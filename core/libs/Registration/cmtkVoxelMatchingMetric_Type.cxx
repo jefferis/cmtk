@@ -1,0 +1,244 @@
+/*
+//
+//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 2004-2009 SRI International
+//
+//  This file is part of the Computational Morphometry Toolkit.
+//
+//  http://www.nitrc.org/projects/cmtk/
+//
+//  The Computational Morphometry Toolkit is free software: you can
+//  redistribute it and/or modify it under the terms of the GNU General Public
+//  License as published by the Free Software Foundation, either version 3 of
+//  the License, or (at your option) any later version.
+//
+//  The Computational Morphometry Toolkit is distributed in the hope that it
+//  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+//  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along
+//  with the Computational Morphometry Toolkit.  If not, see
+//  <http://www.gnu.org/licenses/>.
+//
+//  $Revision: 5806 $
+//
+//  $LastChangedDate: 2009-05-29 13:36:00 -0700 (Fri, 29 May 2009) $
+//
+//  $LastChangedBy: torsten $
+//
+*/
+
+#include <cmtkVoxelMatchingMetric_Type.h>
+
+#include <cmtkJointHistogram.h>
+
+namespace
+cmtk
+{
+
+/** \addtogroup Registration */
+//@{
+
+template<class T,ScalarDataType DT>
+void
+VoxelMatchingMetric_Type<T,DT>::ImageData::Init
+( const UniformVolume* volume )
+{
+  const TypedArray *srcArray = volume->GetData();
+  DataArray = TypedArray::SmartPtr( srcArray->Convert( DT ) );
+  Data = static_cast<T*>( DataArray->GetDataPtr() );
+  NumberOfSamples = this->DataArray->GetDataSize();
+
+  DataArray->GetRange( ValueRange[0], ValueRange[1] );
+  //  NumBins = 1 + (ValueRange[1] - ValueRange[0]);
+  BinOffset = ValueRange[0];
+  BinWidth = 1;
+
+  if ( srcArray->GetPaddingFlag() )
+    {
+    Padding = NumericTraits<T>::ConvertFromDataItem( srcArray->GetPaddingValue() );
+    }
+  else
+    {
+    Padding = NumericTraits<T>::DefaultPaddingValue;
+    }
+}
+
+template<class T,ScalarDataType DT>
+size_t
+VoxelMatchingMetric_Type<T,DT>::ImageData::Init
+( const UniformVolume* volume, const size_t defNumBins, const Types::DataItem minBound, const Types::DataItem maxBound )
+{
+  const TypedArray* data = volume->GetData();
+  this->AllocDataArray( data );
+
+  Types::DataItem value = 0, minValue = FLT_MAX, maxValue = -FLT_MAX;
+  int cropFrom[3], cropTo[3], increments[3];
+  volume->GetCropRegion( cropFrom, cropTo, increments );
+  int offset = increments[0];
+  for ( int z = cropFrom[2]; z < cropTo[2]; ++z, offset += increments[2] ) 
+    {
+    for ( int y = cropFrom[1]; y < cropTo[1]; ++y, offset += increments[1] ) 
+      {
+      for ( int x = cropFrom[0]; x < cropTo[0]; ++x, ++offset ) 
+	{
+	if ( data->Get( value, offset ) ) 
+	  {
+	  if ( value > maxValue ) maxValue = value;
+	  if ( value < minValue ) minValue = value;
+	  }
+	}
+      }
+    }
+  
+  minValue = std::max( minValue, minBound );
+  maxValue = std::min( maxValue, maxBound );
+  
+  unsigned int numBins = defNumBins;
+  if ( numBins != CMTK_HISTOGRAM_AUTOBINS ) 
+    {
+    BinOffset = minValue;
+    BinWidth = ( maxValue - minValue ) / (numBins-1);
+    double factor = 1.0 / BinWidth;
+    
+    for ( size_t idx = 0; idx < NumberOfSamples; ++idx ) 
+      {
+      if ( data->Get( value, idx ) ) 
+	{
+	value = std::max( std::min( value, maxValue ), minValue );
+	Data[idx] = static_cast<T>( floor(factor * (value-BinOffset)) );
+	} 
+      else 
+	{
+	// point to extra bins at the end of each row/column for NULL data.
+	Data[idx] = numBins;
+	}
+      }
+    } 
+  else 
+    {
+    switch ( data->GetDataClass() ) 
+      {
+      case DATACLASS_BINARY: 
+      {
+      numBins = 2;
+      BinOffset = 0;
+      BinWidth = 1;
+      
+      const Types::DataItem threshold = (minValue + maxValue) / 2;
+      for ( size_t idx = 0; idx < NumberOfSamples; ++idx ) 
+	{
+	if ( data->Get( value, idx ) ) 
+	  {
+	  if ( value > threshold  ) 
+	    Data[idx] = 1;
+	  else
+	    Data[idx] = 0;
+	  } 
+	else
+	  // point to extra bins at the end of each row/column for NULL data.
+	  Data[idx] = numBins;
+	}
+      }
+      break;
+      case DATACLASS_LABEL: 
+      {
+      numBins = 1 + static_cast<unsigned int>(maxValue-minValue);
+      if ( numBins > 254 ) 
+	{
+	fprintf( stderr, "Fatal error: Cannot handle more than 254 different labels.\n" );
+	exit( 1 );
+	}
+      
+      BinOffset = 0;
+      BinWidth = 1;
+      
+      for ( size_t idx = 0; idx < NumberOfSamples; ++idx ) 
+	{
+	if ( data->Get( value, idx ) )
+	  Data[idx] = static_cast<T>( value - minValue );
+	else
+	  // point to extra bins at the end of each row/column for NULL data.
+	  Data[idx] = numBins;
+	}
+      }
+      break;
+      default: // Handle everything else as grey-level data.
+      case DATACLASS_GREY: 
+      {
+      numBins = JointHistogramBase::CalcNumBins( volume );
+      BinOffset = minValue;
+      BinWidth = ( maxValue - minValue ) / (numBins-1);
+      double factor = 1.0 / BinWidth;
+      
+      for ( size_t idx = 0; idx < NumberOfSamples; ++idx ) 
+	{
+	if ( data->Get( value, idx ) ) 
+	  {
+	  value = std::max( std::min( value, maxValue ), minValue );
+	  Data[idx] = static_cast<T>( floor(factor*(value-BinOffset)) );
+	  } 
+	else 
+	  {
+	  // point to extra bins at the end of each row/column for NULL data.
+	  Data[idx] = numBins;
+	  }
+	}
+      }
+      break;
+      } 
+    }
+  
+  ValueRange[0] = 0;
+  ValueRange[1] = static_cast<Types::DataItem>( numBins - 1 );
+  
+  return Padding = numBins;
+}
+
+template<class T,ScalarDataType DT>
+void
+VoxelMatchingMetric_Type<T,DT>::ImageData::AllocDataArray
+( const TypedArray* templateArray )
+{
+  NumberOfSamples = templateArray->GetDataSize();
+  DataArray = TypedArray::SmartPtr
+    ( TypedArray::Create( DT, NumberOfSamples ) );
+  Data = static_cast<T*>( DataArray->GetDataPtr() );
+}
+
+template<class T,ScalarDataType DT>
+void
+VoxelMatchingMetric_Type<T,DT>::ImageData::PrecomputeIncrements
+( const UniformVolume* volume )
+{
+  memcpy( ImageDims, volume->GetDims(), sizeof( ImageDims ) );
+  // pre-compute relative offsets for tri-linear model interpolation
+  nextJ = volume->GetDims()[0];
+  nextK = nextJ * volume->GetDims()[1];
+  nextIJ = nextJ + 1;
+  nextIK = nextK + 1;
+  nextJK = nextK + nextJ;
+  nextIJK = nextJK + 1;
+}
+
+template<class T,ScalarDataType DT>
+void
+VoxelMatchingMetric_Type<T,DT>::ImageData::CopyFrom( const ImageData& src ) 
+{
+  NumberOfSamples = src.NumberOfSamples;
+  memcpy( ImageDims, src.ImageDims, sizeof( ImageDims ) );
+  
+  nextJ = src.nextJ;
+  nextK = src.nextK;
+  nextIJ = src.nextIJ;
+  nextIK = src.nextIK;
+  nextJK = src.nextJK;
+  nextIJK = src.nextIJK;
+}
+
+// instantiate necessary templates.
+template class VoxelMatchingMetric_Type<byte,TYPE_BYTE>;
+template class VoxelMatchingMetric_Type<short,TYPE_SHORT>;
+
+} // namespace cmtk

@@ -1,0 +1,11 @@
+! TYPEDSTREAM 1.1
+
+reference_study "phantom_ax.nhdr"
+floating_study "phantom_sa.nhdr"
+affine_xform {
+	xlate -116.5315 0 116.531 
+	rotate -0 -0 -0 
+	scale 1 1 1 
+	shear 0 0 0 
+	center 0 0 0 
+}

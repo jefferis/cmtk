@@ -1,0 +1,13 @@
+! TYPEDSTREAM 1.1
+
+registration {
+	reference_study "pat002_ct.hdr"
+	floating_study "pat002_ct.hdr"
+	affine_xform {
+		xlate 0 0 0 
+		rotate -0 -0 -0 
+		scale 1 1 1 
+		shear 0 0 0 
+		center 85.40000153 102.1999969 70 
+	}
+}

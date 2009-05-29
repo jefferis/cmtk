@@ -1,0 +1,3 @@
+Statistics for image spgr_3t.hdr
+min	max	mean	sdev	n	Entropy	sum
+0.00000	3492.00000	372.21921	404.96503	835584	4.08475	311020416.000000

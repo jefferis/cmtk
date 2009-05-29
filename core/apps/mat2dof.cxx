@@ -1,0 +1,200 @@
+/*
+//
+//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 2004-2009 SRI International
+//
+//  This file is part of the Computational Morphometry Toolkit.
+//
+//  http://www.nitrc.org/projects/cmtk/
+//
+//  The Computational Morphometry Toolkit is free software: you can
+//  redistribute it and/or modify it under the terms of the GNU General Public
+//  License as published by the Free Software Foundation, either version 3 of
+//  the License, or (at your option) any later version.
+//
+//  The Computational Morphometry Toolkit is distributed in the hope that it
+//  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+//  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along
+//  with the Computational Morphometry Toolkit.  If not, see
+//  <http://www.gnu.org/licenses/>.
+//
+//  $Revision: 5806 $
+//
+//  $LastChangedDate: 2009-05-29 13:36:00 -0700 (Fri, 29 May 2009) $
+//
+//  $LastChangedBy: torsten $
+//
+*/
+
+#include <cmtkconfig.h>
+
+#include <iostream>
+
+#include <cmtkConsole.h>
+#include <cmtkCommandLine.h>
+
+#include <cmtkVector.h>
+#include <cmtkAffineXform.h>
+#include <cmtkMatrix4x4.h>
+
+#include <cmtkStudyList.h>
+#include <cmtkClassStream.h>
+#include <cmtkClassStreamAffineXform.h>
+#include <cmtkClassStreamStudyList.h>
+
+const char* CenterStr = NULL;
+const char* OffsetStr = NULL;
+const char* TranslateStr = NULL;
+const char* PixelSizeStr = NULL;
+
+const char* Reference = "reference";
+const char* Floating = "floating";
+
+const char* OutList = NULL;
+bool AppendToOutput = false;
+
+bool Matrix3x3 = false;
+bool Transpose = false;
+bool Inverse = false;
+
+int
+main( const int argc, const char* argv[] )
+{
+  try
+    {
+    cmtk::CommandLine cl( argc, argv );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Matrix to degrees of freedom" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Convert transformation matrix to degrees of freedom" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] < matrix" );
+
+    typedef cmtk::CommandLine::Key Key;    
+    cl.AddSwitch( Key( '3', "matrix3x3" ), &Matrix3x3, true, "Only input upper left 3x3 submatrix." );
+    cl.AddSwitch( Key( 't', "transpose" ), &Transpose, true, "Transpose input matrix." );
+    cl.AddSwitch( Key( 'i', "inverse" ), &Inverse, true, "Output inverse transformation." );
+    cl.AddOption( Key( 'c', "center" ), &CenterStr, "Set center x,y,z for rotation and scaling." );
+    cl.AddOption( Key( 'o', "offset" ), &OffsetStr, "Set offset dx,dy,dz for translation." );
+    cl.AddOption( Key( 'x', "xlate" ), &TranslateStr, "Translate result relative by given vector." );
+    cl.AddOption( Key( 'p', "pixel-size" ), &PixelSizeStr, "For matrices in pixel space, set pixel size." );
+
+    cl.AddOption( Key( 'l', "list" ), &OutList, "Write output in list format to this archive" );
+    cl.AddOption( Key( 'A', "append" ), &OutList, "Append output to this archive", &AppendToOutput );
+
+    cl.Parse();
+    }
+  catch ( cmtk::CommandLine::Exception e )
+    {
+    cmtk::StdErr << e;
+    exit( 1 );
+    }
+
+  cmtk::Types::Coordinate matrix[4][4];
+  memset( matrix, 0 , sizeof( matrix ) );
+  if ( Matrix3x3 )
+    {
+    for ( int row = 0; row < 3; ++row )
+      for ( int col = 0; col < 3; ++col )
+	std::cin >> matrix[col][row];
+    matrix[3][3] = 1.0;
+    }
+  else
+    {
+    for ( int row = 0; row < 4; ++row )
+      for ( int col = 0; col < 4; ++col )
+	std::cin >> matrix[col][row];
+    }
+
+  if ( Transpose )
+    {
+    for ( int row = 0; row < 3; ++row )
+      for ( int col = 0; col < row; ++col )
+	{
+	const cmtk::Types::Coordinate tmp = matrix[col][row];
+	matrix[col][row] = matrix[row][col];
+	matrix[row][col] = tmp;
+	}
+    }
+
+  if ( PixelSizeStr )
+    {
+    float pixel[4] = { 1.0, 1.0, 1.0, 1.0 };
+    if ( 3 == sscanf( PixelSizeStr, "%f,%f,%f", pixel+0, pixel+1, pixel+2 ) )
+      {
+      for ( int row = 0; row < 4; ++row )
+	for ( int col = 0; col < 4; ++col )
+	  matrix[col][row] /= pixel[row];
+      }
+    }
+
+  cmtk::AffineXform::SmartPtr xform( new cmtk::AffineXform( matrix ) );
+
+  if ( CenterStr )
+    {
+    float center[3];
+    if ( 3 == sscanf( CenterStr, "%f,%f,%f", center+0, center+1, center+2 ) )
+      {
+      cmtk::Types::Coordinate c[] = { center[0], center[1], center[2] };
+      xform->ChangeCenter( c );
+      }
+    }
+  
+  if ( OffsetStr )
+    {
+    float offset[3];
+    if ( 3 == sscanf( OffsetStr, "%f,%f,%f", offset+0, offset+1, offset+2 ) )
+      {
+      cmtk::Vector3D o( offset ), oo;
+      xform->RotateScaleShear( oo.XYZ, o.XYZ );
+      xform->Translate( oo.XYZ );
+      }
+    }
+
+  if ( TranslateStr )
+    {
+    float xlate[3];
+    if ( 3 == sscanf( TranslateStr, "%f,%f,%f", xlate+0, xlate+1, xlate+2 ) )
+      {
+      cmtk::Vector3D x( xlate );
+      xform->Translate( x.XYZ );
+      }
+    }
+
+  if ( OutList )
+    {
+    if ( AppendToOutput )
+      {
+      cmtk::ClassStream outStream( OutList, cmtk::ClassStream::APPEND );
+      if ( Inverse )
+	outStream << *xform->GetInverse();
+      else
+	outStream << *xform;
+      }
+    else
+      {
+      cmtk::StudyList studyList;
+      
+      studyList.AddStudy( Reference );
+      studyList.AddStudy( Floating );
+
+      if ( Inverse )
+	{
+	cmtk::AffineXform::SmartPtr inverse( xform->GetInverse() );
+	studyList.AddXform( Reference, Floating, inverse );
+	}
+      else
+	studyList.AddXform( Reference, Floating, xform );
+      
+      cmtk::ClassStreamStudyList::Write( OutList, &studyList );
+      }
+    }
+  else
+    {
+    cmtk::CoordinateVector v;
+    xform->GetParamVector( v );
+    for ( unsigned int idx = 0; idx < v.Dim; ++idx )
+      std::cout << "#" << idx << "\t" << v.Elements[idx] << "\n";
+    }
+}
+

@@ -1,0 +1,185 @@
+/*
+//
+//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 2004-2009 SRI International
+//
+//  This file is part of the Computational Morphometry Toolkit.
+//
+//  http://www.nitrc.org/projects/cmtk/
+//
+//  The Computational Morphometry Toolkit is free software: you can
+//  redistribute it and/or modify it under the terms of the GNU General Public
+//  License as published by the Free Software Foundation, either version 3 of
+//  the License, or (at your option) any later version.
+//
+//  The Computational Morphometry Toolkit is distributed in the hope that it
+//  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+//  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along
+//  with the Computational Morphometry Toolkit.  If not, see
+//  <http://www.gnu.org/licenses/>.
+//
+//  $Revision: 5806 $
+//
+//  $LastChangedDate: 2009-05-29 13:36:00 -0700 (Fri, 29 May 2009) $
+//
+//  $LastChangedBy: torsten $
+//
+*/
+
+#ifndef __cmtkElasticRegistrationCommandLine_h_included_
+#define __cmtkElasticRegistrationCommandLine_h_included_
+
+#include <cmtkconfig.h>
+
+#include <cmtkElasticRegistration.h>
+
+namespace
+cmtk
+{
+
+/** \addtogroup Registration */
+//@{
+/** Class for command line controlled  voxel registration.
+ *@author T. Rohlfing
+ *@version $Revision: 5806 $ $Date: 2009-05-29 13:36:00 -0700 (Fri, 29 May 2009) $
+ */
+class ElasticRegistrationCommandLine : 
+  /// Inherit generic elastic registration.
+  public ElasticRegistration 
+{
+public:
+  /// This class.
+  typedef ElasticRegistrationCommandLine Self;
+
+  /// Smart pointer.
+  typedef SmartPointer<ElasticRegistrationCommandLine> SmartPtr;
+
+  /// Parent class.
+  typedef ElasticRegistration Superclass;
+
+  /** Constructor.
+   *@param argc Number of command line arguments; this should be the argc
+   * parameter of the main() function.
+   *@param argv Array of command line arguments; this should be the argv
+   * parameter of the main() function.
+   */
+  ElasticRegistrationCommandLine ( int argc, char *argv[] );
+
+  /// Destructor.
+  ~ElasticRegistrationCommandLine ();
+
+  /** Perform registration.
+   */
+  virtual CallbackResult Register ();
+
+protected:
+  /** Initialize registration.
+   * So far, this function has no effect other than calling the equivalent
+   * inherited function.
+   */
+  virtual CallbackResult InitRegistration();
+
+  /** Output registration result.
+   * This function write the transformation that was found to a studylist
+   * archive with the name provided by command line arguments. The result is 
+   * also printed to stderr in parameter list form.
+   */
+  virtual void OutputResult ( const CoordinateVector* ) const;
+
+  /** Enter resolution level.
+   * An information is printed to stderr and to the protocol file if one is
+   * written.
+   */
+  virtual void EnterResolution( CoordinateVector::SmartPtr&, Functional::SmartPtr&, const int, const int );
+
+  /** Leave resolution level.
+   * The transformation found so far is written to a file if desired.
+   */
+  virtual int DoneResolution( CoordinateVector::SmartPtr&, Functional::SmartPtr&, const int, const int );
+
+private:
+  /** Name of input studylist.
+   * This is defined by the --inlist command line parameter (not currently
+   * supported).
+   */
+  const char *InputStudylist;
+
+  /** Name of output studylist.
+   * This is defined by the -o or --outlist command line option.
+   */
+  const char *Studylist;
+
+  /** Name of first study to be registered.
+   * This is given as the first non-option command line paramter.
+   */
+  char *Study1;
+
+  /** Name of second study to be registered.
+   * This is given as the second non-option command line paramter.
+   */
+  char *Study2;
+  
+  /// Flag for pixel padding in first image.
+  bool Padding0;
+
+  /// Flag for pixel padding in second image.
+  bool Padding1;
+
+  /// Padding value in first image.
+  Types::DataItem PaddingValue0;
+
+  /// Padding value in second image.
+  Types::DataItem PaddingValue1;
+
+  /// Prune histogram for image 0: number of target bins (0 = no pruning).
+  int m_PruneHistogram0;
+
+  /// Prune histogram for image 1: number of target bins (0 = no pruning).
+  int m_PruneHistogram1;
+
+  /// Filename for rigidity constraint map.
+  const char* RigidityConstraintMapFilename;
+
+  /** Name of protocol output file.
+   * This is defined by the -p or --protocol command line option.
+   */
+  const char *Protocol;
+
+  /** Name of elapsed time output file.
+   * This is defined by the -t or --time command line option.
+   */
+  const char *Time;
+
+  /** Verbosity flag.
+   * This is set to 'on' by -v or --verbose, and set to 'off' by -q or --quiet.
+   */
+  bool Verbose;
+
+  /** Select whether too create intermediate warp output files (level-xx.list).
+   */
+  bool m_OutputIntermediate;
+
+  /// Write deformation to studylist archive.
+  void OutputWarp ( const char* ) const;
+
+  /// Counter for intermediate result files.
+  int IntermediateResultIndex;
+
+  /// Write intermediate deformation file.
+  void OutputIntermediate( const bool incrementCount = true );
+
+  /// Signal handler that writes intermediate result during a level.
+  static void DispatchSIGUSR1( int sig );
+
+  /// Static pointer to this object.
+  static Self* StaticThis;
+};
+
+//@}
+
+} // namespace cmtk
+
+#endif // #ifndef __cmtkElasticRegistrationCommandLine_h_included_

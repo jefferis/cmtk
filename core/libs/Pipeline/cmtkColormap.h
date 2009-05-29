@@ -1,0 +1,226 @@
+/*
+//
+//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 2004-2009 SRI International
+//
+//  This file is part of the Computational Morphometry Toolkit.
+//
+//  http://www.nitrc.org/projects/cmtk/
+//
+//  The Computational Morphometry Toolkit is free software: you can
+//  redistribute it and/or modify it under the terms of the GNU General Public
+//  License as published by the Free Software Foundation, either version 3 of
+//  the License, or (at your option) any later version.
+//
+//  The Computational Morphometry Toolkit is distributed in the hope that it
+//  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+//  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along
+//  with the Computational Morphometry Toolkit.  If not, see
+//  <http://www.gnu.org/licenses/>.
+//
+//  $Revision: 5806 $
+//
+//  $LastChangedDate: 2009-05-29 13:36:00 -0700 (Fri, 29 May 2009) $
+//
+//  $LastChangedBy: torsten $
+//
+*/
+
+#ifndef __cmtkColormap_h_included_
+#define __cmtkColormap_h_included_
+
+#include <cmtkconfig.h>
+
+#include <cmtkPipelineObject.h>
+#include <cmtkRGB.h>
+
+#include <cmtkTypedArray.h>
+
+#include <cmtkStudy.h>
+
+namespace
+cmtk
+{
+
+/** \addtogroup Pipeline */
+//@{
+
+/** Class representing a configurable (HSV) colormap.
+ * Ranges for H, S, and V can be defined. For all data values in a given
+ * range, colors are interpolated linearly from these ranges. The number of
+ * discrete colors can be chosen by the user (default is 256). For any given
+ * set of parameters the lookup table is precomputed, so the actual lookup
+ * of several subsequent images can be done very efficiently. 
+ */
+class Colormap : 
+  /// Inherit basic functions from generic pipeline object.
+  public PipelineObject 
+{
+public:
+  /// Create new Colormap object.
+  static Colormap* New() { return new Colormap(); }
+
+  /// Return virtual class name.
+  virtual const char *GetClassName() const { return "Colormap"; }
+
+  /// Flag for user-defined colormaps.
+  igsClassParameter(bool,HaveUserMap);
+
+  /// Two-value array defining the Hue range of the colormap.
+  igsClassParameter2Array(float,HueRange);
+
+  /// Two-value array defining the Saturation range of the colormap.
+  igsClassParameter2Array(float,SaturationRange);
+
+  /// Two-value array defining the Value range of the colormap.
+  igsClassParameter2Array(float,ValueRange);
+
+  // Gamma correction coefficient.
+  igsClassParameter(float,Gamma);
+
+  /// The number of entries in the colormap, ie. the number of discrete colors.
+  igsClassParameter(int,TableEntries);
+
+  /** Two-value array defining the range of data values to map.
+   * All values below the lower bound will be mapped to the first color in the
+   * table while all values above the upper bound are mapped to the final color
+   * in the table.
+   */
+  igsClassParameter2Array(float,DataRange);
+
+  /** Reverse order of table entries.
+   */
+  igsClassParameter(bool,Reverse);
+
+  /** Chose one out of five predefined colormaps.
+   *@param index The index of the desired standard colormap. Valid values are
+   * 0 (Greylevel), 1 (Red), 2 (Green), 3 (Blue), 4 (Rainbow), 5 (Inverse
+   * Rainbow). PALETTE_XXX constants are available for convenient access.
+   */
+  void SetStandardColormap( const int index );
+
+  /// NULL-terminated list of standard colormap names.
+  static const char *StandardColormaps[];
+
+  /** Apply this colormap to an image to get an RGB presentation.
+   *@param outPtr Pointer to a suffiently big memory segment that will hold
+   * the resulting RGB data. The data will be stored as three unsigned
+   * 8-bit values per pixel, representing the red, green, and blue components
+   * of that pixel.
+   *@param inPtr Pointer to a TypedArray object containing the data to be 
+   * converted. The primitive data type can be any of the types supported by
+   * TypedArray, eg. byte, short, float etc.
+   *@param generateAlpha If this flag is set, a constant alpha value will be
+   * generated for each pixel, resulting in 32 bits of aRGB data per pixel,
+   * rather than 24 bits of RGB data. Default value for this parameter is off.
+   */
+  void Apply( void *const outPtr, const TypedArray* inPtr, const bool generateAlpha = false );
+
+  /** Apply this colormap and an alpha ramp to get an RGBA presentation.
+   *@param outPtr Pointer to a suffiently big memory segment that will hold
+   * the resulting RGBA data. The data will be stored as four unsigned
+   * 8-bit values per pixel, representing the red, green, and blue components
+   * of that pixel plus its transparency (0=transparent, 255=opaque). 
+   * Transparency is linearly interpolated between these over the range defined
+   * by the "alphaRampFrom" and "alphaRangeTo" parameters.
+   *@param inPtr Pointer to a TypedArray object containing the data to be 
+   * converted. The primitive data type can be any of the types supported by
+   * TypedArray, eg. byte, short, float etc.
+   *@param alphaRampFrom All data values below this threshold will be given
+   * complete transparency (alpha=0).
+   *@param alphaRampTo All data values above this threshold will be set to 
+   * opaque (alpha=255).
+   */
+  void Apply( void *const outPtr, const TypedArray* inPtr, const double alphaRampFrom, const double alphaRampTo );
+
+  /// Set colormap parameters from Study object.
+  void SetFromStudy( const Study* study );
+
+  /// Convert HSV color to RGB.
+  static void HSV2RGB( RGB& rgb, float H, float S, float V );
+
+protected:
+  /// Default constructor.
+  Colormap();
+
+  /** Virtual destructor.
+   * Frees the lookup table if one was allocated.
+  */
+  virtual ~Colormap();
+  
+  /** Execute function.
+   * Called by the Update() function inherited from Object, this function
+   * computes the lookup table using the parameters specified.
+   */
+  virtual void Execute();
+
+private:
+  /** Color lookup table.
+   * This array holds the precomputed R, G, and B color components for 
+   * "TableEntries" distinct data values in the range DataRange[0] throgh
+   * DataRange[1].
+   */
+  RGB *LookupTable;
+
+  /** Number of entries allocated for the lookup table.
+   * Before regeneration of the lookup table, this field is compared to 
+   * TableEntries. If both are equal, the already allocated storage is reused
+   * for the refreshed lookup table. Otherwise, the old table is freed and a 
+   * new one is allocated.
+   */
+  int LookupTableEntries;
+
+  /// Precomputed scaling factor for data value to table index conversion.
+  float InvDataRangeWidth;
+
+  /** Apply table lookup for a particular primitive data type.
+   *@param T Template parameter specifying the primitive data type to lookup
+   * in the color table, eg. byte, short, float etc.
+   *@param outPtr Pointer to an array holding the RGB pixel data after table
+   * lookup.
+   *@param inPtr Pointer to the primitive data array of type T.
+   *@param count Number of values in the array pointed to by inPtr. As inPtr
+   * is not a TypedArray anymore, we have to make this explicit.
+   *@see Apply
+   */
+  template<class T>
+  void ApplyPrimitive( RGB *const outPtr, const T* inPtr, const unsigned int count, const bool nullFlag, const T nullData ) const;
+
+  /** Apply table lookup with constant alpha for one primitive data type.
+   *@param T Template parameter specifying the primitive data type to lookup
+   * in the color table, eg. byte, short, float etc.
+   *@param outPtr Pointer to an array holding the aRGB pixel data after table
+   * lookup.
+   *@param inPtr Pointer to the primitive data array of type T.
+   *@param count Number of values in the array pointed to by inPtr. As inPtr
+   * is not a TypedArray anymore, we have to make this explicit.
+   *@see Apply
+   */
+  template<class T>
+  void ApplyPrimitive( RGBA *const outPtr, const T* inPtr, const unsigned int count, const bool nullFlag, const T nullData ) const;
+
+  /** Apply table lookup for a particular primitive data type.
+   *@param T Template parameter specifying the primitive data type to lookup
+   * in the color table, eg. byte, short, float etc.
+   *@param outPtr Pointer to an array holding the RGB pixel data after table
+   * lookup.
+   *@param inPtr Pointer to the primitive data array of type T.
+   *@param count Number of values in the array pointed to by inPtr. As inPtr
+   * is not a TypedArray anymore, we have to make this explicit.
+   *@see Apply
+   */
+  template<class T>
+  void ApplyPrimitive( RGBA *const outPtr, const T* inPtr, const unsigned int count, const bool nullFlag, const T nullData, const T alphaRampFrom, const T alphaRampTo ) const;
+
+  /// Label color map: is system-defined by default or can be read from file.
+  SegmentationLabelMap LabelColorMap;
+};
+
+//@}
+
+} // namespace cmtk
+
+#endif // #ifndef __cmtkColormap_h_included_

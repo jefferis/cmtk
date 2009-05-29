@@ -1,0 +1,9 @@
+! TYPEDSTREAM 1.1
+
+affine_xform {
+	xlate 90 90 62.5 
+	rotate 0 0 0 
+	scale 1 1 1 
+	shear 0 0 0 
+	center 179.296875 179.296875 62.5 
+}

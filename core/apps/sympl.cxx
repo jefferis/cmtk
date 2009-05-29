@@ -1,0 +1,443 @@
+/*
+//
+//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 2004-2009 SRI International
+//
+//  This file is part of the Computational Morphometry Toolkit.
+//
+//  http://www.nitrc.org/projects/cmtk/
+//
+//  The Computational Morphometry Toolkit is free software: you can
+//  redistribute it and/or modify it under the terms of the GNU General Public
+//  License as published by the Free Software Foundation, either version 3 of
+//  the License, or (at your option) any later version.
+//
+//  The Computational Morphometry Toolkit is distributed in the hope that it
+//  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+//  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along
+//  with the Computational Morphometry Toolkit.  If not, see
+//  <http://www.gnu.org/licenses/>.
+//
+//  $Revision: 5806 $
+//
+//  $LastChangedDate: 2009-05-29 13:36:00 -0700 (Fri, 29 May 2009) $
+//
+//  $LastChangedBy: torsten $
+//
+*/
+
+#include <cmtkconfig.h>
+
+#include <cmtkVolume.h>
+#include <cmtkUniformVolume.h>
+#include <cmtkVolumeIO.h>
+#include <cmtkXformIO.h>
+
+#include <cmtkSymmetryPlaneFunctional.h>
+#include <cmtkBestNeighbourOptimizer.h>
+
+#include <cmtkTypes.h>
+#include <cmtkTypedArray.h>
+
+#include <stdio.h>
+
+#include <cmtkCommandLine.h>
+#include <cmtkConsole.h>
+#include <cmtkClassStream.h>
+
+#include <cmtkReformatVolume.h>
+#include <cmtkUniformVolumeInterpolator.h>
+#include <cmtkSincInterpolator.h>
+#include <cmtkLinearInterpolator.h>
+#include <cmtkCubicInterpolator.h>
+
+bool Verbose = false;
+
+float MinValue = 0;
+bool MinValueSet = false;
+float MaxValue = 0;
+bool MaxValueSet = false;
+
+cmtk::Types::Coordinate Sampling = 1;
+cmtk::Types::Coordinate Accuracy = 0.1;
+
+cmtk::Interpolators::InterpolationEnum Interpolation = cmtk::Interpolators::LINEAR;
+
+int Levels = 1;
+
+bool OutputOnly = false;
+cmtk::Types::Coordinate Rho, Theta, Phi;
+
+bool DoWriteMirror = false;
+const char* MirrorOutFile = "symmetry_mirror.hdr";
+
+bool DoWriteAligned = false;
+const char* AlignedOutFile = "symmetry_aligned.hdr";
+bool MarkPlaneAligned = false;
+
+bool DoWriteMarked = false;
+const char* MarkedOutFile = "symmetry_marked.hdr";
+
+bool DoWriteDifference = false;
+const char* DifferenceOutFile = "symmetry_diff.hdr";
+
+const char* WriteXformPath = NULL;
+
+cmtk::Types::DataItem MarkPlaneValue = 4095;
+
+bool PadOutValueSet = false;
+cmtk::Types::DataItem PadOutValue = 0;
+
+const char* SymmetryOutFileName = NULL;
+
+const char* SymmetryParameters = NULL;
+const char* SymmetryParametersFile = NULL;
+
+const char* InFileName = NULL;
+
+bool ParseCommandLine ( const int argc, const char* argv[] )
+{
+  cmtk::CommandLine cl( argc, argv );
+  cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Symmetry plane" );
+  cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute the approximate symmetry plane of an image, e.g., to determine the mid-sagittal plane in human brain images." );
+  cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] image" );
+
+  typedef cmtk::CommandLine::Key Key;
+  cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Turn on verbosity mode." );
+
+  cl.BeginGroup( "Optimization", "Optimization" );
+  cl.AddOption( Key( 'a', "accuracy" ), &Accuracy, "Accuracy (final optimization step size in [mm]." );
+  cl.AddOption( Key( 's', "sampling" ), &Sampling, "Resampled image resolution." );
+  cl.AddOption( Key( 'l', "levels" ), &Levels, "Number of resolution levels." );
+  cl.EndGroup();
+
+  cl.BeginGroup( "Pre-computed", "Pre-computed symmetry" );
+  cl.AddOption( Key( "output-only" ), &SymmetryParameters, "Give symmetry parameters [Rho Theta Phi] as option, skip search.", &OutputOnly );
+  cl.AddOption( Key( "output-only-file" ), &SymmetryParametersFile, "Read symmetry parameters from file, skip search.", &OutputOnly );
+  cl.EndGroup();
+
+  cl.BeginGroup( "Preprocessing", "Data pre-processing" );
+  cl.AddOption( Key( "min-value" ), &MinValue, "Force minumum data value.", &MinValueSet );
+  cl.AddOption( Key( "max-value" ), &MaxValue, "Force maximum data value.", &MaxValueSet );
+  cl.EndGroup();
+
+  cl.BeginGroup( "Interpolation", "Interpolation" );
+  cl.AddSwitch( Key( 'L', "linear" ), &Interpolation, cmtk::Interpolators::LINEAR, "Use linear image interpolation for output." );
+  cl.AddSwitch( Key( 'C', "cubic" ), &Interpolation, cmtk::Interpolators::CUBIC, "Use cubic image interpolation for output." );
+  cl.AddSwitch( Key( 'S', "sinc" ), &Interpolation, cmtk::Interpolators::COSINE_SINC, "Use cosine-windowed sinc image interpolation for output." );
+  cl.EndGroup();
+
+  cl.BeginGroup( "Output", "Output" );
+  cl.AddOption( Key( 'o', "outfile" ), &SymmetryOutFileName, "File name for symmetry plane parameter output." );
+  cl.AddOption( Key( 'P', "pad-out" ), &PadOutValue, "Padding value for output images.", &PadOutValueSet );
+  cl.AddOption( Key( "mark-value" ), &MarkPlaneValue, "Data value to mark (draw) symmetry plane.", &DoWriteMarked );
+  cl.AddOption( Key( "write-marked" ), &MarkedOutFile, "File name for output image with marked symmetry plane.", &DoWriteMarked );
+  cl.AddOption( Key( "write-aligned" ), &AlignedOutFile, "File name for symmetry plane-aligned output image.", &DoWriteAligned );
+  cl.AddSwitch( Key( "mark-aligned" ), &MarkPlaneAligned, true, "Mark symmetry plane in aligned output image." );
+  cl.AddOption( Key( "write-subtract" ), &DifferenceOutFile, "File name for mirror subtraction image.", &DoWriteDifference );
+  cl.AddOption( Key( "write-mirror" ), &MirrorOutFile, "File name for image mirrored w.r.t. symmetry plane.", &DoWriteMirror );
+  cl.AddOption( Key( "write-xform" ), &WriteXformPath, "Write affine alignment transformation to file" );
+  cl.EndGroup();
+
+  if ( ! cl.Parse() ) return false;
+
+  if ( SymmetryParameters ) 
+    {
+    double rho, theta, phi;
+    if ( 3 == sscanf( SymmetryParameters, "%lf %lf %lf", &rho, &theta, &phi ) ) 
+      {
+      Rho = rho; Theta = theta, Phi = phi;
+      }
+    }
+  
+  if ( SymmetryParametersFile ) 
+    {
+    cmtk::ClassStream inStream( SymmetryParametersFile, cmtk::ClassStream::READ );
+    if ( inStream.IsValid() ) 
+      {
+      cmtk::InfinitePlane *plane = NULL;
+      inStream >> plane;
+      Rho = plane->GetRho(); 
+      Theta = plane->GetTheta();
+      Phi = plane->GetPhi();
+      delete plane;
+      } 
+    else
+      {
+      cmtk::StdErr.printf( "ERROR: Could not open symmetry parameter file %s\n", SymmetryParametersFile );
+      }
+    }
+  
+  try
+    {
+    InFileName = cl.GetNext();
+    }
+  catch ( cmtk::CommandLine::Exception& ex ) 
+    {
+    cmtk::StdErr << ex << "\n";
+    return false;
+    }
+  
+  return true;
+}
+
+void
+WriteDifference
+( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::InfinitePlane& infinitePlane, const char* outFileName )
+{
+  cmtk::UniformVolume::SmartPtr diffVolume( originalVolume->CloneGrid() );
+  const cmtk::TypedArray* originalData = originalVolume->GetData();
+  cmtk::TypedArray::SmartPtr diffData = cmtk::TypedArray::SmartPtr( cmtk::TypedArray::Create( GetSignedDataType( originalData->GetType() ), originalData->GetDataSize() ) );
+  diffVolume->SetData( diffData );
+
+  cmtk::Vector3D v;	
+  cmtk::Types::DataItem dataV, dataW;
+
+  int offset = 0;
+  for ( int z = 0; z < originalVolume->GetDims()[2]; ++z )
+    for ( int y = 0; y < originalVolume->GetDims()[1]; ++y )
+      for ( int x = 0; x < originalVolume->GetDims()[0]; ++x, ++offset ) 
+	{
+	if ( ! originalData->Get( dataV, offset ) ) 
+	  {
+	  diffData->SetPaddingAt( offset );
+	  continue;
+	  }
+	originalVolume->GetGridLocation( v, x, y, z );
+	cmtk::Vector3D w(v);
+	infinitePlane.MirrorInPlace( w );
+
+	if ( interpolator->GetDataAt( w, dataW ) )
+	  {
+	  diffData->Set( fabs( dataV - dataW ), offset );
+	  }
+	else
+	  {
+	  diffData->SetPaddingAt( offset );
+	  }
+	}
+  
+  cmtk::VolumeIO::Write( diffVolume, outFileName );
+}
+
+void
+WriteMirror
+( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::InfinitePlane& infinitePlane, const char* outFileName )
+{
+  cmtk::UniformVolume::SmartPtr mirrorVolume( originalVolume->CloneGrid() );
+  cmtk::TypedArray::SmartPtr mirrorData( originalVolume->GetData()->NewTemplateArray() );
+  mirrorVolume->SetData( mirrorData );
+
+  cmtk::Vector3D v;	
+  cmtk::Types::DataItem data;
+
+  int offset = 0;
+  for ( int z = 0; z < originalVolume->GetDims()[2]; ++z ) 
+    {
+    for ( int y = 0; y < originalVolume->GetDims()[1]; ++y )
+      for ( int x = 0; x < originalVolume->GetDims()[0]; ++x, ++offset ) 
+	{
+	originalVolume->GetGridLocation( v, x, y, z );
+	infinitePlane.MirrorInPlace( v );
+
+	if ( interpolator->GetDataAt( v, data ) )
+	  {
+	  mirrorData->Set( data, offset );
+	  }
+	else
+	  {
+	  mirrorData->SetPaddingAt( offset );
+	  }
+	}
+    }
+
+  cmtk::VolumeIO::Write( mirrorVolume, outFileName );
+}
+
+void
+WriteMarkPlane
+( const cmtk::UniformVolume* originalVolume, const cmtk::InfinitePlane& infinitePlane, const cmtk::Types::DataItem markPlaneValue, const char* outFileName )
+{
+  cmtk::UniformVolume::SmartPtr markVolume( originalVolume->CloneGrid() );
+  cmtk::TypedArray::SmartPtr markData( originalVolume->GetData()->Clone() );
+  markVolume->SetData( markData );
+
+  cmtk::Vector3D v;	
+  int offset = 0;
+  for ( int z = 0; z < originalVolume->GetDims()[2]; ++z ) 
+    {
+    for ( int y = 0; y < originalVolume->GetDims()[1]; ++y ) 
+      {
+      int currentSideOfPlane = 0;
+      for ( int x = 0; x < originalVolume->GetDims()[0]; ++x, ++offset ) 
+	{
+	originalVolume->GetGridLocation( v, x, y, z );
+	int newSideOfPlane = infinitePlane.GetWhichSide( v );
+	if ( ( newSideOfPlane != currentSideOfPlane ) && x )
+	  markData->Set( markPlaneValue, offset );
+	currentSideOfPlane = newSideOfPlane;
+	}
+      }    
+    }
+
+  cmtk::VolumeIO::Write( markVolume, outFileName );
+}
+
+void
+WriteAligned
+( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::InfinitePlane& infinitePlane, const char* outFileName )
+{
+  const cmtk::TypedArray* originalData = originalVolume->GetData();
+
+  cmtk::TypedArray::SmartPtr alignData( originalData->NewTemplateArray() );
+  if ( PadOutValueSet )
+    {
+    alignData->SetPaddingValue( PadOutValue );
+    }
+
+  cmtk::UniformVolume::SmartPtr alignVolume( originalVolume->CloneGrid() );
+  alignVolume->SetData( alignData );
+
+  cmtk::Types::DataItem minData, maxData;
+  originalData->GetRange( minData, maxData );
+
+  cmtk::Vector3D v;	
+  cmtk::Types::DataItem data;
+
+  cmtk::AffineXform::SmartPtr alignment( infinitePlane.GetAlignmentXform( 0 ) );
+  int offset = 0;
+  for ( int z = 0; z < originalVolume->GetDims()[2]; ++z ) 
+    {
+    for ( int y = 0; y < originalVolume->GetDims()[1]; ++y ) 
+      {
+      for ( int x = 0; x < originalVolume->GetDims()[0]; ++x, ++offset ) 
+	{
+	originalVolume->GetGridLocation( v, x, y, z );
+	alignment->ApplyInPlaceNonVirtual( v );
+
+	if ( interpolator->GetDataAt( v, data ) )
+	  {
+	  if ( MarkPlaneAligned && (x == ( originalVolume->GetDims()[0] / 2 )) )
+	    alignData->Set( 2 * maxData, offset );
+	  else
+	    alignData->Set( data, offset );
+	  }
+	else
+	  {
+	  alignData->SetPaddingAt( offset );
+	  }
+	}
+      }
+    }
+
+  cmtk::VolumeIO::Write( alignVolume, outFileName );
+}
+
+int
+main ( const int argc, const char* argv[] ) 
+{
+  if ( ! ParseCommandLine( argc, argv ) ) return 1;
+
+  cmtk::UniformVolume::SmartPtr originalVolume( cmtk::VolumeIO::ReadOriented( InFileName, Verbose ) );
+  if ( !originalVolume ) 
+    {
+    cmtk::StdErr.printf( "Could not read image file %s\n", InFileName );
+    exit(1);
+    }
+
+  cmtk::CoordinateVector v( 6 );
+  // initialize plane as the mid-sagittal with respect to image orientation --
+  // distance from coordinate origin (image center) is 0:
+  v[0] = 0;
+  // and angles are chosen so that the plane normal is (1,0,0)
+  v[1] = 0;
+  v[2] = 90;
+  
+  // set center of volume (crop region) as coordinate origin.
+  cmtk::Vector3D center = originalVolume->GetCenterCropRegion();
+  v[3] = center[0]; v[4] = center[1]; v[5] = center[2];
+
+  if ( OutputOnly ) 
+    {
+    v[0] = Rho;
+    v[1] = Theta;
+    v[2] = Phi;
+    } 
+  else
+    {
+    cmtk::BestNeighbourOptimizer optimizer;
+    
+    for ( int level = 0; level < Levels; ++level ) 
+      {      
+      cmtk::UniformVolume::SmartPtr volume;
+      if ( level < Levels-1 ) 
+	{
+	cmtk::Types::Coordinate voxelSize = Sampling * pow( 2.0, (Levels-level-2) );
+	if ( Verbose )
+	  fprintf( stderr, "Entering level %d out of %d (%.2f mm voxel size)\n", level+1, Levels, voxelSize );
+	
+	volume = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( *originalVolume, voxelSize ) );
+	} 
+      else
+	{
+	if ( Verbose )
+	  fprintf(stderr,"Entering level %d out of %d (original voxel size)\n", level+1, Levels );
+	volume = originalVolume; 
+	}
+      
+      cmtk::SmartPointer<cmtk::SymmetryPlaneFunctional> functional( NULL );
+      if ( MinValueSet || MaxValueSet ) 
+	{
+	cmtk::Types::DataItem minValue = 0, maxValue = 0;
+	volume->GetData()->GetRange( minValue, maxValue );
+	
+	if ( MinValueSet ) minValue = MinValue;
+	if ( MaxValueSet ) maxValue = MaxValue;
+	functional = cmtk::SmartPointer<cmtk::SymmetryPlaneFunctional>( new cmtk::SymmetryPlaneFunctional( volume, minValue, maxValue ) );
+	} 
+      else
+	{
+	functional = cmtk::SmartPointer<cmtk::SymmetryPlaneFunctional>( new cmtk::SymmetryPlaneFunctional( volume ) );
+	}
+      
+      optimizer.SetFunctional( cmtk::Functional::SmartPtr::DynamicCastFrom( functional ) );
+      optimizer.Optimize( v, pow( 2.0, Levels-level-1 ), Accuracy * pow( 2.0, Levels-level-1 ) );
+      
+      }
+    if ( Verbose )
+      fprintf( stdout, "rho=%f, theta=%f, phi=%f\n", v[0], v[1], v[2] );
+    }
+  
+  cmtk::InfinitePlane infinitePlane;
+  infinitePlane.SetParameters( v );
+  
+  if ( SymmetryOutFileName )
+    {
+    cmtk::ClassStream stream( SymmetryOutFileName, cmtk::ClassStream::WRITE );
+    stream << infinitePlane;
+    stream.Close();
+    }
+
+  const cmtk::UniformVolumeInterpolatorBase::SmartPtr interpolator( cmtk::ReformatVolume::CreateInterpolator( Interpolation, originalVolume ) );;
+  
+  if ( DoWriteAligned ) 
+    WriteAligned( originalVolume, interpolator, infinitePlane, AlignedOutFile );
+
+  if ( DoWriteMarked ) 
+    WriteMarkPlane( originalVolume, infinitePlane, MarkPlaneValue, MarkedOutFile );
+
+  if ( DoWriteDifference )
+    WriteDifference( originalVolume, interpolator, infinitePlane, DifferenceOutFile );
+
+  if ( DoWriteMirror )
+    WriteMirror( originalVolume, interpolator, infinitePlane, MirrorOutFile );
+
+  if ( WriteXformPath )
+    {
+    cmtk::AffineXform::SmartPtr alignment( infinitePlane.GetAlignmentXform( 0 ) );
+    cmtk::XformIO::Write( alignment, WriteXformPath, Verbose );
+    }
+}

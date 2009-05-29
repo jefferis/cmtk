@@ -1,0 +1,13 @@
+! TYPEDSTREAM 1.1
+
+registration {
+	reference_study "/fs/axon/torsten/igs/testing/cmake.x86_64/bin/../testing/temporary/cluster11.cluster/GroupwiseRMIFromInit/average_groupwise_rmi.hdr"
+	floating_study "spgr_brain_1.hdr"
+	affine_xform {
+		xlate -8.073217861 -25.16414434 3.342559063 
+		rotate 2.603282649 -4.421420255 -9.560317953 
+		log_scale -0.002360387732 -0.03154586691 -0.02400369945 
+		shear 0 0 0 
+		center 88.125 118.125 75 
+	}
+}

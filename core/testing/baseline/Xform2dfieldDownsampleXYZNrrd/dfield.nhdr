@@ -1,0 +1,14 @@
+NRRD0004
+# Complete NRRD file format specification at:
+# http://teem.sourceforge.net/nrrd/format.html
+type: double
+dimension: 4
+space: right-anterior-superior
+sizes: 3 16 16 1
+space directions: none (11.25,0,0) (0,11.25,0) (0,0,1)
+kinds: vector domain domain domain
+labels: "Vx;Vy;Vz" "x" "y" "z"
+endian: little
+encoding: gzip
+space origin: (4.21875,4.21875,6.25)
+data file: dfield.raw.gz

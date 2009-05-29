@@ -1,0 +1,83 @@
+##
+##  Copyright 1997-2009 Torsten Rohlfing
+##  Copyright 2004-2009 SRI International
+##
+##  This file is part of the Computational Morphometry Toolkit.
+##
+##  http:##www.nitrc.org/projects/cmtk/
+##
+##  The Computational Morphometry Toolkit is free software: you can
+##  redistribute it and/or modify it under the terms of the GNU General Public
+##  License as published by the Free Software Foundation, either version 3 of
+##  the License, or (at your option) any later version.
+##
+##  The Computational Morphometry Toolkit is distributed in the hope that it
+##  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+##  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License along
+##  with the Computational Morphometry Toolkit.  If not, see
+##  <http:##www.gnu.org/licenses/>.
+##
+##  $Revision$
+##
+##  $LastChangedDate$
+##
+##  $LastChangedBy$
+##
+
+# Sources of non-templated classes.
+SET(cmtkIO_SRCS
+  cmtkClassStreamAffineXform.cxx
+  cmtkClassStreamHistogram.cxx
+  cmtkClassStreamInfinitePlane.cxx
+  cmtkClassStreamJointHistogram.cxx
+  cmtkClassStreamLandmarkList.cxx
+  cmtkClassStreamStudy.cxx
+  cmtkClassStreamStudyList.cxx
+  cmtkClassStreamWarpXform.cxx
+  cmtkDcmTags.cxx
+  cmtkDICOM.cxx
+  cmtkFileFormat.cxx
+  cmtkGroupwiseRegistrationFunctionalIO.cxx
+  cmtkImageInfo.cxx
+  cmtkImageIO.cxx
+  cmtkMountPoints.cxx
+  cmtkPGM.cxx
+  cmtkRAW.cxx
+  cmtkResourceFile.cxx
+  cmtkScalarImageIO.cxx
+  cmtkSegmentationLabelIO.cxx
+  cmtkStudy.cxx
+  cmtkStudyImageSet.cxx
+  cmtkStudyInfo.cxx
+  cmtkStudyList.cxx
+  cmtkTypedStream.cxx
+  cmtkTypedStreamStudylist.cxx
+  cmtkVolumeFromFileAnalyze.cxx
+  cmtkVolumeFromFileBioRad.cxx
+  cmtkVolumeFromFile.cxx
+  cmtkVolumeFromFileMetaFile.cxx
+  cmtkVolumeFromFileNRRD.cxx
+  cmtkVolumeFromFileNifti.cxx
+  cmtkVolumeFromSlices.cxx
+  cmtkVolumeFromStudy.cxx
+  cmtkVolumeIO.cxx
+  cmtkXformIO.cxx
+  cmtkXformIONrrd.cxx
+)
+
+IF(CMTK_USE_MPI)
+  SET(cmtkIO_SRCS ${cmtkIO_SRCS} cmtkUniformVolumeMPI.cxx)
+ENDIF(CMTK_USE_MPI)
+
+ADD_LIBRARY(cmtkIO ${cmtkIO_SRCS})
+TARGET_LINK_LIBRARIES(cmtkIO cmtkIO)
+IF(CMTK_LIBRARY_PROPERTIES)
+  SET_TARGET_PROPERTIES(cmtkIO PROPERTIES ${CMTK_LIBRARY_PROPERTIES})
+ENDIF(CMTK_LIBRARY_PROPERTIES)
+
+IF(${CMTK_BUILD_SHARED_LIBS})
+  INSTALL(TARGETS cmtkIO LIBRARY DESTINATION bin)
+ENDIF(${CMTK_BUILD_SHARED_LIBS})

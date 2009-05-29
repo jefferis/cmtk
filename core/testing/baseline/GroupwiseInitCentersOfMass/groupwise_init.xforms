@@ -1,0 +1,32 @@
+! TYPEDSTREAM 1.1
+
+template {
+	dims 32 43 27 
+	delta 5.625 5.625 5.625 
+	size 174.375 236.25 146.25 
+	origin 0 0 0 
+}
+target "spgr_brain_1.hdr"
+affine_xform {
+	xlate -5.353617092 -17.96124547 3.680169188 
+	rotate 0 0 0 
+	log_scale 0 0 0 
+	shear 0 0 0 
+	center 87.1875 118.125 73.125 
+}
+target "spgr_brain_2.hdr"
+affine_xform {
+	xlate 4.142897451 -25.90506678 1.876145104 
+	rotate 0 0 0 
+	log_scale 0 0 0 
+	shear 0 0 0 
+	center 87.1875 118.125 73.125 
+}
+target "spgr_brain_3.hdr"
+affine_xform {
+	xlate 2.207935936 -21.16280134 4.78171363 
+	rotate 0 0 0 
+	log_scale 0 0 0 
+	shear 0 0 0 
+	center 87.1875 118.125 73.125 
+}

@@ -1,0 +1,53 @@
+##
+##  Copyright 1997-2009 Torsten Rohlfing
+##  Copyright 2004-2009 SRI International
+##
+##  This file is part of the Computational Morphometry Toolkit.
+##
+##  http:##www.nitrc.org/projects/cmtk/
+##
+##  The Computational Morphometry Toolkit is free software: you can
+##  redistribute it and/or modify it under the terms of the GNU General Public
+##  License as published by the Free Software Foundation, either version 3 of
+##  the License, or (at your option) any later version.
+##
+##  The Computational Morphometry Toolkit is distributed in the hope that it
+##  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+##  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License along
+##  with the Computational Morphometry Toolkit.  If not, see
+##  <http:##www.gnu.org/licenses/>.
+##
+##  $Revision$
+##
+##  $LastChangedDate$
+##
+##  $LastChangedBy$
+##
+
+#
+# This file sets up include directories, link directories, and
+# compiler settings for a project to use CMTK.  It should not be
+# included directly, but rather through the CMTK_USE_FILE setting
+# obtained from CMTKConfig.cmake.
+#
+
+IF(CMTK_BUILD_SETTINGS_FILE)
+  INCLUDE(${CMAKE_ROOT}/Modules/CMakeImportBuildSettings.cmake)
+  CMAKE_IMPORT_BUILD_SETTINGS(${CMTK_BUILD_SETTINGS_FILE})
+ENDIF(CMTK_BUILD_SETTINGS_FILE)
+
+# Add compiler flags needed to use CMTK.
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CMTK_REQUIRED_C_FLAGS}")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMTK_REQUIRED_CXX_FLAGS}")
+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMTK_REQUIRED_LINK_FLAGS}")
+SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${CMTK_REQUIRED_LINK_FLAGS}")
+SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${CMTK_REQUIRED_LINK_FLAGS}")
+
+# Add include directories needed to use CMTK.
+INCLUDE_DIRECTORIES(BEFORE ${CMTK_INCLUDE_DIRS})
+
+# Add link directories needed to use CMTK.
+LINK_DIRECTORIES(${CMTK_LIBRARY_DIRS})

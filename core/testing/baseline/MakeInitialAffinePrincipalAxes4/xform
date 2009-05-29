@@ -1,0 +1,11 @@
+! TYPEDSTREAM 1.1
+
+reference_study "box1.hdr"
+floating_study "box4.hdr"
+affine_xform {
+	xlate 5 -10 15 
+	rotate 9.996305466 20.00063896 29.99972725 
+	scale 1 1 1 
+	shear 1.110223025e-16 5.551115123e-17 -0 
+	center 99.5 99.5 99.5 
+}
