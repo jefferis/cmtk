@@ -21,11 +21,11 @@
 //  with the Computational Morphometry Toolkit.  If not, see
 //  <http://www.gnu.org/licenses/>.
 //
-//  $Revision: 5806 $
+//  $Revision$
 //
-//  $LastChangedDate: 2009-05-29 13:36:00 -0700 (Fri, 29 May 2009) $
+//  $LastChangedDate$
 //
-//  $LastChangedBy: torsten $
+//  $LastChangedBy$
 //
 */
 /** \file nifti1.h

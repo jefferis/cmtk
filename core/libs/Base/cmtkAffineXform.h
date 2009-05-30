@@ -21,11 +21,11 @@
 //  with the Computational Morphometry Toolkit.  If not, see
 //  <http://www.gnu.org/licenses/>.
 //
-//  $Revision: 5806 $
+//  $Revision$
 //
-//  $LastChangedDate: 2009-05-29 13:36:00 -0700 (Fri, 29 May 2009) $
+//  $LastChangedDate$
 //
-//  $LastChangedBy: torsten $
+//  $LastChangedBy$
 //
 */
 
@@ -56,7 +56,7 @@ cmtk
  * the matrix itself or a parameter vector. Both representations are 
  * permanently accessible and held mutually up-to-date whenever one of them
  * changes.
- *@author $Author: torsten $
+ *@author $Author$
  */
 class AffineXform : 
   /// Inherit virtual interface from generic transformation.

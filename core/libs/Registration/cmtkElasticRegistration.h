@@ -21,11 +21,11 @@
 //  with the Computational Morphometry Toolkit.  If not, see
 //  <http://www.gnu.org/licenses/>.
 //
-//  $Revision: 5806 $
+//  $Revision$
 //
-//  $LastChangedDate: 2009-05-29 13:36:00 -0700 (Fri, 29 May 2009) $
+//  $LastChangedDate$
 //
-//  $LastChangedBy: torsten $
+//  $LastChangedBy$
 //
 */
 
@@ -50,7 +50,7 @@ cmtk
  * By implementing member functions to retrieve parameters and report results
  * in derived classes, registration can be integrated into various 
  * environments.
- *@version $Revision: 5806 $ $Date: 2009-05-29 13:36:00 -0700 (Fri, 29 May 2009) $
+ *@version $Revision$ $Date$
  */
 class ElasticRegistration : 
   /// Inherit basic voxel registration functions.

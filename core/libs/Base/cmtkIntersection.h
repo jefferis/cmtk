@@ -21,11 +21,11 @@
 //  with the Computational Morphometry Toolkit.  If not, see
 //  <http://www.gnu.org/licenses/>.
 //
-//  $Revision: 5806 $
+//  $Revision$
 //
-//  $LastChangedDate: 2009-05-29 13:36:00 -0700 (Fri, 29 May 2009) $
+//  $LastChangedDate$
 //
-//  $LastChangedBy: torsten $
+//  $LastChangedBy$
 //
 */
 
@@ -58,7 +58,7 @@ cmtk
  * clipping for voxel based volume similarity computation. All member functions
  * are static, so they can be used without contructing an object.
  *@author T. Rohlfing
- *@version $Revision: 5806 $ $Date: 2009-05-29 13:36:00 -0700 (Fri, 29 May 2009) $
+ *@version $Revision$ $Date$
  */
 class Intersection 
 {
