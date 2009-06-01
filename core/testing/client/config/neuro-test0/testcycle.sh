@@ -37,6 +37,12 @@ if test -f ${lockfile}; then
 fi
 touch ${lockfile}
 
+if [ ! -d ../data ]; then
+    pushd ..
+    svn co https://www.nitrc.org:443/svn/cmtk/trunk/data/
+    popd
+fi
+
 svn update
 tests=`ls ctest-*.cmake`
 
