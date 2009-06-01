@@ -27,12 +27,12 @@
 ##  $LastChangedBy$
 ##
 
-set(CTEST_PROJECT_NAME "IGS")
+set(CTEST_PROJECT_NAME "CMTK")
 set(CTEST_NIGHTLY_START_TIME "00:00:00 PST")
 
 set(CTEST_DROP_METHOD "http")
 set(CTEST_DROP_SITE "neuro.sri.com")
-set(CTEST_DROP_LOCATION "/CDash/submit.php?project=IGS")
+set(CTEST_DROP_LOCATION "/CDash/submit.php?project=CMTK")
 set(CTEST_DROP_SITE_CDASH TRUE)
 
 SET(CTEST_CUSTOM_WARNING_EXCEPTION
