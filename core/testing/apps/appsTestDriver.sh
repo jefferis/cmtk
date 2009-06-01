@@ -31,21 +31,19 @@
 
 BUILDNAME=$1
 BINDIR=$2
-SRCDIR=$3
+DATADIR=$3
 RUNTEST=$4
 
 HOSTNAME=`uname -n`
 tmpdir=${BINDIR}/../testing/temporary/${HOSTNAME}/${RUNTEST}
 mkdir -p ${tmpdir}
 
-INPUTS=${SRCDIR}/../data/
-
-BASELINE=${SRCDIR}/../baseline/${RUNTEST}
-if [ -d ${SRCDIR}/../baseline/${BUILDNAME}/${RUNTEST} ]; then
-    BASELINE=${SRCDIR}/../baseline/${BUILDNAME}/${RUNTEST}
+BASELINE=${DATADIR}/testing/baseline/${RUNTEST}
+if [ -d ${DATADIR}/testing/baseline/${BUILDNAME}/${RUNTEST} ]; then
+    BASELINE=${DATADIR}/testing/${BUILDNAME}/${RUNTEST}
 fi
 
-cd ${INPUTS}
+cd ${DATADIR}/testing/inputs
 
 run()
 {
