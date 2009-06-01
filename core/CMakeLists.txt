@@ -27,7 +27,7 @@
 ##  $LastChangedBy$
 ##
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
 
 IF(COMMAND cmake_policy)
       cmake_policy(SET CMP0003 NEW) ## libraries with full paths vs. search paths
@@ -131,6 +131,9 @@ ENABLE_TESTING()
 IF(BUILD_TESTING)
   SET(BUILDNAME "${BUILDNAME}" CACHE STRING "Name of build on the dashboard")
   MARK_AS_ADVANCED(BUILDNAME)
+
+  SET(CMTK_DATA_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../data)
+  MARK_AS_ADVANCED(CMTK_DATA_ROOT)
 ENDIF(BUILD_TESTING)
 
 #-----------------------------------------------------------------------------

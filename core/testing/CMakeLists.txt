@@ -27,8 +27,8 @@
 ##  $LastChangedBy$
 ##
 
-SET(DATA ${CMTK_SOURCE_DIR}/testing/data)
-SET(BASELINE ${CMTK_SOURCE_DIR}/testing/baseline)
+SET(DATA ${CMTK_DATA_DIR}/testing/inputs)
+SET(BASELINE ${CMTK_DATA_DIR}/testing/baseline)
 
 IF(BUILD_APPS)
 	SUBDIRS(apps)
