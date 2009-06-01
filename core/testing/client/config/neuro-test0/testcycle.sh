@@ -41,6 +41,8 @@ if [ ! -d ../data ]; then
     pushd ..
     svn co https://www.nitrc.org:443/svn/cmtk/trunk/data/
     popd
+else
+    svn update ../data
 fi
 
 svn update
