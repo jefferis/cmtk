@@ -39,7 +39,7 @@ SET(CTEST_UPDATE_COMMAND                "/usr/bin/svn")
 SET(CTEST_BUILD_CONFIGURATION           "Debug")
 
 IF(NOT EXISTS ${CTEST_SOURCE_DIRECTORY})
-  SET(CTEST_CHECKOUT_COMMAND  "${CTEST_UPDATE_COMMAND} co https://www.nitrc.org:443/svn/cmtk/trunk/core/ ${CTEST_SOURCE_DIRECTORY}")
+  SET(CTEST_CHECKOUT_COMMAND  "${CTEST_UPDATE_COMMAND} co https://www.nitrc.org:443/svn/cmtk/trunk/core/ ${CMK_CTEST_ROOT}")
 ENDIF(NOT EXISTS ${CTEST_SOURCE_DIRECTORY})
 
 SET(CTEST_COVERAGE_COMMAND              "/usr/bin/gcov")
