@@ -6,7 +6,7 @@
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
-##  http:##www.nitrc.org/projects/cmtk/
+##  http://www.nitrc.org/projects/cmtk/
 ##
 ##  The Computational Morphometry Toolkit is free software: you can
 ##  redistribute it and/or modify it under the terms of the GNU General Public
@@ -20,7 +20,7 @@
 ##
 ##  You should have received a copy of the GNU General Public License along
 ##  with the Computational Morphometry Toolkit.  If not, see
-##  <http:##www.gnu.org/licenses/>.
+##  <http://www.gnu.org/licenses/>.
 ##
 ##  $Revision$
 ##
