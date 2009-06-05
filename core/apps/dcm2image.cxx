@@ -57,7 +57,6 @@
 #include <memory>
 #include <fstream>
 
-#define HAVE_CONFIG_H
 #include <dctk.h>
 #include <didocu.h>
 #include <djdecode.h>

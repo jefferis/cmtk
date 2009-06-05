@@ -39,8 +39,6 @@
 #  include <string.h>
 #  include <stdio.h>
 
-// let DCMTK know we have its config file.
-#  define HAVE_CONFIG_H
 #  include <dcdeftag.h>
 #  include <didocu.h>
 #  include <djdecode.h>
