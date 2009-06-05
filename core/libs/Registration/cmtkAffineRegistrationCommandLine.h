@@ -97,6 +97,9 @@ protected:
   virtual void EnterResolution( CoordinateVector::SmartPtr&, Functional::SmartPtr&, const int, const int );
 
 private:
+  /// Number of levels for automatic parameter generation.
+  unsigned int m_AutoMultiLevels;
+
   /** Name of output studylist.
    * This is defined by the -o or --outlist command line option.
    */

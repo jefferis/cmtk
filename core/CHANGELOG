@@ -19,6 +19,8 @@ Release CMTK-1.0.0:
     class with minimal extra programmer involvement
 - Added: cmtk::Console can now typeset text with given margin and width.
 - Added: Windows implementation of mutex lock.
+- Added: "--auto-multi-levels" option for registration tool. Selects automatic
+    resolution and optimization parameters for given number of levels.
 
 - Fixed: numerical instability of correlation coefficient (leading to values
     outside -1..+1, which in turn produced invalid p-values
@@ -26,6 +28,7 @@ Release CMTK-1.0.0:
 - Fixed: principal axes registration was broken (Issue NITRC-#3743)
 - Fixed: configure problem with bundled zlib, which broke compile of NrrdIO in
     Visual Studio.
+- Fixed: Analyze/Nifti images were not written compressed
 
 - Improved: simplified code by removing HAVE_ZLIB conditionals. These are now
     always true since we're bundling zlib.
@@ -34,6 +37,7 @@ Release CMTK-1.0.0:
 - Improved: prevent configurations where CMTK_USE_THREADS is ON but
     CMTK_BUILD_SMP is OFF.
 - Improved: better integration of Doxygen into CMake build system
+- Improved: better output of stacked image information in dcm2image
 
 - Removed: cmtk::MathUtil::CoefficientOfCorrelation was removed because it
     turned out to be a redundant, numerically unstable variant of

@@ -82,6 +82,8 @@ AffineRegistrationCommandLine
 ( int argc, char* argv[] ) 
 {
   Metric = 0;
+
+  this->m_AutoMultiLevels = 0;
   CoarsestResolution = -1;
   Exploration = 8;
   Accuracy = 0.1;
@@ -129,10 +131,21 @@ AffineRegistrationCommandLine
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
     cl.AddSwitch( Key( 'q', "quiet" ), &Verbose, false, "Quiet mode" );
 
+    cl.BeginGroup( "Automation", "Automation Options" );
+    cl.AddOption( Key( "auto-multi-levels" ), &this->m_AutoMultiLevels, "Automatic optimization and resolution parameter generation for <n> levels" );
+
     cl.BeginGroup( "Optimization", "Optimization settings" );
     cl.AddOption( Key( 'e', "exploration" ), &this->Exploration, "Exploration [initial optimizer step size]" );
     cl.AddOption( Key( 'a', "accuracy" ), &this->Accuracy, "Accuracy [final optimizer step size]" );
     cl.AddOption( Key( 'f', "stepfactor" ), &this->OptimizerStepFactor, "Factor for search step size reduction. Must be > 0.0 and < 1.0 [default: 0.5]" );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Resolution", "Image resolution parameters" );
+    cl.AddOption( Key( 's', "sampling" ), &this->Sampling, "Image sampling (finest resampled image resolution)" );
+    cl.AddOption( Key( "coarsest" ), &this->CoarsestResolution, "Upper limit for image sampling in multiresolution hierarchy" );
+
+    cl.AddSwitch( Key( "use-original-data" ), &this->UseOriginalData, true, "Use original data in full resolution as final level [default]" );
+    cl.AddSwitch( Key( "omit-original-data" ), &this->UseOriginalData, false, "Do NOT use original data in full resolution" );
     cl.EndGroup();
 
     cl.BeginGroup( "Transformation", "Transformation parameters" );
@@ -144,14 +157,6 @@ AffineRegistrationCommandLine
 
     cl.AddOption( Key( "initial" ), &InitialStudylist, "Initialize transformation from given path" );
     cl.AddOption( Key( "initial-inverse" ), &InitialStudylist, "Initialize transformation with inverse from given path", &InitialXformIsInverse );
-    cl.EndGroup();
-
-    cl.BeginGroup( "Resolution", "Image resolution parameters" );
-    cl.AddOption( Key( 's', "sampling" ), &this->Sampling, "Image sampling (finest resampled image resolution)" );
-    cl.AddOption( Key( "coarsest" ), &this->CoarsestResolution, "Upper limit for image sampling in multiresolution hierarchy" );
-
-    cl.AddSwitch( Key( "use-original-data" ), &this->UseOriginalData, true, "Use original data in full resolution as final level [default]" );
-    cl.AddSwitch( Key( "omit-original-data" ), &this->UseOriginalData, false, "Do NOT use original data in full resolution" );
     cl.EndGroup();
 
     cl.BeginGroup( "Image data", "Image data" );
@@ -414,6 +419,16 @@ AffineRegistrationCommandLine
       {
       this->SetInitialAlignCenters();
       }
+    }
+
+  if ( this->m_AutoMultiLevels > 0 )
+    {
+    const Types::Coordinate minDelta = std::min( Volume_1->GetMinDelta(), Volume_2->GetMinDelta() );
+    const Types::Coordinate maxDelta = std::max( Volume_1->GetMaxDelta(), Volume_2->GetMaxDelta() );
+
+    this->Accuracy = 0.1 * minDelta;
+    this->Sampling = maxDelta;
+    this->Exploration = maxDelta * (1<<(this->m_AutoMultiLevels-1));
     }
   
   if ( Protocol ) 

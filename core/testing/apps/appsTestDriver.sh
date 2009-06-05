@@ -590,6 +590,18 @@ case ${RUNTEST} in
 	run ${BINDIR}/registration -v --dofs 0 -o ${tmpdir} --initial-inverse vol001_mr_t0t1.list  vol001_mr_t0t1.list
 	check_result registration
 	;;
+    RegistrationAutoLevelsRat4)
+	run ${BINDIR}/registration -v -i --auto-multi-levels 4 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	check_result registration
+	;;
+    RegistrationAutoLevelsRat2)
+	run ${BINDIR}/registration -v -i --auto-multi-levels 2 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	check_result registration
+	;;
+    RegistrationAutoLevelsCt3)
+	run ${BINDIR}/registration -q --msd --auto-multi-levels 3 --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_ct.hdr
+	check_result registration
+	;;
     ReorientHdrSaToAx)
 	run ${BINDIR}/reorient -o RAS phantom_sa.hdr ${tmpdir}/reorient.hdr
 	check_result reorient.hdr

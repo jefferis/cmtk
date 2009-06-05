@@ -1,0 +1,11 @@
+! TYPEDSTREAM 1.1
+
+exploration 20.0000000000
+accuracy 0.1399999958
+min_sampling 5.0000000000
+coarsest_resolution -1.0000000000
+metric 4
+optimizer_step_factor 0.5000000000
+no_switch no
+dataclass_1 "GreyLevel"
+dataclass_2 "GreyLevel"

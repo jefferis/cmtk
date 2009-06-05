@@ -217,6 +217,9 @@ SET(testList ${testList} RigidRegistrationMrPet
 		      RigidRegistrationCtMrDOF7
 		      RigidRegistrationLabelsDOF69
 		      RigidRegistrationCrop
+		      RegistrationAutoLevelsRat4
+                      RegistrationAutoLevelsRat2
+                      RegistrationAutoLevelsCt3
 		      RegistrationFromList
 		      RegistrationWithInitial
 		      RegistrationWithInitialInverse)
