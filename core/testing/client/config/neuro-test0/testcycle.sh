@@ -37,14 +37,6 @@ if test -f ${lockfile}; then
 fi
 touch ${lockfile}
 
-if [ ! -d ../data ]; then
-    pushd ..
-    svn co https://www.nitrc.org:443/svn/cmtk/trunk/data/
-    popd
-else
-    svn update ../data
-fi
-
 svn update
 tests=`ls ctest-*.cmake`
 
@@ -56,7 +48,16 @@ if [ "${DISPLAY}" == "" ]; then
 fi
 
 for t in ${tests}; do
-	ctest -S ${t}
+
+    if [ ! -d ../data ]; then
+	pushd ..
+	svn co https://www.nitrc.org:443/svn/cmtk/trunk/data/
+	popd
+    else
+	svn update ../data
+    fi
+    
+    ctest -S ${t}
 done
 
 if [ "${Xpid}" != "" ]; then
