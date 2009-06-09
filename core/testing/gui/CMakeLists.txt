@@ -52,6 +52,6 @@ ENDIF(IGS_BUILD_NRRD OR IGS_USE_TEEM)
 
 FOREACH(testName ${testList})
   ADD_TEST(${testName} /bin/sh ${CMAKE_CURRENT_SOURCE_DIR}/triplanarTestDriver.sh 
-    ${BUILDNAME} ${EXECUTABLE_OUTPUT_PATH} ${CMAKE_CURRENT_SOURCE_DIR} ${testName})		 
+    ${BUILDNAME} ${EXECUTABLE_OUTPUT_PATH} ${CMTK_DATA_ROOT} ${testName})		 
 ENDFOREACH(testName ${testList})
 
