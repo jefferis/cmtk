@@ -68,8 +68,8 @@ cmtk::XformList::Apply( Vector3D& v )
     else
       {
       // are we outside xform domain? then return failure.
-      if ( !(*it)->Xform->InDomain( v ) ) return false;
-      (*it)->Xform->ApplyInPlace( v );
+      if ( !(*it)->m_Xform->InDomain( v ) ) return false;
+      (*it)->m_Xform->ApplyInPlace( v );
       }
     }
   return true;
@@ -95,7 +95,7 @@ cmtk::XformList::GetJacobian
 	// yes: use approximate inverse
 	if ( (*it)->m_WarpXform->ApplyInverseInPlace( vv, this->m_Epsilon ) ) 
 	  // compute Jacobian at destination and invert
-	  jacobian /= static_cast<Types::DataItem>( (*it)->Xform->GetJacobianDeterminant( vv ) );	
+	  jacobian /= static_cast<Types::DataItem>( (*it)->m_Xform->GetJacobianDeterminant( vv ) );	
 	else
 	  // if that fails, return failure flag
 	  return false;
@@ -114,12 +114,12 @@ cmtk::XformList::GetJacobian
     else 
       {
       // are we outside xform domain? then return failure.
-      if ( !(*it)->Xform->InDomain( v ) ) return false;
+      if ( !(*it)->m_Xform->InDomain( v ) ) return false;
 
-      jacobian *= static_cast<Types::DataItem>( (*it)->Xform->GetJacobianDeterminant( vv ) );
+      jacobian *= static_cast<Types::DataItem>( (*it)->m_Xform->GetJacobianDeterminant( vv ) );
       if ( correctGlobalScale )
 	jacobian /= static_cast<Types::DataItem>( (*it)->GlobalScale );
-      (*it)->Xform->ApplyInPlace( vv );
+      (*it)->m_Xform->ApplyInPlace( vv );
       }
     }
   return true;

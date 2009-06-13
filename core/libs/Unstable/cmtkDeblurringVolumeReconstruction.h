@@ -133,7 +133,7 @@ private:
     }
 
     /// Evaluate function and gradient.
-    virtual void Evaluate( const ap::real_1d_array& x, double& f, ap::real_1d_array& g );
+    virtual void Evaluate( const ap::real_1d_array& x, ap::real_value_type& f, ap::real_1d_array& g );
 
   private:
     /// Pointer to actual function class.

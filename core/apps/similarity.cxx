@@ -307,7 +307,7 @@ main ( int argc, char* argv[] )
   histogram->GetJointEntropy( hXY );
   histogram->GetMarginalEntropies( hX, hY );
   
-  fprintf( stdout, "STAT\tN\tHX\tHY\nSTATval\t%d\t%.2f\t%.2f\n\n", voxelCount, hX, hY );
+  fprintf( stdout, "STAT\tN\tHX\tHY\nSTATval\t%d\t%.5f\t%.5f\n\n", voxelCount, hX, hY );
   
   fprintf( stdout, "SIM\tDIFF\tMSD\tMAD\tNCC\tHXY\tMI\tNMI\nSIMval\t%d\t%.1f\t%.3f\t%.4f\t%.5f\t%.5f\t%.5f\n",
 	   countVoxelsUnequal, sumSq / voxelCount, sumAbs / voxelCount, ccMetric.Get(), hXY, hX + hY - hXY, ( hX + hY ) / hXY );
@@ -379,7 +379,7 @@ main ( int argc, char* argv[] )
 
 	const unsigned int totalFlt = ( i < numberLabelsFlt ) ? histogram->ProjectToY( i ) : 0;
 	const double SI = static_cast<double>( 2.0 * correct / (totalRef + totalFlt ) );
-	fprintf( stdout, "\nLabel #%d:\t%d\t%d\t%.2lf\t%d\t%.2lf\t%d\t%.2lf\t%.2lf", 
+	fprintf( stdout, "\nLabel #%d:\t%d\t%d\t%.2lf\t%d\t%.2lf\t%d\t%.2lf\t%.5lf", 
 		 i, totalRef, correct, 100.0 * correct / totalRef, missed, 100.0 * missed / totalRef, wrong, 100.0 * wrong / totalRef, SI );
 	
 	if ( i )

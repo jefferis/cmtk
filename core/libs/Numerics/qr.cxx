@@ -114,7 +114,7 @@ void rmatrixqr(ap::real_2d_array& a, int m, int n, ap::real_1d_array& tau)
     int i;
     int k;
     int minmn;
-    double tmp;
+    ap::real_value_type tmp;
 
     if( m<=0||n<=0 )
     {
@@ -289,7 +289,7 @@ void qrdecomposition(ap::real_2d_array& a,
     int k;
     int mmip1;
     int minmn;
-    double tmp;
+    ap::real_value_type tmp;
 
     minmn = ap::minint(m, n);
     work.setbounds(1, n);

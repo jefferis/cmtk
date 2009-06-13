@@ -98,7 +98,7 @@ arithmetic   domain     # trials      peak         rms
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1988, 1992, 2000 by Stephen L. Moshier
 *************************************************************************/
-double erf(double x);
+ap::real_value_type erf(ap::real_value_type x);
 
 
 /*************************************************************************
@@ -128,7 +128,7 @@ arithmetic   domain     # trials      peak         rms
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1988, 1992, 2000 by Stephen L. Moshier
 *************************************************************************/
-double erfc(double x);
+ap::real_value_type erfc(ap::real_value_type x);
 
 
 /*************************************************************************
@@ -161,7 +161,7 @@ arithmetic   domain     # trials      peak         rms
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1988, 1992, 2000 by Stephen L. Moshier
 *************************************************************************/
-double normaldistribution(double x);
+ap::real_value_type normaldistribution(ap::real_value_type x);
 
 
 /*************************************************************************
@@ -170,7 +170,7 @@ Inverse of the error function
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1988, 1992, 2000 by Stephen L. Moshier
 *************************************************************************/
-double inverf(double e);
+ap::real_value_type inverf(ap::real_value_type e);
 
 
 /*************************************************************************
@@ -198,7 +198,7 @@ arithmetic   domain        # trials      peak         rms
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1988, 1992, 2000 by Stephen L. Moshier
 *************************************************************************/
-double invnormaldistribution(double y0);
+ap::real_value_type invnormaldistribution(ap::real_value_type y0);
 
 
 #endif

@@ -299,11 +299,13 @@ Threads::Initializer
     if ( numThreads )
       {
       SetNumberOfThreads( numThreads );
-      StdErr << "INFO: number of threads set to " << numThreads << " according to environment variable CMTK_NUM_THREADS\n";
+      // cannot use StdErr here, because it may not be initialized yet
+      std::cerr << "INFO: number of threads set to " << numThreads << " according to environment variable CMTK_NUM_THREADS\n";
       }
     else
       {
-      StdErr << "WARNING: environment variable IGS_NUM_THREADS is set but does not seem to contain a number larger than 0.\n";
+      // cannot use StdErr here, because it may not be initialized yet
+      std::cerr << "WARNING: environment variable CMTK_NUM_THREADS is set but does not seem to contain a number larger than 0.\n";
       }
     }
 }

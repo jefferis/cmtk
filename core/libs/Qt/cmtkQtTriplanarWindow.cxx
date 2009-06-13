@@ -37,7 +37,8 @@
 #include <qmessagebox.h>
 #include <q3scrollview.h>
 #include <qradiobutton.h>
-#include <qmenubar.h>
+#include <QMenuBar>
+#include <QMenu>
 #include <qinputdialog.h>
 #include <q3groupbox.h>
 #include <q3filedialog.h>
@@ -45,7 +46,6 @@
 #include <QLabel>
 #include <Q3GridLayout>
 #include <QPixmap>
-#include <Q3PopupMenu>
 
 #include <cmtkLandmark.h>
 #include <cmtkLandmarkList.h>
@@ -65,32 +65,52 @@ cmtk
 QtTriplanarWindow::QtTriplanarWindow()
   : QWidget( NULL, "TriplanarViewer" ),
     m_Study( NULL ),
-    Interpolate( false ),
-    CrosshairMode( true ),
-    CheckerboxMode( true ),
     m_ZoomFactor( 100 ),
     m_BatchMode( false )
 {
   this->setIcon( QtIcons::WindowIcon() );
 
-  Q3PopupMenu* ViewMenu = new Q3PopupMenu();
-  ViewMenu->insertItem( "25%", 25 );
-  ViewMenu->insertItem( "33%", 33 );
-  ViewMenu->insertItem( "&50%", 50 );
-  ViewMenu->insertSeparator();
-  ViewMenu->insertItem( "&100%", 100 );
-  ViewMenu->insertSeparator();
-  ViewMenu->insertItem( "&200%", 200 );
-  ViewMenu->insertItem( "&300%", 300 );
-  ViewMenu->insertItem( "&400%", 400 );
-  ViewMenu->insertItem( "&500%", 500 );
-  ViewMenu->insertSeparator();
-  ViewMenu->insertItem( "&Interpolation", 1 );
-  ViewMenu->insertItem( "&Crosshair", 2 );
-  ViewMenu->insertItem( "C&heckerbox", 3 );
-  QObject::connect( ViewMenu, SIGNAL( activated( int ) ), this, SLOT( slotViewMenuCmd( int ) ) );
+  this->m_ZoomActions = new QActionGroup( this );
+  this->m_ZoomActions->setExclusive( true );
+  QAction* action;
+
+  QMenu* ViewMenu = new QMenu();
+  action = ViewMenu->addAction( "25%", this, SLOT( slotView25() ) );
+  action->setCheckable( true );
+  this->m_ZoomActions->addAction( action );
+  action = ViewMenu->addAction( "33%", this, SLOT( slotView33() ) );
+  action->setCheckable( true );
+  this->m_ZoomActions->addAction( action );
+  action = ViewMenu->addAction( "50%", this, SLOT( slotView50() ) );
+  action->setCheckable( true );
+  this->m_ZoomActions->addAction( action );
+  ViewMenu->addSeparator();
+  action = ViewMenu->addAction( "100%", this, SLOT( slotView100() ) );
+  action->setCheckable( true );
+  action->setChecked( true );  
+  this->m_ZoomActions->addAction( action );
+  ViewMenu->addSeparator();
+  action = ViewMenu->addAction( "200%", this, SLOT( slotView200() ) );
+  action->setCheckable( true );
+  this->m_ZoomActions->addAction( action );
+  action = ViewMenu->addAction( "300%", this, SLOT( slotView300() ) );
+  action->setCheckable( true );
+  this->m_ZoomActions->addAction( action );
+  action = ViewMenu->addAction( "400%", this, SLOT( slotView400() ) );
+  action->setCheckable( true );
+  this->m_ZoomActions->addAction( action );
+  action = ViewMenu->addAction( "500%", this, SLOT( slotView500() ) );
+  action->setCheckable( true );
+  this->m_ZoomActions->addAction( action );
+  ViewMenu->addSeparator();
+  (this->m_InterpolateAction = ViewMenu->addAction( "&Interpolation", this, SLOT( slotViewInterpolation() ) ))->setCheckable( true );
+  this->m_InterpolateAction->setChecked( false );
+  (this->m_CrosshairAction = ViewMenu->addAction( "&Crosshair", this, SLOT( slotViewCrosshair() ) ))->setCheckable( true );
+  this->m_CrosshairAction->setChecked( true );
+  (this->m_CheckerboxAction = ViewMenu->addAction( "C&heckerbox", this, SLOT( slotViewCheckerbox() ) ))->setCheckable( true );
+  this->m_CheckerboxAction->setChecked( true );
   
-  Q3PopupMenu* ExportMenu = new Q3PopupMenu();
+  QMenu* ExportMenu = new QMenu();
   ExportMenu->insertItem( "&Axial", 1 );
   ExportMenu->insertItem( "&Coronal", 2 );
   ExportMenu->insertItem( "&Sagittal", 3 );
@@ -119,7 +139,7 @@ QtTriplanarWindow::QtTriplanarWindow()
   ScrollRenderViewAx->GetRenderImage()->SetFlipX( true );
   ScrollRenderViewAx->GetRenderImage()->SetFlipY( true );
   ScrollRenderViewAx->ShowSlider();
-  ScrollRenderViewAx->GetRenderImage()->SetCrosshairMode( CrosshairMode );
+  ScrollRenderViewAx->GetRenderImage()->SetCrosshairMode( this->m_CrosshairAction->isChecked() );
   ScrollRenderViewAx->GetRenderImage()->SetCrosshairColors( QColor( 255,0,0 ), QColor( 0,255,0 ) );
   GridLayout->addWidget( ScrollRenderViewAx, 1, 0 );
 
@@ -127,7 +147,7 @@ QtTriplanarWindow::QtTriplanarWindow()
   ScrollRenderViewSa->ShowSlider();
   ScrollRenderViewSa->SetSliderLabelL( "L" );
   ScrollRenderViewSa->SetSliderLabelR( "R" );
-  ScrollRenderViewSa->GetRenderImage()->SetCrosshairMode( CrosshairMode );
+  ScrollRenderViewSa->GetRenderImage()->SetCrosshairMode( this->m_CrosshairAction->isChecked() );
   ScrollRenderViewSa->GetRenderImage()->SetCrosshairColors( QColor( 0,255,0 ), QColor( 0,0,255 ) );
   GridLayout->addWidget( ScrollRenderViewSa, 0, 1 );
 
@@ -136,7 +156,7 @@ QtTriplanarWindow::QtTriplanarWindow()
   ScrollRenderViewCo->SetSliderLabelL( "P" );
   ScrollRenderViewCo->SetSliderLabelR( "A" );
   ScrollRenderViewCo->GetRenderImage()->SetFlipX( true );
-  ScrollRenderViewCo->GetRenderImage()->SetCrosshairMode( CrosshairMode );
+  ScrollRenderViewCo->GetRenderImage()->SetCrosshairMode( this->m_CrosshairAction->isChecked() );
   ScrollRenderViewCo->GetRenderImage()->SetCrosshairColors( QColor( 255,0,0 ), QColor( 0,0,255 ) );
   GridLayout->addWidget( ScrollRenderViewCo, 0, 0 );
 
@@ -262,27 +282,6 @@ QtTriplanarWindow::QtTriplanarWindow()
   QObject::connect( ScrollRenderViewCo, SIGNAL( signalMouse3D( Qt::ButtonState, const Vector3D& ) ), this, SLOT( slotMouse3D( Qt::ButtonState, const Vector3D& ) ) );
 }
 
-void 
-QtTriplanarWindow::slotViewMenuCmd( int command )
-{
-  switch ( command ) 
-    {
-    case 1: // Toggle interpolation.
-      Interpolate = ! Interpolate;
-      this->slotRenderAll();
-      break;
-    case 2: // Toggle crosshair mode.
-      this->slotSetCrosshairMode( !this->CrosshairMode );
-      break;
-    case 3: // Toggle checkerbox mode.
-      CheckerboxMode = !CheckerboxMode;
-      this->slotRenderAll();
-      break;
-    default: //everything else is a direct zoom factor.
-      this->slotSetZoom( command );
-      break;
-    }
-}
 
 void
 QtTriplanarWindow::slotSetZoom( const int zoomPercent )
@@ -295,20 +294,24 @@ QtTriplanarWindow::slotSetZoom( const int zoomPercent )
 }
 
 void
-QtTriplanarWindow::slotSetCrosshairMode( const bool mode )
+QtTriplanarWindow::slotSetCheckerboardMode( const bool mode )
 {
-  this->CrosshairMode = mode;
-  ScrollRenderViewAx->GetRenderImage()->SetCrosshairMode( this->CrosshairMode );
-  ScrollRenderViewCo->GetRenderImage()->SetCrosshairMode( this->CrosshairMode );
-  ScrollRenderViewSa->GetRenderImage()->SetCrosshairMode( this->CrosshairMode );
-  this->slotRenderAll();
+  this->m_CheckerboxAction->setChecked( mode );
+  this->slotViewCheckerbox();
 }
       
 void
-QtTriplanarWindow::slotSetCheckerboardMode( const bool mode )
+QtTriplanarWindow::slotSetCrosshairMode( const bool mode )
 {
-  CheckerboxMode = mode;
-  this->slotRenderAll();
+  this->m_CrosshairAction->setChecked( mode );
+  this->slotViewCrosshair();
+}
+      
+void
+QtTriplanarWindow::slotSetInterpolateMode( const bool mode )
+{
+  this->m_InterpolateAction->setChecked( mode );
+  this->slotViewInterpolation();
 }
       
 void
@@ -500,7 +503,7 @@ QtTriplanarWindow::UpdateDialog()
       {
       qWarning( "QtTriplanarWindow::UpdateDialog called with no image data loaded.\n" );
       }
-    if ( CrosshairMode ) 
+    if ( this->m_CrosshairAction->isChecked() ) 
       {
       this->slotRenderAll();
       }
@@ -529,10 +532,10 @@ QtTriplanarWindow::slotSwitchImageAx( int imageIndex )
     
     if ( sliceImage ) 
       {
-      if ( ! this->CheckerboxMode )
+      if ( ! this->m_CheckerboxAction->isChecked() )
 	sliceImage->GetPixelData()->ReplacePaddingData( 0.0 );
       
-      sliceImage->AdjustToIsotropic( volume->GetMinDelta(), this->Interpolate );
+      sliceImage->AdjustToIsotropic( volume->GetMinDelta(), this->m_InterpolateAction->isChecked() );
       PipelineImageAx->SetFromScalarImage( sliceImage );
       }
     sliceImage = ScalarImage::SmartPtr::Null;
@@ -541,7 +544,7 @@ QtTriplanarWindow::slotSwitchImageAx( int imageIndex )
     GridIndex[2] = imageIndex;
     this->UpdateGridInfo();
     
-    if ( CrosshairMode ) 
+    if ( this->m_CrosshairAction->isChecked() ) 
       {
       this->slotGoToLocation();
       } 
@@ -567,11 +570,11 @@ QtTriplanarWindow::slotSwitchImageSa( int imageIndex )
     
     if ( sliceImage ) 
       {
-      if ( ! this->CheckerboxMode )
+      if ( ! this->m_CheckerboxAction->isChecked() )
 	sliceImage->GetPixelData()->ReplacePaddingData( 0.0 );
       
       sliceImage->Mirror( false /* horizontal */, true /* vertical */ );
-      sliceImage->AdjustToIsotropic( volume->GetMinDelta(), this->Interpolate );
+      sliceImage->AdjustToIsotropic( volume->GetMinDelta(), this->m_InterpolateAction->isChecked() );
       PipelineImageSa->SetFromScalarImage( sliceImage );
       delete sliceImage;
       }
@@ -580,7 +583,7 @@ QtTriplanarWindow::slotSwitchImageSa( int imageIndex )
     GridIndex[0] = imageIndex;
     this->UpdateGridInfo();
     
-    if ( CrosshairMode ) 
+    if ( this->m_CrosshairAction->isChecked() ) 
       {
       this->slotGoToLocation();
       } 
@@ -606,11 +609,11 @@ QtTriplanarWindow::slotSwitchImageCo( int imageIndex )
     
     if ( sliceImage ) 
       {
-      if ( ! this->CheckerboxMode )
+      if ( ! this->m_CheckerboxAction->isChecked() )
 	sliceImage->GetPixelData()->ReplacePaddingData( 0.0 );
       
       sliceImage->Mirror( false /* horizontal */, true /* vertical */ );
-      sliceImage->AdjustToIsotropic( volume->GetMinDelta(), this->Interpolate );
+      sliceImage->AdjustToIsotropic( volume->GetMinDelta(), this->m_InterpolateAction->isChecked() );
       PipelineImageCo->SetFromScalarImage( sliceImage );
       delete sliceImage;
       }
@@ -619,7 +622,7 @@ QtTriplanarWindow::slotSwitchImageCo( int imageIndex )
     GridIndex[1] = imageIndex;
     this->UpdateGridInfo();
     
-    if ( CrosshairMode ) 
+    if ( this->m_CrosshairAction->isChecked() ) 
       {
       this->slotGoToLocation();
       } 

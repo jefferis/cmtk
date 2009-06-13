@@ -69,20 +69,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "tdevd.h"
 
-void tdevde2(const double& a,
-     const double& b,
-     const double& c,
-     double& rt1,
-     double& rt2);
-void tdevdev2(const double& a,
-     const double& b,
-     const double& c,
-     double& rt1,
-     double& rt2,
-     double& cs1,
-     double& sn1);
-double tdevdpythag(double a, double b);
-double tdevdextsign(double a, double b);
+void tdevde2(const ap::real_value_type& a,
+     const ap::real_value_type& b,
+     const ap::real_value_type& c,
+     ap::real_value_type& rt1,
+     ap::real_value_type& rt2);
+void tdevdev2(const ap::real_value_type& a,
+     const ap::real_value_type& b,
+     const ap::real_value_type& c,
+     ap::real_value_type& rt1,
+     ap::real_value_type& rt2,
+     ap::real_value_type& cs1,
+     ap::real_value_type& sn1);
+ap::real_value_type tdevdpythag(ap::real_value_type a, ap::real_value_type b);
+ap::real_value_type tdevdextsign(ap::real_value_type a, ap::real_value_type b);
 
 /*************************************************************************
 Finding the eigenvalues and eigenvectors of a tridiagonal symmetric matrix
@@ -242,24 +242,24 @@ bool tridiagonalevd(ap::real_1d_array& d,
     int nm1;
     int nmaxit;
     int tmpint;
-    double anorm;
-    double b;
-    double c;
-    double eps;
-    double eps2;
-    double f;
-    double g;
-    double p;
-    double r;
-    double rt1;
-    double rt2;
-    double s;
-    double safmax;
-    double safmin;
-    double ssfmax;
-    double ssfmin;
-    double tst;
-    double tmp;
+    ap::real_value_type anorm;
+    ap::real_value_type b;
+    ap::real_value_type c;
+    ap::real_value_type eps;
+    ap::real_value_type eps2;
+    ap::real_value_type f;
+    ap::real_value_type g;
+    ap::real_value_type p;
+    ap::real_value_type r;
+    ap::real_value_type rt1;
+    ap::real_value_type rt2;
+    ap::real_value_type s;
+    ap::real_value_type safmax;
+    ap::real_value_type safmin;
+    ap::real_value_type ssfmax;
+    ap::real_value_type ssfmin;
+    ap::real_value_type tst;
+    ap::real_value_type tmp;
     ap::real_1d_array work1;
     ap::real_1d_array work2;
     ap::real_1d_array workc;
@@ -569,7 +569,7 @@ bool tridiagonalevd(ap::real_1d_array& d,
                     // Form shift.
                     //
                     g = (d(l+1)-p)/(2*e(l));
-                    r = tdevdpythag(g, double(1));
+                    r = tdevdpythag(g, ap::real_value_type(1));
                     g = d(m)-p+e(l)/(g+tdevdextsign(r, g));
                     s = 1;
                     c = 1;
@@ -722,7 +722,7 @@ bool tridiagonalevd(ap::real_1d_array& d,
                     // Form shift.
                     //
                     g = (d(l-1)-p)/(2*e(l-1));
-                    r = tdevdpythag(g, double(1));
+                    r = tdevdpythag(g, ap::real_value_type(1));
                     g = d(m)-p+e(l-1)/(g+tdevdextsign(r, g));
                     s = 1;
                     c = 1;
@@ -971,20 +971,20 @@ is the eigenvalue of smaller absolute value.
      Courant Institute, Argonne National Lab, and Rice University
      October 31, 1992
 *************************************************************************/
-void tdevde2(const double& a,
-     const double& b,
-     const double& c,
-     double& rt1,
-     double& rt2)
+void tdevde2(const ap::real_value_type& a,
+     const ap::real_value_type& b,
+     const ap::real_value_type& c,
+     ap::real_value_type& rt1,
+     ap::real_value_type& rt2)
 {
-    double ab;
-    double acmn;
-    double acmx;
-    double adf;
-    double df;
-    double rt;
-    double sm;
-    double tb;
+    ap::real_value_type ab;
+    ap::real_value_type acmn;
+    ap::real_value_type acmx;
+    ap::real_value_type adf;
+    ap::real_value_type df;
+    ap::real_value_type rt;
+    ap::real_value_type sm;
+    ap::real_value_type tb;
 
     sm = a+c;
     df = a-c;
@@ -1017,7 +1017,7 @@ void tdevde2(const double& a,
             //
             // Includes case AB=ADF=0
             //
-            rt = ab*sqrt(double(2));
+            rt = ab*sqrt(ap::real_value_type(2));
         }
     }
     if( sm<0 )
@@ -1076,28 +1076,28 @@ eigenvector for RT1, giving the decomposition
      Courant Institute, Argonne National Lab, and Rice University
      October 31, 1992
 *************************************************************************/
-void tdevdev2(const double& a,
-     const double& b,
-     const double& c,
-     double& rt1,
-     double& rt2,
-     double& cs1,
-     double& sn1)
+void tdevdev2(const ap::real_value_type& a,
+     const ap::real_value_type& b,
+     const ap::real_value_type& c,
+     ap::real_value_type& rt1,
+     ap::real_value_type& rt2,
+     ap::real_value_type& cs1,
+     ap::real_value_type& sn1)
 {
     int sgn1;
     int sgn2;
-    double ab;
-    double acmn;
-    double acmx;
-    double acs;
-    double adf;
-    double cs;
-    double ct;
-    double df;
-    double rt;
-    double sm;
-    double tb;
-    double tn;
+    ap::real_value_type ab;
+    ap::real_value_type acmn;
+    ap::real_value_type acmx;
+    ap::real_value_type acs;
+    ap::real_value_type adf;
+    ap::real_value_type cs;
+    ap::real_value_type ct;
+    ap::real_value_type df;
+    ap::real_value_type rt;
+    ap::real_value_type sm;
+    ap::real_value_type tb;
+    ap::real_value_type tn;
 
     
     //
@@ -1134,7 +1134,7 @@ void tdevdev2(const double& a,
             //
             // Includes case AB=ADF=0
             //
-            rt = ab*sqrt(double(2));
+            rt = ab*sqrt(ap::real_value_type(2));
         }
     }
     if( sm<0 )
@@ -1221,9 +1221,9 @@ void tdevdev2(const double& a,
 /*************************************************************************
 Internal routine
 *************************************************************************/
-double tdevdpythag(double a, double b)
+ap::real_value_type tdevdpythag(ap::real_value_type a, ap::real_value_type b)
 {
-    double result;
+    ap::real_value_type result;
 
     if( fabs(a)<fabs(b) )
     {
@@ -1240,9 +1240,9 @@ double tdevdpythag(double a, double b)
 /*************************************************************************
 Internal routine
 *************************************************************************/
-double tdevdextsign(double a, double b)
+ap::real_value_type tdevdextsign(ap::real_value_type a, ap::real_value_type b)
 {
-    double result;
+    ap::real_value_type result;
 
     if( b>=0 )
     {

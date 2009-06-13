@@ -106,9 +106,9 @@ void applyrotationsfromtheleft(bool isforward,
 {
     int j;
     int jp1;
-    double ctemp;
-    double stemp;
-    double temp;
+    ap::real_value_type ctemp;
+    ap::real_value_type stemp;
+    ap::real_value_type temp;
 
     if( m1>m2||n1>n2 )
     {
@@ -242,9 +242,9 @@ void applyrotationsfromtheright(bool isforward,
 {
     int j;
     int jp1;
-    double ctemp;
-    double stemp;
-    double temp;
+    ap::real_value_type ctemp;
+    ap::real_value_type stemp;
+    ap::real_value_type temp;
 
     
     //
@@ -345,10 +345,10 @@ The subroutine generates the elementary rotation, so that:
 
 CS**2 + SN**2 = 1
 *************************************************************************/
-void generaterotation(double f, double g, double& cs, double& sn, double& r)
+void generaterotation(ap::real_value_type f, ap::real_value_type g, ap::real_value_type& cs, ap::real_value_type& sn, ap::real_value_type& r)
 {
-    double f1;
-    double g1;
+    ap::real_value_type f1;
+    ap::real_value_type g1;
 
     if( g==0 )
     {

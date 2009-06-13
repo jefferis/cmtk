@@ -76,30 +76,30 @@ public:
   /// Return parameter vector.
   virtual void GetParamVector ( CoordinateVector& v )  
   {
-    AffineXform->GetParamVector( v );
+    this->m_AffineXform->GetParamVector( v );
   }
 
   /// Return parameter stepping.
   virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const 
   {
-    return AffineXform->GetParamStep( idx, FloatingSize, mmStep );
+    return this->m_AffineXform->GetParamStep( idx, FloatingSize, mmStep );
   }
 
   /// Return the transformation's parameter vector dimension.
   virtual size_t ParamVectorDim() const 
   {
-    return AffineXform->ParamVectorDim();
+    return this->m_AffineXform->ParamVectorDim();
   }
 
   /// Return the number of variable parameters of the transformation.
   virtual size_t VariableParamVectorDim() const 
   {
-    return AffineXform->VariableParamVectorDim();
+    return this->m_AffineXform->VariableParamVectorDim();
   }
 
 protected:
   /// Current coordinate transformation.
-  AffineXform::SmartPtr AffineXform;
+  AffineXform::SmartPtr m_AffineXform;
 
   /// Utility object for volume clipping.
   VolumeClipping Clipper;
@@ -247,7 +247,7 @@ public:
     : VoxelMatchingFunctional( refVolume, modVolume ) 
   {
     if ( affineXform.IsNull() ) throw Exception();
-    AffineXform = affineXform;
+    this->m_AffineXform = affineXform;
   }
 
   /// Destructor.
@@ -326,7 +326,7 @@ public:
   /// Evaluate with new parameter vector.
   virtual typename Self::ReturnType EvaluateAt ( CoordinateVector& v ) 
   {
-    AffineXform->SetParamVector( v );
+    this->m_AffineXform->SetParamVector( v );
     return this->Evaluate();
   }
 
@@ -347,7 +347,7 @@ public:
    */
   virtual typename Self::ReturnType Evaluate() 
   {
-    const VolumeAxesHash axesHash( *this->ReferenceGrid, this->AffineXform->GetInverse(), this->FloatingGrid->Delta, this->FloatingGrid->m_Origin.XYZ );
+    const VolumeAxesHash axesHash( *this->ReferenceGrid, this->m_AffineXform->GetInverse(), this->FloatingGrid->Delta, this->FloatingGrid->m_Origin.XYZ );
     const Vector3D *axesHashX = axesHash[0], *axesHashY = axesHash[1], *axesHashZ = axesHash[2];
     
     this->Metric->Reset();

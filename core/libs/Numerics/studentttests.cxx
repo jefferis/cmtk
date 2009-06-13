@@ -101,19 +101,19 @@ Output parameters:
 *************************************************************************/
 void studentttest1(const ap::real_1d_array& x,
      int n,
-     double mean,
-     double& t,
-     double& bothtails,
-     double& lefttail,
-     double& righttail)
+     ap::real_value_type mean,
+     ap::real_value_type& t,
+     ap::real_value_type& bothtails,
+     ap::real_value_type& lefttail,
+     ap::real_value_type& righttail)
 {
     int i;
-    double xmean;
-    double xvariance;
-    double xstddev;
-    double v1;
-    double v2;
-    double s;
+    ap::real_value_type xmean;
+    ap::real_value_type xvariance;
+    ap::real_value_type xstddev;
+    ap::real_value_type v1;
+    ap::real_value_type v2;
+    ap::real_value_type s;
 
     if( n<=1 )
     {
@@ -169,7 +169,7 @@ void studentttest1(const ap::real_1d_array& x,
     //
     // Statistic (t)
     //
-    t = (xmean-mean)/(xstddev/sqrt(double(n)));
+    t = (xmean-mean)/(xstddev/sqrt(ap::real_value_type(n)));
     s = studenttdistribution(n-1, t);
     bothtails = 2*ap::minreal(s, 1-s);
     lefttail = s;
@@ -218,16 +218,16 @@ void studentttest2(const ap::real_1d_array& x,
      int n,
      const ap::real_1d_array& y,
      int m,
-     double& t,
-     double& bothtails,
-     double& lefttail,
-     double& righttail)
+     ap::real_value_type& t,
+     ap::real_value_type& bothtails,
+     ap::real_value_type& lefttail,
+     ap::real_value_type& righttail)
 {
     int i;
-    double xmean;
-    double ymean;
-    double s;
-    double p;
+    ap::real_value_type xmean;
+    ap::real_value_type ymean;
+    ap::real_value_type s;
+    ap::real_value_type p;
 
     if( n<=1||m<=1 )
     {
@@ -265,7 +265,7 @@ void studentttest2(const ap::real_1d_array& x,
     {
         s = s+ap::sqr(y(i)-ymean);
     }
-    s = sqrt(s*(double(1)/double(n)+double(1)/double(m))/(n+m-2));
+    s = sqrt(s*(ap::real_value_type(1)/ap::real_value_type(n)+ap::real_value_type(1)/ap::real_value_type(m))/(n+m-2));
     if( s==0 )
     {
         bothtails = 1.0;
@@ -279,7 +279,9 @@ void studentttest2(const ap::real_1d_array& x,
     //
     t = (xmean-ymean)/s;
     if ( s < 0 )
-       int stophere = 1;
+      {
+      // stop here
+      }
 
     p = studenttdistribution(n+m-2, t);
     bothtails = 2*ap::minreal(p, 1-p);
@@ -329,19 +331,19 @@ void unequalvariancettest(const ap::real_1d_array& x,
      int n,
      const ap::real_1d_array& y,
      int m,
-     double& t,
-     double& bothtails,
-     double& lefttail,
-     double& righttail)
+     ap::real_value_type& t,
+     ap::real_value_type& bothtails,
+     ap::real_value_type& lefttail,
+     ap::real_value_type& righttail)
 {
     int i;
-    double xmean;
-    double ymean;
-    double xvar;
-    double yvar;
-    double df;
-    double p;
-    double c;
+    ap::real_value_type xmean;
+    ap::real_value_type ymean;
+    ap::real_value_type xvar;
+    ap::real_value_type yvar;
+    ap::real_value_type df;
+    ap::real_value_type p;
+    ap::real_value_type c;
 
     if( n<=1||m<=1 )
     {

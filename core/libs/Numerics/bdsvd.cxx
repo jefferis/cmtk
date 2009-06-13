@@ -83,17 +83,17 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
      ap::real_2d_array& vt,
      int vstart,
      int ncvt);
-double extsignbdsqr(double a, double b);
-void svd2x2(double f, double g, double h, double& ssmin, double& ssmax);
-void svdv2x2(double f,
-     double g,
-     double h,
-     double& ssmin,
-     double& ssmax,
-     double& snr,
-     double& csr,
-     double& snl,
-     double& csl);
+ap::real_value_type extsignbdsqr(ap::real_value_type a, ap::real_value_type b);
+void svd2x2(ap::real_value_type f, ap::real_value_type g, ap::real_value_type h, ap::real_value_type& ssmin, ap::real_value_type& ssmax);
+void svdv2x2(ap::real_value_type f,
+     ap::real_value_type g,
+     ap::real_value_type h,
+     ap::real_value_type& ssmin,
+     ap::real_value_type& ssmax,
+     ap::real_value_type& snr,
+     ap::real_value_type& csr,
+     ap::real_value_type& snl,
+     ap::real_value_type& csl);
 
 /*************************************************************************
 Singular value decomposition of a bidiagonal matrix (extended algorithm)
@@ -263,35 +263,35 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
     int maxit;
     int oldll;
     int oldm;
-    double abse;
-    double abss;
-    double cosl;
-    double cosr;
-    double cs;
-    double eps;
-    double f;
-    double g;
-    double h;
-    double mu;
-    double oldcs;
-    double oldsn;
-    double r;
-    double shift;
-    double sigmn;
-    double sigmx;
-    double sinl;
-    double sinr;
-    double sll;
-    double smax;
-    double smin;
-    double sminl;
-    double sminlo;
-    double sminoa;
-    double sn;
-    double thresh;
-    double tol;
-    double tolmul;
-    double unfl;
+    ap::real_value_type abse;
+    ap::real_value_type abss;
+    ap::real_value_type cosl;
+    ap::real_value_type cosr;
+    ap::real_value_type cs;
+    ap::real_value_type eps;
+    ap::real_value_type f;
+    ap::real_value_type g;
+    ap::real_value_type h;
+    ap::real_value_type mu;
+    ap::real_value_type oldcs;
+    ap::real_value_type oldsn;
+    ap::real_value_type r;
+    ap::real_value_type shift;
+    ap::real_value_type sigmn;
+    ap::real_value_type sigmx;
+    ap::real_value_type sinl;
+    ap::real_value_type sinr;
+    ap::real_value_type sll;
+    ap::real_value_type smax;
+    ap::real_value_type smin;
+    ap::real_value_type sminl;
+    ap::real_value_type sminlo;
+    ap::real_value_type sminoa;
+    ap::real_value_type sn;
+    ap::real_value_type thresh;
+    ap::real_value_type tol;
+    ap::real_value_type tolmul;
+    ap::real_value_type unfl;
     ap::real_1d_array work0;
     ap::real_1d_array work1;
     ap::real_1d_array work2;
@@ -305,7 +305,7 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
     ap::real_1d_array etemp;
     bool rightside;
     bool fwddir;
-    double tmp;
+    ap::real_value_type tmp;
     int mm1;
     int mm0;
     bool bchangedir;
@@ -404,7 +404,7 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
     // (By setting TOL to be negative, algorithm will compute
     // singular values to absolute accuracy ABS(TOL)*norm(input matrix))
     //
-    tolmul = ap::maxreal(double(10), ap::minreal(double(100), pow(eps, -0.125)));
+    tolmul = ap::maxreal(ap::real_value_type(10), ap::minreal(ap::real_value_type(100), pow(eps, -0.125)));
     tol = tolmul*eps;
     if( !isfractionalaccuracyrequired )
     {
@@ -444,7 +444,7 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
                 }
             }
         }
-        sminoa = sminoa/sqrt(double(n));
+        sminoa = sminoa/sqrt(ap::real_value_type(n));
         thresh = ap::maxreal(tol*sminoa, maxitr*n*n*unfl);
     }
     else
@@ -882,7 +882,7 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
                 // Chase bulge from top to bottom
                 // Save cosines and sines for later singular vector updates
                 //
-                f = (fabs(d(ll))-shift)*(extsignbdsqr(double(1), d(ll))+shift/d(ll));
+                f = (fabs(d(ll))-shift)*(extsignbdsqr(ap::real_value_type(1), d(ll))+shift/d(ll));
                 g = e(ll);
                 for(i = ll; i <= m-1; i++)
                 {
@@ -942,7 +942,7 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
                 // Chase bulge from bottom to top
                 // Save cosines and sines for later singular vector updates
                 //
-                f = (fabs(d(m))-shift)*(extsignbdsqr(double(1), d(m))+shift/d(m));
+                f = (fabs(d(m))-shift)*(extsignbdsqr(ap::real_value_type(1), d(m))+shift/d(m));
                 g = e(m-1);
                 for(i = m; i >= ll+1; i--)
                 {
@@ -1077,9 +1077,9 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
 }
 
 
-double extsignbdsqr(double a, double b)
+ap::real_value_type extsignbdsqr(ap::real_value_type a, ap::real_value_type b)
 {
-    double result;
+    ap::real_value_type result;
 
     if( b>=0 )
     {
@@ -1093,17 +1093,17 @@ double extsignbdsqr(double a, double b)
 }
 
 
-void svd2x2(double f, double g, double h, double& ssmin, double& ssmax)
+void svd2x2(ap::real_value_type f, ap::real_value_type g, ap::real_value_type h, ap::real_value_type& ssmin, ap::real_value_type& ssmax)
 {
-    double aas;
-    double at;
-    double au;
-    double c;
-    double fa;
-    double fhmn;
-    double fhmx;
-    double ga;
-    double ha;
+    ap::real_value_type aas;
+    ap::real_value_type at;
+    ap::real_value_type au;
+    ap::real_value_type c;
+    ap::real_value_type fa;
+    ap::real_value_type fhmn;
+    ap::real_value_type fhmx;
+    ap::real_value_type ga;
+    ap::real_value_type ha;
 
     fa = fabs(f);
     ga = fabs(g);
@@ -1161,41 +1161,41 @@ void svd2x2(double f, double g, double h, double& ssmin, double& ssmax)
 }
 
 
-void svdv2x2(double f,
-     double g,
-     double h,
-     double& ssmin,
-     double& ssmax,
-     double& snr,
-     double& csr,
-     double& snl,
-     double& csl)
+void svdv2x2(ap::real_value_type f,
+     ap::real_value_type g,
+     ap::real_value_type h,
+     ap::real_value_type& ssmin,
+     ap::real_value_type& ssmax,
+     ap::real_value_type& snr,
+     ap::real_value_type& csr,
+     ap::real_value_type& snl,
+     ap::real_value_type& csl)
 {
     bool gasmal;
     bool swp;
     int pmax;
-    double a;
-    double clt;
-    double crt;
-    double d;
-    double fa;
-    double ft;
-    double ga;
-    double gt;
-    double ha;
-    double ht;
-    double l;
-    double m;
-    double mm;
-    double r;
-    double s;
-    double slt;
-    double srt;
-    double t;
-    double temp;
-    double tsign = 0;
-    double tt;
-    double v;
+    ap::real_value_type a;
+    ap::real_value_type clt;
+    ap::real_value_type crt;
+    ap::real_value_type d;
+    ap::real_value_type fa;
+    ap::real_value_type ft;
+    ap::real_value_type ga;
+    ap::real_value_type gt;
+    ap::real_value_type ha;
+    ap::real_value_type ht;
+    ap::real_value_type l;
+    ap::real_value_type m;
+    ap::real_value_type mm;
+    ap::real_value_type r;
+    ap::real_value_type s;
+    ap::real_value_type slt;
+    ap::real_value_type srt;
+    ap::real_value_type t;
+    ap::real_value_type temp;
+    ap::real_value_type tsign = 0;
+    ap::real_value_type tt;
+    ap::real_value_type v;
 
     ft = f;
     fa = fabs(ft);
@@ -1308,7 +1308,7 @@ void svdv2x2(double f,
                 //
                 if( l==0 )
                 {
-                    t = extsignbdsqr(double(2), ft)*extsignbdsqr(double(1), gt);
+                    t = extsignbdsqr(ap::real_value_type(2), ft)*extsignbdsqr(ap::real_value_type(1), gt);
                 }
                 else
                 {
@@ -1347,18 +1347,18 @@ void svdv2x2(double f,
     //
     if( pmax==1 )
     {
-        tsign = extsignbdsqr(double(1), csr)*extsignbdsqr(double(1), csl)*extsignbdsqr(double(1), f);
+        tsign = extsignbdsqr(ap::real_value_type(1), csr)*extsignbdsqr(ap::real_value_type(1), csl)*extsignbdsqr(ap::real_value_type(1), f);
     }
     if( pmax==2 )
     {
-        tsign = extsignbdsqr(double(1), snr)*extsignbdsqr(double(1), csl)*extsignbdsqr(double(1), g);
+        tsign = extsignbdsqr(ap::real_value_type(1), snr)*extsignbdsqr(ap::real_value_type(1), csl)*extsignbdsqr(ap::real_value_type(1), g);
     }
     if( pmax==3 )
     {
-        tsign = extsignbdsqr(double(1), snr)*extsignbdsqr(double(1), snl)*extsignbdsqr(double(1), h);
+        tsign = extsignbdsqr(ap::real_value_type(1), snr)*extsignbdsqr(ap::real_value_type(1), snl)*extsignbdsqr(ap::real_value_type(1), h);
     }
     ssmax = extsignbdsqr(ssmax, tsign);
-    ssmin = extsignbdsqr(ssmin, tsign*extsignbdsqr(double(1), f)*extsignbdsqr(double(1), h));
+    ssmin = extsignbdsqr(ssmin, tsign*extsignbdsqr(ap::real_value_type(1), f)*extsignbdsqr(ap::real_value_type(1), h));
 }
 
 

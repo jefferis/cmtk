@@ -112,7 +112,7 @@ MODIFICATIONS:
      Courant Institute, Argonne National Lab, and Rice University
      September 30, 1994
 *************************************************************************/
-void generatereflection(ap::real_1d_array& x, int n, double& tau);
+void generatereflection(ap::real_1d_array& x, int n, ap::real_value_type& tau);
 
 
 /*************************************************************************
@@ -144,7 +144,7 @@ Output parameters:
      September 30, 1994
 *************************************************************************/
 void applyreflectionfromtheleft(ap::real_2d_array& c,
-     double tau,
+     ap::real_value_type tau,
      const ap::real_1d_array& v,
      int m1,
      int m2,
@@ -182,7 +182,7 @@ Output parameters:
      September 30, 1994
 *************************************************************************/
 void applyreflectionfromtheright(ap::real_2d_array& c,
-     double tau,
+     ap::real_value_type tau,
      const ap::real_1d_array& v,
      int m1,
      int m2,

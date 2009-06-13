@@ -277,15 +277,15 @@ template<class TPSF>
 void
 DeblurringVolumeReconstruction<TPSF>
 ::FunctionAndGradient
-::Evaluate( const ap::real_1d_array& x, double& f, ap::real_1d_array& g )
+::Evaluate( const ap::real_1d_array& x, ap::real_value_type& f, ap::real_1d_array& g )
 {
   this->m_Function->Blur( x );
   this->m_Function->ComputeApproximationError();
   this->m_Function->ComputeErrorGradientImage( g );
   
-  const double msd = f = this->m_Function->GetMeanSquaredError();
+  const ap::real_value_type msd = f = this->m_Function->GetMeanSquaredError();
 
-  double lnorm = 0;
+  ap::real_value_type lnorm = 0;
   if ( this->m_Function->m_ConstraintWeightLNorm > 0 )
     {
     f += this->m_Function->m_ConstraintWeightLNorm * (lnorm = this->m_Function->ComputeCorrectedImageLaplacianNorm( x ));

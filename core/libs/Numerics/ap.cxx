@@ -27,6 +27,7 @@
 //
 //  $LastChangedBy$
 //
+
 */
 /********************************************************************
 AP Library version 1.2
@@ -64,7 +65,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ap.h"
 
-
 /********************************************************************
 Optimized ABLAS interface
 ********************************************************************/
@@ -72,14 +72,14 @@ Optimized ABLAS interface
 #include <windows.h>
 extern "C"
 {
-typedef double  (*_ddot1)(const double*, const double*, long);
-typedef void    (*_dmove1)(const double*, const double*, long);
-typedef void    (*_dmoves1)(const double*, const double*, long, double);
-typedef void    (*_dmoveneg1)(const double*, const double*, long);
-typedef void    (*_dadd1)(const double*, const double*, long);
-typedef void    (*_dadds1)(const double*, const double*, long, double);
-typedef void    (*_dsub1)(const double*, const double*, long);
-typedef void    (*_dmuls1)(const double*, long, double);
+typedef ap::real_value_type  (*_ddot1)(const ap::real_value_type*, const ap::real_value_type*, long);
+typedef void    (*_dmove1)(const ap::real_value_type*, const ap::real_value_type*, long);
+typedef void    (*_dmoves1)(const ap::real_value_type*, const ap::real_value_type*, long, ap::real_value_type);
+typedef void    (*_dmoveneg1)(const ap::real_value_type*, const ap::real_value_type*, long);
+typedef void    (*_dadd1)(const ap::real_value_type*, const ap::real_value_type*, long);
+typedef void    (*_dadds1)(const ap::real_value_type*, const ap::real_value_type*, long, ap::real_value_type);
+typedef void    (*_dsub1)(const ap::real_value_type*, const ap::real_value_type*, long);
+typedef void    (*_dmuls1)(const ap::real_value_type*, long, ap::real_value_type);
 }
 HINSTANCE ABLAS = LoadLibrary("ablas.dll");
 
@@ -93,9 +93,9 @@ static _dsub1     dsub1     = ABLAS==NULL ? NULL :     (_dsub1)  GetProcAddress(
 static _dmuls1    dmuls1    = ABLAS==NULL ? NULL :     (_dmuls1) GetProcAddress(ABLAS, "ASMMulS1");
 #endif
 
-const double ap::machineepsilon = 5E-16;
-const double ap::maxrealnumber  = 1E300;
-const double ap::minrealnumber  = 1E-300;
+const ap::real_value_type ap::machineepsilon = 5E-16;
+const ap::real_value_type ap::maxrealnumber  = 1E300;
+const ap::real_value_type ap::minrealnumber  = 1E-300;
 
 /********************************************************************
 ap::complex operations
@@ -115,35 +115,35 @@ const ap::complex ap::operator-(const ap::complex& lhs)
 const ap::complex ap::operator+(const ap::complex& lhs, const ap::complex& rhs)
 { ap::complex r = lhs; r += rhs; return r; }
 
-const ap::complex ap::operator+(const ap::complex& lhs, const double& rhs)
+const ap::complex ap::operator+(const ap::complex& lhs, const ap::real_value_type& rhs)
 { ap::complex r = lhs; r += rhs; return r; }
 
-const ap::complex ap::operator+(const double& lhs, const ap::complex& rhs)
+const ap::complex ap::operator+(const ap::real_value_type& lhs, const ap::complex& rhs)
 { ap::complex r = rhs; r += lhs; return r; }
 
 const ap::complex ap::operator-(const ap::complex& lhs, const ap::complex& rhs)
 { ap::complex r = lhs; r -= rhs; return r; }
 
-const ap::complex ap::operator-(const ap::complex& lhs, const double& rhs)
+const ap::complex ap::operator-(const ap::complex& lhs, const ap::real_value_type& rhs)
 { ap::complex r = lhs; r -= rhs; return r; }
 
-const ap::complex ap::operator-(const double& lhs, const ap::complex& rhs)
+const ap::complex ap::operator-(const ap::real_value_type& lhs, const ap::complex& rhs)
 { ap::complex r = lhs; r -= rhs; return r; }
 
 const ap::complex ap::operator*(const ap::complex& lhs, const ap::complex& rhs)
 { return ap::complex(lhs.x*rhs.x - lhs.y*rhs.y,  lhs.x*rhs.y + lhs.y*rhs.x); }
 
-const ap::complex ap::operator*(const ap::complex& lhs, const double& rhs)
+const ap::complex ap::operator*(const ap::complex& lhs, const ap::real_value_type& rhs)
 { return ap::complex(lhs.x*rhs,  lhs.y*rhs); }
 
-const ap::complex ap::operator*(const double& lhs, const ap::complex& rhs)
+const ap::complex ap::operator*(const ap::real_value_type& lhs, const ap::complex& rhs)
 { return ap::complex(lhs*rhs.x,  lhs*rhs.y); }
 
 const ap::complex ap::operator/(const ap::complex& lhs, const ap::complex& rhs)
 {
     ap::complex result;
-    double e;
-    double f;
+    ap::real_value_type e;
+    ap::real_value_type f;
     if( fabs(rhs.y)<fabs(rhs.x) )
     {
         e = rhs.y/rhs.x;
@@ -161,11 +161,11 @@ const ap::complex ap::operator/(const ap::complex& lhs, const ap::complex& rhs)
     return result;
 }
 
-const ap::complex ap::operator/(const double& lhs, const ap::complex& rhs)
+const ap::complex ap::operator/(const ap::real_value_type& lhs, const ap::complex& rhs)
 {
     ap::complex result;
-    double e;
-    double f;
+    ap::real_value_type e;
+    ap::real_value_type f;
     if( fabs(rhs.y)<fabs(rhs.x) )
     {
         e = rhs.y/rhs.x;
@@ -183,15 +183,15 @@ const ap::complex ap::operator/(const double& lhs, const ap::complex& rhs)
     return result;
 }
 
-const ap::complex ap::operator/(const ap::complex& lhs, const double& rhs)
+const ap::complex ap::operator/(const ap::complex& lhs, const ap::real_value_type& rhs)
 { return ap::complex(lhs.x/rhs, lhs.y/rhs); }
 
-double ap::abscomplex(const ap::complex &z)
+ap::real_value_type ap::abscomplex(const ap::complex &z)
 {
-    double w;
-    double xabs;
-    double yabs;
-    double v;
+    ap::real_value_type w;
+    ap::real_value_type xabs;
+    ap::real_value_type yabs;
+    ap::real_value_type v;
 
     xabs = fabs(z.x);
     yabs = fabs(z.y);
@@ -201,7 +201,7 @@ double ap::abscomplex(const ap::complex &z)
         return w;
     else
     {
-        double t = v/w;
+        ap::real_value_type t = v/w;
         return w*sqrt(1+t*t);
     }
 }
@@ -215,13 +215,13 @@ const ap::complex ap::csqr(const ap::complex &z)
 /********************************************************************
 BLAS functions
 ********************************************************************/
-double ap::vdotproduct(const double *v1, const double *v2, int N)
+ap::real_value_type ap::vdotproduct(const ap::real_value_type *v1, const ap::real_value_type *v2, int N)
 {
 #ifdef AP_WIN32
     if( ddot1!=NULL )
         return ddot1(v1, v2, N);
 #endif
-    return ap::_vdotproduct<double>(v1, v2, N);
+    return ap::_vdotproduct<ap::real_value_type>(v1, v2, N);
 }
 
 ap::complex ap::vdotproduct(const ap::complex *v1, const ap::complex *v2, int N)
@@ -258,7 +258,7 @@ void ap::vmove(ap::complex *vdst, const ap::complex* vsrc, int N)
     ap::_vmove<ap::complex>(vdst, vsrc, N);
 }
 
-void ap::vmoveneg(double *vdst, const double *vsrc, int N)
+void ap::vmoveneg(ap::real_value_type *vdst, const ap::real_value_type *vsrc, int N)
 {
 #ifdef AP_WIN32
     if( dmoveneg1!=NULL )
@@ -267,7 +267,7 @@ void ap::vmoveneg(double *vdst, const double *vsrc, int N)
         return;
     }
 #endif
-    ap::_vmoveneg<double>(vdst, vsrc, N);
+    ap::_vmoveneg<ap::real_value_type>(vdst, vsrc, N);
 }
 
 void ap::vmoveneg(ap::complex *vdst, const ap::complex *vsrc, int N)
@@ -299,9 +299,9 @@ void ap::vmove(float *vdst, const float *vsrc, int N, float alpha)
     ap::_vmove<float,float>(vdst, vsrc, N, alpha);
 }
 
-void ap::vmove(ap::complex *vdst, const ap::complex *vsrc, int N, double alpha)
+void ap::vmove(ap::complex *vdst, const ap::complex *vsrc, int N, ap::real_value_type alpha)
 {
-    ap::_vmove<ap::complex,double>(vdst, vsrc, N, alpha);
+    ap::_vmove<ap::complex,ap::real_value_type>(vdst, vsrc, N, alpha);
 }
 
 void ap::vmove(ap::complex *vdst, const ap::complex *vsrc, int N, ap::complex alpha)
@@ -309,7 +309,7 @@ void ap::vmove(ap::complex *vdst, const ap::complex *vsrc, int N, ap::complex al
     ap::_vmove<ap::complex,ap::complex>(vdst, vsrc, N, alpha);
 }
 
-void ap::vadd(double *vdst, const double *vsrc, int N)
+void ap::vadd(ap::real_value_type *vdst, const ap::real_value_type *vsrc, int N)
 {
 #ifdef AP_WIN32
     if( dadd1!=NULL )
@@ -318,7 +318,7 @@ void ap::vadd(double *vdst, const double *vsrc, int N)
         return;
     }
 #endif
-    ap::_vadd<double>(vdst, vsrc, N);
+    ap::_vadd<ap::real_value_type>(vdst, vsrc, N);
 }
 
 void ap::vadd(ap::complex *vdst, const ap::complex *vsrc, int N)
@@ -326,7 +326,7 @@ void ap::vadd(ap::complex *vdst, const ap::complex *vsrc, int N)
     ap::_vadd<ap::complex>(vdst, vsrc, N);
 }
 
-void ap::vadd(double *vdst, const double *vsrc, int N, double alpha)
+void ap::vadd(ap::real_value_type *vdst, const ap::real_value_type *vsrc, int N, ap::real_value_type alpha)
 {
 #ifdef AP_WIN32
     if( dadds1!=NULL )
@@ -335,12 +335,12 @@ void ap::vadd(double *vdst, const double *vsrc, int N, double alpha)
         return;
     }
 #endif
-    ap::_vadd<double,double>(vdst, vsrc, N, alpha);
+    ap::_vadd<ap::real_value_type,ap::real_value_type>(vdst, vsrc, N, alpha);
 }
 
-void ap::vadd(ap::complex *vdst, const ap::complex *vsrc, int N, double alpha)
+void ap::vadd(ap::complex *vdst, const ap::complex *vsrc, int N, ap::real_value_type alpha)
 {
-    ap::_vadd<ap::complex,double>(vdst, vsrc, N, alpha);
+  ap::_vadd<ap::complex,ap::real_value_type>(vdst, vsrc, N, alpha);
 }
 
 void ap::vadd(ap::complex *vdst, const ap::complex *vsrc, int N, ap::complex alpha)
@@ -348,7 +348,7 @@ void ap::vadd(ap::complex *vdst, const ap::complex *vsrc, int N, ap::complex alp
     ap::_vadd<ap::complex,ap::complex>(vdst, vsrc, N, alpha);
 }
 
-void ap::vsub(double *vdst, const double *vsrc, int N)
+void ap::vsub(ap::real_value_type *vdst, const ap::real_value_type *vsrc, int N)
 {
 #ifdef AP_WIN32
     if( dsub1!=NULL )
@@ -357,7 +357,7 @@ void ap::vsub(double *vdst, const double *vsrc, int N)
         return;
     }
 #endif
-    ap::_vsub<double>(vdst, vsrc, N);
+    ap::_vsub<ap::real_value_type>(vdst, vsrc, N);
 }
 
 void ap::vsub(ap::complex *vdst, const ap::complex *vsrc, int N)
@@ -365,7 +365,7 @@ void ap::vsub(ap::complex *vdst, const ap::complex *vsrc, int N)
     ap::_vsub<ap::complex>(vdst, vsrc, N);
 }
 
-void ap::vsub(double *vdst, const double *vsrc, int N, double alpha)
+void ap::vsub(ap::real_value_type *vdst, const ap::real_value_type *vsrc, int N, ap::real_value_type alpha)
 {
 #ifdef AP_WIN32
     if( dadds1!=NULL )
@@ -374,12 +374,12 @@ void ap::vsub(double *vdst, const double *vsrc, int N, double alpha)
         return;
     }
 #endif
-    ap::_vsub<double,double>(vdst, vsrc, N, alpha);
+    ap::_vsub<ap::real_value_type,ap::real_value_type>(vdst, vsrc, N, alpha);
 }
 
-void ap::vsub(ap::complex *vdst, const ap::complex *vsrc, int N, double alpha)
+void ap::vsub(ap::complex *vdst, const ap::complex *vsrc, int N, ap::real_value_type alpha)
 {
-    ap::_vsub<ap::complex,double>(vdst, vsrc, N, alpha);
+    ap::_vsub<ap::complex,ap::real_value_type>(vdst, vsrc, N, alpha);
 }
 
 void ap::vsub(ap::complex *vdst, const ap::complex *vsrc, int N, ap::complex alpha)
@@ -387,7 +387,7 @@ void ap::vsub(ap::complex *vdst, const ap::complex *vsrc, int N, ap::complex alp
     ap::_vsub<ap::complex,ap::complex>(vdst, vsrc, N, alpha);
 }
 
-void ap::vmul(double *vdst, int N, double alpha)
+void ap::vmul(ap::real_value_type *vdst, int N, ap::real_value_type alpha)
 {
 #ifdef AP_WIN32
     if( dmuls1!=NULL )
@@ -396,12 +396,12 @@ void ap::vmul(double *vdst, int N, double alpha)
         return;
     }
 #endif
-    ap::_vmul<double,double>(vdst, N, alpha);
+    ap::_vmul<ap::real_value_type,ap::real_value_type>(vdst, N, alpha);
 }
 
-void ap::vmul(ap::complex *vdst, int N, double alpha)
+void ap::vmul(ap::complex *vdst, int N, ap::real_value_type alpha)
 {
-    ap::_vmul<ap::complex,double>(vdst, N, alpha);
+    ap::_vmul<ap::complex,ap::real_value_type>(vdst, N, alpha);
 }
 
 void ap::vmul(ap::complex *vdst, int N, ap::complex alpha)
@@ -412,40 +412,40 @@ void ap::vmul(ap::complex *vdst, int N, ap::complex alpha)
 /********************************************************************
 standard functions
 ********************************************************************/
-int ap::sign(double x)
+int ap::sign(ap::real_value_type x)
 {
     if( x>0 ) return  1;
     if( x<0 ) return -1;
     return 0;
 }
 
-double ap::randomreal()
+ap::real_value_type ap::randomreal()
 {
     int i = rand();
     while(i==RAND_MAX)
         i =rand();
-    return double(i)/double(RAND_MAX);
+    return ap::real_value_type(i)/ap::real_value_type(RAND_MAX);
 }
 
 int ap::randominteger(int maxv)
 {  return rand()%maxv; }
 
-int ap::round(double x)
+int ap::round(ap::real_value_type x)
 { return int(floor(x+0.5)); }
 
-int ap::trunc(double x)
+int ap::trunc(ap::real_value_type x)
 { return int(x>0 ? floor(x) : ceil(x)); }
 
-int ap::ifloor(double x)
+int ap::ifloor(ap::real_value_type x)
 { return int(floor(x)); }
 
-int ap::iceil(double x)
+int ap::iceil(ap::real_value_type x)
 { return int(ceil(x)); }
 
-double ap::pi()
+ap::real_value_type ap::pi()
 { return 3.14159265358979323846; }
 
-double ap::sqr(double x)
+ap::real_value_type ap::sqr(ap::real_value_type x)
 { return x*x; }
 
 int ap::maxint(int m1, int m2)
@@ -458,12 +458,12 @@ int ap::minint(int m1, int m2)
     return m1>m2 ? m2 : m1;
 }
 
-double ap::maxreal(double m1, double m2)
+ap::real_value_type ap::maxreal(ap::real_value_type m1, ap::real_value_type m2)
 {
     return m1>m2 ? m1 : m2;
 }
 
-double ap::minreal(double m1, double m2)
+ap::real_value_type ap::minreal(ap::real_value_type m1, ap::real_value_type m2)
 {
     return m1>m2 ? m2 : m1;
 }

@@ -81,60 +81,63 @@ public:
    * This object is called during the optimization, reporting optimization
    * progress to the user and checking for user interrupts.
    */
-  igsGetSetMacro(RegistrationCallback::SmartPtr,Callback);
+  cmtkGetSetMacro(RegistrationCallback::SmartPtr,Callback);
 
   /** Optimization functional.
    */
-  igsGetSetMacro(Functional::SmartPtr,Functional);
+  cmtkGetSetMacro(Functional::SmartPtr,Functional);
 
   /// Execute callback if one was set.
   virtual CallbackResult CallbackExecute( const CoordinateVector &v, const Self::ReturnType metric, const int percentDone ) 
   {
-    if ( Callback ) return Callback->Execute( v, metric, percentDone );
+    if ( m_Callback )
+      return m_Callback->Execute( v, metric, percentDone );
     return CALLBACK_OK;
   }
 
   /// Execute callback if one was set.
   virtual CallbackResult CallbackExecute( const int percentDone )
   {
-    if ( Callback ) Callback->Execute( percentDone );
+    if ( m_Callback ) 
+      m_Callback->Execute( percentDone );
     return CALLBACK_OK;
   }
 
   /// Notify callback of an annotation if one exists.
   virtual void CallbackComment ( const char* comment = NULL ) 
   {
-    if ( Callback ) Callback->Comment( comment );
+    if ( m_Callback ) 
+      m_Callback->Comment( comment );
   }
 
   /// Return dimension of search space.
   virtual unsigned int GetSearchSpaceDimension() const 
   {
-    return Functional->VariableParamVectorDim();
+    return this->m_Functional->VariableParamVectorDim();
   }
 
   /// Return parameter stepping.
   virtual Self::ParameterType GetParamStep( unsigned int idx, const Self::ParameterType mmStep = 1.0 ) const 
   {
-    return Functional->GetParamStep( idx, mmStep );
+    return this->m_Functional->GetParamStep( idx, mmStep );
   }
 
   /// Return functional value.
   virtual Self::ReturnType Evaluate ( CoordinateVector& v ) 
   {
-    return Functional->EvaluateAt( v );
+    return this->m_Functional->EvaluateAt( v );
   }
 
   /// Evaluate functional and also return its gradient.
   virtual Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& directionVector, const Self::ParameterType step = 1 ) 
   {
-    return Functional->EvaluateWithGradient( v, directionVector, step );
+    return this->m_Functional->EvaluateWithGradient( v, directionVector, step );
   }
 
   /// Default constructor.
   Optimizer()
-    : Callback( NULL ),
-      Functional( NULL )
+    : m_Callback( NULL ),
+      m_Functional( NULL )
   {
     UpdateStepScaleVector = false;
   }

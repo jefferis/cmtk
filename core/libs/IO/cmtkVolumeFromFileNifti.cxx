@@ -82,7 +82,7 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
   hdrStream.Close();
   
   // determine if we need to byte-swap
-  const int dim0 = ((nifti_1_header*)buffer)->dim[0];
+  const int dim0 = reinterpret_cast<nifti_1_header*>((void*)buffer)->dim[0];
   const bool byteSwap = ((dim0>0) && (dim0<8)) ? false : true;
 
 #ifdef WORDS_BIGENDIAN
@@ -393,7 +393,6 @@ VolumeFromFile::WriteNifti
     header.vox_offset = 352;
     }
   
-#ifdef HAVE_ZLIB
   char path[PATH_MAX];
   strcpy( path, pathImg );
   if ( VolumeIO::GetWriteCompressed() )
@@ -415,7 +414,7 @@ VolumeFromFile::WriteNifti
 	}
       
       const size_t dataSize = data->GetItemSize() * data->GetDataSize();
-      if ( dataSize != gzwrite( imgFile, data->GetDataPtr(), dataSize ) )
+      if ( dataSize != static_cast<size_t>( gzwrite( imgFile, data->GetDataPtr(), dataSize ) ) )
 	{
 	StdErr << "WARNING: gzwrite() returned error when writing to " << path << "\n";
 	}
@@ -423,7 +422,6 @@ VolumeFromFile::WriteNifti
       }
     }
   else
-#endif
     {
     FILE *imgFile = fopen( pathImg, modestr );
     if ( imgFile ) 

@@ -38,6 +38,7 @@ SET(cmtkQt_SRCS
   cmtkQtTriplanarViewerBatchMode.cxx
   cmtkQtTriplanarViewer.cxx
   cmtkQtTriplanarWindow.cxx
+  cmtkQtTriplanarWindowViewActions.cxx
   cmtkQtWindowLevelControls.cxx
   cmtkQtWindowLevelDialog.cxx
 )

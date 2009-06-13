@@ -105,7 +105,7 @@ void rmatrixlq(ap::real_2d_array& a, int m, int n, ap::real_1d_array& tau)
     int k;
     int minmn;
     int maxmn;
-    double tmp;
+    ap::real_value_type tmp;
 
     minmn = ap::minint(m, n);
     maxmn = ap::maxint(m, n);
@@ -275,7 +275,7 @@ void lqdecomposition(ap::real_2d_array& a,
     int nmip1;
     int minmn;
     int maxmn;
-    double tmp;
+    ap::real_value_type tmp;
 
     minmn = ap::minint(m, n);
     maxmn = ap::maxint(m, n);

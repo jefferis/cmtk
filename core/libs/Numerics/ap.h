@@ -28,6 +28,7 @@
 //  $LastChangedBy$
 //
 */
+
 /********************************************************************
 AP Library version 1.2.1
 
@@ -112,6 +113,12 @@ Namespace of a standard library AlgoPascal.
 namespace ap
 {
 
+#ifdef CMTK_NUMERICS_DOUBLE
+typedef double real_value_type;
+#else
+typedef float real_value_type;
+#endif
+
 /********************************************************************
 Service routines:
     amalloc - allocates an aligned block of size bytes
@@ -141,7 +148,7 @@ private:
 };
 
 /********************************************************************
-Class defining a complex number with double precision.
+Class defining a complex number with ap::real_value_type precision.
 ********************************************************************/
 class complex;
 
@@ -149,25 +156,25 @@ class complex
 {
 public:
     complex():x(0.0),y(0.0){};
-    complex(const double &_x):x(_x),y(0.0){};
-    complex(const double &_x, const double &_y):x(_x),y(_y){};
+    complex(const real_value_type &_x):x(_x),y(0.0){};
+    complex(const real_value_type &_x, const real_value_type &_y):x(_x),y(_y){};
     complex(const complex &z):x(z.x),y(z.y){};
 
-    complex& operator= (const double& v){ x  = v; y = 0.0; return *this; };
-    complex& operator+=(const double& v){ x += v;          return *this; };
-    complex& operator-=(const double& v){ x -= v;          return *this; };
-    complex& operator*=(const double& v){ x *= v; y *= v;  return *this; };
-    complex& operator/=(const double& v){ x /= v; y /= v;  return *this; };
+    complex& operator= (const real_value_type& v){ x  = v; y = 0.0; return *this; };
+    complex& operator+=(const real_value_type& v){ x += v;          return *this; };
+    complex& operator-=(const real_value_type& v){ x -= v;          return *this; };
+    complex& operator*=(const real_value_type& v){ x *= v; y *= v;  return *this; };
+    complex& operator/=(const real_value_type& v){ x /= v; y /= v;  return *this; };
 
     complex& operator= (const complex& z){ x  = z.x; y  = z.y; return *this; };
     complex& operator+=(const complex& z){ x += z.x; y += z.y; return *this; };
     complex& operator-=(const complex& z){ x -= z.x; y -= z.y; return *this; };
-    complex& operator*=(const complex& z){ double t = x*z.x-y*z.y; y = x*z.y+y*z.x; x = t; return *this; };
+    complex& operator*=(const complex& z){ real_value_type t = x*z.x-y*z.y; y = x*z.y+y*z.x; x = t; return *this; };
     complex& operator/=(const complex& z)
     {
         ap::complex result;
-        double e;
-        double f;
+        real_value_type e;
+        real_value_type f;
         if( fabs(z.y)<fabs(z.x) )
         {
             e = z.y/z.x;
@@ -186,7 +193,7 @@ public:
         return *this;
     };
 
-    double x, y;
+    real_value_type x, y;
 };
 
 const complex operator/(const complex& lhs, const complex& rhs);
@@ -195,18 +202,18 @@ bool operator!=(const complex& lhs, const complex& rhs);
 const complex operator+(const complex& lhs);
 const complex operator-(const complex& lhs);
 const complex operator+(const complex& lhs, const complex& rhs);
-const complex operator+(const complex& lhs, const double& rhs);
-const complex operator+(const double& lhs, const complex& rhs);
+const complex operator+(const complex& lhs, const real_value_type& rhs);
+const complex operator+(const real_value_type& lhs, const complex& rhs);
 const complex operator-(const complex& lhs, const complex& rhs);
-const complex operator-(const complex& lhs, const double& rhs);
-const complex operator-(const double& lhs, const complex& rhs);
+const complex operator-(const complex& lhs, const real_value_type& rhs);
+const complex operator-(const real_value_type& lhs, const complex& rhs);
 const complex operator*(const complex& lhs, const complex& rhs);
-const complex operator*(const complex& lhs, const double& rhs);
-const complex operator*(const double& lhs, const complex& rhs);
+const complex operator*(const complex& lhs, const real_value_type& rhs);
+const complex operator*(const real_value_type& lhs, const complex& rhs);
 const complex operator/(const complex& lhs, const complex& rhs);
-const complex operator/(const double& lhs, const complex& rhs);
-const complex operator/(const complex& lhs, const double& rhs);
-double abscomplex(const complex &z);
+const complex operator/(const real_value_type& lhs, const complex& rhs);
+const complex operator/(const complex& lhs, const real_value_type& rhs);
+real_value_type abscomplex(const complex &z);
 const complex conj(const complex &z);
 const complex csqr(const complex &z);
 
@@ -219,37 +226,37 @@ Templates for vector operations
 /********************************************************************
 BLAS functions
 ********************************************************************/
-double vdotproduct(const double *v1, const double *v2, int N);
+real_value_type vdotproduct(const real_value_type *v1, const real_value_type *v2, int N);
 complex vdotproduct(const complex *v1, const complex *v2, int N);
 
 void vmove(double *vdst, const double* vsrc, int N);
 void vmove(float *vdst, const float* vsrc, int N);
 void vmove(complex *vdst, const complex* vsrc, int N);
 
-void vmoveneg(double *vdst, const double *vsrc, int N);
+void vmoveneg(real_value_type *vdst, const real_value_type *vsrc, int N);
 void vmoveneg(complex *vdst, const complex *vsrc, int N);
 
 void vmove(double *vdst, const double *vsrc, int N, double alpha);
 void vmove(float *vdst, const float *vsrc, int N, float alpha);
-void vmove(complex *vdst, const complex *vsrc, int N, double alpha);
+void vmove(complex *vdst, const complex *vsrc, int N, real_value_type alpha);
 void vmove(complex *vdst, const complex *vsrc, int N, complex alpha);
 
-void vadd(double *vdst, const double *vsrc, int N);
+void vadd(real_value_type *vdst, const real_value_type *vsrc, int N);
 void vadd(complex *vdst, const complex *vsrc, int N);
 
-void vadd(double *vdst, const double *vsrc, int N, double alpha);
-void vadd(complex *vdst, const complex *vsrc, int N, double alpha);
+void vadd(real_value_type *vdst, const real_value_type *vsrc, int N, real_value_type alpha);
+void vadd(complex *vdst, const complex *vsrc, int N, real_value_type alpha);
 void vadd(complex *vdst, const complex *vsrc, int N, complex alpha);
 
-void vsub(double *vdst, const double *vsrc, int N);
+void vsub(real_value_type *vdst, const real_value_type *vsrc, int N);
 void vsub(complex *vdst, const complex *vsrc, int N);
 
-void vsub(double *vdst, const double *vsrc, int N, double alpha);
-void vsub(complex *vdst, const complex *vsrc, int N, double alpha);
+void vsub(real_value_type *vdst, const real_value_type *vsrc, int N, real_value_type alpha);
+void vsub(complex *vdst, const complex *vsrc, int N, real_value_type alpha);
 void vsub(complex *vdst, const complex *vsrc, int N, complex alpha);
 
-void vmul(double *vdst, int N, double alpha);
-void vmul(complex *vdst, int N, double alpha);
+void vmul(real_value_type *vdst, int N, real_value_type alpha);
+void vmul(complex *vdst, int N, real_value_type alpha);
 void vmul(complex *vdst, int N, complex alpha);
 
 
@@ -577,38 +584,59 @@ private:
 
 
 typedef template_1d_array<int>          integer_1d_array;
-typedef template_1d_array<double,true>  real_1d_array;
+typedef template_1d_array<real_value_type,true>  real_1d_array;
 typedef template_1d_array<complex>      complex_1d_array;
 typedef template_1d_array<bool>         boolean_1d_array;
 
 typedef template_2d_array<int>          integer_2d_array;
-typedef template_2d_array<double,true>  real_2d_array;
+typedef template_2d_array<real_value_type,true>  real_2d_array;
 typedef template_2d_array<complex>      complex_2d_array;
 typedef template_2d_array<bool>         boolean_2d_array;
+
+/********************************************************************
+Structs for use with the linear regression module
+ (moved from linreg.h -mh 2009.05.31)
+********************************************************************/
+struct linearmodel
+{
+    real_1d_array w;
+};
+struct lrreport
+{
+    real_2d_array c;
+    real_value_type rmserror;
+    real_value_type avgerror;
+    real_value_type avgrelerror;
+    real_value_type cvrmserror;
+    real_value_type cvavgerror;
+    real_value_type cvavgrelerror;
+    int ncvdefects;
+    integer_1d_array cvdefects;
+};
 
 
 /********************************************************************
 Constants and functions introduced for compatibility with AlgoPascal
 ********************************************************************/
-extern const double machineepsilon;
-extern const double maxrealnumber;
-extern const double minrealnumber;
+extern const real_value_type machineepsilon;
+extern const real_value_type maxrealnumber;
+extern const real_value_type minrealnumber;
 
-int sign(double x);
-double randomreal();
+int sign(real_value_type x);
+real_value_type randomreal();
 int randominteger(int maxv);
-int round(double x);
-int trunc(double x);
-int ifloor(double x);
-int iceil(double x);
-double pi();
-double sqr(double x);
+int round(real_value_type x);
+int trunc(real_value_type x);
+int ifloor(real_value_type x);
+int iceil(real_value_type x);
+real_value_type pi();
+real_value_type sqr(real_value_type x);
 int maxint(int m1, int m2);
 int minint(int m1, int m2);
-double maxreal(double m1, double m2);
-double minreal(double m1, double m2);
+real_value_type maxreal(real_value_type m1, real_value_type m2);
+real_value_type minreal(real_value_type m1, real_value_type m2);
 
-};//namespace ap
+} //namespace ap
 
 
 #endif

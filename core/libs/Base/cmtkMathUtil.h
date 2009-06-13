@@ -273,7 +273,11 @@ double BetaCf( const double a, const double b, const double x );
 double GammaLn( const double xx );
 
 /// Singular Value Decomposition
-void SVD( double **U, size_t m, size_t n, double *W, double **V );
+void SVD( Matrix2D<double> *U, size_t m, size_t n, Array<double> *W, Matrix2D<double> *V );
+
+/// Linear Regression using SVD results
+void
+SVDLinearRegression( Matrix2D<double> *U, size_t m, size_t n, Array<double> *W, Matrix2D<double> *V, double *b, double *lm_params );
 
 /** Convert degrees to radians.
    * No range checking is done. If the given angle is outside the range 

@@ -154,8 +154,7 @@ CallbackReconGrid( const char* arg )
   float gridDelta[3] = { 0, 0, 0 };
   float gridOrigin[3] = { 0, 0, 0 };
 
-  const size_t numArgs = 
-    sscanf( arg, "%d,%d,%d:%f,%f,%f:%f,%f,%f", gridDims, gridDims+1, gridDims+2, gridDelta, gridDelta+1, gridDelta+2, gridOrigin, gridOrigin+1, gridOrigin+2 );
+  const size_t numArgs = sscanf( arg, "%d,%d,%d:%f,%f,%f:%f,%f,%f", gridDims, gridDims+1, gridDims+2, gridDelta, gridDelta+1, gridDelta+2, gridOrigin, gridOrigin+1, gridOrigin+2 );
   if ( (numArgs != 6) && (numArgs != 9) )
     {
     cmtk::StdErr.printf( "ERROR: reconstruction volume definition must be int,int,int:float,float,float or int,int,int:float,float,float:float,float,float\n", arg );
@@ -163,6 +162,7 @@ CallbackReconGrid( const char* arg )
     }
   
   ReconGrid = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( gridDims, gridDelta[0], gridDelta[1], gridDelta[2] ) );
+  ReconGrid->m_MetaInformation[CMTK_META_SPACE] = ReconGrid->m_MetaInformation[CMTK_META_SPACE_ORIGINAL] = cmtk::AnatomicalOrientation::ORIENTATION_STANDARD;
 
   if ( numArgs == 9 )
     {

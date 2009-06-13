@@ -76,7 +76,7 @@ void symmetricmatrixvectormultiply(const ap::real_2d_array& a,
      int i1,
      int i2,
      const ap::real_1d_array& x,
-     double alpha,
+     ap::real_value_type alpha,
      ap::real_1d_array& y);
 
 
@@ -87,7 +87,7 @@ void symmetricrank2update(ap::real_2d_array& a,
      const ap::real_1d_array& x,
      const ap::real_1d_array& y,
      ap::real_1d_array& t,
-     double alpha);
+     ap::real_value_type alpha);
 
 
 #endif

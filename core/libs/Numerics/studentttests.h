@@ -109,11 +109,11 @@ Output parameters:
 *************************************************************************/
 void studentttest1(const ap::real_1d_array& x,
      int n,
-     double mean,
-     double& t,
-     double& bothtails,
-     double& lefttail,
-     double& righttail);
+     ap::real_value_type mean,
+     ap::real_value_type& t,
+     ap::real_value_type& bothtails,
+     ap::real_value_type& lefttail,
+     ap::real_value_type& righttail);
 
 
 /*************************************************************************
@@ -157,10 +157,10 @@ void studentttest2(const ap::real_1d_array& x,
      int n,
      const ap::real_1d_array& y,
      int m,
-     double& t,
-     double& bothtails,
-     double& lefttail,
-     double& righttail);
+     ap::real_value_type& t,
+     ap::real_value_type& bothtails,
+     ap::real_value_type& lefttail,
+     ap::real_value_type& righttail);
 
 
 /*************************************************************************
@@ -204,10 +204,10 @@ void unequalvariancettest(const ap::real_1d_array& x,
      int n,
      const ap::real_1d_array& y,
      int m,
-     double& t,
-     double& bothtails,
-     double& lefttail,
-     double& righttail);
+     ap::real_value_type& t,
+     ap::real_value_type& bothtails,
+     ap::real_value_type& lefttail,
+     ap::real_value_type& righttail);
 
 
 #endif

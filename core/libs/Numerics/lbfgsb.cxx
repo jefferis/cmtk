@@ -28,6 +28,7 @@
 //  $LastChangedBy$
 //
 */
+
 /*************************************************************************
 NEOS, November 1994. (Latest revision June 1996.)
 Optimization Technology Center.
@@ -141,7 +142,7 @@ void lbfgsbbmv(const int&,
     int i;
     int k;
     int i2;
-    double s;
+    ap::real_value_type s;
 
     if( col==0 )
     {
@@ -208,7 +209,7 @@ void lbfgsbcauchy(const int& n,
      const ap::real_2d_array& ws,
      const ap::real_2d_array& sy,
      ap::real_2d_array& wt,
-     const double& theta,
+     const ap::real_value_type& theta,
      const int& col,
      const int& head,
      ap::real_1d_array& p,
@@ -218,7 +219,7 @@ void lbfgsbcauchy(const int& n,
      int& nint,
      const ap::real_1d_array&,
      const ap::real_1d_array&,
-     const double& sbgnrm,
+     const ap::real_value_type& sbgnrm,
      int& info,
      ap::real_1d_array& workvec)
 {
@@ -235,25 +236,25 @@ void lbfgsbcauchy(const int& n,
     int nleft;
     int ibkmin;
     int iter;
-    double f1;
-    double f2;
-    double dt;
-    double dtm;
-    double tsum;
-    double dibp;
-    double zibp;
-    double dibp2;
-    double bkmin;
-    double tu = 0;
-    double tl = 0;
-    double wmc;
-    double wmp;
-    double wmw;
-    double tj;
-    double tj0;
-    double neggi;
-    double f2org;
-    double tmpv;
+    ap::real_value_type f1;
+    ap::real_value_type f2;
+    ap::real_value_type dt;
+    ap::real_value_type dtm;
+    ap::real_value_type tsum;
+    ap::real_value_type dibp;
+    ap::real_value_type zibp;
+    ap::real_value_type dibp2;
+    ap::real_value_type bkmin;
+    ap::real_value_type tu = 0;
+    ap::real_value_type tl = 0;
+    ap::real_value_type wmc;
+    ap::real_value_type wmp;
+    ap::real_value_type wmw;
+    ap::real_value_type tj;
+    ap::real_value_type tj0;
+    ap::real_value_type neggi;
+    ap::real_value_type f2org;
+    ap::real_value_type tmpv;
 
     if( sbgnrm<=0 )
     {
@@ -524,7 +525,7 @@ void lbfgsbcmprlb(const int& n,
      ap::real_1d_array& r,
      ap::real_1d_array& wa,
      const ap::integer_1d_array& index,
-     const double& theta,
+     const ap::real_value_type& theta,
      const int& col,
      const int& head,
      const int& nfree,
@@ -537,8 +538,8 @@ void lbfgsbcmprlb(const int& n,
     int j;
     int k;
     int pointr;
-    double a1;
-    double a2;
+    ap::real_value_type a1;
+    ap::real_value_type a2;
 
     if( !cnstnd&&col>0 )
     {
@@ -580,7 +581,7 @@ void lbfgsbcmprlb(const int& n,
 
 void lbfgsberrclb(const int& n,
      const int& m,
-     const double& factr,
+     const ap::real_value_type& factr,
      const ap::real_1d_array& l,
      const ap::real_1d_array& u,
      const ap::integer_1d_array& nbd,
@@ -641,7 +642,7 @@ void lbfgsbformk(const int& n,
      const ap::real_2d_array& ws,
      const ap::real_2d_array& wy,
      const ap::real_2d_array& sy,
-     const double& theta,
+     const ap::real_value_type& theta,
      const int& col,
      const int& head,
      int& info,
@@ -666,11 +667,11 @@ void lbfgsbformk(const int& n,
     int dbegin;
     int dend;
     int upcl;
-    double temp1;
-    double temp2;
-    double temp3;
-    double temp4;
-    double v;
+    ap::real_value_type temp1;
+    ap::real_value_type temp2;
+    ap::real_value_type temp3;
+    ap::real_value_type temp4;
+    ap::real_value_type v;
     int j;
 
     if( updatd )
@@ -869,14 +870,14 @@ void lbfgsbformt(const int&,
      const ap::real_2d_array& sy,
      const ap::real_2d_array& ss,
      const int& col,
-     const double& theta,
+     const ap::real_value_type& theta,
      int& info)
 {
     int i;
     int j;
     int k;
     int k1;
-    double ddum;
+    ap::real_value_type ddum;
 
     for(j = 1; j <= col; j++)
     {
@@ -971,8 +972,8 @@ void lbfgsbhpsolb(const int& n,
     int k;
     int indxin;
     int indxou;
-    double ddum;
-    double dout;
+    ap::real_value_type ddum;
+    ap::real_value_type dout;
 
     if( iheap==0 )
     {
@@ -1039,20 +1040,20 @@ void lbfgsblnsrlb(const int& n,
      const ap::real_1d_array& u,
      const ap::integer_1d_array& nbd,
      ap::real_1d_array& x,
-     const double& f,
-     double& fold,
-     double& gd,
-     double& gdold,
+     const ap::real_value_type& f,
+     ap::real_value_type& fold,
+     ap::real_value_type& gd,
+     ap::real_value_type& gdold,
      const ap::real_1d_array& g,
      const ap::real_1d_array& d,
      ap::real_1d_array& r,
      ap::real_1d_array& t,
      const ap::real_1d_array& z,
-     double& stp,
-     double& dnrm,
-     double& dtd,
-     double& xstep,
-     double& stpmx,
+     ap::real_value_type& stp,
+     ap::real_value_type& dnrm,
+     ap::real_value_type& dtd,
+     ap::real_value_type& xstep,
+     ap::real_value_type& stpmx,
      const int& iter,
      int& ifun,
      int& iback,
@@ -1066,13 +1067,13 @@ void lbfgsblnsrlb(const int& n,
      ap::real_1d_array& dsave)
 {
     int i;
-    double a1;
-    double a2;
-    double v;
-    double ftol;
-    double gtol;
-    double xtol;
-    double big;
+    ap::real_value_type a1;
+    ap::real_value_type a2;
+    ap::real_value_type v;
+    ap::real_value_type ftol;
+    ap::real_value_type gtol;
+    ap::real_value_type xtol;
+    ap::real_value_type big;
     int addinfo;
 
     addinfo = 0;
@@ -1162,7 +1163,7 @@ void lbfgsblnsrlb(const int& n,
             return;
         }
     }
-    lbfgsbdcsrch(f, gd, stp, ftol, gtol, xtol, double(0), stpmx, csave, isave, dsave, addinfo);
+    lbfgsbdcsrch(f, gd, stp, ftol, gtol, xtol, ap::real_value_type(0), stpmx, csave, isave, dsave, addinfo);
     xstep = stp*dnrm;
     if( csave!=4&&csave!=3 )
     {
@@ -1201,15 +1202,15 @@ void lbfgsbmatupd(const int& n,
      const int& iupdat,
      int& col,
      int& head,
-     double& theta,
-     const double& rr,
-     const double& dr,
-     const double& stp,
-     const double& dtd)
+     ap::real_value_type& theta,
+     const ap::real_value_type& rr,
+     const ap::real_value_type& dr,
+     const ap::real_value_type& stp,
+     const ap::real_value_type& dtd)
 {
     int j;
     int pointr;
-    double v;
+    ap::real_value_type v;
 
     if( iupdat<=m )
     {
@@ -1259,10 +1260,10 @@ void lbfgsbprojgr(const int& n,
      const ap::integer_1d_array& nbd,
      const ap::real_1d_array& x,
      const ap::real_1d_array& g,
-     double& sbgnrm)
+     ap::real_value_type& sbgnrm)
 {
     int i;
-    double gi;
+    ap::real_value_type gi;
 
     sbgnrm = 0;
     for(i = 1; i <= n; i++)
@@ -1301,7 +1302,7 @@ void lbfgsbsubsm(const int&,
      ap::real_1d_array& d,
      const ap::real_2d_array& ws,
      const ap::real_2d_array& wy,
-     const double& theta,
+     const ap::real_value_type& theta,
      const int& col,
      const int& head,
      int& iword,
@@ -1318,10 +1319,10 @@ void lbfgsbsubsm(const int&,
     int i;
     int j;
     int k;
-    double alpha;
-    double dk;
-    double temp1;
-    double temp2;
+    ap::real_value_type alpha;
+    ap::real_value_type dk;
+    ap::real_value_type temp1;
+    ap::real_value_type temp2;
 
     if( nsub<=0 )
     {
@@ -1455,14 +1456,14 @@ void lbfgsbsubsm(const int&,
 }
 
 
-void lbfgsbdcsrch(const double& f,
-     const double& g,
-     double& stp,
-     const double& ftol,
-     const double& gtol,
-     const double& xtol,
-     const double& stpmin,
-     const double& stpmax,
+void lbfgsbdcsrch(const ap::real_value_type& f,
+     const ap::real_value_type& g,
+     ap::real_value_type& stp,
+     const ap::real_value_type& ftol,
+     const ap::real_value_type& gtol,
+     const ap::real_value_type& xtol,
+     const ap::real_value_type& stpmin,
+     const ap::real_value_type& stpmax,
      int& task,
      ap::integer_1d_array& isave,
      ap::real_1d_array& dsave,
@@ -1470,28 +1471,28 @@ void lbfgsbdcsrch(const double& f,
 {
     bool brackt;
     int stage;
-    double finit;
-    double ftest;
-    double fm;
-    double fx;
-    double fxm;
-    double fy;
-    double fym;
-    double ginit;
-    double gtest;
-    double gm;
-    double gx;
-    double gxm;
-    double gy;
-    double gym;
-    double stx;
-    double sty;
-    double stmin;
-    double stmax;
-    double width;
-    double width1;
-    double xtrapl;
-    double xtrapu;
+    ap::real_value_type finit;
+    ap::real_value_type ftest;
+    ap::real_value_type fm;
+    ap::real_value_type fx;
+    ap::real_value_type fxm;
+    ap::real_value_type fy;
+    ap::real_value_type fym;
+    ap::real_value_type ginit;
+    ap::real_value_type gtest;
+    ap::real_value_type gm;
+    ap::real_value_type gx;
+    ap::real_value_type gxm;
+    ap::real_value_type gy;
+    ap::real_value_type gym;
+    ap::real_value_type stx;
+    ap::real_value_type sty;
+    ap::real_value_type stmin;
+    ap::real_value_type stmax;
+    ap::real_value_type width;
+    ap::real_value_type width1;
+    ap::real_value_type xtrapl;
+    ap::real_value_type xtrapu;
 
     xtrapl = 1.1E0;
     xtrapu = 4.0E0;
@@ -1691,29 +1692,29 @@ void lbfgsbdcsrch(const double& f,
 }
 
 
-void lbfgsbdcstep(double& stx,
-     double& fx,
-     double& dx,
-     double& sty,
-     double& fy,
-     double& dy,
-     double& stp,
-     const double& fp,
-     const double& dp,
+void lbfgsbdcstep(ap::real_value_type& stx,
+     ap::real_value_type& fx,
+     ap::real_value_type& dx,
+     ap::real_value_type& sty,
+     ap::real_value_type& fy,
+     ap::real_value_type& dy,
+     ap::real_value_type& stp,
+     const ap::real_value_type& fp,
+     const ap::real_value_type& dp,
      bool& brackt,
-     const double& stpmin,
-     const double& stpmax)
+     const ap::real_value_type& stpmin,
+     const ap::real_value_type& stpmax)
 {
-    double gamma;
-    double p;
-    double q;
-    double r;
-    double s;
-    double sgnd;
-    double stpc;
-    double stpf;
-    double stpq;
-    double theta;
+    ap::real_value_type gamma;
+    ap::real_value_type p;
+    ap::real_value_type q;
+    ap::real_value_type r;
+    ap::real_value_type s;
+    ap::real_value_type sgnd;
+    ap::real_value_type stpc;
+    ap::real_value_type stpf;
+    ap::real_value_type stpq;
+    ap::real_value_type theta;
 
     sgnd = dp*(dx/fabs(dx));
     if( fp>fx )
@@ -1772,7 +1773,7 @@ void lbfgsbdcstep(double& stx,
             {
                 theta = 3*(fx-fp)/(stp-stx)+dx+dp;
                 s = ap::maxreal(fabs(theta), ap::maxreal(fabs(dx), fabs(dp)));
-                gamma = s*sqrt(ap::maxreal(double(0), ap::sqr(theta/s)-dx/s*(dp/s)));
+                gamma = s*sqrt(ap::maxreal(ap::real_value_type(0), ap::sqr(theta/s)-dx/s*(dp/s)));
                 if( stp>stx )
                 {
                     gamma = -gamma;
@@ -1884,7 +1885,7 @@ void lbfgsbdcstep(double& stx,
 
 bool additionallbfgsbstoppingcriterion(int,
      const ap::real_1d_array&,
-     double,
+     ap::real_value_type,
      const ap::real_1d_array&)
 {
     bool result;
@@ -1897,9 +1898,9 @@ bool additionallbfgsbstoppingcriterion(int,
 bool lbfgsbdpofa(ap::real_2d_array& a, const int& n)
 {
     bool result;
-    double t;
-    double s;
-    double v;
+    ap::real_value_type t;
+    ap::real_value_type s;
+    ap::real_value_type v;
     int j;
     int jm1;
     int k;
@@ -1938,8 +1939,8 @@ void lbfgsbdtrsl(ap::real_2d_array& t,
      const int& job,
      int& info)
 {
-    double temp;
-    double v;
+    ap::real_value_type temp;
+    ap::real_value_type v;
     int cse;
     int j;
     int jj;
@@ -2028,7 +2029,7 @@ void lbfgsbdtrsl(ap::real_2d_array& t,
 
 
 void lbfgsbnewiteration(const ap::real_1d_array&,
-     double,
+     ap::real_value_type,
      const ap::real_1d_array&)
 {
 
@@ -2127,16 +2128,16 @@ lbfgsbminimize
   const int& n,
   const int& m,
   ap::real_1d_array& x,
-  const double& epsg,
-  const double& epsf,
-  const double& epsx,
+  const ap::real_value_type& epsg,
+  const ap::real_value_type& epsf,
+  const ap::real_value_type& epsx,
   const int& maxits,
   const ap::integer_1d_array& nbd,
   const ap::real_1d_array& l,
   const ap::real_1d_array& u,
   int& info )
 {
-  double f;
+  ap::real_value_type f;
   ap::real_1d_array g;
   ap::real_1d_array xold;
   ap::real_1d_array xdiff;
@@ -2189,20 +2190,20 @@ lbfgsbminimize
   int nact;
   int ileave;
   int nenter;
-  double theta;
-  double fold;
-  double dr;
-  double rr;
-  double dnrm;
-  double xstep;
-  double sbgnrm;
-  double ddum;
-  double dtd;
-  double gd;
-  double gdold;
-  double stp;
-  double stpmx;
-  double tf;
+  ap::real_value_type theta;
+  ap::real_value_type fold;
+  ap::real_value_type dr;
+  ap::real_value_type rr;
+  ap::real_value_type dnrm;
+  ap::real_value_type xstep;
+  ap::real_value_type sbgnrm;
+  ap::real_value_type ddum;
+  ap::real_value_type dtd;
+  ap::real_value_type gd;
+  ap::real_value_type gdold;
+  ap::real_value_type stp;
+  ap::real_value_type stpmx;
+  ap::real_value_type tf;
   ap::real_1d_array workvec;
   ap::real_1d_array workvec2;
   ap::real_1d_array dsave13;
@@ -2407,7 +2408,7 @@ lbfgsbminimize
       info = 2;
       return;
       }
-    ddum = ap::maxreal(fabs(fold), ap::maxreal(fabs(f), double(1)));
+    ddum = ap::maxreal(fabs(fold), ap::maxreal(fabs(f), ap::real_value_type(1)));
     if( fold-f<=epsf*ddum )
       {
       info = 1;

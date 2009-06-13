@@ -63,14 +63,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "blas.h"
 
-double vectornorm2(const ap::real_1d_array& x, int i1, int i2)
+ap::real_value_type vectornorm2(const ap::real_1d_array& x, int i1, int i2)
 {
-    double result;
+    ap::real_value_type result;
     int n;
     int ix;
-    double absxi;
-    double scl;
-    double ssq;
+    ap::real_value_type absxi;
+    ap::real_value_type scl;
+    ap::real_value_type ssq;
 
     n = i2-i1+1;
     if( n<1 )
@@ -110,7 +110,7 @@ int vectoridxabsmax(const ap::real_1d_array& x, int i1, int i2)
 {
     int result;
     int i;
-    double a;
+    ap::real_value_type a;
 
     result = i1;
     a = fabs(x(result));
@@ -129,7 +129,7 @@ int columnidxabsmax(const ap::real_2d_array& x, int i1, int i2, int j)
 {
     int result;
     int i;
-    double a;
+    ap::real_value_type a;
 
     result = i1;
     a = fabs(x(result,j));
@@ -148,7 +148,7 @@ int rowidxabsmax(const ap::real_2d_array& x, int j1, int j2, int i)
 {
     int result;
     int j;
-    double a;
+    ap::real_value_type a;
 
     result = j1;
     a = fabs(x(i,result));
@@ -163,14 +163,14 @@ int rowidxabsmax(const ap::real_2d_array& x, int j1, int j2, int i)
 }
 
 
-double upperhessenberg1norm(const ap::real_2d_array& a,
+ap::real_value_type upperhessenberg1norm(const ap::real_2d_array& a,
      int i1,
      int i2,
      int j1,
      int j2,
      ap::real_1d_array& work)
 {
-    double result;
+    ap::real_value_type result;
     int i;
     int j;
 
@@ -291,14 +291,14 @@ void matrixvectormultiply(const ap::real_2d_array& a,
      const ap::real_1d_array& x,
      int ix1,
      int ix2,
-     double alpha,
+     ap::real_value_type alpha,
      ap::real_1d_array& y,
      int iy1,
      int iy2,
-     double beta)
+     ap::real_value_type beta)
 {
     int i;
-    double v;
+    ap::real_value_type v;
 
     if( !trans )
     {
@@ -377,13 +377,13 @@ void matrixvectormultiply(const ap::real_2d_array& a,
 }
 
 
-double pythag2(double x, double y)
+ap::real_value_type pythag2(ap::real_value_type x, ap::real_value_type y)
 {
-    double result;
-    double w;
-    double xabs;
-    double yabs;
-    double z;
+    ap::real_value_type result;
+    ap::real_value_type w;
+    ap::real_value_type xabs;
+    ap::real_value_type yabs;
+    ap::real_value_type z;
 
     xabs = fabs(x);
     yabs = fabs(y);
@@ -413,13 +413,13 @@ void matrixmatrixmultiply(const ap::real_2d_array& a,
      int bj1,
      int bj2,
      bool transb,
-     double alpha,
+     ap::real_value_type alpha,
      ap::real_2d_array& c,
      int ci1,
      int ci2,
      int cj1,
      int cj2,
-     double beta,
+     ap::real_value_type beta,
      ap::real_1d_array& work)
 {
     int arows;
@@ -433,7 +433,7 @@ void matrixmatrixmultiply(const ap::real_2d_array& a,
     int k = 0;
     int l;
     int r;
-    double v;
+    ap::real_value_type v;
 
     
     //

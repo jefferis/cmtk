@@ -81,9 +81,9 @@ Result:
   -- ALGLIB --
      Copyright 2005-2008 by Bochkanov Sergey
 *************************************************************************/
-double spdmatrixcholeskydet(const ap::real_2d_array& a, int n)
+ap::real_value_type spdmatrixcholeskydet(const ap::real_2d_array& a, int n)
 {
-    double result;
+    ap::real_value_type result;
     int i;
 
     result = 1;
@@ -113,9 +113,9 @@ Result:
   -- ALGLIB --
      Copyright 2005-2008 by Bochkanov Sergey
 *************************************************************************/
-double spdmatrixdet(ap::real_2d_array a, int n, bool isupper)
+ap::real_value_type spdmatrixdet(ap::real_2d_array a, int n, bool isupper)
 {
-    double result;
+    ap::real_value_type result;
 
     if( !spdmatrixcholesky(a, n, isupper) )
     {
@@ -132,9 +132,9 @@ double spdmatrixdet(ap::real_2d_array a, int n, bool isupper)
 /*************************************************************************
 Obsolete subroutine
 *************************************************************************/
-double determinantcholesky(const ap::real_2d_array& a, int n)
+ap::real_value_type determinantcholesky(const ap::real_2d_array& a, int n)
 {
-    double result;
+    ap::real_value_type result;
     int i;
 
     result = 1;
@@ -149,9 +149,9 @@ double determinantcholesky(const ap::real_2d_array& a, int n)
 /*************************************************************************
 Obsolete subroutine
 *************************************************************************/
-double determinantspd(ap::real_2d_array a, int n, bool isupper)
+ap::real_value_type determinantspd(ap::real_2d_array a, int n, bool isupper)
 {
-    double result;
+    ap::real_value_type result;
 
     if( !choleskydecomposition(a, n, isupper) )
     {

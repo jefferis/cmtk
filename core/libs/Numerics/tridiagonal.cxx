@@ -146,9 +146,9 @@ void smatrixtd(ap::real_2d_array& a,
      ap::real_1d_array& e)
 {
     int i;
-    double alpha;
-    double taui;
-    double v;
+    ap::real_value_type alpha;
+    ap::real_value_type taui;
+    ap::real_value_type v;
     ap::real_1d_array t;
     ap::real_1d_array t2;
     ap::real_1d_array t3;
@@ -221,7 +221,7 @@ void smatrixtd(ap::real_2d_array& a,
                 //
                 ap::vmove(t.getvector(1, i+1), a.getcolumn(i+1, 0, i));
                 ap::vmove(&t3(1), &tau(0), ap::vlen(1,i+1));
-                symmetricrank2update(a, isupper, 0, i, t, t3, t2, double(-1));
+                symmetricrank2update(a, isupper, 0, i, t, t3, t2, ap::real_value_type(-1));
                 a(i,i+1) = e(i);
             }
             d(i+1) = a(i+1,i+1);
@@ -274,7 +274,7 @@ void smatrixtd(ap::real_2d_array& a,
                 //
                 ap::vmove(t.getvector(1, n-i-1), a.getcolumn(i, i+1, n-1));
                 ap::vmove(&t2(1), &tau(i), ap::vlen(1,n-i-1));
-                symmetricrank2update(a, isupper, i+1, n-1, t, t2, t3, double(-1));
+                symmetricrank2update(a, isupper, i+1, n-1, t, t2, t3, ap::real_value_type(-1));
                 a(i+1,i) = e(i);
             }
             d(i) = a(i,i);
@@ -386,9 +386,9 @@ void totridiagonal(ap::real_2d_array& a,
     int im1;
     int nmi;
     int nm1;
-    double alpha;
-    double taui;
-    double v;
+    ap::real_value_type alpha;
+    ap::real_value_type taui;
+    ap::real_value_type v;
     ap::real_1d_array t;
     ap::real_1d_array t2;
     ap::real_1d_array t3;
@@ -464,7 +464,7 @@ void totridiagonal(ap::real_2d_array& a,
                 // DSYR2( UPLO, I, -ONE, A( 1, I+1 ), 1, TAU, 1, A, LDA );
                 //
                 ap::vmove(t.getvector(1, i), a.getcolumn(ip1, 1, i));
-                symmetricrank2update(a, isupper, 1, i, t, tau, t2, double(-1));
+                symmetricrank2update(a, isupper, 1, i, t, tau, t2, ap::real_value_type(-1));
                 a(i,i+1) = e(i);
             }
             d(i+1) = a(i+1,i+1);
@@ -533,7 +533,7 @@ void totridiagonal(ap::real_2d_array& a,
                 ip1 = i+1;
                 ap::vmove(t.getvector(1, nmi), a.getcolumn(i, ip1, n));
                 ap::vmove(&t2(1), &tau(i), ap::vlen(1,nmi));
-                symmetricrank2update(a, isupper, i+1, n, t, t2, t3, double(-1));
+                symmetricrank2update(a, isupper, i+1, n, t, t2, t3, ap::real_value_type(-1));
                 a(i+1,i) = e(i);
             }
             d(i) = a(i,i);

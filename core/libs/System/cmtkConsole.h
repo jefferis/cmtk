@@ -55,7 +55,8 @@ class Console
 {
 public:
   /// Constructor.
-  Console() 
+  Console( std::ostream& stream ) 
+    : m_Stream( stream )
   { 
     this->IndentLevel = 0; 
     this->DebugLevel = 0; 
@@ -77,7 +78,7 @@ public:
   void flush() 
   { 
     this->m_MutexLock.Lock();
-    std::cerr.flush(); 
+    this->m_Stream.flush(); 
     this->m_MutexLock.Unlock();
   }
 
@@ -91,7 +92,7 @@ public:
     if ( this->m_RankMPI ) return *this;
 #endif
     this->m_MutexLock.Lock();
-    std::cerr << data; 
+    this->m_Stream << data; 
     this->m_MutexLock.Unlock();
     return *this; 
   }
@@ -103,6 +104,9 @@ public:
   void unindent() { IndentLevel -= 2; }
 
 private:
+  /// The system stream that we're attaching to.
+  std::ostream& m_Stream;
+  
   /// Indentiation level.
   size_t IndentLevel;
 
@@ -123,6 +127,9 @@ private:
 
 /// Standard error output for the library.
 extern Console StdErr;
+
+/// Standard output for the library.
+extern Console StdOut;
 
 //@}
 

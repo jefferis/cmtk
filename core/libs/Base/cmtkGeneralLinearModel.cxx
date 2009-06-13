@@ -43,8 +43,6 @@
 
 #include <cmtkMathUtil.h>
 
-#include <copyrighted/svd.cxx>
-
 namespace
 cmtk
 {
@@ -64,21 +62,22 @@ GeneralLinearModel::GeneralLinearModel
   VariableMean( nParameters ),
   VariableSD( nParameters )
 {
-  U = matrix( 1, NData, 1, NParameters );
-  V = matrix( 1, NParameters, 1, NParameters );
-  W = vector( 1, NParameters );
+  U = new Matrix2D<double>( NData, NParameters );
+  V = new Matrix2D<double>( NParameters, NParameters );
+  W = new Array<double>( NParameters );
 
   double wmax, thresh;
-
-  memcpy( &U[1][1], designMatrix, sizeof( double ) * NData * NParameters );
 
   Array<double> data( this->NData );
   for ( size_t j=0; j < NParameters; ++j ) 
     {
     // set up data vector for parameter 'j'
     for ( size_t i=0; i < this->NData; ++i ) 
+      {
       data[i] = DesignMatrix[i][j];
-    
+      (*U)[i][j] = DesignMatrix[i][j];
+      }
+
     // compute variance
     this->VariableMean[j] = MathUtil::Mean<double>( this->NData, data );
     this->VariableSD[j] = MathUtil::Variance<double>( this->NData, data, this->VariableMean[j] );
@@ -88,14 +87,16 @@ GeneralLinearModel::GeneralLinearModel
     }
   
   // perform SVD of design matrix
-  svdcmp( this->U, this->NData, this->NParameters, this->W, this->V );
-  
+  //svdcmp( this->U, this->NData, this->NParameters, this->W, this->V );
+
+  MathUtil::SVD( this->U, this->NData, this->NParameters, this->W, this->V );
+ 
   // prepare partial regressions, each with one of the parameters omitted
   for ( size_t p=0; p < this->NParameters; ++p) 
     {
-    Up[p] = matrix( 1, NData, 1, NParameters-1 );
-    Vp[p] = matrix( 1, NParameters-1, 1, NParameters-1 );
-    Wp[p] = vector( 1, NParameters-1 );
+    Up[p] = new Matrix2D<double>( NData, NParameters-1 );
+    Vp[p] = new Matrix2D<double>( NParameters-1, NParameters-1 );
+    Wp[p] = new Array<double>( NParameters-1 );
     
     // create partial design matrix, omitting parameter 'p'
     for ( size_t i=0; i < this->NData; ++i ) 
@@ -105,38 +106,24 @@ GeneralLinearModel::GeneralLinearModel
 	{
 	if ( j != p ) 
 	  {
-	  this->Up[p][i+1][jj+1] = DesignMatrix[i][j];
+	  (*(this->Up[p]))[i][jj] = DesignMatrix[i][j];
 	  ++jj;
 	  }
 	}
       }
     
-    svdcmp( this->Up[p], this->NData, this->NParameters-1, this->Wp[p], this->Vp[p] );
+    //svdcmp( this->Up[p], this->NData, this->NParameters-1, this->Wp[p], this->Vp[p] );
+    MathUtil::SVD( this->Up[p], this->NData, this->NParameters-1, this->Wp[p], this->Vp[p] );
     }
   
   wmax=0.0;
-  for ( size_t j=1;j<=NParameters;j++)
-    if (W[j] > wmax) wmax=W[j];
+  for ( size_t j=0;j<NParameters;j++)
+    if ((*W)[j] > wmax) wmax=(*W)[j];
   thresh=TOL*wmax;
-  for ( size_t j=1;j<=NParameters;j++)
-    if (W[j] < thresh) W[j]=0.0;
+  for ( size_t j=0;j<NParameters;j++)
+    if ((*W)[j] < thresh) (*W)[j]=0.0;
 }
 
-Matrix2D<double>*
-GeneralLinearModel::GetCovarianceMatrix() const
-{
-  double **cvm = matrix( 1, NParameters, 1, NParameters );
-  svdvar( this->V, this->NParameters, this->W, cvm );
-
-  Matrix2D<double>* CVM = new Matrix2D<double>( NParameters, NParameters );
-  
-  for ( size_t i = 0; i < this->NParameters; ++i ) 
-    for ( size_t j = 0; j < this->NParameters; ++j ) 
-      (*CVM)[i][j] = cvm[1+i][1+j];
-  
-  free_matrix( cvm, 1, NParameters, 1, NParameters );
-  return CVM;
-}
 
 Matrix2D<double>*
 GeneralLinearModel::GetCorrelationMatrix() const
@@ -177,14 +164,13 @@ GeneralLinearModel::~GeneralLinearModel()
 {
   for ( size_t p=0; p < this->NParameters; ++p) 
     {
-    free_vector( this->Wp[p], 1, this->NParameters-1 );
-    free_matrix( this->Vp[p], 1, this->NParameters-1, 1, this->NParameters-1 );
-    free_matrix( this->Up[p], 1, this->NData, 1, this->NParameters-1 );
+    delete this->Wp[p];
+    delete this->Vp[p];
+    delete this->Up[p];
     }
-  
-  free_vector( this->W, 1, this->NParameters );
-  free_matrix( this->V, 1, this->NParameters, 1, this->NParameters );
-  free_matrix( this->U, 1, this->NData, 1, this->NParameters );
+  delete this->W; 
+  delete this->V; 
+  delete this->U; 
 }
 
 void
@@ -230,7 +216,7 @@ GeneralLinearModel
   const Self* ThisConst = params->thisObject;
   Self* This = params->thisObject;
   
-  double* a = Memory::AllocateArray<double>( ThisConst->NParameters );
+  double* lm_params = Memory::AllocateArray<double>( ThisConst->NParameters );
   double* b = Memory::AllocateArray<double>( ThisConst->NData );
   double* valueYhat = Memory::AllocateArray<double>( ThisConst->NData );
 
@@ -259,7 +245,7 @@ GeneralLinearModel
 	b[i] = value;
       else
 	missing = true;
-    
+
     if ( missing )
       {
       for (size_t p = 0; (p<ThisConst->NParameters); ++p ) 
@@ -270,9 +256,15 @@ GeneralLinearModel
       } 
     else 
       {
-      // use SVD of design matrix to compute model parameters a[] 
+      // use SVD of design matrix to compute model parameters lm_params[] 
       // from data b[]
-      svbksb( ThisConst->U, ThisConst->W, ThisConst->V, ThisConst->NData, ThisConst->NParameters, b-1, &a[-1] );
+      MathUtil::SVDLinearRegression( ThisConst->U, 
+                                     ThisConst->NData, 
+                                     ThisConst->NParameters, 
+                                     ThisConst->W, 
+                                     ThisConst->V, 
+                                     b,
+                                     lm_params );
 
       // compute variance of data
       double varY, avgY;
@@ -282,10 +274,10 @@ GeneralLinearModel
       // copy model parameters into output
       for (size_t p = 0; (p<ThisConst->NParameters); ++p ) 
 	{
-	value = a[p];
+	value = lm_params[p];
 	if ( params->m_NormalizeParameters )
 	  // Cohen & Cohen, Eq. (3.5.2)
-//	  Model[p]->Set( a[p] * this->GetNormFactor( p ) / sqrt( varY ), n );
+//	  Model[p]->Set( lm_params[p] * this->GetNormFactor( p ) / sqrt( varY ), n );
 	  value *= This->GetNormFactor( p );
 
 	if ( finite( value ) )
@@ -300,7 +292,7 @@ GeneralLinearModel
 	{ 
 	valueYhat[i] = 0.0;
 	for (size_t pi = 0; (pi<ThisConst->NParameters); ++pi )
-	  valueYhat[i] += a[pi] * ThisConst->DesignMatrix[i][pi];
+	  valueYhat[i] += lm_params[pi] * ThisConst->DesignMatrix[i][pi];
 	}
       avgYhat = MathUtil::Mean<double>( ThisConst->NData, valueYhat );
       varYhat = MathUtil::Variance<double>( ThisConst->NData, valueYhat, avgYhat );
@@ -309,7 +301,7 @@ GeneralLinearModel
       const double R2 = varYhat / varY;
       This->FStat->Set( (R2*df) / ((1-R2)*ThisConst->NParameters), n );
       
-      Array<double> apartial( ThisConst->NParameters-1 );
+      Array<double> lm_params_P( ThisConst->NParameters-1 );
       Array<double> valueYhatp( ThisConst->NData );
       
       // for each parameter, evaluate R^2_i for model without parameter Xi
@@ -318,10 +310,16 @@ GeneralLinearModel
 	// exclude constant parameter
 //	if ( this->VariableSD[p] > 0 )
 	  {
-	  // use SVD of partial design matrix to compute partial 
-	  // regression
-	  svbksb( ThisConst->Up[p], ThisConst->Wp[p], ThisConst->Vp[p], ThisConst->NData, ThisConst->NParameters-1, b-1, &apartial[-1] );
-	  
+//	  // use SVD of partial design matrix to compute partial 
+//	  // regression
+          MathUtil::SVDLinearRegression( ThisConst->Up[p], 
+                                         ThisConst->NData, 
+                                         ThisConst->NParameters-1, 
+                                         ThisConst->Wp[p], 
+                                         ThisConst->Vp[p], 
+                                         b,
+                                         lm_params_P );
+
 	  // compute variance of data
 	  for (size_t i = 0; i < ThisConst->NData; i++) 
 	    { 
@@ -331,7 +329,7 @@ GeneralLinearModel
 	      {
 	      if ( p != pi ) 
 		{
-		valueYhatp[i] += apartial[pip] * ThisConst->DesignMatrix[i][pi];
+		valueYhatp[i] += lm_params_P[pip] * ThisConst->DesignMatrix[i][pi];
 		++pip;
 		}
 	      }
@@ -365,7 +363,7 @@ GeneralLinearModel
   delete[] valueYhat;
 
   delete[] b;
-  delete[] a;
+  delete[] lm_params;
 
   return CMTK_THREAD_RETURN_VALUE;
 }

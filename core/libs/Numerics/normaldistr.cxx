@@ -96,13 +96,13 @@ arithmetic   domain     # trials      peak         rms
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1988, 1992, 2000 by Stephen L. Moshier
 *************************************************************************/
-double erf(double x)
+ap::real_value_type erf(ap::real_value_type x)
 {
-    double result;
-    double xsq;
-    double s;
-    double p;
-    double q;
+    ap::real_value_type result;
+    ap::real_value_type xsq;
+    ap::real_value_type s;
+    ap::real_value_type p;
+    ap::real_value_type q;
 
     s = ap::sign(x);
     x = fabs(x);
@@ -163,11 +163,11 @@ arithmetic   domain     # trials      peak         rms
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1988, 1992, 2000 by Stephen L. Moshier
 *************************************************************************/
-double erfc(double x)
+ap::real_value_type erfc(ap::real_value_type x)
 {
-    double result;
-    double p;
-    double q;
+    ap::real_value_type result;
+    ap::real_value_type p;
+    ap::real_value_type q;
 
     if( x<0 )
     {
@@ -237,9 +237,9 @@ arithmetic   domain     # trials      peak         rms
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1988, 1992, 2000 by Stephen L. Moshier
 *************************************************************************/
-double normaldistribution(double x)
+ap::real_value_type normaldistribution(ap::real_value_type x)
 {
-    double result;
+    ap::real_value_type result;
 
     result = 0.5*(erf(x/1.41421356237309504880)+1);
     return result;
@@ -252,11 +252,11 @@ Inverse of the error function
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1988, 1992, 2000 by Stephen L. Moshier
 *************************************************************************/
-double inverf(double e)
+ap::real_value_type inverf(ap::real_value_type e)
 {
-    double result;
+    ap::real_value_type result;
 
-    result = invnormaldistribution(0.5*(e+1))/sqrt(double(2));
+    result = invnormaldistribution(0.5*(e+1))/sqrt(ap::real_value_type(2));
     return result;
 }
 
@@ -286,24 +286,24 @@ arithmetic   domain        # trials      peak         rms
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1988, 1992, 2000 by Stephen L. Moshier
 *************************************************************************/
-double invnormaldistribution(double y0)
+ap::real_value_type invnormaldistribution(ap::real_value_type y0)
 {
-    double result;
-    double expm2;
-    double s2pi;
-    double x;
-    double y;
-    double z;
-    double y2;
-    double x0;
-    double x1;
+    ap::real_value_type result;
+    ap::real_value_type expm2;
+    ap::real_value_type s2pi;
+    ap::real_value_type x;
+    ap::real_value_type y;
+    ap::real_value_type z;
+    ap::real_value_type y2;
+    ap::real_value_type x0;
+    ap::real_value_type x1;
     int code;
-    double p0;
-    double q0;
-    double p1;
-    double q1;
-    double p2;
-    double q2;
+    ap::real_value_type p0;
+    ap::real_value_type q0;
+    ap::real_value_type p1;
+    ap::real_value_type q1;
+    ap::real_value_type p2;
+    ap::real_value_type q2;
 
     expm2 = 0.13533528323661269189;
     s2pi = 2.50662827463100050242;

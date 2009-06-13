@@ -57,6 +57,7 @@ IF(NOT CMTK_USE_MPI)
 	   deformation_field
 	   film
 	   filter
+           glm
 	   gregxform
 	   histogram
 	   imagemath

@@ -139,7 +139,7 @@ void rmatrixlu(ap::real_2d_array& a,
     int j2;
     int cb;
     int nb;
-    double v;
+    ap::real_value_type v;
 
     ap::ap_error::make_assertion(lunb>=1, "RMatrixLU internal error");
     nb = lunb;
@@ -274,7 +274,7 @@ void ludecomposition(ap::real_2d_array& a,
     int j;
     int jp;
     ap::real_1d_array t1;
-    double s;
+    ap::real_value_type s;
 
     pivots.setbounds(1, ap::minint(m, n));
     t1.setbounds(1, ap::maxint(m, n));
@@ -421,7 +421,7 @@ void rmatrixlu2(ap::real_2d_array& a,
     int j;
     int jp;
     ap::real_1d_array t1;
-    double s;
+    ap::real_value_type s;
 
     pivots.setbounds(0, ap::minint(m-1, n-1));
     t1.setbounds(0, ap::maxint(m-1, n-1));

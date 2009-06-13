@@ -106,8 +106,8 @@ so that v(0:i) = 0, v(i+1) = 1, v(i+2:n-1) stored in A(i+2:n-1,i).
 void rmatrixhessenberg(ap::real_2d_array& a, int n, ap::real_1d_array& tau)
 {
     int i;
-//    double aii;
-    double v;
+//    ap::real_value_type aii;
+    ap::real_value_type v;
     ap::real_1d_array t;
     ap::real_1d_array work;
 
@@ -266,8 +266,8 @@ void toupperhessenberg(ap::real_2d_array& a, int n, ap::real_1d_array& tau)
     int i;
     int ip1;
     int nmi;
-//    double aii;
-    double v;
+//    ap::real_value_type aii;
+    ap::real_value_type v;
     ap::real_1d_array t;
     ap::real_1d_array work;
 

@@ -106,8 +106,8 @@ bool spdmatrixcholesky(ap::real_2d_array& a, int n, bool isupper)
     bool result;
     int i;
     int j;
-    double ajj;
-    double v;
+    ap::real_value_type ajj;
+    ap::real_value_type v;
 
     
     //
@@ -209,8 +209,8 @@ bool choleskydecomposition(ap::real_2d_array& a, int n, bool isupper)
     bool result;
     int i;
     int j;
-    double ajj;
-    double v;
+    ap::real_value_type ajj;
+    ap::real_value_type v;
     int jm1;
     int jp1;
 

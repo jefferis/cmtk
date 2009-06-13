@@ -81,7 +81,7 @@ public:
 
 private:
   /// The study object that we're working on.
-  Study::SmartPtr Study;
+  Study::SmartPtr m_Study;
 
   /// Layout of this widget.
   Q3VBoxLayout* Layout;

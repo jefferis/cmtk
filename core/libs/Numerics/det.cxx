@@ -79,11 +79,11 @@ Result: matrix determinant.
   -- ALGLIB --
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
-double rmatrixludet(const ap::real_2d_array& a,
+ap::real_value_type rmatrixludet(const ap::real_2d_array& a,
      const ap::integer_1d_array& pivots,
      int n)
 {
-    double result;
+    ap::real_value_type result;
     int i;
     int s;
 
@@ -114,9 +114,9 @@ Result: determinant of matrix A.
   -- ALGLIB --
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
-double rmatrixdet(ap::real_2d_array a, int n)
+ap::real_value_type rmatrixdet(ap::real_2d_array a, int n)
 {
-    double result;
+    ap::real_value_type result;
     ap::integer_1d_array pivots;
 
     rmatrixlu(a, n, n, pivots);
@@ -129,11 +129,11 @@ double rmatrixdet(ap::real_2d_array a, int n)
 Obsolete 1-based subroutine.
 See RMatrixDetLU for 0-based replacement.
 *************************************************************************/
-double determinantlu(const ap::real_2d_array& a,
+ap::real_value_type determinantlu(const ap::real_2d_array& a,
      const ap::integer_1d_array& pivots,
      int n)
 {
-    double result;
+    ap::real_value_type result;
     int i;
     int s;
 
@@ -156,9 +156,9 @@ double determinantlu(const ap::real_2d_array& a,
 Obsolete 1-based subroutine.
 See RMatrixDet for 0-based replacement.
 *************************************************************************/
-double determinant(ap::real_2d_array a, int n)
+ap::real_value_type determinant(ap::real_2d_array a, int n)
 {
-    double result;
+    ap::real_value_type result;
     ap::integer_1d_array pivots;
 
     ludecomposition(a, n, n, pivots);

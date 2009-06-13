@@ -72,6 +72,6 @@ private:
   TypedArray::SmartPtr m_Result;
 };
 
-}; // namespace cmtk
+} // namespace cmtk
 
 #endif // #ifndef __cmtkLabelCombinationVoting_h_included_

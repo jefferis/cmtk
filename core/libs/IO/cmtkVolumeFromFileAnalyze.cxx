@@ -407,7 +407,6 @@ VolumeFromFile::WriteAnalyzeHdr
   if ( suffix ) *suffix = 0;
   strcat( pathImg, ".img" );
   
-#ifdef HAVE_ZLIB
   if ( VolumeIO::GetWriteCompressed() )
     {
     struct stat buf;
@@ -426,7 +425,7 @@ VolumeFromFile::WriteAnalyzeHdr
     if ( imgFile ) 
       {
       const size_t dataSize = data->GetItemSize() * data->GetDataSize();
-      if ( dataSize != gzwrite( imgFile, data->GetDataPtr(), dataSize ) )
+      if ( dataSize != static_cast<size_t>( gzwrite( imgFile, data->GetDataPtr(), dataSize ) ) )
 	{
 	StdErr << "WARNING: gzwrite() returned error when writing to " << pathImg << "\n";
 	}
@@ -434,7 +433,6 @@ VolumeFromFile::WriteAnalyzeHdr
       }
     }
   else
-#endif
     {
 #ifdef _MSC_VER
     const char* modestr = "wb";

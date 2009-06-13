@@ -47,6 +47,7 @@ SET(cmtkBase_SRCS
   cmtkException.cxx
   cmtkFilterVolume.cxx
   cmtkFunctional.cxx
+  cmtkGeneralLinearModel.cxx
   cmtkHistogram.cxx
   cmtkInfinitePlane.cxx
   cmtkIntersection.cxx

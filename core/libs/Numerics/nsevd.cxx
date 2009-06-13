@@ -81,29 +81,29 @@ void internaltrevc(const ap::real_2d_array& t,
 void internalhsevdlaln2(const bool& ltrans,
      const int& na,
      const int& nw,
-     const double& smin,
-     const double& ca,
+     const ap::real_value_type& smin,
+     const ap::real_value_type& ca,
      const ap::real_2d_array& a,
-     const double& d1,
-     const double& d2,
+     const ap::real_value_type& d1,
+     const ap::real_value_type& d2,
      const ap::real_2d_array& b,
-     const double& wr,
-     const double& wi,
+     const ap::real_value_type& wr,
+     const ap::real_value_type& wi,
      ap::boolean_1d_array& rswap4,
      ap::boolean_1d_array& zswap4,
      ap::integer_2d_array& ipivot44,
      ap::real_1d_array& civ4,
      ap::real_1d_array& crv4,
      ap::real_2d_array& x,
-     double& scl,
-     double& xnorm,
+     ap::real_value_type& scl,
+     ap::real_value_type& xnorm,
      int& info);
-void internalhsevdladiv(const double& a,
-     const double& b,
-     const double& c,
-     const double& d,
-     double& p,
-     double& q);
+void internalhsevdladiv(const ap::real_value_type& a,
+     const ap::real_value_type& b,
+     const ap::real_value_type& c,
+     const ap::real_value_type& d,
+     ap::real_value_type& p,
+     ap::real_value_type& q);
 
 /*************************************************************************
 Finding eigenvalues and eigenvectors of a general matrix
@@ -187,7 +187,7 @@ bool rmatrixevd(ap::real_2d_array a,
     ap::real_1d_array wr1;
     ap::real_1d_array wi1;
     int i;
-//    double mx;
+//    ap::real_value_type mx;
 
     ap::ap_error::make_assertion(vneeded>=0&&vneeded<=3, "RMatrixEVD: incorrect VNeeded!");
     a1.setbounds(1, n, 1, n);
@@ -317,22 +317,22 @@ void internaltrevc(const ap::real_2d_array& t,
     int k;
     int ki;
     int n2;
-    double beta;
-    double bignum;
-    double emax;
-    double ovfl;
-    double rec;
-    double remax;
-    double scl;
-    double smin;
-    double smlnum;
-    double ulp;
-    double unfl;
-    double vcrit;
-    double vmax;
-    double wi;
-    double wr;
-    double xnorm;
+    ap::real_value_type beta;
+    ap::real_value_type bignum;
+    ap::real_value_type emax;
+    ap::real_value_type ovfl;
+    ap::real_value_type rec;
+    ap::real_value_type remax;
+    ap::real_value_type scl;
+    ap::real_value_type smin;
+    ap::real_value_type smlnum;
+    ap::real_value_type ulp;
+    ap::real_value_type unfl;
+    ap::real_value_type vcrit;
+    ap::real_value_type vmax;
+    ap::real_value_type wi;
+    ap::real_value_type wr;
+    ap::real_value_type xnorm;
     ap::real_2d_array x;
     ap::real_1d_array work;
     ap::real_1d_array temp;
@@ -347,7 +347,7 @@ void internaltrevc(const ap::real_2d_array& t,
     int k2;
     int k3;
     int k4;
-    double vt;
+    ap::real_value_type vt;
     ap::boolean_1d_array rswap4;
     ap::boolean_1d_array zswap4;
     ap::integer_2d_array ipivot44;
@@ -597,7 +597,7 @@ void internaltrevc(const ap::real_2d_array& t,
                             //
                             temp11(1,1) = t(j,j);
                             temp11b(1,1) = work(j+n);
-                            internalhsevdlaln2(false, 1, 1, smin, double(1), temp11, 1.0, 1.0, temp11b, wr, 0.0, rswap4, zswap4, ipivot44, civ4, crv4, x, scl, xnorm, ierr);
+                            internalhsevdlaln2(false, 1, 1, smin, ap::real_value_type(1), temp11, 1.0, 1.0, temp11b, wr, 0.0, rswap4, zswap4, ipivot44, civ4, crv4, x, scl, xnorm, ierr);
                             
                             //
                             // Scale X(1,1) to avoid overflow when updating
@@ -644,7 +644,7 @@ void internaltrevc(const ap::real_2d_array& t,
                             temp22(2,2) = t(j,j);
                             temp21b(1,1) = work(j-1+n);
                             temp21b(2,1) = work(j+n);
-                            internalhsevdlaln2(false, 2, 1, smin, 1.0, temp22, 1.0, 1.0, temp21b, wr, double(0), rswap4, zswap4, ipivot44, civ4, crv4, x, scl, xnorm, ierr);
+                            internalhsevdlaln2(false, 2, 1, smin, 1.0, temp22, 1.0, 1.0, temp21b, wr, ap::real_value_type(0), rswap4, zswap4, ipivot44, civ4, crv4, x, scl, xnorm, ierr);
                             
                             //
                             // Scale X(1,1) and X(2,1) to avoid overflow when
@@ -1061,7 +1061,7 @@ void internaltrevc(const ap::real_2d_array& t,
                             //
                             temp11(1,1) = t(j,j);
                             temp11b(1,1) = work(j+n);
-                            internalhsevdlaln2(false, 1, 1, smin, 1.0, temp11, 1.0, 1.0, temp11b, wr, double(0), rswap4, zswap4, ipivot44, civ4, crv4, x, scl, xnorm, ierr);
+                            internalhsevdlaln2(false, 1, 1, smin, 1.0, temp11, 1.0, 1.0, temp11b, wr, ap::real_value_type(0), rswap4, zswap4, ipivot44, civ4, crv4, x, scl, xnorm, ierr);
                             
                             //
                             // Scale if necessary
@@ -1107,7 +1107,7 @@ void internaltrevc(const ap::real_2d_array& t,
                             temp22(2,2) = t(j+1,j+1);
                             temp21b(1,1) = work(j+n);
                             temp21b(2,1) = work(j+1+n);
-                            internalhsevdlaln2(true, 2, 1, smin, 1.0, temp22, 1.0, 1.0, temp21b, wr, double(0), rswap4, zswap4, ipivot44, civ4, crv4, x, scl, xnorm, ierr);
+                            internalhsevdlaln2(true, 2, 1, smin, 1.0, temp22, 1.0, 1.0, temp21b, wr, ap::real_value_type(0), rswap4, zswap4, ipivot44, civ4, crv4, x, scl, xnorm, ierr);
                             
                             //
                             // Scale if necessary
@@ -1382,63 +1382,63 @@ void internaltrevc(const ap::real_2d_array& t,
 void internalhsevdlaln2(const bool& ltrans,
      const int& na,
      const int& nw,
-     const double& smin,
-     const double& ca,
+     const ap::real_value_type& smin,
+     const ap::real_value_type& ca,
      const ap::real_2d_array& a,
-     const double& d1,
-     const double& d2,
+     const ap::real_value_type& d1,
+     const ap::real_value_type& d2,
      const ap::real_2d_array& b,
-     const double& wr,
-     const double& wi,
+     const ap::real_value_type& wr,
+     const ap::real_value_type& wi,
      ap::boolean_1d_array& rswap4,
      ap::boolean_1d_array& zswap4,
      ap::integer_2d_array& ipivot44,
      ap::real_1d_array& civ4,
      ap::real_1d_array& crv4,
      ap::real_2d_array& x,
-     double& scl,
-     double& xnorm,
+     ap::real_value_type& scl,
+     ap::real_value_type& xnorm,
      int& info)
 {
     int icmax;
     int j;
-    double bbnd;
-    double bi1;
-    double bi2;
-    double bignum;
-    double bnorm;
-    double br1;
-    double br2;
-    double ci21;
-    double ci22;
-    double cmax;
-    double cnorm;
-    double cr21;
-    double cr22;
-    double csi;
-    double csr;
-    double li21;
-    double lr21;
-    double smini;
-    double smlnum;
-    double temp;
-    double u22abs;
-    double ui11;
-    double ui11r;
-    double ui12;
-    double ui12s;
-    double ui22;
-    double ur11;
-    double ur11r;
-    double ur12;
-    double ur12s;
-    double ur22;
-    double xi1;
-    double xi2;
-    double xr1;
-    double xr2;
-    double tmp1;
-    double tmp2;
+    ap::real_value_type bbnd;
+    ap::real_value_type bi1;
+    ap::real_value_type bi2;
+    ap::real_value_type bignum;
+    ap::real_value_type bnorm;
+    ap::real_value_type br1;
+    ap::real_value_type br2;
+    ap::real_value_type ci21;
+    ap::real_value_type ci22;
+    ap::real_value_type cmax;
+    ap::real_value_type cnorm;
+    ap::real_value_type cr21;
+    ap::real_value_type cr22;
+    ap::real_value_type csi;
+    ap::real_value_type csr;
+    ap::real_value_type li21;
+    ap::real_value_type lr21;
+    ap::real_value_type smini;
+    ap::real_value_type smlnum;
+    ap::real_value_type temp;
+    ap::real_value_type u22abs;
+    ap::real_value_type ui11;
+    ap::real_value_type ui11r;
+    ap::real_value_type ui12;
+    ap::real_value_type ui12s;
+    ap::real_value_type ui22;
+    ap::real_value_type ur11;
+    ap::real_value_type ur11r;
+    ap::real_value_type ur12;
+    ap::real_value_type ur12s;
+    ap::real_value_type ur22;
+    ap::real_value_type xi1;
+    ap::real_value_type xi2;
+    ap::real_value_type xr1;
+    ap::real_value_type xr2;
+    ap::real_value_type tmp1;
+    ap::real_value_type tmp2;
 
     zswap4(1) = false;
     zswap4(2) = false;
@@ -1869,15 +1869,15 @@ void internalhsevdlaln2(const bool& ltrans,
 }
 
 
-void internalhsevdladiv(const double& a,
-     const double& b,
-     const double& c,
-     const double& d,
-     double& p,
-     double& q)
+void internalhsevdladiv(const ap::real_value_type& a,
+     const ap::real_value_type& b,
+     const ap::real_value_type& c,
+     const ap::real_value_type& d,
+     ap::real_value_type& p,
+     ap::real_value_type& q)
 {
-    double e;
-    double f;
+    ap::real_value_type e;
+    ap::real_value_type f;
 
     if( fabs(d)<fabs(c) )
     {

@@ -49,6 +49,10 @@ cmtk
 //@{
 
 /** Pixelwise linear modeling and t statistics of data.
+ * \note This class formerly contained a method for 
+ * getting the covariance matrix of an SVD.  It has 
+ * been removed due to obsolete implementation 
+ * (Numerical Recipes) and un-use
  */
 class GeneralLinearModel
 {
@@ -74,12 +78,8 @@ public:
    */
   double GetSingularValue( const size_t n ) const 
   {
-    return this->W[1+n];
+    return (*(this->W))[n];
   }
-
-  /** Get the parameter covariance matrix from SVD.
-   */
-  Matrix2D<double>* GetCovarianceMatrix() const;
 
   /** Get the parameter correlation matrix from design matrix.
    */
@@ -138,22 +138,22 @@ private:
   Matrix2D<double> DesignMatrix;
 
   /// Matrix U of the design matrix SVD.
-  double** U;
+  Matrix2D<double>* U;
 
   /// Array of partial design matrices.
-  Array<double**> Up;
+  Array< Matrix2D<double>* > Up;
 
   /// Matrix V the design matrix SVD.
-  double** V;
+  Matrix2D<double>* V;
 
   /// SVD of partial design matrices.
-  Array<double**> Vp;
+  Array< Matrix2D<double>* > Vp;
 
   /// Vector W (workspace).
-  double* W;
+  Array<double>* W;
 
   /// Workspace vectors for partial regressions.
-  Array<double*> Wp;
+  Array< Array<double>* > Wp;
 
   /// Means of variables.
   Array<double> VariableMean;

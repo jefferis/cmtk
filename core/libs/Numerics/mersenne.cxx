@@ -135,10 +135,10 @@ uint32_t CRandomMersenne::BRandom() {
 }
 
 
-double CRandomMersenne::Random() {
+ap::real_value_type CRandomMersenne::Random() {
    // Output random float number in the interval 0 <= x < 1
    // Multiply by 2^(-32)
-   return (double)BRandom() * (1./(65536.*65536.));
+   return (ap::real_value_type)BRandom() * (1./(65536.*65536.));
 }
 
 
@@ -149,7 +149,7 @@ int CRandomMersenne::IRandom(int min, int max) {
       if (max == min) return min; else return 0x80000000;
    }
    // Multiply interval with random and truncate
-   int r = int((double)(uint32_t)(max - min + 1) * Random() + min); 
+   int r = int((ap::real_value_type)(uint32_t)(max - min + 1) * Random() + min); 
    if (r > max) r = max;
    return r;
 }

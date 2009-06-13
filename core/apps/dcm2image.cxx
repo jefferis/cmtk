@@ -170,7 +170,7 @@ ImageFileDCM::ImageFileDCM( const char* filename )
 
   std::cerr << filename << std::endl;
 
-  char *last_slash = strrchr( filename, '/' );
+  const char *last_slash = strrchr( filename, '/' );
   if ( last_slash ) 
     {
     fname = strdup(last_slash+1);
@@ -321,41 +321,48 @@ VolumeDCM::WriteToArchive( const std::string& fname )
   studyImageSet.SetImageDirectory( first->fpath );
   studyImageSet.SetMultiFile( true );
 
-  if ( Verbose )
-    {
-    cmtk::StdErr << "  Series:      " << first->SeriesUID << "\n";
-    cmtk::StdErr << "  Study:       " << first->StudyUID << "\n";
-    cmtk::StdErr << "  Acquisition: " << first->AcquisitionNumber << "\n";
-    cmtk::StdErr << "  TR / TE:     " << first->RepetitionTime << "ms /" << first->EchoTime << "ms\n";
-    cmtk::StdErr << "  Position:    " << first->ImagePositionPatient << "\n";
-    cmtk::StdErr << "  Orientation: " << first->ImageOrientationPatient << "\n";
-
-    if ( WithExtensionsGE )
-      {
-      cmtk::StdErr << "  GE Raw Data Type: " << first->GERawDataType << "\n";
-      }
-    }
-  
   for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
     {
     studyImageSet.push_back( (*it)->fname );
-    if ( Verbose )
-      cmtk::StdErr << (*it)->fname << " ";
     }
-  if ( Verbose )
-    cmtk::StdErr << "\n\n";
 
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeFromStudy::Read( &studyImageSet ) );
   if ( volume )
     {
     cmtk::VolumeIO::Write( volume, fname.c_str() );
-    
-    cmtk::StdErr.printf( "\r%s\t%3dx%3dx%3d pixels\t%.4fx%.4fx%.4f mm\n", fname.c_str(), 
-		      volume->Dims[0], volume->Dims[1], volume->Dims[2],
-		      volume->Delta[0], volume->Delta[1], volume->Delta[2] );
+    if ( Verbose )
+      {
+      cmtk::StdOut.printf( "\nOutput Fille:%s\nImage size: %3dx%3dx%3d pixels\nPixel size: %.4fx%.4fx%.4f mm\n\n", 
+			   fname.c_str(), volume->Dims[0], volume->Dims[1], volume->Dims[2], volume->Delta[0], volume->Delta[1], volume->Delta[2] );
+      }
     }
+  else
+    {
+    cmtk::StdOut << "No valid volume was read.\n";
+    }
+  
   if ( Verbose )
-    cmtk::StdErr << "\n\n";
+    {
+    cmtk::StdOut << "DICOM Information: \n";
+    cmtk::StdOut << "  Series:      " << first->SeriesUID << "\n";
+    cmtk::StdOut << "  Study:       " << first->StudyUID << "\n";
+    cmtk::StdOut << "  Acquisition: " << first->AcquisitionNumber << "\n";
+    cmtk::StdOut << "  TR / TE:     " << first->RepetitionTime << "ms /" << first->EchoTime << "ms\n";
+    cmtk::StdOut << "  Position:    " << first->ImagePositionPatient << "\n";
+    cmtk::StdOut << "  Orientation: " << first->ImageOrientationPatient << "\n";
+
+    if ( WithExtensionsGE )
+      {
+      cmtk::StdOut << "  GE Raw Data Type: " << first->GERawDataType << "\n";
+      }
+    
+    cmtk::StdOut << "\nImage List:\n";
+    for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
+      {
+      cmtk::StdOut << (*it)->fname << " ";
+      }
+    cmtk::StdOut << "\n====================================================\n";
+    }
 }
 
 class VolumeList : 
@@ -466,8 +473,8 @@ traverse_directory( VolumeList& studylist, const char *path, const char *wildcar
 	  {
 	  if ( !fnmatch(wildcard,entry_pointer->d_name,FNM_PERIOD) ) 
 	    {
-	    std::cout << "\r" << progress_chars[ ++progress % 4 ];
-	    std::cout.flush();
+	    cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ];
+	    cmtk::StdErr.flush();
 	    fileNameList.push_back( fullname );
 	    }
 	  }

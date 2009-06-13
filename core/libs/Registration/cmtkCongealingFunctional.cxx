@@ -125,7 +125,7 @@ CongealingFunctional<TXform,THistogramBinType>::Evaluate()
   double entropy = 0;
   unsigned int count = 0;
 
-  const size_t numberOfThreads = Threads::GetNumberOfThreads();
+  const size_t numberOfThreads = 1; //Threads::GetNumberOfThreads();
   ThreadParameterArray<Self,EvaluateThreadParameters> params( this, numberOfThreads );
   this->m_ThreadHistograms.resize( numberOfThreads );
   

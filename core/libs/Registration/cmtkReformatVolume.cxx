@@ -61,8 +61,8 @@ ReformatVolume::ReformatVolume()
   : m_UserDataType( TYPE_NONE ),
     ReferenceVolume( NULL ),
     FloatingVolume( NULL ),
-    AffineXform( NULL ),
-    WarpXform( NULL )
+    m_AffineXform( NULL ),
+    m_WarpXform( NULL )
 {
   Interpolation = cmtk::Interpolators::LINEAR;
 
@@ -102,13 +102,13 @@ ReformatVolume::SetFloatingVolume
 void
 ReformatVolume::SetAffineXform( AffineXform::SmartPtr& affineXform )
 {
-  AffineXform = affineXform;
+  this->m_AffineXform = affineXform;
 }
 
 void
 ReformatVolume::SetWarpXform( WarpXform::SmartPtr& warpXform )
 {
-  WarpXform = warpXform;
+  this->m_WarpXform = warpXform;
 }
 
 void
@@ -184,11 +184,11 @@ ReformatVolume::PlainReformat
 
   UniformVolumeInterpolatorBase::SmartPtr interpolator( this->CreateInterpolator( this->FloatingVolume ) );
   
-  if ( WarpXform ) 
+  if ( this->m_WarpXform ) 
     {
-    WarpXform->RegisterVolume( ReferenceVolume );
+    this->m_WarpXform->RegisterVolume( ReferenceVolume );
     
-    const SplineWarpXform::SmartPtr& splineWarp = SplineWarpXform::SmartPtr::DynamicCastFrom( WarpXform );
+    const SplineWarpXform::SmartPtr& splineWarp = SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_WarpXform );
     
     for ( int pY = 0; pY<DimsY; ++pY ) 
       {
@@ -208,14 +208,14 @@ ReformatVolume::PlainReformat
     } 
   else
     {
-    if ( ! this->AffineXform ) return result;
+    if ( ! this->m_AffineXform ) return result;
     
     for ( int pY = 0; pY<DimsY; ++pY ) 
       {
       for ( int pX = 0; pX<DimsX; ++pX, ++offset ) 
 	{	    
 	ReferenceVolume->GetGridLocation( pMod, pX, pY, plane );
-	this->AffineXform->ApplyInPlace( pMod );
+	this->m_AffineXform->ApplyInPlace( pMod );
 
 	if ( interpolator->GetDataAt( pMod, value ) )
 	  result->Set( value, offset );
@@ -237,7 +237,7 @@ ReformatVolume::GetTransformedReference
 {
   UniformVolume* result = NULL;
 
-  const SplineWarpXform* splineXform = dynamic_cast<const SplineWarpXform*>( WarpXform.GetPtr() );
+  const SplineWarpXform* splineXform = dynamic_cast<const SplineWarpXform*>( this->m_WarpXform.GetPtr() );
   if ( ! splineXform ) 
     {
     StdErr << "ERROR: ReformatVolume::GetTransformedReference supports spline warp only.\n";
@@ -444,7 +444,7 @@ ReformatVolume::GetTransformedReferenceJacobianAvg
   Types::Coordinate *const volumeOffset,
   const bool includeReferenceData )
 {
-  const SplineWarpXform* splineXform = dynamic_cast<const SplineWarpXform*>( WarpXform.GetPtr() );
+  const SplineWarpXform* splineXform = dynamic_cast<const SplineWarpXform*>( this->m_WarpXform.GetPtr() );
   if ( ! splineXform ) 
     {
     StdErr
@@ -641,7 +641,7 @@ ReformatVolume::CreateTransformedReference
 	  else
 	    u.XYZ[AXIS_X] = 0;
 	  
-	  v = this->WarpXform->Apply( u );
+	  v = this->m_WarpXform->Apply( u );
 	  for ( unsigned int axis = 0; axis < 3; ++axis ) 
 	    {
 	    bbFrom[axis] = std::min( bbFrom[axis], v.XYZ[axis] );

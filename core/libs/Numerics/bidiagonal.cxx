@@ -131,7 +131,7 @@ void rmatrixbd(ap::real_2d_array& a,
     int maxmn;
     int i;
 //    int j;
-    double ltau;
+    ap::real_value_type ltau;
 
     
     //
@@ -774,7 +774,7 @@ void tobidiagonal(ap::real_2d_array& a,
     int minmn;
     int maxmn;
     int i;
-    double ltau;
+    ap::real_value_type ltau;
     int mmip1;
     int nmi;
     int ip1;

@@ -70,17 +70,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ibetaf.h"
 
-double incompletebetafe(double a,
-     double b,
-     double x,
-     double big,
-     double biginv);
-double incompletebetafe2(double a,
-     double b,
-     double x,
-     double big,
-     double biginv);
-double incompletebetaps(double a, double b, double x, double maxgam);
+ap::real_value_type incompletebetafe(ap::real_value_type a,
+     ap::real_value_type b,
+     ap::real_value_type x,
+     ap::real_value_type big,
+     ap::real_value_type biginv);
+ap::real_value_type incompletebetafe2(ap::real_value_type a,
+     ap::real_value_type b,
+     ap::real_value_type x,
+     ap::real_value_type big,
+     ap::real_value_type biginv);
+ap::real_value_type incompletebetaps(ap::real_value_type a, ap::real_value_type b, ap::real_value_type x, ap::real_value_type maxgam);
 
 /*************************************************************************
 Incomplete beta integral
@@ -123,20 +123,20 @@ were excluded from these statistics.
 Cephes Math Library, Release 2.8:  June, 2000
 Copyright 1984, 1995, 2000 by Stephen L. Moshier
 *************************************************************************/
-double incompletebeta(double a, double b, double x)
+ap::real_value_type incompletebeta(ap::real_value_type a, ap::real_value_type b, ap::real_value_type x)
 {
-    double result;
-    double t;
-    double xc;
-    double w;
-    double y;
+    ap::real_value_type result;
+    ap::real_value_type t;
+    ap::real_value_type xc;
+    ap::real_value_type w;
+    ap::real_value_type y;
     int flag;
-    double sg;
-    double big;
-    double biginv;
-    double maxgam;
-    double minlog;
-    double maxlog;
+    ap::real_value_type sg;
+    ap::real_value_type big;
+    ap::real_value_type biginv;
+    ap::real_value_type maxgam;
+    ap::real_value_type minlog;
+    ap::real_value_type maxlog;
 
     big = 4.503599627370496e15;
     biginv = 2.22044604925031308085e-16;
@@ -277,29 +277,29 @@ With a = .5, b constrained to half-integer or integer values:
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1996, 2000 by Stephen L. Moshier
 *************************************************************************/
-double invincompletebeta(double a, double b, double y)
+ap::real_value_type invincompletebeta(ap::real_value_type a, ap::real_value_type b, ap::real_value_type y)
 {
-    double result;
-    double aaa = 0;
-    double bbb = 0;
-    double y0 = 0;
-    double d;
-    double yyy = 0;
-    double x = 0;
-    double x0;
-    double x1;
-    double lgm = 0;
-    double yp;
-    double di = 0;
-    double dithresh = 0;
-    double yl;
-    double yh;
-    double xt;
+    ap::real_value_type result;
+    ap::real_value_type aaa = 0;
+    ap::real_value_type bbb = 0;
+    ap::real_value_type y0 = 0;
+    ap::real_value_type d;
+    ap::real_value_type yyy = 0;
+    ap::real_value_type x = 0;
+    ap::real_value_type x0;
+    ap::real_value_type x1;
+    ap::real_value_type lgm = 0;
+    ap::real_value_type yp;
+    ap::real_value_type di = 0;
+    ap::real_value_type dithresh = 0;
+    ap::real_value_type yl;
+    ap::real_value_type yh;
+    ap::real_value_type xt;
     int i;
     int rflg = 0;
     int dir = 0;
     int nflg;
-    double s;
+    ap::real_value_type s;
     int mainlooppos;
     int ihalve;
     int ihalvecycle;
@@ -703,32 +703,32 @@ Continued fraction expansion #1 for incomplete beta integral
 Cephes Math Library, Release 2.8:  June, 2000
 Copyright 1984, 1995, 2000 by Stephen L. Moshier
 *************************************************************************/
-double incompletebetafe(double a,
-     double b,
-     double x,
-     double big,
-     double biginv)
+ap::real_value_type incompletebetafe(ap::real_value_type a,
+     ap::real_value_type b,
+     ap::real_value_type x,
+     ap::real_value_type big,
+     ap::real_value_type biginv)
 {
-    double result;
-    double xk;
-    double pk;
-    double pkm1;
-    double pkm2;
-    double qk;
-    double qkm1;
-    double qkm2;
-    double k1;
-    double k2;
-    double k3;
-    double k4;
-    double k5;
-    double k6;
-    double k7;
-    double k8;
-    double r;
-    double t;
-    double ans;
-    double thresh;
+    ap::real_value_type result;
+    ap::real_value_type xk;
+    ap::real_value_type pk;
+    ap::real_value_type pkm1;
+    ap::real_value_type pkm2;
+    ap::real_value_type qk;
+    ap::real_value_type qkm1;
+    ap::real_value_type qkm2;
+    ap::real_value_type k1;
+    ap::real_value_type k2;
+    ap::real_value_type k3;
+    ap::real_value_type k4;
+    ap::real_value_type k5;
+    ap::real_value_type k6;
+    ap::real_value_type k7;
+    ap::real_value_type k8;
+    ap::real_value_type r;
+    ap::real_value_type t;
+    ap::real_value_type ans;
+    ap::real_value_type thresh;
     int n;
 
     k1 = a;
@@ -817,33 +817,33 @@ for incomplete beta integral
 Cephes Math Library, Release 2.8:  June, 2000
 Copyright 1984, 1995, 2000 by Stephen L. Moshier
 *************************************************************************/
-double incompletebetafe2(double a,
-     double b,
-     double x,
-     double big,
-     double biginv)
+ap::real_value_type incompletebetafe2(ap::real_value_type a,
+     ap::real_value_type b,
+     ap::real_value_type x,
+     ap::real_value_type big,
+     ap::real_value_type biginv)
 {
-    double result;
-    double xk;
-    double pk;
-    double pkm1;
-    double pkm2;
-    double qk;
-    double qkm1;
-    double qkm2;
-    double k1;
-    double k2;
-    double k3;
-    double k4;
-    double k5;
-    double k6;
-    double k7;
-    double k8;
-    double r;
-    double t;
-    double ans;
-    double z;
-    double thresh;
+    ap::real_value_type result;
+    ap::real_value_type xk;
+    ap::real_value_type pk;
+    ap::real_value_type pkm1;
+    ap::real_value_type pkm2;
+    ap::real_value_type qk;
+    ap::real_value_type qkm1;
+    ap::real_value_type qkm2;
+    ap::real_value_type k1;
+    ap::real_value_type k2;
+    ap::real_value_type k3;
+    ap::real_value_type k4;
+    ap::real_value_type k5;
+    ap::real_value_type k6;
+    ap::real_value_type k7;
+    ap::real_value_type k8;
+    ap::real_value_type r;
+    ap::real_value_type t;
+    ap::real_value_type ans;
+    ap::real_value_type z;
+    ap::real_value_type thresh;
     int n;
 
     k1 = a;
@@ -933,18 +933,18 @@ Use when b*x is small and x not too close to 1.
 Cephes Math Library, Release 2.8:  June, 2000
 Copyright 1984, 1995, 2000 by Stephen L. Moshier
 *************************************************************************/
-double incompletebetaps(double a, double b, double x, double maxgam)
+ap::real_value_type incompletebetaps(ap::real_value_type a, ap::real_value_type b, ap::real_value_type x, ap::real_value_type maxgam)
 {
-    double result;
-    double s;
-    double t;
-    double u;
-    double v;
-    double n;
-    double t1;
-    double z;
-    double ai;
-    double sg;
+    ap::real_value_type result;
+    ap::real_value_type s;
+    ap::real_value_type t;
+    ap::real_value_type u;
+    ap::real_value_type v;
+    ap::real_value_type n;
+    ap::real_value_type t1;
+    ap::real_value_type z;
+    ap::real_value_type ai;
+    ap::real_value_type sg;
 
     ai = 1.0/a;
     u = (1.0-b)*x;

@@ -152,7 +152,7 @@ public:
   }
 
   /// Get Kullback-Leibler Divergence between intensity distributions in original and corrected image.
-  double GetOriginalToCorrectedImageKLD( const ap::real_1d_array& x );
+  ap::real_value_type GetOriginalToCorrectedImageKLD( const ap::real_1d_array& x );
   
 protected:
   /// Number of interleaved passes.
@@ -192,13 +192,13 @@ protected:
   UniformVolume::SmartPtr m_CorrectedImage;
 
   /// Corrected image Laplacian.
-  std::vector<double> m_CorrectedImageLaplacians;  
+  std::vector<ap::real_value_type> m_CorrectedImageLaplacians;  
 
   /** Compute norm of the corrected image Laplacian.
    * Side effect: this function first computes the Laplacian image, which is stored in
    * m_CorrectedImageLaplacian for use in the AddLaplacianGradientImage function.
    */
-  double ComputeCorrectedImageLaplacianNorm( 
+  ap::real_value_type ComputeCorrectedImageLaplacianNorm( 
     const ap::real_1d_array& correctedImagePixels //!< Current vector of corrected image pixels.
     );
   
@@ -206,7 +206,7 @@ protected:
   void AddLaplacianGradientImage( 
     ap::real_1d_array& g, 
     const ap::real_1d_array& correctedImagePixels,
-    const double weight ) const;
+    const ap::real_value_type weight ) const;
 
   /// Maximum neighborhood pixel values in the corrected image.
   ap::real_1d_array m_NeighorhoodMaxPixelValues;

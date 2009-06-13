@@ -345,7 +345,7 @@ CompareDeformations::GetZScores
   const unsigned int dataYsize = dataY.size();
   Array<Types::DataItem> valuesY( dataYsize );
 
-  Types::DataItem avgX, avgY, varX, varY;
+  Types::DataItem avgX, avgY, varX;
 
   for ( size_t idx = 0; idx < length; ++idx ) {
 

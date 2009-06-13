@@ -145,24 +145,24 @@ TTest
   
   ap::real_1d_array apValuesX;
   apValuesX.setbounds( 0, nValuesX-1 );
-  for (int i = 0; i < nValuesX; i++)
+  for (unsigned int i = 0; i < nValuesX; i++)
     apValuesX(i) = (double)(1.0 * valuesX[i]);
 
   ap::real_1d_array apValuesY;
   apValuesY.setbounds( 0, nValuesY-1 );
-  for (int i = 0; i < nValuesY; i++)
+  for (unsigned int i = 0; i < nValuesY; i++)
     apValuesY(i) = (double)(1.0 * valuesY[i]);
   
-  double t_temp, p1, p2, p3;
+  ap::real_value_type t_temp, p1, p2, p3;
 
   avgX = MathUtil::Mean<T>( nValuesX, valuesX );
   avgY = MathUtil::Mean<T>( nValuesY, valuesY );
   
   studentttest2( apValuesX, nValuesX, apValuesY, nValuesY, t_temp, p1, p2, p3 );
 
-  t = (T) t_temp;
+  t = static_cast<T>( t_temp );
 
-  return (T) p1; // probability
+  return static_cast<T>( p1 ); // probability
 
 }
 

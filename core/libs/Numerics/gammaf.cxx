@@ -70,7 +70,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gammaf.h"
 
-double gammastirf(double x);
+ap::real_value_type gammastirf(ap::real_value_type x);
 
 /*************************************************************************
 Gamma function
@@ -92,16 +92,16 @@ Cephes Math Library Release 2.8:  June, 2000
 Original copyright 1984, 1987, 1989, 1992, 2000 by Stephen L. Moshier
 Translated to AlgoPascal by Bochkanov Sergey (2005, 2006, 2007).
 *************************************************************************/
-double gamma(double x)
+ap::real_value_type gamma(ap::real_value_type x)
 {
-    double result;
-    double p;
-    double pp;
-    double q;
-    double qq;
-    double z;
+    ap::real_value_type result;
+    ap::real_value_type p;
+    ap::real_value_type pp;
+    ap::real_value_type q;
+    ap::real_value_type qq;
+    ap::real_value_type z;
     int i;
-    double sgngam;
+    ap::real_value_type sgngam;
 
     sgngam = 1;
     q = fabs(x);
@@ -217,21 +217,21 @@ Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1989, 1992, 2000 by Stephen L. Moshier
 Translated to AlgoPascal by Bochkanov Sergey (2005, 2006, 2007).
 *************************************************************************/
-double lngamma(double x, double& sgngam)
+ap::real_value_type lngamma(ap::real_value_type x, ap::real_value_type& sgngam)
 {
-    double result;
-    double a;
-    double b;
-    double c;
-    double p;
-    double q;
-    double u;
-    double w;
-    double z;
+    ap::real_value_type result;
+    ap::real_value_type a;
+    ap::real_value_type b;
+    ap::real_value_type c;
+    ap::real_value_type p;
+    ap::real_value_type q;
+    ap::real_value_type u;
+    ap::real_value_type w;
+    ap::real_value_type z;
     int i;
-    double logpi;
-    double ls2pi;
-    double tmp;
+    ap::real_value_type logpi;
+    ap::real_value_type ls2pi;
+    ap::real_value_type tmp;
 
     sgngam = 1;
     logpi = 1.14472988584940017414;
@@ -335,13 +335,13 @@ double lngamma(double x, double& sgngam)
 }
 
 
-double gammastirf(double x)
+ap::real_value_type gammastirf(ap::real_value_type x)
 {
-    double result;
-    double y;
-    double w;
-    double v;
-    double stir;
+    ap::real_value_type result;
+    ap::real_value_type y;
+    ap::real_value_type w;
+    ap::real_value_type v;
+    ap::real_value_type stir;
 
     w = 1/x;
     stir = 7.87311395793093628397E-4;

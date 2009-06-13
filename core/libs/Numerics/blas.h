@@ -65,7 +65,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ap.h"
 
-double vectornorm2(const ap::real_1d_array& x, int i1, int i2);
+ap::real_value_type vectornorm2(const ap::real_1d_array& x, int i1, int i2);
 
 
 int vectoridxabsmax(const ap::real_1d_array& x, int i1, int i2);
@@ -77,7 +77,7 @@ int columnidxabsmax(const ap::real_2d_array& x, int i1, int i2, int j);
 int rowidxabsmax(const ap::real_2d_array& x, int j1, int j2, int i);
 
 
-double upperhessenberg1norm(const ap::real_2d_array& a,
+ap::real_value_type upperhessenberg1norm(const ap::real_2d_array& a,
      int i1,
      int i2,
      int j1,
@@ -126,14 +126,14 @@ void matrixvectormultiply(const ap::real_2d_array& a,
      const ap::real_1d_array& x,
      int ix1,
      int ix2,
-     double alpha,
+     ap::real_value_type alpha,
      ap::real_1d_array& y,
      int iy1,
      int iy2,
-     double beta);
+     ap::real_value_type beta);
 
 
-double pythag2(double x, double y);
+ap::real_value_type pythag2(ap::real_value_type x, ap::real_value_type y);
 
 
 void matrixmatrixmultiply(const ap::real_2d_array& a,
@@ -148,13 +148,13 @@ void matrixmatrixmultiply(const ap::real_2d_array& a,
      int bj1,
      int bj2,
      bool transb,
-     double alpha,
+     ap::real_value_type alpha,
      ap::real_2d_array& c,
      int ci1,
      int ci2,
      int cj1,
      int cj2,
-     double beta,
+     ap::real_value_type beta,
      ap::real_1d_array& work);
 
 

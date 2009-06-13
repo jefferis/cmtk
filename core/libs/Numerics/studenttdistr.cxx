@@ -111,16 +111,16 @@ arithmetic   domain     # trials      peak         rms
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1995, 2000 by Stephen L. Moshier
 *************************************************************************/
-double studenttdistribution(int k, double t)
+ap::real_value_type studenttdistribution(int k, ap::real_value_type t)
 {
-    double result;
-    double x;
-    double rk;
-    double z;
-    double f;
-    double tz;
-    double p;
-    double xsqk;
+    ap::real_value_type result;
+    ap::real_value_type x;
+    ap::real_value_type rk;
+    ap::real_value_type z;
+    ap::real_value_type f;
+    ap::real_value_type tz;
+    ap::real_value_type p;
+    ap::real_value_type xsqk;
     int j;
 
     ap::ap_error::make_assertion(k>0, "Domain error in StudentTDistribution");
@@ -204,12 +204,12 @@ arithmetic   domain     # trials      peak         rms
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1995, 2000 by Stephen L. Moshier
 *************************************************************************/
-double invstudenttdistribution(int k, double p)
+ap::real_value_type invstudenttdistribution(int k, ap::real_value_type p)
 {
-    double result;
-    double t;
-    double rk;
-    double z;
+    ap::real_value_type result;
+    ap::real_value_type t;
+    ap::real_value_type rk;
+    ap::real_value_type z;
     int rflg;
 
     ap::ap_error::make_assertion(k>0&&p>0&&p<1, "Domain error in InvStudentTDistribution");

@@ -53,8 +53,8 @@ cmtk
 VoxelRegistration::VoxelRegistration () 
   : InitialXform( NULL ),
     InitialXformIsInverse( false ),
-    Xform( NULL ),
-    Optimizer( NULL )
+    m_Xform( NULL ),
+    m_Optimizer( NULL )
 { 
   DataClass_1 = DataClass_2 = DATACLASS_GREY;
 
@@ -117,7 +117,7 @@ VoxelRegistration::Register ()
     // calling DoneResolution().
     //    nextFunctional->Reference();
 
-    Optimizer->SetFunctional( nextFunctional );
+    this->m_Optimizer->SetFunctional( nextFunctional );
 
     int doneResolution = 0;
     while ( ! doneResolution && ( irq == CALLBACK_OK )  ) 
@@ -129,14 +129,14 @@ VoxelRegistration::Register ()
 	{
 	Types::Coordinate effectiveAccuracy = (index == NumResolutionLevels) ? std::max<Types::Coordinate>( Accuracy, currentExploration/1024 ) : Accuracy;
 	
-	irq = Optimizer->Optimize( *v, currentExploration, effectiveAccuracy );
-	Xform->SetParamVector( *v );
+	irq = this->m_Optimizer->Optimize( *v, currentExploration, effectiveAccuracy );
+	this->m_Xform->SetParamVector( *v );
 	}
       
       doneResolution = this->DoneResolution( v, nextFunctional, index, NumResolutionLevels );
       }
     
-    Optimizer->SetFunctional( Functional::SmartPtr::Null );
+    this->m_Optimizer->SetFunctional( Functional::SmartPtr::Null );
     
     currentExploration *= 0.5;
     ++index;
@@ -152,7 +152,7 @@ void
 VoxelRegistration::DoneRegistration( const CoordinateVector* v )
 {
   if ( v )
-    Xform->SetParamVector( *v );
+    this->m_Xform->SetParamVector( *v );
 }
 
 void

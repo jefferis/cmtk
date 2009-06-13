@@ -46,7 +46,7 @@ cmtk
 QtWindowLevelControls::QtWindowLevelControls
 ( QWidget *const parent, const char* name )
   : QWidget( parent, name ),
-    Study( NULL )
+    m_Study( NULL )
 {
   Layout = new Q3VBoxLayout( this );
   Layout->setContentsMargins( 5, 5, 5, 5 );
@@ -92,13 +92,13 @@ QtWindowLevelControls::QtWindowLevelControls
 void
 QtWindowLevelControls::slotSetStudy( Study::SmartPtr& study )
 {
-  Study = study;
-  RangeFrom = Study->GetMinimumValue();
-  RangeTo = Study->GetMaximumValue();
+  this->m_Study = study;
+  RangeFrom = this->m_Study->GetMinimumValue();
+  RangeTo = this->m_Study->GetMaximumValue();
 
   RangeWidth = RangeTo - RangeFrom;
 
-  const Volume* volume = Study->GetVolume();
+  const Volume* volume = this->m_Study->GetVolume();
   if ( volume ) 
     {
     const TypedArray* data = volume->GetData();
@@ -116,10 +116,10 @@ QtWindowLevelControls::slotSetStudy( Study::SmartPtr& study )
 void 
 QtWindowLevelControls::slotSwitchModeWL( int modeWindowLevel )
 {
-  if ( Study.IsNull() ) return;
+  if ( !this->m_Study ) return;
   
-  const float black = Study->GetBlack();
-  const float white = Study->GetWhite();
+  const float black = this->m_Study->GetBlack();
+  const float white = this->m_Study->GetWhite();
   
   unsigned int precision = 0;
   
@@ -156,7 +156,7 @@ QtWindowLevelControls::slotSwitchModeWL( int modeWindowLevel )
 void
 QtWindowLevelControls::slotControlsChanged()
 {
-  if ( Study.IsNull() ) return;
+  if ( !this->m_Study ) return;
 
   float black, white;
   if ( WindowLevelCheckBox->isChecked() ) 
@@ -169,23 +169,23 @@ QtWindowLevelControls::slotControlsChanged()
     black = BlackWindowSlider->GetValue();
     white = WhiteLevelSlider->GetValue();
     }
-  
-  float gamma = GammaSlider->GetValue();
 
-  Study->SetBlack( black );
-  Study->SetWhite( white );
-  Study->SetGamma( gamma );
+  const float gamma = GammaSlider->GetValue();
+ 
+  this->m_Study->SetBlack( black );
+  this->m_Study->SetWhite( white );
+  this->m_Study->SetGamma( gamma );
 
-  emit colormap( Study );
+  emit colormap( this->m_Study );
 }
 
 void
 QtWindowLevelControls::slotSelectColormap( int colormapIndex )
 {
-  if ( !Study.IsNull() )
+  if ( !this->m_Study )
     {
-    Study->SetStandardColormap( colormapIndex );
-    emit colormap( Study );
+    this->m_Study->SetStandardColormap( colormapIndex );
+    emit colormap( this->m_Study );
     }
 }
 

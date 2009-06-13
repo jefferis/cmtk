@@ -91,6 +91,6 @@ private:
   std::vector<float> m_VecQ;
 };
 
-}; // namespace cmtk
+} // namespace cmtk
 
 #endif // #ifndef __cmtkLabelCombinationSTAPLE_h_included_

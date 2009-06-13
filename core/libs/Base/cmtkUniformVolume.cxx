@@ -557,8 +557,8 @@ UniformVolume
 {
   const AffineXform::MatrixType& matrix = this->m_IndexToPhysicalMatrix;
   return Vector3D( i * matrix[0][0] + j * matrix[1][0] + k * matrix[2][0] + matrix[3][0],
-		      i * matrix[0][1] + j * matrix[1][1] + k * matrix[2][1] + matrix[3][1],
-		      i * matrix[0][2] + j * matrix[1][2] + k * matrix[2][2] + matrix[3][2] );  
+		   i * matrix[0][1] + j * matrix[1][1] + k * matrix[2][1] + matrix[3][1],
+		   i * matrix[0][2] + j * matrix[1][2] + k * matrix[2][2] + matrix[3][2] );  
 }
 
 } // namespace cmtk

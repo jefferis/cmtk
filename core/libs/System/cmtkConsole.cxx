@@ -45,7 +45,8 @@ cmtk
 
 /** \addtogroup System */
 //@{
-Console StdErr;
+Console StdErr( std::cerr );
+Console StdOut( std::cout );
 
 Console& 
 Console::FormatText( const std::string& text, const size_t margin, const size_t width, const int firstLine )
@@ -114,7 +115,7 @@ Console::printf( const char* format, ... )
   this->Indent();
 
   this->m_MutexLock.Lock();
-  std::cerr << buffer;
+  this->m_Stream << buffer;
   this->m_MutexLock.Unlock();
 #endif
 }

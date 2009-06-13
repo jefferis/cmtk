@@ -169,7 +169,7 @@ BestDirectionOptimizer::Optimize
 	else
 	  {
 	  --levelRepeatCounter;
-	  update = (levelRepeatCounter > 0) && this->Functional->Wiggle();
+	  update = (levelRepeatCounter > 0) && this->m_Functional->Wiggle();
 	  }
 	}
       }

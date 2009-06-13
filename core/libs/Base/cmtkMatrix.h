@@ -75,12 +75,12 @@ public:
   /// Element pointer type.
   typedef typename Superclass::ElementPointerType* ElementPointerType;
 
-  typename Self::ElementPointerType operator[]( const size_t idx )
+  typename Self::ElementPointerType& operator[]( const size_t idx )
   {
     return this->m_SubMatrixArray[idx];
   }
   
-  const typename Self::ElementPointerType operator[]( const size_t idx ) const
+  const typename Self::ElementPointerType& operator[]( const size_t idx ) const
   {
     return this->m_SubMatrixArray[idx];
   }

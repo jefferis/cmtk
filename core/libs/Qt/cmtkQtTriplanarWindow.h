@@ -46,6 +46,7 @@
 #include <qlabel.h>
 #include <qtabwidget.h>
 #include <Q3GridLayout>
+#include <QActionGroup>
 
 #include <cmtkMacros.h>
 #include <cmtkStudy.h>
@@ -81,13 +82,13 @@ protected:
   cmtkGetSetMacro(Study::SmartPtr,Study);
 
   /// Use (linear) interpolation when rendering slices.
-  igsGetSetMacro(bool,Interpolate);
+  QAction* m_InterpolateAction;
 
   /// Use (linear) interpolation when rendering slices.
-  igsGetSetMacro(bool,CrosshairMode);
+  QAction* m_CrosshairAction;
 
   /// Fill Null data areas with a checkerbox pattern
-  igsGetSetMacro(bool,CheckerboxMode);
+  QAction* m_CheckerboxAction;
 
   /// Zoom factor in percent.
   int m_ZoomFactor;
@@ -98,6 +99,9 @@ protected:
   /// Batch mode flag: if set, no dialog boxes are shown.
   bool m_BatchMode;
 
+  /// Action group for zoom factor adjustment.
+  QActionGroup* m_ZoomActions;
+
 public slots:
   void slotDataChanged( Study::SmartPtr& study );
   void slotColormapChanged( Study::SmartPtr& study );
@@ -105,7 +109,19 @@ public slots:
   void slotSwitchToStudyInternal( Study::SmartPtr& study );
 
 protected slots:
-  void slotViewMenuCmd( int command );
+  void slotView25();
+  void slotView33();
+  void slotView50();
+  void slotView100();
+  void slotView200();
+  void slotView300();
+  void slotView400();
+  void slotView500();
+
+  void slotViewInterpolation();
+  void slotViewCrosshair();
+  void slotViewCheckerbox();
+
   void slotExportMenuCmd( int command );
   void slotRenderAll();
 
@@ -115,6 +131,7 @@ protected slots:
   void slotGoToPixel( const QString& xyz );
   void slotGoToLocation( const QString& xyz );
   void slotExportImage( const QString& filename, const int command );
+  void slotSetInterpolateMode( const bool mode );
   void slotSetCrosshairMode( const bool mode );
   void slotSetCheckerboardMode( const bool mode );
   void slotSetZoom( const int zoomPercent );

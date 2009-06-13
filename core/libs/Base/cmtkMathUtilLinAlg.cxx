@@ -146,43 +146,73 @@ template void ComputeEigenvalues<float>( const Matrix2D<float>& matrix, Array<fl
 template void ComputeEigenvalues<double>( const Matrix2D<double>& matrix, Array<double>& eigenvalues );
 
 void 
-SVD( double **U, size_t m, size_t n, double *W, double **V )
+SVD( Matrix2D<double> *U, size_t m, size_t n, Array<double> *W, Matrix2D<double> *V )
 {
   ap::real_2d_array apA;
   apA.setbounds(0, m-1, 0, n-1);
   for (size_t j = 0; j < n; j++)
     for (size_t i = 0; i < m; i++)
-      apA(i,j) = (double) U[i+1][j+1];
+      apA(i,j) = (double) (*U)[i][j];
 
   ap::real_1d_array w;
   ap::real_2d_array u;
   ap::real_2d_array vt;
-  w.setbounds( 0, n-1 );
-  u.setbounds( 0, m-1, 0, n-1 );
-  vt.setbounds( 0, m-1, 0, n-1 );
 
   rmatrixsvd( apA, m, n, 
               true /* U needed */, 
               true /* V needed */, 
-              1 /*medium-level memory usage */, 
+              2 /*max-level memory usage */, 
               w, u, vt);
 
   /* Put u in U */
   for (size_t j = 0; j < n; j++)
     for (size_t i = 0; i < m; i++)
-      U[i+1][j+1] = u(i,j);
+      (*U)[i][j] = u(i,j);
   
   /* Put w in W */
   for (size_t i = 0; i < n; i++)
-    W[i+1] = w(i);
+    (*W)[i] = w(i);
   
   /* Un-transpose vt and put it in V */
   for (size_t j = 0; j < n; j++)
     for (size_t i = 0; i < n; i++)
-      V[i+1][j+1] = vt(j,i);
+      (*V)[i][j] = vt(j,i);
 
 }
 
+/** TODO: move this someplace more logical than the linear-algebra module
+ */
+void
+SVDLinearRegression( Matrix2D<double> *U, size_t m, size_t n, Array<double> *W, Matrix2D<double> *V, double *b, double *lm_params )
+{
+    // From alglib linear regression:
+    // Take the inverses of the singular values, setting the inverse 
+    // to 0 if the sv is close to 0 (tolerance controlled by epstol)
+    double epstol = 1000;
+    ap::real_1d_array svi;
+    svi.setbounds( 0, n-1 );
+    for( size_t i = 0; i < n; i++ )
+      if( (*W)[i] > epstol*ap::machineepsilon * (*W)[0] )
+        svi(i) = 1 / (*W)[i];
+      else
+        svi(i) = 0;
+
+    // Calculate linear model parameters following Heath, Ch. 3.6
+    // (Scientific Computing: An Introductory Survey, 2nd Ed., 2002)
+    for ( size_t i = 0; i < n; i++ )
+      lm_params[i] = 0.0;
+    double ut_times_b; 
+    
+    for ( size_t i = 0; i < n; i++ )
+      {
+      ut_times_b = 0.0;
+      for ( size_t j = 0; j < m; j++ )
+        ut_times_b += (*U)[j][i] * b[j];
+      ut_times_b *= svi(i);
+      for ( size_t j = 0; j < n; j++ )
+        lm_params[j] += ut_times_b * (*V)[j][i]; 
+      }
+}
 
 /////////////////////////////////////////////////////////////////////
 // HELPERS

@@ -112,7 +112,7 @@ AffineRegistration::InitRegistration ()
     }
   
   // explicit cast needed for MIPSpro comp.
-  Xform = Xform::SmartPtr::DynamicCastFrom( affineXform );
+  this->m_Xform = Xform::SmartPtr::DynamicCastFrom( affineXform );
   
   Vector3D center = fltVolume->GetCenterCropRegion();
   affineXform->ChangeCenter( center.XYZ );
@@ -164,8 +164,8 @@ AffineRegistration::InitRegistration ()
     fltVolume = nextMod;
     }
 
-  Optimizer = Optimizer::SmartPtr( new BestNeighbourOptimizer( OptimizerStepFactor ) );   
-  Optimizer->SetCallback( Callback );
+  this->m_Optimizer = Optimizer::SmartPtr( new BestNeighbourOptimizer( OptimizerStepFactor ) );   
+  this->m_Optimizer->SetCallback( Callback );
   
   // default to rigid transformation
   if ( NumberDOFs.empty() )
@@ -192,7 +192,7 @@ AffineRegistration::EnterResolution
       NumberDOFsIterator = NumberDOFs.begin();
     }
 
-  AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( Xform );
+  AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( this->m_Xform );
   if ( affineXform ) 
     {
     int numberDOFs = *NumberDOFsIterator;
@@ -221,7 +221,7 @@ AffineRegistration::DoneResolution
 AffineXform::SmartPtr
 AffineRegistration::GetTransformation() const
 {
-  AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( Xform );
+  AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( this->m_Xform );
   if ( affineXform && SwitchVolumes ) 
     {
     return affineXform->GetInverse();

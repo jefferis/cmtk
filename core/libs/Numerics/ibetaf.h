@@ -117,7 +117,7 @@ were excluded from these statistics.
 Cephes Math Library, Release 2.8:  June, 2000
 Copyright 1984, 1995, 2000 by Stephen L. Moshier
 *************************************************************************/
-double incompletebeta(double a, double b, double x);
+ap::real_value_type incompletebeta(ap::real_value_type a, ap::real_value_type b, ap::real_value_type x);
 
 
 /*************************************************************************
@@ -148,7 +148,7 @@ With a = .5, b constrained to half-integer or integer values:
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1996, 2000 by Stephen L. Moshier
 *************************************************************************/
-double invincompletebeta(double a, double b, double y);
+ap::real_value_type invincompletebeta(ap::real_value_type a, ap::real_value_type b, ap::real_value_type y);
 
 
 #endif

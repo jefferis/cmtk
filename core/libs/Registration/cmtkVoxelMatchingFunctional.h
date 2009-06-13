@@ -97,7 +97,7 @@ protected:
   int ReferenceCropTo[3];
 
   /// Optional list of matched landmarks.
-  igsGetSetMacro(MatchedLandmarkList::SmartPtr,MatchedLandmarkList);
+  cmtkGetSetMacro(MatchedLandmarkList::SmartPtr,MatchedLandmarkList);
 
   /// Weight for the landmark registration error relative to image similarity.
   igsGetSetMacro(Self::ReturnType,LandmarkErrorWeight);
@@ -110,7 +110,7 @@ public:
    *@param floating The floating (i.e. transformed) volume.
    */
   VoxelMatchingFunctional( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating )
-    : MatchedLandmarkList( NULL )
+    : m_MatchedLandmarkList( NULL )
   {
     this->InitFloating( floating );
     this->InitReference( reference );
@@ -122,7 +122,7 @@ public:
    * internal data structures.
    */
   VoxelMatchingFunctional ( VoxelMatchingFunctional& source ) : 
-    MatchedLandmarkList( source.MatchedLandmarkList )
+    m_MatchedLandmarkList( source.m_MatchedLandmarkList )
   {
     this->InitFloating( source.FloatingGrid );
     this->InitReference( source.ReferenceGrid );
@@ -134,7 +134,7 @@ public:
    * internal data structures.
    */
   VoxelMatchingFunctional ( VoxelMatchingFunctional *const source ) : 
-    MatchedLandmarkList( source->MatchedLandmarkList )
+    m_MatchedLandmarkList( source->m_MatchedLandmarkList )
   {
     this->InitFloating( source->FloatingGrid );
     this->InitReference( source->ReferenceGrid );

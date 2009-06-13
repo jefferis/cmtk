@@ -306,10 +306,10 @@ private:
   UniformVolume* MakeTargetVolume() const;
 
   /// Pointer to the affine transformation of the floating volume.
-  AffineXform::SmartPtr AffineXform;
+  AffineXform::SmartPtr m_AffineXform;
   
   /// Pointer to the local deformation of the reference grid.
-  WarpXform::SmartPtr WarpXform;
+  WarpXform::SmartPtr m_WarpXform;
 
   /** Maximum value in reference and floating image.
    * This field is updated by both SetXXXVolume methods. Its value is used for

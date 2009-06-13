@@ -121,18 +121,17 @@ VoxelMatchingElasticFunctional_WarpTemplate<W>::WeightedDerivative
     }
   else
     {
-    if ( MatchedLandmarkList.GetPtr() ) 
+    if ( this->m_MatchedLandmarkList.GetPtr() ) 
       {
       double lowerMSD, upperMSD;
-      warp->GetDerivativeLandmarksMSD( lowerMSD, upperMSD, MatchedLandmarkList, param, step );
+      warp->GetDerivativeLandmarksMSD( lowerMSD, upperMSD, this->m_MatchedLandmarkList, param, step );
       lower -= LandmarkErrorWeight * lowerMSD;
       upper -= LandmarkErrorWeight * upperMSD;
       }
     if ( InverseTransformation ) 
       {
       double lowerIC, upperIC;
-      warp->GetDerivativeInverseConsistencyError
-	( lowerIC, upperIC, this->InverseTransformation, this->ReferenceGrid, &(this->VolumeOfInfluence[param]), param, step );
+      warp->GetDerivativeInverseConsistencyError( lowerIC, upperIC, this->InverseTransformation, this->ReferenceGrid, &(this->VolumeOfInfluence[param]), param, step );
       lower -= InverseConsistencyWeight * lowerIC;
       upper -= InverseConsistencyWeight * upperIC;
       }

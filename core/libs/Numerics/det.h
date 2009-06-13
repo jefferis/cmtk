@@ -84,7 +84,7 @@ Result: matrix determinant.
   -- ALGLIB --
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
-double rmatrixludet(const ap::real_2d_array& a,
+ap::real_value_type rmatrixludet(const ap::real_2d_array& a,
      const ap::integer_1d_array& pivots,
      int n);
 
@@ -101,14 +101,14 @@ Result: determinant of matrix A.
   -- ALGLIB --
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
-double rmatrixdet(ap::real_2d_array a, int n);
+ap::real_value_type rmatrixdet(ap::real_2d_array a, int n);
 
 
 /*************************************************************************
 Obsolete 1-based subroutine.
 See RMatrixDetLU for 0-based replacement.
 *************************************************************************/
-double determinantlu(const ap::real_2d_array& a,
+ap::real_value_type determinantlu(const ap::real_2d_array& a,
      const ap::integer_1d_array& pivots,
      int n);
 
@@ -117,7 +117,7 @@ double determinantlu(const ap::real_2d_array& a,
 Obsolete 1-based subroutine.
 See RMatrixDet for 0-based replacement.
 *************************************************************************/
-double determinant(ap::real_2d_array a, int n);
+ap::real_value_type determinant(ap::real_2d_array a, int n);
 
 
 #endif

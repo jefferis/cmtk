@@ -28,6 +28,9 @@
 //  $LastChangedBy$
 //
 */
+
+#include <ap.h>
+
 /*****************************   randomc.h   **********************************
 * Author:        Agner Fog
 * Date created:  1997
@@ -74,7 +77,7 @@
 * array will influence the sequence of random numbers generated. NumSeeds 
 * is the number of entries in the seeds[] array.
 *
-* double Random();
+* ap::real_value_type Random();
 * Gives a floating point random number in the interval 0 <= x < 1.
 * The resolution is 32 bits in CRandomMother and CRandomMersenne, and
 * 52 bits in CRandomSFMT.
@@ -201,7 +204,7 @@ public:
    void RandomInitByArray(int const seeds[], int NumSeeds); // Seed by more than 32 bits
    int IRandom (int min, int max);     // Output random integer
    int IRandomX(int min, int max);     // Output random integer, exact
-   double Random();                    // Output random float
+   ap::real_value_type Random();                    // Output random float
    uint32_t BRandom();                 // Output random bits
 private:
    void Init0(int seed);               // Basic initialization procedure
@@ -216,7 +219,7 @@ class CRandomMother {                  // Encapsulate random number generator
 public:
    void RandomInit(int seed);          // Initialization
    int IRandom(int min, int max);      // Get integer random number in desired interval
-   double Random();                    // Get floating point random number
+   ap::real_value_type Random();                    // Get floating point random number
    uint32_t BRandom();                 // Output random bits
    CRandomMother(int seed) {           // Constructor
       RandomInit(seed);}

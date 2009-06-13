@@ -149,7 +149,7 @@ ElasticRegistration::InitRegistration ()
     InitialWarpXform->SetFastMode( FastMode );
     InitialWarpXform->SetParametersActive( RestrictToAxes );
     // MIPSpro needs explicit.
-    Xform = Xform::SmartPtr::DynamicCastFrom( InitialWarpXform );
+    this->m_Xform = Xform::SmartPtr::DynamicCastFrom( InitialWarpXform );
     } 
   else
     {
@@ -159,7 +159,7 @@ ElasticRegistration::InitRegistration ()
       InverseWarpXform = WarpXform::SmartPtr( this->MakeWarpXform( fltVolume->Size, affineXform ) );
 
     // MIPSpro needs explicit:
-    Xform = Xform::SmartPtr::DynamicCastFrom( warpXform ); 
+    this->m_Xform = Xform::SmartPtr::DynamicCastFrom( warpXform ); 
     }
   
   if ( UseOriginalData )
@@ -227,25 +227,25 @@ ElasticRegistration::InitRegistration ()
     fltVolume = nextMod;
   }
   
-  switch ( Algorithm ) {
-  case 0:
-    Optimizer = Optimizer::SmartPtr
-      ( new BestNeighbourOptimizer( OptimizerStepFactor ) ); 
-    break;
-  case 1:
-  case 2:
-    Optimizer = Optimizer::SmartPtr( NULL );
-    break;
-  case 3: {
-    BestDirectionOptimizer *optimizer = 
-      new BestDirectionOptimizer( OptimizerStepFactor ); 
+  switch ( Algorithm ) 
+    {
+    case 0:
+      this->m_Optimizer = Optimizer::SmartPtr( new BestNeighbourOptimizer( OptimizerStepFactor ) ); 
+      break;
+    case 1:
+    case 2:
+      this->m_Optimizer = Optimizer::SmartPtr( NULL );
+      break;
+    case 3: 
+    {
+    BestDirectionOptimizer *optimizer = new BestDirectionOptimizer( OptimizerStepFactor ); 
     optimizer->SetUseMaxNorm( UseMaxNorm );
-    Optimizer = Optimizer::SmartPtr( optimizer );
+    this->m_Optimizer = Optimizer::SmartPtr( optimizer );
     break;
-  }
-  }
-
-  Optimizer->SetCallback( Callback );
+    }
+    }
+  
+  this->m_Optimizer->SetCallback( Callback );
   return irq;
 }
 
@@ -310,7 +310,7 @@ ElasticRegistration::EnterResolution
 ( CoordinateVector::SmartPtr& v, Functional::SmartPtr& functional,
   const int idx, const int total ) 
 {
-  WarpXform::SmartPtr warpXform = WarpXform::SmartPtr::DynamicCastFrom( this->Xform );
+  WarpXform::SmartPtr warpXform = WarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
 
   float effGridEnergyWeight = this->GridEnergyWeight;
   float effJacobianConstraintWeight = this->JacobianConstraintWeight;
@@ -381,7 +381,7 @@ ElasticRegistration::DoneResolution
       {      
       if ( (!DelayRefineGrid) || RefineDelayed || ( idx == total ) ) 
 	{
-	WarpXform::SmartPtr warpXform = WarpXform::SmartPtr::DynamicCastFrom( Xform );
+	WarpXform::SmartPtr warpXform = WarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
 	if ( warpXform ) 
 	  {
 	  warpXform->Refine( 2 );

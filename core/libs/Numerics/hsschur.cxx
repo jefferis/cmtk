@@ -85,18 +85,18 @@ void internalauxschur(bool wantt,
      ap::real_1d_array& workc1,
      ap::real_1d_array& works1,
      int& info);
-void aux2x2schur(double& a,
-     double& b,
-     double& c,
-     double& d,
-     double& rt1r,
-     double& rt1i,
-     double& rt2r,
-     double& rt2i,
-     double& cs,
-     double& sn);
-double extschursign(double a, double b);
-int extschursigntoone(double b);
+void aux2x2schur(ap::real_value_type& a,
+     ap::real_value_type& b,
+     ap::real_value_type& c,
+     ap::real_value_type& d,
+     ap::real_value_type& rt1r,
+     ap::real_value_type& rt1i,
+     ap::real_value_type& rt2r,
+     ap::real_value_type& rt2i,
+     ap::real_value_type& cs,
+     ap::real_value_type& sn);
+ap::real_value_type extschursign(ap::real_value_type a, ap::real_value_type b);
+int extschursigntoone(ap::real_value_type b);
 
 /*************************************************************************
 Subroutine performing  the  Schur  decomposition  of  a  matrix  in  upper
@@ -181,14 +181,14 @@ void internalschurdecomposition(ap::real_2d_array& h,
     int nr;
     int ns;
     int nv;
-    double absw;
-    double ovfl;
-    double smlnum;
-    double tau;
-    double temp;
-    double tst1;
-    double ulp;
-    double unfl;
+    ap::real_value_type absw;
+    ap::real_value_type ovfl;
+    ap::real_value_type smlnum;
+    ap::real_value_type tau;
+    ap::real_value_type temp;
+    ap::real_value_type tst1;
+    ap::real_value_type ulp;
+    ap::real_value_type unfl;
     ap::real_2d_array s;
     ap::real_1d_array v;
     ap::real_1d_array vv;
@@ -200,13 +200,13 @@ void internalschurdecomposition(ap::real_2d_array& h,
     bool initz;
     bool wantt;
     bool wantz;
-    double cnst;
+    ap::real_value_type cnst;
     bool failflag;
     int p1;
     int p2;
 //    int p3;
 //    int p4;
-    double vt;
+    ap::real_value_type vt;
 
     
     //
@@ -300,7 +300,7 @@ void internalschurdecomposition(ap::real_2d_array& h,
     {
         
         //
-        // Use the standard double-shift algorithm
+        // Use the standard ap::real_value_type-shift algorithm
         //
         internalauxschur(wantt, wantz, n, 1, n, h, wr, wi, 1, n, z, work, workv3, workc1, works1, info);
         
@@ -634,7 +634,7 @@ void internalschurdecomposition(ap::real_2d_array& h,
         
         //
         // A submatrix of order <= MAXB in rows and columns L to I has split
-        // off. Use the double-shift QR algorithm to handle it.
+        // off. Use the ap::real_value_type-shift QR algorithm to handle it.
         //
         internalauxschur(wantt, wantz, n, l, i, h, wr, wi, 1, n, z, work, workv3, workc1, works1, info);
         if( info>0 )
@@ -681,46 +681,46 @@ void internalauxschur(bool wantt,
     int nh;
     int nr;
     int nz;
-    double ave;
-    double cs;
-    double disc;
-    double h00;
-    double h10;
-    double h11;
-    double h12;
-    double h21;
-    double h22;
-    double h33;
-    double h33s;
-    double h43h34;
-    double h44;
-    double h44s;
-    double ovfl;
-    double s;
-    double smlnum;
-    double sn;
-    double sum;
-    double t1;
-    double t2;
-    double t3;
-    double tst1;
-    double unfl;
-    double v1;
-    double v2;
-    double v3;
+    ap::real_value_type ave;
+    ap::real_value_type cs;
+    ap::real_value_type disc;
+    ap::real_value_type h00;
+    ap::real_value_type h10;
+    ap::real_value_type h11;
+    ap::real_value_type h12;
+    ap::real_value_type h21;
+    ap::real_value_type h22;
+    ap::real_value_type h33;
+    ap::real_value_type h33s;
+    ap::real_value_type h43h34;
+    ap::real_value_type h44;
+    ap::real_value_type h44s;
+    ap::real_value_type ovfl;
+    ap::real_value_type s;
+    ap::real_value_type smlnum;
+    ap::real_value_type sn;
+    ap::real_value_type sum;
+    ap::real_value_type t1;
+    ap::real_value_type t2;
+    ap::real_value_type t3;
+    ap::real_value_type tst1;
+    ap::real_value_type unfl;
+    ap::real_value_type v1;
+    ap::real_value_type v2;
+    ap::real_value_type v3;
     bool failflag;
-    double dat1;
-    double dat2;
+    ap::real_value_type dat1;
+    ap::real_value_type dat2;
     int p1;
-    double him1im1;
-    double him1i;
-    double hiim1;
-    double hii;
-    double wrim1;
-    double wri;
-    double wiim1;
-    double wii;
-    double ulp;
+    ap::real_value_type him1im1;
+    ap::real_value_type him1i;
+    ap::real_value_type hiim1;
+    ap::real_value_type hii;
+    ap::real_value_type wrim1;
+    ap::real_value_type wri;
+    ap::real_value_type wiim1;
+    ap::real_value_type wii;
+    ap::real_value_type ulp;
 
     info = 0;
     dat1 = 0.75;
@@ -851,7 +851,7 @@ void internalauxschur(bool wantt,
             {
                 
                 //
-                // Prepare to use Francis' double shift
+                // Prepare to use Francis' ap::real_value_type shift
                 // (i.e. 2nd degree generalized Rayleigh quotient)
                 //
                 h44 = h(i,i);
@@ -889,7 +889,7 @@ void internalauxschur(bool wantt,
             {
                 
                 //
-                // Determine the effect of starting the double-shift QR
+                // Determine the effect of starting the ap::real_value_type-shift QR
                 // iteration at row M, and see if this would make H(M,M-1)
                 // negligible.
                 //
@@ -1132,35 +1132,35 @@ void internalauxschur(bool wantt,
 }
 
 
-void aux2x2schur(double& a,
-     double& b,
-     double& c,
-     double& d,
-     double& rt1r,
-     double& rt1i,
-     double& rt2r,
-     double& rt2i,
-     double& cs,
-     double& sn)
+void aux2x2schur(ap::real_value_type& a,
+     ap::real_value_type& b,
+     ap::real_value_type& c,
+     ap::real_value_type& d,
+     ap::real_value_type& rt1r,
+     ap::real_value_type& rt1i,
+     ap::real_value_type& rt2r,
+     ap::real_value_type& rt2i,
+     ap::real_value_type& cs,
+     ap::real_value_type& sn)
 {
-    double multpl;
-    double aa;
-    double bb;
-    double bcmax;
-    double bcmis;
-    double cc;
-    double cs1;
-    double dd;
-    double eps;
-    double p;
-    double sab;
-    double sac;
-    double scl;
-    double sigma;
-    double sn1;
-    double tau;
-    double temp;
-    double z;
+    ap::real_value_type multpl;
+    ap::real_value_type aa;
+    ap::real_value_type bb;
+    ap::real_value_type bcmax;
+    ap::real_value_type bcmis;
+    ap::real_value_type cc;
+    ap::real_value_type cs1;
+    ap::real_value_type dd;
+    ap::real_value_type eps;
+    ap::real_value_type p;
+    ap::real_value_type sab;
+    ap::real_value_type sac;
+    ap::real_value_type scl;
+    ap::real_value_type sigma;
+    ap::real_value_type sn1;
+    ap::real_value_type tau;
+    ap::real_value_type temp;
+    ap::real_value_type z;
 
     multpl = 4.0;
     eps = ap::machineepsilon;
@@ -1234,7 +1234,7 @@ void aux2x2schur(double& a,
                     sigma = b+c;
                     tau = pythag2(sigma, temp);
                     cs = sqrt(0.5*(1+fabs(sigma)/tau));
-                    sn = -p/(tau*cs)*extschursign(double(1), sigma);
+                    sn = -p/(tau*cs)*extschursign(ap::real_value_type(1), sigma);
                     
                     //
                     // Compute [ AA  BB ] = [ A  B ] [ CS -SN ]
@@ -1313,9 +1313,9 @@ void aux2x2schur(double& a,
 }
 
 
-double extschursign(double a, double b)
+ap::real_value_type extschursign(ap::real_value_type a, ap::real_value_type b)
 {
-    double result;
+    ap::real_value_type result;
 
     if( b>=0 )
     {
@@ -1329,7 +1329,7 @@ double extschursign(double a, double b)
 }
 
 
-int extschursigntoone(double b)
+int extschursigntoone(ap::real_value_type b)
 {
     int result;
 

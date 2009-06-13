@@ -33,17 +33,17 @@
 
 cmtk::XformListEntry::XformListEntry
 ( Xform::SmartPtr& xform, const bool inverse, const Types::Coordinate globalScale )
-  : Xform( xform ), 
+  : m_Xform( xform ), 
     InverseAffineXform( NULL ), 
     m_WarpXform( NULL ),
     Inverse( inverse ), 
     GlobalScale( globalScale )
 {
-  if ( this->Xform ) 
+  if ( this->m_Xform ) 
     {
-    this->m_WarpXform = dynamic_cast<WarpXform*>( this->Xform.GetPtr() );
+    this->m_WarpXform = dynamic_cast<WarpXform*>( this->m_Xform.GetPtr() );
     
-    AffineXform::SmartPtr affineXform( AffineXform::SmartPtr::DynamicCastFrom( this->Xform ) );
+    AffineXform::SmartPtr affineXform( AffineXform::SmartPtr::DynamicCastFrom( this->m_Xform ) );
     if ( affineXform ) 
       {
       this->InverseAffineXform = affineXform->MakeInverse();

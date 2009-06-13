@@ -55,7 +55,7 @@ public:
   ~XformListEntry();
   
   /// The actual transformation.
-  Xform::SmartPtr Xform;
+  Xform::SmartPtr m_Xform;
   
   /// The actual inverse if transformation is affine.
   AffineXform* InverseAffineXform;

@@ -609,7 +609,7 @@ ElasticRegistrationCommandLine::OutputWarp ( const char* path ) const
 #endif
   classStream.Close();
 
-  const WarpXform::SmartPtr warp = WarpXform::SmartPtr::DynamicCastFrom( Xform );
+  const WarpXform::SmartPtr warp = WarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
   if ( warp ) 
     {
     classStream.Open( path, "registration", ClassStream::WRITE );

@@ -19,8 +19,15 @@ Release CMTK-1.0.0:
     class with minimal extra programmer involvement
 - Added: cmtk::Console can now typeset text with given margin and width.
 - Added: Windows implementation of mutex lock.
+- Added: cmtk::StdOut stream
 - Added: "--auto-multi-levels" option for registration tool. Selects automatic
     resolution and optimization parameters for given number of levels.
+- Added: new top-level configuration option to switch all numerical algorithms
+    (i.e., AlgLib) to single-precision floats. This can be used to save memory
+    in extreme situations (for example, high-resolution volume reconstruction)
+
+- Changed: CMake switches for changing coordinate and data real type are now
+    advanced.
 
 - Fixed: numerical instability of correlation coefficient (leading to values
     outside -1..+1, which in turn produced invalid p-values
@@ -29,6 +36,7 @@ Release CMTK-1.0.0:
 - Fixed: configure problem with bundled zlib, which broke compile of NrrdIO in
     Visual Studio.
 - Fixed: Analyze/Nifti images were not written compressed
+- Fixed: numerous compiler errors and warnings detected by GCC 4.4
 
 - Improved: simplified code by removing HAVE_ZLIB conditionals. These are now
     always true since we're bundling zlib.

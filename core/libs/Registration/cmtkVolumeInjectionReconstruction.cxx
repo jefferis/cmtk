@@ -33,7 +33,6 @@
 #include <cmtkHistogramBase.h>
 #include <cmtkVolumeIO.h>
 
-
 #include <algorithm>
 
 namespace
@@ -227,15 +226,15 @@ VolumeInjectionReconstruction
 #pragma omp parallel for schedule(dynamic)
   for ( size_t correctedPx = 0; correctedPx < correctedImageNumPixels; ++correctedPx )
     {
-    double sum = 0;
-    double weight = 0;
+    ap::real_value_type sum = 0;
+    ap::real_value_type weight = 0;
 
     Vector3D vCorrected;
     correctedImage->GetGridLocation( vCorrected, correctedPx );
     
     for ( int pass = 0; pass < this->m_NumberOfPasses; ++pass )
       {
-      const double passImageWeight = this->m_PassWeights[pass];
+      const ap::real_value_type passImageWeight = this->m_PassWeights[pass];
       
       if ( passImageWeight > 0 )
 	{
@@ -278,7 +277,7 @@ VolumeInjectionReconstruction
 		const Types::Coordinate mahalanobis = delta.EuclidNorm();
 		if ( mahalanobis <= kernelRadiusFactor )
 		  {
-		  const double kernelWeightPixel = passImageWeight * exp( mahalanobis*mahalanobis * minusOneOverTwoSigmaSquare );
+		  const ap::real_value_type kernelWeightPixel = passImageWeight * exp( mahalanobis*mahalanobis * minusOneOverTwoSigmaSquare );
 		  
 		  sum += passImageData * kernelWeightPixel;
 		  weight += kernelWeightPixel;
@@ -295,7 +294,7 @@ VolumeInjectionReconstruction
 	}
       }
     if ( weight > 0 )
-		correctedImageData->Set( static_cast<Types::DataItem>( sum / weight ), correctedPx );
+      correctedImageData->Set( static_cast<Types::DataItem>( sum / weight ), correctedPx );
     else
       correctedImageData->SetPaddingAt( correctedPx );
     }
@@ -328,15 +327,15 @@ VolumeInjectionReconstruction
   const Types::Coordinate kernelRadiusSquare = kernelRadius * kernelRadius;
   const Types::Coordinate minusOneOverTwoSigmaSquare = -1 / (2 * kernelSigma*kernelSigma);
 
-  std::vector<double> kernelWeights( correctedImageNumPixels );
+  std::vector<ap::real_value_type> kernelWeights( correctedImageNumPixels );
   std::fill( kernelWeights.begin(), kernelWeights.end(), 0 );
       
-  std::vector<double> splattedImage( correctedImageNumPixels );
+  std::vector<ap::real_value_type> splattedImage( correctedImageNumPixels );
   std::fill( splattedImage.begin(), splattedImage.end(), 0 );  
   
   for ( int pass = 0; pass < this->m_NumberOfPasses; ++pass )
     {
-    const double passImageWeight = this->m_PassWeights[pass];
+    const ap::real_value_type passImageWeight = this->m_PassWeights[pass];
 
     if ( passImageWeight > 0 )
       {
@@ -392,7 +391,7 @@ VolumeInjectionReconstruction
 		  const Types::Coordinate distanceSquare = Vector3D::SquareEuclidDistance( u, v );
 		  if ( distanceSquare <= kernelRadiusSquare )
 		    {
-		    const double kernelWeightPixel = passImageWeight * exp( distanceSquare * minusOneOverTwoSigmaSquare );
+		    const ap::real_value_type kernelWeightPixel = passImageWeight * exp( distanceSquare * minusOneOverTwoSigmaSquare );
 		    
 		    splattedImage[splattedImageOffset] += passImageData * kernelWeightPixel;
 		    kernelWeights[splattedImageOffset] += kernelWeightPixel;
@@ -436,7 +435,7 @@ VolumeInjectionReconstruction
   this->m_ReferenceImage = referenceImage;
 }
 
-double
+ap::real_value_type
 VolumeInjectionReconstruction
 ::GetOriginalToCorrectedImageKLD( const ap::real_1d_array& x )
 {
@@ -444,12 +443,12 @@ VolumeInjectionReconstruction
   for ( int i = x.getlowbound(); i <= x.gethighbound(); ++i )
     this->m_CorrectedImageHistogram->AddWeightedSymmetricKernel
 	( this->m_CorrectedImageHistogram->ValueToBin( static_cast<Types::DataItem>( x(i) ) ), this->m_OriginalImageIntensityNoiseKernel.size(), &this->m_OriginalImageIntensityNoiseKernel[0] );
-  const double kld = this->m_CorrectedImageHistogram->GetKullbackLeiblerDivergence( *this->m_OriginalImageHistogram );
+  const ap::real_value_type kld = this->m_CorrectedImageHistogram->GetKullbackLeiblerDivergence( *this->m_OriginalImageHistogram );
 
   return kld;
 }
 
-double
+ap::real_value_type
 VolumeInjectionReconstruction
 ::ComputeCorrectedImageLaplacianNorm( const ap::real_1d_array& correctedImagePixels )
 {
@@ -462,7 +461,7 @@ VolumeInjectionReconstruction
   const int nextJ = nextI * correctedImageDims[0];
   const int nextK = nextJ * correctedImageDims[1];
 
-  double lnorm = 0;
+  ap::real_value_type lnorm = 0;
 #pragma omp parallel for reduction(+:lnorm)
   for ( size_t idx = 1; idx <= correctedImageNumPixels; ++idx )
     {
@@ -477,7 +476,7 @@ VolumeInjectionReconstruction
     const int yp = (y+1 < correctedImageDims[1]) ? idx+nextJ : idx-nextJ;
     const int zp = (z+1 < correctedImageDims[2]) ? idx+nextK : idx-nextK;
     
-    const double l = 
+    const ap::real_value_type l = 
       correctedImagePixels( xm ) + correctedImagePixels( xp ) +
       correctedImagePixels( ym ) + correctedImagePixels( yp ) +
       correctedImagePixels( zm ) + correctedImagePixels( zp ) - 
@@ -491,7 +490,7 @@ VolumeInjectionReconstruction
 
 void
 VolumeInjectionReconstruction
-::AddLaplacianGradientImage( ap::real_1d_array& g, const ap::real_1d_array&, const double weight ) const
+::AddLaplacianGradientImage( ap::real_1d_array& g, const ap::real_1d_array&, const ap::real_value_type weight ) const
 {
   const UniformVolume* correctedImage = this->m_CorrectedImage;
   const size_t correctedImageNumPixels = correctedImage->GetNumberOfPixels();
@@ -521,23 +520,6 @@ VolumeInjectionReconstruction
 	this->m_CorrectedImageLaplacians[zm] + this->m_CorrectedImageLaplacians[zp] - 
 	6 * this->m_CorrectedImageLaplacians[idx] );
     }
-
-#ifdef __IGNORE__
-  UniformVolume::SmartPtr image( this->m_CorrectedImage->CloneGrid() );
-  image->CreateDataArray( TYPE_FLOAT );
-  
-  for ( size_t i = 0; i < correctedImageNumPixels; ++i )
-    image->SetDataAt( g(i+1), i );
-  VolumeIO::Write( image, "gradient.nrrd" );
-
-  for ( size_t i = 0; i < correctedImageNumPixels; ++i )
-    image->SetDataAt( this->m_CorrectedImageLaplacians[i], i );
-  VolumeIO::Write( image, "laplacian.nrrd" );
-
-  VolumeIO::Write( this->m_CorrectedImage, "corrected.nrrd" );
-
-  exit(1);
-#endif
 }
 
 } // namespace cmtk

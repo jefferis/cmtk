@@ -118,7 +118,7 @@ arithmetic   domain     # trials      peak         rms
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1995, 2000 by Stephen L. Moshier
 *************************************************************************/
-double studenttdistribution(int k, double t);
+ap::real_value_type studenttdistribution(int k, ap::real_value_type t);
 
 
 /*************************************************************************
@@ -138,7 +138,7 @@ arithmetic   domain     # trials      peak         rms
 Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 1995, 2000 by Stephen L. Moshier
 *************************************************************************/
-double invstudenttdistribution(int k, double p);
+ap::real_value_type invstudenttdistribution(int k, ap::real_value_type p);
 
 
 #endif

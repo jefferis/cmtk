@@ -156,13 +156,13 @@ protected:
   igsGetSetMacro(bool,InitialXformIsInverse);
 
   /// Current / final transformation.
-  Xform::SmartPtr Xform;
+  Xform::SmartPtr m_Xform;
 
   /// Stack of functional objects for the resolution steps.
   std::stack<Functional::SmartPtr> FunctionalStack;
 
   /// Pointer to optimizer object.
-  Optimizer::SmartPtr Optimizer;
+  Optimizer::SmartPtr m_Optimizer;
 
   /**@name Member functions to be overwritten.
    */
