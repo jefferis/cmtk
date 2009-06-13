@@ -61,7 +61,7 @@ ReformatVolume::GetTransformedReference
       }
     }
   
-  const SplineWarpXform* splineXform = dynamic_cast<const SplineWarpXform*>( WarpXform.GetPtr() );
+  const SplineWarpXform* splineXform = dynamic_cast<const SplineWarpXform*>( this->m_WarpXform.GetPtr() );
   if ( ! splineXform ) 
     {
     StdErr << "ERROR: ReformatVolume::GetTransformedReference supports spline warp only.\n";
