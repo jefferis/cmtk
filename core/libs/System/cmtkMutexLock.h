@@ -40,6 +40,7 @@
 
 #ifdef _MSC_VER
 #  include <Windows.h>
+#  include <iostream>
 #endif
 
 namespace
@@ -66,7 +67,7 @@ public:
     this->m_MutexObject = CreateMutex( NULL /*default security attributes*/, FALSE /*initially not owned*/, NULL /*unnamed*/ );
     if ( ! this->m_MutexObject )
       {
-      StdErr << "FATAL: cannot create mutex object\n";
+      std::cerr << "FATAL: cannot create mutex object\n";
       exit( 1 );
       }
 #endif
@@ -104,7 +105,7 @@ public:
     pthread_mutex_unlock( &this->m_MutexLock );
 #else
 #ifdef _MSC_VER
-    ReleaseMutex( this->m_MutexObject );.
+    ReleaseMutex( this->m_MutexObject );
 #endif
 #endif
   }
