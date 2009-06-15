@@ -365,6 +365,14 @@ case ${RUNTEST} in
 	run ${BINDIR}/imagemath --in parc1_bin.hdr parc2_bin.hdr parc3_bin.hdr --average --out ${tmpdir}/average.hdr
 	check_result average.img
 	;;
+    ImagemathXor)
+	run ${BINDIR}/imagemath --in parc1.hdr --scalar-xor 1 --out ${tmpdir}/xor.hdr
+	check_result xor.img
+	;;
+    ImagemathContractLabels)
+	run ${BINDIR}/imagemath --in parc1.hdr parc2.hdr parc3.hdr --contract-labels --out ${tmpdir}/contract.hdr
+	check_result contract.img
+	;;
     ImagemathVote)
 	run ${BINDIR}/imagemath --in parc1_bin.hdr parc2_bin.hdr parc3_bin.hdr --vote --out ${tmpdir}/vote.hdr
 	check_result vote.img

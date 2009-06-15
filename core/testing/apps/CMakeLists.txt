@@ -135,7 +135,10 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "imagemath" tool
-SET(testList ${testList} ImagemathAverage ImagemathStackEntropyLabels ImagemathVote ImagemathSTAPLE ImagemathMultiClassSTAPLE ImagemathCombinePCA ImagemathT2)
+SET(testList ${testList} 
+	     ImagemathAverage ImagemathXor ImagemathContractLabels
+	     ImagemathStackEntropyLabels ImagemathVote ImagemathSTAPLE
+	     ImagemathMultiClassSTAPLE ImagemathCombinePCA ImagemathT2)
 
 # ==========================================
 # Tests for "levelset" tool

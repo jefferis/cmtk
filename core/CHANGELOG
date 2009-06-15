@@ -25,6 +25,7 @@ Release CMTK-1.0.0:
 - Added: new top-level configuration option to switch all numerical algorithms
     (i.e., AlgLib) to single-precision floats. This can be used to save memory
     in extreme situations (for example, high-resolution volume reconstruction)
+- Added: two new operations for imagemath tool: xor-scalar and contract-labels
 
 - Changed: CMake switches for changing coordinate and data real type are now
     advanced.

@@ -318,6 +318,40 @@ CallbackScalarAdd( const char* argv )
 }
 
 const char*
+CallbackScalarXor( const long int c )
+{
+  if ( ! CheckStackOneImage( "ScalarXor" ) )
+    return NULL;
+  
+  cmtk::UniformVolume::SmartPtr p = ImageStack.top();
+  ImageStack.pop();
+
+  const size_t numberOfPixels = p->GetNumberOfPixels();
+
+  cmtk::TypedArray::SmartPtr out( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+  
+#pragma omp parallel for
+  for ( size_t i = 0; i < numberOfPixels; ++i )
+    {
+    cmtk::Types::DataItem pv;
+    if ( p->GetDataAt( pv, i ) )
+      {
+      const long int iv = static_cast<long int>( pv );
+      out->Set( iv ^ c, i );
+      }
+    else
+      {
+      out->SetPaddingAt( i );
+      }
+    }
+  
+  p->SetData( out );
+  ImageStack.push( p );
+
+  return NULL;
+}
+
+const char*
 CallbackOneOver()
 {
   if ( ! CheckStackOneImage( "OneOver" ) )
@@ -741,7 +775,7 @@ CallbackMaxValue()
 #pragma omp parallel for  
   for ( size_t i = 0; i < numberOfPixels; ++i )
     {
-    float maxValue = 0;
+    cmtk::Types::DataItem maxValue = 0;
     bool maxValueValid = false;
     cmtk::Types::DataItem v;
 
@@ -751,7 +785,7 @@ CallbackMaxValue()
         {
 	if ( maxValueValid )
 	  {
-	  maxValue = std::max<float>( maxValue, v );
+	  maxValue = std::max( maxValue, v );
 	  }
 	else
 	  {
@@ -766,6 +800,46 @@ CallbackMaxValue()
     }
   
   volPtrs[0]->SetData( maxArray );
+  ImageStack.push( volPtrs[0] );
+  
+  return NULL;
+}
+
+const char*
+CallbackContractLabels()
+{
+  if ( ! CheckStackTwoMatchingImages( "ContractLabels" ) )
+    return NULL;
+  
+  std::vector<cmtk::UniformVolume::SmartPtr> volPtrs;
+  while ( ImageStack.size() > 0 ) 
+    {
+    if ( ImageStack.size() > 1 )
+      if ( ! CheckStackTwoMatchingImages( "ContractLabels" ) )
+	return NULL;
+    
+    volPtrs.push_back( ImageStack.top() );
+    ImageStack.pop();
+    }
+  
+  const size_t numberOfPixels = volPtrs[ 0 ]->GetNumberOfPixels();
+  cmtk::TypedArray::SmartPtr outArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+
+#pragma omp parallel for  
+  for ( size_t i = 0; i < numberOfPixels; ++i )
+    {
+    cmtk::Types::DataItem v = 0;
+
+    for ( size_t curVol = 0; curVol < volPtrs.size(); ++curVol )
+      {
+      if ( volPtrs[ curVol ]->GetDataAt( v, i ) && v ) 
+	break;
+      }
+        
+    outArray->Set( v, i );
+    }
+  
+  volPtrs[0]->SetData( outArray );
   ImageStack.push( volPtrs[0] );
   
   return NULL;
@@ -930,6 +1004,7 @@ main( int argc, char *argv[] )
     cl.AddCallback( Key( "one-over" ), CallbackOneOver, "For each pixel, replace its value x with 1.0/x" );
     cl.AddCallback( Key( "scalar-mul" ), CallbackScalarMul, "Multiply top image with a scalar value" );
     cl.AddCallback( Key( "scalar-add" ), CallbackScalarAdd, "Add a scalar to each pixel of the top image" );
+    cl.AddCallback( Key( "scalar-xor" ), CallbackScalarXor, "Bitwise exclusive-or between top level and given scalar value" );
 
     cl.AddCallback( Key( "threshold-min" ), CallbackThreshMin, "Apply lower threshold to image at top of stack" );
     cl.EndGroup();
@@ -947,6 +1022,7 @@ main( int argc, char *argv[] )
     cl.AddCallback( Key( "combine-pca" ), CallbackCombinePCA, "Combine images using PCA by projecting onto direction of largest correlation" );
     cl.AddCallback( Key( "max-value" ), CallbackMaxValue, "For each pixel, compute maximum VALUE over all images, place result on stack" );
     cl.AddCallback( Key( "max-index" ), CallbackMaxIndex, "For each pixel, compute INDEX of image with maximum value, place result on stack" );
+    cl.AddCallback( Key( "contract-labels" ), CallbackContractLabels, "Contract multiple label maps into one by selecting the first (over all images on the stack) non-zero label at each pixel" );
     cl.EndGroup();
 
     cl.BeginGroup( "Multiple label images", "Multi-image operators for label images" );
