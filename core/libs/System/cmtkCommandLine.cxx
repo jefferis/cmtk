@@ -174,20 +174,6 @@ CommandLine::Parse()
     // Break at first non-switch argument.
     if ( ArgV[Index][0] != '-' ) return true;
     
-    // Check for "--xml" special option, which produces self description according to Slicer execution model.
-    if ( !strcmp( ArgV[Index], "--xml" ) ) 
-      {
-      this->WriteXML();
-      exit( 2 );
-      }
-
-    // Check for "--help" special option, which produces textual description of all command line options
-    if ( !strcmp( ArgV[Index], "--help" ) ) 
-      {
-      this->PrintHelp();
-      exit( 2 );
-      }
-
     // Like POSIX, break at "--" terminator.
     if ( !strcmp( ArgV[Index], "--" ) ) 
       {
@@ -210,6 +196,20 @@ CommandLine::Parse()
       // not found?
       if ( !item ) 
 	{
+	// Check for "--xml" special option, which produces self description according to Slicer execution model.
+	if ( !strcmp( ArgV[Index], "--xml" ) ) 
+	  {
+	  this->WriteXML();
+	  exit( 2 );
+	  }
+	
+	// Check for "--help" special option, which produces textual description of all command line options
+	if ( !strcmp( ArgV[Index], "--help" ) ) 
+	  {
+	  this->PrintHelp();
+	  exit( 2 );
+	  }
+	
 	StdErr.printf( "Unknown option: %s\n", ArgV[Index] );
 	return false;
 	}

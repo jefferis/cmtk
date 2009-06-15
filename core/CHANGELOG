@@ -47,6 +47,8 @@ Release CMTK-1.0.0:
     CMTK_BUILD_SMP is OFF.
 - Improved: better integration of Doxygen into CMake build system
 - Improved: better output of stacked image information in dcm2image
+- Improved: pre-defined "--xml" and "--help" command line options can now be
+    overridden by library user (Issue [#3830]).
 
 - Removed: cmtk::MathUtil::CoefficientOfCorrelation was removed because it
     turned out to be a redundant, numerically unstable variant of
