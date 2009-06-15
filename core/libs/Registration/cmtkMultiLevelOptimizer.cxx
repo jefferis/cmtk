@@ -72,7 +72,7 @@ MultiLevelOptimizer::Optimize( CoordinateVector& v, const Types::Coordinate, con
 
   // if we made things worse during the optimization, then
   // backtrack.
-  const float finalFunctionalValue = this->m_Optimizer->GetFinalValue();
+  const Self::ReturnType finalFunctionalValue = this->m_Optimizer->GetFinalValue();
   if ( finalFunctionalValue < this->GetFinalValue() )
     {
     v = vOriginal;
