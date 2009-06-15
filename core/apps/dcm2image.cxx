@@ -44,9 +44,12 @@
 #error Build system is broken: this application should not be build if CMTK_HAVE_DCMTK is not set.
 #endif
 
-#include <dirent.h>
-#include <fnmatch.h>
-#include <unistd.h>
+#ifdef _MSC_VER
+#else
+#  include <dirent.h>
+#  include <fnmatch.h>
+#  include <unistd.h>
+#endif
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -452,12 +455,15 @@ traverse_directory( VolumeList& studylist, const char *path, const char *wildcar
 {
   char fullname[PATH_MAX];
 
+  std::vector<std::string> fileNameList;
+
+#ifdef _MSC_VER
+#else    
   DIR *dir_pointer = opendir ( path );
   if ( dir_pointer != NULL ) 
     {
     struct dirent *entry_pointer;
 
-    std::vector<std::string> fileNameList;
     while ( (entry_pointer = readdir(dir_pointer)) ) 
       {
       strcat( strcat( strcpy( fullname, path ), "/"), entry_pointer->d_name );
@@ -481,20 +487,21 @@ traverse_directory( VolumeList& studylist, const char *path, const char *wildcar
 	}
       }
     (void) closedir(dir_pointer);
+    }
+#endif
 
-    if ( SortFilesByName )
+  if ( SortFilesByName )
+    {
+    std::sort( fileNameList.begin(), fileNameList.end() );
+    }
+  for ( std::vector<std::string>::const_iterator it = fileNameList.begin(); it != fileNameList.end(); ++it )
+    {
+    try 
       {
-      std::sort( fileNameList.begin(), fileNameList.end() );
+      studylist.AddImageFileDCM( new ImageFileDCM( it->c_str() ) );
       }
-    for ( std::vector<std::string>::const_iterator it = fileNameList.begin(); it != fileNameList.end(); ++it )
+    catch (int i) 
       {
-      try 
-	{
-	studylist.AddImageFileDCM( new ImageFileDCM( it->c_str() ) );
-	}
-      catch (int i) 
-	{
-	}
       }
     }
   std::cout << "\r";

@@ -34,6 +34,7 @@
 #ifndef __cmtkconfig_h_included__
 #define __cmtkconfig_h_included__
 
+#cmakedefine HAVE_DIRENT_H 1
 #cmakedefine HAVE_EXECINFO_H 1
 #cmakedefine HAVE_FCNTL_H 1
 #cmakedefine HAVE_FLOAT_H 1

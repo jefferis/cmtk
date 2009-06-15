@@ -53,6 +53,7 @@ ADD_DEFINITIONS(-DCMTK_INSTANTIATE_TEMPLATES)
 #-----------------------------------------------------------------------------
 # Check for system headers.
 INCLUDE (CheckIncludeFiles)
+CHECK_INCLUDE_FILES (dirent.h HAVE_DIRENT_H)
 CHECK_INCLUDE_FILES (execinfo.h HAVE_EXECINFO_H)
 CHECK_INCLUDE_FILES (fcntl.h HAVE_FCNTL_H)
 CHECK_INCLUDE_FILES (float.h HAVE_FLOAT_H)
