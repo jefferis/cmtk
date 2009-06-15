@@ -404,7 +404,7 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
     // (By setting TOL to be negative, algorithm will compute
     // singular values to absolute accuracy ABS(TOL)*norm(input matrix))
     //
-    tolmul = ap::maxreal(ap::real_value_type(10), ap::minreal(ap::real_value_type(100), pow(eps, -0.125)));
+    tolmul = ap::maxreal(ap::real_value_type(10), ap::minreal(ap::real_value_type(100), pow((ap::real_value_type)eps, (ap::real_value_type)-0.125)));
     tol = tolmul*eps;
     if( !isfractionalaccuracyrequired )
     {

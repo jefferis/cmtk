@@ -353,12 +353,12 @@ ap::real_value_type gammastirf(ap::real_value_type x)
     y = exp(x);
     if( x>143.01608 )
     {
-        v = pow(x, 0.5*x-0.25);
+        v = pow((ap::real_value_type)x, (ap::real_value_type)(0.5*x-0.25));
         y = v*(v/y);
     }
     else
     {
-        y = pow(x, x-0.5)/y;
+        y = pow((ap::real_value_type)x, (ap::real_value_type)(x-0.5))/y;
     }
     result = 2.50662827463100050242*y*w;
     return result;
