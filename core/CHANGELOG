@@ -26,6 +26,7 @@ Release CMTK-1.0.0:
     (i.e., AlgLib) to single-precision floats. This can be used to save memory
     in extreme situations (for example, high-resolution volume reconstruction)
 - Added: two new operations for imagemath tool: xor-scalar and contract-labels
+- Added: Windows implementation of dcm2image file scanning
 
 - Changed: CMake switches for changing coordinate and data real type are now
     advanced.
