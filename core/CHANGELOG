@@ -1,4 +1,6 @@
-Release CMTK-1.0.0:
+Release CMTK-1.0.1:
+
+Release CMTK-1.0.0 (2009-06-16):
 
 - API: "TemplateHistogram", "LogTemplateHistogram", and "TemplateHistogram2D"
     renamed to remove "Template" part. Also removed all global histogram
