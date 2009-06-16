@@ -45,6 +45,7 @@
 #endif
 
 #ifdef _MSC_VER
+#  include <windows.h>
 #else
 #  include <dirent.h>
 #  include <fnmatch.h>
@@ -458,6 +459,27 @@ traverse_directory( VolumeList& studylist, const char *path, const char *wildcar
   std::vector<std::string> fileNameList;
 
 #ifdef _MSC_VER
+  WIN32_FIND_DATA fData;
+  char pattern[PATH_MAX];
+  snprintf( pattern, sizeof( pattern ), "%s\\%s", path, wildcard );
+  HANDLE hFind = FindFirstFile( pattern, &fData);
+  do
+   {
+   snprintf( fullname, sizeof( fullname ), "%s\\%s", path, fData.cFileName );
+   if ( fData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+      {
+      if ( Recursive && (fData.cFileName[0] != '.') )
+      {
+      traverse_directory( studylist, fullname, wildcard );
+      }
+      }
+      else
+      {
+      fileNameList.push_back( fullname );
+	  (cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ]).flush();
+      }
+   }
+   while (FindNextFile(hFind, &fData) != 0);
 #else    
   DIR *dir_pointer = opendir ( path );
   if ( dir_pointer != NULL ) 
