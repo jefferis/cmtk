@@ -8,6 +8,10 @@ Release CMTK-1.0.1:
 - Changed: probe_xform tool now uses different command line semantics. All
     transformations are concatenated rather than applied separately.
 
+- Added: normal vector of InfinitePlane can now be set directly.
+
+- Fixed: cmtkVoxelMatchingAffineFunctional.h compile error when SMP is turned
+    off.
 
 Release CMTK-1.0.0 (2009-06-16):
 

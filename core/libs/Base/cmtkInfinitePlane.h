@@ -98,6 +98,9 @@ public:
     return Phi; 
   }
 
+  /// Set normal vector and determine rotation angles from it.
+  void SetNormal( const Vector3D& normal );
+
   /// Get all parameters.
   void GetParameters( CoordinateVector& v ) const 
   {

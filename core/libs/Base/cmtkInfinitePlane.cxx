@@ -33,6 +33,8 @@
 
 #include <cmtkMathUtil.h>
 
+#include <math.h>
+
 namespace
 cmtk
 {
@@ -47,7 +49,8 @@ InfinitePlane::InfinitePlane()
   this->Update();
 }
 
-void InfinitePlane::Update()
+void
+InfinitePlane::Update()
 {
   Types::Coordinate radTheta = static_cast<Types::Coordinate>( MathUtil::DegToRad( Theta ) );
   Types::Coordinate radPhi = static_cast<Types::Coordinate>( MathUtil::DegToRad( Phi ) );
@@ -57,6 +60,23 @@ void InfinitePlane::Update()
   Normal.XYZ[2] = cos( radPhi );
 
   SquareNormal = Normal * Normal;
+}
+
+void
+InfinitePlane::SetNormal( const Vector3D& normal )
+{
+  this->Normal = (1.0 / normal.EuclidNorm()) * normal;
+  
+  const Types::Coordinate radPhi = acos( this->Normal.XYZ[2] );
+  this->Phi = static_cast<Types::Coordinate>( MathUtil::RadToDeg( radPhi ) );
+
+  const Types::Coordinate sinPhi = sin( radPhi );
+  if ( sinPhi != 0 )
+    this->Theta = static_cast<Types::Coordinate>( MathUtil::RadToDeg( asin( this->Normal.XYZ[1] / sinPhi ) ) );
+  else
+    this->Theta = 0;
+
+  this->SquareNormal = this->Normal * this->Normal;
 }
 
 AffineXform* 
@@ -75,7 +95,7 @@ InfinitePlane::GetAlignmentXform( const byte axis ) const
       // compute z component of normal vector after first rotation; remember
       // that y component will be zero after this rotation.
       Types::Coordinate newNormal0 = MathUtil::Sign( Normal[0] ) * sqrt( 1 - Normal[2]*Normal[2] );
-	  angles[1] = static_cast<Types::Coordinate>( -MathUtil::RadToDeg( atan2( Normal[2], newNormal0 ) ) );
+      angles[1] = static_cast<Types::Coordinate>( -MathUtil::RadToDeg( atan2( Normal[2], newNormal0 ) ) );
       
       alignment->ChangeCenter( this->GetOrigin().XYZ );
       alignment->SetAngles( angles );
