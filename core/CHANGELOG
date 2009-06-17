@@ -9,6 +9,8 @@ Release CMTK-1.0.1:
     transformations are concatenated rather than applied separately.
 
 - Added: normal vector of InfinitePlane can now be set directly.
+- Added: "sympl" tool can now use different approximated symmetry plane
+    orientations to begin search, supporting non-sagittal symmetry planes.
 
 - Fixed: cmtkVoxelMatchingAffineFunctional.h compile error when SMP is turned
     off.

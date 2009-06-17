@@ -98,6 +98,20 @@ const char* SymmetryParametersFile = NULL;
 
 const char* InFileName = NULL;
 
+/// Constants for initial plane orientation.
+typedef enum
+{
+  /// XY plane (axial)
+  SYMPL_INIT_XY,
+  /// XZ plane (coronal)
+  SYMPL_INIT_XZ,
+  /// YZ plane (sagittal)
+  SYMPL_INIT_YZ
+} InitialPlaneEnum;
+
+/// Initial plane orientation: default to sagittal for human images.
+InitialPlaneEnum InitialPlane = SYMPL_INIT_YZ;
+
 bool ParseCommandLine ( const int argc, const char* argv[] )
 {
   cmtk::CommandLine cl( argc, argv );
@@ -112,6 +126,12 @@ bool ParseCommandLine ( const int argc, const char* argv[] )
   cl.AddOption( Key( 'a', "accuracy" ), &Accuracy, "Accuracy (final optimization step size in [mm]." );
   cl.AddOption( Key( 's', "sampling" ), &Sampling, "Resampled image resolution." );
   cl.AddOption( Key( 'l', "levels" ), &Levels, "Number of resolution levels." );
+  cl.EndGroup();
+
+  cl.BeginGroup( "Initial", "Initial approximate symmetry plane orientation" );
+  cl.AddSwitch( Key( "initial-xy" ), &InitialPlane, SYMPL_INIT_XY, "XY plane: axial symmetry" );
+  cl.AddSwitch( Key( "initial-xz" ), &InitialPlane, SYMPL_INIT_XZ, "XZ plane: coronal symmetry" );
+  cl.AddSwitch( Key( "initial-yz" ), &InitialPlane, SYMPL_INIT_YZ, "YZ plane: sagittal symmetry" );
   cl.EndGroup();
 
   cl.BeginGroup( "Pre-computed", "Pre-computed symmetry" );
@@ -353,8 +373,22 @@ main ( const int argc, const char* argv[] )
   // distance from coordinate origin (image center) is 0:
   v[0] = 0;
   // and angles are chosen so that the plane normal is (1,0,0)
-  v[1] = 0;
-  v[2] = 90;
+  switch ( InitialPlane )
+    {
+    case SYMPL_INIT_XY:
+      v[1] = 0;
+      v[2] = 0;
+      break;
+    case SYMPL_INIT_XZ:
+      v[1] = 90;
+      v[2] = 90;
+      break;
+    default:
+    case SYMPL_INIT_YZ:
+      v[1] = 0;
+      v[2] = 90;
+      break;
+    }
   
   // set center of volume (crop region) as coordinate origin.
   cmtk::Vector3D center = originalVolume->GetCenterCropRegion();
