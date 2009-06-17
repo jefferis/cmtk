@@ -537,7 +537,7 @@ public:
    */
   virtual typename Self::ReturnType Evaluate() 
   {
-    const VolumeAxesHash axesHash( *ReferenceGrid, AffineXform->GetInverse(), FloatingGrid->Delta, FloatingGrid->m_Origin.XYZ );
+    const VolumeAxesHash axesHash( *ReferenceGrid, this->m_AffineXform->GetInverse(), FloatingGrid->Delta, FloatingGrid->m_Origin.XYZ );
     const Vector3D *HashX = axesHash[0], *HashY = axesHash[1], *HashZ = axesHash[2];
     
     Vector3D pFloating;
