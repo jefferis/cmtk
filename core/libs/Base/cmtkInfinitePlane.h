@@ -190,7 +190,7 @@ public:
    * 2 for x, y, or z, respectively).
    *@TODO Support other alignment axes than x is still missing.
    */
-  AffineXform* GetAlignmentXform( const byte axis = 0 ) const;
+  AffineXform* GetAlignmentXform( const byte normalAxis = 0 ) const;
 
   /** Return normal vector.
    */

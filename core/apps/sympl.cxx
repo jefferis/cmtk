@@ -308,7 +308,8 @@ WriteMarkPlane
 
 void
 WriteAligned
-( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::InfinitePlane& infinitePlane, const char* outFileName )
+( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::InfinitePlane& infinitePlane, const InitialPlaneEnum initialPlane, 
+  const char* outFileName )
 {
   const cmtk::TypedArray* originalData = originalVolume->GetData();
 
@@ -327,7 +328,15 @@ WriteAligned
   cmtk::Vector3D v;	
   cmtk::Types::DataItem data;
 
-  cmtk::AffineXform::SmartPtr alignment( infinitePlane.GetAlignmentXform( 0 ) );
+  int normalAxis = 0;
+  switch ( initialPlane )
+    {
+    case SYMPL_INIT_XY: normalAxis = 2; break;
+    case SYMPL_INIT_XZ: normalAxis = 1; break;
+    case SYMPL_INIT_YZ: normalAxis = 0; break;
+    }
+
+  cmtk::AffineXform::SmartPtr alignment( infinitePlane.GetAlignmentXform( normalAxis ) );
   int offset = 0;
   for ( int z = 0; z < originalVolume->GetDims()[2]; ++z ) 
     {
@@ -458,7 +467,7 @@ main ( const int argc, const char* argv[] )
   const cmtk::UniformVolumeInterpolatorBase::SmartPtr interpolator( cmtk::ReformatVolume::CreateInterpolator( Interpolation, originalVolume ) );;
   
   if ( DoWriteAligned ) 
-    WriteAligned( originalVolume, interpolator, infinitePlane, AlignedOutFile );
+    WriteAligned( originalVolume, interpolator, infinitePlane, InitialPlane, AlignedOutFile );
 
   if ( DoWriteMarked ) 
     WriteMarkPlane( originalVolume, infinitePlane, MarkPlaneValue, MarkedOutFile );

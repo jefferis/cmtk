@@ -80,30 +80,58 @@ InfinitePlane::SetNormal( const Vector3D& normal )
 }
 
 AffineXform* 
-InfinitePlane::GetAlignmentXform( const byte axis ) const
+InfinitePlane::GetAlignmentXform( const byte normalAxis ) const
 {
   Types::Coordinate angles[3] = { 0, 0, 0 };
   Types::Coordinate xlate[3] = { 0, 0, 0 };
   
   AffineXform *alignment = new AffineXform;
 
-  switch ( axis ) 
+  switch ( normalAxis ) 
     {
-    case 0: 
-      angles[2] = static_cast<Types::Coordinate>( -MathUtil::RadToDeg( atan2( Normal[1], Normal[0]  ) ) );
-      
-      // compute z component of normal vector after first rotation; remember
-      // that y component will be zero after this rotation.
-      Types::Coordinate newNormal0 = MathUtil::Sign( Normal[0] ) * sqrt( 1 - Normal[2]*Normal[2] );
-      angles[1] = static_cast<Types::Coordinate>( -MathUtil::RadToDeg( atan2( Normal[2], newNormal0 ) ) );
-      
-      alignment->ChangeCenter( this->GetOrigin().XYZ );
-      alignment->SetAngles( angles );
-      break;
+    // YZ plane, i.e., normal to X
+    case 0:
+    {
+    // first make y component zero.
+    angles[2] = static_cast<Types::Coordinate>( -MathUtil::RadToDeg( atan2( Normal[1], Normal[0]  ) ) );
+    
+    // compute x component of normal vector after first rotation; remember that y component will be zero after this rotation.
+    const Types::Coordinate newNormal0 = MathUtil::Sign( Normal[0] ) * sqrt( 1 - Normal[2]*Normal[2] );
+    angles[1] = static_cast<Types::Coordinate>( -MathUtil::RadToDeg( atan2( Normal[2], newNormal0 ) ) );
+    break;
+    }
+
+    // XZ plane, normal to Y
+    case 1:
+    {
+    // first make x component zero.
+    angles[2] = static_cast<Types::Coordinate>( -MathUtil::RadToDeg( atan2( Normal[0], Normal[1]  ) ) );
+    
+    // compute y component of normal vector after first rotation; remember that x component will be zero after this rotation.
+    const Types::Coordinate newNormal1 = MathUtil::Sign( Normal[1] ) * sqrt( 1 - Normal[2]*Normal[2] );
+    angles[0] = static_cast<Types::Coordinate>( -MathUtil::RadToDeg( atan2( Normal[2], newNormal1 ) ) );
+    break;
+    }
+
+    // XY plane, normal to Z
+    case 2:
+    {
+    // first make x component zero.
+    angles[1] = static_cast<Types::Coordinate>( -MathUtil::RadToDeg( atan2( Normal[0], Normal[2]  ) ) );
+    
+    // compute z component of normal vector after first rotation; remember that x component will be zero after this rotation.
+    const Types::Coordinate newNormal2 = MathUtil::Sign( Normal[2] ) * sqrt( 1 - Normal[1]*Normal[1] );
+    angles[0] = static_cast<Types::Coordinate>( -MathUtil::RadToDeg( atan2( Normal[1], newNormal2 ) ) );
+    break;
+    }
     }
   
-  xlate[axis] = Rho;
+  alignment->ChangeCenter( this->GetOrigin().XYZ );
+  alignment->SetAngles( angles );
+  
+  xlate[normalAxis] = Rho;
   alignment->SetXlate( xlate );
+
   return alignment;
 }
 
