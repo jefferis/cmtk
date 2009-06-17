@@ -208,6 +208,13 @@ SET(testList ${testList}
 	     OverlapFirstByLabelNumLabels)
 
 # ==========================================
+# Tests for "probe_xform" tool
+SET(testList ${testList}
+	     ProbeXformSimple
+	     ProbeXformFwdBwd
+	     ProbeXformBwdFwd)
+
+# ==========================================
 # Tests for "registration" tool
 SET(testList ${testList} RigidRegistrationMrPet 
   		      RigidRegistrationMrCt

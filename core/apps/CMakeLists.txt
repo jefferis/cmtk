@@ -69,10 +69,12 @@ IF(NOT CMTK_USE_MPI)
 	   mk_phantom_3d
 	   mrbias
 	   overlap
+	   probe_xform
 	   randompxls
 	   randomwarp
 	   reformatx
 	   registration
+	   regress
 	   reorient
 	   runcheck
 	   sequence

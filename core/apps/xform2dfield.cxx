@@ -157,7 +157,7 @@ main ( const int argc, const char *argv[] )
 	bool invalid = true;
 	if ( (!Mask) || (volume->GetDataAt( x, y, z ) > 0) )
 	  {
-	  invalid = !xformList.Apply( v1 );
+	  invalid = !xformList.ApplyInPlace( v1 );
 	  }
 
 	if ( !invalid )

@@ -53,7 +53,7 @@ ReformatVolume::ReformatPushForward
       for ( int x = 0; x < dims[0]; ++x )
 	{
 	Vector3D v( floating->GetGridLocation( x, y, z ) );
-	targetToRef.Apply( v );
+	targetToRef.ApplyInPlace( v );
 	if ( reference->GetClosestGridPointIndex( v, xyzCP ) )
 	  {
 	  Types::DataItem value;
@@ -83,7 +83,7 @@ ReformatVolume::ReformatPushForwardAccumulate
       for ( int x = 0; x < dims[0]; ++x )
 	{
 	Vector3D v( floating->GetGridLocation( x, y, z ) );
-	targetToRef.Apply( v );
+	targetToRef.ApplyInPlace( v );
 	if ( reference->GetClosestGridPointIndex( v, xyzCP ) )
 	  {
 	  Types::DataItem value;

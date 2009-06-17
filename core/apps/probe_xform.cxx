@@ -39,6 +39,8 @@
 
 #include <cmtkXformIO.h>
 
+#include <cmtkXformList.h>
+
 #include <stdio.h>
 #include <list>
 
@@ -51,77 +53,67 @@ const char*
 AddProbeLocation( const char* argv )
 {
   double x, y, z;
-  if ( 3 == sscanf( argv, "%lf,%lf,%lf", &x, &y, &z ) ) {
+  if ( 3 == sscanf( argv, "%lf,%lf,%lf", &x, &y, &z ) ) 
+    {
     LocationList.push_back( cmtk::Vector3D( x, y, z ) );
-  } else {
-    cmtk::StdErr << "WARNING: '" << argv
-	      << "' is not a valid location (must be x,y,z)\n";
-  }
+    } 
+  else
+    {
+    cmtk::StdErr << "WARNING: '" << argv << "' is not a valid location (must be x,y,z)\n";
+    }
   return NULL;
 }
 
-std::list<cmtk::Xform::SmartPtr> XformList;
+cmtk::XformList XformList;
 
 int 
 main( const int argc, const char* argv[] )
 {
-  cmtk::CommandLine::PrintProgramID( argv[0], __DATE__, __TIME__ );
-
-  try {
+  try
+    {
     cmtk::CommandLine cl( argc, argv );
-
-    cl.AddSwitch( Key( 'h', "help" ), &Help, true, "Print command line help" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Probe transformation at user-defined coordinates" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] [--inverse] xform0 [[--inverse] xform1 ...]" );
+    
+    typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-
-    cl.AddCallback( Key( 'p', "probe", AddProbeLocation, "Probe location" ) );
+    cl.AddCallback( Key( 'p', "probe" ), AddProbeLocation, "Probe location" );
 
     cl.Parse();
-
-    if ( Help ) {
-      cl.PrintHelp( "Extended volume reformatter tool.",
-		    "[options] xform [xform ...]" );
-      exit( 2 );
-    }
-
+    
     const char* next = cl.GetNext();
-    while ( next ) {
-      bool inverse = ! strcmp( next, "-i" ) || ! strcmp( next, "--inverse" );
-      if ( inverse ) next = cl.GetNext();
-
+    while ( next ) 
+      {
+      const bool inverse = ! strcmp( next, "-i" ) || ! strcmp( next, "--inverse" );
+      if ( inverse )
+	next = cl.GetNext();
+      
       cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( next, Verbose ) );
-      if ( ! xform ) {
-	cmtk::StdErr << "ERROR: could not read transformation from "
-		  << next << "\n";
+      if ( ! xform )
+	{
+	cmtk::StdErr << "ERROR: could not read transformation from " << next << "\n";
 	exit( 1 );
-      }
-
-      XformList.push_back( xform );
-
+	}
+      
+      XformList.Add( xform, inverse );
       next = cl.GetNextOptional();
+      }
     }
-  }
-  catch ( cmtk::CommandLine::Exception e ) {
+  catch ( cmtk::CommandLine::Exception e ) 
+    {
     cmtk::StdErr << e << "\n";
     exit( 1 );
-  }
-
-  unsigned int xformIdx = 0;
-
-  std::list<cmtk::Xform::SmartPtr>::iterator xformIt = XformList.begin();
-  for ( ; xformIt != XformList.end(); ++xformIt, ++xformIdx ) {
-
-    printf( "Transformation #%d:\n", xformIdx );
-
-    std::list<cmtk::Vector3D>::iterator probeIt = LocationList.begin();
-    for ( ; probeIt != LocationList.end(); ++probeIt ) {
-      cmtk::Vector3D u( *probeIt ), v;
-      v = (*xformIt)->Apply( u );
-      printf( "\t%f %f %f -> %f %f %f\n", 
-	      u.XYZ[0], u.XYZ[1], u.XYZ[2],
-	      v.XYZ[0], v.XYZ[1], v.XYZ[2] );
     }
-
-  }
+  
+  for ( std::list<cmtk::Vector3D>::iterator probeIt = LocationList.begin(); probeIt != LocationList.end(); ++probeIt ) 
+    {
+    cmtk::Vector3D v( *probeIt );
+    cmtk::StdOut.printf( "%lf %lf %lf -> ", (double)probeIt->XYZ[0], (double)probeIt->XYZ[1], (double)probeIt->XYZ[2] );
+    if ( XformList.ApplyInPlace( v ) )
+      cmtk::StdOut.printf( "%lf %lf %lf\n", (double)v.XYZ[0], (double)v.XYZ[1], (double)v.XYZ[2] );
+    else
+      cmtk::StdOut.printf( "FAILED\n" );
+    }
   
   return 0;
 }

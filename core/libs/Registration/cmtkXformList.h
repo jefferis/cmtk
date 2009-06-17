@@ -67,7 +67,7 @@ public:
   void Add( Xform::SmartPtr& xform, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
   
   /// Apply a sequence of (inverse) transformations.
-  bool Apply( Vector3D& v );
+  bool ApplyInPlace( Vector3D& v );
   
   /// Get the Jacobian determinant of a sequence of transformations.
   bool GetJacobian( const Vector3D& v, Types::DataItem& jacobian, const bool correctGlobalScale = true );

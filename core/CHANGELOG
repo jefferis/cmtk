@@ -1,5 +1,14 @@
 Release CMTK-1.0.1:
 
+- API: changed XformList::Apply to XformList::ApplyInPlace
+
+- Build: added missing applications "regress" and "probe_xform" to default
+    build again.
+
+- Changed: probe_xform tool now uses different command line semantics. All
+    transformations are concatenated rather than applied separately.
+
+
 Release CMTK-1.0.0 (2009-06-16):
 
 - API: "TemplateHistogram", "LogTemplateHistogram", and "TemplateHistogram2D"

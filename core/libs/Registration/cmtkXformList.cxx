@@ -39,7 +39,7 @@ cmtk::XformList::Add
 }
 
 bool
-cmtk::XformList::Apply( Vector3D& v )
+cmtk::XformList::ApplyInPlace( Vector3D& v )
 {
   for ( iterator it = this->begin(); it != this->end(); ++it ) 
     {

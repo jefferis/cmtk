@@ -534,6 +534,18 @@ case ${RUNTEST} in
 	run_eval "${BINDIR}/overlap --by-label --first-label 10 --num-labels 10 parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
 	check_result overlap.txt
 	;;
+    ProbeXformSimple)
+	run_eval "${BINDIR}/probe_xform --probe 180,180,60 --probe 20,20,20 --probe 0,0,0 vol001_mr_t0t1_warp.xform > ${tmpdir}/stdout.txt"
+	check_result stdout.txt
+	;;
+    ProbeXformFwdBwd)
+	run_eval "${BINDIR}/probe_xform --probe 180,180,60 --probe 20,20,20 --probe 0,0,0 vol001_mr_t0t1_warp.xform --inverse vol001_mr_t0t1_warp.xform > ${tmpdir}/stdout.txt"
+	check_result stdout.txt
+	;;
+    ProbeXformBwdFwd)
+	run_eval "${BINDIR}/probe_xform --probe 180,180,60 --probe 20,20,20 --probe 0,0,0 --inverse vol001_mr_t0t1_warp.xform vol001_mr_t0t1_warp.xform > ${tmpdir}/stdout.txt"
+	check_result stdout.txt
+	;;
     ReformatxNoXform)
 	run ${BINDIR}/reformatx --linear -o ${tmpdir}/reformat.hdr --floating vol001_mr_t1.hdr vol001_mr_t0_crop.hdr
 	check_result reformat.img

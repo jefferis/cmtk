@@ -45,7 +45,7 @@ ReformatVolume::Plain::operator()
   ( const Vector3D& inRef, XformList& refToFloat, TInterpolator& interpolator, Types::DataItem& value )
 {
   Vector3D inFlt( inRef );
-  if ( ! refToFloat.Apply( inFlt ) ) 
+  if ( ! refToFloat.ApplyInPlace( inFlt ) ) 
     return false;
 
   return interpolator->GetDataAt( inFlt, value ); 
