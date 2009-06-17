@@ -10,7 +10,8 @@ Release CMTK-1.0.1:
 
 - Added: normal vector of InfinitePlane can now be set directly.
 - Added: "sympl" tool can now use different approximated symmetry plane
-    orientations to begin search, supporting non-sagittal symmetry planes.
+    orientations to begin search, supporting non-sagittal symmetry planes
+    [Tracker #3834].
 
 - Fixed: cmtkVoxelMatchingAffineFunctional.h compile error when SMP is turned
     off.
@@ -51,7 +52,7 @@ Release CMTK-1.0.0 (2009-06-16):
 - Fixed: numerical instability of correlation coefficient (leading to values
     outside -1..+1, which in turn produced invalid p-values
 - Fixed: legacy IGS_MOUNTPOINTS was not considered
-- Fixed: principal axes registration was broken (Issue NITRC-#3743)
+- Fixed: principal axes registration was broken [Tracker #3743]
 - Fixed: configure problem with bundled zlib, which broke compile of NrrdIO in
     Visual Studio.
 - Fixed: Analyze/Nifti images were not written compressed
@@ -66,7 +67,7 @@ Release CMTK-1.0.0 (2009-06-16):
 - Improved: better integration of Doxygen into CMake build system
 - Improved: better output of stacked image information in dcm2image
 - Improved: pre-defined "--xml" and "--help" command line options can now be
-    overridden by library user (Issue [#3830]).
+    overridden by library user [Tracker #3830].
 
 - Removed: cmtk::MathUtil::CoefficientOfCorrelation was removed because it
     turned out to be a redundant, numerically unstable variant of
