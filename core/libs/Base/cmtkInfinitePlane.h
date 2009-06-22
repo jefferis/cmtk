@@ -188,7 +188,6 @@ public:
    * axes.
    *@param axis The index of the axis to align the normal vector with (0, 1, or
    * 2 for x, y, or z, respectively).
-   *@TODO Support other alignment axes than x is still missing.
    */
   AffineXform* GetAlignmentXform( const byte normalAxis = 0 ) const;
 
