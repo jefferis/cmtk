@@ -58,7 +58,7 @@ void dumpVolume( const cmtk::UniformVolume *volume )
 
 const char *Investigator = "Rohlfing T";
 const char *Site = "SRI International";
-const char *Method = "Multi-resolution optimization of NMI";
+const char *Method = "CMTK -- multi-resolution optimization of NMI";
 const char *Date = __DATE__;
 const char *PatientNumber = "undefined";
 const char *FromModality = "undefined";
