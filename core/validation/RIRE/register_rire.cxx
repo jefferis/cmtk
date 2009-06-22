@@ -71,7 +71,7 @@ parseFilenames( const char* refFn, const char *fltFn )
   char setFromModality[128];
   char setToModality[128];
   
-#ifdef _WIN32
+#ifdef WIN32
 #define PATH_SEPARATOR '\\'
 #else
 #define PATH_SEPARATOR '/'
@@ -157,11 +157,8 @@ void DoRegistration( const char* refFile, const char* fltFile )
   
 // open new scope so we can destruct automatic Registration instance and potentially check memory usage.
   {
-// setup registration object with two volumes; as soon as volumes are
-// linked to registration object, we can decrement their reference
-// counters.
+// setup registration object with two volumes
   cmtk::AffineRegistration Registration;
-// Registration.SetMetric( 1 ); // MI
   Registration.SetVolume_1( refVolume );
   cmtk::Vector3D refSize( refVolume->Size );
   Registration.SetVolume_2( fltVolume );
@@ -175,20 +172,14 @@ void DoRegistration( const char* refFile, const char* fltFile )
   Registration.SetSampling( 1.0 );
   Registration.SetUseOriginalData( true );
   
-// create a simple callback object that creates a detailed protocol of the
-// registration process.
+// create a simple callback object that creates a detailed protocol of the registration process.
   cmtk::RegistrationCallback::SmartPtr callback( new cmtk::ProtocolCallback( "vanderbilt.txt" ) );
   Registration.SetCallback( callback );
-  
-// print estimated memory allocation
-// fprintf( stderr, "Estimated peak memory allocation: %d Kbytes.\n",
-// Registration.EstimatedMemoryAllocation() );
   
 // run registration
   cmtk::CallbackResult result = Registration.Register();
   
-// output diagnostic message regarding the final status of the
-// registration.
+// output diagnostic message regarding the final status of the registration.
   fprintf( stderr, "Registration " );
   switch ( result ) 
     {
@@ -204,13 +195,8 @@ void DoRegistration( const char* refFile, const char* fltFile )
       fprintf( stderr, "returned unknown status code.\n" ); break;
     }
   
-// output transformation parameters.
-  cmtk::AffineXform::SmartPtr affineXform = Registration.GetTransformation();
-// fprintf( stderr, "\rResulting transformation parameters: \n" );
-// for ( int idx = 0; idx < affineXform->ParamVectorDim(); ++idx )
-// fprintf( stderr, "#%d: %f\n", idx,
-// (float) affineXform->Parameters[idx] );
-  
+// output transformation.
+  cmtk::AffineXform::SmartPtr affineXform = Registration.GetTransformation();  
   dumpTransformationVanderbilt( affineXform->GetInverse(), refSize );
   
 // Registration object is destructed here.
