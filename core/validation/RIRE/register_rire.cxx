@@ -212,7 +212,9 @@ void DoRegistration( const char* refFile, const char* fltFile )
   }
 }
 
-int main( const int argc, const char *argv[] )
+int
+main
+( const int argc, const char *argv[] )
 {
 // say who we are
   const char *cp = strrchr ( argv[0], '/' );
@@ -221,6 +223,12 @@ int main( const int argc, const char *argv[] )
   else
     ++cp;
   fprintf( stderr, "%s %s %s\n", cp, __DATE__, __TIME__ );
+
+  if ( argc != 3 )
+    {
+    fputs( "ERROR: this tool needs exactly two parameters, the reference and floating image paths\n", stderr );
+    exit( 1 );
+    }
 
   double timeBaseline = cmtk::Timers::GetTimeProcess();
   DoRegistration( argv[1], argv[2] );
