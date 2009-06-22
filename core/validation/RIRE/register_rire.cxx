@@ -35,15 +35,15 @@
 #include <cmtkAffineRegistration.h>
 #include <cmtkProtocolCallback.h>
 
-#include <cmtkPerform.h>
+#include <cmtkTimers.h>
 
 /** Print some diagnostic information about the volume.
 */
-void dumpVolume( const cmtkUniformVolume *volume )
+void dumpVolume( const cmtk::UniformVolume *volume )
 {
   fprintf( stderr, "%d x %d x %d pixels, %f x %f x %f mm\n", 
-	   volume->GetDims( CMTK_AXIS_X ), volume->GetDims( CMTK_AXIS_Y ),volume->GetDims( CMTK_AXIS_Z ), 
-	   volume->Size[0], volume->Size[1], volume->Size[2] );
+	   volume->GetDims( cmtk::AXIS_X ), volume->GetDims( cmtk::AXIS_Y ),volume->GetDims( cmtk::AXIS_Z ), 
+	   volume->Size[cmtk::AXIS_X], volume->Size[cmtk::AXIS_Y], volume->Size[cmtk::AXIS_Z] );
   
   const cmtk::TypedArray *data = volume->GetData();
   if ( data ) 
@@ -94,8 +94,7 @@ void parseFilenames( const char* refFn, const char *fltFn )
 
 /** Dump transformation in Vanderbilt format as transformed corner coordinates.
 */
-void dumpTransformationVanderbilt( const cmtkAffineXform* affineXform,
-				   const cmtkVector3D& size )
+void dumpTransformationVanderbilt( const cmtk::AffineXform* affineXform, const cmtk::Vector3D& size )
 {
   fprintf( stdout, "-------------------------------------------------------------------------\n" );
   fprintf( stdout, "Transformation Parameters\n\n" );
@@ -120,7 +119,7 @@ void dumpTransformationVanderbilt( const cmtkAffineXform* affineXform,
       for ( int i=0; i<2; ++i, ++pointIdx ) 
 	{
 	v.XYZ[0] = i ? size.XYZ[0] : 0;
-	cmtkVector3D w( v );
+	cmtk::Vector3D w( v );
 	affineXform->ApplyInPlace( w );
 	fprintf( stdout, " %1d %10.4f %10.4f %10.4f %10.4f %11.4f %11.4f\n", pointIdx, v.XYZ[0], v.XYZ[1], v.XYZ[2], w.XYZ[0], w.XYZ[1], w.XYZ[2] );
 	}
@@ -159,7 +158,7 @@ void DoRegistration( const char* refFile, const char* fltFile )
   cmtk::AffineRegistration Registration;
 // Registration.SetMetric( 1 ); // MI
   Registration.SetVolume_1( refVolume );
-  cmtkVector3D refSize( refVolume->Size );
+  cmtk::Vector3D refSize( refVolume->Size );
   Registration.SetVolume_2( fltVolume );
   
 // we want the centers of both images aligned intially.
@@ -188,13 +187,13 @@ void DoRegistration( const char* refFile, const char* fltFile )
   fprintf( stderr, "Registration " );
   switch ( result ) 
     {
-    case CMTK_CALLBACK_OK :
+    case cmtk::CALLBACK_OK :
       fprintf( stderr, "completed successfully.\n" ); break;
-    case CMTK_CALLBACK_INTERRUPT :
+    case cmtk::CALLBACK_INTERRUPT :
       fprintf( stderr, "was interrupted by user.\n" ); break;
-    case CMTK_CALLBACK_TIMEOUT :
+    case cmtk::CALLBACK_TIMEOUT :
       fprintf( stderr, "reached timeout.\n" ); break;
-    case CMTK_CALLBACK_FAILED :
+    case cmtk::CALLBACK_FAILED :
       fprintf( stderr, "failed miserably.\n" ); break;
     default:
       fprintf( stderr, "returned unknown status code.\n" ); break;
@@ -223,9 +222,9 @@ int main( const int argc, const char *argv[] )
     ++cp;
   fprintf( stderr, "%s %s %s\n", cp, __DATE__, __TIME__ );
 
-  double timeBaseline = cmtkPerform::GetTimeProcess();
+  double timeBaseline = cmtk::Timers::GetTimeProcess();
   DoRegistration( argv[1], argv[2] );
-  fprintf( stderr, "time: %f [s]\n", cmtk::Perform::GetTimeProcess() - timeBaseline );
+  fprintf( stderr, "time: %f [s]\n", cmtk::Timers::GetTimeProcess() - timeBaseline );
   
   return 0;
 }
