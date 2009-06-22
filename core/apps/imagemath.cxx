@@ -44,6 +44,7 @@
 
 #include <math.h>
 #include <stack>
+#include <vector>
 
 #ifdef _MSC_VER
 double trunc( const double x )
@@ -911,7 +912,7 @@ CallbackCombinePCA()
     }
   
   cmtk::Matrix2D<cmtk::Types::DataItem> eigensystem( numberOfImages, numberOfImages );
-  cmtk::Array<cmtk::Types::DataItem> eigenvalues( numberOfImages );
+  std::vector<cmtk::Types::DataItem> eigenvalues( numberOfImages );
   
   cmtk::MathUtil::ComputeEigensystem( cc, eigensystem, eigenvalues );
   

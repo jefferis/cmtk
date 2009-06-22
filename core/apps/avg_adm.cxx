@@ -40,7 +40,6 @@
 #include <cmtkClassStream.h>
 #include <cmtkTypedStreamStudylist.h>
 
-#include <cmtkArray.h>
 #include <cmtkActiveDeformationModel.h>
 #include <cmtkReformatVolume.h>
 #include <cmtkUniformVolume.h>

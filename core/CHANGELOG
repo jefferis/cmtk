@@ -15,6 +15,10 @@ Release CMTK-1.0.1:
 
 - Fixed: cmtkVoxelMatchingAffineFunctional.h compile error when SMP is turned
     off.
+- Fixed: crash of average_affine tool when run with no parameters 
+    [Tracker #3841]
+
+- Removed: obsolete cmtk::Array class; replace all uses with std::vector
 
 Release CMTK-1.0.0 (2009-06-16):
 

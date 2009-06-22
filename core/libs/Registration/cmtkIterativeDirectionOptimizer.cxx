@@ -31,7 +31,7 @@
 
 #include <cmtkIterativeDirectionOptimizer.h>
 
-#include <cmtkArray.h>
+#include <vector>
 
 namespace
 cmtk
@@ -53,7 +53,7 @@ IterativeDirectionOptimizer::Optimize
   int numOfSteps = 1+static_cast<int>(log(real_accuracy/exploration)/log(StepFactor));
   Types::Coordinate step = real_accuracy * pow( StepFactor, 1-numOfSteps );
 
-  Array<Types::Coordinate> stepScaleVector( Dim );
+  std::vector<Types::Coordinate> stepScaleVector( Dim );
   for ( int idx=0; idx<Dim; ++idx )
     stepScaleVector[idx] = this->GetParamStep( idx );
 

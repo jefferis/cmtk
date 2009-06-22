@@ -832,9 +832,9 @@ ScalarImage::AdjustAspectY( const bool interpolate )
   if ( interpolate ) 
     {
     // with interpolation
-    Array<Types::DataItem> row0( Dims[0] ), row1( Dims[0] );
-    PixelData->GetSubArray( row0, 0, Dims[0] );
-    PixelData->GetSubArray( row1, Dims[0], Dims[0] );
+    std::vector<Types::DataItem> row0( Dims[0] ), row1( Dims[0] );
+    PixelData->GetSubArray( &(row0[0]), 0, Dims[0] );
+    PixelData->GetSubArray( &(row1[0]), Dims[0], Dims[0] );
     
     Types::Coordinate scanLine = 0;
     size_t ySource = 0;
@@ -852,7 +852,7 @@ ScalarImage::AdjustAspectY( const bool interpolate )
 	{
 	++ySource;
 	row0 = row1;
-	PixelData->GetSubArray( row1, (1+ySource) * Dims[0], Dims[0] );
+	PixelData->GetSubArray( &(row1[0]), (1+ySource) * Dims[0], Dims[0] );
 	scanLine -= PixelSize[1];
 	}
       }
@@ -894,8 +894,8 @@ ScalarImage::AdjustAspectX( const bool interpolate )
   
   if ( interpolate ) 
     {
-    Array<Types::Coordinate> factor( newDimsX );
-    Array<unsigned int> fromPixel( newDimsX );
+    std::vector<Types::Coordinate> factor( newDimsX );
+    std::vector<unsigned int> fromPixel( newDimsX );
     
     Types::Coordinate scanLine = 0;
     size_t xSource = 0;
@@ -911,11 +911,11 @@ ScalarImage::AdjustAspectX( const bool interpolate )
 	}
       }
     
-    Array<Types::DataItem> rowFrom( Dims[0] );
+    std::vector<Types::DataItem> rowFrom( Dims[0] );
     size_t offset = 0;
     for ( unsigned int y = 0; y < Dims[1]; ++y ) 
       {
-      PixelData->GetSubArray( rowFrom, y * Dims[0], Dims[0] );
+      PixelData->GetSubArray( &(rowFrom[0]), y * Dims[0], Dims[0] );
       for ( unsigned int x = 0; x < newDimsX; ++x, ++offset ) 
 	{
 	scaled->Set( (1.0 - factor[x] ) * rowFrom[fromPixel[x]] + factor[x] * rowFrom[fromPixel[x]+1], offset );
@@ -926,7 +926,7 @@ ScalarImage::AdjustAspectX( const bool interpolate )
     {
     Types::Coordinate scanLine = PixelSize[0] / 2; // correct offset for NN
     size_t xSource = 0;
-    Array<unsigned int> fromPixel( newDimsX );
+    std::vector<unsigned int> fromPixel( newDimsX );
     for ( unsigned int x = 0; x < newDimsX; ++x ) 
       {
       fromPixel[x] = xSource * scaled->GetItemSize();

@@ -64,11 +64,11 @@ GeneralLinearModel::GeneralLinearModel
 {
   U = new Matrix2D<double>( NData, NParameters );
   V = new Matrix2D<double>( NParameters, NParameters );
-  W = new Array<double>( NParameters );
+  W = new std::vector<double>( NParameters );
 
   double wmax, thresh;
 
-  Array<double> data( this->NData );
+  std::vector<double> data( this->NData );
   for ( size_t j=0; j < NParameters; ++j ) 
     {
     // set up data vector for parameter 'j'
@@ -79,8 +79,8 @@ GeneralLinearModel::GeneralLinearModel
       }
 
     // compute variance
-    this->VariableMean[j] = MathUtil::Mean<double>( this->NData, data );
-    this->VariableSD[j] = MathUtil::Variance<double>( this->NData, data, this->VariableMean[j] );
+    this->VariableMean[j] = MathUtil::Mean<double>( data );
+    this->VariableSD[j] = MathUtil::Variance<double>( data, this->VariableMean[j] );
     
     // convert variance to standard deviation
     this->VariableSD[j] = sqrt( this->VariableSD[j] );
@@ -96,7 +96,7 @@ GeneralLinearModel::GeneralLinearModel
     {
     Up[p] = new Matrix2D<double>( NData, NParameters-1 );
     Vp[p] = new Matrix2D<double>( NParameters-1, NParameters-1 );
-    Wp[p] = new Array<double>( NParameters-1 );
+    Wp[p] = new std::vector<double>( NParameters-1 );
     
     // create partial design matrix, omitting parameter 'p'
     for ( size_t i=0; i < this->NData; ++i ) 
@@ -130,8 +130,8 @@ GeneralLinearModel::GetCorrelationMatrix() const
 {
   Matrix2D<double>* CC = new Matrix2D<double>( this->NParameters, this->NParameters );
 
-  Array<double> pi( this->NData );
-  Array<double> pj( this->NData );
+  std::vector<double> pi( this->NData );
+  std::vector<double> pj( this->NData );
 
   for ( size_t i = 0; i < this->NParameters; ++i )
     {
@@ -148,7 +148,7 @@ GeneralLinearModel::GetCorrelationMatrix() const
 	  {
 	  pj[n] = this->DesignMatrix[n][j];
 	  }
-	(*CC)[i][j] = MathUtil::Correlation( this->NData, &pi[0], &pj[0] );
+	(*CC)[i][j] = MathUtil::Correlation( pi, pj );
 	}
       else
 	{
@@ -216,7 +216,7 @@ GeneralLinearModel
   const Self* ThisConst = params->thisObject;
   Self* This = params->thisObject;
   
-  double* lm_params = Memory::AllocateArray<double>( ThisConst->NParameters );
+  std::vector<double> lm_params( ThisConst->NParameters );
   double* b = Memory::AllocateArray<double>( ThisConst->NData );
   double* valueYhat = Memory::AllocateArray<double>( ThisConst->NData );
 
@@ -301,8 +301,8 @@ GeneralLinearModel
       const double R2 = varYhat / varY;
       This->FStat->Set( (R2*df) / ((1-R2)*ThisConst->NParameters), n );
       
-      Array<double> lm_params_P( ThisConst->NParameters-1 );
-      Array<double> valueYhatp( ThisConst->NData );
+      std::vector<double> lm_params_P( ThisConst->NParameters-1 );
+      std::vector<double> valueYhatp( ThisConst->NData );
       
       // for each parameter, evaluate R^2_i for model without parameter Xi
       for (size_t p = 0; p < ThisConst->NParameters; ++p ) 
@@ -336,8 +336,8 @@ GeneralLinearModel
 	    }
 	  
 	  double varYhatp, avgYhatp;
-          avgYhatp = MathUtil::Mean<double>( ThisConst->NData, valueYhatp );
-          varYhatp = MathUtil::Variance<double>( ThisConst->NData, valueYhatp, avgYhatp );
+          avgYhatp = MathUtil::Mean<double>( valueYhatp );
+          varYhatp = MathUtil::Variance<double>( valueYhatp, avgYhatp );
 	  
 	  // copmpute R^2_p
 	  const double R2p = varYhatp / varY;
@@ -363,7 +363,6 @@ GeneralLinearModel
   delete[] valueYhat;
 
   delete[] b;
-  delete[] lm_params;
 
   return CMTK_THREAD_RETURN_VALUE;
 }

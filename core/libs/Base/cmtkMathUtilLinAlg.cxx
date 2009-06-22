@@ -56,7 +56,7 @@ MathUtil
 template<class T>
 void
 ComputeEigensystem
-( const Matrix2D<T>& matrix, Matrix2D<T>& eigenvectors,  Array<T>& eigenvalues )
+( const Matrix2D<T>& matrix, Matrix2D<T>& eigenvectors,  std::vector<T>& eigenvalues )
 {
   const size_t n = matrix.GetNumberOfColumns();
 
@@ -70,8 +70,8 @@ ComputeEigensystem
       apMatrix(i,j) = (double)(1.0 * matrix[i][j]);
 
   ap::real_1d_array apEigenvalues;
-  apEigenvalues.setbounds(0, eigenvalues.GetDim());
-  for (size_t i = 0; i < eigenvalues.GetDim(); i++)
+  apEigenvalues.setbounds(0, eigenvalues.size());
+  for (size_t i = 0; i < eigenvalues.size(); i++)
         apEigenvalues(i) = (double)(1.0 * eigenvalues[i]);
 
 
@@ -93,17 +93,17 @@ ComputeEigensystem
     for (size_t i = 0; i < n; i++)
         eigenvectors[i][j] = static_cast<T>( apEigenvectors(i,j) );
 
-  for (size_t i = 0; i < eigenvalues.GetDim(); i++)
+  for (size_t i = 0; i < eigenvalues.size(); i++)
     eigenvalues[i] = static_cast<T>( apEigenvalues(i) );
 }
 
-template void ComputeEigensystem<float>( const Matrix2D<float>& matrix, Matrix2D<float>& eigensystem, Array<float>& eigenvalues );
-template void ComputeEigensystem<double>( const Matrix2D<double>& matrix, Matrix2D<double>& eigensystem, Array<double>& eigenvalues );
+template void ComputeEigensystem<float>( const Matrix2D<float>& matrix, Matrix2D<float>& eigensystem, std::vector<float>& eigenvalues );
+template void ComputeEigensystem<double>( const Matrix2D<double>& matrix, Matrix2D<double>& eigensystem, std::vector<double>& eigenvalues );
 
 template<class T>
 void
 ComputeEigenvalues
-( const Matrix2D<T>& matrix, Array<T>& eigenvalues )
+( const Matrix2D<T>& matrix, std::vector<T>& eigenvalues )
 {
   const size_t n = matrix.GetNumberOfColumns();
 
@@ -117,8 +117,8 @@ ComputeEigenvalues
       apMatrix(i,j) = (double)(1.0 * matrix[i][j]);
 
   ap::real_1d_array apEigenvalues;
-  apEigenvalues.setbounds(0, eigenvalues.GetDim());
-  for (size_t i = 0; i < eigenvalues.GetDim(); i++)
+  apEigenvalues.setbounds(0, eigenvalues.size());
+  for (size_t i = 0; i < eigenvalues.size(); i++)
         apEigenvalues(i) = (double)(1.0 * eigenvalues[i]);
 
   ap::real_2d_array nullArray;
@@ -138,15 +138,15 @@ ComputeEigenvalues
     for (size_t j = 0; j < n; j++)
         matrix[i][j] = static_cast<T>( apMatrix(i,j) );
 
-  for (size_t i = 0; i < eigenvalues.GetDim(); i++)
+  for (size_t i = 0; i < eigenvalues.size(); i++)
     eigenvalues[i] = static_cast<T>( apEigenvalues(i) );
 }
 
-template void ComputeEigenvalues<float>( const Matrix2D<float>& matrix, Array<float>& eigenvalues );
-template void ComputeEigenvalues<double>( const Matrix2D<double>& matrix, Array<double>& eigenvalues );
+template void ComputeEigenvalues<float>( const Matrix2D<float>& matrix, std::vector<float>& eigenvalues );
+template void ComputeEigenvalues<double>( const Matrix2D<double>& matrix, std::vector<double>& eigenvalues );
 
 void 
-SVD( Matrix2D<double> *U, size_t m, size_t n, Array<double> *W, Matrix2D<double> *V )
+SVD( Matrix2D<double> *U, size_t m, size_t n, std::vector<double> *W, Matrix2D<double> *V )
 {
   ap::real_2d_array apA;
   apA.setbounds(0, m-1, 0, n-1);
@@ -183,7 +183,7 @@ SVD( Matrix2D<double> *U, size_t m, size_t n, Array<double> *W, Matrix2D<double>
 /** TODO: move this someplace more logical than the linear-algebra module
  */
 void
-SVDLinearRegression( Matrix2D<double> *U, size_t m, size_t n, Array<double> *W, Matrix2D<double> *V, double *b, double *lm_params )
+SVDLinearRegression( Matrix2D<double> *U, size_t m, size_t n, std::vector<double> *W, Matrix2D<double> *V, double *b, std::vector<double>& lm_params )
 {
     // From alglib linear regression:
     // Take the inverses of the singular values, setting the inverse 

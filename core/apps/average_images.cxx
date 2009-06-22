@@ -214,11 +214,13 @@ int main( const int argc, const char* argv[] )
   const int pixelsPerPercent = volume->GetNumberOfPixels() / 100;
   cmtk::Progress::SetTotalSteps( 100 );
 
-  cmtk::Array<cmtk::Types::DataItem> pixelData( dataList.size() );
+  std::vector<cmtk::Types::DataItem> pixelData( dataList.size() );
   for ( size_t i = 0; i < volume->GetNumberOfPixels(); ++i ) 
     {
-    if ( !(i % pixelsPerPercent) ) cmtk::Progress::SetProgress( i / pixelsPerPercent );
+    if ( !(i % pixelsPerPercent) ) 
+      cmtk::Progress::SetProgress( i / pixelsPerPercent );
 
+    pixelData.resize( dataList.size() );
     size_t actualSize = 0;
     std::list<cmtk::TypedArray::SmartPtr>::const_iterator dit;
     for ( dit = dataList.begin(); dit != dataList.end(); ++dit )
@@ -231,32 +233,29 @@ int main( const int argc, const char* argv[] )
       
       if ( actualSize )
 	{
+	pixelData.resize( actualSize );
 	cmtk::Types::DataItem avg, var;
-	avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( actualSize, pixelData );
-	var = cmtk::MathUtil::Variance<cmtk::Types::DataItem>( actualSize, pixelData, avg );
+	avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( pixelData );
+	var = cmtk::MathUtil::Variance<cmtk::Types::DataItem>( pixelData, avg );
 	switch ( Mode )
 	  {
 	  case MODE_AVG: 
 	  {
-	  cmtk::Types::DataItem avg, var;
-          avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( actualSize, pixelData );
-          var = cmtk::MathUtil::Variance<cmtk::Types::DataItem>( actualSize, pixelData, avg );
+	  const cmtk::Types::DataItem avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( pixelData );
 	  outputData->Set( avg, i );
 	  break;
 	  }
 	  case MODE_VAR:
 	  {
-	  cmtk::Types::DataItem avg, var;
-          avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( actualSize, pixelData );
-          var = cmtk::MathUtil::Variance<cmtk::Types::DataItem>( actualSize, pixelData, avg );
+	  const cmtk::Types::DataItem avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( pixelData );
+          const cmtk::Types::DataItem var = cmtk::MathUtil::Variance<cmtk::Types::DataItem>( pixelData, avg );
 	  outputData->Set( var, i );
 	  break;
 	  }
 	  case MODE_STDEV:
 	  {
-	  cmtk::Types::DataItem avg, var;
-          avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( actualSize, pixelData );
-          var = cmtk::MathUtil::Variance<cmtk::Types::DataItem>( actualSize, pixelData, avg );
+          const cmtk::Types::DataItem avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( pixelData );
+          const cmtk::Types::DataItem var = cmtk::MathUtil::Variance<cmtk::Types::DataItem>( pixelData, avg );
 	  outputData->Set( sqrt(var), i );
 	  break;
 	  }
@@ -271,9 +270,8 @@ int main( const int argc, const char* argv[] )
 	  }
 	  case MODE_ZSCORE:
 	  {
-	  cmtk::Types::DataItem avg, var;
-          avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( actualSize, pixelData );
-          var = cmtk::MathUtil::Variance<cmtk::Types::DataItem>( actualSize, pixelData, avg );
+          const cmtk::Types::DataItem avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( pixelData );
+          const cmtk::Types::DataItem var = cmtk::MathUtil::Variance<cmtk::Types::DataItem>( pixelData, avg );
 	  outputData->Set( avg / sqrt(var), i );
 	  break;
 	  }

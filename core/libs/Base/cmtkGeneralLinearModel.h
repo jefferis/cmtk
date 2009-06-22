@@ -141,25 +141,25 @@ private:
   Matrix2D<double>* U;
 
   /// Array of partial design matrices.
-  Array< Matrix2D<double>* > Up;
+  std::vector< Matrix2D<double>* > Up;
 
   /// Matrix V the design matrix SVD.
   Matrix2D<double>* V;
 
   /// SVD of partial design matrices.
-  Array< Matrix2D<double>* > Vp;
+  std::vector< Matrix2D<double>* > Vp;
 
   /// Vector W (workspace).
-  Array<double>* W;
+  std::vector<double>* W;
 
   /// Workspace vectors for partial regressions.
-  Array< Array<double>* > Wp;
+  std::vector< std::vector<double>* > Wp;
 
   /// Means of variables.
-  Array<double> VariableMean;
+  std::vector<double> VariableMean;
 
   /// Standard deviations of variables.
-  Array<double> VariableSD;
+  std::vector<double> VariableSD;
 
   /// Computed model coefficients.
   std::vector<TypedArray::SmartPtr> Model;

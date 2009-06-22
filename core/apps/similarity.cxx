@@ -45,7 +45,6 @@
 #include <cmtkUniformVolumeInterpolatorPartialVolume.h>
 
 #include <cmtkVoxelMatchingCrossCorrelation.h>
-#include <cmtkArray.h>
 
 #include <stdio.h>
 #include <string.h>

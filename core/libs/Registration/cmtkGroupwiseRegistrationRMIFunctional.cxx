@@ -134,7 +134,7 @@ GroupwiseRegistrationRMIFunctional<TXform>
       }
     }
   
-  Array<typename Self::ReturnType> eigenvalues( numberOfImages );
+  std::vector<typename Self::ReturnType> eigenvalues( numberOfImages );
   MathUtil::ComputeEigenvalues<typename Self::ReturnType>( covarianceMatrix, eigenvalues );
 
   const typename Self::ReturnType EIGENVALUE_THRESHOLD = 1e-6;

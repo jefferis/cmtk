@@ -33,7 +33,8 @@
 
 #include <cmtkMathUtil.h>
 #include <cmtkBitVector.h>
-#include <cmtkArray.h>
+
+#include <vector>
 
 #include <assert.h>
 
@@ -319,6 +320,11 @@ SplineWarpXform::Refine ( const int factor )
   const int newNextJK = newNextK + newNextJ;
   const int newNextIJK = newNextJK + newNextI;
 
+  Types::Coordinate level0[3][3];
+  memset( level0, 0, sizeof( level0 ) );
+  Types::Coordinate level1[3];
+  memset( level1, 0, sizeof( level1 ) );
+
   Types::Coordinate *ncoeff = newCoefficients;
   for ( int z = 0; z<newDims[2]; ++z ) 
     {
@@ -333,7 +339,6 @@ SplineWarpXform::Refine ( const int factor )
 	
 	for ( int dim=0; dim<3; ++dim, ++coeff, ++ncoeff ) 
 	  {	  
-	  Types::Coordinate level0[3][3];
 	  for ( int k=0; k<3; ++k ) 
 	    {
 	    int ofsJK = (k-1) * nextK - nextJ;
@@ -353,7 +358,6 @@ SplineWarpXform::Refine ( const int factor )
 	      }
 	    }
 	  
-	  Types::Coordinate level1[3];
 	  for ( int k=0; k<3; ++k )
 	    {
 	    if ( oddZ || k )
@@ -1030,7 +1034,7 @@ SplineWarpXform::GetInverseConsistencyError
   const int startZ = pVoi->startZ - (pVoi->startZ % dZ);
 
   const size_t length = pVoi->endX - startX;
-  Array<Vector3D> vecArray( length );
+  std::vector<Vector3D> vecArray( length );
 
   for ( int z = startZ; z < pVoi->endZ; z += dZ ) 
     {

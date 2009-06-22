@@ -78,11 +78,50 @@ Variance
     return (sumOfSquares - sum*sum/nValues) / (nValues);                                     
 }        
 
+template<class T>                                                                     
+T                                                                                     
+Mean                                                                                  
+( const std::vector<T>& values )                                       
+{                                                                                     
+  const size_t nValues = values.size();
+  
+  T mean = 0.0;
+  for ( size_t j = 0; j < nValues; j++ )                                        
+    mean += values[j];                                                                
+  mean /= nValues;                                                                    
+                                                                                      
+  return mean;                                                                        
+}                                                                                     
+                                                                                      
+template<class T>                                                                     
+T                                                                                     
+Variance                                                                              
+( const std::vector<T>& values, const T mean, const bool unbiased )           
+{                                                                                            
+  const size_t nValues = values.size();
+
+  T sumOfSquares = 0.0;                                                                          
+  T sum = 0.0;                                                                               
+  for ( size_t j = 0; j < nValues; j++ ) 
+    { 
+    const T s = values[j] - mean;                                                                  
+    sum += s;                                                                                
+    sumOfSquares += s*s;                                                                         
+    }                                                                                          
+  
+  if ( unbiased )                                                                            
+    return (sumOfSquares - sum*sum/nValues) / (nValues-1);                                   
+  else                                                                                       
+    return (sumOfSquares - sum*sum/nValues) / (nValues);                                     
+}        
+
 template<class T>
 T
 Correlation
-( const size_t n, const T* x, const T* y )
+( const std::vector<T>& x, const std::vector<T>& y )
 {
+  const size_t n = std::min( x.size(), y.size() );
+
   // compute means
   T meanx = 0, meany = 0;
   for ( size_t i = 0; i < n; ++i )
@@ -109,19 +148,21 @@ Correlation
 template<class T>
 T
 TTest
-( const unsigned int nValuesX, const T* valuesX, const unsigned int nValuesY, const T* valuesY, T& t )
+( const std::vector<T>& valuesX, const std::vector<T>& valuesY, T& t )
 {
   T averageX, averageY;
-  return TTest( nValuesX, valuesX, nValuesY, valuesY, t, averageX, averageY );
+  return TTest( valuesX, valuesY, t, averageX, averageY );
 }
 
 template<class T>
 T
 PairedTTest
-( const unsigned int nValues, const T* valuesX, const T* valuesY, T& t, T& avgX, T& avgY )
+( const std::vector<T>& valuesX, const std::vector<T>& valuesY, T& t, T& avgX, T& avgY )
 {
-  avgX = Mean( nValues, valuesX );
-  avgY = Mean( nValues, valuesY );
+  const size_t nValues = valuesX.size();
+
+  avgX = Mean( valuesX );
+  avgY = Mean( valuesY );
 
   T SSD = 0;
   for ( size_t i = 0; i < nValues; ++i )
@@ -140,9 +181,11 @@ PairedTTest
 template<class T>
 T
 TTest
-( const unsigned int nValuesX, const T* valuesX, const unsigned int nValuesY, const T* valuesY, T& t, T& avgX, T& avgY )
+( const std::vector<T>& valuesX, const std::vector<T>& valuesY, T& t, T& avgX, T& avgY )
 {
-  
+  const size_t nValuesX = valuesX.size();
+  const size_t nValuesY = valuesY.size();
+
   ap::real_1d_array apValuesX;
   apValuesX.setbounds( 0, nValuesX-1 );
   for (unsigned int i = 0; i < nValuesX; i++)
@@ -155,15 +198,14 @@ TTest
   
   ap::real_value_type t_temp, p1, p2, p3;
 
-  avgX = MathUtil::Mean<T>( nValuesX, valuesX );
-  avgY = MathUtil::Mean<T>( nValuesY, valuesY );
+  avgX = MathUtil::Mean<T>( valuesX );
+  avgY = MathUtil::Mean<T>( valuesY );
   
   studentttest2( apValuesX, nValuesX, apValuesY, nValuesY, t_temp, p1, p2, p3 );
 
   t = static_cast<T>( t_temp );
 
   return static_cast<T>( p1 ); // probability
-
 }
 
 /** One-sample t-test
@@ -171,11 +213,12 @@ TTest
 template<class T>
 T
 TTest
-( const unsigned int nValuesX, const T* valuesX, T& t, T& avgX )
+( const std::vector<T>& valuesX, T& t, T& avgX )
 {
+  const size_t nValuesX = valuesX.size();
 
-  avgX = Mean( nValuesX, valuesX );
-  T varianceX = Variance( nValuesX, valuesX, avgX, true /*unbiased*/ );
+  avgX = Mean( valuesX );
+  T varianceX = Variance( valuesX, avgX, true /*unbiased*/ );
 
   t = avgX * nValuesX / sqrt( varianceX );
 

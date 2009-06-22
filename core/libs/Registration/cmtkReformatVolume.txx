@@ -92,7 +92,7 @@ ReformatVolume::GetTransformedReference
   Progress::SetTotalSteps( result->GetNumberOfPixels() );
 
   const size_t numberOfThreads = Threads::GetNumberOfThreads();
-  Array<GetTransformedReferenceTP> params( numberOfThreads );
+  std::vector<GetTransformedReferenceTP> params( numberOfThreads );
 
   for ( size_t thr = 0; thr < numberOfThreads; ++thr ) 
     {
@@ -149,9 +149,9 @@ ReformatVolume::GetTransformedReferenceGreyAvg( void *const arg )
 
   Types::Coordinate minDelta = std::min( delta[0], std::min( delta[1], delta[2] ) );
   
-  Array<Types::DataItem> value( params->numberOfImages );
+  std::vector<Types::DataItem> value( params->numberOfImages );
   
-  Array<const SplineWarpXform*> xforms( params->numberOfImages-1 );
+  std::vector<const SplineWarpXform*> xforms( params->numberOfImages-1 );
 
   for ( unsigned int img = 0; img < params->numberOfImages-1; ++img ) 
     {

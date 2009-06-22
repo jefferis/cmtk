@@ -39,13 +39,13 @@
 #include <cmtkTypedArray.h>
 #include <cmtkTemplateArray.h>
 #include <cmtkMathUtil.h>
-#include <cmtkArray.h>
 
 #include <cmtkProgress.h>
 #include <cmtkConsole.h>
 
 #include <assert.h>
 #include <algorithm>
+#include <vector>
 
 #include <cmtkSincInterpolator.h>
 #include <cmtkLinearInterpolator.h>
@@ -365,8 +365,8 @@ ReformatVolume::GetTransformedReferenceLabel( void *const arg )
   Types::Coordinate x, y, z;
   bool success = false;
 
-  Array<ProbeInfo> probe( params->numberOfImages );
-  Array<Types::Coordinate> labelCount( params->maxLabel+1 );
+  std::vector<ProbeInfo> probe( params->numberOfImages );
+  std::vector<Types::Coordinate> labelCount( params->maxLabel+1 );
     
   z = bbFrom[2];
   size_t offset = 0;
@@ -409,7 +409,7 @@ ReformatVolume::GetTransformedReferenceLabel( void *const arg )
 	  }
 	if ( toIdx && success ) 
 	  {
-	  labelCount.SetAllToZero();
+	  std::fill( labelCount.begin(), labelCount.end(), 0 );
 	  for ( unsigned int idx = 0; idx < toIdx; ++idx ) 
 	    {
 	    for ( unsigned int corner = 0; corner < 8; ++corner ) 
@@ -467,7 +467,7 @@ ReformatVolume::GetTransformedReferenceJacobianAvg
   Progress::SetTotalSteps( result->GetDims( AXIS_Z ) );
 
   const size_t numberOfThreads = Threads::GetNumberOfThreads();
-  Array<GetTransformedReferenceTP> params( numberOfThreads );
+  std::vector<GetTransformedReferenceTP> params( numberOfThreads );
 
   for ( size_t thr = 0; thr < numberOfThreads; ++thr ) 
     {
@@ -511,7 +511,7 @@ ReformatVolume::GetTransformedReferenceJacobianAvgThread
   bool success = false;
 
   const size_t numberOfXforms = xformList->size();
-  Array<const SplineWarpXform*> xforms( numberOfXforms );
+  std::vector<const SplineWarpXform*> xforms( numberOfXforms );
   for ( unsigned int img = 0; img < numberOfXforms; ++img )
     xforms[img] = (*xformList)[img];
 

@@ -34,6 +34,7 @@
 #include <cmtkTypes.h>
 
 #include <algorithm>
+#include <vector>
 
 namespace
 cmtk
@@ -104,9 +105,9 @@ MultiChannelRMIRegistrationFunctional<TRealType,TDataType,TInterpolator>
       }
     }
   
-  Array<RealType> eigenvalues( this->m_NumberOfChannels );
-  Array<RealType> eigenvaluesRef( this->m_ReferenceChannels.size() );
-  Array<RealType> eigenvaluesFlt( this->m_FloatingChannels.size() );
+  std::vector<RealType> eigenvalues( this->m_NumberOfChannels );
+  std::vector<RealType> eigenvaluesRef( this->m_ReferenceChannels.size() );
+  std::vector<RealType> eigenvaluesFlt( this->m_FloatingChannels.size() );
 
   MathUtil::ComputeEigenvalues( metricData.m_CovarianceMatrix, eigenvalues );
   MathUtil::ComputeEigenvalues( metricData.m_CovarianceMatrixRef, eigenvaluesRef );

@@ -31,7 +31,6 @@
 
 #include <cmtkActiveShapeModel.h>
 
-#include <cmtkArray.h>
 #include <cmtkMatrix.h>
 #include <cmtkMathUtil.h>
 
@@ -114,12 +113,12 @@ ActiveShapeModel::Construct
   // here comes the hard part: compute Eigenvectors of cc...
   // we do this in a separate routine, for clarity.
   Matrix2D<Types::Coordinate> eigensystem( numberOfSamples, numberOfSamples );
-  Array<Types::Coordinate> eigenvalues( numberOfSamples );
+  std::vector<Types::Coordinate> eigenvalues( numberOfSamples );
 
   MathUtil::ComputeEigensystem( cc, eigensystem, eigenvalues );
 
   // determine permutation that orders eigenvectors by descending eigenvalues
-  Array<unsigned int> permutation( numberOfSamples );
+  std::vector<unsigned int> permutation( numberOfSamples );
   // initialize permutation array
   for ( unsigned int i = 0; i < numberOfSamples; ++i )
     permutation[i] = i;
@@ -193,7 +192,7 @@ float
 ActiveShapeModel::Decompose
 ( const CoordinateVector* input, Types::Coordinate *const weights ) const
 {
-  Array<Types::Coordinate> w( this->NumberOfModes );
+  std::vector<Types::Coordinate> w( this->NumberOfModes );
   CoordinateVector deviation( *input );
   deviation -= *(this->Mean);
 

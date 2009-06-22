@@ -35,6 +35,8 @@
 #include <cmtkMathUtil.h>
 #include <cmtkConsole.h>
 
+#include <vector>
+
 namespace
 cmtk
 {
@@ -63,9 +65,9 @@ CompareDeformations::GetJacobianTTest
     *avgYData = TypedArray::Create( TYPE_FLOAT, length );
   
   const unsigned int dataXsize = dataX.size();
-  Array<Types::DataItem> valuesX( dataXsize );
+  std::vector<Types::DataItem> valuesX( dataXsize );
   const unsigned int dataYsize = dataY.size();
-  Array<Types::DataItem> valuesY( dataYsize );
+  std::vector<Types::DataItem> valuesY( dataYsize );
 
   Types::DataItem t = 0, prob = 0, avgX = 0, avgY = 0;
   for ( unsigned int idx = 0; idx < length; ++idx ) {
@@ -83,7 +85,7 @@ CompareDeformations::GetJacobianTTest
       
       if ( actualSizeX && actualSizeY )
 	{
-	prob = MathUtil::TTest<Types::DataItem>( actualSizeX, valuesX, actualSizeY, valuesY, t, avgX, avgY );
+	prob = MathUtil::TTest<Types::DataItem>( valuesX, valuesY, t, avgX, avgY );
 	
 	if ( (prob < 0) || (prob>1) )
 	  {
@@ -144,9 +146,9 @@ CompareDeformations::GetPairedTTest
     *avgYData = TypedArray::Create( TYPE_FLOAT, length );
   
   const unsigned int dataXsize = dataX.size();
-  Array<Types::DataItem> valuesX( dataXsize );
+  std::vector<Types::DataItem> valuesX( dataXsize );
   const unsigned int dataYsize = dataY.size();
-  Array<Types::DataItem> valuesY( dataYsize );
+  std::vector<Types::DataItem> valuesY( dataYsize );
 
   Types::DataItem t = 0, prob = 0, avgX = 0, avgY = 0;
   for ( unsigned int idx = 0; idx < length; ++idx ) {
@@ -154,17 +156,22 @@ CompareDeformations::GetPairedTTest
     Types::DataItem maskValue;
     if ( !mask || (mask->Get( maskValue, idx ) && (maskValue != 0)) ) 
       {
+      valuesX.resize( dataXsize );
       unsigned int actualSizeX = 0;
       for ( unsigned int i = 0; i < dataXsize; ++i )
 	if ( dataX[i]->Get( valuesX[actualSizeX], idx ) ) ++actualSizeX;
       
+      valuesY.resize( dataYsize );
       unsigned int actualSizeY = 0;
       for ( unsigned int i = 0; i < dataYsize; ++i )
 	if ( dataY[i]->Get( valuesY[actualSizeY], idx ) ) ++actualSizeY;
       
       if ( actualSizeX == actualSizeY )
 	{
-	prob = MathUtil::PairedTTest<Types::DataItem>( actualSizeX, valuesX, valuesY, t, avgX, avgY );
+	valuesX.resize( actualSizeX );
+	valuesY.resize( actualSizeY );
+
+	prob = MathUtil::PairedTTest<Types::DataItem>( valuesX, valuesY, t, avgX, avgY );
 	
 	if ( (prob < 0) || (prob>1) )
 	  {
@@ -215,9 +222,9 @@ CompareDeformations::GetPairedCorrelation
     *pData = TypedArray::Create( TYPE_FLOAT, length );
 
   const unsigned int dataXsize = dataX.size();
-  Array<Types::DataItem> valuesX( dataXsize );
+  std::vector<Types::DataItem> valuesX( dataXsize );
   const unsigned int dataYsize = dataY.size();
-  Array<Types::DataItem> valuesY( dataYsize );
+  std::vector<Types::DataItem> valuesY( dataYsize );
 
   for ( unsigned int idx = 0; idx < length; ++idx ) 
     {
@@ -228,6 +235,9 @@ CompareDeformations::GetPairedCorrelation
     Types::DataItem maskValue;
     if ( !mask || (mask->Get( maskValue, idx ) && (maskValue != 0)) ) 
       {
+      valuesX.resize( dataXsize );
+      valuesY.resize( dataXsize );
+
       unsigned int actualSize = 0;
       for ( unsigned int i = 0; i < dataXsize; ++i )
 	if ( dataX[i]->Get( valuesX[actualSize], idx ) && dataY[i]->Get( valuesY[actualSize], idx ) )
@@ -235,9 +245,13 @@ CompareDeformations::GetPairedCorrelation
       
       if ( actualSize )
 	{
-	Types::DataItem corr = MathUtil::Correlation<Types::DataItem>( actualSize, valuesX, valuesY );
+	valuesX.resize( actualSize );
+	valuesY.resize( actualSize );
+
+	Types::DataItem corr = MathUtil::Correlation<Types::DataItem>( valuesX, valuesY );
 	correlationData->Set(  corr, idx );
-	if ( pData ) (*pData)->Set( MathUtil::ProbabilityFromTStat( MathUtil::TStatFromCorrelation( corr, actualSize-2 ), actualSize-2 ), idx );
+	if ( pData ) 
+	  (*pData)->Set( MathUtil::ProbabilityFromTStat( MathUtil::TStatFromCorrelation( corr, actualSize-2 ), actualSize-2 ), idx );
 	}
       }
     }
@@ -262,20 +276,24 @@ CompareDeformations::GetOneSampleTTest
     *avgXData = TypedArray::Create( TYPE_FLOAT, length );
 
   const unsigned int dataXsize = dataX.size();
-  Array<Types::DataItem> valuesX( dataXsize );
+  std::vector<Types::DataItem> valuesX( dataXsize );
 
   Types::DataItem t = 0, prob = 0, avgX = 0;
   for ( unsigned int idx = 0; idx < length; ++idx ) {
 
     Types::DataItem maskValue;
-    if ( !mask || (mask->Get( maskValue, idx ) && (maskValue != 0)) ) {
+    if ( !mask || (mask->Get( maskValue, idx ) && (maskValue != 0)) ) 
+      {
+      valuesX.resize( dataXsize );
       unsigned int actualSizeX = 0;
       for ( unsigned int i = 0; i < dataXsize; ++i )
-	if ( dataX[i]->Get( valuesX[actualSizeX], idx ) ) ++actualSizeX;
+	if ( dataX[i]->Get( valuesX[actualSizeX], idx ) ) 
+	  ++actualSizeX;
       
       if ( actualSizeX )
 	{
-	prob = MathUtil::TTest<Types::DataItem>( actualSizeX, valuesX, t, avgX );
+	valuesX.resize( actualSizeX );
+	prob = MathUtil::TTest<Types::DataItem>( valuesX, t, avgX );
 
 	if ( (prob < 0) || (prob>1) )
 	  {
@@ -316,9 +334,9 @@ CompareDeformations::GetHeritability
   TypedArray* outData = TypedArray::Create( TYPE_FLOAT, length );
   
   const unsigned int dataXsize = dataX.size();
-  Array<float> valuesX( dataXsize );
+  std::vector<float> valuesX( dataXsize );
   const unsigned int dataYsize = dataY.size();
-  Array<float> valuesY( dataYsize );
+  std::vector<float> valuesY( dataYsize );
 
   for ( size_t idx = 0; idx < length; ++idx ) {
 
@@ -341,9 +359,9 @@ CompareDeformations::GetZScores
   TypedArray* outData = TypedArray::Create( TYPE_FLOAT, length );
   
   const unsigned int dataXsize = dataX.size();
-  Array<Types::DataItem> valuesX( dataXsize );
+  std::vector<Types::DataItem> valuesX( dataXsize );
   const unsigned int dataYsize = dataY.size();
-  Array<Types::DataItem> valuesY( dataYsize );
+  std::vector<Types::DataItem> valuesY( dataYsize );
 
   Types::DataItem avgX, avgY, varX;
 
@@ -352,20 +370,24 @@ CompareDeformations::GetZScores
     Types::DataItem maskValue;
     if ( !mask || (mask->Get( maskValue, idx ) && (maskValue != 0)) ) 
       {
+      valuesX.resize( dataXsize );
       unsigned int actualSizeX = 0;
       for ( unsigned int i = 0; i < dataXsize; ++i )
 	if ( dataX[i]->Get( valuesX[actualSizeX], idx ) ) ++actualSizeX;
       
+      valuesY.resize( dataYsize );
       unsigned int actualSizeY = 0;
       for ( unsigned int i = 0; i < dataYsize; ++i )
 	if ( dataY[i]->Get( valuesY[actualSizeY], idx ) ) ++actualSizeY;
 
       if ( actualSizeX && actualSizeY )
 	{
-	avgX = MathUtil::Mean<Types::DataItem>( actualSizeX, valuesX );
-	avgY = MathUtil::Mean<Types::DataItem>( actualSizeY, valuesY );
+	valuesX.resize( actualSizeX );
+	avgX = MathUtil::Mean<Types::DataItem>( valuesX );
+	valuesY.resize( actualSizeY );
+	avgY = MathUtil::Mean<Types::DataItem>( valuesY );
 	
-        varX = MathUtil::Variance<Types::DataItem>( actualSizeX, valuesX, avgX );
+        varX = MathUtil::Variance<Types::DataItem>( valuesX, avgX );
 
 	outData->Set( (avgY - avgX) / sqrt( varX ), idx );
 	}
@@ -394,9 +416,9 @@ CompareDeformations::GetGeneticCovariance
   TypedArray* outData = TypedArray::Create( TYPE_FLOAT, length );
   
   const unsigned int dataMZsize = dataMZ.size();
-  Array<Types::DataItem> valuesMZ( dataMZsize );
+  std::vector<Types::DataItem> valuesMZ( dataMZsize );
   const unsigned int dataDZsize = dataDZ.size();
-  Array<Types::DataItem> valuesDZ( dataDZsize );
+  std::vector<Types::DataItem> valuesDZ( dataDZsize );
 
   Types::DataItem avgMZ, avgDZ, varMZ, varDZ;
 
@@ -405,21 +427,25 @@ CompareDeformations::GetGeneticCovariance
     Types::DataItem maskValue;
     if ( !mask || (mask->Get( maskValue, idx ) && (maskValue != 0)) ) 
       {
+      valuesMZ.resize( dataMZsize );
       unsigned int actualSizeMZ = 0;
       for ( unsigned int i = 0; i < dataMZsize; ++i )
 	if ( dataMZ[i]->Get( valuesMZ[actualSizeMZ], idx ) ) ++actualSizeMZ;
       
+      valuesDZ.resize( dataDZsize );
       unsigned int actualSizeDZ = 0;
       for ( unsigned int i = 0; i < dataDZsize; ++i )
 	if ( dataDZ[i]->Get( valuesDZ[actualSizeDZ], idx ) ) ++actualSizeDZ;
 
       if ( actualSizeMZ && actualSizeDZ )
 	{
-	avgMZ = MathUtil::Mean<Types::DataItem>( actualSizeMZ, valuesMZ );
-	varMZ = MathUtil::Variance<Types::DataItem>( actualSizeMZ, valuesMZ, avgMZ );
+	valuesMZ.resize( actualSizeMZ );
+	avgMZ = MathUtil::Mean<Types::DataItem>( valuesMZ );
+	varMZ = MathUtil::Variance<Types::DataItem>( valuesMZ, avgMZ );
 
-	avgDZ = MathUtil::Mean<Types::DataItem>( actualSizeDZ, valuesDZ );
-	varDZ = MathUtil::Variance<Types::DataItem>( actualSizeDZ, valuesDZ, avgDZ );
+	valuesDZ.resize( actualSizeDZ );
+	avgDZ = MathUtil::Mean<Types::DataItem>( valuesDZ );
+	varDZ = MathUtil::Variance<Types::DataItem>( valuesDZ, avgDZ );
 
 	outData->Set( varMZ / avgMZ - varDZ / avgDZ, idx );
 	}

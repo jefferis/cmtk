@@ -34,7 +34,6 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkArray.h>
 #include <cmtkMatrix.h>
 
 #include <math.h>
@@ -216,6 +215,12 @@ template<class T>
 T Mean
 ( const unsigned int nValues, const T* values );
 
+/** Computes average of a vector of float values.
+   */
+template<class T>
+T Mean
+( const std::vector<T>& values );
+
 /** Computes variance of an array of float values.
     *\param unbiased If this flag is set (default: unset), then the variance
     * will be computed over nValues-1; otherwise over nValues.
@@ -224,11 +229,19 @@ template<class T>
 T Variance
 ( const unsigned int nValues, const T* values, T mean, const bool unbiased = false );
 
+/** Computes variance of a vector of float values.
+    *\param unbiased If this flag is set (default: unset), then the variance
+    * will be computed over nValues-1; otherwise over nValues.
+   */
+template<class T>
+T Variance
+( const std::vector<T>& values, T mean, const bool unbiased = false );
+
 
 /** Normalized correlation coefficient between two float vectors.
    */
 template<class T>
-T Correlation( const size_t n, const T* x, const T* y );
+T Correlation( const std::vector<T>& x, const std::vector<T>& y );
 
 /// Compute t-statistic from coefficient of correlation.
 double TStatFromCorrelation
@@ -243,25 +256,25 @@ double ProbabilityFromTStat
 /** Performs t-test on two distributions.
    */
 template<class T>
-T TTest ( const unsigned int nValuesX, const T* valuesX, const unsigned int nValuesY, const T* valuesY, T& t );
+T TTest ( const std::vector<T>& valuesX, const std::vector<T>& valuesY, T& t );
 
 /** Performs t-test on two distributions.
    * Also return average value for each distribution.
    */
 template<class T>
-T TTest ( const unsigned int nValuesX, const T* valuesX, const unsigned int nValuesY, const T* valuesY, T& t, T& avgX, T& avgY );
+T TTest ( const std::vector<T>& valuesX, const std::vector<T>& valuesY, T& t, T& avgX, T& avgY );
 
 /** Performs t-test on two distributions.
    * Also return average value for each distribution.
    */
 template<class T>
-T PairedTTest ( const unsigned int nValues, const T* valuesX, const T* valuesY, T& t, T& avgX, T& avgY );
+T PairedTTest ( const std::vector<T>& valuesX, const std::vector<T>& valuesY, T& t, T& avgX, T& avgY );
 
 /** Performs one-sample t-test on distribution to test for zero mean.
    * Also return average value for each distribution.
    */
 template<class T>
-T TTest ( const unsigned int nValuesX, const T* valuesX, T& t, T& avgX );
+T TTest ( const std::vector<T>& valuesX, T& t, T& avgX );
 
 /// Beta-i function.
 double Betai( const double a, const double b, const double x );
@@ -273,11 +286,11 @@ double BetaCf( const double a, const double b, const double x );
 double GammaLn( const double xx );
 
 /// Singular Value Decomposition
-void SVD( Matrix2D<double> *U, size_t m, size_t n, Array<double> *W, Matrix2D<double> *V );
+void SVD( Matrix2D<double> *U, size_t m, size_t n, std::vector<double> *W, Matrix2D<double> *V );
 
 /// Linear Regression using SVD results
 void
-SVDLinearRegression( Matrix2D<double> *U, size_t m, size_t n, Array<double> *W, Matrix2D<double> *V, double *b, double *lm_params );
+SVDLinearRegression( Matrix2D<double> *U, size_t m, size_t n, std::vector<double> *W, Matrix2D<double> *V, double *b, std::vector<double>& lm_params );
 
 /** Convert degrees to radians.
    * No range checking is done. If the given angle is outside the range 
@@ -363,10 +376,10 @@ inline double NormalRandom( const double sigma, const unsigned int seed ) {
 double UniformRandom();
 
 /// Compute eigensystem and eigenvalues for square real matrix using Jacobi rotation.
-template<class T> void ComputeEigensystem( const Matrix2D<T>& matrix, Matrix2D<T>& eigensystem, Array<T>& eigenvalues );
+template<class T> void ComputeEigensystem( const Matrix2D<T>& matrix, Matrix2D<T>& eigensystem, std::vector<T>& eigenvalues );
 
 /// Compute eigenvalues for square real matrix using Jacobi rotation.
-template<class T> void ComputeEigenvalues( const Matrix2D<T>& matrix, Array<T>& eigenvalues );
+template<class T> void ComputeEigenvalues( const Matrix2D<T>& matrix, std::vector<T>& eigenvalues );
 
 /// Determinant of an n x n square matrix.
 template<class T> T CholeskyDeterminant( const Matrix2D<T>& matrix, int n);

@@ -33,12 +33,13 @@
 
 #include <cmtkConsole.h>
 #include <cmtkMathUtil.h>
-#include <cmtkArray.h>
 #include <cmtkMatrix.h>
 #include <cmtkQRDecomposition.h>
 
 #include <string.h>
 #include <math.h>
+
+#include <vector>
 
 namespace
 cmtk
@@ -203,7 +204,7 @@ Matrix4x4<T>::Decompose
     for ( int j = 0; j < 3; ++j )
       matrix2d[i][j] = matrix[i][j];
 
-  Array<T> R_diagonal( 3 );
+  std::vector<T> R_diagonal( 3 );
 
   QRDecomposition<T> qr( matrix2d );
 

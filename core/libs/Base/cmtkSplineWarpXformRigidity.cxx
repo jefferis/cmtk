@@ -31,8 +31,9 @@
 
 #include <cmtkSplineWarpXform.h>
 
-#include <cmtkArray.h>
 #include <cmtkQRDecomposition.h>
+
+#include <vector>
 
 namespace
 cmtk
@@ -67,14 +68,14 @@ SplineWarpXform::GetRigidityConstraintDerivative
   const Types::Coordinate step ) const
 {
   const int pixelsPerRow = voi.endX - voi.startX;
-  Array<CoordinateMatrix3x3> arrayJ( pixelsPerRow );
+  std::vector<CoordinateMatrix3x3> arrayJ( pixelsPerRow );
   
   double ground = 0;
 
   for ( int k = voi.startZ; k < voi.endZ; ++k )
     for ( int j = voi.startY; j < voi.endY; ++j ) 
       {
-      this->GetJacobianSequence( arrayJ, voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianSequence( &(arrayJ[0]), voi.startX, j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
 	ground += this->GetRigidityConstraint( arrayJ[i] );
@@ -89,7 +90,7 @@ SplineWarpXform::GetRigidityConstraintDerivative
   for ( int k = voi.startZ; k < voi.endZ; ++k )
     for ( int j = voi.startY; j < voi.endY; ++j ) 
       {
-      this->GetJacobianSequence( arrayJ, voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianSequence( &(arrayJ[0]), voi.startX, j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
 	upper += this->GetRigidityConstraint( arrayJ[i] );
@@ -100,7 +101,7 @@ SplineWarpXform::GetRigidityConstraintDerivative
   for ( int k = voi.startZ; k < voi.endZ; ++k )
     for ( int j = voi.startY; j < voi.endY; ++j ) 
       {
-      this->GetJacobianSequence( arrayJ, voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianSequence( &(arrayJ[0]), voi.startX, j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
 	lower += this->GetRigidityConstraint( arrayJ[i] );
@@ -119,14 +120,14 @@ SplineWarpXform::GetRigidityConstraintDerivative
   const Types::Coordinate step, const DataGrid* weightMap ) const
 {
   const int pixelsPerRow = voi.endX - voi.startX;
-  Array<CoordinateMatrix3x3> arrayJ( pixelsPerRow );
+  std::vector<CoordinateMatrix3x3> arrayJ( pixelsPerRow );
   
   double ground = 0;
 
   for ( int k = voi.startZ; k < voi.endZ; ++k )
     for ( int j = voi.startY; j < voi.endY; ++j ) 
       {
-      this->GetJacobianSequence( arrayJ, voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianSequence( &(arrayJ[0]), voi.startX, j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
 	ground += weightMap->GetDataAt( voi.startX + i, j, k ) * this->GetRigidityConstraint( arrayJ[i] );
@@ -141,7 +142,7 @@ SplineWarpXform::GetRigidityConstraintDerivative
   for ( int k = voi.startZ; k < voi.endZ; ++k )
     for ( int j = voi.startY; j < voi.endY; ++j ) 
       {
-      this->GetJacobianSequence( arrayJ, voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianSequence( &(arrayJ[0]), voi.startX, j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
 	upper += weightMap->GetDataAt( voi.startX + i, j, k ) *
@@ -153,7 +154,7 @@ SplineWarpXform::GetRigidityConstraintDerivative
   for ( int k = voi.startZ; k < voi.endZ; ++k )
     for ( int j = voi.startY; j < voi.endY; ++j ) 
       {
-      this->GetJacobianSequence( arrayJ, voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianSequence( &(arrayJ[0]), voi.startX, j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
 	lower += weightMap->GetDataAt( voi.startX + i, j, k ) * this->GetRigidityConstraint( arrayJ[i] );
@@ -229,13 +230,13 @@ Types::Coordinate
 SplineWarpXform::GetRigidityConstraint () const
 {
   const int pixelsPerRow = VolumeDims[0];
-  Array<CoordinateMatrix3x3> arrayJ( pixelsPerRow );
+  std::vector<CoordinateMatrix3x3> arrayJ( pixelsPerRow );
 
   double constraint = 0;
   for ( int z = 0; z < VolumeDims[2]; ++z )
     for ( int y = 0; y < VolumeDims[1]; ++y ) 
       {
-      this->GetJacobianSequence( arrayJ, 0, y, z, pixelsPerRow );
+      this->GetJacobianSequence( &(arrayJ[0]), 0, y, z, pixelsPerRow );
       for ( int x = 0; x < pixelsPerRow; ++x ) 
 	{
 	constraint += this->GetRigidityConstraint( arrayJ[x] );
@@ -251,13 +252,13 @@ Types::Coordinate
 SplineWarpXform::GetRigidityConstraint( const DataGrid* weightMap ) const
 {
   const int pixelsPerRow = VolumeDims[0];
-  Array<CoordinateMatrix3x3> arrayJ( pixelsPerRow );
+  std::vector<CoordinateMatrix3x3> arrayJ( pixelsPerRow );
 
   double constraint = 0;
   for ( int z = 0; z < VolumeDims[2]; ++z )
     for ( int y = 0; y < VolumeDims[1]; ++y ) 
       {
-      this->GetJacobianSequence( arrayJ, 0, y, z, pixelsPerRow );
+      this->GetJacobianSequence( &(arrayJ[0]), 0, y, z, pixelsPerRow );
       for ( int x = 0; x < pixelsPerRow; ++x ) 
 	{
 	constraint += weightMap->GetDataAt( x, y, z ) * this->GetRigidityConstraint( arrayJ[x] );
@@ -281,7 +282,7 @@ SplineWarpXform::GetRigidityConstraint( const CoordinateMatrix3x3& J )
   QRDecomposition<Types::Coordinate> qr( matrix2d );
   Matrix2D<Types::Coordinate> R = *(qr.GetR());
   
-  Array<Types::Coordinate> R_diagonal( 3 );
+  std::vector<Types::Coordinate> R_diagonal( 3 );
   for ( int i = 0; i < 3; i++ )
     R_diagonal[i] = R[i][i];
 

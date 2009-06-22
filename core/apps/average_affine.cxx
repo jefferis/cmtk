@@ -120,32 +120,35 @@ main( const int argc, const char* argv[] )
   cmtk::AffineXform average;
   average.SetUseLogScaleFactors( true );
 
-  cmtk::CoordinateVector v, vx;
-  for ( std::list<cmtk::AffineXform::SmartPtr>::const_iterator xit = xformList.begin(); xit != xformList.end(); ++xit )
+  if ( xformList.size() )
     {
-    if ( xit == xformList.begin() )
+    cmtk::CoordinateVector v, vx;
+    for ( std::list<cmtk::AffineXform::SmartPtr>::const_iterator xit = xformList.begin(); xit != xformList.end(); ++xit )
       {
-      (*xit)->GetParamVector( v );
-      }
-    else
-      {
-      (*xit)->GetParamVector( vx );
-      for ( size_t p = 0; p < 12; ++p )
+      if ( xit == xformList.begin() )
 	{
-	v[p] += vx[p];
+	(*xit)->GetParamVector( v );
+	}
+      else
+	{
+	(*xit)->GetParamVector( vx );
+	for ( size_t p = 0; p < 12; ++p )
+	  {
+	  v[p] += vx[p];
+	  }
 	}
       }
+    
+    for ( size_t p = 0; p < 12; ++p )
+      {
+      if ( IncludeReference )
+	v[p] /= (xformList.size()+1);
+      else
+	v[p] /= xformList.size();
+      }
+    
+    average.SetParamVector( v );
     }
-
-  for ( size_t p = 0; p < 12; ++p )
-    {
-    if ( IncludeReference )
-      v[p] /= (xformList.size()+1);
-    else
-      v[p] /= xformList.size();
-    }
-  
-  average.SetParamVector( v );
 
   cmtk::ClassStream outStream;
   if ( AppendToOutput )

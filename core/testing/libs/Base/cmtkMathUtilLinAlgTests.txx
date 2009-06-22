@@ -31,6 +31,8 @@
 #include <cmtkMathUtil.h>
 #include <cmtkMatrix.h>
 
+#include <vector>
+
 // test eigensystem decomposition
 int
 testMathUtilEigensystem()
@@ -43,7 +45,7 @@ testMathUtilEigensystem()
   cmtk::Matrix2D<double> matrix( 4, 4, mdata );
   
   cmtk::Matrix2D<double> eigensystem( 4, 4 );
-  cmtk::Array<double> eigenvalues( 4 );
+  std::vector<double> eigenvalues( 4 );
 
   cmtk::MathUtil::ComputeEigensystem( matrix, eigensystem, eigenvalues );
   
@@ -62,7 +64,7 @@ testMathUtilEigenvalues()
   cmtk::Matrix2D<double> matrix( 4, 4, mdata );
 
   cmtk::Matrix2D<double> eigensystem( 4, 4 );
-  cmtk::Array<double> eigenvalues( 4 );
+  std::vector<double> eigenvalues( 4 );
   
   cmtk::MathUtil::ComputeEigenvalues( matrix, eigenvalues );
 
