@@ -37,6 +37,8 @@
 
 #include <cmtkTimers.h>
 
+#include <algorithm>
+
 /** Print some diagnostic information about the volume.
 */
 void dumpVolume( const cmtk::UniformVolume *volume )
@@ -62,12 +64,13 @@ const char *PatientNumber = "undefined";
 const char *FromModality = "undefined";
 const char *ToModality = "undefined";
 
-char setPatientNumber[128];
-char setFromModality[128];
-char setToModality[128];
-
-void parseFilenames( const char* refFn, const char *fltFn )
+void
+parseFilenames( const char* refFn, const char *fltFn )
 {
+  char setPatientNumber[128];
+  char setFromModality[128];
+  char setToModality[128];
+  
 #ifdef _WIN32
 #define PATH_SEPARATOR '\\'
 #else
@@ -76,16 +79,18 @@ void parseFilenames( const char* refFn, const char *fltFn )
   const char *last, *previous;
   last = strrchr( refFn, PATH_SEPARATOR );
   if ( ! last ) return;
+
   for ( previous = last-1; *previous != PATH_SEPARATOR && previous != refFn; --previous );
-  strncpy( setFromModality, previous+1, (last-previous-1) );
+  strncpy( setFromModality, previous+1, std::min<int>( sizeof( setFromModality-1 ), (last-previous-1) ) );
+
   last = previous;
   for ( previous = last-1; *previous != PATH_SEPARATOR && previous != refFn; --previous );
-  strncpy( setPatientNumber, previous+1, (last-previous-1) );
+  strncpy( setPatientNumber, previous+1, std::min<int>( sizeof( setPatientNumber-1 ), (last-previous-1) ) );
   
   last = strrchr( fltFn, PATH_SEPARATOR );
   if ( ! last ) return;
   for ( previous = last-1; *previous != PATH_SEPARATOR && previous != fltFn; --previous );
-  strncpy( setToModality, previous+1, (last-previous-1) );
+  strncpy( setToModality, previous+1, std::min<int>( sizeof( setToModality-1 ), (last-previous-1) ) );
   
   FromModality = setFromModality;
   ToModality = setToModality;
