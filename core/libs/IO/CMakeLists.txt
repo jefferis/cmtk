@@ -61,6 +61,7 @@ SET(cmtkIO_SRCS
   cmtkVolumeFromFileMetaFile.cxx
   cmtkVolumeFromFileNRRD.cxx
   cmtkVolumeFromFileNifti.cxx
+  cmtkVolumeFromFileVanderbilt.cxx
   cmtkVolumeFromSlices.cxx
   cmtkVolumeFromStudy.cxx
   cmtkVolumeIO.cxx

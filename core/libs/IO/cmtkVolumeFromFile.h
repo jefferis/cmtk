@@ -73,11 +73,8 @@ public:
   /// Read Nifti file.
   static UniformVolume* ReadNifti( const char* pathHdr, const bool detached, const bool readData = true );
 
-  /// Read geometry data only from a Vanderbilt image file.
+  /// Read geometry data only from a DICOM image file.
   static void ReadGeometryDICOM( const char *filename, int *const dims, Types::Coordinate *const size );
-
-  /// Read geometry data only from a Vanderbilt image file.
-  static void ReadGeometryVanderbilt( const char *filename, int *const dims, Types::Coordinate *const size );
 
   /// Read geometry data only from an Amira file.
   static void ReadGeometryAmira( const char *filename, int *const dims, Types::Coordinate *const size );

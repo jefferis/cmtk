@@ -12,6 +12,9 @@ Release CMTK-1.0.1:
 - Added: "sympl" tool can now use different approximated symmetry plane
     orientations to begin search, supporting non-sagittal symmetry planes
     [Tracker #3834].
+- Added: established infrastructure for optional algorithm validation,
+    beginning with rigid registration. All validation tools must be activated
+    via the "BUILD_VALIDATION" option of the top-level CMakeLists.txt file
 
 - Fixed: cmtkVoxelMatchingAffineFunctional.h compile error when SMP is turned
     off.
