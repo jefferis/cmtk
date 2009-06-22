@@ -51,6 +51,7 @@ BUILD_TESTING:BOOL=ON
 CMTK_DATA_ROOT:PATH=/home/testrunner/nitrc/data
 BUILD_FUSION:BOOL=ON
 BUILD_GUI:BOOL=ON
+BUILD_VALIDATION:BOOL=ON
 CMAKE_BUILD_TYPE:STRING=Release
 CMAKE_CXX_FLAGS:STRING=-m32 -march=pentium4 -mmmx -msse -msse2 -mfpmath=sse -Wno-deprecated -Wno-unknown-pragmas
 CMAKE_CXX_FLAGS_DEBUG:STRING=-g -DDEBUG
