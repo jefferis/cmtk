@@ -33,7 +33,7 @@
 
 #include <cmtkVolumeIO.h>
 #include <cmtkAffineRegistration.h>
-#include <cmtkProtocolCallback.h>
+#include <cmtkAnatomicalOrientation.h>
 
 #include <cmtkTimers.h>
 
@@ -64,33 +64,34 @@ const char *PatientNumber = "undefined";
 const char *FromModality = "undefined";
 const char *ToModality = "undefined";
 
+char setPatientNumber[128];
+char setFromModality[128];
+char setToModality[128];
+
 void
 parseFilenames( const char* refFn, const char *fltFn )
-{
-  char setPatientNumber[128];
-  char setFromModality[128];
-  char setToModality[128];
-  
+{  
 #ifdef WIN32
 #define PATH_SEPARATOR '\\'
 #else
 #define PATH_SEPARATOR '/'
 #endif
+
   const char *last, *previous;
   last = strrchr( refFn, PATH_SEPARATOR );
   if ( ! last ) return;
 
   for ( previous = last-1; *previous != PATH_SEPARATOR && previous != refFn; --previous );
-  strncpy( setFromModality, previous+1, std::min<int>( sizeof( setFromModality-1 ), (last-previous-1) ) );
+  strncpy( setFromModality, previous+1, std::min<int>( sizeof( setFromModality ) - 1, (last-previous-1) ) );
 
   last = previous;
   for ( previous = last-1; *previous != PATH_SEPARATOR && previous != refFn; --previous );
-  strncpy( setPatientNumber, previous+1, std::min<int>( sizeof( setPatientNumber-1 ), (last-previous-1) ) );
+  strncpy( setPatientNumber, previous+1, std::min<int>( sizeof( setPatientNumber ) - 1, (last-previous-1) ) );
   
   last = strrchr( fltFn, PATH_SEPARATOR );
   if ( ! last ) return;
   for ( previous = last-1; *previous != PATH_SEPARATOR && previous != fltFn; --previous );
-  strncpy( setToModality, previous+1, std::min<int>( sizeof( setToModality-1 ), (last-previous-1) ) );
+  strncpy( setToModality, previous+1, std::min<int>( sizeof( setToModality ) - 1, (last-previous-1) ) );
   
   FromModality = setFromModality;
   ToModality = setToModality;
@@ -99,7 +100,8 @@ parseFilenames( const char* refFn, const char *fltFn )
 
 /** Dump transformation in Vanderbilt format as transformed corner coordinates.
 */
-void dumpTransformationVanderbilt( const cmtk::AffineXform* affineXform, const cmtk::Vector3D& size )
+void 
+dumpTransformationVanderbilt( const cmtk::AffineXform::MatrixType& matrix, const cmtk::Vector3D& size )
 {
   fprintf( stdout, "-------------------------------------------------------------------------\n" );
   fprintf( stdout, "Transformation Parameters\n\n" );
@@ -125,7 +127,7 @@ void dumpTransformationVanderbilt( const cmtk::AffineXform* affineXform, const c
 	{
 	v.XYZ[0] = i ? size.XYZ[0] : 0;
 	cmtk::Vector3D w( v );
-	affineXform->ApplyInPlace( w );
+	matrix.Multiply( w.XYZ );
 	fprintf( stdout, " %1d %10.4f %10.4f %10.4f %10.4f %11.4f %11.4f\n", pointIdx, v.XYZ[0], v.XYZ[1], v.XYZ[2], w.XYZ[0], w.XYZ[1], w.XYZ[2] );
 	}
       }
@@ -138,7 +140,7 @@ void DoRegistration( const char* refFile, const char* fltFile )
   parseFilenames( refFile, fltFile );
   
 // read first (reference) volume and dump diagnostic information.
-  cmtk::UniformVolume::SmartPtr refVolume( cmtk::VolumeIO::Read( refFile ) );
+  cmtk::UniformVolume::SmartPtr refVolume( cmtk::VolumeIO::ReadOriented( refFile ) );
   if ( !refVolume ) 
     {
     fprintf( stderr, "Could not read reference volume %s.\n", refFile );
@@ -147,14 +149,14 @@ void DoRegistration( const char* refFile, const char* fltFile )
   dumpVolume( refVolume );
 
 // read second (floating) volume and dump diagnostic information.
-  cmtk::UniformVolume::SmartPtr fltVolume( cmtk::VolumeIO::Read( fltFile ) );
+  cmtk::UniformVolume::SmartPtr fltVolume( cmtk::VolumeIO::ReadOriented( fltFile ) );
   if ( !fltVolume ) 
     {
     fprintf( stderr, "Could not read floating volume %s.\n", fltFile );
     exit( 1 );
     }
   dumpVolume( fltVolume );
-  
+
 // open new scope so we can destruct automatic Registration instance and potentially check memory usage.
   {
 // setup registration object with two volumes
@@ -171,10 +173,9 @@ void DoRegistration( const char* refFile, const char* fltFile )
   Registration.SetAccuracy( 0.01 );
   Registration.SetSampling( 1.0 );
   Registration.SetUseOriginalData( true );
-  
-// create a simple callback object that creates a detailed protocol of the registration process.
-  cmtk::RegistrationCallback::SmartPtr callback( new cmtk::ProtocolCallback( "vanderbilt.txt" ) );
-  Registration.SetCallback( callback );
+
+  Registration.SetSampling( 2.0 );
+  Registration.SetUseOriginalData( false );
   
 // run registration
   cmtk::CallbackResult result = Registration.Register();
@@ -196,8 +197,13 @@ void DoRegistration( const char* refFile, const char* fltFile )
     }
   
 // output transformation.
-  cmtk::AffineXform::SmartPtr affineXform = Registration.GetTransformation();  
-  dumpTransformationVanderbilt( affineXform->GetInverse(), refSize );
+  const cmtk::AffineXform::MatrixType refMatrix = refVolume->GetImageToPhysicalMatrix ();
+  const cmtk::AffineXform::MatrixType fltMatrix = fltVolume->GetImageToPhysicalMatrix ();
+  cmtk::AffineXform::SmartPtr affineXform = Registration.GetTransformation()->GetInverse();
+
+  cmtk::AffineXform::MatrixType concatMatrix = refMatrix;
+  (concatMatrix.Invert() *= affineXform->Matrix) *= fltMatrix;
+  dumpTransformationVanderbilt( concatMatrix, refSize );
   
 // Registration object is destructed here.
   }

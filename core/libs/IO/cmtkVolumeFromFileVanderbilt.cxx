@@ -46,6 +46,8 @@ VolumeFromFile::ReadVanderbilt( const char *path )
   int dims[3] = { 1, 1, 1 };
   double calib[3] = { 0, 0, 0 };
 
+  char orientation[] = "RAS";
+
   // parse header file for image dimensios etc.
   char line[96], key[32], value[64];
   while ( !feof( fp ) ) 
@@ -74,6 +76,18 @@ VolumeFromFile::ReadVanderbilt( const char *path )
 	calib[2] = static_cast<Types::Coordinate>( atof( value ) );
 	}
       }
+    else
+      {
+      char axes[3];
+      if ( 3 == sscanf( line, "Patient orientation := %c : %c : %c", &axes[0], &axes[1], &axes[2] ) )
+	{
+	const char* translation = "PbcdeSgIijkRmnoAqLstuvwxyz";
+	for ( int i = 0; i < 3; ++i )
+	  {
+	  orientation[i] = translation[axes[i]-'A'];
+	  }
+	}
+      }
     }
   fclose( fp );
   
@@ -84,6 +98,7 @@ VolumeFromFile::ReadVanderbilt( const char *path )
 
   // create volume, for the time being with empty data array.
   UniformVolume *volume = new UniformVolume( dims, size );
+  volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION] = volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION_ORIGINAL] = orientation;
 
   // generate image filename from header file path.
   char imageFilename[PATH_MAX], *lastSlash;
