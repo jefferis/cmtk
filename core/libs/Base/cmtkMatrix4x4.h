@@ -180,7 +180,7 @@ Console& operator<< ( Console& stream, const Matrix4x4<T>& m )
   for ( int i = 0; i < 4; ++i ) 
     {
     for ( int j = 0; j < 4; ++j )
-      stream << m[i][j] << "\t";
+      stream << "[" << i << "][" << j << "]=" << m[i][j] << "\t";
     stream << "\n";
     }
   return stream;
