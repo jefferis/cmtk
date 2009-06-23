@@ -174,9 +174,6 @@ void DoRegistration( const char* refFile, const char* fltFile )
   Registration.SetSampling( 1.0 );
   Registration.SetUseOriginalData( true );
 
-  Registration.SetSampling( 2.0 );
-  Registration.SetUseOriginalData( false );
-  
 // run registration
   cmtk::CallbackResult result = Registration.Register();
   
