@@ -85,7 +85,7 @@ parseFilenames( const char* refFn, const char *fltFn )
   strncpy( setFromModality, previous+1, std::min<int>( sizeof( setFromModality ) - 1, (last-previous-1) ) );
 
   last = previous;
-  for ( previous = last-1; *previous != PATH_SEPARATOR && previous != refFn; --previous ) {};
+  for ( previous = last-1; *previous != '_' && previous != refFn; --previous ) {};
   strncpy( setPatientNumber, previous+1, std::min<int>( sizeof( setPatientNumber ) - 1, (last-previous-1) ) );
   
   last = strrchr( fltFn, PATH_SEPARATOR );
