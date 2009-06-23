@@ -38,7 +38,7 @@ fi
 touch ${lockfile}
 
 svn update
-tests=`ls ctest-*.cmake`
+tests=`ls *.cmake`
 
 Xpid=""
 if [ "${DISPLAY}" == "" ]; then
