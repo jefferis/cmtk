@@ -1,4 +1,4 @@
-/*
+ /*
 //
 //  Copyright 1997-2004 Torsten Rohlfing
 //  Copyright 2009 SRI International
@@ -81,16 +81,16 @@ parseFilenames( const char* refFn, const char *fltFn )
   last = strrchr( refFn, PATH_SEPARATOR );
   if ( ! last ) return;
 
-  for ( previous = last-1; *previous != PATH_SEPARATOR && previous != refFn; --previous );
+  for ( previous = last-1; *previous != PATH_SEPARATOR && previous != refFn; --previous ) {};
   strncpy( setFromModality, previous+1, std::min<int>( sizeof( setFromModality ) - 1, (last-previous-1) ) );
 
   last = previous;
-  for ( previous = last-1; *previous != PATH_SEPARATOR && previous != refFn; --previous );
+  for ( previous = last-1; *previous != PATH_SEPARATOR && previous != refFn; --previous ) {};
   strncpy( setPatientNumber, previous+1, std::min<int>( sizeof( setPatientNumber ) - 1, (last-previous-1) ) );
   
   last = strrchr( fltFn, PATH_SEPARATOR );
   if ( ! last ) return;
-  for ( previous = last-1; *previous != PATH_SEPARATOR && previous != fltFn; --previous );
+  for ( previous = last-1; *previous != PATH_SEPARATOR && previous != fltFn; --previous ) {};
   strncpy( setToModality, previous+1, std::min<int>( sizeof( setToModality ) - 1, (last-previous-1) ) );
   
   FromModality = setFromModality;
