@@ -27,6 +27,7 @@ Release CMTK-1.0.1:
 
 - Removed: obsolete cmtk::Array class; replace all uses with std::vector
 
+
 Release CMTK-1.0.0 (2009-06-16):
 
 - API: "TemplateHistogram", "LogTemplateHistogram", and "TemplateHistogram2D"
