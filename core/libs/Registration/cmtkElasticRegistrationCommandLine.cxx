@@ -184,7 +184,7 @@ ElasticRegistrationCommandLine
     cl.AddOption( Key( "force-outside-value" ), &forceOutsideValue, "Force values outside field of view to this value rather than drop incomplete pixel pairs", &forceOutsideFlag );
 
     this->m_PreprocessorRef.AttachToCommandLine( cl );
-    this->m_PreprocessorRef.AttachToCommandLine( cl );
+    this->m_PreprocessorFlt.AttachToCommandLine( cl );
 
     cl.BeginGroup( "Output", "Output parameters" );
     cl.AddOption( Key( 'o', "outlist" ), &this->Studylist, "Output path for final transformation" );

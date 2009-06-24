@@ -694,11 +694,11 @@ case ${RUNTEST} in
 	check_result registration
 	;;
     RigidRegistrationLabelsDOF69)
-	run ${BINDIR}/registration -q --dofs 6 --dofs 9 --class0 label --class1 label -o ${tmpdir} parc1.hdr parc2.hdr
+	run ${BINDIR}/registration -q --dofs 6 --dofs 9 --class-ref label --class-flt label -o ${tmpdir} parc1.hdr parc2.hdr
 	check_result registration
 	;;
     RigidRegistrationCrop)
-	run ${BINDIR}/registration -v -i -e 2.0 -a 0.125 --sampling 0.25 --crop-reference-index 17,20,0,47,49,12 --crop-floating-index 12,15,0,52,54,12 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	run ${BINDIR}/registration -v -i -e 2.0 -a 0.125 --sampling 0.25 --crop-index-ref 17,20,0,47,49,12 --crop-index-flt 12,15,0,52,54,12 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
 	check_result registration
 	;;
     SequenceDefault)

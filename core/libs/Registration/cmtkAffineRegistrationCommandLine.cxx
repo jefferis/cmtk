@@ -148,7 +148,7 @@ AffineRegistrationCommandLine
     cl.AddSwitch( Key( "ncc" ), &this->Metric, 5, "Normalized Cross Correlation metric" );
 
     this->m_PreprocessorRef.AttachToCommandLine( cl );
-    this->m_PreprocessorRef.AttachToCommandLine( cl );
+    this->m_PreprocessorFlt.AttachToCommandLine( cl );
 
     cl.BeginGroup( "Output", "Output parameters" );
     cl.AddOption( Key( 'o', "outlist" ), &this->Studylist, "Output path for final transformation" );
