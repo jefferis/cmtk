@@ -947,7 +947,7 @@ case ${RUNTEST} in
 	check_result registration
 	;;
     WarpLabels)
-	run ${BINDIR}/warp -q --exploration 8 --grid-spacing 90 --accuracy 1 --refine 1 --class0 label --class1 label --adaptive-fix --no-delay-refine -o ${tmpdir} --initial parc1_parc2_9dof.xform parc1.hdr parc2.hdr
+	run ${BINDIR}/warp -q --exploration 8 --grid-spacing 90 --accuracy 1 --refine 1 --class-ref label --class-flt label --adaptive-fix --no-delay-refine -o ${tmpdir} --initial parc1_parc2_9dof.xform parc1.hdr parc2.hdr
 	check_result registration
 	;;
     Xform2dfieldWarpNrrd)
