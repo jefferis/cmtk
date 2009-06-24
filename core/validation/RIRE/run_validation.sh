@@ -21,11 +21,11 @@
 ##  with the Computational Morphometry Toolkit.  If not, see
 ##  <http://www.gnu.org/licenses/>.
 ##
-##  $Revision: 48 $
+##  $Revision$
 ##
-##  $LastChangedDate: 2009-06-12 21:29:27 -0700 (Fri, 12 Jun 2009) $
+##  $LastChangedDate$
 ##
-##  $LastChangedBy: torstenrohlfing $
+##  $LastChangedBy$
 ##
 
 CMTK_BIN=$1

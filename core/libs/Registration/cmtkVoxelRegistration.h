@@ -113,6 +113,59 @@ protected:
   /// Data class of second data volume.
   igsGetSetMacro(DataClass,DataClass_2);
 
+  /// Local class for preprocessing image data, e.g., by histogram operations, thresholding, and cropping.
+  class ImagePreprocessor
+  {
+  public:
+    /// Data class (intensity, labels, binary)
+    DataClass m_DataClass;
+    
+    /// Flag for pixel padding.
+    bool m_PaddingFlag;
+    
+    /// Padding value.
+    Types::DataItem m_PaddingValue;
+
+    /// Lower threshold flag.
+    bool m_LowerThresholdActive;
+
+    /// Lower threshold value.
+    float m_LowerThresholdValue;
+  
+    /// Upper threshold flag.
+    bool m_UpperThresholdActive;
+
+    /// Upper threshold value.
+    float m_UpperThresholdValue;
+
+    /// Crop region in index coordinates.
+    const char* m_CropIndex;
+
+    /// Crop region in world coordinates.
+    const char* m_CropWorld;
+
+    /// Prune histogram for image: number of target bins (0 = no pruning).
+    unsigned int m_PruneHistogramBins;
+
+    /// Flag for auto cropping.
+    bool m_AutoCropFlag;
+
+    /// Auto cropping level.
+    float m_AutoCropLevel;
+
+    /// Constructor.
+    ImagePreprocessor();
+
+    /// Get pre-processed image from original image.
+    UniformVolume* GetProcessedImage( const UniformVolume* original );
+  };
+
+  /// Image preprocessor for reference image.
+  ImagePreprocessor m_PreprocessorRef;
+
+  /// Image preprocessor for floating image.
+  ImagePreprocessor m_PreprocessorFlt;
+
   /// Lower threshold flag for image 1.
   bool m_ThreshMin1;
 

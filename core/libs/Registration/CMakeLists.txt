@@ -82,6 +82,7 @@ SET(cmtkRegistration_SRCS
   cmtkVoxelMatchingMetric.cxx
   cmtkVoxelMatchingMetric_Type.cxx
   cmtkVoxelRegistration.cxx
+  cmtkVoxelRegistrationImagePreprocessor.cxx
   cmtkXformList.cxx
   cmtkXformListEntry.cxx
 )
