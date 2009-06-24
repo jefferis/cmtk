@@ -48,6 +48,7 @@
 #include <cmtkOptimizer.h>
 
 #include <cmtkTimers.h>
+#include <cmtkCommandLine.h>
 
 #include <stack>
 #include <string.h>
@@ -118,7 +119,7 @@ protected:
   {
   public:
     /// Data class (intensity, labels, binary)
-    DataClass m_DataClass;
+    const char* m_DataClassString;
     
     /// Flag for pixel padding.
     bool m_PaddingFlag;
@@ -130,13 +131,16 @@ protected:
     bool m_LowerThresholdActive;
 
     /// Lower threshold value.
-    float m_LowerThresholdValue;
+    Types::DataItem m_LowerThresholdValue;
   
     /// Upper threshold flag.
     bool m_UpperThresholdActive;
 
     /// Upper threshold value.
-    float m_UpperThresholdValue;
+    Types::DataItem m_UpperThresholdValue;
+
+    /// Prune histogram for image: number of target bins (0 = no pruning).
+    unsigned int m_PruneHistogramBins;
 
     /// Crop region in index coordinates.
     const char* m_CropIndex;
@@ -144,18 +148,21 @@ protected:
     /// Crop region in world coordinates.
     const char* m_CropWorld;
 
-    /// Prune histogram for image: number of target bins (0 = no pruning).
-    unsigned int m_PruneHistogramBins;
-
     /// Flag for auto cropping.
     bool m_AutoCropFlag;
 
     /// Auto cropping level.
-    float m_AutoCropLevel;
+     Types::DataItem m_AutoCropLevel;
 
     /// Constructor.
     ImagePreprocessor();
 
+    /// Attach this preprocessor to a command line parse.
+    void AttachToCommandLine( CommandLine& cl, //!< The command line object to add our options to.
+			      const char* name,  //!< There are two preprocessors, for reference and floating image: this parameter names a parameter group for this instance.
+			      const char* key //!< This parameter gives a string key that is appended to each command line option so that reference and floating preprocessors do not collide.
+      ); 
+    
     /// Get pre-processed image from original image.
     UniformVolume* GetProcessedImage( const UniformVolume* original );
   };

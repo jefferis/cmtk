@@ -30,13 +30,14 @@
 */
 
 #include <cmtkVoxelRegistration.h>
+#include <cmtkCommandLine.h>
 
 namespace
 cmtk
 {
 
 VoxelRegistration::ImagePreprocessor::ImagePreprocessor()
-  : m_DataClass( DATACLASS_GREY ),
+  : m_DataClassString( NULL ),
     m_PaddingFlag( false ),
     m_PaddingValue( 0 ),
     m_LowerThresholdActive( false ),
@@ -51,20 +52,47 @@ VoxelRegistration::ImagePreprocessor::ImagePreprocessor()
 {
 }
 
+void 
+VoxelRegistration::ImagePreprocessor::AttachToCommandLine
+( CommandLine& cl, const char* name, const char* key )
+{
+  char buffer[64];
+
+  cl.BeginGroup( name, strcat( strcpy( buffer, name ), " Image Preprocessing" ) );
+  
+  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "class-" ), key ) ), &this->m_DataClassString, "Data class: grey (default), binary, or label" );
+  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "pad-" ), key ) ), &this->m_PaddingValue, "Padding value", &this->m_PaddingFlag );
+  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "thresh-min-" ), key ) ), &this->m_LowerThresholdValue, "Minimum value truncation threshold", &this->m_LowerThresholdActive );
+  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "thresh-max-" ), key ) ), &this->m_UpperThresholdValue, "Maximum value truncation threshold", &this->m_UpperThresholdActive );
+  
+  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "prune-histogram-" ), key ) ), &this->m_PruneHistogramBins, "Number of bins for histogram-based pruning [default: no pruning]" );
+  
+  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "crop-index-" ), key ) ), &this->m_CropIndex, "Cropping region in pixel index coordinates [parsed as %d,%d,%d]" );
+  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "crop-world-" ), key ) ), &this->m_CropWorld, "Cropping region in world coordinates [parsed as %f,%f,%f]" );
+  
+  cl.EndGroup();
+}
+
 UniformVolume*
 VoxelRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume* original )
 {
   UniformVolume* volume = original->Clone();
 
-  volume->GetData()->SetDataClass( this->m_DataClass );
+  if ( this->m_DataClassString )
+    {
+    volume->GetData()->SetDataClass( StringToDataClass( this->m_DataClassString ) );
+    }
+
   if ( this->m_PaddingFlag ) 
     {
     volume->GetData()->SetPaddingValue( this->m_PaddingValue );
     }
+
   if ( this->m_LowerThresholdActive || this->m_UpperThresholdActive )
     {
     volume->GetData()->Threshold( this->m_LowerThresholdValue, this->m_UpperThresholdValue );
     }
+
   if ( this->m_PruneHistogramBins )
     {
     volume->GetData()->PruneHistogram( true /*pruneHi*/, false /*pruneLo*/, this->m_PruneHistogramBins );

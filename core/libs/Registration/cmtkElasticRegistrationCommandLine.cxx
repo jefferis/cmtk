@@ -222,6 +222,9 @@ ElasticRegistrationCommandLine
     cl.AddSwitch( Key( "output-intermediate" ), &this->m_OutputIntermediate, true, "Write transformation for each level [default: only write final transformation]" );
     cl.EndGroup();
 
+    this->m_PreprocessorRef.AttachToCommandLine( cl, "Reference", "ref" );
+    this->m_PreprocessorRef.AttachToCommandLine( cl, "Floating", "flt" );
+
     cl.Parse();
 
     clArg1 = cl.GetNext();
