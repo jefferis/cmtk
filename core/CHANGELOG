@@ -21,6 +21,10 @@ Release CMTK-1.0.1:
 - Fixed: crash of average_affine tool when run with no parameters 
     [Tracker #3841]
 
+- Improved: AffineRegistration and ElasticRegistration now use a new, unified
+    image preprocessing class for things like cropping, histogram
+    equalization, etc.
+
 - Removed: obsolete cmtk::Array class; replace all uses with std::vector
 
 Release CMTK-1.0.0 (2009-06-16):
