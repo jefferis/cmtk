@@ -98,10 +98,6 @@ ElasticRegistrationCommandLine
   Sampling = 1.0;
   Studylist = Protocol = Time = NULL;
 
-  Padding0 = Padding1 = 0;
-  PaddingValue0 = PaddingValue1 = 0;
-  this->m_PruneHistogram0 = this->m_PruneHistogram1 = 0;
-
   this->m_OutputIntermediate = 0;
   Verbose = 0;
 
@@ -115,14 +111,6 @@ ElasticRegistrationCommandLine
 
   bool forceOutsideFlag = false;
   Types::DataItem forceOutsideValue = 0;
-
-  const char* dataClassRef = "grey";
-  const char* dataClassFlt = "grey";
-
-  const char* cropRealFlt = NULL;
-  const char* cropRealRef = NULL;
-  const char* cropIndexFlt = NULL;
-  const char* cropIndexRef = NULL;
 
   const char* clArg1; // input studylist or reference image
   const char* clArg2; // empty or floating image
@@ -195,25 +183,8 @@ ElasticRegistrationCommandLine
 
     cl.AddOption( Key( "force-outside-value" ), &forceOutsideValue, "Force values outside field of view to this value rather than drop incomplete pixel pairs", &forceOutsideFlag );
 
-    cl.AddOption( Key( "pad0" ), &this->PaddingValue0, "Padding value for reference image", &Padding0 );
-    cl.AddOption( Key( "pad1" ), &this->PaddingValue1, "Padding value for floating image", &Padding1 );
-
-    cl.AddOption( Key( "class0" ), &dataClassRef, "Data class for reference image: grey (default), binary, or label" );
-    cl.AddOption( Key( "class1" ), &dataClassFlt, "Data class for floating image: grey (default), binary, or label" );
-
-    cl.AddOption( Key( "thresh-min0" ), &this->m_ThreshMinValue1, "Minimum value truncation threshold for reference image", (bool*)&this->m_ThreshMin1 );
-    cl.AddOption( Key( "thresh-max0" ), &this->m_ThreshMaxValue1, "Maximum value truncation threshold for reference image", (bool*)&this->m_ThreshMax1 );
-    cl.AddOption( Key( "thresh-min1" ), &this->m_ThreshMinValue2, "Minimum value truncation threshold for floating image", (bool*)&this->m_ThreshMin2 );
-    cl.AddOption( Key( "thresh-max1" ), &this->m_ThreshMaxValue2, "Maximum value truncation threshold for floating image", (bool*)&this->m_ThreshMax2 );
-
-    cl.AddOption( Key( "prune-histogram0" ), &this->m_PruneHistogram0, "Number of bins for histogram-based pruning of reference image [default: no pruning]" );
-    cl.AddOption( Key( "prune-histogram1" ), &this->m_PruneHistogram1, "Number of bins for histogram-based pruning of floating image [default: no pruning]" );
-
-    cl.AddOption( Key( "crop-reference-index" ), &cropIndexRef, "Cropping region for reference image in pixel index coordinates" );
-    cl.AddOption( Key( "crop-floating-index" ), &cropIndexFlt, "Cropping region for floating image in pixel index coordinates" );
-    cl.AddOption( Key( "crop-reference-real" ), &cropRealRef, "Cropping region for reference image in world coordinates" );
-    cl.AddOption( Key( "crop-floating-real" ), &cropRealFlt, "Cropping region for floating image in world coordinates" );
-    cl.EndGroup();
+    this->m_PreprocessorRef.AttachToCommandLine( cl );
+    this->m_PreprocessorRef.AttachToCommandLine( cl );
 
     cl.BeginGroup( "Output", "Output parameters" );
     cl.AddOption( Key( 'o', "outlist" ), &this->Studylist, "Output path for final transformation" );
@@ -221,9 +192,6 @@ ElasticRegistrationCommandLine
     cl.AddOption( Key( 't', "time" ), &this->Time, "Computation time statistics output file name" );
     cl.AddSwitch( Key( "output-intermediate" ), &this->m_OutputIntermediate, true, "Write transformation for each level [default: only write final transformation]" );
     cl.EndGroup();
-
-    this->m_PreprocessorRef.AttachToCommandLine( cl, "Reference", "ref" );
-    this->m_PreprocessorRef.AttachToCommandLine( cl, "Floating", "flt" );
 
     cl.Parse();
 
@@ -311,130 +279,13 @@ ElasticRegistrationCommandLine
     Study2 = swap;
     }
   
-  this->SetDataClass_1( StringToDataClass( dataClassRef ) );
-  this->SetDataClass_2( StringToDataClass( dataClassFlt ) );
-
   UniformVolume::SmartPtr volume( VolumeIO::ReadOriented( Study1, Verbose ) );
   if ( !volume ) throw ConstructorFailed();
-  this->SetVolume_1( volume );
-  Volume_1->GetData()->SetDataClass( this->GetDataClass_1() );
-  if ( Padding0 ) 
-    {
-    Volume_1->GetData()->SetPaddingValue( PaddingValue0 );
-    }
-  if ( this->m_ThreshMin1 || this->m_ThreshMax1 )
-    {
-    Volume_1->GetData()->Threshold( this->m_ThreshMinValue1, this->m_ThreshMaxValue1 );
-    }
-  if ( this->m_PruneHistogram0 )
-    {
-    Volume_1->GetData()->PruneHistogram( true /*pruneHi*/, false /*pruneLo*/, this->m_PruneHistogram0 );
-    }
+  this->SetVolume_1( UniformVolume::SmartPtr( this->m_PreprocessorRef.GetProcessedImage( volume ) ) );
 
   volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( Study2, Verbose ) );
   if ( !volume ) throw ConstructorFailed();
-  this->SetVolume_2( volume );
-  Volume_2->GetData()->SetDataClass( this->GetDataClass_2() );
-  if ( Padding1 ) 
-    {
-    Volume_2->GetData()->SetPaddingValue( PaddingValue1 );
-    }
-  if ( this->m_ThreshMin2 || this->m_ThreshMax2 )
-    {
-    Volume_2->GetData()->Threshold( this->m_ThreshMinValue2, this->m_ThreshMaxValue2 );
-    }
-  if ( this->m_PruneHistogram1 )
-    {
-    Volume_2->GetData()->PruneHistogram( true /*pruneHi*/, false /*pruneLo*/, this->m_PruneHistogram1 );
-    }
-  
-  if ( cropIndexRef )
-    {
-    int crop[6];
-    if ( 6 != sscanf( cropIndexRef, "%d,%d,%d,%d,%d,%d", crop, crop+1, crop+2, crop+3, crop+4, crop+5 ) ) 
-      {
-      StdErr << "Option '--crop-reference-index' expects six integer parameters.\n";
-      exit( 1 );
-      }
-
-    for ( int dim=0; dim<3; ++dim ) 
-      {
-      if ( crop[3+dim] < 0 ) 
-	{
-	crop[3+dim] = Volume_1->GetDims()[dim] + crop[3+dim] + 1;
-	}
-      }
-    Volume_1->SetCropRegion( crop, crop+3 );
-    }
-  
-  if ( cropIndexFlt )
-    {
-    int crop[6];
-    if ( 6 != sscanf( cropIndexFlt, "%d,%d,%d,%d,%d,%d", crop, crop+1, crop+2, crop+3, crop+4, crop+5 ) ) 
-      {
-      StdErr << "Option '--crop-floating-index' expects six integer parameters.\n";
-      exit( 1 );
-      }
-
-    for ( int dim=0; dim<3; ++dim ) 
-      {
-      if ( crop[3+dim] < 0 ) 
-	{
-	crop[3+dim] = Volume_2->GetDims()[dim] + crop[3+dim] + 1;
-	}
-      }
-    Volume_2->SetCropRegion( crop, crop+3 );
-    }
-
-  if ( cropRealRef )
-    {
-    float crop[6];
-    if ( 6 != sscanf( cropRealRef, "%f,%f,%f,%f,%f,%f", crop, crop+1, crop+2, crop+3, crop+4, crop+5 ) ) 
-      {
-      StdErr << "Option '--crop-reference-real' expects six floating-point parameters.\n";
-      exit( 1 );
-      }
-
-    Types::Coordinate realCrop[6];
-    for ( int dim=0; dim<3; ++dim ) 
-      {
-      realCrop[dim] = crop[dim];
-      if ( crop[3+dim] < 0 ) 
-	{
-	realCrop[3+dim] = Volume_1->Size[dim] + crop[3+dim];
-	}
-      else
-	{
-	realCrop[3+dim] = crop[3+dim];
-	}
-      }
-    Volume_1->SetCropRegion( realCrop, realCrop+3 );
-    }
-
-  if ( cropRealFlt )
-    {
-    float crop[6];
-    if ( 6 != sscanf( cropRealFlt, "%f,%f,%f,%f,%f,%f", crop, crop+1, crop+2, crop+3, crop+4, crop+5 ) ) 
-      {
-      StdErr << "Option '--crop-floating-real' expects six floating-point parameters.\n";
-      exit( 1 );
-      }
-
-    Types::Coordinate realCrop[6];
-    for ( int dim=0; dim<3; ++dim ) 
-      {
-      realCrop[dim] = crop[dim];
-      if ( crop[3+dim] < 0 ) 
-	{
-	realCrop[3+dim] = Volume_2->Size[dim] + crop[3+dim];
-	}
-      else
-	{
-	realCrop[3+dim] = crop[3+dim];
-	}
-      }
-    Volume_2->SetCropRegion( realCrop, realCrop+3 );
-    }
+  this->SetVolume_2( UniformVolume::SmartPtr( this->m_PreprocessorFlt.GetProcessedImage( volume ) ) );
   
   if ( this->RigidityConstraintMapFilename )
     {
@@ -572,24 +423,10 @@ ElasticRegistrationCommandLine::OutputWarp ( const char* path ) const
   classStream.WriteBool( "delay_refine_grid", DelayRefineGrid );
   classStream.WriteBool( "adaptive_fix_parameters", AdaptiveFixParameters );
   classStream.WriteDouble( "adaptive_fix_parameters_thresh", AdaptiveFixThreshFactor );
-  classStream.WriteString( "dataclass_1", DataClassToString( DataClass_1 ));
-  if ( Padding0 )
-    {
-    classStream.WriteDouble( "padding_value_1", PaddingValue0 );
-    }
-  if ( this->m_PruneHistogram0 )
-    {
-    classStream.WriteInt( "prune_histogram_1", this->m_PruneHistogram0 );
-    }
-  classStream.WriteString( "dataclass_2", DataClassToString( DataClass_2 ));
-  if ( Padding1 ) 
-    {
-    classStream.WriteDouble( "padding_value_2", PaddingValue1 );
-    }
-  if ( this->m_PruneHistogram1 )
-    {
-    classStream.WriteInt( "prune_histogram_2", this->m_PruneHistogram1 );
-    }
+
+  this->m_PreprocessorRef.WriteSettings( classStream );  
+  this->m_PreprocessorFlt.WriteSettings( classStream );  
+
   classStream.Close();
       
   classStream.Open( path, "statistics", ClassStream::WRITE );

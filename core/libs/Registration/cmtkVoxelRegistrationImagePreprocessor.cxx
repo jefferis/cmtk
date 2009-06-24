@@ -36,8 +36,9 @@ namespace
 cmtk
 {
 
-VoxelRegistration::ImagePreprocessor::ImagePreprocessor()
+VoxelRegistration::ImagePreprocessor::ImagePreprocessor( const char* name, const char* key )
   : m_DataClassString( NULL ),
+    m_DataClass( DATACLASS_GREY ),
     m_PaddingFlag( false ),
     m_PaddingValue( 0 ),
     m_LowerThresholdActive( false ),
@@ -48,27 +49,29 @@ VoxelRegistration::ImagePreprocessor::ImagePreprocessor()
     m_CropIndex( NULL ),
     m_CropWorld( NULL ),
     m_AutoCropFlag( false ),
-    m_AutoCropLevel( 0 )
+    m_AutoCropLevel( 0 ),
+    m_Name( name ),
+    m_Key( key )
 {
 }
 
 void 
 VoxelRegistration::ImagePreprocessor::AttachToCommandLine
-( CommandLine& cl, const char* name, const char* key )
+( CommandLine& cl )
 {
   char buffer[64];
+  cl.BeginGroup( this->m_Name, strcat( strcpy( buffer, this->m_Name ), " Image Preprocessing" ) );
+  
+  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "class-" ), this->m_Key ) ), &this->m_DataClassString, "Data class: grey (default), binary, or label" );
+  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "pad-" ), this->m_Key ) ), &this->m_PaddingValue, "Padding value", &this->m_PaddingFlag );
 
-  cl.BeginGroup( name, strcat( strcpy( buffer, name ), " Image Preprocessing" ) );
+  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "thresh-min-" ), this->m_Key ) ), &this->m_LowerThresholdValue, "Minimum value truncation threshold", &this->m_LowerThresholdActive );
+  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "thresh-max-" ), this->m_Key ) ), &this->m_UpperThresholdValue, "Maximum value truncation threshold", &this->m_UpperThresholdActive );
   
-  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "class-" ), key ) ), &this->m_DataClassString, "Data class: grey (default), binary, or label" );
-  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "pad-" ), key ) ), &this->m_PaddingValue, "Padding value", &this->m_PaddingFlag );
-  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "thresh-min-" ), key ) ), &this->m_LowerThresholdValue, "Minimum value truncation threshold", &this->m_LowerThresholdActive );
-  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "thresh-max-" ), key ) ), &this->m_UpperThresholdValue, "Maximum value truncation threshold", &this->m_UpperThresholdActive );
+  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "prune-histogram-" ), this->m_Key ) ), &this->m_PruneHistogramBins, "Number of bins for histogram-based pruning [default: no pruning]" );
   
-  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "prune-histogram-" ), key ) ), &this->m_PruneHistogramBins, "Number of bins for histogram-based pruning [default: no pruning]" );
-  
-  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "crop-index-" ), key ) ), &this->m_CropIndex, "Cropping region in pixel index coordinates [parsed as %d,%d,%d]" );
-  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "crop-world-" ), key ) ), &this->m_CropWorld, "Cropping region in world coordinates [parsed as %f,%f,%f]" );
+  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "crop-index-" ), this->m_Key ) ), &this->m_CropIndex, "Cropping region in pixel index coordinates [parsed as %d,%d,%d]" );
+  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "crop-world-" ), this->m_Key ) ), &this->m_CropWorld, "Cropping region in world coordinates [parsed as %f,%f,%f]" );
   
   cl.EndGroup();
 }
@@ -80,7 +83,8 @@ VoxelRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume* or
 
   if ( this->m_DataClassString )
     {
-    volume->GetData()->SetDataClass( StringToDataClass( this->m_DataClassString ) );
+    this->m_DataClass = StringToDataClass( this->m_DataClassString );
+    volume->GetData()->SetDataClass( this->m_DataClass );
     }
 
   if ( this->m_PaddingFlag ) 
@@ -149,5 +153,51 @@ VoxelRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume* or
 
   return volume;
 }
+
+void 
+VoxelRegistration::ImagePreprocessor::WriteSettings
+( ClassStream& stream ) const
+{
+  char buffer[64];
+  stream.Begin( strcat( strcpy( buffer, "preprocessing_" ), this->m_Key ) );
+  switch ( this->m_DataClass ) 
+    {
+    case DATACLASS_GREY:
+      stream.WriteString( "dataclass", "GreyLevel" );
+      break;
+    case DATACLASS_LABEL:
+      stream.WriteString( "dataclass", "LabelField" );
+      break;
+    case DATACLASS_BINARY:
+      stream.WriteString( "dataclass", "Binary" );
+      break;
+    default:
+      stream.WriteString( "dataclass", "Unknown" );
+      break;
+    }
+
+  if ( this->m_PaddingFlag )
+    stream.WriteDouble( "padding_value", this->m_PaddingValue );
+
+  if ( this->m_LowerThresholdActive )
+    stream.WriteDouble( "thresh_lower", this->m_LowerThresholdValue );    
+    
+  if ( this->m_UpperThresholdActive )
+    stream.WriteDouble( "thresh_upper", this->m_UpperThresholdValue );    
+    
+  if ( this->m_PruneHistogramBins )
+    stream.WriteInt( "prune_histogram_bins", this->m_PruneHistogramBins );
+
+  if ( this->m_CropIndex )
+    stream.WriteString( "crop_index", this->m_CropIndex );
+
+  if ( this->m_CropWorld )
+    stream.WriteString( "crop_world", this->m_CropWorld );
+
+  if ( this->m_AutoCropFlag )
+    stream.WriteDouble( "auto_crop_level", this->m_AutoCropLevel );
+
+  stream.End();
+}  
 
 } // namespace cmtk

@@ -54,10 +54,10 @@ VoxelRegistration::VoxelRegistration ()
   : InitialXform( NULL ),
     InitialXformIsInverse( false ),
     m_Xform( NULL ),
-    m_Optimizer( NULL )
+    m_Optimizer( NULL ),
+    m_PreprocessorRef( "Reference", "ref" ),
+    m_PreprocessorFlt( "Floating", "flt" )
 { 
-  DataClass_1 = DataClass_2 = DATACLASS_GREY;
-
   Callback = RegistrationCallback::SmartPtr( new RegistrationCallback() );
   Protocol = NULL; 
 
@@ -72,11 +72,6 @@ VoxelRegistration::VoxelRegistration ()
   OptimizerStepFactor = 0.5;
 
   Metric = 0;
-
-  // no thresholds (these are FLAGS)
-  this->m_ThreshMin1 = this->m_ThreshMin2 = this->m_ThreshMax1 = this->m_ThreshMax2 = 0;
-  this->m_ThreshMinValue1 = this->m_ThreshMinValue2 = -FLT_MAX;
-  this->m_ThreshMaxValue1 = this->m_ThreshMaxValue2 = FLT_MAX;
 }
 
 VoxelRegistration::~VoxelRegistration () 

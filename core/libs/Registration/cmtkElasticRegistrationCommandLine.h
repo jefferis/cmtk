@@ -122,24 +122,6 @@ private:
    */
   char *Study2;
   
-  /// Flag for pixel padding in first image.
-  bool Padding0;
-
-  /// Flag for pixel padding in second image.
-  bool Padding1;
-
-  /// Padding value in first image.
-  Types::DataItem PaddingValue0;
-
-  /// Padding value in second image.
-  Types::DataItem PaddingValue1;
-
-  /// Prune histogram for image 0: number of target bins (0 = no pruning).
-  int m_PruneHistogram0;
-
-  /// Prune histogram for image 1: number of target bins (0 = no pruning).
-  int m_PruneHistogram1;
-
   /// Filename for rigidity constraint map.
   const char* RigidityConstraintMapFilename;
 

@@ -49,6 +49,7 @@
 
 #include <cmtkTimers.h>
 #include <cmtkCommandLine.h>
+#include <cmtkClassStream.h>
 
 #include <stack>
 #include <string.h>
@@ -105,21 +106,18 @@ protected:
   /// First data volume.
   igsGetSetMacro(UniformVolume::SmartPtr,Volume_1);
 
-  /// Data class of first data volume.
-  igsGetSetMacro(DataClass,DataClass_1);
-
   /// Second data volume.
   igsGetSetMacro(UniformVolume::SmartPtr,Volume_2);
-
-  /// Data class of second data volume.
-  igsGetSetMacro(DataClass,DataClass_2);
 
   /// Local class for preprocessing image data, e.g., by histogram operations, thresholding, and cropping.
   class ImagePreprocessor
   {
   public:
-    /// Data class (intensity, labels, binary)
+    /// Data class string ("grey", "labels", or "binary")
     const char* m_DataClassString;
+
+    /// Data class ID.
+    DataClass m_DataClass;
     
     /// Flag for pixel padding.
     bool m_PaddingFlag;
@@ -152,50 +150,30 @@ protected:
     bool m_AutoCropFlag;
 
     /// Auto cropping level.
-     Types::DataItem m_AutoCropLevel;
-
+    Types::DataItem m_AutoCropLevel;
+    
     /// Constructor.
-    ImagePreprocessor();
-
+    ImagePreprocessor( const char* name,  //!< There are two preprocessors, for reference and floating image: this parameter names a parameter group for this instance.
+		       const char* key //!< This parameter gives a string key that is appended to each command line option so that reference and floating preprocessors do not collide.
+      );
+    
     /// Attach this preprocessor to a command line parse.
-    void AttachToCommandLine( CommandLine& cl, //!< The command line object to add our options to.
-			      const char* name,  //!< There are two preprocessors, for reference and floating image: this parameter names a parameter group for this instance.
-			      const char* key //!< This parameter gives a string key that is appended to each command line option so that reference and floating preprocessors do not collide.
+    void AttachToCommandLine( CommandLine& cl //!< The command line object to add our options to.
       ); 
     
     /// Get pre-processed image from original image.
     UniformVolume* GetProcessedImage( const UniformVolume* original );
+    
+    /// Write settings of this object to class stream for archiving.
+    void WriteSettings( ClassStream& stream ) const;
+
+  private:
+    /// Store the name that identifies this instance ("Reference" or "Floating")
+    const char* m_Name;
+
+    /// Store the key that identifies this instance ("ref" or "flt")
+    const char* m_Key;
   };
-
-  /// Image preprocessor for reference image.
-  ImagePreprocessor m_PreprocessorRef;
-
-  /// Image preprocessor for floating image.
-  ImagePreprocessor m_PreprocessorFlt;
-
-  /// Lower threshold flag for image 1.
-  bool m_ThreshMin1;
-
-  /// Lower threshold value for image 1.
-  float m_ThreshMinValue1;
-
-  /// Lower threshold flag for image 2.
-  bool m_ThreshMin2;
-
-  /// Lower threshold value for image 2.
-  float m_ThreshMinValue2;
-
-  /// Upper threshold flag for image 1.
-  bool m_ThreshMax1;
-
-  /// Upper threshold value for image 1.
-  float m_ThreshMaxValue1;
-
-  /// Upper threshold flag for image 2.
-  bool m_ThreshMax2;
-
-  /// Upper threshold value for image 2.
-  float m_ThreshMaxValue2;
 
   /// Weighting factor of landmark registration error vs. image similarity.
   igsGetSetMacro(float,LandmarkErrorWeight);
@@ -344,6 +322,13 @@ public:
   {
     return cmtk::Timers::GetTimeThread() - ThreadTimeStartLevel;
   }
+
+protected:
+    /// Image preprocessor for reference image.
+  ImagePreprocessor m_PreprocessorRef;
+
+  /// Image preprocessor for floating image.
+  ImagePreprocessor m_PreprocessorFlt;
   
 private:
   /** Time of registration start.

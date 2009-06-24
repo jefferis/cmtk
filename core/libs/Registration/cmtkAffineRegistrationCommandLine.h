@@ -125,18 +125,6 @@ private:
    */
   const char *Study2;
 
-  /// Flag for pixel padding in first image.
-  bool Padding0;
-
-  /// Flag for pixel padding in second image.
-  bool Padding1;
-
-  /// Padding value in first image.
-  Types::DataItem PaddingValue0;
-
-  /// Padding value in second image.
-  Types::DataItem PaddingValue1;
-
   /** Name of protocol output file.
    * This is defined by the -p or --protocol command line option.
    */

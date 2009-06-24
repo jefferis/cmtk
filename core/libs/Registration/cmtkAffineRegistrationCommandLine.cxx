@@ -92,33 +92,14 @@ AffineRegistrationCommandLine
   InitXlate = 0;
   NoSwitch = 0;
 
-  Padding0 = false;
-  Padding1 = false;
-  PaddingValue0 = 0;
-  PaddingValue1 = 0;
-
   Verbose = 0;
 
   const char* inStudylist = NULL;
   const char *InitialStudylist = NULL;
   Study1 = Study2 = NULL;
 
-  const char* dataClassRef = "grey";
-  const char* dataClassFlt = "grey";
-
-  const char* cropRealFlt = NULL;
-  const char* cropRealRef = NULL;
-  const char* cropIndexFlt = NULL;
-  const char* cropIndexRef = NULL;
-
   const char* clArg1; // input studylist or reference image
   const char* clArg2; // empty or floating image
-
-  bool autoCrop0 = false;
-  float autoCropLevel0 = 0;
-
-  bool autoCrop1 = false;
-  float autoCropLevel1 = 0;
 
   try 
     {
@@ -166,28 +147,8 @@ AffineRegistrationCommandLine
     cl.AddSwitch( Key( "msd" ), &this->Metric, 4, "Mean Squared Difference metric" );
     cl.AddSwitch( Key( "ncc" ), &this->Metric, 5, "Normalized Cross Correlation metric" );
 
-    cl.AddOption( Key( "pad0" ), &this->PaddingValue0, "Padding value for reference image", &Padding0 );
-    cl.AddOption( Key( "pad1" ), &this->PaddingValue1, "Padding value for floating image", &Padding1 );
-
-    cl.AddOption( Key( "class0" ), &dataClassRef, "Data class for reference image: grey (default), binary, or label" );
-    cl.AddOption( Key( "class1" ), &dataClassFlt, "Data class for floating image: grey (default), binary, or label" );
-
-    cl.AddSwitch( Key( "hist-eq0" ), &HistogramEqualization1, 1, "Apply histogram equalization to reference image data" );
-    cl.AddSwitch( Key( "hist-eq1" ), &HistogramEqualization2, 1, "Apply histogram equalization to floating image data" );
-
-    cl.AddOption( Key( "thresh-min0" ), &this->m_ThreshMinValue1, "Minimum value truncation threshold for reference image", (bool*)&this->m_ThreshMin1 );
-    cl.AddOption( Key( "thresh-max0" ), &this->m_ThreshMaxValue1, "Maximum value truncation threshold for reference image", (bool*)&this->m_ThreshMax1 );
-    cl.AddOption( Key( "thresh-min1" ), &this->m_ThreshMinValue2, "Minimum value truncation threshold for floating image", (bool*)&this->m_ThreshMin2 );
-    cl.AddOption( Key( "thresh-max1" ), &this->m_ThreshMaxValue2, "Maximum value truncation threshold for floating image", (bool*)&this->m_ThreshMax2 );
-
-    cl.AddOption( Key( "crop-reference-index" ), &cropIndexRef, "Cropping region for reference image in pixel index coordinates" );
-    cl.AddOption( Key( "crop-floating-index" ), &cropIndexFlt, "Cropping region for floating image in pixel index coordinates" );
-    cl.AddOption( Key( "crop-reference-real" ), &cropRealRef, "Cropping region for reference image in world coordinates" );
-    cl.AddOption( Key( "crop-floating-real" ), &cropRealFlt, "Cropping region for floating image in world coordinates" );
-
-    cl.AddOption( Key( "auto-crop0" ), &autoCropLevel0, "Automatic cropping of reference image with given threshold", &autoCrop0 );
-    cl.AddOption( Key( "auto-crop1" ), &autoCropLevel1, "Automatic cropping of floating image with given threshold", &autoCrop1 );
-    cl.EndGroup();
+    this->m_PreprocessorRef.AttachToCommandLine( cl );
+    this->m_PreprocessorRef.AttachToCommandLine( cl );
 
     cl.BeginGroup( "Output", "Output parameters" );
     cl.AddOption( Key( 'o', "outlist" ), &this->Studylist, "Output path for final transformation" );
@@ -291,123 +252,13 @@ AffineRegistrationCommandLine
     exit( 1 );
     }
   
-  this->SetDataClass_1( StringToDataClass( dataClassRef ) );
-  this->SetDataClass_2( StringToDataClass( dataClassFlt ) );
-
   UniformVolume::SmartPtr volume( VolumeIO::ReadOriented( Study1, Verbose ) );
   if ( !volume ) throw ConstructorFailed();
-  this->SetVolume_1( volume );
-  Volume_1->GetData()->SetDataClass( this->GetDataClass_1() );
-  if ( Padding0 )
-    {
-    Volume_1->GetData()->SetPaddingValue( PaddingValue0 );
-    }
+  this->SetVolume_1( UniformVolume::SmartPtr( this->m_PreprocessorRef.GetProcessedImage( volume ) ) );
 
   volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( Study2, Verbose ) );
   if ( !volume ) throw ConstructorFailed();
-  this->SetVolume_2( volume );
-  Volume_2->GetData()->SetDataClass( this->GetDataClass_2() );
-  if ( Padding1 ) 
-    {
-    Volume_2->GetData()->SetPaddingValue( PaddingValue1 );
-    }
-  
-  if ( cropIndexRef )
-    {
-    int crop[6];
-    if ( 6 != sscanf( cropIndexRef, "%d,%d,%d,%d,%d,%d", crop, crop+1, crop+2, crop+3, crop+4, crop+5 ) ) 
-      {
-      StdErr << "Option '--crop-reference-index' expects six integer parameters.\n";
-      exit( 1 );
-      }
-
-    for ( int dim=0; dim<3; ++dim ) 
-      {
-      if ( crop[3+dim] < 0 ) 
-	{
-	crop[3+dim] = Volume_1->GetDims()[dim] + crop[3+dim] + 1;
-	}
-      }
-    Volume_1->SetCropRegion( crop, crop+3 );
-    }
-  
-  if ( cropIndexFlt )
-    {
-    int crop[6];
-    if ( 6 != sscanf( cropIndexFlt, "%d,%d,%d,%d,%d,%d", crop, crop+1, crop+2, crop+3, crop+4, crop+5 ) ) 
-      {
-      StdErr << "Option '--crop-floating-index' expects six integer parameters.\n";
-      exit( 1 );
-      }
-
-    for ( int dim=0; dim<3; ++dim ) 
-      {
-      if ( crop[3+dim] < 0 ) 
-	{
-	crop[3+dim] = Volume_2->GetDims()[dim] + crop[3+dim] + 1;
-	}
-      }
-    Volume_2->SetCropRegion( crop, crop+3 );
-    }
-
-  if ( cropRealRef )
-    {
-    float crop[6];
-    if ( 6 != sscanf( cropRealRef, "%f,%f,%f,%f,%f,%f", crop, crop+1, crop+2, crop+3, crop+4, crop+5 ) ) 
-      {
-      StdErr << "Option '--crop-reference-real' expects six floating-point parameters.\n";
-      exit( 1 );
-      }
-
-    Types::Coordinate realCrop[6];
-    for ( int dim=0; dim<3; ++dim ) 
-      {
-      realCrop[dim] = crop[dim];
-      if ( crop[3+dim] < 0 ) 
-	{
-	realCrop[3+dim] = Volume_1->Size[dim] + crop[3+dim];
-	}
-      else
-	{
-	realCrop[3+dim] = crop[3+dim];
-	}
-      }
-    Volume_1->SetCropRegion( realCrop, realCrop+3 );
-    }
-
-  if ( cropRealFlt )
-    {
-    float crop[6];
-    if ( 6 != sscanf( cropRealFlt, "%f,%f,%f,%f,%f,%f", crop, crop+1, crop+2, crop+3, crop+4, crop+5 ) ) 
-      {
-      StdErr << "Option '--crop-floating-real' expects six floating-point parameters.\n";
-      exit( 1 );
-      }
-
-    Types::Coordinate realCrop[6];
-    for ( int dim=0; dim<3; ++dim ) 
-      {
-      realCrop[dim] = crop[dim];
-      if ( crop[3+dim] < 0 ) 
-	{
-	realCrop[3+dim] = Volume_2->Size[dim] + crop[3+dim];
-	}
-      else
-	{
-	realCrop[3+dim] = crop[3+dim];
-	}
-      }
-    Volume_2->SetCropRegion( realCrop, realCrop+3 );
-    }
-  
-  if ( autoCrop0 )
-    {
-    Volume_1->AutoCrop( autoCropLevel0, true /*recrop*/ );
-    }
-  if ( autoCrop1 )
-    {
-    Volume_2->AutoCrop( autoCropLevel1, true /*recrop*/ );
-    }
+  this->SetVolume_2(  UniformVolume::SmartPtr( this->m_PreprocessorFlt.GetProcessedImage( volume ) ) );
 
   if ( InitXlate ) 
     {
@@ -514,42 +365,10 @@ AffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
   classStream.WriteInt( "metric", Metric );
   classStream.WriteDouble( "optimizer_step_factor", OptimizerStepFactor );
   classStream.WriteBool( "no_switch", NoSwitch );
-  switch ( DataClass_1 ) 
-    {
-    case DATACLASS_GREY:
-      classStream.WriteString( "dataclass_1", "GreyLevel" );
-      break;
-    case DATACLASS_LABEL:
-      classStream.WriteString( "dataclass_1", "LabelField" );
-      break;
-    case DATACLASS_BINARY:
-      classStream.WriteString( "dataclass_1", "Binary" );
-      break;
-    default:
-      classStream.WriteString( "dataclass_1", "Unknown" );
-      break;
-    }
-  if ( Padding0 )
-    classStream.WriteDouble( "padding_value_1", PaddingValue0 );
-    
-  switch ( DataClass_2 ) 
-    {
-    case DATACLASS_GREY:
-      classStream.WriteString( "dataclass_2", "GreyLevel" );
-      break;
-    case DATACLASS_LABEL:
-      classStream.WriteString( "dataclass_2", "LabelField" );
-      break;
-    case DATACLASS_BINARY:
-      classStream.WriteString( "dataclass_2", "Binary" );
-      break;
-    default:
-      classStream.WriteString( "dataclass_2", "Unknown" );
-      break;
-    }
-  if ( Padding1 )
-    classStream.WriteDouble( "padding_value_2", PaddingValue1 );
-    
+
+  this->m_PreprocessorRef.WriteSettings( classStream );  
+  this->m_PreprocessorFlt.WriteSettings( classStream );  
+
   classStream.Close();
     
   classStream.Open( studyList, "statistics", ClassStream::WRITE );
