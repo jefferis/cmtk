@@ -2,11 +2,17 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
-Release Notes -- CMTK 1.0.0
+Release Notes -- CMTK 1.0.1
 ===========================
 
-This is the first full source code release of CMTK.  The toolkit has been
-build and tested on the following platforms:
+This is a bugfix and minor featur release. Two command line tools, "regress"
+and "probe_xform" were missing for the 1.0.0 builds. These have been
+added. Some command line options of the "warp" and "registration" tools have
+changed due to internal reorganization and unification of image
+preprocessing. Finally, a tool and script for validation of rigid registration
+using RIRE data have been added.
+
+CMTK has been built and tested on the following platforms:
 
 - Linux 32bit (Fedora 10), gcc 4.3.0
 - Linux 64bit (Fedora 10), gcc 4.3.0
