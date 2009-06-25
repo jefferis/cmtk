@@ -181,6 +181,12 @@ protected:
     const char* m_Key;
   };
 
+  /// Image preprocessor for reference image.
+  ImagePreprocessor m_PreprocessorRef;
+
+  /// Image preprocessor for floating image.
+  ImagePreprocessor m_PreprocessorFlt;
+  
   /// Weighting factor of landmark registration error vs. image similarity.
   igsGetSetMacro(float,LandmarkErrorWeight);
 
@@ -329,13 +335,6 @@ public:
     return cmtk::Timers::GetTimeThread() - ThreadTimeStartLevel;
   }
 
-protected:
-    /// Image preprocessor for reference image.
-  ImagePreprocessor m_PreprocessorRef;
-
-  /// Image preprocessor for floating image.
-  ImagePreprocessor m_PreprocessorFlt;
-  
 private:
   /** Time of registration start.
    * This is used as the reference for absolute computation time calculation.
