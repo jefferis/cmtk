@@ -62,12 +62,6 @@ protected:
   /// If set, this flag prevent automatic switching of model and reference.
   igsGetSetMacro(int,NoSwitch);
 
-  /// Flag for histogram equalization on the first image.
-  int HistogramEqualization1;
-
-  /// Flag for histogram equalization on the second image.
-  int HistogramEqualization2;
-
   /** Numbers of degrees of freedom.
    * This list contains the numbers of degrees of freedom for every resolution
    * level. Registration is repeated with the same data as many times as there

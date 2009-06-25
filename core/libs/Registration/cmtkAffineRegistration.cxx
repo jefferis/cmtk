@@ -57,7 +57,6 @@ cmtk
 AffineRegistration::AffineRegistration () 
 { 
   InitialAlignCenters = false;
-  HistogramEqualization1 = HistogramEqualization2 = 0;
   NoSwitch = false;
 }
 
@@ -132,36 +131,23 @@ AffineRegistration::InitRegistration ()
   for ( ; ( irq == CALLBACK_OK ) && (currSampling<=coarsest); currSampling *= 2 ) 
     {
     UniformVolume::SmartPtr nextRef( NULL );
-    UniformVolume::SmartPtr nextMod( NULL );
+    UniformVolume::SmartPtr nextFlt( NULL );
     try 
       {
       this->ReportProgress( "resampling", 0 );
       nextRef = UniformVolume::SmartPtr( new UniformVolume( *refVolume, currSampling ) );
       irq = this->ReportProgress(  "resampling", 50 );
-      nextMod = UniformVolume::SmartPtr( new UniformVolume( *fltVolume, currSampling ) );
+      nextFlt = UniformVolume::SmartPtr( new UniformVolume( *fltVolume, currSampling ) );
       }
     catch (...) 
       {
       }
     
-    UniformVolume::SmartPtr useRef( nextRef );
-    UniformVolume::SmartPtr useFlt( nextMod );
-    if ( HistogramEqualization1 ) 
-      {
-      useRef = UniformVolume::SmartPtr( useRef->Clone() );
-      useRef->GetData()->HistogramEqualization();
-      }
-    if ( HistogramEqualization2 )
-      {
-      useFlt = UniformVolume::SmartPtr( useFlt->Clone() );
-      useFlt->GetData()->HistogramEqualization();
-      }
-
-    VoxelMatchingAffineFunctional *newFunctional = CreateAffineFunctional( Metric, useRef, useFlt, affineXform );
+    VoxelMatchingAffineFunctional *newFunctional = CreateAffineFunctional( Metric, nextRef, nextFlt, affineXform );
     FunctionalStack.push( Functional::SmartPtr( newFunctional ) );
     
     refVolume = nextRef;
-    fltVolume = nextMod;
+    fltVolume = nextFlt;
     }
 
   this->m_Optimizer = Optimizer::SmartPtr( new BestNeighbourOptimizer( OptimizerStepFactor ) );   
