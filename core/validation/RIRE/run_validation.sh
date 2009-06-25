@@ -28,17 +28,26 @@
 ##  $LastChangedBy$
 ##
 
+# what is the registration binary? This could be "register_rire" for the default algorithm
 CMTK_BIN=$1
+
+# where is the tree of test data from the RIRE project? This is where the "patient_XXX" folders are.
 IN_TREE=$2
 
+# get a list of all patients
 PATIENTS=`cd ${IN_TREE} ; ls | fgrep patient`
 for p in ${PATIENTS}; do
     mkdir ${p}
-    REFSCANS=`cd ${IN_TREE}/${p}; ls | fgrep t`
-    MRSCANS=`cd ${IN_TREE}/${p}; ls | fgrep mr`
+    # Get a list of all reference scans, which are the non-MR scans.
+    REFSCANS=`cd ${IN_TREE}/${p}; ls | fgrep -v mr`
+    # Get a list of floating scans, i.e., the MR scans
+    FLTSCANS=`cd ${IN_TREE}/${p}; ls | fgrep mr`
     for ref in ${REFSCANS}; do	
-	for flt in ${MRSCANS}; do
-	    ${CMTK_BIN} ${IN_TREE}/${p}/${ref}/header.ascii ${IN_TREE}/${p}/${flt}/header.ascii > ${p}/${p}_${ref}_${flt}
+	for flt in ${FLTSCANS}; do
+	    out=${p}/${p}_${ref}_${flt}
+	    if [ ! -f ${out} ]; then
+		${CMTK_BIN} ${IN_TREE}/${p}/${ref}/header.ascii ${IN_TREE}/${p}/${flt}/header.ascii > ${out}
+	    fi
 	done
     done
 done
