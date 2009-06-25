@@ -1,4 +1,4 @@
-Release CMTK-1.0.1:
+Release CMTK-1.0.1 (2009-06-25):
 
 - API: changed XformList::Apply to XformList::ApplyInPlace
 
