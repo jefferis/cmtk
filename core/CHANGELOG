@@ -15,8 +15,8 @@ Release CMTK-1.0.1:
 - Added: established infrastructure for optional algorithm validation,
     beginning with rigid registration. All validation tools must be activated
     via the "BUILD_VALIDATION" option of the top-level CMakeLists.txt file
-- Added: "registration" tool now supports on-the-fly histogram equalization
-    and Sobel edge filtering.
+- Added: "registration" tool now supports on-the-fly Sobel edge filtering, and
+    histogram equalization was unified with "warp" tool's.
 
 - Fixed: cmtkVoxelMatchingAffineFunctional.h compile error when SMP is turned
     off.
