@@ -135,20 +135,6 @@ protected:
    */
   igsGetSetMacro(float,InverseConsistencyWeight);
 
-  /** Flag for application of a 3D sobel operator to the first image
-   */
-  int Sobel1;
-
-  /** Flag for application of a 3D sobel operator to the second image
-   */
-  int Sobel2;
-
-  /// Flag for histogram equalization on the first image.
-  int HistogramEqualization1;
-
-  /// Flag for histogram equalization on the second image.
-  int HistogramEqualization2;
-
   /// Set flag and value for forcing values outside the floating image.
   virtual void SetForceOutside( const bool flag = true, const Types::DataItem value = 0 )
   {

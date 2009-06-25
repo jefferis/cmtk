@@ -46,6 +46,8 @@ VoxelRegistration::ImagePreprocessor::ImagePreprocessor( const char* name, const
     m_UpperThresholdActive( false ),
     m_UpperThresholdValue( CMTK_ITEM_MAX ),
     m_PruneHistogramBins( 0 ),
+    m_HistogramEqualization( false ),
+    m_SobelFilter( false ),
     m_CropIndex( NULL ),
     m_CropWorld( NULL ),
     m_AutoCropFlag( false ),
@@ -69,6 +71,8 @@ VoxelRegistration::ImagePreprocessor::AttachToCommandLine
   cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "thresh-max-" ), this->m_Key ) ), &this->m_UpperThresholdValue, "Maximum value truncation threshold", &this->m_UpperThresholdActive );
   
   cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "prune-histogram-" ), this->m_Key ) ), &this->m_PruneHistogramBins, "Number of bins for histogram-based pruning [default: no pruning]" );
+  cl.AddSwitch( CommandLine::Key( strcat( strcpy( buffer, "histogram-equalization-" ), this->m_Key ) ), &this->m_HistogramEqualization, true, "Apply histogram equalization" );
+  cl.AddSwitch( CommandLine::Key( strcat( strcpy( buffer, "sobel-filter-" ), this->m_Key ) ), &this->m_SobelFilter, true, "Apply Sobel edge detection filter" );
   
   cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "crop-index-" ), this->m_Key ) ), &this->m_CropIndex, "Cropping region in pixel index coordinates [parsed as %d,%d,%d,%d,%d,%d for i0,j0,k0,i1,j1,k1]" );
   cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "crop-world-" ), this->m_Key ) ), &this->m_CropWorld, "Cropping region in world coordinates [parsed as %f,%f,%f,%f,%f,%f for x0,y0,z0,x1,y1,z1]" );
@@ -80,28 +84,39 @@ UniformVolume*
 VoxelRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume* original )
 {
   UniformVolume* volume = original->Clone();
+  TypedArray::SmartPtr data = volume->GetData();
 
   if ( this->m_DataClassString )
     {
     this->m_DataClass = StringToDataClass( this->m_DataClassString );
-    volume->GetData()->SetDataClass( this->m_DataClass );
+    data->SetDataClass( this->m_DataClass );
     }
 
   if ( this->m_PaddingFlag ) 
     {
-    volume->GetData()->SetPaddingValue( this->m_PaddingValue );
+    data->SetPaddingValue( this->m_PaddingValue );
     }
 
   if ( this->m_LowerThresholdActive || this->m_UpperThresholdActive )
     {
-    volume->GetData()->Threshold( this->m_LowerThresholdValue, this->m_UpperThresholdValue );
+    data->Threshold( this->m_LowerThresholdValue, this->m_UpperThresholdValue );
     }
 
   if ( this->m_PruneHistogramBins )
     {
-    volume->GetData()->PruneHistogram( true /*pruneHi*/, false /*pruneLo*/, this->m_PruneHistogramBins );
+    data->PruneHistogram( true /*pruneHi*/, false /*pruneLo*/, this->m_PruneHistogramBins );
     }
   
+  if ( this->m_HistogramEqualization ) 
+    {
+    data->HistogramEqualization();
+    }
+
+  if ( this->m_SobelFilter ) 
+    {
+    volume->ApplySobelFilter();
+    }
+
   if ( this->m_CropIndex )
     {
     int crop[6];
@@ -187,6 +202,12 @@ VoxelRegistration::ImagePreprocessor::WriteSettings
     
   if ( this->m_PruneHistogramBins )
     stream.WriteInt( "prune_histogram_bins", this->m_PruneHistogramBins );
+
+  if ( this->m_HistogramEqualization ) 
+    stream.WriteBool( "histogram_equalization", true );
+
+  if ( this->m_SobelFilter ) 
+    stream.WriteBool( "sobel_filter", true );
 
   if ( this->m_CropIndex )
     stream.WriteString( "crop_index", this->m_CropIndex );

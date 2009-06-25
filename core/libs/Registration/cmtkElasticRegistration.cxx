@@ -79,8 +79,6 @@ ElasticRegistration::ElasticRegistration ()
   LandmarkErrorWeight = 0;
   InverseConsistencyWeight = 0.0;
   RelaxationStep = false;
-  Sobel1 = Sobel2 = 0;
-  HistogramEqualization1 = HistogramEqualization2 = 0;
 }
 
 CallbackResult 
@@ -193,34 +191,7 @@ ElasticRegistration::InitRegistration ()
       {
       }
     
-    UniformVolume::SmartPtr useRef = nextRef;
-    UniformVolume::SmartPtr useMod = nextMod;
-    UniformVolume::SmartPtr useRigidityMap = nextRigidityMap;
-    
-    if ( HistogramEqualization1 ) 
-      {
-      useRef = UniformVolume::SmartPtr( useRef->Clone() );
-      useRef->GetData()->HistogramEqualization();
-      }
-    if ( HistogramEqualization2 )
-      {
-      useMod = UniformVolume::SmartPtr( useMod->Clone() );
-      useMod->GetData()->HistogramEqualization();
-      }
-
-    if ( Sobel1 ) 
-      {
-      useRef = UniformVolume::SmartPtr( useRef->Clone() );
-      useRef->ApplySobelFilter();
-      }
-    if ( Sobel2 ) 
-      {
-      useMod = UniformVolume::SmartPtr( useMod->Clone() );
-      useMod->ApplySobelFilter();
-      }
-
-    Functional::SmartPtr nextFunctional
-      ( this->MakeFunctional( useRef, useMod, useRigidityMap, mll ) );
+    Functional::SmartPtr nextFunctional( this->MakeFunctional( nextRef, nextMod, nextRigidityMap, mll ) );
     FunctionalStack.push( nextFunctional );
     
     refVolume = nextRef;

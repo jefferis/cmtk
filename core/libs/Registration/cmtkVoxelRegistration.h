@@ -140,6 +140,12 @@ protected:
     /// Prune histogram for image: number of target bins (0 = no pruning).
     unsigned int m_PruneHistogramBins;
 
+    /// Flag for histogram equalization.
+    bool m_HistogramEqualization;
+
+    /// Flag for application of Sobel edge detection filter.
+    bool m_SobelFilter;
+
     /// Crop region in index coordinates.
     const char* m_CropIndex;
 

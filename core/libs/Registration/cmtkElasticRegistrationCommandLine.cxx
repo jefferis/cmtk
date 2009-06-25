@@ -401,10 +401,6 @@ ElasticRegistrationCommandLine::OutputWarp ( const char* path ) const
   classStream.WriteDouble( "coarsest_resolution", CoarsestResolution );
   classStream.WriteBool( "use_original_data", UseOriginalData );
   classStream.WriteInt( "metric", Metric );
-  classStream.WriteBool( "sobel1", this->Sobel1 );
-  classStream.WriteBool( "sobel2", this->Sobel2 );
-  classStream.WriteBool( "hist-eq1", this->HistogramEqualization1 );
-  classStream.WriteBool( "hist-eq2", this->HistogramEqualization2 );
   classStream.WriteDouble( "optimizer_step_factor", OptimizerStepFactor );
   classStream.WriteDouble( "grid_spacing", GridSpacing );
   classStream.WriteInt( "ignore_edge", IgnoreEdge );
