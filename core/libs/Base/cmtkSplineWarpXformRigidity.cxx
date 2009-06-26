@@ -49,9 +49,9 @@ SplineWarpXform::GetRigidityConstraintSparse () const
   CoordinateMatrix3x3 J;
 
   const Types::Coordinate* coeff = this->m_Parameters + nextI + nextJ + nextK;
-  for ( int z = 1; z<Dims[2]-1; ++z, coeff+=2*nextJ )
-    for ( int y = 1; y<Dims[1]-1; ++y, coeff+=2*nextI )
-      for ( int x = 1; x<Dims[0]-1; ++x, coeff+=nextI )
+  for ( int z = 1; z<this->m_Dims[2]-1; ++z, coeff+=2*nextJ )
+    for ( int y = 1; y<this->m_Dims[1]-1; ++y, coeff+=2*nextI )
+      for ( int x = 1; x<this->m_Dims[0]-1; ++x, coeff+=nextI )
 	{
 	this->GetJacobian( coeff, J );
 	Constraint += this->GetRigidityConstraint( J );
@@ -173,9 +173,9 @@ SplineWarpXform::GetRigidityConstraintDerivative
   const
 {
   const int controlPointIdx = param / nextI;
-  const unsigned short x =  ( controlPointIdx %  Dims[0] );
-  const unsigned short y = ( (controlPointIdx /  Dims[0]) % Dims[1] );
-  const unsigned short z = ( (controlPointIdx /  Dims[0]) / Dims[1] );
+  const unsigned short x =  ( controlPointIdx %  this->m_Dims[0] );
+  const unsigned short y = ( (controlPointIdx /  this->m_Dims[0]) % this->m_Dims[1] );
+  const unsigned short z = ( (controlPointIdx /  this->m_Dims[0]) / this->m_Dims[1] );
   
   const int thisDim = param % nextI;
   const Types::Coordinate* coeff = this->m_Parameters + param - thisDim;
@@ -186,9 +186,9 @@ SplineWarpXform::GetRigidityConstraintDerivative
   const int jFrom = std::max( -1, 1-y );
   const int kFrom = std::max( -1, 1-z );
 
-  const int iTo = std::min( 1, Dims[0]-2-x );
-  const int jTo = std::min( 1, Dims[1]-2-y );
-  const int kTo = std::min( 1, Dims[2]-2-z );
+  const int iTo = std::min( 1, this->m_Dims[0]-2-x );
+  const int jTo = std::min( 1, this->m_Dims[1]-2-y );
+  const int kTo = std::min( 1, this->m_Dims[2]-2-z );
 
   CoordinateMatrix3x3 J;
   for ( int k = kFrom; k < kTo; ++k )

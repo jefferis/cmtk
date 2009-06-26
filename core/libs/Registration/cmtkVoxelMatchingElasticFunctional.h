@@ -103,7 +103,7 @@ protected:
    * passive parameters of the warp transformation prior to gradient 
    * computation.
    */
-  igsGetSetMacroDefault(bool,AdaptiveFixParameters,true);
+  cmtkGetSetMacroDefault(bool,AdaptiveFixParameters,true);
 
   /** Set threshold factor for selecting passive warp parameters adaptively.
    * If the flag AdaptiveFixParameters is set, this value determines the
@@ -112,34 +112,34 @@ protected:
    * below this factor times sum of min and max region entropy. The default
    * value is 0.5.
    */
-  igsGetSetMacro(double,AdaptiveFixThreshFactor);
+  cmtkGetSetMacro(double,AdaptiveFixThreshFactor);
 
   /** Weight of the Jacobian constraint relative to voxel similarity measure.
    * If this is zero, only the voxel-based similarity will be computed.
    */
-  igsGetSetMacroDefault(double,JacobianConstraintWeight,0);
+  cmtkGetSetMacroDefault(double,JacobianConstraintWeight,0);
 
   /** Weight of the rigidity constraint relative to voxel similarity measure.
    */
-  igsGetSetMacroDefault(double,RigidityConstraintWeight,0);
+  cmtkGetSetMacroDefault(double,RigidityConstraintWeight,0);
 
   /** Map of rigidity weights constraint relative to voxel similarity measure.
    */
-  igsGetSetMacro(DataGrid::SmartPtr,RigidityConstraintMap);
+  cmtkGetSetMacro(DataGrid::SmartPtr,RigidityConstraintMap);
 
   /** Spatial map of relative (tissue-specific) incompressibility constraint.
    */
-  igsGetSetMacro(DataGrid::SmartPtr,IncompressibilityMap);
+  cmtkGetSetMacro(DataGrid::SmartPtr,IncompressibilityMap);
 
   /** Weight of the grid energy relative to voxel similarity measure.
    * If this is zero, only the voxel-based similarity will be computed. If
    * equal to one, only the grid energy will be computed.
    */
-  igsGetSetMacroDefault(double,GridEnergyWeight,0);
+  cmtkGetSetMacroDefault(double,GridEnergyWeight,0);
 
   /** Regularize the deformation.
    */
-  igsGetSetMacroDefault(bool,Regularize,false);
+  cmtkGetSetMacroDefault(bool,Regularize,false);
 
   /** Warp's fixed parameters need to be updated.
    * This flag is set when the warp transformation is set or modified. It
@@ -244,26 +244,26 @@ protected:
 	typename Self::ReturnType WeightedTotal( const typename Self::ReturnType metric, const W* warp ) const 
   {
     double result = metric;
-    if ( JacobianConstraintWeight > 0 ) 
+    if ( this->m_JacobianConstraintWeight > 0 ) 
       {
-      result -= JacobianConstraintWeight * warp->GetJacobianConstraint();
+      result -= this->m_JacobianConstraintWeight * warp->GetJacobianConstraint();
       } 
     
-    if ( RigidityConstraintWeight > 0 ) 
+    if ( this->m_RigidityConstraintWeight > 0 ) 
       {
-      if ( this->RigidityConstraintMap )
+      if ( this->m_RigidityConstraintMap )
 	{
-	result -= RigidityConstraintWeight * warp->GetRigidityConstraint( this->RigidityConstraintMap );
+	result -= this->m_RigidityConstraintWeight * warp->GetRigidityConstraint( this->m_RigidityConstraintMap );
 	}
       else
 	{
-	result -= RigidityConstraintWeight * warp->GetRigidityConstraint();
+	result -= this->m_RigidityConstraintWeight * warp->GetRigidityConstraint();
 	}
       } 
     
-    if ( GridEnergyWeight > 0 ) 
+    if ( this->m_GridEnergyWeight > 0 ) 
       {
-      result -= GridEnergyWeight * warp->GetGridEnergy();
+      result -= this->m_GridEnergyWeight * warp->GetGridEnergy();
       }
     
     if ( !finite( result ) ) 
@@ -271,7 +271,7 @@ protected:
     
     if ( this->m_MatchedLandmarkList ) 
       {
-      result -= LandmarkErrorWeight * warp->GetLandmarksMSD( this->m_MatchedLandmarkList );
+      result -= this->m_LandmarkErrorWeight * warp->GetLandmarksMSD( this->m_MatchedLandmarkList );
       }
 
     if ( InverseTransformation ) 
@@ -517,7 +517,7 @@ public:
   {
     const typename Self::ReturnType current = this->WeightedTotal( this->EvaluateComplete( v ), this->Warp );
 
-    if ( this->AdaptiveFixParameters && this->WarpNeedsFixUpdate ) 
+    if ( this->m_AdaptiveFixParameters && this->WarpNeedsFixUpdate ) 
       {
       this->UpdateWarpFixedParameters();
       }

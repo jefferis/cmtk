@@ -44,7 +44,7 @@ cmtk
 
 InfinitePlane::InfinitePlane()
 {
-  Origin.Set( 0, 0, 0 );
+  this->m_Origin.Set( 0, 0, 0 );
   Rho = Theta = Phi = 0;
   this->Update();
 }

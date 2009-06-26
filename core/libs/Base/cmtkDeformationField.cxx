@@ -49,13 +49,13 @@ DeformationField::InitControlPoints( const AffineXform* affineXform )
 
     Vector3D p;
     p[2] = this->m_Origin[2];
-    for ( int z = 0; z < this->Dims[2]; ++z, p[2] += this->Spacing[2] ) 
+    for ( int z = 0; z < this->m_Dims[2]; ++z, p[2] += this->Spacing[2] ) 
       {
       p[1] = this->m_Origin[1];
-      for ( int y = 0; y < this->Dims[1]; ++y, p[1] += this->Spacing[1] ) 
+      for ( int y = 0; y < this->m_Dims[1]; ++y, p[1] += this->Spacing[1] ) 
 	{
 	p[0] = this->m_Origin[0];
-	for ( int x = 0; x < this->Dims[0]; ++x, p[0] += this->Spacing[0], ofs+=3 ) 
+	for ( int x = 0; x < this->m_Dims[0]; ++x, p[0] += this->Spacing[0], ofs+=3 ) 
 	  {
 	  Vector3D q( p );
 	  affineXform->ApplyInPlaceNonVirtual( q );
@@ -122,13 +122,13 @@ DeformationField::ApplyInPlace
     // given location is in.
     r[dim] = this->InverseSpacing[dim] * ( v.XYZ[dim] - this->m_Origin.XYZ[dim] );
     // This is the actual cell index.
-    grid[dim] = std::min( static_cast<int>( r[dim] ), this->Dims[dim]-2 );
+    grid[dim] = std::min( static_cast<int>( r[dim] ), this->m_Dims[dim]-2 );
     // And here's the relative position within the cell.
     f[dim] = r[dim] - grid[dim];
     }
   
   // Create a pointer to the front-lower-left corner of the c.p.g. cell.
-  Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + this->Dims[0] * (grid[1] + this->Dims[1] * grid[2]) );
+  Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + this->m_Dims[0] * (grid[1] + this->m_Dims[1] * grid[2]) );
   
   for ( int dim = 0; dim<3; ++dim ) 
     {

@@ -72,16 +72,16 @@ protected:
   bool ForceSwitchVolumes;
   
   /// This value determines how often the control point grid is refined.
-  igsGetSetMacro(int,RefineGrid);
+  cmtkGetSetMacro(int,RefineGrid);
 
   /** Flag whether to delay grid refinement.
    * If this flag is set, a newly entered image resolution level is run with 
    * the previous, coarser deformation grid first before refining.
    */
-  igsGetSetMacro(bool,DelayRefineGrid);
+  cmtkGetSetMacro(bool,DelayRefineGrid);
 
   /// Initial spacing of the control point grid.
-  igsGetSetMacro(Types::Coordinate,GridSpacing);
+  cmtkGetSetMacro(Types::Coordinate,GridSpacing);
 
   /** Force exact grid spacing.
    * If this flag is set, then the CPG will be spaced at exactly the distance
@@ -89,7 +89,7 @@ protected:
    * adjusted so that there is an integral number of CPG cells that cover the
    * reference image domain.
    */
-  igsGetSetMacro(bool,ExactGridSpacing);
+  cmtkGetSetMacro(bool,ExactGridSpacing);
 
   /// This counter determines how many edge control points are fixed.
   unsigned int IgnoreEdge;
@@ -99,10 +99,10 @@ protected:
   const char* RestrictToAxes;
 
   /// Flag for fast mode (less accurate) of spline deformations.
-  igsGetSetMacro(bool,FastMode);
+  cmtkGetSetMacro(bool,FastMode);
 
   /// Flag for adaptive selection of active and passive parameters.
-  igsGetSetMacro(bool,AdaptiveFixParameters);
+  cmtkGetSetMacro(bool,AdaptiveFixParameters);
 
   /** Set threshold factor for selecting passive warp parameters adaptively.
    * If the flag AdaptiveFixParameters is set, this value determines the
@@ -111,29 +111,29 @@ protected:
    * below this factor times sum of min and max region entropy. The default
    * value is 0.5.
    */
-  igsGetSetMacro(float,AdaptiveFixThreshFactor);
+  cmtkGetSetMacro(float,AdaptiveFixThreshFactor);
 
   /// Weighting of Jacobian constraint relative to similairy measure.
-  igsGetSetMacro(float,JacobianConstraintWeight);
+  cmtkGetSetMacro(float,JacobianConstraintWeight);
 
   /// Weighting of rigidity constraint relative to similairy measure.
-  igsGetSetMacro(float,RigidityConstraintWeight);
+  cmtkGetSetMacro(float,RigidityConstraintWeight);
 
   /// Pixelwise weight map of rigidity constraint relative to similairy measure.
-  igsGetSetMacro(UniformVolume::SmartPtr,RigidityConstraintMap);
+  cmtkGetSetMacro(UniformVolume::SmartPtr,RigidityConstraintMap);
 
   /// Weighting of grid bending energy constraint relative to image similarity.
-  igsGetSetMacro(float,GridEnergyWeight);
+  cmtkGetSetMacro(float,GridEnergyWeight);
 
   /// Factor by which to relax constraint weights for a relaxation step.
-  igsGetSetMacro(float,RelaxWeight);
+  cmtkGetSetMacro(float,RelaxWeight);
 
   /** Weight for inverse consistency weight.
    * If this is set to a value greater than 0, inverse consistency of the
    * transformation is enforced. In fact, both forward and backward
    * transformation are optimized simultaneously.
    */
-  igsGetSetMacro(float,InverseConsistencyWeight);
+  cmtkGetSetMacro(float,InverseConsistencyWeight);
 
   /// Set flag and value for forcing values outside the floating image.
   virtual void SetForceOutside( const bool flag = true, const Types::DataItem value = 0 )

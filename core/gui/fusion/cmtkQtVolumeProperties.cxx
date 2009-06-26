@@ -92,7 +92,7 @@ QtVolumeProperties::QtVolumeProperties( const Study* study )
 
 	new QLabel( "Pixel size: ", gridBox );
 	QString psize;
-	psize.sprintf( "%f x %f x %f mm", uniVolume->Delta[AXIS_X], uniVolume->Delta[AXIS_Y], uniVolume->Delta[AXIS_Z] );
+	psize.sprintf( "%f x %f x %f mm", uniVolume->m_Delta[AXIS_X], uniVolume->m_Delta[AXIS_Y], uniVolume->m_Delta[AXIS_Z] );
 
 	new QLabel( psize, gridBox );
 	} 

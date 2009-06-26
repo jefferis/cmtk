@@ -70,16 +70,16 @@ class VoxelRegistration
 {
 protected:
   /// Metric to use.
-  igsGetSetMacro(int,Metric);
+  cmtkGetSetMacro(int,Metric);
 
   /// Optimization algorithm to use.
-  igsGetSetMacro(int,Algorithm);
+  cmtkGetSetMacro(int,Algorithm);
 
   /// Exploration, i.e. initial step size.
-  igsGetSetMacro(double,Exploration);
+  cmtkGetSetMacro(double,Exploration);
 
   /// Accuracy, i.e. final step size.
-  igsGetSetMacro(double,Accuracy);
+  cmtkGetSetMacro(double,Accuracy);
 
   /** Coarsest resolution to resample image data to.
    * If this value is unset, ie. less than or equal to zero, then the coarsest
@@ -89,7 +89,7 @@ protected:
   double CoarsestResolution;
 
   /// Flag whether the last resolution level uses the original images.
-  igsGetSetMacro(bool,UseOriginalData);
+  cmtkGetSetMacro(bool,UseOriginalData);
  
  /// Factor between optimization step sizes.
   double OptimizerStepFactor;
@@ -98,16 +98,16 @@ protected:
   bool UseMaxNorm;
 
   /// Sampling, i.e. last non-original resolution.
-  igsGetSetMacro(Types::Coordinate,Sampling);
+  cmtkGetSetMacro(Types::Coordinate,Sampling);
 
   /// Name of protocol file.
-  igsGetSetMacroString(Protocol);
+  cmtkGetSetMacroString(Protocol);
 
   /// First data volume.
-  igsGetSetMacro(UniformVolume::SmartPtr,Volume_1);
+  cmtkGetSetMacro(UniformVolume::SmartPtr,Volume_1);
 
   /// Second data volume.
-  igsGetSetMacro(UniformVolume::SmartPtr,Volume_2);
+  cmtkGetSetMacro(UniformVolume::SmartPtr,Volume_2);
 
   /// Local class for preprocessing image data, e.g., by histogram operations, thresholding, and cropping.
   class ImagePreprocessor
@@ -188,22 +188,22 @@ protected:
   ImagePreprocessor m_PreprocessorFlt;
   
   /// Weighting factor of landmark registration error vs. image similarity.
-  igsGetSetMacro(float,LandmarkErrorWeight);
+  cmtkGetSetMacro(float,LandmarkErrorWeight);
 
   /// Matched landmarks list.
-  igsGetSetMacro(MatchedLandmarkList::SmartPtr,LandmarkList);
+  cmtkGetSetMacro(MatchedLandmarkList::SmartPtr,LandmarkList);
 
   /// Flag whether model and reference are exchanged.
   bool SwitchVolumes;
 
   /// Pointer to callback object.
-  igsGetSetMacro(RegistrationCallback::SmartPtr,Callback);
+  cmtkGetSetMacro(RegistrationCallback::SmartPtr,Callback);
 
   /// Initial transformation.
-  igsGetSetMacro(AffineXform::SmartPtr,InitialXform);
+  cmtkGetSetMacro(AffineXform::SmartPtr,InitialXform);
 
   /// FLag whether initial transformation is an inverse.
-  igsGetSetMacro(bool,InitialXformIsInverse);
+  cmtkGetSetMacro(bool,InitialXformIsInverse);
 
   /// Current / final transformation.
   Xform::SmartPtr m_Xform;

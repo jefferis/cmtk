@@ -66,20 +66,20 @@ DataGrid::GetDataEliminatePaddingVoting( bool& changed ) const
   changed = false;
 
   size_t offset = 0;
-  for ( int z = 0; z < this->Dims[2]; ++z ) 
+  for ( int z = 0; z < this->m_Dims[2]; ++z ) 
     {
-    const int dzFrom = z ? z-1 : z, dzTo = (z<this->Dims[2]-1) ? z+1 : z;
-    for ( int y = 0; y < this->Dims[1]; ++y ) 
+    const int dzFrom = z ? z-1 : z, dzTo = (z<this->m_Dims[2]-1) ? z+1 : z;
+    for ( int y = 0; y < this->m_Dims[1]; ++y ) 
       {
-      const int dyFrom = y ? y-1 : y, dyTo = (y<this->Dims[1]-1) ? y+1 : y;
-      for ( int x = 0; x < this->Dims[0]; ++x, ++offset ) 
+      const int dyFrom = y ? y-1 : y, dyTo = (y<this->m_Dims[1]-1) ? y+1 : y;
+      for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
 	{
 	// is there Padding here?
 	if ( data->PaddingDataAt( offset ) )
 	  {
 	  // determine frequencies of values among neighbors
 	  memset( valueMap, 0, sizeof( valueMap ) );
-	  const int dxFrom = x ? x-1 : x, dxTo = (x<Dims[0]-1) ? x+1 : x;
+	  const int dxFrom = x ? x-1 : x, dxTo = (x<this->m_Dims[0]-1) ? x+1 : x;
 	  for ( int dz = dzFrom; (dz <= dzTo); ++dz )
 	    for ( int dy = dyFrom; (dy <= dyTo); ++dy )
 	      for ( int dx = dxFrom; (dx <= dxTo); ++dx )
@@ -146,15 +146,15 @@ DataGrid::GetDataErode( const int iterations ) const
   for ( int i = 0; i < iterations; ++i ) 
     {
     size_t offset = 0;
-    for ( int z = 0; z < Dims[2]; ++z ) 
+    for ( int z = 0; z < this->m_Dims[2]; ++z ) 
       {
-      int dzFrom = z ? -1 : 0, dzTo = (z<Dims[2]-1) ? 1 : 0;
-      for ( int y = 0; y < Dims[1]; ++y ) 
+      int dzFrom = z ? -1 : 0, dzTo = (z<this->m_Dims[2]-1) ? 1 : 0;
+      for ( int y = 0; y < this->m_Dims[1]; ++y ) 
 	{
-	int dyFrom = y ? -1 : 0, dyTo = (y<Dims[1]-1) ? 1 : 0;
-	for ( int x = 0; x < Dims[0]; ++x, ++offset ) 
+	int dyFrom = y ? -1 : 0, dyTo = (y<this->m_Dims[1]-1) ? 1 : 0;
+	for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
 	  {
-	  int dxFrom = x ? -1 : 0, dxTo = (x<Dims[0]-1) ? 1 : 0;
+	  int dxFrom = x ? -1 : 0, dxTo = (x<this->m_Dims[0]-1) ? 1 : 0;
 	  if ( eroded[offset] ) 
 	    {
 	    bool erodePixel = false;
@@ -215,15 +215,15 @@ DataGrid::GetDataDilate( const int iterations ) const
   for ( int i = 0; i < iterations; ++i ) 
     {
     size_t offset = 0;
-    for ( int z = 0; z < Dims[2]; ++z ) 
+    for ( int z = 0; z < this->m_Dims[2]; ++z ) 
       {
-      int dzFrom = z ? -1 : 0, dzTo = (z<Dims[2]-1) ? 1 : 0;
-      for ( int y = 0; y < Dims[1]; ++y ) 
+      int dzFrom = z ? -1 : 0, dzTo = (z<this->m_Dims[2]-1) ? 1 : 0;
+      for ( int y = 0; y < this->m_Dims[1]; ++y ) 
 	{
-	int dyFrom = y ? -1 : 0, dyTo = (y<Dims[1]-1) ? 1 : 0;
-	for ( int x = 0; x < Dims[0]; ++x, ++offset ) 
+	int dyFrom = y ? -1 : 0, dyTo = (y<this->m_Dims[1]-1) ? 1 : 0;
+	for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
 	  {
-	  int dxFrom = x ? -1 : 0, dxTo = (x<Dims[0]-1) ? 1 : 0;
+	  int dxFrom = x ? -1 : 0, dxTo = (x<this->m_Dims[0]-1) ? 1 : 0;
 	  if ( ! dilated[offset] ) 
 	    {
 	    byte dilatePixel = 0;
@@ -269,18 +269,18 @@ DataGrid::GetBoundaryMap( const bool multiValued ) const
   short* boundary = static_cast<short*>( boundaryArray->GetDataPtr() );
 
 #pragma omp parallel for
-  for ( int z = 0; z < Dims[2]; ++z ) 
+  for ( int z = 0; z < this->m_Dims[2]; ++z ) 
     {
-    size_t offset = z * Dims[0] * Dims[1];
+    size_t offset = z * this->m_Dims[0] * this->m_Dims[1];
 
     Types::DataItem value, neighbor;
-    const int dzFrom = z ? -1 : 0, dzTo = (z<Dims[2]-1) ? 1 : 0;
-    for ( int y = 0; y < Dims[1]; ++y ) 
+    const int dzFrom = z ? -1 : 0, dzTo = (z<this->m_Dims[2]-1) ? 1 : 0;
+    for ( int y = 0; y < this->m_Dims[1]; ++y ) 
       {
-      const int dyFrom = y ? -1 : 0, dyTo = (y<Dims[1]-1) ? 1 : 0;
-      for ( int x = 0; x < Dims[0]; ++x, ++offset ) 
+      const int dyFrom = y ? -1 : 0, dyTo = (y<this->m_Dims[1]-1) ? 1 : 0;
+      for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
 	{
-	const int dxFrom = x ? -1 : 0, dxTo = (x<Dims[0]-1) ? 1 : 0;
+	const int dxFrom = x ? -1 : 0, dxTo = (x<this->m_Dims[0]-1) ? 1 : 0;
 	bool bp = false;
 	if ( dataArray->Get( value, offset ) ) 
 	  {

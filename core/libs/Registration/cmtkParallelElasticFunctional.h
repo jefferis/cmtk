@@ -247,7 +247,7 @@ public:
   {
     const typename Self::ReturnType current = this->EvaluateComplete( v );
 
-    if ( this->AdaptiveFixParameters && this->WarpNeedsFixUpdate ) 
+    if ( this->m_AdaptiveFixParameters && this->WarpNeedsFixUpdate ) 
       {
       this->UpdateWarpFixedParameters();
       }

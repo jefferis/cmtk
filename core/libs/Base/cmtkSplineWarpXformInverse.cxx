@@ -65,7 +65,7 @@ SplineWarpXform::FindClosestControlPoint
   Types::Coordinate closestDistance = FLT_MAX;
   Types::Coordinate idx[3];
   for ( int dim = 0; dim < 3; ++dim ) 
-    idx[dim] = 0.5 * Dims[dim];
+    idx[dim] = 0.5 * this->m_Dims[dim];
 
   for ( Types::Coordinate step = 0.25 * MathUtil::Min( 3, idx ); step > 0.01; step *= 0.5 )
     {
@@ -81,7 +81,7 @@ SplineWarpXform::FindClosestControlPoint
 	  {
 	  const Types::Coordinate oldIdx = idx[dim];
 	  idx[dim] += dir * step;
-	  if ( (idx[dim] > 0) && (idx[dim] <= Dims[dim]-2) ) 
+	  if ( (idx[dim] > 0) && (idx[dim] <= this->m_Dims[dim]-2) ) 
 	    {
 	    Vector3D cp;
 	    this->GetOriginalControlPointPosition( cp, idx[0], idx[1], idx[2] );
@@ -107,7 +107,7 @@ SplineWarpXform::FindClosestControlPoint
       }
     }
   
-  assert( (idx[0] <= Dims[0]-1) && (idx[1] <= Dims[1]-1 ) && (idx[2] <= Dims[2]-1) );
+  assert( (idx[0] <= this->m_Dims[0]-1) && (idx[1] <= this->m_Dims[1]-1 ) && (idx[2] <= this->m_Dims[2]-1) );
   assert( idx[0] >= 0 && idx[1] >= 0 && idx[2] >= 0 );
 
   this->GetOriginalControlPointPosition( cp, idx[0], idx[1], idx[2] );

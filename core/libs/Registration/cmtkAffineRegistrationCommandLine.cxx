@@ -81,16 +81,16 @@ AffineRegistrationCommandLine
 ::AffineRegistrationCommandLine 
 ( int argc, char* argv[] ) 
 {
-  Metric = 0;
+  this->m_Metric = 0;
 
   this->m_AutoMultiLevels = 0;
   CoarsestResolution = -1;
-  Exploration = 8;
-  Accuracy = 0.1;
-  Sampling = 1.0;
+  this->m_Exploration = 8;
+  this->m_Accuracy = 0.1;
+  this->m_Sampling = 1.0;
   OutParametersName = OutMatrixName = Studylist = Protocol = Time = NULL;
   InitXlate = 0;
-  NoSwitch = 0;
+  this->m_NoSwitch = 0;
 
   Verbose = 0;
 
@@ -116,36 +116,36 @@ AffineRegistrationCommandLine
     cl.AddOption( Key( "auto-multi-levels" ), &this->m_AutoMultiLevels, "Automatic optimization and resolution parameter generation for <n> levels" );
 
     cl.BeginGroup( "Optimization", "Optimization settings" );
-    cl.AddOption( Key( 'e', "exploration" ), &this->Exploration, "Exploration [initial optimizer step size]" );
-    cl.AddOption( Key( 'a', "accuracy" ), &this->Accuracy, "Accuracy [final optimizer step size]" );
+    cl.AddOption( Key( 'e', "exploration" ), &this->m_Exploration, "Exploration [initial optimizer step size]" );
+    cl.AddOption( Key( 'a', "accuracy" ), &this->m_Accuracy, "Accuracy [final optimizer step size]" );
     cl.AddOption( Key( 'f', "stepfactor" ), &this->OptimizerStepFactor, "Factor for search step size reduction. Must be > 0.0 and < 1.0 [default: 0.5]" );
     cl.EndGroup();
 
     cl.BeginGroup( "Resolution", "Image resolution parameters" );
-    cl.AddOption( Key( 's', "sampling" ), &this->Sampling, "Image sampling (finest resampled image resolution)" );
+    cl.AddOption( Key( 's', "sampling" ), &this->m_Sampling, "Image sampling (finest resampled image resolution)" );
     cl.AddOption( Key( "coarsest" ), &this->CoarsestResolution, "Upper limit for image sampling in multiresolution hierarchy" );
 
-    cl.AddSwitch( Key( "use-original-data" ), &this->UseOriginalData, true, "Use original data in full resolution as final level [default]" );
-    cl.AddSwitch( Key( "omit-original-data" ), &this->UseOriginalData, false, "Do NOT use original data in full resolution" );
+    cl.AddSwitch( Key( "use-original-data" ), &this->m_UseOriginalData, true, "Use original data in full resolution as final level [default]" );
+    cl.AddSwitch( Key( "omit-original-data" ), &this->m_UseOriginalData, false, "Do NOT use original data in full resolution" );
     cl.EndGroup();
 
     cl.BeginGroup( "Transformation", "Transformation parameters" );
     cl.AddRepeat( Key( "dofs" ), this->NumberDOFs, "Add number of degrees of freedom [can be repeated]" );
     cl.AddRepeat( Key( "dofs-final" ), this->NumberDOFsFinal, "Add number of degrees of freedom for final level only [can be repeated]" );
     
-    cl.AddSwitch( Key( 'n', "no-switch" ), &NoSwitch, 1, "Do not auto-switch reference and floating image for improved computational performance" );
+    cl.AddSwitch( Key( 'n', "no-switch" ), &this->m_NoSwitch, 1, "Do not auto-switch reference and floating image for improved computational performance" );
     cl.AddSwitch( Key( 'i', "initxlate" ), &InitXlate, true, "Initialized transformation by translating floating image FOV center onto reference image FOV center" );
 
     cl.AddOption( Key( "initial" ), &InitialStudylist, "Initialize transformation from given path" );
-    cl.AddOption( Key( "initial-inverse" ), &InitialStudylist, "Initialize transformation with inverse from given path", &InitialXformIsInverse );
+    cl.AddOption( Key( "initial-inverse" ), &InitialStudylist, "Initialize transformation with inverse from given path", &this->m_InitialXformIsInverse );
     cl.EndGroup();
 
     cl.BeginGroup( "Image data", "Image data" );
-    cl.AddSwitch( Key( "nmi" ), &this->Metric, 0, "Normalized Mutual Information metric" );
-    cl.AddSwitch( Key( "mi" ), &this->Metric, 1, "Standard Mutual Information metric" );
-    cl.AddSwitch( Key( "cr" ), &this->Metric, 2, "Correlation Ratio metric" );
-    cl.AddSwitch( Key( "msd" ), &this->Metric, 4, "Mean Squared Difference metric" );
-    cl.AddSwitch( Key( "ncc" ), &this->Metric, 5, "Normalized Cross Correlation metric" );
+    cl.AddSwitch( Key( "nmi" ), &this->m_Metric, 0, "Normalized Mutual Information metric" );
+    cl.AddSwitch( Key( "mi" ), &this->m_Metric, 1, "Standard Mutual Information metric" );
+    cl.AddSwitch( Key( "cr" ), &this->m_Metric, 2, "Correlation Ratio metric" );
+    cl.AddSwitch( Key( "msd" ), &this->m_Metric, 4, "Mean Squared Difference metric" );
+    cl.AddSwitch( Key( "ncc" ), &this->m_Metric, 5, "Normalized Cross Correlation metric" );
 
     this->m_PreprocessorRef.AttachToCommandLine( cl );
     this->m_PreprocessorFlt.AttachToCommandLine( cl );
@@ -274,12 +274,12 @@ AffineRegistrationCommandLine
 
   if ( this->m_AutoMultiLevels > 0 )
     {
-    const Types::Coordinate minDelta = std::min( Volume_1->GetMinDelta(), Volume_2->GetMinDelta() );
-    const Types::Coordinate maxDelta = std::max( Volume_1->GetMaxDelta(), Volume_2->GetMaxDelta() );
+    const Types::Coordinate minDelta = std::min( this->m_Volume_1->GetMinDelta(), this->m_Volume_2->GetMinDelta() );
+    const Types::Coordinate maxDelta = std::max( this->m_Volume_1->GetMaxDelta(), this->m_Volume_2->GetMaxDelta() );
 
-    this->Accuracy = 0.1 * minDelta;
-    this->Sampling = maxDelta;
-    this->Exploration = maxDelta * (1<<(this->m_AutoMultiLevels-1));
+    this->m_Accuracy = 0.1 * minDelta;
+    this->m_Sampling = maxDelta;
+    this->m_Exploration = maxDelta * (1<<(this->m_AutoMultiLevels-1));
     }
   
   if ( Protocol ) 
@@ -358,13 +358,13 @@ AffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
   classStream.Close();
     
   classStream.Open( studyList, "settings", ClassStream::WRITE );
-  classStream.WriteDouble( "exploration", Exploration );
-  classStream.WriteDouble( "accuracy", Accuracy );
-  classStream.WriteDouble( "min_sampling", Sampling );
+  classStream.WriteDouble( "exploration", this->m_Exploration );
+  classStream.WriteDouble( "accuracy", this->m_Accuracy );
+  classStream.WriteDouble( "min_sampling", this->m_Sampling );
   classStream.WriteDouble( "coarsest_resolution", CoarsestResolution );
-  classStream.WriteInt( "metric", Metric );
+  classStream.WriteInt( "metric", this->m_Metric );
   classStream.WriteDouble( "optimizer_step_factor", OptimizerStepFactor );
-  classStream.WriteBool( "no_switch", NoSwitch );
+  classStream.WriteBool( "no_switch", this->m_NoSwitch );
 
   this->m_PreprocessorRef.WriteSettings( classStream );  
   this->m_PreprocessorFlt.WriteSettings( classStream );  

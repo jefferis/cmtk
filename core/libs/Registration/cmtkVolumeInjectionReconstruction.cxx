@@ -102,18 +102,18 @@ VolumeInjectionReconstruction
 ::GuessInterleaveAxis
 ( const UniformVolume* image, const int defaultAxis )
 {
-  if ( (image->Dims[0] == image->Dims[1]) && (image->Dims[1] != image->Dims[2]) )
+  if ( (image->m_Dims[0] == image->m_Dims[1]) && (image->m_Dims[1] != image->m_Dims[2]) )
     return 2;
-  if ( (image->Dims[0] == image->Dims[2]) && (image->Dims[1] != image->Dims[2]) )
+  if ( (image->m_Dims[0] == image->m_Dims[2]) && (image->m_Dims[1] != image->m_Dims[2]) )
     return 1;
-  if ( (image->Dims[1] == image->Dims[2]) && (image->Dims[1] != image->Dims[0]) )
+  if ( (image->m_Dims[1] == image->m_Dims[2]) && (image->m_Dims[1] != image->m_Dims[0]) )
     return 0;
 
-  if ( (image->Delta[0] == image->Delta[1]) && (image->Delta[1] != image->Delta[2]) )
+  if ( (image->m_Delta[0] == image->m_Delta[1]) && (image->m_Delta[1] != image->m_Delta[2]) )
     return 2;
-  if ( (image->Delta[0] == image->Delta[2]) && (image->Delta[1] != image->Delta[2]) )
+  if ( (image->m_Delta[0] == image->m_Delta[2]) && (image->m_Delta[1] != image->m_Delta[2]) )
     return 1;
-  if ( (image->Delta[1] == image->Delta[2]) && (image->Delta[1] != image->Delta[0]) )
+  if ( (image->m_Delta[1] == image->m_Delta[2]) && (image->m_Delta[1] != image->m_Delta[0]) )
     return 0;
 
   return defaultAxis;
@@ -243,7 +243,7 @@ VolumeInjectionReconstruction
 	const Xform* passImageXform = this->m_TransformationsToPassImages[pass];
 
 	const Vector3D vPass = passImageXform->Apply( vCorrected );
-	const Types::Coordinate passDelta[3] = { passImage->Delta[0], passImage->Delta[1], passImage->Delta[2] };
+	const Types::Coordinate passDelta[3] = { passImage->m_Delta[0], passImage->m_Delta[1], passImage->m_Delta[2] };
 
 	int passGridPosition[3];
 	passImage->GetVoxelIndexNoBounds( vPass, passGridPosition );
@@ -319,9 +319,9 @@ VolumeInjectionReconstruction
 
   const int kernelRadiusIndex[3] = 
   {
-    1 + static_cast<int>( kernelRadius / this->m_CorrectedImage->Delta[0] ),
-    1 + static_cast<int>( kernelRadius / this->m_CorrectedImage->Delta[1] ),
-    1 + static_cast<int>( kernelRadius / this->m_CorrectedImage->Delta[2] )
+    1 + static_cast<int>( kernelRadius / this->m_CorrectedImage->m_Delta[0] ),
+    1 + static_cast<int>( kernelRadius / this->m_CorrectedImage->m_Delta[1] ),
+    1 + static_cast<int>( kernelRadius / this->m_CorrectedImage->m_Delta[2] )
   };
 
   const Types::Coordinate kernelRadiusSquare = kernelRadius * kernelRadius;

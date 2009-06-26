@@ -137,7 +137,7 @@ public:
   /// Return average volume of all voxels.
   virtual Types::Coordinate AverageVoxelVolume () const 
   {
-    return ( (Size[0]*Size[1]*Size[2]) / ((Dims[0]-1)*(Dims[1]-1)*(Dims[2]-1)) );
+    return ( (Size[0]*Size[1]*Size[2]) / ((this->m_Dims[0]-1)*(this->m_Dims[1]-1)*(this->m_Dims[2]-1)) );
   }
   
   /** Calculate volume center.

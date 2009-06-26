@@ -85,8 +85,8 @@ ReformatVolume::GetTransformedReference
 
   const ScalarDataType dtype = (this->m_UserDataType != TYPE_NONE) ? this->m_UserDataType : ReferenceVolume->GetData()->GetType();
   TypedArray::SmartPtr dataArray( TypedArray::Create( dtype, result->GetNumberOfPixels() ) );
-  if ( this->UsePaddingValue )
-    dataArray->SetPaddingValue( this->PaddingValue );
+  if ( this->m_UsePaddingValue )
+    dataArray->SetPaddingValue( this->m_PaddingValue );
   result->SetData( dataArray );
 
   Progress::SetTotalSteps( result->GetNumberOfPixels() );

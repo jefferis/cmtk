@@ -75,7 +75,7 @@ public:
    * set to "true" so that after each optimization step the functional is
    * queried for updated steppings.
    */
-  igsGetSetMacro(bool,UpdateStepScaleVector);
+  cmtkGetSetMacro(bool,UpdateStepScaleVector);
 
   /** External callback object.
    * This object is called during the optimization, reporting optimization
@@ -139,7 +139,7 @@ public:
     : m_Callback( NULL ),
       m_Functional( NULL )
   {
-    UpdateStepScaleVector = false;
+    this->m_UpdateStepScaleVector = false;
   }
 
   /// Virtual destructor.

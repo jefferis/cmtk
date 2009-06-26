@@ -76,7 +76,7 @@ public:
   { 
     this->m_FunctionAndGradient = new typename Self::FunctionAndGradient( this );
     
-    Vector3D scale( originalImage->Delta );
+    Vector3D scale( originalImage->m_Delta );
     scale *= psfScale;
     scale.XYZ[interleaveAxis] *= numberOfPasses;
     for ( size_t i = 0; i < numberOfPasses; ++i )

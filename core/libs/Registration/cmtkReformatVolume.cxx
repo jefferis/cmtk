@@ -70,7 +70,7 @@ ReformatVolume::ReformatVolume()
   RescaleOffset = 0;
   RescaleSlope = 1;
 
-  this->UsePaddingValue = false;
+  this->m_UsePaddingValue = false;
 }
 
 void
@@ -142,8 +142,8 @@ ReformatVolume::PlainReformat()
     Progress::SetTotalSteps( targetVolume->GetDims( AXIS_Z ) );
     
     TypedArray::SmartPtr targetData( TypedArray::Create( FloatingVolume->GetData()->GetType(), targetVolume->GetNumberOfPixels() ) );
-    if ( UsePaddingValue )
-      targetData->SetPaddingValue( PaddingValue );
+    if ( this->m_UsePaddingValue )
+      targetData->SetPaddingValue( this->m_PaddingValue );
     
     size_t planeOffset = 0;
     for ( int plane = 0; plane < targetVolume->GetDims(AXIS_Z); ++plane, planeOffset += planeSize ) 
@@ -171,8 +171,8 @@ ReformatVolume::PlainReformat
     {
     result = TypedArray::Create( FloatingVolume->GetData()->GetType(), DataSize );
     
-    if ( UsePaddingValue )
-      result->SetPaddingValue( PaddingValue );
+    if ( this->m_UsePaddingValue )
+      result->SetPaddingValue( this->m_PaddingValue );
     }
   
   if ( ! result ) return result;
@@ -250,8 +250,8 @@ ReformatVolume::GetTransformedReference
   ScalarDataType dtype = ReferenceVolume->GetData()->GetType();
   TypedArray::SmartPtr dataArray( TypedArray::Create( dtype, result->GetNumberOfPixels() ) );
 
-  if ( UsePaddingValue )
-    dataArray->SetPaddingValue( PaddingValue );
+  if ( this->m_UsePaddingValue )
+    dataArray->SetPaddingValue( this->m_PaddingValue );
 
   result->SetData( dataArray );
 
@@ -459,8 +459,8 @@ ReformatVolume::GetTransformedReferenceJacobianAvg
   
   TypedArray::SmartPtr dataArray( TypedArray::Create( TYPE_FLOAT, result->GetNumberOfPixels() ) );
 
-  if ( UsePaddingValue )
-    dataArray->SetPaddingValue( PaddingValue );
+  if ( this->m_UsePaddingValue )
+    dataArray->SetPaddingValue( this->m_PaddingValue );
 
   result->SetData( dataArray );
 
@@ -659,7 +659,7 @@ ReformatVolume::CreateTransformedReference
   int dims[3];
   for ( int dim = 0; dim < 3; ++dim ) 
     {
-    delta[dim] = this->ReferenceVolume->Delta[dim];
+    delta[dim] = this->ReferenceVolume->m_Delta[dim];
     bbTo[dim] -= bbFrom[dim];
     dims[dim] = 1 + static_cast<int>( bbTo[dim] / delta[dim] );
     }

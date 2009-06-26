@@ -83,8 +83,8 @@ VolumeFromFile::WriteMetaImage
 	   (double)matrix[2][0], (double)matrix[2][1], (double)matrix[2][2] );
   fprintf( outfile, "Offset = %lf %lf %lf\n", (double)matrix[3][0], (double)matrix[3][1], (double)matrix[3][2] );
   fprintf( outfile, "CenterOfRotation = 0 0 0\n" );
-  fprintf( outfile, "ElementSpacing = %f %f %f\n", volume->Delta[AXIS_X], volume->Delta[AXIS_Y], volume->Delta[AXIS_Z] );
-  fprintf( outfile, "DimSize = %d %d %d\n", volume->Dims[AXIS_X], volume->Dims[AXIS_Y], volume->Dims[AXIS_Z] );
+  fprintf( outfile, "ElementSpacing = %f %f %f\n", volume->m_Delta[AXIS_X], volume->m_Delta[AXIS_Y], volume->m_Delta[AXIS_Z] );
+  fprintf( outfile, "DimSize = %d %d %d\n", volume->m_Dims[AXIS_X], volume->m_Dims[AXIS_Y], volume->m_Dims[AXIS_Z] );
   fprintf( outfile, "AnatomicalOrientation = %s\n", volume->m_MetaInformation[CMTK_META_SPACE].c_str() );
   fprintf( outfile, "ElementNumberOfChannels = 1\n" );
   

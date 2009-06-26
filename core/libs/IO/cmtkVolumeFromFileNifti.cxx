@@ -352,9 +352,9 @@ VolumeFromFile::WriteNifti
     }  
   
   header.pixdim[0] = 1;
-  header.pixdim[1] = static_cast<float>( writeVolume->Delta[AXIS_X] );
-  header.pixdim[2] = static_cast<float>( writeVolume->Delta[AXIS_Y] );
-  header.pixdim[3] = static_cast<float>( writeVolume->Delta[AXIS_Z] );
+  header.pixdim[1] = static_cast<float>( writeVolume->m_Delta[AXIS_X] );
+  header.pixdim[2] = static_cast<float>( writeVolume->m_Delta[AXIS_Y] );
+  header.pixdim[3] = static_cast<float>( writeVolume->m_Delta[AXIS_Z] );
   header.pixdim[4] = 0.0;
   header.pixdim[5] = 0.0;
   

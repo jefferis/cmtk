@@ -68,7 +68,7 @@ BestDirectionOptimizer::Optimize
     StdErr.printf( "%s\n", comment );
     
     bool update = true;
-    int levelRepeatCounter = this->RepeatLevelCount;
+    int levelRepeatCounter = this->m_RepeatLevelCount;
     while ( update && ( irq == CALLBACK_OK ) ) 
       {
       update = false;
@@ -78,14 +78,14 @@ BestDirectionOptimizer::Optimize
       
       // Daniel Rueckert is supposedly using Euclid's norm here, but we found this
       // to be less efficient AND accurate. Makes no sense anyway.
-      const Self::ParameterType vectorLength = ( UseMaxNorm ) ? directionVector.MaxNorm() : directionVector.EuclidNorm();
+      const Self::ParameterType vectorLength = ( this->m_UseMaxNorm ) ? directionVector.MaxNorm() : directionVector.EuclidNorm();
       if ( vectorLength > 0 ) 
 	{
 	const Self::ParameterType stepLength = step / vectorLength;
 	
 	// is there a minimum threshold for gradient components? if so,
 	// filter out (set to zero) all components below this threshold.
-	if ( DirectionThreshold < 0 ) 
+	if ( this->m_DirectionThreshold < 0 ) 
 	  {
 #pragma omp parallel for
 	  for ( int idx=0; idx<Dim; ++idx )
@@ -95,7 +95,7 @@ BestDirectionOptimizer::Optimize
 	  {
 #pragma omp parallel for
 	  for ( int idx=0; idx<Dim; ++idx )
-	    if ( fabs( directionVector[idx] ) > ( vectorLength * DirectionThreshold ) ) 
+	    if ( fabs( directionVector[idx] ) > ( vectorLength * this->m_DirectionThreshold ) ) 
 	      {
 	      directionVector[idx] *= (stepLength * this->GetParamStep(idx) );
 	      } 
@@ -146,7 +146,7 @@ BestDirectionOptimizer::Optimize
 	      v -= directionVector;
 	      }
 	    vNext = v;
-	    if ( this->AggressiveMode )
+	    if ( this->m_AggressiveMode )
 	      {
 	      update = true;
 	      this->m_LastOptimizeChangedParameters = true;
@@ -160,11 +160,11 @@ BestDirectionOptimizer::Optimize
       irq = this->CallbackExecute( v, current, percentDone );
       StdErr.printf( "%f\r", current );
 
-      if ( this->AggressiveMode )
+      if ( this->m_AggressiveMode )
 	{
 	if ( update )
 	  {
-	  levelRepeatCounter = this->RepeatLevelCount;
+	  levelRepeatCounter = this->m_RepeatLevelCount;
 	  }
 	else
 	  {

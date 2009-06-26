@@ -100,7 +100,7 @@ protected:
   cmtkGetSetMacro(MatchedLandmarkList::SmartPtr,MatchedLandmarkList);
 
   /// Weight for the landmark registration error relative to image similarity.
-  igsGetSetMacro(Self::ReturnType,LandmarkErrorWeight);
+  cmtkGetSetMacro(Self::ReturnType,LandmarkErrorWeight);
 
 public:
   /** Constructor.
@@ -114,7 +114,7 @@ public:
   {
     this->InitFloating( floating );
     this->InitReference( reference );
-    LandmarkErrorWeight = 0;
+    this->m_LandmarkErrorWeight = 0;
   }
 
   /** Copy constructor.
@@ -126,7 +126,7 @@ public:
   {
     this->InitFloating( source.FloatingGrid );
     this->InitReference( source.ReferenceGrid );
-    LandmarkErrorWeight = source.LandmarkErrorWeight;
+    this->m_LandmarkErrorWeight = source.m_LandmarkErrorWeight;
   }
 
   /** Copy constructor.
@@ -138,7 +138,7 @@ public:
   {
     this->InitFloating( source->FloatingGrid );
     this->InitReference( source->ReferenceGrid );
-    LandmarkErrorWeight = source->LandmarkErrorWeight;
+    this->m_LandmarkErrorWeight = source->m_LandmarkErrorWeight;
   }
 
   /** Destructor.

@@ -62,7 +62,7 @@ ActiveDeformationModel<W>::ActiveDeformationModel
   typename std::list< SmartPointer<W> >::const_iterator it = deformationList.begin();
 
   // prepare this object to act as an actual deformation.
-  this->InitGrid( (*it)->Domain, (*it)->Dims );
+  this->InitGrid( (*it)->Domain, (*it)->m_Dims );
   // copy Origin field of first warp.
   this->m_Origin = (*it)->m_Origin;
   

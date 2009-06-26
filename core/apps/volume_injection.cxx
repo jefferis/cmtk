@@ -243,7 +243,7 @@ main( const int argc, const char* argv[] )
   if ( Verbose )
     {
     cmtk::StdErr.printf( "Reconstruction grid: %dx%dx%d pixels, %fx%fx%f pixel size, origin=%f,%f,%f\n",
-		      ReconGrid->Dims[0], ReconGrid->Dims[1], ReconGrid->Dims[2], (float)ReconGrid->Delta[0], (float)ReconGrid->Delta[1], (float)ReconGrid->Delta[2],
+		      ReconGrid->m_Dims[0], ReconGrid->m_Dims[1], ReconGrid->m_Dims[2], (float)ReconGrid->m_Delta[0], (float)ReconGrid->m_Delta[1], (float)ReconGrid->m_Delta[2],
 		      (float)ReconGrid->m_Origin[0], (float)ReconGrid->m_Origin[1], (float)ReconGrid->m_Origin[2] );
     }
   

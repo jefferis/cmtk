@@ -51,16 +51,16 @@ class SegmentationLabel
 {
 public:
   /// Init constructor.
-  SegmentationLabel() { Name = NULL; RGB[0] = RGB[1] = RGB[2] = 0; }
+  SegmentationLabel() { this->m_Name = NULL; this->m_RGB[0] = this->m_RGB[1] = this->m_RGB[2] = 0; }
 
   /// Destructor.
-  ~SegmentationLabel() { if ( Name ) free( Name ); }
+  ~SegmentationLabel() { if ( this->m_Name ) free( this->m_Name ); }
 
   /// Name of this label.
-  igsGetSetMacroString(Name);
+  cmtkGetSetMacroString(Name);
 
   /// Color as RGB components for visualization.
-  igsGetSetMacro3Array(byte,RGB);
+  cmtkGetSetMacro3Array(byte,RGB);
 };
 
 /// Map from numerical IDs to labels.

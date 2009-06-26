@@ -52,9 +52,9 @@ VoxelMatchingFunctional::InitFloating( UniformVolume::SmartPtr& floating )
   FloatingGrid->GetCropRegion( FloatingCropFrom, FloatingCropTo );
   for ( int dim = 0; dim < 3; ++dim ) 
     {
-      FloatingInverseDelta.XYZ[dim] = 1.0 / FloatingGrid->Delta[dim];
-      FloatingCropFromIndex[dim] = FloatingCropFrom[dim] * FloatingInverseDelta.XYZ[dim];
-      FloatingCropToIndex[dim] = FloatingCropTo[dim] * FloatingInverseDelta.XYZ[dim];
+    FloatingInverseDelta.XYZ[dim] = 1.0 / FloatingGrid->m_Delta[dim];
+    FloatingCropFromIndex[dim] = FloatingCropFrom[dim] * FloatingInverseDelta.XYZ[dim];
+    FloatingCropToIndex[dim] = FloatingCropTo[dim] * FloatingInverseDelta.XYZ[dim];
     }
   
   FloatingDataClass = floating->GetData()->GetDataClass();
@@ -70,7 +70,7 @@ VoxelMatchingFunctional::InitReference( UniformVolume::SmartPtr& reference )
   ReferenceGrid->GetCropRegion( ReferenceCropFrom, ReferenceCropTo );
 
   for ( int dim = 0; dim < 3; ++dim )
-    this->ReferenceInvDelta[dim] = 1.0 / ReferenceGrid->Delta[dim];
+    this->ReferenceInvDelta[dim] = 1.0 / ReferenceGrid->m_Delta[dim];
 
   ReferenceDataClass = reference->GetData()->GetDataClass();
 }

@@ -103,16 +103,16 @@ main( const int argc, const char* argv[] )
 	{
 	if ( dim == axis )
 	  {
-	  if ( (volume->Dims[dim] != volumes[0]->Dims[dim]) && (volume->Dims[dim]+1 != volumes[0]->Dims[dim]) )
+	  if ( (volume->m_Dims[dim] != volumes[0]->m_Dims[dim]) && (volume->m_Dims[dim]+1 != volumes[0]->m_Dims[dim]) )
 	    {
 	    cmtk::StdErr << "ERROR: interleaving dimension of image " << *it << " must be same as, or one smaller than first image's\n";
 	    exit( 1 );
 	    }
-	  stackDims[dim] += volume->Dims[dim];
+	  stackDims[dim] += volume->m_Dims[dim];
 	  }
 	else
 	  {
-	  if ( volume->Dims[dim] != volumes[0]->Dims[dim] )
+	  if ( volume->m_Dims[dim] != volumes[0]->m_Dims[dim] )
 	    {
 	    cmtk::StdErr << "ERROR: in-plane dimensions of image " << *it << " do not match first image's\n";
 	    exit( 1 );
@@ -126,14 +126,14 @@ main( const int argc, const char* argv[] )
       // set dims and deltas; will modify later
       for ( int dim = 0; dim < 3; ++dim )
 	{
-	stackDims[dim] = volume->Dims[dim];
-	stackDelta[dim] = volume->Delta[dim];
+	stackDims[dim] = volume->m_Dims[dim];
+	stackDelta[dim] = volume->m_Delta[dim];
 	}
       }
     volumes.push_back( volume );
     }
 
-  stackDelta[axis] = volumes[0]->Delta[axis] / volumes.size();
+  stackDelta[axis] = volumes[0]->m_Delta[axis] / volumes.size();
   
   if ( verbose )
     {
@@ -145,7 +145,7 @@ main( const int argc, const char* argv[] )
   stacked->CreateDataArray( volumes[0]->GetData()->GetType() );
 
   int toSlice = 0;
-  for ( int fromSlice = 0; fromSlice < volumes[0]->Dims[axis]; ++fromSlice )
+  for ( int fromSlice = 0; fromSlice < volumes[0]->m_Dims[axis]; ++fromSlice )
     {
     for ( size_t fromVolume = 0; fromVolume < volumes.size(); ++fromVolume, ++toSlice )
       {

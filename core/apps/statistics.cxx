@@ -157,7 +157,7 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
   if ( Verbose )
     fputs( "idx\t\tcount\t\tsurface\t\tvolume\tCenterOfMass\n", stdout );
 
-  const cmtk::Types::Coordinate voxelVolume = volume->Delta[0] * volume->Delta[1] * volume->Delta[2];
+  const cmtk::Types::Coordinate voxelVolume = volume->m_Delta[0] * volume->m_Delta[1] * volume->m_Delta[2];
 
   size_t totalCount = 0;
   for ( unsigned int idx = 0; idx < numberOfLabels; ++idx ) 

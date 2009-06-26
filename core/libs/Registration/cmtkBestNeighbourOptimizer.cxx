@@ -115,7 +115,7 @@ BestNeighbourOptimizer::Optimize
 
 	// query functional for new parameter steppings if the respective
 	// optimizer flag is set.
-	if ( UpdateStepScaleVector )
+	if ( this->m_UpdateStepScaleVector )
 	  for ( int idx=0; idx<Dim; ++idx )
 	    stepScaleVector[idx] = this->GetParamStep( idx );
 	}

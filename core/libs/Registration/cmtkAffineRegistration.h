@@ -57,10 +57,10 @@ class AffineRegistration :
 protected:
   /** Flag for initial alignment of volume centers.
    */
-  igsGetSetMacroDefault(bool,InitialAlignCenters,true);
+  cmtkGetSetMacroDefault(bool,InitialAlignCenters,true);
   
   /// If set, this flag prevent automatic switching of model and reference.
-  igsGetSetMacro(int,NoSwitch);
+  cmtkGetSetMacro(int,NoSwitch);
 
   /** Numbers of degrees of freedom.
    * This list contains the numbers of degrees of freedom for every resolution

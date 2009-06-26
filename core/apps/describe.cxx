@@ -134,7 +134,7 @@ main( int argc, char *argv[] )
 	if ( uniform ) 
 	  {
 	  fprintf( stdout, "GRID\tUniform\nXPIX\t%f\nYPIX\t%f\nZPIX\t%f\nXFOV\t%f\nYFOV\t%f\nZFOV\t%f\n",
-		   uniform->Delta[0], uniform->Delta[1], uniform->Delta[2],
+		   uniform->m_Delta[0], uniform->m_Delta[1], uniform->m_Delta[2],
 		   uniform->Size[0], uniform->Size[1], uniform->Size[2] );
 	  }
 	
@@ -170,7 +170,7 @@ main( int argc, char *argv[] )
 	if ( uniform ) 
 	  {
 	  fprintf( stdout, "Uniform volume\n%f x %f x %f [%s] voxel size\n%f x %f x %f [%s] volume size\n",
-		   uniform->Delta[0], uniform->Delta[1], uniform->Delta[2], spaceUnits,
+		   uniform->m_Delta[0], uniform->m_Delta[1], uniform->m_Delta[2], spaceUnits,
 		   uniform->Size[0], uniform->Size[1], uniform->Size[2], spaceUnits );
 	  }
 

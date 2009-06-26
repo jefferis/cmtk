@@ -176,7 +176,7 @@ protected:
 	      
     // there is an intersection: Look up the corresponding grid indices
     start = std::max( 0, (int)((ReferenceDims[0]-1)*fromFactor)-1 );
-    while ( ( start*ReferenceGrid->Delta[0] < fromFactor*ReferenceSize[0]) && ( start < ReferenceDims[0] ) ) 
+    while ( ( start*ReferenceGrid->m_Delta[0] < fromFactor*ReferenceSize[0]) && ( start < ReferenceDims[0] ) ) 
       ++start;
     
     if ( (toFactor > 1.0) || (start == ReferenceDims[0]) ) 
@@ -186,7 +186,7 @@ protected:
     else
       {
       end = std::min( ReferenceDims[0]-2, (int)(1 + (ReferenceDims[0]-1)*toFactor));
-      while ( end*ReferenceGrid->Delta[0] > toFactor*ReferenceSize[0] ) // 'if' not sufficient!	
+      while ( end*ReferenceGrid->m_Delta[0] > toFactor*ReferenceSize[0] ) // 'if' not sufficient!	
 	--end;
       ++end; // otherwise end=1+min(...) and ...[0][end-1] above!!
       }
@@ -347,7 +347,7 @@ public:
    */
   virtual typename Self::ReturnType Evaluate() 
   {
-    const VolumeAxesHash axesHash( *this->ReferenceGrid, this->m_AffineXform->GetInverse(), this->FloatingGrid->Delta, this->FloatingGrid->m_Origin.XYZ );
+    const VolumeAxesHash axesHash( *this->ReferenceGrid, this->m_AffineXform->GetInverse(), this->FloatingGrid->m_Delta, this->FloatingGrid->m_Origin.XYZ );
     const Vector3D *axesHashX = axesHash[0], *axesHashY = axesHash[1], *axesHashZ = axesHash[2];
     
     this->Metric->Reset();

@@ -245,7 +245,7 @@ VolumeFromFile::WriteNRRD
   
   try
     {
-    if ( nrrdWrap_va( nval, val, type, (size_t)3, (size_t)writeVolume->Dims[0], (size_t)writeVolume->Dims[1], (size_t)writeVolume->Dims[2] ) )
+    if ( nrrdWrap_va( nval, val, type, (size_t)3, (size_t)writeVolume->m_Dims[0], (size_t)writeVolume->m_Dims[1], (size_t)writeVolume->m_Dims[2] ) )
       {
       throw( biffGetDone(NRRD) );
       }

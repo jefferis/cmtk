@@ -337,7 +337,7 @@ VolumeDCM::WriteToArchive( const std::string& fname )
     if ( Verbose )
       {
       cmtk::StdOut.printf( "\nOutput Fille:%s\nImage size: %3dx%3dx%3d pixels\nPixel size: %.4fx%.4fx%.4f mm\n\n", 
-			   fname.c_str(), volume->Dims[0], volume->Dims[1], volume->Dims[2], volume->Delta[0], volume->Delta[1], volume->Delta[2] );
+			   fname.c_str(), volume->m_Dims[0], volume->m_Dims[1], volume->m_Dims[2], volume->m_Delta[0], volume->m_Delta[1], volume->m_Delta[2] );
       }
     }
   else

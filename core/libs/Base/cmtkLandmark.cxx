@@ -40,18 +40,18 @@ cmtk
 
 Landmark::Landmark()
 {
-  Name = NULL;
+  this->m_Name = NULL;
 }
 
 Landmark::Landmark( const char* name, const Types::Coordinate location[3] )
 {
-  Name = strdup( name );
-  memcpy( Location, location, sizeof( Location ) );
+  this->m_Name = strdup( name );
+  memcpy( this->m_Location, location, sizeof( this->m_Location ) );
 }
 
 Landmark::~Landmark()
 {
-  if ( Name ) free( Name );
+  if ( this->m_Name ) free( this->m_Name );
 }
 
 } // namespace

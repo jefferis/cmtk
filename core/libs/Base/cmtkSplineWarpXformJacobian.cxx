@@ -224,12 +224,12 @@ SplineWarpXform::GetJacobian
   for ( int dim = 0; dim<3; ++dim ) 
     {
     r[dim] = this->InverseSpacing[dim] * v.XYZ[dim];
-    grid[dim] = std::min( static_cast<int>( r[dim] ), this->Dims[dim]-4 );
+    grid[dim] = std::min( static_cast<int>( r[dim] ), this->m_Dims[dim]-4 );
     f[dim] = r[dim] - grid[dim];
     assert( (f[dim] >= 0.0) && (f[dim] <= 1.0) );
     }
 
-  const Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + this->Dims[0] * (grid[1] + this->Dims[1] * grid[2]) );
+  const Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + this->m_Dims[0] * (grid[1] + this->m_Dims[1] * grid[2]) );
   
   // loop over the three components of the coordinate transformation function,
   // x, y, z.
@@ -342,11 +342,11 @@ SplineWarpXform::GetJacobianDeterminant
   for ( int dim = 0; dim<3; ++dim ) 
     {
     r[dim] = InverseSpacing[dim] * v.XYZ[dim];
-    grid[dim] = std::min( static_cast<int>( r[dim] ), Dims[dim]-4 );
+    grid[dim] = std::min( static_cast<int>( r[dim] ), this->m_Dims[dim]-4 );
     f[dim] = r[dim] - grid[dim];
     }
   
-  const Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + Dims[0] * (grid[1] + Dims[1] * grid[2]) );
+  const Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + this->m_Dims[0] * (grid[1] + this->m_Dims[1] * grid[2]) );
   
   for ( int dim = 0; dim<3; ++dim ) 
     {
@@ -612,7 +612,7 @@ SplineWarpXform
 Types::Coordinate
 SplineWarpXform::GetJacobianConstraint () const
 {
-  unsigned short numberOfThreads = std::min( Threads::GetNumberOfThreads(), Dims[ 2 ] );
+  unsigned short numberOfThreads = std::min( Threads::GetNumberOfThreads(), this->m_Dims[2] );
 
   // Info blocks for parallel threads that evaulate the constraint.
   Self::JacobianConstraintThreadInfo *ConstraintThreadInfo = Memory::AllocateArray<Self::JacobianConstraintThreadInfo>( numberOfThreads );
@@ -641,7 +641,7 @@ SplineWarpXform::GetJacobianConstraint () const
 Types::Coordinate
 SplineWarpXform::GetJacobianFoldingConstraint () const
 {
-  unsigned short numberOfThreads = std::min( Threads::GetNumberOfThreads(), Dims[ 2 ] );
+  unsigned short numberOfThreads = std::min( Threads::GetNumberOfThreads(), this->m_Dims[2] );
 
   // Info blocks for parallel threads that evaulate the constraint.
   Self::JacobianConstraintThreadInfo *ConstraintThreadInfo = Memory::AllocateArray<Self::JacobianConstraintThreadInfo>( numberOfThreads );
@@ -673,9 +673,9 @@ SplineWarpXform::GetJacobianConstraintSparse () const
   double Constraint = 0;
 
   const Types::Coordinate* coeff = this->m_Parameters + nextI + nextJ + nextK;
-  for ( int z = 1; z<Dims[2]-1; ++z, coeff+=2*nextJ )
-    for ( int y = 1; y<Dims[1]-1; ++y, coeff+=2*nextI )
-      for ( int x = 1; x<Dims[0]-1; ++x, coeff+=nextI )
+  for ( int z = 1; z<this->m_Dims[2]-1; ++z, coeff+=2*nextJ )
+    for ( int y = 1; y<this->m_Dims[1]-1; ++y, coeff+=2*nextI )
+      for ( int x = 1; x<this->m_Dims[0]-1; ++x, coeff+=nextI )
 	Constraint += fabs( log ( this->GetJacobianDeterminant( coeff ) / GlobalScaling ) );
   
   // Divide by number of control points to normalize with respect to the
@@ -788,9 +788,9 @@ SplineWarpXform::GetJacobianConstraintDerivative
   const
 {
   const int controlPointIdx = param / nextI;
-  const unsigned short x =  ( controlPointIdx %  Dims[0] );
-  const unsigned short y = ( (controlPointIdx /  Dims[0]) % Dims[1] );
-  const unsigned short z = ( (controlPointIdx /  Dims[0]) / Dims[1] );
+  const unsigned short x =  ( controlPointIdx %  this->m_Dims[0] );
+  const unsigned short y = ( (controlPointIdx /  this->m_Dims[0]) % this->m_Dims[1] );
+  const unsigned short z = ( (controlPointIdx /  this->m_Dims[0]) / this->m_Dims[1] );
   
   const int thisDim = param % nextI;
   const Types::Coordinate* coeff = this->m_Parameters + param - thisDim;
@@ -801,9 +801,9 @@ SplineWarpXform::GetJacobianConstraintDerivative
   const int jFrom = std::max( -1, 1-y );
   const int kFrom = std::max( -1, 1-z );
 
-  const int iTo = std::min( 1, Dims[0]-2-x );
-  const int jTo = std::min( 1, Dims[1]-2-y );
-  const int kTo = std::min( 1, Dims[2]-2-z );
+  const int iTo = std::min( 1, this->m_Dims[0]-2-x );
+  const int jTo = std::min( 1, this->m_Dims[1]-2-y );
+  const int kTo = std::min( 1, this->m_Dims[2]-2-z );
 
   for ( int k = kFrom; k < kTo; ++k )
     for ( int j = jFrom; j < jTo; ++j )

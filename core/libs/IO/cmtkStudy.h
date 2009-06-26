@@ -75,73 +75,73 @@ enum
 class Study
 {
   /// Path of this study in the file system.
-  igsGetSetMacroString(FileSystemPath);
+  cmtkGetSetMacroString(FileSystemPath);
 
   /// Short, memorable name assigned to this study.
-  igsGetSetMacroString(Name);
+  cmtkGetSetMacroString(Name);
 
   /// Textual description of study file type.
-  igsGetSetMacroString(Description);
+  cmtkGetSetMacroString(Description);
 
   /// File format ID.
-  igsGetSetMacro(FileFormatID,ImageFormat);
+  cmtkGetSetMacro(FileFormatID,ImageFormat);
 
   /// Textual description of study file type.
-  igsGetSetMacroString(Modality);
+  cmtkGetSetMacroString(Modality);
 
   /// Volume data associated with this study.
-  igsGetSetMacro(UniformVolume::SmartPtr,Volume);
+  cmtkGetSetMacro(UniformVolume::SmartPtr,Volume);
 
   /// Landmark list.
   cmtkGetSetMacro(LandmarkList::SmartPtr,LandmarkList)
 
   /// Voxel dimensions of the volume image.
-  igsGetSetMacro3Array(unsigned int,Dims);
+  cmtkGetSetMacro3Array(unsigned int,Dims);
 
   /// Voxel dimensions of the volume image.
-  igsGetSetMacro3Array(Types::Coordinate,Calibration);
+  cmtkGetSetMacro3Array(Types::Coordinate,Calibration);
 
   /// Flag for custom calibration.
-  igsGetSetMacro(bool,CustomCalibration);
+  cmtkGetSetMacro(bool,CustomCalibration);
 
   /// Minimum value.
-  igsGetSetMacro(Types::DataItem,MinimumValue);
+  cmtkGetSetMacro(Types::DataItem,MinimumValue);
 
   /// Maximum value.
-  igsGetSetMacro(Types::DataItem,MaximumValue);
+  cmtkGetSetMacro(Types::DataItem,MaximumValue);
 
   /// Pixel padding value.
-  igsGetSetMacro(bool,Padding);
+  cmtkGetSetMacro(bool,Padding);
 
   /// Pixel padding value.
-  igsGetSetMacro(Types::DataItem,PaddingValue);
+  cmtkGetSetMacro(Types::DataItem,PaddingValue);
 
   /// Flag for user-defined colormap.
-  igsGetSetMacro(bool,HaveUserColorMap);
+  cmtkGetSetMacro(bool,HaveUserColorMap);
 
   /// Index of colormap.
-  igsGetSetMacro(char,StandardColormap);
+  cmtkGetSetMacro(char,StandardColormap);
 
   /// Is colormap reversed?
-  igsGetSetMacro(bool,ReverseColormap);
+  cmtkGetSetMacro(bool,ReverseColormap);
 
   /// Value corresponding to "black".
-  igsGetSetMacro(Types::DataItem,Black);
+  cmtkGetSetMacro(Types::DataItem,Black);
 
   /// Value corresponding to "white".
-  igsGetSetMacro(Types::DataItem,White);
+  cmtkGetSetMacro(Types::DataItem,White);
 
   /// Gamma value.
-  igsGetSetMacro(double,Gamma);
+  cmtkGetSetMacro(double,Gamma);
 
   /// Index of currently displayed image.
-  igsGetSetMacro(unsigned int,DisplayedImageIndex);
+  cmtkGetSetMacro(unsigned int,DisplayedImageIndex);
 
   /// Displayed image zoom.
-  igsGetSetMacro(unsigned int,ZoomFactor);
+  cmtkGetSetMacro(unsigned int,ZoomFactor);
 
   /// Slice normal coordinate axis.
-  igsGetSetMacro(int,SliceNormal);
+  cmtkGetSetMacro(int,SliceNormal);
 
 public:
   /// Smart pointer to Study.
@@ -197,7 +197,7 @@ public:
    */
   void SetFromLabelMap( const SegmentationLabelMap& lblMap ) 
   {
-    HaveUserColorMap = true;
+    this->m_HaveUserColorMap = true;
     UserLabelMap = lblMap;
   }
 

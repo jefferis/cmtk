@@ -50,9 +50,9 @@ cmtk
 
 FunctionalAffine2D::FunctionalAffine2D
 ( ScalarImage::SmartPtr& refImage, ScalarImage::SmartPtr& fltImage, const IntROI2D* fltROI ) 
-  : NumberDOFs( 6 ),
-    SimilarityMeasure( ScalarImageSimilarity::MI ),
-    HistogramEqualization( false ),
+  : m_NumberDOFs( 6 ),
+    m_SimilarityMeasure( ScalarImageSimilarity::MI ),
+    m_HistogramEqualization( false ),
     Parameters( 8 )
 {
   RefImages.push_back( refImage );
@@ -91,9 +91,9 @@ FunctionalAffine2D::FunctionalAffine2D
 ( std::vector<ScalarImage::SmartPtr>& refImages, 
   std::vector<ScalarImage::SmartPtr>& fltImages,
   const IntROI2D* fltROI ) 
-  : NumberDOFs( 6 ),
-    SimilarityMeasure( ScalarImageSimilarity::MI ),
-    HistogramEqualization( false ),
+  : m_NumberDOFs( 6 ),
+    m_SimilarityMeasure( ScalarImageSimilarity::MI ),
+    m_HistogramEqualization( false ),
     RefImages( refImages ),
     FltImages( fltImages ),
     FltImagesROI( fltImages.size() ),
@@ -237,7 +237,7 @@ FunctionalAffine2D::ReturnType
 FunctionalAffine2D::GetSimilarity
 ( const ScalarImage* img0,  const ScalarImage* img1 ) const
 {
-  switch ( this->SimilarityMeasure ) 
+  switch ( this->m_SimilarityMeasure ) 
     {
     case ScalarImageSimilarity::MI :
       return ScalarImageSimilarity::GetMutualInformation( img0, img1, &this->ImageSimilarityMemory );
@@ -269,7 +269,7 @@ FunctionalAffine2D::GetSimilarity
   ( std::vector<const ScalarImage*>& imgs0,  
     std::vector<const ScalarImage*>& imgs1 ) const
 {
-  switch ( this->SimilarityMeasure ) 
+  switch ( this->m_SimilarityMeasure ) 
     {
     case ScalarImageSimilarity::RMI :
       return ScalarImageSimilarity::GetMutualInformation( imgs0, imgs1 );

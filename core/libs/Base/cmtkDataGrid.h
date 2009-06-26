@@ -34,6 +34,7 @@
 
 #include <cmtkconfig.h>
 
+#include <cmtkMacros.h>
 #include <cmtkTypes.h>
 #include <cmtkTypedArray.h>
 #include <cmtkVector3D.h>
@@ -67,10 +68,10 @@ class DataGrid :
   public InformationObject
 {
   /// Number of grid samples in the three spatial dimensions
-  igsGetMacro3Array(int,Dims);
+  cmtkGetMacro3Array(int,Dims);
 
   /// Data array (element type is variable)
-  igsGetSetMacro(TypedArray::SmartPtr,Data);
+  cmtkGetSetMacro(TypedArray::SmartPtr,Data);
 
 public:
   /// This class.
@@ -80,15 +81,17 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Default constructor.
-  DataGrid() : Data( NULL )
+  DataGrid() : 
+    m_Data( NULL )
   {
-    memset( Dims, 0, sizeof(Dims) );
+    memset( this->m_Dims, 0, sizeof(this->m_Dims) );
   }
   
   /// Constructor.
-  DataGrid( const int* dims ) : Data( NULL )
+  DataGrid( const int* dims ) 
+    : m_Data( NULL )
   {
-    memcpy( Dims, dims, sizeof(Dims) );
+    memcpy( this->m_Dims, dims, sizeof(this->m_Dims) );
   }
   
   /// Virtual destructor.
@@ -134,12 +137,12 @@ public:
   virtual TypedArray::SmartPtr CreateDataArray( const ScalarDataType dataType, const bool setToZero = false );
 
   /// Get number of data items in the volume.
-  size_t GetNumberOfPixels () const { return Dims[0]*Dims[1]*Dims[2]; }
+  size_t GetNumberOfPixels () const { return this->m_Dims[0]*this->m_Dims[1]*this->m_Dims[2]; }
 
   /// Check whether given pixel index is inside grid.
   bool IndexIsInRange( const int x, const int y, const int z ) const
   {
-    return (x>=0) && (x<Dims[0]) && (y>=0) && (y<Dims[1]) && (z>=0) && (z<Dims[2]);
+    return (x>=0) && (x<this->m_Dims[0]) && (y>=0) && (y<this->m_Dims[1]) && (z>=0) && (z<this->m_Dims[2]);
   }
 
   /// Get offset of a pixel.
@@ -159,32 +162,32 @@ public:
   /// Return data at specified offset
   bool GetDataAt ( Types::DataItem& data, const size_t offset ) const 
   {
-    return Data->Get( data, offset );
+    return this->m_Data->Get( data, offset );
   }
 
   /// Set data at specified offset
   void SetDataAt ( const Types::DataItem data, const size_t offset )
   {
-    Data->Set( data, offset );
+    this->m_Data->Set( data, offset );
   }
   
   /// Return data at specified grid point.
   bool GetDataAt ( Types::DataItem& data, const int x, const int y, const int z ) const
   {
-    return this->GetDataAt( data, x+Dims[0]*(y+Dims[1]*z) );
+    return this->GetDataAt( data, x+this->m_Dims[0]*(y+this->m_Dims[1]*z) );
   }
 
   /// Set data at specified grid point.
   void SetDataAt ( const Types::DataItem data, const int x, const int y, const int z )
   {
-    this->SetDataAt( data, x+Dims[0]*(y+Dims[1]*z) );
+    this->SetDataAt( data, x+this->m_Dims[0]*(y+this->m_Dims[1]*z) );
   }
 
   /// Return data at specified grid point, or a given default value if no data exists there.
   Types::DataItem GetDataAt ( const int x, const int y, const int z, const Types::DataItem defaultValue = 0.0 ) const
   {
     Types::DataItem value;
-    if ( this->GetDataAt( value, x+Dims[0]*(y+Dims[1]*z) ) )
+    if ( this->GetDataAt( value, x+this->m_Dims[0]*(y+this->m_Dims[1]*z) ) )
       return value;
     else
       return defaultValue;

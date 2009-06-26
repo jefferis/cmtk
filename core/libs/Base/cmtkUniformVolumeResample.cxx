@@ -46,7 +46,7 @@ UniformVolume::Resample( const UniformVolume& other ) const
   const TypedArray* fromData = other.GetData();
 
   const VolumeGridToGridLookup gridLookup( other, *this );
-  const size_t numberOfThreads = std::min<int>( Threads::GetNumberOfThreads(), Dims[ 2 ] );
+  const size_t numberOfThreads = std::min<int>( Threads::GetNumberOfThreads(), this->m_Dims[2] );
    
   // Info blocks for parallel threads that do the resampling.
   UniformVolume::ResampleThreadInfo *ThreadInfo = Memory::AllocateArray<UniformVolume::ResampleThreadInfo>( numberOfThreads );
@@ -119,14 +119,13 @@ UniformVolume::ResampleThreadExecuteLabels( void *arg )
   int pX, pY, pZ;
   Types::DataItem value;
   
-  for ( int z = info->ThisThreadIndex; z < me->Dims[2]; 
-	z += info->NumberOfThreads ) 
+  for ( int z = info->ThisThreadIndex; z < me->m_Dims[2]; z += info->NumberOfThreads ) 
     {
-    int offset = z * me->Dims[0] * me->Dims[1];
+    int offset = z * me->m_Dims[0] * me->m_Dims[1];
     
-    for ( y = 0; y < me->Dims[1]; ++y ) 
+    for ( y = 0; y < me->m_Dims[1]; ++y ) 
       {
-      for ( x = 0; x < me->Dims[0]; ++x, ++offset ) 
+      for ( x = 0; x < me->m_Dims[0]; ++x, ++offset ) 
 	{
 	memset( labelWeights, 0, sizeof( labelWeights ) );
 	
@@ -187,17 +186,17 @@ UniformVolume::ResampleThreadExecuteGrey( void *arg )
   int pX, pY, pZ;
   bool FoundNullData;
   
-  for ( int z = info->ThisThreadIndex; z < me->Dims[2]; z += info->NumberOfThreads ) 
+  for ( int z = info->ThisThreadIndex; z < me->m_Dims[2]; z += info->NumberOfThreads ) 
     {
-    int offset = z * me->Dims[0] * me->Dims[1];
+    int offset = z * me->m_Dims[0] * me->m_Dims[1];
 
     const Types::Coordinate volumeZ = gridLookup->GetLength(2,z);
 	
-    for ( y=0; y < me->Dims[1]; ++y ) 
+    for ( y=0; y < me->m_Dims[1]; ++y ) 
       {
       const Types::Coordinate volumeYZ = volumeZ * gridLookup->GetLength(1,y);
       
-      for ( x=0; x < me->Dims[0]; ++x, ++offset ) 
+      for ( x=0; x < me->m_Dims[0]; ++x, ++offset ) 
 	{
 	tempValue = 0;
 	FoundNullData = false;

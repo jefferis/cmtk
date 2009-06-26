@@ -87,15 +87,15 @@ ElasticRegistrationCommandLine
 ::ElasticRegistrationCommandLine
 ( int argc, char *argv[] ) 
 {
-  Metric = 0;
-  Algorithm = 3;
+  this->m_Metric = 0;
+  this->m_Algorithm = 3;
 
   CoarsestResolution = -1;
-  Exploration = 4.0;
-  GridSpacing = 15;
-  ExactGridSpacing = 0;
-  Accuracy = 0.1;
-  Sampling = 1.0;
+  this->m_Exploration = 4.0;
+  this->m_GridSpacing = 15;
+  this->m_ExactGridSpacing = 0;
+  this->m_Accuracy = 0.1;
+  this->m_Sampling = 1.0;
   Studylist = Protocol = Time = NULL;
 
   this->m_OutputIntermediate = 0;
@@ -128,20 +128,20 @@ ElasticRegistrationCommandLine
     cl.AddSwitch( Key( 'q', "quiet" ), &Verbose, false, "Quiet mode" );
 
     cl.BeginGroup( "Transformation", "Transformation parameters" );
-    cl.AddOption( Key( 'g', "grid-spacing" ), &this->GridSpacing, "Control point grid spacing" );
-    cl.AddSwitch( Key( "exact-spacing" ), &this->ExactGridSpacing, true, "Use exact control point spacing; do not modify spacing to fit reference image bounding box" );
-    cl.AddOption( Key( "refine" ), &this->RefineGrid, "Number of refinements (control point grid resolution levels)" );
-    cl.AddSwitch( Key( "no-delay-refine" ), &this->DelayRefineGrid, false, "Always refine control point grid (up to maximum number of levels) when switching next higher image resolution [default]" );
-    cl.AddSwitch( Key( "delay-refine" ), &this->DelayRefineGrid, true, "Delay control point grid refinement; first switch to next higher image resolution" );
+    cl.AddOption( Key( 'g', "grid-spacing" ), &this->m_GridSpacing, "Control point grid spacing" );
+    cl.AddSwitch( Key( "exact-spacing" ), &this->m_ExactGridSpacing, true, "Use exact control point spacing; do not modify spacing to fit reference image bounding box" );
+    cl.AddOption( Key( "refine" ), &this->m_RefineGrid, "Number of refinements (control point grid resolution levels)" );
+    cl.AddSwitch( Key( "no-delay-refine" ), &this->m_DelayRefineGrid, false, "Always refine control point grid (up to maximum number of levels) when switching next higher image resolution [default]" );
+    cl.AddSwitch( Key( "delay-refine" ), &this->m_DelayRefineGrid, true, "Delay control point grid refinement; first switch to next higher image resolution" );
 
     cl.AddOption( Key( "ignore-edge" ), &this->IgnoreEdge, "Ignore n control point layers along each image face" );
     cl.AddOption( Key( "restrict" ), &this->RestrictToAxes, "Restrict deformation to coordinate dimension(s) [one or more of 'x','y','z']" );
 
-    cl.AddSwitch( Key( "adaptive-fix" ), &this->AdaptiveFixParameters, true, "Adaptive fixing of control points in image background [default]" );
-    cl.AddSwitch( Key( "no-adaptive-fix" ), &this->AdaptiveFixParameters, false, "Disable adaptive fixing of control points; optimize all deformation parameters" );
-    cl.AddOption( Key( "adaptive-fix-thresh" ), &this->AdaptiveFixThreshFactor, "Threshold factor for entropy criterion to fix local control points" );
-    cl.AddSwitch( Key( "fast" ), &this->FastMode, true, "Fast computation mode: take some numerical short cuts to save about 80% computation time [default]" );
-    cl.AddSwitch( Key( "accurate" ), &this->FastMode, false, "Accurate computation mode: may give slightly better results after substantially longer computation" );
+    cl.AddSwitch( Key( "adaptive-fix" ), &this->m_AdaptiveFixParameters, true, "Adaptive fixing of control points in image background [default]" );
+    cl.AddSwitch( Key( "no-adaptive-fix" ), &this->m_AdaptiveFixParameters, false, "Disable adaptive fixing of control points; optimize all deformation parameters" );
+    cl.AddOption( Key( "adaptive-fix-thresh" ), &this->m_AdaptiveFixThreshFactor, "Threshold factor for entropy criterion to fix local control points" );
+    cl.AddSwitch( Key( "fast" ), &this->m_FastMode, true, "Fast computation mode: take some numerical short cuts to save about 80% computation time [default]" );
+    cl.AddSwitch( Key( "accurate" ), &this->m_FastMode, false, "Accurate computation mode: may give slightly better results after substantially longer computation" );
 
     cl.AddSwitch( Key( 'S', "switch" ), &Switch, true, "Switch reference and floating image" );
     cl.AddSwitch( Key( 'x', "exchange" ), &this->ForceSwitchVolumes, true, "Exchange reference and floating image");
@@ -149,37 +149,37 @@ ElasticRegistrationCommandLine
     cl.EndGroup();
 
     cl.BeginGroup( "Optimization", "Optimization parameters" );
-    cl.AddOption( Key( 'e', "exploration" ), &this->Exploration, "Search space exploration (initial step size)" );
-    cl.AddOption( Key( 'a', "accuracy" ), &this->Accuracy, "Search accuracy (initial step size)" );
+    cl.AddOption( Key( 'e', "exploration" ), &this->m_Exploration, "Search space exploration (initial step size)" );
+    cl.AddOption( Key( 'a', "accuracy" ), &this->m_Accuracy, "Search accuracy (initial step size)" );
     cl.AddOption( Key( 'f', "stepfactor" ), &this->OptimizerStepFactor, "Factor for search step size reduction. Must be > 0.0 and < 1.0 [default: 0.5]" );
 
     cl.AddSwitch( Key( "maxnorm" ), &this->UseMaxNorm, true, "Normalized optimization gradient using maximum norm [default]" );
     cl.AddSwitch( Key( "no-maxnorm" ), &this->UseMaxNorm, false, "Disable optimization gradient maximum normalication; use Euclid norm instead" );
 
-    cl.AddOption( Key( "jacobian-weight" ), &this->JacobianConstraintWeight, "Weight for Jacobian-based local volume preservation constraint" );
-    cl.AddOption( Key( "energy-weight" ), &this->GridEnergyWeight, "Weight for grid bending energy constraint" );
-    cl.AddOption( Key( "rigidity-weight" ), &this->RigidityConstraintWeight, "Weight for local rigidity constraint" );
-    cl.AddOption( Key( "landmark-weight" ), &this->LandmarkErrorWeight, "Weight for landmark misregistration registration" );
-    cl.AddOption( Key( "ic-weight" ), &this->InverseConsistencyWeight, "Weight for inverse consistency constraint" );
-    cl.AddOption( Key( "relax" ), &this->RelaxWeight, "Weight relaxation factor for alternating under-constrained iterations" );
+    cl.AddOption( Key( "jacobian-weight" ), &this->m_JacobianConstraintWeight, "Weight for Jacobian-based local volume preservation constraint" );
+    cl.AddOption( Key( "energy-weight" ), &this->m_GridEnergyWeight, "Weight for grid bending energy constraint" );
+    cl.AddOption( Key( "rigidity-weight" ), &this->m_RigidityConstraintWeight, "Weight for local rigidity constraint" );
+    cl.AddOption( Key( "landmark-weight" ), &this->m_LandmarkErrorWeight, "Weight for landmark misregistration registration" );
+    cl.AddOption( Key( "ic-weight" ), &this->m_InverseConsistencyWeight, "Weight for inverse consistency constraint" );
+    cl.AddOption( Key( "relax" ), &this->m_RelaxWeight, "Weight relaxation factor for alternating under-constrained iterations" );
 
     cl.AddOption( Key( "rigidity-weight-map" ), &this->RigidityConstraintMapFilename, "Filename for rigidity map weight image" );
     cl.EndGroup();
 
     cl.BeginGroup( "Resolution", "Image resolution parameters" );
-    cl.AddOption( Key( 's', "sampling" ), &this->Sampling, "Image sampling (finest resampled image resolution)" );
+    cl.AddOption( Key( 's', "sampling" ), &this->m_Sampling, "Image sampling (finest resampled image resolution)" );
     cl.AddOption( Key( "coarsest" ), &this->CoarsestResolution, "Upper limit for image sampling in multiresolution hierarchy" );
 
-    cl.AddSwitch( Key( "use-original-data" ), &this->UseOriginalData, true, "Use original data in full resolution as final level [default]" );
-    cl.AddSwitch( Key( "omit-original-data" ), &this->UseOriginalData, false, "Do NOT use original data in full resolution" );
+    cl.AddSwitch( Key( "use-original-data" ), &this->m_UseOriginalData, true, "Use original data in full resolution as final level [default]" );
+    cl.AddSwitch( Key( "omit-original-data" ), &this->m_UseOriginalData, false, "Do NOT use original data in full resolution" );
     cl.EndGroup();
 
     cl.BeginGroup( "Images", "Image data" );
-    cl.AddSwitch( Key( "nmi" ), &this->Metric, 0, "Normalized Mutual Information metric" );
-    cl.AddSwitch( Key( "mi" ), &this->Metric, 1, "Standard Mutual Information metric" );
-    cl.AddSwitch( Key( "cr" ), &this->Metric, 2, "Correlation Ratio metric" );
-    cl.AddSwitch( Key( "msd" ), &this->Metric, 4, "Mean Squared Difference metric" );
-    cl.AddSwitch( Key( "ncc" ), &this->Metric, 5, "Normalized Cross Correlation metric" );
+    cl.AddSwitch( Key( "nmi" ), &this->m_Metric, 0, "Normalized Mutual Information metric" );
+    cl.AddSwitch( Key( "mi" ), &this->m_Metric, 1, "Standard Mutual Information metric" );
+    cl.AddSwitch( Key( "cr" ), &this->m_Metric, 2, "Correlation Ratio metric" );
+    cl.AddSwitch( Key( "msd" ), &this->m_Metric, 4, "Mean Squared Difference metric" );
+    cl.AddSwitch( Key( "ncc" ), &this->m_Metric, 5, "Normalized Cross Correlation metric" );
 
     cl.AddOption( Key( "force-outside-value" ), &forceOutsideValue, "Force values outside field of view to this value rather than drop incomplete pixel pairs", &forceOutsideFlag );
 
@@ -271,7 +271,7 @@ ElasticRegistrationCommandLine
   // Did user ask for exchanged reference/floating images?
   if ( Switch ) 
     {
-    AffineXform::SmartPtr affineXform( dynamic_cast<AffineXform*>( InitialXform->MakeInverse() ) );
+    AffineXform::SmartPtr affineXform( dynamic_cast<AffineXform*>( this->m_InitialXform->MakeInverse() ) );
     this->SetInitialXform( affineXform );
     
     char *swap = Study1;
@@ -393,32 +393,32 @@ ElasticRegistrationCommandLine::OutputWarp ( const char* path ) const
   classStream.Close();
 
   classStream.Open( path, "settings", ClassStream::WRITE );
-  classStream.WriteInt( "algorithm", Algorithm );
+  classStream.WriteInt( "algorithm", this->m_Algorithm );
   classStream.WriteBool( "use_maxnorm", UseMaxNorm );
-  classStream.WriteDouble( "exploration", Exploration );
-  classStream.WriteDouble( "accuracy", Accuracy );
-  classStream.WriteDouble( "min_sampling", Sampling );
+  classStream.WriteDouble( "exploration", this->m_Exploration );
+  classStream.WriteDouble( "accuracy", this->m_Accuracy );
+  classStream.WriteDouble( "min_sampling", this->m_Sampling );
   classStream.WriteDouble( "coarsest_resolution", CoarsestResolution );
-  classStream.WriteBool( "use_original_data", UseOriginalData );
-  classStream.WriteInt( "metric", Metric );
+  classStream.WriteBool( "use_original_data", this->m_UseOriginalData );
+  classStream.WriteInt( "metric", this->m_Metric );
   classStream.WriteDouble( "optimizer_step_factor", OptimizerStepFactor );
-  classStream.WriteDouble( "grid_spacing", GridSpacing );
+  classStream.WriteDouble( "grid_spacing", this->m_GridSpacing );
   classStream.WriteInt( "ignore_edge", IgnoreEdge );
-  classStream.WriteDouble( "jacobian_constraint_weight", JacobianConstraintWeight );
-  classStream.WriteDouble( "rigidity_constraint_weight", RigidityConstraintWeight );
+  classStream.WriteDouble( "jacobian_constraint_weight", this->m_JacobianConstraintWeight );
+  classStream.WriteDouble( "rigidity_constraint_weight", this->m_RigidityConstraintWeight );
   if ( this->RigidityConstraintMapFilename )
     {
     classStream.WriteString( "rigidity_constraint_map_filename", RigidityConstraintMapFilename );
     }
-  classStream.WriteDouble( "energy_constraint_weight", GridEnergyWeight );
-  classStream.WriteDouble( "inverse_consistency_weight", InverseConsistencyWeight );
-  classStream.WriteDouble( "weight_relaxation", RelaxWeight );
-  classStream.WriteDouble( "landmark_error_weight", LandmarkErrorWeight );
+  classStream.WriteDouble( "energy_constraint_weight", this->m_GridEnergyWeight );
+  classStream.WriteDouble( "inverse_consistency_weight", this->m_InverseConsistencyWeight );
+  classStream.WriteDouble( "weight_relaxation", this->m_RelaxWeight );
+  classStream.WriteDouble( "landmark_error_weight", this->m_LandmarkErrorWeight );
   classStream.WriteBool( "force_switch", ForceSwitchVolumes );
-  classStream.WriteInt( "refine_grid", RefineGrid );
-  classStream.WriteBool( "delay_refine_grid", DelayRefineGrid );
-  classStream.WriteBool( "adaptive_fix_parameters", AdaptiveFixParameters );
-  classStream.WriteDouble( "adaptive_fix_parameters_thresh", AdaptiveFixThreshFactor );
+  classStream.WriteInt( "refine_grid", this->m_RefineGrid );
+  classStream.WriteBool( "delay_refine_grid", this->m_DelayRefineGrid );
+  classStream.WriteBool( "adaptive_fix_parameters", this->m_AdaptiveFixParameters );
+  classStream.WriteDouble( "adaptive_fix_parameters_thresh", this->m_AdaptiveFixThreshFactor );
 
   this->m_PreprocessorRef.WriteSettings( classStream );  
   this->m_PreprocessorFlt.WriteSettings( classStream );  
@@ -469,7 +469,7 @@ ElasticRegistrationCommandLine::OutputWarp ( const char* path ) const
 	} 
       else 
 	{
-	classStream << (*InitialXform->GetInverse());
+	classStream << (*this->m_InitialXform->GetInverse());
 	}
       classStream << warp;
       classStream.End();

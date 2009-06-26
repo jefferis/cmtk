@@ -223,7 +223,7 @@ XformIO::WriteNrrd
   
   try
     {
-    if ( nrrdWrap_va( nval, val, type, 4, (size_t)3, (size_t)dfield->Dims[0], (size_t)dfield->Dims[1], (size_t)dfield->Dims[2] ) )
+    if ( nrrdWrap_va( nval, val, type, 4, (size_t)3, (size_t)dfield->m_Dims[0], (size_t)dfield->m_Dims[1], (size_t)dfield->m_Dims[2] ) )
       {
       throw( biffGetDone(NRRD) );
       }

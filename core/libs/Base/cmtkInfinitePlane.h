@@ -60,7 +60,7 @@ public:
    * even need to be on the plane itself. It is merely the coordinate in space
    * relativ to which the plane is parameterized.
    */
-  igsGetSetMacro(Vector3D,Origin);
+  cmtkGetSetMacro(Vector3D,Origin);
 
   /// Set parameter Rho.
   void SetRho( const Types::Coordinate rho ) 
@@ -106,14 +106,14 @@ public:
   {
     v.SetDim( 6 );
     v[0] = Rho; v[1] = Theta; v[2] = Phi;
-    v[3] = Origin[0]; v[4] = Origin[1]; v[5] = Origin[2];
+    v[3] = this->m_Origin[0]; v[4] = this->m_Origin[1]; v[5] = this->m_Origin[2];
   }
   
   /// Set all parameters.
   void SetParameters( const CoordinateVector& v ) 
   {
     Rho = v[0]; Theta = v[1]; Phi = v[2]; 
-    Origin[0] = v[3]; Origin[1] = v[4]; Origin[2] = v[5];
+    this->m_Origin[0] = v[3]; this->m_Origin[1] = v[4]; this->m_Origin[2] = v[5];
     this->Update();
   }
 
@@ -125,7 +125,7 @@ public:
   {
     // move given origin to coordinate origin
     Vector3D p = point;
-    p -= Origin;
+    p -= this->m_Origin;
     
     // compute line parameter of orthogonal projection of "point" onto this plane
     const Types::Coordinate intersect = Normal * p - Rho;
@@ -143,7 +143,7 @@ public:
   void MirrorInPlace( Vector3D& point ) const 
   {
     // move given origin to coordinate origin
-    point -= Origin;
+    point -= this->m_Origin;
     
     // compute line parameter of orthogonal projection of "point" onto
     // this plane and multiply by two to get parameter of mirrored point
@@ -154,7 +154,7 @@ public:
       point.XYZ[dim] -= intersect * Normal.XYZ[dim];
 
     // move given origin back to its given location
-    point += Origin;
+    point += this->m_Origin;
   }
 
   /// Project point onto plane.
@@ -168,7 +168,7 @@ public:
   void ProjectInPlace( Vector3D& point ) const 
   {
     // move given origin to coordinate origin
-    point -= Origin;
+    point -= this->m_Origin;
     
     // compute line parameter of orthogonal projection of "point" onto
     // this plane
@@ -179,7 +179,7 @@ public:
       point.XYZ[dim] -= intersect * Normal.XYZ[dim];
     
     // move given origin back to its given location
-    point += Origin;
+    point += this->m_Origin;
   }
 
   /** Get transformation that aligns this plane with the coordinate system.

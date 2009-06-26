@@ -81,9 +81,9 @@ ClassStream::PutWarp
     Types::Coordinate *oCoeff = warpXform->m_Parameters;
     nCoeff = Memory::AllocateArray<Types::Coordinate>( warpXform->m_NumberOfParameters );
     Types::Coordinate *p = nCoeff;
-    for ( int z=0; z<warpXform->Dims[2]; ++z )
-      for ( int y=0; y<warpXform->Dims[1]; ++y )
-	for ( int x=0; x<warpXform->Dims[0]; ++x, oCoeff+=3, p+=3 ) 
+    for ( int z=0; z<warpXform->m_Dims[2]; ++z )
+      for ( int y=0; y<warpXform->m_Dims[1]; ++y )
+	for ( int x=0; x<warpXform->m_Dims[0]; ++x, oCoeff+=3, p+=3 ) 
 	  {
 	  Vector3D P( oCoeff );
 	  initialXform->ApplyInPlaceNonVirtual( P );
@@ -116,7 +116,7 @@ ClassStream::PutWarp
     *this << (*warpXform->GetInitialAffineXform());
   
   this->WriteBool ( "absolute", (initialXform == NULL) );
-  this->WriteIntArray( "dims", warpXform->Dims, 3 );
+  this->WriteIntArray( "dims", warpXform->m_Dims, 3 );
 
   this->WriteCoordinateArray( "domain", warpXform->Domain, 3 );
   this->WriteCoordinateArray( "origin", warpXform->m_Origin.XYZ, 3 );

@@ -55,29 +55,29 @@ ElasticRegistration::ElasticRegistration ()
   : VoxelRegistration(),
     InitialWarpXform( NULL ),
     InverseWarpXform( NULL ),
-    RigidityConstraintMap( NULL ),
-    InverseConsistencyWeight( 0.0 ),
+    m_RigidityConstraintMap( NULL ),
+    m_InverseConsistencyWeight( 0.0 ),
     m_ForceOutsideFlag( false ),
     m_ForceOutsideValue( 0.0 )
 {
   ForceSwitchVolumes = 0;
-  GridSpacing = 10;
+  this->m_GridSpacing = 10;
   RestrictToAxes = NULL;
-  RefineGrid = 0;
+  this->m_RefineGrid = 0;
   RefinedGridAtLevel = -1;
   RefineGridCount = 0;
-  DelayRefineGrid = 0;
+  this->m_DelayRefineGrid = 0;
   RefineDelayed = false;
   IgnoreEdge = 0;
-  FastMode = 0;
-  AdaptiveFixParameters = 1;
-  AdaptiveFixThreshFactor = 0.5;
-  JacobianConstraintWeight = 0;
-  RigidityConstraintWeight = 0;
-  GridEnergyWeight = 0;
-  RelaxWeight = -1;
-  LandmarkErrorWeight = 0;
-  InverseConsistencyWeight = 0.0;
+  this->m_FastMode = 0;
+  this->m_AdaptiveFixParameters = 1;
+  this->m_AdaptiveFixThreshFactor = 0.5;
+  this->m_JacobianConstraintWeight = 0;
+  this->m_RigidityConstraintWeight = 0;
+  this->m_GridEnergyWeight = 0;
+  this->m_RelaxWeight = -1;
+  this->m_LandmarkErrorWeight = 0;
+  this->m_InverseConsistencyWeight = 0.0;
   RelaxationStep = false;
 }
 
@@ -92,19 +92,19 @@ ElasticRegistration::InitRegistration ()
 
   if ( ForceSwitchVolumes ) 
     {
-    refVolume = this->Volume_2;
-    fltVolume = this->Volume_1;
+    refVolume = this->m_Volume_2;
+    fltVolume = this->m_Volume_1;
     SwitchVolumes = 1;
     } 
   else
     {
-    refVolume = this->Volume_1;
-    fltVolume = this->Volume_2;
+    refVolume = this->m_Volume_1;
+    fltVolume = this->m_Volume_2;
     SwitchVolumes = 0;
     }
 
   MatchedLandmarkList::SmartPtr mll( NULL );
-  if ( LandmarkErrorWeight != 0 ) 
+  if ( this->m_LandmarkErrorWeight != 0 ) 
     {
     LandmarkList::SmartPtr sourceLandmarks = refVolume->m_LandmarkList;
     LandmarkList::SmartPtr targetLandmarks = fltVolume->m_LandmarkList;
@@ -120,21 +120,21 @@ ElasticRegistration::InitRegistration ()
   AffineXform::SmartPtr initialInverse;
   if ( SwitchVolumes ) 
     {
-    initialInverse = AffineXform::SmartPtr( static_cast<AffineXform*>( InitialXform->MakeInverse() ) );
+    initialInverse = AffineXform::SmartPtr( static_cast<AffineXform*>( this->m_InitialXform->MakeInverse() ) );
     CoordinateVector v( initialInverse->ParamVectorDim() );
     affineXform = AffineXform::SmartPtr( new AffineXform( initialInverse->GetParamVector(v) ) );
-    initialInverse = InitialXform;
+    initialInverse = this->m_InitialXform;
     } 
   else
     {
-    affineXform = InitialXform;
-    initialInverse = AffineXform::SmartPtr( static_cast<AffineXform*>( InitialXform->MakeInverse() ) );
+    affineXform = this->m_InitialXform;
+    initialInverse = AffineXform::SmartPtr( static_cast<AffineXform*>( this->m_InitialXform->MakeInverse() ) );
     }
   
   Vector3D center = fltVolume->GetCenterCropRegion();
   affineXform->ChangeCenter( center.XYZ );
 
-  Types::Coordinate currSampling = std::max( Sampling, 2 * std::min( refVolume->GetMinDelta(), fltVolume->GetMinDelta()));
+  Types::Coordinate currSampling = std::max( this->m_Sampling, 2 * std::min( refVolume->GetMinDelta(), fltVolume->GetMinDelta()));
 
   // If no initial transformation exists, create one from the defined
   // parameters.
@@ -144,7 +144,7 @@ ElasticRegistration::InitRegistration ()
     // This will override all registration parameters otherwise defined,
     // for example grid spacing and deformation type.
     InitialWarpXform->SetIgnoreEdge( IgnoreEdge );
-    InitialWarpXform->SetFastMode( FastMode );
+    InitialWarpXform->SetFastMode( this->m_FastMode );
     InitialWarpXform->SetParametersActive( RestrictToAxes );
     // MIPSpro needs explicit.
     this->m_Xform = Xform::SmartPtr::DynamicCastFrom( InitialWarpXform );
@@ -153,23 +153,24 @@ ElasticRegistration::InitRegistration ()
     {
     WarpXform::SmartPtr warpXform( this->MakeWarpXform( refVolume->Size, initialInverse ) );
     
-    if ( this->InverseConsistencyWeight > 0 ) 
+    if ( this->m_InverseConsistencyWeight > 0 ) 
       InverseWarpXform = WarpXform::SmartPtr( this->MakeWarpXform( fltVolume->Size, affineXform ) );
 
     // MIPSpro needs explicit:
     this->m_Xform = Xform::SmartPtr::DynamicCastFrom( warpXform ); 
     }
   
-  if ( UseOriginalData )
+  if ( this->m_UseOriginalData )
     {
-    Functional::SmartPtr nextFunctional( this->MakeFunctional( refVolume, fltVolume, this->RigidityConstraintMap, mll ) );
+    Functional::SmartPtr nextFunctional( this->MakeFunctional( refVolume, fltVolume, this->m_RigidityConstraintMap, mll ) );
     FunctionalStack.push( nextFunctional );
     }
   
   CallbackResult irq = CALLBACK_OK;
   
   double coarsest = CoarsestResolution;
-  if ( coarsest <= 0 ) coarsest = Exploration;
+  if ( coarsest <= 0 ) 
+    coarsest = this->m_Exploration;
   
   for ( ;(currSampling<=coarsest) && ( irq == CALLBACK_OK ); currSampling *= 2 ) 
     {
@@ -182,9 +183,9 @@ ElasticRegistration::InitRegistration ()
       nextRef = UniformVolume::SmartPtr( new UniformVolume( *refVolume, currSampling ) );
       irq = this->ReportProgress(  "resampling", 50 );
       nextMod = UniformVolume::SmartPtr( new UniformVolume( *fltVolume, currSampling ) );
-      if ( this->RigidityConstraintMap )
+      if ( this->m_RigidityConstraintMap )
 	{
-	nextRigidityMap = UniformVolume::SmartPtr( new UniformVolume( *this->RigidityConstraintMap, currSampling ) );
+	nextRigidityMap = UniformVolume::SmartPtr( new UniformVolume( *this->m_RigidityConstraintMap, currSampling ) );
 	}
       }
     catch (...) 
@@ -198,7 +199,7 @@ ElasticRegistration::InitRegistration ()
     fltVolume = nextMod;
   }
   
-  switch ( Algorithm ) 
+  switch ( this->m_Algorithm ) 
     {
     case 0:
       this->m_Optimizer = Optimizer::SmartPtr( new BestNeighbourOptimizer( OptimizerStepFactor ) ); 
@@ -216,7 +217,7 @@ ElasticRegistration::InitRegistration ()
     }
     }
   
-  this->m_Optimizer->SetCallback( Callback );
+  this->m_Optimizer->SetCallback( this->m_Callback );
   return irq;
 }
 
@@ -226,10 +227,10 @@ ElasticRegistration::MakeWarpXform
 {
   WarpXform* warpXform = NULL;
   
-  warpXform = new SplineWarpXform( size, this->GridSpacing, initialAffine, this->ExactGridSpacing );
+  warpXform = new SplineWarpXform( size, this->m_GridSpacing, initialAffine, this->m_ExactGridSpacing );
   
   warpXform->SetIgnoreEdge( this->IgnoreEdge );
-  warpXform->SetFastMode( this->FastMode );
+  warpXform->SetFastMode( this->m_FastMode );
   warpXform->SetParametersActive( this->RestrictToAxes );
 
   return warpXform;
@@ -241,34 +242,34 @@ ElasticRegistration::MakeFunctional
   UniformVolume::SmartPtr& rigidityMap,
   MatchedLandmarkList::SmartPtr& mll ) const
 {
-  if ( this->InverseConsistencyWeight > 0 ) 
+  if ( this->m_InverseConsistencyWeight > 0 ) 
     {
-    SymmetricElasticFunctional *newFunctional = CreateSymmetricElasticFunctional( this->Metric, refVolume, fltVolume );
-    newFunctional->SetInverseConsistencyWeight( this->InverseConsistencyWeight );
-    newFunctional->SetAdaptiveFixParameters( this->AdaptiveFixParameters );
-    newFunctional->SetAdaptiveFixThreshFactor( this->AdaptiveFixThreshFactor );
-    newFunctional->SetJacobianConstraintWeight( this->JacobianConstraintWeight );
-    newFunctional->SetRigidityConstraintWeight( this->RigidityConstraintWeight );
-    newFunctional->SetGridEnergyWeight( this->GridEnergyWeight );
+    SymmetricElasticFunctional *newFunctional = CreateSymmetricElasticFunctional( this->m_Metric, refVolume, fltVolume );
+    newFunctional->SetInverseConsistencyWeight( this->m_InverseConsistencyWeight );
+    newFunctional->SetAdaptiveFixParameters( this->m_AdaptiveFixParameters );
+    newFunctional->SetAdaptiveFixThreshFactor( this->m_AdaptiveFixThreshFactor );
+    newFunctional->SetJacobianConstraintWeight( this->m_JacobianConstraintWeight );
+    newFunctional->SetRigidityConstraintWeight( this->m_RigidityConstraintWeight );
+    newFunctional->SetGridEnergyWeight( this->m_GridEnergyWeight );
 //    newFunctional->SetForceOutside( this->m_ForceOutsideFlag, this->m_ForceOutsideValue );
     return newFunctional;
     } 
   else
     {
-    VoxelMatchingElasticFunctional *newFunctional = CreateElasticFunctional( this->Metric, refVolume, fltVolume );
-    newFunctional->SetAdaptiveFixParameters( this->AdaptiveFixParameters );
-    newFunctional->SetAdaptiveFixThreshFactor( this->AdaptiveFixThreshFactor );
-    newFunctional->SetJacobianConstraintWeight( this->JacobianConstraintWeight );
-    newFunctional->SetRigidityConstraintWeight( this->RigidityConstraintWeight );
+    VoxelMatchingElasticFunctional *newFunctional = CreateElasticFunctional( this->m_Metric, refVolume, fltVolume );
+    newFunctional->SetAdaptiveFixParameters( this->m_AdaptiveFixParameters );
+    newFunctional->SetAdaptiveFixThreshFactor( this->m_AdaptiveFixThreshFactor );
+    newFunctional->SetJacobianConstraintWeight( this->m_JacobianConstraintWeight );
+    newFunctional->SetRigidityConstraintWeight( this->m_RigidityConstraintWeight );
     newFunctional->SetForceOutside( this->m_ForceOutsideFlag, this->m_ForceOutsideValue );
     if ( rigidityMap )
       {
       newFunctional->SetRigidityConstraintMap( rigidityMap );
       }
-    newFunctional->SetGridEnergyWeight( this->GridEnergyWeight );    
+    newFunctional->SetGridEnergyWeight( this->m_GridEnergyWeight );
     if ( mll )
       {
-      newFunctional->SetLandmarkErrorWeight( this->LandmarkErrorWeight );
+      newFunctional->SetLandmarkErrorWeight( this->m_LandmarkErrorWeight );
       newFunctional->SetMatchedLandmarkList( mll );
       }
     
@@ -283,17 +284,18 @@ ElasticRegistration::EnterResolution
 {
   WarpXform::SmartPtr warpXform = WarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
 
-  float effGridEnergyWeight = this->GridEnergyWeight;
-  float effJacobianConstraintWeight = this->JacobianConstraintWeight;
-  float effRigidityConstraintWeight = this->RigidityConstraintWeight;
-  float effInverseConsistencyWeight = this->InverseConsistencyWeight;
+  float effGridEnergyWeight = this->m_GridEnergyWeight;
+  float effJacobianConstraintWeight = this->m_JacobianConstraintWeight;
+  float effRigidityConstraintWeight = this->m_RigidityConstraintWeight;
+  float effInverseConsistencyWeight = this->m_InverseConsistencyWeight;
 
-  if ( (this->RelaxWeight > 0) && !this->RelaxationStep ) {
-    effGridEnergyWeight *= this->RelaxWeight;
-    effJacobianConstraintWeight *= this->RelaxWeight;
-    effRigidityConstraintWeight *= this->RelaxWeight;
-    effInverseConsistencyWeight *= this->RelaxWeight;
-  }
+  if ( (this->m_RelaxWeight > 0) && !this->RelaxationStep ) 
+    {
+    effGridEnergyWeight *= this->m_RelaxWeight;
+    effJacobianConstraintWeight *= this->m_RelaxWeight;
+    effRigidityConstraintWeight *= this->m_RelaxWeight;
+    effInverseConsistencyWeight *= this->m_RelaxWeight;
+    }
 
   // handle simple elastic functional
   SmartPointer<VoxelMatchingElasticFunctional> elasticFunctional = VoxelMatchingElasticFunctional::SmartPtr::DynamicCastFrom( functional );
@@ -333,7 +335,7 @@ ElasticRegistration::DoneResolution
 ( CoordinateVector::SmartPtr& v, Functional::SmartPtr& functional,
   const int idx, const int total ) 
 {
-  if ( ( RelaxWeight > 0 ) && ! RelaxationStep ) 
+  if ( ( this->m_RelaxWeight > 0 ) && ! RelaxationStep ) 
     {
     RelaxationStep = true;
     this->Superclass::DoneResolution( v, functional, idx, total );
@@ -344,13 +346,13 @@ ElasticRegistration::DoneResolution
     RelaxationStep = false;
     }
   
-  bool repeat = ( ( idx == total ) && ( RefineGridCount < RefineGrid ) );
+  bool repeat = ( ( idx == total ) && ( RefineGridCount < this->m_RefineGrid ) );
   
   if ( (RefinedGridAtLevel != idx) || (idx==total) ) 
     {    
-    if ( RefineGridCount < RefineGrid ) 
+    if ( RefineGridCount < this->m_RefineGrid ) 
       {      
-      if ( (!DelayRefineGrid) || RefineDelayed || ( idx == total ) ) 
+      if ( (!this->m_DelayRefineGrid) || RefineDelayed || ( idx == total ) ) 
 	{
 	WarpXform::SmartPtr warpXform = WarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
 	if ( warpXform ) 
@@ -360,11 +362,11 @@ ElasticRegistration::DoneResolution
 	    InverseWarpXform->Refine( 2 );
 	  ++RefineGridCount;
 	  functional->GetParamVector( *v );    
-	  if ( Callback ) 
-	    Callback->Comment( "Refined control point grid." );
+	  if ( this->m_Callback ) 
+	    this->m_Callback->Comment( "Refined control point grid." );
 	  RefinedGridAtLevel = idx;
 	  } 	  
-	if ( DelayRefineGrid && ( idx > 1 ) ) repeat = true;
+	if ( this->m_DelayRefineGrid && ( idx > 1 ) ) repeat = true;
 	RefineDelayed = false;
 	} 
       else 

@@ -61,20 +61,20 @@ private:
 
 public:
   /// Is this a single file or a multi-file study?
-  igsGetSetMacro(bool,MultiFile);
+  cmtkGetSetMacro(bool,MultiFile);
 
   /// Directory that contains the image files.
-  igsGetSetMacroString(ImageDirectory);
+  cmtkGetSetMacroString(ImageDirectory);
 
   /// Directory that contains the image files.
-  igsGetSetMacro(FileFormatID,ImageFormat);
+  cmtkGetSetMacro(FileFormatID,ImageFormat);
 
   /// Default constructor.
   StudyImageSet() : 
     Study(),
-    MultiFile( false ),
-    ImageDirectory( NULL ), 
-    ImageFormat( FILEFORMAT_UNKNOWN )
+    m_MultiFile( false ),
+    m_ImageDirectory( NULL ), 
+    m_ImageFormat( FILEFORMAT_UNKNOWN )
   {}
 
   /** Read volume data.

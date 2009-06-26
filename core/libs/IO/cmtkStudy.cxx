@@ -48,48 +48,50 @@ cmtk
 //@{
 
 Study::Study()
-  : FileSystemPath( NULL ),
-    Name( NULL ),
-    Description( NULL ),
-    Modality( NULL ),
-    Volume( NULL ),
-    CustomCalibration( false ),
-    MinimumValue( 0.0 ),
-    MaximumValue( 0.0 ),
-    Padding( false ),
-    HaveUserColorMap( false ),
-    Black( 0.0 ),
-    White( 0.0 )
+  : m_FileSystemPath( NULL ),
+    m_Name( NULL ),
+    m_Description( NULL ),
+    m_Modality( NULL ),
+    m_Volume( NULL ),
+    m_CustomCalibration( false ),
+    m_MinimumValue( 0.0 ),
+    m_MaximumValue( 0.0 ),
+    m_Padding( false ),
+    m_HaveUserColorMap( false ),
+    m_Black( 0.0 ),
+    m_White( 0.0 )
 {
 }
 
 Study::Study( const char* fileSystemPath, const char *name )
-  : FileSystemPath( NULL ),
-    Name( NULL ),
-    Description( NULL ),
-    Modality( NULL ),
-    Volume( NULL ),
-    CustomCalibration( false ),
-    MinimumValue( 0.0 ),
-    MaximumValue( 0.0 ),
-    Padding( false ),
-    HaveUserColorMap( false ),
-    Black( 0.0 ),
-    White( 0.0 )
+  : m_FileSystemPath( NULL ),
+    m_Name( NULL ),
+    m_Description( NULL ),
+    m_Modality( NULL ),
+    m_Volume( NULL ),
+    m_CustomCalibration( false ),
+    m_MinimumValue( 0.0 ),
+    m_MaximumValue( 0.0 ),
+    m_Padding( false ),
+    m_HaveUserColorMap( false ),
+    m_Black( 0.0 ),
+    m_White( 0.0 )
 {
-  if ( fileSystemPath ) {
-    FileSystemPath = strdup( fileSystemPath );
-    Description = strdup( FileFormat::Describe( FileSystemPath ) );
+  if ( fileSystemPath ) 
+    {
+    this->m_FileSystemPath = strdup( fileSystemPath );
+    this->m_Description = strdup( FileFormat::Describe( this->m_FileSystemPath ) );
 
     // cut trailing '/'s off the study path.
-    char *endp = FileSystemPath + strlen( FileSystemPath ) - 1;
-    while ( endp > FileSystemPath ) {
+    char *endp = this->m_FileSystemPath + strlen( this->m_FileSystemPath ) - 1;
+    while ( endp > this->m_FileSystemPath ) 
+      {
       if ( *endp == '/' ) 
 	*endp = 0;
       else
 	break;
-    }
-
+      }
+    
     this->SetMakeName( name );
   }
 }
@@ -97,20 +99,20 @@ Study::Study( const char* fileSystemPath, const char *name )
 void
 Study::UpdateFromVolume()
 {
-  const TypedArray *dataArray = this->Volume->GetData();
+  const TypedArray *dataArray = this->m_Volume->GetData();
   if ( dataArray ) 
     {
-    if ( dataArray->GetRange( MinimumValue, MaximumValue ) )
+    if ( dataArray->GetRange( this->m_MinimumValue, this->m_MaximumValue ) )
       {
       const Types::DataItem perc01 = dataArray->GetPercentile( 0.01, 1024 );
       const Types::DataItem perc99 = dataArray->GetPercentile( 0.99, 1024 );
 
-      Black = std::min( std::max( Black, perc01 ), MaximumValue );
-      White = std::max( std::min( White, perc99 ), MinimumValue );
+      this->m_Black = std::min( std::max( this->m_Black, perc01 ), this->m_MaximumValue );
+      this->m_White = std::max( std::min( this->m_White, perc99 ), this->m_MinimumValue );
       }  
     else
       {
-      Black = White = MinimumValue = MaximumValue = 0.0;
+      this->m_Black = this->m_White = this->m_MinimumValue = this->m_MaximumValue = 0.0;
       }
     }
 }
@@ -134,7 +136,7 @@ Study::SetMakeName( const char* name, const int suffix )
   else
     {
     char buffer[PATH_MAX];
-    strncpy( buffer, FileSystemPath, PATH_MAX );
+    strncpy( buffer, this->m_FileSystemPath, PATH_MAX );
     
     char* lastChar = buffer + strlen( buffer ) - 1;
     while ( (lastChar != buffer) && // not yet empty string
@@ -148,7 +150,7 @@ Study::SetMakeName( const char* name, const int suffix )
     if ( slash )
       strcpy( buffer, slash+1 );
     else 
-      strcpy( buffer, FileSystemPath );
+      strcpy( buffer, this->m_FileSystemPath );
     
     char* dot = strchr( buffer, '.' );
     if ( dot )
@@ -164,14 +166,14 @@ Study::SetMakeName( const char* name, const int suffix )
     this->SetName( buffer );
     }
 
-  return Name;
+  return this->m_Name;
 }
 
 Study::~Study() 
 {
-  if ( FileSystemPath ) free( FileSystemPath );
-  if ( Description ) free( Description );
-  if ( Name ) free( Name );
+  if ( this->m_FileSystemPath ) free( this->m_FileSystemPath );
+  if ( this->m_Description ) free( this->m_Description );
+  if ( this->m_Name ) free( this->m_Name );
 }
 
 bool 
@@ -179,55 +181,55 @@ Study::ReadVolume( const bool reRead, const char* orientation )
 {
   UniformVolume::SmartPtr oldVolume( NULL );
 
-  if ( Volume && reRead ) 
+  if ( this->m_Volume && reRead ) 
     {
-    oldVolume = Volume;
-    Volume = UniformVolume::SmartPtr( NULL );
+    oldVolume = this->m_Volume;
+    this->m_Volume = UniformVolume::SmartPtr( NULL );
     }
   
-  if ( !Volume ) 
+  if ( !this->m_Volume ) 
     {
     if ( orientation )
-      Volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( FileSystemPath, orientation ) );
+      this->m_Volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( this->m_FileSystemPath, orientation ) );
     else
-      Volume = UniformVolume::SmartPtr( VolumeIO::Read( FileSystemPath ) );
+      this->m_Volume = UniformVolume::SmartPtr( VolumeIO::Read( this->m_FileSystemPath ) );
     
-    if ( Volume ) 
+    if ( this->m_Volume ) 
       {
-      this->SetDims( Volume->GetDims( AXIS_X ), Volume->GetDims( AXIS_Y ), Volume->GetDims( AXIS_Z ) );
-      DisplayedImageIndex = Volume->GetDims( AXIS_Z ) / 2 ;
-      ZoomFactor = 1;
-      const TypedArray *dataArray = Volume->GetData();
+      this->SetDims( this->m_Volume->GetDims( AXIS_X ), this->m_Volume->GetDims( AXIS_Y ), this->m_Volume->GetDims( AXIS_Z ) );
+      this->m_DisplayedImageIndex = this->m_Volume->GetDims( AXIS_Z ) / 2 ;
+      this->m_ZoomFactor = 1;
+      const TypedArray *dataArray = this->m_Volume->GetData();
       if ( dataArray ) 
 	{
-	if ( dataArray->GetRange( MinimumValue, MaximumValue ) )
+	if ( dataArray->GetRange( this->m_MinimumValue, this->m_MaximumValue ) )
 	  {
-	  Black = dataArray->GetPercentile( 0.01, 1024 );
-	  White = dataArray->GetPercentile( 0.99, 1024 );
+	  this->m_Black = dataArray->GetPercentile( 0.01, 1024 );
+	  this->m_White = dataArray->GetPercentile( 0.99, 1024 );
 	  }
 	else
 	  {
-	  Black = White = MinimumValue = MaximumValue = 0.0;
+	  this->m_Black = this->m_White = this->m_MinimumValue = this->m_MaximumValue = 0.0;
 	  }
-	StandardColormap = 0;
-	ReverseColormap = false;
+	this->m_StandardColormap = 0;
+	this->m_ReverseColormap = false;
 	}
       }
     }
   
-  if ( Volume ) 
+  if ( this->m_Volume ) 
     {
     if ( this->m_LandmarkList ) 
       {
-      Volume->m_LandmarkList = this->m_LandmarkList;
+      this->m_Volume->m_LandmarkList = this->m_LandmarkList;
       }
-    if ( Volume->GetData() ) 
+    if ( this->m_Volume->GetData() ) 
       {
       return true;
       }
     }
   
-  Volume = oldVolume;
+  this->m_Volume = oldVolume;
   return false;
 }
 
@@ -273,13 +275,13 @@ Study::Read( const char* path )
 bool
 Study::Write() const
 {
-  ClassStream stream( FileSystemPath, "images", ClassStream::WRITE );
+  ClassStream stream( this->m_FileSystemPath, "images", ClassStream::WRITE );
   if ( ! stream.IsValid() ) return false;
 
   stream << *this;
   stream.Close();
 
-  stream.Open( FileSystemPath, "landmarks", ClassStream::WRITE );
+  stream.Open( this->m_FileSystemPath, "landmarks", ClassStream::WRITE );
   if ( ! stream.IsValid() ) return false;
 
   stream << this->m_LandmarkList;
@@ -300,7 +302,7 @@ Study::WriteTo( const char* path )
 
   if ( this->m_LandmarkList ) 
     {
-    stream.Open( FileSystemPath, "landmarks", ClassStream::WRITE );
+    stream.Open( this->m_FileSystemPath, "landmarks", ClassStream::WRITE );
     if ( ! stream.IsValid() ) return false;
     
     stream << this->m_LandmarkList;
@@ -313,13 +315,13 @@ Study::WriteTo( const char* path )
 void
 Study::CopyColormap( const Study* other )
 {
-  MinimumValue = other->MinimumValue;
-  MaximumValue = other->MaximumValue;
-  StandardColormap = other->StandardColormap;
-  ReverseColormap = other->ReverseColormap;
-  Black = other->Black;
-  White = other->White;
-  Gamma = other->Gamma;
+  this->m_MinimumValue = other->m_MinimumValue;
+  this->m_MaximumValue = other->m_MaximumValue;
+  this->m_StandardColormap = other->m_StandardColormap;
+  this->m_ReverseColormap = other->m_ReverseColormap;
+  this->m_Black = other->m_Black;
+  this->m_White = other->m_White;
+  this->m_Gamma = other->m_Gamma;
 }
 
 } // namespace cmtk

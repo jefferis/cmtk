@@ -134,14 +134,14 @@ FusionSlicers::GetOutput( Study::SmartPtr& study )
     }
     
     SlicerPipeline *pipeline = new SlicerPipeline( ReferenceSlice, study, affineXform, warpXform );
-    Slicer *slicer = pipeline->Getm_Slicer();
+    Slicer *slicer = pipeline->GetSlicer();
     Image *slice = slicer->GetOutput();
     (*this)[ study ] = pipeline;
     return slice;
     } 
   else 
     {
-    return (*this)[study]->Getm_Slicer()->GetOutput();
+    return (*this)[study]->GetSlicer()->GetOutput();
     }
 }
 
@@ -160,7 +160,7 @@ FusionSlicers::SetInterpolationMode
   while ( it != this->end() ) 
     {
     if ( it->second ) 
-      it->second->Getm_Slicer()->SetInterpolationMode( InterpolationMode );
+      it->second->GetSlicer()->SetInterpolationMode( InterpolationMode );
     ++it;
     }  
 }
@@ -174,7 +174,7 @@ FusionSlicers::SetApplyWarp
   while ( it != this->end() ) 
     {
     if ( it->second ) 
-      it->second->Getm_Slicer()->SetApplyWarp( ApplyWarp );
+      it->second->GetSlicer()->SetApplyWarp( ApplyWarp );
     ++it;
     }  
 }

@@ -89,7 +89,7 @@ UniformVolume::SetCropRegion( const int* cropFrom, const int* cropTo )
     {
     for ( int dim = 0; dim < 3; ++dim )
       {
-      this->CropFrom[dim] = std::max<int>( 0, std::min<int>( this->Dims[dim], cropFrom[dim] ) );
+      this->CropFrom[dim] = std::max<int>( 0, std::min<int>( this->m_Dims[dim], cropFrom[dim] ) );
       }
     } 
   else 
@@ -106,13 +106,13 @@ UniformVolume::SetCropRegion( const int* cropFrom, const int* cropTo )
     {
     for ( int dim = 0; dim < 3; ++dim )
       {
-      this->CropTo[dim] = std::max<int>( this->CropFrom[dim], std::min<int>( this->Dims[dim], cropTo[dim] ) );
+      this->CropTo[dim] = std::max<int>( this->CropFrom[dim], std::min<int>( this->m_Dims[dim], cropTo[dim] ) );
       }
     } 
   else
     {
     for ( int dim = 0; dim<3; ++dim )
-      this->CropTo[dim] = this->Dims[dim];
+      this->CropTo[dim] = this->m_Dims[dim];
   }
   { 
   for ( int dim = 0; dim<3; ++dim )
@@ -173,9 +173,9 @@ UniformVolume::GetCropRegion
   
   if ( increments ) 
     {
-    increments[0] = cropFrom[0] + Dims[0] * ( cropFrom[1] + Dims[1] * cropFrom[2] );
-    increments[1] = cropFrom[0] + (Dims[0] - cropTo[0]);
-    increments[2] = Dims[0] * ( cropFrom[1] + ( Dims[1] - cropTo[1]) );
+    increments[0] = cropFrom[0] + this->m_Dims[0] * ( cropFrom[1] + this->m_Dims[1] * cropFrom[2] );
+    increments[1] = cropFrom[0] + (this->m_Dims[0] - cropTo[0]);
+    increments[2] = this->m_Dims[0] * ( cropFrom[1] + ( this->m_Dims[1] - cropTo[1]) );
     }
 }
 
@@ -198,16 +198,15 @@ UniformVolume::AutoCrop
     for ( int dim = 0; dim < 3; ++dim ) 
       {
       CropFrom[dim] = 0;
-      CropTo[dim] = Dims[dim];
+      CropTo[dim] = this->m_Dims[dim];
       }
     }
   
-  const size_t nextRow = Dims[0] - CropTo[0] + CropFrom[0];
-  const size_t nextPlane = Dims[0] * (Dims[1] - CropTo[1] + CropFrom[1]);
+  const size_t nextRow = this->m_Dims[0] - CropTo[0] + CropFrom[0];
+  const size_t nextPlane = this->m_Dims[0] * (this->m_Dims[1] - CropTo[1] + CropFrom[1]);
   
   bool first = true;
-  size_t offset = 
-    CropFrom[0] + Dims[0] * ( CropFrom[1] + Dims[1] * CropFrom[2] );
+  size_t offset = CropFrom[0] + this->m_Dims[0] * ( CropFrom[1] + this->m_Dims[1] * CropFrom[2] );
 
   for ( int z = CropFrom[2]; z < CropTo[2]; ++z, offset += nextPlane )
     for ( int y = CropFrom[1]; y < CropTo[1]; ++y, offset += nextRow )
@@ -243,7 +242,7 @@ UniformVolume::AutoCrop
     for ( int dim = 0; dim < 3; ++dim ) 
       {
       cropFrom[dim] = std::max<int>( 0, cropFrom[dim] - margin );
-      cropTo[dim] = std::min<int>( Dims[dim], cropTo[dim] + margin );
+      cropTo[dim] = std::min<int>( this->m_Dims[dim], cropTo[dim] + margin );
       }
     }
   
@@ -253,29 +252,29 @@ UniformVolume::AutoCrop
 void
 UniformVolume::FillCropBackground( const Types::DataItem value )
 {
-  const size_t planeSize = Dims[0] * Dims[1];
+  const size_t planeSize = this->m_Dims[0] * this->m_Dims[1];
 
   size_t offset = CropFrom[2] * planeSize;
-  Data->BlockSet( value, 0, offset );
+  this->m_Data->BlockSet( value, 0, offset );
 
   for ( int z = CropFrom[2]; z < CropTo[2]; ++z ) 
     {
-    size_t planeOffset = offset + CropFrom[1] * Dims[0];
-    Data->BlockSet( value, offset, planeOffset );
+    size_t planeOffset = offset + CropFrom[1] * this->m_Dims[0];
+    this->m_Data->BlockSet( value, offset, planeOffset );
 
     offset = planeOffset;
-    for ( int y = CropFrom[1]; y < CropTo[1]; ++y, offset += Dims[0] ) 
+    for ( int y = CropFrom[1]; y < CropTo[1]; ++y, offset += this->m_Dims[0] ) 
       {
-      Data->BlockSet( value, offset, offset+CropFrom[0] );
-      Data->BlockSet( value, offset+CropTo[0], offset+Dims[0] );
+      this->m_Data->BlockSet( value, offset, offset+CropFrom[0] );
+      this->m_Data->BlockSet( value, offset+CropTo[0], offset+this->m_Dims[0] );
       }
     
-    planeOffset = offset + (Dims[1]-CropTo[1]) * Dims[0];
-    Data->BlockSet( value, offset, planeOffset );
+    planeOffset = offset + (this->m_Dims[1]-CropTo[1]) * this->m_Dims[0];
+    this->m_Data->BlockSet( value, offset, planeOffset );
     offset = planeOffset;
     }
   
-  Data->BlockSet( value, CropTo[2] * planeSize, Dims[2] * planeSize );
+  this->m_Data->BlockSet( value, CropTo[2] * planeSize, this->m_Dims[2] * planeSize );
 }
 
 TypedArray*
@@ -288,14 +287,13 @@ UniformVolume::GetCroppedData() const
     srcData->NewTemplateArray( this->GetCropRegionNumVoxels() );
   
   const size_t lineLength = CropTo[0] - CropFrom[0];
-  const size_t nextPlane = Dims[0] * (Dims[1] - (CropTo[1] - CropFrom[1]));
+  const size_t nextPlane = this->m_Dims[0] * (this->m_Dims[1] - (CropTo[1] - CropFrom[1]));
   
   size_t toOffset = 0;
-  size_t fromOffset = 
-    CropFrom[0] + Dims[0] * ( CropFrom[1] + Dims[1] * CropFrom[2] );
+  size_t fromOffset = CropFrom[0] + this->m_Dims[0] * ( CropFrom[1] + this->m_Dims[1] * CropFrom[2] );
 
   for ( int z = CropFrom[2]; z < CropTo[2]; ++z, fromOffset += nextPlane )
-    for ( int y = CropFrom[1]; y < CropTo[1]; ++y, fromOffset += Dims[0] ) 
+    for ( int y = CropFrom[1]; y < CropTo[1]; ++y, fromOffset += this->m_Dims[0] ) 
       {
       srcData->BlockCopy( cropData, toOffset, fromOffset, lineLength );
       toOffset += lineLength;
@@ -308,7 +306,7 @@ UniformVolume*
 UniformVolume::GetCroppedVolume() const
 {
   const int cropDims[3] = { CropTo[0]-CropFrom[0], CropTo[1]-CropFrom[1], CropTo[2]-CropFrom[2] };
-  const Types::Coordinate cropSize[3] = { (cropDims[0]-1) * Delta[0], (cropDims[1]-1) * Delta[1], (cropDims[2]-1) * Delta[2] };
+  const Types::Coordinate cropSize[3] = { (cropDims[0]-1) * this->m_Delta[0], (cropDims[1]-1) * this->m_Delta[1], (cropDims[2]-1) * this->m_Delta[2] };
   UniformVolume* volume = new UniformVolume( cropDims, cropSize );
 
   // get cropped data.

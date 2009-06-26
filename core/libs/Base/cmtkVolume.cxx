@@ -46,34 +46,34 @@ Volume::GetTrilinear
 {
   const TypedArray* data = this->GetData();
 
-  int offset = X+Dims[0]*(Y+Dims[1]*Z);
+  int offset = X+this->m_Dims[0]*(Y+this->m_Dims[1]*Z);
 
   bool data_present = data->Get( probeInfo.Values[0], offset );
   
-  if ( X<Dims[0]-1 ) 
+  if ( X<this->m_Dims[0]-1 ) 
     {
     data_present &= data->Get( probeInfo.Values[1], offset+nextI );
     
-    if ( Y<Dims[1]-1 ) 
+    if ( Y<this->m_Dims[1]-1 ) 
       {
       data_present &= data->Get( probeInfo.Values[3], offset+nextIJ );
       
-      if ( Z<Dims[2]-1 )
+      if ( Z<this->m_Dims[2]-1 )
 	data_present &= data->Get( probeInfo.Values[7], offset+nextIJK );
       }
-    if ( Z<Dims[2]-1 )
+    if ( Z<this->m_Dims[2]-1 )
       data_present &= data->Get( probeInfo.Values[5], offset+nextIK );
     }
   
-  if ( Y<Dims[1]-1 ) 
+  if ( Y<this->m_Dims[1]-1 ) 
     {
     data_present &= data->Get( probeInfo.Values[2], offset+nextJ );
     
-    if ( Z<Dims[2]-1 )
+    if ( Z<this->m_Dims[2]-1 )
       data_present &= data->Get( probeInfo.Values[6], offset+nextJK );
     }
   
-  if ( Z<Dims[2]-1 )
+  if ( Z<this->m_Dims[2]-1 )
     data_present &= data->Get( probeInfo.Values[4], offset+nextK );
   
   if (data_present)

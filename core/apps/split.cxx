@@ -116,7 +116,7 @@ main( const int argc, const char* argv[] )
 	}
       cmtk::AffineXform xform;
       cmtk::Types::Coordinate xlate[3] = {0,0,0};
-      xlate[Axis] = -i * volume->Delta[Axis];
+      xlate[Axis] = -i * volume->m_Delta[Axis];
       xform.SetXlate( xlate );
 
       cmtk::ClassStream stream( path, cmtk::ClassStream::WRITE );

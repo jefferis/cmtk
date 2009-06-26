@@ -1,6 +1,7 @@
 Release CMTK-1.0.2:
 
-
+- API: all igsGetSetXXX macros are now cmtkGetSetXXX, and they all define the
+    field name with a "m_" prefix to avoid type/field name collisions.
 
 
 Release CMTK-1.0.1 (2009-06-25):

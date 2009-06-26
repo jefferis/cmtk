@@ -214,7 +214,7 @@ main( int argc, char ** argv )
       if ( Verbose )
 	{
 	cmtk::StdErr.printf( "Template grid is %d x %d x %d pixels of size %f x %f x %f\n",
-			  templateGrid->Dims[0], templateGrid->Dims[1], templateGrid->Dims[2], templateGrid->Delta[0], templateGrid->Delta[1], templateGrid->Delta[2] );
+			     templateGrid->m_Dims[0], templateGrid->m_Dims[1], templateGrid->m_Dims[2], templateGrid->m_Delta[0], templateGrid->m_Delta[1], templateGrid->m_Delta[2] );
 	}
       
       if ( SamplingDensity > 0 )

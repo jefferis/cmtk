@@ -43,15 +43,15 @@ DataGrid::DrawSphere
 ( const Vector3D& center, const Types::Coordinate radius, const Types::DataItem value )
 {
   size_t offset = 0;
-  for ( int k = 0; k < Dims[2]; ++k )
+  for ( int k = 0; k < this->m_Dims[2]; ++k )
     {
-    for ( int j = 0; j < Dims[1]; ++j )
+    for ( int j = 0; j < this->m_Dims[1]; ++j )
       {
-      for ( int i = 0; i < Dims[0]; ++i, ++offset )
+      for ( int i = 0; i < this->m_Dims[0]; ++i, ++offset )
 	{
 	Vector3D v( i, j, k );
 	if ( (v-center).EuclidNorm() <= radius )
-	  this->Data->Set( value, offset );
+	  this->m_Data->Set( value, offset );
 	}
       }
     }
@@ -67,7 +67,7 @@ DataGrid::DrawBox
       {
       for ( int i = box.From[0]; i < box.To[0]; ++i )
 	{
-	this->Data->Set( value, this->GetOffsetFromIndex( i, j, k ) );
+	this->m_Data->Set( value, this->GetOffsetFromIndex( i, j, k ) );
 	}
       }
     }

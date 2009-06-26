@@ -55,13 +55,12 @@ SplineWarpXform::GetStrainTensor( const Vector3D& v, CoordinateMatrix3x3& t ) co
   for ( int dim = 0; dim<3; ++dim ) 
     {
     r[dim] = this->InverseSpacing[dim] * v.XYZ[dim];
-    grid[dim] = std::min( static_cast<int>( r[dim] ), Dims[dim]-4 );
+    grid[dim] = std::min( static_cast<int>( r[dim] ), this->m_Dims[dim]-4 );
     f[dim] = r[dim] - grid[dim];
     assert( (f[dim] >= 0.0) && (f[dim] <= 1.0) );
     }
 
-  const Types::Coordinate* coeff = 
-    this->m_Parameters + 3 * ( grid[0] + Dims[0] * (grid[1] + Dims[1] * grid[2]) );
+  const Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + this->m_Dims[0] * (grid[1] + this->m_Dims[1] * grid[2]) );
 
   // loop over the three components of the coordinate transformation function,
   // x, y, z.

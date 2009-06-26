@@ -386,9 +386,9 @@ VolumeIO::Write
   const TypedArray *data = volume->GetData();
   if ( data == NULL ) return;
 
-  int planeSize = volume->Dims[0] * volume->Dims[1];
-  ScalarImage image( volume->Dims[0], volume->Dims[1] );
-  image.SetPixelSize( volume->Delta[AXIS_X], volume->Delta[AXIS_Y] );
+  int planeSize = volume->m_Dims[0] * volume->m_Dims[1];
+  ScalarImage image( volume->m_Dims[0], volume->m_Dims[1] );
+  image.SetPixelSize( volume->m_Delta[AXIS_X], volume->m_Delta[AXIS_Y] );
 
   FileUtils::RecursiveMkPrefixDir( path );
   char *dirName = strdup( StrDir( path ) );
@@ -415,7 +415,7 @@ VolumeIO::Write
       PGM::Write( fname, &image );
       if ( studyStream ) 
 	{
-	WriteStudyImageEntry( studyStream, StrFName( fname ), "PRIMARY", volume->Delta[AXIS_X], volume->Delta[AXIS_Y], volume->GetPlaneCoord( AXIS_Z, k ) );
+	WriteStudyImageEntry( studyStream, StrFName( fname ), "PRIMARY", volume->m_Delta[AXIS_X], volume->m_Delta[AXIS_Y], volume->GetPlaneCoord( AXIS_Z, k ) );
 	}
       }
     if ( studyStream ) 
@@ -583,9 +583,9 @@ VolumeIO::CreateStudy
     
     studyStream->WriteString( "direction", "CaudalCranial" );
     studyStream->WriteBool( "custom", 1 );
-    studyStream->WriteDouble( "calibrationx", volume->Delta[AXIS_X] );
-    studyStream->WriteDouble( "calibrationy", volume->Delta[AXIS_Y] );
-    studyStream->WriteDouble( "slicedistance", volume->Delta[AXIS_Z] );
+    studyStream->WriteDouble( "calibrationx", volume->m_Delta[AXIS_X] );
+    studyStream->WriteDouble( "calibrationy", volume->m_Delta[AXIS_Y] );
+    studyStream->WriteDouble( "slicedistance", volume->m_Delta[AXIS_Z] );
 
     if ( volumeData ) 
       {

@@ -38,6 +38,16 @@
 #define NULL 0
 #endif
 
+/** Macro to define a protected pointer class parameter and public read and 
+ * write access member functions.
+ */
+#define cmtkGetSetMacroObject(t,name) \
+  protected: t *m_##name; \
+  public:    void Set##name( t *const v ) { if (v) v->Reference(); if (this->m_##name) this->m_##name->Delete(); this->m_##name = v; } \
+             t* Get##name() { return this->m_##name; } \
+             const t* Get##name() const { return this->m_##name; } \
+             void Get##name( t*& to ) { to = this->m_##name; }
+
 /** Macro to define a protected scalar class parameter and public read and 
  * write access member functions.
  */

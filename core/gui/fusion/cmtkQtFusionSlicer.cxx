@@ -209,7 +209,7 @@ QtFusionSlicer::slotSetOrientation( int sliceNormal )
   
   
   this->PositionTo = volume->Size[SliceNormal];
-  this->PositionStep = volume->Delta[SliceNormal];
+  this->PositionStep = volume->m_Delta[SliceNormal];
   
   SliceSlider->slotSetRange( 0, this->PositionTo );
   SliceSlider->slotCenter();

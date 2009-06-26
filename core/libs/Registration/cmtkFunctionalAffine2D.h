@@ -63,13 +63,13 @@ class FunctionalAffine2D :
   public Functional 
 {
   /// Number of degrees of freedom.
-  igsGetSetMacro(int,NumberDOFs);
+  cmtkGetSetMacro(int,NumberDOFs);
 
   /// Similarity metric.
-  igsGetSetMacro(ScalarImageSimilarity::ID,SimilarityMeasure);
+  cmtkGetSetMacro(ScalarImageSimilarity::ID,SimilarityMeasure);
 
   /// Flag for histogram equalization of projection data.
-  igsGetSetMacro(bool,HistogramEqualization);
+  cmtkGetSetMacro(bool,HistogramEqualization);
 
 public:
   /// This class.
@@ -148,7 +148,7 @@ public:
   virtual size_t ParamVectorDim() const { return 8; }
 
   /// Return the number of variable parameters of the transformation.
-  virtual size_t VariableParamVectorDim() const { return this->NumberDOFs; }
+  virtual size_t VariableParamVectorDim() const { return this->m_NumberDOFs; }
 
   /// Return parameter stepping.
   virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const;

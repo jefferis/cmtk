@@ -57,7 +57,7 @@ public:
   typedef Optimizer Superclass;
 
   /// Flag whether to use maximum (1) or Euclid (0) for normalization.
-  igsGetSetMacroDefault(bool,UseMaxNorm,true);
+  cmtkGetSetMacroDefault(bool,UseMaxNorm,true);
 
   /** Threshold for direction components.
    * Before searching in a certain directions, all components below this
@@ -67,7 +67,7 @@ public:
    * set this flag to 0 to disable thresholding; set it to 1 to remove all but
    * the most significant components.
    */
-  igsGetSetMacroDefault(Self::ParameterType,DirectionThreshold,-1);
+  cmtkGetSetMacroDefault(Self::ParameterType,DirectionThreshold,-1);
 
   /** Number of repetitions of each search level, even if previously unsuccessful.
    * This is one by default, so whenever no successful update was made, the level
@@ -75,7 +75,7 @@ public:
    * optimized functional is changing over time, e.g., due to probabilistic 
    * effects. 
    */
-  igsGetSetMacro(int,RepeatLevelCount);
+  cmtkGetSetMacro(int,RepeatLevelCount);
 
   /** Agressive mode.
    * If this flag is set, the optimization is continued at one level as long as
@@ -83,16 +83,16 @@ public:
    * steps in the binary seach phase are not considered and search terminates 
    * earlier.
    */
-  igsGetSetMacro(bool,AggressiveMode);
+  cmtkGetSetMacro(bool,AggressiveMode);
 
   /// UNDOCUMENTED
   BestDirectionOptimizer ( const Self::ParameterType stepFactor = 0.5, const Self::ParameterType = 0.1 )
   { 
     StepFactor = stepFactor;
-    UseMaxNorm = true;
-    DirectionThreshold = -1;
-    RepeatLevelCount = 1;
-    AggressiveMode = false;
+    this->m_UseMaxNorm = true;
+    this->m_DirectionThreshold = -1;
+    this->m_RepeatLevelCount = 1;
+    this->m_AggressiveMode = false;
   };
  
   /// Optimize functional.

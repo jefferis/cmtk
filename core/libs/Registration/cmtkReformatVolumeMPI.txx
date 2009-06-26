@@ -92,8 +92,8 @@ ReformatVolume::GetTransformedReference
   ScalarDataType dtype = ReferenceVolume->GetData()->GetType();
   TypedArray::SmartPtr dataArray( TypedArray::Create( dtype, mpiBlockSize  ) );
 
-  if ( this->UsePaddingValue )
-    dataArray->SetPaddingValue( this->PaddingValue );
+  if ( this->m_UsePaddingValue )
+    dataArray->SetPaddingValue( this->m_PaddingValue );
 
   const size_t numberOfThreads = Threads::GetNumberOfThreads();
   std::vector<GetTransformedReferenceTP> params( numberOfThreads );

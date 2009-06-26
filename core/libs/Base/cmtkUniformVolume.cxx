@@ -44,9 +44,9 @@ cmtk
 
 UniformVolume::UniformVolume()
 {
-  memset( Dims, 0, sizeof( Dims ) );
+  memset( this->m_Dims, 0, sizeof( this->m_Dims ) );
   memset( Size, 0, sizeof( Size ) );
-  memset( Delta, 0, sizeof( Delta ) );
+  memset( this->m_Delta, 0, sizeof( this->m_Delta ) );
   this->SetCropRegion( (int*) NULL, (int*) NULL );
 }
 
@@ -59,7 +59,7 @@ UniformVolume::UniformVolume
   
   for ( int i=0; i<3; ++i ) {
     Size[i] = static_cast<Types::Coordinate>( size[i] );
-    Delta[i] = ( Dims[i] == 1 ) ? 0 : Size[i] / (Dims[i] - 1);
+    this->m_Delta[i] = ( this->m_Dims[i] == 1 ) ? 0 : Size[i] / (this->m_Dims[i] - 1);
   }
 
   this->SetCropRegion( (int*) NULL, (int*) NULL );
@@ -74,7 +74,7 @@ UniformVolume::UniformVolume
 
   for ( int i=0; i<3; ++i ) {
     Size[i] = static_cast<Types::Coordinate>( size[i] );
-    Delta[i] = ( Dims[i] == 1 ) ? 0 : Size[i] / (Dims[i] - 1);
+    this->m_Delta[i] = ( this->m_Dims[i] == 1 ) ? 0 : Size[i] / (this->m_Dims[i] - 1);
   }
 
   this->SetCropRegion( (int*) NULL, (int*) NULL );
@@ -87,12 +87,12 @@ UniformVolume::UniformVolume
   this->SetData( data );
   this->SetDims( dims );
 
-  Delta[0] = deltaX;
-  Delta[1] = deltaY;
-  Delta[2] = deltaZ;
+  this->m_Delta[0] = deltaX;
+  this->m_Delta[1] = deltaY;
+  this->m_Delta[2] = deltaZ;
 
   for ( int i=0; i<3; ++i )
-    Size[i] = Delta[i] * (Dims[i]-1);
+    Size[i] = this->m_Delta[i] * (this->m_Dims[i]-1);
 
   this->SetCropRegion( (int*) NULL, (int*) NULL );
   this->CreateDefaultIndexToPhysicalMatrix();
@@ -105,23 +105,23 @@ UniformVolume::UniformVolume
   for ( int dim=0; dim<3; ++dim ) {
     Size[dim] = other.Size[dim];
     int new_dims=(int) (Size[dim]/resolution)+1;
-    if ( allowUpsampling || (new_dims<=other.Dims[dim]) ) 
+    if ( allowUpsampling || (new_dims<=other.m_Dims[dim]) ) 
       {
       newDims[dim]=new_dims;
-      Delta[dim]=Size[dim]/(new_dims-1);
+      this->m_Delta[dim]=Size[dim]/(new_dims-1);
       } 
     else
       {
-      if ( other.Dims[dim] == 1 ) 
+      if ( other.m_Dims[dim] == 1 ) 
 	{
-	Delta[dim] = Size[dim];
+	this->m_Delta[dim] = Size[dim];
 	newDims[dim] = 1;
 	} 
       else 
 	{
-	Delta[dim] = other.Delta[dim];
-	newDims[dim] = ((int)(Size[dim]/Delta[dim])) + 1;
-	Size[dim] = (newDims[dim]-1) * Delta[dim];
+	this->m_Delta[dim] = other.m_Delta[dim];
+	newDims[dim] = ((int)(Size[dim]/this->m_Delta[dim])) + 1;
+	Size[dim] = (newDims[dim]-1) * this->m_Delta[dim];
 	}
       }
   }
@@ -174,7 +174,7 @@ UniformVolume::Clone() const
 UniformVolume*
 UniformVolume::CloneGrid() const
 {
-  UniformVolume* clone = new UniformVolume( Dims, Size );
+  UniformVolume* clone = new UniformVolume( this->m_Dims, Size );
   clone->SetOrigin( this->m_Origin );
   clone->m_MetaInformation = this->m_MetaInformation;
   clone->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
@@ -187,7 +187,7 @@ UniformVolume::GetReoriented( const char* newOrientation ) const
   const std::string curOrientation = this->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION];
   DataGrid::SmartPtr temp( DataGrid::GetReoriented( newOrientation ) );
 
-  AnatomicalOrientation::PermutationMatrix pmatrix( this->Dims, this->Size, curOrientation, newOrientation );
+  AnatomicalOrientation::PermutationMatrix pmatrix( this->m_Dims, this->Size, curOrientation, newOrientation );
   Types::Coordinate newSize[3];
   pmatrix.GetPermutedArray( this->Size, newSize );
 
@@ -204,10 +204,10 @@ UniformVolume::GetDownsampled( const int downsample, const bool approxIsotropic 
 {
   if ( approxIsotropic )
     {
-    const Types::Coordinate minDelta = std::min<Types::Coordinate>( this->Delta[0], std::min<Types::Coordinate>( this->Delta[1], this->Delta[2] ) );
-    const int downsampleByAxis[3] = { std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->Delta[0] / minDelta) ) ),
-				      std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->Delta[1] / minDelta) ) ),
-				      std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->Delta[2] / minDelta) ) ) };
+    const Types::Coordinate minDelta = std::min<Types::Coordinate>( this->m_Delta[0], std::min<Types::Coordinate>( this->m_Delta[1], this->m_Delta[2] ) );
+    const int downsampleByAxis[3] = { std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->m_Delta[0] / minDelta) ) ),
+				      std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->m_Delta[1] / minDelta) ) ),
+				      std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->m_Delta[2] / minDelta) ) ) };
     return this->GetDownsampled( downsampleByAxis );
     }
   else
@@ -224,10 +224,10 @@ UniformVolume::GetDownsampled( const int (&downsample)[3] ) const
   TypedArray::SmartPtr newData = newDataGrid->GetData();
 
   // create downsample grid
-  UniformVolume* dsVolume = new UniformVolume( newDataGrid->GetDims(), downsample[0] * Delta[0], downsample[1] * Delta[1], downsample[2] * Delta[2], newData );
+  UniformVolume* dsVolume = new UniformVolume( newDataGrid->GetDims(), downsample[0] * this->m_Delta[0], downsample[1] * this->m_Delta[1], downsample[2] * this->m_Delta[2], newData );
 
   // compute shift of volume origin
-  const Vector3D shift( (downsample[0]-1)*Delta[0]/2, (downsample[1]-1)*Delta[1]/2, (downsample[2]-1)*Delta[2]/2 );
+  const Vector3D shift( (downsample[0]-1)*this->m_Delta[0]/2, (downsample[1]-1)*this->m_Delta[1]/2, (downsample[2]-1)*this->m_Delta[2]/2 );
   
   // apply shift to origin
   Vector3D origin( this->m_Origin );
@@ -260,16 +260,16 @@ UniformVolume::GetInterleavedSubVolume
   Types::Coordinate size[3];
   for ( int dim = 0; dim < 3; ++dim )
     {
-    dims[dim] = this->Dims[dim];
+    dims[dim] = this->m_Dims[dim];
     size[dim] = this->Size[ dim ];
     }
-  dims[axis] = this->Dims[axis] / factor;
-  if ( this->Dims[axis] % factor > idx )
+  dims[axis] = this->m_Dims[axis] / factor;
+  if ( this->m_Dims[axis] % factor > idx )
     ++dims[axis];
-  size[axis] = (dims[axis]-1) * factor * this->Delta[axis];
+  size[axis] = (dims[axis]-1) * factor * this->m_Delta[axis];
   
   Vector3D origin( 0, 0, 0 );
-  origin.XYZ[axis] = idx * this->Delta[axis];
+  origin.XYZ[axis] = idx * this->m_Delta[axis];
   
   UniformVolume* volume = new UniformVolume( dims, size );
   volume->SetOrigin( origin );
@@ -296,11 +296,11 @@ UniformVolume*
 UniformVolume::GetInterleavedPaddedSubVolume
 ( const int axis, const int factor, const int idx ) const
 {
-  int sDims = this->Dims[axis] / factor;
-  if ( this->Dims[axis] % factor > idx )
+  int sDims = this->m_Dims[axis] / factor;
+  if ( this->m_Dims[axis] % factor > idx )
     ++sDims;
 
-  UniformVolume* volume = new UniformVolume( this->Dims, this->Size );
+  UniformVolume* volume = new UniformVolume( this->m_Dims, this->Size );
   (volume->CreateDataArray( this->GetData()->GetType() ))->Fill( 0.0 );
   volume->SetOrigin( this->m_Origin );
   for ( int i = 0; i < sDims; ++i )
@@ -319,14 +319,14 @@ void
 UniformVolume::GetGridRange
 ( const Vector3D& fromVOI, const Vector3D& toVOI, Rect3D& voi ) const
 {					      
-  voi.startX = std::max<GridIndexType>( 0, static_cast<GridIndexType>( (fromVOI[0]-this->m_Origin[0]) / this->Delta[0] ) );
-  voi.endX = 1+std::min( this->Dims[0]-1, 1+static_cast<GridIndexType>( (toVOI[0]-this->m_Origin[0]) / this->Delta[0] ) );
+  voi.startX = std::max<GridIndexType>( 0, static_cast<GridIndexType>( (fromVOI[0]-this->m_Origin[0]) / this->m_Delta[0] ) );
+  voi.endX = 1+std::min( this->m_Dims[0]-1, 1+static_cast<GridIndexType>( (toVOI[0]-this->m_Origin[0]) / this->m_Delta[0] ) );
 
-  voi.startY = std::max<GridIndexType>( 0, static_cast<GridIndexType>( (fromVOI[1]-this->m_Origin[1]) / this->Delta[1] ) );
-  voi.endY = 1+std::min( this->Dims[1]-1, 1+static_cast<GridIndexType>( (toVOI[1]-this->m_Origin[1]) / this->Delta[1] ) );
+  voi.startY = std::max<GridIndexType>( 0, static_cast<GridIndexType>( (fromVOI[1]-this->m_Origin[1]) / this->m_Delta[1] ) );
+  voi.endY = 1+std::min( this->m_Dims[1]-1, 1+static_cast<GridIndexType>( (toVOI[1]-this->m_Origin[1]) / this->m_Delta[1] ) );
 
-  voi.startZ = std::max<GridIndexType>( 0, static_cast<GridIndexType>( (fromVOI[2]-this->m_Origin[2]) / this->Delta[2] ) );
-  voi.endZ = 1+std::min( this->Dims[2]-1, 1+static_cast<GridIndexType>( (toVOI[2]-this->m_Origin[2]) / this->Delta[2] ) );
+  voi.startZ = std::max<GridIndexType>( 0, static_cast<GridIndexType>( (fromVOI[2]-this->m_Origin[2]) / this->m_Delta[2] ) );
+  voi.endZ = 1+std::min( this->m_Dims[2]-1, 1+static_cast<GridIndexType>( (toVOI[2]-this->m_Origin[2]) / this->m_Delta[2] ) );
 }
 
 void
@@ -334,8 +334,8 @@ UniformVolume::Mirror ( const int axis )
 {
   this->DataGrid::ApplyMirrorPlane( axis );
 
-  CropFrom[ axis ] = Dims[ axis ] - 1 - CropFrom[ axis ];
-  CropTo[ axis ] = Dims[ axis ] - 1 - CropTo[ axis ];
+  CropFrom[ axis ] = this->m_Dims[ axis ] - 1 - CropFrom[ axis ];
+  CropTo[ axis ] = this->m_Dims[ axis ] - 1 - CropTo[ axis ];
 
   CropFromReal[ axis ] = Size[ axis ] - CropFromReal[ axis ];
   CropToReal[ axis ] = Size[ axis ] - CropToReal[ axis ];
@@ -439,15 +439,15 @@ UniformVolume
   Matrix3x3<Types::Coordinate> inertiaMatrix;
 
   Types::DataItem ixx = 0, iyy = 0, izz = 0, ixy = 0, iyz = 0, izx = 0;
-  for ( int k = 0; k < this->Dims[2]; ++k )
+  for ( int k = 0; k < this->m_Dims[2]; ++k )
     {
     const Types::Coordinate Dz = this->GetPlaneCoord( AXIS_Z, k ) - zg;
     const Types::Coordinate Dz2 = Dz * Dz;
-    for ( int j = 0; j < this->Dims[1]; ++j )
+    for ( int j = 0; j < this->m_Dims[1]; ++j )
       {
       const Types::Coordinate Dy = this->GetPlaneCoord( AXIS_Y, j ) - yg;
       const Types::Coordinate Dy2 = Dy * Dy;
-      for ( int i = 0; i < this->Dims[0]; ++i )
+      for ( int i = 0; i < this->m_Dims[0]; ++i )
 	{
         const Types::Coordinate Dx = this->GetPlaneCoord( AXIS_X, i ) - xg;
 	const Types::Coordinate Dx2 = Dx * Dx;
@@ -505,7 +505,7 @@ UniformVolume::CreateDefaultIndexToPhysicalMatrix()
   this->m_IndexToPhysicalMatrix = AffineXform::MatrixType::IdentityMatrix;
   for ( int axis = 0; axis < 3; ++axis )
     for ( int i = 0; i < 3; ++i )
-      this->m_IndexToPhysicalMatrix[axis][i] *= this->Delta[axis];
+      this->m_IndexToPhysicalMatrix[axis][i] *= this->m_Delta[axis];
 }
 
 void
@@ -546,7 +546,7 @@ UniformVolume::GetImageToPhysicalMatrix() const
   AffineXform::MatrixType matrix = this->m_IndexToPhysicalMatrix;
   for ( int i = 0; i < 3; ++i )
     for ( int j = 0; j < 3; ++j )
-      matrix[i][j] /= this->Delta[i];
+      matrix[i][j] /= this->m_Delta[i];
 
   return matrix;
 }

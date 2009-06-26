@@ -89,27 +89,27 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Threshold for the reference image.
-  igsGetSetMacroDefault(float,LowerThresholdReference,FLT_MIN);
+  cmtkGetSetMacroDefault(float,LowerThresholdReference,FLT_MIN);
 
   /// Threshold for the floating image.
-  igsGetSetMacroDefault(float,LowerThresholdFloating,FLT_MIN);
+  cmtkGetSetMacroDefault(float,LowerThresholdFloating,FLT_MIN);
 
   /// Threshold for the reference image.
-  igsGetSetMacroDefault(float,UpperThresholdReference,FLT_MAX);
+  cmtkGetSetMacroDefault(float,UpperThresholdReference,FLT_MAX);
 
   /// Threshold for the floating image.
-  igsGetSetMacroDefault(float,UpperThresholdFloating,FLT_MAX);
+  cmtkGetSetMacroDefault(float,UpperThresholdFloating,FLT_MAX);
 
   /// Flag for rescaling.
-  igsGetSetMacroDefault(bool,Rescale,false);
+  cmtkGetSetMacroDefault(bool,Rescale,false);
 
   /** Flag whether the PADDING value is defined by client.
    */
-  igsGetSetMacroDefault(bool,UsePaddingValue,true);
+  cmtkGetSetMacroDefault(bool,UsePaddingValue,true);
 
   /** PADDING value as defined by client.
    */
-  igsGetSetMacro(Types::DataItem,PaddingValue);
+  cmtkGetSetMacro(Types::DataItem,PaddingValue);
 
   /// Default constructor.
   ReformatVolume();

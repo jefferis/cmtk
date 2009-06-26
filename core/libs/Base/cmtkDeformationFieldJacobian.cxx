@@ -49,7 +49,7 @@ DeformationField::GetJacobian
     {
     r[dim] = this->InverseSpacing[dim] * (v.XYZ[dim] - this->m_Origin[dim]);
     grid[dim] = static_cast<int>( r[dim]-1 );
-    if ( (grid[dim] < 0) || (grid[dim] >= this->Dims[dim]-3) )
+    if ( (grid[dim] < 0) || (grid[dim] >= this->m_Dims[dim]-3) )
       {
       J.Fill( 0.0 );
       return;
@@ -57,7 +57,7 @@ DeformationField::GetJacobian
     f[dim] = r[dim] - grid[dim] - 1;
     }
 
-  const Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + this->Dims[0] * (grid[1] + this->Dims[1] * grid[2]) );
+  const Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + this->m_Dims[0] * (grid[1] + this->m_Dims[1] * grid[2]) );
   
   // loop over the three components of the coordinate transformation function,
   // x, y, z.

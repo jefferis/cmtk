@@ -361,9 +361,9 @@ VolumeFromFile::WriteAnalyzeHdr
       break;
     }  
   
-  header.StoreField<float>( 80, (float)writeVolume->Delta[AXIS_X] );
-  header.StoreField<float>( 84, (float)writeVolume->Delta[AXIS_Y] );
-  header.StoreField<float>( 88, (float)writeVolume->Delta[AXIS_Z] );
+  header.StoreField<float>( 80, (float)writeVolume->m_Delta[AXIS_X] );
+  header.StoreField<float>( 84, (float)writeVolume->m_Delta[AXIS_Y] );
+  header.StoreField<float>( 88, (float)writeVolume->m_Delta[AXIS_Z] );
   header.StoreField<float>( 92, 1.0f ); // write sizes in dims 3 and
   header.StoreField<float>( 96, 1.0f ); // 4 just to be safe
 

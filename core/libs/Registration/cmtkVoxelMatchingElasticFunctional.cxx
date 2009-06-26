@@ -60,8 +60,8 @@ VoxelMatchingElasticFunctional::VoxelMatchingElasticFunctional
   ReferenceFrom.Set( 0,0,0 );
   ReferenceTo.Set( reference->Size );
 
-  AdaptiveFixParameters = false;
-  AdaptiveFixThreshFactor = 0.5;
+  this->m_AdaptiveFixParameters = false;
+  this->m_AdaptiveFixThreshFactor = 0.5;
   StepScaleVector = NULL;
 
   VectorCache = Memory::AllocateArray<Vector3D>( ReferenceDims[0] );
@@ -80,37 +80,36 @@ VoxelMatchingElasticFunctional_WarpTemplate<W>::WeightedDerivative
 ( double& lower, double& upper, typename W::SmartPtr& warp, 
   const int param, const Types::Coordinate step ) const
 {
-  if ( JacobianConstraintWeight > 0 )
+  if ( this->m_JacobianConstraintWeight > 0 )
     {
     double lowerConstraint = 0, upperConstraint = 0;
     warp->GetJacobianConstraintDerivative( lowerConstraint, upperConstraint, param, VolumeOfInfluence[param], step );
-    lower -= JacobianConstraintWeight * lowerConstraint;
-    upper -= JacobianConstraintWeight * upperConstraint;
+    lower -= this->m_JacobianConstraintWeight * lowerConstraint;
+    upper -= this->m_JacobianConstraintWeight * upperConstraint;
     } 
 
-  if ( RigidityConstraintWeight > 0 )
+  if ( this->m_RigidityConstraintWeight > 0 )
     {
     double lowerConstraint = 0, upperConstraint = 0;
 
-    if ( this->RigidityConstraintMap )
+    if ( this->m_RigidityConstraintMap )
       {
-      warp->GetRigidityConstraintDerivative( lowerConstraint, upperConstraint, param, VolumeOfInfluence[param], step,
-					     this->RigidityConstraintMap );
+      warp->GetRigidityConstraintDerivative( lowerConstraint, upperConstraint, param, VolumeOfInfluence[param], step, this->m_RigidityConstraintMap );
       }
     else
       {
       warp->GetRigidityConstraintDerivative( lowerConstraint, upperConstraint, param, VolumeOfInfluence[param], step );
       }
-    lower -= RigidityConstraintWeight * lowerConstraint;
-    upper -= RigidityConstraintWeight * upperConstraint;
+    lower -= this->m_RigidityConstraintWeight * lowerConstraint;
+    upper -= this->m_RigidityConstraintWeight * upperConstraint;
     } 
   
-  if ( GridEnergyWeight > 0 ) 
+  if ( this->m_GridEnergyWeight > 0 ) 
     {
     double lowerEnergy = 0, upperEnergy = 0;
     warp->GetGridEnergyDerivative( lowerEnergy, upperEnergy, param, step );
-    lower -= GridEnergyWeight * lowerEnergy;
-    upper -= GridEnergyWeight * upperEnergy;
+    lower -= this->m_GridEnergyWeight * lowerEnergy;
+    upper -= this->m_GridEnergyWeight * upperEnergy;
     }
 
   // Catch infinite values that result from a folding grid. Effectively
@@ -125,8 +124,8 @@ VoxelMatchingElasticFunctional_WarpTemplate<W>::WeightedDerivative
       {
       double lowerMSD, upperMSD;
       warp->GetDerivativeLandmarksMSD( lowerMSD, upperMSD, this->m_MatchedLandmarkList, param, step );
-      lower -= LandmarkErrorWeight * lowerMSD;
-      upper -= LandmarkErrorWeight * upperMSD;
+      lower -= this->m_LandmarkErrorWeight * lowerMSD;
+      upper -= this->m_LandmarkErrorWeight * upperMSD;
       }
     if ( InverseTransformation ) 
       {
@@ -147,7 +146,7 @@ VoxelMatchingElasticFunctional_WarpTemplate<W>::SetWarpXform
   if ( Warp )
     {
     Warp->RegisterVolume( ReferenceGrid );
-    Warp->SetIncompressibilityMap( IncompressibilityMap );
+    Warp->SetIncompressibilityMap( this->m_IncompressibilityMap );
     
     if ( Dim != Warp->VariableParamVectorDim() ) 
       {
@@ -297,8 +296,8 @@ VoxelMatchingElasticFunctional_Template<VM,W>::UpdateWarpFixedParameters()
       if ( mapMod[ctrl] > modMax ) modMax = mapMod[ctrl];
       }
     
-    const double refThresh = refMin + this->AdaptiveFixThreshFactor * (refMax - refMin);
-    const double modThresh = modMin + this->AdaptiveFixThreshFactor * (modMax - modMin);
+    const double refThresh = refMin + this->m_AdaptiveFixThreshFactor * (refMax - refMin);
+    const double modThresh = modMin + this->m_AdaptiveFixThreshFactor * (modMax - modMin);
       
     this->Warp->SetParameterActive();
       

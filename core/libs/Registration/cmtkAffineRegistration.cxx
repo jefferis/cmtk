@@ -56,8 +56,8 @@ cmtk
 
 AffineRegistration::AffineRegistration () 
 { 
-  InitialAlignCenters = false;
-  NoSwitch = false;
+  this->m_InitialAlignCenters = false;
+  this->m_NoSwitch = false;
 }
 
 AffineRegistration::~AffineRegistration () 
@@ -73,30 +73,30 @@ AffineRegistration::InitRegistration ()
   UniformVolume::SmartPtr refVolume;
   UniformVolume::SmartPtr fltVolume;
 
-  if ( NoSwitch || (Volume_1->AverageVoxelVolume() >= Volume_2->AverageVoxelVolume()) ) 
+  if ( this->m_NoSwitch || (this->m_Volume_1->AverageVoxelVolume() >= this->m_Volume_2->AverageVoxelVolume()) ) 
     {
-    refVolume = Volume_1;
-    fltVolume = Volume_2;
+    refVolume = this->m_Volume_1;
+    fltVolume = this->m_Volume_2;
     SwitchVolumes = false;
     } 
   else
     {
-    refVolume = Volume_2;
-    fltVolume = Volume_1;
+    refVolume = this->m_Volume_2;
+    fltVolume = this->m_Volume_1;
     SwitchVolumes = true;
     }
   
   AffineXform::SmartPtr affineXform;
 
-  if ( InitialXform )
+  if ( this->m_InitialXform )
     {
-    if ( SwitchVolumes ^ InitialXformIsInverse )
+    if ( SwitchVolumes ^ this->m_InitialXformIsInverse )
       {
-      affineXform = AffineXform::SmartPtr( InitialXform->MakeInverse() );
+      affineXform = AffineXform::SmartPtr( this->m_InitialXform->MakeInverse() );
       } 
     else
       {
-      affineXform = AffineXform::SmartPtr( InitialXform );
+      affineXform = AffineXform::SmartPtr( this->m_InitialXform );
       }
   } 
   else 
@@ -104,7 +104,7 @@ AffineRegistration::InitRegistration ()
     affineXform = AffineXform::SmartPtr( new AffineXform );
     }
 
-  if ( InitialAlignCenters ) 
+  if ( this->m_InitialAlignCenters ) 
     {
     Vector3D deltaCenter = ( refVolume->GetCenterCropRegion() - fltVolume->GetCenterCropRegion() );
     affineXform->SetXlate( deltaCenter.XYZ );
@@ -116,17 +116,17 @@ AffineRegistration::InitRegistration ()
   Vector3D center = fltVolume->GetCenterCropRegion();
   affineXform->ChangeCenter( center.XYZ );
 
-  if ( UseOriginalData ) 
+  if ( this->m_UseOriginalData ) 
     {  
-    VoxelMatchingAffineFunctional *newFunctional = CreateAffineFunctional( Metric, refVolume, fltVolume, affineXform );
+    VoxelMatchingAffineFunctional *newFunctional = CreateAffineFunctional( this->m_Metric, refVolume, fltVolume, affineXform );
     FunctionalStack.push( Functional::SmartPtr( newFunctional ) );
     }
   
-  Types::Coordinate currSampling = std::max( Sampling, 2 * std::min( refVolume->GetMinDelta(), fltVolume->GetMinDelta()));
+  Types::Coordinate currSampling = std::max( this->m_Sampling, 2 * std::min( refVolume->GetMinDelta(), fltVolume->GetMinDelta()));
   CallbackResult irq = CALLBACK_OK;
   
   double coarsest = CoarsestResolution;
-  if ( coarsest <= 0 ) coarsest = Exploration;
+  if ( coarsest <= 0 ) coarsest = this->m_Exploration;
   
   for ( ; ( irq == CALLBACK_OK ) && (currSampling<=coarsest); currSampling *= 2 ) 
     {
@@ -143,7 +143,7 @@ AffineRegistration::InitRegistration ()
       {
       }
     
-    VoxelMatchingAffineFunctional *newFunctional = CreateAffineFunctional( Metric, nextRef, nextFlt, affineXform );
+    VoxelMatchingAffineFunctional *newFunctional = CreateAffineFunctional( this->m_Metric, nextRef, nextFlt, affineXform );
     FunctionalStack.push( Functional::SmartPtr( newFunctional ) );
     
     refVolume = nextRef;
@@ -151,7 +151,7 @@ AffineRegistration::InitRegistration ()
     }
 
   this->m_Optimizer = Optimizer::SmartPtr( new BestNeighbourOptimizer( OptimizerStepFactor ) );   
-  this->m_Optimizer->SetCallback( Callback );
+  this->m_Optimizer->SetCallback( this->m_Callback );
   
   // default to rigid transformation
   if ( NumberDOFs.empty() )
@@ -183,11 +183,11 @@ AffineRegistration::EnterResolution
     {
     int numberDOFs = *NumberDOFsIterator;
     affineXform->SetNumberDOFs( numberDOFs );
-    if ( Callback ) 
+    if ( this->m_Callback ) 
       {
       char buffer[64];
       snprintf( buffer, sizeof( buffer ), "Setting Number DOFs to %d.", numberDOFs );
-      Callback->Comment( buffer );
+      this->m_Callback->Comment( buffer );
       }
     }
   this->Superclass::EnterResolution( v, f, level, total );

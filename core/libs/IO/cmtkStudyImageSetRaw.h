@@ -54,23 +54,23 @@ private:
 
 public:
   /// Length of file header before actual image data.
-  igsGetSetMacro(unsigned int,HeaderLength);
+  cmtkGetSetMacro(unsigned int,HeaderLength);
 
   /// Bytes per image pixel.
-  igsGetSetMacro(unsigned int,BytesPerPixel);
+  cmtkGetSetMacro(unsigned int,BytesPerPixel);
 
   /// Bytes per image pixel.
-  igsGetSetMacro(bool,BigEndian);
+  cmtkGetSetMacro(bool,BigEndian);
 
   /// Bytes per image pixel.
-  igsGetSetMacro(bool,Signed);
+  cmtkGetSetMacro(bool,Signed);
 
   /// Default constructor.
   StudyImageSetRaw() :
-    HeaderLength( 0 ),
-    BytesPerPixel( 1 ),
-    BigEndian( false ),
-    Signed( false )
+    m_HeaderLength( 0 ),
+    m_BytesPerPixel( 1 ),
+    m_BigEndian( false ),
+    m_Signed( false )
   {}
 };
 

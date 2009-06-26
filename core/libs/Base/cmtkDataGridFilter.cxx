@@ -46,9 +46,9 @@ DataGrid::GetFilteredData
   const std::vector<Types::DataItem>& filterY,
   const std::vector<Types::DataItem>& filterZ ) const
 {
-  if ( ! this->Data ) return NULL;
+  if ( ! this->m_Data ) return NULL;
 
-  TypedArray *result = this->Data->NewTemplateArray( this->Data->GetDataSize() );
+  TypedArray *result = this->m_Data->NewTemplateArray( this->m_Data->GetDataSize() );
 
   const size_t numberOfThreads = Threads::GetNumberOfThreads();
   ThreadParameterArray<Self,FilterThreadParameters> params( const_cast<Self*>( this ), numberOfThreads );
@@ -87,7 +87,7 @@ DataGrid
   const size_t threadID = params->ThisThreadIndex;
   const size_t threadCount = params->NumberOfThreads;
   
-  const int* dims = ThisConst->Dims;
+  const int* dims = ThisConst->m_Dims;
   unsigned int maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
 
   const std::vector<Types::DataItem>& filter = *(params->m_Filter);
@@ -104,7 +104,7 @@ DataGrid
       // copy row data to buffer
       size_t ofs = ThisConst->GetOffsetFromIndex( 0, y, z );
       for ( int x=0; x < dims[0]; ++x, ++ofs )
-	if ( !ThisConst->Data->Get( pixelBufferFrom[x], ofs ) )
+	if ( !ThisConst->m_Data->Get( pixelBufferFrom[x], ofs ) )
 	  pixelBufferFrom[x] = 0;
       
       // convolve row with filter
@@ -155,7 +155,7 @@ DataGrid
   const size_t threadID = params->ThisThreadIndex;
   const size_t threadCount = params->NumberOfThreads;
   
-  const int* dims = ThisConst->Dims;
+  const int* dims = ThisConst->m_Dims;
   unsigned int maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
 
   const std::vector<Types::DataItem>& filter = *(params->m_Filter);
@@ -215,7 +215,7 @@ DataGrid
   const size_t threadID = params->ThisThreadIndex;
   const size_t threadCount = params->NumberOfThreads;
   
-  const int* dims = ThisConst->Dims;
+  const int* dims = ThisConst->m_Dims;
   unsigned int maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
 
   const std::vector<Types::DataItem>& filter = *(params->m_Filter);

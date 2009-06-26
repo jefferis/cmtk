@@ -55,10 +55,10 @@ cmtk
 class VtkADM
 {
   /// Resolution before iso-surface computation.
-  igsGetSetMacro(Types::Coordinate,Resolution);
+  cmtkGetSetMacro(Types::Coordinate,Resolution);
 
   /// Iso-level.
-  igsGetSetMacro(Types::DataItem,Level);
+  cmtkGetSetMacro(Types::DataItem,Level);
 
 public:
   /// Constructor.

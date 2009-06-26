@@ -91,7 +91,7 @@ MultiChannelRegistrationFunctional<TDataType,TInterpolator>
     channel->GetCropRegion( this->m_FloatingCropFrom, this->m_FloatingCropTo );
     for ( int dim = 0; dim < 3; ++dim ) 
       {
-      this->m_FloatingInverseDelta[dim] = 1.0 / channel->Delta[dim];
+      this->m_FloatingInverseDelta[dim] = 1.0 / channel->m_Delta[dim];
       }
     }
   this->m_FloatingChannels.push_back( channel );

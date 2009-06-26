@@ -106,7 +106,7 @@ public:
   /// Get the original position of a control point by index.
   virtual void GetOriginalControlPointPositionByOffset( Vector3D& v, const size_t offset ) const 
   {
-    this->GetOriginalControlPointPosition( v, offset % Dims[0], (offset % (Dims[0]*Dims[1])) / Dims[0], offset / (Dims[0]*Dims[1]) ); 
+    this->GetOriginalControlPointPosition( v, offset % this->m_Dims[0], (offset % (this->m_Dims[0]*this->m_Dims[1])) / this->m_Dims[0], offset / (this->m_Dims[0]*this->m_Dims[1]) ); 
   }
 
   /// Update internal representation.
@@ -264,14 +264,14 @@ public:
       // given location is in.
       r[dim] = this->InverseSpacing[dim] * v.XYZ[dim];
       // This is the actual cell index.
-      grid[dim] = std::min<int>( static_cast<int>( r[dim] ), this->Dims[dim]-4 );
+      grid[dim] = std::min<int>( static_cast<int>( r[dim] ), this->m_Dims[dim]-4 );
       // And here's the relative position within the cell.
       f[dim] = r[dim] - grid[dim];
       }
     }
 
     // Create a pointer to the front-lower-left corner of the c.p.g. cell.
-    const Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + this->Dims[0] * (grid[1] + this->Dims[1] * grid[2]) );
+    const Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + this->m_Dims[0] * (grid[1] + this->m_Dims[1] * grid[2]) );
 
     for ( int dim = 0; dim<3; ++dim ) 
       {

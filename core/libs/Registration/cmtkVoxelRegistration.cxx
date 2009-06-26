@@ -51,32 +51,33 @@ cmtk
 //@{
 
 VoxelRegistration::VoxelRegistration () 
-  : InitialXform( NULL ),
-    InitialXformIsInverse( false ),
+  : m_PreprocessorRef( "Reference", "ref" ),
+    m_PreprocessorFlt( "Floating", "flt" ),
+    m_InitialXform( NULL ),
+    m_InitialXformIsInverse( false ),
     m_Xform( NULL ),
-    m_Optimizer( NULL ),
-    m_PreprocessorRef( "Reference", "ref" ),
-    m_PreprocessorFlt( "Floating", "flt" )
+    m_Optimizer( NULL )
 { 
-  Callback = RegistrationCallback::SmartPtr( new RegistrationCallback() );
-  Protocol = NULL; 
+  this->m_Callback = RegistrationCallback::SmartPtr( new RegistrationCallback() );
+  this->m_Protocol = NULL; 
 
-  Exploration = 8.0;
-  Accuracy = 0.1;
-  Sampling = 1.0;
+  this->m_Exploration = 8.0;
+  this->m_Accuracy = 0.1;
+  this->m_Sampling = 1.0;
   CoarsestResolution = -1;
-  UseOriginalData = true;
+  this->m_UseOriginalData = true;
 
-  Algorithm = 0;
+  this->m_Algorithm = 0;
   UseMaxNorm = true;
   OptimizerStepFactor = 0.5;
 
-  Metric = 0;
+  this->m_Metric = 0;
 }
 
 VoxelRegistration::~VoxelRegistration () 
 {
-  if ( Protocol ) free( Protocol );
+  if ( this->m_Protocol ) 
+    free( this->m_Protocol );
 }
 
 CallbackResult
@@ -98,7 +99,7 @@ VoxelRegistration::Register ()
     return irq;
     }
   
-  Types::Coordinate currentExploration = Exploration;
+  Types::Coordinate currentExploration = this->m_Exploration;
   CoordinateVector::SmartPtr v( new CoordinateVector() );
   int NumResolutionLevels = FunctionalStack.size();
 
@@ -122,7 +123,7 @@ VoxelRegistration::Register ()
       
       if ( irq == CALLBACK_OK ) 
 	{
-	Types::Coordinate effectiveAccuracy = (index == NumResolutionLevels) ? std::max<Types::Coordinate>( Accuracy, currentExploration/1024 ) : Accuracy;
+	Types::Coordinate effectiveAccuracy = (index == NumResolutionLevels) ? std::max<Types::Coordinate>( this->m_Accuracy, currentExploration/1024 ) : this->m_Accuracy;
 	
 	irq = this->m_Optimizer->Optimize( *v, currentExploration, effectiveAccuracy );
 	this->m_Xform->SetParamVector( *v );
@@ -155,14 +156,14 @@ VoxelRegistration::EnterResolution
 ( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f, 
   const int idx, const int total ) 
 {
-  if ( Callback ) 
+  if ( this->m_Callback ) 
     {
     int percentRange = 100 / total;
-    Callback->SetProgressRange( (idx-1) * percentRange, idx * percentRange );
+    this->m_Callback->SetProgressRange( (idx-1) * percentRange, idx * percentRange );
     
     char comment[128];
     snprintf( comment, sizeof( comment ), "Entering resolution level %d out of %d.", idx, total );
-    Callback->Comment( comment );
+    this->m_Callback->Comment( comment );
     }
   
   TimeStartLevel = cmtk::Timers::GetTimeProcess();

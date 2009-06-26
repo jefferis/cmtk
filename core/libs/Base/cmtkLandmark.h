@@ -62,10 +62,10 @@ public:
   ~Landmark();
 
   /// Name of this landmark.
-  igsGetSetMacroString(Name);
+  cmtkGetSetMacroString(Name);
 
   /// Coordinates of this landmark.
-  igsGetSetMacro3Array(Types::Coordinate,Location);
+  cmtkGetSetMacro3Array(Types::Coordinate,Location);
 };
 
 //@}

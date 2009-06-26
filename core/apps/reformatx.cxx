@@ -287,7 +287,7 @@ ReformatPullback()
   if ( TargetImageOffsetPixels )
     {
     for ( int dim = 0; dim < 3; ++dim )
-      TargetImageOffset[dim] *= targetVolume->Delta[dim];
+      TargetImageOffset[dim] *= targetVolume->m_Delta[dim];
     targetVolume->SetOrigin( TargetImageOffset );
 
     if ( Verbose )

@@ -57,7 +57,7 @@ class UniformVolume :
   public Volume 
 {
   /// Grid spacing for three dimensions
-  igsGetSetMacro3Array(Types::Coordinate,Delta); 
+  cmtkGetSetMacro3Array(Types::Coordinate,Delta); 
 
 public:
   /// This class.
@@ -157,7 +157,7 @@ public:
 
   virtual Types::Coordinate GetDelta( const int axis, const int = 0 ) const
   {
-    return this->Delta[axis];
+    return this->m_Delta[axis];
   }
 
   /** Get minimum grid spacing for all dimensions.
@@ -166,7 +166,7 @@ public:
    */
   virtual Types::Coordinate GetMinDelta () const 
   {
-    return MathUtil::Min( 3, this->Delta );
+    return MathUtil::Min( 3, this->m_Delta );
   }
   
   /** Get maximum grid spacing for all dimensions.
@@ -175,7 +175,7 @@ public:
    */
   virtual Types::Coordinate GetMaxDelta () const 
   {
-    return MathUtil::Max( 3, this->Delta );
+    return MathUtil::Max( 3, this->m_Delta );
   }
 
   /** Resample other volume.
@@ -317,7 +317,7 @@ public:
   /// Get plane coordinate.
   virtual Types::Coordinate GetPlaneCoord( const int axis, const int plane ) const 
   {
-    return this->m_Origin[axis] + plane * this->Delta[axis];
+    return this->m_Origin[axis] + plane * this->m_Delta[axis];
   }
 
   /** Get grid index of slice with highest coordinate smaller than given.
@@ -326,7 +326,7 @@ public:
    */
   virtual int GetCoordIndex( const int axis, const Types::Coordinate location ) const 
   {
-    return std::max<int>( 0, std::min<int>( (int) ((location-this->m_Origin[axis]) / this->Delta[axis]), this->Dims[axis]-1 ) );
+    return std::max<int>( 0, std::min<int>( (int) ((location-this->m_Origin[axis]) / this->m_Delta[axis]), this->m_Dims[axis]-1 ) );
   }
   
   /** Get grid index corresponding (as close as possible) to coordinate.
@@ -335,8 +335,8 @@ public:
    */
   virtual int GetClosestCoordIndex( const int axis, const Types::Coordinate location ) const 
   {
-    const int idx = (int)MathUtil::Round((location-this->m_Origin[axis]) / this->Delta[axis]);
-    return std::max<int>( 0, std::min<int>( idx, this->Dims[axis]-1 ) );
+    const int idx = (int)MathUtil::Round((location-this->m_Origin[axis]) / this->m_Delta[axis]);
+    return std::max<int>( 0, std::min<int>( idx, this->m_Dims[axis]-1 ) );
   }
 
   /** Get grid index corresponding (as close as possible) to coordinate.
@@ -346,8 +346,8 @@ public:
   {
     for ( int dim = 0; dim < 3; ++dim )
       {
-      xyz[dim] = (int) MathUtil::Round((v[dim]-this->m_Origin[dim]) / this->Delta[dim]);
-      if ( (xyz[dim] < 0) || ( xyz[dim] > this->Dims[dim]-1) )
+      xyz[dim] = (int) MathUtil::Round((v[dim]-this->m_Origin[dim]) / this->m_Delta[dim]);
+      if ( (xyz[dim] < 0) || ( xyz[dim] > this->m_Dims[dim]-1) )
 	return false;
       }
     return true;
@@ -359,8 +359,8 @@ public:
    */
   virtual int GetTruncCoordIndex( const int axis, const Types::Coordinate location ) const 
   {
-    const int idx = static_cast<int>((location-this->m_Origin[axis]) / this->Delta[axis]);
-    return std::max<int>( 0, std::min<int>( idx, this->Dims[axis]-1 ) );
+    const int idx = static_cast<int>((location-this->m_Origin[axis]) / this->m_Delta[axis]);
+    return std::max<int>( 0, std::min<int>( idx, this->m_Dims[axis]-1 ) );
   }
 
   /** Get grid index corresponding to coordinate by truncation, not rounding.
@@ -370,8 +370,8 @@ public:
   {
     for ( int dim = 0; dim < 3; ++dim )
       {
-      xyz[dim] = static_cast<int>((v[dim]-this->m_Origin[dim]) / this->Delta[dim]);
-      if ( (xyz[dim] < 0) || ( xyz[dim] > this->Dims[dim]-1) )
+      xyz[dim] = static_cast<int>((v[dim]-this->m_Origin[dim]) / this->m_Delta[dim]);
+      if ( (xyz[dim] < 0) || ( xyz[dim] > this->m_Dims[dim]-1) )
 	return false;
       }
     return true;
@@ -386,7 +386,7 @@ public:
    */
   virtual Vector3D GetGridLocation( const int x, const int y, const int z ) const 
   {
-    return Vector3D( this->m_Origin.XYZ[0] + x * this->Delta[0], this->m_Origin.XYZ[1] + y * this->Delta[1], this->m_Origin.XYZ[2] + z * this->Delta[2] );
+    return Vector3D( this->m_Origin.XYZ[0] + x * this->m_Delta[0], this->m_Origin.XYZ[1] + y * this->m_Delta[1], this->m_Origin.XYZ[2] + z * this->m_Delta[2] );
   }
   
   /** Get a grid coordinate.
@@ -398,7 +398,7 @@ public:
    */
   virtual Vector3D& GetGridLocation( Vector3D& v, const int x, const int y, const int z ) const 
   {
-    return v.Set( this->m_Origin.XYZ[0] + x * this->Delta[0], this->m_Origin.XYZ[1] + y * this->Delta[1], this->m_Origin.XYZ[2] + z * this->Delta[2] );
+    return v.Set( this->m_Origin.XYZ[0] + x * this->m_Delta[0], this->m_Origin.XYZ[1] + y * this->m_Delta[1], this->m_Origin.XYZ[2] + z * this->m_Delta[2] );
   }
   
   /** Get a grid coordinate by continuous pixel index.
@@ -410,9 +410,9 @@ public:
    */
   virtual Vector3D& GetGridLocation( Vector3D& v, const size_t idx ) const 
   {
-    return v.Set( this->m_Origin.XYZ[0] +  (idx % this->nextJ) * this->Delta[0], 
-		  this->m_Origin.XYZ[1] +  (idx % this->nextK) / this->nextJ * this->Delta[1], 
-		  this->m_Origin.XYZ[2] +  (idx / this->nextK) * this->Delta[2] );
+    return v.Set( this->m_Origin.XYZ[0] +  (idx % this->nextJ) * this->m_Delta[0], 
+		  this->m_Origin.XYZ[1] +  (idx % this->nextK) / this->nextJ * this->m_Delta[1], 
+		  this->m_Origin.XYZ[2] +  (idx / this->nextK) * this->m_Delta[2] );
   }
 
   /** Calculate volume center.
@@ -496,7 +496,7 @@ public:
   {
     Vector3D com = this->Superclass::GetCenterOfMass();
     for ( int dim = 0; dim < 3; ++dim )
-      (com.XYZ[dim] *= this->Delta[dim]) += this->m_Origin[dim];
+      (com.XYZ[dim] *= this->m_Delta[dim]) += this->m_Origin[dim];
     return com;
   }
   
@@ -506,8 +506,8 @@ public:
     Vector3D com = this->Superclass::GetCenterOfMass( firstOrderMoment );
     for ( int dim = 0; dim < 3; ++dim )
       {
-      (com.XYZ[dim] *= this->Delta[dim]) += this->m_Origin[dim];
-      firstOrderMoment.XYZ[dim] *= this->Delta[dim];
+      (com.XYZ[dim] *= this->m_Delta[dim]) += this->m_Origin[dim];
+      firstOrderMoment.XYZ[dim] *= this->m_Delta[dim];
       }
     return com;
   }

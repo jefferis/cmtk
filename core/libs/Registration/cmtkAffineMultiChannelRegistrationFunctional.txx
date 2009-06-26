@@ -215,7 +215,7 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
   
   // there is an intersection: Look up the corresponding grid indices
   start = std::max( 0, (int)((this->m_ReferenceDims[0]-1)*fromFactor)-1 );
-  while ( ( start*this->m_ReferenceChannels[0]->Delta[0] < fromFactor*this->m_ReferenceSize[0]) && ( start < this->m_ReferenceDims[0] ) ) 
+  while ( ( start*this->m_ReferenceChannels[0]->m_Delta[0] < fromFactor*this->m_ReferenceSize[0]) && ( start < this->m_ReferenceDims[0] ) ) 
     ++start;
   
   if ( (toFactor > 1.0) || (start == this->m_ReferenceDims[0]) ) 
@@ -225,7 +225,7 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
   else
     {
     end = std::min( this->m_ReferenceDims[0]-2, (int)(1 + (this->m_ReferenceDims[0]-1)*toFactor));
-    while ( end*this->m_ReferenceChannels[0]->Delta[0] > toFactor*this->m_ReferenceSize[0] ) // 'if' not sufficient!	
+    while ( end*this->m_ReferenceChannels[0]->m_Delta[0] > toFactor*this->m_ReferenceSize[0] ) // 'if' not sufficient!	
       --end;
     ++end; // otherwise end=1+min(...) and ...[0][end-1] above!!
     }

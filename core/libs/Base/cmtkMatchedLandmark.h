@@ -49,7 +49,7 @@ class MatchedLandmark :
   public Landmark
 {
   /// Coordinates of this landmark.
-  igsGetSetMacro3Array(Types::Coordinate,TargetLocation);
+  cmtkGetSetMacro3Array(Types::Coordinate,TargetLocation);
 
 public:
   /// This class.

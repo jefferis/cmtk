@@ -260,8 +260,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional::UpdateControlPointSchedule()
 {
   const SplineWarpXform* xform0 = this->GetXformByIndex(0);
   this->m_ControlPointSchedule.resize( xform0->GetNumberOfControlPoints() );
-  this->m_ControlPointScheduleOverlapFreeMaxLength = 
-    (xform0->Dims[0] / 4) * (xform0->Dims[1] / 4) * (xform0->Dims[2] / 4);
+  this->m_ControlPointScheduleOverlapFreeMaxLength = (xform0->m_Dims[0] / 4) * (xform0->m_Dims[1] / 4) * (xform0->m_Dims[2] / 4);
   
   size_t ofs = 0;
   for ( int z = 0; z < 4; ++z )
@@ -270,13 +269,13 @@ SplineWarpGroupwiseRegistrationRMIFunctional::UpdateControlPointSchedule()
       {
       for ( int x = 0; x < 4; ++x )
 	{
-	for ( int k = z; k < xform0->Dims[2]; k += 4 )
+	for ( int k = z; k < xform0->m_Dims[2]; k += 4 )
 	  {
-	  for ( int j = y; j < xform0->Dims[1]; j += 4 )
+	  for ( int j = y; j < xform0->m_Dims[1]; j += 4 )
 	    {
-	    for ( int i = x; i < xform0->Dims[0]; i += 4, ++ofs )
+	    for ( int i = x; i < xform0->m_Dims[0]; i += 4, ++ofs )
 	      {
-	      this->m_ControlPointSchedule[ofs] = i + xform0->Dims[0] * ( j + xform0->Dims[1] * k );
+	      this->m_ControlPointSchedule[ofs] = i + xform0->m_Dims[0] * ( j + xform0->m_Dims[1] * k );
 	      }
 	    }
 	  }

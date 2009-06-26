@@ -112,20 +112,20 @@ void
 VolumeAxesHash::MakeHash
 ( const UniformVolume& volume, const Vector3D& offset, const Vector3D& dX, const Vector3D& dY, const Vector3D& dZ )
 {
-  int DimsX = volume.Dims[0], DimsY = volume.Dims[1], DimsZ = volume.Dims[2];
+  int DimsX = volume.m_Dims[0], DimsY = volume.m_Dims[1], DimsZ = volume.m_Dims[2];
   
   this->m_Hash = Memory::AllocateArray<Vector3D*>( 3 );
   assert( this->m_Hash != NULL );
 
   for ( int dim = 0; dim<3; ++dim ) 
     {
-    this->m_Hash[dim] = Memory::AllocateArray<Vector3D>( volume.Dims[dim] );
+    this->m_Hash[dim] = Memory::AllocateArray<Vector3D>( volume.m_Dims[dim] );
     assert( this->m_Hash[dim] != NULL );
     }
 
-  const Types::Coordinate deltaX = volume.Delta[0];
-  const Types::Coordinate deltaY = volume.Delta[1];
-  const Types::Coordinate deltaZ = volume.Delta[2];
+  const Types::Coordinate deltaX = volume.m_Delta[0];
+  const Types::Coordinate deltaY = volume.m_Delta[1];
+  const Types::Coordinate deltaZ = volume.m_Delta[2];
   
   int idx;
   for ( idx=0; idx<DimsX; ++idx )

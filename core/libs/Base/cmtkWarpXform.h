@@ -72,7 +72,7 @@ public:
   typedef SmartPointer<WarpXform> SmartPtr;
 
   /// Dimensions of control point grid.
-  int Dims[3];
+  int m_Dims[3];
 
   /// Domain of control point grid in world coordinates.
   Types::Coordinate Domain[3];
@@ -88,7 +88,7 @@ public:
   { return this->GlobalScaling; }
 
   /// Initial affine transformation.
-  igsGetSetMacro(AffineXform::SmartPtr,InitialAffineXform);
+  cmtkGetSetMacro(AffineXform::SmartPtr,InitialAffineXform);
 
   /** Replace initial affine transformation.
    * If the new transformation is not given (or a NULL pointer), then
@@ -118,10 +118,10 @@ protected:
   Types::Coordinate InverseSpacing[3];
 
   /// Number of edge planes in the control point grid to keep unmoved.
-  igsGetSetMacro(unsigned int,IgnoreEdge);
+  cmtkGetSetMacro(unsigned int,IgnoreEdge);
 
   /// Flag for fast but inaccurate computation.
-  igsGetSetMacroDefault(bool,FastMode,true);
+  cmtkGetSetMacroDefault(bool,FastMode,true);
 
 protected:
   /// Precomputed global scaling of initial affine transformation.
@@ -154,10 +154,11 @@ protected:
 public:
   /// Default constructor.
   WarpXform () : 
-    InitialAffineXform( NULL ), ActiveFlags( NULL )
+    m_InitialAffineXform( NULL ), 
+    m_ActiveFlags( NULL )
   { 
-    IgnoreEdge = 0; 
-    FastMode = false; 
+    this->m_IgnoreEdge = 0; 
+    this->m_FastMode = false; 
     IncompressibilityMap = DataGrid::SmartPtr( NULL );
   }
 
@@ -285,7 +286,7 @@ public:
   /// Get shifted control point position.
   virtual void GetShiftedControlPointPosition( Vector3D& v, const int x, const int y, const int z ) const 
   { 
-    this->GetShiftedControlPointPositionByOffset( v, x + Dims[0] * (y + Dims[1] * z ) );
+    this->GetShiftedControlPointPositionByOffset( v, x + this->m_Dims[0] * (y + this->m_Dims[1] * z ) );
   }
 
   /// Get shifted control point position by offset.
@@ -297,7 +298,7 @@ public:
   /// Set shifted control point position.
   virtual void SetShiftedControlPointPositionByOffset( const Vector3D& v, const int x, const int y, const int z ) const 
   { 
-    this->SetShiftedControlPointPositionByOffset( v, x + Dims[0] * (y + Dims[1] * z ) );
+    this->SetShiftedControlPointPositionByOffset( v, x + this->m_Dims[0] * (y + this->m_Dims[1] * z ) );
   }
 
   /// Set shifted control point position by offset.
@@ -353,7 +354,7 @@ private:
    * parameter. Passive parameters are not considered for gradient computations
    * etc. and can therefore save a significant amount of computation time.
    */
-  igsGetSetMacro(BitVector::SmartPtr,ActiveFlags);
+  cmtkGetSetMacro(BitVector::SmartPtr,ActiveFlags);
 
   /** Voxel-by-voxel map of incompressibility constraint weight.
    */

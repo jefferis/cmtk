@@ -45,38 +45,38 @@ StudyImageSet::ReadVolume( const bool reRead, const char* )
 {
   UniformVolume::SmartPtr oldVolume( NULL );
 
-  if ( !Volume.IsNull() && reRead ) 
+  if ( this->m_Volume && reRead ) 
     {
-    oldVolume = Volume;
-    Volume = UniformVolume::SmartPtr( NULL );
+    oldVolume = this->m_Volume;
+    this->m_Volume = UniformVolume::SmartPtr( NULL );
     }
 
-  if ( Volume.IsNull() ) 
+  if ( !this->m_Volume ) 
     {
-    Volume = UniformVolume::SmartPtr( VolumeFromStudy::Read( this ) );
-    if ( Volume ) 
+    this->m_Volume = UniformVolume::SmartPtr( VolumeFromStudy::Read( this ) );
+    if ( this->m_Volume ) 
       {
-      this->SetDims( Volume->GetDims()[0], Volume->GetDims()[1], Volume->GetDims()[2] );
-      DisplayedImageIndex = Volume->GetDims( AXIS_Z ) / 2 ;
-      ZoomFactor = 1;
-      const TypedArray *dataArray = Volume->GetData();
+      this->SetDims( this->m_Volume->GetDims()[0], this->m_Volume->GetDims()[1], this->m_Volume->GetDims()[2] );
+      this->m_DisplayedImageIndex = this->m_Volume->GetDims( AXIS_Z ) / 2 ;
+      this->m_ZoomFactor = 1;
+      const TypedArray *dataArray = this->m_Volume->GetData();
       if ( dataArray ) 
 	{
-	dataArray->GetRange( MinimumValue, MaximumValue );
-	Black = MinimumValue;
-	White = MaximumValue;
-	StandardColormap = 0;
-	ReverseColormap = false;
+	dataArray->GetRange( this->m_MinimumValue, this->m_MaximumValue );
+	this->m_Black = this->m_MinimumValue;
+	this->m_White = this->m_MaximumValue;
+	this->m_StandardColormap = 0;
+	this->m_ReverseColormap = false;
 	}
       }
     }
 
-  if ( !Volume.IsNull() && !Volume->GetData().IsNull() ) 
+  if ( this->m_Volume && this->m_Volume->GetData() ) 
     {
     return true;
     }
 
-  Volume = oldVolume;
+  this->m_Volume = oldVolume;
   return false;
 }
 

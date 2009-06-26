@@ -526,9 +526,9 @@ AffineXform::RegisterVolume ( const UniformVolume* volume )
   }
   */
 
-  const Types::Coordinate deltaX = volume->Delta[0];
-  const Types::Coordinate deltaY = volume->Delta[1];
-  const Types::Coordinate deltaZ = volume->Delta[2];
+  const Types::Coordinate deltaX = volume->m_Delta[0];
+  const Types::Coordinate deltaY = volume->m_Delta[1];
+  const Types::Coordinate deltaZ = volume->m_Delta[2];
 
   const int *volumeDims = volume->GetDims();
   for ( int dim = 0; dim<3; ++dim ) 

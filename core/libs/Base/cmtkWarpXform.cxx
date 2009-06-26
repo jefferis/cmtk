@@ -48,10 +48,10 @@ WarpXform::InitGrid
 ( const Types::Coordinate domain[3], const int dims[3] )
 {
   memcpy( Domain, domain, sizeof(Domain) );
-  memcpy( Dims, dims, sizeof(Dims) );
+  memcpy( this->m_Dims, dims, sizeof(this->m_Dims) );
   m_Origin.Set( 0, 0, 0 );
   
-  NumberOfControlPoints = Dims[0] * Dims[1] * Dims[2];
+  NumberOfControlPoints = this->m_Dims[0] * this->m_Dims[1] * this->m_Dims[2];
   this->AllocateParameterVector( 3 * NumberOfControlPoints );
   this->Update();
 }
@@ -60,8 +60,8 @@ void
 WarpXform::Update( const bool )
 {
   nextI = 3;
-  nextJ = nextI * Dims[0];
-  nextK = nextJ * Dims[1];
+  nextJ = nextI * this->m_Dims[0];
+  nextK = nextJ * this->m_Dims[1];
   nextIJ = nextJ + nextI;
   nextIK = nextK + nextI;
   nextJK = nextK + nextJ;
@@ -186,14 +186,16 @@ Types::Coordinate
 WarpXform::GetParamStep
 ( const size_t idx, const Types::Coordinate*, const Types::Coordinate mmStep ) const
 {
-  if ( !ActiveFlags.IsNull() && ! (*ActiveFlags)[idx] ) return 0;
+  if ( this->m_ActiveFlags && ! (*this->m_ActiveFlags)[idx] ) return 0;
 
   int controlPointIdx = idx / 3;
-  unsigned short x =  ( controlPointIdx %  Dims[0] );
-  unsigned short y = ( (controlPointIdx /  Dims[0]) % Dims[1] );
-  unsigned short z = ( (controlPointIdx /  Dims[0]) / Dims[1] );
+  unsigned short x =  ( controlPointIdx %  this->m_Dims[0] );
+  unsigned short y = ( (controlPointIdx /  this->m_Dims[0]) % this->m_Dims[1] );
+  unsigned short z = ( (controlPointIdx /  this->m_Dims[0]) / this->m_Dims[1] );
   
-  if ( (x>=IgnoreEdge) && (x<(Dims[0]-IgnoreEdge)) && (y>=IgnoreEdge) && (y<(Dims[1]-IgnoreEdge)) && (z>=IgnoreEdge) && (z<(Dims[2]-IgnoreEdge)) ) 
+  if ( (x>=this->m_IgnoreEdge) && (x<(this->m_Dims[0]-this->m_IgnoreEdge)) && 
+       (y>=this->m_IgnoreEdge) && (y<(this->m_Dims[1]-this->m_IgnoreEdge)) && 
+       (z>=this->m_IgnoreEdge) && (z<(this->m_Dims[2]-this->m_IgnoreEdge)) ) 
     {
     return mmStep;
     } 
@@ -206,30 +208,30 @@ WarpXform::GetParamStep
 void 
 WarpXform::SetParameterActive()
 {
-  if ( !ActiveFlags ) 
+  if ( !this->m_ActiveFlags ) 
     {
-    ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, true ) );
+    this->m_ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, true ) );
     }
-  ActiveFlags->Set();
+  this->m_ActiveFlags->Set();
 }
 
 void
 WarpXform::SetParameterActive
 ( const size_t index, const bool active )
 {
-  if ( !ActiveFlags ) 
+  if ( !this->m_ActiveFlags ) 
     {
-    ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, true ) );
+    this->m_ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, true ) );
     }
-  ActiveFlags->Set( index, active );
+  this->m_ActiveFlags->Set( index, active );
 }
 
 void 
 WarpXform::SetParametersActive( const Rect3D& )
 {
-  if ( !ActiveFlags ) 
+  if ( !this->m_ActiveFlags ) 
     {
-    ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, true ) );
+    this->m_ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, true ) );
     }
 }
 
@@ -237,20 +239,20 @@ void
 WarpXform::SetParametersActive
 ( const int axis, const bool active )
 {
-  if ( !ActiveFlags ) 
+  if ( !this->m_ActiveFlags ) 
     {
-    ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, true ) );
+    this->m_ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, true ) );
     }
   for ( unsigned int idx = (unsigned int)axis; idx < this->m_NumberOfParameters; idx += 3 )
-    ActiveFlags->Set( idx, active );
+    this->m_ActiveFlags->Set( idx, active );
 }
 
 void
 WarpXform::SetParametersActive( const char* axes )
 {
-  if ( !ActiveFlags ) 
+  if ( !this->m_ActiveFlags ) 
     {
-    ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, true ) );
+    this->m_ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, true ) );
     }
   if ( axes ) 
     {
@@ -266,18 +268,18 @@ WarpXform::SetParametersActive( const char* axes )
 void
 WarpXform::SetParameterInactive( const size_t index )
 {
-  if ( !ActiveFlags ) 
+  if ( !this->m_ActiveFlags ) 
     {
-    ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, true ) );
+    this->m_ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, true ) );
     }
-  ActiveFlags->Reset( index );
+  this->m_ActiveFlags->Reset( index );
 }
 
 int
 WarpXform::GetParameterActive( const size_t index ) const
 {
-  if ( ActiveFlags )
-    return (*ActiveFlags)[index];
+  if ( this->m_ActiveFlags )
+    return (*this->m_ActiveFlags)[index];
   else
     return 1;
 }
@@ -285,7 +287,7 @@ WarpXform::GetParameterActive( const size_t index ) const
 void
 WarpXform::DeleteParameterActiveFlags()
 {
-  ActiveFlags = BitVector::SmartPtr::Null;
+  this->m_ActiveFlags = BitVector::SmartPtr::Null;
 }
 
 void
@@ -295,9 +297,9 @@ WarpXform::Regularize( const int weight0, const int weight1 )
   Types::Coordinate* pcoeff = ncoeff;
 
   Types::Coordinate* coeff = this->m_Parameters;
-  for ( int z = 0; z<Dims[2]; ++z )
-    for ( int y = 0; y<Dims[1]; ++y )
-      for ( int x = 0; x<Dims[0]; ++x ) 
+  for ( int z = 0; z<this->m_Dims[2]; ++z )
+    for ( int y = 0; y<this->m_Dims[1]; ++y )
+      for ( int x = 0; x<this->m_Dims[0]; ++x ) 
 	{
 	for ( int dim = 0; dim<3; ++dim, ++coeff, ++pcoeff ) 
 	  {	  
@@ -306,7 +308,7 @@ WarpXform::Regularize( const int weight0, const int weight1 )
 	  for ( int k=-1; k<2; ++k )
 	    for ( int j=-1; j<2; ++j )
 	      for ( int i=-1; i<2; ++i )
-		if ( ((x+i)>=0) && ((y+j)>=0) && ((z+k)>=0) && ((x+i)<Dims[0]) && ((y+j)<Dims[1]) && ((z+k)<Dims[2]) ) 
+		if ( ((x+i)>=0) && ((y+j)>=0) && ((z+k)>=0) && ((x+i)<this->m_Dims[0]) && ((y+j)<this->m_Dims[1]) && ((z+k)<this->m_Dims[2]) ) 
 		  {
 		  int weight = (i?weight1:weight0) * (j?weight1:weight0) * (k?weight1:weight0);
 		  *pcoeff += weight * coeff[ i*nextI + j*nextJ + k*nextK ];
@@ -323,7 +325,7 @@ WarpXform::Regularize( const int weight0, const int weight1 )
 void
 WarpXform::RegisterVolume( const UniformVolume *volume )
 {
-  this->RegisterVolumePoints( volume->Dims, volume->Delta, volume->m_Origin.XYZ );
+  this->RegisterVolumePoints( volume->m_Dims, volume->m_Delta, volume->m_Origin.XYZ );
 }
 
 void 
@@ -339,9 +341,9 @@ WarpXform::ReplaceInitialAffine( const AffineXform* newAffineXform )
   AffineXform change;
 
   // first, get inverse of current initial affine transformation
-  if ( InitialAffineXform ) 
+  if ( this->m_InitialAffineXform ) 
     {
-    change = *(InitialAffineXform->GetInverse());
+    change = *(this->m_InitialAffineXform->GetInverse());
     }
 
   // second, append current initial affine transformation
@@ -363,11 +365,11 @@ WarpXform::ReplaceInitialAffine( const AffineXform* newAffineXform )
   // if the current transformation is linked somewhere else.
   if ( newAffineXform )
     {
-    InitialAffineXform = AffineXform::SmartPtr( newAffineXform->Clone() );
+    this->m_InitialAffineXform = AffineXform::SmartPtr( newAffineXform->Clone() );
     }
   else
     {
-    InitialAffineXform = AffineXform::SmartPtr( new AffineXform );
+    this->m_InitialAffineXform = AffineXform::SmartPtr( new AffineXform );
     }
 }
 
@@ -387,9 +389,9 @@ WarpXform::ConcatAffine( const AffineXform* affineXform )
 
   // Finally, generate combined affine transformation. We want to create a new
   // object here if the current transformation is linked somewhere else.
-  if ( InitialAffineXform.GetReferenceCount() != 1 )
-    InitialAffineXform = AffineXform::SmartPtr( InitialAffineXform->Clone() );
-  InitialAffineXform->Concat( *affineXform );
+  if ( this->m_InitialAffineXform.GetReferenceCount() != 1 )
+    this->m_InitialAffineXform = AffineXform::SmartPtr( this->m_InitialAffineXform->Clone() );
+  this->m_InitialAffineXform->Concat( *affineXform );
 }
 
 } // namespace cmtk

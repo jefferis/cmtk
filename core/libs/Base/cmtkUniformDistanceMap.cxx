@@ -56,7 +56,7 @@ UniformDistanceMap<TDistanceDataType>
 {
   this->SetDims( volume->GetDims() ); // set and update internals
   memcpy( Size, volume->Size, sizeof( Size ) );
-  memcpy( Delta, volume->GetDelta(), sizeof( Delta ) );
+  memcpy( this->m_Delta, volume->GetDelta(), sizeof( this->m_Delta ) );
 
   TypedArray::SmartPtr distanceArray = TypedArray::SmartPtr( TypedArray::Create( DataTypeTraits<DistanceDataType>::DataTypeID, volume->GetNumberOfPixels() ) );
   DistanceDataType *Distance = static_cast<DistanceDataType*>( distanceArray->GetDataPtr() );
@@ -173,12 +173,12 @@ UniformDistanceMap<TDistanceDataType>
 
   /* nXY is number of voxels in each plane (xy) */
   /* nXYZ is number of voxels in 3D image */
-  const size_t nXY = ThisConst->Dims[0] * ThisConst->Dims[1];
+  const size_t nXY = ThisConst->m_Dims[0] * ThisConst->m_Dims[1];
   
   /* compute D_2 */
   /* call edtComputeEDT_2D for each plane */
   DistanceDataType *p = params->m_Distance + nXY * threadIdx;
-  for ( int k = threadIdx; k < ThisConst->Dims[2]; k += threadCnt, p += nXY * threadCnt ) 
+  for ( int k = threadIdx; k < ThisConst->m_Dims[2]; k += threadCnt, p += nXY * threadCnt ) 
     {
     This->ComputeEDT2D( p, This->m_G[threadIdx], This->m_H[threadIdx] );
     }
@@ -198,10 +198,10 @@ UniformDistanceMap<TDistanceDataType>
   const size_t threadIdx = params->ThisThreadIndex;
   const size_t threadCnt = params->NumberOfThreads;
 
-  const size_t nXY = ThisConst->Dims[0] * ThisConst->Dims[1];
+  const size_t nXY = ThisConst->m_Dims[0] * ThisConst->m_Dims[1];
   /* compute D_3 */
   /* solve 1D problem for each column (z direction) */
-  std::vector<DistanceDataType> f( This->Dims[2] );
+  std::vector<DistanceDataType> f( This->m_Dims[2] );
 
   for ( size_t i = threadIdx; i < nXY; i += threadCnt) 
     {
@@ -209,17 +209,17 @@ UniformDistanceMap<TDistanceDataType>
     /* this is essentially line 4 in Procedure VoronoiEDT() in tPAMI paper */
     DistanceDataType *p = params->m_Distance + i;
     DistanceDataType *q = &f[0];
-    for ( int k = 0; k < ThisConst->Dims[2]; k++, p += nXY, q++) 
+    for ( int k = 0; k < ThisConst->m_Dims[2]; k++, p += nXY, q++) 
       {
       *q = *p;
       }
     
     /* call edtVoronoiEDT */
-    if ( This->VoronoiEDT( &f[0], ThisConst->Dims[2], static_cast<DistanceDataType>( ThisConst->Delta[2] ), This->m_G[threadIdx], This->m_H[threadIdx] ) ) 
+    if ( This->VoronoiEDT( &f[0], ThisConst->m_Dims[2], static_cast<DistanceDataType>( ThisConst->m_Delta[2] ), This->m_G[threadIdx], This->m_H[threadIdx] ) ) 
       {
       p = params->m_Distance + i;
       DistanceDataType *q = &f[0];
-      for ( int k = 0; k < ThisConst->Dims[2]; k++, p += nXY, q++ ) 
+      for ( int k = 0; k < ThisConst->m_Dims[2]; k++, p += nXY, q++ ) 
 	{
 	*p = *q;
 	}
@@ -248,12 +248,12 @@ UniformDistanceMap<TDistanceDataType>
   /* it is possible to use a simple distance propagation for D_1  because */
   /* L_1 and L_2 norms are equivalent for 1D case */
   DistanceDataType *p;
-  for ( int j = 0; j < Dims[1]; j++ ) 
+  for ( int j = 0; j < this->m_Dims[1]; j++ ) 
     {
     /* forward pass */
-    p = plane + j * Dims[0];
+    p = plane + j * this->m_Dims[0];
     DistanceDataType d = static_cast<DistanceDataType>( EDT_MAX_DISTANCE_SQUARED );
-    for ( int i = 0; i < Dims[0]; i++, p++ ) 
+    for ( int i = 0; i < this->m_Dims[0]; i++, p++ ) 
       {
       /* set d = 0 when we encounter a feature voxel */
       if ( *p ) 
@@ -277,7 +277,7 @@ UniformDistanceMap<TDistanceDataType>
     if ( *(--p) != EDT_MAX_DISTANCE_SQUARED ) 
       {
       DistanceDataType d = static_cast<DistanceDataType>( EDT_MAX_DISTANCE_SQUARED );
-      for ( int i = Dims[0] - 1; i >= 0; i--, p-- ) 
+      for ( int i = this->m_Dims[0] - 1; i >= 0; i--, p-- ) 
 	{
 	/* set d = 0 when we encounter a feature voxel */
 	if ( *p == 0 ) 
@@ -297,7 +297,7 @@ UniformDistanceMap<TDistanceDataType>
 	
 	/* square distance */
 	/* (we use squared distance in rest of algorithm) */
-	*p = static_cast<DistanceDataType>( *p * Delta[0] );
+	*p = static_cast<DistanceDataType>( *p * m_Delta[0] );
 	*p *= *p;
 	}
       }
@@ -305,24 +305,24 @@ UniformDistanceMap<TDistanceDataType>
   
   /* compute D_2 = squared EDT */
   /* solve 1D problem for each column (y direction) */
-  std::vector<DistanceDataType> f( Dims[1] );
-  for ( int i = 0; i < Dims[0]; i++ ) 
+  std::vector<DistanceDataType> f( this->m_Dims[1] );
+  for ( int i = 0; i < this->m_Dims[0]; i++ ) 
     {
     /* fill array f with D_1 distances in column */
     /* this is essentially line 4 in Procedure VoronoiEDT() in tPAMI paper */
     DistanceDataType *p = plane + i;
     DistanceDataType *q = &f[0];
-    for ( int j = 0; j < Dims[1]; j++, p += Dims[0], q++) 
+    for ( int j = 0; j < this->m_Dims[1]; j++, p += this->m_Dims[0], q++) 
       {
       *q = *p;
       }
     
     /* call edtVoronoiEDT */
-    if ( this->VoronoiEDT( &f[0], Dims[1], static_cast<DistanceDataType>( Delta[1] ), gTemp, hTemp  ) ) 
+    if ( this->VoronoiEDT( &f[0], this->m_Dims[1], static_cast<DistanceDataType>( this->m_Delta[1] ), gTemp, hTemp  ) ) 
       {
       DistanceDataType *p = plane + i;
       DistanceDataType *q = &f[0];
-      for ( int j = 0; j < Dims[1]; j++, p += Dims[0], q++ ) 
+      for ( int j = 0; j < this->m_Dims[1]; j++, p += this->m_Dims[0], q++ ) 
 	{
 	*p = *q;
 	}

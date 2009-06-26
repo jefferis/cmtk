@@ -46,32 +46,32 @@ DataGrid::ComputeProjection
   switch ( axis ) 
     {
     case AXIS_X:
-      dims[0] = Dims[1];
-      dims[1] = Dims[2];
-      depth = Dims[0];
+      dims[0] = this->m_Dims[1];
+      dims[1] = this->m_Dims[2];
+      depth = this->m_Dims[0];
       offset = 0;
-      incX = Dims[0];
-      incY = Dims[0] * Dims[1];
+      incX = this->m_Dims[0];
+      incY = this->m_Dims[0] * this->m_Dims[1];
       incZ = 1;
       break;
     case AXIS_Y:
-      dims[0] = Dims[0];
-      dims[1] = Dims[2];
-      depth = Dims[1];
+      dims[0] = this->m_Dims[0];
+      dims[1] = this->m_Dims[2];
+      depth = this->m_Dims[1];
       offset = 0;
       incX = 1;
-      incY = Dims[0] * Dims[1];
-      incZ = Dims[0];
+      incY = this->m_Dims[0] * this->m_Dims[1];
+      incZ = this->m_Dims[0];
       break;
     case AXIS_Z:
     default:
-      dims[0] = Dims[0];
-      dims[1] = Dims[1];
-      depth = Dims[2];
+      dims[0] = this->m_Dims[0];
+      dims[1] = this->m_Dims[1];
+      depth = this->m_Dims[2];
       offset = 0;
       incX = 1;
-      incY = Dims[0];
-      incZ = Dims[0] * Dims[1];
+      incY = this->m_Dims[0];
+      incZ = this->m_Dims[0] * this->m_Dims[1];
       break;
     }
   
@@ -116,7 +116,7 @@ DataGrid::TrilinearInterpolation
   const Vector3D& Location, const Types::Coordinate* from, 
   const Types::Coordinate* to ) const
 {
-  const size_t offset = X+Dims[0]*(Y+Dims[1]*Z);
+  const size_t offset = X+this->m_Dims[0]*(Y+this->m_Dims[1]*Z);
   const TData* data = dataPtr + offset;
 
   const Types::Coordinate deltaX=1.0/(to[0]-from[0]), deltaY=1.0/(to[1]-from[1]), deltaZ=1.0/(to[2]-from[2]);
@@ -141,7 +141,7 @@ DataGrid
 ( TOutputIterator result, const std::vector<TData*>& dataPtr, const int x, const int y, const int z,
   const Types::Coordinate fracX, const Types::Coordinate fracY, const Types::Coordinate fracZ ) const
 {
-  const size_t offset = x + this->Dims[0] * ( y + this->Dims[1] * z);
+  const size_t offset = x + this->m_Dims[0] * ( y + this->m_Dims[1] * z);
 
   const Types::Coordinate offsX = 1.0-fracX;
   const Types::Coordinate offsY = 1.0-fracY;

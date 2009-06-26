@@ -55,9 +55,9 @@ cmtk
 
 class SlicerPipeline 
 {
-  igsGetSetMacroObject(Slicer,m_Slicer);
+  cmtkGetSetMacroObject(Slicer,Slicer);
 
-  igsGetSetMacroObject(VolumeWrapper,m_VolumeWrapper);
+  cmtkGetSetMacroObject(VolumeWrapper,VolumeWrapper);
 
 public:
   SlicerPipeline( Plane *const plane, Study::SmartPtr& study, AffineXform::SmartPtr& affineXform, WarpXform::SmartPtr& warpXform );

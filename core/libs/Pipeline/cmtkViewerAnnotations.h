@@ -60,39 +60,39 @@ class ViewerAnnotations
 {
 public:
   /// Scale indicator mode.
-  igsGetSetMacro(AnnotationScaleMode,ScaleMode);
+  cmtkGetSetMacro(AnnotationScaleMode,ScaleMode);
   
   /// Scale indicator major tick distance.
-  igsGetSetMacro(Types::Coordinate,ScaleMajorTickDistance);
+  cmtkGetSetMacro(Types::Coordinate,ScaleMajorTickDistance);
 
   /// Scale indicator minor tick distance.
-  igsGetSetMacro(Types::Coordinate,ScaleMinorTickDistance);
+  cmtkGetSetMacro(Types::Coordinate,ScaleMinorTickDistance);
 
   /// Label scale indicator.
-  igsGetSetMacro(bool,ScaleLabels);
+  cmtkGetSetMacro(bool,ScaleLabels);
 
   /// Flag for slice index display.
-  igsGetSetMacro(bool,ShowSliceIndex);
+  cmtkGetSetMacro(bool,ShowSliceIndex);
 
   /// Flag for slice location display.
-  igsGetSetMacro(bool,ShowSliceLocation);
+  cmtkGetSetMacro(bool,ShowSliceLocation);
 
   /// Constructor.
   ViewerAnnotations() 
   {
-    ScaleMode = ANNOT_SCALE_NONE;
-    ScaleMajorTickDistance = 5;
-    ScaleMinorTickDistance = 1;
-    ScaleLabels = true;
+    this->m_ScaleMode = ANNOT_SCALE_NONE;
+    this->m_ScaleMajorTickDistance = 5;
+    this->m_ScaleMinorTickDistance = 1;
+    this->m_ScaleLabels = true;
   }
 
   /// Copy operator.
   ViewerAnnotations& operator= ( const ViewerAnnotations& src ) 
   {
-    ScaleMode = src.ScaleMode;
-    ScaleMajorTickDistance = src.ScaleMajorTickDistance;
-    ScaleMinorTickDistance = src.ScaleMinorTickDistance;
-    ScaleLabels = src.ScaleLabels;
+    this->m_ScaleMode = src.m_ScaleMode;
+    this->m_ScaleMajorTickDistance = src.m_ScaleMajorTickDistance;
+    this->m_ScaleMinorTickDistance = src.m_ScaleMinorTickDistance;
+    this->m_ScaleLabels = src.m_ScaleLabels;
     return *this;
   }
 };

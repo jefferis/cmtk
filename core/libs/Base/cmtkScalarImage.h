@@ -60,19 +60,19 @@ cmtk
 class ScalarImage
 {
   /// Image dimensions.
-  igsGetSetMacro2Array(unsigned int,Dims);
+  cmtkGetSetMacro2Array(unsigned int,Dims);
 
   /// Number of image frames for multi-frame images.
-  igsGetSetMacro(unsigned int,NumberOfFrames);
+  cmtkGetSetMacro(unsigned int,NumberOfFrames);
 
   /// Pixel data.
-  igsGetSetMacro(TypedArray::SmartPtr,PixelData);
+  cmtkGetSetMacro(TypedArray::SmartPtr,PixelData);
 
   /// Pixel spacing.
-  igsGetSetMacro2Array(Types::Coordinate,PixelSize);
+  cmtkGetSetMacro2Array(Types::Coordinate,PixelSize);
 
   /// Frame-to-frame spacing.
-  igsGetSetMacro(Types::Coordinate,FrameToFrameSpacing);
+  cmtkGetSetMacro(Types::Coordinate,FrameToFrameSpacing);
 
 public:
   /// Smart pointer to ScalarImage
@@ -134,17 +134,17 @@ public:
   /// Create pixel data array with given data type.
   void CreatePixelData( const ScalarDataType dtype ) 
   {
-    PixelData = TypedArray::SmartPtr( TypedArray::Create( dtype, Dims[0] * Dims[1] * NumberOfFrames ) );
+    this->m_PixelData = TypedArray::SmartPtr( TypedArray::Create( dtype, this->m_Dims[0] * this->m_Dims[1] * this->m_NumberOfFrames ) );
   }
 
   /** Origin of image in world coordinates.
    */
-  Vector3D ImageOrigin;
+  Vector3D m_ImageOrigin;
 
   /// Set image origin.
   void SetImageOrigin( const Vector3D& imageOrigin ) 
   {
-    ImageOrigin = imageOrigin;
+    this->m_ImageOrigin = imageOrigin;
   }
 
   /// Get image origin of given frame (default: 0).
@@ -152,34 +152,35 @@ public:
 
   /** Direction of image rows relative to ImageOrigin.
    */
-  igsGetSetMacro(Vector3D,ImageDirectionX);
+  cmtkGetSetMacro(Vector3D,ImageDirectionX);
 
   /** Direction of image columns relative to ImageOrigin.
    */
-  igsGetSetMacro(Vector3D,ImageDirectionY);
+  cmtkGetSetMacro(Vector3D,ImageDirectionY);
 
   /** Image position from coordinate origin along axial direction.
    * This field is only meaningful if this 2D image is part of a 3D image.
    */
-  igsGetSetMacro(Types::Coordinate,ImageSlicePosition);
+  cmtkGetSetMacro(Types::Coordinate,ImageSlicePosition);
 
   /** Image tilt with respect to axial position.
    * This field is only meaningful if this is an axial 2D image that is part of
    * a 3D image.
    */
-  igsGetSetMacro(Types::Coordinate,ImageTiltAngle);
+  cmtkGetSetMacro(Types::Coordinate,ImageTiltAngle);
 
   /// Get number of pixels.
   unsigned int GetNumberOfPixels() const 
   { 
-    return Dims[0] * Dims[1];
+    return this->m_Dims[0] * this->m_Dims[1];
   }
 
   /// Get pixel at 2-D index.
   Types::DataItem GetPixelAt( const unsigned int i, const unsigned int j ) const 
   {
     Types::DataItem value;
-    if ( PixelData->Get( value, i + Dims[0] * j ) ) return value;
+    if ( this->m_PixelData->Get( value, i + this->m_Dims[0] * j ) ) 
+      return value;
     return 0;
   }
 
@@ -198,7 +199,7 @@ public:
   /// Set pixel at 2-D index.
   void SetPixelAt( const unsigned int i, const unsigned int j, const Types::DataItem data ) 
   {
-    PixelData->Set( data, i + Dims[0] * j );
+    this->m_PixelData->Set( data, i + this->m_Dims[0] * j );
   }
 
   /// Clone (duplicate) this object.

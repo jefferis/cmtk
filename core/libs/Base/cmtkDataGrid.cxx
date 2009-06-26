@@ -58,7 +58,7 @@ DataGrid::CreateDataArray( const ScalarDataType dataType, const bool setToZero )
 DataGrid* 
 DataGrid::GetDownsampled( const int (&downsample)[3] ) const
 {
-  const int newDims[3] = { (this->Dims[0]-1) / downsample[0] + 1, (this->Dims[1]-1) / downsample[1] + 1, (this->Dims[2]-1) / downsample[2] + 1 };
+  const int newDims[3] = { (this->m_Dims[0]-1) / downsample[0] + 1, (this->m_Dims[1]-1) / downsample[1] + 1, (this->m_Dims[2]-1) / downsample[2] + 1 };
 
   DataGrid* newDataGrid = new DataGrid;
   newDataGrid->SetDims( newDims );
@@ -81,13 +81,13 @@ DataGrid::GetDownsampled( const int (&downsample)[3] ) const
 	  {
 	  Types::DataItem sum = 0;
 	  int count = 0;
-	  for ( int zz = 0; (zz < downsample[2]) && (oldZ+zz<this->Dims[2]); ++zz )
+	  for ( int zz = 0; (zz < downsample[2]) && (oldZ+zz<this->m_Dims[2]); ++zz )
 	    {
 	    const size_t ofsZ = (oldZ+zz)*this->nextK;
-	    for ( int yy = 0; (yy < downsample[1]) && (oldY+yy<this->Dims[1]); ++yy )
+	    for ( int yy = 0; (yy < downsample[1]) && (oldY+yy<this->m_Dims[1]); ++yy )
 	      {
 	      const size_t ofsYZ = ofsZ + (oldY+yy)*this->nextJ;
-	      for ( int xx = 0; (xx < downsample[0]) && (oldX+xx<this->Dims[0]); ++xx )
+	      for ( int xx = 0; (xx < downsample[0]) && (oldX+xx<this->m_Dims[0]); ++xx )
 		{
 		Types::DataItem value;
 		if ( thisData->Get( value, (oldX+xx) + ofsYZ  ) )
@@ -133,10 +133,10 @@ DataGrid::GetReoriented( const char* newOrientation ) const
     }
 
   // 1. get a permutation matrix
-  AnatomicalOrientation::PermutationMatrix pmatrix( this->Dims, NULL, curOrientation, newOrientation );
+  AnatomicalOrientation::PermutationMatrix pmatrix( this->m_Dims, NULL, curOrientation, newOrientation );
   
   int newDims[3] = { 0, 0, 0 }; 
-  pmatrix.GetPermutedArray( this->Dims, newDims );
+  pmatrix.GetPermutedArray( this->m_Dims, newDims );
   DataGrid* newDataGrid = new DataGrid( newDims );
   
   const TypedArray* oldData = this->GetData();
@@ -178,11 +178,11 @@ DataGrid::GetReoriented( const char* newOrientation ) const
 void
 DataGrid::SetDims( const int dims[3] )
 {
-  memcpy( Dims, dims, sizeof( Dims ) );
+  memcpy( this->m_Dims, dims, sizeof( this->m_Dims ) );
 
   nextI = 1;
-  nextJ = nextI * Dims[0];
-  nextK = nextJ * Dims[1];
+  nextJ = nextI * this->m_Dims[0];
+  nextK = nextJ * this->m_Dims[1];
   nextIJ = nextI + nextJ;
   nextIK = nextI + nextK;
   nextJK = nextJ + nextK;
@@ -197,20 +197,20 @@ DataGrid::TrilinearInterpolation
 {
   Types::DataItem corners[8];
 
-  const size_t offset = X+Dims[0]*(Y+Dims[1]*Z);
+  const size_t offset = X+this->m_Dims[0]*(Y+this->m_Dims[1]*Z);
 
   const TypedArray* data = this->GetData();
   bool data_present = data->Get( corners[0], offset );
   
-  if ( X<Dims[0]-1 ) 
+  if ( X<this->m_Dims[0]-1 ) 
     {
     data_present &= data->Get( corners[1] , offset+nextI );
     
-    if ( Y<Dims[1]-1 ) 
+    if ( Y<this->m_Dims[1]-1 ) 
       {
       data_present &= data->Get( corners[3], offset+nextIJ );
       
-      if ( Z<Dims[2]-1 )
+      if ( Z<this->m_Dims[2]-1 )
 	data_present &= data->Get( corners[7], offset+nextIJK );
       else
 	return false;
@@ -257,7 +257,7 @@ TypedArray*
 DataGrid::GetDataMirrorPlane( const int axis ) const
 {
   TypedArray* Result = this->GetData()->Clone();
-  this->MirrorPlaneInPlace( Result, this->Dims, axis );
+  this->MirrorPlaneInPlace( Result, this->m_Dims, axis );
   
   return Result;
 }
@@ -265,7 +265,7 @@ DataGrid::GetDataMirrorPlane( const int axis ) const
 void
 DataGrid::ApplyMirrorPlane( const int axis )
 {
-  this->MirrorPlaneInPlace( this->GetData().GetPtr(), this->Dims, axis );
+  this->MirrorPlaneInPlace( this->GetData().GetPtr(), this->m_Dims, axis );
 }
 
 void
@@ -316,33 +316,33 @@ DataGrid::GetDataMedianFiltered( const int radius ) const
   Types::DataItem *sort = Memory::AllocateArray<Types::DataItem>(  width*width*width  );
   
   int offset = 0;
-  Progress::SetTotalSteps( Dims[2] );
+  Progress::SetTotalSteps( this->m_Dims[2] );
 
   ProgressResult status = PROGRESS_OK;
-  for ( int z = 0; z < Dims[2]; ++z ) 
+  for ( int z = 0; z < this->m_Dims[2]; ++z ) 
     {
     status = Progress::SetProgress( z );
     if ( status != PROGRESS_OK ) break;
     
     int zFrom = ( z > radius ) ? ( z - radius ) : 0;
-    int zTo = std::min( z+radius+1, Dims[2] );
+    int zTo = std::min( z+radius+1, this->m_Dims[2] );
 
-    for ( int y = 0; y < Dims[1]; ++y ) 
+    for ( int y = 0; y < this->m_Dims[1]; ++y ) 
       {      
       int yFrom = ( y > radius ) ? ( y - radius ) : 0;
-      int yTo = std::min( y+radius+1, Dims[1] );
+      int yTo = std::min( y+radius+1, this->m_Dims[1] );
       
-      for ( int x = 0; x < Dims[0]; ++x, ++offset ) 
+      for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
 	{
 	int xFrom = ( x > radius ) ? ( x - radius ) : 0;
-	int xTo = std::min( x+radius+1, Dims[0] );
+	int xTo = std::min( x+radius+1, this->m_Dims[0] );
 	
 	int source = 0;
-	int ofsZ = yFrom + Dims[1] * zFrom;
-	for ( int zz = zFrom; zz < zTo; ++zz, ofsZ += Dims[1] ) 
+	int ofsZ = yFrom + this->m_Dims[1] * zFrom;
+	for ( int zz = zFrom; zz < zTo; ++zz, ofsZ += this->m_Dims[1] ) 
 	  {
-	  int ofsYZ = Dims[0] * ofsZ ;
-	  for ( int yy = yFrom; yy < yTo; ++yy, ofsYZ += Dims[0] ) 
+	  int ofsYZ = this->m_Dims[0] * ofsZ ;
+	  for ( int yy = yFrom; yy < yTo; ++yy, ofsYZ += this->m_Dims[0] ) 
 	    {
 	    int toYZ = ofsYZ + xTo;
 	    for ( int xx = xFrom + ofsYZ; xx < toYZ; ++xx, ++source ) 
@@ -395,16 +395,16 @@ DataGrid::GetDataSobelFiltered() const
   Types::DataItem value = 0;
   Types::DataItem fov[3][3][3];
 
-  Progress::SetTotalSteps( Dims[2] );
+  Progress::SetTotalSteps( this->m_Dims[2] );
 
   size_t offset = 0;
-  for ( int z = 0; z < Dims[2]; ++z ) 
+  for ( int z = 0; z < this->m_Dims[2]; ++z ) 
     {
     Progress::SetProgress( z );
-    for ( int y = 0; y < Dims[1]; ++y )
-      for ( int x = 0; x < Dims[0]; ++x, ++offset ) 
+    for ( int y = 0; y < this->m_Dims[1]; ++y )
+      for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
 	{
-	if ( x && y && z && ( x<Dims[0]-1 ) && ( y<Dims[1]-1 ) && ( z<Dims[2]-1 ) ) 
+	if ( x && y && z && ( x<this->m_Dims[0]-1 ) && ( y<this->m_Dims[1]-1 ) && ( z<this->m_Dims[2]-1 ) ) 
 	  {
 	  for ( int dz=-1; dz<2; ++dz )
 	    for ( int dy=-1; dy<2; ++dy )
@@ -460,21 +460,21 @@ DataGrid::GetDataMirrored
   
   TypedArray* mirroredArray = dataArray->NewTemplateArray();
   
-  Progress::SetTotalSteps( Dims[2] );
+  Progress::SetTotalSteps( this->m_Dims[2] );
 
   size_t offset = 0;
   switch ( axis )
     {
     case AXIS_X:
-      for ( int z = 0; z < Dims[2]; ++z ) 
+      for ( int z = 0; z < this->m_Dims[2]; ++z ) 
 	{
 	Progress::SetProgress( z );
-	for ( int y = 0; y < Dims[1]; ++y ) 
+	for ( int y = 0; y < this->m_Dims[1]; ++y ) 
 	  {
-	  for ( int x = 0; x < Dims[0]; ++x, ++offset ) 
+	  for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
 	    {
-	    dataArray->BlockCopy( mirroredArray, offset, offset, Dims[0] );
-	    mirroredArray->BlockReverse( offset, Dims[0] );
+	    dataArray->BlockCopy( mirroredArray, offset, offset, this->m_Dims[0] );
+	    mirroredArray->BlockReverse( offset, this->m_Dims[0] );
 	    }      
 	  }
 	}
@@ -500,29 +500,29 @@ DataGrid::GetOrthoSlice
   switch ( axis ) 
     {
     case AXIS_X:
-      dims[0] = Dims[1];
-      dims[1] = Dims[2];
-      depth = Dims[0];
-      incX = Dims[0];
-      incY = Dims[0] * Dims[1];
+      dims[0] = this->m_Dims[1];
+      dims[1] = this->m_Dims[2];
+      depth = this->m_Dims[0];
+      incX = this->m_Dims[0];
+      incY = this->m_Dims[0] * this->m_Dims[1];
       incZ = 1;
       break;
     case AXIS_Y:
-      dims[0] = Dims[0];
-      dims[1] = Dims[2];
-      depth = Dims[1];
+      dims[0] = this->m_Dims[0];
+      dims[1] = this->m_Dims[2];
+      depth = this->m_Dims[1];
       incX = 1;
-      incY = Dims[0] * Dims[1];
-      incZ = Dims[0];
+      incY = this->m_Dims[0] * this->m_Dims[1];
+      incZ = this->m_Dims[0];
       break;
     case AXIS_Z:
     default:
-      dims[0] = Dims[0];
-      dims[1] = Dims[1];
-      depth = Dims[2];
+      dims[0] = this->m_Dims[0];
+      dims[1] = this->m_Dims[1];
+      depth = this->m_Dims[2];
       incX = 1;
-      incY = Dims[0];
-      incZ = Dims[0] * Dims[1];
+      incY = this->m_Dims[0];
+      incZ = this->m_Dims[0] * this->m_Dims[1];
       break;
     }
   
@@ -582,29 +582,29 @@ DataGrid::SetOrthoSlice
   switch ( axis ) 
     {
     case AXIS_X:
-      dims[0] = Dims[1];
-      dims[1] = Dims[2];
-      depth = Dims[0];
-      incX = Dims[0];
-      incY = Dims[0] * Dims[1];
+      dims[0] = this->m_Dims[1];
+      dims[1] = this->m_Dims[2];
+      depth = this->m_Dims[0];
+      incX = this->m_Dims[0];
+      incY = this->m_Dims[0] * this->m_Dims[1];
       incZ = 1;
       break;
     case AXIS_Y:
-      dims[0] = Dims[0];
-      dims[1] = Dims[2];
-      depth = Dims[1];
+      dims[0] = this->m_Dims[0];
+      dims[1] = this->m_Dims[2];
+      depth = this->m_Dims[1];
       incX = 1;
-      incY = Dims[0] * Dims[1];
-      incZ = Dims[0];
+      incY = this->m_Dims[0] * this->m_Dims[1];
+      incZ = this->m_Dims[0];
       break;
     case AXIS_Z:
     default:
-      dims[0] = Dims[0];
-      dims[1] = Dims[1];
-      depth = Dims[2];
+      dims[0] = this->m_Dims[0];
+      dims[1] = this->m_Dims[1];
+      depth = this->m_Dims[2];
       incX = 1;
-      incY = Dims[0];
-      incZ = Dims[0] * Dims[1];
+      incY = this->m_Dims[0];
+      incZ = this->m_Dims[0] * this->m_Dims[1];
       break;
     }
   
@@ -635,9 +635,9 @@ DataGrid
 
   double sumOfSamples = 0;
   size_t ofs = 0;
-  for ( int z = 0; z < this->Dims[2]; ++z )
-    for ( int y = 0; y < this->Dims[1]; ++y )
-      for ( int x = 0; x < this->Dims[0]; ++x, ++ofs )
+  for ( int z = 0; z < this->m_Dims[2]; ++z )
+    for ( int y = 0; y < this->m_Dims[1]; ++y )
+      for ( int x = 0; x < this->m_Dims[0]; ++x, ++ofs )
 	{
 	Types::DataItem value;
 	if ( this->GetDataAt( value, x, y, z ) )
@@ -661,9 +661,9 @@ DataGrid
 
   double sumOfSamples = 0;
   size_t ofs = 0;
-  for ( int z = 0; z < this->Dims[2]; ++z )
-    for ( int y = 0; y < this->Dims[1]; ++y )
-      for ( int x = 0; x < this->Dims[0]; ++x, ++ofs )
+  for ( int z = 0; z < this->m_Dims[2]; ++z )
+    for ( int y = 0; y < this->m_Dims[1]; ++y )
+      for ( int x = 0; x < this->m_Dims[0]; ++x, ++ofs )
 	{
 	Types::DataItem value;
 	if ( this->GetDataAt( value, x, y, z ) )
@@ -684,7 +684,7 @@ DataGrid::Print() const
 {
   StdErr.printf( "DataGrid at %p\n", this );
 
-  StdErr.printf( "\tDims: [%d,%d,%d])\n", Dims[0], Dims[1], Dims[2] );
+  StdErr.printf( "\tthis->m_Dims: [%d,%d,%d])\n", this->m_Dims[0], this->m_Dims[1], this->m_Dims[2] );
   StdErr.printf( "\tData array at %p\n", this );
 }
 
