@@ -42,6 +42,7 @@ cmtk
 //@{
 
 AffineCongealingFunctional::AffineCongealingFunctional()
+  : m_XformNumberDOFs( 9 )
 {
   this->m_ParametersPerXform = AffineXform::TotalNumberOfParameters;
 }
