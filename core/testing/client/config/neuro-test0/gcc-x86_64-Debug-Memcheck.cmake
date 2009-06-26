@@ -55,9 +55,9 @@ BUILD_GUI:BOOL=ON
 BUILD_VALIDATION:BOOL=ON
 CMAKE_BUILD_TYPE:STRING=Debug
 CMAKE_CXX_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse -Wno-deprecated -Wno-unknown-pragmas
-CMAKE_CXX_FLAGS_DEBUG:STRING=-g -DDEBUG -fprofile-arcs -ftest-coverage
+CMAKE_CXX_FLAGS_DEBUG:STRING=-g -DDEBUG
 CMAKE_C_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse
-CMAKE_C_FLAGS_DEBUG:STRING=-g -DDEBUG -fprofile-arcs -ftest-coverage
+CMAKE_C_FLAGS_DEBUG:STRING=-g -DDEBUG
 DCMTK_INCLUDE_DIR:PATH=/usr/include
 DCMTK_LIBRARY_DIR:PATH=/usr/lib64
 DCMTK_LIBRARIES_EXTRA:STRING=png;tiff
