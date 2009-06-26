@@ -33,6 +33,7 @@ BUILDNAME=$1
 BINDIR=$2
 DATADIR=$3
 RUNTEST=$4
+VALGRIND=$5
 
 HOSTNAME=`uname -n`
 tmpdir=${BINDIR}/../testing/temporary/${HOSTNAME}/${RUNTEST}
@@ -49,8 +50,8 @@ run()
 {
     cmd=$*
 
-    echo "cd $PWD; $cmd"
-    if $cmd; then
+    echo "pushd $PWD; $cmd; popd"
+    if ${VALGRIND} $cmd; then
 	return
     else
 	exit 1
@@ -61,8 +62,8 @@ run_eval()
 {
     cmd=$*
 
-    echo "cd $PWD; $cmd"
-    if eval "$cmd"; then
+    echo "pushd $PWD; $cmd; popd"
+    if eval "${VALGRIND} $cmd"; then
 	return
     else
 	exit 1

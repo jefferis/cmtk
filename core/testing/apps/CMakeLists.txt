@@ -329,8 +329,13 @@ ENDIF(NOT CMTK_USE_MPI)
 # ==========================================
 # Set up all tests
 FOREACH(testName ${testList})
-  ADD_TEST(${testName} /bin/sh ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh 
-    ${BUILDNAME} ${EXECUTABLE_OUTPUT_PATH} ${CMTK_DATA_ROOT} ${testName})		 
+  IF(CMTK_TESTING_MEMORYCHECK)
+    ADD_TEST(${testName} /bin/sh ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh 
+      ${BUILDNAME} ${EXECUTABLE_OUTPUT_PATH} ${CMTK_DATA_ROOT} ${testName} ${MEMORYCHECK_COMMAND})
+  ELSE(CMTK_TESTING_MEMORYCHECK)
+    ADD_TEST(${testName} /bin/sh ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh 
+      ${BUILDNAME} ${EXECUTABLE_OUTPUT_PATH} ${CMTK_DATA_ROOT} ${testName})
+  ENDIF(CMTK_TESTING_MEMORYCHECK)
 ENDFOREACH(testName ${testList})
 
 SET_TESTS_PROPERTIES(CongealWarpFromInit PROPERTIES TIMEOUT 4800)
