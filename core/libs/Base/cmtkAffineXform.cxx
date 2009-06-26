@@ -138,7 +138,7 @@ void
 AffineXform::SetNumberDOFs ( const int numberDOFs ) 
 {
   this->NumberDOFs = numberDOFs; 
-  if ( numberDOFs == 7 )
+  if ( this->NumberDOFs == 7 )
     {
     this->m_Parameters[8] = (this->m_Parameters[7] = this->m_Parameters[6]);
     this->ComposeMatrix();
