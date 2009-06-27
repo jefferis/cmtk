@@ -454,8 +454,7 @@ CongealingFunctional<TXform,THistogramBinType>
     const size_t pixelsPerThread = 1 + (pixelsPerNode / numberOfThreads);
     const size_t pixelFromNode = ThisConst->m_RankMPI * pixelsPerNode;
     const size_t pixelFrom = pixelFromNode + threadID * pixelsPerThread;
-    const size_t pixelTo = std::min( numberOfPixels, std::min( pixelFromNode + pixelsPerNode, 
-								 pixelFrom + pixelsPerThread ) );
+    const size_t pixelTo = std::min( numberOfPixels, std::min( pixelFromNode + pixelsPerNode, pixelFrom + pixelsPerThread ) );
     size_t mpiPx = threadID * pixelsPerThread;
 #else
     const size_t pixelsPerThread = 1 + (numberOfPixels / numberOfThreads);
