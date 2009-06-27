@@ -202,7 +202,7 @@ GroupwiseRegistrationFunctionalBase
     for ( size_t i = 0; i < numberOfImages; ++i )
       {
       this->m_Data[i] = Memory::AllocateArray<byte>( this->m_TemplateNumberOfSamples );
-    }
+      }
     
     this->m_TempData.resize( this->m_TemplateNumberOfSamples );
     }
