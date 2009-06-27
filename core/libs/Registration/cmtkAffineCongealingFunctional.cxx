@@ -256,7 +256,7 @@ AffineCongealingFunctional::InterpolateImageProbabilisticThread
   const byte* dataPtr = static_cast<const byte*>( target->GetData()->GetDataPtr() );
 
   const size_t startIdx = threadID * (This->m_ProbabilisticSamples.size() / numberOfThreads);
-  const size_t endIdx = ( threadID == numberOfThreads ) ? This->m_ProbabilisticSamples.size() : (threadID+1) * (This->m_ProbabilisticSamples.size() / numberOfThreads);
+  const size_t endIdx = ( threadID == (numberOfThreads-1) ) ? This->m_ProbabilisticSamples.size() : (threadID+1) * (This->m_ProbabilisticSamples.size() / numberOfThreads);
 
   byte *wptr = destination + startIdx;
   for ( size_t i = startIdx; i < endIdx; ++i, ++wptr )
@@ -267,7 +267,6 @@ AffineCongealingFunctional::InterpolateImageProbabilisticThread
     
     if ( target->ProbeData( value, dataPtr, v ) )
       {
-//      assert( (value > This->m_HistogramKernelRadiusMax) && (value + This->m_HistogramKernelRadiusMax < This->m_HistogramBins) );
       *wptr = value;
       }
     else
