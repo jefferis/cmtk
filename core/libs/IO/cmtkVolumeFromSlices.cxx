@@ -227,7 +227,7 @@ VolumeFromSlices::FinishVolume ( Types::Coordinate& sliceOffset, int& sliceDirec
   
   // Encapsulate raw volume data.
   
-  if ( VolumeDataArray.IsNull() )
+  if ( !VolumeDataArray )
     VolumeDataArray = TypedArray::SmartPtr( this->EncapDataArray( SelectDataTypeInteger( BytesPerPixel, SignBit ), RawData, DataSize ) );
   
   const Types::Coordinate* aux[] = { Points[0], Points[1], Points[2] };
@@ -416,7 +416,7 @@ UniformVolume*
 VolumeFromSlices::ConstructVolume
 ( const int dims[3], const Types::Coordinate size[3], const Types::Coordinate *points[3], TypedArray::SmartPtr& data ) const
 {
-  int isUniform = 1;
+  bool isUniform = true;
   Types::Coordinate error = 0;
   for ( unsigned int dim=0; (dim<3) && isUniform; ++dim ) 
     {
@@ -424,7 +424,7 @@ VolumeFromSlices::ConstructVolume
     for ( int idx=2; (idx<dims[dim]) && isUniform; ++idx ) 
       {
       if ( fabs( delta - (points[dim][idx] - points[dim][idx-1]) ) > (0.0001 * delta ) )
-	isUniform = 0;
+	isUniform = false;
       error = fabs( delta - (points[dim][idx] - points[dim][idx-1]) );
       }
     }
