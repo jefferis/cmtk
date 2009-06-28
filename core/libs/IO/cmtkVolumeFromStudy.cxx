@@ -112,7 +112,7 @@ VolumeFromStudy::AssembleVolume( const StudyImageSet* study, const bool verbose 
       // TODO: when returning NULL here, we also should tell
       // VolumeFromSlices that we give up, so it can free its
       // temporary storage.
-      if ( image.IsNull() ) return NULL;
+      if ( !image ) return NULL;
 
       if ( ! nextPlane ) 
 	{
