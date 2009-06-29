@@ -18,11 +18,11 @@
 ##  with the Computational Morphometry Toolkit.  If not, see
 ##  <http://www.gnu.org/licenses/>.
 ##
-##  $Revision: 34 $
+##  $Revision$
 ##      
-##  $LastChangedDate: 2009-06-02 13:12:51 -0700 (Tue, 02 Jun 2009) $
+##  $LastChangedDate$
 ##
-##  $LastChangedBy: torstenrohlfing $
+##  $LastChangedBy$
 ##      
 
 
