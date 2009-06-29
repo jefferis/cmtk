@@ -174,20 +174,20 @@ public:
   /// Return data at specified grid point.
   bool GetDataAt ( Types::DataItem& data, const int x, const int y, const int z ) const
   {
-    return this->GetDataAt( data, x+this->m_Dims[0]*(y+this->m_Dims[1]*z) );
+    return this->GetDataAt( data, this->GetOffsetFromIndex( x, y, z ) );
   }
 
   /// Set data at specified grid point.
   void SetDataAt ( const Types::DataItem data, const int x, const int y, const int z )
   {
-    this->SetDataAt( data, x+this->m_Dims[0]*(y+this->m_Dims[1]*z) );
+    this->SetDataAt( data, this->GetOffsetFromIndex( x, y, z ) );
   }
 
   /// Return data at specified grid point, or a given default value if no data exists there.
   Types::DataItem GetDataAt ( const int x, const int y, const int z, const Types::DataItem defaultValue = 0.0 ) const
   {
     Types::DataItem value;
-    if ( this->GetDataAt( value, x+this->m_Dims[0]*(y+this->m_Dims[1]*z) ) )
+    if ( this->GetDataAt( value, this->GetOffsetFromIndex( x, y, z ) ) )
       return value;
     else
       return defaultValue;

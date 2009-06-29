@@ -9,6 +9,8 @@ Release CMTK-1.0.2:
 - Fixed: incomplete computation when using "--sempling-density" option of
     "congeal" tool.
 
+- Improved: eliminated explicit offset calculations in cmtk::DataGrid and use
+    existing index-to-offset function instead.
 
 Release CMTK-1.0.1 (2009-06-25):
 

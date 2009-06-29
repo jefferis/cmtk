@@ -197,7 +197,7 @@ DataGrid::TrilinearInterpolation
 {
   Types::DataItem corners[8];
 
-  const size_t offset = X+this->m_Dims[0]*(Y+this->m_Dims[1]*Z);
+  const size_t offset = this->GetOffsetFromIndex( X, Y, Z );
 
   const TypedArray* data = this->GetData();
   bool data_present = data->Get( corners[0], offset );
@@ -409,7 +409,7 @@ DataGrid::GetDataSobelFiltered() const
 	  for ( int dz=-1; dz<2; ++dz )
 	    for ( int dy=-1; dy<2; ++dy )
 	      for ( int dx=-1; dx<2; ++dx )
-		if ( ! data->Get( fov[1+dx][1+dy][1+dz], offset+nextI*dx+nextJ*dy+nextK*dz ) )
+		if ( ! data->Get( fov[1+dx][1+dy][1+dz], offset+this->GetOffsetFromIndex( dx, dy, dz ) ) )
 		  fov[1+dx][1+dy][1+dz] = 0;
 	  
 	  value = (Types::DataItem)

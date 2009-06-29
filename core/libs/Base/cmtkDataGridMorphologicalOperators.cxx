@@ -162,7 +162,7 @@ DataGrid::GetDataErode( const int iterations ) const
 	      for ( int dy = dyFrom; (dy <= dyTo) && !erodePixel; ++dy )
 		for ( int dx = dxFrom; (dx <= dxTo) && !erodePixel; ++dx )
 		  if ( dx || dy || dz )
-		    if ( ! eroded[offset+nextI*dx+nextJ*dy+nextK*dz] )
+		    if ( ! eroded[offset+this->GetOffsetFromIndex( dx, dy, dz )] )
 		      erodePixel = true;
 	    if ( erodePixel )
 	      tmp[offset] = 0;
@@ -231,7 +231,7 @@ DataGrid::GetDataDilate( const int iterations ) const
 	      for ( int dy = dyFrom; (dy <= dyTo) && !dilatePixel; ++dy )
 		for ( int dx = dxFrom; (dx <= dxTo) && !dilatePixel; ++dx )
 		  if ( dx || dy || dz )
-		    dilatePixel = dilated[offset+nextI*dx+nextJ*dy+nextK*dz];
+		    dilatePixel = dilated[offset+this->GetOffsetFromIndex(dx,dy,dz)];
 	    if ( dilatePixel )
 	      tmp[offset] = dilatePixel;
 	    else
@@ -288,7 +288,7 @@ DataGrid::GetBoundaryMap( const bool multiValued ) const
 	    for ( int dy = dyFrom; (dy <= dyTo) && !bp; ++dy )
 	      for ( int dx = dxFrom; (dx <= dxTo) && !bp; ++dx )
 		if ( dx || dy || dz )
-		  if ( dataArray->Get( neighbor, offset+nextI*dx+nextJ*dy+nextK*dz ) )
+		  if ( dataArray->Get( neighbor, offset+this->GetOffsetFromIndex(dx,dy,dz) ) )
 		    bp = (value != neighbor);
 	  }
 	else
