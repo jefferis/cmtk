@@ -282,7 +282,6 @@ private:
     virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const 
     {
       mxml_node_t *node = mxmlNewElement( parent, "boolean" );
-      mxmlNewText( mxmlNewElement( node, "name" ), 0, "boolean" );
       return node;
     }
 
@@ -323,7 +322,6 @@ private:
     virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const 
     {
       mxml_node_t *node = mxmlNewElement( parent, CommandLineTypeTraits<T>::GetName() );
-      mxmlNewText( mxmlNewElement( node, "name" ), 0, "switch" );
       if ( !Flag ) // if there is no flag monitoring this option, then there must be a valid default value
 	{
 	mxml_node_t *dflt = mxmlNewElement( node, "default" );

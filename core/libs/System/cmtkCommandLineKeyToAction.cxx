@@ -40,12 +40,17 @@ cmtk::CommandLine::KeyToAction::MakeXML( mxml_node_t *const parent ) const
     {
     mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment );
     }
+
+  if ( this->m_KeyString.length() )
+    {
+    mxmlNewText( mxmlNewElement( node, "name" ), 0, this->m_KeyString.c_str() );
+    }
   if ( this->m_Key )
     {
     const char keyStr[] = { '-', this->m_Key, 0 };
     mxmlNewText( mxmlNewElement( node, "flag" ), 0, keyStr );
     }
-  if ( this->m_KeyString.size() )
+  if ( this->m_KeyString.length() )
     {
 // for some reason Slicer does not accept long options that contain hyphens ("-"), so we replace them.
     std::string xmlKeyStr = std::string( "--" ) + this->m_KeyString;
