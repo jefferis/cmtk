@@ -45,5 +45,12 @@ main( int argc, char *argv[] )
   cmtk::PipelineObject::SetDebugMode( true );
 #endif
   cmtk::QtSimpleFusionApp fusionApp( argc, argv );
+
+  if ( argc > 1 )
+    {
+    cmtk::StdErr << "ERROR: this application does not accept any non-Qt command line options\n";
+    exit( 2 );
+    }
+
   return fusionApp.exec();
 }
