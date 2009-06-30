@@ -30,21 +30,26 @@
 */
 #include <cmtkCommandLine.h>
 
-#include <strstream>
+#include <sstream>
 
 mxml_node_t*
 cmtk::CommandLine::KeyToAction::MakeXML( mxml_node_t *const parent ) const
 {
   mxml_node_t *node = this->m_Action->MakeXML( parent );
+  if ( this->m_Comment )
+    {
+    mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment );
+    }
   if ( this->m_Key )
     {
-    const char keyStr[] = { this->m_Key, 0 };
+    const char keyStr[] = { '-', this->m_Key, 0 };
     mxmlNewText( mxmlNewElement( node, "flag" ), 0, keyStr );
     }
   if ( this->m_KeyString.size() )
     {	
-    mxmlNewText( mxmlNewElement( node, "longflag" ), 0, this->m_KeyString.c_str() );
+    mxmlNewText( mxmlNewElement( node, "longflag" ), 0, (std::string( "--" ) + this->m_KeyString).c_str() );
     }
+
   return node;
 }
 

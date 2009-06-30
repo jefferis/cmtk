@@ -56,6 +56,23 @@ CommandLine::AddProgramInfoXML( mxml_node_t *const parent, const ProgramProperti
   return NULL;
 }
 
+const char *
+cmtkWhitespaceWriteMiniXML( mxml_node_t*, int where)
+{
+  switch ( where )
+    {
+    case MXML_WS_BEFORE_OPEN:
+      return "\n";
+    case MXML_WS_AFTER_OPEN:
+      return NULL;
+    case MXML_WS_BEFORE_CLOSE:
+      return NULL;
+    case MXML_WS_AFTER_CLOSE:
+      return "\n";
+    }
+  return NULL;
+}
+
 void
 CommandLine::WriteXML
 () const
@@ -67,33 +84,39 @@ CommandLine::WriteXML
     
     mxml_node_t *x_exec = mxmlNewElement(xml, "executable");
     
+    this->AddProgramInfoXML( x_exec, PRG_CATEG, "category" );
     this->AddProgramInfoXML( x_exec, PRG_TITLE, "title" );
     this->AddProgramInfoXML( x_exec, PRG_DESCR, "description" );
-    this->AddProgramInfoXML( x_exec, PRG_CATEG, "category" );
     this->AddProgramInfoXML( x_exec, PRG_LCNSE, "license" );
     this->AddProgramInfoXML( x_exec, PRG_CNTRB, "contributor" );
     this->AddProgramInfoXML( x_exec, PRG_ACKNL, "acknowledgment" );
+    this->AddProgramInfoXML( x_exec, PRG_DOCUM, "documentation" );
+    this->AddProgramInfoXML( x_exec, PRG_VERSN, "version" );
     
-  for ( KeyActionGroupListType::const_iterator grp = this->m_KeyActionGroupList.begin(); grp != this->m_KeyActionGroupList.end(); ++grp )
-    {
-    const std::string& name = (*grp)->m_Name;
+    for ( KeyActionGroupListType::const_iterator grp = this->m_KeyActionGroupList.begin(); grp != this->m_KeyActionGroupList.end(); ++grp )
+      {
+      mxml_node_t *parameterGroup = mxmlNewElement( x_exec, "parameters" );
 
-    mxml_node_t *parent = x_exec;
-    if ( name != "MAIN" )
-      {
-      parent = mxmlNewElement( x_exec, "parameters" );
-      mxmlNewText( mxmlNewElement( parent, "label" ), 0, name.c_str() );
-      mxmlNewText( mxmlNewElement( parent, "description" ), 0, (*grp)->m_Description.c_str() );
+      const std::string& name = (*grp)->m_Name;
+      if ( name == "MAIN" )
+	{
+	mxmlNewText( mxmlNewElement( parameterGroup, "label" ), 0, "General" );
+	mxmlNewText( mxmlNewElement( parameterGroup, "description" ), 0, "General Parameters" );
+	}
+      else
+	{
+	mxmlNewText( mxmlNewElement( parameterGroup, "label" ), 0, name.c_str() );
+	mxmlNewText( mxmlNewElement( parameterGroup, "description" ), 0, (*grp)->m_Description.c_str() );
+	}
+      
+      const KeyActionListType& kal = (*grp)->m_KeyActionList;
+      for ( KeyActionListType::const_iterator it = kal.begin(); it != kal.end(); ++it )
+	{
+	(*it)->MakeXML( parameterGroup );
+	}
       }
     
-    const KeyActionListType& kal = (*grp)->m_KeyActionList;
-    for ( KeyActionListType::const_iterator it = kal.begin(); it != kal.end(); ++it )
-      {
-      (*it)->MakeXML( parent );
-      }
-    }
-    
-    mxmlSaveFile( xml, stdout, MXML_NO_CALLBACK);
+    mxmlSaveFile( xml, stdout, cmtkWhitespaceWriteMiniXML );
     }
 }
 

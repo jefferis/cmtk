@@ -120,6 +120,10 @@ public:
     PRG_LCNSE = 4,
     /// Program contributor.
     PRG_CNTRB = 5,
+    /// Program documentation (URL).
+    PRG_DOCUM = 6,
+    /// Program version (default: CMTK version).
+    PRG_VERSN = 7,
     /// Program syntax.
     PRG_SYNTX = 100
   } ProgramProperties;
@@ -278,6 +282,7 @@ private:
     virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const 
     {
       mxml_node_t *node = mxmlNewElement( parent, "boolean" );
+      mxmlNewText( mxmlNewElement( node, "name" ), 0, "boolean" );
       return node;
     }
 
@@ -318,6 +323,7 @@ private:
     virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const 
     {
       mxml_node_t *node = mxmlNewElement( parent, CommandLineTypeTraits<T>::GetName() );
+      mxmlNewText( mxmlNewElement( node, "name" ), 0, "switch" );
       if ( !Flag ) // if there is no flag monitoring this option, then there must be a valid default value
 	{
 	mxml_node_t *dflt = mxmlNewElement( node, "default" );
@@ -366,6 +372,7 @@ private:
     virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const 
     {
       mxml_node_t *node = mxmlNewElement( parent, CommandLineTypeTraits<T>::GetName() );
+      mxmlNewText( mxmlNewElement( node, "name" ), 0, CommandLineTypeTraits<T>::GetName() );
       return node;
     }
 

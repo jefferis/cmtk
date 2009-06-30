@@ -90,6 +90,7 @@ main( int argc, char *argv[] )
     {
     cmtk::CommandLine cl( argc, argv );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Describe image file formats and parameters" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool prints a detailed description of the input image(s)" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] imageFile0 [imageFile1 ...]" );
 
     typedef cmtk::CommandLine::Key Key;

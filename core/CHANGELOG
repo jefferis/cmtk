@@ -15,6 +15,9 @@ Release CMTK-1.0.2:
 - Improved: eliminated explicit offset calculations in cmtk::DataGrid and use
     existing index-to-offset function instead.
 
+- Testing: added an experimental build with valgrind/memcheck memory checking
+    to discover further issues with uninitialized data etc.
+
 Release CMTK-1.0.1 (2009-06-25):
 
 - API: changed XformList::Apply to XformList::ApplyInPlace
