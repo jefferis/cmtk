@@ -93,6 +93,7 @@ main ( int argc, char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Pixelwise tests of statistical significance. Also compute correlations and z-scores" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] imageX0 [imageX1 ...] -- imageY0 [imageY1] ...\n"
 		       "[options] --symmetric imageX0 [imageX1 ...]");
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Statistics and Modeling" );
     
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );

@@ -84,6 +84,7 @@ int main( int argc, char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] input output\n"
 		       "[options] [-s,--studholme] input output average subject img0 [img1...]\n"
 		       "[options] [-R,--rohlfing] input output subject" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Filtering" );
     
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );

@@ -122,6 +122,7 @@ ElasticRegistrationCommandLine
     cl.SetProgramInfo( CommandLine::PRG_DESCR, "This program performs nonrigid image registration using multi-resolution optimization of voxel-based image similarity measures "
 		       "and a multi-resolution B-spline transformation model." );
     cl.SetProgramInfo( CommandLine::PRG_SYNTX, "[options] [refImage fltImage | initialStudylist]" );
+    cl.SetProgramInfo( CommandLine::PRG_CATEG, "CMTK.Image Registration" );
 
     typedef CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &this->Verbose, true, "Verbose peration" );

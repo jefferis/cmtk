@@ -86,7 +86,7 @@ std::list<cmtk::Types::DataItem> percentiles;
 const char*
 CallbackAddPercentile( const char* arg )
 {
-	percentiles.push_back( static_cast<cmtk::Types::DataItem>( atof( arg ) ) );
+  percentiles.push_back( static_cast<cmtk::Types::DataItem>( atof( arg ) ) );
   return NULL;
 }
 
@@ -348,6 +348,7 @@ main ( int argc, char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Image statistics" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Statistical computations on image pixel intensities, i.e., means and standard deviations" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] ImageFile0 [ImageFile1 ...]" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Statistics and Modeling" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );

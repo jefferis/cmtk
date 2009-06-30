@@ -89,6 +89,7 @@ main( int argc, char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Affine initialization for groupwise registration" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute initial affine alignment for a group of input images, which can be used as an input for groupwise registration" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] image0 [image1 ...]" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Image Registration" );
     
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation." );

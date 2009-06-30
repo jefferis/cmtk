@@ -306,6 +306,7 @@ main( int argc, char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Multi-channel nonrigid registration" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Multi-channel nonrigid B-spline image registration using histogram-based or covariance-based joint entropy measures" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] mcaffineOutput" );    
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Image Registration" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode" );

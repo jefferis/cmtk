@@ -62,7 +62,7 @@ cmtkWhitespaceWriteMiniXML( mxml_node_t*, int where)
   switch ( where )
     {
     case MXML_WS_BEFORE_OPEN:
-      return "\n";
+      return NULL;
     case MXML_WS_AFTER_OPEN:
       return NULL;
     case MXML_WS_BEFORE_CLOSE:
@@ -89,8 +89,8 @@ CommandLine::WriteXML
     this->AddProgramInfoXML( x_exec, PRG_DESCR, "description" );
     this->AddProgramInfoXML( x_exec, PRG_LCNSE, "license" );
     this->AddProgramInfoXML( x_exec, PRG_CNTRB, "contributor" );
-    this->AddProgramInfoXML( x_exec, PRG_ACKNL, "acknowledgment" );
-    this->AddProgramInfoXML( x_exec, PRG_DOCUM, "documentation" );
+    this->AddProgramInfoXML( x_exec, PRG_ACKNL, "acknowledgements" );
+    this->AddProgramInfoXML( x_exec, PRG_DOCUM, "documentation-url" );
     this->AddProgramInfoXML( x_exec, PRG_VERSN, "version" );
     
     for ( KeyActionGroupListType::const_iterator grp = this->m_KeyActionGroupList.begin(); grp != this->m_KeyActionGroupList.end(); ++grp )
