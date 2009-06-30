@@ -31,6 +31,7 @@
 
 #include <cmtkVolumeInjectionReconstruction.h>
 #include <cmtkHistogramBase.h>
+#include <cmtkTypedArrayNoiseEstimatorNaiveGaussian.h>
 #include <cmtkVolumeIO.h>
 
 #include <algorithm>
@@ -128,7 +129,7 @@ VolumeInjectionReconstruction
   this->m_OriginalImageHistogram->SetRange( this->m_OriginalImageMin, this->m_OriginalImageMax );
   originalData->GetEntropy( *this->m_OriginalImageHistogram, true /*fractional*/ );
   
-  const HistogramType::BinType noiseSigma = originalData->EstimateGaussianNoiseSigma( Self::NumberOfHistogramBins );
+  const HistogramType::BinType noiseSigma = TypedArrayNoiseEstimatorNaiveGaussian( originalData, Self::NumberOfHistogramBins ).GetNoiseLevelSigma();
   const HistogramType::BinType kernelSigma = Self::NumberOfHistogramBins * noiseSigma / (this->m_OriginalImageMax-this->m_OriginalImageMin);
   size_t kernelRadius = static_cast<size_t>( 1 + 2 * kernelSigma );
 

@@ -510,18 +510,6 @@ public:
     const size_t nBins = 256 //!< Number of histogram bins for percentile estimation.
     ) const;
 
-  /** Estimate Gaussian noise standard deviation.
-   */
-  virtual Types::DataItem EstimateGaussianNoiseSigma( const size_t histogramBins = 256 ) const = 0;
-
-  /** Estimate Rician noise variance using Brummer's method.
-   */
-  virtual Types::DataItem EstimateRicianNoiseBrummer( const size_t histogramBins = 255 ) const;
-
-  /** Estimate Rician noise variance using maximum-likelihood method
-   */
-  virtual Types::DataItem EstimateRicianNoiseML( const size_t histogramBins = 255 ) const;
-
   /** Get data histogram.
    *@return A histogram object filled with the relative frequencies of values 
    * in this array.
@@ -562,28 +550,6 @@ public:
   /** Histogram equalization of values in array.
    */
   virtual void HistogramEqualization( const int numberOfLevels = 256 ) = 0;
-
-private:
-
-  /** Compute bias in an ML noise estimate.
-   *  Eq. 26 from Sijbers et al, 2007 
-   */
-  virtual double SijbersBiasHat ( const Histogram<unsigned int>::SmartPtr histogram, const double sigmaHat, const int numBinsToUse ) const;
-
-  /** Compute the log-likelihood for the ML noise estimate.
-   *  Eq. 26 from Sijbers et al, 2007 
-   */
-  virtual double SijbersLogLikelihood ( const Histogram<unsigned int>::SmartPtr histogram, const double sigma, const int numBinsToUse ) const;
-
-  /** Compute variance of an ML noise estimate.
-   *  Eq. 21 from Sijbers et al, 2007 
-   */
-  virtual double SijbersVarHat ( const Histogram<unsigned int>::SmartPtr histogram, const double sigmaHat, const int numBinsToUse ) const;
-
-  /** Figure out how many bins to use in ML noise estimate.
-   *  Section 2.3.1 from Sijbers et al, 2007
-   */
-  virtual double EstimateNumBinsToUse ( const Histogram<unsigned int>::SmartPtr histogram, const double sigmaHat ) const;
 };
 
 //@}

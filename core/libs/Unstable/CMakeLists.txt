@@ -29,7 +29,7 @@
 
 # Sources of non-templated classes.
 
-SET(cmtkUnstable_SRCS dummy.cxx)
+SET(cmtkUnstable_SRCS dummy.cxx cmtkTypedArrayNoiseEstimatorBrummer.cxx cmtkTypedArrayNoiseEstimatorMaximumLikelihood.cxx)
 
 ADD_LIBRARY(cmtkUnstable ${cmtkUnstable_SRCS})
 TARGET_LINK_LIBRARIES(cmtkUnstable cmtkUnstable)

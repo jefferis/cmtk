@@ -1,7 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2008-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,36 +28,33 @@
 //
 */
 
-#include <cmtkTypedArray.h>
+#include <cmtkconfig.h>
 
-namespace
+#include <cmtkTypedArrayNoiseEstimatorBrummer.h>
+#include <cmtkHistogram.h>
+
+namespace 
 cmtk
 {
 
-/** \addtogroup Base */
-//@{
-
-Types::DataItem
-TypedArray
-::GetPercentile
-( const Types::DataItem percentile, const size_t nBins ) const
+/** Estimate noise level in data stored in a TypedArray.
+ * Estimate Rician noise variance using Chang's maximum likelihood method.
+ *\author Mike Hasak
+ */
+class
+TypedArrayNoiseEstimatorMaximumLikelihood :
+    /// Inherit basic fields and helper functions
+    protected TypedArrayNoiseEstimatorBrummer
 {
-  const Histogram<unsigned int>::SmartPtr histogram( this->GetHistogram( nBins ) );
-  return histogram->GetPercentile( percentile );
-}
+public:
+  /// This class.
+  typedef TypedArrayNoiseEstimatorMaximumLikelihood Self;
 
-std::vector<Types::DataItem>
-TypedArray
-::GetPercentileList
-( const std::vector<Types::DataItem>& percentileList, const size_t nBins ) const
-{
-  const Histogram<unsigned int>::SmartPtr histogram( this->GetHistogram( nBins ) );
+  /// Base class.
+  typedef TypedArrayNoiseEstimatorBrummer Superclass;
 
-  std::vector<Types::DataItem> results( percentileList.size() );
-  for ( size_t i = 0; i < percentileList.size(); ++i )
-    results[i] = histogram->GetPercentile( percentileList[i] );
-  
-  return results;
-}
+  /// Constructor.
+  TypedArrayNoiseEstimatorMaximumLikelihood( const TypedArray* data, const size_t histogramBins = 255 );
+};
 
 } // namespace cmtk

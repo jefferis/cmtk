@@ -1,7 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2008-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,36 +28,44 @@
 //
 */
 
-#include <cmtkTypedArray.h>
+#include <cmtkconfig.h>
 
-namespace
+#include <cmtkTypedArray.h>
+#include <cmtkHistogram.h>
+
+namespace 
 cmtk
 {
 
-/** \addtogroup Base */
-//@{
-
-Types::DataItem
-TypedArray
-::GetPercentile
-( const Types::DataItem percentile, const size_t nBins ) const
+/** Estimate noise level in data stored in a TypedArray.
+ * Estimate Gaussian noise variance using naive peak finding method.
+ *\author Torsten Rohlfing
+ */
+class
+TypedArrayNoiseEstimatorNaiveGaussian
 {
-  const Histogram<unsigned int>::SmartPtr histogram( this->GetHistogram( nBins ) );
-  return histogram->GetPercentile( percentile );
-}
+public:
+  /// This class.
+  typedef TypedArrayNoiseEstimatorNaiveGaussian Self;
 
-std::vector<Types::DataItem>
-TypedArray
-::GetPercentileList
-( const std::vector<Types::DataItem>& percentileList, const size_t nBins ) const
-{
-  const Histogram<unsigned int>::SmartPtr histogram( this->GetHistogram( nBins ) );
-
-  std::vector<Types::DataItem> results( percentileList.size() );
-  for ( size_t i = 0; i < percentileList.size(); ++i )
-    results[i] = histogram->GetPercentile( percentileList[i] );
+  /// Constructor.
+  TypedArrayNoiseEstimatorNaiveGaussian( const TypedArray* data, const size_t histogramBins = 255 );
   
-  return results;
-}
+  /// Get noise level.
+  Types::DataItem GetNoiseLevelSigma() const
+  {
+    return this->m_NoiseLevelSigma;
+  }
+
+protected:
+  /// Default constructor; should not be invoked by user code.
+  TypedArrayNoiseEstimatorNaiveGaussian()
+  {
+    this->m_NoiseLevelSigma = 0;
+  }
+
+  /// The estimate noise sigma.
+  Types::DataItem m_NoiseLevelSigma;
+};
 
 } // namespace cmtk

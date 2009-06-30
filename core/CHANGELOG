@@ -2,6 +2,9 @@ Release CMTK-1.0.2:
 
 - API: all igsGetSetXXX macros are now cmtkGetSetXXX, and they all define the
     field name with a "m_" prefix to avoid type/field name collisions.
+- API: more elegant design of noise estimator classes that work on TypedArray
+    objects. Mike's experimental ML noise estimator implementations moved to
+    "Unstable" library.
 
 - Testing: support for automated memory testing using valgrind etc.
 

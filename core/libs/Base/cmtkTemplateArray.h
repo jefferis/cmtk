@@ -673,10 +673,6 @@ public:
    */
   virtual size_t GetStatistics ( Types::DataItem& mean, Types::DataItem& variance ) const;
 
-  /** Estimate Gaussian noise standard deviation.
-   */
-  virtual Types::DataItem EstimateGaussianNoiseSigma( const size_t histogramBins = 255 ) const;
-
   /** Set data block to constant value.
    */
   virtual void BlockSet( const Types::DataItem value, const size_t fromOffset, const size_t toOffset );
