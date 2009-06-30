@@ -199,7 +199,10 @@ public:
   {
   public:
     /// Short option constructor.
-    Key( const char keyChar ) : m_KeyChar( keyChar ) {}
+    Key( const char keyChar ) : m_KeyChar( keyChar ) 
+    {
+      StdErr << "WARNING: short command line option '" << keyChar << "' should also have a long name.\n";
+    }
 
     /// Long option constructor.
     Key( const std::string& keyString ) : m_KeyChar( 0 ), m_KeyString( keyString ) {}
