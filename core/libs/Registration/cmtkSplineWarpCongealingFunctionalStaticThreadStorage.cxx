@@ -61,6 +61,8 @@ SplineWarpCongealingFunctional::StaticThreadStorage::Initialize( const Self* Thi
     {
     this->m_Histogram[x].Resize( This->m_HistogramBins + 2 * This->m_HistogramKernelRadiusMax, false /*reset*/ );
     }    
+
+  this->m_NeedToCopyXformParameters = true;
 }
 
 } // namespace cmtk
