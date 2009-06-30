@@ -198,7 +198,10 @@ public:
   class Key
   {
   public:
-    /// Short option constructor.
+    /** Short option constructor.
+     *\deprecated This may be removed in the future because short-only options are not nice when we use
+     * the XML self description for Slicer integration.
+     */
     Key( const char keyChar ) : m_KeyChar( keyChar ) 
     {
       StdErr << "WARNING: short command line option '" << keyChar << "' should also have a long name.\n";
