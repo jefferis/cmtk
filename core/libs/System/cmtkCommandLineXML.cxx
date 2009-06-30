@@ -64,9 +64,9 @@ cmtkWhitespaceWriteMiniXML( mxml_node_t*, int where)
     case MXML_WS_BEFORE_OPEN:
       return NULL;
     case MXML_WS_AFTER_OPEN:
-      return NULL;
+      return "\n";
     case MXML_WS_BEFORE_CLOSE:
-      return NULL;
+      return "\n";
     case MXML_WS_AFTER_CLOSE:
       return "\n";
     }
