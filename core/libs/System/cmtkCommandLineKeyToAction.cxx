@@ -46,8 +46,15 @@ cmtk::CommandLine::KeyToAction::MakeXML( mxml_node_t *const parent ) const
     mxmlNewText( mxmlNewElement( node, "flag" ), 0, keyStr );
     }
   if ( this->m_KeyString.size() )
-    {	
-    mxmlNewText( mxmlNewElement( node, "longflag" ), 0, (std::string( "--" ) + this->m_KeyString).c_str() );
+    {
+// for some reason Slicer does not accept long options that contain hyphens ("-"), so we replace them.
+    std::string xmlKeyStr = std::string( "--" ) + this->m_KeyString;
+    for ( size_t i = 2; i < xmlKeyStr.length(); ++i )
+      {
+      if ( xmlKeyStr[i] == '-' )
+	xmlKeyStr[i] = '_';
+      }
+    mxmlNewText( mxmlNewElement( node, "longflag" ), 0, xmlKeyStr.c_str() );
     }
 
   return node;
