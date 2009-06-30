@@ -32,15 +32,12 @@
 #include <cmtkconfig.h>
 
 #include <cmtkUniformVolume.h>
-
-#include <iostream>
-
 #include <cmtkVolumeIO.h>
 
 int
 main( const int argc, const char*[] )
 {
-  if ( argc > 2 )
+  if ( argc > 3 )
     {
     cmtk::UniformVolume volume;
     }
