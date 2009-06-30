@@ -42,6 +42,7 @@ cmtk
 //@{
 
 AffineGroupwiseRegistrationRMIFunctional::AffineGroupwiseRegistrationRMIFunctional()
+  : m_XformNumberDOFs( 9 )
 {
   this->m_ParametersPerXform = AffineXform::TotalNumberOfParameters;
 }
