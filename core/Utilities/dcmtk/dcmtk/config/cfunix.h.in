@@ -517,7 +517,13 @@ typedef unsigned short ushort;
 #undef HAVE_SSTREAM
 
 /* Define to 1 if you have the <sstream.h> header file. */
-#undef HAVE_SSTREAM_H
+//#undef HAVE_SSTREAM_H
+#cmakedefine HAVE_SSTREAM 1
+#cmakedefine HAVE_SSTREAM_H 1
+#cmakedefine HAVE_STRSTREAM 1
+#cmakedefine HAVE_STRSTREAM_H 1
+#cmakedefine HAVE_STRSTREA_H 1
+
 
 /* Define to 1 if you have the `stat' function. */
 #undef HAVE_STAT
@@ -755,7 +761,7 @@ typedef unsigned short ushort;
 #undef TM_IN_SYS_TIME
 
 /* Define if ANSI standard C++ includes are used */
-#undef USE_STD_CXX_INCLUDES
+#cmakedefine USE_STD_CXX_INCLUDES
 
 /* Define if we are compiling with libpng support */
 #undef WITH_LIBPNG

@@ -12,7 +12,6 @@
 #define END_EXTERN_C
 #endif
 
-
 /*
 ** This head includes an OS/Compiler specific configuration header.
 ** Add entries for specific non-unix OS/Compiler environments.

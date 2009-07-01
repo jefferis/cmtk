@@ -59,7 +59,7 @@ using namespace std;
 #endif
 
 #else /* USE_STD_CXX_INCLUDES */
-
+#error NO STD CXX INCLUDES
 #include <iostream.h>
 #include <fstream.h>
 // For old STREAMS library: preference for strstream

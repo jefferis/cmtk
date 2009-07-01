@@ -27,6 +27,26 @@
 
 
 PROJECT(cmtkDCMTK)
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_CONFIG_H")
+
+SET(USE_STD_CXX_INCLUDES 1)
+
+INCLUDE (CheckIncludeFileCXX)
+CHECK_INCLUDE_FILE_CXX (sstream HAVE_SSTREAM)
+CHECK_INCLUDE_FILE_CXX (strstream HAVE_STRSTREAM)
+CHECK_INCLUDE_FILE_CXX (sstream.h HAVE_SSTREAM_H)
+CHECK_INCLUDE_FILE_CXX (strstrea.h HAVE_STRSTREA_H)
+CHECK_INCLUDE_FILE_CXX (strstream.h HAVE_STRSTREAM_H)
+
+CONFIGURE_FILE(${DCMTK_INCLUDE_DIR}/config/cfunix.h.in ${DCMTK_INCLUDE_DIR}/config/cfunix.h)
+
+INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR}/config)
+INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR}/dcmdata)
+INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR}/dcmimgle)
+INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR}/dcmjpeg)
+INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR}/ofstd)
+
 INCLUDE_REGULAR_EXPRESSION("^.*.h$")
 
 SET(dcmtk_SRCS dcbytstr.cc dcerror.cc  dcobject.cc dctagkey.cc didocu.cc   ofconsol.cc
@@ -35,18 +55,11 @@ SET(dcmtk_SRCS dcbytstr.cc dcerror.cc  dcobject.cc dctagkey.cc didocu.cc   ofcon
                dcdict.cc   dcitem.cc   dcstack.cc  dcvrui.cc   djutils.cc  ofstring.cc
                dcelem.cc   dclist.cc   dctag.cc    dcxfer.cc   ofcond.cc   ofthread.cc )
 
-CONFIGURE_FILE(${DCMTK_INCLUDE_DIR}/config/cfunix.h.in ${CMAKE_CURRENT_BINARY_DIR}/cfunix.h)
-
 ADD_LIBRARY(cmtkDCMTK ${dcmtk_SRCS})
 TARGET_LINK_LIBRARIES(cmtkDCMTK)
 
 INSTALL_TARGETS(/lib cmtkDCMTK)
 INSTALL_FILES(/include/dcmtk "(\\.h)$")
-INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR}/config)
-INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR}/dcmdata)
-INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR}/dcmimgle)
-INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR}/dcmjpeg)
-INCLUDE_DIRECTORIES(${DCMTK_INCLUDE_DIR}/ofstd)
 
 SET(CMTK_DCMTK_LIBRARIES cmtkDCMTK)
 
