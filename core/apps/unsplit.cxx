@@ -61,13 +61,9 @@ main( const int argc, const char* argv[] )
 
     cl.AddOption( Key( 'o', "output" ), &outputFilePath, "Path for output image." );
 
-    cl.AddSwitch( Key( 'a', "axial" ), &axis, 2, "Interleaved axial images [default]" );
-    cl.AddSwitch( Key( 'c', "coronal" ), &axis, 1, "Interleaved coronal images" );
-    cl.AddSwitch( Key( 's', "sagittal" ), &axis, 0, "Interleaved sagittal images" );
-
-    cl.AddSwitch( Key( 'x' ), &axis, 0, "Interleaved along x axis" );
-    cl.AddSwitch( Key( 'y' ), &axis, 1, "Interleaved along y axis" );
-    cl.AddSwitch( Key( 'z' ), &axis, 2, "Interleaved along z axis [default]" );
+    cl.AddSwitch( Key( 'z', "axial" ), &axis, 2, "Interleaved axial images (along z axis) [default]" );
+    cl.AddSwitch( Key( 'y', "coronal" ), &axis, 1, "Interleaved coronal images (along y axis)" );
+    cl.AddSwitch( Key( 'x', "sagittal" ), &axis, 0, "Interleaved sagittal images (along x axis)" );
 
     cl.Parse();
 
