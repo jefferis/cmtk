@@ -57,7 +57,7 @@ float ThresholdForegroundMax = FLT_MAX;
 bool ThresholdForegroundFlag = false;
 const char* FNameMaskImage = NULL;
 float SamplingDensity = 0;
-size_t NumberOfHistogramBins = 256;
+unsigned int NumberOfHistogramBins = 256;
 
 const char* FNameInputImage = NULL;
 const char* FNameOutputImage = NULL;
