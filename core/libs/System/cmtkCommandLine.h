@@ -244,7 +244,7 @@ public:
     virtual ~Item() {}
 
     /// Set item properties.
-    virtual void SetProperties( const ItemProperties properties )
+    virtual void SetProperties( const long int properties )
     {
       this->m_Properties = properties;
     }
@@ -258,7 +258,7 @@ public:
 
   protected:
     /// Item properties.
-    ItemProperties m_Properties;
+    long int m_Properties;
 
     /// Safely convertstring argument to long integer.
     static long int ConvertStrToLong( const char* str );
@@ -460,20 +460,12 @@ private:
     NonOptionParameter( const char* *const var, const char* name, const char* comment, bool *const flag ) : Superclass( var, flag ), m_Name( name ), m_Comment( comment ) {};
 
     /// Evaluate and set associated variable.
-    virtual void Evaluate( const size_t argc, const char* argv[], size_t& index )
-    {
-      if ( Flag ) 
-	*Flag = true;
+    virtual void Evaluate( const size_t argc, const char* argv[], size_t& index );
 
-      if ( index < argc ) 
-	{
-	*Var = argv[index];
-	} 
-      else
-	{
-	throw( Exception( "Argument missing", index ) );
-	}
-    }
+    /// Returns an XML tree describing this parameter.
+    virtual mxml_node_t* MakeXML( mxml_node_t *const parent, //!< Parent in the XML tree for the new node.
+				  const int index //!< Running index [0,1,...] of this argument in the argument list.
+      ) const;
 
     /// Name of this parameter.
     const char* m_Name;

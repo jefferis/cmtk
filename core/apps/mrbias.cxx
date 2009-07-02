@@ -70,7 +70,6 @@ bool IncrementalPolynomials = false;
 cmtk::Types::Coordinate StepMax = 1.0;
 cmtk::Types::Coordinate StepMin = 0.1;
 
-bool EstimateDropOff = false;
 bool LogIntensities = false;
 
 int
@@ -91,7 +90,6 @@ main( const int argc, const char *argv[] )
     cl.AddOption( Key( 'A', "degree-add" ), &PolynomialDegreeAdd, "Polynomial degree for additive correction." );
     cl.AddOption( Key( 'M', "degree-mul" ), &PolynomialDegreeMul, "Polynomial degree for multiplicative correction." );
     cl.AddSwitch( Key( 'I', "incremental" ), &IncrementalPolynomials, true, "Incrementally increase polynomial degrees." );
-    cl.AddSwitch( Key( 'd', "dropoff" ), &EstimateDropOff, true, "Estimate signal drop-off from coil coverage." );
     cl.EndGroup();
 
     cl.BeginGroup( "Preprocessing", "Input Image Preprocessing" );
@@ -119,8 +117,8 @@ main( const int argc, const char *argv[] )
     cl.AddSwitch( Key( 'F', "write-float" ), &OutputFloatImage, true, "Write output image with floating point pixel data [default: input data type]." );
     cl.EndGroup();
     
-    cl.AddParameter( &FNameInputImage, "InputImage", "Input image path" );
-    cl.AddParameter( &FNameOutputImage, "OutputImage", "Output image path" );
+    cl.AddParameter( &FNameInputImage, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &FNameOutputImage, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE & cmtk::CommandLine::PROPS_OUTPUT );
 
     cl.Parse();
     }
@@ -254,34 +252,6 @@ main( const int argc, const char *argv[] )
 
     // make sure everything is according to optimum parameters
     outputImage = functional->GetOutputImage( v, false/*foregroundOnly*/ );
-    }
-  
-  if ( EstimateDropOff )
-    {
-    std::vector<float> edgeImageMean( outputImage->GetDims( 2 ) );
-    for ( int i = 0; i < outputImage->GetDims( 2 ); ++i )
-      {
-      cmtk::ScalarImage::SmartPtr slice( outputImage->GetOrthoSlice( cmtk::AXIS_Z, i ) );
-      slice->ApplySobel2DFilter();
-      
-      cmtk::Types::DataItem mean, variance;
-      slice->GetPixelData()->GetStatistics( mean, variance );
-
-      edgeImageMean[i] = mean;
-      }
-
-    const float maxOfMeans = *(std::max_element( edgeImageMean.begin(), edgeImageMean.end() ) );
-
-    for ( int i = 0; i < outputImage->GetDims( 2 ); ++i )
-      {
-      const float scale = maxOfMeans / edgeImageMean[i];
-      for ( int y = 0; y < outputImage->GetDims( 1 ); ++y )
-	for ( int x = 0; x < outputImage->GetDims( 0 ); ++x )
-	  {
-	  const size_t offset = outputImage->GetOffsetFromIndex( x, y, i );
-	  outputImage->SetDataAt( scale * outputImage->GetDataAt( offset ), offset );
-	  }
-      }
     }
   
   if ( FNameOutputImage )

@@ -102,6 +102,12 @@ CommandLine::WriteXML
 	{
 	mxmlNewText( mxmlNewElement( parameterGroup, "label" ), 0, "General" );
 	mxmlNewText( mxmlNewElement( parameterGroup, "description" ), 0, "General Parameters" );
+
+	int index = 0;
+	for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
+	  {
+	  (*it)->MakeXML( parameterGroup, index++ );
+	  }
 	}
       else
 	{
@@ -118,6 +124,8 @@ CommandLine::WriteXML
     
     mxmlSaveFile( xml, stdout, cmtkWhitespaceWriteMiniXML );
     fputs( "\n", stdout ); // Slicer's XML parser needs an extra \n after the last line
+
+    mxmlDelete( xml );
     }
 }
 
