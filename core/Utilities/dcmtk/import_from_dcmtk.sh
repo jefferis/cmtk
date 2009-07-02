@@ -10,19 +10,19 @@ CMTK_DCMTK_ROOT="${CMTK_ROOT}/Utilities/dcmtk"
 CMTK_DCMTK_INCLUDE="${CMTK_ROOT}/Utilities/dcmtk/dcmtk"
 
 CONFIG_DIR="config"
-CONFIG_MODULES="cfunix cfwin32 osconfig"
+CONFIG_MODULES="cfwin32 osconfig"
 
 DCMDATA_DIR="dcmdata"
-DCMDATA_MODULES="dcbytstr dcdeftag dcdict dcerror dchashdi dclist dcpcache dcstack dctagkey dctypes dcvrui dcdatset dcdicent dcelem dcfilefo dcitem dcobject dcsequen dctag dctk dcvr dcxfer"
+DCMDATA_MODULES="dcuid dcvm dcdefine dcmetinf dcdicdir dcpixseq dcvrae dcvras dcvrcs dcvrda dcvrds dcvrdt dcvris dcvrtm dcchrstr dcvrlo dcvrlt dcvrpn dcvrsh dcvrst dcvrut dcvrobow dcpixel dcovlay dcvrat dcvrss dcvrus dcvrsl dcvrul dcvrulup dcvrfl dcvrfd dcvrof cmdlnarg dcdirrec dcofsetl dcvrpobw dcbytstr dcdebug dcdeftag dcdict dcerror dchashdi dclist dcpcache dcstack dctagkey dctypes dcvrui dcdatset dcdicent dcelem dcfilefo dcitem dcobject dcsequen dctag dctk dcvr dcxfer dcswap dcistrma dcostrma dcostrmf dcistrmf dcpxitem dccodec"
 
 DCMIMGLE_DIR="dcmimgle"
 DCMIMGLE_MODULES="didocu diobjcou diutils"
 
 DCMJPEG_DIR="dcmjpeg"
-DCMJPEG_MODULES="djdecode djutils"
+DCMJPEG_MODULES="djdecode djutils djdecbas djdecext djdecsps djdecpro djdecsv1 djdeclol djcparam djcodecd"
 
 OFSTD_DIR="ofstd"
-OFSTD_MODULES="ofalgo ofcast ofcond ofconsol ofglobal oflist ofstack ofstdinc ofstream ofstring ofthread oftypes"
+OFSTD_MODULES="ofalgo ofcast ofcond ofconsol ofglobal oflist ofstack ofstdinc ofstream ofstring ofthread oftypes ofdate ofdatime oftime"
 
 copy_src_tgt()
 {
@@ -50,7 +50,6 @@ copy_src_tgt ${DCMDATA_DIR} ${DCMDATA_MODULES};
 copy_src_tgt ${DCMIMGLE_DIR} ${DCMIMGLE_MODULES};
 copy_src_tgt ${DCMJPEG_DIR} ${DCMJPEG_MODULES};
 copy_src_tgt ${OFSTD_DIR} ${OFSTD_MODULES};
-cp ${DCM_SOURCE_ROOT}/config/include/dcmtk/config/cfunix.h.in ${CMTK_DCMTK_INCLUDE}/config
 cp ${DCM_SOURCE_ROOT}/dcmdata/libsrc/dicom.dic ${CMTK_DCMTK_ROOT}
 
 
