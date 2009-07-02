@@ -152,7 +152,7 @@ public:
   /** Compute pattern intensity between two images.
    * See Penney et al. III-E.
    */
-  static ReturnType GetPatternIntensity( const ScalarImage* image0, const ScalarImage* image1, const ReturnType sigma = 10, const unsigned int radius = 3 );
+  static ReturnType GetPatternIntensity( const ScalarImage* image0, const ScalarImage* image1, const ReturnType sigma = 10, const int radius = 3 );
 
   /** Compute entropy of difference of two images.
    * See Penney et al. III-B.

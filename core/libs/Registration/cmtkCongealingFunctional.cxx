@@ -403,7 +403,7 @@ CongealingFunctional<TXform,THistogramBinType>
 
     for ( size_t smpl = sampleFrom; smpl < sampleTo; ++smpl )
       {
-      float sum = 0, sumsq = 0;
+      double sum = 0, sumsq = 0;
       unsigned int count = 0;
 
       if ( ThisConst->m_UseTemplateData )

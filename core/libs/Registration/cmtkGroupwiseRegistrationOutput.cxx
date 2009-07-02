@@ -163,7 +163,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
 
       for ( size_t px = 0; px < numberOfPixels; ++px )
 	{
-	averagePtr[px] = templateGrid->GetDataAt( px );	
+	averagePtr[px] = static_cast<float>( templateGrid->GetDataAt( px ) );
 	}
       count->Fill( 1 );
       }  
@@ -218,7 +218,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
 	Types::DataItem v;
 	if ( data->Get( v, i ) )
 	  {
-	  averagePtr[i] += v;
+	  averagePtr[i] += static_cast<float>( v );
 	  ++countPtr[i];
 	  }
 	}

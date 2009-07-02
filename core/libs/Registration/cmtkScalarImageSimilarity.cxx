@@ -146,7 +146,7 @@ ScalarImageSimilarity::GetGradientDifference
 
 ScalarImageSimilarity::ReturnType 
 ScalarImageSimilarity::GetPatternIntensity
-( const ScalarImage* image0, const ScalarImage* image1, const ScalarImageSimilarity::ReturnType sigma, const unsigned int radius )
+( const ScalarImage* image0, const ScalarImage* image1, const ScalarImageSimilarity::ReturnType sigma, const int radius )
 {
   if ( ! CheckImageDimensions( image0, image1 ) ) return CMTK_FLOAT_NAN;
 
@@ -159,7 +159,7 @@ ScalarImageSimilarity::GetPatternIntensity
   static std::vector<int> rows; 
   static std::vector<int> cols;
 
-  static unsigned int lastRadius = 0;
+  static int lastRadius = 0;
   
   if ( radius != lastRadius )
     {

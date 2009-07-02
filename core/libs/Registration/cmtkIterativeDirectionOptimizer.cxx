@@ -83,7 +83,7 @@ IterativeDirectionOptimizer::Optimize
 	  if ( (irq = this->CallbackExecute( percentDone )) ) break;
 	  
 	  v[dim] += step * stepScaleVector[dim];
-	  float fUpper = this->Evaluate( v );
+      const Self::ReturnType fUpper = this->Evaluate( v );
 	  
 	  Types::Coordinate optimumStep = 0;
 	  
@@ -98,7 +98,7 @@ IterativeDirectionOptimizer::Optimize
 	  if ( (irq = this->CallbackExecute( percentDone )) ) break;
 	  
 	  v[dim] = vOld - (step * stepScaleVector[dim]);
-	  float fLower = this->Evaluate( v );
+      const Self::ReturnType fLower = this->Evaluate( v );
 	  
 	  if ( fLower > optimum ) 
 	    {
@@ -116,7 +116,7 @@ IterativeDirectionOptimizer::Optimize
 	      updateThisDim = false;
 	      vOld = v[dim];
 	      v[dim] += optimumStep * stepScaleVector[dim];
-	      float f = this->Evaluate( v );
+          const Self::ReturnType f = this->Evaluate( v );
 	      
 	      if ( f > optimum ) 
 		{

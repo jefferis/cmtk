@@ -451,14 +451,14 @@ void Colormap::Execute ()
   else 
     {
     // if no user-defined map, create map from HSV ramps.
-    float H = HueRange[0];
-    float Hstep = (HueRange[1] - HueRange[0]) / (LookupTableEntries - 1);
+    Types::DataItem H = HueRange[0];
+    const Types::DataItem Hstep = (HueRange[1] - HueRange[0]) / (LookupTableEntries - 1);
     
-    float S = SaturationRange[0];
-    float Sstep = (SaturationRange[1] - SaturationRange[0]) / (LookupTableEntries - 1);
+    Types::DataItem S = SaturationRange[0];
+    const Types::DataItem Sstep = (SaturationRange[1] - SaturationRange[0]) / (LookupTableEntries - 1);
     
-    float V = ValueRange[0];
-    float Vstep = (ValueRange[1] - ValueRange[0]) / (LookupTableEntries - 1);
+    Types::DataItem V = ValueRange[0];
+    const Types::DataItem Vstep = (ValueRange[1] - ValueRange[0]) / (LookupTableEntries - 1);
     
     if ( Gamma > 0 ) 
       {
@@ -466,7 +466,7 @@ void Colormap::Execute ()
 	{
 	if ( V > 0 ) 
 	  {
-	  float Vgamma = exp( log(V) * (1/Gamma) );
+	  Types::DataItem Vgamma = exp( log(V) * (1/Gamma) );
 	  HSV2RGB( LookupTable[index], H, S, Vgamma );
 	  } 
 	else
@@ -485,12 +485,12 @@ void Colormap::Execute ()
     }
 }
 
-void Colormap::HSV2RGB( RGB& rgb, float H, float S, float V )
+void Colormap::HSV2RGB( RGB& rgb, Types::DataItem H, Types::DataItem S, Types::DataItem V )
 {
-  const float max = 1.0;
-  const float third = 1.0 / 3.0;
+  const Types::DataItem max = 1.0;
+  const Types::DataItem third = 1.0 / 3.0;
 
-  float R, G, B;
+  Types::DataItem R, G, B;
   // compute rgb assuming S = 1.0;
   if (H >= 0.0 && H <= third) 
     { // red -> green

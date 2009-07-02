@@ -70,16 +70,16 @@ public:
   igsClassParameter(bool,HaveUserMap);
 
   /// Two-value array defining the Hue range of the colormap.
-  igsClassParameter2Array(float,HueRange);
+  igsClassParameter2Array(Types::DataItem,HueRange);
 
   /// Two-value array defining the Saturation range of the colormap.
-  igsClassParameter2Array(float,SaturationRange);
+  igsClassParameter2Array(cmtk::Types::DataItem,SaturationRange);
 
   /// Two-value array defining the Value range of the colormap.
-  igsClassParameter2Array(float,ValueRange);
+  igsClassParameter2Array(cmtk::Types::DataItem,ValueRange);
 
   // Gamma correction coefficient.
-  igsClassParameter(float,Gamma);
+  igsClassParameter(cmtk::Types::DataItem,Gamma);
 
   /// The number of entries in the colormap, ie. the number of discrete colors.
   igsClassParameter(int,TableEntries);
@@ -89,7 +89,7 @@ public:
    * table while all values above the upper bound are mapped to the final color
    * in the table.
    */
-  igsClassParameter2Array(float,DataRange);
+  igsClassParameter2Array(cmtk::Types::DataItem,DataRange);
 
   /** Reverse order of table entries.
    */
@@ -140,7 +140,7 @@ public:
   void SetFromStudy( const Study* study );
 
   /// Convert HSV color to RGB.
-  static void HSV2RGB( RGB& rgb, float H, float S, float V );
+  static void HSV2RGB( RGB& rgb, Types::DataItem H, Types::DataItem S, Types::DataItem V );
 
 protected:
   /// Default constructor.
@@ -174,7 +174,7 @@ private:
   int LookupTableEntries;
 
   /// Precomputed scaling factor for data value to table index conversion.
-  float InvDataRangeWidth;
+  Types::DataItem InvDataRangeWidth;
 
   /** Apply table lookup for a particular primitive data type.
    *@param T Template parameter specifying the primitive data type to lookup

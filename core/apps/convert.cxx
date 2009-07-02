@@ -95,13 +95,13 @@ int CropImagesRegionFrom[3] = { 0,0,0 };
 int CropImagesRegionTo[3] = { 0,0,0 };
 
 bool AutoCrop = false;
-float AutoCropThreshold = 0;
+cmtk::Types::DataItem AutoCropThreshold = 0;
 const char* CropXformOutFileName = NULL;
 
 const char* Downsample = NULL;
 
 bool AddGaussianNoise = 0;
-float AddGaussianNoiseFWHM = 0;
+cmtk::Types::Coordinate AddGaussianNoiseFWHM = 0;
 
 cmtk::Types::DataItem
 AddGaussianNoiseFunction( const cmtk::Types::DataItem value )
@@ -144,22 +144,22 @@ CallbackDilate( const char* arg )
   return NULL;
 }
 
-float Threshold = 0;
+cmtk::Types::DataItem Threshold = 0;
 bool HaveThreshold = false;
-float ThresholdMax = 0;
+cmtk::Types::DataItem ThresholdMax = 0;
 bool HaveThresholdMax = false;
 
 bool ThresholdToPadding = false;
 
-float RescaleMin = 0;
+cmtk::Types::DataItem RescaleMin = 0;
 bool HaveRescaleMin = false;
-float RescaleMax = 0;
+cmtk::Types::DataItem RescaleMax = 0;
 bool HaveRescaleMax = false;
 
-float RescaleSlope = 1.0;
+cmtk::Types::DataItem RescaleSlope = 1.0;
 bool HaveRescaleSlope = false;
 
-float BinarizeThreshold = 0;
+cmtk::Types::DataItem BinarizeThreshold = 0;
 bool HaveBinarizeThreshold = false;
 
 int MedianFilterRadius = 0;
@@ -169,10 +169,10 @@ bool Invert = false;
 bool HistogramEqualization = false;
 int PruneHistogramBinsHigh = 0;
 
-float Gamma = 1.0;
+cmtk::Types::DataItem Gamma = 1.0;
 bool ApplyGamma = false;
 
-float GaussFilterSigma = 1.0;
+cmtk::Types::Coordinate GaussFilterSigma = 1.0;
 bool ApplyGaussFilter = false;
 
 bool ApplySobelFilter = false;
@@ -183,10 +183,10 @@ bool ApplySquare = false;
 bool ApplySqrt = false;
 bool ApplyAbs = false;
 
-float PaddingData = 0.0;
+cmtk::Types::DataItem PaddingData = 0.0;
 bool HavePaddingData = false;
 
-float ReplacePaddingData = 0.0;
+cmtk::Types::DataItem ReplacePaddingData = 0.0;
 bool HaveReplacePaddingData = false;
 
 const char* MaskFileName = NULL;
