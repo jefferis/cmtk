@@ -1,3 +1,33 @@
+/*
+//
+//  Copyright 2009 SRI International
+//
+//  This file is part of the Computational Morphometry Toolkit.
+//
+//  http://www.nitrc.org/projects/cmtk/
+//
+//  The Computational Morphometry Toolkit is free software: you can
+//  redistribute it and/or modify it under the terms of the GNU General Public
+//  License as published by the Free Software Foundation, either version 3 of
+//  the License, or (at your option) any later version.
+//
+//  The Computational Morphometry Toolkit is distributed in the hope that it
+//  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+//  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along
+//  with the Computational Morphometry Toolkit.  If not, see
+//  <http://www.gnu.org/licenses/>.
+//
+//  $Revision$
+//
+//  $LastChangedDate$
+//
+//  $LastChangedBy$
+//
+*/
+
 #include <cmtkCommandLine.h>
 
 #include <sstream>
@@ -28,7 +58,11 @@ cmtk::CommandLine::NonOptionParameter
   if ( this->m_Properties & PROPS_IMAGE )
     {
     node = mxmlNewElement( parent, "image" );
-    mxmlElementSetAttr( node, "type", "scalar" );
+    
+    if ( this->m_Properties & PROPS_LABELS )
+      mxmlElementSetAttr( node, "type", "scalar" );
+    else
+      mxmlElementSetAttr( node, "type", "label" );
     }
   else if ( this->m_Properties & PROPS_FILENAME )
     node = mxmlNewElement( parent, "file" );
@@ -45,9 +79,12 @@ cmtk::CommandLine::NonOptionParameter
   mxmlNewText( mxmlNewElement( node, "name" ), 0, this->m_Name );
   mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment );
 
-  std::ostringstream strm;
-  strm << index;
-  mxmlNewText( mxmlNewElement( node, "index" ), 0, strm.str().c_str() );
+  if ( index >= 0 )
+    {
+    std::ostringstream strm;
+    strm << index;
+    mxmlNewText( mxmlNewElement( node, "index" ), 0, strm.str().c_str() );
+    }
 
   return node;
 } 

@@ -145,8 +145,10 @@ public:
     PROPS_FILENAME = 16,
     /// Item is an image file name
     PROPS_IMAGE = 32,
+    /// When used with PROPS_IMAGE, this means the expected image is a label map.
+    PROPS_LABELS = 64,
     /// This parameter refers to an output, not an input.
-    PROPS_OUTPUT = 64
+    PROPS_OUTPUT = 128
   } ItemProperties;
 
   /// Set program title, description, an category.
@@ -332,21 +334,7 @@ private:
     }
 
     /// Virtual function that returns an XML tree describing this option.
-    virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const 
-    {
-      if ( Flag ) // if there is a flag monitoring this option, then we need to create an additional boolean toggle
-	{
-	}
-
-      mxml_node_t *node = mxmlNewElement( parent, CommandLineTypeTraits<T>::GetName() );
-
-      if ( !Flag ) // if there is no flag monitoring this option, then there must be a valid default value
-	{
-	mxml_node_t *dflt = mxmlNewElement( node, "default" );
-	mxmlNewText( dflt, 0, CommandLineTypeTraits<T>::ValueToString( *Var ).c_str() );
-	}
-      return node;
-    }
+    virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const;
 
   protected:
     /// Pointer to associated variable.
@@ -508,13 +496,6 @@ public:
     return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Switch<T>( var, value ) ), comment ) ) );
   }
   
-  /// Add switch for const char* variables.
-  Item::SmartPtr&
-  AddSwitch( const Key& key, const char** var, const char* value, const char* comment ) 
-  {
-    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Switch<const char*>( var, value ) ), comment ) ) );
-  }
-
   /// Add option.
   template<class T> 
   Item::SmartPtr&
@@ -744,5 +725,6 @@ Console& operator<<( Console& console, CommandLine::Exception e );
 } // namespace cmtk
 
 #include <cmtkCommandLineConvert.txx>
+#include <cmtkCommandLineOption.txx>
 
 #endif // #ifndef __cmtkCommandLine_h_included_

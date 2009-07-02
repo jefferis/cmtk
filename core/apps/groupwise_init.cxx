@@ -100,7 +100,7 @@ main( int argc, char* argv[] )
     cl.AddOption( Key( 'o', "output" ), &OutputArchive, "Output filename for groupwise registration archive." );
     cl.AddOption( Key( "output-average" ), &AverageImagePath, "Output filename for registered average image." );
     cl.AddSwitch( Key( "average-cubic" ), &AverageImageInterpolation, cmtk::Interpolators::CUBIC, "Use cubic interpolation for average image (default: linear)" );
-    cl.AddSwitch( Key( "no-output-average" ), &AverageImagePath, NULL, "Do not write average image." );
+    cl.AddSwitch( Key( "no-output-average" ), &AverageImagePath, (const char*)NULL, "Do not write average image." );
 
     cl.AddSwitch( Key( "align-centers-of-mass" ), &AlignCentersOfMass, true, "Initially align centers of mass [default: centers of Bounding Boxes]" );
     cl.AddSwitch( Key( "init-scales" ), &InitScales, true, "Initialize scale factors using first-order moments [default: off]" );

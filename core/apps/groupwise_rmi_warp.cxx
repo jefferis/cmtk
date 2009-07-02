@@ -122,6 +122,7 @@ main( int argc, char ** argv )
 
     cl.AddOption( Key( 'o', "output" ), &OutputArchive, "Output filename for groupwise registration archive." );
     cl.AddOption( Key( 'O', "output-average" ), &AverageImagePath, "Output filename for registered average image." );
+    cl.AddSwitch( Key( "no-output-average" ), &AverageImagePath, (const char*)NULL, "Do not write average image." );
 
     cl.AddOption( Key( 's', "sampling-density" ), &SamplingDensity, "Probabilistic sampling density [default: off]." );
 
