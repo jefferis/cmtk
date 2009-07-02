@@ -11,6 +11,9 @@ Release CMTK-1.0.2:
 - Fixed: some uninitialized data situations
 - Fixed: incomplete computation when using "--sempling-density" option of
     "congeal" tool.
+- Fixed: Slicer can now detect CMTK tools as plugins via their response to
+    "--xml"; note that the XML description itself is not fully correct and
+    functional yet.
 
 - Improved: eliminated explicit offset calculations in cmtk::DataGrid and use
     existing index-to-offset function instead.
