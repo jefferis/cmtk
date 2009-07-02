@@ -327,7 +327,12 @@ private:
     /// Virtual function that returns an XML tree describing this option.
     virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const 
     {
+      if ( Flag ) // if there is a flag monitoring this option, then we need to create an additional boolean toggle
+	{
+	}
+
       mxml_node_t *node = mxmlNewElement( parent, CommandLineTypeTraits<T>::GetName() );
+
       if ( !Flag ) // if there is no flag monitoring this option, then there must be a valid default value
 	{
 	mxml_node_t *dflt = mxmlNewElement( node, "default" );
@@ -427,6 +432,25 @@ private:
 
     /// Pointer to callback with multiple arguments.
     CallbackFuncMultiArg m_FuncMultiArg;
+  };
+
+  /// Non-option parameter.
+  class NonOptionParameter :
+    /// This is like a standalone string option, so inherit from that.
+    public Option<const char*>
+  {
+  public:
+    /// This class.
+    typedef NonOptionParameter Self;
+
+    /// Smart pointer.
+    typedef SmartPointer<Self> SmartPtr;
+    
+    /// Superclass.
+    typedef Option<const char*> Superclass;
+
+    /// Constructor.
+    NonOptionParameter( const char* *const var, bool *const flag ) : Superclass( var, flag ) {};
   };
 
 public:
@@ -643,6 +667,9 @@ private:
   
   /// List of command line keys with associated actions.
   KeyActionGroupListType m_KeyActionGroupList;
+
+  /// List of non-option parameters (i.e., "the rest of the command line").
+  std::list< NonOptionParameter::SmartPtr > m_ParameterList;
 
   /// Map type for program meta information.
   typedef std::map<ProgramProperties,std::string> ProgramPropertiesMapType;

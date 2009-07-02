@@ -87,26 +87,37 @@ main( const int argc, const char *argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Be verbose" );
 
-    cl.AddSwitch( Key( 'L', "log-intensities" ), &LogIntensities, true, "Use log intensities for entropy estimation." );
-    cl.AddOption( Key( 'm', "mask" ), &FNameMaskImage, "Binary mask image filename." );
-    cl.AddOption( Key( 't', "thresh-min" ), &ThresholdForegroundMin, "Minimum intensity threshold for image foreground.", &ThresholdForegroundFlag );
-    cl.AddOption( Key( 'T', "thresh-max" ), &ThresholdForegroundMax, "Minimum intensity threshold for image foreground.", &ThresholdForegroundFlag );
-    cl.AddOption( Key( 's', "sampling-density" ), &SamplingDensity, "Pixel sampling density (default: 1.0; all pixels)" );
-    cl.AddOption( Key( 'n', "num-bins" ), &NumberOfHistogramBins, "Number of histogram bins for entropy estimation [default: 256]" );
-
-    cl.AddOption( Key( "step-max" ), &StepMax, "Maximum (initial) search step size." );
-    cl.AddOption( Key( "step-min" ), &StepMin, "Minimum (final) search step size." );
+    cl.BeginGroup( "Bias Field", "Bias Field Parameterization" );
     cl.AddOption( Key( 'A', "degree-add" ), &PolynomialDegreeAdd, "Polynomial degree for additive correction." );
     cl.AddOption( Key( 'M', "degree-mul" ), &PolynomialDegreeMul, "Polynomial degree for multiplicative correction." );
     cl.AddSwitch( Key( 'I', "incremental" ), &IncrementalPolynomials, true, "Incrementally increase polynomial degrees." );
     cl.AddSwitch( Key( 'd', "dropoff" ), &EstimateDropOff, true, "Estimate signal drop-off from coil coverage." );
+    cl.EndGroup();
 
+    cl.BeginGroup( "Preprocessing", "Input Image Preprocessing" );
+    cl.AddOption( Key( 'm', "mask" ), &FNameMaskImage, "Binary mask image filename." );
+    cl.AddOption( Key( 't', "thresh-min" ), &ThresholdForegroundMin, "Minimum intensity threshold for image foreground.", &ThresholdForegroundFlag );
+    cl.AddOption( Key( 'T', "thresh-max" ), &ThresholdForegroundMax, "Minimum intensity threshold for image foreground.", &ThresholdForegroundFlag );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Entropy Estimation", "Entropy Estimation Settings" );
+    cl.AddSwitch( Key( 'L', "log-intensities" ), &LogIntensities, true, "Use log intensities for entropy estimation." );
+    cl.AddOption( Key( 's', "sampling-density" ), &SamplingDensity, "Pixel sampling density (default: 1.0; all pixels)" );
+    cl.AddOption( Key( 'n', "num-bins" ), &NumberOfHistogramBins, "Number of histogram bins for entropy estimation [default: 256]" );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Optimization", "Optimization Algorithm Settings" );
+    cl.AddOption( Key( "step-max" ), &StepMax, "Maximum (initial) search step size." );
+    cl.AddOption( Key( "step-min" ), &StepMin, "Minimum (final) search step size." );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Bias Field I/O", "Import and Output of Bias Fields" );
+    cl.AddOption( Key( "import-bias-add" ), &ImportBiasFieldAdd, "Import additive bias field (disables optimization)." );
+    cl.AddOption( Key( "import-bias-mul" ), &ImportBiasFieldMul, "Import multiplicative bias field (disables optimization)." );
     cl.AddOption( Key( "write-bias-add" ), &FNameBiasFieldAdd, "File name for output of additive bias field." );
     cl.AddOption( Key( "write-bias-mul" ), &FNameBiasFieldMul, "File name for output of multiplicative bias field." );
     cl.AddSwitch( Key( 'F', "write-float" ), &OutputFloatImage, true, "Write output image with floating point pixel data [default: input data type]." );
-
-    cl.AddOption( Key( "import-bias-add" ), &ImportBiasFieldAdd, "Import additive bias field (disables optimization)." );
-    cl.AddOption( Key( "import-bias-mul" ), &ImportBiasFieldMul, "Import multiplicative bias field (disables optimization)." );
+    cl.EndGroup();
     
     cl.Parse();
 
