@@ -48,7 +48,7 @@ CommandLine::SetDefaultInfo()
   this->m_ProgramInfo[PRG_LCNSE] = "http://www.fsf.org/licensing/licenses/gpl.html";
   this->m_ProgramInfo[PRG_CNTRB] = "Torsten Rohlfing";
   this->m_ProgramInfo[PRG_ACKNL] = "CMTK is supported by the National Institute of Biomedical Imaging and BioEngineering under Grant EB008381";
-  this->m_ProgramInfo[PRG_CATEG] = "CMTK";
+  this->m_ProgramInfo[PRG_CATEG] = "CMTK.Miscellaneous";
   this->m_ProgramInfo[PRG_DOCUM] = "https://neuro.sri.com/cmtk/wiki/";
   this->m_ProgramInfo[PRG_VERSN] = CMTK_VERSION;
 }
@@ -167,6 +167,22 @@ CommandLine::Callback::Evaluate
       }
 }
 
+bool
+CommandLine::MatchLongOption( const std::string& s1, const std::string& s2 ) const
+{
+  if ( s1.length() != s2.length() )
+    return false;
+
+  for ( size_t i = 0; i < s1.length(); ++i )
+    {
+    if ( (s1[i] == '-' || s1[i] == '_') && (s2[i] == '-' || s2[i] == '_') )
+      continue;
+
+    if ( s1[i] != s2[i] )
+      return false;
+    }
+  return true;
+}
 
 bool
 CommandLine::Parse()
@@ -190,7 +206,7 @@ CommandLine::Parse()
       // long option
       for ( KeyActionListType::iterator it = this->m_KeyActionListComplete.begin(); it != this->m_KeyActionListComplete.end(); ++it )
 	{
-	if ( (*it)->m_KeyString == std::string( this->ArgV[this->Index]+2 ) )
+	if ( MatchLongOption( (*it)->m_KeyString, std::string( this->ArgV[this->Index]+2 ) ) )
 	  {
 	  item = (*it)->m_Action;
 	  }

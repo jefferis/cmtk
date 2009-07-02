@@ -607,6 +607,14 @@ private:
 
   /// Array of argument pointers.
   const char** ArgV;
+  
+  /** Match two long options but be tolerant to hyphens, i.e., consider '-' and '_' the same.
+   * This allows us to be tolerant with Slicer's requirement that there are no hyphens in
+   * long options, while maintaining the ability to use them on the command line for
+   * compatibility.
+   *\return true is the two string match, or their only differences are hyphens vs. underlines.
+   */
+  bool MatchLongOption( const std::string& s1, const std::string& s2 ) const;
 
   /// Global properties of the command line.
   int m_Properties;

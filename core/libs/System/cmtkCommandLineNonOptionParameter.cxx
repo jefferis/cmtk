@@ -24,23 +24,23 @@ mxml_node_t*
 cmtk::CommandLine::NonOptionParameter
 ::MakeXML( mxml_node_t *const parent, const int index ) const
 {
-  mxml_node_t *node;
+  mxml_node_t *node = NULL;
   if ( this->m_Properties & PROPS_IMAGE )
     {
     node = mxmlNewElement( parent, "image" );
     mxmlElementSetAttr( node, "type", "scalar" );
-    mxmlElementSetAttr( node, "coordinateSystem", "ras" );
     }
   else if ( this->m_Properties & PROPS_FILENAME )
     node = mxmlNewElement( parent, "file" );
   else if ( this->m_Properties & PROPS_DIRNAME )
     node = mxmlNewElement( parent, "directory" );
+  else 
+    node = mxmlNewElement( parent, "string" );
 
   if ( this->m_Properties & PROPS_OUTPUT )
     mxmlNewText( mxmlNewElement( node, "channel" ), 0, "output" );
   else
     mxmlNewText( mxmlNewElement( node, "channel" ), 0, "input" );
-
 
   mxmlNewText( mxmlNewElement( node, "name" ), 0, this->m_Name );
   mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment );
@@ -48,4 +48,6 @@ cmtk::CommandLine::NonOptionParameter
   std::ostringstream strm;
   strm << index;
   mxmlNewText( mxmlNewElement( node, "index" ), 0, strm.str().c_str() );
+
+  return node;
 } 
