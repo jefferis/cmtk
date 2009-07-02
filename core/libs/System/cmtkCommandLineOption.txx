@@ -39,8 +39,10 @@ cmtk::CommandLine::Option<T>
     {
     }
   
+  const char* typeName = CommandLineTypeTraits<T>::GetName();
+
   mxml_node_t *node = NULL;
-  if ( std::string( CommandLineTypeTraits<T>::GetName() ) == "string" )
+  if ( std::string( typeName ) == "string" )
     {
     if ( this->m_Properties & PROPS_IMAGE )
       {
@@ -59,7 +61,7 @@ cmtk::CommandLine::Option<T>
       node = mxmlNewElement( parent, "string" );
     }
   else
-    node = mxmlNewElement( parent, CommandLineTypeTraits<T>::GetName() );
+    node = mxmlNewElement( parent, typeName );
   
   if ( !Flag ) // if there is no flag monitoring this option, then there must be a valid default value
     {

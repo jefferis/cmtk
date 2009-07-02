@@ -250,6 +250,11 @@ public:
     {
       this->m_Properties = properties;
     }
+
+    virtual long int GetProperties() const
+    {
+      return this->m_Properties;
+    }
     
     /// Virtual function: evaluate switch or option.
     virtual void Evaluate( const size_t argc, const char* argv[], size_t& index ) = 0;
@@ -598,7 +603,7 @@ private:
   bool MatchLongOption( const std::string& s1, const std::string& s2 ) const;
 
   /// Global properties of the command line.
-  int m_Properties;
+  long int m_Properties;
 
   /// Index of current argument.
   size_t Index;

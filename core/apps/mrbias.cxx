@@ -93,7 +93,7 @@ main( const int argc, const char *argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Preprocessing", "Input Image Preprocessing" );
-    cl.AddOption( Key( 'm', "mask" ), &FNameMaskImage, "Binary mask image filename." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE & cmtk::CommandLine::PROPS_LABELS );
+    cl.AddOption( Key( 'm', "mask" ), &FNameMaskImage, "Binary mask image filename." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_LABELS );
     cl.AddOption( Key( 't', "thresh-min" ), &ThresholdForegroundMin, "Minimum intensity threshold for image foreground.", &ThresholdForegroundFlag );
     cl.AddOption( Key( 'T', "thresh-max" ), &ThresholdForegroundMax, "Minimum intensity threshold for image foreground.", &ThresholdForegroundFlag );
     cl.EndGroup();
@@ -112,8 +112,8 @@ main( const int argc, const char *argv[] )
     cl.BeginGroup( "Bias Field I/O", "Import and Output of Bias Fields" );
     cl.AddOption( Key( "import-bias-add" ), &ImportBiasFieldAdd, "Import additive bias field (disables optimization)." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddOption( Key( "import-bias-mul" ), &ImportBiasFieldMul, "Import multiplicative bias field (disables optimization)." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddOption( Key( "write-bias-add" ), &FNameBiasFieldAdd, "File name for output of additive bias field." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE & cmtk::CommandLine::PROPS_OUTPUT );
-    cl.AddOption( Key( "write-bias-mul" ), &FNameBiasFieldMul, "File name for output of multiplicative bias field." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE & cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddOption( Key( "write-bias-add" ), &FNameBiasFieldAdd, "File name for output of additive bias field." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddOption( Key( "write-bias-mul" ), &FNameBiasFieldMul, "File name for output of multiplicative bias field." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddSwitch( Key( 'F', "write-float" ), &OutputFloatImage, true, "Write output image with floating point pixel data [default: input data type]." );
     cl.EndGroup();
     
