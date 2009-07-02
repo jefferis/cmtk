@@ -119,10 +119,10 @@ main( const int argc, const char *argv[] )
     cl.AddSwitch( Key( 'F', "write-float" ), &OutputFloatImage, true, "Write output image with floating point pixel data [default: input data type]." );
     cl.EndGroup();
     
-    cl.Parse();
+    cl.AddParameter( &FNameInputImage, "InputImage", "Input image path" );
+    cl.AddParameter( &FNameOutputImage, "OutputImage", "Output image path" );
 
-    FNameInputImage = cl.GetNext();
-    FNameOutputImage = cl.GetNext();
+    cl.Parse();
     }
   catch ( cmtk::CommandLine::Exception e )
     {

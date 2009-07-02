@@ -140,11 +140,13 @@ public:
     /// Item is not included in XML output.
     PROPS_NOXML = 4,
     /// Item is a generic file name
-    PROPS_FILENAME = 8,
+    PROPS_DIRNAME = 8,
+    /// Item is a generic directory name
+    PROPS_FILENAME = 16,
     /// Item is an image file name
-    PROPS_IMAGE = 16,
-    /// Item is an output file name
-    PROPS_OUTPUT = 32
+    PROPS_IMAGE = 32,
+    /// This parameter refers to an output, not an input.
+    PROPS_OUTPUT = 64
   } ItemProperties;
 
   /// Set program title, description, an category.
@@ -162,8 +164,13 @@ public:
       Message( message ), Index( index ) 
     {}
     
+    /// Constructor.
+    Exception( const std::string& message, const size_t index = 0 ) :
+      Message( message ), Index( index ) 
+    {}
+    
     /// The error message describing the parsing condition.
-    const char* Message;
+    std::string Message;
     
     /// The parameter index where the condition occured.
     size_t Index;
@@ -341,7 +348,7 @@ private:
       return node;
     }
 
-  private:
+  protected:
     /// Pointer to associated variable.
     T* Var;
 
@@ -450,7 +457,29 @@ private:
     typedef Option<const char*> Superclass;
 
     /// Constructor.
-    NonOptionParameter( const char* *const var, bool *const flag ) : Superclass( var, flag ) {};
+    NonOptionParameter( const char* *const var, const char* name, const char* comment, bool *const flag ) : Superclass( var, flag ), m_Name( name ), m_Comment( comment ) {};
+
+    /// Evaluate and set associated variable.
+    virtual void Evaluate( const size_t argc, const char* argv[], size_t& index )
+    {
+      if ( Flag ) 
+	*Flag = true;
+
+      if ( index < argc ) 
+	{
+	*Var = argv[index];
+	} 
+      else
+	{
+	throw( Exception( "Argument missing", index ) );
+	}
+    }
+
+    /// Name of this parameter.
+    const char* m_Name;
+
+    /// Comment (description) of this parameter.
+    const char* m_Comment;
   };
 
 public:
@@ -530,6 +559,15 @@ public:
   AddCallback( const Key& key, CallbackFuncMultiArg funcMultiArg, const char* comment ) 
   {
     return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Callback( funcMultiArg ) ), comment ) ) );
+  }
+  
+  /// Add option.
+  Item::SmartPtr
+  AddParameter( const char* *const var, const char* name, const char* comment, bool *const flag = NULL ) 
+  {
+    NonOptionParameter::SmartPtr parameter( new NonOptionParameter( var, name, comment, flag ) );
+    this->m_NonOptionParameterList.push_back( parameter );
+    return parameter;
   }
   
   /// Begin parameter group.
@@ -668,8 +706,11 @@ private:
   /// List of command line keys with associated actions.
   KeyActionGroupListType m_KeyActionGroupList;
 
+  /// Type for no-option parameter list.
+  typedef std::list<NonOptionParameter::SmartPtr> NonOptionParameterListType;
+
   /// List of non-option parameters (i.e., "the rest of the command line").
-  std::list< NonOptionParameter::SmartPtr > m_ParameterList;
+  NonOptionParameterListType m_NonOptionParameterList;
 
   /// Map type for program meta information.
   typedef std::map<ProgramProperties,std::string> ProgramPropertiesMapType;

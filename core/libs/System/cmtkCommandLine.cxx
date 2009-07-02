@@ -171,26 +171,26 @@ CommandLine::Callback::Evaluate
 bool
 CommandLine::Parse()
 {
-  Index = 1;
-  while ( (Index < ArgC) && (ArgV[Index][0] == '-') ) 
+  this->Index = 1;
+  while ( (this->Index < this->ArgC) && (this->ArgV[this->Index][0] == '-') ) 
     {
     // Break at first non-switch argument.
-    if ( ArgV[Index][0] != '-' ) return true;
+    if ( this->ArgV[this->Index][0] != '-' ) return true;
     
     // Like POSIX, break at "--" terminator.
-    if ( !strcmp( ArgV[Index], "--" ) ) 
+    if ( !strcmp( this->ArgV[this->Index], "--" ) ) 
       {
-      ++Index;
+      ++this->Index;
       break;
       }
     
     SmartPointer<Item> item(NULL);
-    if ( ArgV[Index][1] == '-' ) 
+    if ( this->ArgV[this->Index][1] == '-' ) 
       {
       // long option
       for ( KeyActionListType::iterator it = this->m_KeyActionListComplete.begin(); it != this->m_KeyActionListComplete.end(); ++it )
 	{
-	if ( (*it)->m_KeyString == std::string( ArgV[Index]+2 ) )
+	if ( (*it)->m_KeyString == std::string( this->ArgV[this->Index]+2 ) )
 	  {
 	  item = (*it)->m_Action;
 	  }
@@ -200,27 +200,26 @@ CommandLine::Parse()
       if ( !item ) 
 	{
 	// Check for "--xml" special option, which produces self description according to Slicer execution model.
-	if ( !strcmp( ArgV[Index], "--xml" ) ) 
+	if ( !strcmp( this->ArgV[this->Index], "--xml" ) ) 
 	  {
 	  this->WriteXML();
 	  exit( 0 );
 	  }
 	
 	// Check for "--help" special option, which produces textual description of all command line options
-	if ( !strcmp( ArgV[Index], "--help" ) ) 
+	if ( !strcmp( this->ArgV[this->Index], "--help" ) ) 
 	  {
 	  this->PrintHelp();
 	  exit( 2 );
 	  }
 	
-	StdErr.printf( "Unknown option: %s\n", ArgV[Index] );
-	return false;
+	throw( Exception( std::string("Unknown option: ") + std::string(this->ArgV[this->Index] ) ) );
 	}
-      item->Evaluate( ArgC, ArgV, Index );
+      item->Evaluate( this->ArgC, this->ArgV, this->Index );
       } 
     else
       {
-      const char* optChar = ArgV[Index]+1;
+      const char* optChar = this->ArgV[this->Index]+1;
       while ( *optChar ) 
 	{
 	// short option
@@ -234,17 +233,26 @@ CommandLine::Parse()
       
 	if ( !item ) 
 	  {
-	  StdErr.printf( "Unknown option: -%c\n", *optChar );
-	  return false;
+	  const char opt[2] = { *optChar, 0 };
+	  throw( Exception( std::string("Unknown option: -") + std::string(opt) ) );
 	  }
-	item->Evaluate( ArgC, ArgV, Index );
+	item->Evaluate( this->ArgC, this->ArgV, this->Index );
 	
 	++optChar; // next short option in this block, POSIX style.
 	}
       }
     
-    ++Index;
+    ++this->Index;
     } // while
+
+  for ( NonOptionParameterListType::iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it, ++this->Index )
+    {
+    if ( this->Index >= this->ArgC )
+      {
+      throw( Exception( "Insufficient number of command line arguments", this->Index ) );
+      }
+    (*it)->Evaluate( this->ArgC, this->ArgV, this->Index );
+    }
   
   return true;
 }
