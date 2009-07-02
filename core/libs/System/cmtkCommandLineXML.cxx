@@ -117,6 +117,7 @@ CommandLine::WriteXML
       }
     
     mxmlSaveFile( xml, stdout, cmtkWhitespaceWriteMiniXML );
+    fputs( "\n", stdout ); // Slicer's XML parser needs an extra \n after the last line
     }
 }
 

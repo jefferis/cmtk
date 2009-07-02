@@ -203,7 +203,7 @@ CommandLine::Parse()
 	if ( !strcmp( ArgV[Index], "--xml" ) ) 
 	  {
 	  this->WriteXML();
-	  exit( 2 );
+	  exit( 0 );
 	  }
 	
 	// Check for "--help" special option, which produces textual description of all command line options
