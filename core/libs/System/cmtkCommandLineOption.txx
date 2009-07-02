@@ -40,7 +40,7 @@ cmtk::CommandLine::Option<T>
     }
   
   mxml_node_t *node = NULL;
-  if ( typeid( T ) == typeid( const char* ) )
+  if ( std::string( CommandLineTypeTraits<T>::GetName() ) == "string" )
     {
     if ( this->m_Properties & PROPS_IMAGE )
       {

@@ -64,7 +64,7 @@ public:
   /// Return name of the parameter type (for XML).
   static const char* GetName() 
   { 
-    return NULL; 
+    return "none"; 
   }
 };
 
