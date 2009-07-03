@@ -118,7 +118,7 @@ main( const int argc, const char *argv[] )
     cl.EndGroup();
     
     cl.AddParameter( &FNameInputImage, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &FNameOutputImage, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE & cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddParameter( &FNameOutputImage, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
 
     cl.Parse();
     }

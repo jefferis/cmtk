@@ -110,19 +110,6 @@ public:
 
 template<>
 class 
-CommandLineTypeTraits<unsigned int> :
-  /// Inherit generic template members
-  public CommandLineTypeTraitsBase<unsigned int>
-{
-public:
-  static const char* GetName() 
-  { 
-    return "integer";
-  }
-};
-
-template<>
-class 
 CommandLineTypeTraits<short> :
   /// Inherit generic template members
   public CommandLineTypeTraitsBase<short>

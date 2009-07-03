@@ -59,6 +59,11 @@ cmtk::CommandLine::Option<T>
       node = mxmlNewElement( parent, "directory" );
     else 
       node = mxmlNewElement( parent, "string" );
+
+    if ( this->m_Properties & PROPS_OUTPUT )
+      mxmlNewText( mxmlNewElement( node, "channel" ), 0, "output" );
+    else
+      mxmlNewText( mxmlNewElement( node, "channel" ), 0, "input" );
     }
   else
     node = mxmlNewElement( parent, typeName );

@@ -60,9 +60,9 @@ cmtk::CommandLine::NonOptionParameter
     node = mxmlNewElement( parent, "image" );
     
     if ( this->m_Properties & PROPS_LABELS )
-      mxmlElementSetAttr( node, "type", "scalar" );
-    else
       mxmlElementSetAttr( node, "type", "label" );
+    else
+      mxmlElementSetAttr( node, "type", "scalar" );
     }
   else if ( this->m_Properties & PROPS_FILENAME )
     node = mxmlNewElement( parent, "file" );
