@@ -513,9 +513,6 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `socket' function. */
 #define HAVE_SOCKET 1
 
-/* Define to 1 if you have the <sstream> header file. */
-#define HAVE_SSTREAM 1
-
 /* Define to 1 if you have the <sstream.h> header file. */
 //#undef HAVE_SSTREAM_H
 #cmakedefine HAVE_SSTREAM 1
