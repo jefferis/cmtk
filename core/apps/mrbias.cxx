@@ -84,7 +84,7 @@ main( const int argc, const char *argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Artifact Correction" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Be verbose" );
+    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Be verbose" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
 
     cl.BeginGroup( "Bias Field", "Bias Field Parameterization" );
     cl.AddOption( Key( 'A', "degree-add" ), &PolynomialDegreeAdd, "Polynomial degree for additive correction." );
@@ -98,18 +98,18 @@ main( const int argc, const char *argv[] )
     cl.AddOption( Key( 'T', "thresh-max" ), &ThresholdForegroundMax, "Minimum intensity threshold for image foreground.", &ThresholdForegroundFlag );
     cl.EndGroup();
 
-    cl.BeginGroup( "Entropy Estimation", "Entropy Estimation Settings" );
+    cl.BeginGroup( "Entropy Estimation", "Entropy Estimation Settings" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
     cl.AddSwitch( Key( 'L', "log-intensities" ), &LogIntensities, true, "Use log intensities for entropy estimation." );
     cl.AddOption( Key( 's', "sampling-density" ), &SamplingDensity, "Pixel sampling density (default: 1.0; all pixels)" );
     cl.AddOption( Key( 'n', "num-bins" ), &NumberOfHistogramBins, "Number of histogram bins for entropy estimation [default: 256]" );
     cl.EndGroup();
 
-    cl.BeginGroup( "Optimization", "Optimization Algorithm Settings" );
+    cl.BeginGroup( "Optimization", "Optimization Algorithm Settings" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );;
     cl.AddOption( Key( "step-max" ), &StepMax, "Maximum (initial) search step size." );
     cl.AddOption( Key( "step-min" ), &StepMin, "Minimum (final) search step size." );
     cl.EndGroup();
 
-    cl.BeginGroup( "Bias Field I/O", "Import and Output of Bias Fields" );
+    cl.BeginGroup( "Bias Field I/O", "Import and Output of Bias Fields" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );;
     cl.AddOption( Key( "import-bias-add" ), &ImportBiasFieldAdd, "Import additive bias field (disables optimization)." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddOption( Key( "import-bias-mul" ), &ImportBiasFieldMul, "Import multiplicative bias field (disables optimization)." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddOption( Key( "write-bias-add" ), &FNameBiasFieldAdd, "File name for output of additive bias field." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
