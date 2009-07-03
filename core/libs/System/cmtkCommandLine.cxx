@@ -53,12 +53,13 @@ CommandLine::SetDefaultInfo()
   this->m_ProgramInfo[PRG_VERSN] = CMTK_VERSION;
 }
 
-void
+CommandLine::KeyActionGroupType::SmartPtr&
 CommandLine
 ::BeginGroup( const char* name, const char* description ) 
 { 
   this->m_KeyActionGroupList.push_back( KeyActionGroupType::SmartPtr( new KeyActionGroupType( name, description ) ) );
   this->m_KeyActionList = &(this->m_KeyActionGroupList.back()->m_KeyActionList);
+  return this->m_KeyActionGroupList.back();
 }
 
 void

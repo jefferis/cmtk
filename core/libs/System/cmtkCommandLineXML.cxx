@@ -95,30 +95,36 @@ CommandLine::WriteXML
     
     for ( KeyActionGroupListType::const_iterator grp = this->m_KeyActionGroupList.begin(); grp != this->m_KeyActionGroupList.end(); ++grp )
       {
-      mxml_node_t *parameterGroup = mxmlNewElement( x_exec, "parameters" );
-
-      const std::string& name = (*grp)->m_Name;
-      if ( name == "MAIN" )
+      if ( ! (*grp)->GetProperties() & PROPS_NOXML )
 	{
-	mxmlNewText( mxmlNewElement( parameterGroup, "label" ), 0, "General" );
-	mxmlNewText( mxmlNewElement( parameterGroup, "description" ), 0, "General Parameters" );
-
-	int index = 0;
-	for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
+	mxml_node_t *parameterGroup = mxmlNewElement( x_exec, "parameters" );
+	
+	if ( (*grp)->GetProperties() & PROPS_ADVANCED )
+	  mxmlElementSetAttr( parameterGroup, "advanced", "true" );
+	
+	const std::string& name = (*grp)->m_Name;
+	if ( name == "MAIN" )
 	  {
-	  (*it)->MakeXML( parameterGroup, index++ );
+	  mxmlNewText( mxmlNewElement( parameterGroup, "label" ), 0, "General" );
+	  mxmlNewText( mxmlNewElement( parameterGroup, "description" ), 0, "General Parameters" );
+	  
+	  int index = 0;
+	  for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
+	    {
+	    (*it)->MakeXML( parameterGroup, index++ );
+	    }
 	  }
-	}
-      else
-	{
-	mxmlNewText( mxmlNewElement( parameterGroup, "label" ), 0, name.c_str() );
-	mxmlNewText( mxmlNewElement( parameterGroup, "description" ), 0, (*grp)->m_Description.c_str() );
-	}
-      
-      const KeyActionListType& kal = (*grp)->m_KeyActionList;
-      for ( KeyActionListType::const_iterator it = kal.begin(); it != kal.end(); ++it )
-	{
-	(*it)->MakeXML( parameterGroup );
+	else
+	  {
+	  mxmlNewText( mxmlNewElement( parameterGroup, "label" ), 0, name.c_str() );
+	  mxmlNewText( mxmlNewElement( parameterGroup, "description" ), 0, (*grp)->m_Description.c_str() );
+	  }
+	
+	const KeyActionListType& kal = (*grp)->m_KeyActionList;
+	for ( KeyActionListType::const_iterator it = kal.begin(); it != kal.end(); ++it )
+	  {
+	  (*it)->MakeXML( parameterGroup );
+	  }
 	}
       }
     

@@ -549,66 +549,6 @@ public:
     return parameter;
   }
   
-  /// Begin parameter group.
-  void BeginGroup( const char* name, const char* description );
-
-  /// End last parameter group.
-  void EndGroup();
-
-  /// Parse command line.
-  bool Parse();
-
-  /// Print help text.
-  void PrintHelp() const;
-
-  /// Get next parameter index.
-  size_t GetIndex() const { return Index; }
-
-  /** Get next command line argument.
-   * An exception is generated if no further arguments are available.
-   */
-  const char* GetNext() 
-  {
-    if ( Index >= ArgC ) 
-      throw( Exception( "Out of arguments.", Index ) ); 
-    return ArgV[Index++];
-  }
-  
-  /** Get next command line argument.
-   * A null pointer is returned if no further arguments are available.
-   */
-  const char* GetNextOptional() 
-  {
-    if ( Index >= ArgC ) return NULL;
-    return ArgV[Index++];
-  }
-
-  /** Write XML self description according to Slice3 execution model.
-   *@see 
-   */
-  void WriteXML() const;
-  
-private:
-  /// Total number of arguments.
-  size_t ArgC;
-
-  /// Array of argument pointers.
-  const char** ArgV;
-  
-  /** Match two long options but be tolerant to hyphens, i.e., consider '-' and '_' the same.
-   * This allows us to be tolerant with Slicer's requirement that there are no hyphens in
-   * long options, while maintaining the ability to use them on the command line for
-   * compatibility.
-   *\return true is the two string match, or their only differences are hyphens vs. underlines.
-   */
-  bool MatchLongOption( const std::string& s1, const std::string& s2 ) const;
-
-  /// Global properties of the command line.
-  long int m_Properties;
-
-  /// Index of current argument.
-  size_t Index;
-
   /// Local class that connects command line options with their evaluators.
   class KeyToAction
   {
@@ -702,6 +642,66 @@ private:
     /// Group properties.
     long int m_Properties;
   };
+
+  /// Begin parameter group.
+  KeyActionGroupType::SmartPtr& BeginGroup( const char* name, const char* description );
+
+  /// End last parameter group.
+  void EndGroup();
+
+  /// Parse command line.
+  bool Parse();
+
+  /// Print help text.
+  void PrintHelp() const;
+
+  /// Get next parameter index.
+  size_t GetIndex() const { return Index; }
+
+  /** Get next command line argument.
+   * An exception is generated if no further arguments are available.
+   */
+  const char* GetNext() 
+  {
+    if ( Index >= ArgC ) 
+      throw( Exception( "Out of arguments.", Index ) ); 
+    return ArgV[Index++];
+  }
+  
+  /** Get next command line argument.
+   * A null pointer is returned if no further arguments are available.
+   */
+  const char* GetNextOptional() 
+  {
+    if ( Index >= ArgC ) return NULL;
+    return ArgV[Index++];
+  }
+
+  /** Write XML self description according to Slice3 execution model.
+   *@see 
+   */
+  void WriteXML() const;
+  
+private:
+  /// Total number of arguments.
+  size_t ArgC;
+
+  /// Array of argument pointers.
+  const char** ArgV;
+  
+  /** Match two long options but be tolerant to hyphens, i.e., consider '-' and '_' the same.
+   * This allows us to be tolerant with Slicer's requirement that there are no hyphens in
+   * long options, while maintaining the ability to use them on the command line for
+   * compatibility.
+   *\return true is the two string match, or their only differences are hyphens vs. underlines.
+   */
+  bool MatchLongOption( const std::string& s1, const std::string& s2 ) const;
+
+  /// Global properties of the command line.
+  long int m_Properties;
+
+  /// Index of current argument.
+  size_t Index;
 
   /// Type for group list.
   typedef std::list<KeyActionGroupType::SmartPtr> KeyActionGroupListType;
