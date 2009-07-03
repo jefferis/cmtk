@@ -187,42 +187,70 @@ MARK_AS_ADVANCED(CMTK_NUMERICS_DOUBLE)
 # Add an option to use or not use DCMTK
 
 OPTION(CMTK_USE_DCMTK "Use DCMTK (for DICOM import)" OFF)
+
+#-----------------------------------------------------------------------------
+# Add an option to use or not use DCMTK
+
+OPTION(CMTK_USE_BUNDLED_DCMTK "Accept the bundled version of DCMTK" OFF)
+
 IF(CMTK_USE_DCMTK)
-	IF(NOT DCMTK_DIR)
-		SET(DCMTK_DIR "NOTFOUND")
-	ENDIF(NOT DCMTK_DIR)
+        IF(CMTK_USE_BUNDLED_DCMTK)
+                MESSAGE( STATUS "Building bundled DCMTK library" )
+                SET(CMTK_BUILD_DCMTK 1)
+                SET(HAVE_DCMTK 1)
+                SET(DCMTK_BUNDLE_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/dcmtk)
+                SET(DCMTK_INCLUDE_DIR "${DCMTK_BUNDLE_ROOT}" CACHE PATH "Directory containining DCMTK header files" FORCE)
+                SET(DCMTK_INCLUDE_DIRS "${DCMTK_INCLUDE_DIR};${DCMTK_INCLUDE_DIR}/dcmtk/dcmjpeg;${DCMTK_INCLUDE_DIR}/dcmtk/dcmimage;${DCMTK_INCLUDE_DIR}/dcmtk/dcmimgle;${DCMTK_INCLUDE_DIR}/dcmtk/dcmdata;${DCMTK_INCLUDE_DIR}/dcmtk/ofstd")
+                SET(DCMTK_LIBRARIES "cmtkDCMTK" CACHE STRING "Libraries to link for DCMTK support")
+                SET(DCMTK_DICTIONARY_DIR ${DCMTK_BUNDLE_ROOT})
+                
+                ADD_DEFINITIONS(-DHAVE_CONFIG_H -DCMTK_HAVE_DCMTK -DCMAKE_DCMDICTPATH=\\\"${DCMTK_DICTIONARY_DIR}\\\")
 
-	FIND_PATH(DCMTK_LIBRARY_DIR dicom.dic ${DCMTK_DIR}/lib /usr/local/lib/ /usr/lib/)
-	IF(DCMTK_LIBRARY_DIR)
-		SET(DCMTK_LIBRARIES "dcmjpeg;ijg8;ijg12;ijg16;dcmimage;dcmimgle;dcmdata;ofstd")
-		MARK_AS_ADVANCED(DCMTK_LIBRARY_DIR)
-	ELSE(DCMTK_LIBRARY_DIR)
-	        MESSAGE(FATAL_ERROR "Please set DCMTK_LIBRARY_DIR")		
-	ENDIF(DCMTK_LIBRARY_DIR)
-
-	FIND_PATH(DCMTK_INCLUDE_DIR dcmtk ${DCMTK_DIR}/include /usr/local/include /usr/include )
-	IF(DCMTK_INCLUDE_DIR)
-		SET(DCMTK_INCLUDE_DIRS "${DCMTK_INCLUDE_DIR};${DCMTK_INCLUDE_DIR}/dcmtk/dcmjpeg;${DCMTK_INCLUDE_DIR}/dcmtk/ijg8;${DCMTK_INCLUDE_DIR}/dcmtk/ijg12;${DCMTK_INCLUDE_DIR}/dcmtk/ijg16;${DCMTK_INCLUDE_DIR}/dcmtk/dcmimage;${DCMTK_INCLUDE_DIR}/dcmtk/dcmimgle;${DCMTK_INCLUDE_DIR}/dcmtk/dcmdata;${DCMTK_INCLUDE_DIR}/dcmtk/ofstd")
-		MARK_AS_ADVANCED(DCMTK_INCLUDE_DIR)
-	ELSE(DCMTK_INCLUDE_DIR)
-	        MESSAGE(FATAL_ERROR "Please set DCMTK_INCLUDE_DIR")		
-	ENDIF(DCMTK_INCLUDE_DIR)
-
-	IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-		SET(DCMTK_LIBRARIES_EXTRA "wsock32;netapi32" CACHE STRING "Extra libraries needed for DCMTK")
-	ELSE(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-		SET(DCMTK_LIBRARIES_EXTRA "" CACHE STRING "Extra libraries needed for DCMTK")
-	ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-
-	MARK_AS_ADVANCED(DCMTK_LIBRARIES_EXTRA)
-
-	IF(DCMTK_LIBRARY_DIR AND DCMTK_INCLUDE_DIR)
-        	ADD_DEFINITIONS(-DCMTK_HAVE_DCMTK -DCMAKE_DCMDICTPATH=\\\"${DCMTK_LIBRARY_DIR}/dicom.dic\\\")
-		IF(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-		       ADD_DEFINITIONS(-DHAVE_CONFIG_H)
-		ENDIF(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-	ENDIF(DCMTK_LIBRARY_DIR AND DCMTK_INCLUDE_DIR)
-
+                SET(USE_STD_CXX_INCLUDES 1)
+                SET(DCM_DICT_DEFAULT_PATH "${DCMTK_DICTIONARY_DIR}")
+                CHECK_INCLUDE_FILE_CXX (sstream HAVE_SSTREAM)
+                CHECK_INCLUDE_FILE_CXX (strstream HAVE_STRSTREAM)
+                CHECK_INCLUDE_FILE_CXX (sstream.h HAVE_SSTREAM_H)
+                CHECK_INCLUDE_FILE_CXX (strstrea.h HAVE_STRSTREA_H)
+                CHECK_INCLUDE_FILE_CXX (strstream.h HAVE_STRSTREAM_H)
+                CONFIGURE_FILE(${DCMTK_BUNDLE_ROOT}/dcmtk/config/cfunix.h.in ${DCMTK_BUNDLE_ROOT}/dcmtk/config/cfunix.h)
+        ELSE (CMTK_USE_BUNDLED_DCMTK)
+                IF(NOT DCMTK_DIR)
+                        SET(DCMTK_DIR "NOTFOUND")
+                ENDIF(NOT DCMTK_DIR)
+  
+                FIND_PATH(DCMTK_LIBRARY_DIR dicom.dic ${DCMTK_DIR}/lib /usr/local/lib/ /usr/lib/)
+                IF(DCMTK_LIBRARY_DIR)
+                        SET(DCMTK_DICTIONARY_DIR ${DCMTK_LIBRARY_DIR})
+                        SET(DCMTK_LIBRARIES "dcmjpeg;ijg8;ijg12;ijg16;dcmimage;dcmimgle;dcmdata;ofstd")
+                        MARK_AS_ADVANCED(DCMTK_LIBRARY_DIR)
+                ELSE(DCMTK_LIBRARY_DIR)
+                        MESSAGE(FATAL_ERROR "Please set DCMTK_LIBRARY_DIR")		
+                ENDIF(DCMTK_LIBRARY_DIR)
+  
+                FIND_PATH(DCMTK_INCLUDE_DIR dcmtk ${DCMTK_DIR}/include /usr/local/include /usr/include )
+                IF(DCMTK_INCLUDE_DIR)
+                        SET(DCMTK_INCLUDE_DIRS "${DCMTK_INCLUDE_DIR};${DCMTK_INCLUDE_DIR}/dcmtk/dcmjpeg;${DCMTK_INCLUDE_DIR}/dcmtk/ijg8;${DCMTK_INCLUDE_DIR}/dcmtk/ijg12;${DCMTK_INCLUDE_DIR}/dcmtk/ijg16;${DCMTK_INCLUDE_DIR}/dcmtk/dcmimage;${DCMTK_INCLUDE_DIR}/dcmtk/dcmimgle;${DCMTK_INCLUDE_DIR}/dcmtk/dcmdata;${DCMTK_INCLUDE_DIR}/dcmtk/ofstd")
+                        MARK_AS_ADVANCED(DCMTK_INCLUDE_DIR)
+                ELSE(DCMTK_INCLUDE_DIR)
+                        MESSAGE(FATAL_ERROR "Please set DCMTK_INCLUDE_DIR")		
+                ENDIF(DCMTK_INCLUDE_DIR)
+  
+                IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+                        SET(DCMTK_LIBRARIES_EXTRA "wsock32;netapi32" CACHE STRING "Extra libraries needed for DCMTK")
+                ELSE(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+                        SET(DCMTK_LIBRARIES_EXTRA "" CACHE STRING "Extra libraries needed for DCMTK")
+                ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  
+                MARK_AS_ADVANCED(DCMTK_LIBRARIES_EXTRA)
+  
+                IF(DCMTK_LIBRARY_DIR AND DCMTK_INCLUDE_DIR)
+                        ADD_DEFINITIONS(-DCMTK_HAVE_DCMTK -DCMAKE_DCMDICTPATH=\\\"${DCMTK_LIBRARY_DIR}/dicom.dic\\\")
+                        IF(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+                                ADD_DEFINITIONS(-DHAVE_CONFIG_H)
+                        ENDIF(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+                ENDIF(DCMTK_LIBRARY_DIR AND DCMTK_INCLUDE_DIR)
+        ENDIF (CMTK_USE_BUNDLED_DCMTK)
 ENDIF(CMTK_USE_DCMTK)
 
 #-----------------------------------------------------------------------------
@@ -473,8 +501,8 @@ INCLUDE(CPack)
 INSTALL(FILES ${CPACK_RESOURCE_FILE_LICENSE} ${CPACK_PACKAGE_DESCRIPTION_FILE} DESTINATION share/doc/CMTK)
 
 # Install dicom.dic from dcmtk so it's in packages
-  IF(CMTK_USE_DCMTK)
-	INSTALL(FILES ${DCMTK_LIBRARY_DIR}/dicom.dic DESTINATION lib)
+IF(CMTK_USE_DCMTK)
+	INSTALL(FILES ${DCMTK_DICTIONARY_DIR}/dicom.dic DESTINATION lib)
 ENDIF(CMTK_USE_DCMTK)
 
 #-----------------------------------------------------------------------------
