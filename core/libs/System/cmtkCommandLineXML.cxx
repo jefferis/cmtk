@@ -95,7 +95,7 @@ CommandLine::WriteXML
     
     for ( KeyActionGroupListType::const_iterator grp = this->m_KeyActionGroupList.begin(); grp != this->m_KeyActionGroupList.end(); ++grp )
       {
-      if ( ! (*grp)->GetProperties() & PROPS_NOXML )
+      if ( ! ((*grp)->GetProperties() & PROPS_NOXML) )
 	{
 	mxml_node_t *parameterGroup = mxmlNewElement( x_exec, "parameters" );
 	
