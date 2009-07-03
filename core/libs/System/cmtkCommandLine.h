@@ -251,6 +251,7 @@ public:
       this->m_Properties = properties;
     }
 
+    /// Get item properties.
     virtual long int GetProperties() const
     {
       return this->m_Properties;
@@ -684,6 +685,22 @@ private:
 
     /// Key-action list for this group.
     KeyActionListType m_KeyActionList;
+
+    /// Set group properties.
+    virtual void SetProperties( const long int properties )
+    {
+      this->m_Properties = properties;
+    }
+
+    /// Get group properties.
+    virtual long int GetProperties() const
+    {
+      return this->m_Properties;
+    }
+    
+  private:
+    /// Group properties.
+    long int m_Properties;
   };
 
   /// Type for group list.
