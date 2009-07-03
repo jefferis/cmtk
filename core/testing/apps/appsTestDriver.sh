@@ -137,7 +137,7 @@ case ${RUNTEST} in
 	check_result concat.xform
 	;;
     ConcatAffineA1A)
-	run ${BINDIR}/concat_affine -o ${tmpdir}/concat.xform --inverse affineA.xform affineA.xform
+	run ${BINDIR}/concat_affine -o ${tmpdir}/concat.xform -- --inverse affineA.xform affineA.xform
 	check_result concat.xform
 	;;
     CongealFromInit)
@@ -544,7 +544,7 @@ case ${RUNTEST} in
 	check_result stdout.txt
 	;;
     ProbeXformBwdFwd)
-	run_eval "${BINDIR}/probe_xform --probe 180,180,60 --probe 20,20,20 --probe 0,0,0 --inverse vol001_mr_t0t1_warp.xform vol001_mr_t0t1_warp.xform > ${tmpdir}/stdout.txt"
+	run_eval "${BINDIR}/probe_xform --probe 180,180,60 --probe 20,20,20 --probe 0,0,0 -- --inverse vol001_mr_t0t1_warp.xform vol001_mr_t0t1_warp.xform > ${tmpdir}/stdout.txt"
 	check_result stdout.txt
 	;;
     ReformatxNoXform)
