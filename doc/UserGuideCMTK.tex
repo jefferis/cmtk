@@ -1,0 +1,128 @@
+%
+% Complete documentation on the extended LaTeX markup used for Insight
+% documentation is available in ``Documenting Insight'', which is part
+% of the standard documentation for Insight.  It may be found online
+% at:
+%
+%     http://www.itk.org/
+
+\documentclass{InsightArticle}
+
+\usepackage[dvipdfm]{graphicx}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  hyperref should be the last package to be loaded.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[dvipdfm,
+bookmarks,
+bookmarksopen,
+backref,
+colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
+]{hyperref}
+
+
+%  This is a template for Papers to the Insight Journal. 
+%  It is comparable to a technical report format.
+
+% The title should be descriptive enough for people to be able to find
+% the relevant document. 
+\title{User Guide to The Computational Morphometry Toolkit}
+
+% Increment the release number whenever significant changes are made.
+% The author and/or editor can define 'significant' however they like.
+\release{1.00}
+
+% At minimum, give your name and an email address.  You can include a
+% snail-mail address if you like.
+\author{Torsten Rohlfing$^{1}$}
+\authoraddress{$^{1}$Neuroscience Program, SRI International, Menlo Park, CA}
+
+\begin{document}
+
+
+\ifpdf
+\else
+   %
+   % Commands for including Graphics when using latex
+   % 
+   \DeclareGraphicsExtensions{.eps,.jpg,.gif,.tiff,.bmp,.png}
+   \DeclareGraphicsRule{.jpg}{eps}{.jpg.bb}{`convert #1 eps:-}
+   \DeclareGraphicsRule{.gif}{eps}{.gif.bb}{`convert #1 eps:-}
+   \DeclareGraphicsRule{.tiff}{eps}{.tiff.bb}{`convert #1 eps:-}
+   \DeclareGraphicsRule{.bmp}{eps}{.bmp.bb}{`convert #1 eps:-}
+   \DeclareGraphicsRule{.png}{eps}{.png.bb}{`convert #1 eps:-}
+\fi
+
+
+\maketitle
+
+
+\ifhtml
+\chapter*{Front Matter\label{front}}
+\fi
+
+
+% The abstract should be a paragraph or two long, and describe the
+% scope of the document.
+\begin{abstract}
+\noindent
+This paper is intended as a very brief introduction of the main tools in the Computational Morphometry Toolkit (CMTK).
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}
+
+\section{Step-by-Step}
+
+\subsection{DICOM Image Stacker}
+
+\begin{verbatim}
+dcm2image -r -O image_%02d.nii /path/to/dicom
+\end{verbatim}
+
+\subsection{MR Intensity Bias Field Correction}
+
+\begin{verbatim}
+levelset levelset.nii
+\end{verbatim}
+
+\begin{verbatim}
+mrbias -M 2 --mask levelset.nii spgr.nii spgr_corrected.nii
+\end{verbatim}
+
+
+\subsection{Affine Image Registration}
+
+
+\begin{verbatim}
+registration -o afine.xform --dofs 6 --dofs 9 --auto-multi-level 4 spgr1.nii spgr2.nii
+\end{verbatim}
+
+\subsection{Nonrigid Image Registration}
+
+\begin{verbatim}
+warp -o ffd.xform affine.xform
+\end{verbatim}
+
+\subsection{Jacobian Determinant Maps}
+
+\subsection{Statistical Testing}
+
+\subsection{General Linear Modeling}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Insert the bibliography using BibTeX
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%\bibliographystyle{plain}
+%%\bibliography{InsightJournal}
+
+
+\end{document}
+
