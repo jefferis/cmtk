@@ -1,0 +1,4 @@
+Note that the files in this directory do not constitute the DCMTK 
+toolkit. Instead, what you find here is a stripped-down, minimal
+subset of DCMTK classes, which represents the exact functionality
+used in CMTK.

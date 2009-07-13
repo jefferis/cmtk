@@ -36,8 +36,8 @@ copy_src_tgt()
   mkdir -p ${tgt_c_path}
 
   for module in ${module_list}; do
-    cp ${src_h_path}/${module}.h ${tgt_h_path}
-    cp ${src_c_path}/${module}.cc ${tgt_c_path}
+      [ -f ${src_h_path}/${module}.h ] && cp ${src_h_path}/${module}.h ${tgt_h_path}
+      [ -f ${src_c_path}/${module}.cc] && cp ${src_c_path}/${module}.cc ${tgt_c_path}
   done
 
 }

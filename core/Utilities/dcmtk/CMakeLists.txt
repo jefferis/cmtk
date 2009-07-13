@@ -25,40 +25,118 @@
 ##  $LastChangedBy$
 ##      
 
-
 PROJECT(cmtkDCMTK)
 
-INCLUDE_DIRECTORIES(${DCMTK_BUNDLE_ROOT})
-INCLUDE_DIRECTORIES(${DCMTK_BUNDLE_ROOT}/dcmtk)
-INCLUDE_DIRECTORIES(${DCMTK_BUNDLE_ROOT}/dcmtk/config)
-INCLUDE_DIRECTORIES(${DCMTK_BUNDLE_ROOT}/dcmtk/dcmdata)
-INCLUDE_DIRECTORIES(${DCMTK_BUNDLE_ROOT}/dcmtk/dcmimgle)
-INCLUDE_DIRECTORIES(${DCMTK_BUNDLE_ROOT}/dcmtk/dcmjpeg) 
-INCLUDE_DIRECTORIES(${DCMTK_BUNDLE_ROOT}/dcmtk/ofstd)
+CHECK_INCLUDE_FILE_CXX (sstream HAVE_SSTREAM)
+CHECK_INCLUDE_FILE_CXX (strstream HAVE_STRSTREAM)
+CHECK_INCLUDE_FILE_CXX (sstream.h HAVE_SSTREAM_H)
+CHECK_INCLUDE_FILE_CXX (strstrea.h HAVE_STRSTREA_H)
+CHECK_INCLUDE_FILE_CXX (strstream.h HAVE_STRSTREAM_H)
+
+SET(USE_STD_CXX_INCLUDES 1)
+
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/dcmtk/config/cfunix.h.in ${CMAKE_CURRENT_BINARY_DIR}/cfunix.h)
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/dcmtk)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/dcmtk/config)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/dcmtk/dcmdata)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/dcmtk/dcmimgle)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/dcmtk/dcmjpeg) 
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/dcmtk/ofstd)
 
 INCLUDE_REGULAR_EXPRESSION("^.*.h$")
 
-#SET(dcmtk_SRCS dcbytstr.cc dcerror.cc  dcobject.cc dctagkey.cc didocu.cc   ofconsol.cc
-#               dcdatset.cc dcfilefo.cc dcpcache.cc dctypes.cc  diutils.cc  oflist.cc
-#               dcdicent.cc dchashdi.cc dcsequen.cc dcvr.cc     djdecode.cc ofstd.cc
-#               dcdict.cc   dcitem.cc   dcstack.cc  dcvrui.cc   djutils.cc  ofstring.cc
-#               dcelem.cc   dclist.cc   dctag.cc    dcxfer.cc   ofcond.cc   ofthread.cc )
+SET(dcmtk_SRCS
+  cmdlnarg.cc
+  dcbytstr.cc
+  dcchrstr.cc
+  dccodec.cc
+  dcdatset.cc
+  dcdebug.cc
+  dcdicdir.cc
+  dcdicent.cc
+  dcdict.cc
+  dcdirrec.cc
+  dcelem.cc
+  dcerror.cc
+  dcfilefo.cc
+  dchashdi.cc
+  dcistrma.cc
+  dcistrmf.cc
+  dcitem.cc
+  dclist.cc
+  dcmetinf.cc
+  dcobject.cc
+  dcostrma.cc
+  dcostrmf.cc
+  dcpcache.cc
+  dcpixel.cc
+  dcpixseq.cc
+  dcpxitem.cc
+  dcsequen.cc
+  dcstack.cc
+  dcswap.cc
+  dctag.cc
+  dctagkey.cc
+  dctypes.cc
+  dcuid.cc
+  dcvm.cc
+  dcvr.cc
+  dcvrae.cc
+  dcvras.cc
+  dcvrat.cc
+  dcvrcs.cc
+  dcvrda.cc
+  dcvrds.cc
+  dcvrdt.cc
+  dcvrfd.cc
+  dcvrfl.cc
+  dcvris.cc
+  dcvrlo.cc
+  dcvrlt.cc
+  dcvrobow.cc
+  dcvrof.cc
+  dcvrpn.cc
+  dcvrpobw.cc
+  dcvrsh.cc
+  dcvrsl.cc
+  dcvrss.cc
+  dcvrst.cc
+  dcvrtm.cc
+  dcvrui.cc
+  dcvrul.cc
+  dcvrulup.cc
+  dcvrus.cc
+  dcvrut.cc
+  dcxfer.cc
+  didocu.cc
+  diutils.cc
+  djcodecd.cc
+  djcparam.cc
+  djdecbas.cc
+  djdecext.cc
+  djdeclol.cc
+  djdecode.cc
+  djdecpro.cc
+  djdecsps.cc
+  djdecsv1.cc
 
-SET(dcmtk_SRCS cmdlnarg.cc  dcdebug.cc   dcelem.cc    dcistrmf.cc  dcostrma.cc
-               dcpxitem.cc  dctagkey.cc  dcvras.cc  dcvrds.cc  dcvrlo.cc    dcvrpobw.cc
-               dcvrtm.cc    dcvrut.cc    djcparam.cc  djdecpro.cc  ofconsol.cc  ofstring.cc
-               dcbytstr.cc  dcdicdir.cc  dcerror.cc   dcitem.cc    dcostrmf.cc  dcsequen.cc
-               dctypes.cc   dcvrat.cc  dcvrdt.cc  dcvrlt.cc    dcvrsh.cc    dcvrui.cc
-               dcxfer.cc    djdecbas.cc  djdecsps.cc  ofdate.cc    ofthread.cc
-               dcchrstr.cc  dcdicent.cc  dcfilefo.cc  dclist.cc    dcpcache.cc  dcstack.cc
-               dcuid.cc     dcvr.cc    dcvrfd.cc  dcvrobow.cc  dcvrsl.cc    dcvrul.cc
-               didocu.cc    djdecext.cc  djdecsv1.cc  ofdatime.cc  oftime.cc
-               dccodec.cc   dcdict.cc    dchashdi.cc  dcmetinf.cc  dcpixel.cc   dcswap.cc
-               dcvm.cc      dcvrcs.cc  dcvrfl.cc  dcvrof.cc    dcvrss.cc    dcvrulup.cc
-               diutils.cc   djdeclol.cc  djutils.cc   oflist.cc
-               dcdatset.cc  dcdirrec.cc  dcistrma.cc  dcobject.cc  dcpixseq.cc  dctag.cc
-               dcvrae.cc    dcvrda.cc  dcvris.cc  dcvrpn.cc    dcvrst.cc    dcvrus.cc
-               djcodecd.cc  djdecode.cc  ofcond.cc    ofstd.cc )
+  djdijg8.cc 
+  djdijg12.cc
+  djdijg16.cc  
+
+  djutils.cc
+  ofcond.cc
+  ofconsol.cc
+  ofdate.cc
+  ofdatime.cc
+  oflist.cc
+  ofstd.cc
+  ofstring.cc
+  ofthread.cc
+  oftime.cc
+)
 
 
 ADD_LIBRARY(cmtkDCMTK ${dcmtk_SRCS})
@@ -66,8 +144,3 @@ TARGET_LINK_LIBRARIES(cmtkDCMTK)
 
 INSTALL_TARGETS(/lib cmtkDCMTK)
 INSTALL_FILES(/include/dcmtk "(\\.h)$")
-
-SET(CMTK_DCMTK_LIBRARIES cmtkDCMTK)
-
-
-
