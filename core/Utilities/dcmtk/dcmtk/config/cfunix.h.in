@@ -241,7 +241,7 @@
 /* #undef HAVE_ITOA */
 
 /* Define to 1 if you have the <libc.h> header file. */
-#define HAVE_LIBC_H 1
+#cmakedefine HAVE_LIBC_H 1
 
 /* Define to 1 if you have the `iostream' library (-liostream). */
 /* #undef HAVE_LIBIOSTREAM */
@@ -575,10 +575,12 @@ typedef unsigned short ushort;
 #define HAVE_STRING_H 1
 
 /* Define to 1 if you have the `strlcat' function. */
-#define HAVE_STRLCAT 1
+//#cmakedefine HAVE_STRLCAT 1
+#undef HAVE_STRLCAT
 
 /* Define to 1 if you have the `strlcpy' function. */
-#define HAVE_STRLCPY 1
+//#cmakedefine HAVE_STRLCPY 1
+#undef HAVE_STRLCPY
 
 /* Define to 1 if you have the `strstr' function. */
 #define HAVE_STRSTR 1
@@ -692,7 +694,7 @@ typedef unsigned short ushort;
 /* #undef HAVE__FINDFIRST */
 
 /* Define if libc.h should be treated as a C++ header */
-/* #undef INCLUDE_LIBC_H_AS_CXX */
+#cmakedefine INCLUDE_LIBC_H_AS_CXX
 
 /* Define if <math.h> fails if included extern "C" */
 /* #undef INCLUDE_MATH_H_AS_CXX */
