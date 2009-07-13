@@ -11,15 +11,15 @@ CONFIG_DIR="config"
 CONFIG_MODULES="cfwin32 osconfig"
 
 DCMDATA_DIR="dcmdata"
-DCMDATA_MODULES="cmdlnarg dcbytstr dcchrstr dccodec dcdatset dcdebug dcdefine dcdeftag dcdicdir dcdicent dcdict dcdirrec dcelem dcerror dcfilefo dchashdi dcistrma dcistrmf dcitem dclist dcmetinf dcobject dcofsetl dcostrma dcostrmf dcostrmz dcovlay dcpcache dcpixel dcpixseq dcpxitem dcsequen dcstack dcswap dctag dctagkey dctk dctypes dcuid dcvm dcvr dcvrae dcvras dcvrat dcvrcs dcvrda dcvrds dcvrdt dcvrfd dcvrfl dcvris dcvrlo dcvrlt dcvrobow dcvrof dcvrpn dcvrpobw dcvrsh dcvrsl dcvrss dcvrst dcvrtm dcvrui dcvrul dcvrulup dcvrus dcvrut dcxfer"
+DCMDATA_MODULES="cmdlnarg dcbytstr dcchrstr dccodec dcdatset dcdebug dcdefine dcdeftag dcdicdir dcdicent dcdict dcdirrec dcelem dcerror dcfilefo dchashdi dcistrma dcistrmf dcistrmz dcitem dclist dcmetinf dcobject dcofsetl dcostrma dcostrmf dcostrmz dcovlay dcpcache dcpixel dcpixseq dcpxitem dcsequen dcstack dcswap dctag dctagkey dctk dctypes dcuid dcvm dcvr dcvrae dcvras dcvrat dcvrcs dcvrda dcvrds dcvrdt dcvrfd dcvrfl dcvris dcvrlo dcvrlt dcvrobow dcvrof dcvrpn dcvrpobw dcvrsh dcvrsl dcvrss dcvrst dcvrtm dcvrui dcvrul dcvrulup dcvrus dcvrut dcxfer"
 DCMIMGLE_DIR="dcmimgle"
 DCMIMGLE_MODULES="didocu diobjcou diutils"
 
 DCMJPEG_DIR="dcmjpeg"
-DCMJPEG_MODULES="djdecode djutils djdecbas djdecext djdecsps djdecpro djdecsv1 djdeclol djcparam djcodecd"
+DCMJPEG_MODULES="djdecode djdecabs djdijg8 djdijg12 djdijg16 djutils djdecbas djdecext djdecsps djdecpro djdecsv1 djdeclol djcparam djcodecd djrploss djrplol"
 
 OFSTD_DIR="ofstd"
-OFSTD_MODULES="ofalgo ofcast ofcond ofconsol ofglobal oflist ofstack ofstdinc ofstream ofstring ofthread oftypes ofdate ofdatime oftime"
+OFSTD_MODULES="ofalgo ofcast ofcond ofconsol ofcrc32 ofglobal oflist ofstack ofstdinc ofstream ofstring ofthread oftypes ofdate ofdatime oftime"
 
 copy_src_tgt()
 {
