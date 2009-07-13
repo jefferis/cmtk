@@ -7,7 +7,7 @@ Release CMTK-1.0.2:
     "Unstable" library.
 
 - Added: source tree now incorporates minimal subset of DCMTK files so we can
-    build DICOM support without external dependencies.
+    build DICOM support without external dependencies. [not functional yet]
 
 - Testing: support for automated memory testing using valgrind etc.
 
