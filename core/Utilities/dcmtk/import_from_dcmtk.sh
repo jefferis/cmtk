@@ -13,8 +13,7 @@ CONFIG_DIR="config"
 CONFIG_MODULES="cfwin32 osconfig"
 
 DCMDATA_DIR="dcmdata"
-DCMDATA_MODULES="dcuid dcvm dcdefine dcmetinf dcdicdir dcpixseq dcvrae dcvras dcvrcs dcvrda dcvrds dcvrdt dcvris dcvrtm dcchrstr dcvrlo dcvrlt dcvrpn dcvrsh dcvrst dcvrut dcvrobow dcpixel dcovlay dcvrat dcvrss dcvrus dcvrsl dcvrul dcvrulup dcvrfl dcvrfd dcvrof cmdlnarg dcdirrec dcofsetl dcvrpobw dcbytstr dcdebug dcdeftag dcdict dcerror dchashdi dclist dcpcache dcstack dctagkey dctypes dcvrui dcdatset dcdicent dcelem dcfilefo dcitem dcobject dcsequen dctag dctk dcvr dcxfer dcswap dcistrma dcostrma dcostrmf dcistrmf dcpxitem dccodec"
-
+DCMDATA_MODULES="cmdlnarg dcbytstr dcchrstr dccodec dcdatset dcdebug dcdefine dcdeftag dcdicdir dcdicent dcdict dcdirrec dcelem dcerror dcfilefo dchashdi dcistrma dcistrmf dcitem dclist dcmetinf dcobject dcofsetl dcostrma dcostrmf dcovlay dcpcache dcpixel dcpixseq dcpxitem dcsequen dcstack dcswap dctag dctagkey dctk dctypes dcuid dcvm dcvr dcvrae dcvras dcvrat dcvrcs dcvrda dcvrds dcvrdt dcvrfd dcvrfl dcvris dcvrlo dcvrlt dcvrobow dcvrof dcvrpn dcvrpobw dcvrsh dcvrsl dcvrss dcvrst dcvrtm dcvrui dcvrul dcvrulup dcvrus dcvrut dcxfer"
 DCMIMGLE_DIR="dcmimgle"
 DCMIMGLE_MODULES="didocu diobjcou diutils"
 
