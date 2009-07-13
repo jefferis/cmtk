@@ -97,15 +97,15 @@ DICOM::Read
     fileformat->loadFile( filename );
     fileformat->transferEnd();
     
-    DcmDataset *dataset = fileformat->getDataset();
+    DcmDataset *dataset = fileformat->getAndRemoveDataset();
+//    DcmDataset *dataset = fileformat->getDataset();
     if ( !dataset ) 
       {
       this->SetErrorMsg( "File format has NULL dataset." );
       throw(1);
       }
     
-    std::auto_ptr<DiDocument> document( new DiDocument( dataset, dataset->getOriginalXfer() ) );
-
+    std::auto_ptr<DiDocument> document( new DiDocument( dataset, dataset->getOriginalXfer(), CIF_AcrNemaCompatibility ) );
     if ( ! document.get() || ! document->good() ) 
       {
       this->SetErrorMsg( "Could not create document representation." );
