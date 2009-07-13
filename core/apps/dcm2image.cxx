@@ -63,7 +63,7 @@
 
 #include <dctk.h>
 #include <didocu.h>
-#  include <diutils.h>
+#include <diutils.h>
 
 #ifndef DCM_RawDataType_ImageType
 #define DCM_RawDataType_ImageType DcmTagKey(0x0043,0x102f)
