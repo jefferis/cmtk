@@ -6,6 +6,9 @@ Release CMTK-1.0.2:
     objects. Mike's experimental ML noise estimator implementations moved to
     "Unstable" library.
 
+- Added: source tree now incorporates minimal subset of DCMTK files so we can
+    build DICOM support without external dependencies.
+
 - Testing: support for automated memory testing using valgrind etc.
 
 - Fixed: some uninitialized data situations
