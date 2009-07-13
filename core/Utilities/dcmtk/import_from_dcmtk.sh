@@ -4,9 +4,8 @@ DCMTK_ROOT=$1
 
 files="COPYRIGHT"
 
-CMTK_ROOT="/Users/mphasak/Development/cmtk/trunk/core"
-CMTK_DCMTK_ROOT="${CMTK_ROOT}/Utilities/dcmtk"
-CMTK_DCMTK_INCLUDE="${CMTK_ROOT}/Utilities/dcmtk/dcmtk"
+CMTK_DCMTK_ROOT="$2"
+CMTK_DCMTK_INCLUDE="${CMTK_DCMTK_ROOT}/dcmtk"
 
 CONFIG_DIR="config"
 CONFIG_MODULES="cfwin32 osconfig"
