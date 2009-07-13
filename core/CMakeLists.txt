@@ -239,7 +239,7 @@ IF(CMTK_USE_DCMTK)
                 MARK_AS_ADVANCED(DCMTK_LIBRARIES_EXTRA)
   
                 IF(DCMTK_LIBRARY_DIR AND DCMTK_INCLUDE_DIR)
-                        ADD_DEFINITIONS(-DCMTK_HAVE_DCMTK -DCMAKE_DCMDICTPATH=\\\"${DCMTK_LIBRARY_DIR}/dicom.dic\\\")
+                        ADD_DEFINITIONS(-DCMTK_HAVE_DCMTK -DCMTK_HAVE_DCMTK_JPEG -DCMAKE_DCMDICTPATH=\\\"${DCMTK_LIBRARY_DIR}/dicom.dic\\\")
                         IF(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
                                 ADD_DEFINITIONS(-DHAVE_CONFIG_H)
                         ENDIF(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")

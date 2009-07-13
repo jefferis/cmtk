@@ -39,6 +39,7 @@
 #  include <string.h>
 #  include <stdio.h>
 
+#  include <dcdebug.h>
 #  include <dcdeftag.h>
 #  include <didocu.h>
 #  include <diutils.h>
@@ -96,8 +97,6 @@ DICOM::Read
     fileformat->loadFile( filename );
     fileformat->transferEnd();
     
-    //    DicomImageClass::setDebugLevel( 255 );
-    
     DcmDataset *dataset = fileformat->getDataset();
     if ( !dataset ) 
       {
@@ -106,6 +105,7 @@ DICOM::Read
       }
     
     std::auto_ptr<DiDocument> document( new DiDocument( dataset, dataset->getOriginalXfer() ) );
+
     if ( ! document.get() || ! document->good() ) 
       {
       this->SetErrorMsg( "Could not create document representation." );
@@ -231,18 +231,8 @@ DICOM::Read
 	this->SetDataPtr( (char*) pdata, delem->getLength() );
 	if ( haveRescaleIntercept || haveRescaleSlope ) 
 	  {
-	  TypedArray::SmartPtr typedArray = TypedArray::SmartPtr
-	    ( TypedArray::Create( TYPE_SHORT, pdata, totalImageSizePixels, IGS_NO_FREE_ARRAY, imageInfo.Padding, &imageInfo.PaddingValue ) );
-#ifdef __IGNORE__
-	  Types::DataItem min, max;
-	  typedArray->GetRange( min, max );
-	  fprintf( stderr, "before: %f %f ", min, max );
-#endif
+	  TypedArray::SmartPtr typedArray = TypedArray::SmartPtr( TypedArray::Create( TYPE_SHORT, pdata, totalImageSizePixels, IGS_NO_FREE_ARRAY, imageInfo.Padding, &imageInfo.PaddingValue ) );
 	  typedArray->Rescale( rescaleSlope, rescaleIntercept );
-#ifdef __IGNORE__
-	  typedArray->GetRange( min, max );
-	  fprintf( stderr, "before: %f %f ", min, max );
-#endif
 	  imageInfo.signbit = imageInfo.signbit || (rescaleIntercept < 0);
 	  }
 	} 
