@@ -57,6 +57,7 @@ SET(dcmtk_SRCS
   dcdicdir.cc
   dcdicent.cc
   dcdict.cc
+  dcdictzz.cc
   dcdirrec.cc
   dcelem.cc
   dcerror.cc
@@ -112,21 +113,7 @@ SET(dcmtk_SRCS
   dcxfer.cc
   didocu.cc
   diutils.cc
-  djcodecd.cc
-  djcparam.cc
-  djdecbas.cc
-  djdecext.cc
-  djdeclol.cc
-  djdecode.cc
-  djdecpro.cc
-  djdecsps.cc
-  djdecsv1.cc
 
-  djdijg8.cc 
-  djdijg12.cc
-  djdijg16.cc  
-
-  djutils.cc
   ofcond.cc
   ofconsol.cc
   ofdate.cc

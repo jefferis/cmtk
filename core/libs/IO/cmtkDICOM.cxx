@@ -41,7 +41,11 @@
 
 #  include <dcdeftag.h>
 #  include <didocu.h>
-#  include <djdecode.h>
+#  include <diutils.h>
+
+#  ifdef CMTK_HAVE_DCMTK_JPEG
+#    include <djdecode.h>
+#  endif
 
 #  ifdef HAVE_SYS_TYPES_H
 #    include <sys/types.h>
@@ -71,6 +75,7 @@ DICOM::Read
   
   try 
     {
+#ifdef CMTK_HAVE_DCMTK_JPEG
     // register global decompression codecs
     static bool decodersRegistered = false;
     if ( ! decodersRegistered ) 
@@ -78,6 +83,7 @@ DICOM::Read
       DJDecoderRegistration::registerCodecs( EDC_photometricInterpretation, EUC_default, EPC_default, 1 );
       decodersRegistered = true;
       }
+#endif
     
     std::auto_ptr<DcmFileFormat> fileformat( new DcmFileFormat );
     if (!fileformat.get()) 
@@ -471,6 +477,7 @@ DICOM::Read
 {
   ScalarImage* image = NULL;
 
+#ifdef CMTK_HAVE_DCMTK_JPEG
   // register global decompression codecs
   static bool decodersRegistered = false;
   if ( ! decodersRegistered ) 
@@ -478,6 +485,7 @@ DICOM::Read
     DJDecoderRegistration::registerCodecs( EDC_photometricInterpretation, EUC_default, EPC_default, 1 );
     decodersRegistered = true;
     }
+#endif
   
   std::auto_ptr<DcmFileFormat> fileformat( new DcmFileFormat );
   if (!fileformat.get()) 
