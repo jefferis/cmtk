@@ -709,25 +709,25 @@ typedef unsigned short ushort;
 /* #undef SIGNAL_HANDLER_WITH_ELLIPSE */
 
 /* The size of a `char', as computed by sizeof. */
-#define SIZEOF_CHAR 1
+#cmakedefine SIZEOF_CHAR @SIZEOF_CHAR@
 
 /* The size of a `double', as computed by sizeof. */
-#define SIZEOF_DOUBLE 8
+#cmakedefine SIZEOF_DOUBLE @SIZEOF_DOUBLE@
 
 /* The size of a `float', as computed by sizeof. */
-#define SIZEOF_FLOAT 4
+#cmakedefine SIZEOF_FLOAT @SIZEOF_FLOAT@
 
 /* The size of a `int', as computed by sizeof. */
-#define SIZEOF_INT 4
+#cmakedefine SIZEOF_INT @SIZEOF_INT@
 
 /* The size of a `long', as computed by sizeof. */
-#define SIZEOF_LONG 4
+#cmakedefine SIZEOF_LONG @SIZEOF_LONG@
 
 /* The size of a `short', as computed by sizeof. */
-#define SIZEOF_SHORT 2
+#cmakedefine SIZEOF_SHORT @SIZEOF_SHORT@
 
 /* The size of a `void *', as computed by sizeof. */
-#define SIZEOF_VOID_P 4
+#cmakedefine SIZEOF_VOID_P @SIZEOF_VOID_P@
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
