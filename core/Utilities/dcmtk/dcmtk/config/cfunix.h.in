@@ -736,7 +736,7 @@ typedef unsigned short ushort;
 /* #undef TM_IN_SYS_TIME */
 
 /* Define if ANSI standard C++ includes are used */
-#define USE_STD_CXX_INCLUDES 
+#cmakedefine USE_STD_CXX_INCLUDES 1
 
 /* Define if we are compiling with libpng support */
 #undef WITH_LIBPNG
