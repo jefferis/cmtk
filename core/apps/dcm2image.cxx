@@ -61,9 +61,9 @@
 #include <memory>
 #include <fstream>
 
-#include <dctk.h>
-#include <didocu.h>
-#include <diutils.h>
+#include <dcmtk/dcmdata/dctk.h>
+#include <dcmtk/dcmimgle/didocu.h>
+#include <dcmtk/dcmimgle/diutils.h>
 
 #ifndef DCM_RawDataType_ImageType
 #define DCM_RawDataType_ImageType DcmTagKey(0x0043,0x102f)

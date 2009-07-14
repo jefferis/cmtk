@@ -39,10 +39,9 @@
 #  include <string.h>
 #  include <stdio.h>
 
-#  include <dcdebug.h>
-#  include <dcdeftag.h>
-#  include <didocu.h>
-#  include <diutils.h>
+#  include <dcmtk/dcmdata/dcdeftag.h>
+#  include <dcmtk/dcmimgle/didocu.h>
+#  include <dcmtk/dcmimgle/diutils.h>
 
 #  ifdef CMTK_HAVE_DCMTK_JPEG
 #    include <djdecode.h>
@@ -98,14 +97,14 @@ DICOM::Read
     fileformat->transferEnd();
     
     DcmDataset *dataset = fileformat->getAndRemoveDataset();
-//    DcmDataset *dataset = fileformat->getDataset();
     if ( !dataset ) 
       {
       this->SetErrorMsg( "File format has NULL dataset." );
       throw(1);
       }
     
-    std::auto_ptr<DiDocument> document( new DiDocument( dataset, dataset->getOriginalXfer(), CIF_AcrNemaCompatibility ) );
+    const E_TransferSyntax xfer = dataset->getOriginalXfer();
+    std::auto_ptr<DiDocument> document( new DiDocument( dataset, xfer, CIF_AcrNemaCompatibility ) );
     if ( ! document.get() || ! document->good() ) 
       {
       this->SetErrorMsg( "Could not create document representation." );
@@ -487,8 +486,6 @@ DICOM::Read
   fileformat->transferInit();
   fileformat->loadFile( path );
   fileformat->transferEnd();
-
-  //DicomImageClass::setDebugLevel( 255 );
 
   DcmDataset *dataset = fileformat->getDataset();
 
