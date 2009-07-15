@@ -295,6 +295,9 @@
 /* Define to 1 if you have the `nsl' library (-lnsl). */
 #cmakedefine HAVE_LIBNSL 1
 
+/* Define to 1 if you have the <libpng/png.h> header file. */
+#cmakedefine HAVE_LIBPNG_PNG_H 1
+
 //TODO:
 /* Define to 1 if you have the `socket' library (-lsocket). */
 #cmakedefine HAVE_LIBSOCKET 1
