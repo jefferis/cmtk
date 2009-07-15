@@ -1,4 +1,31 @@
-/* include/dcmtk/config/cfunix.h.in.  Generated from configure.in by autoheader.  */
+##  Copyright 2004-2009 SRI International
+##
+##  This file is part of the Computational Morphometry Toolkit.
+##
+##  http://www.nitrc.org/projects/cmtk/
+##
+##  The Computational Morphometry Toolkit is free software: you can
+##  redistribute it and/or modify it under the terms of the GNU General Public
+##  License as published by the Free Software Foundation, either version 3 of
+##  the License, or (at your option) any later version.
+##
+##  The Computational Morphometry Toolkit is distributed in the hope that it
+##  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+##  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License along
+##  with the Computational Morphometry Toolkit.  If not, see
+##  <http://www.gnu.org/licenses/>.
+##
+##  $Revision$
+##      
+##  $LastChangedDate$
+##
+##  $LastChangedBy$
+##      
+
+/* Based on include/dcmtk/config/cfunix.h.in.  Generated from configure.in by autoheader.  */
 
 #ifndef CFUNIX_H
 #define CFUNIX_H
@@ -601,19 +628,19 @@ typedef unsigned short ushort;
 #undef INCLUDE_MATH_H_AS_CXX
 
 /* Define to the address where bug reports for this package should be sent. */
-#undef PACKAGE_BUGREPORT
+#define PACKAGE_BUGREPORT "torsten@synapse.sri.com"
 
 /* Define to the full name of this package. */
-#undef PACKAGE_NAME
+#define PACKAGE_NAME "D4CMTK"
 
 /* Define to the full name and version of this package. */
-#undef PACKAGE_STRING
+#define PACKAGE_STRING "DICOM for CMTK"
 
 /* Define to the one symbol short name of this package. */
-#undef PACKAGE_TARNAME
+#define PACKAGE_TARNAME "d4cmtk"
 
 /* Define to the version of this package. */
-#undef PACKAGE_VERSION
+#define PACKAGE_VERSION @CMTK_VERSION_STRING@
 
 /* Define path separator */
 #define PATH_SEPARATOR '/'
