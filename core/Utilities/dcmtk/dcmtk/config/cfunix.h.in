@@ -605,14 +605,14 @@ typedef unsigned short ushort;
 #cmakedefine HAVE_UTIME_H 1
 
 /* Define if variable-length arrays are supported in C */
-#undef HAVE_VLA 1
+#undef HAVE_VLA
 
 /* Define to 1 if you have the `vprintf' function. */
 #cmakedefine HAVE_VPRINTF 1
 
 /* Define to 1 if you have the `wait3' system call. Deprecated, you should no
    longer depend upon `wait3'. */
-#undef HAVE_WAIT3 1
+#undef HAVE_WAIT3
 
 /* Define to 1 if you have the `waitpid' function. */
 #cmakedefine HAVE_WAITPID 1
