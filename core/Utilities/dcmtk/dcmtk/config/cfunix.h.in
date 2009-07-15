@@ -93,12 +93,14 @@
 /* Define to 1 if you have the `bzero' function. */
 #cmakedefine HAVE_BZERO 1
 
+//TODO:
 /* Define if your C++ compiler can work with class templates */
 #cmakedefine HAVE_CLASS_TEMPLATE 1
 
 /* Define to 1 if you have the `connect' function. */
 #cmakedefine HAVE_CONNECT 1
 
+//TODO:
 /* define if the compiler supports const_cast<> */
 #cmakedefine HAVE_CONST_CAST 1
 
@@ -108,32 +110,42 @@
 /* Define to 1 if you have the `cuserid' function. */
 #cmakedefine HAVE_CUSERID 1
 
+//TODO:
 /* Define if bool is a built-in type */
 #cmakedefine HAVE_CXX_BOOL 1
 
+
+//TODO:
 /* Define if volatile is a known keyword */
 #cmakedefine HAVE_CXX_VOLATILE 
 
+//TODO:
 /* Define if "const" is supported by the C compiler */
 #cmakedefine HAVE_C_CONST 1
 
+//TODO:
 /* Define if your system has a declaration for socklen_t in sys/types.h
    sys/socket.h */
 #cmakedefine HAVE_DECLARATION_SOCKLEN_T 1
 
+//TODO:
 /* Define if your system has a declaration for std::ios_base::openmode in
    iostream.h */
 #cmakedefine HAVE_DECLARATION_STD__IOS_BASE__OPENMODE 1
 
+//TODO:
 /* Define if your system has a declaration for struct utimbuf in sys/types.h
    utime.h sys/utime.h */
 #cmakedefine HAVE_DECLARATION_STRUCT_UTIMBUF 1
 
+/* Define to 1 if you have the <dirent.h> header file. */
 #cmakedefine HAVE_DIRENT_H 1
 
+//TODO:
 /* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
 #cmakedefine HAVE_DOPRNT 1
 
+//TODO:
 /* define if the compiler supports dynamic_cast<> */
 #cmakedefine HAVE_DYNAMIC_CAST 
 
@@ -143,6 +155,7 @@
 /* Define to 1 if you have the <errno.h> header file. */
 #cmakedefine HAVE_ERRNO_H 1
 
+//TODO:
 /* Define if your C++ compiler supports the explicit template specialization
    syntax */
 #undef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
@@ -171,6 +184,7 @@
 /* Define to 1 if you have the <fstream.h> header file. */
 #cmakedefine HAVE_FSTREAM_H 1
 
+//TODO:
 /* Define if your C++ compiler can work with function templates */
 #cmakedefine HAVE_FUNCTION_TEMPLATE 1
 
@@ -222,194 +236,337 @@
 /* Define to 1 if the system has the type `int64_t'. */
 #cmakedefine HAVE_INT64_T 1
 
+//TODO:
 /* Define if your system declares argument 3 of accept() as int * instead of
    size_t * or socklen_t * */
 #cmakedefine HAVE_INTP_ACCEPT 1
 
+//TODO:
 /* Define if your system declares argument 5 of getsockopt() as int * instead
    of size_t * or socklen_t */
 #cmakedefine HAVE_INTP_GETSOCKOPT 1
 
+//TODO:
 /* Define if your system declares argument 2-4 of select() as int * instead of
    struct fd_set * */
+#undef HAVE_INTP_SELECT
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#cmakedefine HAVE_INTTYPES_H 1
+
+/* Define to 1 if you have the <iomanip> header file. */
+#cmakedefine HAVE_IOMANIP 1
+
+/* Define to 1 if you have the <iomanip.h> header file. */
+#cmakedefine HAVE_IOMANIP_H 1
+
+/* Define to 1 if you have the <iostream> header file. */
+#cmakedefine HAVE_IOSTREAM 1
+
+/* Define to 1 if you have the <iostream.h> header file. */
 #cmakedefine HAVE_INTP_SELECT 1
+
 /* Define if your system defines ios::nocreate in iostream.h */
 #cmakedefine HAVE_IOS_NOCREATE 1
 
-/* Define to 1 if you have the `iostream' library (-liostream). */
-#cmakedefine HAVE_LIBIOSTREAM 1
+/* Define to 1 if you have the <io.h> header file. */
+#cmakedefine HAVE_IO_H 1
 
+/* Define to 1 if you have the `isinf' function. */
+#cmakedefine HAVE_ISINF 1
+
+/* Define to 1 if you have the `isnan' function. */
+#cmakedefine HAVE_ISNAN 1
+
+/* Define to 1 if you have the <iso646.h> header file. */
+#cmakedefine HAVE_ISO646_H 1
+
+/* Define to 1 if you have the `itoa' function. */
+#cmakedefine HAVE_ITOA 1
+
+/* Define to 1 if you have the <libc.h> header file. */
+#cmakedefine HAVE_LIBC_H 1
+
+//TODO:
+/* Define to 1 if you have the `iostream' library (-liostream). */
+#define HAVE_LIBIOSTREAM 1
+
+//TODO:
 /* Define to 1 if you have the `nsl' library (-lnsl). */
 #cmakedefine HAVE_LIBNSL 1
+
+//TODO:
 /* Define to 1 if you have the `socket' library (-lsocket). */
 #cmakedefine HAVE_LIBSOCKET 1
 
+//TODO:
 /* Define if libtiff supports LZW compression */
 #cmakedefine HAVE_LIBTIFF_LZW_COMPRESSION 1
-/* Define to 1 if the system has the type `longlong'. */
-#undef HAVE_LONGLONG
 
+/* Define to 1 if you have the <limits.h> header file. */
+#cmakedefine HAVE_LIMITS_H 1
+
+/* Define to 1 if you have the `listen' function. */
+#cmakedefine HAVE_LISTEN 1
+
+/* Define to 1 if you have the <locale.h> header file. */
+#cmakedefine HAVE_LOCALE_H 1
+
+/* Define to 1 if you have the `lockf' function. */
+#cmakedefine HAVE_LOCKF 1
+
+/* Define to 1 if the system has the type `longlong'. */
+#cmakedefine HAVE_LONGLONG 1
+
+//TODO:
 /* Define to 1 if you support file names longer than 14 characters. */
-#define HAVE_LONG_FILE_NAMES 1
+#cmakedefine HAVE_LONG_FILE_NAMES 1
+
+/* Define to 1 if you have the `malloc_debug' function. */
+#cmakedefine HAVE_MALLOC_DEBUG 1
+
+/* Define to 1 if you have the <malloc.h> header file. */
+#cmakedefine HAVE_MALLOC_H 1
+
+/* Define to 1 if you have the <math.h> header file. */
+#cmakedefine HAVE_MATH_H 1
+
+/* Define to 1 if you have the `memcmp' function. */
+#cmakedefine HAVE_MEMCMP 1
+
+/* Define to 1 if you have the `memcpy' function. */
+#cmakedefine HAVE_MEMCPY 1
+
+/* Define to 1 if you have the `memmove' function. */
+#cmakedefine HAVE_MEMMOVE 1
+
+/* Define to 1 if you have the <memory.h> header file. */
+#cmakedefine HAVE_MEMORY_H 1
+
+/* Define to 1 if you have the `memset' function. */
+#cmakedefine HAVE_MEMSET 1
+
+/* Define to 1 if you have the `mkstemp' function. */
+#cmakedefine HAVE_MKSTEMP 1
+
+/* Define to 1 if you have the `mktemp' function. */
+#cmakedefine HAVE_MKTEMP 1
+
+/* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
+#cmakedefine HAVE_NDIR_H 1
+
+/* Define to 1 if you have the <netdb.h> header file. */
+#cmakedefine HAVE_NETDB_H 1
+
+/* Define to 1 if you have the <netinet/in.h> header file. */
+#cmakedefine HAVE_NETINET_IN_H 1
+
+/* Define to 1 if you have the <netinet/in_systm.h> header file. */
+#cmakedefine HAVE_NETINET_IN_SYSTM_H 1
+
+/* Define to 1 if you have the <netinet/tcp.h> header file. */
+#cmakedefine HAVE_NETINET_TCP_H 1
+
+/* Define to 1 if you have the <new.h> header file. */
+#cmakedefine HAVE_NEW_H 1
+
+//TODO:
 /* Define `pid_t' to `int' if <sys/types.h> does not define. */
 #cmakedefine HAVE_NO_TYPEDEF_PID_T 1
 #ifdef HAVE_NO_TYPEDEF_PID_T
 typedef int pid_t;
 #endif
 
+//TODO:
 /* Define `size_t' to `unsigned' if <sys/types.h> does not define. */
 #cmakedefine HAVE_NO_TYPEDEF_SIZE_T 1
 #ifdef HAVE_NO_TYPEDEF_SIZE_T
 typedef unsigned size_t;
 #endif
 
+//TODO:
 /* Define `ssize_t' to `long' if <sys/types.h> does not define. */
 #cmakedefine HAVE_NO_TYPEDEF_SSIZE_T 1
 #ifdef HAVE_NO_TYPEDEF_SSIZE_T
 typedef long ssize_t;
 #endif
 
+//TODO:
 /* Define `uchar' to `unsigned char' if <sys/types.h> does not define. */
 #cmakedefine HAVE_NO_TYPEDEF_UCHAR 1
 #ifdef HAVE_NO_TYPEDEF_UCHAR
 typedef unsigned char uchar;
 #endif
 
+//TODO:
 /* Define `uint' to `unsigned int' if <sys/types.h> does not define. */
 #cmakedefine HAVE_NO_TYPEDEF_UINT 1
 #ifdef HAVE_NO_TYPEDEF_UINT
 typedef unsigned int uint;
 #endif
 
+//TODO:
 /* Define `ulong' to `unsigned long' if <sys/types.h> does not define. */
 #define HAVE_NO_TYPEDEF_ULONG 1
 #ifdef HAVE_NO_TYPEDEF_ULONG
 typedef unsigned long ulong;
 #endif
 
+//TODO:
 /* Define `ushort' to `unsigned short' if <sys/types.h> does not define. */
 #cmakedefine HAVE_NO_TYPEDEF_USHORT 1
 #ifdef HAVE_NO_TYPEDEF_USHORT
 typedef unsigned short ushort;
 #endif
 
+//TODO:
 /* Define if your system supports readdir_r with the obsolete Posix 1.c draft
    6 declaration (2 arguments) instead of the Posix 1.c declaration with 3
    arguments. */
 #cmakedefine HAVE_OLD_READDIR_R 1
 
+//TODO:
 /* Define if pthread_t is a pointer type on your system */
 #cmakedefine HAVE_POINTER_TYPE_PTHREAD_T 1
 
+//TODO:
 /* Define if your system has a prototype for accept in sys/types.h
    sys/socket.h */
 #cmakedefine HAVE_PROTOTYPE_ACCEPT 1
 
+//TODO:
 /* Define if your system has a prototype for bind in sys/types.h sys/socket.h
    */
 #cmakedefine HAVE_PROTOTYPE_BIND 1
 
+//TODO:
 /* Define if your system has a prototype for bzero in string.h strings.h
    libc.h unistd.h stdlib.h */
 #cmakedefine HAVE_PROTOTYPE_BZERO 1
 
+//TODO:
 /* Define if your system has a prototype for connect in sys/types.h
    sys/socket.h */
 #cmakedefine HAVE_PROTOTYPE_CONNECT 1
 
+//TODO:
 /* Define if your system has a prototype for finite in math.h */
 #cmakedefine HAVE_PROTOTYPE_FINITE 1
 
+//TODO:
 /* Define if your system has a prototype for flock in sys/file.h */
 #cmakedefine HAVE_PROTOTYPE_FLOCK 1
 
+//TODO:
 /* Define if your system has a prototype for gethostbyname in libc.h unistd.h
    stdlib.h netdb.h */
 #cmakedefine HAVE_PROTOTYPE_GETHOSTBYNAME 1
 
+//TODO:
 /* Define if your system has a prototype for gethostid in libc.h unistd.h
    stdlib.h netdb.h */
 #cmakedefine HAVE_PROTOTYPE_GETHOSTID 1
 
+//TODO:
 /* Define if your system has a prototype for gethostname in unistd.h libc.h
    stdlib.h netdb.h */
 #cmakedefine HAVE_PROTOTYPE_GETHOSTNAME 1
 
+//TODO:
 /* Define if your system has a prototype for getsockname in sys/types.h
    sys/socket.h */
 #cmakedefine HAVE_PROTOTYPE_GETSOCKNAME 1
 
+//TODO:
 /* Define if your system has a prototype for getsockopt in sys/types.h
    sys/socket.h */
 #cmakedefine HAVE_PROTOTYPE_GETSOCKOPT 1
 
+//TODO:
 /* Define if your system has a prototype for gettimeofday in sys/time.h
    unistd.h */
 #cmakedefine HAVE_PROTOTYPE_GETTIMEOFDAY 1
 
+//TODO:
 /* Define if your system has a prototype for isinf in math.h */
 #cmakedefine HAVE_PROTOTYPE_ISINF 1
 
+//TODO:
 /* Define if your system has a prototype for isnan in math.h */
 #cmakedefine HAVE_PROTOTYPE_ISNAN 1
 
+//TODO:
 /* Define if your system has a prototype for listen in sys/types.h
    sys/socket.h */
 #cmakedefine HAVE_PROTOTYPE_LISTEN 1
 
+//TODO:
 /* Define if your system has a prototype for mkstemp in libc.h unistd.h
    stdlib.h */
 #cmakedefine HAVE_PROTOTYPE_MKSTEMP 1
 
+//TODO:
 /* Define if your system has a prototype for mktemp in libc.h unistd.h
    stdlib.h */
 #cmakedefine HAVE_PROTOTYPE_MKTEMP 1
 
+//TODO:
 /* Define if your system has a prototype for select in sys/select.h
    sys/types.h sys/socket.h sys/time.h */
 #cmakedefine HAVE_PROTOTYPE_SELECT 1
 
+//TODO:
 /* Define if your system has a prototype for setsockopt in sys/types.h
    sys/socket.h */
 #cmakedefine HAVE_PROTOTYPE_SETSOCKOPT 1
 
+//TODO:
 /* Define if your system has a prototype for socket in sys/types.h
    sys/socket.h */
 #cmakedefine HAVE_PROTOTYPE_SOCKET 1
 
+//TODO:
 /* Define if your system has a prototype for std::vfprintf in stdarg.h */
 #cmakedefine HAVE_PROTOTYPE_STD__VFPRINTF 1
 
+//TODO:
 /* Define if your system has a prototype for strcasecmp in string.h */
 #cmakedefine HAVE_PROTOTYPE_STRCASECMP 1
 
+//TODO:
 /* Define if your system has a prototype for strncasecmp in string.h */
 #cmakedefine HAVE_PROTOTYPE_STRNCASECMP 1
 
+//TODO:
 /* Define if your system has a prototype for usleep in libc.h unistd.h
    stdlib.h */
 #cmakedefine HAVE_PROTOTYPE_USLEEP 1
 
+//TODO:
 /* Define if your system has a prototype for wait3 in libc.h sys/wait.h
    sys/time.h sys/resource.h */
 #cmakedefine HAVE_PROTOTYPE_WAIT3 1
 
+//TODO:
 /* Define if your system has a prototype for waitpid in sys/wait.h sys/time.h
    sys/resource.h */
 #cmakedefine HAVE_PROTOTYPE_WAITPID 1
 
+//TODO:
 /* Define if your system has a prototype for _stricmp in string.h */
 #cmakedefine HAVE_PROTOTYPE__STRICMP 1
 
 /* Define to 1 if you have the <pthread.h> header file. */
 #cmakedefine HAVE_PTHREAD_H 1
 
+//TODO:
 /* Define if your system supports POSIX read/write locks */
 #cmakedefine HAVE_PTHREAD_RWLOCK 1
 
 /* Define to 1 if you have the <pwd.h> header file. */
 #cmakedefine HAVE_PWD_H 1
 
+//TODO:
 /* define if the compiler supports reinterpret_cast<> */
 #cmakedefine HAVE_REINTERPRET_CAST 1
 
@@ -449,9 +606,11 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `stat' function. */
 #cmakedefine HAVE_STAT 1
 
+//TODO:
 /* define if the compiler supports static_cast<> */
 #cmakedefine HAVE_STATIC_CAST 1
 
+//TODO:
 /* Define if your C++ compiler can work with static methods in class templates
    */
 #undef HAVE_STATIC_TEMPLATE_METHOD
@@ -477,9 +636,11 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <stdlib.h> header file. */
 #cmakedefine HAVE_STDLIB_H 1
 
+//TODO:
 /* Define if ANSI standard C++ includes use std namespace */
 #cmakedefine HAVE_STD_NAMESPACE 1
 
+//TODO:
 /* Define if the compiler supports std::nothrow */
 #cmakedefine HAVE_STD__NOTHROW 1
 
@@ -499,10 +660,10 @@ typedef unsigned short ushort;
 #cmakedefine HAVE_STRING_H 1
 
 /* Define to 1 if you have the `strlcat' function. */
-#cmakedefine HAVE_STRLCAT 1
+#undef HAVE_STRLCAT
 
-/* Define to 1 if you have the `strlcpy' function. */ 
-#cmakedefine HAVE_STRLCPY 1
+/* Define to 1 if you have the `strlcpy' function. */
+#undef HAVE_STRLCPY
 
 /* Define to 1 if you have the `strstr' function. */
 #cmakedefine HAVE_STRSTR 1
@@ -525,6 +686,7 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `sysinfo' function. */
 #cmakedefine HAVE_SYSINFO 1
 
+//TODO:
 /* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
    */
 #cmakedefine HAVE_SYS_DIR_H 1
@@ -535,6 +697,7 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <sys/file.h> header file. */
 #cmakedefine HAVE_SYS_FILE_H 1
 
+//TODO:
 /* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'. */
 #cmakedefine HAVE_SYS_NDIR_H 1
 
@@ -565,6 +728,7 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <sys/utsname.h> header file. */
 #cmakedefine HAVE_SYS_UTSNAME_H 1
 
+//TODO:
 /* Define to 1 if you have <sys/wait.h> that is POSIX.1 compatible. */
 #undef HAVE_SYS_WAIT_H
 
@@ -580,6 +744,7 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `tmpnam' function. */
 #cmakedefine HAVE_TMPNAM 1
 
+//TODO:
 /* define if the compiler recognizes typename */
 #define HAVE_TYPENAME 1
 
@@ -604,6 +769,7 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <utime.h> header file. */
 #cmakedefine HAVE_UTIME_H 1
 
+//TODO:
 /* Define if variable-length arrays are supported in C */
 #undef HAVE_VLA
 
@@ -626,6 +792,7 @@ typedef unsigned short ushort;
 /* Define if libc.h should be treated as a C++ header */
 #cmakedefine INCLUDE_LIBC_H_AS_CXX 1
 
+//TODO:
 /* Define if <math.h> fails if included extern "C" */
 #undef INCLUDE_MATH_H_AS_CXX
 
@@ -647,9 +814,11 @@ typedef unsigned short ushort;
 /* Define path separator */
 #define PATH_SEPARATOR '/'
 
+//TODO:
 /* Define as the return type of signal handlers (`int' or `void'). */
 #define RETSIGTYPE void
 
+//TODO:
 /* Define if signal handlers need ellipse (...) parameters */
 #cmakedefine SIGNAL_HANDLER_WITH_ELLIPSE 1
 
@@ -674,33 +843,40 @@ typedef unsigned short ushort;
 /* The size of a `void *', as computed by sizeof. */
 #cmakedefine SIZEOF_VOID_P @SIZEOF_VOID_P@
 
+//TODO:
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
 
+//TODO:
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */
 #cmakedefine TM_IN_SYS_TIME 1
 
 /* Define if ANSI standard C++ includes are used */
 #cmakedefine USE_STD_CXX_INCLUDES 1
 
+//TODO:
 /* Define if we are compiling with libpng support */
 #cmakedefine WITH_LIBPNG 1
 
+//TODO:
 /* Define if we are compiling with libtiff support */
 #cmakedefine WITH_LIBTIFF 1
 
+//TODO:
 /* Define if we are compiling with libxml support */
 #undef WITH_LIBXML
 
 /* Define if we are compiling with OpenSSL support */
 #undef WITH_OPENSSL
 
+//TODO:
 /* Define if we are compiling for built-in private tag dictionary */
 #cmakedefine WITH_PRIVATE_TAGS 1
 
 /* Define if we are compiling with libwrap (TCP wrapper) support */
 #undef WITH_TCPWRAPPER
 
+//TODO:
 /* Define if we are compiling with any type of Multi-thread support */
 #cmakedefine WITH_THREADS 1
 
