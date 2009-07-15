@@ -56,10 +56,10 @@
 #cmakedefine C_RIGHTSHIFT_UNSIGNED
 
 /* Define the DCMTK default path */
-#cmakedefine DCMTK_PREFIX @DCMTK_PREFIX@
+#cmakedefine DCMTK_PREFIX "@DCMTK_PREFIX@"
 
 /* Define the default data dictionary path for the dcmdata library package */
-#cmakedefine DCM_DICT_DEFAULT_PATH @DCM_DICT_DEFAULT_PATH@
+#cmakedefine DCM_DICT_DEFAULT_PATH "@DCM_DICT_DEFAULT_PATH@"
 
 /* Define the environment variable path separator */
 #ifndef ENVIRONMENT_PATH_SEPARATOR
