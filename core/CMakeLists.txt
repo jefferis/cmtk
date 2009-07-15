@@ -216,6 +216,12 @@ IF(CMTK_USE_DCMTK)
                 FIND_PATH(DCMTK_LIBRARY_DIR dicom.dic ${DCMTK_DIR}/lib /usr/local/lib/ /usr/lib/)
                 IF(DCMTK_LIBRARY_DIR)
                         SET(DCMTK_DICTIONARY_DIR ${DCMTK_LIBRARY_DIR})
+
+			# Install dicom.dic from dcmtk so it's in packages
+			IF(CMTK_USE_DCMTK)
+				INSTALL(FILES ${DCMTK_DICTIONARY_DIR}/dicom.dic DESTINATION lib)
+			ENDIF(CMTK_USE_DCMTK)
+
                         SET(DCMTK_LIBRARIES "dcmjpeg;ijg8;ijg12;ijg16;dcmimage;dcmimgle;dcmdata;ofstd")
                         MARK_AS_ADVANCED(DCMTK_LIBRARY_DIR)
                 ELSE(DCMTK_LIBRARY_DIR)
@@ -493,11 +499,6 @@ SET(CPACK_PACKAGE_INSTALL_DIRECTORY "CMTK-${CMTK_VERSION_MAJOR}.${CMTK_VERSION_M
 INCLUDE(CPack)
 
 INSTALL(FILES ${CPACK_RESOURCE_FILE_LICENSE} ${CPACK_PACKAGE_DESCRIPTION_FILE} DESTINATION share/doc/CMTK)
-
-# Install dicom.dic from dcmtk so it's in packages
-IF(CMTK_USE_DCMTK)
-	INSTALL(FILES ${DCMTK_DICTIONARY_DIR}/dicom.dic DESTINATION lib)
-ENDIF(CMTK_USE_DCMTK)
 
 #-----------------------------------------------------------------------------
 # Dispatch the build into the proper subdirectories.
