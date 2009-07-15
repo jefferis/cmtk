@@ -472,7 +472,8 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `strlcat' function. */
 #cmakedefine HAVE_STRLCAT 1
 
-#undef HAVE_STRLCPY
+/* Define to 1 if you have the `strlcpy' function. */ 
+#cmakedefine HAVE_STRLCPY 1
 
 /* Define to 1 if you have the `strstr' function. */
 #cmakedefine HAVE_STRSTR 1
