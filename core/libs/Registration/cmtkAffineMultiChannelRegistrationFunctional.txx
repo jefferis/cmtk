@@ -51,8 +51,7 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
       exit( 1 );
       }
 
-    Vector3D deltaCenter = 
-      ( this->m_ReferenceChannels[0]->GetCenterCropRegion() - this->m_FloatingChannels[0]->GetCenterCropRegion() );
+    Vector3D deltaCenter = ( this->m_ReferenceChannels[0]->GetCenterCropRegion() - this->m_FloatingChannels[0]->GetCenterCropRegion() );
     this->m_Transformation.SetXlate( deltaCenter.XYZ );
     }
   
