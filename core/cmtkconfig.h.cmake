@@ -66,6 +66,9 @@
 #cmakedefine HAVE_HASH_MAP 1
 #cmakedefine HAVE_HASH_MAP_H 1
 
+#cmakedefine HAVE_UNORDERED_MAP 1
+#cmakedefine HAVE_UNORDERED_MAP_TR1 1
+
 #cmakedefine WORDS_BIGENDIAN 1
 
 #ifdef _MSC_VER
