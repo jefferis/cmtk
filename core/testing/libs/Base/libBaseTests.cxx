@@ -35,7 +35,9 @@
 
 /** Set up table of test names and function pointers */
 typedef int (*testFuncPtr)();
-typedef struct
+
+typedef 
+struct __testNameAndFunctionPointer
 {
   const char* name;
   const testFuncPtr func;
