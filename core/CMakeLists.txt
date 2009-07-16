@@ -83,15 +83,6 @@ CHECK_INCLUDE_FILES (sys/times.h HAVE_SYS_TIMES_H)
 CHECK_INCLUDE_FILES (sys/types.h HAVE_SYS_TYPES_H)
 CHECK_INCLUDE_FILES (sys/utsname.h HAVE_SYS_UTSNAME_H)
 
-INCLUDE (CheckIncludeFileCXX)
-CHECK_INCLUDE_FILE_CXX (hash_map HAVE_HASH_MAP)
-CHECK_INCLUDE_FILE_CXX (hash_map.h HAVE_HASH_MAP_H)
-
-CHECK_INCLUDE_FILE_CXX (unordered_map HAVE_UNORDERED_MAP)
-IF(NOT HAVE_UNORDERED_MAP)
-       CHECK_INCLUDE_FILE_CXX (tr1/unordered_map HAVE_UNORDERED_MAP_TR1)
-ENDIF(NOT HAVE_UNORDERED_MAP)
-
 INCLUDE(TestBigEndian)
 TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
 
@@ -107,6 +98,21 @@ IF(QNANHIBIT_VALUE)
 ELSE(QNANHIBIT_VALUE)
    SET(QNANHIBIT 0 CACHE INTERNAL "The 22nd bit of 32-bit floating-point quiet NaN.")
 ENDIF(QNANHIBIT_VALUE)
+
+#-----------------------------------------------------------------------------
+# Check for at least one of the typical STL hash map implementations
+
+INCLUDE (CheckIncludeFileCXX)
+CHECK_INCLUDE_FILE_CXX (unordered_map HAVE_UNORDERED_MAP)
+IF(NOT HAVE_UNORDERED_MAP)
+  CHECK_INCLUDE_FILE_CXX (tr1/unordered_map HAVE_UNORDERED_MAP_TR1)
+  IF(NOT HAVE_UNORDERED_MAP_TR1)
+    CHECK_INCLUDE_FILE_CXX (hash_map HAVE_HASH_MAP)
+    IF(NOT HAVE_HASH_MAP)
+      CHECK_INCLUDE_FILE_CXX (hash_map.h HAVE_HASH_MAP_H)
+    ENDIF(NOT HAVE_HASH_MAP)
+  ENDIF(NOT HAVE_UNORDERED_MAP_TR1)
+ENDIF(NOT HAVE_UNORDERED_MAP)
 
 #-----------------------------------------------------------------------------
 # build configuration options.
