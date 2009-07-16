@@ -44,29 +44,6 @@
 #  include <hash_map>
 #endif
 
-namespace
-cmtk
-{
-
-/** Wrapper class for STL hash_map or unordered_map classes.
- * This class will use whatever hash map implementation is provided by the
- * currently used STL. If both unordered_map and hash_map are provided, the
- * former is used as it is the future standard class.
- */
-template<class TKey, class TValue>
-class HashMapSTL : 
-#if defined(HAVE_UNORDERED_MAP) || defined(HAVE_UNORDERED_MAP_TR1)
-    /// Inherit STL hash/unordered map.
-    public std::unordered_map<TKey,TValue>
-#elif defined(__GNUC__) && ! defined(__INTEL_COMPILER)
-    public __gnu_cxx::hash_map
-#else
-    public std::hash_map
-#endif
-{
-};
-#else
-
 #if SIZEOF_LONG != 8
 #if defined(__GNUC__) && ! defined(__INTEL_COMPILER)
 namespace __gnu_cxx
@@ -83,5 +60,32 @@ namespace __gnu_cxx
 }
 #endif // defined(__GNUC__) && ! defined(__INTEL_COMPILER)
 #endif
+
+namespace
+cmtk
+{
+
+/** Wrapper class for STL hash_map or unordered_map classes.
+ * This class will use whatever hash map implementation is provided by the
+ * currently used STL. If both unordered_map and hash_map are provided, the
+ * former is used as it is the future standard class.
+ */
+template<class TKey, class TValue>
+class HashMapSTL : 
+#if defined(HAVE_UNORDERED_MAP)
+    /// Inherit STL hash/unordered map.
+    public std::unordered_map<TKey,TValue>
+#elif defined(HAVE_UNORDERED_MAP_TR1)
+    /// Inherit STL hash/unordered map.
+    public std::tr1::unordered_map<TKey,TValue>
+#elif defined(__GNUC__) && ! defined(__INTEL_COMPILER)
+    public __gnu_cxx::hash_map
+#else
+    public std::hash_map
+#endif
+{
+};
+
+} // namespace cmtk
 
 #endif // #ifndef __cmtkHashMapSTL_h_included_

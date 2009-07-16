@@ -446,6 +446,10 @@ case ${RUNTEST} in
 	run ${BINDIR}/mcaffine --downsample-from 4 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --dofs 6 --covariance -o ${tmpdir}/xform pat001_mr_T1.hdr -- pat001_pet.hdr
 	check_result xform
 	;;
+    McAffine2)
+	run ${BINDIR}/mcaffine --downsample-from 4 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --dofs 6 --histograms -o ${tmpdir}/xform pat001_mr_T1.hdr -- pat001_pet.hdr
+	check_result xform
+	;;
     MkPhantomBox)
 	run ${BINDIR}/mk_phantom_3d -o ${tmpdir}/phantom.nii --dims 10,10,10 --voxel 1,1,1 box 2,2,2 5,5,5 10
 	check_results phantom.nii

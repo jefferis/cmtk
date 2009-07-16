@@ -36,32 +36,13 @@
 
 #include <cmtkMultiChannelRegistrationFunctional.h>
 
+#include <cmtkHashMapSTL.h>
 #include <cmtkUniformVolume.h>
 #include <cmtkSmartPtr.h>
 #include <cmtkUniformVolumeInterpolator.h>
 #include <cmtkLinearInterpolator.h>
 
 #include <vector>
-
-#if defined(HAVE_HASH_MAP_H)
-#  include <hash_map.h>
-#elif defined(HAVE_HASH_MAP)
-#  include <hash_map>
-#endif
-
-#if defined(__GNUC__) && ! defined(__INTEL_COMPILER)
-using __gnu_cxx::hash_map;
-#else
-#ifdef _MSC_VER
-using stdext::hash_map;
-#else
-using std::hash_map;
-#endif
-#endif
-
-#if __WORDSIZE != 64
-#  include <hash_func_llui.h>
-#endif
 
 namespace
 cmtk
@@ -125,7 +106,7 @@ protected:
     void Init( Parent *const parent );
 
     /** Hash table type. */
-    typedef hash_map<HashKeyType,int> HashTableType;
+    typedef HashMapSTL<HashKeyType,int> HashTableType;
 
     /** Joint haash table for reference and floating channels. */
     HashTableType m_JointHash;

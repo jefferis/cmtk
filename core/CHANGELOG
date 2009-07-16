@@ -5,11 +5,15 @@ Release CMTK-1.0.2:
 - API: more elegant design of noise estimator classes that work on TypedArray
     objects. Mike's experimental ML noise estimator implementations moved to
     "Unstable" library.
+- API: new wrapper class "cmtk::HashMapSTL" hides the various STL hash map
+    implementations and also adds support for upcoming standard unordered_map
+    class.
 
 - Added: source tree now incorporates minimal subset of DCMTK files so we can
     build DICOM support without external dependencies. [not functional yet]
 
 - Testing: support for automated memory testing using valgrind etc.
+- Testing: added test for multi-channel affine registration using histograms
 
 - Fixed: some uninitialized data situations
 - Fixed: incomplete computation when using "--sempling-density" option of

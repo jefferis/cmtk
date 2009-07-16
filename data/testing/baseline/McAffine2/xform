@@ -1,0 +1,15 @@
+! TYPEDSTREAM 1.1
+
+registration {
+	reference_channel_count 1
+	reference_channel "pat001_mr_T1.hdr"
+	floating_channel_count 1
+	floating_channel "pat001_pet.hdr"
+	affine_xform {
+		xlate -53.3499972 -44.57750567 -24.44999977 
+		rotate 0.7758324426 -1.177163283 0.1037176224 
+		scale 1 1 1 
+		shear 0 0 0 
+		center 78.3 99.89999536 63 
+	}
+}
