@@ -450,6 +450,14 @@ case ${RUNTEST} in
 	run ${BINDIR}/mcaffine --initial-xform McAffine2_initial.xform --downsample-from 4 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --dofs 6 --histograms -o ${tmpdir}/xform pat001_mr_T1.hdr -- pat001_pet.hdr
 	check_result xform
 	;;
+    McAffine3)
+	run ${BINDIR}/mcaffine --downsample-from 4 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --dofs 6 --dofs 9 --covariance -o ${tmpdir}/xform rat_fse_erly.hdr rat_fse_late.hdr -- rat2_fse_erly.hdr rat2_fse_late.hdr
+	check_result xform
+	;;
+    McWarp1)
+	run ${BINDIR}/mcwarp --downsample-from 2 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --grid-spacing 14 --refine-grid 2 --covariance -o ${tmpdir}/xform McAffine_rat_rat2.xform
+	check_result xform
+	;;
     MkPhantomBox)
 	run ${BINDIR}/mk_phantom_3d -o ${tmpdir}/phantom.nii --dims 10,10,10 --voxel 1,1,1 box 2,2,2 5,5,5 10
 	check_results phantom.nii

@@ -165,7 +165,12 @@ ENDIF(CMTK_BUILD_NRRD)
 # ==========================================
 # Tests for "mcaffine" tool
 SET(testList ${testList} 
-	     McAffine1 McAffine2)
+	     McAffine1 McAffine2 McAffine3)
+
+# ==========================================
+# Tests for "mcwarp" tool
+SET(testList ${testList} 
+	     McWarp1)
 
 # ==========================================
 # Tests for "mk_phantom_3d" tool
