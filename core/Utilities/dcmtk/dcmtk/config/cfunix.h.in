@@ -158,7 +158,7 @@
 //TODO:
 /* Define if your C++ compiler supports the explicit template specialization
    syntax */
-#undef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
+#cmakedefine HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION 1
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #cmakedefine HAVE_FCNTL_H 1
