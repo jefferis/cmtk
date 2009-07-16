@@ -16,6 +16,7 @@ Release CMTK-1.0.2:
 
 - Testing: support for automated memory testing using valgrind etc.
 - Testing: added test for multi-channel affine registration using histograms
+- Testing: added actual multi-channel registration test, and test for mcwarp
 
 - Fixed: some uninitialized data situations
 - Fixed: incomplete computation when using "--sempling-density" option of
