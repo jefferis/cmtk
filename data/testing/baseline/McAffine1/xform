@@ -6,10 +6,10 @@ registration {
 	floating_channel_count 1
 	floating_channel "pat001_pet.hdr"
 	affine_xform {
-		xlate 2.450000204 14.82249157 -15.90000017 
-		rotate -0.1102159875 0 0.1075848855 
+		xlate 0.3100004849 10.38999228 -7.650000167 
+		rotate -0.9991521887 0.3939146754 0.1134585566 
 		scale 1 1 1 
 		shear 0 0 0 
-		center 78.3 99.89999536 63 
+		center 76.5 98.54999542 63 
 	}
 }
