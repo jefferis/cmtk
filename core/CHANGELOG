@@ -14,10 +14,6 @@ Release CMTK-1.0.2:
 - Added: "mcaffine" tool now accepts user-provided initial transformation from
     file [Tracker #3925].
 
-- Testing: support for automated memory testing using valgrind etc.
-- Testing: added test for multi-channel affine registration using histograms
-- Testing: added actual multi-channel registration test, and test for mcwarp
-
 - Fixed: some uninitialized data situations
 - Fixed: incomplete computation when using "--sempling-density" option of
     "congeal" tool.
@@ -30,6 +26,10 @@ Release CMTK-1.0.2:
 
 - Testing: added an experimental build with valgrind/memcheck memory checking
     to discover further issues with uninitialized data etc.
+- Testing: support for automated memory testing using valgrind etc.
+- Testing: added test for multi-channel affine registration using histograms
+- Testing: added actual multi-channel registration test, and test for mcwarp
+
 
 Release CMTK-1.0.1 (2009-06-25):
 
