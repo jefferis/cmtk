@@ -11,6 +11,8 @@ Release CMTK-1.0.2:
 
 - Added: source tree now incorporates minimal subset of DCMTK files so we can
     build DICOM support without external dependencies. [not functional yet]
+- Added: "mcaffine" tool now accepts user-provided initial transformation from
+    file [Tracker #3925].
 
 - Testing: support for automated memory testing using valgrind etc.
 - Testing: added test for multi-channel affine registration using histograms

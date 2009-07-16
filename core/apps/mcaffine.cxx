@@ -48,6 +48,7 @@
 #include <cmtkRegistrationCallback.h>
 
 #include <cmtkClassStreamMultiChannelRegistration.h>
+#include <cmtkXformIO.h>
 
 #include <list>
 #include <algorithm>
@@ -71,6 +72,7 @@ bool verbose = false;
 std::list<const char*> fileListRef;
 std::list<const char*> fileListFlt;
 
+const char* initialXformPath = NULL;
 const char* outArchive = NULL;
 
 std::list<cmtk::UniformVolume::SmartPtr> refChannelList;
@@ -137,12 +139,47 @@ DoRegistration()
   typedef cmtk::AffineMultiChannelRegistrationFunctional<TMetricFunctional> FunctionalType;
   typename FunctionalType::SmartPtr functional( new FunctionalType );  
   functional->SetNormalizedMI( metricNMI );
-  
+
+  // determine initial transformation parameters based on bounding boxes.
+  cmtk::CoordinateVector params;
+  if ( initialXformPath )
+    {
+    cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( initialXformPath, verbose ) );
+    if ( xform )
+      {
+      const cmtk::AffineXform::SmartPtr affine = cmtk::AffineXform::SmartPtr::DynamicCastFrom( xform );
+      if ( affine )
+	{
+	affine->GetParamVector( params );
+	}
+      else
+	{
+	const cmtk::WarpXform::SmartPtr warp = cmtk::WarpXform::SmartPtr::DynamicCastFrom( xform );
+	if ( warp )
+	  {
+	  warp->GetInitialAffineXform()->GetParamVector( params );
+	  }
+	}
+      functional->SetParamVector( params );
+      }
+    else
+      {
+      cmtk::StdErr << "ERROR: unable to read initial transformation from " << initialXformPath << "\n";
+      exit( 2 );
+      }
+    }
+  else
+    {
+    functional->AddReferenceChannel( *(refChannelList.begin()) );
+    functional->AddFloatingChannel( *(fltChannelList.begin()) );
+    functional->InitTransformation( alignCenters );
+    functional->GetParamVector( params );
+    }
+
   cmtk::BestNeighbourOptimizer optimizer;
   optimizer.SetCallback( cmtk::RegistrationCallback::SmartPtr( new cmtk::RegistrationCallback ) );
   optimizer.SetFunctional( functional );
 
-  cmtk::CoordinateVector params;
   for ( int downsample = std::max(downsampleFrom, downsampleTo); downsample >= std::min(downsampleFrom, downsampleTo); --downsample )
     {
     if ( verbose )
@@ -163,12 +200,6 @@ DoRegistration()
       functional->AddFloatingChannel( image );
       }
 
-    if ( downsample == downsampleFrom )
-      {
-      functional->InitTransformation( alignCenters );
-      functional->GetParamVector( params );
-      }
-    
     for ( std::list<int>::const_iterator itDOF = numberDOFs.begin(); itDOF != numberDOFs.end(); ++itDOF )
       {
       if ( verbose )
@@ -210,6 +241,7 @@ main( int argc, char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode" );
 
     cl.AddOption( Key( 'o', "out-archive" ), &outArchive, "Output archive path." );
+    cl.AddOption( Key( "initial-xform" ), &initialXformPath, "Optional path of a file with the initial transformation." );
 
     cl.AddOption( Key( 'd', "downsample-from" ), &downsampleFrom, "Initial downsampling factor [1]." );
     cl.AddOption( Key( 'D', "downsample-to" ), &downsampleTo, "Final downsampling factor [1]. Factor 0 is full resolution with smoothing turned off" );
