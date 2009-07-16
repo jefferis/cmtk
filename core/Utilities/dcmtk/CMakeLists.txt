@@ -28,7 +28,7 @@
 PROJECT(D4CMTK)
 
 SET(DCMTK_PREFIX ${CMAKE_BINARY_DIR})
-SET(DCM_DICT_DEFAULT_PATH ${DCMTK_PREFIX}/lib/dicom.dic)
+SET(DCM_DICT_DEFAULT_PATH "/dicom.dic;${DCMTK_PREFIX}/lib/dicom.dic;${CMAKE_INSTALL_PREFIX}/lib/dicom.dic")
 
 INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityC.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityCXX.cmake)
