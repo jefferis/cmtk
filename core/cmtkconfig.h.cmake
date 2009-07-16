@@ -71,6 +71,27 @@
 
 #cmakedefine WORDS_BIGENDIAN 1
 
+/* The size of a `char', as computed by sizeof. */
+#cmakedefine SIZEOF_CHAR @CMAKE_SIZEOF_CHAR@
+
+/* The size of a `double', as computed by sizeof. */
+#cmakedefine SIZEOF_DOUBLE @CMAKE_SIZEOF_DOUBLE@
+
+/* The size of a `float', as computed by sizeof. */
+#cmakedefine SIZEOF_FLOAT @CMAKE_SIZEOF_FLOAT@
+
+/* The size of a `int', as computed by sizeof. */
+#cmakedefine SIZEOF_INT @CMAKE_SIZEOF_INT@
+
+/* The size of a `long', as computed by sizeof. */
+#cmakedefine SIZEOF_LONG @CMAKE_SIZEOF_LONG@
+
+/* The size of a `short', as computed by sizeof. */
+#cmakedefine SIZEOF_SHORT @CMAKE_SIZEOF_SHORT@
+
+/* The size of a `void *', as computed by sizeof. */
+#cmakedefine SIZEOF_VOID_P @CMAKE_SIZEOF_VOID_P@
+
 #ifdef _MSC_VER
 // disable warnings about insecure functions (we want to be portable)
 #  define _CRT_SECURE_NO_DEPRECATE
