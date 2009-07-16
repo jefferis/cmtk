@@ -46,7 +46,7 @@ UniformVolume::SetCropRegion
     {
     for ( int dim = 0; dim<3; ++dim )
       {
-		  this->CropFromReal[dim] = std::max<Types::Coordinate>( cropFromReal[dim], this->m_Origin[dim] );
+      this->CropFromReal[dim] = std::max<Types::Coordinate>( cropFromReal[dim], this->m_Origin[dim] );
       }
     } 
   else
