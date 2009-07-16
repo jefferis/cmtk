@@ -99,7 +99,7 @@ ENDIF(CMTK_BUILD_NRRD)
 # ==========================================
 # Tests for "dcm2image" tool
 IF(CMTK_USE_DCMTK)
-  SET(testList ${testList} Dcm2Image)
+  SET(testList ${testList} Dcm2Image Dcm2ImageZ)
 
   IF(CMTK_BUILD_NRRD)
       SET(testList ${testList} Dcm2ImageNrrd)

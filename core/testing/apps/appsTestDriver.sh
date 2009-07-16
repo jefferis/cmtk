@@ -237,6 +237,10 @@ case ${RUNTEST} in
 	run ${BINDIR}/dcm2image -O ${tmpdir}/%03d.hdr ${PWD}/dcm/
 	check_results 001.hdr 001.img 002.hdr 002.img 003.hdr 003.img
 	;;
+    Dcm2ImageZ)
+	run ${BINDIR}/dcm2image -O ${tmpdir}/%03d.nii ${PWD}/dcmz/
+	check_results 001.nii 002.nii 003.nii
+	;;
     Dcm2ImageNrrd)
 	run ${BINDIR}/dcm2image -O ${tmpdir}/%03d.nhdr ${PWD}/dcm/
 	check_results 001.nhdr 001.raw 002.nhdr 002.raw 003.nhdr 003.raw
