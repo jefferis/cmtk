@@ -15,7 +15,7 @@ Release CMTK-1.0.2:
     file [Tracker #3925].
 
 - Fixed: some uninitialized data situations
-- Fixed: incomplete computation when using "--sempling-density" option of
+- Fixed: incomplete computation when using "--sampling-density" option of
     "congeal" tool.
 - Fixed: Slicer can now detect CMTK tools as plugins via their response to
     "--xml"; note that the XML description itself is not fully correct and
