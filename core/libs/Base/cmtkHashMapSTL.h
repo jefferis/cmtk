@@ -52,6 +52,7 @@ namespace
 cmtk
 {
 
+#ifndef __APPLE__
 /// Generic hash function for all integer types.
 template<typename TKey>
 struct HashFunctionInteger
@@ -62,14 +63,35 @@ struct HashFunctionInteger
     return static_cast<size_t>( x ); 
   }
 };
+#else
+namespace __gnu_cxx
+{
 
+  template<>
+    struct hash<unsigned long long>
+    {
+      size_t
+      operator()(unsigned long long __x) const
+      { return (__x & 0xffff) ^ (__x >> 32 ); }
+    };
+
+}
+#endif // #ifdef __APPLE__
 
 /** Wrapper class for STL hash_map or unordered_map classes.
  * This class will use whatever hash map implementation is provided by the
  * currently used STL. If both unordered_map and hash_map are provided, the
  * former is used as it is the future standard class.
  */
-template<class TKey, class TValue, class THashFunc = HashFunctionInteger<TKey> >
+template<
+  class TKey, 
+  class TValue, 
+#ifndef __APPLE__
+  class THashFunc = HashFunctionInteger<TKey>
+#else
+  class THashFunc = __gnu_cxx::hash<TKey>
+#endif
+  >
 class HashMapSTL : 
 #if defined(HAVE_UNORDERED_MAP)
     /// Inherit STL hash/unordered map.
