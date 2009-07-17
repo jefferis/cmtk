@@ -98,20 +98,19 @@ template<
 #endif
   >
 class HashMapSTL : 
+    /// Inherit STL hash/unordered map.
 #if defined(__APPLE__)
-	public __gnu_cxx::hash_map<TKey,TValue,THashFunc>
+    public __gnu_cxx::hash_map<TKey,TValue,THashFunc>
 #elif defined(_MSC_VER)
     public std::tr1::unordered_map<TKey,TValue,THashFunc>
 #elif defined(HAVE_UNORDERED_MAP)
-    /// Inherit STL hash/unordered map.
-		 public std::unordered_map<TKey,TValue,THashFunc>
+    public std::unordered_map<TKey,TValue,THashFunc>
 #elif defined(HAVE_UNORDERED_MAP_TR1)
-    /// Inherit STL hash/unordered map.
-		 public std::tr1::unordered_map<TKey,TValue,THashFunc>
-#elif defined(__GNUC__) && ! defined(__INTEL_COMPILER)
-		 public __gnu_cxx::hash_map<TKey,TValue,THashFunc>
+    public std::tr1::unordered_map<TKey,TValue,THashFunc>
+#elif defined(__GNUC__)
+    public __gnu_cxx::hash_map<TKey,TValue,THashFunc>
 #else
-		 public std::hash_map<TKey,TValue,THashFunc>
+    public std::hash_map<TKey,TValue,THashFunc>
 #endif
 {
 };
