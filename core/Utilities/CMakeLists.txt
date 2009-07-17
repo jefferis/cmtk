@@ -27,6 +27,11 @@
 ##  $LastChangedBy$
 ##
 
+# turn off Windows security warnings for bundled code
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+
 IF(CMTK_BUILD_ZLIB)
 	SUBDIRS(zlib)
 	INCLUDE_DIRECTORIES( ${ZLIB_INCLUDE_DIR} )
