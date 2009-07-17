@@ -100,6 +100,8 @@ template<
 class HashMapSTL : 
 #if defined(__APPLE__)
 	public __gnu_cxx::hash_map<TKey,TValue,THashFunc>
+#elif defined(_MSC_VER)
+    public std::tr1::unordered_map<TKey,TValue,THashFunc>
 #elif defined(HAVE_UNORDERED_MAP)
     /// Inherit STL hash/unordered map.
 		 public std::unordered_map<TKey,TValue,THashFunc>
