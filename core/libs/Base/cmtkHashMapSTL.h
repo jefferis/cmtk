@@ -34,6 +34,7 @@
 
 #include <cmtkconfig.h>
 
+#define HAVE_STL_HASH_MAP
 #if defined(HAVE_UNORDERED_MAP)
 #  include <unordered_map>
 #elif defined(HAVE_UNORDERED_MAP_TR1)
@@ -42,8 +43,11 @@
 #  include <hash_map.h>
 #elif defined(HAVE_HASH_MAP)
 #  include <hash_map>
+#else
+#  undef HAVE_STL_HASH_MAP
 #endif
 
+#ifdef HAVE_STL_HASH_MAP
 #if SIZEOF_LONG != 8
 #if defined(__GNUC__) && ! defined(__INTEL_COMPILER)
 namespace __gnu_cxx
@@ -88,4 +92,5 @@ class HashMapSTL :
 
 } // namespace cmtk
 
+#endif // #ifdef HAVE_STL_HASH_MAP
 #endif // #ifndef __cmtkHashMapSTL_h_included_
