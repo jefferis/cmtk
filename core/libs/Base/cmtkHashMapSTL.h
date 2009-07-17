@@ -35,7 +35,10 @@
 #include <cmtkconfig.h>
 
 #define HAVE_STL_HASH_MAP
-#if defined(HAVE_UNORDERED_MAP)
+
+#if defined(__APPLE__)
+#  include <hash_map.h>
+#elif defined(HAVE_UNORDERED_MAP)
 #  include <unordered_map>
 #elif defined(HAVE_UNORDERED_MAP_TR1)
 #  include <tr1/unordered_map>
@@ -46,6 +49,21 @@
 #else
 #  undef HAVE_STL_HASH_MAP
 #endif
+
+#ifdef __APPLE__
+namespace __gnu_cxx
+{
+
+  template<>
+    struct hash<unsigned long long>
+    {
+      size_t
+      operator()(unsigned long long __x) const
+      { return (__x & 0xffff) ^ (__x >> 32 ); }
+    };
+
+}
+#endif // #ifdef __APPLE__
 
 #ifdef HAVE_STL_HASH_MAP
 namespace
@@ -63,19 +81,6 @@ struct HashFunctionInteger
     return static_cast<size_t>( x ); 
   }
 };
-#else
-namespace __gnu_cxx
-{
-
-  template<>
-    struct hash<unsigned long long>
-    {
-      size_t
-      operator()(unsigned long long __x) const
-      { return (__x & 0xffff) ^ (__x >> 32 ); }
-    };
-
-}
 #endif // #ifdef __APPLE__
 
 /** Wrapper class for STL hash_map or unordered_map classes.
@@ -93,7 +98,9 @@ template<
 #endif
   >
 class HashMapSTL : 
-#if defined(HAVE_UNORDERED_MAP)
+#if defined(__APPLE__)
+	public __gnu_cxx::hash_map<TKey,TValue,THashFunc>
+#elif defined(HAVE_UNORDERED_MAP)
     /// Inherit STL hash/unordered map.
 		 public std::unordered_map<TKey,TValue,THashFunc>
 #elif defined(HAVE_UNORDERED_MAP_TR1)
