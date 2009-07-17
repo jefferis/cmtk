@@ -693,6 +693,7 @@ ReformatVolume::CreateInterpolator
     break;
     }
     }  
+  return NULL;
 }
 
 UniformVolumeInterpolatorBase*
