@@ -92,6 +92,14 @@ extern int	_mxml_vsnprintf(char *, size_t, const char *, va_list);
 #    define vsnprintf _mxml_vsnprintf
 #  endif /* !HAVE_VSNPRINTF */
 
+
+#ifdef _MSC_VER
+#if _MSC_VER >= 1400
+/* disable warnings about "deprecated" C runtime functions  */
+#pragma warning( disable : 4996 )
+#endif
+#endif
+
 /*
  * End of "$Id: config.h.in 387 2009-04-18 17:05:52Z mike $".
  */

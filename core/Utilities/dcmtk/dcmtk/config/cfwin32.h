@@ -884,7 +884,6 @@ typedef unsigned short ushort;
 #if _MSC_VER >= 1400
 /* disable warnings about "deprecated" C runtime functions  */
 #pragma warning( disable : 4996 )
-#define _CRT_SECURE_NO_WARNINGS
 #endif
 #endif
 
