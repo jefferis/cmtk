@@ -30,6 +30,9 @@ PROJECT(D4CMTK)
 SET(DCMTK_PREFIX ${CMAKE_BINARY_DIR})
 SET(DCM_DICT_DEFAULT_PATH "/dicom.dic;${DCMTK_PREFIX}/lib/dicom.dic;${CMAKE_INSTALL_PREFIX}/lib/dicom.dic")
 
+#we have zlib on board!
+SET(WITH_ZLIB 1)
+
 INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityC.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityCXX.cmake)
 
