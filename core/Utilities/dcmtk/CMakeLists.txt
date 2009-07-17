@@ -248,12 +248,14 @@ SET(dcmtk_SRCS
   dchashdi.cc
   dcistrma.cc
   dcistrmf.cc
+  dcistrmz.cc
   dcitem.cc
   dclist.cc
   dcmetinf.cc
   dcobject.cc
   dcostrma.cc
   dcostrmf.cc
+  dcostrmz.cc
   dcpcache.cc
   dcpixel.cc
   dcpixseq.cc
