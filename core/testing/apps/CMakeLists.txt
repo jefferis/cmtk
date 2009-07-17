@@ -30,29 +30,29 @@
 # ==========================================
 # Tests for "congeal" tool
 SET(testList ${testList} 
-	     CongealFromInit
-	     CongealFromInitSampling
-	     CongealBackground 
-	     CongealUseTemplate
-	     CongealZeroSumSmooth)
+  CongealFromInit
+  CongealFromInitSampling
+  CongealBackground 
+  CongealUseTemplate
+  CongealZeroSumSmooth)
 
 # ==========================================
 # Tests for "congeal_warp" tool
 SET(testList ${testList} 
-	     CongealWarpFromInit
-	     CongealWarpFitFromInit
-	     CongealWarpFromInitZeroSum
-	     CongealWarpUseTemplate
-	     )
+  CongealWarpFromInit
+  CongealWarpFitFromInit
+  CongealWarpFromInitZeroSum
+  CongealWarpUseTemplate
+  )
 
 # ==========================================
 # Tests for "describe" tool
 SET(testList ${testList} DescribeMR1 DescribeMR2 DescribeMR3 DescribeMR4)
 
 IF(CMTK_BUILD_NRRD)
-      SET(testList ${testList} DescribeMRNrrd1 DescribeMRNrrd2)
+  SET(testList ${testList} DescribeMRNrrd1 DescribeMRNrrd2)
 ENDIF(CMTK_BUILD_NRRD)
-	     
+
 # ==========================================
 # Tests for "groupwise_init" tool
 SET(testList ${testList} GroupwiseInitCentersOfMass GroupwiseInitCentersOfMassTemplate)
@@ -62,272 +62,277 @@ SET(testList ${testList} GroupwiseInitCentersOfMass GroupwiseInitCentersOfMassTe
 SET(testList ${testList} GroupwiseRMIFromInitMI GroupwiseRMIFromInitSampling GroupwiseRMIBackground GroupwiseRMIZeroSumSmoothMI)
 
 IF(NOT CMTK_USE_MPI)
-# ==========================================
-# Tests for "concat_affine" tool
-SET(testList ${testList} 
-	     ConcatAffineABA
-	     ConcatAffineABAInvert
-	     ConcatAffineAB1A	     
-	     ConcatAffineAA1
-	     ConcatAffineA1A)
-
-# ==========================================
-# Tests for "average_edt" tool
-SET(testList ${testList} ShapeBasedAverage ShapeBasedAverageInterpolation)
-
-# ==========================================
-# Tests for "convert" tool
-SET(testList ${testList} 
-	     ConvertAutoCrop
-	     ConvertBoundaryMap
-	     ConvertBoundaryMapMultiValue
-	     ConvertDownsample
-	     ConvertErodeDilateErode
-	     ConvertDilateErodeDilate
-	     ConvertMedianFilter1
-	     ConvertMedianFilter2
-	     ConvertNiftiToAnalyze
-	     ConvertAnalyzeToNifti
-	     ConvertNiftiDetachedToNifti
-	     ConvertAnalyzeToNiftiDetached )
-
-IF(CMTK_BUILD_NRRD)
+  # ==========================================
+  # Tests for "concat_affine" tool
   SET(testList ${testList} 
-	       ConvertDownsampleNrrd)
-ENDIF(CMTK_BUILD_NRRD)
+    ConcatAffineABA
+    ConcatAffineABAInvert
+    ConcatAffineAB1A	     
+    ConcatAffineAA1
+    ConcatAffineA1A)
 
-# ==========================================
-# Tests for "dcm2image" tool
-IF(CMTK_USE_DCMTK)
-  SET(testList ${testList} Dcm2Image Dcm2ImageZ)
+  # ==========================================
+  # Tests for "average_edt" tool
+  SET(testList ${testList} ShapeBasedAverage ShapeBasedAverageInterpolation)
+
+  # ==========================================
+  # Tests for "convert" tool
+  SET(testList ${testList} 
+    ConvertAutoCrop
+    ConvertBoundaryMap
+    ConvertBoundaryMapMultiValue
+    ConvertDownsample
+    ConvertErodeDilateErode
+    ConvertDilateErodeDilate
+    ConvertMedianFilter1
+    ConvertMedianFilter2
+    ConvertNiftiToAnalyze
+    ConvertAnalyzeToNifti
+    ConvertNiftiDetachedToNifti
+    ConvertAnalyzeToNiftiDetached )
 
   IF(CMTK_BUILD_NRRD)
-      SET(testList ${testList} Dcm2ImageNrrd)
+    SET(testList ${testList} 
+      ConvertDownsampleNrrd)
   ENDIF(CMTK_BUILD_NRRD)
-ENDIF(CMTK_USE_DCMTK)
 
-# ==========================================
-# Tests for "filter" tool
-SET(testList ${testList} 
-	     FilterGaussian
-	     FilterGaussianSmallKernel
-	     FilterGaussianNoFilter)
+  # ==========================================
+  # Tests for "dcm2image" tool
+  IF(CMTK_USE_DCMTK)
+    SET(testList ${testList} Dcm2Image Dcm2ImageZ)
 
-# ==========================================
-# Tests for "film" tool
-SET(testList ${testList} FilmCubic
-			 FilmFourthOrder
-			 FilmMSDLinearNoTrunc
-			 FilmMISincRefSPGR)
+    IF(CMTK_BUILD_NRRD)
+      SET(testList ${testList} Dcm2ImageNrrd)
+    ENDIF(CMTK_BUILD_NRRD)
+  ENDIF(CMTK_USE_DCMTK)
 
-# ==========================================
-# Tests for "gregxform" tool
-SET(testList ${testList} GregxformFordwardBackward GregxformAffine GregxformAffineFromWarp GregxformAffineFromWarpFwdBwd)
+  # ==========================================
+  # Tests for "filter" tool
+  SET(testList ${testList} 
+    FilterGaussian
+    FilterGaussianSmallKernel
+    FilterGaussianNoFilter)
 
-# ==========================================
-# Tests for "histogram" tool
-SET(testList ${testList}
-	     Histogram 
-	     HistogramNorm
-	     HistogramBinsMinMax
-	     HistogramBinsMinMaxTrunc
-	     HistogramMask)
+  # ==========================================
+  # Tests for "film" tool
+  SET(testList ${testList} FilmCubic
+    FilmFourthOrder
+    FilmMSDLinearNoTrunc
+    FilmMISincRefSPGR)
 
-# ==========================================
-# Tests for "imagemath" tool
-SET(testList ${testList} 
-	     ImagemathAverage ImagemathXor ImagemathContractLabels
-	     ImagemathStackEntropyLabels ImagemathVote ImagemathSTAPLE
-	     ImagemathMultiClassSTAPLE ImagemathCombinePCA ImagemathT2)
+  # ==========================================
+  # Tests for "gregxform" tool
+  SET(testList ${testList} GregxformFordwardBackward GregxformAffine GregxformAffineFromWarp GregxformAffineFromWarpFwdBwd)
 
-# ==========================================
-# Tests for "levelset" tool
-SET(testList ${testList} LevelsetDefault)
-
-# ==========================================
-# Tests for "make_initial_affine" tool
-SET(testList ${testList} 
-	     MakeInitialAffineCenterOfMass
-	     MakeInitialAffinePrincipalAxes1
-	     MakeInitialAffinePrincipalAxes2
-	     MakeInitialAffinePrincipalAxes3
-	     MakeInitialAffinePrincipalAxes4
-	     MakeInitialAffinePrincipalAxes5
-	     MakeInitialAffinePrincipalAxes6)
-
-IF(CMTK_BUILD_NRRD)
+  # ==========================================
+  # Tests for "histogram" tool
   SET(testList ${testList}
-	       MakeInitialAffineDirectionVectorsNrrdAxSa
-	       MakeInitialAffineDirectionVectorsNrrdAxCo
-	       MakeInitialAffineDirectionVectorsNrrdSaCo)
-ENDIF(CMTK_BUILD_NRRD)
+    Histogram 
+    HistogramNorm
+    HistogramBinsMinMax
+    HistogramBinsMinMaxTrunc
+    HistogramMask)
 
-# ==========================================
-# Tests for "mcaffine" tool
-SET(testList ${testList} 
-	     McAffine1 McAffine2 McAffine3)
+  # ==========================================
+  # Tests for "imagemath" tool
+  SET(testList ${testList} 
+    ImagemathAverage ImagemathXor ImagemathContractLabels
+    ImagemathStackEntropyLabels ImagemathVote ImagemathSTAPLE
+    ImagemathMultiClassSTAPLE ImagemathCombinePCA ImagemathT2)
 
-# ==========================================
-# Tests for "mcwarp" tool
-SET(testList ${testList} 
-	     McWarp1)
+  # ==========================================
+  # Tests for "levelset" tool
+  SET(testList ${testList} LevelsetDefault)
 
-# ==========================================
-# Tests for "mk_phantom_3d" tool
-SET(testList ${testList} MkPhantomBox MkPhantomSphere MkPhantomBoxSphere MkPhantomImport)
+  # ==========================================
+  # Tests for "make_initial_affine" tool
+  SET(testList ${testList} 
+    MakeInitialAffineCenterOfMass
+    MakeInitialAffinePrincipalAxes1
+    MakeInitialAffinePrincipalAxes2
+    MakeInitialAffinePrincipalAxes3
+    MakeInitialAffinePrincipalAxes4
+    MakeInitialAffinePrincipalAxes5
+    MakeInitialAffinePrincipalAxes6)
 
-# ==========================================
-# Tests for "model" tool
-SET(testList ${testList} GLMDefault GLMNormalize GLMExp GLMNoConstant GLMIgnore GLMSelect GLMCrop)
+  IF(CMTK_BUILD_NRRD)
+    SET(testList ${testList}
+      MakeInitialAffineDirectionVectorsNrrdAxSa
+      MakeInitialAffineDirectionVectorsNrrdAxCo
+      MakeInitialAffineDirectionVectorsNrrdSaCo)
+  ENDIF(CMTK_BUILD_NRRD)
 
-# ==========================================
-# Tests for "reorient" tool
-SET(testList ${testList}
-	     ReorientHdrSaToAx
-	     ReorientHdrCoToAx
-	     ReorientHdrAxToSa
-	     ReorientHdrCoToSa
-	     ReorientHdrAxToCo
-	     ReorientHdrSaToCo)
+  # ==========================================
+  # Multi-channel registration requires hash map to build
+  IF(HAVE_STL_HASH_MAP)
+    # ==========================================
+    # Tests for "mcaffine" tool
+    SET(testList ${testList} 
+      McAffine1 McAffine2 McAffine3)
+    
+    # ==========================================
+    # Tests for "mcwarp" tool
+    SET(testList ${testList} 
+      McWarp1)
 
-IF(CMTK_BUILD_NRRD)
-  SET(testList ${testList} ReorientNrrdToNrrd)
-ENDIF(CMTK_BUILD_NRRD)
+  ENDIF(HAVE_STL_HASH_MAP)
 
-# ==========================================
-# Tests for "split" tool
-SET(testList ${testList} SplitAxial SplitSagittal2 SplitCoronal3)
+  # ==========================================
+  # Tests for "mk_phantom_3d" tool
+  SET(testList ${testList} MkPhantomBox MkPhantomSphere MkPhantomBoxSphere MkPhantomImport)
 
-IF(CMTK_BUILD_NRRD)
-  SET(testList ${testList} SplitAxialNrrd)
-ENDIF(CMTK_BUILD_NRRD)
+  # ==========================================
+  # Tests for "model" tool
+  SET(testList ${testList} GLMDefault GLMNormalize GLMExp GLMNoConstant GLMIgnore GLMSelect GLMCrop)
 
-# ==========================================
-# Tests for "overlap" tool
-SET(testList ${testList}
-	     Overlap
-	     OverlapNumLabels
-	     OverlapByLabel
-	     OverlapFirst
-	     OverlapFirstByLabel
-	     OverlapFirstByLabelNumLabels)
+  # ==========================================
+  # Tests for "reorient" tool
+  SET(testList ${testList}
+    ReorientHdrSaToAx
+    ReorientHdrCoToAx
+    ReorientHdrAxToSa
+    ReorientHdrCoToSa
+    ReorientHdrAxToCo
+    ReorientHdrSaToCo)
 
-# ==========================================
-# Tests for "probe_xform" tool
-SET(testList ${testList}
-	     ProbeXformSimple
-	     ProbeXformFwdBwd
-	     ProbeXformBwdFwd)
+  IF(CMTK_BUILD_NRRD)
+    SET(testList ${testList} ReorientNrrdToNrrd)
+  ENDIF(CMTK_BUILD_NRRD)
 
-# ==========================================
-# Tests for "registration" tool
-SET(testList ${testList} RigidRegistrationMrPet 
-  		      RigidRegistrationMrCt
-		      RigidRegistrationCt
-		      RigidRegistrationPetMr
-		      RigidRegistrationCtMr
-		      RigidRegistrationMrPetNoSwap
-		      RigidRegistrationMrCtNoSwap
-		      RigidRegistrationPetMrDOF9
-		      RigidRegistrationCtMrDOF7
-		      RigidRegistrationLabelsDOF69
-		      RigidRegistrationCrop
-		      RegistrationAutoLevelsRat4
-                      RegistrationAutoLevelsRat2
-                      RegistrationAutoLevelsCt3
-		      RegistrationFromList
-		      RegistrationWithInitial
-		      RegistrationWithInitialInverse)
+  # ==========================================
+  # Tests for "split" tool
+  SET(testList ${testList} SplitAxial SplitSagittal2 SplitCoronal3)
 
-# ==========================================
-# Tests for "mrbias" tool
-SET(testList ${testList} 
-	     MrbiasMulIncremental MrbiasMulLogIntensity MrbiasAddMulMask)
+  IF(CMTK_BUILD_NRRD)
+    SET(testList ${testList} SplitAxialNrrd)
+  ENDIF(CMTK_BUILD_NRRD)
 
-# ==========================================
-# Tests for "reformatx" tool
-SET(testList ${testList} 
-	     ReformatxNoXform
-	     ReformatxLinear 
-##		   ReformatxLinearFwdBwd
-		   ReformatxNearestNeighbor
-		   ReformatxPartialVolume
-		   ReformatxCubic
-		   ReformatxCubicInverse
-		   ReformatxSincCosine
-		   ReformatxSincCosine5
-		   ReformatxJacobian
-		   ReformatxInverseJacobian
-		   ReformatxSincHamming)
-IF(CMTK_BUILD_NRRD)
-	SET(testList ${testList} ReformatxDfieldNrrd)
-ENDIF(CMTK_BUILD_NRRD)
+  # ==========================================
+  # Tests for "overlap" tool
+  SET(testList ${testList}
+    Overlap
+    OverlapNumLabels
+    OverlapByLabel
+    OverlapFirst
+    OverlapFirstByLabel
+    OverlapFirstByLabelNumLabels)
 
-# ==========================================
-# Tests for "sequence" tool
-SET(testList ${testList} SequenceDefault SequenceFormat SequenceThresh SequenceAbs SequenceAbsThresh)
+  # ==========================================
+  # Tests for "probe_xform" tool
+  SET(testList ${testList}
+    ProbeXformSimple
+    ProbeXformFwdBwd
+    ProbeXformBwdFwd)
 
-# ==========================================
-# Tests for "similarity" tool
-SET(testList ${testList} SimilarityGrey SimilarityLabels SimilarityGreyMask SimilarityLabelsMask)
+  # ==========================================
+  # Tests for "registration" tool
+  SET(testList ${testList} RigidRegistrationMrPet 
+    RigidRegistrationMrCt
+    RigidRegistrationCt
+    RigidRegistrationPetMr
+    RigidRegistrationCtMr
+    RigidRegistrationMrPetNoSwap
+    RigidRegistrationMrCtNoSwap
+    RigidRegistrationPetMrDOF9
+    RigidRegistrationCtMrDOF7
+    RigidRegistrationLabelsDOF69
+    RigidRegistrationCrop
+    RegistrationAutoLevelsRat4
+    RegistrationAutoLevelsRat2
+    RegistrationAutoLevelsCt3
+    RegistrationFromList
+    RegistrationWithInitial
+    RegistrationWithInitialInverse)
 
-# ==========================================
-# Tests for "symmetry_plane" tool
-SET(testList ${testList} SymmetryPlane SymmetryPlaneThresh)
+  # ==========================================
+  # Tests for "mrbias" tool
+  SET(testList ${testList} 
+    MrbiasMulIncremental MrbiasMulLogIntensity MrbiasAddMulMask)
 
-# ==========================================
-# Tests for "statistics" tool
-SET(testList ${testList} 
-	     StatisticsGrey StatisticsPercentiles
-	     StatisticsGreyColumn StatisticsGreyExpNotation
-	     StatisticsGreyMask StatisticsGreyMultiMask	
-	     StatisticsLabels)
+  # ==========================================
+  # Tests for "reformatx" tool
+  SET(testList ${testList} 
+    ReformatxNoXform
+    ReformatxLinear 
+    ##		   ReformatxLinearFwdBwd
+    ReformatxNearestNeighbor
+    ReformatxPartialVolume
+    ReformatxCubic
+    ReformatxCubicInverse
+    ReformatxSincCosine
+    ReformatxSincCosine5
+    ReformatxJacobian
+    ReformatxInverseJacobian
+    ReformatxSincHamming)
+  IF(CMTK_BUILD_NRRD)
+    SET(testList ${testList} ReformatxDfieldNrrd)
+  ENDIF(CMTK_BUILD_NRRD)
 
-# ==========================================
-# Tests for "ttest" tool
-SET(testList ${testList} TTestDefault TTestLog TTestAbsLog TTestInvert
-			 TTestPaired TTestCrossCorrelation TTestZScores
-			 TTestMask TTestOneSided)
+  # ==========================================
+  # Tests for "sequence" tool
+  SET(testList ${testList} SequenceDefault SequenceFormat SequenceThresh SequenceAbs SequenceAbsThresh)
 
-# ==========================================
-# Tests for "unsplit" tool
-SET(testList ${testList} UnsplitHdrAx UnsplitHdrSa UnsplitHdrCo)
+  # ==========================================
+  # Tests for "similarity" tool
+  SET(testList ${testList} SimilarityGrey SimilarityLabels SimilarityGreyMask SimilarityLabelsMask)
 
-IF(CMTK_BUILD_NRRD)
-  SET(testList ${testList} UnsplitHdrNrrdAx UnsplitHdrNrrdSa UnsplitHdrNrrdCo UnsplitNrrdNrrd)
-ENDIF(CMTK_BUILD_NRRD)
+  # ==========================================
+  # Tests for "symmetry_plane" tool
+  SET(testList ${testList} SymmetryPlane SymmetryPlaneThresh)
 
-# ==========================================
-# Tests for "volume_injection" tool
-SET(testList ${testList} VolumeInjection VolumeInjectionIsotropic VolumeInjectionNoXform VolumeInjectionNoXformIsotropic)
+  # ==========================================
+  # Tests for "statistics" tool
+  SET(testList ${testList} 
+    StatisticsGrey StatisticsPercentiles
+    StatisticsGreyColumn StatisticsGreyExpNotation
+    StatisticsGreyMask StatisticsGreyMultiMask	
+    StatisticsLabels)
 
-# ==========================================
-# Tests for "volume_reconstruction" tool
-SET(testList ${testList} VolumeReconstructionFourthOrder VolumeReconstructionCubic VolumeReconstructionNoXform)
+  # ==========================================
+  # Tests for "ttest" tool
+  SET(testList ${testList} TTestDefault TTestLog TTestAbsLog TTestInvert
+    TTestPaired TTestCrossCorrelation TTestZScores
+    TTestMask TTestOneSided)
 
-# ==========================================
-# Tests for "warp" tool
-SET(testList ${testList} 
-	     WarpSingleLevel
-	     WarpSingleLevelExact
-	     WarpInverseConsistentCC
-	     WarpMultiLevel
-	     WarpMultiLevelExact
-	     WarpDelayRefine
-	     WarpEnergy
-	     WarpJacobian
-	     WarpLabels)
+  # ==========================================
+  # Tests for "unsplit" tool
+  SET(testList ${testList} UnsplitHdrAx UnsplitHdrSa UnsplitHdrCo)
 
-# ==========================================
-# Tests for "xform2dfield" tool
-IF(CMTK_BUILD_NRRD)
-  SET(testList ${testList} Xform2dfieldWarpNrrd
-			   Xform2dfieldAffineNrrd
-			   Xform2dfieldDownsampleXYZNrrd
-			   Xform2dfieldDownsampleXNrrd
-			   Xform2dfieldConcatNrrd
-			   Xform2dfieldInverseNrrd)
-ENDIF(CMTK_BUILD_NRRD)
+  IF(CMTK_BUILD_NRRD)
+    SET(testList ${testList} UnsplitHdrNrrdAx UnsplitHdrNrrdSa UnsplitHdrNrrdCo UnsplitNrrdNrrd)
+  ENDIF(CMTK_BUILD_NRRD)
+
+  # ==========================================
+  # Tests for "volume_injection" tool
+  SET(testList ${testList} VolumeInjection VolumeInjectionIsotropic VolumeInjectionNoXform VolumeInjectionNoXformIsotropic)
+
+  # ==========================================
+  # Tests for "volume_reconstruction" tool
+  SET(testList ${testList} VolumeReconstructionFourthOrder VolumeReconstructionCubic VolumeReconstructionNoXform)
+
+  # ==========================================
+  # Tests for "warp" tool
+  SET(testList ${testList} 
+    WarpSingleLevel
+    WarpSingleLevelExact
+    WarpInverseConsistentCC
+    WarpMultiLevel
+    WarpMultiLevelExact
+    WarpDelayRefine
+    WarpEnergy
+    WarpJacobian
+    WarpLabels)
+
+  # ==========================================
+  # Tests for "xform2dfield" tool
+  IF(CMTK_BUILD_NRRD)
+    SET(testList ${testList} Xform2dfieldWarpNrrd
+      Xform2dfieldAffineNrrd
+      Xform2dfieldDownsampleXYZNrrd
+      Xform2dfieldDownsampleXNrrd
+      Xform2dfieldConcatNrrd
+      Xform2dfieldInverseNrrd)
+  ENDIF(CMTK_BUILD_NRRD)
 
 ENDIF(NOT CMTK_USE_MPI)
 
@@ -349,26 +354,26 @@ SET_TESTS_PROPERTIES(CongealWarpFromInitZeroSum PROPERTIES TIMEOUT 4800)
 SET_TESTS_PROPERTIES(CongealWarpUseTemplate PROPERTIES TIMEOUT 6400)
 
 IF(NOT CMTK_USE_MPI)
-# ==========================================
-# Set up test properties, now that the tests 
-# have been defined.
+  # ==========================================
+  # Set up test properties, now that the tests 
+  # have been defined.
 
-SET_TESTS_PROPERTIES(FilmCubic PROPERTIES TIMEOUT 1800)
-SET_TESTS_PROPERTIES(FilmMSDLinearNoTrunc PROPERTIES TIMEOUT 3600)
-SET_TESTS_PROPERTIES(FilmMISincRefSPGR PROPERTIES TIMEOUT 3600)
+  SET_TESTS_PROPERTIES(FilmCubic PROPERTIES TIMEOUT 1800)
+  SET_TESTS_PROPERTIES(FilmMSDLinearNoTrunc PROPERTIES TIMEOUT 3600)
+  SET_TESTS_PROPERTIES(FilmMISincRefSPGR PROPERTIES TIMEOUT 3600)
 
-SET_TESTS_PROPERTIES(MrbiasAddMulMask PROPERTIES TIMEOUT 3600)
-SET_TESTS_PROPERTIES(MrbiasMulIncremental PROPERTIES TIMEOUT 3600)
-SET_TESTS_PROPERTIES(MrbiasMulLogIntensity PROPERTIES TIMEOUT 3600)
+  SET_TESTS_PROPERTIES(MrbiasAddMulMask PROPERTIES TIMEOUT 3600)
+  SET_TESTS_PROPERTIES(MrbiasMulIncremental PROPERTIES TIMEOUT 3600)
+  SET_TESTS_PROPERTIES(MrbiasMulLogIntensity PROPERTIES TIMEOUT 3600)
 
-SET_TESTS_PROPERTIES(VolumeReconstructionCubic PROPERTIES TIMEOUT 1800)
-SET_TESTS_PROPERTIES(VolumeReconstructionFourthOrder PROPERTIES TIMEOUT 1800)
+  SET_TESTS_PROPERTIES(VolumeReconstructionCubic PROPERTIES TIMEOUT 1800)
+  SET_TESTS_PROPERTIES(VolumeReconstructionFourthOrder PROPERTIES TIMEOUT 1800)
 
-SET_TESTS_PROPERTIES(WarpDelayRefine PROPERTIES TIMEOUT 1800)
-SET_TESTS_PROPERTIES(WarpInverseConsistentCC PROPERTIES TIMEOUT 1800)
-SET_TESTS_PROPERTIES(WarpLabels PROPERTIES TIMEOUT 1800)
-SET_TESTS_PROPERTIES(WarpMultiLevel PROPERTIES TIMEOUT 1800)
-SET_TESTS_PROPERTIES(WarpMultiLevelExact PROPERTIES TIMEOUT 1800)
-SET_TESTS_PROPERTIES(WarpSingleLevel PROPERTIES TIMEOUT 1800)
-SET_TESTS_PROPERTIES(WarpSingleLevelExact PROPERTIES TIMEOUT 1800)
+  SET_TESTS_PROPERTIES(WarpDelayRefine PROPERTIES TIMEOUT 1800)
+  SET_TESTS_PROPERTIES(WarpInverseConsistentCC PROPERTIES TIMEOUT 1800)
+  SET_TESTS_PROPERTIES(WarpLabels PROPERTIES TIMEOUT 1800)
+  SET_TESTS_PROPERTIES(WarpMultiLevel PROPERTIES TIMEOUT 1800)
+  SET_TESTS_PROPERTIES(WarpMultiLevelExact PROPERTIES TIMEOUT 1800)
+  SET_TESTS_PROPERTIES(WarpSingleLevel PROPERTIES TIMEOUT 1800)
+  SET_TESTS_PROPERTIES(WarpSingleLevelExact PROPERTIES TIMEOUT 1800)
 ENDIF(NOT CMTK_USE_MPI)
