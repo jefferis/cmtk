@@ -290,7 +290,7 @@ main( int argc, char* argv[] )
     functional->SetProbabilisticSampleDensity( SamplingDensity );
     }
   
-  const float timeBaselineProcess = cmtk::Timers::GetTimeProcess();
+  const double timeBaselineProcess = cmtk::Timers::GetTimeProcess();
 
   const int downsampleFrom = std::max( DownsampleFrom, DownsampleTo );
   const int downsampleTo = std::min( DownsampleFrom, DownsampleTo );
@@ -367,7 +367,7 @@ main( int argc, char* argv[] )
     }
   
   // determine and print CPU time (by node, if using MPI)
-  const float timeElapsedProcess = cmtk::Timers::GetTimeProcess() - timeBaselineProcess;
+  const double timeElapsedProcess = cmtk::Timers::GetTimeProcess() - timeBaselineProcess;
 #ifdef CMTK_BUILD_MPI    
   std::vector<float> timeElapsedByNodeProcess( mpiSize );
   MPI::COMM_WORLD.Gather( &timeElapsedProcess, 1, MPI::FLOAT, &timeElapsedByNodeProcess[0], 1, MPI::FLOAT, 0 /*root*/ );
