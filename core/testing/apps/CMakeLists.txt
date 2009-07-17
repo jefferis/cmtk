@@ -173,7 +173,7 @@ IF(NOT CMTK_USE_MPI)
     # ==========================================
     # Tests for "mcwarp" tool
     SET(testList ${testList} 
-      McWarp1)
+      McWarp1 McWarp2)
 
   ENDIF(HAVE_STL_HASH_MAP)
 

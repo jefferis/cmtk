@@ -459,7 +459,14 @@ case ${RUNTEST} in
 	check_result xform
 	;;
     McWarp1)
+	# Test breaks when using multiple threads due to floating point effects
+	export CMTK_NUM_THREADS=1
 	run ${BINDIR}/mcwarp --downsample-from 2 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --grid-spacing 14 --refine-grid 2 --covariance -o ${tmpdir}/xform McAffine_rat_rat2.xform
+	check_result xform
+	unset CMTK_NUM_THREADS
+	;;
+    McWarp2)
+	run ${BINDIR}/mcwarp --downsample-from 2 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --grid-spacing 14 --refine-grid 2 --histograms -o ${tmpdir}/xform McAffine_rat_rat2.xform
 	check_result xform
 	;;
     MkPhantomBox)
