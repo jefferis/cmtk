@@ -93,38 +93,38 @@ public:
   }
 
   /// Return minimum of all values.
-  float GetMinimum() const { return Minimum; }
+  double GetMinimum() const { return Minimum; }
 
   /// Return maximum of all values.
-  float GetMaximum() const { return Maximum; }
+  double GetMaximum() const { return Maximum; }
 
   /// Return minimum of all absolute values.
-  float GetMinimumAbs() const { return MinimumAbs; }
+  double GetMinimumAbs() const { return MinimumAbs; }
 
   /// Return maximum of all absolute values.
-  float GetMaximumAbs() const { return MaximumAbs; }
+  double GetMaximumAbs() const { return MaximumAbs; }
 
   /// Return total number of values.
   int GetNValues() const { return NValues; }
 
   /// Return variance of all values.
-  float GetVariance( const bool unbiased = true ) const
+  double GetVariance( const bool unbiased = true ) const
   { 
-    const float mu = this->GetAverage();
+    const double mu = this->GetAverage();
     return ( NValues * mu * mu - 2 * mu * Sum + SumOfSquares ) / ( unbiased ? (NValues-1) : NValues );
   }
 
   /// Return sum of all values.
-  float GetSum() const { return Sum; }
+  double GetSum() const { return static_cast<double>( Sum ); }
 
   /// Return sum of squres of all values.
-  float GetSumOfSquares() const { return SumOfSquares; }
+  double GetSumOfSquares() const { return static_cast<double>( SumOfSquares ); }
 
   /// Return average value.
-  float GetAverage() const { return Sum / NValues; }
+  double GetAverage() const { return static_cast<double>( Sum / NValues ); }
 
   /// Return average value.
-  float GetAverageAbs() const { return SumAbs / NValues; }
+  double GetAverageAbs() const { return static_cast<double>( SumAbs / NValues ); }
 
   /// Assignment operator.
   ValueSequence<T>& operator=( const ValueSequence<T>& other );
