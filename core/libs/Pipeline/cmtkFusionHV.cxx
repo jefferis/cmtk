@@ -60,7 +60,7 @@ void FusionHV::Execute()
 
   RGBA rgb1, rgb2;
   RGB outrgb;
-  float invSqrt3 = 1.0/sqrt((double)3);
+  const double invSqrt3 = 1.0/sqrt((double)3);
 
   unsigned int outputPixels = output->GetNumPixels();
   for ( unsigned int idx = 0; idx < outputPixels; ++idx ) 
