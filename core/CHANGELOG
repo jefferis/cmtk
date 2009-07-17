@@ -10,7 +10,8 @@ Release CMTK-1.0.2:
     class.
 
 - Added: source tree now incorporates minimal subset of DCMTK files so we can
-    build DICOM support without external dependencies. [not functional yet]
+    build DICOM support without external dependencies, even on Windows using
+    VisualStudio.
 - Added: "mcaffine" tool now accepts user-provided initial transformation from
     file [Tracker #3925].
 
