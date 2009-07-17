@@ -49,10 +49,9 @@
 
 #ifdef HAVE_STL_HASH_MAP
 #if SIZEOF_LONG != 8
-#if defined(__GNUC__) && ! defined(__INTEL_COMPILER)
-namespace __gnu_cxx
+#if defined(__GNUC__) && ! defined(__INTEL_COMPILER) && ! defined(HAVE_UNORDERED_MAP_TR1)
+namespace std
 {
-
   template<>
     struct hash<unsigned long long>
     {
@@ -60,8 +59,8 @@ namespace __gnu_cxx
       operator()(unsigned long long __x) const
       { return (__x & 0xffff) ^ (__x >> 32 ); }
     };
-
 }
+
 #endif // defined(__GNUC__) && ! defined(__INTEL_COMPILER)
 #endif
 
