@@ -77,8 +77,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 {
   if ( this->m_ReferenceChannels.size() == 0 )
     {
-    StdErr << "ERROR: call to SplineWarpMultiChannelRegistrationFunctional::InitTransformation() before "
-	      << "reference channel image was set.\n";
+    StdErr << "ERROR: call to SplineWarpMultiChannelRegistrationFunctional::InitTransformation() before reference channel image was set.\n";
     exit( 1 );
     }
 
@@ -86,8 +85,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   this->m_ThreadTransformations.resize( this->m_NumberOfThreads, SplineWarpXform::SmartPtr::Null );
   for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
     {
-    this->m_ThreadTransformations[thread] = 
-      SplineWarpXform::SmartPtr( new SplineWarpXform( domain, gridSpacing, &this->m_InitialAffineTransformation, exact ) );
+    this->m_ThreadTransformations[thread] = SplineWarpXform::SmartPtr( new SplineWarpXform( domain, gridSpacing, &this->m_InitialAffineTransformation, exact ) );
     }
   this->UpdateTransformationData();
 }
