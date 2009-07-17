@@ -387,6 +387,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
       }
     }
   
+  idx = this->m_ReferenceChannels.size();
   for ( size_t flt = 0; flt < this->m_FloatingChannels.size(); ++flt, ++idx )
     this->m_ReformattedFloatingChannels[flt][rindex] = values[idx];
   
