@@ -106,7 +106,7 @@ protected:
     void Init( Parent *const parent );
 
     /** Hash table type. */
-    typedef HashMapSTL<HashKeyType,int> HashTableType;
+    typedef HashMapSTL<HashKeyType, int> HashTableType;
 
     /** Joint haash table for reference and floating channels. */
     HashTableType m_JointHash;

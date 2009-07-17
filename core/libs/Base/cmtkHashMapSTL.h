@@ -48,43 +48,39 @@
 #endif
 
 #ifdef HAVE_STL_HASH_MAP
-#if SIZEOF_LONG != 8
-#if defined(__GNUC__) && ! defined(__INTEL_COMPILER) && ! defined(HAVE_UNORDERED_MAP_TR1)
-namespace std
-{
-  template<>
-    struct hash<unsigned long long>
-    {
-      size_t
-      operator()(unsigned long long __x) const
-      { return (__x & 0xffff) ^ (__x >> 32 ); }
-    };
-}
-
-#endif // defined(__GNUC__) && ! defined(__INTEL_COMPILER)
-#endif
-
 namespace
 cmtk
 {
+
+/// Generic hash function for all integer types.
+template<typename TKey>
+struct HashFunctionInteger
+{
+  /// Simply cast integer key to size_t
+  size_t operator()( const TKey x ) const
+  { 
+    return static_cast<size_t>( x ); 
+  }
+};
+
 
 /** Wrapper class for STL hash_map or unordered_map classes.
  * This class will use whatever hash map implementation is provided by the
  * currently used STL. If both unordered_map and hash_map are provided, the
  * former is used as it is the future standard class.
  */
-template<class TKey, class TValue>
+template<class TKey, class TValue, class THashFunc = HashFunctionInteger<TKey> >
 class HashMapSTL : 
 #if defined(HAVE_UNORDERED_MAP)
     /// Inherit STL hash/unordered map.
-    public std::unordered_map<TKey,TValue>
+		 public std::unordered_map<TKey,TValue,THashFunc>
 #elif defined(HAVE_UNORDERED_MAP_TR1)
     /// Inherit STL hash/unordered map.
-    public std::tr1::unordered_map<TKey,TValue>
+		 public std::tr1::unordered_map<TKey,TValue,THashFunc>
 #elif defined(__GNUC__) && ! defined(__INTEL_COMPILER)
-    public __gnu_cxx::hash_map<TKey,TValue>
+		 public __gnu_cxx::hash_map<TKey,TValue,THashFunc>
 #else
-    public std::hash_map<TKey,TValue>
+		 public std::hash_map<TKey,TValue,THashFunc>
 #endif
 {
 };

@@ -23,6 +23,9 @@ Release CMTK-1.0.2:
 
 - Improved: eliminated explicit offset calculations in cmtk::DataGrid and use
     existing index-to-offset function instead.
+- Improved: instead of trying to figure out what STL version provides, or does
+    not provide, a 64bit integer hash function specialization, we simply provide a
+    generic hash function ourselves, which works on all platforms.
 
 - Testing: added an experimental build with valgrind/memcheck memory checking
     to discover further issues with uninitialized data etc.
