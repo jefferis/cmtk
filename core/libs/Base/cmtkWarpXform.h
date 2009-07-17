@@ -161,6 +161,7 @@ public:
     this->m_FastMode = false; 
     IncompressibilityMap = DataGrid::SmartPtr( NULL );
     this->m_Dims[0] = this->m_Dims[1] = this->m_Dims[2] = 0;
+    this->InverseSpacing[0] = this->InverseSpacing[1] = this->InverseSpacing[2] = 0.0;
   }
 
   /// Destructor.

@@ -497,9 +497,9 @@ void
 SplineWarpXform::RegisterVolumePoints
 ( const int volDims[3], const Types::Coordinate delta[3], const Types::Coordinate origin[3] )
 {
-  this->RegisterVolumeAxis( volDims[0], delta[0], origin[0], this->m_Dims[0], InverseSpacing[0], gX, splineX, dsplineX );
-  this->RegisterVolumeAxis( volDims[1], delta[1], origin[1], this->m_Dims[1], InverseSpacing[1], gY, splineY, dsplineY );
-  this->RegisterVolumeAxis( volDims[2], delta[2], origin[2], this->m_Dims[2], InverseSpacing[2], gZ, splineZ, dsplineZ );
+  this->RegisterVolumeAxis( volDims[0], delta[0], origin[0], this->m_Dims[0], this->InverseSpacing[0], gX, splineX, dsplineX );
+  this->RegisterVolumeAxis( volDims[1], delta[1], origin[1], this->m_Dims[1], this->InverseSpacing[1], gY, splineY, dsplineY );
+  this->RegisterVolumeAxis( volDims[2], delta[2], origin[2], this->m_Dims[2], this->InverseSpacing[2], gZ, splineZ, dsplineZ );
 
   for ( int idx = 0; idx<volDims[0]; ++idx ) gX[idx] *= nextI;
   for ( int idx = 0; idx<volDims[1]; ++idx ) gY[idx] *= nextJ;
