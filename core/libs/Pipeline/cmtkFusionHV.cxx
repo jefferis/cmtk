@@ -68,14 +68,14 @@ void FusionHV::Execute()
     Input[  ImageIndexV]->GetPixel( rgb1, idx );
     Input[1-ImageIndexV]->GetPixel( rgb2, idx );
     
-    const float brightness = 
+    const double brightness = 
       invSqrt3 * 
       sqrt( (double) ( MathUtil::Square( static_cast<unsigned short>(rgb1.R) ) + 
 		       MathUtil::Square( static_cast<unsigned short>(rgb1.G) ) +
 		       MathUtil::Square( static_cast<unsigned short>(rgb1.B) ) ) );
     
     const byte maxnorm = std::max( rgb2.R, std::max( rgb2.G, rgb2.B) );
-    const float factor = static_cast<float>(255-Contrast*(255-brightness))/maxnorm;
+    const double factor = static_cast<float>(255-Contrast*(255-brightness))/maxnorm;
     
     outrgb.R = (byte) (rgb2.R * factor);
     outrgb.G = (byte) (rgb2.G * factor);

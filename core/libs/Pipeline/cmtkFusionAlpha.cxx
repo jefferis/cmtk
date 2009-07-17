@@ -64,7 +64,7 @@ void FusionAlpha::Execute()
       Input[1-TopImageIndex]->GetPixel( rgb2, idx );
       TransparencyImage->GetPixel( rgba, idx );
       
-      float alpha = ((float) rgba.Alpha) / 255.0;
+      const double alpha = ((double) rgba.Alpha) / 255.0;
       outrgb.R = (byte) (alpha*rgb1.R + (1-alpha)*rgb2.R);
       outrgb.G = (byte) (alpha*rgb1.G + (1-alpha)*rgb2.G);
       outrgb.B = (byte) (alpha*rgb1.B + (1-alpha)*rgb2.B);
@@ -78,7 +78,7 @@ void FusionAlpha::Execute()
       Input[  TopImageIndex]->GetPixel( rgb1, idx );
       Input[1-TopImageIndex]->GetPixel( rgb2, idx );
       
-      float alpha = ((float) rgb1.Alpha) / 255.0;
+      const double alpha = ((double) rgb1.Alpha) / 255.0;
       outrgb.R = (byte) (alpha*rgb1.R + (1-alpha)*rgb2.R);
       outrgb.G = (byte) (alpha*rgb1.G + (1-alpha)*rgb2.G);
       outrgb.B = (byte) (alpha*rgb1.B + (1-alpha)*rgb2.B);

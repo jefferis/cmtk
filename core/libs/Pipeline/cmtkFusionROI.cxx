@@ -123,12 +123,12 @@ FusionROI::Circles
   const int cY = (int) (ny * CircleY);
   
   // force a reasonable minimum spacing
-  const float rDelta = std::max<float>( CircleDelta * std::max( nx, ny ), 2.0);
+  const double rDelta = std::max<double>( CircleDelta * std::max( nx, ny ), 2.0);
 
   int toggle;
   for ( int y=0; y<ny; ++y, target+=nx, source1+=nx, source2+=nx ) 
     {
-    float radius = sqrt( (double) (MathUtil::Square( cX ) + MathUtil::Square( y-cY )) );
+    double radius = sqrt( (double) (MathUtil::Square( cX ) + MathUtil::Square( y-cY )) );
     int radiusIdx = (int) ( radius/rDelta + CircleOffset );
     
     toggle = (radiusIdx & 1);
@@ -138,7 +138,7 @@ FusionROI::Circles
       if ( x < cX ) 
 	{
 	// left of center: circles get smaller
-	const float minRadius = rDelta * ( radiusIdx - CircleOffset );
+	const double minRadius = rDelta * ( radiusIdx - CircleOffset );
 	
 	if ( minRadius > abs( y-cY ) )
 	  // intersection with inner circle exists
@@ -150,7 +150,7 @@ FusionROI::Circles
       else
 	{
 	// right of center: circles get bigger
-	const float maxRadius = rDelta * ( 1 + radiusIdx - CircleOffset );
+	const double maxRadius = rDelta * ( 1 + radiusIdx - CircleOffset );
 	delta = (int) sqrt( (double)( MathUtil::Square( maxRadius ) - MathUtil::Square( y-cY ) ) ) + ( cX-x );
 	}
       
