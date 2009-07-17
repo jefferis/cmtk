@@ -79,9 +79,9 @@ class HashMapSTL :
     /// Inherit STL hash/unordered map.
     public std::tr1::unordered_map<TKey,TValue>
 #elif defined(__GNUC__) && ! defined(__INTEL_COMPILER)
-    public __gnu_cxx::hash_map
+    public __gnu_cxx::hash_map<TKey,TValue>
 #else
-    public std::hash_map
+    public std::hash_map<TKey,TValue>
 #endif
 {
 };
