@@ -298,6 +298,7 @@ SET(dcmtk_SRCS
   diutils.cc
   ofcond.cc
   ofconsol.cc
+  ofcrc32.cc
   ofdate.cc
   ofdatime.cc
   oflist.cc
