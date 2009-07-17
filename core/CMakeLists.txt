@@ -114,6 +114,9 @@ IF(NOT HAVE_UNORDERED_MAP)
   ENDIF(NOT HAVE_UNORDERED_MAP_TR1)
 ENDIF(NOT HAVE_UNORDERED_MAP)
 
+# set a single flag is we have ANY hash map implementation in STL
+SET(HAVE_STL_HASH_MAP ${HAVE_UNORDERED_MAP}${HAVE_UNORDERED_MAP_TR1}${HAVE_HASH_MAP}${HAVE_HASH_MAP_H} CACHE INTERNAL "Flag for presence of ANY hash map implementation in the C++ STL")
+
 #-----------------------------------------------------------------------------
 # build configuration options.
 OPTION(BUILD_SHARED_LIBS "Build CMTK with shared libraries." OFF)
