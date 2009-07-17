@@ -269,7 +269,7 @@ AffineXform::GetMatrix( float (&matrix)[4][4] ) const
 {
   for ( unsigned int j = 0; j < 4; ++j )
     for ( unsigned int i = 0; i < 4; ++i )
-      matrix[j][i] = Matrix[j][i];
+      matrix[j][i] = static_cast<float>( Matrix[j][i] );
 }
 
 template<> 
@@ -278,7 +278,7 @@ AffineXform::GetMatrix( double (&matrix)[4][4] ) const
 {
   for ( unsigned int j = 0; j < 4; ++j )
     for ( unsigned int i = 0; i < 4; ++i )
-      matrix[j][i] = Matrix[j][i];
+      matrix[j][i] = static_cast<double>( Matrix[j][i] );
 }
 
 void

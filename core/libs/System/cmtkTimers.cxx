@@ -72,7 +72,7 @@ cmtk::Timers::GetTimeProcess()
 double
 cmtk::Timers::GetWalltime()
 {
-  return time( NULL );
+  return static_cast<double>( time( NULL ) );
 }
 
 double
