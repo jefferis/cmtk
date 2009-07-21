@@ -102,7 +102,7 @@ DICOM::Read
       this->SetErrorMsg( "File format has NULL dataset." );
       throw(1);
       }
-    
+
     const E_TransferSyntax xfer = dataset->getOriginalXfer();
     std::auto_ptr<DiDocument> document( new DiDocument( dataset, xfer, CIF_AcrNemaCompatibility ) );
     if ( ! document.get() || ! document->good() ) 
