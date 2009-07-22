@@ -86,9 +86,6 @@ CHECK_INCLUDE_FILES (sys/utsname.h HAVE_SYS_UTSNAME_H)
 INCLUDE(TestBigEndian)
 TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
 
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmtkconfig.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/cmtkconfig.h)
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/CTestCustom.ctest.in ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.ctest @ONLY)
-
 #-----------------------------------------------------------------------------
 # Test NaN high bit
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles/TestQnanhibit.cmake)
@@ -579,6 +576,12 @@ OPTION(BUILD_TESTING "Build test code" ON)
 IF (BUILD_TESTING)
   SUBDIRS(testing)
 ENDIF (BUILD_TESTING)
+
+#-----------------------------------------------------------------------------
+# Configure this tree
+
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmtkconfig.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/cmtkconfig.h)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/CTestCustom.ctest.in ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.ctest @ONLY)
 
 #-----------------------------------------------------------------------------
 # Help other projects use CMTK.
