@@ -22,6 +22,8 @@ Release CMTK-1.0.2:
 - Fixed: Slicer can now detect CMTK tools as plugins via their response to
     "--xml"; note that the XML description itself is not fully correct and
     functional yet.
+- Fixed: testing and configuration were out of order in top-level
+    CMakeLists.txt, resulting in build problems.
 
 - Improved: eliminated explicit offset calculations in cmtk::DataGrid and use
     existing index-to-offset function instead.
