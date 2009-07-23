@@ -196,8 +196,6 @@ ImageFileDCM::ImageFileDCM( const char* filename )
     fpath = NULL;
     }
   
-//  DcmFileFormat *fileformat = new DcmFileFormat;
-//  if (!fileformat) throw (1);
   std::auto_ptr<DcmFileFormat> fileformat( new DcmFileFormat );
   if ( !fileformat.get() ) throw (1);
   
