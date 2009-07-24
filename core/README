@@ -2,15 +2,14 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
-Release Notes -- CMTK 1.0.1
+Release Notes -- CMTK 1.0.2
 ===========================
 
-This is a bugfix and minor featur release. Two command line tools, "regress"
-and "probe_xform" were missing for the 1.0.0 builds. These have been
-added. Some command line options of the "warp" and "registration" tools have
-changed due to internal reorganization and unification of image
-preprocessing. Finally, a tool and script for validation of rigid registration
-using RIRE data have been added.
+This is a bugfix and minor featur release. The "film" tool has been updated to
+use anisotropic volume injection. The command line class has been updated to
+print the default setting and state of each option in the "--help" output. As
+a preview, the "mrbias" tool now integrates into Slicer3 using the "--xml"
+command self description.
 
 CMTK has been built and tested on the following platforms:
 
