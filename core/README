@@ -5,11 +5,14 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 1.0.2
 ===========================
 
-This is a bugfix and minor featur release. The "film" tool has been updated to
-use anisotropic volume injection. The command line class has been updated to
-print the default setting and state of each option in the "--help" output. As
-a preview, the "mrbias" tool now integrates into Slicer3 using the "--xml"
-command self description.
+This is a bugfix and minor feature release.
+
+The "film" tool has been updated to use anisotropic volume injection. The
+command line class has been updated to print the default setting and state of
+each option in the "--help" output. As a preview, the "mrbias" tool now
+integrates into Slicer3 using the "--xml" command self description.
+
+For more information, see the CHANGELOG file.
 
 CMTK has been built and tested on the following platforms:
 
