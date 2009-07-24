@@ -72,8 +72,8 @@ unsigned int NumberOfPasses = 2;
 
 int RegistrationMetric = 0; //NMI
 
-double InjectionKernelSigma = 1;
-int InjectionKernelRadius = 0;
+double InjectionKernelSigma = 0.5;
+double InjectionKernelRadius = 2;
 
 bool FourthOrderError = false;
 int Interpolation = 1;
@@ -166,7 +166,7 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
     {
     cmtk::StdErr << "Volume injection...\n";
     }
-  volRecon.VolumeInjectionIsotropic( InjectionKernelSigma, InjectionKernelRadius );
+  volRecon.VolumeInjectionAnisotropic( InjectionKernelSigma, InjectionKernelRadius );
   if ( InjectedImagePath )
     {
     cmtk::UniformVolume::SmartPtr outputImage = volRecon.GetCorrectedImage();
@@ -223,8 +223,8 @@ main( int argc, char* argv[] )
     cl.AddOption( Key( "import-xforms-path" ), &ImportXformsPath, "Path of file from which to import transformations between passes." );
     cl.AddOption( Key( "export-xforms-path" ), &ExportXformsPath, "Path of file to which to export transformations between passes." );
 
-    cl.AddOption( Key( 'S', "injection-kernel-sigma" ), &InjectionKernelSigma, "Standard deviation of Gaussian kernel for volume injection [default: 1.0 mm]" );
-    cl.AddOption( Key( 'r', "injection-kernel-radius" ), &InjectionKernelRadius, "Truncation radius of injection kernel [default: 0]" );
+    cl.AddOption( Key( 'S', "injection-kernel-sigma" ), &InjectionKernelSigma, "Standard deviation of Gaussian kernel for volume injection in world coordinate units (e.g., mm)" );
+    cl.AddOption( Key( 'r', "injection-kernel-radius" ), &InjectionKernelRadius, "Truncation radius factor of injection kernel. The kernel is truncated at sigma*radius, where sigma is the kernel standard deviation." );
 
     cl.BeginGroup( "invint", "Inverse Interpolation Options" );
     cl.AddSwitch( Key( 'L', "linear" ), &Interpolation, 0, "Trilinear interpolation" );

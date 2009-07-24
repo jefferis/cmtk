@@ -24,6 +24,11 @@ Release CMTK-1.0.2:
     functional yet.
 - Fixed: testing and configuration were out of order in top-level
     CMakeLists.txt, resulting in build problems.
+- Fixed: "film" tool now uses anisotropic Gaussian kernel for volume
+    injection [Tracker #3945].
+- Fixed: volume injection should use reconstructed image pixel saize to scale
+    Gaussian kernel, not pass image pixel size. Pass image size depends on
+    number of passes, whereas point spread function does not.
 
 - Improved: eliminated explicit offset calculations in cmtk::DataGrid and use
     existing index-to-offset function instead.

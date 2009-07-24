@@ -215,6 +215,7 @@ VolumeInjectionReconstruction
   UniformVolume::SmartPtr& correctedImage = this->m_CorrectedImage;
   TypedArray::SmartPtr correctedImageData = correctedImage->GetData();
   const size_t correctedImageNumPixels = correctedImage->GetNumberOfPixels();
+  const Types::Coordinate correctedDelta[3] = { correctedImage->m_Delta[0], correctedImage->m_Delta[1], correctedImage->m_Delta[2] };
 
   this->m_NeighorhoodMaxPixelValues.setbounds( 1, correctedImageNumPixels );
   this->m_NeighorhoodMinPixelValues.setbounds( 1, correctedImageNumPixels );
@@ -244,7 +245,6 @@ VolumeInjectionReconstruction
 	const Xform* passImageXform = this->m_TransformationsToPassImages[pass];
 
 	const Vector3D vPass = passImageXform->Apply( vCorrected );
-	const Types::Coordinate passDelta[3] = { passImage->m_Delta[0], passImage->m_Delta[1], passImage->m_Delta[2] };
 
 	int passGridPosition[3];
 	passImage->GetVoxelIndexNoBounds( vPass, passGridPosition );
@@ -260,17 +260,17 @@ VolumeInjectionReconstruction
 	for ( int k = passGridFrom[2]; k < passGridTo[2]; ++k )
 	  {
 	  u.XYZ[2] = passImage->GetPlaneCoord( AXIS_Z, k );
-	  delta.XYZ[2] = (u.XYZ[2] - vPass.XYZ[2]) / passDelta[2];
+	  delta.XYZ[2] = (u.XYZ[2] - vPass.XYZ[2]) / correctedDelta[2];
 	      
 	  for ( int j = passGridFrom[1]; j < passGridTo[1]; ++j )
 	    {
 	    u.XYZ[1] = passImage->GetPlaneCoord( AXIS_Y, j );
-	    delta.XYZ[1] = (u.XYZ[1] - vPass.XYZ[1]) / passDelta[1];
+	    delta.XYZ[1] = (u.XYZ[1] - vPass.XYZ[1]) / correctedDelta[1];
 	    
 	    for ( int i = passGridFrom[0]; i < passGridTo[0]; ++i )
 	      {                
 	      u.XYZ[0] = passImage->GetPlaneCoord( AXIS_X, i );
-	      delta.XYZ[0] = (u.XYZ[0] - vPass.XYZ[0]) / passDelta[0];
+	      delta.XYZ[0] = (u.XYZ[0] - vPass.XYZ[0]) / correctedDelta[0];
 	      
 	      Types::DataItem passImageData;
 	      if ( passImage->GetDataAt( passImageData, i, j, k ) ) 
