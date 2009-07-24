@@ -1,6 +1,5 @@
 ! TYPEDSTREAM 1.1
 
-! /fs/axon/torsten/cmtk/testing/bin/mcwarp --downsample-from 2 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --grid-spacing 14 --refine-grid 2 --histograms -o /fs/axon/torsten/cmtk/testing/bin/../testing/temporary/corpus3.cluster/McWarp2/xform McAffine_rat_rat2.xform 
 registration {
 	reference_channel_count 2
 	reference_channel "rat_fse_erly.hdr"
