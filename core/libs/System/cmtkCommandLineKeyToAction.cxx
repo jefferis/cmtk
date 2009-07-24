@@ -99,6 +99,8 @@ cmtk::CommandLine::KeyToAction::PrintHelp( const size_t globalIndent ) const
     {
     fmt << this->m_Comment;
     }
+
+  this->m_Action->PrintHelp( fmt );
   
   StdErr.FormatText( fmt.str(), indent + globalIndent, 80, -indent ) << "\n";
 }

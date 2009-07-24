@@ -1,8 +1,8 @@
 Statistics for image spgr_3t.hdr
 min	0.00000
 max	3492.00000
-mean	372.21921
+mean	372.21920
 sdev	404.96503
 n	835584
 Entropy	4.08475
-sum	311020416.000000
+sum	311020411.000000

@@ -262,7 +262,15 @@ public:
 
     /// Virtual function that returns an XML tree describing this option.
     virtual mxml_node_t* MakeXML( mxml_node_t *const parent //!< Parent in the XML tree for the new node.
-      ) const = 0;    
+      ) const = 0;
+
+    /// Format additional help information.
+    virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
+      ) const
+    {
+      // by default, simply return stream unchanged.
+      return fmt;
+    }
 
   protected:
     /// Item properties.
@@ -306,6 +314,15 @@ private:
       return node;
     }
 
+    /// Format additional help information (e.g., default values).
+    virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
+      ) const
+    {
+      if ( *(this->Flag) == this->Value )
+	fmt << "\n[This is the default]";
+      return fmt;
+    }
+
   private:
     /// Pointer to flag handled by this switch.
     T* Flag;
@@ -327,10 +344,11 @@ private:
     /// Evaluate and set associated option.
     virtual void Evaluate( const size_t argc, const char* argv[], size_t& index )
     {
-      if ( Flag ) *Flag = true;
+      if ( this->Flag ) 
+	*(this->Flag) = true;
       if ( index+1 < argc ) 
 	{
-	*Var = this->Convert<T>( argv[index+1] );
+	*(this->Var) = this->Convert<T>( argv[index+1] );
 	++index;
 	} 
       else
@@ -341,6 +359,17 @@ private:
 
     /// Virtual function that returns an XML tree describing this option.
     virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const;
+
+    /// Format additional help information (e.g., default values).
+    virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
+      ) const
+    {
+      if ( this->Flag && !(*this->Flag) )
+	fmt << "\n[Default: disabled]";
+      else
+	fmt << "\n[Default value: " << CommandLineTypeTraits<T>::ValueToString( this->Var ) << "]";
+      return fmt;
+    }
 
   protected:
     /// Pointer to associated variable.
@@ -460,6 +489,18 @@ private:
     virtual mxml_node_t* MakeXML( mxml_node_t *const parent, //!< Parent in the XML tree for the new node.
 				  const int index //!< Running index [0,1,...] of this argument in the argument list.
       ) const;
+
+    /// Format additional help information (e.g., default values).
+    virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
+      ) const
+    {
+      // by default, simply return stream unchanged.
+      if ( this->Var )
+	fmt << "\n[Default: " << *(this->Var) << "]";
+      else
+	fmt << "\n[There is no default for this parameter]";
+      return fmt;
+    }
 
     /// Name of this parameter.
     const char* m_Name;

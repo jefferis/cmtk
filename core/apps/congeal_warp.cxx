@@ -73,10 +73,15 @@ float SamplingDensity = -1.0;
 bool DeactivateUninformative = true;
 float PartialGradientThreshold = 0.0;
 
+bool UseNumberOfHistogramBins = false;
 size_t NumberOfHistogramBins = 0;
+
 bool CropImageHistograms = false;
 
+bool UseSmoothSigmaFactorPixel = false;
 cmtk::Types::Coordinate SmoothSigmaFactorPixel = 0.0;
+
+bool UseSmoothSigmaFactorControlPointSpacing = false;
 cmtk::Types::Coordinate SmoothSigmaFactorControlPointSpacing = 0.0;
 
 cmtk::Types::Coordinate Accuracy = 0.01;
@@ -152,10 +157,10 @@ main( int argc, char* argv[] )
     cl.AddSwitch( Key( "activate-uninformative" ), &DeactivateUninformative, false, "Activate potentially uninformative control points [default: off]" );
 
     cl.AddOption( Key( 'B', "force-background" ), &UserBackgroundValue, "Force background pixels (outside FOV) to given (bin) value.", &UserBackgroundFlag );
-    cl.AddOption( Key( 'H', "histogram-bins" ), &NumberOfHistogramBins, "Set number of histogram bins for entropy evaluation." );
+    cl.AddOption( Key( 'H', "histogram-bins" ), &NumberOfHistogramBins, "Set number of histogram bins for entropy evaluation.", &UseNumberOfHistogramBins );
     cl.AddSwitch( Key( "crop-histograms" ), &CropImageHistograms, true, "Crop image histograms to make better use of histogram bins." );
-    cl.AddOption( Key( "smooth-pixels" ), &SmoothSigmaFactorPixel, "Sigma of Gaussian smoothing kernel in multiples of template image pixel size [default: off] )" );
-    cl.AddOption( Key( "smooth-cps" ), &SmoothSigmaFactorControlPointSpacing, "Sigma of Gaussian smoothing kernel in multiples of control point delta [default: off] )" );
+    cl.AddOption( Key( "smooth-pixels" ), &SmoothSigmaFactorPixel, "Sigma of Gaussian smoothing kernel in multiples of template image pixel size", &UseSmoothSigmaFactorPixel );
+    cl.AddOption( Key( "smooth-cps" ), &SmoothSigmaFactorControlPointSpacing, "Sigma of Gaussian smoothing kernel in multiples of control point delta", &UseSmoothSigmaFactorControlPointSpacing );
 
     cl.AddOption( Key( "grid-spacing" ), &GridSpacing, "Control point grid spacing." );
     cl.AddSwitch( Key( "grid-spacing-exact" ), &GridSpacingExact, true, "Use exact grid spacing [default]" );
@@ -190,7 +195,7 @@ main( int argc, char* argv[] )
   if ( UserBackgroundFlag )
     functional->SetUserBackgroundValue( UserBackgroundValue );
 
-  if ( NumberOfHistogramBins > 0 )
+  if ( UseNumberOfHistogramBins )
     {
     // must be done IMMEDIATELY after creating the functional!
     // otherwise, scaling and conversion of input images goes
@@ -264,14 +269,14 @@ main( int argc, char* argv[] )
       functional->SetTemplateGrid( originalTemplateGrid, actualDownsample, UseTemplateData ); 
       cmtk::UniformVolume::SmartPtr templateGrid = functional->GetTemplateGrid();
       
-      if ( SmoothSigmaFactorPixel > 0.0 )
+      if ( UseSmoothSigmaFactorPixel )
 	{
 	functional->SetGaussianSmoothImagesSigma( SmoothSigmaFactorPixel * templateGrid->GetMinDelta() );
 	functional->SetTargetImages( imageListOriginal );
 	}
       else
 	{
-	if ( SmoothSigmaFactorControlPointSpacing > 0.0 )
+	if ( UseSmoothSigmaFactorControlPointSpacing )
 	  {
 	  functional->SetGaussianSmoothImagesSigma( SmoothSigmaFactorControlPointSpacing * FinestGridSpacing * (1<<RefineTransformationGrid) );
 	  functional->SetTargetImages( imageListOriginal );

@@ -45,6 +45,7 @@ VoxelRegistration::ImagePreprocessor::ImagePreprocessor( const char* name, const
     m_LowerThresholdValue( -CMTK_ITEM_MAX ),
     m_UpperThresholdActive( false ),
     m_UpperThresholdValue( CMTK_ITEM_MAX ),
+    m_UsePruneHistogramBins( false ),
     m_PruneHistogramBins( 0 ),
     m_HistogramEqualization( false ),
     m_SobelFilter( false ),
@@ -70,7 +71,7 @@ VoxelRegistration::ImagePreprocessor::AttachToCommandLine
   cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "thresh-min-" ), this->m_Key ) ), &this->m_LowerThresholdValue, "Minimum value truncation threshold", &this->m_LowerThresholdActive );
   cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "thresh-max-" ), this->m_Key ) ), &this->m_UpperThresholdValue, "Maximum value truncation threshold", &this->m_UpperThresholdActive );
   
-  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "prune-histogram-" ), this->m_Key ) ), &this->m_PruneHistogramBins, "Number of bins for histogram-based pruning [default: no pruning]" );
+  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "prune-histogram-" ), this->m_Key ) ), &this->m_PruneHistogramBins, "Number of bins for histogram-based pruning", &this->m_UsePruneHistogramBins );
   cl.AddSwitch( CommandLine::Key( strcat( strcpy( buffer, "histogram-equalization-" ), this->m_Key ) ), &this->m_HistogramEqualization, true, "Apply histogram equalization" );
   cl.AddSwitch( CommandLine::Key( strcat( strcpy( buffer, "sobel-filter-" ), this->m_Key ) ), &this->m_SobelFilter, true, "Apply Sobel edge detection filter" );
   

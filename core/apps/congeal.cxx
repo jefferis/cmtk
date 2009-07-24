@@ -58,12 +58,16 @@ byte UserBackgroundValue = 0;
 bool UserBackgroundFlag = false;
 
 float SamplingDensity = -1.0;
+bool UseSamplingDensity = false;
+
 bool ForceZeroSum = false;
 size_t ForceZeroSumFirstN = 0;
 size_t NormalGroupFirstN = 0;
 
+bool UseSmoothSigmaFactor = false;
 cmtk::Types::Coordinate SmoothSigmaFactor = -1.0;
 
+bool UseNumberOfHistogramBins = false;
 size_t NumberOfHistogramBins = 0;
 bool CropImageHistograms = false;
 
@@ -148,30 +152,34 @@ main( int argc, char* argv[] )
     cl.AddOption( Key( 'O', "output-root" ), &OutputRootDirectory, "Root directory for all output files." );
     cl.AddOption( Key( 'o', "output" ), &OutputArchive, "Output filename for groupwise registration archive." );
     cl.AddOption( Key( "output-average" ), &AverageImagePath, "Output filename for registered average image." );
-    cl.AddSwitch( Key( "average-cubic" ), &AverageImageInterpolation, cmtk::Interpolators::CUBIC, "Use cubic interpolation for average image (default: linear)" );
+    cl.AddSwitch( Key( "average-linear" ), &AverageImageInterpolation, cmtk::Interpolators::LINEAR, "Use linear interpolation for average image" );
+    cl.AddSwitch( Key( "average-cubic" ), &AverageImageInterpolation, cmtk::Interpolators::CUBIC, "Use cubic interpolation for average image" );
     cl.AddSwitch( Key( "no-output-average" ), &AverageImagePath, (const char*)NULL, "Do not write average image." );
 
-    cl.AddOption( Key( 'd', "downsample-from" ), &DownsampleFrom, "Initial downsampling factor [4]." );
-    cl.AddOption( Key( 'D', "downsample-to" ), &DownsampleTo, "Final downsampling factor [1]." );
-    cl.AddOption( Key( 's', "sampling-density" ), &SamplingDensity, "Probabilistic sampling density [default: off]." );
+    cl.AddOption( Key( 'd', "downsample-from" ), &DownsampleFrom, "Initial downsampling factor" );
+    cl.AddOption( Key( 'D', "downsample-to" ), &DownsampleTo, "Final downsampling factor." );
+    cl.AddOption( Key( 's', "sampling-density" ), &SamplingDensity, "Probabilistic sampling density. Legal values between 0 and 1.", &UseSamplingDensity );
 
     cl.AddOption( Key( 'B', "force-background" ), &UserBackgroundValue, "Force background pixels (outside FOV) to given (bin) value.", &UserBackgroundFlag );
-    cl.AddOption( Key( 'H', "histogram-bins" ), &NumberOfHistogramBins, "Set number of histogram bins for entropy evaluation." );
+    cl.AddOption( Key( 'H', "histogram-bins" ), &NumberOfHistogramBins, "Manually set number of histogram bins for entropy evaluation", &UseNumberOfHistogramBins );
     cl.AddSwitch( Key( "crop-histograms" ), &CropImageHistograms, true, "Crop image histograms to make better use of histogram bins." );
-    cl.AddOption( Key( "smooth" ), &SmoothSigmaFactor, "Sigma of Gaussian smoothing kernel in multiples of template image pixel size [default: off] )" );
+    cl.AddOption( Key( "smooth" ), &SmoothSigmaFactor, "Sigma of Gaussian smoothing kernel in multiples of template image pixel size.", &UseSmoothSigmaFactor );
 
     cl.AddCallback( Key( "dofs" ), CallbackNumberDOFs, "Add DOFs to list [default: one pass, 6 DOF]" );
     cl.AddSwitch( Key( 'z', "zero-sum" ), &ForceZeroSum, true, "Enforce zero-sum computation." );
     cl.AddOption( Key( 'N', "normal-group-first-n" ), &NormalGroupFirstN, "First N images are from the normal group and should be registered unbiased." );
     cl.AddOption( Key( 'Z', "zero-sum-first-n" ), &ForceZeroSumFirstN, "Enforce zero-sum computation for first N images.", &ForceZeroSum );
     
-    cl.AddSwitch( Key( "align-centers-of-mass" ), &AlignCentersOfMass, true, "Initially align centers of mass [default: centers of Bounding Boxes]" );
-    cl.AddSwitch( Key( "init-scales" ), &InitScales, true, "Initialize scale factors using first-order moments [default: off]" );
+    cl.AddSwitch( Key( "align-bounding-boxes" ), &AlignCentersOfMass, false, "Initially align centers of bounding boxes of all images by translations" );
+    cl.AddSwitch( Key( "align-centers-of-mass" ), &AlignCentersOfMass, true, "Initially align centers of mass by translations" );
 
-    cl.AddOption( Key( 'e', "exploration" ), &Exploration, "Exploration of optimization in pixels [0.25]" );
-    cl.AddOption( Key( 'a', "accuracy" ), &Accuracy, "Accuracy of optimization in pixels [0.01]" );
-    cl.AddOption( Key( 'r', "repeat-level" ), &OptimizerRepeatLevel, "Number of repetitions per optimization level [5]" );
-    cl.AddOption( Key( 'S', "step-factor" ), &OptimizerStepFactor, "Step factor for successive optimization passes [0.5]" );
+    cl.AddSwitch( Key( "no-init-scales" ), &InitScales, false, "All scale factors are initialized as 1.0" );
+    cl.AddSwitch( Key( "init-scales" ), &InitScales, true, "Initialize scale factors using first-order moments" );
+
+    cl.AddOption( Key( 'e', "exploration" ), &Exploration, "Exploration of optimization in pixels" );
+    cl.AddOption( Key( 'a', "accuracy" ), &Accuracy, "Accuracy of optimization in pixels" );
+    cl.AddOption( Key( 'r', "repeat-level" ), &OptimizerRepeatLevel, "Number of repetitions per optimization level" );
+    cl.AddOption( Key( 'S', "step-factor" ), &OptimizerStepFactor, "Step factor for successive optimization passes" );
     cl.AddSwitch( Key( "disable-optimization" ), &DisableOptimization, true, "Disable optimization and output initial configuration." );
       
     cl.Parse();
@@ -201,7 +209,7 @@ main( int argc, char* argv[] )
   if ( UserBackgroundFlag )
     functional->SetUserBackgroundValue( UserBackgroundValue );
 
-  if ( NumberOfHistogramBins > 0 )
+  if ( UseNumberOfHistogramBins )
     {
     // must be done IMMEDIATELY after creating the functional!
     // otherwise, scaling and conversion of input images goes
@@ -285,7 +293,7 @@ main( int argc, char* argv[] )
       }
     }
   
-  if ( SamplingDensity > 0 )
+  if ( UseSamplingDensity )
     {
     functional->SetProbabilisticSampleDensity( SamplingDensity );
     }
@@ -305,7 +313,7 @@ main( int argc, char* argv[] )
       functional->CreateTemplateGridFromTargets( imageListOriginal, std::max( 1, downsample ) );
     
     cmtk::UniformVolume::SmartPtr templateGrid = functional->GetTemplateGrid();
-    if ( (SmoothSigmaFactor > 0.0) && downsample )
+    if ( UseSmoothSigmaFactor && downsample )
       {
       functional->SetGaussianSmoothImagesSigma( SmoothSigmaFactor * templateGrid->GetMinDelta() );
       }

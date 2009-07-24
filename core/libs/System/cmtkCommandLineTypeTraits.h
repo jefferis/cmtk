@@ -45,10 +45,10 @@ class CommandLineTypeTraitsBase
 {
 public:
   /// Convert a value of this type to string.
-  static std::string ValueToString( const T value )
+  static std::string ValueToString( const T* value )
   {
     std::ostringstream stream;
-    stream << value;
+    stream << *value;
     return stream.str();
   }
 };
@@ -79,6 +79,16 @@ public:
   static const char* GetName() 
   { 
     return "string";
+  }
+
+  static std::string ValueToString( const char** value )
+  {
+    std::ostringstream stream;
+    if ( value && *value )
+      stream << "\"" << *value << "\"";
+    else
+      stream << "NONE";
+    return stream.str();
   }
 };
 

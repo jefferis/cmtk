@@ -137,7 +137,10 @@ protected:
     /// Upper threshold value.
     Types::DataItem m_UpperThresholdValue;
 
-    /// Prune histogram for image: number of target bins (0 = no pruning).
+    /// Flag for image histogram pruning.
+    bool m_UsePruneHistogramBins;
+
+    /// Prune histogram for image: number of target bins.
     unsigned int m_PruneHistogramBins;
 
     /// Flag for histogram equalization.

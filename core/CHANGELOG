@@ -14,6 +14,8 @@ Release CMTK-1.0.2:
     VisualStudio.
 - Added: "mcaffine" tool now accepts user-provided initial transformation from
     file [Tracker #3925].
+- Added: cmtk::CommandLine class now automatically prints parameter defaults
+    in "--help" output.
 
 - Fixed: numerous uninitialized data situations identified by valgrind memory
     checker
@@ -26,7 +28,7 @@ Release CMTK-1.0.2:
     CMakeLists.txt, resulting in build problems.
 - Fixed: "film" tool now uses anisotropic Gaussian kernel for volume
     injection [Tracker #3945].
-- Fixed: volume injection should use reconstructed image pixel saize to scale
+- Fixed: volume injection should use reconstructed image pixel size to scale
     Gaussian kernel, not pass image pixel size. Pass image size depends on
     number of passes, whereas point spread function does not.
 

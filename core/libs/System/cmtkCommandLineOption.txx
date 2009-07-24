@@ -71,7 +71,7 @@ cmtk::CommandLine::Option<T>
   if ( !Flag ) // if there is no flag monitoring this option, then there must be a valid default value
     {
     mxml_node_t *dflt = mxmlNewElement( node, "default" );
-    mxmlNewText( dflt, 0, CommandLineTypeTraits<T>::ValueToString( *Var ).c_str() );
+    mxmlNewText( dflt, 0, CommandLineTypeTraits<T>::ValueToString( this->Var ).c_str() );
     }
   return node;
 }
