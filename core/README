@@ -13,8 +13,8 @@ command self description.
 
 CMTK has been built and tested on the following platforms:
 
-- Linux 32bit (Fedora 10), gcc 4.3.0
-- Linux 64bit (Fedora 10), gcc 4.3.0
+- Linux 32bit (Fedora 9), gcc 4.3.0
+- Linux 64bit (Fedora 9), gcc 4.3.0
 - Linux 32bit (Fedora 11), gcc 4.4.0
 - Linux 64bit (Fedora 11), gcc 4.4.0
 - Cygwin, gcc 4.3.2 beta2
