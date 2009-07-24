@@ -291,7 +291,6 @@ DoRegistration( int argc, char* argv[] )
   if ( outArchive )
     {
     cmtk::ClassStream stream( outArchive, cmtk::ClassStream::WRITE );
-    stream.WriteComment( argc, argv );
     stream << *functional;
     stream.Close();
     }
