@@ -81,7 +81,7 @@ public:
     return "string";
   }
 
-  static std::string ValueToString( const char** value )
+  static std::string ValueToString( const char *const * value )
   {
     std::ostringstream stream;
     if ( value && *value )

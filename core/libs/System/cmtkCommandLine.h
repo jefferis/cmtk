@@ -337,7 +337,7 @@ private:
 	  node = mxmlNewElement( parent, "enum" );
 	  for ( std::multimap<const void*,Item*>::const_iterator it = range.first; it != range.second; ++it )
 	    {
-//	    mxmlNewText( mxmlNewElement( node, "value" ), 0, CommandLineTypeTraits<T>::ValueToString( &(dynamic_cast<const Switch<T>*>( it->second )->m_Value) ).c_str() );
+	    mxmlNewText( mxmlNewElement( node, "value" ), 0, CommandLineTypeTraits<T>::ValueToString( &(dynamic_cast<const Switch<T>*>( it->second )->m_Value) ).c_str() );
 	    }
 	  }
 	}
