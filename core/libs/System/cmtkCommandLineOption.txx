@@ -31,6 +31,24 @@
 #include <typeinfo>
 
 template<class T>
+void
+cmtk::CommandLine::Option<T>
+::Evaluate( const size_t argc, const char* argv[], size_t& index )
+{
+  if ( this->Flag ) 
+    *(this->Flag) = true;
+  if ( index+1 < argc ) 
+    {
+    *(this->Var) = this->Convert<T>( argv[index+1] );
+	++index;
+    } 
+  else
+    {
+    throw( Exception( "Option needs an argument.", index ) );
+    }
+}
+
+template<class T>
 mxml_node_t* 
 cmtk::CommandLine::Option<T>
 ::MakeXML(  mxml_node_t *const parent ) const 
@@ -74,4 +92,16 @@ cmtk::CommandLine::Option<T>
     mxmlNewText( dflt, 0, CommandLineTypeTraits<T>::ValueToString( this->Var ).c_str() );
     }
   return node;
+}
+
+template<class T>
+std::ostringstream& 
+cmtk::CommandLine::Option<T>
+::PrintHelp( std::ostringstream& fmt ) const
+{
+  if ( this->Flag && !(*this->Flag) )
+    fmt << "\n[Default: disabled]";
+  else
+    fmt << "\n[Default value: " << CommandLineTypeTraits<T>::ValueToString( this->Var ) << "]";
+  return fmt;
 }

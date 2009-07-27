@@ -342,34 +342,14 @@ private:
     Option( T *const var, bool *const flag ) : Var( var ), Flag( flag ) {}
     
     /// Evaluate and set associated option.
-    virtual void Evaluate( const size_t argc, const char* argv[], size_t& index )
-    {
-      if ( this->Flag ) 
-	*(this->Flag) = true;
-      if ( index+1 < argc ) 
-	{
-	*(this->Var) = this->Convert<T>( argv[index+1] );
-	++index;
-	} 
-      else
-	{
-	throw( Exception( "Option needs an argument.", index ) );
-	}
-    }
+    virtual void Evaluate( const size_t argc, const char* argv[], size_t& index );
 
     /// Virtual function that returns an XML tree describing this option.
     virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const;
 
     /// Format additional help information (e.g., default values).
     virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
-      ) const
-    {
-      if ( this->Flag && !(*this->Flag) )
-	fmt << "\n[Default: disabled]";
-      else
-	fmt << "\n[Default value: " << CommandLineTypeTraits<T>::ValueToString( this->Var ) << "]";
-      return fmt;
-    }
+      ) const;
 
   protected:
     /// Pointer to associated variable.
