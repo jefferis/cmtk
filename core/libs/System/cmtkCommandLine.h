@@ -291,6 +291,14 @@ public:
   };
 
 private:
+  /** Map from fields to switches.
+   * This map stores the correspondences between fields (i.e., command line variables)
+   * and switches that set these fields. The correspondence is used when generating XML
+   * command line descriptions to distinguish between boolean switches and enum-type
+   * sets of switches.
+   */
+  std::multimap<const void*,Item*> m_FieldToSwitchMap;
+
   /// Command line switch.
   template<class T> 
   class Switch : 
@@ -299,18 +307,40 @@ private:
   {
   public:
     /// Constructor.
-    Switch( T *const flag, const T value ) : Flag( flag ), Value( value ) {}
+    Switch( CommandLine *const cl, T *const field, const T value ) : 
+      m_CommandLine( cl ),
+      m_Field( field ), 
+      m_Value( value ) 
+    {
+      cl->m_FieldToSwitchMap.insert( std::pair<const void*,Item*>( field, this ) );
+    }
 
     /// Evaluate and set associated flag.
     virtual void Evaluate( const size_t, const char*[], size_t& )
     { 
-      *Flag  = Value;
+      *this->m_Field  = this->m_Value;
     }
 
     /// Virtual function that returns an XML tree describing this option.
     virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const 
     {
-      mxml_node_t *node = mxmlNewElement( parent, "boolean" );
+      mxml_node_t *node = NULL;
+      if ( this->m_CommandLine->m_FieldToSwitchMap.count( this->m_Field ) == 1 )
+	{
+	node = mxmlNewElement( parent, "boolean" );
+	}
+      else
+	{
+	std::pair< std::multimap<const void*,Item*>::const_iterator, std::multimap<const void*,Item*>::const_iterator> range = this->m_CommandLine->m_FieldToSwitchMap.equal_range( this->m_Field );
+	if ( range.first->second == this )
+	  {
+	  node = mxmlNewElement( parent, "enum" );
+	  for ( std::multimap<const void*,Item*>::const_iterator it = range.first; it != range.second; ++it )
+	    {
+	    mxmlNewText( mxmlNewElement( node, "value" ), 0, CommandLineTypeTraits<T>::ValueToString( &(dynamic_cast<const Switch<T>*>( it->second )->m_Value) ).c_str() );
+	    }
+	  }
+	}
       return node;
     }
 
@@ -318,17 +348,20 @@ private:
     virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
       ) const
     {
-      if ( *(this->Flag) == this->Value )
+      if ( *(this->m_Field) == this->m_Value )
 	fmt << "\n[This is the default]";
       return fmt;
     }
-
+    
   private:
-    /// Pointer to flag handled by this switch.
-    T* Flag;
+    /// Pointer to the command line object.
+    CommandLine* m_CommandLine;
 
-    /// Value to set flag to when switch is encountered.
-    const T Value;
+    /// Pointer to field handled by this switch.
+    T* m_Field;
+
+    /// Value to set field to when switch is encountered.
+    const T m_Value;
   };
 
   /// Command line option with argument.
@@ -520,7 +553,7 @@ public:
   Item::SmartPtr& 
   AddSwitch( const Key& key, T *const var, const T value, const char* comment ) 
   {
-    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Switch<T>( var, value ) ), comment ) ) );
+    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Switch<T>( this, var, value ) ), comment ) ) );
   }
   
   /// Add option.
