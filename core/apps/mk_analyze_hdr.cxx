@@ -119,7 +119,7 @@ int main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( "SRI1" ), &LegacyMode, -1, "Force 'SRI1' tag even if not present in imported header" );
 
     cl.AddOption( Key( 'I', "import" ), &ImportHdrFile, "Import data from given header file." );
-    cl.AddOption( Key( cmtk::CommandLine::PRG_DESCR ), &Description, "Set description string [max. 80 characters]" );
+    cl.AddOption( Key( "description" ), &Description, "Set description string [max. 80 characters]" );
 
     cl.Parse();
 
