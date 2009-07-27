@@ -1,3 +1,8 @@
+Release CMTK-1.0.3:
+
+- Fixed: mk_analyze_hdr command line option "--description" was broken.
+
+
 Release CMTK-1.0.2 (2009-07-24):
 
 - API: all igsGetSetXXX macros are now cmtkGetSetXXX, and they all define the
