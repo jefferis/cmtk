@@ -51,6 +51,14 @@ public:
     stream << *value;
     return stream.str();
   }
+
+  /// Convert a value of this type to string with minimal added markup (for XML output).
+  static std::string ValueToStringMinimal( const T* value )
+  {
+    std::ostringstream stream;
+    stream << *value;
+    return stream.str();
+  }
 };
 
 /// Template for traits to handle command line arguments of different types.
@@ -88,6 +96,14 @@ public:
       stream << "\"" << *value << "\"";
     else
       stream << "NONE";
+    return stream.str();
+  }
+
+  static std::string ValueToStringMinimal( const char *const * value )
+  {
+    std::ostringstream stream;
+    if ( value && *value )
+      stream << *value;
     return stream.str();
   }
 };
