@@ -282,18 +282,6 @@ public:
   };
 
 private:
-  /// Enumeration item class.
-  template<class T>
-  class EnumItem
-  {
-  public:
-    /// Constructor.
-    EnumItem( const Key& key, const T& value, const std::string& comment );
-
-  private:
-    /// Key 
-  };
-  
   /// Command line switch.
   template<class T> 
   class Switch : 
@@ -589,27 +577,33 @@ public:
     /// Constructor.
     KeyToAction( const Key& key, //!< Key: long and/or short command line option for this action.
 		 Item::SmartPtr action, //!< The actual action (option, switch, callback, etc.)
-		 const char* comment ) : //!< Command line help comment for this action.
+		 const std::string& comment ) : //!< Command line help comment for this action.
       m_Key( key.m_KeyChar ),
       m_KeyString( key.m_KeyString ),
       m_Action( action ),
       m_Comment( comment )
     {}
     
-    /** Match two long options but be tolerant to hyphens, i.e., consider '-' and '_' the same.
-     * This allows us to be tolerant with Slicer's requirement that there are no hyphens in
-     * long options, while maintaining the ability to use them on the command line for
-     * compatibility.
-     *\return true is the two string match, or their only differences are hyphens vs. underlines.
-     */
-    bool MatchLongOption( const std::string& key ) const;
+    /// Test long key from command line and execute if match.
+    bool MatchAndExecute( const std::string& key, //!< Key (long option) from the command line.
+			  const size_t argc, //!< Total number of command line arguments.
+			  const char* argv[], //!< Command line argument list.
+			  size_t& index //!< Current index in command line list
+      );
+
+    /// Test short key from command line and execute if match.
+    bool MatchAndExecute( const char keyChar, //!< Key (long option) from the command line.
+			  const size_t argc, //!< Total number of command line arguments.
+			  const char* argv[], //!< Command line argument list.
+			  size_t& index //!< Current index in command line list
+      );
 
     /// Returns an XML tree describing this key and action.
-    mxml_node_t* MakeXML( mxml_node_t *const parent //!< Parent in the XML tree for the new node.
+    virtual mxml_node_t* MakeXML( mxml_node_t *const parent //!< Parent in the XML tree for the new node.
       ) const;
 
     /// Print help for this item.
-    void PrintHelp( const size_t globalIndent = 0 ) const;
+    virtual void PrintHelp( const size_t globalIndent = 0 ) const;
     
   private:
     /// Short option associated with this action.
@@ -622,7 +616,15 @@ public:
     Item::SmartPtr m_Action;
 
     /// Comment (description).
-    const char* m_Comment;
+    std::string m_Comment;
+
+    /** Match two long options but be tolerant to hyphens, i.e., consider '-' and '_' the same.
+     * This allows us to be tolerant with Slicer's requirement that there are no hyphens in
+     * long options, while maintaining the ability to use them on the command line for
+     * compatibility.
+     *\return true is the two string match, or their only differences are hyphens vs. underlines.
+     */
+    virtual bool MatchLongOption( const std::string& key ) const;
 
     /// Give command line class full access.
     friend class CommandLine;

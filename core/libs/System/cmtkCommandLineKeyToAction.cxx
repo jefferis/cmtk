@@ -44,9 +44,9 @@ cmtk::CommandLine::KeyToAction::MakeXML( mxml_node_t *const parent ) const
     }
 
   mxml_node_t *node = this->m_Action->MakeXML( parent );
-  if ( this->m_Comment )
+  if ( this->m_Comment.length() )
     {
-    mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment );
+    mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment.c_str() );
     }
 
   if ( this->m_KeyString.length() )
@@ -95,7 +95,7 @@ cmtk::CommandLine::KeyToAction::PrintHelp( const size_t globalIndent ) const
       fmt << " ";
     }
   
-  if ( this->m_Comment )
+  if ( this->m_Comment.length() )
     {
     fmt << this->m_Comment;
     }
@@ -103,4 +103,43 @@ cmtk::CommandLine::KeyToAction::PrintHelp( const size_t globalIndent ) const
   this->m_Action->PrintHelp( fmt );
   
   StdErr.FormatText( fmt.str(), indent + globalIndent, 80, -indent ) << "\n";
+}
+
+bool
+cmtk::CommandLine::KeyToAction::MatchLongOption( const std::string& key ) const
+{
+  if ( key.length() != this->m_KeyString.length() )
+    return false;
+  
+  for ( size_t i = 0; i < key.length(); ++i )
+    {
+    if ( (key[i] == '-' || key[i] == '_') && (this->m_KeyString[i] == '-' || this->m_KeyString[i] == '_') )
+      continue;
+
+    if ( key[i] != this->m_KeyString[i] )
+      return false;
+    }
+  return true;
+}
+
+bool
+cmtk::CommandLine::KeyToAction::MatchAndExecute( const std::string& key, const size_t argc, const char* argv[], size_t& index )
+{
+  if ( this->MatchLongOption( std::string( key ) ) )
+    {
+    this->m_Action->Evaluate( argc, argv, index );
+    return true;
+    }
+  return false;
+}
+
+bool
+cmtk::CommandLine::KeyToAction::MatchAndExecute( const char keyChar, const size_t argc, const char* argv[], size_t& index )
+{
+  if ( this->m_Key == keyChar )
+    {
+    this->m_Action->Evaluate( argc, argv, index );
+    return true;
+    }
+  return false;
 }

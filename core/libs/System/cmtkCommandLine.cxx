@@ -169,23 +169,6 @@ CommandLine::Callback::Evaluate
 }
 
 bool
-CommandLine::KeyToAction::MatchLongOption( const std::string& key ) const
-{
-  if ( key.length() != this->m_KeyString.length() )
-    return false;
-  
-  for ( size_t i = 0; i < key.length(); ++i )
-    {
-    if ( (key[i] == '-' || key[i] == '_') && (this->m_KeyString[i] == '-' || this->m_KeyString[i] == '_') )
-      continue;
-
-    if ( key[i] != this->m_KeyString[i] )
-      return false;
-    }
-  return true;
-}
-
-bool
 CommandLine::Parse()
 {
   this->Index = 1;
@@ -201,20 +184,17 @@ CommandLine::Parse()
       break;
       }
     
-    SmartPointer<Item> item(NULL);
+    bool found = false;
     if ( this->ArgV[this->Index][1] == '-' ) 
       {
       // long option
       for ( KeyActionListType::iterator it = this->m_KeyActionListComplete.begin(); it != this->m_KeyActionListComplete.end(); ++it )
 	{
-	if ( (*it)->MatchLongOption( std::string( this->ArgV[this->Index]+2 ) ) )
-	  {
-	  item = (*it)->m_Action;
-	  }
+	found = (*it)->MatchAndExecute( std::string( this->ArgV[this->Index]+2 ), this->ArgC, this->ArgV, this->Index );
 	}
       
       // not found?
-      if ( !item ) 
+      if ( !found ) 
 	{
 	// Check for "--xml" special option, which produces self description according to Slicer execution model.
 	if ( !strcmp( this->ArgV[this->Index], "--xml" ) ) 
@@ -232,7 +212,6 @@ CommandLine::Parse()
 	
 	throw( Exception( std::string("Unknown option: ") + std::string(this->ArgV[this->Index] ) ) );
 	}
-      item->Evaluate( this->ArgC, this->ArgV, this->Index );
       } 
     else
       {
@@ -242,18 +221,14 @@ CommandLine::Parse()
 	// short option
 	for ( KeyActionListType::iterator it = this->m_KeyActionListComplete.begin(); it != this->m_KeyActionListComplete.end(); ++it )
 	  {
-	  if ( (*it)->m_Key == *optChar )
-	    {
-	    item = (*it)->m_Action;
-	    }
+	  found = (*it)->MatchAndExecute( *optChar, this->ArgC, this->ArgV, this->Index );
 	  }
       
-	if ( !item ) 
+	if ( !found ) 
 	  {
 	  const char opt[2] = { *optChar, 0 };
 	  throw( Exception( std::string("Unknown option: -") + std::string(opt) ) );
 	  }
-	item->Evaluate( this->ArgC, this->ArgV, this->Index );
 	
 	++optChar; // next short option in this block, POSIX style.
 	}
