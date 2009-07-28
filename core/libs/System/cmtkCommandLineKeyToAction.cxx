@@ -33,7 +33,8 @@
 #include <sstream>
 
 mxml_node_t*
-cmtk::CommandLine::KeyToAction::MakeXML( mxml_node_t *const parent ) const
+cmtk::CommandLine::KeyToAction
+::MakeXML( mxml_node_t *const parent ) const
 {
 // for some reason Slicer does not accept long options that contain hyphens ("-"), so we replace them.
   std::string xmlKeyStr = this->m_KeyString;
@@ -68,7 +69,8 @@ cmtk::CommandLine::KeyToAction::MakeXML( mxml_node_t *const parent ) const
 }
 
 void
-cmtk::CommandLine::KeyToAction::PrintHelp( const size_t globalIndent ) const
+cmtk::CommandLine::KeyToAction
+::PrintHelp( const size_t globalIndent ) const
 {
   std::ostringstream fmt;
   if ( this->m_Key )
@@ -106,7 +108,8 @@ cmtk::CommandLine::KeyToAction::PrintHelp( const size_t globalIndent ) const
 }
 
 bool
-cmtk::CommandLine::KeyToAction::MatchLongOption( const std::string& key ) const
+cmtk::CommandLine::KeyToAction
+::MatchLongOption( const std::string& key ) const
 {
   if ( key.length() != this->m_KeyString.length() )
     return false;
@@ -123,7 +126,8 @@ cmtk::CommandLine::KeyToAction::MatchLongOption( const std::string& key ) const
 }
 
 bool
-cmtk::CommandLine::KeyToAction::MatchAndExecute( const std::string& key, const size_t argc, const char* argv[], size_t& index )
+cmtk::CommandLine::KeyToAction
+::MatchAndExecute( const std::string& key, const size_t argc, const char* argv[], size_t& index )
 {
   if ( this->MatchLongOption( std::string( key ) ) )
     {
@@ -134,7 +138,8 @@ cmtk::CommandLine::KeyToAction::MatchAndExecute( const std::string& key, const s
 }
 
 bool
-cmtk::CommandLine::KeyToAction::MatchAndExecute( const char keyChar, const size_t argc, const char* argv[], size_t& index )
+cmtk::CommandLine::KeyToAction
+::MatchAndExecute( const char keyChar, const size_t argc, const char* argv[], size_t& index )
 {
   if ( this->m_Key == keyChar )
     {
@@ -143,3 +148,24 @@ cmtk::CommandLine::KeyToAction::MatchAndExecute( const char keyChar, const size_
     }
   return false;
 }
+
+void
+cmtk::CommandLine::KeyToAction
+::SetProperties( const long int properties )
+{
+  if ( this->m_Action )
+    this->m_Action->SetProperties( properties );
+  else
+    this->m_Properties = properties;
+}
+
+long int
+cmtk::CommandLine::KeyToAction
+::GetProperties() const
+{
+  if ( this->m_Action )
+    return this->m_Action->GetProperties();
+  else
+    return this->m_Properties;
+}
+

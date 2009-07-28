@@ -512,61 +512,6 @@ public:
   /// Destructor.
   ~CommandLine() {};
 
-  /// Add switch.
-  template<class T> 
-  Item::SmartPtr& 
-  AddSwitch( const Key& key, T *const var, const T value, const char* comment ) 
-  {
-    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Switch<T>( this, var, value ) ), comment ) ) );
-  }
-  
-  /// Add option.
-  template<class T> 
-  Item::SmartPtr&
-  AddOption( const Key& key, T *const var, const char* comment, bool *const flag = NULL ) 
-  {
-    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Option<T>( var, flag ) ), comment ) ) );
-  }
-  
-  /// Add repeat option (put arguments into a FIFO list).
-  template<class T> 
-  Item::SmartPtr&
-  AddRepeat( const Key& key, std::list<T>& list, const char* comment ) 
-  {
-    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Repeat<T>( list ) ), comment ) ) );
-  }
-  
-  /// Add callback.
-  Item::SmartPtr&
-  AddCallback( const Key& key, CallbackFunc func, const char* comment ) 
-  {
-    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Callback( func ) ), comment ) ) );
-  }
-
-  /// Add callback with a single argument.
-  template<class TArg>
-  Item::SmartPtr&
-  AddCallback( const Key& key, const char* (*funcArg)( const TArg ), const char* comment ) 
-  {
-    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Callback( funcArg ) ), comment ) ) );
-  }
-  
-  /// Add callback with multiple arguments.
-  Item::SmartPtr&
-  AddCallback( const Key& key, CallbackFuncMultiArg funcMultiArg, const char* comment ) 
-  {
-    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Callback( funcMultiArg ) ), comment ) ) );
-  }
-  
-  /// Add option.
-  Item::SmartPtr
-  AddParameter( const char* *const var, const char* name, const char* comment, bool *const flag = NULL ) 
-  {
-    NonOptionParameter::SmartPtr parameter( new NonOptionParameter( var, name, comment, flag ) );
-    this->m_NonOptionParameterList.push_back( parameter );
-    return parameter;
-  }
-  
   /// Local class that connects command line options with their evaluators.
   class KeyToAction
   {
@@ -581,7 +526,24 @@ public:
       m_Key( key.m_KeyChar ),
       m_KeyString( key.m_KeyString ),
       m_Action( action ),
-      m_Comment( comment )
+      m_Comment( comment ),
+      m_Properties( PROPS_NONE )
+    {}
+    
+    /** Constructor for enumeration parameter group.
+     * An enumeration parameter group is a group of parameters that all modify the same variable
+     * by setting it to different values. There is one command line parameter (i.e., key/action pair)
+     * per value, plus a group parameter, which sets the variable based on the name of one of
+     * the supported values.
+     */
+    KeyToAction( const Key& key, //!< Key: long and/or short command line option for this action.
+		 std::list<KeyToAction::SmartPtr>& keyToActionEnum, //!< The definition of the enumeration keys and values.
+		 const std::string& comment ) : //!< Command line help comment for this action.
+      m_Key( key.m_KeyChar ),
+      m_KeyString( key.m_KeyString ),
+      m_Action( NULL ),
+      m_Comment( comment ),
+      m_Properties( PROPS_NONE )
     {}
     
     /// Test long key from command line and execute if match.
@@ -598,6 +560,24 @@ public:
 			  size_t& index //!< Current index in command line list
       );
 
+    /// Set action properties.
+    virtual void SetProperties( const long int properties )
+    {
+      if ( this->m_Action )
+	this->m_Action->SetProperties( properties );
+      else
+	this->m_Properties = properties;
+    }
+
+    /// Get item properties.
+    virtual long int GetProperties() const
+    {
+      if ( this->m_Action )
+	return this->m_Action->GetProperties();
+      else
+	return this->m_Properties;
+    }
+    
     /// Returns an XML tree describing this key and action.
     virtual mxml_node_t* MakeXML( mxml_node_t *const parent //!< Parent in the XML tree for the new node.
       ) const;
@@ -618,6 +598,9 @@ public:
     /// Comment (description).
     std::string m_Comment;
 
+    /// Group properties.
+    long int m_Properties;
+
     /** Match two long options but be tolerant to hyphens, i.e., consider '-' and '_' the same.
      * This allows us to be tolerant with Slicer's requirement that there are no hyphens in
      * long options, while maintaining the ability to use them on the command line for
@@ -630,6 +613,83 @@ public:
     friend class CommandLine;
   };
 
+  /// Key-to-action list for enumeration parameter groups.
+  class KeyToActionEnum :
+    /// Inherit from STL list class.
+    public std::list<KeyToAction::SmartPtr>
+  {
+  public:
+    /// Convenience operator.
+    KeyToActionEnum& operator<<( KeyToAction::SmartPtr next )
+    {
+      this->push_back( next );
+      return *this;
+    }
+  };
+
+  /// Add switch.
+  template<class T> 
+  KeyToAction::SmartPtr& 
+  AddSwitch( const Key& key, T *const var, const T value, const char* comment ) 
+  {
+    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Switch<T>( this, var, value ) ), comment ) ) );
+  }
+  
+  /// Add option.
+  template<class T> 
+  KeyToAction::SmartPtr&
+  AddOption( const Key& key, T *const var, const char* comment, bool *const flag = NULL ) 
+  {
+    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Option<T>( var, flag ) ), comment ) ) );
+  }
+  
+  /// Add enumeration parameter group.
+  template<class T> 
+  KeyToAction::SmartPtr&
+  AddOption( const Key& key, std::list<KeyToAction::SmartPtr>& keyToActionEnum, const char* comment ) 
+  {
+    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, keyToActionEnum, comment ) ) );
+  }
+  
+  /// Add repeat option (put arguments into a FIFO list).
+  template<class T> 
+  KeyToAction::SmartPtr&
+  AddRepeat( const Key& key, std::list<T>& list, const char* comment ) 
+  {
+    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Repeat<T>( list ) ), comment ) ) );
+  }
+  
+  /// Add callback.
+  KeyToAction::SmartPtr&
+  AddCallback( const Key& key, CallbackFunc func, const char* comment ) 
+  {
+    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Callback( func ) ), comment ) ) );
+  }
+
+  /// Add callback with a single argument.
+  template<class TArg>
+  KeyToAction::SmartPtr&
+  AddCallback( const Key& key, const char* (*funcArg)( const TArg ), const char* comment ) 
+  {
+    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Callback( funcArg ) ), comment ) ) );
+  }
+  
+  /// Add callback with multiple arguments.
+  KeyToAction::SmartPtr&
+  AddCallback( const Key& key, CallbackFuncMultiArg funcMultiArg, const char* comment ) 
+  {
+    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Callback( funcMultiArg ) ), comment ) ) );
+  }
+  
+  /// Add option.
+  Item::SmartPtr
+  AddParameter( const char* *const var, const char* name, const char* comment, bool *const flag = NULL ) 
+  {
+    NonOptionParameter::SmartPtr parameter( new NonOptionParameter( var, name, comment, flag ) );
+    this->m_NonOptionParameterList.push_back( parameter );
+    return parameter;
+  }
+
   /// Type for key/action lists.
   typedef std::list<KeyToAction::SmartPtr> KeyActionListType;
 
@@ -640,11 +700,11 @@ public:
   KeyActionListType m_KeyActionListComplete;
 				    
   /// Add an item to applicable key/action lists.
-  Item::SmartPtr& AddKeyAction( KeyToAction::SmartPtr keyAction )
+  KeyToAction::SmartPtr& AddKeyAction( KeyToAction::SmartPtr keyAction )
   {
     this->m_KeyActionList->push_back( keyAction );
     this->m_KeyActionListComplete.push_back( keyAction );
-    return this->m_KeyActionListComplete.back()->m_Action;
+    return this->m_KeyActionListComplete.back();
   }
 
   /// Type for action groups, which map a group name to the group's key-action list.
