@@ -70,7 +70,7 @@ const char* OutputFilePath = NULL;
 int InterleaveAxis = -1;
 unsigned int NumberOfPasses = 2;
 
-int RegistrationMetric = 0; //NMI
+int RegistrationMetric = 4; // MSD
 
 double InjectionKernelSigma = 0.5;
 double InjectionKernelRadius = 2;
@@ -202,7 +202,8 @@ main( int argc, char* argv[] )
 
     cl.BeginGroup( "interleave", "Interleaving Options" );
     cmtk::CommandLine::EnumGroup::SmartPtr
-      interleaveGroup = cl.AddEnum( "interleave-axis", &InterleaveAxis, "Define interleave axis: this is the through-slice direction of the acquisition. By default, this is guessed from the input image." );
+      interleaveGroup = cl.AddEnum( "interleave-axis", &InterleaveAxis, "Define interleave axis: this is the through-slice direction of the acquisition." );
+    interleaveGroup->AddSwitch( Key( "guess-from-input" ), -1, "Guess from input image" );
     interleaveGroup->AddSwitch( Key( 'a', "axial" ), (int)cmtk::AXIS_Z, "Interleaved axial images" );
     interleaveGroup->AddSwitch( Key( 's', "sagittal" ),(int)cmtk::AXIS_X, "Interleaved sagittal images" );
     interleaveGroup->AddSwitch( Key( 'c', "coronal" ), (int)cmtk::AXIS_Y, "Interleaved coronal images" );
