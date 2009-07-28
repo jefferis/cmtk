@@ -45,6 +45,7 @@ SET(APPS avg_adm
 
 IF(NOT CMTK_USE_MPI)
   SET(APPS ${APPS}
+	   asegment
 	   average_affine
 	   average_edt
 	   average_grey

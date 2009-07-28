@@ -29,6 +29,7 @@
 
 # Sources of non-templated classes.
 SET(cmtkSegmentation_SRCS
+  cmtkAtlasSegmentation.cxx
   cmtkLabelCombinationMultiClassSTAPLE.cxx
   cmtkLabelCombinationSTAPLE.cxx
   cmtkLabelCombinationVoting.cxx
