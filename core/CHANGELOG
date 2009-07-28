@@ -9,6 +9,8 @@ Release CMTK-1.0.3:
 
 - Added: all tools now support "--echo" command line switch, which dumps the
     command line to stdout before continuing with the program.
+- Added: the "levelset" and "film" tools now fully support the Slicer3
+    execution model. Support in "mrbias" tool has also been improved.
 
 Release CMTK-1.0.2 (2009-07-24):
 
