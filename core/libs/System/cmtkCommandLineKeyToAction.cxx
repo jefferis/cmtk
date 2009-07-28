@@ -88,7 +88,7 @@ cmtk::CommandLine::KeyToAction
     fmt << "--" << this->m_KeyString;
     }
 
-  const int indent = 20;
+  const int indent = 10;
   if ( fmt.str().length() > static_cast<size_t>( indent-2 ) )
     fmt << "\n";
   else
@@ -105,15 +105,23 @@ cmtk::CommandLine::KeyToAction
   if ( this->m_Action )
     {
     this->m_Action->PrintHelp( fmt );
+    StdErr.FormatText( fmt.str(), indent + globalIndent, 80, -indent ) << "\n";  
     }
-  
-  StdErr.FormatText( fmt.str(), indent + globalIndent, 80, -indent ) << "\n";
-
-  if ( !this->m_Action )
+  else
     {
-    for ( KeyToActionEnum::const_iterator it = this->m_KeyToActionEnum.begin(); it != this->m_KeyToActionEnum.end(); ++it )
+    fmt << "\nSupported values: ";
+    for ( EnumGroup::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
       {
-      (*it)->PrintHelp( globalIndent + 5 );
+      fmt << "\"" << (*it)->m_KeyString << "\", ";
+      }
+
+    fmt << "or use one of the following";
+
+    StdErr.FormatText( fmt.str(), indent + globalIndent, 80, -indent ) << "\n";  
+
+    for ( EnumGroup::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+      {
+      (*it)->PrintHelp( globalIndent + 10 );
       }
     }
 }
@@ -142,9 +150,39 @@ cmtk::CommandLine::KeyToAction
 {
   if ( this->MatchLongOption( std::string( key ) ) )
     {
-    this->m_Action->Evaluate( argc, argv, index );
-    return true;
+    if ( this->m_Action )
+      {
+      this->m_Action->Evaluate( argc, argv, index );
+      return true;
+      }
+
+    // in enum group, check if optional argument matches suboption
+    if ( this->m_EnumGroup )
+      {      
+      for ( EnumGroup::iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+	{
+	size_t ii = index+1;
+	if ( (*it)->MatchAndExecute( argv[ii], argc, argv, ii ) )
+	  {
+	  index = ii;
+	  return true;
+	  }
+	}
+      }
     }
+
+  // in enum group, also check for direct matches with the suboptions
+  if ( this->m_EnumGroup )
+    {
+    for ( EnumGroup::iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+      {
+      if ( (*it)->MatchAndExecute( key, argc, argv, index ) )
+	{
+	return true;
+	}
+      }
+    }
+
   return false;
 }
 
@@ -154,9 +192,39 @@ cmtk::CommandLine::KeyToAction
 {
   if ( this->m_Key == keyChar )
     {
-    this->m_Action->Evaluate( argc, argv, index );
-    return true;
+    if ( this->m_Action )
+      {
+      this->m_Action->Evaluate( argc, argv, index );
+      return true;
+      }
+
+    // in enum group, check if optional argument matches suboption
+    if ( this->m_EnumGroup )
+      {
+      for ( EnumGroup::iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+	{
+	size_t ii = index+1;
+	if ( (*it)->MatchAndExecute( argv[ii], argc, argv, ii ) )
+	  {
+	  index = ii;
+	  return true;
+	  }
+	}
+      }
     }
+
+  // in enum group, also check for direct matches with the suboptions
+  if ( this->m_EnumGroup )
+    {
+    for ( EnumGroup::iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+      {
+      if ( (*it)->MatchAndExecute( keyChar, argc, argv, index ) )
+	{
+	return true;
+	}
+      }
+    }
+
   return false;
 }
 

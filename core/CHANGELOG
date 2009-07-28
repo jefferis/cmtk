@@ -4,6 +4,8 @@ Release CMTK-1.0.3:
 
 - Fixed: mk_analyze_hdr command line option "--description" was broken.
 
+- Added: all tools now support "--echo" command line switch, which dumps the
+    command line to stdout before continuing with the program.
 
 Release CMTK-1.0.2 (2009-07-24):
 

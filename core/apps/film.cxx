@@ -76,7 +76,7 @@ double InjectionKernelSigma = 0.5;
 double InjectionKernelRadius = 2;
 
 bool FourthOrderError = false;
-int Interpolation = 1;
+int InverseInterpolationKernel = 1;
 int NumberOfIterations = 20;
 bool RegionalIntensityTruncation = true;
 
@@ -201,25 +201,26 @@ main( int argc, char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation" );
 
     cl.BeginGroup( "interleave", "Interleaving Options" );
-    cl.AddSwitch( Key( 'a', "axial" ), &InterleaveAxis, (int)cmtk::AXIS_Z, "Interleaved axial images [default: guess from input image]" );
-    cl.AddSwitch( Key( 's', "sagittal" ), &InterleaveAxis, (int)cmtk::AXIS_X, "Interleaved sagittal images" );
-    cl.AddSwitch( Key( 'c', "coronal" ), &InterleaveAxis, (int)cmtk::AXIS_Y, "Interleaved coronal images" );
+    cmtk::CommandLine::EnumGroup::SmartPtr interleaveGroup = cl.AddEnum( "interleave-axis", &InterleaveAxis, "Define interleave axis: this is the through-slice direction of the acquisition. By default, this is guessed from the input image." );
+    interleaveGroup->AddSwitch( Key( 'a', "axial" ), (int)cmtk::AXIS_Z, "Interleaved axial images" );
+    interleaveGroup->AddSwitch( Key( 's', "sagittal" ),(int)cmtk::AXIS_X, "Interleaved sagittal images" );
+    interleaveGroup->AddSwitch( Key( 'c', "coronal" ), (int)cmtk::AXIS_Y, "Interleaved coronal images" );
+    interleaveGroup->AddSwitch( Key( 'x', "interleave-x" ), (int)cmtk::AXIS_X, "Interleaved along x axis" );
+    interleaveGroup->AddSwitch( Key( 'y', "interleave-y" ), (int)cmtk::AXIS_Y, "Interleaved along y axis" );
+    interleaveGroup->AddSwitch( Key( 'z', "interleave-z" ), (int)cmtk::AXIS_Z, "Interleaved along z axis" );
 
-    cl.AddSwitch( Key( 'x', "interleave-x" ), &InterleaveAxis, (int)cmtk::AXIS_X, "Interleaved along x axis" );
-    cl.AddSwitch( Key( 'y', "interleave-y" ), &InterleaveAxis, (int)cmtk::AXIS_Y, "Interleaved along y axis" );
-    cl.AddSwitch( Key( 'z', "interleave-z" ), &InterleaveAxis, (int)cmtk::AXIS_Z, "Interleaved along z axis" );
-
-    cl.AddOption( Key( 'p', "passes" ), &NumberOfPasses, "Number of interleaved passes [default: 2]" );
+    cl.AddOption( Key( 'p', "passes" ), &NumberOfPasses, "Number of interleaved passes" );
     cl.AddCallback( Key( 'W', "pass-weight" ), CallbackSetPassWeight, "Set contribution weight for a pass in the form 'pass:weight'" );
 
     cl.BeginGroup( "motion", "Motion Correction / Registration Options" );
     cl.AddOption( Key( 'R', "reference-image" ), &ReferenceImagePath, "Use a separate high-resolution reference image for registration" );
 
-    cl.AddSwitch( Key( "nmi" ), &RegistrationMetric, 0, "Use Normalized Mutual Information for pass-to-refereence registration" );
-    cl.AddSwitch( Key( "mi" ), &RegistrationMetric, 1, "Use standard Mutual Information for pass-to-refereence registration" );
-    cl.AddSwitch( Key( "cr" ), &RegistrationMetric, 2, "Use Correlation Ratio for pass-to-refereence registration" );
-    cl.AddSwitch( Key( "msd" ), &RegistrationMetric, 4, "Use Mean Squared Differences for pass-to-refereence registration" );
-    cl.AddSwitch( Key( "cc" ), &RegistrationMetric, 5, "Use Cross-Correlation for pass-to-refereence registration" );
+    cmtk::CommandLine::EnumGroup::SmartPtr metricGroup = cl.AddEnum( "registration-metric", &RegistrationMetric, "Registration metric for motion estimation by image-to-image registration." );
+    metricGroup->AddSwitch( Key( "nmi" ), 0, "Use Normalized Mutual Information for pass-to-refereence registration" );
+    metricGroup->AddSwitch( Key( "mi" ), 1, "Use standard Mutual Information for pass-to-refereence registration" );
+    metricGroup->AddSwitch( Key( "cr" ), 2, "Use Correlation Ratio for pass-to-refereence registration" );
+    metricGroup->AddSwitch( Key( "msd" ), 4, "Use Mean Squared Differences for pass-to-refereence registration" );
+    metricGroup->AddSwitch( Key( "cc" ), 5, "Use Cross-Correlation for pass-to-refereence registration" );
 
     cl.AddOption( Key( "import-xforms-path" ), &ImportXformsPath, "Path of file from which to import transformations between passes." );
     cl.AddOption( Key( "export-xforms-path" ), &ExportXformsPath, "Path of file to which to export transformations between passes." );
@@ -228,17 +229,18 @@ main( int argc, char* argv[] )
     cl.AddOption( Key( 'r', "injection-kernel-radius" ), &InjectionKernelRadius, "Truncation radius factor of injection kernel. The kernel is truncated at sigma*radius, where sigma is the kernel standard deviation." );
 
     cl.BeginGroup( "invint", "Inverse Interpolation Options" );
-    cl.AddSwitch( Key( 'L', "linear" ), &Interpolation, 0, "Trilinear interpolation" );
-    cl.AddSwitch( Key( 'C', "cubic" ), &Interpolation, 1, "Tricubic interpolation [default]" );
-    cl.AddSwitch( Key( 'H', "hamming-sinc" ), &Interpolation, 2, "Hamming-windowed sinc interpolation" );
-    cl.AddSwitch( Key( 'O', "cosine-sinc" ), &Interpolation, 3, "Cosine-windowed sinc interpolation" );
+    cmtk::CommandLine::EnumGroup::SmartPtr kernelGroup = cl.AddEnum( "inverse-interpolation-kernel", &InverseInterpolationKernel, "Kernel for the inverse interpolation reconstruction" );
+    kernelGroup->AddSwitch( Key( 'C', "cubic" ), 1, "Tricubic interpolation" );
+    kernelGroup->AddSwitch( Key( 'L', "linear" ), 0, "Trilinear interpolation (faster but less accurate)" );
+    kernelGroup->AddSwitch( Key( 'H', "hamming-sinc" ), 2, "Hamming-windowed sinc interpolation" );
+    kernelGroup->AddSwitch( Key( 'O', "cosine-sinc" ), 3, "Cosine-windowed sinc interpolation (most accurate but slowest)" );
 
     cl.AddSwitch( Key( 'f', "fourth-order-error" ), &FourthOrderError, true, "Use fourth-order (rather than second-order) error for optimization." );
-    cl.AddOption( Key( 'n', "num-iterations" ), &NumberOfIterations, "Maximum number of inverse interpolation iterations [default: 20]" );
-    cl.AddSwitch( Key( 'T', "no-truncation" ), &RegionalIntensityTruncation, false, "Turn off regional intensity truncatrion [default: On]" );
+    cl.AddOption( Key( 'n', "num-iterations" ), &NumberOfIterations, "Maximum number of inverse interpolation iterations" );
+    cl.AddSwitch( Key( 'T', "no-truncation" ), &RegionalIntensityTruncation, false, "Turn off regional intensity truncatrion" );
     
     cl.BeginGroup( "output", "Output Options" );
-    cl.AddOption( Key( "write-injected-image" ), &InjectedImagePath, "Write initial volume injection image to path [default: do not write image]" );
+    cl.AddOption( Key( "write-injected-image" ), &InjectedImagePath, "Write initial volume injection image to path" );
     cl.AddSwitch( Key( 'F', "write-images-as-float" ), &WriteImagesAsFloat, true, "Write output images as floating point [default: same as input]" );
 
     cl.Parse();
@@ -297,7 +299,7 @@ main( int argc, char* argv[] )
     }
 
   cmtk::UniformVolume::SmartPtr correctedVolume;
-  switch ( Interpolation )
+  switch ( InverseInterpolationKernel )
     {
     default:
     case 0 : 

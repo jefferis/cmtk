@@ -188,7 +188,7 @@ CommandLine::Parse()
     if ( this->ArgV[this->Index][1] == '-' ) 
       {
       // long option
-      for ( KeyActionListType::iterator it = this->m_KeyActionListComplete.begin(); it != this->m_KeyActionListComplete.end(); ++it )
+      for ( KeyActionListType::iterator it = this->m_KeyActionListComplete.begin(); !found && (it != this->m_KeyActionListComplete.end()); ++it )
 	{
 	found = (*it)->MatchAndExecute( std::string( this->ArgV[this->Index]+2 ), this->ArgC, this->ArgV, this->Index );
 	}
@@ -210,7 +210,19 @@ CommandLine::Parse()
 	  exit( 2 );
 	  }
 	
-	throw( Exception( std::string("Unknown option: ") + std::string(this->ArgV[this->Index] ) ) );
+	// Check for "--echo" special option, which echoes the command line to stdout. This does not exit the program automatically.
+	if ( !strcmp( this->ArgV[this->Index], "--echo" ) ) 
+	  {
+	  for ( size_t i = 0; i < this->ArgC; ++i )
+	    {
+	    std::cout << this->ArgV[i] << " ";
+	    }
+	  std::cout << std::endl;
+	  found = true;
+	  }
+	
+	if ( ! found )
+	  throw( Exception( std::string("Unknown option: ") + std::string(this->ArgV[this->Index] ) ) );
 	}
       } 
     else
@@ -219,7 +231,7 @@ CommandLine::Parse()
       while ( *optChar ) 
 	{
 	// short option
-	for ( KeyActionListType::iterator it = this->m_KeyActionListComplete.begin(); it != this->m_KeyActionListComplete.end(); ++it )
+	for ( KeyActionListType::iterator it = this->m_KeyActionListComplete.begin(); !found && (it != this->m_KeyActionListComplete.end()); ++it )
 	  {
 	  found = (*it)->MatchAndExecute( *optChar, this->ArgC, this->ArgV, this->Index );
 	  }

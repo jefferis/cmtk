@@ -290,7 +290,7 @@ private:
   {
   public:
     /// Constructor.
-    Switch( CommandLine *const cl, T *const field, const T value ) : 
+    Switch( T *const field, const T value ) : 
       m_Field( field ), 
       m_Value( value ) 
     {
@@ -318,9 +318,6 @@ private:
     }
     
   private:
-    /// Pointer to the command line object.
-    CommandLine* m_CommandLine;
-
     /// Pointer to field handled by this switch.
     T* m_Field;
 
@@ -512,6 +509,9 @@ public:
   /// Destructor.
   ~CommandLine() {};
 
+  /// Forward declaration.
+  class EnumGroup;
+
   /// Local class that connects command line options with their evaluators.
   class KeyToAction
   {
@@ -520,7 +520,7 @@ public:
     typedef SmartPointer<KeyToAction> SmartPtr;
 
     /// Enum group type.
-    typedef std::list<KeyToAction::SmartPtr> KeyToActionEnumType;
+    typedef SmartPointer<EnumGroup> EnumGroupPointer;
 
     /// Constructor.
     KeyToAction( const Key& key, //!< Key: long and/or short command line option for this action.
@@ -540,12 +540,12 @@ public:
      * the supported values.
      */
     KeyToAction( const Key& key, //!< Key: long and/or short command line option for this action.
-		 KeyToActionEnumType& keyToActionEnum, //!< The definition of the enumeration keys and values.
+		 EnumGroupPointer keyToActionEnum, //!< The definition of the enumeration keys and values.
 		 const std::string& comment ) : //!< Command line help comment for this action.
       m_Key( key.m_KeyChar ),
       m_KeyString( key.m_KeyString ),
       m_Action( NULL ),
-      m_KeyToActionEnum( keyToActionEnum ),
+      m_EnumGroup( keyToActionEnum ),
       m_Comment( comment ),
       m_Properties( PROPS_NONE )
     {}
@@ -587,8 +587,8 @@ public:
     /// Action for simple key-action correspondence..
     Item::SmartPtr m_Action;
 
-    /// For enum parameter group, list of supkeys and action.
-    KeyToActionEnumType m_KeyToActionEnum;
+    /// For enum parameter group, list of subkeys and action.
+    EnumGroupPointer m_EnumGroup;
 
     /// Comment (description).
     std::string m_Comment;
@@ -606,28 +606,59 @@ public:
 
     /// Give command line class full access.
     friend class CommandLine;
+
+    /// Give enum group class full access.
+    friend class EnumGroup;
   };
 
   /// Key-to-action list for enumeration parameter groups.
-  class KeyToActionEnum :
+  class EnumGroup :
     /// Inherit from STL list class.
     public std::list<KeyToAction::SmartPtr>
   {
   public:
-    /// Convenience operator.
-    KeyToActionEnum& operator<<( KeyToAction::SmartPtr next )
+    /// Smart pointer to this class.
+    typedef SmartPointer<EnumGroup> SmartPtr;
+    
+    /// Constructor.
+    EnumGroup( int *const variable //!< The variable handled by this enum group.
+      ) :
+      m_Variable( variable )
     {
-      this->push_back( next );
-      return *this;
     }
+
+    /// Add switch to this group.
+    Item::SmartPtr& 
+    AddSwitch( const Key& key, const int value, const std::string& comment ) 
+    {
+      KeyToAction::SmartPtr keyToAction( new KeyToAction( key, Item::SmartPtr( new Switch<int>( this->m_Variable, value ) ), comment ) );
+      this->push_back( keyToAction );
+      return keyToAction->m_Action;
+    }
+    
+  private:
+    /// Pointer to the variable that holds the enum value.
+    int *m_Variable;
   };
+
+  /// Add an enum group.
+  EnumGroup::SmartPtr AddEnum( const std::string& name, int *const variable, const std::string& comment )
+  {
+    EnumGroup::SmartPtr enumGroup( new EnumGroup( variable ) );
+    KeyToAction::SmartPtr keyToAction( new KeyToAction( Key( name ), enumGroup, comment ) );
+
+    this->m_KeyActionList->push_back( keyToAction );
+    this->m_KeyActionListComplete.push_back( keyToAction );
+
+    return enumGroup;
+  }
 
   /// Add switch.
   template<class T> 
   Item::SmartPtr& 
   AddSwitch( const Key& key, T *const var, const T value, const char* comment ) 
   {
-    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Switch<T>( this, var, value ) ), comment ) ) )->m_Action;
+    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Switch<T>( var, value ) ), comment ) ) )->m_Action;
   }
   
   /// Add option.
@@ -636,14 +667,6 @@ public:
   AddOption( const Key& key, T *const var, const char* comment, bool *const flag = NULL ) 
   {
     return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Option<T>( var, flag ) ), comment ) ) )->m_Action;
-  }
-  
-  /// Add enumeration parameter group.
-  template<class T> 
-  Item::SmartPtr&
-  AddOption( const Key& key, std::list<KeyToAction::SmartPtr>& keyToActionEnum, const char* comment ) 
-  {
-    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, keyToActionEnum, comment ) ) )->m_Action;
   }
   
   /// Add repeat option (put arguments into a FIFO list).
