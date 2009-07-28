@@ -192,12 +192,12 @@ main( int argc, char* argv[] )
   try
     {
     cmtk::CommandLine cl( argc, argv );
+    typedef cmtk::CommandLine::Key Key;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Fix interleaved motion using inverse interpolation" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool splits an interleaved input image into the pass images, co-registers them, and reconstructs a motion-corrected image" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] inImage outImage" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Artifact Correction" );
 
-    typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation" );
 
     cl.BeginGroup( "interleave", "Interleaving Options" );
@@ -205,15 +205,16 @@ main( int argc, char* argv[] )
     cl.AddSwitch( Key( 's', "sagittal" ), &InterleaveAxis, (int)cmtk::AXIS_X, "Interleaved sagittal images" );
     cl.AddSwitch( Key( 'c', "coronal" ), &InterleaveAxis, (int)cmtk::AXIS_Y, "Interleaved coronal images" );
 
-    cl.AddSwitch( Key( 'x' ), &InterleaveAxis, (int)cmtk::AXIS_X, "Interleaved along x axis" );
-    cl.AddSwitch( Key( 'y' ), &InterleaveAxis, (int)cmtk::AXIS_Y, "Interleaved along y axis" );
-    cl.AddSwitch( Key( 'z' ), &InterleaveAxis, (int)cmtk::AXIS_Z, "Interleaved along z axis" );
+    cl.AddSwitch( Key( 'x', "interleave-x" ), &InterleaveAxis, (int)cmtk::AXIS_X, "Interleaved along x axis" );
+    cl.AddSwitch( Key( 'y', "interleave-y" ), &InterleaveAxis, (int)cmtk::AXIS_Y, "Interleaved along y axis" );
+    cl.AddSwitch( Key( 'z', "interleave-z" ), &InterleaveAxis, (int)cmtk::AXIS_Z, "Interleaved along z axis" );
 
     cl.AddOption( Key( 'p', "passes" ), &NumberOfPasses, "Number of interleaved passes [default: 2]" );
     cl.AddCallback( Key( 'W', "pass-weight" ), CallbackSetPassWeight, "Set contribution weight for a pass in the form 'pass:weight'" );
 
     cl.BeginGroup( "motion", "Motion Correction / Registration Options" );
     cl.AddOption( Key( 'R', "reference-image" ), &ReferenceImagePath, "Use a separate high-resolution reference image for registration" );
+
     cl.AddSwitch( Key( "nmi" ), &RegistrationMetric, 0, "Use Normalized Mutual Information for pass-to-refereence registration" );
     cl.AddSwitch( Key( "mi" ), &RegistrationMetric, 1, "Use standard Mutual Information for pass-to-refereence registration" );
     cl.AddSwitch( Key( "cr" ), &RegistrationMetric, 2, "Use Correlation Ratio for pass-to-refereence registration" );

@@ -138,9 +138,9 @@ main ( const int argc, const char* argv[] )
 
     cl.AddOption( Key( 't', "thresh" ), &Threshold, "Use threshold value.", &UseThreshold );
 
-    cl.AddSwitch( Key( 'x' ), &Direction, 0, "Output x component" );
-    cl.AddSwitch( Key( 'y' ), &Direction, 1, "Output y component" );
-    cl.AddSwitch( Key( 'z' ), &Direction, 2, "Output z component" );
+    cl.AddSwitch( Key( 'x', "output-x-component" ), &Direction, 0, "Output x component" );
+    cl.AddSwitch( Key( 'y', "output-y-component" ), &Direction, 1, "Output y component" );
+    cl.AddSwitch( Key( 'z', "output-z-component" ), &Direction, 2, "Output z component" );
     cl.AddOption( Key( 'o', "output-file" ), &OutImagePath, "Output image path [default: no image output]. "
 		  "Use %d printf field for index when using multiple input transformations." );
 

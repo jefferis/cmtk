@@ -207,15 +207,6 @@ public:
   class Key
   {
   public:
-    /** Short option constructor.
-     *\deprecated This may be removed in the future because short-only options are not nice when we use
-     * the XML self description for Slicer integration.
-     */
-    Key( const char keyChar ) : m_KeyChar( keyChar ) 
-    {
-      StdErr << "WARNING: short command line option '" << keyChar << "' should also have a long name.\n";
-    }
-
     /// Long option constructor.
     Key( const std::string& keyString ) : m_KeyChar( 0 ), m_KeyString( keyString ) {}
 
@@ -291,14 +282,8 @@ public:
   };
 
 private:
-  /** Map from fields to switches.
-   * This map stores the correspondences between fields (i.e., command line variables)
-   * and switches that set these fields. The correspondence is used when generating XML
-   * command line descriptions to distinguish between boolean switches and enum-type
-   * sets of switches.
-   */
-  std::multimap<const void*,Item*> m_FieldToSwitchMap;
-
+  /// Enumeration parameter class.
+  
   /// Command line switch.
   template<class T> 
   class Switch : 
@@ -308,11 +293,9 @@ private:
   public:
     /// Constructor.
     Switch( CommandLine *const cl, T *const field, const T value ) : 
-      m_CommandLine( cl ),
       m_Field( field ), 
       m_Value( value ) 
     {
-      cl->m_FieldToSwitchMap.insert( std::pair<const void*,Item*>( field, this ) );
     }
 
     /// Evaluate and set associated flag.
@@ -324,24 +307,7 @@ private:
     /// Virtual function that returns an XML tree describing this option.
     virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const 
     {
-      mxml_node_t *node = NULL;
-      if ( this->m_CommandLine->m_FieldToSwitchMap.count( this->m_Field ) == 1 )
-	{
-	node = mxmlNewElement( parent, "boolean" );
-	}
-      else
-	{
-	std::pair< std::multimap<const void*,Item*>::const_iterator, std::multimap<const void*,Item*>::const_iterator> range = this->m_CommandLine->m_FieldToSwitchMap.equal_range( this->m_Field );
-	if ( range.first->second == this )
-	  {
-	  node = mxmlNewElement( parent, "enum" );
-	  for ( std::multimap<const void*,Item*>::const_iterator it = range.first; it != range.second; ++it )
-	    {
-	    mxmlNewText( mxmlNewElement( node, "value" ), 0, CommandLineTypeTraits<T>::ValueToString( &(dynamic_cast<const Switch<T>*>( it->second )->m_Value) ).c_str() );
-	    }
-	  }
-	}
-      return node;
+      return mxmlNewElement( parent, "boolean" );
     }
 
     /// Format additional help information (e.g., default values).

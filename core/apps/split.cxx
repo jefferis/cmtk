@@ -67,9 +67,9 @@ main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 's', "sagittal" ), &Axis, (int)cmtk::AXIS_X, "Interleaved sagittal images" );
     cl.AddSwitch( Key( 'c', "coronal" ), &Axis, (int)cmtk::AXIS_Y, "Interleaved coronal images" );
 
-    cl.AddSwitch( Key( 'x' ), &Axis, (int)cmtk::AXIS_X, "Interleaved along x axis" );
-    cl.AddSwitch( Key( 'y' ), &Axis, (int)cmtk::AXIS_Y, "Interleaved along y axis" );
-    cl.AddSwitch( Key( 'z' ), &Axis, (int)cmtk::AXIS_Z, "Interleaved along z axis [default]" );
+    cl.AddSwitch( Key( 'x', "interleave-x" ), &Axis, (int)cmtk::AXIS_X, "Interleaved along x axis" );
+    cl.AddSwitch( Key( 'y', "interleave-y" ), &Axis, (int)cmtk::AXIS_Y, "Interleaved along y axis" );
+    cl.AddSwitch( Key( 'z', "interleave-z" ), &Axis, (int)cmtk::AXIS_Z, "Interleaved along z axis [default]" );
 
     cl.AddOption( Key( 'f', "factor" ), &Factor, "Interleave factor [default: 2]" );
     cl.AddSwitch( Key( 'p', "padded" ), &Padded, true, "Padded output, i.e., fill in removed slices [default: off]" );

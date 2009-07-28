@@ -1,5 +1,7 @@
 Release CMTK-1.0.3:
 
+- API: no longer allow short-only options for command lines.
+
 - Fixed: mk_analyze_hdr command line option "--description" was broken.
 
 

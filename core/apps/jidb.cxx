@@ -206,9 +206,9 @@ main( int argc, char* argv[] )
     cl.AddSwitch( Key( 's', "sagittal" ), &InterleaveAxis, (int)cmtk::AXIS_X, "Interleaved sagittal images" );
     cl.AddSwitch( Key( 'c', "coronal" ), &InterleaveAxis, (int)cmtk::AXIS_Y, "Interleaved coronal images" );
 
-    cl.AddSwitch( Key( 'x' ), &InterleaveAxis, (int)cmtk::AXIS_X, "Interleaved along x axis" );
-    cl.AddSwitch( Key( 'y' ), &InterleaveAxis, (int)cmtk::AXIS_Y, "Interleaved along y axis" );
-    cl.AddSwitch( Key( 'z' ), &InterleaveAxis, (int)cmtk::AXIS_Z, "Interleaved along z axis" );
+    cl.AddSwitch( Key( 'x', "interleave-x" ), &InterleaveAxis, (int)cmtk::AXIS_X, "Interleaved along x axis" );
+    cl.AddSwitch( Key( 'y', "interleave-y" ), &InterleaveAxis, (int)cmtk::AXIS_Y, "Interleaved along y axis" );
+    cl.AddSwitch( Key( 'z', "interleave-z" ), &InterleaveAxis, (int)cmtk::AXIS_Z, "Interleaved along z axis" );
 
     cl.AddOption( Key( 'p', "passes" ), &NumberOfPasses, "Number of interleaved passes [default: 2]" );
     cl.AddCallback( Key( 'W', "pass-weight" ), CallbackSetPassWeight, "Set contribution weight for a pass in the form 'pass:weight'" );
