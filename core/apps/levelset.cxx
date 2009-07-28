@@ -71,6 +71,7 @@ main( int argc, char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Levelset segmentation" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Levelset-type segmentation of foreground/background using minimum regional variance energy" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] inputImage outputImage" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode" );
