@@ -55,6 +55,10 @@ cmtk::CommandLine::KeyToAction
   if ( this->m_EnumGroup )
     {
     node = mxmlNewElement( parent, "string-enumeration" );
+
+    mxml_node_t* defaultElement = mxmlNewElement( node, "default" );
+    mxmlNewText( defaultElement, 0, this->m_EnumGroup->GetDefaultKey().c_str() );
+
     for ( EnumGroup::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
       {      
       mxml_node_t* element = mxmlNewElement( node, "element" );
@@ -133,6 +137,12 @@ cmtk::CommandLine::KeyToAction
     for ( EnumGroup::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
       {
       fmt << "\"" << (*it)->m_KeyString << "\", ";
+      }
+
+    const std::string defaultKey = this->m_EnumGroup->GetDefaultKey();
+    if ( defaultKey.length() )
+      {
+      fmt << "where the default is \"" << defaultKey << "\", ";
       }
 
     fmt << "or use one of the following";

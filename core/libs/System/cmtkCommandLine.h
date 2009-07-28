@@ -263,6 +263,12 @@ public:
       return fmt;
     }
 
+    /// Return true if and only if this item is the default for the associated action or variable.
+    virtual bool IsDefault() const
+    {
+      return false;
+    }
+
   protected:
     /// Item properties.
     long int m_Properties;
@@ -312,11 +318,17 @@ private:
     virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
       ) const
     {
-      if ( *(this->m_Field) == this->m_Value )
+      if ( this->IsDefault() )
 	fmt << "\n[This is the default]";
       return fmt;
     }
     
+    /// Return true if and only if this item is the default for the associated action or variable.
+    virtual bool IsDefault() const
+    {
+      return ( *(this->m_Field) == this->m_Value );
+    }
+
   private:
     /// Pointer to field handled by this switch.
     T* m_Field;
@@ -634,6 +646,19 @@ public:
       KeyToAction::SmartPtr keyToAction( new KeyToAction( key, Item::SmartPtr( new Switch<int>( this->m_Variable, value ) ), comment ) );
       this->push_back( keyToAction );
       return keyToAction->m_Action;
+    }
+
+    /// Get key for the default value.
+    std::string GetDefaultKey() const
+    {
+      for ( const_iterator it = this->begin(); it != this->end(); ++it )
+	{
+	if ( (*it)->m_Action->IsDefault() )
+	  {
+	  return std::string( (*it)->m_KeyString );
+	  }
+	}
+      return "";
     }
     
   private:
