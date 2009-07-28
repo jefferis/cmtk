@@ -201,7 +201,8 @@ main( int argc, char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation" );
 
     cl.BeginGroup( "interleave", "Interleaving Options" );
-    cmtk::CommandLine::EnumGroup::SmartPtr interleaveGroup = cl.AddEnum( "interleave-axis", &InterleaveAxis, "Define interleave axis: this is the through-slice direction of the acquisition. By default, this is guessed from the input image." );
+    cmtk::CommandLine::EnumGroup::SmartPtr
+      interleaveGroup = cl.AddEnum( "interleave-axis", &InterleaveAxis, "Define interleave axis: this is the through-slice direction of the acquisition. By default, this is guessed from the input image." );
     interleaveGroup->AddSwitch( Key( 'a', "axial" ), (int)cmtk::AXIS_Z, "Interleaved axial images" );
     interleaveGroup->AddSwitch( Key( 's', "sagittal" ),(int)cmtk::AXIS_X, "Interleaved sagittal images" );
     interleaveGroup->AddSwitch( Key( 'c', "coronal" ), (int)cmtk::AXIS_Y, "Interleaved coronal images" );
@@ -215,7 +216,8 @@ main( int argc, char* argv[] )
     cl.BeginGroup( "motion", "Motion Correction / Registration Options" );
     cl.AddOption( Key( 'R', "reference-image" ), &ReferenceImagePath, "Use a separate high-resolution reference image for registration" );
 
-    cmtk::CommandLine::EnumGroup::SmartPtr metricGroup = cl.AddEnum( "registration-metric", &RegistrationMetric, "Registration metric for motion estimation by image-to-image registration." );
+    cmtk::CommandLine::EnumGroup::SmartPtr
+      metricGroup = cl.AddEnum( "registration-metric", &RegistrationMetric, "Registration metric for motion estimation by image-to-image registration." );
     metricGroup->AddSwitch( Key( "nmi" ), 0, "Use Normalized Mutual Information for pass-to-refereence registration" );
     metricGroup->AddSwitch( Key( "mi" ), 1, "Use standard Mutual Information for pass-to-refereence registration" );
     metricGroup->AddSwitch( Key( "cr" ), 2, "Use Correlation Ratio for pass-to-refereence registration" );
@@ -225,11 +227,12 @@ main( int argc, char* argv[] )
     cl.AddOption( Key( "import-xforms-path" ), &ImportXformsPath, "Path of file from which to import transformations between passes." );
     cl.AddOption( Key( "export-xforms-path" ), &ExportXformsPath, "Path of file to which to export transformations between passes." );
 
-    cl.AddOption( Key( 'S', "injection-kernel-sigma" ), &InjectionKernelSigma, "Standard deviation of Gaussian kernel for volume injection in world coordinate units (e.g., mm)" );
+    cl.AddOption( Key( 'S', "injection-kernel-sigma" ), &InjectionKernelSigma, "Standard deviation of Gaussian kernel for volume injection in multiples of pixel size in each direction." );
     cl.AddOption( Key( 'r', "injection-kernel-radius" ), &InjectionKernelRadius, "Truncation radius factor of injection kernel. The kernel is truncated at sigma*radius, where sigma is the kernel standard deviation." );
 
     cl.BeginGroup( "invint", "Inverse Interpolation Options" );
-    cmtk::CommandLine::EnumGroup::SmartPtr kernelGroup = cl.AddEnum( "inverse-interpolation-kernel", &InverseInterpolationKernel, "Kernel for the inverse interpolation reconstruction" );
+    cmtk::CommandLine::EnumGroup::SmartPtr kernelGroup = 
+      cl.AddEnum( "inverse-interpolation-kernel", &InverseInterpolationKernel, "Kernel for the inverse interpolation reconstruction" );
     kernelGroup->AddSwitch( Key( 'C', "cubic" ), 1, "Tricubic interpolation" );
     kernelGroup->AddSwitch( Key( 'L', "linear" ), 0, "Trilinear interpolation (faster but less accurate)" );
     kernelGroup->AddSwitch( Key( 'H', "hamming-sinc" ), 2, "Hamming-windowed sinc interpolation" );
