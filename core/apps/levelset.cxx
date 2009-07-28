@@ -75,17 +75,17 @@ main( int argc, char* argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode" );
 
-    cl.AddOption( Key( 'n', "iterations" ), &numberOfIterations, "Maximum number of iterations [default: 100]" );
+    cl.AddOption( Key( 'n', "iterations" ), &numberOfIterations, "Maximum number of iterations" );
     cl.AddSwitch( Key( 'f', "force-iterations" ), &forceIterations, true, "Force given number of iterations, even when convergence has been detected" );
 
-    cl.AddOption( Key( 's', "filter-sigma" ), &filterSigma, "Gaussian filter sigma [default: 2.0 mm]" );
-    cl.AddOption( Key( 'd', "delta" ), &delta, "Time constant for levelset evolution; must be > 0; larger is faster [default: 0.1]" );
-    cl.AddOption( Key( 't', "levelset-threshold" ), &levelsetThreshold, "Levelset threshold: levelset function is truncated at +/- this value [default: 1.0]" );
+    cl.AddOption( Key( 's', "filter-sigma" ), &filterSigma, "Gaussian filter sigma in world coordinate units (e.g., mm)" );
+    cl.AddOption( Key( 'd', "delta" ), &delta, "Time constant for levelset evolution; must be > 0; larger is faster" );
+    cl.AddOption( Key( 't', "levelset-threshold" ), &levelsetThreshold, "Levelset threshold: levelset function is truncated at +/- this value" );
+
+    cl.AddParameter( &inFile, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &outFile, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
 
     cl.Parse();
-
-    inFile = cl.GetNext();
-    outFile = cl.GetNext();
     }
   catch ( cmtk::CommandLine::Exception ex )
     {
