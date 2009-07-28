@@ -44,25 +44,45 @@ cmtk::CommandLine::KeyToAction
       xmlKeyStr[i] = '_';
     }
 
-  mxml_node_t *node = this->m_Action->MakeXML( parent );
-  if ( this->m_Comment.length() )
+  mxml_node_t *node = NULL;
+  // create simple action node
+  if ( this->m_Action )
     {
-    mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment.c_str() );
+    node = this->m_Action->MakeXML( parent );
     }
 
-  if ( this->m_KeyString.length() )
+  // create enum group node
+  if ( this->m_EnumGroup )
     {
-    mxmlNewText( mxmlNewElement( node, "name" ), 0, xmlKeyStr.c_str() );
-    mxmlNewText( mxmlNewElement( node, "label" ), 0, xmlKeyStr.c_str() );
+    node = mxmlNewElement( parent, "string-enumeration" );
+    for ( EnumGroup::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+      {      
+      mxml_node_t* element = mxmlNewElement( node, "element" );
+      mxmlNewText( element, 0, (*it)->m_KeyString.c_str() );
+      }
     }
-  if ( this->m_Key )
+  
+  if ( node )
     {
-    const char keyStr[] = { '-', this->m_Key, 0 };
-    mxmlNewText( mxmlNewElement( node, "flag" ), 0, keyStr );
-    }
-  if ( this->m_KeyString.length() )
-    {
-    mxmlNewText( mxmlNewElement( node, "longflag" ), 0, (std::string( "--" ) + xmlKeyStr).c_str() );
+    if ( this->m_Comment.length() )
+      {
+      mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment.c_str() );
+      }
+    
+    if ( this->m_KeyString.length() )
+      {
+      mxmlNewText( mxmlNewElement( node, "name" ), 0, xmlKeyStr.c_str() );
+      mxmlNewText( mxmlNewElement( node, "label" ), 0, xmlKeyStr.c_str() );
+      }
+    if ( this->m_Key )
+      {
+      const char keyStr[] = { '-', this->m_Key, 0 };
+      mxmlNewText( mxmlNewElement( node, "flag" ), 0, keyStr );
+      }
+    if ( this->m_KeyString.length() )
+      {
+      mxmlNewText( mxmlNewElement( node, "longflag" ), 0, (std::string( "--" ) + xmlKeyStr).c_str() );
+      }
     }
 
   return node;
