@@ -176,11 +176,13 @@ ElasticRegistrationCommandLine
     cl.EndGroup();
 
     cl.BeginGroup( "Images", "Image data" );
-    cl.AddSwitch( Key( "nmi" ), &this->m_Metric, 0, "Normalized Mutual Information metric" );
-    cl.AddSwitch( Key( "mi" ), &this->m_Metric, 1, "Standard Mutual Information metric" );
-    cl.AddSwitch( Key( "cr" ), &this->m_Metric, 2, "Correlation Ratio metric" );
-    cl.AddSwitch( Key( "msd" ), &this->m_Metric, 4, "Mean Squared Difference metric" );
-    cl.AddSwitch( Key( "ncc" ), &this->m_Metric, 5, "Normalized Cross Correlation metric" );
+    CommandLine::EnumGroup::SmartPtr
+      metricGroup = cl.AddEnum( "registration-metric", &this->m_Metric, "Registration metric for motion estimation by image-to-image registration." );
+    metricGroup->AddSwitch( Key( "nmi" ), 0, "Normalized Mutual Information metric" );
+    metricGroup->AddSwitch( Key( "mi" ), 1, "Standard Mutual Information metric" );
+    metricGroup->AddSwitch( Key( "cr" ), 2, "Correlation Ratio metric" );
+    metricGroup->AddSwitch( Key( "msd" ), 4, "Mean Squared Difference metric" );
+    metricGroup->AddSwitch( Key( "ncc" ), 5, "Normalized Cross Correlation metric" );
 
     cl.AddOption( Key( "force-outside-value" ), &forceOutsideValue, "Force values outside field of view to this value rather than drop incomplete pixel pairs", &forceOutsideFlag );
 

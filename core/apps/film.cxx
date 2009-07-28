@@ -247,10 +247,10 @@ main( int argc, char* argv[] )
     cl.AddOption( Key( "write-injected-image" ), &InjectedImagePath, "Write initial volume injection image to path" );
     cl.AddSwitch( Key( 'F', "write-images-as-float" ), &WriteImagesAsFloat, true, "Write output images as floating point [default: same as input]" );
 
-    cl.Parse();
+    cl.AddParameter( &InputFilePath, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &OutputFilePath, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
 
-    InputFilePath = cl.GetNext();
-    OutputFilePath = cl.GetNext();
+    cl.Parse();
     }
   catch ( cmtk::CommandLine::Exception e )
     {
