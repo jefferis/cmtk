@@ -169,17 +169,17 @@ CommandLine::Callback::Evaluate
 }
 
 bool
-CommandLine::MatchLongOption( const std::string& s1, const std::string& s2 ) const
+CommandLine::KeyToAction::MatchLongOption( const std::string& key ) const
 {
-  if ( s1.length() != s2.length() )
+  if ( key.length() != this->m_KeyString.length() )
     return false;
-
-  for ( size_t i = 0; i < s1.length(); ++i )
+  
+  for ( size_t i = 0; i < key.length(); ++i )
     {
-    if ( (s1[i] == '-' || s1[i] == '_') && (s2[i] == '-' || s2[i] == '_') )
+    if ( (key[i] == '-' || key[i] == '_') && (this->m_KeyString[i] == '-' || this->m_KeyString[i] == '_') )
       continue;
 
-    if ( s1[i] != s2[i] )
+    if ( key[i] != this->m_KeyString[i] )
       return false;
     }
   return true;
@@ -207,7 +207,7 @@ CommandLine::Parse()
       // long option
       for ( KeyActionListType::iterator it = this->m_KeyActionListComplete.begin(); it != this->m_KeyActionListComplete.end(); ++it )
 	{
-	if ( MatchLongOption( (*it)->m_KeyString, std::string( this->ArgV[this->Index]+2 ) ) )
+	if ( (*it)->MatchLongOption( std::string( this->ArgV[this->Index]+2 ) ) )
 	  {
 	  item = (*it)->m_Action;
 	  }

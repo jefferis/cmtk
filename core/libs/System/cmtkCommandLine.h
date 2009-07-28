@@ -282,7 +282,17 @@ public:
   };
 
 private:
-  /// Enumeration parameter class.
+  /// Enumeration item class.
+  template<class T>
+  class EnumItem
+  {
+  public:
+    /// Constructor.
+    EnumItem( const Key& key, const T& value, const std::string& comment );
+
+  private:
+    /// Key 
+  };
   
   /// Command line switch.
   template<class T> 
@@ -586,6 +596,14 @@ public:
       m_Comment( comment )
     {}
     
+    /** Match two long options but be tolerant to hyphens, i.e., consider '-' and '_' the same.
+     * This allows us to be tolerant with Slicer's requirement that there are no hyphens in
+     * long options, while maintaining the ability to use them on the command line for
+     * compatibility.
+     *\return true is the two string match, or their only differences are hyphens vs. underlines.
+     */
+    bool MatchLongOption( const std::string& key ) const;
+
     /// Returns an XML tree describing this key and action.
     mxml_node_t* MakeXML( mxml_node_t *const parent //!< Parent in the XML tree for the new node.
       ) const;
@@ -709,14 +727,6 @@ private:
   /// Array of argument pointers.
   const char** ArgV;
   
-  /** Match two long options but be tolerant to hyphens, i.e., consider '-' and '_' the same.
-   * This allows us to be tolerant with Slicer's requirement that there are no hyphens in
-   * long options, while maintaining the ability to use them on the command line for
-   * compatibility.
-   *\return true is the two string match, or their only differences are hyphens vs. underlines.
-   */
-  bool MatchLongOption( const std::string& s1, const std::string& s2 ) const;
-
   /// Global properties of the command line.
   long int m_Properties;
 
