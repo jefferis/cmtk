@@ -96,9 +96,6 @@ main( int argc, char* argv[] )
     cl.AddSwitch( cmtk::CommandLine::Key( 'v', "verbose" ), &verbose, true, "Verbose operation" );
     cl.EndGroup();
 
-    int RegistrationMetric = 0;;
-    cmtk::CommandLine::EnumGroup::SmartPtr metricGroup = cl.AddEnum( "registration-metric", &RegistrationMetric, "Registration metric for motion estimation by image-to-image registration." );
-
     cl.Parse();
     
     const char* pathRefReal = cl.GetNext();
