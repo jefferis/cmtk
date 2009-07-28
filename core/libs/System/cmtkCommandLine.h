@@ -380,26 +380,10 @@ private:
     }
     
     /// Evaluate and set associated option.
-    virtual void Evaluate( const size_t argc, const char* argv[], size_t& index )
-    {
-      if ( index+1 < argc ) 
-	{
-	m_pList->push_back( this->Convert<T>( argv[index+1] ) );
-	++index;
-	} 
-      else
-	{
-	throw( Exception( "Option needs an argument.", index ) );
-	}
-    }
+    virtual void Evaluate( const size_t argc, const char* argv[], size_t& index );
 
     /// Virtual function that returns an XML tree describing this option.
-    virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const 
-    {
-      mxml_node_t *node = mxmlNewElement( parent, CommandLineTypeTraits<T>::GetName() );
-      mxmlNewText( mxmlNewElement( node, "name" ), 0, CommandLineTypeTraits<T>::GetName() );
-      return node;
-    }
+    virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const;
 
   private:
     /// Pointer to associated variable.
@@ -883,5 +867,6 @@ Console& operator<<( Console& console, CommandLine::Exception e );
 
 #include <cmtkCommandLineConvert.txx>
 #include <cmtkCommandLineOption.txx>
+#include <cmtkCommandLineRepeat.txx>
 
 #endif // #ifndef __cmtkCommandLine_h_included_
