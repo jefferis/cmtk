@@ -102,9 +102,20 @@ cmtk::CommandLine::KeyToAction
     fmt << this->m_Comment;
     }
 
-  this->m_Action->PrintHelp( fmt );
+  if ( this->m_Action )
+    {
+    this->m_Action->PrintHelp( fmt );
+    }
   
   StdErr.FormatText( fmt.str(), indent + globalIndent, 80, -indent ) << "\n";
+
+  if ( !this->m_Action )
+    {
+    for ( KeyToActionEnum::const_iterator it = this->m_KeyToActionEnum.begin(); it != this->m_KeyToActionEnum.end(); ++it )
+      {
+      (*it)->PrintHelp( globalIndent + 5 );
+      }
+    }
 }
 
 bool
@@ -153,19 +164,13 @@ void
 cmtk::CommandLine::KeyToAction
 ::SetProperties( const long int properties )
 {
-  if ( this->m_Action )
-    this->m_Action->SetProperties( properties );
-  else
-    this->m_Properties = properties;
+  this->m_Properties = properties;
 }
 
 long int
 cmtk::CommandLine::KeyToAction
 ::GetProperties() const
 {
-  if ( this->m_Action )
-    return this->m_Action->GetProperties();
-  else
-    return this->m_Properties;
+  return this->m_Properties;
 }
 

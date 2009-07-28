@@ -519,6 +519,9 @@ public:
     /// Smart pointer to this class.
     typedef SmartPointer<KeyToAction> SmartPtr;
 
+    /// Enum group type.
+    typedef std::list<KeyToAction::SmartPtr> KeyToActionEnumType;
+
     /// Constructor.
     KeyToAction( const Key& key, //!< Key: long and/or short command line option for this action.
 		 Item::SmartPtr action, //!< The actual action (option, switch, callback, etc.)
@@ -537,11 +540,12 @@ public:
      * the supported values.
      */
     KeyToAction( const Key& key, //!< Key: long and/or short command line option for this action.
-		 std::list<KeyToAction::SmartPtr>& keyToActionEnum, //!< The definition of the enumeration keys and values.
+		 KeyToActionEnumType& keyToActionEnum, //!< The definition of the enumeration keys and values.
 		 const std::string& comment ) : //!< Command line help comment for this action.
       m_Key( key.m_KeyChar ),
       m_KeyString( key.m_KeyString ),
       m_Action( NULL ),
+      m_KeyToActionEnum( keyToActionEnum ),
       m_Comment( comment ),
       m_Properties( PROPS_NONE )
     {}
@@ -561,22 +565,10 @@ public:
       );
 
     /// Set action properties.
-    virtual void SetProperties( const long int properties )
-    {
-      if ( this->m_Action )
-	this->m_Action->SetProperties( properties );
-      else
-	this->m_Properties = properties;
-    }
+    virtual void SetProperties( const long int properties );
 
     /// Get item properties.
-    virtual long int GetProperties() const
-    {
-      if ( this->m_Action )
-	return this->m_Action->GetProperties();
-      else
-	return this->m_Properties;
-    }
+    virtual long int GetProperties() const;
     
     /// Returns an XML tree describing this key and action.
     virtual mxml_node_t* MakeXML( mxml_node_t *const parent //!< Parent in the XML tree for the new node.
@@ -592,8 +584,11 @@ public:
     /// Long option associated with this action.
     std::string m_KeyString;
     
-    /// Action.
+    /// Action for simple key-action correspondence..
     Item::SmartPtr m_Action;
+
+    /// For enum parameter group, list of supkeys and action.
+    KeyToActionEnumType m_KeyToActionEnum;
 
     /// Comment (description).
     std::string m_Comment;
@@ -629,56 +624,56 @@ public:
 
   /// Add switch.
   template<class T> 
-  KeyToAction::SmartPtr& 
+  Item::SmartPtr& 
   AddSwitch( const Key& key, T *const var, const T value, const char* comment ) 
   {
-    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Switch<T>( this, var, value ) ), comment ) ) );
+    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Switch<T>( this, var, value ) ), comment ) ) )->m_Action;
   }
   
   /// Add option.
   template<class T> 
-  KeyToAction::SmartPtr&
+  Item::SmartPtr&
   AddOption( const Key& key, T *const var, const char* comment, bool *const flag = NULL ) 
   {
-    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Option<T>( var, flag ) ), comment ) ) );
+    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Option<T>( var, flag ) ), comment ) ) )->m_Action;
   }
   
   /// Add enumeration parameter group.
   template<class T> 
-  KeyToAction::SmartPtr&
+  Item::SmartPtr&
   AddOption( const Key& key, std::list<KeyToAction::SmartPtr>& keyToActionEnum, const char* comment ) 
   {
-    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, keyToActionEnum, comment ) ) );
+    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, keyToActionEnum, comment ) ) )->m_Action;
   }
   
   /// Add repeat option (put arguments into a FIFO list).
   template<class T> 
-  KeyToAction::SmartPtr&
+  Item::SmartPtr&
   AddRepeat( const Key& key, std::list<T>& list, const char* comment ) 
   {
-    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Repeat<T>( list ) ), comment ) ) );
+    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Repeat<T>( list ) ), comment ) ) )->m_Action;
   }
   
   /// Add callback.
-  KeyToAction::SmartPtr&
+  Item::SmartPtr&
   AddCallback( const Key& key, CallbackFunc func, const char* comment ) 
   {
-    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Callback( func ) ), comment ) ) );
+    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Callback( func ) ), comment ) ) )->m_Action;
   }
 
   /// Add callback with a single argument.
   template<class TArg>
-  KeyToAction::SmartPtr&
+  Item::SmartPtr&
   AddCallback( const Key& key, const char* (*funcArg)( const TArg ), const char* comment ) 
   {
-    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Callback( funcArg ) ), comment ) ) );
+    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Callback( funcArg ) ), comment ) ) )->m_Action;
   }
   
   /// Add callback with multiple arguments.
-  KeyToAction::SmartPtr&
+  Item::SmartPtr&
   AddCallback( const Key& key, CallbackFuncMultiArg funcMultiArg, const char* comment ) 
   {
-    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Callback( funcMultiArg ) ), comment ) ) );
+    return this->AddKeyAction( KeyToAction::SmartPtr( new KeyToAction( key, Item::SmartPtr( new Callback( funcMultiArg ) ), comment ) ) )->m_Action;
   }
   
   /// Add option.
