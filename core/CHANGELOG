@@ -1,4 +1,4 @@
-Release CMTK-1.0.3:
+Release CMTK-1.1.0:
 
 - API: no longer allow short-only options for command lines.
 
