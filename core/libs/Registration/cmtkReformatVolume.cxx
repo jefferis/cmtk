@@ -47,9 +47,11 @@
 #include <algorithm>
 #include <vector>
 
+#include <cmtkUniformVolumeInterpolator.h>
 #include <cmtkSincInterpolator.h>
 #include <cmtkLinearInterpolator.h>
 #include <cmtkCubicInterpolator.h>
+#include <cmtkUniformVolumeInterpolatorPartialVolume.h>
 
 namespace
 cmtk
@@ -62,7 +64,8 @@ ReformatVolume::ReformatVolume()
     ReferenceVolume( NULL ),
     FloatingVolume( NULL ),
     m_AffineXform( NULL ),
-    m_WarpXform( NULL )
+    m_WarpXform( NULL ),
+    CheckerboardMode( false )
 {
   Interpolation = cmtk::Interpolators::LINEAR;
 
@@ -689,6 +692,12 @@ ReformatVolume::CreateInterpolator
     case cmtk::Interpolators::COSINE_SINC:
     {
     typedef UniformVolumeInterpolator< cmtk::Interpolators::CosineSinc<> > TInterpolator;
+    return new TInterpolator( volume );
+    break;
+    }
+    case cmtk::Interpolators::PARTIALVOLUME:
+    {
+    typedef UniformVolumeInterpolatorPartialVolume TInterpolator;
     return new TInterpolator( volume );
     break;
     }

@@ -99,7 +99,7 @@ cmtk::AtlasSegmentation
 
   const Types::Coordinate minSize = std::min( std::min( this->m_TargetImage->Size[0], this->m_TargetImage->Size[1] ), this->m_TargetImage->Size[2] );
   er.SetGridSpacing( minSize / 2 );
-  er.SetRefineGrid( std::max( 0, static_cast<int>( (log( minSize / this->m_TargetImage->GetMinDelta() ) / log(2)) - 1 ) ) );
+  er.SetRefineGrid( std::max( 0, static_cast<int>( (log( minSize / this->m_TargetImage->GetMinDelta() ) / log(2)) - 2 ) ) );
   er.SetDelayRefineGrid( !this->m_Fast );
   
   er.SetGridEnergyWeight( 1e-1 );
@@ -125,6 +125,7 @@ cmtk::AtlasSegmentation
 {
   ReformatVolume reformat;
   reformat.SetInterpolation( Interpolators::PARTIALVOLUME );
+  reformat.SetPaddingValue( 0 );
   reformat.SetReferenceVolume( this->m_TargetImage );
   reformat.SetFloatingVolume( this->m_AtlasLabels );
 

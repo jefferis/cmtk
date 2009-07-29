@@ -6,6 +6,9 @@ Release CMTK-1.1.0:
 - Fixed: contrary to the Wiki, NMI was the default registration criterion used
     in "film." This has now been changed to MSD, which is most approriate for
     within-modality registration.
+- Fixed: ReformatVolume::CheckerboardMode was not initialized
+- Fixed: ReformatVolume::CreateInterpoaltor did not support partial volume
+    interpolation.
 
 - Added: all tools now support "--echo" command line switch, which dumps the
     command line to stdout before continuing with the program.
