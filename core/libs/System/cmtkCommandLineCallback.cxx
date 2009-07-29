@@ -30,6 +30,105 @@
 */
 #include <cmtkCommandLine.h>
 
+void 
+CommandLine::Callback::Evaluate
+( const size_t argc, const char* argv[], size_t& index )
+{
+  // callback with argument?
+  if ( this->m_FuncArg ) 
+    {
+    if ( index+1 < argc ) 
+      {
+      const char* error = this->m_FuncArg( argv[index+1] );
+      if ( error ) 
+	{
+	throw( Exception( error, index ) );
+	} 
+      else 
+	{
+	++index;
+	}
+      } 
+    else
+      {
+      throw( Exception( "Option needs an argument.", index ) );
+      }
+    } 
+  else
+    // callback with integer argument?
+    if ( this->m_FuncIntArg ) 
+      {
+      if ( index+1 < argc ) 
+	{
+	const char* error = this->m_FuncIntArg( ConvertStrToLong( argv[index+1] ) );
+	if ( error ) 
+	  {
+	  throw( Exception( error, index ) );
+	  } 
+	else 
+	  {
+	  ++index;
+	  }
+	} 
+      else
+	{
+	throw( Exception( "Option needs an integer argument.", index ) );
+	}
+      } 
+  else
+    // callback with double argument?
+    if ( this->m_FuncDblArg ) 
+      {
+      if ( index+1 < argc ) 
+	{
+	const char* error = this->m_FuncDblArg( ConvertStrToDouble( argv[index+1] ) );
+	if ( error ) 
+	  {
+	  throw( Exception( error, index ) );
+	  } 
+	else 
+	  {
+	  ++index;
+	  }
+	} 
+      else
+	{
+	throw( Exception( "Option needs a floating point argument.", index ) );
+	}
+      } 
+  else
+    // multiple arguments to callback?
+    if ( this->m_FuncMultiArg ) 
+      {
+      if ( index+1 < argc ) 
+	{
+	int argsUsed = 0;
+	const char* error = this->m_FuncMultiArg( argv+index+1, argsUsed );
+	if ( error ) 
+	  {
+	  throw( Exception( error, index ) );
+	  } 
+	else 
+	  {
+	  index += argsUsed;
+	  }
+	} 
+      else
+	{
+	throw( Exception( "Option needs an argument", index ) );
+	}
+      } 
+    else
+      {
+      // no argument to callback
+      const char* error = this->m_Func();
+      if ( error ) 
+	{
+	throw( Exception( error, index ) );
+	}
+      }
+}
+
 mxml_node_t* 
 cmtk::CommandLine::Callback
 ::MakeXML(  mxml_node_t *const parent ) const 
@@ -57,5 +156,7 @@ cmtk::CommandLine::Callback
     {
     node = mxmlNewElement( parent, "string-vector" );
     }
+
+  mxmlElementSetAttr( node, "multiple", "true" );
   return node;
 }
