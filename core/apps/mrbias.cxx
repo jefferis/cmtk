@@ -80,7 +80,7 @@ main( const int argc, const char *argv[] )
 {
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl( argc, argv, cmtk::CommandLine::PROPS_XML );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "MR Image Intensity Bias Field Correction" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This program corrects intensity inhomogeneity artifacts in MR images using a bias field estimated via entropy minimization." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Artifact Correction" );

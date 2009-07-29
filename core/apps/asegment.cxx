@@ -52,7 +52,7 @@ main( const int argc, const char* argv[] )
 
   try
     {
-    cmtk::CommandLine  cl( argc, argv );
+    cmtk::CommandLine  cl( argc, argv, cmtk::CommandLine::PROPS_XML );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Atlas-based segmentation" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Register a target image to an atlas, using affine followed by nonrigid B-spline registration, then reformat the atlas label map to the target image." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation" );

@@ -67,7 +67,7 @@ main( int argc, char* argv[] )
 {
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl( argc, argv, cmtk::CommandLine::PROPS_XML );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Levelset segmentation" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Levelset-type segmentation of foreground/background using minimum regional variance energy" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] inputImage outputImage" );

@@ -99,7 +99,7 @@ CommandLine::Parse()
       if ( !found ) 
 	{
 	// Check for "--xml" special option, which produces self description according to Slicer execution model.
-	if ( !strcmp( this->ArgV[this->Index], "--xml" ) ) 
+	if ( !strcmp( this->ArgV[this->Index], "--xml" ) && !(this->m_Properties & PROPS_NOXML) ) 
 	  {
 	  this->WriteXML();
 	  exit( 0 );

@@ -153,8 +153,8 @@ public:
   /// Enum for command line item properties.
   typedef enum
   {
-    /// No properties.
-    PROPS_NONE = 0,
+    /// No properties, but supports XML (NOXML is off)..
+    PROPS_XML = 0,
     /// Item is an advanced option.
     PROPS_ADVANCED = 1,
     /// Item can appear repeatedly
@@ -253,7 +253,7 @@ public:
     typedef SmartPointer<Item> SmartPtr;
 
     /// Constructor.
-    Item() : m_Properties( PROPS_NONE ) {};
+    Item() : m_Properties( PROPS_XML ) {};
 
     /// Virtual destructor.
     virtual ~Item() {}
@@ -503,7 +503,7 @@ private:
 
 public:
   /// Constructor.
-  CommandLine( int argc, char* argv[], const int properties = PROPS_NONE ) 
+  CommandLine( int argc, char* argv[], const int properties = PROPS_NOXML ) 
   {
     this->SetDefaultInfo();    
     ArgC = argc;
@@ -514,7 +514,7 @@ public:
   }
 
   /// Constructor.
-  CommandLine( const int argc, const char* argv[], const int properties = PROPS_NONE ) 
+  CommandLine( const int argc, const char* argv[], const int properties = PROPS_NOXML ) 
   {
     this->SetDefaultInfo();
     ArgC = argc;
@@ -548,7 +548,7 @@ public:
       m_KeyString( key.m_KeyString ),
       m_Action( action ),
       m_Comment( comment ),
-      m_Properties( PROPS_NONE )
+      m_Properties( PROPS_XML )
     {}
     
     /** Constructor for enumeration parameter group.
@@ -565,7 +565,7 @@ public:
       m_Action( NULL ),
       m_EnumGroup( keyToActionEnum ),
       m_Comment( comment ),
-      m_Properties( PROPS_NONE )
+      m_Properties( PROPS_XML )
     {}
     
     /// Test long key from command line and execute if match.

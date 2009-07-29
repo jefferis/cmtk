@@ -191,7 +191,7 @@ main( int argc, char* argv[] )
   */
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl( argc, argv, cmtk::CommandLine::PROPS_XML );
     typedef cmtk::CommandLine::Key Key;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Fix interleaved motion using inverse interpolation" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool splits an interleaved input image into the pass images, co-registers them, and reconstructs a motion-corrected image" );

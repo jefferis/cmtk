@@ -2,6 +2,10 @@ Release CMTK-1.1.0:
 
 - API: no longer allow short-only options for command lines.
 
+- Changed: command line tools now need to "opt-in" for XML support. This is to
+    prevent cluttering Slicer's menu with modules that do not actually support
+    it fully (yet).
+
 - Fixed: mk_analyze_hdr command line option "--description" was broken.
 - Fixed: contrary to the Wiki, NMI was the default registration criterion used
     in "film." This has now been changed to MSD, which is most approriate for
