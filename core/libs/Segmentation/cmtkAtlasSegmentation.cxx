@@ -126,6 +126,7 @@ cmtk::AtlasSegmentation
   ReformatVolume reformat;
   reformat.SetInterpolation( Interpolators::PARTIALVOLUME );
   reformat.SetPaddingValue( 0 );
+  reformat.SetUsePaddingValue( true );
   reformat.SetReferenceVolume( this->m_TargetImage );
   reformat.SetFloatingVolume( this->m_AtlasLabels );
 
