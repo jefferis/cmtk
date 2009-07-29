@@ -32,6 +32,7 @@
 #include <cmtkCommandLine.h>
 
 #include <string.h>
+#include <sstream>
 
 #include <cmtkConsole.h>
 
@@ -176,18 +177,53 @@ CommandLine::PrintHelp
   it = this->m_ProgramInfo.find(PRG_DESCR);
   if ( it != this->m_ProgramInfo.end() )
     {
-    StdErr << "DESCRIPTION:\n\n";
+    StdErr << "\nDESCRIPTION:\n\n";
     StdErr.FormatText( it->second, 5 ) << "\n";
     }
 
   it = this->m_ProgramInfo.find(PRG_SYNTX);
   if ( it != this->m_ProgramInfo.end() )
     {
-    StdErr << "SYNTAX:\n\n";
+    StdErr << "\nSYNTAX:\n\n";
     StdErr.FormatText( it->second, 5 ) << "\n";
     }
+  else
+    {
+    if ( this->m_NonOptionParameterList.size() )
+      {
+      StdErr << "\nSYNTAX:\n\n";
 
-  StdErr << "LIST OF SUPPORTED OPTIONS:\n\n";
+      std::ostringstream fmt;
+      fmt << "[options] ";
+      for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
+	{
+	fmt << (*it)->m_Name << " ";
+	}
+      StdErr.FormatText( fmt.str(), 5, 80 );
+
+      StdErr << "\n  where\n";
+
+      const int indent = 20;
+      for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
+	{
+	fmt.str("");
+
+	StdErr << "\n";
+	fmt << (*it)->m_Name << " = ";
+	if ( fmt.str().length() > static_cast<size_t>( indent-2 ) )
+	  fmt << "\n";
+	else
+	  {
+	  while ( fmt.str().length() < static_cast<size_t>( indent ) )
+	    fmt << " ";
+	  }
+	fmt << (*it)->m_Comment;
+	StdErr.FormatText( fmt.str(), 5+indent, 80, -indent ) << "\n";
+	}
+      }
+    }
+
+  StdErr << "\nLIST OF SUPPORTED OPTIONS:\n\n";
 
   for ( KeyActionGroupListType::const_iterator grp = this->m_KeyActionGroupList.begin(); grp != this->m_KeyActionGroupList.end(); ++grp )
     {

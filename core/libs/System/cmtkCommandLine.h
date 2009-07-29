@@ -63,7 +63,9 @@ cmtk
  *
  * The class handles the following types of command line arguments:
  * 
- * 1. Switches: a switch does not have an argument itself but internally sets a variable
+ *\section secSwitch Switches
+ *
+ *  A command line switch does not have an argument itself but internally sets a variable
  *  to a pre-defined value.
  *
  * Example:
@@ -75,7 +77,9 @@ cmtk
  *
  * Effect: "--verbose" sets the "verbose" variable to "true".
  *
- * 2. Options: an option has an argument, which is evaluated and stored in a variable.
+ *\section secOption Options
+ *
+ * A command line option has an argument, which is evaluated and stored in a variable.
  *
  * Example:
  *
@@ -86,7 +90,9 @@ cmtk
  *
  * Effect: "--iterations 10" sets "iterations" to 10.
  *
- * 3. Callbacks: a callback is linked to a user-defined C function, which is called when the
+ *\section secCallback Callbacks
+ *
+ *  A callback is linked to a user-defined C function, which is called when the
  *  associated key appears on the command line.
  *
  * Example:
@@ -97,6 +103,22 @@ cmtk
  *    std::cerr << "callback!" << std::endl;
  * }
  * cl.AddCallback( Key( "do-something" ), &callback, "Do something using a callback function" );
+ * \endcode
+ *
+ *\section secEnumeration Enumerations
+ *
+ * An enumeration is a group of options that modify the same variable by setting it to
+ *  different values.
+ *
+ * Example:
+ *
+ * \code
+ *  int InterleaveAxis = 1;
+ *  cmtk::CommandLine::EnumGroup::SmartPtr interleaveGroup = cl.AddEnum( "interleave-axis", &InterleaveAxis, "Define interleave axis." );
+ *  interleaveGroup->AddSwitch( Key( "guess-from-input" ), -1, "Guess from input image" );
+ *  interleaveGroup->AddSwitch( Key( 'a', "axial" ), (int)cmtk::AXIS_Z, "Interleaved axial images" );
+ *  interleaveGroup->AddSwitch( Key( 'c', "coronal" ),(int)cmtk::AXIS_Y, "Interleaved coronal images" );
+ *  interleaveGroup->AddSwitch( Key( 's', "sagittal" ),(int)cmtk::AXIS_X, "Interleaved sagittal images" );
  * \endcode
  */
 class CommandLine

@@ -31,7 +31,7 @@
 #include <cmtkCommandLine.h>
 
 void 
-CommandLine::Callback::Evaluate
+cmtk::CommandLine::Callback::Evaluate
 ( const size_t argc, const char* argv[], size_t& index )
 {
   // callback with argument?
