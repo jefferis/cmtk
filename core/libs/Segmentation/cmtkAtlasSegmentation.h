@@ -32,6 +32,8 @@
 #include <cmtkconfig.h>
 
 #include <cmtkUniformVolume.h>
+#include <cmtkAffineXform.h>
+#include <cmtkSplineWarpXform.h>
 
 namespace
 cmtk
@@ -41,17 +43,83 @@ class AtlasSegmentation
 {
 public:
   /// Constructor: compute registrations.
-  AtlasSegmentation( UniformVolume::SmartPtr& targetImage, UniformVolume::SmartPtr& atlasImg, UniformVolume::SmartPtr& atlasLbl, const bool verbose );
+  AtlasSegmentation( UniformVolume::SmartPtr& targetImage, UniformVolume::SmartPtr& atlasImage, UniformVolume::SmartPtr& atlasLabels );
 
-  /// Get reformatted label map.
-  cmtk::UniformVolume::SmartPtr& GetLabelMap()
+  /// Get affine transformation.
+  AffineXform::SmartPtr& GetAffineXform()
   {
+    if ( ! this->m_AffineXform )
+      this->RegisterAffine();
+    return this->m_AffineXform;
+  }
+  
+  /// Get nonrigid transformation.
+  WarpXform::SmartPtr GetWarpXform()
+  {
+    if ( ! this->m_WarpXform )
+      this->RegisterSpline();
+    return this->m_WarpXform;
+  }
+  
+  /// Get nonrigid spline transformation.
+  SplineWarpXform::SmartPtr GetSplineWarpXform()
+  {
+    return SplineWarpXform::SmartPtr::DynamicCastFrom( this->GetWarpXform() );
+  }
+  
+  /// Get reformatted label map.
+  UniformVolume::SmartPtr& GetLabelMap()
+  {
+    if ( ! this->m_LabelMap )
+      this->ReformatLabels();
     return this->m_LabelMap;
   }
 
+  /// Set verbose flag.
+  void SetVerbose( const bool verbose )
+  {
+    this->m_Verbose = verbose;
+  }
+
+  /// Set fast flag.
+  void SetFast( const bool fast )
+  {
+    this->m_Fast = fast;
+  }
+
 private:
+  /// Verbose flag.
+  bool m_Verbose;
+
+  /// Flag for "fast" computation.
+  bool m_Fast;
+
+  /// Target image.
+  UniformVolume::SmartPtr m_TargetImage;
+
+  /// Atlas image.
+  UniformVolume::SmartPtr m_AtlasImage;
+
+  /// Atlas labels.
+  UniformVolume::SmartPtr m_AtlasLabels;
+
+  /// Affine registration transformation.
+  AffineXform::SmartPtr m_AffineXform;
+  
+  /// Compute affine registration.
+  void RegisterAffine();
+
+  /// Nonrigid, B-spline transformation.
+  WarpXform::SmartPtr m_WarpXform;
+
+  /// Compute spline registration.
+  void RegisterSpline();
+
   /// Output label map.
   UniformVolume::SmartPtr m_LabelMap;
+
+  /// Compute label map.
+  void ReformatLabels();
 };
 
 } // namespace cmtk

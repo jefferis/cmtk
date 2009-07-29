@@ -176,6 +176,12 @@ protected:
   virtual int DoneResolution( CoordinateVector::SmartPtr&, Functional::SmartPtr&, const int, const int );
   //@}
 
+  /// Return final transformation.
+  SplineWarpXform::SmartPtr GetTransformation() const
+  {
+    return SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
+  }
+
 private:
   /// Level on which the last control grid refinement was performend.
   int RefinedGridAtLevel;

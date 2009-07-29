@@ -39,93 +39,67 @@
 #include <cmtkVolumeIO.h>
 #include <cmtkAtlasSegmentation.h>
 
-bool Verbose = false;
-
-const char* RawImageName = NULL;
-const char* AtlasImageName = NULL;
-const char* AtlasLabelName = NULL;
-const char* OutFileName = "segmentation.hdr";
-
-std::list<const char*> AtlasList;
-
-bool
-ParseCommandLine( const int argc, const char* argv[] )
-{
-  cmtk::CommandLine  cl( argc, argv );
-
-  cl.AddSwitch( cmtk::CommandLine::Key( 'v', "verbose" ), &Verbose, true, "Verbose mode." );
-  cl.AddOption( cmtk::CommandLine::Key( 'o', "output" ), &OutFileName, "Output file name [format:]path" );
-
-  if ( ! cl.Parse() ) return false;
-
-  // get raw image name
-  RawImageName = cl.GetNextOptional();
-  
-  // get at least atlas images and label field.
-  const char* next = cl.GetNextOptional();
-  while ( next ) 
-    {
-    AtlasList.push_back( next );
-    next = cl.GetNextOptional();
-    }
-  
-  if ( ! RawImageName ) 
-    {
-    cmtk::StdErr << "ERROR: no images given. Use -h switch for help.\n";
-    return false;
-    }
-  
-  if ( AtlasList.size() % 2 ) 
-    {
-    cmtk::StdErr << "ERROR: must have alternating images and label fields for all atlases.\n";
-    return false;
-    }
-  
-  if ( AtlasList.size() < 2 ) 
-    {
-    cmtk::StdErr << "ERROR: must have at least one atlas image and labelmap.\n";
-    return false;
-    }
-  
-  return true;
-}
-
 int
 main( const int argc, const char* argv[] )
 {
-  if ( ! ParseCommandLine( argc, argv ) ) 
+  bool verbose = false;
+  bool fast = false;
+  
+  const char* targetImageName = NULL;
+  const char* atlasImageName = NULL;
+  const char* atlasLabelName = NULL;
+  const char* outImageName = NULL;
+
+  try
     {
+    cmtk::CommandLine  cl( argc, argv );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Atlas-based segmentation" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Register a target image to an atlas, using affine followed by nonrigid B-spline registration, then reformat the atlas label map to the target image." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation" );
+
+    typedef cmtk::CommandLine::Key Key;
+    cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode." );
+    cl.AddSwitch( Key( 'f', "fast" ), &fast, true, "Fast mode." );
+    
+    cl.AddParameter( &targetImageName, "TargetImage", "Target image path. This is the image to be segmented." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &atlasImageName, "AtlasImage", "Atlas image path. This is the structural channel (e.g., T1-weighted MRI) of the atlas to be used." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &atlasLabelName, "AtlasLabels", "Atlas label image path. This is the label map to be reformatted to the target image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &outImageName, "OutputImage", "Output image path. This is where the reformatted label map is written." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+
+    cl.Parse();
+    }
+  catch ( cmtk::CommandLine::Exception e )
+    {
+    cmtk::StdErr << e << "\n";
     exit( 1 );
     }
   
-  cmtk::UniformVolume::SmartPtr rawImage( cmtk::VolumeIO::ReadOriented( RawImageName, Verbose ) );
-  if ( !rawImage ) 
+  cmtk::UniformVolume::SmartPtr targetImg( cmtk::VolumeIO::ReadOriented( targetImageName, verbose ) );
+  if ( !targetImg ) 
     {
-    cmtk::StdErr << "ERROR: could not read unsegmented image " << RawImageName << "\n";
+    cmtk::StdErr << "ERROR: could not read target image " << targetImageName << "\n";
     exit( 1 );
     }
   
-  cmtk::UniformVolume::SmartPtr atlasImg( cmtk::VolumeIO::ReadOriented( AtlasImageName, Verbose ) );
+  cmtk::UniformVolume::SmartPtr atlasImg( cmtk::VolumeIO::ReadOriented( atlasImageName, verbose ) );
   if ( !atlasImg ) 
     {
-    cmtk::StdErr << "ERROR: could not read atlas image " << AtlasImageName << "\n";
+    cmtk::StdErr << "ERROR: could not read atlas image " << atlasImageName << "\n";
     exit( 1 );
     }
   
-  cmtk::UniformVolume::SmartPtr atlasLbl( cmtk::VolumeIO::ReadOriented( AtlasLabelName, Verbose ) );
+  cmtk::UniformVolume::SmartPtr atlasLbl( cmtk::VolumeIO::ReadOriented( atlasLabelName, verbose ) );
   if ( !atlasLbl ) 
     {
-    cmtk::StdErr << "ERROR: could not read atlas labels " << AtlasLabelName << "\n";
+    cmtk::StdErr << "ERROR: could not read atlas labels " << atlasLabelName << "\n";
     exit( 1 );
     }
     
-  if ( Verbose ) 
-    {
-    cmtk::StdErr << "Computing combined segmentation...\n";
-    }
+  cmtk::AtlasSegmentation segment( targetImg, atlasImg, atlasLbl );
+  segment.SetVerbose( verbose );
+  segment.SetFast( fast );
 
-  cmtk::AtlasSegmentation segment( rawImage, atlasImg, atlasLbl, Verbose );
-  cmtk::VolumeIO::Write( segment.GetLabelMap(), OutFileName );
+  cmtk::VolumeIO::Write( segment.GetLabelMap(), outImageName );
 
   return 0;
 }

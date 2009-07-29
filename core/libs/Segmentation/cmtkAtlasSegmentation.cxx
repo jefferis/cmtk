@@ -34,72 +34,102 @@
 #include <cmtkRegistrationCallback.h>
 #include <cmtkAffineRegistration.h>
 #include <cmtkElasticRegistration.h>
+#include <cmtkReformatVolume.cxx>
 
 cmtk::AtlasSegmentation::AtlasSegmentation
-( UniformVolume::SmartPtr& targetImage, UniformVolume::SmartPtr& atlasImg, UniformVolume::SmartPtr& atlasLbl, const bool verbose )
-  : m_LabelMap( NULL )
+( UniformVolume::SmartPtr& targetImage, UniformVolume::SmartPtr& atlasImage, UniformVolume::SmartPtr& atlasLabels )  
+  : m_Verbose( false ),
+    m_Fast( false ),
+    m_TargetImage( targetImage ),
+    m_AtlasImage( atlasImage ),
+    m_AtlasLabels( atlasLabels ),
+    m_LabelMap( NULL )
 {
-  AffineXform::SmartPtr affine;
-  {
+}
+
+void
+cmtk::AtlasSegmentation
+::RegisterAffine()
+{
   AffineRegistration ar;
-  ar.SetVolume_1( targetImage );
-  ar.SetVolume_2( atlasImg );
+  ar.SetVolume_1( this->m_TargetImage );
+  ar.SetVolume_2( this->m_AtlasImage );
   
   // run 6 DOFs first, then 9 at each level.
   ar.AddNumberDOFs( 6 );
   ar.AddNumberDOFs( 9 );
   
   ar.SetInitialAlignCenters( true );
-  ar.SetExploration( 4 * targetImage->GetMaxDelta() );
-  ar.SetAccuracy( .1 * targetImage->GetMinDelta() );
-  ar.SetSampling( 2 * targetImage->GetMaxDelta() );
+  ar.SetExploration( 4 * this->m_TargetImage->GetMaxDelta() );
+  ar.SetAccuracy( .1 * this->m_TargetImage->GetMinDelta() );
+  ar.SetSampling( 2 * this->m_TargetImage->GetMaxDelta() );
+
+  ar.SetUseOriginalData( !this->m_Fast );
   
-  if ( verbose ) 
+  if ( this->m_Verbose ) 
     {
     StdErr << "Affine registration...";
     StdErr.flush();
     }
   ar.Register();
-  if ( verbose ) 
+  if ( this->m_Verbose ) 
     {
     StdErr << " done.\n";
     }
   
-  affine = ar.GetTransformation();
-  }
-  
-  WarpXform::SmartPtr xform;
-  {
+  this->m_AffineXform = ar.GetTransformation();
+}
+
+void
+cmtk::AtlasSegmentation
+::RegisterSpline()
+{
   ElasticRegistration er;
-  er.SetVolume_1( targetImage );
-  er.SetVolume_2( atlasImg );
-  er.SetInitialXform( affine );
+  er.SetVolume_1( this->m_TargetImage );
+  er.SetVolume_2( this->m_AtlasImage );
+  er.SetInitialXform( this->GetAffineXform() );
   
   er.SetAlgorithm( 3 );
-  er.SetExploration( 4 * targetImage->GetMaxDelta() );
-  er.SetAccuracy( .1 * targetImage->GetMinDelta() );
-  er.SetSampling( 2 * targetImage->GetMaxDelta() );
+  er.SetExploration( 8 * this->m_TargetImage->GetMaxDelta() );
+  er.SetAccuracy( .1 * this->m_TargetImage->GetMinDelta() );
+  er.SetSampling( 2 * this->m_TargetImage->GetMaxDelta() );
   
-  er.SetGridSpacing( targetImage->Size[0] / 4 );
-  er.SetRefineGrid( 3 );
-  //  er.SetUseOriginalData( false );
+  er.SetUseOriginalData( !this->m_Fast );
+  er.SetFastMode( this->m_Fast );
+
+  const Types::Coordinate minSize = std::min( std::min( this->m_TargetImage->Size[0], this->m_TargetImage->Size[1] ), this->m_TargetImage->Size[2] );
+  er.SetGridSpacing( minSize / 2 );
+  er.SetRefineGrid( std::max( 0, static_cast<int>( (log( minSize / this->m_TargetImage->GetMinDelta() ) / log(2)) - 1 ) ) );
+  er.SetDelayRefineGrid( !this->m_Fast );
+  
   er.SetGridEnergyWeight( 1e-1 );
   
-  er.SetFastMode( true );
   er.SetAdaptiveFixParameters( true );
   
-  if ( verbose ) 
+  if ( this->m_Verbose ) 
     {
     StdErr << "Nonrigid registration...";
     StdErr.flush();
     }
   er.Register();
-  if ( verbose ) 
+  if ( this->m_Verbose ) 
     {
     StdErr << " done.\n";
     }
-  xform = WarpXform::SmartPtr::DynamicCastFrom( er.m_Xform );
-  }
-  
+  this->m_WarpXform = er.GetTransformation();
 }
 
+void
+cmtk::AtlasSegmentation
+::ReformatLabels()
+{
+  ReformatVolume reformat;
+  reformat.SetInterpolation( Interpolators::PARTIALVOLUME );
+  reformat.SetReferenceVolume( this->m_TargetImage );
+  reformat.SetFloatingVolume( this->m_AtlasLabels );
+
+  WarpXform::SmartPtr warpXform = this->GetWarpXform();
+  reformat.SetWarpXform( warpXform );
+
+  this->m_LabelMap = UniformVolume::SmartPtr( reformat.PlainReformat() );
+}

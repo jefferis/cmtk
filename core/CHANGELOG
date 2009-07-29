@@ -12,6 +12,10 @@ Release CMTK-1.1.0:
 - Added: the "levelset" and "film" tools now fully support the Slicer3
     execution model. Support in "mrbias" tool has also been improved.
 - Added: new "asegment" tool for atlas-based segmentation
+- Added: command line class now automatically generates command line syntax
+    description for "--help" output, unless a syntax description string is
+   explicitly set.
+
 
 Release CMTK-1.0.2 (2009-07-24):
 
