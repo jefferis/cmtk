@@ -34,6 +34,8 @@
 #ifndef __cmtkconfig_h_included__
 #define __cmtkconfig_h_included__
 
+#define CMTK_ROOT_PATH_SRI24 "@CMTK_ROOT_PATH_SRI24@"
+
 #cmakedefine HAVE_DIRENT_H 1
 #cmakedefine HAVE_EXECINFO_H 1
 #cmakedefine HAVE_FCNTL_H 1
