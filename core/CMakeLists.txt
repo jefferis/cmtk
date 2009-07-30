@@ -154,7 +154,7 @@ IF(BUILD_TESTING)
   MARK_AS_ADVANCED(CMTK_DATA_ROOT)
 ENDIF(BUILD_TESTING)
 
-SET(CMTK_ROOT_PATH_SRI24 "NOTFOUND" CACHE PATH "Root path of the SRI24 atlas data (usually ends with \"sri24\")" )
+SET(CMTK_ROOT_PATH_SRI24 "CMTK_ROOT_PATH_SRI24-NOTFOUND" CACHE PATH "Root path of the SRI24 atlas data (usually ends with \"sri24\")" )
 
 #-----------------------------------------------------------------------------
 # Configure Doxygen support
