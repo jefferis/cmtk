@@ -27,6 +27,9 @@ Release CMTK-1.1.0:
 - Added: new optional "asegment_sri24" tool for atlas-based segmentation using
     the SRI24 atlas (currently available only separately from
     http://nitrc.org/projects/sri24/).
+- Added: "warp" and "registration" tools now support writing of the
+    reformatted floating image without requiring a separate tool, such as
+    refortmatx. This makes integration into Slicer much more convenient.
 
 
 Release CMTK-1.0.2 (2009-07-24):
