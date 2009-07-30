@@ -383,4 +383,19 @@ ElasticRegistration::DoneResolution
   return this->Superclass::DoneResolution( v, functional, idx, total ) && !repeat;
 }
 
+UniformVolume* 
+ElasticRegistration::GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator )
+{
+  ReformatVolume reformat;
+  reformat.SetInterpolation( interpolator );
+  reformat.SetReferenceVolume( this->m_Volume_1 );
+  reformat.SetFloatingVolume( this->m_Volume_2 );
+
+  AffineXform::SmartPtr warpXform( this->GetTransformation() );
+  reformat.SetWarpXform( warpXform );
+
+  return reformat.PlainReformat();
+}
+
+
 } // namespace cmtk

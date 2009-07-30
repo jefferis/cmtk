@@ -36,6 +36,9 @@
 
 #include <cmtkVoxelRegistration.h>
 
+#include <cmtkUniformVolume.h>
+#include <cmtkInterpolator.h>
+
 #include <list>
 
 namespace
@@ -122,6 +125,9 @@ public:
   /// Return final transformation.
   AffineXform::SmartPtr GetTransformation() const;
   
+  /// Get reformatted floating image.
+  UniformVolume* GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator = Interpolators::LINEAR );
+
   /// Clear general list of degrees of freedom (DOFs).
   void ClearNumberDOFs() 
   {

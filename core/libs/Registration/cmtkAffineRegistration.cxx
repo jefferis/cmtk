@@ -45,6 +45,8 @@
 #include <cmtkOptimizer.h>
 #include <cmtkBestNeighbourOptimizer.h>
 
+#include <cmtkReformatVolume.h>
+
 #include <cmtkTimers.h>
 
 namespace
@@ -216,6 +218,20 @@ AffineRegistration::GetTransformation() const
     {
     return affineXform;
     }
+}
+
+UniformVolume* 
+AffineRegistration::GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator )
+{
+  ReformatVolume reformat;
+  reformat.SetInterpolation( interpolator );
+  reformat.SetReferenceVolume( this->SwitchVolumes ? this->m_Volume_2 :  this->m_Volume_1 );
+  reformat.SetFloatingVolume(  this->SwitchVolumes ? this->m_Volume_1 : this->m_Volume_2 );
+
+  AffineXform::SmartPtr affineXform( this->GetTransformation() );
+  reformat.SetAffineXform( affineXform );
+
+  return reformat.PlainReformat();
 }
 
 } // namespace cmtk

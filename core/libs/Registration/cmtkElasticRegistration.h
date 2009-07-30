@@ -182,6 +182,9 @@ protected:
     return SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
   }
 
+  /// Get reformatted floating image.
+  UniformVolume* GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator = Interpolators::LINEAR );
+
 private:
   /// Level on which the last control grid refinement was performend.
   int RefinedGridAtLevel;
