@@ -63,13 +63,13 @@ main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode." );
     cl.AddSwitch( Key( 'f', "fast" ), &fast, true, "Fast mode." );
 
-    cmtk::CommandLine::EnumGroup<std::string>::SmartPtr channelGroup = cl.AddEnum( "RegistrationChannel", &channelSRI24, "The SRI24 channel used for registration to the target image." );
+    cmtk::CommandLine::EnumGroup<std::string>::SmartPtr channelGroup = cl.AddEnum( "registration-channel", &channelSRI24, "The SRI24 channel used for registration to the target image." );
     channelGroup->AddSwitch( Key( "spgr" ), "spgr", "SPGR (T1-weighted) structural channel" );
     channelGroup->AddSwitch( Key( "early-fse" ), "erly", "Early-echo (PD-weighted) fast spin echo channel" );
     channelGroup->AddSwitch( Key( "late-fse" ), "late", "Late-echo (T2-weighted) fast spin echo channel" );
     channelGroup->AddSwitch( Key( "fa" ), "fa", "Fractional anisotropy channel, derived from diffusion tensor images" );
     
-    cmtk::CommandLine::EnumGroup<std::string>::SmartPtr labelsGroup = cl.AddEnum( "ReformatLabelMap", &labelsSRI24, "The SRI24 label map that is reformatted to the target image." );
+    cmtk::CommandLine::EnumGroup<std::string>::SmartPtr labelsGroup = cl.AddEnum( "label-map", &labelsSRI24, "The SRI24 label map that is reformatted to the target image." );
     labelsGroup->AddSwitch( Key( "tzo116plus" ), "tzo116plus", "Extended cortical parcellation template based on Tzourio-Mazoyer 116 region template." );
     labelsGroup->AddSwitch( Key( "lpba40" ), "lpba40", "Template based on the 40 subject LONI Probabilistic Brain Atlas segmentation." );
     labelsGroup->AddSwitch( Key( "tissue" ), "tissue", "SRI24 maximum likelihood three compartment (GM, WM, CSF) tissue segmentation map." );
