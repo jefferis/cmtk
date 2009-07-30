@@ -110,15 +110,23 @@ cmtk
  * An enumeration is a group of options that modify the same variable by setting it to
  *  different values.
  *
- * Example:
+ * Examples:
  *
  * \code
  *  int InterleaveAxis = 1;
  *  cmtk::CommandLine::EnumGroup<int>::SmartPtr interleaveGroup = cl.AddEnum( "interleave-axis", &InterleaveAxis, "Define interleave axis." );
  *  interleaveGroup->AddSwitch( Key( "guess-from-input" ), -1, "Guess from input image" );
- *  interleaveGroup->AddSwitch( Key( 'a', "axial" ), (int)cmtk::AXIS_Z, "Interleaved axial images" );
- *  interleaveGroup->AddSwitch( Key( 'c', "coronal" ),(int)cmtk::AXIS_Y, "Interleaved coronal images" );
- *  interleaveGroup->AddSwitch( Key( 's', "sagittal" ),(int)cmtk::AXIS_X, "Interleaved sagittal images" );
+ *  interleaveGroup->AddSwitch( Key( 'a', "axial" ), 2, "Interleaved axial images" );
+ *  interleaveGroup->AddSwitch( Key( 'c', "coronal" ), 1, "Interleaved coronal images" );
+ *  interleaveGroup->AddSwitch( Key( 's', "sagittal" ), 0, "Interleaved sagittal images" );
+ * \endcode
+ *
+ * \code
+ *  std::string channel( "spgr" );
+ *  cmtk::CommandLine::EnumGroup<std::string>::SmartPtr channelGroup = cl.AddEnum( "RegistrationChannel", &channel, "MR channel." );
+ *  channelGroup->AddSwitch( Key( "spgr" ), "spgr", "SPGR (T1-weighted) structural channel" );
+ *  channelGroup->AddSwitch( Key( "early-fse" ), "erly", "Early-echo (PD-weighted) fast spin echo channel" );
+ *  channelGroup->AddSwitch( Key( "late-fse" ), "late", "Late-echo (T2-weighted) fast spin echo channel" );
  * \endcode
  */
 class CommandLine
