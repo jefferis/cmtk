@@ -142,7 +142,7 @@ AffineRegistrationCommandLine
     cl.EndGroup();
 
     cl.BeginGroup( "Image data", "Image data" );
-    CommandLine::EnumGroup::SmartPtr
+    CommandLine::EnumGroup<int>::SmartPtr
       metricGroup = cl.AddEnum( "registration-metric", &this->m_Metric, "Registration metric for motion estimation by image-to-image registration." );
     metricGroup->AddSwitch( Key( "nmi" ), 0, "Normalized Mutual Information metric" );
     metricGroup->AddSwitch( Key( "mi" ), 1, "Standard Mutual Information metric" );

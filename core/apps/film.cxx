@@ -200,7 +200,7 @@ main( int argc, char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation" );
 
     cl.BeginGroup( "interleave", "Interleaving Options" );
-    cmtk::CommandLine::EnumGroup::SmartPtr
+    cmtk::CommandLine::EnumGroup<int>::SmartPtr
       interleaveGroup = cl.AddEnum( "interleave-axis", &InterleaveAxis, "Define interleave axis: this is the through-slice direction of the acquisition." );
     interleaveGroup->AddSwitch( Key( "guess-from-input" ), -1, "Guess from input image" );
     interleaveGroup->AddSwitch( Key( 'a', "axial" ), (int)cmtk::AXIS_Z, "Interleaved axial images" );
@@ -216,7 +216,7 @@ main( int argc, char* argv[] )
     cl.BeginGroup( "motion", "Motion Correction / Registration Options" );
     cl.AddOption( Key( 'R', "reference-image" ), &ReferenceImagePath, "Use a separate high-resolution reference image for registration" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
 
-    cmtk::CommandLine::EnumGroup::SmartPtr
+    cmtk::CommandLine::EnumGroup<int>::SmartPtr
       metricGroup = cl.AddEnum( "registration-metric", &RegistrationMetric, "Registration metric for motion estimation by image-to-image registration." );
     metricGroup->AddSwitch( Key( "nmi" ), 0, "Use Normalized Mutual Information for pass-to-refereence registration" );
     metricGroup->AddSwitch( Key( "mi" ), 1, "Use standard Mutual Information for pass-to-refereence registration" );
@@ -231,7 +231,7 @@ main( int argc, char* argv[] )
     cl.AddOption( Key( 'r', "injection-kernel-radius" ), &InjectionKernelRadius, "Truncation radius factor of injection kernel. The kernel is truncated at sigma*radius, where sigma is the kernel standard deviation." );
 
     cl.BeginGroup( "invint", "Inverse Interpolation Options" );
-    cmtk::CommandLine::EnumGroup::SmartPtr kernelGroup = 
+    cmtk::CommandLine::EnumGroup<int>::SmartPtr kernelGroup = 
       cl.AddEnum( "inverse-interpolation-kernel", &InverseInterpolationKernel, "Kernel for the inverse interpolation reconstruction" );
     kernelGroup->AddSwitch( Key( 'C', "cubic" ), 1, "Tricubic interpolation" );
     kernelGroup->AddSwitch( Key( 'L', "linear" ), 0, "Trilinear interpolation (faster but less accurate)" );

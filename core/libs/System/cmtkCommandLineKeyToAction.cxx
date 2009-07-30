@@ -28,13 +28,29 @@
 //  $LastChangedBy$
 //
 */
+
 #include <cmtkCommandLine.h>
 
 #include <sstream>
 
+
+void
+cmtk::CommandLine::KeyToAction
+::SetProperties( const long int properties )
+{
+  this->m_Properties = properties;
+}
+
+long int
+cmtk::CommandLine::KeyToAction
+::GetProperties() const
+{
+  return this->m_Properties;
+}
+
 mxml_node_t*
 cmtk::CommandLine::KeyToAction
-::MakeXML( mxml_node_t *const parent ) const
+::MakeXML( mxml_node_t *const node ) const
 {
 // for some reason Slicer does not accept long options that contain hyphens ("-"), so we replace them.
   std::string xmlKeyStr = this->m_KeyString;
@@ -44,49 +60,24 @@ cmtk::CommandLine::KeyToAction
       xmlKeyStr[i] = '_';
     }
 
-  mxml_node_t *node = NULL;
-  // create simple action node
-  if ( this->m_Action )
+  if ( this->m_Comment.length() )
     {
-    node = this->m_Action->MakeXML( parent );
-    }
-
-  // create enum group node
-  if ( this->m_EnumGroup )
-    {
-    node = mxmlNewElement( parent, "string-enumeration" );
-
-    mxml_node_t* defaultElement = mxmlNewElement( node, "default" );
-    mxmlNewText( defaultElement, 0, this->m_EnumGroup->GetDefaultKey().c_str() );
-
-    for ( EnumGroup::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
-      {      
-      mxml_node_t* element = mxmlNewElement( node, "element" );
-      mxmlNewText( element, 0, (*it)->m_KeyString.c_str() );
-      }
+    mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment.c_str() );
     }
   
-  if ( node )
+  if ( this->m_KeyString.length() )
     {
-    if ( this->m_Comment.length() )
-      {
-      mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment.c_str() );
-      }
-    
-    if ( this->m_KeyString.length() )
-      {
-      mxmlNewText( mxmlNewElement( node, "name" ), 0, xmlKeyStr.c_str() );
-      mxmlNewText( mxmlNewElement( node, "label" ), 0, xmlKeyStr.c_str() );
-      }
-    if ( this->m_Key )
-      {
-      const char keyStr[] = { '-', this->m_Key, 0 };
-      mxmlNewText( mxmlNewElement( node, "flag" ), 0, keyStr );
-      }
-    if ( this->m_KeyString.length() )
-      {
-      mxmlNewText( mxmlNewElement( node, "longflag" ), 0, (std::string( "--" ) + xmlKeyStr).c_str() );
-      }
+    mxmlNewText( mxmlNewElement( node, "name" ), 0, xmlKeyStr.c_str() );
+    mxmlNewText( mxmlNewElement( node, "label" ), 0, xmlKeyStr.c_str() );
+    }
+  if ( this->m_Key )
+    {
+    const char keyStr[] = { '-', this->m_Key, 0 };
+    mxmlNewText( mxmlNewElement( node, "flag" ), 0, keyStr );
+    }
+  if ( this->m_KeyString.length() )
+    {
+    mxmlNewText( mxmlNewElement( node, "longflag" ), 0, (std::string( "--" ) + xmlKeyStr).c_str() );
     }
 
   return node;
@@ -94,9 +85,8 @@ cmtk::CommandLine::KeyToAction
 
 void
 cmtk::CommandLine::KeyToAction
-::PrintHelp( const size_t globalIndent ) const
+::FormatHelp( std::ostringstream& fmt ) const
 {
-  std::ostringstream fmt;
   if ( this->m_Key )
     {
     fmt << "-" << this->m_Key;
@@ -112,47 +102,17 @@ cmtk::CommandLine::KeyToAction
     fmt << "--" << this->m_KeyString;
     }
 
-  const int indent = 10;
-  if ( fmt.str().length() > static_cast<size_t>( indent-2 ) )
+  if ( fmt.str().length() > static_cast<size_t>( CommandLine::HelpTextIndent-2 ) )
     fmt << "\n";
   else
     {
-    while ( fmt.str().length() < static_cast<size_t>( indent ) )
+    while ( fmt.str().length() < static_cast<size_t>( CommandLine::HelpTextIndent ) )
       fmt << " ";
     }
   
   if ( this->m_Comment.length() )
     {
     fmt << this->m_Comment;
-    }
-
-  if ( this->m_Action )
-    {
-    this->m_Action->PrintHelp( fmt );
-    StdErr.FormatText( fmt.str(), indent + globalIndent, 80, -indent ) << "\n";  
-    }
-  else
-    {
-    fmt << "\nSupported values: ";
-    for ( EnumGroup::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
-      {
-      fmt << "\"" << (*it)->m_KeyString << "\", ";
-      }
-
-    const std::string defaultKey = this->m_EnumGroup->GetDefaultKey();
-    if ( defaultKey.length() )
-      {
-      fmt << "where the default is \"" << defaultKey << "\", ";
-      }
-
-    fmt << "or use one of the following";
-
-    StdErr.FormatText( fmt.str(), indent + globalIndent, 80, -indent ) << "\n";  
-
-    for ( EnumGroup::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
-      {
-      (*it)->PrintHelp( globalIndent + 10 );
-      }
     }
 }
 
@@ -172,103 +132,5 @@ cmtk::CommandLine::KeyToAction
       return false;
     }
   return true;
-}
-
-bool
-cmtk::CommandLine::KeyToAction
-::MatchAndExecute( const std::string& key, const size_t argc, const char* argv[], size_t& index )
-{
-  if ( this->MatchLongOption( std::string( key ) ) )
-    {
-    if ( this->m_Action )
-      {
-      this->m_Action->Evaluate( argc, argv, index );
-      return true;
-      }
-
-    // in enum group, check if optional argument matches suboption
-    if ( this->m_EnumGroup )
-      {      
-      for ( EnumGroup::iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
-	{
-	size_t ii = index+1;
-	if ( (*it)->MatchAndExecute( argv[ii], argc, argv, ii ) )
-	  {
-	  index = ii;
-	  return true;
-	  }
-	}
-      }
-    }
-
-  // in enum group, also check for direct matches with the suboptions
-  if ( this->m_EnumGroup )
-    {
-    for ( EnumGroup::iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
-      {
-      if ( (*it)->MatchAndExecute( key, argc, argv, index ) )
-	{
-	return true;
-	}
-      }
-    }
-
-  return false;
-}
-
-bool
-cmtk::CommandLine::KeyToAction
-::MatchAndExecute( const char keyChar, const size_t argc, const char* argv[], size_t& index )
-{
-  if ( this->m_Key == keyChar )
-    {
-    if ( this->m_Action )
-      {
-      this->m_Action->Evaluate( argc, argv, index );
-      return true;
-      }
-
-    // in enum group, check if optional argument matches suboption
-    if ( this->m_EnumGroup )
-      {
-      for ( EnumGroup::iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
-	{
-	size_t ii = index+1;
-	if ( (*it)->MatchAndExecute( argv[ii], argc, argv, ii ) )
-	  {
-	  index = ii;
-	  return true;
-	  }
-	}
-      }
-    }
-
-  // in enum group, also check for direct matches with the suboptions
-  if ( this->m_EnumGroup )
-    {
-    for ( EnumGroup::iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
-      {
-      if ( (*it)->MatchAndExecute( keyChar, argc, argv, index ) )
-	{
-	return true;
-	}
-      }
-    }
-
-  return false;
-}
-
-void
-cmtk::CommandLine::KeyToAction
-::SetProperties( const long int properties )
-{
-  this->m_Properties = properties;
-}
-
-long int
-cmtk::CommandLine::KeyToAction
-::GetProperties() const
-{
-  return this->m_Properties;
 }
 

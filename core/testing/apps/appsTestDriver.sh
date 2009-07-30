@@ -282,11 +282,11 @@ case ${RUNTEST} in
 	check_result filter.img
 	;;
     FilmFourthOrder)
-	run ${BINDIR}/film --coronal --fourth-order-error --passes 3 --num-iterations 3 --injection-kernel-radius 2 --injection-kernel-sigma 1 --write-injected-image ${tmpdir}/injected.hdr interleave_thnfse.hdr ${tmpdir}/corrected.hdr
+	run ${BINDIR}/film --coronal --nmi --fourth-order-error --passes 3 --num-iterations 3 --injection-kernel-radius 2 --injection-kernel-sigma 1 --write-injected-image ${tmpdir}/injected.hdr interleave_thnfse.hdr ${tmpdir}/corrected.hdr
 	check_result corrected.img
 	;;
     FilmCubic)
-	run ${BINDIR}/film --coronal --cubic --passes 3 --num-iterations 3 --injection-kernel-radius 2 --injection-kernel-sigma 1 --write-injected-image ${tmpdir}/injected.hdr interleave_thnfse.hdr ${tmpdir}/corrected.hdr
+	run ${BINDIR}/film --coronal --nmi --cubic --passes 3 --num-iterations 3 --injection-kernel-radius 2 --injection-kernel-sigma 1 --write-injected-image ${tmpdir}/injected.hdr interleave_thnfse.hdr ${tmpdir}/corrected.hdr
 	check_result corrected.img
 	;;
     FilmMSDLinearNoTrunc)

@@ -33,6 +33,8 @@ SET(cmtkSystem_SRCS
   cmtkCommandLineCallback.cxx
   cmtkCommandLineItem.cxx
   cmtkCommandLineKeyToAction.cxx
+  cmtkCommandLineKeyToActionEnum.cxx
+  cmtkCommandLineKeyToActionSingle.cxx
   cmtkCommandLineXML.cxx
   cmtkCommandLineNonOptionParameter.cxx
   cmtkCompressedStream.cxx
