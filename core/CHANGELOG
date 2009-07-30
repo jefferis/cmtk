@@ -22,6 +22,11 @@ Release CMTK-1.1.0:
 - Added: command line class now automatically generates command line syntax
     description for "--help" output, unless a syntax description string is
    explicitly set.
+- Added: cmtk::CommandLine class now permits arbitrary-typed variables to be
+    set by command line enum parameter groups.
+- Added: new optional "asegment_sri24" tool for atlas-based segmentation using
+    the SRI24 atlas (currently available only separately from
+    http://nitrc.org/projects/sri24/).
 
 
 Release CMTK-1.0.2 (2009-07-24):

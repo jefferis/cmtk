@@ -61,10 +61,14 @@ main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode." );
     cl.AddSwitch( Key( 'f', "fast" ), &fast, true, "Fast mode." );
     
-    cl.AddParameter( &targetImageName, "TargetImage", "Target image path. This is the image to be segmented." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &atlasImageName, "AtlasImage", "Atlas image path. This is the structural channel (e.g., T1-weighted MRI) of the atlas to be used." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &atlasLabelName, "AtlasLabels", "Atlas label image path. This is the label map to be reformatted to the target image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &outImageName, "OutputImage", "Output image path. This is where the reformatted label map is written." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddParameter( &targetImageName, "TargetImage", "Target image path. This is the image to be segmented." )
+      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &atlasImageName, "AtlasImage", "Atlas image path. This is the structural channel (e.g., T1-weighted MRI) of the atlas to be used." )
+      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &atlasLabelName, "AtlasLabels", "Atlas label image path. This is the label map to be reformatted to the target image." )
+      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_LABELS );
+    cl.AddParameter( &outImageName, "OutputImage", "Output image path. This is where the reformatted label map is written." )
+      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_LABELS | cmtk::CommandLine::PROPS_OUTPUT );
 
     cl.Parse();
     }

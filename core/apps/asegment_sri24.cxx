@@ -70,12 +70,14 @@ main( const int argc, const char* argv[] )
     channelGroup->AddSwitch( Key( "fa" ), "fa", "Fractional anisotropy channel, derived from diffusion tensor images" );
     
     cmtk::CommandLine::EnumGroup<std::string>::SmartPtr labelsGroup = cl.AddEnum( "ReformatLabelMap", &labelsSRI24, "The SRI24 label map that is reformatted to the target image." );
-    channelGroup->AddSwitch( Key( "tzo116plus" ), "tzo116plus", "Extended cortical parcellation template based on Tzourio-Mazoyer 116 region template." );
-    channelGroup->AddSwitch( Key( "lpba40" ), "lpba40", "Template based on the 40 subject LONI Probabilistic Brain Atlas segmentation." );
-    channelGroup->AddSwitch( Key( "tissue" ), "tissue", "SRI24 maximum likelihood three compartment (GM, WM, CSF) tissue segmentation map." );
+    labelsGroup->AddSwitch( Key( "tzo116plus" ), "tzo116plus", "Extended cortical parcellation template based on Tzourio-Mazoyer 116 region template." );
+    labelsGroup->AddSwitch( Key( "lpba40" ), "lpba40", "Template based on the 40 subject LONI Probabilistic Brain Atlas segmentation." );
+    labelsGroup->AddSwitch( Key( "tissue" ), "tissue", "SRI24 maximum likelihood three compartment (GM, WM, CSF) tissue segmentation map." );
     
-    cl.AddParameter( &targetImageName, "TargetImage", "Target image path. This is the image to be segmented." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &outImageName, "OutputImage", "Output image path. This is where the reformatted label map is written." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddParameter( &targetImageName, "TargetImage", "Target image path. This is the image to be segmented." )
+      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &outImageName, "OutputImage", "Output image path. This is where the reformatted label map is written." )
+      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_LABELS | cmtk::CommandLine::PROPS_OUTPUT );
 
     cl.Parse();
     }
@@ -92,7 +94,7 @@ main( const int argc, const char* argv[] )
     exit( 1 );
     }
   
-  std::string atlasImageName = std::string( CMTK_ROOT_PATH_SRI24 ) + "/" + "spgr" + "nii";
+  std::string atlasImageName = std::string( CMTK_ROOT_PATH_SRI24 ) + "/" + channelSRI24 + ".nii";
   cmtk::UniformVolume::SmartPtr atlasImg( cmtk::VolumeIO::ReadOriented( atlasImageName.c_str(), verbose ) );
   if ( !atlasImg ) 
     {
@@ -100,7 +102,7 @@ main( const int argc, const char* argv[] )
     exit( 1 );
     }
   
-  std::string atlasLabelName = std::string( CMTK_ROOT_PATH_SRI24 ) + "/" + "tzo116plus" + "nii";
+  std::string atlasLabelName = std::string( CMTK_ROOT_PATH_SRI24 ) + "/" + labelsSRI24 + ".nii";
   cmtk::UniformVolume::SmartPtr atlasLbl( cmtk::VolumeIO::ReadOriented( atlasLabelName.c_str(), verbose ) );
   if ( !atlasLbl ) 
     {
