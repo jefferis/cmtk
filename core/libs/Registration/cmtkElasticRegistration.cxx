@@ -44,6 +44,8 @@
 #include <cmtkUniformVolume.h>
 #include <cmtkSplineWarpXform.h>
 
+#include <cmtkReformatVolume.h>
+
 namespace
 cmtk
 {
@@ -391,7 +393,7 @@ ElasticRegistration::GetReformattedFloatingImage( Interpolators::InterpolationEn
   reformat.SetReferenceVolume( this->m_Volume_1 );
   reformat.SetFloatingVolume( this->m_Volume_2 );
 
-  AffineXform::SmartPtr warpXform( this->GetTransformation() );
+  WarpXform::SmartPtr warpXform( this->GetTransformation() );
   reformat.SetWarpXform( warpXform );
 
   return reformat.PlainReformat();
