@@ -80,6 +80,7 @@ cmtk
 AffineRegistrationCommandLine
 ::AffineRegistrationCommandLine 
 ( int argc, char* argv[] ) 
+  : m_ReformattedImagePath( NULL )
 {
   this->m_Metric = 0;
 
@@ -155,6 +156,7 @@ AffineRegistrationCommandLine
 
     cl.BeginGroup( "Output", "Output parameters" );
     cl.AddOption( Key( 'o', "outlist" ), &this->Studylist, "Output path for final transformation" );
+    cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddOption( Key( "out-matrix" ), &this->OutMatrixName, "Output path for final transformation in matrix format" );
     cl.AddOption( Key( "out-parameters" ), &this->OutParametersName, "Output path for final transformation in plain parameter list format" );
     cl.AddOption( Key( 'p', "protocol" ), &this->Protocol, "Optimization protocol output file name" );
@@ -393,7 +395,7 @@ AffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
 }
 
 void
-AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v ) const
+AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
 {
   if ( Verbose ) 
     {
@@ -415,6 +417,11 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v ) const
   if ( this->Studylist ) 
     {
     this->OutputResultList( this->Studylist );
+    }
+
+  if ( this->m_ReformattedImagePath )
+    {
+    VolumeIO::Write( UniformVolume::SmartPtr( this->GetReformattedFloatingImage() ), this->m_ReformattedImagePath, this->Verbose );
     }
 }
 

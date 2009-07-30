@@ -88,7 +88,7 @@ protected:
    * archive with the name provided by command line arguments. The result is 
    * also printed to stderr in parameter list form.
    */
-  virtual void OutputResult ( const CoordinateVector* ) const;
+  virtual void OutputResult ( const CoordinateVector* );
 
   /** Enter resolution level.
    * An information is printed to stderr and to the protocol file if one is
@@ -99,6 +99,9 @@ protected:
 private:
   /// Number of levels for automatic parameter generation.
   unsigned int m_AutoMultiLevels;
+
+  /// Path for reformatted floating image.
+  const char* m_ReformattedImagePath;
 
   /** Name of output studylist.
    * This is defined by the -o or --outlist command line option.

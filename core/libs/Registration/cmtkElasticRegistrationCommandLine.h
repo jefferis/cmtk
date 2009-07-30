@@ -87,7 +87,7 @@ protected:
    * archive with the name provided by command line arguments. The result is 
    * also printed to stderr in parameter list form.
    */
-  virtual void OutputResult ( const CoordinateVector* ) const;
+  virtual void OutputResult ( const CoordinateVector* );
 
   /** Enter resolution level.
    * An information is printed to stderr and to the protocol file if one is
