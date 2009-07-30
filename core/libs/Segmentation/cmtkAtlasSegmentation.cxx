@@ -61,7 +61,7 @@ cmtk::AtlasSegmentation
   
   ar.SetInitialAlignCenters( true );
   ar.SetExploration( 4 * this->m_TargetImage->GetMaxDelta() );
-  ar.SetAccuracy( .1 * this->m_TargetImage->GetMinDelta() );
+  ar.SetAccuracy( .1 * this->m_TargetImage->GetMaxDelta() );
   ar.SetSampling( 2 * this->m_TargetImage->GetMaxDelta() );
 
   ar.SetUseOriginalData( !this->m_Fast );
@@ -89,22 +89,21 @@ cmtk::AtlasSegmentation
   er.SetVolume_2( this->m_AtlasImage );
   er.SetInitialXform( this->GetAffineXform() );
   
-  er.SetAlgorithm( 3 );
-  er.SetExploration( 8 * this->m_TargetImage->GetMaxDelta() );
-  er.SetAccuracy( .1 * this->m_TargetImage->GetMinDelta() );
-  er.SetSampling( 2 * this->m_TargetImage->GetMaxDelta() );
-  
   er.SetUseOriginalData( !this->m_Fast );
   er.SetFastMode( this->m_Fast );
 
   const Types::Coordinate minSize = std::min( std::min( this->m_TargetImage->Size[0], this->m_TargetImage->Size[1] ), this->m_TargetImage->Size[2] );
   er.SetGridSpacing( minSize / 2 );
-  er.SetRefineGrid( std::max( 0, static_cast<int>( (log( minSize / this->m_TargetImage->GetMinDelta() ) / log(2)) - 2 ) ) );
+  er.SetRefineGrid( std::max( 0, static_cast<int>( (log( minSize / this->m_TargetImage->GetMaxDelta() ) / log(2)) - 3 ) ) );
   er.SetDelayRefineGrid( !this->m_Fast );
   
   er.SetGridEnergyWeight( 1e-1 );
-  
   er.SetAdaptiveFixParameters( true );
+
+  er.SetAlgorithm( 3 );
+  er.SetExploration( minSize / 8 );
+  er.SetAccuracy( .1 * this->m_TargetImage->GetMinDelta() );
+  er.SetSampling( 2 * this->m_TargetImage->GetMaxDelta() );  
   
   if ( this->m_Verbose ) 
     {
