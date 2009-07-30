@@ -85,7 +85,8 @@ ElasticRegistrationCommandLine* ElasticRegistrationCommandLine::StaticThis = NUL
 
 ElasticRegistrationCommandLine
 ::ElasticRegistrationCommandLine
-( int argc, char *argv[] ) 
+( int argc, char *argv[] ) :
+  m_ReformattedImagePath( NULL )
 {
   this->m_Metric = 0;
   this->m_Algorithm = 3;
@@ -191,6 +192,7 @@ ElasticRegistrationCommandLine
 
     cl.BeginGroup( "Output", "Output parameters" );
     cl.AddOption( Key( 'o', "outlist" ), &this->Studylist, "Output path for final transformation" );
+    cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddOption( Key( 'p', "protocol" ), &this->Protocol, "Optimization protocol output file name" );
     cl.AddOption( Key( 't', "time" ), &this->Time, "Computation time statistics output file name" );
     cl.AddSwitch( Key( "output-intermediate" ), &this->m_OutputIntermediate, true, "Write transformation for each level [default: only write final transformation]" );

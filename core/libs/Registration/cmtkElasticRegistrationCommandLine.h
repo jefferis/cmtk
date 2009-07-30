@@ -153,6 +153,9 @@ private:
   /// Write intermediate deformation file.
   void OutputIntermediate( const bool incrementCount = true );
 
+  /// Path for reformatted floating image.
+  const char* m_ReformattedImagePath;
+
   /// Signal handler that writes intermediate result during a level.
   static void DispatchSIGUSR1( int sig );
 
