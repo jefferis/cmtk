@@ -77,14 +77,16 @@ main( int argc, char* argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode" );
 
+    cl.AddSwitch( Key( 'b', "binarize" ), &binarize, true, "Binarize levelset and write as byte mask, rather than write floating-point levelset function itself." );
+
+    cl.BeginGroup( "Eveluation", "Parameters of Levelset Evolution" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
     cl.AddOption( Key( 'n', "iterations" ), &numberOfIterations, "Maximum number of iterations" );
     cl.AddSwitch( Key( 'f', "force-iterations" ), &forceIterations, true, "Force given number of iterations, even when convergence has been detected" );
 
     cl.AddOption( Key( 's', "filter-sigma" ), &filterSigma, "Gaussian filter sigma in world coordinate units (e.g., mm)" );
     cl.AddOption( Key( 'd', "delta" ), &delta, "Time constant for levelset evolution; must be > 0; larger is faster" );
     cl.AddOption( Key( 't', "levelset-threshold" ), &levelsetThreshold, "Levelset threshold: levelset function is truncated at +/- this value" );
-
-    cl.AddSwitch( Key( 'b', "binarize" ), &binarize, true, "Binarize levelset and write as byte mask, rather than write floating-point levelset function itself." );
+    cl.EndGroup();
 
     cl.AddParameter( &inFile, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &outFile, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_LABELS | cmtk::CommandLine::PROPS_OUTPUT );
