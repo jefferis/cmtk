@@ -82,7 +82,7 @@ ProgressConsole::SetProgressVirtual( const unsigned int progress )
 }
 
 void
-ProgressConsole::SetTotalStepsVirtual( const unsigned int steps )
+ProgressConsole::SetTotalStepsVirtual( const unsigned int )
 {
   this->m_TimeAtStart = Timers::GetTimeProcess();
 
