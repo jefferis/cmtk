@@ -127,10 +127,7 @@ ReformatVolume::SetRescale
 UniformVolume* 
 ReformatVolume::MakeTargetVolume() const
 {
-  UniformVolume* volume = new UniformVolume( ReferenceVolume->GetDims(), ReferenceVolume->Size );
-  volume->m_MetaInformation[CMTK_META_SPACE_UNITS_STRING] = ReferenceVolume->m_MetaInformation[CMTK_META_SPACE_UNITS_STRING];
-  volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION] = ReferenceVolume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION];
-  return volume;
+  return ReferenceVolume->CloneGrid();
 }
 
 UniformVolume* 
