@@ -170,7 +170,7 @@ CommandLine::PrintHelp
   ProgramPropertiesMapType::const_iterator it = this->m_ProgramInfo.find(PRG_TITLE);
   if ( it != this->m_ProgramInfo.end() )
     {
-    StdErr << "TILE:\n\n";
+    StdErr << "TITLE:\n\n";
     StdErr.FormatText( it->second, 5 ) << "\n";
     }
 
