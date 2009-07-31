@@ -57,6 +57,7 @@ cmtk::Types::Coordinate delta = 0.1;
 
 int numberOfIterations = 100;
 bool forceIterations = false;
+bool binarize = false;
 
 cmtk::Types::Coordinate levelsetThreshold = 1.0;
 
@@ -71,7 +72,6 @@ main( int argc, char* argv[] )
     cmtk::CommandLine cl( argc, argv, cmtk::CommandLine::PROPS_XML );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Levelset segmentation" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Levelset-type segmentation of foreground/background using minimum regional variance energy" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] inputImage outputImage" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation" );
 
     typedef cmtk::CommandLine::Key Key;
@@ -83,6 +83,8 @@ main( int argc, char* argv[] )
     cl.AddOption( Key( 's', "filter-sigma" ), &filterSigma, "Gaussian filter sigma in world coordinate units (e.g., mm)" );
     cl.AddOption( Key( 'd', "delta" ), &delta, "Time constant for levelset evolution; must be > 0; larger is faster" );
     cl.AddOption( Key( 't', "levelset-threshold" ), &levelsetThreshold, "Levelset threshold: levelset function is truncated at +/- this value" );
+
+    cl.AddSwitch( Key( 'b', "binarize" ), &binarize, true, "Binarize levelset and write as byte mask, rather than write floating-point levelset function itself." );
 
     cl.AddParameter( &inFile, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &outFile, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_LABELS | cmtk::CommandLine::PROPS_OUTPUT );
@@ -109,7 +111,7 @@ main( int argc, char* argv[] )
 
   size_t nInsideOld = 0, nInside = 1;
 
-  cmtk::Progress::SetTotalNumSteps( numberOfIterations, "Levelset Evolution" );
+  cmtk::Progress::SetTotalSteps( numberOfIterations, "Levelset Evolution" );
   for ( int it = 0; (it < numberOfIterations) && ((nInside!=nInsideOld) || forceIterations); ++it )
     {
     cmtk::Progress::SetProgress( it );
@@ -160,6 +162,12 @@ main( int argc, char* argv[] )
     }
 
   cmtk::Progress::Done();
+
+  if ( binarize )
+    {
+    levelset->GetData()->Binarize( 0.5 );
+    levelset->SetData( cmtk::TypedArray::SmartPtr( levelset->GetData()->Convert( cmtk::TYPE_BYTE ) ) );
+    }
   
   cmtk::VolumeIO::Write( levelset, outFile, verbose );
 
