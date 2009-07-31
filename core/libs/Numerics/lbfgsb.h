@@ -74,7 +74,8 @@ public:
   virtual void Evaluate( const ap::real_1d_array& x, ap::real_value_type& f, ap::real_1d_array& g ) = 0;
 
   /// Get notified when L-BFGS-B goes into next iteration.
-  virtual void NextIteration( const int iteration ) {};
+  virtual void NextIteration( const int //!< The current iteration number.
+    ) {};
 };
 } // namespace ap
 
