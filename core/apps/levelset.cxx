@@ -109,10 +109,10 @@ main( int argc, char* argv[] )
 
   size_t nInsideOld = 0, nInside = 1;
 
-  Progress::SetTotalNumSteps( numberOfIterations, "Levelset Evolution" );
+  cmtk::Progress::SetTotalNumSteps( numberOfIterations, "Levelset Evolution" );
   for ( int it = 0; (it < numberOfIterations) && ((nInside!=nInsideOld) || forceIterations); ++it )
     {
-    Progress::SetProgress( it );
+    cmtk::Progress::SetProgress( it );
 
     nInsideOld = nInside;
     nInside = 0;
@@ -159,7 +159,7 @@ main( int argc, char* argv[] )
       }
     }
 
-  Progress::Done();
+  cmtk::Progress::Done();
   
   cmtk::VolumeIO::Write( levelset, outFile, verbose );
 
