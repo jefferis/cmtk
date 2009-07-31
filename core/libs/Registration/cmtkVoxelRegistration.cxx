@@ -38,6 +38,7 @@
 #include <cmtkFunctional.h>
 
 #include <cmtkTimers.h>
+#include <cmtkProgress.h>
 
 #ifdef HAVE_SYS_UTSNAME_H
 #  include <sys/utsname.h>
@@ -103,6 +104,8 @@ VoxelRegistration::Register ()
   CoordinateVector::SmartPtr v( new CoordinateVector() );
   int NumResolutionLevels = FunctionalStack.size();
 
+  Progress::SetTotalSteps( NumResolutionLevels, "Multi-level Registration" );
+
   int index = 1;
   while ( ! FunctionalStack.empty() && ( irq == CALLBACK_OK ) ) 
     {
@@ -135,8 +138,14 @@ VoxelRegistration::Register ()
     this->m_Optimizer->SetFunctional( Functional::SmartPtr::Null );
     
     currentExploration *= 0.5;
+
+    Progress::SetProgress( index );
+
     ++index;
     }
+
+  Progress::Done();
+
   this->OutputResult( v );
   this->ReportProgress( "registration", 100 );
   this->DoneRegistration( v );
