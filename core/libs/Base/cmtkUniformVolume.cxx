@@ -102,7 +102,8 @@ UniformVolume::UniformVolume
 ( const UniformVolume& other, const Types::Coordinate resolution, const bool allowUpsampling ) 
 {
   int newDims[3];
-  for ( int dim=0; dim<3; ++dim ) {
+  for ( int dim=0; dim<3; ++dim ) 
+    {
     Size[dim] = other.Size[dim];
     int new_dims=(int) (Size[dim]/resolution)+1;
     if ( allowUpsampling || (new_dims<=other.m_Dims[dim]) ) 
@@ -124,7 +125,7 @@ UniformVolume::UniformVolume
 	Size[dim] = (newDims[dim]-1) * this->m_Delta[dim];
 	}
       }
-  }
+    }
   
   this->SetDims( newDims );
   TypedArray::SmartPtr resampledData( this->Resample( other ) );
