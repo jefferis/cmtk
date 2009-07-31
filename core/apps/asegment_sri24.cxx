@@ -33,6 +33,7 @@
 
 #include <cmtkCommandLine.h>
 #include <cmtkConsole.h>
+#include <cmtkProgressConsole.h>
 
 #include <list>
 #include <string>
@@ -87,6 +88,9 @@ main( const int argc, const char* argv[] )
     exit( 1 );
     }
   
+  // Instantiate programm progress indicator.
+  cmtk::ProgressConsole progressIndicator( "Segmentation Using the SRI24 Atlas" );
+
   cmtk::UniformVolume::SmartPtr targetImg( cmtk::VolumeIO::ReadOriented( targetImageName, verbose ) );
   if ( !targetImg ) 
     {

@@ -33,6 +33,7 @@
 
 #include <cmtkCommandLine.h>
 #include <cmtkConsole.h>
+#include <cmtkProgressConsole.h>
 
 #include <cmtkUniformVolume.h>
 #include <cmtkVolumeIO.h>
@@ -129,6 +130,9 @@ main( const int argc, const char *argv[] )
     cmtk::StdErr << e << "\n";
     exit( 1 );
     }
+
+  // Instantiate programm progress indicator.
+  cmtk::ProgressConsole progressIndicator( "Intensity Bias Field Correction" );
 
   cmtk::UniformVolume::SmartPtr inputImage( cmtk::VolumeIO::ReadOriented( FNameInputImage, Verbose ) );
   if ( ! inputImage || ! inputImage->GetData() )

@@ -210,7 +210,7 @@ ReformatPushforward()
       }    
     }
   
-  cmtk::ProgressConsole progressIndicator;
+  cmtk::ProgressConsole progressIndicator( "Volume Reformatter" );
 
   cmtk::TypedArray::SmartPtr reformatData;
   reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::ReformatPushForwardAccumulate( floatingVolume, TargetToReference, targetVolume ) );

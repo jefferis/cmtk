@@ -33,6 +33,7 @@
 
 #include <cmtkConsole.h>
 #include <cmtkCommandLine.h>
+#include <cmtkProgressConsole.h>
 
 #include <cmtkVolumeIO.h>
 #include <cmtkDataGrid.h>
@@ -93,6 +94,9 @@ main( int argc, char* argv[] )
     cmtk::StdErr << ex;
     exit( 1 );
     }
+
+  // Instantiate programm progress indicator.
+  cmtk::ProgressConsole progressIndicator( "Levelset-type Segmentation" );
 
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( inFile, verbose ) );
   const size_t numberOfPixels = volume->GetNumberOfPixels();

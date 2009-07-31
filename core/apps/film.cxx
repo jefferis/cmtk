@@ -33,6 +33,7 @@
 
 #include <cmtkCommandLine.h>
 #include <cmtkConsole.h>
+#include <cmtkProgressConsole.h>
 
 #include <cmtkUniformVolume.h>
 #include <cmtkVolumeIO.h>
@@ -256,6 +257,9 @@ main( int argc, char* argv[] )
     cmtk::StdErr << e << "\n";
     return 1;
     }
+
+  // Instantiate programm progress indicator.
+  cmtk::ProgressConsole progressIndicator( "Interleaved Image Motion Correction" );
 
   /*
   // Read input image
