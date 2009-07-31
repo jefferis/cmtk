@@ -142,13 +142,6 @@ main( const int argc, const char *argv[] )
     }
 
   cmtk::UniformVolume::SmartPtr maskImage;
-  if ( ThresholdForegroundFlag )
-    {
-    maskImage = cmtk::UniformVolume::SmartPtr( inputImage->Clone( true /*copyData*/ ) );
-    maskImage->GetData()->SetPaddingValue( 0.0 );
-    maskImage->GetData()->ThresholdToPadding( ThresholdForegroundMin, ThresholdForegroundMax );
-    }
-  
   if ( FNameMaskImage )
     {
     maskImage = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( FNameMaskImage, Verbose ) );
@@ -157,6 +150,15 @@ main( const int argc, const char *argv[] )
       cmtk::StdErr << "ERROR: Could not read mask image " << FNameMaskImage << "\n";
       exit( 1 );
       }
+    }
+  else
+    {
+    if ( ThresholdForegroundFlag )
+      {
+      maskImage = cmtk::UniformVolume::SmartPtr( inputImage->Clone( true /*copyData*/ ) );
+      maskImage->GetData()->SetPaddingValue( 0.0 );
+      maskImage->GetData()->ThresholdToPadding( ThresholdForegroundMin, ThresholdForegroundMax );
+      }  
     }
 
   typedef cmtk::EntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr FunctionalPointer;
