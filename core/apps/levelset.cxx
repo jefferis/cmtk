@@ -109,8 +109,11 @@ main( int argc, char* argv[] )
 
   size_t nInsideOld = 0, nInside = 1;
 
+  Progress::SetTotalNumSteps( numberOfIterations, "Levelset Evolution" );
   for ( int it = 0; (it < numberOfIterations) && ((nInside!=nInsideOld) || forceIterations); ++it )
     {
+    Progress::SetProgress( it );
+
     nInsideOld = nInside;
     nInside = 0;
     double insideSum = 0, outsideSum = 0;
@@ -155,6 +158,8 @@ main( int argc, char* argv[] )
       levelset->SetDataAt( std::min<cmtk::Types::DataItem>( levelsetThreshold, std::max<cmtk::Types::DataItem>( -levelsetThreshold, newLevel ) ), n );
       }
     }
+
+  Progress::Done();
   
   cmtk::VolumeIO::Write( levelset, outFile, verbose );
 
