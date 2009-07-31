@@ -33,7 +33,7 @@
 
 #include <cmtkConsole.h>
 #include <cmtkCommandLine.h>
-#include <cmtkProgress.h>
+#include <cmtkProgressConsole.h>
 
 #include <cmtkXform.h>
 #include <cmtkUniformVolume.h>
@@ -210,7 +210,7 @@ ReformatPushforward()
       }    
     }
   
-  cmtk::ConsoleProgress progressIndicator;
+  cmtk::ProgressConsole progressIndicator;
 
   cmtk::TypedArray::SmartPtr reformatData;
   reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::ReformatPushForwardAccumulate( floatingVolume, TargetToReference, targetVolume ) );
@@ -394,7 +394,7 @@ ReformatPullback()
       cmtk::StdErr << "INFO: Using target data as binary mask.\n";
     }
   
-  cmtk::ConsoleProgress progressIndicator;
+  cmtk::ProgressConsole progressIndicator;
 
   cmtk::TypedArray::SmartPtr reformatData;
   switch ( Interpolation ) 

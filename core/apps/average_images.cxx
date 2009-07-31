@@ -33,7 +33,7 @@
 
 #include <cmtkCommandLine.h>
 #include <cmtkConsole.h>
-#include <cmtkProgress.h>
+#include <cmtkProgressConsole.h>
 
 #include <list>
 #include <algorithm>
@@ -210,7 +210,7 @@ int main( const int argc, const char* argv[] )
     outputData->SetPaddingValue( CMTK_FLOAT_NAN );
     } 
   
-  cmtk::ConsoleProgress progressIndicator;
+  cmtk::ProgressConsole progressIndicator;
   const int pixelsPerPercent = volume->GetNumberOfPixels() / 100;
   cmtk::Progress::SetTotalSteps( 100 );
 

@@ -33,7 +33,7 @@
 
 #include <cmtkConsole.h>
 #include <cmtkCommandLine.h>
-#include <cmtkProgress.h>
+#include <cmtkProgressConsole.h>
 #include <cmtkMemory.h>
 
 #include <cmtkTypedArray.h>
@@ -329,7 +329,7 @@ main( int argc, char* argv[] )
     exit( 1 );
     }
   
-  cmtk::ConsoleProgress progressIndicator;
+  cmtk::ProgressConsole progressIndicator;
   
   if ( Verbose )
     {

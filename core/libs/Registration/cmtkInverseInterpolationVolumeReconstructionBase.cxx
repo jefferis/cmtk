@@ -33,6 +33,7 @@
 
 #include <cmtkInverseInterpolationVolumeReconstructionBase.h>
 #include <cmtkHistogramBase.h>
+#include <cmtkProgress.h>
 
 namespace
 cmtk
@@ -131,10 +132,14 @@ InverseInterpolationVolumeReconstructionBase
       this->m_NeighorhoodMaxPixelValues(i) = this->m_OriginalImageMax;
       }
     }
+
+  Progress::SetTotalSteps( numberOfIterations, "Inverse Interpolation" );
   
   int info;
   ap::lbfgsbminimize( this->m_FunctionAndGradient, numberOfPixels, 5, x, 1e-10 /*epsg*/, 1e-10 /*epsf*/, 1e-10 /*epsx*/, numberOfIterations, 
 		      nbd, this->m_NeighorhoodMinPixelValues, this->m_NeighorhoodMaxPixelValues, info );
+
+  Progress::Done();
   
   if ( info < 0 )
     StdErr << "ERROR: lbfgsbminimize returned status code " << info << "\n";

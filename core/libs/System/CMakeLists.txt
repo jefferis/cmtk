@@ -41,6 +41,7 @@ SET(cmtkSystem_SRCS
   cmtkConsole.cxx
   cmtkFileUtil.cxx
   cmtkProgress.cxx	
+  cmtkProgressConsole.cxx	
   cmtkStackBacktrace
   cmtkStrUtility.cxx
   cmtkThreads.cxx

@@ -66,7 +66,7 @@ FilterVolume::GaussianFilter
   const int dimsY = dims[AXIS_Y];
   const int dimsZ = dims[AXIS_Z];
   
-  Progress::SetTotalSteps( dimsZ );
+  Progress::SetTotalSteps( dimsZ, "Gaussian Filter" );
 
 #pragma omp parallel for
   for ( int z = 0; z < dimsZ; ++z )
@@ -436,7 +436,7 @@ FilterVolume::CoupeFilter
             << dimY << " x " 
             << dimZ << std::endl;
   
-  Progress::SetTotalSteps( dimZ );
+  Progress::SetTotalSteps( dimZ, "Coupe Filter" );
 
   std::vector< std::vector<Types::DataItem>* > NLsPerVoxel;
 
@@ -802,7 +802,7 @@ FilterVolume
   const unsigned int dimsY = dims[AXIS_Y];
   const unsigned int dimsZ = dims[AXIS_Z];
   
-  Progress::SetTotalSteps( dimsZ );
+  Progress::SetTotalSteps( dimsZ, "Rohlfing Intensity-Consistent Filter" );
 
   size_t offset = 0;
   for ( unsigned int z = 0; z < dimsZ; ++z ) 
@@ -904,7 +904,7 @@ FilterVolume::StudholmeFilter
     filterByThread[idx] = filter;
     }
   
-  Progress::SetTotalSteps( dimsZ );
+  Progress::SetTotalSteps( dimsZ, "Studholme Intensity-Consistent Filter" );
 #pragma omp parallel for
   for ( unsigned int row = 0; row < numberOfRows; ++row ) 
     {
@@ -1040,7 +1040,7 @@ FilterVolume::StudholmeFilter
   const unsigned int dimsY = dims[AXIS_Y];
   const unsigned int dimsZ = dims[AXIS_Z];
 
-  Progress::SetTotalSteps( dimsZ );
+  Progress::SetTotalSteps( dimsZ, "Studholme Intensity-Consistent Filter" );
 
   size_t offset = 0;
   for ( unsigned int z = 0; z < dimsZ; ++z ) 

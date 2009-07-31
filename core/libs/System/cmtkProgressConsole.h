@@ -29,47 +29,55 @@
 //
 */
 
-#include <cmtkProgress.h>
-#include <cmtkConsole.h>
+#ifndef __cmtkProgressConsole_h_included_
+#define __cmtkProgressConsole_h_included_
 
-#ifdef CMTK_USE_OPENMP
-#  include <omp.h>
-#endif
+#include <cmtkconfig.h>
+
+#include <cmtkProgress.h>
+
+#include <string>
+
+/** \addtogroup System */
+//@{
 
 namespace
 cmtk
 {
 
-/** \addtogroup System */
-//@{
-
-Progress* Progress::ProgressInstance = 0;
-unsigned int Progress::TotalSteps = 0;
-std::string Progress::m_CurrentTaskName( "" );
-
-void
-Progress::SetTotalSteps( const unsigned int totalSteps, const std::string& currentTaskName )
+/** Progress indicator with console output.
+ */
+class ProgressConsole :
+  /// Inherit generic progress indicator interface.
+  public Progress
 {
-  Self::m_CurrentTaskName = currentTaskName;
-  Self::TotalSteps = totalSteps;
-  if ( ProgressInstance )
-    ProgressInstance->SetTotalStepsVirtual( totalSteps );
-}
+public:
+  /// Default constructor: connect to progress indicator.
+  ProgressConsole( const std::string& programName = std::string("") );
+  
+  /// Output progress to console.
+  virtual ProgressResult SetProgressVirtual( const unsigned int progress );
 
-ProgressResult 
-Progress::SetProgress( const unsigned int progress )
-{
-  if ( ProgressInstance )
-    return ProgressInstance->SetProgressVirtual( progress );
-  else
-    return PROGRESS_OK;
-}
+protected:
+  /// This member function can be overriden by derived classes.
+  virtual void SetTotalStepsVirtual( const unsigned int steps );
 
-void
-Progress::Done()
-{
-  if ( ProgressInstance )
-    ProgressInstance->DoneVirtual();
-}
+  /// Clean up console output.
+  void DoneVirtual();
+
+private:
+  /// Name of this program.
+  std::string m_ProgramName;
+
+  /// Process time at start of task.
+  double m_TimeAtStart;
+
+  /// Flag that indicates whether we're running inside of Slicer3.
+  bool m_InsideSlicer3;
+};
+
+//@}
 
 } // namespace cmtk
+
+#endif // #ifndef __cmtkProgressConsole_h_included_

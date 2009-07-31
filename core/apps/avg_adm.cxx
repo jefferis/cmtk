@@ -33,7 +33,7 @@
 
 #include <cmtkCommandLine.h>
 #include <cmtkConsole.h>
-#include <cmtkProgress.h>
+#include <cmtkProgressConsole.h>
 #include <cmtkThreads.h>
 #include <cmtkTimers.h>
 
@@ -342,7 +342,7 @@ main( int argc, char** argv )
 
   if ( OutImageName ) 
     {
-    cmtk::ConsoleProgress progressIndicator;
+    cmtk::ProgressConsole progressIndicator;
     
     cmtk::ReformatVolume reformat;
     reformat.SetReferenceVolume( refVolume );

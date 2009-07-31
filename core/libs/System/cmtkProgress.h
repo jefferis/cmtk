@@ -34,6 +34,8 @@
 
 #include <cmtkconfig.h>
 
+#include <string>
+
 namespace
 cmtk
 {
@@ -65,7 +67,7 @@ public:
   virtual ~Progress() {};
   
   /// Set total number of steps to complete.
-  static void SetTotalSteps( const unsigned int totalSteps );
+  static void SetTotalSteps( const unsigned int totalSteps, const std::string& taskName = std::string("") );
 
   /// Set number of tasks completed.
   static ProgressResult SetProgress( const unsigned int progress );
@@ -73,14 +75,8 @@ public:
   /// Done with progress indicator.
   static void Done();
 
-  /// Set total number of steps to complete.
-  virtual void SetTotalStepsVirtual( const unsigned int ) {};
-
   /// Set number of tasks completed.
   virtual ProgressResult SetProgressVirtual( const unsigned int progress ) = 0;
-
-  /// This member function can be overriden by derived classes.
-  virtual void DoneVirtual() {};
 
   /// Set progress handler instance.
   static void SetProgressInstance( Self *const progressInstance ) 
@@ -93,28 +89,21 @@ private:
   static Self* ProgressInstance;
 
 protected:
+  /// Name of the current task.
+  static std::string m_CurrentTaskName;
+
   /// Total number of steps in current task.
   static unsigned int TotalSteps;
-};
 
-/** Progress indicator with console output.
- */
-class ConsoleProgress :
-  /// Inherit generic progress indicator interface.
-  public Progress
-{
-public:
-  /// Default constructor: connect to progress indicator.
-  ConsoleProgress() 
-  {
-    Progress::SetProgressInstance( this );
-  }
-  
-  /// Output progress to console.
-  virtual ProgressResult SetProgressVirtual( const unsigned int progress );
+  /** Set total number of steps to complete.
+   * This member function can be overriden by derived classes.
+   */
+  virtual void SetTotalStepsVirtual( const unsigned int ) {};
 
-  /// CLean up console output.
-  void DoneVirtual();
+  /** Clean up progress output.
+   * This member function can be overriden by derived classes.
+   */
+  virtual void DoneVirtual() {};
 };
 
 //@}

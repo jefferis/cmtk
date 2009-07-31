@@ -2373,6 +2373,7 @@ lbfgsbminimize
 	  }
 	task = 2;
 	iter = iter+1;
+	functionAndGradient->NextIteration( iter );
 	info = -2;
 	return;
 	}
@@ -2392,6 +2393,7 @@ lbfgsbminimize
 	}
       }
     iter = iter+1;
+    functionAndGradient->NextIteration( iter );
     ap::lbfgsbnewiteration(x, f, g);
     ap::lbfgsbprojgr(n, l, u, nbd, x, g, sbgnrm);
     if( sbgnrm<=epsg )

@@ -33,7 +33,7 @@
 
 #include <cmtkConsole.h>
 #include <cmtkCommandLine.h>
-#include <cmtkProgress.h>
+#include <cmtkProgressConsole.h>
 
 #include <cmtkTypedArray.h>
 #include <cmtkUniformVolume.h>
@@ -136,7 +136,7 @@ main ( int argc, char* argv[] )
     maskData = maskVolume->GetData();
     }
 
-  cmtk::ConsoleProgress progressIndicator;
+  cmtk::ProgressConsole progressIndicator;
 
   double overlapEqual = 0, overlapVolume = 0, overlapInverse = 0;
   

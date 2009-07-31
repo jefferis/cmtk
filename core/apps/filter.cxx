@@ -33,7 +33,7 @@
 
 #include <cmtkConsole.h>
 #include <cmtkCommandLine.h>
-#include <cmtkProgress.h>
+#include <cmtkProgressConsole.h>
 
 #include <string.h>
 #include <list>
@@ -76,7 +76,7 @@ std::list<const char*> ImageNameList;
 
 int main( int argc, char* argv[] )
 {
-  cmtk::ConsoleProgress progressIndicator;
+  cmtk::ProgressConsole progressIndicator( "Image Filtering" );
   try 
     {
     cmtk::CommandLine cl( argc, argv );

@@ -33,6 +33,7 @@
 #include <cmtkHistogramBase.h>
 #include <cmtkTypedArrayNoiseEstimatorNaiveGaussian.h>
 #include <cmtkVolumeIO.h>
+#include <cmtkProgress.h>
 
 #include <algorithm>
 
@@ -225,9 +226,14 @@ VolumeInjectionReconstruction
     this->m_NeighorhoodMinPixelValues(i) = this->m_OriginalImageMax;
     }
 
+  Progress::SetTotalSteps( correctedImageNumPixels, "Anisotropic Volume Injection" );
+
 #pragma omp parallel for schedule(dynamic)
   for ( size_t correctedPx = 0; correctedPx < correctedImageNumPixels; ++correctedPx )
     {
+    if ( (correctedPx % ((size_t)1e5)) == 0 )
+      Progress::SetProgress( correctedPx );
+
     ap::real_value_type sum = 0;
     ap::real_value_type weight = 0;
 
@@ -299,6 +305,8 @@ VolumeInjectionReconstruction
     else
       correctedImageData->SetPaddingAt( correctedPx );
     }
+
+  Progress::Done();
 }
 
 void
@@ -334,8 +342,12 @@ VolumeInjectionReconstruction
   std::vector<ap::real_value_type> splattedImage( correctedImageNumPixels );
   std::fill( splattedImage.begin(), splattedImage.end(), 0 );  
   
+  Progress::SetTotalSteps( this->m_NumberOfPasses, "Isotropic Volume Injection" );
+
   for ( int pass = 0; pass < this->m_NumberOfPasses; ++pass )
     {
+    Progress::SetProgress( pass );
+
     const ap::real_value_type passImageWeight = this->m_PassWeights[pass];
 
     if ( passImageWeight > 0 )
@@ -417,9 +429,11 @@ VolumeInjectionReconstruction
     const Types::DataItem kernelWeightPixel = static_cast<Types::DataItem>( kernelWeights[idx] );
     if ( kernelWeightPixel > 0 ) // check if pixel is a neighbour
       {
-		  this->m_CorrectedImage->SetDataAt( static_cast<Types::DataItem>( splattedImage[idx] / kernelWeightPixel ), idx ); // Set normalized data on grid
+      this->m_CorrectedImage->SetDataAt( static_cast<Types::DataItem>( splattedImage[idx] / kernelWeightPixel ), idx ); // Set normalized data on grid
       }
     }
+  
+  Progress::Done();
 }
 
 UniformVolume::SmartPtr&

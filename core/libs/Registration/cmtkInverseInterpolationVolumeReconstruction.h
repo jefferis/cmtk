@@ -39,6 +39,7 @@
 #include <cmtkAffineRegistration.h>
 #include <cmtkAffineXform.h>
 #include <cmtkUniformVolume.h>
+#include <cmtkProgress.h>
 
 #include <ap.h>
 #include <vector>
@@ -120,6 +121,12 @@ private:
 
     /// Evaluate function and gradient.
     virtual void Evaluate( const ap::real_1d_array& x, ap::real_value_type& f, ap::real_1d_array& g );
+
+    /// Get notified when L-BFGS-B goes into next iteration.
+    virtual void NextIteration( const int iteration )
+    {
+      Progress::SetProgress( iteration );
+    }
 
   private:
     /// Pointer to actual function class.
