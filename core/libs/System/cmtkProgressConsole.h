@@ -46,6 +46,11 @@ cmtk
 {
 
 /** Progress indicator with console output.
+ * This class displays the programm progress on the console, using cmtk::StdErr.
+ * If this process is being run from inside Slicer3, output is based on Slicer's
+ * XML-type progress reporting instead, and this is written to std::cout.
+ *
+ *\see http://www.slicer.org/slicerWiki/index.php/Slicer3:Execution_Model_Documentation#Showing_Progress_in_an_Application
  */
 class ProgressConsole :
   /// Inherit generic progress indicator interface.
