@@ -88,6 +88,7 @@ main( const int argc, const char *argv[] )
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Be verbose" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
+    cl.AddSwitch( Key( 'F', "write-float" ), &OutputFloatImage, true, "Write output image with floating point pixel data. If this is not given, the input data type is used." );
 
     cl.BeginGroup( "Bias Field", "Bias Field Parameterization" );
     cl.AddOption( Key( 'A', "degree-add" ), &PolynomialDegreeAdd, "Polynomial degree for additive correction." );
@@ -117,7 +118,6 @@ main( const int argc, const char *argv[] )
     cl.AddOption( Key( "import-bias-mul" ), &ImportBiasFieldMul, "Import multiplicative bias field (disables optimization)." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddOption( Key( "write-bias-add" ), &FNameBiasFieldAdd, "File name for output of additive bias field." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddOption( Key( "write-bias-mul" ), &FNameBiasFieldMul, "File name for output of multiplicative bias field." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
-    cl.AddSwitch( Key( 'F', "write-float" ), &OutputFloatImage, true, "Write output image with floating point pixel data. If this is not given, the input data type is used." );
     cl.EndGroup();
     
     cl.AddParameter( &FNameInputImage, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
