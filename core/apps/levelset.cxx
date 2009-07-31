@@ -79,7 +79,7 @@ main( int argc, char* argv[] )
 
     cl.AddSwitch( Key( 'b', "binarize" ), &binarize, true, "Binarize levelset and write as byte mask, rather than write floating-point levelset function itself." );
 
-    cl.BeginGroup( "Eveluation", "Parameters of Levelset Evolution" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
+    cl.BeginGroup( "Levelset Evolution Parameters", "These parameters of control the evolution of the levelset function" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
     cl.AddOption( Key( 'n', "iterations" ), &numberOfIterations, "Maximum number of iterations" );
     cl.AddSwitch( Key( 'f', "force-iterations" ), &forceIterations, true, "Force given number of iterations, even when convergence has been detected" );
 
@@ -100,7 +100,7 @@ main( int argc, char* argv[] )
     }
 
   // Instantiate programm progress indicator.
-  cmtk::ProgressConsole progressIndicator( "Levelset-type Segmentation" );
+  cmtk::ProgressConsole progressIndicator( "LevelsetSegmentation" );
 
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( inFile, verbose ) );
   const size_t numberOfPixels = volume->GetNumberOfPixels();
