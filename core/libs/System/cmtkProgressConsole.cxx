@@ -71,7 +71,7 @@ ProgressConsole::SetProgressVirtual( const unsigned int progress )
 
   if ( this->m_InsideSlicer3 )
     {
-    std::cout << "<filter-progress>\n" << fraction << "\n</filter-progress>\n";
+    std::cout << "<filter-progress>" << fraction << "</filter-progress>\n";
     }
   else
     {
@@ -88,8 +88,10 @@ ProgressConsole::SetTotalStepsVirtual( const unsigned int )
 
   if ( this->m_InsideSlicer3 )
     {
-    std::cout << "<filter-start>\n<filter-name>\n" << this->m_ProgramName << "\n</filter-name>\n"
-	      << "<filter-comment>\n" << this->m_CurrentTaskName << "\n</filter-comment>\n</filter-start>\n";
+    std::cout << "<filter-start>\n"
+	      << "<filter-name>" << this->m_ProgramName << "</filter-name>\n"
+	      << "<filter-comment> \"" << this->m_CurrentTaskName << "\" </filter-comment>\n"
+	      << "</filter-start>\n";
     }
 }
 
@@ -98,8 +100,10 @@ ProgressConsole::DoneVirtual()
 {
   if ( this->m_InsideSlicer3 )
     {
-    std::cout << "<filter-end>\n<filter-name>\n" << this->m_ProgramName << "\n</filter-name>\n"
-	      << "<filter-time>\n" << Timers::GetTimeProcess() - this->m_TimeAtStart << "\n</filter-time>\n</filter-end>\n";
+    std::cout << "<filter-end>\n"
+	      << "<filter-name>" << this->m_ProgramName << "</filter-name>\n"
+	      << "<filter-time>" << Timers::GetTimeProcess() - this->m_TimeAtStart << "</filter-time>\n"
+	      << "</filter-end>\n";
     }
   else
     {
