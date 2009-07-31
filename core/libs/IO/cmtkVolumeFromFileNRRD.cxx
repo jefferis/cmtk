@@ -293,6 +293,14 @@ VolumeFromFile::WriteNRRD
       {
       nval->space = nrrdSpace3DLeftHandedTime;
       }
+    else
+      {
+      if ( space.length() == 3 )
+	{
+	writeVolume->ChangeCoordinateSpace( "RAS" );
+	nval->space = nrrdSpaceRightAnteriorSuperior;
+	}
+      }
     
     const AffineXform::MatrixType& matrix = writeVolume->m_IndexToPhysicalMatrix;
     double spaceDir[NRRD_DIM_MAX][NRRD_SPACE_DIM_MAX];
