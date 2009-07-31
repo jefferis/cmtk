@@ -64,9 +64,9 @@ ProgressConsole::SetProgressVirtual( const unsigned int progress )
     return PROGRESS_OK;
     }
 
-  const float fraction = (progress * omp_get_num_threads()) / this->TotalSteps;
+  const float fraction = static_cast<float>( progress * omp_get_num_threads() ) / this->TotalSteps;
 #else
-  const float fraction = 1.0 * progress / this->TotalSteps;
+  const float fraction = static_cast<float>( progress ) / this->TotalSteps;
 #endif
 
   if ( this->m_InsideSlicer3 )
