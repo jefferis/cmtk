@@ -29,8 +29,8 @@
 //
 */
 
-#ifndef __cmtkSmartPtr_h_included_
-#define __cmtkSmartPtr_h_included_
+#ifndef __cmtkSmartPtrConst_h_included_
+#define __cmtkSmartPtrConst_h_included_
 
 #include <cmtkconfig.h>
 
@@ -38,12 +38,10 @@
 #  define NULL 0
 #endif
 
-#ifdef DEBUG
-#  include <stdio.h>
-#endif
 #include <assert.h>
 
 #include <cmtkSafeCounter.h>
+#include <cmtkSmartPtr.h>
 
 namespace
 cmtk
@@ -55,7 +53,7 @@ cmtk
 /** Smart pointer with reference counting.
  */
 template<class T>
-class SmartPointer
+class SmartPointerConst
 {
 private:
   /// Pointer to detached reference counter for this object.
@@ -67,7 +65,7 @@ private:
   /** Construct from dumb pointer and existing reference counter.
    * The reference counter is increased in the process.
    */
-  SmartPointer( T *const object, SafeCounter *const counter ) 
+  SmartPointerConst( T *const object, SafeCounter *const counter ) 
   {
     Object = object;
     ReferenceCount = counter;
@@ -76,7 +74,7 @@ private:
   
 public:
   /// This class instance.
-  typedef SmartPointer<T> Self;
+  typedef SmartPointerConst<T> Self;
 
   /// The underlying raw pointer type.
   typedef T* PointerType;
@@ -91,16 +89,34 @@ public:
    * Note that you MUST NEVER use this constructor more than once for each
    * dumb pointer, other than NULL!
    */
-  explicit SmartPointer( T *const object = NULL ) 
+  explicit SmartPointerConst( T *const object = NULL ) 
   { 
     ReferenceCount = new SafeCounter( 1 );
     Object = object;
   }
 
-  /** Construct from other smart pointer reference.
+  /** Construct from const smart pointer reference.
    * Increment reference counter in the process.
    */
-  SmartPointer( const Self& ptr ) 
+  SmartPointerConst( const Self& ptr ) 
+  {
+    if ( &ptr ) 
+      {
+      ReferenceCount = ptr.ReferenceCount;
+      ReferenceCount->Increment();
+      Object = ptr.Object;
+      } 
+    else 
+      {
+      ReferenceCount = new SafeCounter( 1 );
+      Object = NULL;
+      }
+  }
+  
+  /** Construct from non-const smart pointer reference.
+   * Increment reference counter in the process.
+   */
+  SmartPointerConst( const SmartPointer<T>& ptr ) 
   {
     if ( &ptr ) 
       {
@@ -116,45 +132,27 @@ public:
   }
   
   /// Destruct: decrease reference pointer and free dumb pointer if necessary.
-  ~SmartPointer() 
+  ~SmartPointerConst() 
   {
     assert( ReferenceCount != NULL ); // we may have Object=NULL, but ReferenceCount should never be!
     if ( ! ReferenceCount->Decrement() ) 
       {
       delete ReferenceCount;
-#ifdef DEBUG
-      ReferenceCount = NULL;
-#endif
       if ( Object ) 
 	{
 	delete Object;
-#ifdef DEBUG
-	Object = NULL;
-#endif
 	}
       }
   }
-
-  /// De-referencing operator (returns non-constant object).
-  T& operator*() { return *Object; }
 
   /// De-referencing operator (returns constant object).
   const T& operator*() const { return *Object; }
 
   /// De-referencing operator (returns volatile object).
-  volatile T& operator*() volatile { return *Object; }
-
-  /// De-referencing operator (returns volatile object).
   const volatile T& operator*() const volatile { return *Object; }
-
-  /// De-referencing operator (returns non-constant object pointer).
-  T* operator->() { return Object; }
 
   /// De-referencing operator (returns constant object pointer).
   const T* operator->() const { return Object; }
-
-  /// De-referencing operator (returns constant object pointer).
-  volatile T* operator->() volatile { return Object; }
 
   /// De-referencing operator (returns constant object pointer).
   const volatile T* operator->() const volatile { return Object; }
@@ -162,20 +160,11 @@ public:
   /// Implicit conversion to constant pointer.
   operator const T*() const { return Object; }
   
-  /// Implicit conversion to bool (validity).
-  //  operator bool() const { return Object != NULL; }
-  
   /// Explicit conversion to bool (validity).
   bool IsNull() const { return Object == NULL; }
   
-  /// Explicit conversion to non-constant pointer.
-  T* GetPtr() { return Object; }
-
   /// Explicit conversion to constant pointer.
   const T* GetPtr() const { return Object; }
-
-  /// Explicit conversion to volatile pointer.
-  volatile T* GetPtr() volatile { return Object; }
 
   /// Explicit conversion to constant and volatile pointer.
   const volatile T* GetPtr() const volatile { return Object; }
@@ -183,9 +172,9 @@ public:
   /** Release control of this pointer.
    *\note This is a dangerous function. Be sure you know what you are doing!
    */
-  T* ReleasePtr() 
+  const T* ReleasePtr() 
   { 
-    T* object = Object; 
+    const T* object = Object; 
     Object = NULL; 
     return object; 
   }
@@ -194,6 +183,16 @@ public:
    * Implemented using Swap() operator.
    */
   Self& operator= ( const Self& other ) 
+  {
+    Self temp( other );
+    this->Swap( temp );
+    return *this;
+  }
+
+  /** Assignment operator from non-const smart pointer.
+   * Implemented using Swap() operator.
+   */
+  Self& operator= ( const SmartPointer<T>& other ) 
   {
     Self temp( other );
     this->Swap( temp );
@@ -222,9 +221,9 @@ public:
   }
   
   /// Implicit cast conversion operator.
-  template<class T2> operator SmartPointer<T2>() 
+  template<class T2> operator SmartPointerConst<T2>() 
   { 
-    return SmartPointer<T2>( Object, ReferenceCount );
+    return SmartPointerConst<T2>( Object, ReferenceCount );
   }
   
   ///Dynamic cast between smart pointer types.
@@ -255,16 +254,13 @@ private:
   }
 
   /// Make all template instances friends for easy type casting.
-  template<class T2> friend class SmartPointer;
-
-  /// Make all template instances of const smart pointers friends for easy type casting.
   template<class T2> friend class SmartPointerConst;
 };
 
-template<typename T> SmartPointer<T> SmartPointer<T>::Null;
+template<typename T> SmartPointerConst<T> SmartPointerConst<T>::Null;
 
 //@}
 
 } // namespace cmtk
 
-#endif // define __cmtkSmartPtr_h_included_
+#endif // define __cmtkSmartPtrConst_h_included_

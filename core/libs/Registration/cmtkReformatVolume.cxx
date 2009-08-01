@@ -78,7 +78,7 @@ ReformatVolume::ReformatVolume()
 
 void
 ReformatVolume::SetReferenceVolume
-( UniformVolume::SmartPtr& referenceVolume )
+( UniformVolume::SmartPtrConst referenceVolume )
 {
   ReferenceVolume = referenceVolume;
   if ( ReferenceVolume && ReferenceVolume->GetData() ) 
@@ -669,7 +669,7 @@ ReformatVolume::CreateTransformedReference
 
 UniformVolumeInterpolatorBase*
 ReformatVolume::CreateInterpolator
-( const cmtk::Interpolators::InterpolationEnum interpolation, UniformVolume::SmartPtr& volume )
+( const cmtk::Interpolators::InterpolationEnum interpolation, UniformVolume::SmartPtrConst volume )
 {
   switch ( interpolation )
     {
@@ -704,7 +704,7 @@ ReformatVolume::CreateInterpolator
 
 UniformVolumeInterpolatorBase*
 ReformatVolume::CreateInterpolator
-( UniformVolume::SmartPtr& volume )
+( UniformVolume::SmartPtrConst volume )
 {
   return Self::CreateInterpolator( this->Interpolation, volume );
 }

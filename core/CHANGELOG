@@ -1,6 +1,8 @@
 Release CMTK-1.1.0:
 
 - API: no longer allow short-only options for command lines.
+- API: introduced new class for smart pointers to constant objects,
+    cmtk::SmartPointerConst, for improved const-consistency.
 
 - Changed: command line tools now need to "opt-in" for XML support. This is to
     prevent cluttering Slicer's menu with modules that do not actually support
