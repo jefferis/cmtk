@@ -121,10 +121,10 @@ public:
   }
 
   /// Create interpolator object for given volume according to interpolation mode set in this object.
-  UniformVolumeInterpolatorBase* CreateInterpolator( UniformVolume::SmartPtrConst volume );
+  UniformVolumeInterpolatorBase* CreateInterpolator( const UniformVolume::SmartPtr& volume );
 
   /// Create interpolator object for given volume according to interpolation mode set in this object.
-  static UniformVolumeInterpolatorBase* CreateInterpolator( const cmtk::Interpolators::InterpolationEnum interpolation, UniformVolume::SmartPtrConst volume );
+  static UniformVolumeInterpolatorBase* CreateInterpolator( const cmtk::Interpolators::InterpolationEnum interpolation, const UniformVolume::SmartPtr& volume );
 
   /// Set user-defined data type.
   void SetUserDataType( const ScalarDataType dataType ) 
@@ -133,7 +133,7 @@ public:
   }
 
   /// Set the reference volume for reformatting.
-  void SetReferenceVolume( UniformVolume::SmartPtrConst referenceVolume );
+  void SetReferenceVolume( const UniformVolume::SmartPtr& referenceVolume );
 
   /// Set the floating (transformed) volume for reformatting.
   void SetFloatingVolume( UniformVolume::SmartPtr& floatingVolume );
@@ -297,7 +297,7 @@ private:
   ScalarDataType m_UserDataType;
 
   /// Pointer to the reference volume.
-  UniformVolume::SmartPtrConst ReferenceVolume;
+  const UniformVolume::SmartPtr ReferenceVolume;
 
   /// Pointer to the floating volume.
   UniformVolume::SmartPtr FloatingVolume;

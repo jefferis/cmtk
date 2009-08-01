@@ -56,7 +56,7 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Constructor.
-  UniformVolumeInterpolatorBase( UniformVolume::SmartPtrConst volume = UniformVolume::SmartPtrConst::Null )
+  UniformVolumeInterpolatorBase( const UniformVolume::SmartPtr& volume = UniformVolume::SmartPtr::Null )
   {
     this->SetVolume( volume );
   }
@@ -69,13 +69,13 @@ public:
    * from. It may also perform some pre-computations to speed up interpolation,
    * such as indexing etc. It does not perform any interpolation itself.
    */
-  virtual void SetVolume( UniformVolume::SmartPtrConst volume )
+  virtual void SetVolume( const UniformVolume::SmartPtr& volume )
   {
     this->m_Volume = volume;
   }
   
   /// Get smart pointer to linked volume.
-  virtual UniformVolume::SmartPtrConst GetVolume() const
+  virtual const UniformVolume::SmartPtr& GetVolume() const
   {
     return this->m_Volume;
   } 
@@ -93,7 +93,7 @@ public:
 
 protected:
   /// Pointer to volume that we interpolate from.
-  UniformVolume::SmartPtrConst m_Volume;
+  const UniformVolume::SmartPtr m_Volume;
 };
 
 //@}

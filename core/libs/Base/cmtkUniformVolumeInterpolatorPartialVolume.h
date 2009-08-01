@@ -61,7 +61,7 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Constructor.
-  UniformVolumeInterpolatorPartialVolume( UniformVolume::SmartPtrConst volume = UniformVolume::SmartPtrConst::Null )
+  UniformVolumeInterpolatorPartialVolume( const UniformVolume::SmartPtr& volume = UniformVolume::SmartPtr::Null )
     : UniformVolumeInterpolatorBase( volume )
   {
   }

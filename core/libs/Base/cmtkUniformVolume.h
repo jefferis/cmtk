@@ -36,7 +36,6 @@
 
 #include <cmtkVolume.h>
 #include <cmtkSmartPtr.h>
-#include <cmtkSmartPtrConst.h>
 
 #include <algorithm>
 
@@ -69,9 +68,6 @@ public:
 
   /// Smart pointer to UniformVolume.
   typedef SmartPointer<Self> SmartPtr;
-
-  /// Smart pointer to const UniformVolume.
-  typedef SmartPointerConst<Self> SmartPtrConst;
 
   /// Points array type.
   typedef std::vector< std::vector<Types::Coordinate> > PointsArrayType;

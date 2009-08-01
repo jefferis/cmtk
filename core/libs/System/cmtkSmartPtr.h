@@ -193,7 +193,17 @@ public:
   /** Assignment operator.
    * Implemented using Swap() operator.
    */
-  Self& operator= ( const Self& other ) 
+  const Self& operator= ( const Self& other ) const
+  {
+    const Self temp( other );
+    this->Swap( temp );
+    return *this;
+  }
+
+  /** Assignment operator.
+   * Implemented using Swap() operator.
+   */
+  Self& operator= ( Self& other )
   {
     Self temp( other );
     this->Swap( temp );
@@ -240,14 +250,32 @@ private:
    * This function is used for reference-safe assignment (i.e., replacing) of
    * smart pointer objects.
    */
-  void Swap( Self& other ) 
+  void Swap( const Self& other ) const
+  {
+    this->SwapPrimitive( ReferenceCount, other.ReferenceCount );
+    this->SwapPrimitive( Object, other.Object );
+  }
+  
+  /** Swap two smart pointers.
+   * This function is used for reference-safe assignment (i.e., replacing) of
+   * smart pointer objects.
+   */
+  void Swap( Self& other )
   {
     this->SwapPrimitive( ReferenceCount, other.ReferenceCount );
     this->SwapPrimitive( Object, other.Object );
   }
   
   /// Helper function that swaps two primitive objects (or pointers).
-  template<class TT> void SwapPrimitive( TT& a, TT& b ) 
+  template<class TT> void SwapPrimitive( TT& a, TT& b )
+  {
+    TT temp = a;
+    a = b;
+    b = temp;
+  }
+
+  /// Helper function that swaps two primitive objects (or pointers).
+  template<class TT> void SwapPrimitive( TT& a, TT& b ) const
   {
     TT temp = a;
     a = b;
