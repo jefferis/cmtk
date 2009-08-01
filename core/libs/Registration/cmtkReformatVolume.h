@@ -136,10 +136,10 @@ public:
   void SetReferenceVolume( const UniformVolume::SmartPtr& referenceVolume );
 
   /// Set the floating (transformed) volume for reformatting.
-  void SetFloatingVolume( UniformVolume::SmartPtr& floatingVolume );
+  void SetFloatingVolume( const UniformVolume::SmartPtr& floatingVolume );
 
   /// Set affine transformation to be applied to the floating volume.
-  void SetAffineXform( AffineXform::SmartPtr& affineXform );
+  void SetAffineXform( const AffineXform::SmartPtr& affineXform );
 
   /// Set the local deformation to be applied to the reference grid.
   void SetWarpXform( WarpXform::SmartPtr& warpXform );
@@ -300,13 +300,13 @@ private:
   const UniformVolume::SmartPtr ReferenceVolume;
 
   /// Pointer to the floating volume.
-  UniformVolume::SmartPtr FloatingVolume;
+  const UniformVolume::SmartPtr FloatingVolume;
 
   /// Make target volume matching (reoriented) reference volume.
   UniformVolume* MakeTargetVolume() const;
 
   /// Pointer to the affine transformation of the floating volume.
-  AffineXform::SmartPtr m_AffineXform;
+  const AffineXform::SmartPtr m_AffineXform;
   
   /// Pointer to the local deformation of the reference grid.
   WarpXform::SmartPtr m_WarpXform;

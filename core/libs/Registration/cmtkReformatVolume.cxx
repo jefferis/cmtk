@@ -91,7 +91,7 @@ ReformatVolume::SetReferenceVolume
 
 void 
 ReformatVolume::SetFloatingVolume
-( UniformVolume::SmartPtr& floatingVolume )
+( const UniformVolume::SmartPtr& floatingVolume )
 {
   FloatingVolume = floatingVolume;
   if ( FloatingVolume && FloatingVolume->GetData() ) 
@@ -103,7 +103,7 @@ ReformatVolume::SetFloatingVolume
 }
 
 void
-ReformatVolume::SetAffineXform( AffineXform::SmartPtr& affineXform )
+ReformatVolume::SetAffineXform( const AffineXform::SmartPtr& affineXform )
 {
   this->m_AffineXform = affineXform;
 }
