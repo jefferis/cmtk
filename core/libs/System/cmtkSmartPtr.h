@@ -55,11 +55,7 @@ cmtk
 /** Smart pointer with reference counting.
  */
 template<class T>
-#if defined(_MSC_VER)
-class __declspec( dllexport ) SmartPointer
-#else 
 class SmartPointer
-#endif
 {
 private:
   /// Pointer to detached reference counter for this object.
