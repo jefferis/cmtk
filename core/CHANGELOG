@@ -3,6 +3,12 @@ Release CMTK-1.1.0:
 - API: no longer allow short-only options for command lines.
 - API: cmtk::SmartPointer now supports smart pointers to constant objects for
     improved const-consistency.
+- API: begin decoupling the actual transformation classes (e.g.,
+    SplineWarpXform) from their reference image grids (used for
+    precomputations). Instead, use classes like the new
+    SplineWarpXformUniformVolume to tie both together, thus allowing more
+    transformation objects to remain const in more situations (see, for
+    example, modified implementation of ReformatVolume::WarpXform).
 
 - Changed: command line tools now need to "opt-in" for XML support. This is to
     prevent cluttering Slicer's menu with modules that do not actually support
