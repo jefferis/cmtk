@@ -57,9 +57,9 @@
 
 bool Verbose = false;
 
-float MinValue = 0;
+float MinValue = -1e5;
 bool MinValueSet = false;
-float MaxValue = 0;
+float MaxValue = 1e5;
 bool MaxValueSet = false;
 
 cmtk::Types::Coordinate Sampling = 1;
@@ -67,7 +67,7 @@ cmtk::Types::Coordinate Accuracy = 0.1;
 
 cmtk::Interpolators::InterpolationEnum Interpolation = cmtk::Interpolators::LINEAR;
 
-int Levels = 1;
+int Levels = 4;
 
 bool OutputOnly = false;
 cmtk::Types::Coordinate Rho, Theta, Phi;
@@ -124,7 +124,7 @@ bool ParseCommandLine ( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Registration" );
     
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Turn on verbosity mode." );
+    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Turn on verbosity mode." )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
     
     cl.BeginGroup( "Optimization", "Optimization" );
     cl.AddOption( Key( 'a', "accuracy" ), &Accuracy, "Accuracy (final optimization step size in [mm]." );
@@ -143,25 +143,24 @@ bool ParseCommandLine ( const int argc, const char* argv[] )
     initialPlane->AddSwitch( Key( "initial-yz" ), SYMPL_INIT_YZ, "Approximately YZ plane symmetry" );
     cl.EndGroup();
     
-    cl.BeginGroup( "Pre-computed", "Pre-computed symmetry" );
+    cl.BeginGroup( "Pre-computed", "Pre-computed symmetry" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
     cl.AddOption( Key( "output-only" ), &SymmetryParameters, "Give symmetry parameters [Rho Theta Phi] as option, skip search.", &OutputOnly );
     cl.AddOption( Key( "output-only-file" ), &SymmetryParametersFile, "Read symmetry parameters from file, skip search.", &OutputOnly );
     cl.EndGroup();
     
-    cl.BeginGroup( "Preprocessing", "Data pre-processing" );
+    cl.BeginGroup( "Preprocessing", "Data pre-processing" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
     cl.AddOption( Key( "min-value" ), &MinValue, "Force minumum data value.", &MinValueSet );
     cl.AddOption( Key( "max-value" ), &MaxValue, "Force maximum data value.", &MaxValueSet );
     cl.EndGroup();
     
-    cl.BeginGroup( "Interpolation", "Interpolation" );
-    cl.AddSwitch( Key( 'L', "linear" ), &Interpolation, cmtk::Interpolators::LINEAR, "Use linear image interpolation for output." );
-    cl.AddSwitch( Key( 'C', "cubic" ), &Interpolation, cmtk::Interpolators::CUBIC, "Use cubic image interpolation for output." );
-    cl.AddSwitch( Key( 'S', "sinc" ), &Interpolation, cmtk::Interpolators::COSINE_SINC, "Use cosine-windowed sinc image interpolation for output." );
-    cl.EndGroup();
+    cl.BeginGroup( "OutputImages", "Output of Images" );
+    cmtk::CommandLine::EnumGroup<cmtk::Interpolators::InterpolationEnum>::SmartPtr
+      interpGroup = cl.AddEnum( "interpolation", &Interpolation, "Interpolation method used for reformatted output data" );
+    interpGroup->AddSwitch( Key( 'L', "linear" ), cmtk::Interpolators::LINEAR, "Use linear image interpolation for output." );
+    interpGroup->AddSwitch( Key( 'C', "cubic" ), cmtk::Interpolators::CUBIC, "Use cubic image interpolation for output." );
+    interpGroup->AddSwitch( Key( 'S', "sinc" ), cmtk::Interpolators::COSINE_SINC, "Use cosine-windowed sinc image interpolation for output." );
     
-    cl.BeginGroup( "Output", "Output" );
-    cl.AddOption( Key( 'o', "outfile" ), &SymmetryOutFileName, "File name for symmetry plane parameter output." );
-    cl.AddOption( Key( 'P', "pad-out" ), &PadOutValue, "Padding value for output images.", &PadOutValueSet );
+    cl.AddOption( Key( 'P', "pad-out" ), &PadOutValue, "Padding value for output images.", &PadOutValueSet )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
     cl.AddOption( Key( "mark-value" ), &MarkPlaneValue, "Data value to mark (draw) symmetry plane.", &DoWriteMarked );
     cl.AddOption( Key( "write-marked" ), &MarkedOutFile, "File name for output image with marked symmetry plane.", &DoWriteMarked )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
@@ -172,6 +171,10 @@ bool ParseCommandLine ( const int argc, const char* argv[] )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddOption( Key( "write-mirror" ), &MirrorOutFile, "File name for image mirrored w.r.t. symmetry plane.", &DoWriteMirror )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.EndGroup();
+
+    cl.BeginGroup( "OutputParameters", "Output of Parameters" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
+    cl.AddOption( Key( 'o', "outfile" ), &SymmetryOutFileName, "File name for symmetry plane parameter output." );
     cl.AddOption( Key( "write-xform" ), &WriteXformPath, "Write affine alignment transformation to file" );
     cl.EndGroup();
     
