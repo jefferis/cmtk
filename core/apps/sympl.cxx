@@ -47,6 +47,7 @@
 #include <cmtkCommandLine.h>
 #include <cmtkConsole.h>
 #include <cmtkClassStream.h>
+#include <cmtkProgressConsole.h>
 
 #include <cmtkReformatVolume.h>
 #include <cmtkUniformVolumeInterpolator.h>
@@ -114,86 +115,96 @@ InitialPlaneEnum InitialPlane = SYMPL_INIT_YZ;
 
 bool ParseCommandLine ( const int argc, const char* argv[] )
 {
-  cmtk::CommandLine cl( argc, argv );
-  cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Symmetry plane" );
-  cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute the approximate symmetry plane of an image, e.g., to determine the mid-sagittal plane in human brain images." );
-  cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] image" );
-
-  typedef cmtk::CommandLine::Key Key;
-  cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Turn on verbosity mode." );
-
-  cl.BeginGroup( "Optimization", "Optimization" );
-  cl.AddOption( Key( 'a', "accuracy" ), &Accuracy, "Accuracy (final optimization step size in [mm]." );
-  cl.AddOption( Key( 's', "sampling" ), &Sampling, "Resampled image resolution." );
-  cl.AddOption( Key( 'l', "levels" ), &Levels, "Number of resolution levels." );
-  cl.EndGroup();
-
-  cl.BeginGroup( "Initial", "Initial approximate symmetry plane orientation" );
-  cl.AddSwitch( Key( "initial-xy" ), &InitialPlane, SYMPL_INIT_XY, "XY plane: axial symmetry" );
-  cl.AddSwitch( Key( "initial-xz" ), &InitialPlane, SYMPL_INIT_XZ, "XZ plane: coronal symmetry" );
-  cl.AddSwitch( Key( "initial-yz" ), &InitialPlane, SYMPL_INIT_YZ, "YZ plane: sagittal symmetry" );
-  cl.EndGroup();
-
-  cl.BeginGroup( "Pre-computed", "Pre-computed symmetry" );
-  cl.AddOption( Key( "output-only" ), &SymmetryParameters, "Give symmetry parameters [Rho Theta Phi] as option, skip search.", &OutputOnly );
-  cl.AddOption( Key( "output-only-file" ), &SymmetryParametersFile, "Read symmetry parameters from file, skip search.", &OutputOnly );
-  cl.EndGroup();
-
-  cl.BeginGroup( "Preprocessing", "Data pre-processing" );
-  cl.AddOption( Key( "min-value" ), &MinValue, "Force minumum data value.", &MinValueSet );
-  cl.AddOption( Key( "max-value" ), &MaxValue, "Force maximum data value.", &MaxValueSet );
-  cl.EndGroup();
-
-  cl.BeginGroup( "Interpolation", "Interpolation" );
-  cl.AddSwitch( Key( 'L', "linear" ), &Interpolation, cmtk::Interpolators::LINEAR, "Use linear image interpolation for output." );
-  cl.AddSwitch( Key( 'C', "cubic" ), &Interpolation, cmtk::Interpolators::CUBIC, "Use cubic image interpolation for output." );
-  cl.AddSwitch( Key( 'S', "sinc" ), &Interpolation, cmtk::Interpolators::COSINE_SINC, "Use cosine-windowed sinc image interpolation for output." );
-  cl.EndGroup();
-
-  cl.BeginGroup( "Output", "Output" );
-  cl.AddOption( Key( 'o', "outfile" ), &SymmetryOutFileName, "File name for symmetry plane parameter output." );
-  cl.AddOption( Key( 'P', "pad-out" ), &PadOutValue, "Padding value for output images.", &PadOutValueSet );
-  cl.AddOption( Key( "mark-value" ), &MarkPlaneValue, "Data value to mark (draw) symmetry plane.", &DoWriteMarked );
-  cl.AddOption( Key( "write-marked" ), &MarkedOutFile, "File name for output image with marked symmetry plane.", &DoWriteMarked );
-  cl.AddOption( Key( "write-aligned" ), &AlignedOutFile, "File name for symmetry plane-aligned output image.", &DoWriteAligned );
-  cl.AddSwitch( Key( "mark-aligned" ), &MarkPlaneAligned, true, "Mark symmetry plane in aligned output image." );
-  cl.AddOption( Key( "write-subtract" ), &DifferenceOutFile, "File name for mirror subtraction image.", &DoWriteDifference );
-  cl.AddOption( Key( "write-mirror" ), &MirrorOutFile, "File name for image mirrored w.r.t. symmetry plane.", &DoWriteMirror );
-  cl.AddOption( Key( "write-xform" ), &WriteXformPath, "Write affine alignment transformation to file" );
-  cl.EndGroup();
-
-  if ( ! cl.Parse() ) return false;
-
-  if ( SymmetryParameters ) 
-    {
-    double rho, theta, phi;
-    if ( 3 == sscanf( SymmetryParameters, "%lf %lf %lf", &rho, &theta, &phi ) ) 
-      {
-      Rho = rho; Theta = theta, Phi = phi;
-      }
-    }
-  
-  if ( SymmetryParametersFile ) 
-    {
-    cmtk::ClassStream inStream( SymmetryParametersFile, cmtk::ClassStream::READ );
-    if ( inStream.IsValid() ) 
-      {
-      cmtk::InfinitePlane *plane = NULL;
-      inStream >> plane;
-      Rho = plane->GetRho(); 
-      Theta = plane->GetTheta();
-      Phi = plane->GetPhi();
-      delete plane;
-      } 
-    else
-      {
-      cmtk::StdErr.printf( "ERROR: Could not open symmetry parameter file %s\n", SymmetryParametersFile );
-      }
-    }
-  
   try
     {
-    InFileName = cl.GetNext();
+    cmtk::CommandLine cl( argc, argv, cmtk::CommandLine::PROPS_XML  );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Symmetry plane computation" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute the approximate symmetry plane of an image to determine, for example, the mid-sagittal plane in human brain images. "
+		       "Various forms of output are supported, e.g., writing the input image with the symmetry plane drawn into it, or the input image realigned along the symmetry plane." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Registration" );
+    
+    typedef cmtk::CommandLine::Key Key;
+    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Turn on verbosity mode." );
+    
+    cl.BeginGroup( "Optimization", "Optimization" );
+    cl.AddOption( Key( 'a', "accuracy" ), &Accuracy, "Accuracy (final optimization step size in [mm]." );
+    cl.AddOption( Key( 's', "sampling" ), &Sampling, "Resampled image resolution." );
+    cl.AddOption( Key( 'l', "levels" ), &Levels, "Number of resolution levels." );
+    cl.EndGroup();
+    
+    cl.BeginGroup( "Initial", "Initial approximate symmetry plane orientation" );
+    cmtk::CommandLine::EnumGroup<InitialPlaneEnum>::SmartPtr
+      initialPlane = cl.AddEnum( "initial-plane", &InitialPlane, "Initial orientation of symmetry plane. This should be the closest orthogonal plane to the expected actual symmetry plane." );
+    initialPlane->AddSwitch( Key( "initial-axial" ), SYMPL_INIT_XY, "Approximately axial symmetry" );
+    initialPlane->AddSwitch( Key( "initial-coronal" ), SYMPL_INIT_XZ, "Approximately coronal symmetry" );
+    initialPlane->AddSwitch( Key( "initial-sagittal" ), SYMPL_INIT_YZ, "Approximately sagittal symmetry" );
+    initialPlane->AddSwitch( Key( "initial-xy" ), SYMPL_INIT_XY, "Approximately XY plane symmetry" );
+    initialPlane->AddSwitch( Key( "initial-xz" ), SYMPL_INIT_XZ, "Approximately XZ plane symmetry" );
+    initialPlane->AddSwitch( Key( "initial-yz" ), SYMPL_INIT_YZ, "Approximately YZ plane symmetry" );
+    cl.EndGroup();
+    
+    cl.BeginGroup( "Pre-computed", "Pre-computed symmetry" );
+    cl.AddOption( Key( "output-only" ), &SymmetryParameters, "Give symmetry parameters [Rho Theta Phi] as option, skip search.", &OutputOnly );
+    cl.AddOption( Key( "output-only-file" ), &SymmetryParametersFile, "Read symmetry parameters from file, skip search.", &OutputOnly );
+    cl.EndGroup();
+    
+    cl.BeginGroup( "Preprocessing", "Data pre-processing" );
+    cl.AddOption( Key( "min-value" ), &MinValue, "Force minumum data value.", &MinValueSet );
+    cl.AddOption( Key( "max-value" ), &MaxValue, "Force maximum data value.", &MaxValueSet );
+    cl.EndGroup();
+    
+    cl.BeginGroup( "Interpolation", "Interpolation" );
+    cl.AddSwitch( Key( 'L', "linear" ), &Interpolation, cmtk::Interpolators::LINEAR, "Use linear image interpolation for output." );
+    cl.AddSwitch( Key( 'C', "cubic" ), &Interpolation, cmtk::Interpolators::CUBIC, "Use cubic image interpolation for output." );
+    cl.AddSwitch( Key( 'S', "sinc" ), &Interpolation, cmtk::Interpolators::COSINE_SINC, "Use cosine-windowed sinc image interpolation for output." );
+    cl.EndGroup();
+    
+    cl.BeginGroup( "Output", "Output" );
+    cl.AddOption( Key( 'o', "outfile" ), &SymmetryOutFileName, "File name for symmetry plane parameter output." );
+    cl.AddOption( Key( 'P', "pad-out" ), &PadOutValue, "Padding value for output images.", &PadOutValueSet );
+    cl.AddOption( Key( "mark-value" ), &MarkPlaneValue, "Data value to mark (draw) symmetry plane.", &DoWriteMarked );
+    cl.AddOption( Key( "write-marked" ), &MarkedOutFile, "File name for output image with marked symmetry plane.", &DoWriteMarked )
+      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddOption( Key( "write-aligned" ), &AlignedOutFile, "File name for symmetry plane-aligned output image.", &DoWriteAligned )
+      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddSwitch( Key( "mark-aligned" ), &MarkPlaneAligned, true, "Mark symmetry plane in aligned output image." );
+    cl.AddOption( Key( "write-subtract" ), &DifferenceOutFile, "File name for mirror subtraction image.", &DoWriteDifference )
+      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddOption( Key( "write-mirror" ), &MirrorOutFile, "File name for image mirrored w.r.t. symmetry plane.", &DoWriteMirror )
+      ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddOption( Key( "write-xform" ), &WriteXformPath, "Write affine alignment transformation to file" );
+    cl.EndGroup();
+    
+    cl.AddParameter( &InFileName, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    
+    if ( ! cl.Parse() ) return false;
+    
+    if ( SymmetryParameters ) 
+      {
+      double rho, theta, phi;
+      if ( 3 == sscanf( SymmetryParameters, "%lf %lf %lf", &rho, &theta, &phi ) ) 
+	{
+	Rho = rho; Theta = theta, Phi = phi;
+	}
+      }
+    
+    if ( SymmetryParametersFile ) 
+      {
+      cmtk::ClassStream inStream( SymmetryParametersFile, cmtk::ClassStream::READ );
+      if ( inStream.IsValid() ) 
+	{
+	cmtk::InfinitePlane *plane = NULL;
+	inStream >> plane;
+	Rho = plane->GetRho(); 
+	Theta = plane->GetTheta();
+	Phi = plane->GetPhi();
+	delete plane;
+	} 
+      else
+	{
+	cmtk::StdErr.printf( "ERROR: Could not open symmetry parameter file %s\n", SymmetryParametersFile );
+	}
+      }
     }
   catch ( cmtk::CommandLine::Exception& ex ) 
     {
@@ -446,6 +457,9 @@ main ( const int argc, const char* argv[] )
 	functional = cmtk::SmartPointer<cmtk::SymmetryPlaneFunctional>( new cmtk::SymmetryPlaneFunctional( volume ) );
 	}
       
+      // Instantiate programm progress indicator.
+      cmtk::ProgressConsole progressIndicator( "Intensity Bias Field Correction" );
+
       optimizer.SetFunctional( cmtk::Functional::SmartPtr::DynamicCastFrom( functional ) );
       optimizer.Optimize( v, pow( 2.0, Levels-level-1 ), Accuracy * pow( 2.0, Levels-level-1 ) );
       
