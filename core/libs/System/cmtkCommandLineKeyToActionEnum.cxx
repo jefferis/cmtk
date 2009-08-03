@@ -64,8 +64,7 @@ void
 cmtk::CommandLine::KeyToActionEnum
 ::PrintWiki() const
 {
-  std::ostringstream fmt;
-  this->Superclass::FormatHelp( fmt );
+  this->Superclass::PrintWiki();
 
   StdOut << "\nSupported values: ";
   for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )

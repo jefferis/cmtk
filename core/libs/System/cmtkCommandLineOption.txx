@@ -112,7 +112,7 @@ cmtk::CommandLine::Option<T>
 ::PrintWiki() const
 {
   if ( this->Flag && !(*this->Flag) )
-    StdOut << "\n'''\\[Default: disabled\\]'''";
+    StdOut << " '''\\[Default: disabled\\]'''\n";
   else
-    StdOut << "\n'''\\[Default value: " << CommandLineTypeTraits<T>::ValueToString( this->Var ) << "\\]'''";
+    StdOut << " '''\\[Default value: " << CommandLineTypeTraits<T>::ValueToString( this->Var ) << "\\]'''\n";
 }

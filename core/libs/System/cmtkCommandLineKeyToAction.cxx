@@ -141,7 +141,6 @@ cmtk::CommandLine::KeyToAction
     {
     StdOut << this->m_Comment;
     }
-  StdOut << "\n";
 }
 
 bool

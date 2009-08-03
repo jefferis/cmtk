@@ -363,7 +363,7 @@ private:
     virtual void PrintWiki() const
     {
       if ( this->IsDefault() )
-	StdOut << "\n'''\\[This is the default\\]'''";
+	StdOut << " '''\\[This is the default\\]'''\n";
     }
     
     /// Return true if and only if this item is the default for the associated action or variable.
@@ -523,9 +523,9 @@ private:
     {
       // by default, simply return stream unchanged.
       if ( this->Var )
-	StdOut << "\n'''[Default: " << *(this->Var) << "]'''";
+	StdOut << " '''[Default: " << *(this->Var) << "]'''\n";
       else
-	StdOut << "\n'''[There is no default for this parameter]'''";
+	StdOut << " '''[There is no default for this parameter]'''\n";
     }
 
     /// Name of this parameter.

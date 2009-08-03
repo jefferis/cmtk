@@ -283,7 +283,7 @@ CommandLine::PrintWiki
       {
       StdOut << "== Syntax ==\n\n";
 
-      StdOut << ": <tt>\\[options\\] ";
+      StdOut << ": <tt>[options] ";
       for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
 	{
 	StdOut << (*it)->m_Name << " ";
@@ -293,7 +293,7 @@ CommandLine::PrintWiki
       for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
 	{
 	StdOut << "\n";
-	StdOut << "; " << (*it)->m_Name << " : ";
+	StdOut << "; <tt>" << (*it)->m_Name << "</tt> : ";
 	StdOut << (*it)->m_Comment << "\n";;
 	}
       }
