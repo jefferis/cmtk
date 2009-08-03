@@ -363,7 +363,7 @@ private:
     virtual void PrintWiki() const
     {
       if ( this->IsDefault() )
-	StdOut << " '''\\[This is the default\\]'''\n";
+	StdOut << " '''[This is the default]'''";
     }
     
     /// Return true if and only if this item is the default for the associated action or variable.
@@ -604,13 +604,13 @@ public:
     /// Print help for this item.
     virtual void PrintHelp( const size_t globalIndent = 0 ) const = 0;
     
-    /// Print help for this item.
-    virtual void PrintWiki() const = 0;
-    
   protected:
     /// Format help for key part of this key/action..
     virtual void FormatHelp( std::ostringstream& fmt ) const;    
 
+    /// Print help for this item.
+    virtual void PrintWiki( const std::string prefix = "" ) const;
+    
   private:
     /// Short option associated with this action.
     char m_Key;
@@ -678,7 +678,7 @@ public:
     virtual void PrintHelp( const size_t globalIndent = 0 ) const;
     
     /// Print wiki help for this item.
-    virtual void PrintWiki() const;
+    virtual void PrintWiki( const std::string prefix = "" ) const;
     
     /// Action for simple key-action correspondence..
     Item::SmartPtr m_Action;
@@ -754,7 +754,7 @@ public:
     virtual void PrintHelp( const size_t globalIndent = 0 ) const;
     
     /// Print help for this item in Wiki markup.
-    virtual void PrintWiki() const;
+    virtual void PrintWiki( const std::string prefix = "" ) const;
     
   private:
     /// For enum parameter group, list of subkeys and action.

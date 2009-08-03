@@ -315,6 +315,7 @@ CommandLine::PrintWiki
     for ( KeyActionListType::const_iterator it = kal.begin(); it != kal.end(); ++it )
       {
       (*it)->PrintWiki();
+      StdOut << "\n";
       }
     }
   

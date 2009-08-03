@@ -51,12 +51,12 @@ cmtk::CommandLine::KeyToActionSingle
 
 void
 cmtk::CommandLine::KeyToActionSingle
-::PrintWiki() const
+::PrintWiki( const std::string prefix ) const
 {
-  this->Superclass::PrintWiki();
+  this->Superclass::PrintWiki( prefix );
   
   this->m_Action->PrintWiki();
-  StdOut << "\n";  
+  StdOut << "\n";
 }
 
 bool

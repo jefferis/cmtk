@@ -118,9 +118,9 @@ cmtk::CommandLine::KeyToAction
 
 void
 cmtk::CommandLine::KeyToAction
-::PrintWiki() const
+::PrintWiki( const std::string prefix ) const
 {
-  StdOut << "; ";
+  StdOut << prefix << "; ";
   if ( this->m_Key )
     {
     StdOut << "<tt>-" << this->m_Key << "</tt>";
