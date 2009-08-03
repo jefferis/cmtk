@@ -308,7 +308,7 @@ CommandLine::PrintWiki
     size_t indent = 0;
     if ( name != "MAIN" )
       {
-      StdOut << "\n=== " << (*grp)->m_Description << " ===\n\n";
+      StdOut << "=== " << (*grp)->m_Description << " ===\n\n";
       }
 
     const KeyActionListType& kal = (*grp)->m_KeyActionList;
