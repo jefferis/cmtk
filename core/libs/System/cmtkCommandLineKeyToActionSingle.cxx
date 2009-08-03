@@ -49,6 +49,16 @@ cmtk::CommandLine::KeyToActionSingle
   StdErr.FormatText( fmt.str(), CommandLine::HelpTextIndent + globalIndent, 80, -CommandLine::HelpTextIndent ) << "\n";  
 }
 
+void
+cmtk::CommandLine::KeyToActionSingle
+::PrintWiki() const
+{
+  this->Superclass::PrintWiki();
+  
+  this->m_Action->PrintWiki();
+  StdOut << "\n";  
+}
+
 bool
 cmtk::CommandLine::KeyToActionSingle
 ::MatchAndExecute( const std::string& key, const size_t argc, const char* argv[], size_t& index )

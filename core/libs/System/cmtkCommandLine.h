@@ -293,6 +293,12 @@ public:
       return fmt;
     }
 
+    /// Format additional help information.
+    virtual void PrintWiki() const
+    {
+      // by default, do nothing
+    }
+
     /// Return true if and only if this item is the default for the associated action or variable.
     virtual bool IsDefault() const
     {
@@ -353,6 +359,13 @@ private:
       return fmt;
     }
     
+    /// Format additional help information (e.g., default values).
+    virtual void PrintWiki() const
+    {
+      if ( this->IsDefault() )
+	StdOut << "\n'''\\[This is the default\\]'''";
+    }
+    
     /// Return true if and only if this item is the default for the associated action or variable.
     virtual bool IsDefault() const
     {
@@ -386,6 +399,9 @@ private:
     /// Format additional help information (e.g., default values).
     virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
       ) const;
+
+    /// Format additional help information (e.g., default values).
+    virtual void PrintWiki() const;
 
   protected:
     /// Pointer to associated variable.
@@ -502,6 +518,16 @@ private:
       return fmt;
     }
 
+    /// Format additional help information (e.g., default values).
+    virtual void PrintWiki() const
+    {
+      // by default, simply return stream unchanged.
+      if ( this->Var )
+	StdOut << "\n'''[Default: " << *(this->Var) << "]'''";
+      else
+	StdOut << "\n'''[There is no default for this parameter]'''";
+    }
+
     /// Name of this parameter.
     const char* m_Name;
 
@@ -578,6 +604,9 @@ public:
     /// Print help for this item.
     virtual void PrintHelp( const size_t globalIndent = 0 ) const = 0;
     
+    /// Print help for this item.
+    virtual void PrintWiki() const = 0;
+    
   protected:
     /// Format help for key part of this key/action..
     virtual void FormatHelp( std::ostringstream& fmt ) const;    
@@ -647,6 +676,9 @@ public:
 
     /// Print help for this item.
     virtual void PrintHelp( const size_t globalIndent = 0 ) const;
+    
+    /// Print wiki help for this item.
+    virtual void PrintWiki() const;
     
     /// Action for simple key-action correspondence..
     Item::SmartPtr m_Action;
@@ -720,6 +752,9 @@ public:
 
     /// Print help for this item.
     virtual void PrintHelp( const size_t globalIndent = 0 ) const;
+    
+    /// Print help for this item in Wiki markup.
+    virtual void PrintWiki() const;
     
   private:
     /// For enum parameter group, list of subkeys and action.
@@ -903,6 +938,9 @@ public:
 
   /// Print help text.
   void PrintHelp() const;
+
+  /// Print help text.
+  void PrintWiki() const;
 
   /// Get next parameter index.
   size_t GetIndex() const { return Index; }

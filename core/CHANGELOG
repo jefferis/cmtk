@@ -39,6 +39,7 @@ Release CMTK-1.1.0:
 - Added: support Slicer3's XML-based progress reporting, and auto-detect
     Slicer's presence to switch between standard console progress output and
     XML-based output.
+- Added: automatic Wiki markup printing of command line options
 
 
 Release CMTK-1.0.2 (2009-07-24):

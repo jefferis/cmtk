@@ -112,6 +112,13 @@ CommandLine::Parse()
 	  exit( 2 );
 	  }
 	
+	// Check for "--wiki" special option, which produces Wiki-markup description of all command line options
+	if ( !strcmp( this->ArgV[this->Index], "--wiki" ) ) 
+	  {
+	  this->PrintWiki();
+	  exit( 2 );
+	  }
+	
 	// Check for "--echo" special option, which echoes the command line to stdout. This does not exit the program automatically.
 	if ( !strcmp( this->ArgV[this->Index], "--echo" ) ) 
 	  {
@@ -244,6 +251,74 @@ CommandLine::PrintHelp
     }
   
   StdErr << "\n";
+}
+
+void
+CommandLine::PrintWiki
+() const
+{
+  ProgramPropertiesMapType::const_iterator it = this->m_ProgramInfo.find(PRG_TITLE);
+  if ( it != this->m_ProgramInfo.end() )
+    {
+    StdOut << "== Title ==\n\n";
+    StdOut << it->second << "\n\n";
+    }
+
+  it = this->m_ProgramInfo.find(PRG_DESCR);
+  if ( it != this->m_ProgramInfo.end() )
+    {
+    StdOut << "== Description ==\n\n";
+    StdOut << it->second << "\n\n";
+    }
+  
+  it = this->m_ProgramInfo.find(PRG_SYNTX);
+  if ( it != this->m_ProgramInfo.end() )
+    {
+    StdOut << "== Syntax ==\n\n";
+    StdOut << it->second << "\n\n";
+    }
+  else
+    {
+    if ( this->m_NonOptionParameterList.size() )
+      {
+      StdOut << "== Syntax ==\n\n";
+
+      StdOut << ": <tt>\\[options\\] ";
+      for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
+	{
+	StdOut << (*it)->m_Name << " ";
+	}
+      StdErr << "</tt>\n\nwhere\n";
+
+      for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
+	{
+	StdOut << "\n";
+	StdOut << "; " << (*it)->m_Name << " : ";
+	StdOut << (*it)->m_Comment << "\n";;
+	}
+      }
+    }
+  
+  StdOut << "\n== List of Supported Options ==\n\n";
+
+  for ( KeyActionGroupListType::const_iterator grp = this->m_KeyActionGroupList.begin(); grp != this->m_KeyActionGroupList.end(); ++grp )
+    {
+    const std::string& name = (*grp)->m_Name;
+
+    size_t indent = 0;
+    if ( name != "MAIN" )
+      {
+      StdOut << "\n=== " << (*grp)->m_Description << " ===\n\n";
+      }
+
+    const KeyActionListType& kal = (*grp)->m_KeyActionList;
+    for ( KeyActionListType::const_iterator it = kal.begin(); it != kal.end(); ++it )
+      {
+      (*it)->PrintWiki();
+      }
+    }
+  
+  StdOut << "\n";
 }
 
 Console& operator<<( Console& console, CommandLine::Exception e )

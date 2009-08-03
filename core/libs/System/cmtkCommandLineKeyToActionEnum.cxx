@@ -60,6 +60,33 @@ cmtk::CommandLine::KeyToActionEnum
     }
 }
 
+void
+cmtk::CommandLine::KeyToActionEnum
+::PrintWiki() const
+{
+  std::ostringstream fmt;
+  this->Superclass::FormatHelp( fmt );
+
+  StdOut << "\nSupported values: ";
+  for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+    {
+    StdOut << "\"" << (*it)->m_KeyString << "\", ";
+    }
+  
+  const std::string defaultKey = this->m_EnumGroup->GetDefaultKey();
+  if ( defaultKey.length() )
+    {
+    StdOut << "where the default is \"" << defaultKey << "\", ";
+    }
+  
+  StdOut << "or use one of the following\n";
+  
+  for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+    {
+    (*it)->PrintWiki();
+    }
+}
+
 mxml_node_t*
 cmtk::CommandLine::KeyToActionEnum
 ::MakeXML( mxml_node_t *const parent ) const

@@ -116,6 +116,34 @@ cmtk::CommandLine::KeyToAction
     }
 }
 
+void
+cmtk::CommandLine::KeyToAction
+::PrintWiki() const
+{
+  StdOut << "; ";
+  if ( this->m_Key )
+    {
+    StdOut << "<tt>-" << this->m_Key << "</tt>";
+    }
+
+  if ( this->m_Key && this->m_KeyString.size() )
+    {
+    StdOut << " / ";
+    }
+
+  if ( this->m_KeyString.size() )
+    {
+    StdOut << "<tt>--" << this->m_KeyString << "</tt>";
+    }
+
+  StdOut << " : ";
+  if ( this->m_Comment.length() )
+    {
+    StdOut << this->m_Comment;
+    }
+  StdOut << "\n";
+}
+
 bool
 cmtk::CommandLine::KeyToAction
 ::MatchLongOption( const std::string& key ) const
