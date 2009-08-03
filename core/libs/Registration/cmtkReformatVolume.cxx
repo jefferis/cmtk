@@ -35,6 +35,7 @@
 #include <cmtkAffineXform.h>
 #include <cmtkWarpXform.h>
 #include <cmtkSplineWarpXform.h>
+#include <cmtkSplineWarpXformUniformVolume.h>
 #include <cmtkAnatomicalOrientation.h>
 #include <cmtkTypedArray.h>
 #include <cmtkTemplateArray.h>
@@ -109,7 +110,7 @@ ReformatVolume::SetAffineXform( const AffineXform::SmartPtr& affineXform )
 }
 
 void
-ReformatVolume::SetWarpXform( WarpXform::SmartPtr& warpXform )
+ReformatVolume::SetWarpXform( const WarpXform::SmartPtr& warpXform )
 {
   this->m_WarpXform = warpXform;
 }
@@ -184,17 +185,16 @@ ReformatVolume::PlainReformat
 
   UniformVolumeInterpolatorBase::SmartPtr interpolator( this->CreateInterpolator( this->FloatingVolume ) );
   
-  if ( this->m_WarpXform ) 
+  const SplineWarpXform::SmartPtr& splineWarp = SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_WarpXform );
+  if ( splineWarp ) 
     {
-    this->m_WarpXform->RegisterVolume( ReferenceVolume );
-    
-    const SplineWarpXform::SmartPtr& splineWarp = SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_WarpXform );
+    const SplineWarpXformUniformVolume xformVolume( splineWarp, this->ReferenceVolume );
     
     for ( int pY = 0; pY<DimsY; ++pY ) 
       {
       for ( int pX = 0; pX<DimsX; ++pX, ++offset ) 
 	{
-	splineWarp->GetTransformedGrid( pMod, pX, pY, plane );
+	xformVolume.GetTransformedGrid( pMod, pX, pY, plane );
 	
 	if ( interpolator->GetDataAt( pMod, value ) )
 	  result->Set( value, offset );	      

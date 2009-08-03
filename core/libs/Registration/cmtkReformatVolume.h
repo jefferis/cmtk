@@ -142,7 +142,7 @@ public:
   void SetAffineXform( const AffineXform::SmartPtr& affineXform );
 
   /// Set the local deformation to be applied to the reference grid.
-  void SetWarpXform( WarpXform::SmartPtr& warpXform );
+  void SetWarpXform( const WarpXform::SmartPtr& warpXform );
 
   /** Set parameters for image data rescaling.
    * As a side effect to setting the scaling parameters, this object is also
@@ -309,7 +309,7 @@ private:
   const AffineXform::SmartPtr m_AffineXform;
   
   /// Pointer to the local deformation of the reference grid.
-  WarpXform::SmartPtr m_WarpXform;
+  const WarpXform::SmartPtr m_WarpXform;
 
   /** Maximum value in reference and floating image.
    * This field is updated by both SetXXXVolume methods. Its value is used for

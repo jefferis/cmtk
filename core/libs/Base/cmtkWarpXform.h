@@ -361,6 +361,9 @@ private:
   /** Voxel-by-voxel map of incompressibility constraint weight.
    */
   DataGrid::SmartPtr IncompressibilityMap;
+
+  /// Friend declaration.
+  friend class SplineWarpXformUniformVolume;
 };
 
 //@}

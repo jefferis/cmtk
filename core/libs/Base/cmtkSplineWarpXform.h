@@ -464,6 +464,9 @@ protected:
 
   /// Find nearest (after deformation) control point.
   void FindClosestControlPoint( const Vector3D& v, Vector3D& cp ) const;
+
+  /// Friend declaration.
+  friend class SplineWarpXformUniformVolume;
 };
 
 } // namespace
