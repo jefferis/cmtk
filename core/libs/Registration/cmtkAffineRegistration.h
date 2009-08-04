@@ -49,9 +49,6 @@ cmtk
 //@{
 
 /** Class for affine multi-resolution voxel registration.
- *\todo Do not destruct "NumberDOFs" stacks during registration to enable
- * repeated calls. Instead, deallocate them in the destructor.
- *@version $Revision$ $Date$
  */
 class AffineRegistration : 
   /// Inherit general voxel registration interface and functionality.
