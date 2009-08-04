@@ -561,6 +561,9 @@ public:
   /// Destructor.
   ~CommandLine() {};
 
+  /// Forward declaration.
+  class EnumGroupBase;
+
   /// Local class that connects command line options with their evaluators.
   class KeyToAction
   {
