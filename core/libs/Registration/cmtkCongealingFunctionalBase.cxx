@@ -191,7 +191,7 @@ CongealingFunctionalBase<TXform,THistogramBinType>::InterpolateImageThread
       for ( int x = 0; x < dimsX; ++x )
 	{
 	This->m_TemplateGrid->GetGridLocation( v, x, y, z );
-	xform->ApplyInPlaceNonVirtual( v );
+	xform->ApplyInPlace( v );
 	
 	if ( target->ProbeData( value, dataPtr, v ) )
 	  {
@@ -241,7 +241,7 @@ CongealingFunctionalBase<TXform,THistogramBinType>::InterpolateImageProbabilisti
     {
     const size_t offset = This->m_ProbabilisticSamples[i];
     This->m_TemplateGrid->GetGridLocation( v, offset );
-    xform->ApplyInPlaceNonVirtual( v );
+    xform->ApplyInPlace( v );
     
     if ( target->ProbeData( value, dataPtr, v ) )
       {

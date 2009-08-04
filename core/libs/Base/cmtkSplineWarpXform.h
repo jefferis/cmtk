@@ -245,13 +245,7 @@ public:
   virtual bool ApplyInverseInPlaceWithInitial( Vector3D& v, const Vector3D& initial, const Types::Coordinate accuracy = 0.01 ) const;
 
   /// Replace existing vector with transformed location.
-  virtual void ApplyInPlace ( Vector3D& v ) const 
-  {
-    this->ApplyInPlaceNonVirtual( v );
-  }
-  
-  /// Replace existing vector with transformed location.
-  void ApplyInPlaceNonVirtual ( Vector3D& v ) const 
+  virtual void ApplyInPlace( Vector3D& v ) const 
   {
     Types::Coordinate r[3], f[3];
     int grid[3];
@@ -313,26 +307,13 @@ public:
   virtual void UnRegisterVolume();
   
   /// Get a grid point from the deformed grid.
-  virtual void GetTransformedGrid( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const 
-  {
-    this->GetTransformedGridNonVirtual( v, idxX, idxY, idxZ );
-  }
-  
-  /// Get a grid point from the deformed grid.
-  void GetTransformedGridNonVirtual( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const;
+  virtual void GetTransformedGrid( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get a sequence of grid points from the deformed grid. 
-  void GetTransformedGridSequenceNonVirtual( Vector3D *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const;
-  
-  /// Get a sequence of grid points from the deformed grid. 
-  virtual void GetTransformedGridSequence( Vector3D *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const 
-  {
-    this->GetTransformedGridSequenceNonVirtual( v, numPoints, idxX, idxY, idxZ );
-  }
+  virtual void GetTransformedGridSequence( Vector3D *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Apply transformation to all coordinate triples stored in an array.
-  virtual void ApplyToAll
-  ( CoordinateVector& v, BitVector& valid, const bool inverse = false, const Types::Coordinate epsilon = 0.0, const int* gridDims = NULL );
+  virtual void ApplyToAll( CoordinateVector& v, BitVector& valid, const bool inverse = false, const Types::Coordinate epsilon = 0.0, const int* gridDims = NULL );
   
   /// Get parameter stepping.
   virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate* volSize, const Types::Coordinate mmStep = 1 ) const 

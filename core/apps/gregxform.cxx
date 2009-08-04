@@ -212,7 +212,7 @@ main( int argc, char *argv[] )
 	
 	if ( Forward )
 	  {
-	  splineWarp->ApplyInPlaceNonVirtual( v );
+	  splineWarp->ApplyInPlace( v );
 	  success = true;
 	  }
 	else
@@ -230,7 +230,7 @@ main( int argc, char *argv[] )
 	if ( !success )
 	  {
 	  uu = v;
-	  splineWarp->ApplyInPlaceNonVirtual( uu );
+	  splineWarp->ApplyInPlace( uu );
 	  uu -= u;
 	  error = uu.EuclidNorm();
 
@@ -243,12 +243,12 @@ main( int argc, char *argv[] )
 	if ( Forward )
 	  {
 	  if ( affineXform )
-	    affineXform->ApplyInPlaceNonVirtual( v );
+	    affineXform->ApplyInPlace( v );
 	  }
 	else
 	  {
 	  if ( inverseAffineXform )
-	    inverseAffineXform->ApplyInPlaceNonVirtual( v );
+	    inverseAffineXform->ApplyInPlace( v );
 	  }
 	}
       if ( success || NoCheck ) 

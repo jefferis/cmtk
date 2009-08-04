@@ -355,7 +355,7 @@ WarpXform::ReplaceInitialAffine( const AffineXform* newAffineXform )
   for ( unsigned int idx = 0; idx < NumberOfControlPoints; ++idx, coeff+=3 ) 
     {
     Vector3D p( coeff );
-    change.ApplyInPlaceNonVirtual( p );
+    change.ApplyInPlace( p );
     coeff[0] = p[0];
     coeff[1] = p[1];
     coeff[2] = p[2];
@@ -381,7 +381,7 @@ WarpXform::ConcatAffine( const AffineXform* affineXform )
   for ( unsigned int idx = 0; idx < NumberOfControlPoints; ++idx, coeff+=3 ) 
     {
     Vector3D p( coeff );
-    affineXform->ApplyInPlaceNonVirtual( p );
+    affineXform->ApplyInPlace( p );
     coeff[0] = p[0];
     coeff[1] = p[1];
     coeff[2] = p[2];

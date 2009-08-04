@@ -9,6 +9,8 @@ Release CMTK-1.1.0:
     SplineWarpXformUniformVolume to tie both together, thus allowing more
     transformation objects to remain const in more situations (see, for
     example, modified implementation of ReformatVolume::WarpXform).
+- API: all "...NonVirtual" member functions replaced their virtual
+    counterparts and became virtual themselves.
 
 - Changed: command line tools now need to "opt-in" for XML support. This is to
     prevent cluttering Slicer's menu with modules that do not actually support

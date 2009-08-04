@@ -86,7 +86,7 @@ ClassStream::PutWarp
 	for ( int x=0; x<warpXform->m_Dims[0]; ++x, oCoeff+=3, p+=3 ) 
 	  {
 	  Vector3D P( oCoeff );
-	  initialXform->ApplyInPlaceNonVirtual( P );
+	  initialXform->ApplyInPlace( P );
 	  p[0] = P[0]; p[1] = P[1]; p[2] = P[2];
 	  
 	  // Undo offset tranformation; regain deltas.

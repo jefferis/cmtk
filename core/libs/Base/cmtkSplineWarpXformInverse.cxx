@@ -85,7 +85,7 @@ SplineWarpXform::FindClosestControlPoint
 	    {
 	    Vector3D cp;
 	    this->GetOriginalControlPointPosition( cp, idx[0], idx[1], idx[2] );
-	    this->ApplyInPlaceNonVirtual( cp );
+	    this->ApplyInPlace( cp );
 	    cp -= v;
 	    const Types::Coordinate distance = cp.EuclidNorm();
 	    if ( distance < closestDistance ) 
@@ -127,7 +127,7 @@ SplineWarpXform::ApplyInverseInPlaceWithInitial
     }
 
   Vector3D vu( initial ), delta;
-  this->ApplyInPlaceNonVirtual( vu );
+  this->ApplyInPlace( vu );
   ((delta = vu) -= target);
 
   Types::Coordinate error = delta.EuclidNorm();
@@ -155,7 +155,7 @@ SplineWarpXform::ApplyInverseInPlaceWithInitial
       }
     
     Vector3D uNext( vu );
-    this->ApplyInPlaceNonVirtual( vu );
+    this->ApplyInPlace( vu );
     
     (delta = vu) -= target;
     if ( error > delta.EuclidNorm() ) 

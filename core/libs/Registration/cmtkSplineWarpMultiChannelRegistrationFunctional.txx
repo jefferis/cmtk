@@ -476,7 +476,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
     {
     for ( int pY = region.startY; pY < region.endY; ++pY ) 
       {
-      transformation->GetTransformedGridSequenceNonVirtual( &pFloating[0], pixelsPerLineRegion, region.startX, pY, pZ );
+      transformation->GetTransformedGridSequence( &pFloating[0], pixelsPerLineRegion, region.startX, pY, pZ );
 
       size_t r = region.startX + dimsX * (pY + dimsY * pZ );
       for ( int pX = region.startX; pX < region.endX; ++pX, ++r ) 

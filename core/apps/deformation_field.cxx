@@ -322,7 +322,7 @@ main ( const int argc, const char* argv[] )
 		{
 		volume->GetGridLocation( v0, newX, newY, newZ );
 		if ( WarpOnly )
-		  initialAffine->ApplyInPlaceNonVirtual( v0 );
+		  initialAffine->ApplyInPlace( v0 );
 		warpXform->GetTransformedGrid( v1, newX, newY, newZ );
 		v1 -= v0;
 		if ( Direction < 0 ) 

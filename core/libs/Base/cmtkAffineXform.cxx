@@ -503,12 +503,12 @@ AffineXform::RegisterVolume ( const UniformVolume* volume )
   // compute inverse transformation for subsequent (direct) use.
   this->GetInverse();
 
-  InverseXform->ApplyInPlaceNonVirtual(V);
-  InverseXform->ApplyInPlaceNonVirtual(dX);
+  InverseXform->ApplyInPlace(V);
+  InverseXform->ApplyInPlace(dX);
   dX -= V;
-  InverseXform->ApplyInPlaceNonVirtual(dY);
+  InverseXform->ApplyInPlace(dY);
   dY -= V;
-  InverseXform->ApplyInPlaceNonVirtual(dZ);
+  InverseXform->ApplyInPlace(dZ);
   dZ -= V;
   
   // Apply post-transformation scaling

@@ -384,7 +384,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional::InterpolateImageThread
     {
     for ( int y = yFrom; (y < dimsY) && rowsToDo; yFrom = 0, ++y, --rowsToDo )
       {
-      xform->GetTransformedGridSequenceNonVirtual( &(vectorList[0]), dimsX, 0, y, z );
+      xform->GetTransformedGridSequence( &(vectorList[0]), dimsX, 0, y, z );
       for ( int x = 0; x < dimsX; ++x )
 	{
 	if ( target->ProbeData( value, dataPtr, vectorList[x] ) )

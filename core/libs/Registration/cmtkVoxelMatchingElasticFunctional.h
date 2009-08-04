@@ -407,7 +407,7 @@ public:
       for ( pY = 0; pY<DimsY; ++pY ) 
 	{
 	pVec = this->VectorCache;
-	this->Warp->GetTransformedGridSequenceNonVirtual( pVec, DimsX, 0, pY, pZ );
+	this->Warp->GetTransformedGridSequence( pVec, DimsX, 0, pY, pZ );
 	for ( pX = 0; pX<DimsX; ++pX, ++r, ++pVec ) 
 	  {	      
 	  // Tell us whether the current location is still within the 
@@ -465,7 +465,7 @@ public:
       for ( pY = voi->startY; pY<voi->endY; ++pY ) 
 	{
 	pVec = this->VectorCache;
-	warp->GetTransformedGridSequenceNonVirtual( pVec, voi->endX-voi->startX, voi->startX, pY, pZ );
+	warp->GetTransformedGridSequence( pVec, voi->endX-voi->startX, voi->startX, pY, pZ );
 	for ( pX = voi->startX; pX<voi->endX; ++pX, ++r, ++pVec ) 
 	  {
 	  // Remove this sample from incremental metric according to "ground warp" image.
@@ -584,7 +584,7 @@ public:
       {
       for ( pY = 0; pY<DimsY; ++pY )
 	{
-	this->Warp->GetTransformedGridSequenceNonVirtual( this->VectorCache, DimsX, 0, pY, pZ );
+	this->Warp->GetTransformedGridSequence( this->VectorCache, DimsX, 0, pY, pZ );
 	pVec = this->VectorCache;
 	for ( pX = 0; pX<DimsX; ++pX, ++r, ++pVec )
 	  {

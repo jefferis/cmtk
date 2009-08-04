@@ -207,7 +207,7 @@ SplineWarpCongealingFunctional
 		Types::Coordinate vTest = v0 + (2*delta-1) * pStep;
 		xform->SetParameter( xfparam, vTest );
 		
-		xform->GetTransformedGridSequenceNonVirtual( &(threadStorage->m_VectorList[0]), pixelsPerLineVOI, voi->startX, y, z );
+		xform->GetTransformedGridSequence( &(threadStorage->m_VectorList[0]), pixelsPerLineVOI, voi->startX, y, z );
 		
 		size_t ofs = rowofs;
 		for ( size_t x = 0; x < pixelsPerLineVOI; ++x, ++ofs )

@@ -183,7 +183,7 @@ SplineWarpXform::InitControlPoints( const AffineXform* affineXform )
     for ( unsigned int idx = 0; idx < NumberOfControlPoints; ++idx, ofs+=3 ) 
       {
       Vector3D p( ofs );
-      affineXform->ApplyInPlaceNonVirtual( p );
+      affineXform->ApplyInPlace( p );
       ofs[0] = p[0];
       ofs[1] = p[1];
       ofs[2] = p[2];
@@ -568,7 +568,7 @@ SplineWarpXform::GetDeformedControlPointPosition
 
 void
 SplineWarpXform
-::GetTransformedGridNonVirtual 
+::GetTransformedGrid 
 ( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const
 {
   const Types::Coordinate* coeff = this->m_Parameters + gX[idxX] + gY[idxY] + gZ[idxZ];
@@ -602,7 +602,7 @@ SplineWarpXform
 }
 
 void 
-SplineWarpXform::GetTransformedGridSequenceNonVirtual
+SplineWarpXform::GetTransformedGridSequence
 ( Vector3D *const vIn, const int numPoints, const int idxX, const int idxY, const int idxZ ) 
   const
 {
@@ -745,7 +745,7 @@ SplineWarpXform::ApplyToAll
       if ( valid[i] ) 
 	{
 	Vector3D vv( p );
-	this->ApplyInPlaceNonVirtual( vv );
+	this->ApplyInPlace( vv );
 	for ( int dim = 0; dim < 3; ++dim ) p[dim] = vv.XYZ[dim];
 	}
       }
@@ -1041,7 +1041,7 @@ SplineWarpXform::GetInverseConsistencyError
     for ( int y = startY; y < pVoi->endY; y += dY ) 
       {
       Vector3D* pVec = &vecArray[0];
-      this->GetTransformedGridSequenceNonVirtual( pVec, length, startX, y, z );
+      this->GetTransformedGridSequence( pVec, length, startX, y, z );
 
       for ( int x = startX; x < pVoi->endX; x += dX, pVec += dX ) 
 	{
@@ -1081,7 +1081,7 @@ SplineWarpXform::GetPureDeformation( const bool includeScale ) const
     Vector3D v( ptr );
     
     // undo affine transformation component
-    xform->ApplyInPlaceNonVirtual( v );
+    xform->ApplyInPlace( v );
     
     // copy the result into ouput array
     for ( unsigned int dim = 0; dim < 3; ++dim ) 

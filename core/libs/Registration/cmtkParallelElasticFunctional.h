@@ -205,7 +205,7 @@ public:
       for ( pY = voi->startY; pY<voi->endY; ++pY ) 
 	{
 	pVec = vectorCache;
-	warp->GetTransformedGridSequenceNonVirtual( pVec,voi->endX-voi->startX, voi->startX, pY, pZ );
+	warp->GetTransformedGridSequence( pVec,voi->endX-voi->startX, voi->startX, pY, pZ );
 	for ( pX = voi->startX; pX<voi->endX; ++pX, ++r, ++pVec ) 
 	  {
 	  // Remove this sample from incremental metric according to "ground warp" image.
@@ -456,7 +456,7 @@ private:
       {
       for ( pY = pYfrom; (pY < me->DimsY) && rowsToDo; pYfrom = 0, ++pY, --rowsToDo ) 
 	{
-	warp->GetTransformedGridSequenceNonVirtual( vectorCache, me->DimsX, 0, pY, pZ );
+	warp->GetTransformedGridSequence( vectorCache, me->DimsX, 0, pY, pZ );
 	pVec = vectorCache;
 	for ( pX = 0; pX<me->DimsX; ++pX, ++r, ++pVec ) 
 	  {

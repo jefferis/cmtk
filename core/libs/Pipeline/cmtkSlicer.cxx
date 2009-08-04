@@ -156,9 +156,9 @@ Slicer::Execute()
     
     if ( affineXform ) 
       {
-      affineXform->ApplyInPlaceNonVirtual( dirX += p );
-      affineXform->ApplyInPlaceNonVirtual( dirY += p );
-      affineXform->ApplyInPlaceNonVirtual( p );
+      affineXform->ApplyInPlace( dirX += p );
+      affineXform->ApplyInPlace( dirY += p );
+      affineXform->ApplyInPlace( p );
       dirX -= p;
       dirY -= p;
       }
@@ -284,7 +284,7 @@ Slicer::ExecuteSplineWarp
     for ( unsigned int x = 0; x<dims[0]; ++x, p += dX, ++index ) 
       {
       pDeformed = p;
-      warpXform->ApplyInPlaceNonVirtual( pDeformed );
+      warpXform->ApplyInPlace( pDeformed );
       if ( interpolator->GetDataAt( pDeformed, value ) )
 	data->Set( value, index );
       else

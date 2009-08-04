@@ -361,7 +361,7 @@ WriteAligned
       for ( int x = 0; x < originalVolume->GetDims()[0]; ++x, ++offset ) 
 	{
 	originalVolume->GetGridLocation( v, x, y, z );
-	alignment->ApplyInPlaceNonVirtual( v );
+	alignment->ApplyInPlace( v );
 
 	if ( interpolator->GetDataAt( v, data ) )
 	  {

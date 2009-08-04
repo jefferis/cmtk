@@ -478,7 +478,7 @@ SplineWarpCongealingFunctional
       {
       for ( int x = 0; x < dimsX; ++x )
 	{
-	xform->GetTransformedGridNonVirtual( v, x, y, z );
+	xform->GetTransformedGrid( v, x, y, z );
 	if ( target->ProbeData( value, dataPtr, v ) )
 	  {
 	  *wptr = value;

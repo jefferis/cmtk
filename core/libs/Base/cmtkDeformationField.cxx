@@ -58,7 +58,7 @@ DeformationField::InitControlPoints( const AffineXform* affineXform )
 	for ( int x = 0; x < this->m_Dims[0]; ++x, p[0] += this->Spacing[0], ofs+=3 ) 
 	  {
 	  Vector3D q( p );
-	  affineXform->ApplyInPlaceNonVirtual( q );
+	  affineXform->ApplyInPlace( q );
 	  q -= p;
 
 	  ofs[0] = q[0];

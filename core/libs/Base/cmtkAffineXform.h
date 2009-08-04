@@ -275,13 +275,7 @@ public:
   }
   
   /// Apply transformation to existing vector.
-  virtual void ApplyInPlace ( Vector3D& vec ) const 
-  {
-    this->ApplyInPlaceNonVirtual( vec );	       
-  }
-  
-  /// Apply transformation to existing vector.
-  void ApplyInPlaceNonVirtual ( Vector3D& vec ) const 
+  void ApplyInPlace( Vector3D& vec ) const 
   {
     this->Matrix.Multiply( vec.XYZ );
   }
@@ -491,24 +485,18 @@ public:
   /// Unegister axes points, ie free all internal data structures.
   virtual void UnRegisterVolume ();
 
-  /** Get location from precomputed transformed grid.
-   *\todo Document this.
+  /** Get transformed location of linked grid pixel.
    */
   virtual void GetTransformedGrid( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const
-  { this->GetTransformedGridNonVirtual( v, idxX, idxY, idxZ ); }
-  
-  virtual void GetTransformedGridSequence( Vector3D *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const
-    { this->GetTransformedGridSequenceNonVirtual
-	( v, numPoints, idxX, idxY, idxZ ); 
-    }
-
-
-  virtual void GetTransformedGridNonVirtual( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const
-  { ( (v = RegisteredVolumeAxes[0][idxX]) 
+  {
+    ( (v = RegisteredVolumeAxes[0][idxX]) 
       += RegisteredVolumeAxes[1][idxY]) 
-      += RegisteredVolumeAxes[2][idxZ]; }
+      += RegisteredVolumeAxes[2][idxZ]; 
+  }
   
-  virtual void GetTransformedGridSequenceNonVirtual( Vector3D *const v, const int numPoints, int idxX, int idxY, int idxZ ) 
+  /** Get transformed locations of a series (scanline) of linked grid pixels.
+   */
+  virtual void GetTransformedGridSequence( Vector3D *const v, const int numPoints, int idxX, int idxY, int idxZ ) 
     const
   {
     Vector3D v0 = RegisteredVolumeAxes[1][idxY];

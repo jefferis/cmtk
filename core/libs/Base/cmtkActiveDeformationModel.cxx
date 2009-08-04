@@ -164,7 +164,7 @@ ActiveDeformationModel<W>::MakeSamplePoints( const W* deformation )
     Vector3D v( ptr );
     
     // undo affine transformation component
-    xform->ApplyInPlaceNonVirtual( v );
+    xform->ApplyInPlace( v );
     
     // copy the result into ouput array
     for ( unsigned int dim = 0; dim < 3; ++dim ) 
