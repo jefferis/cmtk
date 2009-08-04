@@ -62,7 +62,7 @@ bool MinValueSet = false;
 float MaxValue = 1e5;
 bool MaxValueSet = false;
 
-cmtk::Types::Coordinate Samplng = 1;
+cmtk::Types::Coordinate Sampling = 1.0;
 cmtk::Types::Coordinate Accuracy = 0.1;
 
 cmtk::Interpolators::InterpolationEnum Interpolation = cmtk::Interpolators::LINEAR;
