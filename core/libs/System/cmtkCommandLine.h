@@ -614,7 +614,6 @@ public:
     /// Print help for this item.
     virtual void PrintWiki( const std::string prefix = "" ) const;
     
-  private:
     /// Short option associated with this action.
     char m_Key;
 
