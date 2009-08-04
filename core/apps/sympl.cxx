@@ -143,7 +143,7 @@ bool ParseCommandLine ( const int argc, const char* argv[] )
     initialPlane->AddSwitch( Key( "initial-yz" ), SYMPL_INIT_YZ, "Approximately YZ plane symmetry" );
     cl.EndGroup();
     
-    cl.BeginGroup( "Pre-computed", "Pre-computed symmetry" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
+    cl.BeginGroup( "Pre-computed", "Pre-computed symmetry" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED | cmtk::CommandLine::PROPS_NOXML );
     cl.AddOption( Key( "output-only" ), &SymmetryParameters, "Give symmetry parameters [Rho Theta Phi] as option, skip search.", &OutputOnly );
     cl.AddOption( Key( "output-only-file" ), &SymmetryParametersFile, "Read symmetry parameters from file, skip search.", &OutputOnly );
     cl.EndGroup();
@@ -174,8 +174,8 @@ bool ParseCommandLine ( const int argc, const char* argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "OutputParameters", "Output of Parameters" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
-    cl.AddOption( Key( 'o', "outfile" ), &SymmetryOutFileName, "File name for symmetry plane parameter output." );
-    cl.AddOption( Key( "write-xform" ), &WriteXformPath, "Write affine alignment transformation to file" );
+    cl.AddOption( Key( 'o', "outfile" ), &SymmetryOutFileName, "File name for symmetry plane parameter output." )->SetProperties( cmtk::CommandLine::PROPS_FILENAME );
+    cl.AddOption( Key( "write-xform" ), &WriteXformPath, "Write affine alignment transformation to file" )->SetProperties( cmtk::CommandLine::PROPS_FILENAME );
     cl.EndGroup();
     
     cl.AddParameter( &InFileName, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
