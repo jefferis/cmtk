@@ -62,7 +62,7 @@ bool MinValueSet = false;
 float MaxValue = 1e5;
 bool MaxValueSet = false;
 
-cmtk::Types::Coordinate Sampling = 1;
+cmtk::Types::Coordinate Samplng = 1;
 cmtk::Types::Coordinate Accuracy = 0.1;
 
 cmtk::Interpolators::InterpolationEnum Interpolation = cmtk::Interpolators::LINEAR;
@@ -128,8 +128,10 @@ bool ParseCommandLine ( const int argc, const char* argv[] )
     
     cl.BeginGroup( "Optimization", "Optimization" );
     cl.AddOption( Key( 'a', "accuracy" ), &Accuracy, "Accuracy (final optimization step size in [mm]." );
-    cl.AddOption( Key( 's', "sampling" ), &Sampling, "Resampled image resolution." );
-    cl.AddOption( Key( 'l', "levels" ), &Levels, "Number of resolution levels." );
+    cl.AddOption( Key( 's', "sampling" ), &Sampling, "Resampled image resolution. This is the resolution [in mm] of the first (finest) resampled image in the multi-scale pyramid, "
+		  "which is derived directly from the original full-resolution images.");
+    cl.AddOption( Key( 'l', "levels" ), &Levels, "Number of resolution levels. The algorithm will create (levels-1) resampled images with increasingly coarse resolution and use these "
+		  "in successive order of increasing resolution before using the original images at the final level." );
     cl.EndGroup();
     
     cl.BeginGroup( "Initial", "Initial approximate symmetry plane orientation" );
