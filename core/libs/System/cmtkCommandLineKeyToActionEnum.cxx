@@ -41,7 +41,7 @@ cmtk::CommandLine::KeyToActionEnum
   fmt << "\nSupported values: ";
   for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
     {
-    fmt << "\"" << (*it)->m_KeyString << "\", ";
+    fmt << "\"" << (*it)->m_Key.m_KeyString << "\", ";
     }
   
   const std::string defaultKey = this->m_EnumGroup->GetDefaultKey();
@@ -69,7 +69,7 @@ cmtk::CommandLine::KeyToActionEnum
   StdOut << "Supported values: ";
   for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
     {
-    StdOut << "\"<tt>" << (*it)->m_KeyString << "</tt>\", ";
+    StdOut << "\"<tt>" << (*it)->m_Key.m_KeyString << "</tt>\", ";
     }
   
   const std::string defaultKey = this->m_EnumGroup->GetDefaultKey();
@@ -98,7 +98,7 @@ cmtk::CommandLine::KeyToActionEnum
   for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
     {      
     mxml_node_t* element = mxmlNewElement( node, "element" );
-    mxmlNewText( element, 0, (*it)->m_KeyString.c_str() );
+    mxmlNewText( element, 0, (*it)->m_Key.m_KeyString.c_str() );
     }
   
   return this->Superclass::MakeXML( node );

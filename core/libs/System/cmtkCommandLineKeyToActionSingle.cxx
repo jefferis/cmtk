@@ -75,7 +75,7 @@ bool
 cmtk::CommandLine::KeyToActionSingle
 ::MatchAndExecute( const char keyChar, const size_t argc, const char* argv[], size_t& index )
 {
-  if ( this->m_Key == keyChar )
+  if ( this->m_Key.m_KeyChar == keyChar )
     {
     this->m_Action->Evaluate( argc, argv, index );
     return true;

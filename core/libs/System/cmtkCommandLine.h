@@ -571,11 +571,13 @@ public:
     /// Smart pointer to this class.
     typedef SmartPointer<KeyToAction> SmartPtr;
 
+    /// Key for this key-action pair.
+    const Key m_Key;
+
     /// Constructor.
     KeyToAction( const Key& key, //!< Key: long and/or short command line option for this action.
 		 const std::string& comment ) : //!< Command line help comment for this action.
-      m_Key( key.m_KeyChar ),
-      m_KeyString( key.m_KeyString ),
+      m_Key( key ),
       m_Comment( comment ),
       m_Properties( PROPS_XML )
     {}
@@ -613,12 +615,6 @@ public:
 
     /// Print help for this item.
     virtual void PrintWiki( const std::string prefix = "" ) const;
-    
-    /// Short option associated with this action.
-    char m_Key;
-
-    /// Long option associated with this action.
-    std::string m_KeyString;
     
     /// Comment (description).
     std::string m_Comment;
@@ -705,7 +701,7 @@ public:
 	{
 	if ( (*it)->m_Action->IsDefault() )
 	  {
-	  return std::string( (*it)->m_KeyString );
+	  return std::string( (*it)->m_Key.m_KeyString );
 	  }
 	}
       return "";

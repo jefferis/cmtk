@@ -53,7 +53,7 @@ cmtk::CommandLine::KeyToAction
 ::MakeXML( mxml_node_t *const node ) const
 {
 // for some reason Slicer does not accept long options that contain hyphens ("-"), so we replace them.
-  std::string xmlKeyStr = this->m_KeyString;
+  std::string xmlKeyStr = this->m_Key.m_KeyString;
   for ( size_t i = 0; i < xmlKeyStr.length(); ++i )
     {
     if ( xmlKeyStr[i] == '-' )
@@ -65,17 +65,17 @@ cmtk::CommandLine::KeyToAction
     mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment.c_str() );
     }
   
-  if ( this->m_KeyString.length() )
+  if ( this->m_Key.m_KeyString.length() )
     {
     mxmlNewText( mxmlNewElement( node, "name" ), 0, xmlKeyStr.c_str() );
     mxmlNewText( mxmlNewElement( node, "label" ), 0, xmlKeyStr.c_str() );
     }
-  if ( this->m_Key )
+  if ( this->m_Key.m_KeyChar )
     {
-    const char keyStr[] = { '-', this->m_Key, 0 };
+    const char keyStr[] = { '-', this->m_Key.m_KeyChar, 0 };
     mxmlNewText( mxmlNewElement( node, "flag" ), 0, keyStr );
     }
-  if ( this->m_KeyString.length() )
+  if ( this->m_Key.m_KeyString.length() )
     {
     mxmlNewText( mxmlNewElement( node, "longflag" ), 0, (std::string( "--" ) + xmlKeyStr).c_str() );
     }
@@ -87,19 +87,19 @@ void
 cmtk::CommandLine::KeyToAction
 ::FormatHelp( std::ostringstream& fmt ) const
 {
-  if ( this->m_Key )
+  if ( this->m_Key.m_KeyChar )
     {
-    fmt << "-" << this->m_Key;
+    fmt << "-" << this->m_Key.m_KeyChar;
     }
 
-  if ( this->m_Key && this->m_KeyString.size() )
+  if ( this->m_Key.m_KeyChar && this->m_Key.m_KeyString.size() )
     {
     fmt << " / ";
     }
 
-  if ( this->m_KeyString.size() )
+  if ( this->m_Key.m_KeyString.size() )
     {
-    fmt << "--" << this->m_KeyString;
+    fmt << "--" << this->m_Key.m_KeyString;
     }
 
   if ( fmt.str().length() > static_cast<size_t>( CommandLine::HelpTextIndent-2 ) )
@@ -121,19 +121,19 @@ cmtk::CommandLine::KeyToAction
 ::PrintWiki( const std::string prefix ) const
 {
   StdOut << prefix << "; ";
-  if ( this->m_Key )
+  if ( this->m_Key.m_KeyChar )
     {
-    StdOut << "<tt>-" << this->m_Key << "</tt>";
+    StdOut << "<tt>-" << this->m_Key.m_KeyChar << "</tt>";
     }
 
-  if ( this->m_Key && this->m_KeyString.size() )
+  if ( this->m_Key.m_KeyChar && this->m_Key.m_KeyString.size() )
     {
     StdOut << " / ";
     }
 
-  if ( this->m_KeyString.size() )
+  if ( this->m_Key.m_KeyString.size() )
     {
-    StdOut << "<tt>--" << this->m_KeyString << "</tt>";
+    StdOut << "<tt>--" << this->m_Key.m_KeyString << "</tt>";
     }
 
   StdOut << " : ";
@@ -147,15 +147,15 @@ bool
 cmtk::CommandLine::KeyToAction
 ::MatchLongOption( const std::string& key ) const
 {
-  if ( key.length() != this->m_KeyString.length() )
+  if ( key.length() != this->m_Key.m_KeyString.length() )
     return false;
   
   for ( size_t i = 0; i < key.length(); ++i )
     {
-    if ( (key[i] == '-' || key[i] == '_') && (this->m_KeyString[i] == '-' || this->m_KeyString[i] == '_') )
+    if ( (key[i] == '-' || key[i] == '_') && (this->m_Key.m_KeyString[i] == '-' || this->m_Key.m_KeyString[i] == '_') )
       continue;
 
-    if ( key[i] != this->m_KeyString[i] )
+    if ( key[i] != this->m_Key.m_KeyString[i] )
       return false;
     }
   return true;
