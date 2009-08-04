@@ -198,7 +198,7 @@ main( int argc, char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool splits an interleaved input image into the pass images, co-registers them, and reconstructs a motion-corrected image" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Artifact Correction" );
 
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation" );
+    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
 
     cl.BeginGroup( "interleave", "Interleaving Options" );
     cmtk::CommandLine::EnumGroup<int>::SmartPtr
@@ -225,8 +225,10 @@ main( int argc, char* argv[] )
     metricGroup->AddSwitch( Key( "msd" ), 4, "Use Mean Squared Differences for pass-to-refereence registration" );
     metricGroup->AddSwitch( Key( "cc" ), 5, "Use Cross-Correlation for pass-to-refereence registration" );
 
-    cl.AddOption( Key( "import-xforms-path" ), &ImportXformsPath, "Path of file from which to import transformations between passes." );
-    cl.AddOption( Key( "export-xforms-path" ), &ExportXformsPath, "Path of file to which to export transformations between passes." );
+    cl.AddOption( Key( "import-xforms-path" ), &ImportXformsPath, "Path of file from which to import transformations between passes." )
+      ->SetProperties( cmtk::CommandLine::PROPS_FILENAME );
+    cl.AddOption( Key( "export-xforms-path" ), &ExportXformsPath, "Path of file to which to export transformations between passes." )
+      ->SetProperties( cmtk::CommandLine::PROPS_FILENAME | cmtk::CommandLine::PROPS_OUTPUT );
 
     cl.AddOption( Key( 'S', "injection-kernel-sigma" ), &InjectionKernelSigma, "Standard deviation of Gaussian kernel for volume injection in multiples of pixel size in each direction." );
     cl.AddOption( Key( 'r', "injection-kernel-radius" ), &InjectionKernelRadius, "Truncation radius factor of injection kernel. The kernel is truncated at sigma*radius, where sigma is the kernel standard deviation." );

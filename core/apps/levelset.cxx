@@ -75,7 +75,7 @@ main( int argc, char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode" );
+    cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
 
     cl.AddSwitch( Key( 'b', "binarize" ), &binarize, true, "Binarize levelset and write as byte mask, rather than write floating-point levelset function itself." );
 
