@@ -636,7 +636,7 @@ public:
     friend class CommandLine;
 
     /// Give enum group class full access.
-    friend class EnumGroupBase;
+    friend class CommandLine::EnumGroupBase;
   };
 
   /// Local class that connects command line options with single action evaluators.
