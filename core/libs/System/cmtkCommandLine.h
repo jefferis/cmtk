@@ -634,6 +634,9 @@ public:
 
     /// Give command line class full access.
     friend class CommandLine;
+
+    /// Give enum group class full access.
+    friend class EnumGroupBase;
   };
 
   /// Local class that connects command line options with single action evaluators.
