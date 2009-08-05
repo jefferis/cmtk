@@ -177,8 +177,10 @@ public:
     PROPS_IMAGE = 32,
     /// When used with PROPS_IMAGE, this means the expected image is a label map.
     PROPS_LABELS = 64,
+    /// Item is a transformation file name
+    PROPS_XFORM = 128,
     /// This parameter refers to an output, not an input.
-    PROPS_OUTPUT = 128
+    PROPS_OUTPUT = 256
   } ItemProperties;
 
   /// Set program title, description, an category.
@@ -277,6 +279,12 @@ public:
     {
       return this->m_Properties;
     }
+
+    /// Set an attribute.
+    void SetAttribute( const std::string& key, const std::string& value )
+    {
+      this->m_Attributes[key] = value;
+    }
     
     /// Virtual function: evaluate switch or option.
     virtual void Evaluate( const size_t argc, const char* argv[], size_t& index ) = 0;
@@ -308,6 +316,9 @@ public:
   protected:
     /// Item properties.
     long int m_Properties;
+
+    /// Item attributes. These are free-form string key/value pairs.
+    std::map<const std::string, std::string> m_Attributes;
 
     /// Safely convertstring argument to long integer.
     static long int ConvertStrToLong( const char* str );

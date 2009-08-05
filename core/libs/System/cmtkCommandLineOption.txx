@@ -71,6 +71,11 @@ cmtk::CommandLine::Option<T>
       else
 	mxmlElementSetAttr( node, "type", "scalar" );
       }
+    else if ( this->m_Properties & PROPS_XFORM )
+      {
+      node = mxmlNewElement( parent, "transform" );
+      mxmlElementSetAttr( node, "fileExtensions", ".txt" );
+      }
     else if ( this->m_Properties & PROPS_FILENAME )
       node = mxmlNewElement( parent, "file" );
     else if ( this->m_Properties & PROPS_DIRNAME )
