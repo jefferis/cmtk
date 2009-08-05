@@ -83,6 +83,8 @@ typedef enum {
   FILEFORMAT_ANALYZE_HDR = 18,
   /// Path is an Analyze header file in little endian.
   FILEFORMAT_ANALYZE_HDR_BIGENDIAN = 19,
+  /// Path is an ITK transformation file.
+  FILEFORMAT_ITK_TFM = 20,
   /** File type cannot be determined.
    * This ID always has to be the last one!
    */

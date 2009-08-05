@@ -87,6 +87,7 @@ const FileFormatMagic FileFormatMagicNumbers[] = {
   { 0, "NRRD", 4 }, //NRRD
   { 0, "\x5C\x01\x00\x00", 4 }, // Analyze little endian
   { 0, "\x00\x00\x01\x5C", 4 }, // Analyze big endian
+  { 0, "#Insight Transform File V1.0", 28 }, // ITK transformation file
   { 0, NULL, 0 }  // Unknown.
 };
 

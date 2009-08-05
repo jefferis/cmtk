@@ -39,6 +39,7 @@
 #include <cmtkClassStreamAffineXform.h>
 #include <cmtkTypedStreamStudylist.h>
 #include <cmtkFileUtil.h>
+#include <cmtkAffineXformITKIO.h>
 
 namespace
 cmtk
@@ -64,6 +65,9 @@ XformIO::Read( const char* path, const bool verbose )
     return NULL;
 #endif
     }
+    case FILEFORMAT_ITK_TFM:
+      return AffineXformITKIO::Read( path );
+      break;
     case FILEFORMAT_STUDYLIST: 
     {
     if ( verbose ) 
@@ -121,6 +125,13 @@ XformIO::Write
       {
       fileFormat = FILEFORMAT_NRRD;
       }
+    else
+      {
+      if ( ! strcmp( ".tfm", suffix ) )
+	{
+	fileFormat = FILEFORMAT_ITK_TFM;
+	}      
+      }
     }
   
   char absolutePath[PATH_MAX];
@@ -135,6 +146,13 @@ XformIO::Write
       StdErr << "ERROR: XformIO::Write -- Nrrd support not configured.\n";
 #endif
       break;
+    case FILEFORMAT_ITK_TFM:
+    {
+    const AffineXform* affineXform = dynamic_cast<const AffineXform*>( xform );
+    if ( affineXform )
+      AffineXformITKIO::Write( path, affineXform );
+    break;
+    }
     case FILEFORMAT_TYPEDSTREAM:
     {
     ClassStream stream( absolutePath, ClassStream::WRITE );
