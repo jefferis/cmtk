@@ -81,8 +81,8 @@ cmtk
 AffineRegistrationCommandLine
 ::AffineRegistrationCommandLine 
 ( int argc, char* argv[] ) 
-  : m_OutputPathITK( NULL ),
-    m_ReformattedImagePath( NULL )
+  : m_ReformattedImagePath( NULL ),
+    m_OutputPathITK( NULL )
 {
   this->m_Metric = 0;
 
