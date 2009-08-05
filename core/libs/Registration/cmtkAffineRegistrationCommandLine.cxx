@@ -109,7 +109,7 @@ AffineRegistrationCommandLine
     CommandLine cl( argc, argv, CommandLine::PROPS_XML );
     cl.SetProgramInfo( CommandLine::PRG_TITLE, "Rigid and affine registration" );
     cl.SetProgramInfo( CommandLine::PRG_DESCR, "This program performs rigid and affine image registration using multi-resolution optimization of voxel-based image similarity measures." );
-    cl.SetProgramInfo( CommandLine::PRG_CATEG, "CMTK.Image Registration" );
+    cl.SetProgramInfo( CommandLine::PRG_CATEG, "CMTK.Registration" );
 
     typedef CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" )->SetProperties( CommandLine::PROPS_NOXML );
