@@ -48,6 +48,8 @@ Release CMTK-1.1.0:
     Slicer's presence to switch between standard console progress output and
     XML-based output.
 - Added: automatic Wiki markup printing of command line options
+- Added: export and import of affine transformations in ITK file format for
+    exchange with Slicer.
 
 
 Release CMTK-1.0.2 (2009-07-24):
