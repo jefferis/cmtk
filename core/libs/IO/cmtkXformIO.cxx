@@ -127,7 +127,7 @@ XformIO::Write
       }
     else
       {
-      if ( ! strcmp( ".tfm", suffix ) )
+      if ( ! strcmp( ".tfm", suffix ) || ! strcmp( ".txt", suffix ) )
 	{
 	fileFormat = FILEFORMAT_ITK_TFM;
 	}      
@@ -150,7 +150,7 @@ XformIO::Write
     {
     const AffineXform* affineXform = dynamic_cast<const AffineXform*>( xform );
     if ( affineXform )
-      AffineXformITKIO::Write( path, affineXform );
+      AffineXformITKIO::Write( path, *affineXform );
     break;
     }
     case FILEFORMAT_TYPEDSTREAM:

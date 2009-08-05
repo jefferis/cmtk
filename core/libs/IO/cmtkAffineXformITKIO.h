@@ -49,7 +49,7 @@ class AffineXformITKIO
 {
 public:
   /// Write transformation to ITK file.
-  static void Write( const std::string& filename, const AffineXform* affineXform );
+  static void Write( const std::string& filename, const AffineXform& affineXform );
 
   /// Read transformation from ITK file.
   static AffineXform* Read( const std::string& filename );

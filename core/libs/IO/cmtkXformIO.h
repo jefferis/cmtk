@@ -43,7 +43,14 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-/// Utility class for one-stop transformation import (later also export).
+/** Utility class for one-stop transformation import.
+ * When reading a transformation file using the Read() function, the file and transformation type
+ * are automatically detected based on each file format's "magic number".
+ *
+ * When writing a transformation using the Write() function, the path or file name suffix determines
+ * the output file format. Supported formats are: ITK Transformation file (".txt"; ".tfm"), Nrrd deformation
+ * fields (".nrrd"; ".nhdr"), and legacy TypedStream (all other suffixes).
+ */
 class XformIO 
 {
 public:

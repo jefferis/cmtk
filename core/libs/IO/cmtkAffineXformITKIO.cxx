@@ -35,7 +35,7 @@
 
 void
 cmtk::AffineXformITKIO
-::Write( const std::string& filename, const AffineXform* affineXform )
+::Write( const std::string& filename, const AffineXform& affineXform )
 {
   std::ofstream stream( filename.c_str() );
   if ( stream.good() )
@@ -59,13 +59,13 @@ cmtk::AffineXformITKIO
     for ( int j = 0; j < 3; ++j )
       for ( int i = 0; i < 3; ++i )
 	{
-	stream << affineXform->Matrix[j][i] << " ";
+	stream << affineXform.Matrix[j][i] << " ";
 	}
 
     // write translations
     for ( int i = 0; i < 3; ++i )
       {
-      stream << affineXform->Matrix[3][i] << " ";
+      stream << affineXform.Matrix[3][i] << " ";
       }
 
     // finish up with (all-zero) fixed parameters
