@@ -333,6 +333,15 @@ public:
     /// Convert function.
     template<class T> T Convert( const char* str );
 
+    /// Helper class to avoid function template
+    template<class T>
+    class Helper
+    {
+    public:
+      /// Make a basic XML node for a generic item based on type, properties, attribute, etc.
+      static mxml_node_t* MakeXML( const Item* item, mxml_node_t *const parent );
+    };
+
   private:
     /// Allow command line class full access.
     friend class CommandLine;
@@ -445,6 +454,13 @@ private:
 
     /// Virtual function that returns an XML tree describing this option.
     virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const;
+
+    /// Format additional help information (e.g., default values).
+    virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
+      ) const;
+
+    /// Format additional help information (e.g., default values).
+    virtual void PrintWiki() const;
 
   private:
     /// Pointer to associated variable.
@@ -1041,6 +1057,7 @@ Console& operator<<( Console& console, CommandLine::Exception e );
 
 } // namespace cmtk
 
+#include <cmtkCommandLineItem.txx>
 #include <cmtkCommandLineConvert.txx>
 #include <cmtkCommandLineOption.txx>
 #include <cmtkCommandLineRepeat.txx>

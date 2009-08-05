@@ -51,35 +51,7 @@ mxml_node_t*
 cmtk::CommandLine::Repeat<T>
 ::MakeXML(  mxml_node_t *const parent ) const 
 {
-  const char* typeName = CommandLineTypeTraits<T>::GetName();
-
-  mxml_node_t *node = NULL;
-  if ( std::string( typeName ) == "string" )
-    {
-    if ( this->m_Properties & PROPS_IMAGE )
-      {
-      node = mxmlNewElement( parent, "image" );
-      
-      if ( this->m_Properties & PROPS_LABELS )
-	mxmlElementSetAttr( node, "type", "label" );
-      else
-	mxmlElementSetAttr( node, "type", "scalar" );
-      }
-    else if ( this->m_Properties & PROPS_FILENAME )
-      node = mxmlNewElement( parent, "file" );
-    else if ( this->m_Properties & PROPS_DIRNAME )
-      node = mxmlNewElement( parent, "directory" );
-    else 
-      node = mxmlNewElement( parent, "string" );
-
-    if ( this->m_Properties & PROPS_OUTPUT )
-      mxmlNewText( mxmlNewElement( node, "channel" ), 0, "output" );
-    else
-      mxmlNewText( mxmlNewElement( node, "channel" ), 0, "input" );
-    }
-  else
-    node = mxmlNewElement( parent, typeName );
-
+  mxml_node_t *node = Item::Helper<T>::MakeXML( this, parent );
   mxmlElementSetAttr( node, "multiple", "true" );
   
   return node;

@@ -57,46 +57,8 @@ cmtk::CommandLine::Option<T>
     {
     }
   
-  const char* typeName = CommandLineTypeTraits<T>::GetName();
+  mxml_node_t *node = Item::Helper<T>::MakeXML( this, parent );
 
-  mxml_node_t *node = NULL;
-  if ( std::string( typeName ) == "string" )
-    {
-    if ( this->m_Properties & PROPS_IMAGE )
-      {
-      node = mxmlNewElement( parent, "image" );
-      
-      if ( this->m_Properties & PROPS_LABELS )
-	mxmlElementSetAttr( node, "type", "label" );
-      else
-	mxmlElementSetAttr( node, "type", "scalar" );
-      }
-    else if ( this->m_Properties & PROPS_XFORM )
-      {
-      node = mxmlNewElement( parent, "transform" );
-      mxmlElementSetAttr( node, "fileExtensions", ".txt" );
-      }
-    else if ( this->m_Properties & PROPS_FILENAME )
-      node = mxmlNewElement( parent, "file" );
-    else if ( this->m_Properties & PROPS_DIRNAME )
-      node = mxmlNewElement( parent, "directory" );
-    else 
-      node = mxmlNewElement( parent, "string" );
-
-    if ( this->m_Properties & PROPS_OUTPUT )
-      mxmlNewText( mxmlNewElement( node, "channel" ), 0, "output" );
-    else
-      mxmlNewText( mxmlNewElement( node, "channel" ), 0, "input" );
-    }
-  else
-    node = mxmlNewElement( parent, typeName );
-
-  // write any attributes the user might have set
-  for ( std::map<const std::string,std::string>::const_iterator attrIt = this->m_Attributes.begin(); attrIt != this->m_Attributes.end(); ++attrIt )
-    {
-    mxmlElementSetAttr( node, attrIt->first.c_str(), attrIt->second.c_str() );
-    }
-  
   if ( !Flag ) // if there is no flag monitoring this option, then there must be a valid default value
     {
     mxml_node_t *dflt = mxmlNewElement( node, "default" );

@@ -308,8 +308,6 @@ CommandLine::PrintWiki
   for ( KeyActionGroupListType::const_iterator grp = this->m_KeyActionGroupList.begin(); grp != this->m_KeyActionGroupList.end(); ++grp )
     {
     const std::string& name = (*grp)->m_Name;
-
-    size_t indent = 0;
     if ( name != "MAIN" )
       {
       StdOut << "=== " << (*grp)->m_Description << " ===\n\n";
