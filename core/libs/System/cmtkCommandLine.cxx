@@ -161,10 +161,14 @@ CommandLine::Parse()
   for ( NonOptionParameterListType::iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it, ++this->Index )
     {
     if ( this->Index >= this->ArgC )
-      {
-      throw( Exception( "Insufficient number of command line arguments", this->Index ) );
+      {     
+      if ( ! ((*it)->m_Properties & PROPS_OPTIONAL) )
+	throw( Exception( "Insufficient number of command line arguments", this->Index ) );
       }
-    (*it)->Evaluate( this->ArgC, this->ArgV, this->Index );
+    else
+      {
+      (*it)->Evaluate( this->ArgC, this->ArgV, this->Index );
+      }
     }
   
   return true;

@@ -180,7 +180,9 @@ public:
     /// Item is a transformation file name
     PROPS_XFORM = 128,
     /// This parameter refers to an output, not an input.
-    PROPS_OUTPUT = 256
+    PROPS_OUTPUT = 256,
+    /// This parameter (non-option argument) is optional.
+    PROPS_OPTIONAL = 512
   } ItemProperties;
 
   /// Set program title, description, an category.

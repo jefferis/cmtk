@@ -119,7 +119,7 @@ private:
   const char* OutParametersName;
 
   /// Name of output transformation file in ITK format.
-  std::string m_OutputPathITK;
+  const char* m_OutputPathITK;
 
   /** Name of first study to be registered.
    * This is given as the first non-option command line paramter.

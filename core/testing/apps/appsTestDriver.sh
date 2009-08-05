@@ -631,7 +631,7 @@ case ${RUNTEST} in
 	check_result registration
 	;;
     RegistrationWithInitialInverse)
-	run ${BINDIR}/registration -v --dofs 0 -o ${tmpdir} --initial-inverse vol001_mr_t0t1.list  vol001_mr_t0t1.list
+	run ${BINDIR}/registration -v --dofs 0 -o ${tmpdir} --initial vol001_mr_t0t1.list --initial-is-inverse vol001_mr_t0t1.list
 	check_result registration
 	;;
     RegistrationAutoLevelsRat4)

@@ -90,6 +90,12 @@ cmtk::CommandLine::Option<T>
     }
   else
     node = mxmlNewElement( parent, typeName );
+
+  // write any attributes the user might have set
+  for ( std::map<const std::string,std::string>::const_iterator attrIt = this->m_Attributes.begin(); attrIt != this->m_Attributes.end(); ++attrIt )
+    {
+    mxmlElementSetAttr( node, attrIt->first.c_str(), attrIt->second.c_str() );
+    }
   
   if ( !Flag ) // if there is no flag monitoring this option, then there must be a valid default value
     {

@@ -101,15 +101,14 @@ AffineRegistrationCommandLine
   const char *InitialStudylist = NULL;
   Study1 = Study2 = NULL;
 
-  const char* clArg1; // input studylist or reference image
-  const char* clArg2; // empty or floating image
+  const char* clArg1 = NULL; // input studylist or reference image
+  const char* clArg2 = NULL; // empty or floating image
 
   try 
     {
     CommandLine cl( argc, argv );
     cl.SetProgramInfo( CommandLine::PRG_TITLE, "Rigid and affine registration" );
     cl.SetProgramInfo( CommandLine::PRG_DESCR, "This program performs rigid and affine image registration using multi-resolution optimization of voxel-based image similarity measures." );
-    cl.SetProgramInfo( CommandLine::PRG_SYNTX, "[options] [refImage fltImage | initialStudylist]" );
     cl.SetProgramInfo( CommandLine::PRG_CATEG, "CMTK.Image Registration" );
 
     typedef CommandLine::Key Key;
@@ -156,27 +155,30 @@ AffineRegistrationCommandLine
     this->m_PreprocessorRef.AttachToCommandLine( cl );
     this->m_PreprocessorFlt.AttachToCommandLine( cl );
 
-    cl.BeginGroup( "Output", "Output parameters" );
+    cl.BeginGroup( "Output", "Output parameters" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
     cl.AddOption( Key( 'o', "outlist" ), &this->Studylist, "Output path for final transformation" );
-    cl.AddOption( Key( "out-itk" ), &this->m_OutputPathITK, "Output path for final transformation in ITK format" )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
-    cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddOption( Key( "out-matrix" ), &this->OutMatrixName, "Output path for final transformation in matrix format" );
     cl.AddOption( Key( "out-parameters" ), &this->OutParametersName, "Output path for final transformation in plain parameter list format" );
     cl.AddOption( Key( 'p', "protocol" ), &this->Protocol, "Optimization protocol output file name" );
     cl.AddOption( Key( 't', "time" ), &this->Time, "Computation time statistics output file name" );
     cl.EndGroup();
-    
-    cl.Parse();
 
-    clArg1 = cl.GetNext();
-    clArg2 = cl.GetNextOptional();
+    cl.BeginGroup( "SlicerImprt", "Import Results into Slicer" );
+    cl.AddOption( Key( "out-itk" ), &this->m_OutputPathITK, "Output path for final transformation in ITK format" )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.EndGroup();
+    
+    cl.AddParameter( &clArg1, "ReferenceImagePath", "Reference (fixed) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &clArg2, "FloatingImagePath", "Floating (moving) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OPTIONAL );
+
+    cl.Parse();
     }
   catch ( CommandLine::Exception ex )
     {
     StdErr << ex << "\n";
     exit( 1 );
     }
-
+  
   if ( (OptimizerStepFactor <= 0) || (OptimizerStepFactor >= 1) ) 
     {
     StdErr << "ERROR: step factor value " << OptimizerStepFactor << " is invalid. Must be in range (0..1)\n";
@@ -194,6 +196,8 @@ AffineRegistrationCommandLine
   else
     {
     inStudylist = clArg1;
+    AffineXform::SmartPtr initialXform( new AffineXform() );
+    this->SetInitialXform( initialXform );
 
     if ( InitialStudylist ) 
       {
@@ -228,7 +232,7 @@ AffineRegistrationCommandLine
       }
 
     typedStream.Close();
-  }
+    }
 
   if ( InitialStudylist ) 
     {
@@ -261,11 +265,17 @@ AffineRegistrationCommandLine
     }
   
   UniformVolume::SmartPtr volume( VolumeIO::ReadOriented( Study1, Verbose ) );
-  if ( !volume ) throw ConstructorFailed();
+  if ( !volume )
+    {
+    StdErr << "ERROR: volume " << this->Study1 << " could not be read\n";
+    }
   this->SetVolume_1( UniformVolume::SmartPtr( this->m_PreprocessorRef.GetProcessedImage( volume ) ) );
 
   volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( Study2, Verbose ) );
-  if ( !volume ) throw ConstructorFailed();
+  if ( !volume )
+    {
+    StdErr << "ERROR: volume " << this->Study2 << " could not be read\n";
+    }
   this->SetVolume_2(  UniformVolume::SmartPtr( this->m_PreprocessorFlt.GetProcessedImage( volume ) ) );
 
   if ( InitXlate ) 
@@ -422,7 +432,7 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
     this->OutputResultList( this->Studylist );
     }
 
-  if ( this->m_OutputPathITK.length() ) 
+  if ( this->m_OutputPathITK ) 
     {
     AffineXformITKIO::Write( this->m_OutputPathITK, *(this->GetTransformation()->GetInverse()) );
     }

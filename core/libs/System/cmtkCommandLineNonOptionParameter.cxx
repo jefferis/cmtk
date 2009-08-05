@@ -45,7 +45,8 @@ cmtk::CommandLine::NonOptionParameter
     } 
   else
     {
-    throw( Exception( "Argument missing", index ) );
+    if ( ! (this->m_Properties & PROPS_OPTIONAL) )
+      throw( Exception( "Argument missing", index ) );
     }
 }
 
@@ -54,35 +55,7 @@ mxml_node_t*
 cmtk::CommandLine::NonOptionParameter
 ::MakeXML( mxml_node_t *const parent, const int index ) const
 {
-  mxml_node_t *node = NULL;
-  if ( this->m_Properties & PROPS_IMAGE )
-    {
-    node = mxmlNewElement( parent, "image" );
-    
-    if ( this->m_Properties & PROPS_LABELS )
-      mxmlElementSetAttr( node, "type", "label" );
-    else
-      mxmlElementSetAttr( node, "type", "scalar" );
-    }
-  else if ( this->m_Properties & PROPS_XFORM )
-    {
-    node = mxmlNewElement( parent, "transform" );
-    mxmlElementSetAttr( node, "fileExtensions", ".txt" );
-    }
-  else if ( this->m_Properties & PROPS_FILENAME )
-    node = mxmlNewElement( parent, "file" );
-  else if ( this->m_Properties & PROPS_DIRNAME )
-    node = mxmlNewElement( parent, "directory" );
-  else 
-    node = mxmlNewElement( parent, "string" );
-
-  if ( this->m_Properties & PROPS_OUTPUT )
-    mxmlNewText( mxmlNewElement( node, "channel" ), 0, "output" );
-  else
-    mxmlNewText( mxmlNewElement( node, "channel" ), 0, "input" );
-
-  mxmlNewText( mxmlNewElement( node, "name" ), 0, this->m_Name );
-  mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment );
+  mxml_node_t *node = Option<const char*>::MakeXML( parent );
 
   if ( index >= 0 )
     {
