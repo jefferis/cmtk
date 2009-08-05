@@ -269,9 +269,10 @@ public:
     virtual ~Item() {}
 
     /// Set item properties.
-    virtual void SetProperties( const long int properties )
+    virtual Item* SetProperties( const long int properties )
     {
       this->m_Properties = properties;
+      return this;
     }
 
     /// Get item properties.
@@ -281,9 +282,10 @@ public:
     }
 
     /// Set an attribute.
-    void SetAttribute( const std::string& key, const std::string& value )
+    virtual Item* SetAttribute( const std::string& key, const std::string& value )
     {
       this->m_Attributes[key] = value;
+      return this;
     }
     
     /// Virtual function: evaluate switch or option.

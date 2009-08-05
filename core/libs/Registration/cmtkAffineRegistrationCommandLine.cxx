@@ -140,7 +140,7 @@ AffineRegistrationCommandLine
     cl.AddSwitch( Key( 'n', "no-switch" ), &this->m_NoSwitch, 1, "Do not auto-switch reference and floating image for improved computational performance" );
     cl.AddSwitch( Key( 'i', "initxlate" ), &InitXlate, true, "Initialized transformation by translating floating image FOV center onto reference image FOV center" );
 
-    cl.AddOption( Key( "initial" ), &InitialStudylist, "Initialize transformation from given path" )->SetProperties( cmtk::CommandLine::PROPS_XFORM );
+    cl.AddOption( Key( "initial" ), &InitialStudylist, "Initialize transformation from given path" )->SetProperties( cmtk::CommandLine::PROPS_XFORM )->SetAttribute( "reference", "ReferenceImagePath" );
     cl.AddSwitch( Key( "initial-is-inverse" ), &this->m_InitialXformIsInverse, true, "Invert initial transformation before initializing registration" );
     cl.EndGroup();
 
