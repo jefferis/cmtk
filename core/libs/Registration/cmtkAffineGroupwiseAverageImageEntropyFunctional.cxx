@@ -257,7 +257,7 @@ AffineGroupwiseAverageImageEntropyFunctional::InterpolateImageProbabilisticThrea
     {
     const size_t offset = This->m_ProbabilisticSamples[i];
     This->m_TemplateGrid->GetGridLocation( v, offset );
-    xform->ApplyInPlaceNonVirtual( v );
+    xform->ApplyInPlace( v );
     
     if ( target->ProbeData( value, dataPtr, v ) )
       {

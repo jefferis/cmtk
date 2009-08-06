@@ -79,7 +79,7 @@ DeformationField::InitControlPoints( const AffineXform* affineXform )
 
 void
 DeformationField
-::GetTransformedGridNonVirtual 
+::GetTransformedGrid 
 ( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const
 {
   const Types::Coordinate* coeff = this->m_Parameters + nextI * idxX + nextJ * idxY + nextK * idxZ;
@@ -90,7 +90,7 @@ DeformationField
 }
 
 void 
-DeformationField::GetTransformedGridSequenceNonVirtual
+DeformationField::GetTransformedGridSequence
 ( Vector3D *const vIn, const int numPoints, const int idxX, const int idxY, const int idxZ ) 
   const
 {

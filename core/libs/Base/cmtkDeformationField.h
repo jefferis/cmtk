@@ -116,22 +116,10 @@ public:
   virtual void ApplyInPlace ( Vector3D& ) const;
 
   /// Get a grid point from the deformed grid.
-  void GetTransformedGridNonVirtual( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const;
-  
-  /// Get a grid point from the deformed grid.
-  virtual void GetTransformedGrid( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const 
-  {
-    this->GetTransformedGridNonVirtual( v, idxX, idxY, idxZ );
-  }
+  virtual void GetTransformedGrid( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get a sequence of grid points from the deformed grid. 
-  void GetTransformedGridSequenceNonVirtual( Vector3D *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const;
-  
-  /// Get a sequence of grid points from the deformed grid. 
-  virtual void GetTransformedGridSequence( Vector3D *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const 
-  {
-    this->GetTransformedGridSequenceNonVirtual( v, numPoints, idxX, idxY, idxZ );
-  }
+  virtual void GetTransformedGridSequence( Vector3D *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get Jacobian matrix.
   virtual void GetJacobian( const Vector3D& v, CoordinateMatrix3x3& J ) const;

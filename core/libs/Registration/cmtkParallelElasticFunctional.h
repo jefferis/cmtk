@@ -532,7 +532,7 @@ private:
       {
       for ( pY = pYfrom; (pY < dimsY) && rowsToDo; pYfrom = 0, ++pY, --rowsToDo )
 	{
-	warp->GetTransformedGridSequenceNonVirtual( vectorCache, dimsX, 0, pY, pZ );
+	warp->GetTransformedGridSequence( vectorCache, dimsX, 0, pY, pZ );
 
 	pVec = vectorCache;
 	for ( pX = 0; pX < dimsX; ++pX, ++r, ++pVec ) 

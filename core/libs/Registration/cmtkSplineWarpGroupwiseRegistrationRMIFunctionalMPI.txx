@@ -438,7 +438,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional::EvaluateLocalGradientThreadFunc
 	      
 	      Types::Coordinate vTest = v0 + (2*delta-1) * pStep;
 	      xform->SetParameter( xfparam, vTest );
-	      xform->GetTransformedGridSequenceNonVirtual( &(vectorList[0]), pixelsPerLineVOI, voi.startX, y, z );
+	      xform->GetTransformedGridSequence( &(vectorList[0]), pixelsPerLineVOI, voi.startX, y, z );
 	      
 	      byte* rowDataPtr = ThisConst->m_Data[img] + rowofs;
 	      for ( size_t x = 0; x < pixelsPerLineVOI; ++x, ++rowDataPtr )
