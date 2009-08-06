@@ -56,4 +56,3 @@ cmtk::CommandLine::Repeat<T>
   
   return node;
 }
-

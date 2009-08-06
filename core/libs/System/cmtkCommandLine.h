@@ -455,13 +455,6 @@ private:
     /// Virtual function that returns an XML tree describing this option.
     virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const;
 
-    /// Format additional help information (e.g., default values).
-    virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
-      ) const;
-
-    /// Format additional help information (e.g., default values).
-    virtual void PrintWiki() const;
-
   private:
     /// Pointer to associated variable.
     std::list<T>* m_pList;
