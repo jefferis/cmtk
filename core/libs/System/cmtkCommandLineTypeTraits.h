@@ -162,6 +162,32 @@ public:
 
 template<>
 class 
+CommandLineTypeTraits<char> :
+  /// Inherit generic template members
+  public CommandLineTypeTraitsBase<char>
+{
+public:
+  static const char* GetName() 
+  { 
+    return "integer";
+  }
+};
+
+template<>
+class 
+CommandLineTypeTraits<byte> :
+  /// Inherit generic template members
+  public CommandLineTypeTraitsBase<byte>
+{
+public:
+  static const char* GetName() 
+  { 
+    return "integer";
+  }
+};
+
+template<>
+class 
 CommandLineTypeTraits<float> :
   /// Inherit generic template members
   public CommandLineTypeTraitsBase<float>
