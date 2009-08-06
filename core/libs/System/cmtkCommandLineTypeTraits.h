@@ -162,9 +162,9 @@ public:
 
 template<>
 class 
-CommandLineTypeTraits<char> :
+CommandLineTypeTraits<signed char> :
   /// Inherit generic template members
-  public CommandLineTypeTraitsBase<char>
+  public CommandLineTypeTraitsBase<signed char>
 {
 public:
   static const char* GetName() 
@@ -175,9 +175,9 @@ public:
 
 template<>
 class 
-CommandLineTypeTraits<byte> :
+CommandLineTypeTraits<unsigned char> :
   /// Inherit generic template members
-  public CommandLineTypeTraitsBase<byte>
+  public CommandLineTypeTraitsBase<unsigned char>
 {
 public:
   static const char* GetName() 
