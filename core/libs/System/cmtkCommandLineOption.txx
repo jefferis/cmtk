@@ -53,18 +53,22 @@ mxml_node_t*
 cmtk::CommandLine::Option<T>
 ::MakeXML(  mxml_node_t *const parent ) const 
 {
-  if ( Flag ) // if there is a flag monitoring this option, then we need to create an additional boolean toggle
+  if ( ! (this->m_Properties & PROPS_NOXML) )
     {
+    if ( Flag ) // if there is a flag monitoring this option, then we need to create an additional boolean toggle
+      {
+      }
+    
+    mxml_node_t *node = Item::Helper<T>::MakeXML( this, parent );
+    
+    if ( !Flag ) // if there is no flag monitoring this option, then there must be a valid default value
+      {
+      mxml_node_t *dflt = mxmlNewElement( node, "default" );
+      mxmlNewText( dflt, 0, CommandLineTypeTraits<T>::ValueToStringMinimal( this->Var ).c_str() );
+      }
+    return node;
     }
-  
-  mxml_node_t *node = Item::Helper<T>::MakeXML( this, parent );
-
-  if ( !Flag ) // if there is no flag monitoring this option, then there must be a valid default value
-    {
-    mxml_node_t *dflt = mxmlNewElement( node, "default" );
-    mxmlNewText( dflt, 0, CommandLineTypeTraits<T>::ValueToStringMinimal( this->Var ).c_str() );
-    }
-  return node;
+  return NULL;
 }
 
 template<class T>

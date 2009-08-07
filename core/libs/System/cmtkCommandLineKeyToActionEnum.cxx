@@ -90,18 +90,22 @@ mxml_node_t*
 cmtk::CommandLine::KeyToActionEnum
 ::MakeXML( mxml_node_t *const parent ) const
 {
-  mxml_node_t *node = mxmlNewElement( parent, "string-enumeration" );
-  
-  mxml_node_t* defaultElement = mxmlNewElement( node, "default" );
-  mxmlNewText( defaultElement, 0, this->m_EnumGroup->GetDefaultKey().c_str() );
-  
-  for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
-    {      
-    mxml_node_t* element = mxmlNewElement( node, "element" );
-    mxmlNewText( element, 0, (*it)->m_Key.m_KeyString.c_str() );
+  if ( ! (this->m_Properties & PROPS_NOXML) )
+    {
+    mxml_node_t *node = mxmlNewElement( parent, "string-enumeration" );
+    
+    mxml_node_t* defaultElement = mxmlNewElement( node, "default" );
+    mxmlNewText( defaultElement, 0, this->m_EnumGroup->GetDefaultKey().c_str() );
+    
+    for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+      {      
+      mxml_node_t* element = mxmlNewElement( node, "element" );
+      mxmlNewText( element, 0, (*it)->m_Key.m_KeyString.c_str() );
+      }
+    
+    return this->Superclass::MakeXML( node );
     }
-  
-  return this->Superclass::MakeXML( node );
+  return NULL;
 }
 
 bool

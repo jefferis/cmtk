@@ -35,7 +35,11 @@ mxml_node_t*
 cmtk::CommandLine::KeyToActionSingle
 ::MakeXML( mxml_node_t *const parent ) const
 {
-  return this->Superclass::MakeXML( this->m_Action->MakeXML( parent ) );
+  if ( ! (this->m_Properties & PROPS_NOXML) )
+    {
+    return this->Superclass::MakeXML( this->m_Action->MakeXML( parent ) );
+    }
+  return NULL;
 }
 
 void

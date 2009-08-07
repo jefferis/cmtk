@@ -35,45 +35,49 @@ mxml_node_t*
 cmtk::CommandLine::Item::Helper<T>
 ::MakeXML( const Item* item, mxml_node_t *const parent )
 {
-  const char* typeName = CommandLineTypeTraits<T>::GetName();
-
-  mxml_node_t *node = NULL;
-  if ( std::string( typeName ) == "string" )
+  if ( ! (item->m_Properties & PROPS_NOXML) )
     {
-    if ( item->m_Properties & PROPS_IMAGE )
+    const char* typeName = CommandLineTypeTraits<T>::GetName();
+    
+    mxml_node_t *node = NULL;
+    if ( std::string( typeName ) == "string" )
       {
-      node = mxmlNewElement( parent, "image" );
+      if ( item->m_Properties & PROPS_IMAGE )
+	{
+	node = mxmlNewElement( parent, "image" );
+	
+	if ( item->m_Properties & PROPS_LABELS )
+	  mxmlElementSetAttr( node, "type", "label" );
+	else
+	  mxmlElementSetAttr( node, "type", "scalar" );
+	}
+      else if ( item->m_Properties & PROPS_XFORM )
+	{
+	node = mxmlNewElement( parent, "transform" );
+	mxmlElementSetAttr( node, "fileExtensions", ".txt" );
+	}
+      else if ( item->m_Properties & PROPS_FILENAME )
+	node = mxmlNewElement( parent, "file" );
+      else if ( item->m_Properties & PROPS_DIRNAME )
+	node = mxmlNewElement( parent, "directory" );
+      else 
+	node = mxmlNewElement( parent, "string" );
       
-      if ( item->m_Properties & PROPS_LABELS )
-	mxmlElementSetAttr( node, "type", "label" );
+      if ( item->m_Properties & PROPS_OUTPUT )
+	mxmlNewText( mxmlNewElement( node, "channel" ), 0, "output" );
       else
-	mxmlElementSetAttr( node, "type", "scalar" );
+	mxmlNewText( mxmlNewElement( node, "channel" ), 0, "input" );
       }
-    else if ( item->m_Properties & PROPS_XFORM )
-      {
-      node = mxmlNewElement( parent, "transform" );
-      mxmlElementSetAttr( node, "fileExtensions", ".txt" );
-      }
-    else if ( item->m_Properties & PROPS_FILENAME )
-      node = mxmlNewElement( parent, "file" );
-    else if ( item->m_Properties & PROPS_DIRNAME )
-      node = mxmlNewElement( parent, "directory" );
-    else 
-      node = mxmlNewElement( parent, "string" );
-
-    if ( item->m_Properties & PROPS_OUTPUT )
-      mxmlNewText( mxmlNewElement( node, "channel" ), 0, "output" );
     else
-      mxmlNewText( mxmlNewElement( node, "channel" ), 0, "input" );
+      node = mxmlNewElement( parent, typeName );
+    
+    // write any attributes the user might have set
+    for ( std::map<const std::string,std::string>::const_iterator attrIt = item->m_Attributes.begin(); attrIt != item->m_Attributes.end(); ++attrIt )
+      {
+      mxmlElementSetAttr( node, attrIt->first.c_str(), attrIt->second.c_str() );
+      }
+    
+    return node;
     }
-  else
-    node = mxmlNewElement( parent, typeName );
-
-  // write any attributes the user might have set
-  for ( std::map<const std::string,std::string>::const_iterator attrIt = item->m_Attributes.begin(); attrIt != item->m_Attributes.end(); ++attrIt )
-    {
-    mxmlElementSetAttr( node, attrIt->first.c_str(), attrIt->second.c_str() );
-    }
-
-  return node;
+  return NULL;
 }

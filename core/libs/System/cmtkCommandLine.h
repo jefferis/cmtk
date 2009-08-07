@@ -371,7 +371,11 @@ private:
     /// Virtual function that returns an XML tree describing this option.
     virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const 
     {
-      return mxmlNewElement( parent, "boolean" );
+      if ( ! (this->m_Properties & PROPS_NOXML) )
+	{
+	return mxmlNewElement( parent, "boolean" );
+	}
+      return NULL;
     }
 
     /// Format additional help information (e.g., default values).

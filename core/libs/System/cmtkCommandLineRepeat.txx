@@ -51,8 +51,12 @@ mxml_node_t*
 cmtk::CommandLine::Repeat<T>
 ::MakeXML(  mxml_node_t *const parent ) const 
 {
-  mxml_node_t *node = Item::Helper<T>::MakeXML( this, parent );
-  mxmlElementSetAttr( node, "multiple", "true" );
-  
-  return node;
+  if ( ! (this->m_Properties & PROPS_NOXML) )
+    {
+    mxml_node_t *node = Item::Helper<T>::MakeXML( this, parent );
+    mxmlElementSetAttr( node, "multiple", "true" );
+    
+    return node;
+    }
+  return NULL;
 }

@@ -52,35 +52,39 @@ mxml_node_t*
 cmtk::CommandLine::KeyToAction
 ::MakeXML( mxml_node_t *const node ) const
 {
-// for some reason Slicer does not accept long options that contain hyphens ("-"), so we replace them.
-  std::string xmlKeyStr = this->m_Key.m_KeyString;
-  for ( size_t i = 0; i < xmlKeyStr.length(); ++i )
+  if ( ! (this->m_Properties & PROPS_NOXML) )
     {
-    if ( xmlKeyStr[i] == '-' )
-      xmlKeyStr[i] = '_';
+    // for some reason Slicer does not accept long options that contain hyphens ("-"), so we replace them.
+    std::string xmlKeyStr = this->m_Key.m_KeyString;
+    for ( size_t i = 0; i < xmlKeyStr.length(); ++i )
+      {
+      if ( xmlKeyStr[i] == '-' )
+	xmlKeyStr[i] = '_';
+      }
+    
+    if ( this->m_Comment.length() )
+      {
+      mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment.c_str() );
+      }
+    
+    if ( this->m_Key.m_KeyString.length() )
+      {
+      mxmlNewText( mxmlNewElement( node, "name" ), 0, xmlKeyStr.c_str() );
+      mxmlNewText( mxmlNewElement( node, "label" ), 0, xmlKeyStr.c_str() );
+      }
+    if ( this->m_Key.m_KeyChar )
+      {
+      const char keyStr[] = { '-', this->m_Key.m_KeyChar, 0 };
+      mxmlNewText( mxmlNewElement( node, "flag" ), 0, keyStr );
+      }
+    if ( this->m_Key.m_KeyString.length() )
+      {
+      mxmlNewText( mxmlNewElement( node, "longflag" ), 0, (std::string( "--" ) + xmlKeyStr).c_str() );
+      }
+    
+    return node;
     }
-
-  if ( this->m_Comment.length() )
-    {
-    mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment.c_str() );
-    }
-  
-  if ( this->m_Key.m_KeyString.length() )
-    {
-    mxmlNewText( mxmlNewElement( node, "name" ), 0, xmlKeyStr.c_str() );
-    mxmlNewText( mxmlNewElement( node, "label" ), 0, xmlKeyStr.c_str() );
-    }
-  if ( this->m_Key.m_KeyChar )
-    {
-    const char keyStr[] = { '-', this->m_Key.m_KeyChar, 0 };
-    mxmlNewText( mxmlNewElement( node, "flag" ), 0, keyStr );
-    }
-  if ( this->m_Key.m_KeyString.length() )
-    {
-    mxmlNewText( mxmlNewElement( node, "longflag" ), 0, (std::string( "--" ) + xmlKeyStr).c_str() );
-    }
-
-  return node;
+  return NULL;
 }
 
 void
