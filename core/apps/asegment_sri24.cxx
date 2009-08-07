@@ -61,7 +61,7 @@ main( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode." );
+    cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode." )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
     cl.AddSwitch( Key( 'f', "fast" ), &fast, true, "Fast mode." );
 
     cmtk::CommandLine::EnumGroup<std::string>::SmartPtr channelGroup = cl.AddEnum( "registration-channel", &channelSRI24, "The SRI24 channel used for registration to the target image." );

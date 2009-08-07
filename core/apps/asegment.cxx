@@ -59,7 +59,7 @@ main( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode." );
+    cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode." )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
     cl.AddSwitch( Key( 'f', "fast" ), &fast, true, "Fast mode." );
     
     cl.AddParameter( &targetImageName, "TargetImage", "Target image path. This is the image to be segmented." )
