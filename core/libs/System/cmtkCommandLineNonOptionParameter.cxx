@@ -57,11 +57,19 @@ cmtk::CommandLine::NonOptionParameter
 {
   mxml_node_t *node = Item::Helper<const char*>::MakeXML( this, parent );
 
-  if ( index >= 0 )
+  if ( node )
     {
-    std::ostringstream strm;
-    strm << index;
-    mxmlNewText( mxmlNewElement( node, "index" ), 0, strm.str().c_str() );
+    if ( this->m_Comment )
+      {
+      mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment );
+      }
+    
+    if ( index >= 0 )
+      {
+      std::ostringstream strm;
+      strm << index;
+      mxmlNewText( mxmlNewElement( node, "index" ), 0, strm.str().c_str() );
+      }
     }
 
   return node;
