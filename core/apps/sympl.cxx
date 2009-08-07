@@ -177,7 +177,9 @@ bool ParseCommandLine ( const int argc, const char* argv[] )
 
     cl.BeginGroup( "OutputParameters", "Output of Parameters" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
     cl.AddOption( Key( 'o', "outfile" ), &SymmetryOutFileName, "File name for symmetry plane parameter output." )->SetProperties( cmtk::CommandLine::PROPS_FILENAME | cmtk::CommandLine::PROPS_OUTPUT );
-    cl.AddOption( Key( "write-xform" ), &WriteXformPath, "Write affine alignment transformation to file" )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddOption( Key( "write-xform" ), &WriteXformPath, "Write affine alignment transformation to file" )
+      ->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT )
+      ->SetAttribute( "reference", "InputImage" );
     cl.EndGroup();
     
     cl.AddParameter( &InFileName, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
