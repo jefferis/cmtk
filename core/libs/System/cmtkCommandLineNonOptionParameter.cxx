@@ -61,6 +61,7 @@ cmtk::CommandLine::NonOptionParameter
     {
     if ( this->m_Name )
       {
+      mxmlNewText( mxmlNewElement( node, "name" ), 0, this->m_Name );
       mxmlNewText( mxmlNewElement( node, "label" ), 0, this->m_Name );
       }
     
