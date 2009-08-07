@@ -57,21 +57,29 @@ int main( int argc, char* argv[] )
     progressInstance.SetProgressWidgetMode( cmtk::QtProgress::PROGRESS_DIALOG );
     cmtk::Progress::SetProgressInstance( &progressInstance );
     
-    if ( (argc > 1) && !strcmp( argv[1], "--exec" ) )
+    if ( (argc > 1) )
       {
-      viewer->hide();
-      viewer->ExecuteBatchMode( argc-2, argv+2 );
-      }
-    else
-      {
-      for ( int i = 1; i < argc; ++i ) 
+      if ( !strcmp( argv[1], "--exec" ) )
 	{
-	viewer->slotAddStudy( argv[i] );
+	viewer->hide();
+	viewer->ExecuteBatchMode( argc-2, argv+2 );
 	}
-      viewer->show();
-      app.setMainWidget( viewer );
-      
-      return app.exec();
+      else
+	if ( !strcmp( argv[1], "--xml" ) )
+	  {
+	  exit(1);
+	  }
+	else
+	  {
+	  for ( int i = 1; i < argc; ++i ) 
+	    {
+	    viewer->slotAddStudy( argv[i] );
+	    }
+	  viewer->show();
+	  app.setMainWidget( viewer );
+	  
+	  return app.exec();
+	  }
       }
     }
   
