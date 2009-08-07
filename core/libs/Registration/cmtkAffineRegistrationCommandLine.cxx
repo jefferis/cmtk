@@ -128,8 +128,7 @@ AffineRegistrationCommandLine
     cl.AddOption( Key( 's', "sampling" ), &this->m_Sampling, "Image sampling (finest resampled image resolution)" );
     cl.AddOption( Key( "coarsest" ), &this->CoarsestResolution, "Upper limit for image sampling in multiresolution hierarchy" );
 
-    cl.AddSwitch( Key( "use-original-data" ), &this->m_UseOriginalData, true, "Use original data in full resolution as final level [default]" );
-    cl.AddSwitch( Key( "omit-original-data" ), &this->m_UseOriginalData, false, "Do NOT use original data in full resolution" );
+    cl.AddSwitch( Key( "omit-original-data" ), &this->m_UseOriginalData, false, "Do not use original data in full resolution, omit final stage in multiresolution hierarchy, thus reducing computation time." );
     cl.EndGroup();
 
     cl.BeginGroup( "Transformation", "Transformation parameters" );

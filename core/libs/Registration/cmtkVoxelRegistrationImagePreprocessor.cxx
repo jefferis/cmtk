@@ -63,7 +63,7 @@ VoxelRegistration::ImagePreprocessor::AttachToCommandLine
 ( CommandLine& cl )
 {
   char buffer[64];
-  cl.BeginGroup( this->m_Name, strcat( strcpy( buffer, this->m_Name ), " Image Preprocessing" ) );
+  cl.BeginGroup( this->m_Name, strcat( strcpy( buffer, this->m_Name ), " Image Preprocessing" ) )->SetProperties( CommandLine::PROPS_NOXML );
   
   cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "class-" ), this->m_Key ) ), &this->m_DataClassString, "Data class: grey (default), binary, or label" );
   cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "pad-" ), this->m_Key ) ), &this->m_PaddingValue, "Padding value", &this->m_PaddingFlag );
