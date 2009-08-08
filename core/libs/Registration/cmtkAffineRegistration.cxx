@@ -183,7 +183,7 @@ AffineRegistration::EnterResolution
   AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( this->m_Xform );
   if ( affineXform ) 
     {
-    int numberDOFs = std::min<int>( 15, *NumberDOFsIterator );
+    int numberDOFs = std::min<int>( 12, *NumberDOFsIterator );
     affineXform->SetNumberDOFs( numberDOFs );
     if ( this->m_Callback ) 
       {
