@@ -44,6 +44,7 @@ cmtk::CommandLine::Vector<T>
 
   if ( index+1 < argc ) 
     {
+    ++index;
     // first, replace all commas with spaces, so we can simply use a stringstream for parsing the vector elements
     std::string str( argv[index] );
     for ( int i = 0; i < str.length(); ++i )
@@ -60,6 +61,7 @@ cmtk::CommandLine::Vector<T>
       strm >> nextValue;
       this->m_pVector->push_back( nextValue );
       }
+
     } 
   else
     {
@@ -74,7 +76,15 @@ cmtk::CommandLine::Vector<T>
 {
   if ( ! (this->m_Properties & PROPS_NOXML) )
     {
-    mxml_node_t *node = Item::Helper<T>::MakeXML( this, parent );
+    const std::string typeName = std::string ( CommandLineTypeTraits<T>::GetName() ) + std::string( "-vector" );    
+    mxml_node_t *node = mxmlNewElement( parent, typeName.c_str() );
+    
+    // write any attributes the user might have set
+    for ( std::map<const std::string,std::string>::const_iterator attrIt = this->m_Attributes.begin(); attrIt != this->m_Attributes.end(); ++attrIt )
+      {
+      mxmlElementSetAttr( node, attrIt->first.c_str(), attrIt->second.c_str() );
+      }
+    
     mxmlElementSetAttr( node, "multiple", "true" );
     
     return node;

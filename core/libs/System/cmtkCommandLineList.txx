@@ -37,8 +37,8 @@ cmtk::CommandLine::List<T>
 {
   if ( index+1 < argc ) 
     {
-    m_pList->push_back( this->Convert<T>( argv[index+1] ) );
     ++index;
+    m_pList->push_back( this->Convert<T>( argv[index] ) );
     } 
   else
     {
