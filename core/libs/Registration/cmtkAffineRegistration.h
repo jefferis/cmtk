@@ -39,7 +39,7 @@
 #include <cmtkUniformVolume.h>
 #include <cmtkInterpolator.h>
 
-#include <list>
+#include <vector>
 
 namespace
 cmtk
@@ -68,21 +68,14 @@ protected:
    * are entries in this list. If the derived classes do not set any entries,
    * InitRegistration() will push a "6"  into the list, resulting in an affine
    * registration.
-   *
-   * In addition, as a guard element -1 is pushed to the end of the list. This
-   * saves some effort in figuring out whether an iterator is in this list, or
-   * rather in "NumberDOFsFinal".
    */
-  std::list<signed char> NumberDOFs;
+  std::vector<signed char> NumberDOFs;
 
   /** Numbers of degrees of freedom for the final resolution level.
    * Just as "NumberDOFs", this list defines the sequence of numbers of degrees
    * of freedom for the finest resolution level.
-   *
-   * If this list is empty (ie. only contains the -1 guard entry), "NumberDOFs"
-   * is also used for the finest resolution level.
    */
-  std::list<signed char> NumberDOFsFinal;
+  std::vector<signed char> NumberDOFsFinal;
 
   /** Initialize registration.
    * This function is called by Register before any other operations. It can
@@ -125,22 +118,10 @@ public:
   /// Get reformatted floating image.
   UniformVolume* GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator = Interpolators::LINEAR );
 
-  /// Clear general list of degrees of freedom (DOFs).
-  void ClearNumberDOFs() 
-  {
-    while ( ! NumberDOFs.empty() ) NumberDOFs.pop_back();
-  }
-
   /// Add a number to the general list of numbers of DOFs.
   void AddNumberDOFs( const int numberDOFs ) 
   {
     NumberDOFs.push_back( numberDOFs );
-  }
-  
-  /// Clear list of DOFs for the last level.
-  void ClearNumberDOFsFinal() 
-  {
-    while ( ! NumberDOFsFinal.empty() ) NumberDOFsFinal.pop_back();
   }
   
   /// Add a number to the list of numbers of DOFs for the last level.
@@ -154,7 +135,7 @@ private:
   typedef VoxelRegistration Superclass;
 
   /// Iterator for NumberDOFs and NumberDOFsFinal
-  std::list<signed char>::iterator NumberDOFsIterator;
+  std::vector<signed char>::iterator NumberDOFsIterator;
 };
 
 //@}
