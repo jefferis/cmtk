@@ -464,8 +464,8 @@ private:
   /** Command line option with vector argument.
    *\note For backward compatibility, repeated use of a vector option appends
    * the subsequent vector elements onto the previously set ones. That is, the
-   * vector is never cleared. Default elements in the vector upon initialization
-   * will also remain in the vector.
+   * vector is only cleared upon the first option use, to remove potentially
+   * present default elements.
    */
   template<class T>
   class Vector : 
@@ -474,7 +474,7 @@ private:
   {
   public:
     /// Constructor.
-    Vector( std::vector<T>& vector ) : m_pVector( &vector ) {}
+    Vector( std::vector<T>& vector ) : m_pVector( &vector ), m_HasBeenUsed( false ) {}
     
     /// Evaluate and set associated option.
     virtual void Evaluate( const size_t argc, const char* argv[], size_t& index );
@@ -485,6 +485,9 @@ private:
   private:
     /// Pointer to associated variable.
     std::vector<T>* m_pVector;
+
+    /// Has this vector option been used already? This is so we clear the vector exactly once.
+    bool m_HasBeenUsed;
   };
 
   /// Command line callback.

@@ -36,6 +36,12 @@ void
 cmtk::CommandLine::Vector<T>
 ::Evaluate( const size_t argc, const char* argv[], size_t& index )
 {
+  if ( !this->m_HasBeenUsed )
+    {
+    this->m_pVector->resize(0);
+    this->m_HasBeenUsed = true;
+    }
+
   if ( index+1 < argc ) 
     {
     // first, replace all commas with spaces, so we can simply use a stringstream for parsing the vector elements
