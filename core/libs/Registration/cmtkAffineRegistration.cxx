@@ -228,7 +228,7 @@ AffineRegistration::GetReformattedFloatingImage( Interpolators::InterpolationEnu
   reformat.SetReferenceVolume( this->SwitchVolumes ? this->m_Volume_2 :  this->m_Volume_1 );
   reformat.SetFloatingVolume(  this->SwitchVolumes ? this->m_Volume_1 : this->m_Volume_2 );
 
-  AffineXform::SmartPtr affineXform( this->GetTransformation() );
+  AffineXform::SmartPtr affineXform( this->GetTransformation()->GetInverse() );
   reformat.SetAffineXform( affineXform );
 
   return reformat.PlainReformat();
