@@ -461,7 +461,12 @@ private:
     std::list<T>* m_pList;
   };
 
-  /// Command line option with vector argument.
+  /** Command line option with vector argument.
+   *\note For backward compatibility, repeated use of a vector option appends
+   * the subsequent vector elements onto the previously set ones. That is, the
+   * vector is never cleared. Default elements in the vector upon initialization
+   * will also remain in the vector.
+   */
   template<class T>
   class Vector : 
     /// Inherit from generic command line item.
