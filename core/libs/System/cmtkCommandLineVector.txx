@@ -29,6 +29,7 @@
 */
 
 #include <typeinfo>
+#include <sstream>
 
 template<class T>
 void
@@ -37,6 +38,22 @@ cmtk::CommandLine::Vector<T>
 {
   if ( index+1 < argc ) 
     {
+    // first, replace all commas with spaces, so we can simply use a stringstream for parsing the vector elements
+    std::string str( argv[index] );
+    for ( int i = 0; i < str.length(); ++i )
+      {
+      if ( str[i] == ',' )
+	str[i] = ' ';
+      }
+
+    // new read values from the whitespaced argument
+    std::istringstream strm( str );
+    while ( strm.good() && ! strm.eof() )
+      {
+      T nextValue;
+      strm >> nextValue;
+      this->m_pVector->push_back( nextValue );
+      }
     } 
   else
     {
