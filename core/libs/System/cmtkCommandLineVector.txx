@@ -32,23 +32,21 @@
 
 template<class T>
 void
-cmtk::CommandLine::Repeat<T>
+cmtk::CommandLine::Vector<T>
 ::Evaluate( const size_t argc, const char* argv[], size_t& index )
 {
   if ( index+1 < argc ) 
     {
-    m_pList->push_back( this->Convert<T>( argv[index+1] ) );
-    ++index;
     } 
   else
     {
-    throw( Exception( "Option needs an argument.", index ) );
+    throw( Exception( "Vector command line option needs an argument.", index ) );
     }
 }
 
 template<class T>
 mxml_node_t* 
-cmtk::CommandLine::Repeat<T>
+cmtk::CommandLine::Vector<T>
 ::MakeXML(  mxml_node_t *const parent ) const 
 {
   if ( ! (this->m_Properties & PROPS_NOXML) )

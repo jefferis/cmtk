@@ -38,6 +38,7 @@
 #include <list>
 #include <string>
 #include <sstream>
+#include <vector>
 
 #include <stdlib.h>
 #include <string.h>
@@ -439,19 +440,15 @@ private:
     bool* Flag;
   };
 
-  /// Command line option with argument.
+  /// Command line option with list argument: repeated calls will add to list
   template<class T>
-  class Repeat : 
+  class List : 
     /// Inherit from generic command line item.
     public Item
   {
   public:
     /// Constructor.
-    Repeat( std::list<T>& list ) : m_pList( &list ) 
-    {
-      if ( ! m_pList )
-	throw( Exception( "List pointer must not be NULL" ) );
-    }
+    List( std::list<T>& list ) : m_pList( &list ) {}
     
     /// Evaluate and set associated option.
     virtual void Evaluate( const size_t argc, const char* argv[], size_t& index );
@@ -462,6 +459,27 @@ private:
   private:
     /// Pointer to associated variable.
     std::list<T>* m_pList;
+  };
+
+  /// Command line option with vector argument.
+  template<class T>
+  class Vector : 
+    /// Inherit from generic command line item.
+    public Item
+  {
+  public:
+    /// Constructor.
+    Vector( std::vector<T>& vector ) : m_pVector( &vector ) {}
+    
+    /// Evaluate and set associated option.
+    virtual void Evaluate( const size_t argc, const char* argv[], size_t& index );
+
+    /// Virtual function that returns an XML tree describing this option.
+    virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const;
+
+  private:
+    /// Pointer to associated variable.
+    std::vector<T>* m_pVector;
   };
 
   /// Command line callback.
@@ -853,12 +871,20 @@ public:
     return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new Option<T>( var, flag ) ), comment ) ) )->m_Action;
   }
   
-  /// Add repeat option (put arguments into a FIFO list).
+  /// Add list option (put arguments from repeated uses into a FIFO list).
   template<class T> 
   Item::SmartPtr&
-  AddRepeat( const Key& key, std::list<T>& list, const char* comment ) 
+  AddList( const Key& key, std::list<T>& list, const char* comment ) 
   {
-    return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new Repeat<T>( list ) ), comment ) ) )->m_Action;
+    return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new List<T>( list ) ), comment ) ) )->m_Action;
+  }
+  
+  /// Add vector option (breaks argument into elements of a vector).
+  template<class T> 
+  Item::SmartPtr&
+  AddVector( const Key& key, std::vector<T>& vector, const char* comment ) 
+  {
+    return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new Vector<T>( vector ) ), comment ) ) )->m_Action;
   }
   
   /// Add callback.
@@ -1057,6 +1083,7 @@ Console& operator<<( Console& console, CommandLine::Exception e );
 #include <cmtkCommandLineItem.txx>
 #include <cmtkCommandLineConvert.txx>
 #include <cmtkCommandLineOption.txx>
-#include <cmtkCommandLineRepeat.txx>
+#include <cmtkCommandLineList.txx>
+#include <cmtkCommandLineVector.txx>
 
 #endif // #ifndef __cmtkCommandLine_h_included_
