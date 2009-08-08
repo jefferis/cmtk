@@ -162,7 +162,7 @@ AffineRegistrationCommandLine
     cl.AddOption( Key( 't', "time" ), &this->Time, "Computation time statistics output file name" );
     cl.EndGroup();
 
-    cl.BeginGroup( "SlicerImprt", "Import Results into Slicer" );
+    cl.BeginGroup( "SlicerImport", "Import Results into Slicer" );
     cl.AddOption( Key( "out-itk" ), &this->m_OutputPathITK, "Output path for final transformation in ITK format" )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.EndGroup();

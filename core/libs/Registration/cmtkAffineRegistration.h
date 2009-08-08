@@ -69,13 +69,13 @@ protected:
    * InitRegistration() will push a "6"  into the list, resulting in an affine
    * registration.
    */
-  std::vector<signed char> NumberDOFs;
+  std::vector<short> NumberDOFs;
 
   /** Numbers of degrees of freedom for the final resolution level.
    * Just as "NumberDOFs", this list defines the sequence of numbers of degrees
    * of freedom for the finest resolution level.
    */
-  std::vector<signed char> NumberDOFsFinal;
+  std::vector<short> NumberDOFsFinal;
 
   /** Initialize registration.
    * This function is called by Register before any other operations. It can
@@ -135,7 +135,7 @@ private:
   typedef VoxelRegistration Superclass;
 
   /// Iterator for NumberDOFs and NumberDOFsFinal
-  std::vector<signed char>::iterator NumberDOFsIterator;
+  std::vector<short>::iterator NumberDOFsIterator;
 };
 
 //@}
