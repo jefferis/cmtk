@@ -292,7 +292,7 @@ CommandLine::PrintWiki
 	{
 	StdOut << (*it)->m_Name << " ";
 	}
-      StdErr << "</tt>\n\nwhere\n";
+      StdOut << "</tt>\n\nwhere\n";
 
       for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
 	{
