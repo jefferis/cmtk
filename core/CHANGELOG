@@ -11,10 +11,13 @@ Release CMTK-1.1.0:
     example, modified implementation of ReformatVolume::WarpXform).
 - API: all "...NonVirtual" member functions replaced their virtual
     counterparts and became virtual themselves.
+- API: decoupled VTK and non-VTK landmark code so only one tool,
+    align_landmarks, still needs to be linked against the VTKWrapper and VTK 
+    libraries.
 
 - Changed: command line tools now need to "opt-in" for XML support. This is to
     prevent cluttering Slicer's menu with modules that do not actually support
-    it fully (yet).
+    it.
 
 - Fixed: mk_analyze_hdr command line option "--description" was broken.
 - Fixed: contrary to the Wiki, NMI was the default registration criterion used

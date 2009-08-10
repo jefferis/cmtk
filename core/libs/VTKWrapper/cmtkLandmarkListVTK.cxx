@@ -29,65 +29,49 @@
 //
 */
 
-#include <cmtkMatchedLandmarkList.h>
+#include <cmtkLandmarkListVTKVTK.h>
 
 namespace
 cmtk
 {
 
-/** \addtogroup Base */
+/** \addtogroup VTKWrapper */
 //@{
 
-void
-MatchedLandmarkList::AddLandmarkLists
-( const LandmarkList* sourceList, const LandmarkList* targetList )
+vtkPoints*
+LandmarkListVTK::GetVtkPoints() const
 {
-  LandmarkList::const_iterator it = sourceList->begin();
-  while ( it != sourceList->end() ) 
-    {
-    const Landmark* targetLM = targetList->FindByName( (*it)->GetName() ).GetPtr();
-    if ( targetLM ) 
-      {
-      SmartPointer<MatchedLandmark> newMatchedLM( new MatchedLandmark );
-      newMatchedLM->SetName( (*it)->GetName() );      
-      newMatchedLM->SetLocation( (*it)->GetLocation() );
-      newMatchedLM->SetTargetLocation( targetLM->GetLocation() );
-      this->push_back( newMatchedLM );
-      }
-    ++it;
-    }
-}
+  vtkPoints* points = vtkPoints::New();
 
-const SmartPointer<MatchedLandmark> 
-MatchedLandmarkList::FindByName( const char* name ) const
-{
   const_iterator it = this->begin();
   while ( it != this->end() ) 
     {
-    if ( !strcmp( (*it)->GetName(), name ) ) 
-      {
-      return *it;
-      }
+    points->InsertNextPoint( (*it)->GetLocation() );
     ++it;
     }
   
-  return SmartPointer<MatchedLandmark>( NULL );
+  return points;
 }
 
-SmartPointer<MatchedLandmark> 
-MatchedLandmarkList::FindByName( const char* name )
+vtkPoints* 
+LandmarkListVTK::GetMatchedVtkPoints( vtkPoints*& targetPoints, const LandmarkListVTK *targetLL ) const
 {
-  iterator it = this->begin();
+  vtkPoints* points = vtkPoints::New();
+  targetPoints = vtkPoints::New();
+  
+  const_iterator it = this->begin();
   while ( it != this->end() ) 
     {
-    if ( !strcmp( (*it)->GetName(), name ) ) 
+    const SmartPointer<Landmark> targetLM = targetLL->FindByName( (*it)->GetName() );
+    if ( targetLM.GetPtr() )
       {
-      return *it;
+      points->InsertNextPoint( (*it)->GetLocation() );
+      targetPoints->InsertNextPoint( targetLM->GetLocation() );
       }
     ++it;
     }
   
-  return SmartPointer<MatchedLandmark>( NULL );
+  return points;
 }
 
 } // namespace cmtk

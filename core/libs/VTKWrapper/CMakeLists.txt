@@ -1,5 +1,7 @@
 # Sources of non-templated classes.
 SET(cmtkVTKWrapper_SRCS
+  cmtkLandmarkListVTK.cxx
+  cmtkMatchedLandmarkListVTK.cxx
   cmtkVolumeToVtkStructuredPoints.cxx
   cmtkVtkADM.cxx
   cmtkVtkIsoSurface.cxx

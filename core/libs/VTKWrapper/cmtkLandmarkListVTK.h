@@ -29,58 +29,54 @@
 //
 */
 
-#ifndef __cmtkMatchedLandmarkList_h_included_
-#define __cmtkMatchedLandmarkList_h_included_
+#ifndef __cmtkLandmarkListVTK_h_included_
+#define __cmtkLandmarkListVTK_h_included_
 
 #include <cmtkconfig.h>
 
 #include <cmtkSmartPtr.h>
 #include <cmtkLandmarkList.h>
-#include <cmtkMatchedLandmark.h>
 
 #include <list>
+
+#include <vtkPoints.h>
 
 namespace
 cmtk
 {
 
-/** \addtogroup Base */
+/** \addtogroup VTKWrapper */
 //@{
 
-/// List of matched landmarks in 3-D.
-class MatchedLandmarkList :
-  /// Inherit STL list container.
-  public std::list<MatchedLandmark::SmartPtr>
+/// List of landmarks in 3-D with VTK support.
+class LandmarkListVTK :
+  /// Inherit non-VTK base class
+  public LandmarkList
 {
 public:
   /// This class.
-  typedef MatchedLandmarkList Self;
+  typedef LandmarkListVTK Self;
 
-  /// Smart pointer to MatchedLandmarkList.
+  /// Smart pointer to LandmarkListVTK.
   typedef SmartPointer<Self> SmartPtr;
 
-  /// Default constructor.
-  MatchedLandmarkList() {}
+  /// Superclass.
+  typedef LandmarkList Superclass;
 
-  /// Initialize from two separate landmark lists.
-  MatchedLandmarkList( const LandmarkList* sourceList, const LandmarkList* targetList )
-  {
-    this->AddLandmarkLists( sourceList, targetList );
-  }
-  
-  /// Initialize from two separate landmark lists.
-  void  AddLandmarkLists( const LandmarkList* sourceList, const LandmarkList* targetList );
-  
-  /// Find landmark by name.
-  SmartPointer<MatchedLandmark> FindByName( const char* name );
-  
-  /// Find landmark by name and return constant pointer.
-  const SmartPointer<MatchedLandmark> FindByName( const char* name ) const;
-  
+  /// Get landmarks as vtkPoints list.
+  vtkPoints* GetVtkPoints() const;
+
+  /** Get matched landmarks as two vtkPoints lists.
+   * The landmarks in this list and the list given as the "targetLL" parameter
+   * are matched using their name and inserted into two vtkPoints objects. The
+   * order of insertion is determined by their order in this object. Landmarks
+   * that have no equally named counterpart in the other list will be ignored.
+   */
+  vtkPoints* GetMatchedVtkPoints( vtkPoints*& targetPoints, const LandmarkListVTK *targetLL ) const;
 };
 
 //@}
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkMatchedLandmarkList_h_included_
+#endif // #ifndef __cmtkLandmarkListVTK_h_included_

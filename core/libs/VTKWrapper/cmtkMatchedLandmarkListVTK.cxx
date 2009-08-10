@@ -29,65 +29,59 @@
 //
 */
 
-#include <cmtkMatchedLandmarkList.h>
+#include <cmtkMatchedLandmarkListVTK.h>
 
 namespace
 cmtk
 {
 
-/** \addtogroup Base */
+/** \addtogroup VTKWrapper */
 //@{
 
-void
-MatchedLandmarkList::AddLandmarkLists
-( const LandmarkList* sourceList, const LandmarkList* targetList )
+vtkPoints*
+MatchedLandmarkListVTK::GetVtkPointsSource() const
 {
-  LandmarkList::const_iterator it = sourceList->begin();
-  while ( it != sourceList->end() ) 
-    {
-    const Landmark* targetLM = targetList->FindByName( (*it)->GetName() ).GetPtr();
-    if ( targetLM ) 
-      {
-      SmartPointer<MatchedLandmark> newMatchedLM( new MatchedLandmark );
-      newMatchedLM->SetName( (*it)->GetName() );      
-      newMatchedLM->SetLocation( (*it)->GetLocation() );
-      newMatchedLM->SetTargetLocation( targetLM->GetLocation() );
-      this->push_back( newMatchedLM );
-      }
-    ++it;
-    }
-}
+  vtkPoints* points = vtkPoints::New();
 
-const SmartPointer<MatchedLandmark> 
-MatchedLandmarkList::FindByName( const char* name ) const
-{
   const_iterator it = this->begin();
   while ( it != this->end() ) 
     {
-    if ( !strcmp( (*it)->GetName(), name ) ) 
-      {
-      return *it;
-      }
+    points->InsertNextPoint( (*it)->GetLocation() );
     ++it;
     }
   
-  return SmartPointer<MatchedLandmark>( NULL );
+  return points;
 }
 
-SmartPointer<MatchedLandmark> 
-MatchedLandmarkList::FindByName( const char* name )
+vtkPoints*
+MatchedLandmarkListVTK::GetVtkPointsTarget() const
 {
-  iterator it = this->begin();
+  vtkPoints* points = vtkPoints::New();
+
+  const_iterator it = this->begin();
   while ( it != this->end() ) 
     {
-    if ( !strcmp( (*it)->GetName(), name ) ) 
-      {
-      return *it;
-      }
+    points->InsertNextPoint( (*it)->GetTargetLocation() );
     ++it;
     }
   
-  return SmartPointer<MatchedLandmark>( NULL );
+  return points;
+}
+
+void
+MatchedLandmarkListVTK::GetMatchedVtkPoints
+( vtkPoints*& sourcePoints, vtkPoints*& targetPoints ) const
+{
+  sourcePoints = vtkPoints::New();
+  targetPoints = vtkPoints::New();
+
+  const_iterator it = this->begin();
+  while ( it != this->end() ) 
+    {
+    sourcePoints->InsertNextPoint( (*it)->GetLocation() );
+    targetPoints->InsertNextPoint( (*it)->GetTargetLocation() );
+    ++it;
+    }
 }
 
 } // namespace cmtk

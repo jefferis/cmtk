@@ -29,58 +29,60 @@
 //
 */
 
-#ifndef __cmtkMatchedLandmarkList_h_included_
-#define __cmtkMatchedLandmarkList_h_included_
+#ifndef __cmtkMatchedLandmarkListVTK_h_included_
+#define __cmtkMatchedLandmarkListVTK_h_included_
 
 #include <cmtkconfig.h>
 
 #include <cmtkSmartPtr.h>
-#include <cmtkLandmarkList.h>
+#include <cmtkLandmarkListVTK.h>
 #include <cmtkMatchedLandmark.h>
+#include <cmtkMatchedLandmarkList.h>
 
 #include <list>
+
+#ifdef CMTK_HAVE_VTK
+#  include <vtkPoints.h>
+#endif
 
 namespace
 cmtk
 {
 
-/** \addtogroup Base */
+/** \addtogroup VTKWrapper */
 //@{
 
-/// List of matched landmarks in 3-D.
-class MatchedLandmarkList :
-  /// Inherit STL list container.
-  public std::list<MatchedLandmark::SmartPtr>
+/// List of matched landmarks in 3-D with support for VTK data structures.
+class MatchedLandmarkListVTK :
+  /// Inherit from non-VTK base class.
+  public MatchedLandmarkList
 {
 public:
   /// This class.
-  typedef MatchedLandmarkList Self;
+  typedef MatchedLandmarkListVTK Self;
 
-  /// Smart pointer to MatchedLandmarkList.
+  /// Parent class.
+  typedef MatchedLandmarkList Superclass;
+
+  /// Smart pointer to MatchedLandmarkListVTK.
   typedef SmartPointer<Self> SmartPtr;
 
-  /// Default constructor.
-  MatchedLandmarkList() {}
+  /// Initialize from two separate landmark lists.
+  MatchedLandmarkListVTK( const LandmarkListVTK* sourceList, const LandmarkListVTK* targetList ) : Superclass( sourceList, targeList ) {};
+  
+  /// Get landmarks source locations as vtkPoints list.
+  vtkPoints* GetVtkPointsSource() const;
 
-  /// Initialize from two separate landmark lists.
-  MatchedLandmarkList( const LandmarkList* sourceList, const LandmarkList* targetList )
-  {
-    this->AddLandmarkLists( sourceList, targetList );
-  }
-  
-  /// Initialize from two separate landmark lists.
-  void  AddLandmarkLists( const LandmarkList* sourceList, const LandmarkList* targetList );
-  
-  /// Find landmark by name.
-  SmartPointer<MatchedLandmark> FindByName( const char* name );
-  
-  /// Find landmark by name and return constant pointer.
-  const SmartPointer<MatchedLandmark> FindByName( const char* name ) const;
-  
+  /// Get landmarks source locations as vtkPoints list.
+  vtkPoints* GetVtkPointsTarget() const;
+
+  /** Get matched landmarks as two vtkPoints lists.
+   */
+  void GetMatchedVtkPoints( vtkPoints*& sourcePoints, vtkPoints*& targetPoints ) const;
 };
 
 //@}
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkMatchedLandmarkList_h_included_
+#endif // #ifndef __cmtkMatchedLandmarkListVTK_h_included_
