@@ -48,8 +48,8 @@ int main ( const int argc, const char *argv[] )
   cmtk::Study::SmartPtr refStudy( cmtk::Study::Read( argv[1] ) );
   cmtk::Study::SmartPtr fltStudy( cmtk::Study::Read( argv[2] ) );
 
-  cmtk::LandmarkListVTK::SmartPtr refLL = refStudy->GetLandmarkList();
-  cmtk::LandmarkListVTK::SmartPtr fltLL = fltStudy->GetLandmarkList();
+  cmtk::LandmarkListVTK::SmartPtr refLL( new cmtk::LandmarkListVTK( refStudy->GetLandmarkList() ) );
+  cmtk::LandmarkListVTK::SmartPtr fltLL( new cmtk::LandmarkListVTK( fltStudy->GetLandmarkList() ) );
 
   vtkPoints *refPoints, *fltPoints;
   refPoints = refLL->GetMatchedVtkPoints( fltPoints, fltLL );
