@@ -29,7 +29,7 @@
 //
 */
 
-#include <cmtkLandmarkListVTKVTK.h>
+#include <cmtkLandmarkListVTK.h>
 
 namespace
 cmtk
