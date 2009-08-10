@@ -109,7 +109,7 @@ CommandLine::Parse()
 	if ( !strcmp( this->ArgV[this->Index], "--help" ) ) 
 	  {
 	  this->PrintHelp();
-	  exit( 2 );
+	  exit( 0 );
 	  }
 	
 	// Check for "--wiki" special option, which produces Wiki-markup description of all command line options
