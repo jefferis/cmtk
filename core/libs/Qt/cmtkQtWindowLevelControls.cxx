@@ -182,7 +182,7 @@ QtWindowLevelControls::slotControlsChanged()
 void
 QtWindowLevelControls::slotSelectColormap( int colormapIndex )
 {
-  if ( !this->m_Study )
+  if ( this->m_Study )
     {
     this->m_Study->SetStandardColormap( colormapIndex );
     emit colormap( this->m_Study );
