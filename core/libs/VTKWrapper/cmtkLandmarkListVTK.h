@@ -63,6 +63,9 @@ public:
   /// Superclass.
   typedef LandmarkList Superclass;
 
+  /// Copy-and-convert constructor from superclass.
+  LandmarkListVTK( const Superclass& other ) : Superclass( other ) {};
+
   /// Get landmarks as vtkPoints list.
   vtkPoints* GetVtkPoints() const;
 
