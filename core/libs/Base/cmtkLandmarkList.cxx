@@ -70,42 +70,4 @@ LandmarkList::FindByName( const char* name )
   return Landmark::SmartPtr( NULL );
 }
 
-#ifdef CMTK_HAVE_VTK
-vtkPoints*
-LandmarkList::GetVtkPoints() const
-{
-  vtkPoints* points = vtkPoints::New();
-
-  const_iterator it = this->begin();
-  while ( it != this->end() ) 
-    {
-    points->InsertNextPoint( (*it)->GetLocation() );
-    ++it;
-    }
-  
-  return points;
-}
-
-vtkPoints* 
-LandmarkList::GetMatchedVtkPoints( vtkPoints*& targetPoints, const LandmarkList *targetLL ) const
-{
-  vtkPoints* points = vtkPoints::New();
-  targetPoints = vtkPoints::New();
-  
-  const_iterator it = this->begin();
-  while ( it != this->end() ) 
-    {
-    const SmartPointer<Landmark> targetLM = targetLL->FindByName( (*it)->GetName() );
-    if ( targetLM.GetPtr() )
-      {
-      points->InsertNextPoint( (*it)->GetLocation() );
-      targetPoints->InsertNextPoint( targetLM->GetLocation() );
-      }
-    ++it;
-    }
-  
-  return points;
-}
-#endif // #ifndef CMTK_HAVE_VTK
-
 } // namespace cmtk
