@@ -68,7 +68,7 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Initialize from two separate landmark lists.
-  MatchedLandmarkListVTK( const LandmarkListVTK* sourceList, const LandmarkListVTK* targetList ) : Superclass( sourceList, targeList ) {};
+  MatchedLandmarkListVTK( const LandmarkListVTK* sourceList, const LandmarkListVTK* targetList ) : Superclass( sourceList, targetList ) {};
   
   /// Get landmarks source locations as vtkPoints list.
   vtkPoints* GetVtkPointsSource() const;
