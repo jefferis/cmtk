@@ -63,6 +63,11 @@ SET(testList ${testList} GroupwiseRMIFromInitMI GroupwiseRMIFromInitSampling Gro
 
 IF(NOT CMTK_USE_MPI)
   # ==========================================
+  # Tests for xml and wiki markups
+  SET(testList_xml film levelset mrbias registration)
+  SET(testList_wiki film levelset mrbias registration)
+
+  # ==========================================
   # Tests for "concat_affine" tool
   SET(testList ${testList} 
     ConcatAffineABA
@@ -347,6 +352,26 @@ FOREACH(testName ${testList})
       ${BUILDNAME} ${EXECUTABLE_OUTPUT_PATH} ${CMTK_DATA_ROOT} ${testName})
   ENDIF(CMTK_TESTING_MEMORYCHECK)
 ENDFOREACH(testName ${testList})
+
+FOREACH(testName ${testList_xml})
+  IF(CMTK_TESTING_MEMORYCHECK)
+    ADD_TEST(xml_${testName} /bin/sh ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh 
+      ${BUILDNAME} ${EXECUTABLE_OUTPUT_PATH} ${CMTK_DATA_ROOT} xml_${testName} ${MEMORYCHECK_COMMAND})
+  ELSE(CMTK_TESTING_MEMORYCHECK)
+    ADD_TEST(xml_${testName} /bin/sh ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh 
+      ${BUILDNAME} ${EXECUTABLE_OUTPUT_PATH} ${CMTK_DATA_ROOT} xml_${testName})
+  ENDIF(CMTK_TESTING_MEMORYCHECK)
+ENDFOREACH(testName ${testList_xml})
+
+FOREACH(testName ${testList_wiki})
+  IF(CMTK_TESTING_MEMORYCHECK)
+    ADD_TEST(wiki_${testName} /bin/sh ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh 
+      ${BUILDNAME} ${EXECUTABLE_OUTPUT_PATH} ${CMTK_DATA_ROOT} wiki_${testName} ${MEMORYCHECK_COMMAND})
+  ELSE(CMTK_TESTING_MEMORYCHECK)
+    ADD_TEST(wiki_${testName} /bin/sh ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh 
+      ${BUILDNAME} ${EXECUTABLE_OUTPUT_PATH} ${CMTK_DATA_ROOT} wiki_${testName})
+  ENDIF(CMTK_TESTING_MEMORYCHECK)
+ENDFOREACH(testName ${testList_wiki})
 
 SET_TESTS_PROPERTIES(CongealWarpFromInit PROPERTIES TIMEOUT 4800)
 SET_TESTS_PROPERTIES(CongealWarpFitFromInit PROPERTIES TIMEOUT 4800)

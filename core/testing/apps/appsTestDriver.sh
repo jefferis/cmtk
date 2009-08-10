@@ -1004,6 +1004,38 @@ case ${RUNTEST} in
 	check_result dfield.nhdr
 	check_result dfield.raw
 	;;
+    xml_film)
+	run ${BINDIR}/film --xml > ${tmpdir}/film.xml
+	check_result film.xml
+	;;
+    xml_levelset)
+	run ${BINDIR}/levelset --xml > ${tmpdir}/levelset.xml
+	check_result levelset.xml
+	;;
+    xml_mrbias)
+	run ${BINDIR}/mrbias --xml > ${tmpdir}/mrbias.xml
+	check_result mrbias.xml
+	;;
+    xml_registration)
+	run ${BINDIR}/registration --xml > ${tmpdir}/registration.xml
+	check_result registration.xml
+	;;
+    wiki_film)
+	run ${BINDIR}/film --wiki > ${tmpdir}/film.wiki
+	check_result film.wiki
+	;;
+    wiki_levelset)
+	run ${BINDIR}/levelset --wiki > ${tmpdir}/levelset.wiki
+	check_result levelset.wiki
+	;;
+    wiki_mrbias)
+	run ${BINDIR}/mrbias --wiki > ${tmpdir}/mrbias.wiki
+	check_result mrbias.wiki
+	;;
+    wiki_registration)
+	run ${BINDIR}/registration --wiki > ${tmpdir}/registration.wiki
+	check_result registration.wiki
+	;;
     *)
 	exit 2
 	;;
