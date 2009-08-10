@@ -107,7 +107,7 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
     ENDIF(CMTK_USE_DCMTK)
     
     IF(CMTK_USE_VTK)
-      SET(VTK_APPS align_landmarks warp)
+      SET(VTK_APPS align_landmarks asegment sympl warp)
     ELSE(CMTK_USE_VTK)
       SET(APPS ${APPS} warp)
     ENDIF(CMTK_USE_VTK)
