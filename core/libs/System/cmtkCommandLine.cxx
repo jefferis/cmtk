@@ -116,7 +116,7 @@ CommandLine::Parse()
 	if ( !strcmp( this->ArgV[this->Index], "--wiki" ) ) 
 	  {
 	  this->PrintWiki();
-	  exit( 2 );
+	  exit( 0 );
 	  }
 	
 	// Check for "--echo" special option, which echoes the command line to stdout. This does not exit the program automatically.
