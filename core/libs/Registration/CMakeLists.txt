@@ -69,6 +69,7 @@ SET(cmtkRegistration_SRCS
   cmtkSplineWarpGroupwiseRegistrationRMIFunctionalIO.cxx
   cmtkSymmetricElasticFunctional.cxx
   cmtkSymmetryPlaneFunctional.cxx
+  cmtkTransformationToNativeSpaceAffine.cxx
   cmtkTypedArraySimilarity.cxx
   cmtkTypedArraySimilarityMemory.cxx
   cmtkTypedArraySimilarityRMI.cxx

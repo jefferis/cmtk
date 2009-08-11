@@ -48,6 +48,8 @@
 #include <cmtkClassStreamAffineXform.h>
 #include <cmtkCompressedStream.h>
 #include <cmtkXformIO.h>
+
+#include <cmtkTransformationToNativeSpaceAffine.h>
 #include <cmtkAffineXformITKIO.h>
 
 #include <stdio.h>
@@ -435,25 +437,8 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
 
   if ( this->m_OutputPathITK ) 
     {
-    // adapt transformation to Slicer's image coordinate systems as defined in the Nrrd files we probably read
-    UniformVolume::SmartPtr refVolumeOriginalSpace( this->m_Volume_1->CloneGrid() );
-    UniformVolume::SmartPtr fltVolumeOriginalSpace( this->m_Volume_2->CloneGrid() );
-
-    // first bring volumes back into their native coordinate space.
-    refVolumeOriginalSpace->ChangeCoordinateSpace( refVolumeOriginalSpace->m_MetaInformation[CMTK_META_SPACE_ORIGINAL] );
-    fltVolumeOriginalSpace->ChangeCoordinateSpace( fltVolumeOriginalSpace->m_MetaInformation[CMTK_META_SPACE_ORIGINAL] );
-
-    // now determine image-to-physical transformations and concatenate these.
-    const AffineXform::MatrixType refMatrix = refVolumeOriginalSpace->GetImageToPhysicalMatrix ();
-    const AffineXform::MatrixType fltMatrix = fltVolumeOriginalSpace->GetImageToPhysicalMatrix ();
-    AffineXform::SmartPtr affineXform = this->GetTransformation()->GetInverse();
-
-    AffineXform::MatrixType concatMatrix = refMatrix;
-    (concatMatrix.Invert() *= affineXform->Matrix) *= fltMatrix;
-
-    // create output transformation and write
-    AffineXform externalXform( concatMatrix );
-    AffineXformITKIO::Write( this->m_OutputPathITK, externalXform );
+    TransformationToNativeSpaceAffine toNative( this->GetTransformation()->GetInverse(), this->m_Volume_1, this->m_Volume_2 );
+    AffineXformITKIO::Write( this->m_OutputPathITK, toNative.GetNativeTransformation() );
     }
 
   if ( this->m_ReformattedImagePath )
