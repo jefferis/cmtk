@@ -94,10 +94,10 @@ cmtk::AffineXformITKIO
       return NULL;
 
     std::getline( stream, line );
-    if ( line == "Transform: AffineTransform_double_3_3" )
+    if ( line == "Transform: AffineTransform_double_3_3" || line == "Transform: AffineTransform_float_3_3" )
       {
       std::getline( stream, line, ' ' );
-      double matrix[4][4] = { {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,1} };
+      Types::Coordinate matrix[4][4] = { {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,1} };
       
       for ( int j = 0; j < 3; ++j )
 	for ( int i = 0; i < 3; ++i )
@@ -110,26 +110,7 @@ cmtk::AffineXformITKIO
 	}
       return new AffineXform( matrix );
       }
-    else
-      {
-      if ( line == "Transform: AffineTransform_float_3_3" )
-	{
-	std::getline( stream, line, ' ' );
-	float matrix[4][4] = { {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,1} };
-	
-	for ( int j = 0; j < 3; ++j )
-	  for ( int i = 0; i < 3; ++i )
-	    {
-	    stream >> matrix[j][i];
-	    }
-	for ( int i = 0; i < 3; ++i )
-	  {
-	  stream >> matrix[3][i];
-	  }
-	return new AffineXform( matrix );
-	}
-      }
     }
-
+  
   return NULL;
 }
