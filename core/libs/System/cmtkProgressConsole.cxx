@@ -60,6 +60,7 @@ ProgressConsole::ProgressConsole( const std::string& programName )
 	      << "<filter-name>" << this->m_ProgramName << "</filter-name>\n"
 	      << "<filter-comment> \"" << this->m_ProgramName << "\" </filter-comment>\n"
 	      << "</filter-start>\n";
+    std::cout.flush();
     }
 }
 
@@ -71,6 +72,7 @@ ProgressConsole::~ProgressConsole()
 	      << "<filter-name>" << this->m_ProgramName << "</filter-name>\n"
 	      << "<filter-time>" << Timers::GetTimeProcess() - this->m_TimeAtStart << "</filter-time>\n"
 	      << "</filter-end>\n";
+    std::cout.flush();
     }
 }
 
@@ -82,6 +84,7 @@ ProgressConsole::UpdateProgress()
   if ( this->m_InsideSlicer3 )
     {
     std::cout << "<filter-progress>" << fraction << "</filter-progress>\n";
+    std::cout.flush();
     }
   else
     {
