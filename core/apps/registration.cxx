@@ -58,10 +58,10 @@ main
 
   try 
     {
+    cmtk::AffineRegistrationCommandLine Registration( argc, argv );
+
     // set up console progress reporting
     cmtk::ProgressConsole progressInstance( "AffineImageRegistration" );
-
-    cmtk::AffineRegistrationCommandLine Registration( argc, argv );
     Registration.Register();
     }
   catch ( cmtk::VoxelRegistration::ConstructorFailed ) 
