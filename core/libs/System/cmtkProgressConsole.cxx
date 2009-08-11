@@ -53,6 +53,25 @@ ProgressConsole::ProgressConsole( const std::string& programName )
   Progress::SetProgressInstance( this );
 
   this->m_InsideSlicer3 = ( getenv( "Slicer3_HOME" ) != NULL );
+    
+  if ( this->m_InsideSlicer3 )
+    {
+    std::cout << "<filter-start>\n"
+	      << "<filter-name>" << this->m_ProgramName << "</filter-name>\n"
+	      << "<filter-comment> \"" << this->m_ProgramName << "\" </filter-comment>\n"
+	      << "</filter-start>\n";
+    }
+}
+
+ProgressConsole::~ProgressConsole()
+{
+  if ( this->m_InsideSlicer3 )
+    {
+    std::cout << "<filter-end>\n"
+	      << "<filter-name>" << this->m_ProgramName << "</filter-name>\n"
+	      << "<filter-time>" << Timers::GetTimeProcess() - this->m_TimeAtStart << "</filter-time>\n"
+	      << "</filter-end>\n";
+    }
 }
 
 Progress::ResultEnum
@@ -89,35 +108,7 @@ ProgressConsole:: BeginVirtual
   if ( this->IsTopLevel() )
     {
     this->m_TimeAtStart = Timers::GetTimeProcess();
-    
-    if ( this->m_InsideSlicer3 )
-      {
-      std::cout << "<filter-start>\n"
-		<< "<filter-name>" << this->m_ProgramName << "</filter-name>\n"
-		<< "<filter-comment> \"" << this->GetCurrentTaskName() << "\" </filter-comment>\n"
-		<< "</filter-start>\n";
-      }
     }
-}
-
-void
-ProgressConsole::DoneVirtual()
-{
-  if ( this->IsTopLevel() )
-    {
-    if ( this->m_InsideSlicer3 )
-      {
-      std::cout << "<filter-end>\n"
-		<< "<filter-name>" << this->m_ProgramName << "</filter-name>\n"
-		<< "<filter-time>" << Timers::GetTimeProcess() - this->m_TimeAtStart << "</filter-time>\n"
-		<< "</filter-end>\n";
-      }
-    else
-      {
-      StdErr << "done.\n";
-      }
-    }
-  this->Superclass::DoneVirtual();
 }
 
 } // namespace cmtk

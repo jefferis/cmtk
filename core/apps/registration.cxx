@@ -38,6 +38,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <cmtkProgressConsole.h>
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 namespace cmtk
 {
@@ -56,13 +58,11 @@ main
 
   try 
     {
+    // set up console progress reporting
+    cmtk::ProgressConsole progressInstance( "AffineImageRegistration" );
+
     cmtk::AffineRegistrationCommandLine Registration( argc, argv );
-    
-    const double baselineTime = cmtk::Timers::GetTimeProcess();
     Registration.Register();
-    const int elapsed = static_cast<int>( cmtk::Timers::GetTimeProcess() - baselineTime );
-    
-    fprintf( stderr, "Time: %d (%f) sec.\n", elapsed, (float)Registration.GetThreadTotalElapsedTime() );
     }
   catch ( cmtk::VoxelRegistration::ConstructorFailed ) 
     {

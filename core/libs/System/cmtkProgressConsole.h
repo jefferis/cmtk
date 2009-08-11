@@ -65,16 +65,16 @@ public:
   
   /// Default constructor: connect to progress indicator.
   ProgressConsole( const std::string& programName = std::string("") );
-  
+
+  /// Destructor: finish things up.
+  virtual ~ProgressConsole();
+
   /// Output progress to console.
   virtual ResultEnum UpdateProgress();
 
 protected:
   /// Begin a new level of progress reporting.
   virtual void BeginVirtual( const float start, const float end, const float increment, const std::string& taskName );
-
-  /// Clean up console output.
-  void DoneVirtual();
 
 private:
   /// Name of this program.
