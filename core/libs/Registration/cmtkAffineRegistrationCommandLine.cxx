@@ -435,7 +435,15 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
 
   if ( this->m_OutputPathITK ) 
     {
-    AffineXformITKIO::Write( this->m_OutputPathITK, *(this->GetTransformation()->GetInverse()) );
+    // adapt transformation to Slicer's image coordinate systems as defined in the Nrrd files we probably read
+    const AffineXform::MatrixType refMatrix = this->m_Volume_1->GetImageToPhysicalMatrix ();
+    const AffineXform::MatrixType fltMatrix = this->m_Volume_2->GetImageToPhysicalMatrix ();
+    AffineXform::SmartPtr affineXform = this->GetTransformation()->GetInverse();
+
+    AffineXform::MatrixType concatMatrix = refMatrix;
+    (concatMatrix.Invert() *= affineXform->Matrix) *= fltMatrix;
+    AffineXform externalXform( concatMatrix );
+    AffineXformITKIO::Write( this->m_OutputPathITK, externalXform );
     }
 
   if ( this->m_ReformattedImagePath )
