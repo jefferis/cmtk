@@ -56,11 +56,13 @@ cmtk::AffineXformITKIO
 
     // write parameters, 3x3 transformation matrix first
     stream << "Parameters: ";
-    for ( int j = 0; j < 3; ++j )
-      for ( int i = 0; i < 3; ++i )
+    for ( int i = 0; i < 3; ++i )
+      {
+      for ( int j = 0; j < 3; ++j )
 	{
 	stream << affineXform.Matrix[j][i] << " ";
 	}
+      }
 
     // write translations
     for ( int i = 0; i < 3; ++i )
@@ -99,11 +101,13 @@ cmtk::AffineXformITKIO
       std::getline( stream, line, ' ' );
       Types::Coordinate matrix[4][4] = { {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,1} };
       
-      for ( int j = 0; j < 3; ++j )
-	for ( int i = 0; i < 3; ++i )
+      for ( int i = 0; i < 3; ++i )
+	{
+	for ( int j = 0; j < 3; ++j )
 	  {
 	  stream >> matrix[j][i];
 	  }
+	}
       for ( int i = 0; i < 3; ++i )
 	{
 	stream >> matrix[3][i];
