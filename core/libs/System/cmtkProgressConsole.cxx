@@ -75,7 +75,14 @@ ProgressConsole::SetProgressVirtual( const unsigned int progress )
     }
   else
     {
-    StdErr.printf( "%s: %d %%\r", Self::m_CurrentTaskName.c_str(), static_cast<int>( 100.0 * fraction ) );
+    if ( Self::m_CurrentTaskName.length() )
+      {
+      StdErr.printf( "%s: %d %%\r", Self::m_CurrentTaskName.c_str(), static_cast<int>( 100.0 * fraction ) );
+      }
+    else
+      {
+      StdErr.printf( "%d %%\r", static_cast<int>( 100.0 * fraction ) );
+      }
     }
 
   return Self::OK;
