@@ -70,6 +70,7 @@ SET(cmtkBase_SRCS
   cmtkSplineWarpXformRigidity.cxx
   cmtkSplineWarpXformStrainTensor.cxx
   cmtkSplineWarpXformUniformVolume.cxx
+  cmtkTransformChangeSpaceAffine.cxx
   cmtkTypedArray.cxx
   cmtkTypedArrayNoiseEstimatorNaiveGaussian.cxx
   cmtkTypedArrayRLE.cxx
