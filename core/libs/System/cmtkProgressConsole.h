@@ -61,7 +61,7 @@ public:
   ProgressConsole( const std::string& programName = std::string("") );
   
   /// Output progress to console.
-  virtual ProgressResult SetProgressVirtual( const unsigned int progress );
+  virtual ResultEnum SetProgressVirtual( const unsigned int progress );
 
 protected:
   /// This member function can be overriden by derived classes.

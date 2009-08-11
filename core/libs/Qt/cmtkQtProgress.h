@@ -73,7 +73,7 @@ public:
   virtual void SetTotalStepsVirtual( const unsigned int totalSteps );
 
   /// This member function sets the Qt progress indicator.
-  virtual ProgressResult SetProgressVirtual( const unsigned int progress );
+  virtual Progress::ResultEnum SetProgressVirtual( const unsigned int progress );
 
   /// This member function deletes the Qt progress indicator.
   virtual void DoneVirtual();

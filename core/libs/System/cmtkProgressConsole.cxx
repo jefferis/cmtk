@@ -55,13 +55,13 @@ ProgressConsole::ProgressConsole( const std::string& programName )
   this->m_InsideSlicer3 = ( getenv( "Slicer3_HOME" ) != NULL );
 }
 
-ProgressResult
+Progress::ResultEnum
 ProgressConsole::SetProgressVirtual( const unsigned int progress )
 {
 #ifdef CMTK_USE_OPENMP
   if ( omp_get_thread_num() != 0 )
     {
-    return PROGRESS_OK;
+    return Self::OK;
     }
 
   const float fraction = static_cast<float>( progress * omp_get_num_threads() ) / this->TotalSteps;
@@ -78,7 +78,7 @@ ProgressConsole::SetProgressVirtual( const unsigned int progress )
     StdErr.printf( "%s: %d %%\r", Self::m_CurrentTaskName.c_str(), static_cast<int>( 100.0 * fraction ) );
     }
 
-  return PROGRESS_OK;
+  return Self::OK;
 }
 
 void

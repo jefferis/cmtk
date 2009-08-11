@@ -318,11 +318,11 @@ DataGrid::GetDataMedianFiltered( const int radius ) const
   int offset = 0;
   Progress::SetTotalSteps( this->m_Dims[2] );
 
-  ProgressResult status = PROGRESS_OK;
+  Progress::ResultEnum status = Progress::OK;
   for ( int z = 0; z < this->m_Dims[2]; ++z ) 
     {
     status = Progress::SetProgress( z );
-    if ( status != PROGRESS_OK ) break;
+    if ( status != Progress::OK ) break;
     
     int zFrom = ( z > radius ) ? ( z - radius ) : 0;
     int zTo = std::min( z+radius+1, this->m_Dims[2] );
@@ -369,7 +369,7 @@ DataGrid::GetDataMedianFiltered( const int radius ) const
   
   delete[] sort;
   
-  if ( status != PROGRESS_OK ) 
+  if ( status != Progress::OK ) 
     {
     delete Result;
     Result = NULL;

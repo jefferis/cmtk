@@ -56,13 +56,13 @@ Progress::SetTotalSteps( const unsigned int totalSteps, const std::string& curre
     ProgressInstance->SetTotalStepsVirtual( totalSteps );
 }
 
-ProgressResult 
+Progress::ResultEnum 
 Progress::SetProgress( const unsigned int progress )
 {
   if ( ProgressInstance )
     return ProgressInstance->SetProgressVirtual( progress );
   else
-    return PROGRESS_OK;
+    return Self::OK;
 }
 
 void

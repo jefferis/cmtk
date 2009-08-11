@@ -62,7 +62,7 @@ QtProgress::SetTotalStepsVirtual( const unsigned int totalSteps )
   qApp->processEvents();
 }
 
-ProgressResult
+Progress::ResultEnum
 QtProgress::SetProgressVirtual( const unsigned int progress )
 {
   if ( ProgressBar )
@@ -72,10 +72,10 @@ QtProgress::SetProgressVirtual( const unsigned int progress )
 
   qApp->processEvents();
 
-  ProgressResult result = PROGRESS_OK;
+  Progress::ResultEnum result = Progress::OK;
   if ( ProgressDialog )
     if ( ProgressDialog->wasCanceled() )
-      result = PROGRESS_INTERRUPT;
+      result = Progress::INTERRUPT;
 
   return result;
 }

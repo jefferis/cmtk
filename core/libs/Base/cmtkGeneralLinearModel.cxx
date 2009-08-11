@@ -236,7 +236,7 @@ GeneralLinearModel
   for ( size_t n = 0; n < nPixels; ++n ) 
     {
     if ( ! params->ThisThreadIndex && ! (n % pixelUpdateIncrement) )
-      if ( Progress::SetProgress( n / pixelUpdateIncrement ) != PROGRESS_OK ) break;
+      if ( Progress::SetProgress( n / pixelUpdateIncrement ) != Progress::OK ) break;
 
     bool missing = false;
     Types::DataItem value;
