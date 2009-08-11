@@ -33,6 +33,7 @@
 
 #include <cmtkSearchTrace.h>
 #include <cmtkConsole.h>
+#include <cmtkProgress.h>
 
 namespace
 cmtk
@@ -63,13 +64,15 @@ BestNeighbourOptimizer::Optimize
   for ( int idx=0; idx<Dim; ++idx )
     stepScaleVector[idx] = this->GetParamStep( idx );
 
-  int percentDone = 1, incPercentDone = 99 / numOfSteps;
-
   SearchTrace<Self::ParameterType> searchTrace ( Dim );
 
-  CallbackResult irq = this->CallbackExecute( v, optimum, percentDone );
-  for ( int stepIdx = 0; (stepIdx < numOfSteps) && ( irq == CALLBACK_OK ); ++stepIdx, step *= StepFactor, percentDone += incPercentDone ) 
+  Progress::Begin( 0, numOfSteps, 1, "Multi-resolution optimization" );
+
+  CallbackResult irq = this->CallbackExecute( v, optimum );
+  for ( int stepIdx = 0; (stepIdx < numOfSteps) && ( irq == CALLBACK_OK ); ++stepIdx, step *= StepFactor ) 
     {
+    Progress::SetProgress( stepIdx );
+
     char comment[128];
     snprintf( comment, sizeof( comment ), "Setting step size to %4g [mm]", step );
     this->CallbackComment( comment );
@@ -87,7 +90,7 @@ BestNeighbourOptimizer::Optimize
 
 	for ( int direction = -1; direction <= 1; direction += 2 )
 	  {
-	  if ( (irq = this->CallbackExecute( percentDone )) ) break;
+	  if ( (irq = this->CallbackExecute()) ) break;
 	
 	  v[dim] = vOld + direction * step * stepScaleVector[dim];
 	  if ( !searchTrace.Get( next, dim, step ) )
@@ -110,7 +113,7 @@ BestNeighbourOptimizer::Optimize
 	{
 	v = optimumV;
 	searchTrace.Move( optimumDim, optimumDir );
-	irq = this->CallbackExecute( v, optimum, percentDone );
+	irq = this->CallbackExecute( v, optimum );
 	this->m_LastOptimizeChangedParameters = true;
 
 	// query functional for new parameter steppings if the respective
@@ -121,6 +124,8 @@ BestNeighbourOptimizer::Optimize
 	}
       }
     }
+
+  Progress::Done();
 
   this->SetFinalValue( optimum );
   delete[] stepScaleVector;

@@ -56,18 +56,9 @@ ProgressConsole::ProgressConsole( const std::string& programName )
 }
 
 Progress::ResultEnum
-ProgressConsole::SetProgressVirtual( const unsigned int progress )
+ProgressConsole::UpdateProgress()
 {
-#ifdef CMTK_USE_OPENMP
-  if ( omp_get_thread_num() != 0 )
-    {
-    return Self::OK;
-    }
-
-  const float fraction = static_cast<float>( progress * omp_get_num_threads() ) / this->TotalSteps;
-#else
-  const float fraction = static_cast<float>( progress ) / this->TotalSteps;
-#endif
+  const float fraction = this->GetFractionComplete();
 
   if ( this->m_InsideSlicer3 )
     {
@@ -75,9 +66,10 @@ ProgressConsole::SetProgressVirtual( const unsigned int progress )
     }
   else
     {
-    if ( Self::m_CurrentTaskName.length() )
+    const std::string& currentTaskName = this->GetCurrentTaskName();
+    if ( currentTaskName.length() )
       {
-      StdErr.printf( "%s: %d %%\r", Self::m_CurrentTaskName.c_str(), static_cast<int>( 100.0 * fraction ) );
+      StdErr.printf( "%s: %d %%\r", currentTaskName.c_str(), static_cast<int>( 100.0 * fraction ) );
       }
     else
       {
@@ -89,33 +81,43 @@ ProgressConsole::SetProgressVirtual( const unsigned int progress )
 }
 
 void
-ProgressConsole::SetTotalStepsVirtual( const unsigned int )
+ProgressConsole:: BeginVirtual
+( const float start, const float end, const float increment, const std::string& taskName )
 {
-  this->m_TimeAtStart = Timers::GetTimeProcess();
+  this->Superclass::BeginVirtual( start, end, increment, taskName );
 
-  if ( this->m_InsideSlicer3 )
+  if ( this->IsTopLevel() )
     {
-    std::cout << "<filter-start>\n"
-	      << "<filter-name>" << this->m_ProgramName << "</filter-name>\n"
-	      << "<filter-comment> \"" << this->m_CurrentTaskName << "\" </filter-comment>\n"
-	      << "</filter-start>\n";
+    this->m_TimeAtStart = Timers::GetTimeProcess();
+    
+    if ( this->m_InsideSlicer3 )
+      {
+      std::cout << "<filter-start>\n"
+		<< "<filter-name>" << this->m_ProgramName << "</filter-name>\n"
+		<< "<filter-comment> \"" << this->GetCurrentTaskName() << "\" </filter-comment>\n"
+		<< "</filter-start>\n";
+      }
     }
 }
 
 void
 ProgressConsole::DoneVirtual()
 {
-  if ( this->m_InsideSlicer3 )
+  if ( this->IsTopLevel() )
     {
-    std::cout << "<filter-end>\n"
-	      << "<filter-name>" << this->m_ProgramName << "</filter-name>\n"
-	      << "<filter-time>" << Timers::GetTimeProcess() - this->m_TimeAtStart << "</filter-time>\n"
-	      << "</filter-end>\n";
+    if ( this->m_InsideSlicer3 )
+      {
+      std::cout << "<filter-end>\n"
+		<< "<filter-name>" << this->m_ProgramName << "</filter-name>\n"
+		<< "<filter-time>" << Timers::GetTimeProcess() - this->m_TimeAtStart << "</filter-time>\n"
+		<< "</filter-end>\n";
+      }
+    else
+      {
+      StdErr << "done.\n";
+      }
     }
-  else
-    {
-    StdErr << "done.\n";
-    }
+  this->Superclass::DoneVirtual();
 }
 
 } // namespace cmtk

@@ -95,7 +95,7 @@ VolumeFromStudy::AssembleVolume( const StudyImageSet* study, const bool verbose 
     
     std::auto_ptr<ImageIO> imageIO( ImageIO::Create( study->GetImageFormat() ) );
     
-    Progress::SetTotalSteps( study->size() );
+    Progress::Begin( 0, study->size(), 1, "Volume image assembly" );
     
     unsigned int nextPlane = 0;
     StudyImageSet::const_iterator it = study->begin();

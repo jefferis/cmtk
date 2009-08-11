@@ -60,10 +60,7 @@ public:
   virtual const char* GetClassName() const { return "ProtocolCallback"; }
 
   /// Execute callback action.
-  virtual CallbackResult Execute ( const CoordinateVector& v, const double metric, const int percentDone = 0 );
-
-  /// Execute callback action but do not write to protocol.
-  virtual CallbackResult Execute ( const int percentDone = 0 );
+  virtual CallbackResult Execute ( const CoordinateVector& v, const double metric );
 
   /// Write comment to protocol file.
   virtual void Comment ( const char* comment = NULL );

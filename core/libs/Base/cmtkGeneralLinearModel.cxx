@@ -231,7 +231,7 @@ GeneralLinearModel
   const size_t pixelUpdateIncrement = 10000 * params->NumberOfThreads;
   if ( ! params->ThisThreadIndex )
     {
-    Progress::SetTotalSteps( nPixels / pixelUpdateIncrement );
+    Progress::Begin( 0, nPixels / pixelUpdateIncrement, 1, "Linear model fitting" );
     }
   for ( size_t n = 0; n < nPixels; ++n ) 
     {

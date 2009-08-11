@@ -140,7 +140,7 @@ ReformatVolume::PlainReformat()
     {
     size_t planeSize = targetVolume->GetDims(AXIS_X) * targetVolume->GetDims(AXIS_Y);
     
-    Progress::SetTotalSteps( targetVolume->GetDims( AXIS_Z ) );
+    Progress::Begin( 0, targetVolume->GetDims( AXIS_Z ), 1, "Volume reformatting" );
     
     TypedArray::SmartPtr targetData( TypedArray::Create( FloatingVolume->GetData()->GetType(), targetVolume->GetNumberOfPixels() ) );
     if ( this->m_UsePaddingValue )
@@ -255,8 +255,6 @@ ReformatVolume::GetTransformedReference
 
   result->SetData( dataArray );
 
-  Progress::SetTotalSteps( result->GetNumberOfPixels() );
-    
   GetTransformedReferenceTP params;
   params.thisObject = this;
   params.ThisThreadIndex = 0;
@@ -285,7 +283,6 @@ ReformatVolume::GetTransformedReference
     }
     break;
     }
-  Progress::Done();  
   
   return result;
 }
@@ -464,8 +461,6 @@ ReformatVolume::GetTransformedReferenceJacobianAvg
 
   result->SetData( dataArray );
 
-  Progress::SetTotalSteps( result->GetDims( AXIS_Z ) );
-
   const size_t numberOfThreads = Threads::GetNumberOfThreads();
   std::vector<GetTransformedReferenceTP> params( numberOfThreads );
 
@@ -485,7 +480,6 @@ ReformatVolume::GetTransformedReferenceJacobianAvg
     }
   
   Threads::RunThreads( GetTransformedReferenceJacobianAvgThread, numberOfThreads, &params[0] );
-  Progress::Done();  
   
   return result;
 }

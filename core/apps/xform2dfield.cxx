@@ -138,7 +138,7 @@ main ( const int argc, const char *argv[] )
   
   cmtk::DeformationField::SmartPtr dfield( new cmtk::DeformationField( volume ) );
   
-  cmtk::Progress::SetTotalSteps( volume->GetDims( cmtk::AXIS_Z ) );
+  cmtk::Progress::Begin( 0, volume->GetDims( cmtk::AXIS_Z ), 1, "Deformation field generation" );
 #pragma omp parallel for
   for ( int z = 0; z < volume->GetDims( cmtk::AXIS_Z ); ++z )
     {

@@ -212,7 +212,7 @@ int main( const int argc, const char* argv[] )
   
   cmtk::ProgressConsole progressIndicator;
   const int pixelsPerPercent = volume->GetNumberOfPixels() / 100;
-  cmtk::Progress::SetTotalSteps( 100 );
+  cmtk::Progress::Begin( 0, 100, 1, "Image averaging" );
 
   std::vector<cmtk::Types::DataItem> pixelData( dataList.size() );
   for ( size_t i = 0; i < volume->GetNumberOfPixels(); ++i ) 

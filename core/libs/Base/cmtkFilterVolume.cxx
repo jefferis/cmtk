@@ -66,7 +66,7 @@ FilterVolume::GaussianFilter
   const int dimsY = dims[AXIS_Y];
   const int dimsZ = dims[AXIS_Z];
   
-  Progress::SetTotalSteps( dimsZ, "Gaussian Filter" );
+  Progress::Begin( 0, dimsZ, 1, "Gaussian Filter" );
 
 #pragma omp parallel for
   for ( int z = 0; z < dimsZ; ++z )
@@ -436,8 +436,6 @@ FilterVolume::CoupeFilter
             << dimY << " x " 
             << dimZ << std::endl;
   
-  Progress::SetTotalSteps( dimZ, "Coupe Filter" );
-
   std::vector< std::vector<Types::DataItem>* > NLsPerVoxel;
 
   /*  Initialize an array with a vector for each voxel,
@@ -507,7 +505,6 @@ FilterVolume::CoupeFilter
   Types::DataItem blockAtCurVox = 0.0;
   for ( int Cz = blockRadius; Cz < dimZ - blockRadius; Cz ++ )
     {
-    Progress::SetProgress( Cz );
     for ( int Cy = blockRadius; Cy < dimY - blockRadius; Cy ++ )
       for ( int Cx = blockRadius; Cx < dimX - blockRadius; Cx ++ ) 
 	{
@@ -703,7 +700,6 @@ FilterVolume::CoupeFilter
 //                            }
 //                        }
     }
-  Progress::Done();
 
 
 
@@ -802,7 +798,7 @@ FilterVolume
   const unsigned int dimsY = dims[AXIS_Y];
   const unsigned int dimsZ = dims[AXIS_Z];
   
-  Progress::SetTotalSteps( dimsZ, "Rohlfing Intensity-Consistent Filter" );
+  Progress::Begin( 0, dimsZ, 1, "Rohlfing Intensity-Consistent Filter" );
 
   size_t offset = 0;
   for ( unsigned int z = 0; z < dimsZ; ++z ) 
@@ -904,7 +900,7 @@ FilterVolume::StudholmeFilter
     filterByThread[idx] = filter;
     }
   
-  Progress::SetTotalSteps( dimsZ, "Studholme Intensity-Consistent Filter" );
+  Progress::Begin( 0, numberOfRows, 1, "Studholme Intensity-Consistent Filter" );
 #pragma omp parallel for
   for ( unsigned int row = 0; row < numberOfRows; ++row ) 
     {
@@ -1040,7 +1036,7 @@ FilterVolume::StudholmeFilter
   const unsigned int dimsY = dims[AXIS_Y];
   const unsigned int dimsZ = dims[AXIS_Z];
 
-  Progress::SetTotalSteps( dimsZ, "Studholme Intensity-Consistent Filter" );
+  Progress::Begin( 0, dimsZ, 1, "Studholme Intensity-Consistent Filter" );
 
   size_t offset = 0;
   for ( unsigned int z = 0; z < dimsZ; ++z ) 

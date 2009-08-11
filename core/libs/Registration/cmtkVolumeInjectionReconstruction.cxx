@@ -226,7 +226,7 @@ VolumeInjectionReconstruction
     this->m_NeighorhoodMinPixelValues(i) = this->m_OriginalImageMax;
     }
 
-  Progress::SetTotalSteps( correctedImageNumPixels, "Anisotropic Volume Injection" );
+  Progress::Begin( 0, correctedImageNumPixels, 1e5, "Anisotropic Volume Injection" );
 
 #pragma omp parallel for schedule(dynamic)
   for ( size_t correctedPx = 0; correctedPx < correctedImageNumPixels; ++correctedPx )
@@ -342,7 +342,7 @@ VolumeInjectionReconstruction
   std::vector<ap::real_value_type> splattedImage( correctedImageNumPixels );
   std::fill( splattedImage.begin(), splattedImage.end(), 0 );  
   
-  Progress::SetTotalSteps( this->m_NumberOfPasses, "Isotropic Volume Injection" );
+  Progress::Begin( 0, this->m_NumberOfPasses, 1, "Isotropic Volume Injection" );
 
   for ( int pass = 0; pass < this->m_NumberOfPasses; ++pass )
     {

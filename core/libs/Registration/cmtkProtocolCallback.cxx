@@ -64,8 +64,7 @@ ProtocolCallback::~ProtocolCallback ()
 
 CallbackResult
 ProtocolCallback::Execute
-( const CoordinateVector& v, 
-  const double metric, const int percentDone ) 
+( const CoordinateVector& v, const double metric ) 
 {
   size_t dim = std::min<unsigned int>( 20, v.Dim );
   if (fp) 
@@ -87,13 +86,7 @@ ProtocolCallback::Execute
     fputs( "\n", stderr );
     }
   
-  return this->Superclass::Execute( v, metric, percentDone );
-}
-
-CallbackResult
-ProtocolCallback::Execute ( const int percentDone ) 
-{
-  return this->Superclass::Execute( percentDone );
+  return this->Superclass::Execute( v, metric );
 }
 
 void

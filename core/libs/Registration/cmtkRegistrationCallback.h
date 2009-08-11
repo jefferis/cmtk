@@ -79,10 +79,10 @@ public:
   }
 
   /// Interface: Execute callback action
-  virtual CallbackResult Execute( const CoordinateVector& v, const double metric, const int percentDone = 0 );
+  virtual CallbackResult Execute( const CoordinateVector& v, const double metric );
 
   /// Execute callback action without interim result.
-  virtual CallbackResult Execute ( const int percentDone = 0 );
+  virtual CallbackResult Execute();
 
   /// Notify callback of an annotation.
   virtual void Comment ( const char* comment = NULL );
@@ -90,39 +90,13 @@ public:
   /// Notify callback of an annotation with variable parameters.
   virtual void FormatComment ( const char* format, ... );
   
-  /// Set restricted range for progress indication.
-  virtual void ResetProgressRange() 
-  {
-    ProgressOffset = 0; ProgressScale = 1;
-  }
-  
-  /// Set restricted range for progress indication.
-  virtual void SetProgressRange( const int fromPercent, const int toPercent ) 
-  {
-    ProgressOffset = fromPercent;
-    ProgressScale = (float) ( toPercent - fromPercent ) / 100;
-  }
-  
   /// Default constructor.
   RegistrationCallback();
 
   /// Virtual destructor.
   virtual ~RegistrationCallback();
 
-protected:
-  /// Returned range-transformed percent value.
-  int TranslatePercentDone( const int percentDone ) const 
-  {
-    return (int) ( ProgressOffset + ( percentDone * ProgressScale ) );
-  }
-
 private:
-  /// Lower end of the current progress range.
-  int ProgressOffset;
-  
-  /// Relative length of the current progress range.
-  float ProgressScale;
-
   /// Handler function for SIGINT interrupt signal.
   static void DispatchSIGINT( int sig );
 };

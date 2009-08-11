@@ -57,15 +57,21 @@ class ProgressConsole :
   public Progress
 {
 public:
+  /// This class.
+  typedef ProgressConsole Self;
+
+  /// Superclass.
+  typedef Progress Superclass;
+  
   /// Default constructor: connect to progress indicator.
   ProgressConsole( const std::string& programName = std::string("") );
   
   /// Output progress to console.
-  virtual ResultEnum SetProgressVirtual( const unsigned int progress );
+  virtual ResultEnum UpdateProgress();
 
 protected:
-  /// This member function can be overriden by derived classes.
-  virtual void SetTotalStepsVirtual( const unsigned int steps );
+  /// Begin a new level of progress reporting.
+  virtual void BeginVirtual( const float start, const float end, const float increment, const std::string& taskName );
 
   /// Clean up console output.
   void DoneVirtual();

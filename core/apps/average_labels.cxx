@@ -107,7 +107,7 @@ main( const int argc, const char* argv[] )
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, ReferenceImage->GetNumberOfPixels() ) );
 
   const int* dims = ReferenceImage->GetDims();
-  cmtk::Progress::SetTotalSteps( dims[2] );
+  cmtk::Progress::Begin( 0, dims[2], 1, "Label image averaging" );
 #pragma omp parallel for
   for ( int z = 0; z < dims[2]; ++z )
     {

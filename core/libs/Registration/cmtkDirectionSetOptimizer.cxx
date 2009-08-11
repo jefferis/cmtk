@@ -32,6 +32,7 @@
 #include <cmtkDirectionSetOptimizer.h>
 
 #include <cmtkConsole.h>
+#include <cmtkProgress.h>
 
 namespace
 cmtk
@@ -52,11 +53,13 @@ DirectionSetOptimizer::Optimize
   const int numOfSteps = 1+static_cast<int>(log(real_accuracy/exploration)/log(stepFactor));
   Self::ParameterType step = real_accuracy * pow( stepFactor, 1-numOfSteps );
 
-  int percentDone = 1, incPercentDone = 99 / numOfSteps;
+  Progress::Begin( 0, numOfSteps, 1, "Multi-resolution optimization" );
 
   CallbackResult irq = CALLBACK_OK;
-  for ( int stepIdx = 0; (stepIdx < numOfSteps) && (irq == CALLBACK_OK); ++stepIdx, step *= stepFactor, percentDone += incPercentDone ) 
+  for ( int stepIdx = 0; (stepIdx < numOfSteps) && (irq == CALLBACK_OK); ++stepIdx, step *= stepFactor ) 
     {
+    Progress::SetProgress( stepIdx );
+
     char comment[128];
     snprintf( comment, sizeof( comment ), "Setting step size to %4g [mm]", step );
     this->CallbackComment( comment );
@@ -78,14 +81,14 @@ DirectionSetOptimizer::Optimize
 	update = false;
 	
 	current = this->Evaluate( v );
-	irq = this->CallbackExecute( v, current, percentDone );
+	irq = this->CallbackExecute( v, current );
 	
 	CoordinateVector vNext( v );
 	vNext.Add( *directionVector, scaleLength );
 	Self::ReturnType next = this->Evaluate( vNext );
 	while (  next > current ) 
 	  {
-	  if ( ( irq = this->CallbackExecute( percentDone ) ) != CALLBACK_OK )
+	  if ( ( irq = this->CallbackExecute() ) != CALLBACK_OK )
 	    break;
 	  current = next;
 	  update = true;
@@ -133,10 +136,12 @@ DirectionSetOptimizer::Optimize
       fputs( "\n", stderr );
 #endif
       
-      irq = this->CallbackExecute( v, current, percentDone );
+      irq = this->CallbackExecute( v, current );
       fprintf( stderr, "%f\n", current );
     }
   }
+
+  Progress::Done();
 
   return irq;
 }

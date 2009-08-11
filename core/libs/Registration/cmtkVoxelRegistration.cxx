@@ -104,7 +104,7 @@ VoxelRegistration::Register ()
   CoordinateVector::SmartPtr v( new CoordinateVector() );
   int NumResolutionLevels = FunctionalStack.size();
 
-  Progress::SetTotalSteps( NumResolutionLevels, "Multi-level Registration" );
+  Progress::Begin( 0, NumResolutionLevels, 1, "Multi-level Registration" );
 
   int index = 1;
   while ( ! FunctionalStack.empty() && ( irq == CALLBACK_OK ) ) 
@@ -167,9 +167,6 @@ VoxelRegistration::EnterResolution
 {
   if ( this->m_Callback ) 
     {
-    int percentRange = 100 / total;
-    this->m_Callback->SetProgressRange( (idx-1) * percentRange, idx * percentRange );
-    
     char comment[128];
     snprintf( comment, sizeof( comment ), "Entering resolution level %d out of %d.", idx, total );
     this->m_Callback->Comment( comment );

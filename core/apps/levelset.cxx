@@ -113,7 +113,7 @@ main( int argc, char* argv[] )
 
   size_t nInsideOld = 0, nInside = 1;
 
-  cmtk::Progress::SetTotalSteps( numberOfIterations, "Levelset Evolution" );
+  cmtk::Progress::Begin( 0, numberOfIterations, 1, "Levelset Evolution" );
   for ( int it = 0; (it < numberOfIterations) && ((nInside!=nInsideOld) || forceIterations); ++it )
     {
     cmtk::Progress::SetProgress( it );

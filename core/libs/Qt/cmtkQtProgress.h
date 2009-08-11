@@ -70,10 +70,10 @@ public:
   }
   
   /// This member function initialises the Qt progress indicator.
-  virtual void SetTotalStepsVirtual( const unsigned int totalSteps );
+  virtual void BeginVirtual( const float start, const float end, const float increment, const std::string& taskName = std::string("") );
 
   /// This member function sets the Qt progress indicator.
-  virtual Progress::ResultEnum SetProgressVirtual( const unsigned int progress );
+  virtual Progress::ResultEnum UpdateProgress();
 
   /// This member function deletes the Qt progress indicator.
   virtual void DoneVirtual();

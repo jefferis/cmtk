@@ -42,33 +42,38 @@ cmtk
 //@{
 
 void
-QtProgress::SetTotalStepsVirtual( const unsigned int totalSteps )
+QtProgress
+::BeginVirtual( const float start, const float end, const float increment, const std::string& taskName )
 {
-  if ( ProgressBar ) 
+  if ( this->IsTopLevel() )
     {
-    ProgressBar->setTotalSteps( totalSteps );
-    ProgressBar->show();
+    if ( ProgressBar ) 
+      {
+      ProgressBar->setTotalSteps( 100 );
+      ProgressBar->show();
+      }
+    
+    if ( ! ProgressDialog )
+      ProgressDialog = new Q3ProgressDialog( taskName.c_str(), "Cancel", 100, ParentWindow, Qt::Popup );
+    
+    ProgressDialog->setModal( true );
+    ProgressDialog->setCaption( "Please wait" );
+    ProgressDialog->setMinimumDuration( 100 );
+    ProgressDialog->show();
+    ProgressDialog->setTotalSteps( 100 );
+    
+    qApp->processEvents();
     }
-  
-  if ( ! ProgressDialog )
-    ProgressDialog = new Q3ProgressDialog( "This may take a bit...", "Cancel", totalSteps, ParentWindow, Qt::Popup );
-
-  ProgressDialog->setModal( true );
-  ProgressDialog->setCaption( "Please wait" );
-  ProgressDialog->setMinimumDuration( 1000 );
-  ProgressDialog->show();
-  ProgressDialog->setTotalSteps( totalSteps );
-  
-  qApp->processEvents();
 }
 
 Progress::ResultEnum
-QtProgress::SetProgressVirtual( const unsigned int progress )
+QtProgress::UpdateProgress()
 {
+  const int percent = static_cast<int>( 100 * this->GetFractionComplete() );
   if ( ProgressBar )
-    ProgressBar->setProgress( progress );
+    ProgressBar->setProgress( percent );
   if ( ProgressDialog )
-    ProgressDialog->setProgress( progress );
+    ProgressDialog->setProgress( percent );
 
   qApp->processEvents();
 
@@ -83,11 +88,14 @@ QtProgress::SetProgressVirtual( const unsigned int progress )
 void
 QtProgress::DoneVirtual()
 {
-  if ( ProgressBar )
-    ProgressBar->reset();
-
-  if ( ProgressDialog )
-    ProgressDialog->hide();
+  if ( this->IsTopLevel() )
+    {
+    if ( ProgressBar )
+      ProgressBar->reset();
+    
+    if ( ProgressDialog )
+      ProgressDialog->hide();
+    }
 }
 
 } // namespace cmtk

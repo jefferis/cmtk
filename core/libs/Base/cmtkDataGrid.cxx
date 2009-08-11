@@ -316,7 +316,7 @@ DataGrid::GetDataMedianFiltered( const int radius ) const
   Types::DataItem *sort = Memory::AllocateArray<Types::DataItem>(  width*width*width  );
   
   int offset = 0;
-  Progress::SetTotalSteps( this->m_Dims[2] );
+  Progress::Begin( 0, this->m_Dims[2], 1 );
 
   Progress::ResultEnum status = Progress::OK;
   for ( int z = 0; z < this->m_Dims[2]; ++z ) 
@@ -395,7 +395,7 @@ DataGrid::GetDataSobelFiltered() const
   Types::DataItem value = 0;
   Types::DataItem fov[3][3][3];
 
-  Progress::SetTotalSteps( this->m_Dims[2] );
+  Progress::Begin( 0, this->m_Dims[2], 1 );
 
   size_t offset = 0;
   for ( int z = 0; z < this->m_Dims[2]; ++z ) 
@@ -460,7 +460,7 @@ DataGrid::GetDataMirrored
   
   TypedArray* mirroredArray = dataArray->NewTemplateArray();
   
-  Progress::SetTotalSteps( this->m_Dims[2] );
+  Progress::Begin( 0, this->m_Dims[2], 1, "Mirror image" );
 
   size_t offset = 0;
   switch ( axis )

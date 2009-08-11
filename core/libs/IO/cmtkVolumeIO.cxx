@@ -493,7 +493,7 @@ VolumeIO::WriteData
   FILE *fp = fopen( path, "w" );
   if ( fp ) 
     {
-    Progress::SetTotalSteps( 1 + numberOfItems / (1<<20) );
+    Progress::Begin( 0, 1 + numberOfItems / (1<<20), 1, "Writing volume data" );
     unsigned int step = 0;
     
     // if bigger than 1 MB, write in 1 MB chunks to allow progress reports

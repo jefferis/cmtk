@@ -49,7 +49,7 @@ ReformatVolume::Reformat
     result->SetPaddingValue( fct.PaddingValue );
   const TypedArray* targetData = target->GetData();
   
-  Progress::SetTotalSteps( dims[2] );
+  Progress::Begin( 0, dims[2], 1, "Volume reformatting" );
   
 #pragma omp parallel for
   for ( int z = 0; z < dims[2]; z++ ) 

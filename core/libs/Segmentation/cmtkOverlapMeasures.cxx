@@ -106,7 +106,8 @@ OverlapMeasures::ComputeGroupwiseOverlap
     return numberOfLabelsIncluded;
 
   // run overlap computation
-  Progress::SetTotalSteps( this->m_NumberOfPixels );
+  const size_t progressPixels = 100000;
+  Progress::Begin( 0, this->m_NumberOfPixels, progressPixels, "Overlap computation" );
 
 #ifdef _OPENMP
   const size_t numberOfThreads = omp_get_max_threads();
@@ -123,7 +124,7 @@ OverlapMeasures::ComputeGroupwiseOverlap
 #pragma omp parallel for  
   for ( size_t px = 0; px < this->m_NumberOfPixels; ++px )
     {
-    if ( (px % 100000) == 0 )
+    if ( (px % progressPixels) == 0 )
 #ifdef _OPENMP
       if ( !omp_get_thread_num() )
 #endif

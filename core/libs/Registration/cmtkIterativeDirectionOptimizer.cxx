@@ -31,6 +31,8 @@
 
 #include <cmtkIterativeDirectionOptimizer.h>
 
+#include <cmtkProgress.h>
+
 #include <vector>
 
 namespace
@@ -57,11 +59,13 @@ IterativeDirectionOptimizer::Optimize
   for ( int idx=0; idx<Dim; ++idx )
     stepScaleVector[idx] = this->GetParamStep( idx );
 
-  int percentDone = 1, incPercentDone = 99 / numOfSteps;
+  Progress::Begin( 0, numOfSteps, 1, "Multi-resolution optimization" );
 
-  CallbackResult irq = this->CallbackExecute( v, optimum, percentDone );
-  for ( int stepIdx = 0; (stepIdx < numOfSteps) && ( irq == CALLBACK_OK ); ++stepIdx, step *= StepFactor, percentDone += incPercentDone ) 
+  CallbackResult irq = this->CallbackExecute( v, optimum );
+  for ( int stepIdx = 0; (stepIdx < numOfSteps) && ( irq == CALLBACK_OK ); ++stepIdx, step *= StepFactor ) 
     {
+    Progress::SetProgress( stepIdx );
+
     char comment[128];
     snprintf( comment, sizeof( comment ), "Setting step size to %4g [mm]", step );
     this->CallbackComment( comment );
@@ -80,7 +84,7 @@ IterativeDirectionOptimizer::Optimize
 	  
 	  Types::Coordinate vOld = v[dim];
 	  
-	  if ( (irq = this->CallbackExecute( percentDone )) ) break;
+	  if ( (irq = this->CallbackExecute()) ) break;
 	  
 	  v[dim] += step * stepScaleVector[dim];
       const Self::ReturnType fUpper = this->Evaluate( v );
@@ -95,7 +99,7 @@ IterativeDirectionOptimizer::Optimize
 	    optimumStep = step;
 	    }
 	  
-	  if ( (irq = this->CallbackExecute( percentDone )) ) break;
+	  if ( (irq = this->CallbackExecute()) ) break;
 	  
 	  v[dim] = vOld - (step * stepScaleVector[dim]);
       const Self::ReturnType fLower = this->Evaluate( v );
@@ -125,7 +129,7 @@ IterativeDirectionOptimizer::Optimize
 		updateThisDim = true;
 		}
 	      
-	      if ( (irq = this->CallbackExecute( percentDone )) ) break;
+	      if ( (irq = this->CallbackExecute()) ) break;
 	      }
 	    updateThisDim = true;
 	    }
@@ -136,7 +140,7 @@ IterativeDirectionOptimizer::Optimize
 	if ( update ) 
 	  {
 	  v = optimumV;
-	  irq = this->CallbackExecute( v, optimum, percentDone );
+	  irq = this->CallbackExecute( v, optimum );
 	  // query functional for new parameter steppings if the respective
 	  // optimzier flag is set.
 	  if ( this->m_UpdateStepScaleVector )
@@ -146,6 +150,8 @@ IterativeDirectionOptimizer::Optimize
 	}
       }
     }
+
+  Progress::Done();
   
   return irq;
 }

@@ -59,7 +59,6 @@ RegistrationCallback::RegistrationCallback()
   signal( SIGINT, RegistrationCallback::DispatchSIGINT );
 #endif
 #endif
-  this->ResetProgressRange();
 }
 
 RegistrationCallback::~RegistrationCallback() 
@@ -73,13 +72,13 @@ RegistrationCallback::~RegistrationCallback()
 
 CallbackResult 
 RegistrationCallback::Execute
-( const CoordinateVector&, const double, const int )
+( const CoordinateVector&, const double )
 {
   return InterruptSignalReceived ? CALLBACK_INTERRUPT : CALLBACK_OK;
 }
 
 CallbackResult
-RegistrationCallback::Execute ( const int )
+RegistrationCallback::Execute ()
 {
   return InterruptSignalReceived ? CALLBACK_INTERRUPT : CALLBACK_OK;
 }

@@ -132,7 +132,7 @@ LabelCombinationMultiClassSTAPLE
   // allocate array for pixel class weights
   std::vector<float> W( numberOfClasses );
 
-  Progress::SetTotalSteps( maxIterations );
+  Progress::Begin( 0, maxIterations, 1, "Multi-label STAPLE" );
   
   // main EM loop
   for ( int it = 0; it < maxIterations; ++it )

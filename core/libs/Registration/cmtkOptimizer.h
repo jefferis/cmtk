@@ -88,18 +88,18 @@ public:
   cmtkGetSetMacro(Functional::SmartPtr,Functional);
 
   /// Execute callback if one was set.
-  virtual CallbackResult CallbackExecute( const CoordinateVector &v, const Self::ReturnType metric, const int percentDone ) 
+  virtual CallbackResult CallbackExecute( const CoordinateVector &v, const Self::ReturnType metric ) 
   {
     if ( m_Callback )
-      return m_Callback->Execute( v, metric, percentDone );
+      return m_Callback->Execute( v, metric );
     return CALLBACK_OK;
   }
 
   /// Execute callback if one was set.
-  virtual CallbackResult CallbackExecute( const int percentDone )
+  virtual CallbackResult CallbackExecute()
   {
     if ( m_Callback ) 
-      m_Callback->Execute( percentDone );
+      m_Callback->Execute();
     return CALLBACK_OK;
   }
 

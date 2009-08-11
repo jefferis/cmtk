@@ -52,7 +52,7 @@ void
 VolumeFromSlices::InitSequence
 ( const ImageInfo& image, const int slice_count )
 { 
-  Progress::SetTotalSteps( slice_count );
+  Progress::Begin( 0, slice_count, 1, "Volume image stacking" );
 
   Padding = false;
 

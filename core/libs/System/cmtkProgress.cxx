@@ -44,23 +44,42 @@ cmtk
 //@{
 
 Progress* Progress::ProgressInstance = 0;
-unsigned int Progress::TotalSteps = 0;
-std::string Progress::m_CurrentTaskName( "" );
 
 void
-Progress::SetTotalSteps( const unsigned int totalSteps, const std::string& currentTaskName )
-{
-  Self::m_CurrentTaskName = currentTaskName;
-  Self::TotalSteps = totalSteps;
+Progress::Begin
+( const float start, const float end, const float increment, const std::string& taskName ){
   if ( ProgressInstance )
-    ProgressInstance->SetTotalStepsVirtual( totalSteps );
+    {
+    ProgressInstance->BeginVirtual( start, end, increment, taskName );
+    }
+}
+
+void
+Progress::BeginVirtual
+( const float start, const float end, const float increment, const std::string& taskName )
+{
+  this->m_RangeStack.push_front( Self::Range( start, end, increment, taskName ) );
+}
+
+void
+Progress::SetProgressCurrent( const float progress )
+{
+  RangeStackType::iterator current = this->m_RangeStack.begin();
+  
+  if ( current != this->m_RangeStack.end() )
+    {
+    current->m_Current = progress;
+    }
 }
 
 Progress::ResultEnum 
-Progress::SetProgress( const unsigned int progress )
+Progress::SetProgress( const float progress )
 {
   if ( ProgressInstance )
-    return ProgressInstance->SetProgressVirtual( progress );
+    {
+    ProgressInstance->SetProgressCurrent( progress );
+    return ProgressInstance->UpdateProgress();
+    }
   else
     return Self::OK;
 }
@@ -70,6 +89,40 @@ Progress::Done()
 {
   if ( ProgressInstance )
     ProgressInstance->DoneVirtual();
+}
+
+void
+Progress::DoneVirtual()
+{
+  if ( this->m_RangeStack.begin() != this->m_RangeStack.end() )
+    this->m_RangeStack.pop_front();
+}
+
+float
+Progress::Range::GetFractionComplete( const float nestedFraction ) const
+{
+  return ( ( this->m_Current + nestedFraction * this->m_Increment ) - this->m_Start) / (this->m_End - this->m_Start);
+}
+
+float
+Progress::GetFractionComplete() const
+{
+  float fraction = 0;
+  for ( RangeStackType::const_iterator it = this->m_RangeStack.begin(); it != this->m_RangeStack.end(); ++it )
+    {
+    fraction = it->GetFractionComplete( fraction );
+    }
+
+  return fraction;
+}
+
+const std::string
+Progress::GetCurrentTaskName() const
+{
+  RangeStackType::const_reverse_iterator it = this->m_RangeStack.rbegin();
+  if ( it != this->m_RangeStack.rend() )
+    return it->m_TaskName;
+  return std::string("");
 }
 
 } // namespace cmtk

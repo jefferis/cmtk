@@ -133,7 +133,7 @@ InverseInterpolationVolumeReconstructionBase
       }
     }
 
-  Progress::SetTotalSteps( numberOfIterations, "Inverse Interpolation" );
+  Progress::Begin( 0, numberOfIterations, 1, "Inverse Interpolation" );
   
   int info;
   ap::lbfgsbminimize( this->m_FunctionAndGradient, numberOfPixels, 5, x, 1e-10 /*epsg*/, 1e-10 /*epsf*/, 1e-10 /*epsx*/, numberOfIterations, 

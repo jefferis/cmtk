@@ -33,6 +33,7 @@
 
 #include <cmtkTypes.h>
 #include <cmtkConsole.h>
+#include <cmtkProgress.h>
 
 #include <algorithm>
 
@@ -55,13 +56,15 @@ BestDirectionOptimizer::Optimize
   int numOfSteps = 1+static_cast<int>(log(real_accuracy/exploration)/log(StepFactor));
   Self::ParameterType step = real_accuracy * pow( StepFactor, 1-numOfSteps );
 
-  int percentDone = 1, incPercentDone = 99 / numOfSteps;
-
   CoordinateVector directionVector( v.Dim, 0.0 );
 
+  Progress::Begin( 0, numOfSteps, 1, "Multi-resolution optimization" );
+
   CallbackResult irq = CALLBACK_OK;
-  for ( int stepIdx = 0; (stepIdx < numOfSteps) && (irq == CALLBACK_OK); ++stepIdx, step *= StepFactor, percentDone += incPercentDone ) 
+  for ( int stepIdx = 0; (stepIdx < numOfSteps) && (irq == CALLBACK_OK); ++stepIdx, step *= StepFactor ) 
     {
+    Progress::SetProgress( stepIdx );
+
     char comment[128];
     snprintf( comment, sizeof( comment ), "Setting step size to %4g [mm]", step );
     this->CallbackComment( comment );
@@ -74,7 +77,7 @@ BestDirectionOptimizer::Optimize
       update = false;
       
       Self::ReturnType current = this->EvaluateWithGradient( v, directionVector, step );
-      irq = this->CallbackExecute( v, current, percentDone );
+      irq = this->CallbackExecute( v, current );
       
       // Daniel Rueckert is supposedly using Euclid's norm here, but we found this
       // to be less efficient AND accurate. Makes no sense anyway.
@@ -110,7 +113,7 @@ BestDirectionOptimizer::Optimize
 	Self::ReturnType next = this->Evaluate( vNext );
 	while (  next > current ) 
 	  {
-	  if ( ( irq = this->CallbackExecute( percentDone ) ) != CALLBACK_OK )
+	  if ( ( irq = this->CallbackExecute() ) != CALLBACK_OK )
 	    break;
 	  current = next;
 	  update = true;
@@ -157,7 +160,7 @@ BestDirectionOptimizer::Optimize
 	  }
 	}
       
-      irq = this->CallbackExecute( v, current, percentDone );
+      irq = this->CallbackExecute( v, current );
       StdErr.printf( "%f\r", current );
 
       if ( this->m_AggressiveMode )
@@ -174,6 +177,8 @@ BestDirectionOptimizer::Optimize
 	}
       }
     }
+
+  Progress::Done();
   
   return irq;
 }

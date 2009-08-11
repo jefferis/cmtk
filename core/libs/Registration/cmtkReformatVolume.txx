@@ -89,8 +89,6 @@ ReformatVolume::GetTransformedReference
     dataArray->SetPaddingValue( this->m_PaddingValue );
   result->SetData( dataArray );
 
-  Progress::SetTotalSteps( result->GetNumberOfPixels() );
-
   const size_t numberOfThreads = Threads::GetNumberOfThreads();
   std::vector<GetTransformedReferenceTP> params( numberOfThreads );
 
@@ -128,8 +126,7 @@ ReformatVolume::GetTransformedReference
     }
     break;
     }
-  Progress::Done();  
-  
+
   return result;
 }
 
