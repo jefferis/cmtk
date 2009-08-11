@@ -54,6 +54,9 @@ Release CMTK-1.1.0:
 - Added: automatic Wiki markup printing of command line options
 - Added: export and import of affine transformations in ITK file format for
     exchange with Slicer.
+- Added: new class, cmtk::TransformationToNativeSpacesAffine, to change an
+    affine transformation from RAS space to map between the native spaces of
+    reference and floating images.
 
 
 Release CMTK-1.0.2 (2009-07-24):
