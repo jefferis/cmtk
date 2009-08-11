@@ -49,7 +49,7 @@
 #include <cmtkCompressedStream.h>
 #include <cmtkXformIO.h>
 
-#include <cmtkTransformationToNativeSpaceAffine.h>
+#include <cmtkTransformChangeSpaceAffine.h>
 #include <cmtkAffineXformITKIO.h>
 
 #include <stdio.h>
@@ -437,8 +437,8 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
 
   if ( this->m_OutputPathITK ) 
     {
-    TransformationToNativeSpaceAffine toNative( this->GetTransformation()->GetInverse(), this->m_Volume_1, this->m_Volume_2 );
-    AffineXformITKIO::Write( this->m_OutputPathITK, toNative.GetNativeTransformation() );
+    TransformChangeSpaceAffine toNative( this->GetTransformation()->GetInverse(), this->m_Volume_1, this->m_Volume_2 );
+    AffineXformITKIO::Write( this->m_OutputPathITK, toNative.GetTransformation() );
     }
 
   if ( this->m_ReformattedImagePath )
