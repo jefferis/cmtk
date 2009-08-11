@@ -126,9 +126,9 @@ public:
   /** Create identity transformation.
    */
   AffineXform () :
-    Xform( TotalNumberOfParameters ),
     m_LogScaleFactors( false )
   {
+    this->AllocateParameterVector( TotalNumberOfParameters );
     this->NumberDOFs = this->DefaultNumberOfDOFs();
     this->MakeIdentityXform();
     memset( this->RegisteredVolumeAxes, 0, sizeof( this->RegisteredVolumeAxes ) );
@@ -139,10 +139,10 @@ public:
    * to 'Parameters' for a detailed description.
    *@see Parameters
    */
-  AffineXform ( const CoordinateVector& v, const bool logScaleFactors = false ) 
-    : Xform( TotalNumberOfParameters ),
+  AffineXform ( const CoordinateVector& v, const bool logScaleFactors = false ) :
       m_LogScaleFactors( logScaleFactors )
   {
+    this->AllocateParameterVector( TotalNumberOfParameters );
     this->NumberDOFs = this->DefaultNumberOfDOFs();
     this->SetParamVector( v );
     memset( RegisteredVolumeAxes, 0, sizeof( RegisteredVolumeAxes ) );
@@ -153,10 +153,10 @@ public:
    * to 'Parameters' for a detailed description.
    *@see Parameters
    */
-  AffineXform ( const Types::Coordinate v[15], const bool logScaleFactors = false ) 
-    : Xform( TotalNumberOfParameters ),
+  AffineXform ( const Types::Coordinate v[15], const bool logScaleFactors = false ) :
       m_LogScaleFactors( logScaleFactors )
   {
+    this->AllocateParameterVector( TotalNumberOfParameters );
     this->NumberDOFs = this->DefaultNumberOfDOFs();
     memcpy( this->m_Parameters, v, 15 * sizeof(Types::Coordinate) );
     this->ComposeMatrix();

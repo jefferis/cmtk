@@ -74,10 +74,15 @@ public:
   /// Total number of parameters, ie. the values in Coefficients.
   size_t m_NumberOfParameters;
 
-  /// Allocation constructor.
-  Xform( const size_t numberOfParameters = 0 )
+  /// Copy constructor.
+  Xform( const Xform& other )
+    : InformationObject( other )
+  {    
+  }
+
+  /// Default constructor.
+  Xform()
   {
-    this->AllocateParameterVector( numberOfParameters );
   }
 
   /// Virtual destructor.

@@ -59,6 +59,14 @@ cmtk
 class InformationObject
 {
 public:
+  /// Default constructor: do nothing.
+  InformationObject() {}
+
+  /// Copy constructor: copy meta information when copying higher-level objects.
+  InformationObject( const InformationObject& other )
+    : m_MetaInformation( other.m_MetaInformation )
+  {}
+
   /// Virtual destructor template.
   virtual ~InformationObject() {};
 

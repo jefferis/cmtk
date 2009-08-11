@@ -56,11 +56,12 @@ AffineXform::MakeIdentityXform ()
 }
 
 AffineXform::AffineXform ( const AffineXform& other ) :
-  Xform( TotalNumberOfParameters ),
+  Xform( other ),
   Matrix( NULL ), 
   m_LogScaleFactors( false ),
   InverseXform( NULL )
 { 
+  this->AllocateParameterVector( TotalNumberOfParameters );
   (*this->m_ParameterVector) = (*other.m_ParameterVector);
   this->m_LogScaleFactors = other.m_LogScaleFactors;
   this->NumberDOFs = other.NumberDOFs;
@@ -70,11 +71,11 @@ AffineXform::AffineXform ( const AffineXform& other ) :
 
 AffineXform::AffineXform
 ( const Types::Coordinate matrix[4][4], const Types::Coordinate* center ) :
-  Xform( TotalNumberOfParameters ),
   Matrix( &matrix[0][0] ), 
   m_LogScaleFactors( false ),
   InverseXform( NULL )
 {
+  this->AllocateParameterVector( TotalNumberOfParameters );
   this->NumberDOFs = this->DefaultNumberOfDOFs();
   if ( center )
     memcpy( this->RetCenter(), center, 3 * sizeof( Types::Coordinate ) );
@@ -86,11 +87,11 @@ AffineXform::AffineXform
 
 AffineXform::AffineXform
 ( const MatrixType& matrix, const Types::Coordinate* center ) :
-  Xform( TotalNumberOfParameters ),
   Matrix( matrix ), 
   m_LogScaleFactors( false ),
   InverseXform( NULL )
 {
+  this->AllocateParameterVector( TotalNumberOfParameters );
   this->NumberDOFs = this->DefaultNumberOfDOFs();
   if ( center )
     memcpy( this->RetCenter(), center, 3 * sizeof( Types::Coordinate ) );
@@ -103,11 +104,11 @@ AffineXform::AffineXform
 AffineXform::AffineXform
 ( const Types::Coordinate matrix[4][4], const Types::Coordinate xlate[3],
   const Types::Coordinate center[3] ) :
-  Xform( TotalNumberOfParameters ),
   Matrix( &matrix[0][0] ), 
   m_LogScaleFactors( false ),
   InverseXform( NULL )
 {
+  this->AllocateParameterVector( TotalNumberOfParameters );
   this->NumberDOFs = this->DefaultNumberOfDOFs();
   Types::Coordinate cM[3] = 
     {
