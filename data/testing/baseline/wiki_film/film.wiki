@@ -1,0 +1,78 @@
+pushd /fs/u00/torsten/develop/nitrc/data/testing/inputs; /fs/axon/torsten/cmtk/testing/bin/film --wiki; popd
+== Title ==
+
+Fix interleaved motion using inverse interpolation
+
+== Description ==
+
+This tool splits an interleaved input image into the pass images, co-registers them, and reconstructs a motion-corrected image
+
+== Syntax ==
+
+: <tt>[options] InputImage OutputImage </tt>
+
+where
+
+; <tt>InputImage</tt> : Input image path
+
+; <tt>OutputImage</tt> : Output image path
+
+== List of Supported Options ==
+
+; <tt>-v</tt> / <tt>--verbose</tt> : Verbose operation
+
+=== Interleaving Options ===
+
+; <tt>--interleave-axis</tt> : Define interleave axis: this is the through-slice direction of the acquisition.Supported values: "<tt>guess-from-input</tt>", "<tt>axial</tt>", "<tt>sagittal</tt>", "<tt>coronal</tt>", "<tt>interleave-x</tt>", "<tt>interleave-y</tt>", "<tt>interleave-z</tt>", where the default is "guess-from-input", or use one of the following
+:; <tt>--guess-from-input</tt> : Guess from input image '''[This is the default]'''
+:; <tt>-a</tt> / <tt>--axial</tt> : Interleaved axial images
+:; <tt>-s</tt> / <tt>--sagittal</tt> : Interleaved sagittal images
+:; <tt>-c</tt> / <tt>--coronal</tt> : Interleaved coronal images
+:; <tt>-x</tt> / <tt>--interleave-x</tt> : Interleaved along x axis
+:; <tt>-y</tt> / <tt>--interleave-y</tt> : Interleaved along y axis
+:; <tt>-z</tt> / <tt>--interleave-z</tt> : Interleaved along z axis
+
+; <tt>-p</tt> / <tt>--passes</tt> : Number of interleaved passes '''[Default value: 2]'''
+
+; <tt>-W</tt> / <tt>--pass-weight</tt> : Set contribution weight for a pass in the form 'pass:weight'
+
+=== Motion Correction / Registration Options ===
+
+; <tt>-R</tt> / <tt>--reference-image</tt> : Use a separate high-resolution reference image for registration '''[Default value: NONE]'''
+
+; <tt>--registration-metric</tt> : Registration metric for motion estimation by image-to-image registration.Supported values: "<tt>nmi</tt>", "<tt>mi</tt>", "<tt>cr</tt>", "<tt>msd</tt>", "<tt>cc</tt>", where the default is "msd", or use one of the following
+:; <tt>--nmi</tt> : Use Normalized Mutual Information for pass-to-refereence registration
+:; <tt>--mi</tt> : Use standard Mutual Information for pass-to-refereence registration
+:; <tt>--cr</tt> : Use Correlation Ratio for pass-to-refereence registration
+:; <tt>--msd</tt> : Use Mean Squared Differences for pass-to-refereence registration '''[This is the default]'''
+:; <tt>--cc</tt> : Use Cross-Correlation for pass-to-refereence registration
+
+; <tt>--import-xforms-path</tt> : Path of file from which to import transformations between passes. '''[Default value: NONE]'''
+
+; <tt>--export-xforms-path</tt> : Path of file to which to export transformations between passes. '''[Default value: NONE]'''
+
+; <tt>-S</tt> / <tt>--injection-kernel-sigma</tt> : Standard deviation of Gaussian kernel for volume injection in multiples of pixel size in each direction. '''[Default value: 0.5]'''
+
+; <tt>-r</tt> / <tt>--injection-kernel-radius</tt> : Truncation radius factor of injection kernel. The kernel is truncated at sigma*radius, where sigma is the kernel standard deviation. '''[Default value: 2]'''
+
+=== Inverse Interpolation Options ===
+
+; <tt>--inverse-interpolation-kernel</tt> : Kernel for the inverse interpolation reconstructionSupported values: "<tt>cubic</tt>", "<tt>linear</tt>", "<tt>hamming-sinc</tt>", "<tt>cosine-sinc</tt>", where the default is "cubic", or use one of the following
+:; <tt>-C</tt> / <tt>--cubic</tt> : Tricubic interpolation '''[This is the default]'''
+:; <tt>-L</tt> / <tt>--linear</tt> : Trilinear interpolation (faster but less accurate)
+:; <tt>-H</tt> / <tt>--hamming-sinc</tt> : Hamming-windowed sinc interpolation
+:; <tt>-O</tt> / <tt>--cosine-sinc</tt> : Cosine-windowed sinc interpolation (most accurate but slowest)
+
+; <tt>-f</tt> / <tt>--fourth-order-error</tt> : Use fourth-order (rather than second-order) error for optimization.
+
+; <tt>-n</tt> / <tt>--num-iterations</tt> : Maximum number of inverse interpolation iterations '''[Default value: 20]'''
+
+; <tt>-T</tt> / <tt>--no-truncation</tt> : Turn off regional intensity truncatrion
+
+=== Output Options ===
+
+; <tt>--write-injected-image</tt> : Write initial volume injection image to path '''[Default value: NONE]'''
+
+; <tt>-F</tt> / <tt>--write-images-as-float</tt> : Write output images as floating point [default: same as input]
+
+

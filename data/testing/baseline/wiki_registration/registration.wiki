@@ -1,0 +1,127 @@
+pushd /fs/u00/torsten/develop/nitrc/data/testing/inputs; /fs/axon/torsten/cmtk/testing/bin/registration --wiki; popd
+== Title ==
+
+Rigid and affine registration
+
+== Description ==
+
+This program performs rigid and affine image registration using multi-resolution optimization of voxel-based image similarity measures.
+
+== Syntax ==
+
+: <tt>[options] ReferenceImagePath FloatingImagePath </tt>
+
+where
+
+; <tt>ReferenceImagePath</tt> : Reference (fixed) image path
+
+; <tt>FloatingImagePath</tt> : Floating (moving) image path
+
+== List of Supported Options ==
+
+; <tt>-v</tt> / <tt>--verbose</tt> : Verbose mode
+
+; <tt>-q</tt> / <tt>--quiet</tt> : Quiet mode '''[This is the default]'''
+
+=== Automation Options ===
+
+; <tt>--auto-multi-levels</tt> : Automatic optimization and resolution parameter generation for <n> levels '''[Default value: 0]'''
+
+=== Optimization settings ===
+
+; <tt>-e</tt> / <tt>--exploration</tt> : Exploration [initial optimizer step size] '''[Default value: 8]'''
+
+; <tt>-a</tt> / <tt>--accuracy</tt> : Accuracy [final optimizer step size] '''[Default value: 0.1]'''
+
+; <tt>-f</tt> / <tt>--stepfactor</tt> : Factor for search step size reduction. Must be > 0.0 and < 1.0 [default: 0.5] '''[Default value: 0.5]'''
+
+=== Image resolution parameters ===
+
+; <tt>-s</tt> / <tt>--sampling</tt> : Image sampling (finest resampled image resolution) '''[Default value: 1]'''
+
+; <tt>--coarsest</tt> : Upper limit for image sampling in multiresolution hierarchy '''[Default value: -1]'''
+
+; <tt>--omit-original-data</tt> : Do not use original data in full resolution, omit final stage in multiresolution hierarchy, thus reducing computation time.
+
+=== Transformation parameters ===
+
+; <tt>--dofs</tt> : Add number of degrees of freedom [can be repeated]
+
+; <tt>--dofs-final</tt> : Add number of degrees of freedom for final level only [can be repeated]
+
+; <tt>-n</tt> / <tt>--no-switch</tt> : Do not auto-switch reference and floating image for improved computational performance
+
+; <tt>-i</tt> / <tt>--initxlate</tt> : Initialized transformation by translating floating image FOV center onto reference image FOV center
+
+; <tt>--initial</tt> : Initialize transformation from given path '''[Default value: NONE]'''
+
+; <tt>--initial-is-inverse</tt> : Invert initial transformation before initializing registration
+
+=== Image data ===
+
+; <tt>--registration-metric</tt> : Registration metric for motion estimation by image-to-image registration.Supported values: "<tt>nmi</tt>", "<tt>mi</tt>", "<tt>cr</tt>", "<tt>msd</tt>", "<tt>ncc</tt>", where the default is "nmi", or use one of the following
+:; <tt>--nmi</tt> : Normalized Mutual Information metric '''[This is the default]'''
+:; <tt>--mi</tt> : Standard Mutual Information metric
+:; <tt>--cr</tt> : Correlation Ratio metric
+:; <tt>--msd</tt> : Mean Squared Difference metric
+:; <tt>--ncc</tt> : Normalized Cross Correlation metric
+
+=== Reference Image Preprocessing ===
+
+; <tt>--class-ref</tt> : Data class: grey (default), binary, or label '''[Default value: NONE]'''
+
+; <tt>--pad-ref</tt> : Padding value '''[Default: disabled]'''
+
+; <tt>--thresh-min-ref</tt> : Minimum value truncation threshold '''[Default: disabled]'''
+
+; <tt>--thresh-max-ref</tt> : Maximum value truncation threshold '''[Default: disabled]'''
+
+; <tt>--prune-histogram-ref</tt> : Number of bins for histogram-based pruning '''[Default: disabled]'''
+
+; <tt>--histogram-equalization-ref</tt> : Apply histogram equalization
+
+; <tt>--sobel-filter-ref</tt> : Apply Sobel edge detection filter
+
+; <tt>--crop-index-ref</tt> : Cropping region in pixel index coordinates [parsed as %d,%d,%d,%d,%d,%d for i0,j0,k0,i1,j1,k1] '''[Default value: NONE]'''
+
+; <tt>--crop-world-ref</tt> : Cropping region in world coordinates [parsed as %f,%f,%f,%f,%f,%f for x0,y0,z0,x1,y1,z1] '''[Default value: NONE]'''
+
+=== Floating Image Preprocessing ===
+
+; <tt>--class-flt</tt> : Data class: grey (default), binary, or label '''[Default value: NONE]'''
+
+; <tt>--pad-flt</tt> : Padding value '''[Default: disabled]'''
+
+; <tt>--thresh-min-flt</tt> : Minimum value truncation threshold '''[Default: disabled]'''
+
+; <tt>--thresh-max-flt</tt> : Maximum value truncation threshold '''[Default: disabled]'''
+
+; <tt>--prune-histogram-flt</tt> : Number of bins for histogram-based pruning '''[Default: disabled]'''
+
+; <tt>--histogram-equalization-flt</tt> : Apply histogram equalization
+
+; <tt>--sobel-filter-flt</tt> : Apply Sobel edge detection filter
+
+; <tt>--crop-index-flt</tt> : Cropping region in pixel index coordinates [parsed as %d,%d,%d,%d,%d,%d for i0,j0,k0,i1,j1,k1] '''[Default value: NONE]'''
+
+; <tt>--crop-world-flt</tt> : Cropping region in world coordinates [parsed as %f,%f,%f,%f,%f,%f for x0,y0,z0,x1,y1,z1] '''[Default value: NONE]'''
+
+=== Output parameters ===
+
+; <tt>-o</tt> / <tt>--outlist</tt> : Output path for final transformation '''[Default value: NONE]'''
+
+; <tt>--out-matrix</tt> : Output path for final transformation in matrix format '''[Default value: NONE]'''
+
+; <tt>--out-parameters</tt> : Output path for final transformation in plain parameter list format '''[Default value: NONE]'''
+
+; <tt>-p</tt> / <tt>--protocol</tt> : Optimization protocol output file name '''[Default value: NONE]'''
+
+; <tt>-t</tt> / <tt>--time</tt> : Computation time statistics output file name '''[Default value: NONE]'''
+
+=== Import Results into Slicer ===
+
+; <tt>--out-itk</tt> : Output path for final transformation in ITK format '''[Default value: NONE]'''
+
+; <tt>--write-reformatted</tt> : Write reformatted floating image. '''[Default value: NONE]'''
+
+

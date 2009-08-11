@@ -1,0 +1,435 @@
+pushd /fs/u00/torsten/develop/nitrc/data/testing/inputs; /fs/axon/torsten/cmtk/testing/bin/mrbias --xml; popd
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+<category>
+CMTK.Artifact Correction
+</category>
+<title>
+MR Image Intensity Bias Field Correction
+</title>
+<description>
+This program corrects intensity inhomogeneity artifacts in MR images using a bias field estimated via entropy minimization.
+</description>
+<license>
+http://www.fsf.org/licensing/licenses/gpl.html
+</license>
+<contributor>
+Torsten Rohlfing
+</contributor>
+<acknowledgements>
+CMTK is supported by the National Institute of Biomedical Imaging and BioEngineering under Grant EB008381
+</acknowledgements>
+<documentation-url>
+https://neuro.sri.com/cmtk/wiki/
+</documentation-url>
+<version>
+1.1.0svn
+</version>
+<parameters>
+<label>
+General
+</label>
+<description>
+General Parameters
+</description>
+<image type="scalar">
+<channel>
+input
+</channel>
+<name>
+InputImage
+</name>
+<label>
+InputImage
+</label>
+<description>
+Input image path
+</description>
+<index>
+0
+</index>
+
+</image>
+<image type="scalar">
+<channel>
+output
+</channel>
+<name>
+OutputImage
+</name>
+<label>
+OutputImage
+</label>
+<description>
+Output image path
+</description>
+<index>
+1
+</index>
+
+</image>
+<boolean>
+<description>
+Write output image with floating point pixel data. If this is not given, the input data type is used.
+</description>
+<name>
+write_float
+</name>
+<label>
+write_float
+</label>
+<flag>
+-F
+</flag>
+<longflag>
+--write_float
+</longflag>
+
+</boolean>
+
+</parameters>
+<parameters>
+<label>
+Bias Field
+</label>
+<description>
+Bias Field Parameterization
+</description>
+<integer>
+<default>
+0
+</default>
+<description>
+Polynomial degree for additive correction.
+</description>
+<name>
+degree_add
+</name>
+<label>
+degree_add
+</label>
+<flag>
+-A
+</flag>
+<longflag>
+--degree_add
+</longflag>
+
+</integer>
+<integer>
+<default>
+2
+</default>
+<description>
+Polynomial degree for multiplicative correction.
+</description>
+<name>
+degree_mul
+</name>
+<label>
+degree_mul
+</label>
+<flag>
+-M
+</flag>
+<longflag>
+--degree_mul
+</longflag>
+
+</integer>
+<boolean>
+<description>
+Incrementally increase polynomial degrees.
+</description>
+<name>
+incremental
+</name>
+<label>
+incremental
+</label>
+<flag>
+-I
+</flag>
+<longflag>
+--incremental
+</longflag>
+
+</boolean>
+
+</parameters>
+<parameters>
+<label>
+Preprocessing
+</label>
+<description>
+Input Image Preprocessing
+</description>
+<image type="label">
+<channel>
+input
+</channel>
+<default>
+
+</default>
+<description>
+Binary mask image filename.
+</description>
+<name>
+mask
+</name>
+<label>
+mask
+</label>
+<flag>
+-m
+</flag>
+<longflag>
+--mask
+</longflag>
+
+</image>
+<float>
+<description>
+Minimum intensity threshold for image foreground.
+</description>
+<name>
+thresh_min
+</name>
+<label>
+thresh_min
+</label>
+<flag>
+-t
+</flag>
+<longflag>
+--thresh_min
+</longflag>
+
+</float>
+<float>
+<description>
+Minimum intensity threshold for image foreground.
+</description>
+<name>
+thresh_max
+</name>
+<label>
+thresh_max
+</label>
+<flag>
+-T
+</flag>
+<longflag>
+--thresh_max
+</longflag>
+
+</float>
+
+</parameters>
+<parameters advanced="true">
+<label>
+Entropy Estimation
+</label>
+<description>
+Entropy Estimation Settings
+</description>
+<boolean>
+<description>
+Use log intensities for entropy estimation.
+</description>
+<name>
+log_intensities
+</name>
+<label>
+log_intensities
+</label>
+<flag>
+-L
+</flag>
+<longflag>
+--log_intensities
+</longflag>
+
+</boolean>
+<float>
+<description>
+Image sampling density to use only subset of image pixels
+</description>
+<name>
+sampling_density
+</name>
+<label>
+sampling_density
+</label>
+<flag>
+-s
+</flag>
+<longflag>
+--sampling_density
+</longflag>
+
+</float>
+<integer>
+<default>
+256
+</default>
+<description>
+Number of histogram bins for entropy estimation
+</description>
+<name>
+num_bins
+</name>
+<label>
+num_bins
+</label>
+<flag>
+-n
+</flag>
+<longflag>
+--num_bins
+</longflag>
+
+</integer>
+
+</parameters>
+<parameters advanced="true">
+<label>
+Optimization
+</label>
+<description>
+Optimization Algorithm Settings
+</description>
+<double>
+<default>
+1
+</default>
+<description>
+Maximum (initial) search step size.
+</description>
+<name>
+step_max
+</name>
+<label>
+step_max
+</label>
+<longflag>
+--step_max
+</longflag>
+
+</double>
+<double>
+<default>
+0.1
+</default>
+<description>
+Minimum (final) search step size.
+</description>
+<name>
+step_min
+</name>
+<label>
+step_min
+</label>
+<longflag>
+--step_min
+</longflag>
+
+</double>
+
+</parameters>
+<parameters advanced="true">
+<label>
+Bias Field I/O
+</label>
+<description>
+Import and Output of Bias Fields
+</description>
+<image type="scalar">
+<channel>
+input
+</channel>
+<default>
+
+</default>
+<description>
+Import additive bias field (disables optimization).
+</description>
+<name>
+import_bias_add
+</name>
+<label>
+import_bias_add
+</label>
+<longflag>
+--import_bias_add
+</longflag>
+
+</image>
+<image type="scalar">
+<channel>
+input
+</channel>
+<default>
+
+</default>
+<description>
+Import multiplicative bias field (disables optimization).
+</description>
+<name>
+import_bias_mul
+</name>
+<label>
+import_bias_mul
+</label>
+<longflag>
+--import_bias_mul
+</longflag>
+
+</image>
+<image type="scalar">
+<channel>
+output
+</channel>
+<default>
+
+</default>
+<description>
+File name for output of additive bias field.
+</description>
+<name>
+write_bias_add
+</name>
+<label>
+write_bias_add
+</label>
+<longflag>
+--write_bias_add
+</longflag>
+
+</image>
+<image type="scalar">
+<channel>
+output
+</channel>
+<default>
+
+</default>
+<description>
+File name for output of multiplicative bias field.
+</description>
+<name>
+write_bias_mul
+</name>
+<label>
+write_bias_mul
+</label>
+<longflag>
+--write_bias_mul
+</longflag>
+
+</image>
+
+</parameters>
+
+</executable>
+
