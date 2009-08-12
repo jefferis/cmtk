@@ -214,6 +214,9 @@ AffineXform::MakeInverse () const
     inverseXform->m_Parameters[8] = (inverseXform->m_Parameters[7] = inverseXform->m_Parameters[6]);
     inverseXform->Matrix.Compose( inverseXform->m_Parameters, this->m_LogScaleFactors );
     }
+
+  inverseXform->m_MetaInformation[CMTK_META_SPACE] = this->m_MetaInformation[CMTK_META_SPACE];
+
   return inverseXform;
 }
 
