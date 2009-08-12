@@ -58,6 +58,10 @@
     affine transformation under changes of reference and floating image
     coordinate spaces.
 
+- Removed: multiple redundant command line parameters of the "warp" tool have
+    been retired. We are only retaining options that differ from the default
+    values.
+
 
 Release CMTK-1.0.2 (2009-07-24):
 
