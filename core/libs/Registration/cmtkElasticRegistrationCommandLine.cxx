@@ -44,6 +44,7 @@
 #include <cmtkTypedStreamStudylist.h>
 #include <cmtkVolumeIO.h>
 #include <cmtkAnatomicalOrientation.h>
+#include <cmtkTransformChangeSpaceAffine.h>
 
 #include <cmtkVoxelMatchingElasticFunctional.h>
 #include <cmtkSymmetricElasticFunctional.h>
@@ -292,6 +293,17 @@ ElasticRegistrationCommandLine
   if ( !volume ) throw ConstructorFailed();
   this->SetVolume_2( UniformVolume::SmartPtr( this->m_PreprocessorFlt.GetProcessedImage( volume ) ) );
   
+  AffineXform::SmartPtr affineXform( AffineXform::SmartPtr::DynamicCastFrom( this->m_InitialXform ) );
+  if ( affineXform )
+    {
+    if ( affineXform->m_MetaInformation[CMTK_META_SPACE] != AnatomicalOrientation::ORIENTATION_STANDARD )
+      {
+      TransformChangeSpaceAffine toStandardSpace( affineXform, this->m_Volume_1, this->m_Volume_2, AnatomicalOrientation::ORIENTATION_STANDARD );
+      *affineXform = toStandardSpace.GetTransformation();
+      affineXform->m_MetaInformation[CMTK_META_SPACE] = AnatomicalOrientation::ORIENTATION_STANDARD;
+      }
+    }
+
   if ( this->RigidityConstraintMapFilename )
     {
     UniformVolume::SmartPtr rigidityWeightMap( VolumeIO::ReadOriented( this->RigidityConstraintMapFilename, Verbose ) );
