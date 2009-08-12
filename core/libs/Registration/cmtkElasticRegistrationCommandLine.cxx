@@ -87,7 +87,8 @@ ElasticRegistrationCommandLine* ElasticRegistrationCommandLine::StaticThis = NUL
 ElasticRegistrationCommandLine
 ::ElasticRegistrationCommandLine
 ( int argc, char *argv[] ) :
-  m_ReformattedImagePath( NULL )
+  m_ReformattedImagePath( NULL ),
+  m_OutputPathITK( NULL )
 {
   this->m_Metric = 0;
   this->m_Algorithm = 3;
@@ -119,36 +120,34 @@ ElasticRegistrationCommandLine
 
   try
     {
-    CommandLine cl( argc, argv );    
+    CommandLine cl( argc, argv, CommandLine::PROPS_XML );
     cl.SetProgramInfo( CommandLine::PRG_TITLE, "B-spline nonrigid registration" );
     cl.SetProgramInfo( CommandLine::PRG_DESCR, "This program performs nonrigid image registration using multi-resolution optimization of voxel-based image similarity measures "
 		       "and a multi-resolution B-spline transformation model." );
-    cl.SetProgramInfo( CommandLine::PRG_SYNTX, "[options] [refImage fltImage | initialStudylist]" );
-    cl.SetProgramInfo( CommandLine::PRG_CATEG, "CMTK.Image Registration" );
+    cl.SetProgramInfo( CommandLine::PRG_CATEG, "CMTK.Registration" );
 
     typedef CommandLine::Key Key;
+    cl.BeginGroup( "Console", "Console output control" )->SetProperties( CommandLine::PROPS_NOXML );
     cl.AddSwitch( Key( 'v', "verbose" ), &this->Verbose, true, "Verbose peration" );
     cl.AddSwitch( Key( 'q', "quiet" ), &Verbose, false, "Quiet mode" );
+    cl.EndGroup();
 
     cl.BeginGroup( "Transformation", "Transformation parameters" );
     cl.AddOption( Key( 'g', "grid-spacing" ), &this->m_GridSpacing, "Control point grid spacing" );
     cl.AddSwitch( Key( "exact-spacing" ), &this->m_ExactGridSpacing, true, "Use exact control point spacing; do not modify spacing to fit reference image bounding box" );
     cl.AddOption( Key( "refine" ), &this->m_RefineGrid, "Number of refinements (control point grid resolution levels)" );
-    cl.AddSwitch( Key( "no-delay-refine" ), &this->m_DelayRefineGrid, false, "Always refine control point grid (up to maximum number of levels) when switching next higher image resolution [default]" );
     cl.AddSwitch( Key( "delay-refine" ), &this->m_DelayRefineGrid, true, "Delay control point grid refinement; first switch to next higher image resolution" );
 
     cl.AddOption( Key( "ignore-edge" ), &this->IgnoreEdge, "Ignore n control point layers along each image face" );
     cl.AddOption( Key( "restrict" ), &this->RestrictToAxes, "Restrict deformation to coordinate dimension(s) [one or more of 'x','y','z']" );
 
-    cl.AddSwitch( Key( "adaptive-fix" ), &this->m_AdaptiveFixParameters, true, "Adaptive fixing of control points in image background [default]" );
     cl.AddSwitch( Key( "no-adaptive-fix" ), &this->m_AdaptiveFixParameters, false, "Disable adaptive fixing of control points; optimize all deformation parameters" );
     cl.AddOption( Key( "adaptive-fix-thresh" ), &this->m_AdaptiveFixThreshFactor, "Threshold factor for entropy criterion to fix local control points" );
-    cl.AddSwitch( Key( "fast" ), &this->m_FastMode, true, "Fast computation mode: take some numerical short cuts to save about 80% computation time [default]" );
     cl.AddSwitch( Key( "accurate" ), &this->m_FastMode, false, "Accurate computation mode: may give slightly better results after substantially longer computation" );
 
     cl.AddSwitch( Key( 'S', "switch" ), &Switch, true, "Switch reference and floating image" );
     cl.AddSwitch( Key( 'x', "exchange" ), &this->ForceSwitchVolumes, true, "Exchange reference and floating image");
-    cl.AddOption( Key( "initial" ), &InitialStudylist, "Initialize transformation from given path" );
+    cl.AddOption( Key( "initial" ), &InitialStudylist, "Initialize transformation from given path" )->SetProperties( cmtk::CommandLine::PROPS_XFORM );
     cl.EndGroup();
 
     cl.BeginGroup( "Optimization", "Optimization parameters" );
@@ -156,8 +155,7 @@ ElasticRegistrationCommandLine
     cl.AddOption( Key( 'a', "accuracy" ), &this->m_Accuracy, "Search accuracy (initial step size)" );
     cl.AddOption( Key( 'f', "stepfactor" ), &this->OptimizerStepFactor, "Factor for search step size reduction. Must be > 0.0 and < 1.0 [default: 0.5]" );
 
-    cl.AddSwitch( Key( "maxnorm" ), &this->UseMaxNorm, true, "Normalized optimization gradient using maximum norm [default]" );
-    cl.AddSwitch( Key( "no-maxnorm" ), &this->UseMaxNorm, false, "Disable optimization gradient maximum normalication; use Euclid norm instead" );
+    cl.AddSwitch( Key( "no-maxnorm" ), &this->UseMaxNorm, false, "Use Euclid norm for gradient normalication in optimization, rather than maximum norm" );
 
     cl.AddOption( Key( "jacobian-weight" ), &this->m_JacobianConstraintWeight, "Weight for Jacobian-based local volume preservation constraint" );
     cl.AddOption( Key( "energy-weight" ), &this->m_GridEnergyWeight, "Weight for grid bending energy constraint" );
@@ -173,8 +171,7 @@ ElasticRegistrationCommandLine
     cl.AddOption( Key( 's', "sampling" ), &this->m_Sampling, "Image sampling (finest resampled image resolution)" );
     cl.AddOption( Key( "coarsest" ), &this->CoarsestResolution, "Upper limit for image sampling in multiresolution hierarchy" );
 
-    cl.AddSwitch( Key( "use-original-data" ), &this->m_UseOriginalData, true, "Use original data in full resolution as final level [default]" );
-    cl.AddSwitch( Key( "omit-original-data" ), &this->m_UseOriginalData, false, "Do NOT use original data in full resolution" );
+    cl.AddSwitch( Key( "omit-original-data" ), &this->m_UseOriginalData, false, "Do not use original data in full resolution for final registration stage." );
     cl.EndGroup();
 
     cl.BeginGroup( "Images", "Image data" );
@@ -191,12 +188,17 @@ ElasticRegistrationCommandLine
     this->m_PreprocessorRef.AttachToCommandLine( cl );
     this->m_PreprocessorFlt.AttachToCommandLine( cl );
 
-    cl.BeginGroup( "Output", "Output parameters" );
+    cl.BeginGroup( "Output", "Output parameters" )->SetProperties( CommandLine::PROPS_NOXML );
     cl.AddOption( Key( 'o', "outlist" ), &this->Studylist, "Output path for final transformation" );
-    cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddOption( Key( 'p', "protocol" ), &this->Protocol, "Optimization protocol output file name" );
     cl.AddOption( Key( 't', "time" ), &this->Time, "Computation time statistics output file name" );
     cl.AddSwitch( Key( "output-intermediate" ), &this->m_OutputIntermediate, true, "Write transformation for each level [default: only write final transformation]" );
+    cl.EndGroup();
+
+    cl.BeginGroup( "SlicerImport", "Import Results into Slicer" );
+    cl.AddOption( Key( "out-itk" ), &this->m_OutputPathITK, "Output path for final transformation in ITK format" )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT )
+      ->SetAttribute( "reference", "FloatingImagePath" );
+    cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.EndGroup();
 
     cl.Parse();

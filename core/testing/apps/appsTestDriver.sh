@@ -937,41 +937,41 @@ case ${RUNTEST} in
 	check_result reconstruction.img
 	;;
     WarpSingleLevel)
-	run ${BINDIR}/warp -q --exploration 8 --grid-spacing 160 --accuracy 1 --no-adaptive-fix --no-delay-refine -o ${tmpdir} vol001_mr_t0t1.list
+	run ${BINDIR}/warp -q --exploration 8 --grid-spacing 160 --accuracy 1 --no-adaptive-fix -o ${tmpdir} vol001_mr_t0t1.list
 	check_result registration
 	;;
     WarpSingleLevelExact)
-	run ${BINDIR}/warp -q --exploration 8 --grid-spacing 180 --exact-spacing --accuracy 1 --sampling 3 --no-adaptive-fix --no-delay-refine -o ${tmpdir} vol001_mr_t0t1.list
+	run ${BINDIR}/warp -q --exploration 8 --grid-spacing 180 --exact-spacing --accuracy 1 --sampling 3 --no-adaptive-fix -o ${tmpdir} vol001_mr_t0t1.list
 	check_result registration
 	;;
     WarpInverseConsistentCC)
-	run ${BINDIR}/warp -q --exploration 8 --grid-spacing 80 --accuracy 1 --adaptive-fix --ncc --ic-weight 1e-2 -o ${tmpdir} vol001_mr_t0t1.list
+	run ${BINDIR}/warp -q --exploration 8 --grid-spacing 80 --accuracy 1 --ncc --ic-weight 1e-2 -o ${tmpdir} vol001_mr_t0t1.list
 	check_result registration
 	;;
     WarpMultiLevel)
-	run ${BINDIR}/warp -q --exploration 8 --grid-spacing 160 --accuracy 1 --refine 1 --adaptive-fix --no-delay-refine -o ${tmpdir} vol001_mr_t0t1.list
+	run ${BINDIR}/warp -q --exploration 8 --grid-spacing 160 --accuracy 1 --refine 1 -o ${tmpdir} vol001_mr_t0t1.list
 	check_result registration
 	;;
     WarpMultiLevelExact)
-	run ${BINDIR}/warp -q --exploration 8 --grid-spacing 160 --exact-spacing --accuracy 1 --refine 1 --adaptive-fix --no-delay-refine -o ${tmpdir} vol001_mr_t0t1.list
+	run ${BINDIR}/warp -q --exploration 8 --grid-spacing 160 --exact-spacing --accuracy 1 --refine 1 -o ${tmpdir} vol001_mr_t0t1.list
 	check_result registration
 	;;
     WarpDelayRefine)
-	run ${BINDIR}/warp -q --exploration 12 --grid-spacing 160 --accuracy 2 --refine 1 --adaptive-fix --delay-refine --sampling 6 -o ${tmpdir} vol001_mr_t0t1.list
+	run ${BINDIR}/warp -q --exploration 12 --grid-spacing 160 --accuracy 2 --refine 1 --delay-refine --sampling 6 -o ${tmpdir} vol001_mr_t0t1.list
 	check_result registration
 	;;
     WarpEnergy)
-	run ${BINDIR}/warp -q --exploration 8 --grid-spacing 160 --accuracy 1 --refine 1 --energy-weight 1e-1 --adaptive-fix --no-delay-refine -o ${tmpdir} vol001_mr_t0t1.list
+	run ${BINDIR}/warp -q --exploration 8 --grid-spacing 160 --accuracy 1 --refine 1 --energy-weight 1e-1 -o ${tmpdir} vol001_mr_t0t1.list
 	check_result registration
 	;;
     WarpJacobian)
 	export CMTK_NUM_THREADS=1
-	run ${BINDIR}/warp -q --exploration 12 --grid-spacing 160 --accuracy 2 --refine 1 --jacobian-weight 1e-1 --adaptive-fix --no-delay-refine --sampling 12 --omit-original-data -o ${tmpdir} vol001_mr_t0t1.list
+	run ${BINDIR}/warp -q --exploration 12 --grid-spacing 160 --accuracy 2 --refine 1 --jacobian-weight 1e-1 --sampling 12 --omit-original-data -o ${tmpdir} vol001_mr_t0t1.list
 	unset CMTK_NUM_THREADS
 	check_result registration
 	;;
     WarpLabels)
-	run ${BINDIR}/warp -q --exploration 8 --grid-spacing 90 --accuracy 1 --refine 1 --class-ref label --class-flt label --adaptive-fix --no-delay-refine -o ${tmpdir} --initial parc1_parc2_9dof.xform parc1.hdr parc2.hdr
+	run ${BINDIR}/warp -q --exploration 8 --grid-spacing 90 --accuracy 1 --refine 1 --class-ref label --class-flt label -o ${tmpdir} --initial parc1_parc2_9dof.xform parc1.hdr parc2.hdr
 	check_result registration
 	;;
     Xform2dfieldWarpNrrd)

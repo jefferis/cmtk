@@ -153,6 +153,9 @@ private:
   /// Write intermediate deformation file.
   void OutputIntermediate( const bool incrementCount = true );
 
+  /// Name of output transformation file in ITK format.
+  const char* m_OutputPathITK;
+
   /// Path for reformatted floating image.
   const char* m_ReformattedImagePath;
 
