@@ -118,7 +118,7 @@ ReformatVolume::GetTransformedReference
     }
   
   if ( mpiRank == 0 ) 
-    Progress::SetTotalSteps( result->GetNumberOfPixels() );
+    Progress::Begin( 0, result->GetNumberOfPixels(), result->GetNumberOfPixels() / 1e5 );
 
   switch ( dataClass ) 
     {
@@ -126,17 +126,14 @@ ReformatVolume::GetTransformedReference
     case DATACLASS_GREY: 
     {
     if ( xformList && xformList->size() )
-      Threads::RunThreads
-	( GetTransformedReferenceGreyAvg, numberOfThreads, &params[0] );
+      Threads::RunThreads( GetTransformedReferenceGreyAvg, numberOfThreads, &params[0] );
     else
-      Threads::RunThreads
-	( GetTransformedReferenceGrey, numberOfThreads, &params[0] );
+      Threads::RunThreads( GetTransformedReferenceGrey, numberOfThreads, &params[0] );
     }
     break;
     case DATACLASS_LABEL: 
     {
-    Threads::RunThreads
-      ( GetTransformedReferenceLabel, numberOfThreads, &params[0] );
+    Threads::RunThreads( GetTransformedReferenceLabel, numberOfThreads, &params[0] );
     }
     break;
     }
@@ -192,7 +189,7 @@ ReformatVolume::GetTransformedReferenceGreyAvg( void *const arg )
   const UniformVolume* referenceVolume = thisObject->ReferenceVolume;
 
   const size_t numberOfPixels = dims[0] * dims[1] * dims[2];
-  const size_t statusUpdateIncrement = numberOfPixels / 100;
+  const size_t statusUpdateIncrement = numberOfPixels / 1e5;
 
   const size_t firstOffset = params->m_Offset + params->ThisThreadIndex * params->m_Stride;
   const size_t incrOffset = params->NumberOfThreads * params->m_Stride;
