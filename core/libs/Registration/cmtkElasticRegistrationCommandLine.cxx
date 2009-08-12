@@ -87,8 +87,8 @@ ElasticRegistrationCommandLine* ElasticRegistrationCommandLine::StaticThis = NUL
 ElasticRegistrationCommandLine
 ::ElasticRegistrationCommandLine
 ( int argc, char *argv[] ) :
-  m_ReformattedImagePath( NULL ),
-  m_OutputPathITK( NULL )
+  m_OutputPathITK( NULL ),
+  m_ReformattedImagePath( NULL )
 {
   this->m_Metric = 0;
   this->m_Algorithm = 3;
