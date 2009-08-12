@@ -262,7 +262,7 @@ VolumeFromSlices::FinishVolume ( Types::Coordinate& sliceOffset, int& sliceDirec
 
   Result->m_IndexToPhysicalMatrix = m4;
   const std::string orientationString0 = Result->GetOrientationFromDirections();
-  Result->ChangeCoordinateSpace( "RAS" );
+  Result->ChangeCoordinateSpace( AnatomicalOrientation::ORIENTATION_STANDARD );
 
   const std::string orientationString = Result->GetOrientationFromDirections();
   Result->m_MetaInformation[CMTK_META_SPACE_UNITS_STRING] = "mm"; // seems to be implied in DICOM
