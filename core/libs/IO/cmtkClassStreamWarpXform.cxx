@@ -250,6 +250,11 @@ ClassStream::Get
     }
   
   this->End();
+
+  if ( warpXform )
+    {
+    warpXform->m_MetaInformation[CMTK_META_SPACE] = "RAS";
+    }
   
   return *this;
 }
