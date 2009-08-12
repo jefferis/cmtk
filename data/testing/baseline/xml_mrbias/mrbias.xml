@@ -1,4 +1,3 @@
-pushd /fs/u00/torsten/develop/nitrc/data/testing/inputs; /fs/axon/torsten/cmtk/testing/bin/mrbias --xml; popd
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
 <category>

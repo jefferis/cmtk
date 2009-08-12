@@ -1,4 +1,3 @@
-pushd /fs/u00/torsten/develop/nitrc/data/testing/inputs; /fs/axon/torsten/cmtk/testing/bin/registration --wiki; popd
 == Title ==
 
 Rigid and affine registration
