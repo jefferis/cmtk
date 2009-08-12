@@ -122,7 +122,6 @@ VoxelRegistration::Register ()
     while ( ! doneResolution && ( irq == CALLBACK_OK )  ) 
       {
       this->EnterResolution( v, nextFunctional, index, NumResolutionLevels );
-      irq = this->ReportProgress( "registration", 1  );
       
       if ( irq == CALLBACK_OK ) 
 	{
@@ -147,7 +146,6 @@ VoxelRegistration::Register ()
   Progress::Done();
 
   this->OutputResult( v );
-  this->ReportProgress( "registration", 100 );
   this->DoneRegistration( v );
   
   return irq;

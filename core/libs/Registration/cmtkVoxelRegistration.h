@@ -228,18 +228,6 @@ protected:
    */
   virtual CallbackResult InitRegistration ();
 
-  /** Report registration progress.
-   * This function is called repeatedly during creation of the resampled
-   * data volumes. It is also called before optimizing every resolution
-   * level. It is not, however, called DURING optimization. For that, use
-   * a suitable callback object.
-   *@return If this function returns 1, registration is terminated as soon
-   * as possible.
-   *@see CreateCallback
-   */
-  virtual CallbackResult ReportProgress ( const char*, const int ) const 
-  { return CALLBACK_OK; };
-
   /** Output registration result.
    * This function is called after finishing registration. It can overloaded
    * to report the resulting transformation, export it to an encapsulating

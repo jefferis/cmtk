@@ -172,7 +172,7 @@ AffineRegistrationCommandLine
     cl.EndGroup();
     
     cl.AddParameter( &clArg1, "ReferenceImagePath", "Reference (fixed) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &clArg2, "FloatingImagePath", "Floating (moving) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OPTIONAL );
+    cl.AddParameter( &clArg2, "FloatingImagePath", "Floating (moving) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
 
     cl.Parse();
     }

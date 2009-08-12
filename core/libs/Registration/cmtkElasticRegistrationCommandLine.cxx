@@ -201,12 +201,10 @@ ElasticRegistrationCommandLine
     cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.EndGroup();
 
+    cl.AddParameter( &clArg1, "ReferenceImagePath", "Reference (fixed) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &clArg2, "FloatingImagePath", "Floating (moving) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+
     cl.Parse();
-
-    clArg1 = cl.GetNext();
-    clArg2 = cl.GetNextOptional();
-
-//      cl.PrintHelp( "B-spline nonrigid registration", "[options] [studylist | refImage fltImage]");
     }
   catch ( CommandLine::Exception ex )
     {

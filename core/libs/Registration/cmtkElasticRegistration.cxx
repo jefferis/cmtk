@@ -168,22 +168,18 @@ ElasticRegistration::InitRegistration ()
     FunctionalStack.push( nextFunctional );
     }
   
-  CallbackResult irq = CALLBACK_OK;
-  
   double coarsest = CoarsestResolution;
   if ( coarsest <= 0 ) 
     coarsest = this->m_Exploration;
   
-  for ( ;(currSampling<=coarsest) && ( irq == CALLBACK_OK ); currSampling *= 2 ) 
+  for ( ;(currSampling<=coarsest); currSampling *= 2 ) 
     {
     UniformVolume::SmartPtr nextRef;
     UniformVolume::SmartPtr nextMod;
     UniformVolume::SmartPtr nextRigidityMap;
     try 
       {
-      this->ReportProgress( "resampling", 0 );
       nextRef = UniformVolume::SmartPtr( new UniformVolume( *refVolume, currSampling ) );
-      irq = this->ReportProgress(  "resampling", 50 );
       nextMod = UniformVolume::SmartPtr( new UniformVolume( *fltVolume, currSampling ) );
       if ( this->m_RigidityConstraintMap )
 	{
@@ -220,7 +216,7 @@ ElasticRegistration::InitRegistration ()
     }
   
   this->m_Optimizer->SetCallback( this->m_Callback );
-  return irq;
+  return CALLBACK_OK;
 }
 
 WarpXform*

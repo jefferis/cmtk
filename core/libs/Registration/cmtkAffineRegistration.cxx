@@ -125,20 +125,17 @@ AffineRegistration::InitRegistration ()
     }
   
   Types::Coordinate currSampling = std::max( this->m_Sampling, 2 * std::min( refVolume->GetMinDelta(), fltVolume->GetMinDelta()));
-  CallbackResult irq = CALLBACK_OK;
   
   double coarsest = CoarsestResolution;
   if ( coarsest <= 0 ) coarsest = this->m_Exploration;
   
-  for ( ; ( irq == CALLBACK_OK ) && (currSampling<=coarsest); currSampling *= 2 ) 
+  for ( ; (currSampling<=coarsest); currSampling *= 2 ) 
     {
     UniformVolume::SmartPtr nextRef( NULL );
     UniformVolume::SmartPtr nextFlt( NULL );
     try 
       {
-      this->ReportProgress( "resampling", 0 );
       nextRef = UniformVolume::SmartPtr( new UniformVolume( *refVolume, currSampling ) );
-      irq = this->ReportProgress(  "resampling", 50 );
       nextFlt = UniformVolume::SmartPtr( new UniformVolume( *fltVolume, currSampling ) );
       }
     catch (...) 
@@ -165,7 +162,7 @@ AffineRegistration::InitRegistration ()
   // intialize iterator.
   NumberDOFsIterator = NumberDOFs.begin();
 
-  return irq;
+  return CALLBACK_OK;
 }
 
 void
