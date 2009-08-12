@@ -253,7 +253,7 @@ ClassStream::Get
 
   if ( warpXform )
     {
-    warpXform->m_MetaInformation[CMTK_META_SPACE] = "RAS";
+    warpXform->m_MetaInformation[CMTK_META_SPACE] = AnatomicalOrientation::ORIENTATION_STANDARD;
     }
   
   return *this;

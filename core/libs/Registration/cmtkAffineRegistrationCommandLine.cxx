@@ -278,6 +278,14 @@ AffineRegistrationCommandLine
       StdErr << "ERROR: transformation " << InitialStudylist << " is not affine.\n";
       exit( 1 );
       }
+
+    if ( affine->m_MetaInformation[CMTK_META_SPACE] != AnatomicalOrientation::ORIENTATION_STANDARD )
+      {
+      TransformChangeSpaceAffine toStandardSpace( affine, this->m_Volume_1, this->m_Volume_2, AnatomicalOrientation::ORIENTATION_STANDARD );
+      *affine = toStandardSpace.GetTransformation();
+      affine->m_MetaInformation[CMTK_META_SPACE] = AnatomicalOrientation::ORIENTATION_STANDARD;
+      }
+    
     this->SetInitialXform( affine->GetInverse() );
     }
   
