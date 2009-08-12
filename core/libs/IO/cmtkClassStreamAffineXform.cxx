@@ -126,4 +126,4 @@ operator >> ( ClassStream& stream, AffineXform& affineXform )
   return stream;
 }
 
-} //
+} // namespace cmtk
