@@ -237,24 +237,6 @@ AffineRegistrationCommandLine
     typedStream.Close();
     }
 
-  if ( InitialStudylist ) 
-    {
-    Xform::SmartPtr xform( XformIO::Read( InitialStudylist, Verbose ) );
-    if ( ! xform ) 
-      {
-      StdErr << "ERROR: could not read transformation from " << InitialStudylist << "\n";
-      exit( 1 );
-      }
-    
-    AffineXform::SmartPtr affine( AffineXform::SmartPtr::DynamicCastFrom( xform ) );
-    if ( ! affine )
-      {
-      StdErr << "ERROR: transformation " << InitialStudylist << " is not affine.\n";
-      exit( 1 );
-      }
-    this->SetInitialXform( affine->GetInverse() );
-    }
-  
   if ( !Study1 )
     {
     StdErr << "ERROR: reference image path resolved to NULL.\n";
@@ -281,6 +263,24 @@ AffineRegistrationCommandLine
     }
   this->SetVolume_2(  UniformVolume::SmartPtr( this->m_PreprocessorFlt.GetProcessedImage( volume ) ) );
 
+  if ( InitialStudylist ) 
+    {
+    Xform::SmartPtr xform( XformIO::Read( InitialStudylist, Verbose ) );
+    if ( ! xform ) 
+      {
+      StdErr << "ERROR: could not read transformation from " << InitialStudylist << "\n";
+      exit( 1 );
+      }
+    
+    AffineXform::SmartPtr affine( AffineXform::SmartPtr::DynamicCastFrom( xform ) );
+    if ( ! affine )
+      {
+      StdErr << "ERROR: transformation " << InitialStudylist << " is not affine.\n";
+      exit( 1 );
+      }
+    this->SetInitialXform( affine->GetInverse() );
+    }
+  
   if ( InitXlate ) 
     {
     if ( inStudylist || InitialStudylist ) 
