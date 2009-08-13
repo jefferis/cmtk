@@ -4,10 +4,10 @@ registration {
 	reference_study "parc1.hdr"
 	floating_study "parc2.hdr"
 	affine_xform {
-		xlate -1.865174681e-14 -1.421085472e-14 0 
-		rotate 8.144677162 1.372249126 -0.821626544 
-		scale 0.9309233325 0.9295716887 0.9838986642 
-		shear -0 7.454000569e-18 -0 
+		xlate 0 0 0 
+		rotate 9.260396395 1.653642213 -0.9508442727 
+		scale 0.9331632653 0.9321428571 0.9897959184 
+		shear 0 0 0 
 		center 98 98 98 
 	}
 }

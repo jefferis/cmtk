@@ -347,7 +347,7 @@ public:
    */
   virtual typename Self::ReturnType Evaluate() 
   {
-    const VolumeAxesHash axesHash( *this->ReferenceGrid, this->m_AffineXform->GetInverse(), this->FloatingGrid->m_Delta, this->FloatingGrid->m_Origin.XYZ );
+    const VolumeAxesHash axesHash( *this->ReferenceGrid, this->m_AffineXform, this->FloatingGrid->m_Delta, this->FloatingGrid->m_Origin.XYZ );
     const Vector3D *axesHashX = axesHash[0], *axesHashY = axesHash[1], *axesHashZ = axesHash[2];
     
     this->Metric->Reset();
@@ -537,7 +537,7 @@ public:
    */
   virtual typename Self::ReturnType Evaluate() 
   {
-    const VolumeAxesHash axesHash( *ReferenceGrid, this->m_AffineXform->GetInverse(), FloatingGrid->m_Delta, FloatingGrid->m_Origin.XYZ );
+    const VolumeAxesHash axesHash( *ReferenceGrid, this->m_AffineXform, FloatingGrid->m_Delta, FloatingGrid->m_Origin.XYZ );
     const Vector3D *HashX = axesHash[0], *HashY = axesHash[1], *HashZ = axesHash[2];
     
     Vector3D pFloating;

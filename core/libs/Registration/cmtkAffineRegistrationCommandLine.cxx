@@ -141,7 +141,7 @@ AffineRegistrationCommandLine
     cl.AddSwitch( Key( 'n', "no-switch" ), &this->m_NoSwitch, 1, "Do not auto-switch reference and floating image for improved computational performance" );
     cl.AddSwitch( Key( 'i', "initxlate" ), &InitXlate, true, "Initialized transformation by translating floating image FOV center onto reference image FOV center" );
 
-    cl.AddOption( Key( "initial" ), &InitialStudylist, "Initialize transformation from given path" )->SetProperties( cmtk::CommandLine::PROPS_XFORM );
+    cl.AddOption( Key( "initial" ), &InitialStudylist, "Initialize transformation from given path" )->SetProperties( CommandLine::PROPS_XFORM );
     cl.AddSwitch( Key( "initial-is-inverse" ), &this->m_InitialXformIsInverse, true, "Invert initial transformation before initializing registration" );
     cl.EndGroup();
 
@@ -157,7 +157,7 @@ AffineRegistrationCommandLine
     this->m_PreprocessorRef.AttachToCommandLine( cl );
     this->m_PreprocessorFlt.AttachToCommandLine( cl );
 
-    cl.BeginGroup( "Output", "Output parameters" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
+    cl.BeginGroup( "Output", "Output parameters" )->SetProperties( CommandLine::PROPS_NOXML );
     cl.AddOption( Key( 'o', "outlist" ), &this->Studylist, "Output path for final transformation" );
     cl.AddOption( Key( "out-matrix" ), &this->OutMatrixName, "Output path for final transformation in matrix format" );
     cl.AddOption( Key( "out-parameters" ), &this->OutParametersName, "Output path for final transformation in plain parameter list format" );
@@ -167,13 +167,13 @@ AffineRegistrationCommandLine
 
     cl.BeginGroup( "SlicerImport", "Import Results into Slicer" );
     cl.AddOption( Key( "out-itk" ), &this->m_OutputPathITK, "Output path for final transformation in ITK format" )
-      ->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT )
+      ->SetProperties( CommandLine::PROPS_XFORM | CommandLine::PROPS_OUTPUT )
       ->SetAttribute( "reference", "FloatingImagePath" );
-    cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OUTPUT );
     cl.EndGroup();
     
-    cl.AddParameter( &clArg1, "ReferenceImagePath", "Reference (fixed) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &clArg2, "FloatingImagePath", "Floating (moving) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &clArg1, "ReferenceImagePath", "Reference (fixed) image path" )->SetProperties( CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &clArg2, "FloatingImagePath", "Floating (moving) image path" )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OPTIONAL );
 
     cl.Parse();
     }
@@ -192,7 +192,7 @@ AffineRegistrationCommandLine
   if ( clArg2 ) 
     {
     AffineXform::SmartPtr initialXform( new AffineXform() );
-    this->SetInitialXform( initialXform );
+    this->SetInitialTransformation( initialXform );
     
     Study1 = const_cast<char*>( clArg1 );
     Study2 = const_cast<char*>( clArg2 );
@@ -201,7 +201,7 @@ AffineRegistrationCommandLine
     {
     inStudylist = clArg1;
     AffineXform::SmartPtr initialXform( new AffineXform() );
-    this->SetInitialXform( initialXform );
+    this->SetInitialTransformation( initialXform );
 
     if ( InitialStudylist ) 
       {
@@ -225,14 +225,15 @@ AffineRegistrationCommandLine
       {
       AffineXform::SmartPtr affineXform;
       typedStream >> affineXform;
-      this->SetInitialXform( affineXform->GetInverse() );
+      this->SetInitialTransformation( affineXform );
       }
     else
       {
+      // legacy studylists have inverse transformation in them
       Study2 = typedStream.ReadString( "model_study" );
       AffineXform::SmartPtr affineXform;
       typedStream >> affineXform;
-      this->SetInitialXform( affineXform );
+      this->SetInitialTransformation( affineXform->GetInverse() );
       }
 
     typedStream.Close();
@@ -287,7 +288,7 @@ AffineRegistrationCommandLine
       affine->m_MetaInformation[CMTK_META_SPACE] = AnatomicalOrientation::ORIENTATION_STANDARD;
       }
     
-    this->SetInitialXform( affine->GetInverse() );
+    this->SetInitialTransformation( affine );
     }
   
   if ( InitXlate ) 
@@ -382,7 +383,7 @@ AffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
   classStream.WriteString( "reference_study", CompressedStream::GetBaseName( Study1 ) );
   classStream.WriteString( "floating_study", CompressedStream::GetBaseName( Study2 ) );
     
-  classStream << (*this->GetTransformation()->GetInverse());
+  classStream << *(this->GetTransformation());
     
   classStream.End();
   classStream.Close();
@@ -446,7 +447,7 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
 
   if ( this->m_OutputPathITK ) 
     {
-    TransformChangeToSpaceAffine toNative( *(this->GetTransformation()->GetInverse()), *(this->m_Volume_1), *(this->m_Volume_2) );
+    TransformChangeToSpaceAffine toNative( *(this->GetTransformation()), *(this->m_Volume_1), *(this->m_Volume_2) );
     AffineXformITKIO::Write( this->m_OutputPathITK, toNative.GetTransformation() );
     }
 
@@ -469,9 +470,9 @@ AffineRegistrationCommandLine::EnterResolution
 CallbackResult
 AffineRegistrationCommandLine::Register ()
 {
-  const double baselineTime = cmtk::Timers::GetTimeProcess();
+  const double baselineTime = Timers::GetTimeProcess();
   CallbackResult Result = Superclass::Register();
-  const int elapsed = static_cast<int>( cmtk::Timers::GetTimeProcess() - baselineTime );
+  const int elapsed = static_cast<int>( Timers::GetTimeProcess() - baselineTime );
 
   if ( Time ) 
     {

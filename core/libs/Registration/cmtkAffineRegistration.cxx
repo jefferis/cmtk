@@ -90,15 +90,15 @@ AffineRegistration::InitRegistration ()
   
   AffineXform::SmartPtr affineXform;
 
-  if ( this->m_InitialXform )
+  if ( this->m_InitialTransformation )
     {
     if ( SwitchVolumes ^ this->m_InitialXformIsInverse )
       {
-      affineXform = AffineXform::SmartPtr( this->m_InitialXform->MakeInverse() );
+      affineXform = AffineXform::SmartPtr( this->m_InitialTransformation );
       } 
     else
       {
-      affineXform = AffineXform::SmartPtr( this->m_InitialXform );
+      affineXform = AffineXform::SmartPtr( this->m_InitialTransformation->MakeInverse() );
       }
   } 
   else 
@@ -112,10 +112,9 @@ AffineRegistration::InitRegistration ()
     affineXform->SetXlate( deltaCenter.XYZ );
     }
   
-  // explicit cast needed for MIPSpro comp.
-  this->m_Xform = Xform::SmartPtr::DynamicCastFrom( affineXform );
+  this->m_Xform = affineXform;
   
-  Vector3D center = fltVolume->GetCenterCropRegion();
+  Vector3D center = refVolume->GetCenterCropRegion();
   affineXform->ChangeCenter( center.XYZ );
 
   if ( this->m_UseOriginalData ) 

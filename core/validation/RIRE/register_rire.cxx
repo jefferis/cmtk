@@ -196,7 +196,7 @@ void DoRegistration( const char* refFile, const char* fltFile )
 // output transformation.
   const cmtk::AffineXform::MatrixType refMatrix = refVolume->GetImageToPhysicalMatrix ();
   const cmtk::AffineXform::MatrixType fltMatrix = fltVolume->GetImageToPhysicalMatrix ();
-  cmtk::AffineXform::SmartPtr affineXform = Registration.GetTransformation()->GetInverse();
+  cmtk::AffineXform::SmartPtr affineXform = Registration.GetTransformation();
 
   cmtk::AffineXform::MatrixType concatMatrix = refMatrix;
   (concatMatrix.Invert() *= affineXform->Matrix) *= fltMatrix;

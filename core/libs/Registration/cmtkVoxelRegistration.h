@@ -203,7 +203,7 @@ protected:
   cmtkGetSetMacro(RegistrationCallback::SmartPtr,Callback);
 
   /// Initial transformation.
-  cmtkGetSetMacro(AffineXform::SmartPtr,InitialXform);
+  cmtkGetSetMacro(AffineXform::SmartPtr,InitialTransformation);
 
   /// FLag whether initial transformation is an inverse.
   cmtkGetSetMacro(bool,InitialXformIsInverse);

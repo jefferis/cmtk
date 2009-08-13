@@ -54,7 +54,7 @@ cmtk
 VoxelRegistration::VoxelRegistration () 
   : m_PreprocessorRef( "Reference", "ref" ),
     m_PreprocessorFlt( "Floating", "flt" ),
-    m_InitialXform( NULL ),
+    m_InitialTransformation( NULL ),
     m_InitialXformIsInverse( false ),
     m_Xform( NULL ),
     m_Optimizer( NULL )

@@ -202,7 +202,7 @@ VolumeInjectionReconstruction
       
       ar.Register();
       
-      this->m_TransformationsToPassImages.push_back( ar.GetTransformation()->GetInverse() );
+      this->m_TransformationsToPassImages.push_back( ar.GetTransformation() );
       }
     }
 }

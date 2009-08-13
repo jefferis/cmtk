@@ -122,15 +122,15 @@ ElasticRegistration::InitRegistration ()
   AffineXform::SmartPtr initialInverse;
   if ( SwitchVolumes ) 
     {
-    initialInverse = AffineXform::SmartPtr( static_cast<AffineXform*>( this->m_InitialXform->MakeInverse() ) );
+    initialInverse = AffineXform::SmartPtr( static_cast<AffineXform*>( this->m_InitialTransformation->MakeInverse() ) );
     CoordinateVector v( initialInverse->ParamVectorDim() );
     affineXform = AffineXform::SmartPtr( new AffineXform( initialInverse->GetParamVector(v) ) );
-    initialInverse = this->m_InitialXform;
+    initialInverse = this->m_InitialTransformation->GetInverse();
     } 
   else
     {
-    affineXform = this->m_InitialXform;
-    initialInverse = AffineXform::SmartPtr( static_cast<AffineXform*>( this->m_InitialXform->MakeInverse() ) );
+    affineXform = this->m_InitialTransformation;
+    initialInverse = AffineXform::SmartPtr::DynamicCastFrom( this->m_InitialTransformation );
     }
   
   Vector3D center = fltVolume->GetCenterCropRegion();

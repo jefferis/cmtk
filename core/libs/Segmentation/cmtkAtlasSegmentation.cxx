@@ -87,7 +87,7 @@ cmtk::AtlasSegmentation
   ElasticRegistration er;
   er.SetVolume_1( this->m_TargetImage );
   er.SetVolume_2( this->m_AtlasImage );
-  er.SetInitialXform( this->GetAffineXform() );
+  er.SetInitialTransformation( this->GetAffineXform() );
   
   er.SetUseOriginalData( !this->m_Fast );
   er.SetFastMode( this->m_Fast );

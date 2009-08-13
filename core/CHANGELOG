@@ -19,6 +19,11 @@
 - Changed: command line tools now need to "opt-in" for XML support. This is to
     prevent cluttering Slicer's menu with modules that do not actually support
     it.
+- Changed: finally eliminated all those affine transformation inversions in
+    the rigid registration framework that have been a pain for over ten
+    years. CAUTION! This changes the outcomes of both affine and warp
+    registrations, usually just slightly, but in unstable cases potentially by
+    a lot.
 
 - Fixed: mk_analyze_hdr command line option "--description" was broken.
 - Fixed: contrary to the Wiki, NMI was the default registration criterion used

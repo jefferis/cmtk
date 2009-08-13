@@ -105,7 +105,7 @@ ElasticRegistrationCommandLine
   Verbose = 0;
 
   InputStudylist = NULL;
-  const char *InitialStudylist = NULL;
+  const char *initialTransformationFile = NULL;
   IntermediateResultIndex = 0;
 
   bool Switch = false;
@@ -115,9 +115,9 @@ ElasticRegistrationCommandLine
   bool forceOutsideFlag = false;
   Types::DataItem forceOutsideValue = 0;
 
-  const char* clArg1; // input studylist or reference image
-  const char* clArg2; // empty or floating image
-  const char* clArg3; // empty or initial transformation
+  const char* clArg1 = NULL; // input studylist or reference image
+  const char* clArg2 = NULL; // empty or floating image
+  const char* clArg3 = NULL; // empty or initial transformation
 
   try
     {
@@ -148,7 +148,7 @@ ElasticRegistrationCommandLine
 
     cl.AddSwitch( Key( 'S', "switch" ), &Switch, true, "Switch reference and floating image" );
     cl.AddSwitch( Key( 'x', "exchange" ), &this->ForceSwitchVolumes, true, "Exchange reference and floating image");
-    cl.AddOption( Key( "initial" ), &InitialStudylist, "Initialize transformation from given path" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
+    cl.AddOption( Key( "initial" ), &initialTransformationFile, "Initialize transformation from given path" )->SetProperties( CommandLine::PROPS_NOXML );
     cl.EndGroup();
 
     cl.BeginGroup( "Optimization", "Optimization parameters" );
@@ -197,14 +197,14 @@ ElasticRegistrationCommandLine
     cl.EndGroup();
 
     cl.BeginGroup( "SlicerImport", "Import Results into Slicer" );
-    cl.AddOption( Key( "out-itk" ), &this->m_OutputPathITK, "Output path for final transformation in ITK format" )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT )
+    cl.AddOption( Key( "out-itk" ), &this->m_OutputPathITK, "Output path for final transformation in ITK format" )->SetProperties( CommandLine::PROPS_XFORM | CommandLine::PROPS_OUTPUT )
       ->SetAttribute( "reference", "FloatingImagePath" );
-    cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OUTPUT );
     cl.EndGroup();
 
-    cl.AddParameter( &clArg1, "ReferenceImagePath", "Reference (fixed) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &clArg2, "FloatingImagePath", "Floating (moving) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OPTIONAL);
-    cl.AddParameter( &clArg3, "InitialXform", "Initial affine transformation from reference to floating image" )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OPTIONAL );
+    cl.AddParameter( &clArg1, "ReferenceImagePath", "Reference (fixed) image path" )->SetProperties( CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &clArg2, "FloatingImagePath", "Floating (moving) image path" )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OPTIONAL);
+    cl.AddParameter( &clArg3, "InitialXform", "Initial affine transformation from reference to floating image" )->SetProperties( CommandLine::PROPS_XFORM | CommandLine::PROPS_OPTIONAL );
 
     cl.Parse();
     }
@@ -222,14 +222,14 @@ ElasticRegistrationCommandLine
 
   if ( clArg2 ) 
     {
-    this->SetInitialXform( AffineXform::SmartPtr( new AffineXform() ) );
+    this->SetInitialTransformation( AffineXform::SmartPtr( new AffineXform() ) );
     
     Study1 = const_cast<char*>( clArg1 );
     Study2 = const_cast<char*>( clArg2 );
 
     if ( clArg3 )
       {
-      InitialStudylist = clArg3;
+      initialTransformationFile = clArg3;
       }
     }
   else 
@@ -253,27 +253,28 @@ ElasticRegistrationCommandLine
       {
       AffineXform::SmartPtr affineXform;
       classStream >> affineXform;
-      this->SetInitialXform( affineXform->GetInverse() );
+      this->SetInitialTransformation( affineXform );
       }
     else
       {
+      // legacy studylists have inverse transformation stored in them
       Study2 = classStream.ReadString( "model_study" );
       AffineXform::SmartPtr affineXform;
       classStream >> affineXform;
-      this->SetInitialXform( affineXform );
+      this->SetInitialTransformation( affineXform->GetInverse() );
       }
     
     classStream.Close();
     }
 
   /// Was an initial studylist given? If so, get warp 
-  if ( InitialStudylist ) 
+  if ( initialTransformationFile ) 
     {
-    Xform::SmartPtr initialXform( XformIO::Read( InitialStudylist ) );
+    Xform::SmartPtr initialXform( XformIO::Read( initialTransformationFile ) );
     AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( initialXform );
     if ( affineXform )
       {
-      this->SetInitialXform( affineXform->GetInverse() );
+      this->SetInitialTransformation( affineXform );
       }
     else
       {
@@ -284,8 +285,8 @@ ElasticRegistrationCommandLine
   // Did user ask for exchanged reference/floating images?
   if ( Switch ) 
     {
-    AffineXform::SmartPtr affineXform( dynamic_cast<AffineXform*>( this->m_InitialXform->MakeInverse() ) );
-    this->SetInitialXform( affineXform );
+    AffineXform::SmartPtr affineXform( dynamic_cast<AffineXform*>( this->m_InitialTransformation->MakeInverse() ) );
+    this->SetInitialTransformation( affineXform );
     
     char *swap = Study1;
     Study1 = Study2;
@@ -300,15 +301,15 @@ ElasticRegistrationCommandLine
   if ( !volume ) throw ConstructorFailed();
   this->SetVolume_2( UniformVolume::SmartPtr( this->m_PreprocessorFlt.GetProcessedImage( volume ) ) );
   
-  AffineXform::SmartPtr affineXform( AffineXform::SmartPtr::DynamicCastFrom( this->m_InitialXform ) );
+  AffineXform::SmartPtr affineXform( AffineXform::SmartPtr::DynamicCastFrom( this->m_InitialTransformation ) );
   if ( affineXform )
     {
     if ( affineXform->m_MetaInformation[CMTK_META_SPACE] != AnatomicalOrientation::ORIENTATION_STANDARD )
       {
-      TransformChangeFromSpaceAffine toStandardSpace( *(affineXform->GetInverse()), *(this->m_Volume_1), *(this->m_Volume_2) );
+      TransformChangeFromSpaceAffine toStandardSpace( *affineXform, *(this->m_Volume_1), *(this->m_Volume_2) );
       *affineXform = toStandardSpace.GetTransformation();
       affineXform->m_MetaInformation[CMTK_META_SPACE] = AnatomicalOrientation::ORIENTATION_STANDARD;
-      this->SetInitialXform( affineXform->GetInverse() );
+      this->SetInitialTransformation( affineXform );
       }
     }
 
@@ -498,7 +499,7 @@ ElasticRegistrationCommandLine::OutputWarp ( const char* path ) const
 	} 
       else 
 	{
-	classStream << (*this->m_InitialXform->GetInverse());
+	classStream << *this->m_InitialTransformation;
 	}
       classStream << warp;
       classStream.End();
@@ -527,9 +528,9 @@ ElasticRegistrationCommandLine::OutputIntermediate( const bool incrementCount )
 
 CallbackResult ElasticRegistrationCommandLine::Register ()
 {
-  const double baselineTime = cmtk::Timers::GetTimeProcess();
+  const double baselineTime = Timers::GetTimeProcess();
   CallbackResult Result = this->Superclass::Register();
-  const int elapsed = static_cast<int>( cmtk::Timers::GetTimeProcess() - baselineTime );
+  const int elapsed = static_cast<int>( Timers::GetTimeProcess() - baselineTime );
 
   if ( Time ) 
     {
