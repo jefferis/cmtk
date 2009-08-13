@@ -47,7 +47,7 @@ cmtk::CommandLine::Vector<T>
     ++index;
     // first, replace all commas with spaces, so we can simply use a stringstream for parsing the vector elements
     std::string str( argv[index] );
-    for ( int i = 0; i < str.length(); ++i )
+    for ( size_t i = 0; i < str.length(); ++i )
       {
       if ( str[i] == ',' )
 	str[i] = ' ';
