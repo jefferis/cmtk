@@ -117,6 +117,7 @@ ElasticRegistrationCommandLine
 
   const char* clArg1; // input studylist or reference image
   const char* clArg2; // empty or floating image
+  const char* clArg3; // empty or initial transformation
 
   try
     {
@@ -147,7 +148,7 @@ ElasticRegistrationCommandLine
 
     cl.AddSwitch( Key( 'S', "switch" ), &Switch, true, "Switch reference and floating image" );
     cl.AddSwitch( Key( 'x', "exchange" ), &this->ForceSwitchVolumes, true, "Exchange reference and floating image");
-    cl.AddOption( Key( "initial" ), &InitialStudylist, "Initialize transformation from given path" )->SetProperties( cmtk::CommandLine::PROPS_XFORM );
+    cl.AddOption( Key( "initial" ), &InitialStudylist, "Initialize transformation from given path" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
     cl.EndGroup();
 
     cl.BeginGroup( "Optimization", "Optimization parameters" );
@@ -202,7 +203,8 @@ ElasticRegistrationCommandLine
     cl.EndGroup();
 
     cl.AddParameter( &clArg1, "ReferenceImagePath", "Reference (fixed) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &clArg2, "FloatingImagePath", "Floating (moving) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &clArg2, "FloatingImagePath", "Floating (moving) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OPTIONAL);
+    cl.AddParameter( &clArg3, "InitialXform", "Initial affine transformation from reference to floating image" )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OPTIONAL );
 
     cl.Parse();
     }
@@ -224,6 +226,11 @@ ElasticRegistrationCommandLine
     
     Study1 = const_cast<char*>( clArg1 );
     Study2 = const_cast<char*>( clArg2 );
+
+    if ( clArg3 )
+      {
+      InitialStudylist = clArg3;
+      }
     }
   else 
     {
