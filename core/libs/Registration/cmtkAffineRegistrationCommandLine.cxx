@@ -49,7 +49,8 @@
 #include <cmtkCompressedStream.h>
 #include <cmtkXformIO.h>
 
-#include <cmtkTransformChangeSpaceAffine.h>
+#include <cmtkTransformChangeToSpaceAffine.h>
+#include <cmtkTransformChangeFromSpaceAffine.h>
 #include <cmtkAffineXformITKIO.h>
 
 #include <stdio.h>
@@ -281,7 +282,7 @@ AffineRegistrationCommandLine
 
     if ( affine->m_MetaInformation[CMTK_META_SPACE] != AnatomicalOrientation::ORIENTATION_STANDARD )
       {
-      TransformChangeSpaceAffine toStandardSpace( affine, this->m_Volume_1, this->m_Volume_2, AnatomicalOrientation::ORIENTATION_STANDARD );
+      TransformChangeFromSpaceAffine toStandardSpace( affine, this->m_Volume_1, this->m_Volume_2, AnatomicalOrientation::ORIENTATION_STANDARD );
       *affine = toStandardSpace.GetTransformation();
       affine->m_MetaInformation[CMTK_META_SPACE] = AnatomicalOrientation::ORIENTATION_STANDARD;
       }
@@ -445,7 +446,7 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
 
   if ( this->m_OutputPathITK ) 
     {
-    TransformChangeSpaceAffine toNative( this->GetTransformation()->GetInverse(), this->m_Volume_1, this->m_Volume_2 );
+    TransformChangeToSpaceAffine toNative( this->GetTransformation()->GetInverse(), this->m_Volume_1, this->m_Volume_2 );
     AffineXformITKIO::Write( this->m_OutputPathITK, toNative.GetTransformation() );
     }
 

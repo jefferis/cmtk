@@ -29,10 +29,10 @@
 //
 */
 
-#include <cmtkTransformChangeSpaceAffine.h>
+#include <cmtkTransformChangeToSpaceAffine.h>
 
 void
-cmtk::TransformChangeSpaceAffine
+cmtk::TransformChangeToSpaceAffine
 ::ComputeNewTransformation
 ( const AffineXform* xform, const UniformVolume* reference, const std::string& referenceSpaceNew, const UniformVolume* floating, const std::string& floatingSpaceNew )
 {

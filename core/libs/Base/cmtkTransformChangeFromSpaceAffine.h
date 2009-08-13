@@ -29,8 +29,8 @@
 //
 */
 
-#ifndef __cmtkTransformChangeSpaceAffine_h_included_
-#define __cmtkTransformChangeSpaceAffine_h_included_
+#ifndef __cmtkTransformChangeFromSpaceAffine_h_included_
+#define __cmtkTransformChangeFromSpaceAffine_h_included_
 
 #include <cmtkconfig.h>
 
@@ -46,12 +46,12 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-/// Compute affine coordinate transformation under changes of reference and floating image coordinate spaces.
-class TransformChangeSpaceAffine
+/// Compute affine coordinate transformation in standard space from transformation in natrive reference and floating image coordinate spaces.
+class TransformChangeFromSpaceAffine
 {
 public:
   /// Constructor: compute transformation between new spaces.
-  TransformChangeSpaceAffine( const AffineXform* xform, //!< Transformation from reference to floating in their current spaces.
+  TransformChangeFromSpaceAffine( const AffineXform* xform, //!< Transformation from reference to floating in their current spaces.
 			      const UniformVolume* reference, //!< Reference (fixed) image.
 			      const std::string& referenceSpaceNew, //!< New space for the reference image.
 			      const UniformVolume* floating, //! Floating (moving) image.
@@ -62,7 +62,7 @@ public:
   }
   
   /// Simplified constructor: compute transformation between images in new, common space.
-  TransformChangeSpaceAffine( const AffineXform* xform, //!< Transformation from reference to floating in their current spaces.
+  TransformChangeFromSpaceAffine( const AffineXform* xform, //!< Transformation from reference to floating in their current spaces.
 			      const UniformVolume* reference, //!< Reference (fixed) image.
 			      const UniformVolume* floating, //! Floating (moving) image.
 			      const std::string& spaceNew //!< New space for both reference and floating image.
@@ -72,7 +72,7 @@ public:
   }
   
   /// Simplified constructor: compute transformation between native spaces.
-  TransformChangeSpaceAffine( const AffineXform* xform, //!< Transformation from reference to floating in their current spaces.
+  TransformChangeFromSpaceAffine( const AffineXform* xform, //!< Transformation from reference to floating in their current spaces.
 			      const UniformVolume* reference, //!< Reference (fixed) image.
 			      const UniformVolume* floating //! Floating (moving) image.
     )
@@ -103,4 +103,4 @@ private:
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkTransformChangeSpaceAffine_h_included_
+#endif // #ifndef __cmtkTransformChangeFromSpaceAffine_h_included_
