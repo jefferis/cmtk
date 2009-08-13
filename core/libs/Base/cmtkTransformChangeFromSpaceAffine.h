@@ -50,35 +50,12 @@ cmtk
 class TransformChangeFromSpaceAffine
 {
 public:
-  /// Constructor: compute transformation between new spaces.
-  TransformChangeFromSpaceAffine( const AffineXform* xform, //!< Transformation from reference to floating in their current spaces.
-			      const UniformVolume* reference, //!< Reference (fixed) image.
-			      const std::string& referenceSpaceNew, //!< New space for the reference image.
-			      const UniformVolume* floating, //! Floating (moving) image.
-			      const std::string& floatingSpaceNew //!< New space for the reference image.
-    )
-  {
-    this->ComputeNewTransformation( xform, reference, referenceSpaceNew, floating, floatingSpaceNew );
-  }
-  
   /// Simplified constructor: compute transformation between images in new, common space.
-  TransformChangeFromSpaceAffine( const AffineXform* xform, //!< Transformation from reference to floating in their current spaces.
-			      const UniformVolume* reference, //!< Reference (fixed) image.
-			      const UniformVolume* floating, //! Floating (moving) image.
-			      const std::string& spaceNew //!< New space for both reference and floating image.
-    )
-  {
-    this->ComputeNewTransformation( xform, reference, spaceNew, floating, spaceNew );
-  }
-  
-  /// Simplified constructor: compute transformation between native spaces.
-  TransformChangeFromSpaceAffine( const AffineXform* xform, //!< Transformation from reference to floating in their current spaces.
-			      const UniformVolume* reference, //!< Reference (fixed) image.
-			      const UniformVolume* floating //! Floating (moving) image.
-    )
-  {
-    this->ComputeNewTransformation( xform, reference, reference->m_MetaInformation[CMTK_META_SPACE_ORIGINAL], floating, floating->m_MetaInformation[CMTK_META_SPACE_ORIGINAL] );
-  }
+  TransformChangeFromSpaceAffine( const AffineXform& xform, //!< Transformation from reference to floating in their current spaces.
+				  const UniformVolume& reference, //!< Reference (fixed) image.
+				  const UniformVolume& floating, //! Floating (moving) image.
+				  const std::string& xformSpace = AnatomicalOrientation::ORIENTATION_STANDARD //!< Space in which the coordinate transformation lives.
+    );
   
   /// Return transformation in native spaces.
   const AffineXform& GetTransformation() const
@@ -89,14 +66,6 @@ public:
 private:
   /// Transformation between native spaces.
   AffineXform m_NewXform;
-
-  /// Actual function to compute transformation between new spaces.
-  void ComputeNewTransformation( const AffineXform* xform, //!< Transformation from reference to floating in their current spaces.
-				 const UniformVolume* reference, //!< Reference (fixed) image.
-				 const std::string& referenceSpaceNew, //!< New space for the reference image.
-				 const UniformVolume* floating, //! Floating (moving) image.
-				 const std::string& floatingSpaceNew //!< New space for the reference image.
-    );
 };
 
 //@}

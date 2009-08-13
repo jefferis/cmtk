@@ -31,25 +31,24 @@
 
 #include <cmtkTransformChangeToSpaceAffine.h>
 
-void
 cmtk::TransformChangeToSpaceAffine
-::ComputeNewTransformation
-( const AffineXform* xform, const UniformVolume* reference, const std::string& referenceSpaceNew, const UniformVolume* floating, const std::string& floatingSpaceNew )
+::TransformChangeToSpaceAffine
+( const AffineXform& xform, const UniformVolume& reference, const UniformVolume& floating, const std::string& xformSpace )
 {
-  // adapt transformation to Slicer's image coordinate systems as defined in the Nrrd files we probably read
-  UniformVolume::SmartPtr refVolumeOriginalSpace( reference->CloneGrid() );
-  UniformVolume::SmartPtr fltVolumeOriginalSpace( floating->CloneGrid() );
+// adapt transformation to Slicer's image coordinate systems as defined in the Nrrd files we probably read
+  UniformVolume::SmartPtr refVolumeOriginalSpace( reference.CloneGrid() );
+  UniformVolume::SmartPtr fltVolumeOriginalSpace( floating.CloneGrid() );
   
   // first bring volumes back into their native coordinate space.
-  refVolumeOriginalSpace->ChangeCoordinateSpace( referenceSpaceNew );
-  fltVolumeOriginalSpace->ChangeCoordinateSpace( floatingSpaceNew );
+  refVolumeOriginalSpace->ChangeCoordinateSpace( xformSpace );
+  fltVolumeOriginalSpace->ChangeCoordinateSpace( xformSpace );
   
   // now determine image-to-physical transformations and concatenate these.
   const AffineXform::MatrixType refMatrix = refVolumeOriginalSpace->GetImageToPhysicalMatrix ();
   const AffineXform::MatrixType fltMatrix = fltVolumeOriginalSpace->GetImageToPhysicalMatrix ();
   
   AffineXform::MatrixType concatMatrix = refMatrix;
-  (concatMatrix.Invert() *= xform->Matrix) *= fltMatrix;
+  (concatMatrix.Invert() *= xform.Matrix) *= fltMatrix;
   
   // create output transformation and write
   this->m_NewXform.SetMatrix( concatMatrix );

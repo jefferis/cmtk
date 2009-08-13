@@ -298,10 +298,10 @@ ElasticRegistrationCommandLine
     {
     if ( affineXform->m_MetaInformation[CMTK_META_SPACE] != AnatomicalOrientation::ORIENTATION_STANDARD )
       {
-      TransformChangeFromSpaceAffine toStandardSpace( affineXform->GetInverse(), this->m_Volume_1, this->m_Volume_2, AnatomicalOrientation::ORIENTATION_STANDARD );
+      TransformChangeFromSpaceAffine toStandardSpace( *(affineXform->GetInverse()), *(this->m_Volume_1), *(this->m_Volume_2) );
       *affineXform = toStandardSpace.GetTransformation();
       affineXform->m_MetaInformation[CMTK_META_SPACE] = AnatomicalOrientation::ORIENTATION_STANDARD;
-      this->SetInitialXform( affineXform );
+      this->SetInitialXform( affineXform->GetInverse() );
       }
     }
 

@@ -282,7 +282,7 @@ AffineRegistrationCommandLine
 
     if ( affine->m_MetaInformation[CMTK_META_SPACE] != AnatomicalOrientation::ORIENTATION_STANDARD )
       {
-      TransformChangeFromSpaceAffine toStandardSpace( affine, this->m_Volume_1, this->m_Volume_2, AnatomicalOrientation::ORIENTATION_STANDARD );
+      TransformChangeFromSpaceAffine toStandardSpace( *affine, *(this->m_Volume_1), *(this->m_Volume_2) );
       *affine = toStandardSpace.GetTransformation();
       affine->m_MetaInformation[CMTK_META_SPACE] = AnatomicalOrientation::ORIENTATION_STANDARD;
       }
@@ -446,7 +446,7 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
 
   if ( this->m_OutputPathITK ) 
     {
-    TransformChangeToSpaceAffine toNative( this->GetTransformation()->GetInverse(), this->m_Volume_1, this->m_Volume_2 );
+    TransformChangeToSpaceAffine toNative( *(this->GetTransformation()->GetInverse()), *(this->m_Volume_1), *(this->m_Volume_2) );
     AffineXformITKIO::Write( this->m_OutputPathITK, toNative.GetTransformation() );
     }
 
