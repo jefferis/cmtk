@@ -53,8 +53,7 @@ public:
   /// Simplified constructor: compute transformation between images in new, common space.
   TransformChangeToSpaceAffine( const AffineXform& xform, //!< Transformation from reference to floating in their current spaces.
 				const UniformVolume& reference, //!< Reference (fixed) image.
-				const UniformVolume& floating, //! Floating (moving) image.
-				const std::string& xformSpace = AnatomicalOrientation::ORIENTATION_STANDARD //!< Space of the coordinate transformation.
+				const UniformVolume& floating //! Floating (moving) image.
     );
 
   /// Return transformation in native spaces.

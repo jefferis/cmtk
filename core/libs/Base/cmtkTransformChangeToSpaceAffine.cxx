@@ -33,15 +33,15 @@
 
 cmtk::TransformChangeToSpaceAffine
 ::TransformChangeToSpaceAffine
-( const AffineXform& xform, const UniformVolume& reference, const UniformVolume& floating, const std::string& xformSpace )
+( const AffineXform& xform, const UniformVolume& reference, const UniformVolume& floating )
 {
 // adapt transformation to Slicer's image coordinate systems as defined in the Nrrd files we probably read
   UniformVolume::SmartPtr refVolumeOriginalSpace( reference.CloneGrid() );
   UniformVolume::SmartPtr fltVolumeOriginalSpace( floating.CloneGrid() );
   
   // first bring volumes back into their native coordinate space.
-  refVolumeOriginalSpace->ChangeCoordinateSpace( xformSpace );
-  fltVolumeOriginalSpace->ChangeCoordinateSpace( xformSpace );
+  refVolumeOriginalSpace->ChangeCoordinateSpace( reference.m_MetaInformation[CMTK_META_SPACE_ORIGINAL] );
+  fltVolumeOriginalSpace->ChangeCoordinateSpace( reference.m_MetaInformation[CMTK_META_SPACE_ORIGINAL] );
   
   // now determine image-to-physical transformations and concatenate these.
   const AffineXform::MatrixType refMatrix = refVolumeOriginalSpace->GetImageToPhysicalMatrix ();
