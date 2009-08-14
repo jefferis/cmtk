@@ -255,6 +255,7 @@ AffineRegistrationCommandLine
   if ( !volume )
     {
     StdErr << "ERROR: volume " << this->Study1 << " could not be read\n";
+    exit( 1 );
     }
   this->SetVolume_1( UniformVolume::SmartPtr( this->m_PreprocessorRef.GetProcessedImage( volume ) ) );
 
@@ -262,6 +263,7 @@ AffineRegistrationCommandLine
   if ( !volume )
     {
     StdErr << "ERROR: volume " << this->Study2 << " could not be read\n";
+    exit( 1 );
     }
   this->SetVolume_2(  UniformVolume::SmartPtr( this->m_PreprocessorFlt.GetProcessedImage( volume ) ) );
 

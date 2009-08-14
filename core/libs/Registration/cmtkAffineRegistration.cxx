@@ -94,11 +94,11 @@ AffineRegistration::InitRegistration ()
     {
     if ( SwitchVolumes ^ this->m_InitialXformIsInverse )
       {
-      affineXform = AffineXform::SmartPtr( this->m_InitialTransformation );
+      affineXform = AffineXform::SmartPtr( this->m_InitialTransformation->MakeInverse() );
       } 
     else
       {
-      affineXform = AffineXform::SmartPtr( this->m_InitialTransformation->MakeInverse() );
+      affineXform = AffineXform::SmartPtr( this->m_InitialTransformation );
       }
   } 
   else 
