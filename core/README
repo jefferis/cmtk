@@ -10,6 +10,10 @@ implementation of the Slicer3 Execution Model for command line-based
 plugins. Currently, the tools "levelset", "mrbias", "registration", "warp",
 and "film" support slicer integration.
 
+As an additional improvement, we are now including a minimal, stripped-down
+version of the OFFIS DCMTK tookit. This allows for convenient building of CMTK
+with DICOM support on all platforms.
+
 NOTE: due to a major design change to eliminate redundant and inconsistent
 legacy code, results of the rigid and affine registration algorithm will
 change when compared with results computed using previous versions of CMTK. We
