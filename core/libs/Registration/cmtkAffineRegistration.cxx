@@ -108,7 +108,7 @@ AffineRegistration::InitRegistration ()
 
   if ( this->m_InitialAlignCenters ) 
     {
-    Vector3D deltaCenter = ( refVolume->GetCenterCropRegion() - fltVolume->GetCenterCropRegion() );
+    Vector3D deltaCenter = ( fltVolume->GetCenterCropRegion() - refVolume->GetCenterCropRegion() );
     affineXform->SetXlate( deltaCenter.XYZ );
     }
   
