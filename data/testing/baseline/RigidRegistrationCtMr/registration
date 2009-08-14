@@ -4,8 +4,8 @@ registration {
 	reference_study "pat002_ct.hdr"
 	floating_study "pat002_mr_T2.hdr"
 	affine_xform {
-		xlate -6.649996948 -14.41000366 27.5 
-		rotate -0.4036584902 -0.1188708335 1.165151757 
+		xlate -7.150003052 -17.98999634 -21.5 
+		rotate -0.05382113203 -0.1485885419 -1.235060862 
 		scale 1 1 1 
 		shear 0 0 0 
 		center 85.40000153 102.1999969 70 
