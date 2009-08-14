@@ -799,7 +799,7 @@ typedef unsigned short ushort;
 #define WITH_THREADS
 
 /* Define if we are compiling with zlib support */
-/* #undef  WITH_ZLIB */
+#define WITH_ZLIB
 
 /* Define to 1 if on AIX 3.
    System headers sometimes define this.
