@@ -124,8 +124,8 @@ public:
     return NULL;
   }
   
-  /// Refine transformation.
-  virtual void Refine ( const int factor = 2 );
+  /// Refine control point grid by a factor of two, but maintain transformation exactly.
+  virtual void Refine();
 
   /// Return grid bending energy.
   virtual Types::Coordinate GetGridEnergy() const;

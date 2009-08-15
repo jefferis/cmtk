@@ -355,9 +355,9 @@ ElasticRegistration::DoneResolution
 	WarpXform::SmartPtr warpXform = WarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
 	if ( warpXform ) 
 	  {
-	  warpXform->Refine( 2 );
+	  warpXform->Refine();
 	  if ( InverseWarpXform )
-	    InverseWarpXform->Refine( 2 );
+	    InverseWarpXform->Refine();
 	  ++RefineGridCount;
 	  functional->GetParamVector( *v );    
 	  if ( this->m_Callback ) 

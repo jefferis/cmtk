@@ -284,17 +284,10 @@ SplineWarpXform::Clone () const
 }
 
 void
-SplineWarpXform::Refine ( const int factor )
+SplineWarpXform::Refine()
 {
   if ( !this->m_ParameterVector ) return;
 
-  if ( factor != 2 )
-    {
-    fputs( "WARNING: Cannot refine spline warps by factors other than 2.\n",
-	   stderr );
-    return;
-    }
-  
   int newDims[3];
   for ( int dim=0; dim<3; ++dim ) 
     newDims[dim] = 2 * this->m_Dims[dim] - 3;

@@ -182,8 +182,8 @@ public:
   /// Update internal representation.
   virtual void Update( const bool exactDelta = false );
 
-  /// Refine transformation.
-  virtual void Refine ( const int ) {}
+  /// Refine control point grid, but maintain transformation exactly.
+  virtual void Refine() {}
 
   /// Regularize (smooth) transformation.
   virtual void Regularize( const int weight0, const int weight1 );
