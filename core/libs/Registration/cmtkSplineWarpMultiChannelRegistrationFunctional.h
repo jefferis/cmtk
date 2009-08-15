@@ -122,8 +122,8 @@ public:
   /** Initialize transformation. */
   virtual void InitTransformation( const Types::Coordinate* domain, const Types::Coordinate gridSpacing, const bool exact );
 
-  /** Refine transformation by given factor. */
-  virtual void RefineTransformation( const unsigned int factor = 2 );
+  /** Refine transformation control point grid by factor 2. */
+  virtual void RefineTransformation();
 
   /** Reset channels, clear all images. */
   virtual void ClearAllChannels()

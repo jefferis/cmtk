@@ -93,12 +93,12 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 template<class TMetricFunctional>
 void
 SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
-::RefineTransformation( const unsigned int factor )
+::RefineTransformation()
 {
-  this->m_Transformation.Refine( factor );
+  this->m_Transformation.Refine();
   for ( size_t thread = 0; thread < this->m_ThreadTransformations.size(); ++thread )
     {
-    this->m_ThreadTransformations[thread]->Refine( factor );
+    this->m_ThreadTransformations[thread]->Refine();
     }
   this->UpdateTransformationData();
 }
