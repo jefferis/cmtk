@@ -1005,19 +1005,19 @@ case ${RUNTEST} in
 	check_result dfield.raw
 	;;
     xml_film)
-	run_eval "${BINDIR}/film --xml > ${tmpdir}/film.xml"
+	run_eval "${BINDIR}/film --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/film.xml"
 	check_result film.xml
 	;;
     xml_levelset)
-        run_eval "${BINDIR}/levelset --xml > ${tmpdir}/levelset.xml"
+        run_eval "${BINDIR}/levelset --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/levelset.xml"
 	check_result levelset.xml
 	;;
     xml_mrbias)
-	run_eval "${BINDIR}/mrbias --xml > ${tmpdir}/mrbias.xml"
+	run_eval "${BINDIR}/mrbias --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/mrbias.xml"
 	check_result mrbias.xml
 	;;
     xml_registration)
-	run_eval "${BINDIR}/registration --xml > ${tmpdir}/registration.xml"
+	run_eval "${BINDIR}/registration --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/registration.xml"
 	check_result registration.xml
 	;;
     wiki_film)
