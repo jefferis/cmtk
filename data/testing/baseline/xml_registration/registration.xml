@@ -35,10 +35,10 @@ General Parameters
 input
 </channel>
 <name>
-ReferenceImagePath
+ReferenceImage
 </name>
 <label>
-ReferenceImagePath
+ReferenceImage
 </label>
 <description>
 Reference (fixed) image path
@@ -53,10 +53,10 @@ Reference (fixed) image path
 input
 </channel>
 <name>
-FloatingImagePath
+FloatingImage
 </name>
 <label>
-FloatingImagePath
+FloatingImage
 </label>
 <description>
 Floating (moving) image path
@@ -390,7 +390,7 @@ SlicerImport
 <description>
 Import Results into Slicer
 </description>
-<transform fileExtensions=".txt" reference="FloatingImagePath">
+<transform fileExtensions=".txt" reference="FloatingImage">
 <channel>
 output
 </channel>
