@@ -58,26 +58,30 @@ main( const int argc, const char* argv[] )
 
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl( argc, argv, cmtk::CommandLine::PROPS_XML );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Initialize affine transformation" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute initial affine transformation by aligning centers of mass or principal axes" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] referenceImagePath floatingImagePath outputTransformationPath" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Image Registration" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Registration" );
 
     typedef cmtk::CommandLine::Key Key;
+    cl.BeginGroup( "Console", "Console output control" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
     cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode." );
+    cl.EndGroup();
 
-    cl.AddSwitch( Key( 'd', "direction-vectors" ), &mode, 0, "Alignment based on image direction vectors [default]" );
-    cl.AddSwitch( Key( 'c', "centers-of-mass" ), &mode, 1, "Alignment based on centers of mass (translation only)" );
-    cl.AddSwitch( Key( 'p', "principal-axes" ), &mode, 2, "Alignment based on principal axes" );
-
+    cl.BeginGroup( "Transformation", "Transformation construction control" );
+    cmtk::CommandLine::EnumGroup<int>::SmartPtr
+      modeGroup = cl.AddEnum( "mode", &mode, "Mode selection for initialization" );
+    modeGroup->AddSwitch( Key( "direction-vectors" ), 0, "Alignment based on image direction vectors" );
+    modeGroup->AddSwitch( Key( "centers-of-mass" ), 1, "Alignment based on centers of mass (translation only)" );
+    modeGroup->AddSwitch( Key( "principal-axes" ), 2, "Alignment based on principal axes" );
+    
     cl.AddSwitch( Key( 'C', "center-xform" ), &centerXform, true, "Set transformation center (for rotation, scale) to center of reference image." );
+    
+    cl.AddParameter( &referenceImagePath, "ReferenceImage", "Reference (fixed) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &floatingImagePath, "FloatingImage", "Floating (moving) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &outputXformPath, "OutputTransformation", "Floating (moving) image path" )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
 
     cl.Parse();
-
-    referenceImagePath = cl.GetNext();
-    floatingImagePath = cl.GetNext();
-    outputXformPath = cl.GetNext();
     }
   catch ( cmtk::CommandLine::Exception ex )
     {
