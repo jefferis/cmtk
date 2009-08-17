@@ -8,13 +8,13 @@ This program performs rigid and affine image registration using multi-resolution
 
 == Syntax ==
 
-: <tt>[options] ReferenceImagePath FloatingImagePath </tt>
+: <tt>[options] ReferenceImage FloatingImage </tt>
 
 where
 
-; <tt>ReferenceImagePath</tt> : Reference (fixed) image path
+; <tt>ReferenceImage</tt> : Reference (fixed) image path
 
-; <tt>FloatingImagePath</tt> : Floating (moving) image path
+; <tt>FloatingImage</tt> : Floating (moving) image path
 
 == List of Supported Options ==
 
