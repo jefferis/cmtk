@@ -168,12 +168,12 @@ AffineRegistrationCommandLine
     cl.BeginGroup( "SlicerImport", "Import Results into Slicer" );
     cl.AddOption( Key( "out-itk" ), &this->m_OutputPathITK, "Output path for final transformation in ITK format" )
       ->SetProperties( CommandLine::PROPS_XFORM | CommandLine::PROPS_OUTPUT )
-      ->SetAttribute( "reference", "FloatingImagePath" );
+      ->SetAttribute( "reference", "FloatingImage" );
     cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OUTPUT );
     cl.EndGroup();
     
-    cl.AddParameter( &clArg1, "ReferenceImagePath", "Reference (fixed) image path" )->SetProperties( CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &clArg2, "FloatingImagePath", "Floating (moving) image path" )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OPTIONAL );
+    cl.AddParameter( &clArg1, "ReferenceImage", "Reference (fixed) image path" )->SetProperties( CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &clArg2, "FloatingImage", "Floating (moving) image path" )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OPTIONAL );
 
     cl.Parse();
     }

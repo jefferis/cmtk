@@ -202,8 +202,8 @@ ElasticRegistrationCommandLine
     cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OUTPUT );
     cl.EndGroup();
 
-    cl.AddParameter( &clArg1, "ReferenceImagePath", "Reference (fixed) image path" )->SetProperties( CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &clArg2, "FloatingImagePath", "Floating (moving) image path" )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OPTIONAL);
+    cl.AddParameter( &clArg1, "ReferenceImage", "Reference (fixed) image path" )->SetProperties( CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &clArg2, "FloatingImage", "Floating (moving) image path" )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OPTIONAL);
     cl.AddParameter( &clArg3, "InitialXform", "Initial affine transformation from reference to floating image" )->SetProperties( CommandLine::PROPS_XFORM | CommandLine::PROPS_OPTIONAL );
 
     cl.Parse();
