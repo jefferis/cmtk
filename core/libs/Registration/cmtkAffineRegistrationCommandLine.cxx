@@ -138,7 +138,7 @@ AffineRegistrationCommandLine
     cl.AddVector( Key( "dofs" ), this->NumberDOFs, "Add number of degrees of freedom [can be repeated]" );
     cl.AddVector( Key( "dofs-final" ), this->NumberDOFsFinal, "Add number of degrees of freedom for final level only [can be repeated]" );
     
-    cl.AddSwitch( Key( 'n', "no-switch" ), &this->m_NoSwitch, 1, "Do not auto-switch reference and floating image for improved computational performance" );
+    cl.AddSwitch( Key( 'n', "no-switch" ), &this->m_NoSwitch, true, "Do not auto-switch reference and floating image for improved computational performance" );
     cl.AddSwitch( Key( 'i', "initxlate" ), &InitXlate, true, "Initialized transformation by translating floating image FOV center onto reference image FOV center" );
 
     cl.AddOption( Key( "initial" ), &InitialStudylist, "Initialize transformation from given path" )->SetProperties( CommandLine::PROPS_XFORM );
