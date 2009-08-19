@@ -37,11 +37,12 @@
 #include <cmtkUniformVolume.h>
 #include <cmtkAffineXform.h>
 #include <cmtkMatrix4x4.h>
+
 #include <cmtkMakeInitialAffineTransformation.h>
+#include <cmtkTransformChangeToSpaceAffine.h>
 
 #include <cmtkVolumeIO.h>
-#include <cmtkClassStream.h>
-#include <cmtkClassStreamAffineXform.h>
+#include <cmtkXformIO.h>
 
 int
 main( const int argc, const char* argv[] )
@@ -53,6 +54,7 @@ main( const int argc, const char* argv[] )
   bool verbose = false;
 
   bool centerXform = false;
+  bool writeXformRAS = false;
 
   int mode = 0;
 
@@ -76,6 +78,7 @@ main( const int argc, const char* argv[] )
     modeGroup->AddSwitch( Key( "principal-axes" ), 2, "Alignment based on principal axes" );
     
     cl.AddSwitch( Key( 'C', "center-xform" ), &centerXform, true, "Set transformation center (for rotation, scale) to center of reference image." );
+    cl.AddSwitch( Key( "xform-ras" ), &writeXformRAS, true, "Write transformation in RAS space, rather than between native image spaces." );
     
     cl.AddParameter( &referenceImagePath, "ReferenceImage", "Reference (fixed) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &floatingImagePath, "FloatingImage", "Floating (moving) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
@@ -121,14 +124,14 @@ main( const int argc, const char* argv[] )
 
   if ( xform )
     {
-    cmtk::ClassStream stream( outputXformPath, cmtk::ClassStream::WRITE );
-    if ( stream.IsValid() )
+    if ( writeXformRAS )
       {
-      stream.WriteString( "reference_study", referenceImagePath );
-      stream.WriteString( "floating_study", floatingImagePath );
-      
-      stream << *xform;      
-      stream.Close();
+      cmtk::XformIO::Write( xform, outputXformPath, verbose );
+      }
+    else
+      {
+      cmtk::TransformChangeToSpaceAffine toNative( *xform, *referenceImage, *floatingImage );
+      cmtk::XformIO::Write( &toNative.GetTransformation(), outputXformPath, verbose );
       }
     }
   else
