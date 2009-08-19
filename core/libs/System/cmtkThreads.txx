@@ -98,7 +98,7 @@ ThreadParameterArray<TClass,TParam>
   for ( size_t threadIdx = 0; threadIdx < this->m_NumberOfThreads; ++threadIdx ) 
     {
 #ifdef _MSC_VER
-    WaitForSingleObject( this->m_Ptr[threadIdx].m_Handle, 0 /*no timeout*/ );
+    WaitForSingleObject( this->m_Ptr[threadIdx].m_Handle, INFINITE /*no timeout*/ );
 #else
     void *resultThread;
     if ( this->m_Ptr[threadIdx].m_ThreadID ) 

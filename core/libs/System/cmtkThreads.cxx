@@ -172,6 +172,7 @@ int
 Threads::GetNumberOfProcessors()
 {
 #ifdef _MSC_VER 
+return 2;
   SYSTEM_INFO systemInfo;
   GetSystemInfo( &systemInfo ); 
   return std::min<int>( systemInfo.dwNumberOfProcessors, CMTK_MAX_THREADS );
@@ -222,9 +223,7 @@ Threads::RunThreads
     // spent on the longest thread, at least approximately.
 #ifdef CMTK_BUILD_SMP
 #ifdef _MSC_VER
-    ThreadHandles[threadIdx] = CreateThread( NULL /*default security attributes*/, 0/*use default stack size*/, (LPTHREAD_START_ROUTINE) threadCall, threadParameters, 
-					     0/*use default creation flags*/, &Thread[threadIdx] );
-    
+    ThreadHandles[threadIdx] = CreateThread( NULL /*default security attributes*/, 0/*use default stack size*/, (LPTHREAD_START_ROUTINE) threadCall, threadParameters,  0/*use default creation flags*/, &Thread[threadIdx] );
     if ( ThreadHandles[threadIdx] == NULL ) 
       {
       status = -1;
@@ -260,7 +259,7 @@ Threads::RunThreads
     {
 #ifdef CMTK_BUILD_SMP
 #  ifdef _MSC_VER
-    WaitForSingleObject( ThreadHandles[threadIdx], 0 /*no timeout*/ );
+    WaitForSingleObject( ThreadHandles[threadIdx], INFINITE /*no timeout*/ );
 #  else // _MSC_VER
     void *resultThread;
     if ( Thread[threadIdx] ) 
