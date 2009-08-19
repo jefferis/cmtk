@@ -97,6 +97,8 @@
 #ifdef _MSC_VER
 // disable warnings about insecure functions (we want to be portable)
 #  define _CRT_SECURE_NO_DEPRECATE
+// disable warnings about unknown (i.e., gcc) pragmas
+#  pragma warning disable 4068
 // enable POSIX compliance
 #  define _POSIX_
 #  define NOMINMAX
