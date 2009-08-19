@@ -496,7 +496,7 @@ public:
   
   /** Get transformed locations of a series (scanline) of linked grid pixels.
    */
-  virtual void GetTransformedGridSequence( Vector3D *const v, const int numPoints, int idxX, int idxY, int idxZ ) 
+  virtual void GetTransformedGridSequence( Vector3D *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) 
     const
   {
     Vector3D v0 = RegisteredVolumeAxes[1][idxY];
