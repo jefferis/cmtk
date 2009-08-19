@@ -446,7 +446,7 @@ case ${RUNTEST} in
 	run ${BINDIR}/make_initial_affine --xform-ras phantom_sa.nhdr phantom_co.nhdr ${tmpdir}/xform
 	check_result xform
 	;;
-    MakeInitialAffineDirectionVectorsNrrdAxSaNativ)
+    MakeInitialAffineDirectionVectorsNrrdAxSaNative)
 	run ${BINDIR}/make_initial_affine phantom_ax.nhdr phantom_sa.nhdr ${tmpdir}/xform
 	check_result xform
 	;;
