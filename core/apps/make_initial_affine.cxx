@@ -79,7 +79,9 @@ main( const int argc, const char* argv[] )
     
     cl.AddParameter( &referenceImagePath, "ReferenceImage", "Reference (fixed) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &floatingImagePath, "FloatingImage", "Floating (moving) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &outputXformPath, "OutputTransformation", "Floating (moving) image path" )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddParameter( &outputXformPath, "OutputTransformation", "Floating (moving) image path" )
+      ->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT )
+      ->SettAttribute( "reference", "FloatingImage" );
 
     cl.Parse();
     }
