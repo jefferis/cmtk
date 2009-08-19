@@ -172,9 +172,9 @@ int
 Threads::GetNumberOfProcessors()
 {
 #ifdef _MSC_VER 
-  LPSYSTEM_INFO lpSystemInfo;
-  GetSystemInfo( lpSystemInfo ); 
-  return std::min<int>( lpSystemInfo->dwNumberOfProcessors, CMTK_MAX_THREADS );
+  SYSTEM_INFO systemInfo;
+  GetSystemInfo( &systemInfo ); 
+  return std::min<int>( systemInfo.dwNumberOfProcessors, CMTK_MAX_THREADS );
 #elif defined(__APPLE__)
   // use sysctl to get number of available cpus on apple.  Copied from:
   // developer.apple.com/documentation/Porting/Conceptual/PortingUnix/index.html
