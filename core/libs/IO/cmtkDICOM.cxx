@@ -167,10 +167,12 @@ DICOM::Read
     unsigned long totalImageSizePixels = imageInfo.dims[0] * imageInfo.dims[1] * imageInfo.dims[2];
     
     double rescaleIntercept, rescaleSlope;
-    bool haveRescaleIntercept, haveRescaleSlope;
-    if ( ! ( haveRescaleIntercept = document->getValue( DCM_RescaleIntercept, rescaleIntercept ) ) )
+    const bool haveRescaleIntercept = (0 != document->getValue( DCM_RescaleIntercept, rescaleIntercept ));
+    if ( ! haveRescaleIntercept )
       rescaleIntercept = 0;
-    if ( ! ( haveRescaleSlope = document->getValue( DCM_RescaleSlope, rescaleSlope ) ) )
+
+    const bool haveRescaleSlope = (0 != document->getValue( DCM_RescaleSlope, rescaleSlope ));
+    if ( ! haveRescaleSlope )
       rescaleSlope = 1;
     
     Uint16 paddingValue;
@@ -539,10 +541,12 @@ DICOM::Read
   unsigned long totalImageSizePixels = image->GetDims( AXIS_X ) * image->GetDims( AXIS_Y ) * image->GetNumberOfFrames();
 
   double rescaleIntercept, rescaleSlope;
-  bool haveRescaleIntercept, haveRescaleSlope;
-  if ( ! ( haveRescaleIntercept = document->getValue( DCM_RescaleIntercept, rescaleIntercept ) ) )
+  const bool haveRescaleIntercept = (0 != document->getValue( DCM_RescaleIntercept, rescaleIntercept ));
+  if ( ! haveRescaleIntercept )
     rescaleIntercept = 0;
-  if ( ! ( haveRescaleSlope = document->getValue( DCM_RescaleSlope, rescaleSlope ) ) )
+
+  const bool haveRescaleSlope = (0 != document->getValue( DCM_RescaleSlope, rescaleSlope ));
+  if ( ! haveRescaleSlope )
     rescaleSlope = 1;
   
   pixelDataSigned = pixelDataSigned || (rescaleIntercept < 0);

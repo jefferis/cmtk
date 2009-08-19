@@ -631,7 +631,7 @@ TypedStream
     if ( this->GenericReadArray( key, TYPEDSTREAM_TYPE_INT, &value, 1, forward ) != TYPEDSTREAM_OK )
       return defaultValue;
   
-  return static_cast<bool>(value);
+  return (value != 0);
 }
 
 TypedStreamCondition 
