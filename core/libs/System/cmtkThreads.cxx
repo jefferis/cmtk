@@ -172,7 +172,6 @@ int
 Threads::GetNumberOfProcessors()
 {
 #ifdef _MSC_VER 
-return 2;
   SYSTEM_INFO systemInfo;
   GetSystemInfo( &systemInfo ); 
   return std::min<int>( systemInfo.dwNumberOfProcessors, CMTK_MAX_THREADS );
