@@ -1,7 +1,5 @@
 ! TYPEDSTREAM 1.1
 
-reference_study "phantom_ax.nhdr"
-floating_study "phantom_co.nhdr"
 affine_xform {
 	xlate 0 -116.531 116.531 
 	rotate -0 -0 -0 

@@ -36,6 +36,8 @@ Release CMTK-1.1.0:
     geometry (i.e., offset, direction matrix, meta data).
 - Fixed: conversion of non-axial Analyze images to Nrrd produced output file
     that was missing coordinate space definition.
+- Fixed: a critical bug that effectively broke all multi-threaded computations
+    on Windows (using MS compilers).
 
 - Added: all tools now support "--echo" command line switch, which dumps the
     command line to stdout before continuing with the program.

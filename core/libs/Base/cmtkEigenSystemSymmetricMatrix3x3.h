@@ -58,7 +58,7 @@ public:
   template <class T> void GetNthEigenvector( const size_t n, T *const evec ) const
   {
     for ( size_t i = 0; i < 3; ++i )
-      evec[i] = this->m_Eigenvectors[i][n];
+      evec[i] = this->m_Eigenvectors[n][i];
   }
 
   /// Get n-th eigenvalue.

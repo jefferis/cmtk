@@ -1,11 +1,9 @@
 ! TYPEDSTREAM 1.1
 
-reference_study "box2.hdr"
-floating_study "box4.hdr"
 affine_xform {
 	xlate 5 -10 15 
-	rotate 20.28399277 -9.387782097 -56.55028534 
+	rotate -20.28399277 9.387782097 -56.55028534 
 	scale 1 1 1 
-	shear 1.110223025e-16 8.326672685e-17 1.110223025e-16 
+	shear -1.110223025e-16 -2.220446049e-16 2.220446049e-16 
 	center 99.5 99.5 99.5 
 }

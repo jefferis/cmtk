@@ -1,7 +1,5 @@
 ! TYPEDSTREAM 1.1
 
-reference_study "box2.hdr"
-floating_study "box3.hdr"
 affine_xform {
 	xlate -30 0 20 
 	rotate -0 -0 -0 

@@ -164,7 +164,10 @@ IF(NOT CMTK_USE_MPI)
     SET(testList ${testList}
       MakeInitialAffineDirectionVectorsNrrdAxSa
       MakeInitialAffineDirectionVectorsNrrdAxCo
-      MakeInitialAffineDirectionVectorsNrrdSaCo)
+      MakeInitialAffineDirectionVectorsNrrdSaCo
+      MakeInitialAffineDirectionVectorsNrrdAxSaNative
+      MakeInitialAffineDirectionVectorsNrrdAxCoNative
+      MakeInitialAffineDirectionVectorsNrrdSaCoNative)
   ENDIF(CMTK_BUILD_NRRD)
 
   # ==========================================

@@ -99,40 +99,8 @@ MakeInitialAffineTransformation
   referenceImage.GetPrincipalAxes( pAxesRef, centerOfMassRef );
   floatingImage.GetPrincipalAxes( pAxesFlt, centerOfMassFlt );
 
-  // detect pairs of unnecessary 180 deg rotations and fix
-  Matrix3x3<Types::Coordinate> product = pAxesRef * pAxesFlt;
-  
-  int flipCount = 0;
-  for ( int i = 0; i < 3; ++i )
-    if ( product[i][i] < 0 )
-      ++flipCount;
-  
-  if ( flipCount > 1 )
-    {
-    int flipA, flipB;
-    if ( product[0][0] < product[1][1] )
-      {
-      flipA = 0;
-      if ( product[2][2] < product[1][1] )
-	flipB = 2;
-      else
-	flipB = 1;
-      }
-    else
-      {
-      flipA = 1;
-      if ( product[0][0] < product[2][2] )
-	flipB = 0;
-      else
-	flipB = 2;
-      }
-    
-    for ( int i = 0; i < 3; ++i )
-      {
-      pAxesFlt[flipA][i] *= -1;
-      pAxesFlt[flipB][i] *= -1;
-      }
-    }
+  pAxesRef = pAxesRef.GetTranspose();
+  pAxesFlt = pAxesFlt.GetTranspose();
 
   // Now compute transformation
   pAxesRef.Invert3x3();
@@ -156,6 +124,16 @@ MakeInitialAffineTransformation
   AffineXform* xform = new AffineXform( xform4x4 );
   xform->ChangeCenter( centerOfMassRef.XYZ );
 
+  Types::Coordinate* angles = xform->RetAngles();
+  for ( int i = 0; i < 3; ++i )
+    {
+    if ( angles[i] > 90 )
+      angles[i] -= 180;
+    else if ( angles[i] < -90 )
+      angles[i] += 180;
+    }
+  xform->SetAngles( angles );
+  
   return xform;
 }
 
