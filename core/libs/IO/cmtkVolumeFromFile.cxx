@@ -93,7 +93,8 @@ VolumeFromFile::ReadDICOM( const char *path )
 
   ScalarDataType dtype = SelectDataTypeInteger( imageInfo.bytesperpixel, imageInfo.signbit );
 
-  TypedArray::SmartPtr dataArray( TypedArray::Create( dtype, dicomIO.GetReleaseDataPtr(), imageInfo.dims[0]*imageInfo.dims[1]*imageInfo.dims[2], IGS_FREE_ARRAY, imageInfo.Padding, &imageInfo.PaddingValue ) );
+  TypedArray::SmartPtr dataArray
+    ( TypedArray::Create( dtype, dicomIO.GetReleaseDataPtr(), imageInfo.dims[0]*imageInfo.dims[1]*imageInfo.dims[2], true /*freeArray*/, imageInfo.Padding, &imageInfo.PaddingValue ) );
 		       
   UniformVolume *volume = new UniformVolume( imageInfo.dims, size, dataArray );
 
