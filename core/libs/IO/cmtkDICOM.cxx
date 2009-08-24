@@ -232,7 +232,7 @@ DICOM::Read
 	this->SetDataPtr( (char*) pdata, delem->getLength() );
 	if ( haveRescaleIntercept || haveRescaleSlope ) 
 	  {
-	  TypedArray::SmartPtr typedArray = TypedArray::SmartPtr( TypedArray::Create( TYPE_SHORT, pdata, totalImageSizePixels, IGS_NO_FREE_ARRAY, imageInfo.Padding, &imageInfo.PaddingValue ) );
+	  TypedArray::SmartPtr typedArray = TypedArray::SmartPtr( TypedArray::Create( TYPE_SHORT, pdata, totalImageSizePixels, false /*freeArray*/, imageInfo.Padding, &imageInfo.PaddingValue ) );
 	  typedArray->Rescale( rescaleSlope, rescaleIntercept );
 	  imageInfo.signbit = imageInfo.signbit || (rescaleIntercept < 0);
 	  }
@@ -244,8 +244,7 @@ DICOM::Read
 	this->SetDataPtr( (char*) pdata, delem->getLength() );
 	if ( haveRescaleIntercept || haveRescaleSlope ) 
 	  {
-	  TypedArray::SmartPtr typedArray
-	    ( TypedArray::Create( TYPE_CHAR, pdata, totalImageSizePixels, IGS_NO_FREE_ARRAY, imageInfo.Padding, &imageInfo.PaddingValue ) );
+	  TypedArray::SmartPtr typedArray( TypedArray::Create( TYPE_CHAR, pdata, totalImageSizePixels, false /*freeArray*/, imageInfo.Padding, &imageInfo.PaddingValue ) );
 	  typedArray->Rescale( rescaleSlope, rescaleIntercept );
 	  imageInfo.signbit = imageInfo.signbit || (rescaleIntercept < 0);
 	  }
