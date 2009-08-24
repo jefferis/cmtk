@@ -238,7 +238,7 @@ public:
   {
     T* CloneData = (T*) malloc( len * sizeof(T) );
     memcpy( CloneData, Data+fromIdx, len * sizeof( T ) );
-    return this->NewTemplateArray( CloneData, len, IGS_FREE_ARRAY, PaddingFlag, &Padding );
+    return this->NewTemplateArray( CloneData, len, true/*freeArray*/, PaddingFlag, &Padding );
   }
 
   virtual void SetPaddingAt ( const size_t index = 0 ) 

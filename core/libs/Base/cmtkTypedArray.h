@@ -58,18 +58,6 @@
 #define CheckBounds(index,bound)
 #endif
 
-/// Do not free memory array when object is destructed.
-#define IGS_NO_FREE_ARRAY false
-
-/// Do free memory array when object is destructed.
-#define IGS_FREE_ARRAY true
-
-/// Object does not have PADDING data.
-#define IGS_NO_PADDING_DATA false
-
-/// Object has PADDING data.
-#define IGS_PADDING_DATA true
-
 namespace
 cmtk
 {
