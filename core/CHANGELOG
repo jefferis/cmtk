@@ -15,6 +15,7 @@ Release CMTK-1.1.0:
     align_landmarks, still needs to be linked against the VTKWrapper and VTK 
     libraries.
 - API: re-worked progress reporting to support multiple-level nested tasks
+- API: removed some residual legacy preprocessor definitions
 
 - Changed: command line tools now need to "opt-in" for XML support. This is to
     prevent cluttering Slicer's menu with modules that do not actually support
