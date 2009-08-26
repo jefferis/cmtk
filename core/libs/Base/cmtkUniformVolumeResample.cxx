@@ -175,9 +175,6 @@ UniformVolume::ResampleThreadExecuteLabels( void *arg )
 CMTK_THREAD_RETURN_TYPE
 UniformVolume::ResampleThreadExecuteGrey( void *arg )
 {
-    std::cerr << "I am here: " << arg << std::endl;
-          std::cerr.flush();
-
   UniformVolume::ResampleThreadInfo *info = static_cast<UniformVolume::ResampleThreadInfo*>( arg );
 
   const UniformVolume *me = info->thisObject;
@@ -242,10 +239,7 @@ UniformVolume::ResampleThreadExecuteGrey( void *arg )
 	}
       }
     }
-    std::cerr << "I am done: " << arg << std::endl;
-          std::cerr.flush();
-
-          return CMTK_THREAD_RETURN_VALUE;
+  return CMTK_THREAD_RETURN_VALUE;
 }
 
 } // namespace cmtk
