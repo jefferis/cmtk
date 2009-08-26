@@ -65,6 +65,8 @@ where
 :; <tt>--msd</tt> : Mean Squared Difference metric
 :; <tt>--ncc</tt> : Normalized Cross Correlation metric
 
+; <tt>--match-histograms</tt> : Match floating image histogram to reference image histogram.
+
 === Reference Image Preprocessing ===
 
 ; <tt>--class-ref</tt> : Data class: grey (default), binary, or label '''[Default value: NONE]'''

@@ -381,6 +381,21 @@ registration_metric
 </longflag>
 
 </string-enumeration>
+<boolean>
+<description>
+Match floating image histogram to reference image histogram.
+</description>
+<name>
+match_histograms
+</name>
+<label>
+match_histograms
+</label>
+<longflag>
+--match_histograms
+</longflag>
+
+</boolean>
 
 </parameters>
 <parameters>
