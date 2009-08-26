@@ -29,6 +29,8 @@
 //
 */
 
+#include <algorithm>
+
 namespace
 cmtk
 {
@@ -326,12 +328,8 @@ void
 TemplateArray<T>
 ::HistogramEqualization( const int numberOfLevels ) 
 {
-#ifdef VARIABLE_ARRAY_SIZE
-  unsigned int histogram[numberOfLevels];
-#else
-  unsigned int *histogram = Memory::AllocateArray<unsigned int>( numberOfLevels );
-#endif
-  memset( histogram, 0, sizeof( histogram ) );
+  std::vector<unsigned int> histogram( numberOfLevels );
+  std::fill( histogram.begin(), histogram.end(), 0 );
 
   // find original value range
   T min = Data[0], max = Data[0];
@@ -368,9 +366,6 @@ TemplateArray<T>
       Data[i] = min + std::max<T>( 0, static_cast<T>( this->ConvertItem( equalized ) ) );
       }
     }
-#ifndef VARIABLE_ARRAY_SIZE
-  delete[] histogram;
-#endif
 }
 
 template<class T>
