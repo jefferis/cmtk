@@ -686,6 +686,10 @@ public:
   /** Histogram equalization of values in array.
    */
   virtual void HistogramEqualization( const int numberOfLevels = 256 );
+
+  /** Match histogram of this array to that of a reference array.
+   */
+  virtual void MatchHistogramToReference( const TypedArray* referenceArray, const unsigned int numberOfBins = 1024 );
 };
 
 /**@name Classes for typed arrays. */

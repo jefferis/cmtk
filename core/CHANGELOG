@@ -65,6 +65,8 @@ Release CMTK-1.1.0:
 - Added: new class, cmtk::TransformationToNativeSpacesAffine, to change an
     affine transformation under changes of reference and floating image
     coordinate spaces.
+- Added: intensity adjustment of floating image in affine and B-spline
+    registration using histogram matching
 
 - Removed: multiple redundant command line parameters of the "warp" tool have
     been retired. We are only retaining options that differ from the default

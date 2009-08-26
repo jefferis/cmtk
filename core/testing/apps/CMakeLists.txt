@@ -234,7 +234,9 @@ IF(NOT CMTK_USE_MPI)
 
   # ==========================================
   # Tests for "registration" tool
-  SET(testList ${testList} RigidRegistrationMrPet 
+  SET(testList ${testList} 
+    AffineRegistrationMrMrMSD
+    RigidRegistrationMrPet 
     RigidRegistrationMrCt
     RigidRegistrationCt
     RigidRegistrationPetMr

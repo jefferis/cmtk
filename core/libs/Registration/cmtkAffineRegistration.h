@@ -59,6 +59,9 @@ protected:
    */
   cmtkGetSetMacroDefault(bool,InitialAlignCenters,true);
   
+  /// Flag whether to adjust floating image histogram to match reference image.
+  cmtkGetSetMacro(bool,MatchFltToRefHistogram);
+
   /// If set, this flag prevent automatic switching of model and reference.
   cmtkGetSetMacro(bool,NoSwitch);
 

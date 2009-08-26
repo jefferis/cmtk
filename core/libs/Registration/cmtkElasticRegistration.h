@@ -71,6 +71,9 @@ protected:
    */
   bool ForceSwitchVolumes;
   
+  /// Flag whether to adjust floating image histogram to match reference image.
+  cmtkGetSetMacro(bool,MatchFltToRefHistogram);
+
   /// This value determines how often the control point grid is refined.
   cmtkGetSetMacro(int,RefineGrid);
 

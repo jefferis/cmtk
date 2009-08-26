@@ -56,7 +56,8 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-AffineRegistration::AffineRegistration () 
+AffineRegistration::AffineRegistration () :
+  m_MatchFltToRefHistogram( false )
 { 
   this->m_InitialAlignCenters = false;
   this->m_NoSwitch = false;
@@ -86,6 +87,11 @@ AffineRegistration::InitRegistration ()
     refVolume = this->m_Volume_2;
     fltVolume = this->m_Volume_1;
     SwitchVolumes = true;
+    }
+  
+  if ( this->m_MatchFltToRefHistogram )
+    {
+    this->GetVolume_2()->GetData()->MatchHistogramToReference( this->GetVolume_1()->GetData() );
     }
   
   AffineXform::SmartPtr affineXform;

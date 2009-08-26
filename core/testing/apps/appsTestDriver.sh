@@ -112,6 +112,10 @@ check_results()
 }
 
 case ${RUNTEST} in
+    AffineRegistrationMrMrMSD)
+	run ${BINDIR}/registration -i --dofs 6,9 --msd --match-histograms -o ${tmpdir} pat001_mr_T1.hdr pat002_mr_T2.hdr
+	check_result registration
+	;;
     ShapeBasedAverage)
 	run ${BINDIR}/average_edt -o ${tmpdir}/shape_average.hdr -n 255 --interpolate-image parc1.hdr parc2.hdr parc3.hdr
 	check_result shape_average.img

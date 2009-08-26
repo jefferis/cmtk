@@ -57,6 +57,7 @@ ElasticRegistration::ElasticRegistration ()
   : VoxelRegistration(),
     InitialWarpXform( NULL ),
     InverseWarpXform( NULL ),
+    m_MatchFltToRefHistogram( false ),
     m_RigidityConstraintMap( NULL ),
     m_InverseConsistencyWeight( 0.0 ),
     m_ForceOutsideFlag( false ),
@@ -105,6 +106,11 @@ ElasticRegistration::InitRegistration ()
     SwitchVolumes = 0;
     }
 
+  if ( this->m_MatchFltToRefHistogram )
+    {
+    this->GetVolume_2()->GetData()->MatchHistogramToReference( this->GetVolume_1()->GetData() );
+    }
+  
   MatchedLandmarkList::SmartPtr mll( NULL );
   if ( this->m_LandmarkErrorWeight != 0 ) 
     {

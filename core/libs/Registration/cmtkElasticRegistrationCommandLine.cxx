@@ -184,6 +184,7 @@ ElasticRegistrationCommandLine
     metricGroup->AddSwitch( Key( "msd" ), 4, "Mean Squared Difference metric" );
     metricGroup->AddSwitch( Key( "ncc" ), 5, "Normalized Cross Correlation metric" );
 
+    cl.AddSwitch( Key( "match-histograms" ), &this->m_MatchFltToRefHistogram, true, "Match floating image histogram to reference image histogram." );
     cl.AddOption( Key( "force-outside-value" ), &forceOutsideValue, "Force values outside field of view to this value rather than drop incomplete pixel pairs", &forceOutsideFlag );
 
     this->m_PreprocessorRef.AttachToCommandLine( cl );
@@ -300,7 +301,7 @@ ElasticRegistrationCommandLine
   volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( Study2, Verbose ) );
   if ( !volume ) throw ConstructorFailed();
   this->SetVolume_2( UniformVolume::SmartPtr( this->m_PreprocessorFlt.GetProcessedImage( volume ) ) );
-  
+
   AffineXform::SmartPtr affineXform( AffineXform::SmartPtr::DynamicCastFrom( this->m_InitialTransformation ) );
   if ( affineXform )
     {
