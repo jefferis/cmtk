@@ -81,3 +81,34 @@ cmtk::CommandLine::Item::Helper<T>
     }
   return NULL;
 }
+
+template<class T>
+std::string
+cmtk::CommandLine::Item::Helper<T>
+::GetParamTypeString( const Item* item )
+{
+  const char* typeName = CommandLineTypeTraits<T>::GetName();
+    
+  if ( std::string( typeName ) == "string" )
+    {
+    if ( item->m_Properties & PROPS_IMAGE )
+      {
+      if ( item->m_Properties & PROPS_LABELS )
+	return "labelmap-path";
+      else
+	return "image-path";
+      }
+    else if ( item->m_Properties & PROPS_XFORM )
+      {
+      return "transformation-path";
+      }
+    else if ( item->m_Properties & PROPS_FILENAME )
+      return "path";
+    else if ( item->m_Properties & PROPS_DIRNAME )
+      return "directory";
+    else 
+      return "string";
+    }
+
+  return typeName;
+}

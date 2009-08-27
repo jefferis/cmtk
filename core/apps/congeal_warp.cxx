@@ -65,8 +65,8 @@ cmtk::Types::Coordinate GridSpacing = 40.0;
 bool GridSpacingExact = true;
 bool ForceZeroSum = false;
 bool ForceZeroSumNoAffine = false;
-size_t ForceZeroSumFirstN = 0;
-size_t NormalGroupFirstN = 0;
+unsigned int ForceZeroSumFirstN = 0;
+unsigned int NormalGroupFirstN = 0;
 
 float SamplingDensity = -1.0;
 
@@ -74,7 +74,7 @@ bool DeactivateUninformative = true;
 float PartialGradientThreshold = 0.0;
 
 bool UseNumberOfHistogramBins = false;
-size_t NumberOfHistogramBins = 0;
+unsigned int NumberOfHistogramBins = 0;
 
 bool CropImageHistograms = false;
 bool HistogramMatching = false;

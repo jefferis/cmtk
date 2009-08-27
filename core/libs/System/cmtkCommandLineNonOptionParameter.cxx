@@ -80,3 +80,10 @@ cmtk::CommandLine::NonOptionParameter
 
   return node;
 } 
+
+std::string
+cmtk::CommandLine::NonOptionParameter
+::GetParamTypeString() const
+{
+  return Item::Helper<const char*>::GetParamTypeString( this );
+}

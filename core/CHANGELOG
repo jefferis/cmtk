@@ -6,6 +6,9 @@ Release CMTK-1.1.1:
 
 - Improved: command line options for "congeal" and "congeal_warp" tools
     streamlined and grouped.
+- Improved: help and wiki outputs of command line tool option descriptions now
+    include textual descriptions of the argument expected by each option,
+    e.g., "float", "string", "image-path".
 
 
 Release CMTK-1.1.0 (2009-08-26):

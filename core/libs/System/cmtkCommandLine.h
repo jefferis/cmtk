@@ -298,6 +298,9 @@ public:
     virtual mxml_node_t* MakeXML( mxml_node_t *const parent //!< Parent in the XML tree for the new node.
       ) const = 0;
 
+    /// Virtual function returns a string that describes the parameter type associated with this option (derived classes only)
+    virtual std::string GetParamTypeString() const { return ""; }
+
     /// Format additional help information.
     virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
       ) const
@@ -341,6 +344,9 @@ public:
     public:
       /// Make a basic XML node for a generic item based on type, properties, attribute, etc.
       static mxml_node_t* MakeXML( const Item* item, mxml_node_t *const parent );
+
+      /// Return a textual description of the parameter associated with this option
+      static std::string GetParamTypeString( const Item* item );
     };
 
   private:
@@ -424,6 +430,9 @@ private:
 
     /// Virtual function that returns an XML tree describing this option.
     virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const;
+
+    /// Return a textual description of the parameter associated with this option
+    virtual std::string GetParamTypeString() const;
 
     /// Format additional help information (e.g., default values).
     virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
@@ -560,6 +569,9 @@ private:
 				  const int index //!< Running index [0,1,...] of this argument in the argument list.
       ) const;
 
+    /// Return a textual description of the parameter associated with this option
+    virtual std::string GetParamTypeString() const;
+
     /// Format additional help information (e.g., default values).
     virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
       ) const
@@ -668,7 +680,13 @@ public:
     virtual void FormatHelp( std::ostringstream& fmt ) const;    
 
     /// Print help for this item.
-    virtual void PrintWiki( const std::string prefix = "" ) const;
+    virtual void PrintWiki( const std::string& prefix = "" ) const;
+
+    /// Get type info for action parameter (if any).
+    virtual std::string GetActionTypeInfo() const 
+    {
+      return "";
+    }
     
     /// Comment (description).
     std::string m_Comment;
@@ -735,6 +753,12 @@ public:
     /// Print wiki help for this item.
     virtual void PrintWiki( const std::string prefix = "" ) const;
     
+    /// Get type info for action parameter (if any).
+    virtual std::string GetActionTypeInfo() const
+    {
+      return this->m_Action->GetParamTypeString();
+    }
+
     /// Action for simple key-action correspondence..
     Item::SmartPtr m_Action;
   };

@@ -72,6 +72,14 @@ cmtk::CommandLine::Option<T>
 }
 
 template<class T>
+std::string
+cmtk::CommandLine::Option<T>
+::GetParamTypeString() const
+{
+  return Item::Helper<T>::GetParamTypeString( this );
+}
+
+template<class T>
 std::ostringstream& 
 cmtk::CommandLine::Option<T>
 ::PrintHelp( std::ostringstream& fmt ) const

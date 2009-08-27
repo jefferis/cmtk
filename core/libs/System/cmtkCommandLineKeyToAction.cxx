@@ -91,9 +91,14 @@ void
 cmtk::CommandLine::KeyToAction
 ::FormatHelp( std::ostringstream& fmt ) const
 {
+  const std::string& typeInfo = this->GetActionTypeInfo();
   if ( this->m_Key.m_KeyChar )
     {
     fmt << "-" << this->m_Key.m_KeyChar;
+    if ( typeInfo.length() )
+      {
+      fmt << " <" << typeInfo << ">";
+      }
     }
 
   if ( this->m_Key.m_KeyChar && this->m_Key.m_KeyString.size() )
@@ -104,6 +109,10 @@ cmtk::CommandLine::KeyToAction
   if ( this->m_Key.m_KeyString.size() )
     {
     fmt << "--" << this->m_Key.m_KeyString;
+    if ( typeInfo.length() )
+      {
+      fmt << " <" << typeInfo << ">";
+      }
     }
 
   if ( fmt.str().length() > static_cast<size_t>( CommandLine::HelpTextIndent-2 ) )
@@ -122,12 +131,18 @@ cmtk::CommandLine::KeyToAction
 
 void
 cmtk::CommandLine::KeyToAction
-::PrintWiki( const std::string prefix ) const
+::PrintWiki( const std::string& prefix ) const
 {
+  const std::string& typeInfo = this->GetActionTypeInfo();
+
   StdOut << prefix << "; ";
   if ( this->m_Key.m_KeyChar )
     {
     StdOut << "<tt>-" << this->m_Key.m_KeyChar << "</tt>";
+    if ( typeInfo.length() )
+      {
+      StdOut << " <tt><" << typeInfo << "></tt>";
+      }
     }
 
   if ( this->m_Key.m_KeyChar && this->m_Key.m_KeyString.size() )
@@ -138,6 +153,10 @@ cmtk::CommandLine::KeyToAction
   if ( this->m_Key.m_KeyString.size() )
     {
     StdOut << "<tt>--" << this->m_Key.m_KeyString << "</tt>";
+    if ( typeInfo.length() )
+      {
+      StdOut << " <tt><" << typeInfo << "></tt>";
+      }
     }
 
   StdOut << " : ";

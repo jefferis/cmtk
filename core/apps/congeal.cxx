@@ -61,14 +61,14 @@ float SamplingDensity = -1.0;
 bool UseSamplingDensity = false;
 
 bool ForceZeroSum = false;
-size_t ForceZeroSumFirstN = 0;
-size_t NormalGroupFirstN = 0;
+unsigned int ForceZeroSumFirstN = 0;
+unsigned int  NormalGroupFirstN = 0;
 
 bool UseSmoothSigmaFactor = false;
 cmtk::Types::Coordinate SmoothSigmaFactor = -1.0;
 
 bool UseNumberOfHistogramBins = false;
-size_t NumberOfHistogramBins = 0;
+unsigned int NumberOfHistogramBins = 0;
 bool CropImageHistograms = false;
 
 const char* PreDefinedTemplatePath = NULL;
