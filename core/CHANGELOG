@@ -1,3 +1,13 @@
+Release CMTK-1.1.1:
+
+- Added: "congeal" and "congeal_warp" now optionally match image histograms to
+    either template data (if template data is used for registration) or first
+    image (if no template is defined or its data is not used).
+
+- Improved: command line options for "congeal" and "congeal_warp" tools
+    streamlined and grouped.
+
+
 Release CMTK-1.1.0 (2009-08-26):
 
 - API: no longer allow short-only options for command lines.
