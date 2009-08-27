@@ -91,3 +91,12 @@ cmtk::CommandLine::Vector<T>
     }
   return NULL;
 }
+
+template<class T>
+std::string
+cmtk::CommandLine::Vector<T>
+::GetParamTypeString() const
+{
+  const std::string& singleItemString = Item::Helper<T>::GetParamTypeString( this );
+  return singleItemString+std::string("[,")+singleItemString+std::string(",...]");
+}

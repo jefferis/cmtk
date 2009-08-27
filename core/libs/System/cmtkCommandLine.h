@@ -491,6 +491,9 @@ private:
     /// Virtual function that returns an XML tree describing this option.
     virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const;
 
+    /// Return a textual description of the parameter associated with this option
+    virtual std::string GetParamTypeString() const;
+
   private:
     /// Pointer to associated variable.
     std::vector<T>* m_pVector;
