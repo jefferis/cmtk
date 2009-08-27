@@ -87,28 +87,28 @@ std::string
 cmtk::CommandLine::Item::Helper<T>
 ::GetParamTypeString( const Item* item )
 {
-  const char* typeName = CommandLineTypeTraits<T>::GetName();
+  const std::string& typeName = CommandLineTypeTraits<T>::GetName();
     
-  if ( std::string( typeName ) == "string" )
+  if ( typeName == "string" )
     {
     if ( item->m_Properties & PROPS_IMAGE )
       {
       if ( item->m_Properties & PROPS_LABELS )
-	return "labelmap-path";
+	return "<labelmap-path>";
       else
-	return "image-path";
+	return "<image-path>";
       }
     else if ( item->m_Properties & PROPS_XFORM )
       {
-      return "transformation-path";
+      return "<transformation-path>";
       }
     else if ( item->m_Properties & PROPS_FILENAME )
-      return "path";
+      return "<path>";
     else if ( item->m_Properties & PROPS_DIRNAME )
-      return "directory";
+      return "<directory>";
     else 
-      return "string";
+      return "<string>";
     }
 
-  return typeName;
+  return std::string("<")+typeName+std::string(">");
 }

@@ -97,7 +97,7 @@ cmtk::CommandLine::KeyToAction
     fmt << "-" << this->m_Key.m_KeyChar;
     if ( typeInfo.length() )
       {
-      fmt << " <" << typeInfo << ">";
+      fmt << " " << typeInfo;
       }
     }
 
@@ -111,7 +111,7 @@ cmtk::CommandLine::KeyToAction
     fmt << "--" << this->m_Key.m_KeyString;
     if ( typeInfo.length() )
       {
-      fmt << " <" << typeInfo << ">";
+      fmt << " " << typeInfo;
       }
     }
 
@@ -141,7 +141,7 @@ cmtk::CommandLine::KeyToAction
     StdOut << "<tt>-" << this->m_Key.m_KeyChar << "</tt>";
     if ( typeInfo.length() )
       {
-      StdOut << " <tt><" << typeInfo << "></tt>";
+      StdOut << " <tt>" << typeInfo << "</tt>";
       }
     }
 
@@ -155,7 +155,7 @@ cmtk::CommandLine::KeyToAction
     StdOut << "<tt>--" << this->m_Key.m_KeyString << "</tt>";
     if ( typeInfo.length() )
       {
-      StdOut << " <tt><" << typeInfo << "></tt>";
+      StdOut << " <tt>" << typeInfo << "</tt>";
       }
     }
 
