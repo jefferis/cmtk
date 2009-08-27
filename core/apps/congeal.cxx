@@ -101,6 +101,7 @@ CallbackNumberDOFs( const char* argv )
 
 bool AlignCentersOfMass = false;
 bool InitScales = false;
+bool HistogramMatching = false;
 
 cmtk::Types::Coordinate Accuracy = 0.01;
 cmtk::Types::Coordinate Exploration = 0.25;
@@ -144,43 +145,55 @@ main( int argc, char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Image Registration" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation." );
+    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation." )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
 
+    cl.BeginGroup( "Template", "Template Image Options" );
     cl.AddOption( Key( 't', "template" ), &PreDefinedTemplatePath, "Input filename for pre-defined template image." );
     cl.AddOption( Key( 'T', "template-with-data" ), &PreDefinedTemplatePath, "Use user-supplied template images's pixel data in registration", &UseTemplateData );
+    cl.EndGroup();
 
+    cl.BeginGroup( "Output", "Output Options" );
     cl.AddOption( Key( 'O', "output-root" ), &OutputRootDirectory, "Root directory for all output files." );
     cl.AddOption( Key( 'o', "output" ), &OutputArchive, "Output filename for groupwise registration archive." );
     cl.AddOption( Key( "output-average" ), &AverageImagePath, "Output filename for registered average image." );
     cl.AddSwitch( Key( "average-linear" ), &AverageImageInterpolation, cmtk::Interpolators::LINEAR, "Use linear interpolation for average image" );
     cl.AddSwitch( Key( "average-cubic" ), &AverageImageInterpolation, cmtk::Interpolators::CUBIC, "Use cubic interpolation for average image" );
     cl.AddSwitch( Key( "no-output-average" ), &AverageImagePath, (const char*)NULL, "Do not write average image." );
+    cl.EndGroup();
 
+    cl.BeginGroup( "Multuresolution", "Multuresolution Parameters" );
     cl.AddOption( Key( 'd', "downsample-from" ), &DownsampleFrom, "Initial downsampling factor" );
     cl.AddOption( Key( 'D', "downsample-to" ), &DownsampleTo, "Final downsampling factor." );
     cl.AddOption( Key( 's', "sampling-density" ), &SamplingDensity, "Probabilistic sampling density. Legal values between 0 and 1.", &UseSamplingDensity );
+    cl.EndGroup();
 
+    cl.BeginGroup( "Image", "Image Options and Operations" );
     cl.AddOption( Key( 'B', "force-background" ), &UserBackgroundValue, "Force background pixels (outside FOV) to given (bin) value.", &UserBackgroundFlag );
     cl.AddOption( Key( 'H', "histogram-bins" ), &NumberOfHistogramBins, "Manually set number of histogram bins for entropy evaluation", &UseNumberOfHistogramBins );
     cl.AddSwitch( Key( "crop-histograms" ), &CropImageHistograms, true, "Crop image histograms to make better use of histogram bins." );
     cl.AddOption( Key( "smooth" ), &SmoothSigmaFactor, "Sigma of Gaussian smoothing kernel in multiples of template image pixel size.", &UseSmoothSigmaFactor );
+    cl.AddSwitch( Key( "match-histograms" ), &HistogramMatching, true, "Match all image histograms to template data (or first image, if no template image is given)" );
+    cl.EndGroup();
 
+    cl.BeginGroup( "Transformation", "Transformation Parameters" );
     cl.AddCallback( Key( "dofs" ), CallbackNumberDOFs, "Add DOFs to list [default: one pass, 6 DOF]" );
     cl.AddSwitch( Key( 'z', "zero-sum" ), &ForceZeroSum, true, "Enforce zero-sum computation." );
     cl.AddOption( Key( 'N', "normal-group-first-n" ), &NormalGroupFirstN, "First N images are from the normal group and should be registered unbiased." );
     cl.AddOption( Key( 'Z', "zero-sum-first-n" ), &ForceZeroSumFirstN, "Enforce zero-sum computation for first N images.", &ForceZeroSum );
     
+    cl.BeginGroup( "Initialization", "Transformation Initialization" );
     cl.AddSwitch( Key( "align-bounding-boxes" ), &AlignCentersOfMass, false, "Initially align centers of bounding boxes of all images by translations" );
     cl.AddSwitch( Key( "align-centers-of-mass" ), &AlignCentersOfMass, true, "Initially align centers of mass by translations" );
-
-    cl.AddSwitch( Key( "no-init-scales" ), &InitScales, false, "All scale factors are initialized as 1.0" );
     cl.AddSwitch( Key( "init-scales" ), &InitScales, true, "Initialize scale factors using first-order moments" );
+    cl.EndGroup();
 
+    cl.BeginGroup( "Optimization", "Optimization Parameters" );
     cl.AddOption( Key( 'e', "exploration" ), &Exploration, "Exploration of optimization in pixels" );
     cl.AddOption( Key( 'a', "accuracy" ), &Accuracy, "Accuracy of optimization in pixels" );
     cl.AddOption( Key( 'r', "repeat-level" ), &OptimizerRepeatLevel, "Number of repetitions per optimization level" );
     cl.AddOption( Key( 'S', "step-factor" ), &OptimizerStepFactor, "Step factor for successive optimization passes" );
     cl.AddSwitch( Key( "disable-optimization" ), &DisableOptimization, true, "Disable optimization and output initial configuration." );
+    cl.EndGroup();
       
     cl.Parse();
 
@@ -292,7 +305,25 @@ main( int argc, char* argv[] )
 	}
       }
     }
-  
+
+  if ( HistogramMatching )
+    {
+    const cmtk::TypedArray* referenceDataForHistogramMatching = NULL; 
+    if ( PreDefinedTemplate && UseTemplateData )
+      {
+      referenceDataForHistogramMatching = PreDefinedTemplate->GetData();
+      }
+    if ( !referenceDataForHistogramMatching )
+      {
+      referenceDataForHistogramMatching = imageListOriginal[0]->GetData();
+      }
+    
+    for ( size_t idx = 1; idx < imageListOriginal.size(); ++idx )
+      {
+      imageListOriginal[idx]->GetData()->MatchHistogramToReference( referenceDataForHistogramMatching );
+      }
+    }
+
   if ( UseSamplingDensity )
     {
     functional->SetProbabilisticSampleDensity( SamplingDensity );

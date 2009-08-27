@@ -77,6 +77,7 @@ bool UseNumberOfHistogramBins = false;
 size_t NumberOfHistogramBins = 0;
 
 bool CropImageHistograms = false;
+bool HistogramMatching = false;
 
 bool UseSmoothSigmaFactorPixel = false;
 cmtk::Types::Coordinate SmoothSigmaFactorPixel = 0.0;
@@ -133,49 +134,59 @@ main( int argc, char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Image Registration" );
     
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation." );
+    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation." )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
 
+    cl.BeginGroup( "Template", "Template Image Options" );
     cl.AddOption( Key( 't', "template" ), &PreDefinedTemplatePath, "Override template image with given file." );
     cl.AddOption( Key( 'T', "template-with-data" ), &PreDefinedTemplatePath, "Use user-supplied template images's pixel data in registration", &UseTemplateData );
+    cl.EndGroup();
 
+    cl.BeginGroup( "Multuresolution", "Multuresolution Parameters" );
     cl.AddOption( Key( 'd', "downsample-from" ), &DownsampleFrom, "Initial downsampling factor [4]." );
     cl.AddOption( Key( 'D', "downsample-to" ), &DownsampleTo, "Final downsampling factor [1]." );
-    cl.AddOption( Key( 'r', "refine-grid" ), &RefineTransformationGrid, "Number of times to refine transformation grid [default: 0]." );
-    cl.AddOption( Key( 'J', "jacobian-weight" ), &JacobianConstraintWeight, "Weight for Jacobian volume preservation constraint [default: off]" );
-    cl.AddOption( Key( 'E', "bending-energy-weight" ), &BendingEnergyWeight, "Weight for grid bending energy regularization constraint [default: off]" );
+    cl.AddOption( Key( 's', "sampling-density" ), &SamplingDensity, "Probabilistic sampling density [default: off]." );
+    cl.EndGroup();
 
+    cl.BeginGroup( "Output", "Output Options" );
     cl.AddOption( Key( 'O', "output-root" ), &OutputRootDirectory, "Root directory for all output files." );
     cl.AddOption( Key( 'o', "output" ), &OutputArchive, "Output filename for groupwise registration archive." );
     cl.AddOption( Key( "output-average" ), &AverageImagePath, "Output filename for registered average image." );
     cl.AddSwitch( Key( "no-output-average" ), &AverageImagePath, (const char*)NULL, "Do not write average image." );
     cl.AddSwitch( Key( "average-cubic" ), &AverageImageInterpolation, cmtk::Interpolators::CUBIC, "Use cubic interpolation for average image (default: linear)" );
-
-    cl.AddOption( Key( 's', "sampling-density" ), &SamplingDensity, "Probabilistic sampling density [default: off]." );
-
-    cl.AddOption( Key( 'p', "partial-gradient-thresh" ), &PartialGradientThreshold, "Threshold factor for partial gradient zeroing [default: off; <0 turn off]" );
-    cl.AddSwitch( Key( "deactivate-uninformative" ), &DeactivateUninformative, true, "Deactivate uninformative control points [default: on]" );
-    cl.AddSwitch( Key( "activate-uninformative" ), &DeactivateUninformative, false, "Activate potentially uninformative control points [default: off]" );
-
+    cl.EndGroup();
+    
+    cl.BeginGroup( "Image", "Image Options and Operations" );
     cl.AddOption( Key( 'B', "force-background" ), &UserBackgroundValue, "Force background pixels (outside FOV) to given (bin) value.", &UserBackgroundFlag );
     cl.AddOption( Key( 'H', "histogram-bins" ), &NumberOfHistogramBins, "Set number of histogram bins for entropy evaluation.", &UseNumberOfHistogramBins );
     cl.AddSwitch( Key( "crop-histograms" ), &CropImageHistograms, true, "Crop image histograms to make better use of histogram bins." );
+    cl.AddSwitch( Key( "match-histograms" ), &HistogramMatching, true, "Match all image histograms to template data (or first image, if no template image is given)" );
     cl.AddOption( Key( "smooth-pixels" ), &SmoothSigmaFactorPixel, "Sigma of Gaussian smoothing kernel in multiples of template image pixel size", &UseSmoothSigmaFactorPixel );
     cl.AddOption( Key( "smooth-cps" ), &SmoothSigmaFactorControlPointSpacing, "Sigma of Gaussian smoothing kernel in multiples of control point delta", &UseSmoothSigmaFactorControlPointSpacing );
+    cl.EndGroup();
 
+    cl.BeginGroup( "Transformation", "Transformation Parameters" );
     cl.AddOption( Key( "grid-spacing" ), &GridSpacing, "Control point grid spacing." );
-    cl.AddSwitch( Key( "grid-spacing-exact" ), &GridSpacingExact, true, "Use exact grid spacing [default]" );
     cl.AddSwitch( Key( "grid-spacing-fit" ), &GridSpacingExact, false, "Use grid spacing that fits volume FOV" );
+    cl.AddOption( Key( 'r', "refine-grid" ), &RefineTransformationGrid, "Number of times to refine transformation grid [default: 0]." );
+    cl.EndGroup();
 
+    cl.BeginGroup( "Constraints", "Transformation Constraint Options" );
     cl.AddSwitch( Key( 'z', "zero-sum" ), &ForceZeroSum, true, "Enforce zero-sum computation." );
     cl.AddSwitch( Key( "zero-sum-no-affine" ), &ForceZeroSumNoAffine, true, "Enforce zero-sum computation EXCLUDING affine components." );
     cl.AddOption( Key( 'N', "normal-group-first-n" ), &NormalGroupFirstN, "First N images are from the normal group and should be registered unbiased." );
     cl.AddOption( Key( 'Z', "zero-sum-first-n" ), &ForceZeroSumFirstN, "Enforce zero-sum computation for first N images.", &ForceZeroSum );
+    cl.AddOption( Key( 'J', "jacobian-weight" ), &JacobianConstraintWeight, "Weight for Jacobian volume preservation constraint [default: off]" );
+    cl.AddOption( Key( 'E', "bending-energy-weight" ), &BendingEnergyWeight, "Weight for grid bending energy regularization constraint [default: off]" );
+    cl.EndGroup();
 
-    cl.AddOption( Key( 'e', "exploration" ), &Exploration, "Exploration of optimization in pixels [0.25]" );
-    cl.AddOption( Key( 'a', "accuracy" ), &Accuracy, "Accuracy of optimization in pixels [0.01]" );
-    cl.AddOption( Key( 'S', "step-factor" ), &OptimizerStepFactor, "Step factor for successive optimization passes [0.5]" );
-
+    cl.BeginGroup( "Optimization", "Optimization Parameters" );
+    cl.AddOption( Key( 'e', "exploration" ), &Exploration, "Exploration of optimization in pixels" );
+    cl.AddOption( Key( 'a', "accuracy" ), &Accuracy, "Accuracy of optimization in pixels" );
+    cl.AddOption( Key( 'S', "step-factor" ), &OptimizerStepFactor, "Step factor for successive optimization passes" );
+    cl.AddOption( Key( 'p', "partial-gradient-thresh" ), &PartialGradientThreshold, "Threshold factor for partial gradient zeroing [<0 turn off]" );
+    cl.AddSwitch( Key( "activate-uninformative" ), &DeactivateUninformative, false, "Activate potentially uninformative control points" );
     cl.AddSwitch( Key( "disable-optimization" ), &DisableOptimization, true, "Disable optimization and output initial configuration." );
+    cl.EndGroup();
       
     cl.Parse();
 
@@ -242,6 +253,24 @@ main( int argc, char* argv[] )
   functional->GetOriginalTargetImages( imageListOriginal );
 
   cmtk::UniformVolume::SmartPtr originalTemplateGrid = functional->GetTemplateGrid();
+
+  if ( HistogramMatching )
+    {
+    const cmtk::TypedArray* referenceDataForHistogramMatching = NULL; 
+    if ( originalTemplateGrid && UseTemplateData )
+      {
+      referenceDataForHistogramMatching = originalTemplateGrid->GetData();
+      }
+    if ( !referenceDataForHistogramMatching )
+      {
+      referenceDataForHistogramMatching = imageListOriginal[0]->GetData();
+      }
+    
+    for ( size_t idx = 1; idx < imageListOriginal.size(); ++idx )
+      {
+      imageListOriginal[idx]->GetData()->MatchHistogramToReference( referenceDataForHistogramMatching );
+      }
+    }
 
   functional->InitializeXforms( GridSpacing, GridSpacingExact ); // must do this before downsampling template grid
   const cmtk::Types::Coordinate FinestGridSpacing = GridSpacing / (1<<RefineTransformationGrid);
