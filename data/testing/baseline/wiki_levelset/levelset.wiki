@@ -19,19 +19,12 @@ where
 == List of Supported Options ==
 
 ; <tt>-v</tt> / <tt>--verbose</tt> : Verbose mode
-
 ; <tt>-b</tt> / <tt>--binarize</tt> : Binarize levelset and write as byte mask, rather than write floating-point levelset function itself.
-
 === These parameters of control the evolution of the levelset function ===
 
-; <tt>-n</tt> / <tt>--iterations</tt> : Maximum number of iterations '''[Default value: 100]'''
-
+; <tt>-n</tt> <tt><integer></tt> / <tt>--iterations</tt> <tt><integer></tt> : Maximum number of iterations
 ; <tt>-f</tt> / <tt>--force-iterations</tt> : Force given number of iterations, even when convergence has been detected
-
-; <tt>-s</tt> / <tt>--filter-sigma</tt> : Gaussian filter sigma in world coordinate units (e.g., mm) '''[Default value: 2]'''
-
-; <tt>-d</tt> / <tt>--delta</tt> : Time constant for levelset evolution; must be > 0; larger is faster '''[Default value: 0.1]'''
-
-; <tt>-t</tt> / <tt>--levelset-threshold</tt> : Levelset threshold: levelset function is truncated at +/- this value '''[Default value: 1]'''
-
+; <tt>-s</tt> <tt><double></tt> / <tt>--filter-sigma</tt> <tt><double></tt> : Gaussian filter sigma in world coordinate units (e.g., mm)
+; <tt>-d</tt> <tt><double></tt> / <tt>--delta</tt> <tt><double></tt> : Time constant for levelset evolution; must be > 0; larger is faster
+; <tt>-t</tt> <tt><double></tt> / <tt>--levelset-threshold</tt> <tt><double></tt> : Levelset threshold: levelset function is truncated at +/- this value
 

@@ -19,47 +19,30 @@ where
 == List of Supported Options ==
 
 ; <tt>-v</tt> / <tt>--verbose</tt> : Be verbose
-
 ; <tt>-F</tt> / <tt>--write-float</tt> : Write output image with floating point pixel data. If this is not given, the input data type is used.
-
 === Bias Field Parameterization ===
 
-; <tt>-A</tt> / <tt>--degree-add</tt> : Polynomial degree for additive correction. '''[Default value: 0]'''
-
-; <tt>-M</tt> / <tt>--degree-mul</tt> : Polynomial degree for multiplicative correction. '''[Default value: 2]'''
-
+; <tt>-A</tt> <tt><integer></tt> / <tt>--degree-add</tt> <tt><integer></tt> : Polynomial degree for additive correction.
+; <tt>-M</tt> <tt><integer></tt> / <tt>--degree-mul</tt> <tt><integer></tt> : Polynomial degree for multiplicative correction.
 ; <tt>-I</tt> / <tt>--incremental</tt> : Incrementally increase polynomial degrees.
-
 === Input Image Preprocessing ===
 
-; <tt>-m</tt> / <tt>--mask</tt> : Binary mask image filename. '''[Default value: NONE]'''
-
-; <tt>-t</tt> / <tt>--thresh-min</tt> : Minimum intensity threshold for image foreground. '''[Default: disabled]'''
-
-; <tt>-T</tt> / <tt>--thresh-max</tt> : Minimum intensity threshold for image foreground. '''[Default: disabled]'''
-
+; <tt>-m</tt> <tt><labelmap-path></tt> / <tt>--mask</tt> <tt><labelmap-path></tt> : Binary mask image filename.
+; <tt>-t</tt> <tt><float></tt> / <tt>--thresh-min</tt> <tt><float></tt> : Minimum intensity threshold for image foreground.
+; <tt>-T</tt> <tt><float></tt> / <tt>--thresh-max</tt> <tt><float></tt> : Minimum intensity threshold for image foreground.
 === Entropy Estimation Settings ===
 
 ; <tt>-L</tt> / <tt>--log-intensities</tt> : Use log intensities for entropy estimation.
-
-; <tt>-s</tt> / <tt>--sampling-density</tt> : Image sampling density to use only subset of image pixels '''[Default: disabled]'''
-
-; <tt>-n</tt> / <tt>--num-bins</tt> : Number of histogram bins for entropy estimation '''[Default value: 256]'''
-
+; <tt>-s</tt> <tt><float></tt> / <tt>--sampling-density</tt> <tt><float></tt> : Image sampling density to use only subset of image pixels
+; <tt>-n</tt> <tt><integer></tt> / <tt>--num-bins</tt> <tt><integer></tt> : Number of histogram bins for entropy estimation
 === Optimization Algorithm Settings ===
 
-; <tt>--step-max</tt> : Maximum (initial) search step size. '''[Default value: 1]'''
-
-; <tt>--step-min</tt> : Minimum (final) search step size. '''[Default value: 0.1]'''
-
+; <tt>--step-max</tt> <tt><double></tt> : Maximum (initial) search step size.
+; <tt>--step-min</tt> <tt><double></tt> : Minimum (final) search step size.
 === Import and Output of Bias Fields ===
 
-; <tt>--import-bias-add</tt> : Import additive bias field (disables optimization). '''[Default value: NONE]'''
-
-; <tt>--import-bias-mul</tt> : Import multiplicative bias field (disables optimization). '''[Default value: NONE]'''
-
-; <tt>--write-bias-add</tt> : File name for output of additive bias field. '''[Default value: NONE]'''
-
-; <tt>--write-bias-mul</tt> : File name for output of multiplicative bias field. '''[Default value: NONE]'''
-
+; <tt>--import-bias-add</tt> <tt><image-path></tt> : Import additive bias field (disables optimization).
+; <tt>--import-bias-mul</tt> <tt><image-path></tt> : Import multiplicative bias field (disables optimization).
+; <tt>--write-bias-add</tt> <tt><image-path></tt> : File name for output of additive bias field.
+; <tt>--write-bias-mul</tt> <tt><image-path></tt> : File name for output of multiplicative bias field.
 
