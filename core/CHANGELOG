@@ -4,6 +4,8 @@ Release CMTK-1.1.1:
     either template data (if template data is used for registration) or first
     image (if no template is defined or its data is not used).
 
+- Fixed: configuration of type sizes in bundled DICOM library was broken.
+
 - Improved: command line options for "congeal" and "congeal_warp" tools
     streamlined and grouped.
 - Improved: help and wiki outputs of command line tool option descriptions now
