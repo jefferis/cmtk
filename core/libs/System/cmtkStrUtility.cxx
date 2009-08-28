@@ -89,7 +89,7 @@ static char StrBuffer[PATH_MAX];
 const char*
 StrDir( const char *path )
 {
-  const char *slash = strrchr( path, '/' );
+  const char *slash = strrchr( path, CMTK_PATH_SEPARATOR );
   if ( slash && (slash != path) ) 
     {
     int dirLen = (slash-path);
@@ -99,7 +99,7 @@ StrDir( const char *path )
   else
     {
     if ( slash )
-      strcpy( StrBuffer, "/" );
+      strcpy( StrBuffer, CMTK_PATH_SEPARATOR_STR );
     else
       strcpy( StrBuffer, path );
     }
@@ -109,7 +109,7 @@ StrDir( const char *path )
 const char*
 StrFName( const char *path )
 {
-  const char *slash = strrchr( path, '/' );
+  const char *slash = strrchr( path, CMTK_PATH_SEPARATOR );
   if ( slash )
     {
     strcpy( StrBuffer, slash+1 );

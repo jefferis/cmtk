@@ -174,7 +174,11 @@ ImageFileDCM::ImageFileDCM( const char* filename )
 
   std::cerr << filename << std::endl;
 
+#ifdef _MSC_VER
+  const char *last_slash = strrchr( filename, '\\' );
+#else
   const char *last_slash = strrchr( filename, '/' );
+#endif
   if ( last_slash ) 
     {
     fname = strdup(last_slash+1);
@@ -205,10 +209,14 @@ ImageFileDCM::ImageFileDCM( const char* filename )
   if ( !status.good() ) 
     {
     std::cerr << "Error: cannot read DICOM file " << filename << " (" << status.text() << ")" << std::endl;
-    throw (2);
+    throw (0);
     }
   
   DcmDataset *dataset = fileformat->getAndRemoveDataset();
+  if ( ! dataset )
+  {
+     throw(1);
+  }
 //  DcmDataset *dataset = fileformat->getDataset();
   std::auto_ptr<DiDocument> document( new DiDocument( dataset, dataset->getOriginalXfer(), CIF_AcrNemaCompatibility ) );
   if ( ! document.get() || ! document->good() ) 
@@ -520,7 +528,7 @@ traverse_directory( VolumeList& studylist, const char *path, const char *wildcar
       {
       studylist.AddImageFileDCM( new ImageFileDCM( it->c_str() ) );
       }
-    catch (int i) 
+    catch (int)
       {
       }
     }

@@ -86,7 +86,7 @@ RecursiveMkPrefixDir
   for ( unsigned i=0; filename[i]; ++i ) 
     {
     prefix[i] = filename[i];
-    if ( (prefix[i] == '/') ) 
+    if ( (prefix[i] == CMTK_PATH_SEPARATOR) ) 
       {
       prefix[i+1] = 0;
       if ( stat( prefix, &buf ) != 0 ) 
@@ -106,15 +106,15 @@ RecursiveMkPrefixDir
 char* 
 GetAbsolutePath( char *absPath, const char* relPath )
 {
-  if ( relPath[0] == '/' )
+  if ( relPath[0] == CMTK_PATH_SEPARATOR )
     {
     strcpy( absPath, relPath );
     }
   else
     {
     getcwd( absPath, PATH_MAX );
-    if ( absPath[ strlen( absPath )-1 ] != '/' )
-      strcat( absPath, "/" );
+    if ( absPath[ strlen( absPath )-1 ] != CMTK_PATH_SEPARATOR )
+      strcat( absPath, CMTK_PATH_SEPARATOR_STR );
     
     strcat( absPath, relPath );
     }

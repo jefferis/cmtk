@@ -108,6 +108,15 @@
 #  define finite(a) _finite(a)
 #  define random rand
 #  define srandom srand
+
+#  define CMTK_PATH_SEPARATOR '\\'
+#  define CMTK_PATH_SEPARATOR_STR "\\"
+
+#else
+
+#  define CMTK_PATH_SEPARATOR '/'
+#  define CMTK_PATH_SEPARATOR_STR "/"
+
 #endif //#ifdef _MSC_VER
 
 #endif // #ifndef __cmtkconfig_h_included__

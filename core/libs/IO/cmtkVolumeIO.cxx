@@ -317,7 +317,8 @@ VolumeIO::Write
 	}
       }
     }
-  
+ 
+#ifndef _MSC_VER
   const char* colon = strchr( pathAndFormat, ':' );
   if ( colon != NULL ) 
     {
@@ -361,6 +362,7 @@ VolumeIO::Write
       fileFormat = FILEFORMAT_PGM;
       }
     }
+#endif
 
   if ( fileFormat == FILEFORMAT_UNKNOWN )
     {

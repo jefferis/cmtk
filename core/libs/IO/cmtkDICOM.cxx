@@ -485,10 +485,16 @@ DICOM::Read
     }
   
   fileformat->transferInit();
-  fileformat->loadFile( path );
+  OFCondition status = fileformat->loadFile( path );
   fileformat->transferEnd();
 
-  DcmDataset *dataset = fileformat->getDataset();
+  if ( !status.good() ) 
+    {
+    StdErr << "Error: cannot read DICOM file " << path << " (" << status.text() << ")\n";
+    throw (0);
+    }
+  
+  DcmDataset *dataset = fileformat->getAndRemoveDataset();
 
   if ( !dataset ) 
     {
