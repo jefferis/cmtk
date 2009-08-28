@@ -197,14 +197,14 @@ ImageFileDCM::ImageFileDCM( const char* filename )
     }
   
   std::auto_ptr<DcmFileFormat> fileformat( new DcmFileFormat );
-  if ( !fileformat.get() ) throw (1);
   
   fileformat->transferInit();
-  fileformat->loadFile( filename );
+  OFCondition status = fileformat->loadFile( filename );
   fileformat->transferEnd();
   
-  if ( fileformat->error() != EC_Normal ) 
+  if ( !status.good() ) 
     {
+    std::cerr << "Error: cannot read DICOM file " << filename << " (" << status.text() << ")" << std::endl;
     throw (2);
     }
   
@@ -590,7 +590,6 @@ main ( int argc, char *argv[] )
 
   VolumeList studylist;
   
-  //  std::std::cerr = std::cnull;
   traverse_directory( studylist, SearchRootDir, "*" );
   
   studylist.WriteToArchive();
