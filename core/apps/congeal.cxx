@@ -83,21 +83,7 @@ const char* OutputStudyListIndividual = "congeal_pairs";
 const char* AverageImagePath = "average_congeal.hdr";
 cmtk::Interpolators::InterpolationEnum AverageImageInterpolation = cmtk::Interpolators::LINEAR;
 
-std::list<int> NumberDOFs;
-const char*
-CallbackNumberDOFs( const char* argv )
-{
-  int numberDOFs = atoi( argv );
-  if ( (numberDOFs == 3) || (numberDOFs == 6) || (numberDOFs == 7) || (numberDOFs == 9) || (numberDOFs == 12) )
-    {
-    NumberDOFs.push_back( numberDOFs );
-    }
-  else
-    {
-    cmtk::StdErr << "WARNING: Number of DOFs " << numberDOFs << "(" << argv << ") is not supported and will be ignored\n";
-    }
-  return NULL;
-}
+std::vector<int> NumberDOFs;
 
 bool AlignCentersOfMass = false;
 bool InitScales = false;
@@ -176,7 +162,7 @@ main( int argc, char* argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Transformation", "Transformation Parameters" );
-    cl.AddCallback( Key( "dofs" ), CallbackNumberDOFs, "Add DOFs to list [default: one pass, 6 DOF]" );
+    cl.AddVector( Key( "dofs" ), NumberDOFs, "Add DOFs to list [default: one pass, 6 DOF]" );
     cl.AddSwitch( Key( 'z', "zero-sum" ), &ForceZeroSum, true, "Enforce zero-sum computation." );
     cl.AddOption( Key( 'N', "normal-group-first-n" ), &NormalGroupFirstN, "First N images are from the normal group and should be registered unbiased." );
     cl.AddOption( Key( 'Z', "zero-sum-first-n" ), &ForceZeroSumFirstN, "Enforce zero-sum computation for first N images.", &ForceZeroSum );
@@ -376,7 +362,7 @@ main( int argc, char* argv[] )
       optimizer.SetRepeatLevelCount( OptimizerRepeatLevel );
       optimizer.SetFunctional( functional );
       
-      for ( std::list<int>::const_iterator itDOF = NumberDOFs.begin(); itDOF != NumberDOFs.end(); ++itDOF )
+      for ( std::vector<int>::const_iterator itDOF = NumberDOFs.begin(); itDOF != NumberDOFs.end(); ++itDOF )
 	{
 	functional->SetXformNumberDOFs( *itDOF );
 	
