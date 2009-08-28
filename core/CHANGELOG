@@ -5,6 +5,8 @@ Release CMTK-1.1.1:
     image (if no template is defined or its data is not used).
 
 - Fixed: configuration of type sizes in bundled DICOM library was broken.
+- Fixed: file system functions were borken on Windows (MS-VS build) due to use
+    of Unix-style directory separators ('/' vs. '\').
 
 - Improved: command line options for "congeal" and "congeal_warp" tools
     streamlined and grouped.
