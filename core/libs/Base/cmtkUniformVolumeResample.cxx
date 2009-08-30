@@ -58,8 +58,6 @@ UniformVolume::Resample( const UniformVolume& other ) const
      
     for ( size_t threadIdx = 0; threadIdx < numberOfThreads; ++threadIdx ) 
       {
-          std::cerr << threadIdx << "\t" << &ThreadInfo[threadIdx] << std::endl;
-          std::cerr.flush();
       ThreadInfo[threadIdx].thisObject = this;
       ThreadInfo[threadIdx].ThisThreadIndex = threadIdx;
       ThreadInfo[threadIdx].NumberOfThreads = numberOfThreads;
