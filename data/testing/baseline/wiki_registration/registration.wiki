@@ -27,7 +27,8 @@ where
 
 ; <tt>-e</tt> <tt><double></tt> / <tt>--exploration</tt> <tt><double></tt> : Exploration [initial optimizer step size]
 ; <tt>-a</tt> <tt><double></tt> / <tt>--accuracy</tt> <tt><double></tt> : Accuracy [final optimizer step size]
-; <tt>-f</tt> <tt><double></tt> / <tt>--stepfactor</tt> <tt><double></tt> : Factor for search step size reduction. Must be > 0.0 and < 1.0 [default: 0.5]
+; <tt>-f</tt> <tt><double></tt> / <tt>--stepfactor</tt> <tt><double></tt> : Factor for search step size reduction. Must be > 0.0 and < 1.0
+; <tt>--delta-f-threshold</tt> <tt><double></tt> : Optional threshold to terminate optimization (level) if relative change of target function drops below this value.
 === Image resolution parameters ===
 
 ; <tt>-s</tt> <tt><double></tt> / <tt>--sampling</tt> <tt><double></tt> : Image sampling (finest resampled image resolution)

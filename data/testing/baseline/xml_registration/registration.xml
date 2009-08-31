@@ -149,7 +149,7 @@ accuracy
 0.5
 </default>
 <description>
-Factor for search step size reduction. Must be &gt; 0.0 and &lt; 1.0 [default: 0.5]
+Factor for search step size reduction. Must be &gt; 0.0 and &lt; 1.0
 </description>
 <name>
 stepfactor
@@ -162,6 +162,24 @@ stepfactor
 </flag>
 <longflag>
 --stepfactor
+</longflag>
+
+</double>
+<double>
+<default>
+0
+</default>
+<description>
+Optional threshold to terminate optimization (level) if relative change of target function drops below this value.
+</description>
+<name>
+delta_f_threshold
+</name>
+<label>
+delta_f_threshold
+</label>
+<longflag>
+--delta_f_threshold
 </longflag>
 
 </double>
