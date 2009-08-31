@@ -59,7 +59,12 @@ SET(testList ${testList} GroupwiseInitCentersOfMass GroupwiseInitCentersOfMassTe
 
 # ==========================================
 # Tests for "groupwise_rmi" tool
-SET(testList ${testList} GroupwiseRMIFromInitMI GroupwiseRMIFromInitSampling GroupwiseRMIBackground GroupwiseRMIZeroSumSmoothMI)
+SET(testList ${testList}
+  GroupwiseRMIFromInitMI 
+  GroupwiseRMIFromInitMIDeltaF
+  GroupwiseRMIFromInitSampling 
+  GroupwiseRMIBackground 
+  GroupwiseRMIZeroSumSmoothMI)
 
 IF(NOT CMTK_USE_MPI)
   # ==========================================
@@ -176,12 +181,12 @@ IF(NOT CMTK_USE_MPI)
     # ==========================================
     # Tests for "mcaffine" tool
     SET(testList ${testList} 
-      McAffine1 McAffine2 McAffine3)
+      McAffine1 McAffine2 McAffine3 McAffine4)
     
     # ==========================================
     # Tests for "mcwarp" tool
     SET(testList ${testList} 
-      McWarp1 McWarp2)
+      McWarp1 McWarp2 McWarp3)
 
   ENDIF(HAVE_STL_HASH_MAP)
 
@@ -249,6 +254,8 @@ IF(NOT CMTK_USE_MPI)
     RigidRegistrationCrop
     RegistrationAutoLevelsRat4
     RegistrationAutoLevelsRat2
+    RegistrationAutoLevelsRatToRat
+    RegistrationAutoLevelsRatToRatDeltaFThreshold
     RegistrationAutoLevelsCt3
     RegistrationFromList
     RegistrationWithInitial
@@ -327,6 +334,8 @@ IF(NOT CMTK_USE_MPI)
     WarpSingleLevelExact
     WarpInverseConsistentCC
     WarpMultiLevel
+    WarpMultiLevelMatchHistograms
+    WarpMultiLevelDeltaFThreshold
     WarpMultiLevelExact
     WarpDelayRefine
     WarpEnergy

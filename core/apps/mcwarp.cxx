@@ -97,6 +97,7 @@ float jacobianConstraintWeight = 0.0;
 
 cmtk::Types::Coordinate initialStepSize = 1.0;
 cmtk::Types::Coordinate finalStepSize = 0.125;
+cmtk::Optimizer::ReturnType optimizerDeltaFThreshold = 0;
 
 bool metricNMI = false;
 bool intensityCorrection = false;
@@ -197,6 +198,7 @@ DoRegistration( int argc, char* argv[] )
     }
   
   cmtk::BestDirectionOptimizer optimizer;
+  optimizer.SetDeltaFThreshold( optimizerDeltaFThreshold );
   optimizer.SetCallback( cmtk::RegistrationCallback::SmartPtr( new cmtk::RegistrationCallback ) );
   optimizer.SetFunctional( functional );
 
@@ -340,6 +342,7 @@ main( int argc, char* argv[] )
     
     cl.AddOption( Key( "initial-step-size" ), &initialStepSize, "Initial optimizer step size in pixels." );
     cl.AddOption( Key( "final-step-size" ), &finalStepSize, "Initial optimizer step size in pixels." );
+    cl.AddOption( Key( "delta-f-threshold" ), &optimizerDeltaFThreshold, "Optional threshold to terminate optimization (level) if relative change of target function drops below this value." );
 
     cl.Parse();
 

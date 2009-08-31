@@ -78,6 +78,8 @@ BestDirectionOptimizer::Optimize
       
       Self::ReturnType current = this->EvaluateWithGradient( v, directionVector, step );
       irq = this->CallbackExecute( v, current );
+
+      const Self::ReturnType previous = current;
       
       // Daniel Rueckert is supposedly using Euclid's norm here, but we found this
       // to be less efficient AND accurate. Makes no sense anyway.
@@ -163,6 +165,9 @@ BestDirectionOptimizer::Optimize
       irq = this->CallbackExecute( v, current );
       StdErr.printf( "%f\r", current );
 
+      if ( (fabs(previous-current) / (fabs(previous)+fabs(current)) ) < this->m_DeltaFThreshold )
+	update = false;
+      
       if ( this->m_AggressiveMode )
 	{
 	if ( update )

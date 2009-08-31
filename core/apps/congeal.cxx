@@ -92,6 +92,7 @@ bool HistogramMatching = false;
 cmtk::Types::Coordinate Accuracy = 0.01;
 cmtk::Types::Coordinate Exploration = 0.25;
 cmtk::Types::Coordinate OptimizerStepFactor = 0.5;
+cmtk::Optimizer::ReturnType OptimizerDeltaFThreshold = 0;
 bool DisableOptimization = false;
 bool OptimizerAggressive = false;
 int OptimizerRepeatLevel = 5;
@@ -178,6 +179,7 @@ main( int argc, char* argv[] )
     cl.AddOption( Key( 'a', "accuracy" ), &Accuracy, "Accuracy of optimization in pixels" );
     cl.AddOption( Key( 'r', "repeat-level" ), &OptimizerRepeatLevel, "Number of repetitions per optimization level" );
     cl.AddOption( Key( 'S', "step-factor" ), &OptimizerStepFactor, "Step factor for successive optimization passes" );
+    cl.AddOption( Key( "delta-f-threshold" ), &OptimizerDeltaFThreshold, "Optional threshold to terminate optimization (level) if relative change of target function drops below this value." );
     cl.AddSwitch( Key( "disable-optimization" ), &DisableOptimization, true, "Disable optimization and output initial configuration." );
     cl.EndGroup();
       
@@ -360,6 +362,7 @@ main( int argc, char* argv[] )
       cmtk::BestDirectionOptimizer optimizer( OptimizerStepFactor );
       optimizer.SetAggressiveMode( OptimizerAggressive );
       optimizer.SetRepeatLevelCount( OptimizerRepeatLevel );
+      optimizer.SetDeltaFThreshold( OptimizerDeltaFThreshold );
       optimizer.SetFunctional( functional );
       
       for ( std::vector<int>::const_iterator itDOF = NumberDOFs.begin(); itDOF != NumberDOFs.end(); ++itDOF )
@@ -439,4 +442,3 @@ main( int argc, char* argv[] )
 
   return 0;
 }
-

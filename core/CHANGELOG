@@ -3,6 +3,9 @@ Release CMTK-1.1.1:
 - Added: "congeal" and "congeal_warp" now optionally match image histograms to
     either template data (if template data is used for registration) or first
     image (if no template is defined or its data is not used).
+- Added: groupwise, pairwise, and multi-channel registration tools now each
+    support "--delta-f-threshold" option to define termination threshold for
+    optimization based on relative target function change.
 
 - Fixed: configuration of type sizes in bundled DICOM library was broken.
 - Fixed: file system functions were borken on Windows (MS-VS build) due to use
@@ -13,6 +16,8 @@ Release CMTK-1.1.1:
 - Improved: help and wiki outputs of command line tool option descriptions now
     include textual descriptions of the argument expected by each option,
     e.g., "float", "string", "image-path".
+
+- Testing: added tests for all registrations using DeltaF threshold.
 
 
 Release CMTK-1.1.0 (2009-08-26):

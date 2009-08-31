@@ -79,26 +79,12 @@ const char* OutputStudyListIndividual = "groupwise_rmi_pairs";
 const char* AverageImagePath = "average_groupwise_rmi.hdr";
 cmtk::Interpolators::InterpolationEnum AverageImageInterpolation = cmtk::Interpolators::LINEAR;
 
-std::list<int> NumberDOFs;
-const char*
-CallbackNumberDOFs( const char* argv )
-{
-  int numberDOFs = atoi( argv );
-  if ( (numberDOFs == 6) || (numberDOFs == 7) ||
-       (numberDOFs == 9) )
-    {
-    NumberDOFs.push_back( numberDOFs );
-    }
-  else
-    {
-    cmtk::StdErr << "WARNING: Number of DOFs " << numberDOFs << "(" << argv << ") is not supported and will be ignored\n";
-    }
-  return NULL;
-}
+std::vector<int> NumberDOFs;
 
 cmtk::Types::Coordinate Accuracy = 0.01;
 cmtk::Types::Coordinate Exploration = 0.25;
 cmtk::Types::Coordinate OptimizerStepFactor = 0.5;
+cmtk::Optimizer::ReturnType OptimizerDeltaFThreshold = 0;
 bool DisableOptimization = false;
 bool OptimizerAggressive = false;
 int OptimizerRepeatLevel = 5;
@@ -158,7 +144,7 @@ main( int argc, char* argv[] )
     cl.AddSwitch( Key( "mi" ), &MutualInformation, true, "Mutual information metric." );
     cl.AddSwitch( Key( "no-mi" ), &MutualInformation, false, "Joint entropy metric [default]." );
 
-    cl.AddCallback( Key( "dofs" ), CallbackNumberDOFs, "Add DOFs to list [default: one pass, 6 DOF]" );
+    cl.AddVector( Key( "dofs" ), NumberDOFs, "Set sequence of numbers of DOFs for optimization schedule [can be repeated]. Supported values are: 0, 3, 6, 7, 9, 12." );
     cl.AddSwitch( Key( 'z', "zero-sum" ), &ForceZeroSum, true, "Enforce zero-sum computation." );
     cl.AddOption( Key( 'N', "normal-group-first-n" ), &NormalGroupFirstN, "First N images are from the normal group and should be registered unbiased." );
     cl.AddOption( Key( 'Z', "zero-sum-first-n" ), &ForceZeroSumFirstN, "Enforce zero-sum computation for first N images.", &ForceZeroSum ); 
@@ -167,6 +153,7 @@ main( int argc, char* argv[] )
     cl.AddOption( Key( 'a', "accuracy" ), &Accuracy, "Accuracy of optimization in pixels [0.01]" );
     cl.AddOption( Key( 'r', "repeat-level" ), &OptimizerRepeatLevel, "Number of repetitions per optimization level [5]" );
     cl.AddOption( Key( 'S', "step-factor" ), &OptimizerStepFactor, "Step factor for successive optimization passes [0.5]" );
+    cl.AddOption( Key( "delta-f-threshold" ), &OptimizerDeltaFThreshold, "Optional threshold to terminate optimization (level) if relative change of target function drops below this value." );
     cl.AddSwitch( Key( "disable-optimization" ), &DisableOptimization, true, "Disable optimization and output initial configuration." );
       
     cl.Parse();
@@ -314,10 +301,11 @@ main( int argc, char* argv[] )
       {
       cmtk::BestDirectionOptimizer optimizer( OptimizerStepFactor );
       optimizer.SetAggressiveMode( OptimizerAggressive );
+      optimizer.SetDeltaFThreshold( OptimizerDeltaFThreshold );
       optimizer.SetRepeatLevelCount( OptimizerRepeatLevel );
       optimizer.SetFunctional( functional );
       
-      for ( std::list<int>::const_iterator itDOF = NumberDOFs.begin(); itDOF != NumberDOFs.end(); ++itDOF )
+      for ( std::vector<int>::const_iterator itDOF = NumberDOFs.begin(); itDOF != NumberDOFs.end(); ++itDOF )
 	{
 	functional->SetXformNumberDOFs( *itDOF );
 

@@ -87,6 +87,12 @@ public:
    */
   cmtkGetSetMacro(Functional::SmartPtr,Functional);
 
+  /// Set DeltaF threshold.
+  virtual void SetDeltaFThreshold( const Self::ReturnType value )
+  {
+    this->m_DeltaFThreshold = value;
+  }
+
   /// Execute callback if one was set.
   virtual CallbackResult CallbackExecute( const CoordinateVector &v, const Self::ReturnType metric ) 
   {
@@ -137,7 +143,8 @@ public:
   /// Default constructor.
   Optimizer()
     : m_Callback( NULL ),
-      m_Functional( NULL )
+      m_Functional( NULL ),
+      m_DeltaFThreshold( 0.0 )
   {
     this->m_UpdateStepScaleVector = false;
   }
@@ -157,6 +164,12 @@ public:
 protected:
   /// Flag whether the last call to Optimize() made any changes to functional parameters.
   bool m_LastOptimizeChangedParameters;
+
+  /** Threshold for termination based on change of target function.
+   * Optimization should terminate if the relative change of the target function in one step
+   * falls below this threshold.
+   */
+  Self::ReturnType m_DeltaFThreshold;
 };
 
 //@}

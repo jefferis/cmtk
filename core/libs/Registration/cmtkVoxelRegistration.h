@@ -97,6 +97,9 @@ protected:
   /// Use maximum norm instead of Euclid where applicable.
   bool UseMaxNorm;
 
+  /// Threshold for terminating optimization based on changes of the target function.
+  Optimizer::ReturnType m_DeltaFThreshold;
+
   /// Sampling, i.e. last non-original resolution.
   cmtkGetSetMacro(Types::Coordinate,Sampling);
 

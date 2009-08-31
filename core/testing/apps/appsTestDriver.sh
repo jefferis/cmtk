@@ -326,15 +326,16 @@ case ${RUNTEST} in
     GroupwiseInitCentersOfMassTemplate)
 	run ${BINDIR}/groupwise_init -O ${tmpdir} --template spgr_brain_1.hdr --align-centers-of-mass spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
 	check_result groupwise_init.xforms
-	check_result groupwise_init_pairs/target-000.list/registration
-	check_result groupwise_init_pairs/target-001.list/registration
-	check_result groupwise_init_pairs/target-002.list/registration
+	check_results groupwise_init_pairs/target-000.list/registration groupwise_init_pairs/target-001.list/registration groupwise_init_pairs/target-002.list/registration
 	check_result groupwise_init_average.img
 	;;
     GroupwiseRMIFromInitMI)
 	run ${BINDIR}/groupwise_rmi --mi --force-background 0 -O ${tmpdir} --dofs 6 --dofs 9 -e 4 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum groupwise_init_brain123.xforms
-	check_result groupwise_rmi.xforms
-	check_result average_groupwise_rmi.img
+	check_results groupwise_rmi.xforms average_groupwise_rmi.img
+	;;
+    GroupwiseRMIFromInitMIDeltaF)
+	run ${BINDIR}/groupwise_rmi --mi --force-background 0 -O ${tmpdir} --dofs 6,9 -e 4 --delta-f-threshold 0.1 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum groupwise_init_brain123.xforms
+	check_results groupwise_rmi.xforms average_groupwise_rmi.img
 	;;
     GroupwiseRMIFromInitSampling)
 	run ${BINDIR}/groupwise_rmi --force-background 0 -O ${tmpdir} --dofs 6 --dofs 9 -e 4 -a 0.25 --downsample-to 1 --sampling-density 0.5 --zero-sum groupwise_init_brain123.xforms
@@ -342,8 +343,7 @@ case ${RUNTEST} in
 	;;
     GroupwiseRMIBackground)
 	run ${BINDIR}/groupwise_rmi --mi --force-background 0 -O ${tmpdir} --template spgr_brain_1.hdr --dofs 6 --dofs 9 -e 2 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
-	check_result groupwise_rmi.xforms
-	check_result average_groupwise_rmi.img
+	check_results groupwise_rmi.xforms average_groupwise_rmi.img
 	;;
     GroupwiseRMIZeroSumSmoothMI)
 	run ${BINDIR}/groupwise_rmi --smooth 0.5  --downsample-to 0 --mi -O ${tmpdir} --template spgr_brain_1.hdr --dofs 6 --dofs 9 -e 2 -a 0.25 --downsample-from 2 --sampling-density 1.0 --zero-sum spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
@@ -474,6 +474,10 @@ case ${RUNTEST} in
 	run ${BINDIR}/mcaffine --downsample-from 4 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --dofs 6 --dofs 9 --covariance -o ${tmpdir}/xform rat_fse_erly.hdr rat_fse_late.hdr -- rat2_fse_erly.hdr rat2_fse_late.hdr
 	check_result xform
 	;;
+    McAffine4)
+	run ${BINDIR}/mcaffine --downsample-from 4 --downsample-to 1 --delta-f-threshold 0.1 --initial-step-size 1 --final-step-size 0.5 --dofs 6,9 --covariance -o ${tmpdir}/xform rat_fse_erly.hdr rat_fse_late.hdr -- rat2_fse_erly.hdr rat2_fse_late.hdr
+	check_result xform
+	;;
     McWarp1)
 	# Test breaks when using multiple threads due to floating point effects
 	export CMTK_NUM_THREADS=1
@@ -484,6 +488,13 @@ case ${RUNTEST} in
     McWarp2)
 	run ${BINDIR}/mcwarp --downsample-from 2 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --grid-spacing 14 --refine-grid 2 --histograms -o ${tmpdir}/xform McAffine_rat_rat2.xform
 	check_result xform
+	;;
+    McWarp3)
+	# Test breaks when using multiple threads due to floating point effects
+	export CMTK_NUM_THREADS=1
+	run ${BINDIR}/mcwarp --downsample-from 2 --downsample-to 1 --delta-f-threshold 0.1 --initial-step-size 1 --final-step-size 0.5 --grid-spacing 14 --refine-grid 2 --covariance -o ${tmpdir}/xform McAffine_rat_rat2.xform
+	check_result xform
+	unset CMTK_NUM_THREADS
 	;;
     MkPhantomBox)
 	run ${BINDIR}/mk_phantom_3d -o ${tmpdir}/phantom.nii --dims 10,10,10 --voxel 1,1,1 box 2,2,2 5,5,5 10
@@ -656,6 +667,14 @@ case ${RUNTEST} in
 	;;
     RegistrationAutoLevelsRat2)
 	run ${BINDIR}/registration -v -i --auto-multi-levels 2 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	check_result registration
+	;;
+    RegistrationAutoLevelsRatToRat)
+	run ${BINDIR}/registration -v -i --auto-multi-levels 2 --dofs 6,9 --msd --match-histograms -o ${tmpdir} rat_fse_erly.hdr rat2_fse_erly.hdr
+	check_result registration
+	;;
+    RegistrationAutoLevelsRatToRatDeltaFThreshold)
+	run ${BINDIR}/registration -v -i --auto-multi-levels 2 --dofs 6,9 --msd --match-histograms --delta-f-threshold 0.01 -o ${tmpdir} rat_fse_erly.hdr rat2_fse_erly.hdr
 	check_result registration
 	;;
     RegistrationAutoLevelsCt3)
@@ -966,6 +985,14 @@ case ${RUNTEST} in
 	;;
     WarpMultiLevel)
 	run ${BINDIR}/warp -q --exploration 8 --grid-spacing 160 --accuracy 1 --refine 1 -o ${tmpdir} vol001_mr_t0t1.list
+	check_result registration
+	;;
+    WarpMultiLevelMatchHistograms)
+	run ${BINDIR}/warp -q --exploration 8 --match-histograms --msd --grid-spacing 160 --accuracy 1 --refine 1 -o ${tmpdir} vol001_mr_t0t1.list
+	check_result registration
+	;;
+    WarpMultiLevelDeltaFThreshold)
+	run ${BINDIR}/warp -q --exploration 8 --delta-f-threshold 0.01 --msd --grid-spacing 160 --accuracy 1 --refine 1 -o ${tmpdir} vol001_mr_t0t1.list
 	check_result registration
 	;;
     WarpMultiLevelExact)

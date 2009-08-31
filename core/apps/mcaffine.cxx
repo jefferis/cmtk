@@ -50,7 +50,7 @@
 #include <cmtkClassStreamMultiChannelRegistration.h>
 #include <cmtkXformIO.h>
 
-#include <list>
+#include <vector>
 #include <algorithm>
 
 #if defined(HAVE_STDINT_H)
@@ -78,21 +78,12 @@ const char* outArchive = NULL;
 std::list<cmtk::UniformVolume::SmartPtr> refChannelList;
 std::list<cmtk::UniformVolume::SmartPtr> fltChannelList;
 
-std::list<int> numberDOFs;
-const char*
-CallbackNumberDOFs( const char* argv )
-{
-  const int dofs = atoi( argv );
-  if ( (dofs == 3) || (dofs == 6) || (dofs == 7) || (dofs == 9) || (dofs == 12) )
-    numberDOFs.push_back( dofs );
-  else
-    cmtk::StdErr.printf( "WARNING: number of DOFs cannot be %d (from '%s'). Ignoring this.\n", dofs, argv );
-
-  return NULL;
-}
+std::vector<int> numberDOFs;
 
 cmtk::Types::Coordinate initialStepSize = 1.0;
 cmtk::Types::Coordinate finalStepSize = 0.125;
+cmtk::Optimizer::ReturnType optimizerDeltaFThreshold = 0;
+
 bool alignCenters = true;
 bool metricNMI = true;
 bool useHistograms = true;
@@ -177,6 +168,7 @@ DoRegistration()
     }
 
   cmtk::BestNeighbourOptimizer optimizer;
+  optimizer.SetDeltaFThreshold( optimizerDeltaFThreshold );
   optimizer.SetCallback( cmtk::RegistrationCallback::SmartPtr( new cmtk::RegistrationCallback ) );
   optimizer.SetFunctional( functional );
 
@@ -200,7 +192,7 @@ DoRegistration()
       functional->AddFloatingChannel( image );
       }
 
-    for ( std::list<int>::const_iterator itDOF = numberDOFs.begin(); itDOF != numberDOFs.end(); ++itDOF )
+    for ( std::vector<int>::const_iterator itDOF = numberDOFs.begin(); itDOF != numberDOFs.end(); ++itDOF )
       {
       if ( verbose )
 	cmtk::StdErr.printf( "Setting number of DOFs to %d\n", *itDOF );
@@ -248,7 +240,7 @@ main( int argc, char* argv[] )
     cl.AddOption( Key( "smooth" ), &smoothSigmaFactor, "Sigma of Gaussian smoothing kernel in multiples of template image pixel size [default: off] )" );
     cl.AddOption( Key( "downsample-average" ), &downsampleWithAverage, "Downsample using sliding-window averaging [default: off] )" );
 
-    cl.AddCallback( Key( "dofs" ), CallbackNumberDOFs, "Add number of DOFs to optimization schedule [can be repeated]." );
+    cl.AddVector( Key( "dofs" ), numberDOFs, "Set sequence of numbers of DOFs for optimization schedule [can be repeated]. Supported values are: 0, 3, 6, 7, 9, 12." );
 
     cl.AddSwitch( Key( "nmi" ), &metricNMI, true, "Use normalized mutual information metric [default]" );
     cl.AddSwitch( Key( "mi" ), &metricNMI, false, "Use standard mutual information metric" );
@@ -259,6 +251,7 @@ main( int argc, char* argv[] )
 
     cl.AddOption( Key( "initial-step-size" ), &initialStepSize, "Initial optimizer step size in pixels." );
     cl.AddOption( Key( "final-step-size" ), &finalStepSize, "Initial optimizer step size in pixels." );
+    cl.AddOption( Key( "delta-f-threshold" ), &optimizerDeltaFThreshold, "Optional threshold to terminate optimization (level) if relative change of target function drops below this value." );
 
     cl.AddOption( Key( "crop-reference-from-index" ), &cropReferenceFromIndex, "Crop reference image from index x,y,z." );
     cl.AddOption( Key( "crop-reference-to-index" ), &cropReferenceToIndex, "Crop reference image to index x,y,z." );
@@ -284,6 +277,9 @@ main( int argc, char* argv[] )
     cmtk::StdErr << e << "\n";
     exit( 1 );
     }
+
+  if ( numberDOFs.size() == 0 )
+    numberDOFs.push_back( 6 );
 
   for ( std::list<const char*>::const_iterator refIt = fileListRef.begin(); refIt != fileListRef.end(); ++refIt )
     {

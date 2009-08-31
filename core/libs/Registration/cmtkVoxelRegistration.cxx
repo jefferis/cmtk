@@ -52,7 +52,8 @@ cmtk
 //@{
 
 VoxelRegistration::VoxelRegistration () 
-  : m_PreprocessorRef( "Reference", "ref" ),
+  : m_DeltaFThreshold( 0.0 ),
+    m_PreprocessorRef( "Reference", "ref" ),
     m_PreprocessorFlt( "Floating", "flt" ),
     m_InitialTransformation( NULL ),
     m_InitialXformIsInverse( false ),
@@ -99,6 +100,8 @@ VoxelRegistration::Register ()
     this->DoneRegistration();
     return irq;
     }
+
+  this->m_Optimizer->SetDeltaFThreshold( this->m_DeltaFThreshold );
   
   Types::Coordinate currentExploration = this->m_Exploration;
   CoordinateVector::SmartPtr v( new CoordinateVector() );

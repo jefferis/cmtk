@@ -78,6 +78,7 @@ cmtk::Types::Coordinate SmoothSigmaFactor = 0.0;
 cmtk::Types::Coordinate Accuracy = 0.01;
 cmtk::Types::Coordinate Exploration = 0.25;
 cmtk::Types::Coordinate OptimizerStepFactor = 0.5;
+cmtk::Optimizer::ReturnType OptimizerDeltaFThreshold = 0;
 bool OptimizerAggressive = true;
 int OptimizerRepeatLevel = 2;
 
@@ -140,6 +141,7 @@ main( int argc, char ** argv )
     cl.AddOption( Key( 'e', "exploration" ), &Exploration, "Exploration of optimization in pixels [0.25]" );
     cl.AddOption( Key( 'a', "accuracy" ), &Accuracy, "Accuracy of optimization in pixels [0.01]" );
     cl.AddOption( Key( 'S', "step-factor" ), &OptimizerStepFactor, "Step factor for successive optimization passes [0.5]" );
+    cl.AddOption( Key( "delta-f-threshold" ), &OptimizerDeltaFThreshold, "Optional threshold to terminate optimization (level) if relative change of target function drops below this value." );
 
     cl.AddOption( Key( "threads" ), &NumberOfThreads, "Number of parallel threads [automatic]" );
     cl.AddSwitch( Key( "disable-optimization" ), &DisableOptimization, true, "Disable optimization and output initial configuration." );
@@ -227,6 +229,7 @@ main( int argc, char ** argv )
       
       cmtk::BestDirectionOptimizer optimizer( OptimizerStepFactor );
       optimizer.SetAggressiveMode( OptimizerAggressive );
+      optimizer.SetDeltaFThreshold( OptimizerDeltaFThreshold );
       optimizer.SetRepeatLevelCount( OptimizerRepeatLevel );
       optimizer.SetFunctional( functional );
 

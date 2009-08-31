@@ -155,6 +155,7 @@ ElasticRegistrationCommandLine
     cl.AddOption( Key( 'e', "exploration" ), &this->m_Exploration, "Search space exploration (initial step size)" );
     cl.AddOption( Key( 'a', "accuracy" ), &this->m_Accuracy, "Search accuracy (initial step size)" );
     cl.AddOption( Key( 'f', "stepfactor" ), &this->OptimizerStepFactor, "Factor for search step size reduction. Must be > 0.0 and < 1.0 [default: 0.5]" );
+    cl.AddOption( Key( "delta-f-threshold" ), &this->m_DeltaFThreshold, "Optional threshold to terminate optimization (level) if relative change of target function drops below this value." );
 
     cl.AddSwitch( Key( "no-maxnorm" ), &this->UseMaxNorm, false, "Use Euclid norm for gradient normalication in optimization, rather than maximum norm" );
 

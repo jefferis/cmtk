@@ -124,7 +124,8 @@ AffineRegistrationCommandLine
     cl.BeginGroup( "Optimization", "Optimization settings" );
     cl.AddOption( Key( 'e', "exploration" ), &this->m_Exploration, "Exploration [initial optimizer step size]" );
     cl.AddOption( Key( 'a', "accuracy" ), &this->m_Accuracy, "Accuracy [final optimizer step size]" );
-    cl.AddOption( Key( 'f', "stepfactor" ), &this->OptimizerStepFactor, "Factor for search step size reduction. Must be > 0.0 and < 1.0 [default: 0.5]" );
+    cl.AddOption( Key( 'f', "stepfactor" ), &this->OptimizerStepFactor, "Factor for search step size reduction. Must be > 0.0 and < 1.0" );
+    cl.AddOption( Key( "delta-f-threshold" ), &this->m_DeltaFThreshold, "Optional threshold to terminate optimization (level) if relative change of target function drops below this value." );
     cl.EndGroup();
 
     cl.BeginGroup( "Resolution", "Image resolution parameters" );

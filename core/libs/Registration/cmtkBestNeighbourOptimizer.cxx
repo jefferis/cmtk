@@ -81,6 +81,8 @@ BestNeighbourOptimizer::Optimize
     while ( update && ( irq == CALLBACK_OK ) ) 
       {
       update = 0;
+
+      const Self::ReturnType previous = optimum;
       
       for ( int dim = 0; dim < Dim; ++dim ) 
 	{
@@ -122,6 +124,9 @@ BestNeighbourOptimizer::Optimize
 	  for ( int idx=0; idx<Dim; ++idx )
 	    stepScaleVector[idx] = this->GetParamStep( idx );
 	}
+
+      if ( (fabs(previous-optimum) / (fabs(previous)+fabs(optimum)) ) < this->m_DeltaFThreshold )
+	update = false;
       }
     }
 
