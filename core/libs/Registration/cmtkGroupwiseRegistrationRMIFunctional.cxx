@@ -129,8 +129,7 @@ GroupwiseRegistrationRMIFunctional<TXform>
     {
     for ( size_t i = 0; i <= j; ++i, ++midx )
       {
-      covarianceMatrix[i][j] = covarianceMatrix[j][i] = 
-	(sumOfProductsMatrix[midx] - ((1.0 * sumsVector[i] * sumsVector[j]) / totalNumberOfSamples)) / totalNumberOfSamples;
+      covarianceMatrix[i][j] = covarianceMatrix[j][i] = (sumOfProductsMatrix[midx] - ((1.0 * sumsVector[i] * sumsVector[j]) / totalNumberOfSamples)) / totalNumberOfSamples;
       }
     }
   
