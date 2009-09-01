@@ -82,12 +82,6 @@ public:
   /// Destructor.
   virtual ~GroupwiseRegistrationRMIFunctional();
 
-  /// Set MI flag.
-  void SetMutualInformation( const bool flag )
-  {
-    this->m_MutualInformation = flag;
-  }
-
   /** Set template grid.
    *\param The template grid that defines size and resolution for the
    *  implicit registration template.
@@ -107,9 +101,6 @@ public:
   virtual typename Self::ReturnType Evaluate();
   
 protected:
-  /// Flag for MI vs. joint entropy.
-  bool m_MutualInformation;
-
   /// Covariance matrix type.
   typedef Matrix2D<typename Self::ReturnType> CovarianceMatrixType;
 

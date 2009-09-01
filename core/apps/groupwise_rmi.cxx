@@ -66,8 +66,6 @@ cmtk::Types::Coordinate SmoothSigmaFactor = -1.0;
 byte UserBackgroundValue = 0;
 bool UserBackgroundFlag = false;
 
-bool MutualInformation = false;
-
 const char* PreDefinedTemplatePath = NULL;
 cmtk::UniformVolume::SmartPtr PreDefinedTemplate;
 bool UseTemplateData = false;
@@ -141,9 +139,6 @@ main( int argc, char* argv[] )
     cl.AddOption( Key( "smooth" ), &SmoothSigmaFactor, "Sigma of Gaussian smoothing kernel in multiples of template image pixel size [default: off] )" );
     cl.AddOption( Key( 'B', "force-background" ), &UserBackgroundValue, "Force background pixels (outside FOV) to given (bin) value.", &UserBackgroundFlag );
 
-    cl.AddSwitch( Key( "mi" ), &MutualInformation, true, "Mutual information metric." );
-    cl.AddSwitch( Key( "no-mi" ), &MutualInformation, false, "Joint entropy metric [default]." );
-
     cl.AddVector( Key( "dofs" ), NumberDOFs, "Set sequence of numbers of DOFs for optimization schedule [can be repeated]. Supported values are: 0, 3, 6, 7, 9, 12." );
     cl.AddSwitch( Key( 'z', "zero-sum" ), &ForceZeroSum, true, "Enforce zero-sum computation." );
     cl.AddOption( Key( 'N', "normal-group-first-n" ), &NormalGroupFirstN, "First N images are from the normal group and should be registered unbiased." );
@@ -177,7 +172,6 @@ main( int argc, char* argv[] )
   cmtk::AffineGroupwiseRegistrationRMIFunctional::SmartPtr functional( new cmtk::AffineGroupwiseRegistrationRMIFunctional );
   functional->SetForceZeroSum( ForceZeroSum );
   functional->SetForceZeroSumFirstN( ForceZeroSumFirstN );
-  functional->SetMutualInformation( MutualInformation );
   functional->SetFreeAndRereadImages( true );
 
   if ( UserBackgroundFlag )

@@ -60,11 +60,11 @@ SET(testList ${testList} GroupwiseInitCentersOfMass GroupwiseInitCentersOfMassTe
 # ==========================================
 # Tests for "groupwise_rmi" tool
 SET(testList ${testList}
-  GroupwiseRMIFromInitMI 
-  GroupwiseRMIFromInitMIDeltaF
+  GroupwiseRMIFromInit
+  GroupwiseRMIFromInitDeltaF
   GroupwiseRMIFromInitSampling 
   GroupwiseRMIBackground 
-  GroupwiseRMIZeroSumSmoothMI)
+  GroupwiseRMIZeroSumSmooth)
 
 IF(NOT CMTK_USE_MPI)
   # ==========================================

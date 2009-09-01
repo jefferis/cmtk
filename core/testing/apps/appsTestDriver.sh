@@ -329,12 +329,12 @@ case ${RUNTEST} in
 	check_results groupwise_init_pairs/target-000.list/registration groupwise_init_pairs/target-001.list/registration groupwise_init_pairs/target-002.list/registration
 	check_result groupwise_init_average.img
 	;;
-    GroupwiseRMIFromInitMI)
-	run ${BINDIR}/groupwise_rmi --mi --force-background 0 -O ${tmpdir} --dofs 6 --dofs 9 -e 4 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum groupwise_init_brain123.xforms
+    GroupwiseRMIFromInit)
+	run ${BINDIR}/groupwise_rmi --force-background 0 -O ${tmpdir} --dofs 6 --dofs 9 -e 4 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum groupwise_init_brain123.xforms
 	check_results groupwise_rmi.xforms average_groupwise_rmi.img
 	;;
-    GroupwiseRMIFromInitMIDeltaF)
-	run ${BINDIR}/groupwise_rmi --mi --force-background 0 -O ${tmpdir} --dofs 6,9 -e 4 --delta-f-threshold 0.1 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum groupwise_init_brain123.xforms
+    GroupwiseRMIFromInitDeltaF)
+	run ${BINDIR}/groupwise_rmi --force-background 0 -O ${tmpdir} --dofs 6,9 -e 4 --delta-f-threshold 0.1 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum groupwise_init_brain123.xforms
 	check_results groupwise_rmi.xforms average_groupwise_rmi.img
 	;;
     GroupwiseRMIFromInitSampling)
@@ -342,11 +342,11 @@ case ${RUNTEST} in
 	## no baseline; this mode uses probabilistic sampling
 	;;
     GroupwiseRMIBackground)
-	run ${BINDIR}/groupwise_rmi --mi --force-background 0 -O ${tmpdir} --template spgr_brain_1.hdr --dofs 6 --dofs 9 -e 2 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
+	run ${BINDIR}/groupwise_rmi --force-background 0 -O ${tmpdir} --template spgr_brain_1.hdr --dofs 6 --dofs 9 -e 2 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
 	check_results groupwise_rmi.xforms average_groupwise_rmi.img
 	;;
-    GroupwiseRMIZeroSumSmoothMI)
-	run ${BINDIR}/groupwise_rmi --smooth 0.5  --downsample-to 0 --mi -O ${tmpdir} --template spgr_brain_1.hdr --dofs 6 --dofs 9 -e 2 -a 0.25 --downsample-from 2 --sampling-density 1.0 --zero-sum spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
+    GroupwiseRMIZeroSumSmooth)
+	run ${BINDIR}/groupwise_rmi --smooth 0.5  --downsample-to 0 -O ${tmpdir} --template spgr_brain_1.hdr --dofs 6 --dofs 9 -e 2 -a 0.25 --downsample-from 2 --sampling-density 1.0 --zero-sum spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
 	check_result groupwise_rmi.xforms
 	check_result average_groupwise_rmi.img
 	;;

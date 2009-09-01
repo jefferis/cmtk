@@ -45,7 +45,6 @@ cmtk
 template<class TXform>
 GroupwiseRegistrationRMIFunctional<TXform>
 ::GroupwiseRegistrationRMIFunctional()
-  : m_MutualInformation( false )
 {
   this->SetNumberOfHistogramBins( 255 );
 }
@@ -147,15 +146,7 @@ GroupwiseRegistrationRMIFunctional<TXform>
   if ( determinant > 0 )
     {
     const static double alpha = 1.41893853320467;
-    typename Self::ReturnType metric = numberOfImages*alpha + .5*log( determinant );
-    if ( this->m_MutualInformation )
-      {
-      // subtract marginal entropy estimates (diagonal entries of the covariance matrix)
-      for ( size_t i = 0; i < numberOfImages; ++i )
-	if ( eigenvalues[i] > EIGENVALUE_THRESHOLD )
-	  metric -= (alpha + .5*log( eigenvalues[i] ));
-      }
-    
+    typename Self::ReturnType metric = numberOfImages*alpha + .5*log( determinant );    
     return -metric;
     }
   else

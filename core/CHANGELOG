@@ -17,6 +17,10 @@ Release CMTK-1.1.1:
     include textual descriptions of the argument expected by each option,
     e.g., "float", "string", "image-path".
 
+- Removed: "Mutual Information" variant of RMI-based groupwise registration
+    deleted; this turned out to be almost zero and thus useless. For now,
+    we're left with optimizing the approximated joint entropy.
+
 - Testing: added tests for all registrations using DeltaF threshold.
 
 
