@@ -1,3 +1,7 @@
+Release CMTK-1.1.2:
+
+
+
 Release CMTK-1.1.1 (2009-09-02):
 
 - Added: "congeal" and "congeal_warp" now optionally match image histograms to
