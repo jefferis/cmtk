@@ -2,23 +2,10 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
-Release Notes -- CMTK 1.1.0
+Release Notes -- CMTK 1.1.1
 ===============================
 
-This is a major feature upgrade of CMTK. The toolkit now provides a working
-implementation of the Slicer3 Execution Model for command line-based
-plugins. Currently, the tools "levelset", "mrbias", "registration", "warp",
-"film", and "make_initial_affine" support slicer integration.
-
-As an additional improvement, we are now including a minimal, stripped-down
-version of the OFFIS DCMTK tookit. This allows for convenient building of CMTK
-with DICOM support on all platforms.
-
-NOTE: due to a major design change to eliminate redundant and inconsistent
-legacy code, results of the rigid and affine registration algorithm will
-change when compared with results computed using previous versions of CMTK. We
-have re-validated CMTK's registration with data from the RIRE project, and the
-achieved registration accuracies are essentially identical.
+This is a minor bugfix and feature release for the 1.1 series of CMTK.
 
 For more information, see the CHANGELOG file.
 
