@@ -72,7 +72,8 @@ VolumeFromFile::ReadBioRad( const char* path )
 {
   CompressedStream stream( path );
 
-  char buffer[sizeof(FileHeaderBioRad)];
+  // Biorad header is 76 bytes
+  char buffer[76];
   if ( 1 != stream.Read( &buffer, sizeof(buffer), 1 ) ) 
     {
     StdErr << "ERROR: cannot read header from BioRad file " << path << ". Bailing out.\n";
