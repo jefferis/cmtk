@@ -265,6 +265,10 @@ case ${RUNTEST} in
 	run_eval "${BINDIR}/describe -m phantom_ax.nii phantom_co.nii phantom_sa.nii > ${tmpdir}/describe.txt"
 	check_result describe.txt
 	;;
+    DescribeMRBiorad)
+	run_eval "${BINDIR}/describe -m bioradvol.PIC.gz > ${tmpdir}/describe.txt"
+	check_result describe.txt
+	;;
     DescribeMRNrrd1)
 	run_eval "${BINDIR}/describe -m phantom_ax.nhdr phantom_co.nhdr phantom_sa.nhdr > ${tmpdir}/describe.txt"
 	check_result describe.txt
