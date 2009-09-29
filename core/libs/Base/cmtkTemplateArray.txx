@@ -135,11 +135,16 @@ TemplateArray<T>
 ::GetRangeTemplate( T& min, T& max ) 
   const 
 {
-  // find first non-Padding element
+  // find first finite and non-Padding element
   size_t idx = 0;
   if ( PaddingFlag )
     {
-    while ((idx < DataSize) && (Data[idx] == Padding) ) 
+    while ((idx < DataSize) && (Data[idx] == Padding) || !finite(Data[idx])) 
+      ++idx;
+    }
+  else
+    {
+    while ( !finite(Data[idx]) ) 
       ++idx;
     }
 
@@ -157,7 +162,7 @@ TemplateArray<T>
     {
     for ( ; idx < DataSize; ++idx ) 
       {
-      if ( Data[idx] != Padding ) 
+      if ( (Data[idx] != Padding) && finite(Data[idx]) ) 
 	{
 	if (Data[idx] > max) max = Data[idx];
 	if (Data[idx] < min) min = Data[idx];
@@ -168,8 +173,11 @@ TemplateArray<T>
     {
     for ( ; idx < DataSize; ++idx ) 
       {
-      if (Data[idx] > max) max = Data[idx];
-      if (Data[idx] < min) min = Data[idx];
+      if ( finite(Data[idx]) )
+	{
+	if (Data[idx] > max) max = Data[idx];
+	if (Data[idx] < min) min = Data[idx];
+	}
       }
     }
   return true;

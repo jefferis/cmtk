@@ -2,6 +2,9 @@ Release CMTK-1.1.2:
 
 - Added; logit and logistic functions for imagemath tool.
 
+- Fixed: TemplateArray::GetRangeTemplate() now ignores non-finite values, which
+    also fixes a crash in triplanar viewer when reading images with non-finite
+    values.
 
 Release CMTK-1.1.1 (2009-09-02):
 
