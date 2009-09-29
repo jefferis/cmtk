@@ -410,6 +410,10 @@ case ${RUNTEST} in
 	run ${BINDIR}/imagemath --float --in rat_fse_erly.hdr --log --in rat_fse_late.hdr --log --scalar-mul -1 --add --one-over --out ${tmpdir}/t2.hdr
 	check_result t2.img
 	;;
+    ImagemathLogOddsAdd)
+	run ${BINDIR}/imagemath --float --in pbmap_wm_2.nii --logit --in pbmap_wm_1.nii --logit --average --logistic --out ${tmpdir}/logodds_add.hdr
+	check_result logodds_add.img
+	;;
     LevelsetDefault)
 	run ${BINDIR}/levelset -v vol001_mr_t1.hdr ${tmpdir}/levelset.hdr
 	check_result levelset.img

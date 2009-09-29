@@ -148,7 +148,8 @@ IF(NOT CMTK_USE_MPI)
   SET(testList ${testList} 
     ImagemathAverage ImagemathXor ImagemathContractLabels
     ImagemathStackEntropyLabels ImagemathVote ImagemathSTAPLE
-    ImagemathMultiClassSTAPLE ImagemathCombinePCA ImagemathT2)
+    ImagemathMultiClassSTAPLE ImagemathCombinePCA ImagemathT2
+    ImagemathLogOddsAdd)
 
   # ==========================================
   # Tests for "levelset" tool

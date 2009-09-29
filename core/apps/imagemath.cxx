@@ -69,7 +69,7 @@ double Logit( const double x )
 }
 
 /// Logistic function.
-double Logit( const double x )
+double Logistic( const double x )
 {
   return 1.0/(1.0+exp(-x));
 }
@@ -217,6 +217,18 @@ CallbackLogit()
     {
     ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
     ImageStack.top()->GetData()->ApplyFunctionDouble( cmtk::Logit );
+    }
+
+  return NULL;
+}
+    
+const char*
+CallbackLogistic()
+{
+  if ( CheckStackOneImage( "Logistic" ) )
+    {
+    ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
+    ImageStack.top()->GetData()->ApplyFunctionDouble( cmtk::Logistic );
     }
 
   return NULL;
