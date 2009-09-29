@@ -55,11 +55,26 @@ double trunc( const double x )
 
 namespace cmtk
 {
+
+/// Square function.
 double Square( const double x )
 {
   return x*x; 
 }
+
+/// Logit function.
+double Logit( const double x )
+{
+  return log(x / (1.0-x)); 
 }
+
+/// Logistic function.
+double Logit( const double x )
+{
+  return 1.0/(1.0+exp(-x));
+}
+
+} // namespace cmtk
 
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 namespace cmtk
@@ -190,6 +205,18 @@ CallbackLog()
     {
     ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
     ImageStack.top()->GetData()->ApplyFunctionDouble( log );
+    }
+
+  return NULL;
+}
+    
+const char*
+CallbackLogit()
+{
+  if ( CheckStackOneImage( "Logit" ) )
+    {
+    ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
+    ImageStack.top()->GetData()->ApplyFunctionDouble( cmtk::Logit );
     }
 
   return NULL;
@@ -998,6 +1025,8 @@ main( int argc, char *argv[] )
     cl.BeginGroup( "Single image", "Single-image operators" );
     cl.AddCallback( Key( "abs" ), CallbackAbs, "Apply abs() function to top image" );
     cl.AddCallback( Key( "log" ), CallbackLog, "Apply log() function to top image" );
+    cl.AddCallback( Key( "logit" ), CallbackLogit, "Apply log(x/(1-x)) function to top image" );
+    cl.AddCallback( Key( "logistic" ), CallbackLogistic, "Apply 1/(1+exp(-x)) function to top image" );
     cl.AddCallback( Key( "exp" ), CallbackExp, "Apply exp() function to top image" );
     cl.AddCallback( Key( "sqr" ), CallbackSqr, "Apply square operator to top image" );
     cl.AddCallback( Key( "sqrt" ), CallbackSqrt, "Apply square root operator to top image" );

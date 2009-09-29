@@ -1,5 +1,6 @@
 Release CMTK-1.1.2:
 
+- Added; logit and logistic functions for imagemath tool.
 
 
 Release CMTK-1.1.1 (2009-09-02):
