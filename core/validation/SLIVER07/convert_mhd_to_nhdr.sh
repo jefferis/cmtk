@@ -5,6 +5,16 @@
 # file and creates a matching NRRD header (nhdr) file.
 #
 
+#
+# IMPORTANT:
+#
+# Note that the SLIVER07 mhd headers are written incorrectly in that they
+# encode the pixel size in BOTH the ElementSpacing and the TrasnformationMatrix
+# field. Properly interpreting these header would, therefore, lead to incorrect
+# (squared) pixel sizes. We thus read here only the TransformationMatrix field
+# and use it to construct the NRRD "space directions" field.
+#
+
 in_mhd=$1
 out_nhdr=$2
 
