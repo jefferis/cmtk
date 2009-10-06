@@ -8,8 +8,8 @@
 #
 # IMPORTANT:
 #
-# The CAUSE07 images are stored in RAI space, which NRRD does not support. So
-# We store in RAS space instead with negated z direction.
+# To get the CAUSE07 images oriented correctly, we need to negate
+# the y coordinate direction
 #
 
 in_mhd=$1
@@ -21,7 +21,7 @@ SPACING=`fgrep ElementSpacing ${in_mhd} | sed 's/.* = //g'`
 DIR1=`echo ${SPACING} | cut -d" " -f1`
 DIR2=`echo ${SPACING} | cut -d" " -f2`
 DIR3=`echo ${SPACING} | cut -d" " -f3`
-DIRECTIONS="(${DIR1},0,0) (0,${DIR2},0) (0,-${DIR3},0)"
+DIRECTIONS="(${DIR1},0,0) (0,-${DIR2},0) (0,0,${DIR3})"
 
 FILE=`fgrep ElementDataFile ${in_mhd} | sed 's/.* = //g'`
 
