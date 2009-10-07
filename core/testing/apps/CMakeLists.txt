@@ -149,7 +149,7 @@ IF(NOT CMTK_USE_MPI)
     ImagemathAverage ImagemathXor ImagemathContractLabels
     ImagemathStackEntropyLabels ImagemathVote ImagemathSTAPLE
     ImagemathMultiClassSTAPLE ImagemathCombinePCA ImagemathT2
-    ImagemathLogOddsAdd)
+    ImagemathLogOddsAdd ImagemathLogOddsAdd2)
 
   # ==========================================
   # Tests for "levelset" tool

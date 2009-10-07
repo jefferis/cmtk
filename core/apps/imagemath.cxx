@@ -192,7 +192,7 @@ CallbackTrunc()
   if ( CheckStackOneImage( "Trunc" ) )
     {
     ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
-	ImageStack.top()->GetData()->ApplyFunctionDouble( trunc );
+    ImageStack.top()->GetData()->ApplyFunctionDouble( trunc );
     }
 
   return NULL;
@@ -223,6 +223,29 @@ CallbackLogit()
 }
     
 const char*
+CallbackLogitAll()
+{
+  std::stack<cmtk::UniformVolume::SmartPtr> tmpStack;
+  while ( ! ImageStack.empty() )
+    {
+    if ( CheckStackOneImage( "LogitAll" ) )
+      {
+      CallbackLogit();
+      tmpStack.push( ImageStack.top() );
+      ImageStack.pop();
+      }
+    }
+     
+  while ( ! tmpStack.empty() )
+    {
+    ImageStack.push( tmpStack.top() );
+    tmpStack.pop();
+    }
+  
+  return NULL;
+}
+    
+const char*
 CallbackLogistic()
 {
   if ( CheckStackOneImage( "Logistic" ) )
@@ -231,6 +254,29 @@ CallbackLogistic()
     ImageStack.top()->GetData()->ApplyFunctionDouble( cmtk::Logistic );
     }
 
+  return NULL;
+}
+    
+const char*
+CallbackLogisticAll()
+{
+  std::stack<cmtk::UniformVolume::SmartPtr> tmpStack;
+  while ( ! ImageStack.empty() )
+    {
+    if ( CheckStackOneImage( "LogisticAll" ) )
+      {
+      CallbackLogistic();
+      tmpStack.push( ImageStack.top() );
+      ImageStack.pop();
+      }
+    }
+     
+  while ( ! tmpStack.empty() )
+    {
+    ImageStack.push( tmpStack.top() );
+    tmpStack.pop();
+    }
+  
   return NULL;
 }
     
@@ -1058,7 +1104,7 @@ main( int argc, char *argv[] )
     cl.AddCallback( Key( "atan2" ), CallbackAtan2, "Compute atan2() function from tup two image pixel pairs, place result on stack" );
     cl.EndGroup();
 
-    cl.BeginGroup( "Multiple images", "Multi-image operators (operate on the entire stack)" );
+    cl.BeginGroup( "Contract multiple images", "Operators that contract the entire stack into a single image" );
     cl.AddCallback( Key( "sum" ), CallbackSum, "Sum all images on stack, place result on stack" );
     cl.AddCallback( Key( "average" ), CallbackAverage, "Average all images on stack, place result on stack" );
     cl.AddCallback( Key( "combine-pca" ), CallbackCombinePCA, "Combine images using PCA by projecting onto direction of largest correlation" );
@@ -1067,12 +1113,16 @@ main( int argc, char *argv[] )
     cl.AddCallback( Key( "contract-labels" ), CallbackContractLabels, "Contract multiple label maps into one by selecting the first (over all images on the stack) non-zero label at each pixel" );
     cl.EndGroup();
 
-    cl.BeginGroup( "Multiple label images", "Multi-image operators for label images" );
+    cl.BeginGroup( "Contract multiple label images", "Operators that contract a stack of label images into a single label image" );
     cl.AddCallback( Key( "vote" ), CallbackVoteCombination, "Merge all images on stack with voting, place result on stack" );
     cl.AddCallback( Key( "staple" ), CallbackSTAPLE, "Combine binary masks on the stack using [arg] iterations of the STAPLE algorithm" );
     cl.AddCallback( Key( "mstaple" ), CallbackMultiClassSTAPLE, "Combine multi-label masks on the stack using [arg] iterations of the multi-class STAPLE algorithm" );
     cl.AddCallback( Key( "stack-entropy-labels" ), CallbackStackEntropyLabels, "Compute stack entropy at each pixel from integer (label) input images" );
     cl.EndGroup();
+
+    cl.BeginGroup( "Multiple image operators", "Operators that work on the entire image stack but do not contract" );
+    cl.AddCallback( Key( "logit-all" ), CallbackLogitAll, "Apply log(x/(1-x)) function to top image" );
+    cl.AddCallback( Key( "logistic-all" ), CallbackLogisticAll, "Apply 1/(1+exp(-x)) function to top image" );
 
     cl.Parse();
 

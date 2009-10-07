@@ -1,6 +1,7 @@
 Release CMTK-1.1.2:
 
-- Added; logit and logistic functions for imagemath tool.
+- Added; logit and logistic functions for imagemath tool, for single and
+    multiple images.
 
 - Fixed: BioRad header problem resulting from struct field alignment (patch by
     Greg Jefferis).
