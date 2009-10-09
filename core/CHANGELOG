@@ -2,6 +2,8 @@ Release CMTK-1.1.2:
 
 - Added; logit and logistic functions for imagemath tool, for single and
     multiple images.
+- Added: imagemath tool "--match-histograms" operation matches the intensity
+    distribution of one image to that of another.
 
 - Fixed: BioRad header problem resulting from struct field alignment (patch by
     Greg Jefferis).

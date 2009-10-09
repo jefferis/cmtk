@@ -607,6 +607,19 @@ CallbackAtan2()
 }
 
 const char*
+CallbackMatchHistograms()
+{
+  if ( ! CheckStackTwoMatchingImages( "MatchHistograms" ) )
+    return NULL;
+  
+  cmtk::UniformVolume::SmartPtr ref = ImageStack.top();
+  ImageStack.pop();
+  ImageStack.top()->GetData()->MatchHistogramToReference( ref->GetData() );
+  
+  return NULL;
+}
+
+const char*
 CallbackSum()
 {
   while ( ImageStack.size() > 1 )
@@ -1101,7 +1114,8 @@ main( int argc, char *argv[] )
     cl.AddCallback( Key( "add" ), CallbackAdd, "Add top and second image, place result on stack" );
     cl.AddCallback( Key( "mul" ), CallbackMul, "Multiply top and second image, place result on stack" );
     cl.AddCallback( Key( "div" ), CallbackDiv, "Divide top image by second image, place result on stack" );
-    cl.AddCallback( Key( "atan2" ), CallbackAtan2, "Compute atan2() function from tup two image pixel pairs, place result on stack" );
+    cl.AddCallback( Key( "atan2" ), CallbackAtan2, "Compute atan2() function from tup two image pixel pairs, place result on stack" );    
+    cl.AddCallback( Key( "match-histograms" ), CallbackMatchHistograms, "Scale intensities one image to match intensities another. The image pushed onto the stack last provides the reference intensity distribution, the preceding image will be modified. Both input images will be removed from the stack and the modified image will be pushed onto the stack." );
     cl.EndGroup();
 
     cl.BeginGroup( "Contract multiple images", "Operators that contract the entire stack into a single image" );
