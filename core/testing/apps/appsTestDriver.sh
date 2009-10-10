@@ -418,6 +418,10 @@ case ${RUNTEST} in
 	run ${BINDIR}/imagemath --float --in pbmap_wm_2.nii pbmap_wm_1.nii --logit-all --average --logistic-all --out ${tmpdir}/logodds_add.hdr
 	check_result logodds_add.img
 	;;
+    ImagemathMatchHistograms)
+        run ${BINDIR}/imagemath --set-padding-value 0 --in spgr_brain_{1,2}.hdr --match-histograms --out ${tmpdir}/match_histograms.hdr
+        check_result match_histograms.img
+        ;;
     LevelsetDefault)
 	run ${BINDIR}/levelset -v vol001_mr_t1.hdr ${tmpdir}/levelset.hdr
 	check_result levelset.img
