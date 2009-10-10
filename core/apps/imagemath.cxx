@@ -84,10 +84,20 @@ namespace apps
 namespace imagemath
 {
 #endif
+
+/// Flag for verbose operation.
 bool Verbose = false;
 
+/// The output data type of image operations.
 cmtk::ScalarDataType ResultType = cmtk::TYPE_FLOAT;
 
+/// Value used for padding input data, if PaddingFlag is true.
+cmtk::Types::DataItem PaddingValue;
+
+/// If this flag is set, PaddingValue defines the padding value for images read from files.
+bool PaddingFlag = false;
+
+/// Operating stack of images.
 std::stack<cmtk::UniformVolume::SmartPtr> ImageStack;
 
 bool
@@ -136,6 +146,9 @@ CallbackIn( const char** argv, int& argsUsed )
       cmtk::StdErr << "ERROR: could not read input image " << argv[argsUsed] << "\n";
       exit( 1 );
       }
+
+    if ( PaddingFlag )
+      volume->GetData()->SetPaddingValue( PaddingValue );
 
     ImageStack.push( volume );
     ++argsUsed;
@@ -1081,6 +1094,8 @@ main( int argc, char *argv[] )
     cl.BeginGroup( "Input/output", "Input/output operations" );
     cl.AddCallback( Key( "in" ), CallbackIn, "Read input image(s) to top of stack" );
     cl.AddCallback( Key( "out" ), CallbackOut, "Write output image from top of stack (but leave it on the stack)" );
+    cl.AddOption( Key( "set-padding-value" ), &PaddingValue, "Set the value that is interpreted as padding value in subsequently read images.", &PaddingFlag );
+    cl.AddSwitch( Key( "unset-padding" ), &PaddingFlag, false, "Disable padding. All values in subsequently read images will be interpreted as actual data." );
     cl.EndGroup();
 
     cl.BeginGroup( "Internal", "Internal settings" );

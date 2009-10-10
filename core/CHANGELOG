@@ -4,6 +4,7 @@ Release CMTK-1.1.2:
     multiple images.
 - Added: imagemath tool "--match-histograms" operation matches the intensity
     distribution of one image to that of another.
+- Added: imagemath tool now supports image data padding.
 
 - Fixed: BioRad header problem resulting from struct field alignment (patch by
     Greg Jefferis).
