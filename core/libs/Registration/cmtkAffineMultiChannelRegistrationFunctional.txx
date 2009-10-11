@@ -29,6 +29,8 @@
 //
 */
 
+#include <cmtkThreadParameterArray.h>
+
 namespace
 cmtk
 {
