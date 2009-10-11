@@ -34,6 +34,8 @@
 #include <cmtkMathUtil.h>
 #include <cmtkMatrix.h>
 
+#include <cmtkThreadParameterArray.h>
+
 #include <algorithm>
 
 namespace

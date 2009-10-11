@@ -308,4 +308,6 @@ Threads::Initializer
     }
 }
 
+//@}
+
 } // namespace cmtk

@@ -40,6 +40,7 @@
 #endif
 
 #include <cmtkProgress.h>
+#include <cmtkThreadParameterArray.h>
 
 #include <cmtkMathUtil.h>
 

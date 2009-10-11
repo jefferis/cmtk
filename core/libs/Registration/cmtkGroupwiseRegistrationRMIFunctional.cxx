@@ -32,6 +32,7 @@
 #include <cmtkGroupwiseRegistrationRMIFunctional.h>
 
 #include <cmtkMathUtil.h>
+#include <cmtkThreadParameterArray.h>
 
 #include <algorithm>
 

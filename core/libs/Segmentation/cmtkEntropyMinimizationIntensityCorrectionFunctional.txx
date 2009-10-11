@@ -29,6 +29,8 @@
 //
 */
 
+#include <cmtkThreadParameterArray.h>
+
 #pragma GCC diagnostic ignored "-Wtype-limits"
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
 void
@@ -272,7 +274,7 @@ EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 ::UpdateBiasFields( bool foregroundOnly )
 {
   const size_t numberOfThreads = std::min<size_t>( this->m_NumberOfThreads, Threads::GetNumberOfThreads() );
-  ThreadParameterArray< Self, ThreadParameters<Self> > params( this, numberOfThreads );
+  cmtk::ThreadParameterArray< Self, ThreadParameters<Self> > params( this, numberOfThreads );
   if ( foregroundOnly )
     params.RunInParallel( &UpdateBiasFieldsThreadFunc );
   else
@@ -415,7 +417,7 @@ EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 ::UpdateBiasFieldAdd( const bool foregroundOnly )
 {
   const size_t numberOfThreads = std::min<size_t>( this->m_NumberOfThreads, Threads::GetNumberOfThreads() );
-  ThreadParameterArray< Self, ThreadParameters<Self> > params( this, numberOfThreads );
+  cmtk::ThreadParameterArray< Self, ThreadParameters<Self> > params( this, numberOfThreads );
   if ( foregroundOnly )
     params.RunInParallel( &UpdateBiasFieldAddThreadFunc );
   else
@@ -541,7 +543,7 @@ EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 ::UpdateBiasFieldMul( const bool foregroundOnly )
 {
   const size_t numberOfThreads = std::min<size_t>( this->m_NumberOfThreads, Threads::GetNumberOfThreads() );
-  ThreadParameterArray< Self, ThreadParameters<Self> > params( this, numberOfThreads );
+  cmtk::ThreadParameterArray< Self, ThreadParameters<Self> > params( this, numberOfThreads );
   if ( foregroundOnly )
     params.RunInParallel( &UpdateBiasFieldMulThreadFunc );
   else

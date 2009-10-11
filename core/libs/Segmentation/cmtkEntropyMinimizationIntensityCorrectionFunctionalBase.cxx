@@ -31,6 +31,8 @@
 
 #include <cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.h>
 
+#include <cmtkThreadParameterArray.h>
+
 #include <algorithm>
 
 namespace cmtk

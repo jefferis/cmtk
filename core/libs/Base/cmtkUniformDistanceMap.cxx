@@ -33,6 +33,8 @@
 
 #include <cmtkDataTypeTraits.h>
 
+#include <cmtkThreadParameterArray.h>
+
 namespace
 cmtk
 {

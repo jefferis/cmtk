@@ -30,6 +30,7 @@
 */
 
 #include <cmtkDataGrid.h>
+#include <cmtkThreadParameterArray.h>
 
 #include <vector>
 

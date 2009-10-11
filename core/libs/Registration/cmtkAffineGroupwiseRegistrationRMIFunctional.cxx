@@ -34,6 +34,8 @@
 #include <cmtkMathUtil.h>
 #include <cmtkVolumeAxesHash.h>
 
+#include <cmtkThreadParameterArray.h>
+
 namespace
 cmtk
 {
