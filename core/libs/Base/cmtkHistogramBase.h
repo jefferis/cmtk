@@ -131,6 +131,24 @@ public:
     to = this->m_BinsUpperBound;
   }
 
+  /// Get lower bound of value range.
+  Types::DataItem GetRangeFrom() const
+  {
+    return this->m_BinsLowerBound;
+  }
+
+  /// Get upper bound of value range.
+  Types::DataItem GetRangeTo() const
+  {
+    return this->m_BinsUpperBound;
+  }
+
+  /// Get bin width.
+  Types::DataItem GetBinWidth() const
+  {
+    return this->m_BinWidth;
+  }
+
   /** Get value range of a given bin.
    */
   virtual void GetRangeBin( const size_t bin, Types::DataItem& from, Types::DataItem& to ) const 

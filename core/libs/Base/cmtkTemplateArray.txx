@@ -381,52 +381,38 @@ void
 TemplateArray<T>
 ::MatchHistogramToReference( const TypedArray* referenceArray, const unsigned int numberOfBins )
 {
-  const Histogram<unsigned int>* referenceHistogram = referenceArray->GetHistogram( numberOfBins );
+  const Histogram<unsigned int>::SmartPtr referenceHistogram( referenceArray->GetHistogram( numberOfBins ) );
   
-  std::vector<unsigned int> cumulativeRefHistogram( numberOfBins );
+  std::vector<double> cumulativeRefHistogram( numberOfBins );
   cumulativeRefHistogram[0] = (*referenceHistogram)[0];
   for ( size_t l = 1; l < numberOfBins; ++l )
     {
     cumulativeRefHistogram[l] = cumulativeRefHistogram[l-1] + (*referenceHistogram)[l];
     }
-  
-  std::vector<unsigned int> histogram( numberOfBins );
-  std::fill( histogram.begin(), histogram.end(), 0 );
-  
-  Types::DataItem refMin, refMax;
-  referenceHistogram->GetRange( refMin, refMax );
-  const Types::DataItem refScale = (refMax-refMin) / (numberOfBins-1);
-
-  // find original value range
-  T min = this->Data[0], max = this->Data[0];
-  for ( size_t i = 1; i < this->DataSize; ++i )
-    if ( !this->PaddingFlag || (this->Data[i] != this->Padding) )
-      {
-      if ( this->Data[i] > max ) max = this->Data[i];
-      if ( this->Data[i] < min ) min = this->Data[i];
-      }
-
-  // generate histogram
-  const double scaleToBin = (1.0 * (numberOfBins-1)) / (max-min);
-  for ( size_t i = 0; i < this->DataSize; ++i )
+  for ( size_t l = 0; l < numberOfBins; ++l )
     {
-    if ( !this->PaddingFlag || (this->Data[i] != this->Padding) )
-      ++histogram[static_cast<unsigned int>(scaleToBin*(this->Data[i]-min))];
+    cumulativeRefHistogram[l] /= cumulativeRefHistogram[numberOfBins-1];
     }
+  
+  const Histogram<unsigned int>::SmartPtr thisHistogram( this->GetHistogram( numberOfBins ) );
 
-  // transform into cumulative histogram
-  histogram[0] = 0; // this effectively stretches the distribution
+  std::vector<double> cumulativeHistogram( numberOfBins );
+  cumulativeHistogram[0] = (*thisHistogram)[0];
   for ( size_t l = 1; l < numberOfBins; ++l )
     {
-    histogram[l] += histogram[l-1];
+    cumulativeHistogram[l] = cumulativeHistogram[l-1] + (*thisHistogram)[l];
     }
-
+  for ( size_t l = 0; l < numberOfBins; ++l )
+    {
+    cumulativeHistogram[l] /= cumulativeHistogram[numberOfBins-1];
+    }
+  
   std::vector<unsigned int> lookup( numberOfBins );
 
   size_t j = 0;
   for ( size_t i = 0; i < numberOfBins; ++i )
     {
-    while ((j < numberOfBins) && (cumulativeRefHistogram[j] < histogram[i]))
+    while ((j < numberOfBins) && (cumulativeRefHistogram[j] < cumulativeHistogram[i]))
       {
       ++j;
       }
@@ -436,7 +422,7 @@ TemplateArray<T>
   for ( size_t i = 0; i < this->DataSize; ++i )
     {
     if ( !this->PaddingFlag || (this->Data[i] != this->Padding) )
-      this->Data[i] = refMin + lookup[static_cast<unsigned int>(scaleToBin*(this->Data[i]-min))] * refScale;
+      this->Data[i] = referenceHistogram->BinToValue( lookup[ thisHistogram->ValueToBin( this->Data[i] ) ] );
     }
 }
 
