@@ -419,6 +419,10 @@ case ${RUNTEST} in
 	check_result logodds_add.img
 	;;
     ImagemathMatchHistograms)
+        run ${BINDIR}/imagemath --in spgr_brain_{1,2}.hdr --match-histograms --out ${tmpdir}/match_histograms.hdr
+        check_result match_histograms.img
+        ;;
+    ImagemathMatchHistogramsPadding)
         run ${BINDIR}/imagemath --set-padding-value 0 --in spgr_brain_{1,2}.hdr --match-histograms --out ${tmpdir}/match_histograms.hdr
         check_result match_histograms.img
         ;;
