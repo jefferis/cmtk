@@ -45,6 +45,7 @@ SET(cmtkSystem_SRCS
   cmtkStackBacktrace
   cmtkStrUtility.cxx
   cmtkThreads.cxx
+  cmtkThreadPool.cxx
   cmtkTimers.cxx
 )
 
