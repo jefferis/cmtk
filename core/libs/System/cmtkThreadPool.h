@@ -60,9 +60,6 @@ public:
   /// Destructor: stop all running threads.
   ~ThreadPool();
 
-  /// Number of running threads.
-  size_t m_NumberOfThreads;
-
   /// Semaphore to signal running threads when tasks are waiting.
   ThreadSemaphore m_TaskWaitingSemaphore;
 
@@ -79,13 +76,16 @@ public:
   MutexLock m_NextTaskIndexLock;
 
 private:
+  /// Number of running threads.
+  size_t m_NumberOfThreads;
+
 #ifdef CMTK_BUILD_SMP
   /// Thread handles.
-std::vector<ThreadIDType> m_ThreadID;
+  std::vector<ThreadIDType> m_ThreadID;
   
 #ifdef _MSC_VER
   /// Windows thread handles
-std::vector<HANDLE> m_ThreadHandles;
+  std::vector<HANDLE> m_ThreadHandles;
 #endif
 #endif  
 };
