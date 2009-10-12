@@ -382,36 +382,28 @@ TemplateArray<T>
 ::MatchHistogramToReference( const TypedArray* referenceArray, const unsigned int numberOfBins )
 {
   const Histogram<unsigned int>::SmartPtr referenceHistogram( referenceArray->GetHistogram( numberOfBins ) );
+  referenceHistogram->ConvertToCumulative();
   
-  std::vector<double> cumulativeRefHistogram( numberOfBins );
-  cumulativeRefHistogram[0] = (*referenceHistogram)[0];
-  for ( size_t l = 1; l < numberOfBins; ++l )
-    {
-    cumulativeRefHistogram[l] = cumulativeRefHistogram[l-1] + (*referenceHistogram)[l];
-    }
+  std::vector<double> normalizedRefHistogram( numberOfBins );
   for ( size_t l = 0; l < numberOfBins; ++l )
     {
-    cumulativeRefHistogram[l] /= cumulativeRefHistogram[numberOfBins-1];
+    normalizedRefHistogram[l] = 1.0 * referenceHistogram->Bins[l] / referenceHistogram->Bins[numberOfBins-1];
     }
   
-  const Histogram<unsigned int>::SmartPtr thisHistogram( this->GetHistogram( numberOfBins ) );
+  const Histogram<unsigned int>::SmartPtr movingHistogram( this->GetHistogram( numberOfBins ) );
+  movingHistogram->ConvertToCumulative();
 
-  std::vector<double> cumulativeHistogram( numberOfBins );
-  cumulativeHistogram[0] = (*thisHistogram)[0];
-  for ( size_t l = 1; l < numberOfBins; ++l )
-    {
-    cumulativeHistogram[l] = cumulativeHistogram[l-1] + (*thisHistogram)[l];
-    }
+  std::vector<double> normalizedMovHistogram( numberOfBins );
   for ( size_t l = 0; l < numberOfBins; ++l )
     {
-    cumulativeHistogram[l] /= cumulativeHistogram[numberOfBins-1];
+    normalizedMovHistogram[l] /=  1.0 * movingHistogram->Bins[l] / movingHistogram->Bins[numberOfBins-1];
     }
   
   std::vector<unsigned int> lookup( numberOfBins );
   size_t j = 0;
   for ( size_t i = 0; i < numberOfBins; ++i )
     {
-    while ((j < numberOfBins) && (cumulativeRefHistogram[j] < cumulativeHistogram[i]))
+    while ((j < numberOfBins) && (normalizedRefHistogram[j] < normalizedMovHistogram[i]))
       {
       ++j;
       }
@@ -421,7 +413,7 @@ TemplateArray<T>
   for ( size_t i = 0; i < this->DataSize; ++i )
     {
     if ( !this->PaddingFlag || (this->Data[i] != this->Padding) )
-      this->Data[i] = referenceHistogram->BinToValue( lookup[ thisHistogram->ValueToBin( this->Data[i] ) ] );
+      this->Data[i] = referenceHistogram->BinToValue( lookup[ movingHistogram->ValueToBin( this->Data[i] ) ] );
     }
 }
 
