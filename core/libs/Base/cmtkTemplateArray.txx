@@ -387,7 +387,7 @@ TemplateArray<T>
   std::vector<double> normalizedRefHistogram( numberOfBins );
   for ( size_t l = 0; l < numberOfBins; ++l )
     {
-    normalizedRefHistogram[l] = 1.0 * referenceHistogram->Bins[l] / referenceHistogram->Bins[numberOfBins-1];
+    normalizedRefHistogram[l] = 1.0 * referenceHistogram->GetBin(l) / referenceHistogram->GetBin(numberOfBins-1);
     }
   
   Histogram<unsigned int>::SmartPtr movingHistogram( this->GetHistogram( numberOfBins ) );
@@ -396,7 +396,7 @@ TemplateArray<T>
   std::vector<double> normalizedMovHistogram( numberOfBins );
   for ( size_t l = 0; l < numberOfBins; ++l )
     {
-    normalizedMovHistogram[l] /=  1.0 * movingHistogram->Bins[l] / movingHistogram->Bins[numberOfBins-1];
+    normalizedMovHistogram[l] /=  1.0 * movingHistogram->GetBin(l) / movingHistogram->GetBin(numberOfBins-1);
     }
   
   std::vector<unsigned int> lookup( numberOfBins );
