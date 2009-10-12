@@ -60,6 +60,12 @@ public:
   /// Destructor: stop all running threads.
   ~ThreadPool();
 
+  /// Run actual worker functions through running threads.
+  template<class TParam> void RunWorkerFunction( const size_t numberOfTasks, //!< Number of tasks. Ideally, for scheduling, this is larger than the number of running threads, but this is not required.
+						 TParam* taskParameters, //!< Pointer to array of task parameters.
+						 void (*taskFunction)( TParam *const args ) //!< Pointer to task function.
+    );
+
   /// Semaphore to signal running threads when tasks are waiting.
   ThreadSemaphore m_TaskWaitingSemaphore;
 
@@ -93,5 +99,7 @@ private:
 } // namespace cmtk
 
 extern "C" CMTK_THREAD_RETURN_TYPE cmtkThreadPoolThreadFunction( CMTK_THREAD_ARG_TYPE );
+
+#include <cmtkThreadPool.txx>
 
 #endif // #ifndef __cmtkThreadPool_h_included_

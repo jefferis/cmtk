@@ -58,7 +58,8 @@ ThreadPool::ThreadPool( const size_t nThreads )
 #ifdef _OPENMP
   omp_set_num_threads( std::max<int>( 1, 1+Threads::GetNumberOfThreads()-this->m_NumberOfThreads ) );
 #endif
-  
+
+#ifdef CMTK_BUILD_SMP  
 #ifdef CMTK_USE_THREADS
   pthread_attr_t attr;
   pthread_attr_init(&attr);
@@ -70,10 +71,6 @@ ThreadPool::ThreadPool( const size_t nThreads )
     // nothing happened yet, so set status to OK
     int status = 0;
     
-    // We do NOT run the last thread as a thread, but rather continue the
-    // main thread. This should allow us to compute the actual real time
-    // spent on the longest thread, at least approximately.
-#ifdef CMTK_BUILD_SMP
 #ifdef _MSC_VER
     this->m_ThreadHandles[idx] = CreateThread( NULL /*default security attributes*/, 0/*use default stack size*/, 
 					       (LPTHREAD_START_ROUTINE) cmtkThreadPoolThreadFunction, 
@@ -85,10 +82,6 @@ ThreadPool::ThreadPool( const size_t nThreads )
 #else // _MSC_VER
     status = pthread_create( &this->m_ThreadID[idx], &attr, cmtkThreadPoolThreadFunction, static_cast<CMTK_THREAD_ARG_TYPE>( this ) );
 #endif // _MSC_VER
-#else
-    StdErr << "ERROR: cmtk::ThreadPool class cannot be used without SMP support\n";
-    exit( 1 );
-#endif
     
     if ( status ) 
       {
@@ -96,16 +89,17 @@ ThreadPool::ThreadPool( const size_t nThreads )
       exit( 1 );
       }
     }
-
-#ifdef CMTK_BUILD_SMP
+  
 #ifndef _MSC_VER
   pthread_attr_destroy(&attr);
 #endif
-#endif
+  
+#endif // #ifdef CMTK_BUILD_SMP
 }
 
 ThreadPool::~ThreadPool()
 {
+#ifdef CMTK_BUILD_SMP
 #ifdef CMTK_USE_THREADS  
   for ( size_t idx = 0; idx < this->m_NumberOfThreads; ++idx ) 
     {
@@ -120,12 +114,12 @@ ThreadPool::~ThreadPool()
 #endif
     }
 #endif
+#endif // #ifdef CMTK_BUILD_SMP
   
 #ifdef _OPENMP
   omp_set_num_threads( Threads::GetNumberOfThreads() );
 #endif
 }
-
 
 }
 
