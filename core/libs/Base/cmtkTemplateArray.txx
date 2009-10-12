@@ -381,7 +381,7 @@ void
 TemplateArray<T>
 ::MatchHistogramToReference( const TypedArray* referenceArray, const unsigned int numberOfBins )
 {
-  const Histogram<unsigned int>::SmartPtr referenceHistogram( referenceArray->GetHistogram( numberOfBins ) );
+  Histogram<unsigned int>::SmartPtr referenceHistogram( referenceArray->GetHistogram( numberOfBins ) );
   referenceHistogram->ConvertToCumulative();
   
   std::vector<double> normalizedRefHistogram( numberOfBins );
@@ -390,7 +390,7 @@ TemplateArray<T>
     normalizedRefHistogram[l] = 1.0 * referenceHistogram->Bins[l] / referenceHistogram->Bins[numberOfBins-1];
     }
   
-  const Histogram<unsigned int>::SmartPtr movingHistogram( this->GetHistogram( numberOfBins ) );
+  Histogram<unsigned int>::SmartPtr movingHistogram( this->GetHistogram( numberOfBins ) );
   movingHistogram->ConvertToCumulative();
 
   std::vector<double> normalizedMovHistogram( numberOfBins );
