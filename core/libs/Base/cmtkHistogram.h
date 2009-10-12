@@ -366,6 +366,15 @@ public:
    */
   void RemoveHistogram ( const Self& other );
 
+
+  /// Convert this histogram to a cumulative histogram (in place).
+  void ConvertToCumulative()
+  {
+    for ( size_t idx = 1; idx < this->m_NumBins; ++idx )
+      {
+      this->Bins[idx] += this->Bins[idx-1];
+      }
+  }
   /** Normalize histogram values by their total sum.
    *@param normalizeTo All histogram bins are scaled by a common factor so that
    * their sum matches the value of this parameter.
