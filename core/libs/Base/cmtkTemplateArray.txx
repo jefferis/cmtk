@@ -139,7 +139,7 @@ TemplateArray<T>
   size_t idx = 0;
   if ( PaddingFlag )
     {
-    while ((idx < DataSize) && (Data[idx] == Padding) || !finite(Data[idx])) 
+    while ( (idx < DataSize) && ((Data[idx] == Padding) || !finite(Data[idx])) ) 
       ++idx;
     }
   else
