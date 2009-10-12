@@ -38,6 +38,8 @@
 #include <cmtkThreadSemaphore.h>
 #include <cmtkMutexLock.h>
 
+#include <vector>
+
 namespace
 cmtk
 {
@@ -54,6 +56,9 @@ public:
    * the number of CPUs minus the number of currently running threads, if any.
    */
   ThreadPool( const size_t nThreads = 0 );
+
+  /// Destructor: stop all running threads.
+  ~ThreadPool();
 
   /// Number of running threads.
   size_t m_NumberOfThreads;
@@ -72,6 +77,17 @@ public:
 
   /// Lock to ensure exclusive access to the task index counter.
   MutexLock m_NextTaskIndexLock;
+
+private:
+#ifdef CMTK_BUILD_SMP
+  /// Thread handles.
+std::vector<ThreadIDType> m_ThreadID;
+  
+#ifdef _MSC_VER
+  /// Windows thread handles
+std::vector<HANDLE> m_ThreadHandles;
+#endif
+#endif  
 };
 
 } // namespace cmtk
