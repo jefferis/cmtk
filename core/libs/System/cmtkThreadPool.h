@@ -48,11 +48,15 @@ cmtk
 class ThreadPool
 {
 public:
-  /// Constructor: create a pool of nThreads running threads.
-  ThreadPool( const size_t nThreads );
+  /** Constructor: create a pool of nThreads running threads.
+   *\param nThreads Number of threads to create for this pool. By default, the number
+   * of threads created is the current number of available threads, i.e., typically
+   * the number of CPUs minus the number of currently running threads, if any.
+   */
+  ThreadPool( const size_t nThreads = 0 );
 
   /// Number of running threads.
-  size_t nThreads;
+  size_t m_NumberOfThreads;
 
   /// Semaphore to signal running threads when tasks are waiting.
   ThreadSemaphore m_TaskWaitingSemaphore;
@@ -68,7 +72,6 @@ public:
 
   /// Lock to ensure exclusive access to the task index counter.
   MutexLock m_NextTaskIndexLock;
-
 };
 
 } // namespace cmtk

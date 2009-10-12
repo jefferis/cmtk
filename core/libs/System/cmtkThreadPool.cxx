@@ -31,6 +31,22 @@
 
 #include <cmtkThreadPool.h>
 
+#include <cmtkThreads.h>
+
+namespace
+cmtk
+{
+
+ThreadPool::ThreadPool( const size_t nThreads )
+{
+  if ( ! nThreads )
+    this->m_NumberOfThreads = cmtk::Threads::GetNumberOfThreads();
+  else
+    this->m_NumberOfThreads = nThreads;
+}
+
+}
+
 CMTK_THREAD_RETURN_TYPE
 cmtkThreadPoolThreadFunction( CMTK_THREAD_ARG_TYPE arg )
 {
