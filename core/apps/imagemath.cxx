@@ -116,7 +116,7 @@ CheckStackTwoMatchingImages( const char* function )
 {
   if ( ImageStack.size() < 2 )
     {
-    cmtk::StdErr << "ERROR: two images are required to perform operation '" << function << "'\n";
+    cmtk::StdErr << "ERROR: at least two images are required to perform operation '" << function << "'\n";
     return false;
     }
 
@@ -622,8 +622,11 @@ CallbackAtan2()
 const char*
 CallbackMatchHistograms()
 {
-  if ( ! CheckStackTwoMatchingImages( "MatchHistograms" ) )
+  if ( ImageStack.size() < 2 )
+    {
+    cmtk::StdErr << "ERROR: need at least two images on stack for histogram intensity matching\n";
     return NULL;
+    }
   
   cmtk::UniformVolume::SmartPtr ref = ImageStack.top();
   ImageStack.pop();
