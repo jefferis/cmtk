@@ -136,7 +136,7 @@ MakeDownsampled( const cmtk::UniformVolume::SmartPtr& image, const int downsampl
 
 template<class TMetricFunctional>
 void
-DoRegistration( int argc, char* argv[] )
+DoRegistration()
 {
   typedef cmtk::SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional> FunctionalType;
   typedef cmtk::SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional<TMetricFunctional> ICFunctionalType;
@@ -360,12 +360,12 @@ main( int argc, char* argv[] )
     if ( useHistograms )
       {
       typedef cmtk::MultiChannelHistogramRegistrationFunctional<float,InterpolatorType,uint64_t,6> MetricFunctionalType;
-      DoRegistration<MetricFunctionalType>( argc, argv );
+      DoRegistration<MetricFunctionalType>();
       }
     else
       {
       typedef cmtk::MultiChannelRMIRegistrationFunctional<float> MetricFunctionalType;
-      DoRegistration<MetricFunctionalType>( argc, argv );
+      DoRegistration<MetricFunctionalType>();
       }
     }
   else
@@ -374,12 +374,12 @@ main( int argc, char* argv[] )
     if ( useHistograms )
       {
       typedef cmtk::MultiChannelHistogramRegistrationFunctional<float,InterpolatorType,uint64_t,6> MetricFunctionalType;
-      DoRegistration<MetricFunctionalType>( argc, argv );
+      DoRegistration<MetricFunctionalType>();
       }
     else
       {
       typedef cmtk::MultiChannelRMIRegistrationFunctional<float> MetricFunctionalType;
-      DoRegistration<MetricFunctionalType>( argc, argv );
+      DoRegistration<MetricFunctionalType>();
       }
     }
 
