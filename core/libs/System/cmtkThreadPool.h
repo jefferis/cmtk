@@ -37,6 +37,7 @@
 #include <cmtkThreadSystemTypes.h>
 #include <cmtkThreadSemaphore.h>
 #include <cmtkMutexLock.h>
+#include <cmtkSmartPtr.h>
 
 #include <vector>
 
@@ -50,6 +51,18 @@ cmtk
 class ThreadPool
 {
 public:
+  /// This class.
+  typedef ThreadPool Self;
+
+  /// Smart pointer.
+  typedef SmartPointer<Self> SmartPtr;
+
+  /// Task function: this is the interface for the functions called by the pooled threads to do the actual work.
+  typedef void (*TaskFunction)( void *const args, //!< Pointer to parameter block for this task.
+				const size_t taskIdx, //!< Index of this task.
+				const size_t taskCnt //!< Number of tasks.
+    );
+
   /** Constructor: create a pool of nThreads running threads.
    *\param nThreads Number of threads to create for this pool. By default, the number
    * of threads created is the current number of available threads, i.e., typically
@@ -63,9 +76,9 @@ public:
   /// Run actual worker functions through running threads.
   template<class TParam> void RunWorkerFunction( const size_t numberOfTasks, //!< Number of tasks. Ideally, for scheduling, this is larger than the number of running threads, but this is not required.
 						 TParam* taskParameters, //!< Pointer to array of task parameters.
-						 void (*taskFunction)( TParam *const args ) //!< Pointer to task function.
+						 TaskFunction taskFunction //!< Pointer to task function.
     );
-
+  
   /// Semaphore to signal running threads when tasks are waiting.
   ThreadSemaphore m_TaskWaitingSemaphore;
 
@@ -80,6 +93,12 @@ public:
 
   /// Lock to ensure exclusive access to the task index counter.
   MutexLock m_NextTaskIndexLock;
+
+  /// The current task function.
+  TaskFunction m_TaskFunction;
+
+  /// Task function parameter pointers.
+  std::vector<void*> m_TaskParameters;
 
 private:
   /// Number of running threads.

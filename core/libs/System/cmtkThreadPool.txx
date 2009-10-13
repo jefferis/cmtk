@@ -32,14 +32,33 @@
 template<class TParam> 
 void
 cmtk::ThreadPool::RunWorkerFunction
-( const size_t numberOfTasks, TParam* taskParameters, void (*taskFunction)( TParam *const args ) )
+( const size_t numberOfTasks, TParam* taskParameters, TaskFunction taskFunction )
 {
 #ifdef CMTK_BUILD_SMP
+  // set task function
+  this->m_TaskFunction = taskFunction;
+
+  // initialize task index and count
+  this->m_NumberOfTasks = numberOfTasks;
+  this->m_NextTaskIndex = 0;
+
+  // set parameter pointers and post semaphores for tasks waiting
+  for ( size_t idx = 0; idx < numberOfTasks; ++idx )
+    {
+    this->m_TaskParameters[idx] = &(taskParameters[idx]);
+    this->m_TaskWaitingSemaphore.Post();
+    }
+
+  // now wait for all tasks to complete, as signaled via the "thread waiting" semaphore.
+  for ( size_t idx = 0; idx < numberOfTasks; ++idx )
+    {
+    this->m_ThreadWaitingSemaphore.Wait();
+    }  
 #else
   // without SMP, just run everything sequentially.
   for ( size_t idx = 0; idx < numberOfTasks; ++idx )
     {
-    taskFunction( taskParameters[idx] );
+    taskFunction( taskParameters[idx], idx, numberOfTasks );
     }
 #endif
 }

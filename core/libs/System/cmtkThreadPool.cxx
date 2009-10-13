@@ -50,6 +50,7 @@ ThreadPool::ThreadPool( const size_t nThreads )
   else
     this->m_NumberOfThreads = nThreads;
 
+  this->m_TaskParameters.resize( this->m_NumberOfThreads );
   this->m_ThreadID.resize( this->m_NumberOfThreads );
 #ifdef _MSC_VER
   this->m_ThreadHandles.resize( this->m_NumberOfThreads );
@@ -64,24 +65,11 @@ ThreadPool::ThreadPool( const size_t nThreads )
   pthread_attr_t attr;
   pthread_attr_init(&attr);
   pthread_attr_setscope(&attr, PTHREAD_SCOPE_SYSTEM);
-#endif
 
   for ( size_t idx = 0; idx < this->m_NumberOfThreads; ++idx ) 
     {
     // nothing happened yet, so set status to OK
-    int status = 0;
-    
-#ifdef _MSC_VER
-    this->m_ThreadHandles[idx] = CreateThread( NULL /*default security attributes*/, 0/*use default stack size*/, 
-					       (LPTHREAD_START_ROUTINE) cmtkThreadPoolThreadFunction, 
-					       static_cast<CMTK_THREAD_ARG_TYPE>( this ),  0/*use default creation flags*/, &this->m_ThreadID[threadIdx] );
-    if ( this->m_ThreadHandles[idx] == NULL ) 
-      {
-      status = -1;
-      }
-#else // _MSC_VER
-    status = pthread_create( &this->m_ThreadID[idx], &attr, cmtkThreadPoolThreadFunction, static_cast<CMTK_THREAD_ARG_TYPE>( this ) );
-#endif // _MSC_VER
+    const int status = pthread_create( &this->m_ThreadID[idx], &attr, cmtkThreadPoolThreadFunction, static_cast<CMTK_THREAD_ARG_TYPE>( this ) );
     
     if ( status ) 
       {
@@ -90,10 +78,28 @@ ThreadPool::ThreadPool( const size_t nThreads )
       }
     }
   
-#ifndef _MSC_VER
   pthread_attr_destroy(&attr);
-#endif
-  
+#elif defined(_MSC_VER)
+  for ( size_t idx = 0; idx < this->m_NumberOfThreads; ++idx ) 
+    {
+    // nothing happened yet, so set status to OK
+    int status = 0;
+    
+    this->m_ThreadHandles[idx] = CreateThread( NULL /*default security attributes*/, 0/*use default stack size*/, 
+					       (LPTHREAD_START_ROUTINE) cmtkThreadPoolThreadFunction, 
+					       static_cast<CMTK_THREAD_ARG_TYPE>( this ),  0/*use default creation flags*/, &this->m_ThreadID[threadIdx] );
+    if ( this->m_ThreadHandles[idx] == NULL ) 
+      {
+      status = -1;
+      }
+    
+    if ( status ) 
+      {
+      StdErr.printf( "Creation of pooled thread #%d failed with status %d.\n", idx, status );
+      exit( 1 );
+      }
+    }
+#endif // #ifdef CMTK_USE_THREADS
 #endif // #ifdef CMTK_BUILD_SMP
 }
 
@@ -130,19 +136,20 @@ cmtkThreadPoolThreadFunction( CMTK_THREAD_ARG_TYPE arg )
 
   while ( true )
     {
+    // wait for task waiting
     myThreadPool->m_TaskWaitingSemaphore.Wait();
-    
+
+    // lock, get, increment next task index
     myThreadPool->m_NextTaskIndexLock.Lock();
-    while ( myThreadPool->m_NextTaskIndex < myThreadPool->m_NumberOfTasks )
-      {
-      ++myThreadPool->m_NextTaskIndex;
-      myThreadPool->m_NextTaskIndexLock.Unlock();
-      
-      myThreadPool->m_NextTaskIndexLock.Lock();
-      }
+    const size_t taskIdx = myThreadPool->m_NextTaskIndex;
+    ++myThreadPool->m_NextTaskIndex;
     myThreadPool->m_NextTaskIndexLock.Unlock();
     
-    myThreadPool->m_ThreadWaitingSemaphore.Post();
+    // call task function
+    myThreadPool->m_TaskFunction( myThreadPool->m_TaskParameters[taskIdx], taskIdx, myThreadPool->m_NumberOfTasks ); 
+
+    // post "task done, thread waiting"
+    myThreadPool->m_ThreadWaitingSemaphore.Post(); 
     }
   
   return CMTK_THREAD_RETURN_VALUE;
