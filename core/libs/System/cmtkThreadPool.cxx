@@ -33,10 +33,6 @@
 
 #include <cmtkThreads.h>
 
-#ifdef _OPENMP
-#  include <omp.h>
-#endif
-
 #include <cmtkConsole.h>
 
 namespace
@@ -54,10 +50,6 @@ ThreadPool::ThreadPool( const size_t nThreads )
   this->m_ThreadID.resize( this->m_NumberOfThreads );
 #ifdef _MSC_VER
   this->m_ThreadHandles.resize( this->m_NumberOfThreads );
-#endif
-
-#ifdef _OPENMP
-  omp_set_num_threads( std::max<int>( 1, 1+Threads::GetNumberOfThreads()-this->m_NumberOfThreads ) );
 #endif
 
 #ifdef CMTK_BUILD_SMP  
@@ -121,10 +113,6 @@ ThreadPool::~ThreadPool()
     }
 #endif
 #endif // #ifdef CMTK_BUILD_SMP
-  
-#ifdef _OPENMP
-  omp_set_num_threads( Threads::GetNumberOfThreads() );
-#endif
 }
 
 void

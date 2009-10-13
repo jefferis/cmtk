@@ -46,27 +46,26 @@ TypedArray*
 UniformVolume::Resample( const UniformVolume& other ) const 
 {
   const TypedArray* fromData = other.GetData();
-
   const VolumeGridToGridLookup gridLookup( other, *this );
-  const size_t numberOfThreads = std::min<int>( Threads::GetNumberOfThreads(), this->m_Dims[2] );
+
+  // compute number of tasks: we go by image plane and use twice as many tasks as threads, so we hopefully get decent load balancing.
+  const size_t numberOfTasks = std::min<int>( Threads::GetNumberOfThreads(), this->m_Dims[2] );
    
-  // Info blocks for parallel threads that do the resampling.
-  UniformVolume::ResampleThreadInfo *ThreadInfo = Memory::AllocateArray<UniformVolume::ResampleThreadInfo>( numberOfThreads );
+  // Info blocks for parallel tasks that do the resampling.
+  UniformVolume::ResampleTaskInfo *taskInfoArray = Memory::AllocateArray<UniformVolume::ResampleTaskInfo>( numberOfTasks );
    
   Types::DataItem *resampledData = NULL;
   try
     {
-    resampledData = Memory::AllocateArray<Types::DataItem>(  this->GetNumberOfPixels()  );
+    resampledData = Memory::AllocateArray<Types::DataItem>( this->GetNumberOfPixels() );
      
-    for ( size_t threadIdx = 0; threadIdx < numberOfThreads; ++threadIdx ) 
+    for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
       {
-      ThreadInfo[threadIdx].thisObject = this;
-      ThreadInfo[threadIdx].ThisThreadIndex = threadIdx;
-      ThreadInfo[threadIdx].NumberOfThreads = numberOfThreads;
-      ThreadInfo[threadIdx].GridLookup = &gridLookup;
-      ThreadInfo[threadIdx].OtherVolume = &other;
-      ThreadInfo[threadIdx].FromData = fromData;
-      ThreadInfo[threadIdx].ResampledData = resampledData;
+      taskInfoArray[taskIdx].thisObject = this;
+      taskInfoArray[taskIdx].GridLookup = &gridLookup;
+      taskInfoArray[taskIdx].OtherVolume = &other;
+      taskInfoArray[taskIdx].FromData = fromData;
+      taskInfoArray[taskIdx].ResampledData = resampledData;
       }
      
     switch ( fromData->GetDataClass() ) 
@@ -77,15 +76,17 @@ UniformVolume::Resample( const UniformVolume& other ) const
 	       "You may not like the result though...\n", stderr );
       case DATACLASS_GREY:
       default:
-//	Threads::RunThreads( UniformVolume::ResampleThreadExecuteGrey, numberOfThreads, ThreadInfo );
       {
-      ThreadPool threadPool( numberOfThreads );
-      threadPool.Run( UniformVolume::ResampleThreadPoolExecuteGrey, numberOfThreads, ThreadInfo );
+      ThreadPool threadPool;
+      threadPool.Run( UniformVolume::ResampleThreadPoolExecuteGrey, numberOfTasks, taskInfoArray );
       }
       break;
       case DATACLASS_LABEL:
-	Threads::RunThreads( UniformVolume::ResampleThreadExecuteLabels, numberOfThreads, ThreadInfo );
-	break;
+      {
+      ThreadPool threadPool;
+      threadPool.Run( UniformVolume::ResampleThreadPoolExecuteLabels, numberOfTasks, taskInfoArray );
+      break;
+      }
       }
     }
    
@@ -94,7 +95,7 @@ UniformVolume::Resample( const UniformVolume& other ) const
     resampledData = NULL;
     }
    
-  delete[] ThreadInfo;
+  delete[] taskInfoArray;
    
   if ( resampledData == NULL ) 
     {
@@ -109,10 +110,10 @@ UniformVolume::Resample( const UniformVolume& other ) const
   return Result;
 }
 
-CMTK_THREAD_RETURN_TYPE
-UniformVolume::ResampleThreadExecuteLabels( void *arg )
+void
+UniformVolume::ResampleThreadPoolExecuteLabels( void *const arg, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCnt )
 {
-  UniformVolume::ResampleThreadInfo *info = static_cast<UniformVolume::ResampleThreadInfo*>( arg );
+  UniformVolume::ResampleTaskInfo *info = static_cast<UniformVolume::ResampleTaskInfo*>( arg );
 
   const UniformVolume *me = info->thisObject;
   const UniformVolume *other = info->OtherVolume;
@@ -125,7 +126,7 @@ UniformVolume::ResampleThreadExecuteLabels( void *arg )
   int pX, pY, pZ;
   Types::DataItem value;
   
-  for ( int z = info->ThisThreadIndex; z < me->m_Dims[2]; z += info->NumberOfThreads ) 
+  for ( int z = taskIdx; z < me->m_Dims[2]; z += taskCnt ) 
     {
     int offset = z * me->m_Dims[0] * me->m_Dims[1];
     
@@ -173,83 +174,12 @@ UniformVolume::ResampleThreadExecuteLabels( void *arg )
 	}
       }
     }
-  return CMTK_THREAD_RETURN_VALUE;
-}
-
-CMTK_THREAD_RETURN_TYPE
-UniformVolume::ResampleThreadExecuteGrey( void *arg )
-{
-  UniformVolume::ResampleThreadInfo *info = static_cast<UniformVolume::ResampleThreadInfo*>( arg );
-
-  const UniformVolume *me = info->thisObject;
-  Types::DataItem *dest = info->ResampledData;
-  const UniformVolume *other = info->OtherVolume;
-  const VolumeGridToGridLookup *gridLookup = info->GridLookup;
-  
-  Types::DataItem tempValue, value;
-  
-  int x, y;
-  int pX, pY, pZ;
-  bool FoundNullData;
-  
-  for ( int z = info->ThisThreadIndex; z < me->m_Dims[2]; z += info->NumberOfThreads ) 
-    {
-    int offset = z * me->m_Dims[0] * me->m_Dims[1];
-
-    const Types::Coordinate volumeZ = gridLookup->GetLength(2,z);
-	
-    for ( y=0; y < me->m_Dims[1]; ++y ) 
-      {
-      const Types::Coordinate volumeYZ = volumeZ * gridLookup->GetLength(1,y);
-      
-      for ( x=0; x < me->m_Dims[0]; ++x, ++offset ) 
-	{
-	tempValue = 0;
-	FoundNullData = false;
-	
-	for ( pZ=0; pZ<gridLookup->GetSourceCount(2,z); ++pZ ) 
-	  {
-	  const Types::Coordinate weightZ=gridLookup->GetWeight(2,z,pZ);
-	  
-	  for ( pY=0; pY<gridLookup->GetSourceCount(1,y); ++pY ) 
-	    {
-	    const Types::Coordinate weightYZ=weightZ*gridLookup->GetWeight(1,y,pY);
-	    
-	    for ( pX=0; pX<gridLookup->GetSourceCount(0,x); ++pX ) 
-	      {
-	      const Types::Coordinate weight=weightYZ*gridLookup->GetWeight(0,x,pX);
-	      
-	      if ( other->GetDataAt(value,pX+gridLookup->GetFromIndex(0,x), pY+gridLookup->GetFromIndex(1,y), pZ+gridLookup->GetFromIndex(2,z) ) )
-		{
-		tempValue+=static_cast<Types::DataItem>( weight*value );
-		} 
-	      else
-		{
-		FoundNullData = true;
-		}
-	      }
-	    }
-	  }
-	
-	if ( ! FoundNullData ) 
-	  {
-	  const Types::Coordinate volume = volumeYZ*gridLookup->GetLength(0,x);
-	  dest[offset] = static_cast<Types::DataItem>( tempValue / volume );
-	  } 
-	else
-	  {
-	  dest[offset] = sqrt( static_cast<Types::DataItem>( -1 ) );
-	  }
-	}
-      }
-    }
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 void
-UniformVolume::ResampleThreadPoolExecuteGrey( void *arg, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCnt )
+UniformVolume::ResampleThreadPoolExecuteGrey( void *const arg, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCnt )
 {
-  UniformVolume::ResampleThreadInfo *info = static_cast<UniformVolume::ResampleThreadInfo*>( arg );
+  UniformVolume::ResampleTaskInfo *info = static_cast<UniformVolume::ResampleTaskInfo*>( arg );
 
   const UniformVolume *me = info->thisObject;
   Types::DataItem *dest = info->ResampledData;

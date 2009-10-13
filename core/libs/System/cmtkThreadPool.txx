@@ -29,11 +29,22 @@
 //
 */
 
+#ifdef _OPENMP
+#  include <omp.h>
+#endif
+
+#include <cmtkThreads.h>
+
 template<class TParam> 
 void
 cmtk::ThreadPool::Run
 ( const TaskFunction taskFunction, size_t numberOfTasks, TParam* taskParameters )
 {
+#ifdef _OPENMP
+  const int ompNumThreads = omp_get_num_threads();
+  omp_set_num_threads( std::max<int>( 1, 1+Threads::GetNumberOfThreads()-this->m_NumberOfThreads ) );
+#endif
+
 #ifdef CMTK_BUILD_SMP
   // set task function
   this->m_TaskFunction = taskFunction;
@@ -60,5 +71,9 @@ cmtk::ThreadPool::Run
     {
     taskFunction( taskParameters[idx], idx, numberOfTasks );
     }
+#endif
+
+#ifdef _OPENMP
+  omp_set_num_threads( ompNumThreads );
 #endif
 }

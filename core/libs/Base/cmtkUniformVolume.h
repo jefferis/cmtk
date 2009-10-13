@@ -545,7 +545,7 @@ private:
    * instance of this structure is given to EvaluateGradientThread() for
    * each thread created.
    */
-  class ResampleThreadInfo :
+  class ResampleTaskInfo :
     public ThreadParameters<const Self> 
   {
   public:
@@ -559,14 +559,11 @@ private:
     const TypedArray* FromData;
   };
 
-  /// Multi-threaded resampling for label data.
-  static CMTK_THREAD_RETURN_TYPE ResampleThreadExecuteLabels( void *arg );
-
   /// Multi-threaded resampling for grey data.
-  static CMTK_THREAD_RETURN_TYPE ResampleThreadExecuteGrey( void *arg );
+  static void ResampleThreadPoolExecuteGrey( void *const arg, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCnt );
 
-  /// Multi-threaded resampling for grey data.
-  static void ResampleThreadPoolExecuteGrey( void *arg, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCnt );
+  /// Multi-threaded resampling for label data (using partial volume averaging).
+  static void ResampleThreadPoolExecuteLabels( void *const arg, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCnt );
 };
 
 //@}
