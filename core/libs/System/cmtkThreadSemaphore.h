@@ -36,11 +36,12 @@
 
 #if defined(CMTK_USE_THREADS)
 #    include <semaphore.h>
+#elif defined(_MSC_VER)
+#  include <Windows.h>
 #endif
 
-#ifdef HAVE_TIME_H
-#  include <time.h>
-#endif
+#include <iostream>
+#include <stdlib.h>
 
 namespace
 cmtk
@@ -58,6 +59,14 @@ public:
   {
 #if defined(CMTK_USE_THREADS)
     sem_init( &this->m_Semaphore, 0, initial );
+#elif defined(_MSC_VER)
+    this->m_Semaphore = CreateSemaphore( NULL /*default security attributes*/, initial, 32768 /*maximum count*/, NULL /*unnamed semaphore*/ );
+    
+    if ( this->m_Semaphore == NULL) 
+      {
+      std::cerr << "CreateSemaphore error: " << GetLastError() << std::endl;
+      exit( 1 );
+      }
 #endif
   }
 
@@ -66,6 +75,8 @@ public:
   {
 #if defined(CMTK_USE_THREADS)
     sem_destroy( &this->m_Semaphore );
+#elif defined(_MSC_VER)
+    CloseHandle( this->m_Semaphore );
 #endif
   }
 
@@ -74,6 +85,8 @@ public:
   {
 #if defined(CMTK_USE_THREADS)
     sem_post( &this->m_Semaphore );
+#elif defined(_MSC_VER)
+    ReleaseSemaphore( this->m_Semaphore, 1, NULL);
 #endif
   }
   
@@ -82,6 +95,8 @@ public:
   {
 #if defined(CMTK_USE_THREADS)
     sem_wait( &this->m_Semaphore );
+#elif defined(_MSC_VER)
+    WaitForSingleObject( this->m_Semaphore, INFINITE );
 #endif
   }
 
@@ -92,6 +107,9 @@ public:
   {
 #if defined(CMTK_USE_THREADS)
     return !sem_wait( &this->m_Semaphore );
+#elif defined(_MSC_VER)
+    const DWORD waitResult = WaitForSingleObject( this->m_Semaphore, 0 );
+    return (waitResult != WAIT_TIMEOUT);
 #else
     return false;
 #endif 
@@ -101,6 +119,10 @@ public:
 private:
   /// Opaque system semaphore object.
   sem_t m_Semaphore;
+#elif defined(_MSC_VER)
+private:
+  /// Opaque system semaphore object.
+  HANDLE m_Semaphore;
 #endif
 };
 
