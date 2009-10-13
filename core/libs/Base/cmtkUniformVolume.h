@@ -564,6 +564,9 @@ private:
 
   /// Multi-threaded resampling for grey data.
   static CMTK_THREAD_RETURN_TYPE ResampleThreadExecuteGrey( void *arg );
+
+  /// Multi-threaded resampling for grey data.
+  static void ResampleThreadPoolExecuteGrey( void *arg, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCnt );
 };
 
 //@}

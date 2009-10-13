@@ -1,6 +1,10 @@
 Release CMTK-1.1.2:
 
-- Added; logit and logistic functions for imagemath tool, for single and
+- Added: a still-experimental new multi-threading class based on pools of
+    continuously running threads. This should reduce thread creation overhead
+    and also improve scheduling by allowing over-partitioned tasks, i.e.,
+    tasks split into substantially more parts than the number of CPUs.
+- Added: logit and logistic functions for imagemath tool, for single and
     multiple images.
 - Added: imagemath tool "--match-histograms" operation matches the intensity
     distribution of one image to that of another.
@@ -11,6 +15,9 @@ Release CMTK-1.1.2:
 - Fixed: TemplateArray::GetRangeTemplate() now ignores non-finite values, which
     also fixes a crash in triplanar viewer when reading images with non-finite
     values.
+
+- Improved: switched log and short options in command line help and wiki
+    markup outputs.
 
 
 Release CMTK-1.1.1 (2009-09-02):

@@ -18,28 +18,28 @@ where
 
 == List of Supported Options ==
 
-; <tt>-v</tt> / <tt>--verbose</tt> : Verbose operation
+; <tt>--verbose</tt> / <tt>-v</tt> : Verbose operation
 === Interleaving Options ===
 
 ; <tt>--interleave-axis</tt> : Define interleave axis: this is the through-slice direction of the acquisition.
-; <tt>-p</tt> <tt><integer></tt> / <tt>--passes</tt> <tt><integer></tt> : Number of interleaved passes
-; <tt>-W</tt> / <tt>--pass-weight</tt> : Set contribution weight for a pass in the form 'pass:weight'
+; <tt>--passes</tt> <tt><integer></tt> / <tt>-p</tt> <tt><integer></tt> : Number of interleaved passes
+; <tt>--pass-weight</tt> / <tt>-W</tt> : Set contribution weight for a pass in the form 'pass:weight'
 === Motion Correction / Registration Options ===
 
-; <tt>-R</tt> <tt><image-path></tt> / <tt>--reference-image</tt> <tt><image-path></tt> : Use a separate high-resolution reference image for registration
+; <tt>--reference-image</tt> <tt><image-path></tt> / <tt>-R</tt> <tt><image-path></tt> : Use a separate high-resolution reference image for registration
 ; <tt>--registration-metric</tt> : Registration metric for motion estimation by image-to-image registration.
 ; <tt>--import-xforms-path</tt> <tt><path></tt> : Path of file from which to import transformations between passes.
 ; <tt>--export-xforms-path</tt> <tt><path></tt> : Path of file to which to export transformations between passes.
-; <tt>-S</tt> <tt><double></tt> / <tt>--injection-kernel-sigma</tt> <tt><double></tt> : Standard deviation of Gaussian kernel for volume injection in multiples of pixel size in each direction.
-; <tt>-r</tt> <tt><double></tt> / <tt>--injection-kernel-radius</tt> <tt><double></tt> : Truncation radius factor of injection kernel. The kernel is truncated at sigma*radius, where sigma is the kernel standard deviation.
+; <tt>--injection-kernel-sigma</tt> <tt><double></tt> / <tt>-S</tt> <tt><double></tt> : Standard deviation of Gaussian kernel for volume injection in multiples of pixel size in each direction.
+; <tt>--injection-kernel-radius</tt> <tt><double></tt> / <tt>-r</tt> <tt><double></tt> : Truncation radius factor of injection kernel. The kernel is truncated at sigma*radius, where sigma is the kernel standard deviation.
 === Inverse Interpolation Options ===
 
 ; <tt>--inverse-interpolation-kernel</tt> : Kernel for the inverse interpolation reconstruction
-; <tt>-f</tt> / <tt>--fourth-order-error</tt> : Use fourth-order (rather than second-order) error for optimization.
-; <tt>-n</tt> <tt><integer></tt> / <tt>--num-iterations</tt> <tt><integer></tt> : Maximum number of inverse interpolation iterations
-; <tt>-T</tt> / <tt>--no-truncation</tt> : Turn off regional intensity truncatrion
+; <tt>--fourth-order-error</tt> / <tt>-f</tt> : Use fourth-order (rather than second-order) error for optimization.
+; <tt>--num-iterations</tt> <tt><integer></tt> / <tt>-n</tt> <tt><integer></tt> : Maximum number of inverse interpolation iterations
+; <tt>--no-truncation</tt> / <tt>-T</tt> : Turn off regional intensity truncatrion
 === Output Options ===
 
 ; <tt>--write-injected-image</tt> <tt><image-path></tt> : Write initial volume injection image to path
-; <tt>-F</tt> / <tt>--write-images-as-float</tt> : Write output images as floating point [default: same as input]
+; <tt>--write-images-as-float</tt> / <tt>-F</tt> : Write output images as floating point [default: same as input]
 

@@ -33,6 +33,8 @@
 
 #include <cmtkVolumeGridToGridLookup.h>
 
+#include <cmtkThreadPool.h>
+
 namespace
 cmtk
 {
@@ -75,8 +77,12 @@ UniformVolume::Resample( const UniformVolume& other ) const
 	       "You may not like the result though...\n", stderr );
       case DATACLASS_GREY:
       default:
-	Threads::RunThreads( UniformVolume::ResampleThreadExecuteGrey, numberOfThreads, ThreadInfo );
-	break;
+//	Threads::RunThreads( UniformVolume::ResampleThreadExecuteGrey, numberOfThreads, ThreadInfo );
+      {
+      ThreadPool threadPool( numberOfThreads );
+      threadPool.Run( UniformVolume::ResampleThreadPoolExecuteGrey, numberOfThreads, ThreadInfo );
+      }
+      break;
       case DATACLASS_LABEL:
 	Threads::RunThreads( UniformVolume::ResampleThreadExecuteLabels, numberOfThreads, ThreadInfo );
 	break;
@@ -215,7 +221,7 @@ UniformVolume::ResampleThreadExecuteGrey( void *arg )
 	      
 	      if ( other->GetDataAt(value,pX+gridLookup->GetFromIndex(0,x), pY+gridLookup->GetFromIndex(1,y), pZ+gridLookup->GetFromIndex(2,z) ) )
 		{
-			tempValue+=static_cast<Types::DataItem>( weight*value );
+		tempValue+=static_cast<Types::DataItem>( weight*value );
 		} 
 	      else
 		{
@@ -238,6 +244,75 @@ UniformVolume::ResampleThreadExecuteGrey( void *arg )
       }
     }
   return CMTK_THREAD_RETURN_VALUE;
+}
+
+void
+UniformVolume::ResampleThreadPoolExecuteGrey( void *arg, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCnt )
+{
+  UniformVolume::ResampleThreadInfo *info = static_cast<UniformVolume::ResampleThreadInfo*>( arg );
+
+  const UniformVolume *me = info->thisObject;
+  Types::DataItem *dest = info->ResampledData;
+  const UniformVolume *other = info->OtherVolume;
+  const VolumeGridToGridLookup *gridLookup = info->GridLookup;
+  
+  Types::DataItem tempValue, value;
+  
+  int x, y;
+  int pX, pY, pZ;
+  bool FoundNullData;
+  
+  for ( int z = taskIdx; z < me->m_Dims[2]; z += taskCnt ) 
+    {
+    int offset = z * me->m_Dims[0] * me->m_Dims[1];
+
+    const Types::Coordinate volumeZ = gridLookup->GetLength(2,z);
+	
+    for ( y=0; y < me->m_Dims[1]; ++y ) 
+      {
+      const Types::Coordinate volumeYZ = volumeZ * gridLookup->GetLength(1,y);
+      
+      for ( x=0; x < me->m_Dims[0]; ++x, ++offset ) 
+	{
+	tempValue = 0;
+	FoundNullData = false;
+	
+	for ( pZ=0; pZ<gridLookup->GetSourceCount(2,z); ++pZ ) 
+	  {
+	  const Types::Coordinate weightZ=gridLookup->GetWeight(2,z,pZ);
+	  
+	  for ( pY=0; pY<gridLookup->GetSourceCount(1,y); ++pY ) 
+	    {
+	    const Types::Coordinate weightYZ=weightZ*gridLookup->GetWeight(1,y,pY);
+	    
+	    for ( pX=0; pX<gridLookup->GetSourceCount(0,x); ++pX ) 
+	      {
+	      const Types::Coordinate weight=weightYZ*gridLookup->GetWeight(0,x,pX);
+	      
+	      if ( other->GetDataAt(value,pX+gridLookup->GetFromIndex(0,x), pY+gridLookup->GetFromIndex(1,y), pZ+gridLookup->GetFromIndex(2,z) ) )
+		{
+		tempValue+=static_cast<Types::DataItem>( weight*value );
+		} 
+	      else
+		{
+		FoundNullData = true;
+		}
+	      }
+	    }
+	  }
+	
+	if ( ! FoundNullData ) 
+	  {
+	  const Types::Coordinate volume = volumeYZ*gridLookup->GetLength(0,x);
+	  dest[offset] = static_cast<Types::DataItem>( tempValue / volume );
+	  } 
+	else
+	  {
+	  dest[offset] = sqrt( static_cast<Types::DataItem>( -1 ) );
+	  }
+	}
+      }
+    }
 }
 
 } // namespace cmtk

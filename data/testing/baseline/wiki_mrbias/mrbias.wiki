@@ -18,23 +18,23 @@ where
 
 == List of Supported Options ==
 
-; <tt>-v</tt> / <tt>--verbose</tt> : Be verbose
-; <tt>-F</tt> / <tt>--write-float</tt> : Write output image with floating point pixel data. If this is not given, the input data type is used.
+; <tt>--verbose</tt> / <tt>-v</tt> : Be verbose
+; <tt>--write-float</tt> / <tt>-F</tt> : Write output image with floating point pixel data. If this is not given, the input data type is used.
 === Bias Field Parameterization ===
 
-; <tt>-A</tt> <tt><integer></tt> / <tt>--degree-add</tt> <tt><integer></tt> : Polynomial degree for additive correction.
-; <tt>-M</tt> <tt><integer></tt> / <tt>--degree-mul</tt> <tt><integer></tt> : Polynomial degree for multiplicative correction.
-; <tt>-I</tt> / <tt>--incremental</tt> : Incrementally increase polynomial degrees.
+; <tt>--degree-add</tt> <tt><integer></tt> / <tt>-A</tt> <tt><integer></tt> : Polynomial degree for additive correction.
+; <tt>--degree-mul</tt> <tt><integer></tt> / <tt>-M</tt> <tt><integer></tt> : Polynomial degree for multiplicative correction.
+; <tt>--incremental</tt> / <tt>-I</tt> : Incrementally increase polynomial degrees.
 === Input Image Preprocessing ===
 
-; <tt>-m</tt> <tt><labelmap-path></tt> / <tt>--mask</tt> <tt><labelmap-path></tt> : Binary mask image filename.
-; <tt>-t</tt> <tt><float></tt> / <tt>--thresh-min</tt> <tt><float></tt> : Minimum intensity threshold for image foreground.
-; <tt>-T</tt> <tt><float></tt> / <tt>--thresh-max</tt> <tt><float></tt> : Minimum intensity threshold for image foreground.
+; <tt>--mask</tt> <tt><labelmap-path></tt> / <tt>-m</tt> <tt><labelmap-path></tt> : Binary mask image filename.
+; <tt>--thresh-min</tt> <tt><float></tt> / <tt>-t</tt> <tt><float></tt> : Minimum intensity threshold for image foreground.
+; <tt>--thresh-max</tt> <tt><float></tt> / <tt>-T</tt> <tt><float></tt> : Minimum intensity threshold for image foreground.
 === Entropy Estimation Settings ===
 
-; <tt>-L</tt> / <tt>--log-intensities</tt> : Use log intensities for entropy estimation.
-; <tt>-s</tt> <tt><float></tt> / <tt>--sampling-density</tt> <tt><float></tt> : Image sampling density to use only subset of image pixels
-; <tt>-n</tt> <tt><integer></tt> / <tt>--num-bins</tt> <tt><integer></tt> : Number of histogram bins for entropy estimation
+; <tt>--log-intensities</tt> / <tt>-L</tt> : Use log intensities for entropy estimation.
+; <tt>--sampling-density</tt> <tt><float></tt> / <tt>-s</tt> <tt><float></tt> : Image sampling density to use only subset of image pixels
+; <tt>--num-bins</tt> <tt><integer></tt> / <tt>-n</tt> <tt><integer></tt> : Number of histogram bins for entropy estimation
 === Optimization Algorithm Settings ===
 
 ; <tt>--step-max</tt> <tt><double></tt> : Maximum (initial) search step size.

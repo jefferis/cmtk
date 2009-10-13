@@ -18,28 +18,28 @@ where
 
 == List of Supported Options ==
 
-; <tt>-v</tt> / <tt>--verbose</tt> : Verbose mode
-; <tt>-q</tt> / <tt>--quiet</tt> : Quiet mode
+; <tt>--verbose</tt> / <tt>-v</tt> : Verbose mode
+; <tt>--quiet</tt> / <tt>-q</tt> : Quiet mode
 === Automation Options ===
 
 ; <tt>--auto-multi-levels</tt> <tt><integer></tt> : Automatic optimization and resolution parameter generation for <n> levels
 === Optimization settings ===
 
-; <tt>-e</tt> <tt><double></tt> / <tt>--exploration</tt> <tt><double></tt> : Exploration [initial optimizer step size]
-; <tt>-a</tt> <tt><double></tt> / <tt>--accuracy</tt> <tt><double></tt> : Accuracy [final optimizer step size]
-; <tt>-f</tt> <tt><double></tt> / <tt>--stepfactor</tt> <tt><double></tt> : Factor for search step size reduction. Must be > 0.0 and < 1.0
+; <tt>--exploration</tt> <tt><double></tt> / <tt>-e</tt> <tt><double></tt> : Exploration [initial optimizer step size]
+; <tt>--accuracy</tt> <tt><double></tt> / <tt>-a</tt> <tt><double></tt> : Accuracy [final optimizer step size]
+; <tt>--stepfactor</tt> <tt><double></tt> / <tt>-f</tt> <tt><double></tt> : Factor for search step size reduction. Must be > 0.0 and < 1.0
 ; <tt>--delta-f-threshold</tt> <tt><double></tt> : Optional threshold to terminate optimization (level) if relative change of target function drops below this value.
 === Image resolution parameters ===
 
-; <tt>-s</tt> <tt><double></tt> / <tt>--sampling</tt> <tt><double></tt> : Image sampling (finest resampled image resolution)
+; <tt>--sampling</tt> <tt><double></tt> / <tt>-s</tt> <tt><double></tt> : Image sampling (finest resampled image resolution)
 ; <tt>--coarsest</tt> <tt><double></tt> : Upper limit for image sampling in multiresolution hierarchy
 ; <tt>--omit-original-data</tt> : Do not use original data in full resolution, omit final stage in multiresolution hierarchy, thus reducing computation time.
 === Transformation parameters ===
 
 ; <tt>--dofs</tt> <tt><integer>[,<integer>,...]</tt> : Add number of degrees of freedom [can be repeated]
 ; <tt>--dofs-final</tt> <tt><integer>[,<integer>,...]</tt> : Add number of degrees of freedom for final level only [can be repeated]
-; <tt>-n</tt> / <tt>--no-switch</tt> : Do not auto-switch reference and floating image for improved computational performance
-; <tt>-i</tt> / <tt>--initxlate</tt> : Initialized transformation by translating floating image FOV center onto reference image FOV center
+; <tt>--no-switch</tt> / <tt>-n</tt> : Do not auto-switch reference and floating image for improved computational performance
+; <tt>--initxlate</tt> / <tt>-i</tt> : Initialized transformation by translating floating image FOV center onto reference image FOV center
 ; <tt>--initial</tt> <tt><transformation-path></tt> : Initialize transformation from given path
 ; <tt>--initial-is-inverse</tt> : Invert initial transformation before initializing registration
 === Image data ===
@@ -70,11 +70,11 @@ where
 ; <tt>--crop-world-flt</tt> <tt><string></tt> : Cropping region in world coordinates [parsed as %f,%f,%f,%f,%f,%f for x0,y0,z0,x1,y1,z1]
 === Output parameters ===
 
-; <tt>-o</tt> <tt><string></tt> / <tt>--outlist</tt> <tt><string></tt> : Output path for final transformation
+; <tt>--outlist</tt> <tt><string></tt> / <tt>-o</tt> <tt><string></tt> : Output path for final transformation
 ; <tt>--out-matrix</tt> <tt><string></tt> : Output path for final transformation in matrix format
 ; <tt>--out-parameters</tt> <tt><string></tt> : Output path for final transformation in plain parameter list format
-; <tt>-p</tt> <tt><string></tt> / <tt>--protocol</tt> <tt><string></tt> : Optimization protocol output file name
-; <tt>-t</tt> <tt><string></tt> / <tt>--time</tt> <tt><string></tt> : Computation time statistics output file name
+; <tt>--protocol</tt> <tt><string></tt> / <tt>-p</tt> <tt><string></tt> : Optimization protocol output file name
+; <tt>--time</tt> <tt><string></tt> / <tt>-t</tt> <tt><string></tt> : Computation time statistics output file name
 === Import Results into Slicer ===
 
 ; <tt>--out-itk</tt> <tt><transformation-path></tt> : Output path for final transformation in ITK format
