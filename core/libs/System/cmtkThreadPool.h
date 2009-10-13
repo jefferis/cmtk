@@ -83,9 +83,10 @@ public:
   ~ThreadPool();
 
   /// Run actual worker functions through running threads.
-  template<class TParam> void RunWorkerFunction( const size_t numberOfTasks, //!< Number of tasks. Ideally, for scheduling, this is larger than the number of running threads, but this is not required.
-						 TParam* taskParameters, //!< Pointer to array of task parameters.
-						 TaskFunction taskFunction //!< Pointer to task function.
+  template<class TParam> 
+  void Run( TaskFunction taskFunction, //!< Pointer to task function.
+	    const size_t numberOfTasks, //!< Number of tasks. Ideally, for scheduling, this is larger than the number of running threads, but this is not required.
+	    TParam* taskParameters //!< Pointer to array of task parameters.
     );
 
   /// This function is run as a thread.

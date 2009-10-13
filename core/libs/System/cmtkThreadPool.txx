@@ -31,8 +31,8 @@
 
 template<class TParam> 
 void
-cmtk::ThreadPool::RunWorkerFunction
-( const size_t numberOfTasks, TParam* taskParameters, TaskFunction taskFunction )
+cmtk::ThreadPool::Run
+( const TaskFunction taskFunction, size_t numberOfTasks, TParam* taskParameters )
 {
 #ifdef CMTK_BUILD_SMP
   // set task function
