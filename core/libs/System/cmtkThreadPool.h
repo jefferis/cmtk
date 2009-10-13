@@ -78,7 +78,11 @@ public:
 						 TParam* taskParameters, //!< Pointer to array of task parameters.
 						 TaskFunction taskFunction //!< Pointer to task function.
     );
+
+  /// This function is run as a thread.
+  void ThreadFunction();
   
+private:
   /// Semaphore to signal running threads when tasks are waiting.
   ThreadSemaphore m_TaskWaitingSemaphore;
 
@@ -100,7 +104,6 @@ public:
   /// Task function parameter pointers.
   std::vector<void*> m_TaskParameters;
 
-private:
   /// Number of running threads.
   size_t m_NumberOfThreads;
 
@@ -117,7 +120,9 @@ private:
 
 } // namespace cmtk
 
-extern "C" CMTK_THREAD_RETURN_TYPE cmtkThreadPoolThreadFunction( CMTK_THREAD_ARG_TYPE );
+/// This is the actual low-level thread function. It calls ThreadFunction() for the cmtk::ThreadPool instance given as the function parameter.
+extern "C" CMTK_THREAD_RETURN_TYPE cmtkThreadPoolThreadFunction( CMTK_THREAD_ARG_TYPE arg //!< This is a pointer to the cmtk::ThreadPool instance.
+  );
 
 #include <cmtkThreadPool.txx>
 

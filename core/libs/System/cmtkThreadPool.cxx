@@ -127,30 +127,33 @@ ThreadPool::~ThreadPool()
 #endif
 }
 
+void
+ThreadPool::ThreadFunction()
+{
+  while ( true )
+    {
+    // wait for task waiting
+    this->m_TaskWaitingSemaphore.Wait();
+
+    // lock, get, increment next task index
+    this->m_NextTaskIndexLock.Lock();
+    const size_t taskIdx = this->m_NextTaskIndex;
+    ++this->m_NextTaskIndex;
+    this->m_NextTaskIndexLock.Unlock();
+    
+    // call task function
+    this->m_TaskFunction( this->m_TaskParameters[taskIdx], taskIdx, this->m_NumberOfTasks ); 
+    
+    // post "task done, thread waiting"
+    this->m_ThreadWaitingSemaphore.Post(); 
+    }
+}
+
 }
 
 CMTK_THREAD_RETURN_TYPE
 cmtkThreadPoolThreadFunction( CMTK_THREAD_ARG_TYPE arg )
 {
-  cmtk::ThreadPool* myThreadPool = static_cast<cmtk::ThreadPool*>( arg );
-
-  while ( true )
-    {
-    // wait for task waiting
-    myThreadPool->m_TaskWaitingSemaphore.Wait();
-
-    // lock, get, increment next task index
-    myThreadPool->m_NextTaskIndexLock.Lock();
-    const size_t taskIdx = myThreadPool->m_NextTaskIndex;
-    ++myThreadPool->m_NextTaskIndex;
-    myThreadPool->m_NextTaskIndexLock.Unlock();
-    
-    // call task function
-    myThreadPool->m_TaskFunction( myThreadPool->m_TaskParameters[taskIdx], taskIdx, myThreadPool->m_NumberOfTasks ); 
-
-    // post "task done, thread waiting"
-    myThreadPool->m_ThreadWaitingSemaphore.Post(); 
-    }
-  
+  static_cast<cmtk::ThreadPool*>( arg )->ThreadFunction();
   return CMTK_THREAD_RETURN_VALUE;
 }
