@@ -41,8 +41,9 @@ cmtk::ThreadPool::Run
 ( const TaskFunction taskFunction, size_t numberOfTasks, TParam* taskParameters )
 {
 #ifdef _OPENMP
+  // if OpenMP is also used in CMTK, reduce the number of OMP threads by the number of threads/tasks that we're about to run in parallel.
   const int ompNumThreads = omp_get_num_threads();
-  omp_set_num_threads( std::max<int>( 1, 1+Threads::GetNumberOfThreads()-this->m_NumberOfThreads ) );
+  omp_set_num_threads( std::max<int>( 1, 1+Threads::GetNumberOfThreads()- std::min<int>( numberOfTasks, this->m_NumberOfThreads ) ) );
 #endif
 
 #ifdef CMTK_BUILD_SMP
@@ -51,15 +52,16 @@ cmtk::ThreadPool::Run
 
   // initialize task index and count
   this->m_NumberOfTasks = numberOfTasks;
+  this->m_TaskParameters.resize( this->m_NumberOfTasks );
   this->m_NextTaskIndex = 0;
 
-  // set parameter pointers and post semaphores for tasks waiting
+  // set parameter pointers and post semaphores for tasks waiting to supply all running threads.
   for ( size_t idx = 0; idx < numberOfTasks; ++idx )
     {
     this->m_TaskParameters[idx] = &(taskParameters[idx]);
     this->m_TaskWaitingSemaphore.Post();
     }
-
+  
   // now wait for all tasks to complete, as signaled via the "thread waiting" semaphore.
   for ( size_t idx = 0; idx < numberOfTasks; ++idx )
     {
@@ -74,6 +76,7 @@ cmtk::ThreadPool::Run
 #endif
 
 #ifdef _OPENMP
+  // restore OpenMP thread count to what we found upen entering this function
   omp_set_num_threads( ompNumThreads );
 #endif
 }
