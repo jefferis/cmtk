@@ -92,9 +92,9 @@ cmtk::CommandLine::KeyToAction
 ::FormatHelp( std::ostringstream& fmt ) const
 {
   const std::string& typeInfo = this->GetActionTypeInfo();
-  if ( this->m_Key.m_KeyChar )
+  if ( this->m_Key.m_KeyString.size() )
     {
-    fmt << "-" << this->m_Key.m_KeyChar;
+    fmt << "--" << this->m_Key.m_KeyString;
     if ( typeInfo.length() )
       {
       fmt << " " << typeInfo;
@@ -106,9 +106,9 @@ cmtk::CommandLine::KeyToAction
     fmt << " / ";
     }
 
-  if ( this->m_Key.m_KeyString.size() )
+  if ( this->m_Key.m_KeyChar )
     {
-    fmt << "--" << this->m_Key.m_KeyString;
+    fmt << "-" << this->m_Key.m_KeyChar;
     if ( typeInfo.length() )
       {
       fmt << " " << typeInfo;
@@ -136,9 +136,9 @@ cmtk::CommandLine::KeyToAction
   const std::string& typeInfo = this->GetActionTypeInfo();
 
   StdOut << prefix << "; ";
-  if ( this->m_Key.m_KeyChar )
+  if ( this->m_Key.m_KeyString.size() )
     {
-    StdOut << "<tt>-" << this->m_Key.m_KeyChar << "</tt>";
+    StdOut << "<tt>--" << this->m_Key.m_KeyString << "</tt>";
     if ( typeInfo.length() )
       {
       StdOut << " <tt>" << typeInfo << "</tt>";
@@ -150,9 +150,9 @@ cmtk::CommandLine::KeyToAction
     StdOut << " / ";
     }
 
-  if ( this->m_Key.m_KeyString.size() )
+  if ( this->m_Key.m_KeyChar )
     {
-    StdOut << "<tt>--" << this->m_Key.m_KeyString << "</tt>";
+    StdOut << "<tt>-" << this->m_Key.m_KeyChar << "</tt>";
     if ( typeInfo.length() )
       {
       StdOut << " <tt>" << typeInfo << "</tt>";
