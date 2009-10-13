@@ -396,7 +396,7 @@ TemplateArray<T>
   std::vector<double> normalizedMovHistogram( numberOfBins );
   for ( size_t l = 0; l < numberOfBins; ++l )
     {
-    normalizedMovHistogram[l] /=  1.0 * movingHistogram->GetBin(l) / movingHistogram->GetBin(numberOfBins-1);
+    normalizedMovHistogram[l] =  1.0 * movingHistogram->GetBin(l) / movingHistogram->GetBin(numberOfBins-1);
     }
   
   std::vector<unsigned int> lookup( numberOfBins );
