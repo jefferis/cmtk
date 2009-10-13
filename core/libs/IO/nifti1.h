@@ -163,8 +163,13 @@ extern "C" {
            This binary header should be found at the beginning of a valid
            NIFTI-1 header file.
  */
+
+struct 
+#ifdef __GNUC__
+__attribute__((packed)) 
+#endif
                         /*************************/  /************************/
-struct nifti_1_header { /* NIFTI-1 usage         */  /* ANALYZE 7.5 field(s) */
+       nifti_1_header { /* NIFTI-1 usage         */  /* ANALYZE 7.5 field(s) */
                         /*************************/  /************************/
 
                                            /*--- was header_key substruct ---*/
