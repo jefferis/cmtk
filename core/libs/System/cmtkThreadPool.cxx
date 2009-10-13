@@ -130,6 +130,8 @@ ThreadPool::~ThreadPool()
 void
 ThreadPool::ThreadFunction()
 {
+#ifdef CMTK_BUILD_SMP
+  const size_t threadIdx = this->GetMyThreadIndex();
   while ( true )
     {
     // wait for task waiting
@@ -142,11 +144,28 @@ ThreadPool::ThreadFunction()
     this->m_NextTaskIndexLock.Unlock();
     
     // call task function
-    this->m_TaskFunction( this->m_TaskParameters[taskIdx], taskIdx, this->m_NumberOfTasks ); 
+    this->m_TaskFunction( this->m_TaskParameters[taskIdx], taskIdx, this->m_NumberOfTasks, threadIdx, this->m_NumberOfThreads ); 
     
     // post "task done, thread waiting"
     this->m_ThreadWaitingSemaphore.Post(); 
     }
+#endif // #ifdef CMTK_BUILD_SMP
+}
+
+size_t 
+ThreadPool::GetMyThreadIndex() const
+{
+#ifdef CMTK_BUILD_SMP
+#ifdef _MSC_VER
+  const DWORD self = GetCurrentThreadId();
+#else
+  const pthread_t self = pthread_self();
+#endif // #ifdef _MSC_VER
+  for ( size_t idx = 0; idx < this->m_ThreadID.size(); ++idx )
+    if ( self == this->m_ThreadID[idx] )
+      return idx;
+#endif // #ifdef CMTK_BUILD_SMP
+  return -1;
 }
 
 }

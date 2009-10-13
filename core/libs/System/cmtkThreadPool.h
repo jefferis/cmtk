@@ -57,10 +57,19 @@ public:
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
-  /// Task function: this is the interface for the functions called by the pooled threads to do the actual work.
+  /** Task function: this is the interface for the functions called by the pooled threads to do the actual work.
+   * The task function receives five parameters: a) a pointer to its parameter black, b) the index of the task,
+   * c) the number of tasks, d) the index of the thread within the pool that is calling the task, and e) the
+   * number of threads in the pool. Whereas the function should use b) and c) to determine what portion of work 
+   * it needs to do, d) and e) must be used to determine, for example, what local memory should be used, if
+   * temporary storage has been allocated for each thread. Because the number of tasks typically exceeds the
+   * number of threads, this is more efficient than allocating temporary storage for each task.
+   */
   typedef void (*TaskFunction)( void *const args, //!< Pointer to parameter block for this task.
 				const size_t taskIdx, //!< Index of this task.
-				const size_t taskCnt //!< Number of tasks.
+				const size_t taskCnt, //!< Number of tasks.
+				const size_t threadIdx, //!< Index of the thread that is running this task.
+				const size_t threadCont //!< Number of threads in this pool.
     );
 
   /** Constructor: create a pool of nThreads running threads.
@@ -115,7 +124,10 @@ private:
   /// Windows thread handles
   std::vector<HANDLE> m_ThreadHandles;
 #endif
-#endif  
+#endif
+  
+  /// Get index of currently running thread (called from inside ThreadFunction()).
+  size_t GetMyThreadIndex() const;
 };
 
 } // namespace cmtk
