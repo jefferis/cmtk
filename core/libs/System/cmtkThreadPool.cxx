@@ -50,9 +50,11 @@ ThreadPool::ThreadPool( const size_t nThreads )
   else
     this->m_NumberOfThreads = nThreads;
 
+#ifdef CMTK_BUILD_SMP  
   this->m_ThreadID.resize( this->m_NumberOfThreads );
 #ifdef _MSC_VER
   this->m_ThreadHandles.resize( this->m_NumberOfThreads );
+#endif
 #endif
 
 #ifdef CMTK_BUILD_SMP  
