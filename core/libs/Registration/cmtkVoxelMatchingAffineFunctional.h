@@ -440,7 +440,7 @@ public:
     * For these parameters, the thread computes the partial derivative of the
     * functional by finite-difference approximation.
     */
-  static void EvaluateThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCont ) 
+  static void EvaluateThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t ) 
   {
   typename Self::EvaluateTaskInfo *info = static_cast<typename Self::EvaluateTaskInfo*>( args );
 
