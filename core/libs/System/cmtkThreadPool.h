@@ -82,6 +82,12 @@ public:
   /// Destructor: stop all running threads.
   ~ThreadPool();
 
+  /// Return number of threads in the pool.
+  size_t GetNumberOfThreads() const
+  {
+    return this->m_NumberOfThreads;
+  }
+
   /// Run actual worker functions through running threads.
   template<class TParam> 
   void Run( TaskFunction taskFunction, //!< Pointer to task function.
