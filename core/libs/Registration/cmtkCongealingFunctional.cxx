@@ -127,21 +127,25 @@ CongealingFunctional<TXform,THistogramBinType>::Evaluate()
   double entropy = 0;
   unsigned int count = 0;
 
-  const size_t numberOfThreads = 1; //Threads::GetNumberOfThreads();
-  ThreadParameterArray<Self,EvaluateThreadParameters> params( this, numberOfThreads );
-  this->m_ThreadHistograms.resize( numberOfThreads );
+  this->m_ThreadHistograms.resize( this->m_NumberOfThreads );
+
+  EvaluateThreadParameters* params = Memory::AllocateArray<EvaluateThreadParameters>( this->m_NumberOfTasks );
+  for ( size_t idx = 0; idx < this->m_NumberOfTasks; ++idx )
+    params[idx].thisObject = this;
   
   if ( this->m_ProbabilisticSamples.size() )
-    params.RunInParallel( &EvaluateProbabilisticThread );
+    this->m_ThreadPool.Run( Self::EvaluateProbabilisticThread, this->m_NumberOfTasks, params );
   else
-    params.RunInParallel( &EvaluateThread );
+    this->m_ThreadPool.Run( Self::EvaluateThread, this->m_NumberOfTasks, params );
   
-  // gather partial entropies from threads
-  for ( size_t thread = 0; thread < numberOfThreads; ++thread )
+  // gather partial entropies from tasks
+  for ( size_t task = 0; task < this->m_NumberOfTasks; ++task )
     {
-    entropy += params[thread].m_Entropy;
-    count += params[thread].m_Count;
+    entropy += params[task].m_Entropy;
+    count += params[task].m_Count;
     }
+
+  Memory::DeleteArray( params );
 
 #ifdef CMTK_BUILD_MPI
   double partialEntropy = entropy;
@@ -158,18 +162,16 @@ CongealingFunctional<TXform,THistogramBinType>::Evaluate()
 }
 
 template<class TXform,class THistogramBinType>
-CMTK_THREAD_RETURN_TYPE
+void
 CongealingFunctional<TXform,THistogramBinType>::EvaluateThread
-( void *args )
+( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t )
 {
   EvaluateThreadParameters* threadParameters = static_cast<EvaluateThreadParameters*>( args );
   
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
   
-  HistogramType& histogram = This->m_ThreadHistograms[threadID];
+  HistogramType& histogram = This->m_ThreadHistograms[threadIdx];
   histogram.Resize( ThisConst->m_HistogramBins + 2 * ThisConst->m_HistogramKernelRadiusMax, false /*reset*/ );
   
   double entropy = 0;
@@ -177,12 +179,12 @@ CongealingFunctional<TXform,THistogramBinType>::EvaluateThread
 
   const size_t numberOfPixels = ThisConst->m_TemplateNumberOfPixels;
 #ifdef CMTK_BUILD_MPI  
-  const size_t pixelsPerThread = 1+numberOfPixels / ( numberOfThreads * ThisConst->m_SizeMPI );
-  const size_t pixelFrom = ( threadID + ThisConst->m_RankMPI * numberOfThreads ) * pixelsPerThread;
+  const size_t pixelsPerThread = 1+numberOfPixels / ( taskCnt * ThisConst->m_SizeMPI );
+  const size_t pixelFrom = ( taskIdx + ThisConst->m_RankMPI * taskCnt ) * pixelsPerThread;
   const size_t pixelTo = std::min( numberOfPixels, pixelFrom + pixelsPerThread );
 #else
-  const size_t pixelsPerThread = 1+(numberOfPixels / numberOfThreads);
-  const size_t pixelFrom = threadID * pixelsPerThread;
+  const size_t pixelsPerThread = 1+(numberOfPixels / taskCnt);
+  const size_t pixelFrom = taskIdx * pixelsPerThread;
   const size_t pixelTo = std::min( numberOfPixels, pixelFrom + pixelsPerThread );
 #endif
 
@@ -229,23 +231,19 @@ CongealingFunctional<TXform,THistogramBinType>::EvaluateThread
   
   threadParameters->m_Entropy = entropy;
   threadParameters->m_Count = count;
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 template<class TXform,class THistogramBinType>
-CMTK_THREAD_RETURN_TYPE
+void
 CongealingFunctional<TXform,THistogramBinType>::EvaluateProbabilisticThread
-( void *args )
+( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t )
 {
   EvaluateThreadParameters* threadParameters = static_cast<EvaluateThreadParameters*>( args );
   
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
   
-  HistogramType& histogram = This->m_ThreadHistograms[threadID];
+  HistogramType& histogram = This->m_ThreadHistograms[threadIdx];
   histogram.Resize( ThisConst->m_HistogramBins + 2 * ThisConst->m_HistogramKernelRadiusMax, false /*reset*/ );
 
   double entropy = 0;
@@ -257,12 +255,12 @@ CongealingFunctional<TXform,THistogramBinType>::EvaluateProbabilisticThread
 
   const size_t numberOfSamples = ThisConst->m_ProbabilisticSamples.size();
 #ifdef CMTK_BUILD_MPI  
-  const size_t samplesPerThread = numberOfSamples / ( numberOfThreads * ThisConst->m_SizeMPI );
-  const size_t sampleFrom = ( threadID + ThisConst->m_RankMPI * numberOfThreads ) * samplesPerThread;
+  const size_t samplesPerThread = numberOfSamples / ( taskCnt * ThisConst->m_SizeMPI );
+  const size_t sampleFrom = ( taskIdx + ThisConst->m_RankMPI * taskCnt ) * samplesPerThread;
   const size_t sampleTo = std::min( numberOfSamples, sampleFrom + samplesPerThread );
 #else
-  const size_t samplesPerThread = numberOfSamples / numberOfThreads;
-  const size_t sampleFrom = threadID * samplesPerThread;
+  const size_t samplesPerThread = numberOfSamples / taskCnt;
+  const size_t sampleFrom = taskIdx * samplesPerThread;
   const size_t sampleTo = std::min( numberOfSamples, sampleFrom + samplesPerThread );
 #endif
 
@@ -309,8 +307,6 @@ CongealingFunctional<TXform,THistogramBinType>::EvaluateProbabilisticThread
     
   threadParameters->m_Entropy = entropy;
   threadParameters->m_Count = count;
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 template<class TXform,class THistogramBinType>
@@ -360,7 +356,7 @@ CongealingFunctional<TXform,THistogramBinType>
   for ( size_t idx = 0; idx < this->m_NumberOfTasks; ++idx )
     params[idx].thisObject = this;
 
-  this->m_ThreadPool.Run( UpdateStandardDeviationByPixelThreadFunc, this->m_NumberOfTasks, params );
+  this->m_ThreadPool.Run( Self::UpdateStandardDeviationByPixelThreadFunc, this->m_NumberOfTasks, params );
   
 #ifdef CMTK_BUILD_MPI
   MPI::COMM_WORLD.Allgather( &this->m_StandardDeviationByPixelMPI[0], this->m_StandardDeviationByPixelMPI.size(), 

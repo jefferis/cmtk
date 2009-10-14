@@ -55,7 +55,14 @@ CongealingFunctionalBase<TXform,THistogramBinType>::CongealingFunctionalBase() :
   m_CropImageHistograms( false )
 {
   this->m_NumberOfThreads = this->m_ThreadPool.GetNumberOfThreads();
-  this->m_NumberOfTasks = 2 * this->m_NumberOfThreads;
+  if ( this->m_NumberOfThreads > 1 )
+    {
+    this->m_NumberOfTasks = 2 * this->m_NumberOfThreads;
+    }
+  else
+    {
+    this->m_NumberOfTasks = 1;
+    }
   this->m_TaskInfo = Memory::AllocateArray<InterpolateImageThreadParameters>( this->m_NumberOfTasks );
 }
 

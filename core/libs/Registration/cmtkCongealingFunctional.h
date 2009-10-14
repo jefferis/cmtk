@@ -171,10 +171,10 @@ private:
   };
   
   /// Evaluate functional with currently set parameters.
-  static CMTK_THREAD_RETURN_TYPE EvaluateThread( void* threadParameters );
+  static void EvaluateThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCnt );
 
   /// Evaluate functional with currently set parameters with probabilistic sampling.
-  static CMTK_THREAD_RETURN_TYPE EvaluateProbabilisticThread( void* threadParameters );
+  static void EvaluateProbabilisticThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCnt );
 };
 
 //@}
