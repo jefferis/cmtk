@@ -4,9 +4,9 @@ registration {
 	reference_study "rat_fse_erly.hdr"
 	floating_study "rat2_fse_erly.hdr"
 	affine_xform {
-		xlate -0.6 1.8 -6 
-		rotate -0.797932542 1.418546741 -0.1929249249 
-		scale 0.9968253968 0.3634920635 1.302380952 
+		xlate 0 0.3 1 
+		rotate 8.777257962 4.521617738 -0.7073913913 
+		scale 1.115873016 0.9015873016 1.10952381 
 		shear 0 0 0 
 		center 31.5 31.5 7.200000286 
 	}
