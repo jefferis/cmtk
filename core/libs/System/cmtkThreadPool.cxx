@@ -81,9 +81,8 @@ ThreadPool::ThreadPool( const size_t nThreads )
     // nothing happened yet, so set status to OK
     int status = 0;
     
-    this->m_ThreadHandles[idx] = CreateThread( NULL /*default security attributes*/, 0/*use default stack size*/, 
-					       (LPTHREAD_START_ROUTINE) cmtkThreadPoolThreadFunction, 
-					       static_cast<CMTK_THREAD_ARG_TYPE>( this ),  0/*use default creation flags*/, &this->m_ThreadID[threadIdx] );
+    this->m_ThreadHandles[idx] = CreateThread( NULL /*default security attributes*/, 0/*use default stack size*/, (LPTHREAD_START_ROUTINE) cmtkThreadPoolThreadFunction, 
+					       static_cast<CMTK_THREAD_ARG_TYPE>( this ),  0/*use default creation flags*/, &this->m_ThreadID[idx] );
     if ( this->m_ThreadHandles[idx] == NULL ) 
       {
       status = -1;
