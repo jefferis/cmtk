@@ -19,6 +19,9 @@ Release CMTK-1.1.2:
 - Improved: switched long and short options in command line help and wiki
     markup outputs.
 
+- Fixed: basic reformatting in groupwise registration used slightly broken
+    partitioning for SMP computation. This has been fixed.
+
 
 Release CMTK-1.1.1 (2009-09-02):
 

@@ -159,15 +159,11 @@ case ${RUNTEST} in
 	check_result average_congeal.img
 	;;
     CongealUseTemplate)
-	export CMTK_NUM_THREADS=1
 	run ${BINDIR}/congeal -v --force-background 0 -O ${tmpdir} --template spgr_brain_1.hdr --dofs 6 --dofs 9 -e 2 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --template-with-data spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
 	check_results congeal.xforms average_congeal.img
-	unset CMTK_NUM_THREADS	
 	;;
     CongealZeroSumSmooth)
-	export CMTK_NUM_THREADS=1
 	run ${BINDIR}/congeal -v --smooth 0.5 --downsample-to 0 -O ${tmpdir} --template spgr_brain_1.hdr --dofs 6 --dofs 9 -e 2 -a 0.25 --downsample-from 2 --sampling-density 1.0 --zero-sum spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
-	unset CMTK_NUM_THREADS
 	check_results congeal.xforms average_congeal.img
 	;;
     CongealWarpFromInit)
