@@ -152,7 +152,7 @@ private:
   typedef ThreadParameters<Self> ThreadParametersType;
 
   /// Thread function to update standard dedviations by pixel.
-  static CMTK_THREAD_RETURN_TYPE UpdateStandardDeviationByPixelThreadFunc( void* threadParameters );
+  static void UpdateStandardDeviationByPixelThreadFunc( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
   
   /// Thread parameter for entropy evaluation.
   class EvaluateThreadParameters : 

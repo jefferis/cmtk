@@ -356,31 +356,30 @@ CongealingFunctional<TXform,THistogramBinType>
 #endif
     }
 
-  const size_t numberOfThreads = Threads::GetNumberOfThreads();
-  ThreadParameterArray<Self,ThreadParametersType> params( this, numberOfThreads );
-  params.RunInParallel( &UpdateStandardDeviationByPixelThreadFunc );
+  ThreadParametersType* params = Memory::AllocateArray<ThreadParametersType>( this->m_NumberOfTasks );
+  for ( size_t idx = 0; idx < this->m_NumberOfTasks; ++idx )
+    params[idx].thisObject = this;
 
+  this->m_ThreadPool.Run( UpdateStandardDeviationByPixelThreadFunc, this->m_NumberOfTasks, params );
+  
 #ifdef CMTK_BUILD_MPI
-  MPI::COMM_WORLD.Allgather
-    ( &this->m_StandardDeviationByPixelMPI[0], this->m_StandardDeviationByPixelMPI.size(), MPI::CHAR,
-      &this->m_StandardDeviationByPixel[0], this->m_StandardDeviationByPixelMPI.size(), MPI::CHAR );
+  MPI::COMM_WORLD.Allgather( &this->m_StandardDeviationByPixelMPI[0], this->m_StandardDeviationByPixelMPI.size(), 
+			     MPI::CHAR, &this->m_StandardDeviationByPixel[0], this->m_StandardDeviationByPixelMPI.size(), MPI::CHAR );
 #endif
-
+  
   this->m_NeedsUpdateStandardDeviationByPixel = false;
 }
 
-
 template<class TXform,class THistogramBinType>
-CMTK_THREAD_RETURN_TYPE
+void
 CongealingFunctional<TXform,THistogramBinType>
-::UpdateStandardDeviationByPixelThreadFunc( void *args )
+::UpdateStandardDeviationByPixelThreadFunc
+( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
-  ThreadParametersType* threadParameters = static_cast<ThreadParametersType*>( args );
+  ThreadParametersType* taskParameters = static_cast<ThreadParametersType*>( args );
   
-  Self* This = threadParameters->thisObject;
-  const Self* ThisConst = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
+  Self* This = taskParameters->thisObject;
+  const Self* ThisConst = taskParameters->thisObject;
 
   const size_t imagesFrom = ThisConst->m_ActiveImagesFrom;
   const size_t imagesTo = ThisConst->m_ActiveImagesTo;
@@ -391,16 +390,15 @@ CongealingFunctional<TXform,THistogramBinType>
     const size_t numberOfSamples = ThisConst->m_ProbabilisticSamples.size();
 #ifdef CMTK_BUILD_MPI
     const size_t samplesPerNode = (numberOfSamples+ThisConst->m_SizeMPI-1) / ThisConst->m_SizeMPI;
-    const size_t samplesPerThread = 1 + (samplesPerNode / numberOfThreads);
+    const size_t samplesPerTask = 1 + (samplesPerNode / taskCnt);
     const size_t sampleFromNode = ThisConst->m_RankMPI * samplesPerNode;
-    const size_t sampleFrom = sampleFromNode + threadID * samplesPerThread;
-    const size_t sampleTo = std::min( numberOfSamples, std::min( sampleFromNode + samplesPerNode, 
-								 sampleFrom + samplesPerThread ) );
-    size_t mpiSmpl = threadID * samplesPerThread;
+    const size_t sampleFrom = sampleFromNode + taskIdx * samplesPerTask;
+    const size_t sampleTo = std::min( numberOfSamples, std::min( sampleFromNode + samplesPerNode, sampleFrom + samplesPerTask ) );
+    size_t mpiSmpl = taskIdx * samplesPerTask;
 #else
-    const size_t samplesPerThread = 1 + (numberOfSamples / numberOfThreads );
-    const size_t sampleFrom = threadID * samplesPerThread;
-    const size_t sampleTo = std::min( numberOfSamples, sampleFrom + samplesPerThread );
+    const size_t samplesPerTask = 1 + (numberOfSamples / taskCnt );
+    const size_t sampleFrom = taskIdx * samplesPerTask;
+    const size_t sampleTo = std::min( numberOfSamples, sampleFrom + samplesPerTask );
 #endif
 
     for ( size_t smpl = sampleFrom; smpl < sampleTo; ++smpl )
@@ -453,15 +451,15 @@ CongealingFunctional<TXform,THistogramBinType>
     const size_t numberOfPixels = ThisConst->m_TemplateNumberOfPixels;
 #ifdef CMTK_BUILD_MPI
     const size_t pixelsPerNode = (numberOfPixels+ThisConst->m_SizeMPI-1) / ThisConst->m_SizeMPI;
-    const size_t pixelsPerThread = 1 + (pixelsPerNode / numberOfThreads);
+    const size_t pixelsPerTask = 1 + (pixelsPerNode / taskCnt);
     const size_t pixelFromNode = ThisConst->m_RankMPI * pixelsPerNode;
-    const size_t pixelFrom = pixelFromNode + threadID * pixelsPerThread;
-    const size_t pixelTo = std::min( numberOfPixels, std::min( pixelFromNode + pixelsPerNode, pixelFrom + pixelsPerThread ) );
-    size_t mpiPx = threadID * pixelsPerThread;
+    const size_t pixelFrom = pixelFromNode + taskIdx * pixelsPerTask;
+    const size_t pixelTo = std::min( numberOfPixels, std::min( pixelFromNode + pixelsPerNode, pixelFrom + pixelsPerTask ) );
+    size_t mpiPx = taskIdx * pixelsPerTask;
 #else
-    const size_t pixelsPerThread = 1 + (numberOfPixels / numberOfThreads);
-    const size_t pixelFrom = threadID * pixelsPerThread;
-    const size_t pixelTo = std::min( numberOfPixels, pixelFrom + pixelsPerThread );
+    const size_t pixelsPerTask = 1 + (numberOfPixels / taskCnt);
+    const size_t pixelFrom = taskIdx * pixelsPerTask;
+    const size_t pixelTo = std::min( numberOfPixels, pixelFrom + pixelsPerTask );
 #endif
     for ( size_t px = pixelFrom; px < pixelTo; ++px )
       {
@@ -507,8 +505,6 @@ CongealingFunctional<TXform,THistogramBinType>
 	}
       }
     }
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 //@}
