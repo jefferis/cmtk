@@ -131,10 +131,10 @@ private:
   };
 
   /// Image interpolation thread function.
-  static CMTK_THREAD_RETURN_TYPE InterpolateImageThread( void* threadParameters );
+  static void InterpolateImageThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 
   /// Image interpolation with probabilistic sampling thread function.
-  static CMTK_THREAD_RETURN_TYPE InterpolateImageProbabilisticThread( void* threadParameters );
+  static void InterpolateImageProbabilisticThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 
   friend ClassStream& operator<<( ClassStream& stream, const AffineCongealingFunctional& func );
   friend ClassStream& operator>>( ClassStream& stream, AffineCongealingFunctional& func );

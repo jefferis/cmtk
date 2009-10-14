@@ -156,12 +156,11 @@ AffineCongealingFunctional::InterpolateImage
 {
   const VolumeAxesHash gridHash( *this->m_TemplateGrid, this->GetXformByIndex( idx ) );
 
-  const size_t numberOfThreads = Threads::GetNumberOfThreads();
-  ThreadParameterArray<Self,InterpolateImageThreadParameters> params( this, numberOfThreads );
-
-  for ( size_t thread = 0; thread < numberOfThreads; ++thread )
+  InterpolateImageThreadParameters* params = Memory::AllocateArray<InterpolateImageThreadParameters>( this->m_NumberOfTasks );
+  for ( size_t thread = 0; thread < this->m_NumberOfTasks; ++thread )
     {
-    params[thread].m_Idx = idx;    
+    params[thread].thisObject = this;
+    params[thread].m_Idx = idx;
     params[thread].m_Destination = destination;    
     params[thread].m_HashX = gridHash[0];
     params[thread].m_HashY = gridHash[1];
@@ -169,20 +168,20 @@ AffineCongealingFunctional::InterpolateImage
     }
   
   if ( (this->m_ProbabilisticSampleDensity > 0) && (this->m_ProbabilisticSampleDensity < 1) )
-    params.RunInParallel( &InterpolateImageProbabilisticThread );
+    this->m_ThreadPool.Run( InterpolateImageProbabilisticThread, this->m_NumberOfTasks, params );
   else
-    params.RunInParallel( &InterpolateImageThread );    
+    this->m_ThreadPool.Run( InterpolateImageThread, this->m_NumberOfTasks, params );
+  
+  Memory::DeleteArray( params );
 }
 
-CMTK_THREAD_RETURN_TYPE
+void
 AffineCongealingFunctional::InterpolateImageThread
-( void* args )
+( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
   
   const Self* This = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
   const size_t idx = threadParameters->m_Idx;
   byte* destination = threadParameters->m_Destination;
 
@@ -200,8 +199,8 @@ AffineCongealingFunctional::InterpolateImageThread
   const int dimsZ = This->m_TemplateGrid->GetDims( AXIS_Z );
 
   const int rowCount = ( dimsY * dimsZ );
-  const int rowFrom = ( rowCount / numberOfThreads ) * threadID;
-  const int rowTo = ( threadID == (numberOfThreads-1) ) ? rowCount : ( rowCount / numberOfThreads ) * ( threadID + 1 );
+  const int rowFrom = ( rowCount / taskCnt ) * taskIdx;
+  const int rowTo = ( taskIdx == (taskCnt-1) ) ? rowCount : ( rowCount / taskCnt ) * ( taskIdx + 1 );
   int rowsToDo = rowTo - rowFrom;
   
   int yFrom = rowFrom % dimsY;
@@ -231,19 +230,15 @@ AffineCongealingFunctional::InterpolateImageThread
 	}
       }
     }
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
-CMTK_THREAD_RETURN_TYPE
+void
 AffineCongealingFunctional::InterpolateImageProbabilisticThread
-( void* args )
+( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
   
   const Self* This = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
   const size_t idx = threadParameters->m_Idx;
   byte* destination = threadParameters->m_Destination;
 
@@ -257,8 +252,8 @@ AffineCongealingFunctional::InterpolateImageProbabilisticThread
   byte value;
   const byte* dataPtr = static_cast<const byte*>( target->GetData()->GetDataPtr() );
 
-  const size_t startIdx = threadID * (This->m_ProbabilisticSamples.size() / numberOfThreads);
-  const size_t endIdx = ( threadID == (numberOfThreads-1) ) ? This->m_ProbabilisticSamples.size() : (threadID+1) * (This->m_ProbabilisticSamples.size() / numberOfThreads);
+  const size_t startIdx = taskIdx * (This->m_ProbabilisticSamples.size() / taskCnt);
+  const size_t endIdx = ( taskIdx == (taskCnt-1) ) ? This->m_ProbabilisticSamples.size() : (taskIdx+1) * (This->m_ProbabilisticSamples.size() / taskCnt);
 
   byte *wptr = destination + startIdx;
   for ( size_t i = startIdx; i < endIdx; ++i, ++wptr )
@@ -276,8 +271,6 @@ AffineCongealingFunctional::InterpolateImageProbabilisticThread
       *wptr = backgroundValue;
       }
     }
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 } // namespace cmtk

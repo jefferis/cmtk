@@ -143,10 +143,6 @@ protected:
    */
   virtual void InterpolateImage( const size_t idx, byte* const destination );
 
-private:
-  /// Crop image histograms to get rid of high-intensity low-probability samples.
-  bool m_CropImageHistograms;
-
   /// Thread pool for parallel computation.
   ThreadPool m_ThreadPool;
 
@@ -155,6 +151,10 @@ private:
 
   /// Number of parallel tasks to partition the computation into.
   size_t m_NumberOfTasks;
+
+private:
+  /// Crop image histograms to get rid of high-intensity low-probability samples.
+  bool m_CropImageHistograms;
 
   /// Thread parameters with no further data.
   typedef ThreadParameters<Self> ThreadParametersType;
