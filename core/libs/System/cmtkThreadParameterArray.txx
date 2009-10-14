@@ -134,6 +134,7 @@ ThreadParameterArray<TClass,TParam>
     if ( this->m_Ptr[threadIdx].m_ThreadID ) 
       {
       pthread_cancel( this->m_Ptr[threadIdx].m_ThreadID );
+      pthread_join( this->m_Ptr[threadIdx].m_ThreadID, NULL );
       this->m_Ptr[threadIdx].m_ThreadID = 0;
       }
 #endif
