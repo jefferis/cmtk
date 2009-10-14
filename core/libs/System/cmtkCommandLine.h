@@ -1116,8 +1116,8 @@ Console& operator<<( Console& console, CommandLine::Exception e );
 } // namespace cmtk
 
 #include <cmtkCommandLineItem.txx>
-#include <cmtkCommandLineConvert.txx>
 #include <cmtkCommandLineOption.txx>
+#include <cmtkCommandLineConvert.txx>
 #include <cmtkCommandLineList.txx>
 #include <cmtkCommandLineVector.txx>
 
