@@ -16,7 +16,7 @@ Release CMTK-1.1.2:
     also fixes a crash in triplanar viewer when reading images with non-finite
     values.
 
-- Improved: switched log and short options in command line help and wiki
+- Improved: switched long and short options in command line help and wiki
     markup outputs.
 
 
