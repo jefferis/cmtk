@@ -1,8 +1,8 @@
 Release CMTK-1.1.2:
 
-- Added: a still-experimental new multi-threading class based on pools of
-    continuously running threads. This should reduce thread creation overhead
-    and also improve scheduling by allowing over-partitioned tasks, i.e.,
+- Added: new multi-threading framework based on pools of continuously running
+    threads. This should reduce thread creation overhead and also improve
+    scheduling by allowing load balancing using over-partitioned tasks, i.e.,
     tasks split into substantially more parts than the number of CPUs.
 - Added: logit and logistic functions for imagemath tool, for single and
     multiple images.
