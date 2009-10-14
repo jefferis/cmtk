@@ -71,6 +71,15 @@ AllocateArray( const size_t size )
   return NULL;
 }
 
+/// Delete an array allocated using AllocateArray().
+template<class T>
+inline
+void
+DeleteArray( T *const array )
+{
+  delete[] array;
+}
+
 /** Set (fill) memory region with given value.
  * This is the templated version of ::memset()
  */
