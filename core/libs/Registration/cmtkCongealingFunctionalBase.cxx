@@ -183,18 +183,10 @@ CongealingFunctionalBase<TXform,THistogramBinType>::InterpolateImageThread
   const int dimsY = This->m_TemplateGrid->GetDims( AXIS_Y );
   const int dimsZ = This->m_TemplateGrid->GetDims( AXIS_Z );
 
-  const int rowCount = ( dimsY * dimsZ );
-  const int rowFrom = ( rowCount / taskCnt ) * taskIdx;
-  const int rowTo = ( taskIdx == (taskCnt-1) ) ? rowCount : ( rowCount / taskCnt ) * ( taskIdx + 1 );
-  int rowsToDo = rowTo - rowFrom;
-  
-  int yFrom = rowFrom % dimsY;
-  int zFrom = rowFrom / dimsY;
-  
-  byte *wptr = destination + rowFrom * dimsX;
-  for ( int z = zFrom; (z < dimsZ) && rowsToDo; ++z ) 
+  for ( int z = taskIdx; (z < dimsZ); z += taskCnt ) 
     {
-    for ( int y = yFrom; (y < dimsY) && rowsToDo; yFrom = 0, ++y, --rowsToDo )
+    byte *wptr = destination + z * dimsX * dimsY;
+    for ( int y = 0; (y < dimsY); ++y )
       {
       for ( int x = 0; x < dimsX; ++x )
 	{
