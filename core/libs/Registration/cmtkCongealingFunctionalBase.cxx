@@ -54,11 +54,15 @@ template<class TXform,class THistogramBinType>
 CongealingFunctionalBase<TXform,THistogramBinType>::CongealingFunctionalBase() :
   m_CropImageHistograms( false )
 {
+  this->m_NumberOfThreads = this->m_ThreadPool.GetNumberOfThreads();
+  this->m_NumberOfTasks = 2 * this->m_NumberOfThreads;
+  this->m_TaskInfo = Memory::AllocateArray<InterpolateImageThreadParameters>( this->m_NumberOfTasks );
 }
 
 template<class TXform,class THistogramBinType>
 CongealingFunctionalBase<TXform,THistogramBinType>::~CongealingFunctionalBase()
 {
+  Memory::DeleteArray( this->m_TaskInfo );
 }
 
 template<class TXform,class THistogramBinType>
@@ -82,20 +86,17 @@ CongealingFunctionalBase<TXform,THistogramBinType>
 ::InterpolateImage
 ( const size_t idx, byte* const destination )
 {
-  const size_t numberOfThreads = Threads::GetNumberOfThreads();
-  ThreadParameterArray<Self,InterpolateImageThreadParameters> 
-    params( this, numberOfThreads );
-
-  for ( size_t thread = 0; thread < numberOfThreads; ++thread )
+  for ( size_t task = 0; task < this->m_NumberOfTasks; ++task )
     {
-    params[thread].m_Idx = idx;    
-    params[thread].m_Destination = destination;    
+    this->m_TaskInfo[task].thisObject = this;
+    this->m_TaskInfo[task].m_Idx = idx;    
+    this->m_TaskInfo[task].m_Destination = destination;    
     }
 
   if ( m_ProbabilisticSamples.size() )
-    params.RunInParallel( &InterpolateImageProbabilisticThread );
+    this->m_ThreadPool.Run( InterpolateImageProbabilisticThread, this->m_NumberOfTasks, this->m_TaskInfo );
   else
-    params.RunInParallel( &InterpolateImageThread );    
+    this->m_ThreadPool.Run( InterpolateImageThread, this->m_NumberOfTasks, this->m_TaskInfo );
 }
 
 template<class TXform,class THistogramBinType>
@@ -151,15 +152,13 @@ CongealingFunctionalBase<TXform,THistogramBinType>
 }
 
 template<class TXform,class THistogramBinType>
-CMTK_THREAD_RETURN_TYPE
+void
 CongealingFunctionalBase<TXform,THistogramBinType>::InterpolateImageThread
-( void* args )
+( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
   
   const Self* This = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
   const size_t idx = threadParameters->m_Idx;
   byte* destination = threadParameters->m_Destination;
 
@@ -178,8 +177,8 @@ CongealingFunctionalBase<TXform,THistogramBinType>::InterpolateImageThread
   const int dimsZ = This->m_TemplateGrid->GetDims( AXIS_Z );
 
   const int rowCount = ( dimsY * dimsZ );
-  const int rowFrom = ( rowCount / numberOfThreads ) * threadID;
-  const int rowTo = ( threadID == (numberOfThreads-1) ) ? rowCount : ( rowCount / numberOfThreads ) * ( threadID + 1 );
+  const int rowFrom = ( rowCount / taskCnt ) * taskIdx;
+  const int rowTo = ( taskIdx == (taskCnt-1) ) ? rowCount : ( rowCount / taskCnt ) * ( taskIdx + 1 );
   int rowsToDo = rowTo - rowFrom;
   
   int yFrom = rowFrom % dimsY;
@@ -208,20 +207,16 @@ CongealingFunctionalBase<TXform,THistogramBinType>::InterpolateImageThread
 	}
       }
     }
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 template<class TXform,class THistogramBinType>
-CMTK_THREAD_RETURN_TYPE
+void
 CongealingFunctionalBase<TXform,THistogramBinType>::InterpolateImageProbabilisticThread
-( void* args )
+( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
   
   const Self* This = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
   const size_t idx = threadParameters->m_Idx;
   byte* destination = threadParameters->m_Destination;
 
@@ -235,8 +230,8 @@ CongealingFunctionalBase<TXform,THistogramBinType>::InterpolateImageProbabilisti
   byte value;
   const byte* dataPtr = static_cast<const byte*>( target->GetData()->GetDataPtr() );
 
-  const size_t startIdx = threadID * (This->m_ProbabilisticSamples.size() / numberOfThreads);
-  const size_t endIdx = ( threadID == numberOfThreads ) ? This->m_ProbabilisticSamples.size() : (threadID+1) * (This->m_ProbabilisticSamples.size() / numberOfThreads);
+  const size_t startIdx = taskIdx * (This->m_ProbabilisticSamples.size() / taskCnt);
+  const size_t endIdx = ( taskIdx == taskCnt ) ? This->m_ProbabilisticSamples.size() : (taskIdx+1) * (This->m_ProbabilisticSamples.size() / taskCnt);
 
   byte *wptr = destination + startIdx;
   for ( size_t i = startIdx; i < endIdx; ++i, ++wptr )
@@ -254,8 +249,6 @@ CongealingFunctionalBase<TXform,THistogramBinType>::InterpolateImageProbabilisti
       *wptr = backgroundValue;
       }
     }
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 //@}

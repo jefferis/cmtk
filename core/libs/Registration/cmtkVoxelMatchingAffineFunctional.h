@@ -316,9 +316,9 @@ public:
   {
     for ( size_t thread = 0; thread < m_NumberOfThreads; ++thread )
       delete m_ThreadMetric[thread];
-    delete[] m_ThreadMetric;
-
-    delete[] m_EvaluateTaskInfo;
+    Memory::DeleteArray( this->m_ThreadMetric );
+    
+    Memory::DeleteArray( this->m_EvaluateTaskInfo );
   }
 
   /// Evaluate with new parameter vector.

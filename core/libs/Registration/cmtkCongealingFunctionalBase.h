@@ -38,6 +38,7 @@
 
 #include <cmtkSmartPtr.h>
 #include <cmtkThreads.h>
+#include <cmtkThreadPool.h>
 
 #include <cmtkUniformVolume.h>
 #include <cmtkXform.h>
@@ -146,6 +147,15 @@ private:
   /// Crop image histograms to get rid of high-intensity low-probability samples.
   bool m_CropImageHistograms;
 
+  /// Thread pool for parallel computation.
+  ThreadPool m_ThreadPool;
+
+  /// Number of running threads in my pool.
+  size_t m_NumberOfThreads;
+
+  /// Number of parallel tasks to partition the computation into.
+  size_t m_NumberOfTasks;
+
   /// Thread parameters with no further data.
   typedef ThreadParameters<Self> ThreadParametersType;
 
@@ -161,13 +171,16 @@ private:
     /// Pointer to storage that will hold the reformatted pixel data.
     byte* m_Destination;    
   };
+  
+  /// Task info blocks.
+  InterpolateImageThreadParameters* m_TaskInfo;
 
   /// Image interpolation thread function.
-  static CMTK_THREAD_RETURN_TYPE InterpolateImageThread( void* threadParameters );
+  static void InterpolateImageThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCont );
 
   /// Image interpolation thread function with probabilistic sampling.
-  static CMTK_THREAD_RETURN_TYPE InterpolateImageProbabilisticThread( void* threadParameters );
-
+  static void InterpolateImageProbabilisticThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCont );
+  
   /// Prepare data for one image.
   virtual UniformVolume* PrepareSingleImage( UniformVolume::SmartPtr& image );
 
