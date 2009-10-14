@@ -40,7 +40,11 @@ cmtk
 {
 
 ThreadPool::ThreadPool( const size_t nThreads )
+  : m_NumberOfTasks( 0 ),
+    m_NextTaskIndex( 0 ),
+    m_TaskFunction( NULL )
 {
+  std::cerr << "ThreadPool constructor" << std::endl;
   if ( ! nThreads )
     this->m_NumberOfThreads = cmtk::Threads::GetNumberOfThreads();
   else
@@ -107,11 +111,13 @@ ThreadPool::~ThreadPool()
     if ( this->m_ThreadID[idx] ) 
       {
       pthread_cancel( this->m_ThreadID[idx] );
+      pthread_join( this->m_ThreadID[idx], NULL );
       }
 #endif
     }
 #endif
 #endif // #ifdef CMTK_BUILD_SMP
+  std::cerr << "ThreadPool destructor" << std::endl;
 }
 
 void
