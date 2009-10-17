@@ -42,8 +42,7 @@ cmtk::ThreadPool::Run
 {
 #ifdef _OPENMP
   // if OpenMP is also used in CMTK, reduce the number of OMP threads by the number of threads/tasks that we're about to run in parallel.
-  const int ompNumThreads = omp_get_num_threads();
-  omp_set_num_threads( std::max<int>( 1, 1+Threads::GetNumberOfThreads()- std::min<int>( numberOfTasks, this->m_NumberOfThreads ) ) );
+  omp_set_num_threads( std::max<int>( 1, 1+Threads::GetNumberOfThreads() - std::min<int>( numberOfTasks, this->m_NumberOfThreads ) ) );
 #endif
 
 #ifdef CMTK_BUILD_SMP
@@ -76,7 +75,7 @@ cmtk::ThreadPool::Run
 #endif
 
 #ifdef _OPENMP
-  // restore OpenMP thread count to what we found upen entering this function
-  omp_set_num_threads( ompNumThreads );
+  // restore OpenMP thread count to maximum
+  omp_set_num_threads( Threads::GetNumberOfThreads() );
 #endif
 }
