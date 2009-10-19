@@ -135,6 +135,22 @@ private:
   
   /// Get index of currently running thread (called from inside ThreadFunction()).
   size_t GetMyThreadIndex() const;
+
+  /// Flag whether threads for this pool are running.
+  bool m_ThreadsRunning;
+
+  /// Start threads for this pool.
+  void StartThreads();
+
+  /// End threads for this pool.
+  void EndThreads();
+
+public:
+  /** Global thread pool.
+   * This is shared by all functions in the process and allows re-use of the same "physical" threads 
+   * for all types of computations.
+   */
+  static Self GlobalThreadPool;
 };
 
 } // namespace cmtk

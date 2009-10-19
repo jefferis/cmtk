@@ -42,7 +42,8 @@ cmtk
 ThreadPool::ThreadPool( const size_t nThreads )
   : m_NumberOfTasks( 0 ),
     m_NextTaskIndex( 0 ),
-    m_TaskFunction( NULL )
+    m_TaskFunction( NULL ),
+    m_ThreadsRunning( false )
 {
   if ( ! nThreads )
     this->m_NumberOfThreads = cmtk::Threads::GetNumberOfThreads();
@@ -55,68 +56,87 @@ ThreadPool::ThreadPool( const size_t nThreads )
   this->m_ThreadHandles.resize( this->m_NumberOfThreads );
 #endif
 #endif
+}
 
+void
+ThreadPool::StartThreads()
+{
+  if ( !this->m_ThreadsRunning )
+    {
 #ifdef CMTK_BUILD_SMP  
 #ifdef CMTK_USE_THREADS
-  pthread_attr_t attr;
-  pthread_attr_init(&attr);
-  pthread_attr_setscope(&attr, PTHREAD_SCOPE_SYSTEM);
-
-  for ( size_t idx = 0; idx < this->m_NumberOfThreads; ++idx ) 
-    {
-    // nothing happened yet, so set status to OK
-    const int status = pthread_create( &this->m_ThreadID[idx], &attr, cmtkThreadPoolThreadFunction, static_cast<CMTK_THREAD_ARG_TYPE>( this ) );
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_attr_setscope(&attr, PTHREAD_SCOPE_SYSTEM);
     
-    if ( status ) 
+    for ( size_t idx = 0; idx < this->m_NumberOfThreads; ++idx ) 
       {
-      StdErr.printf( "Creation of pooled thread #%d failed with status %d.\n", idx, status );
-      exit( 1 );
+      // nothing happened yet, so set status to OK
+      const int status = pthread_create( &this->m_ThreadID[idx], &attr, cmtkThreadPoolThreadFunction, static_cast<CMTK_THREAD_ARG_TYPE>( this ) );
+      
+      if ( status ) 
+	{
+	StdErr.printf( "Creation of pooled thread #%d failed with status %d.\n", idx, status );
+	exit( 1 );
+	}
       }
-    }
-  
-  pthread_attr_destroy(&attr);
+    
+    pthread_attr_destroy(&attr);
 #elif defined(_MSC_VER)
-  for ( size_t idx = 0; idx < this->m_NumberOfThreads; ++idx ) 
-    {
-    // nothing happened yet, so set status to OK
-    int status = 0;
-    
-    this->m_ThreadHandles[idx] = CreateThread( NULL /*default security attributes*/, 0/*use default stack size*/, (LPTHREAD_START_ROUTINE) cmtkThreadPoolThreadFunction, 
-					       static_cast<CMTK_THREAD_ARG_TYPE>( this ),  0/*use default creation flags*/, &this->m_ThreadID[idx] );
-    if ( this->m_ThreadHandles[idx] == NULL ) 
+    for ( size_t idx = 0; idx < this->m_NumberOfThreads; ++idx ) 
       {
-      status = -1;
+      // nothing happened yet, so set status to OK
+      int status = 0;
+      
+      this->m_ThreadHandles[idx] = CreateThread( NULL /*default security attributes*/, 0/*use default stack size*/, (LPTHREAD_START_ROUTINE) cmtkThreadPoolThreadFunction, 
+						 static_cast<CMTK_THREAD_ARG_TYPE>( this ),  0/*use default creation flags*/, &this->m_ThreadID[idx] );
+      if ( this->m_ThreadHandles[idx] == NULL ) 
+	{
+	status = -1;
+	}
+      
+      if ( status ) 
+	{
+	StdErr.printf( "Creation of pooled thread #%d failed with status %d.\n", idx, status );
+	exit( 1 );
+	}
       }
-    
-    if ( status ) 
-      {
-      StdErr.printf( "Creation of pooled thread #%d failed with status %d.\n", idx, status );
-      exit( 1 );
-      }
-    }
 #endif // #ifdef CMTK_USE_THREADS
 #endif // #ifdef CMTK_BUILD_SMP
+    this->m_ThreadsRunning = true;
+    }
 }
 
 ThreadPool::~ThreadPool()
 {
+  this->EndThreads();
+}
+
+
+void
+ThreadPool::EndThreads()
+{
+  if ( this->m_ThreadsRunning )
+    {
 #ifdef CMTK_BUILD_SMP
 #ifdef CMTK_USE_THREADS  
-  for ( size_t idx = 0; idx < this->m_NumberOfThreads; ++idx ) 
-    {
-#ifdef _MSC_VER
-    DWORD resultThread;
-    TerminateThread( this->m_ThreadHandles[idx], resultThread );
-#else
-    if ( this->m_ThreadID[idx] ) 
+    for ( size_t idx = 0; idx < this->m_NumberOfThreads; ++idx ) 
       {
-      pthread_cancel( this->m_ThreadID[idx] );
-      pthread_join( this->m_ThreadID[idx], NULL );
+#ifdef _MSC_VER
+      DWORD resultThread;
+      TerminateThread( this->m_ThreadHandles[idx], resultThread );
+#else
+      if ( this->m_ThreadID[idx] ) 
+	{
+	pthread_cancel( this->m_ThreadID[idx] );
+	pthread_join( this->m_ThreadID[idx], NULL );
+	}
+#endif
       }
 #endif
-    }
-#endif
 #endif // #ifdef CMTK_BUILD_SMP
+    this->m_ThreadsRunning = false;
+    }
 }
 
 void
@@ -159,6 +179,8 @@ ThreadPool::GetMyThreadIndex() const
 #endif // #ifdef CMTK_BUILD_SMP
   return -1;
 }
+
+ThreadPool ThreadPool::GlobalThreadPool;
 
 }
 

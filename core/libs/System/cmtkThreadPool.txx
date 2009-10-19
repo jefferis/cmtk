@@ -40,6 +40,11 @@ void
 cmtk::ThreadPool::Run
 ( const TaskFunction taskFunction, size_t numberOfTasks, TParam* taskParameters )
 {
+  if ( ! this->m_ThreadsRunning )
+    {
+    this->StartThreads();
+    }
+
 #ifdef _OPENMP
   // if OpenMP is also used in CMTK, reduce the number of OMP threads by the number of threads/tasks that we're about to run in parallel.
   omp_set_num_threads( std::max<int>( 1, 1+Threads::GetNumberOfThreads() - std::min<int>( numberOfTasks, this->m_NumberOfThreads ) ) );
