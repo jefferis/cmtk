@@ -61,7 +61,6 @@ ThreadPool::ThreadPool( const size_t nThreads )
 void
 ThreadPool::StartThreads()
 {
-  std::cerr << this->m_NumberOfThreads << " threads starting" << std::endl;
   if ( !this->m_ThreadsRunning )
     {
 #ifdef CMTK_BUILD_SMP  
