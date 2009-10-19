@@ -38,6 +38,7 @@
 
 #ifdef CMTK_BUILD_SMP
 #  include <cmtkThreads.h>
+#  include <cmtkThreadPool.h>
 #  include <cmtkMutexLock.h>
 #  include <cmtkTimers.h>
 #endif
@@ -66,12 +67,15 @@ protected:
   /// Array of storage for simultaneously retrieving multiple deformed vectors.
   Vector3D **ThreadVectorCache;
 
-  /** Number of threads that this object was created for.
+  /** Number of actual parallel threads used for computations.
    * All duplicated data structures are generated with the multiplicity given
    * by this value. It is determined from Threads when the object is first
    * instanced. It cannot be changed afterwards.
    */
-  int MyNumberOfThreads;
+  size_t m_NumberOfThreads;
+
+  /// Number of parallel tasks.
+  size_t m_NumberOfTasks;
 
 public:
   /// This class.
@@ -84,23 +88,24 @@ public:
   ParallelElasticFunctional ( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating ) :
     VoxelMatchingElasticFunctional_Template<VM,W>( reference, floating )
   {
-    MyNumberOfThreads = Threads::GetNumberOfThreads();
-
-    ThreadWarp = Memory::AllocateArray<typename W::SmartPtr>( MyNumberOfThreads );
+    this->m_NumberOfThreads = Threads::GetNumberOfThreads();
+    this->m_NumberOfTasks = (this->m_NumberOfThreads > 1) ? 4 * this->m_NumberOfThreads : this->m_NumberOfThreads;
     
-    InfoThreadGradient = Memory::AllocateArray<typename Self::EvaluateGradientThreadInfo>( MyNumberOfThreads );
-    InfoThreadComplete = Memory::AllocateArray<typename Self::EvaluateCompleteThreadInfo>( MyNumberOfThreads );
+    ThreadWarp = Memory::AllocateArray<typename W::SmartPtr>( this->m_NumberOfThreads );
     
-    ThreadMetric = Memory::AllocateArray<VM*>( MyNumberOfThreads );
-    for ( int thread = 0; thread < MyNumberOfThreads; ++thread )
+    InfoTaskGradient = Memory::AllocateArray<typename Self::EvaluateGradientTaskInfo>( this->m_NumberOfTasks );
+    InfoThreadComplete = Memory::AllocateArray<typename Self::EvaluateCompleteThreadInfo>( this->m_NumberOfThreads );
+    
+    ThreadMetric = Memory::AllocateArray<VM*>( this->m_NumberOfThreads );
+    for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
       ThreadMetric[thread] = new VM( *(this->Metric) );
     
-    ThreadConsistencyHistogram = Memory::AllocateArray<JointHistogram<unsigned int>*>( MyNumberOfThreads );
-    for ( int thread = 0; thread < MyNumberOfThreads; ++thread )
+    ThreadConsistencyHistogram = Memory::AllocateArray<JointHistogram<unsigned int>*>( this->m_NumberOfThreads );
+    for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
       ThreadConsistencyHistogram[thread] = new JointHistogram<unsigned int>;
     
-    ThreadVectorCache = Memory::AllocateArray<Vector3D*>( MyNumberOfThreads );
-    for ( int thread = 0; thread < MyNumberOfThreads; ++thread )
+    ThreadVectorCache = Memory::AllocateArray<Vector3D*>( this->m_NumberOfThreads );
+    for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
       ThreadVectorCache[thread] = Memory::AllocateArray<Vector3D>( this->ReferenceDims[0] );
   }
 
@@ -109,20 +114,20 @@ public:
    */
   virtual ~ParallelElasticFunctional() 
   {
-    for ( int thread = 0; thread < MyNumberOfThreads; ++thread )
+    for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
       if ( ThreadVectorCache[thread] ) delete[] ThreadVectorCache[thread];
     delete[] ThreadVectorCache;
     
-    for ( int thread = 0; thread < MyNumberOfThreads; ++thread )
+    for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
       delete ThreadMetric[thread];
     delete[] ThreadMetric;
     
-    for ( int thread = 0; thread < MyNumberOfThreads; ++thread )
+    for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
       delete ThreadConsistencyHistogram[thread];
     delete[] ThreadConsistencyHistogram;
     
     delete[] ThreadWarp;
-    delete[] InfoThreadGradient;
+    delete[] InfoTaskGradient;
     delete[] InfoThreadComplete;
   }
 
@@ -135,7 +140,7 @@ public:
   {
     this->Superclass::SetWarpXform( warp );
     
-    for ( int thread = 0; thread < MyNumberOfThreads; ++thread ) 
+    for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread ) 
       {
       if ( this->Warp ) 
 	{
@@ -168,8 +173,8 @@ public:
     
     ThreadWarp[0]->SetParamVector( v );
 
-    int numberOfThreads = std::min( MyNumberOfThreads, this->DimsY * this->DimsZ );
-    for ( int threadIdx = 0; threadIdx < numberOfThreads; ++threadIdx ) 
+    const size_t numberOfThreads = std::min<size_t>( this->m_NumberOfThreads, this->DimsY * this->DimsZ );
+    for ( size_t threadIdx = 0; threadIdx < numberOfThreads; ++threadIdx ) 
       {
       InfoThreadComplete[threadIdx].thisObject = this;
       InfoThreadComplete[threadIdx].ThisThreadIndex = threadIdx;
@@ -256,20 +261,18 @@ public:
     // Actually, we shouldn't create more than the number of ACTIVE parameters.
     // May add this at some point. Anyway, unless we have A LOT of processors,
     // we shouldn't really ever have more threads than active parameters :))
-    int numberOfThreads = std::min<int>( MyNumberOfThreads, this->Dim );
-
-    for ( int threadIdx = 0; threadIdx < numberOfThreads; ++threadIdx ) 
+    const size_t numberOfTasks = std::min<size_t>( this->m_NumberOfTasks, this->Dim );
+    
+    for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
       {
-      InfoThreadGradient[threadIdx].thisObject = this;
-      InfoThreadGradient[threadIdx].ThisThreadIndex = threadIdx;
-      InfoThreadGradient[threadIdx].NumberOfThreads = numberOfThreads;
-      InfoThreadGradient[threadIdx].Step = step;
-      InfoThreadGradient[threadIdx].Gradient = g.Elements;
-      InfoThreadGradient[threadIdx].BaseValue = current;
-      InfoThreadGradient[threadIdx].Parameters = &v;
+      InfoTaskGradient[taskIdx].thisObject = this;
+      InfoTaskGradient[taskIdx].Step = step;
+      InfoTaskGradient[taskIdx].Gradient = g.Elements;
+      InfoTaskGradient[taskIdx].BaseValue = current;
+      InfoTaskGradient[taskIdx].Parameters = &v;
       }
 
-    Threads::RunThreads( EvaluateGradientThread, numberOfThreads, InfoThreadGradient );
+    ThreadPool::GlobalThreadPool.Run( EvaluateGradientThread, numberOfTasks, InfoTaskGradient );
     
     return current;
   }
@@ -285,9 +288,9 @@ public:
   {
     this->Metric->Reset();
 
-    int numberOfThreads = std::min( MyNumberOfThreads, this->DimsY * this->DimsZ );
+    const size_t numberOfThreads = std::min<size_t>( this->m_NumberOfThreads, this->DimsY * this->DimsZ );
 
-    for ( int threadIdx = 0; threadIdx < numberOfThreads; ++threadIdx ) 
+    for ( size_t threadIdx = 0; threadIdx < numberOfThreads; ++threadIdx ) 
       {
       InfoThreadComplete[threadIdx].thisObject = this;
       InfoThreadComplete[threadIdx].ThisThreadIndex = threadIdx;
@@ -314,17 +317,13 @@ private:
    * instance of this structure is given to EvaluateGradientThread() for
    * each thread created.
    */
-  class EvaluateGradientThreadInfo 
+  class EvaluateGradientTaskInfo 
   {
   public:
     /** Pointer to the functional object that created the thread. */
     Self *thisObject;
     /// Current parameter vector.
     CoordinateVector *Parameters;
-    /// Unique index of this thread instance among all threads.
-    int ThisThreadIndex;
-    /// Total number of threads created.
-    int NumberOfThreads;
     /// Current global coordinate stepping.
     typename Self::ParameterType Step;
     /// Pointer to gradient vector that is the target for computation results.
@@ -334,7 +333,7 @@ private:
   };
   
   /// Info blocks for parallel threads evaluating functional gradient.
-  typename Self::EvaluateGradientThreadInfo *InfoThreadGradient;
+  typename Self::EvaluateGradientTaskInfo *InfoTaskGradient;
   
   /** Compute functional gradient as a thread.
    * This function (i.e., each thread) iterates over all parameters of the
@@ -344,66 +343,56 @@ private:
    * For these parameters, the thread computes the partial derivative of the
    * functional by finite-difference approximation.
    */
-  static CMTK_THREAD_RETURN_TYPE EvaluateGradientThread( void* arg ) 
+  static void EvaluateGradientThread( void* arg, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t ) 
   {
-    typename Self::EvaluateGradientThreadInfo *info = static_cast<typename Self::EvaluateGradientThreadInfo*>( arg );
+    typename Self::EvaluateGradientTaskInfo *info = static_cast<typename Self::EvaluateGradientTaskInfo*>( arg );
     
     Self *me = info->thisObject;
-    SmartPointer<W>& Warp = me->ThreadWarp[info->ThisThreadIndex];
+
+    SmartPointer<W>& myWarp = me->ThreadWarp[threadIdx];
+    myWarp->SetParamVector( *info->Parameters );
     
-    // Set parameter vector on all but first warp (was set on first in 
-    // EvaluateComplete() already.
-    if ( info->ThisThreadIndex ) Warp->SetParamVector( *info->Parameters );
-    
-    VM* threadMetric = me->ThreadMetric[info->ThisThreadIndex];
-    Vector3D *vectorCache = me->ThreadVectorCache[info->ThisThreadIndex];
-    Types::Coordinate *p = Warp->m_Parameters;
+    VM* threadMetric = me->ThreadMetric[threadIdx];
+    Vector3D *vectorCache = me->ThreadVectorCache[threadIdx];
+    Types::Coordinate *p = myWarp->m_Parameters;
     
     Types::Coordinate pOld;
     double upper, lower;
-    Rect3D *voi = me->VolumeOfInfluence;
 
-    int activeDims = 0;
-    for ( size_t dim = 0; dim < me->Dim; ++dim, ++voi ) 
+    const Rect3D *voi = me->VolumeOfInfluence + taskIdx;
+    for ( size_t dim = taskIdx; dim < me->Dim; dim+=taskCnt, voi+=taskCnt ) 
       {
       if ( me->StepScaleVector[dim] <= 0 ) 
 	{
-	// let the "0" thread do the common work
-	if ( info->ThisThreadIndex == 0 ) info->Gradient[dim] = 0;
+	info->Gradient[dim] = 0;
 	}
       else
 	{
-	if ( (activeDims % info->NumberOfThreads) == info->ThisThreadIndex ) 
+	const typename Self::ParameterType thisStep = info->Step * me->StepScaleVector[dim];
+	
+	pOld = p[dim];
+	
+	p[dim] += thisStep;
+	upper = me->EvaluateIncremental( myWarp, threadMetric, voi, vectorCache );
+	p[dim] = pOld - thisStep;
+	lower = me->EvaluateIncremental( myWarp, threadMetric, voi, vectorCache );
+	
+	p[dim] = pOld;
+	me->WeightedDerivative( lower, upper, myWarp, dim, thisStep );
+	
+	if ( (upper > info->BaseValue ) || (lower > info->BaseValue) ) 
 	  {
-	  const typename Self::ParameterType thisStep = info->Step * me->StepScaleVector[dim];
-
-	  pOld = p[dim];
-
-	  p[dim] += thisStep;
-	  upper = me->EvaluateIncremental( Warp, threadMetric, voi, vectorCache );
-	  p[dim] = pOld - thisStep;
-	  lower = me->EvaluateIncremental( Warp, threadMetric, voi, vectorCache );
-	  
-	  p[dim] = pOld;
-	  me->WeightedDerivative( lower, upper, Warp, dim, thisStep );
-	  
-	  if ( (upper > info->BaseValue ) || (lower > info->BaseValue) ) 
-	    {
-	    // actually, we should divide here by step*StepScaleVector[dim],
-	    // shouldn't we?!
-	    info->Gradient[dim] = upper - lower;
-	    } 
-	  else
-	    {
-	    info->Gradient[dim] = 0;
-	    }
+	  // strictly mathematically speaking, we should divide here by step*StepScaleVector[dim], but StepScaleVector[idx] is either zero or a constant independent of idx
+	  info->Gradient[dim] = upper - lower;
+	  } 
+	else
+	  {
+	  info->Gradient[dim] = 0;
 	  }
-	++activeDims;
 	}
       }
-    return CMTK_THREAD_RETURN_VALUE;
   }
-
+  
   /** Thread parameter block for complete functional evaluation.
    * This structure holds all thread-specific information. A pointer to an
    * instance of this structure is given to EvaluateGradientThread() for
