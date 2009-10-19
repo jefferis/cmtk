@@ -39,8 +39,6 @@
 #ifdef CMTK_BUILD_SMP
 #  include <cmtkThreads.h>
 #  include <cmtkThreadPool.h>
-#  include <cmtkMutexLock.h>
-#  include <cmtkTimers.h>
 #endif
 
 namespace
