@@ -79,6 +79,9 @@ int Threads::NumberOfThreads = 0;
 int
 Threads::GetNumberOfThreads()
 {
+  if ( !Threads::NumberOfThreads ) 
+    Threads::Initializer::CheckEnvironment();
+  
   if ( Threads::NumberOfThreads ) 
     {
     return Threads::NumberOfThreads;
@@ -286,6 +289,12 @@ Threads::Initializer Threads::InitializerInstance;
 Threads::Initializer
 ::Initializer()
 {
+  CheckEnvironment();
+}
+
+void
+Threads::Initializer::CheckEnvironment()
+{
   char *env = getenv( "CMTK_NUM_THREADS" );
   // check legacy variable
   if ( ! env )
@@ -307,6 +316,7 @@ Threads::Initializer
       }
     }
 }
+
 
 //@}
 

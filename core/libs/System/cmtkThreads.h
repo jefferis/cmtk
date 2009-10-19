@@ -65,6 +65,9 @@ class Initializer
 public:
   /// Constructor: check for CMTK_NUM_THREADS environment variable
   Initializer();
+
+  /// Check environment variables that control thread creation.
+  static void CheckEnvironment();
 };
 
 /// Static initializer instance.
