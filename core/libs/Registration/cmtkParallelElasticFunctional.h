@@ -94,11 +94,11 @@ public:
     ThreadWarp = Memory::AllocateArray<typename W::SmartPtr>( this->m_NumberOfThreads );
     
     InfoTaskGradient = Memory::AllocateArray<typename Self::EvaluateGradientTaskInfo>( this->m_NumberOfTasks );
-    InfoThreadComplete = Memory::AllocateArray<typename Self::EvaluateCompleteThreadInfo>( this->m_NumberOfThreads );
+    InfoTaskComplete = Memory::AllocateArray<typename Self::EvaluateCompleteTaskInfo>( this->m_NumberOfTasks );
     
-    ThreadMetric = Memory::AllocateArray<VM*>( this->m_NumberOfThreads );
-    for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
-      ThreadMetric[thread] = new VM( *(this->Metric) );
+    TaskMetric = Memory::AllocateArray<VM*>( this->m_NumberOfTasks );
+    for ( size_t task = 0; task < this->m_NumberOfTasks; ++task )
+      this->TaskMetric[task] = new VM( *(this->Metric) );
     
     ThreadConsistencyHistogram = Memory::AllocateArray<JointHistogram<unsigned int>*>( this->m_NumberOfThreads );
     for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
@@ -115,20 +115,21 @@ public:
   virtual ~ParallelElasticFunctional() 
   {
     for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
-      if ( ThreadVectorCache[thread] ) delete[] ThreadVectorCache[thread];
-    delete[] ThreadVectorCache;
+      if ( ThreadVectorCache[thread] ) 
+	Memory::DeleteArray( this->ThreadVectorCache[thread] );
+    Memory::DeleteArray( this->ThreadVectorCache );
     
-    for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
-      delete ThreadMetric[thread];
-    delete[] ThreadMetric;
+    for ( size_t task = 0; task < this->m_NumberOfTasks; ++task )
+      delete this->TaskMetric[task];
+    Memory::DeleteArray( this->TaskMetric );
     
     for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
       delete ThreadConsistencyHistogram[thread];
-    delete[] ThreadConsistencyHistogram;
+    Memory::DeleteArray( this->ThreadConsistencyHistogram );
     
-    delete[] ThreadWarp;
-    delete[] InfoTaskGradient;
-    delete[] InfoThreadComplete;
+    Memory::DeleteArray( this->ThreadWarp );
+    Memory::DeleteArray( this->InfoTaskGradient );
+    Memory::DeleteArray( this->InfoTaskComplete );
   }
 
   /** Set warp transformation.
@@ -173,15 +174,18 @@ public:
     
     ThreadWarp[0]->SetParamVector( v );
 
-    const size_t numberOfThreads = std::min<size_t>( this->m_NumberOfThreads, this->DimsY * this->DimsZ );
-    for ( size_t threadIdx = 0; threadIdx < numberOfThreads; ++threadIdx ) 
+    const size_t numberOfTasks = std::min<size_t>( this->m_NumberOfTasks, this->DimsY * this->DimsZ );
+    for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
       {
-      InfoThreadComplete[threadIdx].thisObject = this;
-      InfoThreadComplete[threadIdx].ThisThreadIndex = threadIdx;
-      InfoThreadComplete[threadIdx].NumberOfThreads = numberOfThreads;
+      InfoTaskComplete[taskIdx].thisObject = this;
       }
     
-    Threads::RunThreads( EvaluateCompleteThread, numberOfThreads, InfoThreadComplete );
+    ThreadPool::GlobalThreadPool.Run( EvaluateCompleteThread, numberOfTasks, InfoTaskComplete );
+
+    for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
+      {
+      this->Metric->AddHistogram( *(this->TaskMetric[taskIdx]) );
+      }
     
     return this->WeightedTotal( this->Metric->Get(), ThreadWarp[0] );
   }
@@ -288,16 +292,18 @@ public:
   {
     this->Metric->Reset();
 
-    const size_t numberOfThreads = std::min<size_t>( this->m_NumberOfThreads, this->DimsY * this->DimsZ );
-
-    for ( size_t threadIdx = 0; threadIdx < numberOfThreads; ++threadIdx ) 
+    const size_t numberOfTasks = std::min<size_t>( this->m_NumberOfTasks, this->DimsY * this->DimsZ );
+    for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
       {
-      InfoThreadComplete[threadIdx].thisObject = this;
-      InfoThreadComplete[threadIdx].ThisThreadIndex = threadIdx;
-      InfoThreadComplete[threadIdx].NumberOfThreads = numberOfThreads;
+      InfoTaskComplete[taskIdx].thisObject = this;
       }
     
-    Threads::RunThreads( EvaluateCompleteThread, numberOfThreads, InfoThreadComplete );
+    ThreadPool::GlobalThreadPool.Run( EvaluateCompleteThread, numberOfTasks, this->InfoTaskComplete );
+    
+    for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
+      {
+      this->Metric->AddHistogram( *(this->TaskMetric[taskIdx]) );
+      }
     
     return this->WeightedTotal( this->Metric->Get(), ThreadWarp[0] );
   }
@@ -307,7 +313,7 @@ private:
    * The objects in this array are the per-thread equivalent of the
    * VoxelMatchingElasticFunctional::IncrementalMetric object.
    */
-  VM** ThreadMetric;
+  VM** TaskMetric;
   
   /// Consistency histogram objects for threadwise computation.
   JointHistogram<unsigned int>** ThreadConsistencyHistogram;
@@ -352,7 +358,7 @@ private:
     SmartPointer<W>& myWarp = me->ThreadWarp[threadIdx];
     myWarp->SetParamVector( *info->Parameters );
     
-    VM* threadMetric = me->ThreadMetric[threadIdx];
+    VM* taskMetric = me->TaskMetric[taskIdx];
     Vector3D *vectorCache = me->ThreadVectorCache[threadIdx];
     Types::Coordinate *p = myWarp->m_Parameters;
     
@@ -373,9 +379,9 @@ private:
 	pOld = p[dim];
 	
 	p[dim] += thisStep;
-	upper = me->EvaluateIncremental( myWarp, threadMetric, voi, vectorCache );
+	upper = me->EvaluateIncremental( myWarp, taskMetric, voi, vectorCache );
 	p[dim] = pOld - thisStep;
-	lower = me->EvaluateIncremental( myWarp, threadMetric, voi, vectorCache );
+	lower = me->EvaluateIncremental( myWarp, taskMetric, voi, vectorCache );
 	
 	p[dim] = pOld;
 	me->WeightedDerivative( lower, upper, myWarp, dim, thisStep );
@@ -398,30 +404,26 @@ private:
    * instance of this structure is given to EvaluateGradientThread() for
    * each thread created.
    */
-  class EvaluateCompleteThreadInfo 
+  class EvaluateCompleteTaskInfo 
   {
   public:
     /** Pointer to the functional object that created the thread. */
     Self *thisObject;
-    /// Unique index of this thread instance among all threads.
-    int ThisThreadIndex;
-    /// Total number of threads created.
-    int NumberOfThreads;
   };
   
   /** Info blocks for parallel threads evaluating complete functional. */
-  typename Self::EvaluateCompleteThreadInfo *InfoThreadComplete;
+  typename Self::EvaluateCompleteTaskInfo *InfoTaskComplete;
     
   /// Multi-threaded implementation of complete metric evaluation.
-  static CMTK_THREAD_RETURN_TYPE EvaluateCompleteThread ( void *arg ) 
+  static void EvaluateCompleteThread ( void *arg, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t ) 
   {
-    typename Self::EvaluateCompleteThreadInfo *info = static_cast<typename Self::EvaluateCompleteThreadInfo*>( arg );
+    typename Self::EvaluateCompleteTaskInfo *info = static_cast<typename Self::EvaluateCompleteTaskInfo*>( arg );
     
     Self *me = info->thisObject;
     const W *warp = me->ThreadWarp[0];
-    VM* threadMetric = me->ThreadMetric[info->ThisThreadIndex];
-    threadMetric->Reset();
-    Vector3D *vectorCache = me->ThreadVectorCache[info->ThisThreadIndex];
+    VM* taskMetric = me->TaskMetric[taskIdx];
+    taskMetric->Reset();
+    Vector3D *vectorCache = me->ThreadVectorCache[threadIdx];
     
     typename VM::Exchange* warpedVolume = me->WarpedVolume;
     const typename VM::Exchange unsetY = me->Metric->DataY.padding();
@@ -433,8 +435,8 @@ private:
     Types::Coordinate fltFrac[3];
     
     int rowCount = ( me->DimsY * me->DimsZ );
-    int rowFrom = ( rowCount / info->NumberOfThreads ) * info->ThisThreadIndex;
-    int rowTo = ( info->ThisThreadIndex == (info->NumberOfThreads-1) ) ? rowCount : ( rowCount / info->NumberOfThreads ) * ( info->ThisThreadIndex + 1 );
+    int rowFrom = ( rowCount / taskCnt ) * taskIdx;
+    int rowTo = ( taskIdx == (taskCnt-1) ) ? rowCount : ( rowCount / taskCnt ) * ( taskIdx + 1 );
     int rowsToDo = rowTo - rowFrom;
     
     int pYfrom = rowFrom % me->DimsY;
@@ -466,89 +468,10 @@ private:
 	    warpedVolume[r] = unsetY;
 	    }
 	  
-	  threadMetric->Increment( me->Metric->GetSampleX(r), warpedVolume[r] );
+	  taskMetric->Increment( me->Metric->GetSampleX(r), warpedVolume[r] );
 	  }
 	}
       }
-    
-    me->MetricMutex.Lock();
-    me->Metric->AddHistogram( *threadMetric );
-    me->MetricMutex.Unlock();
-    
-    return CMTK_THREAD_RETURN_VALUE;
-  }
-  
-  /// Multi-threaded implementation of complete metric evaluation.
-  static CMTK_THREAD_RETURN_TYPE EvaluateThread ( void *const arg ) 
-  {
-    typename Self::EvaluateCompleteThreadInfo *info = static_cast<typename Self::EvaluateCompleteThreadInfo*>( arg );
-    
-    Self *const me = info->thisObject;
-    W *const warp = me->ThreadWarp[0];
-    VM *const threadMetric = me->ThreadMetric[info->ThisThreadIndex];
-    VM *const metric = me->Metric;
-    threadMetric->Reset();
-    Vector3D *const vectorCache = me->ThreadVectorCache[info->ThisThreadIndex];
-    
-    const typename VM::Exchange unsetY = metric->DataY.padding();
-    
-    const int dimsX = me->DimsX;
-    const int dimsY = me->DimsY;
-    const int dimsZ = me->DimsZ;
-    
-    const int fltDimsX = me->FltDimsX;
-    const int fltDimsY = me->FltDimsY;
-     
-    Vector3D *pVec;
-    int pX, pY, pZ;
-    int fltIdx[3];
-    Types::Coordinate fltFrac[3];
-     
-    const int rowCount = ( dimsY * dimsZ );
-    const int rowFrom = 
-      ( rowCount / info->NumberOfThreads ) * info->ThisThreadIndex;
-    const int rowTo = ( info->ThisThreadIndex == (info->NumberOfThreads-1) ) 
-      ? rowCount
-      : ( rowCount / info->NumberOfThreads ) * ( info->ThisThreadIndex + 1 );
-    int rowsToDo = rowTo - rowFrom;
-     
-    const int pYfrom = rowFrom % dimsY;
-    const int pZfrom = rowFrom / dimsY;
-     
-    int offset, r = rowFrom * dimsX;
-     
-    for ( pZ = pZfrom; (pZ < dimsZ) && rowsToDo; ++pZ ) 
-      {
-      for ( pY = pYfrom; (pY < dimsY) && rowsToDo; pYfrom = 0, ++pY, --rowsToDo )
-	{
-	warp->GetTransformedGridSequence( vectorCache, dimsX, 0, pY, pZ );
-
-	pVec = vectorCache;
-	for ( pX = 0; pX < dimsX; ++pX, ++r, ++pVec ) 
-	  {
-	  // Tell us whether the current location is still within the floating volume and get the respective voxel.
-	  Vector3D::CoordMultInPlace( *pVec, me->FloatingInverseDelta );
-	  if ( me->FloatingGrid->FindVoxelByIndex( *pVec, fltIdx, fltFrac ) ) 
-	    {
-	    // Compute data index of the floating voxel in the floating volume.
-	    offset = fltIdx[0] + fltDimsX * ( fltIdx[1]+ fltDimsY * fltIdx[2] );
-	     
-	    // Continue metric computation.
-	    threadMetric->Increment( metric->GetSampleX( r ), metric->GetSampleY( offset, fltIdx, fltFrac ) );
-	    } 
-	  else
-	    {
-	    threadMetric->Increment( metric->GetSampleX( r ), unsetY );
-	    }
-	  }
-	}
-      }
-     
-    me->MetricMutex.Lock();
-    me->Metric->AddHistogram( threadMetric );
-    me->MetricMutex.Unlock();
-     
-    return CMTK_THREAD_RETURN_VALUE;
   }
   
   /** Thread parameter block.
@@ -581,7 +504,7 @@ private:
 
     Self *me = info->thisObject;
     W *warp = me->ThreadWarp[0];
-    VM *threadMetric = me->ThreadMetric[info->ThisThreadIndex];
+    VM *threadMetric = me->TaskMetric[info->ThisThreadIndex];
     VM *metric = me->Metric;
 
     JointHistogram<unsigned int> *threadHistogram = me->ThreadConsistencyHistogram[info->ThisThreadIndex];
