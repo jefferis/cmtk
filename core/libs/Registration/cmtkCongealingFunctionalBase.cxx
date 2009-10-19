@@ -54,7 +54,7 @@ template<class TXform,class THistogramBinType>
 CongealingFunctionalBase<TXform,THistogramBinType>::CongealingFunctionalBase() :
   m_CropImageHistograms( false )
 {
-  this->m_NumberOfThreads = this->m_ThreadPool.GetNumberOfThreads();
+  this->m_NumberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
   if ( this->m_NumberOfThreads > 1 )
     {
     this->m_NumberOfTasks = 2 * this->m_NumberOfThreads;
@@ -101,9 +101,9 @@ CongealingFunctionalBase<TXform,THistogramBinType>
     }
 
   if ( m_ProbabilisticSamples.size() )
-    this->m_ThreadPool.Run( InterpolateImageProbabilisticThread, this->m_NumberOfTasks, this->m_TaskInfo );
+    ThreadPool::GlobalThreadPool.Run( InterpolateImageProbabilisticThread, this->m_NumberOfTasks, this->m_TaskInfo );
   else
-    this->m_ThreadPool.Run( InterpolateImageThread, this->m_NumberOfTasks, this->m_TaskInfo );
+    ThreadPool::GlobalThreadPool.Run( InterpolateImageThread, this->m_NumberOfTasks, this->m_TaskInfo );
 }
 
 template<class TXform,class THistogramBinType>

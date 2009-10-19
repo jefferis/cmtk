@@ -77,14 +77,12 @@ UniformVolume::Resample( const UniformVolume& other ) const
       case DATACLASS_GREY:
       default:
       {
-      ThreadPool threadPool;
-      threadPool.Run( UniformVolume::ResampleThreadPoolExecuteGrey, numberOfTasks, taskInfoArray );
+      ThreadPool::GlobalThreadPool.Run( UniformVolume::ResampleThreadPoolExecuteGrey, numberOfTasks, taskInfoArray );
       }
       break;
       case DATACLASS_LABEL:
       {
-      ThreadPool threadPool;
-      threadPool.Run( UniformVolume::ResampleThreadPoolExecuteLabels, numberOfTasks, taskInfoArray );
+      ThreadPool::GlobalThreadPool.Run( UniformVolume::ResampleThreadPoolExecuteLabels, numberOfTasks, taskInfoArray );
       break;
       }
       }

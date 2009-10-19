@@ -168,9 +168,9 @@ AffineCongealingFunctional::InterpolateImage
     }
   
   if ( (this->m_ProbabilisticSampleDensity > 0) && (this->m_ProbabilisticSampleDensity < 1) )
-    this->m_ThreadPool.Run( InterpolateImageProbabilisticThread, this->m_NumberOfTasks, params );
+    ThreadPool::GlobalThreadPool.Run( InterpolateImageProbabilisticThread, this->m_NumberOfTasks, params );
   else
-    this->m_ThreadPool.Run( InterpolateImageThread, this->m_NumberOfTasks, params );
+    ThreadPool::GlobalThreadPool.Run( InterpolateImageThread, this->m_NumberOfTasks, params );
   
   Memory::DeleteArray( params );
 }

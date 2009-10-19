@@ -134,9 +134,9 @@ CongealingFunctional<TXform,THistogramBinType>::Evaluate()
     params[idx].thisObject = this;
   
   if ( this->m_ProbabilisticSamples.size() )
-    this->m_ThreadPool.Run( Self::EvaluateProbabilisticThread, this->m_NumberOfTasks, params );
+    ThreadPool::GlobalThreadPool.Run( Self::EvaluateProbabilisticThread, this->m_NumberOfTasks, params );
   else
-    this->m_ThreadPool.Run( Self::EvaluateThread, this->m_NumberOfTasks, params );
+    ThreadPool::GlobalThreadPool.Run( Self::EvaluateThread, this->m_NumberOfTasks, params );
   
   // gather partial entropies from tasks
   for ( size_t task = 0; task < this->m_NumberOfTasks; ++task )
@@ -356,7 +356,7 @@ CongealingFunctional<TXform,THistogramBinType>
   for ( size_t idx = 0; idx < this->m_NumberOfTasks; ++idx )
     params[idx].thisObject = this;
 
-  this->m_ThreadPool.Run( Self::UpdateStandardDeviationByPixelThreadFunc, this->m_NumberOfTasks, params );
+  ThreadPool::GlobalThreadPool.Run( Self::UpdateStandardDeviationByPixelThreadFunc, this->m_NumberOfTasks, params );
   
 #ifdef CMTK_BUILD_MPI
   MPI::COMM_WORLD.Allgather( &this->m_StandardDeviationByPixelMPI[0], this->m_StandardDeviationByPixelMPI.size(), 

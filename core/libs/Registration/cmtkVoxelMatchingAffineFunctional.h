@@ -297,7 +297,7 @@ public:
     : VoxelMatchingAffineFunctional( reference, floating, affineXform ),
       VoxelMatchingFunctional_Template<VM>( reference, floating ) 
   {
-    this->m_NumberOfThreads = this->m_ThreadPool.GetNumberOfThreads();
+    this->m_NumberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
     this->m_NumberOfTasks = (this->m_NumberOfThreads < 2) ? this->m_NumberOfThreads : 2 * this->m_NumberOfThreads;
 
     this->m_EvaluateTaskInfo = Memory::AllocateArray<typename Self::EvaluateTaskInfo>( this->m_NumberOfTasks );
@@ -377,7 +377,7 @@ public:
 	this->m_ThreadMetric[threadIdx]->Reset();
 	}
 
-      this->m_ThreadPool.Run( EvaluateThread, numberOfTasks, this->m_EvaluateTaskInfo );
+      ThreadPool::GlobalThreadPool.Run( EvaluateThread, numberOfTasks, this->m_EvaluateTaskInfo );
 
       for ( size_t threadIdx = 0; threadIdx < this->m_NumberOfThreads; ++threadIdx ) 
 	{
@@ -395,9 +395,6 @@ public:
    * instanced. It cannot be changed afterwards.
    */
   size_t m_NumberOfThreads;
-
-  /// Pool of persistent threads to repeatedly evaluate this functional.
-  ThreadPool m_ThreadPool;
 
   /** Number of tasks executed by the thread pool.
    * This is the total number of tasks that the complete evaluation is broken into.

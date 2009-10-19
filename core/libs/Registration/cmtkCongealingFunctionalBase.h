@@ -143,9 +143,6 @@ protected:
    */
   virtual void InterpolateImage( const size_t idx, byte* const destination );
 
-  /// Thread pool for parallel computation.
-  ThreadPool m_ThreadPool;
-
   /// Number of running threads in my pool.
   size_t m_NumberOfThreads;
 
