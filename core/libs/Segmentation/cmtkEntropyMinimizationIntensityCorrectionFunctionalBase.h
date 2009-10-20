@@ -247,7 +247,7 @@ private:
   };
 
   /// Thread function: update output image.
-  static void UpdateOutputImageThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  static void UpdateOutputImageThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 };
 
 //@}

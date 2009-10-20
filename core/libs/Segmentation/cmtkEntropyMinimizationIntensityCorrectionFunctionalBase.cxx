@@ -128,7 +128,7 @@ EntropyMinimizationIntensityCorrectionFunctionalBase
  
 void
 EntropyMinimizationIntensityCorrectionFunctionalBase
-::UpdateOutputImageThreadFunc( void *args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t )
+::UpdateOutputImageThreadFunc( void *args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   UpdateOutputImageThreadParameters* threadParameters = static_cast<UpdateOutputImageThreadParameters*>( args );
   

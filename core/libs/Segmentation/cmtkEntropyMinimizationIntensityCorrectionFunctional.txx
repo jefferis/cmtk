@@ -29,12 +29,14 @@
 //
 */
 
-#include <cmtkThreadParameterArray.h>
+#include <cmtkThreads.h>
+#include <cmtkThreadPool.h>
+#include <cmtkMemory.h>
 
 #pragma GCC diagnostic ignored "-Wtype-limits"
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
 void
-EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
+cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 ::UpdateCorrectionFactors()
 {
   const int* dims = this->m_InputImage->GetDims();
@@ -216,8 +218,8 @@ EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 
 #pragma GCC diagnostic ignored "-Wtype-limits"
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
-typename EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>::ReturnType
-EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
+typename cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>::ReturnType
+cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 ::EvaluateWithGradient
 ( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step )
 { 
@@ -270,28 +272,32 @@ EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
 void
-EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
+cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 ::UpdateBiasFields( bool foregroundOnly )
-{
-  const size_t numberOfThreads = std::min<size_t>( this->m_NumberOfThreads, Threads::GetNumberOfThreads() );
-  cmtk::ThreadParameterArray< Self, ThreadParameters<Self> > params( this, numberOfThreads );
+{ 
+  const size_t numberOfTasks = 2 * ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+
+  ThreadParameters<Self>* taskParameters = Memory::AllocateArray< ThreadParameters<Self> >( numberOfTasks );
+  for ( size_t task = 0; task < numberOfTasks; ++task )
+    {
+    taskParameters[task].thisObject = this;
+    }
+ 
   if ( foregroundOnly )
-    params.RunInParallel( &UpdateBiasFieldsThreadFunc );
+    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldsThreadFunc, numberOfTasks, taskParameters );
   else
-    params.RunInParallel( &UpdateBiasFieldsAllThreadFunc );
+    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldsAllThreadFunc, numberOfTasks, taskParameters );
 }
 
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
-CMTK_THREAD_RETURN_TYPE
-EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
-::UpdateBiasFieldsThreadFunc( void *args )
+void
+cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
+::UpdateBiasFieldsThreadFunc( void *args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   ThreadParameters<Self>* threadParameters = static_cast<ThreadParameters<Self>*>( args );
   
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
 
   const int* dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
@@ -300,11 +306,11 @@ EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   float* biasFieldPtrAdd = This->m_BiasFieldAdd->GetDataPtrTemplate();
   float* biasFieldPtrMul = This->m_BiasFieldMul->GetDataPtrTemplate();
 
-  Types::Coordinate* monomialsVec = This->m_MonomialsVec + (threadID * ThisConst->m_MonomialsPerThread);
+  Types::Coordinate* monomialsVec = This->m_MonomialsVec + (taskIdx * ThisConst->m_MonomialsPerThread);
 
-  const int zFrom = threadID * (dims[2] / numberOfThreads);
-  const int zTo = std::max( (threadID+1) * (dims[2] / numberOfThreads), dims[2] );
-
+  const int zFrom = taskIdx * (dims[2] / taskCnt);
+  const int zTo = std::max<int>( (taskIdx+1) * (dims[2] / taskCnt), dims[2] );
+  
   Types::DataItem value;
   size_t ofs = zFrom * dims[0] * dims[1];
   for ( int z = zFrom; z < zTo; ++z )
@@ -343,21 +349,17 @@ EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 	}
       }
     }
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
-CMTK_THREAD_RETURN_TYPE
-EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
-::UpdateBiasFieldsAllThreadFunc( void *args )
+void
+cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
+::UpdateBiasFieldsAllThreadFunc( void *args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   ThreadParameters<Self>* threadParameters = static_cast<ThreadParameters<Self>*>( args );
   
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
 
   const int* dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
@@ -366,10 +368,10 @@ EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   float* biasFieldPtrAdd = This->m_BiasFieldAdd->GetDataPtrTemplate();
   float* biasFieldPtrMul = This->m_BiasFieldMul->GetDataPtrTemplate();
 
-  Types::Coordinate* monomialsVec = This->m_MonomialsVec + (threadID * ThisConst->m_MonomialsPerThread);
+  Types::Coordinate* monomialsVec = This->m_MonomialsVec + (taskIdx * ThisConst->m_MonomialsPerThread);
 
-  const int zFrom = threadID * (dims[2] / numberOfThreads);
-  const int zTo = std::max( (threadID+1) * (dims[2] / numberOfThreads), dims[2] );
+  const int zFrom = taskIdx * (dims[2] / taskCnt);
+  const int zTo = std::max<int>( (taskIdx+1) * (dims[2] / taskCnt), dims[2] );
 
   Types::DataItem value;
   size_t ofs = zFrom * dims[0] * dims[1];
@@ -407,34 +409,36 @@ EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 	}
       }
     }
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
 void
-EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
+cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 ::UpdateBiasFieldAdd( const bool foregroundOnly )
 {
-  const size_t numberOfThreads = std::min<size_t>( this->m_NumberOfThreads, Threads::GetNumberOfThreads() );
-  cmtk::ThreadParameterArray< Self, ThreadParameters<Self> > params( this, numberOfThreads );
+  const size_t numberOfTasks = 2 * ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+
+  ThreadParameters<Self>* taskParameters = Memory::AllocateArray< ThreadParameters<Self> >( numberOfTasks );
+  for ( size_t task = 0; task < numberOfTasks; ++task )
+    {
+    taskParameters[task].thisObject = this;
+    }
+
   if ( foregroundOnly )
-    params.RunInParallel( &UpdateBiasFieldAddThreadFunc );
+    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldAddThreadFunc, numberOfTasks, taskParameters );
   else
-    params.RunInParallel( &UpdateBiasFieldAddAllThreadFunc );
+    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldAddAllThreadFunc, numberOfTasks, taskParameters );
 }
 
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
-CMTK_THREAD_RETURN_TYPE
-EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
-::UpdateBiasFieldAddThreadFunc( void *args )
+void
+cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
+::UpdateBiasFieldAddThreadFunc( void *args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   ThreadParameters<Self>* threadParameters = static_cast<ThreadParameters<Self>*>( args );
   
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
 
   const int* dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
@@ -442,11 +446,11 @@ EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 
   float* biasFieldPtrAdd = This->m_BiasFieldAdd->GetDataPtrTemplate();
 
-  Types::Coordinate* monomialsVec = This->m_MonomialsVec + (threadID * ThisConst->m_MonomialsPerThread);
+  Types::Coordinate* monomialsVec = This->m_MonomialsVec + (taskIdx * ThisConst->m_MonomialsPerThread);
 
-  const int zFrom = threadID * (dims[2] / numberOfThreads);
-  const int zTo = std::max( (threadID+1) * (dims[2] / numberOfThreads), dims[2] );
-
+  const int zFrom = taskIdx * (dims[2] / taskCnt);
+  const int zTo = std::max<int>( (taskIdx+1) * (dims[2] / taskCnt), dims[2] );
+  
   size_t ofs = zFrom * dims[0] * dims[1];
   for ( int z = zFrom; z < zTo; ++z )
     {
@@ -478,21 +482,17 @@ EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 	}
       }
     }
-  
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
-CMTK_THREAD_RETURN_TYPE
-EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
-::UpdateBiasFieldAddAllThreadFunc( void *args )
+void
+cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
+::UpdateBiasFieldAddAllThreadFunc( void *args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   ThreadParameters<Self>* threadParameters = static_cast<ThreadParameters<Self>*>( args );
   
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
 
   const int* dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
@@ -500,10 +500,10 @@ EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 
   float* biasFieldPtrAdd = This->m_BiasFieldAdd->GetDataPtrTemplate();
 
-  Types::Coordinate* monomialsVec = This->m_MonomialsVec + (threadID * ThisConst->m_MonomialsPerThread);
+  Types::Coordinate* monomialsVec = This->m_MonomialsVec + (taskIdx * ThisConst->m_MonomialsPerThread);
 
-  const int zFrom = threadID * (dims[2] / numberOfThreads);
-  const int zTo = std::max( (threadID+1) * (dims[2] / numberOfThreads), dims[2] );
+  const int zFrom = taskIdx * (dims[2] / taskCnt);
+  const int zTo = std::max<int>( (taskIdx+1) * (dims[2] / taskCnt), dims[2] );
 
   size_t ofs = zFrom * dims[0] * dims[1];
   for ( int z = zFrom; z < zTo; ++z )
@@ -533,34 +533,36 @@ EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 	}
       }
     }
-  
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
 void
-EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
+cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 ::UpdateBiasFieldMul( const bool foregroundOnly )
 {
-  const size_t numberOfThreads = std::min<size_t>( this->m_NumberOfThreads, Threads::GetNumberOfThreads() );
-  cmtk::ThreadParameterArray< Self, ThreadParameters<Self> > params( this, numberOfThreads );
+  const size_t numberOfTasks = 2 * ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+
+  ThreadParameters<Self>* taskParameters = Memory::AllocateArray< ThreadParameters<Self> >( numberOfTasks );
+  for ( size_t task = 0; task < numberOfTasks; ++task )
+    {
+    taskParameters[task].thisObject = this;
+    }
+
   if ( foregroundOnly )
-    params.RunInParallel( &UpdateBiasFieldMulThreadFunc );
+    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldMulThreadFunc, numberOfTasks, taskParameters );
   else
-    params.RunInParallel( &UpdateBiasFieldMulAllThreadFunc );
+    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldMulAllThreadFunc, numberOfTasks, taskParameters );
 }
 
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
-CMTK_THREAD_RETURN_TYPE
-EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
-::UpdateBiasFieldMulThreadFunc( void *args )
+void
+cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
+::UpdateBiasFieldMulThreadFunc( void *args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   ThreadParameters<Self>* threadParameters = static_cast<ThreadParameters<Self>*>( args );
   
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
 
   const int* dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
@@ -568,10 +570,10 @@ EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 
   float* biasFieldPtrMul = This->m_BiasFieldMul->GetDataPtrTemplate();
 
-  Types::Coordinate* monomialsVec = This->m_MonomialsVec + (threadID * ThisConst->m_MonomialsPerThread);
+  Types::Coordinate* monomialsVec = This->m_MonomialsVec + (taskIdx * ThisConst->m_MonomialsPerThread);
 
-  const int zFrom = threadID * (dims[2] / numberOfThreads);
-  const int zTo = std::max( (threadID+1) * (dims[2] / numberOfThreads), dims[2] );
+  const int zFrom = taskIdx * (dims[2] / taskCnt);
+  const int zTo = std::max<int>( (taskIdx+1) * (dims[2] / taskCnt), dims[2] );
 
   size_t ofs = zFrom * dims[0] * dims[1];
   for ( int z = zFrom; z < zTo; ++z )
@@ -604,21 +606,17 @@ EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 	}
       }
     }
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
-CMTK_THREAD_RETURN_TYPE
-EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
-::UpdateBiasFieldMulAllThreadFunc( void *args )
+void
+cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
+::UpdateBiasFieldMulAllThreadFunc( void *args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   ThreadParameters<Self>* threadParameters = static_cast<ThreadParameters<Self>*>( args );
   
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
 
   const int* dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
@@ -626,10 +624,10 @@ EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 
   float* biasFieldPtrMul = This->m_BiasFieldMul->GetDataPtrTemplate();
 
-  Types::Coordinate* monomialsVec = This->m_MonomialsVec + (threadID * ThisConst->m_MonomialsPerThread);
+  Types::Coordinate* monomialsVec = This->m_MonomialsVec + (taskIdx * ThisConst->m_MonomialsPerThread);
 
-  const int zFrom = threadID * (dims[2] / numberOfThreads);
-  const int zTo = std::max( (threadID+1) * (dims[2] / numberOfThreads), dims[2] );
+  const int zFrom = taskIdx * (dims[2] / taskCnt);
+  const int zTo = std::max<int>( (taskIdx+1) * (dims[2] / taskCnt), dims[2] );
 
   size_t ofs = zFrom * dims[0] * dims[1];
   for ( int z = zFrom; z < zTo; ++z )
@@ -659,7 +657,5 @@ EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 	}
       }
     }
-  
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
