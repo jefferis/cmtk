@@ -286,6 +286,8 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
     ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldsThreadFunc, numberOfTasks, taskParameters );
   else
     ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldsAllThreadFunc, numberOfTasks, taskParameters );
+
+  Memory::DeleteArray( taskParameters );
 }
 
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
@@ -427,6 +429,8 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
     ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldAddThreadFunc, numberOfTasks, taskParameters );
   else
     ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldAddAllThreadFunc, numberOfTasks, taskParameters );
+
+  Memory::DeleteArray( taskParameters );
 }
 
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
@@ -551,6 +555,8 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
     ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldMulThreadFunc, numberOfTasks, taskParameters );
   else
     ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldMulAllThreadFunc, numberOfTasks, taskParameters );
+
+  Memory::DeleteArray( taskParameters );
 }
 
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
