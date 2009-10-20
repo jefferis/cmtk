@@ -313,7 +313,7 @@ private:
   /// Thread parameter for entropy evaluation.
   class FilterThreadParameters : 
     /// Inherit from generic thread parameter class.
-    public ThreadParameters<Self>
+    public ThreadParameters<const Self>
   {
   public:
     /// Filter kernel.
@@ -324,13 +324,13 @@ private:
   };
   
   /// Thread function for separable filtering in x-direction.
-  static CMTK_THREAD_RETURN_TYPE GetFilteredDataThreadX( void *args );
+  static void GetFilteredDataThreadX( void *args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
 
   /// Thread function for separable filtering in y-direction.
-  static CMTK_THREAD_RETURN_TYPE GetFilteredDataThreadY( void *args );
+  static void GetFilteredDataThreadY( void *args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
 
   /// Thread function for separable filtering in z-direction.
-  static CMTK_THREAD_RETURN_TYPE GetFilteredDataThreadZ( void *args );
+  static void GetFilteredDataThreadZ( void *args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
 
 protected:
   /** Utility function for trilinear interpolation.

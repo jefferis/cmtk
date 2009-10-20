@@ -30,7 +30,8 @@
 */
 
 #include <cmtkDataGrid.h>
-#include <cmtkThreadParameterArray.h>
+#include <cmtkMemory.h>
+#include <cmtkThreadPool.h>
 
 #include <vector>
 
@@ -51,42 +52,38 @@ DataGrid::GetFilteredData
 
   TypedArray *result = this->m_Data->NewTemplateArray( this->m_Data->GetDataSize() );
 
-  const size_t numberOfThreads = Threads::GetNumberOfThreads();
-  ThreadParameterArray<Self,FilterThreadParameters> params( const_cast<Self*>( this ), numberOfThreads );
-
-  for ( size_t thread = 0; thread < numberOfThreads; ++thread )
+  const size_t numberOfTasks = 2 * ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  FilterThreadParameters* params = Memory::AllocateArray<FilterThreadParameters>( numberOfTasks );
+  
+  for ( size_t task = 0; task < numberOfTasks; ++task )
     {
-    params[thread].m_Filter = &filterX;
-    params[thread].m_Result = result;
+    params[task].thisObject = this;
+    params[task].m_Filter = &filterX;
+    params[task].m_Result = result;
     }
-  params.RunInParallel( &GetFilteredDataThreadX );
+  ThreadPool::GlobalThreadPool.Run( GetFilteredDataThreadX, numberOfTasks, params );
 
-  for ( size_t thread = 0; thread < numberOfThreads; ++thread )
+  for ( size_t task = 0; task < numberOfTasks; ++task )
     {
-    params[thread].m_Filter = &filterY;
-    params[thread].m_Result = result;
+    params[task].m_Filter = &filterY;
     }
-  params.RunInParallel( &GetFilteredDataThreadY );
+  ThreadPool::GlobalThreadPool.Run( GetFilteredDataThreadY, numberOfTasks, params );
 
-  for ( size_t thread = 0; thread < numberOfThreads; ++thread )
+  for ( size_t task = 0; task < numberOfTasks; ++task )
     {
-    params[thread].m_Filter = &filterZ;
-    params[thread].m_Result = result;
+    params[task].m_Filter = &filterZ;
     }
-  params.RunInParallel( &GetFilteredDataThreadZ );
+  ThreadPool::GlobalThreadPool.Run( GetFilteredDataThreadZ, numberOfTasks, params );
   
   return result;
 }
 
-CMTK_THREAD_RETURN_TYPE
+void
 DataGrid
-::GetFilteredDataThreadX( void* args )
+::GetFilteredDataThreadX( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   FilterThreadParameters* params = static_cast<FilterThreadParameters*>( args );
-
   const Self* ThisConst = params->thisObject;
-  const size_t threadID = params->ThisThreadIndex;
-  const size_t threadCount = params->NumberOfThreads;
   
   const int* dims = ThisConst->m_Dims;
   unsigned int maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
@@ -98,7 +95,7 @@ DataGrid
   std::vector<Types::DataItem> pixelBufferTo( maxDim );
   TypedArray* result = params->m_Result;
 
-  for ( int z=threadID; z < dims[2]; z += threadCount ) 
+  for ( int z=taskIdx; z < dims[2]; z += taskCnt ) 
     {
     for ( int y=0; y < dims[1]; ++y ) 
       {
@@ -142,19 +139,14 @@ DataGrid
 	result->Set( pixelBufferTo[x], ofs );
       }
     }
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
-CMTK_THREAD_RETURN_TYPE
+void
 DataGrid
-::GetFilteredDataThreadY( void* args )
+::GetFilteredDataThreadY( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   FilterThreadParameters* params = static_cast<FilterThreadParameters*>( args );
-
   const Self* ThisConst = params->thisObject;
-  const size_t threadID = params->ThisThreadIndex;
-  const size_t threadCount = params->NumberOfThreads;
   
   const int* dims = ThisConst->m_Dims;
   unsigned int maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
@@ -166,7 +158,7 @@ DataGrid
   std::vector<Types::DataItem> pixelBufferTo( maxDim );
   TypedArray* result = params->m_Result;
 
-  for ( int z=threadID; z < dims[2]; z+=threadCount ) 
+  for ( int z=taskIdx; z < dims[2]; z+=taskCnt ) 
     {
     for ( int x=0; x < dims[0]; ++x ) 
       {
@@ -203,18 +195,14 @@ DataGrid
 	result->Set( pixelBufferTo[y], ofs );
       }
     }
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
-CMTK_THREAD_RETURN_TYPE
+void
 DataGrid
-::GetFilteredDataThreadZ( void* args )
+::GetFilteredDataThreadZ( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 { 
   FilterThreadParameters* params = static_cast<FilterThreadParameters*>( args );
-
   const Self* ThisConst = params->thisObject;
-  const size_t threadID = params->ThisThreadIndex;
-  const size_t threadCount = params->NumberOfThreads;
   
   const int* dims = ThisConst->m_Dims;
   unsigned int maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
@@ -226,7 +214,7 @@ DataGrid
   std::vector<Types::DataItem> pixelBufferTo( maxDim );
   TypedArray* result = params->m_Result;
 
-  for ( int y=threadID; y < dims[1]; y+=threadCount ) 
+  for ( int y=taskIdx; y < dims[1]; y+=taskCnt ) 
     {
     for ( int x=0; x < dims[0]; ++x ) 
       {
@@ -263,8 +251,6 @@ DataGrid
 	result->Set( pixelBufferTo[z], ofs );
       }
     }
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 } // namespace cmtk
