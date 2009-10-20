@@ -40,6 +40,7 @@
 
 #include <cmtkUniformVolume.h>
 #include <cmtkDataGrid.h>
+#include <cmtkThreads.h>
 
 namespace
 cmtk
@@ -191,29 +192,33 @@ private:
   virtual void UpdateBiasFields( const bool foregroundOnly = true );
 
   /// Thread function: jointly update both bias images.
-  static void UpdateBiasFieldsThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  static CMTK_THREAD_RETURN_TYPE UpdateBiasFieldsThreadFunc( void* args );
 
   /// Thread function: jointly update both bias images.
-  static void UpdateBiasFieldsAllThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  static CMTK_THREAD_RETURN_TYPE UpdateBiasFieldsAllThreadFunc( void* args );
 
   /// Update additive bias image.
   virtual void UpdateBiasFieldAdd( const bool foregroundOnly = true );
 
   /// Thread function: update foreground additive bias images.
-  static void UpdateBiasFieldAddThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  static CMTK_THREAD_RETURN_TYPE UpdateBiasFieldAddThreadFunc( void* args );
 
   /// Thread function: update complete additive bias images.
-  static void UpdateBiasFieldAddAllThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  static CMTK_THREAD_RETURN_TYPE UpdateBiasFieldAddAllThreadFunc( void* args );
 
   /// Update multiplicative bias image.
   virtual void UpdateBiasFieldMul( const bool foregroundOnly = true );
 
   /// Thread function: update foreground multiplicative bias images.
-  static void UpdateBiasFieldMulThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  static CMTK_THREAD_RETURN_TYPE UpdateBiasFieldMulThreadFunc( void* args );
 
   /// Thread function: update complete multiplicative bias images.
-  static void UpdateBiasFieldMulAllThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  static CMTK_THREAD_RETURN_TYPE UpdateBiasFieldMulAllThreadFunc( void* args );
 };
+
+#ifdef CMTK_INSTANTIATE_TEMPLATES
+#include <cmtkEntropyMinimizationIntensityCorrectionFunctional.txx>
+#endif // #ifdef CMTK_INSTANTIATE_TEMPLATES
 
 /// Create functional templated over polynomial degrees.
 template<unsigned int NDegreeMul>
@@ -239,8 +244,6 @@ CreateEntropyMinimizationIntensityCorrectionFunctional
 //@}
 
 } // namespace cmtk
-
-#include <cmtkEntropyMinimizationIntensityCorrectionFunctional.txx>
 
 #endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctional_h_included_
 
