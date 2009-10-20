@@ -75,7 +75,7 @@ cmtk::ThreadPool::Run
   // without SMP, just run everything sequentially.
   for ( size_t idx = 0; idx < numberOfTasks; ++idx )
     {
-    taskFunction( &taskParameters[idx], idx, numberOfTasks );
+    taskFunction( &taskParameters[idx], idx, numberOfTasks, 0, 1 );
     }
 #endif
 
