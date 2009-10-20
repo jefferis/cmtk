@@ -52,7 +52,7 @@ UniformVolume::Resample( const UniformVolume& other ) const
   const size_t numberOfTasks = std::min<int>( 2 * Threads::GetNumberOfThreads(), this->m_Dims[2] );
    
   // Info blocks for parallel tasks that do the resampling.
-  UniformVolume::ResampleTaskInfo *taskInfoArray = Memory::AllocateArray<UniformVolume::ResampleTaskInfo>( numberOfTasks );
+  std::vector<UniformVolume::ResampleTaskInfo> taskInfoVector( numberOfTasks );
    
   Types::DataItem *resampledData = NULL;
   try
@@ -61,11 +61,11 @@ UniformVolume::Resample( const UniformVolume& other ) const
      
     for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
       {
-      taskInfoArray[taskIdx].thisObject = this;
-      taskInfoArray[taskIdx].GridLookup = &gridLookup;
-      taskInfoArray[taskIdx].OtherVolume = &other;
-      taskInfoArray[taskIdx].FromData = fromData;
-      taskInfoArray[taskIdx].ResampledData = resampledData;
+      taskInfoVector[taskIdx].thisObject = this;
+      taskInfoVector[taskIdx].GridLookup = &gridLookup;
+      taskInfoVector[taskIdx].OtherVolume = &other;
+      taskInfoVector[taskIdx].FromData = fromData;
+      taskInfoVector[taskIdx].ResampledData = resampledData;
       }
      
     switch ( fromData->GetDataClass() ) 
@@ -77,12 +77,12 @@ UniformVolume::Resample( const UniformVolume& other ) const
       case DATACLASS_GREY:
       default:
       {
-      ThreadPool::GlobalThreadPool.Run( UniformVolume::ResampleThreadPoolExecuteGrey, numberOfTasks, taskInfoArray );
+      ThreadPool::GlobalThreadPool.Run( UniformVolume::ResampleThreadPoolExecuteGrey, taskInfoVector );
       }
       break;
       case DATACLASS_LABEL:
       {
-      ThreadPool::GlobalThreadPool.Run( UniformVolume::ResampleThreadPoolExecuteLabels, numberOfTasks, taskInfoArray );
+      ThreadPool::GlobalThreadPool.Run( UniformVolume::ResampleThreadPoolExecuteLabels, taskInfoVector );
       break;
       }
       }
@@ -92,8 +92,6 @@ UniformVolume::Resample( const UniformVolume& other ) const
     {
     resampledData = NULL;
     }
-   
-  delete[] taskInfoArray;
    
   if ( resampledData == NULL ) 
     {

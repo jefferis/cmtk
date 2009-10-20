@@ -91,16 +91,16 @@ public:
     
     ThreadWarp = Memory::AllocateArray<typename W::SmartPtr>( this->m_NumberOfThreads );
     
-    InfoTaskGradient = Memory::AllocateArray<typename Self::EvaluateGradientTaskInfo>( this->m_NumberOfTasks );
-    InfoTaskComplete = Memory::AllocateArray<typename Self::EvaluateCompleteTaskInfo>( this->m_NumberOfTasks );
+    this->InfoTaskGradient.resize( this->m_NumberOfTasks );
+    this->InfoTaskComplete.resize( this->m_NumberOfTasks );
     
-    TaskMetric = Memory::AllocateArray<VM*>( this->m_NumberOfTasks );
+    this->TaskMetric = Memory::AllocateArray<VM*>( this->m_NumberOfTasks );
     for ( size_t task = 0; task < this->m_NumberOfTasks; ++task )
       this->TaskMetric[task] = new VM( *(this->Metric) );
     
-    ThreadVectorCache = Memory::AllocateArray<Vector3D*>( this->m_NumberOfThreads );
+    this->ThreadVectorCache = Memory::AllocateArray<Vector3D*>( this->m_NumberOfThreads );
     for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
-      ThreadVectorCache[thread] = Memory::AllocateArray<Vector3D>( this->ReferenceDims[0] );
+      this->ThreadVectorCache[thread] = Memory::AllocateArray<Vector3D>( this->ReferenceDims[0] );
   }
 
   /** Destructor.
@@ -118,8 +118,6 @@ public:
     Memory::DeleteArray( this->TaskMetric );
     
     Memory::DeleteArray( this->ThreadWarp );
-    Memory::DeleteArray( this->InfoTaskGradient );
-    Memory::DeleteArray( this->InfoTaskComplete );
   }
 
   /** Set warp transformation.
@@ -170,7 +168,7 @@ public:
       InfoTaskComplete[taskIdx].thisObject = this;
       }
     
-    ThreadPool::GlobalThreadPool.Run( EvaluateCompleteThread, numberOfTasks, InfoTaskComplete );
+    ThreadPool::GlobalThreadPool.Run( EvaluateCompleteThread, this->InfoTaskComplete );
 
     for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
       {
@@ -266,7 +264,7 @@ public:
       InfoTaskGradient[taskIdx].Parameters = &v;
       }
 
-    ThreadPool::GlobalThreadPool.Run( EvaluateGradientThread, numberOfTasks, InfoTaskGradient );
+    ThreadPool::GlobalThreadPool.Run( EvaluateGradientThread, InfoTaskGradient );
     
     return current;
   }
@@ -288,7 +286,7 @@ public:
       InfoTaskComplete[taskIdx].thisObject = this;
       }
     
-    ThreadPool::GlobalThreadPool.Run( EvaluateCompleteThread, numberOfTasks, this->InfoTaskComplete );
+    ThreadPool::GlobalThreadPool.Run( EvaluateCompleteThread, this->InfoTaskComplete );
     
     for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
       {
@@ -329,7 +327,7 @@ private:
   };
   
   /// Info blocks for parallel threads evaluating functional gradient.
-  typename Self::EvaluateGradientTaskInfo *InfoTaskGradient;
+  std::vector<typename Self::EvaluateGradientTaskInfo> InfoTaskGradient;
   
   /** Compute functional gradient as a thread.
    * This function (i.e., each thread) iterates over all parameters of the
@@ -402,7 +400,7 @@ private:
   };
   
   /** Info blocks for parallel threads evaluating complete functional. */
-  typename Self::EvaluateCompleteTaskInfo *InfoTaskComplete;
+  std::vector<typename Self::EvaluateCompleteTaskInfo> InfoTaskComplete;
     
   /// Multi-threaded implementation of complete metric evaluation.
   static void EvaluateCompleteThread ( void *arg, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t ) 

@@ -154,7 +154,7 @@ AffineCongealingFunctional::InterpolateImage
 {
   const VolumeAxesHash gridHash( *this->m_TemplateGrid, this->GetXformByIndex( idx ) );
 
-  InterpolateImageThreadParameters* params = Memory::AllocateArray<InterpolateImageThreadParameters>( this->m_NumberOfTasks );
+  std::vector<InterpolateImageThreadParameters> params( this->m_NumberOfTasks );
   for ( size_t thread = 0; thread < this->m_NumberOfTasks; ++thread )
     {
     params[thread].thisObject = this;
@@ -166,11 +166,9 @@ AffineCongealingFunctional::InterpolateImage
     }
   
   if ( (this->m_ProbabilisticSampleDensity > 0) && (this->m_ProbabilisticSampleDensity < 1) )
-    ThreadPool::GlobalThreadPool.Run( InterpolateImageProbabilisticThread, this->m_NumberOfTasks, params );
+    ThreadPool::GlobalThreadPool.Run( InterpolateImageProbabilisticThread, params );
   else
-    ThreadPool::GlobalThreadPool.Run( InterpolateImageThread, this->m_NumberOfTasks, params );
-  
-  Memory::DeleteArray( params );
+    ThreadPool::GlobalThreadPool.Run( InterpolateImageThread, params );
 }
 
 void

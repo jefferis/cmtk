@@ -127,14 +127,14 @@ CongealingFunctional<TXform,THistogramBinType>::Evaluate()
 
   this->m_ThreadHistograms.resize( this->m_NumberOfThreads );
 
-  EvaluateThreadParameters* params = Memory::AllocateArray<EvaluateThreadParameters>( this->m_NumberOfTasks );
+  std::vector<EvaluateThreadParameters> params( this->m_NumberOfTasks );
   for ( size_t idx = 0; idx < this->m_NumberOfTasks; ++idx )
     params[idx].thisObject = this;
   
   if ( this->m_ProbabilisticSamples.size() )
-    ThreadPool::GlobalThreadPool.Run( Self::EvaluateProbabilisticThread, this->m_NumberOfTasks, params );
+    ThreadPool::GlobalThreadPool.Run( Self::EvaluateProbabilisticThread, params );
   else
-    ThreadPool::GlobalThreadPool.Run( Self::EvaluateThread, this->m_NumberOfTasks, params );
+    ThreadPool::GlobalThreadPool.Run( Self::EvaluateThread, params );
   
   // gather partial entropies from tasks
   for ( size_t task = 0; task < this->m_NumberOfTasks; ++task )
@@ -142,8 +142,6 @@ CongealingFunctional<TXform,THistogramBinType>::Evaluate()
     entropy += params[task].m_Entropy;
     count += params[task].m_Count;
     }
-
-  Memory::DeleteArray( params );
 
 #ifdef CMTK_BUILD_MPI
   double partialEntropy = entropy;
@@ -350,11 +348,11 @@ CongealingFunctional<TXform,THistogramBinType>
 #endif
     }
 
-  ThreadParametersType* params = Memory::AllocateArray<ThreadParametersType>( this->m_NumberOfTasks );
+  std::vector<ThreadParametersType> params( this->m_NumberOfTasks );
   for ( size_t idx = 0; idx < this->m_NumberOfTasks; ++idx )
     params[idx].thisObject = this;
 
-  ThreadPool::GlobalThreadPool.Run( Self::UpdateStandardDeviationByPixelThreadFunc, this->m_NumberOfTasks, params );
+  ThreadPool::GlobalThreadPool.Run( Self::UpdateStandardDeviationByPixelThreadFunc, params );
   
 #ifdef CMTK_BUILD_MPI
   MPI::COMM_WORLD.Allgather( &this->m_StandardDeviationByPixelMPI[0], this->m_StandardDeviationByPixelMPI.size(), 

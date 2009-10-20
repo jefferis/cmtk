@@ -300,7 +300,7 @@ public:
     this->m_NumberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
     this->m_NumberOfTasks = (this->m_NumberOfThreads < 2) ? this->m_NumberOfThreads : 2 * this->m_NumberOfThreads;
 
-    this->m_EvaluateTaskInfo = Memory::AllocateArray<typename Self::EvaluateTaskInfo>( this->m_NumberOfTasks );
+    this->m_EvaluateTaskInfo.resize( this->m_NumberOfTasks );
     for ( size_t threadIdx = 0; threadIdx < this->m_NumberOfTasks; ++threadIdx ) 
       {
       this->m_EvaluateTaskInfo[threadIdx].thisObject = this;
@@ -317,8 +317,6 @@ public:
     for ( size_t thread = 0; thread < m_NumberOfThreads; ++thread )
       delete m_ThreadMetric[thread];
     Memory::DeleteArray( this->m_ThreadMetric );
-    
-    Memory::DeleteArray( this->m_EvaluateTaskInfo );
   }
 
   /// Evaluate with new parameter vector.
@@ -377,7 +375,7 @@ public:
 	this->m_ThreadMetric[threadIdx]->Reset();
 	}
 
-      ThreadPool::GlobalThreadPool.Run( EvaluateThread, numberOfTasks, this->m_EvaluateTaskInfo );
+      ThreadPool::GlobalThreadPool.Run( EvaluateThread, this->m_EvaluateTaskInfo );
 
       for ( size_t threadIdx = 0; threadIdx < this->m_NumberOfThreads; ++threadIdx ) 
 	{
@@ -427,7 +425,7 @@ public:
   } EvaluateTaskInfo;
  
   /// Info blocks for parallel threads evaluating functional gradient.
-  typename Self::EvaluateTaskInfo *m_EvaluateTaskInfo;
+  std::vector<typename Self::EvaluateTaskInfo> m_EvaluateTaskInfo;
 
   /** Compute functional gradient as a thread.
     * This function (i.e., each thread) iterates over all parameters of the

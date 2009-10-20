@@ -38,12 +38,14 @@
 template<class TParam> 
 void
 cmtk::ThreadPool::Run
-( const TaskFunction taskFunction, size_t numberOfTasks, TParam* taskParameters )
+( const TaskFunction taskFunction, std::vector<TParam>& taskParameters )
 {
   if ( ! this->m_ThreadsRunning )
     {
     this->StartThreads();
     }
+
+  const size_t numberOfTasks = taskParameters.size();
 
 #ifdef _OPENMP
   // if OpenMP is also used in CMTK, reduce the number of OMP threads by the number of threads/tasks that we're about to run in parallel.
@@ -58,7 +60,7 @@ cmtk::ThreadPool::Run
   this->m_NumberOfTasks = numberOfTasks;
   this->m_TaskParameters.resize( this->m_NumberOfTasks );
   this->m_NextTaskIndex = 0;
-
+  
   // set parameter pointers and post semaphores for tasks waiting to supply all running threads.
   for ( size_t idx = 0; idx < numberOfTasks; ++idx )
     {

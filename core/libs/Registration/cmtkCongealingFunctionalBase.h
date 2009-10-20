@@ -170,7 +170,7 @@ private:
   };
   
   /// Task info blocks.
-  InterpolateImageThreadParameters* m_TaskInfo;
+  std::vector<InterpolateImageThreadParameters> m_TaskInfo;
 
   /// Image interpolation thread function.
   static void InterpolateImageThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCont );

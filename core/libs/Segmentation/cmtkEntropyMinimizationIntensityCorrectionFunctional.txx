@@ -276,18 +276,16 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 { 
   const size_t numberOfTasks = 2 * ThreadPool::GlobalThreadPool.GetNumberOfThreads();
 
-  ThreadParameters<Self>* taskParameters = Memory::AllocateArray< ThreadParameters<Self> >( numberOfTasks );
+  std::vector< ThreadParameters<Self> > taskParameters( numberOfTasks );
   for ( size_t task = 0; task < numberOfTasks; ++task )
     {
     taskParameters[task].thisObject = this;
     }
  
   if ( foregroundOnly )
-    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldsThreadFunc, numberOfTasks, taskParameters );
+    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldsThreadFunc, taskParameters );
   else
-    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldsAllThreadFunc, numberOfTasks, taskParameters );
-
-  Memory::DeleteArray( taskParameters );
+    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldsAllThreadFunc, taskParameters );
 }
 
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
@@ -419,18 +417,16 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 {
   const size_t numberOfTasks = 2 * ThreadPool::GlobalThreadPool.GetNumberOfThreads();
 
-  ThreadParameters<Self>* taskParameters = Memory::AllocateArray< ThreadParameters<Self> >( numberOfTasks );
+  std::vector< ThreadParameters<Self> > taskParameters( numberOfTasks );
   for ( size_t task = 0; task < numberOfTasks; ++task )
     {
     taskParameters[task].thisObject = this;
     }
 
   if ( foregroundOnly )
-    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldAddThreadFunc, numberOfTasks, taskParameters );
+    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldAddThreadFunc, taskParameters );
   else
-    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldAddAllThreadFunc, numberOfTasks, taskParameters );
-
-  Memory::DeleteArray( taskParameters );
+    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldAddAllThreadFunc, taskParameters );
 }
 
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
@@ -545,18 +541,16 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 {
   const size_t numberOfTasks = 2 * ThreadPool::GlobalThreadPool.GetNumberOfThreads();
 
-  ThreadParameters<Self>* taskParameters = Memory::AllocateArray< ThreadParameters<Self> >( numberOfTasks );
+  std::vector< ThreadParameters<Self> > taskParameters( numberOfTasks );
   for ( size_t task = 0; task < numberOfTasks; ++task )
     {
     taskParameters[task].thisObject = this;
     }
 
   if ( foregroundOnly )
-    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldMulThreadFunc, numberOfTasks, taskParameters );
+    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldMulThreadFunc, taskParameters );
   else
-    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldMulAllThreadFunc, numberOfTasks, taskParameters );
-
-  Memory::DeleteArray( taskParameters );
+    ThreadPool::GlobalThreadPool.Run( UpdateBiasFieldMulAllThreadFunc, taskParameters );
 }
 
 template<unsigned int NOrderAdd,unsigned int NOrderMul>

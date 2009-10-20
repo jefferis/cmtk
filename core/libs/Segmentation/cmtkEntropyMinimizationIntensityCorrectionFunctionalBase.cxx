@@ -116,14 +116,13 @@ EntropyMinimizationIntensityCorrectionFunctionalBase
 {
   const size_t numberOfTasks = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
   
-  UpdateOutputImageThreadParameters* taskParameters = Memory::AllocateArray<UpdateOutputImageThreadParameters>( numberOfTasks );
+  std::vector<UpdateOutputImageThreadParameters> taskParameters( numberOfTasks );
   for ( size_t task = 0; task < numberOfTasks; ++task )
     {
     taskParameters[task].thisObject = this;
     taskParameters[task].m_ForegroundOnly = foregroundOnly;
     }
-  ThreadPool::GlobalThreadPool.Run( UpdateOutputImageThreadFunc, numberOfTasks, taskParameters );
-  Memory::DeleteArray( taskParameters );
+  ThreadPool::GlobalThreadPool.Run( UpdateOutputImageThreadFunc, taskParameters );
 }
  
 void

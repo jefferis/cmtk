@@ -61,13 +61,12 @@ CongealingFunctionalBase<TXform,THistogramBinType>::CongealingFunctionalBase() :
     {
     this->m_NumberOfTasks = 1;
     }
-  this->m_TaskInfo = Memory::AllocateArray<InterpolateImageThreadParameters>( this->m_NumberOfTasks );
+  this->m_TaskInfo.resize( this->m_NumberOfTasks );
 }
 
 template<class TXform,class THistogramBinType>
 CongealingFunctionalBase<TXform,THistogramBinType>::~CongealingFunctionalBase()
 {
-  Memory::DeleteArray( this->m_TaskInfo );
 }
 
 template<class TXform,class THistogramBinType>
@@ -99,9 +98,9 @@ CongealingFunctionalBase<TXform,THistogramBinType>
     }
 
   if ( m_ProbabilisticSamples.size() )
-    ThreadPool::GlobalThreadPool.Run( InterpolateImageProbabilisticThread, this->m_NumberOfTasks, this->m_TaskInfo );
+    ThreadPool::GlobalThreadPool.Run( InterpolateImageProbabilisticThread, this->m_TaskInfo );
   else
-    ThreadPool::GlobalThreadPool.Run( InterpolateImageThread, this->m_NumberOfTasks, this->m_TaskInfo );
+    ThreadPool::GlobalThreadPool.Run( InterpolateImageThread, this->m_TaskInfo );
 }
 
 template<class TXform,class THistogramBinType>

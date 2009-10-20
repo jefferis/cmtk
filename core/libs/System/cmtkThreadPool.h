@@ -91,8 +91,7 @@ public:
   /// Run actual worker functions through running threads.
   template<class TParam> 
   void Run( TaskFunction taskFunction, //!< Pointer to task function.
-	    const size_t numberOfTasks, //!< Number of tasks. Ideally, for scheduling, this is larger than the number of running threads, but this is not required.
-	    TParam* taskParameters //!< Pointer to array of task parameters.
+	    std::vector<TParam>& taskParameters //!< Vector of task parameter blocks, one per task.
     );
 
   /// This function is run as a thread.
