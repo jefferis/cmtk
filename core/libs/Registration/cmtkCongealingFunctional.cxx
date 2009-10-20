@@ -34,8 +34,6 @@
 #include <cmtkMathUtil.h>
 #include <cmtkScaleHistogramValueTrait.h>
 
-#include <cmtkThreadParameterArray.h>
-
 namespace
 cmtk
 {

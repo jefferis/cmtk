@@ -36,8 +36,6 @@
 #include <cmtkMathUtil.h>
 #include <cmtkVolumeIO.h>
 
-#include <cmtkThreadParameterArray.h>
-
 #ifdef CMTK_BUILD_MPI
 #  include <mpi.h>
 #  include <cmtkMPI.h>
