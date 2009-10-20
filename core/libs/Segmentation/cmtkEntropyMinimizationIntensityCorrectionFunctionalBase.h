@@ -247,7 +247,7 @@ private:
   };
 
   /// Thread function: update output image.
-  static CMTK_THREAD_RETURN_TYPE UpdateOutputImageThreadFunc( void* args );
+  static void UpdateOutputImageThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
 };
 
 //@}

@@ -31,7 +31,7 @@
 
 #include <cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.h>
 
-#include <cmtkThreadParameterArray.h>
+#include <cmtkThreadPool.h>
 
 #include <algorithm>
 
@@ -114,25 +114,26 @@ void
 EntropyMinimizationIntensityCorrectionFunctionalBase
 ::UpdateOutputImage( const bool foregroundOnly )
 {
-  const size_t numberOfThreads = Threads::GetNumberOfThreads();
-  ThreadParameterArray< Self, UpdateOutputImageThreadParameters > params( this, numberOfThreads );
-  for ( size_t thread = 0; thread < numberOfThreads; ++thread )
+  const size_t numberOfTasks = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  
+  UpdateOutputImageThreadParameters* taskParameters = Memory::AllocateArray<UpdateOutputImageThreadParameters>( numberOfTasks );
+  for ( size_t task = 0; task < numberOfTasks; ++task )
     {
-    params[thread].m_ForegroundOnly = foregroundOnly;
+    taskParameters[task].thisObject = this;
+    taskParameters[task].m_ForegroundOnly = foregroundOnly;
     }
-  params.RunInParallel( &UpdateOutputImageThreadFunc );
+  ThreadPool::GlobalThreadPool.Run( UpdateOutputImageThreadFunc, numberOfTasks, taskParameters );
+  Memory::DeleteArray( taskParameters );
 }
  
-CMTK_THREAD_RETURN_TYPE
+void
 EntropyMinimizationIntensityCorrectionFunctionalBase
-::UpdateOutputImageThreadFunc( void *args )
+::UpdateOutputImageThreadFunc( void *args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t )
 {
   UpdateOutputImageThreadParameters* threadParameters = static_cast<UpdateOutputImageThreadParameters*>( args );
   
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
   
   const UniformVolume* inputImage = ThisConst->m_InputImage;
   TypedArray::SmartPtr outputData = This->m_OutputImage->GetData();
@@ -142,7 +143,7 @@ EntropyMinimizationIntensityCorrectionFunctionalBase
   const float* biasFieldPtrMul = ThisConst->m_BiasFieldMul->GetDataPtrTemplate();
 
   Types::DataItem value;
-  for ( size_t ofs = threadID; ofs < numberOfPixels; ofs += numberOfThreads )
+  for ( size_t ofs = taskIdx; ofs < numberOfPixels; ofs += taskCnt )
     {
     if ( !threadParameters->m_ForegroundOnly || ThisConst->m_ForegroundMask[ofs] )
       {
@@ -160,8 +161,6 @@ EntropyMinimizationIntensityCorrectionFunctionalBase
       outputData->SetPaddingAt( ofs );
       }
     }
-  
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 } // namespace cmtk
