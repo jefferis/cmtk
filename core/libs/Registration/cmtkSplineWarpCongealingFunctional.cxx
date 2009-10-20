@@ -34,6 +34,7 @@
 #include <cmtkMathUtil.h>
 #include <cmtkMatrix.h>
 
+#include <cmtkThreadPool.h>
 #include <cmtkThreadParameterArray.h>
 
 #include <algorithm>
@@ -285,17 +286,21 @@ SplineWarpCongealingFunctional
   double entropy = 0;
   unsigned int count = 0;
 
-  const size_t numberOfThreads = Threads::GetNumberOfThreads();
+  const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
   this->m_ThreadHistograms.resize( numberOfThreads );
 
-  ThreadParameterArray<Self,EvaluateThreadParameters> params( this, numberOfThreads );  
-  params.RunInParallel( &EvaluateThread );
+  std::vector< EvaluateThreadParameters> params( numberOfThreads );
+  for ( size_t taskIdx = 0; taskIdx < numberOfThreads; ++taskIdx )
+    {
+    params[taskIdx].thisObject = this;
+    }
+  ThreadPool::GlobalThreadPool.Run( EvaluateThread, params );
   
   // gather partial entropies from threads
-  for ( size_t thread = 0; thread < numberOfThreads; ++thread )
+  for ( size_t taskIdx = 0; taskIdx < numberOfThreads; ++taskIdx )
     {
-    entropy += params[thread].m_Entropy;
-    count += params[thread].m_Count;
+    entropy += params[taskIdx].m_Entropy;
+    count += params[taskIdx].m_Count;
     }
   
 #ifdef CMTK_BUILD_MPI
@@ -326,19 +331,17 @@ SplineWarpCongealingFunctional
     return -FLT_MAX;
 }
 
-CMTK_THREAD_RETURN_TYPE
+void
 SplineWarpCongealingFunctional
 ::EvaluateThread
-( void *args )
+( void *args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t )
 {
   EvaluateThreadParameters* threadParameters = static_cast<EvaluateThreadParameters*>( args );
   
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
   
-  HistogramType& histogram = This->m_ThreadHistograms[threadID];
+  HistogramType& histogram = This->m_ThreadHistograms[threadIdx];
   histogram.Resize( ThisConst->m_HistogramBins + 2 * ThisConst->m_HistogramKernelRadiusMax, false /*reset*/ );
 
   double totalEntropy = 0;
@@ -347,14 +350,14 @@ SplineWarpCongealingFunctional
   const size_t numberOfPixels = ThisConst->m_TemplateNumberOfPixels;
 #ifdef CMTK_BUILD_MPI  
   const size_t pixelsPerNode = (numberOfPixels+ThisConst->m_SizeMPI-1) / ThisConst->m_SizeMPI;
-  const size_t pixelsPerThread = 1 + (pixelsPerNode / numberOfThreads);
+  const size_t pixelsPerThread = 1 + (pixelsPerNode / taskCnt);
   const size_t pixelFromNode = ThisConst->m_RankMPI * pixelsPerNode;
-  const size_t pixelFrom = pixelFromNode + threadID * pixelsPerThread;
+  const size_t pixelFrom = pixelFromNode + taskIdx * pixelsPerThread;
   const size_t pixelTo = std::min( numberOfPixels, std::min( pixelFromNode + pixelsPerNode, pixelFrom + pixelsPerThread ) );
-  size_t mpiOfs = threadID * pixelsPerThread;
+  size_t mpiOfs = taskIdx * pixelsPerThread;
 #else
-  const size_t pixelsPerThread = (numberOfPixels / numberOfThreads);
-  const size_t pixelFrom = threadID * pixelsPerThread;
+  const size_t pixelsPerThread = (numberOfPixels / taskCnt);
+  const size_t pixelFrom = taskIdx * pixelsPerThread;
   const size_t pixelTo = std::min( numberOfPixels, pixelFrom + pixelsPerThread );
 #endif
   
@@ -416,8 +419,6 @@ SplineWarpCongealingFunctional
   
   threadParameters->m_Entropy = totalEntropy;
   threadParameters->m_Count = count;
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 void
@@ -425,29 +426,27 @@ SplineWarpCongealingFunctional
 ::InterpolateImage
 ( const size_t idx, byte* const destination )
 {
-  const size_t numberOfThreads = Threads::GetNumberOfThreads();
-  ThreadParameterArray<Self,InterpolateImageThreadParameters> 
-    params( this, numberOfThreads );
+  const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  std::vector<InterpolateImageThreadParameters> params( numberOfThreads );
 
   for ( size_t thread = 0; thread < numberOfThreads; ++thread )
     {
+    params[thread].thisObject = this;    
     params[thread].m_Idx = idx;    
     params[thread].m_Destination = destination;    
     }
   
-  params.RunInParallel( &InterpolateImageThread );
+  ThreadPool::GlobalThreadPool.Run( InterpolateImageThread, params );
 }
 
-CMTK_THREAD_RETURN_TYPE
+void
 SplineWarpCongealingFunctional
 ::InterpolateImageThread
-( void* args )
+( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
   
   const Self* This = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
   const size_t idx = threadParameters->m_Idx;
   byte* destination = threadParameters->m_Destination;
 
@@ -466,8 +465,8 @@ SplineWarpCongealingFunctional
   const int dimsZ = This->m_TemplateGrid->GetDims( AXIS_Z );
 
   const int rowCount = ( dimsY * dimsZ );
-  const int rowFrom = ( rowCount / numberOfThreads ) * threadID;
-  const int rowTo = ( threadID == (numberOfThreads-1) ) ? rowCount : ( rowCount / numberOfThreads ) * ( threadID + 1 );
+  const int rowFrom = ( rowCount / taskCnt ) * taskIdx;
+  const int rowTo = ( taskIdx == (taskCnt-1) ) ? rowCount : ( rowCount / taskCnt ) * ( taskIdx + 1 );
   int rowsToDo = rowTo - rowFrom;
   
   int yFrom = rowFrom % dimsY;
@@ -494,8 +493,6 @@ SplineWarpCongealingFunctional
 	}
       }
     }
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 void

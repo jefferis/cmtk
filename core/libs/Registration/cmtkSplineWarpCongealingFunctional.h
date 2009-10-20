@@ -262,7 +262,7 @@ private:
   };
 
   /// Image interpolation thread function.
-  static CMTK_THREAD_RETURN_TYPE InterpolateImageThread( void* args );
+  static void InterpolateImageThread( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 
   /// Entropies over all images by pixel for fast local recomputation.
   std::vector<double> m_EntropyByPixel;
@@ -289,11 +289,7 @@ private:
   };
   
   /// Evaluate functional with currently set parameters.
-  static CMTK_THREAD_RETURN_TYPE EvaluateThread( void* args );
-
-  /// Local gradient evaluation thread function.
-  //  static CMTK_THREAD_RETURN_TYPE EvaluateLocalGradientThreadFunc
-  //  ( void* args );
+  static void EvaluateThread( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
 
   /// Thread function parameters for image interpolation.
   class EvaluateLocalGradientThreadParameters : 
