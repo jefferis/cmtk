@@ -259,13 +259,7 @@ GeneralLinearModel
       {
       // use SVD of design matrix to compute model parameters lm_params[] 
       // from data b[]
-      MathUtil::SVDLinearRegression( ThisConst->U, 
-                                     ThisConst->NData, 
-                                     ThisConst->NParameters, 
-                                     ThisConst->W, 
-                                     ThisConst->V, 
-                                     b,
-                                     lm_params );
+      MathUtil::SVDLinearRegression( ThisConst->U, ThisConst->NData, ThisConst->NParameters, ThisConst->W, ThisConst->V, b, lm_params );
 
       // compute variance of data
       double varY, avgY;
@@ -313,13 +307,7 @@ GeneralLinearModel
 	  {
 //	  // use SVD of partial design matrix to compute partial 
 //	  // regression
-          MathUtil::SVDLinearRegression( ThisConst->Up[p], 
-                                         ThisConst->NData, 
-                                         ThisConst->NParameters-1, 
-                                         ThisConst->Wp[p], 
-                                         ThisConst->Vp[p], 
-                                         b,
-                                         lm_params_P );
+          MathUtil::SVDLinearRegression( ThisConst->Up[p], ThisConst->NData, ThisConst->NParameters-1, ThisConst->Wp[p], ThisConst->Vp[p], b, lm_params_P );
 
 	  // compute variance of data
 	  for (size_t i = 0; i < ThisConst->NData; i++) 
