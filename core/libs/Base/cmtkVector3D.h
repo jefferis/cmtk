@@ -225,15 +225,15 @@ public:
   }
   
   /// Get reference to constant vector element by coordinate index.
-  const Types::Coordinate& operator[] ( const int index ) const 
+  inline const Types::Coordinate& operator[] ( const int index ) const 
   {
-    return XYZ[index];
+    return this->XYZ[index];
   }
   
   /// Get reference to non-constant vector element by coordinate index.
-  Types::Coordinate& operator[] ( const int index ) 
+  inline Types::Coordinate& operator[] ( const int index ) 
   {
-    return XYZ[index];
+    return this->XYZ[index];
   }
 
   /// Increment vector by another.
