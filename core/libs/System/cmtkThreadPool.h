@@ -71,9 +71,29 @@ cmtk
  * instance ("this") of a class that acts as the client that requests a parallel computation:
  *
  *\code
- *  const size_t numberOfTasks = 2 * ThreadPool::GlobalThreadPool.GetNumberOfThreads() - 1;
- *  std::vector<Self*> taskParamaters( numberOfTasks, this );
- *  cmtk::ThreadPool::GlobalThreadPool.Run( someComputationFunction, taskParameters );
+ * #include <vector>
+ * #include <cmtkThreadPool.h>
+ *
+ * class ComputationClass
+ * {
+ * public:
+ *   typedef ComputationClass Self;
+ *
+ *   void ComputeUsingSMP()
+ *   {
+ *     // run approximately twice as many tasks as there are threads (only one task for single thread)
+ *     const size_t numberOfTasks = 2 * ThreadPool::GlobalThreadPool.GetNumberOfThreads() - 1;
+ *
+ *     std::vector<Self*> taskParamaters( numberOfTasks, this );
+ *     cmtk::ThreadPool::GlobalThreadPool.Run( ComputeTask, taskParameters );
+ *   }
+ *
+ *   void ComputeTask( void *const arg, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCnt )
+ *   {
+ *     Self* Caller = static_cast<Self*>( arg );
+ *     // more things to do for "Caller"
+ *   }
+ * };
  *\endcode
  */
 class ThreadPool
