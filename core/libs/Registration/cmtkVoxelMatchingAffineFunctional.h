@@ -362,6 +362,7 @@ public:
       endZ = std::min<GridIndexType>( endZ, this->ReferenceCropTo[2] + 1 );
       
       const int numberOfTasks = std::min<size_t>( this->m_NumberOfTasks, endZ - startZ + 1 );
+      this->m_EvaluateTaskInfo.resize( numberOfTasks );
       
       for ( int taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
 	{
