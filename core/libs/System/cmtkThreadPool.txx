@@ -34,6 +34,7 @@
 #endif
 
 #include <cmtkThreads.h>
+#include <cmtkConsole.h>
 
 template<class TParam> 
 void
@@ -46,6 +47,11 @@ cmtk::ThreadPool::Run
     }
 
   const size_t numberOfTasks = taskParameters.size();
+  if ( ! numberOfTasks )
+    {
+    StdErr << "ERROR: trying to run zero tasks on thread pool. Did you forget to resize the parameter vector?\n";
+    exit( 1 );
+    }
 
 #ifdef _OPENMP
   // if OpenMP is also used in CMTK, reduce the number of OMP threads by the number of threads/tasks that we're about to run in parallel.
