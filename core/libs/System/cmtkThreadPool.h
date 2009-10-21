@@ -47,7 +47,35 @@ cmtk
 
 /** \addtogroup System */
 //@{
-/// Class the provides a pool of continuously running threads that can be used for reducing overhead in SMP computations.
+/** Class that provides a pool of continuously running threads that can be used for reducing overhead in SMP computations.
+ *
+ * Every instance of this class starts a pool of threads upon initialization, which can later be used to execute arbitrary tasks.
+ * The threads are held via a semaphore, which are used to signal the availability of an arbitrary number of tasks. Once the
+ * task semaphores have been posted, the calling function waits for the running threads to signal back the same number of
+ * completed tasks via a second semaphore.
+ *
+ * The main advantages of this thread execution framework are:
+ *
+ * 1. On platforms with inefficient, slow thread creation and joining (Win32), the use and re-use of a persistent set of threads
+ * greatly improves run-time efficiency and reduces overhead.
+ *
+ * 2. A single computation can be broken into more tasks than there are threads running, i.e., more tasks than there are CPUs
+ * available. This allows for load balancing, because tasks that complete faster than others will free the executing thread, which
+ * is then available to process the next available task without waiting for any other threads.
+ *
+ * This class provides a global thread pool, which can (and should) be shared by all computations in a process. Creating additional
+ * thread pool instances should hardly ever be necessary.
+ *
+ * To run tasks on the global thread pool, simply create a std::vector that contains a parameter block for each task. The size of the
+ * vector also determines the number of tasks to run. For example, the thread parameter could simply be a pointer to the current
+ * instance ("this") of a class that acts as the client that requests a parallel computation:
+ *
+ *\code
+ *  const size_t numberOfTasks = 2 * ThreadPool::GlobalThreadPool.GetNumberOfThreads() - 1;
+ *  std::vector<Self*> taskParamaters( numberOfTasks, this );
+ *  cmtk::ThreadPool::GlobalThreadPool.Run( someComputationFunction, taskParameters );
+ *\endcode
+ */
 class ThreadPool
 {
 public:
