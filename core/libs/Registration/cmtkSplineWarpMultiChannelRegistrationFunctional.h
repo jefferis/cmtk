@@ -198,7 +198,7 @@ private:
   const size_t m_NumberOfThreads;
 
   /** Thread function for gradient computation. */
-  static CMTK_THREAD_RETURN_TYPE EvaluateThreadFunction( void* args );
+  static void EvaluateThreadFunction( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
 
   /** Mutex lock for shared metric data object. */
   MutexLock m_MetricDataMutex;
@@ -226,7 +226,7 @@ private:
   };
 
   /** Thread function for gradient computation. */
-  static CMTK_THREAD_RETURN_TYPE EvaluateWithGradientThreadFunction( void* args );
+  static void EvaluateWithGradientThreadFunction( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
 
   /** Make functional class with Jacobian intensity correction a friend. */
   template<class MetricFunctionalClass> friend class SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional;

@@ -29,7 +29,7 @@
 //
 */
 
-#include <cmtkThreadParameterArray.h>
+#include <cmtkThreadPool.h>
 
 namespace
 cmtk
@@ -84,23 +84,27 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
     startZ = std::max<int>( startZ, this->m_ReferenceCropFrom[2] );
     endZ = std::min<int>( endZ, this->m_ReferenceCropTo[2] );
 
-    ThreadParameterArray<Self,typename Self::EvaluateThreadParameters> threadParams( this, this->m_NumberOfThreads );
-    for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
-      {
+    const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+    const size_t numberOfTasks = 2 * numberOfThreads - 1;
+
+    std::vector<typename Self::EvaluateThreadParameters> threadParams( numberOfTasks );
+    for ( size_t thread = 0; thread < numberOfTasks; ++thread )
+      {      
+      threadParams[thread].thisObject = this;
       threadParams[thread].m_TransformedAxes = &transformedAxes;
       threadParams[thread].m_StartZ = startZ;
       threadParams[thread].m_EndZ = endZ;
       }
-    threadParams.RunInParallel( Self::EvaluateThreadFunction );
+    ThreadPool::GlobalThreadPool.Run( Self::EvaluateThreadFunction, threadParams );
     }
     
   return this->GetMetric( this->m_MetricData );
 }
       
 template<class TMultiChannelMetricFunctional>
-CMTK_THREAD_RETURN_TYPE
+void
 AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
-::EvaluateThreadFunction( void* args ) 
+::EvaluateThreadFunction( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t  ) 
 {
   typename Self::EvaluateThreadParameters* params = static_cast<typename Self::EvaluateThreadParameters*>( args );
   
@@ -120,7 +124,7 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
   Vector3D pFloating, rowStart;
 
   // Loop over all remaining planes
-  for ( int pZ = params->m_StartZ + params->ThisThreadIndex; pZ < params->m_EndZ; pZ += params->NumberOfThreads ) 
+  for ( int pZ = params->m_StartZ + taskIdx; pZ < params->m_EndZ; pZ += taskCnt ) 
     {
     // Offset of current reference voxel
     int r = pZ * dimsX * dimsY;
@@ -176,8 +180,6 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
 #ifdef CMTK_BUILD_SMP
   This->m_MetricDataMutex.Unlock();
 #endif
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 template<class TMultiChannelMetricFunctional>

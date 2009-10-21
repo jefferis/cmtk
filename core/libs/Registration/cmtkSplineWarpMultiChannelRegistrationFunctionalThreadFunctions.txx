@@ -39,9 +39,9 @@ cmtk
 //@{
 
 template<class TMetricFunctional>
-CMTK_THREAD_RETURN_TYPE
+void
 SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
-::EvaluateThreadFunction( void* args )
+::EvaluateThreadFunction( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t )
 {
   ThreadParameters<Self>* params = static_cast<ThreadParameters<Self>*>( args );
 
@@ -55,7 +55,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   const int dimsX = dims[0], dimsY = dims[1], dimsZ = dims[2];
   std::vector<Vector3D> pFloating( dimsX );
 
-  for ( int pZ = params->ThisThreadIndex; pZ < dimsZ; pZ += params->NumberOfThreads ) 
+  for ( int pZ = taskIdx; pZ < dimsZ; pZ += taskCnt ) 
     {
     for ( int pY = 0; pY < dimsY; ++pY ) 
       {
@@ -73,14 +73,12 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   This->m_MetricDataMutex.Lock();
   This->m_MetricData += metricData;
   This->m_MetricDataMutex.Unlock();
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 template<class TMetricFunctional>
-CMTK_THREAD_RETURN_TYPE
+void
 SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
-::EvaluateWithGradientThreadFunction( void* args )
+::EvaluateWithGradientThreadFunction( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t )
 {
   EvaluateGradientThreadParameters* params = static_cast<EvaluateGradientThreadParameters*>( args );
 
@@ -90,13 +88,10 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   const size_t numberOfParameters = This->VariableParamVectorDim();
   const size_t numberOfControlPoints = numberOfParameters / 3;
 
-  const size_t threadIdx = params->ThisThreadIndex;
-  const size_t threadCnt = params->NumberOfThreads;
-
   SplineWarpXform::SmartPtr transformation = constThis->m_ThreadTransformations[threadIdx];
   transformation->SetParamVector( *(params->m_ParameterVector) );
 
-  for ( size_t cp = threadIdx; cp < numberOfControlPoints; cp += threadCnt ) 
+  for ( size_t cp = taskIdx; cp < numberOfControlPoints; cp += taskCnt ) 
     {
     typename Superclass::MetricData localMetricDataCP = constThis->m_MetricData;
     This->BacktraceMetric( localMetricDataCP, constThis->m_VolumeOfInfluenceVector[cp] );
@@ -143,7 +138,6 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 	}
       }
     }
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 } // namespace cmtk
