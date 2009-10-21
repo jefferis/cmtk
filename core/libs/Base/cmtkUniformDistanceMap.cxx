@@ -1,5 +1,6 @@
 /*
 //
+//  Copyright 2003 Calvin R. Maurer, Jr.
 //  Copyright 1997-2009 Torsten Rohlfing
 //  Copyright 2004-2009 SRI International
 //
