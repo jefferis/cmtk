@@ -73,7 +73,7 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
     return NULL;
     }
   
-  char buffer[352];
+  char buffer[348];
   if ( sizeof(buffer) != hdrStream.Read( buffer, 1, sizeof(buffer) ) ) 
     {
     StdErr.printf( "ERROR: could not read 352 bytes from header file %s\n", pathHdr );
