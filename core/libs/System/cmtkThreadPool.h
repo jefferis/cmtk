@@ -81,8 +81,8 @@ cmtk
  *
  *   void ComputeUsingSMP()
  *   {
- *     // run approximately twice as many tasks as there are threads (only one task for single thread)
- *     const size_t numberOfTasks = 2 * ThreadPool::GlobalThreadPool.GetNumberOfThreads() - 1;
+ *     // run approximately four times as many tasks as there are threads (only one task for single thread)
+ *     const size_t numberOfTasks = 4 * ThreadPool::GlobalThreadPool.GetNumberOfThreads() - 3;
  *
  *     std::vector<Self*> taskParamaters( numberOfTasks, this );
  *     cmtk::ThreadPool::GlobalThreadPool.Run( ComputeTask, taskParameters );
@@ -92,6 +92,10 @@ cmtk
  *   {
  *     Self* Caller = static_cast<Self*>( arg );
  *     // more things to do for "Caller"
+ *     // taskIdx is the index of this task; taskCnt is the total number of tasks. These two determine what part of the total work must be done.
+ *     // threadIdx is the index of the "physical" thread out of threadCnt threads that are running in this pool. If temporary memory is allocated
+ *     // for this function, then threadIdx can be used to index this temporary storage, thus allowing us to get by with threadCnt many spaces,
+ *     // rather than taskCnt many, which is usuallu much larger.
  *   }
  * };
  *\endcode
