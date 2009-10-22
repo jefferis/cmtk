@@ -86,8 +86,8 @@ public:
   ParallelElasticFunctional ( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating ) :
     VoxelMatchingElasticFunctional_Template<VM,W>( reference, floating )
   {
-    this->m_NumberOfThreads = Threads::GetNumberOfThreads();
-    this->m_NumberOfTasks = (this->m_NumberOfThreads > 1) ? 4 * this->m_NumberOfThreads : this->m_NumberOfThreads;
+    this->m_NumberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+    this->m_NumberOfTasks = 4 * this->m_NumberOfThreads - 3;
     
     ThreadWarp = Memory::AllocateArray<typename W::SmartPtr>( this->m_NumberOfThreads );
     

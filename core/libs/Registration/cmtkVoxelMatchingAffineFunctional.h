@@ -298,7 +298,7 @@ public:
       VoxelMatchingFunctional_Template<VM>( reference, floating ) 
   {
     this->m_NumberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
-    this->m_NumberOfTasks = (this->m_NumberOfThreads < 2) ? this->m_NumberOfThreads : 2 * this->m_NumberOfThreads;
+    this->m_NumberOfTasks = 4 * this->m_NumberOfThreads - 3;
 
     this->m_EvaluateTaskInfo.resize( this->m_NumberOfTasks );
     for ( size_t threadIdx = 0; threadIdx < this->m_NumberOfTasks; ++threadIdx ) 

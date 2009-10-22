@@ -450,7 +450,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   this->m_MetricData.Init( this );
 
   const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
-  const size_t numberOfTasks = 3 * numberOfThreads - 2;  
+  const size_t numberOfTasks = 4 * numberOfThreads - 3;
 
   std::vector< ThreadParameters<Self> > threadParams( numberOfTasks );
   for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx )
@@ -510,7 +510,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
     this->UpdateTransformationFixedControlPoints();
 
   const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
-  const size_t numberOfTasks = 3 * numberOfThreads - 2;  
+  const size_t numberOfTasks = 4 * numberOfThreads - 3;  
 
   std::vector< EvaluateGradientThreadParameters > threadParams( numberOfTasks );
   for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx )

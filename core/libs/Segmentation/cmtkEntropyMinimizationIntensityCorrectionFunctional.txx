@@ -274,7 +274,7 @@ void
 cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 ::UpdateBiasFields( bool foregroundOnly )
 { 
-  const size_t numberOfTasks = 2 * ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  const size_t numberOfTasks = 4 * ThreadPool::GlobalThreadPool.GetNumberOfThreads() - 3;
 
   std::vector< ThreadParameters<Self> > taskParameters( numberOfTasks );
   for ( size_t task = 0; task < numberOfTasks; ++task )
@@ -300,7 +300,6 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 
   const int* dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
-  TypedArray* outputData = const_cast<TypedArray*>( This->m_OutputImage->GetData().GetPtr() );
 
   float* biasFieldPtrAdd = This->m_BiasFieldAdd->GetDataPtrTemplate();
   float* biasFieldPtrMul = This->m_BiasFieldMul->GetDataPtrTemplate();
@@ -362,7 +361,6 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 
   const int* dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
-  TypedArray* outputData = const_cast<TypedArray*>( This->m_OutputImage->GetData().GetPtr() );
 
   float* biasFieldPtrAdd = This->m_BiasFieldAdd->GetDataPtrTemplate();
   float* biasFieldPtrMul = This->m_BiasFieldMul->GetDataPtrTemplate();
@@ -415,7 +413,7 @@ void
 cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 ::UpdateBiasFieldAdd( const bool foregroundOnly )
 {
-  const size_t numberOfTasks = 2 * ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  const size_t numberOfTasks = 4 * ThreadPool::GlobalThreadPool.GetNumberOfThreads() - 3;
 
   std::vector< ThreadParameters<Self> > taskParameters( numberOfTasks );
   for ( size_t task = 0; task < numberOfTasks; ++task )
@@ -441,7 +439,6 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 
   const int* dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
-  TypedArray* outputData = const_cast<TypedArray*>( This->m_OutputImage->GetData().GetPtr() );
 
   float* biasFieldPtrAdd = This->m_BiasFieldAdd->GetDataPtrTemplate();
 
@@ -495,7 +492,6 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 
   const int* dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
-  TypedArray* outputData = const_cast<TypedArray*>( This->m_OutputImage->GetData().GetPtr() );
 
   float* biasFieldPtrAdd = This->m_BiasFieldAdd->GetDataPtrTemplate();
 
@@ -539,7 +535,7 @@ void
 cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 ::UpdateBiasFieldMul( const bool foregroundOnly )
 {
-  const size_t numberOfTasks = 2 * ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  const size_t numberOfTasks = 4 * ThreadPool::GlobalThreadPool.GetNumberOfThreads() - 3;
 
   std::vector< ThreadParameters<Self> > taskParameters( numberOfTasks );
   for ( size_t task = 0; task < numberOfTasks; ++task )
@@ -565,7 +561,6 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 
   const int* dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
-  TypedArray* outputData = const_cast<TypedArray*>( This->m_OutputImage->GetData().GetPtr() );
 
   float* biasFieldPtrMul = This->m_BiasFieldMul->GetDataPtrTemplate();
 
@@ -619,7 +614,6 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 
   const int* dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
-  TypedArray* outputData = const_cast<TypedArray*>( This->m_OutputImage->GetData().GetPtr() );
 
   float* biasFieldPtrMul = This->m_BiasFieldMul->GetDataPtrTemplate();
 

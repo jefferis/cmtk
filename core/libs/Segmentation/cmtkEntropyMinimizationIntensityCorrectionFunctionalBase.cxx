@@ -114,7 +114,7 @@ void
 EntropyMinimizationIntensityCorrectionFunctionalBase
 ::UpdateOutputImage( const bool foregroundOnly )
 {
-  const size_t numberOfTasks = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  const size_t numberOfTasks = 4 * ThreadPool::GlobalThreadPool.GetNumberOfThreads() - 3;
   
   std::vector<UpdateOutputImageThreadParameters> taskParameters( numberOfTasks );
   for ( size_t task = 0; task < numberOfTasks; ++task )

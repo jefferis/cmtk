@@ -85,7 +85,7 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
     endZ = std::min<int>( endZ, this->m_ReferenceCropTo[2] );
 
     const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
-    const size_t numberOfTasks = 2 * numberOfThreads - 1;
+    const size_t numberOfTasks = 4 * numberOfThreads - 3;
 
     std::vector<typename Self::EvaluateThreadParameters> threadParams( numberOfTasks );
     for ( size_t thread = 0; thread < numberOfTasks; ++thread )

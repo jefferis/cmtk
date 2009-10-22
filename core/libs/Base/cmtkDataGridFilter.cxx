@@ -52,7 +52,7 @@ DataGrid::GetFilteredData
 
   TypedArray *result = this->m_Data->NewTemplateArray( this->m_Data->GetDataSize() );
 
-  const size_t numberOfTasks = 2 * ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  const size_t numberOfTasks = 4 * ThreadPool::GlobalThreadPool.GetNumberOfThreads() - 3;
   std::vector<FilterThreadParameters> params( numberOfTasks );
   
   for ( size_t task = 0; task < numberOfTasks; ++task )
