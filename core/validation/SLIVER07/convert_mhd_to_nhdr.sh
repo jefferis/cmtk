@@ -31,7 +31,7 @@ FILE=`fgrep ElementDataFile ${in_mhd} | sed 's/.* = //g'`
 echo "NRRD0004
 # Complete NRRD file format specification at:
 # http://teem.sourceforge.net/nrrd/format.html
-type: short
+type: unsigned char
 dimension: 3
 space: right-anterior-superior
 sizes: ${NDIMS}
