@@ -34,7 +34,7 @@
 
 #include <cmtkDataTypeTraits.h>
 
-#include <cmtkThreadParameterArray.h>
+#include <cmtkThreadPool.h>
 
 namespace
 cmtk
@@ -132,13 +132,13 @@ UniformDistanceMap<TDistanceDataType>
 
   p = Distance;
   for ( size_t i = 0; i < volume->GetNumberOfPixels(); ++i, ++p ) 
-  {
+    {
 #ifdef _MSC_VER
-	  *p = static_cast<DistanceDataType>( sqrt( (double)*p ) );
+    *p = static_cast<DistanceDataType>( sqrt( (double)*p ) );
 #else
-	  *p = static_cast<DistanceDataType>( sqrt( *p ) );
+    *p = static_cast<DistanceDataType>( sqrt( *p ) );
 #endif
-  }
+    }
   this->SetData( distanceArray );
 }
 
@@ -147,32 +147,32 @@ void
 UniformDistanceMap<TDistanceDataType>
 ::ComputeEDT( DistanceDataType *const distance )
 {
-  const size_t numberOfThreads = Threads::GetNumberOfThreads();
-
+  const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  const size_t numberOfTasks = 4 * numberOfThreads - 3;
+  
   this->m_G.resize( numberOfThreads );
   this->m_H.resize( numberOfThreads );
-
-  ThreadParameterArray<Self,typename Self::ThreadParametersEDT> params( this, numberOfThreads );
-  for ( size_t idx = 0; idx < numberOfThreads; ++idx )
+  
+  std::vector<Self::ThreadParametersEDT> params( numberOfTasks );
+  for ( size_t idx = 0; idx < numberOfTasks; ++idx )
     {
+    params[idx].thisObject = this;
     params[idx].m_Distance = distance;
     }
 
-  params.RunInParallel( ComputeEDTThreadPhase1 );
-  params.RunInParallel( ComputeEDTThreadPhase2 );
+  ThreadPool::GlobalThreadPool.Run( ComputeEDTThreadPhase1, params );
+  ThreadPool::GlobalThreadPool.Run( ComputeEDTThreadPhase2, params );
 }
 
 template<class TDistanceDataType>
-CMTK_THREAD_RETURN_TYPE
+void
 UniformDistanceMap<TDistanceDataType>
 ::ComputeEDTThreadPhase1
-( void* args )
+( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t )
 {
   ThreadParametersEDT* params = static_cast<ThreadParametersEDT*>( args );
   Self* This = params->thisObject;
   const Self* ThisConst = This;
-  const size_t threadIdx = params->ThisThreadIndex;
-  const size_t threadCnt = params->NumberOfThreads;
 
   /* nXY is number of voxels in each plane (xy) */
   /* nXYZ is number of voxels in 3D image */
@@ -180,33 +180,29 @@ UniformDistanceMap<TDistanceDataType>
   
   /* compute D_2 */
   /* call edtComputeEDT_2D for each plane */
-  DistanceDataType *p = params->m_Distance + nXY * threadIdx;
-  for ( int k = threadIdx; k < ThisConst->m_Dims[2]; k += threadCnt, p += nXY * threadCnt ) 
+  DistanceDataType *p = params->m_Distance + nXY * taskIdx;
+  for ( int k = taskIdx; k < ThisConst->m_Dims[2]; k += taskCnt, p += nXY * taskCnt ) 
     {
     This->ComputeEDT2D( p, This->m_G[threadIdx], This->m_H[threadIdx] );
     }
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 template<class TDistanceDataType>
-CMTK_THREAD_RETURN_TYPE
+void
 UniformDistanceMap<TDistanceDataType>
 ::ComputeEDTThreadPhase2
-( void* args )
+( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t )
 {
   ThreadParametersEDT* params = static_cast<ThreadParametersEDT*>( args );
   Self* This = params->thisObject;
   const Self* ThisConst = This;
-  const size_t threadIdx = params->ThisThreadIndex;
-  const size_t threadCnt = params->NumberOfThreads;
 
   const size_t nXY = ThisConst->m_Dims[0] * ThisConst->m_Dims[1];
   /* compute D_3 */
   /* solve 1D problem for each column (z direction) */
   std::vector<DistanceDataType> f( This->m_Dims[2] );
 
-  for ( size_t i = threadIdx; i < nXY; i += threadCnt) 
+  for ( size_t i = taskIdx; i < nXY; i += taskCnt ) 
     {
     /* fill array f with D_2 distances in column */
     /* this is essentially line 4 in Procedure VoronoiEDT() in tPAMI paper */
@@ -228,8 +224,6 @@ UniformDistanceMap<TDistanceDataType>
 	}
       }
     }
-  
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 template<class TDistanceDataType>

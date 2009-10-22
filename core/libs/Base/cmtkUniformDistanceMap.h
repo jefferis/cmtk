@@ -143,10 +143,10 @@ private:
   };
   
   /** Thread function for first phase (xy) of EDT computation. */
-  static CMTK_THREAD_RETURN_TYPE ComputeEDTThreadPhase1( void* args );
+  static void ComputeEDTThreadPhase1( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
 
   /** Thread function for second phase (z) of EDT computation. */
-  static CMTK_THREAD_RETURN_TYPE ComputeEDTThreadPhase2( void* args );
+  static void ComputeEDTThreadPhase2( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
 };
 
 //@}
