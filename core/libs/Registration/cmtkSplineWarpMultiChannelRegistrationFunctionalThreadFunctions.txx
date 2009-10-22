@@ -41,7 +41,7 @@ cmtk
 template<class TMetricFunctional>
 void
 SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
-::EvaluateThreadFunction( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t )
+::EvaluateThreadFunction( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   ThreadParameters<Self>* params = static_cast<ThreadParameters<Self>*>( args );
 
