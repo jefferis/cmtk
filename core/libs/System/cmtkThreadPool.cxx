@@ -159,7 +159,7 @@ ThreadPool::ThreadFunction()
     this->m_TaskFunction( this->m_TaskParameters[taskIdx], taskIdx, this->m_NumberOfTasks, threadIdx, this->m_NumberOfThreads ); 
     
     // post "task done, thread waiting"
-    this->m_ThreadWaitingSemaphore.Post(); 
+    this->m_ThreadWaitingSemaphore.Post();
     }
 #endif // #ifdef CMTK_BUILD_SMP
 }
