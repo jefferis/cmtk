@@ -115,7 +115,7 @@ AffineGroupwiseRegistrationRMIFunctional::InterpolateImage
   const VolumeAxesHash gridHash( *this->m_TemplateGrid, this->GetXformByIndex(idx)->GetInverse() );
 
   const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
-  const size_t numberOfTasks = numberOfThreads;
+  const size_t numberOfTasks = 4 * numberOfThreads - 3;
 
   std::vector<InterpolateImageThreadParameters> params( numberOfTasks );
 
@@ -158,10 +158,11 @@ AffineGroupwiseRegistrationRMIFunctional::InterpolateImageThread
   const int dimsY = This->m_TemplateGrid->GetDims( AXIS_Y );
   const int dimsZ = This->m_TemplateGrid->GetDims( AXIS_Z );
 
-  const int rowCount = ( dimsY * dimsZ );
-  const int rowFrom = ( rowCount / taskCnt ) * taskIdx;
-  const int rowTo = ( taskIdx == (taskCnt-1) ) ? rowCount : ( rowCount / taskCnt ) * ( taskIdx + 1 );
-  int rowsToDo = rowTo - rowFrom;
+  const size_t rowCount = ( dimsY * dimsZ );
+  const size_t rowsPerTask = 1+rowCount/taskCnt;
+  const size_t rowFrom = rowsPerTask * taskIdx;
+  const size_t rowTo = std::min( rowCount, rowsPerTask * ( taskIdx + 1 ) );
+  size_t rowsToDo = rowTo - rowFrom;
   
   int yFrom = rowFrom % dimsY;
   int zFrom = rowFrom / dimsY;
