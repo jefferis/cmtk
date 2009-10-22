@@ -32,7 +32,7 @@
 #include <cmtkGroupwiseRegistrationRMIFunctional.h>
 
 #include <cmtkMathUtil.h>
-#include <cmtkThreadParameterArray.h>
+#include <cmtkThreadPool.h>
 
 #include <algorithm>
 
@@ -72,7 +72,8 @@ typename GroupwiseRegistrationRMIFunctional<TXform>::ReturnType
 GroupwiseRegistrationRMIFunctional<TXform>
 ::Evaluate()
 {
-  const size_t numberOfThreads = Threads::GetNumberOfThreads();
+  const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  const size_t numberOfTasks = 4 * numberOfThreads - 3;
   const size_t numberOfImages = this->m_ImageVector.size();
 
   this->m_CovarianceMatrix.Resize( numberOfImages, numberOfImages ); // needs no reset
@@ -84,15 +85,20 @@ GroupwiseRegistrationRMIFunctional<TXform>
   this->m_SumsVector.resize( numberOfImages );
   std::fill( this->m_SumsVector.begin(), this->m_SumsVector.end(), 0 );
 
-  ThreadParameterArray<Self,EvaluateThreadParameters> params( this, numberOfThreads );
   this->m_ThreadSumOfProductsMatrix.resize( numberOfThreads );
   this->m_ThreadSumsVector.resize( numberOfThreads );
+
+  std::vector<EvaluateThreadParameters> params( numberOfTasks );
+  for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx )
+    {
+    params[taskIdx].thisObject = this;
+    }
   
   if ( this->m_ProbabilisticSamples.size() )
-    params.RunInParallel( &EvaluateProbabilisticThread );
+    ThreadPool::GlobalThreadPool.Run( EvaluateProbabilisticThread, params );
   else
-    params.RunInParallel( &EvaluateThread );
-
+    ThreadPool::GlobalThreadPool.Run( EvaluateThread, params );
+  
 #ifdef CMTK_BUILD_MPI
   SumsAndProductsVectorType tmpVector( this->m_SumOfProductsMatrix.size() );
   MPI::COMM_WORLD.Allreduce( &(this->m_SumOfProductsMatrix[0]), &(tmpVector[0]), this->m_SumOfProductsMatrix.size(), MPI::LONG, MPI::SUM );
@@ -157,17 +163,15 @@ GroupwiseRegistrationRMIFunctional<TXform>
 }
 
 template<class TXform>
-CMTK_THREAD_RETURN_TYPE
+void
 GroupwiseRegistrationRMIFunctional<TXform>
 ::EvaluateThread
-( void *args )
+( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t )
 {
   EvaluateThreadParameters* threadParameters = static_cast<EvaluateThreadParameters*>( args );
   
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
   
   const size_t imagesFrom = ThisConst->m_ActiveImagesFrom;
   const size_t imagesTo = ThisConst->m_ActiveImagesTo;
@@ -175,11 +179,11 @@ GroupwiseRegistrationRMIFunctional<TXform>
   
   const byte paddingValue = ThisConst->m_PaddingValue;
 
-  SumsAndProductsVectorType& sumOfProductsMatrix = This->m_ThreadSumOfProductsMatrix[threadID];
+  SumsAndProductsVectorType& sumOfProductsMatrix = This->m_ThreadSumOfProductsMatrix[threadIdx];
   sumOfProductsMatrix.resize( numberOfImages * (1+numberOfImages) / 2 );
   std::fill( sumOfProductsMatrix.begin(), sumOfProductsMatrix.end(), 0 );
   
-  SumsAndProductsVectorType& sumsVector = This->m_ThreadSumsVector[threadID];
+  SumsAndProductsVectorType& sumsVector = This->m_ThreadSumsVector[threadIdx];
   sumsVector.resize( numberOfImages );
   std::fill( sumsVector.begin(), sumsVector.end(), 0 );
 
@@ -187,13 +191,13 @@ GroupwiseRegistrationRMIFunctional<TXform>
 
   const size_t numberOfPixels = ThisConst->m_TemplateNumberOfPixels;
 #ifdef CMTK_BUILD_MPI  
-  const size_t pixelsPerThread = numberOfPixels / ( numberOfThreads * ThisConst->m_SizeMPI );
-  const size_t pixelFrom = ( threadID + ThisConst->m_RankMPI * numberOfThreads ) * pixelsPerThread;
-  const size_t pixelTo = std::min( numberOfPixels, pixelFrom + pixelsPerThread );
+  const size_t pixelsPerTask = 1+(numberOfPixels / ( taskCnt * ThisConst->m_SizeMPI ));
+  const size_t pixelFrom = ( taskIdx + ThisConst->m_RankMPI * taskCnt ) * pixelsPerTask;
+  const size_t pixelTo = std::min( numberOfPixels, pixelFrom + pixelsPerTask );
 #else
-  const size_t pixelsPerThread = (numberOfPixels / numberOfThreads);
-  const size_t pixelFrom = threadID * pixelsPerThread;
-  const size_t pixelTo = std::min( numberOfPixels, pixelFrom + pixelsPerThread );
+  const size_t pixelsPerTask = 1+(numberOfPixels / taskCnt);
+  const size_t pixelFrom = taskIdx * pixelsPerTask;
+  const size_t pixelTo = std::min( numberOfPixels, pixelFrom + pixelsPerTask );
 #endif
 
   for ( size_t ofs = pixelFrom; ofs < pixelTo; ++ofs )
@@ -236,22 +240,18 @@ GroupwiseRegistrationRMIFunctional<TXform>
     }
   This->m_TotalNumberOfSamples += totalNumberOfSamples;
   This->m_MutexLock.Unlock();
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 template<class TXform>
-CMTK_THREAD_RETURN_TYPE
+void
 GroupwiseRegistrationRMIFunctional<TXform>
 ::EvaluateProbabilisticThread
-( void *args )
+( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t )
 {
   EvaluateThreadParameters* threadParameters = static_cast<EvaluateThreadParameters*>( args );
   
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
   
   const size_t imagesFrom = ThisConst->m_ActiveImagesFrom;
   const size_t imagesTo = ThisConst->m_ActiveImagesTo;
@@ -259,23 +259,23 @@ GroupwiseRegistrationRMIFunctional<TXform>
   
   const byte paddingValue = ThisConst->m_PaddingValue;
 
-  SumsAndProductsVectorType& sumOfProductsMatrix = This->m_ThreadSumOfProductsMatrix[threadID];
+  SumsAndProductsVectorType& sumOfProductsMatrix = This->m_ThreadSumOfProductsMatrix[threadIdx];
   sumOfProductsMatrix.resize( numberOfImages * (1+numberOfImages) / 2 );
   std::fill( sumOfProductsMatrix.begin(), sumOfProductsMatrix.end(), 0 );
   
-  SumsAndProductsVectorType& sumsVector = This->m_ThreadSumsVector[threadID];
+  SumsAndProductsVectorType& sumsVector = This->m_ThreadSumsVector[threadIdx];
   sumsVector.resize( numberOfImages );
   std::fill( sumsVector.begin(), sumsVector.end(), 0 );
 
   const size_t numberOfSamples = ThisConst->m_ProbabilisticSamples.size();
 #ifdef CMTK_BUILD_MPI  
-  const size_t samplesPerThread = numberOfSamples / ( numberOfThreads * ThisConst->m_SizeMPI );
-  const size_t sampleFrom = ( threadID + ThisConst->m_RankMPI * numberOfThreads ) * samplesPerThread;
-  const size_t sampleTo = std::min( numberOfSamples, sampleFrom + samplesPerThread );
+  const size_t samplesPerTask = 1+(numberOfSamples / ( taskCnt * ThisConst->m_SizeMPI ));
+  const size_t sampleFrom = ( taskIdx + ThisConst->m_RankMPI * taskCnt ) * samplesPerTask;
+  const size_t sampleTo = std::min( numberOfSamples, sampleFrom + samplesPerTask );
 #else
-  const size_t samplesPerThread = numberOfSamples / numberOfThreads;
-  const size_t sampleFrom = threadID * samplesPerThread;
-  const size_t sampleTo = std::min( numberOfSamples, sampleFrom + samplesPerThread );
+  const size_t samplesPerTask = 1+(numberOfSamples / taskCnt);
+  const size_t sampleFrom = taskIdx * samplesPerTask;
+  const size_t sampleTo = std::min( numberOfSamples, sampleFrom + samplesPerTask );
 #endif
 
   size_t totalNumberOfSamples = 0;
@@ -318,8 +318,6 @@ GroupwiseRegistrationRMIFunctional<TXform>
     }
   This->m_TotalNumberOfSamples += totalNumberOfSamples;
   This->m_MutexLock.Unlock();
-  
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 template<class TXform>
