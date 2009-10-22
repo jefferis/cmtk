@@ -439,9 +439,11 @@ protected:
     Types::Coordinate Constraint;
   } JacobianConstraintThreadInfo;
   
-  static CMTK_THREAD_RETURN_TYPE GetJacobianConstraintThreads( void *arg );
+  /// Thread function for SMP Jacobian constraint computation.
+  static void GetJacobianConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 
-  static CMTK_THREAD_RETURN_TYPE GetJacobianFoldingConstraintThreads( void *arg );
+  /// Thread function for SMP Jacobian folding constraint computation.
+  static void GetJacobianFoldingConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 
   /// Find nearest (after deformation) control point.
   void FindClosestControlPoint( const Vector3D& v, Vector3D& cp ) const;

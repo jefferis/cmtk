@@ -32,10 +32,9 @@
 #include <cmtkSplineWarpXform.h>
 
 #include <cmtkMathUtil.h>
+#include <cmtkThreadPool.h>
 
-#ifndef CMTK_VAR_AUTO_ARRAYSIZE
-#  include <vector>
-#endif
+#include <vector>
 
 namespace
 cmtk
@@ -514,20 +513,20 @@ SplineWarpXform::JacobianDeterminant ( const Types::Coordinate *cp ) const
       J[0][2] * (J[1][0]*J[2][1] - J[1][1]*J[2][0]) );
 }
 
-CMTK_THREAD_RETURN_TYPE
+void
 SplineWarpXform
-::GetJacobianConstraintThreads( void *arg )
+::GetJacobianConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
-  Self::JacobianConstraintThreadInfo *info = static_cast<Self::JacobianConstraintThreadInfo*>( arg );
+  Self::JacobianConstraintThreadInfo *info = static_cast<Self::JacobianConstraintThreadInfo*>( args );
 
   const SplineWarpXform *me = info->thisObject;
 
-  int pixelsPerRow = me->VolumeDims[0];
+  const int pixelsPerRow = me->VolumeDims[0];
   std::vector<double> valuesJ( pixelsPerRow );
 
-  int rowCount = ( me->VolumeDims[1] * me->VolumeDims[2] );
-  int rowFrom = ( rowCount / info->NumberOfThreads ) * info->ThisThreadIndex;
-  int rowTo = ( info->ThisThreadIndex == (info->NumberOfThreads-1) ) ? rowCount : ( rowCount/info->NumberOfThreads ) * (info->ThisThreadIndex+1);
+  const int rowCount = ( me->VolumeDims[1] * me->VolumeDims[2] );
+  const int rowFrom = ( rowCount / taskCnt ) * taskIdx;
+  const int rowTo = ( taskIdx == (taskCnt-1) ) ? rowCount : ( rowCount/taskCnt ) * (taskIdx+1);
   int rowsToDo = rowTo - rowFrom;
 
   int yFrom = rowFrom % me->VolumeDims[1];
@@ -566,24 +565,22 @@ SplineWarpXform
   // Divide by number of control points to normalize with respect to the
   // number of local Jacobians in the computation.
   info->Constraint = constraint;
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
-CMTK_THREAD_RETURN_TYPE
+void
 SplineWarpXform
-::GetJacobianFoldingConstraintThreads( void *arg )
+::GetJacobianFoldingConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
-  Self::JacobianConstraintThreadInfo *info = static_cast<Self::JacobianConstraintThreadInfo*>( arg );
+  Self::JacobianConstraintThreadInfo *info = static_cast<Self::JacobianConstraintThreadInfo*>( args );
 
   const SplineWarpXform *me = info->thisObject;
 
-  int pixelsPerRow = me->VolumeDims[0];
+  const int pixelsPerRow = me->VolumeDims[0];
   std::vector<double> valuesJ( pixelsPerRow );
 
-  int rowCount = ( me->VolumeDims[1] * me->VolumeDims[2] );
-  int rowFrom = ( rowCount / info->NumberOfThreads ) * info->ThisThreadIndex;
-  int rowTo = ( info->ThisThreadIndex == (info->NumberOfThreads-1) ) ? rowCount : ( rowCount/info->NumberOfThreads ) * (info->ThisThreadIndex+1);
+  const int rowCount = ( me->VolumeDims[1] * me->VolumeDims[2] );
+  const int rowFrom = ( rowCount / taskCnt ) * taskIdx;
+  const int rowTo = ( taskIdx == (taskCnt-1) ) ? rowCount : ( rowCount/taskCnt ) * (taskIdx+1);
   int rowsToDo = rowTo - rowFrom;
 
   int yFrom = rowFrom % me->VolumeDims[1];
@@ -605,34 +602,29 @@ SplineWarpXform
   // Divide by number of control points to normalize with respect to the
   // number of local Jacobians in the computation.
   info->Constraint = constraint;
-  
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 Types::Coordinate
 SplineWarpXform::GetJacobianConstraint () const
 {
-  unsigned short numberOfThreads = std::min( Threads::GetNumberOfThreads(), this->m_Dims[2] );
-
-  // Info blocks for parallel threads that evaulate the constraint.
-  Self::JacobianConstraintThreadInfo *ConstraintThreadInfo = Memory::AllocateArray<Self::JacobianConstraintThreadInfo>( numberOfThreads );
-
-  for ( int threadIdx = 0; threadIdx < numberOfThreads; ++threadIdx ) 
+  const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  const size_t numberOfTasks = std::min<size_t>( 4 * numberOfThreads - 3, this->m_Dims[2] );
+  
+  // Info blocks for parallel tasks that evaulate the constraint.
+  std::vector<Self::JacobianConstraintThreadInfo> constraintTaskInfo( numberOfTasks );
+  for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
     {
-    ConstraintThreadInfo[threadIdx].thisObject = this;
-    ConstraintThreadInfo[threadIdx].ThisThreadIndex = threadIdx;
-    ConstraintThreadInfo[threadIdx].NumberOfThreads = numberOfThreads;
+    constraintTaskInfo[taskIdx].thisObject = this;
     }
   
-  Threads::RunThreads( SplineWarpXform::GetJacobianConstraintThreads, numberOfThreads, ConstraintThreadInfo );
+  ThreadPool::GlobalThreadPool.Run( Self::GetJacobianConstraintThread, constraintTaskInfo );
   
   double constraint = 0;
-  for ( size_t threadIdx = 0; threadIdx < numberOfThreads; ++threadIdx ) 
+  for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
     {
-    constraint += ConstraintThreadInfo[threadIdx].Constraint;
+    constraint += constraintTaskInfo[taskIdx].Constraint;
     }
-  delete[] ConstraintThreadInfo;
-
+  
   // Divide by number of control points to normalize with respect to the
   // number of local Jacobians in the computation.
   return constraint / ( VolumeDims[0] * VolumeDims[1] * VolumeDims[2] );
@@ -641,26 +633,23 @@ SplineWarpXform::GetJacobianConstraint () const
 Types::Coordinate
 SplineWarpXform::GetJacobianFoldingConstraint () const
 {
-  unsigned short numberOfThreads = std::min( Threads::GetNumberOfThreads(), this->m_Dims[2] );
+  const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  const size_t numberOfTasks = std::min<size_t>( 4 * numberOfThreads - 3, this->m_Dims[2] );
 
   // Info blocks for parallel threads that evaulate the constraint.
-  Self::JacobianConstraintThreadInfo *ConstraintThreadInfo = Memory::AllocateArray<Self::JacobianConstraintThreadInfo>( numberOfThreads );
-
-  for ( int threadIdx = 0; threadIdx < numberOfThreads; ++threadIdx ) 
+  std::vector<Self::JacobianConstraintThreadInfo> constraintTaskInfo( numberOfTasks );
+  for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
     {
-    ConstraintThreadInfo[threadIdx].thisObject = this;
-    ConstraintThreadInfo[threadIdx].ThisThreadIndex = threadIdx;
-    ConstraintThreadInfo[threadIdx].NumberOfThreads = numberOfThreads;
+    constraintTaskInfo[taskIdx].thisObject = this;
     }
   
-  Threads::RunThreads( SplineWarpXform::GetJacobianFoldingConstraintThreads, numberOfThreads, ConstraintThreadInfo );
+  ThreadPool::GlobalThreadPool.Run( Self::GetJacobianFoldingConstraintThread, constraintTaskInfo );
   
   double constraint = 0;
-  for ( size_t threadIdx = 0; threadIdx < numberOfThreads; ++threadIdx ) 
+  for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
     {
-    constraint += ConstraintThreadInfo[threadIdx].Constraint;
+    constraint += constraintTaskInfo[taskIdx].Constraint;
     }
-  delete[] ConstraintThreadInfo;
   
   // Divide by number of control points to normalize with respect to the
   // number of local Jacobians in the computation.
