@@ -47,6 +47,7 @@ template<class TXform>
 GroupwiseRegistrationRMIFunctional<TXform>
 ::GroupwiseRegistrationRMIFunctional()
 {
+  this->SetNumberOfHistogramBins( 255 );
 }
 
 template<class TXform>
