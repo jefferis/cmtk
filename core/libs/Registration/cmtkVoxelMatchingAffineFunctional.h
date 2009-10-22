@@ -298,13 +298,6 @@ public:
       VoxelMatchingFunctional_Template<VM>( reference, floating ) 
   {
     this->m_NumberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
-    this->m_NumberOfTasks = 4 * this->m_NumberOfThreads - 3;
-
-    this->m_EvaluateTaskInfo.resize( this->m_NumberOfTasks );
-    for ( size_t threadIdx = 0; threadIdx < this->m_NumberOfTasks; ++threadIdx ) 
-      {
-      this->m_EvaluateTaskInfo[threadIdx].thisObject = this;
-      }
 
     this->m_ThreadMetric = Memory::AllocateArray<VM*>( m_NumberOfThreads );
     for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
@@ -361,11 +354,12 @@ public:
       startZ = std::max<GridIndexType>( startZ, this->ReferenceCropFrom[2] );
       endZ = std::min<GridIndexType>( endZ, this->ReferenceCropTo[2] + 1 );
       
-      const int numberOfTasks = std::min<size_t>( this->m_NumberOfTasks, endZ - startZ + 1 );
+      const int numberOfTasks = std::min<size_t>( 4 * this->m_NumberOfThreads - 3, endZ - startZ + 1 );
       this->m_EvaluateTaskInfo.resize( numberOfTasks );
       
       for ( int taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
 	{
+	this->m_EvaluateTaskInfo[taskIdx].thisObject = this;
 	this->m_EvaluateTaskInfo[taskIdx].AxesHash = &axesHash;
 	this->m_EvaluateTaskInfo[taskIdx].StartZ = startZ;
 	this->m_EvaluateTaskInfo[taskIdx].EndZ = endZ;
@@ -376,7 +370,7 @@ public:
 	this->m_ThreadMetric[threadIdx]->Reset();
 	}
 
-      ThreadPool::GlobalThreadPool.Run( EvaluateThread, this->m_EvaluateTaskInfo, numberOfTasks );
+      ThreadPool::GlobalThreadPool.Run( EvaluateThread, this->m_EvaluateTaskInfo );
 
       for ( size_t threadIdx = 0; threadIdx < this->m_NumberOfThreads; ++threadIdx ) 
 	{
@@ -394,12 +388,6 @@ public:
    * instanced. It cannot be changed afterwards.
    */
   size_t m_NumberOfThreads;
-
-  /** Number of tasks executed by the thread pool.
-   * This is the total number of tasks that the complete evaluation is broken into.
-   * Ideally, this should be larger than the number of threads to allow load balancing.
-   */
-  size_t m_NumberOfTasks;
 
   /// Metric objects for the separate threads.
   VM** m_ThreadMetric;
@@ -441,9 +429,7 @@ public:
   typename Self::EvaluateTaskInfo *info = static_cast<typename Self::EvaluateTaskInfo*>( args );
 
     Self *me = info->thisObject;
-#ifndef CMTK_PVI_HISTOGRAMS
     const VM* Metric = me->Metric;
-#endif
     VM* threadMetric = me->m_ThreadMetric[threadIdx];
 
     const Vector3D *hashX = (*info->AxesHash)[0], *hashY = (*info->AxesHash)[1], *hashZ = (*info->AxesHash)[2];
@@ -502,11 +488,7 @@ public:
 		offset = fltIdx[0]+FltDimsX*(fltIdx[1]+FltDimsY*fltIdx[2]);
 		
 		// Continue metric computation.
-#ifdef CMTK_PVI_HISTOGRAMS
-		threadMetric->Proceed( r, offset, fltIdx, fltFrac );
-#else
 		threadMetric->Increment( Metric->GetSampleX( r ), Metric->GetSampleY( offset, fltFrac ) );
-#endif
 		}
 	      }
 	    r += (DimsX-endX);
