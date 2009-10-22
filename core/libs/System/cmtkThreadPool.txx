@@ -39,14 +39,14 @@
 template<class TParam> 
 void
 cmtk::ThreadPool::Run
-( const TaskFunction taskFunction, std::vector<TParam>& taskParameters )
+( const TaskFunction taskFunction, std::vector<TParam>& taskParameters, const size_t numberOfTasksOverride )
 {
   if ( ! this->m_ThreadsRunning )
     {
     this->StartThreads();
     }
 
-  const size_t numberOfTasks = taskParameters.size();
+  const size_t numberOfTasks = numberOfTasksOverride ? numberOfTasksOverride : taskParameters.size();
   if ( ! numberOfTasks )
     {
     StdErr << "ERROR: trying to run zero tasks on thread pool. Did you forget to resize the parameter vector?\n";

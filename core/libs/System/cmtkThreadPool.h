@@ -143,7 +143,8 @@ public:
   /// Run actual worker functions through running threads.
   template<class TParam> 
   void Run( TaskFunction taskFunction, //!< Pointer to task function.
-	    std::vector<TParam>& taskParameters //!< Vector of task parameter blocks, one per task.
+	    std::vector<TParam>& taskParameters, //!< Vector of task parameter blocks, one per task.
+	    const size_t numberOfTasksOverride = 0 //!< This can be used to run a smaller number of tasks than taskParameters.size(), which is useful to allow re-use of larger, allocated vector.
     );
 
   /// This function is run as a thread.

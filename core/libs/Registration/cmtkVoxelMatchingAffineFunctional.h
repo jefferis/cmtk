@@ -376,7 +376,7 @@ public:
 	this->m_ThreadMetric[threadIdx]->Reset();
 	}
 
-      ThreadPool::GlobalThreadPool.Run( EvaluateThread, this->m_EvaluateTaskInfo );
+      ThreadPool::GlobalThreadPool.Run( EvaluateThread, this->m_EvaluateTaskInfo, numberOfTasks );
 
       for ( size_t threadIdx = 0; threadIdx < this->m_NumberOfThreads; ++threadIdx ) 
 	{
