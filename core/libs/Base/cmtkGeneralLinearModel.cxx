@@ -40,7 +40,6 @@
 #endif
 
 #include <cmtkProgress.h>
-#include <cmtkThreadParameterArray.h>
 
 #include <cmtkMathUtil.h>
 
@@ -193,55 +192,31 @@ GeneralLinearModel::InitResults( const size_t nPixels )
 
 void
 GeneralLinearModel::FitModel
-( std::vector<TypedArray::SmartPtr> y, const bool normalizeParameters )
+( std::vector<TypedArray::SmartPtr>& y, const bool normalizeParameters )
 {
   assert( y.size() == this->NData );
   const size_t nPixels = y[0]->GetDataSize();
   this->InitResults( nPixels );
   
-  const size_t numberOfThreads = Threads::GetNumberOfThreads();
-  ThreadParameterArray<Self,Self::FitModelThreadArgs> threadParams( this, numberOfThreads );
-  for ( size_t thread = 0; thread < numberOfThreads; ++thread )
-    {
-    threadParams[thread].m_ImageVector = y;
-    threadParams[thread].m_NormalizeParameters = normalizeParameters;
-    }
-  threadParams.RunInParallel( FitModelThreadFunc );
-}
-
-CMTK_THREAD_RETURN_TYPE
-GeneralLinearModel
-::FitModelThreadFunc( void* args )
-{
-  Self::FitModelThreadArgs* params = static_cast<Self::FitModelThreadArgs*>( args );
-  const Self* ThisConst = params->thisObject;
-  Self* This = params->thisObject;
+  std::vector<double> lm_params( this->NParameters );
+  std::vector<double> b( this->NData );
+  std::vector<double> valueYhat( this->NData );
   
-  std::vector<double> lm_params( ThisConst->NParameters );
-  double* b = Memory::AllocateArray<double>( ThisConst->NData );
-  double* valueYhat = Memory::AllocateArray<double>( ThisConst->NData );
-
-  const std::vector<TypedArray::SmartPtr>& y = params->m_ImageVector;
-  const size_t nPixels = y[0]->GetDataSize();
-
   // number of degrees of freedom for t-statistics
-  // note: we omit "-1" because the constant in our model is either suppressed
-  // or an explicit parameter
-  const int df = ThisConst->NData - ThisConst->NParameters;
+  // note: we omit "-1" because the constant in our model is either suppressed or an explicit parameter
+  const int df = this->NData - this->NParameters;
 
-  const size_t pixelUpdateIncrement = 10000 * params->NumberOfThreads;
-  if ( ! params->ThisThreadIndex )
-    {
-    Progress::Begin( 0, nPixels / pixelUpdateIncrement, 1, "Linear model fitting" );
-    }
+  const size_t pixelUpdateIncrement = 10000;
+  Progress::Begin( 0, nPixels, pixelUpdateIncrement, "Linear model fitting" );
+
   for ( size_t n = 0; n < nPixels; ++n ) 
     {
-    if ( ! params->ThisThreadIndex && ! (n % pixelUpdateIncrement) )
-      if ( Progress::SetProgress( n / pixelUpdateIncrement ) != Progress::OK ) break;
-
+    if ( ! (n % pixelUpdateIncrement) )
+      if ( Progress::SetProgress( n ) != Progress::OK ) break;
+    
     bool missing = false;
     Types::DataItem value;
-    for (size_t i = 0; (i<ThisConst->NData) && !missing; i++) 
+    for (size_t i = 0; (i<this->NData) && !missing; i++) 
       if ( y[i]->Get( value, n ) && finite( value ) )
 	b[i] = value;
       else
@@ -249,76 +224,74 @@ GeneralLinearModel
 
     if ( missing )
       {
-      for (size_t p = 0; (p<ThisConst->NParameters); ++p ) 
+      for (size_t p = 0; (p<this->NParameters); ++p ) 
 	{
-	This->Model[p]->SetPaddingAt( n );
-	This->TStat[p]->SetPaddingAt( n );
+	this->Model[p]->SetPaddingAt( n );
+	this->TStat[p]->SetPaddingAt( n );
 	}
       } 
     else 
       {
-      // use SVD of design matrix to compute model parameters lm_params[] 
-      // from data b[]
-      MathUtil::SVDLinearRegression( ThisConst->U, ThisConst->NData, ThisConst->NParameters, ThisConst->W, ThisConst->V, b, lm_params );
+      // use SVD of design matrix to compute model parameters lm_params[] from data b[]
+      MathUtil::SVDLinearRegression( this->U, this->NData, this->NParameters, this->W, this->V, &b[0], lm_params );
 
       // compute variance of data
       double varY, avgY;
-      avgY = MathUtil::Mean<double>( ThisConst->NData, b );
-      varY = MathUtil::Variance<double>( ThisConst->NData, b, avgY );
+      avgY = MathUtil::Mean<double>( this->NData, &b[0] );
+      varY = MathUtil::Variance<double>( this->NData, &b[0], avgY );
       
       // copy model parameters into output
-      for (size_t p = 0; (p<ThisConst->NParameters); ++p ) 
+      for (size_t p = 0; (p<this->NParameters); ++p ) 
 	{
 	value = lm_params[p];
-	if ( params->m_NormalizeParameters )
+	if ( normalizeParameters )
 	  // Cohen & Cohen, Eq. (3.5.2)
 //	  Model[p]->Set( lm_params[p] * this->GetNormFactor( p ) / sqrt( varY ), n );
-	  value *= This->GetNormFactor( p );
+	  value *= this->GetNormFactor( p );
 
 	if ( finite( value ) )
-	  This->Model[p]->Set( value, n );
+	  this->Model[p]->Set( value, n );
 	else
-	  This->Model[p]->SetPaddingAt( n );
+	  this->Model[p]->SetPaddingAt( n );
 	}
       
       // compute variance of approximated data using entire model
       double varYhat, avgYhat;
-      for (size_t i = 0; i<ThisConst->NData; i++) 
+      for (size_t i = 0; i<this->NData; i++) 
 	{ 
 	valueYhat[i] = 0.0;
-	for (size_t pi = 0; (pi<ThisConst->NParameters); ++pi )
-	  valueYhat[i] += lm_params[pi] * ThisConst->DesignMatrix[i][pi];
+	for (size_t pi = 0; (pi<this->NParameters); ++pi )
+	  valueYhat[i] += lm_params[pi] * this->DesignMatrix[i][pi];
 	}
-      avgYhat = MathUtil::Mean<double>( ThisConst->NData, valueYhat );
-      varYhat = MathUtil::Variance<double>( ThisConst->NData, valueYhat, avgYhat );
+      avgYhat = MathUtil::Mean<double>( this->NData, &valueYhat[0] );
+      varYhat = MathUtil::Variance<double>( this->NData, &valueYhat[0], avgYhat );
       
       // compute multiple R square
       const double R2 = varYhat / varY;
-      This->FStat->Set( (R2*df) / ((1-R2)*ThisConst->NParameters), n );
+      this->FStat->Set( (R2*df) / ((1-R2)*this->NParameters), n );
       
-      std::vector<double> lm_params_P( ThisConst->NParameters-1 );
-      std::vector<double> valueYhatp( ThisConst->NData );
+      std::vector<double> lm_params_P( this->NParameters-1 );
+      std::vector<double> valueYhatp( this->NData );
       
       // for each parameter, evaluate R^2_i for model without parameter Xi
-      for (size_t p = 0; p < ThisConst->NParameters; ++p ) 
+      for (size_t p = 0; p < this->NParameters; ++p ) 
 	{
 	// exclude constant parameter
 //	if ( this->VariableSD[p] > 0 )
 	  {
-//	  // use SVD of partial design matrix to compute partial 
-//	  // regression
-          MathUtil::SVDLinearRegression( ThisConst->Up[p], ThisConst->NData, ThisConst->NParameters-1, ThisConst->Wp[p], ThisConst->Vp[p], b, lm_params_P );
+//	  // use SVD of partial design matrix to compute partial regression
+          MathUtil::SVDLinearRegression( this->Up[p], this->NData, this->NParameters-1, this->Wp[p], this->Vp[p], &b[0], lm_params_P );
 
 	  // compute variance of data
-	  for (size_t i = 0; i < ThisConst->NData; i++) 
+	  for (size_t i = 0; i < this->NData; i++) 
 	    { 
 	    valueYhatp[i] = 0.0;
 	    size_t pip = 0;
-	    for (size_t pi = 0; pi < ThisConst->NParameters; ++pi ) 
+	    for (size_t pi = 0; pi < this->NParameters; ++pi ) 
 	      {
 	      if ( p != pi ) 
 		{
-		valueYhatp[i] += lm_params_P[pip] * ThisConst->DesignMatrix[i][pi];
+		valueYhatp[i] += lm_params_P[pip] * this->DesignMatrix[i][pi];
 		++pip;
 		}
 	      }
@@ -337,23 +310,15 @@ GeneralLinearModel
 	  // compute T-statistics
 	  double tStat = static_cast<double>( srp * sqrt( df / (1.0-R2) ) );
 	  // export T-statistics (set to zero if NAN)
-	  if ( isnan( tStat ) ) tStat = 0;
-	  This->TStat[p]->Set( tStat, n ); 
+	  if ( isnan( tStat ) ) 
+	    tStat = 0;
+	  this->TStat[p]->Set( tStat, n ); 
 	  }
 	}
       }
     }
   
-  if ( !params->ThisThreadIndex )
-    {
-    Progress::Done();
-    }
-
-  delete[] valueYhat;
-
-  delete[] b;
-
-  return CMTK_THREAD_RETURN_VALUE;
+  Progress::Done();
 }
 
 } // namespace cmtk

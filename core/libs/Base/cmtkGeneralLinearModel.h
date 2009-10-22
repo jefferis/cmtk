@@ -92,9 +92,7 @@ public:
    * linear model parameters are normalized w.r.t. the maghnitudes of the
    * respective measurements.
    */
-  void FitModel
-  ( std::vector<TypedArray::SmartPtr> y, 
-    const bool normalizeParameters = true );
+  void FitModel( std::vector<TypedArray::SmartPtr>& y, const bool normalizeParameters = true );
 
   /// Get pointer to n-th model parameter array.
   TypedArray::SmartPtr& GetModel( const size_t n )
@@ -169,20 +167,6 @@ private:
 
   /// Computed model F statistics.
   TypedArray::SmartPtr FStat;
-
-  /// Model fitting thread function.
-  static CMTK_THREAD_RETURN_TYPE FitModelThreadFunc( void* args );
-
-  /// Thread parameters for model fitting function.
-  class FitModelThreadArgs : public ThreadParameters<Self>
-  {
-  public:
-    /// Vector of pointer to input images.
-    std::vector<TypedArray::SmartPtr> m_ImageVector;
-    
-    /// Flag for model parameter normalization.
-    bool m_NormalizeParameters;
-  };
 };
 
 //@}
