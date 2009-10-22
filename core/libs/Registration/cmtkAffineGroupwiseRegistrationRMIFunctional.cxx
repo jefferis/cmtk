@@ -34,7 +34,7 @@
 #include <cmtkMathUtil.h>
 #include <cmtkVolumeAxesHash.h>
 
-#include <cmtkThreadParameterArray.h>
+#include <cmtkThreadPool.h>
 
 namespace
 cmtk
@@ -102,8 +102,6 @@ AffineGroupwiseRegistrationRMIFunctional::SetXforms
     AffineXform::SmartPtr xform( new AffineXform( *(xformVector[i]) ) );
     xform->SetNumberDOFs( this->m_XformNumberDOFs );
     xform->SetUseLogScaleFactors( true );
-
-//    const Vector3D center = this->m_ImageVector[i]->GetCenterCropRegion();
     xform->ChangeCenter( centerTemplate.XYZ );
 
     this->m_XformVector[i] = xform;
@@ -116,33 +114,34 @@ AffineGroupwiseRegistrationRMIFunctional::InterpolateImage
 {
   const VolumeAxesHash gridHash( *this->m_TemplateGrid, this->GetXformByIndex(idx)->GetInverse() );
 
-  const size_t numberOfThreads = Threads::GetNumberOfThreads();
-  ThreadParameterArray<Self,InterpolateImageThreadParameters> params( this, numberOfThreads );
+  const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  const size_t numberOfTasks = numberOfThreads;
 
-  for ( size_t thread = 0; thread < numberOfThreads; ++thread )
+  std::vector<InterpolateImageThreadParameters> params( numberOfTasks );
+
+  for ( size_t task = 0; task < numberOfTasks; ++task )
     {
-    params[thread].m_Idx = idx;    
-    params[thread].m_Destination = destination;    
-    params[thread].m_HashX = gridHash[0];
-    params[thread].m_HashY = gridHash[1];
-    params[thread].m_HashZ = gridHash[2];
+    params[task].thisObject = this;
+    params[task].m_Idx = idx;    
+    params[task].m_Destination = destination;    
+    params[task].m_HashX = gridHash[0];
+    params[task].m_HashY = gridHash[1];
+    params[task].m_HashZ = gridHash[2];
     }
   
   if ( (this->m_ProbabilisticSampleDensity > 0) && (this->m_ProbabilisticSampleDensity < 1) )
-    params.RunInParallel( &InterpolateImageProbabilisticThread );
+    ThreadPool::GlobalThreadPool.Run( InterpolateImageProbabilisticThread, params );
   else
-    params.RunInParallel( &InterpolateImageThread );    
+    ThreadPool::GlobalThreadPool.Run( InterpolateImageThread, params );
 }
 
-CMTK_THREAD_RETURN_TYPE
+void
 AffineGroupwiseRegistrationRMIFunctional::InterpolateImageThread
-( void* args )
+( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
   
   const Self* This = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
   const size_t idx = threadParameters->m_Idx;
   byte* destination = threadParameters->m_Destination;
 
@@ -160,8 +159,8 @@ AffineGroupwiseRegistrationRMIFunctional::InterpolateImageThread
   const int dimsZ = This->m_TemplateGrid->GetDims( AXIS_Z );
 
   const int rowCount = ( dimsY * dimsZ );
-  const int rowFrom = ( rowCount / numberOfThreads ) * threadID;
-  const int rowTo = ( threadID == (numberOfThreads-1) ) ? rowCount : ( rowCount / numberOfThreads ) * ( threadID + 1 );
+  const int rowFrom = ( rowCount / taskCnt ) * taskIdx;
+  const int rowTo = ( taskIdx == (taskCnt-1) ) ? rowCount : ( rowCount / taskCnt ) * ( taskIdx + 1 );
   int rowsToDo = rowTo - rowFrom;
   
   int yFrom = rowFrom % dimsY;
@@ -191,19 +190,15 @@ AffineGroupwiseRegistrationRMIFunctional::InterpolateImageThread
 	}
       }
     }
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
-CMTK_THREAD_RETURN_TYPE
+void
 AffineGroupwiseRegistrationRMIFunctional::InterpolateImageProbabilisticThread
-( void* args )
+( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
   
   const Self* This = threadParameters->thisObject;
-  const int threadID = threadParameters->ThisThreadIndex;
-  const int numberOfThreads = threadParameters->NumberOfThreads;
   const size_t idx = threadParameters->m_Idx;
   byte* destination = threadParameters->m_Destination;
 
@@ -217,10 +212,10 @@ AffineGroupwiseRegistrationRMIFunctional::InterpolateImageProbabilisticThread
   byte value;
   const byte* dataPtr = static_cast<const byte*>( target->GetData()->GetDataPtr() );
 
-  const size_t samplesPerThread = This->m_ProbabilisticSamples.size() / numberOfThreads;
-  const size_t startIdx = threadID * samplesPerThread;
+  const size_t samplesPerThread = This->m_ProbabilisticSamples.size() / taskCnt;
+  const size_t startIdx = taskIdx * samplesPerThread;
   const size_t endIdx = std::min( startIdx + samplesPerThread, This->m_ProbabilisticSamples.size() );
-
+  
   byte *wptr = destination + startIdx;
   for ( size_t i = startIdx; i < endIdx; ++i, ++wptr )
     {
@@ -237,8 +232,6 @@ AffineGroupwiseRegistrationRMIFunctional::InterpolateImageProbabilisticThread
       *wptr = backgroundValue;
       }
     }
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 } // namespace cmtk

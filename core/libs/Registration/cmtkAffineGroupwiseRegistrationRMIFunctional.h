@@ -101,8 +101,7 @@ protected:
    *  Sufficient memory (for as many pixels as there are in the template grid)
    *  must be allocated there.
    */
-  virtual void InterpolateImage
-  ( const size_t idx, byte* const destination );
+  virtual void InterpolateImage( const size_t idx, byte* const destination );
 
 private:
   /// Thread function parameters for image interpolation.
@@ -123,11 +122,10 @@ private:
   };
 
   /// Image interpolation thread function.
-  static CMTK_THREAD_RETURN_TYPE InterpolateImageThread
-  ( void* threadParameters );
-
+  static void InterpolateImageThread( void *const threadParameters, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
+  
   /// Image interpolation with probabilistic sampling thread function.
-  static CMTK_THREAD_RETURN_TYPE InterpolateImageProbabilisticThread( void* threadParameters );
+  static void InterpolateImageProbabilisticThread( void *const threadParameters, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 
   friend ClassStream& operator<<( ClassStream& stream, const AffineGroupwiseRegistrationRMIFunctional& func );
   friend ClassStream& operator>>( ClassStream& stream, AffineGroupwiseRegistrationRMIFunctional& func );
