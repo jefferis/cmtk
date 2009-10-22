@@ -21,6 +21,8 @@ Release CMTK-1.1.2:
 
 - Fixed: basic reformatting in groupwise registration used slightly broken
     partitioning for SMP computation. This has been fixed.
+- Fixed: NIFTI reader was not able to read files with detached 348-byte
+    headers, i.e., headers without "extension" field.
 
 
 Release CMTK-1.1.1 (2009-09-02):
