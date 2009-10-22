@@ -64,8 +64,6 @@ GroupwiseRegistrationFunctionalBase
     m_ProbabilisticSampleDensity( -1.0 ),
     m_ProbabilisticSampleUpdatesAfter( 1000000 ),
     m_ProbabilisticSampleUpdatesSince( 0 ),
-    m_HistogramBins( 64 ),
-    m_HistogramKernelRadiusMax( 0 ),
     m_GaussianSmoothImagesSigma( -1.0 ),
     m_UserBackgroundValue( 0 ),
     m_UserBackgroundFlag( false ),

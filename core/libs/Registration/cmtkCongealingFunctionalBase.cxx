@@ -50,6 +50,8 @@ cmtk
 
 template<class TXform,class THistogramBinType>
 CongealingFunctionalBase<TXform,THistogramBinType>::CongealingFunctionalBase() :
+  m_HistogramBins( 64 ),
+  m_HistogramKernelRadiusMax( 0 ),
   m_CropImageHistograms( false )
 {
   this->m_NumberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();

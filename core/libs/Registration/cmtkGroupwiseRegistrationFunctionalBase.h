@@ -458,14 +458,6 @@ protected:
   /// Temporary data allocated at correct size of template grid.
   std::vector<byte> m_TempData;
 
-  /** Number of (usable) histogram bins.
-   */
-  size_t m_HistogramBins;
-
-  /** Maximal radius of histogram kernels.
-   */
-  size_t m_HistogramKernelRadiusMax;
-
   /// Kernel width in [mm] for Gaussian smoothing of target images.
   Types::Coordinate m_GaussianSmoothImagesSigma;
 

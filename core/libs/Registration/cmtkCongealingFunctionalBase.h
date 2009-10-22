@@ -149,6 +149,14 @@ protected:
   /// Number of parallel tasks to partition the computation into.
   size_t m_NumberOfTasks;
 
+  /** Number of (usable) histogram bins.
+   */
+  size_t m_HistogramBins;
+
+  /** Maximal radius of histogram kernels.
+   */
+  size_t m_HistogramKernelRadiusMax;
+
 private:
   /// Crop image histograms to get rid of high-intensity low-probability samples.
   bool m_CropImageHistograms;
