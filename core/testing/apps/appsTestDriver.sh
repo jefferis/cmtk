@@ -279,6 +279,10 @@ case ${RUNTEST} in
 	run_eval "${BINDIR}/describe -m split_ax_0.nhdr split_ax_1.nhdr split_ax_2.nhdr > ${tmpdir}/describe.txt"
 	check_result describe.txt
 	;;
+    DescribeNiftiDetached348)
+	run_eval "${BINDIR}/describe -m spgr_brain_nifti_hdr348.hdr > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
     FilterGaussian)
 	run ${BINDIR}/filter --gaussian 1 --radius 2 rat_fse_erly.hdr ${tmpdir}/filter.hdr
 	check_result filter.img

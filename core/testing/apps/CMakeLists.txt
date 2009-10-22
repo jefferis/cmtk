@@ -47,7 +47,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "describe" tool
-SET(testList ${testList} DescribeMR1 DescribeMR2 DescribeMR3 DescribeMR4 DescribeMRBiorad)
+SET(testList ${testList} DescribeMR1 DescribeMR2 DescribeMR3 DescribeMR4 DescribeMRBiorad DescribeNiftiDetached348)
 
 IF(CMTK_BUILD_NRRD)
   SET(testList ${testList} DescribeMRNrrd1 DescribeMRNrrd2)
