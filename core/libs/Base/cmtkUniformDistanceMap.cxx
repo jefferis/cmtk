@@ -153,7 +153,7 @@ UniformDistanceMap<TDistanceDataType>
   this->m_G.resize( numberOfThreads );
   this->m_H.resize( numberOfThreads );
   
-  std::vector<Self::ThreadParametersEDT> params( numberOfTasks );
+  std::vector<typename Self::ThreadParametersEDT> params( numberOfTasks );
   for ( size_t idx = 0; idx < numberOfTasks; ++idx )
     {
     params[idx].thisObject = this;
