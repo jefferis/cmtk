@@ -39,26 +39,30 @@ cmtk
 
 ThreadSemaphore::ThreadSemaphore( const unsigned int initial )
 {
+#ifdef CMTK_USE_THREADS
   if ( sem_init( &this->m_Semaphore, 0, initial ) )
     {
     std::cerr << "ERROR: sem_init failed with errno=" << errno << "\n";
     exit( 1 );
     }
+#endif
 }
 
 ThreadSemaphore::~ThreadSemaphore()
 {
+#ifdef CMTK_USE_THREADS
   if ( sem_destroy( &this->m_Semaphore ) )
     {
     std::cerr << "ERROR: sem_destroy failed with errno=" << errno << "\n";
     exit( 1 );
     }
-  
+#endif  
 }
 
 void
 ThreadSemaphore::Post( const unsigned int increment )
 {
+#ifdef CMTK_USE_THREADS
   for ( unsigned int idx = 0; idx < increment; ++idx )
     {
     if ( sem_post( &this->m_Semaphore ) )
@@ -67,16 +71,19 @@ ThreadSemaphore::Post( const unsigned int increment )
       exit( 1 );
       }
     }
+#endif
 }
 
 void
 ThreadSemaphore::Wait() 
 {
+#ifdef CMTK_USE_THREADS
   if ( sem_wait( &this->m_Semaphore ) )
     {
     std::cerr << "ERROR: sem_post failed with errno=" << errno << "\n";
     exit( 1 );
     }
+#endif
 }
 
 }

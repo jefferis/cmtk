@@ -33,8 +33,8 @@
 
 #ifdef _MSC_VER
 #  include <cmtkThreadSemaphoreWindows.txx>
-#elif defined(APPLE)
+#elif defined(__APPLE__)
 #  include <cmtkThreadSemaphoreAppleIsRetarded.txx>
-#elif defined(CMTK_USE_THREADS)
+#else
 #  include <cmtkThreadSemaphorePOSIX.txx>
 #endif
