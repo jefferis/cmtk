@@ -74,21 +74,21 @@ public:
 #if defined(CMTK_USE_THREADS)
 #  if defined(__APPLE__)
 private:
-  /// Counter.
+  /// Counter (Apple only).
   long int m_Counter;
 
-  /// Counter mutex lock.
+  /// Counter mutex lock (Apple only).
   pthread_mutex_t m_Mutex;
   
-  /// Condition variable.
+  /// Condition variable (Apple only).
   pthread_cond_t m_Condition;
 #  else // POSIX
-  /// Opaque system semaphore object.
+  /// Opaque system semaphore object (POSIX only).
   sem_t m_Semaphore;
 #  endif
 #elif defined(_MSC_VER)
 private:
-  /// Opaque system semaphore object.
+  /// Opaque system semaphore object (Windows native only).
   HANDLE m_Semaphore;
 #endif
 };
