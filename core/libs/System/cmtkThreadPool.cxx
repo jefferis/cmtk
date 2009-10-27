@@ -123,7 +123,11 @@ ThreadPool::EndThreads()
       {
       if ( this->m_ThreadID[idx] ) 
 	{
-	pthread_cancel( this->m_ThreadID[idx] );
+	if ( pthread_cancel( this->m_ThreadID[idx] ) )
+	  {
+	  std::cerr << "ERROR: pthread_cancel failed.\n";
+	  exit( 1 );
+	  }
 #ifndef __APPLE__
 	// we can't use this on Apple, because MacOS doesn't have unnamed semaphores, which causes all sorts of trouble down the line, such as here.
 	pthread_join( this->m_ThreadID[idx], NULL );
