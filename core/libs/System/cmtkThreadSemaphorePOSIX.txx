@@ -31,6 +31,7 @@
 
 #include <iostream>
 #include <errno.h>
+#include <stdlib.h>
 
 namespace
 cmtk
