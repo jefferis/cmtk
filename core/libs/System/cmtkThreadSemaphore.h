@@ -35,13 +35,14 @@
 #include <cmtkconfig.h>
 
 #if defined(CMTK_USE_THREADS)
+#  ifdef __APPLE__
+#    include <pthread.h>
+#  else
 #    include <semaphore.h>
+#  endif
 #elif defined(_MSC_VER)
 #  include <Windows.h>
 #endif
-
-#include <iostream>
-#include <stdlib.h>
 
 namespace
 cmtk
@@ -50,75 +51,41 @@ cmtk
 /** \addtogroup System */
 //@{
 
-/// Semaphore for thread synchronization.
+/** Semaphore for thread synchronization.
+ * Because apparently Apple engineers are incapable of implementing an interface for unnamed
+ * semaphores as provided by <semaphore.h>, we are building the semaphore ourselves using a
+ * mutex and a condition variable.
+ */
 class ThreadSemaphore
 {
 public:
   /// Initialize semaphore.
-  ThreadSemaphore( const unsigned int initial = 0 )
-  {
-#if defined(CMTK_USE_THREADS)
-    sem_init( &this->m_Semaphore, 0, initial );
-#elif defined(_MSC_VER)
-    this->m_Semaphore = CreateSemaphore( NULL /*default security attributes*/, initial, 32768 /*maximum count*/, NULL /*unnamed semaphore*/ );
-    
-    if ( this->m_Semaphore == NULL) 
-      {
-      std::cerr << "CreateSemaphore error: " << GetLastError() << std::endl;
-      exit( 1 );
-      }
-#endif
-  }
+  ThreadSemaphore( const unsigned int initial = 0 );
 
   /// Destroy semaphore object.
-  ~ThreadSemaphore()
-  {
-#if defined(CMTK_USE_THREADS)
-    sem_destroy( &this->m_Semaphore );
-#elif defined(_MSC_VER)
-    CloseHandle( this->m_Semaphore );
-#endif
-  }
+  ~ThreadSemaphore();
 
   /// Post semaphore.
-  void Post() 
-  {
-#if defined(CMTK_USE_THREADS)
-    sem_post( &this->m_Semaphore );
-#elif defined(_MSC_VER)
-    ReleaseSemaphore( this->m_Semaphore, 1, NULL);
-#endif
-  }
+  void Post( const unsigned int increment = 1 );
   
   /// Wait for semaphore.
-  void Wait() 
-  {
-#if defined(CMTK_USE_THREADS)
-    sem_wait( &this->m_Semaphore );
-#elif defined(_MSC_VER)
-    WaitForSingleObject( this->m_Semaphore, INFINITE );
-#endif
-  }
-
-  /** Try to wait for semaphore.
-   * Returns true if successful (semaphore was decremented), false if not successful (semaphore unchanged).
-   */
-  bool TryWait() 
-  {
-#if defined(CMTK_USE_THREADS)
-    return !sem_wait( &this->m_Semaphore );
-#elif defined(_MSC_VER)
-    const DWORD waitResult = WaitForSingleObject( this->m_Semaphore, 0 );
-    return (waitResult != WAIT_TIMEOUT);
-#else
-    return false;
-#endif 
-  }
+  void Wait();
 
 #if defined(CMTK_USE_THREADS)
+#  if defined(__APPLE__)
 private:
+  /// Counter.
+  long int m_Counter;
+
+  /// Counter mutex lock.
+  pthread_mutex_t m_Mutex;
+  
+  /// Condition variable.
+  pthread_cond_t m_Condition;
+#  else // POSIX
   /// Opaque system semaphore object.
   sem_t m_Semaphore;
+#endif
 #elif defined(_MSC_VER)
 private:
   /// Opaque system semaphore object.

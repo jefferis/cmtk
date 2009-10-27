@@ -46,6 +46,7 @@ SET(cmtkSystem_SRCS
   cmtkStrUtility.cxx
   cmtkThreads.cxx
   cmtkThreadPool.cxx
+  cmtkThreadSemaphore.cxx
   cmtkTimers.cxx
 )
 

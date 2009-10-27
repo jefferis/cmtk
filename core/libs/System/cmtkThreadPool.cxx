@@ -118,23 +118,27 @@ ThreadPool::EndThreads()
 {
   if ( this->m_ThreadsRunning )
     {
-#ifdef CMTK_BUILD_SMP
-#ifdef CMTK_USE_THREADS  
+#ifdef CMTK_USE_THREADS
     for ( size_t idx = 0; idx < this->m_NumberOfThreads; ++idx ) 
       {
-#ifdef _MSC_VER
-      DWORD resultThread;
-      TerminateThread( this->m_ThreadHandles[idx], resultThread );
-#else
       if ( this->m_ThreadID[idx] ) 
 	{
 	pthread_cancel( this->m_ThreadID[idx] );
+#ifndef __APPLE__
+	// we can't use this on Apple, because MacOS doesn't have unnamed semaphores, which causes all sorts of trouble down the line, such as here.
 	pthread_join( this->m_ThreadID[idx], NULL );
-	}
 #endif
+	}
       }
 #endif
-#endif // #ifdef CMTK_BUILD_SMP
+
+#ifdef _MSC_VER
+    for ( size_t idx = 0; idx < this->m_NumberOfThreads; ++idx ) 
+      {
+      DWORD resultThread;
+      TerminateThread( this->m_ThreadHandles[idx], resultThread );
+      }
+#endif
     this->m_ThreadsRunning = false;
     }
 }

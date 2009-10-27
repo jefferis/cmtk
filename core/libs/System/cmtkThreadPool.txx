@@ -71,8 +71,8 @@ cmtk::ThreadPool::Run
   for ( size_t idx = 0; idx < numberOfTasks; ++idx )
     {
     this->m_TaskParameters[idx] = &(taskParameters[idx]);
-    this->m_TaskWaitingSemaphore.Post();
     }
+  this->m_TaskWaitingSemaphore.Post( numberOfTasks );
   
   // now wait for all tasks to complete, as signaled via the "thread waiting" semaphore.
   for ( size_t idx = 0; idx < numberOfTasks; ++idx )
