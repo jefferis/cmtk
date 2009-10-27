@@ -29,18 +29,30 @@
 //
 */
 
+#include <iostream>
+#include <errno.h>
+
 namespace
 cmtk
 {
 
 ThreadSemaphore::ThreadSemaphore( const unsigned int initial )
 {
-  sem_init( &this->m_Semaphore, 0, initial );
+  if ( sem_init( &this->m_Semaphore, 0, initial ) )
+    {
+    std::cerr << "ERROR: sem_init failed with errno=" << errno << "\n";
+    exit( 1 );
+    }
 }
 
 ThreadSemaphore::~ThreadSemaphore()
 {
-  sem_destroy( &this->m_Semaphore );
+  if ( sem_destroy( &this->m_Semaphore ) )
+    {
+    std::cerr << "ERROR: sem_destroy failed with errno=" << errno << "\n";
+    exit( 1 );
+    }
+  
 }
 
 void
@@ -48,14 +60,22 @@ ThreadSemaphore::Post( const unsigned int increment )
 {
   for ( unsigned int idx = 0; idx < increment; ++idx )
     {
-    sem_post( &this->m_Semaphore );
+    if ( sem_post( &this->m_Semaphore ) )
+      {
+      std::cerr << "ERROR: sem_post failed with errno=" << errno << "\n";
+      exit( 1 );
+      }
     }
 }
 
 void
 ThreadSemaphore::Wait() 
 {
-  sem_wait( &this->m_Semaphore );
+  if ( sem_wait( &this->m_Semaphore ) )
+    {
+    std::cerr << "ERROR: sem_post failed with errno=" << errno << "\n";
+    exit( 1 );
+    }
 }
 
 }
