@@ -31,9 +31,6 @@
 
 #include <cmtkThreadSemaphore.h>
 
-#include <iostream>
-#include <stdlib.h>
-
 #ifdef _MSC_VER
 #  include <cmtkThreadSemaphoreWindows.txx>
 #elif defined(APPLE)
@@ -41,5 +38,3 @@
 #elif defined(CMTK_USE_THREADS)
 #  include <cmtkThreadSemaphorePOSIX.txx>
 #endif
-
-} // namespace cmtk

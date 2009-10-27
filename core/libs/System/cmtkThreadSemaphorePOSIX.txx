@@ -57,3 +57,5 @@ ThreadSemaphore::Wait()
 {
   sem_wait( &this->m_Semaphore );
 }
+
+}
