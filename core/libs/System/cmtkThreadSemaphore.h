@@ -53,8 +53,8 @@ cmtk
 
 /** Semaphore for thread synchronization.
  * Because apparently Apple engineers are incapable of implementing an interface for unnamed
- * semaphores as provided by <semaphore.h>, we are building the semaphore ourselves using a
- * mutex and a condition variable.
+ * semaphores as provided by <semaphore.h>, we are building the semaphore ourselves on the
+ * Mac OS platform using a mutex and a condition variable.
  */
 class ThreadSemaphore
 {
@@ -85,7 +85,7 @@ private:
 #  else // POSIX
   /// Opaque system semaphore object.
   sem_t m_Semaphore;
-#endif
+#  endif
 #elif defined(_MSC_VER)
 private:
   /// Opaque system semaphore object.
