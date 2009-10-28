@@ -128,11 +128,9 @@ ThreadPool::EndThreads()
       if ( this->m_ThreadID[idx] ) 
 	{
 	pthread_join( this->m_ThreadID[idx], NULL );
-#endif
 	}
       }
-
-#ifdef _MSC_VER
+#elif defined(_MSC_VER)
     for ( size_t idx = 0; idx < this->m_NumberOfThreads; ++idx ) 
       {
       DWORD resultThread;
