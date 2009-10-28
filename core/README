@@ -2,10 +2,21 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
-Release Notes -- CMTK 1.1.1
-===============================
+Release Notes -- CMTK 1.1.2
+===========================
 
 This is a minor bugfix and feature release for the 1.1 series of CMTK.
+The major enhancement introduced with this release is a completely
+re-designed thread execution framework for multi-processor computation.
+Instead of starting threads as needed throughout the life of a process,
+a persistent pool of threads is now allocated once when a program begins
+execution. These threads can then execute different tasks as needed.
+
+While the new threading framework causes a small performance penalty
+on Linux systems (about 5%), it vastly improves performance of the native
+Windows build. The new framework has the additional benefit that it enables
+dynamic load balancing between threads, which benefits all platforms.
+
 
 For more information, see the CHANGELOG file.
 
