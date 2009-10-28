@@ -133,7 +133,7 @@ ThreadPool::EndThreads()
 #elif defined(_MSC_VER)
     for ( size_t idx = 0; idx < this->m_NumberOfThreads; ++idx ) 
       {
-      DWORD resultThread;
+      DWORD resultThread = 0;
       TerminateThread( this->m_ThreadHandles[idx], resultThread );
       }
 #endif
