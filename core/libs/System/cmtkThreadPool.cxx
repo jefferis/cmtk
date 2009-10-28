@@ -43,7 +43,8 @@ ThreadPool::ThreadPool( const size_t nThreads )
   : m_NumberOfTasks( 0 ),
     m_NextTaskIndex( 0 ),
     m_TaskFunction( NULL ),
-    m_ThreadsRunning( false )
+    m_ThreadsRunning( false ),
+    m_ContinueThreads( true )
 {
   if ( ! nThreads )
     this->m_NumberOfThreads = cmtk::Threads::GetNumberOfThreads();
@@ -119,22 +120,17 @@ ThreadPool::EndThreads()
   if ( this->m_ThreadsRunning )
     {
 #ifdef CMTK_USE_THREADS
+    // set flag to terminate threads and post one semaphore per actual thread
+    this->m_ContinueThreads = false;
+    this->m_TaskWaitingSemaphore.Post( this->m_NumberOfThreads );
     for ( size_t idx = 0; idx < this->m_NumberOfThreads; ++idx ) 
       {
       if ( this->m_ThreadID[idx] ) 
 	{
-	if ( pthread_cancel( this->m_ThreadID[idx] ) )
-	  {
-	  std::cerr << "ERROR: pthread_cancel failed.\n";
-	  exit( 1 );
-	  }
-#ifndef __APPLE__
-	// we can't use this on Apple, because MacOS doesn't have unnamed semaphores, which causes all sorts of trouble down the line, such as here.
 	pthread_join( this->m_ThreadID[idx], NULL );
 #endif
 	}
       }
-#endif
 
 #ifdef _MSC_VER
     for ( size_t idx = 0; idx < this->m_NumberOfThreads; ++idx ) 
@@ -152,11 +148,11 @@ ThreadPool::ThreadFunction()
 {
 #ifdef CMTK_BUILD_SMP
   const size_t threadIdx = this->GetMyThreadIndex();
-  while ( true )
-    {
-    // wait for task waiting
-    this->m_TaskWaitingSemaphore.Wait();
 
+  // wait for task waiting
+  this->m_TaskWaitingSemaphore.Wait();
+  while ( this->m_ContinueThreads )
+    {
     // lock, get, increment next task index
     this->m_NextTaskIndexLock.Lock();
     const size_t taskIdx = this->m_NextTaskIndex;
@@ -168,6 +164,9 @@ ThreadPool::ThreadFunction()
     
     // post "task done, thread waiting"
     this->m_ThreadWaitingSemaphore.Post();
+
+    // wait for task waiting
+    this->m_TaskWaitingSemaphore.Wait();
     }
 #endif // #ifdef CMTK_BUILD_SMP
 }

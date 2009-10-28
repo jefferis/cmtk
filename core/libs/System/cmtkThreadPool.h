@@ -191,6 +191,12 @@ private:
   /// Flag whether threads for this pool are running.
   bool m_ThreadsRunning;
 
+  /** Flag whether threads should continue or terminate.
+   * When the thread pool is destructed, this is set to "true" to wind down all running
+   * threads gracefully.
+   */
+  bool m_ContinueThreads;
+
   /// Start threads for this pool.
   void StartThreads();
 
