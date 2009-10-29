@@ -213,6 +213,7 @@ main( int argc, char* argv[] )
 
     cl.AddOption( Key( 'p', "passes" ), &NumberOfPasses, "Number of interleaved passes" );
     cl.AddCallback( Key( 'W', "pass-weight" ), CallbackSetPassWeight, "Set contribution weight for a pass in the form 'pass:weight'" );
+    cl.EndGroup();
 
     cl.BeginGroup( "motion", "Motion Correction / Registration Options" );
     cl.AddOption( Key( 'R', "reference-image" ), &ReferenceImagePath, "Use a separate high-resolution reference image for registration" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
@@ -232,6 +233,7 @@ main( int argc, char* argv[] )
 
     cl.AddOption( Key( 'S', "injection-kernel-sigma" ), &InjectionKernelSigma, "Standard deviation of Gaussian kernel for volume injection in multiples of pixel size in each direction." );
     cl.AddOption( Key( 'r', "injection-kernel-radius" ), &InjectionKernelRadius, "Truncation radius factor of injection kernel. The kernel is truncated at sigma*radius, where sigma is the kernel standard deviation." );
+    cl.EndGroup();
 
     cl.BeginGroup( "invint", "Inverse Interpolation Options" );
     cmtk::CommandLine::EnumGroup<int>::SmartPtr kernelGroup = 
@@ -244,10 +246,12 @@ main( int argc, char* argv[] )
     cl.AddSwitch( Key( 'f', "fourth-order-error" ), &FourthOrderError, true, "Use fourth-order (rather than second-order) error for optimization." );
     cl.AddOption( Key( 'n', "num-iterations" ), &NumberOfIterations, "Maximum number of inverse interpolation iterations" );
     cl.AddSwitch( Key( 'T', "no-truncation" ), &RegionalIntensityTruncation, false, "Turn off regional intensity truncatrion" );
+    cl.EndGroup();
     
     cl.BeginGroup( "output", "Output Options" );
     cl.AddOption( Key( "write-injected-image" ), &InjectedImagePath, "Write initial volume injection image to path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddSwitch( Key( 'F', "write-images-as-float" ), &WriteImagesAsFloat, true, "Write output images as floating point [default: same as input]" );
+    cl.EndGroup();
 
     cl.AddParameter( &InputFilePath, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &OutputFilePath, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );

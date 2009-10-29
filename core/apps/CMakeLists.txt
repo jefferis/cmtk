@@ -55,7 +55,6 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
       convert
       convert_warp
       cpmatch
-      deformation_field
       film
       filter
       glm
@@ -89,7 +88,8 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
       volume_reconstruction
       warp
       warp2ps
-      xform2dfield)
+      xform2dfield
+      xform2scalar)
 
     IF(CMTK_ROOT_PATH_SRI24)
       SET(APPS ${APPS} asegment_sri24)

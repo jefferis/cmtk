@@ -347,7 +347,8 @@ IF(NOT CMTK_USE_MPI)
   # ==========================================
   # Tests for "xform2dfield" tool
   IF(CMTK_BUILD_NRRD)
-    SET(testList ${testList} Xform2dfieldWarpNrrd
+    SET(testList ${testList} 
+      Xform2dfieldWarpNrrd
       Xform2dfieldAffineNrrd
       Xform2dfieldDownsampleXYZNrrd
       Xform2dfieldDownsampleXNrrd
@@ -355,6 +356,19 @@ IF(NOT CMTK_USE_MPI)
       Xform2dfieldInverseNrrd)
   ENDIF(CMTK_BUILD_NRRD)
 
+  # ==========================================
+  # Tests for "xform2scalar" tool
+  SET(testList ${testList} 
+    xform2scalarAffine 
+    xform2scalarAffineDoubleY 
+    xform2scalarWarp 
+    xform2scalarWarpOnly)
+
+  IF(CMTK_BUILD_NRRD)
+    SET(testList ${testList} 
+      xform2scalarDfield)
+  ENDIF(CMTK_BUILD_NRRD)
+  
 ENDIF(NOT CMTK_USE_MPI)
 
 # ==========================================
