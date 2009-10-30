@@ -62,10 +62,8 @@ INITIAL_REFERENCE=`get_first ${IMAGES}`
 INITIAL_FLOATING=`get_all_but_first ${IMAGES}`
  
 # This function will compute the affine alignments of one image to the initial reference.
-register_affine_to_reference()
+pass0()
 {
-  local case=$1
- 
   local in_ref=${INITIAL_REFERENCE}
   local ref_name=`basename ${in_ref} | sed 's/\..*//g'`
   for in_flt in ${INITIAL_FLOATING}; do
@@ -79,6 +77,4 @@ register_affine_to_reference()
 }
  
 # Run this for all cases (except reference)
-for c in ${CASES}; do
-  register_affine_to_reference ${c}
-done  
+pass0
