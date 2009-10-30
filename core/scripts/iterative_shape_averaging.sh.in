@@ -1,0 +1,69 @@
+#!/bin/sh
+
+##
+##  Copyright 2009 SRI International
+##
+##  This file is part of the Computational Morphometry Toolkit.
+##
+##  http://www.nitrc.org/projects/cmtk/
+##
+##  The Computational Morphometry Toolkit is free software: you can
+##  redistribute it and/or modify it under the terms of the GNU General Public
+##  License as published by the Free Software Foundation, either version 3 of
+##  the License, or (at your option) any later version.
+##
+##  The Computational Morphometry Toolkit is distributed in the hope that it
+##  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+##  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License along
+##  with the Computational Morphometry Toolkit.  If not, see
+##  <http://www.gnu.org/licenses/>.
+##
+##  $Revision$
+##
+##  $LastChangedDate$
+##
+##  $LastChangedBy$
+##
+
+CMTK_BINDIR=@CMTK_BINDIR@
+ 
+# Get the utilities.sh script from the scripts/ directory in the CMTK source tree
+. ${CMTK_BINDIR}/utilities.sh
+ 
+# For convenience and readability
+cmtk()
+{
+  ${CMTK_BIN_DIR}/$*
+}
+ 
+# Where are the input images? I am assuming they are all single-file NIFTIs, i.e., either ".nii" or ".nii.gz"
+IMAGES_DIR=images/
+ 
+# Let us get the list of images (cases).
+CASES=`cd ${IMAGES_DIR}; ls *.nii* | sed 's/\.nii.*//g'`
+ 
+# Which image is the initial reference? I am assuming that ${IMAGES_DIR}/${INITIAL_REFERENCE}.nii{.gz} is the corresponding image
+INITIAL_REFERENCE=case001
+ 
+# This function will compute the affine alignments of one image to the initial reference.
+register_affine_to_reference()
+{
+  local case=$1
+ 
+  local in_ref=${IMAGES_DIR}/${INITIAL_REFERENCE}.nii
+  local in_flt=${IMAGES_DIR}/${case}.nii
+ 
+  local out_xfm=isa/pass0/${INITIAL_REFERENCE}_${case}.xform
+  if needs_update_and_lock ${out_xfm} ${in_ref} ${in_flt}; then
+    cmtk registration --auto-multi-levels 5 -v --dofs 6 --dofs 9 -o ${out_xfm} ${in_ref} ${in_flt}
+    lockfile_delete ${out_xfm}
+  fi
+}
+ 
+# Run this for all cases (except reference)
+for c in ${CASES}; do
+  register_affine_to_reference ${c}
+done  

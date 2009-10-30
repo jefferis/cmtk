@@ -29,10 +29,20 @@
 ##  $LastChangedBy$
 ##
 
-bindir=@bindir@
-registration=${bindir}/registration
-reformatx=${bindir}/reformatx
-average_images=${bindir}/average_images
+CMTK_BINDIR=@CMTK_BINDIR@
+ 
+# Get the utilities.sh script from the scripts/ directory in the CMTK source tree
+. ${CMTK_BINDIR}/utilities.sh
+ 
+# For convenience and readability
+cmtk()
+{
+  ${CMTK_BIN_DIR}/$*
+}
+ 
+registration=${CMTK_BINDIR}/registration
+reformatx=${CMTK_BINDIR}/reformatx
+average_images=${CMTK_BINDIR}/average_images
 
 tmpdir=`mktemp -d`
 if [ "${tmpdir}" == "" ]; then
@@ -63,4 +73,4 @@ echo "Averaging"
 ${average_images} -o ${outfile} ${images}
 echo "Done."
 
-##rm -rf ${tmpdir}
+rm -rf ${tmpdir}

@@ -579,6 +579,8 @@ IF (BUILD_TESTING)
   SUBDIRS(testing)
 ENDIF (BUILD_TESTING)
 
+SUBDIRS(scripts)
+
 #-----------------------------------------------------------------------------
 # Configure this tree
 
