@@ -27,5 +27,8 @@
 ##
 
 SET(CMTK_BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
-CONFIGURE_FILE(${CMTK_SOURCE_DIR}/scripts/iterative_shape_averaging.sh.in ${CMTK_BINDIR}/iterative_shape_averaging.sh)
 
+SET(scripts iterative_shape_averaging correct_nex_motion)
+FOREACH(s ${scripts})
+  CONFIGURE_FILE(${CMTK_SOURCE_DIR}/scripts/${s}.sh.in ${CMTK_BINDIR}/${s}.sh)
+ENDFOREACH(s ${scripts})

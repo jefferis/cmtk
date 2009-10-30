@@ -40,10 +40,6 @@ cmtk()
   ${CMTK_BIN_DIR}/$*
 }
  
-registration=${CMTK_BINDIR}/registration
-reformatx=${CMTK_BINDIR}/reformatx
-average_images=${CMTK_BINDIR}/average_images
-
 tmpdir=`mktemp -d`
 if [ "${tmpdir}" == "" ]; then
     echo "ERROR: cannot create tmpdir"
@@ -61,16 +57,16 @@ for f in ${fltfiles}; do
 
     echo "Registration: ${name}"
     xform=${tmpdir}/${name}.list
-    ${registration} -i -o ${xform} -a 0.01 --dofs 6 -e 2 ${reffile} ${f}
+    cmtk registration -i -o ${xform} -a 0.01 --dofs 6 -e 2 ${reffile} ${f}
 
     echo "Reformatting: ${name}"
     nrrd=${tmpdir}/reformat/${name}.nrrd
-    ${reformatx} --sinc-cosine --sinc-window-width 5 -o ${nrrd} --floating ${f} ${reffile} ${xform}
+    cmtk reformatx --sinc-cosine --sinc-window-width 5 -o ${nrrd} --floating ${f} ${reffile} ${xform}
     images="${images} ${nrrd}"
 done
 
 echo "Averaging"
-${average_images} -o ${outfile} ${images}
+cmtk average_images -o ${outfile} ${images}
 echo "Done."
 
 rm -rf ${tmpdir}
