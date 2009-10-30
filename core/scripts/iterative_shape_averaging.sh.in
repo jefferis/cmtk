@@ -38,29 +38,44 @@ cmtk()
 {
   ${CMTK_BIN_DIR}/$*
 }
+
+# Get first argument out of a list
+get_first()
+{
+    echo $1
+}
  
-# Where are the input images? I am assuming they are all single-file NIFTIs, i.e., either ".nii" or ".nii.gz"
-IMAGES_DIR=images/
+# Get all but first from a list.
+get_all_but_first()
+{
+    shift
+    echo $*
+}
  
-# Let us get the list of images (cases).
-CASES=`cd ${IMAGES_DIR}; ls *.nii* | sed 's/\.nii.*//g'`
+# We should have received a list of all images via the command line
+IMAGES="$*"
  
-# Which image is the initial reference? I am assuming that ${IMAGES_DIR}/${INITIAL_REFERENCE}.nii{.gz} is the corresponding image
-INITIAL_REFERENCE=case001
+# We take the first image in the list as the initial reference
+INITIAL_REFERENCE=`get_first ${IMAGES}`
+
+# Everything else is the initial list of floating images
+INITIAL_FLOATING=`get_all_but_first ${IMAGES}`
  
 # This function will compute the affine alignments of one image to the initial reference.
 register_affine_to_reference()
 {
   local case=$1
  
-  local in_ref=${IMAGES_DIR}/${INITIAL_REFERENCE}.nii
-  local in_flt=${IMAGES_DIR}/${case}.nii
- 
-  local out_xfm=isa/pass0/${INITIAL_REFERENCE}_${case}.xform
-  if needs_update_and_lock ${out_xfm} ${in_ref} ${in_flt}; then
-    cmtk registration --auto-multi-levels 5 -v --dofs 6 --dofs 9 -o ${out_xfm} ${in_ref} ${in_flt}
-    lockfile_delete ${out_xfm}
-  fi
+  local in_ref=${INITIAL_REFERENCE}
+  local ref_name=`basename ${in_ref} | sed 's/\..*//g'`
+  for in_flt in ${INITIAL_FLOATING}; do
+      local flt_name=`basename ${in_flt} | sed 's/\..*//g'`
+      local out_xfm=isa/pass0/${ref_name}_${flt_name}.xform
+      if needs_update_and_lock ${out_xfm} ${in_ref} ${in_flt}; then
+	  cmtk registration --auto-multi-levels 5 -v --dofs 6 --dofs 9 -o ${out_xfm} ${in_ref} ${in_flt}
+	  lockfile_delete ${out_xfm}
+      fi
+  done
 }
  
 # Run this for all cases (except reference)
