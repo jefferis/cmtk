@@ -62,8 +62,8 @@ run_eval()
 {
     cmd=$*
 
-    echo "pushd $PWD; ${BINDIR}/$cmd; popd"
-    if eval "${VALGRIND} ${BINDIR}/$cmd"; then
+    echo "pushd $PWD; $cmd; popd"
+    if eval "${VALGRIND} $cmd"; then
 	return
     else
 	exit 1
@@ -187,7 +187,7 @@ case ${RUNTEST} in
 	check_results congeal_warp.xforms average_congeal_warp.img
 	;;
     ConvertAutoCrop)
-	run_eval "convert -v --crop-xform-out ${tmpdir}/crop.xform --auto-crop 1 spgr_brain_1.hdr ${tmpdir}/cropped.nii  > ${tmpdir}/crop.txt"
+	run_eval "${BINDIR}/convert -v --crop-xform-out ${tmpdir}/crop.xform --auto-crop 1 spgr_brain_1.hdr ${tmpdir}/cropped.nii  > ${tmpdir}/crop.txt"
 	cat ${tmpdir}/crop.xform/registration | sed 's/reference_study ".*"/reference_study ""/g' > ${tmpdir}/crop.xform/registration.tmp && mv ${tmpdir}/crop.xform/registration.tmp ${tmpdir}/crop.xform/registration
 	check_results cropped.nii crop.txt crop.xform/registration
 	;;
@@ -252,35 +252,35 @@ case ${RUNTEST} in
 	check_results 001.nhdr 001.raw 002.nhdr 002.raw 003.nhdr 003.raw
 	;;
     DescribeMR1)
-	run_eval "describe -m parc1_bin.hdr > ${tmpdir}/describe.txt"
+	run_eval "${BINDIR}/describe -m parc1_bin.hdr > ${tmpdir}/describe.txt"
 	check_result describe.txt
 	;;
     DescribeMR2)
-	run_eval "describe -m phantom_ax.hdr phantom_co.hdr phantom_sa.hdr > ${tmpdir}/describe.txt"
+	run_eval "${BINDIR}/describe -m phantom_ax.hdr phantom_co.hdr phantom_sa.hdr > ${tmpdir}/describe.txt"
 	check_result describe.txt
 	;;
     DescribeMR3)
-	run_eval "describe -m header_only.hdr > ${tmpdir}/describe.txt"
+	run_eval "${BINDIR}/describe -m header_only.hdr > ${tmpdir}/describe.txt"
 	check_result describe.txt
 	;;
     DescribeMR4)
-	run_eval "describe -m phantom_ax.nii phantom_co.nii phantom_sa.nii > ${tmpdir}/describe.txt"
+	run_eval "${BINDIR}/describe -m phantom_ax.nii phantom_co.nii phantom_sa.nii > ${tmpdir}/describe.txt"
 	check_result describe.txt
 	;;
     DescribeMRBiorad)
-	run_eval "describe -m bioradvol.PIC.gz > ${tmpdir}/describe.txt"
+	run_eval "${BINDIR}/describe -m bioradvol.PIC.gz > ${tmpdir}/describe.txt"
 	check_result describe.txt
 	;;
     DescribeMRNrrd1)
-	run_eval "describe -m phantom_ax.nhdr phantom_co.nhdr phantom_sa.nhdr > ${tmpdir}/describe.txt"
+	run_eval "${BINDIR}/describe -m phantom_ax.nhdr phantom_co.nhdr phantom_sa.nhdr > ${tmpdir}/describe.txt"
 	check_result describe.txt
 	;;
     DescribeMRNrrd2)
-	run_eval "describe -m split_ax_0.nhdr split_ax_1.nhdr split_ax_2.nhdr > ${tmpdir}/describe.txt"
+	run_eval "${BINDIR}/describe -m split_ax_0.nhdr split_ax_1.nhdr split_ax_2.nhdr > ${tmpdir}/describe.txt"
 	check_result describe.txt
 	;;
     DescribeNiftiDetached348)
-	run_eval "describe -m spgr_brain_nifti_hdr348.hdr > ${tmpdir}/describe.txt"
+	run_eval "${BINDIR}/describe -m spgr_brain_nifti_hdr348.hdr > ${tmpdir}/describe.txt"
 	check_results describe.txt
 	;;
     FilterGaussian)
@@ -312,19 +312,19 @@ case ${RUNTEST} in
 	check_result corrected.img
 	;;
     GregxformFordwardBackward)
-	run_eval "cat vol001_t0_points.xyz | gregxform -f vol001_mr_t0t1_warp.xform | gregxform vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyz"
+	run_eval "cat vol001_t0_points.xyz | ${BINDIR}/gregxform -f vol001_mr_t0t1_warp.xform | gregxform vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyz"
 	check_result vol001_t0_points.xyz
 	;;
     GregxformAffine)
-	run_eval "cat vol001_t0_points.xyz | gregxform -f vol001_mr_t0t1.list > ${tmpdir}/vol001_t0_points.xyz"
+	run_eval "cat vol001_t0_points.xyz | ${BINDIR}/gregxform -f vol001_mr_t0t1.list > ${tmpdir}/vol001_t0_points.xyz"
 	check_result vol001_t0_points.xyz
 	;;
     GregxformAffineFromWarp)
-	run_eval "cat vol001_t0_points.xyz | gregxform --affine -f vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyz"
+	run_eval "cat vol001_t0_points.xyz | ${BINDIR}/gregxform --affine -f vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyz"
 	check_result vol001_t0_points.xyz
 	;;
     GregxformAffineFromWarpFwdBwd)
-	run_eval "cat vol001_t0_points.xyz | gregxform --affine -f vol001_mr_t0t1_warp.xform | gregxform --affine vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyz"
+	run_eval "cat vol001_t0_points.xyz | ${BINDIR}/gregxform --affine -f vol001_mr_t0t1_warp.xform | gregxform --affine vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyz"
 	check_result vol001_t0_points.xyz
 	;;
     GroupwiseInitCentersOfMass)
@@ -539,37 +539,37 @@ case ${RUNTEST} in
 	check_results phantom.nii
 	;;
     GLMDefault)
-	run_eval "glm -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
+	run_eval "${BINDIR}/glm -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
 	check_results model_stdout.txt model_fstat_00_model.img  model_tstat_00_age.img model_param_00_age.img
 	check_results model_tstat_01_sex.img model_param_01_sex.img model_tstat_02_CONST.img model_param_02_CONST.img
 	;;
     GLMNormalize)
-	run_eval "glm --normalize -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
+	run_eval "${BINDIR}/glm --normalize -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
 	check_results model_stdout.txt model_fstat_00_model.img  model_tstat_00_age.img model_param_00_age.img
 	check_results model_tstat_01_sex.img model_param_01_sex.img model_tstat_02_CONST.img model_param_02_CONST.img
 	;;
     GLMExp)
-	run_eval "glm --exp -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
+	run_eval "${BINDIR}/glm --exp -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
 	check_results model_stdout.txt model_fstat_00_model.img  model_tstat_00_age.img model_param_00_age.img
 	check_results model_tstat_01_sex.img model_param_01_sex.img model_tstat_02_CONST.img model_param_02_CONST.img
 	;;
     GLMNoConstant)
-	run_eval "glm --exclude-constant -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
+	run_eval "${BINDIR}/glm --exclude-constant -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
 	check_results model_stdout.txt model_fstat_00_model.img  model_tstat_00_age.img model_param_00_age.img
 	check_results model_tstat_01_sex.img model_param_01_sex.img
 	;;
     GLMIgnore)
-	run_eval "glm --ignore-parameter 1 -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
+	run_eval "${BINDIR}/glm --ignore-parameter 1 -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
 	check_results model_stdout.txt model_fstat_00_model.img  model_tstat_00_age.img model_param_00_age.img
 	check_results model_tstat_02_CONST.img model_param_02_CONST.img
 	;;
     GLMSelect)
-	run_eval "glm --select-parameter age -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
+	run_eval "${BINDIR}/glm --select-parameter age -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
 	check_results model_stdout.txt model_fstat_00_model.img
 	check_results model_tstat_00_age.img model_param_00_age.img model_tstat_02_CONST.img model_param_02_CONST.img
 	;; 
     GLMCrop)
-	run_eval "glm --crop 10,10,0,20,20,2 -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
+	run_eval "${BINDIR}/glm --crop 10,10,0,20,20,2 -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
 	check_results model_stdout.txt model_fstat_00_model.img  model_tstat_00_age.img model_param_00_age.img
 	check_results model_tstat_01_sex.img model_param_01_sex.img model_tstat_02_CONST.img model_param_02_CONST.img
 	;;
@@ -588,39 +588,39 @@ case ${RUNTEST} in
 	check_results corrected.img bias_mul.img bias_add.img
 	;;
     Overlap)
-	run_eval "overlap parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
+	run_eval "${BINDIR}/overlap parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
 	check_result overlap.txt
 	;;
     OverlapNumLabels)
-	run_eval "overlap -N 2 parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
+	run_eval "${BINDIR}/overlap -N 2 parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
 	check_result overlap.txt
 	;;
     OverlapByLabel)
-	run_eval "overlap --by-label parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
+	run_eval "${BINDIR}/overlap --by-label parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
 	check_result overlap.txt
 	;;
     OverlapFirst)
-	run_eval "overlap --first-label 10 parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
+	run_eval "${BINDIR}/overlap --first-label 10 parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
 	check_result overlap.txt
 	;;
     OverlapFirstByLabel)
-	run_eval "overlap --by-label --first-label 10 parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
+	run_eval "${BINDIR}/overlap --by-label --first-label 10 parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
 	check_result overlap.txt
 	;;
     OverlapFirstByLabelNumLabels)
-	run_eval "overlap --by-label --first-label 10 --num-labels 10 parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
+	run_eval "${BINDIR}/overlap --by-label --first-label 10 --num-labels 10 parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
 	check_result overlap.txt
 	;;
     ProbeXformSimple)
-	run_eval "probe_xform --probe 180,180,60 --probe 20,20,20 --probe 0,0,0 vol001_mr_t0t1_warp.xform > ${tmpdir}/stdout.txt"
+	run_eval "${BINDIR}/probe_xform --probe 180,180,60 --probe 20,20,20 --probe 0,0,0 vol001_mr_t0t1_warp.xform > ${tmpdir}/stdout.txt"
 	check_result stdout.txt
 	;;
     ProbeXformFwdBwd)
-	run_eval "probe_xform --probe 180,180,60 --probe 20,20,20 --probe 0,0,0 vol001_mr_t0t1_warp.xform --inverse vol001_mr_t0t1_warp.xform > ${tmpdir}/stdout.txt"
+	run_eval "${BINDIR}/probe_xform --probe 180,180,60 --probe 20,20,20 --probe 0,0,0 vol001_mr_t0t1_warp.xform --inverse vol001_mr_t0t1_warp.xform > ${tmpdir}/stdout.txt"
 	check_result stdout.txt
 	;;
     ProbeXformBwdFwd)
-	run_eval "probe_xform --probe 180,180,60 --probe 20,20,20 --probe 0,0,0 -- --inverse vol001_mr_t0t1_warp.xform vol001_mr_t0t1_warp.xform > ${tmpdir}/stdout.txt"
+	run_eval "${BINDIR}/probe_xform --probe 180,180,60 --probe 20,20,20 --probe 0,0,0 -- --inverse vol001_mr_t0t1_warp.xform vol001_mr_t0t1_warp.xform > ${tmpdir}/stdout.txt"
 	check_result stdout.txt
 	;;
     ReformatxNoXform)
@@ -787,39 +787,39 @@ case ${RUNTEST} in
 	check_result registration
 	;;
     SequenceDefault)
-	run_eval "cat numbers.txt | sequence > ${tmpdir}/sequence.txt"
+	run_eval "cat numbers.txt | ${BINDIR}/sequence > ${tmpdir}/sequence.txt"
 	check_result sequence.txt
 	;;
     SequenceFormat)
-	run_eval "cat numbers.txt | sequence --format %g > ${tmpdir}/sequence.txt"
+	run_eval "cat numbers.txt | ${BINDIR}/sequence --format %g > ${tmpdir}/sequence.txt"
 	check_result sequence.txt
 	;;
     SequenceThresh)
-	run_eval "cat numbers.txt | sequence --thresh 1e4 > ${tmpdir}/sequence.txt"	
+	run_eval "cat numbers.txt | ${BINDIR}/sequence --thresh 1e4 > ${tmpdir}/sequence.txt"	
 	check_result sequence.txt
 	;;
     SequenceAbs)
-	run_eval "cat numbers.txt | sequence --abs > ${tmpdir}/sequence.txt"
+	run_eval "cat numbers.txt | ${BINDIR}/sequence --abs > ${tmpdir}/sequence.txt"
 	check_result sequence.txt
 	;;
     SequenceAbsThresh)
-	run_eval "cat numbers.txt | sequence --thresh 1000 --abs > ${tmpdir}/sequence.txt"
+	run_eval "cat numbers.txt | ${BINDIR}/sequence --thresh 1000 --abs > ${tmpdir}/sequence.txt"
 	check_result sequence.txt
 	;;
     SimilarityGrey)
-	run_eval "similarity --histogram-file ${tmpdir}/histogram --histogram-text-file ${tmpdir}/histogram.txt rat_fse_erly.hdr rat_fse_late.hdr > ${tmpdir}/similarity.txt"
+	run_eval "${BINDIR}/similarity --histogram-file ${tmpdir}/histogram --histogram-text-file ${tmpdir}/histogram.txt rat_fse_erly.hdr rat_fse_late.hdr > ${tmpdir}/similarity.txt"
 	check_results histogram histogram.txt similarity.txt
 	;;
     SimilarityLabels)
-	run_eval "similarity --labels --histogram-file ${tmpdir}/histogram --histogram-text-file ${tmpdir}/histogram.txt parc1.hdr parc2.hdr > ${tmpdir}/similarity.txt"
+	run_eval "${BINDIR}/similarity --labels --histogram-file ${tmpdir}/histogram --histogram-text-file ${tmpdir}/histogram.txt parc1.hdr parc2.hdr > ${tmpdir}/similarity.txt"
 	check_results histogram histogram.txt similarity.txt
 	;;
     SimilarityGreyMask)
-	run_eval "similarity --mask rat_fse_erly.hdr --histogram-file ${tmpdir}/histogram --histogram-text-file ${tmpdir}/histogram.txt rat_fse_erly.hdr rat_fse_late.hdr > ${tmpdir}/similarity.txt"
+	run_eval "${BINDIR}/similarity --mask rat_fse_erly.hdr --histogram-file ${tmpdir}/histogram --histogram-text-file ${tmpdir}/histogram.txt rat_fse_erly.hdr rat_fse_late.hdr > ${tmpdir}/similarity.txt"
 	check_results histogram histogram.txt similarity.txt
 	;;
     SimilarityLabelsMask)
-	run_eval "similarity --mask parc3_bin.hdr --labels --histogram-file ${tmpdir}/histogram --histogram-text-file ${tmpdir}/histogram.txt parc1.hdr parc2.hdr > ${tmpdir}/similarity.txt"
+	run_eval "${BINDIR}/similarity --mask parc3_bin.hdr --labels --histogram-file ${tmpdir}/histogram --histogram-text-file ${tmpdir}/histogram.txt parc1.hdr parc2.hdr > ${tmpdir}/similarity.txt"
 	check_results histogram histogram.txt similarity.txt
 	;;
     SplitAxial)
@@ -853,31 +853,31 @@ case ${RUNTEST} in
 	check_result split_co_2.xform
 	;;
     StatisticsGrey)
-	run_eval "statistics spgr_3t.hdr > ${tmpdir}/statistics.txt"
+	run_eval "${BINDIR}/statistics spgr_3t.hdr > ${tmpdir}/statistics.txt"
 	check_results statistics.txt
 	;;
     StatisticsPercentiles)
-	run_eval "statistics -p 0.1 --percentile 0.5 -p 0.75 spgr_3t.hdr > ${tmpdir}/statistics.txt"
+	run_eval "${BINDIR}/statistics -p 0.1 --percentile 0.5 -p 0.75 spgr_3t.hdr > ${tmpdir}/statistics.txt"
 	check_results statistics.txt
 	;;
     StatisticsGreyColumn)
-	run_eval "statistics -C spgr_3t.hdr > ${tmpdir}/statistics.txt"
+	run_eval "${BINDIR}/statistics -C spgr_3t.hdr > ${tmpdir}/statistics.txt"
 	check_results statistics.txt
 	;;
     StatisticsGreyExpNotation)
-	run_eval "statistics -E spgr_3t.hdr > ${tmpdir}/statistics.txt"
+	run_eval "${BINDIR}/statistics -E spgr_3t.hdr > ${tmpdir}/statistics.txt"
 	check_results statistics.txt
 	;;
     StatisticsGreyMask)
-	run_eval "statistics -m spgr_3t_mask.hdr spgr_3t.hdr > ${tmpdir}/statistics.txt"
+	run_eval "${BINDIR}/statistics -m spgr_3t_mask.hdr spgr_3t.hdr > ${tmpdir}/statistics.txt"
 	check_results statistics.txt
 	;;
     StatisticsGreyMultiMask)
-	run_eval "statistics -M spgr_3t_mask.hdr spgr_3t.hdr > ${tmpdir}/statistics.txt"
+	run_eval "${BINDIR}/statistics -M spgr_3t_mask.hdr spgr_3t.hdr > ${tmpdir}/statistics.txt"
 	check_results statistics.txt
 	;;
     StatisticsLabels)
-	run_eval "statistics -l parc1.hdr > ${tmpdir}/statistics.txt"
+	run_eval "${BINDIR}/statistics -l parc1.hdr > ${tmpdir}/statistics.txt"
 	check_results statistics.txt
 	;;
     SymmetryPlane)
@@ -1094,35 +1094,35 @@ case ${RUNTEST} in
 	check_results magnitude.nii
 	;;
     xml_film)
-	run_eval "film --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/film.xml"
+	run_eval "${BINDIR}/film --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/film.xml"
 	check_result film.xml
 	;;
     xml_levelset)
-        run_eval "levelset --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/levelset.xml"
+        run_eval "${BINDIR}/levelset --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/levelset.xml"
 	check_result levelset.xml
 	;;
     xml_mrbias)
-	run_eval "mrbias --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/mrbias.xml"
+	run_eval "${BINDIR}/mrbias --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/mrbias.xml"
 	check_result mrbias.xml
 	;;
     xml_registration)
-	run_eval "registration --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/registration.xml"
+	run_eval "${BINDIR}/registration --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/registration.xml"
 	check_result registration.xml
 	;;
     wiki_film)
-	run_eval "film --wiki > ${tmpdir}/film.wiki"
+	run_eval "${BINDIR}/film --wiki > ${tmpdir}/film.wiki"
 	check_result film.wiki
 	;;
     wiki_levelset)
-	run_eval "levelset --wiki > ${tmpdir}/levelset.wiki"
+	run_eval "${BINDIR}/levelset --wiki > ${tmpdir}/levelset.wiki"
 	check_result levelset.wiki
 	;;
     wiki_mrbias)
-	run_eval "mrbias --wiki > ${tmpdir}/mrbias.wiki"
+	run_eval "${BINDIR}/mrbias --wiki > ${tmpdir}/mrbias.wiki"
 	check_result mrbias.wiki
 	;;
     wiki_registration)
-	run_eval "registration --wiki > ${tmpdir}/registration.wiki"
+	run_eval "${BINDIR}/registration --wiki > ${tmpdir}/registration.wiki"
 	check_result registration.wiki
 	;;
     *)
