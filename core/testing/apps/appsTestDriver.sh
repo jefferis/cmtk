@@ -312,7 +312,7 @@ case ${RUNTEST} in
 	check_result corrected.img
 	;;
     GregxformFordwardBackward)
-	run_eval "cat vol001_t0_points.xyz | ${BINDIR}/gregxform -f vol001_mr_t0t1_warp.xform | gregxform vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyz"
+	run_eval "cat vol001_t0_points.xyz | ${BINDIR}/gregxform -f vol001_mr_t0t1_warp.xform | ${BINDIR}/gregxform vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyz"
 	check_result vol001_t0_points.xyz
 	;;
     GregxformAffine)
@@ -324,7 +324,7 @@ case ${RUNTEST} in
 	check_result vol001_t0_points.xyz
 	;;
     GregxformAffineFromWarpFwdBwd)
-	run_eval "cat vol001_t0_points.xyz | ${BINDIR}/gregxform --affine -f vol001_mr_t0t1_warp.xform | gregxform --affine vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyz"
+	run_eval "cat vol001_t0_points.xyz | ${BINDIR}/gregxform --affine -f vol001_mr_t0t1_warp.xform | ${BINDIR}/gregxform --affine vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyz"
 	check_result vol001_t0_points.xyz
 	;;
     GroupwiseInitCentersOfMass)
