@@ -36,7 +36,7 @@ CMTK_BINDIR=@CMTK_BINDIR@
 # For convenience and readability
 cmtk()
 {
-  ${CMTK_BIN_DIR}/$*
+  ${CMTK_BINDIR}/$*
 }
 
 # Get first argument out of a list
@@ -70,7 +70,7 @@ pass0()
       local flt_name=`basename ${in_flt} | sed 's/\..*//g'`
       local out_xfm=isa/pass0/${ref_name}_${flt_name}.xform
       if needs_update_and_lock ${out_xfm} ${in_ref} ${in_flt}; then
-	  cmtk registration --auto-multi-levels 5 -v --dofs 6 --dofs 9 -o ${out_xfm} ${in_ref} ${in_flt}
+	  cmtk registration --echo --auto-multi-levels 5 -v --dofs 6 --dofs 9 -o ${out_xfm} ${in_ref} ${in_flt}
 	  lockfile_delete ${out_xfm}
       fi
   done

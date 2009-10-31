@@ -30,7 +30,7 @@ SET(CMTK_BINDIR ${CMAKE_BINARY_DIR})
 
 SET(scripts utilities iterative_shape_averaging correct_nex_motion)
 FOREACH(s ${scripts})
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${s}.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${s}.sh)
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${s}.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${s}.sh @ONLY)
 ENDFOREACH(s ${scripts})
 
 INSTALL(CODE "SET(CMTK_SOURCE_DIR ${CMTK_SOURCE_DIR})" SCRIPT install.cmake)
