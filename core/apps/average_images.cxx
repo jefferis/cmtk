@@ -108,7 +108,6 @@ int main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'S', "stdev" ), &Mode, MODE_STDEV, "Output standard deviation image" );
     cl.AddSwitch( Key( 'Z', "zscore" ), &Mode, MODE_ZSCORE, "Output zscore image" );
     cl.AddSwitch( Key( 'E', "entropy" ), &Mode, MODE_ENTROPY, "Output pixel-by-pixel population entropy image" );
-    cl.AddSwitch( Key( "vote" ), &Mode, MODE_VOTE, "Perform pixel-by-pixel label voting" );
 
     cl.Parse();
 
