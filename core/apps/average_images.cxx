@@ -63,8 +63,7 @@ typedef enum
   MODE_STDEV,
   MODE_VAR,
   MODE_ZSCORE,
-  MODE_ENTROPY,
-  MODE_VOTE
+  MODE_ENTROPY
 } ModeEnum;
 
 ModeEnum Mode = MODE_AVG;
@@ -274,9 +273,6 @@ int main( const int argc, const char* argv[] )
           const cmtk::Types::DataItem var = cmtk::MathUtil::Variance<cmtk::Types::DataItem>( pixelData, avg );
 	  outputData->Set( avg / sqrt(var), i );
 	  break;
-	  }
-	  case MODE_VOTE:
-	  {
 	  }
 	  }
 	} 
