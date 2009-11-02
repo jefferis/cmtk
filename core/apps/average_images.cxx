@@ -68,6 +68,8 @@ typedef enum
 
 ModeEnum Mode = MODE_AVG;
 
+cmtk::ScalarDataType DataType = cmtk::TYPE_FLOAT;
+
 std::list<const char*> imagePathList;
 
 void
@@ -97,11 +99,11 @@ int main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
     cl.AddOption( Key( 'o', "outfile-name" ), &OutputFileName, "Output file name" );
 
-    cl.AddOption( Key( "pad" ), &PaddingValue, "Define padding value in input images", &Padding );
+    cl.AddOption( Key( "set-padding-value" ), &PaddingValue, "Define padding value in input images", &Padding );
 
     cl.AddSwitch( Key( 'l', "log" ), &ApplyLog, true, "Apply log to input data" );
     cl.AddSwitch( Key( 'a', "abs" ), &ApplyAbs, true, "Use absolute input values" );
-    cl.AddSwitch( Key( 'n', "normalize" ), &Normalize, true, "Normalize image intensities" );
+    cl.AddSwitch( Key( 'n', "normalize-mean-sdev" ), &Normalize, true, "Normalize image intensities using means and standard deviations" );
 
     cl.AddSwitch( Key( 'A', "avg" ), &Mode, MODE_AVG, "Output average image" );
     cl.AddSwitch( Key( 'V', "var" ), &Mode, MODE_VAR, "Output variance image" );
@@ -204,7 +206,7 @@ int main( const int argc, const char* argv[] )
   
   if ( ! outputData ) 
     {
-    outputData = cmtk::TypedArray::SmartPtr( cmtk::TypedArray::Create( cmtk::TYPE_FLOAT, volume->GetNumberOfPixels() ) );
+    outputData = cmtk::TypedArray::SmartPtr( cmtk::TypedArray::Create( DataType, volume->GetNumberOfPixels() ) );
     outputData->SetPaddingValue( CMTK_FLOAT_NAN );
     } 
   
@@ -228,60 +230,57 @@ int main( const int argc, const char* argv[] )
 	{
 	pixelData[actualSize++] = v;
 	}
+      }
       
-      if ( actualSize )
+    if ( actualSize )
+      {
+      pixelData.resize( actualSize );
+      switch ( Mode )
 	{
-	pixelData.resize( actualSize );
-	cmtk::Types::DataItem avg, var;
-	avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( pixelData );
-	var = cmtk::MathUtil::Variance<cmtk::Types::DataItem>( pixelData, avg );
-	switch ( Mode )
-	  {
-	  case MODE_AVG: 
-	  {
-	  const cmtk::Types::DataItem avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( pixelData );
-	  outputData->Set( avg, i );
-	  break;
-	  }
-	  case MODE_VAR:
-	  {
-	  const cmtk::Types::DataItem avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( pixelData );
-          const cmtk::Types::DataItem var = cmtk::MathUtil::Variance<cmtk::Types::DataItem>( pixelData, avg );
-	  outputData->Set( var, i );
-	  break;
-	  }
-	  case MODE_STDEV:
-	  {
-          const cmtk::Types::DataItem avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( pixelData );
-          const cmtk::Types::DataItem var = cmtk::MathUtil::Variance<cmtk::Types::DataItem>( pixelData, avg );
-	  outputData->Set( sqrt(var), i );
-	  break;
-	  }
-	  case MODE_ENTROPY:
-	  {
-	  histogram.Reset();
-	  for ( size_t idx = 0; idx < actualSize; ++idx )
-	    histogram.IncrementFractional( histogram.ValueToBinFractional( pixelData[idx] ) );
-	  
-	  outputData->Set( histogram.GetEntropy(), i );
-	  break;
-	  }
-	  case MODE_ZSCORE:
-	  {
-          const cmtk::Types::DataItem avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( pixelData );
-          const cmtk::Types::DataItem var = cmtk::MathUtil::Variance<cmtk::Types::DataItem>( pixelData, avg );
-	  outputData->Set( avg / sqrt(var), i );
-	  break;
-	  }
-	  }
-	} 
-      else
+	case MODE_AVG: 
 	{
-	outputData->SetPaddingAt( i );
+	const cmtk::Types::DataItem avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( pixelData );
+	outputData->Set( avg, i );
+	break;
 	}
+	case MODE_VAR:
+	{
+	const cmtk::Types::DataItem avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( pixelData );
+	const cmtk::Types::DataItem var = cmtk::MathUtil::Variance<cmtk::Types::DataItem>( pixelData, avg );
+	outputData->Set( var, i );
+	break;
+	}
+	case MODE_STDEV:
+	{
+	const cmtk::Types::DataItem avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( pixelData );
+	const cmtk::Types::DataItem var = cmtk::MathUtil::Variance<cmtk::Types::DataItem>( pixelData, avg );
+	outputData->Set( sqrt(var), i );
+	break;
+	}
+	case MODE_ENTROPY:
+	{
+	histogram.Reset();
+	for ( size_t idx = 0; idx < actualSize; ++idx )
+	  histogram.IncrementFractional( histogram.ValueToBinFractional( pixelData[idx] ) );
+	
+	outputData->Set( histogram.GetEntropy(), i );
+	break;
+	}
+	case MODE_ZSCORE:
+	{
+	const cmtk::Types::DataItem avg = cmtk::MathUtil::Mean<cmtk::Types::DataItem>( pixelData );
+	const cmtk::Types::DataItem var = cmtk::MathUtil::Variance<cmtk::Types::DataItem>( pixelData, avg );
+	outputData->Set( avg / sqrt(var), i );
+	break;
+	}
+	}
+      } 
+    else
+      {
+      outputData->SetPaddingAt( i );
       }
     }
-  
+
   cmtk::Progress::Done();
 
   volume->SetData( outputData );
