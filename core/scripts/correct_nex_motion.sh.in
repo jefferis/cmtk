@@ -29,16 +29,10 @@
 ##  $LastChangedBy$
 ##
 
-CMTK_BINDIR=@CMTK_BINDIR@
+CMTK_BINARY_DIR=@CMTK_BINARY_DIR@
  
 # Get the utilities.sh script from the scripts/ directory in the CMTK source tree
-. ${CMTK_BINDIR}/utilities.sh
- 
-# For convenience and readability
-cmtk()
-{
-  ${CMTK_BIN_DIR}/$*
-}
+. ${CMTK_BINARY_DIR}/utilities.sh
  
 tmpdir=`mktemp -d`
 if [ "${tmpdir}" == "" ]; then

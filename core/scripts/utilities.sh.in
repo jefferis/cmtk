@@ -28,6 +28,14 @@
 ##  $LastChangedBy$
 ##
 
+CMTK_BINARY_DIR=@CMTK_BINARY_DIR@
+ 
+# For convenience and readability
+cmtk()
+{
+  ${CMTK_BINARY_DIR}/$*
+}
+
 ##
 ## Helper functions
 ##
