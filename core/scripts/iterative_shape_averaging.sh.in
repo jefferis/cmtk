@@ -79,8 +79,61 @@ pass0()
 	fi
     done
 
-    cmtk average_images --echo -o isa/pass0/average.nii ${out_nii_list}
+    local avg_nii=isa/pass0/average.nii
+    if needs_update_and_lock ${avg_nii} ${out_nii_list}; then
+	cmtk average_images --echo -o ${avg_nii} ${out_nii_list}
+	lockfile_delete ${avg_nii}
+    fi
 }
- 
-# Run this for all cases (except reference)
+
+# This function computes the first round of nonrigid alignments to the affine average.
+pass1()
+{
+    local out_nii_list=""
+    local ref_nii=isa/pass0/average.nii     
+
+    local initial_ref=${INITIAL_REFERENCE}
+    local initial_ref_name=`basename ${initial_ref} | sed 's/\..*//g'`
+
+    local cpspacing=`cmtk describe --machine-readable ${initial_ref} | fgrep FOV | cut -f2 | cmtk sequence | fgrep STATval | cut -f2 | sed 's/\..*//g'`
+    local exploration=`expr ${cpspacing} / 8`
+    local accuracy=`expr ${cpspacing} / 256`
+    local warp_args="--echo -v --refine 1 --delay-refine --grid-spacing ${cpspacing} --accuracy ${accuracy} --exploration ${exploration} --energy-weight 1e-1"
+
+    for in_flt in ${IMAGES}; do
+	local flt_name=`basename ${in_flt} | sed 's/\..*//g'`
+
+	local out_xfm=isa/pass1/${flt_name}.xform
+
+	if [ "${in_flt}" != "${initial_ref}" ]; then
+	    local inp_xfm=isa/pass0/${initial_ref_name}_${flt_name}.xform
+	    if needs_update_and_lock ${out_xfm} ${inp_xfm} ${ref_nii} ${in_flt}; then
+		cmtk warp ${warp_args} --initial ${inp_xfm} -o ${out_xfm} ${ref_nii} ${in_flt}
+		lockfile_delete ${out_xfm}
+	    fi
+	else
+	    if needs_update_and_lock ${out_xfm} ${ref_nii} ${in_flt}; then
+		cmtk warp ${warp_args} -o ${out_xfm} ${in_ref} ${in_flt}
+		lockfile_delete ${out_xfm}
+	    fi
+	fi
+	
+	local out_nii=isa/pass1/${flt_name}.nii
+	out_nii_list="${out_nii_list} ${out_nii}"
+
+	if needs_update_and_lock ${out_nii} ${out_xfm}; then
+	    cmtk reformatx --echo --sinc-cosine -o ${out_nii} --floating ${in_flt} ${ref_nii} ${out_xfm}
+	    lockfile_delete ${out_nii}
+	fi
+    done
+
+    local avg_nii=isa/pass0/average.nii
+    if needs_update_and_lock ${avg_nii} ${out_nii_list}; then
+	cmtk average_images --echo -o ${avg_nii} ${out_nii_list}
+	lockfile_delete ${avg_nii}
+    fi
+}
+
+# Run the iterative procedure
 pass0
+pass1

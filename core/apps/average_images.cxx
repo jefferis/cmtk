@@ -103,7 +103,7 @@ int main( const int argc, const char* argv[] )
 
     cl.AddSwitch( Key( 'l', "log" ), &ApplyLog, true, "Apply log to input data" );
     cl.AddSwitch( Key( 'a', "abs" ), &ApplyAbs, true, "Use absolute input values" );
-    cl.AddSwitch( Key( 'n', "normalize-mean-sdev" ), &Normalize, true, "Normalize image intensities using means and standard deviations" );
+    cl.AddSwitch( Key( 'n', "normalize-mean-stdev" ), &Normalize, true, "Normalize image intensities using means and standard deviations" );
 
     cl.AddSwitch( Key( 'A', "avg" ), &Mode, MODE_AVG, "Output average image" );
     cl.AddSwitch( Key( 'V', "var" ), &Mode, MODE_VAR, "Output variance image" );

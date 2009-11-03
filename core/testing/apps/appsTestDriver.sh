@@ -124,6 +124,34 @@ case ${RUNTEST} in
 	run average_edt -o ${tmpdir}/shape_average.hdr -n 255 --interpolate-distance parc12_warp.xform parc13_warp.xform
 	check_result shape_average.img
 	;;
+    average_imagesMean)
+	run average_images -o ${tmpdir}/average.hdr spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
+	check_results average.img
+	;;
+    average_imagesMeanNormPadd)
+	run average_images -o ${tmpdir}/average.hdr --set-padding-value 0 --normalize-mean-stdev spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
+	check_results average.img
+	;;
+    average_imagesMeanAbsLog)
+	run average_images -o ${tmpdir}/average.hdr --abs --log spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
+	check_results average.img
+	;;
+    average_imagesVariance)
+	run average_images -o ${tmpdir}/variance.hdr --var spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
+	check_results variance.img
+	;;
+    average_imagesStDev)
+	run average_images -o ${tmpdir}/stdev.hdr --stdev spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
+	check_results stdev.img
+	;;
+    average_imagesEntropy)
+	run average_images -o ${tmpdir}/entropy.hdr --entropy spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
+	check_results entropy.img
+	;;
+    average_imagesZScore)
+	run average_images -o ${tmpdir}/zscore.hdr --zscore spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
+	check_results zscore.img
+	;;
     ConcatAffineABA)
 	run concat_affine -o ${tmpdir}/concat.xform affineA.xform affineB.xform affineA.xform
 	check_result concat.xform

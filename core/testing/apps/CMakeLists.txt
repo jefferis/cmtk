@@ -86,6 +86,17 @@ IF(NOT CMTK_USE_MPI)
   SET(testList ${testList} ShapeBasedAverage ShapeBasedAverageInterpolation)
 
   # ==========================================
+  # Tests for "average_images" tool
+  SET(testList ${testList} 
+    average_imagesMean 
+    average_imagesMeanNormPadd 
+    average_imagesMeanAbsLog 
+    average_imagesVariance
+    average_imagesStDev
+    average_imagesEntropy
+    average_imagesZScore)
+
+  # ==========================================
   # Tests for "convert" tool
   SET(testList ${testList} 
     ConvertAutoCrop
