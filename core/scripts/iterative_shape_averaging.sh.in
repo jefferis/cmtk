@@ -95,9 +95,9 @@ pass1()
     local initial_ref=${INITIAL_REFERENCE}
     local initial_ref_name=`basename ${initial_ref} | sed 's/\..*//g'`
 
-    local cpspacing=`cmtk describe --machine-readable ${initial_ref} | fgrep FOV | cut -f2 | cmtk sequence | fgrep STATval | cut -f2 | sed 's/\..*//g'`
-    local exploration=`expr ${cpspacing} / 8`
-    local accuracy=`expr ${cpspacing} / 256`
+    local cpspacing=`cmtk describe --machine-readable ${initial_ref} | fgrep FOV | cut -f2 | cmtk sequence | fgrep STATval | cut -f2`
+    local exploration=`echo ${cpspacing} | gawk '{ print $1 / 8.0 }'`
+    local accuracy=`echo ${cpspacing} | gawk '{ print $1 / 256.0 }'`
     local warp_args="--echo -v --refine 1 --delay-refine --grid-spacing ${cpspacing} --accuracy ${accuracy} --exploration ${exploration} --energy-weight 1e-1"
 
     for in_flt in ${IMAGES}; do
