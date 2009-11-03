@@ -113,7 +113,7 @@ pass1()
 	    fi
 	else
 	    if needs_update_and_lock ${out_xfm} ${ref_nii} ${in_flt}; then
-		cmtk warp ${warp_args} -o ${out_xfm} ${in_ref} ${in_flt}
+		cmtk warp ${warp_args} -o ${out_xfm} ${ref_nii} ${in_flt}
 		lockfile_delete ${out_xfm}
 	    fi
 	fi
@@ -127,7 +127,7 @@ pass1()
 	fi
     done
 
-    local avg_nii=isa/pass0/average.nii
+    local avg_nii=isa/pass1/average.nii
     if needs_update_and_lock ${avg_nii} ${out_nii_list}; then
 	cmtk average_images --echo -o ${avg_nii} ${out_nii_list}
 	lockfile_delete ${avg_nii}
