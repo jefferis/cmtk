@@ -47,7 +47,7 @@ get_all_but_first()
 }
 
 # Check for command line arguments, print help if none given
-if test $# -lt 1; then
+if test $# -lt 2; then
     echo "Iterative Shape Averging"    
     echo "USAGE: $0 referenceImagePath imagePath1 imagePath2 ..."
     echo "  where the first argument is the path of the initial reference image and"
