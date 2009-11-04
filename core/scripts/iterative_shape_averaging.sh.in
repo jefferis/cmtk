@@ -55,6 +55,9 @@ INITIAL_REFERENCE=`get_first ${IMAGES}`
 # Everything else is the initial list of floating images
 INITIAL_FLOATING=`get_all_but_first ${IMAGES}`
 
+# Warp arguments common to all iterations
+WARP_ARGS_GLOBAL="--echo -v --refine 1 --delay-refine --energy-weight 1e-1"
+
 # This function computed the average of reformatted images.
 average_images()
 {
@@ -95,6 +98,23 @@ pass0()
     average_images isa/pass0/average.nii ${out_nii_list}
 }
 
+# Determine warp arguments from iteration number and reference image
+get_level_warp_args()
+{
+    local iteration=$1
+    local initial_ref=$2
+    
+    local cpspacing=`cmtk describe --machine-readable ${initial_ref} | fgrep FOV | cut -f2 | cmtk sequence | fgrep STATval | cut -f2`
+    for ((i=1;i<iteration;++i)); do
+	cpspacing=`echo ${cpspacing} | gawk '{print $1 / 2}'`
+    done
+    local exploration=`echo ${cpspacing} | gawk '{ print $1 / 8.0 }'`
+    local accuracy=`echo ${cpspacing} | gawk '{ print $1 / 256.0 }'`
+    local warp_args="${WARP_ARGS_GLOBAL} --grid-spacing ${cpspacing} --accuracy ${accuracy} --exploration ${exploration}"
+
+    echo ${warp_args}
+}    
+
 # This function computes the first round of nonrigid alignments to the affine average.
 pass1()
 {
@@ -104,10 +124,7 @@ pass1()
     local initial_ref=${INITIAL_REFERENCE}
     local initial_ref_name=`basename ${initial_ref} | sed 's/\..*//g'`
 
-    local cpspacing=`cmtk describe --machine-readable ${initial_ref} | fgrep FOV | cut -f2 | cmtk sequence | fgrep STATval | cut -f2`
-    local exploration=`echo ${cpspacing} | gawk '{ print $1 / 8.0 }'`
-    local accuracy=`echo ${cpspacing} | gawk '{ print $1 / 256.0 }'`
-    local warp_args="--echo -v --refine 1 --delay-refine --grid-spacing ${cpspacing} --accuracy ${accuracy} --exploration ${exploration} --energy-weight 1e-1"
+    local warp_args=`get_level_warp_args 1 ${initial_ref}`
 
     for in_flt in ${IMAGES}; do
 	local flt_name=`basename ${in_flt} | sed 's/\..*//g'`
@@ -150,14 +167,8 @@ passn()
 
     local initial_ref=${INITIAL_REFERENCE}
     local initial_ref_name=`basename ${initial_ref} | sed 's/\..*//g'`
-    
-    local cpspacing=`cmtk describe --machine-readable ${initial_ref} | fgrep FOV | cut -f2 | cmtk sequence | fgrep STATval | cut -f2`
-    for ((i=1;i<curr;++i)); do
-	cpspacing=`echo ${cpspacing} | gawk '{print $1 / 2}'`
-    done
-    local exploration=`echo ${cpspacing} | gawk '{ print $1 / 8.0 }'`
-    local accuracy=`echo ${cpspacing} | gawk '{ print $1 / 256.0 }'`
-    local warp_args="--echo -v --refine 1 --delay-refine --grid-spacing ${cpspacing} --accuracy ${accuracy} --exploration ${exploration} --energy-weight 1e-1"
+
+    local warp_args=`get_level_warp_args ${curr} ${initial_ref}`
     
     for in_flt in ${IMAGES}; do
 	local flt_name=`basename ${in_flt} | sed 's/\..*//g'`
