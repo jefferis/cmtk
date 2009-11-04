@@ -46,6 +46,8 @@
 
 #include <cmtkReformatVolume.h>
 
+#include <algorithm>
+
 namespace
 cmtk
 {
@@ -87,9 +89,6 @@ ElasticRegistration::ElasticRegistration ()
 CallbackResult 
 ElasticRegistration::InitRegistration ()
 {
-  CallbackResult result = this->Superclass::InitRegistration();
-  if ( result != CALLBACK_OK ) return result;
-
   UniformVolume::SmartPtr refVolume;
   UniformVolume::SmartPtr fltVolume;
 
@@ -222,7 +221,14 @@ ElasticRegistration::InitRegistration ()
     }
   
   this->m_Optimizer->SetCallback( this->m_Callback );
-  return CALLBACK_OK;
+
+  if ( this->m_Exploration <= 0 )
+    {
+    const SplineWarpXform* warp = SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_Xform ); 
+    this->m_Exploration = 0.25 * std::max( warp->Spacing[0], std::max( warp->Spacing[1], warp->Spacing[2] ) );
+    }
+
+  return this->Superclass::InitRegistration();
 }
 
 WarpXform*

@@ -63,10 +63,10 @@ VoxelRegistration::VoxelRegistration ()
   this->m_Callback = RegistrationCallback::SmartPtr( new RegistrationCallback() );
   this->m_Protocol = NULL; 
 
-  this->m_Exploration = 8.0;
-  this->m_Accuracy = 0.1;
-  this->m_Sampling = 1.0;
-  CoarsestResolution = -1;
+  this->m_Exploration = -1;
+  this->m_Accuracy = -1;
+  this->m_Sampling = -1;
+  this->CoarsestResolution = -1;
   this->m_UseOriginalData = true;
 
   this->m_Algorithm = 0;
@@ -85,9 +85,19 @@ VoxelRegistration::~VoxelRegistration ()
 CallbackResult
 VoxelRegistration::InitRegistration ()
 {
+  if ( this->m_Sampling <= 0 )
+    this->m_Sampling = std::max( this->m_Volume_1->GetMaxDelta(), this->m_Volume_2->GetMaxDelta() );
+  
+  if ( this->m_Exploration <= 0 )
+    this->m_Exploration = 8.0 * this->m_Sampling;
+  
+  if ( this->m_Accuracy <= 0 )
+    this->m_Accuracy = this->m_Sampling / 128;
+  
   TimeStartLevel = TimeStartRegistration = cmtk::Timers::GetTimeProcess();
   WalltimeStartLevel = WalltimeStartRegistration = cmtk::Timers::GetWalltime();
   ThreadTimeStartLevel = ThreadTimeStartRegistration = cmtk::Timers::GetTimeThread();
+
   return CALLBACK_OK;
 }
 
