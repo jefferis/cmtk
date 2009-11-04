@@ -91,7 +91,7 @@ pass0()
     local ref_name=`basename ${in_ref} | sed 's/\..*//g'`
     for in_flt in ${INITIAL_FLOATING}; do
 	local flt_name=`basename ${in_flt} | sed 's/\..*//g'`
-	local out_xfm=isa/pass0/${ref_name}_${flt_name}.xform
+	local out_xfm=isa/pass0/${flt_name}.xform
 	if needs_update_and_lock ${out_xfm} ${in_ref} ${in_flt}; then
 	    cmtk registration --echo --auto-multi-levels 5 -v --dofs 6 --dofs 9 -o ${out_xfm} ${in_ref} ${in_flt}
 	    lockfile_delete ${out_xfm}
@@ -141,7 +141,7 @@ pass1()
 	local out_xfm=isa/pass1/${flt_name}.xform
 
 	if [ "${in_flt}" != "${initial_ref}" ]; then
-	    local inp_xfm=isa/pass0/${initial_ref_name}_${flt_name}.xform
+	    local inp_xfm=isa/pass0/${flt_name}.xform
 	    if needs_update_and_lock ${out_xfm} ${inp_xfm} ${ref_nii} ${in_flt}; then
 		cmtk warp ${warp_args} --initial ${inp_xfm} -o ${out_xfm} ${ref_nii} ${in_flt}
 		lockfile_delete ${out_xfm}
