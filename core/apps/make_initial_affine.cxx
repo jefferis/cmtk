@@ -76,13 +76,14 @@ main( const int argc, const char* argv[] )
     modeGroup->AddSwitch( Key( "direction-vectors" ), 0, "Alignment based on image direction vectors" );
     modeGroup->AddSwitch( Key( "centers-of-mass" ), 1, "Alignment based on centers of mass (translation only)" );
     modeGroup->AddSwitch( Key( "principal-axes" ), 2, "Alignment based on principal axes" );
+    modeGroup->AddSwitch( Key( "identity" ), -1, "Create only an identity transformation" );
     
     cl.AddSwitch( Key( 'C', "center-xform" ), &centerXform, true, "Set transformation center (for rotation, scale) to center of reference image." );
     cl.AddSwitch( Key( "xform-ras" ), &writeXformRAS, true, "Write transformation in RAS space, rather than between native image spaces." );
     
     cl.AddParameter( &referenceImagePath, "ReferenceImage", "Reference (fixed) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &floatingImagePath, "FloatingImage", "Floating (moving) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &outputXformPath, "OutputTransformation", "Floating (moving) image path" )
+    cl.AddParameter( &outputXformPath, "OutputXform", "Output transformation path" )
       ->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT )
       ->SetAttribute( "reference", "FloatingImage" );
 
@@ -111,6 +112,9 @@ main( const int argc, const char* argv[] )
   cmtk::AffineXform::SmartPtr xform;
   switch ( mode )
     {
+    case -1:
+      xform = cmtk::AffineXform::SmartPtr( new cmtk::AffineXform );
+      break;
     case 0:
       xform = cmtk::AffineXform::SmartPtr( cmtk::MakeInitialAffineTransformation::AlignDirectionVectors( *referenceImage, *floatingImage, centerXform ) );
       break;
