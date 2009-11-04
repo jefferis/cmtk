@@ -87,7 +87,8 @@ GetNormalizationCoefficients
     }
 }
 
-int main( const int argc, const char* argv[] )
+int
+main( const int argc, const char* argv[] )
 {
   try 
     {
@@ -97,19 +98,28 @@ int main( const int argc, const char* argv[] )
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-    cl.AddOption( Key( 'o', "outfile-name" ), &OutputFileName, "Output file name" );
 
-    cl.AddOption( Key( "set-padding-value" ), &PaddingValue, "Define padding value in input images", &Padding );
+    cmtk::CommandLine::EnumGroup<ModeEnum>::SmartPtr modeGroup = cl.AddEnum( "mode", &Mode, "Mode of averaging operation" );
+    modeGroup->AddSwitch( Key( "avg" ), MODE_AVG, "Compute average (i.e., mean) image" );
+    modeGroup->AddSwitch( Key( "var" ), MODE_VAR, "Compute variance image" );
+    modeGroup->AddSwitch( Key( "stdev" ), MODE_STDEV, "Compute standard deviation image" );
+    modeGroup->AddSwitch( Key( "zscore" ), MODE_ZSCORE, "Compute z-score image" );
+    modeGroup->AddSwitch( Key( "entropy" ), MODE_ENTROPY, "Compute pixel-by-pixel population entropy image" );
 
+    cl.BeginGroup( "Preprocessing", "Data Preprocessing" );
     cl.AddSwitch( Key( 'l', "log" ), &ApplyLog, true, "Apply log to input data" );
     cl.AddSwitch( Key( 'a', "abs" ), &ApplyAbs, true, "Use absolute input values" );
     cl.AddSwitch( Key( 'n', "normalize-mean-stdev" ), &Normalize, true, "Normalize image intensities using means and standard deviations" );
+    cl.AddOption( Key( "set-padding-value" ), &PaddingValue, "Define padding value in input images", &Padding );
+    cl.EndGroup();
 
-    cl.AddSwitch( Key( 'A', "avg" ), &Mode, MODE_AVG, "Output average image" );
-    cl.AddSwitch( Key( 'V', "var" ), &Mode, MODE_VAR, "Output variance image" );
-    cl.AddSwitch( Key( 'S', "stdev" ), &Mode, MODE_STDEV, "Output standard deviation image" );
-    cl.AddSwitch( Key( 'Z', "zscore" ), &Mode, MODE_ZSCORE, "Output zscore image" );
-    cl.AddSwitch( Key( 'E', "entropy" ), &Mode, MODE_ENTROPY, "Output pixel-by-pixel population entropy image" );
+    cl.BeginGroup( "Output", "Output Options" );
+    cl.AddOption( Key( 'o', "outfile-name" ), &OutputFileName, "Output file name" );
+
+    cmtk::CommandLine::EnumGroup<cmtk::ScalarDataType>::SmartPtr typeGroup = cl.AddEnum( "type", &DataType, "Scalar data type of output image." );
+    typeGroup->AddSwitch( Key( "float" ), cmtk::TYPE_FLOAT, "Single-precision float." );
+    typeGroup->AddSwitch( Key( "double" ), cmtk::TYPE_DOUBLE, "Double-precision float." );
+    cl.EndGroup();
 
     cl.Parse();
 
