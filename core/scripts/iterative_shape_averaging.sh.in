@@ -33,19 +33,6 @@ CMTK_BINARY_DIR=@CMTK_BINARY_DIR@
 # Get the utilities.sh script from the scripts/ directory in the CMTK source tree
 . ${CMTK_BINARY_DIR}/utilities.sh
  
-# Get first argument out of a list
-get_first()
-{
-    echo $1
-}
- 
-# Get all but first from a list.
-get_all_but_first()
-{
-    shift
-    echo $*
-}
-
 # Check for command line arguments, print help if none given
 if test $# -lt 2; then
     echo "Iterative Shape Averging"    
@@ -60,12 +47,6 @@ fi
 # We should have received a list of all images via the command line
 IMAGES="$*"
  
-# We take the first image in the list as the initial reference
-INITIAL_REFERENCE=`get_first ${IMAGES}`
-
-# Everything else is the initial list of floating images
-INITIAL_FLOATING=`get_all_but_first ${IMAGES}`
-
 # Warp arguments common to all iterations
 WARP_ARGS_GLOBAL="--echo -v --refine 1 --delay-refine --energy-weight 1e-1"
 
@@ -85,15 +66,21 @@ average_images()
 # This function will compute the affine alignments of one image to the initial reference.
 pass0()
 {
+    local images="$*"
+    local in_ref=$1
+
     local out_nii_list=""
     
-    local in_ref=${INITIAL_REFERENCE}
     local ref_name=`basename ${in_ref} | sed 's/\..*//g'`
-    for in_flt in ${INITIAL_FLOATING}; do
+    for in_flt in ${images}; do
 	local flt_name=`basename ${in_flt} | sed 's/\..*//g'`
 	local out_xfm=isa/pass0/${flt_name}.xform
 	if needs_update_and_lock ${out_xfm} ${in_ref} ${in_flt}; then
-	    cmtk registration --echo --auto-multi-levels 5 -v --dofs 6 --dofs 9 -o ${out_xfm} ${in_ref} ${in_flt}
+	    if [ "${in_ref}" != "${in_flt}" ]; then
+		cmtk registration --echo --auto-multi-levels 5 -v --dofs 6 --dofs 9 -o ${out_xfm} ${in_ref} ${in_flt}
+	    else
+		cmtk make_initial_affine --identity ${in_ref} ${in_flt} ${out_xfm}
+	    fi
 	    lockfile_delete ${out_xfm}
 	fi
 	
@@ -124,66 +111,25 @@ get_level_warp_args()
     echo ${warp_args}
 }    
 
-# This function computes the first round of nonrigid alignments to the affine average.
-pass1()
-{
-    local out_nii_list=""
-    local ref_nii=isa/pass0/average.nii     
-
-    local initial_ref=${INITIAL_REFERENCE}
-    local initial_ref_name=`basename ${initial_ref} | sed 's/\..*//g'`
-
-    local warp_args=`get_level_warp_args 1 ${initial_ref}`
-
-    for in_flt in ${IMAGES}; do
-	local flt_name=`basename ${in_flt} | sed 's/\..*//g'`
-
-	local out_xfm=isa/pass1/${flt_name}.xform
-
-	if [ "${in_flt}" != "${initial_ref}" ]; then
-	    local inp_xfm=isa/pass0/${flt_name}.xform
-	    if needs_update_and_lock ${out_xfm} ${inp_xfm} ${ref_nii} ${in_flt}; then
-		cmtk warp ${warp_args} --initial ${inp_xfm} -o ${out_xfm} ${ref_nii} ${in_flt}
-		lockfile_delete ${out_xfm}
-	    fi
-	else
-	    if needs_update_and_lock ${out_xfm} ${ref_nii} ${in_flt}; then
-		cmtk warp ${warp_args} -o ${out_xfm} ${ref_nii} ${in_flt}
-		lockfile_delete ${out_xfm}
-	    fi
-	fi
-	
-	local out_nii=isa/pass1/${flt_name}.nii
-	out_nii_list="${out_nii_list} ${out_nii}"
-
-	if needs_update_and_lock ${out_nii} ${out_xfm}; then
-	    cmtk reformatx --echo --sinc-cosine -o ${out_nii} --floating ${in_flt} ${ref_nii} ${out_xfm}
-	    lockfile_delete ${out_nii}
-	fi
-    done
-
-    average_images isa/pass1/average.nii ${out_nii_list}
-}
-
 # This function computes the subsequent rounds of nonrigid alignments.
 passn()
 {
     local curr=$1
     local prev=`expr ${curr} - 1`
 
+    shift
+    local images="$*"
+    local initial_ref=$1
+
     local out_nii_list=""
     local ref_nii=isa/pass${prev}/average.nii     
 
-    local initial_ref=${INITIAL_REFERENCE}
-    local initial_ref_name=`basename ${initial_ref} | sed 's/\..*//g'`
-
     local warp_args=`get_level_warp_args ${curr} ${initial_ref}`
     
-    for in_flt in ${IMAGES}; do
+    for in_flt in ${images}; do
 	local flt_name=`basename ${in_flt} | sed 's/\..*//g'`
 
 	local out_xfm=isa/pass${curr}/${flt_name}.xform
-
 	local inp_xfm=isa/pass${prev}/${flt_name}.xform
 	if needs_update_and_lock ${out_xfm} ${inp_xfm} ${ref_nii} ${in_flt}; then	    
 	    cmtk warp ${warp_args} --initial ${inp_xfm} -o ${out_xfm} ${ref_nii} ${in_flt}
@@ -203,8 +149,7 @@ passn()
 }
 
 # Run the iterative procedure
-pass0
-pass1
-for n in 2 3 4 5; do
-    passn ${n}
+pass0 ${IMAGES}
+for n in 1 2 3 4 5; do
+    passn ${n} ${IMAGES}
 done
