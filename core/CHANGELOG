@@ -9,6 +9,10 @@ Release CMTK-1.1.3:
 
 - Fixed: average_images tool was broken.
 
+- Improved: better, more data-drive automatic initialization of optimizer step
+    sizes and image sampling parameters in pairwise rigid and nonrigid
+    registration.
+
 - Testing: added tests and baselines for average_images tool.
 
 
@@ -24,6 +28,10 @@ Release CMTK-1.1.2 (2009-10-28):
     distribution of one image to that of another.
 - Added: imagemath tool now supports image data padding.
 
+- Fixed: basic reformatting in groupwise registration used slightly broken
+    partitioning for SMP computation. This has been fixed.
+- Fixed: NIFTI reader was not able to read files with detached 348-byte
+    headers, i.e., headers without "extension" field.
 - Fixed: BioRad header problem resulting from struct field alignment (patch by
     Greg Jefferis).
 - Fixed: TemplateArray::GetRangeTemplate() now ignores non-finite values, which
@@ -32,11 +40,6 @@ Release CMTK-1.1.2 (2009-10-28):
 
 - Improved: switched long and short options in command line help and wiki
     markup outputs.
-
-- Fixed: basic reformatting in groupwise registration used slightly broken
-    partitioning for SMP computation. This has been fixed.
-- Fixed: NIFTI reader was not able to read files with detached 348-byte
-    headers, i.e., headers without "extension" field.
 
 
 Release CMTK-1.1.1 (2009-09-02):
