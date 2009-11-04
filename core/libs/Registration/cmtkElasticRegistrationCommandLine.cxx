@@ -93,12 +93,8 @@ ElasticRegistrationCommandLine
   this->m_Metric = 0;
   this->m_Algorithm = 3;
 
-  CoarsestResolution = -1;
-  this->m_Exploration = 4.0;
   this->m_GridSpacing = 15;
   this->m_ExactGridSpacing = 0;
-  this->m_Accuracy = 0.1;
-  this->m_Sampling = 1.0;
   Studylist = Protocol = Time = NULL;
 
   this->m_OutputIntermediate = 0;

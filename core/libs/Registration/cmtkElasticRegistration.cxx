@@ -173,11 +173,16 @@ ElasticRegistration::InitRegistration ()
     FunctionalStack.push( nextFunctional );
     }
   
-  double coarsest = CoarsestResolution;
-  if ( coarsest <= 0 ) 
-    coarsest = this->m_Exploration;
+  if ( this->m_Exploration <= 0 )
+    {
+    const SplineWarpXform* warp = SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_Xform ); 
+    this->m_Exploration = 0.25 * std::max( warp->Spacing[0], std::max( warp->Spacing[1], warp->Spacing[2] ) );
+    }
+
+  if ( this->CoarsestResolution <= 0 ) 
+    this->CoarsestResolution = this->m_Exploration;
   
-  for ( ;(currSampling<=coarsest); currSampling *= 2 ) 
+  for ( ;(currSampling<=this->CoarsestResolution); currSampling *= 2 ) 
     {
     UniformVolume::SmartPtr nextRef;
     UniformVolume::SmartPtr nextMod;
@@ -221,12 +226,6 @@ ElasticRegistration::InitRegistration ()
     }
   
   this->m_Optimizer->SetCallback( this->m_Callback );
-
-  if ( this->m_Exploration <= 0 )
-    {
-    const SplineWarpXform* warp = SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_Xform ); 
-    this->m_Exploration = 0.25 * std::max( warp->Spacing[0], std::max( warp->Spacing[1], warp->Spacing[2] ) );
-    }
 
   return this->Superclass::InitRegistration();
 }
