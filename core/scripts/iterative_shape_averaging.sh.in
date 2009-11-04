@@ -77,7 +77,7 @@ pass0()
 	local out_xfm=isa/pass0/${flt_name}.xform
 	if needs_update_and_lock ${out_xfm} ${in_ref} ${in_flt}; then
 	    if [ "${in_ref}" != "${in_flt}" ]; then
-		cmtk registration --echo --auto-multi-levels 5 -v --dofs 6 --dofs 9 -o ${out_xfm} ${in_ref} ${in_flt}
+		cmtk registration --echo --initxlate --auto-multi-levels 5 -v --dofs 6 --dofs 9 -o ${out_xfm} ${in_ref} ${in_flt}
 	    else
 		cmtk make_initial_affine --identity ${in_ref} ${in_flt} ${out_xfm}
 	    fi
