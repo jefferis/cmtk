@@ -84,7 +84,7 @@ pass0()
 	    lockfile_delete ${out_xfm}
 	fi
 	
-	local out_nii=isa/pass0/${ref_name}_${flt_name}.nii
+	local out_nii=isa/pass0/${flt_name}.nii
 	out_nii_list="${out_nii_list} ${out_nii}"
 
 	if needs_update_and_lock ${out_nii} ${out_xfm}; then
