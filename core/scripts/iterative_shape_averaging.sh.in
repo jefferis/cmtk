@@ -54,7 +54,20 @@ INITIAL_REFERENCE=`get_first ${IMAGES}`
 
 # Everything else is the initial list of floating images
 INITIAL_FLOATING=`get_all_but_first ${IMAGES}`
- 
+
+# This function computed the average of reformatted images.
+average_images()
+{
+    local out_img=$1
+    shift
+    local in_imgs="$*"
+
+    if needs_update_and_lock ${out_img} ${in_imgs}; then
+	cmtk average_images --echo -o ${out_img} ${in_imgs}
+	lockfile_delete ${out_img}
+    fi
+}
+    
 # This function will compute the affine alignments of one image to the initial reference.
 pass0()
 {
@@ -79,11 +92,7 @@ pass0()
 	fi
     done
 
-    local avg_nii=isa/pass0/average.nii
-    if needs_update_and_lock ${avg_nii} ${out_nii_list}; then
-	cmtk average_images --echo -o ${avg_nii} ${out_nii_list}
-	lockfile_delete ${avg_nii}
-    fi
+    average_images isa/pass0/average.nii ${out_nii_list}
 }
 
 # This function computes the first round of nonrigid alignments to the affine average.
@@ -127,11 +136,7 @@ pass1()
 	fi
     done
 
-    local avg_nii=isa/pass1/average.nii
-    if needs_update_and_lock ${avg_nii} ${out_nii_list}; then
-	cmtk average_images --echo -o ${avg_nii} ${out_nii_list}
-	lockfile_delete ${avg_nii}
-    fi
+    average_images isa/pass1/average.nii ${out_nii_list}
 }
 
 # This function computes the subsequent rounds of nonrigid alignments.
@@ -174,11 +179,7 @@ passn()
 	fi
     done
 
-    local avg_nii=isa/pass${curr}/average.nii
-    if needs_update_and_lock ${avg_nii} ${out_nii_list}; then
-	cmtk average_images --echo -o ${avg_nii} ${out_nii_list}
-	lockfile_delete ${avg_nii}
-    fi
+    average_images isa/pass${curr}/average.nii ${out_nii_list}
 }
 
 # Run the iterative procedure
