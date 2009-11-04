@@ -134,6 +134,56 @@ pass1()
     fi
 }
 
+# This function computes the subsequent rounds of nonrigid alignments.
+passn()
+{
+    local curr=$1
+    local prev=`expr ${curr} - 1`
+
+    local out_nii_list=""
+    local ref_nii=isa/pass${prev}/average.nii     
+
+    local initial_ref=${INITIAL_REFERENCE}
+    local initial_ref_name=`basename ${initial_ref} | sed 's/\..*//g'`
+    
+    local cpspacing=`cmtk describe --machine-readable ${initial_ref} | fgrep FOV | cut -f2 | cmtk sequence | fgrep STATval | cut -f2`
+    for ((i=1;i<curr;++i)); do
+	cpspacing=`echo ${cpspacing} | gawk '{print $1 / 2}'`
+    done
+    local exploration=`echo ${cpspacing} | gawk '{ print $1 / 8.0 }'`
+    local accuracy=`echo ${cpspacing} | gawk '{ print $1 / 256.0 }'`
+    local warp_args="--echo -v --refine 1 --delay-refine --grid-spacing ${cpspacing} --accuracy ${accuracy} --exploration ${exploration} --energy-weight 1e-1"
+    
+    for in_flt in ${IMAGES}; do
+	local flt_name=`basename ${in_flt} | sed 's/\..*//g'`
+
+	local out_xfm=isa/pass${curr}/${flt_name}.xform
+
+	local inp_xfm=isa/pass${prev}/${initial_ref_name}_${flt_name}.xform
+	if needs_update_and_lock ${out_xfm} ${inp_xfm} ${ref_nii} ${in_flt}; then	    
+	    cmtk warp ${warp_args} --initial ${inp_xfm} -o ${out_xfm} ${ref_nii} ${in_flt}
+	    lockfile_delete ${out_xfm}
+	fi
+	
+	local out_nii=isa/pass${curr}/${flt_name}.nii
+	out_nii_list="${out_nii_list} ${out_nii}"
+
+	if needs_update_and_lock ${out_nii} ${out_xfm}; then
+	    cmtk reformatx --echo --sinc-cosine -o ${out_nii} --floating ${in_flt} ${ref_nii} ${out_xfm}
+	    lockfile_delete ${out_nii}
+	fi
+    done
+
+    local avg_nii=isa/pass${curr}/average.nii
+    if needs_update_and_lock ${avg_nii} ${out_nii_list}; then
+	cmtk average_images --echo -o ${avg_nii} ${out_nii_list}
+	lockfile_delete ${avg_nii}
+    fi
+}
+
 # Run the iterative procedure
 pass0
 pass1
+for n in 2 3 4 5; do
+    passn ${n}
+done
