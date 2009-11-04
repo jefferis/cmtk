@@ -45,6 +45,17 @@ get_all_but_first()
     shift
     echo $*
 }
+
+# Check for command line arguments, print help if none given
+if test $# -lt 1; then
+    echo "Iterative Shape Averging"    
+    echo "USAGE: $0 referenceImagePath imagePath1 imagePath2 ..."
+    echo "  where the first argument is the path of the initial reference image and"
+    echo "  the remaining arguments are the remaining images in the set to be averaged."
+    echo "  Please make sure the initial reference image is not also listed in the"
+    echo "  list of remaining images."
+    exit 2
+fi
  
 # We should have received a list of all images via the command line
 IMAGES="$*"
@@ -108,9 +119,7 @@ get_level_warp_args()
     for ((i=1;i<iteration;++i)); do
 	cpspacing=`echo ${cpspacing} | gawk '{print $1 / 2}'`
     done
-    local exploration=`echo ${cpspacing} | gawk '{ print $1 / 8.0 }'`
-    local accuracy=`echo ${cpspacing} | gawk '{ print $1 / 256.0 }'`
-    local warp_args="${WARP_ARGS_GLOBAL} --grid-spacing ${cpspacing} --accuracy ${accuracy} --exploration ${exploration}"
+    local warp_args="${WARP_ARGS_GLOBAL} --grid-spacing ${cpspacing}"
 
     echo ${warp_args}
 }    
