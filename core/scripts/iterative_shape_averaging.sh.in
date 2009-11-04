@@ -159,7 +159,7 @@ passn()
 
 	local out_xfm=isa/pass${curr}/${flt_name}.xform
 
-	local inp_xfm=isa/pass${prev}/${initial_ref_name}_${flt_name}.xform
+	local inp_xfm=isa/pass${prev}/${flt_name}.xform
 	if needs_update_and_lock ${out_xfm} ${inp_xfm} ${ref_nii} ${in_flt}; then	    
 	    cmtk warp ${warp_args} --initial ${inp_xfm} -o ${out_xfm} ${ref_nii} ${in_flt}
 	    lockfile_delete ${out_xfm}
