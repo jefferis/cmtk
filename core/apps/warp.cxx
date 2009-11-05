@@ -53,7 +53,7 @@ main ( int argc, char *argv[] )
     cmtk::ElasticRegistrationCommandLine Registration( argc, argv );
     
     // set up console progress reporting
-    cmtk::ProgressConsole progressInstance( "AffineImageRegistration" );
+    cmtk::ProgressConsole progressInstance( "BSplineImageRegistration" );
     Registration.Register();
     }
   catch ( cmtk::VoxelRegistration::ConstructorFailed ) 
