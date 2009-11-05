@@ -89,19 +89,16 @@ ElasticRegistration::ElasticRegistration ()
 CallbackResult 
 ElasticRegistration::InitRegistration ()
 {
-  UniformVolume::SmartPtr refVolume;
-  UniformVolume::SmartPtr fltVolume;
-
   if ( ForceSwitchVolumes ) 
     {
-    refVolume = this->m_Volume_2;
-    fltVolume = this->m_Volume_1;
+    this->m_ReferenceVolume = this->m_Volume_2;
+    this->m_FloatingVolume = this->m_Volume_1;
     SwitchVolumes = 1;
     } 
   else
     {
-    refVolume = this->m_Volume_1;
-    fltVolume = this->m_Volume_2;
+    this->m_ReferenceVolume = this->m_Volume_1;
+    this->m_FloatingVolume = this->m_Volume_2;
     SwitchVolumes = 0;
     }
 
@@ -113,8 +110,8 @@ ElasticRegistration::InitRegistration ()
   MatchedLandmarkList::SmartPtr mll( NULL );
   if ( this->m_LandmarkErrorWeight != 0 ) 
     {
-    LandmarkList::SmartPtr sourceLandmarks = refVolume->m_LandmarkList;
-    LandmarkList::SmartPtr targetLandmarks = fltVolume->m_LandmarkList;
+    LandmarkList::SmartPtr sourceLandmarks = this->m_ReferenceVolume->m_LandmarkList;
+    LandmarkList::SmartPtr targetLandmarks = this->m_FloatingVolume->m_LandmarkList;
     
     if ( sourceLandmarks && targetLandmarks ) 
       {
@@ -138,10 +135,10 @@ ElasticRegistration::InitRegistration ()
     initialInverse = AffineXform::SmartPtr::DynamicCastFrom( this->m_InitialTransformation );
     }
   
-  Vector3D center = fltVolume->GetCenterCropRegion();
+  Vector3D center = this->m_FloatingVolume->GetCenterCropRegion();
   affineXform->ChangeCenter( center.XYZ );
 
-  Types::Coordinate currSampling = std::max( this->m_Sampling, 2 * std::min( refVolume->GetMinDelta(), fltVolume->GetMinDelta()));
+  Types::Coordinate currSampling = std::max( this->m_Sampling, 2 * std::min( this->m_ReferenceVolume->GetMinDelta(), this->m_FloatingVolume->GetMinDelta()));
 
   // If no initial transformation exists, create one from the defined
   // parameters.
@@ -158,10 +155,10 @@ ElasticRegistration::InitRegistration ()
     } 
   else
     {
-    WarpXform::SmartPtr warpXform( this->MakeWarpXform( refVolume->Size, initialInverse ) );
+    WarpXform::SmartPtr warpXform( this->MakeWarpXform( this->m_ReferenceVolume->Size, initialInverse ) );
     
     if ( this->m_InverseConsistencyWeight > 0 ) 
-      InverseWarpXform = WarpXform::SmartPtr( this->MakeWarpXform( fltVolume->Size, affineXform ) );
+      InverseWarpXform = WarpXform::SmartPtr( this->MakeWarpXform( this->m_FloatingVolume->Size, affineXform ) );
 
     // MIPSpro needs explicit:
     this->m_Xform = Xform::SmartPtr::DynamicCastFrom( warpXform ); 
@@ -169,7 +166,7 @@ ElasticRegistration::InitRegistration ()
   
   if ( this->m_UseOriginalData )
     {
-    Functional::SmartPtr nextFunctional( this->MakeFunctional( refVolume, fltVolume, this->m_RigidityConstraintMap, mll ) );
+    Functional::SmartPtr nextFunctional( this->MakeFunctional( this->m_ReferenceVolume, this->m_FloatingVolume, this->m_RigidityConstraintMap, mll ) );
     FunctionalStack.push( nextFunctional );
     }
   
@@ -182,30 +179,26 @@ ElasticRegistration::InitRegistration ()
   if ( this->CoarsestResolution <= 0 ) 
     this->CoarsestResolution = this->m_Exploration;
   
+  UniformVolume::SmartPtr currRef( this->m_ReferenceVolume );
+  UniformVolume::SmartPtr currFlt( this->m_FloatingVolume );
+
   for ( ;(currSampling<=this->CoarsestResolution); currSampling *= 2 ) 
     {
-    UniformVolume::SmartPtr nextRef;
-    UniformVolume::SmartPtr nextMod;
+    UniformVolume::SmartPtr nextRef( new UniformVolume( *currRef, currSampling ) );
+    UniformVolume::SmartPtr nextFlt( new UniformVolume( *currFlt, currSampling ) );
+
     UniformVolume::SmartPtr nextRigidityMap;
-    try 
+    if ( this->m_RigidityConstraintMap )
       {
-      nextRef = UniformVolume::SmartPtr( new UniformVolume( *refVolume, currSampling ) );
-      nextMod = UniformVolume::SmartPtr( new UniformVolume( *fltVolume, currSampling ) );
-      if ( this->m_RigidityConstraintMap )
-	{
-	nextRigidityMap = UniformVolume::SmartPtr( new UniformVolume( *this->m_RigidityConstraintMap, currSampling ) );
-	}
-      }
-    catch (...) 
-      {
+      nextRigidityMap = UniformVolume::SmartPtr( new UniformVolume( *this->m_RigidityConstraintMap, currSampling ) );
       }
     
-    Functional::SmartPtr nextFunctional( this->MakeFunctional( nextRef, nextMod, nextRigidityMap, mll ) );
+    Functional::SmartPtr nextFunctional( this->MakeFunctional( nextRef, nextFlt, nextRigidityMap, mll ) );
     FunctionalStack.push( nextFunctional );
     
-    refVolume = nextRef;
-    fltVolume = nextMod;
-  }
+    currRef = nextRef;
+    currFlt = nextFlt;
+    }
   
   switch ( this->m_Algorithm ) 
     {

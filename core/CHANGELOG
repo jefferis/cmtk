@@ -4,6 +4,9 @@ Release CMTK-1.1.3:
     fields or transformations. This, in combination with "statistics" and
     "sequence" tools, obsoletes the old (and inappropriately named)
     "deformation_field" tool.
+- Added: scripts for multi-NEX motion correction and iterative shape averaging
+    are now configured in build tree and installed in install tree. These (and
+    future scripts) will also be included in installable packages.
 
 - Removed: obsolete "deformation_field" tool.
 
@@ -12,6 +15,8 @@ Release CMTK-1.1.3:
 - Improved: better, more data-drive automatic initialization of optimizer step
     sizes and image sampling parameters in pairwise rigid and nonrigid
     registration.
+- Improved: more explicit handling of effective reference and floating volume
+    in pairwise registration classes.
 
 - Testing: added tests and baselines for average_images tool.
 

@@ -35,7 +35,7 @@
 
 void
 cmtk::SplineWarpXformITKIO
-::Write( const std::string& filename, const SplineWarpXform& xform )
+::Write( const std::string& filename, const SplineWarpXform& xform, const UniformVolume& refVolume, const UniformVolume& fltVolume )
 {
   std::ofstream stream( filename.c_str() );
   if ( stream.good() )
@@ -66,6 +66,9 @@ cmtk::SplineWarpXformITKIO
       stream << " " << vx.XYZ[0] << " " << vx.XYZ[1] << " " << vx.XYZ[2];
       }
     stream << "\n";
+
+    Vector3D origin( xform.m_Origin );
+    refVolume.GetImageToPhysicalMatrix().Multiply( origin.XYZ );    
     
     // Fixed parameters:
     // * Grid Size
@@ -74,7 +77,7 @@ cmtk::SplineWarpXformITKIO
     // * Grid Direction
     stream << "FixedParameters: "
 	   << xform.m_Dims[0] << " " << xform.m_Dims[1] << " " << xform.m_Dims[2] << " "
-	   << xform.m_Origin[0] << " " << xform.m_Origin[1] << " " << xform.m_Origin[2] << " "
+	   << origin[0] << " " << origin[1] << " " << origin[2] << " "
 	   << xform.Spacing[0] << " " << xform.Spacing[1] << " " << xform.Spacing[2] << " "
 	   << "1 0 0 0 1 0 0 0 1\n";
     

@@ -73,19 +73,16 @@ AffineRegistration::InitRegistration ()
   CallbackResult result = this->Superclass::InitRegistration();
   if ( result != CALLBACK_OK ) return result;
 
-  UniformVolume::SmartPtr refVolume;
-  UniformVolume::SmartPtr fltVolume;
-
   if ( this->m_NoSwitch || (this->m_Volume_1->AverageVoxelVolume() >= this->m_Volume_2->AverageVoxelVolume()) ) 
     {
-    refVolume = this->m_Volume_1;
-    fltVolume = this->m_Volume_2;
+    this->m_ReferenceVolume = this->m_Volume_1;
+    this->m_FloatingVolume = this->m_Volume_2;
     SwitchVolumes = false;
     } 
   else
     {
-    refVolume = this->m_Volume_2;
-    fltVolume = this->m_Volume_1;
+    this->m_ReferenceVolume = this->m_Volume_2;
+    this->m_FloatingVolume = this->m_Volume_1;
     SwitchVolumes = true;
     }
   
@@ -114,44 +111,39 @@ AffineRegistration::InitRegistration ()
 
   if ( this->m_InitialAlignCenters ) 
     {
-    Vector3D deltaCenter = ( fltVolume->GetCenterCropRegion() - refVolume->GetCenterCropRegion() );
+    Vector3D deltaCenter = ( this->m_FloatingVolume->GetCenterCropRegion() - this->m_ReferenceVolume->GetCenterCropRegion() );
     affineXform->SetXlate( deltaCenter.XYZ );
     }
   
   this->m_Xform = affineXform;
   
-  Vector3D center = refVolume->GetCenterCropRegion();
+  Vector3D center = this->m_ReferenceVolume->GetCenterCropRegion();
   affineXform->ChangeCenter( center.XYZ );
 
   if ( this->m_UseOriginalData ) 
     {  
-    VoxelMatchingAffineFunctional *newFunctional = CreateAffineFunctional( this->m_Metric, refVolume, fltVolume, affineXform );
+    VoxelMatchingAffineFunctional *newFunctional = CreateAffineFunctional( this->m_Metric, this->m_ReferenceVolume, this->m_FloatingVolume, affineXform );
     FunctionalStack.push( Functional::SmartPtr( newFunctional ) );
     }
   
-  Types::Coordinate currSampling = std::max( this->m_Sampling, 2 * std::min( refVolume->GetMinDelta(), fltVolume->GetMinDelta()));
+  Types::Coordinate currSampling = std::max( this->m_Sampling, 2 * std::min( this->m_ReferenceVolume->GetMinDelta(), this->m_FloatingVolume->GetMinDelta()));
   
   double coarsest = CoarsestResolution;
   if ( coarsest <= 0 ) coarsest = this->m_Exploration;
+
+  UniformVolume::SmartPtr currRef( this->m_ReferenceVolume );
+  UniformVolume::SmartPtr currFlt( this->m_FloatingVolume );
   
   for ( ; (currSampling<=coarsest); currSampling *= 2 ) 
     {
-    UniformVolume::SmartPtr nextRef( NULL );
-    UniformVolume::SmartPtr nextFlt( NULL );
-    try 
-      {
-      nextRef = UniformVolume::SmartPtr( new UniformVolume( *refVolume, currSampling ) );
-      nextFlt = UniformVolume::SmartPtr( new UniformVolume( *fltVolume, currSampling ) );
-      }
-    catch (...) 
-      {
-      }
+    UniformVolume::SmartPtr nextRef( new UniformVolume( *currRef, currSampling ) );
+    UniformVolume::SmartPtr nextFlt( new UniformVolume( *currFlt, currSampling ) );
     
     VoxelMatchingAffineFunctional *newFunctional = CreateAffineFunctional( this->m_Metric, nextRef, nextFlt, affineXform );
     FunctionalStack.push( Functional::SmartPtr( newFunctional ) );
     
-    refVolume = nextRef;
-    fltVolume = nextFlt;
+    currRef = nextRef;
+    currFlt = nextFlt;
     }
 
   this->m_Optimizer = Optimizer::SmartPtr( new BestNeighbourOptimizer( OptimizerStepFactor ) );   

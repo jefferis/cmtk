@@ -34,6 +34,7 @@
 #include <cmtkconfig.h>
 
 #include <cmtkSplineWarpXform.h>
+#include <cmtkUniformVolume.h>
 
 #include <string>
 
@@ -49,7 +50,7 @@ class SplineWarpXformITKIO
 {
 public:
   /// Write transformation to ITK file.
-  static void Write( const std::string& filename, const SplineWarpXform& xform );
+  static void Write( const std::string& filename, const SplineWarpXform& xform, const UniformVolume& refVolume, const UniformVolume& fltVolume );
 };
 
 } // namespace cmtk

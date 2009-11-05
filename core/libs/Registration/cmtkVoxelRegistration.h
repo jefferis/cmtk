@@ -112,6 +112,18 @@ protected:
   /// Second data volume.
   cmtkGetSetMacro(UniformVolume::SmartPtr,Volume_2);
 
+  /** Reference data volume.
+   * This is a pointer to the actual reference volume, which is either Volume_1 or Volume_2 above,
+   * depending on whether registration was instructed to switch the two or not.
+   */
+  cmtkGetSetMacro(UniformVolume::SmartPtr,ReferenceVolume);
+
+  /** Floating data volume.
+   * This is a pointer to the actual floating volume, which is either Volume_2 or Volume_1 above,
+   * depending on whether registration was instructed to switch the two or not.
+   */
+  cmtkGetSetMacro(UniformVolume::SmartPtr,FloatingVolume);
+
   /// Local class for preprocessing image data, e.g., by histogram operations, thresholding, and cropping.
   class ImagePreprocessor
   {

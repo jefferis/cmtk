@@ -379,7 +379,7 @@ ElasticRegistrationCommandLine
 
   if ( this->m_OutputPathITK ) 
     {
-    SplineWarpXformITKIO::Write( this->m_OutputPathITK, *(this->GetTransformation()) );
+    SplineWarpXformITKIO::Write( this->m_OutputPathITK, *(this->GetTransformation()), *(this->m_ReferenceVolume), *(this->m_FloatingVolume) );
     }
 
   if ( this->m_ReformattedImagePath )
