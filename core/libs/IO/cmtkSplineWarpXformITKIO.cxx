@@ -59,10 +59,15 @@ cmtk::SplineWarpXformITKIO
 
     // write parameters
     stream << "Parameters:";
+
     Vector3D v, vx;
+    const AffineXform::SmartPtr bulkXform = xform.GetInitialAffineXform();
+
     for ( size_t cp = 0; cp < xform.GetNumberOfControlPoints(); ++cp )
       {
       xform.GetOriginalControlPointPositionByOffset( v, cp );
+      if ( bulkXform )
+	bulkXform->ApplyInPlace( v );
       xform.GetShiftedControlPointPositionByOffset( vx, cp );
 
       vx -= v;
@@ -84,7 +89,6 @@ cmtk::SplineWarpXformITKIO
 	   << xform.Spacing[0] << " " << xform.Spacing[1] << " " << xform.Spacing[2] << " "
 	   << "1 0 0 0 1 0 0 0 1\n";
 
-    const AffineXform::SmartPtr bulkXform = xform.GetInitialAffineXform();
     if ( bulkXform )
       {
       TransformChangeToSpaceAffine toNative( *(bulkXform), refVolume, fltVolume );
