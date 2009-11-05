@@ -41,43 +41,48 @@ cmtk::AffineXformITKIO
   if ( stream.good() )
     {
     // write header
-    stream << "#Insight Transform File V1.0\n"
-	   << "# Transform 0\n";
-
-    // write ID depending on whether CMTK is using single or double precision floats for coordinates
-    if ( typeid( Types::Coordinate ) == typeid( double ) )
-      {
-      stream << "Transform: AffineTransform_double_3_3\n";
-      }
-    else
-      {
-      stream << "Transform: AffineTransform_float_3_3\n";
-      }
-
-    // write parameters, 3x3 transformation matrix first
-    stream << "Parameters: ";
-    for ( int i = 0; i < 3; ++i )
-      {
-      for ( int j = 0; j < 3; ++j )
-	{
-	stream << affineXform.Matrix[j][i] << " ";
-	}
-      }
-
-    // write translations
-    for ( int i = 0; i < 3; ++i )
-      {
-      stream << affineXform.Matrix[3][i] << " ";
-      }
-
-    // finish up with (all-zero) fixed parameters
-    stream << "\n"
-	   << "FixedParameters: 0 0 0\n";
-
+    stream << "#Insight Transform File V1.0\n";
+    Self::Write( stream, affineXform, 0 );
     stream.close();
     }
 }
 
+void
+cmtk::AffineXformITKIO
+::Write( std::ofstream& stream, const AffineXform& affineXform, const size_t idx )
+{
+  stream << "# Transform 0\n";
+  
+  // write ID depending on whether CMTK is using single or double precision floats for coordinates
+  if ( typeid( Types::Coordinate ) == typeid( double ) )
+    {
+    stream << "Transform: AffineTransform_double_3_3\n";
+    }
+  else
+    {
+    stream << "Transform: AffineTransform_float_3_3\n";
+    }
+  
+  // write parameters, 3x3 transformation matrix first
+  stream << "Parameters: ";
+  for ( int i = 0; i < 3; ++i )
+    {
+    for ( int j = 0; j < 3; ++j )
+      {
+      stream << affineXform.Matrix[j][i] << " ";
+      }
+    }
+  
+  // write translations
+  for ( int i = 0; i < 3; ++i )
+    {
+    stream << affineXform.Matrix[3][i] << " ";
+    }
+  
+  // finish up with (all-zero) fixed parameters
+  stream << "\n"
+	 << "FixedParameters: 0 0 0\n";
+}
 
 cmtk::AffineXform*
 cmtk::AffineXformITKIO
