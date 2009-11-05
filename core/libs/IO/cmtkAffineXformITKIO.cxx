@@ -51,7 +51,7 @@ void
 cmtk::AffineXformITKIO
 ::Write( std::ofstream& stream, const AffineXform& affineXform, const size_t idx )
 {
-  stream << "# Transform 0\n";
+  stream << "# Transform " << idx << "\n";
   
   // write ID depending on whether CMTK is using single or double precision floats for coordinates
   if ( typeid( Types::Coordinate ) == typeid( double ) )
