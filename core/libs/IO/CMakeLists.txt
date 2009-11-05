@@ -30,6 +30,7 @@
 # Sources of non-templated classes.
 SET(cmtkIO_SRCS
   cmtkAffineXformITKIO.cxx
+  cmtkSplineWarpXformITKIO.cxx
   cmtkClassStreamAffineXform.cxx
   cmtkClassStreamHistogram.cxx
   cmtkClassStreamInfinitePlane.cxx
