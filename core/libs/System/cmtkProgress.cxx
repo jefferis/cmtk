@@ -47,7 +47,7 @@ Progress* Progress::ProgressInstance = 0;
 
 void
 Progress::Begin
-( const float start, const float end, const float increment, const std::string& taskName ){
+( const double start, const double end, const double increment, const std::string& taskName ){
   if ( ProgressInstance )
     {
     ProgressInstance->BeginVirtual( start, end, increment, taskName );
@@ -56,13 +56,13 @@ Progress::Begin
 
 void
 Progress::BeginVirtual
-( const float start, const float end, const float increment, const std::string& taskName )
+( const double start, const double end, const double increment, const std::string& taskName )
 {
   this->m_RangeStack.push_front( Self::Range( start, end, increment, taskName ) );
 }
 
 void
-Progress::SetProgressCurrent( const float progress )
+Progress::SetProgressCurrent( const double progress )
 {
   RangeStackType::iterator current = this->m_RangeStack.begin();
   
@@ -73,7 +73,7 @@ Progress::SetProgressCurrent( const float progress )
 }
 
 Progress::ResultEnum 
-Progress::SetProgress( const float progress )
+Progress::SetProgress( const double progress )
 {
   if ( ProgressInstance )
     {
@@ -98,16 +98,16 @@ Progress::DoneVirtual()
     this->m_RangeStack.pop_front();
 }
 
-float
-Progress::Range::GetFractionComplete( const float nestedFraction ) const
+double
+Progress::Range::GetFractionComplete( const double nestedFraction ) const
 {
   return ( ( this->m_Current + nestedFraction * this->m_Increment ) - this->m_Start) / (this->m_End - this->m_Start);
 }
 
-float
+double
 Progress::GetFractionComplete() const
 {
-  float fraction = 0;
+  double fraction = 0;
   for ( RangeStackType::const_iterator it = this->m_RangeStack.begin(); it != this->m_RangeStack.end(); ++it )
     {
     fraction = it->GetFractionComplete( fraction );

@@ -68,10 +68,10 @@ public:
   virtual ~Progress() {};
   
   /// Set total number of steps to complete.
-  static void Begin( const float start, const float end, const float increment, const std::string& taskName = std::string("") );
+  static void Begin( const double start, const double end, const double increment, const std::string& taskName = std::string("") );
 
   /// Set number of tasks completed.
-  static ResultEnum SetProgress( const float progress );
+  static ResultEnum SetProgress( const double progress );
 
   /// Done with progress indicator.
   static void Done();
@@ -80,7 +80,7 @@ public:
   virtual ResultEnum UpdateProgress() = 0;
   
   /// Set number of tasks completed.
-  void SetProgressCurrent( const float progress );
+  void SetProgressCurrent( const double progress );
   
   /// Set progress handler instance.
   static void SetProgressInstance( Self *const progressInstance ) 
@@ -97,27 +97,27 @@ private:
   {
   public:
     /// Constructor.
-    Range( const float start, const float end, const float increment, const std::string& taskName = std::string("") )
+    Range( const double start, const double end, const double increment, const std::string& taskName = std::string("") )
       : m_Start( start ), m_End( end ), m_Increment( increment ), m_TaskName( taskName )
     {
       this->m_Current = this->m_Start;
     }
 
     /// Get complete fraction for this range.
-    float GetFractionComplete( const float nestedFraction = 0 //!< For nexted ranges, this is the fraction achieved in he next level down.
+    double GetFractionComplete( const double nestedFraction = 0 //!< For nexted ranges, this is the fraction achieved in he next level down.
       ) const;
 
     /// Start of this range.
-    float m_Start;
+    double m_Start;
 
     /// End of this range.
-    float m_End;
+    double m_End;
 
     /// Increment between steps.
-    float m_Increment;
+    double m_Increment;
 
     /// Current position in the range.
-    float m_Current;
+    double m_Current;
 
     /// Name of this task.
     const std::string m_TaskName;
@@ -140,10 +140,10 @@ protected:
   const std::string GetCurrentTaskName() const;
 
   /// Compute current completion fraction from range stack.
-  float GetFractionComplete() const;
+  double GetFractionComplete() const;
 
   /// Set total number of steps to complete.
-  virtual void BeginVirtual( const float start, const float end, const float increment, const std::string& taskName = std::string("") );
+  virtual void BeginVirtual( const double start, const double end, const double increment, const std::string& taskName = std::string("") );
 
   /** Clean up progress output.
    * This member function can be overriden by derived classes.

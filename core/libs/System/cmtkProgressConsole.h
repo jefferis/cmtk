@@ -74,7 +74,7 @@ public:
 
 protected:
   /// Begin a new level of progress reporting.
-  virtual void BeginVirtual( const float start, const float end, const float increment, const std::string& taskName );
+  virtual void BeginVirtual( const double start, const double end, const double increment, const std::string& taskName );
 
 private:
   /// Name of this program.

@@ -79,7 +79,7 @@ ProgressConsole::~ProgressConsole()
 Progress::ResultEnum
 ProgressConsole::UpdateProgress()
 {
-  const float fraction = this->GetFractionComplete();
+  const double fraction = this->GetFractionComplete();
 
   if ( this->m_InsideSlicer3 )
     {
@@ -104,7 +104,7 @@ ProgressConsole::UpdateProgress()
 
 void
 ProgressConsole:: BeginVirtual
-( const float start, const float end, const float increment, const std::string& taskName )
+( const double start, const double end, const double increment, const std::string& taskName )
 {
   this->Superclass::BeginVirtual( start, end, increment, taskName );
 
