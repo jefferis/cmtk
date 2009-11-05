@@ -84,11 +84,8 @@ public:
   /// Output image format.
   igsClassParameter(int,OutputFormat);
 
-  /// Anonymize flag.
-  igsClassParameter(int,Anonymize);
-
   /// Checkerboard filling of missing data regions.
-  igsClassParameter(int,CheckerboardMode);
+  igsClassParameter(bool,CheckerboardMode);
 
   /// Path to write image files.
   igsClassParameterString(ImagePath);

@@ -50,8 +50,7 @@ VolumeReformatter::VolumeReformatter()
   RescaleSlope = 1;
 
   OutputFormat = 0;
-  Anonymize = 0;
-  CheckerboardMode = 1;
+  CheckerboardMode = true;
 
   ImagePath = FilenamePattern = NULL;
 }
