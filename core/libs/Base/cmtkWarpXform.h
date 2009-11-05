@@ -285,6 +285,18 @@ public:
   /// Set voxel-by-voxel map for incompressibility constraint.
   virtual void SetIncompressibilityMap( DataGrid::SmartPtr& incompressibility );
 
+  /// Get the original position of a control point.
+  virtual void GetOriginalControlPointPosition( Vector3D& v, const Types::Coordinate x, const Types::Coordinate y, const Types::Coordinate z) const 
+  { 
+    v.Set( this->m_Origin[0] + x*this->Spacing[0], this->m_Origin[1] + y*this->Spacing[1], this->m_Origin[2] + z*this->Spacing[2] );
+  }
+  
+  /// Get the original position of a control point by index.
+  virtual void GetOriginalControlPointPositionByOffset( Vector3D& v, const size_t offset ) const 
+  {
+    this->GetOriginalControlPointPosition( v, offset % this->m_Dims[0], (offset % (this->m_Dims[0]*this->m_Dims[1])) / this->m_Dims[0], offset / (this->m_Dims[0]*this->m_Dims[1]) ); 
+  }
+
   /// Get shifted control point position.
   virtual void GetShiftedControlPointPosition( Vector3D& v, const int x, const int y, const int z ) const 
   { 

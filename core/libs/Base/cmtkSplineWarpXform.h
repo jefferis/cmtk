@@ -97,18 +97,6 @@ public:
   /// Initialize control point positions, potentially with affine displacement.
   void InitControlPoints( const AffineXform* affineXform = NULL );
 
-  /// Get the original position of a control point.
-  virtual void GetOriginalControlPointPosition( Vector3D& v, const Types::Coordinate x, const Types::Coordinate y, const Types::Coordinate z) const 
-  { 
-    v.Set( (x-1)*this->Spacing[0], (y-1)*this->Spacing[1], (z-1)*this->Spacing[2] );
-  }
-  
-  /// Get the original position of a control point by index.
-  virtual void GetOriginalControlPointPositionByOffset( Vector3D& v, const size_t offset ) const 
-  {
-    this->GetOriginalControlPointPosition( v, offset % this->m_Dims[0], (offset % (this->m_Dims[0]*this->m_Dims[1])) / this->m_Dims[0], offset / (this->m_Dims[0]*this->m_Dims[1]) ); 
-  }
-
   /// Update internal representation.
   virtual void Update( const bool exactDelta = false );
 
