@@ -86,7 +86,7 @@ public:
   virtual Self::ReturnType Evaluate() { return 0; }
 
   /// Dummy function.
-  virtual void InterpolateImage(size_t, byte*) {}
+  virtual void InterpolateImage( const size_t, byte *const ) {}
 };
 
 /// Class stream write function.

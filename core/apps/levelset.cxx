@@ -120,7 +120,7 @@ main( int argc, char* argv[] )
 
     nInsideOld = nInside;
     nInside = 0;
-    double insideSum = 0, outsideSum = 0;
+    cmtk::Types::DataItem insideSum = 0, outsideSum = 0;
 
     levelset->ApplyGaussFilter( filterSigma );
 #pragma omp parallel for reduction(+:nInside) reduction(+:insideSum) reduction(+:outsideSum)
@@ -138,8 +138,8 @@ main( int argc, char* argv[] )
     const size_t nOutside = numberOfPixels - nInside;
     const cmtk::Types::DataItem ratioInOut = 1.0 * nInside / nOutside;
     
-    const float mInside = insideSum / nInside;
-    const float mOutside = outsideSum / nOutside;
+    const cmtk::Types::DataItem mInside = insideSum / nInside;
+    const cmtk::Types::DataItem mOutside = outsideSum / nOutside;
 
     if ( verbose )
       std::cerr << it << " IN: " << nInside << "  " << mInside << "  OUT: " << nOutside << "  " << mOutside << "\r";

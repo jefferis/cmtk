@@ -71,7 +71,7 @@ size_t NormalGroupFirstN = 0;
 float SamplingDensity = -1.0;
 
 bool DeactivateUninformative = true;
-float PartialGradientThreshold = 0.01;
+cmtk::Types::Coordinate PartialGradientThreshold = 0.01;
 
 cmtk::Types::Coordinate SmoothSigmaFactor = 0.0;
 
@@ -191,7 +191,7 @@ main( int argc, char ** argv )
   cmtk::UniformVolume::SmartPtr originalTemplateGrid = functional->GetTemplateGrid();
   functional->InitializeXforms( GridSpacing ); // must do this before downsampling template grid
 
-  const float timeBaselineProcess = cmtk::Timers::GetTimeProcess();
+  const double timeBaselineProcess = cmtk::Timers::GetTimeProcess();
 
   if ( ! DisableOptimization )
     {
@@ -258,21 +258,21 @@ main( int argc, char ** argv )
     }
 
   // determine and print CPU time (by node, if using MPI)
-  const float timeElapsedProcess = cmtk::Timers::GetTimeProcess() - timeBaselineProcess;
+  const double timeElapsedProcess = cmtk::Timers::GetTimeProcess() - timeBaselineProcess;
 #ifdef CMTK_BUILD_MPI    
-  std::vector<float> timeElapsedByNodeProcess( mpiSize );
-  MPI::COMM_WORLD.Gather( &timeElapsedProcess, 1, MPI::FLOAT, &timeElapsedByNodeProcess[0], 1, MPI::FLOAT, 0 /*root*/ );
-
+  std::vector<double> timeElapsedByNodeProcess( mpiSize );
+  MPI::COMM_WORLD.Gather( &timeElapsedProcess, 1, MPI::DOUBLE, &timeElapsedByNodeProcess[0], 1, MPI::DOUBLE, 0 /*root*/ );
+  
   if ( mpiRank == 0 )
     {
     cmtk::StdErr << "Process CPU time [s] by node:\n";
     for ( int node = 0; node < mpiSize; ++node )
       {
-      cmtk::StdErr.printf( "%d\t%f\n", node, timeElapsedByNodeProcess[node] );
+      cmtk::StdErr.printf( "%d\t%lf\n", node, timeElapsedByNodeProcess[node] );
       }
     }
 #else
-  cmtk::StdErr.printf( "Process CPU time [s]: %f\n", timeElapsedProcess );  
+  cmtk::StdErr.printf( "Process CPU time [s]: %lf\n", timeElapsedProcess );  
 #endif  
 
   cmtk::GroupwiseRegistrationOutput output;
