@@ -27,6 +27,8 @@
 ##  $LastChangedBy$
 ##
 
+FIND_PACKAGE(PythonInterp)
+
 SET(DATA ${CMTK_DATA_ROOT}/testing/inputs)
 SET(BASELINE ${CMTK_DATA_ROOT}/testing/baseline)
 
