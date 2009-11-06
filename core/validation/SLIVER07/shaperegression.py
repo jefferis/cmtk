@@ -1,4 +1,4 @@
-
+#!/usr/bin/python
 import io
 import os
 import struct
@@ -51,10 +51,10 @@ def getIntensityVectors():
       # Unpack the bytes:
       intensities = []
       for i in range(0, len(bytes)):
-        if ((i%ctypelength)==0):
+        if ((i % ctypelength)==0):
           # Current raw item is the concatenation of bytes from
           # list index i to index i+ctypelength.
-          currentDatum = sum(bytes[i:i+ctypelength])
+          currentDatum = ''.join(byte for byte in bytes[i:i+ctypelength])
           # "Unpack" raw bytes to a numeric value:
           intensities.append(struct.unpack(fmt, currentDatum)[0])
       intensityVectors.append(intensities)
