@@ -11,6 +11,7 @@ import numpy
 pathRoot = '/Users/mphasak/Development/sliver07'
 rawDir = os.path.join(pathRoot, 'resamp30')
 comDir = os.path.join(pathRoot, 'com')
+dimsDir = os.path.join(pathRoot, 'dims')
 
 volumeIDs = ['01','02','03','04','05','06','07','08','09','10',\
              '11','12','13','14','15','16','17','18','19','20']
@@ -39,6 +40,32 @@ def getCentersOfMass():
           centersOfMass.append(items)
       print filename
   return centersOfMass
+
+def getDimsInMM():
+  dims = []
+  fileList = os.listdir(dimsDir)
+  for filename in fileList:
+    if filename.endswith(".dims"):
+      dimFile = os.path.join(dimsDir, filename)
+      with open(dimFile) as f:
+        for line in f:
+          line = line.rstrip('\n')
+          items = line.split(" ")
+          items = map(float, items)
+          dims.append(items)
+      print filename
+  return dims
+
+def normalizeCOMs(coms, dims):
+  assert len(coms) == len(dims)
+  normalizedCOMs = []
+  for i in range(0, len(coms)):
+    assert len(coms[i]) == len(dims[i])
+    normalizedCOM = []
+    for dim in range(0, len(coms[i])):
+      normalizedCOM.append(coms[i][dim]/dims[i][dim])
+    normalizedCOMs.append(normalizedCOM)
+  return normalizedCOMs  
 
 def getIntensityVectors():
   """
@@ -100,4 +127,8 @@ def leaveOneOut(A, B):
     r = computeResidual(A, B, x, leaveOut)
     print r
   
+#a = getIntensityVectors()
+#coms = getCentersOfMass()
+#dims = getDimsInMM
+#b = normalizeCOMs(coms, dims)
 
