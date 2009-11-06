@@ -116,6 +116,7 @@ def computeResidual(A, B, x, ommittedRow):
 def leaveOneOut(A, B):
   assert len(A) == len(B)
   rowRange = range(0,len(A))
+  errs = []
   for leaveOut in rowRange:
     currentSubA = []
     currentSubB = []
@@ -125,10 +126,13 @@ def leaveOneOut(A, B):
         currentSubB.append(B[i])
     x = numpy.dot(pseudoInverse(currentSubA), currentSubB)
     r = computeResidual(A, B, x, leaveOut)
-    print r
+    errs.append(r)
+  return errs  
+    
   
 #a = getIntensityVectors()
 #coms = getCentersOfMass()
 #dims = getDimsInMM
 #b = normalizeCOMs(coms, dims)
-
+#errs = leaveOneOut(a,b)
+#avgerr = numpy.average(errs)
