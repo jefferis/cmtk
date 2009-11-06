@@ -41,6 +41,17 @@ def getCentersOfMass():
   return centersOfMass
 
 def getIntensityVectors():
+  "
+  This function may be hard to read. It's parsing the binary
+  data of a NRRD volume, and relies on some unusual string
+  concatenation syntax and the 'struct' class, which has
+  an entirely different meaning than 'struct' in C: here
+  it's a class providing the 'unpack' function for turning
+  a string representation of a ctype (short, float, etc.) 
+  into a python float.
+   (This could be cleaned us by finding and using an actual
+  proper NRRD library.)
+  "
   intensityVectors = []
   fileList = os.listdir(rawDir)
   for filename in fileList:
