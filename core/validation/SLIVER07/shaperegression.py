@@ -2,6 +2,7 @@
 import io
 import os
 import struct
+import math
 import scipy
 import scipy.linalg
 from scipy import matrix
@@ -52,8 +53,8 @@ def getIntensityVectors():
       for i in range(0, len(bytes)):
         if ((i%ctypelength)==0):
           # Current raw item is the concatenation of bytes from
-          # list index i to index i+ctypelength:
-          currentDatum = reduce((lambda a,b: a+b),bytes[i:i+ctypelength])
+          # list index i to index i+ctypelength.
+          currentDatum = sum(bytes[i:i+ctypelength])
           # "Unpack" raw bytes to a numeric value:
           intensities.append(struct.unpack(fmt, currentDatum)[0])
       intensityVectors.append(intensities)
@@ -67,8 +68,11 @@ def pseudoInverse(A):
 def computeResidual(A, B, x, ommittedRow):
   testVector = A[ommittedRow]
   actualCOM = B[ommittedRow]
-  proposedCOM = testVector * x
+  proposedCOM = numpy.dot(testVector, x)
   residualVector = actualCOM - proposedCOM
+  squaredResiduals = map(lambda a: a*a, residualVector)
+  r = math.sqrt(sum(squaredResiduals))
+  return r
 
 
 def leaveOneOut(A, B):
@@ -81,13 +85,8 @@ def leaveOneOut(A, B):
       if i != leaveOut:
         currentSubA.append(A[i])
         currentSubB.append(B[i])
-    print currentSubA
-    currentSubA = matrix(currentSubA)
-    currentSubB = matrix(currentSubB)
-    print currentSubA.shape
-    print pseudoInverse(currentSubA).shape
-    print currentSubB.shape
-    #x = pseudoInverse(currentSubA) * currentSubB
-    print x
+    x = numpy.dot(pseudoInverse(currentSubA), currentSubB)
+    r = computeResidual(A, B, x, leaveOut)
+    print r
   
 
