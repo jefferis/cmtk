@@ -273,19 +273,6 @@ IF(CMTK_USE_DCMTK)
 ENDIF(CMTK_USE_DCMTK)
 
 #-----------------------------------------------------------------------------
-# Add an option to use bundled zlib.
-
-# Check for useful libraries
-Find_Package(ZLIB)
-IF(NOT ZLIB_FOUND)
-  MESSAGE( STATUS "Building bundled zlib library" )
-  SET(CMTK_BUILD_ZLIB 1)
-  SET(ZLIB_FOUND 1)
-  SET(ZLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/zlib CACHE PATH "Directory containing zlib.h header file" FORCE)
-  UNSET(ZLIB_LIBRARY CACHE)
-ENDIF(NOT ZLIB_FOUND)
-
-#-----------------------------------------------------------------------------
 # Add an option to use or not use TEEM (for NrrdIO support)
 
 OPTION(CMTK_BUILD_NRRD "Build NrrdIO library for NRRD import/export" ON)
