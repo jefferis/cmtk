@@ -112,15 +112,15 @@ check_results()
 case ${RUNTEST} in
     AffineRegistrationMrMrMSD)
 	run registration -i --dofs 6,9 --msd --match-histograms -o ${tmpdir} pat001_mr_T1.hdr pat002_mr_T2.hdr
-	check_result registration
+	check_results registration
 	;;
     ShapeBasedAverage)
 	run average_edt -o ${tmpdir}/shape_average.hdr -n 255 --interpolate-image parc1.hdr parc2.hdr parc3.hdr
-	check_result shape_average.img
+	check_results shape_average.img
 	;;
     ShapeBasedAverageInterpolation)
 	run average_edt -o ${tmpdir}/shape_average.hdr -n 255 --interpolate-distance parc12_warp.xform parc13_warp.xform
-	check_result shape_average.img
+	check_results shape_average.img
 	;;
     average_imagesMean)
 	run average_images -o ${tmpdir}/average.hdr spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
@@ -152,28 +152,27 @@ case ${RUNTEST} in
 	;;
     ConcatAffineABA)
 	run concat_affine -o ${tmpdir}/concat.xform affineA.xform affineB.xform affineA.xform
-	check_result concat.xform
+	check_results concat.xform
 	;;
     ConcatAffineABAInvert)
 	run concat_affine --invert-output -o ${tmpdir}/concat.xform affineA.xform affineB.xform affineA.xform
-	check_result concat.xform
+	check_results concat.xform
 	;;
     ConcatAffineAB1A)
 	run concat_affine -o ${tmpdir}/concat.xform affineA.xform --inverse affineB.xform affineA.xform
-	check_result concat.xform
+	check_results concat.xform
 	;;
     ConcatAffineAA1)
 	run concat_affine -o ${tmpdir}/concat.xform affineA.xform --inverse affineA.xform
-	check_result concat.xform
+	check_results concat.xform
 	;;
     ConcatAffineA1A)
 	run concat_affine -o ${tmpdir}/concat.xform -- --inverse affineA.xform affineA.xform
-	check_result concat.xform
+	check_results concat.xform
 	;;
     CongealFromInit)
 	run congeal -v --force-background 0 -O ${tmpdir} --dofs 6 --dofs 9 -e 4 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum groupwise_init_brain123.xforms
-	check_result congeal.xforms
-	check_result average_congeal.img
+	check_results congeal.xforms average_congeal.img
 	;;
     CongealFromInitSampling)
 	run congeal -v --force-background 0 -O ${tmpdir} --dofs 6 --dofs 9 -e 4 -a 0.25 --downsample-to 1 --sampling-density 0.5 --zero-sum groupwise_init_brain123.xforms
@@ -181,8 +180,7 @@ case ${RUNTEST} in
 	;;
     CongealBackground)
 	run congeal -v --force-background 0 -O ${tmpdir} --template spgr_brain_1.hdr --dofs 6 --dofs 9 -e 2 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
-	check_result congeal.xforms
-	check_result average_congeal.img
+	check_results congeal.xforms average_congeal.img
 	;;
     CongealUseTemplate)
         export CMTK_NUM_THREADS=1
@@ -219,11 +217,11 @@ case ${RUNTEST} in
 	;;
     ConvertBoundaryMap)
 	run convert --bmap parc1.hdr ${tmpdir}/boundary_map.hdr
-	check_result boundary_map.img
+	check_results boundary_map.img
 	;;
     ConvertBoundaryMapMultiValue)
 	run convert --bmap-multi parc1.hdr ${tmpdir}/boundary_map_multi.hdr
-	check_result boundary_map_multi.img
+	check_results boundary_map_multi.img
 	;;
     ConvertDownsample)
 	run convert --downsample 8,4,1 phantom_ax.hdr ${tmpdir}/downsample.hdr
@@ -243,11 +241,11 @@ case ${RUNTEST} in
 	;;
     ConvertMedianFilter1)
 	run convert --median 1 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
-	check_result spgr_brain_1.img
+	check_results spgr_brain_1.img
 	;;
     ConvertMedianFilter2)
 	run convert --median 2 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
-	check_result spgr_brain_1.img
+	check_results spgr_brain_1.img
 	;;
     ConvertNiftiToAnalyze)
 	run convert spgr_brain_1.nii ${tmpdir}/spgr_brain_1.hdr
@@ -255,11 +253,11 @@ case ${RUNTEST} in
 	;;
     ConvertAnalyzeToNifti)
 	run convert spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.nii
-	check_result spgr_brain_1.nii
+	check_results spgr_brain_1.nii
 	;;
     ConvertNiftiDetachedToNifti)
 	run convert spgr_brain_nifti.hdr ${tmpdir}/spgr_brain_1.nii
-	check_result spgr_brain_1.nii
+	check_results spgr_brain_1.nii
 	;;
     ConvertAnalyzeToNiftiDetached)
 	run convert spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.img
@@ -279,31 +277,31 @@ case ${RUNTEST} in
 	;;
     DescribeMR1)
 	run_eval "${BINDIR}/describe -m parc1_bin.hdr > ${tmpdir}/describe.txt"
-	check_result describe.txt
+	check_results describe.txt
 	;;
     DescribeMR2)
 	run_eval "${BINDIR}/describe -m phantom_ax.hdr phantom_co.hdr phantom_sa.hdr > ${tmpdir}/describe.txt"
-	check_result describe.txt
+	check_results describe.txt
 	;;
     DescribeMR3)
 	run_eval "${BINDIR}/describe -m header_only.hdr > ${tmpdir}/describe.txt"
-	check_result describe.txt
+	check_results describe.txt
 	;;
     DescribeMR4)
 	run_eval "${BINDIR}/describe -m phantom_ax.nii phantom_co.nii phantom_sa.nii > ${tmpdir}/describe.txt"
-	check_result describe.txt
+	check_results describe.txt
 	;;
     DescribeMRBiorad)
 	run_eval "${BINDIR}/describe -m bioradvol.PIC.gz > ${tmpdir}/describe.txt"
-	check_result describe.txt
+	check_results describe.txt
 	;;
     DescribeMRNrrd1)
 	run_eval "${BINDIR}/describe -m phantom_ax.nhdr phantom_co.nhdr phantom_sa.nhdr > ${tmpdir}/describe.txt"
-	check_result describe.txt
+	check_results describe.txt
 	;;
     DescribeMRNrrd2)
 	run_eval "${BINDIR}/describe -m split_ax_0.nhdr split_ax_1.nhdr split_ax_2.nhdr > ${tmpdir}/describe.txt"
-	check_result describe.txt
+	check_results describe.txt
 	;;
     DescribeNiftiDetached348)
 	run_eval "${BINDIR}/describe -m spgr_brain_nifti_hdr348.hdr > ${tmpdir}/describe.txt"
@@ -311,59 +309,59 @@ case ${RUNTEST} in
 	;;
     FilterGaussian)
 	run filter --gaussian 1 --radius 2 rat_fse_erly.hdr ${tmpdir}/filter.hdr
-	check_result filter.img
+	check_results filter.img
 	;;
     FilterGaussianSmallKernel)
 	run filter --gaussian 1 --radius 1.1 rat_fse_erly.hdr ${tmpdir}/filter.hdr
-	check_result filter.img
+	check_results filter.img
 	;;
     FilterGaussianNoFilter)
 	run filter --gaussian 1 --radius 0.5 rat_fse_erly.hdr ${tmpdir}/filter.hdr
-	check_result filter.img
+	check_results filter.img
 	;;
     FilmFourthOrder)
 	run film --coronal --nmi --fourth-order-error --passes 3 --num-iterations 3 --injection-kernel-radius 2 --injection-kernel-sigma 1 --write-injected-image ${tmpdir}/injected.hdr interleave_thnfse.hdr ${tmpdir}/corrected.hdr
-	check_result corrected.img
+	check_results corrected.img
 	;;
     FilmCubic)
 	run film --coronal --nmi --cubic --passes 3 --num-iterations 3 --injection-kernel-radius 2 --injection-kernel-sigma 1 --write-injected-image ${tmpdir}/injected.hdr interleave_thnfse.hdr ${tmpdir}/corrected.hdr
-	check_result corrected.img
+	check_results corrected.img
 	;;
     FilmMSDLinearNoTrunc)
 	run film --msd --coronal --linear --no-truncation --passes 3 --num-iterations 3 --injection-kernel-radius 2 --injection-kernel-sigma 1 interleave_thnfse.hdr ${tmpdir}/corrected.hdr
-	check_result corrected.img
+	check_results corrected.img
 	;;
     FilmMISincRefSPGR)
 	run film --mi --coronal --cubic --passes 3 --num-iterations 3 --injection-kernel-radius 2 --injection-kernel-sigma 1 --reference-image interleave_3dspgr.hdr interleave_thnfse.hdr ${tmpdir}/corrected.hdr
-	check_result corrected.img
+	check_results corrected.img
 	;;
     GregxformFordwardBackward)
 	run_eval "cat vol001_t0_points.xyz | ${BINDIR}/gregxform -f vol001_mr_t0t1_warp.xform | ${BINDIR}/gregxform vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyz"
-	check_result vol001_t0_points.xyz
+	check_results vol001_t0_points.xyz
 	;;
     GregxformAffine)
 	run_eval "cat vol001_t0_points.xyz | ${BINDIR}/gregxform -f vol001_mr_t0t1.list > ${tmpdir}/vol001_t0_points.xyz"
-	check_result vol001_t0_points.xyz
+	check_results vol001_t0_points.xyz
 	;;
     GregxformAffineFromWarp)
 	run_eval "cat vol001_t0_points.xyz | ${BINDIR}/gregxform --affine -f vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyz"
-	check_result vol001_t0_points.xyz
+	check_results vol001_t0_points.xyz
 	;;
     GregxformAffineFromWarpFwdBwd)
 	run_eval "cat vol001_t0_points.xyz | ${BINDIR}/gregxform --affine -f vol001_mr_t0t1_warp.xform | ${BINDIR}/gregxform --affine vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyz"
-	check_result vol001_t0_points.xyz
+	check_results vol001_t0_points.xyz
 	;;
     GroupwiseInitCentersOfMass)
 	run groupwise_init -O ${tmpdir} --align-centers-of-mass spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
-	check_result groupwise_init.xforms
+	check_results groupwise_init.xforms
 	# cannot compare separate xforms due to local file system path in the file
-	check_result groupwise_init_average.img
+	check_results groupwise_init_average.img
 	;;
     GroupwiseInitCentersOfMassTemplate)
 	run groupwise_init -O ${tmpdir} --template spgr_brain_1.hdr --align-centers-of-mass spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
-	check_result groupwise_init.xforms
+	check_results groupwise_init.xforms
 	check_results groupwise_init_pairs/target-000.list/registration groupwise_init_pairs/target-001.list/registration groupwise_init_pairs/target-002.list/registration
-	check_result groupwise_init_average.img
+	check_results groupwise_init_average.img
 	;;
     GroupwiseRMIFromInit)
 	run groupwise_rmi --force-background 0 -O ${tmpdir} --dofs 6 --dofs 9 -e 4 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum groupwise_init_brain123.xforms
@@ -383,169 +381,169 @@ case ${RUNTEST} in
 	;;
     GroupwiseRMIZeroSumSmooth)
 	run groupwise_rmi --smooth 0.5  --downsample-to 0 -O ${tmpdir} --template spgr_brain_1.hdr --dofs 6 --dofs 9 -e 2 -a 0.25 --downsample-from 2 --sampling-density 1.0 --zero-sum spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
-	check_result groupwise_rmi.xforms
-	check_result average_groupwise_rmi.img
+	check_results groupwise_rmi.xforms
+	check_results average_groupwise_rmi.img
 	;;
     Histogram)
 	run histogram -o ${tmpdir}/histogram spgr_3t.hdr
-	check_result histogram
+	check_results histogram
 	;;
     HistogramNorm)
 	run histogram --normalize -o ${tmpdir}/histogram spgr_3t.hdr
-	check_result histogram
+	check_results histogram
 	;;
     HistogramBinsMinMax)
 	run histogram --min 300 --max 3000 --nbins 16 -o ${tmpdir}/histogram spgr_3t.hdr
-	check_result histogram
+	check_results histogram
 	;;
     HistogramBinsMinMaxTrunc)
 	run histogram --truncate --min 300 --max 3000 --nbins 16 -o ${tmpdir}/histogram spgr_3t.hdr
-	check_result histogram
+	check_results histogram
 	;;
     HistogramMask)
 	run histogram --mask spgr_3t_mask.hdr -o ${tmpdir}/histogram spgr_3t.hdr
-	check_result histogram
+	check_results histogram
 	;;
     ImagemathAverage)
 	run imagemath --in parc1_bin.hdr parc2_bin.hdr parc3_bin.hdr --average --out ${tmpdir}/average.hdr
-	check_result average.img
+	check_results average.img
 	;;
     ImagemathXor)
 	run imagemath --in parc1.hdr --scalar-xor 1 --out ${tmpdir}/xor.hdr
-	check_result xor.img
+	check_results xor.img
 	;;
     ImagemathContractLabels)
 	run imagemath --in parc1.hdr parc2.hdr parc3.hdr --contract-labels --out ${tmpdir}/contract.hdr
-	check_result contract.img
+	check_results contract.img
 	;;
     ImagemathVote)
 	run imagemath --in parc1_bin.hdr parc2_bin.hdr parc3_bin.hdr --vote --out ${tmpdir}/vote.hdr
-	check_result vote.img
+	check_results vote.img
 	;;
     ImagemathStackEntropyLabels)
 	run imagemath --in parc1_bin.hdr parc2_bin.hdr parc3_bin.hdr --stack-entropy-labels --out ${tmpdir}/entropy.hdr
-	check_result entropy.img
+	check_results entropy.img
 	;;
     ImagemathSTAPLE)
 	run imagemath --in parc1_bin.hdr parc2_bin.hdr parc3_bin.hdr --staple 10 --out ${tmpdir}/staple.hdr
-	check_result staple.img
+	check_results staple.img
 	;;
     ImagemathMultiClassSTAPLE)
 	run imagemath --in parc1.hdr parc2.hdr parc3.hdr --mstaple 2 --out ${tmpdir}/mstaple.hdr
-	check_result mstaple.img
+	check_results mstaple.img
 	;;
     ImagemathCombinePCA)
 	run imagemath --in rat_fse_erly.hdr rat_fse_late.hdr --combine-pca --trunc --out ${tmpdir}/combine_pca.hdr
-	check_result combine_pca.img
+	check_results combine_pca.img
 	;;
     ImagemathT2)
 	run imagemath --float --in rat_fse_erly.hdr --log --in rat_fse_late.hdr --log --scalar-mul -1 --add --one-over --out ${tmpdir}/t2.hdr
-	check_result t2.img
+	check_results t2.img
 	;;
     ImagemathLogOddsAdd)
 	run imagemath --float --in pbmap_wm_2.nii --logit --in pbmap_wm_1.nii --logit --average --logistic --out ${tmpdir}/logodds_add.hdr
-	check_result logodds_add.img
+	check_results logodds_add.img
 	;;
     ImagemathLogOddsAdd2)
 	run imagemath --float --in pbmap_wm_2.nii pbmap_wm_1.nii --logit-all --average --logistic-all --out ${tmpdir}/logodds_add.hdr
-	check_result logodds_add.img
+	check_results logodds_add.img
 	;;
     ImagemathMatchHistograms)
         run imagemath --in spgr_brain_{1,2}.hdr --match-histograms --out ${tmpdir}/match_histograms.hdr
-        check_result match_histograms.img
+        check_results match_histograms.img
         ;;
     ImagemathMatchHistogramsPadding)
         run imagemath --set-padding-value 0 --in spgr_brain_{1,2}.hdr --match-histograms --out ${tmpdir}/match_histograms.hdr
-        check_result match_histograms.img
+        check_results match_histograms.img
         ;;
     LevelsetDefault)
 	run levelset -v vol001_mr_t1.hdr ${tmpdir}/levelset.hdr
-	check_result levelset.img
+	check_results levelset.img
 	;;
     MakeInitialAffineCenterOfMass)
 	run make_initial_affine --xform-ras --mode centers-of-mass box1.hdr box3.hdr ${tmpdir}/xform
-	check_result xform
+	check_results xform
 	;;
     MakeInitialAffinePrincipalAxes1)
 	run make_initial_affine --xform-ras --mode principal-axes box1.hdr box2.hdr ${tmpdir}/xform
-	check_result xform
+	check_results xform
 	;;
     MakeInitialAffinePrincipalAxes2)
 	run make_initial_affine --xform-ras --mode principal-axes box1.hdr box3.hdr ${tmpdir}/xform
-	check_result xform
+	check_results xform
 	;;
     MakeInitialAffinePrincipalAxes3)
 	run make_initial_affine --xform-ras --mode principal-axes box2.hdr box3.hdr ${tmpdir}/xform
-	check_result xform
+	check_results xform
 	;;
     MakeInitialAffinePrincipalAxes4)
 	run make_initial_affine --xform-ras --mode principal-axes box1.hdr box4.hdr ${tmpdir}/xform
-	check_result xform
+	check_results xform
 	;;
     MakeInitialAffinePrincipalAxes5)
 	run make_initial_affine --xform-ras --mode principal-axes box2.hdr box4.hdr ${tmpdir}/xform
-	check_result xform
+	check_results xform
 	;;
     MakeInitialAffinePrincipalAxes6)
 	run make_initial_affine --xform-ras --mode principal-axes box3.hdr box4.hdr ${tmpdir}/xform
-	check_result xform
+	check_results xform
 	;;
     MakeInitialAffineDirectionVectorsNrrdAxSa)
 	run make_initial_affine --xform-ras phantom_ax.nhdr phantom_sa.nhdr ${tmpdir}/xform
-	check_result xform
+	check_results xform
 	;;
     MakeInitialAffineDirectionVectorsNrrdAxCo)
 	run make_initial_affine --xform-ras phantom_ax.nhdr phantom_co.nhdr ${tmpdir}/xform
-	check_result xform
+	check_results xform
 	;;
     MakeInitialAffineDirectionVectorsNrrdSaCo)
 	run make_initial_affine --xform-ras phantom_sa.nhdr phantom_co.nhdr ${tmpdir}/xform
-	check_result xform
+	check_results xform
 	;;
     MakeInitialAffineDirectionVectorsNrrdAxSaNative)
 	run make_initial_affine phantom_ax.nhdr phantom_sa.nhdr ${tmpdir}/xform
-	check_result xform
+	check_results xform
 	;;
     MakeInitialAffineDirectionVectorsNrrdAxCoNative)
 	run make_initial_affine phantom_ax.nhdr phantom_co.nhdr ${tmpdir}/xform
-	check_result xform
+	check_results xform
 	;;
     MakeInitialAffineDirectionVectorsNrrdSaCoNative)
 	run make_initial_affine phantom_sa.nhdr phantom_co.nhdr ${tmpdir}/xform
-	check_result xform
+	check_results xform
 	;;
     McAffine1)
 	run mcaffine --downsample-from 4 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --dofs 6 --covariance -o ${tmpdir}/xform pat001_mr_T1.hdr -- pat001_pet.hdr
-	check_result xform
+	check_results xform
 	;;
     McAffine2)
 	run mcaffine --initial-xform McAffine2_initial.xform --downsample-from 4 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --dofs 6 --histograms -o ${tmpdir}/xform pat001_mr_T1.hdr -- pat001_pet.hdr
-	check_result xform
+	check_results xform
 	;;
     McAffine3)
 	run mcaffine --downsample-from 4 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --dofs 6 --dofs 9 --covariance -o ${tmpdir}/xform rat_fse_erly.hdr rat_fse_late.hdr -- rat2_fse_erly.hdr rat2_fse_late.hdr
-	check_result xform
+	check_results xform
 	;;
     McAffine4)
 	run mcaffine --downsample-from 4 --downsample-to 1 --delta-f-threshold 0.1 --initial-step-size 1 --final-step-size 0.5 --dofs 6,9 --covariance -o ${tmpdir}/xform rat_fse_erly.hdr rat_fse_late.hdr -- rat2_fse_erly.hdr rat2_fse_late.hdr
-	check_result xform
+	check_results xform
 	;;
     McWarp1)
 	# Test breaks when using multiple threads due to floating point effects
 	export CMTK_NUM_THREADS=1
 	run mcwarp --downsample-from 2 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --grid-spacing 14 --refine-grid 2 --covariance -o ${tmpdir}/xform McAffine_rat_rat2.xform
-	check_result xform
+	check_results xform
 	unset CMTK_NUM_THREADS
 	;;
     McWarp2)
 	run mcwarp --downsample-from 2 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --grid-spacing 14 --refine-grid 2 --histograms -o ${tmpdir}/xform McAffine_rat_rat2.xform
-	check_result xform
+	check_results xform
 	;;
     McWarp3)
 	# Test breaks when using multiple threads due to floating point effects
 	export CMTK_NUM_THREADS=1
 	run mcwarp --downsample-from 2 --downsample-to 1 --delta-f-threshold 0.1 --initial-step-size 1 --final-step-size 0.5 --grid-spacing 14 --refine-grid 2 --covariance -o ${tmpdir}/xform McAffine_rat_rat2.xform
-	check_result xform
+	check_results xform
 	unset CMTK_NUM_THREADS
 	;;
     MkPhantomBox)
@@ -615,222 +613,222 @@ case ${RUNTEST} in
 	;;
     Overlap)
 	run_eval "${BINDIR}/overlap parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
-	check_result overlap.txt
+	check_results overlap.txt
 	;;
     OverlapNumLabels)
 	run_eval "${BINDIR}/overlap -N 2 parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
-	check_result overlap.txt
+	check_results overlap.txt
 	;;
     OverlapByLabel)
 	run_eval "${BINDIR}/overlap --by-label parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
-	check_result overlap.txt
+	check_results overlap.txt
 	;;
     OverlapFirst)
 	run_eval "${BINDIR}/overlap --first-label 10 parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
-	check_result overlap.txt
+	check_results overlap.txt
 	;;
     OverlapFirstByLabel)
 	run_eval "${BINDIR}/overlap --by-label --first-label 10 parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
-	check_result overlap.txt
+	check_results overlap.txt
 	;;
     OverlapFirstByLabelNumLabels)
 	run_eval "${BINDIR}/overlap --by-label --first-label 10 --num-labels 10 parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
-	check_result overlap.txt
+	check_results overlap.txt
 	;;
     ProbeXformSimple)
 	run_eval "${BINDIR}/probe_xform --probe 180,180,60 --probe 20,20,20 --probe 0,0,0 vol001_mr_t0t1_warp.xform > ${tmpdir}/stdout.txt"
-	check_result stdout.txt
+	check_results stdout.txt
 	;;
     ProbeXformFwdBwd)
 	run_eval "${BINDIR}/probe_xform --probe 180,180,60 --probe 20,20,20 --probe 0,0,0 vol001_mr_t0t1_warp.xform --inverse vol001_mr_t0t1_warp.xform > ${tmpdir}/stdout.txt"
-	check_result stdout.txt
+	check_results stdout.txt
 	;;
     ProbeXformBwdFwd)
 	run_eval "${BINDIR}/probe_xform --probe 180,180,60 --probe 20,20,20 --probe 0,0,0 -- --inverse vol001_mr_t0t1_warp.xform vol001_mr_t0t1_warp.xform > ${tmpdir}/stdout.txt"
-	check_result stdout.txt
+	check_results stdout.txt
 	;;
     ReformatxNoXform)
 	run reformatx --linear -o ${tmpdir}/reformat.hdr --floating vol001_mr_t1.hdr vol001_mr_t0_crop.hdr
-	check_result reformat.img
+	check_results reformat.img
 	;;
     ReformatxLinear)
 	run reformatx --linear -o ${tmpdir}/reformat.hdr --floating vol001_mr_t1.hdr vol001_mr_t0_crop.hdr vol001_mr_t0t1.list
-	check_result reformat.img
+	check_results reformat.img
 	;;
     ReformatxNearestNeighbor)
 	run reformatx --nn -o ${tmpdir}/reformat.hdr --floating vol001_mr_t1.hdr vol001_mr_t0_crop.hdr vol001_mr_t0t1.list
-	check_result reformat.img
+	check_results reformat.img
 	;;
     ReformatxPartialVolume)
 	run reformatx --pv -o ${tmpdir}/reformat.hdr --floating vol001_mr_t1.hdr vol001_mr_t0_crop.hdr vol001_mr_t0t1.list
-	check_result reformat.img
+	check_results reformat.img
 	;;
     ReformatxLinearFwdBwd)
 	run reformatx --linear --short -o ${tmpdir}/reformat.hdr --floating vol001_mr_t0.hdr vol001_mr_t0.hdr vol001_mr_t0t1.list --inverse vol001_mr_t0t1.list
-	check_result vol001_mr_t0.img
+	check_results vol001_mr_t0.img
 	;;
     ReformatxCubic)
 	run reformatx --cubic -o ${tmpdir}/reformat.hdr --floating vol001_mr_t1.hdr vol001_mr_t0_crop.hdr vol001_mr_t0t1.list
-	check_result reformat.img
+	check_results reformat.img
 	;;
     ReformatxCubicInverse)
 	run reformatx --cubic -o ${tmpdir}/reformat.hdr --floating vol001_mr_t1.hdr vol001_mr_t0_crop.hdr --inverse vol001_mr_t0t1.list
-	check_result reformat.img
+	check_results reformat.img
 	;;
     ReformatxSincCosine)
 	run reformatx --sinc-cosine -o ${tmpdir}/reformat.hdr --floating vol001_mr_t1.hdr vol001_mr_t0_crop.hdr vol001_mr_t0t1.list
-	check_result reformat.img
+	check_results reformat.img
 	;;
     ReformatxSincHamming)
 	run reformatx --sinc-hamming -o ${tmpdir}/reformat.hdr --floating vol001_mr_t1.hdr vol001_mr_t0_crop.hdr vol001_mr_t0t1.list
-	check_result reformat.img
+	check_results reformat.img
 	;;
     ReformatxSincCosine5)
 	run reformatx --sinc-cosine --sinc-window-radius 5 -o ${tmpdir}/reformat.hdr --floating vol001_mr_t1.hdr vol001_mr_t0_crop.hdr vol001_mr_t0t1.list
-	check_result reformat.img
+	check_results reformat.img
 	;;
     ReformatxJacobian)
 	run reformatx -o ${tmpdir}/jacobian.hdr vol001_mr_t0_crop.hdr vol001_mr_t0_crop.xform --jacobian vol001_mr_t0t1_warp.xform
-	check_result jacobian.img
+	check_results jacobian.img
 	;;
     ReformatxInverseJacobian)
 	run reformatx -o ${tmpdir}/jacobian.hdr vol001_mr_t0_crop.hdr vol001_mr_t0_crop.xform --jacobian --inverse vol001_mr_t0t1_warp.xform
-	check_result jacobian.img
+	check_results jacobian.img
 	;;
     ReformatxDfieldNrrd)
 	run reformatx -o ${tmpdir}/reformat.hdr --floating parc2.hdr parc1.hdr parc1_parc2_dfield.nrrd
-	check_result reformat.img
+	check_results reformat.img
 	;;
     RegistrationFromList)
 	run registration -v --dofs 0 -o ${tmpdir} vol001_mr_t0t1.list
-	check_result registration
+	check_results registration
 	;;
     RegistrationWithInitial)
 	run registration -v --dofs 0 -o ${tmpdir} --initial vol001_mr_t0t1.list vol001_mr_t0.hdr vol001_mr_t1.hdr
-	check_result registration
+	check_results registration
 	;;
     RegistrationWithInitialInverse)
 	run registration -v --dofs 0 -o ${tmpdir} --initial vol001_mr_t0t1.list --initial-is-inverse vol001_mr_t0t1.list
-	check_result registration
+	check_results registration
 	;;
     RegistrationAutoLevelsRat4)
 	run registration -v -i --auto-multi-levels 4 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
-	check_result registration
+	check_results registration
 	;;
     RegistrationAutoLevelsRat2)
 	run registration -v -i --auto-multi-levels 2 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
-	check_result registration
+	check_results registration
 	;;
     RegistrationAutoLevelsRatToRat)
 	run registration -v -i --auto-multi-levels 2 --dofs 6,9 --msd --match-histograms -o ${tmpdir} rat_fse_erly.hdr rat2_fse_erly.hdr
-	check_result registration
+	check_results registration
 	;;
     RegistrationAutoLevelsRatToRatDeltaFThreshold)
 	run registration -v -i --auto-multi-levels 2 --dofs 6,9 --msd --match-histograms --delta-f-threshold 0.01 -o ${tmpdir} rat_fse_erly.hdr rat2_fse_erly.hdr
-	check_result registration
+	check_results registration
 	;;
     RegistrationAutoLevelsCt3)
 	run registration -q --msd --auto-multi-levels 3 --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_ct.hdr
-	check_result registration
+	check_results registration
 	;;
     ReorientHdrSaToAx)
 	run reorient -o RAS phantom_sa.hdr ${tmpdir}/reorient.hdr
-	check_result reorient.hdr
-	check_result reorient.img
+	check_results reorient.hdr
+	check_results reorient.img
 	;;
     ReorientHdrCoToAx)
 	run reorient -o RAS phantom_co.hdr ${tmpdir}/reorient.hdr
-	check_result reorient.hdr
-	check_result reorient.img
+	check_results reorient.hdr
+	check_results reorient.img
 	;;
     ReorientHdrAxToSa)
 	run reorient -o ASL phantom_ax.hdr ${tmpdir}/reorient.hdr
-	check_result reorient.hdr
-	check_result reorient.img
+	check_results reorient.hdr
+	check_results reorient.img
 	;;
     ReorientHdrCoToSa)
 	run reorient -o ASL phantom_co.hdr ${tmpdir}/reorient.hdr
-	check_result reorient.hdr
-	check_result reorient.img
+	check_results reorient.hdr
+	check_results reorient.img
 	;;
     ReorientHdrAxToCo)
 	run reorient -o LSA phantom_ax.hdr ${tmpdir}/reorient.hdr
-	check_result reorient.hdr
-	check_result reorient.img
+	check_results reorient.hdr
+	check_results reorient.img
 	;;
     ReorientHdrSaToCo)
 	run reorient -o LSA phantom_sa.hdr ${tmpdir}/reorient.hdr
-	check_result reorient.hdr
-	check_result reorient.img
+	check_results reorient.hdr
+	check_results reorient.img
 	;;
     ReorientNrrdToNrrd)
 	run reorient vol001_mr_t0_crop.nrrd ${tmpdir}/vol001_mr_t0_crop.nhdr
-	check_result vol001_mr_t0_crop.nhdr
-	check_result vol001_mr_t0_crop.raw
+	check_results vol001_mr_t0_crop.nhdr
+	check_results vol001_mr_t0_crop.raw
 	;;
     RigidRegistrationMrPet)
 	run registration -q -i --dofs 6 -o ${tmpdir} pat001_mr_T1.hdr pat001_pet.hdr
-	check_result registration
+	check_results registration
 	;;
     RigidRegistrationMrCt)
 	run registration -q -i --dofs 6 -o ${tmpdir} pat002_mr_T2.hdr pat002_ct.hdr
-	check_result registration
+	check_results registration
 	;;
     RigidRegistrationCt)
 	run registration -q --msd -i --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_ct.hdr
-	check_result registration
+	check_results registration
 	;;
     RigidRegistrationPetMr)
 	run registration -q -i --dofs 6 -o ${tmpdir} pat001_pet.hdr pat001_mr_T1.hdr
-	check_result registration
+	check_results registration
 	;;
     RigidRegistrationCtMr)
 	run registration -q -i --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_mr_T2.hdr
-	check_result registration
+	check_results registration
 	;;
     RigidRegistrationMrPetNoSwap)
 	run registration -q --no-switch -i --dofs 6 -o ${tmpdir} pat001_mr_T1.hdr pat001_pet.hdr
-	check_result registration
+	check_results registration
 	;;
     RigidRegistrationMrCtNoSwap)
 	run registration -q --no-switch -i --dofs 6 -o ${tmpdir} pat002_mr_T2.hdr pat002_ct.hdr
-	check_result registration
+	check_results registration
 	;;
     RigidRegistrationPetMrDOF9)
 	run registration -q -i --dofs 9 -o ${tmpdir} pat001_pet.hdr pat001_mr_T1.hdr
-	check_result registration
+	check_results registration
 	;;
     RigidRegistrationCtMrDOF7)
 	run registration -q -i --dofs 7 -o ${tmpdir} pat002_ct.hdr pat002_mr_T2.hdr
-	check_result registration
+	check_results registration
 	;;
     RigidRegistrationLabelsDOF69)
 	run registration -q --dofs 6 --dofs 9 --class-ref label --class-flt label -o ${tmpdir} parc1.hdr parc2.hdr
-	check_result registration
+	check_results registration
 	;;
     RigidRegistrationCrop)
 	run registration -v -i -e 2.0 -a 0.125 --sampling 0.25 --crop-index-ref 17,20,0,47,49,12 --crop-index-flt 12,15,0,52,54,12 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
-	check_result registration
+	check_results registration
 	;;
     SequenceDefault)
 	run_eval "cat numbers.txt | ${BINDIR}/sequence > ${tmpdir}/sequence.txt"
-	check_result sequence.txt
+	check_results sequence.txt
 	;;
     SequenceFormat)
 	run_eval "cat numbers.txt | ${BINDIR}/sequence --format %g > ${tmpdir}/sequence.txt"
-	check_result sequence.txt
+	check_results sequence.txt
 	;;
     SequenceThresh)
 	run_eval "cat numbers.txt | ${BINDIR}/sequence --thresh 1e4 > ${tmpdir}/sequence.txt"	
-	check_result sequence.txt
+	check_results sequence.txt
 	;;
     SequenceAbs)
 	run_eval "cat numbers.txt | ${BINDIR}/sequence --abs > ${tmpdir}/sequence.txt"
-	check_result sequence.txt
+	check_results sequence.txt
 	;;
     SequenceAbsThresh)
 	run_eval "cat numbers.txt | ${BINDIR}/sequence --thresh 1000 --abs > ${tmpdir}/sequence.txt"
-	check_result sequence.txt
+	check_results sequence.txt
 	;;
     SimilarityGrey)
 	run_eval "${BINDIR}/similarity --histogram-file ${tmpdir}/histogram --histogram-text-file ${tmpdir}/histogram.txt rat_fse_erly.hdr rat_fse_late.hdr > ${tmpdir}/similarity.txt"
@@ -850,33 +848,19 @@ case ${RUNTEST} in
 	;;
     SplitAxial)
 	run split --output-xform-path ${tmpdir}/split_ax_%1d.xform --axial spgr_3t.hdr ${tmpdir}/split_ax_%1d.hdr
-	check_result split_ax_0.img
-	check_result split_ax_1.img
-	check_result split_ax_0.xform
-	check_result split_ax_1.xform
+	check_results split_ax_0.img split_ax_1.img split_ax_0.xform split_ax_1.xform
 	;;
     SplitAxialNrrd)
 	run split --axial --factor 3 spgr_3t.hdr ${tmpdir}/split_ax_%1d.nhdr
-	for i in 0 1 2; do
-	    check_result split_ax_${i}.nhdr
-	    check_result split_ax_${i}.raw
-	done
+	check_results split_ax_0.nhdr split_ax_0.raw split_ax_1.nhdr split_ax_1.raw split_ax_2.nhdr split_ax_2.raw
 	;;
     SplitSagittal2)
 	run split --output-xform-path ${tmpdir}/split_sa_%1d.xform --factor 2 --sagittal spgr_3t.hdr ${tmpdir}/split_sa_%1d.hdr
-	check_result split_sa_0.img
-	check_result split_sa_1.img
-	check_result split_sa_0.xform
-	check_result split_sa_1.xform
+	check_results split_sa_0.img split_sa_1.img split_sa_0.xform split_sa_1.xform
 	;;
     SplitCoronal3)
 	run split --output-xform-path ${tmpdir}/split_co_%1d.xform --factor 3 --coronal spgr_3t.hdr ${tmpdir}/split_co_%1d.hdr
-	check_result split_co_0.img
-	check_result split_co_1.img
-	check_result split_co_2.img
-	check_result split_co_0.xform
-	check_result split_co_1.xform
-	check_result split_co_2.xform
+	check_results split_co_0.img split_co_1.img split_co_2.img split_co_0.xform split_co_1.xform split_co_2.xform
 	;;
     StatisticsGrey)
 	run_eval "${BINDIR}/statistics spgr_3t.hdr > ${tmpdir}/statistics.txt"
@@ -908,14 +892,11 @@ case ${RUNTEST} in
 	;;
     SymmetryPlane)
 	run sympl --sampling 1 --levels 4 --accuracy 0.1 --write-xform ${tmpdir}/xform --sinc --write-subtract ${tmpdir}/subtract.hdr -o ${tmpdir}/parameters cad001_ct.hdr
-	check_result parameters
-	check_result xform
-	check_result subtract.img
+	check_results parameters xform subtract.img
 	;;
     SymmetryPlaneThresh)
 	run sympl --sampling 1 --levels 4 --accuracy 0.1 --min-value -224 --max-value 176 --cubic --write-aligned ${tmpdir}/aligned.hdr -o ${tmpdir}/parameters cad001_ct.hdr
-	check_result parameters
-	check_result aligned.img
+	check_results parameters aligned.img
 	;;
     TTestDefault)
 	run ttest -o ${tmpdir}/ttest.hdr --tstats-file ${tmpdir}/tstats.hdr jacobian-01.nii jacobian-02.nii -- jacobian-03.nii jacobian-04.nii
@@ -959,145 +940,129 @@ case ${RUNTEST} in
 	;;
     UnsplitHdrAx)
 	run unsplit --axial -o ${tmpdir}/unsplit.hdr split_ax_0.hdr split_ax_1.hdr
-	check_result unsplit.hdr
-	check_result unsplit.img
+	check_results unsplit.hdr unsplit.img
 	;;
     UnsplitHdrSa)
 	run unsplit --sagittal -o ${tmpdir}/unsplit.hdr split_sa_0.hdr split_sa_1.hdr
-	check_result unsplit.hdr
-	check_result unsplit.img
+	check_results unsplit.hdr unsplit.img
 	;;
     UnsplitHdrCo)
 	run unsplit --coronal -o ${tmpdir}/unsplit.hdr split_co_0.hdr split_co_1.hdr split_co_2.hdr
-	check_result unsplit.hdr
-	check_result unsplit.img
+	check_results unsplit.hdr unsplit.img
 	;;
     UnsplitHdrNrrdAx)
 	run unsplit --axial -o ${tmpdir}/unsplit.nhdr split_ax_0.hdr split_ax_1.hdr
-	check_result unsplit.nhdr
-	check_result unsplit.raw
+	check_results unsplit.nhdr unsplit.raw
 	;;
     UnsplitHdrNrrdSa)
 	run unsplit --sagittal -o ${tmpdir}/unsplit.nhdr split_sa_0.hdr split_sa_1.hdr
-	check_result unsplit.nhdr
-	check_result unsplit.raw
+	check_results unsplit.nhdr unsplit.raw
 	;;
     UnsplitHdrNrrdCo)
 	run unsplit --coronal -o ${tmpdir}/unsplit.nhdr split_co_0.hdr split_co_1.hdr split_co_2.hdr
-	check_result unsplit.nhdr
-	check_result unsplit.raw
+	check_results unsplit.nhdr unsplit.raw
 	;;
     UnsplitNrrdNrrd)
 	run unsplit --axial -o ${tmpdir}/unsplit.nhdr split_ax_0.nhdr split_ax_1.nhdr split_ax_2.nhdr
-	check_result unsplit.nhdr
-	check_result unsplit.raw
+	check_results unsplit.nhdr unsplit.raw
 	;;
     VolumeInjection)
 	run volume_injection --recon-grid-path spgr_3t.hdr -o ${tmpdir}/injection.hdr --gauss-sigma 0.5 --radius 2 split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
-	check_result injection.img
+	check_results injection.img
 	;;
     VolumeInjectionIsotropic)
 	run volume_injection --recon-grid-path spgr_3t.hdr -o ${tmpdir}/injection.hdr --gauss-sigma 0.5 --radius 2 --isotropic-injection split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
-	check_result injection.img
+	check_results injection.img
 	;;
     VolumeInjectionNoXform)
 	run volume_injection -o ${tmpdir}/injection.hdr --gauss-sigma 0.5 --radius 2 --exclude-first-image spgr_3t.hdr -- split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
-	check_result injection.img
+	check_results injection.img
 	;;
     VolumeInjectionNoXformIsotropic)
 	run volume_injection -o ${tmpdir}/injection.hdr --gauss-sigma 0.5 --radius 2 --isotropic-injection --exclude-first-image spgr_3t.hdr -- split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
-	check_result injection.img
+	check_results injection.img
 	;;
     VolumeReconstructionFourthOrder)
 	run volume_reconstruction --recon-grid-path spgr_3t.hdr -o ${tmpdir}/reconstruction.hdr --fourth-order-error --num-iterations 2 --gauss-sigma 0.5 --radius 2 --isotropic-injection --write-splatted-image ${tmpdir}/injection.hdr split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
-	check_result injection.img
-	check_result reconstruction.img
+	check_results injection.img reconstruction.img
 	;;
     VolumeReconstructionCubic)
 	run volume_reconstruction --recon-grid-path spgr_3t.hdr -o ${tmpdir}/reconstruction.hdr --cubic --num-iterations 2 --gauss-sigma 0.5 --radius 2 --isotropic-injection --write-splatted-image ${tmpdir}/injection.hdr split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
-	check_result injection.img
-	check_result reconstruction.img
+	check_results injection.img reconstruction.img
 	;;
     VolumeReconstructionNoXform)
 	run volume_reconstruction -o ${tmpdir}/reconstruction.hdr --linear --num-iterations 2 --gauss-sigma 0.5 --radius 2 --isotropic-injection --write-splatted-image ${tmpdir}/injection.hdr --exclude-first-image spgr_3t.hdr -- split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
-	check_result injection.img
-	check_result reconstruction.img
+	check_results injection.img reconstruction.img
 	;;
     WarpSingleLevel)
 	run warp -q --exploration 8 --grid-spacing 160 --accuracy 1 --no-adaptive-fix -o ${tmpdir} vol001_mr_t0t1.list
-	check_result registration
+	check_results registration
 	;;
     WarpSingleLevelExact)
 	run warp -q --exploration 8 --grid-spacing 180 --exact-spacing --accuracy 1 --sampling 3 --no-adaptive-fix -o ${tmpdir} vol001_mr_t0t1.list
-	check_result registration
+	check_results registration
 	;;
     WarpInverseConsistentCC)
 	run warp -q --exploration 8 --grid-spacing 80 --accuracy 1 --ncc --ic-weight 1e-2 -o ${tmpdir} vol001_mr_t0t1.list
-	check_result registration
+	check_results registration
 	;;
     WarpMultiLevel)
 	run warp -q --exploration 8 --grid-spacing 160 --accuracy 1 --refine 1 -o ${tmpdir} vol001_mr_t0t1.list
-	check_result registration
+	check_results registration
 	;;
     WarpMultiLevelMatchHistograms)
 	run warp -q --exploration 8 --match-histograms --msd --grid-spacing 160 --accuracy 1 --refine 1 -o ${tmpdir} vol001_mr_t0t1.list
-	check_result registration
+	check_results registration
 	;;
     WarpMultiLevelDeltaFThreshold)
 	run warp -q --exploration 8 --delta-f-threshold 0.01 --msd --grid-spacing 160 --accuracy 1 --refine 1 -o ${tmpdir} vol001_mr_t0t1.list
-	check_result registration
+	check_results registration
 	;;
     WarpMultiLevelExact)
 	run warp -q --exploration 8 --grid-spacing 160 --exact-spacing --accuracy 1 --refine 1 -o ${tmpdir} vol001_mr_t0t1.list
-	check_result registration
+	check_results registration
 	;;
     WarpDelayRefine)
 	run warp -q --exploration 12 --grid-spacing 160 --accuracy 2 --refine 1 --delay-refine --sampling 6 -o ${tmpdir} vol001_mr_t0t1.list
-	check_result registration
+	check_results registration
 	;;
     WarpEnergy)
 	run warp -q --exploration 8 --grid-spacing 160 --accuracy 1 --refine 1 --energy-weight 1e-1 -o ${tmpdir} vol001_mr_t0t1.list
-	check_result registration
+	check_results registration
 	;;
     WarpJacobian)
 	export CMTK_NUM_THREADS=1
 	run warp -q --exploration 12 --grid-spacing 160 --accuracy 2 --refine 1 --jacobian-weight 1e-1 --sampling 12 --omit-original-data -o ${tmpdir} vol001_mr_t0t1.list
 	unset CMTK_NUM_THREADS
-	check_result registration
+	check_results registration
 	;;
     WarpLabels)
 	run warp -q --exploration 8 --grid-spacing 90 --accuracy 1 --refine 1 --class-ref label --class-flt label -o ${tmpdir} --initial parc1_parc2_9dof.xform parc1.hdr parc2.hdr
-	check_result registration
+	check_results registration
 	;;
     Xform2dfieldWarpNrrd)
 	run xform2dfield -v ${tmpdir}/dfield.nhdr vol001_mr_t0_crop.hdr vol001_mr_t0t1_warp.xform
-	check_result dfield.nhdr
-	check_result dfield.raw
+	check_results dfield.nhdr dfield.raw
 	;;
     Xform2dfieldAffineNrrd)
 	run xform2dfield -v ${tmpdir}/dfield.nhdr vol001_mr_t0_crop.hdr vol001_mr_t0_crop.xform
-	check_result dfield.nhdr
-	check_result dfield.raw
+	check_results dfield.nhdr dfield.raw
 	;;
     Xform2dfieldDownsampleXYZNrrd)
 	run xform2dfield -v --downsample 4,4,2 ${tmpdir}/dfield.nhdr vol001_mr_t0_crop.hdr vol001_mr_t0_crop.xform
-	check_result dfield.nhdr
-	check_result dfield.raw
+	check_results dfield.nhdr dfield.raw
 	;;
     Xform2dfieldDownsampleXNrrd)
 	run xform2dfield -v --downsample 4 ${tmpdir}/dfield.nhdr vol001_mr_t0_crop.hdr vol001_mr_t0_crop.xform
-	check_result dfield.nhdr
-	check_result dfield.raw
+	check_results dfield.nhdr dfield.raw
 	;;
     Xform2dfieldConcatNrrd)
 	run xform2dfield -v ${tmpdir}/dfield.nhdr vol001_mr_t0_crop.hdr vol001_mr_t0_crop.xform vol001_mr_t0t1_warp.xform
-	check_result dfield.nhdr
-	check_result dfield.raw
+	check_results dfield.nhdr dfield.raw
 	;;
     Xform2dfieldInverseNrrd)
 	run xform2dfield -v ${tmpdir}/dfield.nhdr vol001_mr_t0_crop.hdr vol001_mr_t0_crop.xform --inverse vol001_mr_t0t1_warp.xform
-	check_result dfield.nhdr
-	check_result dfield.raw
+	check_results dfield.nhdr dfield.raw
 	;;
     xform2scalarAffine)
 	run xform2scalar --float --output ${tmpdir}/magnitude.nii vol001_mr_t0.hdr vol001_mr_t0t1.list
@@ -1121,35 +1086,35 @@ case ${RUNTEST} in
 	;;
     xml_film)
 	run_eval "${BINDIR}/film --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/film.xml"
-	check_result film.xml
+	check_results film.xml
 	;;
     xml_levelset)
         run_eval "${BINDIR}/levelset --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/levelset.xml"
-	check_result levelset.xml
+	check_results levelset.xml
 	;;
     xml_mrbias)
 	run_eval "${BINDIR}/mrbias --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/mrbias.xml"
-	check_result mrbias.xml
+	check_results mrbias.xml
 	;;
     xml_registration)
 	run_eval "${BINDIR}/registration --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/registration.xml"
-	check_result registration.xml
+	check_results registration.xml
 	;;
     wiki_film)
 	run_eval "${BINDIR}/film --wiki > ${tmpdir}/film.wiki"
-	check_result film.wiki
+	check_results film.wiki
 	;;
     wiki_levelset)
 	run_eval "${BINDIR}/levelset --wiki > ${tmpdir}/levelset.wiki"
-	check_result levelset.wiki
+	check_results levelset.wiki
 	;;
     wiki_mrbias)
 	run_eval "${BINDIR}/mrbias --wiki > ${tmpdir}/mrbias.wiki"
-	check_result mrbias.wiki
+	check_results mrbias.wiki
 	;;
     wiki_registration)
 	run_eval "${BINDIR}/registration --wiki > ${tmpdir}/registration.wiki"
-	check_result registration.wiki
+	check_results registration.wiki
 	;;
     *)
 	exit 2
