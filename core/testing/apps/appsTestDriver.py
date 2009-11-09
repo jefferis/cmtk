@@ -51,7 +51,7 @@ os.chdir( os.path.join( DATADIR, 'testing' ,'inputs' ) )
 
 def run(cmd):
     print 'pushd ' + os.getcwd() + '; ' + BINDIR + '/' + cmd + '; popd'
-    return os.system(VALGRIND + ' ' + BINDIR + '/' + cmd)
+    return os.system( VALGRIND + ' ' + BINDIR + '/' + cmd + " > " + os.path.join( tmpdir, "stdout" ) )
 
 def check_result(name):
     baseline = os.path.join( BASELINE, name )
@@ -99,5 +99,5 @@ if RUNTEST=='AffineRegistrationMrMrMSD':
     run("registration -i --dofs 6,9 --msd --match-histograms -o " + tmpdir + " pat001_mr_T1.hdr pat002_mr_T2.hdr")
     exit( check_results(['registration']) )
 elif RUNTEST=='xml_film':
-    run("film --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > " + os.path.join(tmpdir, 'film.xml') )
-    exit( check_results(['film.xml']) )
+    run("film --xml")
+    exit( check_results(['stdout']) )
