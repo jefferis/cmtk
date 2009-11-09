@@ -282,8 +282,7 @@ IF(NOT ZLIB_FOUND)
   SET(CMTK_BUILD_ZLIB 1)
   SET(ZLIB_FOUND 1)
   SET(ZLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/zlib CACHE PATH "Directory containing zlib.h header file" FORCE)
-  SET(ZLIB_LIBRARY "cmtkZlib" CACHE FILEPATH "Libraries to link for zlib support")
-  SET(ZLIB_LIBRARIES ${ZLIB_LIBRARY})
+  SET(ZLIB_LIBRARIES "cmtkZlib" CACHE FILEPATH "Libraries to link for zlib support")
 ENDIF(NOT ZLIB_FOUND)
 
 #-----------------------------------------------------------------------------
