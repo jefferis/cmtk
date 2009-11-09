@@ -27,12 +27,12 @@
 ##  $LastChangedBy$
 ##
 
-FIND_PROGRAM(HAVE_SH sh)
-IF(HAVE_SH)
-  SET(testDriver /bin/sh ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh)
-ELSE(HAVE_SH)
+FIND_PROGRAM(SH_PATH sh)
+IF(SH_PATH)
+  SET(testDriver ${SH_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh)
+ELSE(SH_PATH)
   SET(testDriver python ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.py)
-ENDIF(HAVE_SH)
+ENDIF(SH_PATH)
 
 # ==========================================
 # Tests for "congeal" tool
