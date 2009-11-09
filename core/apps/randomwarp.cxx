@@ -65,7 +65,7 @@ main( const int argc, const char *argv[] )
   cmtk::SplineWarpXform *warp = new cmtk::SplineWarpXform( volume, gridSpacing );
 
   // seed RNG with (supposedly) random system time
-  cmtk::MathUtil::NormalRandom( sigma, time( NULL ) );
+  cmtk::MathUtil::NormalRandom( sigma, static_cast<unsigned int>( time( NULL ) ) );
 
   for ( int outFileIdx = 4; outFileIdx < argc; ++outFileIdx ) 
     {
