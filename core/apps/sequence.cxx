@@ -34,6 +34,7 @@
 #include <cmtkCommandLine.h>
 #include <cmtkConsole.h>
 #include <cmtkValueSequence.h>
+#include <cmtkTypes.h>
 
 #include <iostream>
 #include <stdio.h>
@@ -103,7 +104,7 @@ main( const int argc, const char* argv[] )
       list.push_back( f );
       }
     
-    f = sqrt( -1.0 );
+    f = CMTK_FLOAT_NAN;
     }
   
   const size_t totalNumberOfValues = seq.GetNValues() + countOverThreshold;
