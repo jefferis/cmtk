@@ -455,11 +455,17 @@ ENDIF(NOT COMPILER_INCLASS_MEMBER_INITIALIZATION)
 
 #-----------------------------------------------------------------------------
 # Output directories.
+IF(CMAKE_CONFIGURATION_TYPES)
+  SET(CONFIG_BINARY_DIR "bin/${CMAKE_BUILD_TYPE}")
+ELSE(CMAKE_CONFIGURATION_TYPES)
+  SET(CONFIG_BINARY_DIR "bin")
+IF(CMAKE_CONFIGURATION_TYPES)
+
 IF(NOT LIBRARY_OUTPUT_PATH)
-  SET (LIBRARY_OUTPUT_PATH ${CMTK_BINARY_DIR}/bin CACHE INTERNAL "Single output directory for building all libraries.")
+  SET (LIBRARY_OUTPUT_PATH ${CMTK_BINARY_DIR}/${CONFIG_BINARY_DIR} CACHE INTERNAL "Single output directory for building all libraries.")
 ENDIF(NOT LIBRARY_OUTPUT_PATH)
 IF(NOT EXECUTABLE_OUTPUT_PATH)
-  SET (EXECUTABLE_OUTPUT_PATH ${CMTK_BINARY_DIR}/bin CACHE INTERNAL "Single output directory for building all executables.")
+  SET (EXECUTABLE_OUTPUT_PATH ${CMTK_BINARY_DIR}/${CONFIG_BINARY_DIR} CACHE INTERNAL "Single output directory for building all executables.")
 ENDIF(NOT EXECUTABLE_OUTPUT_PATH)
 MARK_AS_ADVANCED(LIBRARY_OUTPUT_PATH EXECUTABLE_OUTPUT_PATH)
 IF(NOT CMTK_BUILD_LIB_DIR) # variable used for generating CMTKConfig.cmake for the build tree
