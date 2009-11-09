@@ -13,4 +13,4 @@ TARGET_LINK_LIBRARIES(cmtkZlib)
 INSTALL_TARGETS(/lib cmtkZlib)
 INSTALL_FILES(/include/zlib "(\\.h)$")
 
-SET(ZLIB_LIBRARIES CACHE FILEPATH "cmtkZlib")
+SET(ZLIB_LIBRARY "cmtkZlib" CACHE STRING "Library to link for libz support" FORCE)
