@@ -65,7 +65,7 @@ SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional<TMetricFunctiona
   const int z = rindex / planeSize;
   const int y = (rindex % planeSize) / this->m_ReferenceDims[0];
   const int x = rindex % this->m_ReferenceDims[0];
-  const float jacobian = this->m_Transformation.GetJacobianDeterminant( x, y, z );
+  const Types::DataItem jacobian = static_cast<Types::DataItem>( this->m_Transformation.GetJacobianDeterminant( x, y, z ) );
 
   for ( size_t flt = 0; flt < this->m_FloatingChannels.size(); ++flt, ++idx )
     {
@@ -110,7 +110,7 @@ SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional<TMetricFunctiona
   for ( size_t flt = 0; flt < this->m_FloatingChannels.size(); ++flt, ++idx )
     {
     values[idx] *= jacobian;
-    this->m_ReformattedFloatingChannels[flt][rindex] = values[idx];
+    this->m_ReformattedFloatingChannels[flt][rindex] = static_cast<float>( values[idx] );
     }
   
   metricData += &(values[0]);
