@@ -27,6 +27,12 @@
 ##  $LastChangedBy$
 ##
 
+IF(WIN32)
+  SET(testDriver python ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.py)
+ELSE(WIN32)
+  SET(testDriver /bin/sh ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh)
+ENDIF(WIN32)
+
 # ==========================================
 # Tests for "congeal" tool
 SET(testList ${testList} 
@@ -386,30 +392,30 @@ ENDIF(NOT CMTK_USE_MPI)
 # Set up all tests
 FOREACH(testName ${testList})
   IF(CMTK_TESTING_MEMORYCHECK)
-    ADD_TEST(${testName} /bin/sh ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh 
+    ADD_TEST(${testName} ${testDriver} 
       ${BUILDNAME} ${EXECUTABLE_OUTPUT_PATH} ${CMTK_DATA_ROOT} ${testName} ${MEMORYCHECK_COMMAND})
   ELSE(CMTK_TESTING_MEMORYCHECK)
-    ADD_TEST(${testName} /bin/sh ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh 
+    ADD_TEST(${testName} ${testDriver} 
       ${BUILDNAME} ${EXECUTABLE_OUTPUT_PATH} ${CMTK_DATA_ROOT} ${testName})
   ENDIF(CMTK_TESTING_MEMORYCHECK)
 ENDFOREACH(testName ${testList})
 
 FOREACH(testName ${testList_xml})
   IF(CMTK_TESTING_MEMORYCHECK)
-    ADD_TEST(xml_${testName} /bin/sh ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh 
+    ADD_TEST(xml_${testName} ${testDriver} 
       ${BUILDNAME} ${EXECUTABLE_OUTPUT_PATH} ${CMTK_DATA_ROOT} xml_${testName} ${MEMORYCHECK_COMMAND})
   ELSE(CMTK_TESTING_MEMORYCHECK)
-    ADD_TEST(xml_${testName} /bin/sh ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh 
+    ADD_TEST(xml_${testName} ${testDriver} 
       ${BUILDNAME} ${EXECUTABLE_OUTPUT_PATH} ${CMTK_DATA_ROOT} xml_${testName})
   ENDIF(CMTK_TESTING_MEMORYCHECK)
 ENDFOREACH(testName ${testList_xml})
 
 FOREACH(testName ${testList_wiki})
   IF(CMTK_TESTING_MEMORYCHECK)
-    ADD_TEST(wiki_${testName} /bin/sh ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh 
+    ADD_TEST(wiki_${testName} ${testDriver}
       ${BUILDNAME} ${EXECUTABLE_OUTPUT_PATH} ${CMTK_DATA_ROOT} wiki_${testName} ${MEMORYCHECK_COMMAND})
   ELSE(CMTK_TESTING_MEMORYCHECK)
-    ADD_TEST(wiki_${testName} /bin/sh ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh 
+    ADD_TEST(wiki_${testName} ${testDriver} 
       ${BUILDNAME} ${EXECUTABLE_OUTPUT_PATH} ${CMTK_DATA_ROOT} wiki_${testName})
   ENDIF(CMTK_TESTING_MEMORYCHECK)
 ENDFOREACH(testName ${testList_wiki})
