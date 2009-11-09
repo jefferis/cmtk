@@ -136,14 +136,14 @@ MultiChannelRMIRegistrationFunctional<TRealType,TDataType,TInterpolator>
   if ( (determinant > 0) && (determinantRef > 0) && (determinantFlt > 0) )
     {
     const static double alpha = 1.41893853320467;
-    const float hxy = this->m_NumberOfChannels*alpha + .5*log( determinant );
-    const float hx = nRefs*alpha + .5*log( determinantRef );
-    const float hy = nFlts*alpha + .5*log( determinantFlt );
+    const double hxy = this->m_NumberOfChannels*alpha + .5*log( determinant );
+    const double hx = nRefs*alpha + .5*log( determinantRef );
+    const double hy = nFlts*alpha + .5*log( determinantFlt );
     
     if ( this->m_NormalizedMI )
-      return (hx+hy) / hxy;
+      return static_cast<RealType>( (hx+hy) / hxy );
     else
-      return hx+hy-hxy;
+      return static_cast<RealType>( hx+hy-hxy );
     }
   return -FLT_MAX;
 }
