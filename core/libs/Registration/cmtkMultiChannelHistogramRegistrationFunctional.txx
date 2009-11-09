@@ -69,8 +69,8 @@ MultiChannelHistogramRegistrationFunctional<TDataType,TInterpolator,THashKeyType
   const Types::DataItem scale = maxBinIndex / (max-min);
   const Types::DataItem offset = -(min/scale);
 
-  this->m_HashKeyScaleRef.push_back( scale );
-  this->m_HashKeyOffsRef.push_back( offset );
+  this->m_HashKeyScaleRef.push_back( static_cast<TDataType>( scale ) );
+  this->m_HashKeyOffsRef.push_back( static_cast<TDataType>( offset ) );
   this->m_HashKeyShiftRef = NBitsPerChannel*this->m_ReferenceChannels.size();
 
   this->Superclass::AddReferenceChannel( channel );
@@ -99,8 +99,8 @@ MultiChannelHistogramRegistrationFunctional<TDataType,TInterpolator,THashKeyType
   const Types::DataItem scale = maxBinIndex / (max-min);
   const Types::DataItem offset = -(min/scale);
 
-  this->m_HashKeyScaleFlt.push_back( scale );
-  this->m_HashKeyOffsFlt.push_back( offset );
+  this->m_HashKeyScaleFlt.push_back( static_cast<TDataType>( scale ) );
+  this->m_HashKeyOffsFlt.push_back( static_cast<TDataType>( offset ) );
 
   this->Superclass::AddFloatingChannel( channel );
 
