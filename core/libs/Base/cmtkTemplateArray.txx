@@ -413,7 +413,7 @@ TemplateArray<T>
   for ( size_t i = 0; i < this->DataSize; ++i )
     {
     if ( !this->PaddingFlag || (this->Data[i] != this->Padding) )
-      this->Data[i] = referenceHistogram->BinToValue( lookup[ movingHistogram->ValueToBin( this->Data[i] ) ] );
+      this->Data[i] = static_cast<T>( referenceHistogram->BinToValue( lookup[ movingHistogram->ValueToBin( this->Data[i] ) ] ) );
     }
 }
 

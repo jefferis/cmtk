@@ -215,7 +215,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 		    histogram.Increment( histogram.ValueToBin( fltValue ) );
 		  }
 	    }
-	  channelEntropy[channelEntropyIdx++] = histogram.GetEntropy();
+	  channelEntropy[channelEntropyIdx++] = static_cast<float>( histogram.GetEntropy() );
 	  }
 	}
       
@@ -382,14 +382,14 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
     if ( !this->m_FloatingInterpolators[flt]->GetDataAt( fvector, values[idx++] ) )
       {
       for ( size_t f = 0; f < this->m_FloatingChannels.size(); ++f )
-	this->m_ReformattedFloatingChannels[f][rindex] = CMTK_ITEM_NAN;
+	this->m_ReformattedFloatingChannels[f][rindex] = CMTK_FLOAT_NAN;
       return;
       }
     }
   
   idx = this->m_ReferenceChannels.size();
   for ( size_t flt = 0; flt < this->m_FloatingChannels.size(); ++flt, ++idx )
-    this->m_ReformattedFloatingChannels[flt][rindex] = values[idx];
+    this->m_ReformattedFloatingChannels[flt][rindex] = static_cast<float>( values[idx] );
   
   metricData += &(values[0]);
 }
