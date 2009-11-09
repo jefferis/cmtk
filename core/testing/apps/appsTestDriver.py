@@ -41,21 +41,21 @@ RUNTEST=sys.argv[4]
 VALGRIND=sys.argv[5]
 
 HOSTNAME = socket.gethostname()
-tmpdir = BINDIR + '/../testing/temporary/' + HOSTNAME + '/' + RUNTEST
+tmpdir = os.path.join( BINDIR, '..', 'testing', 'temporary', HOSTNAME, RUNTEST )
 if not os.path.isdir(tmpdir):
     os.makedirs(tmpdir)
 
-BASELINE = DATADIR + '/testing/baseline/' + RUNTEST
+BASELINE = os.path.join( DATADIR, 'testing', 'baseline', RUNTEST )
 
-os.chdir(DATADIR + '/testing/inputs')
+os.chdir( os.path.join( DATADIR, 'testing' ,'inputs' ) )
 
 def run(cmd):
     print 'pushd ' + os.getcwd() + '; ' + BINDIR + '/' + cmd + '; popd'
     return os.system(VALGRIND + ' ' + BINDIR + '/' + cmd)
 
 def check_result(name):
-    baseline = BASELINE + '/' + name
-    result = tmpdir + '/' + name
+    baseline = os.path.join( BASELINE, name )
+    result = os.path.join( tmpdir, name )
 
     if os.path.isfile(result):
         f = io.open(result, 'rb')
@@ -83,14 +83,18 @@ def check_result(name):
             print 'Baseline file ' + baseline + ' does not exist'
             sys.exit(1)
 
-    diff = difflib.unified_diff( result_content, baseline_content, fromfile=result, tofile=baseline)
-    for line in diff:
-        sys.stdout.write(line) 
+    diff = list( difflib.unified_diff( result_content, baseline_content, fromfile=result, tofile=baseline) )
+    if len( diff ) == 0:
+        return 0
+    sys.stdout.writelines(diff)
+    return 1
 
 def check_results(list):
     for r in list:
-	check_result(r)
+        if not check_result(r) == 0:
+            return 1
+    return 0
 
 if RUNTEST=='AffineRegistrationMrMrMSD':
     run("registration -i --dofs 6,9 --msd --match-histograms -o " + tmpdir + " pat001_mr_T1.hdr pat002_mr_T2.hdr")
-    check_result('registration')
+    exit( check_result('registration') )
