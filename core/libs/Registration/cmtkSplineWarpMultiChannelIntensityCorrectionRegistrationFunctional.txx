@@ -97,7 +97,7 @@ SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional<TMetricFunctiona
     if ( !this->m_FloatingInterpolators[flt]->GetDataAt( fvector, values[idx++] ) )
       {
       for ( size_t f = 0; f < this->m_FloatingChannels.size(); ++f )
-	this->m_ReformattedFloatingChannels[f][rindex] = CMTK_ITEM_NAN;
+	this->m_ReformattedFloatingChannels[f][rindex] = CMTK_FLOAT_NAN;
       return;
       }
     }
@@ -106,7 +106,7 @@ SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional<TMetricFunctiona
   const int z = rindex / planeSize;
   const int y = (rindex % planeSize) / this->m_ReferenceDims[0];
   const int x = rindex % this->m_ReferenceDims[0];
-  const float jacobian = this->m_Transformation.GetJacobianDeterminant( x, y, z );
+  const Types::DataItem jacobian = static_cast<Types::DataItem>( this->m_Transformation.GetJacobianDeterminant( x, y, z ) );
   for ( size_t flt = 0; flt < this->m_FloatingChannels.size(); ++flt, ++idx )
     {
     values[idx] *= jacobian;
