@@ -20,11 +20,11 @@
 ##  with the Computational Morphometry Toolkit.  If not, see
 ##  <http://www.gnu.org/licenses/>.
 ##
-##  $Revision: 743 $
+##  $Revision$
 ##
-##  $LastChangedDate: 2009-11-09 13:50:13 -0800 (Mon, 09 Nov 2009) $
+##  $LastChangedDate$
 ##
-##  $LastChangedBy: torstenrohlfing $
+##  $LastChangedBy$
 ##
 
 RUNTEST=$1
