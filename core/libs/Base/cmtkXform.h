@@ -76,12 +76,17 @@ public:
 
   /// Copy constructor.
   Xform( const Xform& other )
-    : InformationObject( other )
-  {    
+    : InformationObject( other ),
+      m_ParameterVector( other.m_ParameterVector ),
+      m_NumberOfParameters( other.m_NumberOfParameters )
+  {
+    this->m_Parameters = this->m_ParameterVector->Elements;
   }
 
   /// Default constructor.
   Xform()
+    : m_Parameters( NULL ),
+      m_NumberOfParameters( 0 )    
   {
   }
 
