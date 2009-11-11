@@ -332,21 +332,20 @@ public:
   /// Set transformation's translation vector.
   void SetXlate ( const Types::Coordinate* xlate ) 
   { 
-    memcpy( this->RetXlate(), xlate, 3 * sizeof(Types::Coordinate) );
+    if ( this->RetXlate() != xlate )
+      memcpy( this->RetXlate(), xlate, 3 * sizeof(Types::Coordinate) );
     this->ComposeMatrix();
   }
 
   /// Set transformation's translation vector.
-  void SetXlate ( const Types::Coordinate dx, const Types::Coordinate dy,
-		  const Types::Coordinate dz ) 
+  void SetXlate ( const Types::Coordinate dx, const Types::Coordinate dy, const Types::Coordinate dz ) 
   { 
     this->m_Parameters[0] = dx; this->m_Parameters[1] = dy; this->m_Parameters[2] = dz;
     this->ComposeMatrix(); 
   }
 
   /// Add to transformation's translation vector.
-  void Translate( const Types::Coordinate dx, const Types::Coordinate dy,
-		  const Types::Coordinate dz ) 
+  void Translate( const Types::Coordinate dx, const Types::Coordinate dy, const Types::Coordinate dz ) 
   {
     this->m_Parameters[0] += dx; this->m_Parameters[1] += dy; this->m_Parameters[2] += dz; 
     this->ComposeMatrix(); 
@@ -355,14 +354,16 @@ public:
   /// Add to transformation's translation vector.
   void Translate( const Types::Coordinate delta[3] ) 
   { 
-    for ( int dim = 0; dim < 3; ++dim ) this->m_Parameters[dim] += delta[dim];
+    for ( int dim = 0; dim < 3; ++dim ) 
+      this->m_Parameters[dim] += delta[dim];
     this->ComposeMatrix();
   }
 
   /// Set transformation's rotation angles.
   void SetAngles ( const Types::Coordinate* angles ) 
   {
-    memcpy( this->RetAngles(), angles, 3 * sizeof(Types::Coordinate) );
+    if ( angles != this->RetAngles() )
+      memcpy( this->RetAngles(), angles, 3 * sizeof(Types::Coordinate) );
     this->ComposeMatrix();
   }
 
@@ -388,26 +389,31 @@ public:
   /// Set transformation's scaling factors.
   void SetScales ( const Types::Coordinate* scales ) 
   { 
-    memcpy( this->RetScales(), scales, 3 * sizeof(Types::Coordinate) );
+    if ( this->RetScales() != scales )
+      memcpy( this->RetScales(), scales, 3 * sizeof(Types::Coordinate) );
     this->ComposeMatrix();
   }
   
   /// Set transformation's scaling factors.
-  void SetScales ( const Types::Coordinate sx, const Types::Coordinate sy,
-		   const Types::Coordinate sz )
-  { this->m_Parameters[6] = sx; this->m_Parameters[7] = sy; this->m_Parameters[8] = sz; }
+  void SetScales ( const Types::Coordinate sx, const Types::Coordinate sy, const Types::Coordinate sz )
+  { 
+    this->m_Parameters[6] = sx; 
+    this->m_Parameters[7] = sy; 
+    this->m_Parameters[8] = sz; }
 
   /// Set transformation's shears.
   void SetShears ( const Types::Coordinate* shears ) 
   { 
-    memcpy( this->RetShears(), shears, 3 * sizeof(Types::Coordinate) );
+    if ( this->RetShears() != shears )
+      memcpy( this->RetShears(), shears, 3 * sizeof(Types::Coordinate) );
     this->ComposeMatrix();
   }
 
   /// Set transformation's rotation, scaling, and shearing center.
   void SetCenter ( const Types::Coordinate* center ) 
   {
-    memcpy( RetCenter(), center, 3 * sizeof(Types::Coordinate) );
+    if ( this->RetCenter() != center )
+      memcpy( RetCenter(), center, 3 * sizeof(Types::Coordinate) );
     this->ComposeMatrix();
   }
   //@}
