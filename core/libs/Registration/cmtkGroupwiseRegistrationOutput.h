@@ -58,6 +58,7 @@ public:
 
   /// Constructors: link to functional.
   GroupwiseRegistrationOutput( FunctionalPointer& functional = FunctionalPointer::Null ) :
+    m_Verbose( false ),
     m_ExistingTemplatePath( false ),
     m_OutputRootDirectory( NULL )
   {
