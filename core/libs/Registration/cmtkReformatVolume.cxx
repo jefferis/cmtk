@@ -66,7 +66,8 @@ ReformatVolume::ReformatVolume()
     FloatingVolume( NULL ),
     m_AffineXform( NULL ),
     m_WarpXform( NULL ),
-    CheckerboardMode( false )
+    MaximumValue( 0 ),
+    CheckerboardMode( false )    
 {
   Interpolation = cmtk::Interpolators::LINEAR;
 
@@ -86,7 +87,7 @@ ReformatVolume::SetReferenceVolume
     {
     Types::DataItem min, max;
     ReferenceVolume->GetData()->GetRange( min, max );
-    MaximumValue = std::max( max, MaximumValue );
+    this->MaximumValue = std::max( max, this->MaximumValue );
     }			       
 }
 
@@ -99,7 +100,7 @@ ReformatVolume::SetFloatingVolume
     {
     Types::DataItem min, max;
     FloatingVolume->GetData()->GetRange( min, max );
-    MaximumValue = std::max( max, MaximumValue );
+    this->MaximumValue = std::max( max, this->MaximumValue );
     }			       
 }
 
