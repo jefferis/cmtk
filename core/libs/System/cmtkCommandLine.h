@@ -568,8 +568,8 @@ private:
     virtual void Evaluate( const size_t argc, const char* argv[], size_t& index );
 
     /// Returns an XML tree describing this parameter.
-    virtual mxml_node_t* MakeXML( mxml_node_t *const parent, //!< Parent in the XML tree for the new node.
-				  const int index //!< Running index [0,1,...] of this argument in the argument list.
+    virtual mxml_node_t* MakeXMLWithIndex( mxml_node_t *const parent, //!< Parent in the XML tree for the new node.
+					   const int index //!< Running index [0,1,...] of this argument in the argument list.
       ) const;
 
     /// Return a textual description of the parameter associated with this option

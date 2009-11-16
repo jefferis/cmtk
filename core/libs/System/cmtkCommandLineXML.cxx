@@ -111,7 +111,7 @@ CommandLine::WriteXML
 	  int index = 0;
 	  for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
 	    {
-	    (*it)->MakeXML( parameterGroup, index++ );
+	    (*it)->MakeXMLWithIndex( parameterGroup, index++ );
 	    }
 	  }
 	else

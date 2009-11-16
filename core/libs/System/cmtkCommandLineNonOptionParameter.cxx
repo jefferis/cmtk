@@ -53,7 +53,7 @@ cmtk::CommandLine::NonOptionParameter
 
 mxml_node_t* 
 cmtk::CommandLine::NonOptionParameter
-::MakeXML( mxml_node_t *const parent, const int index ) const
+::MakeXMLWithIndex( mxml_node_t *const parent, const int index ) const
 {
   mxml_node_t *node = Item::Helper<const char*>::MakeXML( this, parent );
 
