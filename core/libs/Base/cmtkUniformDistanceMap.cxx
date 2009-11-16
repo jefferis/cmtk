@@ -133,7 +133,7 @@ UniformDistanceMap<TDistanceDataType>
   p = Distance;
   for ( size_t i = 0; i < volume->GetNumberOfPixels(); ++i, ++p ) 
     {
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__SUNPRO_CC)
     *p = static_cast<DistanceDataType>( sqrt( (double)*p ) );
 #else
     *p = static_cast<DistanceDataType>( sqrt( *p ) );
