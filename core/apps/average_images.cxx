@@ -188,12 +188,12 @@ main( const int argc, const char* argv[] )
 
     if ( ApplyLog )
       {
-      data->ApplyFunctionDouble( log );
+      data->ApplyFunctionDouble( cmtk::Log );
       }
 
     if ( ApplyAbs )
       {
-      data->ApplyFunctionDouble( fabs );
+      data->ApplyFunctionDouble( cmtk::Abs );
       }
 
     if ( Normalize ) 
