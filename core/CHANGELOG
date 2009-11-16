@@ -19,6 +19,7 @@ Release CMTK-1.1.3:
     bundled D(4)CMTK library.
 - Fixed: cmake file to set up tests when no hash map implementation is found
     cannot set properties for mcwarp and mcaffine tests.
+- Fixed: numerous compile errors using Sun CC compiler
 
 - Improved: better, more data-drive automatic initialization of optimizer step
     sizes and image sampling parameters in pairwise rigid and nonrigid

@@ -316,7 +316,7 @@ CommandLine::PrintWiki
     const KeyActionListType& kal = (*grp)->m_KeyActionList;
     for ( KeyActionListType::const_iterator it = kal.begin(); it != kal.end(); ++it )
       {
-      (*it)->PrintWiki();
+      (*it)->PrintWikiWithPrefix();
       StdOut << "\n";
       }
     }

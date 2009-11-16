@@ -62,9 +62,9 @@ cmtk::CommandLine::KeyToActionEnum
 
 void
 cmtk::CommandLine::KeyToActionEnum
-::PrintWiki( const std::string prefix ) const
+::PrintWikiWithPrefix( const std::string prefix ) const
 {
-  this->Superclass::PrintWiki( prefix );
+  this->Superclass::PrintWikiWithPrefix( prefix );
 
   StdOut << "Supported values: ";
   for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
@@ -82,7 +82,7 @@ cmtk::CommandLine::KeyToActionEnum
   
   for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
     {
-    (*it)->PrintWiki( ":" );
+    (*it)->PrintWikiWithPrefix( ":" );
     }
 }
 

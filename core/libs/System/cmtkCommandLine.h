@@ -683,7 +683,7 @@ public:
     virtual void FormatHelp( std::ostringstream& fmt ) const;    
 
     /// Print help for this item.
-    virtual void PrintWiki( const std::string& prefix = "" ) const;
+    virtual void PrintWikiWithPrefix( const std::string& prefix = "" ) const;
 
     /// Get type info for action parameter (if any).
     virtual std::string GetActionTypeInfo() const 
@@ -754,7 +754,7 @@ public:
     virtual void PrintHelp( const size_t globalIndent = 0 ) const;
     
     /// Print wiki help for this item.
-    virtual void PrintWiki( const std::string prefix = "" ) const;
+    virtual void PrintWikiWithPrefix( const std::string prefix = "" ) const;
     
     /// Get type info for action parameter (if any).
     virtual std::string GetActionTypeInfo() const
@@ -836,7 +836,7 @@ public:
     virtual void PrintHelp( const size_t globalIndent = 0 ) const;
     
     /// Print help for this item in Wiki markup.
-    virtual void PrintWiki( const std::string prefix = "" ) const;
+    virtual void PrintWikiWithPrefix( const std::string prefix = "" ) const;
     
   private:
     /// For enum parameter group, list of subkeys and action.

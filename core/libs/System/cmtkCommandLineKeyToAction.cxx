@@ -131,7 +131,7 @@ cmtk::CommandLine::KeyToAction
 
 void
 cmtk::CommandLine::KeyToAction
-::PrintWiki( const std::string& prefix ) const
+::PrintWikiWithPrefix( const std::string& prefix ) const
 {
   const std::string& typeInfo = this->GetActionTypeInfo();
 
