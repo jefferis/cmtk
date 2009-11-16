@@ -200,6 +200,7 @@ public:
     return *this;
   }
 
+#ifndef __SUNPRO_CC
 #ifndef _MSC_VER
   /** Assignment operator.
    * Implemented using Swap() operator.
@@ -210,6 +211,7 @@ public:
     this->Swap( temp );
     return *this;
   }
+#endif
 #endif
 
   /** Equality operator using pointer.
