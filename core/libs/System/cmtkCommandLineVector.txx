@@ -80,7 +80,7 @@ cmtk::CommandLine::Vector<T>
     mxml_node_t *node = mxmlNewElement( parent, typeName.c_str() );
     
     // write any attributes the user might have set
-    for ( std::map<const std::string,std::string>::const_iterator attrIt = this->m_Attributes.begin(); attrIt != this->m_Attributes.end(); ++attrIt )
+    for ( std::map<std::string,std::string>::const_iterator attrIt = this->m_Attributes.begin(); attrIt != this->m_Attributes.end(); ++attrIt )
       {
       mxmlElementSetAttr( node, attrIt->first.c_str(), attrIt->second.c_str() );
       }
