@@ -326,7 +326,7 @@ public:
     long int m_Properties;
 
     /// Item attributes. These are free-form string key/value pairs.
-    std::map<const std::string, std::string> m_Attributes;
+    std::map<std::string, std::string> m_Attributes;
 
     /// Safely convertstring argument to long integer.
     static long int ConvertStrToLong( const char* str );
