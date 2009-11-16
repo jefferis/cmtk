@@ -72,6 +72,23 @@ cmtk::ScalarDataType DataType = cmtk::TYPE_FLOAT;
 
 std::list<const char*> imagePathList;
 
+namespace cmtk
+{
+
+/// Log function.
+double Log( const double x )
+{
+  return log( x );
+}
+
+/// Log function.
+double Abs( const double x )
+{
+  return fabs( x );
+}
+
+} // namespace cmtk
+
 void
 GetNormalizationCoefficients
 ( const cmtk::TypedArray* floatingData, const cmtk::Types::DataItem refMean, const cmtk::Types::DataItem refVariance, cmtk::Types::DataItem& scale, cmtk::Types::DataItem& offset )
