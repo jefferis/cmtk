@@ -373,52 +373,45 @@
 /* Define to 1 if you have the <new.h> header file. */
 #cmakedefine HAVE_NEW_H 1
 
-//TODO:
 /* Define `pid_t' to `int' if <sys/types.h> does not define. */
-#cmakedefine HAVE_NO_TYPEDEF_PID_T 1
-#ifdef HAVE_NO_TYPEDEF_PID_T
+#cmakedefine HAVE_SYS_TYPES_PID_T 1
+#ifndef	HAVE_SYS_TYPES_PID_T
 typedef int pid_t;
 #endif
 
-//TODO:
 /* Define `size_t' to `unsigned' if <sys/types.h> does not define. */
-#cmakedefine HAVE_NO_TYPEDEF_SIZE_T 1
-#ifdef HAVE_NO_TYPEDEF_SIZE_T
+#cmakedefine HAVE_SYS_TYPES_SIZE_T 1
+#ifndef HAVE_SYS_TYPES_SIZE_T
 typedef unsigned size_t;
 #endif
 
-//TODO:
 /* Define `ssize_t' to `long' if <sys/types.h> does not define. */
-#cmakedefine HAVE_NO_TYPEDEF_SSIZE_T 1
-#ifdef HAVE_NO_TYPEDEF_SSIZE_T
+#cmakedefine HAVE_SYS_TYPES_SSIZE_T 1
+#ifndef HAVE_SYS_TYPES_SSIZE_T
 typedef long ssize_t;
 #endif
 
-//TODO:
 /* Define `uchar' to `unsigned char' if <sys/types.h> does not define. */
-#cmakedefine HAVE_NO_TYPEDEF_UCHAR 1
-#ifdef HAVE_NO_TYPEDEF_UCHAR
+#cmakedefine HAVE_SYS_TYPES_UCHAR 1
+#ifndef HAVE_SYS_TYPES_UCHAR
 typedef unsigned char uchar;
 #endif
 
-//TODO:
 /* Define `uint' to `unsigned int' if <sys/types.h> does not define. */
-#cmakedefine HAVE_NO_TYPEDEF_UINT 1
-#ifdef HAVE_NO_TYPEDEF_UINT
+#cmakedefine HAVE_SYS_TYPES_UINT 1
+#ifndef HAVE_SYS_TYPES_UINT
 typedef unsigned int uint;
 #endif
 
-//TODO:
 /* Define `ulong' to `unsigned long' if <sys/types.h> does not define. */
-#define HAVE_NO_TYPEDEF_ULONG 1
-#ifdef HAVE_NO_TYPEDEF_ULONG
+#cmakedefine HAVE_SYS_TYPES_ULONG 1
+#ifndef HAVE_SYS_TYPES_ULONG
 typedef unsigned long ulong;
 #endif
 
-//TODO:
 /* Define `ushort' to `unsigned short' if <sys/types.h> does not define. */
-#cmakedefine HAVE_NO_TYPEDEF_USHORT 1
-#ifdef HAVE_NO_TYPEDEF_USHORT
+#cmakedefine HAVE_SYS_TYPES_USHORT 1
+#ifndef HAVE_SYS_TYPES_USHORT
 typedef unsigned short ushort;
 #endif
 
