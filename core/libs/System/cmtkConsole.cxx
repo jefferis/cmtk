@@ -39,6 +39,8 @@
 #  include <stdio.h>
 #endif
 
+#include <algorithm>
+
 namespace
 cmtk
 {
