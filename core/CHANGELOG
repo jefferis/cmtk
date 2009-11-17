@@ -23,7 +23,7 @@ Release CMTK-1.1.3:
 - Fixed: incomplete Wiki markup of command line help due to incorrectly
     overloaded virtual member function
 - Fixed: re-worked CMake build system to eliminate redundant repeated
-    libraries and resolve SunOS linker issues
+    libraries
 
 - Improved: better, more data-drive automatic initialization of optimizer step
     sizes and image sampling parameters in pairwise rigid and nonrigid
