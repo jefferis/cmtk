@@ -445,12 +445,10 @@ ReformatVolume::GetTransformedReferenceJacobianAvg
   const SplineWarpXform* splineXform = dynamic_cast<const SplineWarpXform*>( this->m_WarpXform.GetPtr() );
   if ( ! splineXform ) 
     {
-    StdErr
-      << "ERROR: ReformatVolume::GetTransformedReferenceJacobian supports"
-      << "spline warp only.\n";
+    StdErr << "ERROR: ReformatVolume::GetTransformedReferenceJacobian supports spline warp only.\n";
     return NULL;
     }
-
+  
   // bounding box for reformatted volume.
   Types::Coordinate bbFrom[3], delta[3];
   UniformVolume* result = this->CreateTransformedReference( bbFrom, delta, volumeOffset );
