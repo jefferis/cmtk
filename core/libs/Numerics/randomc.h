@@ -129,6 +129,8 @@
 #ifndef RANDOMC_H
 #define RANDOMC_H
 
+#include <cmtkconfig.h>
+
 // Define integer types with known size: int32_t, uint32_t, int64_t, uint64_t.
 // If this doesn't work then insert compiler-specific definitions here:
 #if defined(HAVE_INTTYPES_H)
