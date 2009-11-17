@@ -131,6 +131,15 @@ ElasticRegistrationCommandLine
     cl.AddSwitch( Key( 'q', "quiet" ), &Verbose, false, "Quiet mode" );
     cl.EndGroup();
 
+    cl.BeginGroup( "TransformationIO", "Transformation import/export" );
+    cl.AddOption( Key( "initial" ), &initialTransformationFile, "Initialize transformation from given path" )->SetProperties( CommandLine::PROPS_XFORM );
+    cl.AddOption( Key( "out-itk" ), &this->m_OutputPathITK, "Output path for final transformation in ITK format" )
+      ->SetProperties( CommandLine::PROPS_XFORM | CommandLine::PROPS_OUTPUT )
+      ->SetAttribute( "type", "bspline" )->SetAttribute( "reference", "FloatingImage" );
+    cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )
+      ->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OUTPUT );
+    cl.EndGroup();
+
     cl.BeginGroup( "Transformation", "Transformation parameters" );
     cl.AddOption( Key( 'g', "grid-spacing" ), &this->m_GridSpacing, "Control point grid spacing" );
     cl.AddSwitch( Key( "exact-spacing" ), &this->m_ExactGridSpacing, true, "Use exact control point spacing; do not modify spacing to fit reference image bounding box" );
@@ -146,7 +155,6 @@ ElasticRegistrationCommandLine
 
     cl.AddSwitch( Key( 'S', "switch" ), &Switch, true, "Switch reference and floating image" );
     cl.AddSwitch( Key( 'x', "exchange" ), &this->ForceSwitchVolumes, true, "Exchange reference and floating image");
-    cl.AddOption( Key( "initial" ), &initialTransformationFile, "Initialize transformation from given path" )->SetProperties( CommandLine::PROPS_NOXML );
     cl.EndGroup();
 
     cl.BeginGroup( "Optimization", "Optimization parameters" );
@@ -196,17 +204,9 @@ ElasticRegistrationCommandLine
     cl.AddSwitch( Key( "output-intermediate" ), &this->m_OutputIntermediate, true, "Write transformation for each level [default: only write final transformation]" );
     cl.EndGroup();
 
-    cl.BeginGroup( "SlicerImport", "Import Results into Slicer" );
-    cl.AddOption( Key( "out-itk" ), &this->m_OutputPathITK, "Output path for final transformation in ITK format" )
-      ->SetProperties( CommandLine::PROPS_XFORM | CommandLine::PROPS_OUTPUT )
-      ->SetAttribute( "type", "bspline" )->SetAttribute( "reference", "FloatingImage" );
-    cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )
-      ->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OUTPUT );
-    cl.EndGroup();
-
     cl.AddParameter( &clArg1, "ReferenceImage", "Reference (fixed) image path" )->SetProperties( CommandLine::PROPS_IMAGE );
     cl.AddParameter( &clArg2, "FloatingImage", "Floating (moving) image path" )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OPTIONAL);
-    cl.AddParameter( &clArg3, "InitialXform", "Initial affine transformation from reference to floating image" )->SetProperties( CommandLine::PROPS_XFORM | CommandLine::PROPS_OPTIONAL );
+    cl.AddParameter( &clArg3, "InitialXform", "Initial affine transformation from reference to floating image" )->SetProperties( CommandLine::PROPS_NOXML | CommandLine::PROPS_OPTIONAL );
 
     cl.Parse();
     }
@@ -361,9 +361,9 @@ ElasticRegistrationCommandLine
     this->OutputIntermediate();
   
   // register signal handler for intermediate result output.
-  ElasticRegistrationCommandLine::StaticThis = this;
+  Self::StaticThis = this;
 #ifndef _MSC_VER
-  signal( SIGUSR1, ElasticRegistrationCommandLine::DispatchSIGUSR1 );
+  signal( SIGUSR1, cmtkElasticRegistrationCommandLineDispatchSIGUSR1 );
 #endif
 
   return CALLBACK_OK;
@@ -557,20 +557,20 @@ CallbackResult ElasticRegistrationCommandLine::Register ()
   return Result;
 }
 
+} // namespace cmtk
+
 void
-ElasticRegistrationCommandLine::DispatchSIGUSR1( int sig )
+cmtkElasticRegistrationCommandLineDispatchSIGUSR1( int sig )
 {
-  fprintf( stderr, "Received USR1 (%d) signal. Writing intermediate result #%d.\n"
-	   "Note that this result is not final.\n", sig, StaticThis->IntermediateResultIndex );
+  fprintf( stderr, "Received USR1 (%d) signal. Writing intermediate result #%d.\nNote that this result is not final.\n", sig, cmtk::ElasticRegistrationCommandLine::StaticThis->IntermediateResultIndex );
 
 #ifndef _MSC_VER
   // set signal handler again.
-  signal( sig, ElasticRegistrationCommandLine::DispatchSIGUSR1 );
+  signal( sig, cmtkElasticRegistrationCommandLineDispatchSIGUSR1 );
 #endif
-
+  
   // write intermediate result. give "false" flag for index increment to 
   // preserve to final numbering of levels.
-  StaticThis->OutputIntermediate( false );
+  cmtk::ElasticRegistrationCommandLine::StaticThis->OutputIntermediate( false );
 }
 
-} // namespace cmtk

@@ -147,27 +147,30 @@ private:
   /// Write deformation to studylist archive.
   void OutputWarp ( const char* ) const;
 
-  /// Counter for intermediate result files.
-  int IntermediateResultIndex;
-
-  /// Write intermediate deformation file.
-  void OutputIntermediate( const bool incrementCount = true );
-
   /// Name of output transformation file in ITK format.
   const char* m_OutputPathITK;
 
   /// Path for reformatted floating image.
   const char* m_ReformattedImagePath;
 
-  /// Signal handler that writes intermediate result during a level.
-  static void DispatchSIGUSR1( int sig );
-
+public:
   /// Static pointer to this object.
   static Self* StaticThis;
+
+  /// Counter for intermediate result files.
+  int IntermediateResultIndex;
+
+  /// Write intermediate deformation file.
+  void OutputIntermediate( const bool incrementCount = true );
 };
 
 //@}
 
 } // namespace cmtk
+
+/// Signal handler that writes intermediate result during a level.
+extern "C" void cmtkElasticRegistrationCommandLineDispatchSIGUSR1( int sig );
+
+
 
 #endif // #ifndef __cmtkElasticRegistrationCommandLine_h_included_
