@@ -44,6 +44,7 @@
 #include <cmtkHistogram.h>
 
 #include <math.h>
+#include <cmtkMathFunctionWrappers.h>
 
 bool Verbose = false;
 const char* OutputFileName = "average.hdr";
@@ -71,23 +72,6 @@ ModeEnum Mode = MODE_AVG;
 cmtk::ScalarDataType DataType = cmtk::TYPE_FLOAT;
 
 std::list<const char*> imagePathList;
-
-namespace cmtk
-{
-
-/// Log function.
-double Log( const double x )
-{
-  return log( x );
-}
-
-/// Log function.
-double Abs( const double x )
-{
-  return fabs( x );
-}
-
-} // namespace cmtk
 
 void
 GetNormalizationCoefficients
@@ -188,12 +172,12 @@ main( const int argc, const char* argv[] )
 
     if ( ApplyLog )
       {
-      data->ApplyFunctionDouble( cmtk::Log );
+      data->ApplyFunctionDouble( cmtk::Wrappers::Log );
       }
 
     if ( ApplyAbs )
       {
-      data->ApplyFunctionDouble( cmtk::Abs );
+      data->ApplyFunctionDouble( cmtk::Wrappers::Abs );
       }
 
     if ( Normalize ) 

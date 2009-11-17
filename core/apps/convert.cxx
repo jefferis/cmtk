@@ -537,28 +537,28 @@ if ( Downsample )
     {
     if ( Verbose )
       cmtk::StdErr << "Applying fabs() function.\n";
-    volumeData->ApplyFunctionDouble( fabs );
+    volumeData->ApplyFunctionDouble( cmtk::Wrappers::Abs );
     }
   
   if ( ApplyLog ) 
     {
     if ( Verbose )
       cmtk::StdErr << "Applying log() function.\n";
-    volumeData->ApplyFunctionDouble( log );
+    volumeData->ApplyFunctionDouble( cmtk::Wrappers::Log );
     }
   
   if ( ApplyExp ) 
     {
     if ( Verbose )
       cmtk::StdErr << "Applying exp() function.\n";
-    volumeData->ApplyFunctionDouble( exp );
+    volumeData->ApplyFunctionDouble( cmtk::Wrappers::Exp );
     }
   
   if ( ApplySqrt ) 
     {
     if ( Verbose )
       cmtk::StdErr << "Applying sqrt() function.\n";
-    volumeData->ApplyFunctionDouble( sqrt );
+    volumeData->ApplyFunctionDouble( cmtk::Wrappers::Sqrt );
     }
   
   if ( ApplySquare ) 
