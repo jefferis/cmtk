@@ -133,7 +133,7 @@ ElasticRegistrationCommandLine
 
     cl.BeginGroup( "TransformationIO", "Transformation import/export" );
     cl.AddOption( Key( "initial" ), &initialTransformationFile, "Initialize transformation from given path" )->SetProperties( CommandLine::PROPS_XFORM );
-    cl.AddOption( Key( "out-itk" ), &this->m_OutputPathITK, "Output path for final transformation in ITK format" )
+    cl.AddOption( Key( "write-itk-xform" ), &this->m_OutputPathITK, "Output path for final transformation in ITK format" )
       ->SetProperties( CommandLine::PROPS_XFORM | CommandLine::PROPS_OUTPUT )
       ->SetAttribute( "type", "bspline" )->SetAttribute( "reference", "FloatingImage" );
     cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )
@@ -204,9 +204,12 @@ ElasticRegistrationCommandLine
     cl.AddSwitch( Key( "output-intermediate" ), &this->m_OutputIntermediate, true, "Write transformation for each level [default: only write final transformation]" );
     cl.EndGroup();
 
-    cl.AddParameter( &clArg1, "ReferenceImage", "Reference (fixed) image path" )->SetProperties( CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &clArg2, "FloatingImage", "Floating (moving) image path" )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OPTIONAL);
-    cl.AddParameter( &clArg3, "InitialXform", "Initial affine transformation from reference to floating image" )->SetProperties( CommandLine::PROPS_NOXML | CommandLine::PROPS_OPTIONAL );
+    cl.AddParameter( &clArg1, "ReferenceImage", "Reference (fixed) image path" )
+      ->SetProperties( CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &clArg2, "FloatingImage", "Floating (moving) image path" )
+      ->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OPTIONAL);
+    cl.AddParameter( &clArg3, "InitialXform", "Initial affine transformation from reference to floating image" )
+      ->SetProperties( CommandLine::PROPS_NOXML | CommandLine::PROPS_XFORM | CommandLine::PROPS_OPTIONAL );
 
     cl.Parse();
     }
