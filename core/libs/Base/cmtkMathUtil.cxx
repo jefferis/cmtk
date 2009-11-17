@@ -44,34 +44,6 @@ namespace
 MathUtil
 {
 
-const FPInitializeUnion FPInitializeNaN = {
-#if WORDS_BIGENDIAN
-  { 0x7fffffff, 0xffffffff }
-#else
-  { 0xffffffff, 0x7fffffff }
-#endif
-};
-
-const FPInitializeUnion FPInitializeInf = {
-#if WORDS_BIGENDIAN
-  { 0x7f800000, 0x00000000 }
-#else
-  { 0x00000000, 0x7f800000 }
-#endif
-};
-
-const void* FPInitializeNaN_P = &FPInitializeNaN;
-const void* FPInitializeInf_P = &FPInitializeInf;
-
-#if WORDS_BIGENDIAN
-const void* FPInitializeNaN_fP = &FPInitializeNaN.f[0];
-const void* FPInitializeInf_fP = &FPInitializeInf.f[0];
-#else
-const void* FPInitializeNaN_fP = &FPInitializeNaN.f[1];
-const void* FPInitializeInf_fP = &FPInitializeInf.f[1];
-#endif
-
-
 #ifdef HAVE_FABSF
 inline float absF ( const float a ) { return fabsf(a); }
 #else
