@@ -65,16 +65,6 @@ public:
     Self::ExitCode = code;
   }
 
-private:
-#ifdef HAVE_SIGNAL_H
-  /// Signal handler.
-#ifndef _MSC_VER
-  static void SignalHandler( int sig, siginfo_t *info, void *secret );
-#else
-  static void SignalHandler( int sig );
-#endif
-#endif
-
   /** Exit code.
    * This defaults to "1" but can be set to "0" for CTest testing.
    */
@@ -84,5 +74,15 @@ private:
 //@}
 
 } // namespace cmtk
+
+#ifdef HAVE_SIGNAL_H
+#ifndef _MSC_VER
+/// Signal handler.
+extern "C" void cmtkStackBacktraceSignalHandler( int sig, siginfo_t *info, void *secret );
+#else
+extern "C" void cmtkStackBacktraceSignalHandler( int sig );
+#endif
+#endif
+
 
 #endif // #ifndef __cmtkStackBacktrace_h_included_

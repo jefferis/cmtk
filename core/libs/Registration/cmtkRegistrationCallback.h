@@ -95,14 +95,13 @@ public:
 
   /// Virtual destructor.
   virtual ~RegistrationCallback();
-
-private:
-  /// Handler function for SIGINT interrupt signal.
-  static void DispatchSIGINT( int sig );
 };
 
 //@}
 
 } // namespace cmtk
+
+/// Handler function for SIGINT interrupt signal.
+extern "C" void cmtkRegistrationCallbackDispatchSIGINT( int sig );
 
 #endif // #ifndef __cmtkRegistrationCallback_h_included_

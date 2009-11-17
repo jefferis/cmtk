@@ -57,10 +57,31 @@ cmtk
 
 #ifdef HAVE_SIGNAL_H
 
+StackBacktrace
+::StackBacktrace()
+{
+#ifdef HAVE_SIGNAL_H
+#ifndef _MSC_VER
+  struct sigaction sa;
+
+  sa.sa_sigaction = cmtkStackBacktraceSignalHandler;
+  sigemptyset (&sa.sa_mask);
+  sa.sa_flags = SA_RESTART | SA_SIGINFO;
+
+  sigaction(SIGSEGV, &sa, NULL);
+  sigaction(SIGUSR1, &sa, NULL);
+#else
+#endif // #ifndef _MSC_VER
+#endif
+}
+
+int StackBacktrace::ExitCode = 1;
+
+} // namespace cmtk
+
 #ifndef _MSC_VER
 void
-StackBacktrace
-::SignalHandler
+cmtkStackBacktraceSignalHandler
 ( int sig, siginfo_t *info, void *secret )
 {
 #if defined(HAVE_UCONTEXT_H) && defined(REG_EIP)
@@ -102,8 +123,7 @@ StackBacktrace
 }
 #else // #ifndef _MSC_VER
 void
-StackBacktrace
-::SignalHandler
+cmtkStackBacktraceSignalHandler
 ( int sig )
 {
   exit( cmtk::StackBacktrace::ExitCode );
@@ -111,24 +131,3 @@ StackBacktrace
 #endif // #ifndef _MSC_VER
 #endif
 
-StackBacktrace
-::StackBacktrace()
-{
-#ifdef HAVE_SIGNAL_H
-#ifndef _MSC_VER
-  struct sigaction sa;
-
-  sa.sa_sigaction = StackBacktrace::SignalHandler;
-  sigemptyset (&sa.sa_mask);
-  sa.sa_flags = SA_RESTART | SA_SIGINFO;
-
-  sigaction(SIGSEGV, &sa, NULL);
-  sigaction(SIGUSR1, &sa, NULL);
-#else
-#endif // #ifndef _MSC_VER
-#endif
-}
-
-int StackBacktrace::ExitCode = 1;
-
-} // namespace cmtk

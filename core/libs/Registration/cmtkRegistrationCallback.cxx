@@ -56,7 +56,7 @@ RegistrationCallback::RegistrationCallback()
 #ifndef DEBUG
   InterruptSignalReceived = false;
 #ifndef _MSC_VER
-  signal( SIGINT, RegistrationCallback::DispatchSIGINT );
+  signal( SIGINT, cmtkRegistrationCallbackDispatchSIGINT );
 #endif
 #endif
 }
@@ -104,22 +104,22 @@ RegistrationCallback::FormatComment( const char* format, ... )
 #endif
 }
 
+} // namespace cmtk
+
 void
-RegistrationCallback::DispatchSIGINT( int sig )
+cmtkRegistrationCallbackDispatchSIGINT( int sig )
 {
-  if ( InterruptSignalReceived )
+  if ( cmtk::InterruptSignalReceived )
     {
-    StdErr.printf( "Received repeated INT signal... exiting.\n" );
+    cmtk::StdErr.printf( "Received repeated INT signal... exiting.\n" );
     exit( 3 );
     }
 
 #ifndef DEBUG
-  InterruptSignalReceived = true;
+  cmtk::InterruptSignalReceived = true;
 #ifndef _MSC_VER
-  signal( sig, RegistrationCallback::DispatchSIGINT );
+  signal( sig, cmtkRegistrationCallbackDispatchSIGINT );
 #endif
 #endif
-  StdErr.printf( "Received INT (%d) signal... preparing exit. Press Ctrl-C again to abort immediately.\n", sig );
+  cmtk::StdErr.printf( "Received INT (%d) signal... preparing exit. Press Ctrl-C again to abort immediately.\n", sig );
 }
-
-} // namespace cmtk
