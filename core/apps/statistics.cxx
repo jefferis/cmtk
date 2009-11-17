@@ -45,6 +45,8 @@
 #include <cmtkLandmark.h>
 #include <cmtkLandmarkList.h>
 
+#include <cmtkMathFunctionWrappers.h>
+
 #include <stdio.h>
 #include <string.h>
 
@@ -434,9 +436,9 @@ main ( int argc, char* argv[] )
     else 
       {
       if ( LogData )
-	volumeData->ApplyFunctionDouble( log );
+	volumeData->ApplyFunctionDouble( cmtk::Wrappers::Log );
       if ( ExpData )
-	volumeData->ApplyFunctionDouble( exp );
+	volumeData->ApplyFunctionDouble( cmtk::Wrappers::Exp );
       if ( maskData )
 	AnalyzeGrey( volume, maskData );
       else
