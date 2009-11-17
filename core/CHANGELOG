@@ -20,6 +20,8 @@ Release CMTK-1.1.3:
 - Fixed: cmake file to set up tests when no hash map implementation is found
     cannot set properties for mcwarp and mcaffine tests.
 - Fixed: numerous compile errors using Sun CC compiler
+- Fixed: incomplete Wiki markup of command line help due to incorrectly
+    overloaded virtual member function
 
 - Improved: better, more data-drive automatic initialization of optimizer step
     sizes and image sampling parameters in pairwise rigid and nonrigid
