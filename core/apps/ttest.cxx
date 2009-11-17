@@ -338,7 +338,7 @@ main ( int argc, char* argv[] )
 	cmtk::VolumeIO::Write( refVolume, TStatFileName, Verbose );
 	}
 
-      if ( AbsoluteOutput ) probData->ApplyFunctionDouble( fabs );
+      if ( AbsoluteOutput ) probData->ApplyFunctionDouble( cmtk::Wrappers::Abs );
       if ( Invert ) probData->Rescale( -1.0, 1.0 );
       
       if ( ConvertToShort ) 
@@ -392,7 +392,7 @@ main ( int argc, char* argv[] )
 	cmtk::VolumeIO::Write( refVolume, TStatFileName, Verbose );
 	}
       
-      if ( AbsoluteOutput ) probData->ApplyFunctionDouble( fabs );
+      if ( AbsoluteOutput ) probData->ApplyFunctionDouble( cmtk::Wrappers::Abs );
       if ( Invert ) probData->Rescale( -1.0, 1.0 );
       
       if ( ConvertToShort ) 
@@ -418,7 +418,7 @@ main ( int argc, char* argv[] )
 	probData = cmtk::TypedArray::SmartPtr( cmtk::CompareDeformations::GetPairedCorrelation( dataX, dataY, &pData, maskData ) );
 	}
       
-      if ( AbsoluteOutput ) probData->ApplyFunctionDouble( fabs );
+      if ( AbsoluteOutput ) probData->ApplyFunctionDouble( cmtk::Wrappers::Abs );
       if ( Invert ) probData->Rescale( -1.0, 1.0 );
       
       if ( ConvertToShort ) 
@@ -451,7 +451,7 @@ main ( int argc, char* argv[] )
       {
       cmtk::TypedArray::SmartPtr zscoreData = cmtk::TypedArray::SmartPtr( cmtk::CompareDeformations::GetZScores( dataX, dataY, maskData ) );
       
-      if ( AbsoluteOutput ) zscoreData->ApplyFunctionDouble( fabs );
+      if ( AbsoluteOutput ) zscoreData->ApplyFunctionDouble( cmtk::Wrappers::Abs );
       if ( Invert ) zscoreData->Rescale( -1.0, 1.0 );
       
       if ( ConvertToShort ) 
