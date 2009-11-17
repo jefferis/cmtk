@@ -55,9 +55,9 @@ bool Studholme = false;
 bool Rohlfing = false;
 
 bool Coupe = false;
-float CoupeBeta = 1;
+cmtk::Types::Coordinate CoupeBeta = 1;
 //float CoupeBlockRadius = 0;  commented out while testing, this is defined in cmtk::FilterVolume.h
-float CoupeWindowRadius = 5;
+cmtk::Types::Coordinate CoupeWindowRadius = 5;
 
 bool Gaussian = false;
 float GaussianWidth = 0.0;
