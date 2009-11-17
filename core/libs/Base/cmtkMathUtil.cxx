@@ -31,14 +31,7 @@
 
 #include <cmtkMathUtil.h>
 
-#include <cmtkTypes.h>
-#include <cmtkMatrix.h>
-
-#include <assert.h>
-
 #include <math.h>
-#include <stdlib.h>
-#include <string.h>
 
 namespace
 cmtk
