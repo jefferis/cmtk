@@ -41,6 +41,9 @@
 #include <cmtkStudyList.h>
 #include <cmtkClassStreamStudyList.h>
 
+#include <math.h>
+#include <cmtkMathFunctionWrappers.h>
+
 #include <stdlib.h>
 
 #include <iostream>

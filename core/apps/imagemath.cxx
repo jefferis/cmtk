@@ -43,6 +43,8 @@
 #include <cmtkLabelCombinationMultiClassSTAPLE.h>
 
 #include <math.h>
+#include <cmtkMathFunctionWrappers.h>
+
 #include <stack>
 #include <vector>
 
@@ -193,7 +195,7 @@ CallbackAbs()
   if ( CheckStackOneImage( "Abs" ) )
     {
     ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
-    ImageStack.top()->GetData()->ApplyFunctionDouble( fabs );
+    ImageStack.top()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Abs );
     }
 
   return NULL;
@@ -217,7 +219,7 @@ CallbackLog()
   if ( CheckStackOneImage( "Log" ) )
     {
     ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
-    ImageStack.top()->GetData()->ApplyFunctionDouble( log );
+    ImageStack.top()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Log );
     }
 
   return NULL;
@@ -299,7 +301,7 @@ CallbackExp()
   if ( CheckStackOneImage( "Exp" ) )
     {
     ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
-    ImageStack.top()->GetData()->ApplyFunctionDouble( exp );
+    ImageStack.top()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Exp );
     }
 
   return NULL;
@@ -323,7 +325,7 @@ CallbackSqrt()
   if ( CheckStackOneImage( "Sqrt" ) )
     {
     ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
-    ImageStack.top()->GetData()->ApplyFunctionDouble( sqrt );
+    ImageStack.top()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Sqrt );
     }
 
   return NULL;
