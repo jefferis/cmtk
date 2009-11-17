@@ -32,7 +32,6 @@
 SET(cmtkUnstable_SRCS dummy.cxx cmtkTypedArrayNoiseEstimatorBrummer.cxx cmtkTypedArrayNoiseEstimatorMaximumLikelihood.cxx)
 
 ADD_LIBRARY(cmtkUnstable ${cmtkUnstable_SRCS})
-TARGET_LINK_LIBRARIES(cmtkUnstable cmtkUnstable)
 IF(CMTK_LIBRARY_PROPERTIES)
     SET_TARGET_PROPERTIES(cmtkUnstable PROPERTIES ${CMTK_LIBRARY_PROPERTIES})
 ENDIF(CMTK_LIBRARY_PROPERTIES)
