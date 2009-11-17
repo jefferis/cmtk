@@ -47,6 +47,7 @@
 #include <vector>
 
 #include <math.h>
+#include <cmtkMathFunctionWrappers.h>
 
 #include <cmtkCompareDeformations.h>
 
@@ -259,17 +260,17 @@ main ( int argc, char* argv[] )
   if ( UseLogData )
     {
     for ( dataIt = dataX.begin(); dataIt != dataX.end(); ++dataIt )
-      (*dataIt)->ApplyFunctionDouble( log );
+      (*dataIt)->ApplyFunctionDouble( cmtk::Wrappers::Log );
     for ( dataIt = dataY.begin(); dataIt != dataY.end(); ++dataIt )
-      (*dataIt)->ApplyFunctionDouble( log );
+      (*dataIt)->ApplyFunctionDouble( cmtk::Wrappers::Log );
     }
   
   if ( UseAbsData )
     {
     for ( dataIt = dataX.begin(); dataIt != dataX.end(); ++dataIt )
-      (*dataIt)->ApplyFunctionDouble( fabs );
+      (*dataIt)->ApplyFunctionDouble( cmtk::Wrappers::Abs );
     for ( dataIt = dataY.begin(); dataIt != dataY.end(); ++dataIt )
-      (*dataIt)->ApplyFunctionDouble( fabs );
+      (*dataIt)->ApplyFunctionDouble( cmtk::Wrappers::Abs );
     }
 
   cmtk::TypedArray::SmartPtr maskData( NULL );
