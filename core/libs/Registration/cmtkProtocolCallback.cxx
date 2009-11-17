@@ -63,7 +63,7 @@ ProtocolCallback::~ProtocolCallback ()
 }
 
 CallbackResult
-ProtocolCallback::Execute
+ProtocolCallback::ExecuteWithData
 ( const CoordinateVector& v, const double metric ) 
 {
   size_t dim = std::min<unsigned int>( 20, v.Dim );
@@ -86,7 +86,7 @@ ProtocolCallback::Execute
     fputs( "\n", stderr );
     }
   
-  return this->Superclass::Execute( v, metric );
+  return this->Superclass::ExecuteWithData( v, metric );
 }
 
 void

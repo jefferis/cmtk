@@ -79,7 +79,7 @@ public:
   }
 
   /// Interface: Execute callback action
-  virtual CallbackResult Execute( const CoordinateVector& v, const double metric );
+  virtual CallbackResult ExecuteWithData( const CoordinateVector& v, const double metric );
 
   /// Execute callback action without interim result.
   virtual CallbackResult Execute();

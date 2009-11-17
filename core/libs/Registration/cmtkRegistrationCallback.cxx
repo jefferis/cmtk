@@ -71,7 +71,7 @@ RegistrationCallback::~RegistrationCallback()
 }
 
 CallbackResult 
-RegistrationCallback::Execute
+RegistrationCallback::ExecuteWithData
 ( const CoordinateVector&, const double )
 {
   return InterruptSignalReceived ? CALLBACK_INTERRUPT : CALLBACK_OK;

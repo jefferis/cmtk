@@ -81,7 +81,7 @@ DirectionSetOptimizer::Optimize
 	update = false;
 	
 	current = this->Evaluate( v );
-	irq = this->CallbackExecute( v, current );
+	irq = this->CallbackExecuteWithData( v, current );
 	
 	CoordinateVector vNext( v );
 	vNext.Add( *directionVector, scaleLength );
@@ -136,7 +136,7 @@ DirectionSetOptimizer::Optimize
       fputs( "\n", stderr );
 #endif
       
-      irq = this->CallbackExecute( v, current );
+      irq = this->CallbackExecuteWithData( v, current );
       fprintf( stderr, "%f\n", current );
     }
   }

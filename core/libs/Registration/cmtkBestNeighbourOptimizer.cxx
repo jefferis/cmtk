@@ -68,7 +68,7 @@ BestNeighbourOptimizer::Optimize
 
   Progress::Begin( 0, numOfSteps, 1, "Multi-resolution optimization" );
 
-  CallbackResult irq = this->CallbackExecute( v, optimum );
+  CallbackResult irq = this->CallbackExecuteWithData( v, optimum );
   for ( int stepIdx = 0; (stepIdx < numOfSteps) && ( irq == CALLBACK_OK ); ++stepIdx, step *= StepFactor ) 
     {
     Progress::SetProgress( stepIdx );
@@ -115,7 +115,7 @@ BestNeighbourOptimizer::Optimize
 	{
 	v = optimumV;
 	searchTrace.Move( optimumDim, optimumDir );
-	irq = this->CallbackExecute( v, optimum );
+	irq = this->CallbackExecuteWithData( v, optimum );
 	this->m_LastOptimizeChangedParameters = true;
 
 	// query functional for new parameter steppings if the respective

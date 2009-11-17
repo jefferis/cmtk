@@ -77,7 +77,7 @@ BestDirectionOptimizer::Optimize
       update = false;
       
       Self::ReturnType current = this->EvaluateWithGradient( v, directionVector, step );
-      irq = this->CallbackExecute( v, current );
+      irq = this->CallbackExecuteWithData( v, current );
 
       const Self::ReturnType previous = current;
       
@@ -162,7 +162,7 @@ BestDirectionOptimizer::Optimize
 	  }
 	}
       
-      irq = this->CallbackExecute( v, current );
+      irq = this->CallbackExecuteWithData( v, current );
       StdErr.printf( "%f\r", current );
 
       if ( (fabs(previous-current) / (fabs(previous)+fabs(current)) ) < this->m_DeltaFThreshold )

@@ -61,7 +61,7 @@ IterativeDirectionOptimizer::Optimize
 
   Progress::Begin( 0, numOfSteps, 1, "Multi-resolution optimization" );
 
-  CallbackResult irq = this->CallbackExecute( v, optimum );
+  CallbackResult irq = this->CallbackExecuteWithData( v, optimum );
   for ( int stepIdx = 0; (stepIdx < numOfSteps) && ( irq == CALLBACK_OK ); ++stepIdx, step *= StepFactor ) 
     {
     Progress::SetProgress( stepIdx );
@@ -140,7 +140,7 @@ IterativeDirectionOptimizer::Optimize
 	if ( update ) 
 	  {
 	  v = optimumV;
-	  irq = this->CallbackExecute( v, optimum );
+	  irq = this->CallbackExecuteWithData( v, optimum );
 	  // query functional for new parameter steppings if the respective
 	  // optimzier flag is set.
 	  if ( this->m_UpdateStepScaleVector )

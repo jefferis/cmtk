@@ -94,10 +94,10 @@ public:
   }
 
   /// Execute callback if one was set.
-  virtual CallbackResult CallbackExecute( const CoordinateVector &v, const Self::ReturnType metric ) 
+  virtual CallbackResult CallbackExecuteWithData( const CoordinateVector &v, const Self::ReturnType metric ) 
   {
     if ( m_Callback )
-      return m_Callback->Execute( v, metric );
+      return m_Callback->ExecuteWithData( v, metric );
     return CALLBACK_OK;
   }
 
