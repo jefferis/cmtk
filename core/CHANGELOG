@@ -24,6 +24,8 @@ Release CMTK-1.1.3:
     overloaded virtual member function
 - Fixed: re-worked CMake build system to eliminate redundant repeated
     libraries
+- Fixed: re-arranged "warp" command line parameters to avoid crashing Slicer,
+    as it does not allow optional non-option parameters
 
 - Improved: better, more data-drive automatic initialization of optimizer step
     sizes and image sampling parameters in pairwise rigid and nonrigid
