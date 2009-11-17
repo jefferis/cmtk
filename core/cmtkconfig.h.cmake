@@ -41,6 +41,7 @@
 #cmakedefine HAVE_FCNTL_H 1
 #cmakedefine HAVE_FLOAT_H 1
 #cmakedefine HAVE_IEEEFP_H 1
+#cmakedefine HAVE_INTTYPES_H 1
 #cmakedefine HAVE_LIMITS_H 1
 #cmakedefine HAVE_MALLOC_H 1
 #cmakedefine HAVE_PTHREAD_H 1

@@ -131,7 +131,7 @@
 
 // Define integer types with known size: int32_t, uint32_t, int64_t, uint64_t.
 // If this doesn't work then insert compiler-specific definitions here:
-#if defined(__GNUC__)
+#if defined(HAVE_INTTYPES_H)
   // Compilers supporting C99 or C++0x have inttypes.h defining these integer types
   #include <inttypes.h>
   #define INT64_SUPPORTED // Remove this if the compiler doesn't support 64-bit integers
