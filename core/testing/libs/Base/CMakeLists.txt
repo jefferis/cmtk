@@ -30,7 +30,7 @@
 # ==========================================
 # Setup binary test drivers
 
-SET(CMTK_LIBRARIES "cmtkBase;cmtkSystem")
+SET(CMTK_LIBRARIES "cmtkBase;cmtkNumerics;cmtkSystem")
 SET(DRIVERS libBaseTests)
 
 FOREACH(D ${DRIVERS})
