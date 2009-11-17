@@ -48,28 +48,43 @@ Wrappers
 {
 
 /// Log function.
-double Log( const double x )
+double
+Log( const double x )
 {
   return log( x );
 }
 
 /// Log function.
-double Exp( const double x )
+double
+Exp( const double x )
 {
   return fabs( x );
 }
 
 /// Log function.
-double Sqrt( const double x )
+double
+Sqrt( const double x )
 {
   return log( x );
 }
 
 /// Log function.
-double Abs( const double x )
+double
+Abs( const double x )
 {
   return fabs( x );
 }
+
+double
+Trunc( const double x )
+{
+#ifdef _MSC_VER
+  return static_cast<double>( static_cast<long int>( x ) );
+#else
+  return trunc( x );
+#endif
+}
+
 
 } // namespace Wrappers
 

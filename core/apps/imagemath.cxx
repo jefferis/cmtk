@@ -48,13 +48,6 @@
 #include <stack>
 #include <vector>
 
-#ifdef _MSC_VER
-double trunc( const double x )
-{
-	return static_cast<double>( static_cast<long int>( x ) );
-}
-#endif
-
 namespace cmtk
 {
 
@@ -207,7 +200,7 @@ CallbackTrunc()
   if ( CheckStackOneImage( "Trunc" ) )
     {
     ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
-    ImageStack.top()->GetData()->ApplyFunctionDouble( trunc );
+    ImageStack.top()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Trunc );
     }
 
   return NULL;

@@ -42,6 +42,8 @@
 
 #include <cmtkVolumeIO.h>
 
+#include <cmtkMathFunctionWrappers.h>
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -191,7 +193,7 @@ Import
 	exit( 1 );
 	}
       if ( ExponentialModel ) 
-	imageData->ApplyFunctionDouble( log );
+	imageData->ApplyFunctionDouble( cmtk::Wrappers::Log );
       
       if ( ! refVolume ) refVolume = volume;
       
