@@ -62,7 +62,7 @@ cmtk::CommandLine::KeyToActionEnum
 
 void
 cmtk::CommandLine::KeyToActionEnum
-::PrintWikiWithPrefix( const std::string prefix ) const
+::PrintWikiWithPrefix( const std::string& prefix ) const
 {
   this->Superclass::PrintWikiWithPrefix( prefix );
 

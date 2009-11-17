@@ -55,7 +55,7 @@ cmtk::CommandLine::KeyToActionSingle
 
 void
 cmtk::CommandLine::KeyToActionSingle
-::PrintWikiWithPrefix( const std::string prefix ) const
+::PrintWikiWithPrefix( const std::string& prefix ) const
 {
   this->Superclass::PrintWikiWithPrefix( prefix );
   
