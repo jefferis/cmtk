@@ -7,15 +7,18 @@ import scipy
 import scipy.linalg
 from scipy import matrix
 import numpy
+import resample
 
-pathRoot = '/Users/mphasak/Development/sliver07'
-rawDir = os.path.join(pathRoot, 'resamp30')
-comDir = os.path.join(pathRoot, 'com')
-dimsDir = os.path.join(pathRoot, 'dims')
+
+sliverRoot = '/Users/mphasak/Development/sliver07'
+rawDir = os.path.join(sliverRoot, 'resamp')
+comDir = os.path.join(sliverRoot, 'com')
+dimsDir = os.path.join(sliverRoot, 'dims')
 
 volumeIDs = ['01','02','03','04','05','06','07','08','09','10',\
              '11','12','13','14','15','16','17','18','19','20']
-resampleFactor = "8"
+goodIDs = ['01','02','03','04','05','06','07','08','09','10',\
+           '11','12','13','15','16','17','18','19']
 
 # Description of the image data format.
 # This will need to be determined on the fly
@@ -38,14 +41,14 @@ def getCentersOfMass():
           items = line.split(" ")
           items = map(float, items)
           centersOfMass.append(items)
-      print filename
+#      print filename
   return centersOfMass
 
-def getDimsInMM():
+def getVolumeDimsInVoxels():
   dims = []
   fileList = os.listdir(dimsDir)
   for filename in fileList:
-    if filename.endswith(".dims"):
+    if filename.endswith(".voxels"):
       dimFile = os.path.join(dimsDir, filename)
       with open(dimFile) as f:
         for line in f:
@@ -53,7 +56,37 @@ def getDimsInMM():
           items = line.split(" ")
           items = map(float, items)
           dims.append(items)
-      print filename
+#      print filename
+  return dims
+
+def getVolumeDimsInMM():
+  dims = []
+  fileList = os.listdir(dimsDir)
+  for filename in fileList:
+    if filename.endswith(".volsize"):
+      dimFile = os.path.join(dimsDir, filename)
+      with open(dimFile) as f:
+        for line in f:
+          line = line.rstrip('\n')
+          items = line.split(" ")
+          items = map(float, items)
+          dims.append(items)
+#      print filename
+  return dims
+
+def getVoxelSizesInMM():
+  dims = []
+  fileList = os.listdir(dimsDir)
+  for filename in fileList:
+    if filename.endswith(".voxelsize"):
+      dimFile = os.path.join(dimsDir, filename)
+      with open(dimFile) as f:
+        for line in f:
+          line = line.rstrip('\n')
+          items = line.split(" ")
+          items = map(float, items)
+          dims.append(items)
+#      print filename
   return dims
 
 def normalizeCOMs(coms, dims):
@@ -67,7 +100,16 @@ def normalizeCOMs(coms, dims):
     normalizedCOMs.append(normalizedCOM)
   return normalizedCOMs  
 
-def getIntensityVectors():
+def scaleVoxelDims(sourceDimsMM, targetCubeDim):
+  scaledVoxelDims = []
+  for i in range(0, len(sourceDimsMM)):
+    scaledVoxelDim = []
+    for dim in range(0, len(sourceDimsMM[i])):
+      scaledVoxelDim.append(sourceDimsMM[i][dim] / targetCubeDim)
+    scaledVoxelDims.append(scaledVoxelDim)
+  return scaledVoxelDims  
+
+def getIntensityVectors(resampleTo):
   """
   This function may be hard to read. It's parsing the binary
   data of a NRRD volume, and relies on some unusual string
@@ -82,7 +124,7 @@ def getIntensityVectors():
   intensityVectors = []
   fileList = os.listdir(rawDir)
   for filename in fileList:
-    if filename.endswith("-30.raw"):
+    if filename.endswith("-%d.raw" % resampleTo):
       rawFile = os.path.join(rawDir, filename)
       rawFileHandle = io.FileIO(rawFile, 'r') # FileIO opens in binary mode
       bytes = rawFileHandle.read() # a list of uninterpreted bytes
@@ -96,12 +138,28 @@ def getIntensityVectors():
           # "Unpack" raw bytes to a numeric value:
           intensities.append(struct.unpack(fmt, currentDatum)[0])
       intensityVectors.append(intensities)
-      print filename
+#      print filename
   return intensityVectors
 
 
 def pseudoInverse(A):
   return numpy.linalg.pinv(A)
+
+def computeProposedCOM(A, B, x, row): 
+  selectedVector = A[row]
+  proposedCOM = numpy.dot(selectedVector, x)
+  return proposedCOM
+ 
+def computeResidualZ(A, B, x, ommittedRow):
+  testVector = A[ommittedRow]
+  actualCOM = B[ommittedRow]
+  proposedCOM = numpy.dot(testVector, x)
+  r = actualCOM[2] - proposedCOM[2]
+  #pz = proposedCOM[2]
+  #az = actualCOM[2]
+  #zd = pz - az
+  #print pz, az, zd
+  return r
 
 def computeResidual(A, B, x, ommittedRow):
   testVector = A[ommittedRow]
@@ -111,7 +169,6 @@ def computeResidual(A, B, x, ommittedRow):
   squaredResiduals = map(lambda a: a*a, residualVector)
   r = math.sqrt(sum(squaredResiduals))
   return r
-
 
 def leaveOneOut(A, B):
   assert len(A) == len(B)
@@ -125,14 +182,52 @@ def leaveOneOut(A, B):
         currentSubA.append(A[i])
         currentSubB.append(B[i])
     x = numpy.dot(pseudoInverse(currentSubA), currentSubB)
-    r = computeResidual(A, B, x, leaveOut)
+#    computeProposedCOM(A, B, x, leaveOut)
+#    r = computeResidual(A, B, x, leaveOut)
+    r = computeResidualZ(A, B, x, leaveOut)
     errs.append(r)
   return errs  
-    
-  
-#a = getIntensityVectors()
-#coms = getCentersOfMass()
-#dims = getDimsInMM
-#b = normalizeCOMs(coms, dims)
-#errs = leaveOneOut(a,b)
-#avgerr = numpy.average(errs)
+
+coms = getCentersOfMass()
+dimsMM = getVolumeDimsInMM()
+dimsVox = getVolumeDimsInVoxels()
+voxelSizes = getVoxelSizesInMM()
+
+def computeCOMs(rf):
+  A = getIntensityVectors(rf)
+  b = normalizeCOMs(coms, dimsMM)
+  x = numpy.dot(pseudoInverse(A), b)
+  newComs = []
+  for i in range(0,len(A)):
+    newComs.append(computeProposedCOM(A,b,x,i))
+  return newComs
+
+def mmPtToVoxel(mmPt, imageIdx):
+  vox = []
+  for i in range(0,2):
+    vox[i] = mmPt[i] * dimsVox[imageIdx][i]
+  return vox
+
+
+   
+
+#scaledVoxelSizes_coll = {}
+#A_coll = {}
+#b_coll = {}
+#x_coll = {}
+#errs_coll = {}
+#avgerrs = []
+#stddevs = []
+#resampleFactors = [30, 25, 22, 21, 20, 19, 18, 16, 15, 14, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+#for rf in resampleFactors:
+#  scaledVoxelSizes_coll[rf] = scaleVoxelDims(dimsMM, rf)
+#  resample.reformat(rf, scaledVoxelSizes) 
+#  A_coll[rf] = getIntensityVectors(rf)
+#  b_coll[rf] = normalizeCOMs(coms, dimsMM)
+#  x_coll[rf] = numpy.dot(pseudoInverse(A_coll[rf]), b_coll[rf])
+#  errs_coll[rf] = leaveOneOut(A_coll[rf], b_coll[rf])
+#  avgerr = numpy.average(errs_coll[rf])
+#  stddev = numpy.std(errs_coll[rf])
+#  avgerrs.append(avgerr)
+#  stddevs.append(stddev)
+#  print "%d,%f,%f" % (rf, avgerr, stddev)
