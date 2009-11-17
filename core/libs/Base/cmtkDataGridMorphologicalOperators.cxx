@@ -299,7 +299,7 @@ DataGrid::GetBoundaryMap( const bool multiValued ) const
 	if ( bp )
 	  {
 	  if ( multiValued )
-	    boundary[offset] = value;
+	    boundary[offset] = static_cast<unsigned short>( value );
 	  else
 	    boundary[offset] = 1;
 	  }
