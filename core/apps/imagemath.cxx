@@ -1083,7 +1083,9 @@ main( int argc, char *argv[] )
     {
     cmtk::CommandLine cl( argc, argv );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Image operations" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Perform operations on images using stack-based postfix notation" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Perform operations on images using stack-based postfix notation. "
+		       "Images can be read from files and pushed onto the stack. Images on the stack can be processed and combined via different operators. "
+		       "Results of all operations are put back onto the stack, where they can be further processed or written back to image files." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] [operations]" );
 
     typedef cmtk::CommandLine::Key Key;
@@ -1142,8 +1144,11 @@ main( int argc, char *argv[] )
 
     cl.BeginGroup( "Contract multiple label images", "Operators that contract a stack of label images into a single label image" );
     cl.AddCallback( Key( "vote" ), CallbackVoteCombination, "Merge all images on stack with voting, place result on stack" );
-    cl.AddCallback( Key( "staple" ), CallbackSTAPLE, "Combine binary masks on the stack using [arg] iterations of the STAPLE algorithm" );
-    cl.AddCallback( Key( "mstaple" ), CallbackMultiClassSTAPLE, "Combine multi-label masks on the stack using [arg] iterations of the multi-class STAPLE algorithm" );
+    cl.AddCallback( Key( "staple" ), CallbackSTAPLE, "Combine binary masks on the stack using [arg] iterations of the STAPLE algorithm. "
+		    "The result of this operation is the spatial map of 'weights' W, which are the probabilities of image foreground at each pixel. In 'verbose' "
+		    "mode, estimated expert parameters p (sensitivity) and q (specificity) are also written to standard output." );
+    cl.AddCallback( Key( "mstaple" ), CallbackMultiClassSTAPLE, "Combine multi-label masks on the stack using [arg] iterations of the multi-class STAPLE algorithm."
+		    "The result of this operation is the combined maximum-likeliood multi-label map." );
     cl.AddCallback( Key( "stack-entropy-labels" ), CallbackStackEntropyLabels, "Compute stack entropy at each pixel from integer (label) input images" );
     cl.EndGroup();
 
