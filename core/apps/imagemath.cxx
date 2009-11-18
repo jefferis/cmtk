@@ -1143,10 +1143,10 @@ main( int argc, char *argv[] )
 
     cl.BeginGroup( "Contract multiple label images", "Operators that contract a stack of label images into a single label image" );
     cl.AddCallback( Key( "vote" ), CallbackVoteCombination, "Merge all images on stack with voting, place result on stack" );
-    cl.AddCallback( Key( "staple" ), CallbackSTAPLE, "Combine binary masks on the stack using [arg] iterations of the STAPLE algorithm. "
+    cl.AddCallback( Key( "staple" ), CallbackSTAPLE, "Combine binary maps on the stack using [arg] iterations of the STAPLE algorithm. "
 		    "The result of this operation is the spatial map of 'weights' W, which are the probabilities of image foreground at each pixel. In 'verbose' "
 		    "mode, estimated expert parameters p (sensitivity) and q (specificity) are also written to standard output." );
-    cl.AddCallback( Key( "mstaple" ), CallbackMultiClassSTAPLE, "Combine multi-label masks on the stack using [arg] iterations of the multi-class STAPLE algorithm."
+    cl.AddCallback( Key( "mstaple" ), CallbackMultiClassSTAPLE, "Combine multi-label maps on the stack using [arg] iterations of the multi-class STAPLE algorithm."
 		    "The result of this operation is the combined maximum-likeliood multi-label map." );
     cl.AddCallback( Key( "stack-entropy-labels" ), CallbackStackEntropyLabels, "Compute stack entropy at each pixel from integer (label) input images" );
     cl.EndGroup();
