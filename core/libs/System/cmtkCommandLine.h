@@ -529,6 +529,9 @@ private:
     /// Virtual function that returns an XML tree describing this option.
     virtual mxml_node_t* MakeXML(  mxml_node_t *const parent ) const;
 
+    /// Virtual function returns a string that describes the parameter type associated with this callback.
+    virtual std::string GetParamTypeString() const;
+
   private:
     /// Pointer to simple callback.
     CallbackFunc m_Func;

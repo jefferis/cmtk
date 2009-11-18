@@ -64,9 +64,9 @@ public:
 /// Template for traits to handle command line arguments of different types.
 template<class T>
 class
-CommandLineTypeTraits :
-    /// Inherit generic template members
-    public CommandLineTypeTraitsBase<T>
+CommandLineTypeTraits
+/// Inherit generic template members
+  : public CommandLineTypeTraitsBase<T>
 {
 public:
   /// Return name of the parameter type (for XML).
@@ -78,10 +78,9 @@ public:
 
 template<>
 class 
-CommandLineTypeTraits<const char*> :
-  /// Inherit generic template members
-  public CommandLineTypeTraitsBase<const char*>
-
+CommandLineTypeTraits<const char*>
+/// Inherit generic template members
+  : public CommandLineTypeTraitsBase<const char*>
 {
 public:
   static const char* GetName() 
@@ -110,9 +109,22 @@ public:
 
 template<>
 class 
-CommandLineTypeTraits<int> :
-  /// Inherit generic template members
-  public CommandLineTypeTraitsBase<int>
+CommandLineTypeTraits<std::string>
+/// Inherit generic template members
+  : public CommandLineTypeTraitsBase<std::string>
+{
+public:
+  static const char* GetName() 
+  { 
+    return "string";
+  }
+};
+
+template<>
+class 
+CommandLineTypeTraits<int>
+/// Inherit generic template members
+  : public CommandLineTypeTraitsBase<int>
 {
 public:
   static const char* GetName() 
@@ -123,9 +135,9 @@ public:
 
 template<>
 class 
-CommandLineTypeTraits<unsigned int> :
-  /// Inherit generic template members
-  public CommandLineTypeTraitsBase<unsigned int>
+CommandLineTypeTraits<unsigned int>
+/// Inherit generic template members
+  : public CommandLineTypeTraitsBase<unsigned int>
 {
 public:
   static const char* GetName() 
@@ -136,9 +148,9 @@ public:
 
 template<>
 class 
-CommandLineTypeTraits<short> :
-  /// Inherit generic template members
-  public CommandLineTypeTraitsBase<short>
+CommandLineTypeTraits<short>
+/// Inherit generic template members
+  : public CommandLineTypeTraitsBase<short>
 {
 public:
   static const char* GetName() 
@@ -149,9 +161,9 @@ public:
 
 template<>
 class 
-CommandLineTypeTraits<unsigned short> :
-  /// Inherit generic template members
-  public CommandLineTypeTraitsBase<unsigned short>
+CommandLineTypeTraits<unsigned short>
+/// Inherit generic template members
+  : public CommandLineTypeTraitsBase<unsigned short>
 {
 public:
   static const char* GetName() 
@@ -162,9 +174,9 @@ public:
 
 template<>
 class 
-CommandLineTypeTraits<signed char> :
-  /// Inherit generic template members
-  public CommandLineTypeTraitsBase<signed char>
+CommandLineTypeTraits<signed char>
+/// Inherit generic template members
+  : public CommandLineTypeTraitsBase<signed char>
 {
 public:
   static const char* GetName() 
@@ -188,9 +200,9 @@ public:
 
 template<>
 class 
-CommandLineTypeTraits<float> :
-  /// Inherit generic template members
-  public CommandLineTypeTraitsBase<float>
+CommandLineTypeTraits<float>
+/// Inherit generic template members
+  : public CommandLineTypeTraitsBase<float>
 {
 public:
   static const char* GetName()
@@ -201,9 +213,9 @@ public:
 
 template<>
 class 
-CommandLineTypeTraits<double> :
-  /// Inherit generic template members
-  public CommandLineTypeTraitsBase<double>
+CommandLineTypeTraits<double>
+/// Inherit generic template members
+  : public CommandLineTypeTraitsBase<double>
 {
 public:
   static const char* GetName() 
@@ -214,9 +226,9 @@ public:
 
 template<>
 class 
-CommandLineTypeTraits<bool> :
-  /// Inherit generic template members
-  public CommandLineTypeTraitsBase<bool>
+CommandLineTypeTraits<bool>
+/// Inherit generic template members
+  : public CommandLineTypeTraitsBase<bool>
 {
 public:
   static const char* GetName() 

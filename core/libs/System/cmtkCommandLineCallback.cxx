@@ -134,7 +134,7 @@ cmtk::CommandLine::Callback
 ::MakeXML(  mxml_node_t *const parent ) const 
 {
   mxml_node_t* node = NULL;
-  if ( this->m_FuncArg )
+  if ( this->m_Func )
     {
     node = mxmlNewElement( parent, "boolean" );
     mxml_node_t *dflt = mxmlNewElement( node, "default" );
@@ -159,4 +159,27 @@ cmtk::CommandLine::Callback
 
   mxmlElementSetAttr( node, "multiple", "true" );
   return node;
+}
+
+std::string
+cmtk::CommandLine::Callback
+::GetParamTypeString() const
+{
+  if ( this->m_FuncArg )
+    {
+    return Item::Helper<std::string>::GetParamTypeString( this );
+    }
+  else if ( this->m_FuncIntArg )
+    {
+    return Item::Helper<int>::GetParamTypeString( this );
+    }
+  else if ( this->m_FuncDblArg )
+    {
+    return Item::Helper<double>::GetParamTypeString( this );
+    }
+  else if ( this->m_FuncMultiArg )
+    {
+    return "<string-vector>";
+    }
+  return "";
 }

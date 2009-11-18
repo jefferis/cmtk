@@ -342,12 +342,10 @@ CallbackThreshMin( const char* argv )
 }
     
 const char*
-CallbackScalarMul( const char* argv )
+CallbackScalarMul( const double c )
 {
   if ( ! CheckStackOneImage( "ScalarMul" ) )
     return NULL;
-  
-  const float c = atof( argv );
   
   cmtk::UniformVolume::SmartPtr p = ImageStack.top();
   ImageStack.pop();
@@ -377,12 +375,10 @@ CallbackScalarMul( const char* argv )
 }
 
 const char*
-CallbackScalarAdd( const char* argv )
+CallbackScalarAdd( const double c )
 {
   if ( ! CheckStackOneImage( "ScalarAdd" ) )
     return NULL;
-  
-  const float c = atof( argv );
   
   cmtk::UniformVolume::SmartPtr p = ImageStack.top();
   ImageStack.pop();
