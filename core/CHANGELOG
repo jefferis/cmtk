@@ -9,6 +9,8 @@ Release CMTK-1.1.3:
     future scripts) will also be included in installable packages.
 - Added: B-spline transformation can now be written in ITK file format, thus
     allowing direct import of "warp" transformations into 3D Slicer.
+- Added: new binary builds for Solaris on i386 and x86_64 using SunPro CC
+    compiler.
 
 - Removed: obsolete "deformation_field" tool.
 
