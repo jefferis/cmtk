@@ -28,6 +28,7 @@ Release CMTK-1.1.3:
     as it does not allow optional non-option parameters
 - Fixed: signal handler functions are now 'extern "C"' to avoid potential
     problems of conflicting linkage
+- Fixed: margins for line breaking not correct in Console::FormatText
 
 - Improved: better, more data-drive automatic initialization of optimizer step
     sizes and image sampling parameters in pairwise rigid and nonrigid

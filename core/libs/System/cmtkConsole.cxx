@@ -57,7 +57,7 @@ Console::FormatText( const std::string& text, const size_t margin, const size_t 
   size_t currentIndent = static_cast<size_t>( std::max<int>( 0, margin + firstLine ) );
 
   // the effective length of a line
-  const size_t length = static_cast<size_t>( std::max<int>( 1, width - currentIndent ) );
+  size_t length = static_cast<size_t>( std::max<int>( 1, width - currentIndent ) );
 
   // loop while text left to write
   std::string remaining = text;
@@ -82,6 +82,7 @@ Console::FormatText( const std::string& text, const size_t margin, const size_t 
     (*this) << remaining.substr( 0, breakAt ) << "\n";
     remaining.erase( 0, breakAt+1 );
     currentIndent = margin;
+    length = static_cast<size_t>( std::max<int>( 1, width - currentIndent ) );
     }
   
   size_t breakAt = remaining.find_first_of( "\n\r", 0 );
