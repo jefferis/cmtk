@@ -1094,7 +1094,7 @@ main( int argc, char *argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Internal", "Internal settings" );
-    cl.AddSwitch( Key( "float" ), &ResultType, cmtk::TYPE_FLOAT, "Use single precision for computations and results [default]" );
+    cl.AddSwitch( Key( "float" ), &ResultType, cmtk::TYPE_FLOAT, "Use single precision for computations and results" );
     cl.AddSwitch( Key( "double" ), &ResultType, cmtk::TYPE_DOUBLE, "Use double precision for computations and results" );
     cl.EndGroup();
 
