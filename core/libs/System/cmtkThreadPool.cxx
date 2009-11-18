@@ -182,7 +182,7 @@ ThreadPool::GetMyThreadIndex() const
     if ( self == this->m_ThreadID[idx] )
       return idx;
 #endif // #ifdef CMTK_BUILD_SMP
-  return -1;
+  return static_cast<size_t>( -1 );
 }
 
 ThreadPool ThreadPool::GlobalThreadPool;
