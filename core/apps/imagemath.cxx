@@ -1083,10 +1083,9 @@ main( int argc, char *argv[] )
     {
     cmtk::CommandLine cl( argc, argv );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Image operations" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Perform operations on images using stack-based postfix notation. "
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Perform operations on images using stack-based postfix notation.\n\n"
 		       "Images can be read from files and pushed onto the stack. Images on the stack can be processed and combined via different operators. "
 		       "Results of all operations are put back onto the stack, where they can be further processed or written back to image files." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] [operations]" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Be verbose" );
@@ -1104,8 +1103,8 @@ main( int argc, char *argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Stack", "Stack operations" );
-    cl.AddCallback( Key( "pop" ), CallbackPop, "Pop (discard) top image from stack" );
-    cl.AddCallback( Key( "dup" ), CallbackDup, "Duplicate image on top of the stack" );
+    cl.AddCallback( Key( "pop" ), CallbackPop, "Pop (discard) top image from stack." );
+    cl.AddCallback( Key( "dup" ), CallbackDup, "Duplicate image on top of the stack." );
     cl.EndGroup();
 
     cl.BeginGroup( "Single image", "Single-image operators" );
