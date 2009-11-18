@@ -135,10 +135,7 @@ passes
 </longflag>
 
 </integer>
-<boolean multiple="true">
-<default>
-false
-</default>
+<string multiple="true">
 <description>
 Set contribution weight for a pass in the form 'pass:weight'
 </description>
@@ -155,7 +152,7 @@ pass_weight
 --pass_weight
 </longflag>
 
-</boolean>
+</string>
 
 </parameters>
 <parameters>

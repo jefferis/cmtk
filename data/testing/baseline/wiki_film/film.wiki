@@ -33,7 +33,7 @@ where
 
 ; <tt>--passes</tt> <tt><integer></tt> / <tt>-p</tt> <tt><integer></tt> : Number of interleaved passes '''[Default value: 2]'''
 
-; <tt>--pass-weight</tt> / <tt>-W</tt> : Set contribution weight for a pass in the form 'pass:weight'
+; <tt>--pass-weight</tt> <tt><string></tt> / <tt>-W</tt> <tt><string></tt> : Set contribution weight for a pass in the form 'pass:weight'
 
 === Motion Correction / Registration Options ===
 
