@@ -172,7 +172,7 @@ public:
 
     for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
       {
-      this->Metric->AddHistogram( *(this->TaskMetric[taskIdx]) );
+      this->Metric->AddJointHistogram( *(this->TaskMetric[taskIdx]) );
       }
     
     return this->WeightedTotal( this->Metric->Get(), ThreadWarp[0] );
@@ -290,7 +290,7 @@ public:
     
     for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
       {
-      this->Metric->AddHistogram( *(this->TaskMetric[taskIdx]) );
+      this->Metric->AddJointHistogram( *(this->TaskMetric[taskIdx]) );
       }
     
     return this->WeightedTotal( this->Metric->Get(), ThreadWarp[0] );

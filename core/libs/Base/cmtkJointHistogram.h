@@ -539,7 +539,7 @@ public:
    *@param other A pointer to the other histogram. Its bin values are added to
    * this object's bins.
    */
-  void AddHistogram ( const Self& other ) 
+  void AddJointHistogram ( const Self& other ) 
   {
     assert( NumBinsX == other.NumBinsX );
     assert( NumBinsY == other.NumBinsY );
@@ -559,8 +559,7 @@ public:
    *@param sampleY Index of the histogram row to which the 1D histogram is to
    * be added.
    */
-  void AddHistogram
-  ( const Histogram<T>& other, const size_t sampleY, const float weight = 1 ) 
+  void AddHistogramRow( const Histogram<T>& other, const size_t sampleY, const float weight = 1 ) 
   {
     assert( NumBinsX == other.GetNumBins() );
     
@@ -582,8 +581,7 @@ public:
    *@param sampleX Index of the histogram column to which the 1D histogram is
    * to be added.
    */
-  void AddHistogram
-  ( const size_t sampleX, const Histogram<T>& other, const float weight = 1 ) 
+  void AddHistogramColumn( const size_t sampleX, const Histogram<T>& other, const float weight = 1 ) 
   {
     assert( NumBinsY == other.GetNumBins() ); 
     
@@ -601,19 +599,16 @@ public:
    *@param other A pointer to the other histogram. Its bin values are
    * subtracted this object's bins.
    */
-  void RemoveHistogram ( const Self& other ) 
+  void RemoveJointHistogram ( const Self& other ) 
   {
     assert( NumBinsX == other.NumBinsX );
     assert( NumBinsY == other.NumBinsY );
     
-    size_t idx = 0;
-    for ( size_t j = 0; j<RealNumBinsY; ++j ) 
+    const size_t realNumBinsXY = this->RealNumBinsX * this->RealNumBinsY;
+    for ( size_t idx = 0; idx < realNumBinsXY; ++idx )
       {
-      for ( size_t i = 0; i<RealNumBinsX; ++i, ++idx ) 
-	{
-	assert( this->JointBins[idx] >= other.JointBins[idx] );
-	this->JointBins[idx] -= other.JointBins[idx];
-	}
+      assert( this->JointBins[idx] >= other.JointBins[idx] );
+      this->JointBins[idx] -= other.JointBins[idx];
       }
   }
   

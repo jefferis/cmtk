@@ -169,7 +169,7 @@ public:
 
   /**
    */
-  void AddHistogram ( const Self& other )
+  void AddJointHistogram ( const Self& other )
   {
     HistogramI->AddHistogram( other.HistogramI );
     for ( size_t bin = 0; bin < NumBinsX; ++bin ) 
@@ -188,7 +188,7 @@ public:
   
   /**
    */
-  void RemoveHistogram ( const Self& other )
+  void RemoveJointHistogram ( const Self& other )
   {
     HistogramI->RemoveHistogram( other.HistogramI );
     for ( size_t bin = 0; bin < NumBinsX; ++bin ) {

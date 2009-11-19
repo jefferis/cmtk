@@ -135,7 +135,7 @@ public:
    * Don't let the Sum += ... confuse you!! Sign is already negative from
    * storing in other metric.
    */
-  void AddHistogram ( const Self& other )
+  void AddJointHistogram ( const Self& other )
   {
     SumX += other.SumX;
     SumY += other.SumY;
@@ -149,7 +149,7 @@ public:
    * Don't let the Sum -= ... confuse you!! Sign is already negative from
    * storing in other metric.
    */
-  void RemoveHistogram ( const Self& other )
+  void RemoveJointHistogram ( const Self& other )
   {
     SumX -= other.SumX;
     SumY -= other.SumY;

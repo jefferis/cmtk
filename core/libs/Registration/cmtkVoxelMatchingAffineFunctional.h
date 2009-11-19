@@ -374,7 +374,7 @@ public:
 
       for ( size_t threadIdx = 0; threadIdx < this->m_NumberOfThreads; ++threadIdx ) 
 	{
-	this->Metric->AddHistogram( *this->m_ThreadMetric[threadIdx] );
+	this->Metric->AddJointHistogram( *this->m_ThreadMetric[threadIdx] );
 	}
       }
     return this->Metric->Get();
