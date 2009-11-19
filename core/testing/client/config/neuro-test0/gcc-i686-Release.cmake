@@ -56,9 +56,10 @@ CMAKE_BUILD_TYPE:STRING=Release
 CMAKE_CXX_FLAGS:STRING=-m32 -march=pentium4 -mmmx -msse -msse2 -mfpmath=sse -Wno-deprecated -Wno-unknown-pragmas
 CMAKE_CXX_FLAGS_DEBUG:STRING=-g -DDEBUG
 CMAKE_C_FLAGS:STRING=-m32 -march=pentium4 -mmmx -msse -msse2 -mfpmath=sse
-DCMTK_INCLUDE_DIR:PATH=/usr/include
-DCMTK_LIBRARY_DIR:PATH=/usr/lib
-CMTK_USE_DCMTK:BOOL=OFF
+
+CMTK_USE_DCMTK:BOOL=ON
+CMTK_USE_BUNDLED_DCMTK:BOOL=ON
+
 CMTK_USE_QT:BOOL=ON
 QT_INCLUDE_DIR:PATH=/usr/include
 QT_LIBRARY_DIR:PATH=/usr/lib/
