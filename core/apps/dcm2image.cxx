@@ -172,13 +172,7 @@ ImageFileDCM::ImageFileDCM( const char* filename )
   if ( cmtk::FileFormat::Identify( filename ) != cmtk::FILEFORMAT_DICOM )
     throw(0);
 
-  std::cerr << filename << std::endl;
-
-#ifdef _MSC_VER
-  const char *last_slash = strrchr( filename, '\\' );
-#else
-  const char *last_slash = strrchr( filename, '/' );
-#endif
+  const char *last_slash = strrchr( filename, CMTK_PATH_SEPARATOR );
   if ( last_slash ) 
     {
     fname = strdup(last_slash+1);
@@ -217,7 +211,7 @@ ImageFileDCM::ImageFileDCM( const char* filename )
   {
      throw(1);
   }
-//  DcmDataset *dataset = fileformat->getDataset();
+
   std::auto_ptr<DiDocument> document( new DiDocument( dataset, dataset->getOriginalXfer(), CIF_AcrNemaCompatibility ) );
   if ( ! document.get() || ! document->good() ) 
     {
