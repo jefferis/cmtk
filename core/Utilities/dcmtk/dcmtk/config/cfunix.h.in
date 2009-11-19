@@ -871,13 +871,13 @@ typedef unsigned short ushort;
 #undef WITH_TCPWRAPPER
 
 /* Define if we are compiling with any type of Multi-thread support */
-#cmakedefine WITH_THREADS @CMTK_WITH_THREADS@
+#cmakedefine WITH_THREADS 1
 #ifdef WITH_THREADS
 #  define _REENTRANT
 #endif
 
 /* Define if we are compiling with zlib support */
-#cmakedefine WITH_ZLIB @CMTK_WITH_ZLIB@
+#cmakedefine WITH_ZLIB 1
 
 /* Define to 1 if on AIX 3.
    System headers sometimes define this.
