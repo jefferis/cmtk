@@ -401,10 +401,6 @@ public:
   {
     /// Pointer to the functional object that created the thread.
     Self *thisObject;
-    /// Unique index of this thread instance among all threads.
-    int ThisThreadIndex;
-    /// Total number of threads created.
-    int NumberOfThreads;
     /// Axes hash.
     const VolumeAxesHash* AxesHash;
     /// First plane of clipped reference volume.
