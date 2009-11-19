@@ -724,9 +724,8 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <sys/utsname.h> header file. */
 #cmakedefine HAVE_SYS_UTSNAME_H 1
 
-//TODO:
 /* Define to 1 if you have <sys/wait.h> that is POSIX.1 compatible. */
-#undef HAVE_SYS_WAIT_H
+#cmakedefine HAVE_SYS_WAIT_H
 
 /* Define to 1 if you have the `tempnam' function. */
 #cmakedefine HAVE_TEMPNAM 1
@@ -740,7 +739,6 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `tmpnam' function. */
 #cmakedefine HAVE_TMPNAM 1
 
-//TODO:
 /* define if the compiler recognizes typename */
 #define HAVE_TYPENAME 1
 
@@ -765,9 +763,8 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <utime.h> header file. */
 #cmakedefine HAVE_UTIME_H 1
 
-//TODO:
 /* Define if variable-length arrays are supported in C */
-#undef HAVE_VLA
+#cmakedefine HAVE_VLA @COMPILER_VAR_AUTO_ARRAYSIZE@
 
 /* Define to 1 if you have the `vprintf' function. */
 #cmakedefine HAVE_VPRINTF 1
@@ -854,15 +851,12 @@ typedef unsigned short ushort;
 /* Define if ANSI standard C++ includes are used */
 #cmakedefine USE_STD_CXX_INCLUDES 1
 
-//TODO:
 /* Define if we are compiling with libpng support */
-#cmakedefine WITH_LIBPNG 1
+#undef WITH_LIBPNG
 
-//TODO:
 /* Define if we are compiling with libtiff support */
-#cmakedefine WITH_LIBTIFF 1
+#undef WITH_LIBTIFF
 
-//TODO:
 /* Define if we are compiling with libxml support */
 #undef WITH_LIBXML
 
@@ -876,12 +870,14 @@ typedef unsigned short ushort;
 /* Define if we are compiling with libwrap (TCP wrapper) support */
 #undef WITH_TCPWRAPPER
 
-//TODO:
 /* Define if we are compiling with any type of Multi-thread support */
-#cmakedefine WITH_THREADS 1
+#cmakedefine WITH_THREADS @CMTK_WITH_THREADS@
+#ifdef WITH_THREADS
+#  define _REENTRANT
+#endif
 
 /* Define if we are compiling with zlib support */
-#cmakedefine WITH_ZLIB 1
+#cmakedefine WITH_ZLIB @CMTK_WITH_ZLIB@
 
 /* Define to 1 if on AIX 3.
    System headers sometimes define this.
