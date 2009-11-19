@@ -873,7 +873,9 @@ typedef unsigned short ushort;
 /* Define if we are compiling with any type of Multi-thread support */
 #cmakedefine WITH_THREADS 1
 #ifdef WITH_THREADS
+#  ifndef _REENTRANT
 #  define _REENTRANT
+#  endif
 #endif
 
 /* Define if we are compiling with zlib support */
