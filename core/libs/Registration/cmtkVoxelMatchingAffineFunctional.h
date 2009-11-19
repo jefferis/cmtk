@@ -364,18 +364,8 @@ public:
 	this->m_EvaluateTaskInfo[taskIdx].StartZ = startZ;
 	this->m_EvaluateTaskInfo[taskIdx].EndZ = endZ;
 	}
-      
-      for ( size_t threadIdx = 0; threadIdx < this->m_NumberOfThreads; ++threadIdx ) 
-	{
-	this->m_ThreadMetric[threadIdx]->Reset();
-	}
 
       ThreadPool::GlobalThreadPool.Run( EvaluateThread, this->m_EvaluateTaskInfo );
-
-      for ( size_t threadIdx = 0; threadIdx < this->m_NumberOfThreads; ++threadIdx ) 
-	{
-	this->Metric->AddJointHistogram( *this->m_ThreadMetric[threadIdx] );
-	}
       }
     return this->Metric->Get();
   }
@@ -391,6 +381,9 @@ public:
 
   /// Metric objects for the separate threads.
   VM** m_ThreadMetric;
+
+  /// Mutex lock for access to global Metric field.
+  MutexLock m_MetricMutex;
 
   /** Thread parameter block for incremental gradient computation.
    * This structure holds all thread-specific information. A pointer to an
@@ -426,7 +419,9 @@ public:
 
     Self *me = info->thisObject;
     const VM* Metric = me->Metric;
+
     VM* threadMetric = me->m_ThreadMetric[threadIdx];
+    threadMetric->Reset();
 
     const Vector3D *hashX = (*info->AxesHash)[0], *hashY = (*info->AxesHash)[1], *hashZ = (*info->AxesHash)[2];
     Vector3D pFloating;
@@ -502,6 +497,10 @@ public:
 	r += DimsY * DimsX;
 	}
       }
+
+    me->m_MetricMutex.Lock();
+    me->Metric->AddJointHistogram( *threadMetric );
+    me->m_MetricMutex.Unlock();
   }
 };
 
