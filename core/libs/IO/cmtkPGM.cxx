@@ -428,7 +428,7 @@ PGM::Write
   const TypedArray *pixelData = image->GetPixelData();
 
   Types::DataItem greyScale = 255.0 / (greyTo - greyFrom);
-
+  
   for ( unsigned int i = 0; i < numberOfPixels; ++i ) 
     {
     Types::DataItem pixel;
@@ -471,20 +471,20 @@ PGM::Write( const char* filename, const ScalarImage *image )
   {
     void *Void;
     byte *Byte;
-    ushort *UShort;
+    unsigned short *UShort;
   } pgmData;
   pgmData.Void = NULL;
   unsigned int bytesPerPixel = 0;
 
   const TypedArray *pixelData = image->GetPixelData();
 
-  ushort maxData;
+  unsigned short maxData;
   Types::DataItem min, max;
   pixelData->GetRange( min, max );
-  maxData = static_cast<ushort>( max );
+  maxData = static_cast<unsigned short>( max );
   if ( maxData > 255 ) 
     {
-    pgmData.UShort = Memory::AllocateArray<ushort>(  numberOfPixels  );
+    pgmData.UShort = Memory::AllocateArray<unsigned short>(  numberOfPixels  );
     bytesPerPixel = 2;
     for ( unsigned int i = 0; i < numberOfPixels; ++i ) 
       {
@@ -493,10 +493,10 @@ PGM::Write( const char* filename, const ScalarImage *image )
 	{
 	// pgm wants 16bit in little endian, so let's do it...
 #ifdef WORDS_BIGENDIAN
-	ushort tmp = static_cast<ushort>( pixel );
+	unsigned short tmp = static_cast<unsigned short>( pixel );
 	pgmData.UShort[i] = ((tmp&255)<<8) + (tmp>>8);
 #else
-	pgmData.UShort[i] = static_cast<ushort>( pixel );
+	pgmData.UShort[i] = static_cast<unsigned short>( pixel );
 #endif
 	}
       else
