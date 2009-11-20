@@ -75,6 +75,38 @@ JointHistogram<T>::GetJointEntropy() const
   
   const T sampleCount = this->SampleCount();
   
+#ifdef _OPENMP
+  const size_t numBins = this->RealNumBinsX * this->RealNumBinsY;
+#ifdef COMPILER_VAR_AUTO_ARRAYSIZE
+  double plogp[numBins];
+#else
+  std::vector<double> plogp( numBins );
+#endif
+
+#pragma omp parallel for
+  for ( size_t idx = 0; idx < numBins; ++idx )
+    {
+    if ( JointBins[idx] ) 
+      {
+      const double pXY = ((double)JointBins[idx]) / sampleCount;
+      plogp[idx] = pXY * log( pXY );
+      }
+    else
+      {
+      plogp[idx] = 0;
+      }
+    }
+  
+  size_t idx = 0;
+// no omp here to make sure we get reproducible results
+  for ( size_t i=0; i<NumBinsY; ++i ) 
+    {
+    for ( size_t j=0; j<NumBinsX; ++j, ++idx )
+      HXY -= plogp[idx];
+    // Skip extra bin at the end of each row.
+    ++idx;
+    }
+#else // #ifdef _OPENMP
   size_t idx = 0;
   for ( size_t i=0; i<NumBinsY; ++i ) 
     {
@@ -88,6 +120,7 @@ JointHistogram<T>::GetJointEntropy() const
     // Skip extra bin at the end of each row.
     ++idx;
     }
+#endif // #ifdef _OPENMP
 
   return HXY;
 }
