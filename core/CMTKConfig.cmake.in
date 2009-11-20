@@ -82,6 +82,9 @@ SET(CMTK_LIBRARY_DEPENDS_FILE "${CMTK_CONFIG_DIR}/@CMTK_LIBRARY_DEPENDS_FILE@")
 # Whether CMTK was built with shared libraries.
 SET(CMTK_BUILD_SHARED "@BUILD_SHARED_LIBS@")
 
+# The build type used.
+SET(CMTK_BUILD_TYPE "@CMAKE_BUILD_TYPE@")
+
 # A list of all libraries for CMTK.  Those listed here should
 # automatically pull in their dependencies.
 SET(CMTK_LIBRARIES cmtkBase cmtkIO cmtkPipeline cmtkQt cmtkRegistration cmtkSegmentation cmtkSystem cmtkVTKWrapper)
