@@ -94,8 +94,8 @@ public:
     this->InfoTaskGradient.resize( this->m_NumberOfTasks );
     this->InfoTaskComplete.resize( this->m_NumberOfTasks );
     
-    this->TaskMetric = Memory::AllocateArray<VM*>( this->m_NumberOfTasks );
-    for ( size_t task = 0; task < this->m_NumberOfTasks; ++task )
+    this->TaskMetric = Memory::AllocateArray<VM*>( this->m_NumberOfThreads );
+    for ( size_t task = 0; task < this->m_NumberOfThreads; ++task )
       this->TaskMetric[task] = new VM( *(this->Metric) );
     
     this->ThreadVectorCache = Memory::AllocateArray<Vector3D*>( this->m_NumberOfThreads );
@@ -113,7 +113,7 @@ public:
 	Memory::DeleteArray( this->ThreadVectorCache[thread] );
     Memory::DeleteArray( this->ThreadVectorCache );
     
-    for ( size_t task = 0; task < this->m_NumberOfTasks; ++task )
+    for ( size_t task = 0; task < this->m_NumberOfThreads; ++task )
       delete this->TaskMetric[task];
     Memory::DeleteArray( this->TaskMetric );
     
@@ -167,10 +167,15 @@ public:
       {
       InfoTaskComplete[taskIdx].thisObject = this;
       }
+
+    for ( size_t taskIdx = 0; taskIdx < this->m_NumberOfThreads; ++taskIdx ) 
+      {
+      this->TaskMetric[taskIdx]->Reset();
+      }
     
     ThreadPool::GlobalThreadPool.Run( EvaluateCompleteThread, this->InfoTaskComplete );
-
-    for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
+    
+    for ( size_t taskIdx = 0; taskIdx < this->m_NumberOfThreads; ++taskIdx ) 
       {
       this->Metric->AddJointHistogram( *(this->TaskMetric[taskIdx]) );
       }
@@ -286,9 +291,14 @@ public:
       InfoTaskComplete[taskIdx].thisObject = this;
       }
     
+    for ( size_t taskIdx = 0; taskIdx < this->m_NumberOfThreads; ++taskIdx ) 
+      {
+      this->TaskMetric[taskIdx]->Reset();
+      }
+    
     ThreadPool::GlobalThreadPool.Run( EvaluateCompleteThread, this->InfoTaskComplete );
     
-    for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
+    for ( size_t taskIdx = 0; taskIdx < this->m_NumberOfThreads; ++taskIdx ) 
       {
       this->Metric->AddJointHistogram( *(this->TaskMetric[taskIdx]) );
       }
@@ -346,7 +356,7 @@ private:
     SmartPointer<W>& myWarp = me->ThreadWarp[threadIdx];
     myWarp->SetParamVector( *info->Parameters );
     
-    VM* taskMetric = me->TaskMetric[taskIdx];
+    VM* threadMetric = me->TaskMetric[threadIdx];
     Vector3D *vectorCache = me->ThreadVectorCache[threadIdx];
     Types::Coordinate *p = myWarp->m_Parameters;
     
@@ -367,9 +377,9 @@ private:
 	pOld = p[dim];
 	
 	p[dim] += thisStep;
-	upper = me->EvaluateIncremental( myWarp, taskMetric, voi, vectorCache );
+	upper = me->EvaluateIncremental( myWarp, threadMetric, voi, vectorCache );
 	p[dim] = pOld - thisStep;
-	lower = me->EvaluateIncremental( myWarp, taskMetric, voi, vectorCache );
+	lower = me->EvaluateIncremental( myWarp, threadMetric, voi, vectorCache );
 	
 	p[dim] = pOld;
 	me->WeightedDerivative( lower, upper, myWarp, dim, thisStep );
@@ -409,8 +419,7 @@ private:
     
     Self *me = info->thisObject;
     const W *warp = me->ThreadWarp[0];
-    VM* taskMetric = me->TaskMetric[taskIdx];
-    taskMetric->Reset();
+    VM* threadMetric = me->TaskMetric[threadIdx];
     Vector3D *vectorCache = me->ThreadVectorCache[threadIdx];
     
     typename VM::Exchange* warpedVolume = me->WarpedVolume;
@@ -456,7 +465,7 @@ private:
 	    warpedVolume[r] = unsetY;
 	    }
 	  
-	  taskMetric->Increment( me->Metric->GetSampleX(r), warpedVolume[r] );
+	  threadMetric->Increment( me->Metric->GetSampleX(r), warpedVolume[r] );
 	  }
 	}
       }
