@@ -31,10 +31,6 @@
 
 #include <cmtkHistogram.h>
 
-#ifdef CMTK_HAVE_ACML
-#  include <acml_mv.h>
-#endif
-
 namespace
 cmtk
 {
@@ -88,22 +84,6 @@ Histogram<T>
   if ( ! sampleCount ) 
     throw "Empty histogram in Histogram<T>::GetEntropy()";
   
-#ifdef CMTK_HAVE_ACML
-  double p[this->m_NumBins], logp[this->m_NumBins];
-  size_t toIdx = 0;
-  for ( size_t i=0; i<this->m_NumBins; ++i ) 
-    {
-    if ( this->Bins[i] ) 
-      {
-      p[toIdx++] = ((double)this->Bins[i]) / sampleCount;
-      }
-    }
-  vrsa_log( toIdx, p, logp );
-  for ( size_t i=0; i<toIdx; ++i ) 
-    {
-    H -= p[i] * logp[i];
-    }
-#else
   for ( size_t i=0; i<this->m_NumBins; ++i ) 
     {
     if ( this->Bins[i] ) 
@@ -112,7 +92,6 @@ Histogram<T>
       H -= pX*log(pX);
       }
     }
-#endif
   return H;
 }
 

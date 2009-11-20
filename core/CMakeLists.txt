@@ -348,32 +348,6 @@ IF(NOT CMTK_USE_MPI)
 ENDIF(NOT CMTK_USE_MPI)
 
 #-----------------------------------------------------------------------------
-# Add an option to use or not use AMD Core Math Library
-
-OPTION(CMTK_USE_ACML "Use AMD Core Math Library (ACML) for better math performance" OFF)
-IF(CMTK_USE_ACML)
-  SET(ACML_FOUND 1)
-  FIND_PATH(ACML_INCLUDE_DIR acml.h ${INCLUDE_DIRS})
-  IF(NOT EXISTS ${ACML_INCLUDE_DIR}/acml_mv.h)
-    SET(ACML_INCLUDE_DIR "NOTFOUND" CACHE PATH "Include directory of ACML library" )
-    SET(ACML_FOUND 0)
-  ENDIF(NOT EXISTS ${ACML_INCLUDE_DIR}/acml_mv.h)
-
-  FIND_PATH(ACML_LIBRARY_DIR libacml.a ${LIBRARY_DIRS})
-  IF(NOT EXISTS ${ACML_LIBRARY_DIR}/libacml_mv.a)
-    SET(ACML_LIBRARY_DIR "NOTFOUND" CACHE PATH "Include directory of ACML library" )
-    SET(ACML_FOUND 0)
-  ENDIF(NOT EXISTS ${ACML_LIBRARY_DIR}/libacml_mv.a)
-
-  IF(ACML_FOUND)
-    ADD_DEFINITIONS(-DCMTK_HAVE_ACML)
-    SET(ACML_LIBRARIES "acml_mv")
-    MARK_AS_ADVANCED(ACML_INCLUDE_DIR ACML_LIBRARY_DIR)
-  ENDIF(ACML_FOUND)
-
-ENDIF(CMTK_USE_ACML)
-
-#-----------------------------------------------------------------------------
 # Add an option to use or not to use MPI distributed-memory parallelism
 
 OPTION(CMTK_USE_MPI "Use MPI for distributed-memory parallelism" OFF)

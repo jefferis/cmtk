@@ -32,10 +32,6 @@
 #include <cmtkJointHistogram.h>
 #include <cmtkMathUtil.h>
 
-#ifdef CMTK_HAVE_ACML
-#  include <acml_mv.h>
-#endif
-
 namespace
 cmtk
 {
@@ -79,29 +75,6 @@ JointHistogram<T>::GetJointEntropy() const
   
   const T sampleCount = this->SampleCount();
   
-#ifdef CMTK_HAVE_ACML
-  const size_t numBins = NumBinsX * NumBinsY;
-  double p[numBins];
-  double logp[numBins];
-
-  size_t idx = 0, toIdx = 0;
-  for ( size_t i=0; i<NumBinsY; ++i ) 
-    {
-    for ( size_t j=0; j<NumBinsX; ++j, ++idx )
-      if ( JointBins[idx] ) 
-	{
-	p[toIdx++] = ((double)JointBins[idx]) / sampleCount;
-	}
-    
-    // Skip extra bin at the end of each row.
-    ++idx;
-    }
-  vrsa_log( toIdx, p, logp );
-  for ( size_t i = 0; i < toIdx; ++i )
-    {
-    HXY -= p[i] * logp[i];
-    }
-#else // #ifdef CMTK_HAVE_ACML
   size_t idx = 0;
   for ( size_t i=0; i<NumBinsY; ++i ) 
     {
@@ -115,7 +88,6 @@ JointHistogram<T>::GetJointEntropy() const
     // Skip extra bin at the end of each row.
     ++idx;
     }
-#endif // #ifdef CMTK_HAVE_ACML
 
   return HXY;
 }
