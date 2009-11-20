@@ -36,6 +36,8 @@
 #  include <acml_mv.h>
 #endif
 
+#include <algorithm>
+
 namespace
 cmtk
 {
@@ -51,25 +53,49 @@ JointHistogram<T>::GetMarginalEntropies ( double& HX, double& HY )
   
   const T sampleCount = this->SampleCount();
   
+#ifdef COMPILER_VAR_AUTO_ARRAYSIZE
+  double plogp[std::max( this->NumBinsX, this->NumBinsY )];
+#else
+  std::vector<double> plogp( std::max( this->NumBinsX, this->NumBinsY ) );
+#endif
+
+#pragma omp parallel for
   for ( size_t i=0; i<NumBinsX; ++i ) 
     {
     const double project = this->ProjectToX( i );
     if ( project ) 
       {
       const double pX = project / sampleCount;
-      HX -= pX * log(pX);
+      plogp[i] = pX * log(pX);
       }
+    else
+      plogp[i] = 0;
+    }
+
+// no omp here to make sure we get reproducible results
+  for ( size_t i=0; i<NumBinsX; ++i ) 
+    {
+    HX -= plogp[i];
     }
   
+#pragma omp parallel for
   for ( size_t j=0; j<NumBinsY; ++j ) 
     {
     const double project = this->ProjectToY( j );
     if ( project ) 
       {
       const double pY = project / sampleCount;
-      HY -= pY * log(pY);
+      plogp[j] = pY * log(pY);
       }
-  }
+    else
+      plogp[j] = 0;
+    }
+
+// no omp here to make sure we get reproducible results
+  for ( size_t j=0; j<NumBinsY; ++j ) 
+    {
+    HY -= plogp[j];
+    }
 }
 
 template<class T> double
@@ -102,16 +128,34 @@ JointHistogram<T>::GetJointEntropy() const
     HXY -= p[i] * logp[i];
     }
 #else
+  const size_t numBins = this->RealNumBinsX * RealNumBinsY;
+
+#ifdef COMPILER_VAR_AUTO_ARRAYSIZE
+  double plogp[numBins];
+#else
+  std::vector<double> plogp( numBins );
+#endif
+
+#pragma omp parallel for
+  for ( size_t idx = 0; idx < numBins; ++idx )
+    {
+    if ( JointBins[idx] ) 
+      {
+      const double pXY = ((double)JointBins[idx]) / sampleCount;
+      plogp[idx] = pXY * log( pXY );
+      }
+    else
+      {
+      plogp[idx] = 0;
+      }
+    }
+
   size_t idx = 0;
+// no omp here to make sure we get reproducible results
   for ( size_t i=0; i<NumBinsY; ++i ) 
     {
     for ( size_t j=0; j<NumBinsX; ++j, ++idx )
-      if ( JointBins[idx] ) 
-	{
-	const double pXY = ((double)JointBins[idx]) / sampleCount;
-	HXY -= pXY * log(pXY);
-	}
-    
+      HXY -= plogp[idx];
     // Skip extra bin at the end of each row.
     ++idx;
     }
