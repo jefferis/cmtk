@@ -88,6 +88,9 @@ SET(cmtkRegistration_SRCS
 )
 
 ADD_LIBRARY(cmtkRegistration ${cmtkRegistration_SRCS})
+
+TARGET_LINK_LIBRARIES(cmtkRegistration cmtkIO cmtkBase cmtkSystem cmtkNumerics )
+
 IF(CMTK_LIBRARY_PROPERTIES)
   SET_TARGET_PROPERTIES(cmtkRegistration PROPERTIES ${CMTK_LIBRARY_PROPERTIES})
 ENDIF(CMTK_LIBRARY_PROPERTIES)

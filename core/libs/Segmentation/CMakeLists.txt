@@ -39,6 +39,9 @@ SET(cmtkSegmentation_SRCS
 )
 
 ADD_LIBRARY(cmtkSegmentation ${cmtkSegmentation_SRCS})
+
+TARGET_LINK_LIBRARIES(cmtkSegmentation cmtkBase cmtkSystem cmtkNumerics )
+
 IF(CMTK_LIBRARY_PROPERTIES)
   SET_TARGET_PROPERTIES(cmtkSegmentation PROPERTIES ${CMTK_LIBRARY_PROPERTIES})
 ENDIF(CMTK_LIBRARY_PROPERTIES)

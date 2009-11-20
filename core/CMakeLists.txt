@@ -561,13 +561,6 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/CTestCustom.ctest.in ${CMAKE_CURRENT_
 # Copy the UseCMTK.cmake file to the binary tree for backward compatability.
 CONFIGURE_FILE(${CMTK_SOURCE_DIR}/UseCMTK.cmake.in ${CMTK_BINARY_DIR}/UseCMTK.cmake COPYONLY IMMEDIATE)
 
-# Save the compiler settings so another project can import them.
-INCLUDE(${CMAKE_ROOT}/Modules/CMakeExportBuildSettings.cmake)
-CMAKE_EXPORT_BUILD_SETTINGS(${CMTK_BINARY_DIR}/CMTKBuildSettings.cmake)
-
-# Save library dependencies.
-EXPORT_LIBRARY_DEPENDENCIES(${CMTK_BINARY_DIR}/CMTKLibraryDepends.cmake)
-
 # Create the CMTKConfig.cmake file containing the CMTK configuration.
 INCLUDE (${CMTK_SOURCE_DIR}/cmtkGenerateCMTKConfig.cmake)
 
@@ -599,3 +592,6 @@ IF(${CMTK_BUILD_SHARED_LIBS})
 ELSE(${CMTK_BUILD_SHARED_LIBS})
   SET(CMAKE_SKIP_RPATH TRUE)
 ENDIF(${CMTK_BUILD_SHARED_LIBS})
+
+# Save library dependencies.
+EXPORT_LIBRARY_DEPENDENCIES(${CMTK_BINARY_DIR}/CMTKLibraryDepends.cmake)
