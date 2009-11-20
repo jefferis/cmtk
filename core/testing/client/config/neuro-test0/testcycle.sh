@@ -30,6 +30,7 @@
 ##
 
 export LC_ALL=POSIX
+export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib
 
 lockfile=${HOME}/testcycle.lock
 if test -f ${lockfile}; then
