@@ -11,9 +11,11 @@ import resample
 
 
 sliverRoot = '/Users/mphasak/Development/sliver07'
+testDir = os.path.join(sliverRoot, 'resamp')
 rawDir = os.path.join(sliverRoot, 'resamp')
 comDir = os.path.join(sliverRoot, 'com')
 dimsDir = os.path.join(sliverRoot, 'dims')
+cropDir = os.path.join(sliverRoot, 'cropfiles')
 
 volumeIDs = ['01','02','03','04','05','06','07','08','09','10',\
              '11','12','13','14','15','16','17','18','19','20']
@@ -109,7 +111,7 @@ def scaleVoxelDims(sourceDimsMM, targetCubeDim):
     scaledVoxelDims.append(scaledVoxelDim)
   return scaledVoxelDims  
 
-def getIntensityVectors(resampleTo):
+def getTrainingIntensityVectors(resampleTo):
   """
   This function may be hard to read. It's parsing the binary
   data of a NRRD volume, and relies on some unusual string
@@ -126,6 +128,27 @@ def getIntensityVectors(resampleTo):
   for filename in fileList:
     if filename.endswith("-%d.raw" % resampleTo):
       rawFile = os.path.join(rawDir, filename)
+      rawFileHandle = io.FileIO(rawFile, 'r') # FileIO opens in binary mode
+      bytes = rawFileHandle.read() # a list of uninterpreted bytes
+      # Unpack the bytes:
+      intensities = []
+      for i in range(0, len(bytes)):
+        if ((i % ctypelength)==0):
+          # Current raw item is the concatenation of bytes from
+          # list index i to index i+ctypelength.
+          currentDatum = ''.join(byte for byte in bytes[i:i+ctypelength])
+          # "Unpack" raw bytes to a numeric value:
+          intensities.append(struct.unpack(fmt, currentDatum)[0])
+      intensityVectors.append(intensities)
+#      print filename
+  return intensityVectors
+
+def getTestingIntensityVectors():
+  intensityVectors = []
+  fileList = os.listdir(testDir)
+  for filename in fileList:
+    if filename.endswith(".raw"):
+      rawFile = os.path.join(testDir, filename)
       rawFileHandle = io.FileIO(rawFile, 'r') # FileIO opens in binary mode
       bytes = rawFileHandle.read() # a list of uninterpreted bytes
       # Unpack the bytes:
@@ -188,28 +211,55 @@ def leaveOneOut(A, B):
     errs.append(r)
   return errs  
 
+rf = 5
 coms = getCentersOfMass()
 dimsMM = getVolumeDimsInMM()
 dimsVox = getVolumeDimsInVoxels()
 voxelSizes = getVoxelSizesInMM()
 
 def computeCOMs(rf):
-  A = getIntensityVectors(rf)
+  trainA = getTrainingIntensityVectors(rf)
+  testA = getTrainingIntensityVectors(rf)
   b = normalizeCOMs(coms, dimsMM)
-  x = numpy.dot(pseudoInverse(A), b)
+  x = numpy.dot(pseudoInverse(trainA), b)
   newComs = []
-  for i in range(0,len(A)):
-    newComs.append(computeProposedCOM(A,b,x,i))
+  for i in range(0,len(testA)):
+    newComs.append(computeProposedCOM(testA,b,x,i))
   return newComs
 
 def mmPtToVoxel(mmPt, imageIdx):
   vox = []
-  for i in range(0,2):
-    vox[i] = mmPt[i] * dimsVox[imageIdx][i]
+  for i in range(0,3):
+    vox.append(int(mmPt[i] * dimsVox[imageIdx][i]))
   return vox
 
+def computeBoundingBoxes(rf):
+  newComs = computeCOMs(rf)
+  boxheightPx = 210
+  boxes = []
+  for i in range(0,len(goodIDs)):
+    boxCenterVox = mmPtToVoxel(newComs[i],i)
+    centerZ = boxCenterVox[2]
+    topZ = min(512, centerZ + int(boxheightPx/2))
+    botZ = max(0, centerZ - int(boxheightPx/2))
+    boxes.append([0,0,botZ,512,512,topZ])
+  return boxes  
 
-   
+def saveBoundingBoxes(rf):
+  boxes = computeBoundingBoxes(rf)
+  
+  if not os.path.exists(cropDir):
+    os.makedirs(cropDir)
+
+  for i in range(0, len(goodIDs)):
+    filename = "liver-orig0%s.crop" % goodIDs[i]
+    cropFile = os.path.join(cropDir, filename)
+    with open(cropFile, 'w') as f:
+      for p in range(0,len(boxes[i])):
+        if (p > 0): f.write(",") 
+        f.write(str(boxes[i][p]))
+      f.close()
+
 
 #scaledVoxelSizes_coll = {}
 #A_coll = {}
@@ -222,7 +272,7 @@ def mmPtToVoxel(mmPt, imageIdx):
 #for rf in resampleFactors:
 #  scaledVoxelSizes_coll[rf] = scaleVoxelDims(dimsMM, rf)
 #  resample.reformat(rf, scaledVoxelSizes) 
-#  A_coll[rf] = getIntensityVectors(rf)
+#  A_coll[rf] = getTrainingIntensityVectors(rf)
 #  b_coll[rf] = normalizeCOMs(coms, dimsMM)
 #  x_coll[rf] = numpy.dot(pseudoInverse(A_coll[rf]), b_coll[rf])
 #  errs_coll[rf] = leaveOneOut(A_coll[rf], b_coll[rf])
