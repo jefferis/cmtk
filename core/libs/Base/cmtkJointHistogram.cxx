@@ -52,7 +52,8 @@ JointHistogram<T>::GetMarginalEntropies ( double& HX, double& HY )
   HX = HY = 0;
   
   const T sampleCount = this->SampleCount();
-  
+
+#ifdef _OPENMP  
 #ifdef COMPILER_VAR_AUTO_ARRAYSIZE
   double plogp[std::max( this->NumBinsX, this->NumBinsY )];
 #else
@@ -96,6 +97,27 @@ JointHistogram<T>::GetMarginalEntropies ( double& HX, double& HY )
     {
     HY -= plogp[j];
     }
+#else // #ifdef _OPENMP  
+  for ( size_t i=0; i<NumBinsX; ++i ) 
+    {
+    const double project = this->ProjectToX( i );
+    if ( project ) 
+      {
+      const double pX = project / sampleCount;
+      HX -= pX * log(pX);
+      }
+    }
+  
+  for ( size_t j=0; j<NumBinsY; ++j ) 
+    {
+    const double project = this->ProjectToY( j );
+    if ( project ) 
+      {
+      const double pY = project / sampleCount;
+      HY -= pY * log(pY);
+      }
+  }
+#endif // #ifdef _OPENMP  
 }
 
 template<class T> double
@@ -127,9 +149,10 @@ JointHistogram<T>::GetJointEntropy() const
     {
     HXY -= p[i] * logp[i];
     }
-#else
+#else // #ifdef CMTK_HAVE_ACML
   const size_t numBins = this->RealNumBinsX * RealNumBinsY;
 
+#ifdef _OPENMP  
 #ifdef COMPILER_VAR_AUTO_ARRAYSIZE
   double plogp[numBins];
 #else
@@ -159,7 +182,11 @@ JointHistogram<T>::GetJointEntropy() const
     // Skip extra bin at the end of each row.
     ++idx;
     }
-#endif
+#else // #ifdef _OPENMP  
+#endif // #ifdef _OPENMP  
+
+#endif // #ifdef CMTK_HAVE_ACML
+
   return HXY;
 }
 
