@@ -2,6 +2,8 @@ Release CMTK-1.1.4:
 
 - Fixed: bundled DICOM library finally works on all tested platforms and all
     tested compilers.
+- Fixed: compile error on latest Mac/Intel gcc due to undefined "ushort"
+    type.
 
 - Removed: support for AMD Core Math Library (ACML), which was rarely used and
     complicated code unnecessarily
