@@ -66,8 +66,7 @@ public:
    * Afterwards, the original (untransformed) probability distribution 
    * functions of model and reference are calculated.
    */
-  VoxelMatchingCorrRatio ( const UniformVolume* refVolume, const UniformVolume* fltVolume,
-		    const unsigned int numBins = CMTK_HISTOGRAM_AUTOBINS )
+  VoxelMatchingCorrRatio ( const UniformVolume* refVolume, const UniformVolume* fltVolume, const unsigned int numBins = CMTK_HISTOGRAM_AUTOBINS )
     : VoxelMatchingMetric<short,TYPE_SHORT,I>( refVolume, fltVolume ),
     SumJ( NULL ), SumJ2( NULL ), HistogramI( NULL ), 
     SumI( NULL ), SumI2( NULL ), HistogramJ( NULL )
@@ -169,7 +168,7 @@ public:
 
   /**
    */
-  void AddJointHistogram ( const Self& other )
+  void AddMetric ( const Self& other )
   {
     HistogramI->AddHistogram( other.HistogramI );
     for ( size_t bin = 0; bin < NumBinsX; ++bin ) 
@@ -188,7 +187,7 @@ public:
   
   /**
    */
-  void RemoveJointHistogram ( const Self& other )
+  void RemoveMetric ( const Self& other )
   {
     HistogramI->RemoveHistogram( other.HistogramI );
     for ( size_t bin = 0; bin < NumBinsX; ++bin ) {

@@ -131,6 +131,16 @@ public:
     this->Increment( refData, fltNode[nextIJK], frac[2]* frac[1]* frac[0] );
 #endif
   }
+
+  void AddMetric ( const Self& other )
+  {
+    this->AddJointHistogram( other );
+  }
+
+  void RemoveMetric ( const Self& other )
+  {
+    this->RemoveJointHistogram( other );
+  }
 };
 
 //@}

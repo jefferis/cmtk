@@ -499,7 +499,7 @@ public:
       }
 
     me->m_MetricMutex.Lock();
-    me->Metric->AddJointHistogram( *threadMetric );
+    me->Metric->AddMetric( *threadMetric );
     me->m_MetricMutex.Unlock();
   }
 };

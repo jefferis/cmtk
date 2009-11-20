@@ -135,21 +135,13 @@ public:
     Sum += MathUtil::Square( sampleX - sampleY );
   }
 
-  /**
-   * Don't let the Sum += ... confuse you!! Sign is already negative from
-   * storing in other metric.
-   */
-  void AddJointHistogram ( const Self& other )
+  void AddMetric ( const Self& other )
   {
     Sum += other.Sum;
     Samples += other.Samples;
   }
 
-  /**
-   * Don't let the Sum -= ... confuse you!! Sign is already negative from
-   * storing in other metric.
-   */
-  void RemoveJointHistogram ( const Self& other )
+  void RemoveMetric ( const Self& other )
   {
     Sum -= other.Sum;
     assert( Sum <= 0 );

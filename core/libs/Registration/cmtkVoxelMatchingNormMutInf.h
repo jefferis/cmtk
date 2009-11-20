@@ -61,6 +61,9 @@ public:
 
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
+  
+  /// Parent class.
+  typedef RegistrationJointHistogram<I> Superclass;
 
   /** Constructor.
    * For reference and floating volume, InitDataset is called.
@@ -73,8 +76,8 @@ public:
    * floating image data. If this parameter is zero (default), a suitable value
    * is automatically determined.
    */
-  VoxelMatchingNormMutInf ( const UniformVolume* refVolume, const UniformVolume* fltVolume,const unsigned int numRefBins = CMTK_HISTOGRAM_AUTOBINS, 
-		     const unsigned int numFltBins = CMTK_HISTOGRAM_AUTOBINS )
+  VoxelMatchingNormMutInf ( const UniformVolume* refVolume, const UniformVolume* fltVolume,
+			    const unsigned int numRefBins = CMTK_HISTOGRAM_AUTOBINS, const unsigned int numFltBins = CMTK_HISTOGRAM_AUTOBINS )
     : RegistrationJointHistogram<I>( refVolume, fltVolume, numRefBins, numFltBins ) {};
   
   /** Constructor with explicit value range limits.
@@ -97,7 +100,7 @@ public:
    * values above this bound will be sorted into the highest histogram bin.
    */
   VoxelMatchingNormMutInf ( const UniformVolume* refVolume, const UniformVolume* fltVolume, const Types::DataItem minBoundRef, const Types::DataItem maxBoundRef,
-		     const Types::DataItem minBoundFlt, const Types::DataItem maxBoundFlt )
+			    const Types::DataItem minBoundFlt, const Types::DataItem maxBoundFlt )
     : RegistrationJointHistogram<I>( refVolume, fltVolume, CMTK_HISTOGRAM_AUTOBINS, CMTK_HISTOGRAM_AUTOBINS, minBoundRef, maxBoundRef, minBoundFlt, maxBoundFlt ) {};
   
   /// UNDOCUMENTED
@@ -113,8 +116,8 @@ public:
     
     this->GetMarginalEntropies(HX,HY);
     this->GetJointEntropy(HXY);
-
-	return static_cast<typename Self::ReturnType>( (HX + HY) / HXY );
+    
+    return static_cast<typename Self::ReturnType>( (HX + HY) / HXY );
   }
 };
 
