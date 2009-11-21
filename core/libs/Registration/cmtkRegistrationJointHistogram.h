@@ -64,6 +64,12 @@ class RegistrationJointHistogram :
   public VoxelMatchingMetric<byte,TYPE_BYTE,I>
 {
 public:
+  /// This class.
+  typedef RegistrationJointHistogram<I> Self;
+
+  /// Smart pointer.
+  typedef SmartPointer<Self> SmartPtr;
+
   /** Constructor.
    *@param refVolume The reference (fixed) volume.
    *@param fltVolume The floating (transformed) volume.
