@@ -96,6 +96,22 @@ three-dimensional (3D) image data. CMTK is available both in source code
 (licensed under the GNU GPL3) and as pre-compiled binaries from
 \url{http://www.nitrc.org/projects/cmtk/}.
 
+\subsection{Terminology}
+
+Regarding the roles of images in pairwise registration, throughout this guide we shall
+refer to one image as the reference and the other as the floating
+image. Others may refer to these as the fixed and the moving image,
+respectively. By definition, all coordinate transformations computed by CMTK
+are functions that map {\em from\/} the space of the reference (fixed) image
+{\em to\/} the space of the floating (moving) image. As a result, when
+reformatting one image to match the other, it is the floating image by default
+that will be transformed to match the reference image.
+
+Note that when we speak about transforming coordinates of features, such as
+landmarks or the nodes in a mesh, then the coordinates of the reference image
+will be transformed to match the floating image.
+
+\subsection{Conventions}
 
 \section{Step-by-Step}
 
