@@ -9,6 +9,7 @@
 \documentclass{InsightArticle}
 
 \usepackage[dvipdfm]{graphicx}
+\usepackage{url}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -28,7 +29,7 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 
 % The title should be descriptive enough for people to be able to find
 % the relevant document. 
-\title{User Guide to The Computational Morphometry Toolkit}
+\title{User Guide to \\[4mm] The Computational Morphometry Toolkit}
 
 % Increment the release number whenever significant changes are made.
 % The author and/or editor can define 'significant' however they like.
@@ -68,20 +69,48 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 % scope of the document.
 \begin{abstract}
 \noindent
-This paper is intended as a very brief introduction of the main tools in the Computational Morphometry Toolkit (CMTK).
+This paper is intended as a very brief introduction of the main tools in the
+Computational Morphometry Toolkit (CMTK). The target audience are CMTK users,
+who might use this codument as a reference to the most common processing
+tasks, and prospective users, who may find this information useful to
+determine whether CMTK provides functionality that they can use.
 \end{abstract}
 
 \tableofcontents
 
 \section{Introduction}
 
+The Computational Morphometry Toolkit, or short CMTK, is a set of software
+tools that perform various types of processing and analysis on
+three-dimensional (3D) image data. CMTK is available both in source code
+(licensed under the GNU GPL3) and as pre-compiled binaries from
+\url{http://www.nitrc.org/projects/cmtk/}.
+
+
 \section{Step-by-Step}
 
 \subsection{DICOM Image Stacker}
 
+When dealing with 3D medical image data in particular, the first step of
+processing is usually the conversion of a stack of single-slice image files in
+DICOM format to a single-file 3D image. To this end, CMTK provides a tool that
+can search through a file system tree, find all DICOM files in it, group the
+ones that form 3D image volumes, and write each of these volumes into a
+separate file in one of the supported formats.
+
+For example, the command
+\begin{verbatim}
+dcm2image --recurse --out-pattern image_%02d.nii /path/to/dicom
+\end{verbatim}
+or short
 \begin{verbatim}
 dcm2image -r -O image_%02d.nii /path/to/dicom
 \end{verbatim}
+would recursively search the file system under {\tt /path/to/dicom} and write
+all resulting image volumes to consecutively numbered image files in NIFTI
+format, {\tt image\_01.nii},  {\tt image\_01.nii}, and so on.
+
+\subsection{Interleaved Image Motion Artifact Correction}
 
 \subsection{MR Intensity Bias Field Correction}
 
@@ -92,7 +121,6 @@ levelset levelset.nii
 \begin{verbatim}
 mrbias -M 2 --mask levelset.nii spgr.nii spgr_corrected.nii
 \end{verbatim}
-
 
 \subsection{Affine Image Registration}
 
