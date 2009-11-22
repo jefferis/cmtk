@@ -52,7 +52,7 @@ cmtk::CommandLine::KeyToActionEnum
   
   fmt << "or use one of the following";
   
-  StdErr.FormatText( fmt.str(), CommandLine::HelpTextIndent + globalIndent, 80, -CommandLine::HelpTextIndent ) << "\n";  
+  StdErr.FormatText( fmt.str(), CommandLine::HelpTextIndent + globalIndent, StdErr.GetLineWidth(), -CommandLine::HelpTextIndent ) << "\n";  
   
   for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
     {

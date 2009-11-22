@@ -65,6 +65,9 @@ public:
 #endif
   }
 
+  /// Get terminal line width, if possible.
+  size_t GetLineWidth() const;
+
   /// Format text with line breaks etc.
   Console& FormatText( const std::string& text, //!< The text to format with line breaks.
 		       const size_t margin = 0, //!< Left margin: this many space characters are printed at the beginning of each line.

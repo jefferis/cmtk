@@ -178,6 +178,8 @@ void
 CommandLine::PrintHelp
 () const
 {
+  const size_t lineWidth = StdErr.GetLineWidth();
+
   ProgramPropertiesMapType::const_iterator it = this->m_ProgramInfo.find(PRG_TITLE);
   if ( it != this->m_ProgramInfo.end() )
     {
@@ -210,7 +212,7 @@ CommandLine::PrintHelp
 	{
 	fmt << (*it)->m_Name << " ";
 	}
-      StdErr.FormatText( fmt.str(), 5, 80 );
+      StdErr.FormatText( fmt.str(), 5, lineWidth );
 
       StdErr << "\n  where\n";
 
@@ -229,7 +231,7 @@ CommandLine::PrintHelp
 	    fmt << " ";
 	  }
 	fmt << (*it)->m_Comment;
-	StdErr.FormatText( fmt.str(), 5+indent, 80, -indent ) << "\n";
+	StdErr.FormatText( fmt.str(), 5+indent, lineWidth, -indent ) << "\n";
 	}
       }
     }

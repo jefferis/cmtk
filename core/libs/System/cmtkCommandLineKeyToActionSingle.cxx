@@ -50,7 +50,7 @@ cmtk::CommandLine::KeyToActionSingle
   this->Superclass::FormatHelp( fmt );
 
   this->m_Action->PrintHelp( fmt );
-  StdErr.FormatText( fmt.str(), CommandLine::HelpTextIndent + globalIndent, 80, -CommandLine::HelpTextIndent ) << "\n";  
+  StdErr.FormatText( fmt.str(), CommandLine::HelpTextIndent + globalIndent, StdErr.GetLineWidth(), -CommandLine::HelpTextIndent ) << "\n";  
 }
 
 void
