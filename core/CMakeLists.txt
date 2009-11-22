@@ -70,7 +70,6 @@ CHECK_INCLUDE_FILES (stdint.h HAVE_STDINT_H)
 CHECK_INCLUDE_FILES (stdio.h HAVE_STDIO_H)
 CHECK_INCLUDE_FILES (stdlib.h HAVE_STDLIB_H)
 CHECK_INCLUDE_FILES (string.h HAVE_STRING_H)
-CHECK_INCLUDE_FILES (termios.h HAVE_TERMIOS_H)
 CHECK_INCLUDE_FILES (time.h HAVE_TIME_H)
 CHECK_INCLUDE_FILES (ucontext.h HAVE_UCONTEXT_H)
 CHECK_INCLUDE_FILES (unistd.h HAVE_UNISTD_H)
@@ -135,6 +134,95 @@ MARK_AS_ADVANCED(CMTK_SINGLE_COMMAND_BINARY)
 IF(CMTK_SINGLE_COMMAND_BINARY)
   ADD_DEFINITIONS(-DCMTK_SINGLE_COMMAND_BINARY)
 ENDIF(CMTK_SINGLE_COMMAND_BINARY)
+
+#-----------------------------------------------------------------------------
+# Add an option to use or not to use MPI distributed-memory parallelism
+
+OPTION(CMTK_USE_MPI "Use MPI for distributed-memory parallelism" OFF)
+IF(CMTK_USE_MPI)
+  ADD_DEFINITIONS(-DCMTK_BUILD_MPI)
+ENDIF(CMTK_USE_MPI)
+
+OPTION(CMTK_BUILD_SMP "Enable shared-memory parallelism (requires at least POSIX Threads, OpenMP, or Windows threads)" ON)
+IF(CMTK_BUILD_SMP)
+  ADD_DEFINITIONS(-DCMTK_BUILD_SMP)
+ENDIF(CMTK_BUILD_SMP)
+
+
+#-----------------------------------------------------------------------------
+# Add an option to enable or disable POSIX threads if pthread.h header exists
+
+IF(HAVE_PTHREAD_H)
+  OPTION(CMTK_USE_PTHREADS "Use POSIX Threads for SMP parallelism" ON)
+  MARK_AS_ADVANCED(CMTK_USE_PTHREADS)
+
+  IF(NOT CMTK_BUILD_SMP)
+    SET(CMTK_USE_PTHREADS OFF)
+  ENDIF(NOT CMTK_BUILD_SMP)
+ENDIF(HAVE_PTHREAD_H)
+
+#-----------------------------------------------------------------------------
+# for the gnu compiler a -D_PTHREADS is needed on sun
+# for the native compiler a -mt flag is needed on the sun
+IF(CMTK_USE_PTHREADS)
+
+  ADD_DEFINITIONS(-DCMTK_USE_THREADS)
+
+  IF(CMAKE_SYSTEM MATCHES "SunOS.*")
+    IF(CMAKE_COMPILER_IS_GNUCXX)
+      SET(CMTK_REQUIRED_CXX_FLAGS "${CMTK_REQUIRED_CXX_FLAGS} -D_PTHREADS")
+    ELSE(CMAKE_COMPILER_IS_GNUCXX)
+      SET(CMTK_REQUIRED_CXX_FLAGS "${CMTK_REQUIRED_CXX_FLAGS} -mt")
+      SET(CMTK_REQUIRED_C_FLAGS "${CMTK_REQUIRED_C_FLAGS} -mt")
+    ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+  ENDIF(CMAKE_SYSTEM MATCHES "SunOS.*")
+ENDIF(CMTK_USE_PTHREADS)
+
+# mingw thread support
+IF(MINGW)
+  SET(CMTK_REQUIRED_CXX_FLAGS "${CMTK_REQUIRED_CXX_FLAGS} -mthreads")
+  SET(CMTK_REQUIRED_C_FLAGS "${CMTK_REQUIRED_C_FLAGS} -mthreads")
+  SET(CMTK_REQUIRED_LINK_FLAGS "${CMTK_REQUIRED_LINK_FLAGS} -mthreads")
+ENDIF(MINGW)
+
+#-----------------------------------------------------------------------------
+# Check for, and configure, OpenMP
+
+IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} STRLESS 2.6.2)
+  MESSAGE("Warning.  We need at least CMake 2.6.2 to check for OpenMP support. You have version ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}")
+ELSE (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} STRLESS 2.6.2)
+  FIND_PACKAGE(OpenMP)
+  IF(OPENMP_FOUND)
+    OPTION(CMTK_USE_OPENMP "Use OpenMP for SMP parallelism" ON)
+    MARK_AS_ADVANCED(CMTK_USE_OPENMP)
+
+    IF(NOT CMTK_BUILD_SMP)
+      SET(CMTK_USE_OPENMP OFF)
+    ENDIF(NOT CMTK_BUILD_SMP)
+
+    IF(CMTK_USE_OPENMP)
+      SET(CMTK_REQUIRED_CXX_FLAGS "${CMTK_REQUIRED_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+      SET(CMTK_REQUIRED_LINK_FLAGS "${CMTK_REQUIRED_LINK_FLAGS} ${OpenMP_C_FLAGS}")
+      ADD_DEFINITIONS(-DCMTK_USE_OPENMP)
+    ENDIF(CMTK_USE_OPENMP)
+  ENDIF(OPENMP_FOUND)
+ENDIF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} STRLESS 2.6.2)
+
+#-----------------------------------------------------------------------------
+# Check whether compiler supports variable-size automatic arrays, i.e.,
+# things like "const int size = 10; const char string[size];" rather than
+# "const char string[10];"
+
+INCLUDE(${CMAKE_ROOT}/Modules/CheckCXXSourceCompiles.cmake)
+CHECK_CXX_SOURCE_COMPILES("int main() { int size = 10; char string[size]; }" COMPILER_VAR_AUTO_ARRAYSIZE)
+IF(COMPILER_VAR_AUTO_ARRAYSIZE)
+  ADD_DEFINITIONS(-DCMTK_VAR_AUTO_ARRAYSIZE)
+ENDIF(COMPILER_VAR_AUTO_ARRAYSIZE)
+
+CHECK_CXX_SOURCE_COMPILES("template<int N> class C { public: static const float nn = 1.0 / N; }; int main() { C<10> c; return C<10>::nn; }; " COMPILER_INCLASS_MEMBER_INITIALIZATION)
+IF(NOT COMPILER_INCLASS_MEMBER_INITIALIZATION)
+  ADD_DEFINITIONS(-DCMTK_NO_INCLASS_MEMBER_INITIALIZATION)
+ENDIF(NOT COMPILER_INCLASS_MEMBER_INITIALIZATION)
 
 #-----------------------------------------------------------------------------
 # Configure Dart testing support.  This should be done before any
@@ -347,95 +435,6 @@ IF(NOT CMTK_USE_MPI)
 
   ENDIF(CMTK_USE_QT)
 ENDIF(NOT CMTK_USE_MPI)
-
-#-----------------------------------------------------------------------------
-# Add an option to use or not to use MPI distributed-memory parallelism
-
-OPTION(CMTK_USE_MPI "Use MPI for distributed-memory parallelism" OFF)
-IF(CMTK_USE_MPI)
-  ADD_DEFINITIONS(-DCMTK_BUILD_MPI)
-ENDIF(CMTK_USE_MPI)
-
-OPTION(CMTK_BUILD_SMP "Enable shared-memory parallelism (requires at least POSIX Threads, OpenMP, or Windows threads)" ON)
-IF(CMTK_BUILD_SMP)
-  ADD_DEFINITIONS(-DCMTK_BUILD_SMP)
-ENDIF(CMTK_BUILD_SMP)
-
-
-#-----------------------------------------------------------------------------
-# Add an option to enable or disable POSIX threads if pthread.h header exists
-
-IF(HAVE_PTHREAD_H)
-  OPTION(CMTK_USE_PTHREADS "Use POSIX Threads for SMP parallelism" ON)
-  MARK_AS_ADVANCED(CMTK_USE_PTHREADS)
-
-  IF(NOT CMTK_BUILD_SMP)
-    SET(CMTK_USE_PTHREADS OFF)
-  ENDIF(NOT CMTK_BUILD_SMP)
-ENDIF(HAVE_PTHREAD_H)
-
-#-----------------------------------------------------------------------------
-# for the gnu compiler a -D_PTHREADS is needed on sun
-# for the native compiler a -mt flag is needed on the sun
-IF(CMTK_USE_PTHREADS)
-
-  ADD_DEFINITIONS(-DCMTK_USE_THREADS)
-
-  IF(CMAKE_SYSTEM MATCHES "SunOS.*")
-    IF(CMAKE_COMPILER_IS_GNUCXX)
-      SET(CMTK_REQUIRED_CXX_FLAGS "${CMTK_REQUIRED_CXX_FLAGS} -D_PTHREADS")
-    ELSE(CMAKE_COMPILER_IS_GNUCXX)
-      SET(CMTK_REQUIRED_CXX_FLAGS "${CMTK_REQUIRED_CXX_FLAGS} -mt")
-      SET(CMTK_REQUIRED_C_FLAGS "${CMTK_REQUIRED_C_FLAGS} -mt")
-    ENDIF(CMAKE_COMPILER_IS_GNUCXX)
-  ENDIF(CMAKE_SYSTEM MATCHES "SunOS.*")
-ENDIF(CMTK_USE_PTHREADS)
-
-# mingw thread support
-IF(MINGW)
-  SET(CMTK_REQUIRED_CXX_FLAGS "${CMTK_REQUIRED_CXX_FLAGS} -mthreads")
-  SET(CMTK_REQUIRED_C_FLAGS "${CMTK_REQUIRED_C_FLAGS} -mthreads")
-  SET(CMTK_REQUIRED_LINK_FLAGS "${CMTK_REQUIRED_LINK_FLAGS} -mthreads")
-ENDIF(MINGW)
-
-#-----------------------------------------------------------------------------
-# Check for, and configure, OpenMP
-
-IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} STRLESS 2.6.2)
-  MESSAGE("Warning.  We need at least CMake 2.6.2 to check for OpenMP support. You have version ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}")
-ELSE (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} STRLESS 2.6.2)
-  FIND_PACKAGE(OpenMP)
-  IF(OPENMP_FOUND)
-    OPTION(CMTK_USE_OPENMP "Use OpenMP for SMP parallelism" ON)
-    MARK_AS_ADVANCED(CMTK_USE_OPENMP)
-
-    IF(NOT CMTK_BUILD_SMP)
-      SET(CMTK_USE_OPENMP OFF)
-    ENDIF(NOT CMTK_BUILD_SMP)
-
-    IF(CMTK_USE_OPENMP)
-      SET(CMTK_REQUIRED_CXX_FLAGS "${CMTK_REQUIRED_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-      SET(CMTK_REQUIRED_LINK_FLAGS "${CMTK_REQUIRED_LINK_FLAGS} ${OpenMP_C_FLAGS}")
-      ADD_DEFINITIONS(-DCMTK_USE_OPENMP)
-    ENDIF(CMTK_USE_OPENMP)
-  ENDIF(OPENMP_FOUND)
-ENDIF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} STRLESS 2.6.2)
-
-#-----------------------------------------------------------------------------
-# Check whether compiler supports variable-size automatic arrays, i.e.,
-# things like "const int size = 10; const char string[size];" rather than
-# "const char string[10];"
-
-INCLUDE(${CMAKE_ROOT}/Modules/CheckCXXSourceCompiles.cmake)
-CHECK_CXX_SOURCE_COMPILES("int main() { int size = 10; char string[size]; }" COMPILER_VAR_AUTO_ARRAYSIZE)
-IF(COMPILER_VAR_AUTO_ARRAYSIZE)
-  ADD_DEFINITIONS(-DCMTK_VAR_AUTO_ARRAYSIZE)
-ENDIF(COMPILER_VAR_AUTO_ARRAYSIZE)
-
-CHECK_CXX_SOURCE_COMPILES("template<int N> class C { public: static const float nn = 1.0 / N; }; int main() { C<10> c; return C<10>::nn; }; " COMPILER_INCLASS_MEMBER_INITIALIZATION)
-IF(NOT COMPILER_INCLASS_MEMBER_INITIALIZATION)
-  ADD_DEFINITIONS(-DCMTK_NO_INCLASS_MEMBER_INITIALIZATION)
-ENDIF(NOT COMPILER_INCLASS_MEMBER_INITIALIZATION)
 
 #-----------------------------------------------------------------------------
 # Output directories.
