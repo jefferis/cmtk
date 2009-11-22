@@ -53,13 +53,8 @@ cmtk
  */
 template<Interpolators::InterpolationEnum I=Interpolators::LINEAR>
 class RegistrationJointHistogram : 
-#ifdef CMTK_PVI_HISTOGRAMS
-  /// For PVI, inherit histogram with real-valued bins.
-  public JointHistogram<float>,
-#else
-  /// For non-PVI, inherit histogram with integral bins.
+  /// Inherit histogram with integral bins.
   public JointHistogram<int>,
-#endif
   /// Inherit from generic voxel metric with internal byte data.
   public VoxelMatchingMetric<byte,TYPE_BYTE,I>
 {
