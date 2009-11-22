@@ -43,7 +43,7 @@
 #  include <sys/ioctl.h>
 #endif
 
-#ifdef HAVE_TERMIOS_H
+#if defined(TIOCGWINSZ_IN_TERMIOS_H) || defined(STRUCT_WINSIZE_IN_TERMIOS_H)
 #  include <termios.h>
 #endif
 
@@ -61,10 +61,12 @@ Console StdOut( std::cout );
 size_t
 Console::GetLineWidth() const
 {
-#ifdef HAVE_SYS_IOCTL_H
+#if defined(TIOCGWINSZ_IN_TERMIOS_H) || defined(TIOCGWINSZ_IN_SYS_IOCTL_H) 
+#if defined(STRUCT_WINSIZE_IN_TERMIOS_H) || defined(STRUCT_WINSIZE_IN_SYS_IOCTL_H)
   struct winsize sz;
   if ( ioctl(0, TIOCGWINSZ, &sz) >= 0 )
     return sz.ws_col;
+#endif
 #endif
   // default to 80
   return 80;
