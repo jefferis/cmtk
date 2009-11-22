@@ -116,6 +116,10 @@ will be transformed to match the floating image.
 
 \section{Step-by-Step}
 
+This section provides a step-by-step guide to the tools used in a typical
+morpometry study using the CMTK tools. It is not intended to provide a
+complete list of available tools.
+
 \subsection{DICOM Image Stacker}
 
 When dealing with 3D medical image data in particular, the first step of
@@ -174,6 +178,18 @@ warp -o ffd.xform affine.xform
 
 \section{Quick Tool Reference}
 
+\section*{Acknowledgments}
+
+Much of the effort required to get CMTK ready for release as open source
+software was performed by Mike Hasak at SRI. Calvin R. Maurer, Jr., wrote the
+original implementation of his linear-time algorithm for the Euclidean
+distance transform, which \verb|cmtk::UniformDistanceMap| is based on, and
+kindly agreed to distribution of this derived code under the GPL. Likewise,
+Daniel Russakoff kindly agreed to GPL licensing of code he wrote for entropy
+computation based on covariance matrices, as he used it in his work on
+Regional Mutual Information. Greg Jefferis provided numerous bug reports and
+fixes, including much of the details required to get CMTK compiled and working
+on the MacOS platform.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
