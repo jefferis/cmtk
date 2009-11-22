@@ -43,6 +43,10 @@
 #  include <sys/ioctl.h>
 #endif
 
+#ifdef HAVE_TERMIOS_H
+#  include <termios.h>
+#endif
+
 #include <algorithm>
 
 namespace
