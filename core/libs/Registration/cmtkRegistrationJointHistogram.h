@@ -109,28 +109,7 @@ public:
    */
   void Proceed( const size_t refIdx, const size_t fltIdx, const Types::Coordinate* frac ) 
   {
-#ifndef CMTK_PVI_HISTOGRAMS
     this->Increment( this->GetSampleX( refIdx ), this->GetSampleY( fltIdx, frac ) );
-#else
-    const byte refData = this->GetSampleX( refIdx );
-    Types::Coordinate offsX = 1.0 - frac[0];
-    Types::Coordinate offsY = 1.0 - frac[1];
-    Types::Coordinate offsZ = 1.0 - frac[2];
-
-    // set pointer to bottom-left-proximal node of enclosing voxel
-    assert( (fltIdx + nextIJK) < NumSamplesY );
-    byte *fltNode = DataY + fltIdx;
-
-    // compute data by tri-linear interpolation
-    this->Increment( refData, fltNode[0],       offsZ  * offsY  * offsX );
-    this->Increment( refData, fltNode[1],       offsZ  * offsY  * frac[0] );
-    this->Increment( refData, fltNode[nextJ],   offsZ  * frac[1]* offsX );
-    this->Increment( refData, fltNode[nextIJ],  offsZ  * frac[1]* frac[0] );
-    this->Increment( refData, fltNode[nextK],   frac[2]* offsY  * offsX );
-    this->Increment( refData, fltNode[nextIK],  frac[2]* offsY  * frac[0] );
-    this->Increment( refData, fltNode[nextJK],  frac[2]* frac[1]* offsX );
-    this->Increment( refData, fltNode[nextIJK], frac[2]* frac[1]* frac[0] );
-#endif
   }
 
   void AddMetric ( const Self& other )
