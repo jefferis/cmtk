@@ -112,11 +112,13 @@ public:
     this->Increment( this->GetSampleX( refIdx ), this->GetSampleY( fltIdx, frac ) );
   }
 
+  /// Add another metric object, e.g., from distributed computation.
   void AddMetric ( const Self& other )
   {
     this->AddJointHistogram( other );
   }
 
+  /// Remove another metric, e.g., to undo results from an ROI in local computation.
   void RemoveMetric ( const Self& other )
   {
     this->RemoveJointHistogram( other );
