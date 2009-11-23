@@ -114,6 +114,22 @@ will be transformed to match the floating image.
 
 \subsection{Conventions}
 
+For medical image data, CMTK uses an anatmoy-based coordinate system, which we
+refer to as ``RAS'' coordinates. This means that the $x$ direction of the
+coordinate space increases towards the anatomical ``Right,'' the $y$ direction
+increases towards the anatomical ``Anterior,'' and the $z$ direction increases
+towards the anatomical ``Superior.'' The coordinate space origin, $(0,0,0)$,
+thus coincides with the ``Left-Posterior-Inferior'' corner of the image
+volume. 
+
+All images that are read into one of CMTK's tools are first reoriented to fit
+this coordinate system. This means that the storage order of image pixels in
+memory is also such that the fastest-
+
+For image formats that define subject orientation based on direction vectors
+within an anatomy-based coordinate space, CMTK determines the nearest
+anatomical orientation within $\pm 45$ degrees around each rotation axis.
+
 \section{Step-by-Step}
 
 This section provides a step-by-step guide to the tools used in a typical
