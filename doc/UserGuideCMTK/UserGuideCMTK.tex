@@ -230,10 +230,38 @@ format, {\tt image\_01.nii},  {\tt image\_01.nii}, and so on.
 
 \subsection{Interleaved Image Motion Artifact Correction}
 
-\cite{RohlRadePfef:2008a}
+\begin{figure}[tbp]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[width=.3\linewidth]{img/film_artifacts}&
+\includegraphics[width=.3\linewidth]{img/film_corrected}
+\end{tabular}
+\end{center}
+\caption{Example of interleaved image before (left) and after (right)
+  correction of motion artifacts using the {\tt film} tool. These are roughly
+  mid-sagittal slices through a late-echo FSE image acquired in three
+  interleaved passes.}
+\label{fig:InterleavedExample}
+\end{figure}
 
-At the very least, the \verb|film| tool needs to be given the number of passes
-in the interleaved images:
+When MR images are acquired as multiple interleaved sparse image stacks
+(``passes''), subject motion between the passes can lead to characteristic
+artifacts in the final, interleaved image stack (see
+Fig.~\ref{fig:InterleavedExample} for an example). CMTK implements an
+algorithm for post-reconstruction correction of these
+artifacts~\cite{RohlRadePfef:2008a} in the \verb|film| tool (for ``Fix
+InterLeaved Motion'').
+
+The \verb|film| tool operates in three stages: first, the interleaved image
+stack is separated into the original passes, and all passes are co-registered
+using rigid intensity-based registration to determine the inter-pass motion
+parameters. Second, volume injection is used to obtain a coarse reconstructed,
+motion-corrected image, which is then refined in the third stage using an
+iterative inverse interpolation algorithm (see Ref.~\cite{RohlRadePfef:2008a}
+for details).
+
+For proper operation, the \verb|film| tool needs to be given the number of
+passes in the interleaved images, for example for a three-pass image:
 \begin{verbatim}
 film --passes 3 input.nii corrected.nii
 \end{verbatim}
@@ -242,13 +270,55 @@ data.
 
 \subsection{MR Intensity Bias Field Correction}
 
+CMTK implements a model-free algorithm for intensity bias field correction
+based on minimization of image entropy~\cite{LikaVierPern:2001}. The
+\verb|mrbias| tool, which implements this algorithm, is typically called as
+follows:
 \begin{verbatim}
-levelset levelset.nii
+mrbias --degree-mul 2 --mask foreground.nii spgr.nii spgr_corrected.nii
+\end{verbatim}
+which computes a second-order polynomial multiplicative bias
+field. Computation is constrained via a (binary) mask that is read from the
+\verb|foreground.nii| image. Alternatively, the tool can generate its own mask
+via the \verb|--thresh-min| and  \verb|--thresh-max| command line parameters.
+
+\begin{figure}[tbp]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[width=.3\linewidth]{img/mrbias_orig}&
+\includegraphics[width=.3\linewidth]{img/mrbias_corr}
+\end{tabular}
+\end{center}
+\caption{Example of MR intensity bias field correction using a second-order
+polynomial multiplicative bias field computed by the {\tt mrbias} tool and
+applied to an SPGR image acquired at 3T.}
+\label{fig:Mrbias}
+\end{figure}
+
+To generate foreground masks automatically, CMTK provides a very simple
+levelset-type segmentation tool.
+\begin{verbatim}
+levelset spgr.nii foreground.nii
 \end{verbatim}
 
-\begin{verbatim}
-mrbias -M 2 --mask levelset.nii spgr.nii spgr_corrected.nii
-\end{verbatim}
+\begin{figure}[tbp]
+\begin{center}
+\begin{tabular}{ccc}
+\includegraphics[width=.3\linewidth]{img/levelset_spgr_spgr}&
+\includegraphics[width=.3\linewidth]{img/levelset_spgr_mask}&
+\includegraphics[width=.3\linewidth]{img/levelset_spgr_ovl} \\
+\includegraphics[width=.3\linewidth]{img/levelset_locust_clsm}&
+\includegraphics[width=.3\linewidth]{img/levelset_locust_mask}&
+\includegraphics[width=.3\linewidth]{img/levelset_locust_ovl}
+\end{tabular}
+\end{center}
+\caption{Examples of foreground/background segmentation using the {\tt
+levelset} tool. {\em Top row:\/} SPGR image acquired at 3T. {\em Bottom
+row:\/} fluorescent confocal laser scanning microscopy image of a locust
+brain. Both examples were computed by running the {\tt levelset} tool with
+default settings and no image-specific parameters.}
+\label{fig:Levelset}
+\end{figure}
 
 \subsection{Affine Image Registration}
 
