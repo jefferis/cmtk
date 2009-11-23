@@ -289,7 +289,9 @@ public:
   { 
     T Result = 0;
     
+#ifndef __SUNPRO_CC
 #pragma omp parallel for if (Dim>1e4) reduction(+:Result)
+#endif
     for ( size_t i=0; i<this->Dim; ++i ) 
       {
       const T e = Elements[i];
@@ -321,7 +323,9 @@ public:
   /// Set all vector elements to constant value.
   void SetAll( const T value )
   {
+#ifndef __SUNPRO_CC
 #pragma omp parallel for if (Dim>1e5)
+#endif
     for ( size_t i=0; i < this->Dim; ++i ) 
       this->Elements[i] = value;
   }
@@ -353,7 +357,9 @@ public:
   {
     assert( Dim == delta.Dim );
 
+#ifndef __SUNPRO_CC
 #pragma omp parallel for if (Dim>1e4)
+#endif
     for ( size_t i=0; i<this->Dim; ++i )
       Elements[i] += delta.Elements[i];
     
@@ -365,7 +371,9 @@ public:
   {
     assert( Dim == delta.Dim );
 
+#ifndef __SUNPRO_CC
 #pragma omp parallel for if (Dim>1e4)
+#endif
     for ( size_t i=0; i< this->Dim; ++i )
       Elements[i] += weight * delta.Elements[i];
     
@@ -397,7 +405,9 @@ public:
   {
     assert( Dim == delta.Dim );
     
+#ifndef __SUNPRO_CC
 #pragma omp parallel for if (Dim>1e4)
+#endif
     for ( size_t i=0; i < this->Dim; ++i )
       Elements[i] -= delta.Elements[i];
     
@@ -417,7 +427,9 @@ public:
   /// Multiply by a scalar.
   Vector<T>& operator*= ( const T a ) 
   {
+#ifndef __SUNPRO_CC
 #pragma omp parallel for if (Dim>1e4)
+#endif
     for ( size_t i=0; i<this->Dim; ++i )
       this->Elements[i] *= a;
     
