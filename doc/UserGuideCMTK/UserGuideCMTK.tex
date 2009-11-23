@@ -124,11 +124,23 @@ volume.
 
 All images that are read into one of CMTK's tools are first reoriented to fit
 this coordinate system. This means that the storage order of image pixels in
-memory is also such that the fastest-
+memory is such that the fastest-varying of the three pixel indexes corresponds
+to the ``Left''--''Right'' anatomical direction, the second fastest to the
+``Posterior''--''Anterior'' direction, and the slowest varying to the
+``Inferior''--''Superior'' direction. Consequently, the first pixel in memory
+is the one that is the Left-Posterior-Inferior-most pixel anatomically.
 
-For image formats that define subject orientation based on direction vectors
-within an anatomy-based coordinate space, CMTK determines the nearest
-anatomical orientation within $\pm 45$ degrees around each rotation axis.
+For image file formats that define subject orientation based on direction
+vectors within an anatomy-based coordinate space, which is the majority of
+modern formats, CMTK determines the nearest anatomical orientation of the
+image within $\pm 45$ degrees around each rotation axis.
+
+To confirm that images are read correctly, and to diagnose problems, CMTK
+comes with a very simple triplanar image viewer, adequately named
+``\verb|triplanar|.'' The coordinates shown in this viewer for any image are
+exactly the coordinates that all CMTK tools use. Note that for the triplanar
+viewer to be available, CMTK must be built with support for the Qt toolkit,
+and the ``\verb|BUILD_GUI|'' build option must be enabled.
 
 \section{Step-by-Step}
 
