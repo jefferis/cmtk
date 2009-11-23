@@ -296,12 +296,14 @@ applied to an SPGR image acquired at 3T.}
 \end{figure}
 
 To generate foreground masks automatically, CMTK provides a very simple
-levelset-type segmentation tool.
+``levelset-type'' segmentation tool:
 \begin{verbatim}
 levelset spgr.nii foreground.nii
 \end{verbatim}
+In very broad terms, the tool implements an extreme simplification of the
+algorithm for segmentation without edges by Chan \& Vese~\cite{ChanVese:2001}.
 
-\begin{figure}[tbp]
+\begin{figure}[tb]
 \begin{center}
 \begin{tabular}{ccc}
 \includegraphics[width=.3\linewidth]{img/levelset_spgr_spgr}&
@@ -322,9 +324,53 @@ default settings and no image-specific parameters.}
 
 \subsection{Affine Image Registration}
 
+The basic pairwise image registration tool in CMTK, \verb|registration|,
+implements an algorithm similar to the multi-resolution algorithm by Studholme
+{\em et al.\/}~\cite{StudHillHawk:1997}. More technical detail about our
+implementation in particular can be found in Ref.~\cite{Rohlfing:2000}, albeit
+only in German.
 
+In order to compute an affine registration between two images, the
+registration tool can be run as follows:
 \begin{verbatim}
-registration -o afine.xform --dofs 6 --dofs 9 --auto-multi-level 4 spgr1.nii spgr2.nii
+registration --initxlate --dofs 6,9 --auto-multi-level 4 \
+        -o affine.xform ref.nii flt.nii
+\end{verbatim}
+This performs a registration of the floating image, \verb|flt.nii|, to the
+reference image, \verb|ref.nii|, where all optimization and image resampling
+parameters are automatically determined for a 4-level multi-resolution
+procedure. 
+
+At each resolution level, the registration first optimizes 6 degrees of
+freedom (DOF), i.e., translation and rotation of a 3D rigid
+transformation. Afterwards, 9 DOFs are optimized, i.e., three anisotropic
+scale factors in addition to the translational and rotational
+parameters. Supported DOF numbers are: 0 (no registration, for testing),
+3 (translation only), 6 (rigid: translation, rotation),  7 (similarity:
+translation, rotation, global scale), 9 (translation, rotation, anisotropic
+scale), and 12 (full affine: translation, rotation, scale, and shears).
+
+By default, registration uses the normalized mutual
+information~\cite{StudHillHawk:1999} image similarity measure. Other available
+similarity measures are: standard mutual
+information~\cite{MaesCollVand:1997,WellViolAtsu:1996} (\verb|--mi|), mean
+squared difference (\verb|--msd|), normalized cross-correlation
+(\verb|--ncc|), and correlation ratio~\cite{RochMalaPenn:1998a} (\verb|--cr|)
+
+In the above example, the registration transformation is initialized (via
+\verb|--initxlate|) by translating the floating image's center to that of the
+reference image. For more complex initializations, the
+\verb|make_initial_affine| tool can be used, which supports centers of mass,
+principal axes~\cite{AlpeBradKenn:1990}, and image orientation vectors (e.g.,
+as provided by the original DICOM data).
+
+For example, in order to first initialize a transformation using principal
+axes and then use the result as the initial transformation for intensity-based
+refinement, one would use the following sequence of commands:
+\begin{verbatim}
+make_initial_xform --principal-axes ref.nii flt.nii initial.xform
+registration --initial initial.xform --dofs 6,9 --auto-multi-level 4 \
+        -o affine.xform ref.nii flt.nii
 \end{verbatim}
 
 \subsection{Nonrigid Image Registration}
@@ -372,9 +418,7 @@ on the MacOS platform.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\bibliographystyle{plain}
+\bibliographystyle{UserGuideCMTK}
 \bibliography{cmtk}
 
-
 \end{document}
-
