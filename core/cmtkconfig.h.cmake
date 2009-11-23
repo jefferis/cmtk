@@ -52,6 +52,7 @@
 #cmakedefine HAVE_STDIO_H 1
 #cmakedefine HAVE_STDLIB_H 1
 #cmakedefine HAVE_STRING_H 1
+#cmakedefine HAVE_TERMIOS_H 1
 #cmakedefine HAVE_TIME_H 1
 #cmakedefine HAVE_UCONTEXT_H 1
 #cmakedefine HAVE_UNISTD_H 1

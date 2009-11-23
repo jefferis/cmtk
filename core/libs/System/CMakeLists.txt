@@ -27,14 +27,6 @@
 ##  $LastChangedBy$
 ##
 
-INCLUDE(CheckSymbolExists)
-CHECK_SYMBOL_EXISTS(TIOCGWINSZ termios.h TIOCGWINSZ_IN_TERMIOS_H)
-CHECK_SYMBOL_EXISTS(TIOCGWINSZ sys/ioctl.h TIOCGWINSZ_IN_SYS_IOCTL_H)
-
-INCLUDE(CheckStructHasMember)
-CHECK_STRUCT_HAS_MEMBER("struct winsize" ws_col termios.h STRUCT_WINSIZE_IN_TERMIOS_H)
-CHECK_STRUCT_HAS_MEMBER("struct winsize" ws_col sys/ioctl.h STRUCT_WINSIZE_IN_SYS_IOCTL_H)
-
 # Sources of non-templated classes.
 SET(cmtkSystem_SRCS
   cmtkCommandLine.cxx
