@@ -611,3 +611,79 @@
                   typical errors in the range of ~1 mm. The advantages of the
                   technique are simplicity and speed of computation.}
 }
+
+@InProceedings{RussTomaRohl:2004,
+  author = 	 {Russakoff, Daniel B. and Tomasi, Carlo and Rohlfing, Torsten
+                  and Maurer, Jr., Calvin R.},
+  title = 	 {Image Similarity Using Mutual Information of Regions},
+  booktitle = 	 {Computer Vision - ECCV 2004: 8th European Conference on
+                  Computer Vision, Prague, Czech Republic, May 11-14,
+                  2004. Proceedings, Part III},
+  pages =	 {596--607},
+  year =	 2004,
+  volume =	 3023,
+  series =	 LNCS,
+  address =	 {Berlin/Heidelberg},
+  publisher =	 {Springer-Verlag},
+  abstract =	 {Mutual information (MI) has emerged in recent years as an
+                  effective similarity measure for comparing images. One
+                  drawback of MI, however, is that it is calculated on a pixel
+                  by pixel basis, meaning that it takes into account only the
+                  relationships between corresponding individual pixels and
+                  not those of each pixels respective neighborhood. As a
+                  result, much of the spatial information inherent in images
+                  is not utilized. In this paper, we propose a novel extension
+                  to MI called regional mutual information (RMI). This
+                  extension efficiently takes neighborhood regions of
+                  corresponding pixels into account. We demonstrate the
+                  usefulness of RMI by applying it to a real-world problem in
+                  the medical domain -- intensity-based 2D-3D registration of
+                  X-ray projection images (2D) to a CT image (3D). Using a
+                  gold-standard spine image data set, we show that RMI is a
+                  more robust similarity meaure for image registration than
+                  MI.},
+  keywords =	 {intensity-based registration; mutual information;
+                  high-dimensional entropy; pixel neighborhood},
+  url =          {http://www.springerlink.com/openurl.asp?genre=article&issn=0302-9743&volume=3023&spage=596}
+}
+
+@Article{MaurQiRagh:2003,
+  author = 	 {Maurer, Jr., Calvin R. and Qi, Rensheng and Raghavan,
+                  Vijay},
+  title = 	 {A linear time algorithm for computing exact {Euclidean}
+                  distance transforms of binary images in arbitrary
+                  dimensions},
+  journal = 	 IEEE-TPAMI,
+  year = 	 2003,
+  volume =	 25,
+  number =	 2,
+  pages =	 {265--270},
+  month =	 feb,
+  abstract =	 {A sequential algorithm is presented for computing the exact
+                  Euclidean distance transform (DT) of a k-dimensional binary
+                  image in time linear in the total number of voxels N. The
+                  algorithm, which is based on dimensionality reduction and
+                  partial Voronoi diagram construction, can be used for
+                  computing the DT for a wide class of distance functions,
+                  including the L/sub p/ and chamfer metrics. At each
+                  dimension level, the DT is computed by constructing the
+                  intersection of the Voronoi diagram whose sites are the
+                  feature voxels with each row of the image. This construction
+                  is performed efficiently by using the DT in the next lower
+                  dimension. The correctness and linear time complexity are
+                  demonstrated analytically and verified experimentally. The
+                  algorithm may be of practical value since it is relatively
+                  simple and easy to implement and it is relatively fast (not
+                  only does it run in O(N) time but the time constant is
+                  small). A simple modification of the algorithm computes the
+                  weighted Euclidean DT, which is useful for images with
+                  anisotropic voxel dimensions. A parallel version of the
+                  algorithm runs in O(N/p) time with p processors.},
+  keywords =	 {computational complexity; computational geometry; image
+                  processing; transforms; Voronoi diagram; anisotropic voxel
+                  dimensions; binary images; chamfer metrics; dimensionality
+                  reduction; exact Euclidean DT; exact Euclidean distance
+                  transform computation; feature voxels; linear time
+                  algorithm; linear time complexity; multidimensional binary
+                  image; partial Voronoi diagram construction}
+}

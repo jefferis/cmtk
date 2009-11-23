@@ -456,13 +456,14 @@ reformatx  -o jacobian.nii atlas.nii \
 Much of the effort required to get CMTK ready for release as open source
 software was performed by Mike Hasak at SRI. Calvin R. Maurer, Jr., wrote the
 original implementation of his linear-time algorithm for the Euclidean
-distance transform, which \verb|cmtk::UniformDistanceMap| is based on, and
-kindly agreed to distribution of this derived code under the GPL. Likewise,
-Daniel Russakoff kindly agreed to GPL licensing of code he wrote for entropy
-computation based on covariance matrices, as he used it in his work on
-Regional Mutual Information. Greg Jefferis provided numerous bug reports and
-fixes, including much of the details required to get CMTK compiled and working
-on the MacOS platform.
+distance transform~\cite{MaurQiRagh:2003}, which
+\verb|cmtk::UniformDistanceMap| is based on, and kindly agreed to distribution
+of this derived code under the GPL. Likewise, Daniel Russakoff kindly agreed
+to GPL licensing of code he wrote for entropy computation based on covariance
+matrices, as he used it in his work on Regional Mutual
+Information~\cite{RussTomaRohl:2004}. Greg Jefferis provided numerous bug
+reports and fixes, including much of the details required to get CMTK compiled
+and working on the MacOS platform.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
