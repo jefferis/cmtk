@@ -375,19 +375,71 @@ registration --initial initial.xform --dofs 6,9 --auto-multi-level 4 \
 
 \subsection{Nonrigid Image Registration}
 
-\cite{RuecSonoHaye:1999} \cite{RohlMaur:2003}
+Pairwise nonrigid image registration in CMTK implements an algorithm
+introduced by Rueckert {\em et al.\/}~\cite{RuecSonoHaye:1999}, which uses
+as its transformation model multi-resolution free-form deformations based on
+cubic spline interpolation between sparse, uniformly distributed control
+points. Our particular implementation, which uses SMP parallelism to take
+advantage of multi-CPU systems, was described in Ref.~\cite{RohlMaur:2003}.
 
+A very simple nonrigid registration using a 40\,mm control point grid,
+registering floating image \verb|flt.nii| to reference image \verb|ref.nii|
+based on an affine transformation \verb|affine.xform| can be run as follows:
 \begin{verbatim}
-warp -o ffd.xform affine.xform
+warp -o ffd40.xform --grid-spacing 40 --initial affine.xform ref.nii flt.nii
+\end{verbatim}
+Typically, however, one would want to run a more sophisticated multi-level
+deformation, say with three refinements (each reducing the grid spacing by
+1/2 for a final spacing of 5\,mm), and constrain the deformation using grid
+bending energy:
+\begin{verbatim}
+warp -o ffd5.xform --grid-spacing 40 --refine 3 --energy-weight 1e-1 \
+        --initial affine.xform ref.nii flt.nii
+\end{verbatim}
+To prevent folding of the deformation grid, it is possible to instead
+constrain the Jacobian determinant of the deformation to be nonzero, which is
+achieved by changing the above command as follows:
+\begin{verbatim}
+warp -o ffd5.xform --grid-spacing 40 --refine 3 --jacobian-weight 1e-5 \
+        --initial affine.xform ref.nii flt.nii
 \end{verbatim}
 
-\subsection{Atlas-based Segmentation}
+\subsection{Reformating Registered Images}
+
+To reformat the registered floating image following the examples in
+the previous section, CMTK
+\begin{verbatim}
+reformatx  -o reformat.nii --floating flt.nii ref.nii ffd5.xform
+\end{verbatim}
+The somewhat unintiutive order of arguments on the command line is due to the
+versatility of the \verb|reformatx| tool, which allows for the concatenation
+of arbitrary transformations (and their inverses), such as
+\begin{verbatim}
+reformatx  -o reformat.nii --floating img3.nii \
+        img1.nii img1_to_2.xform --inverse img3_to_2.xform
+\end{verbatim} 
+By default, \verb|reformatx| uses trilinear interpolation, but it also
+supports cubic (\verb|--cubic|) and cosine-windowed sinc
+(\verb|--sinc-cosine|) interpolation for intensity images, partial volume
+interpolation~\cite{MaesCollVand:1997} (\verb|--pvi|) for label images, and
+nearest neighbor (\verb|--nn|) interpolation for all types of images.
 
 \subsection{Jacobian Determinant Maps}
+
+\begin{verbatim}
+reformatx  -o jacobian.nii time1.nii --jacobian time1_to_time2.xform
+\end{verbatim}
+
+\begin{verbatim}
+reformatx  -o jacobian.nii atlas.nii \
+        atlas_to_time1.xform --jacobian time1_to_time2.xform
+\end{verbatim}
 
 \subsection{Statistical Testing}
 
 \subsection{General Linear Modeling}
+
+\subsection{Atlas-based Segmentation}
 
 \section{Atlas Construction}
 
