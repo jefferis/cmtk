@@ -53,21 +53,6 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 
 \begin{document}
 
-
-\ifpdf
-\else
-   %
-   % Commands for including Graphics when using latex
-   % 
-   \DeclareGraphicsExtensions{.eps,.jpg,.gif,.tiff,.bmp,.png}
-   \DeclareGraphicsRule{.jpg}{eps}{.jpg.bb}{`convert #1 eps:-}
-   \DeclareGraphicsRule{.gif}{eps}{.gif.bb}{`convert #1 eps:-}
-   \DeclareGraphicsRule{.tiff}{eps}{.tiff.bb}{`convert #1 eps:-}
-   \DeclareGraphicsRule{.bmp}{eps}{.bmp.bb}{`convert #1 eps:-}
-   \DeclareGraphicsRule{.png}{eps}{.png.bb}{`convert #1 eps:-}
-\fi
-
-
 \maketitle
 
 \ifhtml
@@ -99,22 +84,13 @@ three-dimensional (3D) image data. CMTK is available both in source code
 (licensed under the GNU GPL3) and as pre-compiled binaries from
 \url{http://www.nitrc.org/projects/cmtk/}.
 
-\subsection{Terminology}
+CMTK is primarily a collection of command line tools, which make the toolkit
+ideally suited for unattended batch processing of large amounts of data. In
+addition, CMTK's backend libraries, which are shared by all command line
+tools, can be used as a relatively lightweight, yet powerful, platform for
+implementation of new image processing algorithms.
 
-Regarding the roles of images in pairwise registration, throughout this guide we shall
-refer to one image as the reference and the other as the floating
-image. Others may refer to these as the fixed and the moving image,
-respectively. By definition, all coordinate transformations computed by CMTK
-are functions that map {\em from\/} the space of the reference (fixed) image
-{\em to\/} the space of the floating (moving) image. As a result, when
-reformatting one image to match the other, it is the floating image by default
-that will be transformed to match the reference image.
-
-Note that when we speak about transforming coordinates of features, such as
-landmarks or the nodes in a mesh, then the coordinates of the reference image
-will be transformed to match the floating image.
-
-\subsection{Conventions}
+\subsection{Coordinate Conventions}
 
 For medical image data, CMTK uses an anatmoy-based coordinate system, which we
 refer to as ``RAS'' coordinates. This means that the $x$ direction of the
@@ -138,17 +114,98 @@ modern formats, CMTK determines the nearest anatomical orientation of the
 image within $\pm 45$ degrees around each rotation axis.
 
 To confirm that images are read correctly, and to diagnose problems, CMTK
-comes with a very simple triplanar image viewer, adequately named
-``\verb|triplanar|.'' The coordinates shown in this viewer for any image are
-exactly the coordinates that all CMTK tools use. Note that for the triplanar
-viewer to be available, CMTK must be built with support for the Qt toolkit,
-and the ``\verb|BUILD_GUI|'' build option must be enabled.
+comes with a very simple triplanar image viewer (see screenshot in
+Fig.~\ref{fig:triplanar}), adequately named ``\verb|triplanar|.'' The
+coordinates shown in this viewer for any image are exactly the coordinates
+that all CMTK tools use. Note that for the triplanar viewer to be available,
+CMTK must be built with support for the Qt
+toolkit\footnote{\url{http://qt.nokia.com}} (version 4.3.0 or higher), and the
+``\verb|BUILD_GUI|'' build option must be enabled.
 
-\section{Step-by-Step}
+\begin{figure}[tbp]
+\centerline{\includegraphics[width=.5\linewidth]{img/triplanar}}
+\caption{Screenshot of CMTK's triplanar image viewer.}
+\label{fig:triplanar}
+\end{figure}
+
+\subsection{Registration Terminology}
+
+Since one of the primary strenghts of CMTK is its selection of powerful and
+well-tested registration tools, we shall first clarify some important
+registration terminology. In pairwise registration, throughout this guide as
+well as in all tools and source code, we shall refer to one image as the
+reference and the other as the floating image. Others may refer to these as
+the fixed and the moving image, respectively. By definition, all coordinate
+transformations computed by CMTK are functions that map {\em from\/} the space
+of the reference (fixed) image {\em to\/} the space of the floating (moving)
+image. As a result, when reformatting one image to match the other, it is the
+floating image by default that will be transformed to match the reference
+image.
+
+Note that when we speak about transforming coordinates of features, such as
+landmarks or the nodes in a mesh, then the coordinates of the reference image
+will be transformed to match the floating image.
+
+\subsection{Supported Image File Formats}
+
+CMTK supports a wide range of image file formats, both for import and
+export. When reading an image file into CMTK, its type is detected
+automatically. Note that in order to correctly identify the format of images
+with separate header and data files, it is necessary to provide CMTK with the
+path to the header file, not the data file.
+
+Whether a particular file can be read into CMTK can easily be tested using
+CMTK's \verb|describe| tool. For example, to test (and describe) the content
+of an Analyze 7.5 header/image pair, \verb|example.hdr| and
+\verb|example.img|, one would run the following command:
+\begin{verbatim}
+describe example.hdr
+\end{verbatim}
+
+When writing files, CMTK determines the desired file format based on the
+suffix of the output path. The following suffixes are supported:
+\begin{description}
+\item [nii] Single-file NIFTI image.
+\item [img] NIFTI image with detached header. Header file will be written with
+  suffix \verb|.hdr|
+\item [nrrd] Single-file Nrrd.
+\item [nhdr] Nrrd with detached header. The data file will be written with
+  \verb|.raw| suffix.
+\item [hdr] Analyze 7.5 detached header. The data file will be written with
+  suffix \verb|img|.
+\end{description}
+
+{\bf Note} that both Analyze and NIFTI header/data file pairs use the suffixes
+\verb|.hdr| and \verb|.img|. For historic reasons, using \verb|.hdr| as the
+output file suffix will always invoke Analyze export, whereas the \verb|.img|
+suffix will invoke NIFTI export. Both formats need to be read using the
+\verb|.hdr| file, however.
+
+{\bf Note} also that, by default, all data files are written with \verb|gzip|
+compression. Because CMTK contains a bundled \verb|zlib| library, this is true
+even when the \verb|gzip| tool itself is not installed. This behaviour can be
+disabled by defining the \verb|CMTK_WRITE_UNCOMPRESSED| environment
+variable. On a Unix/Linux system using the \verb|csh| shell, this would be
+achieved via
+\begin{verbatim}
+export CMTK_WRITE_UNCOMPRESSED=1
+\end{verbatim}
+where only the definition of the variable is relevant, and its value is
+ignored. Thus, to re-enable compressed writing, rather than setting the
+variable to ``0'' for example, use
+\begin{verbatim}
+unset CMTK_WRITE_UNCOMPRESSED
+\end{verbatim}
+or its appropriate equivalent inside your favourite shell.
+
+\section{Step-by-Step Morphometry}
 
 This section provides a step-by-step guide to the tools used in a typical
 morpometry study using the CMTK tools. It is not intended to provide a
-complete list of available tools.
+complete list of available tools. We are also not covering all available
+options of each tool. Note that a complete list of supported options can
+always be obtained by running a given tool with the \verb|--help| command line
+option.
 
 \subsection{DICOM Image Stacker}
 
@@ -172,6 +229,16 @@ all resulting image volumes to consecutively numbered image files in NIFTI
 format, {\tt image\_01.nii},  {\tt image\_01.nii}, and so on.
 
 \subsection{Interleaved Image Motion Artifact Correction}
+
+\cite{RohlRadePfef:2008a}
+
+At the very least, the \verb|film| tool needs to be given the number of passes
+in the interleaved images:
+\begin{verbatim}
+film --passes 3 input.nii corrected.nii
+\end{verbatim}
+In most cases, the through-plane acquisition direction can be guessed from the
+data.
 
 \subsection{MR Intensity Bias Field Correction}
 
