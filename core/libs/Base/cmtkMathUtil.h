@@ -253,18 +253,18 @@ double ProbabilityFromTStat
 ( const double t, //!< T-statistic as returned for example from MathUtil::TStatFromCorrelation function.
   const size_t df ); //!< Number of degrees of freedom.
 
-/** Performs t-test on two distributions.
+/** Performs two-tailed unpaired t-test on two distributions.
    */
 template<class T>
 T TTest ( const std::vector<T>& valuesX, const std::vector<T>& valuesY, T& t );
 
-/** Performs t-test on two distributions.
+/** Performs two-tailed unpaired t-test on two distributions.
    * Also return average value for each distribution.
    */
 template<class T>
 T TTest ( const std::vector<T>& valuesX, const std::vector<T>& valuesY, T& t, T& avgX, T& avgY );
 
-/** Performs t-test on two distributions.
+/** Performs two-tailed paired t-test on two distributions.
    * Also return average value for each distribution.
    */
 template<class T>
