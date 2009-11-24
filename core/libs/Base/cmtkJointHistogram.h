@@ -43,7 +43,6 @@
 #include <cmtkHistogram.h>
 
 #include <stdio.h>
-#include <assert.h>
 
 #include <cmtkSmartPtr.h>
 
@@ -481,9 +480,6 @@ public:
    */
   void Increment ( const size_t sampleX, const size_t sampleY ) 
   {
-    assert( (sampleX<RealNumBinsX) );
-    assert( (sampleY<RealNumBinsY) );
-    
     ++this->JointBins[sampleX+sampleY*RealNumBinsX];
   }
 
@@ -497,9 +493,6 @@ public:
   void Increment 
   ( const size_t sampleX, const size_t sampleY, const T weight ) 
   {
-    assert( (sampleX<RealNumBinsX) );
-    assert( (sampleY<RealNumBinsY) );
-    
     this->JointBins[ sampleX + sampleY * RealNumBinsX ] += weight;
   }
 
@@ -513,21 +506,13 @@ public:
    */
   void Decrement ( const size_t sampleX, const size_t sampleY ) 
   {
-    assert( (sampleX<RealNumBinsX) );
-    assert( (sampleY<RealNumBinsY) );
-    
-    assert( this->JointBins[sampleX+sampleY*RealNumBinsX] > 0 );
     --this->JointBins[sampleX+sampleY*RealNumBinsX];
   }
   
   void Decrement
   ( const size_t sampleX, const size_t sampleY, const Types::DataItem weight ) 
   {
-    assert( (sampleX<RealNumBinsX) );
-    assert( (sampleY<RealNumBinsY) );
-    
     this->JointBins[ sampleX + sampleY * RealNumBinsX ] -= static_cast<T>( weight );
-    assert( this->JointBins[sampleX+sampleY*RealNumBinsX] );
   }
   
   /** Add values from another histogram.
@@ -541,9 +526,6 @@ public:
    */
   void AddJointHistogram ( const Self& other ) 
   {
-    assert( NumBinsX == other.NumBinsX );
-    assert( NumBinsY == other.NumBinsY );
-    
     const size_t realNumBinsXY = this->RealNumBinsX * this->RealNumBinsY;
     for ( size_t idx = 0; idx < realNumBinsXY; ++idx )
       this->JointBins[idx] += other.JointBins[idx];
@@ -561,13 +543,10 @@ public:
    */
   void AddHistogramRow( const Histogram<T>& other, const size_t sampleY, const float weight = 1 ) 
   {
-    assert( NumBinsX == other.GetNumBins() );
-    
     size_t idx = RealNumBinsX * sampleY;
     for ( size_t i = 0; i<NumBinsX; ++i, ++idx )
       {
       this->JointBins[idx] += static_cast<T>( weight * other.GetBin( i ) );
-      assert( this->JointBins[idx] >= 0 );
       }
   }
   
@@ -583,8 +562,6 @@ public:
    */
   void AddHistogramColumn( const size_t sampleX, const Histogram<T>& other, const float weight = 1 ) 
   {
-    assert( NumBinsY == other.GetNumBins() ); 
-    
     size_t idx = sampleX;
     for ( size_t j = 0; j<NumBinsY; ++j, idx += RealNumBinsX )
       this->JointBins[idx] += static_cast<T>( weight * other.GetBin( j ) );
@@ -601,13 +578,9 @@ public:
    */
   void RemoveJointHistogram ( const Self& other ) 
   {
-    assert( NumBinsX == other.NumBinsX );
-    assert( NumBinsY == other.NumBinsY );
-    
     const size_t realNumBinsXY = this->RealNumBinsX * this->RealNumBinsY;
     for ( size_t idx = 0; idx < realNumBinsXY; ++idx )
       {
-      assert( this->JointBins[idx] >= other.JointBins[idx] );
       this->JointBins[idx] -= other.JointBins[idx];
       }
   }
@@ -626,8 +599,7 @@ public:
 	{
 	const double factor = normalizeTo / project;
 	for ( size_t i = 0; i < NumBinsX; ++i )
-	  this->JointBins[ i + RealNumBinsX * j ] =
-	    static_cast<T>( this->JointBins[ i + RealNumBinsX * j ] * factor );
+	  this->JointBins[ i + RealNumBinsX * j ] = static_cast<T>( this->JointBins[ i + RealNumBinsX * j ] * factor );
 	}
       }
   }
@@ -772,7 +744,6 @@ public:
 
     return *this;
   }
-
 
 private:
   /// Real number of X data bins.
