@@ -29,8 +29,8 @@
 //
 */
 
-#ifndef __cmtkCompareDeformations_h_included_
-#define __cmtkCompareDeformations_h_included_
+#ifndef __cmtkHypothesisTests_h_included_
+#define __cmtkHypothesisTests_h_included_
 
 #include <cmtkconfig.h>
 
@@ -47,70 +47,44 @@ cmtk
 
 /** \addtogroup Registration */
 //@{
-
-class CompareDeformations
+/// Statistical hypothesis testing between groups of images.
+class HypothesisTests
 {
 public:
-  void AddDeformation0( WarpXform::SmartPtr& warpXform, WarpXform::SmartPtr& warpToRef )
-  {
-    Deformations0.push_back( warpXform );
-    WarpToRef0.push_back( warpToRef );
-  }
-  
-  void AddDeformation1( WarpXform::SmartPtr& warpXform, WarpXform::SmartPtr& warpToRef  ) 
-  {
-    Deformations1.push_back( warpXform );
-    WarpToRef1.push_back( warpToRef );
-  }
-  
-  void SetDeformations0( std::vector<WarpXform::SmartPtr>& deformations, std::vector<WarpXform::SmartPtr>& warpToRef ) 
-  {
-    Deformations0 = deformations;
-    WarpToRef0 = warpToRef;
-  }
-  
-  void SetDeformations1( std::vector<WarpXform::SmartPtr>& deformations, std::vector<WarpXform::SmartPtr>& warpToRef ) 
-  {
-    Deformations1 = deformations;
-    WarpToRef1 = warpToRef;
-  }
-  
   /// Test Jacobian maps of two populations for statistical independence.
-  static TypedArray* GetJacobianTTest( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray** tstatData, TypedArray** avgXData, TypedArray** avgYData,
-				       const TypedArray* mask = NULL );
+  static TypedArray* GetUnpairedTTest
+  ( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray** tstatData, TypedArray** avgXData, TypedArray** avgYData,
+    const TypedArray* mask = NULL );
 
   /// Test parameter maps of two populations for statistical independence.
-  static TypedArray* GetPairedTTest( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray** tstatData, TypedArray** avgXData, TypedArray** avgYData, 
-				     const TypedArray* mask = NULL );
+  static TypedArray* GetPairedTTest
+  ( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray** tstatData, TypedArray** avgXData, TypedArray** avgYData, 
+    const TypedArray* mask = NULL );
 
   /// Get pixel-wise correlation between two sets of input images.
-  static TypedArray* GetPairedCorrelation( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray** pData = NULL, const TypedArray* mask = NULL );
+  static TypedArray* 
+  GetPairedCorrelation( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray** pData = NULL, const TypedArray* mask = NULL );
 
   /// Test mean of Jacobian map of a single population for difference from zero.
-  static TypedArray* GetOneSampleTTest( std::vector<TypedArray::SmartPtr>& dataX, TypedArray** tstatData, TypedArray** avgXData, const TypedArray* mask = NULL );
+  static TypedArray* 
+  GetOneSampleTTest( std::vector<TypedArray::SmartPtr>& dataX, TypedArray** tstatData, TypedArray** avgXData, const TypedArray* mask = NULL );
 
   /// Get pixelwise heritability of two populations.
-  static TypedArray* GetHeritability( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, const TypedArray* mask = NULL );
-
+  static TypedArray* 
+  GetHeritability( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, const TypedArray* mask = NULL );
+  
   /** Get pixelwise z-scores.
     * The X distribution is taken as the "true" or "reference" distribution.
     * The Y distribution is taken as the "test" or "sample" distribution.
     */
   static TypedArray* GetZScores( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, const TypedArray* mask = NULL );
-
+  
   /// Get pixelwise genetic covariance from MZ and DZ twin data.
   static TypedArray* GetGeneticCovariance( std::vector<TypedArray::SmartPtr>& dataMZ, std::vector<TypedArray::SmartPtr>& dataDZ, const TypedArray* mask = NULL );
-
-private:
-  std::vector<WarpXform::SmartPtr> Deformations0;
-  std::vector<WarpXform::SmartPtr> WarpToRef0;
-
-  std::vector<WarpXform::SmartPtr> Deformations1;
-  std::vector<WarpXform::SmartPtr> WarpToRef1;
 };
 
 //@}
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkCompareDeformations_h_included_
+#endif // #ifndef __cmtkHypothesisTests_h_included_

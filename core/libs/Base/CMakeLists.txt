@@ -49,6 +49,7 @@ SET(cmtkBase_SRCS
   cmtkFunctional.cxx
   cmtkGeneralLinearModel.cxx
   cmtkHistogram.cxx
+  cmtkHypothesisTests.cxx
   cmtkInfinitePlane.cxx
   cmtkIntersection.cxx
   cmtkJointHistogram.cxx

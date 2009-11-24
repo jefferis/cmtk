@@ -49,7 +49,7 @@
 #include <math.h>
 #include <cmtkMathFunctionWrappers.h>
 
-#include <cmtkCompareDeformations.h>
+#include <cmtkHypothesisTests.h>
 
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 namespace cmtk
@@ -301,29 +301,29 @@ main ( int argc, char* argv[] )
       {
       case TTEST:
       {
-      // allocated by GetJacobianTTest; freed by SP:
+      // allocated by GetUnpairedTTest; freed by SP:
       cmtk::TypedArray *tstatsData = NULL, *avgXData = NULL, *avgYData = NULL;
       
       if ( TextFileMode )
 	{
 	if ( dataY.size() )
 	  {
-	  probData = cmtk::TypedArray::SmartPtr( cmtk::CompareDeformations::GetJacobianTTest( dataX, dataY, &tstatsData, &avgXData, &avgYData, maskData ) );
+	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetUnpairedTTest( dataX, dataY, &tstatsData, &avgXData, &avgYData, maskData ) );
 	  }
 	else
 	  {
-	  probData = cmtk::TypedArray::SmartPtr( cmtk::CompareDeformations::GetOneSampleTTest( dataX, &tstatsData, &avgXData, maskData ) );
+	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetOneSampleTTest( dataX, &tstatsData, &avgXData, maskData ) );
 	  }
 	}
       else
 	{
 	if ( dataY.size() )
 	  {
-	  probData = cmtk::TypedArray::SmartPtr( cmtk::CompareDeformations::GetJacobianTTest( dataX, dataY, &tstatsData, NULL /*avgXData*/, NULL /*avgYData*/, maskData ) );
+	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetUnpairedTTest( dataX, dataY, &tstatsData, NULL /*avgXData*/, NULL /*avgYData*/, maskData ) );
 	  }
 	else
 	  {
-	  probData = cmtk::TypedArray::SmartPtr( cmtk::CompareDeformations::GetOneSampleTTest( dataX, &tstatsData, NULL /*avgXData*/, maskData ) );
+	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetOneSampleTTest( dataX, &tstatsData, NULL /*avgXData*/, maskData ) );
 	  }
 	}
       
@@ -378,7 +378,7 @@ main ( int argc, char* argv[] )
       
       if ( dataY.size() )
 	{
-	probData = cmtk::TypedArray::SmartPtr( cmtk::CompareDeformations::GetPairedTTest( dataX, dataY, &tstatsData, NULL /*avgXData*/, NULL /*avgYData*/, maskData ) );
+	probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetPairedTTest( dataX, dataY, &tstatsData, NULL /*avgXData*/, NULL /*avgYData*/, maskData ) );
 	}
       
       if ( refVolume && TStatFileName )
@@ -415,7 +415,7 @@ main ( int argc, char* argv[] )
       cmtk::TypedArray *pData = NULL;
       if ( dataY.size() )
 	{
-	probData = cmtk::TypedArray::SmartPtr( cmtk::CompareDeformations::GetPairedCorrelation( dataX, dataY, &pData, maskData ) );
+	probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetPairedCorrelation( dataX, dataY, &pData, maskData ) );
 	}
       
       if ( AbsoluteOutput ) probData->ApplyFunctionDouble( cmtk::Wrappers::Abs );
@@ -449,7 +449,7 @@ main ( int argc, char* argv[] )
       }
       case ZSCORES:
       {
-      cmtk::TypedArray::SmartPtr zscoreData = cmtk::TypedArray::SmartPtr( cmtk::CompareDeformations::GetZScores( dataX, dataY, maskData ) );
+      cmtk::TypedArray::SmartPtr zscoreData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetZScores( dataX, dataY, maskData ) );
       
       if ( AbsoluteOutput ) zscoreData->ApplyFunctionDouble( cmtk::Wrappers::Abs );
       if ( Invert ) zscoreData->Rescale( -1.0, 1.0 );

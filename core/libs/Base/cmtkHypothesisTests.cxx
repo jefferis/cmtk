@@ -29,7 +29,7 @@
 //
 */
 
-#include <cmtkCompareDeformations.h>
+#include <cmtkHypothesisTests.h>
 
 #include <cmtkVector3D.h>
 #include <cmtkMathUtil.h>
@@ -45,7 +45,7 @@ cmtk
 //@{
 
 TypedArray* 
-CompareDeformations::GetJacobianTTest
+HypothesisTests::GetUnpairedTTest
 ( std::vector<TypedArray::SmartPtr>& dataX, 
   std::vector<TypedArray::SmartPtr>& dataY,
   TypedArray** tstatData, TypedArray** avgXData, 
@@ -120,7 +120,7 @@ CompareDeformations::GetJacobianTTest
 }
 
 TypedArray* 
-CompareDeformations::GetPairedTTest
+HypothesisTests::GetPairedTTest
 ( std::vector<TypedArray::SmartPtr>& dataX, 
   std::vector<TypedArray::SmartPtr>& dataY,
   TypedArray** tstatData, TypedArray** avgXData, 
@@ -206,7 +206,7 @@ CompareDeformations::GetPairedTTest
 }
 
 TypedArray* 
-CompareDeformations::GetPairedCorrelation
+HypothesisTests::GetPairedCorrelation
 ( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray** pData, const TypedArray* mask )
 {
   if ( dataX.size() != dataY.size() )
@@ -260,7 +260,7 @@ CompareDeformations::GetPairedCorrelation
 }
 
 TypedArray* 
-CompareDeformations::GetOneSampleTTest
+HypothesisTests::GetOneSampleTTest
 ( std::vector<TypedArray::SmartPtr>& dataX, 
   TypedArray** tstatData, TypedArray** avgXData, 
   const TypedArray* mask )
@@ -324,7 +324,7 @@ CompareDeformations::GetOneSampleTTest
 }
 
 TypedArray* 
-CompareDeformations::GetHeritability
+HypothesisTests::GetHeritability
 ( std::vector<TypedArray::SmartPtr>& dataX, 
   std::vector<TypedArray::SmartPtr>& dataY,
   const TypedArray* mask )
@@ -349,7 +349,7 @@ CompareDeformations::GetHeritability
 }
 
 TypedArray* 
-CompareDeformations::GetZScores
+HypothesisTests::GetZScores
 ( std::vector<TypedArray::SmartPtr>& dataX,
   std::vector<TypedArray::SmartPtr>& dataY,
   const TypedArray* mask )
@@ -406,7 +406,7 @@ CompareDeformations::GetZScores
 }
 
 TypedArray* 
-CompareDeformations::GetGeneticCovariance
+HypothesisTests::GetGeneticCovariance
 ( std::vector<TypedArray::SmartPtr>& dataMZ, 
   std::vector<TypedArray::SmartPtr>& dataDZ,
   const TypedArray* mask )

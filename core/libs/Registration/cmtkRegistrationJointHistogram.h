@@ -107,7 +107,7 @@ public:
    *@param location Fractional voxel coordinate of the probed floating data 
    * value.
    */
-  void Proceed( const size_t refIdx, const size_t fltIdx, const Types::Coordinate* frac ) 
+  inline void Proceed( const size_t refIdx, const size_t fltIdx, const Types::Coordinate* frac ) 
   {
     this->Increment( this->GetSampleX( refIdx ), this->GetSampleY( fltIdx, frac ) );
   }

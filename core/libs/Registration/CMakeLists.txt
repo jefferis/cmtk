@@ -37,7 +37,6 @@ SET(cmtkRegistration_SRCS
   cmtkAffineRegistration.cxx
   cmtkBestDirectionOptimizer.cxx
   cmtkBestNeighbourOptimizer.cxx
-  cmtkCompareDeformations.cxx
   cmtkCongealingFunctionalBase.cxx
   cmtkCongealingFunctional.cxx
   cmtkDirectionSetOptimizer.cxx
