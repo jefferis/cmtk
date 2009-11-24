@@ -317,10 +317,10 @@ algorithm for segmentation without edges by Chan \& Vese~\cite{ChanVese:2001}.
 \caption{Examples of foreground/background segmentation using the {\tt
 levelset} tool. {\em Top row:\/} SPGR image acquired at 3T. {\em Bottom
 row:\/} fluorescent confocal laser scanning microscopy image of a locust
-brain. Both examples were computed by running the {\tt levelset} tool with
-default settings and no image-specific parameters. [Locust images courtesy of
-U. Homberg, Universit\"at Marburg (Germany); see also
-Ref.~\cite{KuryRohlKrof:2008}.]  }
+brain~\cite{KuryRohlKrof:2008}. Both examples were computed by running the
+{\tt levelset} tool with default settings and no image-specific
+parameters. [Locust images courtesy of U.~Homberg, Universit\"at Marburg
+(Germany).]  }
 \label{fig:Levelset}
 \end{figure}
 
@@ -467,6 +467,35 @@ nonrigid transformations are inverted numerically).
 
 \subsection{Statistical Testing}
 
+For group comparisons of, for example, Jacobian determinant maps between
+different subject groups, the \verb|ttest| tool computes different types of
+t-tests (all two-tailed) and statistics. In the simplest case, two populations
+A and B of maps can be tested against one another as follows:
+\begin{verbatim}
+ttest -o pvalues.nii --tstats-file tstats.nii \
+        jacobianA1.nii jacobianA2.nii -- jacobianB1.nii jacobianB2.nii
+\end{verbatim} 
+This computes a pixel-wise two-tailed {\em unpaired\/} t-test between the two
+lists of images separated with ``\verb|--|'' on the command line. The
+resulting $p$-values image is then written to \verb|pvalues.nii|, and the
+t-statistics are also written to \verb|tstats.nii|.
+
+To compute a two-tailed {\em paired\/} t-test, one can use the \verb|--paired|
+option and run
+\begin{verbatim}
+ttest -o pvalues.nii --tstats-file tstats.nii --paired \
+        jacobianA1.nii jacobianA2.nii -- jacobianB1.nii jacobianB2.nii
+\end{verbatim}
+It must be ensured of course for the pairwise test that both groups have the
+same number of images in them.
+
+Invoking \verb|ttest| with only a single group of images (without
+``\verb|--|'' anywhere in the image list), will compute a single-sample
+t-test, that is, a test for significant differences from zero:
+\begin{verbatim}
+ttest -o pvalues.nii --tstats-file tstats.nii jacobianA1.nii jacobianA2.nii
+\end{verbatim} 
+
 \subsection{General Linear Modeling}
 
 \subsection{Atlas-based Segmentation}
@@ -487,6 +516,41 @@ nonrigid transformations are inverted numerically).
 \cite{Learned-Miller:2006}
 \cite{BalcGollShen:2007}
 \cite{RohlZahrSull:2008,RohlZahrSull:2010}
+
+\section{More Details}
+
+\subsection{More Gory Details on Registration Options}
+
+Both the affine and nonrigid pairwise image registration, \verb|registration|
+and \verb|warp|, support a number of pre-processing operations that can be
+applied to the reference and floating image on-the-fly, prior to
+registration. The most commonly used of these are:
+\begin{itemize}
+\item {\em Data Class:\/} For each image, the ``class'' of the image data can
+  be defined. This can be ``grey,'' ``binary,'' or ``label.'' Typically, both
+  images should have data in the same class. When the data class is set to
+  ``label,'' the registration algorithm uses nearest neighbour instead of
+  trilinear interpolation, and the numbers of histogram bin are set to the
+  number of labels in each image rather than being adjusted based on the
+  intensity range and number of pixels.
+\item {\em Thresholding:\/} Upper and lower thresholds can be defined to
+  truncate the image intensities.
+\item {\em Cropping:\/} Images can be cropped, based on either image index
+  ranges or image coordinate ranges. The \verb|registration| tool implements a
+  volume clipping algorithm~\cite{Rohlfing:2003} that considerably speeds up
+  registration of cropped images. Cropping can also improve registration
+  accuracy and robustness by excluding non-informative areas of the images.
+\item {\em Histogram Pruning:\/} For a given number of histogram bins (128 is
+  typically a good value), this operation truncates the intensity range of the
+  image such that both the lowest and the highest histogram bin receive
+  1/NumberOfBins of the total number of image samples. This is quite effective
+  to prevent degeneration of histograms by extreme image intensities due to
+  noise.
+\item {\em Histogram Matching:\/} The intensities of the floating image can be
+  rescaled to match the distribution of the reference image. This is a common
+  pre-processing operator to allow, for example, registration of inter-subject
+  images using the mean squared differences metric.
+\end{itemize}
 
 \section*{Acknowledgments}
 
