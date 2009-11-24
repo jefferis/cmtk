@@ -66,7 +66,7 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 \noindent
 This paper is intended as a very brief introduction of the main tools in the
 Computational Morphometry Toolkit (CMTK). The target audience are CMTK users,
-who might use this codument as a reference to the most common processing
+who might use this document as a reference to the most common processing
 tasks, and prospective users, who may find this information useful to
 determine whether CMTK provides functionality that they can use.
 \end{abstract}
@@ -86,13 +86,13 @@ three-dimensional (3D) image data. CMTK is available both in source code
 
 CMTK is primarily a collection of command line tools, which make the toolkit
 ideally suited for unattended batch processing of large amounts of data. In
-addition, CMTK's backend libraries, which are shared by all command line
+addition, CMTK's back-end libraries, which are shared by all command line
 tools, can be used as a relatively lightweight, yet powerful, platform for
 implementation of new image processing algorithms.
 
 \subsection{Coordinate Conventions}
 
-For medical image data, CMTK uses an anatmoy-based coordinate system, which we
+For medical image data, CMTK uses an anatomy-based coordinate system, which we
 refer to as ``RAS'' coordinates. This means that the $x$ direction of the
 coordinate space increases towards the anatomical ``Right,'' the $y$ direction
 increases towards the anatomical ``Anterior,'' and the $z$ direction increases
@@ -114,7 +114,7 @@ modern formats, CMTK determines the nearest anatomical orientation of the
 image within $\pm 45$ degrees around each rotation axis.
 
 To confirm that images are read correctly, and to diagnose problems, CMTK
-comes with a very simple triplanar image viewer (see screenshot in
+comes with a very simple triplanar image viewer (see screen shot in
 Fig.~\ref{fig:triplanar}), adequately named ``\verb|triplanar|.'' The
 coordinates shown in this viewer for any image are exactly the coordinates
 that all CMTK tools use. Note that for the triplanar viewer to be available,
@@ -124,13 +124,13 @@ toolkit\footnote{\url{http://qt.nokia.com}} (version 4.3.0 or higher), and the
 
 \begin{figure}[tbp]
 \centerline{\includegraphics[width=.5\linewidth]{img/triplanar}}
-\caption{Screenshot of CMTK's triplanar image viewer.}
+\caption{Screen shot of CMTK's triplanar image viewer.}
 \label{fig:triplanar}
 \end{figure}
 
 \subsection{Registration Terminology}
 
-Since one of the primary strenghts of CMTK is its selection of powerful and
+Since one of the primary strengths of CMTK is its selection of powerful and
 well-tested registration tools, we shall first clarify some important
 registration terminology. In pairwise registration, throughout this guide as
 well as in all tools and source code, we shall refer to one image as the
@@ -183,7 +183,7 @@ suffix will invoke NIFTI export. Both formats need to be read using the
 
 {\bf Note} also that, by default, all data files are written with \verb|gzip|
 compression. Because CMTK contains a bundled \verb|zlib| library, this is true
-even when the \verb|gzip| tool itself is not installed. This behaviour can be
+even when the \verb|gzip| tool itself is not installed. This behavior can be
 disabled by defining the \verb|CMTK_WRITE_UNCOMPRESSED| environment
 variable. On a Unix/Linux system using the \verb|csh| shell, this would be
 achieved via
@@ -196,12 +196,12 @@ variable to ``0'' for example, use
 \begin{verbatim}
 unset CMTK_WRITE_UNCOMPRESSED
 \end{verbatim}
-or its appropriate equivalent inside your favourite shell.
+or its appropriate equivalent inside your favorite shell.
 
 \section{Step-by-Step Morphometry}
 
 This section provides a step-by-step guide to the tools used in a typical
-morpometry study using the CMTK tools. It is not intended to provide a
+morphometry study using the CMTK tools. It is not intended to provide a
 complete list of available tools. We are also not covering all available
 options of each tool. Note that a complete list of supported options can
 always be obtained by running a given tool with the \verb|--help| command line
@@ -413,7 +413,7 @@ the previous section, CMTK
 \begin{verbatim}
 reformatx  -o reformat.nii --floating flt.nii ref.nii ffd5.xform
 \end{verbatim}
-The somewhat unintiutive order of arguments on the command line is due to the
+The somewhat unintuitive order of arguments on the command line is due to the
 versatility of the \verb|reformatx| tool, which allows for the concatenation
 of arbitrary transformations (and their inverses), such as
 \begin{verbatim}
@@ -428,14 +428,42 @@ nearest neighbor (\verb|--nn|) interpolation for all types of images.
 
 \subsection{Jacobian Determinant Maps}
 
+Jacobian determinant maps, which are a staple ingredient of deformation-based
+morphometry studies~\cite{AshbHuttFrac:1998}, can also be computed using the
+\verb|reformatx| tool. In the simplest case, we may want to compute the
+Jacobian determinant map for a transformation \verb|time1_to_time2.xform|
+between two images, say images \verb|time1.nii| and \verb|time1.nii| acquired
+from the same subject at two time points. The command to compute the
+appropriate Jacobian determinant map, \verb|jacobian.nii|, is then
 \begin{verbatim}
 reformatx  -o jacobian.nii time1.nii --jacobian time1_to_time2.xform
 \end{verbatim}
-
+More interestingly, say we want to compare these Jacobian maps from multiple
+subjects, all in the space of as common atlas coordinate system. Then, instead
+of computing each map first in each subject's coordinate system and then
+reformatting these maps into atlas space, we can directly compute the maps in
+atlas space by concatenation of transformations:
 \begin{verbatim}
 reformatx  -o jacobian.nii atlas.nii \
         atlas_to_time1.xform --jacobian time1_to_time2.xform
 \end{verbatim}
+Here, every sample coordinate in atlas space is first mapped to subject time 1
+space via \verb|atlas_to_time1.xform|. For the resulting location, the
+Jacobian determinant of the longitudinal transformation,
+\verb|time1_to_time2.xform|, is then computed.
+
+Because the nonrigid transformations computed by the \verb|warp| tool are
+generated via continuously differentiable B-spline basis functions, we can
+compute the Jacobian analytically at any location in the domain of the
+transformation, which means that the direct computation of Jacobians into
+atlas space does indeed avoid one interpolation of the Jacobian determinant
+map.
+
+{\bf Note} that the \verb|reformatx| tool allow an arbitrary number of
+transformations to be listed both before and after the \verb|--jacobian|
+switch, and any transformation can additionally be inverted by prefixing it
+with \verb|--inverse| (affine transformations are inverted explicitly, whereas
+nonrigid transformations are inverted numerically). 
 
 \subsection{Statistical Testing}
 
