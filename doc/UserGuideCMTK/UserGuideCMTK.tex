@@ -156,8 +156,9 @@ path to the header file, not the data file.
 
 Whether a particular file can be read into CMTK can easily be tested using
 CMTK's \verb|describe| tool. For example, to test (and describe) the content
-of an Analyze 7.5 header/image pair, \verb|example.hdr| and
-\verb|example.img|, one would run the following command:
+of an Analyze 7.5\footnote{\url{http://eeg.sourceforge.net/ANALYZE75.pdf}}
+header/image pair, \verb|example.hdr| and \verb|example.img|, one would run
+the following command:
 \begin{verbatim}
 describe example.hdr
 \end{verbatim}
@@ -165,20 +166,20 @@ describe example.hdr
 When writing files, CMTK determines the desired file format based on the
 suffix of the output path. The following suffixes are supported:
 \begin{description}
-\item [nii] Single-file NIFTI image.
-\item [img] NIFTI image with detached header. Header file will be written with
+\item [nii] Single-file NIfTI-1 image\footnote{\url{http://nifti.nimh.nih.gov/nifti-1/}}.
+\item [img] NIfTI image with detached header. Header file will be written with
   suffix \verb|.hdr|
-\item [nrrd] Single-file Nrrd.
+\item [nrrd] Single-file Nrrd\footnote{\url{http://teem.sourceforge.net/nrrd/}}.
 \item [nhdr] Nrrd with detached header. The data file will be written with
   \verb|.raw| suffix.
 \item [hdr] Analyze 7.5 detached header. The data file will be written with
   suffix \verb|img|.
 \end{description}
 
-{\bf Note} that both Analyze and NIFTI header/data file pairs use the suffixes
+{\bf Note} that both Analyze and NIfTI header/data file pairs use the suffixes
 \verb|.hdr| and \verb|.img|. For historic reasons, using \verb|.hdr| as the
 output file suffix will always invoke Analyze export, whereas the \verb|.img|
-suffix will invoke NIFTI export. Both formats need to be read using the
+suffix will invoke NIfTI export. Both formats need to be read using the
 \verb|.hdr| file, however.
 
 {\bf Note} also that, by default, all data files are written with \verb|gzip|
@@ -225,7 +226,7 @@ or short
 dcm2image -r -O image_%02d.nii /path/to/dicom
 \end{verbatim}
 would recursively search the file system under {\tt /path/to/dicom} and write
-all resulting image volumes to consecutively numbered image files in NIFTI
+all resulting image volumes to consecutively numbered image files in NIfTI
 format, {\tt image\_01.nii},  {\tt image\_01.nii}, and so on.
 
 \subsection{Interleaved Image Motion Artifact Correction}
@@ -480,15 +481,14 @@ lists of images separated with ``\verb|--|'' on the command line. The
 resulting $p$-values image is then written to \verb|pvalues.nii|, and the
 t-statistics are also written to \verb|tstats.nii|.
 
-To compute a two-tailed {\em paired\/} t-test, one can use the \verb|--paired|
-option and run
+To compute a two-tailed {\em paired\/} t-test, make sure that there are an
+equal number of images before and after the ``\verb|--|'' separator and that
+corresponding images in both groups are in the same order, then add the
+\verb|--paired| option and run
 \begin{verbatim}
 ttest -o pvalues.nii --tstats-file tstats.nii --paired \
         jacobianA1.nii jacobianA2.nii -- jacobianB1.nii jacobianB2.nii
 \end{verbatim}
-It must be ensured of course for the pairwise test that both groups have the
-same number of images in them.
-
 Invoking \verb|ttest| with only a single group of images (without
 ``\verb|--|'' anywhere in the image list), will compute a single-sample
 t-test, that is, a test for significant differences from zero:
@@ -497,6 +497,8 @@ ttest -o pvalues.nii --tstats-file tstats.nii jacobianA1.nii jacobianA2.nii
 \end{verbatim} 
 
 \subsection{General Linear Modeling}
+
+\cite{FrisHolmWors:1995}
 
 \subsection{Atlas-based Segmentation}
 
