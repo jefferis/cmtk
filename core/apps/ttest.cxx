@@ -308,7 +308,7 @@ main ( int argc, char* argv[] )
 	{
 	if ( dataY.size() )
 	  {
-	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetUnpairedTTest( dataX, dataY, &tstatsData, &avgXData, &avgYData, maskData ) );
+	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetUnpairedTwoTailedTTest( dataX, dataY, &tstatsData, &avgXData, &avgYData, maskData ) );
 	  }
 	else
 	  {
@@ -319,7 +319,7 @@ main ( int argc, char* argv[] )
 	{
 	if ( dataY.size() )
 	  {
-	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetUnpairedTTest( dataX, dataY, &tstatsData, NULL /*avgXData*/, NULL /*avgYData*/, maskData ) );
+	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetUnpairedTwoTailedTTest( dataX, dataY, &tstatsData, NULL /*avgXData*/, NULL /*avgYData*/, maskData ) );
 	  }
 	else
 	  {
@@ -378,7 +378,7 @@ main ( int argc, char* argv[] )
       
       if ( dataY.size() )
 	{
-	probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetPairedTTest( dataX, dataY, &tstatsData, NULL /*avgXData*/, NULL /*avgYData*/, maskData ) );
+	probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetPairedTwoTailedTTest( dataX, dataY, &tstatsData, NULL /*avgXData*/, NULL /*avgYData*/, maskData ) );
 	}
       
       if ( refVolume && TStatFileName )

@@ -45,7 +45,7 @@ cmtk
 //@{
 
 TypedArray* 
-HypothesisTests::GetUnpairedTTest
+HypothesisTests::GetUnpairedTwoTailedTTest
 ( std::vector<TypedArray::SmartPtr>& dataX, 
   std::vector<TypedArray::SmartPtr>& dataY,
   TypedArray** tstatData, TypedArray** avgXData, 
@@ -120,7 +120,7 @@ HypothesisTests::GetUnpairedTTest
 }
 
 TypedArray* 
-HypothesisTests::GetPairedTTest
+HypothesisTests::GetPairedTwoTailedTTest
 ( std::vector<TypedArray::SmartPtr>& dataX, 
   std::vector<TypedArray::SmartPtr>& dataY,
   TypedArray** tstatData, TypedArray** avgXData, 

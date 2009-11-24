@@ -52,12 +52,12 @@ class HypothesisTests
 {
 public:
   /// Test Jacobian maps of two populations for statistical independence.
-  static TypedArray* GetUnpairedTTest
+  static TypedArray* GetUnpairedTwoTailedTTest
   ( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray** tstatData, TypedArray** avgXData, TypedArray** avgYData,
     const TypedArray* mask = NULL );
 
   /// Test parameter maps of two populations for statistical independence.
-  static TypedArray* GetPairedTTest
+  static TypedArray* GetPairedTwoTailedTTest
   ( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray** tstatData, TypedArray** avgXData, TypedArray** avgYData, 
     const TypedArray* mask = NULL );
 
