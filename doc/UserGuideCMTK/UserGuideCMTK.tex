@@ -273,15 +273,25 @@ via the \verb|--thresh-min| and  \verb|--thresh-max| command line parameters.
 \begin{figure}[tbp]
 \begin{center}
 \begin{tabular}{cc}
+Original & Corrected \\
 \includegraphics[width=.3\linewidth]{img/mrbias_orig}&
-\includegraphics[width=.3\linewidth]{img/mrbias_corr}
+\includegraphics[width=.3\linewidth]{img/mrbias_corr} \\
+\includegraphics[width=.3\linewidth]{img/mrbias_rat_early_orig}&
+\includegraphics[width=.3\linewidth]{img/mrbias_rat_early_corr}
 \end{tabular}
 \end{center}
-\caption{Example of MR intensity bias field correction using a second-order
-polynomial multiplicative bias field computed by the {\tt mrbias} tool and
-applied to an SPGR image acquired at 3T.}
+\caption{Examples of MR intensity bias field correction using a second-order
+polynomial multiplicative bias field computed by the {\tt mrbias} tool. {\em
+  Top row:\/} applied to a human brain SPGR image acquired at 3T.  {\em
+  Bottom row:\/} applied to a rat brain early-echo FSE image acquired at 3T.}
 \label{fig:Mrbias}
 \end{figure}
+
+One of the advantages of this particular algorithm for intensity bias field
+correction is that it does not involve a model of either the anatomy in the
+image or the tissue types that are present. It, therefore, works well on human
+as well as non-human images (Fig.~\ref{fig:Mrbias}), and on brain as well as
+non-brain anatomy, such as abdominal images.
 
 To generate foreground masks automatically, CMTK provides a very simple
 ``levelset-type'' segmentation tool:
@@ -298,6 +308,7 @@ output into a thresholded, binary mask that is appropriate for use by the
 \begin{figure}[tb]
 \begin{center}
 \begin{tabular}{ccc}
+Image & Mask & Image with Mask Outline \\
 \includegraphics[width=.3\linewidth]{img/levelset_spgr_spgr}&
 \includegraphics[width=.3\linewidth]{img/levelset_spgr_mask}&
 \includegraphics[width=.3\linewidth]{img/levelset_spgr_ovl} \\
