@@ -502,6 +502,51 @@ ttest -o pvalues.nii --tstats-file tstats.nii jacobianA1.nii jacobianA2.nii
 
 \subsection{Atlas-based Segmentation}
 
+Atlas-based segmentation uses correspondence between a previously segmented
+image (the atlas) and a new, unsegmented image to create a segmentation of the
+latter~\cite{MillChriAmit:1993}. This relatively simple idea can easily be
+implemented using CMTK's \verb|registration|, \verb|warp|, and
+\verb|reformatx| tools. For convenience, however, CMTK also provides an
+integrated atlas-based segmentation tool, which can be run as follows:
+\begin{verbatim}
+asegment input_image.nii atlas_image.nii atlas_labels.nii output_labels.nii
+\end{verbatim}
+Here, it is assumed that \verb|input_image.nii| is a new, unsegmented image,
+for example an MR scan of a new subject, \verb|atlas_image.nii| is the
+intensity image of the atlas, and \verb|atlas_labels.nii| is the label image
+of the atlas, i.e., the segmentation corresponding to the atlas intensity
+image. The tool will then register the atlas to the new image, reformat that
+atlas label map onto it, and write the result to the file
+\verb|output_labels.nii|.
+
+The standard atlas of CMTK is the SRI24
+atlas~\cite{RohlZahrSull:2008,RohlZahrSull:2010}, which comprises several
+different channels of MR image information, as well as scalar diffusion
+measures, tissue probability maps, and segmentation maps. If CMTK is
+configured and built with SRI24 support (by setting the
+\verb|CMTK_ROOT_PATH_SRI24| CMake variable), then a simplified segmentation
+tool, \verb|asegment_sri24|, which uses the SRI24 atlas is also built.
+
+This tool, by default, registers a given image to the SPGR channel of the
+SRI24 atlas. It then creates and writes a segmentation map based on the
+``tzo116plus'' label map, which derived from the AAL parcellation map by
+Tzourio-Mazoyer {\em et al.\/}~\cite{TzouLandPapa:2002}. This is achieved
+simply by running
+\begin{verbatim}
+asegment_sri24 input_image.nii output_segmentation.nii
+\end{verbatim}
+Different atlas channel can be used for registration, selected using the
+\verb|--registration-channel| command line option: ``spgr'' for T1-weighted
+SPGR, which is the default,``early-fse'' for early-echo (proton
+density-weighted) FSE , ``late-fse'' for late-echo (T2-weighted) FSE, and
+``fa'' for DTI-derived fractional anisotropy. 
+
+Likewise, different label maps are available for the output, selected by the
+\verb|--label-map| command line option: ``tzo116plus'' for the extended
+Tzourio-Mazoyer map, ``lpba40'' for a segmentation based on the 40-subject
+LONI Probabilistic Brain Atlas~\cite{ShatMirzAdis:2008}, and ``tissue'' for a
+maximum-likelihood three-tissue (CSF, WM, GM) segmentation.
+
 \section{Atlas Construction}
 
 \subsection{Iterative Shape Averaging}
@@ -519,7 +564,7 @@ ttest -o pvalues.nii --tstats-file tstats.nii jacobianA1.nii jacobianA2.nii
 \cite{BalcGollShen:2007}
 \cite{RohlZahrSull:2008,RohlZahrSull:2010}
 
-\section{More Details}
+\section{If you want to know more...}
 
 \subsection{More Gory Details on Registration Options}
 
