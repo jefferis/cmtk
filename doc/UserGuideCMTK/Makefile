@@ -1,8 +1,8 @@
-
+#!gmake
 
 NAME = UserGuideCMTK
 
-BIBTEXDATABSENAME = ${NAME} 
+BIBTEXDATABSENAME = ${NAME}
 
 
 ${NAME}.pdf: ${NAME}.dvi
