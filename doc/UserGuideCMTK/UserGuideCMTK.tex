@@ -6,24 +6,11 @@
 % license. Please see LICENSE file for details.
 %
 
-%
-% Complete documentation on the extended LaTeX markup used for Insight
-% documentation is available in ``Documenting Insight'', which is part
-% of the standard documentation for Insight.  It may be found online
-% at:
-%
-%     http://www.itk.org/
-
 \documentclass{InsightArticle}
 
 \usepackage[dvipdfm]{graphicx}
 \usepackage{url}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  hyperref should be the last package to be loaded.
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage[dvipdfm,
 bookmarks,
 bookmarksopen,
@@ -32,21 +19,12 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 ]{hyperref}
 
 
-%  This is a template for Papers to the Insight Journal. 
-%  It is comparable to a technical report format.
-
-% The title should be descriptive enough for people to be able to find
-% the relevant document. 
 \title{User Guide to \\[4mm] The Computational Morphometry
   Toolkit\footnote{This document is licensed under
     the Creative Commons Attribution License Version 3.0.}}
 
-% Increment the release number whenever significant changes are made.
-% The author and/or editor can define 'significant' however they like.
-\release{1.00}
+\release{1.10}
 
-% At minimum, give your name and an email address.  You can include a
-% snail-mail address if you like.
 \author{Torsten Rohlfing}
 \authoraddress{Neuroscience Program, SRI International, Menlo Park, CA\footnote{Continued development and maintenance of CMTK is funded by
     the NIBIB under Grant No. R01~EB008381.}}
@@ -60,8 +38,6 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
 \fi
 
 
-% The abstract should be a paragraph or two long, and describe the
-% scope of the document.
 \begin{abstract}
 \noindent This guide is intended as a very brief introduction of the main
 tools in the Computational Morphometry Toolkit (CMTK), which is available in
@@ -511,9 +487,9 @@ t-test, that is, a test for significant differences from zero:
 ttest -o pvalues.nii --tstats-file tstats.nii jacobianA1.nii jacobianA2.nii
 \end{verbatim} 
 
-%%DRAFT%%\subsection{General Linear Modeling}
-%%DRAFT%%
-%%DRAFT%%\cite{FrisHolmWors:1995}
+\subsection{General Linear Modeling}
+
+\cite{FrisHolmWors:1995}
 
 \subsection{Atlas-based Segmentation}
 
@@ -563,96 +539,96 @@ Tzourio-Mazoyer map, ``\verb|lpba40|'' for a segmentation based on the
 ``\verb|tissue|'' for a maximum-likelihood three-tissue (CSF, WM, GM)
 segmentation.
 
-%%DRAFT%%\clearpage
-%%DRAFT%%\section{Atlas Construction}
-%%DRAFT%%
-%%DRAFT%%In addition to being useful for atlas-based segmentation, CMTK also provides
-%%DRAFT%%tools that can be used in the construction of atlases. Indeed, its tools have
-%%DRAFT%%been used to create various published atlases.
-%%DRAFT%%
-%%DRAFT%%\subsection{Iterative Shape Averaging}
-%%DRAFT%%
-%%DRAFT%%The iterative shape averaging (ISA) procedure~\cite{RohlBranMaur:2001} was
-%%DRAFT%%first used to create a standard atlas of the honeybee
-%%DRAFT%%brain~\cite{BranRohlRyba:2005}, and has since been applied to other insect
-%%DRAFT%%species as well~\cite{KuryRohlKrof:2008,KvelLofaRyba:2009}.
-%%DRAFT%%
-%%DRAFT%%\begin{verbatim}
-%%DRAFT%%sh iterative_shape_averaging.sh ref_image.nii flt_image1.nii  flt_image2.nii
-%%DRAFT%%\end{verbatim}
-%%DRAFT%%
-%%DRAFT%%\subsection{Averaging Pairwise Correspondences}
-%%DRAFT%%
-%%DRAFT%%\cite{GuimMeunThir:2000}
-%%DRAFT%%
-%%DRAFT%%\cite{JeffPottChan:2007}
-%%DRAFT%%
-%%DRAFT%%\subsection{Groupwise Population Registration}
-%%DRAFT%%
-%%DRAFT%%\cite{Learned-Miller:2006}
-%%DRAFT%%\cite{BalcGollShen:2007}
-%%DRAFT%%\cite{RohlZahrSull:2008,RohlZahrSull:2010}
-%%DRAFT%%
-%%DRAFT%%\clearpage
-%%DRAFT%%\section{More Gory Details}
-%%DRAFT%%
-%%DRAFT%%\subsection{Registration Options for Image Pre-Processing}
-%%DRAFT%%
-%%DRAFT%%Both the affine and nonrigid pairwise image registration, \verb|registration|
-%%DRAFT%%and \verb|warp|, support a number of pre-processing operations that can be
-%%DRAFT%%applied to the reference and floating image on-the-fly, prior to
-%%DRAFT%%registration. The most commonly used of these are:
-%%DRAFT%%\begin{itemize}
-%%DRAFT%%\item {\em Data Class:\/} For each image, the ``class'' of the image data can
-%%DRAFT%%  be defined. This can be ``grey,'' ``binary,'' or ``label.'' Typically, both
-%%DRAFT%%  images should have data in the same class. When the data class is set to
-%%DRAFT%%  ``label,'' the registration algorithm uses nearest neighbour instead of
-%%DRAFT%%  trilinear interpolation, and the numbers of histogram bin are set to the
-%%DRAFT%%  number of labels in each image rather than being adjusted based on the
-%%DRAFT%%  intensity range and number of pixels.
-%%DRAFT%%\item {\em Thresholding:\/} Upper and lower thresholds can be defined to
-%%DRAFT%%  truncate the image intensities.
-%%DRAFT%%\item {\em Cropping:\/} Images can be cropped, based on either image index
-%%DRAFT%%  ranges or image coordinate ranges. The \verb|registration| tool implements a
-%%DRAFT%%  volume clipping algorithm~\cite{Rohlfing:2003} that considerably speeds up
-%%DRAFT%%  registration of cropped images. Cropping can also improve registration
-%%DRAFT%%  accuracy and robustness by excluding non-informative areas of the images.
-%%DRAFT%%\item {\em Histogram Pruning:\/} For a given number of histogram bins (128 is
-%%DRAFT%%  typically a good value), this operation truncates the intensity range of the
-%%DRAFT%%  image such that both the lowest and the highest histogram bin receive
-%%DRAFT%%  1/NumberOfBins of the total number of image samples. This is quite effective
-%%DRAFT%%  to prevent degeneration of histograms by extreme image intensities due to
-%%DRAFT%%  noise.
-%%DRAFT%%\end{itemize}
-%%DRAFT%%
-%%DRAFT%%{\em Histogram Matching:\/} Using the \verb|--match-histograms| option, the
-%%DRAFT%%intensities of the floating image can be rescaled to match the distribution of
-%%DRAFT%%the reference image. This is a common pre-processing operator to allow, for
-%%DRAFT%%example, registration of inter-subject images using the mean squared
-%%DRAFT%%differences metric.
-%%DRAFT%%
-%%DRAFT%%{\em Setting value outside FOV:\/} A default value for data outside the
-%%DRAFT%%floating image FOV can be defined using the \verb|--force-outside-value|
-%%DRAFT%%option. This artificially inreases the overlapping image region that can be
-%%DRAFT%%considered for registration, which may help increase registration robustness. 
-%%DRAFT%%
-%%DRAFT%%\subsection{Nonrigid Registration Options}
-%%DRAFT%%
-%%DRAFT%%\verb|--delay-refine|
-%%DRAFT%%
-%%DRAFT%%\verb|--exact-spacing|
-%%DRAFT%%
-%%DRAFT%%\verb|--delay-refine|
-%%DRAFT%%
-%%DRAFT%%\verb|--restrict|
-%%DRAFT%%
-%%DRAFT%%\verb|--accurate|
-%%DRAFT%%
-%%DRAFT%%\verb|--delta-f-threshold|
-%%DRAFT%%
-%%DRAFT%%\verb|--ic-weight| \cite{ChriJohn:2001}
-%%DRAFT%%
-%%DRAFT%%\verb|--relax| \cite{RohlMaurBlue:2003b}
+\clearpage
+\section{Atlas Construction}
+
+In addition to being useful for atlas-based segmentation, CMTK also provides
+tools that can be used in the construction of atlases. Indeed, its tools have
+been used to create various published atlases.
+
+\subsection{Iterative Shape Averaging}
+
+The iterative shape averaging (ISA) procedure~\cite{RohlBranMaur:2001} was
+first used to create a standard atlas of the honeybee
+brain~\cite{BranRohlRyba:2005}, and has since been applied to other insect
+species as well~\cite{KuryRohlKrof:2008,KvelLofaRyba:2009}.
+
+\begin{verbatim}
+sh iterative_shape_averaging.sh ref_image.nii flt_image1.nii  flt_image2.nii
+\end{verbatim}
+
+\subsection{Averaging Pairwise Correspondences}
+
+\cite{GuimMeunThir:2000}
+
+\cite{JeffPottChan:2007}
+
+\subsection{Groupwise Population Registration}
+
+\cite{Learned-Miller:2006}
+\cite{BalcGollShen:2007}
+\cite{RohlZahrSull:2008,RohlZahrSull:2010}
+
+\clearpage
+\section{More Gory Details}
+
+\subsection{Registration Options for Image Pre-Processing}
+
+Both the affine and nonrigid pairwise image registration, \verb|registration|
+and \verb|warp|, support a number of pre-processing operations that can be
+applied to the reference and floating image on-the-fly, prior to
+registration. The most commonly used of these are:
+\begin{itemize}
+\item {\em Data Class:\/} For each image, the ``class'' of the image data can
+  be defined. This can be ``grey,'' ``binary,'' or ``label.'' Typically, both
+  images should have data in the same class. When the data class is set to
+  ``label,'' the registration algorithm uses nearest neighbour instead of
+  trilinear interpolation, and the numbers of histogram bin are set to the
+  number of labels in each image rather than being adjusted based on the
+  intensity range and number of pixels.
+\item {\em Thresholding:\/} Upper and lower thresholds can be defined to
+  truncate the image intensities.
+\item {\em Cropping:\/} Images can be cropped, based on either image index
+  ranges or image coordinate ranges. The \verb|registration| tool implements a
+  volume clipping algorithm~\cite{Rohlfing:2003} that considerably speeds up
+  registration of cropped images. Cropping can also improve registration
+  accuracy and robustness by excluding non-informative areas of the images.
+\item {\em Histogram Pruning:\/} For a given number of histogram bins (128 is
+  typically a good value), this operation truncates the intensity range of the
+  image such that both the lowest and the highest histogram bin receive
+  1/NumberOfBins of the total number of image samples. This is quite effective
+  to prevent degeneration of histograms by extreme image intensities due to
+  noise.
+\end{itemize}
+
+{\em Histogram Matching:\/} Using the \verb|--match-histograms| option, the
+intensities of the floating image can be rescaled to match the distribution of
+the reference image. This is a common pre-processing operator to allow, for
+example, registration of inter-subject images using the mean squared
+differences metric.
+
+{\em Setting value outside FOV:\/} A default value for data outside the
+floating image FOV can be defined using the \verb|--force-outside-value|
+option. This artificially inreases the overlapping image region that can be
+considered for registration, which may help increase registration robustness. 
+
+\subsection{Nonrigid Registration Options}
+
+\verb|--delay-refine|
+
+\verb|--exact-spacing|
+
+\verb|--delay-refine|
+
+\verb|--restrict|
+
+\verb|--accurate|
+
+\verb|--delta-f-threshold|
+
+\verb|--ic-weight| \cite{ChriJohn:2001}
+
+\verb|--relax| \cite{RohlMaurBlue:2003b}
 
 \clearpage
 \section*{Acknowledgments}
