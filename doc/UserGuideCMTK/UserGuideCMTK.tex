@@ -549,14 +549,26 @@ maximum-likelihood three-tissue (CSF, WM, GM) segmentation.
 
 \section{Atlas Construction}
 
+In addition to being useful for atlas-based segmentation, CMTK also provides
+tools that can be used in the construction of atlases. Indeed, its tools have
+been used to create various published atlases.
+
 \subsection{Iterative Shape Averaging}
 
-\cite{RohlBranMaur:2001}
-\cite{KuryRohlKrof:2008,BranRohlRyba:2005}
+The iterative shape averaging (ISA) procedure~\cite{RohlBranMaur:2001} was
+first used to create a standard atlas of the honeybee
+brain~\cite{BranRohlRyba:2005}, and has since been applied to other insect
+species as well~\cite{KuryRohlKrof:2008,KvelLofaRyba:2009}.
+
+\begin{verbatim}
+sh iterative_shape_averaging.sh ref_image.nii flt_image1.nii  flt_image2.nii
+\end{verbatim}
 
 \subsection{Averaging Pairwise Correspondences}
 
 \cite{GuimMeunThir:2000}
+
+\cite{JeffPottChan:2007}
 
 \subsection{Groupwise Population Registration}
 
