@@ -113,23 +113,7 @@ public:
   /// UNDOCUMENTED
   Self::ReturnType Get() const 
   {
-	  return static_cast<Self::ReturnType>( Sum / Samples );
-  }
-
-  /// UNDOCUMENTED
-  void AddSampleToBins ( const short sampleX, const short sampleY )
-  {
-    if ( (sampleX == this->DataX.padding()) || (sampleY == this->DataY.padding()) ) return;
-    ++Samples;
-    Sum -= MathUtil::Square( sampleX - sampleY );
-  }
-
-  /// UNDOCUMENTED
-  void RemoveSampleFromBins ( const short sampleX, const short sampleY )
-  {
-    if ( (sampleX == this->DataX.padding()) || (sampleY == this->DataY.padding()) ) return;
-    --Samples;
-    Sum += MathUtil::Square( sampleX - sampleY );
+    return static_cast<Self::ReturnType>( Sum / Samples );
   }
 
   void AddMetric ( const Self& other )
