@@ -68,8 +68,7 @@ public:
    *@param refVolume The reference (fixed) volume.
    *@param modVolume The model (transformed) volume.
    */
-  VoxelMatchingMeanSquaredDifference
-  ( const UniformVolume* refVolume, const UniformVolume* fltVolume );
+  VoxelMatchingMeanSquaredDifference( const UniformVolume* refVolume, const UniformVolume* fltVolume );
 
   /// UNDOCUMENTED
   VoxelMatchingMeanSquaredDifference( const Self& other );
@@ -78,15 +77,13 @@ public:
   VoxelMatchingMeanSquaredDifference( Self& other, const bool copyData = false );
   
   /// UNDOCUMENTED
-  void Copy( const VoxelMatchingMeanSquaredDifference& other,
-	     const bool copyData = false ) 
+  void Copy( const VoxelMatchingMeanSquaredDifference& other, const bool copyData = false ) 
   {
     this->CopyUnsafe( other, copyData );
   }
 
   /// UNDOCUMENTED
-  void CopyUnsafe( const VoxelMatchingMeanSquaredDifference& other,
-		   const bool copyData = false );
+  void CopyUnsafe( const VoxelMatchingMeanSquaredDifference& other, const bool copyData = false );
   
   /** Add a pair of values to the metric.
    */
