@@ -62,8 +62,6 @@ namespace reformatx
 #endif
 bool Verbose = false;
 
-bool PushMode = false;
-
 bool AutoScaleReference = false;
 bool AutoScaleFloating = false;
 
@@ -171,59 +169,6 @@ CallbackTargetImageOffsetPixels( const char* arg )
   TargetImageOffsetPixels = true;
 
   return NULL;
-}
-
-void
-ReformatPushforward()
-{
-  cmtk::UniformVolume::SmartPtr targetVolume = UserDefinedTargetVolume;
-  if ( TargetVolumeName )
-    {
-    targetVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( TargetVolumeName, Verbose ) );
-    }
-  if ( ! targetVolume ) 
-    {
-    cmtk::StdErr << "ERROR: a target volume must be given\n";
-    exit( 1 );
-    }
-  if ( CropImages )
-    {
-    targetVolume->SetCropRegion( CropImagesRegionFrom, CropImagesRegionTo );
-    targetVolume = cmtk::UniformVolume::SmartPtr( targetVolume->GetCroppedVolume() );
-    }
-  
-  TargetToReference.SetEpsilon( 0.1 * targetVolume->GetMinDelta() );
-
-  cmtk::UniformVolume::SmartPtr floatingVolume;
-  if ( FloatingVolumeName )
-    {
-    floatingVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( FloatingVolumeName, Verbose ) );
-    if ( ! floatingVolume ) 
-      {
-      cmtk::StdErr << "ERROR: floating volume " << FloatingVolumeName << " could not be read\n";
-      exit( 1 );
-      }
-    if ( ! floatingVolume->GetData() ) 
-      {
-      cmtk::StdErr << "ERROR: floating volume data must exist in PushForward mode\n";
-      exit( 1 );
-      }    
-    }
-  
-  cmtk::ProgressConsole progressIndicator( "Volume Reformatter" );
-
-  cmtk::TypedArray::SmartPtr reformatData;
-  reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::ReformatPushForwardAccumulate( floatingVolume, TargetToReference, targetVolume ) );
-
-  if ( reformatData ) 
-    {
-    targetVolume->SetData( reformatData );
-    cmtk::VolumeIO::Write( targetVolume, OutputImageName, Verbose );
-    } 
-  else 
-    {
-    cmtk::StdErr << "ERROR: no reformatted data was generated.";
-    }
 }
 
 template<class TInterpolator>
@@ -511,7 +456,7 @@ main( const int argc, char* argv[] )
     cmtk::CommandLine cl( argc, argv );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Volume reformatter" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Extended volume reformatter tool to compute reformatted images and Jacobian maps from arbitrary sequences of concatenated transformations" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] [--push] --floating floatingImg target x0 [x1 ...]\n  OR\n"
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] --floating floatingImg target x0 [x1 ...]\n  OR\n"
 		       "[options] target [x0 x1 ...] {-j,--jacobian} xx0 [xx1 ...]\n  OR\n"
 		       "WHERE x0 ... xN and xx0 ... xxN is [{-i,--inverse}] transformation##" );
 
@@ -552,8 +497,6 @@ main( const int argc, char* argv[] )
 
     cl.AddOption( Key( "sinc-window-radius" ), &InterpolatorWindowRadius, "Window radius for Sinc interpolation [default: 3]" );
 
-    cl.AddSwitch( Key( "push" ), &PushMode, true, "Push-forward reformating [default: pullback]" );
-    
     cl.Parse();
 
     if ( ! UserDefinedTargetVolume )
@@ -619,14 +562,7 @@ main( const int argc, char* argv[] )
     exit( 1 );
     }
 
-  if ( PushMode )
-    {
-    ReformatPushforward();
-    }
-  else
-    {
-    ReformatPullback();
-    }
+  ReformatPullback();
   
   return 0;
 }
