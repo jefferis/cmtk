@@ -4,6 +4,10 @@ Release CMTK-1.1.4:
     and this is used by cmtk::CommandLine to format command line help output
     with the correct line breaking.
 
+- Improved: more sophisticated install and packaging configuration; still not
+    fully clear how that translates into separated packages for different
+    components.
+
 - Fixed: bundled DICOM library finally works on all tested platforms and all
     tested compilers.
 - Fixed: compile error on latest Mac/Intel gcc due to undefined "ushort"
