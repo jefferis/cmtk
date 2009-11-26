@@ -486,27 +486,39 @@ SET(CPACK_PACKAGE_VERSION_PATCH "${CMTK_VERSION_PATCH}")
 SET(CPACK_PACKAGE_FILE_NAME "CMTK-${CMTK_VERSION_MAJOR}.${CMTK_VERSION_MINOR}.${CMTK_VERSION_PATCH}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "CMTK-${CMTK_VERSION_MAJOR}.${CMTK_VERSION_MINOR}.${CMTK_VERSION_PATCH}-${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR}")
 
+set(CPACK_COMPONENTS_ALL applications gui runtime libraries headers documentation)
+
 INCLUDE(CPack)
 
 INSTALL(FILES ${CPACK_RESOURCE_FILE_LICENSE} ${CPACK_PACKAGE_DESCRIPTION_FILE} DESTINATION share/doc/CMTK COMPONENT documentation)
 
-CPACK_ADD_COMPONENT(runtime 
-  DISPLAY_NAME Runtime
-  DESCRIPTION "CMTK Runtime Components"
-  REQUIRED)
+CPACK_ADD_COMPONENT(applications
+  DISPLAY_NAME "Command Line Applications"
+  DEPENDS runtime)
 
-CPACK_ADD_COMPONENT(development
-  DISPLAY_NAME Development
-  DESCRIPTION "CMTK Development Components"
+CPACK_ADD_COMPONENT(gui
+  DISPLAY_NAME "Graphical User Interface Applications"
+  DEPENDS runtime)
+
+CPACK_ADD_COMPONENT(runtime
+  DISPLAY_NAME "Runtime Components")
+
+CPACK_ADD_COMPONENT(libraries
+  DISPLAY_NAME "Link Libraries"
+  GROUP development
+  DISABLED)
+
+CPACK_ADD_COMPONENT(headers
+  DISPLAY_NAME "C/C++ Header Files"
+  GROUP development
   DISABLED)
 
 CPACK_ADD_COMPONENT(documentation
-  DISPLAY_NAME Documentation
-  DESCRIPTION "CMTK Documentation"
+  DISPLAY_NAME "CMTK Documentation"
   DISABLED)
 
-CPACK_ADD_INSTALL_TYPE(runtime DISPLAY_NAME "Runtime Install")
-CPACK_ADD_INSTALL_TYPE(development DISPLAY_NAME "Developer Install")
+CPACK_ADD_COMPONENT_GROUP(development
+  DISPLAY_NAME "Development Components")
 
 #-----------------------------------------------------------------------------
 # Dispatch the build into the proper subdirectories.
