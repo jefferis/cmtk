@@ -236,10 +236,10 @@ IF(NOT CMTK_USE_MPI)
 
   # ==========================================
   # Tests for "split" tool
-  SET(testList ${testList} SplitAxial SplitSagittal2 SplitCoronal3)
+  SET(testList ${testList} splitAxial splitSagittal2 splitCoronal3)
 
   IF(CMTK_BUILD_NRRD)
-    SET(testList ${testList} SplitAxialNrrd)
+    SET(testList ${testList} splitAxialNrrd)
   ENDIF(CMTK_BUILD_NRRD)
 
   # ==========================================
@@ -313,7 +313,7 @@ IF(NOT CMTK_USE_MPI)
 
   # ==========================================
   # Tests for "similarity" tool
-  SET(testList ${testList} SimilarityGrey SimilarityLabels SimilarityGreyMask SimilarityLabelsMask)
+  SET(testList ${testList} similarityGrey similarityLabels similarityGreyMask similarityLabelsMask)
 
   # ==========================================
   # Tests for "symmetry_plane" tool

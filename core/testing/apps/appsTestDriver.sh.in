@@ -835,35 +835,35 @@ case ${RUNTEST} in
 	run_eval "cat numbers.txt | ${BINDIR}/sequence --thresh 1000 --abs > ${tmpdir}/sequence.txt"
 	check_results sequence.txt
 	;;
-    SimilarityGrey)
+    similarityGrey)
 	run_eval "${BINDIR}/similarity --histogram-file ${tmpdir}/histogram --histogram-text-file ${tmpdir}/histogram.txt rat_fse_erly.hdr rat_fse_late.hdr > ${tmpdir}/similarity.txt"
 	check_results histogram histogram.txt similarity.txt
 	;;
-    SimilarityLabels)
+    similarityLabels)
 	run_eval "${BINDIR}/similarity --labels --histogram-file ${tmpdir}/histogram --histogram-text-file ${tmpdir}/histogram.txt parc1.hdr parc2.hdr > ${tmpdir}/similarity.txt"
 	check_results histogram histogram.txt similarity.txt
 	;;
-    SimilarityGreyMask)
+    similarityGreyMask)
 	run_eval "${BINDIR}/similarity --mask rat_fse_erly.hdr --histogram-file ${tmpdir}/histogram --histogram-text-file ${tmpdir}/histogram.txt rat_fse_erly.hdr rat_fse_late.hdr > ${tmpdir}/similarity.txt"
 	check_results histogram histogram.txt similarity.txt
 	;;
-    SimilarityLabelsMask)
+    similarityLabelsMask)
 	run_eval "${BINDIR}/similarity --mask parc3_bin.hdr --labels --histogram-file ${tmpdir}/histogram --histogram-text-file ${tmpdir}/histogram.txt parc1.hdr parc2.hdr > ${tmpdir}/similarity.txt"
 	check_results histogram histogram.txt similarity.txt
 	;;
-    SplitAxial)
+    splitAxial)
 	run split --output-xform-path ${tmpdir}/split_ax_%1d.xform --axial spgr_3t.hdr ${tmpdir}/split_ax_%1d.hdr
 	check_results split_ax_0.img split_ax_1.img split_ax_0.xform split_ax_1.xform
 	;;
-    SplitAxialNrrd)
+    splitAxialNrrd)
 	run split --axial --factor 3 spgr_3t.hdr ${tmpdir}/split_ax_%1d.nhdr
 	check_results split_ax_0.nhdr split_ax_0.raw split_ax_1.nhdr split_ax_1.raw split_ax_2.nhdr split_ax_2.raw
 	;;
-    SplitSagittal2)
+    splitSagittal2)
 	run split --output-xform-path ${tmpdir}/split_sa_%1d.xform --factor 2 --sagittal spgr_3t.hdr ${tmpdir}/split_sa_%1d.hdr
 	check_results split_sa_0.img split_sa_1.img split_sa_0.xform split_sa_1.xform
 	;;
-    SplitCoronal3)
+    splitCoronal3)
 	run split --output-xform-path ${tmpdir}/split_co_%1d.xform --factor 3 --coronal spgr_3t.hdr ${tmpdir}/split_co_%1d.hdr
 	check_results split_co_0.img split_co_1.img split_co_2.img split_co_0.xform split_co_1.xform split_co_2.xform
 	;;
