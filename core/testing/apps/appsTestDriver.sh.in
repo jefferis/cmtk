@@ -736,37 +736,37 @@ case ${RUNTEST} in
 	run registration -q --msd --auto-multi-levels 3 --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_ct.hdr
 	check_results registration
 	;;
-    ReorientHdrSaToAx)
+    reorientHdrSaToAx)
 	run reorient -o RAS phantom_sa.hdr ${tmpdir}/reorient.hdr
 	check_results reorient.hdr
 	check_results reorient.img
 	;;
-    ReorientHdrCoToAx)
+    reorientHdrCoToAx)
 	run reorient -o RAS phantom_co.hdr ${tmpdir}/reorient.hdr
 	check_results reorient.hdr
 	check_results reorient.img
 	;;
-    ReorientHdrAxToSa)
+    reorientHdrAxToSa)
 	run reorient -o ASL phantom_ax.hdr ${tmpdir}/reorient.hdr
 	check_results reorient.hdr
 	check_results reorient.img
 	;;
-    ReorientHdrCoToSa)
+    reorientHdrCoToSa)
 	run reorient -o ASL phantom_co.hdr ${tmpdir}/reorient.hdr
 	check_results reorient.hdr
 	check_results reorient.img
 	;;
-    ReorientHdrAxToCo)
+    reorientHdrAxToCo)
 	run reorient -o LSA phantom_ax.hdr ${tmpdir}/reorient.hdr
 	check_results reorient.hdr
 	check_results reorient.img
 	;;
-    ReorientHdrSaToCo)
+    reorientHdrSaToCo)
 	run reorient -o LSA phantom_sa.hdr ${tmpdir}/reorient.hdr
 	check_results reorient.hdr
 	check_results reorient.img
 	;;
-    ReorientNrrdToNrrd)
+    reorientNrrdToNrrd)
 	run reorient vol001_mr_t0_crop.nrrd ${tmpdir}/vol001_mr_t0_crop.nhdr
 	check_results vol001_mr_t0_crop.nhdr
 	check_results vol001_mr_t0_crop.raw

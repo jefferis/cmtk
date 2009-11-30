@@ -223,15 +223,15 @@ IF(NOT CMTK_USE_MPI)
   # ==========================================
   # Tests for "reorient" tool
   SET(testList ${testList}
-    ReorientHdrSaToAx
-    ReorientHdrCoToAx
-    ReorientHdrAxToSa
-    ReorientHdrCoToSa
-    ReorientHdrAxToCo
-    ReorientHdrSaToCo)
+    reorientHdrSaToAx
+    reorientHdrCoToAx
+    reorientHdrAxToSa
+    reorientHdrCoToSa
+    reorientHdrAxToCo
+    reorientHdrSaToCo)
 
   IF(CMTK_BUILD_NRRD)
-    SET(testList ${testList} ReorientNrrdToNrrd)
+    SET(testList ${testList} reorientNrrdToNrrd)
   ENDIF(CMTK_BUILD_NRRD)
 
   # ==========================================
