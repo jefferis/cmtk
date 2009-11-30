@@ -31,20 +31,20 @@
 # Tests for "triplanar" gui application
 # (batch mode)
 
-SET(testList TriplanarDefault 
-	     TriplanarZoom300
-	     TriplanarZoom25
-	     TriplanarSetPixelWindowLevel 
-	     TriplanarColormaps
-	     TriplanarPhantomAx
-	     TriplanarPhantomSa
-	     TriplanarPhantomCo)
+SET(testList triplanarDefault 
+	     triplanarZoom300
+	     triplanarZoom25
+	     triplanarSetPixelWindowLevel 
+	     triplanarColormaps
+	     triplanarPhantomAx
+	     triplanarPhantomSa
+	     triplanarPhantomCo)
 
 IF(IGS_BUILD_NRRD OR IGS_USE_TEEM)
 	SET(testList ${testList}
-		     TriplanarPhantomAxNrrd
-		     TriplanarPhantomSaNrrd
-		     TriplanarPhantomCoNrrd)
+		     triplanarPhantomAxNrrd
+		     triplanarPhantomSaNrrd
+		     triplanarPhantomCoNrrd)
 ENDIF(IGS_BUILD_NRRD OR IGS_USE_TEEM)
 
 # ==========================================

@@ -100,7 +100,7 @@ def check_results(list):
             return 1
     return 0
 
-if RUNTEST=='AffineRegistrationMrMrMSD':
+if RUNTEST=='registrationAffineMrMrMSD':
     run("registration -i --dofs 6,9 --msd --match-histograms -o " + tmpdir + " pat001_mr_T1.hdr pat002_mr_T2.hdr")
     exit( check_results(['registration']) )
 elif RUNTEST=='xml_film':

@@ -104,6 +104,7 @@ JointHistogram<T>::GetJointEntropy() const
     for ( size_t j=0; j<NumBinsX; ++j, ++idx )
       HXY -= plogp[idx];
     // Skip extra bin at the end of each row.
+    assert( plogp[idx] == 0 );
     ++idx;
     }
 #else // #ifdef _OPENMP
@@ -118,6 +119,7 @@ JointHistogram<T>::GetJointEntropy() const
 	}
     
     // Skip extra bin at the end of each row.
+    assert( JointBins[idx] == 0 );
     ++idx;
     }
 #endif // #ifdef _OPENMP

@@ -111,7 +111,7 @@ check_results()
 }
 
 case ${RUNTEST} in
-    TriplanarDefault)
+    triplanarDefault)
 	run ${BINDIR}/triplanar --exec load pat001_pet.hdr export-panel ${tmpdir}/panel.ppm export-axial ${tmpdir}/axial.ppm export-coronal ${tmpdir}/coronal.ppm export-sagittal ${tmpdir}/sagittal.ppm
 	for img in panel axial sagittal coronal; do
 	    if check_result ${img}.ppm; then
@@ -121,19 +121,19 @@ case ${RUNTEST} in
 	    fi
 	done
 	;;
-    TriplanarZoom300)
+    triplanarZoom300)
 	run ${BINDIR}/triplanar --exec load pat001_pet.hdr zoom 300 export-panel ${tmpdir}/panel.ppm
 	check_result panel.ppm
 	;;
-    TriplanarZoom25)
+    triplanarZoom25)
 	run ${BINDIR}/triplanar --exec load pat001_pet.hdr zoom 25 export-panel ${tmpdir}/panel.ppm
 	check_result panel.ppm
 	;;
-    TriplanarSetPixelWindowLevel)
+    triplanarSetPixelWindowLevel)
 	run ${BINDIR}/triplanar --exec load pat002_ct.hdr crosshair off goto-pixel 32,20,0 window-level 500:0 export-panel ${tmpdir}/panel.ppm
 	check_result panel.ppm
 	;;
-    TriplanarColormaps)
+    triplanarColormaps)
 	run ${BINDIR}/triplanar --exec load parc1.hdr crosshair off window-level 116:58 colormap Labels export-axial ${tmpdir}/labels.ppm colormap Red export-axial ${tmpdir}/red.ppm colormap Rainbow export-axial ${tmpdir}/rainbow.ppm
 	for img in labels red rainbow; do
 	    if check_result ${img}.ppm; then
@@ -143,27 +143,27 @@ case ${RUNTEST} in
 	    fi
 	done
 	;;
-    TriplanarPhantomAx)
+    triplanarPhantomAx)
 	run ${BINDIR}/triplanar --exec load phantom_ax.hdr crosshair off export-panel ${tmpdir}/panel.ppm
 	check_result panel.ppm
 	;;
-    TriplanarPhantomSa)
+    triplanarPhantomSa)
 	run ${BINDIR}/triplanar --exec load phantom_sa.hdr crosshair off export-panel ${tmpdir}/panel.ppm
 	check_result panel.ppm
 	;;
-    TriplanarPhantomCo)
+    triplanarPhantomCo)
 	run ${BINDIR}/triplanar --exec load phantom_co.hdr crosshair off export-panel ${tmpdir}/panel.ppm
 	check_result panel.ppm
 	;;
-    TriplanarPhantomAxNrrd)
+    triplanarPhantomAxNrrd)
 	run ${BINDIR}/triplanar --exec load phantom_ax.nhdr crosshair off export-panel ${tmpdir}/panel.ppm
 	check_result panel.ppm
 	;;
-    TriplanarPhantomSaNrrd)
+    triplanarPhantomSaNrrd)
 	run ${BINDIR}/triplanar --exec load phantom_sa.nhdr crosshair off export-panel ${tmpdir}/panel.ppm
 	check_result panel.ppm
 	;;
-    TriplanarPhantomCoNrrd)
+    triplanarPhantomCoNrrd)
 	run ${BINDIR}/triplanar --exec load phantom_co.nhdr crosshair off export-panel ${tmpdir}/panel.ppm
 	check_result panel.ppm
 	;;
