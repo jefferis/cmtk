@@ -83,6 +83,9 @@ protected:
 
   /// Array of cross-modality (joint) bins.
   T* JointBins;
+
+  /// Total number of bins, ie., NumBinsX*NumBinsY.
+  size_t m_TotalNumberOfBins;
   
 public:
   /// This class.
@@ -95,7 +98,7 @@ public:
    */
   JointHistogram () 
   {
-    RealNumBinsX = RealNumBinsY = NumBinsX = NumBinsY = 0; 
+    this->m_TotalNumberOfBins = NumBinsX = NumBinsY = 0; 
     BinWidthX = BinWidthY = 1.0;
     BinOffsetX = BinOffsetY = 0.0;
     this->JointBins = NULL; 
@@ -106,7 +109,7 @@ public:
   JointHistogram( const size_t numBinsX, const size_t numBinsY, const bool reset = true ) 
   {
     this->JointBins = NULL;
-    RealNumBinsX = RealNumBinsY = NumBinsX = NumBinsY = 0; 
+    this->m_TotalNumberOfBins = NumBinsX = NumBinsY = 0; 
     BinWidthX = BinWidthY = 1.0;
     BinOffsetX = BinOffsetY = 0.0;
     this->SetNumBins( numBinsX, numBinsY, reset );
@@ -116,7 +119,7 @@ public:
   JointHistogram( const Self& other, const bool copyData = true ) 
   {
     this->JointBins = NULL;
-    RealNumBinsX = RealNumBinsY = NumBinsX = NumBinsY = 0; 
+    this->m_TotalNumberOfBins = NumBinsX = NumBinsY = 0; 
     BinWidthX = other.BinWidthX;
     BinWidthY = other.BinWidthY;
     BinOffsetX = other.BinOffsetX;
@@ -124,7 +127,7 @@ public:
 
     this->SetNumBins( other.NumBinsX, other.NumBinsY, !copyData /*reset*/ );
     if ( other.JointBins && copyData )
-      memcpy( this->JointBins, other.JointBins, RealNumBinsX * RealNumBinsY * sizeof( T ) );
+      memcpy( this->JointBins, other.JointBins, NumBinsX * NumBinsY * sizeof( T ) );
   }
 
   /** Destructor.
@@ -159,7 +162,7 @@ public:
     Self *clone = new Self( NumBinsX, NumBinsY, false );
     
     if ( copyData )
-      memcpy( clone->JointBins, this->JointBins, RealNumBinsX * RealNumBinsY * sizeof( T ) );
+      memcpy( clone->JointBins, this->JointBins, NumBinsX * NumBinsY * sizeof( T ) );
     else
       clone->Reset();
     
@@ -176,10 +179,9 @@ public:
   /// Copy another histogram without range checking.
   void CopyUnsafe ( const Self& other ) 
   {
-    const size_t realNumBinsXY = this->RealNumBinsX * this->RealNumBinsY;
+    const size_t realNumBinsXY = this->NumBinsX * this->NumBinsY;
     for ( size_t idx = 0; idx < realNumBinsXY; ++idx )
       this->JointBins[idx] = other.JointBins[idx];
-//    memcpy( this->JointBins, other.JointBins, RealNumBinsX * RealNumBinsY * sizeof( T ) );
   }
 
   /// Set histogram values from existing data array.
@@ -192,7 +194,7 @@ public:
 	this->JointBins[ toOffset ] = bins[ fromOffset ];
       this->JointBins[ toOffset++ ] = 0;
       }
-    for ( size_t x=0; x < RealNumBinsX; ++x, ++toOffset ) 
+    for ( size_t x=0; x < NumBinsX; ++x, ++toOffset ) 
       this->JointBins[ toOffset ] = 0;
   }
 
@@ -236,19 +238,18 @@ public:
   /** Set number of bins in x- and y-direction.
    * This will re-allocate the histogram storage and clear all entries.
    */
-  void SetNumBins
-  ( const size_t numBinsX, const size_t numBinsY, const bool reset = true ) 
+  void SetNumBins( const size_t numBinsX, const size_t numBinsY, const bool reset = true ) 
   {
-    if ( this->JointBins ) delete[] this->JointBins;
+    if ( this->JointBins ) 
+      delete[] this->JointBins;
     
     this->NumBinsX = numBinsX;
     this->NumBinsY = numBinsY;
-    
-    this->RealNumBinsX = NumBinsX + 1;
-    this->RealNumBinsY = NumBinsY + 1;
-    
-    this->JointBins = Memory::AllocateArray<T>( this->RealNumBinsX * this->RealNumBinsY );
-    if ( reset ) this->Reset();
+    this->m_TotalNumberOfBins = this->NumBinsX * this->NumBinsY;
+
+    this->JointBins = Memory::AllocateArray<T>( this->m_TotalNumberOfBins );
+    if ( reset ) 
+      this->Reset();
   }
 
   /// Return number of histogram bins in X direction.
@@ -319,7 +320,7 @@ public:
    */
   void Reset () 
   {
-    memset( this->JointBins, 0, RealNumBinsX * RealNumBinsY * sizeof( T ) );
+    memset( this->JointBins, 0, this->m_TotalNumberOfBins * sizeof( T ) );
   }
   
   /** Return bin corresponding to a certain value of the X distribution.
@@ -328,8 +329,7 @@ public:
    */
   size_t ValueToBinX ( const Types::DataItem value ) const 
   {
-    size_t binIndex = 
-      static_cast<size_t>( (value - BinOffsetX) / BinWidthX );
+    const size_t binIndex = static_cast<size_t>( (value - BinOffsetX) / BinWidthX );
     return std::max<size_t>( 0, std::min<size_t>( NumBinsX-1, binIndex ) );
   }
   
@@ -339,8 +339,7 @@ public:
    */
   size_t ValueToBinY ( const Types::DataItem value ) const 
   {
-    size_t binIndex = 
-      static_cast<int>( (value - BinOffsetY) / BinWidthY );
+    const size_t binIndex = static_cast<int>( (value - BinOffsetY) / BinWidthY );
     return std::max<size_t>( 0, std::min<size_t>( NumBinsY-1, binIndex ) );
   }
 
@@ -373,7 +372,7 @@ public:
   {
     T project = 0;
     for ( size_t j=0; j < NumBinsY; ++j )
-      project += this->JointBins[indexX + j * RealNumBinsX];
+      project += this->JointBins[indexX + j * NumBinsX];
     
     return project;
   }
@@ -388,7 +387,7 @@ public:
   T ProjectToY ( const size_t indexY ) const 
   {
     T project = 0;
-    size_t offset = indexY * RealNumBinsX;
+    size_t offset = indexY * NumBinsX;
     for ( size_t i = 0; i < NumBinsX; ++i )
       project += this->JointBins[i + offset];
     
@@ -405,7 +404,7 @@ public:
    */
   T GetBin( const size_t indexX, const size_t indexY ) const 
   {
-    return this->JointBins[ indexX + RealNumBinsX * indexY ];
+    return this->JointBins[ indexX + NumBinsX * indexY ];
   }
   
   /** Return total number of samples stored in the histogram.
@@ -419,8 +418,6 @@ public:
       {
       for ( size_t j=0; j<NumBinsX; ++j, ++idx )
 	sampleCount += this->JointBins[idx];
-      
-      ++idx; // Skip extra bin at the end of each row.
       }
     
     return sampleCount;
@@ -437,9 +434,6 @@ public:
       {
       for ( size_t j=0; j<NumBinsX; ++j, ++idx )
 	maximum = std::max( maximum, this->JointBins[idx] );
-      
-      /// Skip extra bin at the end of each row.
-	++idx;
       }
     
     return maximum;
@@ -480,7 +474,7 @@ public:
    */
   void Increment ( const size_t sampleX, const size_t sampleY ) 
   {
-    ++this->JointBins[sampleX+sampleY*RealNumBinsX];
+    ++this->JointBins[sampleX+sampleY*NumBinsX];
   }
 
   /** Increment the value of a histogram bin by an arbitrary value.
@@ -493,7 +487,7 @@ public:
   void Increment 
   ( const size_t sampleX, const size_t sampleY, const T weight ) 
   {
-    this->JointBins[ sampleX + sampleY * RealNumBinsX ] += weight;
+    this->JointBins[ sampleX + sampleY * NumBinsX ] += weight;
   }
 
   /** Decrement the value of a histogram bin by 1.
@@ -506,13 +500,13 @@ public:
    */
   void Decrement ( const size_t sampleX, const size_t sampleY ) 
   {
-    --this->JointBins[sampleX+sampleY*RealNumBinsX];
+    --this->JointBins[sampleX+sampleY*NumBinsX];
   }
   
   void Decrement
   ( const size_t sampleX, const size_t sampleY, const Types::DataItem weight ) 
   {
-    this->JointBins[ sampleX + sampleY * RealNumBinsX ] -= static_cast<T>( weight );
+    this->JointBins[ sampleX + sampleY * NumBinsX ] -= static_cast<T>( weight );
   }
   
   /** Add values from another histogram.
@@ -526,8 +520,7 @@ public:
    */
   void AddJointHistogram ( const Self& other ) 
   {
-    const size_t realNumBinsXY = this->RealNumBinsX * this->RealNumBinsY;
-    for ( size_t idx = 0; idx < realNumBinsXY; ++idx )
+    for ( size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx )
       this->JointBins[idx] += other.JointBins[idx];
   }
   
@@ -543,7 +536,7 @@ public:
    */
   void AddHistogramRow( const Histogram<T>& other, const size_t sampleY, const float weight = 1 ) 
   {
-    size_t idx = RealNumBinsX * sampleY;
+    size_t idx = this->NumBinsX * sampleY;
     for ( size_t i = 0; i<NumBinsX; ++i, ++idx )
       {
       this->JointBins[idx] += static_cast<T>( weight * other.GetBin( i ) );
@@ -563,7 +556,7 @@ public:
   void AddHistogramColumn( const size_t sampleX, const Histogram<T>& other, const float weight = 1 ) 
   {
     size_t idx = sampleX;
-    for ( size_t j = 0; j<NumBinsY; ++j, idx += RealNumBinsX )
+    for ( size_t j = 0; j<NumBinsY; ++j, idx += NumBinsX )
       this->JointBins[idx] += static_cast<T>( weight * other.GetBin( j ) );
   }
   
@@ -578,8 +571,7 @@ public:
    */
   void RemoveJointHistogram ( const Self& other ) 
   {
-    const size_t realNumBinsXY = this->RealNumBinsX * this->RealNumBinsY;
-    for ( size_t idx = 0; idx < realNumBinsXY; ++idx )
+    for ( size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx )
       {
       this->JointBins[idx] -= other.JointBins[idx];
       }
@@ -599,7 +591,7 @@ public:
 	{
 	const double factor = normalizeTo / project;
 	for ( size_t i = 0; i < NumBinsX; ++i )
-	  this->JointBins[ i + RealNumBinsX * j ] = static_cast<T>( this->JointBins[ i + RealNumBinsX * j ] * factor );
+	  this->JointBins[ i + NumBinsX * j ] = static_cast<T>( this->JointBins[ i + NumBinsX * j ] * factor );
 	}
       }
   }
@@ -618,8 +610,7 @@ public:
 	{
 	const double factor = normalizeTo / project;
 	for ( size_t j = 0; j < NumBinsY; ++j )
-	  this->JointBins[ i + RealNumBinsX * j ] =
-	    static_cast<T>( this->JointBins[ i + RealNumBinsX * j ] * factor );
+	  this->JointBins[ i + NumBinsX * j ] = static_cast<T>( this->JointBins[ i + NumBinsX * j ] * factor );
 	}
       }
   }
@@ -630,7 +621,7 @@ public:
    */
   size_t GetMaximumBinIndexOverX( const size_t j ) const 
   {
-    size_t offset = j * RealNumBinsX;
+    size_t offset = j * NumBinsX;
     
     size_t maxIndex = 0;
     T maxValue = this->JointBins[ offset ];
@@ -660,7 +651,7 @@ public:
     
     for ( size_t j = 1; j < NumBinsY; ++j ) 
       {
-      offset += RealNumBinsX;
+      offset += NumBinsX;
       if ( this->JointBins[ offset ] > maxValue ) 
 	{
 	maxValue = this->JointBins[ offset ];
@@ -716,8 +707,8 @@ public:
 	double sigSquare_i = 0, m_i = 0;
 	for ( size_t j = 0; j < NumBinsY; ++j ) 
 	  {
-	  sigSquare_i += (MathUtil::Square(j) * this->JointBins[ i + j * RealNumBinsX ]);
-	  m_i += (j * this->JointBins[ i + j * RealNumBinsX ]);
+	  sigSquare_i += (MathUtil::Square(j) * this->JointBins[ i + j * NumBinsX ]);
+	  m_i += (j * this->JointBins[ i + j * NumBinsX ]);
 	  }
 	m_i *= (1.0 / ProjectToX(i) );
 	(sigSquare_i *= (1.0 / ProjectToX(i))) -= MathUtil::Square(m_i);
@@ -735,22 +726,21 @@ public:
     this->BinWidthY = other.BinWidthY;
     this->BinOffsetX = other.BinOffsetX;
     this->BinOffsetY = other.BinOffsetY;
-    
     this->SetNumBins( other.NumBinsX, other.NumBinsY );
+
     if ( other.JointBins )
-      memcpy( this->JointBins, other.JointBins, RealNumBinsX * RealNumBinsY * sizeof( T ) );
+      memcpy( this->JointBins, other.JointBins, this->m_TotalNumberOfBins * sizeof( T ) );
     else
       this->JointBins = NULL;
-
+    
     return *this;
   }
 
+#ifdef _OPENMP
 private:
-  /// Real number of X data bins.
-  size_t RealNumBinsX;
-  
-  /// Real number of Y data bins.
-  size_t RealNumBinsY;
+  /// If we have OpenMP, we may need a vector of double to store some intermediate results.
+  std::vector<double> m_plogp;
+#endif
 };
 
 //@}
