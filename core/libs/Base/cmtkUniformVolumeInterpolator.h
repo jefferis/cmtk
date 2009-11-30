@@ -50,10 +50,10 @@ cmtk
  *
  * This class is templated over the interpolation function, e.g., linear, cubic, or sinc.
  *
- *\see igsLinearInterpolator
- *\see igsCubicInterpolator
- *\see igsSincInterpolator
- *\see igsNearestNeighborInterpolator
+ *\see LinearInterpolator
+ *\see CubicInterpolator
+ *\see SincInterpolator
+ *\see NearestNeighborInterpolator
  */
 template<class TInterpolationFunction>
 class UniformVolumeInterpolator :
