@@ -31,12 +31,12 @@
 
 #include <cmtkQtTriplanarViewer.h>
 
-#include <q3popupmenu.h>
+#include <qmenu.h>
 #include <qmenubar.h>
 #include <qapplication.h>
-#include <q3filedialog.h>
+#include <qfiledialog.h>
 #include <qlayout.h>
-#include <Q3VBoxLayout>
+#include <QVBoxLayout>
 
 #include <cmtkQtImageOperators.h>
 
@@ -54,7 +54,7 @@ QtTriplanarViewer::QtTriplanarViewer()
   : WindowLevel( NULL )
 {
   this->setCaption( "Triplanar Image Viewer" );
-  Q3PopupMenu* StudyMenu = new Q3PopupMenu();
+  QMenu* StudyMenu = new QMenu();
   StudyMenu->insertItem( "&Load File...", this, SLOT( slotLoadFile() )  );
   StudyMenu->insertItem( "Load Stud&y...", this, SLOT( slotLoadStudy() )  );
   StudyMenu->insertItem( "&Reload Data...", this, SLOT( slotReloadData() )  );
@@ -78,12 +78,12 @@ QtTriplanarViewer::QtTriplanarViewer()
   this->m_ControlsTab->addTab( this->m_ImagesTab, "Images" );
   this->m_ControlsTab->setTabEnabled( this->m_ImagesTab, false );
 
-  this->m_StudiesListBox = new Q3ListBox( this->m_ImagesTab );
-  this->m_StudiesListBox->setSelectionMode( Q3ListBox::Single );
-  this->m_StudiesListBox->setColumnMode( Q3ListBox::FixedNumber );
-  QObject::connect( this->m_StudiesListBox, SIGNAL( highlighted( const QString& ) ), this, SLOT( slotSwitchStudy( const QString& ) ) );
+  this->m_StudiesListBox = new QListWidget( this->m_ImagesTab );
+  this->m_StudiesListBox->setSelectionMode( QAbstractItemView::SingleSelection );
+//  this->m_StudiesListBox->setColumnMode( QListWidget::FixedNumber );
+  QObject::connect( this->m_StudiesListBox, SIGNAL( currentTextChanged( const QString& ) ), this, SLOT( slotSwitchStudy( const QString& ) ) );
 
-  Q3VBoxLayout* studiesLayout = new Q3VBoxLayout( this->m_ImagesTab );
+  QVBoxLayout* studiesLayout = new QVBoxLayout( this->m_ImagesTab );
   studiesLayout->setContentsMargins( 5, 5, 5, 5 );
   studiesLayout->setSpacing( 5 );
 
@@ -100,7 +100,7 @@ void
 QtTriplanarViewer::slotAddStudy( const char* fname )
 {
   Study::SmartPtr newStudy( new Study( fname ) );
-  this->m_StudiesListBox->insertItem( QString( newStudy->GetFileSystemPath() ) );
+  this->m_StudiesListBox->addItem( QString( newStudy->GetFileSystemPath() ) );
 
   this->m_Studies.push_back( newStudy );
   this->m_ControlsTab->setTabEnabled( this->m_ImagesTab, this->m_Studies.size() > 1 );
@@ -112,7 +112,7 @@ QtTriplanarViewer::slotAddStudy( const char* fname )
 void
 QtTriplanarViewer::slotLoadStudy()
 {
-  QString path = Q3FileDialog::getExistingDirectory( QString::null, this, "get existing directory", "Load Study" );
+  QString path = QFileDialog::getExistingDirectory( QString::null, this, "get existing directory", "Load Study" );
 
   if ( ! (path.isEmpty() || path.isNull() ) ) 
     {
@@ -121,8 +121,8 @@ QtTriplanarViewer::slotLoadStudy()
     this->m_Studies.push_back( newStudy );
     this->m_ControlsTab->setTabEnabled( this->m_ImagesTab, this->m_Studies.size() > 1 );
 
-    this->m_StudiesListBox->insertItem( QString( newStudy->GetFileSystemPath() ) );
-    this->m_StudiesListBox->setCurrentItem( this->m_StudiesListBox->count()-1 );
+    this->m_StudiesListBox->addItem( QString( newStudy->GetFileSystemPath() ) );
+    this->m_StudiesListBox->setCurrentItem( this->m_StudiesListBox->item( this->m_StudiesListBox->count()-1 ) );
 
     this->slotSwitchToStudy( newStudy );
     this->slotCenter();
@@ -132,7 +132,7 @@ QtTriplanarViewer::slotLoadStudy()
 void
 QtTriplanarViewer::slotLoadFile()
 {
-  QString path = Q3FileDialog::getOpenFileName( QString::null, "*", this, "get existing file", "Load File" );
+  QString path = QFileDialog::getOpenFileName( QString::null, "*", this, "get existing file", "Load File" );
   
   if ( ! (path.isEmpty() || path.isNull() ) ) 
     {
@@ -141,8 +141,8 @@ QtTriplanarViewer::slotLoadFile()
     this->m_Studies.push_back( newStudy );
     this->m_ControlsTab->setTabEnabled( this->m_ImagesTab, this->m_Studies.size() > 1 );
     
-    this->m_StudiesListBox->insertItem( QString( newStudy->GetFileSystemPath() ) );
-    this->m_StudiesListBox->setCurrentItem( this->m_StudiesListBox->count()-1 );
+    this->m_StudiesListBox->addItem( QString( newStudy->GetFileSystemPath() ) );
+    this->m_StudiesListBox->setCurrentItem( this->m_StudiesListBox->item( this->m_StudiesListBox->count()-1 ) );
 
     this->slotSwitchToStudy( newStudy );
     this->slotCenter();

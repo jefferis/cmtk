@@ -37,7 +37,7 @@
 #include <cmtkQtTriplanarWindow.h>
 #include <cmtkQtWindowLevelDialog.h>
 
-#include <q3listbox.h>
+#include <qlistwidget.h>
 
 namespace
 cmtk
@@ -91,7 +91,7 @@ private:
   QWidget* m_ImagesTab;
 
   /// List box with loaded studies' names.
-  Q3ListBox* m_StudiesListBox;
+  QListWidget* m_StudiesListBox;
 
 private slots:
   /// Study was double-clicked in listbox.
