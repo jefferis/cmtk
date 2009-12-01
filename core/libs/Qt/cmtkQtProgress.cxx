@@ -65,8 +65,9 @@ QtProgress
       }
     
     if ( ! ProgressDialog )
-      ProgressDialog = new QProgressDialog( taskName.c_str(), "Cancel", 0, 100, ParentWindow, Qt::Popup );
+      ProgressDialog = new QProgressDialog( taskName.c_str(), "Cancel", 0, 100, ParentWindow, Qt::Dialog );
     
+    ProgressDialog->setWindowModality(Qt::WindowModal);
     ProgressDialog->setModal( true );
     ProgressDialog->setCaption( "Please wait" );
     ProgressDialog->setMinimumDuration( 100 );
