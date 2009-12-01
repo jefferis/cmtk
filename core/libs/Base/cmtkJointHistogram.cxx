@@ -84,11 +84,11 @@ JointHistogram<T>::GetJointEntropy() const
     if ( JointBins[idx] ) 
       {
       const double pXY = ((double)JointBins[idx]) / sampleCount;
-      plogp[idx] = pXY * log( pXY );
+      this->m_plogp[idx] = pXY * log( pXY );
       }
     else
       {
-      plogp[idx] = 0;
+      this->m_plogp[idx] = 0;
       }
     }
   
@@ -97,21 +97,19 @@ JointHistogram<T>::GetJointEntropy() const
   for ( size_t i=0; i<NumBinsY; ++i ) 
     {
     for ( size_t j=0; j<NumBinsX; ++j, ++idx )
-      HXY -= plogp[idx];
+      HXY -= this->m_plogp[idx];
     }
 #else // #ifdef _OPENMP
-  size_t idx = 0;
-  for ( size_t i=0; i<NumBinsY; ++i ) 
+  for ( size_t idx = 0; idx < this->m_NumberOfBins; ++idx )
     {
-    for ( size_t j=0; j<NumBinsX; ++j, ++idx )
-      if ( JointBins[idx] ) 
-	{
-	const double pXY = ((double)JointBins[idx]) / sampleCount;
-	HXY -= pXY * log(pXY);
-	}
+    if ( JointBins[idx] ) 
+      {
+      const double pXY = ((double)JointBins[idx]) / sampleCount;
+      HXY -= pXY * log(pXY);
+      }
     }
 #endif // #ifdef _OPENMP
-
+  
   return HXY;
 }
 

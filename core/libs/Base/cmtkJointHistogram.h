@@ -739,7 +739,7 @@ public:
 #ifdef _OPENMP
 private:
   /// If we have OpenMP, we may need a vector of double to store some intermediate results.
-  std::vector<double> m_plogp;
+  mutable std::vector<double> m_plogp;
 #endif
 };
 
