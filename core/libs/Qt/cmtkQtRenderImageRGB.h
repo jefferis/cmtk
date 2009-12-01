@@ -121,6 +121,13 @@ public:
   /// Render to given paint device.
   void RenderTo( QPaintDevice *pd, const bool annotate = true );
 
+  /// Render this image.
+  virtual void Render()
+  {
+    this->Renderer::Render();
+    this->update();
+  }
+
 signals:
   /// This signal is emitted when a mouse button is pressed on the widget.
   void signalMousePressed( Qt::ButtonState button, int x, int y );

@@ -35,8 +35,7 @@
 #include <cmtkconfig.h>
 
 #include <qobject.h>
-#include <q3scrollview.h>
-#include <q3canvas.h>
+#include <qscrollarea.h>
 #include <qslider.h>
 #include <qlabel.h>
 
@@ -143,7 +142,7 @@ public:
 
 private:
   /// The scrolled viewport.
-  Q3ScrollView* ScrollView;
+  QScrollArea* ScrollView;
 
   /// The actual renderer, if we're rendering to an image object.
   QtRenderImageRGB* RenderImage;

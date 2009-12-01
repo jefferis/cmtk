@@ -57,9 +57,9 @@ QtScrollRenderView::QtScrollRenderView
     this->setTitle( title );
     } 
   
-  ScrollView = new Q3ScrollView( this, "ScrollView", Qt::WResizeNoErase|Qt::WStaticContents  );
-  RenderImage = new QtRenderImageRGB( ScrollView->viewport() );
-  ScrollView->addChild( RenderImage );
+  ScrollView = new QScrollArea( this ); //, "ScrollView", Qt::WResizeNoErase|Qt::WStaticContents  );
+  RenderImage = new QtRenderImageRGB( this );
+  ScrollView->setWidget( RenderImage );
   ScrollView->setFrameStyle( QFrame::NoFrame );
 
   // export viewer's mouse signal
@@ -67,8 +67,7 @@ QtScrollRenderView::QtScrollRenderView
   QObject::connect( RenderImage, SIGNAL(signalMouse3D( Qt::ButtonState, const Vector3D& )), SIGNAL(signalMouse3D( Qt::ButtonState, const Vector3D& )) );
   
   // lock minimum size so we can display 256x256 with not scrollbars.
-  ScrollView->resizeContents( 256, 256 );
-  ScrollView->setMinimumSize( ScrollView->size() );
+  RenderImage->setMinimumSize( 256, 256 );
 
   this->m_SliderGroupBox = new QGroupBox( this );
   this->m_SliderGroupBox->hide();
@@ -118,7 +117,6 @@ void QtScrollRenderView::slotRender()
   if ( RenderImage ) 
     {
     RenderImage->Render();
-    this->ScrollView->repaintContents();
     } 
   else
     {
