@@ -196,12 +196,6 @@ public:
   UniformVolume* GetTransformedReferenceJacobianAvg
   ( const std::vector<SplineWarpXform::SmartPtr>* xformList, Types::Coordinate *const volumeOffset = NULL, const bool includeReferenceData = true );
   
-  /// Push-forward reformat.
-  static TypedArray* ReformatPushForward( const UniformVolume* floating, cmtk::XformList& targetToRef, const UniformVolume* reference );
-  
-  /// Push-forward reformat with value accumulation.
-  static TypedArray* ReformatPushForwardAccumulate( const UniformVolume* floating, cmtk::XformList& targetToRef, const UniformVolume* reference );
-  
   /// Complex reformat.
   template<class TInterpolator, class Fct> static TypedArray* Reformat
   ( const UniformVolume* target, cmtk::XformList& targetToRef, const UniformVolume* reference, cmtk::XformList& refToFloat, Fct& fct, TInterpolator& interpolator = TInterpolator::Null );

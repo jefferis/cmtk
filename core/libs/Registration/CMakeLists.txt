@@ -58,7 +58,6 @@ SET(cmtkRegistration_SRCS
   cmtkReformatVolume.cxx
   cmtkReformatVolumeJacobian.cxx
   cmtkReformatVolumePlain.cxx
-  cmtkReformatVolumePushForward.cxx
   cmtkRegistration2d2d.cxx
   cmtkRegistrationCallback.cxx
   cmtkRegistrationJointHistogram.cxx
