@@ -43,10 +43,10 @@
 #include <cmtkQtIcons.h>
 #include <cmtkMathUtil.h>
 
-#include <Q3HBoxLayout>
+#include <QHBoxLayout>
 #include <QGridLayout>
 #include <QMenu>
-#include <Q3VBoxLayout>
+#include <QVBoxLayout>
 
 namespace
 cmtk
@@ -106,7 +106,7 @@ QtVtkViewer::Construct( const int nrows, const int ncols )
   MasterLayout = new QGridLayout( this, nrows, ncols );
   MasterLayout->setMenuBar( MenuBar );
   
-  Q3BoxLayout* ButtonLayoutL = new Q3VBoxLayout();
+  QBoxLayout* ButtonLayoutL = new QVBoxLayout();
   MasterLayout->addLayout( ButtonLayoutL, 0, 0 );
 
   QPushButton* button = new QPushButton( this );
@@ -163,7 +163,7 @@ QtVtkViewer::Construct( const int nrows, const int ncols )
 
   ButtonLayoutL->insertStretch( 8, 1 );
 
-  Q3BoxLayout* ButtonLayoutR = new Q3VBoxLayout();
+  QBoxLayout* ButtonLayoutR = new QVBoxLayout();
   MasterLayout->addLayout( ButtonLayoutR, 0, 2 );
 
   QPushButton* elevationPlus10 = new QPushButton( this );
@@ -180,7 +180,7 @@ QtVtkViewer::Construct( const int nrows, const int ncols )
 
   ButtonLayoutR->insertStretch( 0, 1 );
 
-  Q3BoxLayout* ButtonLayoutB = new Q3HBoxLayout();
+  QBoxLayout* ButtonLayoutB = new QHBoxLayout();
   MasterLayout->addLayout( ButtonLayoutB, 1, 1 );
 
   QPushButton* azimuthPlus10 = new QPushButton( this );
