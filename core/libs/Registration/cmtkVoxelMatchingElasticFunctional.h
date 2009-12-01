@@ -427,13 +427,13 @@ public:
 	    if ( this->m_ForceOutsideFlag )
 	      {
 	      WarpedVolume[r] = this->m_ForceOutsideValueRescaled;
+	      this->Metric->Increment( this->Metric->GetSampleX(r), WarpedVolume[r] );
 	      }
 	    else
 	      {
 	      WarpedVolume[r] = unsetY;
 	      }
 	    }
-	  this->Metric->Increment( this->Metric->GetSampleX(r), WarpedVolume[r] );
 	  }
 	}
       }
@@ -470,7 +470,8 @@ public:
 	  {
 	  // Remove this sample from incremental metric according to "ground warp" image.
 	  const typename VM::Exchange sampleX = this->Metric->GetSampleX( r );
-	  localMetric->Decrement( sampleX, WarpedVolume[r] );
+	  if ( this->WarpedVolume[r] != unsetY )
+	    localMetric->Decrement( sampleX, WarpedVolume[r] );
 	    
 	  // Tell us whether the current location is still within the floating volume and get the respective voxel.
 	  Vector3D::CoordMultInPlace( *pVec, this->FloatingInverseDelta );
@@ -487,10 +488,6 @@ public:
 	    if ( this->m_ForceOutsideFlag )
 	      {
 	      localMetric->Increment( sampleX, this->m_ForceOutsideValueRescaled );
-	      }
-	    else
-	      {
-	      localMetric->Increment( sampleX, unsetY );
 	      }
 	    }
 	  }
