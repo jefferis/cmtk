@@ -122,7 +122,7 @@ AffineRegistration::InitRegistration ()
 
   if ( this->m_UseOriginalData ) 
     {  
-    VoxelMatchingAffineFunctional *newFunctional = CreateAffineFunctional( this->m_Metric, this->m_ReferenceVolume, this->m_FloatingVolume, affineXform );
+    VoxelMatchingAffineFunctional *newFunctional = VoxelMatchingAffineFunctional::Create( this->m_Metric, this->m_ReferenceVolume, this->m_FloatingVolume, affineXform );
     FunctionalStack.push( Functional::SmartPtr( newFunctional ) );
     }
   
@@ -139,7 +139,7 @@ AffineRegistration::InitRegistration ()
     UniformVolume::SmartPtr nextRef( new UniformVolume( *currRef, currSampling ) );
     UniformVolume::SmartPtr nextFlt( new UniformVolume( *currFlt, currSampling ) );
     
-    VoxelMatchingAffineFunctional *newFunctional = CreateAffineFunctional( this->m_Metric, nextRef, nextFlt, affineXform );
+    VoxelMatchingAffineFunctional *newFunctional = VoxelMatchingAffineFunctional::Create( this->m_Metric, nextRef, nextFlt, affineXform );
     FunctionalStack.push( Functional::SmartPtr( newFunctional ) );
     
     currRef = nextRef;

@@ -31,6 +31,7 @@
 
 #include <cmtkImagePairAffineRegistrationFunctional.h>
 
+#include <cmtkImagePairAffineRegistrationFunctionalTemplate.h>
 #include <cmtkImagePairSimilarityMeasureMSD.h>
 
 namespace
@@ -41,7 +42,8 @@ cmtk
 //@{
 
 ImagePairAffineRegistrationFunctional* 
-CreateAffineFunctional
+ImagePairAffineRegistrationFunctional
+::Create
 ( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, AffineXform::SmartPtr& affineXform )
 {
   switch ( fltVolume->GetData()->GetDataClass() ) 
@@ -62,7 +64,7 @@ CreateAffineFunctional
 	case 3:
 	  return NULL; // masked nmi retired
 	case 4:
-	  return new ImagePairAffineRegistrationFunctional_Template<ImagePairSimilarityMeasureMSD>( refVolume, fltVolume, affineXform );
+	  return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureMSD>( refVolume, fltVolume, affineXform );
 	case 5:
 //	  return new ImagePairAffineRegistrationFunctional_Template<VoxelMatchingCrossCorrelation>( refVolume, fltVolume, affineXform );
 	default:

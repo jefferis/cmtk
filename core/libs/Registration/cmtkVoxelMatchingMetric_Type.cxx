@@ -51,7 +51,6 @@ VoxelMatchingMetric_Type<T,DT>::ImageData::Init
   NumberOfSamples = this->DataArray->GetDataSize();
 
   DataArray->GetRange( ValueRange[0], ValueRange[1] );
-  //  NumBins = 1 + (ValueRange[1] - ValueRange[0]);
   BinOffset = ValueRange[0];
   BinWidth = 1;
 
@@ -95,7 +94,9 @@ VoxelMatchingMetric_Type<T,DT>::ImageData::Init
   minValue = std::max( minValue, minBound );
   maxValue = std::min( maxValue, maxBound );
   
+  unsigned int defaultValue = 0;
   unsigned int numBins = defNumBins;
+
   if ( numBins != CMTK_HISTOGRAM_AUTOBINS ) 
     {
     BinOffset = minValue;
@@ -112,7 +113,7 @@ VoxelMatchingMetric_Type<T,DT>::ImageData::Init
       else 
 	{
 	// point to extra bins at the end of each row/column for NULL data.
-	Data[idx] = numBins;
+	Data[idx] = defaultValue;
 	}
       }
     } 
@@ -138,7 +139,7 @@ VoxelMatchingMetric_Type<T,DT>::ImageData::Init
 	  } 
 	else
 	  // point to extra bins at the end of each row/column for NULL data.
-	  Data[idx] = numBins;
+	  Data[idx] = defaultValue;
 	}
       }
       break;
@@ -160,7 +161,7 @@ VoxelMatchingMetric_Type<T,DT>::ImageData::Init
 	  Data[idx] = static_cast<T>( value - minValue );
 	else
 	  // point to extra bins at the end of each row/column for NULL data.
-	  Data[idx] = numBins;
+	  Data[idx] = defaultValue;
 	}
       }
       break;
@@ -182,7 +183,7 @@ VoxelMatchingMetric_Type<T,DT>::ImageData::Init
 	else 
 	  {
 	  // point to extra bins at the end of each row/column for NULL data.
-	  Data[idx] = numBins;
+	  Data[idx] = defaultValue;
 	  }
 	}
       }
