@@ -72,6 +72,9 @@ protected:
   /// Metric to use.
   cmtkGetSetMacro(int,Metric);
 
+  /// Flag: use old (up to CMTK 1.1.x) or new (after CMTK 1.2.0) metric implementation.
+  bool m_NewMetricImplementation;
+
   /// Optimization algorithm to use.
   cmtkGetSetMacro(int,Algorithm);
 

@@ -52,7 +52,9 @@ cmtk
 //@{
 
 VoxelRegistration::VoxelRegistration () 
-  : m_DeltaFThreshold( 0.0 ),
+  : m_Metric( 0 ),
+    m_NewMetricImplementation( false ), 
+    m_DeltaFThreshold( 0.0 ),
     m_PreprocessorRef( "Reference", "ref" ),
     m_PreprocessorFlt( "Floating", "flt" ),
     m_InitialTransformation( NULL ),
@@ -73,7 +75,6 @@ VoxelRegistration::VoxelRegistration ()
   UseMaxNorm = true;
   OptimizerStepFactor = 0.5;
 
-  this->m_Metric = 0;
 }
 
 VoxelRegistration::~VoxelRegistration () 

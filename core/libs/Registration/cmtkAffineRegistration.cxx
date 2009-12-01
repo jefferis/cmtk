@@ -41,6 +41,7 @@
 #include <cmtkFunctional.h>
 
 #include <cmtkVoxelMatchingAffineFunctional.h>
+#include <cmtkImagePairAffineRegistrationFunctional.h>
 
 #include <cmtkOptimizer.h>
 #include <cmtkBestNeighbourOptimizer.h>
@@ -121,9 +122,13 @@ AffineRegistration::InitRegistration ()
   affineXform->ChangeCenter( center.XYZ );
 
   if ( this->m_UseOriginalData ) 
-    {  
-    VoxelMatchingAffineFunctional *newFunctional = VoxelMatchingAffineFunctional::Create( this->m_Metric, this->m_ReferenceVolume, this->m_FloatingVolume, affineXform );
-    FunctionalStack.push( Functional::SmartPtr( newFunctional ) );
+    {
+    Functional::SmartPtr newFunctional; 
+    if ( this->m_NewMetricImplementation )
+      newFunctional = Functional::SmartPtr( ImagePairAffineRegistrationFunctional::Create( this->m_Metric, this->m_ReferenceVolume, this->m_FloatingVolume, affineXform ) );
+    else
+      newFunctional = Functional::SmartPtr( VoxelMatchingAffineFunctional::Create( this->m_Metric, this->m_ReferenceVolume, this->m_FloatingVolume, affineXform ) );
+    FunctionalStack.push( newFunctional );
     }
   
   Types::Coordinate currSampling = std::max( this->m_Sampling, 2 * std::min( this->m_ReferenceVolume->GetMinDelta(), this->m_FloatingVolume->GetMinDelta()));
@@ -139,8 +144,12 @@ AffineRegistration::InitRegistration ()
     UniformVolume::SmartPtr nextRef( new UniformVolume( *currRef, currSampling ) );
     UniformVolume::SmartPtr nextFlt( new UniformVolume( *currFlt, currSampling ) );
     
-    VoxelMatchingAffineFunctional *newFunctional = VoxelMatchingAffineFunctional::Create( this->m_Metric, nextRef, nextFlt, affineXform );
-    FunctionalStack.push( Functional::SmartPtr( newFunctional ) );
+    Functional::SmartPtr newFunctional;
+    if ( this->m_NewMetricImplementation )
+      newFunctional = Functional::SmartPtr( ImagePairAffineRegistrationFunctional::Create( this->m_Metric, nextRef, nextFlt, affineXform ) );
+    else
+      newFunctional = Functional::SmartPtr( VoxelMatchingAffineFunctional::Create( this->m_Metric, nextRef, nextFlt, affineXform ) );
+    FunctionalStack.push( newFunctional );
     
     currRef = nextRef;
     currFlt = nextFlt;

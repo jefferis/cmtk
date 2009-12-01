@@ -155,6 +155,7 @@ AffineRegistrationCommandLine
     metricGroup->AddSwitch( Key( "msd" ), 4, "Mean Squared Difference metric" );
     metricGroup->AddSwitch( Key( "ncc" ), 5, "Normalized Cross Correlation metric" );
 
+    cl.AddSwitch( Key( "new-metrics" ), &this->m_NewMetricImplementation, true, "Use new metric implementation (CMTK 1.2.0 or later)." );
     cl.AddSwitch( Key( "match-histograms" ), &this->m_MatchFltToRefHistogram, true, "Match floating image histogram to reference image histogram." );
 
     this->m_PreprocessorRef.AttachToCommandLine( cl );
