@@ -34,7 +34,6 @@
 #include <cmtkColormap.h>
 
 #include <qcombobox.h>
-#include <Q3VBoxLayout>
 
 namespace
 cmtk
@@ -48,7 +47,7 @@ QtWindowLevelControls::QtWindowLevelControls
   : QWidget( parent, name ),
     m_Study( NULL )
 {
-  Layout = new Q3VBoxLayout( this );
+  Layout = new QVBoxLayout( this );
   Layout->setContentsMargins( 5, 5, 5, 5 );
 
   QComboBox* colormapBox = new QComboBox( this );

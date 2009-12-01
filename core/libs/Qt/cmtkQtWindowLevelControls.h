@@ -34,11 +34,10 @@
 
 #include <cmtkconfig.h>
 
-#include <q3groupbox.h>
 #include <qcheckbox.h>
 #include <qslider.h>
 #include <qlayout.h>
-#include <Q3VBoxLayout>
+#include <qboxlayout.h>
 
 #include <cmtkQtSliderEntry.h>
 #include <cmtkStudy.h>
@@ -84,7 +83,7 @@ private:
   Study::SmartPtr m_Study;
 
   /// Layout of this widget.
-  Q3VBoxLayout* Layout;
+  QVBoxLayout* Layout;
 
   /// The top slider in the UI.
   QtSliderEntry* BlackWindowSlider;
