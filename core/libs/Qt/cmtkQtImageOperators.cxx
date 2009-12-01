@@ -34,7 +34,6 @@
 #include <math.h>
 
 #include <qinputdialog.h>
-#include <Q3PopupMenu>
 
 #include <cmtkQtProgress.h>
 
@@ -45,16 +44,16 @@ cmtk
 /** \addtogroup Qt */
 //@{
 
-Q3PopupMenu*
+QMenu*
 QtImageOperators::CreatePopupMenu()
 {
-  Q3PopupMenu* algOperatorsMenu = new Q3PopupMenu;
+  QMenu* algOperatorsMenu = new QMenu;
   algOperatorsMenu->insertItem( "&abs()", OPERATORS_MENU_ABS );
   algOperatorsMenu->insertItem( "&log()", OPERATORS_MENU_LOG );
   algOperatorsMenu->insertItem( "&exp()", OPERATORS_MENU_EXP );
   QObject::connect( algOperatorsMenu, SIGNAL( activated( int ) ),this, SLOT( slotOperatorsMenu( int ) ) );
 
-  Q3PopupMenu* operatorsMenu = new Q3PopupMenu;
+  QMenu* operatorsMenu = new QMenu;
   operatorsMenu->insertItem( "&Median Filter...", OPERATORS_MENU_MEDIAN );
   operatorsMenu->insertItem( "&Histogram Equalization...", OPERATORS_MENU_HISTOGRAM );
   operatorsMenu->insertItem( "&Sobel Edge Filter", OPERATORS_MENU_SOBEL );

@@ -36,7 +36,7 @@
 
 #include <qobject.h>
 #include <qwidget.h>
-#include <q3popupmenu.h>
+#include <qmenu.h>
 
 #include <cmtkStudy.h>
 #include <cmtkQtProgress.h>
@@ -71,7 +71,7 @@ public:
       ProgressInstance( progressInstance ) {};
   
   /// Create and return popup menu that makes operators available.
-  Q3PopupMenu* CreatePopupMenu();
+  QMenu* CreatePopupMenu();
 
 private:
   /// Enum for commands in the "Operators" menu.
