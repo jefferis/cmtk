@@ -127,7 +127,7 @@ public:
 
     this->SetNumBins( other.NumBinsX, other.NumBinsY, !copyData /*reset*/ );
     if ( other.JointBins && copyData )
-      memcpy( this->JointBins, other.JointBins, NumBinsX * NumBinsY * sizeof( T ) );
+      memcpy( this->JointBins, other.JointBins, this->m_TotalNumberOfBins * sizeof( T ) );
   }
 
   /** Destructor.
@@ -162,7 +162,7 @@ public:
     Self *clone = new Self( NumBinsX, NumBinsY, false );
     
     if ( copyData )
-      memcpy( clone->JointBins, this->JointBins, NumBinsX * NumBinsY * sizeof( T ) );
+      memcpy( clone->JointBins, this->JointBins, this->m_TotalNumberOfBins * sizeof( T ) );
     else
       clone->Reset();
     
@@ -179,37 +179,25 @@ public:
   /// Copy another histogram without range checking.
   void CopyUnsafe ( const Self& other ) 
   {
-    const size_t realNumBinsXY = this->NumBinsX * this->NumBinsY;
-    for ( size_t idx = 0; idx < realNumBinsXY; ++idx )
+    for ( size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx )
       this->JointBins[idx] = other.JointBins[idx];
   }
 
   /// Set histogram values from existing data array.
   void SetBins( const T* bins ) 
   {
-    size_t fromOffset = 0, toOffset = 0;
-    for ( size_t y=0; y < NumBinsY; ++y ) 
-      {
-      for ( size_t x=0; x < NumBinsX; ++x, ++fromOffset, ++toOffset )
-	this->JointBins[ toOffset ] = bins[ fromOffset ];
-      this->JointBins[ toOffset++ ] = 0;
-      }
-    for ( size_t x=0; x < NumBinsX; ++x, ++toOffset ) 
-      this->JointBins[ toOffset ] = 0;
+    for ( size_t ofs = 0; ofs < this->m_TotalNumberOfBins; ++ofs )
+      this->JointBins[ ofs ] = bins[ ofs ];
   }
 
   /// Get histogram values and put them into data array.
   T* GetBins() const 
   {
-    T *bins = Memory::AllocateArray<T>( NumBinsX * NumBinsY );
+    T *bins = Memory::AllocateArray<T>( this->m_TotalNumberOfBins );
     
-    size_t fromOffset = 0, toOffset = 0;
-    for ( size_t y=0; y < NumBinsY; ++y ) 
-      {
-      for ( size_t x=0; x < NumBinsX; ++x, ++fromOffset, ++toOffset )
-	bins[ toOffset ] = this->JointBins[ fromOffset ];
-      ++fromOffset;
-      }
+    for ( size_t ofs = 0; ofs < this->m_TotalNumberOfBins; ++ofs )
+      bins[ ofs ] = this->JointBins[ ofs ];
+    
     return bins;
   }
   
