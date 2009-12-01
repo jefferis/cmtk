@@ -40,7 +40,7 @@
 #include <q3textstream.h>
 #include <q3filedialog.h>
 #include <qstatusbar.h>
-#include <q3progressbar.h>
+#include <qprogressbar.h>
 #include <QLabel>
 #include <Q3PopupMenu>
 
@@ -60,7 +60,7 @@ QtSimpleFusionMainWindow::InitWidget()
   StatusLabel->setText( "Image Fusion" );
   statBar->addWidget( StatusLabel, 4 );
 
-  Q3ProgressBar* progressBar = new Q3ProgressBar( statBar, "ProgressBar" );
+  QProgressBar* progressBar = new QProgressBar( statBar );
   statBar->addWidget( progressBar, 1 );
   progressBar->show();
 

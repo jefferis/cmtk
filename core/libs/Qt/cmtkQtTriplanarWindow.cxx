@@ -280,6 +280,8 @@ QtTriplanarWindow::QtTriplanarWindow()
 
   QObject::connect( ScrollRenderViewCo, SIGNAL( indexChanged( int ) ), this, SLOT( slotSwitchImageCo( int ) ) );
   QObject::connect( ScrollRenderViewCo, SIGNAL( signalMouse3D( Qt::ButtonState, const Vector3D& ) ), this, SLOT( slotMouse3D( Qt::ButtonState, const Vector3D& ) ) );
+
+  this->m_ProgressReporter = new QtProgress( this );
 }
 
 

@@ -38,8 +38,8 @@
 
 #include <qwidget.h>
 #include <qstatusbar.h>
-#include <q3progressbar.h>
-#include <q3progressdialog.h>
+#include <qprogressbar.h>
+#include <qprogressdialog.h>
 
 namespace
 cmtk
@@ -55,22 +55,23 @@ class QtProgress :
   public Progress
 {
 public:
+  /// This class.
+  typedef QtProgress Self;
+
+  /// Parent class.
+  typedef Progress Superclass;
+
   /// Constructor.
-  QtProgress( QWidget *const parentWindow ) {
-    ParentWindow = parentWindow;
-    ProgressBar = NULL;
-    ProgressDialog = NULL;
-    this->m_ProgressWidgetMode = PROGRESS_DIALOG;
-  }
+  QtProgress( QWidget *const parentWindow );
 
   /// Set the embedded progress bar.
-  void SetProgressBar( Q3ProgressBar *const progressBar ) 
+  void SetProgressBar( QProgressBar *const progressBar ) 
   {
     ProgressBar = progressBar;
   }
   
   /// This member function initialises the Qt progress indicator.
-  virtual void BeginVirtual( const float start, const float end, const float increment, const std::string& taskName = std::string("") );
+  virtual void BeginVirtual( const double start, const double end, const double increment, const std::string& taskName = std::string("") );
 
   /// This member function sets the Qt progress indicator.
   virtual Progress::ResultEnum UpdateProgress();
@@ -79,8 +80,11 @@ public:
   virtual void DoneVirtual();
 
   /// Progress indicator mode.
-  typedef enum { 
+  typedef enum 
+  { 
+    /// Use a modal progress dialog.
     PROGRESS_DIALOG,
+    /// Use a progress bar within another window.
     PROGRESS_BAR
   } ProgressWidgetMode;
 
@@ -95,10 +99,10 @@ private:
   QWidget* ParentWindow;
 
   /// The progress bar widget.
-  Q3ProgressBar* ProgressBar;
+  QProgressBar* ProgressBar;
 
   /// Progress dialog widget.
-  Q3ProgressDialog* ProgressDialog;
+  QProgressDialog* ProgressDialog;
 
   /// Progress widget mode.
   ProgressWidgetMode m_ProgressWidgetMode;

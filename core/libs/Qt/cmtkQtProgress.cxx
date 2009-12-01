@@ -32,7 +32,7 @@
 #include <cmtkQtProgress.h>
 
 #include <qapplication.h>
-#include <q3progressbar.h>
+#include <qprogressbar.h>
 
 namespace
 cmtk
@@ -41,29 +41,42 @@ cmtk
 /** \addtogroup Qt */
 //@{
 
+QtProgress::QtProgress
+( QWidget *const parentWindow ) 
+{
+  ParentWindow = parentWindow;
+  ProgressBar = NULL;
+  ProgressDialog = NULL;
+  this->m_ProgressWidgetMode = PROGRESS_DIALOG;
+}
+
 void
 QtProgress
-::BeginVirtual( const float start, const float end, const float increment, const std::string& taskName )
+::BeginVirtual( const double start, const double end, const double increment, const std::string& taskName )
 {
+  this->Superclass::BeginVirtual( start, end, increment, taskName );
+
   if ( this->IsTopLevel() )
     {
     if ( ProgressBar ) 
       {
-      ProgressBar->setTotalSteps( 100 );
+      ProgressBar->setRange( 0, 100 );
       ProgressBar->show();
       }
     
     if ( ! ProgressDialog )
-      ProgressDialog = new Q3ProgressDialog( taskName.c_str(), "Cancel", 100, ParentWindow, Qt::Popup );
+      ProgressDialog = new QProgressDialog( taskName.c_str(), "Cancel", 0, 100, ParentWindow, Qt::Popup );
     
     ProgressDialog->setModal( true );
     ProgressDialog->setCaption( "Please wait" );
     ProgressDialog->setMinimumDuration( 100 );
     ProgressDialog->show();
-    ProgressDialog->setTotalSteps( 100 );
+    ProgressDialog->setRange( 0, 100 );
     
     qApp->processEvents();
     }
+
+  Progress::SetProgressInstance( this );
 }
 
 Progress::ResultEnum
@@ -71,9 +84,9 @@ QtProgress::UpdateProgress()
 {
   const int percent = static_cast<int>( 100 * this->GetFractionComplete() );
   if ( ProgressBar )
-    ProgressBar->setProgress( percent );
+    ProgressBar->setValue( percent );
   if ( ProgressDialog )
-    ProgressDialog->setProgress( percent );
+    ProgressDialog->setValue( percent );
 
   qApp->processEvents();
 

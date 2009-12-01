@@ -64,6 +64,12 @@ public:
   /// This class.
   typedef Progress Self;
 
+  /// Constructor.
+  Progress()
+  {
+    Self::SetProgressInstance( this );
+  }
+
   /// Virtual (dummy) destructor.
   virtual ~Progress() {};
   
@@ -85,7 +91,7 @@ public:
   /// Set progress handler instance.
   static void SetProgressInstance( Self *const progressInstance ) 
   {
-    ProgressInstance = progressInstance;
+    Self::ProgressInstance = progressInstance;
   }
   
 private:

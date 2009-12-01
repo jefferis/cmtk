@@ -55,6 +55,7 @@
 #include <cmtkColormap.h>
 #include <cmtkImageToImageRGB.h>
 
+#include <cmtkQtProgress.h>
 #include <cmtkQtScrollRenderView.h>
 #include <cmtkQtWindowLevelControls.h>
 
@@ -208,7 +209,8 @@ protected:
   QtWindowLevelControls* WindowLevelControls;
 
   QTabWidget* m_ControlsTab;
-
+  QtProgress* m_ProgressReporter;
+ 
 private:
   /// The pixel grid index of the current location.
   int GridIndex[3];

@@ -52,8 +52,7 @@ QtImageOperators::CreatePopupMenu()
   algOperatorsMenu->insertItem( "&abs()", OPERATORS_MENU_ABS );
   algOperatorsMenu->insertItem( "&log()", OPERATORS_MENU_LOG );
   algOperatorsMenu->insertItem( "&exp()", OPERATORS_MENU_EXP );
-  QObject::connect( algOperatorsMenu, SIGNAL( activated( int ) ),
-		    this, SLOT( slotOperatorsMenu( int ) ) );
+  QObject::connect( algOperatorsMenu, SIGNAL( activated( int ) ),this, SLOT( slotOperatorsMenu( int ) ) );
 
   Q3PopupMenu* operatorsMenu = new Q3PopupMenu;
   operatorsMenu->insertItem( "&Median Filter...", OPERATORS_MENU_MEDIAN );

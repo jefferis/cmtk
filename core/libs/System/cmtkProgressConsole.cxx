@@ -50,8 +50,6 @@ cmtk
 ProgressConsole::ProgressConsole( const std::string& programName )
   : m_ProgramName( programName )
 {
-  Progress::SetProgressInstance( this );
-
   this->m_InsideSlicer3 = ( getenv( "Slicer3_HOME" ) != NULL );
     
   if ( this->m_InsideSlicer3 )
