@@ -28,8 +28,8 @@
 //  $LastChangedBy$
 //
 */
-//Added by qt3to4:
-#include <Q3GridLayout>
+
+#include <QGridLayout>
 
 #ifndef __cmtkQtVtkViewer_h_included_
 #define __cmtkQtVtkViewer_h_included_
@@ -154,10 +154,10 @@ public:
 
 protected:
   /// The top-level layout.
-  Q3GridLayout* MasterLayout;
+  QGridLayout* MasterLayout;
 
   /// Layout of render windows.
-  Q3GridLayout* RenderLayout;
+  QGridLayout* RenderLayout;
 
   /// Menu bar.
   QMenuBar* MenuBar;

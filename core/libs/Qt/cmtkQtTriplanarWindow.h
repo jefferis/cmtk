@@ -45,7 +45,7 @@
 #include <qstatusbar.h>
 #include <qlabel.h>
 #include <qtabwidget.h>
-#include <Q3GridLayout>
+#include <QGridLayout>
 #include <QActionGroup>
 
 #include <cmtkMacros.h>
@@ -186,10 +186,10 @@ protected:
   ImageToImageRGB* ImageToImageRGBCo;
 
   QMenuBar* MenuBar;
-  Q3GridLayout* GridLayout;
+  QGridLayout* GridLayout;
   QStatusBar* StatusBar;
 
-  Q3GridLayout* LandmarksLayout;
+  QGridLayout* LandmarksLayout;
   QLineEdit* LocationEntryX;
   QLineEdit* LocationEntryY;
   QLineEdit* LocationEntryZ;

@@ -44,8 +44,8 @@
 #include <cmtkMathUtil.h>
 
 #include <Q3HBoxLayout>
-#include <Q3GridLayout>
-#include <Q3PopupMenu>
+#include <QGridLayout>
+#include <QMenu>
 #include <Q3VBoxLayout>
 
 namespace
@@ -90,8 +90,8 @@ QtVtkViewer::Construct( const int nrows, const int ncols )
   
   MenuBar = new QMenuBar( this );
 
-  Q3PopupMenu* viewMenu = new Q3PopupMenu;
-  Q3PopupMenu* viewLayoutMenu = new Q3PopupMenu;
+  QMenu* viewMenu = new QMenu;
+  QMenu* viewLayoutMenu = new QMenu;
   viewLayoutMenu->insertItem( "&Single", this, SLOT( slotSetLayoutSingle() ) );
   viewLayoutMenu->insertItem( "&Panel", this, SLOT( slotSetLayoutPanel() ) );
   viewMenu->insertItem( "&Layout", viewLayoutMenu );
@@ -103,7 +103,7 @@ QtVtkViewer::Construct( const int nrows, const int ncols )
   //  MenuBar->insertItem( "Scene", sceneMenu );
   MenuBar->show();
   
-  MasterLayout = new Q3GridLayout( this, nrows, ncols );
+  MasterLayout = new QGridLayout( this, nrows, ncols );
   MasterLayout->setMenuBar( MenuBar );
   
   Q3BoxLayout* ButtonLayoutL = new Q3VBoxLayout();

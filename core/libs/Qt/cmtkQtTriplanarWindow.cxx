@@ -35,16 +35,15 @@
 
 #include <qapplication.h>
 #include <qmessagebox.h>
-#include <q3scrollview.h>
 #include <qradiobutton.h>
 #include <QMenuBar>
 #include <QMenu>
 #include <qinputdialog.h>
 #include <q3groupbox.h>
-#include <q3filedialog.h>
+#include <qfiledialog.h>
 
 #include <QLabel>
-#include <Q3GridLayout>
+#include <QGridLayout>
 #include <QPixmap>
 
 #include <cmtkLandmark.h>
@@ -129,7 +128,7 @@ QtTriplanarWindow::QtTriplanarWindow()
   GridIndex[0] = GridIndex[1] = GridIndex[2] = 0;
   StatusBar->addWidget( GridIndexInfo, 1, true );
 
-  GridLayout = new Q3GridLayout( this, 3, 2 );
+  GridLayout = new QGridLayout( this, 3, 2 );
   GridLayout->setMenuBar( MenuBar );
   GridLayout->addMultiCellWidget( StatusBar, 2, 2, 0, 1 );
 
@@ -167,7 +166,7 @@ QtTriplanarWindow::QtTriplanarWindow()
   QWidget *landmarksTab = new QWidget( this->m_ControlsTab );
   this->m_ControlsTab->addTab( landmarksTab, "Landmarks" );
 
-  LandmarksLayout = new Q3GridLayout( landmarksTab, 7, 3, 30, 10 );
+  LandmarksLayout = new QGridLayout( landmarksTab, 7, 3, 30, 10 );
   LandmarksLayout->setRowSpacing( 2, 40 );
 
   LocationEntryX = new QLineEdit( landmarksTab );
@@ -337,7 +336,7 @@ QtTriplanarWindow::slotExportMenuCmd( int command )
     }
   
   QString filename( "image.png" );
-  filename = Q3FileDialog::getSaveFileName( filename, "Save As", this, "Portable Network Graphic (*.png)", title );
+  filename = QFileDialog::getSaveFileName( filename, "Save As", this, "Portable Network Graphic (*.png)", title );
   
   if ( !filename.isEmpty() ) 
     {
@@ -784,7 +783,7 @@ QtTriplanarWindow::slotExportLandmarks()
   LandmarkList::SmartPtr ll = this->m_Study->GetLandmarkList();
   if ( ! ll ) return;
 
-  QString path = Q3FileDialog::getSaveFileName( NULL, "Landmarks file (landmarks)", this, "export landmarks file dialog", "Choose a filename to save landmarks under" );
+  QString path = QFileDialog::getSaveFileName( NULL, "Landmarks file (landmarks)", this, "export landmarks file dialog", "Choose a filename to save landmarks under" );
   
   if ( ! path.isEmpty() ) 
     {
@@ -820,7 +819,7 @@ QtTriplanarWindow::slotImportLandmarks()
     this->m_Study->SetLandmarkList( ll );
     }
   
-  QString path = Q3FileDialog::getOpenFileName( "*", "Landmarks file (landmarks)", this, "import landmarks file dialog", "Choose a landmarks file" );
+  QString path = QFileDialog::getOpenFileName( "*", "Landmarks file (landmarks)", this, "import landmarks file dialog", "Choose a landmarks file" );
   
   if ( ! path.isEmpty() ) 
     {
