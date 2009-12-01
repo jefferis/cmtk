@@ -42,7 +42,7 @@ cmtk
 template <class TInterpolator>
 bool
 ReformatVolume::Plain::operator()
-  ( const Vector3D& inRef, XformList& refToFloat, TInterpolator& interpolator, Types::DataItem& value )
+  ( Types::DataItem& value, const Vector3D& inRef, XformList& refToFloat, TInterpolator& interpolator )
 {
   Vector3D inFlt( inRef );
   if ( ! refToFloat.ApplyInPlace( inFlt ) ) 

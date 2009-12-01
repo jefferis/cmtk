@@ -189,14 +189,13 @@ void InitializeReformatVolume( cmtk::TypedArray::SmartPtr& reformatData, cmtk::U
     typename TInterpolator::SmartPtr interpolator ( new TInterpolator (floatingVolume) );
     if ( OutPaddingValueFlag )
       plain.SetPaddingValue( OutPaddingValue );
-    reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::Reformat( targetVolume, TargetToReference, referenceVolume, ReferenceToFloating, interpolator, plain ) );
+    reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::Reformat( targetVolume, TargetToReference, referenceVolume, ReferenceToFloating, plain, interpolator ) );
     break;
     }
     case cmtk::ReformatVolume::REFORMAT_JACOBIAN: 
     {
     cmtk::ReformatVolume::Jacobian jacobian( DataType, JacobianCorrectGlobal );
-    typename TInterpolator::SmartPtr interpolator ( new TInterpolator (floatingVolume) );
-    reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::Reformat( targetVolume, TargetToReference, referenceVolume, ReferenceToFloating, interpolator, jacobian ) );
+    reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::Reformat( targetVolume, TargetToReference, referenceVolume, ReferenceToFloating, jacobian, TInterpolator::SmartPtr::Null ) );
     break;
     }
     }

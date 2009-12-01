@@ -204,7 +204,7 @@ public:
   
   /// Complex reformat.
   template<class TInterpolator, class Fct> static TypedArray* Reformat
-  ( const UniformVolume* target, cmtk::XformList& targetToRef, const UniformVolume* reference, cmtk::XformList& refToFloat, TInterpolator& interpolator, Fct& fct );
+  ( const UniformVolume* target, cmtk::XformList& targetToRef, const UniformVolume* reference, cmtk::XformList& refToFloat, Fct& fct, TInterpolator& interpolator = TInterpolator::Null );
   
   /// Constants for extended reformatting mode.
   typedef enum 
@@ -233,15 +233,15 @@ public:
 
     /** Query operator. */
     template <class TInterpolatorInstantiationPtr>
-    bool operator()( const Vector3D& inRef, cmtk::XformList& refToFloat, TInterpolatorInstantiationPtr& interpolator, Types::DataItem& value );
+    bool operator()( Types::DataItem& value, const Vector3D& inRef, cmtk::XformList& refToFloat, TInterpolatorInstantiationPtr& interpolator );
     
     /// Return preferred data type for reformatted data.
-    ScalarDataType GetDataType( const UniformVolume*, const UniformVolume* flt ) const
+    ScalarDataType GetDataType( const UniformVolume*, const UniformVolumeInterpolatorBase* fltInterpolator ) const
     { 
       if ( this->DataType != TYPE_NONE )
 	return this->DataType;
       else
-	return flt->GetData()->GetType(); 
+	return fltInterpolator->GetVolume()->GetData()->GetType(); 
     }
 
   protected:
@@ -269,10 +269,10 @@ public:
     
     /** Query operator. */
     template <class TInterpolatorInstantiationPtr>
-    bool operator()( const Vector3D& inRef, cmtk::XformList& refToFloat, TInterpolatorInstantiationPtr& interpolator, Types::DataItem& value );
+    bool operator()( Types::DataItem& value, const Vector3D& inRef, cmtk::XformList& refToFloat, TInterpolatorInstantiationPtr& interpolator );
     
     /** Return preferred data type for reformatted data. */
-    ScalarDataType GetDataType( const UniformVolume*, const UniformVolume* ) const
+    ScalarDataType GetDataType( const UniformVolume*, const UniformVolumeInterpolatorBase* ) const
     { 
       if ( this->DataType != TYPE_NONE )
 	return this->DataType;
