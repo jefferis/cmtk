@@ -72,6 +72,11 @@ public:
   virtual void SetVolume( const UniformVolume::SmartPtr& volume )
   {
     this->m_Volume = volume;
+
+    this->m_VolumeDataArray = this->m_Volume->GetData();
+    this->m_VolumeDims = this->m_Volume->GetDims();
+    this->m_NextJ = this->m_VolumeDims[0];
+    this->m_NextK = this->m_NextJ * this->m_VolumeDims[1];    
   }
   
   /// Get smart pointer to linked volume.
@@ -91,9 +96,23 @@ public:
    */
   virtual bool GetDataAt( const Vector3D& v, Types::DataItem& value ) const = 0;
 
+  virtual Types::DataItem GetDataDirect( const size_t baseIndex, const int* imageGridPoint, const Types::Coordinate* insidePixel ) const = 0;
+
 protected:
   /// Pointer to volume that we interpolate from.
   const UniformVolume::SmartPtr m_Volume;
+
+  /// Pointer to volume data array.
+  const TypedArray* m_VolumeDataArray;
+
+  /// Image dimensions.
+  const int* m_VolumeDims;
+
+  /// Index increment when increasing "j" pixel index (i.e., moving to next image row).
+  int m_NextJ;
+
+  /// Index increment when increasing "k" pixel index (i.e., moving to next image plane).
+  int m_NextK;
 };
 
 //@}

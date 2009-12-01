@@ -40,9 +40,6 @@ bool
 UniformVolumeInterpolator<TInterpolationFunction>
 ::GetDataAt(const Vector3D& v, Types::DataItem& value) const
 {
-  const int *imageDims = this->m_Volume->GetDims();
-  const int imageDimsX = imageDims[0], imageDimsY = imageDims[1], imageDimsZ = imageDims[2];
-
   const Types::Coordinate *Delta = this->m_Volume->GetDelta();
 
   Types::Coordinate lScaled[3];
@@ -51,7 +48,7 @@ UniformVolumeInterpolator<TInterpolationFunction>
     {
     lScaled[n] = (v.XYZ[n] - this->m_Volume->m_Origin.XYZ[n]) / Delta[n];
     imageGridPoint[n] = (int) floor( lScaled[n] );
-    if ( ( imageGridPoint[n] < 0 ) || ( imageGridPoint[n] >= imageDims[n]-1 ) )
+    if ( ( imageGridPoint[n] < 0 ) || ( imageGridPoint[n] >= this->m_VolumeDims[n]-1 ) )
       return false;
     }
 
@@ -71,19 +68,18 @@ UniformVolumeInterpolator<TInterpolationFunction>
     }
 
   const int iMin = std::max( 0, -xx );
-  const int iMax = std::min( 2 * TInterpolationFunction::RegionSizeLeftRight, imageDimsX - xx );
+  const int iMax = std::min( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[0] - xx );
 
   const int jMin = std::max( 0, -yy );
-  const int jMax = std::min( 2 * TInterpolationFunction::RegionSizeLeftRight, imageDimsY - yy );
+  const int jMax = std::min( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[1] - yy );
 
   const int kMin = std::max( 0, -zz );
-  const int kMax = std::min( 2 * TInterpolationFunction::RegionSizeLeftRight, imageDimsZ - zz );
+  const int kMax = std::min( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[2] - zz );
 
   Types::DataItem data;
   Types::DataItem interpolatedData = 0;
   Types::Coordinate totalWeight = 0;
 
-  const TypedArray* dataArray = this->m_Volume->GetData();
   for ( int k = kMin; k < kMax; ++k )
     {
     for ( int j = jMin; j < jMax; ++j )
@@ -93,8 +89,8 @@ UniformVolumeInterpolator<TInterpolationFunction>
       for ( int i = iMin; i < iMax; ++i, ++offset )
         {
         const Types::Coordinate weightIJK = interpolationWeights[0][i] * weightJK;
-
-        if ( dataArray->Get( data, offset ) )
+	
+        if ( this->m_VolumeDataArray->Get( data, offset ) )
           {
           interpolatedData += static_cast<Types::DataItem>( data * weightIJK );
           totalWeight += weightIJK;
@@ -109,6 +105,63 @@ UniformVolumeInterpolator<TInterpolationFunction>
     value = static_cast<Types::DataItem>( interpolatedData / totalWeight );
 
   return true;
+}
+
+template <class TInterpolationFunction>
+Types::DataItem
+UniformVolumeInterpolator<TInterpolationFunction>
+::GetDataDirect( const size_t baseIndex, const int* imageGridPoint, const Types::Coordinate* insidePixel ) const
+{
+  Types::Coordinate interpolationWeights[3][2 * TInterpolationFunction::RegionSizeLeftRight];
+
+  for ( int n = 0; n < 3; ++n )
+    {
+    for ( int m = 1-TInterpolationFunction::RegionSizeLeftRight; m <= TInterpolationFunction::RegionSizeLeftRight; ++m )
+      {
+      interpolationWeights[n][m+TInterpolationFunction::RegionSizeLeftRight-1] = TInterpolationFunction::GetWeight( m, insidePixel[n] );
+      }
+    }
+
+  const int xx = imageGridPoint[0] + 1 - TInterpolationFunction::RegionSizeLeftRight;
+  const int yy = imageGridPoint[1] + 1 - TInterpolationFunction::RegionSizeLeftRight;
+  const int zz = imageGridPoint[2] + 1 - TInterpolationFunction::RegionSizeLeftRight;
+
+  const int iMin = std::max( 0, -xx );
+  const int iMax = std::min( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[0] - xx );
+
+  const int jMin = std::max( 0, -yy );
+  const int jMax = std::min( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[1] - yy );
+
+  const int kMin = std::max( 0, -zz );
+  const int kMax = std::min( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[2] - zz );
+
+  Types::DataItem data;
+  Types::DataItem interpolatedData = 0;
+  Types::Coordinate totalWeight = 0;
+
+  for ( int k = kMin; k < kMax; ++k )
+    {
+    for ( int j = jMin; j < jMax; ++j )
+      {
+      const Types::Coordinate weightJK = interpolationWeights[1][j] * interpolationWeights[2][k];
+      size_t offset = baseIndex + iMin + j * this->m_NextJ + k * this->m_NextK;
+      for ( int i = iMin; i < iMax; ++i, ++offset )
+        {
+        const Types::Coordinate weightIJK = interpolationWeights[0][i] * weightJK;
+	
+        if ( this->m_VolumeDataArray->Get( data, offset ) )
+          {
+          interpolatedData += static_cast<Types::DataItem>( data * weightIJK );
+          totalWeight += weightIJK;
+          }
+        }
+      }
+    }
+  
+  if ( totalWeight == 0 )
+    return 0;
+  else
+    return static_cast<Types::DataItem>( interpolatedData / totalWeight );
 }
 
 } // namespace cmtk

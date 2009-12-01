@@ -47,6 +47,9 @@ SET(cmtkRegistration_SRCS
   cmtkGroupwiseRegistrationFunctionalBase.cxx
   cmtkGroupwiseRegistrationOutput.cxx
   cmtkGroupwiseRegistrationRMIFunctional.cxx
+  cmtkImagePairAffineRegistrationFunctional.cxx
+  cmtkImagePairSimilarityMeasure.cxx
+  cmtkImagePairSimilarityMeasureMSD.cxx
   cmtkInverseInterpolationVolumeReconstructionBase.cxx
   cmtkIterativeDirectionOptimizer.cxx
   cmtkMakeInitialAffineTransformation.cxx
