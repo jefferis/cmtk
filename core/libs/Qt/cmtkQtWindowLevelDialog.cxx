@@ -34,7 +34,7 @@
 #include <cmtkQtIcons.h>
 
 #include <qlayout.h>
-#include <Q3VBoxLayout>
+#include <qboxlayout.h>
 
 namespace
 cmtk
@@ -50,11 +50,10 @@ QtWindowLevelDialog::QtWindowLevelDialog
   this->setIcon( QtIcons::WindowIcon() );
   this->setCaption( "Window/Level Control" );
 
-  Q3BoxLayout* layout = new Q3VBoxLayout( this );
+  QBoxLayout* layout = new QVBoxLayout( this );
 
   Controls = new QtWindowLevelControls( this );
-  QObject::connect( Controls, SIGNAL( colormap( Study::SmartPtr& ) ),
-		    SIGNAL( colormapChanged( Study::SmartPtr& ) ) );
+  QObject::connect( Controls, SIGNAL( colormap( Study::SmartPtr& ) ), SIGNAL( colormapChanged( Study::SmartPtr& ) ) );
   layout->addWidget( Controls );
 }
 
