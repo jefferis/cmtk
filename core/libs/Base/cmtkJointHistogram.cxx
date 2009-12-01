@@ -100,7 +100,7 @@ JointHistogram<T>::GetJointEntropy() const
       HXY -= this->m_plogp[idx];
     }
 #else // #ifdef _OPENMP
-  for ( size_t idx = 0; idx < this->m_NumberOfBins; ++idx )
+  for ( size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx )
     {
     if ( JointBins[idx] ) 
       {
