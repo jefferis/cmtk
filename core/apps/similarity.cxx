@@ -38,7 +38,7 @@
 #include <cmtkMountPoints.h>
 #include <cmtkClassStream.h>
 
-#include <cmtkRegistrationJointHistogram.h>
+#include <cmtkJointHistogram.h>
 #include <cmtkLinearInterpolator.h>
 #include <cmtkUniformVolumeInterpolatorBase.h>
 #include <cmtkUniformVolumeInterpolator.h>
