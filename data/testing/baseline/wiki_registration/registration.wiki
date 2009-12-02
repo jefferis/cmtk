@@ -67,6 +67,8 @@ where
 :; <tt>--msd</tt> : Mean Squared Difference metric
 :; <tt>--ncc</tt> : Normalized Cross Correlation metric
 
+; <tt>--new-metrics</tt> : Use new metric implementation (CMTK 1.2.0 or later).
+
 ; <tt>--match-histograms</tt> : Match floating image histogram to reference image histogram.
 
 === Reference Image Preprocessing ===
