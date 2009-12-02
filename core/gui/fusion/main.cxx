@@ -41,9 +41,6 @@
 int
 main( int argc, char *argv[] )
 {
-#ifdef DEBUG
-  cmtk::PipelineObject::SetDebugMode( true );
-#endif
   cmtk::QtSimpleFusionApp fusionApp( argc, argv );
 
   if ( argc > 1 )
