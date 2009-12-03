@@ -39,7 +39,7 @@
 #include <cmtkQtScrollRenderView.h>
 
 #include <qslider.h>
-#include <q3buttongroup.h>
+#include <qgroupbox.h>
 #include <qcheckbox.h>
 
 #include <cmtkStudyList.h>
@@ -130,7 +130,7 @@ private:
 
   QSlider* SliderFrom;
   QSlider* SliderTo;
-  Q3ButtonGroup* OperatorButtons;
+  QGroupBox* OperatorButtons;
   QComboBox* OperatorBox;
   QCheckBox* SmoothCheckBox;
   QtSliderEntry* GaussianWidthSlider;

@@ -44,7 +44,7 @@ QtFusionEdge::QtFusionEdge( QtSimpleFusionApp *const fusionApp, QWidget *const p
     StudyEdge( NULL ), StudyBG( NULL ),
     StudyEdgeImage( new Study )
 {
-  WindowLayout->setDirection( Q3BoxLayout::LeftToRight );
+  WindowLayout->setDirection( QBoxLayout::LeftToRight );
 
   this->setCaption( "Edge Blending" );
 
