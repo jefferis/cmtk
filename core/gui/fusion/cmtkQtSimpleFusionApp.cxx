@@ -39,7 +39,6 @@
 #include <qdir.h>
 
 #include <QLabel>
-#include <Q3Frame>
 
 namespace
 cmtk

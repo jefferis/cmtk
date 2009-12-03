@@ -36,8 +36,7 @@
 #include <qapplication.h>
 #include <qmessagebox.h>
 #include <qmenubar.h>
-#include <q3textstream.h>
-#include <q3filedialog.h>
+#include <qfiledialog.h>
 #include <qinputdialog.h>
 #include <qstringlist.h>
 
@@ -110,7 +109,7 @@ QtSimpleFusionMainWindow::slotRecentListsMenu( const int id )
 void 
 QtSimpleFusionMainWindow::slotOpenStudyList()
 {
-  QString path = Q3FileDialog::getExistingDirectory( QString::null, this, "get existing directory", "Open Studylist" );
+  QString path = QFileDialog::getExistingDirectory( QString::null, this, "get existing directory", "Open Studylist" );
   if ( ! (path.isEmpty() || path.isNull() ) )
     this->slotOpenStudyList( path );
 }
@@ -172,7 +171,7 @@ QtSimpleFusionMainWindow::slotRecentStudiesMenu( const int id )
 void 
 QtSimpleFusionMainWindow::slotAddStudy()
 {
-  QString path = Q3FileDialog::getExistingDirectory( QString::null, this, "get existing directory", "Add Study" );
+  QString path = QFileDialog::getExistingDirectory( QString::null, this, "get existing directory", "Add Study" );
   if ( ! (path.isEmpty() || path.isNull() ) )
     this->slotAddStudy( path );
 }
@@ -180,7 +179,7 @@ QtSimpleFusionMainWindow::slotAddStudy()
 void 
 QtSimpleFusionMainWindow::slotAddStudyFiles()
 {
-  QStringList paths = Q3FileDialog::getOpenFileNames( QString::null, "*", this, "get existing file", "Add Study" );
+  QStringList paths = QFileDialog::getOpenFileNames( QString::null, "*", this, "get existing file", "Add Study" );
   
   QStringList::const_iterator it = paths.begin();
   while ( it != paths.end() ) 
@@ -231,7 +230,7 @@ QtSimpleFusionMainWindow::slotSaveStudyAs()
     return;
     }
   
-  QString path = Q3FileDialog::getExistingDirectory( QString::null, this, "get existing directory", "Write Study to" );
+  QString path = QFileDialog::getExistingDirectory( QString::null, this, "get existing directory", "Write Study to" );
   if ( ! (path.isEmpty() || path.isNull() ) ) 
     {
     CurrentStudy->WriteTo( path.latin1() );
@@ -243,7 +242,7 @@ QtSimpleFusionMainWindow::slotStudyReadColorMap()
 {
   if ( CurrentStudy ) 
     {
-    QString path = Q3FileDialog::getOpenFileName( QString::null, "*.txt", this, "get existing file", "Read Colormap" );
+    QString path = QFileDialog::getOpenFileName( QString::null, "*.txt", this, "get existing file", "Read Colormap" );
     
     if ( ! (path.isEmpty() || path.isNull() ) ) 
       {
