@@ -34,9 +34,9 @@
 
 #include <qpushbutton.h>
 #include <q3hgroupbox.h>
-#include <q3filedialog.h>
-#include <Q3VBoxLayout>
-#include <Q3PopupMenu>
+#include <qfiledialog.h>
+#include <QVBoxLayout>
+#include <QMenu>
 
 namespace
 cmtk
@@ -53,7 +53,7 @@ QtFusionWindowTemplate::QtFusionWindowTemplate
 {
   this->setIcon( QtFusionGlobal::WindowIcon() );
 
-  ViewMenu = new Q3PopupMenu();
+  ViewMenu = new QMenu();
   ViewMenu->setCheckable( true );
   ViewMenu->insertItem( "25%", VIEWMENU_25 );
   ViewMenu->insertItem( "33%", VIEWMENU_33 );
@@ -74,13 +74,13 @@ QtFusionWindowTemplate::QtFusionWindowTemplate
   MenuBar->insertItem( "&View", ViewMenu );
   MenuBar->show();
 
-  MasterLayout = new Q3VBoxLayout( this );
+  MasterLayout = new QVBoxLayout( this );
   MasterLayout->setMenuBar( MenuBar );
 
-  WindowLayout = new Q3BoxLayout( MasterLayout, Q3BoxLayout::TopToBottom );
+  WindowLayout = new QBoxLayout( MasterLayout, QBoxLayout::TopToBottom );
 
-  ViewLayout = new Q3BoxLayout( WindowLayout, Q3BoxLayout::TopToBottom );
-  ControlsLayout = new Q3VBoxLayout( WindowLayout );
+  ViewLayout = new QBoxLayout( WindowLayout, QBoxLayout::TopToBottom );
+  ControlsLayout = new QVBoxLayout( WindowLayout );
 
   ButtonBox = new Q3HGroupBox( this );
   MasterLayout->addWidget( ButtonBox );
@@ -172,7 +172,7 @@ QtFusionWindowTemplate::slotUpdateReferenceStudy()
 void
 QtFusionWindowTemplate::slotExport()
 {
-  QString path = Q3FileDialog::getSaveFileName( QString::null, "Images (*.pgm *.ppm *.tif)", this, "get destination file", "Save Image" );
+  QString path = QFileDialog::getSaveFileName( QString::null, "Images (*.pgm *.ppm *.tif)", this, "get destination file", "Save Image" );
   if ( ! (path.isEmpty() || path.isNull() ) )
     this->Export( path );
 }

@@ -38,7 +38,7 @@
 #include <qlayout.h>
 #include <q3groupbox.h>
 #include <qmenubar.h>
-#include <q3popupmenu.h>
+#include <qmenu.h>
 
 #include <cmtkQtSimpleFusionApp.h>
 #include <cmtkStudyList.h>
@@ -121,19 +121,19 @@ protected:
   QMenuBar* MenuBar;
 
   /// "View" menu.
-  Q3PopupMenu* ViewMenu;
+  QMenu* ViewMenu;
 
   /// Qt master layout for this window.
-  Q3BoxLayout* MasterLayout;
+  QBoxLayout* MasterLayout;
 
   /// Qt layout for main part of window (excluding buttons).
-  Q3BoxLayout* WindowLayout;
+  QBoxLayout* WindowLayout;
 
   /// Qt layout for top of the window (viewer area).
-  Q3BoxLayout* ViewLayout;
+  QBoxLayout* ViewLayout;
 
   /// Qt layout for center of the window (optional controls area).
-  Q3BoxLayout* ControlsLayout;
+  QBoxLayout* ControlsLayout;
 
   /// Qt box for bottom of the window (button area).
   Q3GroupBox* ButtonBox;
