@@ -36,7 +36,7 @@
 #include <qapplication.h>
 #include <qmessagebox.h>
 #include <qlayout.h>
-#include <q3vgroupbox.h>
+#include <qgroupbox.h>
 #include <qradiobutton.h>
 #include <qmenubar.h>
 
@@ -44,7 +44,6 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QMenu>
-#include <Q3ButtonGroup>
 
 namespace
 cmtk
@@ -79,16 +78,20 @@ QtAdjustColormap::QtAdjustColormap()
   QObject::connect( WindowLevelBox, SIGNAL( signalChanged(float,float,float) ), this, SLOT( slotWindowChanged() ) );
 
   // create palette selection buttons.
-  Q3ButtonGroup *paletteGroup = new Q3HButtonGroup( this );
+  QGroupBox *paletteGroup = new QGroupBox( this );
+
+  QVBoxLayout *paletteLayout = new QVBoxLayout;
+  paletteGroup->setLayout( paletteLayout );
+
   paletteGroup->setTitle( "Colormap" );
   const char** colorMapNames = Colormap::StandardColormaps;
   int paletteIdx = 0;
   while ( colorMapNames[paletteIdx] ) 
     {
-    paletteGroup->insert( new QRadioButton( colorMapNames[paletteIdx], paletteGroup ), paletteIdx );
+    paletteLayout->addWidget( new QRadioButton( colorMapNames[paletteIdx], paletteGroup ) );
     ++paletteIdx;
     }
-  paletteGroup->setRadioButtonExclusive( true );
+
   QObject::connect( paletteGroup, SIGNAL( pressed( int ) ), this, SLOT( slotSetStandardColormap( int ) ) );
   rightLayout->addWidget( paletteGroup );
 
