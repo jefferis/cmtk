@@ -300,7 +300,7 @@ levelset --binarize spgr.nii foreground.nii
 \end{verbatim}
 In very broad terms, the tool implements an extreme simplification of the
 algorithm for segmentation without edges by Chan \&
-Vese~\cite{ChanVese:2001}. By default, the tool write an image that is the
+Vese~\cite{ChanVese:2001}. By default, the tool writes an image that is the
 resulting levelset function, but using the \verb|--binarize| switch turns the
 output into a thresholded, binary mask that is appropriate for use by the
 \verb|mrbias| tool.
@@ -412,7 +412,7 @@ warp -o ffd5.xform --grid-spacing 40 --refine 3 --jacobian-weight 1e-5 \
 \subsection{Reformating Registered Images}
 
 To reformat the registered floating image following the examples in
-the previous section, CMTK
+the previous section, run
 \begin{verbatim}
 reformatx  -o reformat.nii --floating flt.nii ref.nii ffd5.xform
 \end{verbatim}
@@ -442,7 +442,7 @@ appropriate Jacobian determinant map, \verb|jacobian.nii|, is then
 reformatx  -o jacobian.nii time1.nii --jacobian time1_to_time2.xform
 \end{verbatim}
 More interestingly, say we want to compare these Jacobian maps from multiple
-subjects, all in the space of as common atlas coordinate system. Then, instead
+subjects, all in the space of a common atlas coordinate system. Then, instead
 of computing each map first in each subject's coordinate system and then
 reformatting these maps into atlas space, we can directly compute the maps in
 atlas space by concatenation of transformations:
@@ -462,7 +462,7 @@ transformation, which means that the direct computation of Jacobians into
 atlas space does indeed avoid one interpolation of the Jacobian determinant
 map.
 
-{\bf Note} that the \verb|reformatx| tool allow an arbitrary number of
+{\bf Note} that the \verb|reformatx| tool allows an arbitrary number of
 transformations to be listed both before and after the \verb|--jacobian|
 switch, and any transformation can additionally be inverted by prefixing it
 with \verb|--inverse| (affine transformations are inverted explicitly, whereas
@@ -537,7 +537,7 @@ al.\/}~\cite{TzouLandPapa:2002}. This is achieved simply by running
 \begin{verbatim}
 asegment_sri24 input_image.nii output_segmentation.nii
 \end{verbatim} 
-Different atlas channel can be used for registration, selected
+Different atlas channels can be used for registration, selected
 using the \verb|--registration-channel| command line option: ``\verb|spgr|''
 for T1-weighted SPGR, which is the default,``\verb|early-fse|'' for early-echo
 (proton density-weighted) FSE , ``\verb|late-fse|'' for late-echo
