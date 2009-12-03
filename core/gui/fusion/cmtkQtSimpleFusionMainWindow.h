@@ -47,7 +47,7 @@
 #include <cmtkQtProgress.h>
 #include <cmtkQtListViewItemStudy.h>
 #include <cmtkQtFusionSlicer.h>
-#include <Q3PopupMenu>
+#include <QMenu>
 
 namespace
 cmtk
@@ -163,25 +163,25 @@ private:
   QMenuBar* MenuBar;
 
   /// The "List" menu.
-  Q3PopupMenu* ListMenu;
+  QMenu* ListMenu;
 
   /// Sub-menu with recently opened lists.
-  Q3PopupMenu* RecentListsMenu;
+  QMenu* RecentListsMenu;
 
   /// The "Study" menu.
-  Q3PopupMenu* StudyMenu;
+  QMenu* StudyMenu;
 
   /// Sub-menu with recently opened studies.
-  Q3PopupMenu* RecentStudiesMenu;
+  QMenu* RecentStudiesMenu;
 
   /// The "Operators" menu.
-  Q3PopupMenu* OperatorsMenu;
+  QMenu* OperatorsMenu;
 
   /// The "Operators->Algebraic" submenu.
-  Q3PopupMenu* AlgOperatorsMenu;
+  QMenu* AlgOperatorsMenu;
 
   /// The "Transformation" menu.
-  Q3PopupMenu* XformMenu;
+  QMenu* XformMenu;
 
   /// Enum for commands in the "Study" menu.
   enum {
@@ -220,7 +220,7 @@ private:
   };
 
   /// The "Fusion" menu.
-  Q3PopupMenu* FusionMenu;
+  QMenu* FusionMenu;
 };
 
 } // namespace cmtk

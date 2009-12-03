@@ -42,7 +42,7 @@
 #include <qstatusbar.h>
 #include <qprogressbar.h>
 #include <QLabel>
-#include <Q3PopupMenu>
+#include <QMenu>
 
 namespace
 cmtk
@@ -70,14 +70,14 @@ QtSimpleFusionMainWindow::InitWidget()
 
   MenuBar = this->menuBar();
 
-  ListMenu = new Q3PopupMenu;
+  ListMenu = new QMenu;
   ListMenu->insertItem( "&Open...", this, SLOT( slotOpenStudyList() ) );
   ListMenu->insertSeparator();
   ListMenu->insertItem( "&Save", this, SLOT( slotOpenStudyList() ) );
   ListMenu->insertItem( "Save &As...", this, SLOT( slotOpenStudyList() ) );
   ListMenu->insertSeparator();
 
-  RecentListsMenu = new Q3PopupMenu;
+  RecentListsMenu = new QMenu;
   ListMenu->insertItem( "&Recent", RecentListsMenu );
   ListMenu->insertSeparator();
   this->slotUpdateRecentListsMenu();
@@ -85,11 +85,11 @@ QtSimpleFusionMainWindow::InitWidget()
 
   ListMenu->insertItem( "&Quit", qApp, SLOT( quit() ) );
 
-  RecentStudiesMenu = new Q3PopupMenu;
+  RecentStudiesMenu = new QMenu;
   this->slotUpdateRecentStudiesMenu();
   QObject::connect( RecentStudiesMenu, SIGNAL( activated( int ) ), this, SLOT( slotRecentStudiesMenu( int ) ) );
 
-  StudyMenu = new Q3PopupMenu;
+  StudyMenu = new QMenu;
   StudyMenu->insertItem( "&Add...", this, SLOT( slotAddStudy() ) );
   StudyMenu->insertItem( "Add &File...", this, SLOT( slotAddStudyFiles() ) );
   StudyMenu->insertItem( "&Recent", RecentStudiesMenu );
@@ -104,13 +104,13 @@ QtSimpleFusionMainWindow::InitWidget()
   StudyMenu->insertItem( "&Properties...", 0 );
   StudyMenu->insertItem( "&Triplanar Viewer...", this, SLOT( slotTriplanarViewer() ) );
 
-  AlgOperatorsMenu = new Q3PopupMenu;
+  AlgOperatorsMenu = new QMenu;
   AlgOperatorsMenu->insertItem( "&abs()", OPERATORS_MENU_ABS );
   AlgOperatorsMenu->insertItem( "&log()", OPERATORS_MENU_LOG );
   AlgOperatorsMenu->insertItem( "&exp()", OPERATORS_MENU_EXP );
   QObject::connect( AlgOperatorsMenu, SIGNAL( activated( int ) ), this, SLOT( slotOperatorsMenu( int ) ) );
 
-  OperatorsMenu = new Q3PopupMenu;
+  OperatorsMenu = new QMenu;
   OperatorsMenu->insertItem( "&Median Filter...", OPERATORS_MENU_MEDIAN );
   OperatorsMenu->insertItem( "&Histogram Equalization...", OPERATORS_MENU_HISTOGRAM );
   OperatorsMenu->insertItem( "&Sobel Edge Filter", OPERATORS_MENU_SOBEL );
@@ -119,7 +119,7 @@ QtSimpleFusionMainWindow::InitWidget()
   QObject::connect( OperatorsMenu, SIGNAL( activated( int ) ), this, SLOT( slotOperatorsMenu( int ) ) );
 
   
-  XformMenu = new Q3PopupMenu;
+  XformMenu = new QMenu;
   XformMenu->insertItem( "&Create...", MENU_XFORM_CREATE );
   XformMenu->insertSeparator();
   XformMenu->insertItem( "&Affine Transformation Editor...", 0 );
@@ -127,7 +127,7 @@ QtSimpleFusionMainWindow::InitWidget()
   XformMenu->insertItem( "&Visualize Deformation...", 0 );
   QObject::connect( XformMenu, SIGNAL( activated( int ) ), this, SLOT( slotXformMenu( int ) ) );
 
-  FusionMenu = new Q3PopupMenu;
+  FusionMenu = new QMenu;
   FusionMenu->insertItem( "&Separate View", FUSION_MENU_SEPARATE );
   FusionMenu->insertItem( "&Overlay", FUSION_MENU_OVERLAY );
   FusionMenu->insertItem( "&Alpha Blending", FUSION_MENU_ALPHA );
