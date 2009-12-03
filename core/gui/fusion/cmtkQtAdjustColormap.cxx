@@ -36,15 +36,14 @@
 #include <qapplication.h>
 #include <qmessagebox.h>
 #include <qlayout.h>
-#include <q3scrollview.h>
 #include <q3vgroupbox.h>
 #include <qradiobutton.h>
 #include <qmenubar.h>
 
 #include <QEvent>
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
-#include <Q3PopupMenu>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QMenu>
 #include <Q3ButtonGroup>
 
 namespace
@@ -57,7 +56,7 @@ QtAdjustColormap::QtAdjustColormap()
 {
   this->setIcon( QtFusionGlobal::WindowIcon() );
 
-  Q3PopupMenu* ViewMenu = new Q3PopupMenu();
+  QMenu* ViewMenu = new QMenu();
   ViewMenu->insertItem( "&100%" );
   ViewMenu->insertItem( "&200%" );
   ViewMenu->insertItem( "&300%" );
@@ -67,14 +66,14 @@ QtAdjustColormap::QtAdjustColormap()
   MenuBar->insertItem( "&View", ViewMenu );
   MenuBar->show();
 
-  Q3BoxLayout* topLevelLayout = new Q3HBoxLayout( this );
+  QBoxLayout* topLevelLayout = new QHBoxLayout( this );
   topLevelLayout->setMenuBar( MenuBar );
 
   ScrollRenderView = new QtScrollRenderView( this );
   ScrollRenderView->ShowSlider();
   topLevelLayout->addWidget( ScrollRenderView );
 
-  Q3BoxLayout* rightLayout = new Q3VBoxLayout( topLevelLayout );
+  QBoxLayout* rightLayout = new QVBoxLayout( topLevelLayout );
   WindowLevelBox = new QtWindowLevelControls( this );
   rightLayout->addWidget( WindowLevelBox );
   QObject::connect( WindowLevelBox, SIGNAL( signalChanged(float,float,float) ), this, SLOT( slotWindowChanged() ) );
@@ -93,8 +92,7 @@ QtAdjustColormap::QtAdjustColormap()
   QObject::connect( paletteGroup, SIGNAL( pressed( int ) ), this, SLOT( slotSetStandardColormap( int ) ) );
   rightLayout->addWidget( paletteGroup );
 
-  // insert stretch below all widgets in the right column; left has 
-  // auto-stretching scroll view.
+  // insert stretch below all widgets in the right column; left has auto-stretching scroll view.
   rightLayout->insertStretch( -1 );
   rightLayout->activate();
   rightLayout->setResizeMode( QLayout::SetFixedSize );
