@@ -37,7 +37,7 @@
 #include <qwidget.h>
 #include <qlabel.h>
 #include <qobject.h>
-#include <q3mainwindow.h>
+#include <qmainwindow.h>
 #include <qpoint.h>
 #include <qtabwidget.h>
 
@@ -60,7 +60,7 @@ class QtSimpleFusionApp;
  */
 class QtSimpleFusionMainWindow :
   /// Inherit from Qt's MainWindow class.
-  public Q3MainWindow 
+  public QMainWindow 
 {
   Q_OBJECT // we're using slots
 
