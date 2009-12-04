@@ -30,7 +30,7 @@
 */
 
 #include <cmtkQtStudyNamesBox.h>
-#include <Q3HBoxLayout>
+#include <QHBoxLayout>
 #include <QLabel>
 
 namespace
@@ -40,7 +40,7 @@ cmtk
 QtStudyNamesBox::QtStudyNamesBox( QWidget *parent, const char* name )
   : QWidget( parent, name )
 {
-  Layout = new Q3HBoxLayout( this );
+  Layout = new QHBoxLayout( this );
 
   Label = new QLabel( this );
   Layout->addWidget( Label );

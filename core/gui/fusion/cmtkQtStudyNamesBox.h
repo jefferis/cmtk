@@ -40,7 +40,7 @@
 #include <qstring.h>
 #include <qstringlist.h>
 #include <qcombobox.h>
-#include <Q3HBoxLayout>
+#include <QHBoxLayout>
 
 namespace
 cmtk
@@ -83,7 +83,7 @@ public slots:
 
 private:
   /// The enclosing layout.
-  Q3HBoxLayout* Layout;
+  QHBoxLayout* Layout;
 
   /// The combo box widget.
   QComboBox* ComboBox;
