@@ -7,6 +7,10 @@ Release CMTK-1.2.0:
 - Improved: more sophisticated install and packaging configuration; still not
     fully clear how that translates into separated packages for different
     components.
+- Improved: ported everything related to Qt to use the actual Qt4 classes, so
+    we can finally get rid of legacy Qt3 support classes. This should reduce
+    the number of actually unused dynamic libraries, which we previously had
+    to link against.
 
 - Fixed: bundled DICOM library finally works on all tested platforms and all
     tested compilers.
