@@ -47,107 +47,105 @@ cmtk
 QMenu*
 QtImageOperators::CreatePopupMenu()
 {
-  QMenu* algOperatorsMenu = new QMenu;
-  algOperatorsMenu->insertItem( "&abs()", OPERATORS_MENU_ABS );
-  algOperatorsMenu->insertItem( "&log()", OPERATORS_MENU_LOG );
-  algOperatorsMenu->insertItem( "&exp()", OPERATORS_MENU_EXP );
-  QObject::connect( algOperatorsMenu, SIGNAL( activated( int ) ),this, SLOT( slotOperatorsMenu( int ) ) );
-
   QMenu* operatorsMenu = new QMenu;
-  operatorsMenu->insertItem( "&Median Filter...", OPERATORS_MENU_MEDIAN );
-  operatorsMenu->insertItem( "&Histogram Equalization...", OPERATORS_MENU_HISTOGRAM );
-  operatorsMenu->insertItem( "&Sobel Edge Filter", OPERATORS_MENU_SOBEL );
-  operatorsMenu->insertSeparator();
-  operatorsMenu->insertItem( "&Algebraic", algOperatorsMenu );
-  QObject::connect( operatorsMenu, SIGNAL( activated( int ) ), this, SLOT( slotOperatorsMenu( int ) ) );
+  operatorsMenu->addAction( "&Median Filter...", this, SLOT( slotOperatorMedian() ) );
+  operatorsMenu->addAction( "&Histogram Equalization...", this, SLOT( slotOperatorHistEq() ) );
+  operatorsMenu->addAction( "&Sobel Edge Filter", this, SLOT( slotOperatorSobel() ) );
+  operatorsMenu->addSeparator();
+
+  QMenu* algOperatorsMenu = operatorsMenu->addMenu( "&Algebraic" );
+  algOperatorsMenu->addAction( "&abs()", this, SLOT( slotOperatorAbs() ) );
+  algOperatorsMenu->addAction( "&log()", this, SLOT( slotOperatorLog() ) );
+  algOperatorsMenu->addAction( "&exp()", this, SLOT( slotOperatorExp() ) );
 
   return operatorsMenu;
 }
 
 void
-QtImageOperators::slotOperatorsMenu( int command )
+QtImageOperators::slotOperatorsMedian()
 {
-  switch ( command )
+  if ( this->StudyDataValid() ) 
     {
-    case OPERATORS_MENU_MEDIAN: 
-    {
-    if ( this->StudyDataValid() ) 
+    bool ok;
+    int radius = QInputDialog::getInt( this->Parent, "Median Filter", "Neighborhood radius:",  1, 1, 5, 1, &ok );
+    if ( ok )
       {
-      bool ok;
-      int radius = QInputDialog::getInteger( "Median Filter", "Neighborhood radius:",  1, 1, 5, 1, &ok, this->Parent );
-      if ( ok )
-	{
-	// user entered something and pressed OK
-	if ( this->ProgressInstance )
-	  this->ProgressInstance->SetProgressWidgetMode( QtProgress::PROGRESS_DIALOG );
-	(*(this->CurrentStudy))->GetVolume()->ApplyMedianFilter( radius );
-	emit dataChanged( *(this->CurrentStudy) );
-	} 
-      else
-	{
-        // user pressed Cancel
-	}
-      }
-    break;
-    }
-    case OPERATORS_MENU_SOBEL: 
-    {
-    if ( this->StudyDataValid() ) 
-      {
+      // user entered something and pressed OK
       if ( this->ProgressInstance )
-	this->ProgressInstance->SetProgressWidgetMode( QtProgress::PROGRESS_BAR );
-      (*(this->CurrentStudy))->GetVolume()->ApplySobelFilter();
+	this->ProgressInstance->SetProgressWidgetMode( QtProgress::PROGRESS_DIALOG );
+      (*(this->CurrentStudy))->GetVolume()->ApplyMedianFilter( radius );
       emit dataChanged( *(this->CurrentStudy) );
-      }
-    break;
-    }
-    case OPERATORS_MENU_HISTOGRAM: 
-    {
-    if ( this->StudyDataValid() ) 
+      } 
+    else
       {
+      // user pressed Cancel
+      }
+    }
+}
+
+void
+QtImageOperators::slotOperatorsSobel()
+{
+  if ( this->StudyDataValid() ) 
+    {
+    if ( this->ProgressInstance )
+      this->ProgressInstance->SetProgressWidgetMode( QtProgress::PROGRESS_BAR );
+    (*(this->CurrentStudy))->GetVolume()->ApplySobelFilter();
+    emit dataChanged( *(this->CurrentStudy) );
+    }
+}
+
+void
+QtImageOperators::slotOperatorsHistEq()
+{
+  if ( this->StudyDataValid() ) 
+    {
+    if ( this->ProgressInstance )
+      this->ProgressInstance->SetProgressWidgetMode( QtProgress::PROGRESS_BAR );
+    bool ok;
+    int bins = QInputDialog::getInt( this->Parent, "Histogram Equalization", "Number of Histogram Bins:", 256, 2, 256, 1, &ok );
+    if ( ok ) 
+      {
+      // user entered something and pressed OK
       if ( this->ProgressInstance )
-	this->ProgressInstance->SetProgressWidgetMode( QtProgress::PROGRESS_BAR );
-      bool ok;
-      int bins = QInputDialog::getInteger( "Histogram Equalization", "Number of Histogram Bins:", 256, 2, 256, 1, &ok, this->Parent );
-      if ( ok ) 
-	{
-        // user entered something and pressed OK
-	if ( this->ProgressInstance )
-	  this->ProgressInstance->SetProgressWidgetMode( QtProgress::PROGRESS_DIALOG );
-	(*(this->CurrentStudy))->GetVolume()->GetData()->HistogramEqualization( bins );
-	emit dataChanged( *(this->CurrentStudy) );
-	} 
-      else
-	{
-        // user pressed Cancel
-	}
-      }
-    break;
-    case OPERATORS_MENU_ABS: 
-    case OPERATORS_MENU_LOG: 
-    case OPERATORS_MENU_EXP: 
-    {
-    if ( this->StudyDataValid() ) 
+	this->ProgressInstance->SetProgressWidgetMode( QtProgress::PROGRESS_DIALOG );
+      (*(this->CurrentStudy))->GetVolume()->GetData()->HistogramEqualization( bins );
+      emit dataChanged( *(this->CurrentStudy) );
+      } 
+    else
       {
-      switch ( command ) 
-	{
-	case OPERATORS_MENU_ABS: 
-	  (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunction( fabs );
-	  emit dataChanged( *(this->CurrentStudy) );
-	  break;
-	case OPERATORS_MENU_LOG: 
-	  (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunction( log );
-	  emit dataChanged( *(this->CurrentStudy) );
-	  break;
-	case OPERATORS_MENU_EXP: 
-	  (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunction( exp );
-	  emit dataChanged( *(this->CurrentStudy) );
-	  break;
-	}
+      // user pressed Cancel
       }
-    break;
     }
+}
+
+void
+QtImageOperators::slotOperatorsAbs()
+{
+  if ( this->StudyDataValid() ) 
+    {
+    (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunction( fabs );
+    emit dataChanged( *(this->CurrentStudy) );
     }
+}
+
+void
+QtImageOperators::slotOperatorsLog()
+{
+  if ( this->StudyDataValid() ) 
+    {
+    (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunction( log );
+    emit dataChanged( *(this->CurrentStudy) );
+    }
+}
+
+void
+QtImageOperators::slotOperatorsExp()
+{
+  if ( this->StudyDataValid() ) 
+    {
+    (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunction( exp );
+    emit dataChanged( *(this->CurrentStudy) );
     }
 }
 

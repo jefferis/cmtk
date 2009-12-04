@@ -57,7 +57,12 @@ class QtImageOperators :
 
 public slots:
   /// Slot to open selected type of fusion window.
-  void slotOperatorsMenu( int command );
+  void slotOperatorsMedian();
+  void slotOperatorsSobel();
+  void slotOperatorsHistEq();
+  void slotOperatorsAbs();
+  void slotOperatorsLog();
+  void slotOperatorsExp();
 
 signals:
   /// This signal is sent when the image data has been changed.
@@ -74,22 +79,6 @@ public:
   QMenu* CreatePopupMenu();
 
 private:
-  /// Enum for commands in the "Operators" menu.
-  enum {
-    /// Median operator.
-    OPERATORS_MENU_MEDIAN,
-    /// Sobel operator.
-    OPERATORS_MENU_SOBEL,
-    /// Histogram equalization.
-    OPERATORS_MENU_HISTOGRAM,
-    /// Absolute values.
-    OPERATORS_MENU_ABS,
-    /// Log operator.
-    OPERATORS_MENU_LOG,
-    /// Exponential operator.
-    OPERATORS_MENU_EXP
-  };
-
   /** The parent widget.
    * This is for modal dialogs that may be opened for some operations.
    */

@@ -69,7 +69,6 @@ QtProgress
     
     ProgressDialog->setWindowModality(Qt::WindowModal);
     ProgressDialog->setModal( true );
-    ProgressDialog->setCaption( "Please wait" );
     ProgressDialog->setMinimumDuration( 100 );
     ProgressDialog->show();
     ProgressDialog->setRange( 0, 100 );

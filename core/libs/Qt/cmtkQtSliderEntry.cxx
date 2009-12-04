@@ -55,10 +55,10 @@ QtSliderEntry::QtSliderEntry( QWidget* parent, const char *name )
   font.setPointSize( 2 * font.pointSize() / 4 );
   
   Layout = new QGridLayout( this, 3, 4 );
-  Layout->setColStretch( 0, 1 );
-  Layout->setColStretch( 1, 1 );
-  Layout->setColStretch( 2, 0 );
-  Layout->setColStretch( 3, 0 );
+  Layout->setColumnStretch( 0, 1 );
+  Layout->setColumnStretch( 1, 1 );
+  Layout->setColumnStretch( 2, 0 );
+  Layout->setColumnStretch( 3, 0 );
 
   Slider = new QSlider( Qt::Horizontal, this );
   QObject::connect( Slider, SIGNAL( valueChanged( int ) ), this, SLOT( slotSliderValueChanged( int ) ) );
