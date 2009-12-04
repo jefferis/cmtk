@@ -51,7 +51,7 @@ cmtk
 void
 QtSimpleFusionMainWindow::InitWidget()
 {
-  this->setCaption( "IGL Image Fusion" );
+  this->setCaption( "CMTK Image Fusion" );
   this->setIcon( QtFusionGlobal::WindowIcon() );
 
   QStatusBar* statBar = this->statusBar();
