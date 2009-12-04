@@ -62,7 +62,7 @@ cmtk
 //@{
 
 QtTriplanarWindow::QtTriplanarWindow()
-  : QWidget( NULL, "TriplanarViewer" ),
+  : QWidget( NULL, "CMTK TriplanarViewer" ),
     m_Study( NULL ),
     m_ZoomFactor( 100 ),
     m_BatchMode( false )
