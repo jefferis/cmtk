@@ -44,6 +44,7 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QPixmap>
+#include <QPainter>
 
 #include <cmtkLandmark.h>
 #include <cmtkLandmarkList.h>
@@ -72,7 +73,9 @@ QtTriplanarWindow::QtTriplanarWindow()
   this->m_ZoomActions->setExclusive( true );
   QAction* action;
 
-  QMenu* ViewMenu = new QMenu();
+  MenuBar = new QMenuBar( this );
+
+  QMenu* ViewMenu = MenuBar->addMenu( "&View" );
   action = ViewMenu->addAction( "25%", this, SLOT( slotView25() ) );
   action->setCheckable( true );
   this->m_ZoomActions->addAction( action );
@@ -108,7 +111,7 @@ QtTriplanarWindow::QtTriplanarWindow()
   (this->m_CheckerboxAction = ViewMenu->addAction( "C&heckerbox", this, SLOT( slotViewCheckerbox() ) ))->setCheckable( true );
   this->m_CheckerboxAction->setChecked( true );
   
-  QMenu* ExportMenu = new QMenu();
+  QMenu* ExportMenu = MenuBar->addMenu( "&Export" );
   ExportMenu->addAction( "&Axial" )->setData( QVariant( 1 ) );
   ExportMenu->addAction( "&Coronal" )->setData( QVariant( 2 ) );
   ExportMenu->addAction( "&Sagittal" )->setData( QVariant( 3 ) );
@@ -116,16 +119,13 @@ QtTriplanarWindow::QtTriplanarWindow()
   ExportMenu->addAction( "&Panel")->setData( QVariant( 4 ) );
   QObject::connect( ExportMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( slotExportMenuCmd( QAction* ) ) );
 
-  MenuBar = new QMenuBar( this );
-  MenuBar->insertItem( "&View", ViewMenu );
-  MenuBar->insertItem( "&Export", ExportMenu );
   MenuBar->show();
 
   StatusBar = new QStatusBar( this );
   StatusBar->show();
   GridIndexInfo = new QLabel( StatusBar );
   GridIndex[0] = GridIndex[1] = GridIndex[2] = 0;
-  StatusBar->addWidget( GridIndexInfo, 1, true );
+  StatusBar->insertWidget( 1, GridIndexInfo );
 
   GridLayout = new QGridLayout( this );
   GridLayout->setMenuBar( MenuBar );
@@ -202,7 +202,7 @@ QtTriplanarWindow::QtTriplanarWindow()
   LandmarksLayout->addWidget( GoToLocationButton, 1, 2 );
   QObject::connect( GoToLocationButton, SIGNAL( clicked() ), this, SLOT( slotGoToLocation() ) );
 
-  LandmarkBox = new QComboBox( landmarksTab, "LandmarkComboBox" );
+  LandmarkBox = new QComboBox( landmarksTab );
   LandmarksLayout->addWidget( LandmarkBox, 2, 2, 0, 2 );
   LandmarkBox->setEnabled( false );
   QObject::connect( LandmarkBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( slotGoToLandmark() ) );
@@ -337,7 +337,7 @@ QtTriplanarWindow::slotExportMenuCmd( QAction* action )
     }
   
   QString filename( "image.png" );
-  filename = QFileDialog::getSaveFileName( filename, "Save As", this, "Portable Network Graphic (*.png)", title );
+  filename = QFileDialog::getSaveFileName( this, title, filename, "Portable Network Graphic (*.png)" );
   
   if ( !filename.isEmpty() ) 
     {
@@ -367,19 +367,20 @@ QtTriplanarWindow::slotExportImage( const QString& filename, const int command )
     QPixmap pixmapSa = ScrollRenderViewSa->GetRenderImage()->GetPixmap();
     QPixmap pixmapCo = ScrollRenderViewCo->GetRenderImage()->GetPixmap();
     
-    pixmap = QPixmap( pixmapCo.width() + pixmapSa.width(), pixmapCo.height() + pixmapAx.height() ); // what happened to depth?
-    pixmap.fill( Qt::black );
-    
-    copyBlt( &pixmap, 0, 0, &pixmapCo, 0, 0, pixmapCo.width(), pixmapCo.height() );
-    copyBlt( &pixmap, pixmapCo.width(), 0, &pixmapSa, 0, 0, pixmapSa.width(), pixmapSa.height() );
-    copyBlt( &pixmap, 0, pixmapCo.height(), &pixmapAx, 0, 0, pixmapAx.width(), pixmapAx.height() );
+    QPixmap pixmap( pixmapCo.width() + pixmapSa.width(), pixmapCo.height() + pixmapAx.height() );
+    QPainter painter( &pixmap );
+
+    painter.drawPixmap( 0, 0, pixmapCo.width(), pixmapCo.height(), pixmapCo );
+    painter.drawPixmap( pixmapCo.width(), 0, pixmapSa.width(), pixmapSa.height(), pixmapSa );
+    painter.drawPixmap( 0, pixmapCo.height(), pixmapAx.width(), pixmapAx.height(), pixmapAx );
     break;
     }
     }
   
-  QString format = filename.section( ".", -1 ).upper();
-  if ( format.isEmpty() ) format = "PNG";
-  if ( !pixmap.save( filename, format ) )
+  QString format = filename.section( ".", -1 ).toUpper();
+  if ( format.isEmpty() )
+    format = "PNG";
+  if ( !pixmap.save( filename, format.toLatin1() ) )
     {
     if ( this->m_BatchMode )
       std::cerr << "WARNING: saving file failed." << std::endl;
@@ -784,7 +785,7 @@ QtTriplanarWindow::slotExportLandmarks()
   LandmarkList::SmartPtr ll = this->m_Study->GetLandmarkList();
   if ( ! ll ) return;
 
-  QString path = QFileDialog::getSaveFileName( NULL, "Landmarks file (landmarks)", this, "export landmarks file dialog", "Choose a filename to save landmarks under" );
+  QString path = QFileDialog::getSaveFileName( this, "Save Landmarks File" );
   
   if ( ! path.isEmpty() ) 
     {
@@ -820,7 +821,7 @@ QtTriplanarWindow::slotImportLandmarks()
     this->m_Study->SetLandmarkList( ll );
     }
   
-  QString path = QFileDialog::getOpenFileName( "*", "Landmarks file (landmarks)", this, "import landmarks file dialog", "Choose a landmarks file" );
+  QString path = QFileDialog::getOpenFileName( this, "Open Landmarks File", QString(), "All Files (*.*)" );
   
   if ( ! path.isEmpty() ) 
     {
@@ -845,13 +846,13 @@ QtTriplanarWindow::slotImportLandmarks()
 
 	lm = Landmark::SmartPtr( new Landmark( name, xyz ) );
 	ll->push_back( lm );
-	LandmarkBox->insertItem( name );
+	LandmarkBox->addItem( name );
 	}
 
       lm = *(ll->begin());
       if ( lm )
 	{
-	this->LandmarkBox->setCurrentText( lm->GetName() );
+	this->LandmarkBox->setCurrentIndex( this->LandmarkBox->findText( lm->GetName() ) );
 	this->slotMouse3D( Qt::LeftButton, Vector3D( lm->GetLocation() ) );
 	}
 
@@ -882,13 +883,13 @@ QtTriplanarWindow::slotAddLandmark()
     }
   
   bool ok;
-  QString name = QInputDialog::getText( "Add New Landmark", "Enter new landmark name:", QLineEdit::Normal, QString::null, &ok, this );
+  QString name = QInputDialog::getText( this, "Add New Landmark", "Enter new landmark name:", QLineEdit::Normal, QString::null, &ok );
   if ( ok && !name.isEmpty() ) 
     {
     Types::Coordinate location[3] = { LocationEntryX->text().toDouble(), LocationEntryY->text().toDouble(), LocationEntryZ->text().toDouble() };
-    ll->push_back( Landmark::SmartPtr( new Landmark( name, location ) ) );
-    LandmarkBox->insertItem( name );
-    LandmarkBox->setCurrentText( name );
+    ll->push_back( Landmark::SmartPtr( new Landmark( name.toLatin1(), location ) ) );
+    LandmarkBox->addItem( name );
+    LandmarkBox->setCurrentIndex( this->LandmarkBox->findText( name ) );
     
     LandmarkBox->setEnabled( true );
     GoToLandmarkButton->setEnabled( true );
