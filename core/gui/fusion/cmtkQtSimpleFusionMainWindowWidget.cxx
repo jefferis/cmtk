@@ -101,7 +101,7 @@ QtSimpleFusionMainWindow::InitWidget()
   StudyMenu->insertItem( "&Edit...", 0 );
   StudyMenu->insertItem( "Re&load", this, SLOT( slotStudyReload() ) );
   StudyMenu->insertItem( "&Delete", 0 );
-  StudyMenu->insertItem( "&Properties...", 0 );
+  StudyMenu->insertItem( "&Properties...", this, SLOT( slotVolumeProperties() ) );
   StudyMenu->insertItem( "&Triplanar Viewer...", this, SLOT( slotTriplanarViewer() ) );
 
   AlgOperatorsMenu = new QMenu;

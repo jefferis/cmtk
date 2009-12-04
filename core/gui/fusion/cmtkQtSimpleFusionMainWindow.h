@@ -114,6 +114,9 @@ private slots:
   /// Add study with dialog.
   void slotTriplanarViewer();
 
+  /// Add study with dialog.
+  void slotVolumeProperties();
+
   /// Update menu with recent studies.
   void slotUpdateRecentStudiesMenu();
 

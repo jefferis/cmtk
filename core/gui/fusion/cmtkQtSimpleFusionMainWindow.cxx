@@ -49,6 +49,7 @@
 
 #include <cmtkQtFusionSlicer.h>
 #include <cmtkQtTriplanarViewer.h>
+#include <cmtkQtVolumeProperties.h>
 #include <cmtkQtStudyWidget.h>
 
 #include <cmtkQtSeparateView.h>
@@ -277,6 +278,19 @@ QtSimpleFusionMainWindow::slotTriplanarViewer()
   QObject::connect( StudyTabs->currentPage(), SIGNAL( colormap( Study::SmartPtr& ) ), tpv, SLOT( slotColormapChanged( Study::SmartPtr& ) ) );
   
   tpv->show();
+}
+
+void 
+QtSimpleFusionMainWindow::slotVolumeProperties()
+{
+  if ( ! CurrentStudy ) 
+    {
+    QMessageBox::warning( NULL, "Notification", "No study currently selected.", QMessageBox::Ok, Qt::NoButton, Qt::NoButton );
+    return;
+    }
+  
+  QtVolumeProperties *vp = new QtVolumeProperties( this->CurrentStudy );
+  vp->show();
 }
 
 void
