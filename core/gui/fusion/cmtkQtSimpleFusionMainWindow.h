@@ -45,7 +45,6 @@
 #include <cmtkStudyList.h>
 
 #include <cmtkQtProgress.h>
-#include <cmtkQtListViewItemStudy.h>
 #include <cmtkQtFusionSlicer.h>
 #include <QMenu>
 
