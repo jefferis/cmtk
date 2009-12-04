@@ -48,6 +48,7 @@ QMenu*
 QtImageOperators::CreatePopupMenu()
 {
   QMenu* operatorsMenu = new QMenu;
+  operatorsMenu->setTitle( "&Operators" );
   operatorsMenu->addAction( "&Median Filter...", this, SLOT( slotOperatorMedian() ) );
   operatorsMenu->addAction( "&Histogram Equalization...", this, SLOT( slotOperatorHistEq() ) );
   operatorsMenu->addAction( "&Sobel Edge Filter", this, SLOT( slotOperatorSobel() ) );

@@ -39,7 +39,6 @@
 #include <QMenuBar>
 #include <QMenu>
 #include <qinputdialog.h>
-#include <q3groupbox.h>
 #include <qfiledialog.h>
 
 #include <QLabel>
@@ -62,12 +61,12 @@ cmtk
 //@{
 
 QtTriplanarWindow::QtTriplanarWindow()
-  : QWidget( NULL, "CMTK TriplanarViewer" ),
+  : QWidget( NULL ),
     m_Study( NULL ),
     m_ZoomFactor( 100 ),
     m_BatchMode( false )
 {
-  this->setIcon( QtIcons::WindowIcon() );
+  this->setWindowIcon( QtIcons::WindowIcon() );
 
   this->m_ZoomActions = new QActionGroup( this );
   this->m_ZoomActions->setExclusive( true );
@@ -110,12 +109,12 @@ QtTriplanarWindow::QtTriplanarWindow()
   this->m_CheckerboxAction->setChecked( true );
   
   QMenu* ExportMenu = new QMenu();
-  ExportMenu->insertItem( "&Axial", 1 );
-  ExportMenu->insertItem( "&Coronal", 2 );
-  ExportMenu->insertItem( "&Sagittal", 3 );
-  ExportMenu->insertSeparator();
-  ExportMenu->insertItem( "&Panel", 4 );
-  QObject::connect( ExportMenu, SIGNAL( activated( int ) ), this, SLOT( slotExportMenuCmd( int ) ) );
+  ExportMenu->addAction( "&Axial" )->setData( QVariant( 1 ) );
+  ExportMenu->addAction( "&Coronal" )->setData( QVariant( 2 ) );
+  ExportMenu->addAction( "&Sagittal" )->setData( QVariant( 3 ) );
+  ExportMenu->addSeparator();
+  ExportMenu->addAction( "&Panel")->setData( QVariant( 4 ) );
+  QObject::connect( ExportMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( slotExportMenuCmd( QAction* ) ) );
 
   MenuBar = new QMenuBar( this );
   MenuBar->insertItem( "&View", ViewMenu );
@@ -128,9 +127,9 @@ QtTriplanarWindow::QtTriplanarWindow()
   GridIndex[0] = GridIndex[1] = GridIndex[2] = 0;
   StatusBar->addWidget( GridIndexInfo, 1, true );
 
-  GridLayout = new QGridLayout( this, 3, 2 );
+  GridLayout = new QGridLayout( this );
   GridLayout->setMenuBar( MenuBar );
-  GridLayout->addMultiCellWidget( StatusBar, 2, 2, 0, 1 );
+  GridLayout->addWidget( StatusBar, 2, 2, 0, 1 );
 
   ScrollRenderViewAx = new QtScrollRenderView( this, "Axial" );
   ScrollRenderViewAx->SetSliderLabelL( "I" );
@@ -160,14 +159,14 @@ QtTriplanarWindow::QtTriplanarWindow()
   GridLayout->addWidget( ScrollRenderViewCo, 0, 0 );
 
   this->m_ControlsTab = new QTabWidget( this );
-  this->m_ControlsTab->setMargin( 10 );
+  this->m_ControlsTab->setContentsMargins( 10, 10, 10, 10 );
   GridLayout->addWidget( this->m_ControlsTab, 1, 1 );
 
   QWidget *landmarksTab = new QWidget( this->m_ControlsTab );
   this->m_ControlsTab->addTab( landmarksTab, "Landmarks" );
 
-  LandmarksLayout = new QGridLayout( landmarksTab, 7, 3, 30, 10 );
-  LandmarksLayout->setRowSpacing( 2, 40 );
+  LandmarksLayout = new QGridLayout( landmarksTab );
+  LandmarksLayout->setVerticalSpacing( 40 );
 
   LocationEntryX = new QLineEdit( landmarksTab );
   LocationValidatorX = new QDoubleValidator( LocationEntryX );
@@ -204,7 +203,7 @@ QtTriplanarWindow::QtTriplanarWindow()
   QObject::connect( GoToLocationButton, SIGNAL( clicked() ), this, SLOT( slotGoToLocation() ) );
 
   LandmarkBox = new QComboBox( landmarksTab, "LandmarkComboBox" );
-  LandmarksLayout->addMultiCellWidget( LandmarkBox, 2, 2, 0, 2 );
+  LandmarksLayout->addWidget( LandmarkBox, 2, 2, 0, 2 );
   LandmarkBox->setEnabled( false );
   QObject::connect( LandmarkBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( slotGoToLandmark() ) );
 
@@ -256,7 +255,7 @@ QtTriplanarWindow::QtTriplanarWindow()
   ScrollRenderViewAx->slotConnectImage( ImageToImageRGBAx->GetOutput() );
 
   QObject::connect( ScrollRenderViewAx, SIGNAL( indexChanged( int ) ), this, SLOT( slotSwitchImageAx( int ) ) );
-  QObject::connect( ScrollRenderViewAx, SIGNAL( signalMouse3D( Qt::ButtonState, const Vector3D& ) ), this, SLOT( slotMouse3D( Qt::ButtonState, const Vector3D& ) ) );
+  QObject::connect( ScrollRenderViewAx, SIGNAL( signalMouse3D( Qt::MouseButton, const Vector3D& ) ), this, SLOT( slotMouse3D( Qt::MouseButton, const Vector3D& ) ) );
   
   // set up sagittal viewer
   PipelineImageSa = Image::New();
@@ -268,7 +267,7 @@ QtTriplanarWindow::QtTriplanarWindow()
 
   PipelineImageCo = Image::New();
   QObject::connect( ScrollRenderViewSa, SIGNAL( indexChanged( int ) ), this, SLOT( slotSwitchImageSa( int ) ) );
-  QObject::connect( ScrollRenderViewSa, SIGNAL( signalMouse3D( Qt::ButtonState, const Vector3D& ) ), this, SLOT( slotMouse3D( Qt::ButtonState, const Vector3D& ) ) );
+  QObject::connect( ScrollRenderViewSa, SIGNAL( signalMouse3D( Qt::MouseButton, const Vector3D& ) ), this, SLOT( slotMouse3D( Qt::MouseButton, const Vector3D& ) ) );
 
   // set up coronal viewer
   ImageToImageRGBCo = ImageToImageRGB::New();
@@ -278,7 +277,7 @@ QtTriplanarWindow::QtTriplanarWindow()
   ScrollRenderViewCo->slotConnectImage( ImageToImageRGBCo->GetOutput() );
 
   QObject::connect( ScrollRenderViewCo, SIGNAL( indexChanged( int ) ), this, SLOT( slotSwitchImageCo( int ) ) );
-  QObject::connect( ScrollRenderViewCo, SIGNAL( signalMouse3D( Qt::ButtonState, const Vector3D& ) ), this, SLOT( slotMouse3D( Qt::ButtonState, const Vector3D& ) ) );
+  QObject::connect( ScrollRenderViewCo, SIGNAL( signalMouse3D( Qt::MouseButton, const Vector3D& ) ), this, SLOT( slotMouse3D( Qt::MouseButton, const Vector3D& ) ) );
 
   this->m_ProgressReporter = new QtProgress( this );
 }
@@ -316,10 +315,12 @@ QtTriplanarWindow::slotSetInterpolateMode( const bool mode )
 }
       
 void
-QtTriplanarWindow::slotExportMenuCmd( int command )
+QtTriplanarWindow::slotExportMenuCmd( QAction* action )
 {
+  const int mode = action->data().toInt();
+
   QString title( "Choose filename" );
-  switch ( command ) 
+  switch ( mode ) 
     {
     case 1: // Axial image.
       title = "Axial image export";
@@ -340,7 +341,7 @@ QtTriplanarWindow::slotExportMenuCmd( int command )
   
   if ( !filename.isEmpty() ) 
     {
-    this->slotExportImage( filename, command );
+    this->slotExportImage( filename, mode );
     }
 }
 
@@ -644,7 +645,7 @@ QtTriplanarWindow
 ::slotGoToPixel( const QString& xyz )
 {
   int x, y, z;
-  if ( 3 != sscanf( xyz.latin1(), "%d,%d,%d", &x, &y, &z ) )
+  if ( 3 != sscanf( xyz.toLatin1(), "%d,%d,%d", &x, &y, &z ) )
     {
     qWarning( "QtTriplanarWindow::slotGoToPixel needs pixel index as 'x,y,z'.\n" );
     }
@@ -660,7 +661,7 @@ void
 QtTriplanarWindow::slotGoToLocation( const QString& xyz )
 {
   float x, y, z;
-  if ( 3 != sscanf( xyz.latin1(), "%f,%f,%f", &x, &y, &z ) )
+  if ( 3 != sscanf( xyz.toLatin1(), "%f,%f,%f", &x, &y, &z ) )
     {
     qWarning( "QtTriplanarWindow::slotGoToLocation needs 3D coordinate as 'x,y,z'.\n" );
     }
@@ -691,7 +692,7 @@ QtTriplanarWindow
 ::slotSetWindowLevel( const QString& wl )
 {
   float window, level;
-  if ( 2 != sscanf( wl.latin1(), "%f:%f", &window, &level ) )
+  if ( 2 != sscanf( wl.toLatin1(), "%f:%f", &window, &level ) )
     {
     qWarning( "QtTriplanarWindow::slotSetWindowLevel needs 'window:level'.\n" );
     }
@@ -704,7 +705,7 @@ QtTriplanarWindow
 
 void 
 QtTriplanarWindow
-::slotMouse3D( Qt::ButtonState, const Vector3D& v )
+::slotMouse3D( Qt::MouseButton, const Vector3D& v )
 {
   const UniformVolume *volume = this->m_Study->GetVolume();
 
@@ -751,7 +752,7 @@ QtTriplanarWindow::slotGoToLocation()
   if ( ! volume ) return;
 
   // Pretend there was a button event at the given location
-  const Vector3D location ( atof( LocationEntryX->text() ), atof( LocationEntryY->text() ), atof( LocationEntryZ->text() ) );
+  const Vector3D location ( LocationEntryX->text().toDouble(), LocationEntryY->text().toDouble(), LocationEntryZ->text().toDouble() );
   this->slotMouse3D( Qt::LeftButton, location );
 }
 
@@ -787,7 +788,7 @@ QtTriplanarWindow::slotExportLandmarks()
   
   if ( ! path.isEmpty() ) 
     {
-    std::ofstream stream( path.latin1() );
+    std::ofstream stream( path.toLatin1() );
     
     if ( stream.good() )
       {
@@ -796,7 +797,7 @@ QtTriplanarWindow::slotExportLandmarks()
 	Vector3D v( (*it)->GetLocation() );
 	QString n( (*it)->GetName() );
 
-	stream << v[0] << "\t" << v[1] << "\t" << v[2] << "\t" << n.latin1() << std::endl;
+	stream << v[0] << "\t" << v[1] << "\t" << v[2] << "\t" << n.toLatin1() << std::endl;
 	}
       stream.close();
       } 
@@ -823,7 +824,7 @@ QtTriplanarWindow::slotImportLandmarks()
   
   if ( ! path.isEmpty() ) 
     {
-    std::ifstream stream( path.latin1() );
+    std::ifstream stream( path.toLatin1() );
 
     unsigned int cnt = 0;
     if ( stream.good() ) 
@@ -884,7 +885,7 @@ QtTriplanarWindow::slotAddLandmark()
   QString name = QInputDialog::getText( "Add New Landmark", "Enter new landmark name:", QLineEdit::Normal, QString::null, &ok, this );
   if ( ok && !name.isEmpty() ) 
     {
-    Types::Coordinate location[3] = { atof( LocationEntryX->text() ), atof( LocationEntryY->text() ), atof( LocationEntryZ->text() ) };
+    Types::Coordinate location[3] = { LocationEntryX->text().toDouble(), LocationEntryY->text().toDouble(), LocationEntryZ->text().toDouble() };
     ll->push_back( Landmark::SmartPtr( new Landmark( name, location ) ) );
     LandmarkBox->insertItem( name );
     LandmarkBox->setCurrentText( name );

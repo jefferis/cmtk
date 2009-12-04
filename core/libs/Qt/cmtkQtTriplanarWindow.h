@@ -123,7 +123,7 @@ protected slots:
   void slotViewCrosshair();
   void slotViewCheckerbox();
 
-  void slotExportMenuCmd( int command );
+  void slotExportMenuCmd( QAction* );
   void slotRenderAll();
 
   /// Batch mode slots

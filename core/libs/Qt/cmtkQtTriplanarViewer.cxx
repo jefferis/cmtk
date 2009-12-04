@@ -53,30 +53,31 @@ cmtk
 QtTriplanarViewer::QtTriplanarViewer()
   : WindowLevel( NULL )
 {
-  this->setCaption( "Triplanar Image Viewer" );
+  this->setWindowTitle( "Triplanar Image Viewer" );
   QMenu* StudyMenu = new QMenu();
-  StudyMenu->insertItem( "&Load File...", this, SLOT( slotLoadFile() )  );
-  StudyMenu->insertItem( "Load Stud&y...", this, SLOT( slotLoadStudy() )  );
-  StudyMenu->insertItem( "&Reload Data...", this, SLOT( slotReloadData() )  );
-  StudyMenu->insertSeparator();
-  StudyMenu->insertItem( "&Save" );
-  StudyMenu->insertItem( "Save &as..." );
-  StudyMenu->insertItem( "&Export landmarks..." );
-  StudyMenu->insertSeparator();
-  StudyMenu->insertItem( "&Quit", qApp, SLOT( quit() ) );
+  StudyMenu->setTitle( "&Study" );
+  StudyMenu->addAction( "&Load File...", this, SLOT( slotLoadFile() )  );
+  StudyMenu->addAction( "Load Stud&y...", this, SLOT( slotLoadStudy() )  );
+  StudyMenu->addAction( "&Reload Data...", this, SLOT( slotReloadData() )  );
+  StudyMenu->addSeparator();
+  StudyMenu->addAction( "&Save" );
+  StudyMenu->addAction( "Save &as..." );
+  StudyMenu->addAction( "&Export landmarks..." );
+  StudyMenu->addSeparator();
+  StudyMenu->addAction( "&Quit", qApp, SLOT( quit() ) );
   
   QtImageOperators* imageOperators = new QtImageOperators( &this->m_Study, this, NULL /*progressInstance*/ );
   QObject::connect( imageOperators, SIGNAL( dataChanged( Study::SmartPtr& ) ), this, SLOT( slotDataChanged( Study::SmartPtr& ) ) );
   
   // insert "Study" as first menu.
-  MenuBar->insertItem( "&Study", StudyMenu, -1, 0 );
+  MenuBar->addMenu( StudyMenu );
   // insert "Operators" after "View".
-  MenuBar->insertItem( "&Operators", imageOperators->CreatePopupMenu(), -1, 2 );
+  MenuBar->addMenu( imageOperators->CreatePopupMenu() );
   MenuBar->show();
   
   this->m_ImagesTab = new QWidget( this->m_ControlsTab );
   this->m_ControlsTab->addTab( this->m_ImagesTab, "Images" );
-  this->m_ControlsTab->setTabEnabled( this->m_ImagesTab, false );
+  this->m_ControlsTab->setTabEnabled( this->m_ControlsTab->indexOf( this->m_ImagesTab ), false );
 
   this->m_StudiesListBox = new QListWidget( this->m_ImagesTab );
   this->m_StudiesListBox->setSelectionMode( QAbstractItemView::SingleSelection );
@@ -103,7 +104,7 @@ QtTriplanarViewer::slotAddStudy( const char* fname )
   this->m_StudiesListBox->addItem( QString( newStudy->GetFileSystemPath() ) );
 
   this->m_Studies.push_back( newStudy );
-  this->m_ControlsTab->setTabEnabled( this->m_ImagesTab, this->m_Studies.size() > 1 );
+  this->m_ControlsTab->setTabEnabled( this->m_ControlsTab->indexOf( this->m_ImagesTab ), this->m_Studies.size() > 1 );
 
   this->slotSwitchToStudy( newStudy );
   this->slotCenter();
@@ -112,14 +113,14 @@ QtTriplanarViewer::slotAddStudy( const char* fname )
 void
 QtTriplanarViewer::slotLoadStudy()
 {
-  QString path = QFileDialog::getExistingDirectory( QString::null, this, "get existing directory", "Load Study" );
+  QString path = QFileDialog::getExistingDirectory( this, "Load Study" );
 
   if ( ! (path.isEmpty() || path.isNull() ) ) 
     {
-    Study::SmartPtr newStudy( new Study( path.latin1() ) );
+    Study::SmartPtr newStudy( new Study( path.toLatin1() ) );
 
     this->m_Studies.push_back( newStudy );
-    this->m_ControlsTab->setTabEnabled( this->m_ImagesTab, this->m_Studies.size() > 1 );
+    this->m_ControlsTab->setTabEnabled( this->m_ControlsTab->indexOf( this->m_ImagesTab ), this->m_Studies.size() > 1 );
 
     this->m_StudiesListBox->addItem( QString( newStudy->GetFileSystemPath() ) );
     this->m_StudiesListBox->setCurrentItem( this->m_StudiesListBox->item( this->m_StudiesListBox->count()-1 ) );
@@ -132,14 +133,14 @@ QtTriplanarViewer::slotLoadStudy()
 void
 QtTriplanarViewer::slotLoadFile()
 {
-  QString path = QFileDialog::getOpenFileName( QString::null, "*", this, "get existing file", "Load File" );
+  QString path = QFileDialog::getOpenFileName( this, "Load File", QString(), "*" );
   
   if ( ! (path.isEmpty() || path.isNull() ) ) 
     {
-    Study::SmartPtr newStudy( new Study( path.latin1() ) );
+    Study::SmartPtr newStudy( new Study( path.toLatin1() ) );
 
     this->m_Studies.push_back( newStudy );
-    this->m_ControlsTab->setTabEnabled( this->m_ImagesTab, this->m_Studies.size() > 1 );
+    this->m_ControlsTab->setTabEnabled( this->m_ControlsTab->indexOf( this->m_ImagesTab ), this->m_Studies.size() > 1 );
     
     this->m_StudiesListBox->addItem( QString( newStudy->GetFileSystemPath() ) );
     this->m_StudiesListBox->setCurrentItem( this->m_StudiesListBox->item( this->m_StudiesListBox->count()-1 ) );
