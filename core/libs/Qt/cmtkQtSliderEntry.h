@@ -60,7 +60,7 @@ class QtSliderEntry :
 
 public:
   /// Constructor.
-  QtSliderEntry( QWidget* parent, const char* name = NULL );
+  QtSliderEntry( QWidget* parent );
 
   /// Get value.
   double GetValue() const;

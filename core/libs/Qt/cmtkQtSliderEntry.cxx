@@ -48,13 +48,13 @@ cmtk
 /** \addtogroup Qt */
 //@{
 
-QtSliderEntry::QtSliderEntry( QWidget* parent, const char *name )
-  : QWidget( parent, name )
+QtSliderEntry::QtSliderEntry( QWidget* parent )
+  : QWidget( parent )
 {
   QFont font = this->font();
   font.setPointSize( 2 * font.pointSize() / 4 );
   
-  Layout = new QGridLayout( this, 3, 4 );
+  Layout = new QGridLayout( this );
   Layout->setColumnStretch( 0, 1 );
   Layout->setColumnStretch( 1, 1 );
   Layout->setColumnStretch( 2, 0 );
@@ -62,7 +62,7 @@ QtSliderEntry::QtSliderEntry( QWidget* parent, const char *name )
 
   Slider = new QSlider( Qt::Horizontal, this );
   QObject::connect( Slider, SIGNAL( valueChanged( int ) ), this, SLOT( slotSliderValueChanged( int ) ) );
-  Layout->addMultiCellWidget( Slider, 1, 1, 0, 1 );
+  Layout->addWidget( Slider, 1, 1, 0, 1 );
 
   Edit = new QLineEdit( this );
   Edit->setFixedWidth( 100 );
@@ -94,13 +94,13 @@ QtSliderEntry::GetValue() const
 double
 QtSliderEntry::GetMinValue() const
 {
-  return 1.0 * Slider->minValue() / PrecisionFactor;
+  return 1.0 * Slider->minimum() / PrecisionFactor;
 }
 
 double
 QtSliderEntry::GetMaxValue() const
 {
-  return 1.0 * Slider->minValue() / PrecisionFactor;
+  return 1.0 * Slider->minimum() / PrecisionFactor;
 }
 
 void
@@ -134,7 +134,7 @@ void
 QtSliderEntry::slotSetTitle( const QString& title )
 {
   TitleLabel->setText( title );
-  Layout->addMultiCellWidget( TitleLabel, 0, 0, 0, 2 );
+  Layout->addWidget( TitleLabel, 0, 0, 0, 2 );
   TitleLabel->show();
 }
 
@@ -167,13 +167,13 @@ QtSliderEntry::slotSetMinMaxLabels( const QString& minLabel, const QString& maxL
 void 
 QtSliderEntry::slotEditReturnPressed()
 {
-  double value = atof( Edit->text() );
+  double value = Edit->text().toDouble();
   int valueSlider = static_cast<int>( value * PrecisionFactor );
 
-  if ( valueSlider < Slider->minValue() )
-    this->slotSetRange( value, Slider->maxValue() / PrecisionFactor );
-  if ( valueSlider > Slider->maxValue() )
-    this->slotSetRange( Slider->minValue() / PrecisionFactor, value );
+  if ( valueSlider < Slider->minimum() )
+    this->slotSetRange( value, Slider->maximum() / PrecisionFactor );
+  if ( valueSlider > Slider->maximum() )
+    this->slotSetRange( Slider->minimum() / PrecisionFactor, value );
 
   Slider->setValue( valueSlider );
   emit valueChanged( value );
@@ -191,7 +191,7 @@ QtSliderEntry::slotSliderValueChanged( int value )
 void 
 QtSliderEntry::slotCenter()
 {
-  Slider->setValue( (Slider->minValue() + Slider->maxValue()) / 2 );
+  Slider->setValue( (Slider->minimum() + Slider->maximum()) / 2 );
   // valueChanged signal should be emitted indirectly by slotSliderValueChanged
 }
 
@@ -202,10 +202,10 @@ QtSliderEntry::slotSetValue( const double value )
   Edit->setText( valueString.setNum( value, 'f', Precision ) );
   int valueSlider = static_cast<int>( value * PrecisionFactor );
 
-  if ( valueSlider < Slider->minValue() )
-    this->slotSetRange( value, Slider->maxValue() / PrecisionFactor );
-  if ( valueSlider > Slider->maxValue() )
-    this->slotSetRange( Slider->minValue() / PrecisionFactor, value );
+  if ( valueSlider < Slider->minimum() )
+    this->slotSetRange( value, Slider->maximum() / PrecisionFactor );
+  if ( valueSlider > Slider->maximum() )
+    this->slotSetRange( Slider->minimum() / PrecisionFactor, value );
 
   Slider->setValue( valueSlider );
   emit valueChanged( value );

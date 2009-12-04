@@ -143,7 +143,7 @@ protected slots:
   void slotSwitchImageCo( int imageIndex );
 
   /// Three-dimensional mouse event.
-  void slotMouse3D( Qt::ButtonState, const Vector3D& );
+  void slotMouse3D( Qt::MouseButton, const Vector3D& );
 
   /// This slot is called when the "Center" button is clicked.
   void slotCenter();
