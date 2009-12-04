@@ -36,9 +36,9 @@
 #include <qlayout.h>
 #include <qstring.h>
 #include <qlabel.h>
-#include <q3groupbox.h>
+#include <qgroupbox.h>
 #include <qpushbutton.h>
-#include <Q3VBoxLayout>
+#include <QGridLayout>
 
 #include <cmtkQtFusionGlobal.h>
 
@@ -50,25 +50,31 @@ QtVolumeProperties::QtVolumeProperties( const Study* study )
   : QWidget( NULL, "VolumeProperties", 0 )
 {
   this->setIcon( QtFusionGlobal::WindowIcon() );
-  Q3VBoxLayout* layout = new Q3VBoxLayout( this );
+  QVBoxLayout* layout = new QVBoxLayout( this );
     
   if ( study ) 
     {    
     QString caption;
     this->setCaption( caption.sprintf( "Image Properties: %s", study->GetName() ) );
 
-    Q3GroupBox* generalBox = new Q3GroupBox( 2, Qt::Horizontal, this );
+    QGroupBox* generalBox = new QGroupBox( this );
+    QGridLayout *generalLayout = new QGridLayout;
+
     generalBox->setTitle( "General" );
+    generalBox->setLayout( generalLayout );
     layout->addWidget( generalBox );
     
-    new QLabel( "Path: ", generalBox );
-    new QLabel( study->GetFileSystemPath(), generalBox );
+    generalLayout->addWidget( new QLabel( "Path: ", generalBox ), 0, 0 );
+    generalLayout->addWidget( new QLabel( study->GetFileSystemPath(), generalBox ), 0, 1 );
 
-    new QLabel( "Description: ", generalBox );
-    new QLabel( study->GetDescription(), generalBox );
+    generalLayout->addWidget( new QLabel( "Description: ", generalBox ), 1, 0 );
+    generalLayout->addWidget( new QLabel( study->GetDescription(), generalBox ), 1, 1 );
 
-    Q3GroupBox* gridBox = new Q3GroupBox( 2, Qt::Horizontal, this );
+    QGroupBox* gridBox = new QGroupBox( this );
+    QGridLayout *gridLayout = new QGridLayout;
+
     gridBox->setTitle( "Coordinate Grid" );
+    gridBox->setLayout( gridLayout );
     layout->addWidget( gridBox );
 
     const Volume *volume = study->GetVolume();
@@ -77,29 +83,29 @@ QtVolumeProperties::QtVolumeProperties( const Study* study )
       const UniformVolume *uniVolume = dynamic_cast<const UniformVolume*>( volume );
       if ( uniVolume ) 
 	{
-	new QLabel( "Type: ", gridBox );
-	new QLabel( "Uniform", gridBox );
+	gridLayout->addWidget( new QLabel( "Type: ", gridBox ), 0, 0 );
+	gridLayout->addWidget( new QLabel( "Uniform", gridBox ), 0, 1 );
 
-	new QLabel( "Dimensions: ", gridBox );
+	gridLayout->addWidget( new QLabel( "Dimensions: ", gridBox ), 1, 0 );
 	QString dims;
 	dims.sprintf( "%d x %d x %d pixels", uniVolume->GetDims(AXIS_X), uniVolume->GetDims(AXIS_Y), uniVolume->GetDims(AXIS_Z) );
-	new QLabel( dims, gridBox );
+	gridLayout->addWidget( new QLabel( dims, gridBox ), 1, 1 );
 
-	new QLabel( "Total size: ", gridBox );
+	gridLayout->addWidget( new QLabel( "Total size: ", gridBox ), 2, 0 );
 	QString size;
 	size.sprintf( "%f x %f x %f mm", uniVolume->Size[AXIS_X], uniVolume->Size[AXIS_Y], uniVolume->Size[AXIS_Z] );
-	new QLabel( size, gridBox );
+	gridLayout->addWidget( new QLabel( size, gridBox ), 2, 1 );
 
-	new QLabel( "Pixel size: ", gridBox );
+	gridLayout->addWidget( new QLabel( "Pixel size: ", gridBox ), 3, 0 );
 	QString psize;
 	psize.sprintf( "%f x %f x %f mm", uniVolume->m_Delta[AXIS_X], uniVolume->m_Delta[AXIS_Y], uniVolume->m_Delta[AXIS_Z] );
 
-	new QLabel( psize, gridBox );
+	gridLayout->addWidget( new QLabel( psize, gridBox ), 3, 1 );
 	} 
       else
 	{
-	new QLabel( "Type: ", gridBox );
-	new QLabel( "Non-uniform rectilinear", gridBox );	
+	gridLayout->addWidget( new QLabel( "Type: ", gridBox ), 0, 0 );
+	gridLayout->addWidget( new QLabel( "Non-uniform rectilinear", gridBox ), 0, 1 );
 	}
       }
     }

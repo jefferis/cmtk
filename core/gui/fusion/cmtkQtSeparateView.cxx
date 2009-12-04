@@ -32,7 +32,7 @@
 #include <cmtkQtSeparateView.h>
 
 #include <qlayout.h>
-#include <Q3VBoxLayout>
+#include <QVBoxLayout>
 
 namespace
 cmtk
@@ -44,7 +44,7 @@ QtSeparateView::QtSeparateView( QtSimpleFusionApp* fusionApp, QWidget *const par
   this->setCaption( "Separate Display" );
 
   // transform the default vertical view layout into a horizontal layout
-  ViewLayout->setDirection( Q3BoxLayout::LeftToRight );
+  ViewLayout->setDirection( QBoxLayout::LeftToRight );
 
   this->Left.Construct( this, ViewLayout, "Left:" );
   QObject::connect( this->Left.StudyNamesBox, SIGNAL( signalActivated(const QString&) ), this, SLOT( slotSwitchStudyL( const QString& ) ) );
@@ -63,7 +63,7 @@ void
 QtSeparateView::UI::Construct
 ( QWidget *const parent, QLayout *const inLayout, const QString& label )
 {
-  Q3VBoxLayout* layout = new Q3VBoxLayout( inLayout );
+  QVBoxLayout* layout = new QVBoxLayout( inLayout );
   StudyNamesBox = new QtStudyNamesBox( parent, "StudyNamesBox" );
   StudyNamesBox->slotSetLabel( label );
   layout->addWidget( StudyNamesBox );

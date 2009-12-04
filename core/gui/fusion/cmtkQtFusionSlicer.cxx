@@ -34,13 +34,13 @@
 #include <cmtkQtFusionGlobal.h>
 
 #include <qlayout.h>
-#include <q3vgroupbox.h>
+#include <qgroupbox.h>
+#include <qbuttongroup.h>
 #include <qradiobutton.h>
 #include <qcheckbox.h>
 #include <qpushbutton.h>
 
-#include <Q3VBoxLayout>
-#include <Q3ButtonGroup>
+#include <QVBoxLayout>
 
 #include <cmtkQtSimpleFusionApp.h>
 #include <cmtkRendererCollection.h>
@@ -62,25 +62,40 @@ QtFusionSlicer::QtFusionSlicer( QtSimpleFusionApp *const fusionApp ) :
   StudyNamesList = new QStringList;
   TargetStudyNamesList = new QStringList;
 
-  Q3VBoxLayout* layout = new Q3VBoxLayout( this );
+  QVBoxLayout* layout = new QVBoxLayout( this );
 
   ReferenceBox = new QtStudyNamesBox( this, "ReferenceBox" );
   ReferenceBox->slotSetLabel( "Reference Study:" );
   layout->addWidget( ReferenceBox );
   QObject::connect( ReferenceBox, SIGNAL( signalActivated( const QString& ) ), this, SLOT( slotSetReferenceStudy( const QString& ) ) );
 
-  Q3ButtonGroup* orientButtonGroup = new Q3VButtonGroup( "Orientation", this, "OrientButtonGroup" );
-  orientButtonGroup->insert( new QRadioButton( "Axial", orientButtonGroup ), AXIS_Z );
-  orientButtonGroup->insert( new QRadioButton( "Sagittal", orientButtonGroup ), AXIS_X );
-  orientButtonGroup->insert( new QRadioButton( "Coronal", orientButtonGroup ), AXIS_Y );
-  orientButtonGroup->setExclusive( true );
-  orientButtonGroup->setButton( AXIS_Z );
-  QObject::connect( orientButtonGroup, SIGNAL( clicked( int ) ), this, SLOT( slotSetOrientation( int ) ) );
-  layout->addWidget( orientButtonGroup );
+  QGroupBox* orientButtonBox = new QGroupBox( "Orientation", this, "OrientButtonGroup" );
 
-  Q3GroupBox* sliceGroupBox = new Q3VGroupBox( this, "SliceGroupBox" );
+  QButtonGroup* orientButtonGroup = new QButtonGroup( orientButtonBox );
+  orientButtonGroup->setExclusive( true );
+  
+  QVBoxLayout *orientLayout = new QVBoxLayout;
+  orientButtonBox->setLayout( orientLayout );
+
+  QRadioButton* axialButton = new QRadioButton( "Axial", orientButtonBox );
+  orientLayout->addWidget( axialButton );
+  orientButtonGroup->addButton( axialButton, AXIS_Z );
+  
+  QRadioButton* sagittalButton = new QRadioButton( "Sagittal", orientButtonBox );
+  orientLayout->addWidget( sagittalButton );
+  orientButtonGroup->addButton( sagittalButton, AXIS_X );
+
+  QRadioButton* coronalButton = new QRadioButton( "Coronal", orientButtonBox );
+  orientLayout->addWidget( coronalButton );
+  orientButtonGroup->addButton( coronalButton, AXIS_Y );
+
+  axialButton->setChecked( true );
+
+  QObject::connect( orientButtonGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( slotSetOrientation( int ) ) );
+  layout->addWidget( orientButtonBox );
+
+  QGroupBox* sliceGroupBox = new QGroupBox( this, "SliceGroupBox" );
   sliceGroupBox->setTitle( "Slice Plane Parameters" );
-  layout->addWidget( sliceGroupBox );
 
   SliceSlider = new QtSliderEntry( sliceGroupBox, "SliceSlider" );
   SliceSlider->slotSetPrecision( 2 );
@@ -88,22 +103,47 @@ QtFusionSlicer::QtFusionSlicer( QtSimpleFusionApp *const fusionApp ) :
 
   QPushButton* centerButton = new QPushButton( "Center", sliceGroupBox, "CenterButton" );
   QObject::connect( centerButton, SIGNAL( clicked() ), SliceSlider, SLOT( slotCenter() ) );
+
+  QVBoxLayout *sliceLayout = new QVBoxLayout;
+  sliceLayout->addWidget( SliceSlider );
+  sliceLayout->addWidget( centerButton );
+  sliceLayout->addStretch(1);
+
+  layout->addWidget( sliceGroupBox );
   
-  Q3ButtonGroup* interButtonGroup = new Q3VButtonGroup( "Interpolation", this, "InterButtonGroup" );
-  interButtonGroup->insert( new QRadioButton( "Nearest Neighbor", interButtonGroup ), cmtk::Interpolators::NEAREST_NEIGHBOR );
-  interButtonGroup->insert( new QRadioButton( "Linear", interButtonGroup ), cmtk::Interpolators::LINEAR );
-  interButtonGroup->insert( new QRadioButton( "Cubic", interButtonGroup ), cmtk::Interpolators::CUBIC );
-  interButtonGroup->insert( new QRadioButton( "Partial Volume", interButtonGroup ), cmtk::Interpolators::PARTIALVOLUME );
+  QGroupBox* interButtonBox = new QGroupBox( "Interpolation", this, "InterButtonBox" );
+
+  QButtonGroup* interButtonGroup = new QButtonGroup( interButtonBox );
   interButtonGroup->setExclusive( true );
-  QObject::connect( interButtonGroup, SIGNAL( clicked( int ) ), this, SLOT( slotSetInterpolation( int ) ) );
-  interButtonGroup->setButton( cmtk::Interpolators::LINEAR );
-  layout->addWidget( interButtonGroup );
+  
+  QVBoxLayout *interLayout = new QVBoxLayout;
+  interButtonBox->setLayout( interLayout );
+
+  QRadioButton* nnButton = new QRadioButton( "Nearest Neighbor", interButtonBox );
+  interLayout->addWidget( nnButton );
+  interButtonGroup->addButton( nnButton, cmtk::Interpolators::NEAREST_NEIGHBOR );
+  
+  QRadioButton* linearButton = new QRadioButton( "Linear", interButtonBox );
+  interLayout->addWidget( linearButton );
+  interButtonGroup->addButton( linearButton, cmtk::Interpolators::LINEAR );
+  
+  QRadioButton* cubicButton = new QRadioButton( "Cubic", interButtonBox );
+  interLayout->addWidget( cubicButton );
+  interButtonGroup->addButton( cubicButton, cmtk::Interpolators::CUBIC );
+
+  QRadioButton* pvButton = new QRadioButton( "Partial Volume", interButtonBox );
+  interLayout->addWidget( pvButton );
+  interButtonGroup->addButton( pvButton, cmtk::Interpolators::PARTIALVOLUME );
+  
+  linearButton->setChecked( true );
+
+  QObject::connect( interButtonGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( slotSetInterpolation( int ) ) );
+  layout->addWidget( interButtonBox );
 
   QCheckBox* warpBox = new QCheckBox( "Apply Warp", this, "WarpCheckBox" );
   warpBox->setChecked( false );
   layout->addWidget( warpBox );
-  QObject::connect( warpBox, SIGNAL( stateChanged( int ) ), this, SLOT( slotApplyWarp( int ) ) );
-  
+  QObject::connect( warpBox, SIGNAL( stateChanged( int ) ), this, SLOT( slotApplyWarp( int ) ) );  
 
   QPushButton* closeButton = new QPushButton( "Close", this, "CloseButton" );
   QObject::connect( closeButton, SIGNAL( clicked() ), this, SLOT( hide() ) );

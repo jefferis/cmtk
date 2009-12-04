@@ -35,8 +35,8 @@
 #include <qmessagebox.h>
 #include <qcombobox.h>
 #include <qlayout.h>
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 namespace
 cmtk
@@ -63,10 +63,10 @@ QtStudyWidget::QtStudyWidget
 
   QObject::connect( ScrollRenderView, SIGNAL( indexChanged( int ) ), this, SLOT( slotSwitchImage( int ) ) );
 
-  Q3BoxLayout* topLevelLayout = new Q3HBoxLayout( this );
+  QBoxLayout* topLevelLayout = new QHBoxLayout( this );
   topLevelLayout->addWidget( ScrollRenderView );
 
-  Q3BoxLayout* rightLayout = new Q3VBoxLayout( topLevelLayout );
+  QBoxLayout* rightLayout = new QVBoxLayout( topLevelLayout );
   topLevelLayout->setStretchFactor( rightLayout, 0 );
 
   WindowLevelBox = new QtWindowLevelControls( this );
