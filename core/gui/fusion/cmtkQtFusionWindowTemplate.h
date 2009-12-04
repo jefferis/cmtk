@@ -36,7 +36,7 @@
 
 #include <qwidget.h>
 #include <qlayout.h>
-#include <q3groupbox.h>
+#include <qgroupbox.h>
 #include <qmenubar.h>
 #include <qmenu.h>
 
@@ -136,7 +136,7 @@ protected:
   QBoxLayout* ControlsLayout;
 
   /// Qt box for bottom of the window (button area).
-  Q3GroupBox* ButtonBox;
+  QGroupBox* ButtonBox;
 
   /// This function is called by all slots that change the list of studies.
   virtual void UpdateStudySelection() {};

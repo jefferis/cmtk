@@ -33,7 +33,7 @@
 #include <cmtkQtFusionGlobal.h>
 
 #include <qpushbutton.h>
-#include <q3hgroupbox.h>
+#include <qgroupbox.h>
 #include <qfiledialog.h>
 #include <QVBoxLayout>
 #include <QMenu>
@@ -82,7 +82,7 @@ QtFusionWindowTemplate::QtFusionWindowTemplate
   ViewLayout = new QBoxLayout( WindowLayout, QBoxLayout::TopToBottom );
   ControlsLayout = new QVBoxLayout( WindowLayout );
 
-  ButtonBox = new Q3HGroupBox( this );
+  ButtonBox = new QGroupBox( this );
   MasterLayout->addWidget( ButtonBox );
 
   QPushButton* updateButton = new QPushButton( "Update", ButtonBox, "UpdateButton" );
