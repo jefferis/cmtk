@@ -47,8 +47,8 @@ cmtk
 //@{
 
 QtRenderImageRGB::QtRenderImageRGB
-( QWidget *const parent, const char* name, Qt::WFlags f )
-  : QWidget( parent, name, f ),
+( QWidget *const parent, Qt::WFlags f )
+  : QWidget( parent, f ),
     ZoomFactorPercent( 100 ),
     FlipX( false ), FlipY( false ),
     Annotations( new ViewerAnnotations ),
@@ -99,11 +99,11 @@ QtRenderImageRGB::RenderTo( QPaintDevice *pd, const bool annotate )
   Input->GetDims( width, height );
 
   this->setFixedSize( ZoomFactorPercent * width / 100, ZoomFactorPercent * height / 100 );
-  Image.create( width, height, 32 );
+  Image = QImage( width, height, QImage::Format_RGB32 );
   memcpy( Image.bits(), imageDataRGB, width * height * 4 );
 
   if ( FlipX || FlipY )
-    Image = Image.mirror( FlipX, FlipY );
+    Image = Image.mirrored( FlipX, FlipY );
 
   if ( ZoomFactorPercent != 100 ) 
     {
@@ -212,8 +212,7 @@ QtRenderImageRGB::CaptureDisplay()
 
   QPixmap* capture = new QPixmap( ZoomFactorPercent * image->GetDims( AXIS_X ) / 100, ZoomFactorPercent * image->GetDims( AXIS_Y ) / 100 );
   this->RenderTo( capture );
-  QImage qimage = capture->convertToImage();
-  qimage.convertDepth( 32 );
+  QImage qimage = capture->toImage().convertToFormat( QImage::Format_RGB32 );
   delete capture;
 
   byte* toPtr = image->GetDataPtr( true /* forceAlloc */ );
@@ -228,16 +227,6 @@ QtRenderImageRGB::CaptureDisplay()
     ++fromPtr;
     }
   return image;
-}
-
-QPixmap 
-QtRenderImageRGB::GetIcon( const unsigned int size )
-{
-  if ( Input == NULL ) return QPixmap( size, size );
-
-  QPixmap capture( Input->GetDims( AXIS_X ), Input->GetDims( AXIS_Y ) );
-  this->RenderTo( &capture, false /* annotate */ );
-  return QPixmap( capture.convertToImage().scaled( size, size ) );
 }
 
 QPixmap

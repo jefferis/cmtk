@@ -118,10 +118,10 @@ signals:
   void indexChanged( int );
 
   /// This signal is emitted when a mouse button is pressed on the viewer.
-  void signalMousePressed( Qt::ButtonState button, int x, int y );
+  void signalMousePressed( Qt::MouseButton button, int x, int y );
 
   /// This signal is emitted when a mouse button is pressed on the viewer.
-  void signalMouse3D( Qt::ButtonState button, const Vector3D& v );
+  void signalMouse3D( Qt::MouseButton button, const Vector3D& v );
 
 public slots:
   /// Connect render view to an RGB image object.

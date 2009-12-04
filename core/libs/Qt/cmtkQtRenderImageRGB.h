@@ -104,16 +104,13 @@ class QtRenderImageRGB :
 
 public:
   /// Constructor.
-  QtRenderImageRGB( QWidget *const parent = 0, const char* name = 0, Qt::WFlags f = 0 );
+  QtRenderImageRGB( QWidget *const parent = 0, Qt::WFlags f = 0 );
 
   /// Destructor.
   virtual ~QtRenderImageRGB();
 
   /// The actual renderer function.
   virtual void Execute();
-
-  /// Return iconized version of currently displayed image.
-  QPixmap GetIcon( const unsigned int size );
 
   /// Return currently displayed image.
   QPixmap GetPixmap();
@@ -130,10 +127,10 @@ public:
 
 signals:
   /// This signal is emitted when a mouse button is pressed on the widget.
-  void signalMousePressed( Qt::ButtonState button, int x, int y );
+  void signalMousePressed( Qt::MouseButton button, int x, int y );
 
   /// This signal is emitted when a mouse button is pressed on the widget.
-  void signalMouse3D( Qt::ButtonState button, const Vector3D& v );
+  void signalMouse3D( Qt::MouseButton button, const Vector3D& v );
 
 protected:
   /// Repaint widget.

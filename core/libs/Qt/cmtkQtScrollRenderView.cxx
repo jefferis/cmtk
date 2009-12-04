@@ -129,8 +129,8 @@ void QtScrollRenderView::slotSetNumberOfSlices( unsigned int nSlices )
   if ( nSlices ) 
     {
     ImageIndexSlider->setEnabled( true );
-    ImageIndexSlider->setMinValue( 0 );
-    ImageIndexSlider->setMaxValue( nSlices - 1 );
+    ImageIndexSlider->setMinimum( 0 );
+    ImageIndexSlider->setMaximum( nSlices - 1 );
 
     if ( ImageIndexSlider->value() < 0 || ImageIndexSlider->value() >= (int)nSlices )
       {
@@ -146,7 +146,7 @@ void QtScrollRenderView::slotSetNumberOfSlices( unsigned int nSlices )
 
 void QtScrollRenderView::slotSetSlice( unsigned int slice )
 {
-  if ( slice <= static_cast<unsigned>(ImageIndexSlider->maxValue()) ) 
+  if ( slice <= static_cast<unsigned>(ImageIndexSlider->maximum()) ) 
     {
     ImageIndexSlider->setValue( slice );
     }
