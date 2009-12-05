@@ -76,7 +76,6 @@ int main( int argc, char* argv[] )
 	    viewer->slotAddStudy( argv[i] );
 	    }
 	  viewer->show();
-	  app.setMainWidget( viewer );
 	  
 	  return app.exec();
 	  }
