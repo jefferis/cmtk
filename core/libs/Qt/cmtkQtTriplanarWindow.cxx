@@ -75,7 +75,7 @@ QtTriplanarWindow::QtTriplanarWindow()
 
   MenuBar = new QMenuBar( this );
 
-  QMenu* ViewMenu = MenuBar->addMenu( "&View" );
+  this->ViewMenu = MenuBar->addMenu( "&View" );
   action = ViewMenu->addAction( "25%", this, SLOT( slotView25() ) );
   action->setCheckable( true );
   this->m_ZoomActions->addAction( action );
@@ -111,7 +111,7 @@ QtTriplanarWindow::QtTriplanarWindow()
   (this->m_CheckerboxAction = ViewMenu->addAction( "C&heckerbox", this, SLOT( slotViewCheckerbox() ) ))->setCheckable( true );
   this->m_CheckerboxAction->setChecked( true );
   
-  QMenu* ExportMenu = MenuBar->addMenu( "&Export" );
+  this->ExportMenu = MenuBar->addMenu( "&Export" );
   ExportMenu->addAction( "&Axial" )->setData( QVariant( 1 ) );
   ExportMenu->addAction( "&Coronal" )->setData( QVariant( 2 ) );
   ExportMenu->addAction( "&Sagittal" )->setData( QVariant( 3 ) );
@@ -125,12 +125,11 @@ QtTriplanarWindow::QtTriplanarWindow()
   StatusBar->show();
   GridIndexInfo = new QLabel( StatusBar );
   GridIndex[0] = GridIndex[1] = GridIndex[2] = 0;
-  StatusBar->addWidget( GridIndexInfo );
+  StatusBar->addWidget( GridIndexInfo, 1 );
 
   GridLayout = new QGridLayout( this );
   GridLayout->setMenuBar( MenuBar );
-//  GridLayout->addWidget( StatusBar, 2, 2, 0, 1 );
-  GridLayout->addWidget( StatusBar, 2, 0, 1, 1 );
+  GridLayout->addWidget( StatusBar, 2, 0, 1, 2 );
 
   ScrollRenderViewAx = new QtScrollRenderView( this, "Axial" );
   ScrollRenderViewAx->SetSliderLabelL( "I" );
@@ -339,7 +338,7 @@ QtTriplanarWindow::slotExportMenuCmd( QAction* action )
     }
   
   QString filename( "image.png" );
-  filename = QFileDialog::getSaveFileName( this, title, filename, "Portable Network Graphic (*.png)" );
+  filename = QFileDialog::getSaveFileName( this, title, filename, "Portable Network Graphic (*.png);; Tagged Image File Format (*.tif);; JPEG (*.jpg)" );
   
   if ( !filename.isEmpty() ) 
     {
@@ -369,12 +368,13 @@ QtTriplanarWindow::slotExportImage( const QString& filename, const int command )
     QPixmap pixmapSa = ScrollRenderViewSa->GetRenderImage()->GetPixmap();
     QPixmap pixmapCo = ScrollRenderViewCo->GetRenderImage()->GetPixmap();
     
-    QPixmap pixmap( pixmapCo.width() + pixmapSa.width(), pixmapCo.height() + pixmapAx.height() );
+    pixmap = QPixmap( pixmapCo.width() + pixmapSa.width(), pixmapCo.height() + pixmapAx.height() );
     QPainter painter( &pixmap );
 
     painter.drawPixmap( 0, 0, pixmapCo.width(), pixmapCo.height(), pixmapCo );
     painter.drawPixmap( pixmapCo.width(), 0, pixmapSa.width(), pixmapSa.height(), pixmapSa );
     painter.drawPixmap( 0, pixmapCo.height(), pixmapAx.width(), pixmapAx.height(), pixmapAx );
+    painter.fillRect( pixmapCo.width(), pixmapCo.height(), pixmapSa.width(), pixmapAx.height(), Qt::black );
     break;
     }
     }

@@ -54,6 +54,7 @@ QtTriplanarViewer::QtTriplanarViewer()
   : WindowLevel( NULL )
 {
   this->setWindowTitle( "Triplanar Image Viewer" );
+
   QMenu* StudyMenu = new QMenu();
   StudyMenu->setTitle( "&Study" );
   StudyMenu->addAction( "&Load...", this, SLOT( slotLoadFile() )  );
@@ -69,7 +70,7 @@ QtTriplanarViewer::QtTriplanarViewer()
   QObject::connect( imageOperators, SIGNAL( dataChanged( Study::SmartPtr& ) ), this, SLOT( slotDataChanged( Study::SmartPtr& ) ) );
   
   // insert "Study" as first menu.
-  MenuBar->addMenu( StudyMenu );
+  MenuBar->insertMenu( this->ViewMenu->menuAction(), StudyMenu );
   // insert "Operators" after "View".
   MenuBar->addMenu( imageOperators->CreatePopupMenu() );
   MenuBar->show();

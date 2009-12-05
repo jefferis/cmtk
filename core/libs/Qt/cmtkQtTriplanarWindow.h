@@ -167,6 +167,12 @@ protected slots:
   void slotImportLandmarks();
 
 protected:
+  /// The "View" menu.
+  QMenu* ViewMenu;
+
+  /// The "Export" menu.
+  QMenu* ExportMenu;
+
   /// Store volume dimensions here for convenient access.
   unsigned int VolumeDims[3];
 
@@ -210,7 +216,7 @@ protected:
 
   QTabWidget* m_ControlsTab;
   QtProgress* m_ProgressReporter;
- 
+
 private:
   /// The pixel grid index of the current location.
   int GridIndex[3];
