@@ -63,7 +63,7 @@ QtImageOperators::CreatePopupMenu()
 }
 
 void
-QtImageOperators::slotOperatorsMedian()
+QtImageOperators::slotOperatorMedian()
 {
   if ( this->StudyDataValid() ) 
     {
@@ -85,7 +85,7 @@ QtImageOperators::slotOperatorsMedian()
 }
 
 void
-QtImageOperators::slotOperatorsSobel()
+QtImageOperators::slotOperatorSobel()
 {
   if ( this->StudyDataValid() ) 
     {
@@ -97,7 +97,7 @@ QtImageOperators::slotOperatorsSobel()
 }
 
 void
-QtImageOperators::slotOperatorsHistEq()
+QtImageOperators::slotOperatorHistEq()
 {
   if ( this->StudyDataValid() ) 
     {
@@ -121,7 +121,7 @@ QtImageOperators::slotOperatorsHistEq()
 }
 
 void
-QtImageOperators::slotOperatorsAbs()
+QtImageOperators::slotOperatorAbs()
 {
   if ( this->StudyDataValid() ) 
     {
@@ -131,7 +131,7 @@ QtImageOperators::slotOperatorsAbs()
 }
 
 void
-QtImageOperators::slotOperatorsLog()
+QtImageOperators::slotOperatorLog()
 {
   if ( this->StudyDataValid() ) 
     {
@@ -141,7 +141,7 @@ QtImageOperators::slotOperatorsLog()
 }
 
 void
-QtImageOperators::slotOperatorsExp()
+QtImageOperators::slotOperatorExp()
 {
   if ( this->StudyDataValid() ) 
     {

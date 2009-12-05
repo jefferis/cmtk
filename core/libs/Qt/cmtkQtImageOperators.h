@@ -57,12 +57,12 @@ class QtImageOperators :
 
 public slots:
   /// Slot to open selected type of fusion window.
-  void slotOperatorsMedian();
-  void slotOperatorsSobel();
-  void slotOperatorsHistEq();
-  void slotOperatorsAbs();
-  void slotOperatorsLog();
-  void slotOperatorsExp();
+  void slotOperatorMedian();
+  void slotOperatorSobel();
+  void slotOperatorHistEq();
+  void slotOperatorAbs();
+  void slotOperatorLog();
+  void slotOperatorExp();
 
 signals:
   /// This signal is sent when the image data has been changed.
