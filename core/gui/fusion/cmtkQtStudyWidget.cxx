@@ -136,7 +136,7 @@ QtStudyWidget::slotSwitchImage( int imageIndex )
     } 
   else 
     {
-    qWarning( "QtAdjustColormap::SwitchImage called with no image data loaded.\n" );
+    qWarning( "QtStudyWidget::slotSwitchImage called with no image data loaded.\n" );
     }
 }
 

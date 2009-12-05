@@ -31,7 +31,6 @@ SET(INIT_SRCS ${CMAKE_SOURCE_DIR}/libs/init/initStackBacktrace.cxx)
 
 # Sources of non-templated classes.
 SET(fusion_SRCS
-  cmtkQtAdjustColormap.cxx
   cmtkQtFusionAlpha.cxx
   cmtkQtFusionEdge.cxx
   cmtkQtFusionSlicer.cxx
@@ -49,7 +48,6 @@ SET(fusion_SRCS
 )
 
 SET(fusion_MOC_SRCS
-  cmtkQtAdjustColormap.h
   cmtkQtFusionAlpha.h
   cmtkQtFusionEdge.h
   cmtkQtFusionSlicer.h
