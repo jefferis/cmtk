@@ -338,7 +338,7 @@ QtTriplanarWindow::slotExportMenuCmd( QAction* action )
     }
   
   QString filename( "image.png" );
-  filename = QFileDialog::getSaveFileName( this, title, filename, "Portable Network Graphic (*.png);; Tagged Image File Format (*.tif);; JPEG (*.jpg)" );
+  filename = QFileDialog::getSaveFileName( this, title, filename, "Portable Network Graphic (*.png);; Tagged Image File Format (*.tif);; Portable Pixmap (*.ppm *.pgm);; JPEG (*.jpg)" );
   
   if ( !filename.isEmpty() ) 
     {
