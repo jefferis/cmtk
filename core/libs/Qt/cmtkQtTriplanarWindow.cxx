@@ -125,11 +125,12 @@ QtTriplanarWindow::QtTriplanarWindow()
   StatusBar->show();
   GridIndexInfo = new QLabel( StatusBar );
   GridIndex[0] = GridIndex[1] = GridIndex[2] = 0;
-  StatusBar->insertWidget( 1, GridIndexInfo );
+  StatusBar->addWidget( GridIndexInfo );
 
   GridLayout = new QGridLayout( this );
   GridLayout->setMenuBar( MenuBar );
-  GridLayout->addWidget( StatusBar, 2, 2, 0, 1 );
+//  GridLayout->addWidget( StatusBar, 2, 2, 0, 1 );
+  GridLayout->addWidget( StatusBar, 2, 0, 1, 1 );
 
   ScrollRenderViewAx = new QtScrollRenderView( this, "Axial" );
   ScrollRenderViewAx->SetSliderLabelL( "I" );
@@ -203,7 +204,8 @@ QtTriplanarWindow::QtTriplanarWindow()
   QObject::connect( GoToLocationButton, SIGNAL( clicked() ), this, SLOT( slotGoToLocation() ) );
 
   LandmarkBox = new QComboBox( landmarksTab );
-  LandmarksLayout->addWidget( LandmarkBox, 2, 2, 0, 2 );
+//  LandmarksLayout->addWidget( LandmarkBox, 2, 2, 0, 2 );
+  LandmarksLayout->addWidget( LandmarkBox, 2, 0, 1, 2 );
   LandmarkBox->setEnabled( false );
   QObject::connect( LandmarkBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( slotGoToLandmark() ) );
 

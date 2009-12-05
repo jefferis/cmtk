@@ -62,7 +62,8 @@ QtSliderEntry::QtSliderEntry( QWidget* parent )
 
   Slider = new QSlider( Qt::Horizontal, this );
   QObject::connect( Slider, SIGNAL( valueChanged( int ) ), this, SLOT( slotSliderValueChanged( int ) ) );
-  Layout->addWidget( Slider, 1, 1, 0, 1 );
+//  Layout->addWidget( Slider, 1, 1, 0, 1 );
+  Layout->addWidget( Slider, 1, 0, 1, 2 );
 
   Edit = new QLineEdit( this );
   Edit->setFixedWidth( 100 );
@@ -134,7 +135,8 @@ void
 QtSliderEntry::slotSetTitle( const QString& title )
 {
   TitleLabel->setText( title );
-  Layout->addWidget( TitleLabel, 0, 0, 0, 2 );
+//  Layout->addWidget( TitleLabel, 0, 0, 0, 2 );
+  Layout->addWidget( TitleLabel, 0, 0, 1, 3 );
   TitleLabel->show();
 }
 
