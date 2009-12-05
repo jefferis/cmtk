@@ -403,7 +403,7 @@ QtTriplanarWindow::slotSwitchToStudy( Study::SmartPtr& study )
   this->m_Study = study;
   if ( this->m_Study ) 
     {
-    qApp->setOverrideCursor( Qt::waitCursor );
+    qApp->setOverrideCursor( Qt::WaitCursor );
     this->m_Study->ReadVolume(  true /* reload */, AnatomicalOrientation::ORIENTATION_STANDARD );
     qApp->restoreOverrideCursor();
     
@@ -439,7 +439,7 @@ QtTriplanarWindow::slotSwitchToStudy( Study::SmartPtr& study )
       LandmarkList::const_iterator ll_it = ll->begin();
       while ( ll_it != ll->end() ) 
 	{
-	LandmarkBox->insertItem( (*ll_it)->GetName() );
+	LandmarkBox->addItem( (*ll_it)->GetName() );
 	++ll_it;
 	}
       }
@@ -512,7 +512,7 @@ QtTriplanarWindow::UpdateDialog()
       }
     
     QString caption;
-    this->setCaption( caption.sprintf( "Triplanar Viewer: %s", this->m_Study->GetName() ) );
+    this->setWindowTitle( caption.sprintf( "CMTK Triplanar Viewer: %s", this->m_Study->GetName() ) );
     this->show();
     }
 }
@@ -765,7 +765,7 @@ QtTriplanarWindow::slotGoToLandmark()
   const LandmarkList *ll = this->m_Study->GetLandmarkList();
   if ( ! ll ) return;
 
-  const Landmark* lm = ll->FindByName( LandmarkBox->currentText() );
+  const Landmark* lm = ll->FindByName( LandmarkBox->currentText().toLatin1() );
   if ( lm ) 
     {
     this->slotMouse3D( Qt::LeftButton, Vector3D( lm->GetLocation() ) );
@@ -798,7 +798,7 @@ QtTriplanarWindow::slotExportLandmarks()
 	Vector3D v( (*it)->GetLocation() );
 	QString n( (*it)->GetName() );
 
-	stream << v[0] << "\t" << v[1] << "\t" << v[2] << "\t" << n.toLatin1() << std::endl;
+	stream << v[0] << "\t" << v[1] << "\t" << v[2] << "\t" << (const char*)(n.toLatin1()) << std::endl;
 	}
       stream.close();
       } 

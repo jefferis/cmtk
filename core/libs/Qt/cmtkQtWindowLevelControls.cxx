@@ -43,8 +43,8 @@ cmtk
 //@{
 
 QtWindowLevelControls::QtWindowLevelControls
-( QWidget *const parent, const char* name )
-  : QWidget( parent, name ),
+( QWidget *const parent )
+  : QWidget( parent ),
     m_Study( NULL )
 {
   Layout = new QVBoxLayout( this );
@@ -55,7 +55,7 @@ QtWindowLevelControls::QtWindowLevelControls
   
   for ( unsigned int colormapIndex = 0; Colormap::StandardColormaps[colormapIndex]; ++colormapIndex ) 
     {
-    colormapBox->insertItem( Colormap::StandardColormaps[colormapIndex] );
+    colormapBox->addItem( Colormap::StandardColormaps[colormapIndex] );
     }
   
   QObject::connect( colormapBox, SIGNAL( activated( int ) ), this, SLOT( slotSelectColormap( int ) ) );

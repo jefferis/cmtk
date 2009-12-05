@@ -76,7 +76,7 @@ private slots:
 
 public:
   /// Constructor.
-  QtWindowLevelControls( QWidget *const parent, const char* name = 0 );
+  QtWindowLevelControls( QWidget *const parent );
 
 private:
   /// The study object that we're working on.

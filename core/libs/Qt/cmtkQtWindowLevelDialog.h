@@ -54,7 +54,7 @@ class QtWindowLevelDialog :
 
 public:
   /// Constructor.
-  QtWindowLevelDialog( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags f = 0 );
+  QtWindowLevelDialog( QWidget* parent = 0, bool modal = FALSE, Qt::WFlags f = 0 );
 
   /// Virtual destructor.
   virtual ~QtWindowLevelDialog() {}

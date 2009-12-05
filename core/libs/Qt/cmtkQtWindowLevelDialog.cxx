@@ -44,11 +44,12 @@ cmtk
 //@{
 
 QtWindowLevelDialog::QtWindowLevelDialog
-( QWidget* parent, const char* name, bool modal, Qt::WFlags f )
-  : QDialog( parent, name, modal, f )
+( QWidget* parent, bool modal, Qt::WFlags f )
+  : QDialog( parent, f )
 {
-  this->setIcon( QtIcons::WindowIcon() );
-  this->setCaption( "Window/Level Control" );
+  this->setModal( modal );
+  this->setWindowIcon( QtIcons::WindowIcon() );
+  this->setWindowTitle( "Window/Level Control" );
 
   QBoxLayout* layout = new QVBoxLayout( this );
 
