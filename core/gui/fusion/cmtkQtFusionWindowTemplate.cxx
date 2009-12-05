@@ -43,10 +43,9 @@ cmtk
 {
 
 QtFusionWindowTemplate::QtFusionWindowTemplate
-( QtSimpleFusionApp *const fusionApp, QWidget *const parent, 
-  const char* name, Qt::WFlags flags ) 
+( QtSimpleFusionApp *const fusionApp, QWidget *const parent, Qt::WFlags flags ) 
   :
-  QWidget( parent, name, flags ),
+  QWidget( parent, flags ),
   ZoomFactorPercent( 100 ),
   AxesMode( false ),
   FusionApp( fusionApp )

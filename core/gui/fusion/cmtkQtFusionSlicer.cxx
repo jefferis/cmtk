@@ -50,11 +50,11 @@ cmtk
 {
 
 QtFusionSlicer::QtFusionSlicer( QtSimpleFusionApp *const fusionApp ) :
-  QWidget( NULL, "FusionSlicer", 0 ),
+  QWidget( NULL, 0 ),
   FusionApp( fusionApp )
 {
-  this->setIcon( QtFusionGlobal::WindowIcon() );
-  this->setCaption( "Planar Slicer" );
+  this->setWindowIcon( QtFusionGlobal::WindowIcon() );
+  this->setWindowTitle( "Planar Slicer" );
   this->hide();
   this->setSizePolicy( QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed ) );
 
@@ -64,12 +64,12 @@ QtFusionSlicer::QtFusionSlicer( QtSimpleFusionApp *const fusionApp ) :
 
   QVBoxLayout* layout = new QVBoxLayout( this );
 
-  ReferenceBox = new QtStudyNamesBox( this, "ReferenceBox" );
+  ReferenceBox = new QtStudyNamesBox( this );
   ReferenceBox->slotSetLabel( "Reference Study:" );
   layout->addWidget( ReferenceBox );
   QObject::connect( ReferenceBox, SIGNAL( signalActivated( const QString& ) ), this, SLOT( slotSetReferenceStudy( const QString& ) ) );
 
-  QGroupBox* orientButtonBox = new QGroupBox( "Orientation", this, "OrientButtonGroup" );
+  QGroupBox* orientButtonBox = new QGroupBox( "Orientation", this );
 
   QButtonGroup* orientButtonGroup = new QButtonGroup( orientButtonBox );
   orientButtonGroup->setExclusive( true );
@@ -94,14 +94,14 @@ QtFusionSlicer::QtFusionSlicer( QtSimpleFusionApp *const fusionApp ) :
   QObject::connect( orientButtonGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( slotSetOrientation( int ) ) );
   layout->addWidget( orientButtonBox );
 
-  QGroupBox* sliceGroupBox = new QGroupBox( this, "SliceGroupBox" );
+  QGroupBox* sliceGroupBox = new QGroupBox( this );
   sliceGroupBox->setTitle( "Slice Plane Parameters" );
 
-  SliceSlider = new QtSliderEntry( sliceGroupBox, "SliceSlider" );
+  SliceSlider = new QtSliderEntry( sliceGroupBox );
   SliceSlider->slotSetPrecision( 2 );
   QObject::connect( SliceSlider, SIGNAL( valueChanged( double ) ), this, SLOT( slotSetSlicePosition( double ) ) );
 
-  QPushButton* centerButton = new QPushButton( "Center", sliceGroupBox, "CenterButton" );
+  QPushButton* centerButton = new QPushButton( "Center", sliceGroupBox );
   QObject::connect( centerButton, SIGNAL( clicked() ), SliceSlider, SLOT( slotCenter() ) );
 
   QVBoxLayout *sliceLayout = new QVBoxLayout;
@@ -111,7 +111,7 @@ QtFusionSlicer::QtFusionSlicer( QtSimpleFusionApp *const fusionApp ) :
 
   layout->addWidget( sliceGroupBox );
   
-  QGroupBox* interButtonBox = new QGroupBox( "Interpolation", this, "InterButtonBox" );
+  QGroupBox* interButtonBox = new QGroupBox( "Interpolation", this );
 
   QButtonGroup* interButtonGroup = new QButtonGroup( interButtonBox );
   interButtonGroup->setExclusive( true );
@@ -140,12 +140,12 @@ QtFusionSlicer::QtFusionSlicer( QtSimpleFusionApp *const fusionApp ) :
   QObject::connect( interButtonGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( slotSetInterpolation( int ) ) );
   layout->addWidget( interButtonBox );
 
-  QCheckBox* warpBox = new QCheckBox( "Apply Warp", this, "WarpCheckBox" );
+  QCheckBox* warpBox = new QCheckBox( "Apply Warp", this );
   warpBox->setChecked( false );
   layout->addWidget( warpBox );
   QObject::connect( warpBox, SIGNAL( stateChanged( int ) ), this, SLOT( slotApplyWarp( int ) ) );  
 
-  QPushButton* closeButton = new QPushButton( "Close", this, "CloseButton" );
+  QPushButton* closeButton = new QPushButton( "Close", this );
   QObject::connect( closeButton, SIGNAL( clicked() ), this, SLOT( hide() ) );
   layout->addWidget( closeButton );
 
@@ -192,7 +192,7 @@ QtFusionSlicer::slotStudyListChanged()
 void
 QtFusionSlicer::slotSetReferenceStudy( const QString& studyName )
 {
-  Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.latin1() );
+  Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.toLatin1() );
   if ( study ) 
     {
     FusionApp->slotSetReferenceStudy( study );

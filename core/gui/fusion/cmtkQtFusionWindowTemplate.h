@@ -62,7 +62,7 @@ class QtFusionWindowTemplate :
 
 public:
   /// Constructor.
-  QtFusionWindowTemplate( QtSimpleFusionApp *const fusionApp, QWidget *const parent = 0, const char* name = 0, Qt::WFlags flags = 0 );
+  QtFusionWindowTemplate( QtSimpleFusionApp *const fusionApp, QWidget *const parent = 0, Qt::WFlags flags = 0 );
 
   /** Destructor.
    * Takes care of destroying the internal visualization pipelines.

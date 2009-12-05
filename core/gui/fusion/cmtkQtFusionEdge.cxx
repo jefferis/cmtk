@@ -40,13 +40,13 @@ cmtk
 {
 
 QtFusionEdge::QtFusionEdge( QtSimpleFusionApp *const fusionApp, QWidget *const parent, Qt::WFlags flags )
-  : QtFusionWindowTemplate( fusionApp, parent, "FusionEdgeWindow", flags ),
+  : QtFusionWindowTemplate( fusionApp, parent, flags ),
     StudyEdge( NULL ), StudyBG( NULL ),
     StudyEdgeImage( new Study )
 {
   WindowLayout->setDirection( QBoxLayout::LeftToRight );
 
-  this->setCaption( "Edge Blending" );
+  this->setWindowTitle( "Edge Blending" );
 
   View = new QtScrollRenderView( this );
   ViewLayout->addWidget( View );
@@ -54,12 +54,12 @@ QtFusionEdge::QtFusionEdge( QtSimpleFusionApp *const fusionApp, QWidget *const p
   this->m_FusionEdge = FusionEdge::New();
   View->slotConnectImage( this->m_FusionEdge->GetOutput() );
 
-  StudyNamesBoxEdge = new QtStudyNamesBox( this, "StudyBoxEdge" );
+  StudyNamesBoxEdge = new QtStudyNamesBox( this );
   StudyNamesBoxEdge->slotSetLabel( "Edge Study:" );
   QObject::connect( StudyNamesBoxEdge, SIGNAL( signalActivated(const QString&)), this, SLOT( slotSwitchStudyEdge( const QString& ) ) );
   ControlsLayout->addWidget( StudyNamesBoxEdge );
 
-  StudyNamesBoxBG = new QtStudyNamesBox( this, "StudyBoxBG" );
+  StudyNamesBoxBG = new QtStudyNamesBox( this );
   StudyNamesBoxBG->slotSetLabel( "Background Study:" );
   QObject::connect( StudyNamesBoxBG, SIGNAL( signalActivated(const QString&)), this, SLOT( slotSwitchStudyBG( const QString& ) ) );
   ControlsLayout->addWidget( StudyNamesBoxBG );
@@ -78,19 +78,19 @@ QtFusionEdge::QtFusionEdge( QtSimpleFusionApp *const fusionApp, QWidget *const p
 
   OperatorBox = new QComboBox( this );
   //  OperatorBox->setLabel( "Edge Operator" );
-  OperatorBox->insertItem( "Laplace" );
-  OperatorBox->insertItem( "Sobel" );
+  OperatorBox->addItem( "Laplace" );
+  OperatorBox->addItem( "Sobel" );
   ControlsLayout->addWidget( OperatorBox );
 
   QObject::connect( OperatorBox, SIGNAL( activated( int ) ), this, SLOT( slotParametersChanged() ) );
 
-  SmoothCheckBox = new QCheckBox( this, "GaussianSmoothing" );
+  SmoothCheckBox = new QCheckBox( this );
   SmoothCheckBox->setText( "Gaussian Smoothing" );
   ControlsLayout->addWidget( SmoothCheckBox );
 
   QObject::connect( SmoothCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( slotParametersChanged() ) );
     
-  GaussianWidthSlider = new QtSliderEntry( this, "GaussianWidth" );
+  GaussianWidthSlider = new QtSliderEntry( this );
   GaussianWidthSlider->slotSetTitle( "Gaussian Kernel Width" );
   GaussianWidthSlider->slotSetPrecision( 1 );
   GaussianWidthSlider->slotSetRange( 0.1, 4 );
@@ -149,8 +149,8 @@ QtFusionEdge::slotSetColormap( int value )
 void
 QtFusionEdge::slotParametersChanged()
 {
-  this->m_FusionEdge->EdgeOperator->SetOperator( OperatorBox->currentItem() );
-  this->m_FusionEdge->EdgeOperator->SetSmoothBeforeEdge( SmoothCheckBox->isOn() );
+  this->m_FusionEdge->EdgeOperator->SetOperator( OperatorBox->currentIndex() );
+  this->m_FusionEdge->EdgeOperator->SetSmoothBeforeEdge( SmoothCheckBox->checkState() == Qt::Checked );
   this->m_FusionEdge->EdgeOperator->SetGaussianWidth( GaussianWidthSlider->GetValue() );
   View->slotRender();
 }
@@ -158,7 +158,7 @@ QtFusionEdge::slotParametersChanged()
 void
 QtFusionEdge::slotSwitchStudyEdge( const QString& studyName )
 {
-  Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.latin1() );
+  Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.toLatin1() );
   this->m_FusionEdge->SetInput( 0, FusionSlicer->GetOutput( study ) );
   SliderFrom->setRange( static_cast<int>( study->GetMinimumValue() ), static_cast<int>( study->GetMaximumValue() ) );
   SliderTo->setRange( static_cast<int>( study->GetMinimumValue() ), static_cast<int>( study->GetMaximumValue() ) );
@@ -177,7 +177,7 @@ QtFusionEdge::slotSwitchStudyEdge( const QString& studyName )
 void
 QtFusionEdge::slotSwitchStudyBG( const QString& studyName )
 {
-  Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.latin1() );
+  Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.toLatin1() );
   this->m_FusionEdge->SetInput( 1, FusionSlicer->GetOutput( study ) );
   View->slotRender();
 
@@ -227,16 +227,16 @@ QtFusionEdge::Export
 ( const QString& path, const QString& format, const QStringList* )
 {
   QString filename;
-  filename.sprintf( path, "edg" );
+  filename.sprintf( path.toLatin1(), "edg" );
 
   QString fmt = format;
   if ( fmt == QString::null )
-    fmt = path.section( '.', -1 ).upper();
+    fmt = path.section( '.', -1 ).toUpper();
 
   QPixmap pixmap = View->GetRenderImage()->GetPixmap();
   if ( ! pixmap.isNull() ) 
     {
-    if ( !pixmap.save( filename, fmt ) )
+    if ( !pixmap.save( filename, fmt.toLatin1() ) )
       QMessageBox::warning( this, "Save failed", "Error saving file" );
     }
 }

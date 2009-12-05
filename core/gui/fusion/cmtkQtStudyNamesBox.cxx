@@ -37,8 +37,8 @@ namespace
 cmtk
 {
 
-QtStudyNamesBox::QtStudyNamesBox( QWidget *parent, const char* name )
-  : QWidget( parent, name )
+QtStudyNamesBox::QtStudyNamesBox( QWidget *parent )
+  : QWidget( parent )
 {
   Layout = new QHBoxLayout( this );
 

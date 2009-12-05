@@ -42,23 +42,23 @@ cmtk
 QtFusionAlpha::QtFusionAlpha
 ( QtSimpleFusionApp *const fusionApp, QWidget *const parent, Qt::WFlags flags )
   : 
-  QtFusionWindowTemplate( fusionApp, parent, "FusionAlphaWindow", flags ),
+  QtFusionWindowTemplate( fusionApp, parent, flags ),
   TopIsAlpha( true ),
   StudyTop( NULL ), StudyBottom( NULL )
 {
   this->setWindowTitle( "Alpha Blending" );
 
-  StudyNamesBoxTop = new QtStudyNamesBox( this, "StudyBoxTop" );
+  StudyNamesBoxTop = new QtStudyNamesBox( this );
   StudyNamesBoxTop->slotSetLabel( "Alpha Study:" );
   QObject::connect( StudyNamesBoxTop, SIGNAL( signalActivated(const QString&)), this, SLOT( slotSwitchStudyTop( const QString& ) ) );
   ViewLayout->addWidget( StudyNamesBoxTop );
 
-  StudyNamesBoxBottom = new QtStudyNamesBox( this, "StudyBoxBottom" );
+  StudyNamesBoxBottom = new QtStudyNamesBox( this );
   StudyNamesBoxBottom->slotSetLabel( "Background Study:" );
   QObject::connect( StudyNamesBoxBottom, SIGNAL( signalActivated(const QString&)), this, SLOT( slotSwitchStudyBottom( const QString& ) ) );
   ViewLayout->addWidget( StudyNamesBoxBottom );
 
-  StudyNamesBoxAlpha = new QtStudyNamesBox( this, "StudyBoxAlpha" );
+  StudyNamesBoxAlpha = new QtStudyNamesBox( this );
   StudyNamesBoxAlpha->slotSetLabel( "Transparency Study:" );
   QObject::connect( StudyNamesBoxAlpha, SIGNAL( signalActivated(const QString&)), this, SLOT( slotSwitchStudyAlpha( const QString& ) ) );
   ViewLayout->addWidget( StudyNamesBoxAlpha );

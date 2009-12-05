@@ -55,7 +55,7 @@ class QtStudyNamesBox :
 
 public:
   /// Constructor.
-  QtStudyNamesBox( QWidget *parent, const char *name );
+  QtStudyNamesBox( QWidget *parent );
 
   /// Get currently selected name.
   const QString GetCurrentName() const {
