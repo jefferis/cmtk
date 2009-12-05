@@ -58,7 +58,7 @@ QtSimpleFusionMainWindow::slotAddStudy( Study::SmartPtr& study )
     collision = false;
     for ( int idx = 0; idx < StudyTabs->count(); ++idx )
       {
-      QtStudyWidget* qtstudy = dynamic_cast<QtStudyWidget*>( StudyTabs->page( idx ) );
+      QtStudyWidget* qtstudy = dynamic_cast<QtStudyWidget*>( StudyTabs->widget( idx ) );
       if ( ! strcmp( studyName, qtstudy->GetStudy()->GetName() ) )
 	{
 	collision = true;
@@ -73,7 +73,7 @@ QtSimpleFusionMainWindow::slotAddStudy( Study::SmartPtr& study )
     }
 
   StudyTabs->addTab( studyWidget, studyName );
-  StudyTabs->showPage( studyWidget );
+  StudyTabs->setCurrentWidget( studyWidget );
 
   CurrentStudy = study;
 }
@@ -87,7 +87,7 @@ void
 QtSimpleFusionMainWindow::slotDeleteAllStudies()
 {
   while ( StudyTabs->count() )
-    StudyTabs->removePage( StudyTabs->page( 0 ) );
+    StudyTabs->removeTab( 0 );
 }
 
 } // namespace cmtk
