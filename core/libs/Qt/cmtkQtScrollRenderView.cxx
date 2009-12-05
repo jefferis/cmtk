@@ -63,8 +63,8 @@ QtScrollRenderView::QtScrollRenderView
   ScrollView->setFrameStyle( QFrame::NoFrame );
 
   // export viewer's mouse signal
-  QObject::connect( RenderImage,SIGNAL(signalMousePressed( Qt::ButtonState, int, int )), SIGNAL(signalMousePressed( Qt::ButtonState, int, int )) );
-  QObject::connect( RenderImage, SIGNAL(signalMouse3D( Qt::ButtonState, const Vector3D& )), SIGNAL(signalMouse3D( Qt::ButtonState, const Vector3D& )) );
+  QObject::connect( RenderImage,SIGNAL(signalMousePressed( Qt::MouseButton, int, int )), SIGNAL(signalMousePressed( Qt::MouseButton, int, int )) );
+  QObject::connect( RenderImage, SIGNAL(signalMouse3D( Qt::MouseButton, const Vector3D& )), SIGNAL(signalMouse3D( Qt::MouseButton, const Vector3D& )) );
   
   // lock minimum size so we can display 256x256 with not scrollbars.
   RenderImage->setMinimumSize( 256, 256 );
