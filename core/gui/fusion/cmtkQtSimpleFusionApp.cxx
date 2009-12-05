@@ -54,18 +54,17 @@ QtSimpleFusionApp::QtSimpleFusionApp( int argc, char *argv[] )
   QDir qdir = QDir::current();
   if ( qdir.exists( rcFileName ) ) 
     {
-    rcFileName = qdir.absFilePath( rcFileName );
+    rcFileName = qdir.absoluteFilePath( rcFileName );
     } 
   else
     {
     qdir = QDir::home();
-    rcFileName = qdir.absFilePath( rcFileName );
+    rcFileName = qdir.absoluteFilePath( rcFileName );
     }
   ResourceFilePath = rcFileName;
-  this->m_ResourceFile.Read( ResourceFilePath.latin1() );
+  this->m_ResourceFile.Read( ResourceFilePath.toLatin1() );
   
   MainWindow = new QtSimpleFusionMainWindow( this );
-  this->setMainWidget( MainWindow );
   
   ResourceSection& section = this->m_ResourceFile["MainWindow"];
   ResourceSection::const_iterator it = section.begin();
@@ -101,9 +100,9 @@ QtSimpleFusionApp::~QtSimpleFusionApp()
           
   QString geomStr;
   geomStr.sprintf( "geometry %d %d %d %d", MainWindow->x(), MainWindow->y(), MainWindow->width(), MainWindow->height() );
-  section.push_back( geomStr.latin1() );
+  section.push_back( (const char*)geomStr.toLatin1() );
 
-  this->m_ResourceFile.Write( ResourceFilePath );
+  this->m_ResourceFile.Write( ResourceFilePath.toLatin1() );
 }
 
 QtFusionSlicer* 

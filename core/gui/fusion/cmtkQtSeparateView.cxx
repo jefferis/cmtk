@@ -39,9 +39,9 @@ cmtk
 {
 
 QtSeparateView::QtSeparateView( QtSimpleFusionApp* fusionApp, QWidget *const parent, Qt::WFlags flags )
-  : QtFusionWindowTemplate( fusionApp, parent, "SeparateViewWindow", flags )
+  : QtFusionWindowTemplate( fusionApp, parent, flags )
 {
-  this->setCaption( "Separate Display" );
+  this->setWindowTitle( "Separate Display" );
 
   // transform the default vertical view layout into a horizontal layout
   ViewLayout->setDirection( QBoxLayout::LeftToRight );
@@ -61,10 +61,12 @@ QtSeparateView::QtSeparateView( QtSimpleFusionApp* fusionApp, QWidget *const par
 
 void
 QtSeparateView::UI::Construct
-( QWidget *const parent, QLayout *const inLayout, const QString& label )
+( QWidget *const parent, QBoxLayout *const inLayout, const QString& label )
 {
-  QVBoxLayout* layout = new QVBoxLayout( inLayout );
-  StudyNamesBox = new QtStudyNamesBox( parent, "StudyNamesBox" );
+  QVBoxLayout* layout = new QVBoxLayout();
+  inLayout->addLayout( layout );
+
+  StudyNamesBox = new QtStudyNamesBox( parent );
   StudyNamesBox->slotSetLabel( label );
   layout->addWidget( StudyNamesBox );
   View = new QtScrollRenderView( parent );
@@ -109,7 +111,7 @@ QtSeparateView::slotUpdateColormaps()
 void
 QtSeparateView::slotSwitchStudyL( const QString& studyName )
 {
-  Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.latin1() );
+  Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.toLatin1() );
   if ( study ) 
     {
     this->Left.m_Study = study;
@@ -122,7 +124,7 @@ QtSeparateView::slotSwitchStudyL( const QString& studyName )
 void
 QtSeparateView::slotSwitchStudyR( const QString& studyName )
 {
-  Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.latin1() );
+  Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.toLatin1() );
   if ( study ) 
     {
     this->Right.m_Study = study;

@@ -111,7 +111,7 @@ private:
     }
     
     /// Construct this object.
-    void Construct( QWidget *const parent, QLayout *const inLayout, const QString& label );
+    void Construct( QWidget *const parent, QBoxLayout *const inLayout, const QString& label );
 
     /// Link to the study object.
     Study::SmartPtr m_Study;

@@ -72,10 +72,14 @@ QtFusionWindowTemplate::QtFusionWindowTemplate
   MasterLayout = new QVBoxLayout( this );
   MasterLayout->setMenuBar( MenuBar );
 
-  WindowLayout = new QBoxLayout( MasterLayout, QBoxLayout::TopToBottom );
+  WindowLayout = new QVBoxLayout();
+  MasterLayout->addLayout( WindowLayout );
 
-  ViewLayout = new QBoxLayout( WindowLayout, QBoxLayout::TopToBottom );
-  ControlsLayout = new QVBoxLayout( WindowLayout );
+  ViewLayout = new QVBoxLayout();
+  WindowLayout->addLayout( ViewLayout );
+
+  ControlsLayout = new QVBoxLayout();
+  WindowLayout->addLayout( ControlsLayout );
 
   ButtonBox = new QGroupBox( this );
   MasterLayout->addWidget( ButtonBox );
@@ -158,7 +162,7 @@ QtFusionWindowTemplate::slotUpdateReferenceStudy()
 void
 QtFusionWindowTemplate::slotExport()
 {
-  QString path = QFileDialog::getSaveFileName( QString::null, "Images (*.pgm *.ppm *.tif)", this, "get destination file", "Save Image" );
+  QString path = QFileDialog::getSaveFileName( this, "Export Picture", QString(), "Portable Network Graphic (*.png);; Tagged Image File Format (*.tif);; Portable Pixmap (*.ppm *.pgm);; JPEG (*.jpg)" );
   if ( ! (path.isEmpty() || path.isNull() ) )
     this->Export( path );
 }
