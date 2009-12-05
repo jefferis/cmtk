@@ -46,7 +46,7 @@ QtFusionAlpha::QtFusionAlpha
   TopIsAlpha( true ),
   StudyTop( NULL ), StudyBottom( NULL )
 {
-  this->setCaption( "Alpha Blending" );
+  this->setWindowTitle( "Alpha Blending" );
 
   StudyNamesBoxTop = new QtStudyNamesBox( this, "StudyBoxTop" );
   StudyNamesBoxTop->slotSetLabel( "Alpha Study:" );
@@ -96,10 +96,12 @@ QtFusionAlpha::QtFusionAlpha
 
   View->slotConnectImage( FusionFilter->GetOutput() );
 
-  SliderFrom = new QtSliderEntry( this, "Transparent From" );
+  SliderFrom = new QtSliderEntry( this );
+  SliderFrom->slotSetTitle( "Transparent From" );
   QObject::connect( SliderFrom, SIGNAL( valueChanged( double ) ), this, SLOT( slotSliderFromChanged( double ) ) );
   ControlsLayout->addWidget( SliderFrom );
-  SliderTo = new QtSliderEntry( this, "Transparent To" );
+  SliderTo = new QtSliderEntry( this );
+  SliderTo->slotSetTitle( "Transparent To" );
   QObject::connect( SliderTo, SIGNAL( valueChanged( double ) ), this, SLOT( slotSliderToChanged( double ) ) );
   ControlsLayout->addWidget( SliderTo );
 
@@ -157,7 +159,7 @@ QtFusionAlpha::slotSliderToChanged( double value )
 void
 QtFusionAlpha::slotSwitchStudyTop( const QString& studyName )
 {
-  Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.latin1() );
+  Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.toLatin1() );
 
   if ( ! study.IsNull() ) 
     {
@@ -179,7 +181,7 @@ QtFusionAlpha::slotSwitchStudyTop( const QString& studyName )
 void
 QtFusionAlpha::slotSwitchStudyBottom( const QString& studyName )
 {
-  Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.latin1() );
+  Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.toLatin1() );
 
   if ( ! study.IsNull() ) 
     {
@@ -193,7 +195,7 @@ QtFusionAlpha::slotSwitchStudyBottom( const QString& studyName )
 void
 QtFusionAlpha::slotSwitchStudyAlpha( const QString& studyName )
 {
-  Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.latin1() );
+  Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.toLatin1() );
 
   if ( ! study.IsNull() ) 
     {
@@ -263,15 +265,15 @@ QtFusionAlpha::Export
 ( const QString& path, const QString& format, const QStringList* )
 {
   QString filename;
-  filename.sprintf( path, "alp" );
+  filename.sprintf( path.toLatin1(), "alp" );
   if ( format == QString::null || format == "PPM" )
-    View->GetRenderImage()->WritePPM( filename.latin1() );
+    View->GetRenderImage()->WritePPM( filename.toLatin1() );
   else 
     {
     QPixmap pixmap = View->GetRenderImage()->GetPixmap();
     if ( ! pixmap.isNull() ) 
       {
-      if ( !pixmap.save( filename, format ) )
+      if ( !pixmap.save( filename, format.toLatin1() ) )
 	QMessageBox::warning( this, "Save failed", "Error saving file" );
       }
     }
