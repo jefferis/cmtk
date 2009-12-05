@@ -81,13 +81,13 @@ QtSimpleFusionMainWindow::InitWidget()
   ListMenu->insertItem( "&Recent", RecentListsMenu );
   ListMenu->insertSeparator();
   this->slotUpdateRecentListsMenu();
-  QObject::connect( RecentListsMenu, SIGNAL( activated( int ) ), this, SLOT( slotRecentListsMenu( int ) ) );
+  QObject::connect( RecentListsMenu, SIGNAL( activated( action ) ), this, SLOT( slotRecentListsMenu( action ) ) );
 
   ListMenu->insertItem( "&Quit", qApp, SLOT( quit() ) );
 
   RecentStudiesMenu = new QMenu;
   this->slotUpdateRecentStudiesMenu();
-  QObject::connect( RecentStudiesMenu, SIGNAL( activated( int ) ), this, SLOT( slotRecentStudiesMenu( int ) ) );
+  QObject::connect( RecentStudiesMenu, SIGNAL( activated( action ) ), this, SLOT( slotRecentStudiesMenu( action ) ) );
 
   StudyMenu = new QMenu;
   StudyMenu->insertItem( "&Add...", this, SLOT( slotAddStudy() ) );

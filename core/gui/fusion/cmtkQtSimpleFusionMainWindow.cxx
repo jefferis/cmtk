@@ -89,16 +89,16 @@ QtSimpleFusionMainWindow::slotUpdateRecentListsMenu()
   while ( it != section.end() ) 
     {
     QString menuItem;
-    RecentListsMenu->insertItem( menuItem.sprintf( "&%d. %s", idx, it->c_str() ) );
+    RecentListsMenu->addAction( menuItem.sprintf( "&%d. %s", idx, it->c_str() ) );
     ++it;
     ++idx;
     }
 }
 
 void
-QtSimpleFusionMainWindow::slotRecentListsMenu( const int id )
+QtSimpleFusionMainWindow::slotRecentListsMenu( const QAction* action )
 {
-  QString path = RecentListsMenu->text( id );
+  QString path = action->text();
   if ( path.length() > 4 ) 
     {
     // open studylist referenced by Recent menu entry; chop of first
@@ -110,7 +110,7 @@ QtSimpleFusionMainWindow::slotRecentListsMenu( const int id )
 void 
 QtSimpleFusionMainWindow::slotOpenStudyList()
 {
-  QString path = QFileDialog::getExistingDirectory( QString::null, this, "get existing directory", "Open Studylist" );
+  QString path = QFileDialog::getExistingDirectory( this, "Open Studylist" );
   if ( ! (path.isEmpty() || path.isNull() ) )
     this->slotOpenStudyList( path );
 }
@@ -120,21 +120,20 @@ QtSimpleFusionMainWindow::slotOpenStudyList( const QString& path )
 {
   if ( path.isEmpty() || path.isNull() ) 
     {
-    QMessageBox::warning( NULL, "Notification", "This is not a valid studylist -\nkeeping previous list instead.", 
-			  QMessageBox::Ok, Qt::NoButton, Qt::NoButton );
+    QMessageBox::warning( NULL, "Notification", "This is not a valid studylist -\nkeeping previous list instead.", QMessageBox::Ok );
     } 
   else
     {
-    StudyList::SmartPtr newStudyList( ClassStreamStudyList::Read( path.latin1() ) );
+    StudyList::SmartPtr newStudyList( ClassStreamStudyList::Read( path.toLatin1() ) );
     if ( newStudyList ) 
       {
       FusionApp->slotSetStudyList( newStudyList );
-      FusionApp->m_ResourceFile.AddUnique( "RecentLists", path.latin1(), 8 );
+      FusionApp->m_ResourceFile.AddUnique( "RecentLists", path.toLatin1(), 8 );
       this->slotUpdateRecentListsMenu();
       } 
     else
       {
-      QMessageBox::critical( NULL, "Error", "Reading of studylist failed.", QMessageBox::Ok, Qt::NoButton, Qt::NoButton );
+      QMessageBox::critical( NULL, "Error", "Reading of studylist failed.", QMessageBox::Ok );
       }
     }
 }
@@ -151,14 +150,14 @@ QtSimpleFusionMainWindow::slotUpdateRecentStudiesMenu()
   while ( it != section.end() ) 
     {
     QString menuItem;
-    RecentStudiesMenu->insertItem( menuItem.sprintf( "&%d. %s", idx, it->c_str() ) );
+    RecentStudiesMenu->addAction( menuItem.sprintf( "&%d. %s", idx, it->c_str() ) );
     ++it;
     ++idx;
     }
 }
 
 void
-QtSimpleFusionMainWindow::slotRecentStudiesMenu( const int id )
+QtSimpleFusionMainWindow::slotRecentStudiesMenu( const QAction* action )
 {
   QString path = RecentStudiesMenu->text( id );
   if ( path.length() > 4 ) 
@@ -172,7 +171,7 @@ QtSimpleFusionMainWindow::slotRecentStudiesMenu( const int id )
 void 
 QtSimpleFusionMainWindow::slotAddStudy()
 {
-  QString path = QFileDialog::getExistingDirectory( QString::null, this, "get existing directory", "Add Study" );
+  QString path = QFileDialog::getExistingDirectory( this, "Add Study" );
   if ( ! (path.isEmpty() || path.isNull() ) )
     this->slotAddStudy( path );
 }
@@ -180,7 +179,7 @@ QtSimpleFusionMainWindow::slotAddStudy()
 void 
 QtSimpleFusionMainWindow::slotAddStudyFiles()
 {
-  QStringList paths = QFileDialog::getOpenFileNames( QString::null, "*", this, "get existing file", "Add Study" );
+  QStringList paths = QFileDialog::getOpenFileNames( this, "Add Study", "*" );
   
   QStringList::const_iterator it = paths.begin();
   while ( it != paths.end() ) 
@@ -196,13 +195,13 @@ QtSimpleFusionMainWindow::slotAddStudy( const QString& path )
 {
   if ( path.isEmpty() || path.isNull() ) 
     {
-    QMessageBox::warning( NULL, "Notification", "This is not a valid study.", QMessageBox::Ok, Qt::NoButton, Qt::NoButton );
+    QMessageBox::warning( NULL, "Notification", "This is not a valid study.", QMessageBox::Ok );
     } 
   else 
     {
-    Study::SmartPtr newStudy( Study::Read( path.latin1() ) );
+    Study::SmartPtr newStudy( Study::Read( path.toLatin1() ) );
     FusionApp->slotAddStudy( newStudy );
-    FusionApp->m_ResourceFile.AddUnique( "RecentStudies", path.latin1(), 12 );
+    FusionApp->m_ResourceFile.AddUnique( "RecentStudies", path.toLatin1(), 12 );
     this->slotUpdateRecentStudiesMenu();
     }
 }
@@ -212,7 +211,7 @@ QtSimpleFusionMainWindow::slotSaveStudy()
 {
   if ( ! CurrentStudy ) 
     {
-    QMessageBox::warning( NULL, "Notification", "No study currently selected.", QMessageBox::Ok, Qt::NoButton, Qt::NoButton );
+    QMessageBox::warning( NULL, "Notification", "No study currently selected.", QMessageBox::Ok );
     return;
     }
   
@@ -227,14 +226,14 @@ QtSimpleFusionMainWindow::slotSaveStudyAs()
 {
   if ( ! CurrentStudy ) 
     {
-    QMessageBox::warning( NULL, "Notification", "No study currently selected.", QMessageBox::Ok, Qt::NoButton, Qt::NoButton );
+    QMessageBox::warning( NULL, "Notification", "No study currently selected.", QMessageBox::Ok );
     return;
     }
   
-  QString path = QFileDialog::getExistingDirectory( QString::null, this, "get existing directory", "Write Study to" );
+  QString path = QFileDialog::getExistingDirectory( this, "Write Study to" );
   if ( ! (path.isEmpty() || path.isNull() ) ) 
     {
-    CurrentStudy->WriteTo( path.latin1() );
+    CurrentStudy->WriteTo( path.toLatin1() );
     }
 }
 
@@ -243,11 +242,11 @@ QtSimpleFusionMainWindow::slotStudyReadColorMap()
 {
   if ( CurrentStudy ) 
     {
-    QString path = QFileDialog::getOpenFileName( QString::null, "*.txt", this, "get existing file", "Read Colormap" );
+    QString path = QFileDialog::getOpenFileName( this, "Read Colormap", QString(), "*.txt" );
     
     if ( ! (path.isEmpty() || path.isNull() ) ) 
       {
-      std::ifstream stream( path.latin1() );
+      std::ifstream stream( path.toLatin1() );
       SegmentationLabelMap userColorMap;
       stream >> userColorMap;
       CurrentStudy->SetFromLabelMap( userColorMap );
@@ -269,7 +268,7 @@ QtSimpleFusionMainWindow::slotTriplanarViewer()
 {
   if ( ! CurrentStudy ) 
     {
-    QMessageBox::warning( NULL, "Notification", "No study currently selected.", QMessageBox::Ok, Qt::NoButton, Qt::NoButton );
+    QMessageBox::warning( NULL, "Notification", "No study currently selected.", QMessageBox::Ok );
     return;
     }
   
@@ -285,7 +284,7 @@ QtSimpleFusionMainWindow::slotVolumeProperties()
 {
   if ( ! CurrentStudy ) 
     {
-    QMessageBox::warning( NULL, "Notification", "No study currently selected.", QMessageBox::Ok, Qt::NoButton, Qt::NoButton );
+    QMessageBox::warning( NULL, "Notification", "No study currently selected.", QMessageBox::Ok );
     return;
     }
   
@@ -303,7 +302,7 @@ QtSimpleFusionMainWindow::slotOperatorsMenu( int command )
     if ( CurrentStudy && CurrentStudy->GetVolume() ) 
       {
       bool ok;
-      int size = QInputDialog::getInteger( "Median Filter", "Neighborhood size:",  1, 1, 5, 1, &ok, this );
+      int size = QInputDialog::getInt( this, "Median Filter", "Neighborhood size:",  1, 1, 5, 1, &ok );
       if ( ok ) 
 	{
         // user entered something and pressed OK
@@ -335,7 +334,7 @@ QtSimpleFusionMainWindow::slotOperatorsMenu( int command )
       {
       QtProgressInstance->SetProgressWidgetMode( QtProgress::PROGRESS_BAR );
       bool ok;
-      int bins = QInputDialog::getInteger( "Histogram Equalization", "Number of Histogram Bins:",  256, 2, 256, 1, &ok, this );
+      int bins = QInputDialog::getInt( this, "Histogram Equalization", "Number of Histogram Bins:",  256, 2, 256, 1, &ok );
       if ( ok )
 	{
 	// user entered something and pressed OK
@@ -354,26 +353,27 @@ QtSimpleFusionMainWindow::slotOperatorsMenu( int command )
     case OPERATORS_MENU_LOG: 
     case OPERATORS_MENU_EXP: 
     {
-    if ( CurrentStudy && CurrentStudy->GetVolume() && CurrentStudy->GetVolume()->GetData() ) {
-    switch ( command )
+    if ( CurrentStudy && CurrentStudy->GetVolume() && CurrentStudy->GetVolume()->GetData() ) 
       {
-      case OPERATORS_MENU_ABS: 
-	CurrentStudy->GetVolume()->GetData()->ApplyFunction( fabs );
-	CurrentStudy->UpdateFromVolume();
-	FusionApp->slotDataChanged( CurrentStudy );
-	break;
-      case OPERATORS_MENU_LOG: 
-	CurrentStudy->GetVolume()->GetData()->ApplyFunction( log );
-	CurrentStudy->UpdateFromVolume();
-	FusionApp->slotDataChanged( CurrentStudy );
-	break;
-      case OPERATORS_MENU_EXP: 
-	CurrentStudy->GetVolume()->GetData()->ApplyFunction( exp );
-	CurrentStudy->UpdateFromVolume();
-	FusionApp->slotDataChanged( CurrentStudy );
-	break;
+      switch ( command )
+	{
+	case OPERATORS_MENU_ABS: 
+	  CurrentStudy->GetVolume()->GetData()->ApplyFunction( fabs );
+	  CurrentStudy->UpdateFromVolume();
+	  FusionApp->slotDataChanged( CurrentStudy );
+	  break;
+	case OPERATORS_MENU_LOG: 
+	  CurrentStudy->GetVolume()->GetData()->ApplyFunction( log );
+	  CurrentStudy->UpdateFromVolume();
+	  FusionApp->slotDataChanged( CurrentStudy );
+	  break;
+	case OPERATORS_MENU_EXP: 
+	  CurrentStudy->GetVolume()->GetData()->ApplyFunction( exp );
+	  CurrentStudy->UpdateFromVolume();
+	  FusionApp->slotDataChanged( CurrentStudy );
+	  break;
+	}
       }
-    }
     break;
     }
     }
@@ -389,7 +389,7 @@ QtSimpleFusionMainWindow::slotXformMenu( int command )
     {
     if ( ! CurrentStudy ) 
       {
-      QMessageBox::warning( NULL, "Notification", "No study currently selected.", QMessageBox::Ok, Qt::NoButton, Qt::NoButton );
+      QMessageBox::warning( NULL, "Notification", "No study currently selected.", QMessageBox::Ok );
       return;
       }
     
@@ -405,7 +405,7 @@ QtSimpleFusionMainWindow::slotXformMenu( int command )
     
     if ( ! nameList.size() ) 
       {
-      QMessageBox::warning( NULL, "Notification", "No target studies are available.", QMessageBox::Ok, Qt::NoButton, Qt::NoButton );
+      QMessageBox::warning( NULL, "Notification", "No target studies are available.", QMessageBox::Ok );
       return;
       }
     
@@ -414,12 +414,11 @@ QtSimpleFusionMainWindow::slotXformMenu( int command )
     
     if ( ok ) 
       {
-      Study::SmartPtr targetStudy = FusionApp->m_StudyList->FindStudyName( target.latin1() );
+      Study::SmartPtr targetStudy = FusionApp->m_StudyList->FindStudyName( target.toLatin1() );
       
       if ( targetStudy.IsNull() ) 
 	{
-	QMessageBox::warning( NULL, "Internal Error", "Could not find study with selected name.", 
-			      QMessageBox::Ok, Qt::NoButton, Qt::NoButton );
+	QMessageBox::warning( NULL, "Internal Error", "Could not find study with selected name.", QMessageBox::Ok );
 	return;
 	}
       

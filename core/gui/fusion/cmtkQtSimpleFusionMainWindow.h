@@ -87,7 +87,7 @@ private slots:
   void slotUpdateRecentListsMenu();
 
   /// This lot handles clicks from the "Recent" studylists menu.
-  void slotRecentListsMenu( const int id );
+  void slotRecentListsMenu( const QAction *action );
 
   /// Add study with dialog.
   void slotAddStudy();
@@ -120,7 +120,7 @@ private slots:
   void slotUpdateRecentStudiesMenu();
 
   /// This lot handles clicks from the "Recent" studies menu.
-  void slotRecentStudiesMenu( const int id );
+  void slotRecentStudiesMenu( const QAction* action );
 
 public slots:
   /// Slot to set new study.
