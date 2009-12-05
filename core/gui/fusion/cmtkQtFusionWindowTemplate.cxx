@@ -138,8 +138,6 @@ QtFusionWindowTemplate::slotViewMenuCmd( QAction* action )
     break;
   }
 
-  action->setChecked();
-
   emit updateViewer();
 }
 
