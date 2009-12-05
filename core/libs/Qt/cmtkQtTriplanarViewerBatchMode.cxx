@@ -38,7 +38,7 @@ cmtk
 /** \addtogroup Qt */
 //@{
 
-void
+int
 QtTriplanarViewer
 ::ExecuteBatchMode( const int argc, char* argv[] )
 {
@@ -96,6 +96,7 @@ QtTriplanarViewer
       this->slotExportImage( argv[++i], 4 );
       }
     }
+  return 0;
 }
 
 } // namespace cmtk

@@ -56,8 +56,7 @@ QtTriplanarViewer::QtTriplanarViewer()
   this->setWindowTitle( "Triplanar Image Viewer" );
   QMenu* StudyMenu = new QMenu();
   StudyMenu->setTitle( "&Study" );
-  StudyMenu->addAction( "&Load File...", this, SLOT( slotLoadFile() )  );
-  StudyMenu->addAction( "Load Stud&y...", this, SLOT( slotLoadStudy() )  );
+  StudyMenu->addAction( "&Load...", this, SLOT( slotLoadFile() )  );
   StudyMenu->addAction( "&Reload Data...", this, SLOT( slotReloadData() )  );
   StudyMenu->addSeparator();
   StudyMenu->addAction( "&Save" );
@@ -111,29 +110,13 @@ QtTriplanarViewer::slotAddStudy( const char* fname )
 }
 
 void
-QtTriplanarViewer::slotLoadStudy()
-{
-  QString path = QFileDialog::getExistingDirectory( this, "Load Study" );
-
-  if ( ! (path.isEmpty() || path.isNull() ) ) 
-    {
-    Study::SmartPtr newStudy( new Study( path.toLatin1() ) );
-
-    this->m_Studies.push_back( newStudy );
-    this->m_ControlsTab->setTabEnabled( this->m_ControlsTab->indexOf( this->m_ImagesTab ), this->m_Studies.size() > 1 );
-
-    this->m_StudiesListBox->addItem( QString( newStudy->GetFileSystemPath() ) );
-    this->m_StudiesListBox->setCurrentItem( this->m_StudiesListBox->item( this->m_StudiesListBox->count()-1 ) );
-
-    this->slotSwitchToStudy( newStudy );
-    this->slotCenter();
-    }
-}
-
-void
 QtTriplanarViewer::slotLoadFile()
 {
-  QString path = QFileDialog::getOpenFileName( this, "Load File", QString(), "*" );
+#ifdef CMTK_BUILD_NRRD
+  QString path = QFileDialog::getOpenFileName( this, "Load File", QString(), "All image files (*.hdr *.nii *.nii.gz *.nrrd *.nhdr *.pic);; NIfTI / Analyze (*.hdr *.nii *.nii.gz);; Nrrd (*.nhdr *.nrrd);; BIORAD (*.pic)" );
+#else
+  QString path = QFileDialog::getOpenFileName( this, "Load File", QString(), "All image files (*.hdr *.nii *.nii.gz *.pic);; NIfTI / Analyze (*.hdr *.nii *.nii.gz);; BIORAD (*.pic)" );
+#endif
   
   if ( ! (path.isEmpty() || path.isNull() ) ) 
     {

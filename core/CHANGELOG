@@ -11,11 +11,14 @@ Release CMTK-1.2.0:
     we can finally get rid of legacy Qt3 support classes. This should reduce
     the number of actually unused dynamic libraries, which we previously had
     to link against.
+- Improved: numerous small improvements to triplanar viewer
 
 - Fixed: bundled DICOM library finally works on all tested platforms and all
     tested compilers.
 - Fixed: compile error on latest Mac/Intel gcc due to undefined "ushort"
     type.
+- Fixed: triplanar can now be called again with no parameters to open empty
+    viewer UI.
 
 - Removed: support for AMD Core Math Library (ACML), which was rarely used and
     complicated code unnecessarily

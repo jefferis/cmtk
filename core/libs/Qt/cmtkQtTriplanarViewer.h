@@ -62,14 +62,11 @@ public:
   virtual ~QtTriplanarViewer() {};
 
   /// Execute in batch mode.
-  virtual void ExecuteBatchMode( const int argc, char* argv[] );
+  virtual int ExecuteBatchMode( const int argc, char* argv[] );
 
 public slots:
   /// Add study by filesystem path.
   void slotAddStudy( const char* fname );
-
-  /// Load image from study.
-  void slotLoadStudy();
 
   /// Load image from file.
   void slotLoadFile();

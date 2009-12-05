@@ -45,7 +45,8 @@
 #include <cmtkCommandLine.h>
 #include <cmtkStudy.h>
 
-int main( int argc, char* argv[] )
+int
+main( int argc, char* argv[] )
 {
   QApplication app( argc, argv );
   app.setStyle( new QPlastiqueStyle );
@@ -62,24 +63,22 @@ int main( int argc, char* argv[] )
       if ( !strcmp( argv[1], "--exec" ) )
 	{
 	viewer->hide();
-	viewer->ExecuteBatchMode( argc-2, argv+2 );
+	return viewer->ExecuteBatchMode( argc-2, argv+2 );
 	}
       else
 	if ( !strcmp( argv[1], "--xml" ) )
 	  {
 	  exit(1);
 	  }
-	else
-	  {
-	  for ( int i = 1; i < argc; ++i ) 
-	    {
-	    viewer->slotAddStudy( argv[i] );
-	    }
-	  viewer->show();
-	  
-	  return app.exec();
-	  }
       }
+
+    for ( int i = 1; i < argc; ++i ) 
+      {
+      viewer->slotAddStudy( argv[i] );
+      }
+    viewer->show();
+    
+    return app.exec();
     }
   
   return 0;
