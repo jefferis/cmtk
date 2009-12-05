@@ -91,7 +91,7 @@ public slots:
 
 private slots:
   /// React to "View" menu.
-  void slotViewMenuCmd( int id );
+  void slotViewMenuCmd( QAction* action );
 
   /// React to changed slice location etc.
   void slotSliceChanged() { this->UpdateSlice(); }

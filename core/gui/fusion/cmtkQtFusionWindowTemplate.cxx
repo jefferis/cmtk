@@ -50,29 +50,25 @@ QtFusionWindowTemplate::QtFusionWindowTemplate
   AxesMode( false ),
   FusionApp( fusionApp )
 {
-  this->setIcon( QtFusionGlobal::WindowIcon() );
+  this->setWindowIcon( QtFusionGlobal::WindowIcon() );
 
-  ViewMenu = new QMenu();
-  ViewMenu->setCheckable( true );
-  ViewMenu->insertItem( "25%", VIEWMENU_25 );
-  ViewMenu->insertItem( "33%", VIEWMENU_33 );
-  ViewMenu->insertItem( "&50%", VIEWMENU_50 );
-  ViewMenu->insertItem( "&66%", VIEWMENU_66 );
-  ViewMenu->insertSeparator();
-  ViewMenu->insertItem( "&100%", VIEWMENU_100 );
-  ViewMenu->insertItem( "&200%", VIEWMENU_200 );
-  ViewMenu->insertItem( "&300%", VIEWMENU_300 );
-  ViewMenu->insertItem( "&400%", VIEWMENU_400 );
-  ViewMenu->setItemChecked( VIEWMENU_100, true );
-  ViewMenu->insertSeparator();
-  ViewMenu->insertItem( "Annotations...", VIEWMENU_ANNOTATE );
-  //  ViewMenu->insertSeparator();
-  QObject::connect( ViewMenu, SIGNAL( activated( int ) ), this, SLOT( slotViewMenuCmd( int ) ) );
-  
   MenuBar = new QMenuBar( this );
-  MenuBar->insertItem( "&View", ViewMenu );
   MenuBar->show();
 
+  ViewMenu = MenuBar->addMenu( "&View" );
+  ViewMenu->addAction( "25%" )->setData( QVariant( VIEWMENU_25 ) );
+  ViewMenu->addAction( "33%" )->setData( QVariant( VIEWMENU_33 ) );
+  ViewMenu->addAction( "&50%" )->setData( QVariant( VIEWMENU_50 ) );
+  ViewMenu->addAction( "&66%" )->setData( QVariant( VIEWMENU_66 ) );
+  ViewMenu->addSeparator();
+  ViewMenu->addAction( "&100%" )->setData( QVariant( VIEWMENU_100 ) );
+  ViewMenu->addAction( "&200%" )->setData( QVariant( VIEWMENU_200 ) );
+  ViewMenu->addAction( "&300%" )->setData( QVariant( VIEWMENU_300 ) );
+  ViewMenu->addAction( "&400%" )->setData( QVariant( VIEWMENU_400 ) );
+  ViewMenu->addSeparator();
+  ViewMenu->addAction( "Annotations..." )->setData( QVariant( VIEWMENU_ANNOTATE ) );
+  QObject::connect( ViewMenu, SIGNAL( activated( QAction* ) ), this, SLOT( slotViewMenuCmd( QAction* ) ) );
+  
   MasterLayout = new QVBoxLayout( this );
   MasterLayout->setMenuBar( MenuBar );
 
@@ -107,8 +103,9 @@ QtFusionWindowTemplate::~QtFusionWindowTemplate()
 }
 
 void 
-QtFusionWindowTemplate::slotViewMenuCmd( int id )
+QtFusionWindowTemplate::slotViewMenuCmd( QAction* action )
 {
+  const int id = action->data().toInt();
   switch ( id ) {
   case VIEWMENU_25:
     ZoomFactorPercent = 25;
@@ -137,19 +134,11 @@ QtFusionWindowTemplate::slotViewMenuCmd( int id )
   case VIEWMENU_ANNOTATE:
     break;
   default:
-    qWarning( "Undhandled command in "
-	      "QtFusionWindowTemplate::slotViewMenuCmd()." );
+    qWarning( "Undhandled command in QtFusionWindowTemplate::slotViewMenuCmd()." );
     break;
   }
 
-  ViewMenu->setItemChecked( VIEWMENU_25, id == VIEWMENU_25 );
-  ViewMenu->setItemChecked( VIEWMENU_33, id == VIEWMENU_33 );
-  ViewMenu->setItemChecked( VIEWMENU_50, id == VIEWMENU_50 );
-  ViewMenu->setItemChecked( VIEWMENU_66, id == VIEWMENU_66 );
-  ViewMenu->setItemChecked( VIEWMENU_100, id == VIEWMENU_100 );
-  ViewMenu->setItemChecked( VIEWMENU_200, id == VIEWMENU_200 );
-  ViewMenu->setItemChecked( VIEWMENU_300, id == VIEWMENU_300 );
-  ViewMenu->setItemChecked( VIEWMENU_400, id == VIEWMENU_400 );
+  action->setChecked();
 
   emit updateViewer();
 }
