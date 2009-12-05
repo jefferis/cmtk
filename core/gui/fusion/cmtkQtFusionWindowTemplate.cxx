@@ -80,12 +80,12 @@ QtFusionWindowTemplate::QtFusionWindowTemplate
   ButtonBox = new QGroupBox( this );
   MasterLayout->addWidget( ButtonBox );
 
-  QPushButton* updateButton = new QPushButton( "Update", ButtonBox, "UpdateButton" );
+  QPushButton* updateButton = new QPushButton( "Update", ButtonBox );
   QObject::connect( updateButton, SIGNAL( clicked() ), SIGNAL( signalUpdate() ) );
 
-  QPushButton* exportButton = new QPushButton( "Export...", ButtonBox, "ExportButton" );
+  QPushButton* exportButton = new QPushButton( "Export...", ButtonBox );
 
-  QPushButton* closeButton = new QPushButton( "Close", ButtonBox, "CloseButton" );
+  QPushButton* closeButton = new QPushButton( "Close", ButtonBox );
 
   QObject::connect( exportButton, SIGNAL( clicked() ), this, SLOT( slotExport() ) );
   QObject::connect( closeButton, SIGNAL( clicked() ), this, SLOT( close() ) );
