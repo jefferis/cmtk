@@ -159,7 +159,7 @@ QtSimpleFusionMainWindow::slotUpdateRecentStudiesMenu()
 void
 QtSimpleFusionMainWindow::slotRecentStudiesMenu( const QAction* action )
 {
-  QString path = RecentStudiesMenu->text( id );
+  QString path = action->text();
   if ( path.length() > 4 ) 
     {
     // open studylist referenced by Recent menu entry; chop of first
@@ -274,7 +274,7 @@ QtSimpleFusionMainWindow::slotTriplanarViewer()
   
   QtTriplanarViewer *tpv = new QtTriplanarViewer();
   tpv->slotSwitchToStudy( CurrentStudy );
-  QObject::connect( StudyTabs->currentPage(), SIGNAL( colormap( Study::SmartPtr& ) ), tpv, SLOT( slotColormapChanged( Study::SmartPtr& ) ) );
+  QObject::connect( StudyTabs->currentWidget(), SIGNAL( colormap( Study::SmartPtr& ) ), tpv, SLOT( slotColormapChanged( Study::SmartPtr& ) ) );
   
   tpv->show();
 }
@@ -410,7 +410,7 @@ QtSimpleFusionMainWindow::slotXformMenu( int command )
       }
     
     bool ok = false;
-    QString target = QInputDialog::getItem( "Select Target Study", "Target", nameList, 0 /*current*/, false /*editable*/, &ok /*ok*/, this );
+    QString target = QInputDialog::getItem( this, "Select Target Study", "Target", nameList, 0 /*current*/, false /*editable*/, &ok /*ok*/ );
     
     if ( ok ) 
       {
