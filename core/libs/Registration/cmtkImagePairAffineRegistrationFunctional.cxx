@@ -50,49 +50,23 @@ ImagePairAffineRegistrationFunctional
 ::Create
 ( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, AffineXform::SmartPtr& affineXform )
 {
-  switch ( fltVolume->GetData()->GetDataClass() ) 
+  switch ( metric ) 
     {
-    case DATACLASS_UNKNOWN :
-    case DATACLASS_GREY :
-      switch ( metric ) 
-	{
-	case 0:
-	  return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureMI>( refVolume, fltVolume, affineXform );
-	case 1:
-	  return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureNMI>( refVolume, fltVolume, affineXform );
-	case 2:
-	  return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureCR>( refVolume, fltVolume, affineXform );
-	case 3:
-	  return NULL; // masked nmi retired
-	case 4:
-	  return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureMSD>( refVolume, fltVolume, affineXform );
-	case 5:
-	  return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureNCC>( refVolume, fltVolume, affineXform );
-	default:
-	  break;
-	}
-      break;
-    case DATACLASS_LABEL :
-      switch ( metric ) 
-	{
-	case 0:
-//	  return new ImagePairAffineRegistrationFunctional_Template<VoxelMatchingNormMutInf_NearestNeighbor>( refVolume, fltVolume, affineXform );
-	case 1:
-//	  return new ImagePairAffineRegistrationFunctional_Template<VoxelMatchingMutInf_NearestNeighbor>( refVolume, fltVolume, affineXform );
-	case 2:
-//	  return new ImagePairAffineRegistrationFunctional_Template<VoxelMatchingCorrRatio_NearestNeighbor>( refVolume, fltVolume, affineXform );
-	case 3:
-	  return NULL; // masked nmi retired
-	case 4:
-//	  return new ImagePairAffineRegistrationFunctional_Template<VoxelMatchingMeanSquaredDifference>( refVolume, fltVolume, affineXform );
-	case 5:
-//	  return new ImagePairAffineRegistrationFunctional_Template<VoxelMatchingCrossCorrelation>( refVolume, fltVolume, affineXform );
-	default:
-	  break;
-	}
+    case 0:
+      return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureMI>( refVolume, fltVolume, affineXform );
+    case 1:
+      return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureNMI>( refVolume, fltVolume, affineXform );
+    case 2:
+      return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureCR>( refVolume, fltVolume, affineXform );
+    case 3:
+      return NULL; // masked nmi retired
+    case 4:
+      return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureMSD>( refVolume, fltVolume, affineXform );
+    case 5:
+      return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureNCC>( refVolume, fltVolume, affineXform );
+    default:
       break;
     }
-  
   return NULL;
 }
 

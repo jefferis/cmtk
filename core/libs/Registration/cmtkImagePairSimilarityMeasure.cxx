@@ -32,7 +32,9 @@
 #include <cmtkImagePairSimilarityMeasure.h>
 
 #include <cmtkUniformVolumeInterpolator.h>
+
 #include <cmtkLinearInterpolator.h>
+#include <cmtkNearestNeighborInterpolator.h>
 
 namespace
 cmtk
@@ -46,17 +48,39 @@ ImagePairSimilarityMeasure::ImagePairSimilarityMeasure
 {
   this->m_ReferenceData = refVolume->GetData();
   this->m_FloatingData = fltVolume->GetData();
-  this->m_FloatingImageInterpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear>( fltVolume ) );
+
+  switch ( this->m_FloatingData->GetDataClass() ) 
+    {
+    case DATACLASS_UNKNOWN :
+    case DATACLASS_GREY :
+      this->m_FloatingImageInterpolator = 
+	cmtk::UniformVolumeInterpolatorBase::SmartPtr( new cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear>( fltVolume ) );
+    case DATACLASS_LABEL :
+      this->m_FloatingImageInterpolator = 
+	cmtk::UniformVolumeInterpolatorBase::SmartPtr( new cmtk::UniformVolumeInterpolator<cmtk::Interpolators::NearestNeighbor>( fltVolume ) );
+    }
 }
 
 ImagePairSimilarityMeasure::ImagePairSimilarityMeasure
 ( const Self& other )
 {
+  this->m_ReferenceData = other.m_ReferenceData;
+  this->m_FloatingData = other.m_FloatingData;
+  this->m_FloatingImageInterpolator = other.m_FloatingImageInterpolator;
 }
 
 ImagePairSimilarityMeasure::ImagePairSimilarityMeasure
 ( Self& other, const bool copyData )
 {
+  if ( copyData )
+    {
+    }
+  else
+    {
+    this->m_ReferenceData = other.m_ReferenceData;
+    this->m_FloatingData = other.m_FloatingData;
+    this->m_FloatingImageInterpolator = other.m_FloatingImageInterpolator;
+    }
 }
 
 } // namespace cmtk
