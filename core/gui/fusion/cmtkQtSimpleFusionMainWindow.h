@@ -75,13 +75,13 @@ private slots:
   void slotOpenStudyList( const QString& path );
 
   /// Slot to perform operations from "Transform" menu.
-  void slotXformMenu( int command );
+  void slotXformMenuCreate();
 
   /// Slot to open selected type of fusion window.
-  void slotFusionMenu( int command );
+  void slotFusionMenu( QAction* );
 
   /// Slot to open selected type of fusion window.
-  void slotOperatorsMenu( int command );
+  void slotOperatorsMenu( QAction* );
 
   /// Update menu with recent studylists.
   void slotUpdateRecentListsMenu();

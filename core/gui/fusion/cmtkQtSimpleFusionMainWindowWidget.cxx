@@ -37,8 +37,6 @@
 #include <qapplication.h>
 #include <qmessagebox.h>
 #include <qmenubar.h>
-#include <q3textstream.h>
-#include <q3filedialog.h>
 #include <qstatusbar.h>
 #include <qprogressbar.h>
 #include <QLabel>
@@ -51,12 +49,12 @@ cmtk
 void
 QtSimpleFusionMainWindow::InitWidget()
 {
-  this->setCaption( "CMTK Image Fusion" );
-  this->setIcon( QtFusionGlobal::WindowIcon() );
+  this->setWindowTitle( "CMTK Image Fusion" );
+  this->setWindowIcon( QtFusionGlobal::WindowIcon() );
 
   QStatusBar* statBar = this->statusBar();
 
-  StatusLabel = new QLabel( statBar, "StatusLabel" );
+  StatusLabel = new QLabel( statBar );
   StatusLabel->setText( "Image Fusion" );
   statBar->addWidget( StatusLabel, 4 );
 
@@ -70,86 +68,70 @@ QtSimpleFusionMainWindow::InitWidget()
 
   MenuBar = this->menuBar();
 
-  ListMenu = new QMenu;
-  ListMenu->insertItem( "&Open...", this, SLOT( slotOpenStudyList() ) );
-  ListMenu->insertSeparator();
-  ListMenu->insertItem( "&Save", this, SLOT( slotOpenStudyList() ) );
-  ListMenu->insertItem( "Save &As...", this, SLOT( slotOpenStudyList() ) );
-  ListMenu->insertSeparator();
+  ListMenu = MenuBar->addMenu( "&List" );
+  ListMenu->addAction( "&Open...", this, SLOT( slotOpenStudyList() ) );
+  ListMenu->addSeparator();
+  ListMenu->addAction( "&Save", this, SLOT( slotOpenStudyList() ) );
+  ListMenu->addAction( "Save &As...", this, SLOT( slotOpenStudyList() ) );
+  ListMenu->addSeparator();
 
-  RecentListsMenu = new QMenu;
-  ListMenu->insertItem( "&Recent", RecentListsMenu );
-  ListMenu->insertSeparator();
+  RecentListsMenu = ListMenu->addMenu( "&Recent" );
+  ListMenu->addSeparator();
   this->slotUpdateRecentListsMenu();
   QObject::connect( RecentListsMenu, SIGNAL( activated( action ) ), this, SLOT( slotRecentListsMenu( action ) ) );
 
-  ListMenu->insertItem( "&Quit", qApp, SLOT( quit() ) );
+  ListMenu->addAction( "&Quit", qApp, SLOT( quit() ) );
 
-  RecentStudiesMenu = new QMenu;
+  StudyMenu = MenuBar->addMenu( "&Study" );
+  StudyMenu->addAction( "&Add...", this, SLOT( slotAddStudy() ) );
+  StudyMenu->addAction( "Add &File...", this, SLOT( slotAddStudyFiles() ) );
+
+  RecentStudiesMenu = StudyMenu->addMenu( "&Recent" );
   this->slotUpdateRecentStudiesMenu();
   QObject::connect( RecentStudiesMenu, SIGNAL( activated( action ) ), this, SLOT( slotRecentStudiesMenu( action ) ) );
 
-  StudyMenu = new QMenu;
-  StudyMenu->insertItem( "&Add...", this, SLOT( slotAddStudy() ) );
-  StudyMenu->insertItem( "Add &File...", this, SLOT( slotAddStudyFiles() ) );
-  StudyMenu->insertItem( "&Recent", RecentStudiesMenu );
-  StudyMenu->insertSeparator();
-  StudyMenu->insertItem( "&Save", this, SLOT( slotSaveStudy() ) );
-  StudyMenu->insertItem( "Save as...", this, SLOT( slotSaveStudyAs() ) );
-  StudyMenu->insertSeparator();
-  StudyMenu->insertItem( "Load &Colormap...", this, SLOT( slotStudyReadColorMap() ) );
-  StudyMenu->insertItem( "&Edit...", 0 );
-  StudyMenu->insertItem( "Re&load", this, SLOT( slotStudyReload() ) );
-  StudyMenu->insertItem( "&Delete", 0 );
-  StudyMenu->insertItem( "&Properties...", this, SLOT( slotVolumeProperties() ) );
-  StudyMenu->insertItem( "&Triplanar Viewer...", this, SLOT( slotTriplanarViewer() ) );
+  StudyMenu->addSeparator();
+  StudyMenu->addAction( "&Save", this, SLOT( slotSaveStudy() ) );
+  StudyMenu->addAction( "Save as...", this, SLOT( slotSaveStudyAs() ) );
+  StudyMenu->addSeparator();
+  StudyMenu->addAction( "Load &Colormap...", this, SLOT( slotStudyReadColorMap() ) );
+  StudyMenu->addAction( "Re&load", this, SLOT( slotStudyReload() ) );
+  StudyMenu->addAction( "&Properties...", this, SLOT( slotVolumeProperties() ) );
+  StudyMenu->addAction( "&Triplanar Viewer...", this, SLOT( slotTriplanarViewer() ) );
 
-  AlgOperatorsMenu = new QMenu;
-  AlgOperatorsMenu->insertItem( "&abs()", OPERATORS_MENU_ABS );
-  AlgOperatorsMenu->insertItem( "&log()", OPERATORS_MENU_LOG );
-  AlgOperatorsMenu->insertItem( "&exp()", OPERATORS_MENU_EXP );
-  QObject::connect( AlgOperatorsMenu, SIGNAL( activated( int ) ), this, SLOT( slotOperatorsMenu( int ) ) );
-
-  OperatorsMenu = new QMenu;
-  OperatorsMenu->insertItem( "&Median Filter...", OPERATORS_MENU_MEDIAN );
-  OperatorsMenu->insertItem( "&Histogram Equalization...", OPERATORS_MENU_HISTOGRAM );
-  OperatorsMenu->insertItem( "&Sobel Edge Filter", OPERATORS_MENU_SOBEL );
-  OperatorsMenu->insertSeparator();
-  OperatorsMenu->insertItem( "&Algebraic", AlgOperatorsMenu );
+  OperatorsMenu = MenuBar->addMenu( "&Operators" );
+  OperatorsMenu->addAction( "&Median Filter..." )->setData( OPERATORS_MENU_MEDIAN );
+  OperatorsMenu->addAction( "&Histogram Equalization..." )->setData( OPERATORS_MENU_HISTOGRAM );
+  OperatorsMenu->addAction( "&Sobel Edge Filter" )->setData( OPERATORS_MENU_SOBEL );
+  OperatorsMenu->addSeparator();
   QObject::connect( OperatorsMenu, SIGNAL( activated( int ) ), this, SLOT( slotOperatorsMenu( int ) ) );
 
+  AlgOperatorsMenu = OperatorsMenu->addMenu( "&Algebraic" );
+  AlgOperatorsMenu->addAction( "&abs()" )->setData( OPERATORS_MENU_ABS );
+  AlgOperatorsMenu->addAction( "&log()" )->setData( OPERATORS_MENU_LOG );
+  AlgOperatorsMenu->addAction( "&exp()" )->setData( OPERATORS_MENU_EXP );
+  QObject::connect( AlgOperatorsMenu, SIGNAL( activated( QAction* ) ), this, SLOT( slotOperatorsMenu( AQction* ) ) );
   
-  XformMenu = new QMenu;
-  XformMenu->insertItem( "&Create...", MENU_XFORM_CREATE );
-  XformMenu->insertSeparator();
-  XformMenu->insertItem( "&Affine Transformation Editor...", 0 );
-  XformMenu->insertItem( "&Rigid/Affine Registration...", 0 );
-  XformMenu->insertItem( "&Visualize Deformation...", 0 );
-  QObject::connect( XformMenu, SIGNAL( activated( int ) ), this, SLOT( slotXformMenu( int ) ) );
+  XformMenu = MenuBar->addMenu( "&Transform" );;
+  XformMenu->addAction( "&Create...", this, SLOT( slotXformMenuCreate() ) );
 
-  FusionMenu = new QMenu;
-  FusionMenu->insertItem( "&Separate View", FUSION_MENU_SEPARATE );
-  FusionMenu->insertItem( "&Overlay", FUSION_MENU_OVERLAY );
-  FusionMenu->insertItem( "&Alpha Blending", FUSION_MENU_ALPHA );
-  FusionMenu->insertItem( "&Edge Blending", FUSION_MENU_EDGE );
-  FusionMenu->insertItem( "&Isolines", FUSION_MENU_ISOLINES );
-  FusionMenu->insertItem( "&Difference", FUSION_MENU_DIFFERENCE );
-  FusionMenu->insertItem( "&Region-of-Interest", FUSION_MENU_ROI );
-  FusionMenu->insertItem( "&Mix", FUSION_MENU_MIX );
-  FusionMenu->insertItem( "&Color/Brightness", FUSION_MENU_COLOR );
-  FusionMenu->insertSeparator();
+  FusionMenu = MenuBar->addMenu( "&Fusion" );
+  FusionMenu->addAction( "&Separate View" )->setData(  FUSION_MENU_SEPARATE );
+  FusionMenu->addAction( "&Overlay" )->setData( FUSION_MENU_OVERLAY );
+  FusionMenu->addAction( "&Alpha Blending" )->setData( FUSION_MENU_ALPHA );
+  FusionMenu->addAction( "&Edge Blending" )->setData( FUSION_MENU_EDGE );
+  FusionMenu->addAction( "&Isolines" )->setData( FUSION_MENU_ISOLINES );
+  FusionMenu->addAction( "&Difference" )->setData( FUSION_MENU_DIFFERENCE );
+  FusionMenu->addAction( "&Region-of-Interest" )->setData( FUSION_MENU_ROI );
+  FusionMenu->addAction( "&Mix" )->setData( FUSION_MENU_MIX );
+  FusionMenu->addAction( "&Color/Brightness" )->setData( FUSION_MENU_COLOR );
+  FusionMenu->addSeparator();
 #ifdef IGS_HAVE_VTK
-  FusionMenu->insertItem( "&3D View", FUSION_MENU_3D );
-  FusionMenu->insertSeparator();
+  FusionMenu->addAction( "&3D View" )->setData( FUSION_MENU_3D );
+  FusionMenu->addSeparator();
 #endif // #ifdef IGS_HAVE_VTK
-  FusionMenu->insertItem( "&Planar Slicer...", FUSION_MENU_SLICER );
-  QObject::connect( FusionMenu, SIGNAL( activated( int ) ), this, SLOT( slotFusionMenu( int ) ) );
-
-  MenuBar->insertItem( "&List", ListMenu );
-  MenuBar->insertItem( "&Study", StudyMenu );
-  MenuBar->insertItem( "&Operators", OperatorsMenu );
-  MenuBar->insertItem( "&Transform", XformMenu );
-  MenuBar->insertItem( "&Fusion", FusionMenu );
+  FusionMenu->addAction( "&Planar Slicer..." )->setData( FUSION_MENU_SLICER );
+  QObject::connect( FusionMenu, SIGNAL( activated( QAction* ) ), this, SLOT( slotFusionMenu( QAction* ) ) );
 
   StudyTabs = new QTabWidget( this );
   QObject::connect( StudyTabs, SIGNAL( currentChanged ( QWidget* ) ), this, SLOT( slotSwitchStudy( QWidget* ) ) );

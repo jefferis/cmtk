@@ -293,8 +293,9 @@ QtSimpleFusionMainWindow::slotVolumeProperties()
 }
 
 void
-QtSimpleFusionMainWindow::slotOperatorsMenu( int command )
+QtSimpleFusionMainWindow::slotOperatorsMenu( QAction* action )
 {
+  const int command = action->getData().toInt();
   switch ( command ) 
     {
     case OPERATORS_MENU_MEDIAN: 
@@ -381,66 +382,61 @@ QtSimpleFusionMainWindow::slotOperatorsMenu( int command )
 }
 
 void
-QtSimpleFusionMainWindow::slotXformMenu( int command )
+QtSimpleFusionMainWindow::slotXformMenuCreate()
 {
-  switch ( command ) 
+  if ( ! CurrentStudy ) 
     {
-    case MENU_XFORM_CREATE: 
+    QMessageBox::warning( NULL, "Notification", "No study currently selected.", QMessageBox::Ok );
+    return;
+    }
+  
+  std::list<Study::SmartPtr> targets = FusionApp->m_StudyList->GetIndependentStudyList( CurrentStudy );
+  
+  QStringList nameList;
+  std::list<Study::SmartPtr>::const_iterator it = targets.begin();
+  while ( it != targets.end() ) 
     {
-    if ( ! CurrentStudy ) 
+    nameList.push_back( (*it)->GetName() );
+    ++it;
+    }
+  
+  if ( ! nameList.size() ) 
+    {
+    QMessageBox::warning( NULL, "Notification", "No target studies are available.", QMessageBox::Ok );
+    return;
+    }
+  
+  bool ok = false;
+  QString target = QInputDialog::getItem( this, "Select Target Study", "Target", nameList, 0 /*current*/, false /*editable*/, &ok /*ok*/ );
+  
+  if ( ok ) 
+    {
+    Study::SmartPtr targetStudy = FusionApp->m_StudyList->FindStudyName( target.toLatin1() );
+    
+    if ( targetStudy.IsNull() ) 
       {
-      QMessageBox::warning( NULL, "Notification", "No study currently selected.", QMessageBox::Ok );
+      QMessageBox::warning( NULL, "Internal Error", "Could not find study with selected name.", QMessageBox::Ok );
       return;
       }
     
-    std::list<Study::SmartPtr> targets = FusionApp->m_StudyList->GetIndependentStudyList( CurrentStudy );
+    AffineXform::SmartPtr newXform( new AffineXform );
+    AffineXform::SmartPtr inverse = newXform->GetInverse();
+    WarpXform::SmartPtr nullWarp( NULL );
     
-    QStringList nameList;
-    std::list<Study::SmartPtr>::const_iterator it = targets.begin();
-    while ( it != targets.end() ) 
-      {
-      nameList.push_back( (*it)->GetName() );
-      ++it;
-      }
+    // add identity transformation
+    FusionApp->m_StudyList->AddXform( CurrentStudy, targetStudy, newXform, nullWarp );
+    // add inverse in opposite direction
+    FusionApp->m_StudyList->AddXform( targetStudy, CurrentStudy, inverse, nullWarp );
     
-    if ( ! nameList.size() ) 
-      {
-      QMessageBox::warning( NULL, "Notification", "No target studies are available.", QMessageBox::Ok );
-      return;
-      }
-    
-    bool ok = false;
-    QString target = QInputDialog::getItem( this, "Select Target Study", "Target", nameList, 0 /*current*/, false /*editable*/, &ok /*ok*/ );
-    
-    if ( ok ) 
-      {
-      Study::SmartPtr targetStudy = FusionApp->m_StudyList->FindStudyName( target.toLatin1() );
-      
-      if ( targetStudy.IsNull() ) 
-	{
-	QMessageBox::warning( NULL, "Internal Error", "Could not find study with selected name.", QMessageBox::Ok );
-	return;
-	}
-      
-      AffineXform::SmartPtr newXform( new AffineXform );
-      AffineXform::SmartPtr inverse = newXform->GetInverse();
-      WarpXform::SmartPtr nullWarp( NULL );
-      
-      // add identity transformation
-      FusionApp->m_StudyList->AddXform( CurrentStudy, targetStudy, newXform, nullWarp );
-      // add inverse in opposite direction
-      FusionApp->m_StudyList->AddXform( targetStudy, CurrentStudy, inverse, nullWarp );
-      
-      // notify application of change to studylist
-      FusionApp->slotSetStudyList( FusionApp->m_StudyList );
-      }
-    }
-    }
+    // notify application of change to studylist
+    FusionApp->slotSetStudyList( FusionApp->m_StudyList );
+    }    
 }
-
+  
 void
-QtSimpleFusionMainWindow::slotFusionMenu( int command )
+QtSimpleFusionMainWindow::slotFusionMenu( QAction* action )
 {
+  const int command = action->getData().toInt();
   switch ( command ) 
     {
     case FUSION_MENU_SEPARATE: 
