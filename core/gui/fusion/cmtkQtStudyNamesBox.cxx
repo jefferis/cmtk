@@ -68,7 +68,7 @@ QtStudyNamesBox::slotUpdateStudySelection( const QStringList *namesList )
     }
   ComboBox->clear();
   ComboBox->addItems( *namesList );
-  ComboBox->setCurrentIndex( ComboBox->findText( switchToStudy ) );
+  ComboBox->setCurrentIndex( switchToStudy );
 }
 
 void
