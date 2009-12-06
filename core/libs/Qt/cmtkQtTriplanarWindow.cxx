@@ -710,6 +710,10 @@ void
 QtTriplanarWindow
 ::slotMouse3D( Qt::MouseButton, const Vector3D& v )
 {
+// if we don't have a study yet, simply ignore.
+  if ( ! this->m_Study )
+    return;
+
   const UniformVolume *volume = this->m_Study->GetVolume();
 
   unsigned int i=0, j=0;
