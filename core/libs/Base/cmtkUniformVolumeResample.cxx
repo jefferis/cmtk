@@ -70,10 +70,6 @@ UniformVolume::Resample( const UniformVolume& other ) const
      
     switch ( fromData->GetDataClass() ) 
       {
-      case DATACLASS_BINARY:
-	fputs( "Data class 'binary' not supported in UniformVolume::Resample.\n"
-	       "Falling back to 'greyscale'. "
-	       "You may not like the result though...\n", stderr );
       case DATACLASS_GREY:
       default:
       {

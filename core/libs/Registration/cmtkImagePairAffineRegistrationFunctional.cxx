@@ -32,7 +32,9 @@
 #include <cmtkImagePairAffineRegistrationFunctional.h>
 
 #include <cmtkImagePairAffineRegistrationFunctionalTemplate.h>
+#include <cmtkImagePairSimilarityMeasureCR.h>
 #include <cmtkImagePairSimilarityMeasureMSD.h>
+#include <cmtkImagePairSimilarityMeasureNCC.h>
 
 namespace
 cmtk
@@ -49,9 +51,6 @@ ImagePairAffineRegistrationFunctional
   switch ( fltVolume->GetData()->GetDataClass() ) 
     {
     case DATACLASS_UNKNOWN :
-    case DATACLASS_BINARY :
-      // not a lot we can do here.
-      return NULL;
     case DATACLASS_GREY :
       switch ( metric ) 
 	{
@@ -60,13 +59,13 @@ ImagePairAffineRegistrationFunctional
 	case 1:
 //	  return new ImagePairAffineRegistrationFunctional_Template<VoxelMatchingMutInf_Trilinear>( refVolume, fltVolume, affineXform );
 	case 2:
-//	  return new ImagePairAffineRegistrationFunctional_Template<VoxelMatchingCorrRatio_Trilinear>( refVolume, fltVolume, affineXform );
+	  return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureCR>( refVolume, fltVolume, affineXform );
 	case 3:
 	  return NULL; // masked nmi retired
 	case 4:
 	  return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureMSD>( refVolume, fltVolume, affineXform );
 	case 5:
-//	  return new ImagePairAffineRegistrationFunctional_Template<VoxelMatchingCrossCorrelation>( refVolume, fltVolume, affineXform );
+	  return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureNCC>( refVolume, fltVolume, affineXform );
 	default:
 	  break;
 	}

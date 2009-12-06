@@ -184,9 +184,6 @@ VoxelRegistration::ImagePreprocessor::WriteSettings
     case DATACLASS_LABEL:
       stream.WriteString( "dataclass", "LabelField" );
       break;
-    case DATACLASS_BINARY:
-      stream.WriteString( "dataclass", "Binary" );
-      break;
     default:
       stream.WriteString( "dataclass", "Unknown" );
       break;

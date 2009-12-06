@@ -91,8 +91,6 @@ typedef enum
 {
   /// Grey-level data.
   DATACLASS_GREY,
-  /// Binary (1 / 0) data.
-  DATACLASS_BINARY,
   /// (Segmented) label data.
   DATACLASS_LABEL,
   /// Data type unknown.

@@ -121,28 +121,6 @@ VoxelMatchingMetric_Type<T,DT>::ImageData::Init
     {
     switch ( data->GetDataClass() ) 
       {
-      case DATACLASS_BINARY: 
-      {
-      numBins = 2;
-      BinOffset = 0;
-      BinWidth = 1;
-      
-      const Types::DataItem threshold = (minValue + maxValue) / 2;
-      for ( size_t idx = 0; idx < NumberOfSamples; ++idx ) 
-	{
-	if ( data->Get( value, idx ) ) 
-	  {
-	  if ( value > threshold  ) 
-	    Data[idx] = 1;
-	  else
-	    Data[idx] = 0;
-	  } 
-	else
-	  // point to extra bins at the end of each row/column for NULL data.
-	  Data[idx] = defaultValue;
-	}
-      }
-      break;
       case DATACLASS_LABEL: 
       {
       numBins = 1 + static_cast<unsigned int>(maxValue-minValue);

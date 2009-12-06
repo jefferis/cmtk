@@ -25,6 +25,8 @@ Release CMTK-1.2.0:
 - Removed: push-forward function of reformatx has long been obsolete because
     we can invert any transformation and switch reference and floating image,
     to achieve the same effect.
+- Removed: "Binary" data class; this should really be treated as "Labels"
+    anyway.
 
 
 Release CMTK-1.1.3 (2009-11-18):

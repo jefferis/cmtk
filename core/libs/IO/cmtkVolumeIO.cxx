@@ -618,9 +618,6 @@ VolumeIO::CreateStudy
 	case DATACLASS_LABEL:
 	  studyStream->WriteString( "dataclass", "Label" );
 	  break;
-	case DATACLASS_BINARY:
-	  studyStream->WriteString( "dataclass", "Binary" );
-	  break;
 	default:
 	  studyStream->WriteString( "dataclass", "Unknown" );
 	  break;
