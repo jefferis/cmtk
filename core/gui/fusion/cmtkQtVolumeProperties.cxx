@@ -47,15 +47,15 @@ cmtk
 {
 
 QtVolumeProperties::QtVolumeProperties( const Study* study )
-  : QWidget( NULL, "VolumeProperties", 0 )
+  : QWidget( NULL )
 {
-  this->setIcon( QtFusionGlobal::WindowIcon() );
+  this->setWindowIcon( QtFusionGlobal::WindowIcon() );
   QVBoxLayout* layout = new QVBoxLayout( this );
     
   if ( study ) 
     {    
     QString caption;
-    this->setCaption( caption.sprintf( "Image Properties: %s", study->GetName() ) );
+    this->setWindowTitle( caption.sprintf( "Image Properties: %s", study->GetName() ) );
 
     QGroupBox* generalBox = new QGroupBox( this );
     QGridLayout *generalLayout = new QGridLayout;
