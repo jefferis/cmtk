@@ -295,7 +295,7 @@ QtSimpleFusionMainWindow::slotVolumeProperties()
 void
 QtSimpleFusionMainWindow::slotOperatorsMenu( QAction* action )
 {
-  const int command = action->getData().toInt();
+  const int command = action->data().toInt();
   switch ( command ) 
     {
     case OPERATORS_MENU_MEDIAN: 
@@ -436,7 +436,7 @@ QtSimpleFusionMainWindow::slotXformMenuCreate()
 void
 QtSimpleFusionMainWindow::slotFusionMenu( QAction* action )
 {
-  const int command = action->getData().toInt();
+  const int command = action->data().toInt();
   switch ( command ) 
     {
     case FUSION_MENU_SEPARATE: 
