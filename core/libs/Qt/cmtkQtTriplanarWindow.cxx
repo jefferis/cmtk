@@ -166,7 +166,6 @@ QtTriplanarWindow::QtTriplanarWindow()
   this->m_ControlsTab->addTab( landmarksTab, "Landmarks" );
 
   LandmarksLayout = new QGridLayout( landmarksTab );
-  LandmarksLayout->setVerticalSpacing( 40 );
 
   LocationEntryX = new QLineEdit( landmarksTab );
   LocationValidatorX = new QDoubleValidator( LocationEntryX );
@@ -203,7 +202,6 @@ QtTriplanarWindow::QtTriplanarWindow()
   QObject::connect( GoToLocationButton, SIGNAL( clicked() ), this, SLOT( slotGoToLocation() ) );
 
   LandmarkBox = new QComboBox( landmarksTab );
-//  LandmarksLayout->addWidget( LandmarkBox, 2, 2, 0, 2 );
   LandmarksLayout->addWidget( LandmarkBox, 2, 0, 1, 2 );
   LandmarkBox->setEnabled( false );
   QObject::connect( LandmarkBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( slotGoToLandmark() ) );
