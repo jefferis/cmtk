@@ -126,10 +126,6 @@ QtSimpleFusionMainWindow::InitWidget()
   FusionMenu->addAction( "&Mix" )->setData( FUSION_MENU_MIX );
   FusionMenu->addAction( "&Color/Brightness" )->setData( FUSION_MENU_COLOR );
   FusionMenu->addSeparator();
-#ifdef IGS_HAVE_VTK
-  FusionMenu->addAction( "&3D View" )->setData( FUSION_MENU_3D );
-  FusionMenu->addSeparator();
-#endif // #ifdef IGS_HAVE_VTK
   FusionMenu->addAction( "&Planar Slicer..." )->setData( FUSION_MENU_SLICER );
   QObject::connect( FusionMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( slotFusionMenu( QAction* ) ) );
 
