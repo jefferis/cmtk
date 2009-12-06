@@ -51,6 +51,7 @@ cmtk
 #pragma warning (disable:4521)
 #endif
 /** Mean squared difference metric.
+ *\deprecated For future code, use cmtk::ImagePairSimilarityMetricMSD instead.
  */
 class VoxelMatchingMeanSquaredDifference :
   /// Inherit generic voxel metric with internal short data.

@@ -53,6 +53,7 @@ cmtk
 #pragma warning (disable:4521)
 #endif
 /** Normalized Cross Correlation Metric.
+ *\deprecated For future code, use cmtk::ImagePairSimilarityMetricNCC instead.
  */
 class VoxelMatchingCrossCorrelation :
   /// Inherit generic voxel metric with internal short data.

@@ -49,6 +49,7 @@ cmtk
 #pragma warning (disable:4521)
 #endif
 /** Voxel metric "correlation ratio".
+ *\deprecated For future code, use cmtk::ImagePairSimilarityMetricCR instead.
  */
 template< Interpolators::InterpolationEnum I = Interpolators::LINEAR >
 class VoxelMatchingCorrRatio : 
