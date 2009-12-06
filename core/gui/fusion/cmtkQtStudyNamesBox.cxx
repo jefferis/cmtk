@@ -64,17 +64,17 @@ QtStudyNamesBox::slotUpdateStudySelection( const QStringList *namesList )
   if ( ComboBox->count() ) 
     {
     QString studyName = ComboBox->currentText();
-    switchToStudy = namesList->findIndex( studyName );
+    switchToStudy = namesList->indexOf( studyName );
     }
   ComboBox->clear();
-  ComboBox->insertStringList( *namesList );
-  ComboBox->setCurrentItem( switchToStudy );
+  ComboBox->addItems( *namesList );
+  ComboBox->setCurrentIndex( ComboBox->findText( switchToStudy ) );
 }
 
 void
 QtStudyNamesBox::slotSetCurrentText( const QString& text )
 {
-  ComboBox->setCurrentText( text );
+  ComboBox->setCurrentIndex( ComboBox->findText( text ) );
 }
 
 } // namespace cmtk
