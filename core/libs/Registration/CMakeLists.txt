@@ -48,6 +48,7 @@ SET(cmtkRegistration_SRCS
   cmtkGroupwiseRegistrationOutput.cxx
   cmtkGroupwiseRegistrationRMIFunctional.cxx
   cmtkImagePairAffineRegistrationFunctional.cxx
+  cmtkImagePairSimilarityJointHistogram.cxx
   cmtkImagePairSimilarityMeasure.cxx
   cmtkImagePairSimilarityMeasureCR.cxx
   cmtkImagePairSimilarityMeasureMSD.cxx

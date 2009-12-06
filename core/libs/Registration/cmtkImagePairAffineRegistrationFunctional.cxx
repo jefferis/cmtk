@@ -35,6 +35,8 @@
 #include <cmtkImagePairSimilarityMeasureCR.h>
 #include <cmtkImagePairSimilarityMeasureMSD.h>
 #include <cmtkImagePairSimilarityMeasureNCC.h>
+#include <cmtkImagePairSimilarityMeasureNMI.h>
+#include <cmtkImagePairSimilarityMeasureMI.h>
 
 namespace
 cmtk
@@ -55,9 +57,9 @@ ImagePairAffineRegistrationFunctional
       switch ( metric ) 
 	{
 	case 0:
-//	  return new ImagePairAffineRegistrationFunctional_Template< VoxelMatchingNormMutInf_Trilinear >( refVolume, fltVolume, affineXform );
+	  return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureMI>( refVolume, fltVolume, affineXform );
 	case 1:
-//	  return new ImagePairAffineRegistrationFunctional_Template<VoxelMatchingMutInf_Trilinear>( refVolume, fltVolume, affineXform );
+	  return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureNMI>( refVolume, fltVolume, affineXform );
 	case 2:
 	  return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureCR>( refVolume, fltVolume, affineXform );
 	case 3:

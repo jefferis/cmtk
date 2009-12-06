@@ -49,6 +49,7 @@ cmtk
 #pragma warning (disable:4521)
 #endif
 /** Voxel metric "normalized mutual information".
+ *\deprecated For future code, use cmtk::ImagePairSimilarityMetricNMI instead.
  */
 template<Interpolators::InterpolationEnum I=Interpolators::LINEAR>
 class VoxelMatchingNormMutInf : 
