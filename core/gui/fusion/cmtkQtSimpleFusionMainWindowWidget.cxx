@@ -84,7 +84,6 @@ QtSimpleFusionMainWindow::InitWidget()
 
   StudyMenu = MenuBar->addMenu( "&Study" );
   StudyMenu->addAction( "&Add...", this, SLOT( slotAddStudy() ) );
-  StudyMenu->addAction( "Add &File...", this, SLOT( slotAddStudyFiles() ) );
 
   RecentStudiesMenu = StudyMenu->addMenu( "&Recent" );
   this->slotUpdateRecentStudiesMenu();

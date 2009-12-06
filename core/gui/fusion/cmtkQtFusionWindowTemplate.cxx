@@ -35,7 +35,6 @@
 #include <qpushbutton.h>
 #include <qgroupbox.h>
 #include <qfiledialog.h>
-#include <QVBoxLayout>
 #include <QMenu>
 
 namespace
@@ -82,14 +81,19 @@ QtFusionWindowTemplate::QtFusionWindowTemplate
   WindowLayout->addLayout( ControlsLayout );
 
   ButtonBox = new QGroupBox( this );
+  ButtonBoxLayout = new QHBoxLayout;
+  ButtonBox->setLayout( ButtonBoxLayout );
   MasterLayout->addWidget( ButtonBox );
 
   QPushButton* updateButton = new QPushButton( "Update", ButtonBox );
   QObject::connect( updateButton, SIGNAL( clicked() ), SIGNAL( signalUpdate() ) );
+  ButtonBoxLayout->addWidget( updateButton, 1 );
 
   QPushButton* exportButton = new QPushButton( "Export...", ButtonBox );
+  ButtonBoxLayout->addWidget( exportButton, 1 );
 
   QPushButton* closeButton = new QPushButton( "Close", ButtonBox );
+  ButtonBoxLayout->addWidget( closeButton, 1 );
 
   QObject::connect( exportButton, SIGNAL( clicked() ), this, SLOT( slotExport() ) );
   QObject::connect( closeButton, SIGNAL( clicked() ), this, SLOT( close() ) );

@@ -92,9 +92,6 @@ private slots:
   /// Add study with dialog.
   void slotAddStudy();
 
-  /// Add study with dialog.
-  void slotAddStudyFiles();
-
   /// Add given study.
   void slotAddStudy( const QString& path );
 

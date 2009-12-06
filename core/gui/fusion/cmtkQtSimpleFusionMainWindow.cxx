@@ -171,14 +171,6 @@ QtSimpleFusionMainWindow::slotRecentStudiesMenu( QAction* action )
 void 
 QtSimpleFusionMainWindow::slotAddStudy()
 {
-  QString path = QFileDialog::getExistingDirectory( this, "Add Study" );
-  if ( ! (path.isEmpty() || path.isNull() ) )
-    this->slotAddStudy( path );
-}
-
-void 
-QtSimpleFusionMainWindow::slotAddStudyFiles()
-{
   QStringList paths = QFileDialog::getOpenFileNames( this, "Add Study", "*" );
   
   QStringList::const_iterator it = paths.begin();
