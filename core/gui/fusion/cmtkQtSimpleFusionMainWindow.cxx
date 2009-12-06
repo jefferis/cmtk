@@ -96,7 +96,7 @@ QtSimpleFusionMainWindow::slotUpdateRecentListsMenu()
 }
 
 void
-QtSimpleFusionMainWindow::slotRecentListsMenu( const QAction* action )
+QtSimpleFusionMainWindow::slotRecentListsMenu( QAction* action )
 {
   QString path = action->text();
   if ( path.length() > 4 ) 
@@ -157,7 +157,7 @@ QtSimpleFusionMainWindow::slotUpdateRecentStudiesMenu()
 }
 
 void
-QtSimpleFusionMainWindow::slotRecentStudiesMenu( const QAction* action )
+QtSimpleFusionMainWindow::slotRecentStudiesMenu( QAction* action )
 {
   QString path = action->text();
   if ( path.length() > 4 ) 

@@ -78,7 +78,7 @@ QtSimpleFusionMainWindow::InitWidget()
   RecentListsMenu = ListMenu->addMenu( "&Recent" );
   ListMenu->addSeparator();
   this->slotUpdateRecentListsMenu();
-  QObject::connect( RecentListsMenu, SIGNAL( activated( action ) ), this, SLOT( slotRecentListsMenu( action ) ) );
+  QObject::connect( RecentListsMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( slotRecentListsMenu( QAction* ) ) );
 
   ListMenu->addAction( "&Quit", qApp, SLOT( quit() ) );
 
@@ -88,7 +88,7 @@ QtSimpleFusionMainWindow::InitWidget()
 
   RecentStudiesMenu = StudyMenu->addMenu( "&Recent" );
   this->slotUpdateRecentStudiesMenu();
-  QObject::connect( RecentStudiesMenu, SIGNAL( activated( action ) ), this, SLOT( slotRecentStudiesMenu( action ) ) );
+  QObject::connect( RecentStudiesMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( slotRecentStudiesMenu( QAction* ) ) );
 
   StudyMenu->addSeparator();
   StudyMenu->addAction( "&Save", this, SLOT( slotSaveStudy() ) );
@@ -104,13 +104,13 @@ QtSimpleFusionMainWindow::InitWidget()
   OperatorsMenu->addAction( "&Histogram Equalization..." )->setData( OPERATORS_MENU_HISTOGRAM );
   OperatorsMenu->addAction( "&Sobel Edge Filter" )->setData( OPERATORS_MENU_SOBEL );
   OperatorsMenu->addSeparator();
-  QObject::connect( OperatorsMenu, SIGNAL( activated( int ) ), this, SLOT( slotOperatorsMenu( int ) ) );
+  QObject::connect( OperatorsMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( slotOperatorsMenu( QAction* ) ) );
 
   AlgOperatorsMenu = OperatorsMenu->addMenu( "&Algebraic" );
   AlgOperatorsMenu->addAction( "&abs()" )->setData( OPERATORS_MENU_ABS );
   AlgOperatorsMenu->addAction( "&log()" )->setData( OPERATORS_MENU_LOG );
   AlgOperatorsMenu->addAction( "&exp()" )->setData( OPERATORS_MENU_EXP );
-  QObject::connect( AlgOperatorsMenu, SIGNAL( activated( QAction* ) ), this, SLOT( slotOperatorsMenu( AQction* ) ) );
+  QObject::connect( AlgOperatorsMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( slotOperatorsMenu( QAction* ) ) );
   
   XformMenu = MenuBar->addMenu( "&Transform" );;
   XformMenu->addAction( "&Create...", this, SLOT( slotXformMenuCreate() ) );
@@ -131,7 +131,7 @@ QtSimpleFusionMainWindow::InitWidget()
   FusionMenu->addSeparator();
 #endif // #ifdef IGS_HAVE_VTK
   FusionMenu->addAction( "&Planar Slicer..." )->setData( FUSION_MENU_SLICER );
-  QObject::connect( FusionMenu, SIGNAL( activated( QAction* ) ), this, SLOT( slotFusionMenu( QAction* ) ) );
+  QObject::connect( FusionMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( slotFusionMenu( QAction* ) ) );
 
   StudyTabs = new QTabWidget( this );
   QObject::connect( StudyTabs, SIGNAL( currentChanged ( QWidget* ) ), this, SLOT( slotSwitchStudy( QWidget* ) ) );
