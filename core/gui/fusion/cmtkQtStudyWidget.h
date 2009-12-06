@@ -58,7 +58,7 @@ public QWidget
 
 public:
   /// Constructor
-  QtStudyWidget( QWidget* parent, const char* name = 0, Qt::WFlags flags = 0 );
+  QtStudyWidget( QWidget* parent, Qt::WFlags flags = 0 );
 
   /// Get study object.
   Study::SmartPtr& GetStudy() 

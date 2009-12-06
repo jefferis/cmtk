@@ -43,8 +43,8 @@ cmtk
 {
 
 QtStudyWidget::QtStudyWidget
-( QWidget* parent, const char* name, Qt::WFlags flags )
-  : QWidget( parent, name, flags ),
+( QWidget* parent, Qt::WFlags flags )
+  : QWidget( parent, flags ),
     m_Study( NULL )
 {
   // create the visualization pipeline
@@ -66,8 +66,8 @@ QtStudyWidget::QtStudyWidget
   QBoxLayout* topLevelLayout = new QHBoxLayout( this );
   topLevelLayout->addWidget( ScrollRenderView );
 
-  QBoxLayout* rightLayout = new QVBoxLayout( topLevelLayout );
-  topLevelLayout->setStretchFactor( rightLayout, 0 );
+  QBoxLayout* rightLayout = new QVBoxLayout;
+  topLevelLayout->addLayout( rightLayout, 0 );
 
   WindowLevelBox = new QtWindowLevelControls( this );
   QObject::connect( WindowLevelBox, SIGNAL( colormap( Study::SmartPtr& ) ), SIGNAL( colormap( Study::SmartPtr& ) ) );
@@ -83,7 +83,7 @@ QtStudyWidget::slotSetStudy( Study::SmartPtr& study )
 
   if ( this->m_Study ) 
     {
-    qApp->setOverrideCursor( Qt::waitCursor );
+    qApp->setOverrideCursor( Qt::WaitCursor );
     this->m_Study->ReadVolume( false /*reread*/, AnatomicalOrientation::ORIENTATION_STANDARD );
     qApp->restoreOverrideCursor();
     
