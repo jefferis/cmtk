@@ -66,7 +66,7 @@ QtFusionSlicer::QtFusionSlicer( QtSimpleFusionApp *const fusionApp ) :
 
   ReferenceBox = new QtStudyNamesBox( this );
   ReferenceBox->slotSetLabel( "Reference Study:" );
-  layout->addWidget( ReferenceBox );
+  layout->addWidget( ReferenceBox, 1 );
   QObject::connect( ReferenceBox, SIGNAL( signalActivated( const QString& ) ), this, SLOT( slotSetReferenceStudy( const QString& ) ) );
 
   QGroupBox* orientButtonBox = new QGroupBox( "Orientation", this );
@@ -92,10 +92,11 @@ QtFusionSlicer::QtFusionSlicer( QtSimpleFusionApp *const fusionApp ) :
   axialButton->setChecked( true );
 
   QObject::connect( orientButtonGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( slotSetOrientation( int ) ) );
-  layout->addWidget( orientButtonBox );
+  layout->addWidget( orientButtonBox, 1 );
 
   QGroupBox* sliceGroupBox = new QGroupBox( this );
   sliceGroupBox->setTitle( "Slice Plane Parameters" );
+  layout->addWidget( sliceGroupBox );
 
   SliceSlider = new QtSliderEntry( sliceGroupBox );
   SliceSlider->slotSetPrecision( 2 );
@@ -107,9 +108,7 @@ QtFusionSlicer::QtFusionSlicer( QtSimpleFusionApp *const fusionApp ) :
   QVBoxLayout *sliceLayout = new QVBoxLayout;
   sliceLayout->addWidget( SliceSlider );
   sliceLayout->addWidget( centerButton );
-  sliceLayout->addStretch(1);
-
-  layout->addWidget( sliceGroupBox );
+  sliceGroupBox->setLayout( sliceLayout );
   
   QGroupBox* interButtonBox = new QGroupBox( "Interpolation", this );
 
