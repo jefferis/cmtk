@@ -41,7 +41,7 @@ cmtk
 //@{
 
 const char *DataClassString[] = 
-{ "grey", "binary", "label", "unknown",
+{ "grey", "label", "unknown",
   NULL };
 
 const char* DataTypeName[] = 
