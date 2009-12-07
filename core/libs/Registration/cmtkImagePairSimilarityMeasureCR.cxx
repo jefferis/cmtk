@@ -38,6 +38,36 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
+ImagePairSimilarityMeasureCR::ImagePairSimilarityMeasureCR
+( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
+    : ImagePairSimilarityMeasure( refVolume, fltVolume, interpolation ),
+      SumJ( NULL ), SumJ2( NULL ), HistogramI( NULL ), 
+      SumI( NULL ), SumI2( NULL ), HistogramJ( NULL )
+{ 
+  NumBinsX = std::max<unsigned>( std::min<unsigned>( refVolume->GetNumberOfPixels(), 128 ), 8 );
+  HistogramI = new Histogram<unsigned int>( NumBinsX );
+  
+  NumBinsY = std::max<unsigned>( std::min<unsigned>( fltVolume->GetNumberOfPixels(), 128 ), 8 );
+  HistogramJ = new Histogram<unsigned int>( NumBinsY );
+  
+  Types::DataItem from, to;
+  refVolume->GetData()->GetRange( from, to );
+  HistogramI->SetRange( from, to );
+  
+  SumJ = Memory::AllocateArray<double>( NumBinsX );
+  SumJ2 = Memory::AllocateArray<double>( NumBinsX );
+  
+  fltVolume->GetData()->GetStatistics( MuJ, SigmaSqJ );
+  
+  fltVolume->GetData()->GetRange( from, to );
+  HistogramJ->SetRange( from, to );
+  
+  SumI = Memory::AllocateArray<double>( NumBinsY );
+  SumI2 = Memory::AllocateArray<double>( NumBinsY );
+  
+  refVolume->GetData()->GetStatistics( MuI, SigmaSqI );
+}
+
 ImagePairSimilarityMeasureCR::ReturnType
 ImagePairSimilarityMeasureCR::Get () const
 {

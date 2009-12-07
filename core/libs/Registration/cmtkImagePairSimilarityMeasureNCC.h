@@ -74,7 +74,8 @@ public:
    *@param refVolume The reference (fixed) volume.
    *@param fltVolume The floating (transformed) volume.
    */
-  ImagePairSimilarityMeasureNCC ( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume );
+  ImagePairSimilarityMeasureNCC ( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume,
+				  const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
 
   /// Copy constructor.
   ImagePairSimilarityMeasureNCC ( Self& other, const bool copyData = false );

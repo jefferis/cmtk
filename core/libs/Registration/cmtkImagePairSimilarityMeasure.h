@@ -65,7 +65,11 @@ public:
 
   /** Constructor.
    */
-  ImagePairSimilarityMeasure( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume );
+  ImagePairSimilarityMeasure
+  ( const UniformVolume::SmartPtr& refVolume, //!< The reference image.
+    const UniformVolume::SmartPtr& fltVolume, //!< The floating image.
+    const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT //!< User-selected interpolation kernel
+    );
 
   /** Default constructor.
    */

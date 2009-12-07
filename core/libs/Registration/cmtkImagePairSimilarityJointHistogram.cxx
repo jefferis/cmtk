@@ -39,8 +39,8 @@ cmtk
 //@{
 
 ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
-( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume )
-  : ImagePairSimilarityMeasure( Self::PrescaleData( refVolume, &this->m_NumberOfBinsX ), Self::PrescaleData( fltVolume, &this->m_NumberOfBinsY ) )
+( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
+  : ImagePairSimilarityMeasure( Self::PrescaleData( refVolume, &this->m_NumberOfBinsX ), Self::PrescaleData( fltVolume, &this->m_NumberOfBinsY ), interpolation )
 {
   this->m_JointHistogram.Resize( this->m_NumberOfBinsX, this->m_NumberOfBinsY );
 }

@@ -32,9 +32,10 @@
 #include <cmtkImagePairSimilarityMeasure.h>
 
 #include <cmtkUniformVolumeInterpolator.h>
-
 #include <cmtkLinearInterpolator.h>
 #include <cmtkNearestNeighborInterpolator.h>
+
+#include <cmtkReformatVolume.h>
 
 namespace
 cmtk
@@ -44,20 +45,28 @@ cmtk
 //@{
 
 ImagePairSimilarityMeasure::ImagePairSimilarityMeasure
-( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume )
+( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
 {
   this->m_ReferenceData = refVolume->GetData();
   this->m_FloatingData = fltVolume->GetData();
 
-  switch ( this->m_FloatingData->GetDataClass() ) 
+  if ( interpolation == Interpolators::DEFAULT )
     {
-    case DATACLASS_UNKNOWN :
-    case DATACLASS_GREY :
-      this->m_FloatingImageInterpolator = 
-	cmtk::UniformVolumeInterpolatorBase::SmartPtr( new cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear>( fltVolume ) );
-    case DATACLASS_LABEL :
-      this->m_FloatingImageInterpolator = 
-	cmtk::UniformVolumeInterpolatorBase::SmartPtr( new cmtk::UniformVolumeInterpolator<cmtk::Interpolators::NearestNeighbor>( fltVolume ) );
+    // decide based on floating image data class.
+    switch ( this->m_FloatingData->GetDataClass() ) 
+      {
+      case DATACLASS_UNKNOWN :
+      case DATACLASS_GREY :
+	this->m_FloatingImageInterpolator = 
+	  cmtk::UniformVolumeInterpolatorBase::SmartPtr( new cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear>( fltVolume ) );
+      case DATACLASS_LABEL :
+	this->m_FloatingImageInterpolator = 
+	  cmtk::UniformVolumeInterpolatorBase::SmartPtr( new cmtk::UniformVolumeInterpolator<cmtk::Interpolators::NearestNeighbor>( fltVolume ) );
+      }
+    }
+  else
+    {
+    ReformatVolume::CreateInterpolator( interpolation, fltVolume );
     }
 }
 

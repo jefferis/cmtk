@@ -71,7 +71,8 @@ public:
    *@param refVolume The reference (fixed) volume.
    *@param modVolume The model (transformed) volume.
    */
-  ImagePairSimilarityMeasureMSD( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume );
+  ImagePairSimilarityMeasureMSD( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume,
+				 const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
 
   /// UNDOCUMENTED
   ImagePairSimilarityMeasureMSD( const Self& other );

@@ -75,7 +75,8 @@ public:
    * Derived classes may want to prevent this if they define their own
    * specific initialization (e.g., igsVoxelMatchingJointHistogram).
    */
-  ImagePairSimilarityJointHistogram( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume );
+  ImagePairSimilarityJointHistogram( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume,
+				     const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
 
   /** Default constructor.
    */
