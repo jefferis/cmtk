@@ -39,8 +39,8 @@ cmtk
 //@{
 
 ImagePairSimilarityMeasureMSD::ImagePairSimilarityMeasureMSD
-( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume ) :
-  ImagePairSimilarityMeasure( refVolume, fltVolume )
+( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
+  : ImagePairSimilarityMeasure( refVolume, fltVolume, interpolation )
 {}
 
 ImagePairSimilarityMeasureMSD::ImagePairSimilarityMeasureMSD

@@ -38,9 +38,9 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-ImagePairSimilarityMeasureNCC
-::ImagePairSimilarityMeasureNCC( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume ) :
-  ImagePairSimilarityMeasure( refVolume, fltVolume )
+ImagePairSimilarityMeasureNCC::ImagePairSimilarityMeasureNCC
+( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
+  : ImagePairSimilarityMeasure( refVolume, fltVolume, interpolation )
 {}
 
 ImagePairSimilarityMeasureNCC
