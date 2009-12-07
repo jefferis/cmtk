@@ -56,7 +56,9 @@ typedef enum
   /// Sinc interpolation with cosine window.
   COSINE_SINC,
   /// Sinc interpolation with Hamming window.
-  HAMMING_SINC  
+  HAMMING_SINC,
+  /// Default/unknown interpolation.
+  DEFAULT
 } InterpolationEnum;
 
 } // namespace Interpolators
