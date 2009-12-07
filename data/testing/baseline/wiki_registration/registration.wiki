@@ -73,7 +73,7 @@ where
 
 === Reference Image Preprocessing ===
 
-; <tt>--class-ref</tt> <tt><string></tt> : Data class: grey (default), binary, or label '''[Default value: NONE]'''
+; <tt>--class-ref</tt> <tt><string></tt> : Data class: grey (default) or label '''[Default value: NONE]'''
 
 ; <tt>--pad-ref</tt> <tt><double></tt> : Padding value '''[Default: disabled]'''
 
@@ -93,7 +93,7 @@ where
 
 === Floating Image Preprocessing ===
 
-; <tt>--class-flt</tt> <tt><string></tt> : Data class: grey (default), binary, or label '''[Default value: NONE]'''
+; <tt>--class-flt</tt> <tt><string></tt> : Data class: grey (default) or label '''[Default value: NONE]'''
 
 ; <tt>--pad-flt</tt> <tt><double></tt> : Padding value '''[Default: disabled]'''
 
