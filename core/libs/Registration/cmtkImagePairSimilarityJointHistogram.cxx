@@ -130,6 +130,8 @@ ImagePairSimilarityJointHistogram::PrescaleData
     }
     break;
     } 
+
+  return newVolume;
 }
 
 } // namespace cmtk
