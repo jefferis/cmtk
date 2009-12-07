@@ -40,17 +40,96 @@ cmtk
 
 ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
 ( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume )
+  : ImagePairSimilarityMeasure( Self::PrescaleData( refVolume, &this->m_NumberOfBinsX ), Self::PrescaleData( fltVolume, &this->m_NumberOfBinsX ) )
 {
+  this->m_JointHistogram.Resize( this->m_NumberOfBinsX, this->m_NumberOfBinsY );
 }
 
 ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
 ( const Self& other )
 {
+  StdErr << "Not implemented: " << __FILE__ << ":" << __LINE__ << "\n";
 }
 
 ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
 ( Self& other, const bool copyData )
 {
+  StdErr << "Not implemented: " << __FILE__ << ":" << __LINE__ << "\n";
+}
+
+UniformVolume::SmartPtr
+ImagePairSimilarityJointHistogram::PrescaleData
+( const UniformVolume::SmartPtr& volume, size_t* numberOfBins )
+{
+  UniformVolume::SmartPtr newVolume( volume->CloneGrid() );
+  newVolume->CreateDataArray( TYPE_ITEM );
+  const size_t numberOfPixels = volume->GetNumberOfPixels();
+    
+  Types::DataItem value = 0;
+  Types::DataItem minValue = FLT_MAX;
+  Types::DataItem maxValue = -FLT_MAX;
+
+  int cropFrom[3], cropTo[3], increments[3];
+  volume->GetCropRegion( cropFrom, cropTo, increments );
+  int offset = increments[0];
+  for ( int z = cropFrom[2]; z < cropTo[2]; ++z, offset += increments[2] ) 
+    {
+    for ( int y = cropFrom[1]; y < cropTo[1]; ++y, offset += increments[1] ) 
+      {
+      for ( int x = cropFrom[0]; x < cropTo[0]; ++x, ++offset ) 
+	{
+	if ( volume->GetDataAt( value, offset ) ) 
+	  {
+	  if ( value > maxValue ) maxValue = value;
+	  if ( value < minValue ) minValue = value;
+	  }
+	}
+      }
+    }
+  
+  switch ( volume->GetData()->GetDataClass() ) 
+    {
+    case DATACLASS_LABEL: 
+    {
+    *numberOfBins = 1 + static_cast<unsigned int>(maxValue-minValue);
+    if ( *numberOfBins > 254 ) 
+      {
+      StdErr << "Fatal error: Cannot handle more than 254 different labels.\n";
+      exit( 1 );
+      }
+    
+    for ( size_t idx = 0; idx < numberOfPixels; ++idx ) 
+      {
+      if ( volume->GetDataAt( value, idx ) )
+	newVolume->SetDataAt( static_cast<Types::DataItem>( value - minValue ), idx );
+      else
+	newVolume->GetData()->SetPaddingAt( idx );
+      }
+    }
+    break;
+    default: // Handle everything else as grey-level data.
+    case DATACLASS_GREY: 
+    {
+    *numberOfBins = JointHistogramBase::CalcNumBins( volume );
+    const Types::DataItem binOffset = minValue;
+    const Types::DataItem binWidth = ( maxValue - minValue ) / (*numberOfBins-1);
+    const Types::DataItem factor = 1.0 / binWidth;
+    
+    for ( size_t idx = 0; idx < numberOfPixels; ++idx ) 
+      {
+      if ( volume->GetDataAt( value, idx ) ) 
+	{
+	value = std::max( std::min( value, maxValue ), minValue );
+	newVolume->SetDataAt( static_cast<Types::DataItem>( floor(factor*(value-binOffset)) ), idx );
+	} 
+      else 
+	{
+	newVolume->GetData()->SetPaddingAt( idx );
+	}
+      }
+    }
+    break;
+    } 
 }
 
 } // namespace cmtk

@@ -113,8 +113,24 @@ public:
   }
 
 protected:
+  /// Number of X bins (reference image)
+  size_t m_NumberOfBinsX;
+
+  /// Number of Y bins (floating image)
+  size_t m_NumberOfBinsY;
+
   /// The joint histogram.
   JointHistogram<unsigned int> m_JointHistogram;
+
+private:
+  /** Duplicate and pre-scale image data so that we have the histogram bin numbers readily available.
+   *\return A new volume with the same geometry as the input volume, but for DATACLASS_GREY, all pixel
+   * values will have been rescaled to represent histogram bin indexes directly.
+   */
+  UniformVolume::SmartPtr PrescaleData
+  ( const UniformVolume::SmartPtr& volume, //!< Input volume.
+    size_t* numberOfBins //!< Output: number of bins that the histogram should allocate for the output volume.
+    );
 };
 
 //@}

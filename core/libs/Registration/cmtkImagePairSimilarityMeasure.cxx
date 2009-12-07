@@ -74,6 +74,7 @@ ImagePairSimilarityMeasure::ImagePairSimilarityMeasure
 {
   if ( copyData )
     {
+    StdErr << "Not implemented: " << __FILE__ << ":" << __LINE__ << "\n";
     }
   else
     {
