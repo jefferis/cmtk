@@ -40,7 +40,7 @@ cmtk
 
 ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
 ( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume )
-  : ImagePairSimilarityMeasure( Self::PrescaleData( refVolume, &this->m_NumberOfBinsX ), Self::PrescaleData( fltVolume, &this->m_NumberOfBinsX ) )
+  : ImagePairSimilarityMeasure( Self::PrescaleData( refVolume, &this->m_NumberOfBinsX ), Self::PrescaleData( fltVolume, &this->m_NumberOfBinsY ) )
 {
   this->m_JointHistogram.Resize( this->m_NumberOfBinsX, this->m_NumberOfBinsY );
 }
