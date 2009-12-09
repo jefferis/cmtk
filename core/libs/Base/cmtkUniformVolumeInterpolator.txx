@@ -88,11 +88,10 @@ UniformVolumeInterpolator<TInterpolationFunction>
       size_t offset = this->m_Volume->GetOffsetFromIndex( xx + iMin, yy + j, zz + k );
       for ( int i = iMin; i < iMax; ++i, ++offset )
         {
-        const Types::Coordinate weightIJK = interpolationWeights[0][i] * weightJK;
-	
         if ( this->m_VolumeDataArray->Get( data, offset ) )
           {
-          interpolatedData += static_cast<Types::DataItem>( data * weightIJK );
+	  const Types::Coordinate weightIJK = interpolationWeights[0][i] * weightJK;
+	  interpolatedData += static_cast<Types::DataItem>( data * weightIJK );
           totalWeight += weightIJK;
           }
         }
@@ -147,10 +146,9 @@ UniformVolumeInterpolator<TInterpolationFunction>
       size_t offset = baseIndex + iMin + j * this->m_NextJ + k * this->m_NextK;
       for ( int i = iMin; i < iMax; ++i, ++offset )
         {
-        const Types::Coordinate weightIJK = interpolationWeights[0][i] * weightJK;
-	
         if ( this->m_VolumeDataArray->Get( data, offset ) )
           {
+	  const Types::Coordinate weightIJK = interpolationWeights[0][i] * weightJK;
           interpolatedData += static_cast<Types::DataItem>( data * weightIJK );
           totalWeight += weightIJK;
           }
