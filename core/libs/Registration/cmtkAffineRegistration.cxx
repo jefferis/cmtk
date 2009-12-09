@@ -125,7 +125,7 @@ AffineRegistration::InitRegistration ()
     {
     Functional::SmartPtr newFunctional; 
     if ( this->m_NewMetricImplementation )
-      newFunctional = Functional::SmartPtr( ImagePairAffineRegistrationFunctional::Create( this->m_Metric, this->m_ReferenceVolume, this->m_FloatingVolume, affineXform ) );
+      newFunctional = Functional::SmartPtr( ImagePairAffineRegistrationFunctional::Create( this->m_Metric, this->m_ReferenceVolume, this->m_FloatingVolume, this->m_NewMetricInterpolation, affineXform ) );
     else
       newFunctional = Functional::SmartPtr( VoxelMatchingAffineFunctional::Create( this->m_Metric, this->m_ReferenceVolume, this->m_FloatingVolume, affineXform ) );
     FunctionalStack.push( newFunctional );
@@ -146,7 +146,7 @@ AffineRegistration::InitRegistration ()
     
     Functional::SmartPtr newFunctional;
     if ( this->m_NewMetricImplementation )
-      newFunctional = Functional::SmartPtr( ImagePairAffineRegistrationFunctional::Create( this->m_Metric, nextRef, nextFlt, affineXform ) );
+      newFunctional = Functional::SmartPtr( ImagePairAffineRegistrationFunctional::Create( this->m_Metric, nextRef, nextFlt, this->m_NewMetricInterpolation, affineXform ) );
     else
       newFunctional = Functional::SmartPtr( VoxelMatchingAffineFunctional::Create( this->m_Metric, nextRef, nextFlt, affineXform ) );
     FunctionalStack.push( newFunctional );

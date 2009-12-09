@@ -89,14 +89,6 @@ public:
     return data;
   }
   
-  /// Get a value from the Y distribution (floating image).
-  Types::DataItem GetSampleY ( const size_t index ) const 
-  { 
-    Types::DataItem data;
-    this->m_FloatingData->Get( data, index );
-    return data;
-  }
-  
   /// Interpolate a value from the Y distribution (floating image).
   Types::DataItem GetSampleY ( const size_t baseIndex, const int* index, const Types::Coordinate* frac ) const
   {

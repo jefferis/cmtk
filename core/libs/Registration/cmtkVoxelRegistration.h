@@ -46,6 +46,7 @@
 
 #include <cmtkRegistrationCallback.h>
 #include <cmtkOptimizer.h>
+#include <cmtkInterpolator.h>
 
 #include <cmtkTimers.h>
 #include <cmtkCommandLine.h>
@@ -74,6 +75,13 @@ protected:
 
   /// Flag: use old (up to CMTK 1.1.x) or new (after CMTK 1.2.0) metric implementation.
   bool m_NewMetricImplementation;
+
+  /** For new metric implementation: override default interpolation.
+   * For intensity images, the default interpolator is LINEAR, for label images
+   * it is NEARESTNEIGHBOR. These are used if this field is left at its initial
+   * value, DEFAULT.
+   */
+  cmtkGetSetMacro(Interpolators::InterpolationEnum,NewMetricInterpolation);
 
   /// Optimization algorithm to use.
   cmtkGetSetMacro(int,Algorithm);

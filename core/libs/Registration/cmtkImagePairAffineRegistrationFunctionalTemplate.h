@@ -36,6 +36,8 @@
 
 #include <cmtkImagePairAffineRegistrationFunctional.h>
 
+#include <cmtkInterpolator.h>
+
 namespace
 cmtk
 {
@@ -55,9 +57,7 @@ cmtk
 template<class VM>
 class ImagePairAffineRegistrationFunctionalTemplate :
   /// Inherit from affine voxel matching functional
-  public ImagePairAffineRegistrationFunctional, 
-  /// Inherit from metric template functional.
-  public VoxelMatchingFunctional_Template<VM> 
+  public ImagePairAffineRegistrationFunctional
 {
 public:
   /// This class type.
@@ -80,15 +80,18 @@ public:
    *@param xform A transformation template. This object determines the type
    * of transformation to be optimized. Its initial value is not relevant.
    */
-  ImagePairAffineRegistrationFunctionalTemplate( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating, AffineXform::SmartPtr& affineXform )
-    : ImagePairAffineRegistrationFunctional( reference, floating, affineXform ),
-      VoxelMatchingFunctional_Template<VM>( reference, floating ) 
+  ImagePairAffineRegistrationFunctionalTemplate( UniformVolume::SmartPtr& reference, 
+						 UniformVolume::SmartPtr& floating, 
+						 const Interpolators::InterpolationEnum interpolation,
+						 AffineXform::SmartPtr& affineXform )
+    : ImagePairAffineRegistrationFunctional( reference, floating, affineXform )
   {
     this->m_NumberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
 
+    this->m_Metric = new VM( reference, floating, interpolation );
     this->m_ThreadMetric = Memory::AllocateArray<VM*>( m_NumberOfThreads );
     for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
-      this->m_ThreadMetric[thread] = new VM( *(this->Metric) );
+      this->m_ThreadMetric[thread] = new VM( *(this->m_Metric) );
   }
 
   /// Destructor.
@@ -97,6 +100,8 @@ public:
     for ( size_t thread = 0; thread < m_NumberOfThreads; ++thread )
       delete m_ThreadMetric[thread];
     Memory::DeleteArray( this->m_ThreadMetric );
+
+    delete this->m_Metric;
   }
 
   /// Evaluate with new parameter vector.
@@ -120,42 +125,7 @@ public:
    * subobject.
    *@see VolumeClipping
    */
-  virtual typename Self::ReturnType Evaluate() 
-  {
-    const VolumeAxesHash axesHash( *this->ReferenceGrid, this->m_AffineXform, this->FloatingGrid->m_Delta, this->FloatingGrid->m_Origin.XYZ );
-    const Vector3D *axesHashX = axesHash[0], *axesHashY = axesHash[1], *axesHashZ = axesHash[2];
-    
-    this->Metric->Reset();
-
-    const int *Dims = this->ReferenceGrid->GetDims();
-    const int DimsX = Dims[0], DimsY = Dims[1], DimsZ = Dims[2];
-
-    this->Clipper.SetDeltaX( axesHashX[DimsX-1] - axesHashX[0] );
-    this->Clipper.SetDeltaY( axesHashY[DimsY-1] - axesHashY[0] );
-    this->Clipper.SetDeltaZ( axesHashZ[DimsZ-1] - axesHashZ[0] );
-    this->Clipper.SetClippingBoundaries( this->FloatingCropFromIndex, this->FloatingCropToIndex );
-    
-    GridIndexType startZ, endZ;
-    if ( this->ClipZ( this->Clipper, axesHashZ[0], startZ, endZ ) ) 
-      {
-      startZ = std::max<GridIndexType>( startZ, this->ReferenceCropFrom[2] );
-      endZ = std::min<GridIndexType>( endZ, this->ReferenceCropTo[2] + 1 );
-      
-      const int numberOfTasks = std::min<size_t>( 4 * this->m_NumberOfThreads - 3, endZ - startZ + 1 );
-      this->m_EvaluateTaskInfo.resize( numberOfTasks );
-      
-      for ( int taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
-	{
-	this->m_EvaluateTaskInfo[taskIdx].thisObject = this;
-	this->m_EvaluateTaskInfo[taskIdx].AxesHash = &axesHash;
-	this->m_EvaluateTaskInfo[taskIdx].StartZ = startZ;
-	this->m_EvaluateTaskInfo[taskIdx].EndZ = endZ;
-	}
-
-      ThreadPool::GlobalThreadPool.Run( EvaluateThread, this->m_EvaluateTaskInfo );
-      }
-    return this->Metric->Get();
-  }
+  virtual typename Self::ReturnType Evaluate();
   
   /** Number of threads that this object was created for.
    * This is the actual maximum number of threads running at any time, but not
@@ -200,99 +170,17 @@ public:
     * For these parameters, the thread computes the partial derivative of the
     * functional by finite-difference approximation.
     */
-  static void EvaluateThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t ) 
-  {
-  typename Self::EvaluateTaskInfo *info = static_cast<typename Self::EvaluateTaskInfo*>( args );
+  static void EvaluateThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
 
-    Self *me = info->thisObject;
-    const VM* Metric = me->Metric;
-
-    VM* threadMetric = me->m_ThreadMetric[threadIdx];
-    threadMetric->Reset();
-
-    const Vector3D *hashX = (*info->AxesHash)[0], *hashY = (*info->AxesHash)[1], *hashZ = (*info->AxesHash)[2];
-    Vector3D pFloating;
-
-    const int *Dims = me->ReferenceGrid->GetDims();
-    const int DimsX = Dims[0], DimsY = Dims[1];
-
-    int fltIdx[3];
-    Types::Coordinate fltFrac[3];
-
-    const int FltDimsX = me->FloatingDims[0], FltDimsY = me->FloatingDims[1];
-
-    Vector3D rowStart;
-    Vector3D planeStart;
-
-    int offset;
-    GridIndexType pX, pY, pZ;
-    // Loop over all remaining planes
-    for ( pZ = info->StartZ + taskIdx; pZ < info->EndZ; pZ += taskCnt ) 
-      {
-      // Offset of current reference voxel
-      int r = pZ * DimsX * DimsY;
-      
-      planeStart = hashZ[pZ];
-      
-      GridIndexType startY, endY;
-      if ( me->ClipY( me->Clipper, planeStart, startY, endY ) ) 
-	{	
-	startY = std::max<GridIndexType>( startY, me->ReferenceCropFrom[1] );
-	endY = std::min<GridIndexType>( endY, me->ReferenceCropTo[1] + 1 );
-	r += startY * DimsX;
-	
-	// Loop over all remaining rows
-	for ( pY = startY; pY<endY; ++pY ) 
-	  {
-	  (rowStart = planeStart) += hashY[pY];
-	  
-	  GridIndexType startX, endX;
-	  if ( me->ClipX( me->Clipper, rowStart, startX, endX ) ) 
-	    {	    
-	    startX = std::max<GridIndexType>( startX, me->ReferenceCropFrom[0] );
-	    endX = std::min<GridIndexType>( endX, me->ReferenceCropTo[0] + 1 );
-	    
-	    r += startX;
-	    // Loop over all remaining voxels in current row
-	    for ( pX = startX; pX<endX; ++pX, ++r ) 
-	      {
-	      (pFloating = rowStart) += hashX[pX];
-	      
-	      // probe volume and get the respective voxel
-	      if ( me->FloatingGrid->FindVoxelByIndex( pFloating, fltIdx, fltFrac ) )
-		{
-		// Compute data index of the floating voxel in the floating 
-		// volume.
-		offset = fltIdx[0]+FltDimsX*(fltIdx[1]+FltDimsY*fltIdx[2]);
-		
-		// Continue metric computation.
-		threadMetric->Increment( Metric->GetSampleX( r ), Metric->GetSampleY( offset, fltIdx, fltFrac ) );
-		}
-	      }
-	    r += (DimsX-endX);
-	    } 
-	  else
-	    {
-	    r += DimsX;
-	    }
-	  }
-	
-	r += (DimsY-endY) * DimsX;
-	} 
-      else
-	{
-	r += DimsY * DimsX;
-	}
-      }
-
-    me->m_MetricMutex.Lock();
-    me->Metric->Add( *threadMetric );
-    me->m_MetricMutex.Unlock();
-  }
+private:
+  /// The metric (similarity measure) object.
+  VM* m_Metric;
 };
 
 //@}
 
 } // namespace cmtk
+
+#include <cmtkImagePairAffineRegistrationFunctionalTemplate.txx>
 
 #endif // #ifndef __cmtkImagePairAffineRegistrationFunctionalTemplate_h_included_

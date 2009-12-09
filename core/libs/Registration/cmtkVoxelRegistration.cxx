@@ -54,6 +54,7 @@ cmtk
 VoxelRegistration::VoxelRegistration () 
   : m_Metric( 0 ),
     m_NewMetricImplementation( false ), 
+    m_NewMetricInterpolation( Interpolators::DEFAULT ),
     m_DeltaFThreshold( 0.0 ),
     m_PreprocessorRef( "Reference", "ref" ),
     m_PreprocessorFlt( "Floating", "flt" ),
