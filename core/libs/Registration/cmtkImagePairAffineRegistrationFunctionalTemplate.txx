@@ -95,8 +95,6 @@ ImagePairAffineRegistrationFunctionalTemplate<VM>
   int fltIdx[3];
   Types::Coordinate fltFrac[3];
   
-  const int FltDimsX = me->FloatingDims[0], FltDimsY = me->FloatingDims[1];
-  
   Vector3D rowStart;
   Vector3D planeStart;
   
@@ -137,12 +135,8 @@ ImagePairAffineRegistrationFunctionalTemplate<VM>
 	    // probe volume and get the respective voxel
 	    if ( me->FloatingGrid->FindVoxelByIndex( pFloating, fltIdx, fltFrac ) )
 	      {
-	      // Compute data index of the floating voxel in the floating 
-	      // volume.
-	      offset = fltIdx[0]+FltDimsX*(fltIdx[1]+FltDimsY*fltIdx[2]);
-	      
 	      // Continue metric computation.
-	      threadMetric->Increment( metric->GetSampleX( r ), metric->GetSampleY( offset, fltIdx, fltFrac ) );
+	      threadMetric->Increment( metric->GetSampleX( r ), metric->GetSampleY( fltIdx, fltFrac ) );
 	      }
 	    }
 	  r += (DimsX-endX);

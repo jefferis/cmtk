@@ -90,9 +90,9 @@ public:
   }
   
   /// Interpolate a value from the Y distribution (floating image).
-  Types::DataItem GetSampleY ( const size_t baseIndex, const int* index, const Types::Coordinate* frac ) const
+  Types::DataItem GetSampleY( const int* index, const Types::Coordinate* frac ) const
   {
-    return this->m_FloatingImageInterpolator->GetDataDirect( baseIndex, index, frac );
+    return this->m_FloatingImageInterpolator->GetDataDirect( index, frac );
   }
 
 private:

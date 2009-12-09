@@ -109,7 +109,7 @@ UniformVolumeInterpolator<TInterpolationFunction>
 template <class TInterpolationFunction>
 Types::DataItem
 UniformVolumeInterpolator<TInterpolationFunction>
-::GetDataDirect( const size_t baseIndex, const int* imageGridPoint, const Types::Coordinate* insidePixel ) const
+::GetDataDirect( const int* imageGridPoint, const Types::Coordinate* insidePixel ) const
 {
   Types::Coordinate interpolationWeights[3][2 * TInterpolationFunction::RegionSizeLeftRight];
 
@@ -143,7 +143,7 @@ UniformVolumeInterpolator<TInterpolationFunction>
     for ( int j = jMin; j < jMax; ++j )
       {
       const Types::Coordinate weightJK = interpolationWeights[1][j] * interpolationWeights[2][k];
-      size_t offset = baseIndex + iMin + j * this->m_NextJ + k * this->m_NextK;
+      size_t offset = (xx + iMin) + (yy + j) * this->m_NextJ + (zz + k) * this->m_NextK;
       for ( int i = iMin; i < iMax; ++i, ++offset )
         {
         if ( this->m_VolumeDataArray->Get( data, offset ) )

@@ -87,7 +87,7 @@ public:
    */
   virtual bool GetDataAt( const Vector3D& v, Types::DataItem& value ) const;
 
-  virtual Types::DataItem GetDataDirect( const size_t baseIndex, const int* imageGridPoint, const Types::Coordinate* insidePixel ) const;
+  virtual Types::DataItem GetDataDirect( const int* imageGridPoint, const Types::Coordinate* insidePixel ) const;
 };
 
 //@}

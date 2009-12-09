@@ -53,7 +53,7 @@ cmtk
 /** Mean squared difference metric.
  */
 class ImagePairSimilarityMeasureMSD :
-  /// Inherit generic voxel metric with internal short data.
+  /// Inherit generic pairwise similarity measure class
   public ImagePairSimilarityMeasure
 {
 public:
@@ -127,9 +127,7 @@ public:
   void Remove ( const Self& other )
   {
     this->m_SumOfDifferences -= other.m_SumOfDifferences;
-    assert( this->m_SumOfDifferences <= 0 );
     this->m_NumberOfSamples -= other.m_NumberOfSamples;
-    assert( this->m_NumberOfSamples >= 0 );
   }
   
 private:
