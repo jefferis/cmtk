@@ -249,8 +249,8 @@ public:
    */
   virtual ~VoxelMatchingFunctional_Template () {}
 
-protected:
 #if defined(CMTK_BUILD_SMP)
+protected:
    /** Mutex lock.
     * This mutex is used by the multi-threaded complete functional evaluation.
     * At the end of its computation, each thread adds its contribution in the
