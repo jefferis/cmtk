@@ -40,6 +40,8 @@
 #include <cmtkFunctional.h>
 #include <cmtkJointHistogram.h>
 
+#include <algorithm>
+
 namespace
 cmtk
 {
@@ -98,7 +100,7 @@ public:
    */
   template<class T> void Increment( const T a, const T b )
   {
-    this->m_JointHistogram.Increment( a, b );
+    this->m_JointHistogram.Increment( a, std::max<size_t>( 0, std::min<size_t>( this->m_NumberOfBinsY-1, b ) ) );
   }
 
   /// Add another metric object to this one.
