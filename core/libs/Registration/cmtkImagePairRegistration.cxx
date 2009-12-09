@@ -29,7 +29,7 @@
 //
 */
 
-#include <cmtkVoxelRegistration.h>
+#include <cmtkImagePairRegistration.h>
 
 #include <cmtkVector.h>
 #include <cmtkXform.h>
@@ -51,8 +51,9 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-VoxelRegistration::VoxelRegistration () 
+ImagePairRegistration::ImagePairRegistration () 
   : m_Metric( 0 ),
+    m_FloatingImageInterpolation( Interpolators::DEFAULT ),
     m_DeltaFThreshold( 0.0 ),
     m_PreprocessorRef( "Reference", "ref" ),
     m_PreprocessorFlt( "Floating", "flt" ),
@@ -76,14 +77,14 @@ VoxelRegistration::VoxelRegistration ()
 
 }
 
-VoxelRegistration::~VoxelRegistration () 
+ImagePairRegistration::~ImagePairRegistration () 
 {
   if ( this->m_Protocol ) 
     free( this->m_Protocol );
 }
 
 CallbackResult
-VoxelRegistration::InitRegistration ()
+ImagePairRegistration::InitRegistration ()
 {
   if ( this->m_Sampling <= 0 )
     this->m_Sampling = std::max( this->m_Volume_1->GetMaxDelta(), this->m_Volume_2->GetMaxDelta() );
@@ -102,7 +103,7 @@ VoxelRegistration::InitRegistration ()
 }
 
 CallbackResult
-VoxelRegistration::Register ()
+ImagePairRegistration::Register ()
 {
   CallbackResult irq = this->InitRegistration();
   if ( irq != CALLBACK_OK ) 
@@ -165,14 +166,14 @@ VoxelRegistration::Register ()
 }
 
 void
-VoxelRegistration::DoneRegistration( const CoordinateVector* v )
+ImagePairRegistration::DoneRegistration( const CoordinateVector* v )
 {
   if ( v )
     this->m_Xform->SetParamVector( *v );
 }
 
 void
-VoxelRegistration::EnterResolution
+ImagePairRegistration::EnterResolution
 ( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f, 
   const int idx, const int total ) 
 {

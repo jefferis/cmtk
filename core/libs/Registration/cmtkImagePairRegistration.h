@@ -29,8 +29,8 @@
 //
 */
 
-#ifndef __cmtkVoxelRegistration_h_included_
-#define __cmtkVoxelRegistration_h_included_
+#ifndef __cmtkImagePairRegistration_h_included_
+#define __cmtkImagePairRegistration_h_included_
 
 #include <cmtkconfig.h>
 
@@ -67,11 +67,18 @@ cmtk
  * in derived classes, registration can be integrated into various 
  * environments.
  */
-class VoxelRegistration 
+class ImagePairRegistration 
 {
 protected:
   /// Metric to use.
   cmtkGetSetMacro(int,Metric);
+
+  /** For new metric implementation: override default interpolation.
+   * For intensity images, the default interpolator is LINEAR, for label images
+   * it is NEARESTNEIGHBOR. These are used if this field is left at its initial
+   * value, DEFAULT.
+   */
+  cmtkGetSetMacro(Interpolators::InterpolationEnum,FloatingImageInterpolation);
 
   /// Optimization algorithm to use.
   cmtkGetSetMacro(int,Algorithm);
@@ -286,11 +293,11 @@ public:
 
   /** Default constructor. 
    */
-  VoxelRegistration ();
+  ImagePairRegistration ();
 
   /** Destructor.
    */
-  virtual ~VoxelRegistration ();
+  virtual ~ImagePairRegistration ();
 
   /** Do registration.
    * This function must be called to start the multiresolution optimization
@@ -378,4 +385,4 @@ private:
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkVoxelRegistration_h_included_
+#endif // #ifndef __cmtkImagePairRegistration_h_included_

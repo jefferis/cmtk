@@ -3,6 +3,10 @@ Release CMTK-1.2.0:
 - Added: cmtk::Console can now determine terminal line width on POSIX systems,
     and this is used by cmtk::CommandLine to format command line help output
     with the correct line breaking.
+- Added: new, experimental implementation of pairwise image registration,
+    with more accurate metric computation and support for arbitrary floating
+    image interpolation. These are accessible through the new "registrationx"
+    command line tool.
 
 - Improved: more sophisticated install and packaging configuration; still not
     fully clear how that translates into separated packages for different

@@ -29,7 +29,7 @@
 //
 */
 
-#include <cmtkAffineRegistration.h>
+#include <cmtkImagePairAffineRegistration.h>
 
 #include <cmtkVector.h>
 
@@ -40,7 +40,6 @@
 #include <cmtkUniformVolume.h>
 #include <cmtkFunctional.h>
 
-#include <cmtkVoxelMatchingAffineFunctional.h>
 #include <cmtkImagePairAffineRegistrationFunctional.h>
 
 #include <cmtkOptimizer.h>
@@ -57,19 +56,19 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-AffineRegistration::AffineRegistration () :
+ImagePairAffineRegistration::ImagePairAffineRegistration () :
   m_MatchFltToRefHistogram( false )
 { 
   this->m_InitialAlignCenters = false;
   this->m_NoSwitch = false;
 }
 
-AffineRegistration::~AffineRegistration () 
+ImagePairAffineRegistration::~ImagePairAffineRegistration () 
 {
 }
 
 CallbackResult 
-AffineRegistration::InitRegistration ()
+ImagePairAffineRegistration::InitRegistration ()
 {
   CallbackResult result = this->Superclass::InitRegistration();
   if ( result != CALLBACK_OK ) return result;
@@ -123,7 +122,7 @@ AffineRegistration::InitRegistration ()
 
   if ( this->m_UseOriginalData ) 
     {
-    Functional::SmartPtr newFunctional( VoxelMatchingAffineFunctional::Create( this->m_Metric, this->m_ReferenceVolume, this->m_FloatingVolume, affineXform ) );
+    Functional::SmartPtr newFunctional( ImagePairAffineRegistrationFunctional::Create( this->m_Metric, this->m_ReferenceVolume, this->m_FloatingVolume, this->m_FloatingImageInterpolation, affineXform ) );
     FunctionalStack.push( newFunctional );
     }
   
@@ -140,7 +139,7 @@ AffineRegistration::InitRegistration ()
     UniformVolume::SmartPtr nextRef( new UniformVolume( *currRef, currSampling ) );
     UniformVolume::SmartPtr nextFlt( new UniformVolume( *currFlt, currSampling ) );
     
-    Functional::SmartPtr newFunctional( VoxelMatchingAffineFunctional::Create( this->m_Metric, nextRef, nextFlt, affineXform ) );
+    Functional::SmartPtr newFunctional( ImagePairAffineRegistrationFunctional::Create( this->m_Metric, nextRef, nextFlt, this->m_FloatingImageInterpolation, affineXform ) );
     FunctionalStack.push( newFunctional );
     
     currRef = nextRef;
@@ -164,7 +163,7 @@ AffineRegistration::InitRegistration ()
 }
 
 void
-AffineRegistration::EnterResolution
+ImagePairAffineRegistration::EnterResolution
 ( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f, const int level, const int total ) 
 {
   if ( *NumberDOFsIterator < 0 )
@@ -191,7 +190,7 @@ AffineRegistration::EnterResolution
 }
 
 int 
-AffineRegistration::DoneResolution
+ImagePairAffineRegistration::DoneResolution
 ( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f,
   const int level, const int total )
 {
@@ -202,7 +201,7 @@ AffineRegistration::DoneResolution
 }
 
 AffineXform::SmartPtr
-AffineRegistration::GetTransformation() const
+ImagePairAffineRegistration::GetTransformation() const
 {
   AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( this->m_Xform );
   if ( affineXform && SwitchVolumes ) 
@@ -216,7 +215,7 @@ AffineRegistration::GetTransformation() const
 }
 
 UniformVolume* 
-AffineRegistration::GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator )
+ImagePairAffineRegistration::GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator )
 {
   ReformatVolume reformat;
   reformat.SetInterpolation( interpolator );

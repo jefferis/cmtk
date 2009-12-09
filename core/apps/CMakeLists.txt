@@ -74,6 +74,7 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
       randomwarp
       reformatx
       registration
+      registrationx
       regress
       reorient
       runcheck

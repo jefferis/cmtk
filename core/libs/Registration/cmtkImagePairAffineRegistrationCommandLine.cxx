@@ -29,7 +29,7 @@
 //
 */
 
-#include <cmtkAffineRegistrationCommandLine.h>
+#include <cmtkImagePairAffineRegistrationCommandLine.h>
 
 #include <cmtkConsole.h>
 #include <cmtkThreads.h>
@@ -81,8 +81,8 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-AffineRegistrationCommandLine
-::AffineRegistrationCommandLine 
+ImagePairAffineRegistrationCommandLine
+::ImagePairAffineRegistrationCommandLine 
 ( int argc, char* argv[] ) 
   : m_ReformattedImagePath( NULL ),
     m_OutputPathITK( NULL )
@@ -154,6 +154,15 @@ AffineRegistrationCommandLine
     metricGroup->AddSwitch( Key( "cr" ), 2, "Correlation Ratio metric" );
     metricGroup->AddSwitch( Key( "msd" ), 4, "Mean Squared Difference metric" );
     metricGroup->AddSwitch( Key( "ncc" ), 5, "Normalized Cross Correlation metric" );
+
+    cl.BeginGroup( "Interpolation", "Floating Image Interpolation Options" );
+    cmtk::CommandLine::EnumGroup<Interpolators::InterpolationEnum>::SmartPtr kernelGroup = 
+      cl.AddEnum( "interpolation", &this->m_FloatingImageInterpolation, "Interpolation method for floating image sampling:" );
+    kernelGroup->AddSwitch( Key( "nearest-neighbor" ), Interpolators::NEAREST_NEIGHBOR, "Nearest neighbor interpolation (for intensity and label data)" );
+    kernelGroup->AddSwitch( Key( "linear" ), Interpolators::LINEAR, "Trilinear interpolation" );
+    kernelGroup->AddSwitch( Key( "cubic" ), Interpolators::CUBIC, "Tricubic interpolation" );
+    kernelGroup->AddSwitch( Key( "cosine-sinc" ), Interpolators::COSINE_SINC, "Cosine-windowed sinc interpolation (most accurate but slowest)" );
+    kernelGroup->AddSwitch( Key( "partial-volume" ), Interpolators::PARTIALVOLUME, "Partial volume interpolation (for label data)" );
 
     cl.AddSwitch( Key( "match-histograms" ), &this->m_MatchFltToRefHistogram, true, "Match floating image histogram to reference image histogram." );
 
@@ -326,14 +335,14 @@ AffineRegistrationCommandLine
 }
 
 CallbackResult
-AffineRegistrationCommandLine::InitRegistration ()
+ImagePairAffineRegistrationCommandLine::InitRegistration ()
 {
-  CallbackResult Result = AffineRegistration::InitRegistration();
+  CallbackResult Result = Superclass::InitRegistration();
   return Result;
 }
 	
 void
-AffineRegistrationCommandLine::OutputResultMatrix( const char* matrixName ) const
+ImagePairAffineRegistrationCommandLine::OutputResultMatrix( const char* matrixName ) const
 {
   Types::Coordinate matrix[4][4];
   this->GetTransformation()->GetMatrix( matrix );
@@ -350,7 +359,7 @@ AffineRegistrationCommandLine::OutputResultMatrix( const char* matrixName ) cons
 }
 
 void
-AffineRegistrationCommandLine::OutputResultParameters
+ImagePairAffineRegistrationCommandLine::OutputResultParameters
 ( const char* paramsName, const CoordinateVector& v ) const
 {
   FILE* pfile = fopen( paramsName, "w" );
@@ -363,7 +372,7 @@ AffineRegistrationCommandLine::OutputResultParameters
 }
 
 void
-AffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
+ImagePairAffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
 {
   ClassStream classStream( studyList, "studylist", ClassStream::WRITE );
   if ( !classStream.IsValid() ) return;
@@ -426,7 +435,7 @@ AffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
 }
 
 void
-AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
+ImagePairAffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
 {
   if ( Verbose ) 
     {
@@ -463,7 +472,7 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
 }
 
 void
-AffineRegistrationCommandLine::EnterResolution
+ImagePairAffineRegistrationCommandLine::EnterResolution
 ( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f,
   const int index, const int total )
 {
@@ -473,7 +482,7 @@ AffineRegistrationCommandLine::EnterResolution
 }
 
 CallbackResult
-AffineRegistrationCommandLine::Register ()
+ImagePairAffineRegistrationCommandLine::Register ()
 {
   const double baselineTime = Timers::GetTimeProcess();
   CallbackResult Result = Superclass::Register();
