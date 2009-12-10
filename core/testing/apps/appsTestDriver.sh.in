@@ -115,10 +115,6 @@ check_results()
 }
 
 case ${RUNTEST} in
-    registrationAffineMrMrMSD)
-	run registration -i --dofs 6,9 --msd --match-histograms -o ${tmpdir} pat001_mr_T1.hdr pat002_mr_T2.hdr
-	check_results registration
-	;;
     average_edt)
 	run average_edt -o ${tmpdir}/shape_average.hdr -n 255 --interpolate-image parc1.hdr parc2.hdr parc3.hdr
 	check_results shape_average.img
@@ -704,6 +700,10 @@ case ${RUNTEST} in
 	run reformatx -o ${tmpdir}/reformat.hdr --floating parc2.hdr parc1.hdr parc1_parc2_dfield.nrrd
 	check_results reformat.img
 	;;
+    registrationAffineMrMrMSD)
+	run registration -i --dofs 6,9 --msd --match-histograms -o ${tmpdir} pat001_mr_T1.hdr pat002_mr_T2.hdr
+	check_results registration
+	;;
     registrationFromList)
 	run registration -v --dofs 0 -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
@@ -734,6 +734,54 @@ case ${RUNTEST} in
 	;;
     registrationAutoLevelsCt3)
 	run registration -q --msd --auto-multi-levels 3 --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_ct.hdr
+	check_results registration
+	;;
+    registrationxAffineMrMrMSD)
+	run registrationx -i --dofs 6,9 --msd --match-histograms -o ${tmpdir} pat001_mr_T1.hdr pat002_mr_T2.hdr
+	check_results registration
+	;;
+    registrationxFromList)
+	run registrationx -v --dofs 0 -o ${tmpdir} vol001_mr_t0t1.list
+	check_results registration
+	;;
+    registrationxWithInitial)
+	run registrationx -v --dofs 0 -o ${tmpdir} --initial vol001_mr_t0t1.list vol001_mr_t0.hdr vol001_mr_t1.hdr
+	check_results registration
+	;;
+    registrationxWithInitialInverse)
+	run registrationx -v --dofs 0 -o ${tmpdir} --initial vol001_mr_t0t1.list --initial-is-inverse vol001_mr_t0t1.list
+	check_results registration
+	;;
+    registrationxAutoLevelsRat4)
+	run registrationx -v -i --auto-multi-levels 4 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	check_results registration
+	;;
+    registrationxAutoLevelsRat2)
+	run registrationx -v -i --auto-multi-levels 2 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	check_results registration
+	;;
+    registrationxAutoLevelsRat2Cubic)
+	run registrationx -v --cubic -i --auto-multi-levels 2 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	check_results registration
+	;;
+    registrationxAutoLevelsRat2Sinc)
+	run registrationx -v --cosine-sinc -i --auto-multi-levels 2 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	check_results registration
+	;;
+    registrationxAutoLevelsRat2NN)
+	run registrationx -v --nearest-neighbor -i --auto-multi-levels 2 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	check_results registration
+	;;
+    registrationxAutoLevelsRatToRat)
+	run registrationx -v -i --auto-multi-levels 2 --dofs 6,9 --msd --match-histograms -o ${tmpdir} rat_fse_erly.hdr rat2_fse_erly.hdr
+	check_results registration
+	;;
+    registrationxAutoLevelsRatToRatDeltaFThreshold)
+	run registrationx -v -i --auto-multi-levels 2 --dofs 6,9 --msd --match-histograms --delta-f-threshold 0.01 -o ${tmpdir} rat_fse_erly.hdr rat2_fse_erly.hdr
+	check_results registration
+	;;
+    registrationxAutoLevelsCt3)
+	run registrationx -q --msd --auto-multi-levels 3 --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_ct.hdr
 	check_results registration
 	;;
     reorientHdrSaToAx)

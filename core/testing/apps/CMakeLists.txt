@@ -284,6 +284,22 @@ IF(NOT CMTK_USE_MPI)
     registrationWithInitialInverse)
 
   # ==========================================
+  # Tests for "registrationx" tool
+  SET(testList ${testList} 
+    registrationxAffineMrMrMSD
+    registrationxFromList
+    registrationxWithInitial
+    registrationxWithInitialInverse
+    registrationxAutoLevelsRat4
+    registrationxAutoLevelsRat2
+    registrationxAutoLevelsRat2Cubic
+    registrationxAutoLevelsRat2Sinc
+    registrationxAutoLevelsRat2NN
+    registrationxAutoLevelsRatToRat
+    registrationxAutoLevelsRatToRatDeltaFThreshold
+    registrationxAutoLevelsCt3)
+
+  # ==========================================
   # Tests for "mrbias" tool
   SET(testList ${testList} 
     mrbiasMulIncremental mrbiasMulLogIntensity mrbiasAddMulMask)
