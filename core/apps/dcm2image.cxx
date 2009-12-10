@@ -56,6 +56,9 @@
 #include <sys/stat.h>
 
 #include <vector>
+#include <map>
+#include <string>
+#include <sstream>
 
 #include <iostream>
 #include <memory>
@@ -275,7 +278,7 @@ public:
   
   bool Match ( const ImageFileDCM *newImage ) const;
 
-  void WriteToArchive ( const std::string& name );
+  void WriteToArchive ( const std::string& name ) const;
 
   void print() const;
 };
@@ -315,7 +318,7 @@ VolumeDCM::AddImageFileDCM ( ImageFileDCM *const newImage )
 }
 
 void
-VolumeDCM::WriteToArchive( const std::string& fname )
+VolumeDCM::WriteToArchive( const std::string& fname ) const
 {
   cmtk::StudyImageSet studyImageSet;
 
@@ -396,8 +399,8 @@ replacein(std::string &s, const std::string &sub, const std::string &other)
 void
 VolumeList::WriteToArchive() 
 {
-  int i = 1;
-  for ( const_iterator it = begin(); it != end(); ++it, ++i ) 
+  std::map< std::string,std::vector<const VolumeDCM*> > pathToVolumeMap;
+  for ( const_iterator it = begin(); it != end(); ++it ) 
     {
     if ( (*it)->size() > 1 )
       {
@@ -410,11 +413,40 @@ VolumeList::WriteToArchive()
       // finally, fill spaces with underscores
       replacein( path, " ", "_" );
       
-      char num_name[PATH_MAX];
-      if ( snprintf( num_name, PATH_MAX, path.c_str(), i ) > PATH_MAX )
+      if ( path.length() > PATH_MAX )
 	cmtk::StdErr << "ERROR: output path exceeds maximum path length";
       else
-	(*it)->WriteToArchive( num_name );
+	pathToVolumeMap[path].push_back( *it );
+      }
+    }
+  
+  for ( std::map< std::string,std::vector<const VolumeDCM*> >::const_iterator it = pathToVolumeMap.begin(); it != pathToVolumeMap.end(); ++it )
+    {						
+    const size_t nVolumes = it->second.size();
+
+    // if there is only one volume with the given output path, just write it
+    if ( nVolumes == 1 )
+      {					       
+      // if there's a "number" tag, get rid of it.
+      std::string uniquePath = it->first;
+      replacein( uniquePath, "%N", "" );
+      it->second[0]->WriteToArchive( uniquePath );
+      }
+    else
+      {			
+      // otherwise, make unique paths for each of them
+      for ( size_t i = 0; i < nVolumes; ++i )
+	{
+	std::ostringstream numberString;
+	numberString.width( 1 + static_cast<int>( log( nVolumes ) / log(10) ) );
+	numberString.fill( '0' );
+	numberString << std::right << 1+i;
+
+	std::string uniquePath = it->first;
+	replacein( uniquePath, "%n", numberString.str() );
+	replacein( uniquePath, "%N", "-" + numberString.str() );
+	it->second[i]->WriteToArchive( uniquePath );
+	}
       }
     }
 }

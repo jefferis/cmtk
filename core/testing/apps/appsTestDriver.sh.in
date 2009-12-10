@@ -265,15 +265,15 @@ case ${RUNTEST} in
 	check_results spgr_brain_1.hdr spgr_brain_1.img
 	;;
     dcm2image)
-	run dcm2image -O ${tmpdir}/%03d.hdr ${PWD}/dcm/
+	run dcm2image -O ${tmpdir}/00%n.hdr ${PWD}/dcm/
 	check_results 001.hdr 001.img 002.hdr 002.img 003.hdr 003.img
 	;;
     dcm2imageZ)
-	run dcm2image -O ${tmpdir}/%03d.nii ${PWD}/dcmz/
+	run dcm2image -O ${tmpdir}/00%n.nii ${PWD}/dcmz/
 	check_results 001.nii 002.nii 003.nii
 	;;
     dcm2imageNrrd)
-	run dcm2image -O ${tmpdir}/%03d.nhdr ${PWD}/dcm/
+	run dcm2image -O ${tmpdir}/00%n.nhdr ${PWD}/dcm/
 	check_results 001.nhdr 001.raw 002.nhdr 002.raw 003.nhdr 003.raw
 	;;
     describeMR1)
