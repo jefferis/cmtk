@@ -67,17 +67,6 @@ where
 :; <tt>--msd</tt> : Mean Squared Difference metric
 :; <tt>--ncc</tt> : Normalized Cross Correlation metric
 
-; <tt>--new-metrics</tt> : Use new metric implementation (CMTK 1.2.0 or later).
-
-=== Floating Image Interpolation Options ===
-
-; <tt>--interpolation</tt> : Interpolation method for floating image sampling:Supported values: "<tt>nearest-neighbor</tt>", "<tt>linear</tt>", "<tt>cubic</tt>", "<tt>cosine-sinc</tt>", "<tt>partial-volume</tt>", or use one of the following
-:; <tt>--nearest-neighbor</tt> : Nearest neighbor interpolation (for intensity and label data)
-:; <tt>--linear</tt> : Trilinear interpolation
-:; <tt>--cubic</tt> : Tricubic interpolation
-:; <tt>--cosine-sinc</tt> : Cosine-windowed sinc interpolation (most accurate but slowest)
-:; <tt>--partial-volume</tt> : Partial volume interpolation (for label data)
-
 ; <tt>--match-histograms</tt> : Match floating image histogram to reference image histogram.
 
 === Reference Image Preprocessing ===
