@@ -16,6 +16,16 @@ Release CMTK-1.2.0:
     the number of actually unused dynamic libraries, which we previously had
     to link against.
 - Improved: numerous small improvements to triplanar viewer
+- Improved: dcm2image tool now numbers images only if there would otherwise be
+    filename collisions. The printf()-type numbering has been replaced with
+    two new output path substitutions, "%n" and "%N". Both expand to the empty
+    string when a path is already unique without numbering. Otherwise, "%n"
+    substitutes to an increasing number, and "%N" substitutes to the same
+    number with a leading dash, "-". So using "./%n/image%N.nii" generates a
+    single file ".//image.nii" if that is a unique path, or a sequence of
+    images "./1/image-1.nii", "./2/image-2.nii" for up to ten colliding
+    paths. For larger numbers of collisions, the number of digits is
+    automatically increased as necessary.
 
 - Fixed: bundled DICOM library finally works on all tested platforms and all
     tested compilers.
