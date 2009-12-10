@@ -377,9 +377,6 @@ CreateElasticFunctional
   switch ( fltVolume->GetData()->GetDataClass() ) 
     {
     case DATACLASS_UNKNOWN :
-    case DATACLASS_BINARY :
-      // not a lot we can do here.
-      return NULL;
     case DATACLASS_GREY :
       switch ( metric ) 
 	{
