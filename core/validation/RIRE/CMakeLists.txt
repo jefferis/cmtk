@@ -30,7 +30,7 @@ SET(CMTK_LIBRARIES "cmtkSegmentation;cmtkRegistration;cmtkIO;cmtkBase;cmtkNumeri
 
 INCLUDE(${CMAKE_SOURCE_DIR}/libs/cmtkLibInitSrcs.cmake)
 
-SET(APPS register_rire)
+SET(APPS register_rire register_rire_experimental register_rire_experimental_cubic)
 
 FOREACH(APPLICATION ${APPS})
   ADD_EXECUTABLE(${APPLICATION} ${CMTK_LIB_INIT_SRCS} ${APPLICATION}.cxx)
