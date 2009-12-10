@@ -339,7 +339,7 @@ VolumeDCM::WriteToArchive( const std::string& fname ) const
     cmtk::VolumeIO::Write( volume, fname.c_str() );
     if ( Verbose )
       {
-      cmtk::StdOut.printf( "\nOutput Fille:%s\nImage size: %3dx%3dx%3d pixels\nPixel size: %.4fx%.4fx%.4f mm\n\n", 
+      cmtk::StdOut.printf( "\nOutput file:%s\nImage size: %3dx%3dx%3d pixels\nPixel size: %.4fx%.4fx%.4f mm\n\n", 
 			   fname.c_str(), volume->m_Dims[0], volume->m_Dims[1], volume->m_Dims[2], volume->m_Delta[0], volume->m_Delta[1], volume->m_Delta[2] );
       }
     }
@@ -410,8 +410,9 @@ VolumeList::WriteToArchive()
       replacein( path, "%R", (*it)[0][0]->RepetitionTime );
       replacein( path, "%E", (*it)[0][0]->EchoTime );
       replacein( path, "%T", GERawDataTypeString[(*it)[0][0]->GERawDataType] );
-      // finally, fill spaces with underscores
-      replacein( path, " ", "_" );
+      // finally, replace non-path characters
+      replacein( path, " ", "_" );      
+      replacein( path, ":", "_" );
       
       if ( path.length() > PATH_MAX )
 	cmtk::StdErr << "ERROR: output path exceeds maximum path length";
