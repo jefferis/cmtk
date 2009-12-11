@@ -383,64 +383,6 @@ public:
     this->m_ForceOutsideValueRescaled = this->Metric->DataY.ValueToIndex( value );
   }
 
-  /** Evaluate functional for the complete image data.
-   * This function builds the pre-computed deformed floating image that is
-   * later used for rapid gradient computation.
-   */
-  typename Self::ReturnType EvaluateComplete ( CoordinateVector& v ) 
-  {
-    this->Metric->Reset();
-    if ( ! WarpedVolume ) 
-      WarpedVolume = Memory::AllocateArray<typename VM::Exchange>(  DimsX * DimsY * DimsZ  );
-    const typename VM::Exchange unsetY = this->Metric->DataY.padding();
-    
-    this->Warp->SetParamVector( v );
-
-    Vector3D *pVec;
-    int pX, pY, pZ, offset;
-    int fltIdx[3];
-    Types::Coordinate fltFrac[3];
-
-    int r = 0;
-    for ( pZ = 0; pZ<DimsZ; ++pZ ) 
-      {
-      for ( pY = 0; pY<DimsY; ++pY ) 
-	{
-	pVec = this->VectorCache;
-	this->Warp->GetTransformedGridSequence( pVec, DimsX, 0, pY, pZ );
-	for ( pX = 0; pX<DimsX; ++pX, ++r, ++pVec ) 
-	  {	      
-	  // Tell us whether the current location is still within the 
-	  // floating volume and get the respective voxel.
-	  Vector3D::CoordMultInPlace( *pVec, this->FloatingInverseDelta );
-	  if ( this->FloatingGrid->FindVoxelByIndex( *pVec, fltIdx, fltFrac ) ) 
-	    {
-	    // Compute data index of the floating voxel in the floating 
-	    // volume.
-	    offset = fltIdx[0] + FltDimsX * (fltIdx[1] + FltDimsY * fltIdx[2]);
-	    
-	    // Continue metric computation.
-	    WarpedVolume[r] = this->Metric->GetSampleY( offset, fltFrac );
-	    } 
-	  else
-	    {
-	    if ( this->m_ForceOutsideFlag )
-	      {
-	      WarpedVolume[r] = this->m_ForceOutsideValueRescaled;
-	      this->Metric->Increment( this->Metric->GetSampleX(r), WarpedVolume[r] );
-	      }
-	    else
-	      {
-	      WarpedVolume[r] = unsetY;
-	      }
-	    }
-	  }
-	}
-      }
-    
-    return this->Metric->Get();
-  }
-
   /** Evaluate functional after change of a single parameter.
    *@param warp The current deformation.
    *@param metric The metric computed for the base-deformed volume.
@@ -512,7 +454,7 @@ public:
   /// Compute functional value and gradient.
   virtual typename Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step = 1 ) 
   {
-    const typename Self::ReturnType current = this->WeightedTotal( this->EvaluateComplete( v ), this->Warp );
+    const typename Self::ReturnType current = this->WeightedTotal( this->EvaluateAt( v ), this->Warp );
 
     if ( this->m_AdaptiveFixParameters && this->WarpNeedsFixUpdate ) 
       {
@@ -569,9 +511,13 @@ public:
   /// Evaluate functional.
   virtual typename Self::ReturnType Evaluate()
   {
-    this->Metric->Reset();
-    Vector3D *pVec;
+    if ( ! WarpedVolume ) 
+      WarpedVolume = Memory::AllocateArray<typename VM::Exchange>(  DimsX * DimsY * DimsZ  );
 
+    this->Metric->Reset();
+    const typename VM::Exchange unsetY = this->Metric->DataY.padding();
+
+    Vector3D *pVec;
     int pX, pY, pZ, offset;
     int fltIdx[3];
     Types::Coordinate fltFrac[3];
@@ -594,13 +540,19 @@ public:
 	    offset = fltIdx[0] + FltDimsX * ( fltIdx[1] + FltDimsY * fltIdx[2] );
 	    
 	    // Continue metric computation.
-	    this->Metric->Increment( this->Metric->GetSampleX( r ), this->Metric->GetSampleY( offset, fltFrac ) );
+	    this->WarpedVolume[r] = this->Metric->GetSampleY( offset, fltFrac );
+	    this->Metric->Increment( this->Metric->GetSampleX( r ),  this->WarpedVolume[r] );
 	    }
 	  else 
 	    {
 	    if ( this->m_ForceOutsideFlag )
 	      {
-	      this->Metric->Increment( this->Metric->GetSampleX( r ), this->m_ForceOutsideValueRescaled );
+	      this->WarpedVolume[r] = this->m_ForceOutsideValueRescaled;
+	      this->Metric->Increment( this->Metric->GetSampleX( r ), this->WarpedVolume[r] );
+	      }
+	    else
+	      {
+	      this->WarpedVolume[r] = unsetY;
 	      }
 	    }
 	  }
