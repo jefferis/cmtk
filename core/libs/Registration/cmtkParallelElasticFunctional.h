@@ -148,39 +148,6 @@ public:
       }
   }
   
-  /** Evaluate functional for the complete image data.
-   * This function builds the pre-computed deformed floating image that is 
-   * later used for rapid gradient computation.
-   */
-  typename Self::ReturnType EvaluateComplete ( CoordinateVector& v ) 
-  {
-    this->Metric->Reset();
-    if ( ! this->WarpedVolume ) 
-      this->WarpedVolume = Memory::AllocateArray<typename VM::Exchange>(  this->DimsX * this->DimsY * this->DimsZ  );
-    
-    ThreadWarp[0]->SetParamVector( v );
-
-    const size_t numberOfTasks = std::min<size_t>( this->m_NumberOfTasks, this->DimsY * this->DimsZ );
-    for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
-      {
-      InfoTaskComplete[taskIdx].thisObject = this;
-      }
-
-    for ( size_t taskIdx = 0; taskIdx < this->m_NumberOfThreads; ++taskIdx ) 
-      {
-      this->TaskMetric[taskIdx]->Reset();
-      }
-    
-    ThreadPool::GlobalThreadPool.Run( EvaluateCompleteThread, this->InfoTaskComplete );
-    
-    for ( size_t taskIdx = 0; taskIdx < this->m_NumberOfThreads; ++taskIdx ) 
-      {
-      this->Metric->AddMetric( *(this->TaskMetric[taskIdx]) );
-      }
-    
-    return this->WeightedTotal( this->Metric->Get(), ThreadWarp[0] );
-  }
-
   /** Evaluate functional after change of a single parameter.
    *@param warp The current deformation.
    *@param metric The metric computed for the base-deformed volume.
@@ -242,7 +209,7 @@ public:
   /// Compute functional value and gradient.
   virtual typename Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const typename Self::ParameterType step = 1 ) 
   {
-    const typename Self::ReturnType current = this->EvaluateComplete( v );
+    const typename Self::ReturnType current = this->EvaluateAt( v );
 
     if ( this->m_AdaptiveFixParameters && this->WarpNeedsFixUpdate ) 
       {
@@ -279,6 +246,8 @@ public:
   virtual typename Self::ReturnType Evaluate ()
   {
     this->Metric->Reset();
+    if ( ! this->WarpedVolume ) 
+      this->WarpedVolume = Memory::AllocateArray<typename VM::Exchange>(  this->DimsX * this->DimsY * this->DimsZ  );
 
     const size_t numberOfTasks = std::min<size_t>( this->m_NumberOfTasks, this->DimsY * this->DimsZ );
     for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
