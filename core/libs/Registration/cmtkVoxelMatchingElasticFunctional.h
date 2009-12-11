@@ -596,6 +596,13 @@ public:
 	    // Continue metric computation.
 	    this->Metric->Increment( this->Metric->GetSampleX( r ), this->Metric->GetSampleY( offset, fltFrac ) );
 	    }
+	  else 
+	    {
+	    if ( this->m_ForceOutsideFlag )
+	      {
+	      this->Metric->Increment( this->Metric->GetSampleX( r ), this->m_ForceOutsideValueRescaled );
+	      }
+	    }
 	  }
 	}
       }

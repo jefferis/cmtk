@@ -36,10 +36,8 @@
 
 #include <cmtkVoxelMatchingElasticFunctional.h>
 
-#ifdef CMTK_BUILD_SMP
-#  include <cmtkThreads.h>
-#  include <cmtkThreadPool.h>
-#endif
+#include <cmtkThreads.h>
+#include <cmtkThreadPool.h>
 
 namespace
 cmtk
@@ -460,7 +458,15 @@ private:
 	    } 
 	  else 
 	    {
-	    warpedVolume[r] = unsetY;
+	    if ( me->m_ForceOutsideFlag )
+	      {
+	      warpedVolume[r] = me->m_ForceOutsideValueRescaled;
+	      threadMetric->Increment( me->Metric->GetSampleX(r), warpedVolume[r] );
+	      }
+	    else
+	      {
+	      warpedVolume[r] = unsetY;
+	      }
 	    }
 	  }
 	}
