@@ -278,8 +278,8 @@ protected:
       {
       result -= this->InverseConsistencyWeight * warp->GetInverseConsistencyError( this->InverseTransformation, this->ReferenceGrid );
       }
-
-	return static_cast<typename Self::ReturnType>( result );
+    
+    return static_cast<typename Self::ReturnType>( result );
   }
   
   /// Return weighted combination of similarity and grid energy derivatives.
