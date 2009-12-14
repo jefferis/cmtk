@@ -80,7 +80,7 @@ int
 Threads::GetNumberOfThreads()
 {
   if ( !Threads::NumberOfThreads ) 
-    Threads::Initializer::CheckEnvironment();
+    Threads::CheckEnvironment();
   
   if ( Threads::NumberOfThreads ) 
     {
@@ -283,19 +283,10 @@ Threads::RunThreads
 #endif
 }
 
-// Instantiate static initializer to check for CMTK_NUM_THREADS environment variable.
-Threads::Initializer Threads::InitializerInstance;
-
-Threads::Initializer
-::Initializer()
-{
-  CheckEnvironment();
-}
-
 void
-Threads::Initializer::CheckEnvironment()
+Threads::CheckEnvironment()
 {
-  char *env = getenv( "CMTK_NUM_THREADS" );
+  const char *env = getenv( "CMTK_NUM_THREADS" );
   // check legacy variable
   if ( ! env )
     env = getenv( "IGS_NUM_THREADS" );

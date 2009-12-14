@@ -59,19 +59,8 @@ namespace
 Threads 
 {
 
-/// Initializer class.
-class Initializer
-{
-public:
-  /// Constructor: check for CMTK_NUM_THREADS environment variable
-  Initializer();
-
-  /// Check environment variables that control thread creation.
-  static void CheckEnvironment();
-};
-
-/// Static initializer instance.
-extern Initializer InitializerInstance;
+/// Check environment variables that control thread creation.
+void CheckEnvironment();
 
 /// Check whether this system supports threads.
 bool Available();
