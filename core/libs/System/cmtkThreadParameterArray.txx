@@ -45,7 +45,8 @@ ThreadParameterArray<TClass,TParam>
 ( ThreadFunction threadCall )
 {
 #ifdef _OPENMP
-  omp_set_num_threads( std::max<int>( 1, 1+GetNumberOfThreads()-this->m_NumberOfThreads ) );
+  const int nThreadsOMP = std::max<int>( 1, 1+GetNumberOfThreads()-this->m_NumberOfThreads );
+  omp_set_num_threads( nThreadsOMP );
 #endif
 
 #ifdef CMTK_USE_THREADS
@@ -157,7 +158,8 @@ ThreadParameterArray<TClass,TParam>
 ( ThreadFunction threadCall, const size_t numberOfThreadsTotal, const size_t firstThreadIdx )
 {
 #ifdef _OPENMP
-  omp_set_num_threads( std::max<int>( 1, 1+GetNumberOfThreads()-this->m_NumberOfThreads ) );
+  const int nThreadsOMP = std::max<int>( 1, 1+GetNumberOfThreads()-this->m_NumberOfThreads );
+  omp_set_num_threads( nThreadsOMP );
 #endif
 
 #if !defined(CMTK_BUILD_SMP)

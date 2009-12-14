@@ -196,7 +196,8 @@ Threads::RunThreads
 ( ThreadFunction threadCall, const unsigned numberOfThreads, void *const parameters, const size_t parameterSize )
 {
 #ifdef _OPENMP
-  omp_set_num_threads( std::max<int>( 1, 1+GetNumberOfThreads()-numberOfThreads ) );
+  const int nThreadsOMP = std::max<int>( 1, 1+GetNumberOfThreads()-numberOfThreads );
+  omp_set_num_threads( nThreadsOMP );
 #endif
 
 #ifdef CMTK_BUILD_SMP

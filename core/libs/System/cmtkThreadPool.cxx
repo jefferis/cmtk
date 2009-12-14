@@ -144,6 +144,11 @@ ThreadPool::EndThreads()
 void
 ThreadPool::ThreadFunction()
 {
+#ifdef _OPENMP
+  // Disable OpenMP inside thread
+  omp_set_num_threads( 1 );
+#endif
+
 #ifdef CMTK_BUILD_SMP
   const size_t threadIdx = this->GetMyThreadIndex();
 
