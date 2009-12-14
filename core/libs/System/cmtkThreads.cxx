@@ -108,7 +108,6 @@ Threads::Available()
 	// in unistd.h -  I don't know how you get the info dynamically
 	// so just get it statically at compile time
 #ifdef _POSIX_THREADS
-		//#warning POSIX THREADS AVAILABLE
   return true;
 #else
   return false;
