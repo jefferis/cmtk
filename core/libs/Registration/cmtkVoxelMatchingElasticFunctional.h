@@ -454,7 +454,7 @@ public:
   /// Compute functional value and gradient.
   virtual typename Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step = 1 ) 
   {
-    const typename Self::ReturnType current = this->WeightedTotal( this->EvaluateAt( v ), this->Warp );
+    const typename Self::ReturnType current = this->EvaluateAt( v );
 
     if ( this->m_AdaptiveFixParameters && this->WarpNeedsFixUpdate ) 
       {
@@ -518,7 +518,7 @@ public:
     const typename VM::Exchange unsetY = this->Metric->DataY.padding();
 
     Vector3D *pVec;
-    int pX, pY, pZ, offset;
+    int pX, pY, pZ;
     int fltIdx[3];
     Types::Coordinate fltFrac[3];
 
@@ -537,11 +537,11 @@ public:
 	    {
 	    // Compute data index of the floating voxel in the
 	    // floating volume.
-	    offset = fltIdx[0] + FltDimsX * ( fltIdx[1] + FltDimsY * fltIdx[2] );
+	    const size_t offset = fltIdx[0] + FltDimsX * ( fltIdx[1] + FltDimsY * fltIdx[2] );
 	    
 	    // Continue metric computation.
 	    this->WarpedVolume[r] = this->Metric->GetSampleY( offset, fltFrac );
-	    this->Metric->Increment( this->Metric->GetSampleX( r ),  this->WarpedVolume[r] );
+	    this->Metric->Increment( this->Metric->GetSampleX( r ), this->WarpedVolume[r] );
 	    }
 	  else 
 	    {

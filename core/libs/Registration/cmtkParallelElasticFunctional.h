@@ -403,7 +403,7 @@ private:
     int pYfrom = rowFrom % me->DimsY;
     int pZfrom = rowFrom / me->DimsY;
     
-    int offset, r = rowFrom * me->DimsX;
+    int r = rowFrom * me->DimsX;
     for ( pZ = pZfrom; (pZ < me->DimsZ) && rowsToDo; ++pZ ) 
       {
       for ( pY = pYfrom; (pY < me->DimsY) && rowsToDo; pYfrom = 0, ++pY, --rowsToDo ) 
@@ -412,14 +412,13 @@ private:
 	pVec = vectorCache;
 	for ( pX = 0; pX<me->DimsX; ++pX, ++r, ++pVec ) 
 	  {
-	  // Tell us whether the current location is still within the 
-	  // floating volume and get the respective voxel.
+	  // Tell us whether the current location is still within the floating volume and get the respective voxel.
 	  Vector3D::CoordMultInPlace( *pVec, me->FloatingInverseDelta );
 	  if ( me->FloatingGrid->FindVoxelByIndex( *pVec, fltIdx, fltFrac ) ) 
 	    {
 	    // Compute data index of the floating voxel in the floating 
 	    // volume.
-	    offset = fltIdx[0] + me->FltDimsX * ( fltIdx[1] + me->FltDimsY*fltIdx[2] );
+	    const size_t offset = fltIdx[0] + me->FltDimsX * ( fltIdx[1] + me->FltDimsY*fltIdx[2] );
 	    
 	    // Continue metric computation.
 	    warpedVolume[r] = me->Metric->GetSampleY(offset, fltFrac );
