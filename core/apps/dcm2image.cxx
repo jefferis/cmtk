@@ -439,7 +439,7 @@ VolumeList::WriteToArchive()
       for ( size_t i = 0; i < nVolumes; ++i )
 	{
 	std::ostringstream numberString;
-	numberString.width( 1 + static_cast<int>( log( nVolumes ) / log((float)10.0) ) );
+	numberString.width( 1 + static_cast<int>( log( nVolumes ) / log((double)10) ) );
 	numberString.fill( '0' );
 	numberString << std::right << 1+i;
 
