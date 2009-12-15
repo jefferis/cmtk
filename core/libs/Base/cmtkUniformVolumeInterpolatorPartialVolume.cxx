@@ -114,5 +114,70 @@ UniformVolumeInterpolatorPartialVolume
   return false;
 }
 
+Types::DataItem
+UniformVolumeInterpolatorPartialVolume
+::GetDataDirect( const int* imageGridPoint, const Types::Coordinate* insidePixel ) const
+{
+  Types::DataItem value = 0;
+
+  const int *imageDims = this->m_Volume->GetDims();
+  const size_t offset = imageGridPoint[0] + imageDims[0] * ( imageGridPoint[1] + imageDims[1] * imageGridPoint[2]);
+  const TypedArray* gridData = this->m_Volume->GetData();
+  
+  Types::DataItem corners[8];
+  bool data_present = gridData->Get( corners[0], offset );
+  data_present &= gridData->Get( corners[1], offset+this->m_Volume->GetNextI() );
+  data_present &= gridData->Get( corners[2], offset+this->m_Volume->GetNextJ() );
+  data_present &= gridData->Get( corners[3], offset+this->m_Volume->GetNextIJ() );
+  data_present &= gridData->Get( corners[4], offset+this->m_Volume->GetNextK() );
+  data_present &= gridData->Get( corners[5], offset+this->m_Volume->GetNextIK() );
+  data_present &= gridData->Get( corners[6], offset+this->m_Volume->GetNextJK() );
+  data_present &= gridData->Get( corners[7], offset+this->m_Volume->GetNextIJK() );
+  
+  if (data_present) 
+    {
+    const Types::Coordinate revX = 1-insidePixel[0];
+    const Types::Coordinate revY = 1-insidePixel[1];
+    const Types::Coordinate revZ = 1-insidePixel[2];
+
+    const Types::Coordinate weights[8] = 
+      { insidePixel[0] * insidePixel[1] * insidePixel[2], 
+	revX * insidePixel[1] * insidePixel[2], 
+	insidePixel[0] * revY * insidePixel[2], 
+	revX * revY * insidePixel[2],
+	insidePixel[0] * insidePixel[1] * revZ, 
+	revX * insidePixel[1] * revZ, 
+	insidePixel[0] * revY * revZ, 
+	revX * revY * revZ 
+      };
+
+    bool done[8];
+    memset( done, 0, sizeof( done ) );
+    
+    Types::Coordinate maxWeight = 0;
+    for ( unsigned int j = 0; j < 8; ++j ) 
+      {
+      if ( done[j] ) continue;
+      Types::Coordinate weight = weights[j];
+      for ( unsigned int i = j+1; i < 8; ++i ) 
+	{
+	if ( done[i] ) continue;
+	if ( corners[i] == corners[j] ) 
+	  {
+	  weight += weights[i];
+	  done[i] = true;
+	  }
+	}
+      if ( weight > maxWeight ) 
+	{
+	value = corners[j];
+	maxWeight = weight;
+	}
+      }
+    }
+  
+  return value;
+};
+
 } // namespace cmtk
 

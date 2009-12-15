@@ -96,6 +96,7 @@ public:
    */
   virtual bool GetDataAt( const Vector3D& v, Types::DataItem& value ) const = 0;
 
+  /// Get data at a pre-computed relative pixel index. This is faster if we already know the pixel index and fractional coordinate of a location.
   virtual Types::DataItem GetDataDirect( const int* imageGridPoint, const Types::Coordinate* insidePixel ) const = 0;
 
 protected:
