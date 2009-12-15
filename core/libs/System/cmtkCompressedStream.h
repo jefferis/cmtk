@@ -44,6 +44,8 @@
 #  include <sys/stat.h>
 #endif
 
+#include <string>
+
 namespace
 cmtk
 {
@@ -108,10 +110,8 @@ public:
   bool IsRegularFile () const { return (m_FilePointerMode == FILE_POINTER_FILE); }
 
   /** Return base name of a path without compression suffix.
-   *\note This function is not thread safe!
-   *\todo Make this function thread safe.
    */
-  static const char *GetBaseName( const char *path );
+  static std::string GetBaseName( const std::string& path );
 
   /** Do stat() on compressed file.
    *\return -1 if the file does not exist; 0 if the file exists under the given name; 1 if the file exists

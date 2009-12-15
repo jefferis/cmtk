@@ -350,46 +350,39 @@ int CompressedStream::Feof () const
   return feof( File );
 }
 
-const char *CompressedStream::GetBaseName( const char *path )
+std::string CompressedStream::GetBaseName( const std::string& path )
 {
-  // WARNING: this is not thread safe!!!
-  static char buffer[PATH_MAX];
-
-  strcpy( buffer, path );
-  char *suffix = strrchr( buffer, '.' );
-
-  if ( suffix ) 
+  const size_t suffixPos = path.rfind( '.' );
+  
+  if ( suffixPos != std::string::npos ) 
     {
     for ( int i = 0; ArchiveLookup[i].suffix; ++i )
-      if ( !strcmp( ArchiveLookup[i].suffix, suffix ) ) 
+      {
+      const size_t suffixLen = strlen( ArchiveLookup[i].suffix );
+      if ( path.compare( suffixPos, suffixLen, ArchiveLookup[i].suffix, suffixLen ) )
 	{
-	*suffix = 0;
-	break;
+	return path.substr( 0, suffixPos );
 	}
+      }
     }
-  
-  return buffer;
+  return path;
 }
 
 int 
 CompressedStream::Stat( const char *path, struct stat* buf )
 {
-  const char *baseName = CompressedStream::GetBaseName( path );
+  std::string baseName = CompressedStream::GetBaseName( path );
 
   struct stat statbuf;
   if ( ! buf )
     buf = &statbuf;
 
-  const bool existsUncompressed = ! stat( baseName, buf );
+  const bool existsUncompressed = ! stat( baseName.c_str(), buf );
   
-  char buffer[PATH_MAX];
-  strcpy( buffer, baseName );
-  char *suffix = buffer + strlen( buffer );
-
   for ( int i = 0; ArchiveLookup[i].suffix; ++i ) 
     {
-    strcpy( suffix, ArchiveLookup[i].suffix );
-    if ( ! stat( buffer, buf ) ) 
+    const std::string cpath = path + std::string( ArchiveLookup[i].suffix );
+    if ( ! stat( cpath.c_str(), buf ) ) 
       return existsUncompressed ? 2 : 1;
     }
   

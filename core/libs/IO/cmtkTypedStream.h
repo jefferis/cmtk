@@ -45,6 +45,8 @@
 #define NULL 0
 #endif
 
+#include <string>
+
 namespace
 cmtk
 {
@@ -416,6 +418,9 @@ public:
   
   /// Write a string to an open archive.
   TypedStreamCondition WriteString( const char* key, const char* value );
+
+  /// Write a string to an open archive.
+  TypedStreamCondition WriteString( const char* key, const std::string& value );
 
   /// Write a formated comment to an open archive.
   TypedStreamCondition WriteComment( const char* fmt, ... );

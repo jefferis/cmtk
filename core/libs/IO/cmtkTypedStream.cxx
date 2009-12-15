@@ -793,6 +793,13 @@ TypedStream
 
 TypedStreamCondition
 TypedStream
+::WriteString( const char* key, const std::string& value )
+{
+  this->WriteString( key, value.c_str() );
+}
+
+TypedStreamCondition
+TypedStream
 ::WriteString( const char* key, const char* value )
 {
   char *buffer = Buffer;
