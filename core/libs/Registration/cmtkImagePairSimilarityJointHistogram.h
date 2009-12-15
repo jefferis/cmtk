@@ -100,7 +100,7 @@ public:
    */
   template<class T> void Increment( const T a, const T b )
   {
-    this->m_JointHistogram.Increment( a, std::max<size_t>( 0, std::min<size_t>( this->m_NumberOfBinsY-1, b ) ) );
+    this->m_JointHistogram.Increment( static_cast<size_t>( a ), std::max<size_t>( 0, std::min<size_t>( this->m_NumberOfBinsY-1, static_cast<size_t>( b ) ) );
   }
 
   /// Add another metric object to this one.
