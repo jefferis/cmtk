@@ -32,7 +32,7 @@
 #include <cmtkXformListEntry.h>
 
 cmtk::XformListEntry::XformListEntry
-( Xform::SmartPtr& xform, const bool inverse, const Types::Coordinate globalScale )
+( const Xform::SmartPtr& xform, const bool inverse, const Types::Coordinate globalScale )
   : m_Xform( xform ), 
     InverseAffineXform( NULL ), 
     m_WarpXform( NULL ),
@@ -41,9 +41,9 @@ cmtk::XformListEntry::XformListEntry
 {
   if ( this->m_Xform ) 
     {
-    this->m_WarpXform = dynamic_cast<WarpXform*>( this->m_Xform.GetPtr() );
+    this->m_WarpXform = dynamic_cast<const WarpXform*>( this->m_Xform.GetPtr() );
     
-    AffineXform::SmartPtr affineXform( AffineXform::SmartPtr::DynamicCastFrom( this->m_Xform ) );
+    const AffineXform::SmartPtr affineXform( AffineXform::SmartPtr::DynamicCastFrom( this->m_Xform ) );
     if ( affineXform ) 
       {
       this->InverseAffineXform = affineXform->MakeInverse();

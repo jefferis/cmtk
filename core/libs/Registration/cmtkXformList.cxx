@@ -33,7 +33,7 @@
 
 void
 cmtk::XformList::Add
-( Xform::SmartPtr& xform, const bool inverse, const Types::Coordinate globalScale  )
+( const Xform::SmartPtr& xform, const bool inverse, const Types::Coordinate globalScale  )
 {
   this->push_back( SmartPointer<XformListEntry>( new XformListEntry( xform, inverse, globalScale ) ) );
 }

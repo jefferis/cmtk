@@ -41,6 +41,7 @@
 
 #include <cmtkVolumeIO.h>
 #include <cmtkXformIO.h>
+#include <cmtkXformList.h>
 
 bool Verbose = false;
 
@@ -69,8 +70,9 @@ cmtk::XformToScalarMode Mode = cmtk::X2S_MAGNITUDE;
 cmtk::ScalarDataType DataType = cmtk::TYPE_DOUBLE;
 
 const char* InputGridPath = NULL;
-const char* InputXformPath = NULL;
 const char* OutImagePath = NULL;
+
+std::vector<std::string> InputXformPaths;
 
 int
 main ( const int argc, const char* argv[] ) 
@@ -106,7 +108,7 @@ main ( const int argc, const char* argv[] )
     cl.AddOption( Key( 'o', "output" ), &OutImagePath, "Output path for image with extracted scalar data." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     
     cl.AddParameter( &InputGridPath, "InputImage", "Input grid path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &InputXformPath, "InputTransformation", "Input transformation path" );
+    cl.AddParameterVector( &InputXformPaths, "InputTransformation", "Input transformation path" );
 
     cl.Parse();
     }
@@ -122,21 +124,34 @@ main ( const int argc, const char* argv[] )
     cmtk::StdErr << "Could not read grid from image " << InputGridPath << "\n";
     exit(1);
     }
-
-  cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( InputXformPath, Verbose ) );
-  if ( ! xform ) 
-    {
-    cmtk::StdErr << "Could not read transformation from file " << InputXformPath << "\n";
-    exit(1);
-    }
-
-  const cmtk::SplineWarpXform* splineWarp = cmtk::SplineWarpXform::SmartPtr ::DynamicCastFrom( xform );  
-  const cmtk::AffineXform* affineXform = NULL;
-  if ( splineWarp )
-    affineXform = splineWarp->GetInitialAffineXform();
-  
   scalarImage->CreateDataArray( DataType );
 
+  cmtk::XformList xformList;
+  cmtk::XformList xformListAffine;
+
+  for ( size_t i = 0; i < InputXformPaths.size(); ++i )
+    {
+    cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( InputXformPaths[i].c_str(), Verbose ) );
+    if ( ! xform ) 
+      {
+      cmtk::StdErr << "Could not read transformation from file " << InputXformPaths[i] << "\n";
+      exit(1);
+      }
+
+    xformList.Add( xform );
+
+    const cmtk::SplineWarpXform* splineWarp = cmtk::SplineWarpXform::SmartPtr ::DynamicCastFrom( xform );  
+    if ( splineWarp )
+      {
+      const cmtk::Xform::SmartPtr affine( splineWarp->GetInitialAffineXform() );
+      xformListAffine.Add( affine );
+      }
+    else
+      {
+      xformListAffine.Add( xform );
+      }
+    }  
+  
   const int* dims = scalarImage->GetDims();
 #pragma omp parallel for
   for ( int z = 0; z < dims[2]; ++z )
@@ -152,21 +167,21 @@ main ( const int argc, const char* argv[] )
 	const cmtk::Vector3D v0( v );
 
 	// Apply transformation and subtract original coordinate
-	xform->ApplyInPlace( v );
+	xformList.ApplyInPlace( v );
 	v -= v0;
 
 	// Is this is a B-spline warp and we're only interesting in the nonrigid component?
-	if ( splineWarp && WarpOnly )
+	if ( WarpOnly )
 	  {
 	  // Transform current location also using affine transformation
 	  cmtk::Vector3D vAffine( v0 );
-	  affineXform->ApplyInPlace( vAffine );
+	  xformListAffine.ApplyInPlace( vAffine );
 	  vAffine -= v0;
-
+	  
 	  // subtract affine-transformed from total transformed
 	  v -= vAffine;
 	  }
-
+	
 	switch ( Mode )
 	  {
 	  case cmtk::X2S_EXTRACT_X: scalarImage->SetDataAt( v.XYZ[0], offset ); break;

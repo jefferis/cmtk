@@ -49,19 +49,19 @@ class XformListEntry
 {
 public:
   /// Constructor.
-  XformListEntry( Xform::SmartPtr& xform = Xform::SmartPtr::Null, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
+  XformListEntry( const Xform::SmartPtr& xform = Xform::SmartPtr::Null, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
   
   /// Destructor.
   ~XformListEntry();
   
   /// The actual transformation.
-  Xform::SmartPtr m_Xform;
+  const Xform::SmartPtr m_Xform;
   
   /// The actual inverse if transformation is affine.
-  AffineXform* InverseAffineXform;
+  const AffineXform* InverseAffineXform;
   
   /// The actual transformation as spline warp.
-  WarpXform* m_WarpXform;
+  const WarpXform* m_WarpXform;
   
   /// Apply forward (false) or inverse (true) transformation.
   bool Inverse;

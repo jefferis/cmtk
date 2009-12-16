@@ -64,7 +64,7 @@ public:
   }
   
   /// Add a transformation
-  void Add( Xform::SmartPtr& xform, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
+  void Add( const Xform::SmartPtr& xform, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
   
   /// Apply a sequence of (inverse) transformations.
   bool ApplyInPlace( Vector3D& v );

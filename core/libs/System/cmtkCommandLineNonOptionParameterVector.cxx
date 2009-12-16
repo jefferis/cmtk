@@ -43,7 +43,7 @@ cmtk::CommandLine::NonOptionParameterVector
     {
     while ( (index < argc) && strcmp( argv[index], "--" ) ) 
       {
-      this->Var->push_back( std::string( argv[index] ) );
+      this->Var->push_back( std::string( argv[index++] ) );
       } 
     if (index < argc)
       ++index; // skip "--" separator
