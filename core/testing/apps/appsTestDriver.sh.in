@@ -1129,6 +1129,10 @@ case ${RUNTEST} in
 	run xform2scalar --float --output ${tmpdir}/magnitude.nii vol001_mr_t0.hdr vol001_mr_t0t1_warp.xform
 	check_results magnitude.nii
 	;;
+    xform2scalarWarpInverseError)
+	run xform2scalar --float --output ${tmpdir}/magnitude.nii vol001_mr_t0.hdr vol001_mr_t0t1_warp.xform --inverse vol001_mr_t0t1_warp.xform
+	check_results magnitude.nii
+	;;
     xform2scalarWarpOnly)
 	run xform2scalar --warp-only --float --output ${tmpdir}/magnitude.nii vol001_mr_t0.hdr vol001_mr_t0t1_warp.xform
 	check_results magnitude.nii

@@ -108,7 +108,7 @@ main ( const int argc, const char* argv[] )
     cl.AddOption( Key( 'o', "output" ), &OutImagePath, "Output path for image with extracted scalar data." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     
     cl.AddParameter( &InputGridPath, "InputImage", "Input grid path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameterVector( &InputXformPaths, "InputTransformation", "Input transformation path" );
+    cl.AddParameterVector( &InputXformPaths, "InputTransformation", "Input transformation paths. Use '--inverse' prefix to invert the following transformation." );
 
     cl.Parse();
     }
@@ -131,6 +131,19 @@ main ( const int argc, const char* argv[] )
 
   for ( size_t i = 0; i < InputXformPaths.size(); ++i )
     {
+    bool inverse = false;
+    if ( InputXformPaths[i] == std::string( "--inverse" ) )
+      {
+      inverse = true;
+      ++i;
+
+      if ( i >= InputXformPaths.size() )
+	{
+	cmtk::StdErr << "ERROR: '--inverse' cannot be the last command line argument\n";
+	exit(1);
+	}
+      }
+
     cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( InputXformPaths[i].c_str(), Verbose ) );
     if ( ! xform ) 
       {
@@ -138,7 +151,7 @@ main ( const int argc, const char* argv[] )
       exit(1);
       }
 
-    xformList.Add( xform );
+    xformList.Add( xform, inverse );
 
     const cmtk::SplineWarpXform* splineWarp = cmtk::SplineWarpXform::SmartPtr ::DynamicCastFrom( xform );  
     if ( splineWarp )

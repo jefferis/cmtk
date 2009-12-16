@@ -398,6 +398,7 @@ IF(NOT CMTK_USE_MPI)
     xform2scalarAffine 
     xform2scalarAffineDoubleY 
     xform2scalarWarp 
+    xform2scalarWarpInverseError
     xform2scalarWarpOnly)
 
   IF(CMTK_BUILD_NRRD)
