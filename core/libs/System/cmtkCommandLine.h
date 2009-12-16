@@ -607,6 +607,79 @@ private:
     const char* m_Comment;
   };
 
+  /// Non-option parameter.
+  class NonOptionParameterVector :
+    /// This is like a standalone string option, so inherit from that.
+    public Option< std::vector<std::string> >
+  {
+  public:
+    /// This class.
+    typedef NonOptionParameterVector Self;
+
+    /// Smart pointer.
+    typedef SmartPointer<Self> SmartPtr;
+    
+    /// Superclass.
+    typedef Option< std::vector<std::string> > Superclass;
+
+    /// Constructor.
+    NonOptionParameterVector( std::vector<std::string> *pvec, const char* name, const char* comment, bool *const flag ) 
+      : Superclass( pvec, flag ), 
+	m_Name( name ), 
+	m_Comment( comment ) {};
+
+    /// Evaluate and set associated variable.
+    virtual void Evaluate( const size_t argc, const char* argv[], size_t& index );
+
+    /// Returns an XML tree describing this parameter.
+    virtual mxml_node_t* MakeXMLWithIndex( mxml_node_t *const parent, //!< Parent in the XML tree for the new node.
+					   const int index //!< Running index [0,1,...] of this argument in the argument list.
+      ) const;
+
+    /// Return a textual description of the parameter associated with this option
+    virtual std::string GetParamTypeString() const;
+
+    /// Format additional help information (e.g., default values).
+    virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
+      ) const
+    {
+      if ( this->Var->size() )
+	{
+	fmt << "\n[Default: ( \"" << (*this->Var)[0] << "\"";
+	for ( size_t i = 1; i < this->Var->size(); ++i )
+	  fmt << ", \"" << (*this->Var)[i] << "\" ";
+	fmt << ") ]";
+	}
+      else
+	{
+	fmt << "\n[Default: (empty)]";
+	}
+      return fmt;
+    }
+    
+    /// Format additional help information (e.g., default values).
+    virtual void PrintWiki() const
+    {
+      if ( this->Var->size() )
+	{
+	StdOut << "'''[Default: ( \"" << (*this->Var)[0] << "\"";
+	for ( size_t i = 1; i < this->Var->size(); ++i )
+	  StdOut << ", \"" << (*this->Var)[i] << "\" ";
+	StdOut << ") ]'''\n";
+	}
+      else
+	{
+	StdOut << "'''[Default: (empty)]'''\n";
+	}
+    }
+    
+    /// Name of this parameter.
+    const char* m_Name;
+
+    /// Comment (description) of this parameter.
+    const char* m_Comment;
+  };
+
 public:
   /// Constructor.
   CommandLine( int argc, char* argv[], const int properties = PROPS_NOXML ) 
@@ -947,13 +1020,22 @@ public:
     return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new Callback( funcMultiArg ) ), comment ) ) )->m_Action;
   }
   
-  /// Add option.
+  /// Add single non-option parameter.
   Item::SmartPtr
   AddParameter( const char* *const var, const char* name, const char* comment, bool *const flag = NULL ) 
   {
     NonOptionParameter::SmartPtr parameter( new NonOptionParameter( var, name, comment, flag ) );
     this->m_NonOptionParameterList.push_back( parameter );
     return parameter;
+  }
+
+  /// Add vector of non-option parameters.
+  Item::SmartPtr
+  AddParameterVector( std::vector<std::string>* pvec, const char* name, const char* comment, bool *const flag = NULL ) 
+  {
+    NonOptionParameterVector::SmartPtr vparameter( new NonOptionParameterVector( pvec, name, comment, flag ) );
+    this->m_NonOptionParameterVectorList.push_back( vparameter );
+    return vparameter;
   }
 
   /// Type for key/action lists.
@@ -1086,6 +1168,12 @@ private:
 
   /// List of non-option parameters (i.e., "the rest of the command line").
   NonOptionParameterListType m_NonOptionParameterList;
+
+  /// Type for no-option parameter vector list. These come after the scalar non-option parameters.
+  typedef std::list<NonOptionParameterVector::SmartPtr> NonOptionParameterVectorListType;
+
+  /// List of non-option parameters (i.e., "the rest of the command line").
+  NonOptionParameterVectorListType m_NonOptionParameterVectorList;
 
   /// Map type for program meta information.
   typedef std::map<ProgramProperties,std::string> ProgramPropertiesMapType;

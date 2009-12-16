@@ -122,6 +122,33 @@ public:
 
 template<>
 class 
+CommandLineTypeTraits< std::vector<std::string> >
+/// Inherit generic template members
+  : public CommandLineTypeTraitsBase< std::vector<std::string> >
+{
+public:
+  static const char* GetName() 
+  { 
+    return "vector<string>";
+  }
+
+  static std::string ValueToString( const std::vector<std::string>* value )
+  {
+    std::ostringstream stream;
+    for ( size_t i = 0; i < value->size(); ++i )
+      stream << (*value)[i] << " ";
+    return stream.str();
+  }
+
+  /// Convert a value of this type to string with minimal added markup (for XML output).
+  static std::string ValueToStringMinimal( const std::vector<std::string>* value )
+  {
+    return ValueToString( value );
+  }
+};
+
+template<>
+class 
 CommandLineTypeTraits<int>
 /// Inherit generic template members
   : public CommandLineTypeTraitsBase<int>

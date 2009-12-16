@@ -37,6 +37,7 @@ SET(cmtkSystem_SRCS
   cmtkCommandLineKeyToActionSingle.cxx
   cmtkCommandLineXML.cxx
   cmtkCommandLineNonOptionParameter.cxx
+  cmtkCommandLineNonOptionParameterVector.cxx
   cmtkCompressedStream.cxx
   cmtkConsole.cxx
   cmtkFileUtil.cxx

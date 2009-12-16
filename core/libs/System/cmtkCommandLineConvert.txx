@@ -132,4 +132,15 @@ CommandLine::Item::Convert<const char*>( const char* str )
   return str; 
 }
 
+/// Convert string to vector.
+template<> 
+inline
+std::vector<std::string> 
+CommandLine::Item::Convert< std::vector<std::string> >( const char* str ) 
+{
+  std::vector<std::string> v;
+  v.push_back( std::string( str ) );
+  return v; 
+}
+
 } // namespace cmtk

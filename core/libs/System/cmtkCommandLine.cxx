@@ -171,6 +171,19 @@ CommandLine::Parse()
       }
     }
   
+  for ( NonOptionParameterVectorListType::iterator it = this->m_NonOptionParameterVectorList.begin(); it != this->m_NonOptionParameterVectorList.end(); ++it, ++this->Index )
+    {
+    if ( this->Index >= this->ArgC )
+      {     
+      if ( ! ((*it)->m_Properties & PROPS_OPTIONAL) )
+	throw( Exception( "Insufficient number of command line arguments", this->Index ) );
+      }
+    else
+      {
+      (*it)->Evaluate( this->ArgC, this->ArgV, this->Index );
+      }
+    }
+  
   return true;
 }
 
@@ -202,13 +215,17 @@ CommandLine::PrintHelp
     }
   else
     {
-    if ( this->m_NonOptionParameterList.size() )
+    if ( this->m_NonOptionParameterList.size() || this->m_NonOptionParameterVectorList.size() )
       {
       StdErr << "\nSYNTAX:\n\n";
 
       std::ostringstream fmt;
       fmt << "[options] ";
       for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
+	{
+	fmt << (*it)->m_Name << " ";
+	}
+      for ( NonOptionParameterVectorListType::const_iterator it = this->m_NonOptionParameterVectorList.begin(); it != this->m_NonOptionParameterVectorList.end(); ++it )
 	{
 	fmt << (*it)->m_Name << " ";
 	}
@@ -221,6 +238,23 @@ CommandLine::PrintHelp
 	{
 	fmt.str("");
 
+	StdErr << "\n";
+	fmt << (*it)->m_Name << " = ";
+	if ( fmt.str().length() > static_cast<size_t>( indent-2 ) )
+	  fmt << "\n";
+	else
+	  {
+	  while ( fmt.str().length() < static_cast<size_t>( indent ) )
+	    fmt << " ";
+	  }
+	fmt << (*it)->m_Comment;
+	StdErr.FormatText( fmt.str(), 5+indent, lineWidth, -indent ) << "\n";
+	}
+
+      for ( NonOptionParameterVectorListType::const_iterator it = this->m_NonOptionParameterVectorList.begin(); it != this->m_NonOptionParameterVectorList.end(); ++it )
+	{
+	fmt.str("");
+	
 	StdErr << "\n";
 	fmt << (*it)->m_Name << " = ";
 	if ( fmt.str().length() > static_cast<size_t>( indent-2 ) )
@@ -285,18 +319,28 @@ CommandLine::PrintWiki
     }
   else
     {
-    if ( this->m_NonOptionParameterList.size() )
+    if ( this->m_NonOptionParameterList.size() || this->m_NonOptionParameterVectorList.size() )
       {
       StdOut << "== Syntax ==\n\n";
-
+      
       StdOut << ": <tt>[options] ";
       for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
+	{
+	StdOut << (*it)->m_Name << " ";
+	}
+      for ( NonOptionParameterVectorListType::const_iterator it = this->m_NonOptionParameterVectorList.begin(); it != this->m_NonOptionParameterVectorList.end(); ++it )
 	{
 	StdOut << (*it)->m_Name << " ";
 	}
       StdOut << "</tt>\n\nwhere\n";
 
       for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
+	{
+	StdOut << "\n";
+	StdOut << "; <tt>" << (*it)->m_Name << "</tt> : ";
+	StdOut << (*it)->m_Comment << "\n";;
+	}
+      for ( NonOptionParameterVectorListType::const_iterator it = this->m_NonOptionParameterVectorList.begin(); it != this->m_NonOptionParameterVectorList.end(); ++it )
 	{
 	StdOut << "\n";
 	StdOut << "; <tt>" << (*it)->m_Name << "</tt> : ";
