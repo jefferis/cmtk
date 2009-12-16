@@ -359,7 +359,7 @@ std::string CompressedStream::GetBaseName( const std::string& path )
     for ( int i = 0; ArchiveLookup[i].suffix; ++i )
       {
       const size_t suffixLen = strlen( ArchiveLookup[i].suffix );
-      if ( path.compare( suffixPos, suffixLen, ArchiveLookup[i].suffix, suffixLen ) )
+      if ( !path.compare( suffixPos, suffixLen, ArchiveLookup[i].suffix, suffixLen ) )
 	{
 	return path.substr( 0, suffixPos );
 	}
