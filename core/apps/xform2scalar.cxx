@@ -106,7 +106,7 @@ main ( const int argc, const char* argv[] )
     cl.AddOption( Key( 'o', "output" ), &OutImagePath, "Output path for image with extracted scalar data." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     
     cl.AddParameter( &InputGridPath, "InputImage", "Input grid path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &InputXformPath, "OutputImage", "Output image path" );
+    cl.AddParameter( &InputXformPath, "InputTransformation", "Input transformation path" );
 
     cl.Parse();
     }
