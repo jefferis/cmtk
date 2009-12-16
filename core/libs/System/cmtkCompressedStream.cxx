@@ -381,7 +381,7 @@ CompressedStream::Stat( const char *path, struct stat* buf )
   
   for ( int i = 0; ArchiveLookup[i].suffix; ++i ) 
     {
-    const std::string cpath = path + std::string( ArchiveLookup[i].suffix );
+    const std::string cpath = baseName + std::string( ArchiveLookup[i].suffix );
     if ( ! stat( cpath.c_str(), buf ) ) 
       return existsUncompressed ? 2 : 1;
     }
