@@ -167,12 +167,11 @@ void DoRegistration( const char* refFile, const char* fltFile )
   Registration.SetFloatingImageInterpolation( cmtk::Interpolators::CUBIC );
   
 // we want the centers of both images aligned intially.
-  Registration.SetInitialAlignCenters( true );
+// we want the centers of mass of both images aligned intially.
+  Registration.SetInitializer( cmtk::MakeInitialAffineTransformation::COM );
   
 // set optimization parameters to what they were during the original Vanderbilt submission.
-  Registration.SetExploration( 8.0 );
-  Registration.SetAccuracy( 0.01 );
-  Registration.SetSampling( 1.0 );
+  Registration.SetAutoMultiLevels( 4 );
   Registration.SetUseOriginalData( true );
 
 // run registration

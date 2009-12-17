@@ -49,6 +49,7 @@
 #include <cmtkCompressedStream.h>
 #include <cmtkXformIO.h>
 
+#include <cmtkMakeInitialAffineTransformation.h>
 #include <cmtkTransformChangeToSpaceAffine.h>
 #include <cmtkTransformChangeFromSpaceAffine.h>
 #include <cmtkAffineXformITKIO.h>
@@ -95,8 +96,6 @@ ImagePairAffineRegistrationCommandLine
   this->m_Accuracy = 0.1;
   this->m_Sampling = 1.0;
   OutParametersName = OutMatrixName = Studylist = Protocol = Time = NULL;
-  InitXlate = 0;
-  this->m_NoSwitch = 0;
 
   Verbose = 0;
 
@@ -139,9 +138,14 @@ ImagePairAffineRegistrationCommandLine
     cl.AddVector( Key( "dofs" ), this->NumberDOFs, "Add number of degrees of freedom [can be repeated]" );
     cl.AddVector( Key( "dofs-final" ), this->NumberDOFsFinal, "Add number of degrees of freedom for final level only [can be repeated]" );
     
-    cl.AddSwitch( Key( 'n', "no-switch" ), &this->m_NoSwitch, true, "Do not auto-switch reference and floating image for improved computational performance" );
-    cl.AddSwitch( Key( 'i', "initxlate" ), &InitXlate, true, "Initialized transformation by translating floating image FOV center onto reference image FOV center" );
-
+    CommandLine::EnumGroup<MakeInitialAffineTransformation::Mode>::SmartPtr
+      initGroup = cl.AddEnum( "init", &this->m_Initializer, "Select initializer for the affine trasnformation." );
+    initGroup->AddSwitch( Key( "none" ), MakeInitialAffineTransformation::NONE, "Use identity transformation." );
+    initGroup->AddSwitch( Key( "fov" ), MakeInitialAffineTransformation::FOV, "Align centers of field of view (or crop regions) using a translation." );
+    initGroup->AddSwitch( Key( "com" ), MakeInitialAffineTransformation::COM, "Align centers of mass using a translation." );
+    initGroup->AddSwitch( Key( "pax" ), MakeInitialAffineTransformation::PAX, "Align images by rotation using principal axes and translation using centers of mass." );
+    initGroup->AddSwitch( Key( "physical" ), MakeInitialAffineTransformation::PHYS, "Align images by rotation using direction vectors stored in input images and translation using image origins." );
+    
     cl.AddOption( Key( "initial" ), &InitialStudylist, "Initialize transformation from given path" )->SetProperties( CommandLine::PROPS_XFORM );
     cl.AddSwitch( Key( "initial-is-inverse" ), &this->m_InitialXformIsInverse, true, "Invert initial transformation before initializing registration" );
     cl.EndGroup();
@@ -305,26 +309,12 @@ ImagePairAffineRegistrationCommandLine
     this->SetInitialTransformation( affine );
     }
   
-  if ( InitXlate ) 
+  if ( this->m_Initializer != MakeInitialAffineTransformation::NONE ) 
     {
     if ( inStudylist || InitialStudylist ) 
       {
-      StdErr << "WARNING: Initial transformation was taken from studylist. Switch --initxlate / -i will be ignored.\n";
+      StdErr << "WARNING: Initial transformation was taken from studylist. Selected transformation initializer will be ignored.\n";
       } 
-    else
-      {
-      this->SetInitialAlignCenters();
-      }
-    }
-
-  if ( this->m_AutoMultiLevels > 0 )
-    {
-    const Types::Coordinate minDelta = std::min( this->m_Volume_1->GetMinDelta(), this->m_Volume_2->GetMinDelta() );
-    const Types::Coordinate maxDelta = std::max( this->m_Volume_1->GetMaxDelta(), this->m_Volume_2->GetMaxDelta() );
-
-    this->m_Accuracy = 0.1 * minDelta;
-    this->m_Sampling = maxDelta;
-    this->m_Exploration = maxDelta * (1<<(this->m_AutoMultiLevels-1));
     }
   
   if ( Protocol ) 
@@ -409,7 +399,7 @@ ImagePairAffineRegistrationCommandLine::OutputResultList( const char* studyList 
   classStream.WriteDouble( "coarsest_resolution", CoarsestResolution );
   classStream.WriteInt( "metric", this->m_Metric );
   classStream.WriteDouble( "optimizer_step_factor", OptimizerStepFactor );
-  classStream.WriteBool( "no_switch", this->m_NoSwitch );
+  classStream.WriteString( "initializer", MakeInitialAffineTransformation::GetModeName( this->m_Initializer ) );
 
   this->m_PreprocessorRef.WriteSettings( classStream );  
   this->m_PreprocessorFlt.WriteSettings( classStream );  

@@ -97,9 +97,6 @@ protected:
   virtual void EnterResolution( CoordinateVector::SmartPtr&, Functional::SmartPtr&, const int, const int );
 
 private:
-  /// Number of levels for automatic parameter generation.
-  unsigned int m_AutoMultiLevels;
-
   /// Path for reformatted floating image.
   const char* m_ReformattedImagePath;
 
@@ -145,12 +142,6 @@ private:
    * This is set to 'on' by -v or --verbose, and set to 'off' by -q or --quiet.
    */
   bool Verbose;
-
-  /** Flag for initial center-of-mass translation.
-   * This defaults to 'no' and is set to 'yes' by -i or --initxlate command
-   * line switch.
-   */
-  bool InitXlate;
 
   /// Output result as matrix (text) file.
   void OutputResultMatrix( const char* matrixName ) const;

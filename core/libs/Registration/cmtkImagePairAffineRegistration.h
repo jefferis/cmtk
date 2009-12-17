@@ -38,6 +38,7 @@
 
 #include <cmtkUniformVolume.h>
 #include <cmtkInterpolator.h>
+#include <cmtkMakeInitialAffineTransformation.h>
 
 #include <vector>
 
@@ -57,13 +58,10 @@ class ImagePairAffineRegistration :
 protected:
   /** Flag for initial alignment of volume centers.
    */
-  cmtkGetSetMacroDefault(bool,InitialAlignCenters,true);
+  cmtkGetSetMacro(MakeInitialAffineTransformation::Mode,Initializer);
   
   /// Flag whether to adjust floating image histogram to match reference image.
   cmtkGetSetMacro(bool,MatchFltToRefHistogram);
-
-  /// If set, this flag prevent automatic switching of model and reference.
-  cmtkGetSetMacro(bool,NoSwitch);
 
   /** Numbers of degrees of freedom.
    * This list contains the numbers of degrees of freedom for every resolution

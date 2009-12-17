@@ -83,6 +83,10 @@ protected:
   /// Optimization algorithm to use.
   cmtkGetSetMacro(int,Algorithm);
 
+  /// Number of levels for automatic parameter generation.
+  cmtkGetSetMacro(unsigned int,AutoMultiLevels
+);
+
   /// Exploration, i.e. initial step size.
   cmtkGetSetMacro(double,Exploration);
 
@@ -218,9 +222,6 @@ protected:
 
   /// Matched landmarks list.
   cmtkGetSetMacro(MatchedLandmarkList::SmartPtr,LandmarkList);
-
-  /// Flag whether model and reference are exchanged.
-  bool SwitchVolumes;
 
   /// Pointer to callback object.
   cmtkGetSetMacro(RegistrationCallback::SmartPtr,Callback);

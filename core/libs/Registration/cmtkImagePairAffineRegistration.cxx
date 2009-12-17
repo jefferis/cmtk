@@ -57,10 +57,9 @@ cmtk
 //@{
 
 ImagePairAffineRegistration::ImagePairAffineRegistration () :
+  m_Initializer( MakeInitialAffineTransformation::NONE ),
   m_MatchFltToRefHistogram( false )
 { 
-  this->m_InitialAlignCenters = false;
-  this->m_NoSwitch = false;
 }
 
 ImagePairAffineRegistration::~ImagePairAffineRegistration () 
@@ -73,18 +72,8 @@ ImagePairAffineRegistration::InitRegistration ()
   CallbackResult result = this->Superclass::InitRegistration();
   if ( result != CALLBACK_OK ) return result;
 
-  if ( this->m_NoSwitch || (this->m_Volume_1->AverageVoxelVolume() >= this->m_Volume_2->AverageVoxelVolume()) ) 
-    {
-    this->m_ReferenceVolume = this->m_Volume_1;
-    this->m_FloatingVolume = this->m_Volume_2;
-    SwitchVolumes = false;
-    } 
-  else
-    {
-    this->m_ReferenceVolume = this->m_Volume_2;
-    this->m_FloatingVolume = this->m_Volume_1;
-    SwitchVolumes = true;
-    }
+  this->m_ReferenceVolume = this->m_Volume_1;
+  this->m_FloatingVolume = this->m_Volume_2;
   
   if ( this->m_MatchFltToRefHistogram )
     {
@@ -95,7 +84,7 @@ ImagePairAffineRegistration::InitRegistration ()
 
   if ( this->m_InitialTransformation )
     {
-    if ( SwitchVolumes ^ this->m_InitialXformIsInverse )
+    if ( this->m_InitialXformIsInverse )
       {
       affineXform = AffineXform::SmartPtr( this->m_InitialTransformation->MakeInverse() );
       } 
@@ -103,16 +92,10 @@ ImagePairAffineRegistration::InitRegistration ()
       {
       affineXform = AffineXform::SmartPtr( this->m_InitialTransformation );
       }
-  } 
+    } 
   else 
     {
-    affineXform = AffineXform::SmartPtr( new AffineXform );
-    }
-
-  if ( this->m_InitialAlignCenters ) 
-    {
-    Vector3D deltaCenter = ( this->m_FloatingVolume->GetCenterCropRegion() - this->m_ReferenceVolume->GetCenterCropRegion() );
-    affineXform->SetXlate( deltaCenter.XYZ );
+    affineXform = AffineXform::SmartPtr( MakeInitialAffineTransformation::Create( *this->m_ReferenceVolume, *this->m_FloatingVolume, this->m_Initializer ) );
     }
   
   this->m_Xform = affineXform;
@@ -204,14 +187,7 @@ AffineXform::SmartPtr
 ImagePairAffineRegistration::GetTransformation() const
 {
   AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( this->m_Xform );
-  if ( affineXform && SwitchVolumes ) 
-    {
-    return affineXform->GetInverse();
-    } 
-  else 
-    {
-    return affineXform;
-    }
+  return affineXform;
 }
 
 UniformVolume* 
@@ -219,8 +195,8 @@ ImagePairAffineRegistration::GetReformattedFloatingImage( Interpolators::Interpo
 {
   ReformatVolume reformat;
   reformat.SetInterpolation( interpolator );
-  reformat.SetReferenceVolume( this->SwitchVolumes ? this->m_Volume_2 :  this->m_Volume_1 );
-  reformat.SetFloatingVolume(  this->SwitchVolumes ? this->m_Volume_1 : this->m_Volume_2 );
+  reformat.SetReferenceVolume( this->m_ReferenceVolume );
+  reformat.SetFloatingVolume(  this->m_FloatingVolume );
 
   AffineXform::SmartPtr affineXform( this->GetTransformation() );
   reformat.SetAffineXform( affineXform );

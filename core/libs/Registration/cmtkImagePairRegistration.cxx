@@ -54,6 +54,9 @@ cmtk
 ImagePairRegistration::ImagePairRegistration () 
   : m_Metric( 0 ),
     m_FloatingImageInterpolation( Interpolators::DEFAULT ),
+    m_AutoMultiLevels( 0 ),
+    m_Exploration( -1 ),
+    m_Accuracy( -1 ),
     m_DeltaFThreshold( 0.0 ),
     m_PreprocessorRef( "Reference", "ref" ),
     m_PreprocessorFlt( "Floating", "flt" ),
@@ -65,8 +68,6 @@ ImagePairRegistration::ImagePairRegistration ()
   this->m_Callback = RegistrationCallback::SmartPtr( new RegistrationCallback() );
   this->m_Protocol = NULL; 
 
-  this->m_Exploration = -1;
-  this->m_Accuracy = -1;
   this->m_Sampling = -1;
   this->CoarsestResolution = -1;
   this->m_UseOriginalData = true;
@@ -74,7 +75,6 @@ ImagePairRegistration::ImagePairRegistration ()
   this->m_Algorithm = 0;
   UseMaxNorm = true;
   OptimizerStepFactor = 0.5;
-
 }
 
 ImagePairRegistration::~ImagePairRegistration () 
@@ -86,6 +86,16 @@ ImagePairRegistration::~ImagePairRegistration ()
 CallbackResult
 ImagePairRegistration::InitRegistration ()
 {
+  if ( this->m_AutoMultiLevels > 0 )
+    {
+    const Types::Coordinate minDelta = std::min( this->m_Volume_1->GetMinDelta(), this->m_Volume_2->GetMinDelta() );
+    const Types::Coordinate maxDelta = std::max( this->m_Volume_1->GetMaxDelta(), this->m_Volume_2->GetMaxDelta() );
+
+    this->m_Accuracy = 0.1 * minDelta;
+    this->m_Sampling = maxDelta;
+    this->m_Exploration = maxDelta * (1<<(this->m_AutoMultiLevels-1));
+    }
+  
   if ( this->m_Sampling <= 0 )
     this->m_Sampling = std::max( this->m_Volume_1->GetMaxDelta(), this->m_Volume_2->GetMaxDelta() );
   
