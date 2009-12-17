@@ -140,7 +140,7 @@ ImagePairAffineRegistrationCommandLine
     
     CommandLine::EnumGroup<MakeInitialAffineTransformation::Mode>::SmartPtr
       initGroup = cl.AddEnum( "init", &this->m_Initializer, "Select initializer for the affine trasnformation." );
-    initGroup->AddSwitch( Key( "none" ), MakeInitialAffineTransformation::NONE, "Use identity transformation." );
+    initGroup->AddSwitch( Key( "none" ), MakeInitialAffineTransformation::NONE, "Use input transformation, or identity transformation if none was provided ." );
     initGroup->AddSwitch( Key( "fov" ), MakeInitialAffineTransformation::FOV, "Align centers of field of view (or crop regions) using a translation." );
     initGroup->AddSwitch( Key( "com" ), MakeInitialAffineTransformation::COM, "Align centers of mass using a translation." );
     initGroup->AddSwitch( Key( "pax" ), MakeInitialAffineTransformation::PAX, "Align images by rotation using principal axes and translation using centers of mass." );
