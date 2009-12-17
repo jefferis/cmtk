@@ -60,17 +60,25 @@ UniformVolumeInterpolatorPartialVolume
   const size_t offset = imageGridPoint[0] + imageDims[0] * ( imageGridPoint[1] + imageDims[1] * imageGridPoint[2]);
   const TypedArray* gridData = this->m_Volume->GetData();
   
+  bool done[8];
   Types::DataItem corners[8];
-  bool data_present = gridData->Get( corners[0], offset );
-  data_present &= gridData->Get( corners[1], offset+this->m_Volume->GetNextI() );
-  data_present &= gridData->Get( corners[2], offset+this->m_Volume->GetNextJ() );
-  data_present &= gridData->Get( corners[3], offset+this->m_Volume->GetNextIJ() );
-  data_present &= gridData->Get( corners[4], offset+this->m_Volume->GetNextK() );
-  data_present &= gridData->Get( corners[5], offset+this->m_Volume->GetNextIK() );
-  data_present &= gridData->Get( corners[6], offset+this->m_Volume->GetNextJK() );
-  data_present &= gridData->Get( corners[7], offset+this->m_Volume->GetNextIJK() );
+  bool dataPresent = false;
+
+  size_t idx = 0;
+  for ( int k = 0; k < 2; ++k )
+    {
+    for ( int j = 0; j < 2; ++j )
+      {
+      for ( int i = 0; i < 2; ++i, ++idx )
+	{
+	const bool dataHere = gridData->Get( corners[idx], offset + i + j * this->m_NextJ + k * this->m_NextK );
+	done[idx] = !dataHere;
+	dataPresent |= dataHere;
+	}
+      }
+    }
   
-  if (data_present) 
+  if (dataPresent) 
     {
     const Types::Coordinate revX = lScaled[0]-imageGridPoint[0];
     const Types::Coordinate revY = lScaled[1]-imageGridPoint[1];
@@ -124,36 +132,41 @@ UniformVolumeInterpolatorPartialVolume
   const size_t offset = imageGridPoint[0] + imageDims[0] * ( imageGridPoint[1] + imageDims[1] * imageGridPoint[2]);
   const TypedArray* gridData = this->m_Volume->GetData();
   
+  bool done[8];
   Types::DataItem corners[8];
-  bool data_present = gridData->Get( corners[0], offset );
-  data_present &= gridData->Get( corners[1], offset+this->m_Volume->GetNextI() );
-  data_present &= gridData->Get( corners[2], offset+this->m_Volume->GetNextJ() );
-  data_present &= gridData->Get( corners[3], offset+this->m_Volume->GetNextIJ() );
-  data_present &= gridData->Get( corners[4], offset+this->m_Volume->GetNextK() );
-  data_present &= gridData->Get( corners[5], offset+this->m_Volume->GetNextIK() );
-  data_present &= gridData->Get( corners[6], offset+this->m_Volume->GetNextJK() );
-  data_present &= gridData->Get( corners[7], offset+this->m_Volume->GetNextIJK() );
-  
-  if (data_present) 
+  bool dataPresent = false;
+
+  size_t idx = 0;
+  for ( int k = 0; k < 2; ++k )
     {
-    const Types::Coordinate revX = 1-insidePixel[0];
-    const Types::Coordinate revY = 1-insidePixel[1];
-    const Types::Coordinate revZ = 1-insidePixel[2];
+    for ( int j = 0; j < 2; ++j )
+      {
+      for ( int i = 0; i < 2; ++i, ++idx )
+	{
+	const bool dataHere = gridData->Get( corners[idx], offset + i + j * this->m_NextJ + k * this->m_NextK );
+	done[idx] = !dataHere;
+	dataPresent |= dataHere;
+	}
+      }
+    }
+  
+  if (dataPresent) 
+    {
+    const Types::Coordinate offsX = 1-insidePixel[0];
+    const Types::Coordinate offsY = 1-insidePixel[1];
+    const Types::Coordinate offsZ = 1-insidePixel[2];
 
     const Types::Coordinate weights[8] = 
-      { insidePixel[0] * insidePixel[1] * insidePixel[2], 
-	revX * insidePixel[1] * insidePixel[2], 
-	insidePixel[0] * revY * insidePixel[2], 
-	revX * revY * insidePixel[2],
-	insidePixel[0] * insidePixel[1] * revZ, 
-	revX * insidePixel[1] * revZ, 
-	insidePixel[0] * revY * revZ, 
-	revX * revY * revZ 
+      { offsX * offsY * offsZ, 
+	insidePixel[0] * offsY * offsZ, 
+	offsX * insidePixel[1] * offsZ, 
+	insidePixel[0] * insidePixel[1] * offsZ,
+	offsX * offsY * insidePixel[2], 
+	insidePixel[0] * offsY * insidePixel[2], 
+	offsX * insidePixel[1] * insidePixel[2], 
+	insidePixel[0] * insidePixel[1] * insidePixel[2] 
       };
 
-    bool done[8];
-    memset( done, 0, sizeof( done ) );
-    
     Types::Coordinate maxWeight = 0;
     for ( unsigned int j = 0; j < 8; ++j ) 
       {
