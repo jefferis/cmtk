@@ -40,6 +40,48 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
+const std::string 
+MakeInitialAffineTransformation
+::GetModeName( const Self::Mode mode )
+{
+  switch ( mode )
+    {
+    case Self::NONE:
+    default:
+      return std::string( "none" );
+    case Self::FOV:
+      return std::string( "FieldsOfView" );
+    case Self::COM:
+      return std::string( "CentersOfMass" );
+    case Self::PAX:
+      return std::string( "PrincipalAxes" );
+    case Self::PHYS:
+      return std::string( "PhysicalCoordinates" );
+    }
+  return std::string( "unknown" );
+}
+
+AffineXform* 
+MakeInitialAffineTransformation
+::Create( const UniformVolume& referenceImage, const UniformVolume& floatingImage, const Self::Mode mode )
+{
+  switch ( mode )
+    {
+    case Self::NONE:
+    default:
+      return new AffineXform;
+    case Self::FOV:
+      return Self::AlignFieldsOfView( referenceImage, floatingImage );
+    case Self::COM:
+      return Self::AlignCentersOfMass( referenceImage, floatingImage );
+    case Self::PAX:
+      return Self::AlignPrincipalAxes( referenceImage, floatingImage );
+    case Self::PHYS:
+      return Self::AlignDirectionVectors( referenceImage, floatingImage );
+    }
+  return new AffineXform;
+}
+
 AffineXform* 
 MakeInitialAffineTransformation
 ::AlignDirectionVectors( const UniformVolume& referenceImage, const UniformVolume& floatingImage, const bool centerXform )
@@ -73,6 +115,18 @@ MakeInitialAffineTransformation
     xform->ChangeCenter( center.XYZ );
     }
 
+  return xform;
+}
+
+AffineXform* 
+MakeInitialAffineTransformation
+::AlignFieldsOfView( const UniformVolume& referenceImage, const UniformVolume& floatingImage )
+{
+  AffineXform* xform = new AffineXform;
+  
+  const Vector3D translation = floatingImage.GetCenterCropRegion() - referenceImage.GetCenterCropRegion();
+  xform->SetXlate( translation.XYZ );
+  
   return xform;
 }
 
