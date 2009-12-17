@@ -291,12 +291,16 @@ IF(NOT CMTK_USE_MPI)
     registrationxWithInitial
     registrationxWithInitialInverse
     registrationxAutoLevelsRat4
+    registrationxAutoLevelsRat4COM
+    registrationxAutoLevelsRat4PAX
     registrationxAutoLevelsRat2
     registrationxAutoLevelsRat2Cubic
     registrationxAutoLevelsRat2Sinc
     registrationxAutoLevelsRat2NN
     registrationxAutoLevelsRatToRat
     registrationxAutoLevelsRatToRatDeltaFThreshold
+    registrationxAutoLevelsLabelsNN
+    registrationxAutoLevelsLabelsPV
     registrationxAutoLevelsCt3)
 
   # ==========================================

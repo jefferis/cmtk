@@ -737,7 +737,7 @@ case ${RUNTEST} in
 	check_results registration
 	;;
     registrationxAffineMrMrMSD)
-	run registrationx -i --dofs 6,9 --msd --match-histograms -o ${tmpdir} pat001_mr_T1.hdr pat002_mr_T2.hdr
+	run registrationx --init fov --dofs 6,9 --msd --match-histograms -o ${tmpdir} pat001_mr_T1.hdr pat002_mr_T2.hdr
 	check_results registration
 	;;
     registrationxFromList)
@@ -753,35 +753,55 @@ case ${RUNTEST} in
 	check_results registration
 	;;
     registrationxAutoLevelsRat4)
-	run registrationx -v -i --auto-multi-levels 4 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	run registrationx -v --init fov --auto-multi-levels 4 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	check_results registration
+	;;
+    registrationxAutoLevelsRat4COM)
+	run registrationx -v --init com --auto-multi-levels 4 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	check_results registration
+	;;
+    registrationxAutoLevelsRat4PAX)
+	run registrationx -v --init pax --auto-multi-levels 4 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
 	check_results registration
 	;;
     registrationxAutoLevelsRat2)
-	run registrationx -v -i --auto-multi-levels 2 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	run registrationx -v --init fov --auto-multi-levels 2 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
 	check_results registration
 	;;
     registrationxAutoLevelsRat2Cubic)
-	run registrationx -v --cubic -i --auto-multi-levels 2 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	run registrationx -v --cubic --init fov --auto-multi-levels 2 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
 	check_results registration
 	;;
     registrationxAutoLevelsRat2Sinc)
-	run registrationx -v --cosine-sinc -i --auto-multi-levels 2 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	run registrationx -v --cosine-sinc --init fov --auto-multi-levels 2 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
 	check_results registration
 	;;
     registrationxAutoLevelsRat2NN)
-	run registrationx -v --nearest-neighbor -i --auto-multi-levels 2 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	run registrationx -v --nearest-neighbor --init fov --auto-multi-levels 2 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
 	check_results registration
 	;;
     registrationxAutoLevelsRatToRat)
-	run registrationx -v -i --auto-multi-levels 2 --dofs 6,9 --msd --match-histograms -o ${tmpdir} rat_fse_erly.hdr rat2_fse_erly.hdr
+        export CMTK_NUM_THREADS=1
+        run registrationx -v --init fov --auto-multi-levels 2 --dofs 6,9 --msd --match-histograms -o ${tmpdir} rat_fse_erly.hdr rat2_fse_erly.hdr
+        unset CMTK_NUM_THREADS
 	check_results registration
 	;;
     registrationxAutoLevelsRatToRatDeltaFThreshold)
-	run registrationx -v -i --auto-multi-levels 2 --dofs 6,9 --msd --match-histograms --delta-f-threshold 0.01 -o ${tmpdir} rat_fse_erly.hdr rat2_fse_erly.hdr
+        export CMTK_NUM_THREADS=1
+	run registrationx -v --init fov --auto-multi-levels 2 --dofs 6,9 --msd --match-histograms --delta-f-threshold 0.01 -o ${tmpdir} rat_fse_erly.hdr rat2_fse_erly.hdr
+        unset CMTK_NUM_THREADS
 	check_results registration
 	;;
     registrationxAutoLevelsCt3)
 	run registrationx -q --msd --auto-multi-levels 3 --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_ct.hdr
+	check_results registration
+	;;
+    registrationxAutoLevelsLabelsNN)
+        run registrationx -v --interpolation nearest-neighbor --class-ref label --class-flt label --auto-multi-levels 4 --dofs 6,9 --nmi -o ${tmpdir} parc1.hdr parc2.hdr
+	check_results registration
+	;;
+    registrationxAutoLevelsLabelsPV)
+        run registrationx -v --interpolation partial-volume --class-ref label --class-flt label --auto-multi-levels 4 --dofs 6,9 --nmi -o ${tmpdir} parc1.hdr parc2.hdr
 	check_results registration
 	;;
     reorientHdrSaToAx)
