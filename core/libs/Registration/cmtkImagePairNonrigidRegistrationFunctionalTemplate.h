@@ -79,13 +79,13 @@ protected:
 
   /** Ground transformed volume.
    */
-  typename Types::DataItem *m_WarpedVolume;
+  Types::DataItem *m_WarpedVolume;
 
   /// Flag for forcing pixel values outside the floating image.
   bool m_ForceOutsideFlag;
 
   /// Rescaled byte value for forcing pixel values outside the floating image.
-  typename Types::DataItem m_ForceOutsideValueRescaled;
+  Types::DataItem m_ForceOutsideValueRescaled;
 
   /** Metric object for incremental computation.
    * Before computing the incremental metric after change of one parameter,
@@ -145,7 +145,7 @@ public:
 protected:
 
   /// Return weighted combination of voxel similarity and grid energy.
-	typename Self::ReturnType WeightedTotal( const typename Self::ReturnType metric, const W* warp ) const 
+  typename Self::ReturnType WeightedTotal( const typename Self::ReturnType metric, const W* warp ) const 
   {
     double result = metric;
     if ( this->m_JacobianConstraintWeight > 0 ) 
