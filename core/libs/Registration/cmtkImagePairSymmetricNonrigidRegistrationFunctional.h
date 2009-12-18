@@ -35,6 +35,7 @@
 #include <cmtkconfig.h>
 
 #include <cmtkFunctional.h>
+#include <cmtkWarpXform.h>
 
 #include <cmtkMacros.h>
 
@@ -83,7 +84,7 @@ public:
 
   /// Constructor function.
   static ImagePairSymmetricNonrigidRegistrationFunctional* Create
-  ( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation, WarpXform::SmartPtr& warpXform );
+  ( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation );
 };
 
 //@}

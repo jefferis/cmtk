@@ -73,8 +73,7 @@ SymmetricElasticFunctional_Template<VM,W>
   CoordinateVector vBwd( this->BwdFunctional.ParamVectorDim(), v.Elements+this->FwdFunctional.ParamVectorDim(), false /*freeElements*/ );
   CoordinateVector gBwd( this->BwdFunctional.ParamVectorDim(), g.Elements+this->FwdFunctional.ParamVectorDim(), false /*freeElements*/ );
 
-  const typename Self::ReturnType result =
-    this->FwdFunctional.EvaluateWithGradient( vFwd, gFwd, step ) + this->BwdFunctional.EvaluateWithGradient( vBwd, gBwd, step );
+  const typename Self::ReturnType result = this->FwdFunctional.EvaluateWithGradient( vFwd, gFwd, step ) + this->BwdFunctional.EvaluateWithGradient( vBwd, gBwd, step );
   return result;
 }
 

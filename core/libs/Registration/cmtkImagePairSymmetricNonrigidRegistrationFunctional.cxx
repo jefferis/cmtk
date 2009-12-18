@@ -30,6 +30,7 @@
 */
 
 #include <cmtkImagePairSymmetricNonrigidRegistrationFunctional.h>
+#include <cmtkImagePairSymmetricNonrigidRegistrationFunctionalTemplate.h>
 
 #include <cmtkSplineWarpXform.h>
 
@@ -52,7 +53,7 @@ cmtk
 
 template<class VM, class W>
 void
-ImagePairSymmetricNonrigidRegistrationFunctional_Template<VM,W>::SetWarpXform
+ImagePairSymmetricNonrigidRegistrationFunctionalTemplate<VM,W>::SetWarpXform
 ( WarpXform::SmartPtr& warpFwd, WarpXform::SmartPtr& warpBwd ) 
 {
   this->FwdFunctional.SetWarpXform( warpFwd );
@@ -63,8 +64,8 @@ ImagePairSymmetricNonrigidRegistrationFunctional_Template<VM,W>::SetWarpXform
 }
 
 template<class VM, class W>
-typename ImagePairSymmetricNonrigidRegistrationFunctional_Template<VM,W>::ReturnType
-ImagePairSymmetricNonrigidRegistrationFunctional_Template<VM,W>
+typename ImagePairSymmetricNonrigidRegistrationFunctionalTemplate<VM,W>::ReturnType
+ImagePairSymmetricNonrigidRegistrationFunctionalTemplate<VM,W>
 ::EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step )
 {
   CoordinateVector vFwd( this->FwdFunctional.ParamVectorDim(), v.Elements, false /*freeElements*/ );
@@ -79,27 +80,26 @@ ImagePairSymmetricNonrigidRegistrationFunctional_Template<VM,W>
 }
 
 ImagePairSymmetricNonrigidRegistrationFunctional* 
-ImagePairSymmetricNonrigidRegistrationFunctional*
+ImagePairSymmetricNonrigidRegistrationFunctional
 ::Create( const int metric, 
 	  UniformVolume::SmartPtr& refVolume,  
 	  UniformVolume::SmartPtr& fltVolume,
-	  const Interpolators::InterpolationEnum interpolation, 
-	  WarpXform::SmartPtr& warpXform )
+	  const Interpolators::InterpolationEnum interpolation )
 {
   switch ( metric ) 
     {
     case 0:
-      return new ImagePairSymmetricNonrigidRegistrationFunctional_Template<ImagePairSimilarityMeasureNMI,SplineWarpXform>( refVolume, fltVolume, interpolation, warpXform );
+      return new ImagePairSymmetricNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureNMI,SplineWarpXform>( refVolume, fltVolume, interpolation );
     case 1:
-      return new ImagePairSymmetricNonrigidRegistrationFunctional_Template<ImagePairSimilarityMeasureMI,SplineWarpXform>( refVolume, fltVolume, interpolation, warpXform );
+      return new ImagePairSymmetricNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureMI,SplineWarpXform>( refVolume, fltVolume, interpolation );
     case 2:
-      return new ImagePairSymmetricNonrigidRegistrationFunctional_Template<ImagePairSimilarityMeasureCR,SplineWarpXform>( refVolume, fltVolume, interpolation, warpXform );
+      return new ImagePairSymmetricNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureCR,SplineWarpXform>( refVolume, fltVolume, interpolation );
     case 3:
       return NULL; // masked NMI retired
     case 4:
-      return new ImagePairSymmetricNonrigidRegistrationFunctional_Template<ImagePairSimilarityMeasureMSD,SplineWarpXform>( refVolume, fltVolume, interpolation, warpXform );
+      return new ImagePairSymmetricNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureMSD,SplineWarpXform>( refVolume, fltVolume, interpolation );
     case 5:
-      return new ImagePairSymmetricNonrigidRegistrationFunctional_Template<ImagePairSimilarityMeasureNCC,SplineWarpXform>( refVolume, fltVolume, interpolation, warpXform );
+      return new ImagePairSymmetricNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureNCC,SplineWarpXform>( refVolume, fltVolume, interpolation );
     default:
       return NULL;
     }

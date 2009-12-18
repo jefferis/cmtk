@@ -70,9 +70,9 @@ public:
   ImagePairNonrigidRegistrationFunctionalTemplate<VM,W> BwdFunctional;
 
   /// Constructor.
-  ImagePairSymmetricNonrigidRegistrationFunctionalTemplate( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating )
-    : FwdFunctional( reference, floating ),
-      BwdFunctional( floating, reference )
+  ImagePairSymmetricNonrigidRegistrationFunctionalTemplate( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating, const Interpolators::InterpolationEnum interpolation )
+    : FwdFunctional( reference, floating, interpolation ),
+      BwdFunctional( floating, reference, interpolation )
   {}
 
   /// Set inverse consistency weight.

@@ -222,7 +222,7 @@ ImagePairNonrigidRegistration::MakeFunctional
   if ( this->m_InverseConsistencyWeight > 0 ) 
     {
     ImagePairSymmetricNonrigidRegistrationFunctional *newFunctional = 
-      ImagePairSymmetricNonrigidRegistrationFunctional::Create( this->m_Metric, refVolume, fltVolume, this->m_FloatingImageInterpolation, warpXform );
+      ImagePairSymmetricNonrigidRegistrationFunctional::Create( this->m_Metric, refVolume, fltVolume, this->m_FloatingImageInterpolation );
     newFunctional->SetInverseConsistencyWeight( this->m_InverseConsistencyWeight );
     newFunctional->SetAdaptiveFixParameters( this->m_AdaptiveFixParameters );
     newFunctional->SetAdaptiveFixThreshFactor( this->m_AdaptiveFixThreshFactor );
@@ -235,7 +235,6 @@ ImagePairNonrigidRegistration::MakeFunctional
   else
     {
     ImagePairNonrigidRegistrationFunctional *newFunctional = ImagePairNonrigidRegistrationFunctional::Create( this->m_Metric, refVolume, fltVolume, this->m_FloatingImageInterpolation );
-    newFunctional->SetWarpXform( warpXform );
     newFunctional->SetAdaptiveFixParameters( this->m_AdaptiveFixParameters );
     newFunctional->SetAdaptiveFixThreshFactor( this->m_AdaptiveFixThreshFactor );
     newFunctional->SetJacobianConstraintWeight( this->m_JacobianConstraintWeight );

@@ -47,9 +47,7 @@
 
 #include <cmtkException.h>
 
-#if defined(CMTK_BUILD_SMP)
-#  include <cmtkLockingPtr.h>
-#endif
+#include <cmtkLockingPtr.h>
 
 #include <assert.h>
 

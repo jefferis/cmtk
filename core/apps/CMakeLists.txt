@@ -88,6 +88,7 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
       volume_injection
       volume_reconstruction
       warp
+      warpx
       warp2ps
       xform2dfield
       xform2scalar)
