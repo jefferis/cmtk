@@ -98,7 +98,6 @@ ImagePairAffineRegistrationFunctionalTemplate<VM>
   Vector3D rowStart;
   Vector3D planeStart;
   
-  int offset;
   GridIndexType pX, pY, pZ;
   // Loop over all remaining planes
   for ( pZ = info->StartZ + taskIdx; pZ < info->EndZ; pZ += taskCnt ) 

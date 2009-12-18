@@ -88,11 +88,41 @@ public:
     this->m_ReferenceData->Get( data, index );
     return data;
   }
+
+  /// Get number of samples in the X data (reference image pixels).
+  size_t GetNumberOfSamplesX() const
+  {
+    return this->m_ReferenceData->GetDataSize();
+  }
+
+  /// Get value range of X data (reference data).
+  void GetDataRangeX( Types::DataItem& min, Types::DataItem& max ) const
+  {
+    this->m_ReferenceData->GetRange( min, max );
+  }
   
   /// Interpolate a value from the Y distribution (floating image).
   Types::DataItem GetSampleY( const int* index, const Types::Coordinate* frac ) const
   {
     return this->m_FloatingImageInterpolator->GetDataDirect( index, frac );
+  }
+
+  /// Get number of samples in the Y data (floating image pixels).
+  size_t GetNumberOfSamplesY() const
+  {
+    return this->m_FloatingData->GetDataSize();
+  }
+  
+  /// Get value range of Y data (floating data).
+  void GetDataRangeY( Types::DataItem& min, Types::DataItem& max ) const
+  {
+    this->m_FloatingData->GetRange( min, max );
+  }
+  
+  /// Get scaled floating value if this metric rescales (implemented in derived classes), or input value if it does not (done here as the default).
+  virtual Types::DataItem GetFloatingValueScaled( const Types::DataItem value ) const
+  {
+    return value;
   }
 
 private:

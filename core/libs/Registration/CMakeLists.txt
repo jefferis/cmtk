@@ -52,6 +52,8 @@ SET(cmtkRegistration_SRCS
   cmtkImagePairAffineRegistration.cxx
   cmtkImagePairAffineRegistrationCommandLine.cxx
   cmtkImagePairAffineRegistrationFunctional.cxx
+  cmtkImagePairNonrigidRegistration.cxx
+  cmtkImagePairNonrigidRegistrationFunctional.cxx
   cmtkImagePairSimilarityJointHistogram.cxx
   cmtkImagePairSimilarityMeasure.cxx
   cmtkImagePairSimilarityMeasureCR.cxx

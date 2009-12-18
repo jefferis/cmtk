@@ -90,6 +90,12 @@ public:
   /// Copy constructor.
   ImagePairSimilarityJointHistogram( Self& other, const bool copyData = false );
 
+  /// Copy operator.
+  void CopyUnsafe( const ImagePairSimilarityJointHistogram& other )
+  {
+    this->m_JointHistogram.CopyUnsafe( other.m_JointHistogram );
+  }
+
   /// Reset computation: clear joint histogram.
   void Reset () 
   {
@@ -103,6 +109,13 @@ public:
     this->m_JointHistogram.Increment( static_cast<size_t>( a ), std::max<size_t>( 0, std::min<size_t>( this->m_NumberOfBinsY-1, static_cast<size_t>( b ) ) ) );
   }
 
+  /** Remove a pair of values from the metric.
+   */
+  template<class T> void Decrement( const T a, const T b )
+  {
+    this->m_JointHistogram.Decrement( static_cast<size_t>( a ), std::max<size_t>( 0, std::min<size_t>( this->m_NumberOfBinsY-1, static_cast<size_t>( b ) ) ) );
+  }
+
   /// Add another metric object to this one.
   void Add ( const Self& other )
   {
@@ -113,6 +126,12 @@ public:
   void Remove ( const Self& other )
   {
     this->m_JointHistogram.RemoveJointHistogram( other.m_JointHistogram );
+  }
+
+  /// Get scaled floating value if this metric rescales (implemented in derived classes), or input value if it does not (done here as the default).
+  virtual Types::DataItem GetFloatingValueScaled( const Types::DataItem value ) const
+  {
+    return static_cast<Types::DataItem>( floor(this->m_ScaleFactorFloating*value+this->m_ScaleOffsetFloating) );
   }
 
 protected:
@@ -132,8 +151,22 @@ private:
    */
   UniformVolume::SmartPtr PrescaleData
   ( const UniformVolume::SmartPtr& volume, //!< Input volume.
-    size_t* numberOfBins //!< Output: number of bins that the histogram should allocate for the output volume.
+    size_t* numberOfBins, //!< Output: number of bins that the histogram should allocate for the output volume.
+    Types::DataItem* scaleFactor, //!< Data scaling factor.
+    Types::DataItem* scaleOffset //!< Data scaling offset.
     );
+
+  /// Store reference data rescaling offset.
+  Types::DataItem m_ScaleOffsetReference;
+
+  /// Store reference data rescaling factor.
+  Types::DataItem m_ScaleFactorReference;
+
+  /// Store floating data rescaling offset.
+  Types::DataItem m_ScaleOffsetFloating;
+
+  /// Store floating data rescaling factor.
+  Types::DataItem m_ScaleFactorFloating;
 };
 
 //@}

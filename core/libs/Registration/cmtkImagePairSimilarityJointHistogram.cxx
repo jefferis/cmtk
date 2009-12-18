@@ -40,13 +40,14 @@ cmtk
 
 ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
 ( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
-  : ImagePairSimilarityMeasure( Self::PrescaleData( refVolume, &this->m_NumberOfBinsX ), Self::PrescaleData( fltVolume, &this->m_NumberOfBinsY ), interpolation )
+  : ImagePairSimilarityMeasure( Self::PrescaleData( refVolume, &this->m_NumberOfBinsX, &this->m_ScaleFactorReference, &this->m_ScaleOffsetReference ), 
+				Self::PrescaleData( fltVolume, &this->m_NumberOfBinsY, &this->m_ScaleFactorFloating, &this->m_ScaleOffsetFloating ), interpolation )
 {
   this->m_JointHistogram.Resize( this->m_NumberOfBinsX, this->m_NumberOfBinsY );
 }
 
-ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
-( const Self& other )
+ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram( const Self& other )
+  : ImagePairSimilarityMeasure( other )
 {
   StdErr << "Not implemented: " << __FILE__ << ":" << __LINE__ << "\n";
   exit(1);
@@ -64,7 +65,7 @@ ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
 
 UniformVolume::SmartPtr
 ImagePairSimilarityJointHistogram::PrescaleData
-( const UniformVolume::SmartPtr& volume, size_t* numberOfBins )
+( const UniformVolume::SmartPtr& volume, size_t* numberOfBins, Types::DataItem* scaleFactor, Types::DataItem* scaleOffset )
 {
   UniformVolume::SmartPtr newVolume( volume->CloneGrid() );
   newVolume->CreateDataArray( TYPE_ITEM );
@@ -102,11 +103,14 @@ ImagePairSimilarityJointHistogram::PrescaleData
       StdErr << "Fatal error: Cannot handle more than 254 different labels.\n";
       exit( 1 );
       }
-    
+
+    *scaleOffset = -minValue;
+    *scaleFactor = 1.0;
+
     for ( size_t idx = 0; idx < numberOfPixels; ++idx ) 
       {
       if ( volume->GetDataAt( value, idx ) )
-	newVolume->SetDataAt( static_cast<Types::DataItem>( value - minValue ), idx );
+	newVolume->SetDataAt( static_cast<Types::DataItem>( value + *scaleOffset ), idx );
       else
 	newVolume->GetData()->SetPaddingAt( idx );
       }
@@ -116,16 +120,16 @@ ImagePairSimilarityJointHistogram::PrescaleData
     case DATACLASS_GREY: 
     {
     *numberOfBins = JointHistogramBase::CalcNumBins( volume );
-    const Types::DataItem binOffset = minValue;
-    const Types::DataItem binWidth = ( maxValue - minValue ) / (*numberOfBins-1);
-    const Types::DataItem factor = 1.0 / binWidth;
     
+    *scaleFactor = (*numberOfBins-1) / ( maxValue - minValue );
+    *scaleOffset = -minValue * *scaleFactor;
+
     for ( size_t idx = 0; idx < numberOfPixels; ++idx ) 
       {
       if ( volume->GetDataAt( value, idx ) ) 
 	{
 	value = std::max( std::min( value, maxValue ), minValue );
-	newVolume->SetDataAt( static_cast<Types::DataItem>( floor(factor*(value-binOffset)) ), idx );
+	newVolume->SetDataAt( static_cast<Types::DataItem>( floor(*scaleFactor*value+*scaleOffset) ), idx );
 	} 
       else 
 	{
