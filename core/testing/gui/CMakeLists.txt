@@ -31,6 +31,9 @@
 # Tests for "triplanar" gui application
 # (batch mode)
 
+SET(testDriver ${CMAKE_CURRENT_BINARY_DIR}/triplanarTestDriver.sh)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/triplanarTestDriver.sh.in ${CMAKE_CURRENT_BINARY_DIR}/triplanarTestDriver.sh @ONLY)
+
 SET(testList triplanarDefault 
 	     triplanarZoom300
 	     triplanarZoom25
@@ -51,7 +54,10 @@ ENDIF(IGS_BUILD_NRRD OR IGS_USE_TEEM)
 # Set up all tests
 
 FOREACH(testName ${testList})
-  ADD_TEST(${testName} /bin/sh ${CMAKE_CURRENT_SOURCE_DIR}/triplanarTestDriver.sh 
-    ${BUILDNAME} ${EXECUTABLE_OUTPUT_PATH} ${CMTK_DATA_ROOT} ${testName})		 
+  IF(CMTK_TESTING_MEMORYCHECK)
+    ADD_TEST(${testName} /bin/sh ${testDriver} ${testName} ${MEMORYCHECK_COMMAND})
+  ELSE(CMTK_TESTING_MEMORYCHECK)
+    ADD_TEST(${testName} /bin/sh ${testDriver} ${testName})
+  ENDIF(CMTK_TESTING_MEMORYCHECK)      
 ENDFOREACH(testName ${testList})
 

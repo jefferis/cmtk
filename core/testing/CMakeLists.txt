@@ -30,7 +30,7 @@
 FIND_PACKAGE(PythonInterp)
 
 SET(DATA ${CMTK_DATA_ROOT}/testing/inputs)
-SET(BASELINE ${CMTK_DATA_ROOT}/testing/baseline)
+SET(CMTK_DATA_ROOT_BASELINE ${CMTK_DATA_ROOT}/testing/baseline CACHE PATH "Root directory of test baselines")
 
 IF(BUILD_APPS)
 	SUBDIRS(apps)
