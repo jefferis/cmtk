@@ -529,7 +529,7 @@ private:
     VM* threadMetric = me->m_TaskMetric[threadIdx];
     Vector3D *vectorCache = me->m_ThreadVectorCache[threadIdx];
     
-    typename Types::DataItem* warpedVolume = me->m_WarpedVolume;
+    Types::DataItem* warpedVolume = me->m_WarpedVolume;
     const Types::DataItem unsetY = DataTypeTraits<Types::DataItem>::ChoosePaddingValue();
     
     Vector3D *pVec;
