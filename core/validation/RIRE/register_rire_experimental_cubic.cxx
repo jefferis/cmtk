@@ -58,7 +58,7 @@ void dumpVolume( const cmtk::UniformVolume *volume )
 
 const char *Investigator = "Rohlfing T";
 const char *Site = "SRI International";
-const char *Method = "CMTK "CMTK_VERSION" -- multi-resolution optimization of NMI";
+const char *Method = "CMTK "CMTK_VERSION" -- multi-resolution optimization of NMI using cubic interpolation";
 const char *Date = __DATE__;
 const char *PatientNumber = "undefined";
 const char *FromModality = "undefined";
@@ -171,7 +171,9 @@ void DoRegistration( const char* refFile, const char* fltFile )
   Registration.SetInitializer( cmtk::MakeInitialAffineTransformation::COM );
   
 // set optimization parameters to what they were during the original Vanderbilt submission.
-  Registration.SetAutoMultiLevels( 4 );
+  Registration.SetExploration( 8.0 );
+  Registration.SetAccuracy( 0.01 );
+  Registration.SetSampling( 1.0 );
   Registration.SetUseOriginalData( true );
 
 // run registration
