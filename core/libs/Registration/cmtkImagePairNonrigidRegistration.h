@@ -119,12 +119,6 @@ protected:
   /// Weighting of Jacobian constraint relative to similairy measure.
   cmtkGetSetMacro(float,JacobianConstraintWeight);
 
-  /// Weighting of rigidity constraint relative to similairy measure.
-  cmtkGetSetMacro(float,RigidityConstraintWeight);
-
-  /// Pixelwise weight map of rigidity constraint relative to similairy measure.
-  cmtkGetSetMacro(UniformVolume::SmartPtr,RigidityConstraintMap);
-
   /// Weighting of grid bending energy constraint relative to image similarity.
   cmtkGetSetMacro(float,GridEnergyWeight);
 
@@ -229,8 +223,7 @@ private:
    * parameter. But since we're using neither edge images nor tissue maps
    * much, it doesn't seem worth the effort.
    */
-  Functional* MakeFunctional( UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, UniformVolume::SmartPtr& rigidityMap,
-			      MatchedLandmarkList::SmartPtr& mll = MatchedLandmarkList::SmartPtr::Null ) const;
+  Functional* MakeFunctional( UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, MatchedLandmarkList::SmartPtr& mll = MatchedLandmarkList::SmartPtr::Null ) const;
 };
 
 //@}

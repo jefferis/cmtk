@@ -35,6 +35,8 @@
 #include <cmtkconfig.h>
 
 #include <cmtkImagePairNonrigidRegistrationFunctional.h>
+
+#include <cmtkWarpXform.h>
 #include <cmtkDataTypeTraits.h>
 
 #ifdef HAVE_IEEEFP_H
@@ -55,14 +57,14 @@ cmtk
  * time-consuming tasks performed by ImagePairNonrigidRegistrationFunctional and its
  * derived classes.
  */
-template<class VM, class W> 
+template<class VM> 
 class ImagePairNonrigidRegistrationFunctionalTemplate
   /// Inherit from general image pair registration functional.
   : public ImagePairNonrigidRegistrationFunctional 
 {
 protected:
   /// Array of warp transformation objects for the parallel threads.
-  SmartPointer<W> *m_ThreadWarp;
+  WarpXform::SmartPtr *m_ThreadWarp;
 
   /// Array of storage for simultaneously retrieving multiple deformed vectors.
   Vector3D **m_ThreadVectorCache;
@@ -103,7 +105,7 @@ protected:
 
 public:
   /// This class.
-  typedef ImagePairNonrigidRegistrationFunctionalTemplate<VM,W> Self;
+  typedef ImagePairNonrigidRegistrationFunctionalTemplate<VM> Self;
 
   /// Smart pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
@@ -112,11 +114,11 @@ public:
   typedef ImagePairNonrigidRegistrationFunctional Superclass;
 
   /// Pointer to the local warp transformation.
-  typename W::SmartPtr Warp;
+  WarpXform::SmartPtr Warp;
 
 protected:
   /// Optional inverse transformation for inverse-consistent deformation.
-  typename W::SmartPtr InverseTransformation;
+  WarpXform::SmartPtr InverseTransformation;
 
   /// Weight for inverse consistency constraint.
   double InverseConsistencyWeight;
@@ -125,7 +127,7 @@ public:
   /// Set inverse transformation.
   void SetInverseTransformation( WarpXform::SmartPtr& inverseTransformation ) 
   {
-    this->InverseTransformation = W::SmartPtr::DynamicCastFrom( inverseTransformation );
+    this->InverseTransformation = inverseTransformation;
   }
 
   /// Set inverse consistency weight
@@ -145,24 +147,12 @@ public:
 protected:
 
   /// Return weighted combination of voxel similarity and grid energy.
-  typename Self::ReturnType WeightedTotal( const typename Self::ReturnType metric, const W* warp ) const 
+  typename Self::ReturnType WeightedTotal( const typename Self::ReturnType metric, const WarpXform* warp ) const 
   {
     double result = metric;
     if ( this->m_JacobianConstraintWeight > 0 ) 
       {
       result -= this->m_JacobianConstraintWeight * warp->GetJacobianConstraint();
-      } 
-    
-    if ( this->m_RigidityConstraintWeight > 0 ) 
-      {
-      if ( this->m_RigidityConstraintMap )
-	{
-	result -= this->m_RigidityConstraintWeight * warp->GetRigidityConstraint( this->m_RigidityConstraintMap );
-	}
-      else
-	{
-	result -= this->m_RigidityConstraintWeight * warp->GetRigidityConstraint();
-	}
       } 
     
     if ( this->m_GridEnergyWeight > 0 ) 
@@ -187,7 +177,7 @@ protected:
   }
   
   /// Return weighted combination of similarity and grid energy derivatives.
-  void WeightedDerivative( double& lower, double& upper, typename W::SmartPtr& warp, const int param, const Types::Coordinate step ) const;
+  void WeightedDerivative( double& lower, double& upper, WarpXform::SmartPtr& warp, const int param, const Types::Coordinate step ) const;
 
 public:
   /// Get parameter stepping in milimeters.
@@ -215,13 +205,13 @@ public:
   }
 
   /// Constructor.
-  ImagePairNonrigidRegistrationFunctionalTemplate<VM,W>( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating, const Interpolators::InterpolationEnum interpolation )
+  ImagePairNonrigidRegistrationFunctionalTemplate<VM>( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating, const Interpolators::InterpolationEnum interpolation )
     : ImagePairNonrigidRegistrationFunctional( reference, floating )
   {
     this->m_NumberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
     this->m_NumberOfTasks = 4 * this->m_NumberOfThreads - 3;
     
-    this->m_ThreadWarp = Memory::AllocateArray<typename W::SmartPtr>( this->m_NumberOfThreads );
+    this->m_ThreadWarp = Memory::AllocateArray<WarpXform::SmartPtr>( this->m_NumberOfThreads );
     
     this->m_InfoTaskGradient.resize( this->m_NumberOfTasks );
     this->m_InfoTaskComplete.resize( this->m_NumberOfTasks );
@@ -240,7 +230,7 @@ public:
   /** Destructor.
    * Free all per-thread data structures.
    */
-  virtual ~ImagePairNonrigidRegistrationFunctionalTemplate<VM,W>() 
+  virtual ~ImagePairNonrigidRegistrationFunctionalTemplate<VM>() 
   {
     for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
       if ( this->m_ThreadVectorCache[thread] ) 
@@ -302,7 +292,7 @@ public:
    *@param voi Volume-of-Influence for the parameter under consideration.
    *@return The metric after recomputation over the given volume-of-influence.
    */
-  typename Self::ReturnType EvaluateIncremental( const W* warp, VM *const localMetric, const Rect3D* voi, Vector3D *const vectorCache ) 
+  typename Self::ReturnType EvaluateIncremental( const WarpXform* warp, VM *const localMetric, const Rect3D* voi, Vector3D *const vectorCache ) 
   {
     Vector3D *pVec;
     int pX, pY, pZ, r;
@@ -470,7 +460,7 @@ private:
     
     Self *me = info->thisObject;
 
-    SmartPointer<W>& myWarp = me->m_ThreadWarp[threadIdx];
+    WarpXform::SmartPtr& myWarp = me->m_ThreadWarp[threadIdx];
     myWarp->SetParamVector( *info->Parameters );
     
     VM* threadMetric = me->m_TaskMetric[threadIdx];
@@ -535,7 +525,7 @@ private:
     typename Self::EvaluateCompleteTaskInfo *info = static_cast<typename Self::EvaluateCompleteTaskInfo*>( arg );
     
     Self *me = info->thisObject;
-    const W *warp = me->m_ThreadWarp[0];
+    const WarpXform *warp = me->m_ThreadWarp[0];
     VM* threadMetric = me->m_TaskMetric[threadIdx];
     Vector3D *vectorCache = me->m_ThreadVectorCache[threadIdx];
     

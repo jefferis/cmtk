@@ -106,8 +106,6 @@ ImagePairNonrigidRegistrationCommandLine
   const char *initialTransformationFile = NULL;
   IntermediateResultIndex = 0;
 
-  this->RigidityConstraintMapFilename = NULL;
-
   bool forceOutsideFlag = false;
   Types::DataItem forceOutsideValue = 0;
 
@@ -162,12 +160,9 @@ ImagePairNonrigidRegistrationCommandLine
 
     cl.AddOption( Key( "jacobian-weight" ), &this->m_JacobianConstraintWeight, "Weight for Jacobian-based local volume preservation constraint" );
     cl.AddOption( Key( "energy-weight" ), &this->m_GridEnergyWeight, "Weight for grid bending energy constraint" );
-    cl.AddOption( Key( "rigidity-weight" ), &this->m_RigidityConstraintWeight, "Weight for local rigidity constraint" );
     cl.AddOption( Key( "landmark-weight" ), &this->m_LandmarkErrorWeight, "Weight for landmark misregistration registration" );
     cl.AddOption( Key( "ic-weight" ), &this->m_InverseConsistencyWeight, "Weight for inverse consistency constraint" );
     cl.AddOption( Key( "relax" ), &this->m_RelaxWeight, "Weight relaxation factor for alternating under-constrained iterations" );
-
-    cl.AddOption( Key( "rigidity-weight-map" ), &this->RigidityConstraintMapFilename, "Filename for rigidity map weight image" );
     cl.EndGroup();
 
     cl.BeginGroup( "Resolution", "Image resolution parameters" );
@@ -302,20 +297,6 @@ ImagePairNonrigidRegistrationCommandLine
       }
     }
 
-  if ( this->RigidityConstraintMapFilename )
-    {
-    UniformVolume::SmartPtr rigidityWeightMap( VolumeIO::ReadOriented( this->RigidityConstraintMapFilename, Verbose ) );
-    if ( rigidityWeightMap )
-      {
-      this->SetRigidityConstraintMap( rigidityWeightMap );
-      }
-    else
-      {
-      StdErr << "ERROR: rigidity constraint mapcould not be read from " << this->RigidityConstraintMapFilename << "\n";
-      exit( 1 );
-      }
-    }
-
   if ( forceOutsideFlag )
     {
     this->SetForceOutside( true, forceOutsideValue );
@@ -429,11 +410,6 @@ ImagePairNonrigidRegistrationCommandLine::OutputWarp ( const char* path ) const
   classStream.WriteDouble( "grid_spacing", this->m_GridSpacing );
   classStream.WriteInt( "ignore_edge", IgnoreEdge );
   classStream.WriteDouble( "jacobian_constraint_weight", this->m_JacobianConstraintWeight );
-  classStream.WriteDouble( "rigidity_constraint_weight", this->m_RigidityConstraintWeight );
-  if ( this->RigidityConstraintMapFilename )
-    {
-    classStream.WriteString( "rigidity_constraint_map_filename", RigidityConstraintMapFilename );
-    }
   classStream.WriteDouble( "energy_constraint_weight", this->m_GridEnergyWeight );
   classStream.WriteDouble( "inverse_consistency_weight", this->m_InverseConsistencyWeight );
   classStream.WriteDouble( "weight_relaxation", this->m_RelaxWeight );

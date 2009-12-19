@@ -59,7 +59,6 @@ ImagePairNonrigidRegistration::ImagePairNonrigidRegistration ()
   : InitialWarpXform( NULL ),
     InverseWarpXform( NULL ),
     m_MatchFltToRefHistogram( false ),
-    m_RigidityConstraintMap( NULL ),
     m_InverseConsistencyWeight( 0.0 ),
     m_ForceOutsideFlag( false ),
     m_ForceOutsideValue( 0.0 )
@@ -77,7 +76,6 @@ ImagePairNonrigidRegistration::ImagePairNonrigidRegistration ()
   this->m_AdaptiveFixParameters = 1;
   this->m_AdaptiveFixThreshFactor = 0.5;
   this->m_JacobianConstraintWeight = 0;
-  this->m_RigidityConstraintWeight = 0;
   this->m_GridEnergyWeight = 0;
   this->m_RelaxWeight = -1;
   this->m_LandmarkErrorWeight = 0;
@@ -140,7 +138,7 @@ ImagePairNonrigidRegistration::InitRegistration ()
   
   if ( this->m_UseOriginalData )
     {
-    Functional::SmartPtr nextFunctional( this->MakeFunctional( this->m_ReferenceVolume, this->m_FloatingVolume, this->m_RigidityConstraintMap, mll ) );
+    Functional::SmartPtr nextFunctional( this->MakeFunctional( this->m_ReferenceVolume, this->m_FloatingVolume, mll ) );
     FunctionalStack.push( nextFunctional );
     }
   
@@ -161,13 +159,7 @@ ImagePairNonrigidRegistration::InitRegistration ()
     UniformVolume::SmartPtr nextRef( new UniformVolume( *currRef, currSampling ) );
     UniformVolume::SmartPtr nextFlt( new UniformVolume( *currFlt, currSampling ) );
 
-    UniformVolume::SmartPtr nextRigidityMap;
-    if ( this->m_RigidityConstraintMap )
-      {
-      nextRigidityMap = UniformVolume::SmartPtr( new UniformVolume( *this->m_RigidityConstraintMap, currSampling ) );
-      }
-    
-    Functional::SmartPtr nextFunctional( this->MakeFunctional( nextRef, nextFlt, nextRigidityMap, mll ) );
+    Functional::SmartPtr nextFunctional( this->MakeFunctional( nextRef, nextFlt, mll ) );
     FunctionalStack.push( nextFunctional );
     
     currRef = nextRef;
@@ -215,7 +207,6 @@ ImagePairNonrigidRegistration::MakeWarpXform
 Functional* 
 ImagePairNonrigidRegistration::MakeFunctional
 ( UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume,
-  UniformVolume::SmartPtr& rigidityMap,
   MatchedLandmarkList::SmartPtr& mll ) const
 {
   WarpXform::SmartPtr warpXform = WarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
@@ -227,7 +218,6 @@ ImagePairNonrigidRegistration::MakeFunctional
     newFunctional->SetAdaptiveFixParameters( this->m_AdaptiveFixParameters );
     newFunctional->SetAdaptiveFixThreshFactor( this->m_AdaptiveFixThreshFactor );
     newFunctional->SetJacobianConstraintWeight( this->m_JacobianConstraintWeight );
-    newFunctional->SetRigidityConstraintWeight( this->m_RigidityConstraintWeight );
     newFunctional->SetGridEnergyWeight( this->m_GridEnergyWeight );
 //    newFunctional->SetForceOutside( this->m_ForceOutsideFlag, this->m_ForceOutsideValue );
     return newFunctional;
@@ -238,12 +228,7 @@ ImagePairNonrigidRegistration::MakeFunctional
     newFunctional->SetAdaptiveFixParameters( this->m_AdaptiveFixParameters );
     newFunctional->SetAdaptiveFixThreshFactor( this->m_AdaptiveFixThreshFactor );
     newFunctional->SetJacobianConstraintWeight( this->m_JacobianConstraintWeight );
-    newFunctional->SetRigidityConstraintWeight( this->m_RigidityConstraintWeight );
     newFunctional->SetForceOutside( this->m_ForceOutsideFlag, this->m_ForceOutsideValue );
-    if ( rigidityMap )
-      {
-      newFunctional->SetRigidityConstraintMap( rigidityMap );
-      }
     newFunctional->SetGridEnergyWeight( this->m_GridEnergyWeight );
     if ( mll )
       {
@@ -264,14 +249,12 @@ ImagePairNonrigidRegistration::EnterResolution
 
   float effGridEnergyWeight = this->m_GridEnergyWeight;
   float effJacobianConstraintWeight = this->m_JacobianConstraintWeight;
-  float effRigidityConstraintWeight = this->m_RigidityConstraintWeight;
   float effInverseConsistencyWeight = this->m_InverseConsistencyWeight;
 
   if ( (this->m_RelaxWeight > 0) && !this->RelaxationStep ) 
     {
     effGridEnergyWeight *= this->m_RelaxWeight;
     effJacobianConstraintWeight *= this->m_RelaxWeight;
-    effRigidityConstraintWeight *= this->m_RelaxWeight;
     effInverseConsistencyWeight *= this->m_RelaxWeight;
     }
 
@@ -282,7 +265,6 @@ ImagePairNonrigidRegistration::EnterResolution
     elasticFunctional->SetWarpXform( warpXform );
     elasticFunctional->SetGridEnergyWeight( effGridEnergyWeight );
     elasticFunctional->SetJacobianConstraintWeight( effJacobianConstraintWeight );
-    elasticFunctional->SetRigidityConstraintWeight( effRigidityConstraintWeight );
     } 
   else 
     {
@@ -293,7 +275,6 @@ ImagePairNonrigidRegistration::EnterResolution
       symmetricFunctional->SetWarpXform( warpXform, this->InverseWarpXform );
       symmetricFunctional->SetGridEnergyWeight( effGridEnergyWeight );
       symmetricFunctional->SetJacobianConstraintWeight( effJacobianConstraintWeight );
-      symmetricFunctional->SetRigidityConstraintWeight( effRigidityConstraintWeight );
       symmetricFunctional->SetInverseConsistencyWeight( effInverseConsistencyWeight );
       } 
     else 

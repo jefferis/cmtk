@@ -64,10 +64,10 @@ public:
   typedef ImagePairSymmetricNonrigidRegistrationFunctional Superclass;
 
   /// The forward functional.
-  ImagePairNonrigidRegistrationFunctionalTemplate<VM,W> FwdFunctional;
+  ImagePairNonrigidRegistrationFunctionalTemplate<VM> FwdFunctional;
 
   /// The backward functional.
-  ImagePairNonrigidRegistrationFunctionalTemplate<VM,W> BwdFunctional;
+  ImagePairNonrigidRegistrationFunctionalTemplate<VM> BwdFunctional;
 
   /// Constructor.
   ImagePairSymmetricNonrigidRegistrationFunctionalTemplate( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating, const Interpolators::InterpolationEnum interpolation )
@@ -101,13 +101,6 @@ public:
   {
     this->FwdFunctional.SetJacobianConstraintWeight( jacobianConstraintWeight );
     this->BwdFunctional.SetJacobianConstraintWeight( jacobianConstraintWeight );
-  }
-  
-  /// Set rigidity constraint weight.
-  virtual void SetRigidityConstraintWeight( const typename Self::ReturnType rigidityConstraintWeight ) 
-  {
-    this->FwdFunctional.SetRigidityConstraintWeight( rigidityConstraintWeight );
-    this->BwdFunctional.SetRigidityConstraintWeight( rigidityConstraintWeight );
   }
   
   /// Set smoothness constraint weight.

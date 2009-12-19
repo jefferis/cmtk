@@ -122,9 +122,6 @@ private:
    */
   char *Study2;
   
-  /// Filename for rigidity constraint map.
-  const char* RigidityConstraintMapFilename;
-
   /** Name of protocol output file.
    * This is defined by the -p or --protocol command line option.
    */

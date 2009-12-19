@@ -110,14 +110,6 @@ protected:
    */
   cmtkGetSetMacroDefault(double,JacobianConstraintWeight,0);
 
-  /** Weight of the rigidity constraint relative to voxel similarity measure.
-   */
-  cmtkGetSetMacroDefault(double,RigidityConstraintWeight,0);
-
-  /** Map of rigidity weights constraint relative to voxel similarity measure.
-   */
-  cmtkGetSetMacro(DataGrid::SmartPtr,RigidityConstraintMap);
-
   /** Spatial map of relative (tissue-specific) incompressibility constraint.
    */
   cmtkGetSetMacro(DataGrid::SmartPtr,IncompressibilityMap);

@@ -72,10 +72,10 @@ ImagePairNonrigidRegistrationFunctional::~ImagePairNonrigidRegistrationFunctiona
   if ( StepScaleVector ) delete[] StepScaleVector;
 }
 
-template<class VM,class W>
+template<class VM>
 void
-ImagePairNonrigidRegistrationFunctionalTemplate<VM,W>::WeightedDerivative
-( double& lower, double& upper, typename W::SmartPtr& warp, 
+ImagePairNonrigidRegistrationFunctionalTemplate<VM>::WeightedDerivative
+( double& lower, double& upper, WarpXform::SmartPtr& warp, 
   const int param, const Types::Coordinate step ) const
 {
   if ( this->m_JacobianConstraintWeight > 0 )
@@ -86,22 +86,6 @@ ImagePairNonrigidRegistrationFunctionalTemplate<VM,W>::WeightedDerivative
     upper -= this->m_JacobianConstraintWeight * upperConstraint;
     } 
 
-  if ( this->m_RigidityConstraintWeight > 0 )
-    {
-    double lowerConstraint = 0, upperConstraint = 0;
-
-    if ( this->m_RigidityConstraintMap )
-      {
-      warp->GetRigidityConstraintDerivative( lowerConstraint, upperConstraint, param, VolumeOfInfluence[param], step, this->m_RigidityConstraintMap );
-      }
-    else
-      {
-      warp->GetRigidityConstraintDerivative( lowerConstraint, upperConstraint, param, VolumeOfInfluence[param], step );
-      }
-    lower -= this->m_RigidityConstraintWeight * lowerConstraint;
-    upper -= this->m_RigidityConstraintWeight * upperConstraint;
-    } 
-  
   if ( this->m_GridEnergyWeight > 0 ) 
     {
     double lowerEnergy = 0, upperEnergy = 0;
@@ -135,12 +119,12 @@ ImagePairNonrigidRegistrationFunctionalTemplate<VM,W>::WeightedDerivative
     }
 }
 
-template<class VM,class W> 
+template<class VM> 
 void
-ImagePairNonrigidRegistrationFunctionalTemplate<VM,W>::SetWarpXform
+ImagePairNonrigidRegistrationFunctionalTemplate<VM>::SetWarpXform
 ( WarpXform::SmartPtr& warp )
 {
-  this->Warp = W::SmartPtr::DynamicCastFrom( warp );
+  this->Warp = warp;
   if ( this->Warp )
     {
     Warp->RegisterVolume( ReferenceGrid );
@@ -170,20 +154,20 @@ ImagePairNonrigidRegistrationFunctionalTemplate<VM,W>::SetWarpXform
       {
       if ( thread ) 
 	{
-	this->m_ThreadWarp[thread] = typename W::SmartPtr( dynamic_cast<W*>( this->Warp->Clone() ) );
+	this->m_ThreadWarp[thread] = WarpXform::SmartPtr( dynamic_cast<WarpXform*>( this->Warp->Clone() ) );
 	this->m_ThreadWarp[thread]->RegisterVolume( this->ReferenceGrid );
 	} 
       else 
 	{
-	this->m_ThreadWarp[thread] = W::SmartPtr::DynamicCastFrom( this->Warp );
+	this->m_ThreadWarp[thread] = this->Warp;
 	}
       } 
     }
 }
 
-template<class VM, class W>
+template<class VM>
 void
-ImagePairNonrigidRegistrationFunctionalTemplate<VM,W>::UpdateWarpFixedParameters() 
+ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParameters() 
 {
   if ( this->m_ConsistencyHistogram.IsNull() ) 
     {
@@ -343,17 +327,17 @@ ImagePairNonrigidRegistrationFunctional::Create
   switch ( metric ) 
     {
     case 0:
-      return new ImagePairNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureNMI,SplineWarpXform>( refVolume, fltVolume, interpolation );
+      return new ImagePairNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureNMI>( refVolume, fltVolume, interpolation );
     case 1:
-      return new ImagePairNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureMI,SplineWarpXform>( refVolume, fltVolume, interpolation );
+      return new ImagePairNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureMI>( refVolume, fltVolume, interpolation );
     case 2:
-      return new ImagePairNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureCR,SplineWarpXform>( refVolume, fltVolume, interpolation );
+      return new ImagePairNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureCR>( refVolume, fltVolume, interpolation );
     case 3:
       return NULL; // masked NMI retired
     case 4:
-      return new ImagePairNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureMSD,SplineWarpXform>( refVolume, fltVolume, interpolation );
+      return new ImagePairNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureMSD>( refVolume, fltVolume, interpolation );
     case 5:
-      return new ImagePairNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureNCC,SplineWarpXform>( refVolume, fltVolume, interpolation );
+      return new ImagePairNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureNCC>( refVolume, fltVolume, interpolation );
     default:
       return NULL;
     }

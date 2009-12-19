@@ -73,9 +73,6 @@ public:
   /// Set Jacobian constraint weight.
   virtual void SetJacobianConstraintWeight( const Self::ReturnType ) = 0;
   
-  /// Set Jacobian constraint weight.
-  virtual void SetRigidityConstraintWeight( const Self::ReturnType ) = 0;
-  
   /// Set smoothness constraint weight.
   virtual void SetGridEnergyWeight( const Self::ReturnType ) = 0;
 
