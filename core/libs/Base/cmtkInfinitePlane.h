@@ -58,7 +58,7 @@ public:
   /** Origin of the coordinate system the plane parameters refer to.
    * This is NOT the origin of the plane. In fact, this coordinate does not
    * even need to be on the plane itself. It is merely the coordinate in space
-   * relativ to which the plane is parameterized.
+   * relative to which the plane is parameterized.
    */
   cmtkGetSetMacro(Vector3D,Origin);
 
