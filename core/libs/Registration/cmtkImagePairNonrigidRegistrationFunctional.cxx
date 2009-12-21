@@ -60,21 +60,27 @@ ImagePairNonrigidRegistrationFunctional::ImagePairNonrigidRegistrationFunctional
 
   this->m_AdaptiveFixParameters = false;
   this->m_AdaptiveFixThreshFactor = 0.5;
-  StepScaleVector = NULL;
+  this->VolumeOfInfluence = NULL;
 
-  VectorCache = Memory::AllocateArray<Vector3D>( ReferenceDims[0] );
-  VolumeOfInfluence = NULL;
+  this->m_ThreadWarp = Memory::AllocateArray<WarpXform::SmartPtr>( this->m_NumberOfThreads );  
+
+  this->m_ThreadVectorCache = Memory::AllocateArray<Vector3D*>( this->m_NumberOfThreads );
+  for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
+    this->m_ThreadVectorCache[thread] = Memory::AllocateArray<Vector3D>( this->ReferenceDims[0] );
 }
 
 ImagePairNonrigidRegistrationFunctional::~ImagePairNonrigidRegistrationFunctional()
 {
-  if ( VectorCache ) delete[] VectorCache;
-  if ( StepScaleVector ) delete[] StepScaleVector;
+  for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
+    if ( this->m_ThreadVectorCache[thread] ) 
+      Memory::DeleteArray( this->m_ThreadVectorCache[thread] );
+  Memory::DeleteArray( this->m_ThreadVectorCache );
+  
+  Memory::DeleteArray( this->m_ThreadWarp );
 }
 
-template<class VM>
 void
-ImagePairNonrigidRegistrationFunctionalTemplate<VM>::WeightedDerivative
+ImagePairNonrigidRegistrationFunctional::WeightedDerivative
 ( double& lower, double& upper, WarpXform::SmartPtr& warp, 
   const int param, const Types::Coordinate step ) const
 {
@@ -102,40 +108,37 @@ ImagePairNonrigidRegistrationFunctionalTemplate<VM>::WeightedDerivative
     }
   else
     {
-    if ( this->m_MatchedLandmarkList.GetPtr() ) 
+    if ( this->m_MatchedLandmarkList ) 
       {
       double lowerMSD, upperMSD;
       warp->GetDerivativeLandmarksMSD( lowerMSD, upperMSD, this->m_MatchedLandmarkList, param, step );
       lower -= this->m_LandmarkErrorWeight * lowerMSD;
       upper -= this->m_LandmarkErrorWeight * upperMSD;
       }
-    if ( InverseTransformation ) 
+    if ( this->m_InverseTransformation ) 
       {
       double lowerIC, upperIC;
-      warp->GetDerivativeInverseConsistencyError( lowerIC, upperIC, this->InverseTransformation, this->ReferenceGrid, &(this->VolumeOfInfluence[param]), param, step );
-      lower -= InverseConsistencyWeight * lowerIC;
-      upper -= InverseConsistencyWeight * upperIC;
+      warp->GetDerivativeInverseConsistencyError( lowerIC, upperIC, this->m_InverseTransformation, this->ReferenceGrid, &(this->VolumeOfInfluence[param]), param, step );
+      lower -= this->m_InverseConsistencyWeight * lowerIC;
+      upper -= this->m_InverseConsistencyWeight * upperIC;
       }
     }
 }
 
-template<class VM> 
 void
-ImagePairNonrigidRegistrationFunctionalTemplate<VM>::SetWarpXform
+ImagePairNonrigidRegistrationFunctional::SetWarpXform
 ( WarpXform::SmartPtr& warp )
 {
-  this->Warp = warp;
-  if ( this->Warp )
+  this->m_Warp = warp;
+  if ( this->m_Warp )
     {
-    Warp->RegisterVolume( ReferenceGrid );
-    Warp->SetIncompressibilityMap( this->m_IncompressibilityMap );
+    this->m_Warp->RegisterVolume( ReferenceGrid );
+    this->m_Warp->SetIncompressibilityMap( this->m_IncompressibilityMap );
     
-    if ( Dim != Warp->VariableParamVectorDim() ) 
+    if ( Dim != this->m_Warp->VariableParamVectorDim() ) 
       {
-      if ( StepScaleVector ) delete[] StepScaleVector;
-      if ( VolumeOfInfluence ) delete[] VolumeOfInfluence;
-      Dim = Warp->VariableParamVectorDim();
-      StepScaleVector = Memory::AllocateArray<Types::Coordinate>( Dim );
+      Dim = this->m_Warp->VariableParamVectorDim();
+      this->m_StepScaleVector.resize( Dim );
       VolumeOfInfluence = Memory::AllocateArray<Rect3D>( Dim );
       }
     
@@ -143,178 +146,24 @@ ImagePairNonrigidRegistrationFunctionalTemplate<VM>::SetWarpXform
     Vector3D fromVOI, toVOI;
     for ( size_t dim=0; dim<Dim; ++dim, ++VOIptr ) 
       {
-      StepScaleVector[dim] = this->GetParamStep( dim );
-      Warp->GetVolumeOfInfluence( dim, ReferenceFrom, ReferenceTo, fromVOI, toVOI );
+      this->m_StepScaleVector[dim] = this->GetParamStep( dim );
+      this->m_Warp->GetVolumeOfInfluence( dim, ReferenceFrom, ReferenceTo, fromVOI, toVOI );
       this->GetReferenceGridRange( fromVOI, toVOI, *VOIptr );
       }
     
-    WarpNeedsFixUpdate = true;
-
     for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread ) 
       {
       if ( thread ) 
 	{
-	this->m_ThreadWarp[thread] = WarpXform::SmartPtr( dynamic_cast<WarpXform*>( this->Warp->Clone() ) );
+	this->m_ThreadWarp[thread] = WarpXform::SmartPtr( dynamic_cast<WarpXform*>( this->m_Warp->Clone() ) );
 	this->m_ThreadWarp[thread]->RegisterVolume( this->ReferenceGrid );
 	} 
       else 
 	{
-	this->m_ThreadWarp[thread] = this->Warp;
+	this->m_ThreadWarp[thread] = this->m_Warp;
 	}
       } 
     }
-}
-
-template<class VM>
-void
-ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParameters() 
-{
-  if ( this->m_ConsistencyHistogram.IsNull() ) 
-    {
-    this->m_ConsistencyHistogram = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
-    unsigned int numSamplesX = this->m_Metric->GetNumberOfSamplesX();
-    Types::DataItem fromX, toX;
-    this->m_Metric->GetDataRangeX( fromX, toX );
-    unsigned int numBinsX = this->m_ConsistencyHistogram->CalcNumBins( numSamplesX, fromX, toX );
-    
-    unsigned int numSamplesY = this->m_Metric->GetNumberOfSamplesY();
-    Types::DataItem fromY, toY;
-    this->m_Metric->GetDataRangeY( fromY, toY );
-    unsigned int numBinsY = this->m_ConsistencyHistogram->CalcNumBins( numSamplesY, fromY, toY );
-    
-    this->m_ConsistencyHistogram->SetNumBins( numBinsX, numBinsY );
-    this->m_ConsistencyHistogram->SetRangeX( fromX, toX );
-    this->m_ConsistencyHistogram->SetRangeY( fromY, toY );
-    }
-  
-  int numCtrlPoints = this->Dim / 3;
-  
-  double *mapRef = Memory::AllocateArray<double>( numCtrlPoints );
-  double *mapMod = Memory::AllocateArray<double>( numCtrlPoints );
-
-  Rect3D voi;
-  Vector3D fromVOI, toVOI;
-  int pX, pY, pZ;
-
-  int inactive = 0;
-
-  const Types::DataItem unsetY = DataTypeTraits<Types::DataItem>::ChoosePaddingValue();
-
-  if ( this->ReferenceDataClass == DATACLASS_LABEL ) 
-    {
-    this->Warp->SetParameterActive();
-    
-    for ( int ctrl = 0; ctrl < numCtrlPoints; ++ctrl ) 
-      {
-      /// We cannot use the precomputed table of VOIs here because in "fast"
-      /// mode, these VOIs are smaller than we want them here.
-      this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->ReferenceFrom, this->ReferenceTo, fromVOI, toVOI, 0 );
-      this->GetReferenceGridRange( fromVOI, toVOI, voi );
-      
-      int r = voi.startX + this->m_DimsX * ( voi.startY + this->m_DimsY * voi.startZ );
-      
-      bool active = false;
-      for ( pZ = voi.startZ; (pZ < voi.endZ) && !active; ++pZ ) 
-	{
-	for ( pY = voi.startY; (pY < voi.endY) && !active; ++pY ) 
-	  {
-	  for ( pX = voi.startX; (pX < voi.endX); ++pX, ++r ) 
-	    {
-	    if ( ( this->m_Metric->GetSampleX( r ) != 0 ) || ( ( this->m_WarpedVolume[r] != unsetY ) && ( this->m_WarpedVolume[r] != 0 ) ) ) 
-	      {
-	      active = true;
-	      break;
-	      }
-	    }
-	  r += ( voi.startX + ( this->m_DimsX-voi.endX ) );
-	  }
-	r += this->m_DimsX * ( voi.startY + ( this->m_DimsY-voi.endY ) );
-	}
-      
-      if ( !active ) 
-	{
-	inactive += 3;
-	
-	int dim = 3 * ctrl;
-	for ( int idx=0; idx<3; ++idx, ++dim ) 
-	  {
-	  this->Warp->SetParameterInactive( dim );
-	  this->StepScaleVector[dim] = this->GetParamStep( dim );
-	  }
-	}
-      }
-    } 
-  else
-    {
-    for ( int ctrl = 0; ctrl < numCtrlPoints; ++ctrl ) 
-      {
-      this->m_ConsistencyHistogram->Reset();
-      
-      // We cannot use the precomputed table of VOIs here because in "fast"
-      // mode, these VOIs are smaller than we want them here.
-      this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->ReferenceFrom, this->ReferenceTo, fromVOI, toVOI, 0 );
-      this->GetReferenceGridRange( fromVOI, toVOI, voi );
-      
-      int r = voi.startX + this->m_DimsX * ( voi.startY + this->m_DimsY * voi.startZ );
-      
-      const int endOfLine = ( voi.startX + ( this->m_DimsX-voi.endX) );
-      const int endOfPlane = this->m_DimsX * ( voi.startY + (this->m_DimsY-voi.endY) );
-      
-      for ( pZ = voi.startZ; pZ<voi.endZ; ++pZ ) 
-	{
-	for ( pY = voi.startY; pY<voi.endY; ++pY ) 
-	  {
-	  for ( pX = voi.startX; pX<voi.endX; ++pX, ++r ) 
-	    {
-	    // Continue metric computation.
-	    if ( this->m_WarpedVolume[r] != unsetY ) 
-	      {
-	      this->m_ConsistencyHistogram->Increment( this->m_ConsistencyHistogram->ValueToBinX( this->m_Metric->GetSampleX( r ) ), this->m_ConsistencyHistogram->ValueToBinY( this->m_WarpedVolume[r] ) );
-	      }
-	    }
-	  r += endOfLine;
-	  }
-	r += endOfPlane;
-	}
-      this->m_ConsistencyHistogram->GetMarginalEntropies( mapRef[ctrl], mapMod[ctrl] );
-      }
-    
-    double refMin = HUGE_VAL, refMax = -HUGE_VAL;
-    double modMin = HUGE_VAL, modMax = -HUGE_VAL;
-    for ( int ctrl=0; ctrl<numCtrlPoints; ++ctrl ) 
-      {
-      if ( mapRef[ctrl] < refMin ) refMin = mapRef[ctrl];
-      if ( mapRef[ctrl] > refMax ) refMax = mapRef[ctrl];
-      if ( mapMod[ctrl] < modMin ) modMin = mapMod[ctrl];
-      if ( mapMod[ctrl] > modMax ) modMax = mapMod[ctrl];
-      }
-    
-    const double refThresh = refMin + this->m_AdaptiveFixThreshFactor * (refMax - refMin);
-    const double modThresh = modMin + this->m_AdaptiveFixThreshFactor * (modMax - modMin);
-      
-    this->Warp->SetParameterActive();
-      
-    for ( int ctrl=0; ctrl<numCtrlPoints; ++ctrl ) 
-      {
-      if (  ( mapRef[ctrl] < refThresh ) && ( mapMod[ctrl] < modThresh ) ) 
-	{
-	int dim = 3 * ctrl;
-	for ( int idx=0; idx<3; ++idx, ++dim ) 
-	  {
-	  this->Warp->SetParameterInactive( dim );
-	  this->StepScaleVector[dim] = this->GetParamStep( dim );
-	  }
-	inactive += 3;
-	}
-      }
-    }
-  
-  fprintf( stderr, "Deactivated %d out of %d parameters.\n", inactive, (int)this->Dim );
-  
-  delete[] mapRef;
-  delete[] mapMod;
-
-  this->WarpNeedsFixUpdate = false;
 }
 
 ImagePairNonrigidRegistrationFunctional* 

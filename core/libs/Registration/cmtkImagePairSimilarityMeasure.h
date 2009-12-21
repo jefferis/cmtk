@@ -81,6 +81,9 @@ public:
   /// Copy constructor.
   ImagePairSimilarityMeasure( Self& other, const bool copyData = false );
 
+  /// Reset metric computation.
+  virtual void Reset() {}
+
   /// Get a value from the X distribution (reference image).
   Types::DataItem GetSampleX ( const size_t index ) const
   { 

@@ -117,7 +117,7 @@ public:
   }
   
   /// Start with a new computation.
-  void Reset () 
+  virtual void Reset () 
   {
     SumX = SumY = SumSqX = SumSqY = SumXY = 0;
     Samples = 0;

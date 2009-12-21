@@ -97,7 +97,7 @@ public:
   }
 
   /// Reset computation: clear joint histogram.
-  void Reset () 
+  virtual void Reset () 
   {
     this->m_JointHistogram.Reset();
   }

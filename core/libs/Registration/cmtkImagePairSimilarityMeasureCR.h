@@ -83,7 +83,7 @@ public:
    * Initialize arrays that hold the sums of all floating values and their
    * squares, separated by histogram classes of the reference image.
    */
-  void Reset() 
+  virtual void Reset() 
   {
     HistogramI->Reset();
     HistogramJ->Reset();

@@ -35,6 +35,7 @@
 #include <cmtkconfig.h>
 
 #include <cmtkImagePairRegistrationFunctional.h>
+#include <cmtkImagePairSimilarityMeasure.h>
 
 #include <cmtkThreads.h>
 #include <cmtkThreadPool.h>
@@ -67,28 +68,6 @@ public:
   /// Superclass.
   typedef ImagePairRegistrationFunctional Superclass;
 
-  /** Set Warp transformation.
-   * This virtual function will be overridden by the derived classes that add
-   * the actual warp transformation as a template parameters. It serves as a
-   * common access point to update the warp transformation after construction
-   * of the functional.
-   */
-  virtual void SetWarpXform( WarpXform::SmartPtr& warp ) = 0;
-
-  /// Set flag and value for forcing pixels outside the floating image.
-  virtual void SetForceOutside( const bool flag = true, const Types::DataItem value = 0 ) = 0;
-
-  /// Destructor.
-  virtual ~ImagePairNonrigidRegistrationFunctional ();
-
-  /// Constructor function.
-  static ImagePairNonrigidRegistrationFunctional* Create
-  ( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation );
-  
-protected:
-  /// Constructor.
-  ImagePairNonrigidRegistrationFunctional( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating );
-
   /** Set active and passive warp parameters adaptively.
    * If this flag is set, the functional will adaptively determine active and
    * passive parameters of the warp transformation prior to gradient 
@@ -120,19 +99,141 @@ protected:
    */
   cmtkGetSetMacroDefault(double,GridEnergyWeight,0);
 
+  /// Set flag and value for forcing values outside the floating image.
+  virtual void SetForceOutside( const bool flag = true, const Types::DataItem value = 0 ) = 0;
+
+  /** Set Warp transformation.
+   * This virtual function will be overridden by the derived classes that add
+   * the actual warp transformation as a template parameters. It serves as a
+   * common access point to update the warp transformation after construction
+   * of the functional.
+   */
+  virtual void SetWarpXform( WarpXform::SmartPtr& warp ) = 0;
+
+  /// Set inverse transformation.
+  void SetInverseTransformation( WarpXform::SmartPtr& inverseTransformation ) 
+  {
+    this->m_InverseTransformation = inverseTransformation;
+  }
+
+  /// Set inverse consistency weight
+  void SetInverseConsistencyWeight( const double inverseConsistencyWeight ) 
+  {
+    this->m_InverseConsistencyWeight = inverseConsistencyWeight;
+  }
+
+  /// Get parameter stepping in milimeters.
+  virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const 
+  {
+    return this->m_Warp->GetParamStep( idx, FloatingSize, mmStep );
+  }
+
+  /// Return the transformation's parameter vector dimension.
+  virtual size_t ParamVectorDim() const 
+  {
+    return this->m_Warp->ParamVectorDim();
+  }
+
+  /// Return the number of variable parameters of the transformation.
+  virtual size_t VariableParamVectorDim() const 
+  {
+    return this->m_Warp->VariableParamVectorDim();
+  }
+
+  /// Return parameter vector.
+  virtual void GetParamVector ( CoordinateVector& v ) 
+  {
+    this->m_Warp->GetParamVector( v );
+  }
+
+  /// Constructor function.
+  static ImagePairNonrigidRegistrationFunctional* Create
+  ( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation );
+  
+protected:
+  /// Constructor.
+  ImagePairNonrigidRegistrationFunctional( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating );
+
+  /// Destructor.
+  virtual ~ImagePairNonrigidRegistrationFunctional ();
+
+  /// Array of warp transformation objects for the parallel threads.
+  WarpXform::SmartPtr *m_ThreadWarp;
+
+  /// Array of storage for simultaneously retrieving multiple deformed vectors.
+  Vector3D **m_ThreadVectorCache;
+
+  /** Number of actual parallel threads used for computations.
+   * All duplicated data structures are generated with the multiplicity given
+   * by this value. It is determined from Threads when the object is first
+   * instanced. It cannot be changed afterwards.
+   */
+  size_t m_NumberOfThreads;
+
+  /// Number of parallel tasks.
+  size_t m_NumberOfTasks;
+
+  /** Ground transformed volume.
+   */
+  Types::DataItem *m_WarpedVolume;
+
+  /// Flag for forcing pixel values outside the floating image.
+  bool m_ForceOutsideFlag;
+
+  /// Rescaled byte value for forcing pixel values outside the floating image.
+  Types::DataItem m_ForceOutsideValueRescaled;
+
+  /// Shortcut variables for x, y, z dimension of the reference image.
+  GridIndexType m_DimsX, m_DimsY, m_DimsZ;
+  
+  /// Shorcut variables for x and y dimensions of the floating image.
+  GridIndexType m_FltDimsX, m_FltDimsY;
+
+  /// Pointer to the local warp transformation.
+  WarpXform::SmartPtr m_Warp;
+
+  /// Optional inverse transformation for inverse-consistent deformation.
+  WarpXform::SmartPtr m_InverseTransformation;
+
+  /// Weight for inverse consistency constraint.
+  double m_InverseConsistencyWeight;
+
+  /// Return weighted combination of voxel similarity and grid energy.
+  Self::ReturnType WeightedTotal( const Self::ReturnType metric, const WarpXform* warp ) const 
+  {
+    double result = metric;
+    if ( this->m_JacobianConstraintWeight > 0 ) 
+      {
+      result -= this->m_JacobianConstraintWeight * warp->GetJacobianConstraint();
+      } 
+    
+    if ( this->m_GridEnergyWeight > 0 ) 
+      {
+      result -= this->m_GridEnergyWeight * warp->GetGridEnergy();
+      }
+    
+    if ( !finite( result ) ) 
+      return -FLT_MAX;
+    
+    if ( this->m_MatchedLandmarkList ) 
+      {
+      result -= this->m_LandmarkErrorWeight * warp->GetLandmarksMSD( this->m_MatchedLandmarkList );
+      }
+
+    if ( this->m_InverseTransformation ) 
+      {
+      result -= this->m_InverseConsistencyWeight * warp->GetInverseConsistencyError( this->m_InverseTransformation, this->ReferenceGrid );
+      }
+    
+    return static_cast<Self::ReturnType>( result );
+  }
+  
+  /// Return weighted combination of similarity and grid energy derivatives.
+  void WeightedDerivative( double& lower, double& upper, WarpXform::SmartPtr& warp, const int param, const Types::Coordinate step ) const;
+
   /** Regularize the deformation.
    */
   cmtkGetSetMacroDefault(bool,Regularize,false);
-
-  /** Warp's fixed parameters need to be updated.
-   * This flag is set when the warp transformation is set or modified. It
-   * signals that the active and passive parameters of the transformation
-   * will have to be updated before the next gradient computation.
-   */
-  bool WarpNeedsFixUpdate;
-
-  /// Histogram used for consistency computation.
-  JointHistogram<unsigned int>::SmartPtr m_ConsistencyHistogram;
 
   /// Dimension of warp parameter vector
   size_t Dim;
@@ -142,7 +243,7 @@ protected:
    * by the transformation class. These factors can be used to equalized all
    * parameter modifications during gradient computation etc.
    */
-  Types::Coordinate *StepScaleVector;
+  std::vector<Types::Coordinate> m_StepScaleVector;
 
   /** Volume of influence table.
    * This array holds the precomputed volumes of influence for all 
@@ -158,8 +259,8 @@ protected:
   /// Coordinate of the end of the reference colume crop area.
   Vector3D ReferenceTo;
 
-  /// Storage for simultaneously retrieving multiple deformed vectors.
-  Vector3D *VectorCache;
+  /// Make smart pointer class friend so we can keep destructor protected.
+  friend class SmartPointer<Self>;
 };
 
 //@}

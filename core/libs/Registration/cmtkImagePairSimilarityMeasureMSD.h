@@ -106,7 +106,7 @@ public:
   }
 
   /// Reset internal variables for next computation.
-  void Reset () 
+  virtual void Reset () 
   {
     this->m_SumOfDifferences = 0;
     this->m_NumberOfSamples = 0;
