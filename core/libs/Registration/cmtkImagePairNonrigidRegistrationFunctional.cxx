@@ -67,6 +67,15 @@ ImagePairNonrigidRegistrationFunctional::ImagePairNonrigidRegistrationFunctional
   this->m_ThreadVectorCache = Memory::AllocateArray<Vector3D*>( this->m_NumberOfThreads );
   for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
     this->m_ThreadVectorCache[thread] = Memory::AllocateArray<Vector3D>( this->ReferenceDims[0] );
+
+  this->m_WarpedVolume = NULL;
+  
+  this->m_DimsX = this->ReferenceGrid->GetDims()[0];
+  this->m_DimsY = this->ReferenceGrid->GetDims()[1];
+  this->m_DimsZ = this->ReferenceGrid->GetDims()[2];
+  
+  this->m_FltDimsX = this->FloatingGrid->GetDims()[0];
+  this->m_FltDimsY = this->FloatingGrid->GetDims()[1];
 }
 
 ImagePairNonrigidRegistrationFunctional::~ImagePairNonrigidRegistrationFunctional()
