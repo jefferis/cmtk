@@ -33,15 +33,15 @@ VALGRIND=$2
 BUILDNAME=@BUILDNAME@
 DATADIR=@CMTK_DATA_ROOT@/testing/inputs
 
-BASELINE_DEFAULT=@CMTK_DATA_ROOT@/testing/baseline/${RUNTEST}
-BASELINE=${bindir}/../testing/baseline/${RUNTEST}
-if [ -d ${BASELINE} ]; then
-    BASELINE=${BASELINE_DEFAULT}
-fi
-
 BINDIR=@EXECUTABLE_OUTPUT_PATH@/@CMAKE_BUILD_TYPE@
 if [ ! -d ${BINDIR} ]; then
     BINDIR=@EXECUTABLE_OUTPUT_PATH@
+fi
+
+BASELINE_DEFAULT=@CMTK_DATA_ROOT@/testing/baseline/${RUNTEST}
+BASELINE=${BINDIR}/../testing/baseline/${RUNTEST}
+if [ -d ${BASELINE} ]; then
+    BASELINE=${BASELINE_DEFAULT}
 fi
 
 HOSTNAME=`uname -n`
