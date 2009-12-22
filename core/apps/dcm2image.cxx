@@ -401,7 +401,7 @@ VolumeList::WriteToArchive()
 {
   int idx = 1;
   std::map< std::string,std::vector<const VolumeDCM*> > pathToVolumeMap;
-  for ( const_iterator it = begin(); it != end(); ++it, ++idx ) 
+  for ( const_iterator it = begin(); it != end(); ++it ) 
     {
     if ( (*it)->size() > 1 )
       {
