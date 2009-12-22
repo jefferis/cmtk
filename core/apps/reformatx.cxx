@@ -62,9 +62,6 @@ namespace reformatx
 #endif
 bool Verbose = false;
 
-bool AutoScaleReference = false;
-bool AutoScaleFloating = false;
-
 bool JacobianCorrectGlobal = true;
 
 bool TargetMask = false;
@@ -283,49 +280,6 @@ ReformatPullback()
       }
     }
   
-  if ( AutoScaleReference || AutoScaleFloating ) 
-    {    
-    // in cases with no reference volume, use target for intensity reference
-    cmtk::TypedArray::SmartPtr referenceData = (referenceVolume) ? referenceVolume->GetData() : targetVolume->GetData();
-    if ( ! referenceData ) 
-      {
-      cmtk::StdErr << "ERROR: neither reference nor target volume seem to have pixel data\n";
-      exit( 1 );
-      }
-    
-    cmtk::Types::DataItem mean1, var1, mean2, var2;
-    referenceData->GetStatistics( mean1, var1 );
-    floatingData->GetStatistics( mean2, var2 );
-    
-    if ( Verbose ) 
-      {
-      cmtk::StdErr.printf( "Before auto-rescale: [1] %f +/- %f, [2] %f +/- %f\n", mean1, sqrt( var1 ), mean2, sqrt( var2 ) );
-      }
-    
-    // auto rescale, that is, determine scaling factor and offset so that after
-    // scaling, the intensities in both images have the same mean and standard
-    // deviation. Note that due to the squaring of values in std.dev.
-    // computation, the spread will not be exactly identical. For integer data,
-    // there is also the inherently limited precision.
-    if ( AutoScaleReference ) 
-      {
-      const cmtk::Types::DataItem factor = sqrt(var2) / sqrt(var1);
-      referenceData->Rescale( factor, mean2 - factor * mean1 );
-      referenceData->GetStatistics( mean1, var1 );
-      } 
-    else
-      {
-      const cmtk::Types::DataItem factor = sqrt(var1) / sqrt(var2);
-      floatingData->Rescale( factor, mean1 - factor * mean2 );
-      floatingData->GetStatistics( mean2, var2 );
-      }
-    
-    if ( Verbose ) 
-      {
-      cmtk::StdErr.printf( "After auto-rescale: [1] %f +/- %f, [2] %f +/- %f\n", mean1, sqrt( var1 ), mean2, sqrt( var2 ) );
-      }
-    }
-  
   if ( !TargetMask ) 
     {
     // unless we're in mask mode, remove target pixel data.
@@ -465,19 +419,18 @@ main( const int argc, char* argv[] )
     cl.AddCallback( Key( "target-grid" ), CallbackTargetVolume, "Define target grid for reformating as Nx,Ny,Nz:dX,dY,dZ[:Ox,Oy,Oz] (dims:pixel:origin)" );
     cl.AddSwitch( Key( 'm', "mask" ), &TargetMask, true, "Use target pixel data as binary mask." );
 
-    cl.AddSwitch( Key( "auto-scale-reference" ), &AutoScaleReference, true, "Automatically scale reference image intensities to match floating image" );
-    cl.AddSwitch( Key( "auto-scale-floating" ), &AutoScaleFloating, true, "Automatically scale floating image intensities to match reference image" );
-    
     cl.AddSwitch( Key( "jacobian-correct-global" ), &JacobianCorrectGlobal, true, "Correct Jacobian maps for global scale." );
     cl.AddSwitch( Key( "no-jacobian-correct-global" ), &JacobianCorrectGlobal, false, "Do not correct Jacobian maps for global scale." );
 
-    cl.AddSwitch( Key( 'c', "char" ), &DataType, cmtk::TYPE_CHAR, "8 bits, signed" );
-    cl.AddSwitch( Key( 'b', "byte" ), &DataType, cmtk::TYPE_BYTE, "8 bits, unsigned" );
-    cl.AddSwitch( Key( 's', "short" ), &DataType, cmtk::TYPE_SHORT, "16 bits, signed" );
-    cl.AddSwitch( Key( 'u', "ushort" ), &DataType, cmtk::TYPE_USHORT, "16 bits, unsigned" );
-    cl.AddSwitch( Key( 'i', "int" ), &DataType, cmtk::TYPE_INT, "32 bits signed" );
-    cl.AddSwitch( Key( 'f', "float" ), &DataType, cmtk::TYPE_FLOAT, "32 bits floating point" );
-    cl.AddSwitch( Key( 'd', "double" ), &DataType, cmtk::TYPE_DOUBLE, "64 bits floating point\n" );
+    cmtk::CommandLine::EnumGroup<cmtk::ScalarDataType>::SmartPtr
+      typeGroup = cl.AddEnum( "outputtype", &DataType, "Scalar data type for the output image." );
+    typeGroup->AddSwitch( Key( "char" ), cmtk::TYPE_CHAR, "8 bits, signed" );
+    typeGroup->AddSwitch( Key( "byte" ), cmtk::TYPE_BYTE, "8 bits, unsigned" );
+    typeGroup->AddSwitch( Key( "short" ), cmtk::TYPE_SHORT, "16 bits, signed" );
+    typeGroup->AddSwitch( Key( "ushort" ), cmtk::TYPE_USHORT, "16 bits, unsigned" );
+    typeGroup->AddSwitch( Key( "int" ), cmtk::TYPE_INT, "32 bits signed" );
+    typeGroup->AddSwitch( Key( "float" ), cmtk::TYPE_FLOAT, "32 bits floating point" );
+    typeGroup->AddSwitch( Key( "double" ), cmtk::TYPE_DOUBLE, "64 bits floating point\n" );
 
     cl.AddOption( Key( 'P', "pad-out" ), &OutPaddingValue, "Padding value for output image", &OutPaddingValueFlag );
 
@@ -487,14 +440,16 @@ main( const int argc, char* argv[] )
     cl.AddOption( Key( 'F', "floating" ), &FloatingVolumeName, "Format and path of floating image." );
     cl.AddOption( Key( 'o', "outfile" ), &OutputImageName, "Format and path of output image." );
 
-    cl.AddSwitch( Key( "linear" ), &Interpolation, cmtk::Interpolators::LINEAR, "Trilinear interpolation (default)" );
-    cl.AddSwitch( Key( "nn" ), &Interpolation, cmtk::Interpolators::NEAREST_NEIGHBOR, "Nearest neighbor interpolation" );
-    cl.AddSwitch( Key( "cubic" ), &Interpolation, cmtk::Interpolators::CUBIC, "Tricubic interpolation" );
-    cl.AddSwitch( Key( "pv" ), &Interpolation, cmtk::Interpolators::PARTIALVOLUME, "Partial volume interpolation" );
-    cl.AddSwitch( Key( "sinc-cosine" ), &Interpolation, cmtk::Interpolators::COSINE_SINC, "Sinc interpolation with cosine window" );
-    cl.AddSwitch( Key( "sinc-hamming" ), &Interpolation, cmtk::Interpolators::HAMMING_SINC, "Sinc interpolation with Hamming window" );
+    cmtk::CommandLine::EnumGroup<cmtk::Interpolators::InterpolationEnum>::SmartPtr
+      interpolationGroup = cl.AddEnum( "interpolation", &Interpolation, "Image interpolation method." );
+    interpolationGroup->AddSwitch( Key( "linear" ), cmtk::Interpolators::LINEAR, "Trilinear interpolation" );
+    interpolationGroup->AddSwitch( Key( "nn" ), cmtk::Interpolators::NEAREST_NEIGHBOR, "Nearest neighbor interpolation" );
+    interpolationGroup->AddSwitch( Key( "cubic" ), cmtk::Interpolators::CUBIC, "Tricubic interpolation" );
+    interpolationGroup->AddSwitch( Key( "pv" ), cmtk::Interpolators::PARTIALVOLUME, "Partial volume interpolation" );
+    interpolationGroup->AddSwitch( Key( "sinc-cosine" ), cmtk::Interpolators::COSINE_SINC, "Sinc interpolation with cosine window" );
+    interpolationGroup->AddSwitch( Key( "sinc-hamming" ), cmtk::Interpolators::HAMMING_SINC, "Sinc interpolation with Hamming window" );
 
-    cl.AddOption( Key( "sinc-window-radius" ), &InterpolatorWindowRadius, "Window radius for Sinc interpolation [default: 3]" );
+    cl.AddOption( Key( "sinc-window-radius" ), &InterpolatorWindowRadius, "Window radius for Sinc interpolation" );
 
     cl.Parse();
 
