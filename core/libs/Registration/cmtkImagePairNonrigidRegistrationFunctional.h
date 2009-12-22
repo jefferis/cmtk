@@ -43,6 +43,12 @@
 #include <cmtkWarpXform.h>
 #include <cmtkJointHistogram.h>
 
+#ifdef HAVE_IEEEFP_H
+#  include <ieeefp.h>
+#endif
+
+#include <math.h>
+
 namespace
 cmtk
 {

@@ -39,12 +39,6 @@
 #include <cmtkWarpXform.h>
 #include <cmtkDataTypeTraits.h>
 
-#ifdef HAVE_IEEEFP_H
-#  include <ieeefp.h>
-#endif
-
-#include <math.h>
-
 namespace
 cmtk
 {
