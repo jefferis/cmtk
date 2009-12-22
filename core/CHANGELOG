@@ -7,6 +7,8 @@ Release CMTK-1.2.0:
     with more accurate metric computation and support for arbitrary floating
     image interpolation. These are accessible through the new "registrationx"
     command line tool.
+- Added: single-step mass-preserving reformatting in reformatx tool. Also
+    added a new test to cover this.
 
 - Improved: more sophisticated install and packaging configuration; still not
     fully clear how that translates into separated packages for different

@@ -63,6 +63,7 @@ namespace reformatx
 bool Verbose = false;
 
 bool JacobianCorrectGlobal = true;
+bool MassPreservingReformat = false;
 
 bool TargetMask = false;
 
@@ -187,6 +188,23 @@ void InitializeReformatVolume( cmtk::TypedArray::SmartPtr& reformatData, cmtk::U
     if ( OutPaddingValueFlag )
       plain.SetPaddingValue( OutPaddingValue );
     reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::Reformat( targetVolume, TargetToReference, referenceVolume, ReferenceToFloating, plain, interpolator ) );
+
+    if ( MassPreservingReformat )
+      {
+      cmtk::ReformatVolume::Jacobian jacobian( cmtk::TYPE_DOUBLE, false /*correctGlobalScale*/ );
+      cmtk::XformList emptyXformList;
+      cmtk::TypedArray::SmartPtr jacobianData( cmtk::ReformatVolume::Reformat( targetVolume, emptyXformList, referenceVolume, TargetToReference, jacobian, TInterpolator::SmartPtr::Null ) );
+      
+      const size_t nPixels = reformatData->GetDataSize();
+      for ( size_t i = 0; i < nPixels; ++i )
+	{
+	cmtk::Types::DataItem v, j;
+	if ( reformatData->Get( v, i ) && jacobianData->Get( j, i ) )
+	  reformatData->Set( v*j, i );
+	else
+	  reformatData->SetPaddingAt( i );
+	}
+      }
     break;
     }
     case cmtk::ReformatVolume::REFORMAT_JACOBIAN: 
@@ -419,6 +437,10 @@ main( const int argc, char* argv[] )
     cl.AddCallback( Key( "target-grid" ), CallbackTargetVolume, "Define target grid for reformating as Nx,Ny,Nz:dX,dY,dZ[:Ox,Oy,Oz] (dims:pixel:origin)" );
     cl.AddSwitch( Key( 'm', "mask" ), &TargetMask, true, "Use target pixel data as binary mask." );
 
+    cl.BeginGroup( "PlainOptions", "Options for Plain Reformatting" );
+    cl.AddSwitch( Key( "preserve-mass" ), &MassPreservingReformat, true, "Mass-preserving reformatting: multiply every reformatted value with the Jacobian determinant of the applied transformation." );
+
+    cl.BeginGroup( "JacobianOptions", "Options for Jacobian Map Reformatting" );
     cl.AddSwitch( Key( "jacobian-correct-global" ), &JacobianCorrectGlobal, true, "Correct Jacobian maps for global scale." );
     cl.AddSwitch( Key( "no-jacobian-correct-global" ), &JacobianCorrectGlobal, false, "Do not correct Jacobian maps for global scale." );
 
@@ -462,8 +484,9 @@ main( const int argc, char* argv[] )
       if ( ! strcmp( next, "-j" ) || ! strcmp( next, "--jacobian" ) )
 	break;
       
-      bool inverse = ! strcmp( next, "-i" ) || ! strcmp( next, "--inverse" );
-      if ( inverse ) next = cl.GetNext();
+      const bool inverse = ! strcmp( next, "-i" ) || ! strcmp( next, "--inverse" );
+      if ( inverse ) 
+	next = cl.GetNext();
       
       cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( next, Verbose ) );
       if ( ! xform ) 
@@ -489,9 +512,9 @@ main( const int argc, char* argv[] )
 	case cmtk::ReformatVolume::REFORMAT_JACOBIAN:
 	  while ( next ) 
 	    {
-	    bool inverse =
-	      ! strcmp( next, "-i" ) || ! strcmp( next, "--inverse" );
-	    if ( inverse ) next = cl.GetNext();
+	    const bool inverse = ! strcmp( next, "-i" ) || ! strcmp( next, "--inverse" );
+	    if ( inverse ) 
+	      next = cl.GetNext();
 	    
 	    cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( next, Verbose ) );
 	    if ( ! xform ) 

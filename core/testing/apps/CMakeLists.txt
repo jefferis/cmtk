@@ -320,6 +320,7 @@ IF(NOT CMTK_USE_MPI)
     reformatxCubicInverse
     reformatxSincCosine
     reformatxSincCosine5
+    reformatxMassPreserving
     reformatxJacobian
     reformatxInverseJacobian
     reformatxSincHamming)
@@ -383,6 +384,11 @@ IF(NOT CMTK_USE_MPI)
     warpEnergy
     warpJacobian
     warpLabels)
+
+  # ==========================================
+  # Tests for "warpx" tool
+  SET(testList ${testList} 
+    warpxLabels)
 
   # ==========================================
   # Tests for "xform2dfield" tool

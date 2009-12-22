@@ -689,6 +689,10 @@ case ${RUNTEST} in
 	run reformatx --sinc-cosine --sinc-window-radius 5 -o ${tmpdir}/reformat.hdr --floating vol001_mr_t1.hdr vol001_mr_t0_crop.hdr vol001_mr_t0t1.list
 	check_results reformat.img
 	;;
+    reformatxMassPreserving)
+        run reformatx --preserve-mass -o ${tmpdir}/reformat.hdr  --floating vol001_mr_t1.hdr vol001_mr_t0.hdr vol001_mr_t0t1_warp.xform
+	check_results reformat.img
+	;;
     reformatxJacobian)
 	run reformatx -o ${tmpdir}/jacobian.hdr vol001_mr_t0_crop.hdr vol001_mr_t0_crop.xform --jacobian vol001_mr_t0t1_warp.xform
 	check_results jacobian.img
@@ -1112,6 +1116,10 @@ case ${RUNTEST} in
 	;;
     warpLabels)
 	run warp -q --exploration 8 --grid-spacing 90 --accuracy 1 --refine 1 --class-ref label --class-flt label -o ${tmpdir} --initial parc1_parc2_9dof.xform parc1.hdr parc2.hdr
+	check_results registration
+	;;
+    warpxLabels)
+	run warpx --exploration 8 --grid-spacing 90 --accuracy 1 --refine 1 --class-ref label --class-flt label -o ${tmpdir} --initial parc1_parc2_9dof.xform parc1.hdr parc2.hdr
 	check_results registration
 	;;
     xform2dfieldWarpNrrd)
