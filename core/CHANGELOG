@@ -42,6 +42,11 @@ Release CMTK-1.2.0:
 - Removed: "Binary" data class; this should really be treated as "Labels"
     anyway.
 
+- Testing: support for baselines local to each build. If a baseline exists in
+    testing/baseline/${TESTNAME}, then it will be used. Otherwise, the global
+    baseline as configured by the CMTK_DATA_ROOT top-level CMake variable is
+    used.
+
 
 Release CMTK-1.1.3 (2009-11-18):
 

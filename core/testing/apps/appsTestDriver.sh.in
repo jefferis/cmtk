@@ -31,8 +31,13 @@ RUNTEST=$1
 VALGRIND=$2
 
 BUILDNAME=@BUILDNAME@
-DATADIR=@CMTK_DATA_ROOT@
-BASELINE=@CMTK_DATA_ROOT_BASELINE@/${RUNTEST}
+DATADIR=@CMTK_DATA_ROOT@/testing/inputs
+
+BASELINE_DEFAULT=@CMTK_DATA_ROOT@/testing/baseline/${RUNTEST}
+BASELINE=${bindir}/../testing/baseline/${RUNTEST}
+if [ -d ${BASELINE} ]; then
+    BASELINE=${BASELINE_DEFAULT}
+fi
 
 BINDIR=@EXECUTABLE_OUTPUT_PATH@/@CMAKE_BUILD_TYPE@
 if [ ! -d ${BINDIR} ]; then
@@ -43,7 +48,7 @@ HOSTNAME=`uname -n`
 tmpdir=${BINDIR}/../testing/temporary/${HOSTNAME}/${RUNTEST}
 mkdir -p ${tmpdir}
 
-cd ${DATADIR}/testing/inputs
+cd ${DATADIR}
 
 run()
 {
