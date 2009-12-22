@@ -399,8 +399,9 @@ replacein(std::string &s, const std::string &sub, const std::string &other)
 void
 VolumeList::WriteToArchive() 
 {
+  int idx = 1;
   std::map< std::string,std::vector<const VolumeDCM*> > pathToVolumeMap;
-  for ( const_iterator it = begin(); it != end(); ++it ) 
+  for ( const_iterator it = begin(); it != end(); ++it, ++idx ) 
     {
     if ( (*it)->size() > 1 )
       {
@@ -431,7 +432,10 @@ VolumeList::WriteToArchive()
       // if there's a "number" tag, get rid of it.
       std::string uniquePath = it->first;
       replacein( uniquePath, "%N", "" );
-      it->second[0]->WriteToArchive( uniquePath );
+
+      char finalPath[PATH_MAX];
+      sprintf( finalPath, uniquePath.c_str(), idx++ );
+      it->second[0]->WriteToArchive( finalPath );
       }
     else
       {			
@@ -446,6 +450,9 @@ VolumeList::WriteToArchive()
 	std::string uniquePath = it->first;
 	replacein( uniquePath, "%n", numberString.str() );
 	replacein( uniquePath, "%N", "-" + numberString.str() );
+
+	char finalPath[PATH_MAX];
+	sprintf( finalPath, uniquePath.c_str(), idx++ );
 	it->second[i]->WriteToArchive( uniquePath );
 	}
       }
