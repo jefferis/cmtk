@@ -53,6 +53,9 @@ ImagePairNonrigidRegistrationFunctional::ImagePairNonrigidRegistrationFunctional
 ( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating )
   : ImagePairRegistrationFunctional( reference, floating )
 {
+  this->m_NumberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  this->m_NumberOfTasks = 4 * this->m_NumberOfThreads - 3;
+    
   Dim = 0;
 
   ReferenceFrom.Set( 0,0,0 );

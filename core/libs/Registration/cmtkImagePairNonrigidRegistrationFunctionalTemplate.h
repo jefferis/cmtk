@@ -85,9 +85,6 @@ public:
   ImagePairNonrigidRegistrationFunctionalTemplate<VM>( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating, const Interpolators::InterpolationEnum interpolation )
     : ImagePairNonrigidRegistrationFunctional( reference, floating )
   {
-    this->m_NumberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
-    this->m_NumberOfTasks = 4 * this->m_NumberOfThreads - 3;
-    
     this->m_InfoTaskGradient.resize( this->m_NumberOfTasks );
     this->m_InfoTaskComplete.resize( this->m_NumberOfTasks );
     
