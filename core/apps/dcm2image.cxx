@@ -453,7 +453,7 @@ VolumeList::WriteToArchive()
 
 	char finalPath[PATH_MAX];
 	sprintf( finalPath, uniquePath.c_str(), idx++ );
-	it->second[i]->WriteToArchive( uniquePath );
+	it->second[i]->WriteToArchive( finalPath );
 	}
       }
     }
