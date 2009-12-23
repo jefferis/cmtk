@@ -128,15 +128,13 @@ private:
    */
   const char *Study2;
 
-  /** Name of protocol output file.
-   * This is defined by the -p or --protocol command line option.
-   */
-  const char *Protocol;
-
   /** Name of elapsed time output file.
    * This is defined by the -t or --time command line option.
    */
   const char *Time;
+
+  /// Protocol file name.
+  const char* m_ProtocolFileName;
 
   /** Verbosity flag.
    * This is set to 'on' by -v or --verbose, and set to 'off' by -q or --quiet.

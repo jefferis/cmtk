@@ -111,8 +111,8 @@ ImagePairAffineRegistration::InitRegistration ()
   
   Types::Coordinate currSampling = std::max( this->m_Sampling, 2 * std::min( this->m_ReferenceVolume->GetMinDelta(), this->m_FloatingVolume->GetMinDelta()));
   
-  double coarsest = CoarsestResolution;
-  if ( coarsest <= 0 ) coarsest = this->m_Exploration;
+  double coarsest = this->m_CoarsestResolution;
+  if ( coarsest <= 0 ) coarsest = this->m_MaxStepSize;
 
   UniformVolume::SmartPtr currRef( this->m_ReferenceVolume );
   UniformVolume::SmartPtr currFlt( this->m_FloatingVolume );
@@ -129,7 +129,7 @@ ImagePairAffineRegistration::InitRegistration ()
     currFlt = nextFlt;
     }
 
-  this->m_Optimizer = Optimizer::SmartPtr( new BestNeighbourOptimizer( OptimizerStepFactor ) );   
+  this->m_Optimizer = Optimizer::SmartPtr( new BestNeighbourOptimizer( this->m_OptimizerStepFactor ) );   
   this->m_Optimizer->SetCallback( this->m_Callback );
   
   // default to rigid transformation

@@ -86,16 +86,17 @@ ImagePairAffineRegistrationCommandLine
 ::ImagePairAffineRegistrationCommandLine 
 ( int argc, char* argv[] ) 
   : m_ReformattedImagePath( NULL ),
-    m_OutputPathITK( NULL )
+    m_OutputPathITK( NULL ),
+    m_ProtocolFileName( NULL )
 {
   this->m_Metric = 0;
 
   this->m_AutoMultiLevels = 0;
-  CoarsestResolution = -1;
-  this->m_Exploration = 8;
-  this->m_Accuracy = 0.1;
+  this->m_CoarsestResolution = -1;
+  this->m_MaxStepSize = 8;
+  this->m_MinStepSize = 0.1;
   this->m_Sampling = 1.0;
-  OutParametersName = OutMatrixName = Studylist = Protocol = Time = NULL;
+  OutParametersName = OutMatrixName = Studylist = Time = NULL;
 
   Verbose = 0;
 
@@ -121,15 +122,15 @@ ImagePairAffineRegistrationCommandLine
     cl.AddOption( Key( "auto-multi-levels" ), &this->m_AutoMultiLevels, "Automatic optimization and resolution parameter generation for <n> levels" );
 
     cl.BeginGroup( "Optimization", "Optimization settings" );
-    cl.AddOption( Key( 'e', "exploration" ), &this->m_Exploration, "Exploration [initial optimizer step size]" );
-    cl.AddOption( Key( 'a', "accuracy" ), &this->m_Accuracy, "Accuracy [final optimizer step size]" );
-    cl.AddOption( Key( 'f', "stepfactor" ), &this->OptimizerStepFactor, "Factor for search step size reduction. Must be > 0.0 and < 1.0" );
+    cl.AddOption( Key( "max-stepsize" ), &this->m_MaxStepSize, "Maximum optimizer step size, which determines search space exploration." );
+    cl.AddOption( Key( "min-stepsize" ), &this->m_MinStepSize, "Minimum optimizer step size, which determines precision." );
+    cl.AddOption( Key( "stepfactor" ), &this->m_OptimizerStepFactor, "Factor for search step size reduction. Must be > 0.0 and < 1.0" );
     cl.AddOption( Key( "delta-f-threshold" ), &this->m_DeltaFThreshold, "Optional threshold to terminate optimization (level) if relative change of target function drops below this value." );
     cl.EndGroup();
 
     cl.BeginGroup( "Resolution", "Image resolution parameters" );
     cl.AddOption( Key( 's', "sampling" ), &this->m_Sampling, "Image sampling (finest resampled image resolution)" );
-    cl.AddOption( Key( "coarsest" ), &this->CoarsestResolution, "Upper limit for image sampling in multiresolution hierarchy" );
+    cl.AddOption( Key( "coarsest" ), &this->m_CoarsestResolution, "Upper limit for image sampling in multiresolution hierarchy" );
 
     cl.AddSwitch( Key( "omit-original-data" ), &this->m_UseOriginalData, false, "Do not use original data in full resolution, omit final stage in multiresolution hierarchy, thus reducing computation time." );
     cl.EndGroup();
@@ -174,15 +175,15 @@ ImagePairAffineRegistrationCommandLine
     this->m_PreprocessorFlt.AttachToCommandLine( cl );
 
     cl.BeginGroup( "Output", "Output parameters" )->SetProperties( CommandLine::PROPS_NOXML );
-    cl.AddOption( Key( 'o', "outlist" ), &this->Studylist, "Output path for final transformation" );
-    cl.AddOption( Key( "out-matrix" ), &this->OutMatrixName, "Output path for final transformation in matrix format" );
-    cl.AddOption( Key( "out-parameters" ), &this->OutParametersName, "Output path for final transformation in plain parameter list format" );
-    cl.AddOption( Key( 'p', "protocol" ), &this->Protocol, "Optimization protocol output file name" );
-    cl.AddOption( Key( 't', "time" ), &this->Time, "Computation time statistics output file name" );
+    cl.AddOption( Key( 'o', "output" ), &this->Studylist, "Output path for final transformation" );
+    cl.AddOption( Key( "write-matrix" ), &this->OutMatrixName, "Output path for final transformation in matrix format" );
+    cl.AddOption( Key( "write-parameters" ), &this->OutParametersName, "Output path for final transformation in plain parameter list format" );
+    cl.AddOption( Key( "write-protocol" ), &this->m_ProtocolFileName, "Optimization protocol output file name" );
+    cl.AddOption( Key( "write-time" ), &this->Time, "Computation time statistics output file name" );
     cl.EndGroup();
 
     cl.BeginGroup( "SlicerImport", "Import Results into Slicer" );
-    cl.AddOption( Key( "out-itk" ), &this->m_OutputPathITK, "Output path for final transformation in ITK format" )
+    cl.AddOption( Key( "write-itk" ), &this->m_OutputPathITK, "Output path for final transformation in ITK format" )
       ->SetProperties( CommandLine::PROPS_XFORM | CommandLine::PROPS_OUTPUT )
       ->SetAttribute( "reference", "FloatingImage" );
     cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OUTPUT );
@@ -199,9 +200,9 @@ ImagePairAffineRegistrationCommandLine
     exit( 1 );
     }
   
-  if ( (OptimizerStepFactor <= 0) || (OptimizerStepFactor >= 1) ) 
+  if ( (this->m_OptimizerStepFactor <= 0) || (this->m_OptimizerStepFactor >= 1) ) 
     {
-    StdErr << "ERROR: step factor value " << OptimizerStepFactor << " is invalid. Must be in range (0..1)\n";
+    StdErr << "ERROR: step factor value " << this->m_OptimizerStepFactor << " is invalid. Must be in range (0..1)\n";
     exit( 1 );
     }
 
@@ -317,9 +318,9 @@ ImagePairAffineRegistrationCommandLine
       } 
     }
   
-  if ( Protocol ) 
+  if ( this->m_ProtocolFileName ) 
     {
-    RegistrationCallback::SmartPtr callback( new ProtocolCallback( Protocol ) );
+    RegistrationCallback::SmartPtr callback( new ProtocolCallback( this->m_ProtocolFileName ) );
     this->SetCallback( callback );
     }
 }
@@ -393,12 +394,12 @@ ImagePairAffineRegistrationCommandLine::OutputResultList( const char* studyList 
   classStream.Close();
     
   classStream.Open( studyList, "settings", ClassStream::WRITE );
-  classStream.WriteDouble( "exploration", this->m_Exploration );
-  classStream.WriteDouble( "accuracy", this->m_Accuracy );
+  classStream.WriteDouble( "exploration", this->m_MaxStepSize );
+  classStream.WriteDouble( "accuracy", this->m_MinStepSize );
   classStream.WriteDouble( "min_sampling", this->m_Sampling );
-  classStream.WriteDouble( "coarsest_resolution", CoarsestResolution );
+  classStream.WriteDouble( "coarsest_resolution", this->m_CoarsestResolution );
   classStream.WriteInt( "metric", this->m_Metric );
-  classStream.WriteDouble( "optimizer_step_factor", OptimizerStepFactor );
+  classStream.WriteDouble( "optimizer_step_factor", this->m_OptimizerStepFactor );
   classStream.WriteString( "initializer", MakeInitialAffineTransformation::GetModeName( this->m_Initializer ) );
 
   this->m_PreprocessorRef.WriteSettings( classStream );  

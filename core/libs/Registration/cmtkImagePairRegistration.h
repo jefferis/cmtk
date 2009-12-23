@@ -70,53 +70,52 @@ cmtk
 class ImagePairRegistration 
 {
 protected:
-  /// Metric to use.
-  cmtkGetSetMacro(int,Metric);
-
-  /** For new metric implementation: override default interpolation.
+  /// Image pair similarity measure to use as the registration metric.
+  int m_Metric;
+  
+  /** Override default interpolation method.
    * For intensity images, the default interpolator is LINEAR, for label images
    * it is NEARESTNEIGHBOR. These are used if this field is left at its initial
    * value, DEFAULT.
    */
   cmtkGetSetMacro(Interpolators::InterpolationEnum,FloatingImageInterpolation);
-
+  
   /// Optimization algorithm to use.
   cmtkGetSetMacro(int,Algorithm);
 
   /// Number of levels for automatic parameter generation.
-  cmtkGetSetMacro(unsigned int,AutoMultiLevels
-);
+  unsigned int m_AutoMultiLevels;
 
-  /// Exploration, i.e. initial step size.
-  cmtkGetSetMacro(double,Exploration);
+  /// Maximum optimization step size (this determines search space exploration).
+  double m_MaxStepSize;
 
-  /// Accuracy, i.e. final step size.
-  cmtkGetSetMacro(double,Accuracy);
+  /// Minimum optimization step size (this determines search precision).
+  double m_MinStepSize;
 
   /** Coarsest resolution to resample image data to.
    * If this value is unset, ie. less than or equal to zero, then the coarsest
    * resolution is automatically computed from the initial step size
    * (Exploration).
    */
-  double CoarsestResolution;
+  double m_CoarsestResolution;
 
   /// Flag whether the last resolution level uses the original images.
-  cmtkGetSetMacro(bool,UseOriginalData);
+  bool m_UseOriginalData;
  
  /// Factor between optimization step sizes.
-  double OptimizerStepFactor;
+  double m_OptimizerStepFactor;
 
   /// Use maximum norm instead of Euclid where applicable.
-  bool UseMaxNorm;
+  bool m_UseMaxNorm;
 
   /// Threshold for terminating optimization based on changes of the target function.
   Optimizer::ReturnType m_DeltaFThreshold;
 
-  /// Sampling, i.e. last non-original resolution.
-  cmtkGetSetMacro(Types::Coordinate,Sampling);
-
-  /// Name of protocol file.
-  cmtkGetSetMacroString(Protocol);
+  /** Image sampling.
+   * This is the finest resampled image resolution in the multi-resolution image pyramid.
+   * The only finer resolution images are the original ones.
+   */
+  Types::Coordinate m_Sampling;
 
   /// First data volume.
   cmtkGetSetMacro(UniformVolume::SmartPtr,Volume_1);
@@ -298,7 +297,7 @@ public:
 
   /** Destructor.
    */
-  virtual ~ImagePairRegistration ();
+  virtual ~ImagePairRegistration () {}
 
   /** Do registration.
    * This function must be called to start the multiresolution optimization
@@ -312,74 +311,74 @@ public:
    */
   double GetTotalElapsedTime() const 
   {
-    return cmtk::Timers::GetTimeProcess() - TimeStartRegistration;
+    return cmtk::Timers::GetTimeProcess() - this->m_TimeStartRegistration;
   }
   
   /** Return elapsed process time during current level.
    */
   double GetLevelElapsedTime() const 
   {
-    return cmtk::Timers::GetTimeProcess() - TimeStartLevel;
+    return cmtk::Timers::GetTimeProcess() - this->m_TimeStartLevel;
   }
   
   /** Return total elapsed walltime.
    */
   double GetTotalElapsedWalltime() const 
   {
-    return cmtk::Timers::GetWalltime() - WalltimeStartRegistration;
+    return cmtk::Timers::GetWalltime() - this->m_WalltimeStartRegistration;
   }
   
   /** Return elapsed walltime during current level.
    */
   double GetLevelElapsedWalltime() const 
   {
-    return cmtk::Timers::GetWalltime() - WalltimeStartLevel;
+    return cmtk::Timers::GetWalltime() - this->m_WalltimeStartLevel;
   }
   
   /** Return total elapsed thread time.
    */
   double GetThreadTotalElapsedTime() const 
   {
-    return cmtk::Timers::GetTimeThread() - ThreadTimeStartRegistration;
+    return cmtk::Timers::GetTimeThread() - this->m_ThreadTimeStartRegistration;
   }
   
   /** Return elapsed thread time during current level.
    */
   double GetThreadLevelElapsedTime() const 
   {
-    return cmtk::Timers::GetTimeThread() - ThreadTimeStartLevel;
+    return cmtk::Timers::GetTimeThread() - this->m_ThreadTimeStartLevel;
   }
 
 private:
   /** Time of registration start.
    * This is used as the reference for absolute computation time calculation.
    */
-  double TimeStartRegistration;
+  double m_TimeStartRegistration;
 
   /** Time of entering the current resolution level.
    * This is used as the reference for per-level computation time calculation.
    */
-  double TimeStartLevel;
+  double m_TimeStartLevel;
 
   /** Reference walltime of registration start.
    * This is used as the reference for absolute computation time calculation.
    */
-  double WalltimeStartRegistration;
+  double m_WalltimeStartRegistration;
 
   /** Reference walltime of entering the current resolution level.
    * This is used as the reference for per-level computation time calculation.
    */
-  double WalltimeStartLevel;
+  double m_WalltimeStartLevel;
 
   /** Time of registration start.
    * This is used as the reference for absolute computation time calculation.
    */
-  double ThreadTimeStartRegistration;
+  double m_ThreadTimeStartRegistration;
 
   /** Time of entering the current resolution level.
    * This is used as the reference for per-level computation time calculation.
    */
-  double ThreadTimeStartLevel;
+  double m_ThreadTimeStartLevel;
 };
 
 //@}

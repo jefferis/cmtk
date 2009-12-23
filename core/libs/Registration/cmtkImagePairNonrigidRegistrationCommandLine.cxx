@@ -48,7 +48,6 @@
 
 #include <cmtkVoxelMatchingElasticFunctional.h>
 #include <cmtkSymmetricElasticFunctional.h>
-#include <cmtkProtocolCallback.h>
 
 #include <cmtkSplineWarpXformITKIO.h>
 
@@ -97,7 +96,7 @@ ImagePairNonrigidRegistrationCommandLine
 
   this->m_GridSpacing = 15;
   this->m_ExactGridSpacing = 0;
-  Studylist = Protocol = Time = NULL;
+  Studylist = Time = NULL;
 
   this->m_OutputIntermediate = 0;
   Verbose = 0;
@@ -151,23 +150,23 @@ ImagePairNonrigidRegistrationCommandLine
     cl.EndGroup();
 
     cl.BeginGroup( "Optimization", "Optimization parameters" );
-    cl.AddOption( Key( 'e', "exploration" ), &this->m_Exploration, "Search space exploration (initial step size)" );
-    cl.AddOption( Key( 'a', "accuracy" ), &this->m_Accuracy, "Search accuracy (initial step size)" );
-    cl.AddOption( Key( 'f', "stepfactor" ), &this->OptimizerStepFactor, "Factor for search step size reduction. Must be > 0.0 and < 1.0 [default: 0.5]" );
+    cl.AddOption( Key( "max-stepsize" ), &this->m_MaxStepSize, "Maximum optimizer step size, which determines search space exploration." );
+    cl.AddOption( Key( "min-stepsize" ), &this->m_MinStepSize, "Minimum optimizer step size, which determines precision." );
+    cl.AddOption( Key( "stepfactor" ), &this->m_OptimizerStepFactor, "Factor for search step size reduction. Must be > 0.0 and < 1.0 [default: 0.5]" );
     cl.AddOption( Key( "delta-f-threshold" ), &this->m_DeltaFThreshold, "Optional threshold to terminate optimization (level) if relative change of target function drops below this value." );
 
-    cl.AddSwitch( Key( "no-maxnorm" ), &this->UseMaxNorm, false, "Use Euclid norm for gradient normalication in optimization, rather than maximum norm" );
+    cl.AddSwitch( Key( "no-maxnorm" ), &this->m_UseMaxNorm, false, "Use Euclid norm for gradient normalication in optimization, rather than maximum norm" );
 
-    cl.AddOption( Key( "jacobian-weight" ), &this->m_JacobianConstraintWeight, "Weight for Jacobian-based local volume preservation constraint" );
-    cl.AddOption( Key( "energy-weight" ), &this->m_GridEnergyWeight, "Weight for grid bending energy constraint" );
-    cl.AddOption( Key( "landmark-weight" ), &this->m_LandmarkErrorWeight, "Weight for landmark misregistration registration" );
-    cl.AddOption( Key( "ic-weight" ), &this->m_InverseConsistencyWeight, "Weight for inverse consistency constraint" );
-    cl.AddOption( Key( "relax" ), &this->m_RelaxWeight, "Weight relaxation factor for alternating under-constrained iterations" );
+    cl.AddOption( Key( "jacobian-constraint-weight" ), &this->m_JacobianConstraintWeight, "Weight for Jacobian-based local volume preservation constraint" );
+    cl.AddOption( Key( "gridenergy-constraint-weight" ), &this->m_GridEnergyWeight, "Weight for grid bending energy constraint" );
+    cl.AddOption( Key( "landmark-constraint-weight" ), &this->m_LandmarkErrorWeight, "Weight for landmark misregistration registration" );
+    cl.AddOption( Key( "inverse-consistency-weight" ), &this->m_InverseConsistencyWeight, "Weight for inverse consistency constraint" );
+    cl.AddOption( Key( "constraint-relaxation-factor" ), &this->m_RelaxWeight, "Weight relaxation factor for alternating under-constrained iterations" );
     cl.EndGroup();
 
     cl.BeginGroup( "Resolution", "Image resolution parameters" );
     cl.AddOption( Key( 's', "sampling" ), &this->m_Sampling, "Image sampling (finest resampled image resolution)" );
-    cl.AddOption( Key( "coarsest" ), &this->CoarsestResolution, "Upper limit for image sampling in multiresolution hierarchy" );
+    cl.AddOption( Key( "coarsest" ), &this->m_CoarsestResolution, "Upper limit for image sampling in multiresolution hierarchy" );
 
     cl.AddSwitch( Key( "omit-original-data" ), &this->m_UseOriginalData, false, "Do not use original data in full resolution for final registration stage." );
     cl.EndGroup();
@@ -189,7 +188,6 @@ ImagePairNonrigidRegistrationCommandLine
 
     cl.BeginGroup( "Output", "Output parameters" )->SetProperties( CommandLine::PROPS_NOXML );
     cl.AddOption( Key( 'o', "outlist" ), &this->Studylist, "Output path for final transformation" );
-    cl.AddOption( Key( 'p', "protocol" ), &this->Protocol, "Optimization protocol output file name" );
     cl.AddOption( Key( 't', "time" ), &this->Time, "Computation time statistics output file name" );
     cl.AddSwitch( Key( "output-intermediate" ), &this->m_OutputIntermediate, true, "Write transformation for each level [default: only write final transformation]" );
     cl.EndGroup();
@@ -209,9 +207,9 @@ ImagePairNonrigidRegistrationCommandLine
     exit( 1 );
     }
 
-  if ( (OptimizerStepFactor <= 0) || (OptimizerStepFactor >= 1) ) 
+  if ( (this->m_OptimizerStepFactor <= 0) || (this->m_OptimizerStepFactor >= 1) ) 
     {
-    StdErr << "ERROR: step factor value " << OptimizerStepFactor << " is invalid. Must be in range (0..1)\n";
+    StdErr << "ERROR: step factor value " << this->m_OptimizerStepFactor << " is invalid. Must be in range (0..1)\n";
     exit( 1 );
     }
 
@@ -300,12 +298,6 @@ ImagePairNonrigidRegistrationCommandLine
   if ( forceOutsideFlag )
     {
     this->SetForceOutside( true, forceOutsideValue );
-    }
-
-  if ( Protocol )
-    {
-    RegistrationCallback::SmartPtr callback( new ProtocolCallback( Protocol ) );
-    this->SetCallback( callback );
     }
 }
 
@@ -399,14 +391,14 @@ ImagePairNonrigidRegistrationCommandLine::OutputWarp ( const char* path ) const
 
   classStream.Open( path, "settings", ClassStream::WRITE );
   classStream.WriteInt( "algorithm", this->m_Algorithm );
-  classStream.WriteBool( "use_maxnorm", UseMaxNorm );
-  classStream.WriteDouble( "exploration", this->m_Exploration );
-  classStream.WriteDouble( "accuracy", this->m_Accuracy );
+  classStream.WriteBool( "use_maxnorm", this->m_UseMaxNorm );
+  classStream.WriteDouble( "exploration", this->m_MaxStepSize );
+  classStream.WriteDouble( "accuracy", this->m_MinStepSize );
   classStream.WriteDouble( "min_sampling", this->m_Sampling );
-  classStream.WriteDouble( "coarsest_resolution", CoarsestResolution );
+  classStream.WriteDouble( "coarsest_resolution", this->m_CoarsestResolution );
   classStream.WriteBool( "use_original_data", this->m_UseOriginalData );
   classStream.WriteInt( "metric", this->m_Metric );
-  classStream.WriteDouble( "optimizer_step_factor", OptimizerStepFactor );
+  classStream.WriteDouble( "optimizer_step_factor", this->m_OptimizerStepFactor );
   classStream.WriteDouble( "grid_spacing", this->m_GridSpacing );
   classStream.WriteInt( "ignore_edge", IgnoreEdge );
   classStream.WriteDouble( "jacobian_constraint_weight", this->m_JacobianConstraintWeight );

@@ -171,10 +171,10 @@ void DoRegistration( const char* refFile, const char* fltFile )
   Registration.SetInitializer( cmtk::MakeInitialAffineTransformation::COM );
   
 // set optimization parameters to what they were during the original Vanderbilt submission.
-  Registration.SetExploration( 8.0 );
-  Registration.SetAccuracy( 0.01 );
-  Registration.SetSampling( 1.0 );
-  Registration.SetUseOriginalData( true );
+  Registration.m_MaxStepSize = 8.0;
+  Registration.m_MinStepSize = 0.01;
+  Registration.m_Sampling = 1.0;
+  Registration.m_UseOriginalData = true;
 
 // run registration
   cmtk::CallbackResult result = Registration.Register();

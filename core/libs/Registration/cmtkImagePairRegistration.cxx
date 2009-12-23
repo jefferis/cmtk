@@ -55,8 +55,8 @@ ImagePairRegistration::ImagePairRegistration ()
   : m_Metric( 0 ),
     m_FloatingImageInterpolation( Interpolators::DEFAULT ),
     m_AutoMultiLevels( 0 ),
-    m_Exploration( -1 ),
-    m_Accuracy( -1 ),
+    m_MaxStepSize( -1 ),
+    m_MinStepSize( -1 ),
     m_DeltaFThreshold( 0.0 ),
     m_PreprocessorRef( "Reference", "ref" ),
     m_PreprocessorFlt( "Floating", "flt" ),
@@ -66,21 +66,14 @@ ImagePairRegistration::ImagePairRegistration ()
     m_Optimizer( NULL )
 { 
   this->m_Callback = RegistrationCallback::SmartPtr( new RegistrationCallback() );
-  this->m_Protocol = NULL; 
 
   this->m_Sampling = -1;
-  this->CoarsestResolution = -1;
+  this->m_CoarsestResolution = -1;
   this->m_UseOriginalData = true;
 
   this->m_Algorithm = 0;
-  UseMaxNorm = true;
-  OptimizerStepFactor = 0.5;
-}
-
-ImagePairRegistration::~ImagePairRegistration () 
-{
-  if ( this->m_Protocol ) 
-    free( this->m_Protocol );
+  this->m_UseMaxNorm = true;
+  this->m_OptimizerStepFactor = 0.5;
 }
 
 CallbackResult
@@ -91,23 +84,23 @@ ImagePairRegistration::InitRegistration ()
     const Types::Coordinate minDelta = std::min( this->m_Volume_1->GetMinDelta(), this->m_Volume_2->GetMinDelta() );
     const Types::Coordinate maxDelta = std::max( this->m_Volume_1->GetMaxDelta(), this->m_Volume_2->GetMaxDelta() );
 
-    this->m_Accuracy = 0.1 * minDelta;
+    this->m_MinStepSize = 0.1 * minDelta;
     this->m_Sampling = maxDelta;
-    this->m_Exploration = maxDelta * (1<<(this->m_AutoMultiLevels-1));
+    this->m_MaxStepSize = maxDelta * (1<<(this->m_AutoMultiLevels-1));
     }
   
   if ( this->m_Sampling <= 0 )
     this->m_Sampling = std::max( this->m_Volume_1->GetMaxDelta(), this->m_Volume_2->GetMaxDelta() );
   
-  if ( this->m_Exploration <= 0 )
-    this->m_Exploration = 8.0 * this->m_Sampling;
+  if ( this->m_MaxStepSize <= 0 )
+    this->m_MaxStepSize = 8.0 * this->m_Sampling;
   
-  if ( this->m_Accuracy <= 0 )
-    this->m_Accuracy = this->m_Sampling / 128;
+  if ( this->m_MinStepSize <= 0 )
+    this->m_MinStepSize = this->m_Sampling / 128;
   
-  TimeStartLevel = TimeStartRegistration = cmtk::Timers::GetTimeProcess();
-  WalltimeStartLevel = WalltimeStartRegistration = cmtk::Timers::GetWalltime();
-  ThreadTimeStartLevel = ThreadTimeStartRegistration = cmtk::Timers::GetTimeThread();
+  this->m_TimeStartLevel = this->m_TimeStartRegistration = cmtk::Timers::GetTimeProcess();
+  this->m_WalltimeStartLevel = this->m_WalltimeStartRegistration = cmtk::Timers::GetWalltime();
+  this->m_ThreadTimeStartLevel = this->m_ThreadTimeStartRegistration = cmtk::Timers::GetTimeThread();
 
   return CALLBACK_OK;
 }
@@ -124,7 +117,7 @@ ImagePairRegistration::Register ()
 
   this->m_Optimizer->SetDeltaFThreshold( this->m_DeltaFThreshold );
   
-  Types::Coordinate currentExploration = this->m_Exploration;
+  Types::Coordinate currentExploration = this->m_MaxStepSize;
   CoordinateVector::SmartPtr v( new CoordinateVector() );
   int NumResolutionLevels = FunctionalStack.size();
 
@@ -149,7 +142,7 @@ ImagePairRegistration::Register ()
       
       if ( irq == CALLBACK_OK ) 
 	{
-	Types::Coordinate effectiveAccuracy = (index == NumResolutionLevels) ? std::max<Types::Coordinate>( this->m_Accuracy, currentExploration/1024 ) : this->m_Accuracy;
+	Types::Coordinate effectiveAccuracy = (index == NumResolutionLevels) ? std::max<Types::Coordinate>( this->m_MinStepSize, currentExploration/1024 ) : this->m_MinStepSize;
 	
 	irq = this->m_Optimizer->Optimize( *v, currentExploration, effectiveAccuracy );
 	this->m_Xform->SetParamVector( *v );
@@ -194,9 +187,9 @@ ImagePairRegistration::EnterResolution
     this->m_Callback->Comment( comment );
     }
   
-  TimeStartLevel = cmtk::Timers::GetTimeProcess();
-  WalltimeStartLevel = cmtk::Timers::GetWalltime();
-  ThreadTimeStartLevel = cmtk::Timers::GetTimeThread();
+  this->m_TimeStartLevel = cmtk::Timers::GetTimeProcess();
+  this->m_WalltimeStartLevel = cmtk::Timers::GetWalltime();
+  this->m_ThreadTimeStartLevel = cmtk::Timers::GetTimeThread();
   
   f->GetParamVector( *v );
 }

@@ -122,11 +122,6 @@ private:
    */
   char *Study2;
   
-  /** Name of protocol output file.
-   * This is defined by the -p or --protocol command line option.
-   */
-  const char *Protocol;
-
   /** Name of elapsed time output file.
    * This is defined by the -t or --time command line option.
    */

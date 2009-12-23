@@ -142,19 +142,19 @@ ImagePairNonrigidRegistration::InitRegistration ()
     FunctionalStack.push( nextFunctional );
     }
   
-  if ( this->m_Exploration <= 0 )
+  if ( this->m_MaxStepSize <= 0 )
     {
     const SplineWarpXform* warp = SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_Xform ); 
-    this->m_Exploration = 0.25 * std::max( warp->Spacing[0], std::max( warp->Spacing[1], warp->Spacing[2] ) );
+    this->m_MaxStepSize = 0.25 * std::max( warp->Spacing[0], std::max( warp->Spacing[1], warp->Spacing[2] ) );
     }
 
-  if ( this->CoarsestResolution <= 0 ) 
-    this->CoarsestResolution = this->m_Exploration;
+  if ( this->m_CoarsestResolution <= 0 ) 
+    this->m_CoarsestResolution = this->m_MaxStepSize;
   
   UniformVolume::SmartPtr currRef( this->m_ReferenceVolume );
   UniformVolume::SmartPtr currFlt( this->m_FloatingVolume );
 
-  for ( ;(currSampling<=this->CoarsestResolution); currSampling *= 2 ) 
+  for ( ;(currSampling<=this->m_CoarsestResolution); currSampling *= 2 ) 
     {
     UniformVolume::SmartPtr nextRef( new UniformVolume( *currRef, currSampling ) );
     UniformVolume::SmartPtr nextFlt( new UniformVolume( *currFlt, currSampling ) );
@@ -169,7 +169,7 @@ ImagePairNonrigidRegistration::InitRegistration ()
   switch ( this->m_Algorithm ) 
     {
     case 0:
-      this->m_Optimizer = Optimizer::SmartPtr( new BestNeighbourOptimizer( OptimizerStepFactor ) ); 
+      this->m_Optimizer = Optimizer::SmartPtr( new BestNeighbourOptimizer( this->m_OptimizerStepFactor ) ); 
       break;
     case 1:
     case 2:
@@ -177,8 +177,8 @@ ImagePairNonrigidRegistration::InitRegistration ()
       break;
     case 3: 
     {
-    BestDirectionOptimizer *optimizer = new BestDirectionOptimizer( OptimizerStepFactor ); 
-    optimizer->SetUseMaxNorm( UseMaxNorm );
+    BestDirectionOptimizer *optimizer = new BestDirectionOptimizer( this->m_OptimizerStepFactor );
+    optimizer->SetUseMaxNorm( this->m_UseMaxNorm );
     this->m_Optimizer = Optimizer::SmartPtr( optimizer );
     break;
     }
