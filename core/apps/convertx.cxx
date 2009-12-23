@@ -77,7 +77,10 @@ public:
   typedef cmtk::SmartPointer<Self> SmartPtr;
   
   /// Apply this operation to an image in place.
-  virtual void Apply( cmtk::UniformVolume& ) {}
+  virtual cmtk::UniformVolume::SmartPtr Apply( cmtk::UniformVolume::SmartPtr& volume ) 
+  {
+    return volume;
+  }
 };
 
 /// List of image operations.
@@ -93,7 +96,7 @@ public:
   ImageOperationConvertType( const cmtk::ScalarDataType newType ) : m_NewType( newType ) {}
   
   /// Apply this operation to an image in place.
-  virtual void Apply( cmtk::UniformVolume& volume )
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
   {    
     switch ( this->m_NewType ) 
       {
@@ -104,17 +107,18 @@ public:
       case cmtk::TYPE_INT:
       case cmtk::TYPE_FLOAT:
       case cmtk::TYPE_DOUBLE:
-	if ( this->m_NewType != volume.GetData()->GetType() ) 
+	if ( this->m_NewType != volume->GetData()->GetType() ) 
 	  {
 	  if ( Verbose )
 	    cmtk::StdErr << "Converting to new data type.\n";
 	  
-	  volume.SetData( cmtk::TypedArray::SmartPtr( volume.GetData()->Convert( this->m_NewType ) ) );
+	  volume->SetData( cmtk::TypedArray::SmartPtr( volume->GetData()->Convert( this->m_NewType ) ) );
 	  }
 	break;
       default:
 	break;
       }
+    return volume;
   }
 
   /// Create object to convert to "char" data.
@@ -174,9 +178,10 @@ public:
   ImageOperationFlip( const int normalAxis ) : m_NormalAxis( normalAxis ) {}
 
   /// Apply this operation to an image in place.
-  virtual void Apply( cmtk::UniformVolume& volume )
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
   {
-    volume.ApplyMirrorPlane( this->m_NormalAxis );
+    volume->ApplyMirrorPlane( this->m_NormalAxis );
+    return volume;
   }
 
   /// Create x flip object.
@@ -212,10 +217,10 @@ public:
   ImageOperationApplyMask( const cmtk::UniformVolume::SmartPtr& maskVolume ) : m_MaskVolume( maskVolume ) {}
 
   /// Apply this operation to an image in place.
-  virtual void Apply( cmtk::UniformVolume& volume )
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
   {
     const std::string maskOrientation = this->m_MaskVolume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION];
-    const std::string workingOrientation = volume.m_MetaInformation[CMTK_META_IMAGE_ORIENTATION];
+    const std::string workingOrientation = volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION];
     if ( maskOrientation != workingOrientation )
       {
       if ( Verbose )
@@ -227,7 +232,7 @@ public:
     
     for ( int dim = 0; dim < 3; ++dim )
       {
-      if ( this->m_MaskVolume->m_Dims[dim] != volume.m_Dims[dim] )
+      if ( this->m_MaskVolume->m_Dims[dim] != volume->m_Dims[dim] )
 	{
 	cmtk::StdErr << "ERROR: mask volume dimensions do not match working volume dimensions.\n";
 	exit( 1 );
@@ -235,12 +240,13 @@ public:
       }
     
     const cmtk::TypedArray* maskData = this->m_MaskVolume->GetData();
-    cmtk::TypedArray::SmartPtr& volumeData = volume.GetData();
+    cmtk::TypedArray::SmartPtr& volumeData = volume->GetData();
 
-    const size_t nPixels = volume.GetNumberOfPixels();
+    const size_t nPixels = volume->GetNumberOfPixels();
     for ( size_t i = 0; i < nPixels; ++i )
       if ( maskData->IsPaddingOrZeroAt( i ) ) 
 	volumeData->SetPaddingAt( i );
+    return volume;
   }
 
   /// Create new mask operation.
@@ -295,13 +301,14 @@ public:
   ImageOperationErodeDilate( const int iterations ) : m_Iterations( iterations ) {}
   
   /// Apply this operation to an image in place.
-  virtual void Apply( cmtk::UniformVolume& volume )
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
   {
     if ( this->m_Iterations < 0 )
-      volume.ApplyErode( -this->m_Iterations );
+      volume->ApplyErode( -this->m_Iterations );
     else
       if ( this->m_Iterations > 0 )
-	volume.ApplyDilate( this->m_Iterations );
+	volume->ApplyDilate( this->m_Iterations );
+    return volume;
   }
 
   /// Create new dilation operation.
@@ -331,9 +338,10 @@ public:
   ImageOperationBoundaryMap( const bool multiValued ) : m_MultiValued( multiValued ) {}
   
   /// Apply this operation to an image in place.
-  virtual void Apply( cmtk::UniformVolume& volume )
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
   {
-    volume.SetData( cmtk::TypedArray::SmartPtr( volume.GetBoundaryMap( this->m_MultiValued ) ) );
+    volume->SetData( cmtk::TypedArray::SmartPtr( volume->GetBoundaryMap( this->m_MultiValued ) ) );
+    return volume;
   }
   
   /// Create new binary boundary map operation.
@@ -351,6 +359,56 @@ public:
 private:
   /// Multi-valued flag: if this is set, a multi-valued boundary map will be created, otherwise a binary map.
   bool m_MultiValued;
+};
+
+/// Image operation: grid downsampling.
+class ImageOperationDownsample
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
+  /// Constructor:
+  ImageOperationDownsample( const int factorX, const int factorY, const int factorZ ) : m_FactorX( factorX ), m_FactorY( factorY ), m_FactorZ( factorZ ) {}
+  
+  /// Apply this operation to an image in place.
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
+  {
+    const int factors[3] = { this->m_FactorX, this->m_FactorY, this->m_FactorZ };
+    return cmtk::UniformVolume::SmartPtr( volume->GetDownsampled( factors ) );
+  }
+  
+  /// Create a new downsampler.
+  static void New( const char* arg )
+  {
+    int factorsX = 1;
+    int factorsY = 1;
+    int factorsZ = 1;
+
+    const size_t nFactors = sscanf( arg, "%d,%d,%d", &factorsX, &factorsY, &factorsZ );
+    if ( nFactors == 1 )
+      {
+      factorsZ = factorsY = factorsX;
+      }
+    else
+      {
+      if ( nFactors != 3 )
+	{
+	cmtk::StdErr << "ERROR: downsampling factors must either be three integers, x,y,z, or a single integer\n";
+	exit( 1 );
+	}
+      }
+    ImageOperationList.push_back( SmartPtr( new ImageOperationDownsample( factorsX, factorsY, factorsZ ) ) );
+  }
+  
+private:
+  /// Downsampling factor in X direction.
+  int m_FactorX;
+
+  /// Downsampling factor in Y direction.
+  int m_FactorY;
+
+  /// Downsampling factor in Z direction.
+  int m_FactorZ;
 };
 
 int
@@ -403,10 +461,13 @@ main( int argc, char* argv[] )
     cl.AddCallback( Key( "multi-boundary-map" ), &ImageOperationBoundaryMap::NewMulti, "Create multi-valued boundary map" );
     cl.EndGroup();
 
-    if ( ! cl.Parse() ) return 1;
-    
+    cl.AddCallback( Key( "downsample" ), &ImageOperationDownsample::New, "Downsample image by factors 'x,y,z' or by single factor 'xyz'" );
+
     cl.AddParameter( &imagePathIn, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &imagePathOut, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+
+    if ( ! cl.Parse() ) 
+      return 1;
     }
   catch ( cmtk::CommandLine::Exception ex ) 
     {
@@ -437,7 +498,7 @@ main( int argc, char* argv[] )
   
   for ( std::list<ImageOperation::SmartPtr>::iterator opIt = ImageOperationList.begin(); opIt != ImageOperationList.end(); ++opIt )
     {
-    (*opIt)->Apply( *volume );
+    volume = (*opIt)->Apply( volume );
     }
 
   if ( Verbose )
