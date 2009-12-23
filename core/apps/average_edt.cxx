@@ -77,16 +77,14 @@ std::map<std::string,std::string> ReplaceMap;
 bool PaddingFlag = false;
 float PaddingValue = 0;
 
-const char* AddReplaceFrom( const char* arg )
+void AddReplaceFrom( const char* arg )
 {
   ReplaceFrom = arg;
-  return NULL;
 }
 
-const char* AddReplaceTo( const char* arg )
+void AddReplaceTo( const char* arg )
 {
   ReplaceMap[std::string(ReplaceFrom)] = std::string( arg );
-  return NULL;
 }
 
 cmtk::TypedArray::SmartPtr

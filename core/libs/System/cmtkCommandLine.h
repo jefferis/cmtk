@@ -214,19 +214,19 @@ public:
   };
 
   /// Callback function.
-  typedef const char* (*CallbackFunc)();
+  typedef void (*CallbackFunc)();
 
   /// Callback function with an argument.
-  typedef const char* (*CallbackFuncArg)( const char* );
+  typedef void (*CallbackFuncArg)( const char* );
 
   /// Callback function with an integer argument.
-  typedef const char* (*CallbackFuncIntArg)( const long int );
+  typedef void (*CallbackFuncIntArg)( const long int );
 
   /// Callback function with a double-precision floating point argument.
-  typedef const char* (*CallbackFuncDblArg)( const double );
+  typedef void (*CallbackFuncDblArg)( const double );
 
   /// Callback function with multiple arguments.
-  typedef const char* (*CallbackFuncMultiArg)( const char**, int& argsUsed );
+  typedef void (*CallbackFuncMultiArg)( const char**, int& argsUsed );
 
   /** Command line key: short and long option.
    * A key is the character (short options) or string (long options) that is associated
@@ -1008,7 +1008,7 @@ public:
   /// Add callback with a single argument.
   template<class TArg>
   Item::SmartPtr&
-  AddCallback( const Key& key, const char* (*funcArg)( const TArg ), const char* comment ) 
+  AddCallback( const Key& key, void (*funcArg)( const TArg ), const char* comment ) 
   {
     return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new Callback( funcArg ) ), comment ) ) )->m_Action;
   }

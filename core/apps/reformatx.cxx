@@ -73,15 +73,14 @@ const char* FloatingVolumeName = NULL;
 
 cmtk::UniformVolume::SmartPtr UserDefinedTargetVolume;
 
-const char*
+void
 CallbackTargetVolume( const char* arg )
 {
   int gridDims[3] = { 0, 0, 0 };
   float gridDelta[3] = { 0, 0, 0 };
   float gridOrigin[3] = { 0, 0, 0 };
 
-  const size_t numArgs = 
-    sscanf( arg, "%d,%d,%d:%f,%f,%f:%f,%f,%f", gridDims, gridDims+1, gridDims+2, gridDelta, gridDelta+1, gridDelta+2, gridOrigin, gridOrigin+1, gridOrigin+2 );
+  const size_t numArgs = sscanf( arg, "%d,%d,%d:%f,%f,%f:%f,%f,%f", gridDims, gridDims+1, gridDims+2, gridDelta, gridDelta+1, gridDelta+2, gridOrigin, gridOrigin+1, gridOrigin+2 );
   if ( (numArgs != 6) && (numArgs != 9) )
     {
     cmtk::StdErr.printf( "ERROR: target volume definition must be int,int,int:float,float,float or int,int,int:float,float,float:float,float,float\n", arg );
@@ -94,7 +93,6 @@ CallbackTargetVolume( const char* arg )
     {
     UserDefinedTargetVolume->SetOrigin( cmtk::Vector3D( gridOrigin[0], gridOrigin[1], gridOrigin[2] ) );
     }
-  return NULL;
 }
 
 
@@ -121,17 +119,15 @@ bool TargetImageOffsetReal = false;
 bool TargetImageOffsetPixels = false;
 cmtk::Vector3D TargetImageOffset( 0, 0, 0 );
 
-const char*
+void
 CallbackCropImages( const char* arg )
 {
-  CropImages = 
-    (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d",
-		  &CropImagesRegionFrom[0], &CropImagesRegionFrom[1], &CropImagesRegionFrom[2],
-		  &CropImagesRegionTo[0], &CropImagesRegionTo[1], &CropImagesRegionTo[2] ) );
-  return NULL;
+  CropImages = (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d",
+			     &CropImagesRegionFrom[0], &CropImagesRegionFrom[1], &CropImagesRegionFrom[2],
+			     &CropImagesRegionTo[0], &CropImagesRegionTo[1], &CropImagesRegionTo[2] ) );
 }
 
-const char*
+void
 CallbackTargetImageOffset( const char* arg )
 {
   float x, y, z;
@@ -146,11 +142,9 @@ CallbackTargetImageOffset( const char* arg )
 
   TargetImageOffsetReal = true;
   TargetImageOffsetPixels = false;
-
-  return NULL;
 }
 
-const char*
+void
 CallbackTargetImageOffsetPixels( const char* arg )
 {
   float x, y, z;
@@ -165,8 +159,6 @@ CallbackTargetImageOffsetPixels( const char* arg )
 
   TargetImageOffsetReal = false;
   TargetImageOffsetPixels = true;
-
-  return NULL;
 }
 
 template<class TInterpolator>

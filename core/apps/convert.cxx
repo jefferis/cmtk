@@ -69,20 +69,20 @@ cmtk::ScalarDataType DataType = cmtk::TYPE_NONE;
 
 std::set<cmtk::Types::DataItem> SelectValues;
 
-const char* Select( const char* arg ) 
+void
+Select( const char* arg ) 
 {
   SelectValues.insert( atoi( arg ) ); 
-  return NULL;
 }
 
 std::map<cmtk::Types::DataItem,cmtk::Types::DataItem> MapValues;
 cmtk::Types::DataItem MapFrom;
 bool MapOnly = false;
 
-const char* Map( const char* arg ) 
+void
+Map( const char* arg ) 
 {
   MapValues.insert( std::make_pair<cmtk::Types::DataItem,cmtk::Types::DataItem>( MapFrom, atoi( arg ) ) );
-  return NULL;
 }
 
 const char* InFileName = NULL;
@@ -118,14 +118,12 @@ InvertFunction( const cmtk::Types::DataItem value )
   return 1.0 / value;
 }
 
-const char*
+void
 CallbackCropImages( const char* arg )
 {
-  CropImages = 
-    (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d",
-		  &CropImagesRegionFrom[0], &CropImagesRegionFrom[1], &CropImagesRegionFrom[2],
-		  &CropImagesRegionTo[0], &CropImagesRegionTo[1], &CropImagesRegionTo[2] ) );
-  return NULL;
+  CropImages = (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d",
+			     &CropImagesRegionFrom[0], &CropImagesRegionFrom[1], &CropImagesRegionFrom[2],
+			     &CropImagesRegionTo[0], &CropImagesRegionTo[1], &CropImagesRegionTo[2] ) );
 }
 
 bool BoundaryMap = false;
@@ -133,18 +131,16 @@ bool BoundaryMapMultiValued = false;
 
 std::list<int> ErodeOrDilate;
 
-const char*
+void
 CallbackErode( const char* arg )
 {
   ErodeOrDilate.push_back( -atoi( arg ) );
-  return NULL;
 }
 
-const char*
+void
 CallbackDilate( const char* arg )
 {
   ErodeOrDilate.push_back( atoi( arg ) );
-  return NULL;
 }
 
 cmtk::Types::DataItem Threshold = 0;

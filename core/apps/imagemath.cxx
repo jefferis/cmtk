@@ -129,7 +129,7 @@ CheckStackTwoMatchingImages( const char* function )
   return true;
 }
 
-const char*
+void
 CallbackIn( const char** argv, int& argsUsed )
 {
   argsUsed = 0;
@@ -148,41 +148,34 @@ CallbackIn( const char** argv, int& argsUsed )
     ImageStack.push( volume );
     ++argsUsed;
     }
-  return NULL;
 }
 
-const char*
+void
 CallbackOut( const char* argv )
 {
   if ( CheckStackOneImage( "Out" ) )
     {
     cmtk::VolumeIO::Write( ImageStack.top(), argv, Verbose );
     }
-  
-  return NULL;
 }
 
-const char*
+void
 CallbackPop()
 {
   if ( CheckStackOneImage( "Pop" ) )
     {
     ImageStack.pop();
     }
-
-  return NULL;
 }
 
-const char*
+void
 CallbackDup()
 {
   if ( CheckStackOneImage( "Dup" ) )
     ImageStack.push( cmtk::UniformVolume::SmartPtr( ImageStack.top()->Clone() ) );
-  
-  return NULL;
 }
     
-const char*
+void
 CallbackAbs()
 {
   if ( CheckStackOneImage( "Abs" ) )
@@ -190,11 +183,9 @@ CallbackAbs()
     ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
     ImageStack.top()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Abs );
     }
-
-  return NULL;
 }
     
-const char*
+void
 CallbackTrunc()
 {
   if ( CheckStackOneImage( "Trunc" ) )
@@ -202,11 +193,9 @@ CallbackTrunc()
     ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
     ImageStack.top()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Trunc );
     }
-
-  return NULL;
 }
     
-const char*
+void
 CallbackLog()
 {
   if ( CheckStackOneImage( "Log" ) )
@@ -214,11 +203,9 @@ CallbackLog()
     ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
     ImageStack.top()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Log );
     }
-
-  return NULL;
 }
     
-const char*
+void
 CallbackLogit()
 {
   if ( CheckStackOneImage( "Logit" ) )
@@ -226,11 +213,9 @@ CallbackLogit()
     ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
     ImageStack.top()->GetData()->ApplyFunctionDouble( cmtk::Logit );
     }
-
-  return NULL;
 }
     
-const char*
+void
 CallbackLogitAll()
 {
   std::stack<cmtk::UniformVolume::SmartPtr> tmpStack;
@@ -249,11 +234,9 @@ CallbackLogitAll()
     ImageStack.push( tmpStack.top() );
     tmpStack.pop();
     }
-  
-  return NULL;
 }
     
-const char*
+void
 CallbackLogistic()
 {
   if ( CheckStackOneImage( "Logistic" ) )
@@ -261,11 +244,9 @@ CallbackLogistic()
     ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
     ImageStack.top()->GetData()->ApplyFunctionDouble( cmtk::Logistic );
     }
-
-  return NULL;
 }
     
-const char*
+void
 CallbackLogisticAll()
 {
   std::stack<cmtk::UniformVolume::SmartPtr> tmpStack;
@@ -284,11 +265,9 @@ CallbackLogisticAll()
     ImageStack.push( tmpStack.top() );
     tmpStack.pop();
     }
-  
-  return NULL;
 }
     
-const char*
+void
 CallbackExp()
 {
   if ( CheckStackOneImage( "Exp" ) )
@@ -296,11 +275,9 @@ CallbackExp()
     ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
     ImageStack.top()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Exp );
     }
-
-  return NULL;
 }
 
-const char*
+void
 CallbackSqr()
 {
   if ( CheckStackOneImage( "Sqr" ) )
@@ -308,11 +285,9 @@ CallbackSqr()
     ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
     ImageStack.top()->GetData()->ApplyFunctionDouble( cmtk::Square );
     }
-
-  return NULL;
 }
 
-const char*
+void
 CallbackSqrt()
 {
   if ( CheckStackOneImage( "Sqrt" ) )
@@ -320,11 +295,9 @@ CallbackSqrt()
     ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
     ImageStack.top()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Sqrt );
     }
-
-  return NULL;
 }
         
-const char*
+void
 CallbackThreshMin( const char* argv )
 {
   if ( CheckStackOneImage( "ThreshMin" ) )
@@ -337,15 +310,13 @@ CallbackThreshMin( const char* argv )
     data->GetRange( min, max );
     data->Threshold( threshold, max );
     }
-
-  return NULL;
 }
     
-const char*
+void
 CallbackScalarMul( const double c )
 {
   if ( ! CheckStackOneImage( "ScalarMul" ) )
-    return NULL;
+    return;
   
   cmtk::UniformVolume::SmartPtr p = ImageStack.top();
   ImageStack.pop();
@@ -370,15 +341,13 @@ CallbackScalarMul( const double c )
   
   p->SetData( mul );
   ImageStack.push( p );
-
-  return NULL;
 }
 
-const char*
+void
 CallbackScalarAdd( const double c )
 {
   if ( ! CheckStackOneImage( "ScalarAdd" ) )
-    return NULL;
+    return;
   
   cmtk::UniformVolume::SmartPtr p = ImageStack.top();
   ImageStack.pop();
@@ -403,15 +372,13 @@ CallbackScalarAdd( const double c )
   
   p->SetData( add );
   ImageStack.push( p );
-
-  return NULL;
 }
 
-const char*
+void
 CallbackScalarXor( const long int c )
 {
   if ( ! CheckStackOneImage( "ScalarXor" ) )
-    return NULL;
+    return;
   
   cmtk::UniformVolume::SmartPtr p = ImageStack.top();
   ImageStack.pop();
@@ -437,15 +404,13 @@ CallbackScalarXor( const long int c )
   
   p->SetData( out );
   ImageStack.push( p );
-
-  return NULL;
 }
 
-const char*
+void
 CallbackOneOver()
 {
   if ( ! CheckStackOneImage( "OneOver" ) )
-    return NULL;
+    return;
   
   cmtk::UniformVolume::SmartPtr p = ImageStack.top();
   ImageStack.pop();
@@ -470,15 +435,13 @@ CallbackOneOver()
   
   p->SetData( inv );
   ImageStack.push( p );
-
-  return NULL;
 }
 
-const char*
+void
 CallbackAdd()
 {
   if ( ! CheckStackTwoMatchingImages( "Add" ) )
-    return NULL;
+    return;
   
   cmtk::UniformVolume::SmartPtr p = ImageStack.top();
   ImageStack.pop();
@@ -504,15 +467,13 @@ CallbackAdd()
   
   p->SetData( add );
   ImageStack.push( p );
-
-  return NULL;
 }
 
-const char*
+void
 CallbackMul()
 {
   if ( ! CheckStackTwoMatchingImages( "Mul" ) )
-    return NULL;
+    return;
   
   cmtk::UniformVolume::SmartPtr p = ImageStack.top();
   ImageStack.pop();
@@ -538,15 +499,13 @@ CallbackMul()
   
   p->SetData( mul );
   ImageStack.push( p );
-
-  return NULL;
 }
 
-const char*
+void
 CallbackDiv()
 {
   if ( ! CheckStackTwoMatchingImages( "Div" ) )
-    return NULL;
+    return;
 
   cmtk::UniformVolume::SmartPtr p = ImageStack.top();
   ImageStack.pop();
@@ -572,15 +531,13 @@ CallbackDiv()
   
   p->SetData( div );
   ImageStack.push( p );
-
-  return NULL;
 }
 
-const char*
+void
 CallbackAtan2()
 {
   if ( ! CheckStackTwoMatchingImages( "Atan2" ) )
-    return NULL;
+    return;
 
   cmtk::UniformVolume::SmartPtr p = ImageStack.top();
   ImageStack.pop();
@@ -606,50 +563,44 @@ CallbackAtan2()
   
   p->SetData( result );
   ImageStack.push( p );
-
-  return NULL;
 }
 
-const char*
+void
 CallbackMatchHistograms()
 {
   if ( ImageStack.size() < 2 )
     {
     cmtk::StdErr << "ERROR: need at least two images on stack for histogram intensity matching\n";
-    return NULL;
+    return;
     }
   
   cmtk::UniformVolume::SmartPtr ref = ImageStack.top();
   ImageStack.pop();
   ImageStack.top()->GetData()->MatchHistogramToReference( ref->GetData() );
-  
-  return NULL;
 }
 
-const char*
+void
 CallbackSum()
 {
   while ( ImageStack.size() > 1 )
     {
     CallbackAdd();
     }
-  return NULL;
 }
 
-const char*
+void
 CallbackAverage()
 {
   const size_t nimages = ImageStack.size();
   CallbackSum();
   ImageStack.top()->GetData()->Rescale( 1.0 / nimages );
-  return NULL;
 }
 
-const char*
+void
 CallbackVoteCombination()
 {
   if ( ! CheckStackTwoMatchingImages( "Vote" ) )
-    return NULL;
+    return;
 
   cmtk::UniformVolume::SmartPtr grid = ImageStack.top();
   
@@ -658,7 +609,7 @@ CallbackVoteCombination()
     {
     if ( ImageStack.size() > 1 )
       if ( ! CheckStackTwoMatchingImages( "Vote" ) )
-	return NULL;
+	return;
     
     dataPtrs.push_back( ImageStack.top()->GetData() );
     ImageStack.pop();
@@ -667,15 +618,13 @@ CallbackVoteCombination()
   cmtk::LabelCombinationVoting voting( dataPtrs );
   grid->SetData( voting.GetResult() );
   ImageStack.push( grid );
-
-  return NULL;
 }
 
-const char*
+void
 CallbackSTAPLE( const long int maxIterations )
 {
   if ( ! CheckStackTwoMatchingImages( "STAPLE" ) )
-    return NULL;
+    return;
   
   cmtk::UniformVolume::SmartPtr imageGrid = ImageStack.top();
 
@@ -684,7 +633,7 @@ CallbackSTAPLE( const long int maxIterations )
     {
     if ( ImageStack.size() > 1 )
       if ( ! CheckStackTwoMatchingImages( "STAPLE" ) )
-	return NULL;
+	return;
     
     dataPtrs.push_back( ImageStack.top()->GetData() );
     ImageStack.pop();
@@ -708,15 +657,13 @@ CallbackSTAPLE( const long int maxIterations )
       }
     cmtk::StdErr.printf( "\n" );
     }
-
-  return NULL;
 }
 
-const char*
+void
 CallbackMultiClassSTAPLE( const long int maxIterations )
 {
   if ( ! CheckStackTwoMatchingImages( "MultiClassSTAPLE" ) )
-    return NULL;
+    return;
   
   cmtk::UniformVolume::SmartPtr imageGrid = ImageStack.top();
 
@@ -725,7 +672,7 @@ CallbackMultiClassSTAPLE( const long int maxIterations )
     {
     if ( ImageStack.size() > 1 )
       if ( ! CheckStackTwoMatchingImages( "MultiClassSTAPLE" ) )
-	return NULL;
+	return;
     
     dataPtrs.push_back( ImageStack.top()->GetData() );
     ImageStack.pop();
@@ -734,22 +681,20 @@ CallbackMultiClassSTAPLE( const long int maxIterations )
   cmtk::LabelCombinationMultiClassSTAPLE mstaple( dataPtrs, maxIterations );
   imageGrid->SetData( mstaple.GetResult() );
   ImageStack.push( imageGrid );
-
-  return NULL;
 }
 
-const char*
+void
 CallbackStackEntropyLabels()
 {
   if ( ! CheckStackTwoMatchingImages( "StackEntropyLabels" ) )
-    return NULL;
+    return;
   
   std::vector<cmtk::UniformVolume::SmartPtr> volPtrs;
   while ( ImageStack.size() > 0 ) 
     {
     if ( ImageStack.size() > 1 )
       if ( ! CheckStackTwoMatchingImages( "StackEntropyLabels" ) )
-	return NULL;
+	return;
     
     volPtrs.push_back( ImageStack.top() );
     ImageStack.pop();
@@ -792,15 +737,13 @@ CallbackStackEntropyLabels()
 
   volPtrs[0]->SetData( entropyArray );
   ImageStack.push( volPtrs[0] );
-  
-  return NULL;
 }
 
-const char*
+void
 CallbackMaxIndex()
 {
   if ( ! CheckStackTwoMatchingImages( "MaxIndex" ) )
-    return NULL;
+    return;
   
   std::vector<cmtk::UniformVolume::SmartPtr> volPtrs( ImageStack.size() );
 
@@ -808,7 +751,7 @@ CallbackMaxIndex()
     {
     if ( ImageStack.size() > 1 )
       if ( ! CheckStackTwoMatchingImages( "MaxIndex" ) )
-	return NULL;
+	return;
     
     volPtrs[ImageStack.size()-1] = ImageStack.top();
     ImageStack.pop();
@@ -854,22 +797,20 @@ CallbackMaxIndex()
   
   volPtrs[0]->SetData( maxArray );
   ImageStack.push( volPtrs[0] );
-  
-  return NULL;
 }
 
-const char*
+void
 CallbackMaxValue()
 {
   if ( ! CheckStackTwoMatchingImages( "MaxValue" ) )
-    return NULL;
+    return;
   
   std::vector<cmtk::UniformVolume::SmartPtr> volPtrs;
   while ( ImageStack.size() > 0 ) 
     {
     if ( ImageStack.size() > 1 )
       if ( ! CheckStackTwoMatchingImages( "MaxValue" ) )
-	return NULL;
+	return;
     
     volPtrs.push_back( ImageStack.top() );
     ImageStack.pop();
@@ -907,22 +848,20 @@ CallbackMaxValue()
   
   volPtrs[0]->SetData( maxArray );
   ImageStack.push( volPtrs[0] );
-  
-  return NULL;
 }
 
-const char*
+void
 CallbackContractLabels()
 {
   if ( ! CheckStackTwoMatchingImages( "ContractLabels" ) )
-    return NULL;
+    return;
   
   std::vector<cmtk::UniformVolume::SmartPtr> volPtrs;
   while ( ImageStack.size() > 0 ) 
     {
     if ( ImageStack.size() > 1 )
       if ( ! CheckStackTwoMatchingImages( "ContractLabels" ) )
-	return NULL;
+	return;
     
     volPtrs.push_back( ImageStack.top() );
     ImageStack.pop();
@@ -947,11 +886,9 @@ CallbackContractLabels()
   
   volPtrs[0]->SetData( outArray );
   ImageStack.push( volPtrs[0] );
-  
-  return NULL;
 }
 
-const char*
+void
 CallbackCombinePCA()
 {
   std::vector<cmtk::UniformVolume::SmartPtr> volPtrs;
@@ -959,7 +896,7 @@ CallbackCombinePCA()
     {
     if ( ImageStack.size() > 1 )
       if ( ! CheckStackTwoMatchingImages( "CombinePCA" ) )
-	return NULL;
+	return;
     
     volPtrs.push_back( ImageStack.top() );
     ImageStack.pop();
@@ -1068,8 +1005,6 @@ CallbackCombinePCA()
     }
   volPtrs[0]->SetData( output );
   ImageStack.push( volPtrs[0] );
-
-  return NULL;
 }
 
 int

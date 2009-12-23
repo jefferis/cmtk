@@ -66,7 +66,7 @@ bool MachineReadable = false;
 
 std::list<cmtk::Vector3D> ProbeListIndex;
 
-const char*
+void
 CallbackProbeIndex( const char* arg )
 {
   int x, y, z;
@@ -74,7 +74,6 @@ CallbackProbeIndex( const char* arg )
     {
     ProbeListIndex.push_back( cmtk::Vector3D( x, y, z ) );
     }
-  return NULL;
 }
 
 int

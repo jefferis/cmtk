@@ -122,52 +122,45 @@ public:
   }
 
   /// Create object to convert to "char" data.
-  static const char* NewChar()
+  static void NewChar()
   {
     ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_CHAR ) ) );
-    return NULL;
   }
 
   /// Create object to convert to "byte" data.
-  static const char* NewByte()
+  static void NewByte()
   {
     ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_BYTE ) ) );
-    return NULL;
   }
 
   /// Create object to convert to "short" data.
-  static const char* NewShort()
+  static void NewShort()
   {
     ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_SHORT ) ) );
-    return NULL;
   }
 
   /// Create object to convert to "unsigned short" data.
-  static const char* NewUShort()
+  static void NewUShort()
   {
     ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_USHORT ) ) );
-    return NULL;
   }
 
   /// Create object to convert to "int" data.
-  static const char* NewInt()
+  static void NewInt()
   {
     ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_INT ) ) );
-    return NULL;
   }
 
   /// Create object to convert to "float" data.
-  static const char* NewFloat()
+  static void NewFloat()
   {
     ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_FLOAT ) ) );
-    return NULL;
   }
 
   /// Create object to convert to "double" data.
-  static const char* NewDouble()
+  static void NewDouble()
   {
     ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_DOUBLE ) ) );
-    return NULL;
   }
   
 private:
@@ -192,24 +185,21 @@ public:
   }
 
   /// Create x flip object.
-  static const char* NewX()
+  static void NewX()
   {
     ImageOperationList.push_back( SmartPtr( new ImageOperationFlip( cmtk::AXIS_X ) ) );
-    return NULL;
   }
 
   /// Create y flip object.
-  static const char* NewY()
+  static void NewY()
   {
     ImageOperationList.push_back( SmartPtr( new ImageOperationFlip( cmtk::AXIS_Y ) ) );
-    return NULL;
   }
 
   /// Create y flip object.
-  static const char* NewZ()
+  static void NewZ()
   {
     ImageOperationList.push_back( SmartPtr( new ImageOperationFlip( cmtk::AXIS_Z ) ) );
-    return NULL;
   }
 
 private:
@@ -261,17 +251,15 @@ public:
   }
 
   /// Create new mask operation.
-  static const char* New( const char* maskFileName )
+  static void New( const char* maskFileName )
   {
     ImageOperationList.push_back( SmartPtr( new ImageOperationApplyMask( ReadMaskFile( maskFileName ) ) ) );
-    return NULL;
   }
 
   /// Create new inverse mask operation.
-  static const char* NewInverse( const char* maskFileName )
+  static void NewInverse( const char* maskFileName )
   {
     ImageOperationList.push_back( SmartPtr( new ImageOperationApplyMask( ReadMaskFile( maskFileName, true /*inverse*/ ) ) ) );
-    return NULL;
   }
 
 private:

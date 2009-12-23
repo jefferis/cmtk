@@ -49,7 +49,7 @@ bool Verbose = false;
 
 std::list<cmtk::Vector3D> LocationList;
 
-const char* 
+void
 AddProbeLocation( const char* argv )
 {
   double x, y, z;
@@ -61,7 +61,6 @@ AddProbeLocation( const char* argv )
     {
     cmtk::StdErr << "WARNING: '" << argv << "' is not a valid location (must be x,y,z)\n";
     }
-  return NULL;
 }
 
 cmtk::XformList XformList;

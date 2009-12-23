@@ -64,15 +64,13 @@ bool DrawBox = false;
 bool Crop = false;
 int CropRegion[4] = { 0, 0, 0, 0 };
 
-const char*
+void
 SetCropRegion( const char* arg )
 {
   if ( 4 == sscanf( arg, "%d,%d:%d,%d", &CropRegion[0], &CropRegion[1], &CropRegion[2], &CropRegion[3] ) )
     Crop = true;
   else
     Crop = false;
-  
-  return NULL;
 }
 
 void DrawLine( const std::vector<double>& outputX, const std::vector<double>& outputY )

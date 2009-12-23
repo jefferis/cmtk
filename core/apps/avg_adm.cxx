@@ -74,16 +74,14 @@ cmtk::Interpolators::InterpolationEnum Interpolation = cmtk::Interpolators::LINE
 const char* ReplaceFrom;
 std::map<std::string,std::string> ReplaceMap;
 
-const char* AddReplaceFrom( const char* arg )
+void AddReplaceFrom( const char* arg )
 {
   ReplaceFrom = arg;
-  return NULL;
 }
 
-const char* AddReplaceTo( const char* arg )
+void AddReplaceTo( const char* arg )
 {
   ReplaceMap[std::string(ReplaceFrom)] = std::string( arg );
-  return NULL;
 }
 
 const char* OutImageName = NULL;

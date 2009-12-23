@@ -49,11 +49,11 @@ bool PutDims = false;
 
 int LegacyMode = 0;
 
-const char* SetDims( const char* arg )
+void
+SetDims( const char* arg )
 {
   sscanf( arg, "%d,%d,%d", &DimsX, &DimsY, &DimsZ );
   PutDims = true;
-  return NULL;
 }
 
 float DeltaX = 1.0;
@@ -61,11 +61,11 @@ float DeltaY = 1.0;
 float DeltaZ = 1.0;
 bool PutDeltas = false;
 
-const char* SetDeltas( const char* arg )
+void
+SetDeltas( const char* arg )
 {
   sscanf( arg, "%f,%f,%f", &DeltaX, &DeltaY, &DeltaZ );
   PutDeltas = true;
-  return NULL;
 }
 
 bool LittleEndian = false;

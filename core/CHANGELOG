@@ -32,6 +32,8 @@ Release CMTK-1.2.0:
     images "./1/image-1.nii", "./2/image-2.nii" for up to ten colliding
     paths. For larger numbers of collisions, the number of digits is
     automatically increased as necessary.
+- Improved: command line callback error handling was ugly and tedious; now
+    using exceptions to achieve the same effect.
 
 - Fixed: bundled DICOM library finally works on all tested platforms and all
     tested compilers.

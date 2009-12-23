@@ -89,18 +89,16 @@ cmtk::Vector3D PointSpreadFunction;
 bool PointSpreadFunctionSet = false;
 cmtk::Types::Coordinate PointSpreadFunctionScale = 1.0;
 
-const char*
+void
 CallbackSetPSF( const char* arg )
 {
   float x, y, z;
   if ( 3 != sscanf( arg, "%f,%f,%f", &x, &y, &z ) )
     {
-    return "ERROR: point spread function size must be given as three comma-separated real values: x,y,z\n";
+    throw "ERROR: point spread function size must be given as three comma-separated real values: x,y,z\n";
     }
   PointSpreadFunction.Set( x, y, z );
   PointSpreadFunctionSet = true;
-  
-  return NULL;
 }
 
 int NumberOfIterations = 20;
@@ -111,7 +109,7 @@ bool WriteImagesAsFloat = false;
 
 std::map<size_t,float> PassWeights;
 
-const char*
+void
 CallbackSetPassWeight( const char* argv )
 {
   int pass = 0;
@@ -123,16 +121,15 @@ CallbackSetPassWeight( const char* argv )
   else
     {
     cmtk::StdErr << "ERROR: pass weights must be given as 'pass:weight', where 'pass' is an integer and 'weight' is a number between 0 and 1.\n"
-	      << "       Parameter provided was '" << argv << "'\n";
+		 << "       Parameter provided was '" << argv << "'\n";
     exit( 1 );
     }
-  return NULL;
 }
 
 int CropFromIndex[3], CropToIndex[3];
 bool UseCropRegion = false;
 
-const char*
+void
 CallbackCrop( const char* arg )
 {
   if ( 6 == sscanf( arg, "%d,%d,%d:%d,%d,%d", CropFromIndex, CropFromIndex+1, CropFromIndex+2, CropToIndex, CropToIndex+1, CropToIndex+2 ) )
@@ -142,12 +139,11 @@ CallbackCrop( const char* arg )
     cmtk::StdErr.printf( "ERROR: string '%s' does not describe a valid crop region\n", arg );
     exit( 1 );
     }
-  return NULL;
 }
 
 cmtk::UniformVolume::SmartPtr ReconGrid = cmtk::UniformVolume::SmartPtr::Null;
 
-const char*
+void
 CallbackReconGrid( const char* arg )
 {
   int gridDims[3] = { 0, 0, 0 };
@@ -168,7 +164,6 @@ CallbackReconGrid( const char* arg )
     {
     ReconGrid->SetOrigin( cmtk::Vector3D( gridOrigin[0], gridOrigin[1], gridOrigin[2] ) );
     }
-  return NULL;
 }
 
 void

@@ -44,20 +44,18 @@ bool Verbose = false;
 
 int Dims[3] = { 256, 256, 256 };
 
-const char* 
+void
 SetDims( const char* arg )
 {
   sscanf( arg, "%d,%d,%d", &Dims[0], &Dims[1], &Dims[2] );
-  return NULL;
 }
 
 float Delta[3] = { 1.0, 1.0, 1.0 };
 
-const char* 
+void
 SetDeltas( const char* arg )
 {
   sscanf( arg, "%f,%f,%f", &Delta[0], &Delta[1], &Delta[2] );
-  return NULL;
 }
 
 cmtk::ScalarDataType DataType = cmtk::TYPE_USHORT;

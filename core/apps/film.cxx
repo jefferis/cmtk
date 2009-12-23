@@ -91,7 +91,7 @@ std::map<size_t,float> PassWeights;
 
 bool WriteImagesAsFloat = false;
 
-const char*
+void
 CallbackSetPassWeight( const char* argv )
 {
   int pass = 0;
@@ -106,7 +106,6 @@ CallbackSetPassWeight( const char* argv )
 	      << "       Parameter provided was '" << argv << "'\n";
     exit( 1 );
     }
-  return NULL;
 }
 
 template<class TInterpolator>

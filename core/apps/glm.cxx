@@ -72,18 +72,16 @@ std::set<int> IgnoreSet;
 std::set<std::string> SelectSet;
 std::vector<std::string> FieldNames;
 
-const char*
+void
 CallbackIgnore( const char* argv )
 {
   IgnoreSet.insert( atoi( argv ) );
-  return NULL;
 }
 
-const char*
+void
 CallbackSelect( const char* argv )
 {
   SelectSet.insert( argv );
-  return NULL;
 }
 
 bool ExcludeConstant = false;
@@ -99,14 +97,12 @@ bool CropImages = false;
 int CropImagesRegionFrom[3] = { 0,0,0 };
 int CropImagesRegionTo[3] = { 0,0,0 };
 
-const char*
+void
 CallbackCropImages( const char* arg )
 {
-  CropImages = 
-    (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d",
-		  &CropImagesRegionFrom[0], &CropImagesRegionFrom[1], &CropImagesRegionFrom[2],
-		  &CropImagesRegionTo[0], &CropImagesRegionTo[1], &CropImagesRegionTo[2] ) );
-  return NULL;
+  CropImages = (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d",
+			     &CropImagesRegionFrom[0], &CropImagesRegionFrom[1], &CropImagesRegionFrom[2],
+			     &CropImagesRegionTo[0], &CropImagesRegionTo[1], &CropImagesRegionTo[2] ) );
 }
 
 void

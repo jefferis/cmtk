@@ -69,7 +69,7 @@ int VolumeInjectionRadius = 0;
 
 std::map<size_t,float> PassWeights;
 
-const char*
+void
 CallbackSetPassWeight( const char* argv )
 {
   int pass = 0;
@@ -81,16 +81,15 @@ CallbackSetPassWeight( const char* argv )
   else
     {
     cmtk::StdErr << "ERROR: pass weights must be given as 'pass:weight', where 'pass' is an integer and 'weight' is a number between 0 and 1.\n"
-	      << "       Parameter provided was '" << argv << "'\n";
+		 << "       Parameter provided was '" << argv << "'\n";
     exit( 1 );
     }
-  return NULL;
 }
 
 int CropFromIndex[3], CropToIndex[3];
 bool UseCropRegion = false;
 
-const char*
+void
 CallbackCrop( const char* arg )
 {
   if ( 6 == sscanf( arg, "%d,%d,%d:%d,%d,%d", CropFromIndex, CropFromIndex+1, CropFromIndex+2, CropToIndex, CropToIndex+1, CropToIndex+2 ) )
@@ -100,20 +99,18 @@ CallbackCrop( const char* arg )
     cmtk::StdErr.printf( "ERROR: string '%s' does not describe a valid crop region\n", arg );
     exit( 1 );
     }
-  return NULL;
 }
 
 cmtk::UniformVolume::SmartPtr ReconGrid = cmtk::UniformVolume::SmartPtr::Null;
 
-const char*
+void
 CallbackReconGrid( const char* arg )
 {
   int gridDims[3] = { 0, 0, 0 };
   float gridDelta[3] = { 0, 0, 0 };
   float gridOrigin[3] = { 0, 0, 0 };
 
-  const size_t numArgs = 
-    sscanf( arg, "%d,%d,%d:%f,%f,%f:%f,%f,%f", gridDims, gridDims+1, gridDims+2, gridDelta, gridDelta+1, gridDelta+2, gridOrigin, gridOrigin+1, gridOrigin+2 );
+  const size_t numArgs = sscanf( arg, "%d,%d,%d:%f,%f,%f:%f,%f,%f", gridDims, gridDims+1, gridDims+2, gridDelta, gridDelta+1, gridDelta+2, gridOrigin, gridOrigin+1, gridOrigin+2 );
   if ( (numArgs != 6) && (numArgs != 9) )
     {
     cmtk::StdErr.printf( "ERROR: reconstruction volume definition must be int,int,int:float,float,float or int,int,int:float,float,float:float,float,float\n", arg );
@@ -121,12 +118,11 @@ CallbackReconGrid( const char* arg )
     }
   
   ReconGrid = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( gridDims, gridDelta[0], gridDelta[1], gridDelta[2] ) );
-
+  
   if ( numArgs == 9 )
     {
     ReconGrid->SetOrigin( cmtk::Vector3D( gridOrigin[0], gridOrigin[1], gridOrigin[2] ) );
     }
-  return NULL;
 }
 
 void

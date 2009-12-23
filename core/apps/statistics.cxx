@@ -85,11 +85,10 @@ int NumberOfHistogramBins = 256;
 
 std::list<cmtk::Types::DataItem> percentiles;
 
-const char*
-CallbackAddPercentile( const char* arg )
+void
+CallbackAddPercentile( const double arg )
 {
-  percentiles.push_back( static_cast<cmtk::Types::DataItem>( atof( arg ) ) );
-  return NULL;
+  percentiles.push_back( static_cast<cmtk::Types::DataItem>( arg ) );
 }
 
 void

@@ -39,15 +39,15 @@ cmtk::CommandLine::Callback::Evaluate
     {
     if ( index+1 < argc ) 
       {
-      const char* error = this->m_FuncArg( argv[index+1] );
-      if ( error ) 
+      try
+	{
+	this->m_FuncArg( argv[index+1] );
+	}
+      catch ( const char* error )
 	{
 	throw( Exception( error, index ) );
 	} 
-      else 
-	{
-	++index;
-	}
+      ++index;
       } 
     else
       {
@@ -60,15 +60,16 @@ cmtk::CommandLine::Callback::Evaluate
       {
       if ( index+1 < argc ) 
 	{
-	const char* error = this->m_FuncIntArg( ConvertStrToLong( argv[index+1] ) );
-	if ( error ) 
+	try
+	  {
+	  this->m_FuncIntArg( ConvertStrToLong( argv[index+1] ) );
+	  }
+	catch ( const char* error )
 	  {
 	  throw( Exception( error, index ) );
 	  } 
-	else 
-	  {
-	  ++index;
-	  }
+
+	++index;
 	} 
       else
 	{
@@ -81,15 +82,16 @@ cmtk::CommandLine::Callback::Evaluate
       {
       if ( index+1 < argc ) 
 	{
-	const char* error = this->m_FuncDblArg( ConvertStrToDouble( argv[index+1] ) );
-	if ( error ) 
+	try
+	  {
+	  this->m_FuncDblArg( ConvertStrToDouble( argv[index+1] ) );
+	  }
+	catch ( const char* error )
 	  {
 	  throw( Exception( error, index ) );
 	  } 
-	else 
-	  {
-	  ++index;
-	  }
+
+	++index;
 	} 
       else
 	{
@@ -103,15 +105,15 @@ cmtk::CommandLine::Callback::Evaluate
       if ( index+1 < argc ) 
 	{
 	int argsUsed = 0;
-	const char* error = this->m_FuncMultiArg( argv+index+1, argsUsed );
-	if ( error ) 
+	try
+	  {
+	  this->m_FuncMultiArg( argv+index+1, argsUsed );
+	  }
+	catch ( const char* error )
 	  {
 	  throw( Exception( error, index ) );
 	  } 
-	else 
-	  {
-	  index += argsUsed;
-	  }
+	index += argsUsed;
 	} 
       else
 	{
@@ -121,8 +123,11 @@ cmtk::CommandLine::Callback::Evaluate
     else
       {
       // no argument to callback
-      const char* error = this->m_Func();
-      if ( error ) 
+      try
+	{
+	this->m_Func();
+	}
+      catch ( const char* error )
 	{
 	throw( Exception( error, index ) );
 	}
