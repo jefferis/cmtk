@@ -423,7 +423,7 @@ main( int argc, char* argv[] )
   try 
     {
     cmtk::CommandLine cl( argc, argv );  
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Convert between image formats" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Convert between image file formats and data types. Also apply simple, general-purpose image operations in the process." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] infile outfile" );
 
     typedef cmtk::CommandLine::Key Key;
