@@ -77,10 +77,7 @@ public:
   typedef cmtk::SmartPointer<Self> SmartPtr;
   
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume& Apply( cmtk::UniformVolume& volume )
-  {
-    return volume;
-  }
+  virtual void Apply( cmtk::UniformVolume& ) {}
 };
 
 /// List of image operations.
@@ -96,7 +93,7 @@ public:
   ImageOperationConvertType( const cmtk::ScalarDataType newType ) : m_NewType( newType ) {}
   
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume& Apply( cmtk::UniformVolume& volume )
+  virtual void Apply( cmtk::UniformVolume& volume )
   {    
     switch ( this->m_NewType ) 
       {
@@ -118,7 +115,6 @@ public:
       default:
 	break;
       }
-    return volume;
   }
 
   /// Create object to convert to "char" data.
@@ -178,10 +174,9 @@ public:
   ImageOperationFlip( const int normalAxis ) : m_NormalAxis( normalAxis ) {}
 
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume& Apply( cmtk::UniformVolume& volume )
+  virtual void Apply( cmtk::UniformVolume& volume )
   {
     volume.ApplyMirrorPlane( this->m_NormalAxis );
-    return volume;
   }
 
   /// Create x flip object.
@@ -217,7 +212,7 @@ public:
   ImageOperationApplyMask( const cmtk::UniformVolume::SmartPtr& maskVolume ) : m_MaskVolume( maskVolume ) {}
 
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume& Apply( cmtk::UniformVolume& volume )
+  virtual void Apply( cmtk::UniformVolume& volume )
   {
     const std::string maskOrientation = this->m_MaskVolume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION];
     const std::string workingOrientation = volume.m_MetaInformation[CMTK_META_IMAGE_ORIENTATION];
@@ -246,8 +241,6 @@ public:
     for ( size_t i = 0; i < nPixels; ++i )
       if ( maskData->IsPaddingOrZeroAt( i ) ) 
 	volumeData->SetPaddingAt( i );
-
-    return volume;
   }
 
   /// Create new mask operation.
@@ -292,6 +285,74 @@ private:
   }
 };
 
+/// Image operation: erode or dilate.
+class ImageOperationErodeDilate
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
+  /// Constructor:
+  ImageOperationErodeDilate( const int iterations ) : m_Iterations( iterations ) {}
+  
+  /// Apply this operation to an image in place.
+  virtual void Apply( cmtk::UniformVolume& volume )
+  {
+    if ( this->m_Iterations < 0 )
+      volume.ApplyErode( -this->m_Iterations );
+    else
+      if ( this->m_Iterations > 0 )
+	volume.ApplyDilate( this->m_Iterations );
+  }
+
+  /// Create new dilation operation.
+  static void NewDilate( const long int iterations )
+  {
+    ImageOperationList.push_back( SmartPtr( new ImageOperationErodeDilate( iterations ) ) );
+  }
+
+  /// Create new erosion operation.
+  static void NewErode( const long int iterations )
+  {
+    ImageOperationList.push_back( SmartPtr( new ImageOperationErodeDilate( -iterations ) ) );
+  }
+  
+private:
+  /// Number of iterations of erosion (if negative) or dilation (if positive).
+  int m_Iterations;
+};
+
+/// Image operation: create binary or multi-valued boundary map.
+class ImageOperationBoundaryMap
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
+  /// Constructor:
+  ImageOperationBoundaryMap( const bool multiValued ) : m_MultiValued( multiValued ) {}
+  
+  /// Apply this operation to an image in place.
+  virtual void Apply( cmtk::UniformVolume& volume )
+  {
+    volume.SetData( cmtk::TypedArray::SmartPtr( volume.GetBoundaryMap( this->m_MultiValued ) ) );
+  }
+  
+  /// Create new binary boundary map operation.
+  static void New()
+  {
+    ImageOperationList.push_back( SmartPtr( new ImageOperationBoundaryMap( false ) ) );
+  }
+
+  /// Create new multi-valued boundary map operation.
+  static void NewMulti()
+  {
+    ImageOperationList.push_back( SmartPtr( new ImageOperationBoundaryMap( true ) ) );
+  }
+
+private:
+  /// Multi-valued flag: if this is set, a multi-valued boundary map will be created, otherwise a binary map.
+  bool m_MultiValued;
+};
+
 int
 main( int argc, char* argv[] )
 {
@@ -333,6 +394,13 @@ main( int argc, char* argv[] )
     cl.BeginGroup( "Masking", "Image Masking" );
     cl.AddCallback( Key( 'M', "mask" ), &ImageOperationApplyMask::New, "Binary mask file name: eliminate all image pixels where mask is 0." );
     cl.AddCallback( Key( "mask-inverse" ), &ImageOperationApplyMask::NewInverse, "Inverse binary mask file name eliminate all image pixels where mask is NOT 0." );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Morphological", "Morphological Operations" );
+    cl.AddCallback( Key( "erode" ), &ImageOperationErodeDilate::NewErode, "Morphological erosion operator" );
+    cl.AddCallback( Key( "dilate" ), &ImageOperationErodeDilate::NewDilate, "Morphological dilation operator" );
+    cl.AddCallback( Key( "boundary-map" ), &ImageOperationBoundaryMap::New, "Create boundary map" );
+    cl.AddCallback( Key( "multi-boundary-map" ), &ImageOperationBoundaryMap::NewMulti, "Create multi-valued boundary map" );
     cl.EndGroup();
 
     if ( ! cl.Parse() ) return 1;
