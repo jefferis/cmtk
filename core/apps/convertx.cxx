@@ -322,8 +322,11 @@ main( int argc, char* argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
 
+    cl.BeginGroup( "Input", "Input Image Controls" );
     cl.AddOption( Key( 'N', "set-padding" ), &paddingDataValue, "Set Padding data for input image.", &paddingDataFlag );
-    
+    cl.EndGroup();
+
+    cl.BeginGroup( "Conversion", "Data Type Conversion" );
     cl.AddCallback( Key( 'c', "char" ), &ImageOperationConvertType::NewChar, "8 bits, signed integer" );
     cl.AddCallback( Key( 'b', "byte" ), &ImageOperationConvertType::NewByte, "8 bits, unsigned integer" );
     cl.AddCallback( Key( 's', "short" ), &ImageOperationConvertType::NewShort, "16 bits, signed integer" );
@@ -331,13 +334,18 @@ main( int argc, char* argv[] )
     cl.AddCallback( Key( 'i', "int" ), &ImageOperationConvertType::NewInt, "32 bits signed integer" );
     cl.AddCallback( Key( 'f', "float" ), &ImageOperationConvertType::NewFloat, "32 bits floating point" );
     cl.AddCallback( Key( 'd', "double" ), &ImageOperationConvertType::NewDouble, "64 bits floating point\n" );
+    cl.EndGroup();
     
+    cl.BeginGroup( "Flipping", "Image Flipping" );
     cl.AddCallback( Key( "flip-x" ), &ImageOperationFlip::NewX, "Flip (mirror) along x-direction" );
     cl.AddCallback( Key( "flip-y" ), &ImageOperationFlip::NewY, "Flip (mirror) along y-direction" );
     cl.AddCallback( Key( "flip-z" ), &ImageOperationFlip::NewZ, "Flip (mirror) along z-direction" );
+    cl.EndGroup();
 
+    cl.BeginGroup( "Masking", "Image Masking" );
     cl.AddCallback( Key( 'M', "mask" ), &ImageOperationApplyMask::New, "Binary mask file name: eliminate all image pixels where mask is 0." );
     cl.AddCallback( Key( "mask-inverse" ), &ImageOperationApplyMask::NewInverse, "Inverse binary mask file name eliminate all image pixels where mask is NOT 0." );
+    cl.EndGroup();
 
     if ( ! cl.Parse() ) return 1;
     
