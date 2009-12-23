@@ -47,6 +47,10 @@ Release CMTK-1.2.0:
     to achieve the same effect.
 - Removed: "Binary" data class; this should really be treated as "Labels"
     anyway.
+- Removed: for now, we are dropping support for system-installed DCMTK
+    libraries. The configuration of these was a complete hack anyway. For the
+    time being, we will rely exclusively on the bundled, stripped-down version
+    of the toolkit for DICOM support.
 
 - Testing: support for baselines local to each build. If a baseline exists in
     testing/baseline/${TESTNAME}, then it will be used. Otherwise, the global
