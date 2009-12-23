@@ -428,11 +428,11 @@ public:
 
   /** Apply real function to data.
    */
-  virtual void ApplyFunctionFloat( float (*f)(const float) );
+  virtual void ApplyFunctionFloat( Self::FunctionTypeFloat f );
 
   /** Apply real function to data.
    */
-  virtual void ApplyFunctionDouble( double (*f)(const double) );
+  virtual void ApplyFunctionDouble( Self::FunctionTypeDouble f );
 
   /** Threshold data.
    * All values above upper threshold are set to upper thrershold. All values

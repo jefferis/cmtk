@@ -75,8 +75,11 @@ class TypedArray
   cmtkGetSetMacro(DataClass,DataClass);
 
 public:
+  /// This class.
+  typedef TypedArray Self;
+
   /// Smart pointer.
-  typedef SmartPointer<TypedArray> SmartPtr;
+  typedef SmartPointer<Self> SmartPtr;
 
   /** Create typed data array from existing array of values.
    *@param dtype Type specifier.
@@ -89,7 +92,7 @@ public:
    *@return A pointer to a new typed array object, or NULL if an error 
    * occurred.
    */
-  static TypedArray* Create
+  static Self* Create
   ( const ScalarDataType dtype, void *const data, const size_t size, const bool freeArray = true, const bool paddingFlag = false, const void* paddingData = NULL );
 
   /** Create typed data array, allocating new memory for the items array.
@@ -100,7 +103,7 @@ public:
    *@return A pointer to a new typed array object, or NULL if an error
    * occurred.
    */
-  static TypedArray* Create( const ScalarDataType dtype, const size_t size );
+  static Self* Create( const ScalarDataType dtype, const size_t size );
 
 protected:
   /** Scalar data type ID.
@@ -188,7 +191,7 @@ public:
 
   /** Convert to typed array of any given template type.
    */
-  virtual TypedArray* Convert(  const ScalarDataType dtype ) const = 0;
+  virtual Self* Convert(  const ScalarDataType dtype ) const = 0;
 
   /** Convert a sub-array to any given primitive data type.
    */
@@ -242,27 +245,33 @@ public:
    */
   virtual void GammaCorrection( const Types::DataItem gamma ) = 0;
 
+  /// Function pointer type: double to double.
+  typedef double (*FunctionTypeDouble)(const double);
+
+  /// Function pointer type: float to float.
+  typedef float (*FunctionTypeFloat)(const float);
+
   /** Apply real function to data.
    */
-  virtual void ApplyFunction( float (*f)(const float) ) 
+  virtual void ApplyFunction( Self::FunctionTypeFloat f ) 
   {
     this->ApplyFunctionFloat( f );
   }
 
   /** Apply real function to data.
    */
-  virtual void ApplyFunction( double (*f)(const double) )
+  virtual void ApplyFunction( Self::FunctionTypeDouble f )
   {
     this->ApplyFunctionDouble( f );
   }
 
   /** Apply real function to data.
    */
-  virtual void ApplyFunctionFloat( float (*f)(const float) ) = 0;
+  virtual void ApplyFunctionFloat( Self::FunctionTypeFloat f ) = 0;
 
   /** Apply real function to data.
    */
-  virtual void ApplyFunctionDouble( double (*f)(const double) ) = 0;
+  virtual void ApplyFunctionDouble( Self::FunctionTypeDouble f ) = 0;
 
   /// Convert all values to absolute values.
   virtual void MakeAbsolute() = 0;
@@ -313,7 +322,7 @@ public:
    * read by the source object's Get method and stored by the destination
    * object's Set method. 
    */
-  virtual void Clone ( const TypedArray& other ) 
+  virtual void Clone ( const Self& other ) 
   {
     this->m_DataClass = other.m_DataClass;
     PaddingFlag = other.PaddingFlag;
@@ -331,17 +340,17 @@ public:
    * This function calls CloneSubArray() for the actual cloning.
    *@see #CloneSubArray
    */
-  virtual TypedArray* Clone () const 
+  virtual Self* Clone () const 
   {
     return this->CloneSubArray( 0, DataSize );
   }
   
-  virtual TypedArray* NewTemplateArray
+  virtual Self* NewTemplateArray
   ( void *const data, const size_t datasize, const bool freeArray, const bool paddingFlag, const void* paddingData ) const = 0;
 
-  virtual TypedArray* NewTemplateArray( Types::DataItem *const data, const size_t datasize ) const = 0;
+  virtual Self* NewTemplateArray( Types::DataItem *const data, const size_t datasize ) const = 0;
 
-  virtual TypedArray* NewTemplateArray ( const size_t datasize = 0 ) const = 0;
+  virtual Self* NewTemplateArray ( const size_t datasize = 0 ) const = 0;
 
   /** Allocate and copy a continuous part of the array.
    *@param fromIdx Index element in this object that becomes the first element
@@ -349,7 +358,7 @@ public:
    *@param len Number of elements copied into the cloned object. Also the 
    * number of elements in the resulting cloned object.
    */
-  virtual TypedArray* CloneSubArray
+  virtual Self* CloneSubArray
   ( const size_t fromIdx, const size_t len ) const = 0;
 
   /// Default constructor.
@@ -364,7 +373,7 @@ public:
   /** Constructor.
    * Create array by conversion from an existing one.
    */
-  TypedArray ( const TypedArray& other ) 
+  TypedArray ( const Self& other ) 
   {
     this->Clone( other );
   }
@@ -518,7 +527,7 @@ public:
   /** Copy data block to other array.
    * This is really just a convenience wrapper for ConvertSubArray().
    */
-  virtual void BlockCopy( TypedArray *const target, const size_t toOffset, const size_t fromOffset, const size_t blockLength ) const 
+  virtual void BlockCopy( Self *const target, const size_t toOffset, const size_t fromOffset, const size_t blockLength ) const 
   {
     this->ConvertSubArray( target->GetDataPtr( toOffset ), target->GetType(), fromOffset, blockLength );
   }
@@ -541,7 +550,7 @@ public:
 
   /** Match histogram of this array to that of a reference array.
    */
-  virtual void MatchHistogramToReference( const TypedArray* referenceArray, const unsigned int numberOfBins = 1024 ) = 0;
+  virtual void MatchHistogramToReference( const Self* referenceArray, const unsigned int numberOfBins = 1024 ) = 0;
 };
 
 //@}

@@ -238,7 +238,7 @@ TemplateArray<T>
 template<class T>
 void
 TemplateArray<T>
-::ApplyFunctionFloat( float (*f)(const float) )
+::ApplyFunctionFloat( Self::FunctionTypeFloat f )
 {
 #pragma omp parallel for if (DataSize>1e5)
   for ( size_t i = 0; i < DataSize; ++i )
@@ -251,7 +251,7 @@ TemplateArray<T>
 template<class T>
 void
 TemplateArray<T>
-::ApplyFunctionDouble( double (*f)(const double) )
+::ApplyFunctionDouble( Self::FunctionTypeDouble f )
 {
 #pragma omp parallel for if (DataSize>1e5)
   for ( size_t i = 0; i < DataSize; ++i )
