@@ -434,15 +434,37 @@ main( const int argc, char* argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
 
-    cl.AddCallback( Key( "target-grid" ), CallbackTargetVolume, "Define target grid for reformating as Nx,Ny,Nz:dX,dY,dZ[:Ox,Oy,Oz] (dims:pixel:origin)" );
-    cl.AddSwitch( Key( 'm', "mask" ), &TargetMask, true, "Use target pixel data as binary mask." );
-
     cl.BeginGroup( "PlainOptions", "Options for Plain Reformatting" );
+    cmtk::CommandLine::EnumGroup<cmtk::Interpolators::InterpolationEnum>::SmartPtr
+      interpolationGroup = cl.AddEnum( "interpolation", &Interpolation, "Image interpolation method." );
+    interpolationGroup->AddSwitch( Key( "linear" ), cmtk::Interpolators::LINEAR, "Trilinear interpolation" );
+    interpolationGroup->AddSwitch( Key( "nn" ), cmtk::Interpolators::NEAREST_NEIGHBOR, "Nearest neighbor interpolation" );
+    interpolationGroup->AddSwitch( Key( "cubic" ), cmtk::Interpolators::CUBIC, "Tricubic interpolation" );
+    interpolationGroup->AddSwitch( Key( "pv" ), cmtk::Interpolators::PARTIALVOLUME, "Partial volume interpolation" );
+    interpolationGroup->AddSwitch( Key( "sinc-cosine" ), cmtk::Interpolators::COSINE_SINC, "Sinc interpolation with cosine window" );
+    interpolationGroup->AddSwitch( Key( "sinc-hamming" ), cmtk::Interpolators::HAMMING_SINC, "Sinc interpolation with Hamming window" );
+
+    cl.AddOption( Key( "sinc-window-radius" ), &InterpolatorWindowRadius, "Window radius for Sinc interpolation" );
+
     cl.AddSwitch( Key( "preserve-mass" ), &MassPreservingReformat, true, "Mass-preserving reformatting: multiply every reformatted value with the Jacobian determinant of the applied transformation." );
+    cl.EndGroup();
 
     cl.BeginGroup( "JacobianOptions", "Options for Jacobian Map Reformatting" );
     cl.AddSwitch( Key( "jacobian-correct-global" ), &JacobianCorrectGlobal, true, "Correct Jacobian maps for global scale." );
     cl.AddSwitch( Key( "no-jacobian-correct-global" ), &JacobianCorrectGlobal, false, "Do not correct Jacobian maps for global scale." );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Input", "Input Options" );
+    cl.AddCallback( Key( "target-grid" ), CallbackTargetVolume, "Define target grid for reformating as Nx,Ny,Nz:dX,dY,dZ[:Ox,Oy,Oz] (dims:pixel:origin)" );
+    cl.AddSwitch( Key( 'm', "mask" ), &TargetMask, true, "Use target pixel data as binary mask." );
+    cl.AddCallback( Key( "crop" ), CallbackCropImages, "Crop target image: x0,y0,z0,x1,y1,z2" );
+    cl.AddCallback( Key( 'O', "target-offset" ), CallbackTargetImageOffset, "Set target image offset to x,y,z mm" );
+    cl.AddCallback( Key( "target-offset-pixels" ), CallbackTargetImageOffsetPixels, "Set target image offset to dx,dy,dz pixels" );
+    cl.AddOption( Key( 'F', "floating" ), &FloatingVolumeName, "Format and path of floating image." );
+
+    cl.BeginGroup( "Output", "Output Options" );
+    cl.AddOption( Key( 'o', "outfile" ), &OutputImageName, "Format and path of output image." );
+    cl.EndGroup();
 
     cmtk::CommandLine::EnumGroup<cmtk::ScalarDataType>::SmartPtr
       typeGroup = cl.AddEnum( "outputtype", &DataType, "Scalar data type for the output image." );
@@ -455,23 +477,7 @@ main( const int argc, char* argv[] )
     typeGroup->AddSwitch( Key( "double" ), cmtk::TYPE_DOUBLE, "64 bits floating point\n" );
 
     cl.AddOption( Key( 'P', "pad-out" ), &OutPaddingValue, "Padding value for output image", &OutPaddingValueFlag );
-
-    cl.AddCallback( Key( "crop" ), CallbackCropImages, "Crop target image: x0,y0,z0,x1,y1,z2" );
-    cl.AddCallback( Key( 'O', "target-offset" ), CallbackTargetImageOffset, "Set target image offset to x,y,z mm" );
-    cl.AddCallback( Key( "target-offset-pixels" ), CallbackTargetImageOffsetPixels, "Set target image offset to dx,dy,dz pixels" );
-    cl.AddOption( Key( 'F', "floating" ), &FloatingVolumeName, "Format and path of floating image." );
-    cl.AddOption( Key( 'o', "outfile" ), &OutputImageName, "Format and path of output image." );
-
-    cmtk::CommandLine::EnumGroup<cmtk::Interpolators::InterpolationEnum>::SmartPtr
-      interpolationGroup = cl.AddEnum( "interpolation", &Interpolation, "Image interpolation method." );
-    interpolationGroup->AddSwitch( Key( "linear" ), cmtk::Interpolators::LINEAR, "Trilinear interpolation" );
-    interpolationGroup->AddSwitch( Key( "nn" ), cmtk::Interpolators::NEAREST_NEIGHBOR, "Nearest neighbor interpolation" );
-    interpolationGroup->AddSwitch( Key( "cubic" ), cmtk::Interpolators::CUBIC, "Tricubic interpolation" );
-    interpolationGroup->AddSwitch( Key( "pv" ), cmtk::Interpolators::PARTIALVOLUME, "Partial volume interpolation" );
-    interpolationGroup->AddSwitch( Key( "sinc-cosine" ), cmtk::Interpolators::COSINE_SINC, "Sinc interpolation with cosine window" );
-    interpolationGroup->AddSwitch( Key( "sinc-hamming" ), cmtk::Interpolators::HAMMING_SINC, "Sinc interpolation with Hamming window" );
-
-    cl.AddOption( Key( "sinc-window-radius" ), &InterpolatorWindowRadius, "Window radius for Sinc interpolation" );
+    cl.EndGroup();
 
     cl.Parse();
 
