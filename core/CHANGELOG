@@ -9,6 +9,10 @@ Release CMTK-1.2.0:
     command line tool.
 - Added: single-step mass-preserving reformatting in reformatx tool. Also
     added a new test to cover this.
+- Added: "convertx" tool, which will replace "convert" in the long term but is
+    designed to apply all operations given on the command line in the exact
+    order that they are specified and with arbitrary repetitions. This is in
+    response to Issue #3784.
 
 - Improved: more sophisticated install and packaging configuration; still not
     fully clear how that translates into separated packages for different

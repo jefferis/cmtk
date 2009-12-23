@@ -53,6 +53,7 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
       average_labels
       concat_affine
       convert
+      convertx
       convert_warp
       cpmatch
       film
