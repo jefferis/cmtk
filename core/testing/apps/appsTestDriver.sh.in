@@ -273,6 +273,10 @@ case ${RUNTEST} in
 	run convertx --multi-boundary-map parc1.hdr ${tmpdir}/boundary_map_multi.hdr
 	check_results boundary_map_multi.img
 	;;
+    convertxCropThresholdWriteRegion)
+        run_eval "${BINDIR}/convertx --crop-by-threshold-write-region 1 spgr_brain_1.hdr ${tmpdir}/cropped.nii  > ${tmpdir}/crop.txt"
+	check_results cropped.nii crop.txt
+	;;
     convertxDownsample)
 	run convertx --downsample 8,4,1 phantom_ax.hdr ${tmpdir}/downsample.hdr
 	check_results downsample.hdr downsample.img

@@ -411,6 +411,102 @@ private:
   int m_FactorZ;
 };
 
+/// Image operation: crop to region.
+class ImageOperationCropRegion
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
+  /// Constructor:
+  ImageOperationCropRegion( const int (&region)[6] ) 
+  {
+    for ( size_t i = 0; i<6; ++i )
+      this->m_Region[i] = region[i]; 
+  }
+  
+  /// Apply this operation to an image in place.
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
+  {
+    volume->SetCropRegion( this->m_Region, this->m_Region+3 );
+    return cmtk::UniformVolume::SmartPtr( volume->GetCroppedVolume() );    
+  }
+  
+  /// Create a new downsampler.
+  static void New( const char* arg )
+  {
+    int region[6];
+    const bool okay = (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d", &region[0], &region[1], &region[2], &region[3], &region[4], &region[5] ) );
+    if ( ! okay )
+      {
+      throw "Expected six comma-separated integer values.";
+      }
+    
+    ImageOperationList.push_back( SmartPtr( new ImageOperationCropRegion( region ) ) );
+  }
+  
+private:
+  /// Cropping region: x0,y0,z0,x1,y1,z1
+  int m_Region[6];
+};
+
+/// Image operation: crop by threshold
+class ImageOperationCropThreshold
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
+  /// Constructor.
+  ImageOperationCropThreshold( const double threshold, const bool writeRegion = false, const bool writeXform = false ) : m_Threshold( threshold ), m_WriteRegion( writeRegion ), m_WriteXform( writeXform ) {}
+  
+  /// Apply this operation to an image in place.
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
+  {
+    volume->AutoCrop( this->m_Threshold, true /*recrop*/ );
+    
+    if ( this->m_WriteRegion )
+      {
+      int cropFrom[3], cropTo[3];
+      volume->GetCropRegion( cropFrom, cropTo );
+      printf( "AutoCrop %d,%d,%d,%d,%d,%d\n", cropFrom[0], cropFrom[1], cropFrom[2], cropTo[0], cropTo[1], cropTo[2] );
+      }
+
+    if ( this->m_WriteXform )
+      {
+      cmtk::StdErr << "SORRY, this is not yet implemented!\n";
+      }
+    
+    return cmtk::UniformVolume::SmartPtr( volume->GetCroppedVolume() );    
+  }
+  
+  /// Create a new crop operation.
+  static void New( const double threshold )
+  {
+    ImageOperationList.push_back( SmartPtr( new ImageOperationCropThreshold( threshold ) ) );
+  }
+  
+  /// Create a new crop operation with region output.
+  static void NewWriteRegion( const double threshold )
+  {
+    ImageOperationList.push_back( SmartPtr( new ImageOperationCropThreshold( threshold, true, false ) ) );
+  }
+  
+  /// Create a new crop operation with transformation output.
+  static void NewWriteXform( const double threshold )
+  {
+    ImageOperationList.push_back( SmartPtr( new ImageOperationCropThreshold( threshold, false, true ) ) );
+  }
+  
+private:
+  /// Cropping threshold.
+  double m_Threshold;
+
+  /// Flag for writing region to standard output.
+  bool m_WriteRegion;
+
+  /// Flag for writing transformation to standard output.
+  bool m_WriteXform;
+};
+
 /// Image operation: grid downsampling.
 class ImageOperationMedianFilter
 /// Inherit from image operation base class.
@@ -554,7 +650,16 @@ main( int argc, char* argv[] )
 		    "Filter image with Gaussian kernel. This operation takes a single real-valued parameter, which specifies the kernel full width at half maximum in world units [e.g., mm]." );
     cl.EndGroup();
 
+    cl.BeginGroup( "Grid", "Grid Operations" );
     cl.AddCallback( Key( "downsample" ), &ImageOperationDownsample::New, "Downsample image by factors 'x,y,z' or by single factor 'xyz'" );
+    cl.AddCallback( Key( "crop-by-index" ), &ImageOperationCropRegion::New, "Crop image to a region specified by a set of six grid index coordinates given as integers x0,y0,z0,x1,y1,z2" );
+    cl.AddCallback( Key( "crop-by-threshold" ), &ImageOperationCropThreshold::New, "Crop image to region determined via a given threshold. "
+		    "The resulting image will contain all pixels larger than the given parameter." );
+    cl.AddCallback( Key( "crop-by-threshold-write-region" ), &ImageOperationCropThreshold::NewWriteRegion, 
+		    "Crop image to region determined via a given threshold and write cropping region to standard output." );
+    cl.AddCallback( Key( "crop-by-threshold-write-xform" ), &ImageOperationCropThreshold::NewWriteXform, 
+		    "Crop image to region determined via a given threshold and write cropping transformation to standard output." );
+    cl.EndGroup();
 
     cl.AddParameter( &imagePathIn, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &imagePathOut, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );

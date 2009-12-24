@@ -131,6 +131,7 @@ IF(NOT CMTK_USE_MPI)
   SET(testList ${testList} 
     convertxBoundaryMap
     convertxBoundaryMapMultiValue
+    convertxCropThresholdWriteRegion
     convertxDownsample
     convertxErodeDilateErode
     convertxDilateErodeDilate
