@@ -610,7 +610,8 @@ main( int argc, char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
 
     cl.BeginGroup( "Input", "Input Image Controls" );
-    cl.AddOption( Key( 'N', "set-padding" ), &paddingDataValue, "Set Padding data for input image.", &paddingDataFlag );
+    cl.AddOption( Key( 'N', "set-padding" ), &paddingDataValue, "Set padding data for input image. All pixels in the input image that have this value will be ignored in all operations.", 
+		  &paddingDataFlag );
     cl.EndGroup();
 
     cl.BeginGroup( "Conversion", "Data Type Conversion" );
@@ -651,8 +652,8 @@ main( int argc, char* argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Grid", "Grid Operations" );
-    cl.AddCallback( Key( "downsample" ), &ImageOperationDownsample::New, "Downsample image by factors 'x,y,z' or by single factor 'xyz'" );
-    cl.AddCallback( Key( "crop-by-index" ), &ImageOperationCropRegion::New, "Crop image to a region specified by a set of six grid index coordinates given as integers x0,y0,z0,x1,y1,z2" );
+    cl.AddCallback( Key( "downsample" ), &ImageOperationDownsample::New, "Downsample image by factors 'Fx,Fy,Fz' or by single factor 'Fxyz'" );
+    cl.AddCallback( Key( "crop-by-index" ), &ImageOperationCropRegion::New, "Crop image to a region specified by a set of six grid index coordinates given as comma-separated integers x0,y0,z0,x1,y1,z1" );
     cl.AddCallback( Key( "crop-by-threshold" ), &ImageOperationCropThreshold::New, "Crop image to region determined via a given threshold. "
 		    "The resulting image will contain all pixels larger than the given parameter." );
     cl.AddCallback( Key( "crop-by-threshold-write-region" ), &ImageOperationCropThreshold::NewWriteRegion, 
