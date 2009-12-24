@@ -134,9 +134,11 @@ IF(NOT CMTK_USE_MPI)
     convertxDownsample
     convertxErodeDilateErode
     convertxDilateErodeDilate
-    convertMedianFilter1
-    convertMedianFilter2
-    convertMedianFilterXYZ
+    convertxGaussianFilterSigma
+    convertxGaussianFilterFWHM
+    convertxMedianFilter1
+    convertxMedianFilter2
+    convertxMedianFilterXYZ
     convertxNiftiToAnalyze
     convertxAnalyzeToNifti
     convertxNiftiDetachedToNifti

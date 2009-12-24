@@ -427,7 +427,7 @@ public:
     return volume;
   }
   
-  /// Create a new downsampler.
+  /// Create a new median filter operation.
   static void New( const char* arg )
   {
     int radiusX = 1;
@@ -461,6 +461,39 @@ private:
   int m_RadiusZ;
 };
 
+/// Image operation: grid downsampling.
+class ImageOperationGaussFilter
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
+  /// Constructor:
+  ImageOperationGaussFilter( const double sigma ) : m_Sigma( sigma ) {}
+  
+  /// Apply this operation to an image in place.
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
+  {
+    volume->ApplyGaussFilter( this->m_Sigma );
+    return volume;
+  }
+  
+  /// Create a new filter based on sigma parameter.
+  static void NewSigma( const double sigma )
+  {
+    ImageOperationList.push_back( SmartPtr( new ImageOperationGaussFilter( sigma ) ) );
+  }
+  
+  /// Create a new filter based on full-width-at-half-maximum parameter.
+  static void NewFWHM( const double fwhm )
+  {
+    ImageOperationList.push_back( SmartPtr( new ImageOperationGaussFilter( fwhm / 2.3548 ) ) );
+  }
+  
+private:
+  /// Kernel with specified by coefficient sigma.
+  double m_Sigma;
+};
+
 int
 main( int argc, char* argv[] )
 {
@@ -473,7 +506,8 @@ main( int argc, char* argv[] )
   try 
     {
     cmtk::CommandLine cl( argc, argv );  
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Convert between image file formats and data types. Also apply simple, general-purpose image operations in the process." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Convert between image file formats and data types. Also apply simple, general-purpose image operations in the process. "
+		       "An arbitrary number of operations can be specified on the command line, which will be applied exactly in the order given." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] infile outfile" );
 
     typedef cmtk::CommandLine::Key Key;
@@ -484,13 +518,13 @@ main( int argc, char* argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Conversion", "Data Type Conversion" );
-    cl.AddCallback( Key( 'c', "char" ), &ImageOperationConvertType::NewChar, "8 bits, signed integer" );
-    cl.AddCallback( Key( 'b', "byte" ), &ImageOperationConvertType::NewByte, "8 bits, unsigned integer" );
-    cl.AddCallback( Key( 's', "short" ), &ImageOperationConvertType::NewShort, "16 bits, signed integer" );
-    cl.AddCallback( Key( 'u', "ushort" ), &ImageOperationConvertType::NewUShort, "16 bits, unsigned integer" );
-    cl.AddCallback( Key( 'i', "int" ), &ImageOperationConvertType::NewInt, "32 bits signed integer" );
-    cl.AddCallback( Key( 'f', "float" ), &ImageOperationConvertType::NewFloat, "32 bits floating point" );
-    cl.AddCallback( Key( 'd', "double" ), &ImageOperationConvertType::NewDouble, "64 bits floating point\n" );
+    cl.AddCallback( Key( "char" ), &ImageOperationConvertType::NewChar, "8 bits, signed integer" );
+    cl.AddCallback( Key( "byte" ), &ImageOperationConvertType::NewByte, "8 bits, unsigned integer" );
+    cl.AddCallback( Key( "short" ), &ImageOperationConvertType::NewShort, "16 bits, signed integer" );
+    cl.AddCallback( Key( "ushort" ), &ImageOperationConvertType::NewUShort, "16 bits, unsigned integer" );
+    cl.AddCallback( Key( "int" ), &ImageOperationConvertType::NewInt, "32 bits signed integer" );
+    cl.AddCallback( Key( "float" ), &ImageOperationConvertType::NewFloat, "32 bits floating point" );
+    cl.AddCallback( Key( "double" ), &ImageOperationConvertType::NewDouble, "64 bits floating point\n" );
     cl.EndGroup();
     
     cl.BeginGroup( "Flipping", "Image Flipping" );
@@ -500,7 +534,7 @@ main( int argc, char* argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Masking", "Image Masking" );
-    cl.AddCallback( Key( 'M', "mask" ), &ImageOperationApplyMask::New, "Binary mask file name: eliminate all image pixels where mask is 0." );
+    cl.AddCallback( Key( "mask" ), &ImageOperationApplyMask::New, "Binary mask file name: eliminate all image pixels where mask is 0." );
     cl.AddCallback( Key( "mask-inverse" ), &ImageOperationApplyMask::NewInverse, "Inverse binary mask file name eliminate all image pixels where mask is NOT 0." );
     cl.EndGroup();
 
@@ -512,8 +546,12 @@ main( int argc, char* argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Filtering", "Filter Operations" );
-    cl.AddCallback( Key( "median-filter" ), &ImageOperationMedianFilter::New, "Median filter. This operation takes the filter radius as the parameter. "
+    cl.AddCallback( Key( "median-filter" ), &ImageOperationMedianFilter::New, "Median filter. This operation takes the filter radius in pixels as the parameter. "
 		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
+    cl.AddCallback( Key( "gaussian-filter-sigma" ), &ImageOperationGaussFilter::NewSigma, 
+		    "Filter image with Gaussian kernel. This operation takes a single real-valued parameter, which specifies the kernel coefficient sigma in world units [e.g., mm] as the parameter." );
+    cl.AddCallback( Key( "gaussian-filter-fwhm" ), &ImageOperationGaussFilter::NewFWHM, 
+		    "Filter image with Gaussian kernel. This operation takes a single real-valued parameter, which specifies the kernel full width at half maximum in world units [e.g., mm]." );
     cl.EndGroup();
 
     cl.AddCallback( Key( "downsample" ), &ImageOperationDownsample::New, "Downsample image by factors 'x,y,z' or by single factor 'xyz'" );
