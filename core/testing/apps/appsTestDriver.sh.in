@@ -289,6 +289,18 @@ case ${RUNTEST} in
 	run convertx --dilate 1 --erode 2 --dilate 1 parc1_bin.hdr ${tmpdir}/parc1_ded.img
 	check_results parc1_ded.img
 	;;
+    convertMedianFilter1)
+	run convertx --median-filter 1 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
+	check_results spgr_brain_1.img
+	;;
+    convertMedianFilter2)
+	run convertx --median-filter 2 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
+	check_results spgr_brain_1.img
+	;;
+    convertMedianFilterXYZ)
+	run convertx --median-filter 2,2,1 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
+	check_results spgr_brain_1.img
+	;;
     convertxNiftiToAnalyze)
 	run convertx spgr_brain_1.nii ${tmpdir}/spgr_brain_1.hdr
 	check_results spgr_brain_1.hdr spgr_brain_1.img

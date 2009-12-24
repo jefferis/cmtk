@@ -305,15 +305,17 @@ DataGrid::MirrorPlaneInPlace
 }
 
 TypedArray*
-DataGrid::GetDataMedianFiltered( const int radius ) const
+DataGrid::GetDataMedianFiltered( const int radiusX, const int radiusY, const int radiusZ ) const
 {
   const TypedArray* data = this->GetData();
   if ( ! data ) return NULL;
   
   TypedArray *Result = data->NewTemplateArray( data->GetDataSize() );
 
-  const int width = 1 + 2*radius;
-  Types::DataItem *sort = Memory::AllocateArray<Types::DataItem>(  width*width*width  );
+  const int widthX = 1 + 2*radiusX;
+  const int widthY = 1 + 2*radiusY;
+  const int widthZ = 1 + 2*radiusZ;
+  Types::DataItem *sort = Memory::AllocateArray<Types::DataItem>(  widthX*widthY*widthZ  );
   
   int offset = 0;
   Progress::Begin( 0, this->m_Dims[2], 1 );
@@ -324,18 +326,18 @@ DataGrid::GetDataMedianFiltered( const int radius ) const
     status = Progress::SetProgress( z );
     if ( status != Progress::OK ) break;
     
-    int zFrom = ( z > radius ) ? ( z - radius ) : 0;
-    int zTo = std::min( z+radius+1, this->m_Dims[2] );
-
+    int zFrom = ( z > radiusZ ) ? ( z - radiusZ ) : 0;
+    int zTo = std::min( z+radiusZ+1, this->m_Dims[2] );
+    
     for ( int y = 0; y < this->m_Dims[1]; ++y ) 
       {      
-      int yFrom = ( y > radius ) ? ( y - radius ) : 0;
-      int yTo = std::min( y+radius+1, this->m_Dims[1] );
+      int yFrom = ( y > radiusY ) ? ( y - radiusY ) : 0;
+      int yTo = std::min( y+radiusY+1, this->m_Dims[1] );
       
       for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
 	{
-	int xFrom = ( x > radius ) ? ( x - radius ) : 0;
-	int xTo = std::min( x+radius+1, this->m_Dims[0] );
+	int xFrom = ( x > radiusX ) ? ( x - radiusX ) : 0;
+	int xTo = std::min( x+radiusX+1, this->m_Dims[0] );
 	
 	int source = 0;
 	int ofsZ = yFrom + this->m_Dims[1] * zFrom;
@@ -381,7 +383,13 @@ DataGrid::GetDataMedianFiltered( const int radius ) const
 void
 DataGrid::ApplyMedianFilter( const int radius )
 {
-  this->SetData( TypedArray::SmartPtr( this->GetDataMedianFiltered( radius ) ) );
+  this->SetData( TypedArray::SmartPtr( this->GetDataMedianFiltered( radius, radius, radius ) ) );
+}
+
+void
+DataGrid::ApplyMedianFilter( const int radiusX, const int radiusY, const int radiusZ )
+{
+  this->SetData( TypedArray::SmartPtr( this->GetDataMedianFiltered( radiusX, radiusY, radiusZ ) ) );
 }
 
 TypedArray*

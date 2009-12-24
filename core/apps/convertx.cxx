@@ -411,6 +411,56 @@ private:
   int m_FactorZ;
 };
 
+/// Image operation: grid downsampling.
+class ImageOperationMedianFilter
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
+  /// Constructor:
+  ImageOperationMedianFilter( const int radiusX, const int radiusY, const int radiusZ ) : m_RadiusX( radiusX ), m_RadiusY( radiusY ), m_RadiusZ( radiusZ ) {}
+  
+  /// Apply this operation to an image in place.
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
+  {
+    volume->ApplyMedianFilter( this->m_RadiusX, this->m_RadiusY, this->m_RadiusZ );
+    return volume;
+  }
+  
+  /// Create a new downsampler.
+  static void New( const char* arg )
+  {
+    int radiusX = 1;
+    int radiusY = 1;
+    int radiusZ = 1;
+
+    const size_t nRadii = sscanf( arg, "%d,%d,%d", &radiusX, &radiusY, &radiusZ );
+    if ( nRadii == 1 )
+      {
+      radiusZ = radiusY = radiusX;
+      }
+    else
+      {
+      if ( nRadii != 3 )
+	{
+	cmtk::StdErr << "ERROR: downsampling radii must either be three integers, x,y,z, or a single integer\n";
+	exit( 1 );
+	}
+      }
+    ImageOperationList.push_back( SmartPtr( new ImageOperationMedianFilter( radiusX, radiusY, radiusZ ) ) );
+  }
+  
+private:
+  /// Downsampling radius in X direction.
+  int m_RadiusX;
+
+  /// Downsampling radius in Y direction.
+  int m_RadiusY;
+
+  /// Downsampling radius in Z direction.
+  int m_RadiusZ;
+};
+
 int
 main( int argc, char* argv[] )
 {
@@ -459,6 +509,11 @@ main( int argc, char* argv[] )
     cl.AddCallback( Key( "dilate" ), &ImageOperationErodeDilate::NewDilate, "Morphological dilation operator" );
     cl.AddCallback( Key( "boundary-map" ), &ImageOperationBoundaryMap::New, "Create boundary map" );
     cl.AddCallback( Key( "multi-boundary-map" ), &ImageOperationBoundaryMap::NewMulti, "Create multi-valued boundary map" );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Filtering", "Filter Operations" );
+    cl.AddCallback( Key( "median-filter" ), &ImageOperationMedianFilter::New, "Median filter. This operation takes the filter radius as the parameter. "
+		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
     cl.EndGroup();
 
     cl.AddCallback( Key( "downsample" ), &ImageOperationDownsample::New, "Downsample image by factors 'x,y,z' or by single factor 'xyz'" );

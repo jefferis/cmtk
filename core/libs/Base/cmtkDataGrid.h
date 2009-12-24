@@ -227,10 +227,19 @@ public:
   int GetNextIJK() const { return nextIJK; }
   
   /// Return data after median-filtering.
-  TypedArray* GetDataMedianFiltered( const int radius = 1 ) const;
+  TypedArray* GetDataMedianFiltered( const int radius ) const
+  {
+    return this->GetDataMedianFiltered( radius, radius, radius );
+  }
+
+  /// Return data after median-filtering.
+  TypedArray* GetDataMedianFiltered( const int radiusX, const int radiusY, const int radiusZ ) const;
 
   /// Replace data with median-filtered version.
-  void ApplyMedianFilter( const int radius = 3 );
+  void ApplyMedianFilter( const int radius );
+
+  /// Replace data with median-filtered version.
+  void ApplyMedianFilter( const int radiusX, const int radiusY, const int radiusZ );
 
   /// Return data after median-filtering.
   TypedArray* GetDataSobelFiltered() const;
