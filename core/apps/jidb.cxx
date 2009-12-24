@@ -95,7 +95,7 @@ std::map<size_t,float> PassWeights;
 
 bool WriteImagesAsFloat = false;
 
-const char*
+void
 CallbackSetPassWeight( const char* argv )
 {
   int pass = 0;
@@ -107,10 +107,9 @@ CallbackSetPassWeight( const char* argv )
   else
     {
     cmtk::StdErr << "ERROR: pass weights must be given as 'pass:weight', where 'pass' is an integer and 'weight' is a number between 0 and 1.\n"
-	      << "       Parameter provided was '" << argv << "'\n";
+		 << "       Parameter provided was '" << argv << "'\n";
     exit( 1 );
     }
-  return NULL;
 }
 
 template<class TPSF>
