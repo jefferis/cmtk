@@ -127,6 +127,24 @@ IF(NOT CMTK_USE_MPI)
   ENDIF(CMTK_BUILD_NRRD)
 
   # ==========================================
+  # Tests for "convertx" tool
+  SET(testList ${testList} 
+    convertxBoundaryMap
+    convertxBoundaryMapMultiValue
+    convertxDownsample
+    convertxErodeDilateErode
+    convertxDilateErodeDilate
+    convertxNiftiToAnalyze
+    convertxAnalyzeToNifti
+    convertxNiftiDetachedToNifti
+    convertxAnalyzeToNiftiDetached )
+
+  IF(CMTK_BUILD_NRRD)
+    SET(testList ${testList} 
+      convertxDownsampleNrrd)
+  ENDIF(CMTK_BUILD_NRRD)
+
+  # ==========================================
   # Tests for "dcm2image" tool
   IF(CMTK_USE_DCMTK)
     SET(testList ${testList} dcm2image dcm2imageZ)
