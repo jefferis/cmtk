@@ -294,9 +294,6 @@ private:
 
   /// Make all template instances friends for easy type casting.
   template<class T2> friend class SmartPointer;
-
-  /// Make all template instances of const smart pointers friends for easy type casting.
-  template<class T2> friend class SmartPointerConst;
 };
 
 template<typename T> SmartPointer<T> SmartPointer<T>::Null;
