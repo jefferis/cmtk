@@ -1026,7 +1026,7 @@ public:
   {
     NonOptionParameter::SmartPtr parameter( new NonOptionParameter( var, name, comment, flag ) );
     this->m_NonOptionParameterList.push_back( parameter );
-    return parameter;
+    return Item::SmartPtr::DynamicCastFrom( parameter );
   }
 
   /// Add vector of non-option parameters.
@@ -1035,7 +1035,7 @@ public:
   {
     NonOptionParameterVector::SmartPtr vparameter( new NonOptionParameterVector( pvec, name, comment, flag ) );
     this->m_NonOptionParameterVectorList.push_back( vparameter );
-    return vparameter;
+    return  Item::SmartPtr::DynamicCastFrom( vparameter );
   }
 
   /// Type for key/action lists.
@@ -1050,16 +1050,16 @@ public:
   /// Add an item to applicable key/action lists.
   KeyToActionSingle::SmartPtr AddKeyAction( KeyToActionSingle::SmartPtr keyAction )
   {
-    this->m_KeyActionList->push_back( keyAction );
-    this->m_KeyActionListComplete.push_back( keyAction );
+    this->m_KeyActionList->push_back( KeyToAction::SmartPtr::DynamicCastFrom( keyAction ) );
+    this->m_KeyActionListComplete.push_back( KeyToAction::SmartPtr::DynamicCastFrom( keyAction ) );
     return KeyToActionSingle::SmartPtr::DynamicCastFrom( this->m_KeyActionListComplete.back() );
   }
 
   /// Add an item to applicable key/action lists.
   KeyToActionEnum::SmartPtr AddKeyAction( KeyToActionEnum::SmartPtr keyAction )
   {
-    this->m_KeyActionList->push_back( keyAction );
-    this->m_KeyActionListComplete.push_back( keyAction );
+    this->m_KeyActionList->push_back( KeyToAction::SmartPtr::DynamicCastFrom( keyAction ) );
+    this->m_KeyActionListComplete.push_back( KeyToAction::SmartPtr::DynamicCastFrom( keyAction ) );
     return KeyToActionEnum::SmartPtr::DynamicCastFrom( this->m_KeyActionListComplete.back() );
   }
 

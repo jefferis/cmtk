@@ -83,7 +83,7 @@ AffineCongealingFunctional::InitializeXforms
     xform->SetNumberDOFs( this->m_XformNumberDOFs );
     xform->SetUseLogScaleFactors( true );
     xform->SetCenter( centerTemplate.XYZ );
-    this->m_XformVector[imageIdx] = xform;
+    this->m_XformVector[imageIdx] = Xform::SmartPtr::DynamicCastFrom( xform );
  
     if ( alignCenters )
       {
