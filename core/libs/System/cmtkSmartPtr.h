@@ -262,8 +262,8 @@ private:
    */
   void Swap( const Self& other ) const
   {
-    this->SwapPrimitive( ReferenceCount, other.ReferenceCount );
-    this->SwapPrimitive( Object, other.Object );
+    Self::SwapPrimitive( ReferenceCount, other.ReferenceCount );
+    Self::SwapPrimitive( Object, other.Object );
   }
   
   /** Swap two smart pointers.
@@ -272,20 +272,12 @@ private:
    */
   void Swap( Self& other )
   {
-    this->SwapPrimitive( ReferenceCount, other.ReferenceCount );
-    this->SwapPrimitive( Object, other.Object );
+    Self::SwapPrimitive( ReferenceCount, other.ReferenceCount );
+    Self::SwapPrimitive( Object, other.Object );
   }
   
   /// Helper function that swaps two primitive objects (or pointers).
-  template<class TT> void SwapPrimitive( TT& a, TT& b )
-  {
-    TT temp = a;
-    a = b;
-    b = temp;
-  }
-
-  /// Helper function that swaps two primitive objects (or pointers).
-  template<class TT> void SwapPrimitive( TT& a, TT& b ) const
+  template<class TT> static void SwapPrimitive( TT& a, TT& b )
   {
     TT temp = a;
     a = b;
