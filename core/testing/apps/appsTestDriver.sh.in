@@ -77,7 +77,11 @@ run_eval()
 get_unzipped()
 {
     if test -f ${1}.gz; then
-	tmp=`mktemp`
+	if [ `uname` == "Darwin" ]; them
+	    local tmp=`mktemp /tmp/temp.XXXX`
+	else
+	    local tmp=`mktemp`
+	fi
 	gzip -cd ${1}.gz > ${tmp}
 	echo ${tmp}
     else
