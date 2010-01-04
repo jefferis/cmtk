@@ -1183,7 +1183,7 @@ case ${RUNTEST} in
 	check_results registration
 	;;
     warpxLabels)
-	run warpx --exploration 8 --grid-spacing 90 --accuracy 1 --refine 1 --class-ref label --class-flt label -o ${tmpdir} --initial parc1_parc2_9dof.xform parc1.hdr parc2.hdr
+	run warpx --max-stepsize 8 --grid-spacing 90 --min-stepsize 1 --refine 1 --class-ref label --class-flt label -o ${tmpdir} --initial parc1_parc2_9dof.xform parc1.hdr parc2.hdr
 	check_results registration
 	;;
     xform2dfieldWarpNrrd)
