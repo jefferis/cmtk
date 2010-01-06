@@ -79,9 +79,9 @@ CallbackTargetVolume( const char* arg )
 {
   int gridDims[3] = { 0, 0, 0 };
   float gridDelta[3] = { 0, 0, 0 };
-  float gridOrigin[3] = { 0, 0, 0 };
+  float gridOffset[3] = { 0, 0, 0 };
 
-  const size_t numArgs = sscanf( arg, "%d,%d,%d:%f,%f,%f:%f,%f,%f", gridDims, gridDims+1, gridDims+2, gridDelta, gridDelta+1, gridDelta+2, gridOrigin, gridOrigin+1, gridOrigin+2 );
+  const size_t numArgs = sscanf( arg, "%d,%d,%d:%f,%f,%f:%f,%f,%f", gridDims, gridDims+1, gridDims+2, gridDelta, gridDelta+1, gridDelta+2, gridOffset, gridOffset+1, gridOffset+2 );
   if ( (numArgs != 6) && (numArgs != 9) )
     {
     cmtk::StdErr.printf( "ERROR: target volume definition must be int,int,int:float,float,float or int,int,int:float,float,float:float,float,float\n", arg );
@@ -94,7 +94,7 @@ CallbackTargetVolume( const char* arg )
 
   if ( numArgs == 9 )
     {
-    UserDefinedTargetVolume->SetOrigin( cmtk::Vector3D( gridOrigin[0], gridOrigin[1], gridOrigin[2] ) );
+    UserDefinedTargetVolume->SetOrigin( cmtk::Vector3D( gridOffset[0], gridOffset[1], gridOffset[2] ) );
     }
 }
 
@@ -450,7 +450,7 @@ main( const int argc, char* argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Input", "Input Options" );
-    cl.AddCallback( Key( "target-grid" ), CallbackTargetVolume, "Define target grid for reformating as Nx,Ny,Nz:dX,dY,dZ[:Ox,Oy,Oz] (dims:pixel:origin)" );
+    cl.AddCallback( Key( "target-grid" ), CallbackTargetVolume, "Define target grid for reformating as Nx,Ny,Nz:dX,dY,dZ[:Ox,Oy,Oz] (dims:pixel:offset)" );
     cl.AddSwitch( Key( 'm', "mask" ), &TargetMask, true, "Use target pixel data as binary mask." );
     cl.AddCallback( Key( "crop" ), CallbackCropImages, "Crop target image: x0,y0,z0,x1,y1,z2" );
     cl.AddCallback( Key( 'O', "target-offset" ), CallbackTargetImageOffset, "Override target image offset and set to x,y,z mm" );
