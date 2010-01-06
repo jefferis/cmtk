@@ -349,7 +349,7 @@ IF(NOT CMTK_USE_MPI)
     reformatxInverseJacobian
     reformatxSincHamming
     reformatxTargetGrid
-    reformatxTargetGridOrigin)
+    reformatxTargetGridOffset)
   IF(CMTK_BUILD_NRRD)
     SET(testList ${testList} reformatxDfieldNrrd)
   ENDIF(CMTK_BUILD_NRRD)

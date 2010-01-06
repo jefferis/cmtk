@@ -777,7 +777,7 @@ case ${RUNTEST} in
         run reformatx -o ${tmpdir}/reformat.nii --target-grid 32,43,21:5.625,5.625,7.5 --floating ~/software/nitrc/data/testing/inputs/spgr_brain_1.hdr
 	check_results reformat.nii
 	;;
-    reformatxTargetGridOrigin)
+    reformatxTargetGridOffset)
         run reformatx -o ${tmpdir}/reformat.nii --target-grid 32,43,21:5.625,5.625,7.5:5.625,0,0 --floating ~/software/nitrc/data/testing/inputs/spgr_brain_1.hdr
 	check_results reformat.nii
 	;;
