@@ -2,27 +2,31 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
-Release Notes -- CMTK 1.1.3
+Release Notes -- CMTK 1.2.0
 ===========================
 
-This is a minor bugfix and feature release for the 1.1 series of CMTK.
-The major enhancement introduced with this release is support for building
-using the SunPro CC compiler suite. This has allowed us to add two new binary
-builds, for Solaris on i386 and x86_64. While we are not providing a build for
-Solaris on SPARC, CMTK should build with no problems using the Sun CC compiler
-on that hardware as well.
+This is a feature release that adds new, clean implementations of pairwise
+affine and nonrigid image registration. The new "registrationx" tool will
+eventually replace the "registration" tool, and "warpx" will replace "warp".
 
-Minor improvements in this release include a new tool to analyze deformation
-fields, two scripts for shape averaging and multi-acquisition motion
-correction, as well as better command line documentations.
+These new tools should still be considered experimental, as they have not
+yet been tuned to achieve the same level of accuracy and robustness as the 
+old implementations. The new code is also significantly slower, but 
+potentially more accurate and it also has support for using arbitrary 
+interpolation kernels for the floating image. We will also be making changes
+to the command line arguments supported by both tools to streamline things
+and make everything more intuitive and consistent.
 
+We have also added a new tool, "convertx", to ultimately replace the old
+"convert" tool. The main improvement here is that "convertx" will perform
+all optional image operations in the exact order as they are given on the
+command line, with support for arbitrary repititions.
 
-For more information, see the CHANGELOG file.
+For more information and a complete list of changes and fixes, see the 
+the CHANGELOG file.
 
 CMTK has been built and tested on the following platforms:
 
-- Linux 32bit (Fedora 11), gcc 4.4.1
-- Linux 64bit (Fedora 11), gcc 4.4.1
 - Linux 32bit (Fedora 12), gcc 4.4.2
 - Linux 64bit (Fedora 12), gcc 4.4.2
 - Cygwin, gcc 4.3.2 beta2

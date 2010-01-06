@@ -1,4 +1,4 @@
-Release CMTK-1.2.0:
+Release CMTK-1.2.0 (2010-01-06):
 
 - Added: cmtk::Console can now determine terminal line width on POSIX systems,
     and this is used by cmtk::CommandLine to format command line help output
