@@ -49,8 +49,10 @@ ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
 ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram( const Self& other )
   : ImagePairSimilarityMeasure( other )
 {
-  StdErr << "Not implemented: " << __FILE__ << ":" << __LINE__ << "\n";
-  exit(1);
+  this->m_NumberOfBinsX = other.m_NumberOfBinsX;
+  this->m_NumberOfBinsY = other.m_NumberOfBinsY;
+
+  this->m_JointHistogram = other.m_JointHistogram;
 }
 
 ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
