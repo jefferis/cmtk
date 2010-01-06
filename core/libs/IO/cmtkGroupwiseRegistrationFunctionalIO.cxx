@@ -51,7 +51,7 @@ operator<<
   stream.WriteIntArray( "dims", templateGrid->GetDims(), 3 );
   stream.WriteCoordinateArray( "delta", templateGrid->GetDelta(), 3 );
   stream.WriteCoordinateArray( "size", templateGrid->Size, 3 );
-  stream.WriteCoordinateArray( "origin", templateGrid->m_Origin.XYZ, 3 );
+  stream.WriteCoordinateArray( "origin", templateGrid->m_Offset.XYZ, 3 );
   stream.End();
   
   for ( size_t idx = 0; idx < func.GetNumberOfTargetImages(); ++idx )

@@ -38,7 +38,7 @@ typename ImagePairAffineRegistrationFunctionalTemplate<VM>::ReturnType
 ImagePairAffineRegistrationFunctionalTemplate<VM>
 ::Evaluate() 
 {
-  const VolumeAxesHash axesHash( *this->ReferenceGrid, this->m_AffineXform, this->FloatingGrid->m_Delta, this->FloatingGrid->m_Origin.XYZ );
+  const VolumeAxesHash axesHash( *this->ReferenceGrid, this->m_AffineXform, this->FloatingGrid->m_Delta, this->FloatingGrid->m_Offset.XYZ );
   const Vector3D *axesHashX = axesHash[0], *axesHashY = axesHash[1], *axesHashZ = axesHash[2];
   
   this->m_Metric->Reset();

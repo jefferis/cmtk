@@ -94,7 +94,7 @@ CallbackTargetVolume( const char* arg )
 
   if ( numArgs == 9 )
     {
-    UserDefinedTargetVolume->SetOrigin( cmtk::Vector3D( gridOffset[0], gridOffset[1], gridOffset[2] ) );
+    UserDefinedTargetVolume->SetOffset( cmtk::Vector3D( gridOffset[0], gridOffset[1], gridOffset[2] ) );
     }
 }
 
@@ -242,7 +242,7 @@ ReformatPullback()
     {
     for ( int dim = 0; dim < 3; ++dim )
       TargetImageOffset[dim] *= targetVolume->m_Delta[dim];
-    targetVolume->SetOrigin( TargetImageOffset );
+    targetVolume->SetOffset( TargetImageOffset );
 
     if ( Verbose )
       {
@@ -252,7 +252,7 @@ ReformatPullback()
   
   if ( TargetImageOffsetReal )
     {
-    targetVolume->SetOrigin( TargetImageOffset );
+    targetVolume->SetOffset( TargetImageOffset );
     
     if ( Verbose )
       {

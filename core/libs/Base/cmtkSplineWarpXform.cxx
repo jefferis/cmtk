@@ -216,7 +216,7 @@ SplineWarpXform::Update
       Spacing[dim] = Domain[dim] / (this->m_Dims[dim]-3);
       InverseSpacing[dim] = 1.0*(this->m_Dims[dim]-3) / Domain[dim];
       }
-    m_Origin[dim] = -Spacing[dim];
+    m_Offset[dim] = -Spacing[dim];
     }
   
   int dml = 0;
@@ -240,7 +240,7 @@ SplineWarpXform::Clone () const
   memcpy( newXform->Domain, Domain, sizeof( newXform->Domain ) );
   memcpy( newXform->Spacing, Spacing, sizeof( newXform->Spacing ) );
   memcpy( newXform->InverseSpacing, InverseSpacing, sizeof( newXform->InverseSpacing ) );
-  newXform->m_Origin = this->m_Origin;
+  newXform->m_Offset = this->m_Offset;
 
   if ( this->m_ActiveFlags ) 
     {
@@ -393,7 +393,7 @@ SplineWarpXform::Refine()
     assert( this->m_Dims[dim] > 1 );
     Spacing[dim] = newSpacing[dim];
     InverseSpacing[dim] = 1.0 / Spacing[dim];
-    m_Origin[dim] = -Spacing[dim];
+    m_Offset[dim] = -Spacing[dim];
     }
   
   // MUST do this AFTER acutal refinement, as precomputed increments are used

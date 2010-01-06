@@ -46,7 +46,7 @@ UniformVolumeInterpolator<TInterpolationFunction>
   int imageGridPoint[3];
   for ( int n = 0; n < 3; ++n )
     {
-    lScaled[n] = (v.XYZ[n] - this->m_Volume->m_Origin.XYZ[n]) / Delta[n];
+    lScaled[n] = (v.XYZ[n] - this->m_Volume->m_Offset.XYZ[n]) / Delta[n];
     imageGridPoint[n] = (int) floor( lScaled[n] );
     if ( ( imageGridPoint[n] < 0 ) || ( imageGridPoint[n] >= this->m_VolumeDims[n]-1 ) )
       return false;

@@ -47,7 +47,7 @@ DeformationField::GetJacobian
   
   for ( int dim = 0; dim<3; ++dim ) 
     {
-    r[dim] = this->InverseSpacing[dim] * (v.XYZ[dim] - this->m_Origin[dim]);
+    r[dim] = this->InverseSpacing[dim] * (v.XYZ[dim] - this->m_Offset[dim]);
     grid[dim] = static_cast<int>( r[dim]-1 );
     if ( (grid[dim] < 0) || (grid[dim] >= this->m_Dims[dim]-3) )
       {

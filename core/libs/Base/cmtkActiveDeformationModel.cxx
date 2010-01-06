@@ -64,7 +64,7 @@ ActiveDeformationModel<W>::ActiveDeformationModel
   // prepare this object to act as an actual deformation.
   this->InitGrid( (*it)->Domain, (*it)->m_Dims );
   // copy Origin field of first warp.
-  this->m_Origin = (*it)->m_Origin;
+  this->m_Offset = (*it)->m_Offset;
   
   unsigned int sample = 0;
   Types::Coordinate globalScaling = 0;

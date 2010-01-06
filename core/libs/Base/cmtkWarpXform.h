@@ -81,7 +81,7 @@ public:
   Types::Coordinate Spacing[3];
 
   /// Array of spacings between the control points.
-  Vector3D m_Origin;
+  Vector3D m_Offset;
 
   /// Get global scaling factor.
   virtual Types::Coordinate GetGlobalScaling() const
@@ -288,7 +288,7 @@ public:
   /// Get the original position of a control point.
   virtual void GetOriginalControlPointPosition( Vector3D& v, const Types::Coordinate x, const Types::Coordinate y, const Types::Coordinate z) const 
   { 
-    v.Set( this->m_Origin[0] + x*this->Spacing[0], this->m_Origin[1] + y*this->Spacing[1], this->m_Origin[2] + z*this->Spacing[2] );
+    v.Set( this->m_Offset[0] + x*this->Spacing[0], this->m_Offset[1] + y*this->Spacing[1], this->m_Offset[2] + z*this->Spacing[2] );
   }
   
   /// Get the original position of a control point by index.

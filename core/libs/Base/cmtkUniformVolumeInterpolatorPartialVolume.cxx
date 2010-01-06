@@ -51,7 +51,7 @@ UniformVolumeInterpolatorPartialVolume
   int imageGridPoint[3];
   for ( int n = 0; n < 3; ++n )
     {
-    lScaled[n] = (v[n]-this->m_Volume->m_Origin[n]) / Delta[n];
+    lScaled[n] = (v[n]-this->m_Volume->m_Offset[n]) / Delta[n];
     imageGridPoint[n] = (int) floor( lScaled[n] );
     if ( ( imageGridPoint[n] < 0 ) || ( imageGridPoint[n] >= imageDims[n]-1 ) )
       return false;

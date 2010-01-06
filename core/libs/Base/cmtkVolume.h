@@ -79,13 +79,13 @@ public:
   /// Smart pointer to Volume.
   typedef SmartPointer<Self> SmartPtr;
   
-  /// Volume origin (coordinate of first voxel).
-  Vector3D m_Origin;
+  /// Volume offset (coordinate of first voxel in RAS standard space).
+  Vector3D m_Offset;
 
-  /// Set volume origin.
-  void SetOrigin( const Vector3D& o )
+  /// Set volume offset.
+  void SetOffset( const Vector3D& o )
   {
-    this->m_Origin = o;
+    this->m_Offset = o;
   }
 
   /// List of landmarks defined in this volume.
@@ -98,7 +98,7 @@ public:
   Volume () 
   { 
     Memory::Set<Types::Coordinate>( Size, 0, 3 );
-    m_Origin.Set( 0, 0, 0 );
+    this->m_Offset.Set( 0, 0, 0 );
     Memory::Set<int>( CropFrom, 0, 3 );
     Memory::Set<int>( CropTo, 0, 3 );
     Memory::Set<Types::Coordinate>( CropFromReal, 0, 3 );
@@ -115,7 +115,7 @@ public:
    */
   virtual Types::Coordinate MinSize () const 
   {
-	  return std::min<Types::Coordinate>( Size[0], std::min<Types::Coordinate>( Size[1], Size[2] ) );
+    return std::min<Types::Coordinate>( Size[0], std::min<Types::Coordinate>( Size[1], Size[2] ) );
   }
   
   /** Get maximum extent.

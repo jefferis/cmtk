@@ -239,7 +239,7 @@ XformIO::WriteNrrd
     nrrdAxisInfoSet_nva( nval, nrrdAxisInfoKind, kind );
     nrrdAxisInfoSet_va( nval, nrrdAxisInfoLabel, "Vx;Vy;Vz", "x", "y", "z" );
     
-    double origin[NRRD_DIM_MAX] = { dfield->m_Origin.XYZ[0], dfield->m_Origin.XYZ[1], dfield->m_Origin.XYZ[2] };
+    double origin[NRRD_DIM_MAX] = { dfield->m_Offset.XYZ[0], dfield->m_Offset.XYZ[1], dfield->m_Offset.XYZ[2] };
     if ( nrrdSpaceOriginSet( nval, origin ) )
       {
       throw( biffGetDone(NRRD) );

@@ -134,7 +134,7 @@ UniformVolume::UniformVolume
   this->m_IndexToPhysicalMatrix = other.m_IndexToPhysicalMatrix;
 
   this->SetCropRegion( other.CropFromReal, other.CropToReal );
-  this->SetOrigin( other.m_Origin );
+  this->SetOffset( other.m_Offset );
   this->m_MetaInformation = other.m_MetaInformation;
 }
 
@@ -176,7 +176,7 @@ UniformVolume*
 UniformVolume::CloneGrid() const
 {
   UniformVolume* clone = new UniformVolume( this->m_Dims, Size );
-  clone->SetOrigin( this->m_Origin );
+  clone->SetOffset( this->m_Offset );
   clone->m_MetaInformation = this->m_MetaInformation;
   clone->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
   return clone;
@@ -194,7 +194,7 @@ UniformVolume::GetReoriented( const char* newOrientation ) const
 
   UniformVolume* result = new UniformVolume( temp->GetDims(), newSize, temp->GetData() );
   
-  pmatrix.GetPermutedArray( this->m_Origin.XYZ, result->m_Origin.XYZ );
+  pmatrix.GetPermutedArray( this->m_Offset.XYZ, result->m_Offset.XYZ );
   result->m_IndexToPhysicalMatrix = pmatrix.GetPermutedMatrix( this->m_IndexToPhysicalMatrix );
   result->m_MetaInformation = temp->m_MetaInformation;
   return result;
@@ -231,17 +231,17 @@ UniformVolume::GetDownsampled( const int (&downsample)[3] ) const
   const Vector3D shift( (downsample[0]-1)*this->m_Delta[0]/2, (downsample[1]-1)*this->m_Delta[1]/2, (downsample[2]-1)*this->m_Delta[2]/2 );
   
   // apply shift to origin
-  Vector3D origin( this->m_Origin );
-  origin += shift;
-  dsVolume->SetOrigin( origin );
+  Vector3D offset( this->m_Offset );
+  offset += shift;
+  dsVolume->SetOffset( offset );
   
-  // set crop region while considering new image origin
+  // set crop region while considering new image offset
   dsVolume->SetCropRegion( this->CropFromReal, this->CropToReal );
 
   dsVolume->m_MetaInformation = this->m_MetaInformation;
   dsVolume->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
 
-  // apply origin shift to index-to-physical matrix
+  // apply offset shift to index-to-physical matrix
   for ( int axis = 0; axis < 3; ++axis )
     for ( int i = 0; i < 3; ++i )
       {
@@ -269,11 +269,11 @@ UniformVolume::GetInterleavedSubVolume
     ++dims[axis];
   size[axis] = (dims[axis]-1) * factor * this->m_Delta[axis];
   
-  Vector3D origin( 0, 0, 0 );
-  origin.XYZ[axis] = idx * this->m_Delta[axis];
+  Vector3D offset( 0, 0, 0 );
+  offset.XYZ[axis] = idx * this->m_Delta[axis];
   
   UniformVolume* volume = new UniformVolume( dims, size );
-  volume->SetOrigin( origin );
+  volume->SetOffset( offset );
   for ( int i = 0; i < dims[axis]; ++i )
     {
     ScalarImage::SmartPtr slice( this->GetOrthoSlice( axis, idx + i * factor ) );
@@ -303,7 +303,7 @@ UniformVolume::GetInterleavedPaddedSubVolume
 
   UniformVolume* volume = new UniformVolume( this->m_Dims, this->Size );
   (volume->CreateDataArray( this->GetData()->GetType() ))->Fill( 0.0 );
-  volume->SetOrigin( this->m_Origin );
+  volume->SetOffset( this->m_Offset );
   for ( int i = 0; i < sDims; ++i )
     {
     const size_t sliceIdx = idx + i * factor;
@@ -320,14 +320,14 @@ void
 UniformVolume::GetGridRange
 ( const Vector3D& fromVOI, const Vector3D& toVOI, Rect3D& voi ) const
 {					      
-  voi.startX = std::max<GridIndexType>( 0, static_cast<GridIndexType>( (fromVOI[0]-this->m_Origin[0]) / this->m_Delta[0] ) );
-  voi.endX = 1+std::min( this->m_Dims[0]-1, 1+static_cast<GridIndexType>( (toVOI[0]-this->m_Origin[0]) / this->m_Delta[0] ) );
+  voi.startX = std::max<GridIndexType>( 0, static_cast<GridIndexType>( (fromVOI[0]-this->m_Offset[0]) / this->m_Delta[0] ) );
+  voi.endX = 1+std::min( this->m_Dims[0]-1, 1+static_cast<GridIndexType>( (toVOI[0]-this->m_Offset[0]) / this->m_Delta[0] ) );
 
-  voi.startY = std::max<GridIndexType>( 0, static_cast<GridIndexType>( (fromVOI[1]-this->m_Origin[1]) / this->m_Delta[1] ) );
-  voi.endY = 1+std::min( this->m_Dims[1]-1, 1+static_cast<GridIndexType>( (toVOI[1]-this->m_Origin[1]) / this->m_Delta[1] ) );
+  voi.startY = std::max<GridIndexType>( 0, static_cast<GridIndexType>( (fromVOI[1]-this->m_Offset[1]) / this->m_Delta[1] ) );
+  voi.endY = 1+std::min( this->m_Dims[1]-1, 1+static_cast<GridIndexType>( (toVOI[1]-this->m_Offset[1]) / this->m_Delta[1] ) );
 
-  voi.startZ = std::max<GridIndexType>( 0, static_cast<GridIndexType>( (fromVOI[2]-this->m_Origin[2]) / this->m_Delta[2] ) );
-  voi.endZ = 1+std::min( this->m_Dims[2]-1, 1+static_cast<GridIndexType>( (toVOI[2]-this->m_Origin[2]) / this->m_Delta[2] ) );
+  voi.startZ = std::max<GridIndexType>( 0, static_cast<GridIndexType>( (fromVOI[2]-this->m_Offset[2]) / this->m_Delta[2] ) );
+  voi.endZ = 1+std::min( this->m_Dims[2]-1, 1+static_cast<GridIndexType>( (toVOI[2]-this->m_Offset[2]) / this->m_Delta[2] ) );
 }
 
 void
@@ -349,30 +349,30 @@ UniformVolume::GetOrthoSlice
   ScalarImage* sliceImage = DataGrid::GetOrthoSlice( axis, plane );
   sliceImage->SetImageSlicePosition( this->GetPlaneCoord( axis, plane ) );
 
-  Vector3D imageOrigin;
+  Vector3D imageOffset;
   switch ( axis ) 
     {
     case AXIS_X:
       sliceImage->SetPixelSize( this->GetDelta( AXIS_Y, 0 ), this->GetDelta( AXIS_Z, 0 ) );
-      imageOrigin.Set( this->GetPlaneCoord(AXIS_X, plane), this->GetPlaneCoord(AXIS_Y, 0), this->GetPlaneCoord(AXIS_Z, 0) );
+      imageOffset.Set( this->GetPlaneCoord(AXIS_X, plane), this->GetPlaneCoord(AXIS_Y, 0), this->GetPlaneCoord(AXIS_Z, 0) );
       sliceImage->SetImageDirectionX( Vector3D( 0, 1, 0 ) );
       sliceImage->SetImageDirectionY( Vector3D( 0, 0, 1 ) );
       break;
     case AXIS_Y:
       sliceImage->SetPixelSize( this->GetDelta( AXIS_X, 0 ), this->GetDelta( AXIS_Z, 0 ) );
-      imageOrigin.Set( this->GetPlaneCoord(AXIS_X, 0), this->GetPlaneCoord(AXIS_Y, plane), this->GetPlaneCoord(AXIS_Z, 0) );
+      imageOffset.Set( this->GetPlaneCoord(AXIS_X, 0), this->GetPlaneCoord(AXIS_Y, plane), this->GetPlaneCoord(AXIS_Z, 0) );
       sliceImage->SetImageDirectionX( Vector3D( 1, 0, 0 ) );
       sliceImage->SetImageDirectionY( Vector3D( 0, 0, 1 ) );
       break;
     case AXIS_Z:
       sliceImage->SetPixelSize( this->GetDelta( AXIS_X, 0 ), this->GetDelta( AXIS_Y, 0 ) );
-      imageOrigin.Set( this->GetPlaneCoord(AXIS_X, 0), this->GetPlaneCoord(AXIS_Y, 0), this->GetPlaneCoord(AXIS_Z, plane) );
+      imageOffset.Set( this->GetPlaneCoord(AXIS_X, 0), this->GetPlaneCoord(AXIS_Y, 0), this->GetPlaneCoord(AXIS_Z, plane) );
       sliceImage->SetImageDirectionX( Vector3D( 1, 0, 0 ) );
       sliceImage->SetImageDirectionY( Vector3D( 0, 1, 0 ) );
       break;
     }
   
-  sliceImage->SetImageOrigin( imageOrigin );
+  sliceImage->SetImageOrigin( imageOffset );
   return sliceImage;
 }
 

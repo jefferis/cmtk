@@ -49,7 +49,7 @@ WarpXform::InitGrid
 {
   memcpy( Domain, domain, sizeof(Domain) );
   memcpy( this->m_Dims, dims, sizeof(this->m_Dims) );
-  m_Origin.Set( 0, 0, 0 );
+  m_Offset.Set( 0, 0, 0 );
   
   NumberOfControlPoints = this->m_Dims[0] * this->m_Dims[1] * this->m_Dims[2];
   this->AllocateParameterVector( 3 * NumberOfControlPoints );
@@ -325,7 +325,7 @@ WarpXform::Regularize( const int weight0, const int weight1 )
 void
 WarpXform::RegisterVolume( const UniformVolume *volume )
 {
-  this->RegisterVolumePoints( volume->m_Dims, volume->m_Delta, volume->m_Origin.XYZ );
+  this->RegisterVolumePoints( volume->m_Dims, volume->m_Delta, volume->m_Offset.XYZ );
 }
 
 void 

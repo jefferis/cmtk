@@ -138,7 +138,7 @@ main( int argc, char *argv[] )
 		   uniform->Size[0], uniform->Size[1], uniform->Size[2] );
 	  }
 	
-	fprintf( stdout, "XORIGIN\t%f\nYORIGIN\t%f\nZORIGIN\t%f\n", volume->m_Origin.XYZ[0], volume->m_Origin.XYZ[1], volume->m_Origin.XYZ[2] );
+	fprintf( stdout, "XORIGIN\t%f\nYORIGIN\t%f\nZORIGIN\t%f\n", volume->m_Offset.XYZ[0], volume->m_Offset.XYZ[1], volume->m_Offset.XYZ[2] );
 	if ( volume->MetaKeyExists(CMTK_META_SPACE_UNITS_STRING ) )
 	  fprintf( stdout, "UNITS\t%s\n", volume->m_MetaInformation[CMTK_META_SPACE_UNITS_STRING].c_str() );
 	
@@ -174,7 +174,7 @@ main( int argc, char *argv[] )
 		   uniform->Size[0], uniform->Size[1], uniform->Size[2], spaceUnits );
 	  }
 
-	fprintf( stdout, "Volume origin (%f,%f,%f)\n", volume->m_Origin.XYZ[0], volume->m_Origin.XYZ[1], volume->m_Origin.XYZ[2] );
+	fprintf( stdout, "Volume origin (%f,%f,%f)\n", volume->m_Offset.XYZ[0], volume->m_Offset.XYZ[1], volume->m_Offset.XYZ[2] );
       
 	if ( dataArray ) 
 	  {

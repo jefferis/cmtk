@@ -96,7 +96,7 @@ Volume::GetTrilinear
 Vector3D
 Volume::GetCenter () const 
 {
-  return this->m_Origin + 0.5 * Vector3D(Size);
+  return this->m_Offset + 0.5 * Vector3D(Size);
 }
 
 } // namespace cmtk

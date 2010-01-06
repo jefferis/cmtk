@@ -46,39 +46,39 @@ UniformVolume::SetCropRegion
     {
     for ( int dim = 0; dim<3; ++dim )
       {
-      this->CropFromReal[dim] = std::max<Types::Coordinate>( cropFromReal[dim], this->m_Origin[dim] );
+      this->CropFromReal[dim] = std::max<Types::Coordinate>( cropFromReal[dim], this->m_Offset[dim] );
       }
     } 
   else
     {
     for ( int dim = 0; dim<3; ++dim )
       {
-      this->CropFromReal[dim] = this->m_Origin[dim];
+      this->CropFromReal[dim] = this->m_Offset[dim];
       }
     }
 
   {
   for ( int dim = 0; dim<3; ++dim )
-    this->CropFrom[dim] = this->GetCoordIndex( dim, this->CropFromReal[dim] + this->m_Origin[dim] );
+    this->CropFrom[dim] = this->GetCoordIndex( dim, this->CropFromReal[dim] + this->m_Offset[dim] );
   }
 
   if ( cropToReal ) 
     {
     for ( int dim = 0; dim<3; ++dim )
       {
-      this->CropToReal[dim] = std::min<Types::Coordinate>( cropToReal[dim], this->Size[dim] + this->m_Origin[dim] );
+      this->CropToReal[dim] = std::min<Types::Coordinate>( cropToReal[dim], this->Size[dim] + this->m_Offset[dim] );
       }
     } 
   else
     {
     for ( int dim = 0; dim<3; ++dim )
       {
-      this->CropToReal[dim] = this->Size[dim] + this->m_Origin[dim];
+      this->CropToReal[dim] = this->Size[dim] + this->m_Offset[dim];
       }
     }
   { 
   for ( int dim = 0; dim<3; ++dim )
-    this->CropTo[dim] = 1 + this->GetCoordIndex( dim, this->CropToReal[dim] + this->m_Origin[dim] );
+    this->CropTo[dim] = 1 + this->GetCoordIndex( dim, this->CropToReal[dim] + this->m_Offset[dim] );
   }
 }
 
@@ -99,7 +99,7 @@ UniformVolume::SetCropRegion( const int* cropFrom, const int* cropTo )
 
   { 
   for ( int dim = 0; dim<3; ++dim )
-    this->CropFromReal[dim] = this->GetPlaneCoord( dim, this->CropFrom[dim] ) - this->m_Origin[dim];
+    this->CropFromReal[dim] = this->GetPlaneCoord( dim, this->CropFrom[dim] ) - this->m_Offset[dim];
   }
 
   if ( cropTo ) 
@@ -116,7 +116,7 @@ UniformVolume::SetCropRegion( const int* cropFrom, const int* cropTo )
   }
   { 
   for ( int dim = 0; dim<3; ++dim )
-    this->CropToReal[dim] = this->GetPlaneCoord( dim, this->CropTo[dim]-1 ) - this->m_Origin[dim];
+    this->CropToReal[dim] = this->GetPlaneCoord( dim, this->CropTo[dim]-1 ) - this->m_Offset[dim];
   }
 }
 
@@ -126,7 +126,7 @@ UniformVolume::SetCropRegionFrom( const int* cropFrom )
   memcpy( this->CropFrom, cropFrom, sizeof( this->CropFrom ) );
 
   for ( int dim = 0; dim<3; ++dim )
-    this->CropFromReal[dim] = this->GetPlaneCoord( dim, this->CropFrom[dim] ) - this->m_Origin[dim];
+    this->CropFromReal[dim] = this->GetPlaneCoord( dim, this->CropFrom[dim] ) - this->m_Offset[dim];
 }
 
 void
@@ -135,7 +135,7 @@ UniformVolume::SetCropRegionTo( const int* cropTo )
   memcpy( this->CropTo, cropTo, sizeof( this->CropTo ) );
 
   for ( int dim = 0; dim<3; ++dim )
-    this->CropToReal[dim] = this->GetPlaneCoord( dim, this->CropTo[dim]-1 ) - this->m_Origin[dim];
+    this->CropToReal[dim] = this->GetPlaneCoord( dim, this->CropTo[dim]-1 ) - this->m_Offset[dim];
 }
 
 void
@@ -319,9 +319,9 @@ UniformVolume::GetCroppedVolume() const
     for ( int j = 0; j < 3; ++j )
       volume->m_IndexToPhysicalMatrix[3][i] += this->CropFrom[j] * volume->m_IndexToPhysicalMatrix[j][i];
   
-  // use m_Origin to keep track of new volume origin
-  volume->SetOrigin( this->m_Origin );
-  volume->m_Origin += Vector3D( this->CropFromReal );
+  // use m_Offset to keep track of new volume origin
+  volume->SetOffset( this->m_Offset );
+  volume->m_Offset += Vector3D( this->CropFromReal );
 
   volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION]  = this->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION];
   volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION_ORIGINAL]  = this->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION_ORIGINAL];

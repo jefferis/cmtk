@@ -46,7 +46,7 @@ UniformVolume::ProbeData
   result=0;
   
   Vector3D l( location );
-  l -= this->m_Origin;
+  l -= this->m_Offset;
 
   const int idxX=(int) floor(l[0]/this->m_Delta[0]);
   if ( (idxX < 0) || (idxX>=this->m_Dims[0]-1) )
@@ -72,7 +72,7 @@ UniformVolume::ProbeData
 ( const TOutputIterator& result, const std::vector<TData*>& dataPtr, const Vector3D& location ) const
 {
   Vector3D l( location );
-  l -= this->m_Origin;
+  l -= this->m_Offset;
 
   const Types::Coordinate fracX = l[0]/this->m_Delta[0];
   const int idxX = static_cast<int>( floor(fracX) ) ;
@@ -98,7 +98,7 @@ UniformVolume::ProbeNoXform
 ( ProbeInfo& probeInfo, const Vector3D& location ) const
 {
   Vector3D l( location );
-  l -= this->m_Origin;
+  l -= this->m_Offset;
 
   const int idxX=(int) floor(l[0]/this->m_Delta[0]);
   if ( (idxX<0) || (idxX>=this->m_Dims[0]-1) )
@@ -123,14 +123,14 @@ UniformVolume::FindVoxel
 ( const Vector3D& location, int *const idx, Types::Coordinate *const from, Types::Coordinate *const to ) const
 {
   Vector3D l( location );
-  l -= this->m_Origin;
+  l -= this->m_Offset;
 
   for ( int dim = 0; dim < 3; ++dim ) 
     {
     idx[dim] = static_cast<int>( floor(l[dim] / this->m_Delta[dim]) );
     if ( (idx[dim]<0) || (idx[dim]>=(this->m_Dims[dim]-1)) ) 
       return false;
-    (to[dim] = (from[dim] = this->m_Origin[dim] + (idx[dim] * this->m_Delta[dim]))) += this->m_Delta[dim];
+    (to[dim] = (from[dim] = this->m_Offset[dim] + (idx[dim] * this->m_Delta[dim]))) += this->m_Delta[dim];
     }
   
   return true;
@@ -141,7 +141,7 @@ UniformVolume::FindVoxel
 ( const Vector3D& location, int *const idx ) const
 {
   Vector3D l( location );
-  l -= this->m_Origin;
+  l -= this->m_Offset;
   
   for ( int dim = 0; dim < 3; ++dim ) 
     {
@@ -158,7 +158,7 @@ UniformVolume::GetVoxelIndexNoBounds
 {
   for ( int dim = 0; dim < 3; ++dim ) 
     {
-    idx[dim] = static_cast<int>( floor( (location.XYZ[dim]-this->m_Origin.XYZ[dim]) / this->m_Delta[dim]) );
+    idx[dim] = static_cast<int>( floor( (location.XYZ[dim]-this->m_Offset.XYZ[dim]) / this->m_Delta[dim]) );
     }
 }
 
@@ -194,8 +194,8 @@ UniformVolume::FindVoxelUnsafe
 {
   for ( int dim = 0; dim < 3; ++dim ) 
     {
-    idx[dim] = static_cast<int>( floor((location[dim]-this->m_Origin[dim]) / this->m_Delta[dim]) );
-    (to[dim] = from[dim] = this->m_Origin[dim] + idx[dim] * this->m_Delta[dim]) += this->m_Delta[dim];
+    idx[dim] = static_cast<int>( floor((location[dim]-this->m_Offset[dim]) / this->m_Delta[dim]) );
+    (to[dim] = from[dim] = this->m_Offset[dim] + idx[dim] * this->m_Delta[dim]) += this->m_Delta[dim];
     }
 }
 

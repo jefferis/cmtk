@@ -35,12 +35,17 @@ Release CMTK-1.2.0:
 - Improved: command line callback error handling was ugly and tedious; now
     using exceptions to achieve the same effect.
 
+- Changed: in API, all volume "origin" fields were renamed to "offset" to
+    avoid confusion with "origin" of coordinate spaces.
+
 - Fixed: bundled DICOM library finally works on all tested platforms and all
     tested compilers.
 - Fixed: compile error on latest Mac/Intel gcc due to undefined "ushort"
     type.
 - Fixed: triplanar can now be called again with no parameters to open empty
     viewer UI.
+- Fixed: set coordinate space meta information for user-defined target grid in
+    "reformatx" tool.
 
 - Removed: support for AMD Core Math Library (ACML), which was rarely used and
     complicated code unnecessarily
@@ -58,6 +63,7 @@ Release CMTK-1.2.0:
     testing/baseline/${TESTNAME}, then it will be used. Otherwise, the global
     baseline as configured by the CMTK_DATA_ROOT top-level CMake variable is
     used.
+- Testing: added tests for manual target grid definition in "reformatx" tool.
 
 
 Release CMTK-1.1.3 (2009-11-18):

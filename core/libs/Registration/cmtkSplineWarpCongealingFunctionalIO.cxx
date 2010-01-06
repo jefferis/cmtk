@@ -50,7 +50,7 @@ operator<<
   stream.WriteIntArray( "dims", func.m_TemplateGrid->GetDims(), 3 );
   stream.WriteCoordinateArray( "delta", func.m_TemplateGrid->GetDelta(), 3 );
   stream.WriteCoordinateArray( "size", func.m_TemplateGrid->Size, 3 );
-  stream.WriteCoordinateArray( "origin", func.m_TemplateGrid->m_Origin.XYZ, 3 );
+  stream.WriteCoordinateArray( "origin", func.m_TemplateGrid->m_Offset.XYZ, 3 );
   stream.End();
   
   for ( size_t idx = 0; idx < func.m_XformVector.size(); ++idx )
@@ -81,7 +81,7 @@ operator>>
   stream.End();
   
   UniformVolume::SmartPtr templateGrid( new UniformVolume( dims, size ) );
-  templateGrid->SetOrigin( Vector3D( origin ) );
+  templateGrid->SetOffset( Vector3D( origin ) );
 
   std::vector<UniformVolume::SmartPtr> imageVector;
   std::vector<AffineXform::SmartPtr> xformVector;

@@ -77,17 +77,17 @@ public:
   DeformationField( const UniformVolume* volume ) 
   {
     this->InitGrid( volume->Size, volume->GetDims() );
-    this->m_Origin = volume->m_Origin;
+    this->m_Offset = volume->m_Offset;
   }
   
   /// Constructor.
-  DeformationField( const Types::Coordinate domain[3], const int dims[3], const Types::Coordinate* origin = NULL ) 
+  DeformationField( const Types::Coordinate domain[3], const int dims[3], const Types::Coordinate* offset = NULL ) 
   {
     this->InitGrid( domain, dims );
-    if ( origin )
+    if ( offset )
       {
       for ( int dim = 0; dim < 3; ++dim )
-	this->m_Origin[dim] = origin[dim];
+	this->m_Offset[dim] = offset[dim];
       }
   }
   

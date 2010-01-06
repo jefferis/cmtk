@@ -43,11 +43,11 @@ VolumeAxesHash::VolumeAxesHash
 {
   // define volume corners
   Vector3D dX(1,0,0), dY(0,1,0), dZ(0,0,1);
-  Vector3D V(volume.m_Origin);
+  Vector3D V(volume.m_Offset);
   
-  dX += volume.m_Origin;
-  dY += volume.m_Origin;
-  dZ += volume.m_Origin;
+  dX += volume.m_Offset;
+  dY += volume.m_Offset;
+  dZ += volume.m_Offset;
     
   if ( xform ) 
     {
@@ -84,7 +84,7 @@ VolumeAxesHash::VolumeAxesHash
 {
   // define volume corners
   Vector3D dX(1,0,0), dY(0,1,0), dZ(0,0,1);
-  Vector3D V(volume.m_Origin);
+  Vector3D V(volume.m_Offset);
     
   // apply mirror transformation  
   mirrorPlane.MirrorInPlace(V);

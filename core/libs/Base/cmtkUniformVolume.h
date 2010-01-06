@@ -317,7 +317,7 @@ public:
   /// Get plane coordinate.
   virtual Types::Coordinate GetPlaneCoord( const int axis, const int plane ) const 
   {
-    return this->m_Origin[axis] + plane * this->m_Delta[axis];
+    return this->m_Offset[axis] + plane * this->m_Delta[axis];
   }
 
   /** Get grid index of slice with highest coordinate smaller than given.
@@ -326,7 +326,7 @@ public:
    */
   virtual int GetCoordIndex( const int axis, const Types::Coordinate location ) const 
   {
-    return std::max<int>( 0, std::min<int>( (int) ((location-this->m_Origin[axis]) / this->m_Delta[axis]), this->m_Dims[axis]-1 ) );
+    return std::max<int>( 0, std::min<int>( (int) ((location-this->m_Offset[axis]) / this->m_Delta[axis]), this->m_Dims[axis]-1 ) );
   }
   
   /** Get grid index corresponding (as close as possible) to coordinate.
@@ -335,7 +335,7 @@ public:
    */
   virtual int GetClosestCoordIndex( const int axis, const Types::Coordinate location ) const 
   {
-    const int idx = (int)MathUtil::Round((location-this->m_Origin[axis]) / this->m_Delta[axis]);
+    const int idx = (int)MathUtil::Round((location-this->m_Offset[axis]) / this->m_Delta[axis]);
     return std::max<int>( 0, std::min<int>( idx, this->m_Dims[axis]-1 ) );
   }
 
@@ -346,7 +346,7 @@ public:
   {
     for ( int dim = 0; dim < 3; ++dim )
       {
-      xyz[dim] = (int) MathUtil::Round((v[dim]-this->m_Origin[dim]) / this->m_Delta[dim]);
+      xyz[dim] = (int) MathUtil::Round((v[dim]-this->m_Offset[dim]) / this->m_Delta[dim]);
       if ( (xyz[dim] < 0) || ( xyz[dim] > this->m_Dims[dim]-1) )
 	return false;
       }
@@ -359,7 +359,7 @@ public:
    */
   virtual int GetTruncCoordIndex( const int axis, const Types::Coordinate location ) const 
   {
-    const int idx = static_cast<int>((location-this->m_Origin[axis]) / this->m_Delta[axis]);
+    const int idx = static_cast<int>((location-this->m_Offset[axis]) / this->m_Delta[axis]);
     return std::max<int>( 0, std::min<int>( idx, this->m_Dims[axis]-1 ) );
   }
 
@@ -370,7 +370,7 @@ public:
   {
     for ( int dim = 0; dim < 3; ++dim )
       {
-      xyz[dim] = static_cast<int>((v[dim]-this->m_Origin[dim]) / this->m_Delta[dim]);
+      xyz[dim] = static_cast<int>((v[dim]-this->m_Offset[dim]) / this->m_Delta[dim]);
       if ( (xyz[dim] < 0) || ( xyz[dim] > this->m_Dims[dim]-1) )
 	return false;
       }
@@ -386,7 +386,7 @@ public:
    */
   virtual Vector3D GetGridLocation( const int x, const int y, const int z ) const 
   {
-    return Vector3D( this->m_Origin.XYZ[0] + x * this->m_Delta[0], this->m_Origin.XYZ[1] + y * this->m_Delta[1], this->m_Origin.XYZ[2] + z * this->m_Delta[2] );
+    return Vector3D( this->m_Offset.XYZ[0] + x * this->m_Delta[0], this->m_Offset.XYZ[1] + y * this->m_Delta[1], this->m_Offset.XYZ[2] + z * this->m_Delta[2] );
   }
   
   /** Get a grid coordinate.
@@ -398,7 +398,7 @@ public:
    */
   virtual Vector3D& GetGridLocation( Vector3D& v, const int x, const int y, const int z ) const 
   {
-    return v.Set( this->m_Origin.XYZ[0] + x * this->m_Delta[0], this->m_Origin.XYZ[1] + y * this->m_Delta[1], this->m_Origin.XYZ[2] + z * this->m_Delta[2] );
+    return v.Set( this->m_Offset.XYZ[0] + x * this->m_Delta[0], this->m_Offset.XYZ[1] + y * this->m_Delta[1], this->m_Offset.XYZ[2] + z * this->m_Delta[2] );
   }
   
   /** Get a grid coordinate by continuous pixel index.
@@ -410,9 +410,9 @@ public:
    */
   virtual Vector3D& GetGridLocation( Vector3D& v, const size_t idx ) const 
   {
-    return v.Set( this->m_Origin.XYZ[0] +  (idx % this->nextJ) * this->m_Delta[0], 
-		  this->m_Origin.XYZ[1] +  (idx % this->nextK) / this->nextJ * this->m_Delta[1], 
-		  this->m_Origin.XYZ[2] +  (idx / this->nextK) * this->m_Delta[2] );
+    return v.Set( this->m_Offset.XYZ[0] +  (idx % this->nextJ) * this->m_Delta[0], 
+		  this->m_Offset.XYZ[1] +  (idx % this->nextK) / this->nextJ * this->m_Delta[1], 
+		  this->m_Offset.XYZ[2] +  (idx / this->nextK) * this->m_Delta[2] );
   }
 
   /** Calculate volume center.
@@ -420,7 +420,7 @@ public:
    */
   Vector3D GetCenterCropRegion() const 
   {
-    return this->m_Origin + 0.5 * ( Vector3D( CropToReal ) + Vector3D( CropFromReal ) );
+    return this->m_Offset + 0.5 * ( Vector3D( CropToReal ) + Vector3D( CropFromReal ) );
   }
   
   //@}
@@ -496,7 +496,7 @@ public:
   {
     Vector3D com = this->Superclass::GetCenterOfMass();
     for ( int dim = 0; dim < 3; ++dim )
-      (com.XYZ[dim] *= this->m_Delta[dim]) += this->m_Origin[dim];
+      (com.XYZ[dim] *= this->m_Delta[dim]) += this->m_Offset[dim];
     return com;
   }
   
@@ -506,7 +506,7 @@ public:
     Vector3D com = this->Superclass::GetCenterOfMass( firstOrderMoment );
     for ( int dim = 0; dim < 3; ++dim )
       {
-      (com.XYZ[dim] *= this->m_Delta[dim]) += this->m_Origin[dim];
+      (com.XYZ[dim] *= this->m_Delta[dim]) += this->m_Offset[dim];
       firstOrderMoment.XYZ[dim] *= this->m_Delta[dim];
       }
     return com;

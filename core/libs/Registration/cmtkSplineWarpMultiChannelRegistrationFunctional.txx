@@ -123,7 +123,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   const size_t numberOfControlPoints = this->m_Transformation.VariableParamVectorDim() / 3;
   this->m_VolumeOfInfluenceVector.resize( numberOfControlPoints );
   
-  const Vector3D referenceFrom( this->m_ReferenceChannels[0]->m_Origin );
+  const Vector3D referenceFrom( this->m_ReferenceChannels[0]->m_Offset );
   const Vector3D referenceTo( this->m_ReferenceChannels[0]->Size );
   
   for ( size_t idx = 0; idx < numberOfControlPoints; ++idx ) 
@@ -158,7 +158,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   
   const size_t numberOfControlPoints = this->m_Transformation.VariableParamVectorDim() / 3;
 
-  const Vector3D referenceFrom( this->m_ReferenceChannels[0]->m_Origin );
+  const Vector3D referenceFrom( this->m_ReferenceChannels[0]->m_Offset );
   const Vector3D referenceTo( this->m_ReferenceChannels[0]->Size );
   Vector3D regionFrom, regionTo;
   Rect3D region;

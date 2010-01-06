@@ -169,8 +169,8 @@ void
 SplineWarpGroupwiseRegistrationRMIFunctional
 ::UpdateVolumesOfInfluence()
 {
-  const Vector3D templateFrom( this->m_TemplateGrid->m_Origin );
-  const Vector3D templateTo(  this->m_TemplateGrid->m_Origin + this->m_TemplateGrid->Size );
+  const Vector3D templateFrom( this->m_TemplateGrid->m_Offset );
+  const Vector3D templateTo(  this->m_TemplateGrid->m_Offset + this->m_TemplateGrid->Size );
   
   this->m_VolumeOfInfluenceArray.resize( this->m_ParametersPerXform / 3 );
 
@@ -298,8 +298,8 @@ SplineWarpGroupwiseRegistrationRMIFunctional::UpdateActiveControlPoints()
       this->m_ActiveControlPointFlags.resize( numberOfControlPoints );
       this->m_NumberOfActiveControlPoints = 0;
       
-      const Vector3D templateFrom( this->m_TemplateGrid->m_Origin );
-      const Vector3D templateTo(  this->m_TemplateGrid->m_Origin + this->m_TemplateGrid->Size );
+      const Vector3D templateFrom( this->m_TemplateGrid->m_Offset );
+      const Vector3D templateTo(  this->m_TemplateGrid->m_Offset + this->m_TemplateGrid->Size );
       Vector3D fromVOI, toVOI;
       
       const Rect3D* voi = &this->m_VolumeOfInfluenceArray[0];

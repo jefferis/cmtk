@@ -148,9 +148,9 @@ CallbackReconGrid( const char* arg )
 {
   int gridDims[3] = { 0, 0, 0 };
   float gridDelta[3] = { 0, 0, 0 };
-  float gridOrigin[3] = { 0, 0, 0 };
+  float gridOffset[3] = { 0, 0, 0 };
 
-  const size_t numArgs = sscanf( arg, "%d,%d,%d:%f,%f,%f:%f,%f,%f", gridDims, gridDims+1, gridDims+2, gridDelta, gridDelta+1, gridDelta+2, gridOrigin, gridOrigin+1, gridOrigin+2 );
+  const size_t numArgs = sscanf( arg, "%d,%d,%d:%f,%f,%f:%f,%f,%f", gridDims, gridDims+1, gridDims+2, gridDelta, gridDelta+1, gridDelta+2, gridOffset, gridOffset+1, gridOffset+2 );
   if ( (numArgs != 6) && (numArgs != 9) )
     {
     cmtk::StdErr.printf( "ERROR: reconstruction volume definition must be int,int,int:float,float,float or int,int,int:float,float,float:float,float,float\n", arg );
@@ -162,7 +162,7 @@ CallbackReconGrid( const char* arg )
 
   if ( numArgs == 9 )
     {
-    ReconGrid->SetOrigin( cmtk::Vector3D( gridOrigin[0], gridOrigin[1], gridOrigin[2] ) );
+    ReconGrid->SetOffset( cmtk::Vector3D( gridOffset[0], gridOffset[1], gridOffset[2] ) );
     }
 }
 
@@ -298,7 +298,7 @@ main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation" );
 
     cl.AddSwitch( Key( 'x', "exclude-first-image" ), &ExcludeFirstImage, true, "Exclude first image from reconstruction as a separate registration target image)" );
-    cl.AddCallback( Key( "recon-grid" ), CallbackReconGrid, "Define reconstruction grid as Nx,Ny,Nz:dX,dY,dZ[:Ox,Oy,Oz] (dims:pixel:origin)" );
+    cl.AddCallback( Key( "recon-grid" ), CallbackReconGrid, "Define reconstruction grid as Nx,Ny,Nz:dX,dY,dZ[:Ox,Oy,Oz] (dims:pixel:offset)" );
     cl.AddOption( Key( 'R', "recon-grid-path" ), &ReconstructionGridPath, "Give path to grid that defines reconstructed image grid [including offset]" );
     cl.AddCallback( Key( "crop" ), CallbackCrop, "Crop reference to pixel region x0,y0,z1:x1,y1,z1" );
     cl.AddOption( Key( 'o', "output" ), &OutputImagePath, "Output image path [default: reconstructed.hdr]" );
@@ -403,9 +403,9 @@ main( const int argc, const char* argv[] )
 
   if ( Verbose )
     {
-    cmtk::StdErr.printf( "Reconstruction grid: %dx%dx%d pixels, %fx%fx%f pixel size, origin=%f,%f,%f\n",
+    cmtk::StdErr.printf( "Reconstruction grid: %dx%dx%d pixels, %fx%fx%f pixel size, offset=%f,%f,%f\n",
 		      ReconGrid->m_Dims[0], ReconGrid->m_Dims[1], ReconGrid->m_Dims[2], (float)ReconGrid->m_Delta[0], (float)ReconGrid->m_Delta[1], (float)ReconGrid->m_Delta[2],
-		      (float)ReconGrid->m_Origin[0], (float)ReconGrid->m_Origin[1], (float)ReconGrid->m_Origin[2] );
+		      (float)ReconGrid->m_Offset[0], (float)ReconGrid->m_Offset[1], (float)ReconGrid->m_Offset[2] );
     }
   
   cmtk::UniformVolume::SmartPtr correctedVolume;

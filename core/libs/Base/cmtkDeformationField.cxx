@@ -48,13 +48,13 @@ DeformationField::InitControlPoints( const AffineXform* affineXform )
     Types::Coordinate *ofs = this->m_Parameters;
 
     Vector3D p;
-    p[2] = this->m_Origin[2];
+    p[2] = this->m_Offset[2];
     for ( int z = 0; z < this->m_Dims[2]; ++z, p[2] += this->Spacing[2] ) 
       {
-      p[1] = this->m_Origin[1];
+      p[1] = this->m_Offset[1];
       for ( int y = 0; y < this->m_Dims[1]; ++y, p[1] += this->Spacing[1] ) 
 	{
-	p[0] = this->m_Origin[0];
+	p[0] = this->m_Offset[0];
 	for ( int x = 0; x < this->m_Dims[0]; ++x, p[0] += this->Spacing[0], ofs+=3 ) 
 	  {
 	  Vector3D q( p );
@@ -84,9 +84,9 @@ DeformationField
 {
   const Types::Coordinate* coeff = this->m_Parameters + nextI * idxX + nextJ * idxY + nextK * idxZ;
 
-  v[0] = this->m_Origin[0] + this->Spacing[0] * idxX + coeff[0];
-  v[1] = this->m_Origin[1] + this->Spacing[1] * idxY + coeff[1];
-  v[2] = this->m_Origin[2] + this->Spacing[2] * idxZ + coeff[2];
+  v[0] = this->m_Offset[0] + this->Spacing[0] * idxX + coeff[0];
+  v[1] = this->m_Offset[1] + this->Spacing[1] * idxY + coeff[1];
+  v[2] = this->m_Offset[2] + this->Spacing[2] * idxZ + coeff[2];
 }
 
 void 
@@ -97,12 +97,12 @@ DeformationField::GetTransformedGridSequence
   Vector3D *v = vIn;
   const Types::Coordinate* coeff = this->m_Parameters + 3 * (idxX + nextJ * (idxY + nextK * idxZ ));
 
-  const Types::Coordinate Y = this->m_Origin[1] + this->Spacing[1] * idxY;
-  const Types::Coordinate Z = this->m_Origin[2] + this->Spacing[2] * idxZ;
+  const Types::Coordinate Y = this->m_Offset[1] + this->Spacing[1] * idxY;
+  const Types::Coordinate Z = this->m_Offset[2] + this->Spacing[2] * idxZ;
 
   for ( int n = 0; n < numPoints; ++n, ++v, coeff += 3 )
     {
-    v[n].XYZ[0] = this->m_Origin[0] + this->Spacing[0] * idxX + coeff[0];
+    v[n].XYZ[0] = this->m_Offset[0] + this->Spacing[0] * idxX + coeff[0];
     v[n].XYZ[1] = Y + coeff[1];
     v[n].XYZ[2] = Z + coeff[2];
     }
@@ -120,7 +120,7 @@ DeformationField::ApplyInPlace
     {
     // This is the (real-valued) index of the control point grid cell the
     // given location is in.
-    r[dim] = this->InverseSpacing[dim] * ( v.XYZ[dim] - this->m_Origin.XYZ[dim] );
+    r[dim] = this->InverseSpacing[dim] * ( v.XYZ[dim] - this->m_Offset.XYZ[dim] );
     // This is the actual cell index.
     grid[dim] = std::min( static_cast<int>( r[dim] ), this->m_Dims[dim]-2 );
     // And here's the relative position within the cell.

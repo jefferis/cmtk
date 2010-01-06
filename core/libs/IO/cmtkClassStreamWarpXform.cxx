@@ -90,9 +90,9 @@ ClassStream::PutWarp
 	  p[0] = P[0]; p[1] = P[1]; p[2] = P[2];
 	  
 	  // Undo offset tranformation; regain deltas.
-	  p[0] -= (warpXform->m_Origin[0] + x * warpXform->Spacing[0]);
-	  p[1] -= (warpXform->m_Origin[1] + y * warpXform->Spacing[1]);
-	  p[2] -= (warpXform->m_Origin[2] + z * warpXform->Spacing[2]);
+	  p[0] -= (warpXform->m_Offset[0] + x * warpXform->Spacing[0]);
+	  p[1] -= (warpXform->m_Offset[1] + y * warpXform->Spacing[1]);
+	  p[2] -= (warpXform->m_Offset[2] + z * warpXform->Spacing[2]);
 	  
 	  // Is this correct, anyway? a) we may have to use the INVERSE
 	  // affine transformation, as it is with respect to the model while
@@ -119,7 +119,7 @@ ClassStream::PutWarp
   this->WriteIntArray( "dims", warpXform->m_Dims, 3 );
 
   this->WriteCoordinateArray( "domain", warpXform->Domain, 3 );
-  this->WriteCoordinateArray( "origin", warpXform->m_Origin.XYZ, 3 );
+  this->WriteCoordinateArray( "origin", warpXform->m_Offset.XYZ, 3 );
   this->WriteCoordinateArray( "coefficients", nCoeff, warpXform->m_NumberOfParameters, 3 );
 
   const BitVector* activeFlags = warpXform->GetActiveFlags();

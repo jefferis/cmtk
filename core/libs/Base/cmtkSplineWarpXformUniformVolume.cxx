@@ -41,9 +41,9 @@ SplineWarpXformUniformVolume::SplineWarpXformUniformVolume( const SplineWarpXfor
   : m_Warp( warp ),
     m_Volume( volume )
 {
-  this->RegisterVolumeAxis( volume->m_Dims[0], volume->m_Delta[0], volume->m_Origin[0], warp->m_Dims[0], warp->InverseSpacing[0], this->m_GridX, this->m_SplineX, this->m_DerivSplineX );
-  this->RegisterVolumeAxis( volume->m_Dims[1], volume->m_Delta[1], volume->m_Origin[1], warp->m_Dims[1], warp->InverseSpacing[1], this->m_GridY, this->m_SplineY, this->m_DerivSplineY );
-  this->RegisterVolumeAxis( volume->m_Dims[2], volume->m_Delta[2], volume->m_Origin[2], warp->m_Dims[2], warp->InverseSpacing[2], this->m_GridZ, this->m_SplineZ, this->m_DerivSplineZ );
+  this->RegisterVolumeAxis( volume->m_Dims[0], volume->m_Delta[0], volume->m_Offset[0], warp->m_Dims[0], warp->InverseSpacing[0], this->m_GridX, this->m_SplineX, this->m_DerivSplineX );
+  this->RegisterVolumeAxis( volume->m_Dims[1], volume->m_Delta[1], volume->m_Offset[1], warp->m_Dims[1], warp->InverseSpacing[1], this->m_GridY, this->m_SplineY, this->m_DerivSplineY );
+  this->RegisterVolumeAxis( volume->m_Dims[2], volume->m_Delta[2], volume->m_Offset[2], warp->m_Dims[2], warp->InverseSpacing[2], this->m_GridZ, this->m_SplineZ, this->m_DerivSplineZ );
   
   for ( int idx = 0; idx < volume->m_Dims[0]; ++idx ) 
     this->m_GridX[idx] *= warp->nextI;
