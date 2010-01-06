@@ -46,6 +46,10 @@ Release CMTK-1.2.0:
     viewer UI.
 - Fixed: set coordinate space meta information for user-defined target grid in
     "reformatx" tool.
+- Fixed: using Sun's compiler, there was a problem with the timely
+    initialization of SmartPointer<...>::Null when such an object was used in
+    the global scope. This led to crashing volume_injection and
+    volume_reconstruction tools.
 
 - Removed: support for AMD Core Math Library (ACML), which was rarely used and
     complicated code unnecessarily
