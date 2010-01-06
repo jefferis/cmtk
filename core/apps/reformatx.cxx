@@ -101,7 +101,7 @@ cmtk::XformList ReferenceToFloating;
 
 cmtk::ReformatVolume::Mode Mode = cmtk::ReformatVolume::REFORMAT_PLAIN;
 cmtk::Interpolators::InterpolationEnum Interpolation = cmtk::Interpolators::LINEAR;
-size_t InterpolatorWindowRadius = 3;
+int InterpolatorWindowRadius = 3;
 
 // default to auto-selection of data type
 cmtk::ScalarDataType DataType = cmtk::TYPE_NONE;
