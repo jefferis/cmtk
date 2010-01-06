@@ -347,7 +347,9 @@ IF(NOT CMTK_USE_MPI)
     reformatxMassPreserving
     reformatxJacobian
     reformatxInverseJacobian
-    reformatxSincHamming)
+    reformatxSincHamming
+    reformatxTargetGrid
+    reformatxTargetGridOrigin)
   IF(CMTK_BUILD_NRRD)
     SET(testList ${testList} reformatxDfieldNrrd)
   ENDIF(CMTK_BUILD_NRRD)

@@ -773,6 +773,14 @@ case ${RUNTEST} in
 	run reformatx -o ${tmpdir}/reformat.hdr --floating parc2.hdr parc1.hdr parc1_parc2_dfield.nrrd
 	check_results reformat.img
 	;;
+    reformatxTargetGrid)
+        run reformatx -o ${tmpdir}/reformat.nii --target-grid 32,43,21:5.625,5.625,7.5 --floating ~/software/nitrc/data/testing/inputs/spgr_brain_1.hdr
+	check_results reformat.nii
+	;;
+    reformatxTargetGridOrigin)
+        run reformatx -o ${tmpdir}/reformat.nii --target-grid 32,43,21:5.625,5.625,7.5:5.625,0,0 --floating ~/software/nitrc/data/testing/inputs/spgr_brain_1.hdr
+	check_results reformat.nii
+	;;
     registrationAffineMrMrMSD)
 	run registration -i --dofs 6,9 --msd --match-histograms -o ${tmpdir} pat001_mr_T1.hdr pat002_mr_T2.hdr
 	check_results registration

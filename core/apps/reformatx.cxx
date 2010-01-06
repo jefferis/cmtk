@@ -51,6 +51,7 @@
 #include <cmtkReformatVolume.h>
 #include <cmtkReformatVolumeJacobian.cxx>
 #include <cmtkReformatVolumePlain.cxx>
+#include <cmtkAnatomicalOrientation.h>
 
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 namespace cmtk
@@ -88,6 +89,8 @@ CallbackTargetVolume( const char* arg )
     }
   
   UserDefinedTargetVolume = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( gridDims, gridDelta[0], gridDelta[1], gridDelta[2] ) );
+  UserDefinedTargetVolume->m_MetaInformation[CMTK_META_SPACE] = 
+    UserDefinedTargetVolume->m_MetaInformation[CMTK_META_SPACE_ORIGINAL] = cmtk::AnatomicalOrientation::ORIENTATION_STANDARD;
 
   if ( numArgs == 9 )
     {
