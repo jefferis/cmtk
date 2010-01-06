@@ -450,8 +450,8 @@ main( const int argc, char* argv[] )
     cl.AddCallback( Key( "target-grid" ), CallbackTargetVolume, "Define target grid for reformating as Nx,Ny,Nz:dX,dY,dZ[:Ox,Oy,Oz] (dims:pixel:origin)" );
     cl.AddSwitch( Key( 'm', "mask" ), &TargetMask, true, "Use target pixel data as binary mask." );
     cl.AddCallback( Key( "crop" ), CallbackCropImages, "Crop target image: x0,y0,z0,x1,y1,z2" );
-    cl.AddCallback( Key( 'O', "target-offset" ), CallbackTargetImageOffset, "Set target image offset to x,y,z mm" );
-    cl.AddCallback( Key( "target-offset-pixels" ), CallbackTargetImageOffsetPixels, "Set target image offset to dx,dy,dz pixels" );
+    cl.AddCallback( Key( 'O', "target-offset" ), CallbackTargetImageOffset, "Override target image offset and set to x,y,z mm" );
+    cl.AddCallback( Key( "target-offset-pixels" ), CallbackTargetImageOffsetPixels, "Override target image offset and set to dx,dy,dz pixels" );
     cl.AddOption( Key( 'F', "floating" ), &FloatingVolumeName, "Format and path of floating image." );
 
     cl.BeginGroup( "Output", "Output Options" );
