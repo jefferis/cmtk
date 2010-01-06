@@ -101,7 +101,7 @@ CallbackCrop( const char* arg )
     }
 }
 
-cmtk::UniformVolume::SmartPtr ReconGrid = cmtk::UniformVolume::SmartPtr::Null;
+cmtk::UniformVolume::SmartPtr ReconGrid( NULL );
 
 void
 CallbackReconGrid( const char* arg )
