@@ -55,7 +55,7 @@ Broadcast
     3 * sizeof(int) + // Dims[0..2]
     6 * sizeof(int) + // CropFrom[0..2], CropTo[0..2]
     3 * sizeof( Types::Coordinate ) + // Size[0..2]
-    3 * sizeof( Types::Coordinate ) + // m_Origin[0..2]
+    3 * sizeof( Types::Coordinate ) + // m_Offset[0..2]
     sizeof( ScalarDataType ); // data type
 
   char msgBufferHdr[ msgBufferHdrSize ];
@@ -73,7 +73,7 @@ Broadcast
 
     MPI::CHAR.Pack( inOutPtr->Size, 3 * sizeof( inOutPtr->Size[0] ), msgBufferHdr, msgBufferHdrSize, position, comm );
 
-    MPI::CHAR.Pack( inOutPtr->m_Origin.XYZ, 3 * sizeof( inOutPtr->m_Origin[0] ), msgBufferHdr, msgBufferHdrSize, position, comm );
+    MPI::CHAR.Pack( inOutPtr->m_Offset.XYZ, 3 * sizeof( inOutPtr->m_Offset[0] ), msgBufferHdr, msgBufferHdrSize, position, comm );
 
     ScalarDataType dataType = TYPE_NONE;
     const TypedArray* inData = inOutPtr->GetData();
@@ -92,18 +92,18 @@ Broadcast
     int dims[3];
     int cropRegion[6];
     Types::Coordinate size[3];
-    Types::Coordinate origin[3];
+    Types::Coordinate offset[3];
     ScalarDataType dataType;
 
     int position = 0;
     MPI::CHAR.Unpack( msgBufferHdr, msgBufferHdrSize, dims, sizeof( dims ), position, comm );
     MPI::CHAR.Unpack( msgBufferHdr, msgBufferHdrSize, cropRegion, sizeof( cropRegion ), position, comm );
     MPI::CHAR.Unpack( msgBufferHdr, msgBufferHdrSize, size, sizeof( size ), position, comm );
-    MPI::CHAR.Unpack( msgBufferHdr, msgBufferHdrSize, origin, sizeof( origin ), position, comm );
+    MPI::CHAR.Unpack( msgBufferHdr, msgBufferHdrSize, offset, sizeof( offset ), position, comm );
     MPI::CHAR.Unpack( msgBufferHdr, msgBufferHdrSize, &dataType, sizeof( dataType ), position, comm );
 
     inOutPtr = UniformVolume::SmartPtr( new UniformVolume( dims, size ) );
-    inOutPtr->SetOrigin( Vector3D( origin ) );
+    inOutPtr->SetOffset( Vector3D( offset ) );
     inOutPtr->SetCropRegion( cropRegion, cropRegion+3 );
     inOutPtr->CreateDataArray( dataType );
     }
