@@ -141,23 +141,11 @@ public:
   /// De-referencing operator (returns constant object).
   const T& operator*() const { return *Object; }
 
-  /// De-referencing operator (returns volatile object).
-  volatile T& operator*() volatile { return *Object; }
-
-  /// De-referencing operator (returns volatile object).
-  const volatile T& operator*() const volatile { return *Object; }
-
   /// De-referencing operator (returns non-constant object pointer).
   T* operator->() { return Object; }
 
   /// De-referencing operator (returns constant object pointer).
   const T* operator->() const { return Object; }
-
-  /// De-referencing operator (returns constant object pointer).
-  volatile T* operator->() volatile { return Object; }
-
-  /// De-referencing operator (returns constant object pointer).
-  const volatile T* operator->() const volatile { return Object; }
 
   /// Implicit conversion to constant pointer.
   operator const T*() const { return Object; }
@@ -170,12 +158,6 @@ public:
 
   /// Explicit conversion to constant pointer.
   const T* GetPtr() const { return Object; }
-
-  /// Explicit conversion to volatile pointer.
-  volatile T* GetPtr() volatile { return Object; }
-
-  /// Explicit conversion to constant and volatile pointer.
-  const volatile T* GetPtr() const volatile { return Object; }
 
   /** Release control of this pointer.
    *\note This is a dangerous function. Be sure you know what you are doing!

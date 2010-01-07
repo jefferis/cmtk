@@ -156,7 +156,7 @@ main ( const int argc, const char* argv[] )
     const cmtk::SplineWarpXform* splineWarp = cmtk::SplineWarpXform::SmartPtr ::DynamicCastFrom( xform );  
     if ( splineWarp )
       {
-      const cmtk::Xform::SmartPtr affine( splineWarp->GetInitialAffineXform() );
+	  const cmtk::Xform::SmartPtr affine( cmtk::Xform::SmartPtr::DynamicCastFrom( splineWarp->GetInitialAffineXform() ) );
       xformListAffine.Add( affine );
       }
     else
