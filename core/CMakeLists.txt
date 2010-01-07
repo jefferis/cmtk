@@ -383,6 +383,31 @@ IF(NOT CMTK_USE_MPI)
 ENDIF(NOT CMTK_USE_MPI)
 
 #-----------------------------------------------------------------------------
+# Add options to enable or disable different compoments
+
+OPTION(BUILD_APPS "Build command line applications" ON)
+IF(BUILD_APPS)
+  SUBDIRS(apps)
+ENDIF(BUILD_APPS)
+
+OPTION(BUILD_VALIDATION "Build tools for algorithm validation" OFF)
+IF(BUILD_VALIDATION)
+  SUBDIRS(validation)
+ENDIF(BUILD_VALIDATION)
+
+IF(NOT CMTK_USE_MPI)
+  IF(CMTK_USE_QT)
+    OPTION(BUILD_GUI "Build GUI applications" ON)
+    OPTION(BUILD_FUSION "Build image fusion application" ON)
+  ENDIF(CMTK_USE_QT)
+ENDIF(NOT CMTK_USE_MPI)
+
+OPTION(BUILD_TESTING "Build test code" ON)
+IF (BUILD_TESTING)
+  SUBDIRS(testing)
+ENDIF (BUILD_TESTING)
+
+#-----------------------------------------------------------------------------
 # Output directories.
 IF(NOT LIBRARY_OUTPUT_PATH)
   SET (LIBRARY_OUTPUT_PATH ${CMTK_BINARY_DIR}/bin CACHE INTERNAL "Single output directory for building all libraries.")
@@ -438,16 +463,19 @@ INCLUDE(CPack)
 
 INSTALL(FILES ${CPACK_RESOURCE_FILE_LICENSE} ${CPACK_PACKAGE_DESCRIPTION_FILE} DESTINATION share/doc/cmtk COMPONENT documentation)
 
-CPACK_ADD_COMPONENT(applications
-  DISPLAY_NAME "Command Line Applications"
-  DEPENDS runtime)
+IF(BUILD_APPS)
+  CPACK_ADD_COMPONENT(applications
+    DISPLAY_NAME "Command Line Applications")
+ENDIF(BUILD_APPS)
 
-CPACK_ADD_COMPONENT(gui
-  DISPLAY_NAME "Graphical User Interface Applications"
-  DEPENDS runtime)
+IF(BUILD_GUI)
+  CPACK_ADD_COMPONENT(gui
+    DISPLAY_NAME "Graphical User Interface Applications")
+ENDIF(BUILD_GUI)
 
 CPACK_ADD_COMPONENT(runtime
-  DISPLAY_NAME "Runtime Components")
+  DISPLAY_NAME "Runtime Components"
+  REQUIRED)
 
 CPACK_ADD_COMPONENT(libraries
   DISPLAY_NAME "Link Libraries"
@@ -459,9 +487,11 @@ CPACK_ADD_COMPONENT(headers
   GROUP development
   DISABLED)
 
-CPACK_ADD_COMPONENT(documentation
-  DISPLAY_NAME "CMTK Documentation"
-  DISABLED)
+IF(BUILD_DOCUMENTATION)
+  CPACK_ADD_COMPONENT(documentation
+    DISPLAY_NAME "CMTK Documentation"
+    DISABLED)
+ENDIF(BUILD_DOCUMENTATION)
 
 CPACK_ADD_COMPONENT_GROUP(development
   DISPLAY_NAME "Development Components")
@@ -494,35 +524,9 @@ LINK_DIRECTORIES(
 
 SET(CMTK_SYSTEM_LIBRARIES ${DCMTK_LIBRARIES} ${DCMTK_LIBRARIES_EXTRA} ${NRRD_LIBRARIES} ${MXML_LIBRARIES} ${ZLIB_LIBRARY} ${CMAKE_THREAD_LIBS})
 
-OPTION(BUILD_APPS "Build command line applications" ON)
-IF(BUILD_APPS)
-  SUBDIRS(apps)
-ENDIF(BUILD_APPS)
-
-OPTION(BUILD_VALIDATION "Build tools for algorithm validation" OFF)
-IF(BUILD_VALIDATION)
-  SUBDIRS(validation)
-ENDIF(BUILD_VALIDATION)
-
-IF (BUILD_GUI)
+IF(BUILD_GUI)
   SUBDIRS(gui)
-ENDIF (BUILD_GUI)    
-
-#-----------------------------------------------------------------------------
-# Add options to enable or disable GUI applications when building with Qt
-# support
-
-IF(NOT CMTK_USE_MPI)
-  IF(CMTK_USE_QT)
-    OPTION(BUILD_GUI "Build GUI applications" ON)
-    OPTION(BUILD_FUSION "Build image fusion application" ON)
-  ENDIF(CMTK_USE_QT)
-ENDIF(NOT CMTK_USE_MPI)
-
-OPTION(BUILD_TESTING "Build test code" ON)
-IF (BUILD_TESTING)
-  SUBDIRS(testing)
-ENDIF (BUILD_TESTING)
+ENDIF(BUILD_GUI)    
 
 SUBDIRS(scripts)
 
