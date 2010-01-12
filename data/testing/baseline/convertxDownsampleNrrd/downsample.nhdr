@@ -10,5 +10,5 @@ kinds: domain domain domain
 labels: "x" "y" "z"
 encoding: gzip
 space units: "mm" "mm" "mm"
-space origin: (-116.250250,-118.124750,-3)
+space origin: (-116.25024999999999,-118.12475000000001,-3)
 data file: downsample.raw.gz

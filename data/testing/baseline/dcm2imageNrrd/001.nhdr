@@ -11,5 +11,5 @@ labels: "x" "y" "z"
 endian: little
 encoding: gzip
 space units: "mm" "mm" "mm"
-space origin: (-119.531,-119.531,-3)
+space origin: (-119.53100000000001,-119.53100000000001,-3)
 data file: 001.raw.gz
