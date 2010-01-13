@@ -313,11 +313,14 @@ VolumeFromSlices::CheckImage
   
   // Check whether slice-to-slice direction is orthogonal to image
   // axes.
-  const Types::Coordinate scalarX = imageToImage * ImageOrientation[0];
-  const Types::Coordinate scalarY = imageToImage * ImageOrientation[1];
-  if ( ( fabs( scalarX ) > CMTK_MAX_ANGLE_ERROR ) || ( fabs( scalarY ) > CMTK_MAX_ANGLE_ERROR ) )
+  const Types::Coordinate scalarX = fabs( imageToImage * ImageOrientation[0] );
+  const Types::Coordinate scalarY = fabs( imageToImage * ImageOrientation[1] );
+  if ( (scalarX > CMTK_MAX_ANGLE_ERROR) || (scalarY > CMTK_MAX_ANGLE_ERROR) )
+    {
+    fprintf( stderr, "errX = %f, errY = %f, thresh = %f\n", scalarX, scalarY, CMTK_MAX_ANGLE_ERROR );
     return "Data grid must be orthogonal.";
-
+    }
+  
   // if this is the second slice, save increment vector for further tests.
   if ( plane == 1 )
     IncrementVector = imageToImage;
