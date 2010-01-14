@@ -99,6 +99,9 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
   cmtk::Types::DataItem min, max;
   data->GetRange( min, max );
   
+  if ( MaskOutputAllUpTo )
+    max = MaskOutputAllUpTo;
+
   const unsigned int numberOfLabels = static_cast<unsigned int>( max - min + 1 );
 
   // Number of label voxels.
@@ -164,7 +167,7 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
   size_t totalCount = 0;
   for ( unsigned int idx = 0; idx < numberOfLabels; ++idx ) 
     {
-    if ( count[idx] ) 
+    if ( count[idx] || MaskOutputAllUpTo ) 
       {
       centerOfMass[idx] *= (1.0 / count[idx]);
       if ( OutputExpNotation )
