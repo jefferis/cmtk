@@ -244,7 +244,7 @@ AnalyzeGrey( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData
   if ( ! WriteAsColumn )
     fprintf( stdout, "#M\tmin\tmax\tmean\tsdev\tn\tH1\tH2\tsum\n" );
   
- for ( int maskSelect = 0; maskSelect < 256; ++maskSelect )
+  for ( int maskSelect = 0; maskSelect <= maxLabel; ++maskSelect )
     {
     histogram.Reset();
     if ( ! maskFlags[maskSelect] ) continue;
@@ -271,7 +271,7 @@ AnalyzeGrey( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData
 	}
       }
 
-    if ( seq.GetNValues() )
+    if ( seq.GetNValues() || MaskOutputAllUpTo )
       {
       if ( ! WriteAsColumn )
 	{
