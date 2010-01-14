@@ -79,6 +79,7 @@ bool OutputExpNotation = false;
 const char *LandmarksFileName = NULL;
 const char *MaskFileName = NULL;
 bool MaskIsBinary = false;
+int MaskOutputAllUpTo = 0;
 std::list<const char*> ImageFileNames;
 
 int NumberOfHistogramBins = 256;
@@ -219,20 +220,31 @@ AnalyzeGrey( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData
   cmtk::Histogram<unsigned int> histogram( NumberOfHistogramBins );
   histogram.SetRange( min, max );
 
-  bool maskFlags[256];
-  memset( maskFlags, 0, sizeof( maskFlags ) );
-
-  for ( size_t i = 0; i < maskData->GetDataSize(); ++i )
+  int maxLabel = static_cast<int>( max )+1;
+  if ( MaskOutputAllUpTo )
+    maxLabel = MaskOutputAllUpTo;
+    
+  std::vector<bool> maskFlags( maxLabel );
+  if ( MaskOutputAllUpTo )
     {
-    cmtk::Types::DataItem l;
-    if ( maskData->Get( l, i ) )
-      maskFlags[static_cast<byte>( l )] = true;
+    std::fill( maskFlags.begin(), maskFlags.end(), true );
     }
-
+  else
+    {
+    std::fill( maskFlags.begin(), maskFlags.end(), false );
+    
+    for ( size_t i = 0; i < maskData->GetDataSize(); ++i )
+      {
+      cmtk::Types::DataItem l;
+      if ( maskData->Get( l, i ) && (l <= maxLabel) )
+	maskFlags[static_cast<byte>( l )] = true;
+      }
+    }
+  
   if ( ! WriteAsColumn )
     fprintf( stdout, "#M\tmin\tmax\tmean\tsdev\tn\tH1\tH2\tsum\n" );
   
-  for ( int maskSelect = 0; maskSelect < 256; ++maskSelect )
+ for ( int maskSelect = 0; maskSelect < 256; ++maskSelect )
     {
     histogram.Reset();
     if ( ! maskFlags[maskSelect] ) continue;
@@ -368,6 +380,7 @@ main ( int argc, char* argv[] )
     
     cl.AddOption( Key( 'm', "mask" ), &MaskFileName, "Analyze region based on binary mask file", &MaskIsBinary );
     cl.AddOption( Key( 'M', "Mask" ), &MaskFileName, "Analyze regions separately based on mask file (label field)." );
+    cl.AddOption( Key( "mask-output-all-up-to" ), &MaskOutputAllUpTo, "Output results for all mask values up to given value, even such that do not actually appear in the mask." );
     
     cl.AddCallback( Key( 'p', "percentile" ), CallbackAddPercentile, "Add value to list of percentile to compute." );
     
