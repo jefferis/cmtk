@@ -82,7 +82,7 @@ Histogram<T>
   
   const T sampleCount = this->SampleCount();
   if ( ! sampleCount ) 
-    throw "Empty histogram in Histogram<T>::GetEntropy()";
+    return CMTK_DOUBLE_NAN;
   
   for ( size_t i=0; i<this->m_NumBins; ++i ) 
     {
