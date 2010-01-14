@@ -250,7 +250,7 @@ AnalyzeGrey( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData
   for ( int maskSelect = 0; maskSelect <= maxLabel; ++maskSelect )
     {
     histogram.Reset();
-    if ( ! maskFlags[maskSelect] ) continue;
+    if ( ! maskFlags[maskSelect] && ! MaskOutputAllUpTo ) continue;
 
     cmtk::Types::DataItem value, maskValue;
     cmtk::ValueSequence<cmtk::Types::DataItem> seq;
