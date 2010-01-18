@@ -507,6 +507,71 @@ private:
   bool m_WriteXform;
 };
 
+/// Image operation: thresholding
+class ImageOperationThreshold
+/// Inherit from image operation base class.
+  : public ImageOperation
+{
+public:
+  /// Constructor.
+  ImageOperationThreshold( const double threshold, const bool above = false, const bool toPadding = false ) : m_Threshold( threshold ), m_Above( above ), m_ToPadding( toPadding ) {}
+  
+  /// Apply this operation to an image in place.
+  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
+  {
+    cmtk::TypedArray::SmartPtr volumeData = volume->GetData();
+
+    cmtk::Types::DataItem min, max;
+    volumeData->GetRange( min, max );
+
+    if ( this->m_Above )
+      max = this->m_Threshold;
+    else
+      min = this->m_Threshold;
+    
+    if ( this->m_ToPadding )
+      volumeData->ThresholdToPadding( min, max );
+    else
+      volumeData->Threshold( min, max );
+
+    return volume;
+  }
+  
+  /// Create a new lower thresholding operation.
+  static void NewBelow( const double threshold )
+  {
+    ImageOperationList.push_back( SmartPtr( new ImageOperationThreshold( threshold, false, false ) ) );
+  }
+  
+  /// Create a new upper thresholding operation.
+  static void NewAbove( const double threshold )
+  {
+    ImageOperationList.push_back( SmartPtr( new ImageOperationThreshold( threshold, true, false ) ) );
+  }
+  
+  /// Create a new lower thresholding operation to padding.
+  static void NewBelowToPadding( const double threshold )
+  {
+    ImageOperationList.push_back( SmartPtr( new ImageOperationThreshold( threshold, false, true ) ) );
+  }
+  
+  /// Create a new upper thresholding operation to padding.
+  static void NewAboveToPadding( const double threshold )
+  {
+    ImageOperationList.push_back( SmartPtr( new ImageOperationThreshold( threshold, true, true ) ) );
+  }
+  
+private:
+  /// Threshold.
+  double m_Threshold;
+
+  /// Flag for using the threshold as an upper, rather than lower, threshold.
+  bool m_Above;
+
+  /// Flag for setting values beyond threshold to padding, rather than to threshold value.
+  bool m_ToPadding;
+};
+
 /// Image operation: grid downsampling.
 class ImageOperationMedianFilter
 /// Inherit from image operation base class.
@@ -630,9 +695,14 @@ main( int argc, char* argv[] )
     cl.AddCallback( Key( "flip-z" ), &ImageOperationFlip::NewZ, "Flip (mirror) along z-direction" );
     cl.EndGroup();
 
-    cl.BeginGroup( "Masking", "Image Masking" );
+    cl.BeginGroup( "MaskAndThreshold", "Image Masking and Thresholding" );
     cl.AddCallback( Key( "mask" ), &ImageOperationApplyMask::New, "Binary mask file name: eliminate all image pixels where mask is 0." );
     cl.AddCallback( Key( "mask-inverse" ), &ImageOperationApplyMask::NewInverse, "Inverse binary mask file name eliminate all image pixels where mask is NOT 0." );
+
+    cl.AddCallback( Key( "thresh-below" ), &ImageOperationThreshold::NewBelow, "Set all values below threshold to threshold value." );
+    cl.AddCallback( Key( "thresh-above" ), &ImageOperationThreshold::NewAbove, "Set all values above threshold to threshold value." );
+    cl.AddCallback( Key( "thresh-below-to-padding" ), &ImageOperationThreshold::NewBelowToPadding, "Set all values below threshold to padding value." );
+    cl.AddCallback( Key( "thresh-above-to-padding" ), &ImageOperationThreshold::NewAboveToPadding, "Set all values above threshold to padding value." );
     cl.EndGroup();
 
     cl.BeginGroup( "Morphological", "Morphological Operations" );

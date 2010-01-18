@@ -333,6 +333,22 @@ case ${RUNTEST} in
 	run convertx spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.img
 	check_results spgr_brain_1.hdr spgr_brain_1.img
 	;;
+    convertxThresholdBelow)
+	run convertx --set-padding 0 --thresh-below 100 spgr_brain_1.hdr ${tmpdir}/thresh.hdr
+	check_results thresh.img
+	;;
+    convertxThresholdAbove)
+        run convertx --set-padding 0 --thresh-above 100 spgr_brain_1.hdr ${tmpdir}/thresh.hdr
+	check_results thresh.img
+	;;
+    convertxThresholdBelowToPadding)
+	run convertx --set-padding 0 --thresh-below-to-padding 100 spgr_brain_1.hdr ${tmpdir}/thresh.hdr
+	check_results thresh.img
+	;;
+    convertxThresholdAboveToPadding)
+        run convertx --set-padding 0 --thresh-above-to-padding 100 spgr_brain_1.hdr ${tmpdir}/thresh.hdr
+	check_results thresh.img
+	;;
     dcm2image)
 	run dcm2image -O ${tmpdir}/00%n.hdr ${PWD}/dcm/
 	check_results 001.hdr 001.img 002.hdr 002.img 003.hdr 003.img

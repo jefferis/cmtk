@@ -143,8 +143,12 @@ IF(NOT CMTK_USE_MPI)
     convertxNiftiToAnalyze
     convertxAnalyzeToNifti
     convertxNiftiDetachedToNifti
-    convertxAnalyzeToNiftiDetached )
-
+    convertxAnalyzeToNiftiDetached 
+    convertxThresholdBelow
+    convertxThresholdAbove
+    convertxThresholdBelowToPadding
+    convertxThresholdAboveToPadding)
+  
   IF(CMTK_BUILD_NRRD)
     SET(testList ${testList} 
       convertxDownsampleNrrd)
