@@ -50,6 +50,12 @@ SET(cmtkBase_SRCS
   cmtkGeneralLinearModel.cxx
   cmtkHistogram.cxx
   cmtkHypothesisTests.cxx
+  cmtkImageOperation.cxx
+  cmtkImageOperationCropRegion.cxx
+  cmtkImageOperationCropThreshold.cxx
+  cmtkImageOperationDownsample.cxx
+  cmtkImageOperationMedianFilter.cxx
+  cmtkImageOperationThreshold.cxx
   cmtkInfinitePlane.cxx
   cmtkIntersection.cxx
   cmtkJointHistogram.cxx
