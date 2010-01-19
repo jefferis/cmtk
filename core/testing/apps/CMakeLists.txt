@@ -1,6 +1,6 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
-##  Copyright 2004-2009 SRI International
+##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -56,7 +56,14 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "describe" tool
-SET(testList ${testList} describeMR1 describeMR2 describeMR3 describeMR4 describeMRBiorad describeNiftiDetached348)
+SET(testList ${testList} 
+  describeEmpty
+  describeMR1 
+  describeMR2
+  describeMR3
+  describeMR4
+  describeMRBiorad
+  describeNiftiDetached348)
 
 IF(CMTK_BUILD_NRRD)
   SET(testList ${testList} describeMRNrrd1 describeMRNrrd2)
@@ -132,6 +139,8 @@ IF(NOT CMTK_USE_MPI)
     convertxBoundaryMap
     convertxBoundaryMapMultiValue
     convertxCropThresholdWriteRegion
+    convertxCropRegion1
+    convertxCropRegion2
     convertxDownsample
     convertxErodeDilateErode
     convertxDilateErodeDilate

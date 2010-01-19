@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -85,45 +85,32 @@ UniformVolume::SetCropRegion
 void
 UniformVolume::SetCropRegion( const int* cropFrom, const int* cropTo )
 {
+  this->SetCropRegionFrom( cropFrom );
+  this->SetCropRegionTo( cropTo );
+}
+
+void
+UniformVolume::SetCropRegionFrom( const int* cropFrom )
+{
   if ( cropFrom ) 
     {
     for ( int dim = 0; dim < 3; ++dim )
       {
-      this->CropFrom[dim] = std::max<int>( 0, std::min<int>( this->m_Dims[dim], cropFrom[dim] ) );
+      // for negative values, go from upper boundary
+      if ( cropFrom[dim] >= 0 )
+	{
+	this->CropFrom[dim] = std::min<int>( this->m_Dims[dim], cropFrom[dim] );
+	}
+      else
+	{
+	this->CropFrom[dim] = std::max<int>( 0, this->m_Dims[dim] + cropFrom[dim] );
+	}
       }
     } 
   else 
     {
     memset( this->CropFrom, 0, sizeof( this->CropFrom ) );
     }
-
-  { 
-  for ( int dim = 0; dim<3; ++dim )
-    this->CropFromReal[dim] = this->GetPlaneCoord( dim, this->CropFrom[dim] ) - this->m_Offset[dim];
-  }
-
-  if ( cropTo ) 
-    {
-    for ( int dim = 0; dim < 3; ++dim )
-      {
-      this->CropTo[dim] = std::max<int>( this->CropFrom[dim], std::min<int>( this->m_Dims[dim], cropTo[dim] ) );
-      }
-    } 
-  else
-    {
-    for ( int dim = 0; dim<3; ++dim )
-      this->CropTo[dim] = this->m_Dims[dim];
-  }
-  { 
-  for ( int dim = 0; dim<3; ++dim )
-    this->CropToReal[dim] = this->GetPlaneCoord( dim, this->CropTo[dim]-1 ) - this->m_Offset[dim];
-  }
-}
-
-void
-UniformVolume::SetCropRegionFrom( const int* cropFrom )
-{
-  memcpy( this->CropFrom, cropFrom, sizeof( this->CropFrom ) );
 
   for ( int dim = 0; dim<3; ++dim )
     this->CropFromReal[dim] = this->GetPlaneCoord( dim, this->CropFrom[dim] ) - this->m_Offset[dim];
@@ -132,7 +119,26 @@ UniformVolume::SetCropRegionFrom( const int* cropFrom )
 void
 UniformVolume::SetCropRegionTo( const int* cropTo )
 {
-  memcpy( this->CropTo, cropTo, sizeof( this->CropTo ) );
+  if ( cropTo ) 
+    {
+    for ( int dim = 0; dim < 3; ++dim )
+      {
+      // for negative crop indexes, go from upper boundary
+      if ( cropTo[dim] >= 0 )
+	{
+	this->CropTo[dim] = std::min<int>( this->m_Dims[dim], cropTo[dim] );
+	}
+      else
+	{
+	this->CropTo[dim] = std::max<int>( 0, this->m_Dims[dim] + cropTo[dim] );
+	}
+      }
+    } 
+  else
+    {
+    for ( int dim = 0; dim<3; ++dim )
+      this->CropTo[dim] = this->m_Dims[dim];
+    }
 
   for ( int dim = 0; dim<3; ++dim )
     this->CropToReal[dim] = this->GetPlaneCoord( dim, this->CropTo[dim]-1 ) - this->m_Offset[dim];
