@@ -223,8 +223,11 @@ AnalyzeGrey( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData
 
   cmtk::Histogram<unsigned int> histogram( NumberOfHistogramBins );
   histogram.SetRange( min, max );
+  
+  cmtk::Types::DataItem maskMin, maskMax;
+  maskData->GetRange( maskMin, maskMax );
 
-  int maxLabel = static_cast<int>( max )+1;
+  int maxLabel = static_cast<int>( maskMax )+1;
   if ( MaskOutputAllUpTo )
     maxLabel = MaskOutputAllUpTo;
     
@@ -241,7 +244,7 @@ AnalyzeGrey( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData
       {
       cmtk::Types::DataItem l;
       if ( maskData->Get( l, i ) && (l <= maxLabel) )
-	maskFlags[static_cast<byte>( l )] = true;
+	maskFlags[static_cast<int>( l )] = true;
       }
     }
   
@@ -288,8 +291,6 @@ AnalyzeGrey( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData
 	}
       }
     }
-
-  // BUG: need to support percentiles also for masked operation
 }
 
 void
