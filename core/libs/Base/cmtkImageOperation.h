@@ -42,7 +42,13 @@ namespace
 cmtk
 {
 
-/// Image operation base class.
+/** Image operation base class.
+ * Classes derived from this base class are used to implement an ordered sequence of operations
+ * primarily for the "convertx" command line tool.
+ *
+ *\warning This class is not thread-safe in the sense that the costructed operation sequence is
+ * stored in a static member field of this class, m_ImageOperationList.
+ */
 class ImageOperation
 {
 public:
