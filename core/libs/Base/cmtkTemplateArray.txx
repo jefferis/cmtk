@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -148,10 +148,10 @@ TemplateArray<T>
     }
   else
     {
-    while ( !finite(Data[idx]) ) 
+    while ( (idx < DataSize) && !finite(Data[idx]) ) 
       ++idx;
     }
-
+  
   // didn't find any? return with error flag.
   if ( !(idx < DataSize) ) 
     {
