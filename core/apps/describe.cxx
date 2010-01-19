@@ -151,7 +151,7 @@ main( int argc, char *argv[] )
 	    } 
 	  else
 	    {
-	    fprintf( stdout, "DTYPE\tNONE\n" );
+	    fprintf( stdout, "DTYPE\t%s\nMINDATA\tNAN\nMAXDATA\tNAN\n", cmtk::DataTypeName[ dataArray->GetType() ] );
 	    }
 	  }
 	}
