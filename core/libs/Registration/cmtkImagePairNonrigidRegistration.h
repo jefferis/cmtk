@@ -63,14 +63,6 @@ protected:
   /// Optional inverse warp for inverse-consistent registration.
   WarpXform::SmartPtr InverseWarpXform;
 
-  /** If this flag is set, reference and model volume are exchanged.
-   * By default, volume #1 is the reference and volume #2 the model image.
-   * However, a studylist for example may contain both volumes in the wrong
-   * order. This is caused by the fact that for CT to MRI registration, for
-   * instance, it does not make sense to warp the CT and leave MRI fixed.
-   */
-  bool ForceSwitchVolumes;
-  
   /// Flag whether to adjust floating image histogram to match reference image.
   cmtkGetSetMacro(bool,MatchFltToRefHistogram);
 

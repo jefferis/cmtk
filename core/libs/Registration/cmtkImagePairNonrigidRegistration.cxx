@@ -63,7 +63,11 @@ ImagePairNonrigidRegistration::ImagePairNonrigidRegistration ()
     m_ForceOutsideFlag( false ),
     m_ForceOutsideValue( 0.0 )
 {
-  ForceSwitchVolumes = 0;
+  this->m_Metric = 0;
+  this->m_Algorithm = 3;
+
+  this->m_GridSpacing = 15;
+  this->m_ExactGridSpacing = 0;
   this->m_GridSpacing = 10;
   RestrictToAxes = NULL;
   this->m_RefineGrid = 0;
@@ -72,7 +76,7 @@ ImagePairNonrigidRegistration::ImagePairNonrigidRegistration ()
   this->m_DelayRefineGrid = 0;
   RefineDelayed = false;
   IgnoreEdge = 0;
-  this->m_FastMode = 0;
+  this->m_FastMode = false;
   this->m_AdaptiveFixParameters = 1;
   this->m_AdaptiveFixThreshFactor = 0.5;
   this->m_JacobianConstraintWeight = 0;

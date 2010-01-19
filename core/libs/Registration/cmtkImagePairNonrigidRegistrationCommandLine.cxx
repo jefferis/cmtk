@@ -91,11 +91,6 @@ ImagePairNonrigidRegistrationCommandLine
   m_OutputPathITK( NULL ),
   m_ReformattedImagePath( NULL )
 {
-  this->m_Metric = 0;
-  this->m_Algorithm = 3;
-
-  this->m_GridSpacing = 15;
-  this->m_ExactGridSpacing = 0;
   Studylist = Time = NULL;
 
   this->m_OutputIntermediate = 0;
