@@ -364,7 +364,9 @@ IF(NOT CMTK_USE_MPI)
     reformatxTargetGrid
     reformatxTargetGridOffset)
   IF(CMTK_BUILD_NRRD)
-    SET(testList ${testList} reformatxDfieldNrrd)
+    SET(testList ${testList} 
+      reformatxDfieldNrrd
+      reformatxDfieldNrrdJacobian)
   ENDIF(CMTK_BUILD_NRRD)
 
   # ==========================================
