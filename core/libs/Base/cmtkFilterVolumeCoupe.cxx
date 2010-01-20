@@ -31,6 +31,10 @@
 
 #include <cmtkFilterVolume.h>
 
+namespace
+cmtk
+{
+
 Types::DataItem
 FilterVolume::Mean
 ( CoupeBlock items )
@@ -653,3 +657,4 @@ FilterVolume::CoupeFilter
   return filtered;
 }
 
+} // namespace cmtk
