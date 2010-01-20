@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -70,11 +70,6 @@ ReformatVolume::ReformatVolume()
     CheckerboardMode( false )    
 {
   Interpolation = cmtk::Interpolators::LINEAR;
-
-  RescaleReference = 0;
-  RescaleOffset = 0;
-  RescaleSlope = 1;
-
   this->m_UsePaddingValue = false;
 }
 
@@ -114,16 +109,6 @@ void
 ReformatVolume::SetWarpXform( const WarpXform::SmartPtr& warpXform )
 {
   this->m_WarpXform = warpXform;
-}
-
-void
-ReformatVolume::SetRescale
-( const int rescaleReference, const Types::DataItem rescaleOffset, const Types::DataItem rescaleSlope )
-{
-  RescaleReference = rescaleReference;
-  RescaleOffset = rescaleOffset;
-  RescaleSlope = rescaleSlope;
-  this->SetRescale();
 }
 
 UniformVolume* 

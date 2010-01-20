@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -74,10 +74,8 @@ cmtk
  * This class takes two volume data sets, and affine and an (optional) local
  * deformation. It provides member functions to reformat from one of the
  * images a slice plane corresponding exactly to one of the original planes
- * from the respective other images. The class provides several different
- * modes, such as standard, overlay, and subtraction. It can also handle 
- * rescaling of data and checkerboard filling of areas with no valid original
- * image data present.
+ * from the respective other images. The class provides optional checkerboard filling 
+ * of areas with no valid original image data present.
  */
 class ReformatVolume 
 {
@@ -99,9 +97,6 @@ public:
 
   /// Threshold for the floating image.
   cmtkGetSetMacroDefault(float,UpperThresholdFloating,FLT_MAX);
-
-  /// Flag for rescaling.
-  cmtkGetSetMacroDefault(bool,Rescale,false);
 
   /** Flag whether the PADDING value is defined by client.
    */
@@ -143,22 +138,6 @@ public:
 
   /// Set the local deformation to be applied to the reference grid.
   void SetWarpXform( const WarpXform::SmartPtr& warpXform );
-
-  /** Set parameters for image data rescaling.
-   * As a side effect to setting the scaling parameters, this object is also
-   * set into "rescaling mode". No rescaling takes place otherwise.
-   * Rescaling is performed AFTER thresholding, if any is done.
-   *@param rescaleReference If this parameter is non-zero, rescaling is applied
-   * to the reference image. This has no effect for the "Standard" mode of
-   * reformatting, as only the floating data is copied to the output in the 
-   * mode.
-   *@param rescaleOffset The offset value of rescaling. This value is added to
-   * the transformed data values after multiplying them with "rescaleSlope".
-   *@param rescaleSlope Scaling factor for image data rescaling. The original
-   * image data is multiplied by this value before adding "rescaleOffset".
-   *@see #UnsetRescale
-   */
-  void SetRescale( const int rescaleReference, const Types::DataItem rescaleOffset, const Types::DataItem rescaleSlope );
 
   /// Set flag for checkerboard mode.
   void SetCheckerboardMode( const bool checkerboardMode = true ) 
@@ -310,24 +289,6 @@ private:
    * the optional generation of a checkerboard pattern.
    */
   Types::DataItem MaximumValue;
-
-  /** Rescale reference flag.
-   * If this flag is non-zero, rescaling is applied to the data from the 
-   * reference image. Otherwise, the data from the floating image is rescaled.
-   */
-  int RescaleReference;
-
-  /** Offset for image data rescaling.
-   * This value is added to the original data values after multiplying them 
-   * with "RescaleSlope".
-   */
-  Types::DataItem RescaleOffset;
-
-  /** Factor for image data rescaling.
-   * The original data values are multiplied with this value first during
-   * rescaling.
-   */
-  Types::DataItem RescaleSlope;
 
   /// Flag for checkerboard mode.
   bool CheckerboardMode;
