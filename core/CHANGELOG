@@ -13,6 +13,8 @@ Release CMTK-1.2.1:
 
 - Testing: run all warp and warpx tests in "fast" mode
 
+- Removed: deformation strain tensor computation was untested and unused; thus
+    removed.
 
 Release CMTK-1.2.0 (2010-01-06):
 

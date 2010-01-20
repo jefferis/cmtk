@@ -338,12 +338,6 @@ public:
   /// Get sequence of Jacobians for pixel row.
   virtual void GetJacobianSequence( CoordinateMatrix3x3 *const array, const int x, const int y, const int z, const size_t numberOfPoints ) const;
   
-  /// Get local strain tensor.
-  virtual CoordinateMatrix3x3 GetStrainTensor( const Vector3D& v ) const;
-
-  /// Get local strain tensor into existing matrix.
-  virtual void GetStrainTensor( const Vector3D& v, CoordinateMatrix3x3& J ) const;
-
 private:
   /// Register axes points of the volume to be deformed.
   void RegisterVolumePoints ( const int[3], const Types::Coordinate *const* );

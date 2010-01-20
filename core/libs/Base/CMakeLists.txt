@@ -76,7 +76,6 @@ SET(cmtkBase_SRCS
   cmtkSplineWarpXformInverse.cxx
   cmtkSplineWarpXformJacobian.cxx
   cmtkSplineWarpXformRigidity.cxx
-  cmtkSplineWarpXformStrainTensor.cxx
   cmtkSplineWarpXformUniformVolume.cxx
   cmtkTransformChangeToSpaceAffine.cxx
   cmtkTransformChangeFromSpaceAffine.cxx

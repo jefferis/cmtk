@@ -261,18 +261,6 @@ public:
   /// Return derivative of Jacobian constraint with respect to one parameter.
   virtual void GetJacobianConstraintDerivative( double&, double&, const int, const Types::Coordinate ) const {}
   
-  /// Get local strain tensor.
-  CoordinateMatrix3x3 GetStrainTensor( const Vector3D& ) const
-  {
-    throw Exception( "unimplemented function called" );
-  }
-
-  /// Get local strain tensor into existing matrix.
-  void GetStrainTensor( const Vector3D&, CoordinateMatrix3x3& ) const
-  {
-    throw Exception( "unimplemented function called" );
-  }
-
   /// Register the grid points of the deformed uniform volume.
   virtual void RegisterVolumePoints( const int[3], const Types::Coordinate[3], const Types::Coordinate[3] )
   {
