@@ -205,6 +205,8 @@ void InitializeReformatVolume( cmtk::TypedArray::SmartPtr& reformatData, cmtk::U
     case cmtk::ReformatVolume::REFORMAT_JACOBIAN: 
     {
     cmtk::ReformatVolume::Jacobian jacobian( DataType, JacobianCorrectGlobal );
+    if ( OutPaddingValueFlag )
+      jacobian.SetPaddingValue( OutPaddingValue );
     reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::Reformat( targetVolume, TargetToReference, referenceVolume, ReferenceToFloating, jacobian, TInterpolator::SmartPtr::Null ) );
     break;
     }
