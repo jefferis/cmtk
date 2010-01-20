@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -45,10 +45,6 @@ VolumeReformatter::VolumeReformatter()
   LowerThreshold = 0;
   UpperThreshold = 0;
 
-  RescaleIndex = 0;
-  RescaleOffset = 0;
-  RescaleSlope = 1;
-
   OutputFormat = 0;
   CheckerboardMode = true;
 
@@ -83,7 +79,6 @@ void VolumeReformatter::Execute()
   this->m_ReformatVolume.SetAffineXform( AffineXform );
 
   this->m_ReformatVolume.SetCheckerboardMode( CheckerboardMode );
-  this->m_ReformatVolume.SetRescale( RescaleIndex ==ReferenceIndex, RescaleOffset, RescaleSlope );
 
   int midPlane = referenceVolume->GetDims()[2] / 2;
   TypedArray::SmartPtr previewData = TypedArray::SmartPtr( this->m_ReformatVolume.PlainReformat( midPlane ) );

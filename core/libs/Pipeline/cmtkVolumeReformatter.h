@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -71,15 +71,6 @@ public:
 
   /// Upper threshold for overlay.
   igsClassParameter(double,UpperThreshold);
-
-  /// Index of image to apply grey value rescaling.
-  igsClassParameter(int,RescaleIndex);
-
-  /// Offset for grey value rescaling.
-  igsClassParameter(double,RescaleOffset);
-
-  /// Factor for grey value rescaling.
-  igsClassParameter(double,RescaleSlope);
 
   /// Output image format.
   igsClassParameter(int,OutputFormat);
