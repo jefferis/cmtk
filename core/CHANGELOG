@@ -8,6 +8,8 @@ Release CMTK-1.2.1:
 - Added: re-added missing "--fast" switch for warp and warpx tools.
 
 - Fixed: reading empty (i.e., zero pixels) images crashed the toolkit
+- Fixed: "reformatx" did not respect user-defined padding value when computing
+    Jacobian maps (Issue #4564).
 
 - Testing: run all warp and warpx tests in "fast" mode
 
