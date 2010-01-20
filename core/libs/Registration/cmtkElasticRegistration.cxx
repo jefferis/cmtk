@@ -74,7 +74,7 @@ ElasticRegistration::ElasticRegistration ()
   this->m_DelayRefineGrid = 0;
   RefineDelayed = false;
   IgnoreEdge = 0;
-  this->m_FastMode = 0;
+  this->m_FastMode = true;
   this->m_AdaptiveFixParameters = 1;
   this->m_AdaptiveFixThreshFactor = 0.5;
   this->m_JacobianConstraintWeight = 0;
