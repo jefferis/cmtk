@@ -152,6 +152,7 @@ ElasticRegistrationCommandLine
     cl.AddSwitch( Key( "no-adaptive-fix" ), &this->m_AdaptiveFixParameters, false, "Disable adaptive fixing of control points; optimize all deformation parameters" );
     cl.AddOption( Key( "adaptive-fix-thresh" ), &this->m_AdaptiveFixThreshFactor, "Threshold factor for entropy criterion to fix local control points" );
     cl.AddSwitch( Key( "accurate" ), &this->m_FastMode, false, "Accurate computation mode: may give slightly better results after substantially longer computation" );
+    cl.AddSwitch( Key( "fast" ), &this->m_FastMode, true, "Fast computation mode: may give slightly worse results than accurate mode, but saves substantial CPU time" );
 
     cl.AddSwitch( Key( 'S', "switch" ), &Switch, true, "Switch reference and floating image" );
     cl.AddSwitch( Key( 'x', "exchange" ), &this->ForceSwitchVolumes, true, "Exchange reference and floating image");
@@ -440,6 +441,7 @@ ElasticRegistrationCommandLine::OutputWarp ( const char* path ) const
   classStream.WriteDouble( "min_sampling", this->m_Sampling );
   classStream.WriteDouble( "coarsest_resolution", CoarsestResolution );
   classStream.WriteBool( "use_original_data", this->m_UseOriginalData );
+  classStream.WriteBool( "fast_mode", this->m_FastMode );
   classStream.WriteInt( "metric", this->m_Metric );
   classStream.WriteDouble( "optimizer_step_factor", OptimizerStepFactor );
   classStream.WriteDouble( "grid_spacing", this->m_GridSpacing );

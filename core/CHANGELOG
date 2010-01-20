@@ -5,10 +5,11 @@ Release CMTK-1.2.1:
     actually occur in the mask.
 - Added: "convertx" tool now does thresholding above and below threshold, to
     threshold and to padding.
+- Added: re-added missing "--fast" switch for warp and warpx tools.
 
 - Fixed: reading empty (i.e., zero pixels) images crashed the toolkit
-- Fixed: warp and warpx nonrigid registration tools both defaulted to
-    "accurate" mode, when they should have defaulted to "fast" mode.
+
+- Testing: run all warp and warpx tests in "fast" mode
 
 
 Release CMTK-1.2.0 (2010-01-06):
