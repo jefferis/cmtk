@@ -330,7 +330,7 @@ ReformatVolume::GetTransformedReferenceGrey( void *const arg )
 CMTK_THREAD_RETURN_TYPE
 ReformatVolume::GetTransformedReferenceLabel( void *const arg )
 {
-  GetTransformedReferenceLabelTP* params = static_cast<GetTransformedReferenceLabelTP*>( arg );
+  GetTransformedReferenceTP* params = static_cast<GetTransformedReferenceTP*>( arg );
 
   const ReformatVolume* thisObject = params->thisObject;
   TypedArray::SmartPtr dataArray = params->dataArray;

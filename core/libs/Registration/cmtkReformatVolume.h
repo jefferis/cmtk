@@ -308,6 +308,7 @@ private:
     const Types::Coordinate* bbFrom;
     unsigned int numberOfImages;
     const std::vector<SplineWarpXform::SmartPtr>* xformList;
+    const std::vector<UniformVolume::SmartPtr>* volumeList;
     const std::vector<const UniformVolumeInterpolatorBase*>* interpolatorList;
     const UniformVolumeInterpolatorBase* referenceInterpolator;
     int maxLabel;
@@ -320,27 +321,6 @@ private:
 
   /// Apply forward warp transformation to average grey-level reference volume.
   static CMTK_THREAD_RETURN_TYPE GetTransformedReferenceGreyAvg( void *const arg );
-
-  class GetTransformedReferenceLabelTP : 
-    public ThreadParameters<ReformatVolume>
-  {
-  public:
-    GetTransformedReferenceLabelTP() : m_Offset( 0 ), m_Stride( 1 ) {};
-    TypedArray::SmartPtr dataArray;
-    const SplineWarpXform* splineXform;
-    const int* dims;
-    /// Offset for blockwise distributed computation.
-    size_t m_Offset;
-    size_t m_Stride;
-    const Types::Coordinate* delta;
-    const Types::Coordinate* bbFrom;
-    unsigned int numberOfImages;
-    const std::vector<SplineWarpXform::SmartPtr>* xformList;
-    const std::vector<UniformVolume::SmartPtr>* volumeList;
-    int maxLabel;
-    AveragingMode avgMode;
-    bool IncludeReferenceData;
-  };
 
   /// Apply forward warp transformation to label reference volume.
   static CMTK_THREAD_RETURN_TYPE GetTransformedReferenceLabel( void *const arg );

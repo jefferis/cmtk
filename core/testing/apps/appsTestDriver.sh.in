@@ -156,6 +156,38 @@ case ${RUNTEST} in
 	run average_images -o ${tmpdir}/zscore.hdr --zscore spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
 	check_results zscore.img
 	;;
+    avg_admDefault2)
+        run avg_adm --output ${tmpdir}/avg.hdr --output-warp ${tmpdir}/avg.warp spgr_brain_12_warp.list
+	check_results avg.img avg.warp
+	;;
+    avg_admDefault3)
+        run avg_adm --output ${tmpdir}/avg.hdr --output-warp ${tmpdir}/avg.warp spgr_brain_12_warp.list spgr_brain_13_warp.list
+	check_results avg.img avg.warp
+	;;
+    avg_admJacobianFloat)
+        run avg_adm --jacobian --float --output ${tmpdir}/avg.hdr --output-warp ${tmpdir}/avg.warp spgr_brain_12_warp.list spgr_brain_13_warp.list
+	check_results avg.img avg.warp
+	;;
+    avg_admLabels)
+        run avg_adm --nn --label --replace-from spgr_brain_ --replace-to parc --output ${tmpdir}/avg.hdr --output-warp ${tmpdir}/avg.warp spgr_brain_12_warp.list spgr_brain_13_warp.list
+	check_results avg.img avg.warp
+	;;
+    avg_admPaddOutZeroNN)
+        run avg_adm --nn --pad-out 0 --output ${tmpdir}/avg.hdr --output-warp ${tmpdir}/avg.warp spgr_brain_12_warp.list spgr_brain_13_warp.list
+	check_results avg.img avg.warp
+	;;
+    avg_admNoReferenceModelCubic)
+        run avg_adm --byte --cubic --output ${tmpdir}/avg.hdr --output-warp ${tmpdir}/avg.warp --no-ref-model spgr_brain_12_warp.list spgr_brain_13_warp.list
+	check_results avg.img avg.warp
+	;;
+    avg_admNoScaleModelAutoScale)
+        run avg_adm --byte --output ${tmpdir}/avg.hdr --output-warp ${tmpdir}/avg.warp --no-scale-model --auto-scale spgr_brain_12_warp.list spgr_brain_13_warp.list
+	check_results avg.img avg.warp
+	;;
+    avg_admWithAffineNoRefData)
+        run avg_adm --byte --output ${tmpdir}/avg.hdr --output-warp ${tmpdir}/avg.warp --no-ref-data --with-affine spgr_brain_12_warp.list spgr_brain_13_warp.list
+	check_results avg.img avg.warp
+	;;
     concat_affineABA)
 	run concat_affine -o ${tmpdir}/concat.xform affineA.xform affineB.xform affineA.xform
 	check_results concat.xform

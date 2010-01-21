@@ -1,0 +1,11 @@
+! TYPEDSTREAM 1.1
+
+studylist {
+	num_sources 2
+}
+source {
+	studyname "spgr_brain_1.hdr"
+}
+source {
+	studyname "spgr_brain_3.hdr"
+}

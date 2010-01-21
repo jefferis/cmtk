@@ -37,6 +37,18 @@ ELSE(SH_PATH)
 ENDIF(SH_PATH)
 
 # ==========================================
+# Tests for "avg_adm" tool
+SET(testList ${testList} 
+  avg_admDefault2
+  avg_admDefault3
+  avg_admJacobianFloat
+  avg_admLabels
+  avg_admPaddOutZeroNN
+  avg_admNoReferenceModelCubic
+  avg_admNoScaleModelAutoScale
+  avg_admWithAffineNoRefData)
+
+# ==========================================
 # Tests for "congeal" tool
 SET(testList ${testList} 
   congealFromInit

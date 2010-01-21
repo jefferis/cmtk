@@ -10,8 +10,10 @@ Release CMTK-1.2.1:
 - Fixed: reading empty (i.e., zero pixels) images crashed the toolkit
 - Fixed: "reformatx" did not respect user-defined padding value when computing
     Jacobian maps (Issue #4564).
+- Fixed: label mode of "avg_adm" tool was broken.
 
 - Testing: run all warp and warpx tests in "fast" mode
+- Testing: added tests, inputs, and baselines for "avg_adm" tool.
 
 - Removed: deformation strain tensor computation was untested and unused; thus
     removed.
