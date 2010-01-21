@@ -103,6 +103,7 @@ ReformatVolume::GetTransformedReference
     params[thr].splineXform = splineXform;
     params[thr].numberOfImages = numberOfImages;
     params[thr].xformList = xformList;
+    params[thr].volumeList = volumeList;
     params[thr].interpolatorList = &interpolatorList;
     params[thr].dataArray = dataArray;
     params[thr].maxLabel = maxLabel;
