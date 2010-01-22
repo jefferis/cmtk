@@ -124,6 +124,14 @@ case ${RUNTEST} in
 	run average_edt -o ${tmpdir}/shape_average.hdr -n 255 --interpolate-image parc1.hdr parc2.hdr parc3.hdr
 	check_results shape_average.img
 	;;
+    average_edtWindowed)
+	run average_edt -o ${tmpdir}/shape_average.hdr -n 255 --feature-window-radius 10 --interpolate-image spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
+	check_results shape_average.img
+	;;
+    average_edtWindowedInterpolation)
+	run average_edt -o ${tmpdir}/shape_average.hdr -n 255 --feature-window-radius 10 --interpolate-distance spgr_brain_12_warp.list spgr_brain_13_warp.list
+	check_results shape_average.img
+	;;
     average_edtInterpolation)
 	run average_edt -o ${tmpdir}/shape_average.hdr -n 255 --interpolate-distance parc12_warp.xform parc13_warp.xform
 	check_results shape_average.img

@@ -111,7 +111,11 @@ IF(NOT CMTK_USE_MPI)
 
   # ==========================================
   # Tests for "average_edt" tool
-  SET(testList ${testList} average_edt average_edtInterpolation)
+  SET(testList ${testList} 
+    average_edt 
+    average_edtWindowed
+    average_edtWindowedInterpolation
+    average_edtInterpolation)
 
   # ==========================================
   # Tests for "average_images" tool
