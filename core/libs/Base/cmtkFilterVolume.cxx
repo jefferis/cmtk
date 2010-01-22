@@ -148,8 +148,18 @@ FilterVolume
   subjectData->GetRange( minSubj, maxSubj );
   
   const size_t numBins = 1024;
+#ifdef _OPENMP
+  const size_t maxThreads = omp_get_max_threads();
+  std::vector<Histogram<Types::DataItem>::SmartPtr> histograms( maxThreads );
+  for ( size_t thread = 0; thread < maxThreads; ++thread )
+    {
+    histograms[thread] = Histogram<Types::DataItem>::SmartPtr( new Histogram<Types::DataItem>( numBins ) );
+    histograms[thread]->SetRange( minSubj, maxSubj );
+    }
+#else // #ifdef _OPENMP
   Histogram<Types::DataItem> histogram( numBins );
   histogram.SetRange( minSubj, maxSubj );
+#endif // #ifdef _OPENMP
 
   const size_t iKernelRadius = 1 + static_cast<size_t>( 2 * iFilterSigma * numBins );
   Types::DataItem* iKernel = Memory::AllocateArray<Types::DataItem>( iKernelRadius );
@@ -158,8 +168,7 @@ FilterVolume
     const Types::DataItem normFactor = static_cast<Types::DataItem>( 1.0/(sqrt(2*M_PI) * iFilterSigma * numBins) ); // not really necessary since we normalize during convolution
     for ( size_t i = 0; i < iKernelRadius; ++i )
       {
-		  iKernel[i] = static_cast<Types::DataItem>( normFactor * exp( -MathUtil::Square( 1.0 * i / (iFilterSigma*numBins) ) / 2 ) );
-      std::cout << i << "\t" << iKernel[i] << std::endl;
+      iKernel[i] = static_cast<Types::DataItem>( normFactor * exp( -MathUtil::Square( 1.0 * i / (iFilterSigma*numBins) ) / 2 ) );
       }
     }
   else
@@ -178,11 +187,18 @@ FilterVolume
   
   Progress::Begin( 0, dimsZ, 1, "Rohlfing Intensity-Consistent Filter" );
 
-  size_t offset = 0;
+#pragma omp parallel for
   for ( unsigned int z = 0; z < dimsZ; ++z ) 
     {      
-    Progress::SetProgress( z );
-      
+    size_t offset = z * dimsX * dimsY;
+
+#ifdef _OPENMP
+    const size_t threadIdx = omp_get_thread_num();
+    Histogram<Types::DataItem>& histogram = *(histograms[threadIdx]);
+    if ( ! threadIdx )
+#endif // #ifdef _OPENMP
+      Progress::SetProgress( z );
+
     for ( unsigned int y = 0; y < dimsY; ++y )
       for ( unsigned int x = 0; x < dimsX; ++x, ++offset ) 
 	{
@@ -198,7 +214,7 @@ FilterVolume
 	  histogram.Reset();
 	  histogram.AddWeightedSymmetricKernel( histogram.ValueToBin( valueSubj ), iKernelRadius, iKernel );
 	  
-	  for (  FilterMask<3>::iterator it = filter.begin(); it != filter.end(); ++it ) 
+	  for (  FilterMask<3>::const_iterator it = filter.begin(); it != filter.end(); ++it ) 
 	    {
 	    const int xx = x + it->Location[0];
 	    const int yy = y + it->Location[1];
