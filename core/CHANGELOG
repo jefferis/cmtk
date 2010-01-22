@@ -14,6 +14,8 @@ Release CMTK-1.2.1:
 - Fixed: "avg_adm" now gives consistent results regardless of number of
     CPUs. Also fixed minor bug that would have broken this altogether if there
     were more CPUs than pixels in an image row.
+- Fixed: avg_adm tests crashed on MPI; bug also affected non-MPI build
+    (Issue #4571).
 
 - Testing: run all warp and warpx tests in "fast" mode
 - Testing: added tests, inputs, and baselines for "avg_adm" tool.
