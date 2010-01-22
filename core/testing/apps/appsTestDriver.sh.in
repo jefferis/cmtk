@@ -1256,10 +1256,18 @@ case ${RUNTEST} in
 	run warp -q --fast --exploration 8 --grid-spacing 160 --accuracy 1 --refine 1 --energy-weight 1e-1 -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
 	;;
+    warpEnergyRelax)
+	run warp -q --fast --exploration 8 --grid-spacing 160 --accuracy 1 --refine 1 --energy-weight 1e-1 --relax 1e-2 -o ${tmpdir} vol001_mr_t0t1.list
+	check_results registration
+	;;
     warpJacobian)
 	export CMTK_NUM_THREADS=1
 	run warp -q --fast --exploration 12 --grid-spacing 160 --accuracy 2 --refine 1 --jacobian-weight 1e-1 --sampling 12 --omit-original-data -o ${tmpdir} vol001_mr_t0t1.list
 	unset CMTK_NUM_THREADS
+	check_results registration
+	;;
+    warpRigidity)
+	run warp -q --fast --exploration 12 --grid-spacing 160 --accuracy 2 --refine 1 --rigidity-weight 1e-1 --sampling 12 --omit-original-data -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
 	;;
     warpLabels)

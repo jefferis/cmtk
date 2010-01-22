@@ -439,6 +439,8 @@ IF(NOT CMTK_USE_MPI)
     warpMultiLevelExact
     warpDelayRefine
     warpEnergy
+    warpEnergyRelax
+    warpRigidity
     warpJacobian
     warpLabels)
 
