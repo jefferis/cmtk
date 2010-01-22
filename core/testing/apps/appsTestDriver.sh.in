@@ -939,6 +939,18 @@ case ${RUNTEST} in
         unset CMTK_NUM_THREADS
 	check_results registration
 	;;
+    registrationxAutoLevelsRatToRatNCC)
+        run registrationx -v --init fov --auto-multi-levels 2 --ncc -o ${tmpdir} rat_fse_erly.hdr rat2_fse_erly.hdr
+	check_results registration
+	;;
+    registrationxAutoLevelsRatToRatCR)
+        run registrationx -v --init fov --auto-multi-levels 2 --cr -o ${tmpdir} rat_fse_erly.hdr rat2_fse_erly.hdr
+	check_results registration
+	;;
+    registrationxAutoLevelsRatToRatMI)
+        run registrationx -v --init fov --auto-multi-levels 2 --mi -o ${tmpdir} rat_fse_erly.hdr rat2_fse_erly.hdr
+	check_results registration
+	;;
     registrationxAutoLevelsRatToRatDeltaFThreshold)
         export CMTK_NUM_THREADS=1
 	run registrationx -v --init fov --auto-multi-levels 2 --dofs 6,9 --msd --match-histograms --delta-f-threshold 0.01 -o ${tmpdir} rat_fse_erly.hdr rat2_fse_erly.hdr

@@ -352,6 +352,9 @@ IF(NOT CMTK_USE_MPI)
     registrationxAutoLevelsRat2NN
     registrationxAutoLevelsRatToRat
     registrationxAutoLevelsRatToRatDeltaFThreshold
+    registrationxAutoLevelsRatToRatNCC
+    registrationxAutoLevelsRatToRatCR
+    registrationxAutoLevelsRatToRatMI
     registrationxAutoLevelsLabelsNN
     registrationxAutoLevelsLabelsPV
     registrationxAutoLevelsCt3)
