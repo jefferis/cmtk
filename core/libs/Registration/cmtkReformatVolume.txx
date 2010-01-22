@@ -165,7 +165,7 @@ ReformatVolume::GetTransformedReferenceGreyAvg( void *const arg )
   Types::Coordinate z = bbFrom[2] + cz * delta[2];
   
   const size_t numberOfPixels = dims[0] * dims[1] * dims[2];
-  const size_t statusUpdateIncrement = numberOfPixels / 100;
+  const size_t statusUpdateIncrement = std::max<size_t>( 1, numberOfPixels / 100 );
 
   Vector3D u, v;
   for ( size_t offset = params->ThisThreadIndex; offset < numberOfPixels; offset += params->NumberOfThreads ) 

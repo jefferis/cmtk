@@ -31,6 +31,8 @@
 
 #include <mpi.h>
 
+#include <algorithm>
+
 namespace
 cmtk
 {
@@ -189,7 +191,7 @@ ReformatVolume::GetTransformedReferenceGreyAvg( void *const arg )
   const UniformVolume* referenceVolume = thisObject->ReferenceVolume;
 
   const size_t numberOfPixels = dims[0] * dims[1] * dims[2];
-  const size_t statusUpdateIncrement = numberOfPixels / 1e5;
+  const size_t statusUpdateIncrement = std::max<size_t>( 1, numberOfPixels / 100 );
 
   const size_t firstOffset = params->m_Offset + params->ThisThreadIndex * params->m_Stride;
   const size_t incrOffset = params->NumberOfThreads * params->m_Stride;
