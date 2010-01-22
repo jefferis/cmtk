@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -157,8 +157,8 @@ ReformatVolume::GetTransformedReferenceGreyAvg( void *const arg )
     }
 
   int cx = params->ThisThreadIndex % dims[0];
-  int cz = (params->ThisThreadIndex / dims[0]) % dims[1];
-  int cy = params->ThisThreadIndex / (dims[0] * dims[1]) ;
+  int cy = (params->ThisThreadIndex / dims[0]) % dims[1];
+  int cz = params->ThisThreadIndex / (dims[0] * dims[1]) ;
 
   Types::Coordinate x = bbFrom[0] + cx * delta[0];
   Types::Coordinate y = bbFrom[1] + cy * delta[1];
@@ -168,22 +168,13 @@ ReformatVolume::GetTransformedReferenceGreyAvg( void *const arg )
   const size_t statusUpdateIncrement = numberOfPixels / 100;
 
   Vector3D u, v;
-  bool success = false;
   for ( size_t offset = params->ThisThreadIndex; offset < numberOfPixels; offset += params->NumberOfThreads ) 
     {
     if ( ! params->ThisThreadIndex && ! (offset % statusUpdateIncrement) ) 
       Progress::SetProgress( offset );
 
     v.Set( x, y, z );
-    if ( cx && success ) 
-      {
-      // use previous (successful) inverse as starting point inside row
-      success = splineXform->ApplyInverseInPlaceWithInitial( v, u, 0.1 * minDelta );
-      } 
-    else
-      {
-      success = splineXform->ApplyInverseInPlace( v, 0.1 * minDelta );
-      }
+    const bool success = splineXform->ApplyInverseInPlace( v, 0.1 * minDelta );
     u = v;
     
     unsigned int toIdx = 0;

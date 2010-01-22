@@ -289,7 +289,6 @@ ReformatVolume::GetTransformedReferenceGrey( void *const arg )
   
   Vector3D u, v;
   Types::Coordinate x, y, z;
-  bool success = false;
 
   Types::DataItem value;
   z = bbFrom[2];
@@ -304,13 +303,7 @@ ReformatVolume::GetTransformedReferenceGrey( void *const arg )
       for ( int cx = 0; cx < dims[0]; ++cx, x += delta[0], ++offset ) 
 	{
 	v.Set( x, y, z );
-	if ( cx && success ) 
-	  // use previous (successful) inverse as starting point inside row
-	  success = splineXform->ApplyInverseInPlaceWithInitial( v, u, 0.1 * minDelta );
-	else 
-	  {
-	  success = splineXform->ApplyInverseInPlace( v, 0.1 * minDelta );
-	  }
+	const bool success = splineXform->ApplyInverseInPlace( v, 0.1 * minDelta );
 	u = v;
 	
 	if ( success ) 
@@ -346,7 +339,6 @@ ReformatVolume::GetTransformedReferenceLabel( void *const arg )
   
   Vector3D u, v;
   Types::Coordinate x, y, z;
-  bool success = false;
 
   std::vector<ProbeInfo> probe( params->numberOfImages );
   std::vector<Types::Coordinate> labelCount( params->maxLabel+1 );
@@ -363,13 +355,7 @@ ReformatVolume::GetTransformedReferenceLabel( void *const arg )
       for ( int cx = 0; cx < dims[0]; ++cx, x += delta[0], ++offset ) 
 	{
 	v.Set( x, y, z );
-	if ( cx && success ) 
-	  // use previous (successful) inverse as starting point inside row
-	  success = splineXform->ApplyInverseInPlaceWithInitial( v, u, 0.1 * minDelta );
-	else
-	  {
-	  success = splineXform->ApplyInverseInPlace( v, 0.1 * minDelta );
-	  }
+	const bool success = splineXform->ApplyInverseInPlace( v, 0.1 * minDelta );
 	u = v;
 	
 	bool valid = false;
@@ -486,7 +472,6 @@ ReformatVolume::GetTransformedReferenceJacobianAvgThread
   
   Vector3D u, v;
   Types::Coordinate x, y, z;
-  bool success = false;
 
   const size_t numberOfXforms = xformList->size();
   std::vector<const SplineWarpXform*> xforms( numberOfXforms );
@@ -495,10 +480,6 @@ ReformatVolume::GetTransformedReferenceJacobianAvgThread
 
   const int czFrom = params->ThisThreadIndex * dims[2] / params->NumberOfThreads;
   const int czTo = std::min<int>( dims[2], (1+params->ThisThreadIndex) * dims[2] / params->NumberOfThreads );
-
-#ifdef __IGNORE__
-  StdErr.printf( " Thread #%d from %d to %d\n", params->ThisThreadIndex, czFrom, czTo );
-#endif
 
   Vector<Types::Coordinate> values( params->IncludeReferenceData ? numberOfXforms+1 : numberOfXforms );
   const size_t margin = numberOfXforms / 20; // margin for center 90%
@@ -516,18 +497,12 @@ ReformatVolume::GetTransformedReferenceJacobianAvgThread
       for ( int cx = 0; cx < dims[0]; ++cx, x += delta[0], ++offset ) 
 	{
 	v.Set( x, y, z );
-	if ( cx && success ) 
-	  // use previous (successful) inverse as starting point inside row
-	  success = splineXform->ApplyInverseInPlaceWithInitial( v, u, 0.1 * minDelta );
-	else
-	  {
-	  success = splineXform->ApplyInverseInPlace( v, 0.1 * minDelta );
-	  }
+	const bool success = splineXform->ApplyInverseInPlace( v, 0.1 * minDelta );
 	u = v;
-
+	
 	if ( success ) 
 	  {
-		  const Types::Coordinate refJacobian = splineXform->GetGlobalScaling() / splineXform->GetJacobianDeterminant( u );
+	  const Types::Coordinate refJacobian = splineXform->GetGlobalScaling() / splineXform->GetJacobianDeterminant( u );
 	  
 	  switch ( params->avgMode ) 
 	    {
@@ -554,15 +529,14 @@ ReformatVolume::GetTransformedReferenceJacobianAvgThread
 	      {
 	      // median
 	      if ( numberOfXforms & 1 )
-			  dataArray->Set( static_cast<Types::DataItem>( refJacobian * values[numberOfXforms/2+1] ), offset );
+		dataArray->Set( static_cast<Types::DataItem>( refJacobian * values[numberOfXforms/2+1] ), offset );
 	      else
-			  dataArray->Set( static_cast<Types::DataItem>( 0.5 * refJacobian * (values[numberOfXforms/2]+values[numberOfXforms/2+1]) ), offset );
+		dataArray->Set( static_cast<Types::DataItem>( 0.5 * refJacobian * (values[numberOfXforms/2]+values[numberOfXforms/2+1]) ), offset );
 	      } 
 	    else
 	      {
-	      // robust average of center 90%
-	      // average
-			  Types::Coordinate sum = 0;
+	      // robust average of center 90% average
+	      Types::Coordinate sum = 0;
 	      for ( unsigned int img = margin; img < numberOfXforms - margin; ++img )
 		sum += values[img];
 		  dataArray->Set( static_cast<Types::DataItem>( refJacobian * sum / ( numberOfXforms - 2 * margin ) ), offset );
