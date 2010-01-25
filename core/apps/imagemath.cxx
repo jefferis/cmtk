@@ -298,9 +298,9 @@ CallbackSqrt()
 }
         
 void
-CallbackThreshMin( const char* argv )
+CallbackThreshBelow( const char* argv )
 {
-  if ( CheckStackOneImage( "ThreshMin" ) )
+  if ( CheckStackOneImage( "ThreshBelow" ) )
     {
     const float threshold = atof( argv );
     
@@ -309,6 +309,21 @@ CallbackThreshMin( const char* argv )
     cmtk::Types::DataItem min, max;
     data->GetRange( min, max );
     data->Threshold( threshold, max );
+    }
+}
+    
+void
+CallbackThreshAbove( const char* argv )
+{
+  if ( CheckStackOneImage( "ThreshAbove" ) )
+    {
+    const float threshold = atof( argv );
+    
+    cmtk::TypedArray::SmartPtr data = ImageStack.top()->GetData();
+    
+    cmtk::Types::DataItem min, max;
+    data->GetRange( min, max );
+    data->Threshold( min, threshold );
     }
 }
     
@@ -1052,7 +1067,8 @@ main( int argc, char *argv[] )
     cl.AddCallback( Key( "scalar-add" ), CallbackScalarAdd, "Add a scalar to each pixel of the top image" );
     cl.AddCallback( Key( "scalar-xor" ), CallbackScalarXor, "Bitwise exclusive-or between top level and given scalar value" );
 
-    cl.AddCallback( Key( "threshold-min" ), CallbackThreshMin, "Apply lower threshold to image at top of stack" );
+    cl.AddCallback( Key( "threshold-below" ), CallbackThreshBelow, "Set values below given threshold to threshold." );
+    cl.AddCallback( Key( "threshold-above" ), CallbackThreshAbove, "Set values above given threshold to threshold." );
     cl.EndGroup();
 
     cl.BeginGroup( "Two images", "Image pair operators" );
