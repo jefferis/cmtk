@@ -34,7 +34,6 @@
 #include <cmtkMountPoints.h>
 #include <cmtkStudy.h>
 #include <cmtkClassStream.h>
-#include <cmtkVolumeFromStudy.h>
 #include <cmtkVolumeFromFile.h>
 #include <cmtkPGM.h>
 
@@ -78,18 +77,6 @@ VolumeIO::Read( const char* path, const bool verbose )
   FileFormatID formatID = FileFormat::Identify( translatedPath );
   switch ( formatID ) 
     {
-    case FILEFORMAT_STUDY: 
-    {
-    Study *study = NULL;
-    ClassStream stream( translatedPath, "images", ClassStream::READ );
-    stream >> study;
-    if ( study ) 
-      {
-      volume = VolumeFromStudy::Read( study, verbose );
-      delete study;
-      }
-    }
-    break;
     case FILEFORMAT_DICOM: // (hopefully) multi-slice DICOM
       volume = VolumeFromFile::ReadDICOM( translatedPath );
       break;
@@ -398,34 +385,6 @@ VolumeIO::Write
 
   switch ( format ) 
     {
-    case FILEFORMAT_PGM: 
-    {
-    int offset = 0;
-    TypedStream *studyStream = NULL;
-    if ( studyPath ) 
-      {
-      studyStream = CreateStudy( studyPath, volume, dirName, FILEFORMAT_PGM, verbose );
-      }
-    for ( int k = 0; k < volume->GetDims()[2]; ++k, offset += planeSize ) 
-      {
-      if ( verbose ) 
-	{
-	fprintf( stderr, "Writing slice %d...\r", k );
-	}
-      image.SetPixelData( TypedArray::SmartPtr( data->CloneSubArray( offset, planeSize ) ) );
-      char* fname = MakeSliceFileName( path, "pgm", k );
-      PGM::Write( fname, &image );
-      if ( studyStream ) 
-	{
-	WriteStudyImageEntry( studyStream, StrFName( fname ), "PRIMARY", volume->m_Delta[AXIS_X], volume->m_Delta[AXIS_Y], volume->GetPlaneCoord( AXIS_Z, k ) );
-	}
-      }
-    if ( studyStream ) 
-      {
-      FinishStudy( studyStream );
-      }
-    }
-    break;
     case FILEFORMAT_VANDERBILT: 
     {
     // get image data as short array
@@ -460,22 +419,6 @@ VolumeIO::Write
     {
     VolumeFromFile::WriteNRRD( path, volume, verbose );
     break;
-    }
-    break;
-    case FILEFORMAT_RAW3D: 
-    {
-#ifndef WORDS_BIGENDIAN
-    // change endianness from Sun to whatever we're currently on.
-    //    data->ChangeEndianness();
-#endif
-    WriteData( path, data->GetDataPtr(), data->GetDataSize(), 
-	       data->GetItemSize() );
-    if ( studyPath ) 
-      {
-      TypedStream *studyStream = CreateStudy( studyPath, volume, dirName, FILEFORMAT_RAW3D, verbose );
-      WriteStudyImageEntry( studyStream, baseName, "PRIMARY" );
-      FinishStudy( studyStream );
-      }
     }
     break;
     default:
@@ -532,131 +475,6 @@ VolumeIO::MakeSliceFileName
   static char fullname[PATH_MAX];
   snprintf( fullname, sizeof( fullname ), path, index, suffix );
   return fullname;
-}
-
-TypedStream*
-VolumeIO::CreateStudy
-( const char* studyPath, const UniformVolume* volume, const char* path, 
-  const FileFormatID fileFormat, const bool verbose )
-{
-  const TypedArray *volumeData = volume->GetData();
-  TypedStream* studyStream = new TypedStream( studyPath, "images", TYPEDSTREAM_WRITE );
-  
-  if ( studyStream && !studyStream->IsValid() ) 
-    {
-    fprintf( stderr, "Failed to create study %s.\n", studyPath );
-    delete studyStream;
-    studyStream = NULL;
-    }
-  
-  if ( studyStream )
-    {
-    if ( verbose ) 
-      {
-      fprintf( stderr, "Creating study %s.\n", studyPath );
-      }
-    studyStream->Begin( "imageserie" );
-    studyStream->WriteString( "name", "PRIMARY" );
-    studyStream->WriteString( "imagepath", path );
-    studyStream->WriteString( "iconpath", path );
-
-    switch ( fileFormat ) 
-      {
-      case FILEFORMAT_DICOM:
-	studyStream->WriteString( "format", "DICOM" );
-	break;
-      case FILEFORMAT_PGM:
-	studyStream->WriteString( "format", "PGM" );
-	break;
-      case FILEFORMAT_RAW:
-	studyStream->WriteString( "format", "RAW-DATA" );
-	break;
-      case FILEFORMAT_RAW3D:
-	studyStream->WriteString( "format", "RAW3D" );
-	break;
-      default:
-	break;
-      }
-    
-    studyStream->WriteInt( "width", volume->GetDims( AXIS_X ) );
-    studyStream->WriteInt( "height", volume->GetDims( AXIS_Y ) );
-    if ( fileFormat == FILEFORMAT_RAW3D )
-      studyStream->WriteInt( "depth", volume->GetDims( AXIS_Z ) );
-    
-    studyStream->WriteString( "direction", "CaudalCranial" );
-    studyStream->WriteBool( "custom", 1 );
-    studyStream->WriteDouble( "calibrationx", volume->m_Delta[AXIS_X] );
-    studyStream->WriteDouble( "calibrationy", volume->m_Delta[AXIS_Y] );
-    studyStream->WriteDouble( "slicedistance", volume->m_Delta[AXIS_Z] );
-
-    if ( volumeData ) 
-      {
-      Types::DataItem min, max;
-      volumeData->GetRange( min, max );
-      studyStream->WriteInt( "minimum", static_cast<int>( min ) );
-      studyStream->WriteInt( "maximum", static_cast<int>( max ) );
-
-      studyStream->WriteInt( "offset", 0 );
-      studyStream->WriteInt( "bytesperpixel", volumeData->GetItemSize() );
-      studyStream->WriteBool( "signed", (min < 0) );
-
-#ifdef WORDS_BIGENDIAN
-      studyStream->WriteBool( "bigendian", true );
-      studyStream->WriteBool( "littleendian", false );
-      studyStream->WriteBool( "swapbytes", false );
-#else
-      studyStream->WriteBool( "bigendian", false );
-      studyStream->WriteBool( "littleendian", true );
-      studyStream->WriteBool( "swapbytes", true );
-#endif
-      
-      switch ( volumeData->GetDataClass() ) 
-	{
-	case DATACLASS_GREY:
-	  studyStream->WriteString( "dataclass", "Grey" );
-	  break;
-	case DATACLASS_LABEL:
-	  studyStream->WriteString( "dataclass", "Label" );
-	  break;
-	default:
-	  studyStream->WriteString( "dataclass", "Unknown" );
-	  break;
-	}
-      
-      if ( volumeData->GetPaddingFlag() ) 
-	{
-	studyStream->WriteBool( "padding", true );
-	studyStream->WriteDouble( "padding_value", volumeData->GetPaddingValue() );
-	}
-      }
-    
-    studyStream->End( TYPEDSTREAM_FLUSH );
-    }
-  return studyStream;
-}
-
-void
-VolumeIO::WriteStudyImageEntry
-( TypedStream *const studyStream, const char* fname, const char* serie, 
-  const Types::Coordinate calibrationx, const Types::Coordinate calibrationy,
-  const Types::Coordinate tablepos )
-{
-  if ( studyStream->IsValid() ) 
-    {    
-    studyStream->Begin( "image" );
-    studyStream->WriteString( "serie", serie );
-    studyStream->WriteString( "name", fname );
-    studyStream->WriteDouble( "calibrationx", calibrationx );
-    studyStream->WriteDouble( "calibrationy", calibrationy );
-    studyStream->WriteDouble( "tablepos", tablepos );
-    studyStream->End( TYPEDSTREAM_FLUSH );
-    }
-}
-
-void VolumeIO::FinishStudy( TypedStream *const studyStream )
-{
-  studyStream->Close();
-  delete studyStream;
 }
 
 VolumeIO::Initializer::Initializer()

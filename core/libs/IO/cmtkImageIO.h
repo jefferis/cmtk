@@ -67,14 +67,13 @@ class ImageIO
 public:
   /** Create a new image reader/writer.
    *@param format The name of the image file format to instance a reader/writer
-   * for. Permitted values so far are "DICOM", "PGM", and "RAW". For historical
+   * for. Permitted values so far are "DICOM" and "PGM". For historical
    * reasons, "ACR-NEMA" is also recognized, but the created object is actually
    * a DICOM handler.
    *@return The newly created instace of the image reader/writer handling the
    * given format. If this format is not supported, NULL is returned.
    *@see DICOM
    *@see PGM
-   *@see RAW
    */
   static ImageIO* Create( const char* format );
 
@@ -101,8 +100,7 @@ public:
    * compressed files with .gz, .Z, .bz, and .bz2 suffixes. These are 
    * automatically decompressed as the data is read. The filename may but 
    * should not include the respective archive suffix.
-   *@param imageInfo This parameter defines geometry if required by the
-   * respective image format (RAW) as well as calibration information
+   *@param imageInfo This parameter defines calibration information
    * (PGM and DICOM with custom calibration). Also, for those formats that
    * store the image geometry, this parameter is filled with the actual
    * information from the image after return from this function.

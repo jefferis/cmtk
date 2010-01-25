@@ -199,37 +199,6 @@ QtSimpleFusionMainWindow::slotAddStudy( const QString& path )
 }
 
 void
-QtSimpleFusionMainWindow::slotSaveStudy()
-{
-  if ( ! CurrentStudy ) 
-    {
-    QMessageBox::warning( NULL, "Notification", "No study currently selected.", QMessageBox::Ok );
-    return;
-    }
-  
-  if ( ! CurrentStudy->GetFileSystemPath() )
-    this->slotSaveStudyAs();
-  else
-    CurrentStudy->Write();
-}
-
-void
-QtSimpleFusionMainWindow::slotSaveStudyAs()
-{
-  if ( ! CurrentStudy ) 
-    {
-    QMessageBox::warning( NULL, "Notification", "No study currently selected.", QMessageBox::Ok );
-    return;
-    }
-  
-  QString path = QFileDialog::getExistingDirectory( this, "Write Study to" );
-  if ( ! (path.isEmpty() || path.isNull() ) ) 
-    {
-    CurrentStudy->WriteTo( path.toLatin1() );
-    }
-}
-
-void
 QtSimpleFusionMainWindow::slotStudyReadColorMap()
 {
   if ( CurrentStudy ) 

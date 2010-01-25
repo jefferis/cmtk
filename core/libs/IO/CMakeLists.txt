@@ -36,7 +36,6 @@ SET(cmtkIO_SRCS
   cmtkClassStreamInfinitePlane.cxx
   cmtkClassStreamJointHistogram.cxx
   cmtkClassStreamLandmarkList.cxx
-  cmtkClassStreamStudy.cxx
   cmtkClassStreamStudyList.cxx
   cmtkClassStreamWarpXform.cxx
   cmtkDcmTags.cxx
@@ -47,7 +46,6 @@ SET(cmtkIO_SRCS
   cmtkImageIO.cxx
   cmtkMountPoints.cxx
   cmtkPGM.cxx
-  cmtkRAW.cxx
   cmtkResourceFile.cxx
   cmtkScalarImageIO.cxx
   cmtkSegmentationLabelIO.cxx

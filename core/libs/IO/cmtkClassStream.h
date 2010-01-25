@@ -215,23 +215,6 @@ public:
   /// Read infinite plane.
   ClassStream& operator >> ( InfinitePlane*& infinitePlane );
 
-  /** Write study object.
-   */
-  ClassStream& operator << ( const Study *study );
-
-  /** Write Study object.
-   * This function works on a reference rather than a pointer. It immediately
-   * calls the pointer-based function defined above for the actual writing.
-   */
-  ClassStream& operator << ( const Study& study )
-  { return (*this) << &study; }
-  
-  /// Read study.
-  ClassStream& operator >> ( Study*& study );
-
-  /// Read complete Study object.
-  static Study* ReadStudy( const char* dir );
-
   /** Write landmark list.
    */
   ClassStream& operator << ( const LandmarkList *landmarkList );

@@ -177,18 +177,6 @@ public:
   /// Static study reader function.
   static Study* Read( const char* path );
 
-  /** Study writer function.
-   *@return True if successful, false if unsuccessful.
-   */
-  virtual bool Write() const;
-
-  /** Study writer function.
-   * Side effect: the FileSystemPath field of the current object will be set
-   * to the new path if successful.
-   *@return True if successful, false if unsuccessful.
-   */
-  virtual bool WriteTo( const char* path );
-
   /** Copy colormap information from another study object.
    */
   virtual void CopyColormap( const Study* other );

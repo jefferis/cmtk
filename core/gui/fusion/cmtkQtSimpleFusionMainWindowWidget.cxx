@@ -90,9 +90,6 @@ QtSimpleFusionMainWindow::InitWidget()
   QObject::connect( RecentStudiesMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( slotRecentStudiesMenu( QAction* ) ) );
 
   StudyMenu->addSeparator();
-  StudyMenu->addAction( "&Save", this, SLOT( slotSaveStudy() ) );
-  StudyMenu->addAction( "Save as...", this, SLOT( slotSaveStudyAs() ) );
-  StudyMenu->addSeparator();
   StudyMenu->addAction( "Load &Colormap...", this, SLOT( slotStudyReadColorMap() ) );
   StudyMenu->addAction( "Re&load", this, SLOT( slotStudyReload() ) );
   StudyMenu->addAction( "&Properties...", this, SLOT( slotVolumeProperties() ) );

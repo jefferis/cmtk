@@ -36,7 +36,6 @@
 #endif
 
 #include <cmtkPGM.h>
-#include <cmtkRAW.h>
 
 #ifdef HAVE_STDARG_H
 #  include <stdarg.h>
@@ -67,8 +66,6 @@ ImageIO::Create( const char* format )
 #endif
   else if ( !strcmp( "PGM", format ) )
     return new PGM;
-  else if ( !strcmp( "RAW-DATA", format ) || !strcmp( "RAW3D", format ) )
-    return new RAW;
 
   return NULL;
 }
@@ -86,9 +83,6 @@ ImageIO::Create( const FileFormatID format )
 #endif
     case FILEFORMAT_PGM:
       return new PGM;
-    case FILEFORMAT_RAW:
-    case FILEFORMAT_RAW3D:
-      return new RAW;
     default:
       return NULL;
     }    

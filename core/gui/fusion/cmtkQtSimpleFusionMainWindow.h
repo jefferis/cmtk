@@ -95,12 +95,6 @@ private slots:
   /// Add given study.
   void slotAddStudy( const QString& path );
 
-  /// Save study to its current location.
-  void slotSaveStudy();
-
-  /// Save study to new location.
-  void slotSaveStudyAs();
-
   /// Reload study data.
   void slotStudyReadColorMap();
 

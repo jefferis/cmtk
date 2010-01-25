@@ -146,16 +146,6 @@ private:
   /// Generate slice image file name from path, suffix, and number.
   static char* MakeSliceFileName( const char *path, const char* suffix, const int index );
   
-  /// Create a study and write general image information.
-  static TypedStream* CreateStudy( const char* studyPath, const UniformVolume* volume, const char* path, const FileFormatID fileFormat, const bool verbose );
-
-  /// Add an image entry to a study created by CreateStudy.
-  static void WriteStudyImageEntry
-  ( TypedStream *const studyStream, const char* fname, const char* serie, const Types::Coordinate calibrationx = 0, const Types::Coordinate calibrationy = 0, const Types::Coordinate tablepos = 0 );
-  
-  /// Finish and clode study created by CreateStudy.
-  static void FinishStudy( TypedStream *const studyStream );
-
 private:
   /** Initializer class.
    * An object of this class is automatically instantiated when a program is run.
