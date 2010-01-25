@@ -38,7 +38,6 @@
 
 #include <cmtkStudy.h>
 #include <cmtkStudyImageSet.h>
-#include <cmtkStudyImageSetRaw.h>
 #include <cmtkUniformVolume.h>
 
 namespace

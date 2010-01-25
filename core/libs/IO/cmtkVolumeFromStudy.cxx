@@ -56,8 +56,6 @@
 #  include <limits.h>
 #endif
 
-#include <cmtkStudyImageSetRaw.h>
-
 namespace
 cmtk
 {
