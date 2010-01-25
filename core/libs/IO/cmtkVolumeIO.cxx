@@ -360,22 +360,18 @@ VolumeIO::Write
   char absolutePath[PATH_MAX];
   FileUtils::GetAbsolutePath( absolutePath, actualPath );
   
-  char studyPath[PATH_MAX];
-  strcat( strcpy( studyPath, StrDir( absolutePath ) ), ".study" );
-
-  Write( volume, fileFormat, absolutePath, studyPath, verbose );
+  Write( volume, fileFormat, absolutePath, verbose );
 }
 
 void
 VolumeIO::Write
-( const UniformVolume* volume, const FileFormatID format, const char* path, const char* studyPath, const bool verbose )
+( const UniformVolume* volume, const FileFormatID format, const char* path, const bool verbose )
 {
   if ( volume == NULL ) return;
  
   const TypedArray *data = volume->GetData();
   if ( data == NULL ) return;
 
-  int planeSize = volume->m_Dims[0] * volume->m_Dims[1];
   ScalarImage image( volume->m_Dims[0], volume->m_Dims[1] );
   image.SetPixelSize( volume->m_Delta[AXIS_X], volume->m_Delta[AXIS_Y] );
 

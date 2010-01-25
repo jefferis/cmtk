@@ -107,7 +107,7 @@ public:
   }
 
   /// Write volume data to filesystem.
-  static void Write( const UniformVolume* volume, const FileFormatID format, const char *path, const char *studyPath = NULL, const bool verbose = false );
+  static void Write( const UniformVolume* volume, const FileFormatID format, const char *path, const bool verbose = false );
 
   /** Write volume data to filesystem with automatic format parsing.
    * The output file format is determined automatically from the output name suffix.
