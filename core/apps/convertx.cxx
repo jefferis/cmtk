@@ -52,6 +52,7 @@
 #include <cmtkImageOperationDownsample.h>
 #include <cmtkImageOperationCropRegion.h>
 #include <cmtkImageOperationCropThreshold.h>
+#include <cmtkImageOperationScaleToRange.h>
 #include <cmtkImageOperationThreshold.h>
 #include <cmtkImageOperationMedianFilter.h>
 #include <cmtkImageOperationGaussFilter.h>
@@ -128,6 +129,10 @@ main( int argc, char* argv[] )
     cl.AddCallback( Key( "thresh-above-to-padding" ), &cmtk::ImageOperationThreshold::NewAboveToPadding, "Set all values above threshold to padding value." );
     cl.EndGroup();
 
+    cl.BeginGroup( "Intensity", "Intensity Transformations" );
+    cl.AddCallback( Key( "scale-to-range" ), &cmtk::ImageOperationScaleToRange::New, "Scale image intensities to range 'from:to', e.g., '0:255' before conversion to byte data." );
+    cl.EndGroup();
+    
     cl.BeginGroup( "Morphological", "Morphological Operations" );
     cl.AddCallback( Key( "erode" ), &cmtk::ImageOperationErodeDilate::NewErode, "Morphological erosion operator" );
     cl.AddCallback( Key( "dilate" ), &cmtk::ImageOperationErodeDilate::NewDilate, "Morphological dilation operator" );

@@ -56,6 +56,7 @@ SET(cmtkBase_SRCS
   cmtkImageOperationCropThreshold.cxx
   cmtkImageOperationDownsample.cxx
   cmtkImageOperationMedianFilter.cxx
+  cmtkImageOperationScaleToRange.cxx
   cmtkImageOperationThreshold.cxx
   cmtkInfinitePlane.cxx
   cmtkIntersection.cxx

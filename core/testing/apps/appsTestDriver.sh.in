@@ -397,6 +397,10 @@ case ${RUNTEST} in
         run convertx --set-padding 0 --thresh-above-to-padding 100 spgr_brain_1.hdr ${tmpdir}/thresh.hdr
 	check_results thresh.img
 	;;
+    convertxScaleToRange)
+	run convertx --scale-to-range 128:192 spgr_brain_1.hdr ${tmpdir}/scaled.hdr
+	check_results scaled.img
+	;;
     dcm2image)
 	run dcm2image -O ${tmpdir}/00%n.hdr ${PWD}/dcm/
 	check_results 001.hdr 001.img 002.hdr 002.img 003.hdr 003.img

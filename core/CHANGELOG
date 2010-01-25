@@ -6,6 +6,9 @@ Release CMTK-1.2.1:
 - Added: "convertx" tool now does thresholding above and below threshold, to
     threshold and to padding.
 - Added: re-added missing "--fast" switch for warp and warpx tools.
+- Added: "imagemath" can now threshold above and below given values.
+- Added: "convertx" tool can now rescale image intensities to target range
+    using "--scale-to-range" operation.
 
 - Fixed: reading empty (i.e., zero pixels) images crashed the toolkit
 - Fixed: "reformatx" did not respect user-defined padding value when computing
