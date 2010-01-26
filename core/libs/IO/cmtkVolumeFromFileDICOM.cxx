@@ -33,7 +33,6 @@
 
 #ifdef CMTK_HAVE_DCMTK
 
-#  include <cmtkDcmTags.h>
 #  include <cmtkTypedArray.h>
 
 #  include <string.h>
