@@ -56,7 +56,7 @@ cmtk
 //@{
 
 void
-PGM::Write( const char* filename, const ImageInfo& imageInfo, const StudyInfo& studyInfo, const int anonymize ) 
+PGM::Write( const char* filename, const ImageInfo& imageInfo, const int anonymize ) 
 {
   this->SetError( 0 );
 
@@ -77,11 +77,6 @@ PGM::Write( const char* filename, const ImageInfo& imageInfo, const StudyInfo& s
   fprintf( fp, "P5\n" );
   fprintf( fp, "# calibration %f %f\n", imageInfo.calibrationx, imageInfo.calibrationy );
   fprintf( fp, "# tablepos %f\n", imageInfo.tablepos );
-  
-  const char *p = NULL;
-  if ( (p = studyInfo.GetField( INFO_PATNAME, anonymize )) )
-    fprintf( fp, "# patient_name [%s]\n", p );
-
   fprintf( fp, "%d %d %d\n", imageInfo.dims[0], imageInfo.dims[1], static_cast<int>( imageInfo.maximum ) );
   
   unsigned dim = imageInfo.dims[0] * imageInfo.dims[1];

@@ -37,7 +37,6 @@
 #include <cmtkImageIO.h>
 
 #include <cmtkImageInfo.h>
-#include <cmtkStudyInfo.h>
 
 #include <cmtkScalarImage.h>
 
@@ -73,7 +72,7 @@ public:
   /** Write image to PGM file.
    *@see ImageIO#Write
    */
-  virtual void Write ( const char*, const ImageInfo&, const StudyInfo&, const int = 0 );
+  virtual void Write ( const char*, const ImageInfo&, const int = 0 );
 
   /** Write scalar image to PGM file.
    */

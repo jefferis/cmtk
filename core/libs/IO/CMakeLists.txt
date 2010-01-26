@@ -38,7 +38,6 @@ SET(cmtkIO_SRCS
   cmtkClassStreamLandmarkList.cxx
   cmtkClassStreamStudyList.cxx
   cmtkClassStreamWarpXform.cxx
-  cmtkDcmTags.cxx
   cmtkDICOM.cxx
   cmtkFileFormat.cxx
   cmtkGroupwiseRegistrationFunctionalIO.cxx
@@ -51,7 +50,6 @@ SET(cmtkIO_SRCS
   cmtkSegmentationLabelIO.cxx
   cmtkStudy.cxx
   cmtkStudyImageSet.cxx
-  cmtkStudyInfo.cxx
   cmtkStudyList.cxx
   cmtkTypedStream.cxx
   cmtkTypedStreamStudylist.cxx

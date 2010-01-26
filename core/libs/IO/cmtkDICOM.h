@@ -37,7 +37,6 @@
 #include <cmtkImageIO.h>
 
 #include <cmtkImageInfo.h>
-#include <cmtkStudyInfo.h>
 
 #include <cmtkStudy.h>
 #include <cmtkScalarImage.h>
@@ -65,7 +64,7 @@ public:
   /** Read image and DICOM tags from DICOM file.
    *@see ImageIO#Read
    */
-  virtual void Read ( const char*, ImageInfo&, StudyInfo&, const int = 0 );
+  virtual void Read ( const char*, ImageInfo&, const int = 0 );
 
   /** Read ScalarImage from DICOM file.
    *@see ImageIO#Read
@@ -75,7 +74,7 @@ public:
   /** Write image from DICOM stream using OFFIS library.
    *@see ImageIO#Write
    */
-  virtual void Write ( const char*, const ImageInfo&, const StudyInfo&, const int anonymized = 0 );
+  virtual void Write ( const char*, const ImageInfo&, const int anonymized = 0 );
 };
 
 //@}

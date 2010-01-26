@@ -35,7 +35,6 @@
 #include <cmtkconfig.h>
 
 #include <cmtkImageInfo.h>
-#include <cmtkStudyInfo.h>
 #include <cmtkFileFormat.h>
 
 #include <cmtkStudy.h>
@@ -110,13 +109,11 @@ public:
    * working directory. There is no guarantee that the working directory
    * remains unchanged between subsequent calls to this function.
    *@param imageInfo Geometry information corresponding to the image data.
-   *@param studyInfo Additional information (patient data, imaging parameters
-   * etc.) for the current image.
    *@param anonymize If this optional parameter is non-zero, no
    * patient-specific information is written to the image file. This parameter
    * defaults to zero, resulting in all information stored to be written.
    */
-  virtual void Write ( const char*, const ImageInfo&, const StudyInfo&, const int = 0 ) {};
+  virtual void Write ( const char*, const ImageInfo&, const int = 0 ) {};
 
   /** Return the pointer to the image data.
    * Using this function, the data pointer remains under control of the

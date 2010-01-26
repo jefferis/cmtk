@@ -33,7 +33,6 @@
 
 #ifdef CMTK_HAVE_DCMTK
 
-#  include <cmtkDcmTags.h>
 #  include <cmtkTypedArray.h>
 
 #  include <string.h>
@@ -68,7 +67,7 @@ cmtk
 
 void
 DICOM::Read
-( const char* filename, ImageInfo& imageInfo, StudyInfo& studyInfo, const int imageIndex )
+( const char* filename, ImageInfo& imageInfo, const int imageIndex )
 {
   this->SetError( 0 );
   this->FreeDataPtr();
@@ -330,16 +329,6 @@ DICOM::Read
       imageInfo.SetImageOrientation( 1, 0, 0, 0, 1, 0 );
       }
     
-    // now look up everything that goes into StudyInfo structure.
-    DcmTagKey searchKey;
-    const char *tmpStr;
-    for ( int tag=0; NamedDcmTagTable[tag].group; ++tag ) 
-      {
-      searchKey.set( NamedDcmTagTable[tag].group, NamedDcmTagTable[tag].elem );
-      if ( document->getValue( searchKey, tmpStr ) )
-	studyInfo.SetField( NamedDcmTagTable[tag].id, strdup( tmpStr ) );
-      }
-    
     if ( ! DataPtr ) 
       {
       this->SetErrorMsg( "Could not read pixel data from image file\n%s", filename );
@@ -360,7 +349,7 @@ DICOM::Read
 
 void
 DICOM::Write
-( const char* filename, const ImageInfo& imageInfo, const StudyInfo& studyInfo, const int anonymize )
+( const char* filename, const ImageInfo& imageInfo, const int anonymize )
 {
   DcmDataset *dataset = new DcmDataset;
   DcmElement *elem;
@@ -372,10 +361,6 @@ DICOM::Write
   
   snprintf( tmp_str, sizeof( tmp_str ), "%.6f", imageInfo.tablepos );
   (elem = newDicomElement( DcmTag( 0x0020, 0x0050 ) )) -> putString( tmp_str );
-  dataset->insert( elem );
-  
-  // Put modifying device / date / time information
-  (elem = newDicomElement( DcmTag( 0x0020, 0x3401 ) )) -> putString( StudyInfo::ModDevID() );
   dataset->insert( elem );
   
 #if defined(HAVE_TIMET) && defined(HAVE_LOCALTIME) && defined(HAVE_STRFTIME)
@@ -422,29 +407,6 @@ DICOM::Write
     else
       delem->putUint8Array( (Uint8*) DataPtr, imageInfo.dims[0] * imageInfo.dims[1] );
     dataset->insert(delem);
-    }
-  
-  for ( int tag=0; NamedDcmTagTable[tag].group; ++tag ) 
-    {
-    elem = newDicomElement( DcmTag( NamedDcmTagTable[tag].group, NamedDcmTagTable[tag].elem ) );
-    const char *field_value = studyInfo.GetField( NamedDcmTagTable[tag].id, anonymize );
-    
-    char buffer[32];
-    switch ( NamedDcmTagTable[tag].id ) 
-      {
-      case INFO_RELIMGPOSITION:
-      case INFO_RELIMGPOSITPAT:
-	snprintf( buffer, sizeof( buffer ), "0\\0\\%.6f", imageInfo.tablepos );
-	elem -> putString( buffer );
-	break;
-      case INFO_RELIMGORIENT:
-      case INFO_RELIMGORIENTPAT:
-	elem -> putString( "1\\0\\0\\0\\1\\0" );
-	break;
-      default:
-	elem -> putString( field_value );
-      }
-    dataset->insert( elem );
     }
   
   DcmFileFormat *fileformat = new DcmFileFormat( dataset );
@@ -701,13 +663,13 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-void DICOM::Read ( const char*, ImageInfo&, StudyInfo&, const int ) {}
+void DICOM::Read ( const char*, ImageInfo&, const int ) {}
 
 ScalarImage* 
 DICOM::Read( const char*, const Study*, const int ) const
 { return NULL; }
 
-void DICOM::Write ( const char*, const ImageInfo&, const StudyInfo&, const int ) {}
+void DICOM::Write ( const char*, const ImageInfo&, const int ) {}
 
 //@}
 
