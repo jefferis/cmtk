@@ -39,11 +39,19 @@ FOREACH(D ${DRIVERS})
 ENDFOREACH(D ${DRIVERS})
 
 # ==========================================
-# Tests for "igsSplineWarpXform" class
+# Tests for "cmtk::DataGrid" class
+SET(Tests ${Tests} DataGridMatches)
+
+# ==========================================
+# Tests for "cmtk::SplineWarpXform" class
 SET(Tests ${Tests} SplineWarpXform SplineWarpXformInverse)
 
 # ==========================================
-# Tests for "igsMathUtil" functions
+# Tests for "cmtk::UniformVolume" class
+SET(Tests ${Tests} UniformVolumeMatches)
+
+# ==========================================
+# Tests for "cmtk::MathUtil" functions
 SET(Tests ${Tests} 
 	  EigenSystemSymmetricMatrix3x3
 	  MathUtilEigensystem 

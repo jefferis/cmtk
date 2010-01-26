@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -28,10 +28,13 @@
 //  $LastChangedBy$
 //
 */
+
 #include "cmtkEigenSystemSymmetricMatrix3x3Tests.txx"
 #include "cmtkMathUtilTests.txx"
 #include "cmtkMathUtilLinAlgTests.txx"
 #include "cmtkSplineWarpXformTests.txx"
+#include "cmtkDataGridTests.txx"
+#include "cmtkUniformVolumeTests.txx"
 
 /** Set up table of test names and function pointers */
 typedef int (*testFuncPtr)();
@@ -45,12 +48,14 @@ struct __testNameAndFunctionPointer
 
 const testNameAndFunctionPointer testTable[] =
 {
+  { "DataGridMatches",               &testDataGridMatches },
   { "EigenSystemSymmetricMatrix3x3", &testEigenSystemSymmetricMatrix3x3 },
   { "MathUtilEigensystem",           &testMathUtilEigensystem },
   { "MathUtilEigenvalues",           &testMathUtilEigenvalues },
   { "MathUtilUniformRandom",         &testMathUtilUniformRandom },
   { "SplineWarpXform",               &testSplineWarpXform },
   { "SplineWarpXformInverse",        &testSplineWarpXformInverse },
+  { "UniformVolumeMatches",          &testUniformVolumeMatches },
   { NULL, NULL }
 };
 

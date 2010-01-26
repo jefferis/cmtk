@@ -1,6 +1,6 @@
 ##
-##  Copyright 1997-2009 Torsten Rohlfing
 ##  Copyright 2004-2010 SRI International
+##  Copyright 1997-2009 Torsten Rohlfing
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -404,9 +404,13 @@ IF(NOT CMTK_USE_MPI)
   # ==========================================
   # Tests for "statistics" tool
   SET(testList ${testList} 
-    statisticsGrey statisticsPercentiles
-    statisticsGreyColumn statisticsGreyExpNotation
-    statisticsGreyMask statisticsGreyMultiMask	
+    statisticsGrey 
+    statisticsPercentiles
+    statisticsGreyColumn 
+    statisticsGreyExpNotation
+    statisticsGreyMask 
+    statisticsGreyMultiMask
+    statisticsMaskMismatch
     statisticsLabels)
 
   # ==========================================

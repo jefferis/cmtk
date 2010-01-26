@@ -1128,6 +1128,10 @@ case ${RUNTEST} in
 	run_eval "${BINDIR}/statistics -M spgr_3t_mask.hdr spgr_3t.hdr > ${tmpdir}/statistics.txt"
 	check_results statistics.txt
 	;;
+    statisticsMaskMismatch)
+	run_eval "${BINDIR}/statistics -M parc1.hdr spgr_3t.hdr > ${tmpdir}/statistics.txt"
+	check_results statistics.txt
+	;;
     statisticsLabels)
 	run_eval "${BINDIR}/statistics -l parc1.hdr > ${tmpdir}/statistics.txt"
 	check_results statistics.txt

@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -96,6 +96,12 @@ public:
   
   /// Virtual destructor.
   virtual ~DataGrid() {}
+
+  /// Test whether this grid matches another one, i.e., has the same dimensions.
+  virtual bool GridMatches( const Self& other ) const
+  {
+    return (this->m_Dims[0] == other.m_Dims[0]) && (this->m_Dims[1] == other.m_Dims[1]) && (this->m_Dims[2] == other.m_Dims[2]);
+  }
 
   /// Downsampling constructor function.
   virtual DataGrid* GetDownsampled( const int (&downsample)[3] ) const;

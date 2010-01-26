@@ -404,16 +404,17 @@ main ( int argc, char* argv[] )
     exit( 1 );
     }
   
+  cmtk::UniformVolume::SmartPtr maskVolume( NULL );
   cmtk::TypedArray::SmartPtr maskData( NULL );
   if ( MaskFileName ) 
     {
-    cmtk::UniformVolume::SmartPtr mask( cmtk::VolumeIO::ReadOriented( MaskFileName, Verbose ) );
-    if ( ! mask ) 
+    maskVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( MaskFileName, Verbose ) );
+    if ( ! maskVolume ) 
       {
       cmtk::StdErr << "ERROR: could not read mask file " << MaskFileName << "\n";
       exit( 1 );
       }
-    maskData = mask->GetData();
+    maskData = maskVolume->GetData();
     if ( ! maskData ) 
       {
       cmtk::StdErr << "ERROR: could not read data from mask file " << MaskFileName << "\n";
@@ -443,8 +444,13 @@ main ( int argc, char* argv[] )
       cmtk::StdErr << "ERROR: could not read data from image file " << imageFileName << "\n";
       continue;
       }
-    
-    fprintf( stdout, "Statistics for image %s\n", imageFileName );
+
+    if ( !volume->GridMatches( *maskVolume ) )
+      {
+      cmtk::StdErr << "ERROR: mask grid does not match grid of image " << imageFileName << "\n";
+      continue;
+      }
+    cmtk::StdOut.printf( "Statistics for image %s\n", imageFileName );
     
     if ( Label ) 
       {

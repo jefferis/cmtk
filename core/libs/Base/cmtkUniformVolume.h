@@ -110,6 +110,14 @@ public:
    */
   UniformVolume( const int dims[3], const Types::Coordinate deltaX, const Types::Coordinate deltaY, const Types::Coordinate deltaZ, TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null );
 
+  /// Test whether this grid matches another one, i.e., has the same pixel sizes.
+  virtual bool GridMatches( const Self& other ) const
+  {
+    return Superclass::GridMatches( other ) 
+      && (this->m_Delta[0] == other.m_Delta[0]) && (this->m_Delta[1] == other.m_Delta[1]) && (this->m_Delta[2] == other.m_Delta[2])
+      && (this->m_Offset[0] == other.m_Offset[0]) && (this->m_Offset[1] == other.m_Offset[1]) && (this->m_Offset[2] == other.m_Offset[2]);
+  }
+
   /** Coordinate transformation from index to physical position.
    * This incorporates image axis directions and first pixel offset.
    *\note Strictly, this is not a transformation from the pixel index
