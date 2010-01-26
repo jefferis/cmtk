@@ -96,30 +96,6 @@ public:
    * A pointer to the image data is stored in the "DataPtr" field after return
    * from thsi function. It can then be retrieved by a call to 
    * GetReleaseDataPtr().
-   *@param filename The name of the image to read. All readers recognize
-   * compressed files with .gz, .Z, .bz, and .bz2 suffixes. These are 
-   * automatically decompressed as the data is read. The filename may but 
-   * should not include the respective archive suffix.
-   *@param imageInfo This parameter defines calibration information
-   * (PGM and DICOM with custom calibration). Also, for those formats that
-   * store the image geometry, this parameter is filled with the actual
-   * information from the image after return from this function.
-   *@param studyInfo This parameter is filled with study information (patient 
-   * name, modality, acquisition parameters etc.) if the respective file format
-   * supports this (currently DICOM only).
-   *@param imageIndex When reading a 3D volume sequentially, this parameter
-   * may be used to provide the index of the image to read with respect to the
-   * sequence as a whole. This is used internally to compute the image's table
-   * position for RAW and PGM files that do not provide this information by
-   * themselves..
-   *@see CompressedStream
-   */
-  virtual void Read ( const char*, ImageInfo&, StudyInfo&, const int = 0 ) {};
-
-  /** Read an image.
-   * A pointer to the image data is stored in the "DataPtr" field after return
-   * from thsi function. It can then be retrieved by a call to 
-   * GetReleaseDataPtr().
    */
   virtual ScalarImage* Read( const char*, const Study* = NULL, const int = 0 ) const
   { return NULL; }

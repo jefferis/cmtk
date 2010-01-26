@@ -61,11 +61,6 @@ public:
     return IMAGEFORMAT_DIMS | IMAGEFORMAT_STRUCTURE;
   }
   
-  /** Read image from PGM file.
-   *@see ImageIO#Read
-   */
-  virtual void Read( const char*, ImageInfo&, StudyInfo&, const int = 0 );
-
   /** Read image from PGM file directly.
    */
   static ScalarImage* Read ( const char* );
