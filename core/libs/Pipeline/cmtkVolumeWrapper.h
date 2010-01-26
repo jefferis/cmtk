@@ -41,7 +41,6 @@
 
 #include <cmtkAffineXform.h>
 #include <cmtkWarpXform.h>
-#include <cmtkStudyInfo.h>
 
 namespace
 cmtk
@@ -83,9 +82,6 @@ public:
   /// Set new deformation.
   void SetWarpXform( WarpXform::SmartPtr& warpXform );
 
-  /// Set new study info (DICOM tags).
-  void SetStudyInfo( StudyInfo *const studyInfo );
-
   /// Get pointer to the affine transformation.
   AffineXform::SmartPtr& GetAffineXform() 
   { 
@@ -100,13 +96,6 @@ public:
   WarpXform::SmartPtr& GetWarpXform() 
   { 
     return this->m_WarpXform; 
-  }
-  
-  /// Get pointer to the study information (DICOM tags).
-  StudyInfo* GetStudyInfo() 
-  { 
-    //    if ( m_StudyInfo ) m_StudyInfo->Reference(); 
-    return m_StudyInfo; 
   }
   
 protected:
@@ -125,9 +114,6 @@ private:
 
   /// The associated deformation.
   WarpXform::SmartPtr m_WarpXform;
-
-  /// DICOM tags from the original image data.
-  StudyInfo *m_StudyInfo;
 };
 
 //@}

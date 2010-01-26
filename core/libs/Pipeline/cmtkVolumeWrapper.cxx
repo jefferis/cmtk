@@ -49,13 +49,10 @@ VolumeWrapper::VolumeWrapper()
   Volume = UniformVolume::SmartPtr::Null; 
   this->m_AffineXform = AffineXform::SmartPtr::Null;
   this->m_WarpXform = WarpXform::SmartPtr::Null;
-  this->m_StudyInfo = NULL;
 }
 
 VolumeWrapper::~VolumeWrapper()
 {
-  if ( this->m_StudyInfo ) 
-    delete this->m_StudyInfo;
 }
 
 
@@ -87,14 +84,6 @@ VolumeWrapper::SetWarpXform( WarpXform::SmartPtr& warpXform )
     this->m_WarpXform = warpXform;
     this->UpdateModifiedTime();
     }
-}
-
-void
-VolumeWrapper::SetStudyInfo( StudyInfo *const studyInfo )
-{
-  if ( this->m_StudyInfo ) 
-    delete this->m_StudyInfo;
-  this->m_StudyInfo = studyInfo;
 }
 
 } // namespace cmtk
