@@ -37,7 +37,6 @@
 #include <cmtkTypedArray.h>
 
 #include <cmtkCompressedStream.h>
-#include <cmtkDICOM.h>
 
 namespace
 cmtk
