@@ -25,6 +25,9 @@ Release CMTK-1.2.1:
 
 - Removed: deformation strain tensor computation was untested and unused; thus
     removed.
+- Removed: partial read support for AVW file format removed
+- Removed: support for legacy typedstream studies removed; Nrrd should be able
+    to replace this if needed.
 
 Release CMTK-1.2.0 (2010-01-06):
 

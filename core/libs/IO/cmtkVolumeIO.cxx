@@ -98,9 +98,6 @@ VolumeIO::Read( const char* path, const bool verbose )
     case FILEFORMAT_NIFTI_DETACHED:
       volume = VolumeFromFile::ReadNifti( translatedPath, true /*detached*/, true /*readData*/ );
       break;
-    case FILEFORMAT_ANALYZE_AVW:
-      volume = VolumeFromFile::ReadAnalyzeAVW( translatedPath );
-      break;
     case FILEFORMAT_NRRD:
       volume = VolumeFromFile::ReadNRRD( translatedPath );
       break;

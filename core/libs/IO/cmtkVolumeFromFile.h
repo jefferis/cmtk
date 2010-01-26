@@ -67,9 +67,6 @@ public:
   /// Read Analyze 7.5 file (separate header file).
   static UniformVolume* ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian = false, const bool readData = true );
 
-  /// Read Analyze AVW file.
-  static UniformVolume* ReadAnalyzeAVW( const char* path );
-
   /// Read Nifti file.
   static UniformVolume* ReadNifti( const char* pathHdr, const bool detached, const bool readData = true );
 
