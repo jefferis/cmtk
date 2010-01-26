@@ -31,43 +31,28 @@
 
 #include <cmtkVolumeFromFile.h>
 
-#include <stdio.h>
-
-#include <cmtkFileFormat.h>
-#include <cmtkTypedArray.h>
-
-#include <cmtkCompressedStream.h>
-#include <cmtkDICOM.h>
-
-namespace
-cmtk
-{
-
-/** \addtogroup IO */
-//@{
-
 UniformVolume* 
-VolumeFromFile::Read( const char *path )
+VolumeFromFile::ReadDICOM( const char *path )
 {
-  UniformVolume *volume = NULL;
+  ImageInfo imageInfo;
+  StudyInfo studyInfo;
+  DICOM dicomIO;
 
-  FileFormatID id = FileFormat::Identify( path );
-  switch ( id )
-    {
-    case FILEFORMAT_DICOM:
-      return VolumeFromFile::ReadDICOM( path );
-    case FILEFORMAT_VANDERBILT:
-      return VolumeFromFile::ReadVanderbilt( path );
-    case FILEFORMAT_ANALYZE_HDR:
-      return VolumeFromFile::ReadAnalyzeHdr( path, false /* bigendian */ );
-    case FILEFORMAT_ANALYZE_HDR_BIGENDIAN:
-      return VolumeFromFile::ReadAnalyzeHdr( path, true /* bigendian */ );
-    default:
-      // for all other file formats, we shouldn't be in this function at all.
-      return NULL;
-    }
-  
+  dicomIO.Read( path, imageInfo, studyInfo, 0 );
+
+  Types::Coordinate size[3] = {
+    (imageInfo.dims[0]-1) * imageInfo.calibrationx,
+    (imageInfo.dims[1]-1) * imageInfo.calibrationy,
+    (imageInfo.dims[2]-1) * imageInfo.slicedistance
+  };
+
+  ScalarDataType dtype = SelectDataTypeInteger( imageInfo.bytesperpixel, imageInfo.signbit );
+
+  TypedArray::SmartPtr dataArray
+    ( TypedArray::Create( dtype, dicomIO.GetReleaseDataPtr(), imageInfo.dims[0]*imageInfo.dims[1]*imageInfo.dims[2], true /*freeArray*/, imageInfo.Padding, &imageInfo.PaddingValue ) );
+		       
+  UniformVolume *volume = new UniformVolume( imageInfo.dims, size, dataArray );
+
   return volume;
 }
 
-} // namespace cmtk

@@ -55,9 +55,10 @@ SET(cmtkIO_SRCS
   cmtkStudyList.cxx
   cmtkTypedStream.cxx
   cmtkTypedStreamStudylist.cxx
+  cmtkVolumeFromFile.cxx
   cmtkVolumeFromFileAnalyze.cxx
   cmtkVolumeFromFileBioRad.cxx
-  cmtkVolumeFromFile.cxx
+  cmtkVolumeFromFileDICOM.cxx
   cmtkVolumeFromFileMetaFile.cxx
   cmtkVolumeFromFileNRRD.cxx
   cmtkVolumeFromFileNifti.cxx
