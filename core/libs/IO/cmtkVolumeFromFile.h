@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -58,9 +58,6 @@ public:
   /// Read volume in Vanderbilt format.
   static UniformVolume* ReadVanderbilt( const char *filename );
 
-  /// Read volume in Amira format.
-  static UniformVolume* ReadAmira( const char *filename );
-
   /// Read BioRad PIC file (confocal microscopy image).
   static UniformVolume* ReadBioRad( const char* path );
 
@@ -69,12 +66,6 @@ public:
 
   /// Read Nifti file.
   static UniformVolume* ReadNifti( const char* pathHdr, const bool detached, const bool readData = true );
-
-  /// Read geometry data only from a DICOM image file.
-  static void ReadGeometryDICOM( const char *filename, int *const dims, Types::Coordinate *const size );
-
-  /// Read geometry data only from an Amira file.
-  static void ReadGeometryAmira( const char *filename, int *const dims, Types::Coordinate *const size );
 
   /// Write Analyze 7.5 file (separate header file).
   static void WriteAnalyzeHdr( const char* pathHdr, const UniformVolume* volume, const bool verbose = false );
