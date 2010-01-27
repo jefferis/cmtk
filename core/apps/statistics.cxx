@@ -445,7 +445,7 @@ main ( int argc, char* argv[] )
       continue;
       }
 
-    if ( !volume->GridMatches( *maskVolume ) )
+    if ( maskVolume && !volume->GridMatches( *maskVolume ) )
       {
       cmtk::StdErr << "ERROR: mask grid does not match grid of image " << imageFileName << "\n";
       continue;
