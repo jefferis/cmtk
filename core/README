@@ -2,27 +2,10 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
-Release Notes -- CMTK 1.2.0
+Release Notes -- CMTK 1.2.1
 ===========================
 
-This is a feature release that adds new, clean implementations of pairwise
-affine and nonrigid image registration. The new "registrationx" tool will
-eventually replace the "registration" tool, and "warpx" will replace "warp".
-
-These new tools should still be considered experimental, as they have not
-yet been tuned to achieve the same level of accuracy and robustness as the 
-old implementations. The new code is also significantly slower, but 
-potentially more accurate and it also has support for using arbitrary 
-interpolation kernels for the floating image. We will also be making changes
-to the command line arguments supported by both tools to streamline things
-and make everything more intuitive and consistent.
-
-We have also added a new tool, "convertx", to ultimately replace the old
-"convert" tool. The main improvement here is that "convertx" will perform
-all optional image operations in the exact order as they are given on the
-command line, with support for arbitrary repititions.
-
-For more information and a complete list of changes and fixes, see the 
+This is a minor bugfix release. For a complete list of changes and fixes, see
 the CHANGELOG file.
 
 CMTK has been built and tested on the following platforms:
