@@ -1,4 +1,4 @@
-Release CMTK-1.2.1:
+Release CMTK-1.2.1 (2010-02-01):
 
 - Added: "statistics" tool now optionally outputs mask-based results for all
     up to a user-provided maximum label, even if not all labels in the range
