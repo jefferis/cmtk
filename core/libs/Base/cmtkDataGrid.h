@@ -98,7 +98,7 @@ public:
   virtual ~DataGrid() {}
 
   /// Test whether this grid matches another one, i.e., has the same dimensions.
-  virtual bool GridMatches( const Self& other ) const
+  bool GridMatches( const Self& other ) const
   {
     return (this->m_Dims[0] == other.m_Dims[0]) && (this->m_Dims[1] == other.m_Dims[1]) && (this->m_Dims[2] == other.m_Dims[2]);
   }
