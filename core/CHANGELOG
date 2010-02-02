@@ -1,5 +1,7 @@
 Release CMTK-1.2.2:
 
+- Removed: further removal of obsolete PGM and DICOM I/O code.
+
 
 Release CMTK-1.2.1 (2010-02-01):
 
