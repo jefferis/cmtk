@@ -55,63 +55,6 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-void
-PGM::Write( const char* filename, const ImageInfo& imageInfo, const int anonymize ) 
-{
-  this->SetError( 0 );
-
-  int bytesperpixel = imageInfo.bytesperpixel;
-  if ( bytesperpixel > 2) 
-    {
-    this->SetErrorMsg( "PGM file format does not support more than 2 bytes per pixel." );
-    return;
-    }
-  
-  FILE *fp;
-  if ( (fp = fopen( filename, "wb" ) ) == NULL ) 
-    {
-    this->SetErrorMsg( "Could not open file." );
-    return;
-    }
-  
-  fprintf( fp, "P5\n" );
-  fprintf( fp, "# calibration %f %f\n", imageInfo.calibrationx, imageInfo.calibrationy );
-  fprintf( fp, "# tablepos %f\n", imageInfo.tablepos );
-  fprintf( fp, "%d %d %d\n", imageInfo.dims[0], imageInfo.dims[1], static_cast<int>( imageInfo.maximum ) );
-  
-  unsigned dim = imageInfo.dims[0] * imageInfo.dims[1];
-  
-  int Result = 0;
-
-  if ( bytesperpixel>1 ) 
-    {
-    unsigned char output[16]; // we shall probably not have > 16 bpp ;-)
-    
-    for ( size_t i=0; i<Size; i+=bytesperpixel ) 
-      {
-      memcpy( output, ((char*)DataPtr)+i, bytesperpixel );
-#ifdef WORDS_BIGENDIAN
-      for ( int j=0; j<bytesperpixel/2; ++j ) 
-	{
-	unsigned char d = output[bytesperpixel-1-j];
-	output[bytesperpixel-1-j] = output[j];
-	output[j] = d;
-	}
-#endif
-      Result = (1 == fwrite( output, bytesperpixel, 1, fp ));
-      }
-    } 
-  else
-    {
-    Result = (dim == fwrite( DataPtr, bytesperpixel, dim, fp ));
-    }
-  
-  fclose(fp);
-
-  if ( ! Result )
-    SetErrorMsg( "Error writing file." );
-}
-
 ScalarImage* 
 PGM::Read( const char* filename ) 
 {
@@ -198,106 +141,6 @@ PGM::Read( const char* filename )
   return image;
 }
 
-ScalarImage* 
-PGM::Read
-( const char* path, const Study* study, const int index ) const
-{
-  CompressedStream stream( path );
-  if ( ! stream.IsValid() ) 
-    {
-    StdErr.printf( "File %s could not be opened.", path );
-    return NULL;
-    }
-  
-  Types::Coordinate pixelSize[2] = { study->GetCalibration( AXIS_X ), study->GetCalibration( AXIS_Y ) };
-  Types::Coordinate sliceLocation = index * study->GetCalibration( AXIS_Z );
-  
-  int i;
-  char c, fileID[3], line[1024];
-  stream.Get(fileID[0]); 
-  stream.Get(fileID[1]);
-  stream.Get(c);
-  
-  do
-    {
-    stream.Get(line[0]);
-    if (line[0]=='#') 
-      {
-      int idx = 1;
-      c=0;
-      while (c != '\n') { stream.Get(c); line[idx++] = c; }
-      }
-    float tmpf0, tmpf1;
-    if ( sscanf( line, "# calibration %f %f", &tmpf0, &tmpf1 ) == 2 ) 
-      {
-      pixelSize[0] = tmpf0;
-      pixelSize[1] = tmpf1;
-      }
-    else
-      {
-      if ( sscanf( line, "# tablepos %f", &tmpf0 ) == 1 ) 
-	{
-	sliceLocation = tmpf0;
-	}
-      }
-    } while (line[0]=='#');
-  
-  i = 1;
-  for ( int spaces=0; spaces<3; ++i ) 
-    {
-    stream.Get(line[i]);
-    if (isspace(line[i]))
-      ++spaces;
-    }
-  line[i]=0;
-  
-  unsigned int dimsx, dimsy, maxvalue;
-  sscanf( line, "%d%d%d", &dimsx , &dimsy, &maxvalue );
-  
-  int bytesperpixel = 1;
-  while (maxvalue > 255) 
-    {
-    ++bytesperpixel;
-    maxvalue /= 256;
-    }
-  
-  int dim = dimsx * dimsy;
-  
-  TypedArray* pixelData;
-  switch ( bytesperpixel ) 
-    {
-    case 1:
-      pixelData = TypedArray::Create( TYPE_BYTE, dim );
-      break;
-    case 2:
-      pixelData = TypedArray::Create( TYPE_USHORT, dim );
-      break;
-    case 4:
-      pixelData = TypedArray::Create( TYPE_INT, dim );
-      break;
-    default:
-      return NULL;
-    }
-  stream.Read( pixelData->GetDataPtr(), bytesperpixel, dim);
-  
-  ScalarImage *image = new ScalarImage( dimsx, dimsy );
-  image->SetPixelData( TypedArray::SmartPtr( pixelData ) );
-  
-  if ( study->GetCustomCalibration() ) 
-    {
-    image->SetPixelSize( study->GetCalibration( AXIS_X ), study->GetCalibration( AXIS_Y ) );
-    
-    Types::Coordinate slicePosition = index * study->GetCalibration( AXIS_Z );
-    image->SetImageSlicePosition( slicePosition );
-    image->SetImageOrigin( Vector3D(0, 0, slicePosition ) );
-    }
-  
-  image->SetImageDirectionX( Vector3D( 1, 0, 0 ) );
-  image->SetImageDirectionY( Vector3D( 0, 1, 0 ) );
-  
-  return image;
-}
-
 void
 PGM::Write
 ( const char* filename, const ScalarImage *image, const Types::DataItem greyFrom, const Types::DataItem greyTo )
@@ -344,7 +187,7 @@ PGM::Write
 }
 
 void
-PGM::Write( const char* filename, const ScalarImage *image )
+PGM::Write16bit( const char* filename, const ScalarImage *image )
 {
   unsigned int numberOfPixels = image->GetNumberOfPixels();
   union

@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -106,7 +106,7 @@ Registration2d2d::Register
   snprintf( fname, sizeof( fname ), "fin%03d.pgm", cnt++ );
   Types::DataItem min, max;
   finalImage->GetPixelData()->GetRange( min, max );
-  PGM::Write( fname, finalImage );
+  PGM::Write16bit( fname, finalImage );
 }
 
 } // namespace cmtk

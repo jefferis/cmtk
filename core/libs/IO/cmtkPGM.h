@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -64,23 +64,13 @@ public:
    */
   static ScalarImage* Read ( const char* );
 
-  /** Read image from RAW file.
-   *@see ImageIO#Read
-   */
-  virtual ScalarImage* Read ( const char*, const Study*, const int = 0 ) const;
-
-  /** Write image to PGM file.
-   *@see ImageIO#Write
-   */
-  virtual void Write ( const char*, const ImageInfo&, const int = 0 );
-
   /** Write scalar image to PGM file.
    */
   static void Write( const char* filename, const ScalarImage *image, const Types::DataItem greyFrom, const Types::DataItem greyTo );
 
   /** Write scalar image to 16bit PGM file.
    */
-  static void Write( const char* filename, const ScalarImage *image );
+  static void Write16bit( const char* filename, const ScalarImage *image );
 };
 
 //@}

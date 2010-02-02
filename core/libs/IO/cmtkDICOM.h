@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -61,20 +61,10 @@ public:
     return IMAGEFORMAT_DIMS | IMAGEFORMAT_STRUCTURE | IMAGEFORMAT_CALIBRATION;
   }
 
-  /** Read image and DICOM tags from DICOM file.
-   *@see ImageIO#Read
-   */
-  virtual void Read ( const char*, ImageInfo&, const int = 0 );
-
   /** Read ScalarImage from DICOM file.
    *@see ImageIO#Read
    */
   virtual ScalarImage* Read( const char *path, const Study* study = NULL, const int index = 0 ) const;
-
-  /** Write image from DICOM stream using OFFIS library.
-   *@see ImageIO#Write
-   */
-  virtual void Write ( const char*, const ImageInfo&, const int anonymized = 0 );
 };
 
 //@}

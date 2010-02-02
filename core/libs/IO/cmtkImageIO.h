@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -144,16 +144,14 @@ public:
    * array pointed to by "dataPtr". It defaults to 1, thus if it is omitted
    * the parameter "size" gives the exact size in bytes.
    */
-  void SetDataPtr( void *const dataPtr, const size_t size, 
-		   const size_t itemSize = 1 );
+  void SetDataPtr( void *const dataPtr, const size_t size, const size_t itemSize = 1 );
 
   /** Link data pointer to externally controlled image.
    * This function works in a similar way as 'SetDataPtr()' does. However, 
    * using 'LinkDataPtr()' the control over the memory holding the image data
    * remains with the caller. Thus, it will not be freed by this object.
    */
-  void LinkDataPtr( void *const dataPtr, const size_t size, 
-		    const size_t itemSize = 1 );
+  void LinkDataPtr( void *const dataPtr, const size_t size, const size_t itemSize = 1 );
 
   /** Get the size of the allocated image data.
    *@param itemSize This parameter, defaulting to 1, gives the number of bytes
