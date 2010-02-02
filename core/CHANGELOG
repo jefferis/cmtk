@@ -1,5 +1,6 @@
 Release CMTK-1.2.2:
 
+- Testing: added tests for "mat2dof" tool.
 - Fixed: "mip" tool did not compute projection images with proper pixel sizes
     based on the input volume.
 - Testing: added tests for "mip" tool.

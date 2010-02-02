@@ -253,6 +253,10 @@ IF(NOT CMTK_USE_MPI)
   ENDIF(CMTK_BUILD_NRRD)
 
   # ==========================================
+  # Tests for "mat2dof" tool
+  SET(testList ${testList} mat2dof1 mat2dof2)
+
+  # ==========================================
   # Multi-channel registration requires hash map to build
   IF(HAVE_STL_HASH_MAP)
     # ==========================================

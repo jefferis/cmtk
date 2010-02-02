@@ -1,0 +1,13 @@
+! TYPEDSTREAM 1.1
+
+registration {
+	reference_study "reference"
+	floating_study "floating"
+	affine_xform {
+		xlate 6.829083737 -5.02958 49.4534029 
+		rotate -2.096051693 1.574916124 1.932102919 
+		scale 0.9999973656 0.9999999158 0.9999966443 
+		shear -1.800212242e-08 -1.812693703e-08 -9.802742138e-09 
+		center -28 -48 -28 
+	}
+}
