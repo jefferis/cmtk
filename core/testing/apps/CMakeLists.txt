@@ -195,7 +195,8 @@ IF(NOT CMTK_USE_MPI)
   SET(testList ${testList} 
     filterGaussian
     filterGaussianSmallKernel
-    filterGaussianNoFilter)
+    filterGaussianNoFilter
+    filterRohlfing)
 
   # ==========================================
   # Tests for "film" tool

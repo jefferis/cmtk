@@ -1,5 +1,7 @@
 Release CMTK-1.2.2:
 
+- Testing: added test for "Rohlfing" single-image intensity-consistent
+    filtering in "filter" tool.
 - Removed: further removal of obsolete PGM and DICOM I/O code.
 
 
