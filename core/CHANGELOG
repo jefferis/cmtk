@@ -1,5 +1,10 @@
 Release CMTK-1.2.2:
 
+- Fixed: "mip" tool did not compute projection images with proper pixel sizes
+    based on the input volume.
+- Testing: added tests for "mip" tool.
+- Improved: "mip" tool now sets black and white points automatically if not
+    provided by the user.
 - Testing: added test for "Rohlfing" single-image intensity-consistent
     filtering in "filter" tool.
 - Removed: further removal of obsolete PGM and DICOM I/O code.

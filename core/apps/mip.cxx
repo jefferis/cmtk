@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -44,8 +44,8 @@
 
 bool Verbose = false;
 
-int Black = -1;
-int White = -1;
+double Black = CMTK_DOUBLE_NAN;
+double White = CMTK_DOUBLE_NAN;
 
 int Axis = 2;
 
@@ -102,17 +102,26 @@ int main ( const int argc, const char* argv[] )
     return 1;
     }
   
-  cmtk::Volume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( InFileName, Verbose ) );
+  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( InFileName, Verbose ) );
   
-  if ( Absolute ) volume->GetData()->MakeAbsolute();
-
+  if ( Absolute ) 
+    volume->GetData()->MakeAbsolute();
+  
   cmtk::ScalarImage::SmartPtr mip;
   if ( SumProjection )
     mip = cmtk::ScalarImage::SmartPtr( volume->ComputeProjection< cmtk::Accumulators::Avg<cmtk::Types::DataItem> >( Axis ) );
   else
     mip = cmtk::ScalarImage::SmartPtr( volume->ComputeProjection< cmtk::Accumulators::Max<cmtk::Types::DataItem> >( Axis ) );
-  if ( AdjustAspect ) mip->AdjustAspect();
+  if ( AdjustAspect ) 
+    mip->AdjustAspect();
   
+  cmtk::Types::DataItem min, max;
+  mip->GetPixelData()->GetRange( min, max );
+  if ( isnan( Black ) )
+    Black = min;
+  if ( isnan( White ) )
+    White = max;
+
   cmtk::PGM::Write( OutFileName, mip, Black, White );
   
   return 0;
