@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -56,7 +56,7 @@ cmtk
 //@{
 
 ScalarImage* 
-PGM::Read( const char* filename ) 
+PGM::ReadPGM( const char* filename ) 
 {
   CompressedStream stream(filename);
   if ( ! stream.IsValid() ) 

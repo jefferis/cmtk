@@ -34,10 +34,6 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkImageIO.h>
-
-#include <cmtkImageInfo.h>
-
 #include <cmtkStudy.h>
 #include <cmtkScalarImage.h>
 
@@ -50,21 +46,12 @@ cmtk
 
 /** Reader/writer class for DICOM images.
  */
-class DICOM : 
-  /// Inherit image IO interface.
-  public ImageIO 
+class DICOM
 {
 public:
-  /// Return flags indicating which information is natively.
-  virtual byte GetFormatCapabilities() const 
-  { 
-    return IMAGEFORMAT_DIMS | IMAGEFORMAT_STRUCTURE | IMAGEFORMAT_CALIBRATION;
-  }
-
   /** Read ScalarImage from DICOM file.
-   *@see ImageIO#Read
    */
-  virtual ScalarImage* Read( const char *path, const Study* study = NULL, const int index = 0 ) const;
+  static ScalarImage* Read( const char *path, const Study* study = NULL, const int index = 0 );
 };
 
 //@}

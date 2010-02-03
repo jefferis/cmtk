@@ -1,5 +1,8 @@
 Release CMTK-1.2.2:
 
+- Removed: obsolete "ImageIO" class was removed; the only two remaining former
+    derived classes, cmtk::PGM and cmtk::DICOM, will now be used directly, as
+    they only have static member functions left.
 - Fixed: initialize memory for Analyze header with zeroes in "mk_analyze_hdr"
     tool.
 - Testing: added tests for "mk_analyze_hdr" tool.

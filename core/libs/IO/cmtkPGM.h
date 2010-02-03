@@ -34,8 +34,6 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkImageIO.h>
-
 #include <cmtkImageInfo.h>
 
 #include <cmtkScalarImage.h>
@@ -49,20 +47,12 @@ cmtk
 
 /** Reader/writer class for PGM (portable graymap) files.
  */
-class PGM : 
-  /// Inherit interface for image IO.
-  public ImageIO 
+class PGM
 {
 public:
-  /// Return flags indicating which information is natively.
-  virtual byte GetFormatCapabilities() const 
-  {
-    return IMAGEFORMAT_DIMS | IMAGEFORMAT_STRUCTURE;
-  }
-  
   /** Read image from PGM file directly.
    */
-  static ScalarImage* Read ( const char* );
+  static ScalarImage* ReadPGM( const char* );
 
   /** Write scalar image to PGM file.
    */

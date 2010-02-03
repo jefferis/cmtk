@@ -67,7 +67,7 @@ cmtk
 
 ScalarImage* 
 DICOM::Read 
-( const char *path, const Study* study, const int index ) const
+( const char *path, const Study* study, const int index )
 {
   ScalarImage* image = NULL;
 

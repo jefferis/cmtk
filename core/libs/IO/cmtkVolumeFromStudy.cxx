@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,7 +31,6 @@
 
 #include <cmtkVolumeFromStudy.h>
 
-#include <cmtkImageIO.h>
 #include <cmtkMountPoints.h>
 #include <cmtkCompressedStream.h>
 
@@ -40,6 +39,7 @@
 #include <cmtkLandmarkList.h>
 #include <cmtkUniformVolume.h>
 #include <cmtkVolumeFromFile.h>
+#include <cmtkDICOM.h>
 
 #include <cmtkProgress.h>
 #include <cmtkConsole.h>
@@ -91,8 +91,6 @@ VolumeFromStudy::AssembleVolume( const StudyImageSet* study, const bool verbose 
     if ( verbose )
       fprintf( stderr, "\rReading images from path %s ...\n", MountPoints::Translate( study->GetImageDirectory() ) );
     
-    std::auto_ptr<ImageIO> imageIO( ImageIO::Create( study->GetImageFormat() ) );
-    
     Progress::Begin( 0, study->size(), 1, "Volume image assembly" );
     
     unsigned int nextPlane = 0;
@@ -105,7 +103,7 @@ VolumeFromStudy::AssembleVolume( const StudyImageSet* study, const bool verbose 
       char fullpath[PATH_MAX];
       snprintf( fullpath, sizeof( fullpath ), "%s/%s", MountPoints::Translate( study->GetImageDirectory() ), it->c_str() );
       
-      ScalarImage::SmartPtr image = ScalarImage::SmartPtr( imageIO->Read( fullpath, study, nextPlane ) );
+      ScalarImage::SmartPtr image = ScalarImage::SmartPtr( DICOM::Read( fullpath, study, nextPlane ) );
 
       // TODO: when returning NULL here, we also should tell
       // VolumeFromSlices that we give up, so it can free its

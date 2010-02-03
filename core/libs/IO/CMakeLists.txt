@@ -42,7 +42,6 @@ SET(cmtkIO_SRCS
   cmtkFileFormat.cxx
   cmtkGroupwiseRegistrationFunctionalIO.cxx
   cmtkImageInfo.cxx
-  cmtkImageIO.cxx
   cmtkMountPoints.cxx
   cmtkPGM.cxx
   cmtkResourceFile.cxx

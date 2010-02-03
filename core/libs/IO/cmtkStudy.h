@@ -83,9 +83,6 @@ class Study
   /// Textual description of study file type.
   cmtkGetSetMacroString(Description);
 
-  /// File format ID.
-  cmtkGetSetMacro(FileFormatID,ImageFormat);
-
   /// Textual description of study file type.
   cmtkGetSetMacroString(Modality);
 
