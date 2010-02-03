@@ -280,8 +280,20 @@ IF(NOT CMTK_USE_MPI)
     mipSum)
 
   # ==========================================
+  # Tests for "mk_analyze_hdr" tool
+  SET(testList ${testList} 
+    mk_analyze_hdrDefault
+    mk_analyze_hdrImport
+    mk_analyze_hdrLittleEndian
+    mk_analyze_hdrBigEndian)
+
+  # ==========================================
   # Tests for "mk_phantom_3d" tool
-  SET(testList ${testList} mk_phantom_3dBox mk_phantom_3dSphere mk_phantom_3dBoxSphere mk_phantom_3dImport)
+  SET(testList ${testList} 
+    mk_phantom_3dBox 
+    mk_phantom_3dSphere
+    mk_phantom_3dBoxSphere 
+    mk_phantom_3dImport)
 
   # ==========================================
   # Tests for "model" tool

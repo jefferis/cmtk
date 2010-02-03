@@ -759,6 +759,26 @@ case ${RUNTEST} in
         run mip --sum --coronal spgr_3t.hdr ${tmpdir}/coronal.pgm
 	check_results axial.pgm sagittal.pgm coronal.pgm
 	;;
+    mk_analyze_hdrDefault)
+        run mk_analyze_hdr ${tmpdir}/analyze.hdr
+	run_eval "${BINDIR}/describe -m ${tmpdir}/analyze.hdr | fgrep --invert-match FNAME > ${tmpdir}/analyze.txt"
+	check_results analyze.hdr analyze.txt
+	;;
+    mk_analyze_hdrImport)
+        run mk_analyze_hdr --import spgr_3t.hdr ${tmpdir}/analyze.hdr
+	run_eval "${BINDIR}/describe -m ${tmpdir}/analyze.hdr | fgrep --invert-match FNAME > ${tmpdir}/analyze.txt"
+	check_results analyze.hdr analyze.txt
+	;;
+    mk_analyze_hdrLittleEndian)
+        run mk_analyze_hdr --description LittleEndian --little-endian --float --dims 100,200,300 --voxel 0.3,0.2,0.1 --offset 1024 ${tmpdir}/analyze.hdr
+	run_eval "${BINDIR}/describe -m ${tmpdir}/analyze.hdr | fgrep --invert-match FNAME > ${tmpdir}/analyze.txt"
+	check_results analyze.hdr analyze.txt
+	;;
+    mk_analyze_hdrBigEndian)
+        run mk_analyze_hdr --description BigEndian  --big-endian --ushort --dims 100,200,300 --voxel 0.3,0.2,0.1 --offset 1024 ${tmpdir}/analyze.hdr
+	run_eval "${BINDIR}/describe -m ${tmpdir}/analyze.hdr | fgrep --invert-match FNAME > ${tmpdir}/analyze.txt"
+	check_results analyze.hdr analyze.txt
+	;;
     mk_phantom_3dBox)
 	run mk_phantom_3d -o ${tmpdir}/phantom.nii --dims 10,10,10 --voxel 1,1,1 box 2,2,2 5,5,5 10
 	check_results phantom.nii
