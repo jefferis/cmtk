@@ -68,7 +68,7 @@ testScalarImageSimilarity()
   
   success += testScalarImageSimilarityCheck( "GetMutualInformation", cmtk::ScalarImageSimilarity::GetMutualInformation( img0, img1 ), 1.55075 );
   success += testScalarImageSimilarityCheck( "GetNormalizedMutualInformation", cmtk::ScalarImageSimilarity::GetNormalizedMutualInformation( img0, img1 ), 1.29928 );
-  success += testScalarImageSimilarityCheck( "GetRegionalMutualInformation", cmtk::ScalarImageSimilarity::GetRegionalMutualInformation( img0, img1 ), 0 );
+  success += testScalarImageSimilarityCheck( "GetRegionalMutualInformation", cmtk::ScalarImageSimilarity::GetRegionalMutualInformation( img0, img1 ), 16.8189 );
   success += testScalarImageSimilarityCheck( "GetMeanSquaredDifference", cmtk::ScalarImageSimilarity::GetMeanSquaredDifference( img0, img1 ), -9545.03 );
   success += testScalarImageSimilarityCheck( "GetCrossCorrelation", cmtk::ScalarImageSimilarity::GetCrossCorrelation( img0, img1 ), 0.964253 );
   success += testScalarImageSimilarityCheck( "GetGradientCorrelation", cmtk::ScalarImageSimilarity::GetGradientCorrelation( img0, img1 ), 1.8643 );
