@@ -132,6 +132,8 @@ int main( const int argc, const char* argv[] )
     }
   
   char buffer[348];
+  memset( buffer, 0, sizeof( buffer ) );
+
   if ( ImportHdrFile )
     {
     FILE *hdrIn = fopen( ImportHdrFile, "r" );
