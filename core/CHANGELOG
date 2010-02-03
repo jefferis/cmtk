@@ -1,5 +1,7 @@
 Release CMTK-1.2.2:
 
+- Testing: added tests for cmtk::ScalarImageSimilarity class (and, by
+    extension, cmtk::TypedArraySimilarity as well).
 - Removed: obsolete "ImageIO" class was removed; the only two remaining former
     derived classes, cmtk::PGM and cmtk::DICOM, will now be used directly, as
     they only have static member functions left.

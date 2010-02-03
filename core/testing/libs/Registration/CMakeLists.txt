@@ -1,6 +1,6 @@
 ##
+##  Copyright 2004-2010 SRI International
 ##  Copyright 1997-2009 Torsten Rohlfing
-##  Copyright 2004-2009 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -20,19 +20,28 @@
 ##  with the Computational Morphometry Toolkit.  If not, see
 ##  <http://www.gnu.org/licenses/>.
 ##
-##  $Revision$
+##  $Revision: 1190 $
 ##
-##  $LastChangedDate$
+##  $LastChangedDate: 2010-01-26 10:02:55 -0800 (Tue, 26 Jan 2010) $
 ##
-##  $LastChangedBy$
+##  $LastChangedBy: torsten_at_home $
 ##
 
 # ==========================================
-# Delegate testing to separate subdirs for each library
+# Setup binary test drivers
 
-SET(CMTK_DATADIR @CMTK_DATA_ROOT@/testing/inputs)
-ADD_DEFINITIONS(-DCMTK_DATADIR=\\\"${CMTK_DATADIR}\\\")
+SET(CMTK_LIBRARIES "cmtkRegistration;cmtkIO;cmtkBase;cmtkNumerics;cmtkSystem")
+SET(DRIVERS libRegistrationTests)
 
-SUBDIRS(System)
-SUBDIRS(Registration)
-SUBDIRS(Base)
+FOREACH(D ${DRIVERS})
+  ADD_EXECUTABLE(${D} ${D}.cxx)
+  TARGET_LINK_LIBRARIES(${D} ${CMTK_LIBRARIES} ${CMTK_SYSTEM_LIBRARIES})
+ENDFOREACH(D ${DRIVERS})
+
+# ==========================================
+# Tests for "cmtk::ScalarImageSimilarity" class
+SET(Tests ${Tests} ScalarImageSimilarity)
+
+FOREACH(T ${Tests})
+  ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libRegistrationTests ${T})
+ENDFOREACH(T Tests)
