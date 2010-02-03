@@ -36,7 +36,7 @@
 #include <iostream>
 
 // Check ScalarImageSimilarity result against baseline.
-bool
+int
 testScalarImageSimilarityCheck( const char* name, const cmtk::Types::DataItem result, const cmtk::Types::DataItem baseline )
 {
   const cmtk::Types::DataItem tolerance = 1e-4;
@@ -45,9 +45,9 @@ testScalarImageSimilarityCheck( const char* name, const cmtk::Types::DataItem re
   if ( !finite( result ) || (error > tolerance) )
     {
     std::cerr << name << " returned " << result << ", which exceeds tolerance for baseline " << baseline << std::endl;
-    return false;
+    return 0;
     }
-  return true;
+  return 1;
 }
 
 // test "ScalarImageSimilarity" class
@@ -64,18 +64,18 @@ testScalarImageSimilarity()
   cmtk::ScalarImage::SmartPtr img0( testVolume->GetOrthoSlice( 2, 34 ) );
   cmtk::ScalarImage::SmartPtr img1( testVolume->GetOrthoSlice( 2, 35 ) );
 
-  bool success = true;
+  int success = 0;
   
-  success = success && testScalarImageSimilarityCheck( "GetMutualInformation", cmtk::ScalarImageSimilarity::GetMutualInformation( img0, img1 ), 1.55075 );
-  success = success && testScalarImageSimilarityCheck( "GetNormalizedMutualInformation", cmtk::ScalarImageSimilarity::GetNormalizedMutualInformation( img0, img1 ), 1.29928 );
-  success = success && testScalarImageSimilarityCheck( "GetRegionalMutualInformation", cmtk::ScalarImageSimilarity::GetRegionalMutualInformation( img0, img1 ), 0 );
-  success = success && testScalarImageSimilarityCheck( "GetMeanSquaredDifference", cmtk::ScalarImageSimilarity::GetMeanSquaredDifference( img0, img1 ), -9545.03 );
-  success = success && testScalarImageSimilarityCheck( "GetCrossCorrelation", cmtk::ScalarImageSimilarity::GetCrossCorrelation( img0, img1 ), 0.964253 );
-  success = success && testScalarImageSimilarityCheck( "GetGradientCorrelation", cmtk::ScalarImageSimilarity::GetGradientCorrelation( img0, img1 ), 1.8643 );
-  success = success && testScalarImageSimilarityCheck( "GetGradientDifference", cmtk::ScalarImageSimilarity::GetGradientDifference( img0, img1 ), 22768.8 );
-  success = success && testScalarImageSimilarityCheck( "GetPatternIntensity", cmtk::ScalarImageSimilarity::GetPatternIntensity( img0, img1 ), 98150.8 );
-  success = success && testScalarImageSimilarityCheck( "GetDifferenceImageEntropy", cmtk::ScalarImageSimilarity::GetDifferenceImageEntropy( img0, img1 ), 2.89753 );
-  success = success && testScalarImageSimilarityCheck( "GetCorrelationRatio", cmtk::ScalarImageSimilarity::GetCorrelationRatio( img0, img1 ), 0.933251 );
+  success += testScalarImageSimilarityCheck( "GetMutualInformation", cmtk::ScalarImageSimilarity::GetMutualInformation( img0, img1 ), 1.55075 );
+  success += testScalarImageSimilarityCheck( "GetNormalizedMutualInformation", cmtk::ScalarImageSimilarity::GetNormalizedMutualInformation( img0, img1 ), 1.29928 );
+  success += testScalarImageSimilarityCheck( "GetRegionalMutualInformation", cmtk::ScalarImageSimilarity::GetRegionalMutualInformation( img0, img1 ), 0 );
+  success += testScalarImageSimilarityCheck( "GetMeanSquaredDifference", cmtk::ScalarImageSimilarity::GetMeanSquaredDifference( img0, img1 ), -9545.03 );
+  success += testScalarImageSimilarityCheck( "GetCrossCorrelation", cmtk::ScalarImageSimilarity::GetCrossCorrelation( img0, img1 ), 0.964253 );
+  success += testScalarImageSimilarityCheck( "GetGradientCorrelation", cmtk::ScalarImageSimilarity::GetGradientCorrelation( img0, img1 ), 1.8643 );
+  success += testScalarImageSimilarityCheck( "GetGradientDifference", cmtk::ScalarImageSimilarity::GetGradientDifference( img0, img1 ), 22768.8 );
+  success += testScalarImageSimilarityCheck( "GetPatternIntensity", cmtk::ScalarImageSimilarity::GetPatternIntensity( img0, img1 ), 98150.8 );
+  success += testScalarImageSimilarityCheck( "GetDifferenceImageEntropy", cmtk::ScalarImageSimilarity::GetDifferenceImageEntropy( img0, img1 ), 2.89753 );
+  success += testScalarImageSimilarityCheck( "GetCorrelationRatio", cmtk::ScalarImageSimilarity::GetCorrelationRatio( img0, img1 ), 0.933251 );
 
-  return success ? 0 : 1;
+  return (success == 10) ? 0 : 1;
 }
