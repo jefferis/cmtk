@@ -33,6 +33,11 @@
 #include <cmtkVolumeIO.h>
 
 #include <math.h>
+
+#ifdef HAVE_IEEEFP_H
+#  include <ieeefp.h>
+#endif
+
 #include <iostream>
 
 // Check ScalarImageSimilarity result against baseline.
