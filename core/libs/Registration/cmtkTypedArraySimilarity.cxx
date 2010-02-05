@@ -232,7 +232,7 @@ TypedArraySimilarity::GetPeakSignalToNoiseRatio
 {
   Types::DataItem minSignal, maxSignal;
   signal->GetRange( minSignal, maxSignal );
-  return -10.0 * log( GetMeanSquaredDifference( data, signal ) / (maxSignal-minSignal) ) / log( 10.0 );
+  return -10.0 * log( -GetMeanSquaredDifference( data, signal ) / (maxSignal-minSignal) ) / log( 10.0 );
 }
 
 TypedArraySimilarity::ReturnType 
