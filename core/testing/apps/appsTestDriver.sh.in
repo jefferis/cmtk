@@ -593,6 +593,10 @@ case ${RUNTEST} in
 	run imagemath --in parc1.hdr --scalar-xor 1 --out ${tmpdir}/xor.hdr
 	check_results xor.img
 	;;
+    imagemathAnd)
+        run imagemath --in parc1.hdr --scalar-and 1 --out ${tmpdir}/and.hdr
+	check_results and.img
+	;;
     imagemathContractLabels)
 	run imagemath --in parc1.hdr parc2.hdr parc3.hdr --contract-labels --out ${tmpdir}/contract.hdr
 	check_results contract.img

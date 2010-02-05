@@ -422,6 +422,38 @@ CallbackScalarXor( const long int c )
 }
 
 void
+CallbackScalarAnd( const long int c )
+{
+  if ( ! CheckStackOneImage( "ScalarAnd" ) )
+    return;
+  
+  cmtk::UniformVolume::SmartPtr p = ImageStack.top();
+  ImageStack.pop();
+
+  const size_t numberOfPixels = p->GetNumberOfPixels();
+
+  cmtk::TypedArray::SmartPtr out( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+  
+#pragma omp parallel for
+  for ( size_t i = 0; i < numberOfPixels; ++i )
+    {
+    cmtk::Types::DataItem pv;
+    if ( p->GetDataAt( pv, i ) )
+      {
+      const long int iv = static_cast<long int>( pv );
+      out->Set( iv & c, i );
+      }
+    else
+      {
+      out->SetPaddingAt( i );
+      }
+    }
+  
+  p->SetData( out );
+  ImageStack.push( p );
+}
+
+void
 CallbackOneOver()
 {
   if ( ! CheckStackOneImage( "OneOver" ) )
@@ -1066,6 +1098,7 @@ main( int argc, char *argv[] )
     cl.AddCallback( Key( "scalar-mul" ), CallbackScalarMul, "Multiply top image with a scalar value" );
     cl.AddCallback( Key( "scalar-add" ), CallbackScalarAdd, "Add a scalar to each pixel of the top image" );
     cl.AddCallback( Key( "scalar-xor" ), CallbackScalarXor, "Bitwise exclusive-or between top level and given scalar value" );
+    cl.AddCallback( Key( "scalar-and" ), CallbackScalarAnd, "Bitwise and operation between top level and given scalar value" );
 
     cl.AddCallback( Key( "threshold-below" ), CallbackThreshBelow, "Set values below given threshold to threshold." );
     cl.AddCallback( Key( "threshold-above" ), CallbackThreshAbove, "Set values above given threshold to threshold." );

@@ -1,5 +1,6 @@
 Release CMTK-1.2.2:
 
+- Added: bitwise "and" operation in "imagemath" tool. Added test for this.
 - Testing: added tests for cmtk::TypedArraySimilarity class.
 - Fixed: TypedArraySimilarity::GetPeakSignalToNoiseRatio was broken due to
     negated GetMeanSquaredDifference return value.
