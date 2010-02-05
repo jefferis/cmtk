@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -68,7 +68,7 @@ ScalarImageSimilarity::GetNormalizedMutualInformation
 }
 
 ScalarImageSimilarity::ReturnType 
-ScalarImageSimilarity::GetMeanSquaredDifference
+ScalarImageSimilarity::GetMinusMeanSquaredDifference
 ( const ScalarImage* image0, const ScalarImage* image1 )
 {
   if ( ! CheckImageDimensions( image0, image1 ) ) return CMTK_FLOAT_NAN;
@@ -76,7 +76,7 @@ ScalarImageSimilarity::GetMeanSquaredDifference
   const TypedArray *data0 = image0->GetPixelData();
   const TypedArray *data1 = image1->GetPixelData();
 
-  return TypedArraySimilarity::GetMeanSquaredDifference( data0, data1 );
+  return TypedArraySimilarity::GetMinusMeanSquaredDifference( data0, data1 );
 }
 
 ScalarImageSimilarity::ReturnType 

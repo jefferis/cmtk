@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -252,7 +252,7 @@ FunctionalAffine2D::GetSimilarity
     case ScalarImageSimilarity::CC :
       return ScalarImageSimilarity::GetCrossCorrelation( img0, img1 );
     case ScalarImageSimilarity::MSD :
-      return ScalarImageSimilarity::GetMeanSquaredDifference( img0, img1 );
+      return ScalarImageSimilarity::GetMinusMeanSquaredDifference( img0, img1 );
     case ScalarImageSimilarity::DAE :
       return ScalarImageSimilarity::GetDifferenceImageEntropy( img0, img1 );
     case ScalarImageSimilarity::GradientCorrelation :

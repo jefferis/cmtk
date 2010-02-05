@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -94,8 +94,8 @@ public:
   /// Compute normalized mutual information between two pixel arrays.
   static ReturnType GetNormalizedMutualInformation( const TypedArray* array0, const TypedArray* array1, TypedArraySimilarityMemory *const memory = NULL );
 
-  /// Compute mean squared pixel difference between two pixel arrays.
-  static ReturnType GetMeanSquaredDifference( const TypedArray* array0, const TypedArray* array1 );
+  /// Compute negated (i.e., sign-switched) mean squared pixel difference between two pixel arrays.
+  static ReturnType GetMinusMeanSquaredDifference( const TypedArray* array0, const TypedArray* array1 );
 
   /** Compute Peak-Signal-to-Noise-Ratio.
    *\param data Measured data.

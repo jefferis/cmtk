@@ -32,6 +32,7 @@
 #include <cstring>
 
 #include "cmtkScalarImageSimilarityTests.txx"
+#include "cmtkTypedArraySimilarityTests.txx"
 
 /** Set up table of test names and function pointers */
 typedef int (*testFuncPtr)();
@@ -46,6 +47,7 @@ struct __testNameAndFunctionPointer
 const testNameAndFunctionPointer testTable[] =
 {
   { "ScalarImageSimilarity",               &testScalarImageSimilarity },
+  { "TypedArraySimilarity",                &testTypedArraySimilarity },
   { NULL, NULL }
 };
 

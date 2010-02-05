@@ -201,7 +201,7 @@ TypedArraySimilarity::GetNormalizedMutualInformation
 }
 
 TypedArraySimilarity::ReturnType 
-TypedArraySimilarity::GetMeanSquaredDifference
+TypedArraySimilarity::GetMinusMeanSquaredDifference
 ( const TypedArray* array0, const TypedArray* array1 )
 {
   if ( ! CheckArrayDimensions( array0, array1 ) ) return CMTK_FLOAT_NAN;
@@ -232,7 +232,7 @@ TypedArraySimilarity::GetPeakSignalToNoiseRatio
 {
   Types::DataItem minSignal, maxSignal;
   signal->GetRange( minSignal, maxSignal );
-  return -10.0 * log( -GetMeanSquaredDifference( data, signal ) / (maxSignal-minSignal) ) / log( 10.0 );
+  return -10.0 * log( -GetMinusMeanSquaredDifference( data, signal ) / (maxSignal-minSignal) ) / log( 10.0 );
 }
 
 TypedArraySimilarity::ReturnType 

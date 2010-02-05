@@ -42,6 +42,10 @@ ENDFOREACH(D ${DRIVERS})
 # Tests for "cmtk::ScalarImageSimilarity" class
 SET(Tests ${Tests} ScalarImageSimilarity)
 
+# ==========================================
+# Tests for "cmtk::TypedArraySimilarity" class
+SET(Tests ${Tests} TypedArraySimilarity)
+
 FOREACH(T ${Tests})
   ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libRegistrationTests ${T})
 ENDFOREACH(T Tests)

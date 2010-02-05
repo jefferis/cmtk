@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -130,9 +130,9 @@ public:
    */
   static ReturnType GetRegionalMutualInformation( const ScalarImage* image0, const ScalarImage* image1, const int radius = 2 );
 
-  /** Compute mean squared pixel difference between two images.
+  /** Compute negated (i.e., sign-switched) mean squared pixel difference between two images.
    */
-  static ReturnType GetMeanSquaredDifference( const ScalarImage* image0, const ScalarImage* image1 );
+  static ReturnType GetMinusMeanSquaredDifference( const ScalarImage* image0, const ScalarImage* image1 );
 
   /** Compute normalized cross correlation between two images.
    * See Penney et al. III-A.

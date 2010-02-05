@@ -1,5 +1,8 @@
 Release CMTK-1.2.2:
 
+- Testing: added tests for cmtk::TypedArraySimilarity class.
+- Fixed: TypedArraySimilarity::GetPeakSignalToNoiseRatio was broken due to
+    negated GetMeanSquaredDifference return value.
 - Testing: added tests for cmtk::ScalarImageSimilarity class (and, by
     extension, cmtk::TypedArraySimilarity as well).
 - Removed: obsolete "ImageIO" class was removed; the only two remaining former
