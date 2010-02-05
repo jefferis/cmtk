@@ -47,6 +47,7 @@ struct __testNameAndFunctionPointer
 const testNameAndFunctionPointer testTable[] =
 {
   { "ScalarImageSimilarity",               &testScalarImageSimilarity },
+  { "ScalarImageSimilarityMemory",         &testScalarImageSimilarityMemory },
   { "TypedArraySimilarity",                &testTypedArraySimilarity },
   { NULL, NULL }
 };

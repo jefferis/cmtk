@@ -84,3 +84,32 @@ testScalarImageSimilarity()
 
   return (success == 10) ? 0 : 1;
 }
+
+// test "ScalarImageSimilarityMemory" class
+int
+testScalarImageSimilarityMemory()
+{
+  cmtk::UniformVolume::SmartPtr testVolume( cmtk::VolumeIO::Read( CMTK_DATADIR "/spgr_3t.hdr" ) );
+  if ( ! testVolume )
+    {
+    std::cerr << "SETUP ERROR: could not read test image 'spgr_3t.hdr'" << std::endl;
+    return 1;
+    }
+
+  cmtk::ScalarImage::SmartPtr img0( testVolume->GetOrthoSlice( 2, 34 ) );
+  cmtk::ScalarImage::SmartPtr img1( testVolume->GetOrthoSlice( 2, 35 ) );
+  cmtk::ScalarImage::SmartPtr img2( testVolume->GetOrthoSlice( 2, 36 ) );
+  
+  int success = 0;
+
+  cmtk::ScalarImageSimilarityMemory memory;
+  success += testScalarImageSimilarityCheck( "GetMutualInformation#1", cmtk::ScalarImageSimilarity::GetMutualInformation( img0, img1, &memory ), 1.55075 );
+  success += testScalarImageSimilarityCheck( "GetMutualInformation#2", cmtk::ScalarImageSimilarity::GetMutualInformation( img0, img1, &memory ), 1.55075 );
+  success += testScalarImageSimilarityCheck( "GetMutualInformation#3", cmtk::ScalarImageSimilarity::GetMutualInformation( img1, img2, &memory ), 1.55387 );
+
+  success += testScalarImageSimilarityCheck( "GetNormalizedMutualInformation#1", cmtk::ScalarImageSimilarity::GetNormalizedMutualInformation( img0, img1, &memory ), 1.29928 );
+  success += testScalarImageSimilarityCheck( "GetNormalizedMutualInformation#2", cmtk::ScalarImageSimilarity::GetNormalizedMutualInformation( img0, img1, &memory ), 1.29928 );
+  success += testScalarImageSimilarityCheck( "GetNormalizedMutualInformation#3", cmtk::ScalarImageSimilarity::GetNormalizedMutualInformation( img1, img2, &memory ), 1.30066 );
+
+  return (success == 6) ? 0 : 1;
+}

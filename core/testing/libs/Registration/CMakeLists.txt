@@ -40,7 +40,9 @@ ENDFOREACH(D ${DRIVERS})
 
 # ==========================================
 # Tests for "cmtk::ScalarImageSimilarity" class
-SET(Tests ${Tests} ScalarImageSimilarity)
+SET(Tests ${Tests}
+  ScalarImageSimilarity
+  ScalarImageSimilarityMemory)
 
 # ==========================================
 # Tests for "cmtk::TypedArraySimilarity" class
