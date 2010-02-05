@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -232,7 +232,7 @@ TypedArraySimilarity::GetPeakSignalToNoiseRatio
 {
   Types::DataItem minSignal, maxSignal;
   signal->GetRange( minSignal, maxSignal );
-  return -10.0 * log( GetMeanSquaredDifference( data, signal ) / maxSignal ) / log( 10.0 );
+  return -10.0 * log( GetMeanSquaredDifference( data, signal ) / (maxSignal-minSignal) ) / log( 10.0 );
 }
 
 TypedArraySimilarity::ReturnType 
