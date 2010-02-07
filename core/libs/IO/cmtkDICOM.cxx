@@ -305,8 +305,6 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-void DICOM::Read ( const char*, ImageInfo&, const int ) {}
-
 ScalarImage* 
 DICOM::Read( const char*, const Study*, const int ) const
 { return NULL; }
