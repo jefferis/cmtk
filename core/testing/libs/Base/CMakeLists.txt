@@ -43,6 +43,10 @@ ENDFOREACH(D ${DRIVERS})
 SET(Tests ${Tests} DataGridMatches)
 
 # ==========================================
+# Tests for "cmtk::ScalarImage" class
+SET(Tests ${Tests} ScalarImage)
+
+# ==========================================
 # Tests for "cmtk::SplineWarpXform" class
 SET(Tests ${Tests} SplineWarpXform SplineWarpXformInverse)
 
