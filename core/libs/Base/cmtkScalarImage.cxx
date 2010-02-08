@@ -70,29 +70,29 @@ ScalarImage::ScalarImage
 }
 
 ScalarImage::ScalarImage
-( const ScalarImage* other, 
+( const ScalarImage& other, 
   const unsigned int* roiFrom, const unsigned int* roiTo ) :
   HasROI( false )
 {
-  this->SetDims( other->GetDims( AXIS_X ), other->GetDims( AXIS_Y ) );
-  this->SetPixelSize( other->GetPixelSize() );
+  this->SetDims( other.GetDims( AXIS_X ), other.GetDims( AXIS_Y ) );
+  this->SetPixelSize( other.GetPixelSize() );
 
-  this->SetNumberOfFrames( other->GetNumberOfFrames() );
-  this->SetFrameToFrameSpacing( other->GetFrameToFrameSpacing() );
+  this->SetNumberOfFrames( other.GetNumberOfFrames() );
+  this->SetFrameToFrameSpacing( other.GetFrameToFrameSpacing() );
 
-  this->SetImageOrigin( other->GetImageOrigin() );
-  this->SetImageDirectionX( other->GetImageDirectionX() );
-  this->SetImageDirectionY( other->GetImageDirectionY() );
-  this->SetImageSlicePosition( other->GetImageSlicePosition() );
+  this->SetImageOrigin( other.GetImageOrigin() );
+  this->SetImageDirectionX( other.GetImageDirectionX() );
+  this->SetImageDirectionY( other.GetImageDirectionY() );
+  this->SetImageSlicePosition( other.GetImageSlicePosition() );
 
   if ( roiFrom && roiTo ) 
     {
     this->SetDims( roiTo[0] - roiFrom[0], roiTo[1] - roiFrom[1] );
     
-    this->m_ImageOrigin += ( roiFrom[0] * other->GetPixelSize( AXIS_X ) * other->GetImageDirectionX() );
-    this->m_ImageOrigin += ( roiFrom[1] * other->GetPixelSize( AXIS_Y ) * other->GetImageDirectionY() );
+    this->m_ImageOrigin += ( roiFrom[0] * other.GetPixelSize( AXIS_X ) * other.GetImageDirectionX() );
+    this->m_ImageOrigin += ( roiFrom[1] * other.GetPixelSize( AXIS_Y ) * other.GetImageDirectionY() );
     
-    const TypedArray* otherData = other->GetPixelData();
+    const TypedArray* otherData = other.GetPixelData();
     if ( otherData ) 
       {
       this->CreatePixelData( otherData->GetType() );
@@ -102,39 +102,39 @@ ScalarImage::ScalarImage
       size_t offset = 0;
       for ( unsigned int y = roiFrom[1]; y < roiTo[1]; ++y ) 
 	{
-	otherData->ConvertSubArray( this->m_PixelData->GetDataPtr( offset ), this->m_PixelData->GetType(), roiFrom[0] + y * other->GetDims( AXIS_X ), this->m_Dims[0] );
+	otherData->ConvertSubArray( this->m_PixelData->GetDataPtr( offset ), this->m_PixelData->GetType(), roiFrom[0] + y * other.GetDims( AXIS_X ), this->m_Dims[0] );
 	offset += this->m_Dims[0];
 	}
       }
     } 
   else
     { // if we're not cropping, preserve ROI.
-    HasROI = other->HasROI;
-    ROI = other->ROI;
-    if ( other->GetPixelData() )
-      this->SetPixelData( TypedArray::SmartPtr( other->GetPixelData()->Clone() ) );
+    HasROI = other.HasROI;
+    ROI = other.ROI;
+    if ( other.GetPixelData() )
+      this->SetPixelData( TypedArray::SmartPtr( other.GetPixelData()->Clone() ) );
     }
 }
 
 ScalarImage::ScalarImage
-( const ScalarImage* other, const IntROI2D* roi ) :
+( const ScalarImage& other, const IntROI2D& roi ) :
   HasROI( false )
 {
-  this->SetDims( roi->To[0] - roi->From[0], roi->To[1] - roi->From[1] );
-  this->SetPixelSize( other->GetPixelSize() );
+  this->SetDims( roi.To[0] - roi.From[0], roi.To[1] - roi.From[1] );
+  this->SetPixelSize( other.GetPixelSize() );
 
-  this->SetNumberOfFrames( other->GetNumberOfFrames() );
-  this->SetFrameToFrameSpacing( other->GetFrameToFrameSpacing() );
+  this->SetNumberOfFrames( other.GetNumberOfFrames() );
+  this->SetFrameToFrameSpacing( other.GetFrameToFrameSpacing() );
 
-  this->SetImageOrigin( other->GetImageOrigin() );
-  this->SetImageDirectionX( other->GetImageDirectionX() );
-  this->SetImageDirectionY( other->GetImageDirectionY() );
-  this->SetImageSlicePosition( other->GetImageSlicePosition() );
+  this->SetImageOrigin( other.GetImageOrigin() );
+  this->SetImageDirectionX( other.GetImageDirectionX() );
+  this->SetImageDirectionY( other.GetImageDirectionY() );
+  this->SetImageSlicePosition( other.GetImageSlicePosition() );
 
-  this->m_ImageOrigin += ( roi->From[0] * other->GetPixelSize( AXIS_X ) * other->GetImageDirectionX() );
-  this->m_ImageOrigin += ( roi->From[1] * other->GetPixelSize( AXIS_Y ) * other->GetImageDirectionY() );
+  this->m_ImageOrigin += ( roi.From[0] * other.GetPixelSize( AXIS_X ) * other.GetImageDirectionX() );
+  this->m_ImageOrigin += ( roi.From[1] * other.GetPixelSize( AXIS_Y ) * other.GetImageDirectionY() );
   
-  const TypedArray* otherData = other->GetPixelData();
+  const TypedArray* otherData = other.GetPixelData();
   if ( otherData ) 
     {
     this->CreatePixelData( otherData->GetType() );
@@ -142,9 +142,9 @@ ScalarImage::ScalarImage
       this->m_PixelData->SetPaddingPtr( otherData->GetPaddingPtr() );
     
     size_t offset = 0;
-    for ( int y = roi->From[1]; y < roi->To[1]; ++y ) 
+    for ( int y = roi.From[1]; y < roi.To[1]; ++y ) 
       {
-      otherData->ConvertSubArray( this->m_PixelData->GetDataPtr( offset ), this->m_PixelData->GetType(), roi->From[0] + y * other->GetDims( AXIS_X ), this->m_Dims[0] );
+      otherData->ConvertSubArray( this->m_PixelData->GetDataPtr( offset ), this->m_PixelData->GetType(), roi.From[0] + y * other.GetDims( AXIS_X ), this->m_Dims[0] );
       offset += this->m_Dims[0];
       }
     }

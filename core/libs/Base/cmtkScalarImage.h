@@ -1,7 +1,7 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 1997-2010 Torsten Rohlfing
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -94,11 +94,11 @@ public:
    * cropped image. The cropped image dimension is therefore
    * (1+roiTo[0]-roiFrom[0],1+roiTo[0]-roiFrom[0]).
    */
-  ScalarImage( const ScalarImage* other, const unsigned int* roiFrom = NULL, const unsigned int* roiTo = NULL );
+  ScalarImage( const ScalarImage& other, const unsigned int* roiFrom = NULL, const unsigned int* roiTo = NULL );
 
   /** Get ROI as sub-image.
    */
-  ScalarImage( const ScalarImage* other, const IntROI2D* roi );
+  ScalarImage( const ScalarImage& other, const IntROI2D& roi );
 
   /// Virtual destructor.
   virtual ~ScalarImage() {}
@@ -126,9 +126,9 @@ public:
   virtual ScalarImage* GetCropped() const 
   { 
     if ( HasROI )
-      return new ScalarImage( this, &ROI );
+      return new ScalarImage( *this, ROI );
     else
-      return new ScalarImage( this );
+      return new ScalarImage( *this );
   }
   
   /// Create pixel data array with given data type.

@@ -60,7 +60,7 @@ FunctionalAffine2D::FunctionalAffine2D
 
   if ( fltROI ) 
     {
-    this->FltImagesROI.push_back( ScalarImage::SmartPtr( new ScalarImage( this->FltImages[0].GetPtr(), fltROI ) ) );
+    this->FltImagesROI.push_back( ScalarImage::SmartPtr( new ScalarImage( *(this->FltImages[0]), *fltROI ) ) );
     } 
   else 
     {
@@ -103,7 +103,7 @@ FunctionalAffine2D::FunctionalAffine2D
     {
     for ( size_t i = 0; i < this->FltImages.size(); ++i )
       {
-      this->FltImagesROI[i] = ScalarImage::SmartPtr( new ScalarImage( this->FltImages[i].GetPtr(), fltROI ) );
+      this->FltImagesROI[i] = ScalarImage::SmartPtr( new ScalarImage( *(this->FltImages[i]), *fltROI ) );
       } 
     }
   else 

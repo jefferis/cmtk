@@ -35,6 +35,7 @@
 #include "cmtkSplineWarpXformTests.txx"
 #include "cmtkDataGridTests.txx"
 #include "cmtkUniformVolumeTests.txx"
+#include "cmtkScalarImageTests.txx"
 
 /** Set up table of test names and function pointers */
 typedef int (*testFuncPtr)();
@@ -53,6 +54,7 @@ const testNameAndFunctionPointer testTable[] =
   { "MathUtilEigensystem",           &testMathUtilEigensystem },
   { "MathUtilEigenvalues",           &testMathUtilEigenvalues },
   { "MathUtilUniformRandom",         &testMathUtilUniformRandom },
+  { "ScalarImage",                   &testScalarImage },
   { "SplineWarpXform",               &testSplineWarpXform },
   { "SplineWarpXformInverse",        &testSplineWarpXformInverse },
   { "UniformVolumeMatches",          &testUniformVolumeMatches },
