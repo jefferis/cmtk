@@ -306,10 +306,15 @@ cmtk
 //@{
 
 ScalarImage* 
-DICOM::Read( const char*, const Study*, const int ) const
-{ return NULL; }
+DICOM::Read( const char*, const Study*, const int )
+{ 
+  return NULL;
+}
 
-void DICOM::Write ( const char*, const ImageInfo&, const int ) {}
+void
+DICOM::Write ( const char*, const ImageInfo&, const int ) 
+{
+}
 
 //@}
 
