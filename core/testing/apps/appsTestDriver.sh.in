@@ -763,6 +763,10 @@ case ${RUNTEST} in
         run mip --sum --coronal spgr_3t.hdr ${tmpdir}/coronal.pgm
 	check_results axial.pgm sagittal.pgm coronal.pgm
 	;;
+    mip16Bit)
+        run mip --write-16bit --axial spgr_3t.hdr ${tmpdir}/axial16.pgm
+	check_results axial16.pgm
+	;;
     mk_analyze_hdrDefault)
         run mk_analyze_hdr ${tmpdir}/analyze.hdr
 	run_eval "${BINDIR}/describe -m ${tmpdir}/analyze.hdr | fgrep --invert-match FNAME > ${tmpdir}/analyze.txt"

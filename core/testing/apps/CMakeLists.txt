@@ -277,7 +277,8 @@ IF(NOT CMTK_USE_MPI)
     mipDefault
     mipBlackWhite
     mipAdjust
-    mipSum)
+    mipSum
+    mip16Bit)
 
   # ==========================================
   # Tests for "mk_analyze_hdr" tool

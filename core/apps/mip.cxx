@@ -56,6 +56,7 @@ const char* InFileName = NULL;
 const char* OutFileName = NULL;
 
 bool SumProjection = false;
+bool Write16Bit = false;
 
 bool
 ParseCommandLine( const int argc, const char* argv[] )
@@ -80,6 +81,7 @@ ParseCommandLine( const int argc, const char* argv[] )
     cl.AddOption( Key( 'w', "white" ), &White, "Set white colormap value." );
     
     cl.AddSwitch( Key( 'S', "sum" ), &SumProjection, true, "Sum projection." );
+    cl.AddSwitch( Key( "write-16bit" ), &Write16Bit, true, "Write output as non-standard 16bit PGM image (doubles dynamic range but cannot be properly read by all readers)." );
     
     if ( ! cl.Parse() ) return false;
     
@@ -122,7 +124,10 @@ int main ( const int argc, const char* argv[] )
   if ( isnan( White ) )
     White = max;
 
-  cmtk::PGM::Write( OutFileName, mip, Black, White );
+  if ( Write16Bit )
+    cmtk::PGM::Write16bit( OutFileName, mip, Black, White );
+  else
+    cmtk::PGM::Write( OutFileName, mip, Black, White );
   
   return 0;
 }

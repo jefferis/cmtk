@@ -1,5 +1,7 @@
 Release CMTK-1.2.2:
 
+- Improved: code for PGM output (8 and 16 bit) now more consistent and less
+    complex. Also unified API for 8bit  and 16bit write functions.
 - Added: bitwise "and" operation in "imagemath" tool. Added test for this.
 - Testing: added tests for cmtk::TypedArraySimilarity class.
 - Fixed: TypedArraySimilarity::GetPeakSignalToNoiseRatio was broken due to

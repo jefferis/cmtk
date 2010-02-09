@@ -145,12 +145,12 @@ void
 PGM::Write
 ( const char* filename, const ScalarImage *image, const Types::DataItem greyFrom, const Types::DataItem greyTo )
 {
-  unsigned int numberOfPixels = image->GetNumberOfPixels();
+  const size_t numberOfPixels = image->GetNumberOfPixels();
   byte *pgmData = Memory::AllocateArray<byte>(  numberOfPixels  );
 
   const TypedArray *pixelData = image->GetPixelData();
 
-  Types::DataItem greyScale = 255.0 / (greyTo - greyFrom);
+  const Types::DataItem greyScale = 255.0 / (greyTo - greyFrom);
   
   for ( unsigned int i = 0; i < numberOfPixels; ++i ) 
     {
@@ -167,113 +167,76 @@ PGM::Write
       }
     }
   
-  FILE *fp;
-  if ( (fp = fopen( filename, "wb" ) ) == NULL ) 
+  FILE *fp = fopen( filename, "wb" );
+  if ( fp ) 
     {
-    return;
-    }
-  
-  fprintf( fp, "P5\n" );
-  fprintf( fp, "# calibration %f %f\n", image->GetPixelSize()[0], image->GetPixelSize()[1] );
-  fprintf( fp, "# tablepos %f \n", image->GetImageSlicePosition() );
-
-  fprintf( fp, "%d %d %d\n", image->GetDims()[0], image->GetDims()[1], 255 );
-    
-  fwrite( pgmData, 1, numberOfPixels, fp );
-
-  fclose(fp);
-
-  delete[] pgmData;
-}
-
-void
-PGM::Write16bit( const char* filename, const ScalarImage *image )
-{
-  unsigned int numberOfPixels = image->GetNumberOfPixels();
-  union
-  {
-    void *Void;
-    byte *Byte;
-    unsigned short *UShort;
-  } pgmData;
-  pgmData.Void = NULL;
-  unsigned int bytesPerPixel = 0;
-
-  const TypedArray *pixelData = image->GetPixelData();
-
-  unsigned short maxData;
-  Types::DataItem min, max;
-  pixelData->GetRange( min, max );
-  maxData = static_cast<unsigned short>( max );
-  if ( maxData > 255 ) 
-    {
-    pgmData.UShort = Memory::AllocateArray<unsigned short>(  numberOfPixels  );
-    bytesPerPixel = 2;
-    for ( unsigned int i = 0; i < numberOfPixels; ++i ) 
-      {
-      Types::DataItem pixel;
-      if ( pixelData->Get( pixel, i ) ) 
-	{
-	// pgm wants 16bit in little endian, so let's do it...
-#ifdef WORDS_BIGENDIAN
-	unsigned short tmp = static_cast<unsigned short>( pixel );
-	pgmData.UShort[i] = ((tmp&255)<<8) + (tmp>>8);
-#else
-	pgmData.UShort[i] = static_cast<unsigned short>( pixel );
-#endif
-	}
-      else
-	{
-	pgmData.UShort[i] = 0;
-	}
-      }
-    } 
-  else
-    {
-    pgmData.Byte = Memory::AllocateArray<byte>(  numberOfPixels  );
-    bytesPerPixel = 1;
-    for ( unsigned int i = 0; i < numberOfPixels; ++i ) 
-      {
-      Types::DataItem pixel;
-      if ( pixelData->Get( pixel, i ) ) 
-	{
-	// pgm wants 16bit in little endian, so let's do it...
-	pgmData.Byte[i] = static_cast<byte>( pixel );
-	} 
-      else
-	{
-	pgmData.Byte[i] = 0;
-	}
-      }
-    }
-  
-  if ( pgmData.Void ) 
-    {
-    FILE *fp;
-    if ( (fp = fopen( filename, "wb" ) ) == NULL ) 
-      {
-      return;
-      }
-    
     fprintf( fp, "P5\n" );
     fprintf( fp, "# calibration %f %f\n", image->GetPixelSize()[0], image->GetPixelSize()[1] );
     fprintf( fp, "# tablepos %f \n", image->GetImageSlicePosition() );
     
-    fprintf( fp, "%d %d %d\n", image->GetDims()[0], image->GetDims()[1], maxData ? maxData : 1 );
+    fprintf( fp, "%d %d %d\n", image->GetDims()[0], image->GetDims()[1], 255 );
     
-    fwrite( pgmData.Void, bytesPerPixel, numberOfPixels, fp );
+    fwrite( pgmData, 1, numberOfPixels, fp );
     
     fclose(fp);
-    
-    if ( bytesPerPixel == 1 ) 
+    }
+
+  Memory::DeleteArray( pgmData );
+}
+
+void
+PGM::Write16bit( const char* filename, const ScalarImage *image, const Types::DataItem greyFrom, const Types::DataItem greyTo )
+{
+  const size_t numberOfPixels = image->GetNumberOfPixels();
+  
+  const TypedArray *pixelData = image->GetPixelData();
+
+  const Types::DataItem greyScale = 255.0 / (greyTo - greyFrom);
+  
+  unsigned short *pgmData = Memory::AllocateArray<unsigned short>(  numberOfPixels  );
+  unsigned short maxData = 0;
+  for ( size_t i = 0; i < numberOfPixels; ++i ) 
+    {
+    Types::DataItem pixel;
+    if ( pixelData->Get( pixel, i ) ) 
       {
-      delete[] pgmData.Byte;
-      } 
+      if ( pixel <= greyFrom )
+	pixel = 0;
+      else
+	if ( pixel >= greyTo )
+	  pixel = 65535;
+	else
+	  pixel = (pixel - greyFrom) * greyScale;
+      
+      // gthumb and ImageMagick want 16bit pgm in little endian, so let's do it if necessary
+#ifdef WORDS_BIGENDIAN
+      const unsigned short tmp = static_cast<unsigned short>( pixel );
+      pgmData[i] = ((tmp&255)<<8) + (tmp>>8);
+#else
+      pgmData[i] = static_cast<unsigned short>( pixel );
+#endif
+      }
     else
       {
-      delete[] pgmData.UShort;
+      pgmData[i] = 0;
       }
+    maxData = std::max( maxData, pgmData[i] );
     }
+  
+  FILE *fp = fopen( filename, "wb" );
+  if ( fp ) 
+    {
+    fprintf( fp, "P5\n" );
+    fprintf( fp, "# calibration %f %f\n", image->GetPixelSize()[0], image->GetPixelSize()[1] );
+    fprintf( fp, "# tablepos %f \n", image->GetImageSlicePosition() );
+    
+    fprintf( fp, "%d %d %d\n", image->GetDims()[0], image->GetDims()[1], maxData );
+    
+    fwrite( pgmData, sizeof( *pgmData ), numberOfPixels, fp );
+    fclose(fp);
+    }
+  
+  Memory::DeleteArray( pgmData );
 }
 
 } // namespace cmtk

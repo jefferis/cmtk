@@ -60,7 +60,7 @@ public:
 
   /** Write scalar image to 16bit PGM file.
    */
-  static void Write16bit( const char* filename, const ScalarImage *image );
+  static void Write16bit( const char* filename, const ScalarImage *image, const Types::DataItem greyFrom = 0, const Types::DataItem greyTo = 65535 );
 };
 
 //@}
