@@ -21,50 +21,34 @@
 //  with the Computational Morphometry Toolkit.  If not, see
 //  <http://www.gnu.org/licenses/>.
 //
-//  $Revision$
+//  $Revision: 10 $
 //
-//  $LastChangedDate$
+//  $LastChangedDate: 2009-05-30 11:25:26 -0700 (Sat, 30 May 2009) $
 //
-//  $LastChangedBy$
+//  $LastChangedBy: torstenrohlfing $
 //
 */
 
-#ifndef __cmtkPGM_h_included_
-#define __cmtkPGM_h_included_
-
-#include <cmtkconfig.h>
-
-#include <cmtkImageInfo.h>
-
+#include <cmtkPGM.h>
 #include <cmtkScalarImage.h>
 
-namespace
-cmtk
+// test whether uniform random numbers are reasonably uniform; does NOT test whether they are random!
+int
+testReadPGM()
 {
-
-/** \addtogroup IO */
-//@{
-
-/** Reader/writer class for PGM (portable graymap) files.
- */
-class PGM
-{
-public:
-  /** Read image from PGM file directly.
-   */
-  static ScalarImage* Read( const char* );
-
-  /** Write scalar image to PGM file.
-   */
-  static void Write( const char* filename, const ScalarImage *image, const Types::DataItem greyFrom, const Types::DataItem greyTo );
-
-  /** Write scalar image to 16bit PGM file.
-   */
-  static void Write16bit( const char* filename, const ScalarImage *image, const Types::DataItem greyFrom = 0, const Types::DataItem greyTo = 65535 );
-};
-
-//@}
-
-} // namespace cmtk
-
-#endif // #ifndef __cmtkPGM_h_included_
+  cmtk::ScalarImage::SmartPtr image8( cmtk::PGM::Read( CMTK_DATADIR "/axial.pgm" ) );
+  if ( ! image8 )
+    {
+    std::cerr << "ERROR: could not read 8bit PGM test image 'axial.pgm'" << std::endl;
+    return 1;
+    }
+  
+  cmtk::ScalarImage::SmartPtr image16( cmtk::PGM::Read( CMTK_DATADIR "/axial16.pgm" ) );
+  if ( ! image16 )
+    {
+    std::cerr << "ERROR: could not read 16bit PGM test image 'axial16.pgm'" << std::endl;
+    return 1;
+    }
+  
+  return 0;
+}

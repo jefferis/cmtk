@@ -20,20 +20,28 @@
 ##  with the Computational Morphometry Toolkit.  If not, see
 ##  <http://www.gnu.org/licenses/>.
 ##
-##  $Revision$
+##  $Revision: 1227 $
 ##
-##  $LastChangedDate$
+##  $LastChangedDate: 2010-02-08 11:45:02 -0800 (Mon, 08 Feb 2010) $
 ##
-##  $LastChangedBy$
+##  $LastChangedBy: torstenrohlfing $
 ##
 
 # ==========================================
-# Delegate testing to separate subdirs for each library
+# Setup binary test drivers
 
-SET(CMTK_DATADIR @CMTK_DATA_ROOT@/testing/inputs)
-ADD_DEFINITIONS(-DCMTK_DATADIR=\\\"${CMTK_DATADIR}\\\")
+SET(CMTK_LIBRARIES "cmtkIO;cmtkBase;cmtkNumerics;cmtkSystem")
+SET(DRIVERS libIOTests)
 
-SUBDIRS(System)
-SUBDIRS(Registration)
-SUBDIRS(IO)
-SUBDIRS(Base)
+FOREACH(D ${DRIVERS})
+  ADD_EXECUTABLE(${D} ${D}.cxx)
+  TARGET_LINK_LIBRARIES(${D} ${CMTK_LIBRARIES} ${CMTK_SYSTEM_LIBRARIES})
+ENDFOREACH(D ${DRIVERS})
+
+# ==========================================
+# Tests for "cmtk::PGM" class
+SET(Tests ${Tests} ReadPGM)
+
+FOREACH(T ${Tests})
+	  ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libIOTests ${T})
+ENDFOREACH(T Tests)

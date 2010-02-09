@@ -56,7 +56,7 @@ cmtk
 //@{
 
 ScalarImage* 
-PGM::ReadPGM( const char* filename ) 
+PGM::Read( const char* filename ) 
 {
   CompressedStream stream(filename);
   if ( ! stream.IsValid() ) 
