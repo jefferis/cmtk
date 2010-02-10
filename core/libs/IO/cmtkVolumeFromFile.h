@@ -52,8 +52,15 @@ public:
   /// Read volume from file automatically.
   static UniformVolume* Read( const char *filename );
 
+#ifdef CMTK_HAVE_DCMTK
   /// Read volume in multi-slice DICOM format.
   static UniformVolume* ReadDICOM( const char *filename );
+#else
+  static UniformVolume* ReadDICOM( const char* )
+  {
+    throw Exception( "Library was configured without DICOM support." );
+  }
+#endif
 
   /// Read volume in Vanderbilt format.
   static UniformVolume* ReadVanderbilt( const char *filename );
@@ -84,13 +91,13 @@ public:
   static void WriteNRRD( const char* pathHdr, const UniformVolume* volume, const bool verbose = false );
 #else
   /// Read NRRD file.
-  static UniformVolume* ReadNRRD( const char* path ) 
+  static UniformVolume* ReadNRRD( const char* ) 
   {
     throw Exception( "Library was configured without Nrrd support." );
   }
 
   /// Write NRRD file.
-  static void WriteNRRD( const char* pathHdr, const UniformVolume* volume, const bool = false )
+  static void WriteNRRD( const char*, const UniformVolume*, const bool = false )
   {
     throw Exception( "Library was configured without Nrrd support." );
   }

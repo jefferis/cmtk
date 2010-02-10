@@ -31,35 +31,32 @@
 
 #include <cmtkVolumeFromFile.h>
 
-#ifdef CMTK_HAVE_DCMTK
 
-#  include <cmtkTypedArray.h>
+#include <cmtkTypedArray.h>
 
-#  include <string.h>
-#  include <stdio.h>
+#include <string.h>
+#include <stdio.h>
 
-#  include <dcmtk/dcmdata/dcdeftag.h>
-#  include <dcmtk/dcmimgle/didocu.h>
-#  include <dcmtk/dcmimgle/diutils.h>
+#include <dcmtk/dcmdata/dcdeftag.h>
+#include <dcmtk/dcmimgle/didocu.h>
+#include <dcmtk/dcmimgle/diutils.h>
 
-#  ifdef CMTK_HAVE_DCMTK_JPEG
-#    include <djdecode.h>
-#  endif
+#ifdef CMTK_HAVE_DCMTK_JPEG
+#  include <djdecode.h>
+#endif
 
-#  ifdef HAVE_SYS_TYPES_H
-#    include <sys/types.h>
-#  endif
+#ifdef HAVE_SYS_TYPES_H
+#  include <sys/types.h>
+#endif
 
-#  ifdef HAVE_TIME_H
-#    include <time.h>
-#  endif
+#ifdef HAVE_TIME_H
+#  include <time.h>
+#endif
 
-#  include <memory>
+#include <memory>
 
 #include <cmtkConsole.h>
 #include <cmtkException.h>
-
-#endif // #ifdef CMTK_HAVE_DCMTK
 
 namespace
 cmtk
@@ -68,7 +65,6 @@ cmtk
 UniformVolume* 
 VolumeFromFile::ReadDICOM( const char *path )
 {
-#ifdef CMTK_HAVE_DCMTK
 #ifdef CMTK_HAVE_DCMTK_JPEG
   // register global decompression codecs
   static bool decodersRegistered = false;
@@ -274,9 +270,6 @@ VolumeFromFile::ReadDICOM( const char *path )
   UniformVolume *volume = new UniformVolume( dims, size, dataArray );
   
   return volume;
-#else // #ifdef CMTK_HAVE_DCMTK
-  throw Exception( "Configuration/usage error: CMTK was built without DICOM support" );
-#endif // #ifdef CMTK_HAVE_DCMTK
 }
 
 } // namespace cmtk

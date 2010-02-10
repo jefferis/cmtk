@@ -54,20 +54,21 @@ SET(cmtkIO_SRCS
   cmtkVolumeFromFile.cxx
   cmtkVolumeFromFileAnalyze.cxx
   cmtkVolumeFromFileBioRad.cxx
-  cmtkVolumeFromFileDICOM.cxx
   cmtkVolumeFromFileMetaFile.cxx
   cmtkVolumeFromFileNRRD.cxx
   cmtkVolumeFromFileNifti.cxx
   cmtkVolumeFromFileVanderbilt.cxx
   cmtkVolumeFromSlices.cxx
-  cmtkVolumeFromStudy.cxx
   cmtkVolumeIO.cxx
   cmtkXformIO.cxx
   cmtkXformIONrrd.cxx
 )
 
 IF(CMTK_USE_DCMTK)
-  SET(cmtkIO_SRCS ${cmtkIO_SRCS} cmtkDICOM.cxx)
+  SET(cmtkIO_SRCS ${cmtkIO_SRCS} 
+    cmtkDICOM.cxx
+    cmtkVolumeFromStudy.cxx
+    cmtkVolumeFromFileDICOM.cxx)
 ENDIF(CMTK_USE_DCMTK)
 
 IF(CMTK_USE_MPI)
