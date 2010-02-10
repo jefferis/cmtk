@@ -31,30 +31,28 @@
 
 #include <cmtkDICOM.h>
 
-#ifdef CMTK_HAVE_DCMTK
+#include <cmtkTypedArray.h>
 
-#  include <cmtkTypedArray.h>
+#include <string.h>
+#include <stdio.h>
 
-#  include <string.h>
-#  include <stdio.h>
+#include <dcmtk/dcmdata/dcdeftag.h>
+#include <dcmtk/dcmimgle/didocu.h>
+#include <dcmtk/dcmimgle/diutils.h>
 
-#  include <dcmtk/dcmdata/dcdeftag.h>
-#  include <dcmtk/dcmimgle/didocu.h>
-#  include <dcmtk/dcmimgle/diutils.h>
+#ifdef CMTK_HAVE_DCMTK_JPEG
+#  include <djdecode.h>
+#endif
 
-#  ifdef CMTK_HAVE_DCMTK_JPEG
-#    include <djdecode.h>
-#  endif
+#ifdef HAVE_SYS_TYPES_H
+#  include <sys/types.h>
+#endif
 
-#  ifdef HAVE_SYS_TYPES_H
-#    include <sys/types.h>
-#  endif
+#ifdef HAVE_TIME_H
+#  include <time.h>
+#endif
 
-#  ifdef HAVE_TIME_H
-#    include <time.h>
-#  endif
-
-#  include <memory>
+#include <memory>
 
 #include <cmtkConsole.h>
 
@@ -296,28 +294,3 @@ DICOM::Read
 //@}
 
 } // namespace cmtk
-
-#else // #ifdef CMTK_HAVE_DCMTK
-namespace
-cmtk
-{
-
-/** \addtogroup IO */
-//@{
-
-ScalarImage* 
-DICOM::Read( const char*, const Study*, const int )
-{ 
-  return NULL;
-}
-
-void
-DICOM::Write ( const char*, const ImageInfo&, const int ) 
-{
-}
-
-//@}
-
-} // namespace cmtk
-
-#endif // #ifdef CMTK_HAVE_DCMTK

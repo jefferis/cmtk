@@ -38,7 +38,6 @@ SET(cmtkIO_SRCS
   cmtkClassStreamLandmarkList.cxx
   cmtkClassStreamStudyList.cxx
   cmtkClassStreamWarpXform.cxx
-  cmtkDICOM.cxx
   cmtkFileFormat.cxx
   cmtkGroupwiseRegistrationFunctionalIO.cxx
   cmtkImageInfo.cxx
@@ -66,6 +65,10 @@ SET(cmtkIO_SRCS
   cmtkXformIO.cxx
   cmtkXformIONrrd.cxx
 )
+
+IF(CMTK_USE_DCMTK)
+  SET(cmtkIO_SRCS ${cmtkIO_SRCS} cmtkDICOM.cxx)
+ENDIF(CMTK_USE_DCMTK)
 
 IF(CMTK_USE_MPI)
   SET(cmtkIO_SRCS ${cmtkIO_SRCS} cmtkUniformVolumeMPI.cxx)
