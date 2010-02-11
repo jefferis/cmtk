@@ -641,6 +641,14 @@ case ${RUNTEST} in
         run imagemath --set-padding-value 0 --in spgr_brain_{1,2}.hdr --match-histograms --out ${tmpdir}/match_histograms.hdr
         check_results match_histograms.img
         ;;
+    imagemathMatchHistogramsPadding2)
+        run imagemath --in spgr_brain_{1,2}.hdr --set-padding-value 0 --match-histograms --out ${tmpdir}/match_histograms.hdr
+        check_results match_histograms.img
+        ;;
+    imagemathMatchHistogramsPaddingUnset)
+        run imagemath --set-padding-value 0 --in spgr_brain_1.hdr --unset-padding --in spgr_brain_2.hdr --match-histograms --out ${tmpdir}/match_histograms.hdr
+        check_results match_histograms.img
+        ;;
     levelsetDefault)
 	run levelset -v vol001_mr_t1.hdr ${tmpdir}/levelset.hdr
 	check_results levelset.img

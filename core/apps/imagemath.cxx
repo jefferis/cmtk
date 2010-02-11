@@ -92,6 +92,19 @@ cmtk::Types::DataItem PaddingValue;
 /// If this flag is set, PaddingValue defines the padding value for images read from files.
 bool PaddingFlag = false;
 
+void
+CallbackSetPaddingValue( const double paddingValue )
+{
+  PaddingValue = paddingValue;
+  PaddingFlag = true;
+}
+
+void
+CallbackUnsetPaddingValue()
+{
+  PaddingFlag = false;
+}
+
 /// Operating stack of images.
 std::stack<cmtk::UniformVolume::SmartPtr> ImageStack;
 
@@ -1071,8 +1084,8 @@ main( int argc, char *argv[] )
     cl.BeginGroup( "Input/output", "Input/output operations" );
     cl.AddCallback( Key( "in" ), CallbackIn, "Read input image(s) to top of stack" );
     cl.AddCallback( Key( "out" ), CallbackOut, "Write output image from top of stack (but leave it on the stack)" );
-    cl.AddOption( Key( "set-padding-value" ), &PaddingValue, "Set the value that is interpreted as padding value in subsequently read images.", &PaddingFlag );
-    cl.AddSwitch( Key( "unset-padding" ), &PaddingFlag, false, "Disable padding. All values in subsequently read images will be interpreted as actual data." );
+    cl.AddCallback( Key( "set-padding-value" ), CallbackSetPaddingValue, "Set the value that is interpreted as padding value in subsequently read images." );
+    cl.AddCallback( Key( "unset-padding" ), CallbackUnsetPaddingValue, "Disable padding. All values in subsequently read images will be interpreted as actual data." );
     cl.EndGroup();
 
     cl.BeginGroup( "Internal", "Internal settings" );

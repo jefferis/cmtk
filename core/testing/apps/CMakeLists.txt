@@ -225,7 +225,10 @@ IF(NOT CMTK_USE_MPI)
     imagemathStackEntropyLabels imagemathVote imagemathSTAPLE
     imagemathMultiClassSTAPLE imagemathCombinePCA imagemathT2
     imagemathLogOddsAdd imagemathLogOddsAdd2
-    imagemathMatchHistograms imagemathMatchHistogramsPadding)
+    imagemathMatchHistograms 
+    imagemathMatchHistogramsPadding
+    imagemathMatchHistogramsPadding2
+    imagemathMatchHistogramsPaddingUnset)
 
   # ==========================================
   # Tests for "levelset" tool
