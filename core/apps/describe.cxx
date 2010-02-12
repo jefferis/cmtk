@@ -181,11 +181,11 @@ main( int argc, char *argv[] )
 	  cmtk::Types::DataItem min = 0, max = 0;
 	  if ( dataArray->GetRange( min, max ) ) 
 	    {
-	    cmtk::StdErr.printf( "Data type %s, range [%f .. %f]\n", cmtk::DataTypeName[ dataArray->GetType() ], static_cast<float>( min ), static_cast<float>( max ) );
+	    cmtk::StdOut.printf( "Data type %s, range [%f .. %f]\n", cmtk::DataTypeName[ dataArray->GetType() ], static_cast<float>( min ), static_cast<float>( max ) );
 	    } 
 	  else
 	    {
-	    cmtk::StdErr << "Image does not contain valid data.\n";
+	    cmtk::StdOut << "Image does not contain valid data.\n";
 	    }
 	  }
 	}
