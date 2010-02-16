@@ -593,6 +593,10 @@ case ${RUNTEST} in
 	run imagemath --in parc1.hdr --scalar-xor 1 --out ${tmpdir}/xor.hdr
 	check_results xor.img
 	;;
+    imagemathDupFillMaxValue)
+	run imagemath --in parc1.hdr --dup --fill 1 --max-value --out ${tmpdir}/result.hdr
+	check_results result.img
+	;;
     imagemathAnd)
         run imagemath --in parc1.hdr --scalar-and 1 --out ${tmpdir}/and.hdr
 	check_results and.img

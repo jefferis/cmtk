@@ -1,5 +1,6 @@
 Release CMTK-1.2.2:
 
+- Added: "imagemath" now has "min-value" and "fill" operations.
 - Improved: "imagemath" can now set, unset, and change padding value
     repeatedly, so different images can be read with different padding values
     (Issue #4597)

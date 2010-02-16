@@ -221,10 +221,19 @@ IF(NOT CMTK_USE_MPI)
   # ==========================================
   # Tests for "imagemath" tool
   SET(testList ${testList} 
-    imagemathAverage imagemathXor imagemathAnd imagemathContractLabels
-    imagemathStackEntropyLabels imagemathVote imagemathSTAPLE
-    imagemathMultiClassSTAPLE imagemathCombinePCA imagemathT2
-    imagemathLogOddsAdd imagemathLogOddsAdd2
+    imagemathAverage 
+    imagemathXor
+    imagemathDupFillMaxValue
+    imagemathAnd
+    imagemathContractLabels
+    imagemathStackEntropyLabels
+    imagemathVote
+    imagemathSTAPLE
+    imagemathMultiClassSTAPLE 
+    imagemathCombinePCA
+    imagemathT2
+    imagemathLogOddsAdd
+    imagemathLogOddsAdd2
     imagemathMatchHistograms 
     imagemathMatchHistogramsPadding
     imagemathMatchHistogramsPadding2

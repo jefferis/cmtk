@@ -189,6 +189,16 @@ CallbackDup()
 }
     
 void
+CallbackFill( const double value)
+{
+  if ( CheckStackOneImage( "Fill" ) )
+    {
+    ImageStack.top()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.top()->GetData()->Convert( ResultType ) ) );
+    ImageStack.top()->GetData()->Fill( value );
+    }
+}
+    
+void
 CallbackAbs()
 {
   if ( CheckStackOneImage( "Abs" ) )
@@ -911,6 +921,57 @@ CallbackMaxValue()
 }
 
 void
+CallbackMinValue()
+{
+  if ( ! CheckStackTwoMatchingImages( "MinValue" ) )
+    return;
+  
+  std::vector<cmtk::UniformVolume::SmartPtr> volPtrs;
+  while ( ImageStack.size() > 0 ) 
+    {
+    if ( ImageStack.size() > 1 )
+      if ( ! CheckStackTwoMatchingImages( "MinValue" ) )
+	return;
+    
+    volPtrs.push_back( ImageStack.top() );
+    ImageStack.pop();
+    }
+  
+  const size_t numberOfPixels = volPtrs[ 0 ]->GetNumberOfPixels();
+  cmtk::TypedArray::SmartPtr minArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+
+#pragma omp parallel for  
+  for ( size_t i = 0; i < numberOfPixels; ++i )
+    {
+    cmtk::Types::DataItem minValue = 0;
+    bool minValueValid = false;
+    cmtk::Types::DataItem v;
+
+    for ( size_t curVol = 0; curVol < volPtrs.size(); ++curVol )
+      {
+      if ( volPtrs[ curVol ]->GetDataAt( v, i ) ) 
+        {
+	if ( minValueValid )
+	  {
+	  minValue = std::min( minValue, v );
+	  }
+	else
+	  {
+	  minValueValid = true;
+	  minValue = v;
+	  }
+        }
+      }
+    
+    
+    minArray->Set( minValue, i ); 
+    }
+  
+  volPtrs[0]->SetData( minArray );
+  ImageStack.push( volPtrs[0] );
+}
+
+void
 CallbackContractLabels()
 {
   if ( ! CheckStackTwoMatchingImages( "ContractLabels" ) )
@@ -1099,6 +1160,7 @@ main( int argc, char *argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Single image", "Single-image operators" );
+    cl.AddCallback( Key( "fill" ), CallbackFill, "Fill top image with constant value (i.e., assign value to all pixels)" );
     cl.AddCallback( Key( "abs" ), CallbackAbs, "Apply abs() function to top image" );
     cl.AddCallback( Key( "log" ), CallbackLog, "Apply log() function to top image" );
     cl.AddCallback( Key( "logit" ), CallbackLogit, "Apply log(x/(1-x)) function to top image" );
@@ -1130,6 +1192,7 @@ main( int argc, char *argv[] )
     cl.AddCallback( Key( "average" ), CallbackAverage, "Average all images on stack, place result on stack" );
     cl.AddCallback( Key( "combine-pca" ), CallbackCombinePCA, "Combine images using PCA by projecting onto direction of largest correlation" );
     cl.AddCallback( Key( "max-value" ), CallbackMaxValue, "For each pixel, compute maximum VALUE over all images, place result on stack" );
+    cl.AddCallback( Key( "min-value" ), CallbackMinValue, "For each pixel, compute minimum VALUE over all images, place result on stack" );
     cl.AddCallback( Key( "max-index" ), CallbackMaxIndex, "For each pixel, compute INDEX of image with maximum value, place result on stack" );
     cl.AddCallback( Key( "contract-labels" ), CallbackContractLabels, "Contract multiple label maps into one by selecting the first (over all images on the stack) non-zero label at each pixel" );
     cl.EndGroup();
