@@ -1,6 +1,4 @@
-##
-##  Copyright 1997-2009 Torsten Rohlfing
-##  Copyright 2004-2009 SRI International
+##  Copyright 2010 Torsten Rohlfing
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -20,31 +18,31 @@
 ##  with the Computational Morphometry Toolkit.  If not, see
 ##  <http://www.gnu.org/licenses/>.
 ##
-##  $Revision$
+##  $Revision: 199 $
+##      
+##  $LastChangedDate: 2009-07-13 16:38:02 -0700 (Mon, 13 Jul 2009) $
 ##
-##  $LastChangedDate$
-##
-##  $LastChangedBy$
-##
+##  $LastChangedBy: torstenrohlfing $
+##      
 
-# turn off Windows security warnings for bundled code
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+PROJECT(sqlite3)
+INCLUDE_REGULAR_EXPRESSION("^.*.h$")
 
-SUBDIRS(zlib)
-INCLUDE_DIRECTORIES( ${ZLIB_INCLUDE_DIR} )
+SET(SQLITE_VERSION_MAJOR 3)
+SET(SQLITE_VERSION_MINOR 6)
+SET(SQLITE_VERSION_PATCH 22)
+SET(SQLITE_VERSION "sqlite-3.6.22")
 
-IF(CMTK_BUILD_NRRD)
-  SUBDIRS(NrrdIO)
-ENDIF(CMTK_BUILD_NRRD)
+SET(sqlite_SRCS sqlite3.c)
 
-IF(CMTK_USE_DCMTK)
-  SUBDIRS(dcmtk)
-ENDIF(CMTK_USE_DCMTK)
+ADD_DEFINITIONS(-DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_RTREE)
 
-SUBDIRS(mxml)
+ADD_LIBRARY(sqlite3 ${sqlite_SRCS})
+TARGET_LINK_LIBRARIES(sqlite3)
 
-IF(CMTK_BUILD_SQLITE)
-  SUBDIRS(sqlite-3.6.22)
-ENDIF(CMTK_BUILD_SQLITE)
+INSTALL(TARGETS sqlite3 RUNTIME DESTINATION lib ARCHIVE DESTINATION lib COMPONENT runtime)
+INSTALL(TARGETS sqlite3 LIBRARY DESTINATION lib ARCHIVE DESTINATION lib COMPONENT libraries)
+FILE(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+INSTALL(FILES ${files} DESTINATION include/cmtk/sqlite3 COMPONENT headers)
+
+SET(SQLITE_LIBRARIES sqlite3)

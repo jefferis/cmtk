@@ -1,5 +1,5 @@
 ##
-##  Copyright 1997-2009 Torsten Rohlfing
+##  Copyright 1997-2010 Torsten Rohlfing
 ##  Copyright 2004-2009 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
@@ -314,12 +314,20 @@ IF(CMTK_USE_DCMTK)
 ENDIF(CMTK_USE_DCMTK)
 
 #-----------------------------------------------------------------------------
-# Add an option to use or not use TEEM (for NrrdIO support)
+# Add an option to use or not use zlib library
 
 MESSAGE( STATUS "Building bundled zlib library" ) 	 
 SET(CMTK_BUILD_ZLIB 1) 	 
 SET(ZLIB_FOUND 1) 	 
 SET(ZLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/zlib CACHE PATH "Directory containing zlib.h header file" FORCE) 	 
+
+#-----------------------------------------------------------------------------
+# Add an option to use or not use sqlite3 library
+
+OPTION(CMTK_BUILD_SQLITE "Build sqlite3 library for database support" OFF)
+IF(CMTK_BUILD_SQLITE)
+  MESSAGE(STATUS "Building bundled sqlite3 library" ) 	 
+ENDIF(CMTK_BUILD_SQLITE)
 
 #-----------------------------------------------------------------------------
 # Add an option to use or not use TEEM (for NrrdIO support)
