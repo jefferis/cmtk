@@ -327,6 +327,7 @@ SET(ZLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/zlib CACHE PATH "Dire
 OPTION(CMTK_BUILD_SQLITE "Build sqlite3 library for database support" OFF)
 IF(CMTK_BUILD_SQLITE)
   MESSAGE(STATUS "Building bundled sqlite3 library" ) 	 
+  SET(SQLITE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/sqlite3 CACHE PATH "Directory containing sqlite3.h header file" FORCE)
 ENDIF(CMTK_BUILD_SQLITE)
 
 #-----------------------------------------------------------------------------
@@ -520,6 +521,7 @@ INCLUDE_DIRECTORIES(
   ${QT_INCLUDE_DIR} ${QT_INCLUDE_PATH}
   ${NRRD_INCLUDE_DIR}
   ${MXML_INCLUDE_DIR}
+  ${SQLITE_INCLUDE_DIR}
   ${ZLIB_INCLUDE_DIR}
   ${CMTK_INCLUDE_DIRS_SYSTEM}
   )
