@@ -71,6 +71,11 @@ IF(CMTK_USE_DCMTK)
     cmtkVolumeFromFileDICOM.cxx)
 ENDIF(CMTK_USE_DCMTK)
 
+IF(CMTK_BUILD_SQLITE)
+  SET(cmtkIO_SRCS ${cmtkIO_SRCS} 
+    cmtkSQLite.cxx)
+ENDIF(CMTK_BUILD_SQLITE)
+
 IF(CMTK_USE_MPI)
   SET(cmtkIO_SRCS ${cmtkIO_SRCS} cmtkUniformVolumeMPI.cxx)
 ENDIF(CMTK_USE_MPI)
