@@ -30,14 +30,16 @@
 
 #include <cmtkSQLite.h>
 
-#include <iostream>
+#include <cmtkConsole.h>
+
+#include <stdlib.h>
 
 cmtk::SQLite::SQLite
 ( const std::string& dbPath, const bool readOnly )
 {
   if ( readOnly )
     {
-    const int rc = sqlite3_open_v2( dbPath, &this->m_DB, SQLITE_OPEN_READONLY, NULL /*zVFS*/ );
+    const int rc = sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READONLY, NULL /*zVFS*/ );
     if( rc )
       {
       cmtk::StdErr << "Can't open database: " << sqlite3_errmsg( this->m_DB ) << "\n";
@@ -47,7 +49,7 @@ cmtk::SQLite::SQLite
     }
   else
     {
-    const int rc = sqlite3_open_v2( dbPath, &this->m_DB, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE. NULL, /*zVFS*/ );
+    const int rc = sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL /*zVFS*/ );
     if( rc )
       {
       cmtk::StdErr << "Can't open database: " << sqlite3_errmsg( this->m_DB ) << "\n";
