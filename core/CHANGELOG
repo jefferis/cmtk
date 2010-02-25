@@ -1,5 +1,6 @@
 Release CMTK-1.2.2:
 
+- Added: cmtk::SQLite wrapper class for sqlite3 library, with tests.
 - Added: bundled still-unused sqlite3 "library" for future use in
     image/relationship database.
 - Added: "imagemath" now has "min-value" and "fill" operations.
