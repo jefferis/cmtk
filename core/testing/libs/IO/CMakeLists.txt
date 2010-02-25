@@ -20,18 +20,22 @@
 ##  with the Computational Morphometry Toolkit.  If not, see
 ##  <http://www.gnu.org/licenses/>.
 ##
-##  $Revision: 1227 $
+##  $Revision$
 ##
-##  $LastChangedDate: 2010-02-08 11:45:02 -0800 (Mon, 08 Feb 2010) $
+##  $LastChangedDate$
 ##
-##  $LastChangedBy: torstenrohlfing $
+##  $LastChangedBy$
 ##
 
 # ==========================================
 # Setup binary test drivers
 
 SET(CMTK_LIBRARIES "cmtkIO;cmtkBase;cmtkNumerics;cmtkSystem")
+
 SET(DRIVERS libIOTests)
+IF(CMTK_BUILD_SQLITE)
+  SET(DRIVERS libIOTestsSQLite)
+ENDIF(CMTK_BUILD_SQLITE)
 
 FOREACH(D ${DRIVERS})
   ADD_EXECUTABLE(${D} ${D}.cxx)
@@ -44,9 +48,11 @@ SET(Tests ${Tests} ReadPGM)
 
 # ==========================================
 # Tests for "cmtk::SQLite" class
-SET(Tests ${Tests} 
-  SQLiteCreate 
-  SQLiteOpen)
+IF(CMTK_BUILD_SQLITE)
+  SET(Tests ${Tests} 
+    SQLiteCreate 
+    SQLiteOpen)
+ENDIF(CMTK_BUILD_SQLITE)
 
 FOREACH(T ${Tests})
 	  ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libIOTests ${T})

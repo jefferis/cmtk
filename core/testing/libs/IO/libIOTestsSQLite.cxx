@@ -31,7 +31,7 @@
 
 #include <cstring>
 
-#include "cmtkReadPGMTests.txx"
+#include "cmtkSQLiteTests.txx"
 
 /** Set up table of test names and function pointers */
 typedef int (*testFuncPtr)();
@@ -45,7 +45,8 @@ struct __testNameAndFunctionPointer
 
 const testNameAndFunctionPointer testTable[] =
 {
-  { "ReadPGM",               &testReadPGM },
+  { "SQLiteCreate",          &testSQLiteCreate },
+  { "SQLiteOpen",            &testSQLiteOpen },
   { NULL, NULL }
 };
 
