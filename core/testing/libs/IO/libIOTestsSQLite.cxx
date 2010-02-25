@@ -30,6 +30,7 @@
 */
 
 #include <cstring>
+#include <iostream>
 
 #include "cmtkSQLiteTests.txx"
 
