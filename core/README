@@ -2,20 +2,22 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
-Release Notes -- CMTK 1.2.1
+Release Notes -- CMTK 1.2.2
 ===========================
 
-This is a minor bugfix release. For a complete list of changes and fixes, see
-the CHANGELOG file.
+This is a maintenance release with some minor additions and improvements. This
+will be the last release of the 1.2 series. For a complete list of changes and
+fixes, see the CHANGELOG file.
 
 CMTK has been built and tested on the following platforms:
 
-- Linux 32bit (Fedora 12), gcc 4.4.2
-- Linux 64bit (Fedora 12), gcc 4.4.2
+- Linux 32bit (Fedora 12), gcc 4.4.3
+- Linux 64bit (Fedora 12), gcc 4.4.3
 - Cygwin, gcc 4.3.2 beta2
 - Windows XP, VisualStudio 9 (2008 Express Edition)
 - MacOS X, PowerPC, gcc 4.0.1
 - Solaris, x86_64, gcc 3.4.3
+- Solaris, x86_64, gcc 4.3.4
 - Solaris, i386, Sun C++ 5.10
 - Solaris, x86_64, Sun C++ 5.10
 

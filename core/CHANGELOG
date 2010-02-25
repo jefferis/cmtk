@@ -1,4 +1,4 @@
-Release CMTK-1.2.2:
+Release CMTK-1.2.2 (2010-02-25):
 
 - Added: cmtk::SQLite wrapper class for sqlite3 library, with tests.
 - Added: bundled still-unused sqlite3 "library" for future use in
