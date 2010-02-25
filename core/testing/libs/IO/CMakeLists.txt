@@ -42,6 +42,12 @@ ENDFOREACH(D ${DRIVERS})
 # Tests for "cmtk::PGM" class
 SET(Tests ${Tests} ReadPGM)
 
+# ==========================================
+# Tests for "cmtk::SQLite" class
+SET(Tests ${Tests} 
+  SQLiteCreate 
+  SQLiteOpen)
+
 FOREACH(T ${Tests})
 	  ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libIOTests ${T})
 ENDFOREACH(T Tests)

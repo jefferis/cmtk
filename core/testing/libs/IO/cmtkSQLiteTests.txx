@@ -21,34 +21,29 @@
 //  with the Computational Morphometry Toolkit.  If not, see
 //  <http://www.gnu.org/licenses/>.
 //
-//  $Revision: 10 $
+//  $Revision$
 //
-//  $LastChangedDate: 2009-05-30 11:25:26 -0700 (Sat, 30 May 2009) $
+//  $LastChangedDate$
 //
-//  $LastChangedBy: torstenrohlfing $
+//  $LastChangedBy$
 //
 */
 
-#include <cmtkPGM.h>
-#include <cmtkScalarImage.h>
+#include <cmtkSQLite.h>
 
-// test whether  we can read 8bit and 16bit PGM files.
+// test SQLite database creation
 int
-testReadPGM()
+testSQLiteCreate()
 {
-  cmtk::ScalarImage::SmartPtr image8( cmtk::PGM::Read( CMTK_DATADIR "/axial.pgm" ) );
-  if ( ! image8 )
-    {
-    std::cerr << "ERROR: could not read 8bit PGM test image 'axial.pgm'" << std::endl;
-    return 1;
-    }
-  
-  cmtk::ScalarImage::SmartPtr image16( cmtk::PGM::Read( CMTK_DATADIR "/axial16.pgm" ) );
-  if ( ! image16 )
-    {
-    std::cerr << "ERROR: could not read 16bit PGM test image 'axial16.pgm'" << std::endl;
-    return 1;
-    }
-  
+  cmtk::SQLite db( "new.sqlite" );
   return 0;
 }
+
+// test SQLite open of existing file
+int
+testSQLiteOpen()
+{
+  cmtk::SQLite db( CMTK_DATADIR "/empty.sqlite", true /*readOnly*/ );
+  return 0;
+}
+
