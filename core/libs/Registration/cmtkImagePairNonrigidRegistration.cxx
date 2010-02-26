@@ -43,7 +43,7 @@
 
 #include <cmtkUniformVolume.h>
 #include <cmtkSplineWarpXform.h>
-#include <cmtkTypedArrayHistogramMatchingLookup.h>
+#include <cmtkTypedArrayFunctionHistogramMatching.h>
 
 #include <cmtkReformatVolume.h>
 
@@ -96,7 +96,7 @@ ImagePairNonrigidRegistration::InitRegistration ()
 
   if ( this->m_MatchFltToRefHistogram )
     {
-    this->GetVolume_2()->GetData()->ApplyLookup( TypedArrayHistogramMatchingLookup( *(this->GetVolume_2()->GetData()), *(this->GetVolume_1()->GetData()) ) );
+    this->GetVolume_2()->GetData()->ApplyFunction( TypedArrayFunctionHistogramMatching( *(this->GetVolume_2()->GetData()), *(this->GetVolume_1()->GetData()) ) );
     }
   
   MatchedLandmarkList::SmartPtr mll( NULL );

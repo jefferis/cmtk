@@ -29,12 +29,12 @@
 //
 */
 
-#ifndef __cmtkTypedArrayHistogramMatchingLookup_h_included_
-#define __cmtkTypedArrayHistogramMatchingLookup_h_included_
+#ifndef __cmtkTypedArrayFunctionHistogramMatching_h_included_
+#define __cmtkTypedArrayFunctionHistogramMatching_h_included_
 
 #include <cmtkconfig.h>
 
-#include <cmtkTypedArrayLookup.h>
+#include <cmtkTypedArrayFunction.h>
 
 #include <cmtkTypedArray.h>
 #include <cmtkHistogram.h>
@@ -53,16 +53,16 @@ cmtk
  * of the "fixed" array.
  */
 class
-TypedArrayHistogramMatchingLookup
+TypedArrayFunctionHistogramMatching
 /// Inherit from base class.
-  : public TypedArrayLookup
+  : public TypedArrayFunction
 {
 public:
   /// Constructor: build lookup.
-  TypedArrayHistogramMatchingLookup( const TypedArray& variableArray, const TypedArray& fixedArray, const size_t numberOfHistogramBins = 1024 );
+  TypedArrayFunctionHistogramMatching( const TypedArray& variableArray, const TypedArray& fixedArray, const size_t numberOfHistogramBins = 1024 );
 
   /// Map a single value from the variable array to its new value.
-  virtual Types::DataItem MapSingleValue( const Types::DataItem valueIn ) const;
+  virtual Types::DataItem operator()( const Types::DataItem valueIn ) const;
 
 private:
   /// Fixed array histogram.
@@ -79,4 +79,4 @@ private:
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkTypedArrayHistogramMatchingLookup_h_included_
+#endif // #ifndef __cmtkTypedArrayFunctionHistogramMatching_h_included_

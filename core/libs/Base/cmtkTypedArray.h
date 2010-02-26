@@ -51,7 +51,7 @@
 #include <cmtkDataTypeTraits.h>
 #include <cmtkHistogram.h>
 
-#include <cmtkTypedArrayLookup.h>
+#include <cmtkTypedArrayFunction.h>
 
 #ifdef DEBUG
 #define CheckBounds(index,bound) \
@@ -550,9 +550,9 @@ public:
    */
   virtual void HistogramEqualization( const int numberOfLevels = 256 ) = 0;
 
-  /** Match histogram of this array to that of a reference array.
+  /** Apply function class to the values of this array.
    */
-  virtual void ApplyLookup( const TypedArrayLookup& lookup ) = 0;
+  virtual void ApplyFunction( const TypedArrayFunction& f ) = 0;
 };
 
 //@}

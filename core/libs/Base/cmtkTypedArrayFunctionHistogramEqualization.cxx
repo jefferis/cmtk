@@ -29,13 +29,13 @@
 //
 */
 
-#include <cmtkTypedArrayHistogramEqualizationLookup.h>
+#include <cmtkTypedArrayFunctionHistogramEqualization.h>
 
 #include <vector>
 #include <algorithm>
 
-cmtk::TypedArrayHistogramEqualizationLookup
-::TypedArrayHistogramEqualizationLookup
+cmtk::TypedArrayFunctionHistogramEqualization
+::TypedArrayFunctionHistogramEqualization
 ( const TypedArray& variableArray, const size_t numberOfHistogramBins )
 {  
   this->m_Histogram = Histogram<unsigned int>::SmartPtr( variableArray.GetHistogram( numberOfHistogramBins ) );
@@ -44,8 +44,8 @@ cmtk::TypedArrayHistogramEqualizationLookup
 }
 
 cmtk::Types::DataItem 
-cmtk::TypedArrayHistogramEqualizationLookup
-::MapSingleValue( const cmtk::Types::DataItem valueIn ) const
+cmtk::TypedArrayFunctionHistogramEqualization
+::operator()( const cmtk::Types::DataItem valueIn ) const
 {
   return this->m_Histogram->BinToValue( (*this->m_Histogram)[ this->m_Histogram->ValueToBin( valueIn ) ] );
 }

@@ -44,7 +44,7 @@
 
 #include <math.h>
 #include <cmtkMathFunctionWrappers.h>
-#include <cmtkTypedArrayHistogramMatchingLookup.h>
+#include <cmtkTypedArrayFunctionHistogramMatching.h>
 
 #include <stack>
 #include <vector>
@@ -647,7 +647,7 @@ CallbackMatchHistograms()
   
   cmtk::UniformVolume::SmartPtr ref = ImageStack.top();
   ImageStack.pop();
-  ImageStack.top()->GetData()->ApplyLookup( cmtk::TypedArrayHistogramMatchingLookup( *(ImageStack.top()->GetData()), *(ref->GetData()) ) );
+  ImageStack.top()->GetData()->ApplyFunction( cmtk::TypedArrayFunctionHistogramMatching( *(ImageStack.top()->GetData()), *(ref->GetData()) ) );
 }
 
 void

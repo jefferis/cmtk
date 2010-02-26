@@ -35,7 +35,9 @@
 #include <cmtkconfig.h>
 
 #include <cmtkTypedArray.h>
+
 #include <cmtkConsole.h>
+#include <cmtkTypedArrayFunction.h>
 
 namespace
 cmtk
@@ -687,9 +689,7 @@ public:
    */
   virtual void HistogramEqualization( const int numberOfLevels = 256 );
 
-  /** Match histogram of this array to that of a reference array.
-   */
-  virtual void ApplyLookup( const TypedArrayLookup& lookup );
+  virtual void ApplyFunction( const TypedArrayFunction& f );
 };
 
 /**@name Classes for typed arrays. */
