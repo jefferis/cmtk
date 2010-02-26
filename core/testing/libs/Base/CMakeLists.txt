@@ -51,6 +51,12 @@ SET(Tests ${Tests} ScalarImage)
 SET(Tests ${Tests} SplineWarpXform SplineWarpXformInverse)
 
 # ==========================================
+# Tests for "cmtk::TypedArray" class
+SET(Tests ${Tests} 
+  TypedArrayMatchHistogram1
+  TypedArrayMatchHistogram2)
+
+# ==========================================
 # Tests for "cmtk::UniformVolume" class
 SET(Tests ${Tests} UniformVolumeMatches)
 
