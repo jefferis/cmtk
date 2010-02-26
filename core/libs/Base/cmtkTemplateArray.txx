@@ -35,6 +35,8 @@
 #  include <ieeefp.h>
 #endif
 
+#include <cmtkHistogramMatchingLookup.h>
+
 namespace
 cmtk
 {
@@ -385,39 +387,12 @@ void
 TemplateArray<T>
 ::MatchHistogramToReference( const TypedArray* referenceArray, const unsigned int numberOfBins )
 {
-  Histogram<unsigned int>::SmartPtr referenceHistogram( referenceArray->GetHistogram( numberOfBins ) );
-  referenceHistogram->ConvertToCumulative();
-  
-  std::vector<double> normalizedRefHistogram( numberOfBins );
-  for ( size_t l = 0; l < numberOfBins; ++l )
-    {
-    normalizedRefHistogram[l] = 1.0 * referenceHistogram->GetBin(l) / referenceHistogram->GetBin(numberOfBins-1);
-    }
-  
-  Histogram<unsigned int>::SmartPtr movingHistogram( this->GetHistogram( numberOfBins ) );
-  movingHistogram->ConvertToCumulative();
+  HistogramMatchingLookup lookup( *this, *referenceArray, numberOfBins );
 
-  std::vector<double> normalizedMovHistogram( numberOfBins );
-  for ( size_t l = 0; l < numberOfBins; ++l )
-    {
-    normalizedMovHistogram[l] =  1.0 * movingHistogram->GetBin(l) / movingHistogram->GetBin(numberOfBins-1);
-    }
-  
-  std::vector<unsigned int> lookup( numberOfBins );
-  size_t j = 0;
-  for ( size_t i = 0; i < numberOfBins; ++i )
-    {
-    while ((j < numberOfBins) && (normalizedRefHistogram[j] < normalizedMovHistogram[i]))
-      {
-      ++j;
-      }
-    lookup[i] = j;
-    }
-  
   for ( size_t i = 0; i < this->DataSize; ++i )
     {
     if ( !this->PaddingFlag || (this->Data[i] != this->Padding) )
-      this->Data[i] = static_cast<T>( referenceHistogram->BinToValue( lookup[ movingHistogram->ValueToBin( this->Data[i] ) ] ) );
+      this->Data[i] = static_cast<T>( lookup.MapSingleValue( this->Data[i] ) );
     }
 }
 
