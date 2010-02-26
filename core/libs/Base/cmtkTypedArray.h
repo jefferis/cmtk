@@ -51,6 +51,8 @@
 #include <cmtkDataTypeTraits.h>
 #include <cmtkHistogram.h>
 
+#include <cmtkTypedArrayLookup.h>
+
 #ifdef DEBUG
 #define CheckBounds(index,bound) \
   if (!(index<bound)) throw( Exception( this, "Index %d is outside bound %d", index, bound ) );
@@ -550,7 +552,7 @@ public:
 
   /** Match histogram of this array to that of a reference array.
    */
-  virtual void MatchHistogramToReference( const Self* referenceArray, const unsigned int numberOfBins = 1024 ) = 0;
+  virtual void ApplyLookup( const TypedArrayLookup& lookup ) = 0;
 };
 
 //@}

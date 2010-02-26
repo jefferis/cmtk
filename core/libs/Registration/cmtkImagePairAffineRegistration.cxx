@@ -35,6 +35,7 @@
 
 #include <cmtkXform.h>
 #include <cmtkAffineXform.h>
+#include <cmtkTypedArrayHistogramMatchingLookup.h>
 
 #include <cmtkVolume.h>
 #include <cmtkUniformVolume.h>
@@ -77,7 +78,7 @@ ImagePairAffineRegistration::InitRegistration ()
   
   if ( this->m_MatchFltToRefHistogram )
     {
-    this->GetVolume_2()->GetData()->MatchHistogramToReference( this->GetVolume_1()->GetData() );
+    this->GetVolume_2()->GetData()->ApplyLookup( TypedArrayHistogramMatchingLookup( *(this->GetVolume_2()->GetData()), *(this->GetVolume_1()->GetData()) ) );
     }
   
   AffineXform::SmartPtr affineXform;

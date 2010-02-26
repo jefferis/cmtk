@@ -162,8 +162,8 @@ IF(NOT CMTK_USE_MPI)
     convertxDilateErodeDilate
     convertxGaussianFilterSigma
     convertxGaussianFilterFWHM
-    convertxHistrogramEqualization
-    convertxHistrogramEqualizationNBins
+    convertxHistogramEqualization
+    convertxHistogramEqualizationNBins
     convertxMedianFilter1
     convertxMedianFilter2
     convertxMedianFilterXYZ

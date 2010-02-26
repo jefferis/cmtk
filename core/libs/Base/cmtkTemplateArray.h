@@ -689,7 +689,7 @@ public:
 
   /** Match histogram of this array to that of a reference array.
    */
-  virtual void MatchHistogramToReference( const TypedArray* referenceArray, const unsigned int numberOfBins = 1024 );
+  virtual void ApplyLookup( const TypedArrayLookup& lookup );
 };
 
 /**@name Classes for typed arrays. */

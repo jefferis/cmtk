@@ -37,6 +37,7 @@
 
 #include <cmtkUniformVolume.h>
 #include <cmtkFilterVolume.h>
+#include <cmtkTypedArrayHistogramMatchingLookup.h>
 
 #include <cmtkVolumeIO.h>
 #include <cmtkClassStream.h>
@@ -270,7 +271,7 @@ main( int argc, char* argv[] )
     
     for ( size_t idx = 1; idx < imageListOriginal.size(); ++idx )
       {
-      imageListOriginal[idx]->GetData()->MatchHistogramToReference( referenceDataForHistogramMatching );
+      imageListOriginal[idx]->GetData()->ApplyLookup( cmtk::TypedArrayHistogramMatchingLookup( *(imageListOriginal[idx]->GetData()), *referenceDataForHistogramMatching ) );
       }
     }
 

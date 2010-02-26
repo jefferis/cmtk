@@ -385,10 +385,8 @@ TemplateArray<T>
 template<class T>
 void
 TemplateArray<T>
-::MatchHistogramToReference( const TypedArray* referenceArray, const unsigned int numberOfBins )
+::ApplyLookup( const TypedArrayLookup& lookup )
 {
-  const TypedArrayHistogramMatchingLookup lookup( *this, *referenceArray, numberOfBins );
-
 #pragma omp parallel for
   for ( size_t i = 0; i < this->DataSize; ++i )
     {

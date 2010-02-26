@@ -34,7 +34,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkTypedArray.h>
+#include <cmtkTypes.h>
 
 namespace
 cmtk

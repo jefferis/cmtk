@@ -50,6 +50,8 @@ cmtk
  */
 class
 TypedArrayHistogramEqualizationLookup
+/// Inherit from base class.
+  : public TypedArrayLookup
 {
 public:
   /// Constructor: build lookup.

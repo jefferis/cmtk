@@ -54,10 +54,12 @@ cmtk
  */
 class
 TypedArrayHistogramMatchingLookup
+/// Inherit from base class.
+  : public TypedArrayLookup
 {
 public:
   /// Constructor: build lookup.
-  TypedArrayHistogramMatchingLookup( const TypedArray& variableArray, const TypedArray& fixedArray, const size_t numberOfHistogramBins );
+  TypedArrayHistogramMatchingLookup( const TypedArray& variableArray, const TypedArray& fixedArray, const size_t numberOfHistogramBins = 1024 );
 
   /// Map a single value from the variable array to its new value.
   virtual Types::DataItem MapSingleValue( const Types::DataItem valueIn ) const;

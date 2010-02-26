@@ -42,6 +42,7 @@
 
 #include <cmtkVoxelMatchingAffineFunctional.h>
 #include <cmtkImagePairAffineRegistrationFunctional.h>
+#include <cmtkTypedArrayHistogramMatchingLookup.h>
 
 #include <cmtkOptimizer.h>
 #include <cmtkBestNeighbourOptimizer.h>
@@ -89,7 +90,7 @@ AffineRegistration::InitRegistration ()
   
   if ( this->m_MatchFltToRefHistogram )
     {
-    this->GetVolume_2()->GetData()->MatchHistogramToReference( this->GetVolume_1()->GetData() );
+    this->GetVolume_2()->GetData()->ApplyLookup( TypedArrayHistogramMatchingLookup( *(this->GetVolume_2()->GetData()), *(this->GetVolume_1()->GetData()) ) );
     }
   
   AffineXform::SmartPtr affineXform;
