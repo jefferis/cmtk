@@ -69,7 +69,7 @@ cmtk::HistogramMatchingLookup
   
 cmtk::Types::DataItem 
 cmtk::HistogramMatchingLookup
-::MapSingleValue( const cmtk::Types::DataItem variableArrayValue ) const
+::MapSingleValue( const cmtk::Types::DataItem valueIn ) const
 {
-  return this->m_FixedArrayHistogram->BinToValue( this->m_Lookup[ this->m_VariableArrayHistogram->ValueToBin( variableArrayValue ) ] );
+  return this->m_FixedArrayHistogram->BinToValue( this->m_Lookup[ this->m_VariableArrayHistogram->ValueToBin( valueIn ) ] );
 }

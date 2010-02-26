@@ -387,7 +387,7 @@ void
 TemplateArray<T>
 ::MatchHistogramToReference( const TypedArray* referenceArray, const unsigned int numberOfBins )
 {
-  HistogramMatchingLookup lookup( *this, *referenceArray, numberOfBins );
+  const HistogramMatchingLookup lookup( *this, *referenceArray, numberOfBins );
 
   for ( size_t i = 0; i < this->DataSize; ++i )
     {
