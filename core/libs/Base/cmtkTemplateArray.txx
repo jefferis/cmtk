@@ -389,6 +389,7 @@ TemplateArray<T>
 {
   const HistogramMatchingLookup lookup( *this, *referenceArray, numberOfBins );
 
+#pragma omp parallel for
   for ( size_t i = 0; i < this->DataSize; ++i )
     {
     if ( !this->PaddingFlag || (this->Data[i] != this->Padding) )

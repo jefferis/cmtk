@@ -29,8 +29,8 @@
 //
 */
 
-#ifndef __cmtkHistogramMatchingLookup_h_included_
-#define __cmtkHistogramMatchingLookup_h_included_
+#ifndef __cmtkHistogramEqualizationLookup_h_included_
+#define __cmtkHistogramEqualizationLookup_h_included_
 
 #include <cmtkconfig.h>
 
@@ -45,35 +45,25 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-/** Lookup class for histogram intensity matching.
- * This class provides a lookup table that is computed from the histograms of two
- * cmtk::TypedArray objects. The lookup can then be applied to the "variable" array
- * so that its distribution afterwards matches, as closely as possible, the distribution
- * of the "fixed" array.
+/** Lookup class for histogram equalization.
  */
 class
-HistogramMatchingLookup
+HistogramEqualizationLookup
 {
 public:
   /// Constructor: build lookup.
-  HistogramMatchingLookup( const TypedArray& variableArray, const TypedArray& fixedArray, const size_t numberOfHistogramBins );
+  HistogramEqualizationLookup( const TypedArray& variableArray, const size_t numberOfHistogramBins );
 
   /// Map a single value from the variable array to its new value.
   virtual Types::DataItem MapSingleValue( const Types::DataItem valueIn ) const;
 
 private:
-  /// Fixed array histogram.
-  Histogram<unsigned int>::SmartPtr m_FixedArrayHistogram;
-
-  /// Variable array histogram.
-  Histogram<unsigned int>::SmartPtr m_VariableArrayHistogram;
-
-  /// Lookup table that translates between the two histograms.
-  std::vector<unsigned int> m_Lookup;
+  /// Data histogram.
+  Histogram<unsigned int>::SmartPtr m_Histogram;
 };
 
 //@}
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkHistogramMatchingLookup_h_included_
+#endif // #ifndef __cmtkHistogramEqualizationLookup_h_included_

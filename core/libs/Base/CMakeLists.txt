@@ -51,6 +51,7 @@ SET(cmtkBase_SRCS
   cmtkGeneralLinearModel.cxx
   cmtkHistogram.cxx
   cmtkHistogramMatchingLookup.cxx
+  cmtkHistogramEqualizationLookup.cxx
   cmtkHypothesisTests.cxx
   cmtkImageOperation.cxx
   cmtkImageOperationCropRegion.cxx
