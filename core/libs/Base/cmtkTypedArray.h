@@ -546,10 +546,6 @@ public:
    */
   virtual void BlockReverse( const size_t fromOffset, const size_t blockLength );
 
-  /** Histogram equalization of values in array.
-   */
-  virtual void HistogramEqualization( const int numberOfLevels = 256 ) = 0;
-
   /** Apply function class to the values of this array.
    */
   virtual void ApplyFunction( const TypedArrayFunction& f ) = 0;

@@ -30,7 +30,9 @@
 */
 
 #include <cmtkImagePairRegistration.h>
+
 #include <cmtkCommandLine.h>
+#include <cmtkTypedArrayFunctionHistogramEqualization.h>
 
 namespace
 cmtk
@@ -110,7 +112,7 @@ ImagePairRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume
   
   if ( this->m_HistogramEqualization ) 
     {
-    data->HistogramEqualization();
+    data->ApplyFunction( TypedArrayFunctionHistogramEqualization( *data ) );
     }
 
   if ( this->m_SobelFilter ) 

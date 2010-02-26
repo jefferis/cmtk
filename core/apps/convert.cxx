@@ -43,6 +43,7 @@
 
 #include <math.h>
 #include <cmtkMathFunctionWrappers.h>
+#include <cmtkTypedArrayFunctionHistogramEqualization.h>
 
 #include <stdlib.h>
 
@@ -583,7 +584,7 @@ if ( Downsample )
     {
     if ( Verbose )
       cmtk::StdErr << "Histogram equalization.\n";
-    volumeData->HistogramEqualization();
+    volumeData->ApplyFunction( cmtk::TypedArrayFunctionHistogramEqualization( *volumeData ) );
     }
   
   if ( Revert ) 

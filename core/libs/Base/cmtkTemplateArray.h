@@ -685,10 +685,6 @@ public:
    */
   virtual Histogram<unsigned int>* GetHistogram( const unsigned int numberOfBins ) const;
 
-  /** Histogram equalization of values in array.
-   */
-  virtual void HistogramEqualization( const int numberOfLevels = 256 );
-
   virtual void ApplyFunction( const TypedArrayFunction& f );
 };
 

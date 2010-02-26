@@ -338,51 +338,6 @@ TemplateArray<T>
 }
 
 template<class T>
-void 
-TemplateArray<T>
-::HistogramEqualization( const int numberOfLevels ) 
-{
-  std::vector<unsigned int> histogram( numberOfLevels );
-  std::fill( histogram.begin(), histogram.end(), 0 );
-
-  // find original value range
-  T min = Data[0], max = Data[0];
-  for ( size_t i = 1; i < DataSize; ++i )
-    if ( !PaddingFlag || (Data[i] != Padding) ) 
-      {
-      if ( Data[i] > max ) max = Data[i];
-      if ( Data[i] < min ) min = Data[i];
-      }
-
-  // generate histogram
-  const double scale = (1.0 * (numberOfLevels-1)) / (max-min);
-  for ( size_t i = 0; i < DataSize; ++i ) 
-    {
-    if ( !PaddingFlag || (Data[i] != Padding) ) 
-      ++histogram[static_cast<unsigned int>(scale*(Data[i]-min))];
-    }
-  
-  // transform into cumulative histogram
-  histogram[0] = 0; // this effectively stretches the distribution
-  for ( int l = 1; l < numberOfLevels; ++l ) 
-    {
-    histogram[l] += histogram[l-1];
-    }
-  
-  // apply equalization tranformation
-  const double stretchScale = 1.0 * (max-min) / histogram[numberOfLevels-1];
-#pragma omp parallel for
-  for ( size_t i = 0; i < DataSize; ++i ) 
-    {
-    if ( !PaddingFlag || (Data[i] != Padding) ) 
-      {
-      const double equalized = stretchScale * histogram[static_cast<unsigned int>( scale * (Data[i]-min) )];
-      Data[i] = min + std::max<T>( 0, static_cast<T>( this->ConvertItem( equalized ) ) );
-      }
-    }
-}
-
-template<class T>
 void
 TemplateArray<T>
 ::ApplyFunction( const TypedArrayFunction& f )

@@ -31,6 +31,7 @@
 #include <cmtkImageOperationHistogramEqualization.h>
 
 #include <cmtkCommandLine.h>
+#include <cmtkTypedArrayFunctionHistogramEqualization.h>
 
 void
 cmtk::ImageOperationHistogramEqualization::New()
@@ -48,6 +49,7 @@ cmtk::UniformVolume::SmartPtr
 cmtk::ImageOperationHistogramEqualization::Apply( cmtk::UniformVolume::SmartPtr& volume )
 {
   cmtk::TypedArray::SmartPtr volumeData = volume->GetData();
-  volumeData->HistogramEqualization( this->m_NumberOfBins );
+  volumeData->ApplyFunction( TypedArrayFunctionHistogramEqualization( *volumeData, this->m_NumberOfBins ) );
+//  volumeData->HistogramEqualization( this->m_NumberOfBins );
   return volume;
 }

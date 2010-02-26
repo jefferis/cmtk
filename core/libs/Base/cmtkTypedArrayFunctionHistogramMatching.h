@@ -69,8 +69,14 @@ TypedArrayFunctionHistogramMatching
   : public TypedArrayFunction
 {
 public:
+  /// This class.
+  typedef TypedArrayFunctionHistogramMatching Self;
+
+  /// Default number of histogram bins.
+  static const size_t DefaultNumberOfHistogramBins = 1024;
+
   /// Constructor: build lookup.
-  TypedArrayFunctionHistogramMatching( const TypedArray& variableArray, const TypedArray& fixedArray, const size_t numberOfHistogramBins = 1024 );
+  TypedArrayFunctionHistogramMatching( const TypedArray& variableArray, const TypedArray& fixedArray, const size_t numberOfHistogramBins = Self::DefaultNumberOfHistogramBins );
 
   /// Map a single value from the variable array to its new value.
   virtual Types::DataItem operator()( const Types::DataItem valueIn ) const;

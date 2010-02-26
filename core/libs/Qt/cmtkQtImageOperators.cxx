@@ -37,6 +37,8 @@
 
 #include <cmtkQtProgress.h>
 
+#include <cmtkTypedArrayFunctionHistogramEqualization.h>
+
 namespace
 cmtk
 {
@@ -110,7 +112,7 @@ QtImageOperators::slotOperatorHistEq()
       // user entered something and pressed OK
       if ( this->ProgressInstance )
 	this->ProgressInstance->SetProgressWidgetMode( QtProgress::PROGRESS_DIALOG );
-      (*(this->CurrentStudy))->GetVolume()->GetData()->HistogramEqualization( bins );
+      (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunction( TypedArrayFunctionHistogramEqualization( (*(*(this->CurrentStudy))->GetVolume()->GetData()), bins ) );
       emit dataChanged( *(this->CurrentStudy) );
       } 
     else
