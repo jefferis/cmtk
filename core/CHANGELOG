@@ -1,5 +1,6 @@
 Release CMTK-1.3.0:
 
+- Added: "convertx" now does histogram equalization. Also added tests.
 - Refactored: created a new class for histogram-based intensity matching,
     cmtk::HistogramMatchingLookup.
 - Added: first library-level tests for TypedArray class.

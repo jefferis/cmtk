@@ -50,6 +50,7 @@
 #include <cmtkImageOperationErodeDilate.h>
 #include <cmtkImageOperationBoundaryMap.h>
 #include <cmtkImageOperationDownsample.h>
+#include <cmtkImageOperationHistogramEqualization.h>
 #include <cmtkImageOperationCropRegion.h>
 #include <cmtkImageOperationCropThreshold.h>
 #include <cmtkImageOperationScaleToRange.h>
@@ -131,6 +132,9 @@ main( int argc, char* argv[] )
 
     cl.BeginGroup( "Intensity", "Intensity Transformations" );
     cl.AddCallback( Key( "scale-to-range" ), &cmtk::ImageOperationScaleToRange::New, "Scale image intensities to range 'from:to', e.g., '0:255' before conversion to byte data." );
+    cl.AddCallback( Key( "histogram-equalization" ), &cmtk::ImageOperationHistogramEqualization::New, "Apply histogram equalization." );
+    cl.AddCallback( Key( "histogram-equalization-nbins" ), &cmtk::ImageOperationHistogramEqualization::NewBins, "Apply histogram equalization with <int> number of bins." );
+
     cl.EndGroup();
     
     cl.BeginGroup( "Morphological", "Morphological Operations" );
