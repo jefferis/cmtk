@@ -83,8 +83,8 @@ SET(cmtkBase_SRCS
   cmtkTransformChangeToSpaceAffine.cxx
   cmtkTransformChangeFromSpaceAffine.cxx
   cmtkTypedArray.cxx
-  cmtkTypedArrayHistogramMatchingLookup.cxx
-  cmtkTypedArrayHistogramEqualizationLookup.cxx
+  cmtkTypedArrayFunctionHistogramMatching.cxx
+  cmtkTypedArrayFunctionHistogramEqualization.cxx
   cmtkTypedArrayNoiseEstimatorNaiveGaussian.cxx
   cmtkTypedArrayRLE.cxx
   cmtkTypedArrayStatistics.cxx
