@@ -50,8 +50,6 @@ SET(cmtkBase_SRCS
   cmtkFunctional.cxx
   cmtkGeneralLinearModel.cxx
   cmtkHistogram.cxx
-  cmtkHistogramMatchingLookup.cxx
-  cmtkHistogramEqualizationLookup.cxx
   cmtkHypothesisTests.cxx
   cmtkImageOperation.cxx
   cmtkImageOperationCropRegion.cxx
@@ -85,6 +83,8 @@ SET(cmtkBase_SRCS
   cmtkTransformChangeToSpaceAffine.cxx
   cmtkTransformChangeFromSpaceAffine.cxx
   cmtkTypedArray.cxx
+  cmtkTypedArrayHistogramMatchingLookup.cxx
+  cmtkTypedArrayHistogramEqualizationLookup.cxx
   cmtkTypedArrayNoiseEstimatorNaiveGaussian.cxx
   cmtkTypedArrayRLE.cxx
   cmtkTypedArrayStatistics.cxx

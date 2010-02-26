@@ -31,10 +31,10 @@
 
 #include <vector>
 
-#include <cmtkHistogramMatchingLookup.h>
+#include <cmtkTypedArrayHistogramMatchingLookup.h>
 
-cmtk::HistogramMatchingLookup
-::HistogramMatchingLookup
+cmtk::TypedArrayHistogramMatchingLookup
+::TypedArrayHistogramMatchingLookup
 ( const TypedArray& variableArray, const TypedArray& fixedArray, const size_t numberOfHistogramBins )
   : m_Lookup( numberOfHistogramBins )
 {  
@@ -68,7 +68,7 @@ cmtk::HistogramMatchingLookup
 }
   
 cmtk::Types::DataItem 
-cmtk::HistogramMatchingLookup
+cmtk::TypedArrayHistogramMatchingLookup
 ::MapSingleValue( const cmtk::Types::DataItem valueIn ) const
 {
   return this->m_FixedArrayHistogram->BinToValue( this->m_Lookup[ this->m_VariableArrayHistogram->ValueToBin( valueIn ) ] );

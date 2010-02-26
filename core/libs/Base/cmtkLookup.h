@@ -29,8 +29,8 @@
 //
 */
 
-#ifndef __cmtkLookup_h_included_
-#define __cmtkLookup_h_included_
+#ifndef __cmtkTypedArrayLookup_h_included_
+#define __cmtkTypedArrayLookup_h_included_
 
 #include <cmtkconfig.h>
 
@@ -48,14 +48,14 @@ cmtk
  * cmtk::TypedArray class and its derivatives.
  */
 class
-Lookup
+TypedArrayLookup
 {
 public:
   /// Map a single value to its new value.
   virtual Types::DataItem MapSingleValue( const Types::DataItem valueIn ) const = 0;
 
   /// Virtual destructor.
-  ~Lookup() {}
+  ~TypedArrayLookup() {}
 
 };
 
@@ -63,4 +63,4 @@ public:
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkLookup_h_included_
+#endif // #ifndef __cmtkTypedArrayLookup_h_included_

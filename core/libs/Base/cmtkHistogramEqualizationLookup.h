@@ -29,8 +29,8 @@
 //
 */
 
-#ifndef __cmtkHistogramEqualizationLookup_h_included_
-#define __cmtkHistogramEqualizationLookup_h_included_
+#ifndef __cmtkTypedArrayHistogramEqualizationLookup_h_included_
+#define __cmtkTypedArrayHistogramEqualizationLookup_h_included_
 
 #include <cmtkconfig.h>
 
@@ -48,11 +48,11 @@ cmtk
 /** Lookup class for histogram equalization.
  */
 class
-HistogramEqualizationLookup
+TypedArrayHistogramEqualizationLookup
 {
 public:
   /// Constructor: build lookup.
-  HistogramEqualizationLookup( const TypedArray& variableArray, const size_t numberOfHistogramBins );
+  TypedArrayHistogramEqualizationLookup( const TypedArray& variableArray, const size_t numberOfHistogramBins );
 
   /// Map a single value from the variable array to its new value.
   virtual Types::DataItem MapSingleValue( const Types::DataItem valueIn ) const;
@@ -66,4 +66,4 @@ private:
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkHistogramEqualizationLookup_h_included_
+#endif // #ifndef __cmtkTypedArrayHistogramEqualizationLookup_h_included_
