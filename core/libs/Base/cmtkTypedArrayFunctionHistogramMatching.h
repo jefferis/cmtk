@@ -51,6 +51,17 @@ cmtk
  * cmtk::TypedArray objects. The lookup can then be applied to the "variable" array
  * so that its distribution afterwards matches, as closely as possible, the distribution
  * of the "fixed" array.
+ *
+ * To apply histogram matching to "variableArray" based on the distribution of "fixedArray",
+ * use the following:
+ *\code
+ *  variableArray->ApplyFunction( cmtk::TypedArrayFunctionHistogramMatching( variableArray, fixedArray ) );
+ *\endcode
+ * The variable array for setting up the matching function need not be the same as the array
+ * that the function is applied to:
+ *\code
+ *  variableArray->ApplyFunction( cmtk::TypedArrayFunctionHistogramMatching( testArray, fixedArray ) );
+ *\endcode
  */
 class
 TypedArrayFunctionHistogramMatching
