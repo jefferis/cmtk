@@ -353,11 +353,11 @@ case ${RUNTEST} in
         run convertx --gaussian-filter-fwhm 10.0 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
 	check_results spgr_brain_1.img
 	;;
-    convertxHisotgramEqualization)
+    convertxHistogramEqualization)
         run convertx --histogram-equalization spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
 	check_results spgr_brain_1.img
 	;;
-    convertxHisotgramEqualizationNBins)
+    convertxHistogramEqualizationNBins)
         run convertx --histogram-equalization-nbins 32 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
 	check_results spgr_brain_1.img
 	;;
