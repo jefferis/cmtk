@@ -41,11 +41,16 @@ cmtk::TypedArrayFunctionHistogramEqualization
   this->m_Histogram = Histogram<unsigned int>::SmartPtr( variableArray.GetHistogram( numberOfHistogramBins ) );
   (*this->m_Histogram)[0] = 0; // this effectively stretches the distribution
   this->m_Histogram->ConvertToCumulative();
+
+  Types::DataItem min, max;
+  variableArray.GetRange( min, max );
+  this->m_MinValue = min;
+  this->m_ScaleFactor = 1.0 * (max-min) / (*this->m_Histogram)[numberOfHistogramBins-1];
 }
 
 cmtk::Types::DataItem 
 cmtk::TypedArrayFunctionHistogramEqualization
 ::operator()( const cmtk::Types::DataItem valueIn ) const
 {
-  return this->m_Histogram->BinToValue( (*this->m_Histogram)[ this->m_Histogram->ValueToBin( valueIn ) ] );
+  return this->m_MinValue + this->m_ScaleFactor * (*this->m_Histogram)[ this->m_Histogram->ValueToBin( valueIn ) ];
 }

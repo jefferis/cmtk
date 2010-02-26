@@ -63,6 +63,12 @@ public:
 private:
   /// Data histogram.
   Histogram<unsigned int>::SmartPtr m_Histogram;
+
+  /// Scale factor from cumulative distribution to histogram.
+  Types::DataItem m_ScaleFactor;
+
+  /// Minimum data value.
+  Types::DataItem m_MinValue;
 };
 
 //@}
