@@ -383,7 +383,7 @@ public:
 
   /** Normalize histogram values by their maximum.
    *@param normalizeTo All histogram bins are scaled by a common factor so that
-   * their meximum matches the value of this parameter.
+   * their maximum matches the value of this parameter.
    */
   void NormalizeMaximum( const T normalizeTo = 1 );
 
