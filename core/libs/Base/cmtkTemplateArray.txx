@@ -35,7 +35,7 @@
 #  include <ieeefp.h>
 #endif
 
-#include <cmtkHistogramMatchingLookup.h>
+#include <cmtkTypedArrayHistogramMatchingLookup.h>
 
 namespace
 cmtk
@@ -387,7 +387,7 @@ void
 TemplateArray<T>
 ::MatchHistogramToReference( const TypedArray* referenceArray, const unsigned int numberOfBins )
 {
-  const HistogramMatchingLookup lookup( *this, *referenceArray, numberOfBins );
+  const TypedArrayHistogramMatchingLookup lookup( *this, *referenceArray, numberOfBins );
 
 #pragma omp parallel for
   for ( size_t i = 0; i < this->DataSize; ++i )

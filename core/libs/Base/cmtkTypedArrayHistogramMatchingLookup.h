@@ -34,7 +34,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkLookup.h>
+#include <cmtkTypedArrayLookup.h>
+
 #include <cmtkTypedArray.h>
 #include <cmtkHistogram.h>
 
