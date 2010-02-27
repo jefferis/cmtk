@@ -1,7 +1,7 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 1997-2010 Torsten Rohlfing
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -628,30 +628,6 @@ public:
     else
       {
       memset( Data, 0, sizeof( *Data ) * this->GetDataSize() );
-      }
-  }
-
-  /** Run iterator on all or subset of primitive values in the array.
-   * Use instances of classes derived from TypedArrayIterator to define
-   * iterator action. This function with a suitable iterator class object
-   * should be substantially faster than a loop with access through the virtual
-   * Get() function.
-   */
-  template<class IT> void DoIterator( IT& iterator, const size_t rangeFrom = 0, const size_t rangeTo = -1 ) const
-  {
-    size_t from = rangeFrom;
-    size_t to = rangeTo;
-    if ( to == (size_t)-1 ) to = DataSize;
-    if ( PaddingFlag ) 
-      {
-      for ( size_t idx = from; idx < to; ++idx )
-	if ( Data[idx] != Padding )
-	  iterator( idx, Data[idx] );
-      } 
-    else
-      {
-      for ( size_t idx = from; idx < to; ++idx )
-	iterator( idx, Data[idx] );
       }
   }
 
