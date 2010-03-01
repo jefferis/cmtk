@@ -179,8 +179,7 @@ protected:
   /// Number of parallel tasks.
   size_t m_NumberOfTasks;
 
-  /** Ground transformed volume.
-   */
+  /// Baseline transformed volume.
   Types::DataItem *m_WarpedVolume;
 
   /// Flag for forcing pixel values outside the floating image.
