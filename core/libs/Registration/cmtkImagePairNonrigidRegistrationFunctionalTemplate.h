@@ -127,14 +127,19 @@ public:
    * This function builds the pre-computed deformed floating image that is 
    * later used for rapid gradient computation.
    */
-  typename Self::ReturnType EvaluateComplete ( CoordinateVector& v ) 
+  typename Self::ReturnType Evaluate() 
   {
     this->m_Metric->Reset();
-    if ( ! this->m_WarpedVolume ) 
+    if ( ! this->m_WarpedVolume )
+      {
       this->m_WarpedVolume = Memory::AllocateArray<Types::DataItem>(  this->m_DimsX * this->m_DimsY * this->m_DimsZ  );
+      }
+    else
+      {
+      if ( m_RepeatMatchRefFltIntensities ) 
+	this->MatchRefFltIntensities();
+      }
     
-    this->m_ThreadWarp[0]->SetParamVector( v );
-
     const size_t numberOfTasks = std::min<size_t>( this->m_NumberOfTasks, this->m_DimsY * this->m_DimsZ );
     for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
       {
@@ -214,7 +219,7 @@ public:
   /// Compute functional value and gradient.
   virtual typename Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const typename Self::ParameterType step = 1 ) 
   {
-    const typename Self::ReturnType current = this->EvaluateComplete( v );
+    const typename Self::ReturnType current = this->EvaluateAt( v );
 
     if ( this->m_AdaptiveFixParameters && this->WarpNeedsFixUpdate ) 
       {
@@ -246,31 +251,6 @@ public:
   {
     this->m_ThreadWarp[0]->SetParamVector( v );
     return this->Evaluate();
-  }
-
-  virtual typename Self::ReturnType Evaluate ()
-  {
-    this->m_Metric->Reset();
-
-    const size_t numberOfTasks = std::min<size_t>( this->m_NumberOfTasks, this->m_DimsY * this->m_DimsZ );
-    for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
-      {
-      this->m_InfoTaskComplete[taskIdx].thisObject = this;
-      }
-    
-    for ( size_t taskIdx = 0; taskIdx < this->m_NumberOfThreads; ++taskIdx ) 
-      {
-      this->m_TaskMetric[taskIdx]->Reset();
-      }
-    
-    ThreadPool::GlobalThreadPool.Run( EvaluateCompleteThread, this->m_InfoTaskComplete );
-    
-    for ( size_t taskIdx = 0; taskIdx < this->m_NumberOfThreads; ++taskIdx ) 
-      {
-      this->m_Metric->Add( *(this->m_TaskMetric[taskIdx]) );
-      }
-    
-    return this->WeightedTotal( this->m_Metric->Get(), this->m_ThreadWarp[0] );
   }
 
 private:
