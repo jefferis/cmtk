@@ -65,6 +65,9 @@ public:
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
+  /// Parent class.
+  typedef ImagePairSimilarityMeasure Superclass;
+
   /// Return type: same as cmtk::Functional.
   typedef Functional::ReturnType ReturnType;
 
@@ -95,6 +98,20 @@ public:
   {
     this->m_JointHistogram.CopyUnsafe( other.m_JointHistogram );
   }
+
+  /** Set reference volume.
+   * In addition to setting the reference volume via the base class, this function
+   * also performs pre-scaling and parameter selection using Self::PrescaleData().
+   * Afterwards the joint histogram size is re-allocated.
+   */
+  virtual void SetReferenceVolume( const UniformVolume::SmartPtr& refVolume );
+
+  /** Set floating volume.
+   * In addition to setting the floating volume via the base class, this function
+   * also performs pre-scaling and parameter selection using Self::PrescaleData().
+   * Afterwards the joint histogram size is re-allocated.
+   */
+  virtual void SetFloatingVolume( const UniformVolume::SmartPtr& fltVolume );
 
   /// Reset computation: clear joint histogram.
   virtual void Reset () 

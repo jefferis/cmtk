@@ -84,7 +84,9 @@ public:
   /// Set reference volume.
   virtual void SetReferenceVolume( const UniformVolume::SmartPtr& refVolume );
 
-  /// Set reference volume.
+  /** Set floating volume.
+   * When the floating volume is set, a new interpolator object is also created.
+   */
   virtual void SetFloatingVolume( const UniformVolume::SmartPtr& fltVolume );
 
   /// Reset metric computation.

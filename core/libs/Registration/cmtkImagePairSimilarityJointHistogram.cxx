@@ -65,6 +65,20 @@ ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
   this->m_JointHistogram = other.m_JointHistogram;
 }
 
+void
+ImagePairSimilarityJointHistogram::SetReferenceVolume( const UniformVolume::SmartPtr& refVolume )
+{
+  Superclass::SetReferenceVolume( Self::PrescaleData( refVolume, &this->m_NumberOfBinsX, &this->m_ScaleFactorReference, &this->m_ScaleOffsetReference ) );
+  this->m_JointHistogram.Resize( this->m_NumberOfBinsX, this->m_NumberOfBinsY );
+}
+
+void
+ImagePairSimilarityJointHistogram::SetFloatingVolume( const UniformVolume::SmartPtr& fltVolume )
+{
+  Superclass::SetFloatingVolume( Self::PrescaleData( fltVolume, &this->m_NumberOfBinsY, &this->m_ScaleFactorFloating, &this->m_ScaleOffsetFloating ) );
+  this->m_JointHistogram.Resize( this->m_NumberOfBinsX, this->m_NumberOfBinsY );
+}
+
 UniformVolume::SmartPtr
 ImagePairSimilarityJointHistogram::PrescaleData
 ( const UniformVolume::SmartPtr& volume, size_t* numberOfBins, Types::DataItem* scaleFactor, Types::DataItem* scaleOffset )
