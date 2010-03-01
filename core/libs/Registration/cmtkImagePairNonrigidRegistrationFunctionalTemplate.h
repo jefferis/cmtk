@@ -120,6 +120,9 @@ public:
     this->WarpNeedsFixUpdate = true;
   }
   
+  /// Match intensities of reference and floating images.
+  virtual void MatchRefFltIntensities();
+
   /** Evaluate functional for the complete image data.
    * This function builds the pre-computed deformed floating image that is 
    * later used for rapid gradient computation.

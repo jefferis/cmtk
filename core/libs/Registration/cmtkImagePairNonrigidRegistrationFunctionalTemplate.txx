@@ -29,6 +29,20 @@
 //
 */
 
+#include <cmtkTypedArrayFunctionHistogramMatching.h>
+
+template<class VM>
+void
+cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::MatchRefFltIntensities()
+{
+  const Types::DataItem paddingValue = DataTypeTraits<Types::DataItem>::ChoosePaddingValue();
+  TypedArray::SmartPtr warpedArray( TypedArray::Create( TYPE_ITEM, this->m_WarpedVolume, this->FloatingGrid->GetNumberOfPixels(), false /*freeArray*/, true /*padding*/, &paddingValue ) );
+
+  UniformVolume::SmartPtr floatingCopy( this->FloatingGrid->Clone( true /*copyData*/ ) );
+  floatingCopy->GetData()->ApplyFunction( TypedArrayFunctionHistogramMatching( *warpedArray, *(this->ReferenceGrid->GetData()) ) );
+  this->m_Metric->SetFloatingVolume( floatingCopy );
+}
+
 template<class VM>
 void
 cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParameters() 
