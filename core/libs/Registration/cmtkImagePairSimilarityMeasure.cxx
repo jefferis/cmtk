@@ -46,27 +46,44 @@ cmtk
 
 ImagePairSimilarityMeasure::ImagePairSimilarityMeasure
 ( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
+  : m_InterpolationMethod( interpolation )
 {
-  this->m_ReferenceData = refVolume->GetData();
-  this->m_FloatingData = fltVolume->GetData();
+  this->SetReferenceVolume( refVolume );
+  this->SetFloatingVolume( fltVolume );
+}
 
-  if ( interpolation == Interpolators::DEFAULT )
+void
+ImagePairSimilarityMeasure::SetReferenceVolume( const UniformVolume::SmartPtr& refVolume )
+{
+  this->m_ReferenceVolume = refVolume;
+  this->m_ReferenceData = this->m_ReferenceVolume->GetData();
+}
+
+void
+ImagePairSimilarityMeasure::SetFloatingVolume( const UniformVolume::SmartPtr& fltVolume )
+{
+  this->m_FloatingVolume = fltVolume;
+  this->m_FloatingData = fltVolume->GetData();
+  
+  if ( this->m_InterpolationMethod == Interpolators::DEFAULT )
     {
     // decide based on floating image data class.
     switch ( this->m_FloatingData->GetDataClass() ) 
       {
       case DATACLASS_UNKNOWN :
       case DATACLASS_GREY :
-	this->m_FloatingImageInterpolator = 
-	  cmtk::UniformVolumeInterpolatorBase::SmartPtr( new cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear>( fltVolume ) );
+	this->m_InterpolationMethod = Interpolators::LINEAR;
+	this->m_FloatingImageInterpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear>( fltVolume ) );
+	break;
       case DATACLASS_LABEL :
-	this->m_FloatingImageInterpolator = 
-	  cmtk::UniformVolumeInterpolatorBase::SmartPtr( new cmtk::UniformVolumeInterpolator<cmtk::Interpolators::NearestNeighbor>( fltVolume ) );
+	this->m_InterpolationMethod = Interpolators::NEAREST_NEIGHBOR;
+	this->m_FloatingImageInterpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new cmtk::UniformVolumeInterpolator<cmtk::Interpolators::NearestNeighbor>( fltVolume ) );
+	break;
       }
     }
   else
     {
-    this->m_FloatingImageInterpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( ReformatVolume::CreateInterpolator( interpolation, fltVolume ) );
+    this->m_FloatingImageInterpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( ReformatVolume::CreateInterpolator( this->m_InterpolationMethod, fltVolume ) );
     }
 }
 

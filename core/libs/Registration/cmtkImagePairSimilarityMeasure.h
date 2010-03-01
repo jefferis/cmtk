@@ -81,6 +81,12 @@ public:
   /// Copy constructor.
   ImagePairSimilarityMeasure( Self& other, const bool copyData = false );
 
+  /// Set reference volume.
+  virtual void SetReferenceVolume( const UniformVolume::SmartPtr& refVolume );
+
+  /// Set reference volume.
+  virtual void SetFloatingVolume( const UniformVolume::SmartPtr& fltVolume );
+
   /// Reset metric computation.
   virtual void Reset() {}
 
@@ -129,11 +135,20 @@ public:
   }
 
 private:
+  /// Smart pointer to reference volume.
+  const UniformVolume::SmartPtr m_ReferenceVolume;
+  
   /// Smart pointer to reference image data.
   const TypedArray::SmartPtr m_ReferenceData;
   
+  /// Smart pointer to floating volume.
+  const UniformVolume::SmartPtr m_FloatingVolume;
+  
   /// Smart pointer to floating image data.
   const TypedArray::SmartPtr m_FloatingData;
+
+  /// Interpolation method ID.
+  Interpolators::InterpolationEnum m_InterpolationMethod;
 
   /// Floating image interpolator.
   const cmtk::UniformVolumeInterpolatorBase::SmartPtr m_FloatingImageInterpolator;
