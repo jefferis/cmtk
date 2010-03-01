@@ -76,15 +76,15 @@ public:
   /// Set smoothness constraint weight.
   virtual void SetGridEnergyWeight( const Self::ReturnType ) = 0;
 
+  /// Set flag for repeated intensity matching.
+  virtual void SetRepeatMatchRefFltIntensities( const bool flag ) = 0;
+
   /// Set warp for forward and backward functional.
   virtual void SetWarpXform( WarpXform::SmartPtr& warpFwd, WarpXform::SmartPtr& warpBwd ) = 0;
 
   /// Constructor function.
   static ImagePairSymmetricNonrigidRegistrationFunctional* Create
   ( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation );
-
-  /// Match intensities of reference and floating images.
-  virtual void MatchRefFltIntensities() = 0;
 };
 
 //@}

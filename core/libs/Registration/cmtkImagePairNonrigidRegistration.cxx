@@ -224,7 +224,8 @@ ImagePairNonrigidRegistration::MakeFunctional
     newFunctional->SetAdaptiveFixThreshFactor( this->m_AdaptiveFixThreshFactor );
     newFunctional->SetJacobianConstraintWeight( this->m_JacobianConstraintWeight );
     newFunctional->SetGridEnergyWeight( this->m_GridEnergyWeight );
-//    newFunctional->SetForceOutside( this->m_ForceOutsideFlag, this->m_ForceOutsideValue );
+    newFunctional->SetRepeatMatchRefFltIntensities( this->m_RepeatHistogramIntensityMatching );
+
     return newFunctional;
     } 
   else
@@ -240,6 +241,7 @@ ImagePairNonrigidRegistration::MakeFunctional
       newFunctional->SetLandmarkErrorWeight( this->m_LandmarkErrorWeight );
       newFunctional->SetMatchedLandmarkList( mll );
       }
+    newFunctional->SetRepeatMatchRefFltIntensities( this->m_RepeatHistogramIntensityMatching );
     
     return newFunctional;
   }
@@ -270,11 +272,6 @@ ImagePairNonrigidRegistration::EnterResolution
     nonrigidFunctional->SetWarpXform( warpXform );
     nonrigidFunctional->SetGridEnergyWeight( effGridEnergyWeight );
     nonrigidFunctional->SetJacobianConstraintWeight( effJacobianConstraintWeight );
-
-    if ( this->m_RepeatHistogramIntensityMatching )
-      {
-      nonrigidFunctional->MatchRefFltIntensities();
-      }
     } 
   else 
     {
@@ -286,11 +283,6 @@ ImagePairNonrigidRegistration::EnterResolution
       symmetricFunctional->SetGridEnergyWeight( effGridEnergyWeight );
       symmetricFunctional->SetJacobianConstraintWeight( effJacobianConstraintWeight );
       symmetricFunctional->SetInverseConsistencyWeight( effInverseConsistencyWeight );
-
-      if ( this->m_RepeatHistogramIntensityMatching )
-	{
-	symmetricFunctional->MatchRefFltIntensities();
-	}
       } 
     else 
       {

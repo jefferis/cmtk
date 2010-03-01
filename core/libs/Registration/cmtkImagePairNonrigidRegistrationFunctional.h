@@ -117,7 +117,7 @@ public:
   virtual void SetWarpXform( WarpXform::SmartPtr& warp ) = 0;
 
   /// Flag for repeated reference/floating intensity matching.
-  bool m_RepeatMatchRefFltIntensities;
+  cmtkGetSetMacro(bool,RepeatMatchRefFltIntensities);
   
   /// Match intensities of reference and floating images.
   virtual void MatchRefFltIntensities() = 0;

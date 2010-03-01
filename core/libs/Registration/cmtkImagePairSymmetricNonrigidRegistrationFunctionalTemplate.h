@@ -113,11 +113,11 @@ public:
   /// Set warp for forward and backward functional.
   virtual void SetWarpXform( WarpXform::SmartPtr& warpFwd, WarpXform::SmartPtr& warpBwd );
 
-  /// Match intensities of reference and floating images.
-  virtual void MatchRefFltIntensities()
+  /// Set flag for repeated histogram matching.
+  virtual void SetRepeatMatchRefFltIntensities( const bool flag )
   {
-    this->FwdFunctional.MatchRefFltIntensities();
-    this->BwdFunctional.MatchRefFltIntensities();
+    this->FwdFunctional.SetRepeatMatchRefFltIntensities( flag );
+    this->BwdFunctional.SetRepeatMatchRefFltIntensities( flag );
   }
 
   /// Return parameter vector.
