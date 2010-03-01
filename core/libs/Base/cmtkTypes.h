@@ -136,8 +136,8 @@ namespace Types
  * All data retrievals, stores and conversions are done using this type.
  */
 typedef float DataItem; 
-const ScalarDataType TYPE_ITEM = TYPE_FLOAT;
 }
+const ScalarDataType TYPE_ITEM = TYPE_FLOAT;
 #define CMTK_ITEM_MAX FLT_MAX
 #define CMTK_ITEM_MIN FLT_MIN
 #define CMTK_ITEM_NAN CMTK_FLOAT_NAN
@@ -145,8 +145,8 @@ const ScalarDataType TYPE_ITEM = TYPE_FLOAT;
 namespace Types 
 {
 typedef double DataItem; 
-const ScalarDataType TYPE_ITEM = TYPE_DOUBLE;
 }
+const ScalarDataType TYPE_ITEM = TYPE_DOUBLE;
 #define CMTK_ITEM_MAX DBL_MAX
 #define CMTK_ITEM_MIN DBL_MIN
 #define CMTK_ITEM_NAN CMTK_DOUBLE_NAN
@@ -160,15 +160,15 @@ const ScalarDataType TYPE_ITEM = TYPE_DOUBLE;
 namespace Types 
 { 
 typedef float Coordinate; 
-const ScalarDataType TYPE_COORDINATE = TYPE_FLOAT;
 }
+const ScalarDataType TYPE_COORDINATE = TYPE_FLOAT;
 #else
 /// Define float type used for coordinates.
 namespace Types 
 { 
 typedef double Coordinate; 
-const ScalarDataType TYPE_COORDINATE = TYPE_DOUBLE;
 }
+const ScalarDataType TYPE_COORDINATE = TYPE_DOUBLE;
 #endif
 
 /// Return item size for given scalar data type.
