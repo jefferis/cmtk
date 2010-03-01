@@ -90,6 +90,9 @@ private:
 
   /// Lookup table that translates between the two histograms.
   std::vector<unsigned int> m_Lookup;
+
+  /// Create lookup from histograms.
+  void CreateLookup();
 };
 
 //@}

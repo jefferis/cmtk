@@ -41,25 +41,34 @@ cmtk::TypedArrayFunctionHistogramMatching
   this->m_FixedArrayHistogram = Histogram<unsigned int>::SmartPtr( fixedArray.GetHistogram( numberOfHistogramBins ) );
   this->m_FixedArrayHistogram->ConvertToCumulative();
   
-  std::vector<double> normalizedFixedHistogram( numberOfHistogramBins );
-  for ( size_t l = 0; l < numberOfHistogramBins; ++l )
-    {
-    normalizedFixedHistogram[l] = 1.0 * this->m_FixedArrayHistogram->GetBin(l) / this->m_FixedArrayHistogram->GetBin(numberOfHistogramBins-1);
-    }
-  
   this->m_VariableArrayHistogram = Histogram<unsigned int>::SmartPtr( variableArray.GetHistogram( numberOfHistogramBins ) );
   this->m_VariableArrayHistogram->ConvertToCumulative();
+  
+  this->CreateLookup();
+}
 
-  std::vector<double> normalizedVariableHistogram( numberOfHistogramBins );
-  for ( size_t l = 0; l < numberOfHistogramBins; ++l )
+void
+cmtk::TypedArrayFunctionHistogramMatching
+::CreateLookup()
+{
+  const size_t variableNumBins = this->m_VariableArrayHistogram->GetNumBins();
+  std::vector<double> normalizedVariableHistogram( variableNumBins );
+  for ( size_t l = 0; l < variableNumBins; ++l )
     {
-    normalizedVariableHistogram[l] =  1.0 * this->m_VariableArrayHistogram->GetBin(l) / this->m_VariableArrayHistogram->GetBin(numberOfHistogramBins-1);
+    normalizedVariableHistogram[l] =  1.0 * this->m_VariableArrayHistogram->GetBin(l) / this->m_VariableArrayHistogram->GetBin( variableNumBins-1 );
+    }
+  
+  const size_t fixedNumBins = this->m_FixedArrayHistogram->GetNumBins();
+  std::vector<double> normalizedFixedHistogram( fixedNumBins );
+  for ( size_t l = 0; l < fixedNumBins; ++l )
+    {
+    normalizedFixedHistogram[l] = 1.0 * this->m_FixedArrayHistogram->GetBin(l) / this->m_FixedArrayHistogram->GetBin( fixedNumBins-1 );
     }
   
   size_t j = 0;
-  for ( size_t i = 0; i < numberOfHistogramBins; ++i )
+  for ( size_t i = 0; i < variableNumBins; ++i )
     {
-    while ((j < numberOfHistogramBins) && (normalizedFixedHistogram[j] < normalizedVariableHistogram[i]))
+    while ((j < fixedNumBins) && (normalizedFixedHistogram[j] < normalizedVariableHistogram[i]))
       {
       ++j;
       }
