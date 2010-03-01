@@ -66,6 +66,13 @@ protected:
   /// Flag whether to adjust floating image histogram to match reference image.
   cmtkGetSetMacro(bool,MatchFltToRefHistogram);
 
+  /** Flag for repeated application of histogram-based intensity matching.
+   * If this flag is set, histogram-based intensity matching is repeatedly applied
+   * throughout the registration process to match the floating image intensities
+   * with consideration for changing volume proportions as the deformation progresses.
+   */
+  cmtkGetSetMacroDefault(bool,RepeatHistogramIntensityMatching,true);
+
   /// This value determines how often the control point grid is refined.
   cmtkGetSetMacro(int,RefineGrid);
 

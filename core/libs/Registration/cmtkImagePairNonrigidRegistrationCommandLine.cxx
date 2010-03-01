@@ -177,6 +177,7 @@ ImagePairNonrigidRegistrationCommandLine
     metricGroup->AddSwitch( Key( "ncc" ), 5, "Normalized Cross Correlation metric" );
 
     cl.AddSwitch( Key( "match-histograms" ), &this->m_MatchFltToRefHistogram, true, "Match floating image histogram to reference image histogram." );
+    cl.AddSwitch( Key( "repeat-match-histograms" ), &this->m_RepeatHistogramIntensityMatching, true, "Repeat histogram matching after every level of the registration to account for volume changes." );
     cl.AddOption( Key( "force-outside-value" ), &forceOutsideValue, "Force values outside field of view to this value rather than drop incomplete pixel pairs", &forceOutsideFlag );
 
     this->m_PreprocessorRef.AttachToCommandLine( cl );

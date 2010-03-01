@@ -263,17 +263,22 @@ ImagePairNonrigidRegistration::EnterResolution
     effInverseConsistencyWeight *= this->m_RelaxWeight;
     }
 
-  // handle simple elastic functional
-  SmartPointer<ImagePairNonrigidRegistrationFunctional> elasticFunctional = ImagePairNonrigidRegistrationFunctional::SmartPtr::DynamicCastFrom( functional );
-  if ( elasticFunctional ) 
+  // handle simple nonrigid functional
+  SmartPointer<ImagePairNonrigidRegistrationFunctional> nonrigidFunctional = ImagePairNonrigidRegistrationFunctional::SmartPtr::DynamicCastFrom( functional );
+  if ( nonrigidFunctional ) 
     {
-    elasticFunctional->SetWarpXform( warpXform );
-    elasticFunctional->SetGridEnergyWeight( effGridEnergyWeight );
-    elasticFunctional->SetJacobianConstraintWeight( effJacobianConstraintWeight );
+    nonrigidFunctional->SetWarpXform( warpXform );
+    nonrigidFunctional->SetGridEnergyWeight( effGridEnergyWeight );
+    nonrigidFunctional->SetJacobianConstraintWeight( effJacobianConstraintWeight );
+
+    if ( this->m_RepeatHistogramIntensityMatching )
+      {
+      nonrigidFunctional->MatchRefFltIntensities();
+      }
     } 
   else 
     {
-    // handle inverse-consistent elastic functional
+    // handle inverse-consistent nonrigid functional
     SmartPointer<ImagePairSymmetricNonrigidRegistrationFunctional> symmetricFunctional = ImagePairSymmetricNonrigidRegistrationFunctional::SmartPtr::DynamicCastFrom( functional );
     if ( symmetricFunctional ) 
       {
@@ -281,12 +286,17 @@ ImagePairNonrigidRegistration::EnterResolution
       symmetricFunctional->SetGridEnergyWeight( effGridEnergyWeight );
       symmetricFunctional->SetJacobianConstraintWeight( effJacobianConstraintWeight );
       symmetricFunctional->SetInverseConsistencyWeight( effInverseConsistencyWeight );
+
+      if ( this->m_RepeatHistogramIntensityMatching )
+	{
+	symmetricFunctional->MatchRefFltIntensities();
+	}
       } 
     else 
       {
       // neither simple nor inverse-consistent functional: something went
       // badly wrong.
-      StdErr << "Fatal coding error: Non-elastic functional in ImagePairNonrigidRegistration::EnterResolution.\n";
+      StdErr << "Fatal coding error: Non-nonrigid functional in ImagePairNonrigidRegistration::EnterResolution.\n";
       abort();
       }
     }

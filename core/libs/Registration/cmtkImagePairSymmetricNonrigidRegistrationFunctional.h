@@ -82,6 +82,9 @@ public:
   /// Constructor function.
   static ImagePairSymmetricNonrigidRegistrationFunctional* Create
   ( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation );
+
+  /// Match intensities of reference and floating images.
+  virtual void MatchRefFltIntensities() = 0;
 };
 
 //@}

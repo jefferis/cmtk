@@ -113,6 +113,13 @@ public:
   /// Set warp for forward and backward functional.
   virtual void SetWarpXform( WarpXform::SmartPtr& warpFwd, WarpXform::SmartPtr& warpBwd );
 
+  /// Match intensities of reference and floating images.
+  virtual void MatchRefFltIntensities()
+  {
+    this->FwdFunctional.MatchRefFltIntensities();
+    this->BwdFunctional.MatchRefFltIntensities();
+  }
+
   /// Return parameter vector.
   virtual void GetParamVector ( CoordinateVector& v )  
   {
