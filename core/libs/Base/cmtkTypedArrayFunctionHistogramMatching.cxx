@@ -38,10 +38,23 @@ cmtk::TypedArrayFunctionHistogramMatching
 ( const TypedArray& variableArray, const TypedArray& fixedArray, const size_t numberOfHistogramBins )
   : m_Lookup( numberOfHistogramBins )
 {  
-  this->m_FixedArrayHistogram = Histogram<unsigned int>::SmartPtr( fixedArray.GetHistogram( numberOfHistogramBins ) );
+  this->m_FixedArrayHistogram = Self::HistogramType::SmartPtr( fixedArray.GetHistogram( numberOfHistogramBins ) );
   this->m_FixedArrayHistogram->ConvertToCumulative();
   
-  this->m_VariableArrayHistogram = Histogram<unsigned int>::SmartPtr( variableArray.GetHistogram( numberOfHistogramBins ) );
+  this->m_VariableArrayHistogram = Self::HistogramType::SmartPtr( variableArray.GetHistogram( numberOfHistogramBins ) );
+  this->m_VariableArrayHistogram->ConvertToCumulative();
+  
+  this->CreateLookup();
+}
+
+cmtk::TypedArrayFunctionHistogramMatching
+::TypedArrayFunctionHistogramMatching( const Self::HistogramType& variableHistogram, const Self::HistogramType& fixedHistogram )
+  : m_Lookup( variableHistogram.GetNumBins() )
+{
+  this->m_FixedArrayHistogram = Self::HistogramType::SmartPtr( fixedHistogram.Clone( true /*copyData*/ ) );
+  this->m_FixedArrayHistogram->ConvertToCumulative();
+  
+  this->m_VariableArrayHistogram = Self::HistogramType::SmartPtr( variableHistogram.Clone( true /*copyData*/ ) );
   this->m_VariableArrayHistogram->ConvertToCumulative();
   
   this->CreateLookup();

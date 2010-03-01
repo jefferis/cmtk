@@ -36,7 +36,7 @@
 #include "cmtkDataGridTests.txx"
 #include "cmtkUniformVolumeTests.txx"
 #include "cmtkScalarImageTests.txx"
-#include "cmtkTypedArrayTests.txx"
+#include "cmtkTypedArrayFunctionHistogramMatchingTests.txx"
 
 /** Set up table of test names and function pointers */
 typedef int (*testFuncPtr)();
@@ -60,6 +60,8 @@ const testNameAndFunctionPointer testTable[] =
   { "SplineWarpXformInverse",        &testSplineWarpXformInverse },
   { "TypedArrayMatchHistogram1",     &testTypedArrayMatchHistogram1 },
   { "TypedArrayMatchHistogram2",     &testTypedArrayMatchHistogram2 },
+  { "TypedArrayMatchHistogram3",     &testTypedArrayMatchHistogram3 },
+  { "TypedArrayMatchHistogram4",     &testTypedArrayMatchHistogram4 },
   { "UniformVolumeMatches",          &testUniformVolumeMatches },
   { NULL, NULL }
 };

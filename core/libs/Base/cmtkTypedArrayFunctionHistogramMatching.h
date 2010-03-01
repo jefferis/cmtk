@@ -75,18 +75,24 @@ public:
   /// Default number of histogram bins.
   static const size_t DefaultNumberOfHistogramBins = 1024;
 
-  /// Constructor: build lookup.
+  /// Histogram type.
+  typedef Histogram<unsigned int> HistogramType;
+
+  /// Constructor: build lookup from two data arrays.
   TypedArrayFunctionHistogramMatching( const TypedArray& variableArray, const TypedArray& fixedArray, const size_t numberOfHistogramBins = Self::DefaultNumberOfHistogramBins );
+
+  /// Constructor: build lookup from two histograms.
+  TypedArrayFunctionHistogramMatching( const Self::HistogramType& variableHistogram, const Self::HistogramType& fixedHistogram );
 
   /// Map a single value from the variable array to its new value.
   virtual Types::DataItem operator()( const Types::DataItem valueIn ) const;
 
 private:
   /// Fixed array histogram.
-  Histogram<unsigned int>::SmartPtr m_FixedArrayHistogram;
+  HistogramType::SmartPtr m_FixedArrayHistogram;
 
   /// Variable array histogram.
-  Histogram<unsigned int>::SmartPtr m_VariableArrayHistogram;
+  HistogramType::SmartPtr m_VariableArrayHistogram;
 
   /// Lookup table that translates between the two histograms.
   std::vector<unsigned int> m_Lookup;
