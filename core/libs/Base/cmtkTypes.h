@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -130,17 +130,23 @@ typedef enum
 extern const char* DataTypeName[];
 
 #ifdef CMTK_DATA_FLOAT
+namespace Types
+{ 
 /** @memo Definition of the data exchange item type
  * All data retrievals, stores and conversions are done using this type.
  */
-namespace Types { typedef float DataItem; }
-#define TYPE_ITEM TYPE_FLOAT
+typedef float DataItem; 
+const ScalarDataType TYPE_ITEM = TYPE_FLOAT;
+}
 #define CMTK_ITEM_MAX FLT_MAX
 #define CMTK_ITEM_MIN FLT_MIN
 #define CMTK_ITEM_NAN CMTK_FLOAT_NAN
 #else
-namespace Types { typedef double DataItem; }
-#define TYPE_ITEM TYPE_DOUBLE
+namespace Types 
+{
+typedef double DataItem; 
+const ScalarDataType TYPE_ITEM = TYPE_DOUBLE;
+}
 #define CMTK_ITEM_MAX DBL_MAX
 #define CMTK_ITEM_MIN DBL_MIN
 #define CMTK_ITEM_NAN CMTK_DOUBLE_NAN
@@ -151,13 +157,18 @@ namespace Types { typedef double DataItem; }
 /** @memo Definition of the coordinate data type
  * All spatial locations, distances, etc. are stored using this type.
  */
-namespace Types { typedef float Coordinate; }
-#define TYPE_COORDINATE TYPE_FLOAT
+namespace Types 
+{ 
+typedef float Coordinate; 
+const ScalarDataType TYPE_COORDINATE = TYPE_FLOAT;
+}
 #else
 /// Define float type used for coordinates.
-namespace Types { typedef double Coordinate; }
-#define TYPE_COORDINATE TYPE_DOUBLE
-
+namespace Types 
+{ 
+typedef double Coordinate; 
+const ScalarDataType TYPE_COORDINATE = TYPE_DOUBLE;
+}
 #endif
 
 /// Return item size for given scalar data type.
