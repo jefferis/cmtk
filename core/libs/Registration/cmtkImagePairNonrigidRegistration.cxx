@@ -128,12 +128,6 @@ ImagePairNonrigidRegistration::InitRegistration ()
     this->m_Xform = Xform::SmartPtr::DynamicCastFrom( warpXform ); 
     }
   
-  if ( this->m_UseOriginalData )
-    {
-    Functional::SmartPtr nextFunctional( this->MakeFunctional( this->m_ReferenceVolume, this->m_FloatingVolume ) );
-    FunctionalStack.push( nextFunctional );
-    }
-  
   if ( this->m_MaxStepSize <= 0 )
     {
     const SplineWarpXform* warp = SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_Xform ); 
@@ -143,19 +137,14 @@ ImagePairNonrigidRegistration::InitRegistration ()
   if ( this->m_CoarsestResolution <= 0 ) 
     this->m_CoarsestResolution = this->m_MaxStepSize;
   
-  UniformVolume::SmartPtr currRef( this->m_ReferenceVolume );
-  UniformVolume::SmartPtr currFlt( this->m_FloatingVolume );
-
+  if ( this->m_UseOriginalData )
+    {
+    this->m_ParameterStack.push( Self::LevelParameters::SmartPtr( new Self::LevelParameters( -1 ) ) );
+    }
+  
   for ( ;(currSampling<=this->m_CoarsestResolution); currSampling *= 2 ) 
     {
-    UniformVolume::SmartPtr nextRef( new UniformVolume( *currRef, currSampling ) );
-    UniformVolume::SmartPtr nextFlt( new UniformVolume( *currFlt, currSampling ) );
-
-    Functional::SmartPtr nextFunctional( this->MakeFunctional( nextRef, nextFlt ) );
-    FunctionalStack.push( nextFunctional );
-    
-    currRef = nextRef;
-    currFlt = nextFlt;
+    this->m_ParameterStack.push( Self::LevelParameters::SmartPtr( new Self::LevelParameters( currSampling ) ) );
     }
   
   switch ( this->m_Algorithm ) 
@@ -198,8 +187,22 @@ ImagePairNonrigidRegistration::MakeWarpXform
 
 Functional* 
 ImagePairNonrigidRegistration::MakeFunctional
-( UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume ) const
+( const Superclass::LevelParameters* parameters )
 {
+  const Self::LevelParameters* levelParameters = dynamic_cast<const Self::LevelParameters*>( parameters );
+  if ( ! levelParameters )
+    {
+    StdErr << "CODING ERROR: wrong RTTI for 'parameters'\n";
+    exit( 1 );
+    }
+
+  WarpXform::SmartPtr warpXform = WarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
+  if ( ! warpXform )
+    {
+    StdErr << "CODING ERROR: wrong RTTI for 'this->m_Xform'\n";
+    exit( 1 );
+    }  
+
   MatchedLandmarkList::SmartPtr mll( NULL );
   if ( this->m_LandmarkErrorWeight != 0 ) 
     {
@@ -213,11 +216,23 @@ ImagePairNonrigidRegistration::MakeFunctional
       }
     }
   
-  WarpXform::SmartPtr warpXform = WarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
+  UniformVolume::SmartPtr nextRef, nextFlt;
+  if ( levelParameters->m_Resolution > 0 )
+    {
+    nextRef = UniformVolume::SmartPtr( new UniformVolume( *this->m_ReferenceVolume, levelParameters->m_Resolution ) );
+    nextFlt = UniformVolume::SmartPtr( new UniformVolume( *this->m_FloatingVolume, levelParameters->m_Resolution ) );
+    }
+  else
+    {
+    // for final, original resolution just take input volumes.
+    nextRef = this->m_ReferenceVolume;
+    nextFlt = this->m_FloatingVolume;
+    }
+
   if ( this->m_InverseConsistencyWeight > 0 ) 
     {
     ImagePairSymmetricNonrigidRegistrationFunctional *newFunctional = 
-      ImagePairSymmetricNonrigidRegistrationFunctional::Create( this->m_Metric, refVolume, fltVolume, this->m_FloatingImageInterpolation );
+      ImagePairSymmetricNonrigidRegistrationFunctional::Create( this->m_Metric, nextRef, nextFlt, this->m_FloatingImageInterpolation );
     newFunctional->SetInverseConsistencyWeight( this->m_InverseConsistencyWeight );
     newFunctional->SetAdaptiveFixParameters( this->m_AdaptiveFixParameters );
     newFunctional->SetAdaptiveFixThreshFactor( this->m_AdaptiveFixThreshFactor );
@@ -229,7 +244,7 @@ ImagePairNonrigidRegistration::MakeFunctional
     } 
   else
     {
-    ImagePairNonrigidRegistrationFunctional *newFunctional = ImagePairNonrigidRegistrationFunctional::Create( this->m_Metric, refVolume, fltVolume, this->m_FloatingImageInterpolation );
+    ImagePairNonrigidRegistrationFunctional *newFunctional = ImagePairNonrigidRegistrationFunctional::Create( this->m_Metric, nextRef, nextFlt, this->m_FloatingImageInterpolation );
     newFunctional->SetAdaptiveFixParameters( this->m_AdaptiveFixParameters );
     newFunctional->SetAdaptiveFixThreshFactor( this->m_AdaptiveFixThreshFactor );
     newFunctional->SetJacobianConstraintWeight( this->m_JacobianConstraintWeight );

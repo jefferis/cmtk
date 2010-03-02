@@ -106,8 +106,7 @@ ImagePairAffineRegistration::InitRegistration ()
 
   if ( this->m_UseOriginalData ) 
     {
-    Functional::SmartPtr newFunctional( ImagePairAffineRegistrationFunctional::Create( this->m_Metric, this->m_ReferenceVolume, this->m_FloatingVolume, this->m_FloatingImageInterpolation, affineXform ) );
-    FunctionalStack.push( newFunctional );
+    this->m_ParameterStack.push( Self::LevelParameters::SmartPtr( new Self::LevelParameters( -1 ) ) );
     }
   
   Types::Coordinate currSampling = std::max( this->m_Sampling, 2 * std::min( this->m_ReferenceVolume->GetMinDelta(), this->m_FloatingVolume->GetMinDelta()));
@@ -115,21 +114,11 @@ ImagePairAffineRegistration::InitRegistration ()
   double coarsest = this->m_CoarsestResolution;
   if ( coarsest <= 0 ) coarsest = this->m_MaxStepSize;
 
-  UniformVolume::SmartPtr currRef( this->m_ReferenceVolume );
-  UniformVolume::SmartPtr currFlt( this->m_FloatingVolume );
-  
   for ( ; (currSampling<=coarsest); currSampling *= 2 ) 
     {
-    UniformVolume::SmartPtr nextRef( new UniformVolume( *currRef, currSampling ) );
-    UniformVolume::SmartPtr nextFlt( new UniformVolume( *currFlt, currSampling ) );
-    
-    Functional::SmartPtr newFunctional( ImagePairAffineRegistrationFunctional::Create( this->m_Metric, nextRef, nextFlt, this->m_FloatingImageInterpolation, affineXform ) );
-    FunctionalStack.push( newFunctional );
-    
-    currRef = nextRef;
-    currFlt = nextFlt;
+    this->m_ParameterStack.push( Self::LevelParameters::SmartPtr( new Self::LevelParameters( currSampling ) ) );
     }
-
+  
   this->m_Optimizer = Optimizer::SmartPtr( new BestNeighbourOptimizer( this->m_OptimizerStepFactor ) );   
   this->m_Optimizer->SetCallback( this->m_Callback );
   
@@ -144,6 +133,40 @@ ImagePairAffineRegistration::InitRegistration ()
   NumberDOFsIterator = NumberDOFs.begin();
 
   return CALLBACK_OK;
+}
+
+Functional* 
+ImagePairAffineRegistration
+::MakeFunctional( const Superclass::LevelParameters* parameters )
+{
+  const Self::LevelParameters* levelParameters = dynamic_cast<const Self::LevelParameters*>( parameters );
+  if ( ! levelParameters )
+    {
+    StdErr << "CODING ERROR: wrong RTTI for 'parameters'\n";
+    exit( 1 );
+    }
+
+  AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( this->m_Xform );
+  if ( ! affineXform )
+    {
+    StdErr << "CODING ERROR: wrong RTTI for 'this->m_Xform'\n";
+    exit( 1 );
+    }
+  
+  UniformVolume::SmartPtr nextRef, nextFlt;
+  if ( levelParameters->m_Resolution > 0 )
+    {
+    nextRef = UniformVolume::SmartPtr( new UniformVolume( *this->m_ReferenceVolume, levelParameters->m_Resolution ) );
+    nextFlt = UniformVolume::SmartPtr( new UniformVolume( *this->m_FloatingVolume, levelParameters->m_Resolution ) );
+    }
+  else
+    {
+    // for final, original resolution just take input volumes.
+    nextRef = this->m_ReferenceVolume;
+    nextFlt = this->m_FloatingVolume;
+    }
+  
+  return ImagePairAffineRegistrationFunctional::Create( this->m_Metric, nextRef, nextFlt, this->m_FloatingImageInterpolation, affineXform );
 }
 
 void

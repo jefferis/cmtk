@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -69,6 +69,13 @@ cmtk
  */
 class ImagePairRegistration 
 {
+public:
+  /// This class.
+  typedef ImagePairRegistration Self;
+
+  /// Smart pointer.
+  typedef SmartPointer<Self> SmartPtr;
+
 protected:
   /// Image pair similarity measure to use as the registration metric.
   int m_Metric;
@@ -234,8 +241,25 @@ protected:
   /// Current / final transformation.
   Xform::SmartPtr m_Xform;
 
+  /// Base class for registration level parameters.
+  class LevelParameters
+  {
+  public:
+    /// This class.
+    typedef LevelParameters Self;
+
+    /// Smart pointer.
+    typedef SmartPointer<Self> SmartPtr;
+
+    /// Virtual destructor.
+    virtual ~LevelParameters() {}
+  };
+
   /// Stack of functional objects for the resolution steps.
-  std::stack<Functional::SmartPtr> FunctionalStack;
+  std::stack<Self::LevelParameters::SmartPtr> m_ParameterStack;
+
+  /// Make functional for a set of registration level parameters.
+  virtual Functional* MakeFunctional( const Self::LevelParameters* levelParameters ) = 0;
 
   /// Pointer to optimizer object.
   Optimizer::SmartPtr m_Optimizer;

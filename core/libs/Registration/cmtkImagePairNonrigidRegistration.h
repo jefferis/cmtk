@@ -56,6 +56,13 @@ class ImagePairNonrigidRegistration :
   /// Inherit basic voxel registration functions.
   public ImagePairRegistration 
 {
+public:
+  /// This class.
+  typedef ImagePairNonrigidRegistration Self;
+
+  /// Parent class.
+  typedef ImagePairRegistration Superclass;
+
 protected:
   /// Initial deformation.
   WarpXform::SmartPtr InitialWarpXform;
@@ -188,9 +195,6 @@ private:
   /// Number of refinements so far.
   int RefineGridCount;
 
-  /// Convenience typedef.
-  typedef ImagePairRegistration Superclass;
-
   /// Are we currently doing a relaxation step?
   bool RelaxationStep;
 
@@ -212,9 +216,22 @@ private:
    */
   WarpXform* MakeWarpXform( const Types::Coordinate* size, const AffineXform* initialAffine ) const;
 
-  /** Create functional with all settings and two given volume objects.
+  /// Base class for registration level parameters.
+  class LevelParameters
+    /// Inherit from superclass parameters.
+    : public Superclass::LevelParameters
+  {
+  public:
+    /// Constructor: take image resolution.
+    LevelParameters( const Types::Coordinate resolution ) : m_Resolution( resolution ) {}
+
+    /// Image resolution for this level.
+    Types::Coordinate m_Resolution;
+  };
+
+  /** Create functional with current level settings.
    */
-  Functional* MakeFunctional( UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume ) const;
+  virtual Functional* MakeFunctional( const Superclass::LevelParameters* levelParameters );
 };
 
 //@}

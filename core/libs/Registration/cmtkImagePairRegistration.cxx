@@ -119,20 +119,20 @@ ImagePairRegistration::Register ()
   
   Types::Coordinate currentExploration = this->m_MaxStepSize;
   CoordinateVector::SmartPtr v( new CoordinateVector() );
-  int NumResolutionLevels = FunctionalStack.size();
-
+  const size_t NumResolutionLevels = this->m_ParameterStack.size();
+  
   Progress::Begin( 0, NumResolutionLevels, 1, "Multi-level Registration" );
 
   int index = 1;
-  while ( ! FunctionalStack.empty() && ( irq == CALLBACK_OK ) ) 
+  while ( ! this->m_ParameterStack.empty() && ( irq == CALLBACK_OK ) ) 
     {
-    Functional::SmartPtr nextFunctional = FunctionalStack.top();
-    FunctionalStack.pop();
+    Functional::SmartPtr nextFunctional( this->MakeFunctional( this->m_ParameterStack.top() ) );
+    this->m_ParameterStack.pop();
     
     // Reference functional as we still need if after the optimization when
     // calling DoneResolution().
     //    nextFunctional->Reference();
-
+    
     this->m_Optimizer->SetFunctional( nextFunctional );
 
     int doneResolution = 0;

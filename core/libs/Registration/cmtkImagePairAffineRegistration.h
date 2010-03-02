@@ -105,6 +105,12 @@ protected:
   virtual int DoneResolution( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f, const int level, const int total );
 
 public:
+  /// This class.
+  typedef ImagePairAffineRegistration Self;
+
+  /// Parent class.
+  typedef ImagePairRegistration Superclass;
+
   /** Default constructor. 
    */
   ImagePairAffineRegistration ();
@@ -132,11 +138,25 @@ public:
   }
 
 private:
-  /// Convenience definition.
-  typedef ImagePairRegistration Superclass;
-
   /// Iterator for NumberDOFs and NumberDOFsFinal
   std::vector<short>::iterator NumberDOFsIterator;
+
+  /// Base class for registration level parameters.
+  class LevelParameters
+    /// Inherit from superclass parameters.
+    : public Superclass::LevelParameters
+  {
+  public:
+    /// Constructor: take image resolution.
+    LevelParameters( const Types::Coordinate resolution ) : m_Resolution( resolution ) {}
+
+    /// Image resolution for this level.
+    Types::Coordinate m_Resolution;
+  };
+
+  /** Create functional with all settings for next level.
+   */
+  virtual Functional* MakeFunctional( const Superclass::LevelParameters* );
 };
 
 //@}
