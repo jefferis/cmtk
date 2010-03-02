@@ -380,7 +380,18 @@ ImagePairNonrigidRegistration::GetReformattedFloatingImage( Interpolators::Inter
   WarpXform::SmartPtr warpXform( this->GetTransformation() );
   reformat.SetWarpXform( warpXform );
 
-  return reformat.PlainReformat();
+  if ( this->m_ForceOutsideFlag )
+    {
+    reformat.SetPaddingValue( this->m_ForceOutsideValue );
+    }
+  
+  UniformVolume* result = reformat.PlainReformat();
+
+  if ( this->m_ForceOutsideFlag )
+    {
+    result->GetData()->ClearPaddingFlag();
+    }
+  return result;
 }
 
 

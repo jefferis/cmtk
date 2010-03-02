@@ -151,10 +151,11 @@ public:
 
   /** Plain reformatting of a single plane.
    * This function reformats the floating data to a plane spatially identical 
-   * to the given plane in the reference image.
+   * to the given plane in the reference image. This is useful for interactive
+   * reformatting, where we want a single plane reformatted as fast as possible.
    */
   TypedArray* PlainReformat( const int plane, TypedArray *const target = NULL, const size_t targetOffset = 0 );
-
+  
   /// Constants for transformation field mode.
   typedef enum 
   {

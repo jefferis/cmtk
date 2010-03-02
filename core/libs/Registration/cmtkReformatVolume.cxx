@@ -124,19 +124,64 @@ ReformatVolume::PlainReformat()
 
   if ( targetVolume ) 
     {
-    size_t planeSize = targetVolume->GetDims(AXIS_X) * targetVolume->GetDims(AXIS_Y);
-    
     Progress::Begin( 0, targetVolume->GetDims( AXIS_Z ), 1, "Volume reformatting" );
     
     TypedArray::SmartPtr targetData( TypedArray::Create( FloatingVolume->GetData()->GetType(), targetVolume->GetNumberOfPixels() ) );
     if ( this->m_UsePaddingValue )
       targetData->SetPaddingValue( this->m_PaddingValue );
     
-    size_t planeOffset = 0;
-    for ( int plane = 0; plane < targetVolume->GetDims(AXIS_Z); ++plane, planeOffset += planeSize ) 
+    UniformVolumeInterpolatorBase::SmartPtr interpolator( this->CreateInterpolator( this->FloatingVolume ) );
+    Vector3D pFlt;
+    
+    const int *dims = targetVolume->GetDims();
+    
+    size_t offset = 0;
+    for ( int pZ = 0; pZ < dims[2]; ++pZ ) 
       {
-      this->PlainReformat( plane, targetData.GetPtr(), planeOffset );
-      Progress::SetProgress( plane );
+      Types::DataItem value = 0;
+      
+      const SplineWarpXform::SmartPtr& splineWarp = SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_WarpXform );
+      if ( splineWarp ) 
+	{
+	const SplineWarpXformUniformVolume xformVolume( splineWarp, this->ReferenceVolume );
+	
+	for ( int pY = 0; pY<dims[1]; ++pY ) 
+	  {
+	  for ( int pX = 0; pX<dims[0]; ++pX, ++offset ) 
+	    {
+	    xformVolume.GetTransformedGrid( pFlt, pX, pY, pZ );
+	    
+	    if ( interpolator->GetDataAt( pFlt, value ) )
+	      targetData->Set( value, offset );	      
+	    else
+	      if ( CheckerboardMode )
+		targetData->Set( ((pX>>3)%2)==((pY>>3)%2) ? 0 : MaximumValue, offset );
+	      else
+		targetData->SetPaddingAt( offset );
+	    }
+	  }
+	} 
+      else
+	{
+	for ( int pY = 0; pY<dims[1]; ++pY ) 
+	  {
+	  for ( int pX = 0; pX<dims[0]; ++pX, ++offset ) 
+	    {	    
+	    ReferenceVolume->GetGridLocation( pFlt, pX, pY, pZ );
+	    this->m_AffineXform->ApplyInPlace( pFlt );
+	    
+	    if ( interpolator->GetDataAt( pFlt, value ) )
+	      targetData->Set( value, offset );
+	    else
+	      if ( CheckerboardMode )
+		targetData->Set( ((pX>>3)%2)==((pY>>3)%2) ? 0 : MaximumValue, offset );
+	      else
+		targetData->SetPaddingAt( offset );
+	    }
+	  }
+	}
+      
+      Progress::SetProgress( pZ );
       }
     
     targetVolume->SetData( targetData );
@@ -157,7 +202,7 @@ ReformatVolume::PlainReformat
   if ( ! result ) 
     {
     result = TypedArray::Create( FloatingVolume->GetData()->GetType(), DataSize );
-    
+     
     if ( this->m_UsePaddingValue )
       result->SetPaddingValue( this->m_PaddingValue );
     }
@@ -177,11 +222,11 @@ ReformatVolume::PlainReformat
     const SplineWarpXformUniformVolume xformVolume( splineWarp, this->ReferenceVolume );
     
     for ( int pY = 0; pY<DimsY; ++pY ) 
-      {
+       {
       for ( int pX = 0; pX<DimsX; ++pX, ++offset ) 
-	{
+ 	{
 	xformVolume.GetTransformedGrid( pMod, pX, pY, plane );
-	
+ 	
 	if ( interpolator->GetDataAt( pMod, value ) )
 	  result->Set( value, offset );	      
 	else
@@ -189,8 +234,8 @@ ReformatVolume::PlainReformat
 	    result->Set( ((pX>>3)%2)==((pY>>3)%2) ? 0 : MaximumValue, offset );
 	  else
 	    result->SetPaddingAt( offset );
-	}
-      }
+ 	}
+       }
     } 
   else
     {
