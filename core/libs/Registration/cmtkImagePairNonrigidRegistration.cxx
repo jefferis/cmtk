@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -99,19 +99,6 @@ ImagePairNonrigidRegistration::InitRegistration ()
     this->GetVolume_2()->GetData()->ApplyFunction( TypedArrayFunctionHistogramMatching( *(this->GetVolume_2()->GetData()), *(this->GetVolume_1()->GetData()) ) );
     }
   
-  MatchedLandmarkList::SmartPtr mll( NULL );
-  if ( this->m_LandmarkErrorWeight != 0 ) 
-    {
-    LandmarkList::SmartPtr sourceLandmarks = this->m_ReferenceVolume->m_LandmarkList;
-    LandmarkList::SmartPtr targetLandmarks = this->m_FloatingVolume->m_LandmarkList;
-    
-    if ( sourceLandmarks && targetLandmarks ) 
-      {
-      mll = MatchedLandmarkList::SmartPtr( new MatchedLandmarkList( sourceLandmarks, targetLandmarks ) );
-      fprintf( stderr, "Matched %d landmarks.\n", (int)mll->size() );
-      }
-    }
-  
   Vector3D center = this->m_FloatingVolume->GetCenterCropRegion();
   this->m_InitialTransformation->ChangeCenter( center.XYZ );
 
@@ -143,7 +130,7 @@ ImagePairNonrigidRegistration::InitRegistration ()
   
   if ( this->m_UseOriginalData )
     {
-    Functional::SmartPtr nextFunctional( this->MakeFunctional( this->m_ReferenceVolume, this->m_FloatingVolume, mll ) );
+    Functional::SmartPtr nextFunctional( this->MakeFunctional( this->m_ReferenceVolume, this->m_FloatingVolume ) );
     FunctionalStack.push( nextFunctional );
     }
   
@@ -164,7 +151,7 @@ ImagePairNonrigidRegistration::InitRegistration ()
     UniformVolume::SmartPtr nextRef( new UniformVolume( *currRef, currSampling ) );
     UniformVolume::SmartPtr nextFlt( new UniformVolume( *currFlt, currSampling ) );
 
-    Functional::SmartPtr nextFunctional( this->MakeFunctional( nextRef, nextFlt, mll ) );
+    Functional::SmartPtr nextFunctional( this->MakeFunctional( nextRef, nextFlt ) );
     FunctionalStack.push( nextFunctional );
     
     currRef = nextRef;
@@ -211,9 +198,21 @@ ImagePairNonrigidRegistration::MakeWarpXform
 
 Functional* 
 ImagePairNonrigidRegistration::MakeFunctional
-( UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume,
-  MatchedLandmarkList::SmartPtr& mll ) const
+( UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume ) const
 {
+  MatchedLandmarkList::SmartPtr mll( NULL );
+  if ( this->m_LandmarkErrorWeight != 0 ) 
+    {
+    LandmarkList::SmartPtr sourceLandmarks = this->m_ReferenceVolume->m_LandmarkList;
+    LandmarkList::SmartPtr targetLandmarks = this->m_FloatingVolume->m_LandmarkList;
+    
+    if ( sourceLandmarks && targetLandmarks ) 
+      {
+      mll = MatchedLandmarkList::SmartPtr( new MatchedLandmarkList( sourceLandmarks, targetLandmarks ) );
+      fprintf( stderr, "Matched %d landmarks.\n", (int)mll->size() );
+      }
+    }
+  
   WarpXform::SmartPtr warpXform = WarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
   if ( this->m_InverseConsistencyWeight > 0 ) 
     {

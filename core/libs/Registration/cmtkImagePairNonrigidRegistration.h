@@ -1,7 +1,7 @@
 /*
 //
+//  Copyright 2004-2010 SRI International
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -213,16 +213,8 @@ private:
   WarpXform* MakeWarpXform( const Types::Coordinate* size, const AffineXform* initialAffine ) const;
 
   /** Create functional with all settings and two given volume objects.
-   *\todo Currently, if a tissue property map is used for local constraint
-   * weights, this cannot be used with edge volumes. This is because this
-   * function has access to the resampled edge data in such a case, but not
-   * to the actual image intensities of the resmpled image. The latter is
-   * required for the tissue property map. Potentially, we could create the
-   * entire map outside this function and give it as an additional optional
-   * parameter. But since we're using neither edge images nor tissue maps
-   * much, it doesn't seem worth the effort.
    */
-  Functional* MakeFunctional( UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, MatchedLandmarkList::SmartPtr& mll = MatchedLandmarkList::SmartPtr::Null ) const;
+  Functional* MakeFunctional( UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume ) const;
 };
 
 //@}
