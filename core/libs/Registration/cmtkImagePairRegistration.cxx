@@ -126,7 +126,7 @@ ImagePairRegistration::Register ()
   int index = 1;
   while ( ! this->m_ParameterStack.empty() && ( irq == CALLBACK_OK ) ) 
     {
-    Functional::SmartPtr nextFunctional( this->MakeFunctional( this->m_ParameterStack.top() ) );
+    Functional::SmartPtr nextFunctional( this->MakeFunctional( index-1, this->m_ParameterStack.top() ) );
     this->m_ParameterStack.pop();
     
     // Reference functional as we still need if after the optimization when

@@ -259,7 +259,7 @@ protected:
   std::stack<Self::LevelParameters::SmartPtr> m_ParameterStack;
 
   /// Make functional for a set of registration level parameters.
-  virtual Functional* MakeFunctional( const Self::LevelParameters* levelParameters ) = 0;
+  virtual Functional* MakeFunctional( const int level, const Self::LevelParameters* levelParameters ) = 0;
 
   /// Pointer to optimizer object.
   Optimizer::SmartPtr m_Optimizer;

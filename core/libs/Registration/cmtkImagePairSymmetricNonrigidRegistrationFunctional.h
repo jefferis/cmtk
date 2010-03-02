@@ -76,9 +76,6 @@ public:
   /// Set smoothness constraint weight.
   virtual void SetGridEnergyWeight( const Self::ReturnType ) = 0;
 
-  /// Set flag for repeated intensity matching.
-  virtual void SetRepeatMatchRefFltIntensities( const bool flag ) = 0;
-
   /// Set warp for forward and backward functional.
   virtual void SetWarpXform( WarpXform::SmartPtr& warpFwd, WarpXform::SmartPtr& warpBwd ) = 0;
 

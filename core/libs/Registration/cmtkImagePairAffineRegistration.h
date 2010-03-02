@@ -156,7 +156,7 @@ private:
 
   /** Create functional with all settings for next level.
    */
-  virtual Functional* MakeFunctional( const Superclass::LevelParameters* );
+  virtual Functional* MakeFunctional( const int level, const Superclass::LevelParameters* );
 };
 
 //@}

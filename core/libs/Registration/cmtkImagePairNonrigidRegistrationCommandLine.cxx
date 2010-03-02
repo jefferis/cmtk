@@ -156,7 +156,7 @@ ImagePairNonrigidRegistrationCommandLine
     cl.AddSwitch( Key( "no-maxnorm" ), &this->m_UseMaxNorm, false, "Use Euclid norm for gradient normalication in optimization, rather than maximum norm" );
 
     cl.AddOption( Key( "jacobian-constraint-weight" ), &this->m_JacobianConstraintWeight, "Weight for Jacobian-based local volume preservation constraint" );
-    cl.AddOption( Key( "gridenergy-constraint-weight" ), &this->m_GridEnergyWeight, "Weight for grid bending energy constraint" );
+    cl.AddOption( Key( "smoothness-constraint-weight" ), &this->m_GridEnergyWeight, "Weight for smoothness constraint based on second-order grid bending energy." );
     cl.AddOption( Key( "landmark-constraint-weight" ), &this->m_LandmarkErrorWeight, "Weight for landmark misregistration registration" );
     cl.AddOption( Key( "inverse-consistency-weight" ), &this->m_InverseConsistencyWeight, "Weight for inverse consistency constraint" );
     cl.AddOption( Key( "constraint-relaxation-factor" ), &this->m_RelaxWeight, "Weight relaxation factor for alternating under-constrained iterations" );
@@ -179,7 +179,7 @@ ImagePairNonrigidRegistrationCommandLine
     metricGroup->AddSwitch( Key( "ncc" ), 5, "Normalized Cross Correlation metric" );
 
     cl.AddSwitch( Key( "match-histograms" ), &this->m_MatchFltToRefHistogram, true, "Match floating image histogram to reference image histogram." );
-    cl.AddSwitch( Key( "repeat-match-histograms" ), &this->m_RepeatHistogramIntensityMatching, true, "Repeat histogram matching after every level of the registration to account for volume changes." );
+    cl.AddSwitch( Key( "repeat-match-histograms" ), &this->m_RepeatMatchFltToRefHistogram, true, "Repeat histogram matching after every level of the registration to account for volume changes." );
     cl.AddOption( Key( "force-outside-value" ), &forceOutsideValue, "Force values outside field of view to this value rather than drop incomplete pixel pairs", &forceOutsideFlag );
 
     this->m_PreprocessorRef.AttachToCommandLine( cl );

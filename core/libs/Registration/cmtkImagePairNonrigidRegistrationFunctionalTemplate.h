@@ -134,11 +134,6 @@ public:
       {
       this->m_WarpedVolume = Memory::AllocateArray<Types::DataItem>(  this->m_DimsX * this->m_DimsY * this->m_DimsZ  );
       }
-    else
-      {
-      if ( m_RepeatMatchRefFltIntensities ) 
-	this->MatchRefFltIntensities();
-      }
     
     const size_t numberOfTasks = std::min<size_t>( this->m_NumberOfTasks, this->m_DimsY * this->m_DimsZ );
     for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 

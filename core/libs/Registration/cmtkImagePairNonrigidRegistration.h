@@ -78,7 +78,7 @@ protected:
    * throughout the registration process to match the floating image intensities
    * with consideration for changing volume proportions as the deformation progresses.
    */
-  cmtkGetSetMacroDefault(bool,RepeatHistogramIntensityMatching,true);
+  cmtkGetSetMacroDefault(bool,RepeatMatchFltToRefHistogram,true);
 
   /// This value determines how often the control point grid is refined.
   cmtkGetSetMacro(int,RefineGrid);
@@ -231,7 +231,7 @@ private:
 
   /** Create functional with current level settings.
    */
-  virtual Functional* MakeFunctional( const Superclass::LevelParameters* levelParameters );
+  virtual Functional* MakeFunctional( const int level, const Superclass::LevelParameters* levelParameters );
 };
 
 //@}

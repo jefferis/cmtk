@@ -60,6 +60,7 @@ ImagePairNonrigidRegistration::ImagePairNonrigidRegistration ()
   : InitialWarpXform( NULL ),
     InverseWarpXform( NULL ),
     m_MatchFltToRefHistogram( false ),
+    m_RepeatMatchFltToRefHistogram( false ),
     m_InverseConsistencyWeight( 0.0 ),
     m_ForceOutsideFlag( false ),
     m_ForceOutsideValue( 0.0 )
@@ -94,11 +95,6 @@ ImagePairNonrigidRegistration::InitRegistration ()
   this->m_ReferenceVolume = this->m_Volume_1;
   this->m_FloatingVolume = this->m_Volume_2;
 
-  if ( this->m_MatchFltToRefHistogram )
-    {
-    this->GetVolume_2()->GetData()->ApplyFunction( TypedArrayFunctionHistogramMatching( *(this->GetVolume_2()->GetData()), *(this->GetVolume_1()->GetData()) ) );
-    }
-  
   Vector3D center = this->m_FloatingVolume->GetCenterCropRegion();
   this->m_InitialTransformation->ChangeCenter( center.XYZ );
 
@@ -187,7 +183,7 @@ ImagePairNonrigidRegistration::MakeWarpXform
 
 Functional* 
 ImagePairNonrigidRegistration::MakeFunctional
-( const Superclass::LevelParameters* parameters )
+( const int level, const Superclass::LevelParameters* parameters )
 {
   const Self::LevelParameters* levelParameters = dynamic_cast<const Self::LevelParameters*>( parameters );
   if ( ! levelParameters )
@@ -216,35 +212,46 @@ ImagePairNonrigidRegistration::MakeFunctional
       }
     }
   
-  UniformVolume::SmartPtr nextRef, nextFlt;
-  if ( levelParameters->m_Resolution > 0 )
+  UniformVolume::SmartPtr referenceVolume( this->m_ReferenceVolume );
+  UniformVolume::SmartPtr floatingVolume( this->m_FloatingVolume );
+  if ( !level && this->m_MatchFltToRefHistogram )
     {
-    nextRef = UniformVolume::SmartPtr( new UniformVolume( *this->m_ReferenceVolume, levelParameters->m_Resolution ) );
-    nextFlt = UniformVolume::SmartPtr( new UniformVolume( *this->m_FloatingVolume, levelParameters->m_Resolution ) );
+    floatingVolume = UniformVolume::SmartPtr( floatingVolume->Clone( true /*copyData*/ ) );
+    floatingVolume->GetData()->ApplyFunction( TypedArrayFunctionHistogramMatching( *(floatingVolume->GetData()), *(referenceVolume->GetData()) ) );
     }
   else
     {
-    // for final, original resolution just take input volumes.
-    nextRef = this->m_ReferenceVolume;
-    nextFlt = this->m_FloatingVolume;
+    if ( this->m_RepeatMatchFltToRefHistogram )
+      {
+      floatingVolume = UniformVolume::SmartPtr( floatingVolume->Clone( true /*copyData*/ ) );
+      UniformVolume::SmartPtr reformat( this->GetReformattedFloatingImage( Interpolators::NEAREST_NEIGHBOR ) );
+      floatingVolume->GetData()->ApplyFunction( TypedArrayFunctionHistogramMatching( *(reformat->GetData()), *(referenceVolume->GetData()) ) );
+      }
+    }
+  
+  if ( levelParameters->m_Resolution > 0 )
+    {
+    // for resample if not final, original resolution
+    referenceVolume = UniformVolume::SmartPtr( new UniformVolume( *referenceVolume, levelParameters->m_Resolution ) );
+    floatingVolume = UniformVolume::SmartPtr( new UniformVolume( *floatingVolume, levelParameters->m_Resolution ) );
     }
 
   if ( this->m_InverseConsistencyWeight > 0 ) 
     {
     ImagePairSymmetricNonrigidRegistrationFunctional *newFunctional = 
-      ImagePairSymmetricNonrigidRegistrationFunctional::Create( this->m_Metric, nextRef, nextFlt, this->m_FloatingImageInterpolation );
+      ImagePairSymmetricNonrigidRegistrationFunctional::Create( this->m_Metric, referenceVolume, floatingVolume, this->m_FloatingImageInterpolation );
     newFunctional->SetInverseConsistencyWeight( this->m_InverseConsistencyWeight );
     newFunctional->SetAdaptiveFixParameters( this->m_AdaptiveFixParameters );
     newFunctional->SetAdaptiveFixThreshFactor( this->m_AdaptiveFixThreshFactor );
     newFunctional->SetJacobianConstraintWeight( this->m_JacobianConstraintWeight );
     newFunctional->SetGridEnergyWeight( this->m_GridEnergyWeight );
-    newFunctional->SetRepeatMatchRefFltIntensities( this->m_RepeatHistogramIntensityMatching );
 
     return newFunctional;
     } 
   else
     {
-    ImagePairNonrigidRegistrationFunctional *newFunctional = ImagePairNonrigidRegistrationFunctional::Create( this->m_Metric, nextRef, nextFlt, this->m_FloatingImageInterpolation );
+    ImagePairNonrigidRegistrationFunctional *newFunctional = 
+      ImagePairNonrigidRegistrationFunctional::Create( this->m_Metric, referenceVolume, floatingVolume, this->m_FloatingImageInterpolation );
     newFunctional->SetAdaptiveFixParameters( this->m_AdaptiveFixParameters );
     newFunctional->SetAdaptiveFixThreshFactor( this->m_AdaptiveFixThreshFactor );
     newFunctional->SetJacobianConstraintWeight( this->m_JacobianConstraintWeight );
@@ -255,7 +262,6 @@ ImagePairNonrigidRegistration::MakeFunctional
       newFunctional->SetLandmarkErrorWeight( this->m_LandmarkErrorWeight );
       newFunctional->SetMatchedLandmarkList( mll );
       }
-    newFunctional->SetRepeatMatchRefFltIntensities( this->m_RepeatHistogramIntensityMatching );
     
     return newFunctional;
   }

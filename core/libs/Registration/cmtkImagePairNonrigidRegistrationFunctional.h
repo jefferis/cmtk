@@ -116,12 +116,6 @@ public:
    */
   virtual void SetWarpXform( WarpXform::SmartPtr& warp ) = 0;
 
-  /// Flag for repeated reference/floating intensity matching.
-  cmtkGetSetMacro(bool,RepeatMatchRefFltIntensities);
-  
-  /// Match intensities of reference and floating images.
-  virtual void MatchRefFltIntensities() = 0;
-
   /// Set inverse transformation.
   void SetInverseTransformation( WarpXform::SmartPtr& inverseTransformation ) 
   {
