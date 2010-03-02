@@ -98,6 +98,7 @@ ImagePairNonrigidRegistrationCommandLine
 
   InputStudylist = NULL;
   const char *initialTransformationFile = NULL;
+  bool initialTransformationInverse = false;
   IntermediateResultIndex = 0;
 
   bool forceOutsideFlag = false;
@@ -123,6 +124,7 @@ ImagePairNonrigidRegistrationCommandLine
 
     cl.BeginGroup( "TransformationIO", "Transformation import/export" );
     cl.AddOption( Key( "initial" ), &initialTransformationFile, "Initialize transformation from given path" )->SetProperties( CommandLine::PROPS_XFORM );
+    cl.AddSwitch( Key( "invert-initial" ), &initialTransformationInverse, true, "Invert given (affine) initial transformation." );
     cl.AddOption( Key( "write-itk-xform" ), &this->m_OutputPathITK, "Output path for final transformation in ITK format" )
       ->SetProperties( CommandLine::PROPS_XFORM | CommandLine::PROPS_OUTPUT )
       ->SetAttribute( "type", "bspline" )->SetAttribute( "reference", "FloatingImage" );
@@ -264,7 +266,10 @@ ImagePairNonrigidRegistrationCommandLine
     AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( initialXform );
     if ( affineXform )
       {
-      this->SetInitialTransformation( affineXform );
+      if ( initialTransformationInverse )
+	this->SetInitialTransformation( affineXform->GetInverse() );
+      else
+	this->SetInitialTransformation( affineXform );
       }
     else
       {
