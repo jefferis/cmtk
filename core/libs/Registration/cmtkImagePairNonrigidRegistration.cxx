@@ -95,6 +95,19 @@ ImagePairNonrigidRegistration::InitRegistration ()
   this->m_ReferenceVolume = this->m_Volume_1;
   this->m_FloatingVolume = this->m_Volume_2;
 
+  MatchedLandmarkList::SmartPtr mll( NULL );
+  if ( this->m_LandmarkErrorWeight != 0 ) 
+    {
+    LandmarkList::SmartPtr sourceLandmarks = this->m_ReferenceVolume->m_LandmarkList;
+    LandmarkList::SmartPtr targetLandmarks = this->m_FloatingVolume->m_LandmarkList;
+    
+    if ( sourceLandmarks && targetLandmarks ) 
+      {
+      this->m_MatchedLandmarks = MatchedLandmarkList::SmartPtr( new MatchedLandmarkList( sourceLandmarks, targetLandmarks ) );
+      fprintf( stderr, "Matched %d landmarks.\n", (int)this->m_MatchedLandmarks->size() );
+      }
+    }
+  
   Vector3D center = this->m_FloatingVolume->GetCenterCropRegion();
   this->m_InitialTransformation->ChangeCenter( center.XYZ );
 
@@ -199,19 +212,6 @@ ImagePairNonrigidRegistration::MakeFunctional
     exit( 1 );
     }  
 
-  MatchedLandmarkList::SmartPtr mll( NULL );
-  if ( this->m_LandmarkErrorWeight != 0 ) 
-    {
-    LandmarkList::SmartPtr sourceLandmarks = this->m_ReferenceVolume->m_LandmarkList;
-    LandmarkList::SmartPtr targetLandmarks = this->m_FloatingVolume->m_LandmarkList;
-    
-    if ( sourceLandmarks && targetLandmarks ) 
-      {
-      mll = MatchedLandmarkList::SmartPtr( new MatchedLandmarkList( sourceLandmarks, targetLandmarks ) );
-      fprintf( stderr, "Matched %d landmarks.\n", (int)mll->size() );
-      }
-    }
-  
   UniformVolume::SmartPtr referenceVolume( this->m_ReferenceVolume );
   UniformVolume::SmartPtr floatingVolume( this->m_FloatingVolume );
   if ( !level && this->m_MatchFltToRefHistogram )
@@ -257,10 +257,10 @@ ImagePairNonrigidRegistration::MakeFunctional
     newFunctional->SetJacobianConstraintWeight( this->m_JacobianConstraintWeight );
     newFunctional->SetForceOutside( this->m_ForceOutsideFlag, this->m_ForceOutsideValue );
     newFunctional->SetGridEnergyWeight( this->m_GridEnergyWeight );
-    if ( mll )
+    if ( this->m_MatchedLandmarks )
       {
       newFunctional->SetLandmarkErrorWeight( this->m_LandmarkErrorWeight );
-      newFunctional->SetMatchedLandmarkList( mll );
+      newFunctional->SetMatchedLandmarkList( this->m_MatchedLandmarks );
       }
     
     return newFunctional;
@@ -374,8 +374,8 @@ ImagePairNonrigidRegistration::GetReformattedFloatingImage( Interpolators::Inter
 {
   ReformatVolume reformat;
   reformat.SetInterpolation( interpolator );
-  reformat.SetReferenceVolume( this->m_Volume_1 );
-  reformat.SetFloatingVolume( this->m_Volume_2 );
+  reformat.SetReferenceVolume( this->m_ReferenceVolume );
+  reformat.SetFloatingVolume( this->m_FloatingVolume );
 
   WarpXform::SmartPtr warpXform( this->GetTransformation() );
   reformat.SetWarpXform( warpXform );

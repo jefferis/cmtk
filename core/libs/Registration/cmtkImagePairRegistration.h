@@ -41,7 +41,6 @@
 #include <cmtkAffineXform.h>
 #include <cmtkFunctional.h>
 #include <cmtkUniformVolume.h>
-#include <cmtkMatchedLandmarkList.h>
 #include <cmtkVector.h>
 
 #include <cmtkRegistrationCallback.h>
@@ -223,12 +222,6 @@ protected:
   /// Image preprocessor for floating image.
   ImagePreprocessor m_PreprocessorFlt;
   
-  /// Weighting factor of landmark registration error vs. image similarity.
-  cmtkGetSetMacro(float,LandmarkErrorWeight);
-
-  /// Matched landmarks list.
-  cmtkGetSetMacro(MatchedLandmarkList::SmartPtr,LandmarkList);
-
   /// Pointer to callback object.
   cmtkGetSetMacro(RegistrationCallback::SmartPtr,Callback);
 

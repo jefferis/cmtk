@@ -138,6 +138,9 @@ protected:
    */
   cmtkGetSetMacro(float,InverseConsistencyWeight);
 
+  /// Weighting factor of landmark registration error vs. image similarity.
+  cmtkGetSetMacro(float,LandmarkErrorWeight);
+
   /// Set flag and value for forcing values outside the floating image.
   virtual void SetForceOutside( const bool flag = true, const Types::DataItem value = 0 )
   {
@@ -189,6 +192,9 @@ protected:
   UniformVolume* GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator = Interpolators::LINEAR );
 
 private:
+  /// (Optional) matched landmark list.
+  MatchedLandmarkList::SmartPtr m_MatchedLandmarks;
+
   /// Level on which the last control grid refinement was performend.
   int RefinedGridAtLevel;
 
