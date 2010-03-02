@@ -36,6 +36,7 @@
 
 #include <cmtkVoxelRegistration.h>
 #include <cmtkWarpXform.h>
+#include <cmtkMatchedLandmarkList.h>
 
 #include <string.h>
 
@@ -138,6 +139,12 @@ protected:
    */
   cmtkGetSetMacro(float,InverseConsistencyWeight);
 
+  /// Weighting factor of landmark registration error vs. image similarity.
+  cmtkGetSetMacro(float,LandmarkErrorWeight);
+
+  /// Matched landmarks list.
+  cmtkGetSetMacro(MatchedLandmarkList::SmartPtr,LandmarkList);
+
   /// Set flag and value for forcing values outside the floating image.
   virtual void SetForceOutside( const bool flag = true, const Types::DataItem value = 0 )
   {
@@ -229,8 +236,7 @@ private:
    * parameter. But since we're using neither edge images nor tissue maps
    * much, it doesn't seem worth the effort.
    */
-  Functional* MakeFunctional( UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, UniformVolume::SmartPtr& rigidityMap,
-			      MatchedLandmarkList::SmartPtr& mll = MatchedLandmarkList::SmartPtr::Null ) const;
+  Functional* MakeFunctional( UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, UniformVolume::SmartPtr& rigidityMap ) const;
 };
 
 //@}

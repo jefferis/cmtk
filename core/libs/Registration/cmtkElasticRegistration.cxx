@@ -108,7 +108,6 @@ ElasticRegistration::InitRegistration ()
     this->GetVolume_2()->GetData()->ApplyFunction( TypedArrayFunctionHistogramMatching( *(this->GetVolume_2()->GetData()), *(this->GetVolume_1()->GetData()) ) );
     }
   
-  MatchedLandmarkList::SmartPtr mll( NULL );
   if ( this->m_LandmarkErrorWeight != 0 ) 
     {
     LandmarkList::SmartPtr sourceLandmarks = this->m_ReferenceVolume->m_LandmarkList;
@@ -116,8 +115,8 @@ ElasticRegistration::InitRegistration ()
     
     if ( sourceLandmarks && targetLandmarks ) 
       {
-      mll = MatchedLandmarkList::SmartPtr( new MatchedLandmarkList( sourceLandmarks, targetLandmarks ) );
-      fprintf( stderr, "Matched %d landmarks.\n", (int)mll->size() );
+      this->m_LandmarkList = MatchedLandmarkList::SmartPtr( new MatchedLandmarkList( sourceLandmarks, targetLandmarks ) );
+      fprintf( stderr, "Matched %d landmarks.\n", (int)this->m_LandmarkList->size() );
       }
     }
   
@@ -167,7 +166,7 @@ ElasticRegistration::InitRegistration ()
   
   if ( this->m_UseOriginalData )
     {
-    Functional::SmartPtr nextFunctional( this->MakeFunctional( this->m_ReferenceVolume, this->m_FloatingVolume, this->m_RigidityConstraintMap, mll ) );
+    Functional::SmartPtr nextFunctional( this->MakeFunctional( this->m_ReferenceVolume, this->m_FloatingVolume, this->m_RigidityConstraintMap ) );
     FunctionalStack.push( nextFunctional );
     }
   
@@ -194,7 +193,7 @@ ElasticRegistration::InitRegistration ()
       nextRigidityMap = UniformVolume::SmartPtr( new UniformVolume( *this->m_RigidityConstraintMap, currSampling ) );
       }
     
-    Functional::SmartPtr nextFunctional( this->MakeFunctional( nextRef, nextFlt, nextRigidityMap, mll ) );
+    Functional::SmartPtr nextFunctional( this->MakeFunctional( nextRef, nextFlt, nextRigidityMap ) );
     FunctionalStack.push( nextFunctional );
     
     currRef = nextRef;
@@ -242,8 +241,7 @@ ElasticRegistration::MakeWarpXform
 Functional* 
 ElasticRegistration::MakeFunctional
 ( UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume,
-  UniformVolume::SmartPtr& rigidityMap,
-  MatchedLandmarkList::SmartPtr& mll ) const
+  UniformVolume::SmartPtr& rigidityMap ) const
 {
   if ( this->m_InverseConsistencyWeight > 0 ) 
     {
@@ -270,10 +268,10 @@ ElasticRegistration::MakeFunctional
       newFunctional->SetRigidityConstraintMap( rigidityMap );
       }
     newFunctional->SetGridEnergyWeight( this->m_GridEnergyWeight );
-    if ( mll )
+    if ( this->m_LandmarkList )
       {
       newFunctional->SetLandmarkErrorWeight( this->m_LandmarkErrorWeight );
-      newFunctional->SetMatchedLandmarkList( mll );
+      newFunctional->SetMatchedLandmarkList( this->m_LandmarkList );
       }
     
     return newFunctional;
