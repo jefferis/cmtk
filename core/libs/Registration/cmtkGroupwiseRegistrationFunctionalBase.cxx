@@ -439,8 +439,7 @@ GroupwiseRegistrationFunctionalBase
   for ( size_t idx = this->m_ActiveImagesFrom; idx < this->m_ActiveImagesTo; ++idx )
     {
 #ifdef DEBUG_COMM
-    fprintf( stderr, "%d\tBroadcasting reformated image %d with root %d\n", 
-	     (int)this->m_RankMPI, (int)idx, (int)((idx-this->m_ActiveImagesFrom) % this->m_SizeMPI) );
+    fprintf( stderr, "%d\tBroadcasting reformated image %d with root %d\n", (int)this->m_RankMPI, (int)idx, (int)((idx-this->m_ActiveImagesFrom) % this->m_SizeMPI) );
 #endif
     MPI::COMM_WORLD.Bcast( this->m_Data[idx], this->m_TemplateNumberOfSamples, MPI::CHAR, (idx - this->m_ActiveImagesFrom) % this->m_SizeMPI );
     }
