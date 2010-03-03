@@ -437,6 +437,12 @@ public:
    */
   bool GetPaddingFlag () const { return PaddingFlag; }
 
+  /// Clear padding flag. This effectively turns padded pixels into actual data.
+  void ClearPaddingFlag()
+  {
+    this->PaddingFlag = false;
+  }
+
   /// Set the specified array element to no data present.
   virtual void SetPaddingAt ( const size_t ) = 0;
 
