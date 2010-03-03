@@ -269,35 +269,9 @@ GroupwiseRegistrationFunctionalBase
 ::PrepareTargetImages()
 {
   this->m_ImageVector.resize( this->m_OriginalImageVector.size() );
-
-  if ( this->m_RepeatIntensityHistogramMatching )
+  for ( size_t i = 0; i < this->m_OriginalImageVector.size(); ++i )
     {
-    TypedArray::SmartPtr referenceData = this->m_TemplateGrid->GetData();
-    if ( !this->m_UseTemplateData )
-      referenceData = TypedArray::SmartPtr::Null;
-
-    for ( size_t i = 0; i < this->m_OriginalImageVector.size(); ++i )
-      {
-      UniformVolume::SmartPtr scaledImage( this->m_OriginalImageVector[i]->Clone( true /*copyData*/ ) );
-      if ( referenceData )
-	{
-	UniformVolume::SmartPtr reformatImage( this->GetReformattedImage( i ) );
-	scaledImage->GetData()->ApplyFunction( TypedArrayFunctionHistogramMatching( *(reformatImage->GetData()), *referenceData ) );
-	}
-      else
-	{
-	referenceData = scaledImage->GetData();
-	}
-      
-      this->m_ImageVector[i] = UniformVolume::SmartPtr( this->PrepareSingleImage( scaledImage ) );
-      }
-    }
-  else
-    {
-    for ( size_t i = 0; i < this->m_OriginalImageVector.size(); ++i )
-      {
-      this->m_ImageVector[i] = UniformVolume::SmartPtr( this->PrepareSingleImage( this->m_OriginalImageVector[i] ) );
-      }
+    this->m_ImageVector[i] = UniformVolume::SmartPtr( this->PrepareSingleImage( this->m_OriginalImageVector[i] ) );
     }
 }
 
@@ -522,6 +496,31 @@ GroupwiseRegistrationFunctionalBase
   if ( (this->m_ProbabilisticSampleDensity > 0) && (this->m_ProbabilisticSampleDensity < 1) )
     {
     this->m_ProbabilisticSampleUpdatesSince = 0;
+    wiggle = true;
+    }
+
+  if ( this->m_RepeatIntensityHistogramMatching )
+    {
+    TypedArray::SmartPtr referenceData = this->m_TemplateGrid->GetData();
+    if ( !this->m_UseTemplateData )
+      referenceData = TypedArray::SmartPtr::Null;
+    
+    for ( size_t i = 0; i < this->m_OriginalImageVector.size(); ++i )
+      {
+      UniformVolume::SmartPtr scaledImage( this->m_OriginalImageVector[i]->Clone( true /*copyData*/ ) );
+      if ( referenceData )
+	{
+	UniformVolume::SmartPtr reformatImage( this->GetReformattedImage( i ) );
+	scaledImage->GetData()->ApplyFunction( TypedArrayFunctionHistogramMatching( *(reformatImage->GetData()), *referenceData ) );
+	}
+      else
+	{
+	referenceData = scaledImage->GetData();
+	}
+      
+      this->m_ImageVector[i] = UniformVolume::SmartPtr( this->PrepareSingleImage( scaledImage ) );
+      }
+    this->InterpolateAllImages();
     wiggle = true;
     }
 
