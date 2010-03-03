@@ -91,6 +91,10 @@ public:
   virtual void SetRepeatIntensityHistogramMatching( const bool flag = true )
   {
     this->m_RepeatIntensityHistogramMatching = flag;
+    if ( flag )
+      {
+      this->SetFreeAndRereadImages( false );
+      }
   }
 
   /** Create template grid based on target images.

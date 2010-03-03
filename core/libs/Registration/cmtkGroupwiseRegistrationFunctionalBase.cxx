@@ -57,7 +57,7 @@ cmtk
 
 GroupwiseRegistrationFunctionalBase
 ::GroupwiseRegistrationFunctionalBase() 
-  : m_FreeAndRereadImages( true ),
+  : m_FreeAndRereadImages( false ),
     m_ForceZeroSum( false ),
     m_ForceZeroSumFirstN( 0 ),
     m_ActiveImagesFrom( 0 ),
@@ -506,7 +506,16 @@ GroupwiseRegistrationFunctionalBase
     
     for ( size_t i = 0; i < this->m_OriginalImageVector.size(); ++i )
       {
-      UniformVolume::SmartPtr scaledImage( this->m_OriginalImageVector[i]->Clone( true /*copyData*/ ) );
+      UniformVolume::SmartPtr scaledImage;
+      if ( this->m_OriginalImageVector[i]->GetData() )
+	{
+	scaledImage = UniformVolume::SmartPtr( this->m_OriginalImageVector[i]->Clone( true /*copyData*/ ) );
+	}
+      else
+	{
+	scaledImage = UniformVolume::SmartPtr( VolumeIO::ReadOriented( this->m_OriginalImageVector[i]->m_MetaInformation[CMTK_META_FS_PATH].c_str(), false /*verbose*/ ) );
+	}
+
       if ( referenceData )
 	{
 	UniformVolume::SmartPtr reformatImage( this->GetReformattedImage( i ) );
