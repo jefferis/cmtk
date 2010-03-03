@@ -587,17 +587,17 @@ GroupwiseRegistrationFunctionalBase
   reformat.SetWarpXform( WarpXform::SmartPtr::DynamicCastFrom( this->m_XformVector[idx] ) );
   reformat.SetAffineXform( AffineXform::SmartPtr::DynamicCastFrom( this->m_XformVector[idx] ) );
   
-//  if ( this->m_ForceOutsideFlag )
-//    {
-//    reformat.SetPaddingValue( this->m_ForceOutsideValue );
-//    }
+  if ( this->m_UserBackgroundFlag )
+    {
+    reformat.SetPaddingValue( this->m_UserBackgroundValue );
+    }
   
   UniformVolume* result = reformat.PlainReformat();
 
-//  if ( this->m_ForceOutsideFlag )
-//    {
-//    result->GetData()->ClearPaddingFlag();
-//    }
+  if ( this->m_UserBackgroundFlag )
+    {
+    result->GetData()->ClearPaddingFlag();
+    }
   return result;
 }
 
