@@ -516,14 +516,14 @@ GroupwiseRegistrationFunctionalBase
 	scaledImage = UniformVolume::SmartPtr( VolumeIO::ReadOriented( this->m_OriginalImageVector[i]->m_MetaInformation[CMTK_META_FS_PATH].c_str(), false /*verbose*/ ) );
 	}
 
+      UniformVolume::SmartPtr reformatImage( this->GetReformattedImage( scaledImage, i ) );
       if ( referenceData )
 	{
-	UniformVolume::SmartPtr reformatImage( this->GetReformattedImage( i ) );
 	scaledImage->GetData()->ApplyFunction( TypedArrayFunctionHistogramMatching( *(reformatImage->GetData()), *referenceData ) );
 	}
       else
 	{
-	referenceData = scaledImage->GetData();
+	referenceData = reformatImage->GetData();
 	}
       
       this->m_ImageVector[i] = UniformVolume::SmartPtr( this->PrepareSingleImage( scaledImage ) );
@@ -586,11 +586,11 @@ GroupwiseRegistrationFunctionalBase
 
 UniformVolume* 
 GroupwiseRegistrationFunctionalBase
-::GetReformattedImage( const size_t idx ) const
+::GetReformattedImage( const UniformVolume::SmartPtr& targetGrid, const size_t idx ) const
 {
   ReformatVolume reformat;
   reformat.SetInterpolation( Interpolators::LINEAR );
-  reformat.SetReferenceVolume( this->m_TemplateGrid );
+  reformat.SetReferenceVolume( targetGrid );
   reformat.SetFloatingVolume( this->m_OriginalImageVector[idx] );
   
   reformat.SetWarpXform( WarpXform::SmartPtr::DynamicCastFrom( this->m_XformVector[idx] ) );
