@@ -39,6 +39,10 @@
 
 #include <cmtkAnatomicalOrientation.h>
 
+#include <cmtkInterpolator.h>
+#include <cmtkTypedArrayFunctionHistogramMatching.h>
+#include <cmtkReformatVolume.h>
+
 #ifdef CMTK_BUILD_MPI
 #  include <mpi.h>
 #  include <cmtkMPI.h>
@@ -265,9 +269,35 @@ GroupwiseRegistrationFunctionalBase
 ::PrepareTargetImages()
 {
   this->m_ImageVector.resize( this->m_OriginalImageVector.size() );
-  for ( size_t i = 0; i < this->m_OriginalImageVector.size(); ++i )
+
+  if ( this->m_RepeatIntensityHistogramMatching )
     {
-    this->m_ImageVector[i] = UniformVolume::SmartPtr( this->PrepareSingleImage( this->m_OriginalImageVector[i] ) );
+    TypedArray::SmartPtr referenceData = this->m_TemplateGrid->GetData();
+    if ( !this->m_UseTemplateData )
+      referenceData = TypedArray::SmartPtr::Null;
+
+    for ( size_t i = 0; i < this->m_OriginalImageVector.size(); ++i )
+      {
+      UniformVolume::SmartPtr scaledImage( this->m_OriginalImageVector[i]->Clone( true /*copyData*/ ) );
+      if ( referenceData )
+	{
+	UniformVolume::SmartPtr reformatImage( this->GetReformattedImage( i ) );
+	scaledImage->GetData()->ApplyFunction( TypedArrayFunctionHistogramMatching( *(reformatImage->GetData()), *referenceData ) );
+	}
+      else
+	{
+	referenceData = scaledImage->GetData();
+	}
+      
+      this->m_ImageVector[i] = UniformVolume::SmartPtr( this->PrepareSingleImage( scaledImage ) );
+      }
+    }
+  else
+    {
+    for ( size_t i = 0; i < this->m_OriginalImageVector.size(); ++i )
+      {
+      this->m_ImageVector[i] = UniformVolume::SmartPtr( this->PrepareSingleImage( this->m_OriginalImageVector[i] ) );
+      }
     }
 }
 
@@ -545,6 +575,32 @@ GroupwiseRegistrationFunctionalBase
     sprintf( path, "target%02d.nii", static_cast<int>( n ) );
     VolumeIO::Write( writeVolume, path, true );
     }
+}
+
+UniformVolume* 
+GroupwiseRegistrationFunctionalBase
+::GetReformattedImage( const size_t idx ) const
+{
+  ReformatVolume reformat;
+  reformat.SetInterpolation( Interpolators::LINEAR );
+  reformat.SetReferenceVolume( this->m_TemplateGrid );
+  reformat.SetFloatingVolume( this->m_OriginalImageVector[idx] );
+  
+  reformat.SetWarpXform( WarpXform::SmartPtr::DynamicCastFrom( this->m_XformVector[idx] ) );
+  reformat.SetAffineXform( AffineXform::SmartPtr::DynamicCastFrom( this->m_XformVector[idx] ) );
+  
+//  if ( this->m_ForceOutsideFlag )
+//    {
+//    reformat.SetPaddingValue( this->m_ForceOutsideValue );
+//    }
+  
+  UniformVolume* result = reformat.PlainReformat();
+
+//  if ( this->m_ForceOutsideFlag )
+//    {
+//    result->GetData()->ClearPaddingFlag();
+//    }
+  return result;
 }
 
 } // namespace cmtk

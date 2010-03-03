@@ -499,6 +499,9 @@ protected:
   /// Smooth and pre-scale target images.
   virtual void PrepareTargetImages();
 
+  /// Reformat one image.
+  virtual UniformVolume* GetReformattedImage( const size_t idx ) const;
+
 private:
   /// Copy template data from TypedArray to byte vector.
   void CopyTemplateData();
