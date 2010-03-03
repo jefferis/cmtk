@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -85,6 +85,12 @@ public:
   virtual void SetFreeAndRereadImages( const bool flag = true )
   {
     this->m_FreeAndRereadImages = flag;
+  }
+
+  /// Set flag for repeated histogram-based intensity matching.
+  virtual void SetRepeatIntensityHistogramMatching( const bool flag = true )
+  {
+    this->m_RepeatIntensityHistogramMatching = flag;
   }
 
   /** Create template grid based on target images.
@@ -472,6 +478,9 @@ protected:
 
   /// Number of parameters per transformation..
   size_t m_ParametersPerXform;
+
+  /// Repeat histogram-based intensity matching after each stage.
+  bool m_RepeatIntensityHistogramMatching;
 
   /// Update probabilistic sample table..
   virtual bool Wiggle();
