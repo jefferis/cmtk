@@ -79,6 +79,7 @@ unsigned int NumberOfHistogramBins = 0;
 
 bool CropImageHistograms = false;
 bool HistogramMatching = false;
+bool RepeatHistogramMatching = false;
 
 bool UseSmoothSigmaFactorPixel = false;
 cmtk::Types::Coordinate SmoothSigmaFactorPixel = 0.0;
@@ -162,6 +163,7 @@ main( int argc, char* argv[] )
     cl.AddOption( Key( 'H', "histogram-bins" ), &NumberOfHistogramBins, "Set number of histogram bins for entropy evaluation.", &UseNumberOfHistogramBins );
     cl.AddSwitch( Key( "crop-histograms" ), &CropImageHistograms, true, "Crop image histograms to make better use of histogram bins." );
     cl.AddSwitch( Key( "match-histograms" ), &HistogramMatching, true, "Match all image histograms to template data (or first image, if no template image is given)" );
+    cl.AddSwitch( Key( "repeat-match-histograms" ), &RepeatHistogramMatching, true, "Frequetly repeat histogram-based intensity matching to account for changing volume proportions." );
     cl.AddOption( Key( "smooth-pixels" ), &SmoothSigmaFactorPixel, "Sigma of Gaussian smoothing kernel in multiples of template image pixel size", &UseSmoothSigmaFactorPixel );
     cl.AddOption( Key( "smooth-cps" ), &SmoothSigmaFactorControlPointSpacing, "Sigma of Gaussian smoothing kernel in multiples of control point delta", &UseSmoothSigmaFactorControlPointSpacing );
     cl.EndGroup();
@@ -276,6 +278,7 @@ main( int argc, char* argv[] )
     }
 
   functional->InitializeXforms( GridSpacing, GridSpacingExact ); // must do this before downsampling template grid
+  functional->SetRepeatIntensityHistogramMatching( RepeatHistogramMatching );
   const cmtk::Types::Coordinate FinestGridSpacing = GridSpacing / (1<<RefineTransformationGrid);
 
   const double timeBaselineProcess = cmtk::Timers::GetTimeProcess();
