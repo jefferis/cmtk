@@ -124,7 +124,7 @@ void
 CongealingFunctionalBase<TXform,THistogramBinType>
 ::PrepareTargetImages()
 {
-  this->m_ImageVector = this->m_OriginalImageVector;
+  this->m_ImageVector.resize( this->m_OriginalImageVector.size() );
 
 #ifdef CMTK_BUILD_MPI
   // using MPI, prepare only some of the images locally, obtain others from other nodes
@@ -136,7 +136,7 @@ CongealingFunctionalBase<TXform,THistogramBinType>
 #endif
   for ( size_t i = imageFrom; i < this->m_ImageVector.size(); i += imageSkip )
     {
-    this->m_ImageVector[i] = UniformVolume::SmartPtr( this->PrepareSingleImage( this->m_ImageVector[i] ) );
+    this->m_ImageVector[i] = UniformVolume::SmartPtr( this->PrepareSingleImage( this->m_OriginalImageVector[i] ) );
     }
   
 #ifdef CMTK_BUILD_MPI
