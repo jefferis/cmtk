@@ -301,33 +301,33 @@ main( const int argc, const char* argv[] )
     cl.AddCallback( Key( "recon-grid" ), CallbackReconGrid, "Define reconstruction grid as Nx,Ny,Nz:dX,dY,dZ[:Ox,Oy,Oz] (dims:pixel:offset)" );
     cl.AddOption( Key( 'R', "recon-grid-path" ), &ReconstructionGridPath, "Give path to grid that defines reconstructed image grid [including offset]" );
     cl.AddCallback( Key( "crop" ), CallbackCrop, "Crop reference to pixel region x0,y0,z1:x1,y1,z1" );
-    cl.AddOption( Key( 'o', "output" ), &OutputImagePath, "Output image path [default: reconstructed.hdr]" );
+    cl.AddOption( Key( 'o', "output" ), &OutputImagePath, "Output image path" );
 
     cl.AddCallback( Key( 'W', "pass-weight" ), CallbackSetPassWeight, "Set contribution weight for a pass in the form 'pass:weight'" );
 
-    cl.AddSwitch( Key( "isotropic-injection" ), &VolumeInjectionIsotropic, true, "Use isotropic volume injection [default: scaled with pass image pixel size per dimension]" );
-    cl.AddOption( Key( 'S', "gauss-sigma" ), &VolumeInjectionSigma, "Volume injection Gaussian kernel width factor [default: 1.0x pixel size]" );
-    cl.AddOption( Key( 'r', "radius" ), &VolumeInjectionRadius, "Volume injection kernel truncation factor [default: 2.0x pixel size]" );
-
+    cl.AddSwitch( Key( "isotropic-injection" ), &VolumeInjectionIsotropic, true, "Use isotropic volume injection [otherwise: scaled with pass image pixel size per dimension]" );
+    cl.AddOption( Key( 'S', "gauss-sigma" ), &VolumeInjectionSigma, "Volume injection Gaussian kernel width factor, taken times pixel size." );
+    cl.AddOption( Key( 'r', "radius" ), &VolumeInjectionRadius, "Volume injection kernel truncation factor, taken times pixel size." );
+    
     cl.AddSwitch( Key( 'L', "linear" ), &Interpolation, cmtk::Interpolators::LINEAR, "Trilinear interpolation" );
-    cl.AddSwitch( Key( 'C', "cubic" ), &Interpolation, cmtk::Interpolators::CUBIC, "Tricubic interpolation [default]" );
+    cl.AddSwitch( Key( 'C', "cubic" ), &Interpolation, cmtk::Interpolators::CUBIC, "Tricubic interpolation" );
     cl.AddSwitch( Key( 'H', "hamming-sinc" ), &Interpolation, cmtk::Interpolators::HAMMING_SINC, "Hamming-windowed sinc interpolation" );
     cl.AddSwitch( Key( 'O', "cosine-sinc" ), &Interpolation, cmtk::Interpolators::COSINE_SINC, "Cosine-windowed sinc interpolation" );
 
     cl.AddSwitch( Key( "deblurring-box" ), &DeblurringKernel, (int)DEBLURRING_BOX, "Deblurring reconstruction [box PSF]" );
     cl.AddSwitch( Key( "deblurring-gaussian" ), &DeblurringKernel, (int)DEBLURRING_GAUSSIAN, "Deblurring reconstruction [Gaussian PSF]" );
     cl.AddCallback( Key( "psf" ), CallbackSetPSF, "Set point spread function as x,y,z" );
-    cl.AddOption( Key( "psf-scale" ), &PointSpreadFunctionScale, "Set point spread function global scale as real value [default: 1.0]" );
+    cl.AddOption( Key( "psf-scale" ), &PointSpreadFunctionScale, "Set point spread function global scale as real value" );
 
     cl.AddSwitch( Key( 'f', "fourth-order-error" ), &FourthOrderError, true, "Use fourth-order (rather than second-order) error for optimization." );
     cl.AddOption( Key( "l-norm-weight" ), &ConstraintWeightLNorm, "Set constraint weight for L-Norm regularization (values <= 0 disable constraint)" );
-    cl.AddOption( Key( 'n', "num-iterations" ), &NumberOfIterations, "Maximum number of inverse interpolation iterations [default: 20]" );
-    cl.AddSwitch( Key( 'T', "no-truncation" ), &RegionalIntensityTruncation, false, "Turn off regional intensity truncatrion [default: On]" );
+    cl.AddOption( Key( 'n', "num-iterations" ), &NumberOfIterations, "Maximum number of inverse interpolation iterations" );
+    cl.AddSwitch( Key( 'T', "no-truncation" ), &RegionalIntensityTruncation, false, "Turn off regional intensity truncatrion" );
     
-    cl.AddOption( Key( "write-splatted-image" ), &SplattedImagePath, "Write initial Gaussian-splatted image to path [default: do not write image]" );
+    cl.AddOption( Key( "write-splatted-image" ), &SplattedImagePath, "Write initial Gaussian-splatted image to path" );
     cl.AddOption( Key( "write-lowest-max-error-image" ), &LowestMaxErrorImagePath, "Optional path to write reconstructed image with lowest MAXIMUM error." );
     
-    cl.AddSwitch( Key( 'F', "write-images-as-float" ), &WriteImagesAsFloat, true, "Write output images as floating point [default: same as input]" );
+    cl.AddSwitch( Key( 'F', "write-images-as-float" ), &WriteImagesAsFloat, true, "Write output images as floating point" );
 
     cl.Parse();
 
