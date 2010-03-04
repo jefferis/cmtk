@@ -78,7 +78,7 @@ ImagePairAffineRegistration::InitRegistration ()
   
   if ( this->m_MatchFltToRefHistogram )
     {
-    this->GetVolume_2()->GetData()->ApplyFunction( TypedArrayFunctionHistogramMatching( *(this->GetVolume_2()->GetData()), *(this->GetVolume_1()->GetData()) ) );
+    this->GetVolume_2()->GetData()->ApplyFunctionObject( TypedArrayFunctionHistogramMatching( *(this->GetVolume_2()->GetData()), *(this->GetVolume_1()->GetData()) ) );
     }
   
   AffineXform::SmartPtr affineXform;

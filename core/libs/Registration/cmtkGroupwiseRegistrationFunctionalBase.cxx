@@ -518,7 +518,7 @@ GroupwiseRegistrationFunctionalBase
       UniformVolume::SmartPtr reformatImage( this->GetReformattedImage( scaledImage, i ) );
       if ( referenceData )
 	{
-	scaledImage->GetData()->ApplyFunction( TypedArrayFunctionHistogramMatching( *(reformatImage->GetData()), *referenceData ) );
+	scaledImage->GetData()->ApplyFunctionObject( TypedArrayFunctionHistogramMatching( *(reformatImage->GetData()), *referenceData ) );
 	}
       else
 	{

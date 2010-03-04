@@ -303,7 +303,7 @@ QtSimpleFusionMainWindow::slotOperatorsMenu( QAction* action )
 	{
 	// user entered something and pressed OK
 	QtProgressInstance->SetProgressWidgetMode( QtProgress::PROGRESS_DIALOG );
-	CurrentStudy->GetVolume()->GetData()->ApplyFunction( TypedArrayFunctionHistogramEqualization( *(CurrentStudy->GetVolume()->GetData()), bins ) );
+	CurrentStudy->GetVolume()->GetData()->ApplyFunctionObject( TypedArrayFunctionHistogramEqualization( *(CurrentStudy->GetVolume()->GetData()), bins ) );
 	CurrentStudy->UpdateFromVolume();
 	FusionApp->slotDataChanged( CurrentStudy );
 	} 

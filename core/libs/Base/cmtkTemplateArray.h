@@ -661,7 +661,7 @@ public:
    */
   virtual Histogram<unsigned int>* GetHistogram( const unsigned int numberOfBins ) const;
 
-  virtual void ApplyFunction( const TypedArrayFunction& f );
+  virtual void ApplyFunctionObject( const TypedArrayFunction& f );
 };
 
 /**@name Classes for typed arrays. */

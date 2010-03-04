@@ -39,7 +39,7 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::MatchRefFltIntensitie
   TypedArray::SmartPtr warpedArray( TypedArray::Create( TYPE_ITEM, this->m_WarpedVolume, this->FloatingGrid->GetNumberOfPixels(), false /*freeArray*/, true /*padding*/, &paddingValue ) );
 
   UniformVolume::SmartPtr floatingCopy( this->FloatingGrid->Clone( true /*copyData*/ ) );
-  floatingCopy->GetData()->ApplyFunction( TypedArrayFunctionHistogramMatching( *warpedArray, *(this->ReferenceGrid->GetData()) ) );
+  floatingCopy->GetData()->ApplyFunctionObject( TypedArrayFunctionHistogramMatching( *warpedArray, *(this->ReferenceGrid->GetData()) ) );
   this->m_Metric->SetFloatingVolume( floatingCopy );
 }
 

@@ -647,7 +647,7 @@ CallbackMatchHistograms()
   
   cmtk::UniformVolume::SmartPtr ref = ImageStack.top();
   ImageStack.pop();
-  ImageStack.top()->GetData()->ApplyFunction( cmtk::TypedArrayFunctionHistogramMatching( *(ImageStack.top()->GetData()), *(ref->GetData()) ) );
+  ImageStack.top()->GetData()->ApplyFunctionObject( cmtk::TypedArrayFunctionHistogramMatching( *(ImageStack.top()->GetData()), *(ref->GetData()) ) );
 }
 
 void

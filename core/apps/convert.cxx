@@ -572,7 +572,7 @@ if ( Downsample )
     {
     if ( Verbose )
       cmtk::StdErr << "Applying 1/x function.\n";
-    volumeData->ApplyFunctionDouble( InvertFunction );
+    volumeData->ApplyFunction( InvertFunction );
     }
 
   if ( PruneHistogramBinsHigh )
@@ -584,7 +584,7 @@ if ( Downsample )
     {
     if ( Verbose )
       cmtk::StdErr << "Histogram equalization.\n";
-    volumeData->ApplyFunction( cmtk::TypedArrayFunctionHistogramEqualization( *volumeData ) );
+    volumeData->ApplyFunctionObject( cmtk::TypedArrayFunctionHistogramEqualization( *volumeData ) );
     }
   
   if ( Revert ) 
@@ -686,7 +686,7 @@ if ( Downsample )
   if ( AddGaussianNoise )
     {
     srandom( static_cast<unsigned int>( cmtk::Timers::GetTimeProcess() ) );
-    volumeData->ApplyFunctionDouble( AddGaussianNoiseFunction );
+    volumeData->ApplyFunction( AddGaussianNoiseFunction );
     }
   
   std::list<int>::const_iterator it = ErodeOrDilate.begin();

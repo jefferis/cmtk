@@ -44,7 +44,7 @@ testTypedArrayMatchHistogram1()
 
   float data2[] = { 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3 };
   cmtk::TypedArray::SmartPtr array2( cmtk::TypedArray::Create( cmtk::TYPE_FLOAT, data2, sizeof( data2 ) / sizeof( *data2 ), false /*freeArray*/ ) );
-  array2->ApplyFunction( cmtk::TypedArrayFunctionHistogramMatching( *array2, *array1 ) );
+  array2->ApplyFunctionObject( cmtk::TypedArrayFunctionHistogramMatching( *array2, *array1 ) );
 
   float maxDeviation = 0;
   for ( size_t i = 0; i<array2->GetDataSize(); ++i )
@@ -70,7 +70,7 @@ testTypedArrayMatchHistogram2()
   float data2[] = { 0.1, 0.1, 0.5, 0.5, 2.5, 2.5, 3.0, 3.0 };
   float base2[] = { 0.0, 0.0, 1.0, 1.0, 2.0, 2.0, 3.0, 3.0 };
   cmtk::TypedArray::SmartPtr array2( cmtk::TypedArray::Create( cmtk::TYPE_FLOAT, data2, sizeof( data2 ) / sizeof( *data2 ), false /*freeArray*/ ) );
-  array2->ApplyFunction( cmtk::TypedArrayFunctionHistogramMatching( *array2, *array1 ) );
+  array2->ApplyFunctionObject( cmtk::TypedArrayFunctionHistogramMatching( *array2, *array1 ) );
 
   for ( size_t i = 0; i<array2->GetDataSize(); ++i )
     {
@@ -103,11 +103,11 @@ testTypedArrayMatchHistogram3()
   cmtk::TypedArray::SmartPtr array2a( cmtk::TypedArray::Create( cmtk::TYPE_FLOAT, data2, sizeof( data2 ) / sizeof( *data2 ), false /*freeArray*/ ) );
   cmtk::TypedArray::SmartPtr array2b( cmtk::TypedArray::Create( cmtk::TYPE_FLOAT, data2, sizeof( data2 ) / sizeof( *data2 ), false /*freeArray*/ ) );
 
-  array2a->ApplyFunction( cmtk::TypedArrayFunctionHistogramMatching( *array2a, *array1 ) );
+  array2a->ApplyFunctionObject( cmtk::TypedArrayFunctionHistogramMatching( *array2a, *array1 ) );
 
   cmtk::TypedArrayFunctionHistogramMatching::HistogramType::SmartPtr hist1( array1->GetHistogram( cmtk::TypedArrayFunctionHistogramMatching::DefaultNumberOfHistogramBins ) );
   cmtk::TypedArrayFunctionHistogramMatching::HistogramType::SmartPtr hist2b( array2b->GetHistogram( cmtk::TypedArrayFunctionHistogramMatching::DefaultNumberOfHistogramBins ) );
-  array2b->ApplyFunction( cmtk::TypedArrayFunctionHistogramMatching( *hist2b, *hist1 ) );
+  array2b->ApplyFunctionObject( cmtk::TypedArrayFunctionHistogramMatching( *hist2b, *hist1 ) );
   
   float maxDeviation = 0;
   for ( size_t i = 0; i<array2b->GetDataSize(); ++i )
@@ -139,11 +139,11 @@ testTypedArrayMatchHistogram4()
 
   cmtk::TypedArrayFunctionHistogramMatching::HistogramType::SmartPtr hist1a( array1a->GetHistogram( cmtk::TypedArrayFunctionHistogramMatching::DefaultNumberOfHistogramBins ) );
   cmtk::TypedArrayFunctionHistogramMatching::HistogramType::SmartPtr hist2a( array2a->GetHistogram( cmtk::TypedArrayFunctionHistogramMatching::DefaultNumberOfHistogramBins / 2 ) );
-  array2a->ApplyFunction( cmtk::TypedArrayFunctionHistogramMatching( *hist2a, *hist1a ) );
+  array2a->ApplyFunctionObject( cmtk::TypedArrayFunctionHistogramMatching( *hist2a, *hist1a ) );
 
   cmtk::TypedArrayFunctionHistogramMatching::HistogramType::SmartPtr hist1b( array1b->GetHistogram( cmtk::TypedArrayFunctionHistogramMatching::DefaultNumberOfHistogramBins / 2 ) );
   cmtk::TypedArrayFunctionHistogramMatching::HistogramType::SmartPtr hist2b( array2b->GetHistogram( cmtk::TypedArrayFunctionHistogramMatching::DefaultNumberOfHistogramBins ) );
-  array2b->ApplyFunction( cmtk::TypedArrayFunctionHistogramMatching( *hist2b, *hist1b ) );
+  array2b->ApplyFunctionObject( cmtk::TypedArrayFunctionHistogramMatching( *hist2b, *hist1b ) );
   
   // here, we're only testing for crashes, leaks, etc.
   return 0;

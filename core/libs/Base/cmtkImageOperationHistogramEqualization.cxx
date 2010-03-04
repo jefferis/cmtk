@@ -49,7 +49,7 @@ cmtk::UniformVolume::SmartPtr
 cmtk::ImageOperationHistogramEqualization::Apply( cmtk::UniformVolume::SmartPtr& volume )
 {
   cmtk::TypedArray::SmartPtr volumeData = volume->GetData();
-  volumeData->ApplyFunction( TypedArrayFunctionHistogramEqualization( *volumeData, this->m_NumberOfBins ) );
+  volumeData->ApplyFunctionObject( TypedArrayFunctionHistogramEqualization( *volumeData, this->m_NumberOfBins ) );
 //  volumeData->HistogramEqualization( this->m_NumberOfBins );
   return volume;
 }

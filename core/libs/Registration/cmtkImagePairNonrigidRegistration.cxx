@@ -217,7 +217,7 @@ ImagePairNonrigidRegistration::MakeFunctional
   if ( !level && this->m_MatchFltToRefHistogram )
     {
     floatingVolume = UniformVolume::SmartPtr( floatingVolume->Clone( true /*copyData*/ ) );
-    floatingVolume->GetData()->ApplyFunction( TypedArrayFunctionHistogramMatching( *(floatingVolume->GetData()), *(referenceVolume->GetData()) ) );
+    floatingVolume->GetData()->ApplyFunctionObject( TypedArrayFunctionHistogramMatching( *(floatingVolume->GetData()), *(referenceVolume->GetData()) ) );
     }
   else
     {
@@ -225,7 +225,7 @@ ImagePairNonrigidRegistration::MakeFunctional
       {
       floatingVolume = UniformVolume::SmartPtr( floatingVolume->Clone( true /*copyData*/ ) );
       UniformVolume::SmartPtr reformat( this->GetReformattedFloatingImage( Interpolators::NEAREST_NEIGHBOR ) );
-      floatingVolume->GetData()->ApplyFunction( TypedArrayFunctionHistogramMatching( *(reformat->GetData()), *(referenceVolume->GetData()) ) );
+      floatingVolume->GetData()->ApplyFunctionObject( TypedArrayFunctionHistogramMatching( *(reformat->GetData()), *(referenceVolume->GetData()) ) );
       }
     }
   

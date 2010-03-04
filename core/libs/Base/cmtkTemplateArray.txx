@@ -340,7 +340,7 @@ TemplateArray<T>
 template<class T>
 void
 TemplateArray<T>
-::ApplyFunction( const TypedArrayFunction& f )
+::ApplyFunctionObject( const TypedArrayFunction& f )
 {
 #pragma omp parallel for
   for ( size_t i = 0; i < this->DataSize; ++i )

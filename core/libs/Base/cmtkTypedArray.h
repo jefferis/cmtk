@@ -253,6 +253,18 @@ public:
   /// Function pointer type: float to float.
   typedef float (*FunctionTypeFloat)(const float);
 
+  /** Apply real function to data. */ 	 
+  virtual void ApplyFunction( Self::FunctionTypeFloat f ) 	 
+  { 	 
+    this->ApplyFunctionFloat( f ); 	 
+  } 	 
+  
+  /** Apply real function to data. */ 	 
+  virtual void ApplyFunction( Self::FunctionTypeDouble f ) 	 
+  { 	 
+    this->ApplyFunctionDouble( f ); 	 
+  } 	 
+	  	 
   /** Apply real function to data.
    */
   virtual void ApplyFunctionFloat( Self::FunctionTypeFloat f ) = 0;
@@ -540,7 +552,7 @@ public:
 
   /** Apply function class to the values of this array.
    */
-  virtual void ApplyFunction( const TypedArrayFunction& f ) = 0;
+  virtual void ApplyFunctionObject( const TypedArrayFunction& f ) = 0;
 };
 
 //@}

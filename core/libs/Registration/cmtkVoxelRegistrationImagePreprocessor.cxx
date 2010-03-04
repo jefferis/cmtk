@@ -112,7 +112,7 @@ VoxelRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume* or
   
   if ( this->m_HistogramEqualization ) 
     {
-    data->ApplyFunction( TypedArrayFunctionHistogramEqualization( *data ) );
+    data->ApplyFunctionObject( TypedArrayFunctionHistogramEqualization( *data ) );
     }
 
   if ( this->m_SobelFilter ) 
