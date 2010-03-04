@@ -415,8 +415,7 @@ GroupwiseRegistrationFunctionalBase::UpdateProbabilisticSamples()
     }
   
 #ifdef CMTK_BUILD_MPI
-  MPI::COMM_WORLD.Allgather( &nodeSamples[0], sizeof( nodeSamples[0] ) * samplesPerNode, MPI::CHAR,
-			     &this->m_ProbabilisticSamples[0], sizeof( nodeSamples[0] ) * samplesPerNode, MPI::CHAR );
+  MPI::COMM_WORLD.Allgather( &nodeSamples[0], sizeof( nodeSamples[0] ) * samplesPerNode, MPI::CHAR, &this->m_ProbabilisticSamples[0], sizeof( nodeSamples[0] ) * samplesPerNode, MPI::CHAR );
 #endif
 
 #ifdef CMTK_BUILD_MPI
