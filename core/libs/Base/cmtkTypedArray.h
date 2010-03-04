@@ -255,20 +255,6 @@ public:
 
   /** Apply real function to data.
    */
-  virtual void ApplyFunction( Self::FunctionTypeFloat f ) 
-  {
-    this->ApplyFunctionFloat( f );
-  }
-
-  /** Apply real function to data.
-   */
-  virtual void ApplyFunction( Self::FunctionTypeDouble f )
-  {
-    this->ApplyFunctionDouble( f );
-  }
-
-  /** Apply real function to data.
-   */
   virtual void ApplyFunctionFloat( Self::FunctionTypeFloat f ) = 0;
 
   /** Apply real function to data.

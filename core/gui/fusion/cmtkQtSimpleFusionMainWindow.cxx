@@ -322,17 +322,17 @@ QtSimpleFusionMainWindow::slotOperatorsMenu( QAction* action )
       switch ( command )
 	{
 	case OPERATORS_MENU_ABS: 
-	  CurrentStudy->GetVolume()->GetData()->ApplyFunction( fabs );
+	  CurrentStudy->GetVolume()->GetData()->ApplyFunctionDouble( fabs );
 	  CurrentStudy->UpdateFromVolume();
 	  FusionApp->slotDataChanged( CurrentStudy );
 	  break;
 	case OPERATORS_MENU_LOG: 
-	  CurrentStudy->GetVolume()->GetData()->ApplyFunction( log );
+	  CurrentStudy->GetVolume()->GetData()->ApplyFunctionDouble( log );
 	  CurrentStudy->UpdateFromVolume();
 	  FusionApp->slotDataChanged( CurrentStudy );
 	  break;
 	case OPERATORS_MENU_EXP: 
-	  CurrentStudy->GetVolume()->GetData()->ApplyFunction( exp );
+	  CurrentStudy->GetVolume()->GetData()->ApplyFunctionDouble( exp );
 	  CurrentStudy->UpdateFromVolume();
 	  FusionApp->slotDataChanged( CurrentStudy );
 	  break;

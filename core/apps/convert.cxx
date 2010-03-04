@@ -565,14 +565,14 @@ if ( Downsample )
     {
     if ( Verbose )
       cmtk::StdErr << "Applying square function.\n";
-    volumeData->ApplyFunction( cmtk::MathUtil::Square<cmtk::Types::DataItem> );
+    volumeData->ApplyFunctionDouble( cmtk::MathUtil::Square<double> );
     }
 
   if ( Invert ) 
     {
     if ( Verbose )
       cmtk::StdErr << "Applying 1/x function.\n";
-    volumeData->ApplyFunction( InvertFunction );
+    volumeData->ApplyFunctionDouble( InvertFunction );
     }
 
   if ( PruneHistogramBinsHigh )
@@ -686,7 +686,7 @@ if ( Downsample )
   if ( AddGaussianNoise )
     {
     srandom( static_cast<unsigned int>( cmtk::Timers::GetTimeProcess() ) );
-    volumeData->ApplyFunction( AddGaussianNoiseFunction );
+    volumeData->ApplyFunctionDouble( AddGaussianNoiseFunction );
     }
   
   std::list<int>::const_iterator it = ErodeOrDilate.begin();

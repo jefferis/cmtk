@@ -127,7 +127,7 @@ QtImageOperators::slotOperatorAbs()
 {
   if ( this->StudyDataValid() ) 
     {
-    (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunction( fabs );
+    (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunctionDouble( fabs );
     emit dataChanged( *(this->CurrentStudy) );
     }
 }
@@ -137,7 +137,7 @@ QtImageOperators::slotOperatorLog()
 {
   if ( this->StudyDataValid() ) 
     {
-    (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunction( log );
+    (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunctionDouble( log );
     emit dataChanged( *(this->CurrentStudy) );
     }
 }
@@ -147,7 +147,7 @@ QtImageOperators::slotOperatorExp()
 {
   if ( this->StudyDataValid() ) 
     {
-    (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunction( exp );
+    (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunctionDouble( exp );
     emit dataChanged( *(this->CurrentStudy) );
     }
 }
