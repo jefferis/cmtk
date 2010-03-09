@@ -56,13 +56,13 @@ public:
   virtual UniformVolume::SmartPtr Apply( UniformVolume::SmartPtr& volume );
 
   /// Create new signed distance map operation.
-  static void NewSigned( const char* maskFileName )
+  static void NewSigned()
   {
     ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationDistanceMap( true /*signedDistance*/) ) );
   }
 
   /// Create new unsigned distance map operation.
-  static void NewUnsigned( const char* maskFileName )
+  static void NewUnsigned()
   {
     ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationDistanceMap( false /*signedDistance*/) ) );
   }
