@@ -84,11 +84,8 @@ public:
      * specifying the distance to the nearest non-feature voxel.
      */
     INSIDE = 1,
-    /** Use specific feature value.
-     * If this flag is set, only voxels in the feature image the value of which
-     * matches a given constant will be considered feature voxels. All voxels 
-     * with different values, zero or non-zero, will be considered background 
-     * voxels.
+    /** Compute "inside", rather than "outside" map. Ths essentially inverts
+     * the mask.
      */
     VALUE_EXACT = 2,
     /** Use specific feature value.
