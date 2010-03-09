@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -57,6 +57,7 @@
 #include <cmtkImageOperationThreshold.h>
 #include <cmtkImageOperationMedianFilter.h>
 #include <cmtkImageOperationGaussFilter.h>
+#include <cmtkImageOperationDistanceMap.h>
 
 #include <stdlib.h>
 
@@ -142,6 +143,9 @@ main( int argc, char* argv[] )
     cl.AddCallback( Key( "dilate" ), &cmtk::ImageOperationErodeDilate::NewDilate, "Morphological dilation operator" );
     cl.AddCallback( Key( "boundary-map" ), &cmtk::ImageOperationBoundaryMap::New, "Create boundary map" );
     cl.AddCallback( Key( "multi-boundary-map" ), &cmtk::ImageOperationBoundaryMap::NewMulti, "Create multi-valued boundary map" );
+
+    cl.AddCallback( Key( "distance-map" ), &cmtk::ImageOperationDistanceMap::NewUnsigned, "Compute unsigned Euclidean distance map" );
+    cl.AddCallback( Key( "signed-distance-map" ), &cmtk::ImageOperationDistanceMap::NewSigned, "Compute signed (inside=negative, outside=positive) Euclidean distance map" );
     cl.EndGroup();
 
     cl.BeginGroup( "Filtering", "Filter Operations" );
