@@ -47,10 +47,10 @@ class ImageOperationMedialSkeleton
 {
 public:
   /// Distance map type.
-  typedef UniformDistanceMap<double> DistanceMapType;
+  typedef UniformDistanceMap<Types::Coordinate> DistanceMapType;
 
   /// Constructor.
-  ImageOperationMedialSkeleton( const bool signedDistance ) {}
+  ImageOperationMedialSkeleton() {}
 
   /// Apply this operation to an image in place.
   virtual UniformVolume::SmartPtr Apply( UniformVolume::SmartPtr& volume );

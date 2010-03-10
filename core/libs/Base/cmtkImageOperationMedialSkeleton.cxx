@@ -34,21 +34,32 @@ cmtk::UniformVolume::SmartPtr
 cmtk::ImageOperationMedialSkeleton
 ::Apply( cmtk::UniformVolume::SmartPtr& volume )
 {
-  UniformVolume::SmartPtr iMap( new DistanceMapType( volume, MedialSkeletonType::INSIDE ) );
+  UniformVolume::SmartPtr iMap( new DistanceMapType( volume, DistanceMapType::INSIDE ) );
+
+  UniformVolume::SmartPtr skeleton( volume->CloneGrid() );
+  skeleton->CreateDataArray( TYPE_COORDINATE );
 
   const Types::Coordinate* delta = volume->GetDelta();
 
+  size_t ofs = 0;
   const int* dims = volume->GetDims();
   for ( int k = 0; k < dims[2]; ++k )
     {
     for ( int j = 0; j < dims[1]; ++j )
       {
-      for ( int i = 0; i < dims[0]; ++i )
+      for ( int i = 0; i < dims[0]; ++i, ++ofs )
 	{
+	const Types::Coordinate distance = iMap->GetDataAt( ofs );
+	if ( distance <= 0 )
+	  {
+	  skeleton->SetDataAt( 0, ofs );
+	  }
+	else
+	  {
+	  }
 	}
       }
     }
   
-  UniformVolume::SmartPtr skeleton( volume->CloneGrid() );
   return skeleton;
 }
