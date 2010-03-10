@@ -38,13 +38,17 @@ cmtk::ImageOperationMedialSkeleton
 {
   UniformVolume::SmartPtr iMap( new DistanceMapType( *volume, DistanceMapType::INSIDE ) );
 
-  UniformVolume::SmartPtr skeleton( volume->CloneGrid() );
+  const int crop[] = {127,146,17,130,149,20};
+  iMap->SetCropRegion( crop, crop+3 );
+  iMap = UniformVolume::SmartPtr( iMap->GetCroppedVolume() );
+
+  UniformVolume::SmartPtr skeleton( iMap->CloneGrid() );
   skeleton->CreateDataArray( TYPE_COORDINATE );
   skeleton->GetData()->ClearArray();
 
-  const Types::Coordinate* deltas = volume->GetDelta();
+  const Types::Coordinate* deltas = iMap->GetDelta();
 
-  const int* dims = volume->GetDims();
+  const int* dims = iMap->GetDims();
 #pragma omp parallel for
   for ( int k = 1; k < dims[2]-1; ++k )
     {
@@ -79,8 +83,8 @@ cmtk::ImageOperationMedialSkeleton
 	hessian[2][2] = (dz[1][1][1] - dz[1][1][0]) / deltas[2];
 	
 	hessian[0][1] = hessian[1][0] = (dx[1][0][1] + dx[1][0][0] + dx[1][2][1] + dx[1][2][0] - 2 * ( dx[1][1][1] + dx[1][1][0] ) ) / (2*deltas[1]);
+	hessian[0][2] = hessian[2][0] = (dx[0][1][1] + dx[0][1][0] + dx[2][1][1] + dx[2][1][0] - 2 * ( dx[1][1][1] + dx[1][1][0] ) ) / (2*deltas[2]);
 	hessian[1][2] = hessian[2][1] = (dy[0][1][1] + dy[0][1][0] + dy[2][1][1] + dy[2][1][0] - 2 * ( dy[1][1][1] + dy[1][1][0] ) ) / (2*deltas[2]);
-	hessian[2][0] = hessian[0][2] = (dz[1][0][1] + dz[1][0][0] + dz[1][2][1] + dz[1][2][0] - 2 * ( dz[1][1][1] + dz[1][1][0] ) ) / (2*deltas[0]);
 	
 	EigenSystemSymmetricMatrix3x3<Types::DataItem> eigenSystem( hessian, false /*sortAbsolute*/ );
 	
