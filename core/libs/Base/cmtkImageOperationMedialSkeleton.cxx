@@ -38,9 +38,9 @@ cmtk::ImageOperationMedialSkeleton
 {
   UniformVolume::SmartPtr iMap( new DistanceMapType( *volume, DistanceMapType::INSIDE ) );
 
-  const int crop[] = {127,146,17,130,149,20};
-  iMap->SetCropRegion( crop, crop+3 );
-  iMap = UniformVolume::SmartPtr( iMap->GetCroppedVolume() );
+//  const int crop[] = {127,146,17,130,149,20};
+//  iMap->SetCropRegion( crop, crop+3 );
+//  iMap = UniformVolume::SmartPtr( iMap->GetCroppedVolume() );
 
   UniformVolume::SmartPtr skeleton( iMap->CloneGrid() );
   skeleton->CreateDataArray( TYPE_COORDINATE );
@@ -50,48 +50,36 @@ cmtk::ImageOperationMedialSkeleton
 
   const int* dims = iMap->GetDims();
 #pragma omp parallel for
-  for ( int k = 1; k < dims[2]-1; ++k )
+  for ( int k = 1; k < dims[2]-2; ++k )
     {
-    for ( int j = 1; j < dims[1]-1; ++j )
+    for ( int j = 1; j < dims[1]-2; ++j )
       {
-      for ( int i = 1; i < dims[0]-1; ++i )
+      for ( int i = 1; i < dims[0]-2; ++i )
 	{
 	Types::DataItem n[3][3][3];
 	
-	for ( int kk = -1; kk < 2; ++kk )
-	  for ( int jj = -1; jj < 2; ++jj )
-	    for ( int ii = -1; ii < 2; ++ii )
-	      {
-	      n[1+kk][1+jj][1+ii] = iMap->GetDataAt( i+ii, j+jj, k+kk );
-	      }
-	
-	Types::DataItem dx[3][3][2];
-	Types::DataItem dy[3][3][2];
-	Types::DataItem dz[3][3][2];
 	for ( int kk = 0; kk < 3; ++kk )
 	  for ( int jj = 0; jj < 3; ++jj )
-	    for ( int ii = 0; ii < 2; ++ii )
+	    for ( int ii = 0; ii < 3; ++ii )
 	      {
-	      dx[kk][jj][ii] = (n[kk][jj][ii+1] - n[kk][jj][ii] ) / deltas[0];
-	      dy[kk][jj][ii] = (n[kk][ii+1][jj] - n[kk][ii][jj] ) / deltas[1];
-	      dz[kk][jj][ii] = (n[ii+1][kk][jj] - n[ii][kk][jj] ) / deltas[2];
+	      n[kk][jj][ii] = iMap->GetDataAt( i+ii, j+jj, k+kk );
 	      }
 	
 	Matrix3x3<Types::DataItem> hessian;
-	hessian[0][0] = (dx[1][1][1] - dx[1][1][0]) / deltas[0];
-	hessian[1][1] = (dy[1][1][1] - dy[1][1][0]) / deltas[1];
-	hessian[2][2] = (dz[1][1][1] - dz[1][1][0]) / deltas[2];
+	hessian[0][0] = (n[0][0][2] - 2*n[0][0][1] + n[0][0][0] ) / (deltas[0]*deltas[0]);
+	hessian[1][2] = (n[0][2][0] - 2*n[0][1][0] + n[0][0][0] ) / (deltas[1]*deltas[1]);
+	hessian[1][2] = (n[2][0][0] - 2*n[1][0][0] + n[0][0][0] ) / (deltas[2]*deltas[2]);
 	
-	hessian[0][1] = hessian[1][0] = (dx[1][0][1] + dx[1][0][0] + dx[1][2][1] + dx[1][2][0] - 2 * ( dx[1][1][1] + dx[1][1][0] ) ) / (2*deltas[1]);
-	hessian[0][2] = hessian[2][0] = (dx[0][1][1] + dx[0][1][0] + dx[2][1][1] + dx[2][1][0] - 2 * ( dx[1][1][1] + dx[1][1][0] ) ) / (2*deltas[2]);
-	hessian[1][2] = hessian[2][1] = (dy[0][1][1] + dy[0][1][0] + dy[2][1][1] + dy[2][1][0] - 2 * ( dy[1][1][1] + dy[1][1][0] ) ) / (2*deltas[2]);
+	hessian[0][1] = hessian[1][0] =  (n[0][1][1] - n[0][0][1] - n[0][1][0] + n[0][0][0] ) / (deltas[0]*deltas[1]);
+	hessian[0][2] = hessian[2][0] =  (n[1][0][1] - n[0][0][1] - n[1][0][0] + n[0][0][0] ) / (deltas[0]*deltas[2]);
+	hessian[1][2] = hessian[2][1] =  (n[1][1][0] - n[0][1][0] - n[1][0][0] + n[0][0][0] ) / (deltas[1]*deltas[2]);
 	
 	EigenSystemSymmetricMatrix3x3<Types::DataItem> eigenSystem( hessian, false /*sortAbsolute*/ );
 	
 	Types::DataItem result = n[1][1][1];
 	if ( eigenSystem.GetNthEigenvalue( 2-this->m_Dimensionality ) < 0 )
 	  {
-	  Vector3D gradient( (dx[1][1][0] + dx[1][1][1]) / 2, (dy[1][1][0] + dy[1][1][1]) / 2, (dz[1][1][0] + dz[1][1][1]) / 2 );
+	  Vector3D gradient( (n[0][0][1] - n[0][0][0]) / deltas[0], (n[0][1][0] - n[0][0][0]) / deltas[1], (n[1][0][0] - n[0][0][0]) / deltas[2] );
 	  for ( int n = 0; n < 3-this->m_Dimensionality; ++n )
 	    {
 	    Vector3D ev;
