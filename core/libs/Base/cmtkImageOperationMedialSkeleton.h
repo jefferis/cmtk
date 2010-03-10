@@ -50,16 +50,20 @@ public:
   typedef UniformDistanceMap<Types::Coordinate> DistanceMapType;
 
   /// Constructor.
-  ImageOperationMedialSkeleton() {}
+  ImageOperationMedialSkeleton( const int d ) : m_Dimensionality( d ) {}
 
   /// Apply this operation to an image in place.
   virtual UniformVolume::SmartPtr Apply( UniformVolume::SmartPtr& volume );
 
   /// Create new medial skeleton operation.
-  static void New()
+  static void New( const long int d )
   {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationMedialSkeleton() ) );
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationMedialSkeleton( d ) ) );
   }
+
+private:
+  /// Dimensionality of the medial skeleton (1 or 2).
+  int m_Dimensionality;
 };
 
 } // namespace cmtk

@@ -147,7 +147,7 @@ main( int argc, char* argv[] )
 
     cl.AddCallback( Key( "distance-map" ), &cmtk::ImageOperationDistanceMap::NewUnsigned, "Compute unsigned Euclidean distance map. Input image is interpreted as binary mask." );
     cl.AddCallback( Key( "signed-distance-map" ), &cmtk::ImageOperationDistanceMap::NewSigned, "Compute signed (inside=negative, outside=positive) Euclidean distance map" );
-    cl.AddCallback( Key( "medial-skeleton" ), &cmtk::ImageOperationMedialSkeleton::New, "Compute medial skeleton of binary mask" );
+    cl.AddCallback( Key( "medial-skeleton" ), &cmtk::ImageOperationMedialSkeleton::New, "Compute n-dimensional medial skeleton of binary mask. Argument must be either 1 or 2." );
     cl.EndGroup();
 
     cl.BeginGroup( "Filtering", "Filter Operations" );

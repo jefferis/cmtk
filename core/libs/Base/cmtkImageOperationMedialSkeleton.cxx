@@ -30,6 +30,8 @@
 
 #include <cmtkImageOperationMedialSkeleton.h>
 
+#include <cmtkEigenSystemSymmetricMatrix3x3.h>
+
 cmtk::UniformVolume::SmartPtr  
 cmtk::ImageOperationMedialSkeleton
 ::Apply( cmtk::UniformVolume::SmartPtr& volume )
@@ -50,20 +52,55 @@ cmtk::ImageOperationMedialSkeleton
       {
       for ( int i = 1; i < dims[0]-1; ++i )
 	{
-	Types::Coordinate result = iMap->GetDataAt( i, j, k );
-
-	const Types::Coordinate distance = result;
-	for ( int kk = -1; (result>0) && (kk < 2); ++kk )
-	  for ( int jj = -1; (result>0) && (jj < 2); ++jj )
-	    for ( int ii = -1; (result>0) && (ii < 2); ++ii )
+	Types::DataItem n[3][3][3];
+	
+	for ( int kk = -1; kk < 2; ++kk )
+	  for ( int jj = -1; jj < 2; ++jj )
+	    for ( int ii = -1; ii < 2; ++ii )
 	      {
-	      if ( kk || jj || ii )
-		{
-		const Types::Coordinate delta = sqrt( MathUtil::Square( ii * deltas[0] ) + MathUtil::Square( jj * deltas[1] ) +MathUtil::Square( kk * deltas[2] ) );
-		if ( (iMap->GetDataAt( i+ii, j+jj, k+kk ) - distance - delta) >= -1e-5 )
-		  result = 0;
-		}
+	      n[1+kk][1+jj][1+ii] = iMap->GetDataAt( i+ii, j+jj, k+kk );
 	      }
+	
+	Types::DataItem dx[3][3][2];
+	Types::DataItem dy[3][3][2];
+	Types::DataItem dz[3][3][2];
+	for ( int kk = 0; kk < 3; ++kk )
+	  for ( int jj = 0; jj < 3; ++jj )
+	    for ( int ii = 0; ii < 2; ++ii )
+	      {
+	      dx[kk][jj][ii] = (n[kk][jj][ii+1] - n[kk][jj][ii] ) / deltas[0];
+	      dy[kk][jj][ii] = (n[kk][ii+1][jj] - n[kk][ii][jj] ) / deltas[1];
+	      dz[kk][jj][ii] = (n[ii+1][kk][jj] - n[ii][kk][jj] ) / deltas[2];
+	      }
+	
+	Matrix3x3<Types::DataItem> hessian;
+	hessian[0][0] = (dx[1][1][1] - dx[1][1][0]) / deltas[0];
+	hessian[1][1] = (dy[1][1][1] - dy[1][1][0]) / deltas[1];
+	hessian[2][2] = (dz[1][1][1] - dz[1][1][0]) / deltas[2];
+	
+	hessian[0][1] = hessian[1][0] = (dx[1][0][1] + dx[1][0][0] + dx[1][2][1] + dx[1][2][0] - 2 * ( dx[1][1][1] + dx[1][1][0] ) ) / (2*deltas[1]);
+	hessian[0][2] = hessian[2][0] = (dx[0][1][1] + dx[0][1][0] + dx[2][1][1] + dx[2][1][0] - 2 * ( dx[1][1][1] + dx[1][1][0] ) ) / (2*deltas[2]);
+	hessian[1][2] = hessian[2][1] = (dy[0][1][1] + dy[0][1][0] + dy[2][1][1] + dy[2][1][0] - 2 * ( dy[1][1][1] + dy[1][1][0] ) ) / (2*deltas[2]);
+	
+	EigenSystemSymmetricMatrix3x3<Types::DataItem> eigenSystem( hessian, false /*sortAbsolute*/ );
+	
+	Types::DataItem result = n[1][1][1];
+	if ( eigenSystem.GetNthEigenvalue( 2 - this->m_Dimensionality ) < 0 )
+	  {
+	  Vector3D gradient( (dx[1][1][0] + dx[1][1][1]) / 2, (dy[1][1][0] + dy[1][1][1]) / 2, (dz[1][1][0] + dz[1][1][1]) / 2 );
+	  for ( int n = 0; n < 2 - this->m_Dimensionality; ++n )
+	    {
+	    Vector3D ev;
+	    eigenSystem.GetNthEigenvector( n, ev.XYZ );
+
+	    if ( fabs( ev * gradient ) > 1e-5 )
+	      result = 0;
+	    }
+	  }
+	else
+	  {
+	  result = 0;
+	  }
 	skeleton->SetDataAt( result, i, j, k );
 	}
       }
