@@ -38,7 +38,7 @@ cmtk
 
 template<class TFloat>
 EigenSystemSymmetricMatrix3x3<TFloat>
-::EigenSystemSymmetricMatrix3x3( const Matrix3x3<TFloat>& matrix )
+::EigenSystemSymmetricMatrix3x3( const Matrix3x3<TFloat>& matrix, const bool sortAbsolute )
 {
   TFloat e[3];
   for (int i = 0; i < 3; i++) 
@@ -49,7 +49,7 @@ EigenSystemSymmetricMatrix3x3<TFloat>
       }
     }
   tred2( this->m_Eigenvectors, this->m_Eigenvalues, e);
-  tql2( this->m_Eigenvectors, this->m_Eigenvalues, e);
+  tql2( this->m_Eigenvectors, this->m_Eigenvalues, e, sortAbsolute );
 }
 
 template<class TFloat>
@@ -203,7 +203,7 @@ EigenSystemSymmetricMatrix3x3<TFloat>
 template<class TFloat>
 void 
 EigenSystemSymmetricMatrix3x3<TFloat>
-::tql2(TFloat V[3][3], TFloat d[3], TFloat e[3]) 
+::tql2(TFloat V[3][3], TFloat d[3], TFloat e[3], const bool sortAbsolute) 
 {
 //  This is derived from the Algol procedures tql2, by
 //  Bowdler, Martin, Reinsch, and Wilkinson, Handbook for
@@ -316,7 +316,8 @@ EigenSystemSymmetricMatrix3x3<TFloat>
     TFloat p = d[i];
     for (int j = i+1; j < 3; j++) 
       {
-      if ( fabs(d[j]) < fabs(p) ) 
+      const bool swap = sortAbsolute ? (fabs(d[j]) < fabs(p)) : (d[j] < p);
+      if ( swap ) 
 	{
 	k = j;
         p = d[j];

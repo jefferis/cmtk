@@ -52,8 +52,9 @@ class EigenSystemSymmetricMatrix3x3
 {
 public:
   /// Constructor: compute eigensystem of given matrix.
-  EigenSystemSymmetricMatrix3x3( const Matrix3x3<TFloat>& matrix );
-
+  EigenSystemSymmetricMatrix3x3( const Matrix3x3<TFloat>& matrix, /**!< Symmetric 3x3 matrix for which we are computing the eigenvalues and eigenvectors.*/ 
+				 const bool sortAbsolute = true /**!< Flag for sorting by absolute eigenvalues (default) vs. sorting by actual eigenvalues.*/ );
+  
   /// Get n-th eigenvector.
   template <class T> void GetNthEigenvector( const size_t n, T *const evec ) const
   {
@@ -84,7 +85,7 @@ private:
 
   /* Symmetric tridiagonal QL algorithm.
    */
-  static void tql2(TFloat V[3][3], TFloat d[3], TFloat e[3]);
+  static void tql2(TFloat V[3][3], TFloat d[3], TFloat e[3], const bool sortAbsolute = true );
 };
 
 //@}

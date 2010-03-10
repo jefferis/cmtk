@@ -1,5 +1,7 @@
 Release CMTK-1.3.0:
 
+- Added: symmetric eigensystem can now be sorted either by absolute or by
+    actual eigenvalues.
 - Bugfix: UniformDistanceMap constructor failed to copy orientation and
     space-related information from input UniformVolume object
 - Added: Euclidean distance map computation in "convertx" tool.
