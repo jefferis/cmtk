@@ -108,11 +108,11 @@ public:
    *@param value Feature value
    *@param window Window radius around feature value.
    */
-  UniformDistanceMap( const UniformVolume* volume, const byte flags = DEFAULT, const Types::DataItem value = 0, const Types::DataItem window = 0 );
+  UniformDistanceMap( const UniformVolume& volume, const byte flags = DEFAULT, const Types::DataItem value = 0, const Types::DataItem window = 0 );
 
 private:
   /// Compute distance map.
-  void BuildDistanceMap( const UniformVolume *volume, const byte flags, const Types::DataItem value=0, const Types::DataItem window = 0 );
+  void BuildDistanceMap( const UniformVolume& volume, const byte flags, const Types::DataItem value=0, const Types::DataItem window = 0 );
   
   /// Compute 3-D Euclidean Distance Transformation.
   void ComputeEDT( DistanceDataType *const distance );

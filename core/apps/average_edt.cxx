@@ -135,10 +135,8 @@ Average
 
     for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = volumes.begin(); it != volumes.end(); ++it )
       {
-      cmtk::UniformVolume::SmartPtr insideDistanceMap
-	( new cmtk::UniformDistanceMap<float>( *it, distanceMapFlags + cmtk::UniformDistanceMap<float>::INSIDE, label ) );
-      cmtk::UniformVolume::SmartPtr  outsideDistanceMap
-	( new cmtk::UniformDistanceMap<float>( *it, distanceMapFlags, label ) );
+      cmtk::UniformVolume::SmartPtr insideDistanceMap( new cmtk::UniformDistanceMap<float>( *(*it), distanceMapFlags + cmtk::UniformDistanceMap<float>::INSIDE, label ) );
+      cmtk::UniformVolume::SmartPtr  outsideDistanceMap( new cmtk::UniformDistanceMap<float>( *(*it), distanceMapFlags, label ) );
 
       const float* insideDistancePtr = (const float*)insideDistanceMap->GetData()->GetDataPtr();
       const float* outsideDistancePtr = (const float*)outsideDistanceMap->GetData()->GetDataPtr();
@@ -279,10 +277,8 @@ AverageWindowed
     std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it;
     for ( it = volumes.begin(); it != volumes.end(); ++it )
       {
-      cmtk::UniformVolume::SmartPtr insideDistanceMap
-	( new cmtk::UniformDistanceMap<float>( *it, distanceMapFlags + cmtk::UniformDistanceMap<float>::INSIDE, label, FeatureWindowRadius) );
-      cmtk::UniformVolume::SmartPtr outsideDistanceMap
-	( new cmtk::UniformDistanceMap<float>( *it, distanceMapFlags, label, FeatureWindowRadius ) );
+      cmtk::UniformVolume::SmartPtr insideDistanceMap( new cmtk::UniformDistanceMap<float>( *(*it), distanceMapFlags + cmtk::UniformDistanceMap<float>::INSIDE, label, FeatureWindowRadius) );
+      cmtk::UniformVolume::SmartPtr outsideDistanceMap( new cmtk::UniformDistanceMap<float>( *(*it), distanceMapFlags, label, FeatureWindowRadius ) );
       
       const float* insideDistancePtr = (const float*)insideDistanceMap->GetData()->GetDataPtr();
       const float* outsideDistancePtr = (const float*)outsideDistanceMap->GetData()->GetDataPtr();
@@ -443,8 +439,8 @@ Average
       {
       const size_t nPixelsFloating = (*itV)->GetNumberOfPixels();
 
-      cmtk::UniformVolume::SmartPtr insideDistanceMap( new cmtk::UniformDistanceMap<float>( *itV, distanceMapFlags + cmtk::UniformDistanceMap<float>::INSIDE, label ) );
-      cmtk::UniformVolume::SmartPtr inOutDistanceMap( new cmtk::UniformDistanceMap<float>( *itV, distanceMapFlags, label ) );
+      cmtk::UniformVolume::SmartPtr insideDistanceMap( new cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags + cmtk::UniformDistanceMap<float>::INSIDE, label ) );
+      cmtk::UniformVolume::SmartPtr inOutDistanceMap( new cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags, label ) );
       
       cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> interpolator( inOutDistanceMap );
       
@@ -607,8 +603,8 @@ AverageWindowed
       {
       const size_t nPixelsFloating = (*itV)->GetNumberOfPixels();
 
-      cmtk::UniformVolume::SmartPtr insideDistanceMap( new cmtk::UniformDistanceMap<float>( *itV, distanceMapFlags + cmtk::UniformDistanceMap<float>::INSIDE, label, FeatureWindowRadius ) );
-      cmtk::UniformVolume::SmartPtr inOutDistanceMap ( new cmtk::UniformDistanceMap<float>( *itV, distanceMapFlags, label, FeatureWindowRadius ) );
+      cmtk::UniformVolume::SmartPtr insideDistanceMap( new cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags + cmtk::UniformDistanceMap<float>::INSIDE, label, FeatureWindowRadius ) );
+      cmtk::UniformVolume::SmartPtr inOutDistanceMap ( new cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags, label, FeatureWindowRadius ) );
       cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> interpolator( inOutDistanceMap );
       
       const float* insideDistancePtr = static_cast<const float*>( insideDistanceMap->GetData()->GetDataPtr() );

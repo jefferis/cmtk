@@ -1,5 +1,7 @@
 Release CMTK-1.3.0:
 
+- Bugfix: UniformDistanceMap constructor failed to copy orientation and
+    space-related information from input UniformVolume object
 - Added: Euclidean distance map computation in "convertx" tool.
 - Added: "warpx" and "congeal_warp" can now do repeated histogram-based
     intensity matching of floating to reference image, with a transfer

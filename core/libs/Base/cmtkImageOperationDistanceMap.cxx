@@ -36,8 +36,8 @@ cmtk::ImageOperationDistanceMap
 {
   if ( this->m_SignedDistance )
     {
-    UniformVolume::SmartPtr iMap( new DistanceMapType( volume, DistanceMapType::INSIDE ) );
-    UniformVolume::SmartPtr oMap( new DistanceMapType( volume ) );
+    UniformVolume::SmartPtr iMap( new DistanceMapType( *volume, DistanceMapType::INSIDE ) );
+    UniformVolume::SmartPtr oMap( new DistanceMapType( *volume ) );
     
     const size_t nPixels = volume->GetNumberOfPixels();
 #pragma omp parallel for
@@ -51,6 +51,6 @@ cmtk::ImageOperationDistanceMap
     }
   else
     {
-    return UniformVolume::SmartPtr( new DistanceMapType( volume ) );
+    return UniformVolume::SmartPtr( new DistanceMapType( *volume ) );
     }
 }

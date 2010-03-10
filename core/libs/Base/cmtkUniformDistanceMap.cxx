@@ -46,34 +46,39 @@ cmtk
 template<class TDistanceDataType>
 UniformDistanceMap<TDistanceDataType>
 ::UniformDistanceMap
-( const UniformVolume* volume, const byte flags, const Types::DataItem value, const Types::DataItem window )
+( const UniformVolume& volume, const byte flags, const Types::DataItem value, const Types::DataItem window )
 {
   this->BuildDistanceMap( volume, flags, value, window );
+
+  this->m_IndexToPhysicalMatrix = volume.m_IndexToPhysicalMatrix;
+
+  this->SetOffset( volume.m_Offset );
+  this->m_MetaInformation = volume.m_MetaInformation;
 }
 
 template<class TDistanceDataType>
 void
 UniformDistanceMap<TDistanceDataType>
 ::BuildDistanceMap
-( const UniformVolume* volume, const byte flags, const Types::DataItem value, const Types::DataItem window )
+( const UniformVolume& volume, const byte flags, const Types::DataItem value, const Types::DataItem window )
 {
-  this->SetDims( volume->GetDims() ); // set and update internals
-  memcpy( Size, volume->Size, sizeof( Size ) );
-  memcpy( this->m_Delta, volume->GetDelta(), sizeof( this->m_Delta ) );
+  this->SetDims( volume.GetDims() ); // set and update internals
+  memcpy( Size, volume.Size, sizeof( Size ) );
+  memcpy( this->m_Delta, volume.GetDelta(), sizeof( this->m_Delta ) );
 
-  TypedArray::SmartPtr distanceArray = TypedArray::SmartPtr( TypedArray::Create( DataTypeTraits<DistanceDataType>::DataTypeID, volume->GetNumberOfPixels() ) );
+  TypedArray::SmartPtr distanceArray = TypedArray::SmartPtr( TypedArray::Create( DataTypeTraits<DistanceDataType>::DataTypeID, volume.GetNumberOfPixels() ) );
   DistanceDataType *Distance = static_cast<DistanceDataType*>( distanceArray->GetDataPtr() );
 
   byte inside = ( flags & UniformDistanceMap::INSIDE ) ? 0 : 1;
   byte outside = 1 - inside;
 
-  const TypedArray* Feature = volume->GetData();
+  const TypedArray* Feature = volume.GetData();
 
   Types::DataItem c;
   DistanceDataType *p = Distance;
   if ( flags & UniformDistanceMap::VALUE_EXACT ) 
     {
-    for ( size_t i = 0; i < volume->GetNumberOfPixels(); i++, p++ ) 
+    for ( size_t i = 0; i < volume.GetNumberOfPixels(); i++, p++ ) 
       {
       if ( Feature->Get( c, i ) )
 	{
@@ -87,7 +92,7 @@ UniformDistanceMap<TDistanceDataType>
     } 
   else if ( flags & UniformDistanceMap::VALUE_THRESHOLD ) 
     {
-    for ( size_t i = 0; i < volume->GetNumberOfPixels(); i++, p++ ) 
+    for ( size_t i = 0; i < volume.GetNumberOfPixels(); i++, p++ ) 
       {
       if ( Feature->Get( c, i ) )
 	{
@@ -101,7 +106,7 @@ UniformDistanceMap<TDistanceDataType>
     } 
   else if ( flags & UniformDistanceMap::VALUE_WINDOW ) 
     {
-    for ( size_t i = 0; i < volume->GetNumberOfPixels(); i++, p++ ) 
+    for ( size_t i = 0; i < volume.GetNumberOfPixels(); i++, p++ ) 
       {
       if ( Feature->Get( c, i ) )
 	{
@@ -115,7 +120,7 @@ UniformDistanceMap<TDistanceDataType>
     } 
   else
     {
-    for ( size_t i = 0; i < volume->GetNumberOfPixels(); i++, p++ ) 
+    for ( size_t i = 0; i < volume.GetNumberOfPixels(); i++, p++ ) 
       {
       if ( Feature->Get( c, i ) )
 	{
@@ -131,7 +136,7 @@ UniformDistanceMap<TDistanceDataType>
   this->ComputeEDT( Distance );
 
   p = Distance;
-  for ( size_t i = 0; i < volume->GetNumberOfPixels(); ++i, ++p ) 
+  for ( size_t i = 0; i < volume.GetNumberOfPixels(); ++i, ++p ) 
     {
 #if defined(_MSC_VER) || defined(__SUNPRO_CC)
     *p = static_cast<DistanceDataType>( sqrt( (double)*p ) );
