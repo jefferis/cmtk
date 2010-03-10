@@ -79,21 +79,21 @@ cmtk::ImageOperationMedialSkeleton
 	hessian[2][2] = (dz[1][1][1] - dz[1][1][0]) / deltas[2];
 	
 	hessian[0][1] = hessian[1][0] = (dx[1][0][1] + dx[1][0][0] + dx[1][2][1] + dx[1][2][0] - 2 * ( dx[1][1][1] + dx[1][1][0] ) ) / (2*deltas[1]);
-	hessian[0][2] = hessian[2][0] = (dx[0][1][1] + dx[0][1][0] + dx[2][1][1] + dx[2][1][0] - 2 * ( dx[1][1][1] + dx[1][1][0] ) ) / (2*deltas[2]);
 	hessian[1][2] = hessian[2][1] = (dy[0][1][1] + dy[0][1][0] + dy[2][1][1] + dy[2][1][0] - 2 * ( dy[1][1][1] + dy[1][1][0] ) ) / (2*deltas[2]);
+	hessian[2][0] = hessian[0][2] = (dz[1][0][1] + dz[1][0][0] + dz[1][2][1] + dz[1][2][0] - 2 * ( dz[1][1][1] + dz[1][1][0] ) ) / (2*deltas[0]);
 	
 	EigenSystemSymmetricMatrix3x3<Types::DataItem> eigenSystem( hessian, false /*sortAbsolute*/ );
 	
 	Types::DataItem result = n[1][1][1];
-	if ( eigenSystem.GetNthEigenvalue( 2 - this->m_Dimensionality ) < 0 )
+	if ( eigenSystem.GetNthEigenvalue( 2-this->m_Dimensionality ) < 0 )
 	  {
 	  Vector3D gradient( (dx[1][1][0] + dx[1][1][1]) / 2, (dy[1][1][0] + dy[1][1][1]) / 2, (dz[1][1][0] + dz[1][1][1]) / 2 );
-	  for ( int n = 0; n < 2 - this->m_Dimensionality; ++n )
+	  for ( int n = 0; n < 3-this->m_Dimensionality; ++n )
 	    {
 	    Vector3D ev;
 	    eigenSystem.GetNthEigenvector( n, ev.XYZ );
 
-	    if ( fabs( ev * gradient ) > 1e-5 )
+	    if ( fabs( ev * gradient ) > 1e-2 )
 	      result = 0;
 	    }
 	  }
