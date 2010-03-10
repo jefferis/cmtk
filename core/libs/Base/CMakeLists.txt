@@ -58,6 +58,7 @@ SET(cmtkBase_SRCS
   cmtkImageOperationDownsample.cxx
   cmtkImageOperationHistogramEqualization.cxx
   cmtkImageOperationMedianFilter.cxx
+  cmtkImageOperationMedialSkeleton.cxx
   cmtkImageOperationScaleToRange.cxx
   cmtkImageOperationThreshold.cxx
   cmtkInfinitePlane.cxx
