@@ -158,6 +158,9 @@ IF(NOT CMTK_USE_MPI)
     convertxCropRegion1
     convertxCropRegion2
     convertxDownsample
+    convertxDistanceUnsigned
+    convertxDistanceSigned
+    convertxDistanceSigned2
     convertxErodeDilateErode
     convertxDilateErodeDilate
     convertxGaussianFilterSigma

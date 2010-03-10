@@ -313,6 +313,18 @@ case ${RUNTEST} in
 	run convertx --boundary-map parc1.hdr ${tmpdir}/boundary_map.hdr
 	check_results boundary_map.img
 	;;
+    convertxDistanceUnsigned)
+        run convertx --distance-map parc1_bin.hdr ${tmpdir}/dmap.hdr
+	check_results dmap.img
+	;;
+    convertxDistanceSigned)
+        run convertx --signed-distance-map parc1_bin.hdr ${tmpdir}/dmap.hdr
+	check_results dmap.img
+	;;
+    convertxDistanceSigned2)
+        run convertx --signed-distance-map parc1.hdr ${tmpdir}/dmap.hdr
+	check_results dmap.img
+	;;
     convertxBoundaryMapMultiValue)
 	run convertx --multi-boundary-map parc1.hdr ${tmpdir}/boundary_map_multi.hdr
 	check_results boundary_map_multi.img
