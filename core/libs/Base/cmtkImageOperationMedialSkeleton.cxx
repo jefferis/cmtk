@@ -38,25 +38,33 @@ cmtk::ImageOperationMedialSkeleton
 
   UniformVolume::SmartPtr skeleton( volume->CloneGrid() );
   skeleton->CreateDataArray( TYPE_COORDINATE );
+  skeleton->GetData()->ClearArray();
 
-  const Types::Coordinate* delta = volume->GetDelta();
+  const Types::Coordinate* deltas = volume->GetDelta();
 
-  size_t ofs = 0;
   const int* dims = volume->GetDims();
-  for ( int k = 0; k < dims[2]; ++k )
+#pragma omp parallel for
+  for ( int k = 1; k < dims[2]-1; ++k )
     {
-    for ( int j = 0; j < dims[1]; ++j )
+    for ( int j = 1; j < dims[1]-1; ++j )
       {
-      for ( int i = 0; i < dims[0]; ++i, ++ofs )
+      for ( int i = 1; i < dims[0]-1; ++i )
 	{
-	const Types::Coordinate distance = iMap->GetDataAt( ofs );
-	if ( distance <= 0 )
-	  {
-	  skeleton->SetDataAt( 0, ofs );
-	  }
-	else
-	  {
-	  }
+	Types::Coordinate result = iMap->GetDataAt( i, j, k );
+
+	const Types::Coordinate distance = result;
+	for ( int kk = -1; (result>0) && (kk < 2); ++kk )
+	  for ( int jj = -1; (result>0) && (jj < 2); ++jj )
+	    for ( int ii = -1; (result>0) && (ii < 2); ++ii )
+	      {
+	      if ( kk || jj || ii )
+		{
+		const Types::Coordinate delta = sqrt( MathUtil::Square( ii * deltas[0] ) + MathUtil::Square( jj * deltas[1] ) +MathUtil::Square( kk * deltas[2] ) );
+		if ( (iMap->GetDataAt( i+ii, j+jj, k+kk ) - distance - delta) >= -1e-5 )
+		  result = 0;
+		}
+	      }
+	skeleton->SetDataAt( result, i, j, k );
 	}
       }
     }

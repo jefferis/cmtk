@@ -56,6 +56,7 @@
 #include <cmtkImageOperationScaleToRange.h>
 #include <cmtkImageOperationThreshold.h>
 #include <cmtkImageOperationMedianFilter.h>
+#include <cmtkImageOperationMedialSkeleton.h>
 #include <cmtkImageOperationGaussFilter.h>
 #include <cmtkImageOperationDistanceMap.h>
 
@@ -146,6 +147,7 @@ main( int argc, char* argv[] )
 
     cl.AddCallback( Key( "distance-map" ), &cmtk::ImageOperationDistanceMap::NewUnsigned, "Compute unsigned Euclidean distance map. Input image is interpreted as binary mask." );
     cl.AddCallback( Key( "signed-distance-map" ), &cmtk::ImageOperationDistanceMap::NewSigned, "Compute signed (inside=negative, outside=positive) Euclidean distance map" );
+    cl.AddCallback( Key( "medial-skeleton" ), &cmtk::ImageOperationMedialSkeleton::New, "Compute medial skeleton of binary mask" );
     cl.EndGroup();
 
     cl.BeginGroup( "Filtering", "Filter Operations" );
