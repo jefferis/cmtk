@@ -45,7 +45,7 @@ cmtk::ImageOperationDistanceMap
       {
       Types::DataItem iValue = iMap->GetDataAt( n );
       if ( iValue > 0 )
-	oMap->SetDataAt( iValue, n );
+	oMap->SetDataAt( -iValue, n );
       }
     return oMap;
     }
