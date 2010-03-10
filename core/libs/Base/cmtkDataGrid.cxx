@@ -45,6 +45,13 @@ cmtk
 /** \addtogroup Base */
 //@{
 
+DataGrid::RegionType
+DataGrid::GetRegionComplete() const
+{
+  const int zeroes[3] = {0,0,0};
+  return Self::RegionType( Self::IndexType( zeroes ), Self::IndexType( this->m_Dims ) );
+}
+
 TypedArray::SmartPtr
 DataGrid::CreateDataArray( const ScalarDataType dataType, const bool setToZero )
 {

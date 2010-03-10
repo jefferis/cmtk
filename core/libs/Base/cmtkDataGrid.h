@@ -40,6 +40,8 @@
 #include <cmtkVector3D.h>
 #include <cmtkScalarImage.h>
 #include <cmtkRectangle.h>
+#include <cmtkIndex.h>
+#include <cmtkRegion.h>
 #include <cmtkInformationObject.h>
 #include <cmtkAnatomicalOrientation.h>
 
@@ -102,6 +104,15 @@ public:
   {
     return (this->m_Dims[0] == other.m_Dims[0]) && (this->m_Dims[1] == other.m_Dims[1]) && (this->m_Dims[2] == other.m_Dims[2]);
   }
+
+  /// Index type.
+  typedef Index<3> IndexType;
+
+  /// Region type.
+  typedef Region<3> RegionType;
+
+  /// Get complete grid region.
+  virtual RegionType GetRegionComplete() const;
 
   /// Downsampling constructor function.
   virtual DataGrid* GetDownsampled( const int (&downsample)[3] ) const;
