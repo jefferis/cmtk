@@ -46,40 +46,25 @@ cmtk::ImageOperationMedialSkeleton
   skeleton->CreateDataArray( TYPE_COORDINATE );
   skeleton->GetData()->ClearArray();
 
-  const Types::Coordinate* deltas = iMap->GetDelta();
-
   const int* dims = iMap->GetDims();
 #pragma omp parallel for
-  for ( int k = 1; k < dims[2]-2; ++k )
+  for ( int k = 2; k < dims[2]-2; ++k )
     {
-    for ( int j = 1; j < dims[1]-2; ++j )
+    for ( int j = 2; j < dims[1]-2; ++j )
       {
-      for ( int i = 1; i < dims[0]-2; ++i )
+      for ( int i = 2; i < dims[0]-2; ++i )
 	{
-	Types::DataItem n[3][3][3];
-	
-	for ( int kk = 0; kk < 3; ++kk )
-	  for ( int jj = 0; jj < 3; ++jj )
-	    for ( int ii = 0; ii < 3; ++ii )
-	      {
-	      n[kk][jj][ii] = iMap->GetDataAt( i+ii, j+jj, k+kk );
-	      }
-	
 	Matrix3x3<Types::DataItem> hessian;
-	hessian[0][0] = (n[0][0][2] - 2*n[0][0][1] + n[0][0][0] ) / (deltas[0]*deltas[0]);
-	hessian[1][2] = (n[0][2][0] - 2*n[0][1][0] + n[0][0][0] ) / (deltas[1]*deltas[1]);
-	hessian[1][2] = (n[2][0][0] - 2*n[1][0][0] + n[0][0][0] ) / (deltas[2]*deltas[2]);
-	
-	hessian[0][1] = hessian[1][0] =  (n[0][1][1] - n[0][0][1] - n[0][1][0] + n[0][0][0] ) / (deltas[0]*deltas[1]);
-	hessian[0][2] = hessian[2][0] =  (n[1][0][1] - n[0][0][1] - n[1][0][0] + n[0][0][0] ) / (deltas[0]*deltas[2]);
-	hessian[1][2] = hessian[2][1] =  (n[1][1][0] - n[0][1][0] - n[1][0][0] + n[0][0][0] ) / (deltas[1]*deltas[2]);
+	iMap->GetHessianAt( hessian, i, j, k );
 	
 	EigenSystemSymmetricMatrix3x3<Types::DataItem> eigenSystem( hessian, false /*sortAbsolute*/ );
 	
-	Types::DataItem result = n[1][1][1];
+	Types::DataItem result = iMap->GetDataAt( i, j, k );
 	if ( eigenSystem.GetNthEigenvalue( 2-this->m_Dimensionality ) < 0 )
 	  {
-	  Vector3D gradient( (n[0][0][1] - n[0][0][0]) / deltas[0], (n[0][1][0] - n[0][0][0]) / deltas[1], (n[1][0][0] - n[0][0][0]) / deltas[2] );
+	  Vector3D gradient;
+	  iMap->GetGradientAt( gradient, i, j, k );
+
 	  for ( int n = 0; n < 3-this->m_Dimensionality; ++n )
 	    {
 	    Vector3D ev;
