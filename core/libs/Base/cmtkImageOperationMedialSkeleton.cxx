@@ -54,6 +54,9 @@ cmtk::ImageOperationMedialSkeleton
       {
       for ( int i = 2; i < dims[0]-2; ++i )
 	{
+
+// Ridgeness operator implemented following http://en.wikipedia.org/wiki/Ridge_detection#Definition_of_ridges_and_valleys_in_N_dimensions
+
 	Matrix3x3<Types::DataItem> hessian;
 	iMap->GetHessianAt( hessian, i, j, k );
 	
