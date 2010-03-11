@@ -323,6 +323,20 @@ Matrix3x3<T>::operator*=( const Self& other )
 }
 
 template<class T>
+Matrix3x3<T>& 
+Matrix3x3<T>::operator*=( const T scalar )
+{
+  for ( int j=0; j<3; ++j ) 
+    {
+    for ( int i=0; i<3; ++i ) 
+      {
+      this->Matrix[i][j] *= scalar;
+      }
+    }
+  return *this;
+}
+
+template<class T>
 Matrix3x3<T>
 Matrix3x3<T>::operator*
 ( const Self& other ) const

@@ -118,6 +118,9 @@ public:
   /// In-place multiplication operator.
   Self& operator*=( const Self& other );
   
+  /// In-place scalar multiplication operator.
+  Self& operator*=( const T scalar );
+  
   /// Multiplication operator.
   Self operator*( const Self& other ) const;
 
