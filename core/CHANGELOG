@@ -1,5 +1,8 @@
 Release CMTK-1.3.0:
 
+- Added: two differential operator members for "UniformVolume" class, one for
+    gradient and one for Hessian matrix, each implemented using central
+    differences.
 - Added: symmetric eigensystem can now be sorted either by absolute or by
     actual eigenvalues.
 - Bugfix: UniformDistanceMap constructor failed to copy orientation and

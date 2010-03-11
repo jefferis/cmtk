@@ -253,12 +253,16 @@ public:
   /** Get date gradient vector at pixel using central differences.
    * This function cannot be called for pixels on the volume boundaries, i.e.,
    * we require that 0 < i,j,k < [Dims[0]-1,Dims[1]-1,Dims[2]-1].
+   *
+   *\warning No parameter range checking is currently performed!
    */
   virtual void GetGradientAt( Vector3D& g, const int i, const int j, const int k );
 
   /** Get data Hessian matrix at pixel using central differences.
    * This function cannot be called for pixels within a two-pixel distance from the
    * volume boundary, i.e., we require that 1 < i,j,k < [Dims[0]-2,Dims[1]-2,Dims[2]-2].
+   *
+   *\warning No parameter range checking is currently performed!
    */
   virtual void GetHessianAt( Matrix3x3<Types::DataItem>& H, const int i, const int j, const int k );
 
