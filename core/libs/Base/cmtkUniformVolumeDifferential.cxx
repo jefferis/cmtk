@@ -28,6 +28,8 @@
 //
 */
 
+#include <cmtkUniformVolume.h>
+
 void
 cmtk::UniformVolume
 ::GetGradientAt( Vector3D& g, const int i, const int j, const int k )
