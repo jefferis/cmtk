@@ -829,8 +829,24 @@ case ${RUNTEST} in
 	run mk_phantom_3d -o ${tmpdir}/phantom.nii --dims 10,10,10 --voxel 1,1,1 box 2,2,2 5,5,5 10
 	check_results phantom.nii
 	;;
-    mk_phantom_3dSphere)
-	run mk_phantom_3d -o ${tmpdir}/phantom.nii --dims 10,10,10 --voxel 1,1,1 sphere 7,7,7 5 20
+    mk_phantom_3dSphereIndexed)
+	run mk_phantom_3d --coordinates indexed -o ${tmpdir}/phantom.nii --dims 10,10,10 --voxel 1,1,1 sphere 7,7,7 5 20
+	check_results phantom.nii
+	;;
+    mk_phantom_3dSphereAbsolute)
+        run mk_phantom_3d --coordinates absolute -o ${tmpdir}/phantom.nii --dims 10,10,10 --voxel 1,1,1 sphere 7,7,7 5 20
+	check_results phantom.nii
+	;;
+    mk_phantom_3dSphereAbsolute2)
+        run mk_phantom_3d --coordinates absolute -o ${tmpdir}/phantom.nii --dims 10,10,10 --voxel 1,1,2 sphere 7,7,7 5 20
+	check_results phantom.nii
+	;;
+    mk_phantom_3dSphereRelative)
+        run mk_phantom_3d --coordinates relative -o ${tmpdir}/phantom.nii --dims 10,10,10 --voxel 1,1,1 sphere 0.5,0.4,0.3 0.4 20
+	check_results phantom.nii
+	;;
+    mk_phantom_3dSphereRelative2)
+        run mk_phantom_3d --coordinates relative -o ${tmpdir}/phantom.nii --dims 10,10,10 --voxel 1,1,2 sphere 0.5,0.4,0.3 0.4 20
 	check_results phantom.nii
 	;;
     mk_phantom_3dBoxSphere)
