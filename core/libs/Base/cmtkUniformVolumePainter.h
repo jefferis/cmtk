@@ -56,8 +56,20 @@ public:
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
+  /// Enum for coordinate mode.
+  typedef enum
+  {
+    /// Absolute coordinates: all coordinates are absoluate values within the volume field of view.
+    ABSOLUTE,
+    /// Relative coordinates: all coordinates are in range [0,1] which is mapped to volume field of view for each dimension.
+    RELATIVE,
+    /// Indexed grid coordinates: all coordinates are grid indexes.
+    INDEXED
+  } CoordinateModeEnum;
+  
+
   /// Constructor: link to target volume.
-  UniformVolumePainter( UniformVolume::SmartPtr& volume ) : m_Volume( volume ) {}
+  UniformVolumePainter( UniformVolume::SmartPtr& volume, const CoordinateModeEnum coordinateMode = Self::INDEXED ) : m_Volume( volume ), m_CoordinateMode( coordinateMode ) {}
 
   /// Draw a sphere.
   void DrawSphere( const Vector3D& center, const Types::Coordinate radius, const Types::DataItem value );
@@ -68,6 +80,9 @@ public:
 private:
   /// Pointer to target volume.
   UniformVolume::SmartPtr m_Volume;
+
+  /// Coordinate mode for all operations.
+  Self::CoordinateModeEnum m_CoordinateMode;
 };
 
 //@}

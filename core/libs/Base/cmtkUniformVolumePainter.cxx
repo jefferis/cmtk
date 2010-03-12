@@ -35,6 +35,7 @@ void
 cmtk::UniformVolumePainter::DrawSphere
 ( const Vector3D& center, const Types::Coordinate radius, const Types::DataItem value )
 {
+  Vector3D centerGrid( center );
   size_t offset = 0;
   for ( int k = 0; k < this->m_Volume->m_Dims[2]; ++k )
     {
