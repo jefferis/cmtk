@@ -35,16 +35,51 @@ void
 cmtk::UniformVolumePainter::DrawSphere
 ( const Vector3D& center, const Types::Coordinate radius, const Types::DataItem value )
 {
-  Vector3D centerGrid( center );
+  Vector3D centerAbsolute( center );
+  Types::Coordinate radiusAbsolute[3] = { radius, radius, radius };
+  
+  switch ( this->m_CoordinateMode )
+    {
+    default:
+    case Self::ABSOLUTE:
+      // nothing to do - already absolute
+      break;
+    case Self::RELATIVE:
+      for ( int dim = 0; dim < 3; ++dim )
+	{
+	centerAbsolute[dim] *= this->m_Volume->Size[dim];
+	radiusAbsolute[dim] *= this->m_Volume->Size[dim];
+	}
+      break;
+    case Self::INDEXED:
+      for ( int dim = 0; dim < 3; ++dim )
+	{
+	centerAbsolute[dim] *= this->m_Volume->m_Delta[dim];
+	radiusAbsolute[dim] *= this->m_Volume->m_Delta[dim];
+	}
+      break;
+    }
+  
   size_t offset = 0;
   for ( int k = 0; k < this->m_Volume->m_Dims[2]; ++k )
     {
+    const Types::Coordinate Z = this->m_Volume->GetPlaneCoord( 2, k );
     for ( int j = 0; j < this->m_Volume->m_Dims[1]; ++j )
       {
+    const Types::Coordinate Y = this->m_Volume->GetPlaneCoord( 1, j );
       for ( int i = 0; i < this->m_Volume->m_Dims[0]; ++i, ++offset )
 	{
-	Vector3D v( i, j, k );
-	if ( (v-center).EuclidNorm() <= radius )
+	const Types::Coordinate X = this->m_Volume->GetPlaneCoord( 0, i );
+	
+	Vector3D v( X, Y, Z );
+	v -= centerAbsolute;
+
+	for ( int dim = 0; dim < 3; ++dim )
+	  {
+	  v[dim] /= radiusAbsolute[dim];
+	  }
+
+	if ( v.EuclidNorm() <= 1.0 )
 	  this->m_Volume->SetDataAt( value, offset );
 	}
       }
