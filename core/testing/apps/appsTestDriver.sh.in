@@ -853,8 +853,12 @@ case ${RUNTEST} in
 	run mk_phantom_3d -o ${tmpdir}/phantom.nii --char --bg 50 --dims 10,10,10 --voxel 1,1,1 sphere 7,7,7 5 20 box 2,2,2 5,5,5 10
 	check_results phantom.nii
 	;;
-    mk_phantom_3dImport)	
+    mk_phantom_3dImport)
 	run mk_phantom_3d -o ${tmpdir}/phantom.nii --import spgr_3t_mask.hdr sphere 30,40,30 20 0
+	check_results phantom.nii
+	;;
+    mk_phantom_3dImportGrid)
+	run mk_phantom_3d -o ${tmpdir}/phantom.nii --import-grid spgr_3t_mask.hdr sphere 30,40,30 20 10
 	check_results phantom.nii
 	;;
     mrbiasMulIncremental)

@@ -62,7 +62,9 @@ SetDeltas( const char* arg )
 cmtk::ScalarDataType DataType = cmtk::TYPE_USHORT;
 cmtk::Types::DataItem Background = 0;
 
-const char* InputFileName = NULL;
+const char* InputImageName = NULL;
+bool InputImageGridOnly = false;
+
 const char* OutputFileName = "phantom.hdr";
 
 cmtk::UniformVolumePainter::CoordinateModeEnum CoordinateMode = cmtk::UniformVolumePainter::INDEXED;
@@ -100,15 +102,23 @@ main( const int argc, const char* argv[] )
 
     cl.AddOption( Key( 'B', "bg" ), &Background, "Set the image background value (use to initialize newly created image)." );
 
-    cl.AddOption( Key( 'I', "import" ), &InputFileName, "Import image" );
+    cl.AddOption( Key( 'I', "import" ), &InputImageName, "Import image" );
+    cl.AddOption( Key( "import-grid" ), &InputImageName, "Import image grid only, ignore data", &InputImageGridOnly );
     cl.AddOption( Key( 'o', "outfile" ), &OutputFileName, "File name for output image" );
     
     cl.Parse();
 
     cmtk::UniformVolume::SmartPtr volume;
-    if ( InputFileName )
+    if ( InputImageName )
       {
-      volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( InputFileName, Verbose ) );
+      if ( InputImageGridOnly )
+	{
+	volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( InputImageName, Verbose ) );
+	volume->CreateDataArray( DataType );
+	volume->GetData()->Fill( Background );
+	}
+      else
+	volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( InputImageName, Verbose ) );
       }
     else
       {
@@ -119,7 +129,7 @@ main( const int argc, const char* argv[] )
       volume->SetData( data );
       data->Fill( Background );
       }
-
+    
     cmtk::UniformVolumePainter painter( volume, CoordinateMode );
     
     const char* nextCmd = cl.GetNextOptional();

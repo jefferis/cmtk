@@ -1,5 +1,7 @@
 Release CMTK-1.3.0:
 
+- Added: "mk_phantom_3d" tool can now import either an image including
+    existing pixel data or just the grid geometry.
 - Added: "mk_phantom_3d" tool now supports three different coordinate modes:
     absolute, relative, indexed.
 - Added: "--revert" image operation for "imagemath" tool to revert binary
