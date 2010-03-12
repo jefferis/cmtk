@@ -40,7 +40,13 @@ namespace
 cmtk
 {
 
-/// Compute medical skeleton of a (binary) mask image.
+/** Compute medical skeleton of a (binary) mask image.
+ *\warning This operation is not working properly. Due to discretization of
+ * the image gradient and Hessian, we fail to detect the exact locations of
+ * critical points, which in general do not coincide with grid locations.
+ * In other words, even when a discrete pixel is a local maximum, the discrete
+ * gradient of the image function does not usually vanish at that point.
+ */
 class ImageOperationMedialSkeleton
 /// Inherit generic image operation.
   : public ImageOperation

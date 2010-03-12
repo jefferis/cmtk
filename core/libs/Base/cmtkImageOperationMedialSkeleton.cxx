@@ -38,10 +38,6 @@ cmtk::ImageOperationMedialSkeleton
 {
   UniformVolume::SmartPtr iMap( new DistanceMapType( *volume, DistanceMapType::INSIDE ) );
 
-//  const int crop[] = {127,146,17,130,149,20};
-//  iMap->SetCropRegion( crop, crop+3 );
-//  iMap = UniformVolume::SmartPtr( iMap->GetCroppedVolume() );
-
   UniformVolume::SmartPtr skeleton( iMap->CloneGrid() );
   skeleton->CreateDataArray( TYPE_COORDINATE );
   skeleton->GetData()->ClearArray();
@@ -54,7 +50,6 @@ cmtk::ImageOperationMedialSkeleton
       {
       for ( int i = 2; i < dims[0]-2; ++i )
 	{
-
 // Ridgeness operator implemented following http://en.wikipedia.org/wiki/Ridge_detection#Definition_of_ridges_and_valleys_in_N_dimensions
 
 	Matrix3x3<Types::DataItem> hessian;
