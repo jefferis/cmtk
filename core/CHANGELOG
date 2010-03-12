@@ -1,5 +1,7 @@
 Release CMTK-1.3.0:
 
+- Added: "mk_phantom_3d" tool now supports three different coordinate modes:
+    absolute, relative, indexed.
 - Added: "--revert" image operation for "imagemath" tool to revert binary
     masks.
 - API: moved "DrawXXX" members from "DataGrid" class into a new, dedicated

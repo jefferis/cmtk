@@ -65,6 +65,8 @@ cmtk::Types::DataItem Background = 0;
 const char* InputFileName = NULL;
 const char* OutputFileName = "phantom.hdr";
 
+cmtk::UniformVolumePainter::CoordinateModeEnum CoordinateMode = cmtk::UniformVolumePainter::INDEXED;
+
 int
 main( const int argc, const char* argv[] )
 {
@@ -83,6 +85,11 @@ main( const int argc, const char* argv[] )
     cl.AddCallback( Key( 'D', "dims" ), SetDims, "Set dimensions in voxels" );
     cl.AddCallback( Key( 'V', "voxel" ), SetDeltas, "Set voxel size in [mm]" );
 
+    cmtk::CommandLine::EnumGroup<cmtk::UniformVolumePainter::CoordinateModeEnum>::SmartPtr modeGroup = cl.AddEnum( "coordinates", &CoordinateMode, "Coordinate specification mode." );
+    modeGroup->AddSwitch( Key( "indexed" ), cmtk::UniformVolumePainter::INDEXED, "Use grid indexes to specify coordinates. For each dimension, the valid value range is [0,Dims-1]." );
+    modeGroup->AddSwitch( Key( "absolute" ), cmtk::UniformVolumePainter::ABSOLUTE, "Use absolute volume coordinates. For each dimension, the valid range is [0,FOV]." );
+    modeGroup->AddSwitch( Key( "relative" ), cmtk::UniformVolumePainter::RELATIVE, "Use relative volume coordinates. For each dimension, the valid range is [0,1]." );
+    
     cl.AddSwitch( Key( 'c', "char" ), &DataType, cmtk::TYPE_CHAR, "8 bits, signed" );
     cl.AddSwitch( Key( 'b', "byte" ), &DataType, cmtk::TYPE_BYTE, "8 bits, unsigned" );
     cl.AddSwitch( Key( 's', "short" ), &DataType, cmtk::TYPE_SHORT, "16 bits, signed" );
@@ -113,7 +120,7 @@ main( const int argc, const char* argv[] )
       data->Fill( Background );
       }
 
-    cmtk::UniformVolumePainter painter( volume );
+    cmtk::UniformVolumePainter painter( volume, CoordinateMode );
     
     const char* nextCmd = cl.GetNextOptional();
     while (  nextCmd )
