@@ -60,6 +60,7 @@ SET(cmtkBase_SRCS
   cmtkImageOperationMedialSkeleton.cxx
   cmtkImageOperationScaleToRange.cxx
   cmtkImageOperationThreshold.cxx
+  cmtkImageOperationRevert.cxx
   cmtkInfinitePlane.cxx
   cmtkIntersection.cxx
   cmtkJointHistogram.cxx

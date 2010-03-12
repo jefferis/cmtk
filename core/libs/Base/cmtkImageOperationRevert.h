@@ -49,7 +49,7 @@ public:
   ImageOperationRevert() {}
   
   /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume );
+  virtual cmtk::UniformVolume::SmartPtr Apply( cmtk::UniformVolume::SmartPtr& volume );
   
   /// Create a new lower reverting operation.
   static void New()
