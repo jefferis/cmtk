@@ -1,5 +1,7 @@
 Release CMTK-1.3.0:
 
+- API: moved "DrawXXX" members from "DataGrid" class into a new, dedicated
+    painter class, "UniformVolumePainter."
 - Added: image operation for medial skeleton based on analysis of the Hessian
     eigensystem. Note that this is currently broken and only kept for future
     investigation.
