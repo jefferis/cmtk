@@ -178,7 +178,8 @@ IF(NOT CMTK_USE_MPI)
     convertxThresholdAbove
     convertxThresholdBelowToPadding
     convertxThresholdAboveToPadding
-    convertxScaleToRange)
+    convertxScaleToRange
+    convertxRevert)
   
   IF(CMTK_BUILD_NRRD)
     SET(testList ${testList} 
