@@ -35,6 +35,7 @@
 #include <cmtkConsole.h>
 
 #include <cmtkUniformVolume.h>
+#include <cmtkUniformVolumePainter.h>
 
 #include <cmtkVolumeIO.h>
 
@@ -90,7 +91,7 @@ main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'f', "float" ), &DataType, cmtk::TYPE_FLOAT, "32 bits floating point" );
     cl.AddSwitch( Key( 'd', "double" ), &DataType, cmtk::TYPE_DOUBLE, "64 bits floating point\n" );
 
-    cl.AddOption( Key( 'B', "bg" ), &Background, "Background value" );
+    cl.AddOption( Key( 'B', "bg" ), &Background, "Set the image background value (use to initialize newly created image)." );
 
     cl.AddOption( Key( 'I', "import" ), &InputFileName, "Import image" );
     cl.AddOption( Key( 'o', "outfile" ), &OutputFileName, "File name for output image" );
@@ -111,6 +112,8 @@ main( const int argc, const char* argv[] )
       volume->SetData( data );
       data->Fill( Background );
       }
+
+    cmtk::UniformVolumePainter painter( volume );
     
     const char* nextCmd = cl.GetNextOptional();
     while (  nextCmd )
@@ -128,7 +131,7 @@ main( const int argc, const char* argv[] )
 	  return 1;
 	  }
 	cmtk::Vector3D c( cc );
-	volume->DrawSphere( c, atof( radius ), atof( value ) );
+	painter.DrawSphere( c, atof( radius ), atof( value ) );
 	}
 
       if ( ! strcmp( nextCmd, "box" ) )
@@ -148,7 +151,7 @@ main( const int argc, const char* argv[] )
 	  cmtk::StdErr << "Parameter 'corner1' of 'box' command must be three integers x,y,z\n";
 	  return 1;
 	  }
-	volume->DrawBox( box, atof( value ) );
+	painter.DrawBox( box, atof( value ) );
 	}
       nextCmd = cl.GetNextOptional();
       }

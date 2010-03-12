@@ -60,8 +60,7 @@ cmtk
 /** Grid topology of data arranged in a 3D lattice.
  * This class extends the plain data handling functions of TypedArray
  * with a 3D topology. Real world coordinates, however, are not considered and
- * need to be handled by derived classes. Thus, this class is used by both
- * Volume and igsVirtualUniformGrid to provide them with coordinate
+ * need to be handled by derived classes. Thus, this class provides the coordinate
  * independent services such as median filtering and, to a certain extent,
  * interpolation.
  */
@@ -323,14 +322,6 @@ public:
 
   /// Print object.
   void Print() const;
-
-  /** Draw sphere.
-    */
-  virtual void DrawSphere( const Vector3D& center, const Types::Coordinate radius, const Types::DataItem value );
-
-  /** Draw rectangular box.
-   */
-  void DrawBox( const IntROI3D& box, const Types::DataItem value );
 
   /// Return after filtering with a separable kernel
   TypedArray* GetFilteredData( const std::vector<Types::DataItem>& filterX, const std::vector<Types::DataItem>& filterY, const std::vector<Types::DataItem>& filterZ ) const;

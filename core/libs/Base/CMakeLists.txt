@@ -37,7 +37,6 @@ SET(cmtkBase_SRCS
   cmtkBitVector.cxx
   cmtkControlPoint.cxx
   cmtkDataGrid.cxx
-  cmtkDataGridDraw.cxx
   cmtkDataGridFilter.cxx
   cmtkDataGridMorphologicalOperators.cxx
   cmtkDataTypeTraits.cxx
@@ -97,6 +96,7 @@ SET(cmtkBase_SRCS
   cmtkUniformVolumeDifferential.cxx
   cmtkUniformVolumeFilter.cxx
   cmtkUniformVolumeInterpolatorPartialVolume.cxx
+  cmtkUniformVolumePainter.cxx
   cmtkUniformVolumeResample.cxx
   cmtkVector3D.cxx
   cmtkVector.cxx

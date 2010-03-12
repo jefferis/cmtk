@@ -36,9 +36,9 @@
 #include <cmtkProgressConsole.h>
 
 #include <cmtkVolumeIO.h>
-#include <cmtkDataGrid.h>
 #include <cmtkMathUtil.h>
 #include <cmtkUniformVolume.h>
+#include <cmtkUniformVolumePainter.h>
 
 #include <algorithm>
 
@@ -109,7 +109,9 @@ main( int argc, char* argv[] )
   levelset->CreateDataArray( cmtk::TYPE_FLOAT );
   levelset->GetData()->Fill( -1.0 );
   cmtk::Vector3D center( volume->GetDims(0)/2, volume->GetDims(1)/2, volume->GetDims(2)/2 );
-  levelset->DrawSphere( center, (levelset->GetDims(0)+levelset->GetDims(1)+levelset->GetDims(2))/6, 1.0 );
+
+  cmtk::UniformVolumePainter painter( levelset );
+  painter.DrawSphere( center, (levelset->GetDims(0)+levelset->GetDims(1)+levelset->GetDims(2))/6, 1.0 );
 
   size_t nInsideOld = 0, nInside = 1;
 
