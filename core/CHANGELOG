@@ -1,5 +1,7 @@
 Release CMTK-1.3.0:
 
+- Added: "--revert" image operation for "imagemath" tool to revert binary
+    masks.
 - API: moved "DrawXXX" members from "DataGrid" class into a new, dedicated
     painter class, "UniformVolumePainter."
 - Added: image operation for medial skeleton based on analysis of the Hessian

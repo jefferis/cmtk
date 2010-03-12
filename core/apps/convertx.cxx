@@ -139,6 +139,7 @@ main( int argc, char* argv[] )
     cl.EndGroup();
     
     cl.BeginGroup( "Morphological", "Morphological Operations" );
+    cl.AddCallback( Key( "revert" ), &cmtk::ImageOperationRevert::New, "Revert a binary mask, i.e., exchange foreground and background." );
     cl.AddCallback( Key( "erode" ), &cmtk::ImageOperationErodeDilate::NewErode, "Morphological erosion operator" );
     cl.AddCallback( Key( "dilate" ), &cmtk::ImageOperationErodeDilate::NewDilate, "Morphological dilation operator" );
     cl.AddCallback( Key( "boundary-map" ), &cmtk::ImageOperationBoundaryMap::New, "Create boundary map" );
