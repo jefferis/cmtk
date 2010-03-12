@@ -59,6 +59,7 @@
 #include <cmtkImageOperationMedialSkeleton.h>
 #include <cmtkImageOperationGaussFilter.h>
 #include <cmtkImageOperationDistanceMap.h>
+#include <cmtkImageOperationRevert.h>
 
 #include <stdlib.h>
 
