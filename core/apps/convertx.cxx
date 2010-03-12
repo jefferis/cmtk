@@ -102,8 +102,7 @@ main( int argc, char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
 
     cl.BeginGroup( "Input", "Input Image Controls" );
-    cl.AddOption( Key( 'N', "set-padding" ), &paddingDataValue, "Set padding data for input image. All pixels in the input image that have this value will be ignored in all operations.", 
-		  &paddingDataFlag );
+    cl.AddOption( Key( "set-padding" ), &paddingDataValue, "Set padding data for input image. All pixels in the input image that have this value will be ignored in all operations.", &paddingDataFlag );
     cl.EndGroup();
 
     cl.BeginGroup( "Conversion", "Data Type Conversion" );
