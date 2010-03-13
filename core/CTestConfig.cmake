@@ -1,5 +1,5 @@
 ##
-##  Copyright 1997-2009 Torsten Rohlfing
+##  Copyright 1997-2010 Torsten Rohlfing
 ##  Copyright 2004-2009 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
@@ -40,6 +40,7 @@ SET(CTEST_CUSTOM_WARNING_EXCEPTION
   "comparison is always (true|false) due to limited range of data type"
   "warning: iteration variable .* is unsigned"
   "Warning: String literal converted to char. in initialization"
+  "sqlite3.c:.*: warning: cast from pointer to integer of different size
 )
 
 SET(CTEST_CUSTOM_COVERAGE_EXCLUDE
