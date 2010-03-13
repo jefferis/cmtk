@@ -40,7 +40,7 @@ SET(CTEST_CUSTOM_WARNING_EXCEPTION
   "comparison is always (true|false) due to limited range of data type"
   "warning: iteration variable .* is unsigned"
   "Warning: String literal converted to char. in initialization"
-  "sqlite3.c:.*: warning: cast from pointer to integer of different size
+  "sqlite3.c:.*: warning: cast from pointer to integer of different size"
 )
 
 SET(CTEST_CUSTOM_COVERAGE_EXCLUDE
