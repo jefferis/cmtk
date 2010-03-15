@@ -51,6 +51,7 @@ SET(cmtkBase_SRCS
   cmtkHistogram.cxx
   cmtkHypothesisTests.cxx
   cmtkImageOperation.cxx
+  cmtkImageOperationApplyMask.cxx
   cmtkImageOperationCropRegion.cxx
   cmtkImageOperationCropThreshold.cxx
   cmtkImageOperationDistanceMap.cxx
