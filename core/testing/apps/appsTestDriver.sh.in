@@ -379,6 +379,14 @@ case ${RUNTEST} in
         run convertx --histogram-equalization-nbins 32 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
 	check_results spgr_brain_1.img
 	;;
+    convertxMask)
+	run convertx --mask spgr_3t_mask.hdr spgr_3t.hdr ${tmpdir}/masked.hdr
+	check_results masked.img
+	;;
+    convertxMaskInverse)
+	run convertx --mask-inverse spgr_3t_mask.hdr spgr_3t.hdr ${tmpdir}/masked.hdr
+	check_results masked.img
+	;;
     convertxMedianFilter1)
 	run convertx --median-filter 1 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
 	check_results spgr_brain_1.img
