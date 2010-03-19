@@ -46,8 +46,6 @@ struct __testNameAndFunctionPointer
 const testNameAndFunctionPointer testTable[] =
 {
   { "ReadPGM",               &testReadPGM },
-  { "SQLiteCreate",          &testSQLiteCreate },
-  { "SQLiteOpen",            &testSQLiteOpen },
   { NULL, NULL }
 };
 

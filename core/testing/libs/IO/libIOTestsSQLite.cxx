@@ -78,7 +78,10 @@ main( const int argc, const char* argv[] )
 
   // run test, or return error if none found
   if ( testNumber < 0 )
+    {
+    std::cerr << "Test " << argv[1] << " not found!" << std::endl;
     return 2;
+    }
   else
     return testTable[testNumber].func();
 }

@@ -46,14 +46,19 @@ ENDFOREACH(D ${DRIVERS})
 # Tests for "cmtk::PGM" class
 SET(Tests ${Tests} ReadPGM)
 
+FOREACH(T ${Tests})
+  ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libIOTests ${T})
+ENDFOREACH(T Tests)
+
 # ==========================================
 # Tests for "cmtk::SQLite" class
 IF(CMTK_BUILD_SQLITE)
-  SET(Tests ${Tests} 
+  SET(Tests
     SQLiteCreate 
     SQLiteOpen)
+  
+  FOREACH(T ${Tests})
+    ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libIOTestsSQLite ${T})
+  ENDFOREACH(T Tests)
 ENDIF(CMTK_BUILD_SQLITE)
 
-FOREACH(T ${Tests})
-	  ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libIOTests ${T})
-ENDFOREACH(T Tests)
