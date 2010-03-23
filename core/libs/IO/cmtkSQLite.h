@@ -55,6 +55,9 @@ public:
   /// Destructor: close database.
   virtual ~SQLite();
 
+  /// Virtual function: initialize newly created database.
+  virtual void InitNew() {}
+
 protected:
   /// Database object.
   sqlite3 *m_DB;

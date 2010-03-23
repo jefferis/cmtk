@@ -39,22 +39,28 @@ cmtk::SQLite::SQLite
 {
   if ( readOnly )
     {
-    const int rc = sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READONLY, NULL /*zVFS*/ );
-    if( rc )
+    if( sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READONLY, NULL /*zVFS*/ ) )
       {
-      cmtk::StdErr << "Can't open database: " << sqlite3_errmsg( this->m_DB ) << "\n";
+      cmtk::StdErr << "Can't open database read-only: " << sqlite3_errmsg( this->m_DB ) << "\n";
       sqlite3_close( this->m_DB );
       exit(1);
       }
     }
   else
     {
-    const int rc = sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL /*zVFS*/ );
-    if( rc )
+    if( sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READWRITE, NULL /*zVFS*/ ) )
       {
-      cmtk::StdErr << "Can't open database: " << sqlite3_errmsg( this->m_DB ) << "\n";
-      sqlite3_close( this->m_DB );
-      exit(1);
+      if ( sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL /*zVFS*/ ) )
+	{
+	cmtk::StdErr << "Can't open database for writing: " << sqlite3_errmsg( this->m_DB ) << "\n";
+	sqlite3_close( this->m_DB );
+	exit(1);
+	}
+      else
+	{
+	// new file
+	this->InitNew();
+	}
       }
     }
 }
