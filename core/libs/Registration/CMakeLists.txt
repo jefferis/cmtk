@@ -62,6 +62,7 @@ SET(cmtkRegistration_SRCS
   cmtkImagePairSimilarityMeasureMSD.cxx
   cmtkImagePairSimilarityMeasureNCC.cxx
   cmtkImagePairSymmetricNonrigidRegistrationFunctional.cxx
+  cmtkImageXformDB.cxx
   cmtkInverseInterpolationVolumeReconstructionBase.cxx
   cmtkIterativeDirectionOptimizer.cxx
   cmtkMakeInitialAffineTransformation.cxx

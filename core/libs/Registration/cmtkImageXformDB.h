@@ -28,40 +28,34 @@
 //
 */
 
-#ifndef __cmtkSQLite_h_included_
-#define __cmtkSQLite_h_included_
+#ifndef __cmtkImageXformDB_h_included_
+#define __cmtkImageXformDB_h_included_
 
 #include <cmtkconfig.h>
 
-#include <sqlite3.h>
-#include <string>
+#include <cmtkSQLite.h>
 
 namespace
 cmtk
 {
 
-/** \addtogroup IO */
+/** \addtogroup Registration */
 //@{
 
-/** Wrapper class for SQLite database.
+/** Class for image and transformation database.
  */
-class SQLite
+class ImageXformDB
+/// Inherit from SQLite wrapper class.
+  : public SQLite
 {
 public:
-  /// Constructor: open SQLite database.
-  SQLite( const std::string& dbPath, /**!< Path to the SQLite3 database file. */
-	  const bool readOnly = false /**!< If this flag is set, the database is opened read-only. If false, the database is opened for read/write, and a non-existing database will be created. */);
-  
-  /// Destructor: close database.
-  virtual ~SQLite();
-
-protected:
-  /// Database object.
-  sqlite3 *m_DB;
+  /// Constructor: open ImageXformDB database.
+  ImageXformDB( const std::string& dbPath, /**!< Path to the database file. */
+		const bool readOnly = false /**!< If this flag is set, the database is opened read-only. If false, the database is opened for read/write, and a non-existing database will be created. */);
 };
 
 //@}
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkSQLite_h_included_
+#endif // #ifndef __cmtkImageXformDB_h_included_
