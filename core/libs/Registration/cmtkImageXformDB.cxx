@@ -49,7 +49,7 @@ cmtk::ImageXformDB
   // create entity tables
   this->ExecNoReturn( "create table images(id int primary key, path text)" );
   this->ExecNoReturn( "create table spaces(id int primary key, path text)" );
-  this->ExecNoReturn( "create table xforms(id int primary key, path text)" );
+  this->ExecNoReturn( "create table xforms(id int primary key, path text, invertible int)" );
 
   // create relationship tables
   this->ExecNoReturn( "create table imagespace(spaceid int, imageid int)" );
