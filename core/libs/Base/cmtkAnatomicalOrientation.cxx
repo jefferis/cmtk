@@ -37,7 +37,6 @@
 #include <assert.h>
 
 #include <string>
-#include <sstream>
 
 namespace
 cmtk

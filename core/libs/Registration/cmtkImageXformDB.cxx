@@ -32,6 +32,9 @@
 
 #include <cmtkConsole.h>
 
+#include <string>
+#include <sstream>
+
 cmtk::ImageXformDB
 ::ImageXformDB( const std::string& dbPath, const bool readOnly ) 
   : cmtk::SQLite( dbPath, readOnly )
@@ -49,7 +52,7 @@ cmtk::ImageXformDB
   this->ExecNoReturn( "create table xforms(id int primary key, path text)" );
 
   // create relationship tables
-  this->ExecNoReturn( "create table imagespace(imageid int, spaceid int)" );
+  this->ExecNoReturn( "create table imagespace(spaceid int, imageid int)" );
   this->ExecNoReturn( "create table spacexform(xformid int, spacefromid int, spacetoid int)" );
 }
 
@@ -58,7 +61,7 @@ cmtk::ImageXformDB
 ::AddImage( const std::string& imagePath )
 {
   const std::string sql = "insert into images values (NULL,'"+imagePath+"')";
-  this->ExecNoReturn( sql.c_str() );
+  this->ExecNoReturn( sql );
   return -1;
 }
 
@@ -66,6 +69,9 @@ void
 cmtk::ImageXformDB
 ::AddImageToSpace( const cmtk::ImageXformDB::PrimaryKeyType spaceKey, const cmtk::ImageXformDB::PrimaryKeyType imageKey )
 {
+  std::ostringstream sql;
+  sql << "insert into imagespace values (" << spaceKey << "," << imageKey << ")";
+  this->ExecNoReturn( sql.str() );
 }
 
 cmtk::ImageXformDB::PrimaryKeyType 

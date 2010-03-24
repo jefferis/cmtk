@@ -66,10 +66,10 @@ cmtk::SQLite::SQLite
 }
 
 void
-cmtk::SQLite::ExecNoReturn( const char* sql )
+cmtk::SQLite::ExecNoReturn( const std::string& sql )
 {
   char* err = NULL;
-  if ( sqlite3_exec( this->m_DB, sql, NULL, NULL, &err ) != SQLITE_OK )
+  if ( sqlite3_exec( this->m_DB, sql.c_str(), NULL, NULL, &err ) != SQLITE_OK )
     {
     StdErr << "SQL error: " << err << "\n";
     sqlite3_free( err );

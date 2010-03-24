@@ -62,7 +62,7 @@ public:
   virtual ~SQLite();
 
   /// Execute an SQL command with no return value.
-  void ExecNoReturn( const char* sql );
+  void ExecNoReturn( const std::string& sql );
 
 protected:
   /// Database object.
