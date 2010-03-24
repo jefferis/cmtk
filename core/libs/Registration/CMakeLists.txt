@@ -62,7 +62,6 @@ SET(cmtkRegistration_SRCS
   cmtkImagePairSimilarityMeasureMSD.cxx
   cmtkImagePairSimilarityMeasureNCC.cxx
   cmtkImagePairSymmetricNonrigidRegistrationFunctional.cxx
-  cmtkImageXformDB.cxx
   cmtkInverseInterpolationVolumeReconstructionBase.cxx
   cmtkIterativeDirectionOptimizer.cxx
   cmtkMakeInitialAffineTransformation.cxx
@@ -100,6 +99,11 @@ SET(cmtkRegistration_SRCS
   cmtkXformList.cxx
   cmtkXformListEntry.cxx
 )
+
+IF(CMTK_BUILD_SQLITE)
+  SET(cmtkRegistration_SRCS ${cmtkRegistration_SRCS}
+    cmtkImageXformDB.cxx)
+ENDIF(CMTK_BUILD_SQLITE)
 
 ADD_LIBRARY(cmtkRegistration ${cmtkRegistration_SRCS})
 

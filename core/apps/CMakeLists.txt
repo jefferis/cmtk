@@ -56,7 +56,6 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
       convertx
       convert_warp
       cpmatch
-      dbtool
       film
       filter
       glm
@@ -94,6 +93,11 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
       warp2ps
       xform2dfield
       xform2scalar)
+
+    IF(CMTK_BUILD_SQLITE)
+      SET(APPS ${APPS}
+	dbtool)
+    ENDIF(CMTK_BUILD_SQLITE)
 
     IF(CMTK_ROOT_PATH_SRI24)
       SET(APPS ${APPS} asegment_sri24)
