@@ -41,7 +41,7 @@ cmtk::SQLite::SQLite
     {
     if( sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READONLY, NULL /*zVFS*/ ) != SQLITE_OK )
       {
-      cmtk::StdErr << "Can't open database read-only: " << sqlite3_errmsg( this->m_DB ) << "\n";
+      cmtk::StdErr << "Can't open database " << dbPath << " read-only: " << sqlite3_errmsg( this->m_DB ) << "\n";
       sqlite3_close( this->m_DB );
       exit(1);
       }
@@ -52,7 +52,7 @@ cmtk::SQLite::SQLite
       {
       if ( sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL /*zVFS*/ ) != SQLITE_OK )
 	{
-	cmtk::StdErr << "Can't open database for writing: " << sqlite3_errmsg( this->m_DB ) << "\n";
+	cmtk::StdErr << "Can't open database " << dbPath << " for writing: " << sqlite3_errmsg( this->m_DB ) << "\n";
 	sqlite3_close( this->m_DB );
 	exit(1);
 	}
@@ -77,6 +77,38 @@ cmtk::SQLite::ExecNoReturn( const std::string& sql )
     }
 }
 
+/// Callback for SQLite: add rows to results table.
+int
+cmtkSQLiteQueryCallback( void* pTable, int ncols, char** rowdata, char** colnames )
+{
+  cmtk::SQLite::TableType* table = static_cast<cmtk::SQLite::TableType*>( pTable );
+
+  std::vector< std::string > tableRow( ncols );
+  for ( int col = 0; col < ncols; ++col )
+    {
+    if ( rowdata[col] )
+      tableRow.push_back( std::string( rowdata[col] ) );
+    else
+      tableRow.push_back( std::string( "NULL" ) );      
+    }
+  table->push_back( tableRow );
+
+  return 0;
+}
+
+void
+cmtk::SQLite::Query( const std::string& sql, cmtk::SQLite::TableType& table ) const
+{
+  table.resize( 0 );
+
+  char* err = NULL;
+  if ( sqlite3_exec( this->m_DB, sql.c_str(), cmtkSQLiteQueryCallback, &table, &err ) != SQLITE_OK )
+    {
+    StdErr << "SQL error: " << err << "\n";
+    sqlite3_free( err );
+    exit(1);
+    }
+}
 
 cmtk::SQLite::~SQLite()
 {

@@ -46,8 +46,10 @@ struct __testNameAndFunctionPointer
 
 const testNameAndFunctionPointer testTable[] =
 {
-  { "SQLiteCreate",          &testSQLiteCreate },
+  { "SQLiteNew",             &testSQLiteNew },
   { "SQLiteOpen",            &testSQLiteOpen },
+  { "SQLiteCreateAndInsert", &testSQLiteCreateAndInsert },
+  { "SQLiteQuery",           &testSQLiteQuery },
   { NULL, NULL }
 };
 

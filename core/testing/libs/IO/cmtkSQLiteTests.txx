@@ -33,7 +33,7 @@
 
 // test SQLite database creation
 int
-testSQLiteCreate()
+testSQLiteNew()
 {
   cmtk::SQLite db( "new.sqlite" );
   return 0;
@@ -47,3 +47,26 @@ testSQLiteOpen()
   return 0;
 }
 
+// test SQLite table creation and data insertion
+int
+testSQLiteCreateAndInsert()
+{
+  cmtk::SQLite db( "new.sqlite" );
+  db.ExecNoReturn( "create table testing ( id integer primary key, data text )" );
+  db.ExecNoReturn( "insert into testing values ( NULL, 'test1')" );
+  db.ExecNoReturn( "insert into testing values ( 2, 'test2')" );
+  db.ExecNoReturn( "insert into testing values ( NULL, 'test3')" );
+  return 0;
+}
+
+// test SQLite database query
+int
+testSQLiteQuery()
+{
+  cmtk::SQLite db( CMTK_DATADIR "/testDB.sqlite", true /*readOnly*/ );
+
+  cmtk::SQLite::TableType table;
+  db.Query( "select * from testing", table );
+
+  return 0;
+}

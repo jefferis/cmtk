@@ -34,7 +34,9 @@
 #include <cmtkconfig.h>
 
 #include <sqlite3.h>
+
 #include <string>
+#include <vector>
 
 namespace
 cmtk
@@ -54,6 +56,9 @@ public:
   /// Primary key type for the underlying database. This is used to uniquely identify table entries.
   typedef sqlite3_uint64 PrimaryKeyType;
 
+  /// Table type: matrix of strings.
+  typedef std::vector< std::vector< std::string > > TableType;
+
   /// Constructor: open SQLite database.
   SQLite( const std::string& dbPath, /**!< Path to the SQLite3 database file. */
 	  const bool readOnly = false /**!< If this flag is set, the database is opened read-only. If false, the database is opened for read/write, and a non-existing database will be created. */);
@@ -64,9 +69,12 @@ public:
   /// Execute an SQL command with no return value.
   void ExecNoReturn( const std::string& sql );
 
+  /// Query database and return table.
+  void Query( const std::string& sql, Self::TableType& table ) const;
+
 protected:
   /// Database object.
-  sqlite3 *m_DB;
+  mutable sqlite3 *m_DB;
 
   /// Initialize tables in newly created database.
   virtual void InitNew() {};

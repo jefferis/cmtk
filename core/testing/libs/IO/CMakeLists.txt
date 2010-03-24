@@ -54,8 +54,11 @@ ENDFOREACH(T Tests)
 # Tests for "cmtk::SQLite" class
 IF(CMTK_BUILD_SQLITE)
   SET(Tests
-    SQLiteCreate 
-    SQLiteOpen)
+    SQLiteNew
+    SQLiteOpen
+    SQLiteCreateAndInsert
+    SQLiteQuery
+    )
   
   FOREACH(T ${Tests})
     ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libIOTestsSQLite ${T})
