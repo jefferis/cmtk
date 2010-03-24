@@ -61,7 +61,9 @@ ENDFOREACH(T Tests)
 IF(CMTK_BUILD_SQLITE)
   SET(Tests
     ImageXformDBCreate 
-    ImageXformDBOpen)
+    ImageXformDBOpen
+    ImageXformDBAddImage
+    )
   
   FOREACH(T ${Tests})
     ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libRegistrationTestsSQLite ${T})

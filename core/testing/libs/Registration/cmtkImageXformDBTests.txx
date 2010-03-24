@@ -34,15 +34,25 @@
 int
 testImageXformDBCreate()
 {
-  cmtk::ImageXformDB db( "new.sqlite" );
+  cmtk::ImageXformDB db( "imagexform.sqlite" );
   return 0;
 }
 
-// test SQLite open of existing file
+// test open of existing file
 int
 testImageXformDBOpen()
 {
   cmtk::ImageXformDB db( CMTK_DATADIR "/empty.sqlite", true /*readOnly*/ );
+  return 0;
+}
+
+// test adding an image to a database
+int
+testImageXformDBAddImage()
+{
+  cmtk::ImageXformDB db( "new.sqlite" );
+  db.AddImage( "image.nii" );
+
   return 0;
 }
 

@@ -65,11 +65,11 @@ public:
   void ExecNoReturn( const char* sql );
 
 protected:
-  /// Virtual function: initialize newly created database.
-  virtual void InitNew() {}
-
   /// Database object.
   sqlite3 *m_DB;
+
+  /// Initialize tables in newly created database.
+  virtual void InitNew() {};
 };
 
 //@}

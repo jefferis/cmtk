@@ -39,7 +39,7 @@ cmtk::SQLite::SQLite
 {
   if ( readOnly )
     {
-    if( sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READONLY, NULL /*zVFS*/ ) )
+    if( sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READONLY, NULL /*zVFS*/ ) != SQLITE_OK )
       {
       cmtk::StdErr << "Can't open database read-only: " << sqlite3_errmsg( this->m_DB ) << "\n";
       sqlite3_close( this->m_DB );
@@ -48,9 +48,9 @@ cmtk::SQLite::SQLite
     }
   else
     {
-    if( sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READWRITE, NULL /*zVFS*/ ) )
+    if( sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READWRITE, NULL /*zVFS*/ ) != SQLITE_OK )
       {
-      if ( sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL /*zVFS*/ ) )
+      if ( sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL /*zVFS*/ ) != SQLITE_OK )
 	{
 	cmtk::StdErr << "Can't open database for writing: " << sqlite3_errmsg( this->m_DB ) << "\n";
 	sqlite3_close( this->m_DB );
@@ -69,10 +69,10 @@ void
 cmtk::SQLite::ExecNoReturn( const char* sql )
 {
   char* err = NULL;
-  const int rc = sqlite3_exec( this->m_DB, sql, NULL, NULL, &err );
-  if ( rc )
+  if ( sqlite3_exec( this->m_DB, sql, NULL, NULL, &err ) != SQLITE_OK )
     {
     StdErr << "SQL error: " << err << "\n";
+    sqlite3_free( err );
     exit(1);
     }
 }
