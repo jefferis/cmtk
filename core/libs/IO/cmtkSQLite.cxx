@@ -36,6 +36,7 @@
 
 cmtk::SQLite::SQLite
 ( const std::string& dbPath, const bool readOnly )
+  : m_DebugMode( false )
 {
   if ( readOnly )
     {
@@ -68,10 +69,15 @@ cmtk::SQLite::SQLite
 void
 cmtk::SQLite::Exec( const std::string& sql )
 {
+  if ( this->m_DebugMode )
+    {
+    StdErr << sql << "\n";
+    }
+
   char* err = NULL;
   if ( sqlite3_exec( this->m_DB, sql.c_str(), NULL, NULL, &err ) != SQLITE_OK )
     {
-    StdErr << "SQL error: " << err << "\n";
+    StdErr << "Exec " << sql << "\nSQL error: " << err << "\n";
     sqlite3_free( err );
     exit(1);
     }
@@ -79,7 +85,7 @@ cmtk::SQLite::Exec( const std::string& sql )
 
 /// Callback for SQLite: add rows to results table.
 int
-cmtkSQLiteQueryCallback( void* pTable, int ncols, char** rowdata, char** colnames )
+cmtkSQLiteQueryCallback( void* pTable, int ncols, char** rowdata, char** )
 {
   cmtk::SQLite::TableType* table = static_cast<cmtk::SQLite::TableType*>( pTable );
 
@@ -87,9 +93,9 @@ cmtkSQLiteQueryCallback( void* pTable, int ncols, char** rowdata, char** colname
   for ( int col = 0; col < ncols; ++col )
     {
     if ( rowdata[col] )
-      tableRow.push_back( std::string( rowdata[col] ) );
+      tableRow[col] = std::string( rowdata[col] );
     else
-      tableRow.push_back( std::string( "NULL" ) );      
+      tableRow[col] = std::string( "NULL" );
     }
   table->push_back( tableRow );
 
@@ -99,12 +105,17 @@ cmtkSQLiteQueryCallback( void* pTable, int ncols, char** rowdata, char** colname
 void
 cmtk::SQLite::Query( const std::string& sql, cmtk::SQLite::TableType& table ) const
 {
+  if ( this->m_DebugMode )
+    {
+    StdErr << sql << "\n";
+    }
+
   table.resize( 0 );
 
   char* err = NULL;
   if ( sqlite3_exec( this->m_DB, sql.c_str(), cmtkSQLiteQueryCallback, &table, &err ) != SQLITE_OK )
     {
-    StdErr << "SQL error: " << err << "\n";
+    StdErr << "Query " << sql << "\nSQL error: " << err << "\n";
     sqlite3_free( err );
     exit(1);
     }

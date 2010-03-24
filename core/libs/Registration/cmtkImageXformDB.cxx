@@ -34,6 +34,7 @@
 
 #include <string>
 #include <sstream>
+#include <cstdlib>
 
 cmtk::ImageXformDB
 ::ImageXformDB( const std::string& dbPath, const bool readOnly ) 
@@ -47,36 +48,52 @@ cmtk::ImageXformDB
 ::InitNew() 
 {
   // create entity tables
-  this->Exec( "create table images(id integer primary key, path text)" );
-  this->Exec( "create table spaces(id integer primary key, path text)" );
-  this->Exec( "create table xforms(id integer primary key, path text, invertible integer)" );
+  this->Exec( "CREATE TABLE images(id INTEGER PRIMARY KEY, space INTEGER, path TEXT)" );
+  this->Exec( "CREATE TABLE xforms(id INTEGER PRIMARY KEY, path TEXT, invertible INTEGER)" );
 
   // create relationship tables
-  this->Exec( "create table imagespace(spaceid integer, imageid integer)" );
-  this->Exec( "create table spacexform(xformid integer, spacefromid integer, spacetoid integer)" );
-}
-
-cmtk::ImageXformDB::PrimaryKeyType
-cmtk::ImageXformDB
-::AddImage( const std::string& imagePath )
-{
-  const std::string sql = "insert into images values (NULL,'"+imagePath+"')";
-  this->Exec( sql );
-  return -1;
+  this->Exec( "CREATE TABLE spacexform(xform INTEGER, spacefrom INTEGER, spaceto INTEGER)" );
 }
 
 void
 cmtk::ImageXformDB
-::AddImageToSpace( const cmtk::ImageXformDB::PrimaryKeyType spaceKey, const cmtk::ImageXformDB::PrimaryKeyType imageKey )
+::AddImage( const std::string& imagePath, const std::string& spacePath )
 {
-  std::ostringstream sql;
-  sql << "insert into imagespace values (" << spaceKey << "," << imageKey << ")";
-  this->Exec( sql.str() );
+  if ( (spacePath == "") )
+    {
+    this->Exec( "INSERT INTO images (path) VALUES ('"+imagePath+"')" );
+    this->Exec( "UPDATE images SET space=(SELECT id FROM images WHERE path='"+imagePath+"') WHERE path='"+imagePath+"'" );
+    }
+  else
+    {
+    PrimaryKeyType spaceKey = this->FindImageSpaceID( spacePath );
+    if ( (spaceKey == 0) )
+      {
+      this->Exec( "INSERT INTO images (path) VALUES ('"+spacePath+"')" );
+      this->Exec( "UPDATE images SET space=(SELECT space FROM images WHERE path='"+spacePath+"') WHERE path='"+spacePath+"'" );
+      spaceKey = this->FindImageSpaceID( spacePath );
+      }
+    
+    std::ostringstream sql;
+    sql << "INSERT INTO images (space,path) VALUES ( " << spaceKey << ", '" << imagePath << "')";
+    this->Exec( sql.str() );
+    }
 }
 
 cmtk::ImageXformDB::PrimaryKeyType 
 cmtk::ImageXformDB
-::FindImageSpace( const cmtk::ImageXformDB::PrimaryKeyType& imageKey )
+::FindImageSpaceID( const std::string& imagePath )
 {
-  return -1;
+  if ( imagePath != "" )
+    {
+    const std::string sql = "SELECT space FROM images WHERE path='"+imagePath+"'";
+    
+    SQLite::TableType table;
+    this->Query( sql, table );
+    
+    if ( table.size() && table[0].size() )
+      return atoi( table[0][0].c_str() );
+    }
+
+  return 0;
 }

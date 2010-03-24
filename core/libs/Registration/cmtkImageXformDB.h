@@ -59,18 +59,14 @@ public:
   ImageXformDB( const std::string& dbPath, /**!< Path to the database file. */
 		const bool readOnly = false /**!< If this flag is set, the database is opened read-only. If false, the database is opened for read/write, and a non-existing database will be created. */);
 
-  /** Add an image, identified by its file system path.
+  /** Add an image to a coordinate space, each identified by its file system path.
    *\return Key of newly entered image.
    */
-  Self::PrimaryKeyType AddImage( const std::string& imagePath /**!< File system path of the new image*/ );
-
-  /** Add an image to a space.
-   */
-  void AddImageToSpace( const cmtk::ImageXformDB::PrimaryKeyType spaceKey, /**!< Key of the space.*/
-			const cmtk::ImageXformDB::PrimaryKeyType imageKey /**!< Key of the image.*/ );
+  void AddImage( const std::string& imagePath /**!< File system path of the new image*/,
+		 const std::string& spacePath = "" /**!< File system path of an existing image that lives in the same space*/ );
   
   /// Find space that image lives in and return its key.
-  Self::PrimaryKeyType FindImageSpace( const Self::PrimaryKeyType& imageKey );
+  Self::PrimaryKeyType FindImageSpaceID( const std::string& imagePath );
   
 protected:
   /// Initialize tables in newly created database.

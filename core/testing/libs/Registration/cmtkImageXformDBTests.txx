@@ -51,7 +51,11 @@ int
 testImageXformDBAddImage()
 {
   cmtk::ImageXformDB db( "new.sqlite" );
-  db.AddImage( "image.nii" );
+  db.DebugModeOn();
+  db.AddImage( "image1.nii" );
+  db.AddImage( "image2.nii", "image1.nii" );
+  db.AddImage( "image3.nii", "image2.nii" );
+  db.AddImage( "image4.nii" );
 
   return 0;
 }

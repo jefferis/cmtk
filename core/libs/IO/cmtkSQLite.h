@@ -72,12 +72,21 @@ public:
   /// Query database and return table.
   void Query( const std::string& sql, Self::TableType& table ) const;
 
+  /// Turn on debug mode.
+  void DebugModeOn() { this->m_DebugMode = true; }
+
+  /// Turn off debug mode.
+  void DebugModeOff() { this->m_DebugMode = false; }
+
 protected:
   /// Database object.
   mutable sqlite3 *m_DB;
 
   /// Initialize tables in newly created database.
   virtual void InitNew() {};
+
+  /// Debug mode flag: if this is set, all executed SQL queries will be printed to standard error.
+  bool m_DebugMode;
 };
 
 //@}
