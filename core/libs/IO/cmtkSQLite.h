@@ -67,7 +67,7 @@ public:
   virtual ~SQLite();
 
   /// Execute an SQL command with no return value.
-  void ExecNoReturn( const std::string& sql );
+  void Exec( const std::string& sql );
 
   /// Query database and return table.
   void Query( const std::string& sql, Self::TableType& table ) const;

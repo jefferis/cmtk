@@ -47,13 +47,13 @@ cmtk::ImageXformDB
 ::InitNew() 
 {
   // create entity tables
-  this->ExecNoReturn( "create table images(id integer primary key, path text)" );
-  this->ExecNoReturn( "create table spaces(id integer primary key, path text)" );
-  this->ExecNoReturn( "create table xforms(id integer primary key, path text, invertible integer)" );
+  this->Exec( "create table images(id integer primary key, path text)" );
+  this->Exec( "create table spaces(id integer primary key, path text)" );
+  this->Exec( "create table xforms(id integer primary key, path text, invertible integer)" );
 
   // create relationship tables
-  this->ExecNoReturn( "create table imagespace(spaceid integer, imageid integer)" );
-  this->ExecNoReturn( "create table spacexform(xformid integer, spacefromid integer, spacetoid integer)" );
+  this->Exec( "create table imagespace(spaceid integer, imageid integer)" );
+  this->Exec( "create table spacexform(xformid integer, spacefromid integer, spacetoid integer)" );
 }
 
 cmtk::ImageXformDB::PrimaryKeyType
@@ -61,7 +61,7 @@ cmtk::ImageXformDB
 ::AddImage( const std::string& imagePath )
 {
   const std::string sql = "insert into images values (NULL,'"+imagePath+"')";
-  this->ExecNoReturn( sql );
+  this->Exec( sql );
   return -1;
 }
 
@@ -71,7 +71,7 @@ cmtk::ImageXformDB
 {
   std::ostringstream sql;
   sql << "insert into imagespace values (" << spaceKey << "," << imageKey << ")";
-  this->ExecNoReturn( sql.str() );
+  this->Exec( sql.str() );
 }
 
 cmtk::ImageXformDB::PrimaryKeyType 

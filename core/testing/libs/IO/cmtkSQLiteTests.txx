@@ -52,10 +52,10 @@ int
 testSQLiteCreateAndInsert()
 {
   cmtk::SQLite db( "new.sqlite" );
-  db.ExecNoReturn( "create table testing ( id integer primary key, data text )" );
-  db.ExecNoReturn( "insert into testing values ( NULL, 'test1')" );
-  db.ExecNoReturn( "insert into testing values ( 2, 'test2')" );
-  db.ExecNoReturn( "insert into testing values ( NULL, 'test3')" );
+  db.Exec( "create table testing ( id integer primary key, data text )" );
+  db.Exec( "insert into testing values ( NULL, 'test1')" );
+  db.Exec( "insert into testing values ( 2, 'test2')" );
+  db.Exec( "insert into testing values ( NULL, 'test3')" );
   return 0;
 }
 
