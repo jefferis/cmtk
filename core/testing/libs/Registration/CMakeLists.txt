@@ -31,7 +31,11 @@
 # Setup binary test drivers
 
 SET(CMTK_LIBRARIES "cmtkRegistration;cmtkIO;cmtkBase;cmtkNumerics;cmtkSystem")
+
 SET(DRIVERS libRegistrationTests)
+IF(CMTK_BUILD_SQLITE)
+  SET(DRIVERS ${DRIVERS} libRegistrationTestsSQLite)
+ENDIF(CMTK_BUILD_SQLITE)
 
 FOREACH(D ${DRIVERS})
   ADD_EXECUTABLE(${D} ${D}.cxx)
@@ -51,3 +55,16 @@ SET(Tests ${Tests} TypedArraySimilarity)
 FOREACH(T ${Tests})
   ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libRegistrationTests ${T})
 ENDFOREACH(T Tests)
+
+# ==========================================
+# Tests for "cmtk::XformImageDB" class
+IF(CMTK_BUILD_SQLITE)
+  SET(Tests
+    ImageXformDBCreate 
+    ImageXformDBOpen)
+  
+  FOREACH(T ${Tests})
+    ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libRegistrationTestsSQLite ${T})
+  ENDFOREACH(T Tests)
+ENDIF(CMTK_BUILD_SQLITE)
+

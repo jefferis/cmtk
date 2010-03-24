@@ -65,6 +65,19 @@ cmtk::SQLite::SQLite
     }
 }
 
+void
+cmtk::SQLite::ExecNoReturn( const char* sql )
+{
+  char* err = NULL;
+  const int rc = sqlite3_exec( this->m_DB, sql, NULL, NULL, &err );
+  if ( rc )
+    {
+    StdErr << "SQL error: " << err << "\n";
+    exit(1);
+    }
+}
+
+
 cmtk::SQLite::~SQLite()
 {
   sqlite3_close( this->m_DB );

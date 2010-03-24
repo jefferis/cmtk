@@ -61,6 +61,9 @@ public:
   /// Destructor: close database.
   virtual ~SQLite();
 
+  /// Execute an SQL command with no return value.
+  void ExecNoReturn( const char* sql );
+
 protected:
   /// Virtual function: initialize newly created database.
   virtual void InitNew() {}
