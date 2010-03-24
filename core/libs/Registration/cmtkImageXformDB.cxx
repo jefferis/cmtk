@@ -47,13 +47,13 @@ cmtk::ImageXformDB
 ::InitNew() 
 {
   // create entity tables
-  this->ExecNoReturn( "create table images(id int primary key, path text)" );
-  this->ExecNoReturn( "create table spaces(id int primary key, path text)" );
-  this->ExecNoReturn( "create table xforms(id int primary key, path text, invertible int)" );
+  this->ExecNoReturn( "create table images(id integer primary key, path text)" );
+  this->ExecNoReturn( "create table spaces(id integer primary key, path text)" );
+  this->ExecNoReturn( "create table xforms(id integer primary key, path text, invertible integer)" );
 
   // create relationship tables
-  this->ExecNoReturn( "create table imagespace(spaceid int, imageid int)" );
-  this->ExecNoReturn( "create table spacexform(xformid int, spacefromid int, spacetoid int)" );
+  this->ExecNoReturn( "create table imagespace(spaceid integer, imageid integer)" );
+  this->ExecNoReturn( "create table spacexform(xformid integer, spacefromid integer, spacetoid integer)" );
 }
 
 cmtk::ImageXformDB::PrimaryKeyType
