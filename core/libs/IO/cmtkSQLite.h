@@ -48,6 +48,12 @@ cmtk
 class SQLite
 {
 public:
+  /// This class.
+  typedef SQLite Self;
+
+  /// Primary key type for the underlying database. This is used to uniquely identify table entries.
+  typedef sqlite3_uint64 PrimaryKeyType;
+
   /// Constructor: open SQLite database.
   SQLite( const std::string& dbPath, /**!< Path to the SQLite3 database file. */
 	  const bool readOnly = false /**!< If this flag is set, the database is opened read-only. If false, the database is opened for read/write, and a non-existing database will be created. */);
@@ -55,10 +61,10 @@ public:
   /// Destructor: close database.
   virtual ~SQLite();
 
+protected:
   /// Virtual function: initialize newly created database.
   virtual void InitNew() {}
 
-protected:
   /// Database object.
   sqlite3 *m_DB;
 };

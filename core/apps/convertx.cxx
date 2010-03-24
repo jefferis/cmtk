@@ -92,6 +92,8 @@ main( int argc, char* argv[] )
   const char* imagePathIn = NULL;
   const char* imagePathOut = NULL;
 
+  const char* updateDB = NULL;
+
   try 
     {
     cmtk::CommandLine cl( argc, argv );  
@@ -101,6 +103,7 @@ main( int argc, char* argv[] )
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
+    cl.AddOption( Key( "db" ), &updateDB, "Path to image/transformation database that should be updated with the newly created image." );
 
     cl.BeginGroup( "Input", "Input Image Controls" );
     cl.AddOption( Key( "set-padding" ), &paddingDataValue, "Set padding data for input image. All pixels in the input image that have this value will be ignored in all operations.", &paddingDataFlag );

@@ -49,9 +49,32 @@ class ImageXformDB
   : public SQLite
 {
 public:
+  /// This class.
+  typedef ImageXformDB Self;
+
+  /// Parent class.
+  typedef SQLite Superclass;
+
   /// Constructor: open ImageXformDB database.
   ImageXformDB( const std::string& dbPath, /**!< Path to the database file. */
 		const bool readOnly = false /**!< If this flag is set, the database is opened read-only. If false, the database is opened for read/write, and a non-existing database will be created. */);
+
+  /** Add an image, identified by its file system path.
+   *\return Key of newly entered image.
+   */
+  Self::PrimaryKeyType AddImage( const std::string& imagePath /**!< File system path of the new image*/ );
+
+  /** Add an image to a space.
+   */
+  void AddImageToSpace( const cmtk::ImageXformDB::PrimaryKeyType spaceKey, /**!< Key of the space.*/
+			const cmtk::ImageXformDB::PrimaryKeyType imageKey /**!< Key of the image.*/ );
+  
+  /// Find space that image lives in and return its key.
+  Self::PrimaryKeyType FindImageSpace( const Self::PrimaryKeyType& imageKey );
+  
+protected:
+  /// Initialize tables in newly created database.
+  virtual void InitNew();
 };
 
 //@}

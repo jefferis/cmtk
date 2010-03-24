@@ -28,36 +28,14 @@
 //
 */
 
+#include <cmtkconfig.h>
+
 #include <cmtkImageXformDB.h>
 
-cmtk::ImageXformDB
-::ImageXformDB( const std::string& dbPath, const bool readOnly ) 
-  : cmtk::SQLite( dbPath, readOnly )
+int
+main( const int argc, const char*[] )
 {
+  // if we got here, the program probably ran
+  return 0;
 }
 
-void
-cmtk::ImageXformDB
-::InitNew() 
-{
-}
-
-cmtk::ImageXformDB::PrimaryKeyType
-cmtk::ImageXformDB
-::AddImage( const std::string& imagePath )
-{
-  return -1;
-}
-
-void
-cmtk::ImageXformDB
-::AddImageToSpace( const cmtk::ImageXformDB::PrimaryKeyType spaceKey, const cmtk::ImageXformDB::PrimaryKeyType imageKey )
-{
-}
-
-cmtk::ImageXformDB::PrimaryKeyType 
-cmtk::ImageXformDB
-::FindImageSpace( const cmtk::ImageXformDB::PrimaryKeyType& imageKey )
-{
-  return -1;
-}
