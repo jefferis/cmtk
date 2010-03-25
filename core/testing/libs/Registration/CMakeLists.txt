@@ -61,7 +61,6 @@ ENDFOREACH(T Tests)
 IF(CMTK_BUILD_SQLITE)
   SET(Tests
     ImageXformDBCreate 
-    ImageXformDBOpen
     ImageXformDBAddImage
     )
   

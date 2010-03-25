@@ -67,10 +67,6 @@ public:
   
   /// Find space that image lives in and return its key.
   Self::PrimaryKeyType FindImageSpaceID( const std::string& imagePath );
-  
-protected:
-  /// Initialize tables in newly created database.
-  virtual void InitNew();
 };
 
 //@}

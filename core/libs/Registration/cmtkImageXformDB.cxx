@@ -40,19 +40,22 @@ cmtk::ImageXformDB
 ::ImageXformDB( const std::string& dbPath, const bool readOnly ) 
   : cmtk::SQLite( dbPath, readOnly )
 {
-  this->InitNew();
-}
-
-void
-cmtk::ImageXformDB
-::InitNew() 
-{
   // create entity tables
-  this->Exec( "CREATE TABLE images(id INTEGER PRIMARY KEY, space INTEGER, path TEXT)" );
-  this->Exec( "CREATE TABLE xforms(id INTEGER PRIMARY KEY, path TEXT, invertible INTEGER)" );
+  if ( ! this->TableExists( "images" ) )
+    {
+    this->Exec( "CREATE TABLE images(id INTEGER PRIMARY KEY, space INTEGER, path TEXT)" );
+    }
+  
+  if ( ! this->TableExists( "xforms" ) )
+    {
+    this->Exec( "CREATE TABLE xforms(id INTEGER PRIMARY KEY, path TEXT, invertible INTEGER)" );
+    }
 
   // create relationship tables
-  this->Exec( "CREATE TABLE spacexform(xform INTEGER, spacefrom INTEGER, spaceto INTEGER)" );
+  if ( ! this->TableExists( "spacexform" ) )
+    {
+    this->Exec( "CREATE TABLE spacexform(xform INTEGER, spacefrom INTEGER, spaceto INTEGER)" );
+    }
 }
 
 void

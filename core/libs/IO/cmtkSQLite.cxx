@@ -49,21 +49,18 @@ cmtk::SQLite::SQLite
     }
   else
     {
-    if( sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READWRITE, NULL /*zVFS*/ ) != SQLITE_OK )
+    if ( sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL /*zVFS*/ ) != SQLITE_OK )
       {
-      if ( sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL /*zVFS*/ ) != SQLITE_OK )
-	{
-	cmtk::StdErr << "Can't open database " << dbPath << " for writing: " << sqlite3_errmsg( this->m_DB ) << "\n";
-	sqlite3_close( this->m_DB );
-	exit(1);
-	}
-      else
-	{
-	// new file
-	this->InitNew();
-	}
+      cmtk::StdErr << "Can't open database " << dbPath << " for writing: " << sqlite3_errmsg( this->m_DB ) << "\n";
+      sqlite3_close( this->m_DB );
+      exit(1);
       }
     }
+}
+
+cmtk::SQLite::~SQLite()
+{
+  sqlite3_close( this->m_DB );
 }
 
 void
@@ -121,7 +118,11 @@ cmtk::SQLite::Query( const std::string& sql, cmtk::SQLite::TableType& table ) co
     }
 }
 
-cmtk::SQLite::~SQLite()
+bool
+cmtk::SQLite::TableExists( const std::string& tableName ) const
 {
-  sqlite3_close( this->m_DB );
+  Self::TableType table;
+  this->Query( "SELECT name FROM SQLite_Master WHERE name='"+tableName+"'", table );
+
+  return table.size() && table[0].size() && (table[0][0] == tableName);
 }
