@@ -35,7 +35,7 @@
 int
 testSQLiteNew()
 {
-  cmtk::SQLite db( "new.sqlite" );
+  cmtk::SQLite db( ":memory:" );
   return 0;
 }
 
@@ -51,7 +51,7 @@ testSQLiteOpen()
 int
 testSQLiteCreateAndInsert()
 {
-  cmtk::SQLite db( "new.sqlite" );
+  cmtk::SQLite db( ":memory:" );
   db.Exec( "create table testing ( id integer primary key, data text )" );
   db.Exec( "insert into testing values ( NULL, 'test1')" );
   db.Exec( "insert into testing values ( 2, 'test2')" );
