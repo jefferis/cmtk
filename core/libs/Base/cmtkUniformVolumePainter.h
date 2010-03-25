@@ -60,11 +60,11 @@ public:
   typedef enum
   {
     /// Absolute coordinates: all coordinates are absoluate values within the volume field of view.
-    ABSOLUTE,
+    ABSOLUTE = 0,
     /// Relative coordinates: all coordinates are in range [0,1] which is mapped to volume field of view for each dimension.
-    RELATIVE,
+    RELATIVE = 1,
     /// Indexed grid coordinates: all coordinates are grid indexes.
-    INDEXED
+    INDEXED = 2
   } CoordinateModeEnum;
   
 
