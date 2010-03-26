@@ -309,6 +309,10 @@ case ${RUNTEST} in
 	run convert spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.img
 	check_results spgr_brain_1.hdr spgr_brain_1.img
 	;;
+    convertxBinarize)
+        run convertx --binarize-thresh 100 spgr_brain_1.hdr ${tmpdir}/thresh.hdr
+	check_results thresh.img
+	;;
     convertxBoundaryMap)
 	run convertx --boundary-map parc1.hdr ${tmpdir}/boundary_map.hdr
 	check_results boundary_map.img

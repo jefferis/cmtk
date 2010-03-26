@@ -1,5 +1,7 @@
 Release CMTK-1.3.0:
 
+- Added: "convertx --binarize-thresh" operation
+- Bugfix: shared-library build configuration was broken.
 - Bugfix: "convertx --mask-inverse" was broken.
 - Added: "mk_phantom_3d" tool can now import either an image including
     existing pixel data or just the grid geometry.

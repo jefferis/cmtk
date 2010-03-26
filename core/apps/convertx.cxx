@@ -137,6 +137,7 @@ main( int argc, char* argv[] )
     cl.AddCallback( Key( "thresh-above" ), &cmtk::ImageOperationThreshold::NewAbove, "Set all values above threshold to threshold value." );
     cl.AddCallback( Key( "thresh-below-to-padding" ), &cmtk::ImageOperationThreshold::NewBelowToPadding, "Set all values below threshold to padding value." );
     cl.AddCallback( Key( "thresh-above-to-padding" ), &cmtk::ImageOperationThreshold::NewAboveToPadding, "Set all values above threshold to padding value." );
+    cl.AddCallback( Key( "binarize-thresh" ), &cmtk::ImageOperationThreshold::NewBinarize, "Set all values below threshold to 0, all values equal or above to 1." );
     cl.EndGroup();
 
     cl.BeginGroup( "Intensity", "Intensity Transformations" );

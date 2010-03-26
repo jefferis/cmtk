@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009 SRI International
+//  Copyright 2009, 2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,19 +34,26 @@ cmtk::UniformVolume::SmartPtr
 cmtk::ImageOperationThreshold::Apply( cmtk::UniformVolume::SmartPtr& volume )
 {
   cmtk::TypedArray::SmartPtr volumeData = volume->GetData();
-  
-  cmtk::Types::DataItem min, max;
-  volumeData->GetRange( min, max );
-  
-  if ( this->m_Above )
-    max = this->m_Threshold;
+
+  if ( this->m_Binarize )
+    {
+    volumeData->Binarize( this->m_Threshold );
+    }
   else
-    min = this->m_Threshold;
-  
-  if ( this->m_ToPadding )
-    volumeData->ThresholdToPadding( min, max );
-  else
-    volumeData->Threshold( min, max );
+    {
+    cmtk::Types::DataItem min, max;
+    volumeData->GetRange( min, max );
+    
+    if ( this->m_Above )
+      max = this->m_Threshold;
+    else
+      min = this->m_Threshold;
+    
+    if ( this->m_ToPadding )
+      volumeData->ThresholdToPadding( min, max );
+    else
+      volumeData->Threshold( min, max );
+    }
   
   return volume;
 }

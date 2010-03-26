@@ -41,6 +41,7 @@ SET(cmtkIO_SRCS
   cmtkFileFormat.cxx
   cmtkGroupwiseRegistrationFunctionalIO.cxx
   cmtkImageInfo.cxx
+  cmtkImageOperationApplyMask.cxx
   cmtkMountPoints.cxx
   cmtkPGM.cxx
   cmtkResourceFile.cxx
@@ -82,7 +83,7 @@ ENDIF(CMTK_USE_MPI)
 
 ADD_LIBRARY(cmtkIO ${cmtkIO_SRCS})
 
-TARGET_LINK_LIBRARIES(cmtkIO cmtkBase cmtkSystem cmtkNumerics)
+TARGET_LINK_LIBRARIES(cmtkIO cmtkBase cmtkSystem cmtkNumerics cmtkZlib)
 IF(CMTK_BUILD_SQLITE)
   TARGET_LINK_LIBRARIES(cmtkIO sqlite3)
 ENDIF(CMTK_BUILD_SQLITE)
