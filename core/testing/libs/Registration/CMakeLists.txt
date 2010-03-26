@@ -62,6 +62,8 @@ IF(CMTK_BUILD_SQLITE)
   SET(Tests
     ImageXformDBCreate 
     ImageXformDBAddImage
+    ImageXformDBAddImageThenXform
+    ImageXformDBAddImageWithXform
     )
   
   FOREACH(T ${Tests})

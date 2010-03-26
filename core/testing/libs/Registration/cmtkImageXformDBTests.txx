@@ -50,12 +50,44 @@ testImageXformDBOpen()
 int
 testImageXformDBAddImage()
 {
-  cmtk::ImageXformDB db( "new.sqlite" );
+  cmtk::ImageXformDB db( ":memory:" );
   db.DebugModeOn();
   db.AddImage( "image1.nii" );
   db.AddImage( "image2.nii", "image1.nii" );
   db.AddImage( "image3.nii", "image2.nii" );
   db.AddImage( "image4.nii" );
+
+  return 0;
+}
+
+// test adding images, then a transformation to a database
+int
+testImageXformDBAddImageThenXform()
+{
+  cmtk::ImageXformDB db( "new.sqlite" );
+  db.DebugModeOn();
+  db.AddImage( "image1.nii" );
+  db.AddImage( "image2.nii", "image1.nii" );
+  db.AddImage( "image4.nii" );
+
+  if ( ! db.AddXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) ||
+       ! db.AddXform( "xform21", false /*invertible*/, "image2.nii", "image1.nii" ) ||
+       ! db.AddXform( "xform42", false /*invertible*/, "image4.nii", "image2.nii" ) )
+    return 1;
+
+  return 0;
+}
+
+// test adding images and transformations to a database
+int
+testImageXformDBAddImageWithXform()
+{
+  cmtk::ImageXformDB db( "new.sqlite" );
+  db.DebugModeOn();
+  if ( ! db.AddXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) ||
+       ! db.AddXform( "xform21", false /*invertible*/, "image2.nii", "image1.nii" ) ||       
+       ! db.AddXform( "xform42", false /*invertible*/, "image4.nii", "image2.nii" ) )
+    return 1;
 
   return 0;
 }

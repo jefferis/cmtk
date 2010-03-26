@@ -82,10 +82,18 @@ public:
 		const bool readOnly = false /**!< If this flag is set, the database is opened read-only. If false, the database is opened for read/write, and a non-existing database will be created. */);
 
   /** Add an image to a coordinate space, each identified by its file system path.
-   *\return Key of newly entered image.
    */
   void AddImage( const std::string& imagePath /**!< File system path of the new image*/,
 		 const std::string& spacePath = "" /**!< File system path of an existing image that lives in the same space*/ );
+  
+  /** Add an image to a coordinate space, each identified by its file system path.
+   *\return True if the operation was successful, false otherwise. Failure may be due to source and target image being in the same
+   * space to begin with.
+   */
+  bool AddXform( const std::string& xformPath, /**!< File system path of the tranformation */
+		 const bool invertible, /**<! Flag: does the transformation have an explicit inverse (i.e., is it affine)? */
+		 const std::string& imagePathSrc, /**!< File system path of the source image */
+		 const std::string& imagePathTrg /**!< File system path of the target image */ );
   
   /// Find space that image lives in and return its key.
   Self::PrimaryKeyType FindImageSpaceID( const std::string& imagePath );

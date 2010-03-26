@@ -56,6 +56,9 @@ public:
   /// Primary key type for the underlying database. This is used to uniquely identify table entries.
   typedef sqlite3_uint64 PrimaryKeyType;
 
+  /// Primary key value when object is not found: this should be guaranteed to never be used by the database as an actual primary key.
+  static const PrimaryKeyType NOTFOUND = 0;
+
   /// Table type: matrix of strings.
   typedef std::vector< std::vector< std::string > > TableType;
 

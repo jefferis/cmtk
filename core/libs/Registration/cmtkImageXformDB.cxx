@@ -34,7 +34,9 @@
 
 #include <string>
 #include <sstream>
+
 #include <cstdlib>
+#include <cassert>
 
 cmtk::ImageXformDB
 ::ImageXformDB( const std::string& dbPath, const bool readOnly ) 
@@ -48,7 +50,7 @@ cmtk::ImageXformDB
   
   if ( ! this->TableExists( "xforms" ) )
     {
-    this->Exec( "CREATE TABLE xforms(id INTEGER PRIMARY KEY, path TEXT, invertible INTEGER, spacefrom INTEGER, spaceto INTEGER))" );
+    this->Exec( "CREATE TABLE xforms(id INTEGER PRIMARY KEY, path TEXT, invertible INTEGER, spacefrom INTEGER, spaceto INTEGER)" );
     }
 }
 
@@ -64,7 +66,7 @@ cmtk::ImageXformDB
   else
     {
     PrimaryKeyType spaceKey = this->FindImageSpaceID( spacePath );
-    if ( (spaceKey == 0) )
+    if ( (spaceKey == Self::NOTFOUND) )
       {
       this->Exec( "INSERT INTO images (path) VALUES ('"+spacePath+"')" );
       this->Exec( "UPDATE images SET space=(SELECT space FROM images WHERE path='"+spacePath+"') WHERE path='"+spacePath+"'" );
@@ -76,6 +78,40 @@ cmtk::ImageXformDB
     this->Exec( sql.str() );
     }
 }
+
+bool
+cmtk::ImageXformDB
+::AddXform
+( const std::string& xformPath, const bool invertible, const std::string& imagePathSrc, const std::string& imagePathTrg )
+{
+  PrimaryKeyType spaceKeySrc = this->FindImageSpaceID( imagePathSrc );
+  if ( spaceKeySrc == Self::NOTFOUND )
+    {
+    this->AddImage( imagePathSrc );
+    spaceKeySrc = this->FindImageSpaceID( imagePathSrc );
+    assert( spaceKeySrc != Self::NOTFOUND );
+    }
+
+  PrimaryKeyType spaceKeyTrg = this->FindImageSpaceID( imagePathTrg );
+  if ( spaceKeyTrg == Self::NOTFOUND )
+    {
+    this->AddImage( imagePathTrg );
+    spaceKeyTrg = this->FindImageSpaceID( imagePathTrg );
+    assert( spaceKeyTrg != Self::NOTFOUND );
+    }
+
+  if ( spaceKeyTrg == spaceKeySrc )
+    {
+    StdErr << "WARNING - cmtk::ImageXformDB::AddXform - source and target image of transformation are in the same space; bailing out.\n";
+    return false;
+    }
+  
+  std::ostringstream sql;
+  sql << "INSERT INTO xforms (path,invertible,spacefrom,spaceto) VALUES ( '" << xformPath << "', " << (invertible ? 1 : 0) << ", " << spaceKeySrc << ", " << spaceKeyTrg << ")";
+  this->Exec( sql.str() );
+
+  return true;
+} 
 
 cmtk::ImageXformDB::PrimaryKeyType 
 cmtk::ImageXformDB
@@ -92,5 +128,5 @@ cmtk::ImageXformDB
       return atoi( table[0][0].c_str() );
     }
 
-  return 0;
+  return Self::NOTFOUND;
 }
