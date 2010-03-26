@@ -43,6 +43,28 @@ cmtk
 //@{
 
 /** Class for image and transformation database.
+ * The image and transformation database has three tables that store:
+ * a) images and the coordinate spaces that they live in, b) coordinate
+ * transformations, and from which source space to which target space they map.
+ *
+ * The "images" table stores all images and identifies which space they live in:
+ *\code
+ *  CREATE TABLE images(id INTEGER PRIMARY KEY, space INTEGER, path TEXT);
+ *\endcode
+ * Each image is assigned a table-unique ID. All images that live in the same
+ * coordinate space (i.e., the same acquisition of the same subject) share a
+ * space ID, which is the unique image ID of the first image that was added to
+ * this space.
+ *
+ * The "xforms" table stores the file system path and properties for each coordinate
+ * transformation:
+ *\code
+ *  CREATE TABLE xforms(id INTEGER PRIMARY KEY, path TEXT, invertible INTEGER, spacefrom INTEGER, spaceto INTEGER);
+ *\endcode
+ * Each transformation is assigned a table-unique ID.
+ * The field "invertible" is a flag that is set if the transformation has an explicit
+ * inverse (i.e., if it is affine). All transformations can be inverted nuerically, but
+ * we usually prefer explicit inverses for speed and accuracy.
  */
 class ImageXformDB
 /// Inherit from SQLite wrapper class.

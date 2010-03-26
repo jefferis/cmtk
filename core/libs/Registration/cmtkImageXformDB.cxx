@@ -48,13 +48,7 @@ cmtk::ImageXformDB
   
   if ( ! this->TableExists( "xforms" ) )
     {
-    this->Exec( "CREATE TABLE xforms(id INTEGER PRIMARY KEY, path TEXT, invertible INTEGER)" );
-    }
-
-  // create relationship tables
-  if ( ! this->TableExists( "spacexform" ) )
-    {
-    this->Exec( "CREATE TABLE spacexform(xform INTEGER, spacefrom INTEGER, spaceto INTEGER)" );
+    this->Exec( "CREATE TABLE xforms(id INTEGER PRIMARY KEY, path TEXT, invertible INTEGER, spacefrom INTEGER, spaceto INTEGER))" );
     }
 }
 
