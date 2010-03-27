@@ -64,10 +64,10 @@ testImageXformDBAddImage()
 int
 testImageXformDBAddImageThenXform()
 {
-  cmtk::ImageXformDB db( "new.sqlite" );
+  cmtk::ImageXformDB db( ":memory:" );
   db.DebugModeOn();
   db.AddImage( "image1.nii" );
-  db.AddImage( "image2.nii", "image1.nii" );
+  db.AddImage( "image2.nii" );
   db.AddImage( "image4.nii" );
 
   if ( ! db.AddXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) ||
@@ -82,7 +82,7 @@ testImageXformDBAddImageThenXform()
 int
 testImageXformDBAddImageWithXform()
 {
-  cmtk::ImageXformDB db( "new.sqlite" );
+  cmtk::ImageXformDB db( ":memory:" );
   db.DebugModeOn();
   if ( ! db.AddXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) ||
        ! db.AddXform( "xform21", false /*invertible*/, "image2.nii", "image1.nii" ) ||       
