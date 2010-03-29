@@ -92,3 +92,202 @@ testImageXformDBAddImageWithXform()
   return 0;
 }
 
+// test: try adding a transformation between images in the same space
+int
+testImageXformDBAddXformSameSpace()
+{
+  cmtk::ImageXformDB db( ":memory:" );
+  db.DebugModeOn();
+  db.AddImage( "image1.nii" );
+  db.AddImage( "image2.nii", "image1.nii" );
+  if ( db.AddXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) )
+    return 1;
+  
+  return 0;
+}
+
+// test getting simple transformations
+int
+testImageXformDBFindXform()
+{
+  cmtk::ImageXformDB db( ":memory:" );
+  db.DebugModeOn();
+  if ( ! db.AddXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) )
+    return 1;
+  
+  std::string xform;
+  bool inverse;
+  
+  if ( ! db.FindXform( "image1.nii", "image2.nii", xform, inverse ) )
+    {
+    std::cerr << "DB transformation lookup failed." << std::cerr;
+    return 1;
+    }
+
+  if ( xform != "xform12" )
+    {
+    std::cerr << "DB transformation returned wrong xform." << std::cerr;
+    return 1;
+    }
+
+  if ( inverse )
+    {
+    std::cerr << "DB transformation returned wrong inversion flag." << std::cerr;
+    return 1;
+    }
+
+  return 0;
+}
+
+// test getting transformation between two images in the same space.
+int
+testImageXformDBFindXformSameSpace()
+{
+  cmtk::ImageXformDB db( ":memory:" );
+  db.DebugModeOn();
+
+  db.AddImage( "image1.nii" );
+  db.AddImage( "image2.nii", "image1.nii" );
+
+  std::string xform;
+  bool inverse;
+  
+  if ( ! db.FindXform( "image1.nii", "image2.nii", xform, inverse ) )
+    {
+    std::cerr << "DB transformation lookup failed." << std::cerr;
+    return 1;
+    }
+
+  if ( xform != "" )
+    {
+    std::cerr << "DB transformation returned wrong xform." << std::cerr;
+    return 1;
+    }
+  
+  if ( inverse )
+    {
+    std::cerr << "DB transformation returned wrong inversion flag." << std::cerr;
+    return 1;
+    }
+
+  return 0;
+}
+
+// test getting inverse transformations
+int
+testImageXformDBFindXformInverse()
+{
+  cmtk::ImageXformDB db( ":memory:" );
+  db.DebugModeOn();
+  if ( ! db.AddXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) )
+    return 1;
+  
+  std::string xform;
+  bool inverse;
+  
+  if ( ! db.FindXform( "image2.nii", "image1.nii", xform, inverse ) )
+    {
+    std::cerr << "DB transformation lookup failed." << std::cerr;
+    return 1;
+    }
+
+  if ( xform != "xform12" )
+    {
+    std::cerr << "DB transformation returned wrong xform." << std::cerr;
+    return 1;
+    }
+  
+  if ( !inverse )
+    {
+    std::cerr << "DB transformation returned wrong inversion flag." << std::cerr;
+    return 1;
+    }
+
+  return 0;
+}
+
+// test getting transformations when none actually exists
+int
+testImageXformDBFindXformNone()
+{
+  cmtk::ImageXformDB db( ":memory:" );
+  db.DebugModeOn();
+  if ( ! db.AddXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) )
+    return 1;
+  
+  std::string xform;
+  bool inverse;
+  
+  if ( db.FindXform( "image1.nii", "image3.nii", xform, inverse ) )
+    {
+    std::cerr << "DB transformation lookup succeeded when it should have failed." << std::cerr;
+    return 1;
+    }
+
+  if ( db.FindXform( "image3.nii", "image2.nii", xform, inverse ) )
+    {
+    std::cerr << "DB transformation lookup succeeded when it should have failed." << std::cerr;
+    return 1;
+    }
+
+  if ( db.FindXform( "image3.nii", "image3.nii", xform, inverse ) )
+    {
+    std::cerr << "DB transformation lookup succeeded when it should have failed." << std::cerr;
+    return 1;
+    }
+  
+  return 0;
+}
+
+// test getting transformations when multiple different ones exist
+int
+testImageXformDBFindXformMultiple()
+{
+  cmtk::ImageXformDB db( ":memory:" );
+  db.DebugModeOn();
+  if ( ! db.AddXform( "affine12", true /*invertible*/, "image1.nii", "image2.nii" ) || 
+       ! db.AddXform( "nonrigid12", false /*invertible*/, "image1.nii", "image2.nii" ) )
+    return 1;
+  
+  std::string xform;
+  bool inverse;
+  
+  if ( ! db.FindXform( "image1.nii", "image2.nii", xform, inverse ) )
+    {
+    std::cerr << "DB transformation lookup failed." << std::cerr;
+    return 1;
+    }
+  
+  if ( xform != "nonrigid12" )
+    {
+    std::cerr << "DB transformation returned wrong xform." << std::cerr;
+    return 1;
+    }
+  
+  if ( inverse )
+    {
+    std::cerr << "DB transformation returned wrong inversion flag." << std::cerr;
+    return 1;
+    }
+
+  if ( ! db.FindXform( "image2.nii", "image1.nii", xform, inverse ) )
+    {
+    std::cerr << "DB transformation lookup failed." << std::cerr;
+    return 1;
+    }
+  
+  if ( xform != "nonrigid12" )
+    {
+    std::cerr << "DB transformation returned wrong xform." << std::cerr;
+    return 1;
+    }
+  
+  if ( !inverse )
+    {
+    std::cerr << "DB transformation returned wrong inversion flag." << std::cerr;
+    return 1;
+    }
+
+  return 0;
+}
+

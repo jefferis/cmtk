@@ -64,6 +64,12 @@ IF(CMTK_BUILD_SQLITE)
     ImageXformDBAddImage
     ImageXformDBAddImageThenXform
     ImageXformDBAddImageWithXform
+    ImageXformDBAddXformSameSpace
+    ImageXformDBFindXform
+    ImageXformDBFindXformSameSpace
+    ImageXformDBFindXformInverse
+    ImageXformDBFindXformNone
+    ImageXformDBFindXformMultiple
     )
   
   FOREACH(T ${Tests})

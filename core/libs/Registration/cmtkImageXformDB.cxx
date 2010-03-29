@@ -130,3 +130,49 @@ cmtk::ImageXformDB
 
   return Self::NOTFOUND;
 }
+
+bool
+cmtk::ImageXformDB
+::FindXform( const std::string& imagePathSrc, const std::string& imagePathTrg, std::string& xformPath, bool& inverse )
+{
+  const PrimaryKeyType spaceKeySrc = this->FindImageSpaceID( imagePathSrc );
+  const PrimaryKeyType spaceKeyTrg = this->FindImageSpaceID( imagePathTrg );
+
+  if ( (spaceKeySrc == Self::NOTFOUND) || (spaceKeyTrg == Self::NOTFOUND) )
+    {
+    // if either space is not in the database, then clearly no transformation can reach it
+    return false;
+    }
+
+  if ( spaceKeySrc == spaceKeyTrg )
+    {
+    xformPath = "";
+    inverse = false;
+    return true;
+    }
+
+  std::ostringstream sql;
+  sql << "SELECT path FROM xforms WHERE ( spacefrom=" << spaceKeySrc << " AND spaceto=" << spaceKeyTrg << " ) ORDER BY invertible";
+
+  SQLite::TableType table;
+  this->Query( sql.str(), table );
+  if ( table.size() && table[0].size() )
+    {
+    inverse = false;
+    xformPath = table[0][0];
+    return true;
+    }
+  
+  sql.str( "" );
+  sql << "SELECT path FROM xforms WHERE ( spacefrom=" << spaceKeyTrg << " AND spaceto=" << spaceKeySrc << " ) ORDER BY invertible";
+  
+  this->Query( sql.str(), table );
+  if ( table.size() && table[0].size() )
+    {
+    inverse = true;
+    xformPath = table[0][0];
+    return true;
+    }
+
+  return false;
+}

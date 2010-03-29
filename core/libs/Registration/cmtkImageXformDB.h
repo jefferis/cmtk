@@ -48,9 +48,9 @@ cmtk
  * transformations, and from which source space to which target space they map.
  *
  * The "images" table stores all images and identifies which space they live in:
- *\code
- *  CREATE TABLE images(id INTEGER PRIMARY KEY, space INTEGER, path TEXT);
- *\endcode
+ * \code
+ *   CREATE TABLE images(id INTEGER PRIMARY KEY, space INTEGER, path TEXT);
+ * \endcode
  * Each image is assigned a table-unique ID. All images that live in the same
  * coordinate space (i.e., the same acquisition of the same subject) share a
  * space ID, which is the unique image ID of the first image that was added to
@@ -58,9 +58,9 @@ cmtk
  *
  * The "xforms" table stores the file system path and properties for each coordinate
  * transformation:
- *\code
- *  CREATE TABLE xforms(id INTEGER PRIMARY KEY, path TEXT, invertible INTEGER, spacefrom INTEGER, spaceto INTEGER);
- *\endcode
+ * \code
+ *   CREATE TABLE xforms(id INTEGER PRIMARY KEY, path TEXT, invertible INTEGER, spacefrom INTEGER, spaceto INTEGER);
+ * \endcode
  * Each transformation is assigned a table-unique ID.
  * The field "invertible" is a flag that is set if the transformation has an explicit
  * inverse (i.e., if it is affine). All transformations can be inverted nuerically, but
@@ -94,9 +94,26 @@ public:
 		 const bool invertible, /**<! Flag: does the transformation have an explicit inverse (i.e., is it affine)? */
 		 const std::string& imagePathSrc, /**!< File system path of the source image */
 		 const std::string& imagePathTrg /**!< File system path of the target image */ );
-  
+
   /// Find space that image lives in and return its key.
   Self::PrimaryKeyType FindImageSpaceID( const std::string& imagePath );
+
+  /** Find transformation between two images.
+   * Only one transformation is returned, even if more than one transformation
+   * connects the two spaces.
+   *
+   * Forward non-invertible (i.e., nonrigid) transformations are preferred, 
+   * followed by forward explicitly invertible (i.e., affine) transformations,
+   * then inverses of nonrigid transformations.
+   * and finally inverses of affine transformations, 
+   *
+   *\return True if transformation exists. If false, the two given images may still be connected via a chain of
+   * multiple, concatenated transformations.
+   */
+  bool FindXform( const std::string& imagePathSrc, /**!< File system path of the source image */
+		  const std::string& imagePathTrg, /**!< File system path of the target image */
+		  std::string& xformPath, /**!< File system path of the transformation. Only valid if function returns "true." Path can be empty if both images are already in the same space. */
+		  bool& inverse /**!< If this is set, the given transformation needs to be inverted. */);
 };
 
 //@}
