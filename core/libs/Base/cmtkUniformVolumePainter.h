@@ -75,7 +75,7 @@ public:
   void DrawSphere( const Vector3D& center, const Types::Coordinate radius, const Types::DataItem value );
 
   /// Draw a box.
-  void DrawBox( const IntROI3D& box, const Types::DataItem value );
+  void DrawBox( const Vector3D& boxFrom, const Vector3D& boxTo, const Types::DataItem value );
 
 private:
   /// Pointer to target volume.

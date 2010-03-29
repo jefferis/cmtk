@@ -312,7 +312,9 @@ IF(NOT CMTK_USE_MPI)
   # ==========================================
   # Tests for "mk_phantom_3d" tool
   SET(testList ${testList} 
-    mk_phantom_3dBox 
+    mk_phantom_3dBoxIndexed 
+    mk_phantom_3dBoxAbsolute
+    mk_phantom_3dBoxRelative
     mk_phantom_3dSphereIndexed
     mk_phantom_3dSphereAbsolute
     mk_phantom_3dSphereAbsolute2

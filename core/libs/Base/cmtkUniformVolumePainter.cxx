@@ -88,13 +88,42 @@ cmtk::UniformVolumePainter::DrawSphere
 
 void
 cmtk::UniformVolumePainter::DrawBox
-( const IntROI3D& box, const Types::DataItem value )
+( const Vector3D& boxFrom, const Vector3D& boxTo, const Types::DataItem value )
 {
-  for ( int k = box.From[2]; k < box.To[2]; ++k )
+  int indexFrom[3], indexTo[3];
+
+  switch ( this->m_CoordinateMode )
     {
-    for ( int j = box.From[1]; j < box.To[1]; ++j )
+    default:
+    case Self::ABSOLUTE:
+      for ( int dim = 0; dim < 3; ++dim )
+	{
+	indexFrom[dim] = static_cast<int>( MathUtil::Round( boxFrom[dim] / this->m_Volume->m_Delta[dim] ) );
+	indexTo[dim] = static_cast<int>( MathUtil::Round( boxTo[dim] / this->m_Volume->m_Delta[dim] ) );
+	}
+      break;
+    case Self::RELATIVE:
+      for ( int dim = 0; dim < 3; ++dim )
+	{
+	indexFrom[dim] = static_cast<int>( MathUtil::Round( boxFrom[dim] * this->m_Volume->Size[dim] / this->m_Volume->m_Delta[dim] ) );
+	indexTo[dim] = static_cast<int>( MathUtil::Round( boxTo[dim] * this->m_Volume->Size[dim] / this->m_Volume->m_Delta[dim] ) );
+	}
+      break;
+    case Self::INDEXED:
+      // nothing to do - already indexed
+      for ( int dim = 0; dim < 3; ++dim )
+	{
+	indexFrom[dim] = boxFrom[dim];
+	indexTo[dim] = boxTo[dim];
+	}
+      break;
+    }
+  
+  for ( int k = indexFrom[2]; k <= indexTo[2]; ++k )
+    {
+    for ( int j = indexFrom[1]; j <= indexTo[1]; ++j )
       {
-      for ( int i = box.From[0]; i < box.To[0]; ++i )
+      for ( int i = indexFrom[0]; i <= indexTo[0]; ++i )
 	{
 	this->m_Volume->SetDataAt( value, this->m_Volume->GetOffsetFromIndex( i, j, k ) );
 	}

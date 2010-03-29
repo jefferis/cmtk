@@ -157,18 +157,18 @@ main( const int argc, const char* argv[] )
 	const char* toCorner = cl.GetNextOptional();
 	const char* value = cl.GetNextOptional();
 	
-	cmtk::IntROI3D box;
-	if ( sscanf( fromCorner, "%d,%d,%d", &box.From[0], &box.From[1], &box.From[2] ) != 3 )
+	float boxFrom[3], boxTo[3];
+	if ( sscanf( fromCorner, "%f,%f,%f", &boxFrom[0], &boxFrom[1], &boxFrom[2] ) != 3 )
 	  {
-	  cmtk::StdErr << "Parameter 'corner0' of 'box' command must be three integers x,y,z\n";
+	  cmtk::StdErr << "Parameter 'corner0' of 'box' command must be three number x,y,z\n";
 	  return 1;
 	  }
-	if ( sscanf( toCorner, "%d,%d,%d", &box.To[0], &box.To[1], &box.To[2] ) != 3 )
+	if ( sscanf( toCorner, "%f,%f,%f", &boxTo[0], &boxTo[1], &boxTo[2] ) != 3 )
 	  {
-	  cmtk::StdErr << "Parameter 'corner1' of 'box' command must be three integers x,y,z\n";
+	  cmtk::StdErr << "Parameter 'corner1' of 'box' command must be three numbers x,y,z\n";
 	  return 1;
 	  }
-	painter.DrawBox( box, atof( value ) );
+	painter.DrawBox( cmtk::Vector3D( boxFrom ), cmtk::Vector3D( boxTo ), atof( value ) );
 	}
       nextCmd = cl.GetNextOptional();
       }
