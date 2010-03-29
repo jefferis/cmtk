@@ -27,7 +27,7 @@ Release CMTK-1.3.0:
 - Added: "warpx" and "congeal_warp" can now do repeated histogram-based
     intensity matching of floating to reference image, with a transfer
     function that changes as warping progresses and thus takes into account
-    shifting volume yproportions.
+    shifting volume proportions.
 - Added: "convertx" now does histogram equalization. Also added tests.
 - Refactored: created a new class for histogram-based intensity matching,
     cmtk::HistogramMatchingLookup.
