@@ -273,6 +273,11 @@ IF(NOT CMTK_USE_MPI)
       make_initial_affineDirectionVectorsNrrdSaCoNative)
   ENDIF(CMTK_BUILD_NRRD)
 
+  IF(CMTK_BUILD_SQLITE)
+    SET(testList ${testList}
+      make_initial_affineDB)
+  ENDIF(CMTK_BUILD_SQLITE)  
+  
   # ==========================================
   # Tests for "mat2dof" tool
   SET(testList ${testList} mat2dof1 mat2dof2)

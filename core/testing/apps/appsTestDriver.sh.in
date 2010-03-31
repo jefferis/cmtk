@@ -747,6 +747,10 @@ case ${RUNTEST} in
 	run make_initial_affine phantom_sa.nhdr phantom_co.nhdr ${tmpdir}/xform
 	check_results xform
 	;;
+    make_initial_affineDB)
+	run make_initial_affine --db ${tmpdir}/db.sqlite box1.hdr box3.hdr ${tmpdir}/xform
+	# only test for crash; local xform path in database is not portable for comparison
+	;;
     mat2dof1)
         run_eval "${BINDIR}/mat2dof --center -28,-48,-28 --offset 28,48,28 --pixel-size 1.06667,0.5,1.06667 -l ${tmpdir} < rigid-air.mat"
 	check_results registration

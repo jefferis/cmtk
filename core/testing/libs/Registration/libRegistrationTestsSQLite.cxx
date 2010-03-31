@@ -58,6 +58,7 @@ const testNameAndFunctionPointer testTable[] =
   { "ImageXformDBFindXformInverse",   &testImageXformDBFindXformInverse },
   { "ImageXformDBFindXformNone",      &testImageXformDBFindXformNone },
   { "ImageXformDBFindXformMultiple",  &testImageXformDBFindXformMultiple },
+  { "ImageXformDBFindXformLevels",    &testImageXformDBFindXformLevels },
   { NULL, NULL }
 };
 

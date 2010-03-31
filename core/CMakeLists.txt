@@ -328,7 +328,7 @@ OPTION(CMTK_BUILD_SQLITE "Build sqlite3 library for database support" OFF)
 IF(CMTK_BUILD_SQLITE)
   MESSAGE(STATUS "Building bundled sqlite3 library" ) 	 
   SET(SQLITE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/sqlite3 CACHE PATH "Directory containing sqlite3.h header file" FORCE)
-  ADD_DEFINITIONS(-DUSE_SQLITE)
+  ADD_DEFINITIONS(-DCMTK_USE_SQLITE)
 ENDIF(CMTK_BUILD_SQLITE)
 
 #-----------------------------------------------------------------------------

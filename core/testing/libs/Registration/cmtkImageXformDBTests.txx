@@ -316,3 +316,55 @@ testImageXformDBFindXformMultiple()
   return 0;
 }
 
+// test getting transformations when multiple refinement levels exist.
+int
+testImageXformDBFindXformLevels()
+{
+  cmtk::ImageXformDB db( ":memory:" );
+  db.DebugModeOn();
+  if ( ! db.AddXform( "affine12", true /*invertible*/, "image1.nii", "image2.nii" ) || 
+       ! db.AddXform( "nonrigid12", false /*invertible*/, "affine12" ) )
+    return 1;
+  
+  std::string xform;
+  bool inverse;
+  
+  if ( ! db.FindXform( "image1.nii", "image2.nii", xform, inverse ) )
+    {
+    std::cerr << "DB transformation lookup failed." << std::cerr;
+    return 1;
+    }
+  
+  if ( xform != "nonrigid12" )
+    {
+    std::cerr << "DB transformation returned wrong xform." << std::cerr;
+    return 1;
+    }
+  
+  if ( inverse )
+    {
+    std::cerr << "DB transformation returned wrong inversion flag." << std::cerr;
+    return 1;
+    }
+
+  if ( ! db.FindXform( "image2.nii", "image1.nii", xform, inverse ) )
+    {
+    std::cerr << "DB transformation lookup failed." << std::cerr;
+    return 1;
+    }
+  
+  if ( xform != "nonrigid12" )
+    {
+    std::cerr << "DB transformation returned wrong xform." << std::cerr;
+    return 1;
+    }
+  
+  if ( !inverse )
+    {
+    std::cerr << "DB transformation returned wrong inversion flag." << std::cerr;
+    return 1;
+    }
+
+  return 0;
+}
+

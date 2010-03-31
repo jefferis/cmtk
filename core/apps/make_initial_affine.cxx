@@ -44,6 +44,10 @@
 #include <cmtkVolumeIO.h>
 #include <cmtkXformIO.h>
 
+#ifdef CMTK_USE_SQLITE
+#  include <cmtkImageXformDB.h>
+#endif
+
 int
 main( const int argc, const char* argv[] )
 {
@@ -58,6 +62,10 @@ main( const int argc, const char* argv[] )
 
   int mode = 0;
 
+#ifdef CMTK_USE_SQLITE
+  const char* updateDB = NULL;
+#endif
+
   try
     {
     cmtk::CommandLine cl( argc, argv, cmtk::CommandLine::PROPS_XML );
@@ -71,8 +79,7 @@ main( const int argc, const char* argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Transformation", "Transformation construction control" );
-    cmtk::CommandLine::EnumGroup<int>::SmartPtr
-      modeGroup = cl.AddEnum( "mode", &mode, "Mode selection for initialization" );
+    cmtk::CommandLine::EnumGroup<int>::SmartPtr modeGroup = cl.AddEnum( "mode", &mode, "Mode selection for initialization" );
     modeGroup->AddSwitch( Key( "direction-vectors" ), 0, "Alignment based on image direction vectors" );
     modeGroup->AddSwitch( Key( "centers-of-mass" ), 1, "Alignment based on centers of mass (translation only)" );
     modeGroup->AddSwitch( Key( "principal-axes" ), 2, "Alignment based on principal axes" );
@@ -80,7 +87,14 @@ main( const int argc, const char* argv[] )
     
     cl.AddSwitch( Key( 'C', "center-xform" ), &centerXform, true, "Set transformation center (for rotation, scale) to center of reference image." );
     cl.AddSwitch( Key( "xform-ras" ), &writeXformRAS, true, "Write transformation in RAS space, rather than between native image spaces." );
+    cl.EndGroup();
     
+#ifdef CMTK_USE_SQLITE
+    cl.BeginGroup( "Database", "Image/Transformation Database" );
+    cl.AddOption( Key( "db" ), &updateDB, "Path to image/transformation database that should be updated with the newly transformation from reference to floating image." );
+    cl.EndGroup();
+#endif
+
     cl.AddParameter( &referenceImagePath, "ReferenceImage", "Reference (fixed) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &floatingImagePath, "FloatingImage", "Floating (moving) image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &outputXformPath, "OutputXform", "Output transformation path" )
@@ -137,6 +151,14 @@ main( const int argc, const char* argv[] )
       cmtk::TransformChangeToSpaceAffine toNative( *xform, *referenceImage, *floatingImage );
       cmtk::XformIO::Write( &toNative.GetTransformation(), outputXformPath, verbose );
       }
+
+#ifdef CMTK_USE_SQLITE
+    if ( updateDB )
+      {
+      cmtk::ImageXformDB db( updateDB );
+      db.AddXform( outputXformPath, true /*always affine*/, referenceImagePath, floatingImagePath );
+      }
+#endif
     }
   else
     {

@@ -71,6 +71,7 @@ IF(CMTK_BUILD_SQLITE)
     ImageXformDBFindXformInverse
     ImageXformDBFindXformNone
     ImageXformDBFindXformMultiple
+    ImageXformDBFindXformLevels
     )
   
   FOREACH(T ${Tests})
