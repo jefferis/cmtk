@@ -88,9 +88,9 @@ main( const int argc, const char* argv[] )
     cl.AddCallback( Key( 'V', "voxel" ), SetDeltas, "Set voxel size in [mm]" );
 
     cmtk::CommandLine::EnumGroup<cmtk::UniformVolumePainter::CoordinateModeEnum>::SmartPtr modeGroup = cl.AddEnum( "coordinates", &CoordinateMode, "Coordinate specification mode." );
-    modeGroup->AddSwitch( Key( "indexed" ), cmtk::UniformVolumePainter::INDEXED, "Use grid indexes to specify coordinates. For each dimension, the valid value range is [0,Dims-1]." );
-    modeGroup->AddSwitch( Key( "absolute" ), cmtk::UniformVolumePainter::ABSOLUTE, "Use absolute volume coordinates. For each dimension, the valid range is [0,FOV]." );
-    modeGroup->AddSwitch( Key( "relative" ), cmtk::UniformVolumePainter::RELATIVE, "Use relative volume coordinates. For each dimension, the valid range is [0,1]." );
+    modeGroup->AddSwitch( Key( "indexed" ), cmtk::UniformVolumePainter::COORDINATES_INDEXED, "Use grid indexes to specify coordinates. For each dimension, the valid value range is [0,Dims-1]." );
+    modeGroup->AddSwitch( Key( "absolute" ), cmtk::UniformVolumePainter::COORDINATES_ABSOLUTE, "Use absolute volume coordinates. For each dimension, the valid range is [0,FOV]." );
+    modeGroup->AddSwitch( Key( "relative" ), cmtk::UniformVolumePainter::COORDINATES_RELATIVE, "Use relative volume coordinates. For each dimension, the valid range is [0,1]." );
     
     cl.AddSwitch( Key( 'c', "char" ), &DataType, cmtk::TYPE_CHAR, "8 bits, signed" );
     cl.AddSwitch( Key( 'b', "byte" ), &DataType, cmtk::TYPE_BYTE, "8 bits, unsigned" );

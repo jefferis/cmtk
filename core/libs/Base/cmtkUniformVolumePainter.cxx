@@ -41,17 +41,17 @@ cmtk::UniformVolumePainter::DrawSphere
   switch ( this->m_CoordinateMode )
     {
     default:
-    case Self::ABSOLUTE:
+    case Self::COORDINATES_ABSOLUTE:
       // nothing to do - already absolute
       break;
-    case Self::RELATIVE:
+    case Self::COORDINATES_RELATIVE:
       for ( int dim = 0; dim < 3; ++dim )
 	{
 	centerAbsolute[dim] *= this->m_Volume->Size[dim];
 	radiusAbsolute[dim] *= this->m_Volume->Size[dim];
 	}
       break;
-    case Self::INDEXED:
+    case Self::COORDINATES_INDEXED:
       for ( int dim = 0; dim < 3; ++dim )
 	{
 	centerAbsolute[dim] *= this->m_Volume->m_Delta[dim];
@@ -95,21 +95,21 @@ cmtk::UniformVolumePainter::DrawBox
   switch ( this->m_CoordinateMode )
     {
     default:
-    case Self::ABSOLUTE:
+    case Self::COORDINATES_ABSOLUTE:
       for ( int dim = 0; dim < 3; ++dim )
 	{
 	indexFrom[dim] = static_cast<int>( MathUtil::Round( boxFrom[dim] / this->m_Volume->m_Delta[dim] ) );
 	indexTo[dim] = static_cast<int>( MathUtil::Round( boxTo[dim] / this->m_Volume->m_Delta[dim] ) );
 	}
       break;
-    case Self::RELATIVE:
+    case Self::COORDINATES_RELATIVE:
       for ( int dim = 0; dim < 3; ++dim )
 	{
 	indexFrom[dim] = static_cast<int>( MathUtil::Round( boxFrom[dim] * this->m_Volume->Size[dim] / this->m_Volume->m_Delta[dim] ) );
 	indexTo[dim] = static_cast<int>( MathUtil::Round( boxTo[dim] * this->m_Volume->Size[dim] / this->m_Volume->m_Delta[dim] ) );
 	}
       break;
-    case Self::INDEXED:
+    case Self::COORDINATES_INDEXED:
       // nothing to do - already indexed
       for ( int dim = 0; dim < 3; ++dim )
 	{
