@@ -116,7 +116,7 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
 
   UniformVolume* volume = new UniformVolume( dims, size );
   // Nifti is in RAS space.
-  const char* niftiSpace = "RAS";
+  const char *const niftiSpace = "RAS";
   volume->m_MetaInformation[CMTK_META_SPACE] = volume->m_MetaInformation[CMTK_META_SPACE_ORIGINAL] = niftiSpace;
 
   const short qform_code = header.GetField<short>( offsetof(nifti_1_header,qform_code) );
@@ -365,9 +365,9 @@ VolumeFromFile::WriteNifti
   header.cal_min = static_cast<float>( dataMin );
 
 #ifdef _MSC_VER
-  const char* modestr = "w9b";
+  const char *const modestr = "w9b";
 #else
-  const char* modestr = "w9";
+  const char *const modestr = "w9";
 #endif
     
   if ( detachedHeader )

@@ -77,7 +77,7 @@ public:
    * This function is used to determine which orientation to bring an image into so it can be written to a file
    * format with limited orientation support (e.g., Analyze).
    */
-  static const char* GetClosestOrientation( const char* desiredOrientation, const char* availableOrientations[] );
+  static const char* GetClosestOrientation( const char* desiredOrientation, const char *const availableOrientations[] );
 
   /** Return true if the direction corresponding to the 
    * character 'from' is on the same axis as that corresponding

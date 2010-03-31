@@ -110,12 +110,12 @@ AnatomicalOrientation
 
 const char* 
 AnatomicalOrientation
-::GetClosestOrientation( const char* desiredOrientation, const char* availableOrientations[] )
+::GetClosestOrientation( const char* desiredOrientation, const char *const availableOrientations[] )
 {
   const char* result = NULL;
   int minPenalty = 100;
 
-  const char** next = availableOrientations;
+  const char *const *next = availableOrientations;
   while ( *next )
     {
     int penalty = 0;

@@ -118,7 +118,7 @@ QtVtkViewer::Construct( const int nrows, const int ncols )
 
   ButtonLayoutL->insertSpacing( 1, 32 );
 
-  const char* directionTxt[] = { "FH", "HF", "LR", "RL", "AP", "PA" };
+  const char *const directionTxt[] = { "FH", "HF", "LR", "RL", "AP", "PA" };
   for ( unsigned int direction = 0; direction < 6; ++direction ) 
     {
     QPushButton* button = new QPushButton( this );

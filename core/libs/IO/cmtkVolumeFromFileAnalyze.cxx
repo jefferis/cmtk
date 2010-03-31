@@ -54,12 +54,15 @@
 
 #include <cmtkCompressedStream.h>
 
-#define CMTK_LEGACY_ANALYZE_IO "CMTK_LEGACY_ANALYZE_IO" 
-#define IGS_LEGACY_ANALYZE_IO "IGS_LEGACY_ANALYZE_IO" 
-
 namespace
 cmtk
 {
+
+/// Environment variable that turns on legacy Analyze I/O with incorrect anatomical orientations.
+const char* const CMTK_LEGACY_ANALYZE_IO = "CMTK_LEGACY_ANALYZE_IO";
+
+/// Legacy environment variable that turns on legacy Analyze I/O with incorrect anatomical orientations.
+const char* const IGS_LEGACY_ANALYZE_IO = "IGS_LEGACY_ANALYZE_IO";
 
 /** \addtogroup IO */
 //@{
@@ -276,7 +279,7 @@ VolumeFromFile::WriteAnalyzeHdr
     }
   
   // try to write something as close as possible to original orientation
-  const char* supportedOrientations[] = { "LAS", "LSA", "ASL", NULL };
+  const char *const supportedOrientations[] = { "LAS", "LSA", "ASL", NULL };
   const char* writeOrientation = AnatomicalOrientation::GetClosestOrientation( originalOrientation.c_str(), supportedOrientations );
 
   if ( getenv( CMTK_LEGACY_ANALYZE_IO ) || getenv( IGS_LEGACY_ANALYZE_IO ) )
@@ -416,9 +419,9 @@ VolumeFromFile::WriteAnalyzeHdr
       }
     
 #ifdef _MSC_VER
-    const char* modestr = "w9b";
+    const char *const modestr = "w9b";
 #else
-    const char* modestr = "w9";
+    const char *const modestr = "w9";
 #endif
     
     gzFile imgFile = gzopen( strcat( pathImg, ".gz" ), modestr );
@@ -435,9 +438,9 @@ VolumeFromFile::WriteAnalyzeHdr
   else
     {
 #ifdef _MSC_VER
-    const char* modestr = "wb";
+    const char *const modestr = "wb";
 #else
-    const char* modestr = "w";
+    const char *const modestr = "w";
 #endif
 
     FILE *imgFile = fopen( pathImg, modestr );
