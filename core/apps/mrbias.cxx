@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -45,6 +45,10 @@
 #include <vector>
 #include <algorithm>
 
+#ifdef CMTK_USE_SQLITE
+#  include <cmtkImageXformDB.h>
+#endif
+
 bool Verbose = false;
 
 const char* ImportBiasFieldAdd = NULL;
@@ -75,6 +79,10 @@ cmtk::Types::Coordinate StepMax = 1.0;
 cmtk::Types::Coordinate StepMin = 0.1;
 
 bool LogIntensities = false;
+
+#ifdef CMTK_USE_SQLITE
+const char* updateDB = NULL;
+#endif
 
 int
 main( const int argc, const char *argv[] )
@@ -120,6 +128,12 @@ main( const int argc, const char *argv[] )
     cl.AddOption( Key( "write-bias-mul" ), &FNameBiasFieldMul, "File name for output of multiplicative bias field." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.EndGroup();
     
+#ifdef CMTK_USE_SQLITE
+    cl.BeginGroup( "Database", "Image/Transformation Database" );
+    cl.AddOption( Key( "db" ), &updateDB, "Path to image/transformation database that should be updated with the newly created image." );
+    cl.EndGroup();
+#endif
+
     cl.AddParameter( &FNameInputImage, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &FNameOutputImage, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
 
@@ -271,18 +285,42 @@ main( const int argc, const char *argv[] )
       outputImage->SetData( convertedData );
       }
     cmtk::VolumeIO::Write( outputImage, FNameOutputImage, Verbose );
+
+#ifdef CMTK_USE_SQLITE
+    if ( updateDB )
+      {
+      cmtk::ImageXformDB db( updateDB );
+      db.AddImage( FNameOutputImage, FNameInputImage );
+      }
+#endif
     }
 
   if ( FNameBiasFieldAdd && PolynomialDegreeAdd )
     {
     cmtk::UniformVolume::SmartPtr biasField( functional->GetBiasFieldAdd( true /*completeImage*/ ) );
     cmtk::VolumeIO::Write( biasField, FNameBiasFieldAdd, Verbose );
+
+#ifdef CMTK_USE_SQLITE
+    if ( updateDB )
+      {
+      cmtk::ImageXformDB db( updateDB );
+      db.AddImage( FNameBiasFieldAdd, FNameInputImage );
+      }
+#endif
     }
 
   if ( FNameBiasFieldMul && PolynomialDegreeMul )
     {
     cmtk::UniformVolume::SmartPtr biasField( functional->GetBiasFieldMul( true /*completeImage*/ ) );
     cmtk::VolumeIO::Write( biasField, FNameBiasFieldMul, Verbose );
+
+#ifdef CMTK_USE_SQLITE
+    if ( updateDB )
+      {
+      cmtk::ImageXformDB db( updateDB );
+      db.AddImage( FNameBiasFieldMul, FNameInputImage );
+      }
+#endif
     }
 
   return 0;

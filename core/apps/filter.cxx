@@ -41,6 +41,10 @@
 #include <cmtkVolumeIO.h>
 #include <cmtkFilterVolume.h>
 
+#ifdef CMTK_USE_SQLITE
+#  include <cmtkImageXformDB.h>
+#endif
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 namespace cmtk
 {
@@ -74,6 +78,10 @@ const char* SubjectFileName = NULL;
 const char* MaskFileName = NULL;
 std::list<const char*> ImageNameList;
 
+#ifdef CMTK_USE_SQLITE
+const char* updateDB = NULL;
+#endif
+
 int main( int argc, char* argv[] )
 {
   cmtk::ProgressConsole progressIndicator( "Image Filtering" );
@@ -99,6 +107,12 @@ int main( int argc, char* argv[] )
     cl.AddSwitch( Key( 'C', "coupe" ), &Coupe, true, "Use Coupe's blockwise nonlocal means denoising filter" );
     cl.AddSwitch( Key( 'R', "rohlfing" ), &Rohlfing, true, "Use Rohlfing's single-image consistent filtering" );
     cl.AddOption( Key( 'G', "intensity-gaussian" ), &IntensityGaussianSigma, "Intensity gaussian sigma for consistent filtering" );
+
+#ifdef CMTK_USE_SQLITE
+    cl.BeginGroup( "Database", "Image/Transformation Database" );
+    cl.AddOption( Key( "db" ), &updateDB, "Path to image/transformation database that should be updated with the newly created image." );
+    cl.EndGroup();
+#endif
 
     cl.Parse();
 
@@ -217,6 +231,15 @@ int main( int argc, char* argv[] )
     }
   
   cmtk::VolumeIO::Write( volume, OutputFileName, Verbose );
+
+#ifdef CMTK_USE_SQLITE
+  if ( updateDB )
+    {
+    cmtk::ImageXformDB db( updateDB );
+    db.AddImage( OutputFileName, InputFileName  );
+    }
+#endif
+
 }
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace filter

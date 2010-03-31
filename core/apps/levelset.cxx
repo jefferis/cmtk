@@ -42,6 +42,10 @@
 
 #include <algorithm>
 
+#ifdef CMTK_USE_SQLITE
+#  include <cmtkImageXformDB.h>
+#endif
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 namespace cmtk
 {
@@ -63,6 +67,10 @@ cmtk::Types::Coordinate levelsetThreshold = 1.0;
 
 const char* inFile = NULL;
 const char* outFile = NULL;
+
+#ifdef CMTK_USE_SQLITE
+const char* updateDB = NULL;
+#endif
 
 int
 main( int argc, char* argv[] )
@@ -87,6 +95,12 @@ main( int argc, char* argv[] )
     cl.AddOption( Key( 'd', "delta" ), &delta, "Time constant for levelset evolution; must be > 0; larger is faster" );
     cl.AddOption( Key( 't', "levelset-threshold" ), &levelsetThreshold, "Levelset threshold: levelset function is truncated at +/- this value" );
     cl.EndGroup();
+
+#ifdef CMTK_USE_SQLITE
+    cl.BeginGroup( "Database", "Image/Transformation Database" );
+    cl.AddOption( Key( "db" ), &updateDB, "Path to image/transformation database that should be updated with the newly created image." );
+    cl.EndGroup();
+#endif
 
     cl.AddParameter( &inFile, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &outFile, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_LABELS | cmtk::CommandLine::PROPS_OUTPUT );
@@ -174,6 +188,14 @@ main( int argc, char* argv[] )
     }
   
   cmtk::VolumeIO::Write( levelset, outFile, verbose );
+
+#ifdef CMTK_USE_SQLITE
+  if ( updateDB )
+    {
+    cmtk::ImageXformDB db( updateDB );
+    db.AddImage( outFile, inFile );
+    }
+#endif
 
   return 0;
 }

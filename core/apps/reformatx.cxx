@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -53,6 +53,10 @@
 #include <cmtkReformatVolumePlain.cxx>
 #include <cmtkAnatomicalOrientation.h>
 
+#ifdef CMTK_USE_SQLITE
+#  include <cmtkImageXformDB.h>
+#endif
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 namespace cmtk
 {
@@ -73,6 +77,10 @@ const char* ReferenceVolumeName = NULL;
 const char* FloatingVolumeName = NULL;
 
 cmtk::UniformVolume::SmartPtr UserDefinedTargetVolume;
+
+#ifdef CMTK_USE_SQLITE
+const char* updateDB = NULL;
+#endif
 
 void
 CallbackTargetVolume( const char* arg )
@@ -409,6 +417,17 @@ ReformatPullback()
     {
     targetVolume->SetData( reformatData );
     cmtk::VolumeIO::Write( targetVolume, OutputImageName, Verbose );
+
+#ifdef CMTK_USE_SQLITE
+    if ( updateDB )
+      {
+      if ( TargetVolumeName )
+	{
+	cmtk::ImageXformDB db( updateDB );
+	db.AddImage( OutputImageName, TargetVolumeName );
+	}
+      }
+#endif
     } 
   else 
     {
@@ -475,6 +494,12 @@ main( const int argc, char* argv[] )
 
     cl.AddOption( Key( 'P', "pad-out" ), &OutPaddingValue, "Padding value for output image", &OutPaddingValueFlag );
     cl.EndGroup();
+
+#ifdef CMTK_USE_SQLITE
+    cl.BeginGroup( "Database", "Image/Transformation Database" );
+    cl.AddOption( Key( "db" ), &updateDB, "Path to image/transformation database that should be updated with the newly created image." );
+    cl.EndGroup();
+#endif
 
     cl.Parse();
 

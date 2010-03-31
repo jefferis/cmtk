@@ -1,5 +1,7 @@
 Release CMTK-1.3.0:
 
+- Added: filter, levelset, make_initial_affine, mrbias, and reformatx tools
+    now support database updating.
 - Added: database backend for storing images and transformations between their
     coordinate spaces.
 - Added: "convertx --binarize-thresh" operation
