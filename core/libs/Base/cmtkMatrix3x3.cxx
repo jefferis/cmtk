@@ -337,7 +337,7 @@ Matrix3x3<T>::operator*=( const T scalar )
 }
 
 template<class T>
-Matrix3x3<T>
+const Matrix3x3<T>
 Matrix3x3<T>::operator*
 ( const Self& other ) const
 {

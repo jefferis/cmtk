@@ -122,7 +122,7 @@ public:
   Self& operator*=( const T scalar );
   
   /// Multiplication operator.
-  Self operator*( const Self& other ) const;
+  const Self operator*( const Self& other ) const;
 
   /// Assignment operator.
   Self& operator=( const Self& other );
