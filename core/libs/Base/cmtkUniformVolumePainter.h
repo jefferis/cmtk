@@ -69,7 +69,7 @@ public:
   
 
   /// Constructor: link to target volume.
-  UniformVolumePainter( UniformVolume::SmartPtr& volume, const CoordinateModeEnum coordinateMode = Self::INDEXED ) : m_Volume( volume ), m_CoordinateMode( coordinateMode ) {}
+  UniformVolumePainter( UniformVolume::SmartPtr& volume, const CoordinateModeEnum coordinateMode = Self::COORDINATES_INDEXED ) : m_Volume( volume ), m_CoordinateMode( coordinateMode ) {}
 
   /// Draw a sphere.
   void DrawSphere( const Vector3D& center, const Types::Coordinate radius, const Types::DataItem value );
