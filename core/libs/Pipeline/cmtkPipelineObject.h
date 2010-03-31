@@ -46,13 +46,6 @@ cmtk
 /** \addtogroup Pipeline */
 //@{
 
-/** Global flag for pipeline debugging.
- * If this flag is set, virtual functions of derived classes will generate
- * debugging output when they are invoked. This flag is only present and
- * effective if the library was compiled with the DEBUG symbol defined.
- */
-static bool PipelineDebugMode = 0;
-
 /** Base class for all reference counted and linked objects.
  */
 class PipelineObject : 
