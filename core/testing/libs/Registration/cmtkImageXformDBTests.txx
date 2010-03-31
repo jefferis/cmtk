@@ -106,6 +106,31 @@ testImageXformDBAddXformSameSpace()
   return 0;
 }
 
+// test: add transformation, then add its refinement.
+int
+testImageXformDBAddXformRefined()
+{
+  cmtk::ImageXformDB db( ":memory:" );
+  db.DebugModeOn();
+  db.AddImage( "image1.nii" );
+  db.AddImage( "image2.nii" );
+  if ( ! db.AddXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) ||
+       ! db.AddXform( "xform12refined", true /*invertible*/, "xform12" ) )
+    {
+    std::cerr << "DB add transformation." << std::cerr;
+    return 1;
+    }
+
+  if ( (db.FindXformLevel( "xform12" ) != 0) ||
+       (db.FindXformLevel( "xform12refined" ) != 1) )
+    {
+    std::cerr << "DB transformation levels are incorrect." << std::cerr;
+    return 1;
+    }
+  
+  return 0;
+}
+
 // test getting simple transformations
 int
 testImageXformDBFindXform()

@@ -52,6 +52,7 @@ const testNameAndFunctionPointer testTable[] =
   { "ImageXformDBAddImageThenXform",  &testImageXformDBAddImageThenXform },
   { "ImageXformDBAddImageWithXform",  &testImageXformDBAddImageWithXform },
   { "ImageXformDBAddXformSameSpace",  &testImageXformDBAddXformSameSpace },
+  { "ImageXformDBAddXformRefined",    &testImageXformDBAddXformRefined },
   { "ImageXformDBFindXform",          &testImageXformDBFindXform },
   { "ImageXformDBFindXformSameSpace", &testImageXformDBFindXformSameSpace },
   { "ImageXformDBFindXformInverse",   &testImageXformDBFindXformInverse },

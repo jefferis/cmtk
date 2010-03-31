@@ -65,6 +65,7 @@ IF(CMTK_BUILD_SQLITE)
     ImageXformDBAddImageThenXform
     ImageXformDBAddImageWithXform
     ImageXformDBAddXformSameSpace
+    ImageXformDBAddXformRefined
     ImageXformDBFindXform
     ImageXformDBFindXformSameSpace
     ImageXformDBFindXformInverse

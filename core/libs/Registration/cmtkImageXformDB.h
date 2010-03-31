@@ -59,12 +59,16 @@ cmtk
  * The "xforms" table stores the file system path and properties for each coordinate
  * transformation:
  * \code
- *   CREATE TABLE xforms(id INTEGER PRIMARY KEY, path TEXT, invertible INTEGER, spacefrom INTEGER, spaceto INTEGER);
+ *   CREATE TABLE xforms(id INTEGER PRIMARY KEY, path TEXT, invertible INTEGER, level INTEGER, spacefrom INTEGER, spaceto INTEGER);
  * \endcode
  * Each transformation is assigned a table-unique ID.
  * The field "invertible" is a flag that is set if the transformation has an explicit
  * inverse (i.e., if it is affine). All transformations can be inverted nuerically, but
  * we usually prefer explicit inverses for speed and accuracy.
+ * The field "level" gives the refinement level of the transformation: a transformation
+ * computed from two images with no initialization has level 0. A transformation computed
+ * with initialization from an existing transformation has a level of that transformation 
+ * plus one.
  */
 class ImageXformDB
 /// Inherit from SQLite wrapper class.
@@ -86,7 +90,7 @@ public:
   void AddImage( const std::string& imagePath /**!< File system path of the new image*/,
 		 const std::string& spacePath = "" /**!< File system path of an existing image that lives in the same space*/ );
   
-  /** Add an image to a coordinate space, each identified by its file system path.
+  /** Add a transformation between two images.
    *\return True if the operation was successful, false otherwise. Failure may be due to source and target image being in the same
    * space to begin with.
    */
@@ -94,6 +98,14 @@ public:
 		 const bool invertible, /**<! Flag: does the transformation have an explicit inverse (i.e., is it affine)? */
 		 const std::string& imagePathSrc, /**!< File system path of the source image */
 		 const std::string& imagePathTrg /**!< File system path of the target image */ );
+
+  /** Add a refined transformation based on an existing transformation.
+   *\return True if the operation was successful, false otherwise. Failure may be due to absence of the specified original
+   *  transformation in the database.
+   */
+  bool AddXform( const std::string& xformPath, /**!< File system path of the new tranformation */
+		 const bool invertible, /**<! Flag: does the transformation have an explicit inverse (i.e., is it affine)? */
+		 const std::string& xformInitPath /** Path of the transformation that was used to initialize the computation of the new transformation. */ );
 
   /// Find space that image lives in and return its key.
   Self::PrimaryKeyType FindImageSpaceID( const std::string& imagePath );
@@ -114,6 +126,13 @@ public:
 		  const std::string& imagePathTrg, /**!< File system path of the target image */
 		  std::string& xformPath, /**!< File system path of the transformation. Only valid if function returns "true." Path can be empty if both images are already in the same space. */
 		  bool& inverse /**!< If this is set, the given transformation needs to be inverted. */);
+
+  /** Get the refinement level of a transformation in the database.
+   *\return The level of the given transformation: 0 for an original transformation,
+   * positive for refined transformation, or -1 is transformation is not in the
+   * database.
+   */
+  int FindXformLevel( const std::string& xformPath ) const;
 };
 
 //@}

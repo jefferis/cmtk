@@ -50,7 +50,7 @@ cmtk::ImageXformDB
   
   if ( ! this->TableExists( "xforms" ) )
     {
-    this->Exec( "CREATE TABLE xforms(id INTEGER PRIMARY KEY, path TEXT, invertible INTEGER, spacefrom INTEGER, spaceto INTEGER)" );
+    this->Exec( "CREATE TABLE xforms(id INTEGER PRIMARY KEY, path TEXT, invertible INTEGER, level INTEGER, spacefrom INTEGER, spaceto INTEGER)" );
     }
 }
 
@@ -107,11 +107,42 @@ cmtk::ImageXformDB
     }
   
   std::ostringstream sql;
-  sql << "INSERT INTO xforms (path,invertible,spacefrom,spaceto) VALUES ( '" << xformPath << "', " << (invertible ? 1 : 0) << ", " << spaceKeySrc << ", " << spaceKeyTrg << ")";
+  sql << "INSERT INTO xforms (path,invertible,level,spacefrom,spaceto) VALUES ( '" << xformPath << "', " << (invertible ? 1 : 0) << ", 0, " << spaceKeySrc << ", " << spaceKeyTrg << ")";
   this->Exec( sql.str() );
 
   return true;
 } 
+
+bool
+cmtk::ImageXformDB
+::AddXform( const std::string& xformPath, const bool invertible, const std::string& xformInitPath )
+{
+  const std::string sql = "SELECT level,spacefrom,spaceto FROM xforms WHERE ( path='" + xformInitPath + "' )";
+
+  SQLite::TableType table;
+  this->Query( sql, table );
+
+  if ( !table.size() || !table[0].size() )
+    {
+    return false;
+    }
+  
+  const int level = 1 + atoi( table[0][0].c_str() );
+  const Self::PrimaryKeyType spacefrom = atoi( table[0][1].c_str() );
+  const Self::PrimaryKeyType spaceto = atoi( table[0][2].c_str() );
+
+  if ( spacefrom == Self::NOTFOUND || spaceto == Self::NOTFOUND )
+    {
+    StdErr << "WARNING - cmtk::ImageXformDB::AddXform - given initializing transformation has invalid space ID(s). Bailing out.\n";
+    return false;
+    }
+  
+  std::ostringstream sqlAdd;
+  sqlAdd << "INSERT INTO xforms (path,invertible,level,spacefrom,spaceto) VALUES ( '" << xformPath << "', " << (invertible ? 1 : 0) << ", " << level << ", " << spacefrom << ", " << spaceto << ")";
+  this->Exec( sqlAdd.str() );
+  
+  return true;
+}
 
 cmtk::ImageXformDB::PrimaryKeyType 
 cmtk::ImageXformDB
@@ -175,4 +206,21 @@ cmtk::ImageXformDB
     }
 
   return false;
+}
+
+int
+cmtk::ImageXformDB
+::FindXformLevel( const std::string& xformPath ) const
+{
+  const std::string sql = "SELECT level FROM xforms WHERE ( path='" + xformPath + "' )";
+
+  SQLite::TableType table;
+  this->Query( sql, table );
+
+  if ( table.size() && table[0].size() )
+    {
+    return atoi( table[0][0].c_str() );
+    }
+
+  return -1;
 }
