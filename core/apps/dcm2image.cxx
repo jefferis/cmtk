@@ -94,7 +94,7 @@ bool SortFilesByName = true;
 bool Verbose = false;
 
 bool WithExtensionsGE = false;
-const char* GERawDataTypeString[4] = { "magn", "phas", "real", "imag" };
+const char *const GERawDataTypeString[4] = { "magn", "phas", "real", "imag" };
 
 bool DisableOrientationCheck = false;
 double Tolerance = 1e-5;

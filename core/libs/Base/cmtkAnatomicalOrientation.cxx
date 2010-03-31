@@ -45,7 +45,7 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-const char* AnatomicalOrientation::ORIENTATION_STANDARD = "RAS";
+const char *const AnatomicalOrientation::ORIENTATION_STANDARD = "RAS";
 
 void
 AnatomicalOrientation

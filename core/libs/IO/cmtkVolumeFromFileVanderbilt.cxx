@@ -81,7 +81,7 @@ VolumeFromFile::ReadVanderbilt( const char *path )
       char axes[3];
       if ( 3 == sscanf( line, "Patient orientation := %c : %c : %c", &axes[0], &axes[1], &axes[2] ) )
 	{
-	const char* translation = "PbcdeSgIijkRmnoAqLstuvwxyz";
+	const char *const translation = "PbcdeSgIijkRmnoAqLstuvwxyz";
 	for ( int i = 0; i < 3; ++i )
 	  {
 	  orientation[i] = translation[axes[i]-'A'];

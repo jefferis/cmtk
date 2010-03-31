@@ -284,7 +284,7 @@ VolumeFromFile::WriteAnalyzeHdr
 
   if ( getenv( CMTK_LEGACY_ANALYZE_IO ) || getenv( IGS_LEGACY_ANALYZE_IO ) )
     {
-    const char* supportedOrientationsLegacy[] = { "RAS", "RIP", "AIR", NULL };
+    const char *const supportedOrientationsLegacy[] = { "RAS", "RIP", "AIR", NULL };
     writeOrientation = AnatomicalOrientation::GetClosestOrientation( originalOrientation.c_str(), supportedOrientationsLegacy );
     }
   

@@ -56,7 +56,7 @@ public:
   typedef AnatomicalOrientation Self;
 
   /// Orientation of STANDARD space (LR/AP/IS).
-  static const char* ORIENTATION_STANDARD;
+  static const char *const ORIENTATION_STANDARD;
 
   /** Get closest anatomical orientation based on space dimensions and image direction vectors.
    *\param orientation The resulting orientation string (three characters plus terminating zero) will
