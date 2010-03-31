@@ -183,7 +183,7 @@ cmtk::ImageXformDB
     }
 
   std::ostringstream sql;
-  sql << "SELECT path FROM xforms WHERE ( spacefrom=" << spaceKeySrc << " AND spaceto=" << spaceKeyTrg << " ) ORDER BY invertible";
+  sql << "SELECT path FROM xforms WHERE ( spacefrom=" << spaceKeySrc << " AND spaceto=" << spaceKeyTrg << " ) ORDER BY level DESC, invertible ASC";
 
   SQLite::TableType table;
   this->Query( sql.str(), table );
@@ -195,7 +195,7 @@ cmtk::ImageXformDB
     }
   
   sql.str( "" );
-  sql << "SELECT path FROM xforms WHERE ( spacefrom=" << spaceKeyTrg << " AND spaceto=" << spaceKeySrc << " ) ORDER BY invertible";
+  sql << "SELECT path FROM xforms WHERE ( spacefrom=" << spaceKeyTrg << " AND spaceto=" << spaceKeySrc << " ) ORDER BY level DESC, invertible ASC";
   
   this->Query( sql.str(), table );
   if ( table.size() && table[0].size() )
