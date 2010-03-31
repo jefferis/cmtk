@@ -68,9 +68,6 @@ public:
   /// Image compression mode.
   igsClassParameter(int,CompressionMode);
 
-  /// Return virtual class name.
-  virtual const char* GetClassName() const { return "Renderer"; }
-
   /// Calls to this function should make derived objects update their display.
   virtual void Render();
 

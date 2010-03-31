@@ -52,9 +52,6 @@ public:
   /// Create new class instance.
   static FusionOverlay* New() { return new FusionOverlay; }
 
-  /// Return virtual class name.
-  virtual const char* GetClassName() const { return "cmtkFusionOverlay"; }
-
   /// Parameter selecting which modality to display on top.
   igsClassParameter(int,TopImageIndex);
 

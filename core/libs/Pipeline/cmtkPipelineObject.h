@@ -67,8 +67,6 @@ protected:
   PipelineObject *Owner;
   
 public:
-  virtual const char *GetClassName() const { return "PipelineObject"; }
-
   //  void SetOwner( PipelineObject *const owner ) { Owner = owner; }
   const PipelineObject* GetOwner() const { return Owner; }
 
@@ -108,12 +106,6 @@ public:
    * respective instance up-to-date.
    */
   virtual void Execute () { this->UpdateExecuteTime(); }
-
-  /// Set global flag for pipeline debugging.
-  static void SetDebugMode( const bool debugMode = true ) 
-  {
-    PipelineDebugMode = debugMode;
-  }
 
 protected:
   /** Default constructor.

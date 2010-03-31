@@ -58,9 +58,6 @@ public:
   /// Create new renderer collection object.
   static RendererCollection *New() { return new RendererCollection; }
 
-  /// Return virtual class name.
-  virtual const char* GetClassName() { return "igsRenderCollection"; }
-
   /** Add a new renderer to the renderer collection.
    * The reference counter of the added renderer object is incremented
    * and the object pointer is added to the end of the renderer list.

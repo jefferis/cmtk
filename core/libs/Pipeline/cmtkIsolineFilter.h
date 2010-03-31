@@ -56,9 +56,6 @@ public:
   /// Create new object.
   static IsolineFilter* New() { return new IsolineFilter; }
 
-  /// Return virtual class name.
-  virtual const char* GetClassName() const { return "IsolineFilter"; }
-
   /// Execute isoline operator.
   virtual void Execute();
   

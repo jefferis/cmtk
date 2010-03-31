@@ -56,9 +56,6 @@ public:
    */
   virtual ~ProtocolCallback ();
 
-  /// Get virtual class name.
-  virtual const char* GetClassName() const { return "ProtocolCallback"; }
-
   /// Execute callback action.
   virtual CallbackResult ExecuteWithData ( const CoordinateVector& v, const double metric );
 

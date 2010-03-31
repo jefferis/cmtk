@@ -72,12 +72,6 @@ public:
   /// SMart pointer.
   typedef SmartPointer<RegistrationCallback> SmartPtr;
 
-  /// Get virtual class name.
-  virtual const char* GetClassName() const 
-  { 
-    return "RegistrationCallback"; 
-  }
-
   /// Interface: Execute callback action
   virtual CallbackResult ExecuteWithData( const CoordinateVector& v, const double metric );
 

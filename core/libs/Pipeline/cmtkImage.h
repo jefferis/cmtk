@@ -59,8 +59,6 @@ public:
   /// Create new object.
   static Image* New() { return new Image; }
 
-  const char *GetClassName() const { return "Image"; }
-
   /// Scalar data type.
   igsClassParameter(ScalarDataType,DataType);
 

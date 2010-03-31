@@ -52,9 +52,6 @@ public:
   /// Create new object.
   static SubtractFilter* New() { return new SubtractFilter; }
 
-  /// Return virtual class name.
-  virtual const char* GetClassName() const { return "SubtractFilter"; }
-
   /// Execute subtraction operator.
   virtual void Execute();
 

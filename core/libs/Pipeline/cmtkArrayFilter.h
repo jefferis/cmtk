@@ -59,9 +59,6 @@ class ArrayFilter :
   public Source<O> 
 {
 public:
-  /// Return virtual class name.
-  virtual const char *GetClassName() const { return "ArrayFilter"; }
-
   /// Replace the current Input object with a new one.
   void SetInput ( const int index, I *const input ) 
   {

@@ -52,10 +52,6 @@ int PipelineObject::Register( PipelineObject *const owner )
   if ( owner ) 
     {
     Owner = owner;
-    if ( PipelineDebugMode ) 
-      {
-      fprintf( stderr, "Registering %s as owner of %s.\n", owner->GetClassName(), this->GetClassName() );
-      }
     }
   this->Object::Reference();
   return this->GetReferenceCount();
@@ -67,20 +63,11 @@ void PipelineObject::Unregister( PipelineObject *const owner )
   // Does the primary owner unregister? Then set primary owner to "none".
   if ( Owner == owner ) Owner = NULL;
 
-  if ( PipelineDebugMode ) 
-    {
-    fprintf( stderr, "Unregistering %s as owner of %s.\n", owner->GetClassName(), this->GetClassName() );
-    }
-  
   this->Delete();
 }
 
 long PipelineObject::Update()
 {
-  if ( PipelineDebugMode ) 
-    {
-    fprintf( stderr, "Entering %s::Update\n", this->GetClassName() );
-    }
   this->CheckInputForUpdate( Owner );
   return this->ExecuteIfNecessary();
 }
@@ -101,16 +88,8 @@ int PipelineObject::CheckInputForUpdate( PipelineObject *const object )
 
 long PipelineObject::ExecuteIfNecessary()
 {
-  if ( PipelineDebugMode ) 
-    {
-    fprintf( stderr, "Entering %s::ExecuteIfNecessary\n", this->GetClassName() );
-    }
   if ( (this->GetModifiedTime() > ExecuteTime) || ExecutePending ) 
     {
-    if ( PipelineDebugMode ) 
-      {
-      fprintf( stderr, "Calling %s::Execute (MTime %ld > ETime %ld, Pending %d)\n", this->GetClassName(), this->GetModifiedTime(), ExecuteTime, ExecutePending );
-      }
     this->Execute();
     this->UpdateExecuteTime();
   } 

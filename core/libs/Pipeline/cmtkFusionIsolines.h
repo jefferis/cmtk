@@ -66,9 +66,6 @@ public:
   /// Create new class instance.
   static FusionIsolines* New() { return new FusionIsolines; }
 
-  /// Return virtual class name.
-  virtual const char* GetClassName() const { return "cmtkFusionIsolines"; }
-
   /// Parameter selecting which modality to display on top.
   int IsolineImageIndex;
 

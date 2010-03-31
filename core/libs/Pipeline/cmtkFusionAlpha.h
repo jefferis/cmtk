@@ -62,9 +62,6 @@ public:
   /// Create new class instance.
   static FusionAlpha* New() { return new FusionAlpha; }
 
-  /// Return virtual class name.
-  virtual const char* GetClassName() const { return "FusionAlpha"; }
-
   /// Parameter selecting which modality to display on top.
   igsClassParameter(int,TopImageIndex);
 

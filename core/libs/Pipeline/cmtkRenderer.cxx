@@ -70,10 +70,6 @@ void
 Renderer::SetInput( ImageRGB *const input )
 {
   ReplaceObject( Input, input );
-#ifdef __IGNORE__
-  fprintf( stderr, "Renderer::SetInput: new input=%p (%s)\n",
-	   Input, Input->GetClassName() );
-#endif
 };
 
 long
@@ -87,9 +83,6 @@ Renderer::Update()
 void 
 Renderer::Render()
 {
-#ifdef __IGNORE__
-  fprintf( stderr, "Renderer::Render() this=%p\n", this );
-#endif
   // Is this renderer being updated already, ie. do we have a recursion here?
   // If no: go through it.
   if ( ! RenderPending ) {
@@ -104,10 +97,8 @@ Renderer::Render()
 }
 
 void 
-Renderer::WritePPM( const char* filename, const int cmtc, 
-		       const char** cmtv )
+Renderer::WritePPM( const char* filename, const int cmtc, const char** cmtv )
 {
-  
   this->Update();
   ImageRGB *capture = this->CaptureDisplay();
   if ( capture == NULL ) return;

@@ -50,9 +50,6 @@ public:
   /// Create new class instance.
   static FusionMix* New() { return new FusionMix; }
 
-  /// Return virtual class name.
-  virtual const char* GetClassName() const { return "cmtkFusionMix"; }
-
   /// Parameter selecting the weighting of both modalities.
   igsClassParameter(double,Weight);
 

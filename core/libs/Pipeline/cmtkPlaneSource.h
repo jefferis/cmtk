@@ -76,9 +76,6 @@ public:
   /// Create new object.
   static PlaneSource* New() { return new PlaneSource; }
 
-  /// Return virtual class name.
-  virtual const char* GetClassName() const { return "PlaneSource"; }
-
   /** Direction of the orthogonal reformatted plane.
    * This flag selects one of the six standard orthogonal slice plane 
    * directions. There are three pairs of directions, where each consists of

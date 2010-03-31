@@ -66,9 +66,6 @@ public:
   /// Construct new class instance.
   static ImageRGB* New();
 
-  /// Return virtual class name.
-  virtual const char *GetClassName() const { return "ImageRGB"; }
-
   /** Get pointer to RGB data.
    * This function checks whether a data array of the appropriate size exists.
    * If not, the old array is freed and a new one with the correct size is

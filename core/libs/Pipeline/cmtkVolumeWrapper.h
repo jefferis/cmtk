@@ -66,9 +66,6 @@ public:
   /// Create new wrapper object.
   static VolumeWrapper* New();
 
-  /// Return virtual class name.
-  virtual const char *GetClassName() const { return "VolumeWrapper"; }
-
   /// Get pointer to the actual current volume.
   UniformVolume::SmartPtr& GetVolume() { return Volume; }
   const UniformVolume* GetVolume() const { return Volume; }

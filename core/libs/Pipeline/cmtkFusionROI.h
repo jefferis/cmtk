@@ -54,9 +54,6 @@ public:
   /// Create new class instance.
   static FusionROI* New() { return new FusionROI; }
 
-  /// Return virtual class name.
-  virtual const char* GetClassName() const { return "FusionROI"; }
-
   /** Parameter selecting which ROI fusion technique to use.
    * Supported values are: 0 - Vertical bars, 1 - Horizontal bars, 2 - Circle,
    * 3 - Checkerboard.

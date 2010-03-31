@@ -63,9 +63,6 @@ public:
   /// Create new Colormap object.
   static Colormap* New() { return new Colormap(); }
 
-  /// Return virtual class name.
-  virtual const char *GetClassName() const { return "Colormap"; }
-
   /// Flag for user-defined colormaps.
   igsClassParameter(bool,HaveUserMap);
 

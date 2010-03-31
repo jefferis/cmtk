@@ -52,12 +52,6 @@ public:
   /// Create new class instance.
   static FusionHV* New() { return new FusionHV; }
 
-  /// Return virtual class name.
-  virtual const char* GetClassName() const 
-  {
-    return "cmtkFusionHV"; 
-  }
-
   /// Parameter selecting the weighting of both modalities.
   igsClassParameter(double,Contrast);
 

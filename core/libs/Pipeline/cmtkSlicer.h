@@ -63,9 +63,6 @@ public:
   /// Create new object.
   static Slicer* New() { return new Slicer; }
 
-  /// Return virtual class name.
-  virtual const char *GetClassName() const { return "Slicer"; }
-
   /// Set slice plane defining geometry of reformatted data.
   void SetPlane( Plane *const plane );
 

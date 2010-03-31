@@ -56,9 +56,6 @@ public:
   /// Create new object.
   static Plane* New() { return new Plane; }
 
-  /// Return virtual class name.
-  const char *GetClassName() const { return "Plane"; }
-
   /// Dimensions array.
   igsClassParameter2Array(unsigned int,Dims);
 

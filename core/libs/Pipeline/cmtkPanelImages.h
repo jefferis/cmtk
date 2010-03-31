@@ -53,9 +53,6 @@ public:
   /// Create new class instance.
   static PanelImages *New() { return new PanelImages; }
 
-  /// Return virtual class name.
-  virtual const char* GetClassName() const { return "PanelImages"; }
-
   /// Perform panel operation.
   virtual void Execute();
 

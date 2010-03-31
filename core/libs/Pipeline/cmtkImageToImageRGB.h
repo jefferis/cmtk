@@ -58,9 +58,6 @@ public:
   /// Create new object.
   static ImageToImageRGB* New() { return new ImageToImageRGB; }
 
-  /// Return virtual class name.
-  virtual const char *GetClassName() const { return "ImageToImageRGB"; }
-
   /// Enumeration of Alpha modes.
   typedef enum {
     /// Do not use alpha channel (generate 3 byte-per-pixel RGB data).

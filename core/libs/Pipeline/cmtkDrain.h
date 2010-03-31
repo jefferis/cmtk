@@ -48,9 +48,6 @@ class Drain :
   public PipelineObject 
 {
 public:
-  /// Return virtual class name.
-  virtual const char* GetClassName() const { return "Drain"; }
-
   /// Set input object.
   void SetInput( I *const input ) 
   {   

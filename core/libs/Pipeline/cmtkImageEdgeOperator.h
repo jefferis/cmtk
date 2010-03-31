@@ -57,9 +57,6 @@ public:
   /// Create new object.
   static ImageEdgeOperator* New() { return new ImageEdgeOperator; }
 
-  /// Return virtual class name.
-  virtual const char* GetClassName() const { return "ImageEdgeOperator"; }
-
   /// Execute edge operator.
   virtual void Execute();
 

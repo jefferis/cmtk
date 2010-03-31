@@ -51,12 +51,6 @@ class FileSystemObject :
   public PipelineObject 
 {
 public:
-  /// Return virtual class name.
-  virtual const char* GetClassName() const
-  { 
-    return "cmtkFileSystemObject"; 
-  }
-
   /** Return saved status of this object.
    */
   int GetIsSaved() const 

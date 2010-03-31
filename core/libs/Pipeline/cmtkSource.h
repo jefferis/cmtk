@@ -64,12 +64,6 @@ protected:
   }
   
 public:
-  /// Get virtual class name.
-  virtual const char *GetClassName() const 
-  { 
-    return "Source"; 
-  }
-
   /** Get output object.
    * If the output object does not yet exist, a new objet is created. The
    * current Source object is then registered as the new output object's

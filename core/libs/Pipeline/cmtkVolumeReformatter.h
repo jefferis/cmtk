@@ -57,9 +57,6 @@ public:
   /// Constructor function.
   static VolumeReformatter* New() { return new VolumeReformatter; }
 
-  /// Return virtual class name.
-  virtual const char* GetClassName() const { return "VolumeReformatter"; }
-
   /// Index of the reference dataset.
   igsClassParameter(int,ReferenceIndex);
 

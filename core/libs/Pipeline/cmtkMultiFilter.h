@@ -60,9 +60,6 @@ class MultiFilter :
     public Source<O> 
 {
 public:
-  /// Return virtual class name.
-  virtual const char *GetClassName() const { return "igsMultiFilter"; }
-
   template<class I> void RegisterInput( I** input ) 
   {
     if ( input ) 

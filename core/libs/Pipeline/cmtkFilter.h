@@ -53,9 +53,6 @@ cmtk
 template<class I, class O> class Filter : public Source<O> 
 {
 public:
-  /// Return virtual class name.
-  virtual const char *GetClassName() const { return "cmtkFilter"; }
-
   /// Replace the current Input object with a new one.
   void SetInput ( I *const input ) 
   {

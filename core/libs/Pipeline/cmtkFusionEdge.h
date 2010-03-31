@@ -66,9 +66,6 @@ public:
   /// Create new class instance.
   static FusionEdge* New() { return new FusionEdge; }
 
-  /// Return virtual class name.
-  virtual const char* GetClassName() const { return "FusionEdge"; }
-
   /// Perform fusion.
   virtual void Execute();
 
