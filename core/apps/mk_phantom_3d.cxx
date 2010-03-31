@@ -67,7 +67,7 @@ bool InputImageGridOnly = false;
 
 const char* OutputFileName = "phantom.hdr";
 
-cmtk::UniformVolumePainter::CoordinateModeEnum CoordinateMode = cmtk::UniformVolumePainter::INDEXED;
+cmtk::UniformVolumePainter::CoordinateModeEnum CoordinateMode = cmtk::UniformVolumePainter::COORDINATES_INDEXED;
 
 int
 main( const int argc, const char* argv[] )
