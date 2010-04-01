@@ -170,12 +170,14 @@ public:
   }
 
   /** Assignment operator.
-   * Implemented using Swap() operator.
+   * This is implemented using Swap() member function.
+   *\warning The "other" parameter HAS TO USE CALL BY VALUE for this function to work,
+   *  because we are not creating an explicit copy of the original object before 
+   *  calling Swap() (see Effective C++, 3rd, Item 11, p.56).
    */
-  const Self& operator= ( const Self& other ) const
+  const Self& operator= ( const Self other ) const
   {
-    const Self temp( other );
-    this->Swap( temp );
+    this->Swap( other );
     return *this;
   }
 
