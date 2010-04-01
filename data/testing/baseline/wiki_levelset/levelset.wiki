@@ -34,4 +34,8 @@ where
 
 ; <tt>--levelset-threshold</tt> <tt><double></tt> / <tt>-t</tt> <tt><double></tt> : Levelset threshold: levelset function is truncated at +/- this value '''[Default value: 1]'''
 
+=== Image/Transformation Database ===
+
+; <tt>--db</tt> <tt><string></tt> : Path to image/transformation database that should be updated with the newly created image. '''[Default value: NONE]'''
+
 

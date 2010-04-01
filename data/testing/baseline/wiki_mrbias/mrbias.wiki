@@ -62,4 +62,8 @@ where
 
 ; <tt>--write-bias-mul</tt> <tt><image-path></tt> : File name for output of multiplicative bias field. '''[Default value: NONE]'''
 
+=== Image/Transformation Database ===
+
+; <tt>--db</tt> <tt><string></tt> : Path to image/transformation database that should be updated with the newly created image. '''[Default value: NONE]'''
+
 
