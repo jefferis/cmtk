@@ -219,11 +219,6 @@ IF(COMPILER_VAR_AUTO_ARRAYSIZE)
   ADD_DEFINITIONS(-DCMTK_VAR_AUTO_ARRAYSIZE)
 ENDIF(COMPILER_VAR_AUTO_ARRAYSIZE)
 
-CHECK_CXX_SOURCE_COMPILES("template<int N> class C { public: static const float nn = 1.0 / N; }; int main() { C<10> c; return C<10>::nn; }; " COMPILER_INCLASS_MEMBER_INITIALIZATION)
-IF(NOT COMPILER_INCLASS_MEMBER_INITIALIZATION)
-  ADD_DEFINITIONS(-DCMTK_NO_INCLASS_MEMBER_INITIALIZATION)
-ENDIF(NOT COMPILER_INCLASS_MEMBER_INITIALIZATION)
-
 #-----------------------------------------------------------------------------
 # Configure Dart testing support.  This should be done before any
 # MESSAGE(FATAL_ERROR ...) commands are invoked.
