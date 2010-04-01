@@ -247,16 +247,6 @@ private:
     Self::SwapPrimitive( Object, other.Object );
   }
   
-  /** Swap two smart pointers.
-   * This function is used for reference-safe assignment (i.e., replacing) of
-   * smart pointer objects.
-   */
-  void Swap( Self& other )
-  {
-    Self::SwapPrimitive( ReferenceCount, other.ReferenceCount );
-    Self::SwapPrimitive( Object, other.Object );
-  }
-  
   /// Helper function that swaps two primitive objects (or pointers).
   template<class TT> static void SwapPrimitive( TT& a, TT& b )
   {
