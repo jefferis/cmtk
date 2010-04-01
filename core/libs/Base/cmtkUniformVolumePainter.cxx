@@ -113,8 +113,8 @@ cmtk::UniformVolumePainter::DrawBox
       // nothing to do - already indexed
       for ( int dim = 0; dim < 3; ++dim )
 	{
-	indexFrom[dim] = boxFrom[dim];
-	indexTo[dim] = boxTo[dim];
+	indexFrom[dim] = static_cast<int>( boxFrom[dim] );
+	indexTo[dim] = static_cast<int>( boxTo[dim] );
 	}
       break;
     }
