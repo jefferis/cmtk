@@ -161,7 +161,7 @@ QtFusionAlpha::slotSwitchStudyTop( const QString& studyName )
 {
   Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.toLatin1() );
 
-  if ( ! study.IsNull() ) 
+  if ( study ) 
     {
     StudyTop = study;
     ColormapTop->SetFromStudy( study );
@@ -183,7 +183,7 @@ QtFusionAlpha::slotSwitchStudyBottom( const QString& studyName )
 {
   Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.toLatin1() );
 
-  if ( ! study.IsNull() ) 
+  if ( study ) 
     {
     StudyBottom = study;
     ColormapBottom->SetFromStudy( study );
@@ -197,7 +197,7 @@ QtFusionAlpha::slotSwitchStudyAlpha( const QString& studyName )
 {
   Study::SmartPtr study = FusionApp->m_StudyList->FindStudyName( studyName.toLatin1() );
 
-  if ( ! study.IsNull() ) 
+  if ( study ) 
     {
     StudyAlpha = study;
     ColormapAlpha->SetFromStudy( study );
