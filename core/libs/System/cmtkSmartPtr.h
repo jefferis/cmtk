@@ -186,9 +186,7 @@ public:
    */
   Self& operator= ( Self& other )
   {
-    Self temp( other );
-    this->Swap( temp );
-    return *this;
+    return const_cast<Self&>( static_cast<const Self&>(*this) = other );
   }
 #endif
 #endif
