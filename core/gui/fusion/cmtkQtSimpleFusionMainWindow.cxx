@@ -376,7 +376,7 @@ QtSimpleFusionMainWindow::slotXformMenuCreate()
     {
     Study::SmartPtr targetStudy = FusionApp->m_StudyList->FindStudyName( target.toLatin1() );
     
-    if ( targetStudy.IsNull() ) 
+    if ( !targetStudy ) 
       {
       QMessageBox::warning( NULL, "Internal Error", "Could not find study with selected name.", QMessageBox::Ok );
       return;

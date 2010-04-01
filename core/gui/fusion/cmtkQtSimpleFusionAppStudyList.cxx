@@ -81,7 +81,7 @@ QtSimpleFusionApp::slotAddStudy( Study::SmartPtr& study )
     {
     study->ReadVolume( false /*reread*/, AnatomicalOrientation::ORIENTATION_STANDARD );
     
-    if ( study->GetVolume().IsNull() ) 
+    if ( !study->GetVolume() ) 
       {
       QMessageBox::critical( NULL, "Error", "Cannot read image data for this study.", QMessageBox::Ok, Qt::NoButton, Qt::NoButton );
       return;
