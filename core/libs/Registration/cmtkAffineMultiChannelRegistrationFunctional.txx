@@ -84,7 +84,8 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
     startZ = std::max<int>( startZ, this->m_ReferenceCropFrom[2] );
     endZ = std::min<int>( endZ, this->m_ReferenceCropTo[2] );
 
-    const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+    ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
+    const size_t numberOfThreads = threadPool.GetNumberOfThreads();
     const size_t numberOfTasks = 4 * numberOfThreads - 3;
 
     std::vector<typename Self::EvaluateThreadParameters> threadParams( numberOfTasks );
@@ -95,7 +96,7 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
       threadParams[thread].m_StartZ = startZ;
       threadParams[thread].m_EndZ = endZ;
       }
-    ThreadPool::GlobalThreadPool.Run( Self::EvaluateThreadFunction, threadParams );
+    threadPool.Run( Self::EvaluateThreadFunction, threadParams );
     }
     
   return this->GetMetric( this->m_MetricData );

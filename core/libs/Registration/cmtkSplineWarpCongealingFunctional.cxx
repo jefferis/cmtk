@@ -286,7 +286,7 @@ SplineWarpCongealingFunctional
   double entropy = 0;
   unsigned int count = 0;
   
-  ThreadPool threadPool = ThreadPool::GetGlobalThreadPool();
+  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
   const size_t numberOfThreads = threadPool.GetNumberOfThreads();
   this->m_ThreadHistograms.resize( numberOfThreads );
 
@@ -427,7 +427,7 @@ SplineWarpCongealingFunctional
 ::InterpolateImage
 ( const size_t idx, byte* const destination )
 {
-  ThreadPool threadPool = ThreadPool::GetGlobalThreadPool();
+  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
   const size_t numberOfThreads = threadPool.GetNumberOfThreads();
   std::vector<InterpolateImageThreadParameters> params( numberOfThreads );
 

@@ -32,7 +32,7 @@
 #include <cmtkThreadPool.h>
 
 #include <cmtkThreads.h>
-
+#include <cmtkMutexLock.h>
 #include <cmtkConsole.h>
 
 namespace

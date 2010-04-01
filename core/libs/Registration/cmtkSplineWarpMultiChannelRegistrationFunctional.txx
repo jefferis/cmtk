@@ -51,7 +51,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   : m_AdaptiveFixEntropyThreshold( false ),
     m_AdaptiveFixThreshFactor( 0.5 ), 
     m_JacobianConstraintWeight( 0.0 ),
-    m_NumberOfThreads( ThreadPool::GlobalThreadPool.GetNumberOfThreads() )
+    m_NumberOfThreads( ThreadPool::GetGlobalThreadPool().GetNumberOfThreads() )
 {
 }
 
@@ -63,7 +63,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   : m_AdaptiveFixEntropyThreshold( false ),
     m_AdaptiveFixThreshFactor( 0.5 ),
     m_JacobianConstraintWeight( 0.0 ),
-    m_NumberOfThreads( ThreadPool::GlobalThreadPool.GetNumberOfThreads() )
+    m_NumberOfThreads( ThreadPool::GetGlobalThreadPool().GetNumberOfThreads() )
 {
   this->SetInitialAffineTransformation( affineFunctional.GetTransformation() );
   this->AddReferenceChannels( affineFunctional.m_ReferenceChannels.begin(), affineFunctional.m_ReferenceChannels.end() );
@@ -449,7 +449,8 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 
   this->m_MetricData.Init( this );
 
-  const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
+  const size_t numberOfThreads = threadPool.GetNumberOfThreads();
   const size_t numberOfTasks = 4 * numberOfThreads - 3;
 
   std::vector< ThreadParameters<Self> > threadParams( numberOfTasks );
@@ -457,7 +458,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
     {
     threadParams[taskIdx].thisObject = this;
     }
-  ThreadPool::GlobalThreadPool.Run( EvaluateThreadFunction, threadParams );
+  threadPool.Run( EvaluateThreadFunction, threadParams );
   
   typename Self::ReturnType costFunction = this->GetMetric( this->m_MetricData );
   if ( this->m_JacobianConstraintWeight > 0 )
@@ -509,7 +510,8 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   if ( this->m_UpdateTransformationFixedControlPointsRequired )
     this->UpdateTransformationFixedControlPoints();
 
-  const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
+  const size_t numberOfThreads = threadPool.GetNumberOfThreads();
   const size_t numberOfTasks = 4 * numberOfThreads - 3;  
 
   std::vector< EvaluateGradientThreadParameters > threadParams( numberOfTasks );
@@ -521,7 +523,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
     threadParams[taskIdx].m_Gradient = g.Elements;
     threadParams[taskIdx].m_MetricBaseValue = current;    
     }
-  ThreadPool::GlobalThreadPool.Run( EvaluateWithGradientThreadFunction, threadParams );
+  threadPool.Run( EvaluateWithGradientThreadFunction, threadParams );
 
   return current;
 }
