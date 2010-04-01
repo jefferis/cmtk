@@ -47,7 +47,7 @@ template<class VM>
 void
 cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParameters() 
 {
-  if ( this->m_ConsistencyHistogram.IsNull() ) 
+  if ( !this->m_ConsistencyHistogram ) 
     {
     this->m_ConsistencyHistogram = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
     unsigned int numSamplesX = this->m_Metric->GetNumberOfSamplesX();

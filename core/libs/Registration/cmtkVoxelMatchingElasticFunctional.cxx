@@ -174,7 +174,7 @@ template<class VM, class W>
 void
 VoxelMatchingElasticFunctional_Template<VM,W>::UpdateWarpFixedParameters() 
 {
-  if ( this->ConsistencyHistogram.IsNull() ) 
+  if ( !this->ConsistencyHistogram ) 
     {
     this->ConsistencyHistogram = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
     unsigned int numSamplesX = this->Metric->DataX.NumberOfSamples;

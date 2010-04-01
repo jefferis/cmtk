@@ -111,7 +111,7 @@ VolumeIO::Read( const char* path, const bool verbose )
     volume->m_MetaInformation[CMTK_META_FILEFORMAT_ORIGINAL] = FileFormat::Describe( formatID );
     // for float and double data, automatically recognize Inf as Null Data.
     TypedArray::SmartPtr dataArray = volume->GetData();
-    if ( !dataArray.IsNull() ) 
+    if ( dataArray ) 
       {
       if ( dataArray->GetType() == TYPE_FLOAT )
 	dataArray->SetPaddingPtr( &CMTK_FLOAT_INF );

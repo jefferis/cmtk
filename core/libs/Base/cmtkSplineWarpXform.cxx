@@ -145,7 +145,7 @@ SplineWarpXform::SplineWarpXform
   NumberOfControlPoints = this->m_Dims[0] * this->m_Dims[1] * this->m_Dims[2];
   this->m_NumberOfParameters = 3 * NumberOfControlPoints;
 
-  if ( parameters.IsNull() )
+  if ( !parameters )
     this->m_ParameterVector = CoordinateVector::SmartPtr( new CoordinateVector( this->m_NumberOfParameters ) );
   else
     this->m_ParameterVector = parameters;
@@ -153,7 +153,7 @@ SplineWarpXform::SplineWarpXform
 
   this->Update( false /* exactDelta */ );
 
-  if ( parameters.IsNull() )
+  if ( !parameters )
     this->InitControlPoints( this->m_InitialAffineXform );
 }
 

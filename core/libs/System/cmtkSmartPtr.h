@@ -150,9 +150,6 @@ public:
   /// Implicit conversion to constant pointer.
   operator const T*() const { return Object; }
   
-  /// Explicit conversion to bool (validity).
-  bool IsNull() const { return Object == NULL; }
-  
   /// Explicit conversion to non-constant pointer.
   T* GetPtr() { return Object; }
 

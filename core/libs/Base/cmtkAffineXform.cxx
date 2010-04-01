@@ -453,15 +453,10 @@ AffineXform::RotateWXYZ
 AffineXform::SmartPtr
 AffineXform::GetInverse() const
 {
-  if ( InverseXform.IsNull() ) 
+  if ( !InverseXform ) 
     {
     InverseXform = AffineXform::SmartPtr( this->MakeInverse() );
-    // BEWARE!
-    // The next actually creates a circular reference, so neither this object 
-    // nor its inverse will ever be freed. For the moment, however, this is the
-    // only safe way of handling this symmetric situation.
-    //    InverseXform->InverseXform = this;
-  } 
+    } 
   else 
     {
     this->UpdateInverse();

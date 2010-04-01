@@ -245,12 +245,10 @@ protected:
 public:
   /// Constructor.
   VoxelMatchingAffineFunctional( UniformVolume::SmartPtr refVolume, UniformVolume::SmartPtr modVolume, AffineXform::SmartPtr& affineXform ) 
-    : VoxelMatchingFunctional( refVolume, modVolume ) 
-  {
-    if ( affineXform.IsNull() ) throw Exception();
-    this->m_AffineXform = affineXform;
-  }
-
+    : VoxelMatchingFunctional( refVolume, modVolume ),
+      m_AffineXform( affineXform )    
+  {}
+  
   /// Destructor.
   virtual ~VoxelMatchingAffineFunctional() {}
 

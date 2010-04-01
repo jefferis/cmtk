@@ -165,7 +165,7 @@ StudyList::AddStudy( const char *fileSystemPath )
 void 
 StudyList::AddStudy( Study::SmartPtr& study )
 {
-  if ( study.IsNull() ) return;
+  if ( !study ) return;
 
   const char* newStudyPath = study->GetFileSystemPath();
 
@@ -195,7 +195,7 @@ void
 StudyList::AddXform
 ( Study::SmartPtr& fromStudy, Study::SmartPtr& toStudy, AffineXform::SmartPtr& affineXform, WarpXform::SmartPtr& warpXform )
 {
-  if ( fromStudy.IsNull() || toStudy.IsNull() ) return;
+  if ( !fromStudy || !toStudy ) return;
 
   if ( affineXform ) 
     {

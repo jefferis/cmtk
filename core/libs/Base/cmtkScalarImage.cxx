@@ -679,7 +679,7 @@ ScalarImage::GetSobelFiltered( const bool horizontal, const bool absolute )
 TypedArray*
 ScalarImage::GetLaplace2DFiltered() const
 {
-  if ( this->m_PixelData.IsNull() ) return NULL;
+  if ( !this->m_PixelData ) return NULL;
 
   TypedArray *result = this->m_PixelData->NewTemplateArray( this->m_PixelData->GetDataSize() );
   
