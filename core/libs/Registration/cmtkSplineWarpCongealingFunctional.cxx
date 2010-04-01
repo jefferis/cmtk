@@ -285,8 +285,9 @@ SplineWarpCongealingFunctional
 
   double entropy = 0;
   unsigned int count = 0;
-
-  const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  
+  ThreadPool threadPool = ThreadPool::GetGlobalThreadPool();
+  const size_t numberOfThreads = threadPool.GetNumberOfThreads();
   this->m_ThreadHistograms.resize( numberOfThreads );
 
   std::vector< EvaluateThreadParameters> params( numberOfThreads );
@@ -294,7 +295,7 @@ SplineWarpCongealingFunctional
     {
     params[taskIdx].thisObject = this;
     }
-  ThreadPool::GlobalThreadPool.Run( EvaluateThread, params );
+  threadPool.Run( EvaluateThread, params );
   
   // gather partial entropies from threads
   for ( size_t taskIdx = 0; taskIdx < numberOfThreads; ++taskIdx )
@@ -426,7 +427,8 @@ SplineWarpCongealingFunctional
 ::InterpolateImage
 ( const size_t idx, byte* const destination )
 {
-  const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  ThreadPool threadPool = ThreadPool::GetGlobalThreadPool();
+  const size_t numberOfThreads = threadPool.GetNumberOfThreads();
   std::vector<InterpolateImageThreadParameters> params( numberOfThreads );
 
   for ( size_t thread = 0; thread < numberOfThreads; ++thread )
@@ -436,7 +438,7 @@ SplineWarpCongealingFunctional
     params[thread].m_Destination = destination;    
     }
   
-  ThreadPool::GlobalThreadPool.Run( InterpolateImageThread, params );
+  threadPool.Run( InterpolateImageThread, params );
 }
 
 void

@@ -72,7 +72,8 @@ typename GroupwiseRegistrationRMIFunctional<TXform>::ReturnType
 GroupwiseRegistrationRMIFunctional<TXform>
 ::Evaluate()
 {
-  const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
+  const size_t numberOfThreads = threadPool.GetNumberOfThreads();
   const size_t numberOfTasks = 4 * numberOfThreads - 3;
   const size_t numberOfImages = this->m_ImageVector.size();
 
@@ -95,9 +96,9 @@ GroupwiseRegistrationRMIFunctional<TXform>
     }
   
   if ( this->m_ProbabilisticSamples.size() )
-    ThreadPool::GlobalThreadPool.Run( EvaluateProbabilisticThread, params );
+    threadPool.Run( EvaluateProbabilisticThread, params );
   else
-    ThreadPool::GlobalThreadPool.Run( EvaluateThread, params );
+    threadPool.Run( EvaluateThread, params );
   
 #ifdef CMTK_BUILD_MPI
   SumsAndProductsVectorType tmpVector( this->m_SumOfProductsMatrix.size() );

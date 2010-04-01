@@ -84,7 +84,8 @@ public:
   ParallelElasticFunctional ( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating ) :
     VoxelMatchingElasticFunctional_Template<VM,W>( reference, floating )
   {
-    this->m_NumberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+    ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
+    this->m_NumberOfThreads = threadPool.GetNumberOfThreads();
     this->m_NumberOfTasks = 4 * this->m_NumberOfThreads - 3;
     
     ThreadWarp = Memory::AllocateArray<typename W::SmartPtr>( this->m_NumberOfThreads );
@@ -231,7 +232,8 @@ public:
       InfoTaskGradient[taskIdx].Parameters = &v;
       }
 
-    ThreadPool::GlobalThreadPool.Run( EvaluateGradientThread, InfoTaskGradient );
+    ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
+    threadPool.Run( EvaluateGradientThread, InfoTaskGradient );
     
     return current;
   }
@@ -260,7 +262,7 @@ public:
       this->TaskMetric[taskIdx]->Reset();
       }
     
-    ThreadPool::GlobalThreadPool.Run( EvaluateCompleteThread, this->InfoTaskComplete );
+    ThreadPool::GetGlobalThreadPool().Run( EvaluateCompleteThread, this->InfoTaskComplete );
     
     for ( size_t taskIdx = 0; taskIdx < this->m_NumberOfThreads; ++taskIdx ) 
       {

@@ -204,11 +204,12 @@ private:
   void EndThreads();
 
 public:
-  /** Global thread pool.
+  /** Get reference to global thread pool.
    * This is shared by all functions in the process and allows re-use of the same "physical" threads 
-   * for all types of computations.
+   * for all types of computations. The thread pool itself is a local static instance within this
+   * function, thus making sure it is initialized properly (see Effective C++, 3rd, Item 4).
    */
-  static Self GlobalThreadPool;
+  static Self& GetGlobalThreadPool();
 };
 
 } // namespace cmtk

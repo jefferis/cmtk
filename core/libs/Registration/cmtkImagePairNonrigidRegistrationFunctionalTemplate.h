@@ -146,7 +146,7 @@ public:
       this->m_TaskMetric[taskIdx]->Reset();
       }
     
-    ThreadPool::GlobalThreadPool.Run( EvaluateCompleteThread, this->m_InfoTaskComplete );
+    ThreadPool::GetGlobalThreadPool().Run( EvaluateCompleteThread, this->m_InfoTaskComplete );
     
     for ( size_t taskIdx = 0; taskIdx < this->m_NumberOfThreads; ++taskIdx ) 
       {
@@ -236,7 +236,7 @@ public:
       this->m_InfoTaskGradient[taskIdx].Parameters = &v;
       }
 
-    ThreadPool::GlobalThreadPool.Run( EvaluateGradientThread, this->m_InfoTaskGradient );
+    ThreadPool::GetGlobalThreadPool().Run( EvaluateGradientThread, this->m_InfoTaskGradient );
     
     return current;
   }

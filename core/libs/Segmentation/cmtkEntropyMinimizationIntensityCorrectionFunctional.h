@@ -78,7 +78,8 @@ public:
     this->m_ParameterVector.SetDim( this->ParamVectorDim() );
     this->m_ParameterVector.SetAll( 0.0 );
 
-    this->m_NumberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+    ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
+    this->m_NumberOfThreads = threadPool.GetNumberOfThreads();
     this->m_MonomialsPerThread = std::max( (int)PolynomialTypeAdd::NumberOfMonomials, (int)PolynomialTypeMul::NumberOfMonomials );
     this->m_MonomialsVec = Memory::AllocateArray<Types::Coordinate>( this->m_NumberOfThreads * this->m_MonomialsPerThread  );
   }

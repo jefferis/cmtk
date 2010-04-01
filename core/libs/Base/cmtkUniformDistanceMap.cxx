@@ -152,7 +152,8 @@ void
 UniformDistanceMap<TDistanceDataType>
 ::ComputeEDT( DistanceDataType *const distance )
 {
-  const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
+  const size_t numberOfThreads = threadPool.GetNumberOfThreads();
   const size_t numberOfTasks = 4 * numberOfThreads - 3;
   
   this->m_G.resize( numberOfThreads );
@@ -165,8 +166,8 @@ UniformDistanceMap<TDistanceDataType>
     params[idx].m_Distance = distance;
     }
 
-  ThreadPool::GlobalThreadPool.Run( ComputeEDTThreadPhase1, params );
-  ThreadPool::GlobalThreadPool.Run( ComputeEDTThreadPhase2, params );
+  threadPool.Run( ComputeEDTThreadPhase1, params );
+  threadPool.Run( ComputeEDTThreadPhase2, params );
 }
 
 template<class TDistanceDataType>

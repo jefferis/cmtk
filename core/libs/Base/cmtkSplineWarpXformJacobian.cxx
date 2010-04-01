@@ -607,7 +607,8 @@ SplineWarpXform
 Types::Coordinate
 SplineWarpXform::GetJacobianConstraint () const
 {
-  const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
+  const size_t numberOfThreads = threadPool.GetNumberOfThreads();
   const size_t numberOfTasks = std::min<size_t>( 4 * numberOfThreads - 3, this->m_Dims[2] );
   
   // Info blocks for parallel tasks that evaulate the constraint.
@@ -617,7 +618,7 @@ SplineWarpXform::GetJacobianConstraint () const
     constraintTaskInfo[taskIdx].thisObject = this;
     }
   
-  ThreadPool::GlobalThreadPool.Run( Self::GetJacobianConstraintThread, constraintTaskInfo );
+  threadPool.Run( Self::GetJacobianConstraintThread, constraintTaskInfo );
   
   double constraint = 0;
   for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
@@ -633,7 +634,8 @@ SplineWarpXform::GetJacobianConstraint () const
 Types::Coordinate
 SplineWarpXform::GetJacobianFoldingConstraint () const
 {
-  const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
+  const size_t numberOfThreads = threadPool.GetNumberOfThreads();
   const size_t numberOfTasks = std::min<size_t>( 4 * numberOfThreads - 3, this->m_Dims[2] );
 
   // Info blocks for parallel threads that evaulate the constraint.
@@ -643,7 +645,7 @@ SplineWarpXform::GetJacobianFoldingConstraint () const
     constraintTaskInfo[taskIdx].thisObject = this;
     }
   
-  ThreadPool::GlobalThreadPool.Run( Self::GetJacobianFoldingConstraintThread, constraintTaskInfo );
+  threadPool.Run( Self::GetJacobianFoldingConstraintThread, constraintTaskInfo );
   
   double constraint = 0;
   for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 

@@ -114,7 +114,8 @@ AffineGroupwiseRegistrationRMIFunctional::InterpolateImage
 {
   const VolumeAxesHash gridHash( *this->m_TemplateGrid, this->GetXformByIndex(idx)->GetInverse() );
 
-  const size_t numberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
+  const size_t numberOfThreads = threadPool.GetNumberOfThreads();
   const size_t numberOfTasks = 4 * numberOfThreads - 3;
 
   std::vector<InterpolateImageThreadParameters> params( numberOfTasks );
@@ -130,9 +131,9 @@ AffineGroupwiseRegistrationRMIFunctional::InterpolateImage
     }
   
   if ( (this->m_ProbabilisticSampleDensity > 0) && (this->m_ProbabilisticSampleDensity < 1) )
-    ThreadPool::GlobalThreadPool.Run( InterpolateImageProbabilisticThread, params );
+    threadPool.Run( InterpolateImageProbabilisticThread, params );
   else
-    ThreadPool::GlobalThreadPool.Run( InterpolateImageThread, params );
+    threadPool.Run( InterpolateImageThread, params );
 }
 
 void

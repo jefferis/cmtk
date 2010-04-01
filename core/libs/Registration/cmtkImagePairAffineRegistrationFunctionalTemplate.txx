@@ -68,7 +68,7 @@ ImagePairAffineRegistrationFunctionalTemplate<VM>
       this->m_EvaluateTaskInfo[taskIdx].EndZ = endZ;
       }
     
-    ThreadPool::GlobalThreadPool.Run( EvaluateThread, this->m_EvaluateTaskInfo );
+    ThreadPool::GetGlobalThreadPool().Run( EvaluateThread, this->m_EvaluateTaskInfo );
     }
   return this->m_Metric->Get();
 }

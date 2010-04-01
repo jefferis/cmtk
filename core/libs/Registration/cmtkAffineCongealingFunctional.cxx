@@ -165,10 +165,11 @@ AffineCongealingFunctional::InterpolateImage
     params[thread].m_HashZ = gridHash[2];
     }
   
+  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
   if ( (this->m_ProbabilisticSampleDensity > 0) && (this->m_ProbabilisticSampleDensity < 1) )
-    ThreadPool::GlobalThreadPool.Run( InterpolateImageProbabilisticThread, params );
+    threadPool.Run( InterpolateImageProbabilisticThread, params );
   else
-    ThreadPool::GlobalThreadPool.Run( InterpolateImageThread, params );
+    threadPool.Run( InterpolateImageThread, params );
 }
 
 void

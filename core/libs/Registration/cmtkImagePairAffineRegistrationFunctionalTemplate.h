@@ -86,7 +86,7 @@ public:
 						 AffineXform::SmartPtr& affineXform )
     : ImagePairAffineRegistrationFunctional( reference, floating, affineXform )
   {
-    this->m_NumberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+    this->m_NumberOfThreads = ThreadPool::GetGlobalThreadPool().GetNumberOfThreads();
 
     this->m_Metric = new VM( reference, floating, interpolation );
     this->m_ThreadMetric = Memory::AllocateArray<VM*>( m_NumberOfThreads );

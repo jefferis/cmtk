@@ -190,7 +190,12 @@ ThreadPool::GetMyThreadIndex() const
   return static_cast<size_t>( -1 );
 }
 
-ThreadPool ThreadPool::GlobalThreadPool;
+ThreadPool& 
+ThreadPool::GetGlobalThreadPool()
+{
+  static ThreadPool globalThreadPool;
+  return globalThreadPool;
+}
 
 }
 

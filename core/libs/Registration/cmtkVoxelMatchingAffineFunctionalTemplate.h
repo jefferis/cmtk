@@ -84,7 +84,7 @@ public:
     : VoxelMatchingAffineFunctional( reference, floating, affineXform ),
       VoxelMatchingFunctional_Template<VM>( reference, floating ) 
   {
-    this->m_NumberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+    this->m_NumberOfThreads = ThreadPool::GetGlobalThreadPool().GetNumberOfThreads();
 
     this->m_ThreadMetric = Memory::AllocateArray<VM*>( m_NumberOfThreads );
     for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
@@ -152,7 +152,7 @@ public:
 	this->m_EvaluateTaskInfo[taskIdx].EndZ = endZ;
 	}
 
-      ThreadPool::GlobalThreadPool.Run( EvaluateThread, this->m_EvaluateTaskInfo );
+      ThreadPool::GetGlobalThreadPool().Run( EvaluateThread, this->m_EvaluateTaskInfo );
       }
     return this->Metric->Get();
   }

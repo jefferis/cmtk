@@ -49,7 +49,8 @@ UniformVolume::Resample( const UniformVolume& other ) const
   const VolumeGridToGridLookup gridLookup( other, *this );
 
   // compute number of tasks: we go by image plane and use twice as many tasks as threads, so we hopefully get decent load balancing.
-  const size_t numberOfTasks = std::min<int>( 4 * ThreadPool::GlobalThreadPool.GetNumberOfThreads() - 3, this->m_Dims[2] );
+  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
+  const size_t numberOfTasks = std::min<int>( 4 * threadPool.GetNumberOfThreads() - 3, this->m_Dims[2] );
    
   // Info blocks for parallel tasks that do the resampling.
   std::vector<UniformVolume::ResampleTaskInfo> taskInfoVector( numberOfTasks );
@@ -73,12 +74,12 @@ UniformVolume::Resample( const UniformVolume& other ) const
       case DATACLASS_GREY:
       default:
       {
-      ThreadPool::GlobalThreadPool.Run( UniformVolume::ResampleThreadPoolExecuteGrey, taskInfoVector );
+      threadPool.Run( UniformVolume::ResampleThreadPoolExecuteGrey, taskInfoVector );
       }
       break;
       case DATACLASS_LABEL:
       {
-      ThreadPool::GlobalThreadPool.Run( UniformVolume::ResampleThreadPoolExecuteLabels, taskInfoVector );
+      threadPool.Run( UniformVolume::ResampleThreadPoolExecuteLabels, taskInfoVector );
       break;
       }
       }

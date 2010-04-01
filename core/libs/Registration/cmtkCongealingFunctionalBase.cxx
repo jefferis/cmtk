@@ -54,7 +54,8 @@ CongealingFunctionalBase<TXform,THistogramBinType>::CongealingFunctionalBase() :
   m_HistogramKernelRadiusMax( 0 ),
   m_CropImageHistograms( false )
 {
-  this->m_NumberOfThreads = ThreadPool::GlobalThreadPool.GetNumberOfThreads();
+  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
+  this->m_NumberOfThreads = threadPool.GetNumberOfThreads();
   this->m_NumberOfTasks = 4 * this->m_NumberOfThreads - 3;
   this->m_TaskInfo.resize( this->m_NumberOfTasks );
 }
@@ -84,7 +85,7 @@ void
 CongealingFunctionalBase<TXform,THistogramBinType>
 ::InterpolateImage
 ( const size_t idx, byte* const destination )
-{
+{ 
   for ( size_t task = 0; task < this->m_NumberOfTasks; ++task )
     {
     this->m_TaskInfo[task].thisObject = this;
@@ -92,10 +93,11 @@ CongealingFunctionalBase<TXform,THistogramBinType>
     this->m_TaskInfo[task].m_Destination = destination;    
     }
 
+  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
   if ( m_ProbabilisticSamples.size() )
-    ThreadPool::GlobalThreadPool.Run( InterpolateImageProbabilisticThread, this->m_TaskInfo );
+    threadPool.Run( InterpolateImageProbabilisticThread, this->m_TaskInfo );
   else
-    ThreadPool::GlobalThreadPool.Run( InterpolateImageThread, this->m_TaskInfo );
+    threadPool.Run( InterpolateImageThread, this->m_TaskInfo );
 }
 
 template<class TXform,class THistogramBinType>
