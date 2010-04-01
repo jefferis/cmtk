@@ -626,7 +626,7 @@ SplineWarpXform::GetTransformedGridSequence
   int phiIdx = 0;
   for ( int cell = 0; cell < numberOfCells; ++cell, coeff += nextI ) 
     {
-    gpo = &GridPointOffset[0];
+    gpo = &this->GridPointOffset[0];
     for ( int dim = 0; dim < 3; ++dim, ++phiIdx ) 
       {
       phiComp = coeff[ *gpo ] * sml[0];

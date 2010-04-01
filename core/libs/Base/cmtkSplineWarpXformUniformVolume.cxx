@@ -144,14 +144,11 @@ SplineWarpXformUniformVolume
   Types::Coordinate phiComp;
   std::vector<Types::Coordinate> phiHat( 3*numberOfCells );
 
-  // Relative offsets of all control points in a 4 x 4 x 4 neighborhood.
-  int gridPointOffset[48];
-
   const int *gpo;
   int phiIdx = 0;
   for ( int cell = 0; cell < numberOfCells; ++cell, coeff += this->m_Warp->nextI ) 
     {
-    gpo = &gridPointOffset[0];
+    gpo = &this->m_Warp->GridPointOffset[0];
     for ( int dim = 0; dim < 3; ++dim, ++phiIdx ) 
       {
       phiComp = coeff[ *gpo ] * sml[0];
