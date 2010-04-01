@@ -174,11 +174,8 @@ public:
    */
   const Self& operator= ( const Self& other ) const
   {
-    if ( this != &other )
-      {
-      const Self temp( other );
-      this->Swap( temp );
-      }
+    const Self temp( other );
+    this->Swap( temp );
     return *this;
   }
 
