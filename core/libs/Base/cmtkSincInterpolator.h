@@ -63,20 +63,16 @@ public:
   static Types::Coordinate GetWeight( const int i, const Types::Coordinate x )
   {
     const Types::Coordinate piDiff = M_PI * (x - i);
-#ifdef CMTK_NO_INCLASS_MEMBER_INITIALIZATION
-    const Types::Coordinate result = 0.54 + 0.46 * cos( piDiff / Self::RegionSizeLeftRight ) * sin( piDiff ) / piDiff;
-#else
     const Types::Coordinate result = 0.54 + 0.46 * cos( piDiff * Self::InternalFactor ) * sin( piDiff ) / piDiff;
-#endif
     return finite( result ) ? result : 1;
   }
 
-#ifndef CMTK_NO_INCLASS_MEMBER_INITIALIZATION
 private:
   /// Internal factor.
-  static const Types::Coordinate InternalFactor = 1.0 / Self::RegionSizeLeftRight;
-#endif
+  static const Types::Coordinate InternalFactor;
 };
+
+template<int NRadius> const Types::Coordinate HammingSinc<NRadius>::InternalFactor = 1.0 / HammingSinc<NRadius>::RegionSizeLeftRight;
 
 /// Sinc interpolator with Cosine window.
 template<int NRadius=5>
@@ -93,20 +89,16 @@ public:
   static Types::Coordinate GetWeight( const int i, const Types::Coordinate x )
   {
     const Types::Coordinate piDiff = M_PI * (x - i);
-#ifdef CMTK_NO_INCLASS_MEMBER_INITIALIZATION
-    const Types::Coordinate result = cos( piDiff / (2*Self::RegionSizeLeftRight) ) * sin( piDiff ) / piDiff;
-#else
     const Types::Coordinate result = cos( piDiff * Self::InternalFactor ) * sin( piDiff ) / piDiff;
-#endif
     return finite( result ) ? result : 1;
   }
 
-#ifndef CMTK_NO_INCLASS_MEMBER_INITIALIZATION
 private:
   /// Internal factor.
-  static const Types::Coordinate InternalFactor = 1.0 / (2*Self::RegionSizeLeftRight);
-#endif
+  static const Types::Coordinate InternalFactor;
 };
+
+template<int NRadius> const Types::Coordinate CosineSinc<NRadius>::InternalFactor = 1.0 / (2*CosineSinc<NRadius>::RegionSizeLeftRight);
 
 } // namespace Interpolators
 
