@@ -34,6 +34,8 @@
 
 #include <cmtkconfig.h>
 
+#include <cmtkCannotBeCopied.h>
+
 #include <map>
 #include <list>
 #include <string>
@@ -130,7 +132,9 @@ cmtk
  *  channelGroup->AddSwitch( Key( "late-fse" ), "late", "Late-echo (T2-weighted) fast spin echo channel" );
  * \endcode
  */
-class CommandLine
+class CommandLine :
+  /// Make class uncopyable via inheritance.
+  private CannotBeCopied
 {
 public:
   /// This class.

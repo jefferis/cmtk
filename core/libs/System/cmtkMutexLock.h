@@ -34,6 +34,8 @@
 
 #include <cmtkconfig.h>
 
+#include <cmtkCannotBeCopied.h>
+
 #if defined(CMTK_USE_THREADS)
 #  include <pthread.h>
 #endif
@@ -54,7 +56,9 @@ cmtk
  * This class represents a thread-model independent wrapper for locks on data
  * that requires mutually exclusive access.
  */
-class MutexLock 
+class MutexLock :
+  /// Make class uncopyable via inheritance.
+  private CannotBeCopied
 {
 public:
   /// Constructor: initialize low-level lock.

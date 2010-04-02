@@ -34,6 +34,8 @@
 
 #include <cmtkconfig.h>
 
+#include <cmtkCannotBeCopied.h>
+
 #include <cmtkException.h>
 
 #include <stdio.h>
@@ -54,7 +56,9 @@ cmtk
 //@{
 
 /// Stream with on-the-fly decompression
-class CompressedStream 
+class CompressedStream :
+  /// Make class uncopyable via inheritance.
+  private CannotBeCopied
 {
 public:
   /// This class.

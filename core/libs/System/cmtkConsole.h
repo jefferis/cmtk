@@ -34,6 +34,8 @@
 
 #include <cmtkconfig.h>
 
+#include <cmtkCannotBeCopied.h>
+
 #include <iostream>
 #include <string>
 
@@ -51,7 +53,9 @@ cmtk
 //@{
 
 /// Standard error output console for library.
-class Console
+class Console :
+  /// Make class uncopyable via inheritance.
+  private CannotBeCopied
 {
 public:
   /// Constructor.

@@ -1,5 +1,6 @@
 Release CMTK-1.3.0:
 
+- API: prevent copying of system classes where this would lead to problems.
 - Added: filter, levelset, make_initial_affine, mrbias, and reformatx tools
     now support database updating.
 - Added: database backend for storing images and transformations between their

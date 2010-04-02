@@ -34,6 +34,8 @@
 
 #include <cmtkconfig.h>
 
+#include <cmtkCannotBeCopied.h>
+
 #include <cmtkThreadSystemTypes.h>
 #include <cmtkThreadSemaphore.h>
 #include <cmtkMutexLock.h>
@@ -100,7 +102,9 @@ cmtk
  * };
  *\endcode
  */
-class ThreadPool
+class ThreadPool :
+  /// Make class uncopyable via inheritance.
+  private CannotBeCopied
 {
 public:
   /// This class.

@@ -34,6 +34,8 @@
 
 #include <cmtkconfig.h>
 
+#include <cmtkCannotBeCopied.h>
+
 #if defined(CMTK_USE_THREADS)
 #  ifdef __APPLE__
 #    include <pthread.h>
@@ -56,7 +58,9 @@ cmtk
  * semaphores as provided by <semaphore.h>, we are building the semaphore ourselves on the
  * Mac OS platform using a mutex and a condition variable.
  */
-class ThreadSemaphore
+class ThreadSemaphore :
+  /// Make class uncopyable via inheritance.
+  private CannotBeCopied
 {
 public:
   /// Initialize semaphore.
