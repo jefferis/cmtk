@@ -159,8 +159,9 @@ public:
    */
   const Self& operator= ( const Self other ) const
   {
-    std::swap( this->ReferenceCount, other.ReferenceCount );
-    std::swap( this->Object, other.Object );
+    using std::swap;
+    swap( this->ReferenceCount, other.ReferenceCount );
+    swap( this->Object, other.Object );
 
     return *this;
   }
