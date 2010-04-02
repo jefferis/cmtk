@@ -81,6 +81,7 @@ cmtk::SQLite::Exec( const std::string& sql )
 }
 
 /// Callback for SQLite: add rows to results table.
+extern "C" 
 int
 cmtkSQLiteQueryCallback( void* pTable, int ncols, char** rowdata, char** )
 {
