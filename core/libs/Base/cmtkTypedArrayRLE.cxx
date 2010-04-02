@@ -50,8 +50,7 @@ TemplateArrayRLE<T>::TemplateArrayRLE
   if ( dataArray->GetType() != this->GetType() )
     this->Data = static_cast<T*>( dataArray->ConvertArray( this->GetType() ) );
   else
-    this->Data = // this is okay since we really only use Data for reading.
-      const_cast<T*>( reinterpret_cast<const T*>( dataArray->GetDataPtr() ) );
+    this->Data = const_cast<T*>( static_cast<const T*>( dataArray->GetDataPtr() ) );
   
   // get length of RLE data and create data array
   this->DataSize = dataArray->GetDataSize();

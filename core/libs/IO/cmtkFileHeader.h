@@ -51,7 +51,7 @@ public:
   /// Constructor.
   FileHeader( void *const header, const bool isBigEndian = true ) 
   {
-    Header = reinterpret_cast<char*>( header );
+    Header = static_cast<char*>( header );
     IsBigEndian = isBigEndian;
   }
   

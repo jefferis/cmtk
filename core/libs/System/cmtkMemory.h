@@ -104,10 +104,9 @@ Copy( T* const to, const T* from, const size_t length )
 
 /// Byte-swap arbitrary value.
 template<class T>
-T ByteSwap( const T value ) 
+T ByteSwap( T value ) 
 {
-  T swap = value;
-  char *cptr = reinterpret_cast<char*>( &swap );
+  char *const cptr = reinterpret_cast<char*>( &value );
   unsigned int j = sizeof(T)-1;
   for ( unsigned int i = 0; i < j; ++i, --j ) 
     {
@@ -115,14 +114,14 @@ T ByteSwap( const T value )
     cptr[i] = cptr[j];
     cptr[j] = tmp;
     }
-  return swap;
+  return value;
 }
 
 /// Byte-swap arbitrary value in place.
 template<class T>
 void ByteSwapInPlace( T& value ) 
 {
-  char *cptr = reinterpret_cast<char*>( &value );
+  char *const cptr = reinterpret_cast<char*>( &value );
   unsigned int j = sizeof(T)-1;
   for ( unsigned int i = 0; i < j; ++i, --j ) 
     {

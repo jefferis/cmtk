@@ -82,7 +82,7 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
   hdrStream.Close();
   
   // determine if we need to byte-swap
-  const int dim0 = reinterpret_cast<nifti_1_header*>((void*)buffer)->dim[0];
+  const int dim0 = reinterpret_cast<const nifti_1_header*>(&buffer[0])->dim[0];
   const bool byteSwap = ((dim0>0) && (dim0<8)) ? false : true;
 
 #ifdef WORDS_BIGENDIAN
