@@ -453,7 +453,7 @@ Matrix4x4<T>::operator*=( const Self& other )
 }
 
 template<class T>
-Matrix4x4<T>
+const Matrix4x4<T>
 Matrix4x4<T>::operator*
 ( const Self& other ) const
 {

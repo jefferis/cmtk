@@ -58,7 +58,7 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Null object.
-  static Self IdentityMatrix;
+  static const Self IdentityMatrix;
 
   /** Default constructor: make identity matrix.
    *\note In order to create an uninitialized matrix (for speed), use
@@ -115,7 +115,7 @@ public:
   Self& operator*=( const Self& other );
   
   /// Multiplication operator.
-  Self operator*( const Self& other ) const;
+  const Self operator*( const Self& other ) const;
 
   /// Assignment operator.
   Self& operator=( const Self& other );
@@ -169,7 +169,7 @@ private:
   T Matrix[4][4];
 };
 
-template<typename T> Matrix4x4<T> Matrix4x4<T>::IdentityMatrix;
+template<typename T> const Matrix4x4<T> Matrix4x4<T>::IdentityMatrix;
 
 /// Output object to console.
 template<class T>

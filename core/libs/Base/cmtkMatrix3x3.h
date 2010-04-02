@@ -190,12 +190,6 @@ private:
 /// Define coordinate matrix.
 typedef Matrix3x3<Types::Coordinate> CoordinateMatrix3x3;
 
-/// Define single-precision float matrix.
-typedef Matrix3x3<float> igsFloatMatrix3x3;
-
-/// Define double-precision float matrix.
-typedef Matrix3x3<double> igsDoubleMatrix3x3;
-
 /// Output object to console.
 template<class T>
 inline
