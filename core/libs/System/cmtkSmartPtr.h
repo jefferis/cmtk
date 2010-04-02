@@ -59,23 +59,6 @@ cmtk
 template<class T>
 class SmartPointer
 {
-private:
-  /// Pointer to detached reference counter for this object.
-  mutable SafeCounter* ReferenceCount;
-  
-  /// Pointer for reference-counted object.
-  mutable T* Object;
-  
-  /** Construct from dumb pointer and existing reference counter.
-   * The reference counter is increased in the process.
-   */
-  SmartPointer( T *const object, SafeCounter *const counter ) 
-  {
-    Object = object;
-    ReferenceCount = counter;
-    ReferenceCount->Increment();
-  }
-  
 public:
   /// This class instance.
   typedef SmartPointer<T> Self;
@@ -169,21 +152,22 @@ public:
   }
 
   /** Assignment operator.
-   * This is implemented using Swap() member function.
+   * This is implemented using the std::swap function.
    *\warning The "other" parameter HAS TO USE CALL BY VALUE for this function to work,
    *  because we are not creating an explicit copy of the original object before 
    *  calling Swap() (see Effective C++, 3rd, Item 11, p.56).
    */
   const Self& operator= ( const Self other ) const
   {
-    this->Swap( other );
+    std::swap( this->ReferenceCount, other.ReferenceCount );
+    std::swap( this->Object, other.Object );
+
     return *this;
   }
 
 #ifndef __SUNPRO_CC
 #ifndef _MSC_VER
   /** Assignment operator.
-   * Implemented using Swap() operator.
    */
   Self& operator= ( Self& other )
   {
@@ -236,14 +220,20 @@ public:
   }
 
 private:
-  /** Swap two smart pointers.
-   * This function is used for reference-safe assignment (i.e., replacing) of
-   * smart pointer objects.
+  /// Pointer to detached reference counter for this object.
+  mutable SafeCounter* ReferenceCount;
+  
+  /// Pointer for reference-counted object.
+  mutable T* Object;
+  
+  /** Construct from dumb pointer and existing reference counter.
+   * The reference counter is increased in the process.
    */
-  void Swap( const Self& other ) const
+  SmartPointer( T *const object, SafeCounter *const counter ) 
   {
-    std::swap( ReferenceCount, other.ReferenceCount );
-    std::swap( Object, other.Object );
+    Object = object;
+    ReferenceCount = counter;
+    ReferenceCount->Increment();
   }
   
   /// Make all template instances friends for easy type casting.
