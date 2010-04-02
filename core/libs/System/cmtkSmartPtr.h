@@ -41,6 +41,8 @@
 #ifdef DEBUG
 #  include <cstdio>
 #endif
+
+#include <algorithm>
 #include <cassert>
 
 #include <cmtkSafeCounter.h>
@@ -240,18 +242,10 @@ private:
    */
   void Swap( const Self& other ) const
   {
-    Self::SwapPrimitive( ReferenceCount, other.ReferenceCount );
-    Self::SwapPrimitive( Object, other.Object );
+    std::swap( ReferenceCount, other.ReferenceCount );
+    std::swap( Object, other.Object );
   }
   
-  /// Helper function that swaps two primitive objects (or pointers).
-  template<class TT> static void SwapPrimitive( TT& a, TT& b )
-  {
-    TT temp = a;
-    a = b;
-    b = temp;
-  }
-
   /// Make all template instances friends for easy type casting.
   template<class T2> friend class SmartPointer;
 };
