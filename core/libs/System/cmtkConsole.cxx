@@ -141,9 +141,8 @@ Console::printf( const char* format, ... )
 
   this->Indent();
 
-  this->m_MutexLock.Lock();
-  this->m_Stream << buffer;
-  this->m_MutexLock.Unlock();
+  LockingPtr<std::ostream> pStream( this->m_Stream, this->m_MutexLock );
+  *pStream << buffer;
 #endif
 }
 

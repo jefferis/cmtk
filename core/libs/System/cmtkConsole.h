@@ -44,6 +44,7 @@
 #endif
 
 #include <cmtkMutexLock.h>
+#include <cmtkLockingPtr.h>
 
 namespace
 cmtk
@@ -84,9 +85,8 @@ public:
   /// Flush output stream.
   void flush() 
   { 
-    this->m_MutexLock.Lock();
-    this->m_Stream.flush(); 
-    this->m_MutexLock.Unlock();
+    LockingPtr<std::ostream> pStream( this->m_Stream, this->m_MutexLock );
+    pStream->flush(); 
   }
 
   /// Output stream operator.
@@ -98,9 +98,8 @@ public:
     if ( this->m_RankMPI < 0 ) this->m_RankMPI = MPI::COMM_WORLD.Get_rank();
     if ( this->m_RankMPI ) return *this;
 #endif
-    this->m_MutexLock.Lock();
+    LockingPtr<std::ostream> pStream( this->m_Stream, this->m_MutexLock );
     this->m_Stream << data; 
-    this->m_MutexLock.Unlock();
     return *this; 
   }
 
