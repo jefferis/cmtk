@@ -29,134 +29,123 @@
 //
 */
 
-#include <cmtkDataGrid.h>
+#include <cmtkDataGridMorphologicalOperators.h>
 
 #include <cmtkTemplateArray.h>
+#include <cmtkException.h>
 
 namespace
 cmtk
 {
 
-/** \addtogroup Base */
-//@{
-
-void
-DataGrid::ApplyEliminatePaddingVoting( const int iterations )
+DataGridMorphologicalOperators
+::DataGridMorphologicalOperators( DataGrid::SmartPtr dataGrid ) 
+  : m_DataGrid( dataGrid ) 
 {
-  bool changed = true;
+  if ( !this->m_DataGrid->GetData() )
+    throw Exception( "ERROR: DataGrid object given to DataGridMorphologicalOperators constructor does not have a data array" );
+}
+
+bool
+DataGridMorphologicalOperators::EliminatePaddingVoting( const int iterations )
+{
+  bool changed = false;
   for ( int it = 0; (it < iterations) && changed; ++it )
-    this->SetData( TypedArray::SmartPtr( this->GetDataEliminatePaddingVoting( changed ) ) );
-}
-
-TypedArray*
-DataGrid::GetDataEliminatePaddingVoting() const
-{
-  bool changed;
-  return this->GetDataEliminatePaddingVoting( changed );
-}
-
-TypedArray*
-DataGrid::GetDataEliminatePaddingVoting( bool& changed ) const
-{
-  const TypedArray* data = this->GetData();
-  TypedArray* result = data->Clone();
-
-  if ( !data->GetPaddingFlag() ) return result;
-  const Types::DataItem dataPadding = data->GetPaddingValue();
-
-  short valueMap[256];  
-  changed = false;
-
-  size_t offset = 0;
-  for ( int z = 0; z < this->m_Dims[2]; ++z ) 
     {
-    const int dzFrom = z ? z-1 : z, dzTo = (z<this->m_Dims[2]-1) ? z+1 : z;
-    for ( int y = 0; y < this->m_Dims[1]; ++y ) 
+    const TypedArray* data = this->m_DataGrid->GetData();
+    TypedArray* result = data->Clone();
+    
+    if ( !data->GetPaddingFlag() ) return changed;
+    const Types::DataItem dataPadding = data->GetPaddingValue();
+    
+    short valueMap[256];  
+    size_t offset = 0;
+    for ( int z = 0; z < this->m_DataGrid->m_Dims[2]; ++z ) 
       {
-      const int dyFrom = y ? y-1 : y, dyTo = (y<this->m_Dims[1]-1) ? y+1 : y;
-      for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
+      const int dzFrom = z ? z-1 : z, dzTo = (z<this->m_DataGrid->m_Dims[2]-1) ? z+1 : z;
+      for ( int y = 0; y < this->m_DataGrid->m_Dims[1]; ++y ) 
 	{
-	// is there Padding here?
-	if ( data->PaddingDataAt( offset ) )
+	const int dyFrom = y ? y-1 : y, dyTo = (y<this->m_DataGrid->m_Dims[1]-1) ? y+1 : y;
+	for ( int x = 0; x < this->m_DataGrid->m_Dims[0]; ++x, ++offset ) 
 	  {
-	  // determine frequencies of values among neighbors
-	  memset( valueMap, 0, sizeof( valueMap ) );
-	  const int dxFrom = x ? x-1 : x, dxTo = (x<this->m_Dims[0]-1) ? x+1 : x;
-	  for ( int dz = dzFrom; (dz <= dzTo); ++dz )
-	    for ( int dy = dyFrom; (dy <= dyTo); ++dy )
-	      for ( int dx = dxFrom; (dx <= dxTo); ++dx )
-		{
-		Types::DataItem value;
-		if ( this->GetDataAt( value, dx, dy, dz ) )
+	  // is there Padding here?
+	  if ( data->PaddingDataAt( offset ) )
+	    {
+	    // determine frequencies of values among neighbors
+	    memset( valueMap, 0, sizeof( valueMap ) );
+	    const int dxFrom = x ? x-1 : x, dxTo = (x<this->m_DataGrid->m_Dims[0]-1) ? x+1 : x;
+	    for ( int dz = dzFrom; (dz <= dzTo); ++dz )
+	      for ( int dy = dyFrom; (dy <= dyTo); ++dy )
+		for ( int dx = dxFrom; (dx <= dxTo); ++dx )
 		  {
-		  ++valueMap[static_cast<byte>( value )];
+		  Types::DataItem value;
+		  if ( this->m_DataGrid->GetDataAt( value, dx, dy, dz ) )
+		    {
+		    ++valueMap[static_cast<byte>( value )];
+		    }
 		  }
-		}
-	  
-	  // find most frequent value among neighbors
-	  char maxCount = 0;
-	  Types::DataItem maxValue = 0;
-
-	  for ( int it = 0; it < 256; ++it )
-	    {
-	    if ( valueMap[it] > maxCount )
+	    
+	    // find most frequent value among neighbors
+	    char maxCount = 0;
+	    Types::DataItem maxValue = 0;
+	    
+	    for ( int it = 0; it < 256; ++it )
 	      {
-	      maxCount = valueMap[it];
-	      maxValue = it;
-	      }
-	    else
-	      if ( valueMap[it] == maxCount )
+	      if ( valueMap[it] > maxCount )
 		{
-		maxValue = dataPadding;
+		maxCount = valueMap[it];
+		maxValue = it;
 		}
-	    }
-
-	  if ( maxValue != dataPadding )
-	    {
-	    changed = true;
-	    result->Set( maxValue, offset );
-	    }
-	  } // if PaddingDataAt()
-	} // for x
-      } // for y
-    } // for z
-
-  return result;
+	      else
+		if ( valueMap[it] == maxCount )
+		  {
+		  maxValue = dataPadding;
+		  }
+	      }
+	    
+	    if ( maxValue != dataPadding )
+	      {
+	      changed = true;
+	      result->Set( maxValue, offset );
+	      }
+	    } // if PaddingDataAt()
+	  } // for x
+	} // for y
+      } // for z
+    }
+  
+  return changed;
 }
 
-TypedArray* 
-DataGrid::GetDataErode( const int iterations ) const
+TypedArray::SmartPtr
+DataGridMorphologicalOperators::GetEroded( const int iterations ) const
 {
-  const TypedArray* dataArray = this->GetData();
-  if ( ! dataArray ) return NULL;
-  
+  TypedArray::SmartPtr dataArray = this->m_DataGrid->GetData();
   if ( dataArray->GetType() != TYPE_BYTE ) 
     {
-    StdErr << "ERROR: convert data to byte before calling DataGrid::GetDataErode()\n";
-    return NULL;
+    throw Exception( "ERROR: convert data to byte before calling DataGridMorphologicalOperators::GetDataErode()" );
     }
 
   const byte* data = static_cast<const byte*>( dataArray->GetDataPtr() );
   byte *tmp = Memory::AllocateArray<byte>(  dataArray->GetDataSize()  );
 
-  TypedArray* erodedArray = 
-    TypedArray::Create( TYPE_BYTE, dataArray->GetDataSize() );
-  byte* eroded = static_cast<byte*>( erodedArray->GetDataPtr() );
-
+  ByteArray* erodedArray = ByteArray::Create( dataArray->GetDataSize() );
+  byte* eroded = erodedArray->GetDataPtrConcrete();
+  
   memcpy( eroded, data, erodedArray->GetDataSizeBytes() );
   
   for ( int i = 0; i < iterations; ++i ) 
     {
     size_t offset = 0;
-    for ( int z = 0; z < this->m_Dims[2]; ++z ) 
+    for ( int z = 0; z < this->m_DataGrid->m_Dims[2]; ++z ) 
       {
-      int dzFrom = z ? -1 : 0, dzTo = (z<this->m_Dims[2]-1) ? 1 : 0;
-      for ( int y = 0; y < this->m_Dims[1]; ++y ) 
+      int dzFrom = z ? -1 : 0, dzTo = (z<this->m_DataGrid->m_Dims[2]-1) ? 1 : 0;
+      for ( int y = 0; y < this->m_DataGrid->m_Dims[1]; ++y ) 
 	{
-	int dyFrom = y ? -1 : 0, dyTo = (y<this->m_Dims[1]-1) ? 1 : 0;
-	for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
+	int dyFrom = y ? -1 : 0, dyTo = (y<this->m_DataGrid->m_Dims[1]-1) ? 1 : 0;
+	for ( int x = 0; x < this->m_DataGrid->m_Dims[0]; ++x, ++offset ) 
 	  {
-	  int dxFrom = x ? -1 : 0, dxTo = (x<this->m_Dims[0]-1) ? 1 : 0;
+	  int dxFrom = x ? -1 : 0, dxTo = (x<this->m_DataGrid->m_Dims[0]-1) ? 1 : 0;
 	  if ( eroded[offset] ) 
 	    {
 	    bool erodePixel = false;
@@ -164,7 +153,7 @@ DataGrid::GetDataErode( const int iterations ) const
 	      for ( int dy = dyFrom; (dy <= dyTo) && !erodePixel; ++dy )
 		for ( int dx = dxFrom; (dx <= dxTo) && !erodePixel; ++dx )
 		  if ( dx || dy || dz )
-		    if ( ! eroded[offset+this->GetOffsetFromIndex( dx, dy, dz )] )
+		    if ( ! eroded[offset+this->m_DataGrid->GetOffsetFromIndex( dx, dy, dz )] )
 		      erodePixel = true;
 	    if ( erodePixel )
 	      tmp[offset] = 0;
@@ -184,48 +173,38 @@ DataGrid::GetDataErode( const int iterations ) const
   
   delete[] tmp;
   
-  return erodedArray;
+  return TypedArray::SmartPtr( erodedArray );
 }
 
-void
-DataGrid::ApplyErode( const int iterations )
+TypedArray::SmartPtr
+DataGridMorphologicalOperators::GetDilated( const int iterations ) const
 {
-  this->SetData( TypedArray::SmartPtr( this->GetDataErode( iterations ) ) );
-}
-
-TypedArray* 
-DataGrid::GetDataDilate( const int iterations ) const
-{
-  const TypedArray* dataArray = this->GetData();
-  if ( ! dataArray ) return NULL;
-
+  TypedArray::SmartPtr dataArray = this->m_DataGrid->GetData();
   if ( dataArray->GetType() != TYPE_BYTE ) 
     {
-    StdErr << "ERROR: convert data to byte before calling DataGrid::GetDataDilate()\n";
-    return NULL;
+    throw Exception( "ERROR: convert data to byte before calling DataGridMorphologicalOperators::GetDataDilate()" );
     }
   
   const byte* data = static_cast<const byte*>( dataArray->GetDataPtr() );
   byte *tmp = Memory::AllocateArray<byte>(  dataArray->GetDataSize()  );
   
-  TypedArray* dilatedArray = 
-    TypedArray::Create( TYPE_BYTE, dataArray->GetDataSize() );
-  byte* dilated = static_cast<byte*>( dilatedArray->GetDataPtr() );
+  ByteArray* dilatedArray = ByteArray::Create( dataArray->GetDataSize() );
+  byte* dilated = dilatedArray->GetDataPtrConcrete();
   
   memcpy( dilated, data, dilatedArray->GetDataSizeBytes() );
   
   for ( int i = 0; i < iterations; ++i ) 
     {
     size_t offset = 0;
-    for ( int z = 0; z < this->m_Dims[2]; ++z ) 
+    for ( int z = 0; z < this->m_DataGrid->m_Dims[2]; ++z ) 
       {
-      int dzFrom = z ? -1 : 0, dzTo = (z<this->m_Dims[2]-1) ? 1 : 0;
-      for ( int y = 0; y < this->m_Dims[1]; ++y ) 
+      int dzFrom = z ? -1 : 0, dzTo = (z<this->m_DataGrid->m_Dims[2]-1) ? 1 : 0;
+      for ( int y = 0; y < this->m_DataGrid->m_Dims[1]; ++y ) 
 	{
-	int dyFrom = y ? -1 : 0, dyTo = (y<this->m_Dims[1]-1) ? 1 : 0;
-	for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
+	int dyFrom = y ? -1 : 0, dyTo = (y<this->m_DataGrid->m_Dims[1]-1) ? 1 : 0;
+	for ( int x = 0; x < this->m_DataGrid->m_Dims[0]; ++x, ++offset ) 
 	  {
-	  int dxFrom = x ? -1 : 0, dxTo = (x<this->m_Dims[0]-1) ? 1 : 0;
+	  int dxFrom = x ? -1 : 0, dxTo = (x<this->m_DataGrid->m_Dims[0]-1) ? 1 : 0;
 	  if ( ! dilated[offset] ) 
 	    {
 	    byte dilatePixel = 0;
@@ -233,7 +212,7 @@ DataGrid::GetDataDilate( const int iterations ) const
 	      for ( int dy = dyFrom; (dy <= dyTo) && !dilatePixel; ++dy )
 		for ( int dx = dxFrom; (dx <= dxTo) && !dilatePixel; ++dx )
 		  if ( dx || dy || dz )
-		    dilatePixel = dilated[offset+this->GetOffsetFromIndex(dx,dy,dz)];
+		    dilatePixel = dilated[offset+this->m_DataGrid->GetOffsetFromIndex(dx,dy,dz)];
 	    if ( dilatePixel )
 	      tmp[offset] = dilatePixel;
 	    else
@@ -252,37 +231,29 @@ DataGrid::GetDataDilate( const int iterations ) const
   
   delete[] tmp;
   
-  return dilatedArray;
+  return TypedArray::SmartPtr( dilatedArray );
 }
 
-void
-DataGrid::ApplyDilate( const int iterations )
+TypedArray::SmartPtr 
+DataGridMorphologicalOperators::GetBoundaryMap( const bool multiValued ) const
 {
-  this->SetData( TypedArray::SmartPtr( this->GetDataDilate( iterations ) ) );
-}
-
-TypedArray* 
-DataGrid::GetBoundaryMap( const bool multiValued ) const
-{
-  const TypedArray* dataArray = this->GetData();
-  if ( ! dataArray ) return NULL;
-
+  TypedArray::SmartPtr dataArray = this->m_DataGrid->GetData();
   ShortArray* boundaryArray = ShortArray::Create( dataArray->GetDataSize() );
   short* boundary = boundaryArray->GetDataPtrConcrete();
 
 #pragma omp parallel for
-  for ( int z = 0; z < this->m_Dims[2]; ++z ) 
+  for ( int z = 0; z < this->m_DataGrid->m_Dims[2]; ++z ) 
     {
-    size_t offset = z * this->m_Dims[0] * this->m_Dims[1];
+    size_t offset = z * this->m_DataGrid->m_Dims[0] * this->m_DataGrid->m_Dims[1];
 
     Types::DataItem value, neighbor;
-    const int dzFrom = z ? -1 : 0, dzTo = (z<this->m_Dims[2]-1) ? 1 : 0;
-    for ( int y = 0; y < this->m_Dims[1]; ++y ) 
+    const int dzFrom = z ? -1 : 0, dzTo = (z<this->m_DataGrid->m_Dims[2]-1) ? 1 : 0;
+    for ( int y = 0; y < this->m_DataGrid->m_Dims[1]; ++y ) 
       {
-      const int dyFrom = y ? -1 : 0, dyTo = (y<this->m_Dims[1]-1) ? 1 : 0;
-      for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
+      const int dyFrom = y ? -1 : 0, dyTo = (y<this->m_DataGrid->m_Dims[1]-1) ? 1 : 0;
+      for ( int x = 0; x < this->m_DataGrid->m_Dims[0]; ++x, ++offset ) 
 	{
-	const int dxFrom = x ? -1 : 0, dxTo = (x<this->m_Dims[0]-1) ? 1 : 0;
+	const int dxFrom = x ? -1 : 0, dxTo = (x<this->m_DataGrid->m_Dims[0]-1) ? 1 : 0;
 	bool bp = false;
 	if ( dataArray->Get( value, offset ) ) 
 	  {
@@ -290,7 +261,7 @@ DataGrid::GetBoundaryMap( const bool multiValued ) const
 	    for ( int dy = dyFrom; (dy <= dyTo) && !bp; ++dy )
 	      for ( int dx = dxFrom; (dx <= dxTo) && !bp; ++dx )
 		if ( dx || dy || dz )
-		  if ( dataArray->Get( neighbor, offset+this->GetOffsetFromIndex(dx,dy,dz) ) )
+		  if ( dataArray->Get( neighbor, offset+this->m_DataGrid->GetOffsetFromIndex(dx,dy,dz) ) )
 		    bp = (value != neighbor);
 	  }
 	else
@@ -312,7 +283,7 @@ DataGrid::GetBoundaryMap( const bool multiValued ) const
       } // for y
     } // for z
   
-  return boundaryArray;
+  return TypedArray::SmartPtr( boundaryArray );
 }
 
 } // namespace cmtk

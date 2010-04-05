@@ -34,6 +34,7 @@
 #include <cmtkconfig.h>
 
 #include <cmtkImageOperation.h>
+#include <cmtkDataGridMorphologicalOperators.h>
 
 namespace
 cmtk
@@ -52,10 +53,18 @@ public:
   virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
   {
     if ( this->m_Iterations < 0 )
-      volume->ApplyErode( -this->m_Iterations );
+      {
+      cmtk::DataGridMorphologicalOperators ops( volume );
+      volume->SetData( ops.GetEroded( -this->m_Iterations ) );
+      }
     else
+      {
       if ( this->m_Iterations > 0 )
-	volume->ApplyDilate( this->m_Iterations );
+	{
+	cmtk::DataGridMorphologicalOperators ops( volume );
+	volume->SetData( ops.GetDilated( this->m_Iterations ) );
+	}
+      }
     return volume;
   }
 

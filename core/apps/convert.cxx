@@ -37,7 +37,7 @@
 
 #include <cmtkUniformVolume.h>
 #include <cmtkVolumeIO.h>
-
+#include <cmtkDataGridMorphologicalOperators.h>
 #include <cmtkStudyList.h>
 #include <cmtkClassStreamStudyList.h>
 
@@ -430,7 +430,8 @@ if ( Downsample )
   
   if ( EliminatePaddingVoting )
     {
-    volume->ApplyEliminatePaddingVoting( EliminatePaddingVoting );
+    cmtk::DataGridMorphologicalOperators ops( volume );
+    ops.EliminatePaddingVoting();
     }
   
   if ( HaveThreshold || HaveThresholdMax ) 
@@ -660,7 +661,10 @@ if ( Downsample )
     }
   
   if ( BoundaryMap || BoundaryMapMultiValued )
-    volume->SetData( cmtk::TypedArray::SmartPtr( volume->GetBoundaryMap( BoundaryMapMultiValued ) ) );
+    {
+    cmtk::DataGridMorphologicalOperators ops( volume );
+    volume->SetData( ops.GetBoundaryMap( BoundaryMapMultiValued ) );
+    }
 
   switch ( DataType ) 
     {
@@ -698,7 +702,8 @@ if ( Downsample )
 	{
 	cmtk::StdErr << "Eroding by " << -(*it) << " pixels.\n";
 	}
-      volume->ApplyErode( -(*it) );
+      cmtk::DataGridMorphologicalOperators ops( volume );
+      volume->SetData( ops.GetEroded( -(*it) ) );
       }
     else
       {
@@ -706,7 +711,8 @@ if ( Downsample )
 	{
 	cmtk::StdErr << "Dilating by " << (*it) << " pixels.\n";
 	}
-      volume->ApplyDilate( (*it) );
+      cmtk::DataGridMorphologicalOperators ops( volume );
+      volume->SetData( ops.GetDilated( (*it) ) );
       }
     }
 

@@ -263,42 +263,6 @@ public:
   /// Replace data with Sobel-filtered version.
   void ApplySobelFilter();
 
-  /// Return data after erosion operator.
-  TypedArray* GetDataErode( const int iterations = 1 ) const;
-
-  /// Replace data with eroded data.
-  void ApplyErode( const int iterations = 1 );
-
-  /// Return data after dilation operator.
-  TypedArray* GetDataDilate( const int iterations = 1 ) const;
-
-  /// Replace data with dilated data.
-  void ApplyDilate( const int iterations = 1 );
-
-  /// Return data after eliminating padding data by neighborhood voting.
-  TypedArray* GetDataEliminatePaddingVoting() const;
-
-  /** Return data after eliminating padding data by neighborhood voting.
-   * This function also returns a flag that is set if and only if
-   * a change was made to the data.
-   */
-  TypedArray* GetDataEliminatePaddingVoting( bool& changed ) const;
-
-  /// Eliminate padding data by neighborhood voting.
-  void ApplyEliminatePaddingVoting( const int iterations = 1 );
-
-  /** Return map of region boundaries.
-   * This function returns a byte data array where each pixel is one if it is
-   * a boundary pixel, i.e., if one of its neighbours in this object has a
-   * different value than it has itself. All other pixels are set to zero.
-   *\param multiValue If this is set (default: false), then the resulting
-   *  boundary map is multi valued, i.e., instead of setting boundary pixels
-   *  to "1", they are set to the value present in the image at that location.
-   *\note The boundary contours are at least 2 pixels wide since "boundaryness"
-   * is a symmetric relationship.
-   */
-  TypedArray* GetBoundaryMap( const bool multiValued = false ) const;
-
   /// Get center of mass of pixel data.
   virtual Vector3D GetCenterOfMass() const;
   

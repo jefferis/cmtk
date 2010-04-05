@@ -34,6 +34,7 @@
 #include <cmtkconfig.h>
 
 #include <cmtkImageOperation.h>
+#include <cmtkDataGridMorphologicalOperators.h>
 
 namespace
 cmtk
@@ -51,7 +52,8 @@ public:
   /// Apply this operation to an image in place.
   virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
   {
-    volume->SetData( cmtk::TypedArray::SmartPtr( volume->GetBoundaryMap( this->m_MultiValued ) ) );
+    cmtk::DataGridMorphologicalOperators ops( volume );
+    volume->SetData( ops.GetBoundaryMap( this->m_MultiValued ) );
     return volume;
   }
   
