@@ -65,8 +65,11 @@ class Xform :
   public InformationObject
 {
 public:
-  /// Smart pointer to Xform.
-  typedef SmartPointer<Xform> SmartPtr;
+  /// This class.
+  typedef Xform Self;
+
+  /// Smart pointer to this class.
+  typedef SmartPointer<Self> SmartPtr;
 
   /// Pointer to warp parameter array.
   Types::Coordinate *m_Parameters;
@@ -127,10 +130,10 @@ public:
   }
 
   /// Clone transformation.
-  virtual Xform* Clone () const { return NULL; }
+  virtual Self* Clone () const = 0;
 
   /// Make inverse transformation, or return NULL if this transformation does not support explicit inverses.
-  virtual Xform* MakeInverse () const { return NULL; }
+  virtual Self* MakeInverse () const { return NULL; }
 
   /// Return number of coefficients in parameter vector.
   virtual size_t ParamVectorDim () const 

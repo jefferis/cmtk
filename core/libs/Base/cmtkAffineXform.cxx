@@ -198,7 +198,7 @@ AffineXform::RotateScaleShear
 AffineXform* 
 AffineXform::MakeInverse () const
 {
-  AffineXform* inverseXform = new AffineXform();
+  Self* inverseXform = new AffineXform();
   inverseXform->m_LogScaleFactors = this->m_LogScaleFactors;
   inverseXform->SetNumberDOFs( this->NumberDOFs );
   inverseXform->Matrix = this->Matrix;
@@ -339,10 +339,10 @@ AffineXform::GetParamStep
   return mmStep;
 }
 
-AffineXform*
+AffineXform::SmartPtr
 AffineXform::GetDifference( const AffineXform& other ) const
 {
-  AffineXform *result = dynamic_cast<AffineXform*>( this->MakeInverse() );
+  Self::SmartPtr result( this->MakeInverse() );
   result->Concat( other );
   return result;
 }

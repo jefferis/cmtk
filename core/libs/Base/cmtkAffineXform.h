@@ -204,16 +204,18 @@ public:
   }
   
   /// Clone this object.
-  virtual AffineXform* Clone () const
+  virtual Self* Clone () const
   {
     return new AffineXform( *this );
   }
   
   /// Clone inverse of this transformation.
-  virtual AffineXform* MakeInverse () const;
+  virtual Self* MakeInverse () const;
 
-  /// Compute difference to another affine transformation.
-  virtual AffineXform* GetDifference( const AffineXform& other ) const;
+  /** Compute difference to another affine transformation.
+   *\todo It is probably not a good idea to return a dynamically allocated object here.
+   */
+  virtual Self::SmartPtr GetDifference( const AffineXform& other ) const;
 
   /// Get linked inverse of this transformation.
   SmartPtr GetInverse() const;
