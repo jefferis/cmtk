@@ -41,6 +41,7 @@
 
 #include <cmtkInterpolator.h>
 #include <cmtkTypedArrayFunctionHistogramMatching.h>
+#include <cmtkUniformVolumeFilter.h>
 #include <cmtkReformatVolume.h>
 
 #ifdef CMTK_BUILD_MPI
@@ -240,7 +241,10 @@ GroupwiseRegistrationFunctionalBase
   if ( this->m_GaussianSmoothImagesSigma > 0 )
     {
     const Types::Coordinate gaussianSigma = this->m_GaussianSmoothImagesSigma * this->m_TemplateGrid->GetMinDelta();
-    data = TypedArray::SmartPtr( image->GetDataGaussFiltered( gaussianSigma ) );
+
+    UniformVolumeFilter filter( image );
+    data = filter.GetDataGaussFiltered( gaussianSigma );
+
     if ( this->m_FreeAndRereadImages )
       {
       image->SetData( TypedArray::SmartPtr::Null );

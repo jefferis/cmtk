@@ -38,6 +38,7 @@
 #include <cmtkQtProgress.h>
 
 #include <cmtkTypedArrayFunctionHistogramEqualization.h>
+#include <cmtkDataGridFilter.h>
 
 namespace
 cmtk
@@ -76,7 +77,9 @@ QtImageOperators::slotOperatorMedian()
       // user entered something and pressed OK
       if ( this->ProgressInstance )
 	this->ProgressInstance->SetProgressWidgetMode( QtProgress::PROGRESS_DIALOG );
-      (*(this->CurrentStudy))->GetVolume()->ApplyMedianFilter( radius );
+
+      (*(this->CurrentStudy))->GetVolume()->SetData( DataGridFilter( (*(this->CurrentStudy))->GetVolume() ).GetDataMedianFiltered( radius ) );
+      
       emit dataChanged( *(this->CurrentStudy) );
       } 
     else
@@ -93,7 +96,9 @@ QtImageOperators::slotOperatorSobel()
     {
     if ( this->ProgressInstance )
       this->ProgressInstance->SetProgressWidgetMode( QtProgress::PROGRESS_BAR );
-    (*(this->CurrentStudy))->GetVolume()->ApplySobelFilter();
+
+    (*(this->CurrentStudy))->GetVolume()->SetData( DataGridFilter( (*(this->CurrentStudy))->GetVolume() ).GetDataSobelFiltered() );
+
     emit dataChanged( *(this->CurrentStudy) );
     }
 }

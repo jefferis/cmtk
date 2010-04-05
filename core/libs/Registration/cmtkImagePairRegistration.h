@@ -203,7 +203,7 @@ protected:
       ); 
     
     /// Get pre-processed image from original image.
-    UniformVolume* GetProcessedImage( const UniformVolume* original );
+    UniformVolume::SmartPtr GetProcessedImage( const UniformVolume* original );
     
     /// Write settings of this object to class stream for archiving.
     void WriteSettings( ClassStream& stream ) const;

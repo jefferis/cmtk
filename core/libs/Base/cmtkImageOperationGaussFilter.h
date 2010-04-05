@@ -34,6 +34,7 @@
 #include <cmtkconfig.h>
 
 #include <cmtkImageOperation.h>
+#include <cmtkUniformVolumeFilter.h>
 
 namespace
 cmtk
@@ -51,7 +52,7 @@ public:
   /// Apply this operation to an image in place.
   virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
   {
-    volume->ApplyGaussFilter( this->m_Sigma );
+    volume->SetData( UniformVolumeFilter( volume ).GetDataGaussFiltered( this->m_Sigma ) );
     return volume;
   }
   

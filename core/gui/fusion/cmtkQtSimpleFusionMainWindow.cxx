@@ -60,6 +60,7 @@
 #include <cmtkSegmentationLabelIO.h>
 
 #include <cmtkTypedArrayFunctionHistogramEqualization.h>
+#include <cmtkDataGridFilter.h>
 
 namespace
 cmtk
@@ -271,7 +272,7 @@ QtSimpleFusionMainWindow::slotOperatorsMenu( QAction* action )
 	{
         // user entered something and pressed OK
 	QtProgressInstance->SetProgressWidgetMode( QtProgress::PROGRESS_DIALOG );
-	CurrentStudy->GetVolume()->ApplyMedianFilter( 1 + 2 * size );
+	CurrentStudy->GetVolume()->SetData( DataGridFilter( CurrentStudy->GetVolume() ).GetDataMedianFiltered( 1 + 2 * size ) );
 	CurrentStudy->UpdateFromVolume();
 	FusionApp->slotDataChanged( CurrentStudy );
 	} 
@@ -287,7 +288,7 @@ QtSimpleFusionMainWindow::slotOperatorsMenu( QAction* action )
     if ( CurrentStudy && CurrentStudy->GetVolume() ) 
       {
       QtProgressInstance->SetProgressWidgetMode( QtProgress::PROGRESS_BAR );
-      CurrentStudy->GetVolume()->ApplySobelFilter();
+	CurrentStudy->GetVolume()->SetData( DataGridFilter( CurrentStudy->GetVolume() ).GetDataSobelFiltered() );
       CurrentStudy->UpdateFromVolume();
       }
     break;

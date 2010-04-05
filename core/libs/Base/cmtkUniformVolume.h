@@ -241,15 +241,6 @@ public:
    */
   virtual ScalarImage* GetNearestOrthoSlice( const int axis, const Types::Coordinate location ) const;
 
-  /// Gaussian filter (using faster, separable filtering).
-  TypedArray* GetDataGaussFiltered( const Types::Coordinate stdDev ) const;
-
-  /// Apply Gaussian filter in place.
-  void ApplyGaussFilter( const Types::Coordinate stdDev )
-  {
-    this->SetData( TypedArray::SmartPtr( this->GetDataGaussFiltered( stdDev ) ) );
-  }
-
   /** Get date gradient vector at pixel using central differences.
    * This function cannot be called for pixels on the volume boundaries, i.e.,
    * we require that 0 < i,j,k < [Dims[0]-1,Dims[1]-1,Dims[2]-1].

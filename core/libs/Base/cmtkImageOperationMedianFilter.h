@@ -35,6 +35,8 @@
 
 #include <cmtkImageOperation.h>
 
+#include <cmtkDataGridFilter.h>
+
 namespace
 cmtk
 {
@@ -51,7 +53,7 @@ public:
   /// Apply this operation to an image in place.
   virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
   {
-    volume->ApplyMedianFilter( this->m_RadiusX, this->m_RadiusY, this->m_RadiusZ );
+    volume->SetData( DataGridFilter( volume ).GetDataMedianFiltered( this->m_RadiusX, this->m_RadiusY, this->m_RadiusZ ) );    
     return volume;
   }
   

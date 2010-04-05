@@ -33,6 +33,7 @@
 
 #include <cmtkCommandLine.h>
 #include <cmtkTypedArrayFunctionHistogramEqualization.h>
+#include <cmtkDataGridFilter.h>
 
 namespace
 cmtk
@@ -83,10 +84,10 @@ ImagePairRegistration::ImagePreprocessor::AttachToCommandLine
   cl.EndGroup();
 }
 
-UniformVolume*
+UniformVolume::SmartPtr
 ImagePairRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume* original )
 {
-  UniformVolume* volume = original->Clone();
+  UniformVolume::SmartPtr volume( original->Clone() );
   TypedArray::SmartPtr data = volume->GetData();
 
   if ( this->m_DataClassString )
@@ -117,7 +118,7 @@ ImagePairRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume
 
   if ( this->m_SobelFilter ) 
     {
-    volume->ApplySobelFilter();
+    volume->SetData( DataGridFilter( volume ).GetDataSobelFiltered() );
     }
 
   if ( this->m_CropIndex )

@@ -37,7 +37,11 @@
 
 #include <cmtkUniformVolume.h>
 #include <cmtkVolumeIO.h>
+
 #include <cmtkDataGridMorphologicalOperators.h>
+#include <cmtkDataGridFilter.h>
+#include <cmtkUniformVolumeFilter.h>
+
 #include <cmtkStudyList.h>
 #include <cmtkClassStreamStudyList.h>
 
@@ -517,21 +521,24 @@ if ( Downsample )
     {
     if ( Verbose )
       cmtk::StdErr.printf( "Median filter with radius %d.\n", MedianFilterRadius );
-    volume->ApplyMedianFilter( MedianFilterRadius );
+
+    volume->SetData( cmtk::DataGridFilter( volume ).GetDataMedianFiltered( MedianFilterRadius ) );
     }
   
   if ( ApplyGaussFilter ) 
     {
     if ( Verbose )
       cmtk::StdErr.printf( "Gaussian filter with sigma = %f [mm].\n", GaussFilterSigma );
-    volume->ApplyGaussFilter( GaussFilterSigma );
+
+    volume->SetData( cmtk::UniformVolumeFilter( volume ).GetDataGaussFiltered( GaussFilterSigma ) );
     }
   
   if ( ApplySobelFilter ) 
     {
     if ( Verbose )
       cmtk::StdErr << "Sobel edge detection filter.\n";
-    volume->ApplySobelFilter();
+
+    volume->SetData( cmtk::DataGridFilter( volume ).GetDataSobelFiltered() );
     }
   
   if ( ApplyAbs ) 

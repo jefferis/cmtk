@@ -39,6 +39,7 @@
 #include <cmtkMathUtil.h>
 #include <cmtkUniformVolume.h>
 #include <cmtkUniformVolumePainter.h>
+#include <cmtkUniformVolumeFilter.h>
 
 #include <algorithm>
 
@@ -138,7 +139,7 @@ main( int argc, char* argv[] )
     nInside = 0;
     cmtk::Types::DataItem insideSum = 0, outsideSum = 0;
 
-    levelset->ApplyGaussFilter( filterSigma );
+    levelset->SetData( cmtk::UniformVolumeFilter( levelset ).GetDataGaussFiltered( filterSigma ) );
 #pragma omp parallel for reduction(+:nInside) reduction(+:insideSum) reduction(+:outsideSum)
     for ( size_t n = 0; n < numberOfPixels; ++n )
       {

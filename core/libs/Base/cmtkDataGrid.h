@@ -242,27 +242,6 @@ public:
   int GetNextJK() const { return nextJK; }
   int GetNextIJK() const { return nextIJK; }
   
-  /// Return data after median-filtering.
-  TypedArray* GetDataMedianFiltered( const int radius ) const
-  {
-    return this->GetDataMedianFiltered( radius, radius, radius );
-  }
-
-  /// Return data after median-filtering.
-  TypedArray* GetDataMedianFiltered( const int radiusX, const int radiusY, const int radiusZ ) const;
-
-  /// Replace data with median-filtered version.
-  void ApplyMedianFilter( const int radius );
-
-  /// Replace data with median-filtered version.
-  void ApplyMedianFilter( const int radiusX, const int radiusY, const int radiusZ );
-
-  /// Return data after median-filtering.
-  TypedArray* GetDataSobelFiltered() const;
-
-  /// Replace data with Sobel-filtered version.
-  void ApplySobelFilter();
-
   /// Get center of mass of pixel data.
   virtual Vector3D GetCenterOfMass() const;
   
@@ -286,32 +265,6 @@ public:
 
   /// Print object.
   void Print() const;
-
-  /// Return after filtering with a separable kernel
-  TypedArray* GetFilteredData( const std::vector<Types::DataItem>& filterX, const std::vector<Types::DataItem>& filterY, const std::vector<Types::DataItem>& filterZ ) const;
-
-private:
-  /// Thread parameter for entropy evaluation.
-  class FilterThreadParameters : 
-    /// Inherit from generic thread parameter class.
-    public ThreadParameters<const Self>
-  {
-  public:
-    /// Filter kernel.
-    const std::vector<Types::DataItem>* m_Filter;
-
-    /// Pointer to result pixel data
-    TypedArray* m_Result;
-  };
-  
-  /// Thread function for separable filtering in x-direction.
-  static void GetFilteredDataThreadX( void *args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
-
-  /// Thread function for separable filtering in y-direction.
-  static void GetFilteredDataThreadY( void *args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
-
-  /// Thread function for separable filtering in z-direction.
-  static void GetFilteredDataThreadZ( void *args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
 
 protected:
   /** Utility function for trilinear interpolation.

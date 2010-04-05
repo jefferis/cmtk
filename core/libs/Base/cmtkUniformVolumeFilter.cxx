@@ -29,7 +29,9 @@
 //
 */
 
-#include <cmtkUniformVolume.h>
+#include <cmtkUniformVolumeFilter.h>
+
+#include <cmtkDataGridFilter.h>
 
 #include <vector>
 
@@ -40,20 +42,20 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-TypedArray*
-UniformVolume::GetDataGaussFiltered( const Types::Coordinate stdDev ) const
+TypedArray::SmartPtr
+UniformVolumeFilter::GetDataGaussFiltered( const Types::Coordinate stdDev ) const
 {
-  const Types::Coordinate stdDevPixelX = stdDev / this->m_Delta[0];
-  const Types::Coordinate stdDevPixelY = stdDev / this->m_Delta[1];
-  const Types::Coordinate stdDevPixelZ = stdDev / this->m_Delta[2];
+  const Types::Coordinate stdDevPixelX = stdDev / this->m_UniformVolume->m_Delta[0];
+  const Types::Coordinate stdDevPixelY = stdDev / this->m_UniformVolume->m_Delta[1];
+  const Types::Coordinate stdDevPixelZ = stdDev / this->m_UniformVolume->m_Delta[2];
 
   const unsigned int stdDevDiscreteX = static_cast<unsigned int>( ceil( stdDevPixelX ) );
   const unsigned int stdDevDiscreteY = static_cast<unsigned int>( ceil( stdDevPixelY ) );
   const unsigned int stdDevDiscreteZ = static_cast<unsigned int>( ceil( stdDevPixelZ ) );
 
-  const unsigned int filterLengthX = std::min<unsigned int>( this->m_Dims[0], 3 * stdDevDiscreteX + 1 );
-  const unsigned int filterLengthY = std::min<unsigned int>( this->m_Dims[1], 3 * stdDevDiscreteY + 1 );
-  const unsigned int filterLengthZ = std::min<unsigned int>( this->m_Dims[2], 3 * stdDevDiscreteZ + 1 );
+  const unsigned int filterLengthX = std::min<unsigned int>( this->m_UniformVolume->m_Dims[0], 3 * stdDevDiscreteX + 1 );
+  const unsigned int filterLengthY = std::min<unsigned int>( this->m_UniformVolume->m_Dims[1], 3 * stdDevDiscreteY + 1 );
+  const unsigned int filterLengthZ = std::min<unsigned int>( this->m_UniformVolume->m_Dims[2], 3 * stdDevDiscreteZ + 1 );
 
   std::vector<Types::DataItem> filterX( filterLengthX );
   for ( unsigned int x=0; x < filterLengthX; ++x ) 
@@ -73,9 +75,7 @@ UniformVolume::GetDataGaussFiltered( const Types::Coordinate stdDev ) const
     filterZ[z] = 1.0/(sqrt(2*M_PI) * stdDevPixelZ) * exp( -MathUtil::Square( 1.0 * z / stdDevPixelZ ) / 2);
     }
   
-  TypedArray *result = this->GetFilteredData( filterX, filterY, filterZ );
-  
-  return result;
+  return DataGridFilter::GetDataKernelFiltered( filterX, filterY, filterZ );
 }
 
 } // namespace cmtk

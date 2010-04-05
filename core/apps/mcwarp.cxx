@@ -40,6 +40,8 @@
 #include <cmtkLinearInterpolator.h>
 #include <cmtkCubicInterpolator.h>
 
+#include <cmtkUniformVolumeFilter.h>
+
 #include <cmtkMultiChannelRMIRegistrationFunctional.h>
 #include <cmtkMultiChannelHistogramRegistrationFunctional.h>
 
@@ -121,8 +123,7 @@ MakeDownsampled( const cmtk::UniformVolume::SmartPtr& image, const int downsampl
   if ( (smoothSigmaFactor > 0) && downsample )
     {
     const cmtk::Types::Coordinate sigma = smoothSigmaFactor * downsample * image->GetMinDelta();
-    cmtk::TypedArray::SmartPtr data( image->GetDataGaussFiltered( sigma ) );
-    result->SetData( data );
+    result->SetData( cmtk::UniformVolumeFilter( image ).GetDataGaussFiltered( sigma ) );
     }
   else
     {
