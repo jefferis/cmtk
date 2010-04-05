@@ -134,7 +134,7 @@ public:
 	{
 	if ( thread ) 
 	  {
-	  ThreadWarp[thread] = typename W::SmartPtr( dynamic_cast<W*>( this->Warp->Clone() ) );
+	  ThreadWarp[thread] = typename W::SmartPtr( this->Warp->Clone() );
 	  ThreadWarp[thread]->RegisterVolume( this->ReferenceGrid );
 	  } 
 	else 
