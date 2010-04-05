@@ -139,7 +139,7 @@ public:
 	  } 
 	else 
 	  {
-	  ThreadWarp[thread] = W::SmartPtr::DynamicCastFrom( this->Warp );
+	  ThreadWarp[thread] = this->Warp;
 	  }
 	} 
       else
