@@ -306,8 +306,7 @@ main ( const int argc, const char* argv[] )
     }
 
   size_t reformattedPixelCount = referenceVolume->GetNumberOfPixels();
-  cmtk::SmartPointer<cmtk::FloatArray> averageArray
-    ( dynamic_cast<cmtk::FloatArray*>( cmtk::TypedArray::Create( cmtk::TYPE_FLOAT, reformattedPixelCount ) ) );
+  cmtk::SmartPointer<cmtk::FloatArray> averageArray( cmtk::FloatArray::Create( reformattedPixelCount ) );
   averageArray->ClearArray( 0 );
   float* averageData = averageArray->GetDataPtrTemplate();
   

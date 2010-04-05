@@ -39,7 +39,7 @@
 #include <cmtkUniformVolume.h>
 #include <cmtkUniformDistanceMap.h>
 #include <cmtkTypedArray.h>
-#include <cmtkTypedArrayRLE.h>
+#include <cmtkTemplateArray.h>
 #include <cmtkSplineWarpXform.h>
 
 #include <cmtkFileFormat.h>

@@ -88,7 +88,6 @@ SET(cmtkBase_SRCS
   cmtkTypedArrayFunctionHistogramMatching.cxx
   cmtkTypedArrayFunctionHistogramEqualization.cxx
   cmtkTypedArrayNoiseEstimatorNaiveGaussian.cxx
-  cmtkTypedArrayRLE.cxx
   cmtkTypedArrayStatistics.cxx
   cmtkTypes.cxx
   cmtkUniformDistanceMap.cxx

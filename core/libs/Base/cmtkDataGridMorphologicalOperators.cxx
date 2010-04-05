@@ -31,6 +31,8 @@
 
 #include <cmtkDataGrid.h>
 
+#include <cmtkTemplateArray.h>
+
 namespace
 cmtk
 {
@@ -265,8 +267,8 @@ DataGrid::GetBoundaryMap( const bool multiValued ) const
   const TypedArray* dataArray = this->GetData();
   if ( ! dataArray ) return NULL;
 
-  TypedArray* boundaryArray = TypedArray::Create( TYPE_SHORT, dataArray->GetDataSize() );
-  short* boundary = static_cast<short*>( boundaryArray->GetDataPtr() );
+  ShortArray* boundaryArray = ShortArray::Create( dataArray->GetDataSize() );
+  short* boundary = boundaryArray->GetDataPtrConcrete();
 
 #pragma omp parallel for
   for ( int z = 0; z < this->m_Dims[2]; ++z ) 
@@ -299,7 +301,7 @@ DataGrid::GetBoundaryMap( const bool multiValued ) const
 	if ( bp )
 	  {
 	  if ( multiValued )
-	    boundary[offset] = static_cast<unsigned short>( value );
+	    boundary[offset] = static_cast<short>( value );
 	  else
 	    boundary[offset] = 1;
 	  }

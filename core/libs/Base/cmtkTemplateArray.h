@@ -66,21 +66,31 @@ public:
   /** Data type traits. */
   typedef DataTypeTraits<T> TypeTraits;
 
-protected:
+  /// Create array of this type.
+  static Self* Create( const size_t size )
+  {
+    return new Self( size );
+  }
+  
+private:
   /// The acutal data array.
   T *Data;
-
-  /// Return const pointer to actual data.
-  const T* GetTemplateDataPtr() const { return Data; }
 
   /// Value used for missing data.
   T Padding;
 
+public:
+  /// Return const pointer to actual data.
+  const T* GetDataPtrConcrete() const { return this->Data; }
+
+  /// Return pointer to actual data.
+  T* GetDataPtrConcrete() { return this->Data; }
+
   /// Set the value to mark non-existent data using template data type.
   void SetPaddingValueTemplate ( const T paddingData ) 
   {
-    Padding = paddingData;
-    PaddingFlag = true;
+    this->Padding = paddingData;
+    this->PaddingFlag = true;
   }
   
 public:
@@ -664,7 +674,7 @@ public:
   virtual void ApplyFunctionObject( const TypedArrayFunction& f );
 };
 
-/**@name Classes for typed arrays. */
+/**@name Shortcut class typedefs for typed arrays. */
 //@{
 
 /// Array of (unsigned) byte values.
