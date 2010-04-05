@@ -55,7 +55,7 @@ public:
   typedef UniformVolumeFilter Self;
 
   /// Constructor: link to UniformVolume object.
-  UniformVolumeFilter( UniformVolume::SmartPtr volume ) : DataGridFilter( volume ) {}
+  UniformVolumeFilter( UniformVolume::SmartPtr volume ) : DataGridFilter( volume ), m_UniformVolume( volume ) {}
 
   /// Gaussian filter (using faster, separable filtering).
   TypedArray::SmartPtr GetDataGaussFiltered( const Types::Coordinate stdDev ) const;
