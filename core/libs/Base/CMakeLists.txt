@@ -43,7 +43,6 @@ SET(cmtkBase_SRCS
   cmtkDeformationField.cxx
   cmtkDeformationFieldJacobian.cxx
   cmtkDirectionSet.cxx
-  cmtkException.cxx
   cmtkFilterVolume.cxx
   cmtkFilterVolumeCoupe.cxx
   cmtkFunctional.cxx
