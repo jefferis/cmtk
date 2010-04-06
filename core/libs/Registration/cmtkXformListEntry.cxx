@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -55,6 +55,5 @@ cmtk::XformListEntry::~XformListEntry()
 {
   // we got the inverse affine from AffineXform::MakeInverse, so we
   // need to get rid of it explicitly.
-  if ( this->InverseAffineXform )
-    delete this->InverseAffineXform;
+  delete this->InverseAffineXform;
 }

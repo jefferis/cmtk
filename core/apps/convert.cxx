@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -614,7 +614,7 @@ if ( Downsample )
   if ( DataType == cmtk::TYPE_NONE )
     DataType = volumeData->GetType();
 
-  if ( SelectValues.size() ) 
+  if ( !SelectValues.empty() ) 
     {
     if ( Verbose )
       cmtk::StdErr.printf( "Selecting %d given values.\n", SelectValues.size() );

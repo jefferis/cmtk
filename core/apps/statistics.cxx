@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -347,7 +347,7 @@ AnalyzeGrey( const cmtk::UniformVolume* volume )
       }
     }
     
-  if ( percentiles.size() )
+  if ( !percentiles.empty() )
     {
     fprintf( stdout, "PERC\tVALUE\n" );
     for ( std::list<cmtk::Types::DataItem>::const_iterator it = percentiles.begin(); it != percentiles.end(); ++it )

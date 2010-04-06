@@ -53,8 +53,8 @@ VolumeReformatter::VolumeReformatter()
 
 VolumeReformatter::~VolumeReformatter()
 {
-  if ( ImagePath ) free( ImagePath );
-  if ( FilenamePattern ) free( FilenamePattern );
+  free( this->ImagePath );
+  free( this->FilenamePattern );
 }
 
 void VolumeReformatter::Execute()

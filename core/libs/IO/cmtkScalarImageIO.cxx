@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -63,8 +63,8 @@ ScalarImageIO::ReadAnalyze( const char* pathHdr )
   char buffer[348];
   if ( 348 != fread( buffer, 1, 348, hdrFile ) ) 
     {
-    StdErr.printf( "ERROR: could not read 348 bytes from header file %s\n",
-		      pathHdr );
+    StdErr.printf( "ERROR: could not read 348 bytes from header file %s\n", pathHdr );
+    fclose( hdrFile );
     return NULL;
     }
   fclose( hdrFile );

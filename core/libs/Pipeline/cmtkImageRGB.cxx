@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -55,7 +55,7 @@ ImageRGB::ImageRGB()
 
 ImageRGB::~ImageRGB()
 {
-  if ( Data ) delete[] Data;
+  delete[] this->Data;
 }
 
 byte* 

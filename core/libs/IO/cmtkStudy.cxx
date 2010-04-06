@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -171,9 +171,9 @@ Study::SetMakeName( const char* name, const int suffix )
 
 Study::~Study() 
 {
-  if ( this->m_FileSystemPath ) free( this->m_FileSystemPath );
-  if ( this->m_Description ) free( this->m_Description );
-  if ( this->m_Name ) free( this->m_Name );
+  free( this->m_FileSystemPath );
+  free( this->m_Description );
+  free( this->m_Name );
 }
 
 bool 

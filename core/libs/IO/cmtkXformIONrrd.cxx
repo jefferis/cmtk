@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -128,7 +128,7 @@ XformIO::ReadNrrd( const char* path, const bool )
     else
       {
       StdErr << "ERROR: unsupported data type in nrrd file.\n";
-      return NULL;
+      return dfield;
       }
 
     const char* orientationSpace = NULL;

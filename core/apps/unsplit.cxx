@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -92,7 +92,7 @@ main( const int argc, const char* argv[] )
       return 1;
       }
 
-    if ( volumes.size() )
+    if ( !volumes.empty() )
       {
       // check image dimensions
       for ( int dim = 0; dim < 3; ++dim )

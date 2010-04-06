@@ -267,8 +267,8 @@ ImageFileDCM::ImageFileDCM( const char* filename )
 
 ImageFileDCM::~ImageFileDCM()
 {
-  if ( fname ) free( fname );
-  if ( fpath ) free( fpath );
+  free( fname );
+  free( fpath );
 }
 
 class VolumeDCM : public std::vector<ImageFileDCM*> 

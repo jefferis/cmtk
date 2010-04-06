@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -61,13 +61,12 @@ XformIO::Read( const char* path, const bool verbose )
     return Self::ReadNrrd( realPath, verbose );
 #else
     StdErr << "ERROR: " << realPath << " is a Nrrd file, but Nrrd support is not enabled.\n"
-	      << "  Please re-configure software using either '--with-nrrd' or '--with-nrrd-teem' switch.\n";
+	   << "  Please re-configure software using either '--with-nrrd' or '--with-nrrd-teem' switch.\n";
     return NULL;
 #endif
     }
     case FILEFORMAT_ITK_TFM:
       return AffineXformITKIO::Read( path );
-      break;
     case FILEFORMAT_STUDYLIST: 
     {
     if ( verbose ) 

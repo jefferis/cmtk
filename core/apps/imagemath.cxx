@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -1031,7 +1031,6 @@ CallbackCombinePCA()
   for ( size_t image = 0; image < numberOfImages; ++image )
     {
     cmtk::Types::DataItem mean = 0;
-    size_t numberOfPixelsNotPadding = 0;
 
     for ( size_t pixel = 0; pixel < numberOfPixels; ++pixel ) 
       {      
@@ -1039,7 +1038,6 @@ CallbackCombinePCA()
       if ( volPtrs[image]->GetDataAt( value, pixel ) )
 	{
 	mean += value;
-	++numberOfPixelsNotPadding;
 	}
       }
     

@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -60,6 +60,7 @@ Exception::Exception( const void *fromObject, const char *errorMsgFormat, ... )
   va_end(args);
 #else
   strncpy( ExceptionErrorMessageBuffer, errorMsgFormat, MESSAGE_BUFFER_SIZE );
+  ExceptionErrorMessageBuffer[MESSAGE_BUFFER_SIZE-1] = 0;
 #endif
 
   ErrorMsg = ExceptionErrorMessageBuffer;
@@ -74,6 +75,7 @@ char* Exception::FormatErrorMsg( const char* format, ... )
   va_end(args);
 #else
   strncpy( ExceptionErrorMessageBuffer, format, MESSAGE_BUFFER_SIZE );
+  ExceptionErrorMessageBuffer[MESSAGE_BUFFER_SIZE-1] = 0;
 #endif
   
   return ExceptionErrorMessageBuffer;

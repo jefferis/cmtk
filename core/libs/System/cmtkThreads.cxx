@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -181,8 +181,8 @@ Threads::GetNumberOfProcessors()
   // use sysctl to get number of available cpus on apple.  Copied from:
   // developer.apple.com/documentation/Porting/Conceptual/PortingUnix/index.html
   char *name="hw.activecpu";
-  int nproc, retval;  size_t len=4;
-  retval=sysctlbyname(name, &nproc, &len, NULL, 0);
+  int nproc;  size_t len=4;
+  sysctlbyname(name, &nproc, &len, NULL, 0);
   return nproc;
 #elif defined(CMTK_USE_THREADS)
   return sysconf( _SC_NPROCESSORS_ONLN );

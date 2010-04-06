@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -75,7 +75,7 @@ SetCropRegion( const char* arg )
 
 void DrawLine( const std::vector<double>& outputX, const std::vector<double>& outputY )
 {
-  if ( outputX.size() == 0 )
+  if ( outputX.empty() )
     return;
   
   std::cout << outputX[0] << " " << outputY[0] << " m\n";

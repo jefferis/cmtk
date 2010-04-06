@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -151,10 +151,6 @@ VolumeFromFile::ReadDICOM( const char *path )
     } 
   else
     throw Exception( "DICOM file does not specify pixel size" );
-    
-  bool signbit = false;
-  if ( document->getValue( DCM_PixelRepresentation, tempUint16 ) > 0)
-    signbit = (tempUint16 == 1);
     
   const unsigned long totalImageSizePixels = dims[0] * dims[1] * dims[2];
     

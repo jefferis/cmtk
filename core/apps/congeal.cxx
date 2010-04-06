@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -199,7 +199,7 @@ main( int argc, char* argv[] )
     exit( 1 );
     }
 
-  if ( !NumberDOFs.size() )
+  if ( NumberDOFs.empty() )
     NumberDOFs.push_back( 6 );
 
   cmtk::AffineCongealingFunctional::SmartPtr functional( new cmtk::AffineCongealingFunctional );
@@ -224,7 +224,7 @@ main( int argc, char* argv[] )
     if ( fileNameList.size() > 1 )
       {
       cmtk::StdErr << "First input file is an archive, but additional arguments are given.\n"
-		<< "I am terminating just to make sure not to do something stupid.\n";
+		   << "I am terminating just to make sure not to do something stupid.\n";
       exit( 1 );
       }
     

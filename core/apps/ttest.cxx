@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -306,24 +306,24 @@ main ( int argc, char* argv[] )
       
       if ( TextFileMode )
 	{
-	if ( dataY.size() )
+	if ( dataY.empty() )
 	  {
-	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetUnpairedTwoTailedTTest( dataX, dataY, &tstatsData, &avgXData, &avgYData, maskData ) );
+	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetOneSampleTTest( dataX, &tstatsData, &avgXData, maskData ) );
 	  }
 	else
 	  {
-	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetOneSampleTTest( dataX, &tstatsData, &avgXData, maskData ) );
+	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetUnpairedTwoTailedTTest( dataX, dataY, &tstatsData, &avgXData, &avgYData, maskData ) );
 	  }
 	}
       else
 	{
-	if ( dataY.size() )
+	if ( dataY.empty() )
 	  {
-	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetUnpairedTwoTailedTTest( dataX, dataY, &tstatsData, NULL /*avgXData*/, NULL /*avgYData*/, maskData ) );
+	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetOneSampleTTest( dataX, &tstatsData, NULL /*avgXData*/, maskData ) );
 	  }
 	else
 	  {
-	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetOneSampleTTest( dataX, &tstatsData, NULL /*avgXData*/, maskData ) );
+	  probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetUnpairedTwoTailedTTest( dataX, dataY, &tstatsData, NULL /*avgXData*/, NULL /*avgYData*/, maskData ) );
 	  }
 	}
       
@@ -376,7 +376,7 @@ main ( int argc, char* argv[] )
       {
       cmtk::TypedArray *tstatsData = NULL;
       
-      if ( dataY.size() )
+      if ( !dataY.empty() )
 	{
 	probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetPairedTwoTailedTTest( dataX, dataY, &tstatsData, NULL /*avgXData*/, NULL /*avgYData*/, maskData ) );
 	}
@@ -413,7 +413,7 @@ main ( int argc, char* argv[] )
       case CORRELATION_PAIRED:
       {
       cmtk::TypedArray *pData = NULL;
-      if ( dataY.size() )
+      if ( !dataY.empty() )
 	{
 	probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetPairedCorrelation( dataX, dataY, &pData, maskData ) );
 	}

@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -76,7 +76,7 @@ StrReplace( char*& s1, const char* s2 )
 
 void StrFree( char *const s )
 {
-  if ( s ) free( s );
+  free( s );
 }
 
 int StrPrefixCmp( const char *s, const char* prefix )

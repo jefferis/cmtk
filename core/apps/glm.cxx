@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -133,7 +133,7 @@ Import
     {
     lineStream >> nextFieldName;
 
-    if ( SelectSet.size() )
+    if ( !SelectSet.empty() )
       // positive parameter selection by name
       {
       if ( SelectSet.find( nextFieldName ) == SelectSet.end() ) 
@@ -246,8 +246,7 @@ Import
   if ( nParameters * imagesData.size() != vParam.size() ) 
     {
     cmtk::StdErr << "ERROR: number of parameters does not equal expected number"
-	      << "(" << nParameters * imagesData.size() << " != "
-	      << vParam.size() << ")\n";
+		 << "(" << nParameters * imagesData.size() << " != " << vParam.size() << ")\n";
     exit( 1 );
     }
   
@@ -321,7 +320,7 @@ main( int argc, char* argv[] )
     cmtk::StdErr << e;
     }
 
-  if ( !CtlFileName.size() || !ImgFilePatt.size() ) 
+  if ( CtlFileName.empty() || ImgFilePatt.empty() ) 
     {
     cmtk::StdErr << "ERROR: need both a control file name and an image file pattern\n";
     exit( 1 );

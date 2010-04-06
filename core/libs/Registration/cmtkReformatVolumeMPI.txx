@@ -127,7 +127,7 @@ ReformatVolume::GetTransformedReference
     default:
     case DATACLASS_GREY: 
     {
-    if ( xformList && xformList->size() )
+    if ( xformList && !xformList->empty() )
       Threads::RunThreads( GetTransformedReferenceGreyAvg, numberOfThreads, &params[0] );
     else
       Threads::RunThreads( GetTransformedReferenceGrey, numberOfThreads, &params[0] );

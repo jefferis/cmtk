@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -120,7 +120,7 @@ main( const int argc, const char* argv[] )
   cmtk::AffineXform average;
   average.SetUseLogScaleFactors( true );
 
-  if ( xformList.size() )
+  if ( !xformList.empty() )
     {
     cmtk::CoordinateVector v, vx;
     for ( std::list<cmtk::AffineXform::SmartPtr>::const_iterator xit = xformList.begin(); xit != xformList.end(); ++xit )

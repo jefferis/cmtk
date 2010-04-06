@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -70,8 +70,8 @@ VoxelMatchingElasticFunctional::VoxelMatchingElasticFunctional
 
 VoxelMatchingElasticFunctional::~VoxelMatchingElasticFunctional()
 {
-  if ( VectorCache ) delete[] VectorCache;
-  if ( StepScaleVector ) delete[] StepScaleVector;
+  delete[] VectorCache;
+  delete[] StepScaleVector;
 }
 
 template<class W>

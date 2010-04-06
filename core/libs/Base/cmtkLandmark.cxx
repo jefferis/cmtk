@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -51,7 +51,7 @@ Landmark::Landmark( const char* name, const Types::Coordinate location[3] )
 
 Landmark::~Landmark()
 {
-  if ( this->m_Name ) free( this->m_Name );
+  free( this->m_Name );
 }
 
 } // namespace

@@ -98,7 +98,7 @@ public:
     typedef SmartPointer<Self> SmartPtr;
 
     /// Constructor: determine axes permutation, flipping, and store local copy of reoriented dimensions array.
-    PermutationMatrix( const int* sourceDims, const Types::Coordinate* sourceSize, const std::string curOrientation, const char newOrientation[3] );
+    PermutationMatrix( const int* sourceDims, const Types::Coordinate* sourceSize, const std::string& curOrientation, const char newOrientation[3] );
    
     /** Takes the dimensions of a volume (e.g. a grid, a voxel)
      * and returns the dimensions of that volume after the
