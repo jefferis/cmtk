@@ -48,9 +48,12 @@ VolumeInjectionReconstruction
 ::VolumeInjectionReconstruction( const UniformVolume* originalImage, const int interleaveFactor, const int interleaveAxis )
   : m_NumberOfPasses( interleaveFactor ),
     m_PassWeights( interleaveFactor ),
-    m_OriginalImageHistogram( new Histogram<double>( Self::NumberOfHistogramBins ) ),
-    m_CorrectedImageHistogram( new Histogram<double>( Self::NumberOfHistogramBins ) )
+    m_OriginalImageHistogram(),
+    m_CorrectedImageHistogram()
 {
+  this->m_OriginalImageHistogram = Histogram<double>::SmartPtr( new Histogram<double>( Self::NumberOfHistogramBins ) );
+  this->m_CorrectedImageHistogram = Histogram<double>::SmartPtr( new Histogram<double>( Self::NumberOfHistogramBins ) );
+
   const TypedArray* originalData = originalImage->GetData();
   this->SetupHistogramKernels( originalData );
 
