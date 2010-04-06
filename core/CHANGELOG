@@ -1,5 +1,6 @@
 Release CMTK-1.3.0:
 
+- Fixed: various issues pointed out by "cppcheck" static code analysis.
 - API: moved morphological operators from cmtk::DataGrid into separate class,
     cmtk::DataGridMorphologicalOperators.
 - API: prevent copying of system classes where this would lead to problems.
