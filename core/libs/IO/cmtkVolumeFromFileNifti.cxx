@@ -35,7 +35,6 @@
 #include <cmtkAnalyze.h>
 #include <cmtkFileHeader.h>
 #include <cmtkConsole.h>
-#include <cmtkStrUtility.h>
 
 #include <cmtkUniformVolume.h>
 #include <cmtkAnatomicalOrientation.h>
