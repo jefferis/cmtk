@@ -1,5 +1,6 @@
 Release CMTK-1.3.0:
 
+- Removed: obsolete real-valued mod operators in MathUtil namespace.
 - Removed: long unused support for GIPL image file format import
 - Fix: volume_reconstruction and volume_injection tools now convert affine ITK
     transformations (i.e., such read from .tfm files) from native into
