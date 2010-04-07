@@ -329,10 +329,10 @@ UniformVolume::GetCroppedVolume() const
   volume->SetOffset( this->m_Offset );
   volume->m_Offset += Vector3D( this->CropFromReal );
 
-  volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION]  = this->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION];
-  volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION_ORIGINAL]  = this->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION_ORIGINAL];
+  volume->m_MetaInformation[META_IMAGE_ORIENTATION]  = this->m_MetaInformation[META_IMAGE_ORIENTATION];
+  volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL]  = this->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL];
 
-  volume->m_MetaInformation[CMTK_META_SPACE]  = this->m_MetaInformation[CMTK_META_SPACE];
+  volume->m_MetaInformation[META_SPACE]  = this->m_MetaInformation[META_SPACE];
 
   return volume;
 }

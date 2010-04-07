@@ -185,7 +185,7 @@ UniformVolume::CloneGrid() const
 UniformVolume*
 UniformVolume::GetReoriented( const char* newOrientation ) const
 {
-  const std::string curOrientation = this->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION];
+  const std::string curOrientation = this->m_MetaInformation[META_IMAGE_ORIENTATION];
   DataGrid::SmartPtr temp( DataGrid::GetReoriented( newOrientation ) );
 
   AnatomicalOrientation::PermutationMatrix pmatrix( this->m_Dims, this->Size, curOrientation, newOrientation );
@@ -513,7 +513,7 @@ void
 UniformVolume
 ::ChangeCoordinateSpace( const std::string& newSpace )
 {
-  const std::string currentSpace = this->m_MetaInformation[CMTK_META_SPACE];
+  const std::string currentSpace = this->m_MetaInformation[META_SPACE];
   if ( currentSpace == newSpace )
     return; // nothing to do.
 
@@ -527,7 +527,7 @@ UniformVolume
 	if ( axesPermutation[j][j2] )
 	  newMatrix[i][j] = axesPermutation[j][j2] * this->m_IndexToPhysicalMatrix[i][j2];
   
-  this->m_MetaInformation[CMTK_META_SPACE] = newSpace;
+  this->m_MetaInformation[META_SPACE] = newSpace;
   this->m_IndexToPhysicalMatrix = newMatrix;
 }
 
@@ -537,7 +537,7 @@ UniformVolume
 {
   const AffineXform::MatrixType& matrix = this->m_IndexToPhysicalMatrix;
   char orientationString[4] = { 0,0,0,0 };
-  AnatomicalOrientation::GetOrientationFromDirections( orientationString, matrix, this->m_MetaInformation[CMTK_META_SPACE].c_str() );
+  AnatomicalOrientation::GetOrientationFromDirections( orientationString, matrix, this->m_MetaInformation[META_SPACE].c_str() );
   return std::string( orientationString );
 }
 

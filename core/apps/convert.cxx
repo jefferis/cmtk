@@ -320,8 +320,8 @@ main( int argc, char* argv[] )
       if ( Verbose )
 	cmtk::StdErr << "Applying mask from file.\n";
       
-      const std::string maskOrientation = maskVolume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION];
-      const std::string inputImageOrientation = volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION];
+      const std::string maskOrientation = maskVolume->m_MetaInformation[cmtk::META_IMAGE_ORIENTATION];
+      const std::string inputImageOrientation = volume->m_MetaInformation[cmtk::META_IMAGE_ORIENTATION];
       if ( maskOrientation != inputImageOrientation )
 	{
 	if ( Verbose )

@@ -40,8 +40,8 @@ cmtk::TransformChangeFromSpaceAffine
   UniformVolume::SmartPtr fltVolumeOriginalSpace( floating.CloneGrid() );
   
   // first bring volumes back into their native coordinate space.
-  refVolumeOriginalSpace->ChangeCoordinateSpace( reference.m_MetaInformation[CMTK_META_SPACE_ORIGINAL] );
-  fltVolumeOriginalSpace->ChangeCoordinateSpace( reference.m_MetaInformation[CMTK_META_SPACE_ORIGINAL] );
+  refVolumeOriginalSpace->ChangeCoordinateSpace( reference.m_MetaInformation[META_SPACE_ORIGINAL] );
+  fltVolumeOriginalSpace->ChangeCoordinateSpace( reference.m_MetaInformation[META_SPACE_ORIGINAL] );
   
   // now determine image-to-physical transformations and concatenate these.
   AffineXform::MatrixType concatMatrix = refVolumeOriginalSpace->GetImageToPhysicalMatrix ();

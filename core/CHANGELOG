@@ -1,5 +1,7 @@
 Release CMTK-1.3.0:
 
+- API: made all meta key strings C++ objects rather than cpp #defines; also
+    removed CMTK_ prefix after moving them into cmtk namespace.
 - API: renamed "InformationObject" class to more descriptive
     "MetaInformationObject"
 - Fixed: various issues pointed out by "cppcheck" static code analysis.
