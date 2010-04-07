@@ -44,6 +44,7 @@
 #include <cmtkVolumeInjectionReconstruction.h>
 
 #include <cmtkXformIO.h>
+#include <cmtkTransformChangeFromSpaceAffine.h>
 
 #include <algorithm>
 #include <map>
@@ -194,6 +195,16 @@ main( const int argc, const char* argv[] )
   if ( ExcludeFirstImage )
     ReconstructionGridPath = ImagePaths[0];
 
+  if ( ReconstructionGridPath )
+    {
+    ReconGrid = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( ReconstructionGridPath ) );
+    if ( ! ReconGrid )
+      {
+      cmtk::StdErr << "ERROR: Could not read reconstruction grid from image " << ReconstructionGridPath << "\n";
+      exit( 1 );
+      }
+    }
+  
   for ( size_t idx = (ExcludeFirstImage?1:0); idx < ImagePaths.size(); ++idx )
     {
     cmtk::UniformVolume::SmartPtr image( cmtk::VolumeIO::ReadOriented( ImagePaths[idx], Verbose ) );
@@ -213,22 +224,20 @@ main( const int argc, const char* argv[] )
 	}
       }
 
+    cmtk::AffineXform::SmartPtr affineXform( cmtk::AffineXform::SmartPtr::DynamicCastFrom( xform ) );
+    if ( affineXform && (affineXform->m_MetaInformation[cmtk::META_SPACE] != cmtk::AnatomicalOrientation::ORIENTATION_STANDARD) )
+      {
+      cmtk::TransformChangeFromSpaceAffine toStandardSpace( *affineXform, *ReconGrid, *image );
+      *affineXform = toStandardSpace.GetTransformation();
+      affineXform->m_MetaInformation[cmtk::META_SPACE] = cmtk::AnatomicalOrientation::ORIENTATION_STANDARD;
+      }
+
     Images.push_back( image );
     Xforms.push_back( xform );
     }
 
   if ( ! ReconGrid )
     ReconGrid = Images[0];
-  
-  if ( ReconstructionGridPath )
-    {
-    ReconGrid = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( ReconstructionGridPath ) );
-    if ( ! ReconGrid )
-      {
-      cmtk::StdErr << "ERROR: Could not read reconstruction grid from image " << ReconstructionGridPath << "\n";
-      exit( 1 );
-      }
-    }
   
   if ( UseCropRegion )
     {
