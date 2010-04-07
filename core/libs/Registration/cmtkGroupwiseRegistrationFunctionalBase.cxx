@@ -140,17 +140,17 @@ GroupwiseRegistrationFunctionalBase::SetTemplateGrid
   
   if ( this->m_UseTemplateData && ! this->m_TemplateGrid->GetData() )
     {
-    UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( templateGrid->m_MetaInformation[CMTK_META_FS_PATH].c_str(), false /*verbose*/ ) );
+    UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( templateGrid->m_MetaInformation[META_FS_PATH].c_str(), false /*verbose*/ ) );
     this->m_TemplateGrid->SetData( readImage->GetData() );
     }
   
-  if ( ! this->m_TemplateGrid->MetaKeyExists( CMTK_META_IMAGE_ORIENTATION ) )
+  if ( ! this->m_TemplateGrid->MetaKeyExists( META_IMAGE_ORIENTATION ) )
     {
-    this->m_TemplateGrid->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION] = AnatomicalOrientation::ORIENTATION_STANDARD;
+    this->m_TemplateGrid->m_MetaInformation[META_IMAGE_ORIENTATION] = AnatomicalOrientation::ORIENTATION_STANDARD;
     }
-  if ( ! this->m_TemplateGrid->MetaKeyExists( CMTK_META_IMAGE_ORIENTATION_ORIGINAL ) )
+  if ( ! this->m_TemplateGrid->MetaKeyExists( META_IMAGE_ORIENTATION_ORIGINAL ) )
     {
-    this->m_TemplateGrid->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION_ORIGINAL] = AnatomicalOrientation::ORIENTATION_STANDARD;
+    this->m_TemplateGrid->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = AnatomicalOrientation::ORIENTATION_STANDARD;
     }
 
   if ( this->m_UseTemplateData )
@@ -233,7 +233,7 @@ GroupwiseRegistrationFunctionalBase
 {
   if ( !image->GetData() )
     {
-    UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( image->m_MetaInformation[CMTK_META_FS_PATH].c_str(), false /*verbose*/ ) );
+    UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( image->m_MetaInformation[META_FS_PATH].c_str(), false /*verbose*/ ) );
     image->SetData( readImage->GetData() );
     }
   
@@ -516,7 +516,7 @@ GroupwiseRegistrationFunctionalBase
 	}
       else
 	{
-	scaledImage = UniformVolume::SmartPtr( VolumeIO::ReadOriented( this->m_OriginalImageVector[i]->m_MetaInformation[CMTK_META_FS_PATH].c_str(), false /*verbose*/ ) );
+	scaledImage = UniformVolume::SmartPtr( VolumeIO::ReadOriented( this->m_OriginalImageVector[i]->m_MetaInformation[META_FS_PATH].c_str(), false /*verbose*/ ) );
 	}
 
       UniformVolume::SmartPtr reformatImage( this->GetReformattedImage( scaledImage, i ) );

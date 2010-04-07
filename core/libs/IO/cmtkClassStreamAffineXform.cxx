@@ -121,7 +121,7 @@ operator >> ( ClassStream& stream, AffineXform& affineXform )
 
   affineXform.SetUseLogScaleFactors( logScaleFactors );
   affineXform.SetParamVector( pVector );
-  affineXform.m_MetaInformation[CMTK_META_SPACE] = AnatomicalOrientation::ORIENTATION_STANDARD;
+  affineXform.m_MetaInformation[META_SPACE] = AnatomicalOrientation::ORIENTATION_STANDARD;
 
   return stream;
 }

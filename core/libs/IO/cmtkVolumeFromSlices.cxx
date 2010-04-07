@@ -239,7 +239,7 @@ VolumeFromSlices::FinishVolume ( Types::Coordinate& sliceOffset, int& sliceDirec
   for ( idx = 0; idx<3; ++idx )
     delete[] Points[idx];
 
-  Result->m_MetaInformation[CMTK_META_SPACE] = Result->m_MetaInformation[CMTK_META_SPACE_ORIGINAL] = "LPS";
+  Result->m_MetaInformation[META_SPACE] = Result->m_MetaInformation[META_SPACE_ORIGINAL] = "LPS";
 
   // actual image directions
   const Types::Coordinate spacing[3] = { (Size[0] / (Dims[0]-1)), (Size[1] / (Dims[1]-1)), (Size[2] / (Dims[2]-1)) };
@@ -265,9 +265,9 @@ VolumeFromSlices::FinishVolume ( Types::Coordinate& sliceOffset, int& sliceDirec
   Result->ChangeCoordinateSpace( AnatomicalOrientation::ORIENTATION_STANDARD );
 
   const std::string orientationString = Result->GetOrientationFromDirections();
-  Result->m_MetaInformation[CMTK_META_SPACE_UNITS_STRING] = "mm"; // seems to be implied in DICOM
-  Result->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION] = orientationString;
-  Result->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION_ORIGINAL] = orientationString;
+  Result->m_MetaInformation[META_SPACE_UNITS_STRING] = "mm"; // seems to be implied in DICOM
+  Result->m_MetaInformation[META_IMAGE_ORIENTATION] = orientationString;
+  Result->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = orientationString;
 
   return Result;
 }

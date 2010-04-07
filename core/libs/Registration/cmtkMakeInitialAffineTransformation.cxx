@@ -86,17 +86,17 @@ AffineXform*
 MakeInitialAffineTransformation
 ::AlignDirectionVectors( const UniformVolume& referenceImage, const UniformVolume& floatingImage, const bool centerXform )
 {
-  if ( referenceImage.m_MetaInformation[CMTK_META_SPACE] != floatingImage.m_MetaInformation[CMTK_META_SPACE] )
+  if ( referenceImage.m_MetaInformation[META_SPACE] != floatingImage.m_MetaInformation[META_SPACE] )
     {
-    StdErr << "ERROR: coordinate spaces '" << referenceImage.m_MetaInformation[CMTK_META_SPACE]
-	      << "' and '" << floatingImage.m_MetaInformation[CMTK_META_SPACE] << "' do not match.\n";
+    StdErr << "ERROR: coordinate spaces '" << referenceImage.m_MetaInformation[META_SPACE]
+	      << "' and '" << floatingImage.m_MetaInformation[META_SPACE] << "' do not match.\n";
     return NULL;
     }
   
-  if ( referenceImage.m_MetaInformation[CMTK_META_EXTERNAL_SPACE_ID] != floatingImage.m_MetaInformation[CMTK_META_EXTERNAL_SPACE_ID] )
+  if ( referenceImage.m_MetaInformation[META_EXTERNAL_SPACE_ID] != floatingImage.m_MetaInformation[META_EXTERNAL_SPACE_ID] )
     {
-    StdErr << "ERROR: semantic coordinate spaces '" << referenceImage.m_MetaInformation[CMTK_META_EXTERNAL_SPACE_ID]
-	      << "' and '" << floatingImage.m_MetaInformation[CMTK_META_EXTERNAL_SPACE_ID] << "' do not match.\n";
+    StdErr << "ERROR: semantic coordinate spaces '" << referenceImage.m_MetaInformation[META_EXTERNAL_SPACE_ID]
+	      << "' and '" << floatingImage.m_MetaInformation[META_EXTERNAL_SPACE_ID] << "' do not match.\n";
     return NULL;
     }
   

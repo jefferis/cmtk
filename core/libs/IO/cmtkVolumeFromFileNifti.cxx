@@ -116,7 +116,7 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
   UniformVolume* volume = new UniformVolume( dims, size );
   // Nifti is in RAS space.
   const char *const niftiSpace = "RAS";
-  volume->m_MetaInformation[CMTK_META_SPACE] = volume->m_MetaInformation[CMTK_META_SPACE_ORIGINAL] = niftiSpace;
+  volume->m_MetaInformation[META_SPACE] = volume->m_MetaInformation[META_SPACE_ORIGINAL] = niftiSpace;
 
   const short qform_code = header.GetField<short>( offsetof(nifti_1_header,qform_code) );
   if ( qform_code > 0 )
@@ -146,7 +146,7 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
     
     char orientationImage[4];
     AnatomicalOrientation::GetOrientationFromDirections( orientationImage, m4, niftiSpace );
-    volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION] = volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION_ORIGINAL] = orientationImage;
+    volume->m_MetaInformation[META_IMAGE_ORIENTATION] = volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = orientationImage;
     }
   else
     {
@@ -171,12 +171,12 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
     
       char orientationImage[4];
       AnatomicalOrientation::GetOrientationFromDirections( orientationImage, m4, niftiSpace );
-      volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION] = volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION_ORIGINAL] = orientationImage;
+      volume->m_MetaInformation[META_IMAGE_ORIENTATION] = volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = orientationImage;
       }
     else
       {
       // no orientation info, default to nifti standard space
-      volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION] = volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION_ORIGINAL] = niftiSpace;
+      volume->m_MetaInformation[META_IMAGE_ORIENTATION] = volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = niftiSpace;
       }
     }
   

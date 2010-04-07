@@ -152,7 +152,7 @@ XformIO::ReadNrrd( const char* path, const bool )
 
     if ( orientationSpace )
       {
-      dfield->m_MetaInformation[CMTK_META_SPACE] = dfield->m_MetaInformation[CMTK_META_SPACE_ORIGINAL] = orientationSpace;
+      dfield->m_MetaInformation[META_SPACE] = dfield->m_MetaInformation[META_SPACE_ORIGINAL] = orientationSpace;
       
       const Types::Coordinate directions[3][3] = 
 	{
@@ -177,8 +177,8 @@ XformIO::ReadNrrd( const char* path, const bool )
       
       char orientationImage[4];
       AnatomicalOrientation::GetOrientationFromDirections( orientationImage, m4, orientationSpace );
-      dfield->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION] = orientationImage;
-      dfield->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION_ORIGINAL] = orientationImage;
+      dfield->m_MetaInformation[META_IMAGE_ORIENTATION] = orientationImage;
+      dfield->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = orientationImage;
       }
     
     nrrdNix( nrrd );
@@ -230,9 +230,9 @@ XformIO::WriteNrrd
     
     nrrdSpaceDimensionSet( nval, 3 );
     
-    if ( dfield->MetaKeyExists(CMTK_META_SPACE_UNITS_STRING) )
+    if ( dfield->MetaKeyExists(META_SPACE_UNITS_STRING) )
       {
-      nval->spaceUnits[0] = strdup( dfield->m_MetaInformation[CMTK_META_SPACE_UNITS_STRING].c_str() );
+      nval->spaceUnits[0] = strdup( dfield->m_MetaInformation[META_SPACE_UNITS_STRING].c_str() );
       }
       
     int kind[NRRD_DIM_MAX] = { nrrdKindVector, nrrdKindDomain, nrrdKindDomain, nrrdKindDomain };

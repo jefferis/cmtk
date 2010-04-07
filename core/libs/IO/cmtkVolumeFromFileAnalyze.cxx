@@ -180,10 +180,10 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
     }
   
   UniformVolume* volume = new UniformVolume( dims, size );
-  volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION] = volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION_ORIGINAL] = orientString;
+  volume->m_MetaInformation[META_IMAGE_ORIENTATION] = volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = orientString;
 
   // Analyze is medical data, which we always treat in RAS space.
-  volume->m_MetaInformation[CMTK_META_SPACE] = volume->m_MetaInformation[CMTK_META_SPACE_ORIGINAL] = orientString;
+  volume->m_MetaInformation[META_SPACE] = volume->m_MetaInformation[META_SPACE_ORIGINAL] = orientString;
   volume->ChangeCoordinateSpace( AnatomicalOrientation::ORIENTATION_STANDARD );
 
   // don't read data, we're done here.
@@ -263,15 +263,15 @@ VolumeFromFile::WriteAnalyzeHdr
 ( const char* pathHdr, const UniformVolume* volume, const bool verbose )
 {
   UniformVolume::SmartPtr writeVolume( volume->Clone() );
-  if ( writeVolume->MetaKeyExists( CMTK_META_SPACE_ORIGINAL ) )
-    writeVolume->ChangeCoordinateSpace( writeVolume->m_MetaInformation[CMTK_META_SPACE_ORIGINAL] );
+  if ( writeVolume->MetaKeyExists( META_SPACE_ORIGINAL ) )
+    writeVolume->ChangeCoordinateSpace( writeVolume->m_MetaInformation[META_SPACE_ORIGINAL] );
 
-  std::string currentOrientation = writeVolume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION];
+  std::string currentOrientation = writeVolume->m_MetaInformation[META_IMAGE_ORIENTATION];
   if ( currentOrientation == "" )
     {
     currentOrientation = "LAS"; // default: write as is, axial tag, no reorientation.
     }
-  std::string originalOrientation = writeVolume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION_ORIGINAL];
+  std::string originalOrientation = writeVolume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL];
   if ( originalOrientation == "" )
     {
     originalOrientation = currentOrientation;

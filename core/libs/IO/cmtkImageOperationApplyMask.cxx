@@ -36,8 +36,8 @@ cmtk::UniformVolume::SmartPtr
 cmtk::ImageOperationApplyMask
 ::Apply( cmtk::UniformVolume::SmartPtr& volume )
 {
-  const std::string maskOrientation = this->m_MaskVolume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION];
-  const std::string workingOrientation = volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION];
+  const std::string maskOrientation = this->m_MaskVolume->m_MetaInformation[META_IMAGE_ORIENTATION];
+  const std::string workingOrientation = volume->m_MetaInformation[META_IMAGE_ORIENTATION];
   if ( maskOrientation != workingOrientation )
     {
     this->m_MaskVolume = cmtk::UniformVolume::SmartPtr( this->m_MaskVolume->GetReoriented( workingOrientation.c_str() ) );

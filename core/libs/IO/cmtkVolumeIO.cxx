@@ -108,7 +108,7 @@ VolumeIO::Read( const char* path, const bool verbose )
   
   if ( volume ) 
     {
-    volume->m_MetaInformation[CMTK_META_FILEFORMAT_ORIGINAL] = FileFormat::Describe( formatID );
+    volume->m_MetaInformation[META_FILEFORMAT_ORIGINAL] = FileFormat::Describe( formatID );
     // for float and double data, automatically recognize Inf as Null Data.
     TypedArray::SmartPtr dataArray = volume->GetData();
     if ( dataArray ) 
@@ -152,7 +152,7 @@ VolumeIO::Read( const char* path, const bool verbose )
 
   if ( volume )
     {
-    volume->m_MetaInformation[CMTK_META_FS_PATH] = path;
+    volume->m_MetaInformation[META_FS_PATH] = path;
     }
   
   return volume;
@@ -195,7 +195,7 @@ VolumeIO::ReadGrid( const char* path, const bool verbose )
   
   if ( volume )
     {
-    volume->m_MetaInformation[CMTK_META_FS_PATH] = path;
+    volume->m_MetaInformation[META_FS_PATH] = path;
     }
   
   return volume;
@@ -208,7 +208,7 @@ VolumeIO
   UniformVolume::SmartPtr volume( Self::ReadGrid( path, verbose ) );
   if ( !volume ) return NULL;
   
-  const std::string orientationOriginal = volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION];
+  const std::string orientationOriginal = volume->m_MetaInformation[META_IMAGE_ORIENTATION];
   if ( orientationOriginal == "" )
     {
     StdErr << "WARNING: image does not have valid orientation meta information; cannot reorient.\n";
@@ -237,7 +237,7 @@ VolumeIO
   UniformVolume::SmartPtr volume( VolumeIO::Read( path, verbose ) );
   if ( !volume ) return NULL;
 
-  const std::string orientationOriginal = volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION];
+  const std::string orientationOriginal = volume->m_MetaInformation[META_IMAGE_ORIENTATION];
   if ( orientationOriginal == "" )
     {
     StdErr << "WARNING: image does not have valid orientation meta information; cannot reorient.\n";
@@ -421,7 +421,7 @@ VolumeIO::Write
   free( dirName );
   free( baseName );
   
-  volume->m_MetaInformation[CMTK_META_FS_PATH] = path;
+  volume->m_MetaInformation[META_FS_PATH] = path;
 }
 
 bool 

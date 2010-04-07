@@ -109,7 +109,7 @@ GroupwiseRegistrationOutput::WriteXformsSeparateArchives
 	  }
 	
 	const UniformVolume* image = this->m_Functional->GetOriginalTargetImage( img );
-	Study::SmartPtr imgstudy = slist.AddStudy( image->m_MetaInformation[CMTK_META_FS_PATH].c_str() );
+	Study::SmartPtr imgstudy = slist.AddStudy( image->m_MetaInformation[META_FS_PATH].c_str() );
 	
 	WarpXform::SmartPtr warpXform = WarpXform::SmartPtr::DynamicCastFrom( this->m_Functional->GetGenericXformByIndex( img ) );
 	if ( warpXform )
@@ -157,7 +157,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
       {
       if ( ! templateGrid->GetData() )
 	{
-	UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( templateGrid->m_MetaInformation[CMTK_META_FS_PATH].c_str(), false /*verbose*/ ) );
+	UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( templateGrid->m_MetaInformation[META_FS_PATH].c_str(), false /*verbose*/ ) );
 	templateGrid->SetData( readImage->GetData() );
 	}
 
@@ -188,7 +188,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
       {
       UniformVolume::SmartPtr floatingVolume = this->m_Functional->GetOriginalTargetImage( idx );
       if ( !floatingVolume->GetData() )
-	floatingVolume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( floatingVolume->m_MetaInformation[CMTK_META_FS_PATH].c_str(), false /*verbose*/ ) );
+	floatingVolume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( floatingVolume->m_MetaInformation[META_FS_PATH].c_str(), false /*verbose*/ ) );
       
       cmtk::ReformatVolume reformat;
       reformat.SetReferenceVolume( templateGrid );

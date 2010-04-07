@@ -57,7 +57,7 @@ operator<<
   for ( size_t idx = 0; idx < func.GetNumberOfTargetImages(); ++idx )
     {
     const UniformVolume* target = func.GetOriginalTargetImage( idx );
-    stream.WriteString( "target", target->m_MetaInformation[CMTK_META_FS_PATH].c_str() );
+    stream.WriteString( "target", target->m_MetaInformation[META_FS_PATH].c_str() );
     
     const Xform* xform = func.GetGenericXformByIndex( idx );
     

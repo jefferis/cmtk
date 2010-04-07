@@ -54,7 +54,7 @@ operator<<
   
   for ( size_t idx = 0; idx < func.m_XformVector.size(); ++idx )
     {
-    stream.WriteString( "target", func.m_OriginalImageVector[idx]->m_MetaInformation[CMTK_META_FS_PATH].c_str() );
+    stream.WriteString( "target", func.m_OriginalImageVector[idx]->m_MetaInformation[META_FS_PATH].c_str() );
     stream << (*func.GetXformByIndex( idx ));
     }
   
