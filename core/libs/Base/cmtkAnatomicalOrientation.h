@@ -36,7 +36,7 @@
 
 #include <cmtkSmartPtr.h>
 #include <cmtkTypes.h>
-#include <cmtkInformationObject.h>
+#include <cmtkMetaInformationObject.h>
 #include <cmtkAffineXform.h>
 
 #include <vector>

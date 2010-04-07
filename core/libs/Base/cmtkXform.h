@@ -36,7 +36,7 @@
 
 #include <stdlib.h>
 
-#include <cmtkInformationObject.h>
+#include <cmtkMetaInformationObject.h>
 
 #include <cmtkVector3D.h>
 #include <cmtkVector.h>
@@ -62,7 +62,7 @@ class UniformVolume;
  */
 class Xform :
   /// Inherit from meta data information container.
-  public InformationObject
+  public MetaInformationObject
 {
 public:
   /// This class.
@@ -79,7 +79,7 @@ public:
 
   /// Copy constructor.
   Xform( const Xform& other )
-    : InformationObject( other ),
+    : MetaInformationObject( other ),
       m_NumberOfParameters( other.m_NumberOfParameters ),
       m_ParameterVector( other.m_ParameterVector )
   {

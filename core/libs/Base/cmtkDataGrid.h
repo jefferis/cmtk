@@ -42,7 +42,7 @@
 #include <cmtkRectangle.h>
 #include <cmtkIndex.h>
 #include <cmtkRegion.h>
-#include <cmtkInformationObject.h>
+#include <cmtkMetaInformationObject.h>
 #include <cmtkAnatomicalOrientation.h>
 
 #include <cmtkSmartPtr.h>
@@ -66,7 +66,7 @@ cmtk
  */
 class DataGrid :
   /// Inherit class that handles meta information.
-  public InformationObject
+  public MetaInformationObject
 {
   /// Number of grid samples in the three spatial dimensions
   cmtkGetMacro3Array(int,Dims);
