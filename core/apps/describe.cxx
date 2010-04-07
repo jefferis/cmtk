@@ -120,14 +120,14 @@ main( int argc, char *argv[] )
 	continue;
 	}
       
-      const char* orientOriginal = volume->m_MetaInformation[CMTK_META_IMAGE_ORIENTATION_ORIGINAL].c_str();
+      const char* orientOriginal = volume->m_MetaInformation[cmtk::META_IMAGE_ORIENTATION_ORIGINAL].c_str();
       const cmtk::UniformVolume* uniform = cmtk::UniformVolume::SmartPtr::DynamicCastFrom( volume );
       const cmtk::TypedArray* dataArray = volume->GetData();
       
       if ( MachineReadable )
 	{
 	fprintf( stdout, "FNAME\t%s\n", next );            
-	fprintf( stdout, "FORMAT\t%s\n", volume->m_MetaInformation[CMTK_META_FILEFORMAT_ORIGINAL].c_str() );
+	fprintf( stdout, "FORMAT\t%s\n", volume->m_MetaInformation[cmtk::META_FILEFORMAT_ORIGINAL].c_str() );
 	fprintf( stdout, "XDIM\t%d\nYDIM\t%d\nZDIM\t%d\n", volume->GetDims( cmtk::AXIS_X ), volume->GetDims( cmtk::AXIS_Y ), volume->GetDims( cmtk::AXIS_Z ) );
 	fprintf( stdout, "ORIENT\t%s\n", orientOriginal ? orientOriginal : "UNKNOWN" );
       
@@ -139,8 +139,8 @@ main( int argc, char *argv[] )
 	  }
 	
 	fprintf( stdout, "XORIGIN\t%f\nYORIGIN\t%f\nZORIGIN\t%f\n", volume->m_Offset.XYZ[0], volume->m_Offset.XYZ[1], volume->m_Offset.XYZ[2] );
-	if ( volume->MetaKeyExists(CMTK_META_SPACE_UNITS_STRING ) )
-	  fprintf( stdout, "UNITS\t%s\n", volume->m_MetaInformation[CMTK_META_SPACE_UNITS_STRING].c_str() );
+	if ( volume->MetaKeyExists(cmtk::META_SPACE_UNITS_STRING ) )
+	  fprintf( stdout, "UNITS\t%s\n", volume->m_MetaInformation[cmtk::META_SPACE_UNITS_STRING].c_str() );
 	
 	if ( dataArray ) 
 	  {
@@ -158,14 +158,14 @@ main( int argc, char *argv[] )
       else
 	{
 	fprintf( stdout, "File: %s\n", next );            
-	fprintf( stdout, "File format: %s\n", volume->m_MetaInformation[CMTK_META_FILEFORMAT_ORIGINAL].c_str() );
+	fprintf( stdout, "File format: %s\n", volume->m_MetaInformation[cmtk::META_FILEFORMAT_ORIGINAL].c_str() );
 	fprintf( stdout, "%d x %d x %d voxels\n", volume->GetDims( cmtk::AXIS_X ), volume->GetDims( cmtk::AXIS_Y ), volume->GetDims( cmtk::AXIS_Z ) );
 
 	fprintf( stdout, "Original image orientation: %s\n", orientOriginal ? orientOriginal : "UNKNOWN" );
       
 	const char* spaceUnits = "";
-	if ( volume->MetaKeyExists(CMTK_META_SPACE_UNITS_STRING ) )
-	  spaceUnits = volume->m_MetaInformation[CMTK_META_SPACE_UNITS_STRING].c_str();
+	if ( volume->MetaKeyExists(cmtk::META_SPACE_UNITS_STRING ) )
+	  spaceUnits = volume->m_MetaInformation[cmtk::META_SPACE_UNITS_STRING].c_str();
 	
 	if ( uniform ) 
 	  {
