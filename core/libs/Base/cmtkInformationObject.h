@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,8 +29,8 @@
 //
 */
 
-#ifndef __cmtkInformationObject_h_included_
-#define __cmtkInformationObject_h_included_
+#ifndef __cmtkMetaInformationObject_h_included_
+#define __cmtkMetaInformationObject_h_included_
 
 #include <map>
 #include <string>
@@ -56,19 +56,19 @@ cmtk
 //@{
 
 /// Meta-information associated with library objects.
-class InformationObject
+class MetaInformationObject
 {
 public:
   /// Default constructor: do nothing.
-  InformationObject() {}
+  MetaInformationObject() {}
 
   /// Copy constructor: copy meta information when copying higher-level objects.
-  InformationObject( const InformationObject& other )
+  MetaInformationObject( const MetaInformationObject& other )
     : m_MetaInformation( other.m_MetaInformation )
   {}
 
   /// Virtual destructor template.
-  virtual ~InformationObject() {};
+  virtual ~MetaInformationObject() {};
 
   /// Check whether a key exists.
   bool MetaKeyExists( const std::string key ) const
