@@ -49,13 +49,13 @@ ClassStream& operator <<
   stream.WriteInt( "reference_channel_count", functional.GetNumberOfReferenceChannels() );
   for ( size_t idx = 0; idx < functional.GetNumberOfReferenceChannels(); ++idx )
     {
-    stream.WriteString( "reference_channel", functional.GetReferenceChannel( idx )->m_MetaInformation[CMTK_META_FS_PATH].c_str() );
+    stream.WriteString( "reference_channel", functional.GetReferenceChannel( idx )->m_MetaInformation[META_FS_PATH].c_str() );
     }
 
   stream.WriteInt( "floating_channel_count", functional.GetNumberOfFloatingChannels() );
   for ( size_t idx = 0; idx < functional.GetNumberOfFloatingChannels(); ++idx )
     {
-    stream.WriteString( "floating_channel", functional.GetFloatingChannel( idx )->m_MetaInformation[CMTK_META_FS_PATH].c_str() );
+    stream.WriteString( "floating_channel", functional.GetFloatingChannel( idx )->m_MetaInformation[META_FS_PATH].c_str() );
     }
   
   stream << functional.GetTransformation();
@@ -117,13 +117,13 @@ ClassStream& operator <<
   stream.WriteInt( "reference_channel_count", functional.GetNumberOfReferenceChannels() );
   for ( size_t idx = 0; idx < functional.GetNumberOfReferenceChannels(); ++idx )
     {
-    stream.WriteString( "reference_channel", functional.GetReferenceChannel( idx )->m_MetaInformation[CMTK_META_FS_PATH].c_str() );
+    stream.WriteString( "reference_channel", functional.GetReferenceChannel( idx )->m_MetaInformation[META_FS_PATH].c_str() );
     }
 
   stream.WriteInt( "floating_channel_count", functional.GetNumberOfFloatingChannels() );
   for ( size_t idx = 0; idx < functional.GetNumberOfFloatingChannels(); ++idx )
     {
-    stream.WriteString( "floating_channel", functional.GetFloatingChannel( idx )->m_MetaInformation[CMTK_META_FS_PATH].c_str() );
+    stream.WriteString( "floating_channel", functional.GetFloatingChannel( idx )->m_MetaInformation[META_FS_PATH].c_str() );
     }
   
   stream << functional.GetTransformation();

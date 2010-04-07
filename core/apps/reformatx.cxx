@@ -97,8 +97,8 @@ CallbackTargetVolume( const char* arg )
     }
   
   UserDefinedTargetVolume = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( gridDims, gridDelta[0], gridDelta[1], gridDelta[2] ) );
-  UserDefinedTargetVolume->m_MetaInformation[CMTK_META_SPACE] = 
-    UserDefinedTargetVolume->m_MetaInformation[CMTK_META_SPACE_ORIGINAL] = cmtk::AnatomicalOrientation::ORIENTATION_STANDARD;
+  UserDefinedTargetVolume->m_MetaInformation[cmtk::META_SPACE] = 
+    UserDefinedTargetVolume->m_MetaInformation[cmtk::META_SPACE_ORIGINAL] = cmtk::AnatomicalOrientation::ORIENTATION_STANDARD;
 
   if ( numArgs == 9 )
     {

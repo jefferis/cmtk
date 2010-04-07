@@ -253,14 +253,14 @@ DoRegistration()
       for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = refChannelList.begin(); it != refChannelList.end(); ++it )
 	{
 	cmtk::UniformVolume::SmartPtr image = MakeDownsampled( (*it), downsample, smoothSigmaFactor );
-	image->m_MetaInformation[CMTK_META_FS_PATH] = (*it)->m_MetaInformation[CMTK_META_FS_PATH];
+	image->m_MetaInformation[META_FS_PATH] = (*it)->m_MetaInformation[META_FS_PATH];
 	functional->AddReferenceChannel( image );
 	}
 
       for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = fltChannelList.begin(); it != fltChannelList.end(); ++it )
 	{
 	cmtk::UniformVolume::SmartPtr image = MakeDownsampled( (*it), downsample, smoothSigmaFactor );
-	image->m_MetaInformation[CMTK_META_FS_PATH] = (*it)->m_MetaInformation[CMTK_META_FS_PATH];
+	image->m_MetaInformation[META_FS_PATH] = (*it)->m_MetaInformation[META_FS_PATH];
 	functional->AddFloatingChannel( image );
 	}
       }

@@ -124,7 +124,7 @@ main( const int argc, const char* argv[] )
       {
       const cmtk::Types::Coordinate size[3] = { Delta[0] * (Dims[0]-1),  Delta[1] * (Dims[1]-1),  Delta[2] * (Dims[2]-1) };
       volume = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( Dims, size ) );
-      volume->m_MetaInformation[CMTK_META_SPACE] = volume->m_MetaInformation[CMTK_META_SPACE_ORIGINAL] = cmtk::AnatomicalOrientation::ORIENTATION_STANDARD;
+      volume->m_MetaInformation[META_SPACE] = volume->m_MetaInformation[META_SPACE_ORIGINAL] = cmtk::AnatomicalOrientation::ORIENTATION_STANDARD;
       cmtk::TypedArray::SmartPtr data( cmtk::TypedArray::Create( DataType, volume->GetNumberOfPixels() ) );
       volume->SetData( data );
       data->Fill( Background );
