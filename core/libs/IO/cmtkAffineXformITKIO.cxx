@@ -84,7 +84,7 @@ cmtk::AffineXformITKIO
 	 << "FixedParameters: 0 0 0\n";
 }
 
-cmtk::AffineXform*
+cmtk::AffineXform::SmartPtr
 cmtk::AffineXformITKIO
 ::Read( const std::string& filename )
 {
@@ -94,11 +94,11 @@ cmtk::AffineXformITKIO
     std::string line;
     std::getline( stream, line );
     if ( line != "#Insight Transform File V1.0" )
-      return NULL;
+      return AffineXform::SmartPtr( NULL );
 
     std::getline( stream, line );
     if ( line != "# Transform 0" )
-      return NULL;
+      return AffineXform::SmartPtr( NULL );
 
     std::getline( stream, line );
     if ( line == "Transform: AffineTransform_double_3_3" || line == "Transform: AffineTransform_float_3_3" )
@@ -117,9 +117,9 @@ cmtk::AffineXformITKIO
 	{
 	stream >> matrix[3][i];
 	}
-      return new AffineXform( matrix );
+      return AffineXform::SmartPtr( new AffineXform( matrix ) );
       }
     }
   
-  return NULL;
+  return AffineXform::SmartPtr( NULL );
 }

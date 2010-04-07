@@ -48,7 +48,7 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-Xform* 
+Xform::SmartPtr 
 XformIO::Read( const char* path, const bool verbose )
 {
   const char* realPath = MountPoints::Translate( path );
@@ -76,9 +76,9 @@ XformIO::Read( const char* path, const bool verbose )
     
     TypedStreamStudylist studylist( realPath );
     if ( studylist.GetWarpXform() )
-      return studylist.GetWarpXform().ReleasePtr();
+      return studylist.GetWarpXform();
     else
-      return studylist.GetAffineXform()->MakeInverse();
+      return Xform::SmartPtr( studylist.GetAffineXform()->MakeInverse() );
     }
     case FILEFORMAT_TYPEDSTREAM: 
     {
@@ -91,24 +91,25 @@ XformIO::Read( const char* path, const bool verbose )
     WarpXform* warpXform;
     stream >> warpXform;
     
-    if ( warpXform ) return warpXform;
+    if ( warpXform ) 
+      return Xform::SmartPtr( warpXform );
     
     stream.Open( realPath, ClassStream::READ );
     try
       {
       AffineXform affineXform;
       stream >> affineXform;
-      return new AffineXform( affineXform );
+      return Xform::SmartPtr( new AffineXform( affineXform ) );
       }
     catch (...)
       {
-      return NULL;
+      return Xform::SmartPtr( NULL );
       }
     }
     default:
       StdErr << "The file/directory " << realPath << " does not seem to be in a supported transformation format\n";
     }
-  return NULL;
+  return Xform::SmartPtr( NULL );
 }
 
 void 

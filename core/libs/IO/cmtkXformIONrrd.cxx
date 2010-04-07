@@ -50,10 +50,10 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-Xform* 
+Xform::SmartPtr
 XformIO::ReadNrrd( const char* path, const bool )
 {
-  DeformationField* dfield = NULL;
+  DeformationField::SmartPtr dfield( NULL );
   try 
     {
     Nrrd *nrrd = nrrdNew();
@@ -63,19 +63,19 @@ XformIO::ReadNrrd( const char* path, const bool )
     if ( nrrd->dim != 4 )
       {
       StdErr << "ERROR: deformation field must be stored as 4-dimensional Nrrd.\n";
-      return NULL;
+      return dfield;
       }
 
     if ( nrrd->axis[0].kind != nrrdKindVector )
       {
       StdErr << "ERROR: deformation field vectors in Nrrd must be stored together.\n";
-      return NULL;
+      return dfield;
       }
     
     if ( nrrd->axis[0].size != 3 )
       {
       StdErr << "ERROR: deformation field vectors in Nrrd must be three dimensional.\n";
-      return NULL;
+      return dfield;
       }
 
     NrrdAxisInfo* nrrdSpaceAxes = nrrd->axis+1;
@@ -105,7 +105,7 @@ XformIO::ReadNrrd( const char* path, const bool )
 
     const Types::Coordinate size[3] = { (dims[0]-1) * spacing[0], (dims[1]-1) * spacing[1], (dims[2]-1) * spacing[2] };
     const Types::Coordinate origin[3] = { nrrd->spaceOrigin[0], nrrd->spaceOrigin[1], nrrd->spaceOrigin[2] };
-    dfield = new DeformationField( size, dims, origin );
+    dfield = DeformationField::SmartPtr( new DeformationField( size, dims, origin ) );
     
     ScalarDataType type = TYPE_NONE;
     switch ( nrrd->type )

@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -58,7 +58,7 @@ public:
   typedef XformIO Self;
 
   /// Read transformation from filesystem.
-  static Xform* Read( const char* path, const bool verbose = false );
+  static Xform::SmartPtr Read( const char* path, const bool verbose = false );
 
   /// Write transformation to filesystem.
   static void Write( const Xform* xform, const char* path, const bool verbose = false );
@@ -66,7 +66,7 @@ public:
 protected:
 #ifdef CMTK_BUILD_NRRD
   /// Read deformation field from Nrrd image file.
-  static Xform* ReadNrrd( const char* path, const bool verbose = false );
+  static Xform::SmartPtr ReadNrrd( const char* path, const bool verbose = false );
 
   /// Write transformation to filesystem.
   static void WriteNrrd( const Xform* xform, const char* path, const bool verbose = false );

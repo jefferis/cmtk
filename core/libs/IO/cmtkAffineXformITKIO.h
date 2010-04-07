@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009 SRI International
+//  Copyright 2009, 2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -61,7 +61,7 @@ public:
     );
   
   /// Read transformation from ITK file.
-  static AffineXform* Read( const std::string& filename );
+  static AffineXform::SmartPtr Read( const std::string& filename );
 };
 
 } // namespace cmtk
