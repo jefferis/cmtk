@@ -79,7 +79,7 @@ QtSimpleFusionMainWindow::slotAddStudy( Study::SmartPtr& study )
 }
 
 void
-QtSimpleFusionMainWindow::slotDeleteStudy( Study::SmartPtr& study )
+QtSimpleFusionMainWindow::slotDeleteStudy( Study::SmartPtr& )
 {
 }
 
