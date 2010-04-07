@@ -47,7 +47,8 @@ ScalarImageSimilarity::GetMutualInformation
 ( const ScalarImage* image0, const ScalarImage* image1,
   ScalarImageSimilarityMemory *const memory )
 {
-  if ( ! CheckImageDimensions( image0, image1 ) ) return CMTK_FLOAT_NAN;
+  if ( ! CheckImageDimensions( image0, image1 ) ) 
+    return MathUtil::GetFloatNaN();
 
   const TypedArray *data0 = image0->GetPixelData();
   const TypedArray *data1 = image1->GetPixelData();
@@ -59,7 +60,8 @@ ScalarImageSimilarity::ReturnType
 ScalarImageSimilarity::GetNormalizedMutualInformation
 ( const ScalarImage* image0, const ScalarImage* image1, ScalarImageSimilarityMemory *const )
 {
-  if ( ! CheckImageDimensions( image0, image1 ) ) return CMTK_FLOAT_NAN;
+  if ( ! CheckImageDimensions( image0, image1 ) ) 
+    return MathUtil::GetFloatNaN();
 
   const TypedArray *data0 = image0->GetPixelData();
   const TypedArray *data1 = image1->GetPixelData();
@@ -71,7 +73,8 @@ ScalarImageSimilarity::ReturnType
 ScalarImageSimilarity::GetMinusMeanSquaredDifference
 ( const ScalarImage* image0, const ScalarImage* image1 )
 {
-  if ( ! CheckImageDimensions( image0, image1 ) ) return CMTK_FLOAT_NAN;
+  if ( ! CheckImageDimensions( image0, image1 ) ) 
+    return MathUtil::GetFloatNaN();
 
   const TypedArray *data0 = image0->GetPixelData();
   const TypedArray *data1 = image1->GetPixelData();
@@ -83,7 +86,8 @@ ScalarImageSimilarity::ReturnType
 ScalarImageSimilarity::GetCrossCorrelation
 ( const ScalarImage* image0, const ScalarImage* image1 )
 {
-  if ( ! CheckImageDimensions( image0, image1 ) ) return CMTK_FLOAT_NAN;
+  if ( ! CheckImageDimensions( image0, image1 ) ) 
+    return MathUtil::GetFloatNaN();
 
   const TypedArray *data0 = image0->GetPixelData();
   const TypedArray *data1 = image1->GetPixelData();
@@ -95,7 +99,8 @@ ScalarImageSimilarity::ReturnType
 ScalarImageSimilarity::GetGradientCorrelation
 ( const ScalarImage* image0, const ScalarImage* image1 )
 {
-  if ( ! CheckImageDimensions( image0, image1 ) ) return CMTK_FLOAT_NAN;
+  if ( ! CheckImageDimensions( image0, image1 ) ) 
+    return MathUtil::GetFloatNaN();
 
   TypedArray::SmartPtr gradientX0( image0->GetSobelFiltered( CMTK_SCALARIMAGE_HORIZONTAL ) );
   TypedArray::SmartPtr gradientX1( image1->GetSobelFiltered( CMTK_SCALARIMAGE_HORIZONTAL ) );
@@ -110,7 +115,8 @@ ScalarImageSimilarity::ReturnType
 ScalarImageSimilarity::GetGradientDifference
 ( const ScalarImage* image0, const ScalarImage* image1, const ScalarImageSimilarity::ReturnType Ax, const ScalarImageSimilarity::ReturnType Ay )
 {
-  if ( ! CheckImageDimensions( image0, image1 ) ) return CMTK_FLOAT_NAN;
+  if ( ! CheckImageDimensions( image0, image1 ) ) 
+    return MathUtil::GetFloatNaN();
 
   TypedArray::SmartPtr gradientX0( image0->GetSobelFiltered( CMTK_SCALARIMAGE_HORIZONTAL ) );
   TypedArray::SmartPtr gradientX1( image1->GetSobelFiltered( CMTK_SCALARIMAGE_HORIZONTAL ) );
@@ -148,7 +154,8 @@ ScalarImageSimilarity::ReturnType
 ScalarImageSimilarity::GetPatternIntensity
 ( const ScalarImage* image0, const ScalarImage* image1, const ScalarImageSimilarity::ReturnType sigma, const int radius )
 {
-  if ( ! CheckImageDimensions( image0, image1 ) ) return CMTK_FLOAT_NAN;
+  if ( ! CheckImageDimensions( image0, image1 ) ) 
+    return MathUtil::GetFloatNaN();
 
   ScalarImageSimilarity::ReturnType PI = 0;
 
@@ -242,7 +249,8 @@ ScalarImageSimilarity::ReturnType
 ScalarImageSimilarity::GetDifferenceImageEntropy
 ( const ScalarImage* image0, const ScalarImage* image1, Types::DataItem &scaleFactor )
 {
-  if ( ! CheckImageDimensions( image0, image1 ) ) return CMTK_FLOAT_NAN;
+  if ( ! CheckImageDimensions( image0, image1 ) ) 
+    return MathUtil::GetFloatNaN();
 
   const TypedArray *data0 = image0->GetPixelData();
   const TypedArray *data1 = image1->GetPixelData();
@@ -254,7 +262,8 @@ ScalarImageSimilarity::ReturnType
 ScalarImageSimilarity::GetCorrelationRatio
 ( const ScalarImage* image0, const ScalarImage* image1 )
 {
-  if ( ! CheckImageDimensions( image0, image1 ) ) return CMTK_FLOAT_NAN;
+  if ( ! CheckImageDimensions( image0, image1 ) ) 
+    return MathUtil::GetFloatNaN();
   
   const TypedArray *data0 = image0->GetPixelData();
   const TypedArray *data1 = image1->GetPixelData();

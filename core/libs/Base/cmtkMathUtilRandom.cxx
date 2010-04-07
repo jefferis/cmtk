@@ -44,12 +44,8 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-namespace
-MathUtil
-{
-
 double
-UniformRandom()
+MathUtil::UniformRandom()
 {
 
  int seed = (int)time(0) + (int)( 1000 * rand() );
@@ -57,8 +53,6 @@ UniformRandom()
  double result = randGen.Random();
  return result;
 }
-
-} // namespace MathUtil
 
 } // namespace cmtk
 

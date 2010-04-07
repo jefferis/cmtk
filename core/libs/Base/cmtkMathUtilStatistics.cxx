@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -43,19 +43,15 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-namespace
-MathUtil
-{
-
 double
-TStatFromCorrelation
+MathUtil::TStatFromCorrelation
 ( const double r, const size_t df )
 {
   return r * sqrt( df / (1-r*r) ); 
 }
 
 double 
-ProbabilityFromTStat
+MathUtil::ProbabilityFromTStat
 ( const double t, const size_t df )
 {
   double stat;
@@ -69,5 +65,4 @@ ProbabilityFromTStat
   return incompletebeta( 0.5*df, 0.5, stat );
 }
 
-} // namespace MathUtil
 } // namespace cmtk

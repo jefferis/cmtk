@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,13 +39,9 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-namespace
-MathUtil
-{
-
 template<class T>                                                                     
 T                                                                                     
-Mean                                                                                  
+MathUtil::Mean                                                                                  
 ( const unsigned int nValues, const T* values )                                       
 {                                                                                     
   T mean = 0.0;                                                                       
@@ -59,7 +55,7 @@ Mean
                                                                                       
 template<class T>                                                                     
 T                                                                                     
-Variance                                                                              
+MathUtil::Variance                                                                              
 ( const unsigned int nValues, const T* values, const T mean, const bool unbiased )           
 {                                                                                            
   T sumOfSquares = 0.0;                                                                          
@@ -80,7 +76,7 @@ Variance
 
 template<class T>                                                                     
 T                                                                                     
-Mean                                                                                  
+MathUtil::Mean                                                                                  
 ( const std::vector<T>& values )                                       
 {                                                                                     
   const size_t nValues = values.size();
@@ -95,7 +91,7 @@ Mean
                                                                                       
 template<class T>                                                                     
 T                                                                                     
-Variance                                                                              
+MathUtil::Variance                                                                              
 ( const std::vector<T>& values, const T mean, const bool unbiased )           
 {                                                                                            
   const size_t nValues = values.size();
@@ -117,7 +113,7 @@ Variance
 
 template<class T>
 T
-Correlation
+MathUtil::Correlation
 ( const std::vector<T>& x, const std::vector<T>& y )
 {
   const size_t n = std::min( x.size(), y.size() );
@@ -147,7 +143,7 @@ Correlation
   
 template<class T>
 T
-TTest
+MathUtil::TTest
 ( const std::vector<T>& valuesX, const std::vector<T>& valuesY, T& t )
 {
   T averageX, averageY;
@@ -156,7 +152,7 @@ TTest
 
 template<class T>
 T
-PairedTTest
+MathUtil::PairedTTest
 ( const std::vector<T>& valuesX, const std::vector<T>& valuesY, T& t, T& avgX, T& avgY )
 {
   const size_t nValues = valuesX.size();
@@ -180,7 +176,7 @@ PairedTTest
  */
 template<class T>
 T
-TTest
+MathUtil::TTest
 ( const std::vector<T>& valuesX, const std::vector<T>& valuesY, T& t, T& avgX, T& avgY )
 {
   const size_t nValuesX = valuesX.size();
@@ -212,7 +208,7 @@ TTest
  */
 template<class T>
 T
-TTest
+MathUtil::TTest
 ( const std::vector<T>& valuesX, T& t, T& avgX )
 {
   const size_t nValuesX = valuesX.size();
@@ -228,5 +224,4 @@ TTest
   return (T) p1; // probability
 }
 
-} // namespace MathUtil
 } // namespace cmtk

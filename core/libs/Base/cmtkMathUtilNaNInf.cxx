@@ -45,19 +45,9 @@ MathUtil
 {
 
 const FPInitializeUnion FPInitializeNaN = {
-#if WORDS_BIGENDIAN
-  { 0x7fffffff, 0xffffffff }
-#else
-  { 0xffffffff, 0x7fffffff }
-#endif
 };
 
 const FPInitializeUnion FPInitializeInf = {
-#if WORDS_BIGENDIAN
-  { 0x7f800000, 0x00000000 }
-#else
-  { 0x00000000, 0x7f800000 }
-#endif
 };
 
 const void* FPInitializeNaN_P = &FPInitializeNaN;

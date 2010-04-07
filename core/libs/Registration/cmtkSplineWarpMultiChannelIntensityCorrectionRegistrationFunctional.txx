@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -97,7 +97,7 @@ SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional<TMetricFunctiona
     if ( !this->m_FloatingInterpolators[flt]->GetDataAt( fvector, values[idx++] ) )
       {
       for ( size_t f = 0; f < this->m_FloatingChannels.size(); ++f )
-	this->m_ReformattedFloatingChannels[f][rindex] = CMTK_FLOAT_NAN;
+	this->m_ReformattedFloatingChannels[f][rindex] = MathUtil::GetFloatNaN();
       return;
       }
     }

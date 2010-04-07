@@ -67,7 +67,6 @@ SET(cmtkBase_SRCS
   cmtkLandmark.cxx
   cmtkLandmarkList.cxx
   cmtkMatchedLandmarkList.cxx
-  cmtkMathUtilNaNInf.cxx
   cmtkMathUtilLinAlg.cxx
   cmtkMathUtilRandom.cxx
   cmtkMathUtilStatistics.cxx

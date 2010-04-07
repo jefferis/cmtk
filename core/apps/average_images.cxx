@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -42,6 +42,7 @@
 #include <cmtkUniformVolume.h>
 #include <cmtkTypedArray.h>
 #include <cmtkHistogram.h>
+#include <cmtkMathUtil.h>
 
 #include <math.h>
 #include <cmtkMathFunctionWrappers.h>
@@ -218,7 +219,7 @@ main( const int argc, const char* argv[] )
   if ( ! outputData ) 
     {
     outputData = cmtk::TypedArray::SmartPtr( cmtk::TypedArray::Create( DataType, volume->GetNumberOfPixels() ) );
-    outputData->SetPaddingValue( CMTK_FLOAT_NAN );
+    outputData->SetPaddingValue( cmtk::MathUtil::GetFloatNaN() );
     } 
   
   cmtk::ProgressConsole progressIndicator;

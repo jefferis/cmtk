@@ -49,13 +49,9 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-namespace
-MathUtil
-{
-
 template<class T>
 void
-ComputeEigensystem
+MathUtil::ComputeEigensystem
 ( const Matrix2D<T>& matrix, Matrix2D<T>& eigenvectors,  std::vector<T>& eigenvalues )
 {
   const size_t n = matrix.GetNumberOfColumns();
@@ -97,12 +93,12 @@ ComputeEigensystem
     eigenvalues[i] = static_cast<T>( apEigenvalues(i) );
 }
 
-template void ComputeEigensystem<float>( const Matrix2D<float>& matrix, Matrix2D<float>& eigensystem, std::vector<float>& eigenvalues );
-template void ComputeEigensystem<double>( const Matrix2D<double>& matrix, Matrix2D<double>& eigensystem, std::vector<double>& eigenvalues );
+template void MathUtil::ComputeEigensystem<float>( const Matrix2D<float>& matrix, Matrix2D<float>& eigensystem, std::vector<float>& eigenvalues );
+template void MathUtil::ComputeEigensystem<double>( const Matrix2D<double>& matrix, Matrix2D<double>& eigensystem, std::vector<double>& eigenvalues );
 
 template<class T>
 void
-ComputeEigenvalues
+MathUtil::ComputeEigenvalues
 ( const Matrix2D<T>& matrix, std::vector<T>& eigenvalues )
 {
   const size_t n = matrix.GetNumberOfColumns();
@@ -142,11 +138,11 @@ ComputeEigenvalues
     eigenvalues[i] = static_cast<T>( apEigenvalues(i) );
 }
 
-template void ComputeEigenvalues<float>( const Matrix2D<float>& matrix, std::vector<float>& eigenvalues );
-template void ComputeEigenvalues<double>( const Matrix2D<double>& matrix, std::vector<double>& eigenvalues );
+template void MathUtil::ComputeEigenvalues<float>( const Matrix2D<float>& matrix, std::vector<float>& eigenvalues );
+template void MathUtil::ComputeEigenvalues<double>( const Matrix2D<double>& matrix, std::vector<double>& eigenvalues );
 
 void 
-SVD( Matrix2D<double> *U, size_t m, size_t n, std::vector<double> *W, Matrix2D<double> *V )
+MathUtil::SVD( Matrix2D<double> *U, size_t m, size_t n, std::vector<double> *W, Matrix2D<double> *V )
 {
   ap::real_2d_array apA;
   apA.setbounds(0, m-1, 0, n-1);
@@ -183,7 +179,7 @@ SVD( Matrix2D<double> *U, size_t m, size_t n, std::vector<double> *W, Matrix2D<d
 /** TODO: move this someplace more logical than the linear-algebra module
  */
 void
-SVDLinearRegression( Matrix2D<double> *U, size_t m, size_t n, std::vector<double> *W, Matrix2D<double> *V, double *b, std::vector<double>& lm_params )
+MathUtil::SVDLinearRegression( Matrix2D<double> *U, size_t m, size_t n, std::vector<double> *W, Matrix2D<double> *V, double *b, std::vector<double>& lm_params )
 {
     // From alglib linear regression:
     // Take the inverses of the singular values, setting the inverse 
@@ -220,7 +216,7 @@ SVDLinearRegression( Matrix2D<double> *U, size_t m, size_t n, std::vector<double
 
 template<class T> 
 T
-CholeskyDeterminant
+MathUtil::CholeskyDeterminant
 (const Matrix2D<T>& matrix, int n)
 {    
   ap::real_2d_array apMatrix;
@@ -233,9 +229,8 @@ CholeskyDeterminant
   return determinant;
 }
 
-template double CholeskyDeterminant<double>(const Matrix2D<double>& matrix, int n);
-template float CholeskyDeterminant<float>(const Matrix2D<float>& matrix, int n);
+template double MathUtil::CholeskyDeterminant<double>(const Matrix2D<double>& matrix, int n);
+template float MathUtil::CholeskyDeterminant<float>(const Matrix2D<float>& matrix, int n);
 
-} // namespace MathUtil
 } // namespace cmtk
 

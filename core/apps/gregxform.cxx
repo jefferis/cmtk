@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -285,7 +285,7 @@ main( int argc, char *argv[] )
 	{
 	if(Binary)
 	  {
-	  const float nan3[3] = {CMTK_FLOAT_NAN,CMTK_FLOAT_NAN,CMTK_FLOAT_NAN};
+	  const float nan3[3] = { cmtk::MathUtil::GetFloatNaN(), cmtk::MathUtil::GetFloatNaN(), cmtk::MathUtil::GetFloatNaN()};
 	  fwrite( nan3, sizeof(float), 3, outfile );
 	  }
 	else

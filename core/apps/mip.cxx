@@ -44,8 +44,8 @@
 
 bool Verbose = false;
 
-double Black = CMTK_DOUBLE_NAN;
-double White = CMTK_DOUBLE_NAN;
+double Black = cmtk::MathUtil::GetDoubleNaN();
+double White = cmtk::MathUtil::GetDoubleNaN();
 
 int Axis = 2;
 

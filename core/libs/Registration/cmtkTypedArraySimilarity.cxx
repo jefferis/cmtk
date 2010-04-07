@@ -47,7 +47,8 @@ TypedArraySimilarity::GetMutualInformation
 ( const TypedArray* array0, const TypedArray* array1,
   TypedArraySimilarityMemory *const memory )
 {
-  if ( ! CheckArrayDimensions( array0, array1 ) ) return CMTK_FLOAT_NAN;
+  if ( ! CheckArrayDimensions( array0, array1 ) ) 
+    return MathUtil::GetFloatNaN();
 
   size_t dataSize = array0->GetDataSize();
 
@@ -86,7 +87,7 @@ TypedArraySimilarity::GetCorrelationRatio
  ( const TypedArray* array0, const TypedArray* array1 )
 {
   // check if both images have same number of pixels.
-  if ( ! CheckArrayDimensions( array0, array1 ) ) return CMTK_FLOAT_NAN;
+  if ( ! CheckArrayDimensions( array0, array1 ) ) return MathUtil::GetFloatNaN();
 
   // determine reference image value range.
   Types::DataItem min, max;
@@ -169,7 +170,7 @@ TypedArraySimilarity::GetNormalizedMutualInformation
 ( const TypedArray* array0, const TypedArray* array1,
   TypedArraySimilarityMemory *const memory )
 {
-  if ( ! CheckArrayDimensions( array0, array1 ) ) return CMTK_FLOAT_NAN;
+  if ( ! CheckArrayDimensions( array0, array1 ) ) return MathUtil::GetFloatNaN();
 
   size_t dataSize = array0->GetDataSize();
 
@@ -204,7 +205,7 @@ TypedArraySimilarity::ReturnType
 TypedArraySimilarity::GetMinusMeanSquaredDifference
 ( const TypedArray* array0, const TypedArray* array1 )
 {
-  if ( ! CheckArrayDimensions( array0, array1 ) ) return CMTK_FLOAT_NAN;
+  if ( ! CheckArrayDimensions( array0, array1 ) ) return MathUtil::GetFloatNaN();
 
   unsigned int countPixels = 0;
   Types::DataItem pixel0, pixel1;
@@ -221,7 +222,7 @@ TypedArraySimilarity::GetMinusMeanSquaredDifference
     }
   
   if ( !countPixels )
-    return CMTK_FLOAT_NAN;
+    return MathUtil::GetFloatNaN();
   else
     return static_cast<TypedArraySimilarity::ReturnType>( -(sumOfSquares / (float)countPixels) );
 }
@@ -239,7 +240,8 @@ TypedArraySimilarity::ReturnType
 TypedArraySimilarity::GetCrossCorrelation
 ( const TypedArray* array0, const TypedArray* array1 )
 {
-  if ( ! CheckArrayDimensions( array0, array1 ) ) return CMTK_FLOAT_NAN;
+  if ( ! CheckArrayDimensions( array0, array1 ) ) 
+    return MathUtil::GetFloatNaN();
 
   Types::DataItem pixel0, pixel1;
   Types::DataItem sumOfProducts = 0, sumOfSquares0 = 0, sumOfSquares1 = 0;
@@ -302,8 +304,7 @@ TypedArraySimilarity::GetDifferenceArrayEntropy
 ( const TypedArray* array0, const TypedArray* array1,
   Types::DataItem &scaleFactor )
 {
-  TypedArray::SmartPtr differenceArray
-    ( GetDifferenceArray( array0, array1, scaleFactor ) );
+  TypedArray::SmartPtr differenceArray( GetDifferenceArray( array0, array1, scaleFactor ) );
 
   return differenceArray->GetEntropy();
 }

@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -114,10 +114,18 @@ VolumeIO::Read( const char* path, const bool verbose )
     if ( dataArray ) 
       {
       if ( dataArray->GetType() == TYPE_FLOAT )
-	dataArray->SetPaddingPtr( &CMTK_FLOAT_INF );
+	{
+	const float fInf = MathUtil::GetFloatInf();
+	dataArray->SetPaddingPtr( &fInf );
+	}
       else
+	{
 	if ( dataArray->GetType() == TYPE_DOUBLE )
-	  dataArray->SetPaddingPtr( &CMTK_DOUBLE_INF );
+	  {
+	  const double dInf = MathUtil::GetDoubleInf();
+	  dataArray->SetPaddingPtr( &dInf );
+	  }
+	}
 
       for ( size_t i = 0; i < dataArray->GetDataSize(); ++i )
 	{

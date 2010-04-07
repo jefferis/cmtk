@@ -82,7 +82,7 @@ Histogram<T>
   
   const T sampleCount = this->SampleCount();
   if ( ! sampleCount ) 
-    return CMTK_DOUBLE_NAN;
+    return MathUtil::GetDoubleNaN();
   
   for ( size_t i=0; i<this->m_NumBins; ++i ) 
     {
