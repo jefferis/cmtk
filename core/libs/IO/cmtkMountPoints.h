@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -57,12 +57,13 @@ cmtk
  * able to read data written by this PC.
  *@see MountPoints
  */
-#define CMTK_MOUNTPOINTSVAR "CMTK_MOUNTPOINTS"
+const char* const CMTK_MOUNTPOINTSVAR = "CMTK_MOUNTPOINTS";
+
 /** Legacy environment variable.
  * This is what CMTK_MOUNTPOINTS used to be called in an earlier life. We
  * continue to check for it so we don't break older scripts.
  */
-#define IGS_MOUNTPOINTSVAR "IGS_MOUNTPOINTS"
+const char* const IGS_MOUNTPOINTSVAR = "IGS_MOUNTPOINTS";
 
 /** Directory translation.
  * This class implements a translation for file system paths. This is used to
