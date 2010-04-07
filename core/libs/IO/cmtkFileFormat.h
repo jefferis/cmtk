@@ -57,34 +57,32 @@ typedef enum {
   FILEFORMAT_DICOM = 5,
   /// Path is a Vanderbilt image description file.
   FILEFORMAT_VANDERBILT = 6,
-  /// Path is a GIPL (Guy's Hospital Image Processing Lab) image file.
-  FILEFORMAT_GIPL = 7,
   /// Path is a Amira image file.
-  FILEFORMAT_AMIRA = 8,
+  FILEFORMAT_AMIRA = 7,
   /// Path is some raw binary file (2-D).
-  FILEFORMAT_RAW = 9,
+  FILEFORMAT_RAW = 8,
   /// Path is some raw binary file (3-D).
-  FILEFORMAT_RAW3D = 10,
+  FILEFORMAT_RAW3D = 9,
   /// Path is an Accuray image file
-  FILEFORMAT_ACCURAY = 11,
+  FILEFORMAT_ACCURAY = 10,
   /// Path is a BioRad .PIC image file.
-  FILEFORMAT_BIORAD = 12,
+  FILEFORMAT_BIORAD = 11,
   /// Path is a NRRD file.
-  FILEFORMAT_NIFTI_DETACHED = 13,
+  FILEFORMAT_NIFTI_DETACHED = 12,
   /// Path is a NRRD file.
-  FILEFORMAT_NIFTI_SINGLEFILE = 14,
+  FILEFORMAT_NIFTI_SINGLEFILE = 13,
   /// Path is an Analyze AVW file.
-  FILEFORMAT_ANALYZE_AVW = 15,
+  FILEFORMAT_ANALYZE_AVW = 14,
   /// Path is a MetaImage file.
-  FILEFORMAT_METAIMAGE = 16,
+  FILEFORMAT_METAIMAGE = 15,
   /// Path is a NRRD file.
-  FILEFORMAT_NRRD = 17,
+  FILEFORMAT_NRRD = 16,
   /// Path is an Analyze header file in little endian.
-  FILEFORMAT_ANALYZE_HDR = 18,
+  FILEFORMAT_ANALYZE_HDR = 17,
   /// Path is an Analyze header file in little endian.
-  FILEFORMAT_ANALYZE_HDR_BIGENDIAN = 19,
+  FILEFORMAT_ANALYZE_HDR_BIGENDIAN = 18,
   /// Path is an ITK transformation file.
-  FILEFORMAT_ITK_TFM = 20,
+  FILEFORMAT_ITK_TFM = 19,
   /** File type cannot be determined.
    * This ID always has to be the last one!
    */

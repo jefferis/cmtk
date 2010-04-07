@@ -74,7 +74,6 @@ const FileFormatMagic FileFormatMagicNumbers[] = {
   { 0, "P5", 2 }, // PGM
   { 128, "DICM", 4 }, // DICOM
   { 0, "Modality :=", 11 }, // VANDERBILT
-  { 252, "\x2A\xE3\x89\xB8", 4 }, // GIPL
   { 0, "# AmiraMesh 3D", 14 },
   { 0, NULL, 0 }, // RAW
   { 0, NULL, 0 }, // RAW3D
@@ -107,8 +106,6 @@ const char* FileFormatName[] =
   "DICOM",
   /// Path is a Vanderbilt image description file.
   "VANDERBILT",
-  /// Path is a GIPL (Guy's Hospital Image Processing Lab) image file.
-  "GIPL",
   /// Path is a Amira image file.
   "AMIRA",
   /// Path is some raw binary file (2-D).
@@ -185,8 +182,6 @@ FileFormat::Describe( const FileFormatID id )
       return "DICOM image file [File].";
     case FILEFORMAT_VANDERBILT:
       return "Vanderbilt header/image file combination [File].";
-    case FILEFORMAT_GIPL:
-      return "GIPL image file [File].";
     case FILEFORMAT_AMIRA:
       return "AmiraMesh image file [File].";
     case FILEFORMAT_ACCURAY:
