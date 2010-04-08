@@ -70,16 +70,19 @@ public:
   static Self Null;
   
   /// Get current reference counter value: use with caution!
-  unsigned int GetReferenceCount() const { return ReferenceCount->Get(); }
+  unsigned int GetReferenceCount() const 
+  { 
+    return this->m_ReferenceCount->Get(); 
+  }
 
   /** Construct from dumb pointer.
    * Note that you MUST NEVER use this constructor more than once for each
    * dumb pointer, other than NULL!
    */
   explicit SmartPointer( T *const object = NULL ) 
+    : m_Object( object )
   { 
-    ReferenceCount = new SafeCounter( 1 );
-    Object = object;
+    this->m_ReferenceCount = new SafeCounter( 1 );
   }
 
   /** Construct from other smart pointer reference.
@@ -87,60 +90,60 @@ public:
    */
   template<class T2>
   SmartPointer( const SmartPointer<T2>& ptr ) 
-    : ReferenceCount( ptr.ReferenceCount ),
-      Object( ptr.Object )
+    : m_ReferenceCount( ptr.m_ReferenceCount ),
+      m_Object( ptr.m_Object )
   {
-    this->ReferenceCount->Increment();
+    this->m_ReferenceCount->Increment();
   }
   
   /// Destruct: decrease reference pointer and free dumb pointer if necessary.
   ~SmartPointer() 
   {
-    assert( ReferenceCount != NULL ); // we may have Object=NULL, but ReferenceCount should never be!
-    if ( ! ReferenceCount->Decrement() ) 
+    assert( this->m_ReferenceCount != NULL ); // we may have m_Object=NULL, but m_ReferenceCount should never be!
+    if ( ! this->m_ReferenceCount->Decrement() ) 
       {
-      delete ReferenceCount;
+      delete this->m_ReferenceCount;
 #ifdef DEBUG
-      ReferenceCount = NULL;
+      this->m_ReferenceCount = NULL;
 #endif
-      if ( Object ) 
+      if ( this->m_Object ) 
 	{
-	delete Object;
+	delete this->m_Object;
 #ifdef DEBUG
-	Object = NULL;
+	this->m_Object = NULL;
 #endif
 	}
       }
   }
 
   /// De-referencing operator (returns non-constant object).
-  T& operator*() { return *Object; }
+  T& operator*() { return *this->m_Object; }
 
   /// De-referencing operator (returns constant object).
-  const T& operator*() const { return *Object; }
+  const T& operator*() const { return *this->m_Object; }
 
   /// De-referencing operator (returns non-constant object pointer).
-  T* operator->() { return Object; }
+  T* operator->() { return this->m_Object; }
 
   /// De-referencing operator (returns constant object pointer).
-  const T* operator->() const { return Object; }
+  const T* operator->() const { return this->m_Object; }
 
   /// Implicit conversion to constant pointer.
-  operator const T*() const { return Object; }
+  operator const T*() const { return m_Object; }
   
   /// Explicit conversion to non-constant pointer.
-  T* GetPtr() { return Object; }
+  T* GetPtr() { return this->m_Object; }
 
   /// Explicit conversion to constant pointer.
-  const T* GetPtr() const { return Object; }
+  const T* GetPtr() const { return this->m_Object; }
 
   /** Release control of this pointer.
    *\note This is a dangerous function. Be sure you know what you are doing!
    */
   T* ReleasePtr() 
   { 
-    T* object = Object; 
-    Object = NULL; 
+    T* object = this->m_Object; 
+    this->m_Object = NULL; 
     return object; 
   }
 
@@ -153,72 +156,61 @@ public:
   const Self& operator= ( const Self other ) const
   {
     using std::swap;
-    swap( this->ReferenceCount, other.ReferenceCount );
-    swap( this->Object, other.Object );
+    swap( this->m_ReferenceCount, other.m_ReferenceCount );
+    swap( this->m_Object, other.m_Object );
 
     return *this;
   }
-
-#ifndef __SUNPRO_CC
-#ifndef _MSC_VER
-  /** Assignment operator.
-   */
-  Self& operator= ( Self& other )
-  {
-    return const_cast<Self&>( static_cast<const Self&>(*this) = other );
-  }
-#endif
-#endif
 
   /** Equality operator using pointer.
    */
   bool operator== ( const Self& other ) const 
   {
-    return (this->Object == other.Object);
+    return (this->m_Object == other.m_Object);
   }
   
   /** Inequality operator.
    */
   bool operator!= ( const Self& other ) const 
   {
-    return (this->Object != other.Object);
+    return (this->m_Object != other.m_Object);
   }
   
   /** "Smaller than" operator (necessay for storing objects in std::map).
    */
   bool operator< ( const Self& other ) const 
   {
-    return ( this->Object < other.Object );
+    return ( this->m_Object < other.m_Object );
   }
   
   /// Implicit cast conversion operator.
   template<class T2> operator SmartPointer<T2>() 
   { 
-    return SmartPointer<T2>( Object, ReferenceCount );
+    return SmartPointer<T2>( this->m_Object, this->m_ReferenceCount );
   }
   
   ///Dynamic cast between smart pointer types.
   template<class T2> 
   static Self DynamicCastFrom( const T2& from_P )
   {
-    return Self( dynamic_cast<typename Self::PointerType>( from_P.Object ), from_P.ReferenceCount );
+    return Self( dynamic_cast<typename Self::PointerType>( from_P.m_Object ), from_P.m_ReferenceCount );
   }
 
 private:
   /// Pointer to detached reference counter for this object.
-  mutable SafeCounter* ReferenceCount;
+  mutable SafeCounter* m_ReferenceCount;
   
   /// Pointer for reference-counted object.
-  mutable T* Object;
+  mutable T* m_Object;
   
   /** Construct from dumb pointer and existing reference counter.
    * The reference counter is increased in the process.
    */
   SmartPointer( T *const object, SafeCounter *const counter ) 
   {
-    Object = object;
-    ReferenceCount = counter;
-    ReferenceCount->Increment();
+    this->m_Object = object;
+    this->m_ReferenceCount = counter;
+    this->m_ReferenceCount->Increment();
   }
   
   /// Make all template instances friends for easy type casting.
