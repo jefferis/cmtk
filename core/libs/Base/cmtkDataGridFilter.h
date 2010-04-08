@@ -56,7 +56,7 @@ public:
   typedef DataGridFilter Self;
 
   /// Constructor: link to DataGrid object.
-  DataGridFilter( DataGrid::SmartPtr dataGrid );
+  explicit DataGridFilter( DataGrid::SmartPtr dataGrid );
 
   /// Return data after median-filtering with global filter radius (convenience function).
   TypedArray::SmartPtr GetDataMedianFiltered( const int radius ) const
