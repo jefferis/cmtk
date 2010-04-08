@@ -183,12 +183,6 @@ public:
     return ( this->m_Object < other.m_Object );
   }
   
-  /// Implicit cast conversion operator.
-  template<class T2> operator SmartPointer<T2>() 
-  { 
-    return SmartPointer<T2>( this->m_Object, this->m_ReferenceCount );
-  }
-  
   ///Dynamic cast between smart pointer types.
   template<class T2> 
   static Self DynamicCastFrom( const T2& from_P )
