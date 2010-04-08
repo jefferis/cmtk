@@ -86,18 +86,10 @@ public:
    * Increment reference counter in the process.
    */
   SmartPointer( const Self& ptr ) 
+    : ReferenceCount( ptr.ReferenceCount ),
+      Object( ptr.Object )
   {
-    if ( &ptr ) 
-      {
-      ReferenceCount = ptr.ReferenceCount;
-      ReferenceCount->Increment();
-      Object = ptr.Object;
-      } 
-    else 
-      {
-      ReferenceCount = new SafeCounter( 1 );
-      Object = NULL;
-      }
+    this->ReferenceCount->Increment();
   }
   
   /// Destruct: decrease reference pointer and free dumb pointer if necessary.
@@ -216,8 +208,7 @@ public:
   template<class T2> 
   static Self DynamicCastFrom( const T2& from_P )
   {
-    Self result( dynamic_cast<typename Self::PointerType>( from_P.Object ), from_P.ReferenceCount );
-    return result;
+    return Self( dynamic_cast<typename Self::PointerType>( from_P.Object ), from_P.ReferenceCount );
   }
 
 private:
