@@ -197,14 +197,6 @@ public:
     return SmartPointer<T2>( Object, ReferenceCount );
   }
   
-#ifndef _MSC_VER
-  /// Implicit cast conversion operator.
-  template<class T2> operator const SmartPointer<T2>() const
-  { 
-    return SmartPointer<T2>( Object, ReferenceCount );
-  }
-#endif
-  
   ///Dynamic cast between smart pointer types.
   template<class T2> 
   static Self DynamicCastFrom( const T2& from_P )
