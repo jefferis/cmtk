@@ -38,10 +38,6 @@
 #  define NULL 0
 #endif
 
-#ifdef DEBUG
-#  include <cstdio>
-#endif
-
 #include <algorithm>
 #include <cassert>
 
