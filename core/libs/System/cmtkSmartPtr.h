@@ -85,11 +85,21 @@ public:
     this->m_ReferenceCount = new SafeCounter( 1 );
   }
 
-  /** Construct from other smart pointer reference.
+  /** Copy constructor template.
    * Increment reference counter in the process.
    */
   template<class T2>
   SmartPointer( const SmartPointer<T2>& ptr ) 
+    : m_ReferenceCount( ptr.m_ReferenceCount ),
+      m_Object( ptr.m_Object )
+  {
+    this->m_ReferenceCount->Increment();
+  }
+  
+  /** Copy constructor to prevent compiler-generated copy constructor.
+   * Increment reference counter in the process.
+   */
+  SmartPointer( const Self& ptr ) 
     : m_ReferenceCount( ptr.m_ReferenceCount ),
       m_Object( ptr.m_Object )
   {
@@ -152,6 +162,9 @@ public:
    *\warning The "other" parameter HAS TO USE CALL BY VALUE for this function to work,
    *  because we are not creating an explicit copy of the original object before 
    *  calling Swap() (see Effective C++, 3rd, Item 11, p.56).
+   *\warning Open question: given that we pass the parameter by value, not reference, does
+   *  this really prevent the definition of a compiler-generated assignment (which passes
+   *  parameter by reference)?
    */
   const Self& operator= ( const Self other ) const
   {
