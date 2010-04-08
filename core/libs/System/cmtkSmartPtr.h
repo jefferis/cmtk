@@ -85,7 +85,8 @@ public:
   /** Construct from other smart pointer reference.
    * Increment reference counter in the process.
    */
-  SmartPointer( const Self& ptr ) 
+  template<class T2>
+  SmartPointer( const SmartPointer<T2>& ptr ) 
     : ReferenceCount( ptr.ReferenceCount ),
       Object( ptr.Object )
   {
