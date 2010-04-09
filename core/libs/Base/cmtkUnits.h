@@ -122,6 +122,36 @@ public:
 inline Degrees::Degrees( const Radians& radians ) : UnitBase( radians.Value() / UnitBase::Pi() * 180 ) {};
 inline Radians::Radians( const Degrees& degrees ) : UnitBase( degrees.Value() * UnitBase::Pi() / 180 ) {};
 
+/// Forward declaration.
+class GaussianFWHM;
+
+/// Parameter "\sigma" of Gaussian kernel
+class GaussianSigma :
+    public UnitBase, public Arithmetic<GaussianSigma>
+{
+public:
+  /// Constructor.
+  explicit GaussianSigma( const double value = 0 ) : UnitBase( value ) {};
+
+  /// Conversion constructor.
+  inline GaussianSigma( const GaussianFWHM& radians );
+};
+
+/// Full width at half maximum of Gaussian kernel.
+class GaussianFWHM :
+    public UnitBase, public Arithmetic<GaussianFWHM>
+{
+public:
+  /// Constructor.
+  explicit GaussianFWHM( const double value = 0 ) : UnitBase( value ) {};
+
+  /// Conversion constructor.
+  inline GaussianFWHM( const GaussianSigma& degrees );
+};
+
+inline GaussianSigma::GaussianSigma( const GaussianFWHM& fwhm ) : UnitBase( fwhm.Value() / 2.354820045 ) {};
+inline GaussianFWHM::GaussianFWHM( const GaussianSigma& sigma ) : UnitBase( sigma.Value() * 2.354820045 ) {};
+
 }
 
 //@}
