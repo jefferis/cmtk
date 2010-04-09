@@ -62,7 +62,7 @@ XformIO::Read( const char* path, const bool verbose )
 #else
     StdErr << "ERROR: " << realPath << " is a Nrrd file, but Nrrd support is not enabled.\n"
 	   << "  Please re-configure software using either '--with-nrrd' or '--with-nrrd-teem' switch.\n";
-    return NULL;
+    return Xform::SmartPtr( NULL );
 #endif
     }
     case FILEFORMAT_ITK_TFM:
