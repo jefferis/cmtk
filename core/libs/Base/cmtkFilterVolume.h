@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,6 +39,7 @@
 
 #include <cmtkUniformVolume.h>
 #include <cmtkTypedArray.h>
+#include <cmtkUnits.h>
 
 namespace
 cmtk
@@ -63,7 +64,7 @@ public:
    * example, to replace the one held by the input image. The data type of the
    * array is identical to the input array.
    */
-  static TypedArray* GaussianFilter( const UniformVolume* volume, const Types::Coordinate width, const Types::Coordinate radius = 1.0, const TypedArray* maskData = NULL );
+  static TypedArray* GaussianFilter( const UniformVolume* volume, const Units::GaussianSigma& width, const Types::Coordinate radius = 1.0, const TypedArray* maskData = NULL );
 
   /** Apply Coupe denoising filter.
    *\param volume Input 3D image.
@@ -91,8 +92,8 @@ public:
    */
   static TypedArray* RohlfingFilter
   ( const UniformVolume* volume, const TypedArray* subjectData,
-    const TypedArray* maskData, const Types::Coordinate iFilterSigma,
-    const Types::Coordinate filterWidth, const Types::Coordinate filterRadius );
+    const TypedArray* maskData, const Units::GaussianSigma& iFilterSigma,
+    const Units::GaussianSigma& filterWidth, const Types::Coordinate filterRadius );
   
   /** Apply Colin Studholme's Gaussian filter with registration-based weights.
    *\param volume Input 3D image.
@@ -116,7 +117,7 @@ public:
   ( const UniformVolume* volume, const TypedArray* subjectData,
     const TypedArray* averageData, const TypedArray* maskData,
     std::list<TypedArray::SmartPtr> imgList, const Types::DataItem binWidth,
-    const Types::Coordinate filterWidth, const Types::Coordinate filterRadius );
+    const Units::GaussianSigma& filterWidth, const Types::Coordinate filterRadius );
 
   /** Apply Colin Studholme's Gaussian filter using multiple time points.
    *\param volume Input 3D image.
@@ -143,7 +144,7 @@ public:
     std::list<TypedArray::SmartPtr> subjectData,
     const TypedArray* averageData, const TypedArray* maskData,
     std::list<TypedArray::SmartPtr> imgList, const Types::DataItem binWidth,
-    const Types::Coordinate filterWidth, const Types::Coordinate filterRadius );
+    const Units::GaussianSigma& filterWidth, const Types::Coordinate filterRadius );
 private:
   /** Return the mean value of a vector of Types::DataItems.
    *\param items Block of Types::DataItems. 

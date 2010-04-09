@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,6 +35,7 @@
 #include <cmtkconfig.h>
 
 #include <cmtkTypes.h>
+#include <cmtkUnits.h>
 #include <cmtkMathUtil.h>
 #include <cmtkSmartPtr.h>
 
@@ -200,10 +201,10 @@ public:
   {
   public:
     /// Constructor.
-    Gaussian( const Types::Coordinate standardDeviation ) 
+    Gaussian( const Units::GaussianSigma& standardDeviation ) 
     {
-      InvStandardDeviation = 1.0 / standardDeviation;
-      NormFactor = 1.0 / (sqrt(2.0 * M_PI) * standardDeviation);
+      InvStandardDeviation = 1.0 / standardDeviation.Value();
+      NormFactor = 1.0 / (sqrt(2.0 * M_PI) * standardDeviation.Value());
     }
     
     /// Get filter coefficient at relative location from filter center.

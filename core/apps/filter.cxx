@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -40,6 +40,8 @@
 
 #include <cmtkVolumeIO.h>
 #include <cmtkFilterVolume.h>
+
+#include <cmtkUnits.h>
 
 #ifdef CMTK_USE_SQLITE
 #  include <cmtkImageXformDB.h>
@@ -97,7 +99,7 @@ int main( int argc, char* argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
 
-    cl.AddOption( Key( 'g', "gaussian" ), &GaussianWidth, "Gaussian filter width", &Gaussian );
+    cl.AddOption( Key( 'g', "gaussian" ), &GaussianWidth, "Gaussian filter width (sigma)", &Gaussian );
     cl.AddOption( Key( 'r', "radius" ), &Radius, "Filter radius (truncated outside)" );
     cl.AddOption( Key( 'm', "mask" ), &MaskFileName, "Binary mask file name" );
 
@@ -194,7 +196,7 @@ int main( int argc, char* argv[] )
       }
     
     cmtk::TypedArray::SmartPtr filtered
-      ( cmtk::FilterVolume::StudholmeFilter( volume,  subject->GetData(), average->GetData(), maskData, imageList, IntensityBinWidth, GaussianWidth, Radius ) );
+      ( cmtk::FilterVolume::StudholmeFilter( volume,  subject->GetData(), average->GetData(), maskData, imageList, IntensityBinWidth, cmtk::Units::GaussianSigma( GaussianWidth ), Radius ) );
     volume->SetData( filtered );
     } 
   else
@@ -209,14 +211,14 @@ int main( int argc, char* argv[] )
 	}
 
       cmtk::TypedArray::SmartPtr filtered
-	( cmtk::FilterVolume::RohlfingFilter( volume,  subject->GetData(), maskData, IntensityGaussianSigma, GaussianWidth, Radius ) );
+	( cmtk::FilterVolume::RohlfingFilter( volume,  subject->GetData(), maskData, cmtk::Units::GaussianSigma( IntensityGaussianSigma ), cmtk::Units::GaussianSigma( GaussianWidth ), Radius ) );
       volume->SetData( filtered );
       }
     else
       {
       if ( Gaussian ) 
         {
-        cmtk::TypedArray::SmartPtr filtered( cmtk::FilterVolume::GaussianFilter( volume, GaussianWidth, Radius, maskData ) );
+        cmtk::TypedArray::SmartPtr filtered( cmtk::FilterVolume::GaussianFilter( volume, cmtk::Units::GaussianSigma( GaussianWidth ), Radius, maskData ) );
         volume->SetData( filtered );
         }
       else 

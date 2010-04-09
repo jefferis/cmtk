@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -52,7 +52,7 @@ cmtk
 
 TypedArray* 
 FilterVolume::GaussianFilter
-( const UniformVolume* volume, const Types::Coordinate width, const Types::Coordinate radius, const TypedArray* maskData )
+( const UniformVolume* volume, const Units::GaussianSigma& width, const Types::Coordinate radius, const TypedArray* maskData )
 {
   const TypedArray* inputData = volume->GetData();
   if ( ! inputData ) return NULL;
@@ -138,8 +138,8 @@ TypedArray*
 FilterVolume
 ::RohlfingFilter
 ( const UniformVolume* volume, const TypedArray* subjectData,
-  const TypedArray* maskData, const Types::Coordinate iFilterSigma,
-  const Types::Coordinate filterWidth, const Types::Coordinate filterRadius )
+  const TypedArray* maskData, const Units::GaussianSigma& iFilterSigma,
+  const Units::GaussianSigma& filterWidth, const Types::Coordinate filterRadius )
 {
   const TypedArray* inputData = volume->GetData();
   if ( ! inputData ) return NULL;
@@ -161,14 +161,14 @@ FilterVolume
   histogram.SetRange( minSubj, maxSubj );
 #endif // #ifdef _OPENMP
 
-  const size_t iKernelRadius = 1 + static_cast<size_t>( 2 * iFilterSigma * numBins );
+  const size_t iKernelRadius = 1 + static_cast<size_t>( 2 * iFilterSigma.Value() * numBins );
   Types::DataItem* iKernel = Memory::AllocateArray<Types::DataItem>( iKernelRadius );
   if ( iKernelRadius > 1 )
     {
-    const Types::DataItem normFactor = static_cast<Types::DataItem>( 1.0/(sqrt(2*M_PI) * iFilterSigma * numBins) ); // not really necessary since we normalize during convolution
+    const Types::DataItem normFactor = static_cast<Types::DataItem>( 1.0/(sqrt(2*M_PI) * iFilterSigma.Value() * numBins) ); // not really necessary since we normalize during convolution
     for ( size_t i = 0; i < iKernelRadius; ++i )
       {
-      iKernel[i] = static_cast<Types::DataItem>( normFactor * exp( -MathUtil::Square( 1.0 * i / (iFilterSigma*numBins) ) / 2 ) );
+      iKernel[i] = static_cast<Types::DataItem>( normFactor * exp( -MathUtil::Square( 1.0 * i / (iFilterSigma.Value()*numBins) ) / 2 ) );
       }
     }
   else
@@ -263,7 +263,7 @@ FilterVolume::StudholmeFilter
 ( const UniformVolume* volume, const TypedArray* subjectData,
   const TypedArray* averageData, const TypedArray* maskData,
   std::list<TypedArray::SmartPtr> imgList, const Types::DataItem binWidth, 
-  const Types::Coordinate filterWidth, const Types::Coordinate filterRadius )
+  const Units::GaussianSigma& filterWidth, const Types::Coordinate filterRadius )
 {
   const TypedArray* inputData = volume->GetData();
   if ( ! inputData ) return NULL;
@@ -408,7 +408,7 @@ FilterVolume::StudholmeFilter
   std::list<TypedArray::SmartPtr> subjectData,
   const TypedArray* averageData, const TypedArray* maskData,
   std::list<TypedArray::SmartPtr> imgList, const Types::DataItem binWidth, 
-  const Types::Coordinate filterWidth, const Types::Coordinate filterRadius )
+  const Units::GaussianSigma& filterWidth, const Types::Coordinate filterRadius )
 {
   const TypedArray* inputData = volume->GetData();
   if ( ! inputData ) return NULL;
