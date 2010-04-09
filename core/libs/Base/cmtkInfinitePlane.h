@@ -1,7 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,6 +39,7 @@
 #include <cmtkVector3D.h>
 #include <cmtkAffineXform.h>
 #include <cmtkMathUtil.h>
+#include <cmtkUnits.h>
 
 namespace
 cmtk
@@ -75,25 +76,25 @@ public:
   }
   
   /// Set parameter Theta.
-  void SetTheta( const Types::Coordinate theta ) 
+  void SetTheta( const Units::Degrees& theta ) 
   {
     Theta = theta; this->Update();
   }
   
   /// Get parameter Theta.
-  Types::Coordinate GetTheta() const
+  const Units::Degrees GetTheta() const
   { 
     return Theta; 
   }
   
   /// Set parameter Phi.
-  void SetPhi( const Types::Coordinate phi ) 
+  void SetPhi( const Units::Degrees& phi ) 
   {
     Phi = phi; this->Update();
   }
   
   /// Get parameter Phi.
-  Types::Coordinate GetPhi() const 
+  const Units::Degrees GetPhi() const 
   { 
     return Phi; 
   }
@@ -105,14 +106,14 @@ public:
   void GetParameters( CoordinateVector& v ) const 
   {
     v.SetDim( 6 );
-    v[0] = Rho; v[1] = Theta; v[2] = Phi;
+    v[0] = Rho; v[1] = Theta.Value(); v[2] = Phi.Value();
     v[3] = this->m_Origin[0]; v[4] = this->m_Origin[1]; v[5] = this->m_Origin[2];
   }
   
   /// Set all parameters.
   void SetParameters( const CoordinateVector& v ) 
   {
-    Rho = v[0]; Theta = v[1]; Phi = v[2]; 
+    Rho = v[0]; Theta = Units::Degrees( v[1] ); Phi = Units::Degrees( v[2] ); 
     this->m_Origin[0] = v[3]; this->m_Origin[1] = v[4]; this->m_Origin[2] = v[5];
     this->Update();
   }
@@ -200,10 +201,10 @@ private:
   Types::Coordinate Rho;
 
   /// Rotation angle of tangent point around z axis through Origin.
-  Types::Coordinate Theta;
+  Units::Degrees Theta;
 
   /// Elevation angle of tangent point over x/y plane through Origin.
-  Types::Coordinate Phi;
+  Units::Degrees Phi;
 
   /// Plane normal.
   Vector3D Normal;

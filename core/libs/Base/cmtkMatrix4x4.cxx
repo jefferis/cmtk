@@ -105,13 +105,13 @@ Matrix4x4<T>&
 Matrix4x4<T>::Compose
 ( const Types::Coordinate params[15], const bool logScaleFactors )
 {
-  const double alpha = MathUtil::DegToRad(params[3]);
-  const double theta = MathUtil::DegToRad(params[4]);
-  const double   phi = MathUtil::DegToRad(params[5]);
+  const Units::Radians alpha = Units::Degrees( params[3] );
+  const Units::Radians theta = Units::Degrees( params[4] );
+  const Units::Radians   phi = Units::Degrees( params[5] );
 
-  const double cos0 = cos(alpha), sin0 = sin(alpha);
-  const double cos1 = cos(theta), sin1 = sin(theta);
-  const double cos2 = cos(  phi), sin2 = sin(  phi);
+  const double cos0 = MathUtil::Cos(alpha), sin0 = MathUtil::Sin(alpha);
+  const double cos1 = MathUtil::Cos(theta), sin1 = MathUtil::Sin(theta);
+  const double cos2 = MathUtil::Cos(  phi), sin2 = MathUtil::Sin(  phi);
 
   const double sin0xsin1 = sin0 * sin1;
   const double cos0xsin1 = cos0 * sin1;
@@ -329,7 +329,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     sinTheta = x2 / d1;
     }
   
-  params[5] = MathUtil::RadToDeg(-atan2 (sinTheta, cosTheta)); // theta
+  params[5] = Units::Degrees( Units::Radians( -atan2 (sinTheta, cosTheta ) ) ).Value(); // theta
     
     // now rotate about x axis
   dot = x2 * x2 + y2 * y2 + z2 * z2;
@@ -352,7 +352,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       cosPhi = ( x2 * x2 + z2 * z2) / (d1 * d);
       }
   
-  params[4] = MathUtil::RadToDeg(-atan2 (sinPhi, cosPhi)); // phi 
+  params[4] = Units::Degrees( Units::Radians( -atan2 (sinPhi, cosPhi) ) ).Value(); // phi 
   
   // finally, rotate about z
   x3p = x3 * cosTheta - z3 * sinTheta;
@@ -371,7 +371,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     sinAlpha = x3p / d2;
     }
   
-  params[3] = MathUtil::RadToDeg(-atan2 (sinAlpha, cosAlpha)); // alpha
+  params[3] = Units::Degrees( Units::Radians( -atan2 (sinAlpha, cosAlpha) ) ).Value(); // alpha
   
   if ( logScaleFactor )
     {

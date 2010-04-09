@@ -365,7 +365,7 @@ AffineXform::Insert( const AffineXform& other )
 
 void 
 AffineXform::RotateWXYZ
-( const Types::Coordinate angle, const Vector3D& direction,
+( const Units::Radians angle, const Vector3D& direction,
   const Types::Coordinate* center, Self::MatrixType *const accumulate )
 {
   Vector3D unit( direction );
@@ -401,8 +401,8 @@ AffineXform::RotateWXYZ
   double z = unit.XYZ[2];
 
   // make a normalized quaternion
-  const double w = cos(0.5*angle);
-  const double f = sin(0.5*angle)/sqrt(x*x+y*y+z*z);
+  const double w = MathUtil::Cos(0.5*angle);
+  const double f = MathUtil::Sin(0.5*angle)/sqrt(x*x+y*y+z*z);
   x *= f;
   y *= f;
   z *= f;

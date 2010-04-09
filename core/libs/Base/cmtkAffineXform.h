@@ -42,6 +42,8 @@
 
 #include <cmtkSmartPtr.h>
 
+#include <cmtkUnits.h>
+
 namespace
 cmtk
 {
@@ -258,7 +260,7 @@ public:
    * accumulated transformation, and b) the new rotation is concatenated onto
    * the accumulated matrix by multiplication.
    */
-  void RotateWXYZ( const Types::Coordinate angle, const Vector3D& direction, const Types::Coordinate* origin = NULL, Self::MatrixType *const accumulate = NULL );
+  void RotateWXYZ( const Units::Radians angle, const Vector3D& direction, const Types::Coordinate* origin = NULL, Self::MatrixType *const accumulate = NULL );
 
   /// Change transformation coordinate system.
   void ChangeCoordinateSystem

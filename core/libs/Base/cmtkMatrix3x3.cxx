@@ -79,13 +79,13 @@ template<class T>
 Matrix3x3<T>&
 Matrix3x3<T>::Compose( const Types::Coordinate params[8] )
 {
-  Types::Coordinate alpha = MathUtil::DegToRad(params[2]);
+  const Units::Radians alpha = Units::Degrees( params[2] );
 
-  this->Matrix[0][0] = static_cast<T>(  cos( alpha ) * params[3] );
-  this->Matrix[0][1] = static_cast<T>( -sin( alpha ) * params[3] );
+  this->Matrix[0][0] = static_cast<T>(  MathUtil::Cos( alpha ) * params[3] );
+  this->Matrix[0][1] = static_cast<T>( -MathUtil::Sin( alpha ) * params[3] );
   this->Matrix[0][2] = static_cast<T>( 0.0 );
-  this->Matrix[1][0] = static_cast<T>(  sin( alpha ) * params[4] );
-  this->Matrix[1][1] = static_cast<T>(  cos( alpha ) * params[4] );
+  this->Matrix[1][0] = static_cast<T>(  MathUtil::Sin( alpha ) * params[4] );
+  this->Matrix[1][1] = static_cast<T>(  MathUtil::Cos( alpha ) * params[4] );
   this->Matrix[1][2] = static_cast<T>( 0.0 );
   this->Matrix[2][0] = static_cast<T>( 0.0 );
   this->Matrix[2][1] = static_cast<T>( 0.0 );
@@ -177,7 +177,7 @@ Matrix3x3<T>::Decompose
     sinTheta = y2 / d1;
     }
     
-  params[2] = static_cast<T>( MathUtil::RadToDeg( atan2 (sinTheta, cosTheta) ) );
+  params[2] = static_cast<T>( Units::Degrees( MathUtil::ArcTan2 (sinTheta, cosTheta) ).Value() );
     
   return true;
 #undef IGS_EPSILON

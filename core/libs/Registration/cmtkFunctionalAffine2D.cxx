@@ -161,7 +161,7 @@ FunctionalAffine2D::GetParamStep
     // rotation
     const Types::Coordinate minSize = std::min( FltImagesROI[0]->GetDims( AXIS_X ) * FltImagesROI[0]->GetPixelSize( AXIS_X ),
 					    FltImagesROI[0]->GetDims( AXIS_Y ) * FltImagesROI[0]->GetPixelSize( AXIS_Y ) );
-    return MathUtil::RadToDeg( atan( 2 * mmStep / minSize ) );
+    return Units::Degrees( MathUtil::ArcTan( 2 * mmStep / minSize ) ).Value();
     }
     case 3: 
     {

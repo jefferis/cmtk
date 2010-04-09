@@ -1,5 +1,8 @@
 Release CMTK-1.3.0:
 
+- API: introduced "cmtk::Units" namespace with classes that handle conversions
+    between units, e.g., between degrees and radians. Also added unit-safe
+    trigonometric functions to MathUtil class.
 - Refactored: numerous code improvements based on suggestions from the third
     edition of Meyers, S., "Effective C++"
 - Removed: obsolete real-valued mod operators in MathUtil namespace.

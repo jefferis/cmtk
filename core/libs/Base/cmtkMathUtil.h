@@ -34,6 +34,7 @@
 
 #include <cmtkconfig.h>
 
+#include <cmtkUnits.h>
 #include <cmtkMatrix.h>
 
 #include <math.h>
@@ -117,6 +118,48 @@ public:
 #else
     return Self::GetInternalInf().m_Union.f[1];
 #endif
+  }
+
+  /// Unit-safe sin() function.
+  static double Sin( const Units::Radians& radians )
+  {
+    return sin( radians.Value() );
+  }
+  
+  /// Unit-safe cos() function.
+  static double Cos( const Units::Radians& radians )
+  {
+    return cos( radians.Value() );
+  }
+  
+  /// Unit-safe tan() function.
+  static double Tan( const Units::Radians& radians )
+  {
+    return tan( radians.Value() );
+  }
+  
+  /// Unit-safe asin() function.
+  static const Units::Radians ArcSin( const double value )
+  {
+    return Units::Radians( asin( value ) );
+  }
+
+  /// Unit-safe acos() function.
+  static const Units::Radians ArcCos( const double value )
+  {
+    return Units::Radians( acos( value ) );
+  }
+  
+  /// Unit-safe aten() function.
+  static const Units::Radians ArcTan( const double value )
+  {
+    return Units::Radians( atan( value ) );
+  }
+  
+  /// Unit-safe atan2() function.
+  static const Units::Radians ArcTan2( const double y, const double x )
+  {
+    return Units::Radians( atan2( y, x ) );
   }
   
   /// Return square of a float value.
@@ -252,32 +295,6 @@ public:
   /// Linear Regression using SVD results
   static void
   SVDLinearRegression( Matrix2D<double> *U, size_t m, size_t n, std::vector<double> *W, Matrix2D<double> *V, double *b, std::vector<double>& lm_params );
-  
-  /** Convert degrees to radians.
-   * No range checking is done. If the given angle is outside the range 
-   * [0..360], the returned value will be outside the range [0..2Pi]. However,
-   * the result will still be correct in the sense that it will denote the
-   * same angle.
-   *@param deg Angle in degrees (0 through 360).
-   *@return Equivalent angle in radians (0 through 2 Pi).
-   */
-  static inline double DegToRad ( const double deg ) 
-  {
-    return static_cast<double>( deg * (M_PI/180.0) ); 
-  }
-  
-  /** Convert radians to degrees.
-   * No range checking is done. If the given angle is outside the range 
-   * [0..2 Pi], the returned value will be outside the range [0..2Pi]. However,
-   * the result will still be correct in the sense that it will denote the
-   * same angle.
-   *@param rad Angle in radians (0 through 2 Pi).
-   *@return Equivalent angle in degrees (0 through 360).
-   */
-  static inline double RadToDeg ( const double rad ) 
-  { 
-    return static_cast<float>( rad * (180.0/M_PI) ); 
-  }
   
   /// Function that compares two floats; to be used in qsort().
   static inline int CompareFloat( const void *a, const void *b ) 

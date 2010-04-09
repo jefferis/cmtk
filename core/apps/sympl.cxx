@@ -40,6 +40,7 @@
 #include <cmtkBestNeighbourOptimizer.h>
 
 #include <cmtkTypes.h>
+#include <cmtkUnits.h>
 #include <cmtkTypedArray.h>
 
 #include <stdio.h>
@@ -70,7 +71,9 @@ cmtk::Interpolators::InterpolationEnum Interpolation = cmtk::Interpolators::LINE
 int Levels = 4;
 
 bool OutputOnly = false;
-cmtk::Types::Coordinate Rho, Theta, Phi;
+cmtk::Types::Coordinate Rho;
+cmtk::Units::Degrees Theta;
+cmtk::Units::Degrees Phi;
 
 bool DoWriteMirror = false;
 const char* MirrorOutFile = "symmetry_mirror.hdr";
@@ -191,7 +194,9 @@ bool ParseCommandLine ( const int argc, const char* argv[] )
       double rho, theta, phi;
       if ( 3 == sscanf( SymmetryParameters, "%lf %lf %lf", &rho, &theta, &phi ) ) 
 	{
-	Rho = rho; Theta = theta, Phi = phi;
+	Rho = rho; 
+	Theta = cmtk::Units::Degrees( theta );
+	Phi = cmtk::Units::Degrees( phi );
 	}
       }
     
@@ -424,8 +429,8 @@ main ( const int argc, const char* argv[] )
   if ( OutputOnly ) 
     {
     v[0] = Rho;
-    v[1] = Theta;
-    v[2] = Phi;
+    v[1] = Theta.Value();
+    v[2] = Phi.Value();
     } 
   else
     {

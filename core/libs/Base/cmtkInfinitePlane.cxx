@@ -43,21 +43,20 @@ cmtk
 //@{
 
 InfinitePlane::InfinitePlane()
+  : Rho( 0 ),
+    Theta( 0 ),
+    Phi( 0 )
 {
   this->m_Origin.Set( 0, 0, 0 );
-  Rho = Theta = Phi = 0;
   this->Update();
 }
 
 void
 InfinitePlane::Update()
 {
-  Types::Coordinate radTheta = static_cast<Types::Coordinate>( MathUtil::DegToRad( Theta ) );
-  Types::Coordinate radPhi = static_cast<Types::Coordinate>( MathUtil::DegToRad( Phi ) );
-
-  Normal.XYZ[0] = cos( radTheta ) * sin( radPhi );
-  Normal.XYZ[1] = sin( radTheta ) * sin( radPhi );
-  Normal.XYZ[2] = cos( radPhi );
+  Normal.XYZ[0] = MathUtil::Cos( Theta ) * MathUtil::Sin( Phi );
+  Normal.XYZ[1] = MathUtil::Sin( Theta ) * MathUtil::Sin( Phi );
+  Normal.XYZ[2] = MathUtil::Cos( Phi );
 
   SquareNormal = Normal * Normal;
 }
@@ -67,14 +66,13 @@ InfinitePlane::SetNormal( const Vector3D& normal )
 {
   this->Normal = (1.0 / normal.EuclidNorm()) * normal;
   
-  const Types::Coordinate radPhi = acos( this->Normal.XYZ[2] );
-  this->Phi = static_cast<Types::Coordinate>( MathUtil::RadToDeg( radPhi ) );
+  this->Phi = MathUtil::ArcCos( this->Normal.XYZ[2] );
 
-  const Types::Coordinate sinPhi = sin( radPhi );
+  const Types::Coordinate sinPhi = MathUtil::Sin( this->Phi );
   if ( sinPhi != 0 )
-    this->Theta = static_cast<Types::Coordinate>( MathUtil::RadToDeg( asin( this->Normal.XYZ[1] / sinPhi ) ) );
+    this->Theta = MathUtil::ArcSin( this->Normal.XYZ[1] / sinPhi );
   else
-    this->Theta = 0;
+    this->Theta = Units::Degrees( 0 );
 
   this->SquareNormal = this->Normal * this->Normal;
 }
@@ -93,11 +91,11 @@ InfinitePlane::GetAlignmentXform( const byte normalAxis ) const
     case 0:
     {
     // first make y component zero.
-    angles[2] = static_cast<Types::Coordinate>( -MathUtil::RadToDeg( atan2( Normal[1], Normal[0]  ) ) );
+    angles[2] = -1.0 * Units::Degrees( MathUtil::ArcTan2( Normal[1], Normal[0] ) ).Value();
     
     // compute x component of normal vector after first rotation; remember that y component will be zero after this rotation.
     const Types::Coordinate newNormal0 = MathUtil::Sign( Normal[0] ) * sqrt( 1 - Normal[2]*Normal[2] );
-    angles[1] = static_cast<Types::Coordinate>( -MathUtil::RadToDeg( atan2( Normal[2], newNormal0 ) ) );
+    angles[1] = -1.0 * Units::Degrees( MathUtil::ArcTan2( Normal[2], newNormal0 ) ).Value();
     break;
     }
 
@@ -105,11 +103,11 @@ InfinitePlane::GetAlignmentXform( const byte normalAxis ) const
     case 1:
     {
     // first make x component zero.
-    angles[2] = static_cast<Types::Coordinate>( -MathUtil::RadToDeg( atan2( Normal[0], Normal[1]  ) ) );
+    angles[2] = -1.0 * Units::Degrees( MathUtil::ArcTan2( Normal[0], Normal[1] ) ).Value();
     
     // compute y component of normal vector after first rotation; remember that x component will be zero after this rotation.
     const Types::Coordinate newNormal1 = MathUtil::Sign( Normal[1] ) * sqrt( 1 - Normal[2]*Normal[2] );
-    angles[0] = static_cast<Types::Coordinate>( -MathUtil::RadToDeg( atan2( Normal[2], newNormal1 ) ) );
+    angles[0] = -1.0 * Units::Degrees( MathUtil::ArcTan2( Normal[2], newNormal1 ) ).Value();
     break;
     }
 
@@ -117,11 +115,11 @@ InfinitePlane::GetAlignmentXform( const byte normalAxis ) const
     case 2:
     {
     // first make x component zero.
-    angles[1] = static_cast<Types::Coordinate>( -MathUtil::RadToDeg( atan2( Normal[0], Normal[2]  ) ) );
+    angles[1] = -1.0 * Units::Degrees( MathUtil::ArcTan2( Normal[0], Normal[2] ) ).Value();
     
     // compute z component of normal vector after first rotation; remember that x component will be zero after this rotation.
     const Types::Coordinate newNormal2 = MathUtil::Sign( Normal[2] ) * sqrt( 1 - Normal[1]*Normal[1] );
-    angles[0] = static_cast<Types::Coordinate>( -MathUtil::RadToDeg( atan2( Normal[1], newNormal2 ) ) );
+    angles[0] = -1.0 * Units::Degrees( MathUtil::ArcTan2( Normal[1], newNormal2 ) ).Value();
     break;
     }
     }
