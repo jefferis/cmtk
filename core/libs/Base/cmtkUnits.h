@@ -119,8 +119,8 @@ public:
   inline Radians( const Degrees& degrees );
 };
 
-inline Degrees::Degrees( const Radians& radians ) : UnitBase( radians.Value() / UnitBase::Pi() * 180 ) {};
-inline Radians::Radians( const Degrees& degrees ) : UnitBase( degrees.Value() * UnitBase::Pi() / 180 ) {};
+inline Degrees::Degrees( const Radians& radians ) : UnitBase( radians.Value() / (UnitBase::Pi() * 180) ) {};
+inline Radians::Radians( const Degrees& degrees ) : UnitBase( degrees.Value() * (UnitBase::Pi() / 180) ) {};
 
 /// Forward declaration.
 class GaussianFWHM;
