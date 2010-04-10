@@ -2,6 +2,8 @@
 //
 //  Copyright 2010 SRI International
 //
+//  Copyright 2010 Torsten Rohlfing
+//
 //  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
