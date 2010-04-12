@@ -5,7 +5,7 @@ registration {
 	floating_study "rat_fse_late.hdr"
 	affine_xform {
 		xlate 0 -0.1 -0.1 
-		rotate 1.110223025e-16 -0.08865917133 1.110223025e-16 
+		rotate 0 -0.08865917133 0 
 		scale 1 1 1 
 		shear 0 0 0 
 		center 31.5 31.5 7.200000286 

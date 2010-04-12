@@ -329,7 +329,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     sinTheta = x2 / d1;
     }
   
-  params[5] = Units::Degrees( Units::Radians( -atan2 (sinTheta, cosTheta ) ) ).Value(); // theta
+  params[5] = Units::Degrees( -MathUtil::ArcTan2( sinTheta, cosTheta ) ).Value(); // theta
     
     // now rotate about x axis
   dot = x2 * x2 + y2 * y2 + z2 * z2;
@@ -352,7 +352,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       cosPhi = ( x2 * x2 + z2 * z2) / (d1 * d);
       }
   
-  params[4] = Units::Degrees( Units::Radians( -atan2 (sinPhi, cosPhi) ) ).Value(); // phi 
+  params[4] = Units::Degrees( -MathUtil::ArcTan2( sinPhi, cosPhi ) ).Value(); // phi 
   
   // finally, rotate about z
   x3p = x3 * cosTheta - z3 * sinTheta;
@@ -371,7 +371,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     sinAlpha = x3p / d2;
     }
   
-  params[3] = Units::Degrees( Units::Radians( -atan2 (sinAlpha, cosAlpha) ) ).Value(); // alpha
+  params[3] = Units::Degrees( -MathUtil::ArcTan2( sinAlpha, cosAlpha ) ).Value(); // alpha
   
   if ( logScaleFactor )
     {

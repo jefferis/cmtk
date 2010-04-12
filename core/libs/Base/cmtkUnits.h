@@ -92,6 +92,12 @@ public:
   {
     return T( lhs.Value() + rhs.Value() );
   }
+
+  /// Negation.
+  friend const T operator-( const T& rhs )
+  {
+    return T( -rhs.Value() );
+  }
 };
 
 /// Forward declaration.

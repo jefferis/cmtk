@@ -280,7 +280,10 @@ IF(NOT CMTK_USE_MPI)
   
   # ==========================================
   # Tests for "mat2dof" tool
-  SET(testList ${testList} mat2dof1 mat2dof2)
+  SET(testList ${testList} 
+    mat2dof1
+    mat2dof2
+    mat2dofFile)
 
   # ==========================================
   # Multi-channel registration requires hash map to build

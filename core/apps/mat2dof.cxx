@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,6 +32,7 @@
 
 #include <cmtkconfig.h>
 
+#include <fstream>
 #include <iostream>
 
 #include <cmtkConsole.h>
@@ -45,24 +47,46 @@
 #include <cmtkClassStreamAffineXform.h>
 #include <cmtkClassStreamStudyList.h>
 
-const char* CenterStr = NULL;
-const char* OffsetStr = NULL;
-const char* TranslateStr = NULL;
-const char* PixelSizeStr = NULL;
+void
+ReadMatrix( cmtk::Types::Coordinate (&matrix)[4][4], std::istream& stream, const bool matrix3x3 )
+{
+  memset( matrix, 0 , sizeof( matrix ) );
 
-const char* Reference = "reference";
-const char* Floating = "floating";
-
-const char* OutList = NULL;
-bool AppendToOutput = false;
-
-bool Matrix3x3 = false;
-bool Transpose = false;
-bool Inverse = false;
+  if ( matrix3x3 )
+    {
+    for ( int row = 0; row < 3; ++row )
+      for ( int col = 0; col < 3; ++col )
+	stream >> matrix[col][row];
+    matrix[3][3] = 1.0;
+    }
+  else
+    {
+    for ( int row = 0; row < 4; ++row )
+      for ( int col = 0; col < 4; ++col )
+	stream >> matrix[col][row];
+    }
+}
 
 int
 main( const int argc, const char* argv[] )
 {
+  const char* CenterStr = NULL;
+  const char* OffsetStr = NULL;
+  const char* TranslateStr = NULL;
+  const char* PixelSizeStr = NULL;
+  
+  const char* Reference = "reference";
+  const char* Floating = "floating";
+  
+  const char* OutList = NULL;
+  bool AppendToOutput = false;
+  
+  bool Matrix3x3 = false;
+  bool Transpose = false;
+  bool Inverse = false;
+  
+  const char* InputFileName = NULL;
+  
   try
     {
     cmtk::CommandLine cl( argc, argv );
@@ -83,6 +107,8 @@ main( const int argc, const char* argv[] )
     cl.AddOption( Key( 'A', "append" ), &OutList, "Append output to this archive", &AppendToOutput );
 
     cl.Parse();
+
+    InputFileName = cl.GetNextOptional();
     }
   catch ( cmtk::CommandLine::Exception e )
     {
@@ -91,21 +117,23 @@ main( const int argc, const char* argv[] )
     }
 
   cmtk::Types::Coordinate matrix[4][4];
-  memset( matrix, 0 , sizeof( matrix ) );
-  if ( Matrix3x3 )
+  if ( InputFileName )
     {
-    for ( int row = 0; row < 3; ++row )
-      for ( int col = 0; col < 3; ++col )
-	std::cin >> matrix[col][row];
-    matrix[3][3] = 1.0;
+    std::ifstream stream( InputFileName );
+    if ( stream.good() )
+      {
+      ReadMatrix( matrix, stream, Matrix3x3 );
+      }
+    else
+      {
+      cmtk::StdErr << "ERROR: cannot open input file " << InputFileName << "\n";
+      }
     }
   else
     {
-    for ( int row = 0; row < 4; ++row )
-      for ( int col = 0; col < 4; ++col )
-	std::cin >> matrix[col][row];
+    ReadMatrix( matrix, std::cin, Matrix3x3 );
     }
-
+  
   if ( Transpose )
     {
     for ( int row = 0; row < 3; ++row )

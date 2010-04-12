@@ -759,6 +759,10 @@ case ${RUNTEST} in
         run_eval "${BINDIR}/mat2dof --center -28,-48,-28 --offset 28,48,28 --pixel-size 1.06667,0.5,1.06667 --inverse -l ${tmpdir} < rigid-air.mat"
 	check_results registration
 	;;
+    mat2dofFile)
+        run_eval "${BINDIR}/mat2dof --center -28,-48,-28 --offset 28,48,28 --pixel-size 1.06667,0.5,1.06667 -l ${tmpdir} rigid-air.mat"
+	check_results registration
+	;;
     mcaffine1)
 	run mcaffine --downsample-from 4 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --dofs 6 --covariance -o ${tmpdir}/xform pat001_mr_T1.hdr -- pat001_pet.hdr
 	check_results xform

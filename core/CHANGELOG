@@ -1,5 +1,7 @@
 Release CMTK-1.3.0:
 
+- Added: mat2dof tool can now read from file in addition to reading from
+    std::cin via redirection.
 - API: introduced "cmtk::Units" namespace with classes that handle conversions
     between units, e.g., between degrees and radians. Also added unit-safe
     trigonometric functions to MathUtil class.
