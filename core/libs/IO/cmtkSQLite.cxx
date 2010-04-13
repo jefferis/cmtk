@@ -31,41 +31,37 @@
 #include <cmtkSQLite.h>
 
 #include <cmtkConsole.h>
+#include <cmtkException.h>
 
 #include <stdlib.h>
 
 cmtk::SQLite::SQLite
 ( const std::string& dbPath, const bool readOnly )
-  : m_DebugMode( false )
+  : m_Good( false ),
+    m_DebugMode( false )
 {
   if ( readOnly )
     {
-    if( sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READONLY, NULL /*zVFS*/ ) != SQLITE_OK )
-      {
-      cmtk::StdErr << "Can't open database " << dbPath << " read-only: " << sqlite3_errmsg( this->m_DB ) << "\n";
-      sqlite3_close( this->m_DB );
-      exit(1);
-      }
+    this->m_Good = (sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READONLY, NULL /*zVFS*/ ) == SQLITE_OK);
     }
   else
     {
-    if ( sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL /*zVFS*/ ) != SQLITE_OK )
-      {
-      cmtk::StdErr << "Can't open database " << dbPath << " for writing: " << sqlite3_errmsg( this->m_DB ) << "\n";
-      sqlite3_close( this->m_DB );
-      exit(1);
-      }
+    this->m_Good = (sqlite3_open_v2( dbPath.c_str(), &this->m_DB, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL /*zVFS*/ ) == SQLITE_OK);
     }
 }
 
 cmtk::SQLite::~SQLite()
 {
-  sqlite3_close( this->m_DB );
+  if ( this->m_Good )
+    sqlite3_close( this->m_DB );
 }
 
 void
 cmtk::SQLite::Exec( const std::string& sql )
 {
+  if ( ! this->Good() )
+    throw Exception( "Attempting operation on invalid SQLite databse object" );
+
   if ( this->m_DebugMode )
     {
     StdErr << sql << "\n";
@@ -76,7 +72,6 @@ cmtk::SQLite::Exec( const std::string& sql )
     {
     StdErr << "Exec " << sql << "\nSQL error: " << err << "\n";
     sqlite3_free( err );
-    exit(1);
     }
 }
 
@@ -103,6 +98,9 @@ cmtkSQLiteQueryCallback( void* pTable, int ncols, char** rowdata, char** )
 void
 cmtk::SQLite::Query( const std::string& sql, cmtk::SQLite::TableType& table ) const
 {
+  if ( ! this->Good() )
+    throw Exception( "Attempting operation on invalid SQLite databse object" );
+
   if ( this->m_DebugMode )
     {
     StdErr << sql << "\n";
@@ -115,7 +113,6 @@ cmtk::SQLite::Query( const std::string& sql, cmtk::SQLite::TableType& table ) co
     {
     StdErr << "Query " << sql << "\nSQL error: " << err << "\n";
     sqlite3_free( err );
-    exit(1);
     }
 }
 

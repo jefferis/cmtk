@@ -69,6 +69,12 @@ public:
   /// Destructor: close database.
   virtual ~SQLite();
 
+  /// Test "good" flag.
+  bool Good() const
+  {
+    return this->m_Good;
+  }
+
   /// Execute an SQL command with no return value.
   void Exec( const std::string& sql );
 
@@ -87,6 +93,9 @@ public:
 protected:
   /// Database object.
   mutable sqlite3 *m_DB;
+
+  /// Flag for "good" database object.
+  bool m_Good;
 
   /// Debug mode flag: if this is set, all executed SQL queries will be printed to standard error.
   bool m_DebugMode;
