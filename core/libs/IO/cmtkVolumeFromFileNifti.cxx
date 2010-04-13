@@ -72,22 +72,22 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
     return NULL;
     }
   
-  char buffer[348];
-  if ( sizeof(buffer) != hdrStream.Read( buffer, 1, sizeof(buffer) ) ) 
+  nifti_1_header buffer;
+  if ( sizeof(buffer) != hdrStream.Read( &buffer, 1, sizeof(buffer) ) ) 
     {
-    StdErr.printf( "ERROR: could not read 352 bytes from header file %s\n", pathHdr );
+    StdErr.printf( "ERROR: could not read %d bytes from header file %s\n", int( sizeof( buffer ) ), pathHdr );
     return NULL;
     }
   hdrStream.Close();
   
   // determine if we need to byte-swap
-  const int dim0 = reinterpret_cast<const nifti_1_header*>(&buffer[0])->dim[0];
+  const int dim0 = buffer.dim[0];
   const bool byteSwap = ((dim0>0) && (dim0<8)) ? false : true;
 
 #ifdef WORDS_BIGENDIAN
-  FileHeader header( buffer, !byteSwap );
+  FileHeader header( &buffer, !byteSwap );
 #else
-  FileHeader header( buffer, byteSwap );
+  FileHeader header( &buffer, byteSwap );
 #endif
 
   short ndims = header.GetField<short>( 40 );
