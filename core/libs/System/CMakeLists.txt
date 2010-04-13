@@ -40,7 +40,6 @@ SET(cmtkSystem_SRCS
   cmtkCommandLineNonOptionParameterVector.cxx
   cmtkCompressedStream.cxx
   cmtkConsole.cxx
-  cmtkException.cxx
   cmtkFileUtil.cxx
   cmtkProgress.cxx	
   cmtkProgressConsole.cxx	

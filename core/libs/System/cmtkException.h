@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,10 +36,8 @@
 #include <cmtkconfig.h>
 
 #include <exception>
-
-#ifndef NULL
-#define NULL 0
-#endif
+#include <cstdlib>
+#include <string>
 
 namespace
 cmtk
@@ -63,48 +62,35 @@ public:
    *@param fromObject An optional pointer to the object that encountered the
    * condition causing the exception.
    */
-  Exception( const char *errorMsg = NULL, void *fromObject = NULL ) 
+  Exception( const std::string& errorMsg = "", void *fromObject = NULL ) 
   {
-    ErrorMsg = errorMsg;
-    FromObject = fromObject;
+    this->m_ErrorMsg = errorMsg;
+    this->m_FromObject = fromObject;
   }
   
-  /** Constructor.
-   *@param errorMsg An optional error message describing the condition causing
-   * the exception.
-   *@param fromObject An optional pointer to the object that encountered the
-   * condition causing the exception.
-   */
-  Exception( const void *fromObject, const char *errorMsgFormat, ... );
+  /// Virtual destructor.
+  virtual ~Exception() throw() {};
 
   /** Return pointer to the error message.
    */
-  const char* GetErrorMsg() const { return ErrorMsg; }
+  const std::string& GetErrorMsg() const { return this->m_ErrorMsg; }
 
   /** Return pointer to the object that encountered the error condition.
    */
-  const void* GetFromObject() const { return FromObject; }
-
-  /** Utility function: Format error message.
-   * This function formats an error message using the printf() syntax and
-   * a variable number of parameters. It uses an internal buffer private to
-   * the Exception class, so the caller does not need to provide separate
-   * storage for formatting the message.
-   */
-  static char* FormatErrorMsg( const char* format, ... );
+  const void* GetFromObject() const { return this->m_FromObject; }
 
   /// Overwrite inherited "what" member.
   virtual const char* what() const throw()
   {
-    return ErrorMsg;
+    return this->m_ErrorMsg.c_str();
   }  
 
 private:
   /// Pointer to a string describing the condition causing the exception.
-  const char* ErrorMsg;
+  std::string m_ErrorMsg;
 
   /// Pointer to the object that encountered the error condition.
-  const void* FromObject;
+  const void* m_FromObject;
 };
 
 //@}
