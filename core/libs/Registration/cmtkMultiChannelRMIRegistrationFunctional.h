@@ -53,7 +53,7 @@ template<class TRealType = double,
 	 class TInterpolator = UniformVolumeInterpolator<Interpolators::Linear> >
 class MultiChannelRMIRegistrationFunctional :
   /** Inherit functional interface. */
-  public MultiChannelRegistrationFunctional<TDataType,TInterpolator>
+  public MultiChannelRegistrationFunctional<TInterpolator>
 {
 public:
   /** This class. */
@@ -63,7 +63,7 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /** Superclass. */
-  typedef MultiChannelRegistrationFunctional<TDataType,TInterpolator> Superclass;
+  typedef MultiChannelRegistrationFunctional<TInterpolator> Superclass;
 
   /** Real value type for internal computations. */
   typedef TRealType RealType;

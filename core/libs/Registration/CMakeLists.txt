@@ -1,6 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
-##  Copyright 2004-2009 SRI International
+##
+##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -65,6 +66,7 @@ SET(cmtkRegistration_SRCS
   cmtkInverseInterpolationVolumeReconstructionBase.cxx
   cmtkIterativeDirectionOptimizer.cxx
   cmtkMakeInitialAffineTransformation.cxx
+  cmtkMultiChannelRegistrationFunctionalBase.cxx
   cmtkMultiLevelOptimizer.cxx
   cmtkProtocolCallback.cxx
   cmtkReformatVolume.cxx
@@ -102,7 +104,8 @@ SET(cmtkRegistration_SRCS
 
 IF(CMTK_BUILD_SQLITE)
   SET(cmtkRegistration_SRCS ${cmtkRegistration_SRCS}
-    cmtkImageXformDB.cxx)
+    cmtkImageXformDB.cxx
+    cmtkRegistrationDatabaseUpdater.cxx)
 ENDIF(CMTK_BUILD_SQLITE)
 
 ADD_LIBRARY(cmtkRegistration ${cmtkRegistration_SRCS})

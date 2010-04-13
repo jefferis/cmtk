@@ -57,7 +57,7 @@ template<class TDataType = float,
 	 char NBitsPerChannel=6>
 class MultiChannelHistogramRegistrationFunctional :
   /** Inherit functional interface. */
-  public MultiChannelRegistrationFunctional<TDataType,TInterpolator>
+  public MultiChannelRegistrationFunctional<TInterpolator>
 {
 public:
   /** Number of bits per channel in the histogram bin index type. */
@@ -70,7 +70,7 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /** Superclass. */
-  typedef MultiChannelRegistrationFunctional<TDataType,TInterpolator> Superclass;
+  typedef MultiChannelRegistrationFunctional<TInterpolator> Superclass;
 
   /** Real value type for data representation. */
   typedef TDataType DataType;

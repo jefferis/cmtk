@@ -1,5 +1,8 @@
 Release CMTK-1.3.0:
 
+- API: refactored multi-channel registration class hierarchy to factor common
+    code out of template class and into new non-template base class
+    cmtk::MultiChannelRegistrationFunctionalBase 
 - Added: mat2dof tool can now read from file in addition to reading from
     std::cin via redirection.
 - API: introduced "cmtk::Units" namespace with classes that handle conversions

@@ -1,7 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//  Copyright 2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,26 +28,28 @@
 //
 */
 
+#include <cmtkRegistrationDatabaseUpdater.h>
+
+#include <cmtkConsole.h>
 #include <cmtkException.h>
-#include <cmtkMathUtil.h>
-#include <cmtkTypes.h>
 
-#include <algorithm>
-
-namespace
-cmtk
-{
-
-/** \addtogroup Registration */
-//@{
-
-template<class TInterpolator>
 void
-MultiChannelRegistrationFunctional<TInterpolator>
-::AddFloatingChannel( UniformVolume::SmartPtr& channel )
+cmtk::RegistrationDatabaseUpdater::UpdateDB() const
 {
-  this->Superclass::AddFloatingChannel( channel );
-  this->m_FloatingInterpolators.push_back( typename TInterpolator::SmartPtr( new TInterpolator( channel ) ) );
+  if ( this->m_DatabasePath.length() )
+    {
+    try
+      {
+      ImageXformDB db( this->m_DatabasePath );
+      
+      if ( ! db.AddXform( this->m_OutputXformPath, this->m_OutputXformInvertible, this->m_InputXformPath ) )
+	{
+	StdErr << "ERROR: could not update database " << this->m_DatabasePath << "\n";
+	}
+      }
+    catch ( cmtk::Exception ex )
+      {
+      StdErr << "DB ERROR: " << ex.what() << "\n";
+      }
+    }
 }
-
-} // namespace cmtk
