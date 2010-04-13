@@ -80,7 +80,7 @@ ThreadSemaphore::Wait()
 #ifdef CMTK_USE_THREADS
   if ( sem_wait( &this->m_Semaphore ) )
     {
-    std::cerr << "ERROR: sem_post failed with errno=" << errno << "\n";
+    std::cerr << "ERROR: sem_wait failed with errno=" << errno << "\n";
     exit( 1 );
     }
 #endif
