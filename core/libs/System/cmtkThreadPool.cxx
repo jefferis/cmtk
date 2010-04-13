@@ -52,9 +52,9 @@ ThreadPool::ThreadPool( const size_t nThreads )
     this->m_NumberOfThreads = nThreads;
 
 #ifdef CMTK_BUILD_SMP  
-  this->m_ThreadID.resize( this->m_NumberOfThreads );
+  this->m_ThreadID.resize( this->m_NumberOfThreads, 0 );
 #ifdef _MSC_VER
-  this->m_ThreadHandles.resize( this->m_NumberOfThreads );
+  this->m_ThreadHandles.resize( this->m_NumberOfThreads, 0 );
 #endif
 #endif
 }
@@ -128,6 +128,7 @@ ThreadPool::EndThreads()
       if ( this->m_ThreadID[idx] ) 
 	{
 	pthread_join( this->m_ThreadID[idx], NULL );
+	this->m_ThreadID[idx] = 0;
 	}
       }
 #elif defined(_MSC_VER)
