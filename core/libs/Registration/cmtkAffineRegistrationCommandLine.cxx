@@ -490,7 +490,7 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
 	{
 	if ( this->m_InitialXformPath ) 
 	  {
-	  db.AddXform( this->Studylist, true /*invertible*/, this->m_InitialXformPath );
+	  db.AddXform( this->Studylist, true /*invertible*/, this->m_InitialXformPath, this->m_InitialXformIsInverse );
 	  }
 	else
 	  {

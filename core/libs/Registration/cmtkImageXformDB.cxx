@@ -115,7 +115,7 @@ cmtk::ImageXformDB
 
 bool
 cmtk::ImageXformDB
-::AddXform( const std::string& xformPath, const bool invertible, const std::string& xformInitPath )
+::AddXform( const std::string& xformPath, const bool invertible, const std::string& xformInitPath, const bool initInverse )
 {
   const std::string sql = "SELECT level,spacefrom,spaceto FROM xforms WHERE ( path='" + xformInitPath + "' )";
 
@@ -138,7 +138,13 @@ cmtk::ImageXformDB
     }
   
   std::ostringstream sqlAdd;
-  sqlAdd << "INSERT INTO xforms (path,invertible,level,spacefrom,spaceto) VALUES ( '" << xformPath << "', " << (invertible ? 1 : 0) << ", " << level << ", " << spacefrom << ", " << spaceto << ")";
+  sqlAdd << "INSERT INTO xforms (path,invertible,level,spacefrom,spaceto) VALUES ( '" << xformPath << "', " << (invertible ? 1 : 0) << ", " << level << ", ";
+  if ( initInverse )
+    sqlAdd << spaceto << ", " << spacefrom;
+  else
+    sqlAdd << spacefrom << ", " << spaceto;
+  sqlAdd << ")";
+
   this->Exec( sqlAdd.str() );
   
   return true;
