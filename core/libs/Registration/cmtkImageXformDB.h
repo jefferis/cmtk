@@ -94,19 +94,19 @@ public:
    *\return True if the operation was successful, false otherwise. Failure may be due to source and target image being in the same
    * space to begin with.
    */
-  bool AddXform( const std::string& xformPath, /**!< File system path of the tranformation */
-		 const bool invertible, /**<! Flag: does the transformation have an explicit inverse (i.e., is it affine)? */
-		 const std::string& imagePathSrc, /**!< File system path of the source image */
-		 const std::string& imagePathTrg /**!< File system path of the target image */ );
-
+  bool AddImagePairXform( const std::string& xformPath, /**!< File system path of the tranformation */
+			  const bool invertible, /**<! Flag: does the transformation have an explicit inverse (i.e., is it affine)? */
+			  const std::string& imagePathSrc, /**!< File system path of the source image */
+			  const std::string& imagePathTrg /**!< File system path of the target image */ );
+  
   /** Add a refined transformation based on an existing transformation.
    *\return True if the operation was successful, false otherwise. Failure may be due to absence of the specified original
    *  transformation in the database.
    */
-  bool AddXform( const std::string& xformPath, /**!< File system path of the new tranformation */
-		 const bool invertible, /**<! Flag: does the transformation have an explicit inverse (i.e., is it affine)? */
-		 const std::string& xformInitPath, /** Path of the transformation that was used to initialize the computation of the new transformation. */
-		 const bool initInverse = false /** Flag whether the new transformation is based on the inverse of the initial transformation, i.e., from and to space need to be switched. */ );
+  bool AddRefinedXform( const std::string& xformPath, /**!< File system path of the new tranformation */
+			const bool invertible, /**<! Flag: does the transformation have an explicit inverse (i.e., is it affine)? */
+			const std::string& xformInitPath, /** Path of the transformation that was used to initialize the computation of the new transformation. */
+			const bool initInverse = false /** Flag whether the new transformation is based on the inverse of the initial transformation, i.e., from and to space need to be switched. */ );
 
   /// Find space that image lives in and return its key.
   Self::PrimaryKeyType FindImageSpaceID( const std::string& imagePath );

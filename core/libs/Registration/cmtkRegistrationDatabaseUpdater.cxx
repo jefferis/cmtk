@@ -42,7 +42,7 @@ cmtk::RegistrationDatabaseUpdater::UpdateDB() const
       {
       ImageXformDB db( this->m_DatabasePath );
       
-      if ( ! db.AddXform( this->m_OutputXformPath, this->m_OutputXformInvertible, this->m_InputXformPath ) )
+      if ( ! db.AddRefinedXform( this->m_OutputXformPath, this->m_OutputXformInvertible, this->m_InputXformPath ) )
 	{
 	StdErr << "ERROR: could not update database " << this->m_DatabasePath << "\n";
 	}

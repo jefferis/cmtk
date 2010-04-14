@@ -156,7 +156,7 @@ main( const int argc, const char* argv[] )
     if ( updateDB )
       {
       cmtk::ImageXformDB db( updateDB );
-      db.AddXform( outputXformPath, true /*always affine*/, referenceImagePath, floatingImagePath );
+      db.AddImagePairXform( outputXformPath, true /*always affine*/, referenceImagePath, floatingImagePath );
       }
 #endif
     }

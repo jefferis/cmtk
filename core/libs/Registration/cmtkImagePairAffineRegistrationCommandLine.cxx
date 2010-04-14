@@ -492,11 +492,11 @@ ImagePairAffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v
 	{
 	if ( this->m_InitialXformPath ) 
 	  {
-	  db.AddXform( this->Studylist, true /*invertible*/, this->m_InitialXformPath, this->m_InitialXformIsInverse );
+	  db.AddRefinedXform( this->Studylist, true /*invertible*/, this->m_InitialXformPath, this->m_InitialXformIsInverse );
 	  }
 	else
 	  {
-	  db.AddXform( this->Studylist, true /*invertible*/, this->m_ReferenceVolume->GetMetaInfo( META_FS_PATH ), this->m_FloatingVolume->GetMetaInfo( META_FS_PATH ) );
+	  db.AddImagePairXform( this->Studylist, true /*invertible*/, this->m_ReferenceVolume->GetMetaInfo( META_FS_PATH ), this->m_FloatingVolume->GetMetaInfo( META_FS_PATH ) );
 	  }
 	}
       }

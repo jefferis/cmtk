@@ -46,19 +46,20 @@ struct __testNameAndFunctionPointer
 
 const testNameAndFunctionPointer testTable[] =
 {
-  { "ImageXformDBCreate",             &testImageXformDBCreate },
-  { "ImageXformDBOpen",               &testImageXformDBOpen },
-  { "ImageXformDBAddImage",           &testImageXformDBAddImage },
-  { "ImageXformDBAddImageThenXform",  &testImageXformDBAddImageThenXform },
-  { "ImageXformDBAddImageWithXform",  &testImageXformDBAddImageWithXform },
-  { "ImageXformDBAddXformSameSpace",  &testImageXformDBAddXformSameSpace },
-  { "ImageXformDBAddXformRefined",    &testImageXformDBAddXformRefined },
-  { "ImageXformDBFindXform",          &testImageXformDBFindXform },
-  { "ImageXformDBFindXformSameSpace", &testImageXformDBFindXformSameSpace },
-  { "ImageXformDBFindXformInverse",   &testImageXformDBFindXformInverse },
-  { "ImageXformDBFindXformNone",      &testImageXformDBFindXformNone },
-  { "ImageXformDBFindXformMultiple",  &testImageXformDBFindXformMultiple },
-  { "ImageXformDBFindXformLevels",    &testImageXformDBFindXformLevels },
+  { "ImageXformDBCreate",                 &testImageXformDBCreate },
+  { "ImageXformDBOpen",                   &testImageXformDBOpen },
+  { "ImageXformDBAddImage",               &testImageXformDBAddImage },
+  { "ImageXformDBAddImageThenXform",      &testImageXformDBAddImageThenXform },
+  { "ImageXformDBAddImageWithXform",      &testImageXformDBAddImageWithXform },
+  { "ImageXformDBAddXformSameSpace",      &testImageXformDBAddXformSameSpace },
+  { "ImageXformDBAddXformRefined",        &testImageXformDBAddXformRefined },
+  { "ImageXformDBFindXform",              &testImageXformDBFindXform },
+  { "ImageXformDBFindXformSameSpace",     &testImageXformDBFindXformSameSpace },
+  { "ImageXformDBFindXformInverse",       &testImageXformDBFindXformInverse },
+  { "ImageXformDBFindXformNone",          &testImageXformDBFindXformNone },
+  { "ImageXformDBFindXformMultiple",      &testImageXformDBFindXformMultiple },
+  { "ImageXformDBFindXformLevels",        &testImageXformDBFindXformLevels },
+  { "ImageXformDBFindXformLevelsInverse", &testImageXformDBFindXformLevelsInverse },
   { NULL, NULL }
 };
 

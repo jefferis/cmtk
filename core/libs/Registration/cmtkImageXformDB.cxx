@@ -81,7 +81,7 @@ cmtk::ImageXformDB
 
 bool
 cmtk::ImageXformDB
-::AddXform
+::AddImagePairXform
 ( const std::string& xformPath, const bool invertible, const std::string& imagePathSrc, const std::string& imagePathTrg )
 {
   PrimaryKeyType spaceKeySrc = this->FindImageSpaceID( imagePathSrc );
@@ -115,7 +115,8 @@ cmtk::ImageXformDB
 
 bool
 cmtk::ImageXformDB
-::AddXform( const std::string& xformPath, const bool invertible, const std::string& xformInitPath, const bool initInverse )
+::AddRefinedXform
+( const std::string& xformPath, const bool invertible, const std::string& xformInitPath, const bool initInverse )
 {
   const std::string sql = "SELECT level,spacefrom,spaceto FROM xforms WHERE ( path='" + xformInitPath + "' )";
 

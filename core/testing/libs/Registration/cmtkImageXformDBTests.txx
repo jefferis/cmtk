@@ -70,9 +70,9 @@ testImageXformDBAddImageThenXform()
   db.AddImage( "image2.nii" );
   db.AddImage( "image4.nii" );
 
-  if ( ! db.AddXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) ||
-       ! db.AddXform( "xform21", false /*invertible*/, "image2.nii", "image1.nii" ) ||
-       ! db.AddXform( "xform42", false /*invertible*/, "image4.nii", "image2.nii" ) )
+  if ( ! db.AddImagePairXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) ||
+       ! db.AddImagePairXform( "xform21", false /*invertible*/, "image2.nii", "image1.nii" ) ||
+       ! db.AddImagePairXform( "xform42", false /*invertible*/, "image4.nii", "image2.nii" ) )
     return 1;
 
   return 0;
@@ -84,9 +84,9 @@ testImageXformDBAddImageWithXform()
 {
   cmtk::ImageXformDB db( ":memory:" );
   db.DebugModeOn();
-  if ( ! db.AddXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) ||
-       ! db.AddXform( "xform21", false /*invertible*/, "image2.nii", "image1.nii" ) ||       
-       ! db.AddXform( "xform42", false /*invertible*/, "image4.nii", "image2.nii" ) )
+  if ( ! db.AddImagePairXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) ||
+       ! db.AddImagePairXform( "xform21", false /*invertible*/, "image2.nii", "image1.nii" ) ||       
+       ! db.AddImagePairXform( "xform42", false /*invertible*/, "image4.nii", "image2.nii" ) )
     return 1;
 
   return 0;
@@ -100,7 +100,7 @@ testImageXformDBAddXformSameSpace()
   db.DebugModeOn();
   db.AddImage( "image1.nii" );
   db.AddImage( "image2.nii", "image1.nii" );
-  if ( db.AddXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) )
+  if ( db.AddImagePairXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) )
     return 1;
   
   return 0;
@@ -114,8 +114,8 @@ testImageXformDBAddXformRefined()
   db.DebugModeOn();
   db.AddImage( "image1.nii" );
   db.AddImage( "image2.nii" );
-  if ( ! db.AddXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) ||
-       ! db.AddXform( "xform12refined", true /*invertible*/, "xform12" ) )
+  if ( ! db.AddImagePairXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) ||
+       ! db.AddRefinedXform( "xform12refined", true /*invertible*/, "xform12" ) )
     {
     std::cerr << "DB add transformation." << std::cerr;
     return 1;
@@ -137,7 +137,7 @@ testImageXformDBFindXform()
 {
   cmtk::ImageXformDB db( ":memory:" );
   db.DebugModeOn();
-  if ( ! db.AddXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) )
+  if ( ! db.AddImagePairXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) )
     return 1;
   
   std::string xform;
@@ -204,7 +204,7 @@ testImageXformDBFindXformInverse()
 {
   cmtk::ImageXformDB db( ":memory:" );
   db.DebugModeOn();
-  if ( ! db.AddXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) )
+  if ( ! db.AddImagePairXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) )
     return 1;
   
   std::string xform;
@@ -237,7 +237,7 @@ testImageXformDBFindXformNone()
 {
   cmtk::ImageXformDB db( ":memory:" );
   db.DebugModeOn();
-  if ( ! db.AddXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) )
+  if ( ! db.AddImagePairXform( "xform12", true /*invertible*/, "image1.nii", "image2.nii" ) )
     return 1;
   
   std::string xform;
@@ -270,8 +270,8 @@ testImageXformDBFindXformMultiple()
 {
   cmtk::ImageXformDB db( ":memory:" );
   db.DebugModeOn();
-  if ( ! db.AddXform( "affine12", true /*invertible*/, "image1.nii", "image2.nii" ) || 
-       ! db.AddXform( "nonrigid12", false /*invertible*/, "image1.nii", "image2.nii" ) )
+  if ( ! db.AddImagePairXform( "affine12", true /*invertible*/, "image1.nii", "image2.nii" ) || 
+       ! db.AddRefinedXform( "nonrigid12", false /*invertible*/, "image1.nii", "image2.nii" ) )
     return 1;
   
   std::string xform;
@@ -322,8 +322,8 @@ testImageXformDBFindXformLevels()
 {
   cmtk::ImageXformDB db( ":memory:" );
   db.DebugModeOn();
-  if ( ! db.AddXform( "affine12", true /*invertible*/, "image1.nii", "image2.nii" ) || 
-       ! db.AddXform( "nonrigid12", false /*invertible*/, "affine12" ) )
+  if ( ! db.AddImagePairXform( "affine12", true /*invertible*/, "image1.nii", "image2.nii" ) || 
+       ! db.AddRefinedXform( "nonrigid12", false /*invertible*/, "affine12" ) )
     return 1;
   
   std::string xform;
@@ -360,6 +360,58 @@ testImageXformDBFindXformLevels()
     }
   
   if ( !inverse )
+    {
+    std::cerr << "DB transformation returned wrong inversion flag." << std::cerr;
+    return 1;
+    }
+
+  return 0;
+}
+
+// test getting transformations when multiple refinement levels exist and the refined transformation is based on an inverted initial transformation
+int
+testImageXformDBFindXformLevelsInverse()
+{
+  cmtk::ImageXformDB db( ":memory:" );
+  db.DebugModeOn();
+  if ( ! db.AddImagePairXform( "affine12", true /*invertible*/, "image1.nii", "image2.nii" ) || 
+       ! db.AddRefinedXform( "nonrigid21", false /*invertible*/, "affine12", true /*initInverse*/ ) )
+    return 1;
+  
+  std::string xform;
+  bool inverse;
+  
+  if ( ! db.FindXform( "image1.nii", "image2.nii", xform, inverse ) )
+    {
+    std::cerr << "DB transformation lookup failed." << std::cerr;
+    return 1;
+    }
+  
+  if ( xform != "affine12" )
+    {
+    std::cerr << "DB transformation returned wrong xform." << std::cerr;
+    return 1;
+    }
+  
+  if ( !inverse )
+    {
+    std::cerr << "DB transformation returned wrong inversion flag." << std::cerr;
+    return 1;
+    }
+
+  if ( ! db.FindXform( "image2.nii", "image1.nii", xform, inverse ) )
+    {
+    std::cerr << "DB transformation lookup failed." << std::cerr;
+    return 1;
+    }
+  
+  if ( xform != "nonrigid21" )
+    {
+    std::cerr << "DB transformation returned wrong xform." << std::cerr;
+    return 1;
+    }
+  
+  if ( inverse )
     {
     std::cerr << "DB transformation returned wrong inversion flag." << std::cerr;
     return 1;
