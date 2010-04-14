@@ -72,6 +72,7 @@ SET(cmtkBase_SRCS
   cmtkMathUtilStatistics.cxx
   cmtkMatrix3x3.cxx
   cmtkMatrix4x4.cxx
+  cmtkMetaInformationObject.cxx
   cmtkScalarImage.cxx
   cmtkSegmentationLabel.cxx
   cmtkSplineWarpXform.cxx

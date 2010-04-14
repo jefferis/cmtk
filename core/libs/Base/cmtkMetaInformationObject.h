@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -71,10 +72,16 @@ public:
   virtual ~MetaInformationObject() {};
 
   /// Check whether a key exists.
-  bool MetaKeyExists( const std::string key ) const
+  bool MetaKeyExists( const std::string& key ) const
   {
     return this->m_MetaInformation.find( key ) != this->m_MetaInformation.end();
   }
+
+  /// Return a meta info value.
+  const std::string& GetMetaInfo( const std::string& key ) const;
+
+  /// Set a meta info value.
+  void SetMetaInfo( const std::string& key, const std::string& value );
 
   /// The actual table of meta data: maps keys to values.
   mutable std::map<std::string,std::string> m_MetaInformation;
