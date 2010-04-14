@@ -271,7 +271,7 @@ testImageXformDBFindXformMultiple()
   cmtk::ImageXformDB db( ":memory:" );
   db.DebugModeOn();
   if ( ! db.AddImagePairXform( "affine12", true /*invertible*/, "image1.nii", "image2.nii" ) || 
-       ! db.AddRefinedXform( "nonrigid12", false /*invertible*/, "image1.nii", "image2.nii" ) )
+       ! db.AddImagePairXform( "nonrigid12", false /*invertible*/, "image1.nii", "image2.nii" ) )
     return 1;
   
   std::string xform;
@@ -393,7 +393,7 @@ testImageXformDBFindXformLevelsInverse()
     return 1;
     }
   
-  if ( !inverse )
+  if ( inverse )
     {
     std::cerr << "DB transformation returned wrong inversion flag." << std::cerr;
     return 1;
