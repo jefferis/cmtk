@@ -65,7 +65,7 @@ Console StdOut( std::cout );
 size_t
 Console::GetLineWidth() const
 {
-#if defined(HAVE_TERMIOS_H) && defined(HAVE_SYS_IOCTL_H) 
+#if defined(HAVE_SYS_IOCTL_H) 
   struct winsize sz;
   if ( ioctl(0, TIOCGWINSZ, &sz) >= 0 )
     return sz.ws_col;
@@ -80,8 +80,11 @@ Console::FormatText( const std::string& text, const size_t margin, const size_t 
   // Set current indentation to first line.
   size_t currentIndent = static_cast<size_t>( std::max<int>( 0, margin + firstLine ) );
 
+  // set the actual width
+  const size_t actualWidth = width ? width : this->GetLineWidth();
+
   // the effective length of a line
-  size_t length = static_cast<size_t>( std::max<int>( 1, width - currentIndent ) ) - 1;
+  size_t length = static_cast<size_t>( std::max<int>( 1, actualWidth - currentIndent ) ) - 1;
 
   // loop while text left to write
   std::string remaining = text;
@@ -106,7 +109,7 @@ Console::FormatText( const std::string& text, const size_t margin, const size_t 
     (*this) << remaining.substr( 0, breakAt ) << "\n";
     remaining.erase( 0, breakAt+1 );
     currentIndent = margin;
-    length = static_cast<size_t>( std::max<int>( 1, width - currentIndent ) ) - 1;
+    length = static_cast<size_t>( std::max<int>( 1, actualWidth - currentIndent ) ) - 1;
     }
   
   size_t breakAt = remaining.find_first_of( "\n\r", 0 );
