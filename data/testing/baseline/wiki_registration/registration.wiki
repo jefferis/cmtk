@@ -127,4 +127,8 @@ where
 
 ; <tt>--write-reformatted</tt> <tt><image-path></tt> : Write reformatted floating image. '''[Default value: NONE]'''
 
+=== Image/Transformation Database ===
+
+; <tt>--db</tt> <tt><string></tt> : Path to image/transformation database that should be updated with the new registration and/or reformatted image. '''[Default value: NONE]'''
+
 

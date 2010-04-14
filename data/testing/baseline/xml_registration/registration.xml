@@ -467,6 +467,36 @@ write_reformatted
 </image>
 
 </parameters>
+<parameters>
+<label>
+Database
+</label>
+<description>
+Image/Transformation Database
+</description>
+<string>
+<channel>
+input
+</channel>
+<default>
+
+</default>
+<description>
+Path to image/transformation database that should be updated with the new registration and/or reformatted image.
+</description>
+<name>
+db
+</name>
+<label>
+db
+</label>
+<longflag>
+--db
+</longflag>
+
+</string>
+
+</parameters>
 
 </executable>
 
