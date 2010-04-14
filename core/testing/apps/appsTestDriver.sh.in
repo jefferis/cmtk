@@ -1,5 +1,6 @@
 ##
 ##  Copyright 2004-2010 SRI International
+##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
@@ -1057,6 +1058,18 @@ case ${RUNTEST} in
 	;;
     registrationxWithInitialInverse)
 	run registrationx -v --dofs 0 -o ${tmpdir} --initial vol001_mr_t0t1.list --initial-is-inverse vol001_mr_t0t1.list
+	check_results registration
+	;;
+    registrationxFromListSQL)
+	run registrationx --db ${tmpdir}/db.sqlite -v --dofs 0 -o ${tmpdir} vol001_mr_t0t1.list
+	check_results registration
+	;;
+    registrationxWithInitialSQL)
+	run registrationx --db ${tmpdir}/db.sqlite -v --dofs 0 -o ${tmpdir} --initial vol001_mr_t0t1.list vol001_mr_t0.hdr vol001_mr_t1.hdr
+	check_results registration
+	;;
+    registrationxWithInitialInverseSQL)
+	run registrationx --db ${tmpdir}/db.sqlite -v --dofs 0 -o ${tmpdir} --initial vol001_mr_t0t1.list --initial-is-inverse vol001_mr_t0t1.list
 	check_results registration
 	;;
     registrationxAutoLevelsRat4)

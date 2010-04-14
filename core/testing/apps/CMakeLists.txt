@@ -1,5 +1,6 @@
 ##
 ##  Copyright 2004-2010 SRI International
+##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
@@ -422,6 +423,14 @@ IF(NOT CMTK_USE_MPI)
     registrationxAutoLevelsLabelsPV
     registrationxAutoLevelsCt3)
 
+  IF(CMTK_BUILD_SQLITE)
+    SET(testList ${testList} 
+      registrationxFromListSQL
+      registrationxWithInitialSQL
+      registrationxWithInitialInverseSQL
+      )
+  ENDIF(CMTK_BUILD_SQLITE)  
+  
   # ==========================================
   # Tests for "mrbias" tool
   SET(testList ${testList} 
