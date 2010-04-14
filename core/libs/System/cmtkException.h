@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -62,7 +62,7 @@ public:
    *@param fromObject An optional pointer to the object that encountered the
    * condition causing the exception.
    */
-  Exception( const std::string& errorMsg = "", void *fromObject = NULL ) 
+  Exception( const std::string& errorMsg = "", const void *const fromObject = NULL ) 
   {
     this->m_ErrorMsg = errorMsg;
     this->m_FromObject = fromObject;
