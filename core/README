@@ -10,6 +10,9 @@ and registration transformations between them in an SQLite database. This
 database can then be queried to identify transformations and sequences of
 concatenated transformations between any two given images.
 
+In addition, many new features have been added, numerous bugs fixed, and
+overall code quality and design have been improved in many places.
+
 For a complete list of changes and fixes, see the CHANGELOG file.
 
 CMTK has been built and tested on the following platforms:
