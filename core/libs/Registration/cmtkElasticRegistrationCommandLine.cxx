@@ -52,6 +52,10 @@
 
 #include <cmtkSplineWarpXformITKIO.h>
 
+#ifdef CMTK_USE_SQLITE
+#  include <cmtkImageXformDB.h>
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -90,6 +94,9 @@ ElasticRegistrationCommandLine* ElasticRegistrationCommandLine::StaticThis = NUL
 ElasticRegistrationCommandLine
 ::ElasticRegistrationCommandLine
 ( int argc, char *argv[] ) :
+#ifdef CMTK_USE_SQLITE
+  m_UpdateDB( NULL ),
+#endif
   m_OutputPathITK( NULL ),
   m_ReformattedImagePath( NULL )
 {
@@ -202,6 +209,12 @@ ElasticRegistrationCommandLine
     cl.AddOption( Key( 't', "time" ), &this->Time, "Computation time statistics output file name" );
     cl.AddSwitch( Key( "output-intermediate" ), &this->m_OutputIntermediate, true, "Write transformation for each level [default: only write final transformation]" );
     cl.EndGroup();
+
+#ifdef CMTK_USE_SQLITE
+    cl.BeginGroup( "Database", "Image/Transformation Database" );
+    cl.AddOption( Key( "db" ), &this->m_UpdateDB, "Path to image/transformation database that should be updated with the new registration and/or reformatted image." );
+    cl.EndGroup();
+#endif
 
     cl.AddParameter( &clArg1, "ReferenceImage", "Reference (fixed) image path" )
       ->SetProperties( CommandLine::PROPS_IMAGE );
@@ -384,6 +397,37 @@ ElasticRegistrationCommandLine
     {
     VolumeIO::Write( UniformVolume::SmartPtr( this->GetReformattedFloatingImage() ), this->m_ReformattedImagePath, this->Verbose );
     }
+
+#ifdef CMTK_USE_SQLITE
+  if ( this->m_UpdateDB )
+    {
+    try
+      {
+      cmtk::ImageXformDB db( this->m_UpdateDB );
+      
+      if ( this->m_ReformattedImagePath )
+	{
+	db.AddImage( this->m_ReformattedImagePath, this->m_ReferenceVolume->GetMetaInfo( META_FS_PATH ) );
+	}
+      
+      if ( this->Studylist )
+	{
+	if ( this->InputStudylist ) 
+	  {
+	  db.AddRefinedXform( this->Studylist, true /*invertible*/, this->InputStudylist, this->ForceSwitchVolumes );
+	  }
+	else
+	  {
+	  db.AddImagePairXform( this->Studylist, true /*invertible*/, this->m_ReferenceVolume->GetMetaInfo( META_FS_PATH ), this->m_FloatingVolume->GetMetaInfo( META_FS_PATH ) );
+	  }
+	}
+      }
+    catch ( cmtk::ImageXformDB::Exception ex )
+      {
+      StdErr << "DB ERROR: " << ex.what() << " on database " << this->m_UpdateDB << "\n";
+      }
+    }
+#endif
 }
 
 void
