@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,6 +50,10 @@
 #include <cmtkCompressedStream.h>
 #include <cmtkXformIO.h>
 
+#ifdef CMTK_USE_SQLITE
+#  include <cmtkImageXformDB.h>
+#endif
+
 #include <cmtkMakeInitialAffineTransformation.h>
 #include <cmtkTransformChangeToSpaceAffine.h>
 #include <cmtkTransformChangeFromSpaceAffine.h>
@@ -85,8 +90,12 @@ cmtk
 ImagePairAffineRegistrationCommandLine
 ::ImagePairAffineRegistrationCommandLine 
 ( int argc, char* argv[] ) 
-  : m_ReformattedImagePath( NULL ),
+  : m_InitialXformPath( NULL ),
+    m_ReformattedImagePath( NULL ),
     m_OutputPathITK( NULL ),
+#ifdef CMTK_USE_SQLITE
+    m_UpdateDB( NULL ),
+#endif
     m_ProtocolFileName( NULL )
 {
   this->m_Metric = 0;
@@ -189,6 +198,12 @@ ImagePairAffineRegistrationCommandLine
     cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OUTPUT );
     cl.EndGroup();
     
+#ifdef CMTK_USE_SQLITE
+    cl.BeginGroup( "Database", "Image/Transformation Database" );
+    cl.AddOption( Key( "db" ), &this->m_UpdateDB, "Path to image/transformation database that should be updated with the new registration and/or reformatted image." );
+    cl.EndGroup();
+#endif
+
     cl.AddParameter( &clArg1, "ReferenceImage", "Reference (fixed) image path" )->SetProperties( CommandLine::PROPS_IMAGE );
     cl.AddParameter( &clArg2, "FloatingImage", "Floating (moving) image path" )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OPTIONAL );
 
@@ -460,6 +475,37 @@ ImagePairAffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v
     {
     VolumeIO::Write( UniformVolume::SmartPtr( this->GetReformattedFloatingImage() ), this->m_ReformattedImagePath, this->Verbose );
     }
+
+#ifdef CMTK_USE_SQLITE
+  if ( this->m_UpdateDB )
+    {
+    try
+      {
+      cmtk::ImageXformDB db( this->m_UpdateDB );
+      
+      if ( this->m_ReformattedImagePath )
+	{
+	db.AddImage( this->m_ReformattedImagePath, this->m_ReferenceVolume->GetMetaInfo( META_FS_PATH ) );
+	}
+      
+      if ( this->Studylist )
+	{
+	if ( this->m_InitialXformPath ) 
+	  {
+	  db.AddXform( this->Studylist, true /*invertible*/, this->m_InitialXformPath );
+	  }
+	else
+	  {
+	  db.AddXform( this->Studylist, true /*invertible*/, this->m_ReferenceVolume->GetMetaInfo( META_FS_PATH ), this->m_FloatingVolume->GetMetaInfo( META_FS_PATH ) );
+	  }
+	}
+      }
+    catch ( cmtk::ImageXformDB::Exception ex )
+      {
+      StdErr << "DB ERROR: " << ex.what() << " on database " << this->m_UpdateDB << "\n";
+      }
+    }
+#endif
 }
 
 void

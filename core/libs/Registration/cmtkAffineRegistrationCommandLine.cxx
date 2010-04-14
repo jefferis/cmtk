@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -53,6 +54,10 @@
 #include <cmtkTransformChangeFromSpaceAffine.h>
 #include <cmtkAffineXformITKIO.h>
 
+#ifdef CMTK_USE_SQLITE
+#  include <cmtkImageXformDB.h>
+#endif
+
 #include <stdio.h>
 #include <string.h>
 
@@ -84,8 +89,13 @@ cmtk
 AffineRegistrationCommandLine
 ::AffineRegistrationCommandLine 
 ( int argc, char* argv[] ) 
-  : m_ReformattedImagePath( NULL ),
-    m_OutputPathITK( NULL )
+  : m_InitialXformPath( NULL ),
+    m_ReformattedImagePath( NULL ),
+    m_OutputPathITK( NULL ),
+#ifdef CMTK_USE_SQLITE
+    m_UpdateDB( NULL ),
+#endif
+    Protocol( NULL )
 {
   this->m_Metric = 0;
 
@@ -94,13 +104,12 @@ AffineRegistrationCommandLine
   this->m_Exploration = 8;
   this->m_Accuracy = 0.1;
   this->m_Sampling = 1.0;
-  OutParametersName = OutMatrixName = Studylist = Protocol = Time = NULL;
+  OutParametersName = OutMatrixName = Studylist = Time = NULL;
   InitXlate = 0;
   this->m_NoSwitch = 0;
 
   Verbose = 0;
 
-  const char* inStudylist = NULL;
   const char *InitialStudylist = NULL;
   Study1 = Study2 = NULL;
 
@@ -175,6 +184,12 @@ AffineRegistrationCommandLine
     cl.AddOption( Key( "write-reformatted" ), &this->m_ReformattedImagePath, "Write reformatted floating image." )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OUTPUT );
     cl.EndGroup();
     
+#ifdef CMTK_USE_SQLITE
+    cl.BeginGroup( "Database", "Image/Transformation Database" );
+    cl.AddOption( Key( "db" ), &this->m_UpdateDB, "Path to image/transformation database that should be updated with the new registration and/or reformatted image." );
+    cl.EndGroup();
+#endif
+
     cl.AddParameter( &clArg1, "ReferenceImage", "Reference (fixed) image path" )->SetProperties( CommandLine::PROPS_IMAGE );
     cl.AddParameter( &clArg2, "FloatingImage", "Floating (moving) image path" )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OPTIONAL );
 
@@ -192,19 +207,16 @@ AffineRegistrationCommandLine
     exit( 1 );
     }
 
+  this->SetInitialTransformation( AffineXform::SmartPtr( new AffineXform() ) );
+    
   if ( clArg2 ) 
     {
-    AffineXform::SmartPtr initialXform( new AffineXform() );
-    this->SetInitialTransformation( initialXform );
-    
     Study1 = const_cast<char*>( clArg1 );
     Study2 = const_cast<char*>( clArg2 );
     } 
   else
     {
-    inStudylist = clArg1;
-    AffineXform::SmartPtr initialXform( new AffineXform() );
-    this->SetInitialTransformation( initialXform );
+    this->m_InitialXformPath = clArg1;
 
     if ( InitialStudylist ) 
       {
@@ -212,12 +224,12 @@ AffineRegistrationCommandLine
       }
     
     if ( Verbose )
-      StdErr << "Reading input studylist " << inStudylist << ".\n";
+      StdErr << "Reading input studylist " << this->m_InitialXformPath << ".\n";
     
-    ClassStream typedStream( MountPoints::Translate(inStudylist), "registration", ClassStream::READ );
+    ClassStream typedStream( MountPoints::Translate(this->m_InitialXformPath), "registration", ClassStream::READ );
     if ( ! typedStream.IsValid() ) 
       {
-      StdErr << "Could not open studylist archive " << inStudylist << ".\n";
+      StdErr << "Could not open studylist archive " << this->m_InitialXformPath << ".\n";
       exit( 1 );
       }
 
@@ -272,6 +284,7 @@ AffineRegistrationCommandLine
 
   if ( InitialStudylist ) 
     {
+    this->m_InitialXformPath = InitialStudylist;
     Xform::SmartPtr xform( XformIO::Read( InitialStudylist, Verbose ) );
     if ( ! xform ) 
       {
@@ -298,7 +311,7 @@ AffineRegistrationCommandLine
   
   if ( InitXlate ) 
     {
-    if ( inStudylist || InitialStudylist ) 
+    if ( this->m_InitialXformPath ) 
       {
       StdErr << "WARNING: Initial transformation was taken from studylist. Switch --initxlate / -i will be ignored.\n";
       } 
@@ -460,6 +473,37 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
     {
     VolumeIO::Write( UniformVolume::SmartPtr( this->GetReformattedFloatingImage() ), this->m_ReformattedImagePath, this->Verbose );
     }
+
+#ifdef CMTK_USE_SQLITE
+  if ( this->m_UpdateDB )
+    {
+    try
+      {
+      cmtk::ImageXformDB db( this->m_UpdateDB );
+      
+      if ( this->m_ReformattedImagePath )
+	{
+	db.AddImage( this->m_ReformattedImagePath, this->m_ReferenceVolume->GetMetaInfo( META_FS_PATH ) );
+	}
+      
+      if ( this->Studylist )
+	{
+	if ( this->m_InitialXformPath ) 
+	  {
+	  db.AddXform( this->Studylist, true /*invertible*/, this->m_InitialXformPath );
+	  }
+	else
+	  {
+	  db.AddXform( this->Studylist, true /*invertible*/, this->m_ReferenceVolume->GetMetaInfo( META_FS_PATH ), this->m_FloatingVolume->GetMetaInfo( META_FS_PATH ) );
+	  }
+	}
+      }
+    catch ( cmtk::ImageXformDB::Exception ex )
+      {
+      StdErr << "DB ERROR: " << ex.what() << " on database " << this->m_UpdateDB << "\n";
+      }
+    }
+#endif
 }
 
 void

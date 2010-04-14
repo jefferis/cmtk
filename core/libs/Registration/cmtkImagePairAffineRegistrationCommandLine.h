@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -97,6 +98,14 @@ protected:
   virtual void EnterResolution( CoordinateVector::SmartPtr&, Functional::SmartPtr&, const int, const int );
 
 private:
+  /** Path of the actual input transformation, if any.
+   * If two input transformations are specified, i.e., one as the input studylist and one via
+   * the "--initial" command line switch, then this variable holds the path of the transformation
+   * that was actually used (the one specified with "--initial"). This is used when the optional
+   * image/transformation database is updated.
+   */
+  const char* m_InitialXformPath;
+
   /// Path for reformatted floating image.
   const char* m_ReformattedImagePath;
 
@@ -127,6 +136,11 @@ private:
    * This is given as the second non-option command line paramter.
    */
   const char *Study2;
+
+#ifdef CMTK_USE_SQLITE
+  /// Database to update after registration completes.
+  const char* m_UpdateDB;
+#endif
 
   /** Name of elapsed time output file.
    * This is defined by the -t or --time command line option.
