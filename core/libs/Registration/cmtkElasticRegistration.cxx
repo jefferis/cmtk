@@ -60,13 +60,13 @@ ElasticRegistration::ElasticRegistration ()
   : VoxelRegistration(),
     InitialWarpXform( NULL ),
     InverseWarpXform( NULL ),
+    ForceSwitchVolumes( false ),
     m_MatchFltToRefHistogram( false ),
     m_RigidityConstraintMap( NULL ),
     m_InverseConsistencyWeight( 0.0 ),
     m_ForceOutsideFlag( false ),
     m_ForceOutsideValue( 0.0 )
 {
-  ForceSwitchVolumes = 0;
   this->m_GridSpacing = 10;
   RestrictToAxes = NULL;
   this->m_RefineGrid = 0;
@@ -90,18 +90,8 @@ ElasticRegistration::ElasticRegistration ()
 CallbackResult 
 ElasticRegistration::InitRegistration ()
 {
-  if ( ForceSwitchVolumes ) 
-    {
-    this->m_ReferenceVolume = this->m_Volume_2;
-    this->m_FloatingVolume = this->m_Volume_1;
-    SwitchVolumes = 1;
-    } 
-  else
-    {
-    this->m_ReferenceVolume = this->m_Volume_1;
-    this->m_FloatingVolume = this->m_Volume_2;
-    SwitchVolumes = 0;
-    }
+  this->m_ReferenceVolume = this->m_Volume_1;
+  this->m_FloatingVolume = this->m_Volume_2;
 
   if ( this->m_MatchFltToRefHistogram )
     {
@@ -120,23 +110,10 @@ ElasticRegistration::InitRegistration ()
       }
     }
   
-  AffineXform::SmartPtr affineXform;
-  AffineXform::SmartPtr initialInverse;
-  if ( SwitchVolumes ) 
-    {
-    initialInverse = AffineXform::SmartPtr( static_cast<AffineXform*>( this->m_InitialTransformation->MakeInverse() ) );
-    CoordinateVector v( initialInverse->ParamVectorDim() );
-    affineXform = AffineXform::SmartPtr( new AffineXform( initialInverse->GetParamVector(v) ) );
-    initialInverse = this->m_InitialTransformation->GetInverse();
-    } 
-  else
-    {
-    affineXform = this->m_InitialTransformation;
-    initialInverse = AffineXform::SmartPtr::DynamicCastFrom( this->m_InitialTransformation );
-    }
+  AffineXform::SmartPtr affineXform = this->m_InitialTransformation;
+  AffineXform::SmartPtr initialInverse = AffineXform::SmartPtr::DynamicCastFrom( this->m_InitialTransformation->GetInverse() );
   
-  Vector3D center = this->m_FloatingVolume->GetCenterCropRegion();
-  affineXform->ChangeCenter( center.XYZ );
+  affineXform->ChangeCenter( this->m_FloatingVolume->GetCenterCropRegion().XYZ );
 
   Types::Coordinate currSampling = std::max( this->m_Sampling, 2 * std::min( this->m_ReferenceVolume->GetMinDelta(), this->m_FloatingVolume->GetMinDelta()));
 
@@ -155,10 +132,10 @@ ElasticRegistration::InitRegistration ()
     } 
   else
     {
-    WarpXform::SmartPtr warpXform( this->MakeWarpXform( this->m_ReferenceVolume->Size, initialInverse ) );
+    WarpXform::SmartPtr warpXform( this->MakeWarpXform( this->m_ReferenceVolume->Size, affineXform ) );
     
     if ( this->m_InverseConsistencyWeight > 0 ) 
-      InverseWarpXform = WarpXform::SmartPtr( this->MakeWarpXform( this->m_FloatingVolume->Size, affineXform ) );
+      InverseWarpXform = WarpXform::SmartPtr( this->MakeWarpXform( this->m_FloatingVolume->Size, initialInverse ) );
 
     // MIPSpro needs explicit:
     this->m_Xform = Xform::SmartPtr::DynamicCastFrom( warpXform ); 

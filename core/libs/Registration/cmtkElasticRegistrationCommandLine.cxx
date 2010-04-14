@@ -56,6 +56,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
+#include <algorithm>
 
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
@@ -106,8 +107,6 @@ ElasticRegistrationCommandLine
   const char *initialTransformationFile = NULL;
   IntermediateResultIndex = 0;
 
-  bool Switch = false;
-
   this->RigidityConstraintMapFilename = NULL;
 
   bool forceOutsideFlag = false;
@@ -154,8 +153,7 @@ ElasticRegistrationCommandLine
     cl.AddSwitch( Key( "accurate" ), &this->m_FastMode, false, "Accurate computation mode: may give slightly better results after substantially longer computation" );
     cl.AddSwitch( Key( "fast" ), &this->m_FastMode, true, "Fast computation mode: may give slightly worse results than accurate mode, but saves substantial CPU time" );
 
-    cl.AddSwitch( Key( 'S', "switch" ), &Switch, true, "Switch reference and floating image" );
-    cl.AddSwitch( Key( 'x', "exchange" ), &this->ForceSwitchVolumes, true, "Exchange reference and floating image");
+    cl.AddSwitch( Key( 'S', "switch" ), &this->ForceSwitchVolumes, true, "Switch reference and floating image" );
     cl.EndGroup();
 
     cl.BeginGroup( "Optimization", "Optimization parameters" );
@@ -289,14 +287,10 @@ ElasticRegistrationCommandLine
     }
 
   // Did user ask for exchanged reference/floating images?
-  if ( Switch ) 
+  if ( this->ForceSwitchVolumes ) 
     {
-    AffineXform::SmartPtr affineXform( dynamic_cast<AffineXform*>( this->m_InitialTransformation->MakeInverse() ) );
-    this->SetInitialTransformation( affineXform );
-    
-    char *swap = Study1;
-    Study1 = Study2;
-    Study2 = swap;
+    std::swap( Study1, Study2 );
+    this->SetInitialTransformation( AffineXform::SmartPtr( dynamic_cast<AffineXform*>( this->m_InitialTransformation->MakeInverse() ) ) );
     }
   
   UniformVolume::SmartPtr volume( VolumeIO::ReadOriented( Study1, Verbose ) );
@@ -456,7 +450,7 @@ ElasticRegistrationCommandLine::OutputWarp ( const char* path ) const
   classStream.WriteDouble( "inverse_consistency_weight", this->m_InverseConsistencyWeight );
   classStream.WriteDouble( "weight_relaxation", this->m_RelaxWeight );
   classStream.WriteDouble( "landmark_error_weight", this->m_LandmarkErrorWeight );
-  classStream.WriteBool( "force_switch", ForceSwitchVolumes );
+  classStream.WriteBool( "force_switch", this->ForceSwitchVolumes );
   classStream.WriteInt( "refine_grid", this->m_RefineGrid );
   classStream.WriteBool( "delay_refine_grid", this->m_DelayRefineGrid );
   classStream.WriteBool( "adaptive_fix_parameters", this->m_AdaptiveFixParameters );
@@ -494,16 +488,8 @@ ElasticRegistrationCommandLine::OutputWarp ( const char* path ) const
     if ( classStream.IsValid() ) 
       {
       classStream.Begin( "registration" );
-      if ( SwitchVolumes ) 
-	{
-	classStream.WriteString( "reference_study", CompressedStream::GetBaseName( Study2 ) );
-	classStream.WriteString( "floating_study", CompressedStream::GetBaseName( Study1 ) );
-	} 
-      else
-	{
-	classStream.WriteString( "reference_study", CompressedStream::GetBaseName( Study1 ) );
-	classStream.WriteString( "floating_study", CompressedStream::GetBaseName( Study2 ) );
-	}
+      classStream.WriteString( "reference_study", CompressedStream::GetBaseName( Study1 ) );
+      classStream.WriteString( "floating_study", CompressedStream::GetBaseName( Study2 ) );
       
       if ( warp->GetInitialAffineXform() ) 
 	{

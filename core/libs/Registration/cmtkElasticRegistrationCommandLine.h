@@ -122,6 +122,11 @@ private:
    */
   char *Study2;
   
+#ifdef CMTK_USE_SQLITE
+  /// Database to update after registration completes.
+  const char* m_UpdateDB;
+#endif
+
   /// Filename for rigidity constraint map.
   const char* RigidityConstraintMapFilename;
 
