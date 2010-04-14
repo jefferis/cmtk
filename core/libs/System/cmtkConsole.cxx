@@ -65,7 +65,7 @@ Console StdOut( std::cout );
 size_t
 Console::GetLineWidth() const
 {
-#if defined(HAVE_SYS_IOCTL_H) 
+#if defined(HAVE_SYS_IOCTL_H) && defined(TIOCGWINSZ)
   struct winsize sz;
   if ( ioctl(0, TIOCGWINSZ, &sz) >= 0 )
     return sz.ws_col;
