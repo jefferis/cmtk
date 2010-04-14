@@ -5,6 +5,11 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 1.3
 ===========================
 
+This is a major feature release of CMTK. It adds support for storing images
+and registration transformations between them in an SQLite database. This
+database can then be queried to identify transformations and sequences of
+concatenated transformations between any two given images.
+
 For a complete list of changes and fixes, see the CHANGELOG file.
 
 CMTK has been built and tested on the following platforms:
