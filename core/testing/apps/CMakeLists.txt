@@ -425,9 +425,9 @@ IF(NOT CMTK_USE_MPI)
 
   IF(CMTK_BUILD_SQLITE)
     SET(testList ${testList} 
-      registrationxFromListSQL
-      registrationxWithInitialSQL
-      registrationxWithInitialInverseSQL
+      registrationxFromListDB
+      registrationxWithInitialDB
+      registrationxWithInitialInverseDB
       )
   ENDIF(CMTK_BUILD_SQLITE)  
   

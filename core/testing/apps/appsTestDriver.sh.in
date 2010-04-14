@@ -1060,15 +1060,15 @@ case ${RUNTEST} in
 	run registrationx -v --dofs 0 -o ${tmpdir} --initial vol001_mr_t0t1.list --initial-is-inverse vol001_mr_t0t1.list
 	check_results registration
 	;;
-    registrationxFromListSQL)
+    registrationxFromListDB)
 	run registrationx --db ${tmpdir}/db.sqlite -v --dofs 0 -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
 	;;
-    registrationxWithInitialSQL)
+    registrationxWithInitialDB)
 	run registrationx --db ${tmpdir}/db.sqlite -v --dofs 0 -o ${tmpdir} --initial vol001_mr_t0t1.list vol001_mr_t0.hdr vol001_mr_t1.hdr
 	check_results registration
 	;;
-    registrationxWithInitialInverseSQL)
+    registrationxWithInitialInverseDB)
 	run registrationx --db ${tmpdir}/db.sqlite -v --dofs 0 -o ${tmpdir} --initial vol001_mr_t0t1.list --initial-is-inverse vol001_mr_t0t1.list
 	check_results registration
 	;;
