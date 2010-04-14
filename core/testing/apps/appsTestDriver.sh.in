@@ -1062,15 +1062,12 @@ case ${RUNTEST} in
 	;;
     registrationxFromListDB)
 	run registrationx --db ${tmpdir}/db.sqlite -v --dofs 0 -o ${tmpdir} vol001_mr_t0t1.list
-	check_results registration
 	;;
     registrationxWithInitialDB)
 	run registrationx --db ${tmpdir}/db.sqlite -v --dofs 0 -o ${tmpdir} --initial vol001_mr_t0t1.list vol001_mr_t0.hdr vol001_mr_t1.hdr
-	check_results registration
 	;;
     registrationxWithInitialInverseDB)
 	run registrationx --db ${tmpdir}/db.sqlite -v --dofs 0 -o ${tmpdir} --initial vol001_mr_t0t1.list --initial-is-inverse vol001_mr_t0t1.list
-	check_results registration
 	;;
     registrationxAutoLevelsRat4)
 	run registrationx -v --init fov --auto-multi-levels 4 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
