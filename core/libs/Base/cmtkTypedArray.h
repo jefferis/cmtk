@@ -55,7 +55,7 @@
 
 #ifdef DEBUG
 #define CheckBounds(index,bound) \
-  if (!(index<bound)) throw( Exception( this, "Index %d is outside bound %d", index, bound ) );
+  if (!(index<bound)) throw( Exception( this, "Index is outside bounds" ) );
 #else
 #define CheckBounds(index,bound)
 #endif
