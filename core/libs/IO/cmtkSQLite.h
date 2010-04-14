@@ -38,6 +38,8 @@
 #include <string>
 #include <vector>
 
+#include <cmtkException.h>
+
 namespace
 cmtk
 {
@@ -61,6 +63,16 @@ public:
 
   /// Table type: matrix of strings.
   typedef std::vector< std::vector< std::string > > TableType;
+
+  /// Exception class for class-specific error reporting.
+  class Exception : 
+    /// Inherit from library-level exception
+    public cmtk::Exception 
+  {
+  public:
+    /// Constructor with error message.
+    Exception( const std::string& error ) : cmtk::Exception( error ) {};
+  };
 
   /// Constructor: open SQLite database.
   SQLite( const std::string& dbPath, /**!< Path to the SQLite3 database file. */

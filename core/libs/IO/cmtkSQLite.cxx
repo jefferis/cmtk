@@ -31,7 +31,6 @@
 #include <cmtkSQLite.h>
 
 #include <cmtkConsole.h>
-#include <cmtkException.h>
 
 #include <stdlib.h>
 
@@ -60,7 +59,7 @@ void
 cmtk::SQLite::Exec( const std::string& sql )
 {
   if ( ! this->Good() )
-    throw Exception( "Attempting operation on invalid SQLite databse object" );
+    throw Self::Exception( "Attempting operation on invalid SQLite databse object" );
 
   if ( this->m_DebugMode )
     {
@@ -99,7 +98,7 @@ void
 cmtk::SQLite::Query( const std::string& sql, cmtk::SQLite::TableType& table ) const
 {
   if ( ! this->Good() )
-    throw Exception( "Attempting operation on invalid SQLite databse object" );
+    throw Self::Exception( "Attempting operation on invalid SQLite databse object" );
 
   if ( this->m_DebugMode )
     {
