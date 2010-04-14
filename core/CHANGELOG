@@ -6,7 +6,7 @@ Release CMTK-1.3.0:
 - Fixed: if this is supported, default to terminal width for line width in
     cmtk::Console::FormatText
 - Added: image/transformation database support for the following registration
-    tools: "registration", "registrationx"
+    tools: "registration", "registrationx", "warp"
 - API: cmtk::MetaInformationObject is getting a more explicit and
     task-appropriate interface.
 - API: refactored multi-channel registration class hierarchy to factor common
