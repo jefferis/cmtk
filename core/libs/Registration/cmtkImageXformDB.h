@@ -111,6 +111,9 @@ public:
   /// Find space that image lives in and return its key.
   Self::PrimaryKeyType FindImageSpaceID( const std::string& imagePath );
 
+  /// Get a list of all images in the same space.
+  const std::vector<std::string> GetSpaceImageList( const Self::PrimaryKeyType& spaceKey, const bool sortById = false );
+
   /** Find transformation between two images.
    * Only one transformation is returned, even if more than one transformation
    * connects the two spaces.

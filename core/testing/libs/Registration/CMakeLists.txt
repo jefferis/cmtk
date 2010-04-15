@@ -62,6 +62,7 @@ IF(CMTK_BUILD_SQLITE)
   SET(Tests
     ImageXformDBCreate 
     ImageXformDBAddImage
+    ImageXformDBAddImagePair
     ImageXformDBAddImageThenXform
     ImageXformDBAddImageWithXform
     ImageXformDBAddXformSameSpace

@@ -53,9 +53,89 @@ testImageXformDBAddImage()
   cmtk::ImageXformDB db( ":memory:" );
   db.DebugModeOn();
   db.AddImage( "image1.nii" );
+
+  const cmtk::ImageXformDB::PrimaryKeyType key1 = db.FindImageSpaceID( "image1.nii" );
+  if ( key1 == cmtk::ImageXformDB::NOTFOUND )
+    {
+    std::cerr << "No space key for image1." << std::endl;
+    return 1;
+    }
+
   db.AddImage( "image2.nii", "image1.nii" );
+
+  const cmtk::ImageXformDB::PrimaryKeyType key2 = db.FindImageSpaceID( "image2.nii" );
+  if ( key2 == cmtk::ImageXformDB::NOTFOUND )
+    {
+    std::cerr << "No space key for image2." << std::endl;
+    return 1;
+    }
+
+  if ( key1 != key2 )
+    {
+    std::cerr << "Keys for image1 and image2 do not match." << std::endl;
+    return 1;
+    }
+
   db.AddImage( "image3.nii", "image2.nii" );
+
+  const cmtk::ImageXformDB::PrimaryKeyType key3 = db.FindImageSpaceID( "image3.nii" );
+  if ( key3 == cmtk::ImageXformDB::NOTFOUND )
+    {
+    std::cerr << "No space key for image3." << std::endl;
+    return 1;
+    }
+
+  if ( key1 != key3 )
+    {
+    std::cerr << "Keys for image1 and image3 do not match." << std::endl;
+    return 1;
+    }
+
+
   db.AddImage( "image4.nii" );
+  const cmtk::ImageXformDB::PrimaryKeyType key4 = db.FindImageSpaceID( "image4.nii" );
+  if ( key4 == cmtk::ImageXformDB::NOTFOUND )
+    {
+    std::cerr << "No space key for image4." << std::endl;
+    return 1;
+    }
+
+  if ( key4 == key1 )
+    {
+    std::cerr << "Keys for image1 and image4 match when they should not." << std::endl;
+    return 1;
+    }
+
+  return 0;
+}
+
+// test adding an image to a database
+int
+testImageXformDBAddImagePair()
+{
+  cmtk::ImageXformDB db( ":memory:" );
+  db.DebugModeOn();
+  db.AddImage( "image2.nii", "image1.nii" );
+
+  const cmtk::ImageXformDB::PrimaryKeyType key1 = db.FindImageSpaceID( "image1.nii" );
+  if ( key1 == cmtk::ImageXformDB::NOTFOUND )
+    {
+    std::cerr << "No space key for image1." << std::endl;
+    return 1;
+    }
+
+  const cmtk::ImageXformDB::PrimaryKeyType key2 = db.FindImageSpaceID( "image2.nii" );
+  if ( key2 == cmtk::ImageXformDB::NOTFOUND )
+    {
+    std::cerr << "No space key for image2." << std::endl;
+    return 1;
+    }
+
+  if ( key1 != key2 )
+    {
+    std::cerr << "Keys for image1 and image2 do not match." << std::endl;
+    return 1;
+    }
 
   return 0;
 }

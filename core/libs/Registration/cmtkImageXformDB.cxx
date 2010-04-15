@@ -69,7 +69,7 @@ cmtk::ImageXformDB
     if ( (spaceKey == Self::NOTFOUND) )
       {
       this->Exec( "INSERT INTO images (path) VALUES ('"+spacePath+"')" );
-      this->Exec( "UPDATE images SET space=(SELECT space FROM images WHERE path='"+spacePath+"') WHERE path='"+spacePath+"'" );
+      this->Exec( "UPDATE images SET space=(SELECT id FROM images WHERE path='"+spacePath+"') WHERE path='"+spacePath+"'" );
       spaceKey = this->FindImageSpaceID( spacePath );
       }
     
@@ -167,6 +167,35 @@ cmtk::ImageXformDB
     }
 
   return Self::NOTFOUND;
+}
+
+const std::vector<std::string> 
+cmtk::ImageXformDB
+::GetSpaceImageList( const Self::PrimaryKeyType& spaceKey, const bool sortById )
+{
+  std::vector<std::string> results;
+  if ( spaceKey == Self::NOTFOUND )
+    {
+    return results;
+    }
+
+  std::ostringstream sql;
+  sql << "SELECT path FROM images WHERE space=" << spaceKey;
+
+  if ( sortById )
+    {
+    sql << " ORDER BY id ASC";
+    }
+  
+  SQLite::TableType table;
+  this->Query( sql.str(), table );
+  for ( size_t i = 0; i < table.size(); ++i )
+    {
+    if ( table[i].size() )
+      results.push_back( table[i][0] );
+    }
+  
+  return results;
 }
 
 bool
