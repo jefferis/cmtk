@@ -46,8 +46,9 @@ if [ ! -d ${BASELINE} ]; then
 fi
 
 HOSTNAME=`uname -n`
+
 tmpdir=${BINDIR}/../testing/temporary/${HOSTNAME}/${RUNTEST}
-if [ -f ${tmpdir} ]; then
+if [ -e ${tmpdir} ]; then
     rm -rf ${tmpdir}
 fi
 mkdir -p ${tmpdir}
