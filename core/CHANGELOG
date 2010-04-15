@@ -1,5 +1,7 @@
 Release CMTK-1.3.0:
 
+- Added: a new command line tool, "dbtool", to modify, query, and maintain
+    databases of images and transformations between them.
 - Fixed: consolidated redundant "--switch" and "--exchange" parameters to
     "warp" tool (Issue #3616]. Also fixed initial transformation missing
     inversion bug (unreported) for inverse-consistent nonrigid registration.
