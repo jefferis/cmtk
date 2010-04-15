@@ -94,7 +94,7 @@ listSpace( const int argc, const char* argv[] )
     bool sortById = false;
 
     cmtk::CommandLine cl( argc, argv );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Get image space" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "List image space contents" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This command queries the database to list all images that are in the same space as the given one." );
 
     typedef cmtk::CommandLine::Key Key;
@@ -135,6 +135,54 @@ listSpace( const int argc, const char* argv[] )
 int
 getXform( const int argc, const char* argv[] )
 {
+  try
+    {
+    const char* dbpath = NULL;
+    const char* rimage = NULL;
+    const char* fimage = NULL;
+
+    cmtk::CommandLine cl( argc, argv );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Get transformation link between two images" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This command queries the database to find transformation links that map from a given reference to a given floating image space." );
+
+    typedef cmtk::CommandLine::Key Key;
+    
+    cl.AddParameter( &dbpath, "Database", "Database path." );
+    cl.AddParameter( &rimage, "RefImage", "Reference image path: this is the image FROM which to map." );
+    cl.AddParameter( &fimage, "FltImage", "Floating image path. this is the image TO which to map." );
+    
+    cl.Parse();
+    
+    try
+      {
+      cmtk::ImageXformDB db( dbpath, true /*readOnly*/ );
+
+      if ( DebugMode )
+	db.DebugModeOn();
+
+      std::string xform;
+      bool inverse;
+      
+      db.FindXform( rimage, fimage, xform, inverse );
+
+      if ( inverse )
+	{
+	cmtk::StdOut << "--inverse ";
+	}
+      cmtk::StdOut << xform << "\n";
+      }
+    catch ( cmtk::ImageXformDB::Exception e )
+      {
+      cmtk::StdErr << e.what() << "\n";
+      return 1;
+      }
+    }
+  catch ( cmtk::CommandLine::Exception e )
+    {
+    cmtk::StdErr << e << "\n";
+    return 1;
+    }
+
   return 0;
 }
 
