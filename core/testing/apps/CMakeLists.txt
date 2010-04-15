@@ -37,6 +37,7 @@ ELSE(SH_PATH)
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.py.in ${CMAKE_CURRENT_BINARY_DIR}/appsTestDriver.py @ONLY)
 ENDIF(SH_PATH)
 
+
 # ==========================================
 # Tests for "avg_adm" tool
 SET(testList ${testList} 
@@ -67,6 +68,15 @@ SET(testList ${testList}
   congeal_warpUseTemplate
   )
 
+# ==========================================
+# Tests for "dbtool"
+IF(CMTK_BUILD_SQLITE)
+  SET(testList ${testList}
+    dbtool_AddImage
+    dbtool_ListSpace
+    dbtool_GetXform)
+ENDIF(CMTK_BUILD_SQLITE)  
+  
 # ==========================================
 # Tests for "describe" tool
 SET(testList ${testList} 

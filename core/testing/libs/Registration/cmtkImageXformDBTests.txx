@@ -109,6 +109,46 @@ testImageXformDBAddImage()
   return 0;
 }
 
+// test adding an image to a database repeatedly without creating multiple entries.
+int
+testImageXformDBAddImageRepeat()
+{
+  cmtk::ImageXformDB db( ":memory:" );
+  db.DebugModeOn();
+  db.AddImage( "image1.nii" );
+
+  const cmtk::ImageXformDB::PrimaryKeyType key1 = db.FindImageSpaceID( "image1.nii" );
+  if ( key1 == cmtk::ImageXformDB::NOTFOUND )
+    {
+    std::cerr << "No space key for image1 (first add)" << std::endl;
+    return 1;
+    }
+
+  db.AddImage( "image1.nii" );
+
+  const cmtk::ImageXformDB::PrimaryKeyType key2 = db.FindImageSpaceID( "image1.nii" );
+  if ( key2 == cmtk::ImageXformDB::NOTFOUND )
+    {
+    std::cerr << "No space key for image1 (second add)" << std::endl;
+    return 1;
+    }
+
+  if ( key1 != key2 )
+    {
+    std::cerr << "Two different keys." << std::endl;
+    return 1;
+    }
+
+  const std::vector<std::string> list = db.GetSpaceImageList( "image1.nii" );
+  if ( list.size() != 1 )
+    {
+    std::cerr << "Number of entries is not equal to 1." << std::endl;
+    return 1;
+    }
+
+  return 0;
+}
+
 // test adding an image to a database
 int
 testImageXformDBAddImagePair()

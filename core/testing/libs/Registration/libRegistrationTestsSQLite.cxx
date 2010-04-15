@@ -49,6 +49,7 @@ const testNameAndFunctionPointer testTable[] =
   { "ImageXformDBCreate",                 &testImageXformDBCreate },
   { "ImageXformDBOpen",                   &testImageXformDBOpen },
   { "ImageXformDBAddImage",               &testImageXformDBAddImage },
+  { "ImageXformDBAddImageRepeat",         &testImageXformDBAddImageRepeat },
   { "ImageXformDBAddImagePair",           &testImageXformDBAddImagePair },
   { "ImageXformDBAddImageThenXform",      &testImageXformDBAddImageThenXform },
   { "ImageXformDBAddImageWithXform",      &testImageXformDBAddImageWithXform },

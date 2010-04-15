@@ -86,6 +86,12 @@ public:
 		const bool readOnly = false /**!< If this flag is set, the database is opened read-only. If false, the database is opened for read/write, and a non-existing database will be created. */);
 
   /** Add an image to a coordinate space, each identified by its file system path.
+   * If the given image already exists in the database, no change is made.
+   *\warning If the given image already exists in the database, no change is made even
+   *  if a new space is assigned to it with this call. The reason for this behaviour is
+   *  that if we assign the new space, it is unclear what to do with other images that potentially 
+   *  live in the old image space, especially if that space was defined by the reassigned image
+   *  in the first place.
    */
   void AddImage( const std::string& imagePath /**!< File system path of the new image*/,
 		 const std::string& spacePath = "" /**!< File system path of an existing image that lives in the same space*/ );

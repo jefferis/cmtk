@@ -58,6 +58,10 @@ void
 cmtk::ImageXformDB
 ::AddImage( const std::string& imagePath, const std::string& spacePath )
 {
+  PrimaryKeyType imageKey = this->FindImageSpaceID( imagePath );
+  if ( (spaceKey != Self::NOTFOUND) )
+    return;
+
   if ( (spacePath == "") )
     {
     this->Exec( "INSERT INTO images (path) VALUES ('"+imagePath+"')" );

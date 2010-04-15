@@ -47,6 +47,9 @@ fi
 
 HOSTNAME=`uname -n`
 tmpdir=${BINDIR}/../testing/temporary/${HOSTNAME}/${RUNTEST}
+if [ -f ${tmpdir} ]; then
+    rm -rf ${tmpdir}
+fi
 mkdir -p ${tmpdir}
 
 cd ${DATADIR}
@@ -440,6 +443,15 @@ case ${RUNTEST} in
 	run convertx --scale-to-range 128:192 spgr_brain_1.hdr ${tmpdir}/scaled.hdr
 	check_results scaled.img
 	;;
+    dbtool_AddImage)
+      run dbtool add_image ${tmpdir}/db.sqlite image1 image2
+      ${BINDIR}/sqlite ${tmpdir}/db.sqlite "SELECT * FROM images ORDER BY path ASC" > ${tmpdir}/images
+      check_results images
+      ;;
+    dbtool_ListSpace)
+    ;;
+    dbtool_GetXform)
+    ;;
     dcm2image)
 	run dcm2image -O ${tmpdir}/00%n.hdr ${PWD}/dcm/
 	check_results 001.hdr 001.img 002.hdr 002.img 003.hdr 003.img
