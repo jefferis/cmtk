@@ -450,7 +450,9 @@ case ${RUNTEST} in
       check_results images
       ;;
     dbtool_ListSpace)
-    ;;
+      run_eval "${BINDIR}/dbtool list_space images.sqlite image1c > ${tmpdir}/list.txt"
+      check_results list.txt
+      ;;
     dbtool_GetXform)
     ;;
     dcm2image)
