@@ -1,4 +1,7 @@
+##
 ##  Copyright 2010 Torsten Rohlfing
+##
+##  Copyright 2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -35,7 +38,7 @@ SET(SQLITE_VERSION "sqlite-3.6.22")
 
 SET(sqlite_SRCS sqlite3.c)
 
-ADD_DEFINITIONS(-DSQLITE_OMIT_LOAD_EXTENSION -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_RTREE)
+ADD_DEFINITIONS(-DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_RTREE)
 
 ADD_LIBRARY(sqlite3 ${sqlite_SRCS})
 TARGET_LINK_LIBRARIES(sqlite3)
@@ -47,5 +50,12 @@ INSTALL(TARGETS sqlite3
 
 FILE(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 INSTALL(FILES ${files} DESTINATION include/cmtk/sqlite3 COMPONENT headers)
+
+ADD_EXECUTABLE(sqlite shell.c)
+TARGET_LINK_LIBRARIES(sqlite sqlite3)
+INSTALL(TARGETS sqlite
+  RUNTIME DESTINATION bin COMPONENT applications
+  LIBRARY DESTINATION bin COMPONENT applications
+  ARCHIVE DESTINATION bin COMPONENT applications)
 
 SET(SQLITE_LIBRARIES sqlite3)
