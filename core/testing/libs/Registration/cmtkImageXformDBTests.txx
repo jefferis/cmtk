@@ -139,7 +139,7 @@ testImageXformDBAddImageRepeat()
     return 1;
     }
 
-  const std::vector<std::string> list = db.GetSpaceImageList( "image1.nii" );
+  const std::vector<std::string> list = db.GetSpaceImageList( db.FindImageSpaceID( "image1.nii" ) );
   if ( list.size() != 1 )
     {
     std::cerr << "Number of entries is not equal to 1." << std::endl;
