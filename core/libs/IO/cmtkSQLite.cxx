@@ -59,7 +59,7 @@ void
 cmtk::SQLite::Exec( const std::string& sql )
 {
   if ( ! this->Good() )
-    throw Self::Exception( "Attempting operation on invalid SQLite databse object" );
+    throw Self::Exception( "Attempting operation on invalid SQLite database object" );
 
   if ( this->m_DebugMode )
     {
@@ -98,7 +98,7 @@ void
 cmtk::SQLite::Query( const std::string& sql, cmtk::SQLite::TableType& table ) const
 {
   if ( ! this->Good() )
-    throw Self::Exception( "Attempting operation on invalid SQLite databse object" );
+    throw Self::Exception( "Attempting operation on invalid SQLite database object" );
 
   if ( this->m_DebugMode )
     {
