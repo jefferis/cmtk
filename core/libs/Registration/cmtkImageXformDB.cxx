@@ -59,7 +59,7 @@ cmtk::ImageXformDB
 ::AddImage( const std::string& imagePath, const std::string& spacePath )
 {
   PrimaryKeyType imageKey = this->FindImageSpaceID( imagePath );
-  if ( (spaceKey != Self::NOTFOUND) )
+  if ( imageKey != Self::NOTFOUND )
     return;
 
   if ( (spacePath == "") )
