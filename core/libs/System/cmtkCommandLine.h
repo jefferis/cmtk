@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -1122,7 +1123,7 @@ public:
   void PrintWiki() const;
 
   /// Get next parameter index.
-  size_t GetIndex() const { return Index; }
+  size_t GetNextIndex() const { return this->Index; }
 
   /** Get next command line argument.
    * An exception is generated if no further arguments are available.

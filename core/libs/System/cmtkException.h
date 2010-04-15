@@ -39,6 +39,8 @@
 #include <cstdlib>
 #include <string>
 
+#include <cmtkConsole.h>
+
 namespace
 cmtk
 {
@@ -94,6 +96,9 @@ private:
 };
 
 //@}
+
+/// Output of command line exception.
+Console& operator<<( Console& console, Exception e );
 
 } // namespace cmtk
 

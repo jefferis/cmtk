@@ -81,4 +81,10 @@ char* Exception::FormatErrorMsg( const char* format, ... )
   return ExceptionErrorMessageBuffer;
 }
 
+Console& operator<<( Console& console, Exception e )
+{
+  console << e.what();
+  return console;
+}
+
 } // namespace cmtk
