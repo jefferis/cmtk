@@ -74,7 +74,8 @@ IF(CMTK_BUILD_SQLITE)
   SET(testList ${testList}
     dbtool_AddImage
     dbtool_ListSpace
-    dbtool_GetXform)
+    dbtool_GetXform1
+    dbtool_GetXform2)
 ENDIF(CMTK_BUILD_SQLITE)  
   
 # ==========================================

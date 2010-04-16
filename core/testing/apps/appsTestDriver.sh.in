@@ -453,8 +453,14 @@ case ${RUNTEST} in
       run_eval "${BINDIR}/dbtool list_space images.sqlite image1c > ${tmpdir}/list.txt"
       check_results list.txt
       ;;
-    dbtool_GetXform)
-    ;;
+    dbtool_GetXform1)
+      run_eval "${BINDIR}/dbtool get_xform imagesSingleXform.sqlite image1.nii image2.nii > ${tmpdir}/xform.txt"
+      check_results xform.txt
+      ;;
+    dbtool_GetXform2)
+      run_eval "${BINDIR}/dbtool get_xform imagesSingleXform.sqlite image2.nii image1.nii > ${tmpdir}/xform.txt"
+      check_results xform.txt
+      ;;
     dcm2image)
 	run dcm2image -O ${tmpdir}/00%n.hdr ${PWD}/dcm/
 	check_results 001.hdr 001.img 002.hdr 002.img 003.hdr 003.img
