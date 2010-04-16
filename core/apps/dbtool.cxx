@@ -163,13 +163,19 @@ getXform( const int argc, const char* argv[] )
       std::string xform;
       bool inverse;
       
-      db.FindXform( rimage, fimage, xform, inverse );
-
-      if ( inverse )
+      if ( db.FindXform( rimage, fimage, xform, inverse ) )
 	{
-	cmtk::StdOut << "--inverse ";
+	if ( inverse )
+	  {
+	  cmtk::StdOut << "--inverse ";
+	  }
+	cmtk::StdOut << xform << "\n";
 	}
-      cmtk::StdOut << xform << "\n";
+      else
+	{
+	cmtk::StdErr << "ERROR: no transformation can be found that maps from " << rimage << " to " << fimage << "\n";
+	return 1;
+	}
       }
     catch ( cmtk::ImageXformDB::Exception e )
       {
