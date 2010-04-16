@@ -140,12 +140,15 @@ getXform( const int argc, const char* argv[] )
     const char* dbpath = NULL;
     const char* rimage = NULL;
     const char* fimage = NULL;
+    
+    bool all = false;
 
     cmtk::CommandLine cl( argc, argv );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Get transformation link between two images" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This command queries the database to find transformation links that map from a given reference to a given floating image space." );
 
     typedef cmtk::CommandLine::Key Key;
+    cl.AddSwitch( Key( "all" ), &all, true, "Print list of all transformations." );
     
     cl.AddParameter( &dbpath, "Database", "Database path." );
     cl.AddParameter( &rimage, "RefImage", "Reference image path: this is the image FROM which to map." );
@@ -160,21 +163,38 @@ getXform( const int argc, const char* argv[] )
       if ( DebugMode )
 	db.DebugModeOn();
 
-      std::string xform;
-      bool inverse;
-      
-      if ( db.FindXform( rimage, fimage, xform, inverse ) )
+      if ( all )
 	{
-	if ( inverse )
+	const std::vector<std::string> allXformsFwd = db.FindAllXforms( rimage, fimage );
+	for ( size_t i = 0; i < allXformsFwd.size(); ++i )
 	  {
-	  cmtk::StdOut << "--inverse ";
+	  cmtk::StdOut << allXformsFwd[i] << "\n";
 	  }
-	cmtk::StdOut << xform << "\n";
+
+	const std::vector<std::string> allXformsBwd = db.FindAllXforms( fimage, rimage );
+	for ( size_t i = 0; i < allXformsBwd.size(); ++i )
+	  {
+	  cmtk::StdOut << "--inverse " << allXformsBwd[i] << "\n";
+	  }
 	}
       else
 	{
-	cmtk::StdErr << "ERROR: no transformation can be found that maps from " << rimage << " to " << fimage << "\n";
-	return 1;
+	std::string xform;
+	bool inverse;
+	
+	if ( db.FindXform( rimage, fimage, xform, inverse ) )
+	  {
+	  if ( inverse )
+	    {
+	    cmtk::StdOut << "--inverse ";
+	    }
+	  cmtk::StdOut << xform << "\n";
+	  }
+	else
+	  {
+	  cmtk::StdErr << "ERROR: no transformation can be found that maps from " << rimage << " to " << fimage << "\n";
+	  return 1;
+	  }
 	}
       }
     catch ( cmtk::ImageXformDB::Exception e )
