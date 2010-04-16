@@ -444,8 +444,13 @@ case ${RUNTEST} in
 	run convertx --scale-to-range 128:192 spgr_brain_1.hdr ${tmpdir}/scaled.hdr
 	check_results scaled.img
 	;;
-    dbtool_AddImage)
-      run dbtool add_image ${tmpdir}/db.sqlite image1 image2
+    dbtool_AddImages)
+      run dbtool add_images ${tmpdir}/db.sqlite image1 image2
+      ${BINDIR}/sqlite ${tmpdir}/db.sqlite "SELECT * FROM images ORDER BY path ASC" > ${tmpdir}/images
+      check_results images
+      ;;
+    dbtool_AddImages2)
+      run dbtool add_images ${tmpdir}/db.sqlite image1 image2 image3 image3
       ${BINDIR}/sqlite ${tmpdir}/db.sqlite "SELECT * FROM images ORDER BY path ASC" > ${tmpdir}/images
       check_results images
       ;;

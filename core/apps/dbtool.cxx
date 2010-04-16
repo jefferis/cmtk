@@ -38,24 +38,24 @@
 bool DebugMode = false;
 
 int
-addImage( const int argc, const char* argv[] )
+addImages( const int argc, const char* argv[] )
 {
   try
     {
     const char* dbpath = NULL;
-    const char* image = NULL;
     const char* space = NULL;
+    std::vector<std::string> images;
 
     cmtk::CommandLine cl( argc, argv );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Add an image to the database" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Add images to the database" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This command manually adds a new image to the database, potentially assigning it to the space of an existing image. "
 		       "This is useful, for example, when multiple images were acquired in spatial alignment, or when images were created using tools that do not support database updating." );
 
     typedef cmtk::CommandLine::Key Key;
 
     cl.AddParameter( &dbpath, "Database", "Database path." );
-    cl.AddParameter( &image, "Image", "New Image." );
-    cl.AddParameter( &space, "Space", "Existing image space (i.e., a previously added image that is aligned with the new image." );
+    cl.AddParameter( &space, "Space", "Image that defines coordinate space. If this image is not yet in the database, it will be added first." );
+    cl.AddParameterVector( &images, "Image", "Other images that reside in the same anatomical space (same subject, same acquisition) as the specified space." );
 
     cl.Parse();
 
@@ -66,7 +66,9 @@ addImage( const int argc, const char* argv[] )
       if ( DebugMode )
 	db.DebugModeOn();
 
-      db.AddImage( image, space );
+      db.AddImage( space );
+      for ( size_t i = 0; i < images.size(); ++i )
+	db.AddImage( space, images[i] );
       }
     catch ( cmtk::ImageXformDB::Exception e )
       {
@@ -229,7 +231,7 @@ main( const int argc, const char* argv[] )
 
     cl.AddSwitch( Key( "debug" ), &DebugMode, true, "Turn on debug mode: print all SQL database commands and queries." );
 
-    cl.AddParameter( &command, "Command", "Database command. One of \"add_image\", \"list_space\", \"get_xform\". Use '<command> --help' for detailed help." );
+    cl.AddParameter( &command, "Command", "Database command. One of \"add_images\", \"list_space\", \"get_xform\". Use '<command> --help' for detailed help." );
 
     cl.Parse();
 
@@ -238,8 +240,8 @@ main( const int argc, const char* argv[] )
     const char** cargv = argv+cl.GetNextIndex()-1;
     
     // run commands
-    if ( !strcmp( command, "add_image" ) )
-      exitCode = addImage( cargc, cargv );
+    if ( !strcmp( command, "add_images" ) )
+      exitCode = addImages( cargc, cargv );
     else if ( ! strcmp( command, "list_space" ) )
       exitCode = listSpace( cargc, cargv );
     else if ( ! strcmp( command, "get_xform" ) )
