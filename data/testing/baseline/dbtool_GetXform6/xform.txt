@@ -1,0 +1,3 @@
+affine.xform
+--inverse rigid.xform
+--inverse init.xform

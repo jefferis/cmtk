@@ -75,7 +75,11 @@ IF(CMTK_BUILD_SQLITE)
     dbtool_AddImage
     dbtool_ListSpace
     dbtool_GetXform1
-    dbtool_GetXform2)
+    dbtool_GetXform2
+    dbtool_GetXform3
+    dbtool_GetXform4
+    dbtool_GetXform5
+    dbtool_GetXform6)
 ENDIF(CMTK_BUILD_SQLITE)  
   
 # ==========================================
