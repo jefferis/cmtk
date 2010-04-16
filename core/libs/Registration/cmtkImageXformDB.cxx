@@ -157,7 +157,7 @@ cmtk::ImageXformDB
 
 cmtk::ImageXformDB::PrimaryKeyType 
 cmtk::ImageXformDB
-::FindImageSpaceID( const std::string& imagePath )
+::FindImageSpaceID( const std::string& imagePath ) const
 {
   if ( imagePath != "" )
     {
@@ -204,7 +204,7 @@ cmtk::ImageXformDB
 
 bool
 cmtk::ImageXformDB
-::FindXform( const std::string& imagePathSrc, const std::string& imagePathTrg, std::string& xformPath, bool& inverse )
+::FindXform( const std::string& imagePathSrc, const std::string& imagePathTrg, std::string& xformPath, bool& inverse ) const
 {
   const PrimaryKeyType spaceKeySrc = this->FindImageSpaceID( imagePathSrc );
   const PrimaryKeyType spaceKeyTrg = this->FindImageSpaceID( imagePathTrg );
@@ -246,6 +246,40 @@ cmtk::ImageXformDB
     }
 
   return false;
+}
+
+const std::vector<std::string>
+cmtk::ImageXformDB
+::FindAllXforms( const std::string& imagePathSrc, const std::string& imagePathTrg ) const
+{
+  std::vector<std::string> result;
+
+  const PrimaryKeyType spaceKeySrc = this->FindImageSpaceID( imagePathSrc );
+  const PrimaryKeyType spaceKeyTrg = this->FindImageSpaceID( imagePathTrg );
+
+  if ( (spaceKeySrc == Self::NOTFOUND) || (spaceKeyTrg == Self::NOTFOUND) )
+    {
+    // if either space is not in the database, then clearly no transformation can reach it
+    return result;
+    }
+
+  if ( spaceKeySrc == spaceKeyTrg )
+    {
+    result.push_back( "" );
+    return result;
+    }
+  
+  std::ostringstream sql;
+  sql << "SELECT path FROM xforms WHERE ( spacefrom=" << spaceKeySrc << " AND spaceto=" << spaceKeyTrg << " ) ORDER BY level DESC, invertible ASC";
+
+  SQLite::TableType table;
+  this->Query( sql.str(), table );
+  for ( size_t i = 0; i < table.size(); ++i )
+    {
+    if ( table[i].size() )
+      result.push_back( table[i][0] );
+    }
+  return result;
 }
 
 int

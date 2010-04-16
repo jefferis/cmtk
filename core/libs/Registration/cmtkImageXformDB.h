@@ -115,7 +115,7 @@ public:
 			const bool initInverse = false /** Flag whether the new transformation is based on the inverse of the initial transformation, i.e., from and to space need to be switched. */ );
 
   /// Find space that image lives in and return its key.
-  Self::PrimaryKeyType FindImageSpaceID( const std::string& imagePath );
+  Self::PrimaryKeyType FindImageSpaceID( const std::string& imagePath ) const;
 
   /// Get a list of all images in the same space.
   const std::vector<std::string> GetSpaceImageList( const Self::PrimaryKeyType& spaceKey, const bool sortById = false );
@@ -126,8 +126,8 @@ public:
    *
    * Forward non-invertible (i.e., nonrigid) transformations are preferred, 
    * followed by forward explicitly invertible (i.e., affine) transformations,
-   * then inverses of nonrigid transformations.
-   * and finally inverses of affine transformations, 
+   * then inverses of nonrigid transformations. and finally inverses of affine 
+   * transformations.   
    *
    *\return True if transformation exists. If false, the two given images may still be connected via a chain of
    * multiple, concatenated transformations.
@@ -135,7 +135,18 @@ public:
   bool FindXform( const std::string& imagePathSrc, /**!< File system path of the source image */
 		  const std::string& imagePathTrg, /**!< File system path of the target image */
 		  std::string& xformPath, /**!< File system path of the transformation. Only valid if function returns "true." Path can be empty if both images are already in the same space. */
-		  bool& inverse /**!< If this is set, the given transformation needs to be inverted. */);
+		  bool& inverse /**!< If this is set, the given transformation needs to be inverted. */) const;
+
+  /** Find all transformations between two images.
+   * Only forward transformations are returned. To find inverse transformations,
+   * call this function with source and target images reversed.
+   *
+   *\return List of transformations that map from source to target. Non-invertible 
+   * (i.e., nonrigid) transformations are listed first, followed by explicitly invertible 
+   * (i.e., affine) transformations.mations.
+   */
+  const std::vector<std::string> FindAllXforms( const std::string& imagePathSrc, /**!< File system path of the source image */
+						const std::string& imagePathTrg /**!< File system path of the target image */ ) const;
 
   /** Get the refinement level of a transformation in the database.
    *\return The level of the given transformation: 0 for an original transformation,
