@@ -450,7 +450,7 @@ AffineXform::RotateWXYZ
     }
 }
 
-AffineXform::SmartPtr
+const AffineXform::SmartPtr
 AffineXform::GetInverse() const
 {
   if ( !InverseXform ) 
@@ -575,6 +575,7 @@ AffineXform::Print() const
 void 
 AffineXform::ApplyToAll
 ( CoordinateVector& v, BitVector& valid, const bool inverse, const Types::Coordinate epsilon, const int* gridDims )
+  const
 {
   if ( inverse )
     this->GetInverse()->ApplyToAll( v, valid, false, epsilon, gridDims );

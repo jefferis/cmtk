@@ -220,7 +220,7 @@ public:
   virtual Self::SmartPtr GetDifference( const AffineXform& other ) const;
 
   /// Get linked inverse of this transformation.
-  SmartPtr GetInverse() const;
+  const Self::SmartPtr GetInverse() const;
 
   /// Get global scaling factor.
   virtual Types::Coordinate GetGlobalScaling() const 
@@ -519,7 +519,7 @@ public:
   }
 
   /// Apply transformation to all coordinate triples stored in an array.
-  virtual void ApplyToAll( CoordinateVector& v, BitVector& valid, const bool inverse = false, const Types::Coordinate epsilon = 0.0, const int* gridDims = NULL );
+  virtual void ApplyToAll( CoordinateVector& v, BitVector& valid, const bool inverse = false, const Types::Coordinate epsilon = 0.0, const int* gridDims = NULL ) const;
 
   /// Assignment operator.
   AffineXform& operator=( const AffineXform& other );

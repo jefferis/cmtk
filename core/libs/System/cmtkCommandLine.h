@@ -973,7 +973,7 @@ public:
 
   /// Add switch.
   template<class T> 
-  Item::SmartPtr& 
+  Item::SmartPtr 
   AddSwitch( const Key& key, T *const var, const T value, const char* comment ) 
   {
     return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new Switch<T>( var, value ) ), comment ) ) )->m_Action;
@@ -981,7 +981,7 @@ public:
   
   /// Add option.
   template<class T> 
-  Item::SmartPtr&
+  Item::SmartPtr
   AddOption( const Key& key, T *const var, const char* comment, bool *const flag = NULL ) 
   {
     return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new Option<T>( var, flag ) ), comment ) ) )->m_Action;
@@ -989,7 +989,7 @@ public:
   
   /// Add list option (put arguments from repeated uses into a FIFO list).
   template<class T> 
-  Item::SmartPtr&
+  Item::SmartPtr
   AddList( const Key& key, std::list<T>& list, const char* comment ) 
   {
     return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new List<T>( list ) ), comment ) ) )->m_Action;
@@ -997,14 +997,14 @@ public:
   
   /// Add vector option (breaks argument into elements of a vector).
   template<class T> 
-  Item::SmartPtr&
+  Item::SmartPtr
   AddVector( const Key& key, std::vector<T>& vector, const char* comment ) 
   {
     return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new Vector<T>( vector ) ), comment ) ) )->m_Action;
   }
   
   /// Add callback.
-  Item::SmartPtr&
+  Item::SmartPtr
   AddCallback( const Key& key, CallbackFunc func, const char* comment ) 
   {
     return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new Callback( func ) ), comment ) ) )->m_Action;
@@ -1012,14 +1012,14 @@ public:
 
   /// Add callback with a single argument.
   template<class TArg>
-  Item::SmartPtr&
+  Item::SmartPtr
   AddCallback( const Key& key, void (*funcArg)( const TArg ), const char* comment ) 
   {
     return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new Callback( funcArg ) ), comment ) ) )->m_Action;
   }
   
   /// Add callback with multiple arguments.
-  Item::SmartPtr&
+  Item::SmartPtr
   AddCallback( const Key& key, CallbackFuncMultiArg funcMultiArg, const char* comment ) 
   {
     return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new Callback( funcMultiArg ) ), comment ) ) )->m_Action;
@@ -1053,7 +1053,7 @@ public:
   KeyActionListType m_KeyActionListComplete;
 				    
   /// Add an item to applicable key/action lists.
-  KeyToActionSingle::SmartPtr AddKeyAction( KeyToActionSingle::SmartPtr keyAction )
+  const KeyToActionSingle::SmartPtr AddKeyAction( const KeyToActionSingle::SmartPtr& keyAction )
   {
     this->m_KeyActionList->push_back( KeyToAction::SmartPtr::DynamicCastFrom( keyAction ) );
     this->m_KeyActionListComplete.push_back( KeyToAction::SmartPtr::DynamicCastFrom( keyAction ) );
@@ -1061,7 +1061,7 @@ public:
   }
 
   /// Add an item to applicable key/action lists.
-  KeyToActionEnum::SmartPtr AddKeyAction( KeyToActionEnum::SmartPtr keyAction )
+  const KeyToActionEnum::SmartPtr AddKeyAction( const KeyToActionEnum::SmartPtr& keyAction )
   {
     this->m_KeyActionList->push_back( KeyToAction::SmartPtr::DynamicCastFrom( keyAction ) );
     this->m_KeyActionListComplete.push_back( KeyToAction::SmartPtr::DynamicCastFrom( keyAction ) );

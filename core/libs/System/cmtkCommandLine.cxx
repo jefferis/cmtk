@@ -193,25 +193,25 @@ CommandLine::PrintHelp
 {
   const size_t lineWidth = StdErr.GetLineWidth();
 
-  ProgramPropertiesMapType::const_iterator it = this->m_ProgramInfo.find(PRG_TITLE);
-  if ( it != this->m_ProgramInfo.end() )
+  ProgramPropertiesMapType::const_iterator ppit = this->m_ProgramInfo.find(PRG_TITLE);
+  if ( ppit != this->m_ProgramInfo.end() )
     {
     StdErr << "TITLE:\n\n";
-    StdErr.FormatText( it->second, 5 ) << "\n";
+    StdErr.FormatText( ppit->second, 5 ) << "\n";
     }
 
-  it = this->m_ProgramInfo.find(PRG_DESCR);
-  if ( it != this->m_ProgramInfo.end() )
+  ppit = this->m_ProgramInfo.find(PRG_DESCR);
+  if ( ppit != this->m_ProgramInfo.end() )
     {
     StdErr << "\nDESCRIPTION:\n\n";
-    StdErr.FormatText( it->second, 5 ) << "\n";
+    StdErr.FormatText( ppit->second, 5 ) << "\n";
     }
 
-  it = this->m_ProgramInfo.find(PRG_SYNTX);
-  if ( it != this->m_ProgramInfo.end() )
+  ppit = this->m_ProgramInfo.find(PRG_SYNTX);
+  if ( ppit != this->m_ProgramInfo.end() )
     {
     StdErr << "\nSYNTAX:\n\n";
-    StdErr.FormatText( it->second, 5 ) << "\n";
+    StdErr.FormatText( ppit->second, 5 ) << "\n";
     }
   else
     {
@@ -297,25 +297,25 @@ void
 CommandLine::PrintWiki
 () const
 {
-  ProgramPropertiesMapType::const_iterator it = this->m_ProgramInfo.find(PRG_TITLE);
-  if ( it != this->m_ProgramInfo.end() )
+  ProgramPropertiesMapType::const_iterator ppit = this->m_ProgramInfo.find(PRG_TITLE);
+  if ( ppit != this->m_ProgramInfo.end() )
     {
     StdOut << "== Title ==\n\n";
-    StdOut << it->second << "\n\n";
+    StdOut << ppit->second << "\n\n";
     }
 
-  it = this->m_ProgramInfo.find(PRG_DESCR);
-  if ( it != this->m_ProgramInfo.end() )
+  ppit = this->m_ProgramInfo.find(PRG_DESCR);
+  if ( ppit != this->m_ProgramInfo.end() )
     {
     StdOut << "== Description ==\n\n";
-    StdOut << it->second << "\n\n";
+    StdOut << ppit->second << "\n\n";
     }
   
-  it = this->m_ProgramInfo.find(PRG_SYNTX);
-  if ( it != this->m_ProgramInfo.end() )
+  ppit = this->m_ProgramInfo.find(PRG_SYNTX);
+  if ( ppit != this->m_ProgramInfo.end() )
     {
     StdOut << "== Syntax ==\n\n";
-    StdOut << it->second << "\n\n";
+    StdOut << ppit->second << "\n\n";
     }
   else
     {

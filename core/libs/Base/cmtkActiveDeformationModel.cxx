@@ -93,7 +93,7 @@ ActiveDeformationModel<W>::ActiveDeformationModel
       }
     
     samplePoints[sample++] = (*it)->GetPureDeformation( this->IncludeScaleInModel );
-	globalScaling += static_cast<Types::Coordinate>( log( (*it)->GetGlobalScaling() ) );
+    globalScaling += static_cast<Types::Coordinate>( log( (*it)->GetGlobalScaling() ) );
     ++it;
     }
   
@@ -114,8 +114,8 @@ ActiveDeformationModel<W>::ActiveDeformationModel
 
   this->Construct( samplePoints, numberOfSamples, numberOfPoints, numberOfModes );
   
-  for ( unsigned int sample = 0; sample < numberOfSamples; ++sample )
-    delete[] samplePoints[ sample ];
+  for ( unsigned int n = 0; n < numberOfSamples; ++n )
+    delete[] samplePoints[ n ];
   delete[] samplePoints;
   
 }
