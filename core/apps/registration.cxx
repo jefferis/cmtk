@@ -64,7 +64,7 @@ main
     cmtk::ProgressConsole progressInstance( "AffineImageRegistration" );
     Registration.Register();
     }
-  catch ( cmtk::VoxelRegistration::ConstructorFailed ) 
+  catch ( const cmtk::VoxelRegistration::ConstructorFailed& ) 
     {
     return 1;
     }

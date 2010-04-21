@@ -280,7 +280,7 @@ main( int argc, char* argv[] )
     InFileName = cl.GetNext();
     OutFileName = cl.GetNext();
     }
-  catch ( cmtk::CommandLine::Exception ex ) 
+  catch ( const cmtk::CommandLine::Exception& ex ) 
     {
     cmtk::StdErr << ex << "\n";
     return false;

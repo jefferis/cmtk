@@ -218,7 +218,7 @@ bool ParseCommandLine ( const int argc, const char* argv[] )
 	}
       }
     }
-  catch ( cmtk::CommandLine::Exception& ex ) 
+  catch ( const cmtk::CommandLine::Exception& ex ) 
     {
     cmtk::StdErr << ex << "\n";
     return false;

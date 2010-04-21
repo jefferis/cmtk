@@ -64,7 +64,7 @@ main
     cmtk::ProgressConsole progressInstance( "AffineImageRegistration" );
     Registration.Register();
     }
-  catch ( cmtk::ImagePairRegistration::ConstructorFailed ) 
+  catch ( const cmtk::ImagePairRegistration::ConstructorFailed& ) 
     {
     return 1;
     }

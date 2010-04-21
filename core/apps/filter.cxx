@@ -141,7 +141,7 @@ int main( int argc, char* argv[] )
 	}
       }
     }
-  catch ( cmtk::CommandLine::Exception e ) 
+  catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << e;
     exit( 1 );

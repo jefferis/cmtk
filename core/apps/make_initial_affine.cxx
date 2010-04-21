@@ -103,7 +103,7 @@ main( const int argc, const char* argv[] )
 
     cl.Parse();
     }
-  catch ( cmtk::CommandLine::Exception ex )
+  catch ( const cmtk::CommandLine::Exception& ex )
     {
     cmtk::StdErr << ex << "\n";
     return 1;

@@ -209,7 +209,7 @@ ImagePairAffineRegistrationCommandLine
 
     cl.Parse();
     }
-  catch ( CommandLine::Exception ex )
+  catch ( const CommandLine::Exception& ex )
     {
     StdErr << ex << "\n";
     exit( 1 );
@@ -500,7 +500,7 @@ ImagePairAffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v
 	  }
 	}
       }
-    catch ( cmtk::ImageXformDB::Exception ex )
+    catch ( const cmtk::ImageXformDB::Exception& ex )
       {
       StdErr << "DB ERROR: " << ex.what() << " on database " << this->m_UpdateDB << "\n";
       }

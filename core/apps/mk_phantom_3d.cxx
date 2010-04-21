@@ -175,7 +175,7 @@ main( const int argc, const char* argv[] )
     
     cmtk::VolumeIO::Write( volume, OutputFileName, Verbose );
     }
-  catch ( cmtk::CommandLine::Exception e ) 
+  catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << e;
     return 1;

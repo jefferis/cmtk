@@ -70,13 +70,13 @@ addImages( const int argc, const char* argv[] )
       for ( size_t i = 0; i < images.size(); ++i )
 	db.AddImage( space, images[i] );
       }
-    catch ( cmtk::ImageXformDB::Exception e )
+    catch ( const cmtk::ImageXformDB::Exception& e )
       {
       cmtk::StdErr << e.what() << "\n";
       return 1;
       }
     }
-  catch ( cmtk::CommandLine::Exception e )
+  catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
     return 1;
@@ -119,13 +119,13 @@ listSpace( const int argc, const char* argv[] )
       for ( size_t i = 0; i < list.size(); ++i )
 	cmtk::StdOut << list[i] << "\n";
       }
-    catch ( cmtk::ImageXformDB::Exception e )
+    catch ( const cmtk::ImageXformDB::Exception& e )
       {
       cmtk::StdErr << e.what() << "\n";
       return 1;
       }
     }
-  catch ( cmtk::CommandLine::Exception e )
+  catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
     return 1;
@@ -199,13 +199,13 @@ getXform( const int argc, const char* argv[] )
 	  }
 	}
       }
-    catch ( cmtk::ImageXformDB::Exception e )
+    catch ( const cmtk::ImageXformDB::Exception& e )
       {
       cmtk::StdErr << e.what() << "\n";
       return 1;
       }
     }
-  catch ( cmtk::CommandLine::Exception e )
+  catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
     return 1;
@@ -252,7 +252,7 @@ main( const int argc, const char* argv[] )
       exitCode = 1;
       }
     }
-  catch ( cmtk::CommandLine::Exception e )
+  catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
     exit( 1 );

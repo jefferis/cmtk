@@ -56,7 +56,7 @@ main ( int argc, char *argv[] )
     cmtk::ProgressConsole progressInstance( "BSplineImageRegistration" );
     Registration.Register();
     }
-  catch ( cmtk::ImagePairRegistration::ConstructorFailed ) 
+  catch ( const cmtk::ImagePairRegistration::ConstructorFailed& ) 
     {
     return 1;
     }

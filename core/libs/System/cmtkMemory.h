@@ -63,7 +63,7 @@ AllocateArray( const size_t size )
     {
     return new T[size];
     }
-  catch ( std::exception& e )
+  catch ( const std::exception& e )
     {
     std::cerr << "cmtk::Memory::AllocateArray caught exception '" << e.what() << "' allocating " << size << " objects of type " << typeid(T).name() << std::endl;
     throw;

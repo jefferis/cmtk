@@ -85,7 +85,7 @@ UniformVolume::Resample( const UniformVolume& other ) const
       }
     }
    
-  catch ( std::bad_alloc ) 
+  catch ( const std::bad_alloc& ) 
     {
     resampledData = NULL;
     }

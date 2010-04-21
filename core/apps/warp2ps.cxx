@@ -117,7 +117,7 @@ main ( const int argc, const char* argv[] )
     RefFileName = cl.GetNext();
     InListName = cl.GetNext();
     }
-  catch ( cmtk::CommandLine::Exception ex ) 
+  catch ( const cmtk::CommandLine::Exception& ex ) 
     {
     cmtk::StdErr << ex;
     return 1;

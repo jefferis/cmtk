@@ -77,7 +77,7 @@ main( const int argc, const char* argv[] )
 
     cl.Parse();
     }
-  catch ( cmtk::CommandLine::Exception e ) 
+  catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << "Something went wrong parsing the command line.\n";
     return 1;

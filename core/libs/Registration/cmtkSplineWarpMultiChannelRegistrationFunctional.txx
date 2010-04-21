@@ -310,7 +310,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 	    }
 	  active[cp] = false;
 	  }
-	catch ( bool activeCP )
+	catch ( const bool& activeCP )
 	  {
 	  active[cp] = activeCP;
 	  }

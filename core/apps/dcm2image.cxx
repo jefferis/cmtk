@@ -617,7 +617,7 @@ main ( int argc, char *argv[] )
       SearchRootDir = next;
       }
     }
-  catch ( cmtk::CommandLine::Exception& ex )
+  catch ( const cmtk::CommandLine::Exception& ex )
     {
     cmtk::StdErr << ex << "\n";
     exit( 1 );

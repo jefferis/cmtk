@@ -81,7 +81,7 @@ main( const int argc, const char* argv[] )
     InputFilePath = cl.GetNext();
     OutputFilePath = cl.GetNext();
     }
-  catch ( cmtk::CommandLine::Exception e )
+  catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
     return 1;

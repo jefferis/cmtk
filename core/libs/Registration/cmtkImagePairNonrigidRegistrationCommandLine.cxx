@@ -200,7 +200,7 @@ ImagePairNonrigidRegistrationCommandLine
 
     cl.Parse();
     }
-  catch ( CommandLine::Exception ex )
+  catch ( const CommandLine::Exception& ex )
     {
     StdErr << ex << "\n";
     exit( 1 );

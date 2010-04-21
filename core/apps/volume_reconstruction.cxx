@@ -346,7 +346,7 @@ main( const int argc, const char* argv[] )
       nextImage = cl.GetNextOptional();
       }
     }
-  catch ( cmtk::CommandLine::Exception e )
+  catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
     return 1;

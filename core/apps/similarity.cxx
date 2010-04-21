@@ -129,7 +129,7 @@ ParseCommandLine( int argc, char* argv[] )
     Study0 = cl.GetNext();
     Study1 = cl.GetNext();
     }
-  catch ( cmtk::CommandLine::Exception& ex ) 
+  catch ( const cmtk::CommandLine::Exception& ex ) 
     {
     cmtk::StdErr << ex << "\n";
     return false;

@@ -315,7 +315,7 @@ main( int argc, char* argv[] )
       next = cl.GetNextOptional();
       }
     }
-  catch ( cmtk::CommandLine::Exception e ) 
+  catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << e;
     }

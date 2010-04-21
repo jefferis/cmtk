@@ -59,7 +59,7 @@ main( const int argc, const char *argv[] )
 
     ImageFileName = cl.GetNext();
     }
-  catch ( cmtk::CommandLine::Exception ex )
+  catch ( const cmtk::CommandLine::Exception& ex )
     {
     cmtk::StdErr << ex << "\n";
     exit( 1 );

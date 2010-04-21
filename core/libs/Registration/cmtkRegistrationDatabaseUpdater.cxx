@@ -47,7 +47,7 @@ cmtk::RegistrationDatabaseUpdater::UpdateDB() const
 	StdErr << "ERROR: could not update database " << this->m_DatabasePath << "\n";
 	}
       }
-    catch ( cmtk::Exception ex )
+    catch ( const cmtk::Exception& ex )
       {
       StdErr << "DB ERROR: " << ex.what() << "\n";
       }

@@ -120,7 +120,7 @@ main( int argc, char* argv[] )
     
     cmtk::StdErr << phaseDifference * 180 / M_PI << "\n";    
     }
-  catch ( cmtk::CommandLine::Exception& ex )
+  catch ( const cmtk::CommandLine::Exception& ex )
     {
     cmtk::StdErr << ex << "\n";
     exit( 1 );

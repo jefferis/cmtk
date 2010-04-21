@@ -62,7 +62,7 @@ int main ( const int argc, const char* argv[] )
     inXformPath = cl.GetNext();
     outXformPath = cl.GetNext();
     }
-  catch ( cmtk::CommandLine::Exception e )
+  catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
     exit( 1 );

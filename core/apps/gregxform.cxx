@@ -108,7 +108,7 @@ main( int argc, char *argv[] )
 
     StudyList = cl.GetNext();
     }
-  catch ( cmtk::CommandLine::Exception e )
+  catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e;
     exit( 1 );
