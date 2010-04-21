@@ -269,50 +269,54 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 	this->m_Transformation.GetVolumeOfInfluence( 3 * cp, referenceFrom, referenceTo, regionFrom, regionTo, false /*fast*/ );
 	this->m_ReferenceChannels[0]->GetGridRange( regionFrom, regionTo, region );
 	
-	try
+	active[cp] = false;
+
+	for ( size_t channel = 0; channel < this->m_NumberOfChannels; ++channel )
 	  {
-	  for ( size_t channel = 0; channel < this->m_NumberOfChannels; ++channel )
+	  size_t r = region.startX + this->m_ReferenceDims[0] * ( region.startY + this->m_ReferenceDims[1] * region.startZ );
+	  const int endOfLine = ( region.startX + ( this->m_ReferenceDims[0]-region.endX) );
+	  const int endOfPlane = this->m_ReferenceDims[0] * ( region.startY + (this->m_ReferenceDims[1]-region.endY) );
+	  
+	  if ( channel < this->m_ReferenceChannels.size() )
 	    {
-	    size_t r = region.startX + this->m_ReferenceDims[0] * ( region.startY + this->m_ReferenceDims[1] * region.startZ );
-	    const int endOfLine = ( region.startX + ( this->m_ReferenceDims[0]-region.endX) );
-	    const int endOfPlane = this->m_ReferenceDims[0] * ( region.startY + (this->m_ReferenceDims[1]-region.endY) );
-	    
-	    if ( channel < this->m_ReferenceChannels.size() )
-	      {
-	      const TypedArray* refChannel = this->m_ReferenceChannels[channel]->GetData();
-	      for ( int pZ = region.startZ; pZ<region.endZ; ++pZ, r += endOfPlane ) 
-		for ( int pY = region.startY; pY<region.endY; ++pY, r += endOfLine ) 
-		  for ( int pX = region.startX; pX<region.endX; ++pX, ++r ) 
+	    const TypedArray* refChannel = this->m_ReferenceChannels[channel]->GetData();
+	    for ( int pZ = region.startZ; pZ<region.endZ; ++pZ, r += endOfPlane ) 
+	      for ( int pY = region.startY; pY<region.endY; ++pY, r += endOfLine ) 
+		for ( int pX = region.startX; pX<region.endX; ++pX, ++r ) 
+		  {
+		  Types::DataItem refValue;
+		  if ( refChannel->Get( refValue, r ) && (refValue > minValue[channel] ) )
 		    {
-		    Types::DataItem refValue;
-		    if ( refChannel->Get( refValue, r ) && (refValue > minValue[channel] ) )
-		      {
-		      /* found pixel over threshold; terminate loops and throw flag */
-		      throw true;
-		      }
+		    /* found pixel over threshold; set flag and terminate loops */
+		    active[cp] = true;
+
+		    channel = this->m_NumberOfChannels;
+		    pX = region.endX;
+		    pY = region.endY;
+		    pZ = region.endZ;
 		    }
-	      }
-	    else
-	      {
-	      const float* fltChannel = &(this->m_ReformattedFloatingChannels[channel-this->m_ReferenceChannels.size()][0]);
-	      for ( int pZ = region.startZ; pZ<region.endZ; ++pZ, r += endOfPlane ) 
-		for ( int pY = region.startY; pY<region.endY; ++pY, r += endOfLine ) 
-		  for ( int pX = region.startX; pX<region.endX; ++pX, ++r ) 
-		    {
-		    const float fltValue = fltChannel[r];
-		    if ( finite( fltValue ) && (fltValue > minValue[channel]) )
-		      {
-		      /* found pixel over threshold; terminate loops and throw flag */
-		      throw true;
-		      }
-		    }
-	      }
+		  }
 	    }
-	  active[cp] = false;
-	  }
-	catch ( const bool& activeCP )
-	  {
-	  active[cp] = activeCP;
+	  else
+	    {
+	    const float* fltChannel = &(this->m_ReformattedFloatingChannels[channel-this->m_ReferenceChannels.size()][0]);
+	    for ( int pZ = region.startZ; pZ<region.endZ; ++pZ, r += endOfPlane ) 
+	      for ( int pY = region.startY; pY<region.endY; ++pY, r += endOfLine ) 
+		for ( int pX = region.startX; pX<region.endX; ++pX, ++r ) 
+		  {
+		  const float fltValue = fltChannel[r];
+		  if ( finite( fltValue ) && (fltValue > minValue[channel]) )
+		    {
+		    /* found pixel over threshold; set flag and terminate loops */
+		    active[cp] = true;
+
+		    channel = this->m_NumberOfChannels;
+		    pX = region.endX;
+		    pY = region.endY;
+		    pZ = region.endZ;
+		    }
+		  }
+	    }
 	  }
 	}
       }
