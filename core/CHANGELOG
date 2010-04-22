@@ -1,5 +1,8 @@
 Release CMTK-1.3.1:
 
+- Removed: unused cmtk::DirectionSetOptimizer class.
+- Removed: unused member functions of cmtk::Vector that complicate the API and
+    stand in the way of eventually replacing this class with std::valarray.
 - Refactored: where appropriate, catch exceptions by constant references,
     rather than by value or by non-constant reference.
 

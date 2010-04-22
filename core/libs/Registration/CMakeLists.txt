@@ -40,7 +40,6 @@ SET(cmtkRegistration_SRCS
   cmtkBestNeighbourOptimizer.cxx
   cmtkCongealingFunctionalBase.cxx
   cmtkCongealingFunctional.cxx
-  cmtkDirectionSetOptimizer.cxx
   cmtkElasticRegistrationCommandLine.cxx
   cmtkElasticRegistration.cxx
   cmtkFunctionalAffine2D.cxx

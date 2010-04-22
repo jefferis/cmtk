@@ -342,40 +342,6 @@ public:
     return *this;
   }
 
-  /// Increment vector by another, posibly with a scalar weight.
-  Vector<T>& Add( const Vector<T>& delta, const T weight = 1 ) 
-  {
-    assert( Dim == delta.Dim );
-
-#ifndef __SUNPRO_CC
-#pragma omp parallel for if (Dim>1e4)
-#endif
-    for ( size_t i=0; i< this->Dim; ++i )
-      Elements[i] += weight * delta.Elements[i];
-    
-    return *this;
-  }
-
-  /// Set partial vector by copying from another.
-  Vector<T>& SetPartial 
-  ( const Vector<T>& other, const size_t offs = 0 ) 
-  {
-    for ( size_t i=0; (i<other.Dim) && (i+offs<Dim); ++i )
-      Elements[offs+i] = other.Elements[i];
-    
-    return *this;
-  }
-
-  /// Increment partial vector by another.
-  Vector<T>& AddPartial 
-  ( const Vector<T>& delta, const size_t offs = 0 ) 
-  {
-    for ( size_t i=0; (i<delta.Dim) && (i+offs<Dim); ++i )
-      Elements[offs+i]+=delta.Elements[i];
-    
-    return *this;
-  }
-
   /// Decrement vector by another.
   Vector<T>& operator-= ( const Vector<T>& delta ) 
   {
@@ -386,16 +352,6 @@ public:
 #endif
     for ( size_t i=0; i < this->Dim; ++i )
       Elements[i] -= delta.Elements[i];
-    
-    return *this;
-  }
-
-  /// Subtract partial vector from another.
-  Vector<T>& SubtractPartial 
-  ( const Vector<T>& delta, const size_t offs = 0 ) 
-  {
-    for ( size_t i=0; (i<delta.Dim) && (i+offs<Dim); ++i )
-      this->Elements[i+offs]-=delta.Elements[i];
     
     return *this;
   }
