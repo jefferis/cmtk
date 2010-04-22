@@ -137,7 +137,7 @@ ImagePairAffineRegistration::InitRegistration ()
 
 Functional* 
 ImagePairAffineRegistration
-::MakeFunctional( const int level, const Superclass::LevelParameters* parameters )
+::MakeFunctional( const int /*level*/, const Superclass::LevelParameters* parameters )
 {
   const Self::LevelParameters* levelParameters = dynamic_cast<const Self::LevelParameters*>( parameters );
   if ( ! levelParameters )
