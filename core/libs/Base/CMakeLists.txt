@@ -97,7 +97,6 @@ SET(cmtkBase_SRCS
   cmtkUniformVolumePainter.cxx
   cmtkUniformVolumeResample.cxx
   cmtkVector3D.cxx
-  cmtkVector.cxx
   cmtkVolumeClipping.cxx
   cmtkVolume.cxx
   cmtkVolumeAxesHash.cxx

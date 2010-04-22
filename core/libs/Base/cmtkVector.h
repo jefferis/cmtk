@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -43,7 +44,6 @@
 #include <algorithm>
 
 #include <cmtkMathUtil.h>
-#include <cmtkException.h>
 #include <cmtkTypes.h>
 #include <cmtkSmartPtr.h>
 
@@ -53,9 +53,6 @@ cmtk
 
 /** \addtogroup Base */
 //@{
-
-/// Error message used when dimensions of two vectors do not match.
-extern const char* DimensionMismatchError;
 
 /** Numerical vector class.
  *@author Torsten Rohlfing
@@ -70,13 +67,11 @@ public:
   /// Vector elements.
   T *Elements;
 
-private:
-  /// Flag for memory deallocation of value array.
-  bool FreeElements;
+  /// This class.
+  typedef Vector<T> Self;
 
-public:
   /// Smart pointer to igsFloatVector.
-  typedef SmartPointer< Vector<T> > SmartPtr;
+  typedef SmartPointer<Self> SmartPtr;
 
   /**@name Constructors */
   //@{
@@ -139,25 +134,6 @@ public:
       }
   }
   
-  /** Check vector dimension.
-   * This object's dimension as a vector is compared to a given value. An
-   * exception is thrown if both values are different.
-   */
-  void CheckDim ( const size_t dim ) const 
-  {
-    if ( dim != Dim )
-      throw Exception( DimensionMismatchError, this );
-  }
-
-  /** Test vector dimension.
-   * This object's dimension as a vector is compared to a given value. Other
-   * than CheckDim, this method does not throw an excpetion on a mismatch.
-   */
-  bool CompareDim ( const size_t dim ) const 
-  {
-    return ( dim == Dim );
-  }
-
   /** Set vector dimension.
    * If the current vector dimension is not equal to the requested dimension,
    * the elements array is deleted and a new one is allocated. In any case,
@@ -469,6 +445,9 @@ public:
   }
   
 private:
+  /// Flag for memory deallocation of value array.
+  bool FreeElements;
+
   /// Compare two vector elements; this is needed for sorting.
   static int Compare( const void* a, const void* b ) 
   {
