@@ -59,24 +59,6 @@ Vector3D::GetMaxComponentDimension() const
   return AXIS_Z;
 }
 
-const Vector3D
-operator+ ( const Vector3D& p, const Vector3D& delta )
-{
-  return Vector3D( p[0]+delta[0], p[1]+delta[1], p[2]+delta[2] );
-}
-
-const Vector3D
-operator- ( const Vector3D& p, const Vector3D& delta )
-{
-  return Vector3D( p[0]-delta[0], p[1]-delta[1], p[2]-delta[2] );
-}
-
-const Vector3D
-operator* ( const Types::Coordinate c, const Vector3D& p ) 
-{
-  return Vector3D( c*p[0], c*p[1], c*p[2] );
-}
-
 const Vector3D 
 Vector3D::CoordMult ( const Vector3D& p, const Vector3D& q ) 
 {
@@ -86,19 +68,14 @@ Vector3D::CoordMult ( const Vector3D& p, const Vector3D& q )
 void
 Vector3D::CoordMultInPlace( Vector3D& p, const Vector3D& q ) 
 {
-  for ( int dim = 0; dim < 3; ++dim ) p.XYZ[dim] *= q.XYZ[dim];
+  for ( int dim = 0; dim < 3; ++dim ) 
+    p.XYZ[dim] *= q.XYZ[dim];
 }
 
 const Vector3D 
 Vector3D::CoordDiv ( const Vector3D& p, const Vector3D& q ) 
 {
   return Vector3D( p[0]/q[0], p[1]/q[1], p[2]/q[2]);
-}
-
-Types::Coordinate
-operator* ( const Vector3D& p, const Vector3D& q ) 
-{
-  return p[0]*q[0]+p[1]*q[1]+p[2]*q[2];
 }
 
 } // namespace cmtk

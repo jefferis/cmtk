@@ -271,34 +271,43 @@ public:
   }
 
   /// Unary minus.
-  Vector3D operator-() { return Vector3D(-XYZ[0],-XYZ[1],-XYZ[2]); }
-
-  /**@name Friend operators */
-  //@{
-  /// Add two vectors
-  friend const Vector3D operator+ ( const Vector3D&, const Vector3D& );
-
-  /// Subtract one vector from another
-  friend const Vector3D operator- ( const Vector3D&, const Vector3D& );
-
-  /// Inner product
-  friend Types::Coordinate operator* ( const Vector3D&, const Vector3D& );
-
-  /// Scalar multiplication
-  friend const Vector3D operator* ( const Types::Coordinate, const Vector3D& );
+  const Vector3D operator-() { return Vector3D(-XYZ[0],-XYZ[1],-XYZ[2]); }
 
   /// Coordinatewise multiplication.
   static const Vector3D CoordMult( const Vector3D&, const Vector3D& );
 
   /// Coordinatewise in place multiplication.
   static void CoordMultInPlace( Vector3D& p, const Vector3D& q );
-
+  
   /// Coordinatewise divison.
   static const Vector3D CoordDiv( const Vector3D&, const Vector3D& );
-  //@}
 };
 
-const Vector3D operator * ( const Types::Coordinate, const Vector3D& );
+const Vector3D operator* ( const Types::Coordinate, const Vector3D& );
+
+inline const Vector3D
+operator+( const Vector3D& p, const Vector3D& delta )
+{
+  return Vector3D(p) += delta;
+}
+
+inline const Vector3D
+operator- ( const Vector3D& p, const Vector3D& delta )
+{
+  return Vector3D(p) -= delta;
+}
+
+inline const Vector3D
+operator* ( const Types::Coordinate c, const Vector3D& p ) 
+{
+  return Vector3D(p) *= c;;
+}
+
+inline Types::Coordinate
+operator* ( const Vector3D& p, const Vector3D& q ) 
+{
+  return p[0]*q[0]+p[1]*q[1]+p[2]*q[2];
+}
 
 /// Stream output operator.
 inline
