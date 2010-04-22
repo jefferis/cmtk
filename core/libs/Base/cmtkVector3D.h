@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -275,16 +276,16 @@ public:
   /**@name Friend operators */
   //@{
   /// Add two vectors
-  friend const Vector3D operator + ( const Vector3D&, const Vector3D& );
+  friend const Vector3D operator+ ( const Vector3D&, const Vector3D& );
 
   /// Subtract one vector from another
-  friend const Vector3D operator - ( const Vector3D&, const Vector3D& );
+  friend const Vector3D operator- ( const Vector3D&, const Vector3D& );
 
   /// Inner product
-  friend Types::Coordinate operator * ( const Vector3D&, const Vector3D& );
+  friend Types::Coordinate operator* ( const Vector3D&, const Vector3D& );
 
   /// Scalar multiplication
-  friend const Vector3D operator * ( const Types::Coordinate, const Vector3D& );
+  friend const Vector3D operator* ( const Types::Coordinate, const Vector3D& );
 
   /// Coordinatewise multiplication.
   static const Vector3D CoordMult( const Vector3D&, const Vector3D& );
