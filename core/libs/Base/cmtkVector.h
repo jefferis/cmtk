@@ -306,26 +306,16 @@ public:
       this->Elements[i] = value;
   }
 
-  /// Test if vector is all zero.
-  int IsNull () const 
-  { 
-    for ( size_t i=0; i<Dim; ++i )
-      if ( Elements[i] != 0 )
-	return 0;
-    
-    return 1;
-  }  
-    
   /// Get vector element by coordinate index.
   T& operator [] ( const size_t index ) 
   {
-    return Elements[index];
+    return this->Elements[index];
   }
 
   /// Get constant vector element by coordinate index.
   const T& operator [] ( const size_t index ) const 
   {
-    return Elements[index];
+    return this->Elements[index];
   }
 
   /// Increment vector by another.
