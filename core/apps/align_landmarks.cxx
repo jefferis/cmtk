@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -45,6 +46,9 @@
 
 int main ( const int argc, const char *argv[] )
 {
+  if ( argc < 3 )
+    return 1;
+
   cmtk::Study::SmartPtr refStudy( cmtk::Study::Read( argv[1] ) );
   cmtk::Study::SmartPtr fltStudy( cmtk::Study::Read( argv[2] ) );
 
@@ -75,7 +79,7 @@ int main ( const int argc, const char *argv[] )
     u -= v;
     sqError += u.EuclidNorm();
     }
-  fprintf( stderr, "Matched %d points. FRE = %f [mm].\n", numPoints, sqError / numPoints );
+  fprintf( stderr, "Matched %d points. FRE = %f [mm].\n", numPoints, static_cast<float>( sqError / numPoints ) );
   
   cmtk::AffineXform::SmartPtr affineXform( new cmtk::AffineXform( matrix->Element ) );
   cmtk::WarpXform::SmartPtr warpXform( NULL );

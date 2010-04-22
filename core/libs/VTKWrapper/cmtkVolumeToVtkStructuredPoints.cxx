@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -55,21 +56,6 @@ VolumeToVtkStructuredPoints::VolumeToVtkStructuredPoints () :
   m_Volume( NULL ),
   m_AffineXform( NULL )
 {}
-
-VolumeToVtkStructuredPoints::VolumeToVtkStructuredPoints
-(const VolumeToVtkStructuredPoints& other)
-{
-  this->m_Volume = other.m_Volume;
-  this->m_AffineXform = other.m_AffineXform;
-}
-
-void
-VolumeToVtkStructuredPoints::operator=
-(const VolumeToVtkStructuredPoints& other) 
-{
-  this->m_Volume = other.m_Volume;
-  this->m_AffineXform = other.m_AffineXform;
-}
 
 VolumeToVtkStructuredPoints* VolumeToVtkStructuredPoints::New()
 {

@@ -123,7 +123,7 @@ ImagePairRegistration::Register ()
   
   Progress::Begin( 0, NumResolutionLevels, 1, "Multi-level Registration" );
 
-  int index = 1;
+  unsigned int index = 1;
   while ( ! this->m_ParameterStack.empty() && ( irq == CALLBACK_OK ) ) 
     {
     Functional::SmartPtr nextFunctional( this->MakeFunctional( index-1, this->m_ParameterStack.top() ) );

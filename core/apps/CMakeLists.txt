@@ -55,7 +55,6 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
       convert
       convertx
       convert_warp
-      cpmatch
       film
       filter
       glm
