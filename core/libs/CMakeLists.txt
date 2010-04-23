@@ -27,7 +27,7 @@
 ##  $LastChangedBy$
 ##
 
-SET(BUILD_LIBS_LIST System Numerics Base IO Pipeline Registration Segmentation)
+SET(BUILD_LIBS_LIST System Numerics Base IO Pipeline Registration Segmentation Recon)
 
 IF(CMTK_USE_VTK)
   SET(BUILD_LIBS_LIST ${BUILD_LIBS_LIST} VTKWrapper)

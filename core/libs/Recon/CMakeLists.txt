@@ -28,25 +28,25 @@
 ##  $LastChangedBy$
 ##
 
-#-----------------------------------------------------------------------------
-# Include directories for other projects installed on the system.
-SET(CMTK_INCLUDE_DIRS_SYSTEM "")
-
-#-----------------------------------------------------------------------------
-# Include directories from the build tree.
-SET(CMTK_INCLUDE_DIRS_BUILD_TREE ${CMTK_BINARY_DIR})
-
-# These directories are always needed.
-SET(CMTK_INCLUDE_DIRS_BUILD_TREE ${CMTK_INCLUDE_DIRS_BUILD_TREE}
-  ${CMTK_SOURCE_DIR}/libs/System
-  ${CMTK_SOURCE_DIR}/libs/Numerics
-  ${CMTK_SOURCE_DIR}/libs/Base
-  ${CMTK_SOURCE_DIR}/libs/IO
-  ${CMTK_SOURCE_DIR}/libs/Registration
-  ${CMTK_SOURCE_DIR}/libs/Segmentation
-  ${CMTK_SOURCE_DIR}/libs/Recon
-  ${CMTK_SOURCE_DIR}/libs/Pipeline
-  ${CMTK_SOURCE_DIR}/libs/Qt
-  ${CMTK_SOURCE_DIR}/libs/VTKWrapper
-  ${CMTK_SOURCE_DIR}/libs/Unstable
+# Sources of non-templated classes.
+SET(cmtkRecon_SRCS
+  cmtkInverseInterpolationVolumeReconstructionBase.cxx
+  cmtkVolumeInjectionReconstruction.cxx
 )
+
+ADD_LIBRARY(cmtkRecon ${cmtkRecon_SRCS})
+
+TARGET_LINK_LIBRARIES(cmtkRecon cmtkRegistration cmtkBase cmtkSystem cmtkNumerics )
+
+IF(CMTK_LIBRARY_PROPERTIES)
+  SET_TARGET_PROPERTIES(cmtkRecon PROPERTIES ${CMTK_LIBRARY_PROPERTIES})
+ENDIF(CMTK_LIBRARY_PROPERTIES)
+
+INSTALL(TARGETS cmtkRecon
+  RUNTIME DESTINATION bin COMPONENT runtime
+  LIBRARY DESTINATION lib COMPONENT runtime
+  ARCHIVE DESTINATION lib COMPONENT libraries)
+
+FILE(GLOB files_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+FILE(GLOB files_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx")
+INSTALL(FILES ${files_h} ${files_txx} DESTINATION include/cmtk COMPONENT headers)

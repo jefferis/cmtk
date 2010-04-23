@@ -525,13 +525,9 @@ IF(NOT CMTK_USE_MPI)
   SET(testList ${testList} 
     volume_reconstructionFourthOrder 
     volume_reconstructionCubic
-    volume_reconstructionNoXform)
-
-  IF(CMTK_BUILD_UNSTABLE)
-    SET(testList ${testList} 
-      volume_reconstructionBoxPSF
-      volume_reconstructionGaussianPSF)
-  ENDIF(CMTK_BUILD_UNSTABLE)      
+    volume_reconstructionNoXform
+    volume_reconstructionBoxPSF
+    volume_reconstructionGaussianPSF)
 
   # ==========================================
   # Tests for "warp" tool

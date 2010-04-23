@@ -62,7 +62,6 @@ SET(cmtkRegistration_SRCS
   cmtkImagePairSimilarityMeasureMSD.cxx
   cmtkImagePairSimilarityMeasureNCC.cxx
   cmtkImagePairSymmetricNonrigidRegistrationFunctional.cxx
-  cmtkInverseInterpolationVolumeReconstructionBase.cxx
   cmtkIterativeDirectionOptimizer.cxx
   cmtkMakeInitialAffineTransformation.cxx
   cmtkMultiChannelRegistrationFunctionalBase.cxx
@@ -86,7 +85,6 @@ SET(cmtkRegistration_SRCS
   cmtkTypedArraySimilarity.cxx
   cmtkTypedArraySimilarityMemory.cxx
   cmtkTypedArraySimilarityRMI.cxx
-  cmtkVolumeInjectionReconstruction.cxx
   cmtkVoxelMatchingAffineFunctional.cxx
   cmtkVoxelMatchingCorrRatio.cxx
   cmtkVoxelMatchingCrossCorrelation.cxx
