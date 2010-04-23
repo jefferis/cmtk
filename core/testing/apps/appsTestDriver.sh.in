@@ -364,6 +364,14 @@ case ${RUNTEST} in
 	run convertx --downsample 8,4,1 phantom_ax.nhdr ${tmpdir}/downsample.nhdr
 	check_results downsample.nhdr downsample.raw
 	;;
+    convertxFlipX)
+        run convertx --flip-x parc1_bin.hdr ${tmpdir}/flip.hdr
+	check_results flip.img
+	;;
+    convertxFlipYZ)
+        run convertx --flip-y --flip-z parc1_bin.hdr ${tmpdir}/flip.hdr
+	check_results flip.img
+	;;
     convertxErodeDilateErode)
 	run convertx --erode 1 --dilate 2 --erode 1 parc1_bin.hdr ${tmpdir}/parc1_ede.img
 	check_results parc1_ede.img
@@ -1441,6 +1449,14 @@ case ${RUNTEST} in
     volume_reconstructionNoXform)
 	run volume_reconstruction -o ${tmpdir}/reconstruction.hdr --linear --num-iterations 2 --gauss-sigma 0.5 --radius 2 --isotropic-injection --write-splatted-image ${tmpdir}/injection.hdr --exclude-first-image spgr_3t.hdr -- split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
 	check_results injection.img reconstruction.img
+	;;
+    volume_reconstructionBoxPSF)
+	run volume_reconstruction --recon-grid-path spgr_3t.hdr -o ${tmpdir}/reconstruction.hdr --deblurring-box --psf 0.9375,0.9375,1.25 --num-iterations 2 --gauss-sigma 0.5 --radius 2 split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
+	check_results reconstruction.img
+	;;
+    volume_reconstructionGaussianPSF)
+	run volume_reconstruction --recon-grid-path spgr_3t.hdr -o ${tmpdir}/reconstruction.hdr --deblurring-gaussian --psf 0.9375,0.9375,1.25 --num-iterations 2 --gauss-sigma 0.5 --radius 2 split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
+	check_results reconstruction.img
 	;;
     warpSingleLevel)
 	run warp -q --fast --exploration 8 --grid-spacing 160 --accuracy 1 --no-adaptive-fix -o ${tmpdir} vol001_mr_t0t1.list

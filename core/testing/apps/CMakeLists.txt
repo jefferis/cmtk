@@ -179,6 +179,8 @@ IF(NOT CMTK_USE_MPI)
     convertxDistanceUnsigned
     convertxDistanceSigned
     convertxDistanceSigned2
+    convertxFlipX
+    convertxFlipYZ
     convertxErodeDilateErode
     convertxDilateErodeDilate
     convertxGaussianFilterSigma
@@ -520,7 +522,16 @@ IF(NOT CMTK_USE_MPI)
 
   # ==========================================
   # Tests for "volume_reconstruction" tool
-  SET(testList ${testList} volume_reconstructionFourthOrder volume_reconstructionCubic volume_reconstructionNoXform)
+  SET(testList ${testList} 
+    volume_reconstructionFourthOrder 
+    volume_reconstructionCubic
+    volume_reconstructionNoXform)
+
+  IF(CMTK_BUILD_UNSTABLE)
+    SET(testList ${testList} 
+      volume_reconstructionBoxPSF
+      volume_reconstructionGaussianPSF)
+  ENDIF(CMTK_BUILD_UNSTABLE)      
 
   # ==========================================
   # Tests for "warp" tool
