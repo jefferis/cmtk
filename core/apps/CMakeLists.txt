@@ -1,6 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
-##  Copyright 2004-2009 SRI International
+##
+##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -27,7 +28,7 @@
 ##  $LastChangedBy$
 ##
 
-SET(CMTK_LIBRARIES "cmtkSegmentation;cmtkRegistration;cmtkIO;cmtkBase;cmtkNumerics;cmtkSystem")
+SET(CMTK_LIBRARIES "cmtkSegmentation;cmtkRecon;cmtkRegistration;cmtkIO;cmtkBase;cmtkNumerics;cmtkSystem")
 
 INCLUDE(${CMAKE_SOURCE_DIR}/libs/cmtkLibInitSrcs.cmake)
 
