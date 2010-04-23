@@ -47,7 +47,7 @@ namespace
 cmtk
 {
 
-/** \addtogroup Unstable */
+/** \addtogroup Recon */
 //@{
 /** Class for volume reconstruction using joint iterative deblurring.
  *

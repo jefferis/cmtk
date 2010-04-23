@@ -48,7 +48,7 @@ namespace
 cmtk
 {
 
-/** \addtogroup Registration */
+/** \addtogroup Recon */
 //@{
 
 /** Class for volume reconstruction using inverse interpolation.

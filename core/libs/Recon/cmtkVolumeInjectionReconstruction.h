@@ -46,7 +46,7 @@ namespace
 cmtk
 {
 
-/** \addtogroup Registration */
+/** \addtogroup Recon */
 //@{
 
 /** Class for volume reconstruction using volume injection.

@@ -38,7 +38,7 @@ namespace
 cmtk
 {
 
-/** \addtogroup Unstable */
+/** \addtogroup Recon */
 //@{
 
 /// Point spread functions for iterative deblurring.

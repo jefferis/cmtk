@@ -38,7 +38,7 @@ namespace
 cmtk
 {
 
-/** \addtogroup Unstable */
+/** \addtogroup Recon */
 //@{
 namespace
 PointSpreadFunctions
