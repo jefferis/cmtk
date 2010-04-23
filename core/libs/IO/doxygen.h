@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,11 +30,8 @@
 //
 */
 
-/** \defgroup Pipeline
- *\title Pipeline processing library
- * This library provides pipeline-based processing similar to the paradigms
- * used by VTK and, to lesser extent, ITK.
- *\deprecated This library is deprecated and should not be relied on for
- * future development. It is currently only maintained to the extent
- * necessary to keep the "triplanar" viewer program functional.
+/** \defgroup IO
+ *\title Input and output library
+ * This library provides classes for input and output of images, transformations,
+ * and other types of objects.
  */
