@@ -1,5 +1,5 @@
 ##
-##  Copyright 1997-2009 Torsten Rohlfing
+##  Copyright 1997-2010 Torsten Rohlfing
 ##
 ##  Copyright 2004-2010 SRI International
 ##
@@ -62,6 +62,7 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
       gregxform
       histogram
       imagemath
+      jidb
       levelset
       make_initial_affine
       mat2dof
@@ -106,10 +107,6 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
     IF(HAVE_STL_HASH_MAP)
       SET(APPS ${APPS} mcaffine mcwarp)
     ENDIF(HAVE_STL_HASH_MAP)
-
-    IF(CMTK_BUILD_UNSTABLE)
-      SET(APPS ${APPS} jidb)
-    ENDIF(CMTK_BUILD_UNSTABLE)  
 
     IF(CMTK_USE_DCMTK)
       SET(APPS ${APPS} dcm2image)
