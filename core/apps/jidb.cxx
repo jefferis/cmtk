@@ -233,8 +233,8 @@ main( int argc, char* argv[] )
       ->SetProperties( cmtk::CommandLine::PROPS_FILENAME | cmtk::CommandLine::PROPS_OUTPUT );
 
     cl.BeginGroup( "inject", "Volume Injection Options" );
-    cl.AddOption( Key( 'S', "injection-kernel-sigma" ), &InjectionKernelSigma, "Standard deviation of Gaussian kernel for volume injection [default: 1.0 mm]" );
-    cl.AddOption( Key( 'r', "injection-kernel-radius" ), &InjectionKernelRadius, "Truncation radius of injection kernel [default: 0]" );
+    cl.AddOption( Key( 'S', "injection-kernel-sigma" ), &InjectionKernelSigma, "Standard deviation of Gaussian kernel for volume injection" );
+    cl.AddOption( Key( 'r', "injection-kernel-radius" ), &InjectionKernelRadius, "Truncation radius of injection kernel" );
 
     cl.BeginGroup( "deblur", "Deblurring Options" );
     cmtk::CommandLine::EnumGroup<int>::SmartPtr psfGroup = 
@@ -247,8 +247,8 @@ main( int argc, char* argv[] )
 
     cl.BeginGroup( "optimize", "Optimization Options" );
     cl.AddSwitch( Key( 'f', "fourth-order-error" ), &FourthOrderError, true, "Use fourth-order (rather than second-order) error for optimization." );
-    cl.AddOption( Key( 'n', "num-iterations" ), &NumberOfIterations, "Maximum number of inverse interpolation iterations [default: 20]" );
-    cl.AddSwitch( Key( 'T', "no-truncation" ), &RegionalIntensityTruncation, false, "Turn off regional intensity truncatrion [default: On]" );
+    cl.AddOption( Key( 'n', "num-iterations" ), &NumberOfIterations, "Maximum number of inverse interpolation iterations" );
+    cl.AddSwitch( Key( 'T', "no-truncation" ), &RegionalIntensityTruncation, false, "Turn off regional intensity truncatrion" );
     cl.EndGroup();
     
     cl.BeginGroup( "output", "Output Options" );
