@@ -252,7 +252,7 @@ main( int argc, char* argv[] )
     cl.EndGroup();
     
     cl.BeginGroup( "output", "Output Options" );
-    cl.AddOption( Key( "write-injected-image" ), &InjectedImagePath, "Write initial volume injection image to path [default: do not write image]" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );;
+    cl.AddOption( Key( "write-injected-image" ), &InjectedImagePath, "Write initial volume injection image to path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );;
     cl.AddSwitch( Key( 'F', "write-images-as-float" ), &WriteImagesAsFloat, true, "Write output images as floating point [default: same as input]" );
 
     cl.AddParameter( &InputFilePath, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
