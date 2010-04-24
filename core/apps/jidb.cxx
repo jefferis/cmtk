@@ -1,6 +1,7 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
+//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -201,49 +202,64 @@ main( int argc, char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation" );
 
     cl.BeginGroup( "interleave", "Interleaving Options" );
-    cl.AddSwitch( Key( 'a', "axial" ), &InterleaveAxis, (int)cmtk::AXIS_Z, "Interleaved axial images [default: guess from data]" );
-    cl.AddSwitch( Key( 's', "sagittal" ), &InterleaveAxis, (int)cmtk::AXIS_X, "Interleaved sagittal images" );
-    cl.AddSwitch( Key( 'c', "coronal" ), &InterleaveAxis, (int)cmtk::AXIS_Y, "Interleaved coronal images" );
+    cmtk::CommandLine::EnumGroup<int>::SmartPtr
+      interleaveGroup = cl.AddEnum( "interleave-axis", &InterleaveAxis, "Define interleave axis: this is the through-slice direction of the acquisition." );
+    interleaveGroup->AddSwitch( Key( "guess-from-input" ), -1, "Guess from input image" );
+    interleaveGroup->AddSwitch( Key( 'a', "axial" ), (int)cmtk::AXIS_Z, "Interleaved axial images" );
+    interleaveGroup->AddSwitch( Key( 's', "sagittal" ),(int)cmtk::AXIS_X, "Interleaved sagittal images" );
+    interleaveGroup->AddSwitch( Key( 'c', "coronal" ), (int)cmtk::AXIS_Y, "Interleaved coronal images" );
+    interleaveGroup->AddSwitch( Key( 'x', "interleave-x" ), (int)cmtk::AXIS_X, "Interleaved along x axis" );
+    interleaveGroup->AddSwitch( Key( 'y', "interleave-y" ), (int)cmtk::AXIS_Y, "Interleaved along y axis" );
+    interleaveGroup->AddSwitch( Key( 'z', "interleave-z" ), (int)cmtk::AXIS_Z, "Interleaved along z axis" );
 
-    cl.AddSwitch( Key( 'x', "interleave-x" ), &InterleaveAxis, (int)cmtk::AXIS_X, "Interleaved along x axis" );
-    cl.AddSwitch( Key( 'y', "interleave-y" ), &InterleaveAxis, (int)cmtk::AXIS_Y, "Interleaved along y axis" );
-    cl.AddSwitch( Key( 'z', "interleave-z" ), &InterleaveAxis, (int)cmtk::AXIS_Z, "Interleaved along z axis" );
-
-    cl.AddOption( Key( 'p', "passes" ), &NumberOfPasses, "Number of interleaved passes [default: 2]" );
+    cl.AddOption( Key( 'p', "passes" ), &NumberOfPasses, "Number of interleaved passes" );
     cl.AddCallback( Key( 'W', "pass-weight" ), CallbackSetPassWeight, "Set contribution weight for a pass in the form 'pass:weight'" );
+    cl.EndGroup();
 
     cl.BeginGroup( "motion", "Motion Correction / Registration Options" );
-    cl.AddOption( Key( 'R', "reference-image" ), &ReferenceImagePath, "Use a separate high-resolution reference image for registration" );
-    cl.AddSwitch( Key( "nmi" ), &RegistrationMetric, 0, "Use Normalized Mutual Information for pass-to-reference registration" );
-    cl.AddSwitch( Key( "mi" ), &RegistrationMetric, 1, "Use standard Mutual Information for pass-to-reference registration" );
-    cl.AddSwitch( Key( "cr" ), &RegistrationMetric, 2, "Use Correlation Ratio for pass-to-reference registration" );
-    cl.AddSwitch( Key( "msd" ), &RegistrationMetric, 4, "Use Mean Squared Differences for pass-to-reference registration" );
-    cl.AddSwitch( Key( "cc" ), &RegistrationMetric, 5, "Use Cross-Correlation for pass-to-reference registration" );
+    cl.AddOption( Key( 'R', "reference-image" ), &ReferenceImagePath, "Use a separate high-resolution reference image for registration" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
 
-    cl.AddOption( Key( "import-xforms-path" ), &ImportXformsPath, "Path of file from which to import transformations between passes." );
-    cl.AddOption( Key( "export-xforms-path" ), &ExportXformsPath, "Path of file to which to export transformations between passes." );
+    cmtk::CommandLine::EnumGroup<int>::SmartPtr
+      metricGroup = cl.AddEnum( "registration-metric", &RegistrationMetric, "Registration metric for motion estimation by image-to-image registration." );
+    metricGroup->AddSwitch( Key( "nmi" ), 0, "Use Normalized Mutual Information for pass-to-refereence registration" );
+    metricGroup->AddSwitch( Key( "mi" ), 1, "Use standard Mutual Information for pass-to-refereence registration" );
+    metricGroup->AddSwitch( Key( "cr" ), 2, "Use Correlation Ratio for pass-to-refereence registration" );
+    metricGroup->AddSwitch( Key( "msd" ), 4, "Use Mean Squared Differences for pass-to-refereence registration" );
+    metricGroup->AddSwitch( Key( "cc" ), 5, "Use Cross-Correlation for pass-to-refereence registration" );
+
+    cl.AddOption( Key( "import-xforms-path" ), &ImportXformsPath, "Path of file from which to import transformations between passes." )
+      ->SetProperties( cmtk::CommandLine::PROPS_FILENAME );
+    cl.AddOption( Key( "export-xforms-path" ), &ExportXformsPath, "Path of file to which to export transformations between passes." )
+      ->SetProperties( cmtk::CommandLine::PROPS_FILENAME | cmtk::CommandLine::PROPS_OUTPUT );
 
     cl.BeginGroup( "inject", "Volume Injection Options" );
     cl.AddOption( Key( 'S', "injection-kernel-sigma" ), &InjectionKernelSigma, "Standard deviation of Gaussian kernel for volume injection [default: 1.0 mm]" );
     cl.AddOption( Key( 'r', "injection-kernel-radius" ), &InjectionKernelRadius, "Truncation radius of injection kernel [default: 0]" );
 
     cl.BeginGroup( "deblur", "Deblurring Options" );
-    cl.AddSwitch( Key( "deblurring-box" ), &DeblurringKernel, (int)DEBLURRING_BOX, "Deblurring reconstruction [box PSF]" );
-    cl.AddSwitch( Key( "deblurring-gaussian" ), &DeblurringKernel, (int)DEBLURRING_GAUSSIAN, "Deblurring reconstruction [Gaussian PSF]" );
-    cl.AddOption( Key( "psf-scale" ), &PointSpreadFunctionScale, "Set global scale factor for point spread function size, which itself is derived from the input image." );
+    cmtk::CommandLine::EnumGroup<int>::SmartPtr psfGroup = 
+      cl.AddEnum( "psf", &DeblurringKernel, "Kernel for the inverse interpolation reconstruction" );
+    psfGroup->AddSwitch( Key( "box" ), (int)DEBLURRING_BOX, "Box-shaped PSF" );
+    psfGroup->AddSwitch( Key( "gaussian" ), (int)DEBLURRING_GAUSSIAN, "Gaussian-shaped PSF" );
 
+    cl.AddOption( Key( "psf-scale" ), &PointSpreadFunctionScale, "Set global scale factor for point spread function size, which itself is derived from the input image." );
+    cl.EndGroup();
+
+    cl.BeginGroup( "optimize", "Optimization Options" );
     cl.AddSwitch( Key( 'f', "fourth-order-error" ), &FourthOrderError, true, "Use fourth-order (rather than second-order) error for optimization." );
     cl.AddOption( Key( 'n', "num-iterations" ), &NumberOfIterations, "Maximum number of inverse interpolation iterations [default: 20]" );
     cl.AddSwitch( Key( 'T', "no-truncation" ), &RegionalIntensityTruncation, false, "Turn off regional intensity truncatrion [default: On]" );
+    cl.EndGroup();
     
     cl.BeginGroup( "output", "Output Options" );
-    cl.AddOption( Key( "write-injected-image" ), &InjectedImagePath, "Write initial volume injection image to path [default: do not write image]" );
+    cl.AddOption( Key( "write-injected-image" ), &InjectedImagePath, "Write initial volume injection image to path [default: do not write image]" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );;
     cl.AddSwitch( Key( 'F', "write-images-as-float" ), &WriteImagesAsFloat, true, "Write output images as floating point [default: same as input]" );
+
+    cl.AddParameter( &InputFilePath, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &OutputFilePath, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
 
     cl.Parse();
 
-    InputFilePath = cl.GetNext();
-    OutputFilePath = cl.GetNext();
     }
   catch ( const cmtk::CommandLine::Exception& e )
     {
