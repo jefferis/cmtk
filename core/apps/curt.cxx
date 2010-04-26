@@ -129,11 +129,16 @@ main( const int argc, const char* argv[] )
     refIndexLookup[refIndexValue[i].m_Index] = i;
     }
 
+  std::vector<size_t> lookup( nPixelsRef );
   const double factor = double( nPixelsFlt ) / double( nPixelsRef );
   for ( size_t iRef = 0; iRef < nPixelsRef; ++iRef )
     {
-    const size_t iFlt = fltIndexValue[static_cast<size_t>(refIndexLookup[iRef]*factor)].m_Index;
-    refImage->SetDataAt( fltImage->GetDataAt( iFlt ), iRef );
+    lookup[iRef] = fltIndexValue[static_cast<size_t>(refIndexLookup[iRef]*factor)].m_Index;
+    }
+  
+  for ( size_t iRef = 0; iRef < nPixelsRef; ++iRef )
+    {
+    refImage->SetDataAt( fltImage->GetDataAt( lookup[iRef] ), iRef );
     }
   
   cmtk::VolumeIO::Write( refImage, "reformat.nii", verbose );
@@ -144,8 +149,7 @@ main( const int argc, const char* argv[] )
     
     for ( size_t iRef = 0; iRef < nPixelsRef; ++iRef )
       {
-      const size_t iFlt = fltIndexValue[static_cast<size_t>(refIndexLookup[iRef]*factor)].m_Index;
-      refImage->SetDataAt( lblImage->GetDataAt( iFlt ), iRef );
+      refImage->SetDataAt( lblImage->GetDataAt( lookup[iRef] ), iRef );
       }
     
     char output[PATH_MAX];
