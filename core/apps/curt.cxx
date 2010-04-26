@@ -71,6 +71,8 @@ main( const int argc, const char* argv[] )
 
   std::vector<std::string> pathsLbls;
 
+  bool padZero = false;
+
   try
     {
     cmtk::CommandLine cl( argc, argv, cmtk::CommandLine::PROPS_XML );
@@ -82,6 +84,7 @@ main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Be verbose" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
 
     cl.BeginGroup( "Preprocessing", "Input Image Preprocessing" );
+    cl.AddSwitch( Key( "pad" ), &padZero, true, "Pad (ignore) zero-filled areas in both images" );
 //    cl.AddOption( Key( 'm', "mask" ), &FNameMaskImage, "Binary mask image filename." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_LABELS );
     cl.EndGroup();
 
@@ -99,6 +102,12 @@ main( const int argc, const char* argv[] )
 
   cmtk::UniformVolume::SmartPtr refImage( cmtk::VolumeIO::ReadOriented( pathFix, verbose ) );
   cmtk::UniformVolume::SmartPtr fltImage( cmtk::VolumeIO::ReadOriented( pathMov, verbose ) );
+
+  if ( padZero )
+    {
+    refImage->GetData()->SetPaddingValue( 0 );
+    fltImage->GetData()->SetPaddingValue( 0 );
+    }
 
   fltImage->GetData()->ApplyFunctionObject( cmtk::TypedArrayFunctionHistogramMatching( *(fltImage->GetData()), *(refImage->GetData()) ) );
 
