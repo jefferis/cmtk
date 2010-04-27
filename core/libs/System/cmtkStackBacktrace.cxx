@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -37,11 +38,6 @@
 
 #ifdef HAVE_EXECINFO_H
 #  include <execinfo.h>
-#endif
-
-#ifdef HAVE_UCONTEXT_H
-/* get REG_EIP from ucontext.h */
-#  include <ucontext.h>
 #endif
 
 #ifdef HAVE_STDLIB_H
@@ -82,20 +78,12 @@ int StackBacktrace::ExitCode = 1;
 #ifndef _MSC_VER
 void
 cmtkStackBacktraceSignalHandler
-( int sig, siginfo_t *info, void *secret )
+( int sig, siginfo_t *info, void* )
 {
-#if defined(HAVE_UCONTEXT_H) && defined(REG_EIP)
-  ucontext_t *uc = (ucontext_t *)secret;
-#endif
-  
   /* Do something useful with siginfo_t */
   if (sig == SIGSEGV)
     {
-#ifdef REG_EIP
-    printf( "Caught signal %d, faulty address is %p, from %p\n", sig, info->si_addr, reinterpret_cast<void*>( uc->uc_mcontext.gregs[REG_EIP] ) );
-#else
     printf( "Caught signal %d, faulty address is %p\n", sig, info->si_addr );
-#endif
     }
   else
     {
@@ -105,10 +93,6 @@ cmtkStackBacktraceSignalHandler
 #ifdef HAVE_EXECINFO_H
   void *trace[16];
   const int trace_size = backtrace(trace, 16); 
-  /* overwrite sigaction with caller's address */
-#ifdef REG_EIP
-  trace[1] = (void *) uc->uc_mcontext.gregs[REG_EIP];
-#endif
   
   char *const *messages = backtrace_symbols( trace, trace_size );
   /* skip first stack frame (points here) */
