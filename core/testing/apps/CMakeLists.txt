@@ -228,7 +228,8 @@ IF(NOT CMTK_USE_MPI)
 
   # ==========================================
   # Tests for "film" tool
-  SET(testList ${testList} filmCubic
+  SET(testList ${testList} 
+    filmCubic
     filmFourthOrder
     filmMSDLinearNoTrunc
     filmMISincRefSPGR)
@@ -266,6 +267,14 @@ IF(NOT CMTK_USE_MPI)
     imagemathMatchHistogramsPadding
     imagemathMatchHistogramsPadding2
     imagemathMatchHistogramsPaddingUnset)
+
+  # ==========================================
+  # Tests for "jidb" tool
+  SET(testList ${testList} 
+    jidbGaussian
+    jidbBoxFourthOrder
+    jidbGaussianScale
+    jidbMIRefSPGR)
 
   # ==========================================
   # Tests for "levelset" tool
@@ -618,6 +627,8 @@ IF(NOT CMTK_USE_MPI)
   SET_TESTS_PROPERTIES(filmCubic PROPERTIES TIMEOUT 1800)
   SET_TESTS_PROPERTIES(filmMSDLinearNoTrunc PROPERTIES TIMEOUT 3600)
   SET_TESTS_PROPERTIES(filmMISincRefSPGR PROPERTIES TIMEOUT 3600)
+
+  SET_TESTS_PROPERTIES(jidbMIRefSPGR PROPERTIES TIMEOUT 3600)
 
   IF(HAVE_STL_HASH_MAP)
     SET_TESTS_PROPERTIES(mcaffine2 PROPERTIES TIMEOUT 1800)
