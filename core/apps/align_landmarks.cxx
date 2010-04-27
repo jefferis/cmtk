@@ -71,7 +71,7 @@ int main ( const int argc, const char *argv[] )
 
   float sqError = 0;
   cmtk::Vector3D u, v;
-  vtkIdType numPoints = refPoints->GetNumberOfPoints();
+  const vtkIdType numPoints = refPoints->GetNumberOfPoints();
   for ( vtkIdType id = 0; id < numPoints; ++id ) 
     {
     refPoints->GetPoint( id, u.XYZ );
@@ -79,7 +79,7 @@ int main ( const int argc, const char *argv[] )
     u -= v;
     sqError += u.EuclidNorm();
     }
-  fprintf( stderr, "Matched %d points. FRE = %f [mm].\n", numPoints, static_cast<float>( sqError / numPoints ) );
+  fprintf( stderr, "Matched %d points. FRE = %f [mm].\n", static_cast<int>( numPoints ), static_cast<float>( sqError / numPoints ) );
   
   cmtk::AffineXform::SmartPtr affineXform( new cmtk::AffineXform( matrix->Element ) );
   cmtk::WarpXform::SmartPtr warpXform( NULL );
