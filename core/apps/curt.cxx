@@ -72,7 +72,6 @@ main( const int argc, const char* argv[] )
   std::vector<std::string> pathsLbls;
 
   bool padZero = false;
-  bool normalize = false;
   bool collapse = false;
 
   try
@@ -87,9 +86,7 @@ main( const int argc, const char* argv[] )
 
     cl.BeginGroup( "Preprocessing", "Input Image Preprocessing" );
     cl.AddSwitch( Key( "pad" ), &padZero, true, "Pad (ignore) zero-filled areas in both images" );
-    cl.AddSwitch( Key( "normalize" ), &normalize, true, "Normalize floating image intensities to reference image distribution," );
     cl.AddSwitch( Key( "collapse" ), &collapse, true, "Collapse transformation for equal reference image values to the same floating image pixel." );
-//    cl.AddOption( Key( 'm', "mask" ), &FNameMaskImage, "Binary mask image filename." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_LABELS );
     cl.EndGroup();
 
     cl.AddParameter( &pathFix, "FixedImage", "Fixed image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
@@ -111,11 +108,6 @@ main( const int argc, const char* argv[] )
     {
     refImage->GetData()->SetPaddingValue( 0 );
     fltImage->GetData()->SetPaddingValue( 0 );
-    }
-
-  if ( normalize )
-    {
-    fltImage->GetData()->ApplyFunctionObject( cmtk::TypedArrayFunctionHistogramMatching( *(fltImage->GetData()), *(refImage->GetData()) ) );
     }
 
   const size_t nPixelsRef = refImage->GetNumberOfPixels();
