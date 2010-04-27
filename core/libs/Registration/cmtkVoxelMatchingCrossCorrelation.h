@@ -144,13 +144,13 @@ public:
 
   void RemoveMetric ( const Self& other )
   {
+    assert( Samples >= other.Samples );
     SumX -= other.SumX;
     SumY -= other.SumY;
     SumXY -= other.SumXY;
     SumSqX -= other.SumSqX;
     SumSqY -= other.SumSqY;
     Samples -= other.Samples;
-    assert( Samples >= 0 );
   }
 
 private:
