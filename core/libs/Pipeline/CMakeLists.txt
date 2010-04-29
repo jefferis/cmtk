@@ -1,6 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
-##  Copyright 2004-2009 SRI International
+##
+##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -33,17 +34,11 @@ SET(cmtkPipeline_SRCS
   cmtkFileSystemObject.cxx
   cmtkFusionAlpha.cxx
   cmtkFusionEdge.cxx
-  cmtkFusionHV.cxx
-  cmtkFusionIsolines.cxx
-  cmtkFusionMix.cxx
-  cmtkFusionOverlay.cxx
-  cmtkFusionROI.cxx
   cmtkFusionSlicers.cxx
   cmtkImage.cxx
   cmtkImageEdgeOperator.cxx
   cmtkImageRGB.cxx
   cmtkImageToImageRGB.cxx
-  cmtkIsolineFilter.cxx
   cmtkObject.cxx
   cmtkPanelImages.cxx
   cmtkPipelineObject.cxx
@@ -52,7 +47,6 @@ SET(cmtkPipeline_SRCS
   cmtkRendererCollection.cxx
   cmtkRenderer.cxx
   cmtkSlicer.cxx
-  cmtkSubtractFilter.cxx
   cmtkVolumeReformatter.cxx
   cmtkVolumeWrapper.cxx
 )
