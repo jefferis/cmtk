@@ -31,7 +31,6 @@
 # Sources of non-templated classes.
 SET(cmtkPipeline_SRCS
   cmtkColormap.cxx
-  cmtkFileSystemObject.cxx
   cmtkFusionAlpha.cxx
   cmtkFusionEdge.cxx
   cmtkFusionSlicers.cxx
@@ -40,7 +39,6 @@ SET(cmtkPipeline_SRCS
   cmtkImageRGB.cxx
   cmtkImageToImageRGB.cxx
   cmtkObject.cxx
-  cmtkPanelImages.cxx
   cmtkPipelineObject.cxx
   cmtkPlane.cxx
   cmtkPlaneSource.cxx
