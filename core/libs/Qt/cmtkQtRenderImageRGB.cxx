@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -51,7 +52,6 @@ QtRenderImageRGB::QtRenderImageRGB
   : QWidget( parent, f ),
     ZoomFactorPercent( 100 ),
     FlipX( false ), FlipY( false ),
-    Annotations( new ViewerAnnotations ),
     ImageAspectMode( AspectNone ),
     CrosshairMode( false ),
     Image()
@@ -63,7 +63,6 @@ QtRenderImageRGB::QtRenderImageRGB
 
 QtRenderImageRGB::~QtRenderImageRGB()
 {
-  delete Annotations;
 }
 
 void
@@ -72,7 +71,7 @@ QtRenderImageRGB::paintEvent( QPaintEvent *const )
   // update modified time to force rendering
   this->UpdateModifiedTime();
   this->Update();
-  this->RenderTo( this, true /* annotate */ );
+  this->RenderTo( this );
   this->UpdateExecuteTime();
 }
 
@@ -83,7 +82,7 @@ QtRenderImageRGB::Execute()
 }
 
 void
-QtRenderImageRGB::RenderTo( QPaintDevice *pd, const bool annotate )
+QtRenderImageRGB::RenderTo( QPaintDevice *pd )
 {
   if ( ! Input ) return;
 
@@ -113,21 +112,8 @@ QtRenderImageRGB::RenderTo( QPaintDevice *pd, const bool annotate )
   QPainter painter( pd );
   painter.drawImage( 0, 0, Image );
   
-  if ( annotate ) 
-    {
-    if ( Annotations->GetScaleMode() == ANNOT_SCALE_AXES )
-      this->DrawAxes( painter, width, height );
-    
-    if ( CrosshairMode )
-      this->DrawCrosshair( painter, width, height );
-    
-    if ( Annotations->GetShowSliceIndex() ) 
-      {
-      }
-    if ( Annotations->GetShowSliceLocation() ) 
-      {
-      }    
-    }
+  if ( CrosshairMode )
+    this->DrawCrosshair( painter, width, height );
 }
 
 void
@@ -149,58 +135,6 @@ QtRenderImageRGB::DrawCrosshair
   
   painter.setPen( CrosshairColors[1] );
   painter.drawLine( crosshairX, 0, crosshairX, realHeight-1 );
-}
-
-void
-QtRenderImageRGB::DrawAxes
-( QPainter &painter, const unsigned int width, const unsigned int height ) 
-  const
-{
-  int centerX = width / 2;
-  int centerY = height / 2;
-  painter.setPen( QColor( "white" ) );
-  painter.drawLine( centerX, 0, centerX, height-1 );
-  painter.drawLine( 0, centerY, width-1, centerY );
-
-  float pixelsPerMajorX = Annotations->GetScaleMajorTickDistance() / Input->GetSpacing( 0 );
-  byte minorPerMajor = MathUtil::Round( Annotations->GetScaleMajorTickDistance() / Annotations->GetScaleMinorTickDistance() );
-  float x = centerX + pixelsPerMajorX;
-  int idx = 1;
-  for ( ; x < width-1.5; x += pixelsPerMajorX, ++idx ) 
-    {
-    int xInt = MathUtil::Round( x );
-    if ( idx % minorPerMajor )
-      painter.drawLine( xInt, centerY - 2, xInt, centerY + 2 );
-    else
-      painter.drawLine( xInt, centerY - 4, xInt, centerY + 4 );
-    }
-  for ( x = centerX - pixelsPerMajorX, idx = 1; x >0; x -= pixelsPerMajorX, ++idx ) 
-    {
-    int xInt = MathUtil::Round( x );
-    if ( idx % minorPerMajor )
-      painter.drawLine( xInt, centerY - 2, xInt, centerY + 2 );
-    else
-      painter.drawLine( xInt, centerY - 4, xInt, centerY + 4 );
-    }
-  
-  float pixelsPerMajorY = Annotations->GetScaleMajorTickDistance() / Input->GetSpacing( 1 );
-  float y;
-  for ( y = centerY + pixelsPerMajorY, idx = 1; y < height-1.5; y += pixelsPerMajorY, ++idx ) 
-    {
-    int yInt = MathUtil::Round( y );
-    if ( idx % minorPerMajor )
-      painter.drawLine( centerX - 2, yInt, centerX + 2, yInt );
-    else
-      painter.drawLine( centerX - 4, yInt, centerX + 4, yInt );
-    }
-  for ( y = centerY - pixelsPerMajorY, idx = 1; y > 0; y -= pixelsPerMajorY, ++idx ) 
-    {
-    int yInt = MathUtil::Round( y );
-    if ( idx % minorPerMajor )
-      painter.drawLine( centerX - 2, yInt, centerX + 2, yInt );
-    else
-      painter.drawLine( centerX - 4, yInt, centerX + 4, yInt );
-    }
 }
 
 ImageRGB*

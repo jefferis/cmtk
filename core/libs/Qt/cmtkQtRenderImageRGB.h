@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -45,7 +46,6 @@
 #include <cmtkMacros.h>
 #include <cmtkTypes.h>
 
-#include <cmtkViewerAnnotations.h>
 #include <QMouseEvent>
 #include <QPaintEvent>
 
@@ -74,9 +74,6 @@ class QtRenderImageRGB :
 
   /// Flip image in y-direction.
   igsClassParameter(bool,FlipY);
-
-  /// Display coordinate axes.
-  igsClassParameterPtr(ViewerAnnotations,Annotations);
 
   /// Aspect mode constants.
   typedef enum {
@@ -116,7 +113,7 @@ public:
   QPixmap GetPixmap();
 
   /// Render to given paint device.
-  void RenderTo( QPaintDevice *pd, const bool annotate = true );
+  void RenderTo( QPaintDevice *pd );
 
   /// Render this image.
   virtual void Render()
@@ -154,9 +151,6 @@ private:
 
   /// Draw crosshair.
   void DrawCrosshair( QPainter &painter, const unsigned int width, const unsigned int height ) const;
-
-  /// Draw coordinate axes.
-  void DrawAxes( QPainter &painter, const unsigned int width, const unsigned int height ) const;
 };
 
 //@}
