@@ -45,7 +45,6 @@ SET(cmtkPipeline_SRCS
   cmtkRendererCollection.cxx
   cmtkRenderer.cxx
   cmtkSlicer.cxx
-  cmtkVolumeReformatter.cxx
   cmtkVolumeWrapper.cxx
 )
 
