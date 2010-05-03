@@ -73,7 +73,7 @@ public:
    * Derived classes may want to prevent this if they define their own
    * specific initialization (e.g., igsVoxelMatchingJointHistogram).
    */
-  ImagePairSimilarityMeasureNMI( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume,
+  ImagePairSimilarityMeasureNMI( UniformVolume::SmartConstPtr& refVolume, UniformVolume::SmartConstPtr& fltVolume,
 				 const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT )
     : ImagePairSimilarityJointHistogram( refVolume, fltVolume, interpolation )
   {}

@@ -40,7 +40,7 @@ cmtk
 //@{
 
 ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
-( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
+( UniformVolume::SmartConstPtr& refVolume, UniformVolume::SmartConstPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
   : ImagePairSimilarityMeasure( Self::PrescaleData( refVolume, &this->m_NumberOfBinsX, &this->m_ScaleFactorReference, &this->m_ScaleOffsetReference ), 
 				Self::PrescaleData( fltVolume, &this->m_NumberOfBinsY, &this->m_ScaleFactorFloating, &this->m_ScaleOffsetFloating ), interpolation )
 {
@@ -67,14 +67,14 @@ ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
 }
 
 void
-ImagePairSimilarityJointHistogram::SetReferenceVolume( const UniformVolume::SmartPtr& refVolume )
+ImagePairSimilarityJointHistogram::SetReferenceVolume( UniformVolume::SmartConstPtr& refVolume )
 {
   Superclass::SetReferenceVolume( Self::PrescaleData( refVolume, &this->m_NumberOfBinsX, &this->m_ScaleFactorReference, &this->m_ScaleOffsetReference ) );
   this->m_JointHistogram.Resize( this->m_NumberOfBinsX, this->m_NumberOfBinsY );
 }
 
 void
-ImagePairSimilarityJointHistogram::SetFloatingVolume( const UniformVolume::SmartPtr& fltVolume )
+ImagePairSimilarityJointHistogram::SetFloatingVolume( UniformVolume::SmartConstPtr& fltVolume )
 {
   Superclass::SetFloatingVolume( Self::PrescaleData( fltVolume, &this->m_NumberOfBinsY, &this->m_ScaleFactorFloating, &this->m_ScaleOffsetFloating ) );
   this->m_JointHistogram.Resize( this->m_NumberOfBinsX, this->m_NumberOfBinsY );

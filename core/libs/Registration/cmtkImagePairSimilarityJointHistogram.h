@@ -81,7 +81,7 @@ public:
    * Derived classes may want to prevent this if they define their own
    * specific initialization (e.g., igsVoxelMatchingJointHistogram).
    */
-  ImagePairSimilarityJointHistogram( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume,
+  ImagePairSimilarityJointHistogram( UniformVolume::SmartConstPtr& refVolume, UniformVolume::SmartConstPtr& fltVolume,
 				     const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
 
   /** Default constructor.
@@ -168,7 +168,7 @@ private:
    * values will have been rescaled to represent histogram bin indexes directly.
    */
   UniformVolume::SmartPtr PrescaleData
-  ( const UniformVolume::SmartPtr& volume, //!< Input volume.
+  ( UniformVolume::SmartConstPtr& volume, //!< Input volume.
     size_t* numberOfBins, //!< Output: number of bins that the histogram should allocate for the output volume.
     Types::DataItem* scaleFactor, //!< Data scaling factor.
     Types::DataItem* scaleOffset //!< Data scaling offset.
