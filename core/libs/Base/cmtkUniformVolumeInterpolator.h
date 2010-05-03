@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -71,7 +72,7 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Constructor.
-  UniformVolumeInterpolator( const UniformVolume::SmartPtr& volume = UniformVolume::SmartPtr::Null )
+  UniformVolumeInterpolator( const UniformVolume::SmartConstPtr& volume = UniformVolume::SmartPtr::Null )
     : UniformVolumeInterpolatorBase( volume )
   {
   }

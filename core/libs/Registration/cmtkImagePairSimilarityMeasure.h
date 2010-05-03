@@ -67,8 +67,8 @@ public:
   /** Constructor.
    */
   ImagePairSimilarityMeasure
-  ( UniformVolume::SmartConstPtr& refVolume, //!< The reference image.
-    UniformVolume::SmartConstPtr& fltVolume, //!< The floating image.
+  ( const UniformVolume::SmartConstPtr& refVolume, //!< The reference image.
+    const UniformVolume::SmartConstPtr& fltVolume, //!< The floating image.
     const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT //!< User-selected interpolation kernel
     );
 
@@ -83,12 +83,12 @@ public:
   ImagePairSimilarityMeasure( Self& other, const bool copyData = false );
 
   /// Set reference volume.
-  virtual void SetReferenceVolume( UniformVolume::SmartConstPtr& refVolume );
+  virtual void SetReferenceVolume( const UniformVolume::SmartConstPtr& refVolume );
 
   /** Set floating volume.
    * When the floating volume is set, a new interpolator object is also created.
    */
-  virtual void SetFloatingVolume( UniformVolume::SmartConstPtr& fltVolume );
+  virtual void SetFloatingVolume( const UniformVolume::SmartConstPtr& fltVolume );
 
   /// Reset metric computation.
   virtual void Reset() {}
