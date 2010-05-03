@@ -64,7 +64,7 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Constructor.
-  SplineWarpXformUniformVolume( const UniformVolume& volume, const SplineWarpXform::SmartPtr& xform );
+  SplineWarpXformUniformVolume( const UniformVolume& volume, const SplineWarpXform::SmartConstPtr& xform );
   
   /// Virtual destructor.
   virtual ~SplineWarpXformUniformVolume() {}
@@ -79,7 +79,7 @@ public:
   
 private:
   /// The linked transformation.
-  const SplineWarpXform::SmartPtr m_Xform;
+  const SplineWarpXform::SmartConstPtr m_Xform;
 
   /// Register axes points of the volume to be deformed.
   void RegisterVolume( const UniformVolume& volume );

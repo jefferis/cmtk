@@ -32,7 +32,7 @@
 
 #include <cmtkSplineWarpXformUniformVolume.h>
 
-cmtk::SplineWarpXformUniformVolume::SplineWarpXformUniformVolume( const UniformVolume& volume, const SplineWarpXform::SmartPtr& xform )
+cmtk::SplineWarpXformUniformVolume::SplineWarpXformUniformVolume( const UniformVolume& volume, const SplineWarpXform::SmartConstPtr& xform )
   : m_Xform( xform )
 {
   this->RegisterVolume( volume );

@@ -54,9 +54,9 @@ cmtk
 /** Smart pointer with reference counting.
  */
 template<class T>
-class SmartPointer
-    /// Inherit from smart pointer-to-const.
-  : public SmartConstPointer<T>
+class SmartPointer :
+  /// Inherit from smart pointer-to-const.
+  public SmartConstPointer<T>
 {
 public:
   /// This class instance.
@@ -64,6 +64,12 @@ public:
 
   /// This class instance.
   typedef SmartConstPointer<T> Superclass;
+
+  /// Use "const" inherited member functions.
+  using Superclass::operator*;
+  using Superclass::operator->;
+  using Superclass::GetPtr;
+  using Superclass::ReleasePtr;
 
   /// The underlying raw pointer type.
   typedef T* PointerType;
@@ -90,11 +96,6 @@ public:
   
   /// De-referencing operator (returns non-constant object).
   T& operator*() { return *this->m_Object.ptr; }
-
-  using Superclass::operator*;
-  using Superclass::operator->;
-  using Superclass::GetPtr;
-  using Superclass::ReleasePtr;
 
   /// De-referencing operator (returns non-constant object pointer).
   T* operator->() { return this->m_Object.ptr; }

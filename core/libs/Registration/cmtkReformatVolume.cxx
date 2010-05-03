@@ -141,7 +141,7 @@ ReformatVolume::PlainReformat()
       {
       Types::DataItem value = 0;
       
-      const SplineWarpXform::SmartPtr& splineWarp = SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_WarpXform );
+      const SplineWarpXform::SmartConstPtr& splineWarp = SplineWarpXform::SmartConstPtr::DynamicCastFrom( this->m_WarpXform );
       if ( splineWarp ) 
 	{
 	SplineWarpXformUniformVolume xformVolume( *(this->ReferenceVolume), splineWarp );
