@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -119,7 +120,7 @@ public:
   UniformVolumeInterpolatorBase* CreateInterpolator( const UniformVolume::SmartConstPtr& volume );
 
   /// Create interpolator object for given volume according to interpolation mode set in this object.
-  static UniformVolumeInterpolatorBase* CreateInterpolator( const cmtk::Interpolators::InterpolationEnum interpolation, const UniformVolume::SmartPtr& volume );
+  static UniformVolumeInterpolatorBase* CreateInterpolator( const cmtk::Interpolators::InterpolationEnum interpolation, const UniformVolume::SmartConstPtr& volume );
 
   /// Set user-defined data type.
   void SetUserDataType( const ScalarDataType dataType ) 
