@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -36,6 +37,7 @@
 
 #include <cmtkVolume.h>
 #include <cmtkSmartPtr.h>
+#include <cmtkSmartConstPtr.h>
 
 #include <algorithm>
 
@@ -68,6 +70,9 @@ public:
 
   /// Smart pointer to UniformVolume.
   typedef SmartPointer<Self> SmartPtr;
+
+  /// Smart pointer to const UniformVolume.
+  typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Points array type.
   typedef std::vector< std::vector<Types::Coordinate> > PointsArrayType;

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -66,8 +67,8 @@ public:
   /** Constructor.
    */
   ImagePairSimilarityMeasure
-  ( const UniformVolume::SmartPtr& refVolume, //!< The reference image.
-    const UniformVolume::SmartPtr& fltVolume, //!< The floating image.
+  ( UniformVolume::SmartConstPtr& refVolume, //!< The reference image.
+    UniformVolume::SmartConstPtr& fltVolume, //!< The floating image.
     const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT //!< User-selected interpolation kernel
     );
 
@@ -82,12 +83,12 @@ public:
   ImagePairSimilarityMeasure( Self& other, const bool copyData = false );
 
   /// Set reference volume.
-  virtual void SetReferenceVolume( const UniformVolume::SmartPtr& refVolume );
+  virtual void SetReferenceVolume( UniformVolume::SmartConstPtr& refVolume );
 
   /** Set floating volume.
    * When the floating volume is set, a new interpolator object is also created.
    */
-  virtual void SetFloatingVolume( const UniformVolume::SmartPtr& fltVolume );
+  virtual void SetFloatingVolume( UniformVolume::SmartConstPtr& fltVolume );
 
   /// Reset metric computation.
   virtual void Reset() {}
@@ -138,16 +139,16 @@ public:
 
 private:
   /// Smart pointer to reference volume.
-  const UniformVolume::SmartPtr m_ReferenceVolume;
+  UniformVolume::SmartConstPtr m_ReferenceVolume;
   
   /// Smart pointer to reference image data.
-  const TypedArray::SmartPtr m_ReferenceData;
+  TypedArray::SmartConstPtr m_ReferenceData;
   
   /// Smart pointer to floating volume.
-  const UniformVolume::SmartPtr m_FloatingVolume;
+  UniformVolume::SmartConstPtr m_FloatingVolume;
   
   /// Smart pointer to floating image data.
-  const TypedArray::SmartPtr m_FloatingData;
+  TypedArray::SmartConstPtr m_FloatingData;
 
   /// Interpolation method ID.
   Interpolators::InterpolationEnum m_InterpolationMethod;

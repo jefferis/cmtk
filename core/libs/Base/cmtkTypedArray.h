@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2010 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -36,6 +37,7 @@
 
 #include <cmtkMacros.h>
 #include <cmtkSmartPtr.h>
+#include <cmtkSmartConstPtr.h>
 #include <cmtkException.h>
 
 #include <math.h>
@@ -82,6 +84,9 @@ public:
 
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
+
+  /// Smart pointer to const.
+  typedef SmartConstPointer<Self> SmartConstPtr;
 
   /** Create typed data array from existing array of values.
    *@param dtype Type specifier.

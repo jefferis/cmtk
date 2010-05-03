@@ -75,6 +75,9 @@ public:
   /// Superclass.
   typedef ImagePairRegistrationFunctional Superclass;
 
+  /// Virtual destructor.
+  virtual ~ImagePairNonrigidRegistrationFunctional ();
+
   /** Set active and passive warp parameters adaptively.
    * If this flag is set, the functional will adaptively determine active and
    * passive parameters of the warp transformation prior to gradient 
@@ -160,9 +163,6 @@ public:
 protected:
   /// Constructor.
   ImagePairNonrigidRegistrationFunctional( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating );
-
-  /// Destructor.
-  virtual ~ImagePairNonrigidRegistrationFunctional ();
 
   /// Array of warp transformation objects for the parallel threads.
   SplineWarpXform::SmartPtr *m_ThreadWarp;

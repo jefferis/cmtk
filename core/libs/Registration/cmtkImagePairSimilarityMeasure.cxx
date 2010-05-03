@@ -45,7 +45,7 @@ cmtk
 //@{
 
 ImagePairSimilarityMeasure::ImagePairSimilarityMeasure
-( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
+( UniformVolume::SmartConstPtr& refVolume, UniformVolume::SmartConstPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
   : m_InterpolationMethod( interpolation )
 {
   this->SetReferenceVolume( refVolume );
@@ -53,14 +53,14 @@ ImagePairSimilarityMeasure::ImagePairSimilarityMeasure
 }
 
 void
-ImagePairSimilarityMeasure::SetReferenceVolume( const UniformVolume::SmartPtr& refVolume )
+ImagePairSimilarityMeasure::SetReferenceVolume( UniformVolume::SmartConstPtr& refVolume )
 {
   this->m_ReferenceVolume = refVolume;
   this->m_ReferenceData = this->m_ReferenceVolume->GetData();
 }
 
 void
-ImagePairSimilarityMeasure::SetFloatingVolume( const UniformVolume::SmartPtr& fltVolume )
+ImagePairSimilarityMeasure::SetFloatingVolume( UniformVolume::SmartConstPtr& fltVolume )
 {
   this->m_FloatingVolume = fltVolume;
   this->m_FloatingData = fltVolume->GetData();

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -56,7 +57,7 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Constructor.
-  UniformVolumeInterpolatorBase( const UniformVolume::SmartPtr& volume = UniformVolume::SmartPtr::Null )
+  UniformVolumeInterpolatorBase( UniformVolume::SmartConstPtr& volume = UniformVolume::SmartPtr::Null )
   {
     this->SetVolume( volume );
   }
@@ -69,7 +70,7 @@ public:
    * from. It may also perform some pre-computations to speed up interpolation,
    * such as indexing etc. It does not perform any interpolation itself.
    */
-  virtual void SetVolume( const UniformVolume::SmartPtr& volume )
+  virtual void SetVolume( UniformVolume::SmartConstPtr& volume )
   {
     this->m_Volume = volume;
 
@@ -80,7 +81,7 @@ public:
   }
   
   /// Get smart pointer to linked volume.
-  virtual const UniformVolume::SmartPtr& GetVolume() const
+  virtual UniformVolume::SmartConstPtr GetVolume() const
   {
     return this->m_Volume;
   } 
@@ -101,7 +102,7 @@ public:
 
 protected:
   /// Pointer to volume that we interpolate from.
-  const UniformVolume::SmartPtr m_Volume;
+  UniformVolume::SmartConstPtr m_Volume;
 
   /// Pointer to volume data array.
   const TypedArray* m_VolumeDataArray;
