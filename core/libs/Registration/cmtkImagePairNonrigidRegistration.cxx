@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -131,7 +132,7 @@ ImagePairNonrigidRegistration::InitRegistration ()
     WarpXform::SmartPtr warpXform( this->MakeWarpXform( this->m_ReferenceVolume->Size, this->m_InitialTransformation ) );
     
     if ( this->m_InverseConsistencyWeight > 0 ) 
-      InverseWarpXform = WarpXform::SmartPtr( this->MakeWarpXform( this->m_FloatingVolume->Size, this->m_InitialTransformation->GetInverse() ) );
+      InverseWarpXform = SplineWarpXform::SmartPtr( this->MakeWarpXform( this->m_FloatingVolume->Size, this->m_InitialTransformation->GetInverse() ) );
 
     // MIPSpro needs explicit:
     this->m_Xform = Xform::SmartPtr::DynamicCastFrom( warpXform ); 
@@ -179,13 +180,11 @@ ImagePairNonrigidRegistration::InitRegistration ()
   return this->Superclass::InitRegistration();
 }
 
-WarpXform*
+SplineWarpXform::SmartPtr
 ImagePairNonrigidRegistration::MakeWarpXform
 ( const Types::Coordinate* size, const AffineXform* initialAffine ) const
 {
-  WarpXform* warpXform = NULL;
-  
-  warpXform = new SplineWarpXform( size, this->m_GridSpacing, initialAffine, this->m_ExactGridSpacing );
+  SplineWarpXform::SmartPtr warpXform( new SplineWarpXform( size, this->m_GridSpacing, initialAffine, this->m_ExactGridSpacing ) );
   
   warpXform->SetIgnoreEdge( this->IgnoreEdge );
   warpXform->SetFastMode( this->m_FastMode );
@@ -272,8 +271,6 @@ ImagePairNonrigidRegistration::EnterResolution
 ( CoordinateVector::SmartPtr& v, Functional::SmartPtr& functional,
   const int idx, const int total ) 
 {
-  WarpXform::SmartPtr warpXform = WarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
-
   float effGridEnergyWeight = this->m_GridEnergyWeight;
   float effJacobianConstraintWeight = this->m_JacobianConstraintWeight;
   float effInverseConsistencyWeight = this->m_InverseConsistencyWeight;
@@ -285,6 +282,8 @@ ImagePairNonrigidRegistration::EnterResolution
     effInverseConsistencyWeight *= this->m_RelaxWeight;
     }
 
+  SplineWarpXform::SmartPtr warpXform = SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
+  
   // handle simple nonrigid functional
   SmartPointer<ImagePairNonrigidRegistrationFunctional> nonrigidFunctional = ImagePairNonrigidRegistrationFunctional::SmartPtr::DynamicCastFrom( functional );
   if ( nonrigidFunctional ) 

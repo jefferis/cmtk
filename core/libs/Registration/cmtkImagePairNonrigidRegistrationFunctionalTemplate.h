@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -36,7 +37,7 @@
 
 #include <cmtkImagePairNonrigidRegistrationFunctional.h>
 
-#include <cmtkWarpXform.h>
+#include <cmtkSplineWarpXform.h>
 #include <cmtkDataTypeTraits.h>
 
 namespace
@@ -110,11 +111,8 @@ public:
   }
 
   /** Set warp transformation.
-   * In the multi-threaded implementation, Warp[0] will be linked directly to
-   * the given warp, while for all other threads a copy of the original object
-   * is created by a call to WarpXform::Clone().
    */
-  virtual void SetWarpXform ( WarpXform::SmartPtr& warp )
+  virtual void SetWarpXform ( SplineWarpXform::SmartPtr& warp )
   {
     Superclass::SetWarpXform( warp );
     this->WarpNeedsFixUpdate = true;
@@ -153,7 +151,7 @@ public:
       this->m_Metric->Add( *(this->m_TaskMetric[taskIdx]) );
       }
     
-    return this->WeightedTotal( this->m_Metric->Get(), this->m_ThreadWarp[0] );
+    return this->WeightedTotal( this->m_Metric->Get(), *(this->m_ThreadWarp[0]) );
   }
 
   /** Evaluate functional after change of a single parameter.
@@ -162,7 +160,7 @@ public:
    *@param voi Volume-of-Influence for the parameter under consideration.
    *@return The metric after recomputation over the given volume-of-influence.
    */
-  typename Self::ReturnType EvaluateIncremental( const WarpXform* warp, VM *const localMetric, const Rect3D* voi, Vector3D *const vectorCache ) 
+  typename Self::ReturnType EvaluateIncremental( const SplineWarpXform& warp, VM& localMetric, const Rect3D* voi, Vector3D *const vectorCache ) 
   {
     Vector3D *pVec;
     int pX, pY, pZ, r;
@@ -173,33 +171,33 @@ public:
     int endPlaneIncrement = this->m_DimsX * ( voi->startY + (this->m_DimsY - voi->endY) );
     
     const Types::DataItem unsetY = DataTypeTraits<Types::DataItem>::ChoosePaddingValue();
-    localMetric->CopyUnsafe( *this->m_Metric );
+    localMetric.CopyUnsafe( *this->m_Metric );
     r = voi->startX + this->m_DimsX * ( voi->startY + this->m_DimsY * voi->startZ );
     for ( pZ = voi->startZ; pZ<voi->endZ; ++pZ ) 
       {
       for ( pY = voi->startY; pY<voi->endY; ++pY ) 
 	{
 	pVec = vectorCache;
-	warp->GetTransformedGridSequence( pVec,voi->endX-voi->startX, voi->startX, pY, pZ );
+	warp.GetTransformedGridSequence( pVec,voi->endX-voi->startX, voi->startX, pY, pZ );
 	for ( pX = voi->startX; pX<voi->endX; ++pX, ++r, ++pVec ) 
 	  {
 	  // Remove this sample from incremental metric according to "ground warp" image.
 	  const Types::DataItem sampleX = this->m_Metric->GetSampleX( r );
 	  if ( this->m_WarpedVolume[r] != unsetY )
-	    localMetric->Decrement( sampleX, this->m_WarpedVolume[r] );
+	    localMetric.Decrement( sampleX, this->m_WarpedVolume[r] );
 	  
 	  // Tell us whether the current location is still within the floating volume and get the respective voxel.
 	  Vector3D::CoordMultInPlace( *pVec, this->FloatingInverseDelta );
 	  if ( this->FloatingGrid->FindVoxelByIndex( *pVec, fltIdx, fltFrac ) ) 
 	    {
 	    // Continue metric computation.
-	    localMetric->Increment( sampleX, this->m_Metric->GetSampleY( fltIdx, fltFrac ) );
+	    localMetric.Increment( sampleX, this->m_Metric->GetSampleY( fltIdx, fltFrac ) );
 	    } 
 	  else
 	    {
 	    if ( this->m_ForceOutsideFlag )
 	      {
-	      localMetric->Increment( sampleX, this->m_ForceOutsideValueRescaled );
+	      localMetric.Increment( sampleX, this->m_ForceOutsideValueRescaled );
 	      }
 	    }
 	  }
@@ -208,7 +206,7 @@ public:
       r += endPlaneIncrement;
       }
     
-    return localMetric->Get();
+    return localMetric.Get();
   }
   
   /// Compute functional value and gradient.
@@ -298,12 +296,12 @@ private:
     
     Self *me = info->thisObject;
 
-    WarpXform::SmartPtr& myWarp = me->m_ThreadWarp[threadIdx];
-    myWarp->SetParamVector( *info->Parameters );
+    SplineWarpXform& myWarp = *(me->m_ThreadWarp[threadIdx]);
+    myWarp.SetParamVector( *info->Parameters );
     
-    VM* threadMetric = me->m_TaskMetric[threadIdx];
+    VM& threadMetric = *(me->m_TaskMetric[threadIdx]);
     Vector3D *vectorCache = me->m_ThreadVectorCache[threadIdx];
-    Types::Coordinate *p = myWarp->m_Parameters;
+    Types::Coordinate *p = myWarp.m_Parameters;
     
     Types::Coordinate pOld;
     double upper, lower;
@@ -363,8 +361,8 @@ private:
     typename Self::EvaluateCompleteTaskInfo *info = static_cast<typename Self::EvaluateCompleteTaskInfo*>( arg );
     
     Self *me = info->thisObject;
-    const WarpXform *warp = me->m_ThreadWarp[0];
-    VM* threadMetric = me->m_TaskMetric[threadIdx];
+    const SplineWarpXform& warp = *(me->m_ThreadWarp[0]);
+    VM& threadMetric = *(me->m_TaskMetric[threadIdx]);
     Vector3D *vectorCache = me->m_ThreadVectorCache[threadIdx];
     
     Types::DataItem* warpedVolume = me->m_WarpedVolume;
@@ -389,7 +387,7 @@ private:
       {
       for ( pY = pYfrom; (pY < me->m_DimsY) && rowsToDo; pYfrom = 0, ++pY, --rowsToDo ) 
 	{
-	warp->GetTransformedGridSequence( vectorCache, me->m_DimsX, 0, pY, pZ );
+	warp.GetTransformedGridSequence( vectorCache, me->m_DimsX, 0, pY, pZ );
 	pVec = vectorCache;
 	for ( pX = 0; pX<me->m_DimsX; ++pX, ++r, ++pVec ) 
 	  {
@@ -400,7 +398,7 @@ private:
 	    {
 	    // Continue metric computation.
 	    warpedVolume[r] = me->m_Metric->GetSampleY( fltIdx, fltFrac );
-	    threadMetric->Increment( me->m_Metric->GetSampleX(r), warpedVolume[r] );
+	    threadMetric.Increment( me->m_Metric->GetSampleX(r), warpedVolume[r] );
 	    } 
 	  else 
 	    {

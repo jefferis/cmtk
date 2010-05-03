@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -40,7 +41,7 @@
 #include <cmtkThreads.h>
 #include <cmtkThreadPool.h>
 
-#include <cmtkWarpXform.h>
+#include <cmtkSplineWarpXform.h>
 #include <cmtkJointHistogram.h>
 
 #ifdef HAVE_IEEEFP_H
@@ -114,10 +115,10 @@ public:
    * common access point to update the warp transformation after construction
    * of the functional.
    */
-  virtual void SetWarpXform( WarpXform::SmartPtr& warp ) = 0;
+  virtual void SetWarpXform( SplineWarpXform::SmartPtr& warp ) = 0;
 
   /// Set inverse transformation.
-  void SetInverseTransformation( WarpXform::SmartPtr& inverseTransformation ) 
+  void SetInverseTransformation( SplineWarpXform::SmartPtr& inverseTransformation ) 
   {
     this->m_InverseTransformation = inverseTransformation;
   }
@@ -164,7 +165,7 @@ protected:
   virtual ~ImagePairNonrigidRegistrationFunctional ();
 
   /// Array of warp transformation objects for the parallel threads.
-  WarpXform::SmartPtr *m_ThreadWarp;
+  SplineWarpXform::SmartPtr *m_ThreadWarp;
 
   /// Array of storage for simultaneously retrieving multiple deformed vectors.
   Vector3D **m_ThreadVectorCache;
@@ -195,26 +196,26 @@ protected:
   GridIndexType m_FltDimsX, m_FltDimsY;
 
   /// Pointer to the local warp transformation.
-  WarpXform::SmartPtr m_Warp;
+  SplineWarpXform::SmartPtr m_Warp;
 
   /// Optional inverse transformation for inverse-consistent deformation.
-  WarpXform::SmartPtr m_InverseTransformation;
+  SplineWarpXform::SmartPtr m_InverseTransformation;
 
   /// Weight for inverse consistency constraint.
   double m_InverseConsistencyWeight;
 
   /// Return weighted combination of voxel similarity and grid energy.
-  Self::ReturnType WeightedTotal( const Self::ReturnType metric, const WarpXform* warp ) const 
+  Self::ReturnType WeightedTotal( const Self::ReturnType metric, const SplineWarpXform& warp ) const 
   {
     double result = metric;
     if ( this->m_JacobianConstraintWeight > 0 ) 
       {
-      result -= this->m_JacobianConstraintWeight * warp->GetJacobianConstraint();
+      result -= this->m_JacobianConstraintWeight * warp.GetJacobianConstraint();
       } 
     
     if ( this->m_GridEnergyWeight > 0 ) 
       {
-      result -= this->m_GridEnergyWeight * warp->GetGridEnergy();
+      result -= this->m_GridEnergyWeight * warp.GetGridEnergy();
       }
     
     if ( !finite( result ) ) 
@@ -222,19 +223,19 @@ protected:
     
     if ( this->m_MatchedLandmarkList ) 
       {
-      result -= this->m_LandmarkErrorWeight * warp->GetLandmarksMSD( this->m_MatchedLandmarkList );
+      result -= this->m_LandmarkErrorWeight * warp.GetLandmarksMSD( this->m_MatchedLandmarkList );
       }
 
     if ( this->m_InverseTransformation ) 
       {
-      result -= this->m_InverseConsistencyWeight * warp->GetInverseConsistencyError( this->m_InverseTransformation, this->ReferenceGrid );
+      result -= this->m_InverseConsistencyWeight * warp.GetInverseConsistencyError( this->m_InverseTransformation, this->ReferenceGrid );
       }
     
     return static_cast<Self::ReturnType>( result );
   }
   
   /// Return weighted combination of similarity and grid energy derivatives.
-  void WeightedDerivative( double& lower, double& upper, WarpXform::SmartPtr& warp, const int param, const Types::Coordinate step ) const;
+  void WeightedDerivative( double& lower, double& upper, SplineWarpXform& warp, const int param, const Types::Coordinate step ) const;
 
   /** Regularize the deformation.
    */

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -54,7 +55,7 @@ cmtk
 template<class VM, class W>
 void
 ImagePairSymmetricNonrigidRegistrationFunctionalTemplate<VM,W>::SetWarpXform
-( WarpXform::SmartPtr& warpFwd, WarpXform::SmartPtr& warpBwd ) 
+( SplineWarpXform::SmartPtr& warpFwd, SplineWarpXform::SmartPtr& warpBwd ) 
 {
   this->FwdFunctional.SetWarpXform( warpFwd );
   this->FwdFunctional.SetInverseTransformation( warpBwd );

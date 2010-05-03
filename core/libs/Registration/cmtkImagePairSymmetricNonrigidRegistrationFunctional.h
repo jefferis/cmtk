@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,7 +36,7 @@
 #include <cmtkconfig.h>
 
 #include <cmtkFunctional.h>
-#include <cmtkWarpXform.h>
+#include <cmtkSplineWarpXform.h>
 
 #include <cmtkMacros.h>
 
@@ -77,7 +78,7 @@ public:
   virtual void SetGridEnergyWeight( const Self::ReturnType ) = 0;
 
   /// Set warp for forward and backward functional.
-  virtual void SetWarpXform( WarpXform::SmartPtr& warpFwd, WarpXform::SmartPtr& warpBwd ) = 0;
+  virtual void SetWarpXform( SplineWarpXform::SmartPtr& warpFwd, SplineWarpXform::SmartPtr& warpBwd ) = 0;
 
   /// Constructor function.
   static ImagePairSymmetricNonrigidRegistrationFunctional* Create

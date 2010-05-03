@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -79,7 +80,7 @@ SplineWarpCongealingFunctional
     {
     for ( size_t i = 0; i < this->m_XformVector.size(); ++i )
       {
-      this->m_XformVector[i]->RegisterVolume( this->m_TemplateGrid );	
+      dynamic_cast<SplineWarpXform&>( *(this->m_XformVector[i]) ).RegisterVolume( this->m_TemplateGrid );	
       }      
     this->UpdateVolumesOfInfluence();
     }
@@ -130,7 +131,7 @@ SplineWarpCongealingFunctional
   for ( size_t i = 0; i < this->m_XformVector.size(); ++i )
     {
     this->GetXformByIndex(i)->Refine();
-    this->m_XformVector[i]->RegisterVolume( this->m_TemplateGrid );
+    dynamic_cast<SplineWarpXform&>( *(this->m_XformVector[i]) ).RegisterVolume( this->m_TemplateGrid );
     }
 
   this->m_ParametersPerXform = this->m_XformVector[0]->VariableParamVectorDim();

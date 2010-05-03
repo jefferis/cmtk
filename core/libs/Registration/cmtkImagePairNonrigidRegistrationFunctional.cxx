@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
-//  Copyright 1997-2009 Torsten Rohlfing
+//
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -65,7 +66,7 @@ ImagePairNonrigidRegistrationFunctional::ImagePairNonrigidRegistrationFunctional
   this->m_AdaptiveFixThreshFactor = 0.5;
   this->VolumeOfInfluence = NULL;
 
-  this->m_ThreadWarp = Memory::AllocateArray<WarpXform::SmartPtr>( this->m_NumberOfThreads );  
+  this->m_ThreadWarp = Memory::AllocateArray<SplineWarpXform::SmartPtr>( this->m_NumberOfThreads );  
 
   this->m_ThreadVectorCache = Memory::AllocateArray<Vector3D*>( this->m_NumberOfThreads );
   for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
@@ -93,13 +94,13 @@ ImagePairNonrigidRegistrationFunctional::~ImagePairNonrigidRegistrationFunctiona
 
 void
 ImagePairNonrigidRegistrationFunctional::WeightedDerivative
-( double& lower, double& upper, WarpXform::SmartPtr& warp, 
+( double& lower, double& upper, SplineWarpXform& warp, 
   const int param, const Types::Coordinate step ) const
 {
   if ( this->m_JacobianConstraintWeight > 0 )
     {
     double lowerConstraint = 0, upperConstraint = 0;
-    warp->GetJacobianConstraintDerivative( lowerConstraint, upperConstraint, param, VolumeOfInfluence[param], step );
+    warp.GetJacobianConstraintDerivative( lowerConstraint, upperConstraint, param, VolumeOfInfluence[param], step );
     lower -= this->m_JacobianConstraintWeight * lowerConstraint;
     upper -= this->m_JacobianConstraintWeight * upperConstraint;
     } 
@@ -107,7 +108,7 @@ ImagePairNonrigidRegistrationFunctional::WeightedDerivative
   if ( this->m_GridEnergyWeight > 0 ) 
     {
     double lowerEnergy = 0, upperEnergy = 0;
-    warp->GetGridEnergyDerivative( lowerEnergy, upperEnergy, param, step );
+    warp.GetGridEnergyDerivative( lowerEnergy, upperEnergy, param, step );
     lower -= this->m_GridEnergyWeight * lowerEnergy;
     upper -= this->m_GridEnergyWeight * upperEnergy;
     }
@@ -123,14 +124,14 @@ ImagePairNonrigidRegistrationFunctional::WeightedDerivative
     if ( this->m_MatchedLandmarkList ) 
       {
       double lowerMSD, upperMSD;
-      warp->GetDerivativeLandmarksMSD( lowerMSD, upperMSD, this->m_MatchedLandmarkList, param, step );
+      warp.GetDerivativeLandmarksMSD( lowerMSD, upperMSD, this->m_MatchedLandmarkList, param, step );
       lower -= this->m_LandmarkErrorWeight * lowerMSD;
       upper -= this->m_LandmarkErrorWeight * upperMSD;
       }
     if ( this->m_InverseTransformation ) 
       {
       double lowerIC, upperIC;
-      warp->GetDerivativeInverseConsistencyError( lowerIC, upperIC, this->m_InverseTransformation, this->ReferenceGrid, &(this->VolumeOfInfluence[param]), param, step );
+      warp.GetDerivativeInverseConsistencyError( lowerIC, upperIC, this->m_InverseTransformation, this->ReferenceGrid, &(this->VolumeOfInfluence[param]), param, step );
       lower -= this->m_InverseConsistencyWeight * lowerIC;
       upper -= this->m_InverseConsistencyWeight * upperIC;
       }
@@ -139,7 +140,7 @@ ImagePairNonrigidRegistrationFunctional::WeightedDerivative
 
 void
 ImagePairNonrigidRegistrationFunctional::SetWarpXform
-( WarpXform::SmartPtr& warp )
+( SplineWarpXform::SmartPtr& warp )
 {
   this->m_Warp = warp;
   if ( this->m_Warp )
@@ -167,7 +168,7 @@ ImagePairNonrigidRegistrationFunctional::SetWarpXform
       {
       if ( thread ) 
 	{
-	this->m_ThreadWarp[thread] = WarpXform::SmartPtr( dynamic_cast<WarpXform*>( this->m_Warp->Clone() ) );
+	this->m_ThreadWarp[thread] = SplineWarpXform::SmartPtr( this->m_Warp->Clone() );
 	this->m_ThreadWarp[thread]->RegisterVolume( this->ReferenceGrid );
 	} 
       else 

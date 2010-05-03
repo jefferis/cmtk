@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -35,7 +36,7 @@
 #include <cmtkconfig.h>
 
 #include <cmtkImagePairRegistration.h>
-#include <cmtkWarpXform.h>
+#include <cmtkSplineWarpXform.h>
 
 #include <string.h>
 
@@ -65,10 +66,10 @@ public:
 
 protected:
   /// Initial deformation.
-  WarpXform::SmartPtr InitialWarpXform;
+  SplineWarpXform::SmartPtr InitialWarpXform;
 
   /// Optional inverse warp for inverse-consistent registration.
-  WarpXform::SmartPtr InverseWarpXform;
+  SplineWarpXform::SmartPtr InverseWarpXform;
 
   /// Flag whether to adjust floating image histogram to match reference image.
   cmtkGetSetMacro(bool,MatchFltToRefHistogram);
@@ -220,7 +221,7 @@ private:
    *\param size Reference volume size.
    *\param initialAffine Initial affine transformation for the warp.
    */
-  WarpXform* MakeWarpXform( const Types::Coordinate* size, const AffineXform* initialAffine ) const;
+  SplineWarpXform::SmartPtr MakeWarpXform( const Types::Coordinate* size, const AffineXform* initialAffine ) const;
 
   /// Base class for registration level parameters.
   class LevelParameters
