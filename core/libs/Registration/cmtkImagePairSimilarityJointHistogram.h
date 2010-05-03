@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -104,14 +105,14 @@ public:
    * also performs pre-scaling and parameter selection using Self::PrescaleData().
    * Afterwards the joint histogram size is re-allocated.
    */
-  virtual void SetReferenceVolume( const UniformVolume::SmartPtr& refVolume );
+  virtual void SetReferenceVolume( UniformVolume::SmartConstPtr& refVolume );
 
   /** Set floating volume.
    * In addition to setting the floating volume via the base class, this function
    * also performs pre-scaling and parameter selection using Self::PrescaleData().
    * Afterwards the joint histogram size is re-allocated.
    */
-  virtual void SetFloatingVolume( const UniformVolume::SmartPtr& fltVolume );
+  virtual void SetFloatingVolume( UniformVolume::SmartConstPtr& fltVolume );
 
   /// Reset computation: clear joint histogram.
   virtual void Reset () 

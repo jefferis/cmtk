@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -81,7 +82,7 @@ ImagePairSimilarityJointHistogram::SetFloatingVolume( const UniformVolume::Smart
 
 UniformVolume::SmartPtr
 ImagePairSimilarityJointHistogram::PrescaleData
-( const UniformVolume::SmartPtr& volume, size_t* numberOfBins, Types::DataItem* scaleFactor, Types::DataItem* scaleOffset )
+( UniformVolume::SmartConstPtr& volume, size_t* numberOfBins, Types::DataItem* scaleFactor, Types::DataItem* scaleOffset )
 {
   UniformVolume::SmartPtr newVolume( volume->CloneGrid() );
   newVolume->CreateDataArray( TYPE_ITEM );
