@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -671,77 +672,6 @@ SplineWarpXform::GetTransformedGridSequence
     // we've just left a cell -- shift index of precomputed control points
     // to the next one.
     ++cellIdx;
-    }
-}
-
-void
-SplineWarpXform::ApplyToAll
-( CoordinateVector& v, BitVector& valid, const bool inverse, 
- const Types::Coordinate epsilon, const int* gridDims )
-{
-  const size_t numberOfPoints = v.Dim / 3;
-  Types::Coordinate* p = v.Elements;
-  
-  if ( inverse ) 
-    {
-    if ( gridDims ) 
-      {
-      size_t offset = 0;
-      Vector3D vv, u;
-      for ( int cz = 0; cz < gridDims[2]; ++cz ) 
-	{
-	for ( int cy = 0; cy < gridDims[1]; ++cy ) 
-	  {
-	  bool success = false;
-	  for ( int cx = 0; cx < gridDims[0]; ++cx, ++offset ) 
-	    {
-	    if ( !valid[offset] ) continue;
-	    vv.Set( p );
-	    if ( cx && success )
-	      // use previous (successful) inverse as starting point inside row
-	      success = this->ApplyInverseInPlaceWithInitial( vv, u, epsilon );
-	    else
-	      success = this->ApplyInverseInPlace( vv, epsilon );
-	    
-	    if ( success ) 
-	      {
-	      u = vv;
-	      for ( int dim = 0; dim < 3; ++dim ) p[dim] = vv.XYZ[dim];
-	      } 
-	    else
-	      {
-	      valid.Set( offset, false );
-	      }
-	    }
-	  }
-	}
-      } 
-    else
-      {
-      for ( size_t i = 0; i < numberOfPoints; ++i, p += 3 ) 
-	{
-	if ( valid[i] ) 
-	  {
-	  Vector3D vv( p );
-	  if ( this->ApplyInverseInPlace( vv, epsilon ) )
-	    for ( int dim = 0; dim < 3; ++dim ) p[dim] = vv.XYZ[dim];
-	  else
-	    valid.Reset( i );
-	  }
-	}
-      }
-    } 
-  else
-    {
-    for ( size_t i = 0; i < numberOfPoints; ++i, p += 3 ) 
-      {
-      if ( valid[i] ) 
-	{
-	Vector3D vv( p );
-	this->ApplyInPlace( vv );
-	for ( int dim = 0; dim < 3; ++dim ) p[dim] = vv.XYZ[dim];
-	}
-      }
     }
 }
 

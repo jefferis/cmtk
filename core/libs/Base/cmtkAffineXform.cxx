@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -570,24 +571,6 @@ AffineXform::Print() const
   StdErr.printf( "\tShear: [%f,%f,%f]\n", this->m_Parameters[9], this->m_Parameters[10], this->m_Parameters[11] );
 
   this->Matrix.Print( StdErr );
-}
-
-void 
-AffineXform::ApplyToAll
-( CoordinateVector& v, BitVector& valid, const bool inverse, const Types::Coordinate epsilon, const int* gridDims )
-  const
-{
-  if ( inverse )
-    this->GetInverse()->ApplyToAll( v, valid, false, epsilon, gridDims );
-  else
-    {
-    const size_t numberOfPoints = v.Dim / 3;
-    
-    Types::Coordinate* p = v.Elements;
-    for ( size_t i = 0; i < numberOfPoints; ++i, p+=3 )
-      if ( valid[i] )
-	this->Matrix.Multiply( p );
-    }
 }
 
 } // namespace

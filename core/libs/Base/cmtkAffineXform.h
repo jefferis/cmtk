@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -517,9 +518,6 @@ public:
       (v[n] = v0) += RegisteredVolumeAxes[0][idx];
     }
   }
-
-  /// Apply transformation to all coordinate triples stored in an array.
-  virtual void ApplyToAll( CoordinateVector& v, BitVector& valid, const bool inverse = false, const Types::Coordinate epsilon = 0.0, const int* gridDims = NULL ) const;
 
   /// Assignment operator.
   AffineXform& operator=( const AffineXform& other );
