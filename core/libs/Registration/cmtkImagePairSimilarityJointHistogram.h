@@ -105,14 +105,14 @@ public:
    * also performs pre-scaling and parameter selection using Self::PrescaleData().
    * Afterwards the joint histogram size is re-allocated.
    */
-  virtual void SetReferenceVolume( UniformVolume::SmartConstPtr& refVolume );
+  virtual void SetReferenceVolume( const UniformVolume::SmartConstPtr& refVolume );
 
   /** Set floating volume.
    * In addition to setting the floating volume via the base class, this function
    * also performs pre-scaling and parameter selection using Self::PrescaleData().
    * Afterwards the joint histogram size is re-allocated.
    */
-  virtual void SetFloatingVolume( UniformVolume::SmartConstPtr& fltVolume );
+  virtual void SetFloatingVolume( const UniformVolume::SmartConstPtr& fltVolume );
 
   /// Reset computation: clear joint histogram.
   virtual void Reset () 
@@ -168,7 +168,7 @@ private:
    * values will have been rescaled to represent histogram bin indexes directly.
    */
   UniformVolume::SmartPtr PrescaleData
-  ( UniformVolume::SmartConstPtr& volume, //!< Input volume.
+  ( const UniformVolume::SmartConstPtr& volume, //!< Input volume.
     size_t* numberOfBins, //!< Output: number of bins that the histogram should allocate for the output volume.
     Types::DataItem* scaleFactor, //!< Data scaling factor.
     Types::DataItem* scaleOffset //!< Data scaling offset.

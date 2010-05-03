@@ -67,14 +67,14 @@ ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
 }
 
 void
-ImagePairSimilarityJointHistogram::SetReferenceVolume( UniformVolume::SmartConstPtr& refVolume )
+ImagePairSimilarityJointHistogram::SetReferenceVolume( const UniformVolume::SmartConstPtr& refVolume )
 {
   Superclass::SetReferenceVolume( Self::PrescaleData( refVolume, &this->m_NumberOfBinsX, &this->m_ScaleFactorReference, &this->m_ScaleOffsetReference ) );
   this->m_JointHistogram.Resize( this->m_NumberOfBinsX, this->m_NumberOfBinsY );
 }
 
 void
-ImagePairSimilarityJointHistogram::SetFloatingVolume( UniformVolume::SmartConstPtr& fltVolume )
+ImagePairSimilarityJointHistogram::SetFloatingVolume( const UniformVolume::SmartConstPtr& fltVolume )
 {
   Superclass::SetFloatingVolume( Self::PrescaleData( fltVolume, &this->m_NumberOfBinsY, &this->m_ScaleFactorFloating, &this->m_ScaleOffsetFloating ) );
   this->m_JointHistogram.Resize( this->m_NumberOfBinsX, this->m_NumberOfBinsY );
@@ -82,7 +82,7 @@ ImagePairSimilarityJointHistogram::SetFloatingVolume( UniformVolume::SmartConstP
 
 UniformVolume::SmartPtr
 ImagePairSimilarityJointHistogram::PrescaleData
-( UniformVolume::SmartConstPtr& volume, size_t* numberOfBins, Types::DataItem* scaleFactor, Types::DataItem* scaleOffset )
+( const UniformVolume::SmartConstPtr& volume, size_t* numberOfBins, Types::DataItem* scaleFactor, Types::DataItem* scaleOffset )
 {
   UniformVolume::SmartPtr newVolume( volume->CloneGrid() );
   newVolume->CreateDataArray( TYPE_ITEM );

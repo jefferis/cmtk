@@ -67,7 +67,6 @@ AffineXform::AffineXform ( const AffineXform& other ) :
   this->m_LogScaleFactors = other.m_LogScaleFactors;
   this->NumberDOFs = other.NumberDOFs;
   this->ComposeMatrix();
-  memset( RegisteredVolumeAxes, 0, sizeof( RegisteredVolumeAxes ) );
 }
 
 AffineXform::AffineXform
@@ -83,7 +82,6 @@ AffineXform::AffineXform
   else
     memset( this->RetCenter(), 0, 3 * sizeof( Types::Coordinate ) );
   this->DecomposeMatrix();
-  memset( RegisteredVolumeAxes, 0, sizeof( RegisteredVolumeAxes ) );
 }
 
 AffineXform::AffineXform
@@ -99,7 +97,6 @@ AffineXform::AffineXform
   else
     memset( this->RetCenter(), 0, 3 * sizeof( Types::Coordinate ) );
   this->DecomposeMatrix();
-  memset( RegisteredVolumeAxes, 0, sizeof( RegisteredVolumeAxes ) );
 }
 
 AffineXform::AffineXform
@@ -123,7 +120,6 @@ AffineXform::AffineXform
   Matrix[3][2] = xlate[2] + center[2] - cM[2];
 
   this->Matrix.Decompose( this->m_Parameters, center, this->m_LogScaleFactors );
-  memset( RegisteredVolumeAxes, 0, sizeof( RegisteredVolumeAxes ) );
 }
 
 AffineXform& 
@@ -488,73 +484,6 @@ AffineXform::CanonicalRotationRange()
       this->m_Parameters[3+rotIdx] -= 360;
     while ( this->m_Parameters[3+rotIdx] < -180 ) 
       this->m_Parameters[3+rotIdx] += 360;
-    }
-}
-
-void
-AffineXform::RegisterVolume ( const UniformVolume* volume )
-{
-  this->UnRegisterVolume();
-
-  // define volume corners
-  Vector3D dX(1,0,0), dY(0,1,0), dZ(0,0,1);
-  Vector3D V(0,0,0);
-    
-  // compute inverse transformation for subsequent (direct) use.
-  this->GetInverse();
-
-  InverseXform->ApplyInPlace(V);
-  InverseXform->ApplyInPlace(dX);
-  dX -= V;
-  InverseXform->ApplyInPlace(dY);
-  dY -= V;
-  InverseXform->ApplyInPlace(dZ);
-  dZ -= V;
-  
-  // Apply post-transformation scaling
-  /**
-     // This code allows for the integration of an implicit coordinate-to-
-     // grid-index scaling. Potentially, this saves some additional computation
-     // time, but it does not really fit into the unified handling of 
-     // registered volumes for affine and non-rigid transformations. Therefore,
-     // it has been excluded from the current code base.
-  if ( scales ) {
-    dX.Set( dX[0] * scales[0], dX[1] * scales[1], dX[2] * scales[2] );
-    dY.Set( dY[0] * scales[0], dY[1] * scales[1], dY[2] * scales[2] );
-    dZ.Set( dZ[0] * scales[0], dZ[1] * scales[1], dZ[2] * scales[2] );
-    V.Set (  V[0] * scales[0],  V[1] * scales[1],  V[2] * scales[2] );
-  }
-  */
-
-  const Types::Coordinate deltaX = volume->m_Delta[0];
-  const Types::Coordinate deltaY = volume->m_Delta[1];
-  const Types::Coordinate deltaZ = volume->m_Delta[2];
-
-  const int *volumeDims = volume->GetDims();
-  for ( int dim = 0; dim<3; ++dim ) 
-    {
-    RegisteredVolumeAxes[dim] = Memory::AllocateArray<Vector3D>( volumeDims[dim] );
-    }
-  
-  int idx;
-  for ( idx = 0; idx < volumeDims[0]; ++idx )
-    RegisteredVolumeAxes[0][idx] = deltaX*idx*dX;
-  for ( idx = 0; idx < volumeDims[1]; ++idx )
-    RegisteredVolumeAxes[1][idx] = deltaY*idx*dY;
-  for ( idx = 0; idx < volumeDims[2]; ++idx )
-    (RegisteredVolumeAxes[2][idx] = deltaZ*idx*dZ) += V;
-}
-
-void
-AffineXform::UnRegisterVolume ()
-{
-  for ( int idx=0; idx<3; ++idx ) 
-    {
-    if ( RegisteredVolumeAxes[idx] ) 
-      {
-      delete[] RegisteredVolumeAxes[idx];
-      RegisteredVolumeAxes[idx] = NULL;
-      }
     }
 }
 

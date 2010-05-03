@@ -137,7 +137,6 @@ public:
     this->AllocateParameterVector( TotalNumberOfParameters );
     this->NumberDOFs = this->DefaultNumberOfDOFs();
     this->MakeIdentityXform();
-    memset( this->RegisteredVolumeAxes, 0, sizeof( this->RegisteredVolumeAxes ) );
   }
 
   /** Create transformation from parameter vector.
@@ -151,7 +150,6 @@ public:
     this->AllocateParameterVector( TotalNumberOfParameters );
     this->NumberDOFs = this->DefaultNumberOfDOFs();
     this->SetParamVector( v );
-    memset( RegisteredVolumeAxes, 0, sizeof( RegisteredVolumeAxes ) );
   }
 
   /** Create transformation from raw parameter array.
@@ -167,7 +165,6 @@ public:
     memcpy( this->m_Parameters, v, 15 * sizeof(Types::Coordinate) );
     this->ComposeMatrix();
     this->CanonicalRotationRange();
-    memset( RegisteredVolumeAxes, 0, sizeof( RegisteredVolumeAxes ) );
   }
 
   /** Create transformation from transformation matrix.
@@ -493,35 +490,6 @@ public:
   /// Get parameter stepping.
   virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate* vol_size, const Types::Coordinate step_mm = 1 ) const;
   
-  /// Register the grid points of the deformed uniform or non-uniform volume.
-  virtual void RegisterVolume ( const UniformVolume* );
-
-  /// Unegister axes points, ie free all internal data structures.
-  virtual void UnRegisterVolume ();
-
-  /** Get transformed location of linked grid pixel.
-   */
-  virtual void GetTransformedGrid( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const
-  {
-    ( (v = RegisteredVolumeAxes[0][idxX]) 
-      += RegisteredVolumeAxes[1][idxY]) 
-      += RegisteredVolumeAxes[2][idxZ]; 
-  }
-  
-  /** Get transformed locations of a series (scanline) of linked grid pixels.
-   */
-  virtual void GetTransformedGridSequence( Vector3D *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) 
-    const
-  {
-    Vector3D v0 = RegisteredVolumeAxes[1][idxY];
-    v0 += RegisteredVolumeAxes[2][idxZ];
-
-    int idx = idxX;
-    for ( int n=0; n < numPoints; ++n, ++idx ) {
-      (v[n] = v0) += RegisteredVolumeAxes[0][idx];
-    }
-  }
-
   /// Assignment operator.
   AffineXform& operator=( const AffineXform& other );
 
@@ -554,9 +522,6 @@ private:
 
   /// Correct rotation parameters to canonical range -180 to 180.
   void CanonicalRotationRange();
-
-  /// Axes hash for the points of a registered Volume.
-  Vector3D *RegisteredVolumeAxes[3];
 };
 
 //@}

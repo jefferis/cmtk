@@ -43,11 +43,6 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-Xform::~Xform()
-{
-  this->UnRegisterVolume();
-}
-
 void
 Xform::AllocateParameterVector
 ( const size_t numberOfParameters )
@@ -109,14 +104,6 @@ Xform::GetVolumeOfInfluence
   fromVOI = fromVol;
   toVOI = toVol;
 }
-
-void
-Xform::RegisterVolume( const UniformVolume* )
-{
-  StdErr << "This class does not implement RegisterVolumePoints().\n";
-  exit( 1 );
-}
-
 
 Types::Coordinate
 Xform::GetLandmarksMSD( const MatchedLandmarkList* ll ) const

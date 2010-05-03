@@ -55,11 +55,6 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-// Forward declaration of "Volume" class.
-// this is required to be able to declare the "Volume*" parameter of
-// RegisterVolume
-class UniformVolume;
-
 /** General 3D coordinate transformation.
  */
 class Xform :
@@ -91,12 +86,10 @@ public:
   /// Default constructor.
   Xform()
     : m_Parameters( NULL ),
-      m_NumberOfParameters( 0 )    
-  {
-  }
+      m_NumberOfParameters( 0 ) {}
 
   /// Virtual destructor.
-  virtual ~Xform();
+  virtual ~Xform() {}
   
   /// Check whether coordinate is in domain of transformation.
   virtual bool InDomain( const Vector3D& ) const { return true; }
@@ -209,16 +202,6 @@ public:
   /// Get volume influenced by one parameter.
   virtual void GetVolumeOfInfluence( const size_t idx, const Vector3D&, const Vector3D&, Vector3D&, Vector3D&, const int = -1 ) const;
   
-  /// Register the grid points of the deformed uniform or non-uniform volume.
-  virtual void RegisterVolume ( const UniformVolume* );
-
-  /// Unegister axes points, ie free all internal data structures.
-  virtual void UnRegisterVolume () {};
-
-  virtual void GetTransformedGrid( Vector3D&, const int, const int, const int ) const = 0;
-  
-  virtual void GetTransformedGridSequence( Vector3D *const, const int, const int, const int, const int ) const = 0;
-
 protected:
   /** Encapsulated representation of the transformation parameters.
    * This vector object contains the parameter array pointed at by the public
