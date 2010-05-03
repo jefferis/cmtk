@@ -123,7 +123,6 @@ protected:
   /// Flag for fast but inaccurate computation.
   cmtkGetSetMacroDefault(bool,FastMode,true);
 
-protected:
   /// Precomputed global scaling of initial affine transformation.
   Types::Coordinate GlobalScaling;
 

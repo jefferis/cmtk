@@ -1,5 +1,6 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
+##
 ##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
@@ -32,6 +33,7 @@ SET(cmtkBase_SRCS
   cmtkActiveDeformationModel.cxx
   cmtkActiveShapeModel.cxx
   cmtkAffineXform.cxx
+  cmtkAffineXformUniformVolume.cxx
   cmtkAnatomicalOrientation.cxx
   cmtkAnatomicalOrientationPermutationMatrix.cxx
   cmtkBitVector.cxx

@@ -143,7 +143,7 @@ ReformatVolume::PlainReformat()
       const SplineWarpXform::SmartPtr& splineWarp = SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_WarpXform );
       if ( splineWarp ) 
 	{
-	const SplineWarpXformUniformVolume xformVolume( splineWarp, this->ReferenceVolume );
+	SplineWarpXformUniformVolume xformVolume( *(this->ReferenceVolume), splineWarp );
 	
 	for ( int pY = 0; pY<dims[1]; ++pY ) 
 	  {
@@ -219,7 +219,7 @@ ReformatVolume::PlainReformat
   const SplineWarpXform::SmartPtr& splineWarp = SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_WarpXform );
   if ( splineWarp ) 
     {
-    const SplineWarpXformUniformVolume xformVolume( splineWarp, this->ReferenceVolume );
+    const SplineWarpXformUniformVolume xformVolume( *(this->ReferenceVolume), splineWarp );
     
     for ( int pY = 0; pY<DimsY; ++pY ) 
        {
