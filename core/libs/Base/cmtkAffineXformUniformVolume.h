@@ -62,6 +62,9 @@ public:
   /// Smart pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
 
+  /// Smart pointer-to-const to this class.
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
   /// Constructor.
   AffineXformUniformVolume( const UniformVolume& volume, const AffineXform& xform );
   

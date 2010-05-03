@@ -63,6 +63,9 @@ public:
   /// Smart pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
 
+  /// Smart pointer-to-const to this class.
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
   /// Constructor.
   SplineWarpXformUniformVolume( const UniformVolume& volume, const SplineWarpXform::SmartConstPtr& xform );
   
