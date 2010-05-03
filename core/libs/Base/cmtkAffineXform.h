@@ -75,6 +75,9 @@ public:
   /// Smart pointer to AffineXform.
   typedef SmartPointer<Self> SmartPtr;
 
+  /// Smart pointer to const AffineXform.
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
   /// Transformation matrix.type.
   typedef Matrix4x4<Types::Coordinate> MatrixType;
 

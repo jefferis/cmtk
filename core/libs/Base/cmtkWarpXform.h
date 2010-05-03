@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -70,6 +71,9 @@ class WarpXform :
 public:
   /// Smart pointer to WarpXform
   typedef SmartPointer<WarpXform> SmartPtr;
+
+  /// Smart pointer to const WarpXform
+  typedef SmartConstPointer<WarpXform> SmartConstPtr;
 
   /// Dimensions of control point grid.
   int m_Dims[3];

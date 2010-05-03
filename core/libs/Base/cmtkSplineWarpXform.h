@@ -73,6 +73,9 @@ public:
   /// Smart pointer to SplineWarpXform.
   typedef SmartPointer<Self> SmartPtr;
 
+  /// Smart pointer to const SplineWarpXform.
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
   /** Construct empty new warp.
    * This is mostly useful for the Clone() function that can subsequently
    * copy all data structures into a newly created empty object. 

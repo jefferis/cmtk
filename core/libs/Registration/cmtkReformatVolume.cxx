@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -75,20 +76,20 @@ ReformatVolume::ReformatVolume()
 
 void
 ReformatVolume::SetReferenceVolume
-( const UniformVolume::SmartPtr& referenceVolume )
+( const UniformVolume::SmartConstPtr& referenceVolume )
 {
-  ReferenceVolume = referenceVolume;
-  if ( ReferenceVolume && ReferenceVolume->GetData() ) 
+  this->ReferenceVolume = referenceVolume;
+  if ( this->ReferenceVolume && this->ReferenceVolume->GetData() ) 
     {
     Types::DataItem min, max;
-    ReferenceVolume->GetData()->GetRange( min, max );
+    this->ReferenceVolume->GetData()->GetRange( min, max );
     this->MaximumValue = std::max( max, this->MaximumValue );
     }			       
 }
 
 void 
 ReformatVolume::SetFloatingVolume
-( const UniformVolume::SmartPtr& floatingVolume )
+( const UniformVolume::SmartConstPtr& floatingVolume )
 {
   FloatingVolume = floatingVolume;
   if ( FloatingVolume && FloatingVolume->GetData() ) 

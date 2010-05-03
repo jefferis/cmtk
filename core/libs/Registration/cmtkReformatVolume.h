@@ -129,10 +129,10 @@ public:
   }
 
   /// Set the reference volume for reformatting.
-  void SetReferenceVolume( const UniformVolume::SmartPtr& referenceVolume );
+  void SetReferenceVolume( const UniformVolume::SmartConstPtr& referenceVolume );
 
   /// Set the floating (transformed) volume for reformatting.
-  void SetFloatingVolume( const UniformVolume::SmartPtr& floatingVolume );
+  void SetFloatingVolume( const UniformVolume::SmartConstPtr& floatingVolume );
 
   /// Set affine transformation to be applied to the floating volume.
   void SetAffineXform( const AffineXform::SmartPtr& affineXform );
@@ -272,19 +272,19 @@ private:
   ScalarDataType m_UserDataType;
 
   /// Pointer to the reference volume.
-  const UniformVolume::SmartPtr ReferenceVolume;
+  UniformVolume::SmartConstPtr ReferenceVolume;
 
   /// Pointer to the floating volume.
-  const UniformVolume::SmartPtr FloatingVolume;
+  UniformVolume::SmartConstPtr FloatingVolume;
 
   /// Make target volume matching (reoriented) reference volume.
   UniformVolume* MakeTargetVolume() const;
 
   /// Pointer to the affine transformation of the floating volume.
-  const AffineXform::SmartPtr m_AffineXform;
+  AffineXform::SmartConstPtr m_AffineXform;
   
   /// Pointer to the local deformation of the reference grid.
-  const WarpXform::SmartPtr m_WarpXform;
+  WarpXform::SmartConstPtr m_WarpXform;
 
   /** Maximum value in reference and floating image.
    * This field is updated by both SetXXXVolume methods. Its value is used for
