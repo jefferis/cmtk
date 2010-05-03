@@ -45,7 +45,7 @@ MatchedLandmarkList::AddLandmarkLists
   LandmarkList::const_iterator it = sourceList->begin();
   while ( it != sourceList->end() ) 
     {
-    const Landmark* targetLM = targetList->FindByName( (*it)->GetName() ).GetPtr();
+    const Landmark* targetLM = targetList->FindByName( (*it)->GetName() ).GetConstPtr();
     if ( targetLM ) 
       {
       SmartPointer<MatchedLandmark> newMatchedLM( new MatchedLandmark );

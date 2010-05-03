@@ -133,7 +133,7 @@ public:
   operator const T*() const { return m_Object.ptrConst; }
   
   /// Explicit conversion to constant pointer.
-  const T* GetPtr() const { return this->m_Object.ptrConst; }
+  const T* GetConstPtr() const { return this->m_Object.ptrConst; }
 
   /** Release control of this pointer.
    *\note This is a dangerous function. Be sure you know what you are doing!
@@ -188,7 +188,7 @@ public:
   template<class T2> 
   static Self DynamicCastFrom( const T2& from_P )
   {
-    return Self( dynamic_cast<typename Self::PointerType>( from_P.GetPtr() ), from_P.m_ReferenceCount );
+    return Self( dynamic_cast<typename Self::PointerType>( from_P.GetConstPtr() ), from_P.m_ReferenceCount );
   }
 
 protected:

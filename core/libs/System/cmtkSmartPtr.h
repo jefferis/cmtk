@@ -68,7 +68,6 @@ public:
   /// Use "const" inherited member functions.
   using Superclass::operator*;
   using Superclass::operator->;
-  using Superclass::GetPtr;
   using Superclass::ReleasePtr;
 
   /// The underlying raw pointer type.
@@ -101,7 +100,7 @@ public:
   T* operator->() { return this->m_Object.ptr; }
 
   /// Explicit conversion to non-constant pointer.
-  T* GetPtr() { return this->m_Object.ptr; }
+  T* GetPtr() const { return this->m_Object.ptr; }
 
   /** Release control of this pointer.
    *\note This is a dangerous function. Be sure you know what you are doing!
@@ -117,7 +116,7 @@ public:
   template<class T2> 
   static Self DynamicCastFrom( const T2& from_P )
   {
-    return Self( dynamic_cast<typename Self::PointerType>( from_P.SmartPointer<T2>::GetPtr() ), from_P.m_ReferenceCount );
+    return Self( dynamic_cast<typename Self::PointerType>( from_P.GetPtr() ), from_P.m_ReferenceCount );
   }
 
 private:

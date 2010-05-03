@@ -217,7 +217,7 @@ ReformatVolume::PlainReformat
 
   UniformVolumeInterpolatorBase::SmartPtr interpolator( this->CreateInterpolator( this->FloatingVolume ) );
   
-  const SplineWarpXform::SmartPtr& splineWarp = SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_WarpXform );
+  const SplineWarpXform::SmartConstPtr splineWarp = SplineWarpXform::SmartConstPtr::DynamicCastFrom( this->m_WarpXform );
   if ( splineWarp ) 
     {
     const SplineWarpXformUniformVolume xformVolume( *(this->ReferenceVolume), splineWarp );
@@ -269,7 +269,7 @@ ReformatVolume::GetTransformedReference
 {
   UniformVolume* result = NULL;
 
-  const SplineWarpXform* splineXform = dynamic_cast<const SplineWarpXform*>( this->m_WarpXform.GetPtr() );
+  const SplineWarpXform* splineXform = dynamic_cast<const SplineWarpXform*>( this->m_WarpXform.GetConstPtr() );
   if ( ! splineXform ) 
     {
     StdErr << "ERROR: ReformatVolume::GetTransformedReference supports spline warp only.\n";
@@ -459,7 +459,7 @@ ReformatVolume::GetTransformedReferenceJacobianAvg
   Types::Coordinate *const volumeOffset,
   const bool includeReferenceData )
 {
-  const SplineWarpXform* splineXform = dynamic_cast<const SplineWarpXform*>( this->m_WarpXform.GetPtr() );
+  const SplineWarpXform* splineXform = dynamic_cast<const SplineWarpXform*>( this->m_WarpXform.GetConstPtr() );
   if ( ! splineXform ) 
     {
     StdErr << "ERROR: ReformatVolume::GetTransformedReferenceJacobian supports spline warp only.\n";
