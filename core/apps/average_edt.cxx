@@ -40,7 +40,10 @@
 #include <cmtkUniformDistanceMap.h>
 #include <cmtkTypedArray.h>
 #include <cmtkTemplateArray.h>
-#include <cmtkSplineWarpXform.h>
+
+#include <cmtkXformUniformVolume.h>
+#include <cmtkAffineXformUniformVolume.h>
+#include <cmtkSplineWarpXformUniformVolume.h>
 
 #include <cmtkFileFormat.h>
 #include <cmtkVolumeIO.h>
@@ -388,7 +391,7 @@ cmtk::TypedArray::SmartPtr
 Average
 ( const cmtk::UniformVolume* referenceVolume,
   std::list<cmtk::UniformVolume::SmartPtr> volumes,
-  std::list<cmtk::Xform::SmartPtr> xforms,
+  std::list<cmtk::XformUniformVolume::SmartConstPtr> xforms,
   const byte numLabels )
 {
   const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT;
@@ -434,7 +437,7 @@ Average
 
     referenceInOutDistance->BlockSet( 0 /*value*/, 0 /*idx*/, nPixelsReference /*len*/ );
 
-    std::list<cmtk::Xform::SmartPtr>::const_iterator itX = xforms.begin();
+    std::list<cmtk::XformUniformVolume::SmartConstPtr>::const_iterator itX = xforms.begin();
     for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator itV = volumes.begin(); itV != volumes.end(); ++itV, ++itX )
       {
       const size_t nPixelsFloating = (*itV)->GetNumberOfPixels();
@@ -544,7 +547,7 @@ cmtk::TypedArray::SmartPtr
 AverageWindowed
 ( const cmtk::UniformVolume* referenceVolume,
   std::list<cmtk::UniformVolume::SmartPtr> volumes,
-  std::list<cmtk::Xform::SmartPtr> xforms,
+  std::list<cmtk::XformUniformVolume::SmartConstPtr> xforms,
   const byte numLabels )
 {
   const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_WINDOW;
@@ -598,7 +601,7 @@ AverageWindowed
     referenceInOutDistance->BlockSet( 0 /*value*/, 0 /*idx*/, nPixelsReference /*len*/ );
     countDistanceSamples->BlockSet( 0 /*value*/, 0 /*idx*/, nPixelsReference /*len*/ );
 
-    std::list<cmtk::Xform::SmartPtr>::const_iterator itX = xforms.begin();
+    std::list<cmtk::XformUniformVolume::SmartConstPtr>::const_iterator itX = xforms.begin();
     for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator itV = volumes.begin(); itV != volumes.end(); ++itV, ++itX )
       {
       const size_t nPixelsFloating = (*itV)->GetNumberOfPixels();
@@ -741,7 +744,7 @@ AddVolumeFile
 void
 AddVolumeStudyList
 ( const char* listName, std::list<cmtk::UniformVolume::SmartPtr>& volumeList,
-  std::list<cmtk::Xform::SmartPtr>& xformList,
+  std::list<cmtk::XformUniformVolume::SmartConstPtr>& xformList,
   cmtk::UniformVolume::SmartPtr& referenceVolume )
 {
   if ( Verbose ) 
@@ -795,20 +798,27 @@ AddVolumeStudyList
       }
     }
   
-  cmtk::Xform::SmartPtr xform( studylist.GetWarpXform() );
-  if ( !xform )
-    {
-    xform = studylist.GetAffineXform();
-    }
-  if ( !xform )
-    {
-    cmtk::StdErr << "WARNING: no transformation in studylist " << listName << "\n";
-    return;
-    }
-
   volumeList.push_back( floatingVolume );
-  xform->RegisterVolume( referenceVolume );
-  xformList.push_back( xform );
+
+  cmtk::SplineWarpXform::SmartConstPtr splinexform( cmtk::SplineWarpXform::SmartConstPtr::DynamicCastFrom( studylist.GetWarpXform() ) );
+  if ( !splinexform )
+    {
+    cmtk::AffineXform::SmartConstPtr affinexform( studylist.GetAffineXform() );
+
+    if ( !affinexform )
+      {
+      cmtk::StdErr << "WARNING: no transformation in studylist " << listName << "\n";
+      return;
+      }
+    else
+      {
+      xformList.push_back( cmtk::XformUniformVolume::SmartConstPtr( new cmtk::AffineXformUniformVolume( *(referenceVolume), *(affinexform) ) ) );
+      }
+    }
+  else
+    {
+    xformList.push_back( cmtk::XformUniformVolume::SmartConstPtr( new cmtk::SplineWarpXformUniformVolume( *(referenceVolume), splinexform ) ) );
+    }
 }
 
 void
@@ -946,7 +956,7 @@ main ( const int argc, const char* argv[] )
 
   if ( InterpolateDistance )
     {
-    std::list<cmtk::Xform::SmartPtr> xformList;
+    std::list<cmtk::XformUniformVolume::SmartConstPtr> xformList;
     for ( std::list<const char*>::const_iterator it = InputFileList.begin(); 
 	  it != InputFileList.end(); ++it ) 
       {
