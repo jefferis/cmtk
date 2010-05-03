@@ -120,6 +120,22 @@ public:
   /// Apply transformation to vector in-place.
   virtual void ApplyInPlace ( Vector3D& ) const;
 
+  /** Return origin of warped vector.
+   */
+  virtual bool ApplyInverse ( const Vector3D&, Vector3D&, const Types::Coordinate = 0.01  ) const 
+  {
+    // not implemented
+    return false;
+  }
+
+  /** Return origin of warped vector.
+   */
+  virtual bool ApplyInverseInPlace( Vector3D&, const Types::Coordinate = 0.01  ) const 
+  {
+    // not implemented
+    return false;
+  }
+
   /// Get a grid point from the deformed grid.
   virtual void GetTransformedGrid( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const;
   

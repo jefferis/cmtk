@@ -188,15 +188,6 @@ public:
   /// Refine control point grid, but maintain transformation exactly.
   virtual void Refine() {}
 
-  /// Regularize (smooth) transformation.
-  virtual void Regularize( const int weight0, const int weight1 );
-
-  /// Return total number of coefficients, ie. they are all variable.
-  virtual size_t VariableParamVectorDim () const
-  {
-    return this->ParamVectorDim();
-  }
-
   /// Return warped vector.
   virtual Vector3D Apply ( const Vector3D& v ) const 
   {

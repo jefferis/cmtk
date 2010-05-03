@@ -291,38 +291,6 @@ WarpXform::DeleteParameterActiveFlags()
 }
 
 void
-WarpXform::Regularize( const int weight0, const int weight1 )
-{
-  Types::Coordinate* ncoeff = Memory::AllocateArray<Types::Coordinate>( this->m_NumberOfParameters );
-  Types::Coordinate* pcoeff = ncoeff;
-
-  Types::Coordinate* coeff = this->m_Parameters;
-  for ( int z = 0; z<this->m_Dims[2]; ++z )
-    for ( int y = 0; y<this->m_Dims[1]; ++y )
-      for ( int x = 0; x<this->m_Dims[0]; ++x ) 
-	{
-	for ( int dim = 0; dim<3; ++dim, ++coeff, ++pcoeff ) 
-	  {	  
-	  *pcoeff = 0;
-	  int count = 0;
-	  for ( int k=-1; k<2; ++k )
-	    for ( int j=-1; j<2; ++j )
-	      for ( int i=-1; i<2; ++i )
-		if ( ((x+i)>=0) && ((y+j)>=0) && ((z+k)>=0) && ((x+i)<this->m_Dims[0]) && ((y+j)<this->m_Dims[1]) && ((z+k)<this->m_Dims[2]) ) 
-		  {
-		  int weight = (i?weight1:weight0) * (j?weight1:weight0) * (k?weight1:weight0);
-		  *pcoeff += weight * coeff[ i*nextI + j*nextJ + k*nextK ];
-		  count += weight;
-		  }
-	  *pcoeff /= count;
-	  }
-	}
-  
-  memcpy( coeff, ncoeff, sizeof( *coeff ) * this->m_NumberOfParameters );
-  delete[] ncoeff;
-}
-
-void
 WarpXform::RegisterVolume( const UniformVolume *volume )
 {
   this->RegisterVolumePoints( volume->m_Dims, volume->m_Delta, volume->m_Offset.XYZ );

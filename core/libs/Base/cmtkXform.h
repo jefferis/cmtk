@@ -112,30 +112,21 @@ public:
 
   /** Return origin of warped vector.
    */
-  virtual bool ApplyInverse ( const Vector3D&, Vector3D&, const Types::Coordinate = 0.01  ) const
-  {
-    throw Exception( "unimplemented function called" );
-  }
+  virtual bool ApplyInverse ( const Vector3D&, Vector3D&, const Types::Coordinate = 0.01  ) const = 0;
 
   /** Return origin of warped vector.
    */
-  virtual bool ApplyInverseInPlace( Vector3D&, const Types::Coordinate = 0.01  ) const
-  {
-    throw Exception( "unimplemented function called" );
-  }
+  virtual bool ApplyInverseInPlace( Vector3D&, const Types::Coordinate = 0.01  ) const = 0;
 
   /** Return origin of warped vector.
    */
-  virtual bool ApplyInverseInPlaceWithInitial( Vector3D&, const Vector3D&, const Types::Coordinate = 0.01 ) const
+  virtual bool ApplyInverseInPlaceWithInitial( Vector3D& v, const Vector3D&, const Types::Coordinate error = 0.01 ) const
   {
-    throw Exception( "unimplemented function called" );
+    return this->ApplyInverseInPlace( v, error );
   }
 
   /// Clone transformation.
   virtual Self* Clone () const = 0;
-
-  /// Make inverse transformation, or return NULL if this transformation does not support explicit inverses.
-  virtual Self* MakeInverse () const { return NULL; }
 
   /// Return number of coefficients in parameter vector.
   virtual size_t ParamVectorDim () const 
@@ -148,7 +139,10 @@ public:
    * optimization. They are located at the beginning of the complete parameter
    * vector.
    */
-  virtual size_t VariableParamVectorDim () const = 0;
+  virtual size_t VariableParamVectorDim () const
+  {
+    return this->ParamVectorDim();
+  }
 
   /** Set Xform by parameter vector.
    * Be careful: This is NOT a one-way function. The Xform object may change
