@@ -117,7 +117,7 @@ public:
   template<class T2> 
   static Self DynamicCastFrom( const T2& from_P )
   {
-    return Self( dynamic_cast<typename Self::PointerType>( from_P.m_Object.ptr ), from_P.m_ReferenceCount );
+    return Self( dynamic_cast<typename Self::PointerType>( from_P.SmartPointer<T2>::GetPtr() ), from_P.m_ReferenceCount );
   }
 
 private:

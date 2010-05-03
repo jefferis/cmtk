@@ -1031,7 +1031,7 @@ public:
   {
     NonOptionParameter::SmartPtr parameter( new NonOptionParameter( var, name, comment, flag ) );
     this->m_NonOptionParameterList.push_back( parameter );
-    return Item::SmartPtr::DynamicCastFrom( parameter );
+    return parameter;
   }
 
   /// Add vector of non-option parameters.
@@ -1040,7 +1040,7 @@ public:
   {
     NonOptionParameterVector::SmartPtr vparameter( new NonOptionParameterVector( pvec, name, comment, flag ) );
     this->m_NonOptionParameterVectorList.push_back( vparameter );
-    return  Item::SmartPtr::DynamicCastFrom( vparameter );
+    return  vparameter;
   }
 
   /// Type for key/action lists.
@@ -1053,19 +1053,19 @@ public:
   KeyActionListType m_KeyActionListComplete;
 				    
   /// Add an item to applicable key/action lists.
-  const KeyToActionSingle::SmartPtr AddKeyAction( const KeyToActionSingle::SmartPtr& keyAction )
+  KeyToActionSingle::SmartPtr AddKeyAction( const KeyToActionSingle::SmartPtr& keyAction )
   {
-    this->m_KeyActionList->push_back( KeyToAction::SmartPtr::DynamicCastFrom( keyAction ) );
-    this->m_KeyActionListComplete.push_back( KeyToAction::SmartPtr::DynamicCastFrom( keyAction ) );
-    return KeyToActionSingle::SmartPtr::DynamicCastFrom( this->m_KeyActionListComplete.back() );
+    this->m_KeyActionList->push_back( keyAction );
+    this->m_KeyActionListComplete.push_back( keyAction );
+    return keyAction;
   }
 
   /// Add an item to applicable key/action lists.
-  const KeyToActionEnum::SmartPtr AddKeyAction( const KeyToActionEnum::SmartPtr& keyAction )
+  KeyToActionEnum::SmartPtr AddKeyAction( const KeyToActionEnum::SmartPtr& keyAction )
   {
-    this->m_KeyActionList->push_back( KeyToAction::SmartPtr::DynamicCastFrom( keyAction ) );
-    this->m_KeyActionListComplete.push_back( KeyToAction::SmartPtr::DynamicCastFrom( keyAction ) );
-    return KeyToActionEnum::SmartPtr::DynamicCastFrom( this->m_KeyActionListComplete.back() );
+    this->m_KeyActionList->push_back( keyAction );
+    this->m_KeyActionListComplete.push_back( keyAction );
+    return keyAction;
   }
 
   /// Type for action groups, which map a group name to the group's key-action list.
