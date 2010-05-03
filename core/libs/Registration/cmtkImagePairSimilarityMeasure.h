@@ -154,7 +154,7 @@ private:
   Interpolators::InterpolationEnum m_InterpolationMethod;
 
   /// Floating image interpolator.
-  const cmtk::UniformVolumeInterpolatorBase::SmartPtr m_FloatingImageInterpolator;
+  cmtk::UniformVolumeInterpolatorBase::SmartConstPtr m_FloatingImageInterpolator;
 };
 
 //@}

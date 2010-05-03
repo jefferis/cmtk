@@ -36,6 +36,8 @@
 #include <cmtkconfig.h>
 
 #include <cmtkSmartPtr.h>
+#include <cmtkSmartConstPtr.h>
+
 #include <cmtkVector3D.h>
 #include <cmtkUniformVolume.h>
 
@@ -55,6 +57,9 @@ public:
   
   /// Smart pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
+
+  /// Smart pointer-to-const to this class.
+  typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Constructor.
   UniformVolumeInterpolatorBase( UniformVolume::SmartConstPtr& volume = UniformVolume::SmartPtr::Null )
