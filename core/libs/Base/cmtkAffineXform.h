@@ -203,7 +203,7 @@ public:
    */
   virtual ~AffineXform() 
   { 
-    InverseXform = SmartPtr::Null; 
+    InverseXform = Self::SmartPtr::Null; 
   }
   
   /// Clone this object.
@@ -504,7 +504,7 @@ private:
   static int DefaultNumberOfDOFs() { return 12; }
 
   /// Link to an auto-updated inverse transformation.
-  mutable SmartPtr InverseXform;
+  mutable Self::SmartPtr InverseXform;
 
   /// Update linked inverse transformation.
   void UpdateInverse() const;
@@ -515,7 +515,8 @@ private:
    * safely be called by all other SetXXX() functions in order to update
    * the inverse transformation without producing an infinite loop.
    */
-  void SetMatrixDirect ( const Types::Coordinate* matrix ) {
+  void SetMatrixDirect ( const Types::Coordinate* matrix ) 
+  {
     Matrix.Set( matrix );
     this->DecomposeMatrix();
   }
