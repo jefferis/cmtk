@@ -177,18 +177,8 @@ public:
   }
   
   /// Compute Jacobian determinant at a certain location.
-  virtual Types::Coordinate GetJacobianDeterminant ( const Vector3D& ) const 
-  { 
-    return 1;
-  }
+  virtual Types::Coordinate GetJacobianDeterminant ( const Vector3D& ) const = 0;
   
-  /// Compute sequence of Jacobian determinants from given grid location.
-  virtual void GetJacobianDeterminantSequence( double *const values, const int, const int, const int, const size_t numberOfPoints = 1 ) const
-  {
-    for ( size_t i = 0; i < numberOfPoints; ++i ) 
-      values[i] = 1.0;
-  }
-
   /** Return registration error for set of source/target landmarks.
    * What is actually returned is the mean squared distance of source
    * landmark after transformation and desired target landmark.
