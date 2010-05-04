@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -63,7 +64,7 @@ ReformatVolume::GetTransformedReference
       }
     }
   
-  const SplineWarpXform* splineXform = dynamic_cast<const SplineWarpXform*>( this->m_WarpXform.GetPtr() );
+  const SplineWarpXform* splineXform = dynamic_cast<const SplineWarpXform*>( this->m_WarpXform.GetConstPtr() );
   if ( ! splineXform ) 
     {
     StdErr << "ERROR: ReformatVolume::GetTransformedReference supports spline warp only.\n";
