@@ -40,9 +40,7 @@
 #include <cmtkMacros.h>
 #include <cmtkVector.h>
 #include <cmtkVector3D.h>
-#include <cmtkRect3D.h>
 
-#include <cmtkVolume.h>
 #include <cmtkUniformVolume.h>
 
 #include <cmtkAffineXform.h>
