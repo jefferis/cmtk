@@ -59,20 +59,6 @@ public:
     this->m_RegionTo = toIndex;
   }
   
-  /// Copy constructor.
-  Region( const Self& other )
-  {
-    *this = other;
-  }
-
-  /// Assignment operator.
-  Self& operator=( const Self& other )
-  {
-    this->m_RegionFrom = other.m_RegionFrom;
-    this->m_RegionTo = other.m_RegionTo;
-    return *this;
-  }
-
 private:
   /// Beginning index.
   IndexType m_RegionFrom;

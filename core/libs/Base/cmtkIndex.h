@@ -54,20 +54,6 @@ public:
       this->m_Index[i] = indexArray[i];
   }
 
-  /// Copy constructor.
-  Index( const Self& other )
-  {
-    *this = other;
-  }
-
-  /// Assignment operator.
-  Self& operator=( const Self& other )
-  {
-    for ( size_t i = 0; i < NDIM; ++i )
-      this->m_Index[i] = other.m_Index[i];
-    return *this;
-  }
-
   /// Access operator.
   int& operator[]( const size_t idx )
   {
