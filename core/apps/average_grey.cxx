@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -130,20 +131,17 @@ ReformatAndAdd
   if ( xform ) 
     {
     const int *dims = referenceVolume->GetDims();
-    xform->RegisterVolume( referenceVolume );
-
 #pragma omp parallel for private(value)
     for ( int pZ = 0; pZ < dims[cmtk::AXIS_Z]; ++pZ ) 
       {
-      std::vector<cmtk::Vector3D> pFlt( dims[cmtk::AXIS_X] );
+      cmtk::Vector3D pFlt;
       size_t offset = pZ * dims[cmtk::AXIS_X] * dims[cmtk::AXIS_Y];
       for ( int pY = 0; pY < dims[cmtk::AXIS_Y]; ++pY ) 
 	{
-	xform->GetTransformedGridSequence( &(pFlt[0]), dims[cmtk::AXIS_X], 0, pY, pZ );
-	
 	for ( int pX = 0; pX < dims[cmtk::AXIS_X]; ++pX, ++offset ) 
 	  {
-	  if ( interpolator->GetDataAt( pFlt[pX], value ) )
+	  xform->ApplyInPlace( pFlt );
+	  if ( interpolator->GetDataAt( pFlt, value ) )
 	    {
 	    averageData[offset] += ((value * normFactor) + normOffset);
 	    ++countData[offset];
