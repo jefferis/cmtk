@@ -185,10 +185,6 @@ public:
    */
   virtual Types::Coordinate GetLandmarksMSD( const MatchedLandmarkList* ll ) const;
   
-  /** Return derivative of registration error with respect to one parameter.
-   */
-  virtual void GetDerivativeLandmarksMSD( double&, double&, const MatchedLandmarkList*, const unsigned int, const Types::Coordinate ) {}
-  
   /// Get volume influenced by one parameter.
   virtual void GetVolumeOfInfluence( const size_t idx, const Vector3D&, const Vector3D&, Vector3D&, Vector3D&, const int = -1 ) const;
   
