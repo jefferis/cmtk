@@ -210,51 +210,6 @@ public:
   ( double& lower, double& upper, const WarpXform* inverse, const UniformVolume* volume, const Rect3D* voi, 
     const unsigned int idx, const Types::Coordinate step );
   
-  /// Return bending energy of the current transformation grid.
-  virtual Types::Coordinate GetGridEnergy() const;
-
-  /** Return grid bending energy at one control point.
-   *@param cp The control point where the bending energy is to be evaluated.
-   */
-  virtual Types::Coordinate GetGridEnergy( const Types::Coordinate* ) const
-  {
-    throw Exception( "unimplemented function called" );
-  }    
-
-  /** Return grid bending energy at arbitrary location.
-   */
-  virtual Types::Coordinate GetGridEnergy( const Vector3D& ) const 
-  {
-    throw Exception( "unimplemented function called" );
-  }
-
-  /// Return derivative of bending energy with respect to one parameter.
-  virtual void GetGridEnergyDerivative( double& lower, double& upper, const int param, const Types::Coordinate step ) const;
-  
-  /// Return Jacobian constraint of the current transformation grid.
-  virtual Types::Coordinate GetJacobianConstraint() const
-  {
-    throw Exception( "unimplemented function called" );
-  }
-
-  /// Return rigidity constraint of the current transformation grid.
-  virtual Types::Coordinate GetRigidityConstraint() const 
-  {
-    throw Exception( "unimplemented function called" );
-  }
-
-  /// Return Jacobian constraint of the current transformation grid.
-  virtual Types::Coordinate GetJacobianConstraintSparse() const
-  {
-    throw Exception( "unimplemented function called" );
-  }
-
-  /// Return derivative of Jacobian constraint with respect to one parameter.
-  virtual void GetJacobianConstraintDerivative( double& lower, double& upper, const int param, const Rect3D&, const Types::Coordinate step ) const;
-  
-  /// Return derivative of Jacobian constraint with respect to one parameter.
-  virtual void GetJacobianConstraintDerivative( double&, double&, const int, const Types::Coordinate ) const {}
-  
   /// Register the grid points of the deformed uniform volume.
   virtual void RegisterVolumePoints( const int[3], const Types::Coordinate[3], const Types::Coordinate[3] )
   {

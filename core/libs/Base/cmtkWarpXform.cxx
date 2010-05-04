@@ -163,25 +163,6 @@ WarpXform::GetDerivativeInverseConsistencyError
   this->m_Parameters[idx] = pOld;
 }
 
-Types::Coordinate
-WarpXform::GetGridEnergy() const
-{
-  return 0;
-}
-
-void
-WarpXform::GetGridEnergyDerivative
-( double&, double&, const int, const Types::Coordinate ) const
-{
-}
-
-void 
-WarpXform::GetJacobianConstraintDerivative
-( double&, double&, const int, const Rect3D&, const Types::Coordinate )
-  const
-{
-}
-
 Types::Coordinate 
 WarpXform::GetParamStep
 ( const size_t idx, const Types::Coordinate*, const Types::Coordinate mmStep ) const
