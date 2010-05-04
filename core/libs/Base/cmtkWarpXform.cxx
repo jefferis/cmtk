@@ -271,12 +271,6 @@ WarpXform::DeleteParameterActiveFlags()
   this->m_ActiveFlags = BitVector::SmartPtr::Null;
 }
 
-void
-WarpXform::RegisterVolume( const UniformVolume *volume )
-{
-  this->RegisterVolumePoints( volume->m_Dims, volume->m_Delta, volume->m_Offset.XYZ );
-}
-
 void 
 WarpXform::SetIncompressibilityMap
 ( DataGrid::SmartPtr& incompressibility )

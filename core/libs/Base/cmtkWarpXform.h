@@ -210,15 +210,6 @@ public:
   ( double& lower, double& upper, const WarpXform* inverse, const UniformVolume* volume, const Rect3D* voi, 
     const unsigned int idx, const Types::Coordinate step );
   
-  /// Register the grid points of the deformed uniform volume.
-  virtual void RegisterVolumePoints( const int[3], const Types::Coordinate[3], const Types::Coordinate[3] )
-  {
-    throw Exception( "unimplemented function called" );
-  }
-
-  /// Register the grid points of the deformed uniform or non-uniform volume.
-  virtual void RegisterVolume( const UniformVolume* );
-
   /// Set voxel-by-voxel map for incompressibility constraint.
   virtual void SetIncompressibilityMap( DataGrid::SmartPtr& incompressibility );
 

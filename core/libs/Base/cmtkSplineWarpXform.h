@@ -295,14 +295,20 @@ public:
   /// Get volume influenced by one parameter.
   virtual void GetVolumeOfInfluence( const size_t idx, const Vector3D&, const Vector3D&, Vector3D&, Vector3D&, const int = -1 ) const;
   
+  /// Register the grid points of the deformed uniform or non-uniform volume.
+  void RegisterVolume( const UniformVolume* volume )
+  {
+    this->RegisterVolumePoints( volume->m_Dims, volume->m_Delta, volume->m_Offset.XYZ );
+  }
+
   /// Unegister axes points, ie free all internal data structures.
-  virtual void UnRegisterVolume();
+  void UnRegisterVolume();
   
   /// Get a grid point from the deformed grid.
-  virtual void GetTransformedGrid( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const;
+  void GetTransformedGrid( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get a sequence of grid points from the deformed grid. 
-  virtual void GetTransformedGridSequence( Vector3D *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const;
+  void GetTransformedGridSequence( Vector3D *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get parameter stepping.
   virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate* volSize, const Types::Coordinate mmStep = 1 ) const 
