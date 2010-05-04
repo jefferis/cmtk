@@ -146,8 +146,6 @@ ImagePairNonrigidRegistrationFunctional::SetWarpXform
   if ( this->m_Warp )
     {
     this->m_Warp->RegisterVolume( ReferenceGrid );
-    this->m_Warp->SetIncompressibilityMap( this->m_IncompressibilityMap );
-    
     if ( Dim != this->m_Warp->VariableParamVectorDim() ) 
       {
       Dim = this->m_Warp->VariableParamVectorDim();
