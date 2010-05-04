@@ -35,8 +35,6 @@
 
 #include <cmtkconfig.h>
 
-#include <stdlib.h>
-
 #include <cmtkMetaInformationObject.h>
 
 #include <cmtkVector3D.h>
@@ -46,7 +44,6 @@
 #include <cmtkMatchedLandmarkList.h>
 
 #include <cmtkSmartPtr.h>
-#include <cmtkException.h>
 
 namespace
 cmtk

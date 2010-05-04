@@ -53,8 +53,6 @@
 
 #include <cmtkSmartPtr.h>
 
-#include <assert.h>
-
 namespace
 cmtk
 {
