@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -153,42 +154,6 @@ public:
     return J.Determinant();
   }
   
-  /// Return bending energy of the current transformation grid.
-  virtual Types::Coordinate GetGridEnergy() const { return 0; }
-
-  /** Return grid bending energy at one control point.
-   *@param cp The control point where the bending energy is to be evaluated.
-   */
-  virtual Types::Coordinate GetGridEnergy( const Types::Coordinate* ) const { return 0; }
-
-  /** Return grid bending energy at arbitrary location.
-   */
-  virtual Types::Coordinate GetGridEnergy( const Vector3D& ) const { return 0; }
-
-  /// Return derivative of bending energy with respect to one parameter.
-  virtual void GetGridEnergyDerivative( double&, double&, const int, const Types::Coordinate ) const {};
-  
-  /// Return Jacobian constraint of the current transformation grid.
-  virtual Types::Coordinate GetJacobianConstraint() const { return 0; }
-
-  /// Return rigidity constraint of the current transformation grid.
-  virtual Types::Coordinate GetRigidityConstraint() const { return 0; };
-
-  /// Return Jacobian constraint of the current transformation grid.
-  virtual Types::Coordinate GetJacobianConstraintSparse() const { return 0; };
-
-  /// Return derivative of Jacobian constraint with respect to one parameter.
-  virtual void GetJacobianConstraintDerivative( double&, double&, const int, const Rect3D&, const Types::Coordinate ) const {}
-  
-  /// Return derivative of Jacobian constraint with respect to one parameter.
-  virtual void GetJacobianConstraintDerivative( double&, double&, const int, const Types::Coordinate ) const {}
-  
-  /// Register the grid points of the deformed uniform volume.
-  virtual void RegisterVolumePoints( const int[3], const Types::Coordinate[3], const Types::Coordinate[3] ) {}
-  
-  /// Register the grid points of the deformed uniform or non-uniform volume.
-  virtual void RegisterVolume( const UniformVolume* ) {}
-
   /// Return 1.0 since deformation field DOFs are always direct deformations in space units.
   virtual Types::Coordinate GetParamStep( const size_t, const Types::Coordinate*, const Types::Coordinate = 1 ) const
   {
