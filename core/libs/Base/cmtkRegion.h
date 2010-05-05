@@ -2,6 +2,8 @@
 //
 //  Copyright 2010 SRI International
 //
+//  Copyright 2010 Torsten Rohlfing
+//
 //  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
@@ -110,7 +112,7 @@ std::ofstream& operator<<( std::ofstream& stream, const Region<NDIM,T>& region )
 
 /// Stream output operator.
 template<size_t NDIM,typename T>
-std::ofstream& operator>>( std::ofstream& stream, Region<NDIM,T>& region )
+std::ifstream& operator>>( std::ifstream& stream, Region<NDIM,T>& region )
 {
   return stream >> region.From() >> region.To();
 }
