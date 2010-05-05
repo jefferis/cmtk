@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -164,7 +165,7 @@ protected:
    *@return The newly created instance of a class derived from Volume.
    *@see Volume
    */
-  virtual UniformVolume* ConstructVolume( const int Dims[3], const Types::Coordinate Size[3], const Types::Coordinate *Points[3], TypedArray::SmartPtr& Data ) const;
+  virtual UniformVolume* ConstructVolume( const DataGrid::IndexType& Dims, const Types::Coordinate Size[3], const Types::Coordinate *Points[3], TypedArray::SmartPtr& Data ) const;
 
   /** Check image consistency.
    * This function is used to verify that all images share the same matrix 
@@ -205,7 +206,7 @@ private:
   /** Dimensions of the 3D data.
    * This array is filled with the number of voxels in x-, y-, and z-direction.
    */
-  int Dims[3];
+  DataGrid::IndexType Dims;
 
   /** Size of the 3D data.
    * This array holds the extents of the 3D data in x-, y-, and z-direction.

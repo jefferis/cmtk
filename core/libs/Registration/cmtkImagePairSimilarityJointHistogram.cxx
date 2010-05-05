@@ -92,8 +92,10 @@ ImagePairSimilarityJointHistogram::PrescaleData
   Types::DataItem minValue = FLT_MAX;
   Types::DataItem maxValue = -FLT_MAX;
 
-  int cropFrom[3], cropTo[3], increments[3];
-  volume->GetCropRegion( cropFrom, cropTo, increments );
+  const DataGrid::IndexType& cropFrom = volume->CropRegion().From();
+  const DataGrid::IndexType& cropTo = volume->CropRegion().To();
+  const DataGrid::IndexType increments = volume->GetCropRegionIncrements();
+
   int offset = increments[0];
   for ( int z = cropFrom[2]; z < cropTo[2]; ++z, offset += increments[2] ) 
     {

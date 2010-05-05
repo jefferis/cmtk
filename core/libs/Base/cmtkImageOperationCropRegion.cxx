@@ -34,20 +34,20 @@ cmtk::UniformVolume::SmartPtr
 cmtk::ImageOperationCropRegion
 ::Apply( cmtk::UniformVolume::SmartPtr& volume )
 {
-    volume->SetCropRegion( this->m_Region, this->m_Region+3 );
-    return cmtk::UniformVolume::SmartPtr( volume->GetCroppedVolume() );    
-  }
-  
+  volume->CropRegion() = this->m_Region;
+  return cmtk::UniformVolume::SmartPtr( volume->GetCroppedVolume() );    
+}
+
 void
 cmtk::ImageOperationCropRegion
 ::New( const char* arg )
 {
-  int region[6];
-  const bool okay = (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d", &region[0], &region[1], &region[2], &region[3], &region[4], &region[5] ) );
+  int from[3], to[3];
+  const bool okay = (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d", &from[0], &from[1], &from[2], &to[3], &to[4], &to[5] ) );
   if ( ! okay )
     {
     throw "Expected six comma-separated integer values.";
     }
   
-  ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationCropRegion( region ) ) );
+  ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationCropRegion( DataGrid::RegionType( DataGrid::IndexType(from), DataGrid::IndexType(to) ) ) ) );
 }

@@ -139,20 +139,21 @@ SplineWarpCongealingFunctional
       std::cerr << cpIndex << " / " << numberOfControlPoints << "\r";
       }    
     
-    const Rect3D* voi = &(ThisConst->m_VolumeOfInfluenceArray[cpIndex]);
-    const size_t pixelsPerLineVOI = (voi->endX-voi->startX);
+    std::vector<DataGrid::RegionType>::const_iterator voi = ThisConst->m_VolumeOfInfluenceArray.begin() + cpIndex;
+
+    const size_t pixelsPerLineVOI = (voi->To()[0]-voi->From()[0]);
 
     std::fill( threadStorage->m_FPlus.begin(), threadStorage->m_FPlus.end(), static_cast<Self::ReturnType>( 0 ) );
     std::fill( threadStorage->m_FMinus.begin(), threadStorage->m_FMinus.end(), static_cast<Self::ReturnType>( 0 ) );
     std::fill( threadStorage->m_CountByParameterPlus.begin(), threadStorage->m_CountByParameterPlus.end(), 0 );
     std::fill( threadStorage->m_CountByParameterMinus.begin(), threadStorage->m_CountByParameterMinus.end(), 0 );
     
-    for ( int z = voi->startZ; (z < voi->endZ); ++z ) 
+    for ( int z = voi->From()[2]; (z < voi->To()[2]); ++z ) 
       {
-      for ( int y = voi->startY; (y < voi->endY); ++y )
+      for ( int y = voi->From()[1]; (y < voi->To()[1]); ++y )
 	{
 	// evaluate baseline entropies for this row
-	const size_t rowofs = templateGrid->GetOffsetFromIndex( voi->startX, y, z );
+	const size_t rowofs = templateGrid->GetOffsetFromIndex( voi->From()[0], y, z );
 	
 	size_t ofs = rowofs;
 	for ( size_t x = 0; x < pixelsPerLineVOI; ++x, ++ofs )
@@ -207,7 +208,7 @@ SplineWarpCongealingFunctional
 		Types::Coordinate vTest = v0 + (2*delta-1) * pStep;
 		xform->SetParameter( xfparam, vTest );
 		
-		xform->GetTransformedGridSequence( &(threadStorage->m_VectorList[0]), pixelsPerLineVOI, voi->startX, y, z );
+		xform->GetTransformedGridSequence( &(threadStorage->m_VectorList[0]), pixelsPerLineVOI, voi->From()[0], y, z );
 		
 		size_t ofs = rowofs;
 		for ( size_t x = 0; x < pixelsPerLineVOI; ++x, ++ofs )
@@ -292,7 +293,7 @@ SplineWarpCongealingFunctional
 	    if ( ThisConst->m_JacobianConstraintWeight > 0 )
 	      {
 	      double upperJ, lowerJ;
-	      xform->GetJacobianConstraintDerivative( upperJ, lowerJ, warpParam, voi[warpParam], pStep );
+	      xform->GetJacobianConstraintDerivative( upperJ, lowerJ, warpParam, *(voi+warpParam), pStep );
 	      
 	      upper -= ThisConst->m_JacobianConstraintWeight * upperJ;
 	      lower -= ThisConst->m_JacobianConstraintWeight * lowerJ;

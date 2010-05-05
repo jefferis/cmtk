@@ -59,7 +59,7 @@ FilterVolume::GaussianFilter
   
   TypedArray* filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
-  const int* dims = volume->GetDims();
+  const DataGrid::IndexType& dims = volume->m_Dims;
   FilterMask<3> filter( dims, volume->GetDelta(), radius, FilterMask<3>::Gaussian( width ) );
 
   const int dimsX = dims[AXIS_X];

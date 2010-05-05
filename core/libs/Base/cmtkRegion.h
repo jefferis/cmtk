@@ -39,15 +39,15 @@ namespace
 cmtk
 {
 /// Class for n-dimensional image index.
-template<size_t NDIM>
+template<size_t NDIM,typename T=int>
 class Region
 {
 public:
   /// This class.
-  typedef Region<NDIM> Self;
+  typedef Region<NDIM,T> Self;
 
   /// Index type.
-  typedef Index<NDIM> IndexType;
+  typedef Index<NDIM,T> IndexType;
 
   /// Default constructor.
   Region() {}
@@ -57,6 +57,39 @@ public:
   {
     this->m_RegionFrom = fromIndex;
     this->m_RegionTo = toIndex;
+  }
+  
+  /// Get "from".
+  IndexType& From()
+  {
+    return this->m_RegionFrom;
+  }
+
+  /// Get const "from".
+  const IndexType& From() const
+  {
+    return this->m_RegionFrom;
+  }
+
+  /// Get "from".
+  IndexType& To()
+  {
+    return this->m_RegionTo;
+  }
+
+  /// Get const "from".
+  const IndexType& To() const
+  {
+    return this->m_RegionTo;
+  }
+
+  /// Compute region size (e.g., number of pixels for grid regions).
+  T Size() const
+  {
+    T size = 0;
+    for ( size_t i = 0; i < NDIM; ++i )
+      size *= (this->m_RegionTo[i]-this->m_RegionFrom[i]);
+    return size;
   }
   
 private:

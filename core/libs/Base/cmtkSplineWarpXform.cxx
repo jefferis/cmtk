@@ -489,7 +489,7 @@ SplineWarpXform::RegisterVolumeAxis
 
 void
 SplineWarpXform::RegisterVolumePoints
-( const int volDims[3], const Types::Coordinate delta[3], const Types::Coordinate origin[3] )
+( const DataGrid::IndexType& volDims, const Types::Coordinate delta[3], const Types::Coordinate origin[3] )
 {
   this->RegisterVolumeAxis( volDims[0], delta[0], origin[0], this->m_Dims[0], this->InverseSpacing[0], gX, splineX, dsplineX );
   this->RegisterVolumeAxis( volDims[1], delta[1], origin[1], this->m_Dims[1], this->InverseSpacing[1], gY, splineY, dsplineY );
@@ -499,7 +499,7 @@ SplineWarpXform::RegisterVolumePoints
   for ( int idx = 0; idx<volDims[1]; ++idx ) gY[idx] *= nextJ;
   for ( int idx = 0; idx<volDims[2]; ++idx ) gZ[idx] *= nextK;
 
-  memcpy( VolumeDims, volDims, sizeof( VolumeDims ) );
+  this->VolumeDims = volDims;
 }
 
 void SplineWarpXform::UnRegisterVolume()
@@ -927,46 +927,43 @@ SplineWarpXform::GetGridEnergyDerivative
 Types::Coordinate
 SplineWarpXform::GetInverseConsistencyError
 ( const WarpXform* inverse, const UniformVolume* volume,
-  const Rect3D* voi )
+  const DataGrid::RegionType* voi )
   const 
 {
   Vector3D v, vv;
   Types::Coordinate result = 0.0;
   int count = 0;
 
-  Rect3D myVoi;
-  const Rect3D *pVoi = &myVoi;
+  DataGrid::RegionType myVoi;
+  const DataGrid::RegionType *pVoi = &myVoi;
   if ( voi ) 
     {
     pVoi = voi;
     } 
   else
     {
-    myVoi.startX = myVoi.startY = myVoi.startZ = 0;
-    myVoi.endX = volume->GetDims( AXIS_X );
-    myVoi.endY = volume->GetDims( AXIS_Y );
-    myVoi.endZ = volume->GetDims( AXIS_Z );
+    myVoi = volume->GetWholeImageRegion();
     }
 
   const int dX = 1 + static_cast<int>( this->Spacing[0] / 2 * volume->m_Delta[AXIS_X] );
   const int dY = 1 + static_cast<int>( this->Spacing[1] / 2 * volume->m_Delta[AXIS_Y] );
   const int dZ = 1 + static_cast<int>( this->Spacing[2] / 2 * volume->m_Delta[AXIS_Z] );
 
-  const int startX = pVoi->startX - (pVoi->startX % dX);
-  const int startY = pVoi->startY - (pVoi->startY % dY);
-  const int startZ = pVoi->startZ - (pVoi->startZ % dZ);
+  const int startX = pVoi->From()[0] - (pVoi->From()[0] % dX);
+  const int startY = pVoi->From()[1] - (pVoi->From()[1] % dY);
+  const int startZ = pVoi->From()[2] - (pVoi->From()[2] % dZ);
 
-  const size_t length = pVoi->endX - startX;
+  const size_t length = pVoi->To()[0] - startX;
   std::vector<Vector3D> vecArray( length );
 
-  for ( int z = startZ; z < pVoi->endZ; z += dZ ) 
+  for ( int z = startZ; z < pVoi->To()[2]; z += dZ ) 
     {
-    for ( int y = startY; y < pVoi->endY; y += dY ) 
+    for ( int y = startY; y < pVoi->To()[1]; y += dY ) 
       {
       Vector3D* pVec = &vecArray[0];
       this->GetTransformedGridSequence( pVec, length, startX, y, z );
 
-      for ( int x = startX; x < pVoi->endX; x += dX, pVec += dX ) 
+      for ( int x = startX; x < pVoi->To()[0]; x += dX, pVec += dX ) 
 	{
 	if ( inverse->InDomain( *pVec ) ) 
 	  {

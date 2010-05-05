@@ -154,9 +154,9 @@ public:
     /// Axes hash.
     const VolumeAxesHash* AxesHash;
     /// First plane of clipped reference volume.
-    GridIndexType StartZ;
+    DataGrid::IndexType::ValueType StartZ;
     /// Last plane of clipped reference volume.
-    GridIndexType EndZ;
+    DataGrid::IndexType::ValueType EndZ;
   } EvaluateTaskInfo;
  
   /// Info blocks for parallel threads evaluating functional gradient.

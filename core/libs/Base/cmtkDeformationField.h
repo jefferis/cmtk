@@ -75,12 +75,12 @@ public:
   /// Constructor.
   DeformationField( const UniformVolume* volume ) 
   {
-    this->InitGrid( volume->Size, volume->GetDims() );
+    this->InitGrid( volume->Size, volume->m_Dims );
     this->m_Offset = volume->m_Offset;
   }
   
   /// Constructor.
-  DeformationField( const Types::Coordinate domain[3], const int dims[3], const Types::Coordinate* offset = NULL ) 
+  DeformationField( const Types::Coordinate domain[3], const DataGrid::IndexType& dims, const Types::Coordinate* offset = NULL ) 
   {
     this->InitGrid( domain, dims );
     if ( offset )
@@ -99,7 +99,7 @@ public:
   virtual Self* Clone () const { return NULL; }
 
   /// Initialized internal data structures for new control point grid.
-  virtual void InitGrid( const Types::Coordinate domain[3], const int dims[3] )
+  virtual void InitGrid( const Types::Coordinate domain[3], const DataGrid::IndexType& dims )
   {
     this->Superclass::InitGrid( domain, dims );
     for ( int dim = 0; dim < 3; ++dim )

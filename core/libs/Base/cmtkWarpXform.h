@@ -40,7 +40,7 @@
 #include <cmtkMacros.h>
 #include <cmtkVector.h>
 #include <cmtkVector3D.h>
-#include <cmtkRect3D.h>
+#include <cmtkRegion.h>
 
 #include <cmtkVolume.h>
 #include <cmtkUniformVolume.h>
@@ -74,7 +74,7 @@ public:
   typedef SmartConstPointer<WarpXform> SmartConstPtr;
 
   /// Dimensions of control point grid.
-  int m_Dims[3];
+  DataGrid::IndexType m_Dims;
 
   /// Domain of control point grid in world coordinates.
   Types::Coordinate Domain[3];
@@ -169,7 +169,7 @@ public:
   virtual ~WarpXform () {}
 
   /// Initialized internal data structures for new control point grid.
-  virtual void InitGrid( const Types::Coordinate domain[3], const int dims[3] );
+  virtual void InitGrid( const Types::Coordinate domain[3], const DataGrid::IndexType& dims );
 
   /// Check whether coordinate is in domain of transformation.
   virtual bool InDomain( const Vector3D& v ) const 
@@ -200,12 +200,12 @@ public:
 
   /** Return inverse consistency.
    */
-  virtual Types::Coordinate GetInverseConsistencyError( const WarpXform* inverse, const UniformVolume* volume, const Rect3D* voi = NULL ) const;
+  virtual Types::Coordinate GetInverseConsistencyError( const WarpXform* inverse, const UniformVolume* volume, const UniformVolume::RegionType* voi = NULL ) const;
   
   /** Return derivative of inverse consistency.
    */
   virtual void GetDerivativeInverseConsistencyError
-  ( double& lower, double& upper, const WarpXform* inverse, const UniformVolume* volume, const Rect3D* voi, 
+  ( double& lower, double& upper, const WarpXform* inverse, const UniformVolume* volume, const UniformVolume::RegionType* voi, 
     const unsigned int idx, const Types::Coordinate step );
   
   /// Set voxel-by-voxel map for incompressibility constraint.
@@ -267,7 +267,7 @@ public:
   void SetParameterInactive( const size_t index );
 
   /// Set only those parameters as active that influence a given ROI.
-  void SetParametersActive( const Rect3D& roi );
+  void SetParametersActive( const UniformVolume::RegionType& roi );
   
   /// Set parameters for one spatial dimension as active or inactive.
   void SetParametersActive( const int axis, const bool active = true );

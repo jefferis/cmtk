@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -204,7 +205,7 @@ private:
   virtual bool UpdateParamStepArray();
 
   /// Volumes of influence for the warp parameters.
-  std::vector<Rect3D> m_VolumeOfInfluenceArray;
+  std::vector<DataGrid::RegionType> m_VolumeOfInfluenceArray;
 
   /// Thread function parameters for image interpolation.
   class InterpolateImageThreadParameters : 

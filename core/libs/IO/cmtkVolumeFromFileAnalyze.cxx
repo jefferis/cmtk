@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -96,13 +97,10 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
     return NULL;
     }
   
-  int dims[4];
-  dims[0] = header.GetField<short>( 42 );
-  dims[1] = header.GetField<short>( 44 );
-  dims[2] = header.GetField<short>( 46 );
-  dims[3] = header.GetField<short>( 48 );
+  const DataGrid::IndexType::ValueType dims[3] = { header.GetField<short>( 42 ), header.GetField<short>( 44 ), header.GetField<short>( 46 ) };
+  const int dims3 = header.GetField<short>( 48 );
 
-  if ( (ndims > 3) && (dims[3] > 1) ) 
+  if ( (ndims > 3) && (dims3 > 1) ) 
     {
     StdErr.printf( "WARNING: dimension %d is greater than 3 in file %s\n", ndims, pathHdr );
     }
@@ -318,9 +316,9 @@ VolumeFromFile::WriteAnalyzeHdr
   header.StoreField<short>( 40, 4 );
 
   // dimensions
-  header.StoreField<short>( 42, writeVolume->GetDims( AXIS_X ) );
-  header.StoreField<short>( 44, writeVolume->GetDims( AXIS_Y ) );
-  header.StoreField<short>( 46, writeVolume->GetDims( AXIS_Z ) );
+  header.StoreField<short>( 42, writeVolume->GetDims()[AXIS_X] );
+  header.StoreField<short>( 44, writeVolume->GetDims()[AXIS_Y] );
+  header.StoreField<short>( 46, writeVolume->GetDims()[AXIS_Z] );
   header.StoreField<short>( 48, 1 ); // write dims 3-7
   header.StoreField<short>( 50, 0 ); // just for safety
   header.StoreField<short>( 52, 0 ); // just for safety

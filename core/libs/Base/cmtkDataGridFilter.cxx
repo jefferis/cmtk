@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -225,7 +226,7 @@ DataGridFilter
   FilterThreadParameters* params = static_cast<FilterThreadParameters*>( args );
   const Self* ThisConst = params->thisObject;
   
-  const int* dims = ThisConst->m_DataGrid->m_Dims;
+  const DataGrid::IndexType& dims = ThisConst->m_DataGrid->m_Dims;
   unsigned int maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
 
   const std::vector<Types::DataItem>& filter = *(params->m_Filter);
@@ -288,7 +289,7 @@ DataGridFilter
   FilterThreadParameters* params = static_cast<FilterThreadParameters*>( args );
   const Self* ThisConst = params->thisObject;
   
-  const int* dims = ThisConst->m_DataGrid->m_Dims;
+  const DataGrid::IndexType& dims = ThisConst->m_DataGrid->m_Dims;
   unsigned int maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
 
   const std::vector<Types::DataItem>& filter = *(params->m_Filter);
@@ -342,7 +343,7 @@ DataGridFilter
   FilterThreadParameters* params = static_cast<FilterThreadParameters*>( args );
   const Self* ThisConst = params->thisObject;
   
-  const int* dims = ThisConst->m_DataGrid->m_Dims;
+  const DataGrid::IndexType& dims = ThisConst->m_DataGrid->m_Dims;
   unsigned int maxDim = std::max( dims[0], std::max( dims[1], dims[2] ) );
 
   const std::vector<Types::DataItem>& filter = *(params->m_Filter);

@@ -39,7 +39,6 @@
 
 #include <cmtkVector.h>
 #include <cmtkVector3D.h>
-#include <cmtkRect3D.h>
 #include <cmtkAffineXform.h>
 #include <cmtkCubicSpline.h>
 
@@ -180,19 +179,19 @@ public:
   virtual Types::Coordinate GetRigidityConstraintSparse() const;
 
   /// Return derivative of Jacobian constraint with respect to one parameter.
-  virtual void GetJacobianConstraintDerivative( double& lower, double& upper, const int param, const Rect3D&, const Types::Coordinate step ) const;
+  virtual void GetJacobianConstraintDerivative( double& lower, double& upper, const int param, const UniformVolume::RegionType&, const Types::Coordinate step ) const;
 
   /// Return derivative of Jacobian constraint with respect to one parameter.
-  virtual void GetJacobianFoldingConstraintDerivative( double& lower, double& upper, const int param, const Rect3D&, const Types::Coordinate step ) const;
+  virtual void GetJacobianFoldingConstraintDerivative( double& lower, double& upper, const int param, const UniformVolume::RegionType&, const Types::Coordinate step ) const;
 
   /// Return derivative of Jacobian constraint with respect to one parameter.
   virtual void GetJacobianConstraintDerivative( double& lower, double& upper, const int param, const Types::Coordinate step ) const;
   
   /// Return derivative of rigidity constraint with respect to one parameter.
-  virtual void GetRigidityConstraintDerivative( double& lower, double& upper, const int param, const Rect3D&, const Types::Coordinate step ) const;
+  virtual void GetRigidityConstraintDerivative( double& lower, double& upper, const int param, const UniformVolume::RegionType&, const Types::Coordinate step ) const;
   
   /// Return derivative of rigidity constraint with respect to one parameter.
-  virtual void GetRigidityConstraintDerivative( double& lower, double& upper, const int param, const Rect3D&, const Types::Coordinate step,
+  virtual void GetRigidityConstraintDerivative( double& lower, double& upper, const int param, const UniformVolume::RegionType&, const Types::Coordinate step,
 						const DataGrid* weightMap ) const;
 
   /// Return derivative of rigidity constraint with respect to one parameter.
@@ -200,7 +199,7 @@ public:
 
   /** Return inverse consistency.
    */
-  virtual Types::Coordinate GetInverseConsistencyError( const WarpXform* inverse, const UniformVolume* volume, const Rect3D* voi = NULL ) const;
+  virtual Types::Coordinate GetInverseConsistencyError( const WarpXform* inverse, const UniformVolume* volume, const UniformVolume::RegionType* voi = NULL ) const;
   
   /** Return origin of warped vector.
    * Note that since this class of transformation is not closed under inversion
@@ -347,21 +346,21 @@ public:
   
 private:
   /// Register axes points of the volume to be deformed.
-  void RegisterVolumePoints ( const int[3], const Types::Coordinate *const* );
+  void RegisterVolumePoints ( const DataGrid::IndexType&, const Types::Coordinate *const* );
 
   /// Register axes points of the volume to be deformed.
-  void RegisterVolumePoints( const int[3], const Types::Coordinate[3], const Types::Coordinate[3] );
+  void RegisterVolumePoints( const DataGrid::IndexType&, const Types::Coordinate[3], const Types::Coordinate[3] );
 
   /// Register a single axis of the uniform volume to be deformed.
-  void RegisterVolumeAxis ( const int, const Types::Coordinate delta, const Types::Coordinate origin, const int, const Types::Coordinate, std::vector<int>& g, 
-			    std::vector<Types::Coordinate>& spline, std::vector<Types::Coordinate>& dspline );
+  void RegisterVolumeAxis ( const DataGrid::IndexType::ValueType, const Types::Coordinate delta, const Types::Coordinate origin, const int, const Types::Coordinate, 
+			    std::vector<int>& g, std::vector<Types::Coordinate>& spline, std::vector<Types::Coordinate>& dspline );
 
   /// Return rigidity constraint based on given Jacobian matrix.
   Types::Coordinate GetRigidityConstraint( const CoordinateMatrix3x3& J ) const;
 
 protected:
   /// Dimensions of the volume image linked to this transformation.
-  int VolumeDims[3];
+  DataGrid::IndexType VolumeDims;
 
   /**@name Precomputed grid indices.
    * These arrays hold the precomputed grid indices of the deformed grid's

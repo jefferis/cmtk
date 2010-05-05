@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -44,7 +45,6 @@
 #include <cmtkProbeInfo.h>
 #include <cmtkLandmarkList.h>
 #include <cmtkSmartPtr.h>
-#include <cmtkRect3D.h>
 #include <cmtkAnatomicalOrientation.h>
 
 #include <cmtkThreads.h>
@@ -79,6 +79,12 @@ public:
   /// Smart pointer to Volume.
   typedef SmartPointer<Self> SmartPtr;
   
+  /// Region type.
+  typedef Region<3,Types::Coordinate> CoordinateRegionType;
+
+  /// Index type.
+  typedef CoordinateRegionType::IndexType CoordinateIndexType;
+
   /// Volume offset (coordinate of first voxel in RAS standard space).
   Vector3D m_Offset;
 
@@ -99,10 +105,6 @@ public:
   { 
     Memory::Set<Types::Coordinate>( Size, 0, 3 );
     this->m_Offset.Set( 0, 0, 0 );
-    Memory::Set<int>( CropFrom, 0, 3 );
-    Memory::Set<int>( CropTo, 0, 3 );
-    Memory::Set<Types::Coordinate>( CropFromReal, 0, 3 );
-    Memory::Set<Types::Coordinate>( CropToReal, 0, 3 );
   };
   
   /** Destructor.
@@ -151,23 +153,6 @@ protected:
    * at the given location.
    */
   bool GetTrilinear ( ProbeInfo&, const int, const int, const int, const Vector3D&, const Types::Coordinate*, const Types::Coordinate* ) const;
-
-protected:
-  /** Start of cropped volume in grid elements.
-   */
-  int CropFrom[3];
-
-  /** End of cropped volume in grid elements.
-   */
-  int CropTo[3];
-
-  /** Start of cropped volume in world coordinates.
-   */
-  Types::Coordinate CropFromReal[3];
-
-  /** End of cropped volume in world coordinates.
-   */
-  Types::Coordinate CropToReal[3];
 };
 
 //@}

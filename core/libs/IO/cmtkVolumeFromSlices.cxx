@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -417,7 +418,7 @@ VolumeFromSlices::CheckImage ( const int plane, const ImageInfo& image )
 
 UniformVolume* 
 VolumeFromSlices::ConstructVolume
-( const int dims[3], const Types::Coordinate size[3], const Types::Coordinate *points[3], TypedArray::SmartPtr& data ) const
+( const DataGrid::IndexType& dims, const Types::Coordinate size[3], const Types::Coordinate *points[3], TypedArray::SmartPtr& data ) const
 {
   bool isUniform = true;
   Types::Coordinate error = 0;

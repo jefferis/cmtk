@@ -196,8 +196,8 @@ Study::ReadVolume( const bool reRead, const char* orientation )
     
     if ( this->m_Volume ) 
       {
-      this->SetDims( this->m_Volume->GetDims( AXIS_X ), this->m_Volume->GetDims( AXIS_Y ), this->m_Volume->GetDims( AXIS_Z ) );
-      this->m_DisplayedImageIndex = this->m_Volume->GetDims( AXIS_Z ) / 2 ;
+      this->m_Dims = this->m_Volume->GetDims();
+      this->m_DisplayedImageIndex = this->m_Dims[AXIS_Z] / 2 ;
       this->m_ZoomFactor = 1;
       const TypedArray *dataArray = this->m_Volume->GetData();
       if ( dataArray ) 

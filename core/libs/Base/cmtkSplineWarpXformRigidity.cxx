@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -64,18 +65,17 @@ SplineWarpXform::GetRigidityConstraintSparse () const
 
 void 
 SplineWarpXform::GetRigidityConstraintDerivative
-( double& lower, double& upper, const int param, const Rect3D& voi,
-  const Types::Coordinate step ) const
+( double& lower, double& upper, const int param, const DataGrid::RegionType& voi, const Types::Coordinate step ) const
 {
-  const int pixelsPerRow = voi.endX - voi.startX;
+  const int pixelsPerRow = voi.To()[0] - voi.From()[0];
   std::vector<CoordinateMatrix3x3> arrayJ( pixelsPerRow );
   
   double ground = 0;
 
-  for ( int k = voi.startZ; k < voi.endZ; ++k )
-    for ( int j = voi.startY; j < voi.endY; ++j ) 
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianSequence( &(arrayJ[0]), voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianSequence( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
 	ground += this->GetRigidityConstraint( arrayJ[i] );
@@ -87,10 +87,10 @@ SplineWarpXform::GetRigidityConstraintDerivative
   
   const Types::Coordinate oldCoeff = this->m_Parameters[param];
   this->m_Parameters[param] += step;
-  for ( int k = voi.startZ; k < voi.endZ; ++k )
-    for ( int j = voi.startY; j < voi.endY; ++j ) 
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianSequence( &(arrayJ[0]), voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianSequence( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
 	upper += this->GetRigidityConstraint( arrayJ[i] );
@@ -98,10 +98,10 @@ SplineWarpXform::GetRigidityConstraintDerivative
       }
   
   this->m_Parameters[param] = oldCoeff - step;
-  for ( int k = voi.startZ; k < voi.endZ; ++k )
-    for ( int j = voi.startY; j < voi.endY; ++j ) 
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianSequence( &(arrayJ[0]), voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianSequence( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
 	lower += this->GetRigidityConstraint( arrayJ[i] );
@@ -109,28 +109,27 @@ SplineWarpXform::GetRigidityConstraintDerivative
       }
   this->m_Parameters[param] = oldCoeff;
 
-  const double invVolume = 1.0 / ((voi.endX-voi.startX)*(voi.endY-voi.startY)*(voi.endZ-voi.startZ));
+  const double invVolume = 1.0 / ((voi.To()[0]-voi.From()[0])*(voi.To()[1]-voi.From()[1])*(voi.To()[2]-voi.From()[2]));
   upper *= invVolume;
   lower *= invVolume;
 }
 
 void 
 SplineWarpXform::GetRigidityConstraintDerivative
-( double& lower, double& upper, const int param, const Rect3D& voi,
-  const Types::Coordinate step, const DataGrid* weightMap ) const
+( double& lower, double& upper, const int param, const DataGrid::RegionType& voi, const Types::Coordinate step, const DataGrid* weightMap ) const
 {
-  const int pixelsPerRow = voi.endX - voi.startX;
+  const int pixelsPerRow = voi.To()[0] - voi.From()[0];
   std::vector<CoordinateMatrix3x3> arrayJ( pixelsPerRow );
   
   double ground = 0;
 
-  for ( int k = voi.startZ; k < voi.endZ; ++k )
-    for ( int j = voi.startY; j < voi.endY; ++j ) 
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianSequence( &(arrayJ[0]), voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianSequence( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
-	ground += weightMap->GetDataAt( voi.startX + i, j, k ) * this->GetRigidityConstraint( arrayJ[i] );
+	ground += weightMap->GetDataAt( voi.From()[0] + i, j, k ) * this->GetRigidityConstraint( arrayJ[i] );
 	}
       }
   
@@ -139,30 +138,30 @@ SplineWarpXform::GetRigidityConstraintDerivative
   
   const Types::Coordinate oldCoeff = this->m_Parameters[param];
   this->m_Parameters[param] += step;
-  for ( int k = voi.startZ; k < voi.endZ; ++k )
-    for ( int j = voi.startY; j < voi.endY; ++j ) 
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianSequence( &(arrayJ[0]), voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianSequence( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
-	upper += weightMap->GetDataAt( voi.startX + i, j, k ) *
+	upper += weightMap->GetDataAt( voi.From()[0] + i, j, k ) *
 	  this->GetRigidityConstraint( arrayJ[i] );
 	}
       }
   
   this->m_Parameters[param] = oldCoeff - step;
-  for ( int k = voi.startZ; k < voi.endZ; ++k )
-    for ( int j = voi.startY; j < voi.endY; ++j ) 
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianSequence( &(arrayJ[0]), voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianSequence( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
-	lower += weightMap->GetDataAt( voi.startX + i, j, k ) * this->GetRigidityConstraint( arrayJ[i] );
+	lower += weightMap->GetDataAt( voi.From()[0] + i, j, k ) * this->GetRigidityConstraint( arrayJ[i] );
 	}
       }
   this->m_Parameters[param] = oldCoeff;
 
-  double invVolume = 1.0 / ((voi.endX-voi.startX)*(voi.endY-voi.startY)*(voi.endZ-voi.startZ));
+  const double invVolume = 1.0 / voi.Size();
   upper *= invVolume;
   lower *= invVolume;
 }

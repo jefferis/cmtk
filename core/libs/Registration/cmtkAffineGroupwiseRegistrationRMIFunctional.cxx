@@ -155,9 +155,9 @@ AffineGroupwiseRegistrationRMIFunctional::InterpolateImageThread
   byte value;
   const byte* dataPtr = static_cast<const byte*>( target->GetData()->GetDataPtr() );
 
-  const int dimsX = This->m_TemplateGrid->GetDims( AXIS_X );
-  const int dimsY = This->m_TemplateGrid->GetDims( AXIS_Y );
-  const int dimsZ = This->m_TemplateGrid->GetDims( AXIS_Z );
+  const int dimsX = This->m_TemplateGrid->GetDims()[AXIS_X];
+  const int dimsY = This->m_TemplateGrid->GetDims()[AXIS_Y];
+  const int dimsZ = This->m_TemplateGrid->GetDims()[AXIS_Z];
 
   const size_t rowCount = ( dimsY * dimsZ );
   const size_t rowsPerTask = 1+rowCount/taskCnt;

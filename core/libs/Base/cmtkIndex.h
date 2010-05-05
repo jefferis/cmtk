@@ -37,38 +37,81 @@ namespace
 cmtk
 {
 /// Class for n-dimensional image index.
-template<size_t NDIM>
+template<size_t NDIM,typename T=int>
 class Index
 {
 public:
   /// This class.
-  typedef Index<NDIM> Self;
+  typedef Index<NDIM,T> Self;
+
+  /// Type of the stored values.
+  typedef T ValueType;
 
   /// Default constructor.
   Index() {}
 
   /// Constructor from const int array.
-  Index( const int (&indexArray)[NDIM] )
+  Index( const T (&indexArray)[NDIM] )
   {
     for ( size_t i = 0; i < NDIM; ++i )
       this->m_Index[i] = indexArray[i];
   }
 
   /// Access operator.
-  int& operator[]( const size_t idx )
+  T& operator[]( const size_t idx )
   {
     return this->m_Index[idx];
   }
 
   /// Constant access operator.
-  const int& operator[]( const size_t idx ) const
+  const T& operator[]( const size_t idx ) const
   {
     return this->m_Index[idx];
+  }
+
+  /// Get raw pointer to index array.
+  operator T*()
+  {
+    return this->m_Index;
+  }
+
+  /// Get raw pointer-to-const to index array.
+  operator const T*() const
+  {
+    return this->m_Index;
+  }
+
+  /// Addition operator.
+  const Self operator+( const Self& rhs ) const
+  {
+    return Self( *this ) += rhs;
+  }
+  
+  /// In-place addition operator.
+  Self& operator+=( const Self& rhs )
+  {
+    for ( size_t i = 0; i<NDIM; ++i )
+      this->m_Index[i] += rhs.m_Index[i];
+    return *this;
+  }
+  
+  /// Subtraction operator.
+  const Self operator-( const Self& rhs ) const
+  {
+    return Self( *this ) -= rhs;
+  }
+  
+  /// In-place subtraction operator.
+  Self& operator-=( const Self& rhs )
+  {
+    for ( size_t i = 0; i<NDIM; ++i )
+      this->m_Index[i] -= rhs.m_Index[i];
+    return *this;
   }
   
 private:
   /// The actual index array.
-  int m_Index[NDIM];
+  T m_Index[NDIM];
 };
 
 } // namespace cmtk

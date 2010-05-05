@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -40,7 +41,6 @@
 #include <cmtkFunctional.h>
 
 #include <cmtkVector.h>
-#include <cmtkRect3D.h>
 #include <cmtkVolume.h>
 #include <cmtkUniformVolume.h>
 #include <cmtkMatchedLandmarkList.h>
@@ -90,11 +90,8 @@ protected:
   /// Data class of floating image.
   DataClass FloatingDataClass;
 
-  /// Beginning of the rectangular crop region in the reference volume.
-  int ReferenceCropFrom[3];
-
-  /// End of the rectangular crop region in the reference volume.
-  int ReferenceCropTo[3];
+  /// Crop region in the reference volume.
+  DataGrid::RegionType m_ReferenceCropRegion;
 
   /// Optional list of matched landmarks.
   cmtkGetSetMacro(MatchedLandmarkList::SmartPtr,MatchedLandmarkList);
@@ -147,7 +144,7 @@ public:
 
 protected:
   /// Grid dimensions of the floating volume.
-  int FloatingDims[3];
+  DataGrid::IndexType FloatingDims;
 
   /// Extents of the floating volume in real-world coordinates.
   Types::Coordinate FloatingSize[3];
@@ -155,20 +152,14 @@ protected:
   /// Inverse pixel sizes of the floating volume.
   Vector3D FloatingInverseDelta;
 
-  /// Starting coordinate of the floating's cropping region.
-  Types::Coordinate FloatingCropFrom[3];
+  /// Coordinates of the floating image's cropping region.
+  UniformVolume::CoordinateRegionType m_FloatingCropRegionCoordinates;
 
-  /// End coordinate of the floating's cropping region.
-  Types::Coordinate FloatingCropTo[3];
- 
-  /// Fractional index starting coordinate of the floating's cropping region.
-  Types::Coordinate FloatingCropFromIndex[3];
-
-  /// Fractional index end coordinate of the floating's cropping region.
-  Types::Coordinate FloatingCropToIndex[3];
+  /// Fractional index coordinates of the floating image's cropping region.
+  UniformVolume::CoordinateRegionType m_FloatingCropRegionFractional;
  
   /// Grid dimensions of the reference volume.
-  int ReferenceDims[3];
+  DataGrid::IndexType ReferenceDims;
 
   /// Extents of the reference volume in real-world coordinates.
   Types::Coordinate ReferenceSize[3];
@@ -183,12 +174,10 @@ protected:
    * the original reference grid that is the LOWER bound of the region defined
    * by fromVOI and toVOI. The parameters startY and startZ have equivalent
    * meanings.
-   *@param voi On return, this reference holds the smallest box of reference 
+   *@return The smallest box of reference 
    * grid voxels that contains the given coordinate range.
    */
-  void GetReferenceGridRange ( const Vector3D& fromVOI, 
-			       const Vector3D& toVOI,
-			       Rect3D& voi );
+  const DataGrid::RegionType GetReferenceGridRange ( const Vector3D& fromVOI, const Vector3D& toVOI );
 
 private:
   /// Initialize internal data structures for floating image.

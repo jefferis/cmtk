@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -676,17 +677,17 @@ SplineWarpXform::GetJacobianConstraintSparse () const
 
 void 
 SplineWarpXform::GetJacobianConstraintDerivative
-( double& lower, double& upper, const int param, const Rect3D& voi, const Types::Coordinate step ) const
+( double& lower, double& upper, const int param, const DataGrid::RegionType& voi, const Types::Coordinate step ) const
 {
-  const int pixelsPerRow = voi.endX - voi.startX;
+  const int pixelsPerRow = voi.To()[0] - voi.From()[0];
   std::vector<double> valuesJ( pixelsPerRow );
   
   double ground = 0;
 
-  for ( int k = voi.startZ; k < voi.endZ; ++k )
-    for ( int j = voi.startY; j < voi.endY; ++j ) 
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i )
 	ground += fabs( log( valuesJ[i] / GlobalScaling ) );
       }
@@ -696,10 +697,10 @@ SplineWarpXform::GetJacobianConstraintDerivative
   
   const Types::Coordinate oldCoeff = this->m_Parameters[param];
   this->m_Parameters[param] += step;
-  for ( int k = voi.startZ; k < voi.endZ; ++k )
-    for ( int j = voi.startY; j < voi.endY; ++j ) 
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i )
 	{
 	upper += fabs( log( valuesJ[i] / GlobalScaling ) );
@@ -707,10 +708,10 @@ SplineWarpXform::GetJacobianConstraintDerivative
       }
   
   this->m_Parameters[param] = oldCoeff - step;
-  for ( int k = voi.startZ; k < voi.endZ; ++k )
-    for ( int j = voi.startY; j < voi.endY; ++j ) 
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i )
 	{
 	lower += fabs( log( valuesJ[i] / GlobalScaling ) );
@@ -718,24 +719,24 @@ SplineWarpXform::GetJacobianConstraintDerivative
       }
   this->m_Parameters[param] = oldCoeff;
   
-  const double invVolume = 1.0 / ((voi.endX-voi.startX)*(voi.endY-voi.startY)*(voi.endZ-voi.startZ));
+  const double invVolume = 1.0 / voi.Size();
   upper *= invVolume;
   lower *= invVolume;
 }
 
 void 
 SplineWarpXform::GetJacobianFoldingConstraintDerivative
-( double& lower, double& upper, const int param, const Rect3D& voi, const Types::Coordinate step ) const
+( double& lower, double& upper, const int param, const DataGrid::RegionType& voi, const Types::Coordinate step ) const
 {
-  const int pixelsPerRow = voi.endX - voi.startX;
+  const int pixelsPerRow = voi.To()[0] - voi.From()[0];
   std::vector<double> valuesJ( pixelsPerRow );
   
   double ground = 0;
 
-  for ( int k = voi.startZ; k < voi.endZ; ++k )
-    for ( int j = voi.startY; j < voi.endY; ++j ) 
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i )
 	ground += fabs( this->GlobalScaling / valuesJ[i] + valuesJ[i] / this->GlobalScaling - 2 );
       }
@@ -745,10 +746,10 @@ SplineWarpXform::GetJacobianFoldingConstraintDerivative
   
   const Types::Coordinate oldCoeff = this->m_Parameters[param];
   this->m_Parameters[param] += step;
-  for ( int k = voi.startZ; k < voi.endZ; ++k )
-    for ( int j = voi.startY; j < voi.endY; ++j ) 
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i )
 	{
 	upper += fabs( this->GlobalScaling / valuesJ[i] + valuesJ[i] / this->GlobalScaling - 2 );
@@ -757,10 +758,10 @@ SplineWarpXform::GetJacobianFoldingConstraintDerivative
       }
   
   this->m_Parameters[param] = oldCoeff - step;
-  for ( int k = voi.startZ; k < voi.endZ; ++k )
-    for ( int j = voi.startY; j < voi.endY; ++j ) 
+  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
+    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.startX, j, k, pixelsPerRow );
+      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i )
 	{
 	lower += fabs( this->GlobalScaling / valuesJ[i] + valuesJ[i] / this->GlobalScaling - 2 );
@@ -768,7 +769,7 @@ SplineWarpXform::GetJacobianFoldingConstraintDerivative
       }
   this->m_Parameters[param] = oldCoeff;
   
-  const double invVolume = 1.0 / ((voi.endX-voi.startX)*(voi.endY-voi.startY)*(voi.endZ-voi.startZ));
+  const double invVolume = 1.0 / voi.Size();
   upper *= invVolume;
   lower *= invVolume;
 }

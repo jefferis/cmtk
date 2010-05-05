@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -70,7 +71,7 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
   double *mapRef = Memory::AllocateArray<double>( numCtrlPoints );
   double *mapMod = Memory::AllocateArray<double>( numCtrlPoints );
 
-  Rect3D voi;
+  DataGrid::RegionType voi;
   Vector3D fromVOI, toVOI;
   int pX, pY, pZ;
 
@@ -87,16 +88,16 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
       /// We cannot use the precomputed table of VOIs here because in "fast"
       /// mode, these VOIs are smaller than we want them here.
       this->m_Warp->GetVolumeOfInfluence( 3 * ctrl, this->ReferenceFrom, this->ReferenceTo, fromVOI, toVOI, 0 );
-      this->GetReferenceGridRange( fromVOI, toVOI, voi );
+      voi = this->GetReferenceGridRange( fromVOI, toVOI );
       
-      int r = voi.startX + this->m_DimsX * ( voi.startY + this->m_DimsY * voi.startZ );
+      int r = voi.From()[0] + this->m_DimsX * ( voi.From()[1] + this->m_DimsY * voi.From()[2] );
       
       bool active = false;
-      for ( pZ = voi.startZ; (pZ < voi.endZ) && !active; ++pZ ) 
+      for ( pZ = voi.From()[2]; (pZ < voi.To()[2]) && !active; ++pZ ) 
 	{
-	for ( pY = voi.startY; (pY < voi.endY) && !active; ++pY ) 
+	for ( pY = voi.From()[1]; (pY < voi.To()[1]) && !active; ++pY ) 
 	  {
-	  for ( pX = voi.startX; (pX < voi.endX); ++pX, ++r ) 
+	  for ( pX = voi.From()[0]; (pX < voi.To()[0]); ++pX, ++r ) 
 	    {
 	    if ( ( this->m_Metric->GetSampleX( r ) != 0 ) || ( ( this->m_WarpedVolume[r] != unsetY ) && ( this->m_WarpedVolume[r] != 0 ) ) ) 
 	      {
@@ -104,9 +105,9 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
 	      break;
 	      }
 	    }
-	  r += ( voi.startX + ( this->m_DimsX-voi.endX ) );
+	  r += ( voi.From()[0] + ( this->m_DimsX-voi.To()[0] ) );
 	  }
-	r += this->m_DimsX * ( voi.startY + ( this->m_DimsY-voi.endY ) );
+	r += this->m_DimsX * ( voi.From()[1] + ( this->m_DimsY-voi.To()[1] ) );
 	}
       
       if ( !active ) 
@@ -131,18 +132,18 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
       // We cannot use the precomputed table of VOIs here because in "fast"
       // mode, these VOIs are smaller than we want them here.
       this->m_Warp->GetVolumeOfInfluence( 3 * ctrl, this->ReferenceFrom, this->ReferenceTo, fromVOI, toVOI, 0 );
-      this->GetReferenceGridRange( fromVOI, toVOI, voi );
+      voi = this->GetReferenceGridRange( fromVOI, toVOI );
       
-      int r = voi.startX + this->m_DimsX * ( voi.startY + this->m_DimsY * voi.startZ );
+      int r = voi.From()[0] + this->m_DimsX * ( voi.From()[1] + this->m_DimsY * voi.From()[2] );
       
-      const int endOfLine = ( voi.startX + ( this->m_DimsX-voi.endX) );
-      const int endOfPlane = this->m_DimsX * ( voi.startY + (this->m_DimsY-voi.endY) );
+      const int endOfLine = ( voi.From()[0] + ( this->m_DimsX-voi.To()[0]) );
+      const int endOfPlane = this->m_DimsX * ( voi.From()[1] + (this->m_DimsY-voi.To()[1]) );
       
-      for ( pZ = voi.startZ; pZ<voi.endZ; ++pZ ) 
+      for ( pZ = voi.From()[2]; pZ<voi.To()[2]; ++pZ ) 
 	{
-	for ( pY = voi.startY; pY<voi.endY; ++pY ) 
+	for ( pY = voi.From()[1]; pY<voi.To()[1]; ++pY ) 
 	  {
-	  for ( pX = voi.startX; pX<voi.endX; ++pX, ++r ) 
+	  for ( pX = voi.From()[0]; pX<voi.To()[0]; ++pX, ++r ) 
 	    {
 	    // Continue metric computation.
 	    if ( this->m_WarpedVolume[r] != unsetY ) 

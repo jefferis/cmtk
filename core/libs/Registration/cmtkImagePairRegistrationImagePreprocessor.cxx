@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -123,21 +124,21 @@ ImagePairRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume
 
   if ( this->m_CropIndex )
     {
-    int crop[6];
-    if ( 6 != sscanf( this->m_CropIndex, "%d,%d,%d,%d,%d,%d", crop, crop+1, crop+2, crop+3, crop+4, crop+5 ) ) 
+    int cropFrom[3], cropTo[3];
+    if ( 6 != sscanf( this->m_CropIndex, "%d,%d,%d,%d,%d,%d", cropFrom, cropFrom+1, cropFrom+2, cropTo, cropTo+1, cropTo+2 ) ) 
       {
       StdErr << "Option index coordinate cropping expects six integer parameters but got '" << this->m_CropIndex << "'\n";
       exit( 1 );
       }
-
+    
     for ( int dim=0; dim<3; ++dim ) 
       {
-      if ( crop[3+dim] < 0 ) 
+      if ( cropTo[dim] < 0 ) 
 	{
-	crop[3+dim] = volume->GetDims()[dim] + crop[3+dim] + 1;
+	cropTo[dim] = volume->GetDims()[dim] + cropTo[dim] + 1;
 	}
       }
-    volume->SetCropRegion( crop, crop+3 );
+    volume->CropRegion() = DataGrid::RegionType( DataGrid::IndexType( cropFrom ), DataGrid::IndexType( cropTo ) );
     }
   
   if ( this->m_CropWorld )
@@ -149,22 +150,23 @@ ImagePairRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume
       exit( 1 );
       }
     
-    Types::Coordinate realCrop[6];
+    Types::Coordinate realCropFrom[3], realCropTo[3];
     for ( int dim=0; dim<3; ++dim ) 
       {
-      realCrop[dim] = crop[dim];
+      realCropFrom[dim] = crop[dim];
       if ( crop[3+dim] < 0 ) 
 	{
-	realCrop[3+dim] = volume->Size[dim] + crop[3+dim];
+	realCropTo[dim] = volume->Size[dim] + crop[3+dim];
 	}
       else
 	{
-	realCrop[3+dim] = crop[3+dim];
+	realCropTo[dim] = crop[3+dim];
 	}
       }
-    volume->SetCropRegion( realCrop, realCrop+3 );
+    volume->SetCropRegionCoordinates( UniformVolume::CoordinateRegionType( UniformVolume::CoordinateRegionType::IndexType( realCropFrom ), 
+									   UniformVolume::CoordinateRegionType::IndexType( realCropTo ) ) );
     }
-
+  
   if ( this->m_AutoCropFlag )
     {
     volume->AutoCrop( this->m_AutoCropLevel, true /*recrop*/ );

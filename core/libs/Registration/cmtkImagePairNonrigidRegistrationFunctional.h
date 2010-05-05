@@ -186,10 +186,10 @@ protected:
   Types::DataItem m_ForceOutsideValueRescaled;
 
   /// Shortcut variables for x, y, z dimension of the reference image.
-  GridIndexType m_DimsX, m_DimsY, m_DimsZ;
+  DataGrid::IndexType::ValueType m_DimsX, m_DimsY, m_DimsZ;
   
   /// Shorcut variables for x and y dimensions of the floating image.
-  GridIndexType m_FltDimsX, m_FltDimsY;
+  DataGrid::IndexType::ValueType m_FltDimsX, m_FltDimsY;
 
   /// Pointer to the local warp transformation.
   SplineWarpXform::SmartPtr m_Warp;
@@ -253,7 +253,7 @@ protected:
    * voxel range with respect to the reference colume grid that is affected by
    * the respective parameter.
    */
-  Rect3D *VolumeOfInfluence;
+  DataGrid::RegionType *VolumeOfInfluence;
 
   /// Coordinate of the beginning of the reference colume crop area.
   Vector3D ReferenceFrom;

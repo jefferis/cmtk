@@ -39,6 +39,7 @@ SET(cmtkBase_SRCS
   cmtkBitVector.cxx
   cmtkControlPoint.cxx
   cmtkDataGrid.cxx
+  cmtkDataGridCrop.cxx
   cmtkDataGridFilter.cxx
   cmtkDataGridMorphologicalOperators.cxx
   cmtkDataTypeTraits.cxx

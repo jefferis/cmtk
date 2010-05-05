@@ -45,10 +45,10 @@ cmtk
 
 void
 WarpXform::InitGrid
-( const Types::Coordinate domain[3], const int dims[3] )
+( const Types::Coordinate domain[3], const DataGrid::IndexType& dims )
 {
   memcpy( Domain, domain, sizeof(Domain) );
-  memcpy( this->m_Dims, dims, sizeof(this->m_Dims) );
+  this->m_Dims = dims;
   m_Offset.Set( 0, 0, 0 );
   
   NumberOfControlPoints = this->m_Dims[0] * this->m_Dims[1] * this->m_Dims[2];
@@ -106,29 +106,26 @@ WarpXform::GetDerivativeLandmarksMSD
 
 Types::Coordinate
 WarpXform::GetInverseConsistencyError
-( const WarpXform* inverse, const UniformVolume* volume, const Rect3D* voi ) const 
+( const WarpXform* inverse, const UniformVolume* volume, const DataGrid::RegionType* voi ) const 
 {
   Vector3D v, vv;
   Types::Coordinate result = 0.0;
   int count = 0;
 
-  Rect3D myVoi;
-  const Rect3D *pVoi = &myVoi;
+  DataGrid::RegionType myVoi;
+  const DataGrid::RegionType *pVoi = &myVoi;
   if ( voi ) 
     {
     pVoi = voi;
     } 
   else
     {
-    myVoi.startX = myVoi.startY = myVoi.startZ = 0;
-    myVoi.endX = volume->GetDims( AXIS_X );
-    myVoi.endY = volume->GetDims( AXIS_Y );
-    myVoi.endZ = volume->GetDims( AXIS_Z );
+    myVoi = volume->GetWholeImageRegion();
     }
 
-  for ( int z = pVoi->startZ; z < pVoi->endZ; ++z )
-    for ( int y = pVoi->startY; y < pVoi->endY; ++y )
-      for ( int x = pVoi->startX; x < pVoi->endX; ++x ) 
+  for ( int z = pVoi->From()[2]; z < pVoi->To()[2]; ++z )
+    for ( int y = pVoi->From()[1]; y < pVoi->To()[1]; ++y )
+      for ( int x = pVoi->From()[0]; x < pVoi->To()[0]; ++x ) 
 	{
 	volume->GetGridLocation( v, x, y, z );
 	vv = v;
@@ -148,7 +145,7 @@ WarpXform::GetInverseConsistencyError
 void
 WarpXform::GetDerivativeInverseConsistencyError
 ( double& lower, double& upper, const WarpXform* inverse,
-  const UniformVolume* volume, const Rect3D* voi, 
+  const UniformVolume* volume, const DataGrid::RegionType* voi, 
   const unsigned int idx, const Types::Coordinate step )
 {
   const Types::Coordinate pOld = this->m_Parameters[idx];
@@ -208,7 +205,7 @@ WarpXform::SetParameterActive
 }
 
 void 
-WarpXform::SetParametersActive( const Rect3D& )
+WarpXform::SetParametersActive( const DataGrid::RegionType& )
 {
   if ( !this->m_ActiveFlags ) 
     {

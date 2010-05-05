@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -108,8 +109,9 @@ SplineWarpGroupwiseRegistrationRMIFunctional::EvaluateLocalGradientThreadFunc
     }
   
   const size_t cpIndex = ThisConst->m_ControlPointSchedule[threadID];
-  const Rect3D& voi = ThisConst->m_VolumeOfInfluenceArray[cpIndex];
-  const size_t pixelsPerLineVOI = (voi.endX-voi.startX);
+  std::vector<DataGrid::RegionType>::const_iterator voi = ThisConst->m_VolumeOfInfluenceArray.begin() + cpIndex;
+
+  const size_t pixelsPerLineVOI = (voi->To()[0]-voi->From()[0]);
   std::vector<Vector3D> vectorList( pixelsPerLineVOI );
   std::vector<size_t> count( pixelsPerLineVOI );
   
@@ -141,12 +143,12 @@ SplineWarpGroupwiseRegistrationRMIFunctional::EvaluateLocalGradientThreadFunc
     std::copy( srcSumsVector.begin(), srcSumsVector.end(), dstSumsVector.begin() );
     }
   
-  for ( int z = voi.startZ; (z < voi.endZ); ++z ) 
+  for ( int z = voi->From()[2]; (z < voi->To()[2]); ++z ) 
     {
-    for ( int y = voi.startY; (y < voi.endY); ++y )
+    for ( int y = voi->From()[1]; (y < voi->To()[1]); ++y )
       {      
       // check which pixels in this row have a full sample count
-      const size_t rowofs = templateGrid->GetOffsetFromIndex( voi.startX, y, z );
+      const size_t rowofs = templateGrid->GetOffsetFromIndex( voi->From()[0], y, z );
 
       std::fill( count.begin(), count.end(), 0 );
       for ( size_t img = 0; img < numberOfXforms; ++img )
@@ -186,7 +188,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional::EvaluateLocalGradientThreadFunc
 	      
 	      Types::Coordinate vTest = v0 + (2*delta-1) * pStep;
 	      xform->SetParameter( xfparam, vTest );
-	      xform->GetTransformedGridSequence( &(vectorList[0]), pixelsPerLineVOI, voi.startX, y, z );
+	      xform->GetTransformedGridSequence( &(vectorList[0]), pixelsPerLineVOI, voi->From()[0], y, z );
 	      
 	      byte* rowDataPtr = ThisConst->m_Data[img] + rowofs;
 	      for ( size_t x = 0; x < pixelsPerLineVOI; ++x, ++rowDataPtr )

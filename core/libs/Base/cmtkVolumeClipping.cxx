@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -44,17 +45,9 @@ cmtk
 
 void 
 VolumeClipping::SetClippingBoundaries
-( const Types::Coordinate* clippingFrom, const Types::Coordinate* clippingTo )
+(  const UniformVolume::CoordinateRegionType& region )
 {
-  if ( clippingFrom )
-    memcpy( ClippingFrom, clippingFrom, sizeof( ClippingFrom ) );
-  else
-    memset( ClippingFrom, 0, sizeof( ClippingFrom ) );
-
-  if ( clippingTo )
-    memcpy( ClippingTo, clippingTo, sizeof( ClippingTo ) );
-  else
-    memset( ClippingTo, 0, sizeof( ClippingTo ) );
+  this->m_ClippingRegion = region;
 }
 
 int VolumeClipping::ClipX 
@@ -70,21 +63,21 @@ int VolumeClipping::ClipX
     {
     if ( DeltaX[dim] > 0 ) 
       {
-      fromFactor = std::max( fromFactor, (ClippingFrom[dim] - offset[dim]) / DeltaX[dim] );
-      toFactor = std::min( toFactor, (ClippingTo[dim] - offset[dim]) / DeltaX[dim] );
+      fromFactor = std::max( fromFactor, (this->m_ClippingRegion.From()[dim] - offset[dim]) / DeltaX[dim] );
+      toFactor = std::min( toFactor, (this->m_ClippingRegion.To()[dim] - offset[dim]) / DeltaX[dim] );
       } 
     else
       if ( DeltaX[dim] < 0 ) 
 	{
-	fromFactor = std::max( fromFactor, (ClippingTo[dim] - offset[dim]) / DeltaX[dim] );
-	toFactor = std::min( toFactor, (ClippingFrom[dim]-offset[dim]) / DeltaX[dim] );
+	fromFactor = std::max( fromFactor, (this->m_ClippingRegion.To()[dim] - offset[dim]) / DeltaX[dim] );
+	toFactor = std::min( toFactor, (this->m_ClippingRegion.From()[dim]-offset[dim]) / DeltaX[dim] );
 	} 
       else
 	{
-	if ( (offset[dim] < ClippingFrom[dim]) || 
-	     ( (offset[dim] == ClippingFrom[dim] ) && lowerClosed ) ||
-	     (offset[dim] > ClippingTo[dim]) ||
-	     ( (offset[dim] == ClippingTo[dim]) && upperClosed ) ) {
+	if ( (offset[dim] < this->m_ClippingRegion.From()[dim]) || 
+	     ( (offset[dim] == this->m_ClippingRegion.From()[dim] ) && lowerClosed ) ||
+	     (offset[dim] > this->m_ClippingRegion.To()[dim]) ||
+	     ( (offset[dim] == this->m_ClippingRegion.To()[dim]) && upperClosed ) ) {
 	fromFactor = toFactor = 0;
 	return 0;
 	}
@@ -113,18 +106,18 @@ int VolumeClipping::ClipY
 
     if ( DeltaY[dim] > 0 ) 
       {
-      fromFactor = std::max( fromFactor, ( ClippingFrom[dim] - axmax) / DeltaY[dim] );
-      toFactor = std::min( toFactor, ( ClippingTo[dim] - axmin) / DeltaY[dim] );
+      fromFactor = std::max( fromFactor, ( this->m_ClippingRegion.From()[dim] - axmax) / DeltaY[dim] );
+      toFactor = std::min( toFactor, ( this->m_ClippingRegion.To()[dim] - axmin) / DeltaY[dim] );
       } 
     else
       if ( DeltaY[dim] < 0 ) 
 	{
-	fromFactor = std::max( fromFactor, (ClippingTo[dim] - axmin) / DeltaY[dim] );
-	toFactor = std::min( toFactor, (ClippingFrom[dim] - axmax) / DeltaY[dim] );
+	fromFactor = std::max( fromFactor, (this->m_ClippingRegion.To()[dim] - axmin) / DeltaY[dim] );
+	toFactor = std::min( toFactor, (this->m_ClippingRegion.From()[dim] - axmax) / DeltaY[dim] );
 	} 
       else
 	{
-	if ( (axmax < ClippingFrom[dim]) || (axmin > ClippingTo[dim]) ) 
+	if ( (axmax < this->m_ClippingRegion.From()[dim]) || (axmin > this->m_ClippingRegion.To()[dim]) ) 
 	  {
 	  fromFactor = toFactor = 0;
 	  return 0;
@@ -154,18 +147,18 @@ int VolumeClipping::ClipZ
 
     if ( DeltaZ[dim] > 0 ) 
       {
-      fromFactor = std::max( fromFactor, (ClippingFrom[dim] - axbymax) / DeltaZ[dim] );
-      toFactor = std::min( toFactor, (ClippingTo[dim] - axbymin) / DeltaZ[dim] );
+      fromFactor = std::max( fromFactor, (this->m_ClippingRegion.From()[dim] - axbymax) / DeltaZ[dim] );
+      toFactor = std::min( toFactor, (this->m_ClippingRegion.To()[dim] - axbymin) / DeltaZ[dim] );
       } 
     else
       if ( DeltaZ[dim] < 0 ) 
 	{
-	fromFactor = std::max( fromFactor, (ClippingTo[dim] - axbymin) / DeltaZ[dim] );
-	toFactor = std::min( toFactor, (ClippingFrom[dim] - axbymax) / DeltaZ[dim] );
+	fromFactor = std::max( fromFactor, (this->m_ClippingRegion.To()[dim] - axbymin) / DeltaZ[dim] );
+	toFactor = std::min( toFactor, (this->m_ClippingRegion.From()[dim] - axbymax) / DeltaZ[dim] );
 	} 
       else
 	{
-	if ( (axbymax < ClippingFrom[dim]) || (axbymin > ClippingTo[dim]) ) 
+	if ( (axbymax < this->m_ClippingRegion.From()[dim]) || (axbymin > this->m_ClippingRegion.To()[dim]) ) 
 	  {
 	  fromFactor = toFactor = 0;
 	  return 0;

@@ -212,11 +212,11 @@ SplineWarpCongealingFunctional
     Vector3D fromVOI, toVOI;
     xform0->GetVolumeOfInfluence( param, templateFrom, templateTo, fromVOI, toVOI );
 
-    Rect3D* voi = &this->m_VolumeOfInfluenceArray[param/3];
-    this->m_TemplateGrid->GetGridRange( fromVOI, toVOI, *voi );
+    DataGrid::RegionType& voi = this->m_VolumeOfInfluenceArray[param/3];
+    voi = this->m_TemplateGrid->GetGridRange( fromVOI, toVOI );
     
-    this->m_MaximumNumberOfPixelsVOI = std::max<size_t>( voi->Size(), this->m_MaximumNumberOfPixelsVOI );
-    this->m_MaximumNumberOfPixelsPerLineVOI = std::max<size_t>( voi->endX-voi->startX, this->m_MaximumNumberOfPixelsPerLineVOI );
+    this->m_MaximumNumberOfPixelsVOI = std::max<size_t>( voi.Size(), this->m_MaximumNumberOfPixelsVOI );
+    this->m_MaximumNumberOfPixelsPerLineVOI = std::max<size_t>( voi.To()[0]-voi.From()[0], this->m_MaximumNumberOfPixelsPerLineVOI );
     }
 }
   
@@ -237,16 +237,16 @@ SplineWarpCongealingFunctional
       const Vector3D templateTo( this->m_TemplateGrid->m_Offset + this->m_TemplateGrid->Size );
       Vector3D fromVOI, toVOI;
       
-      const Rect3D* voi = &this->m_VolumeOfInfluenceArray[0];
+      std::vector<DataGrid::RegionType>::const_iterator voi = this->m_VolumeOfInfluenceArray.begin();
       for ( size_t cp = 0; cp < numberOfControlPoints; ++cp, ++voi )
 	{
 	bool active = false;
-	for ( int z = voi->startZ; (z < voi->endZ) && !active; ++z ) 
+	for ( int z = voi->From()[2]; (z < voi->To()[2]) && !active; ++z ) 
 	  {
-	  for ( int y = voi->startY; (y < voi->endY) && !active; ++y )
+	  for ( int y = voi->From()[1]; (y < voi->To()[1]) && !active; ++y )
 	    {
-	    size_t ofs = this->m_TemplateGrid->GetOffsetFromIndex( voi->startX, y, z );
-	    for ( size_t x = voi->startX; (x < voi->endX)  && !active; ++x, ++ofs )
+	    size_t ofs = this->m_TemplateGrid->GetOffsetFromIndex( voi->From()[0], y, z );
+	    for ( size_t x = voi->From()[0]; (x < voi->To()[0])  && !active; ++x, ++ofs )
 	      {
 	      if ( this->m_StandardDeviationByPixel[ofs] > 0 )
 		{
@@ -463,9 +463,9 @@ SplineWarpCongealingFunctional
   const byte paddingValue = This->m_PaddingValue;
   const byte backgroundValue = This->m_UserBackgroundFlag ? This->m_PrivateUserBackgroundValue : paddingValue;
 
-  const int dimsX = This->m_TemplateGrid->GetDims( AXIS_X );
-  const int dimsY = This->m_TemplateGrid->GetDims( AXIS_Y );
-  const int dimsZ = This->m_TemplateGrid->GetDims( AXIS_Z );
+  const int dimsX = This->m_TemplateGrid->GetDims()[AXIS_X];
+  const int dimsY = This->m_TemplateGrid->GetDims()[AXIS_Y];
+  const int dimsZ = This->m_TemplateGrid->GetDims()[AXIS_Z];
 
   const int rowCount = ( dimsY * dimsZ );
   const int rowFrom = ( rowCount / taskCnt ) * taskIdx;

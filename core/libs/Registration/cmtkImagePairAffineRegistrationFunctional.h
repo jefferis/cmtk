@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -122,7 +123,7 @@ protected:
    * isn't. The range of indices returned in "start" and "end" is only
    * guaranteed to be valid if 1 is the return value.
    */
-  int ClipZ ( const VolumeClipping& clipper, const Vector3D& origin, GridIndexType& start, GridIndexType &end ) const
+  int ClipZ ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
   {
     // perform clipping
     Types::Coordinate fromFactor, toFactor;
@@ -130,12 +131,12 @@ protected:
       return 0;
 
     // there is an intersection: Look up the corresponding grid indices
-    start = static_cast<GridIndexType>( (ReferenceDims[2]-1)*fromFactor );
+    start = static_cast<DataGrid::IndexType::ValueType>( (ReferenceDims[2]-1)*fromFactor );
     end = 1+std::min( (int)(ReferenceDims[2]-1), (int)(1 + ((ReferenceDims[2]-1)*toFactor) ) );
     
     // finally, apply cropping boundaries of the reference volume
-    start = std::max<GridIndexType>( start, ReferenceCropFrom[2] );
-    end = std::min<GridIndexType>( end, ReferenceCropTo[2] );
+    start = std::max<DataGrid::IndexType::ValueType>( start, this->m_ReferenceCropRegion.From()[2] );
+    end = std::min<DataGrid::IndexType::ValueType>( end, this->m_ReferenceCropRegion.To()[2] );
     
     // return 1 iff index range is non-empty.
     return (start < end );
@@ -167,7 +168,7 @@ protected:
    * the floating, 0 if there isn't. The range of indices returned in "start"
    * and "end" is only guaranteed to be valid if 1 is the return value.
    */
-  int ClipX ( const VolumeClipping& clipper, const Vector3D& origin, GridIndexType& start, GridIndexType &end ) const
+  int ClipX ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
   {
     // perform clipping
     Types::Coordinate fromFactor, toFactor;
@@ -194,8 +195,8 @@ protected:
       }
     
     // finally, apply cropping boundaries of the reference volume
-    start = std::max<GridIndexType>( start, ReferenceCropFrom[0] );
-    end = std::min<GridIndexType>( end, ReferenceCropTo[0] );
+    start = std::max<DataGrid::IndexType::ValueType>( start, this->m_ReferenceCropRegion.From()[0] );
+    end = std::min<DataGrid::IndexType::ValueType>( end, this->m_ReferenceCropRegion.To()[0] );
     
     // return 1 iff index range is non-empty.
     return (start < end );
@@ -217,7 +218,7 @@ protected:
    * the floating, 0 if there isn't. The range of indices returned in "start" 
    * and "end" is only guaranteed to be valid if 1 is the return value.
    */
-  int ClipY ( const VolumeClipping& clipper, const Vector3D& origin, GridIndexType& start, GridIndexType &end ) const
+  int ClipY ( const VolumeClipping& clipper, const Vector3D& origin, DataGrid::IndexType::ValueType& start, DataGrid::IndexType::ValueType &end ) const
   {
     // perform clipping
     Types::Coordinate fromFactor, toFactor;
@@ -225,7 +226,7 @@ protected:
       return 0;
 
     // there is an intersection: Look up the corresponding grid indices
-    start = static_cast<GridIndexType>( (ReferenceDims[1]-1)*fromFactor );
+    start = static_cast<DataGrid::IndexType::ValueType>( (ReferenceDims[1]-1)*fromFactor );
     
     if ( toFactor > 1.0 ) 
       {
@@ -236,8 +237,8 @@ protected:
       end = 1+std::min( ReferenceDims[1]-1, (int)(1+(ReferenceDims[1]-1)*toFactor ) );
       }
     // finally, apply cropping boundaries of the reference volume
-    start = std::max<GridIndexType>( start, ReferenceCropFrom[1] );
-    end = std::min<GridIndexType>( end, ReferenceCropTo[1] );
+    start = std::max<DataGrid::IndexType::ValueType>( start, this->m_ReferenceCropRegion.From()[1] );
+    end = std::min<DataGrid::IndexType::ValueType>( end, this->m_ReferenceCropRegion.To()[1] );
     
     // return 1 iff index range is non-empty.
     return (start < end );

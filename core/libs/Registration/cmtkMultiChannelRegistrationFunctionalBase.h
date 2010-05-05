@@ -142,7 +142,7 @@ protected:
   size_t m_NumberOfChannels;
 
   /// Grid dimensions of the reference volume.
-  int m_ReferenceDims[3];
+  DataGrid::IndexType m_ReferenceDims[3];
 
   /// Extents of the reference volume in real-world coordinates.
   Types::Coordinate m_ReferenceSize[3];
@@ -150,14 +150,11 @@ protected:
   /// Inverse pixel deltas of the reference volume.
   Types::Coordinate m_ReferenceInvDelta[3];
 
-  /// Beginning of the rectangular crop region in the reference volume.
-  int m_ReferenceCropFrom[3];
-
-  /// End of the rectangular crop region in the reference volume.
-  int m_ReferenceCropTo[3];
-
+  /// Rectangular crop region in the reference volume.
+  DataGrid::RegionType m_ReferenceCropRegion;
+  
   /// Grid dimensions of the floating volume.
-  int m_FloatingDims[3];
+  DataGrid::IndexType m_FloatingDims;
 
   /// Extents of the floating volume in real-world coordinates.
   Types::Coordinate m_FloatingSize[3];
@@ -165,11 +162,8 @@ protected:
   /// Inverse pixel deltas of the floating volume.
   Types::Coordinate m_FloatingInverseDelta[3];
 
-  /// Starting coordinate of the floating's cropping region.
-  Types::Coordinate m_FloatingCropFrom[3];
-
-  /// End coordinate of the floating's cropping region.
-  Types::Coordinate m_FloatingCropTo[3];
+  /// Coordinates of the floating image cropping region.
+  UniformVolume::CoordinateRegionType m_FloatingCropRegion;
  
   /** Update all transformation-related data after init or refine. */
   virtual void NewReferenceChannelGeometry() {}

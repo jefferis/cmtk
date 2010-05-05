@@ -37,9 +37,8 @@ cmtk::ImageOperationCropThreshold::Apply( cmtk::UniformVolume::SmartPtr& volume 
   
   if ( this->m_WriteRegion )
     {
-    int cropFrom[3], cropTo[3];
-    volume->GetCropRegion( cropFrom, cropTo );
-    printf( "AutoCrop %d,%d,%d,%d,%d,%d\n", cropFrom[0], cropFrom[1], cropFrom[2], cropTo[0], cropTo[1], cropTo[2] );
+    const DataGrid::RegionType& cropRegion = volume->CropRegion();
+    printf( "AutoCrop %d,%d,%d,%d,%d,%d\n", cropRegion.From()[0], cropRegion.From()[1], cropRegion.From()[2], cropRegion.To()[0], cropRegion.To()[1], cropRegion.To()[2] );
     }
   
   if ( this->m_WriteXform )

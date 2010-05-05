@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -97,13 +98,10 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
     return NULL;
     }
   
-  int dims[4];
-  dims[0] = header.GetField<short>( 42 );
-  dims[1] = header.GetField<short>( 44 );
-  dims[2] = header.GetField<short>( 46 );
-  dims[3] = header.GetField<short>( 48 );
+  const DataGrid::IndexType::ValueType dims[3] = { header.GetField<short>( 42 ), header.GetField<short>( 44 ), header.GetField<short>( 46 ) };
+  const int dims3 = header.GetField<short>( 48 );
 
-  if ( (ndims > 3) && (dims[3] > 1) ) 
+  if ( (ndims > 3) && (dims3 > 1) ) 
     {
     StdErr.printf( "WARNING: dimension %d is greater than 3 in file %s\n", ndims, pathHdr );
     }
@@ -291,9 +289,9 @@ VolumeFromFile::WriteNifti
   header.dim[0] = 4;
 
   // dimensions
-  header.dim[1] = writeVolume->GetDims( AXIS_X );
-  header.dim[2] = writeVolume->GetDims( AXIS_Y );
-  header.dim[3] = writeVolume->GetDims( AXIS_Z );
+  header.dim[1] = writeVolume->GetDims()[AXIS_X];
+  header.dim[2] = writeVolume->GetDims()[AXIS_Y];
+  header.dim[3] = writeVolume->GetDims()[AXIS_Z];
   header.dim[4] = 1;
   header.dim[5] = 0;
   header.dim[6] = 0;

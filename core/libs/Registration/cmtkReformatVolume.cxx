@@ -125,7 +125,7 @@ ReformatVolume::PlainReformat()
 
   if ( targetVolume ) 
     {
-    Progress::Begin( 0, targetVolume->GetDims( AXIS_Z ), 1, "Volume reformatting" );
+    Progress::Begin( 0, targetVolume->GetDims()[AXIS_Z], 1, "Volume reformatting" );
     
     TypedArray::SmartPtr targetData( TypedArray::Create( FloatingVolume->GetData()->GetType(), targetVolume->GetNumberOfPixels() ) );
     if ( this->m_UsePaddingValue )
@@ -134,7 +134,7 @@ ReformatVolume::PlainReformat()
     UniformVolumeInterpolatorBase::SmartPtr interpolator( this->CreateInterpolator( this->FloatingVolume ) );
     Vector3D pFlt;
     
-    const int *dims = targetVolume->GetDims();
+    const DataGrid::IndexType dims = targetVolume->GetDims();
     
     size_t offset = 0;
     for ( int pZ = 0; pZ < dims[2]; ++pZ ) 

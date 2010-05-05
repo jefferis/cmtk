@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -93,7 +94,7 @@ class Study
   cmtkGetSetMacro(LandmarkList::SmartPtr,LandmarkList)
 
   /// Voxel dimensions of the volume image.
-  cmtkGetSetMacro3Array(unsigned int,Dims);
+  DataGrid::IndexType m_Dims;
 
   /// Voxel dimensions of the volume image.
   cmtkGetSetMacro3Array(Types::Coordinate,Calibration);

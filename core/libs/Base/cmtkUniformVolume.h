@@ -97,14 +97,14 @@ public:
    *@param size Size of the volume in real-world coordinates.
    *@param data An existing TypedArray containing the scalar voxel data.
    */
-  UniformVolume( const int dims[3], const float size[3], TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null );
+  UniformVolume( const DataGrid::IndexType& dims, const float size[3], TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null );
 
   /** Create uniform volume "from scratch".
    *@param dims Number of grid elements for the three spatial dimensions.
    *@param size Size of the volume in real-world coordinates.
    *@param data An existing TypedArray containing the scalar voxel data.
    */
-  UniformVolume( const int dims[3], const double size[3], TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null );
+  UniformVolume( const DataGrid::IndexType& dims, const double size[3], TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null );
 
   /** Create uniform volume "from scratch".
    *@param dims Number of grid elements for the three spatial dimensions.
@@ -113,7 +113,7 @@ public:
    *@param deltaZ Pixel size in z direction.
    *@param data An existing TypedArray containing the scalar voxel data.
    */
-  UniformVolume( const int dims[3], const Types::Coordinate deltaX, const Types::Coordinate deltaY, const Types::Coordinate deltaZ, TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null );
+  UniformVolume( const DataGrid::IndexType& dims, const Types::Coordinate deltaX, const Types::Coordinate deltaY, const Types::Coordinate deltaZ, TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null );
 
   /// Test whether this grid matches another one, i.e., has the same pixel sizes.
   bool GridMatches( const Self& other ) const
@@ -332,7 +332,7 @@ public:
   inline void FindVoxelUnsafe( const Vector3D& location, int *const idx, Types::Coordinate *const from, Types::Coordinate *const to ) const;
 
   /// Get 3D grid region from continuous lower and upper corner.
-  void GetGridRange( const Vector3D& fromVOI, const Vector3D& toVOI, Rect3D& voi ) const;
+  UniformVolume::RegionType GetGridRange( const Vector3D& fromVOI, const Vector3D& toVOI ) const;
  
   /// Get plane coordinate.
   virtual Types::Coordinate GetPlaneCoord( const int axis, const int plane ) const 
@@ -440,64 +440,20 @@ public:
    */
   Vector3D GetCenterCropRegion() const 
   {
-    return this->m_Offset + 0.5 * ( Vector3D( CropToReal ) + Vector3D( CropFromReal ) );
+    Self::CoordinateRegionType region = this->GetCropRegionCoordinates();
+    return this->m_Offset + 0.5 * ( Vector3D( region.From() ) + Vector3D( region.To() ) );
   }
   
   //@}
 
-  /// Reset crop region to cover entire image.
-  void ResetCropRegion() { this->SetCropRegion( (int*)NULL, (int*)NULL ); }
-
   /** Set cropped volume from real-world coordinates.
    */
-  void SetCropRegion( const Types::Coordinate* cropFromReal, const Types::Coordinate* cropToReal );
-
-  /** Set cropped volume from and to grid indices.
-   */
-  void SetCropRegion( const int* cropFrom, const int*cropTo );
-
-  /** Set cropped volume from grid indices.
-   */
-  void SetCropRegionFrom( const int* cropFrom );
-
-  /** Set cropped volume to grid indices.
-   */
-  void SetCropRegionTo( const int* cropTo );
-
-  /** Set cropped volume from grid indices.
-   */
-  void SetCropRegion( const Rect3D* crop );
-
-  /** Set cropped volume from real-world coordinates.
-   */
-  void SetCropRegion( const CoordinateRect3D* crop );
+  void SetCropRegionCoordinates( const Self::CoordinateRegionType& crop );
 
   /** Get cropped volume in real-world coordinates.
    */
-  void GetCropRegion( Types::Coordinate *const cropFromReal, Types::Coordinate *const cropToReal ) const;
-
-  /** Get cropped volume in terms of grid indices.
-   */
-  void GetCropRegion( int *const cropFrom, int *const cropTo, int *const increments = NULL ) const;
-
-  /** Return number of voxels in the cropped remaining image.
-   */
-  int GetCropRegionNumVoxels() const;
-
-  /** Automatically crop to minimal region above given threshold.
-   *@param threshold The cropping threshold.
-   *@param recrop If this flag is true, then the cropping will be performed
-   * inside an already existing cropping region. If this flag is false 
-   * (default), then any pre-set crop region is ignored.
-   */
-  void AutoCrop( const Types::DataItem threshold, const bool recrop = false, const int margin = 0 );
-
-  /// Fill volume outside current crop region with constant value.
-  void FillCropBackground( const Types::DataItem value );
-
-  /// Return data for cropped volume.
-  TypedArray* GetCroppedData() const;
-
+  const Self::CoordinateRegionType GetCropRegionCoordinates() const;
+  
   /** Return cropped uniform volume.
    */
   UniformVolume* GetCroppedVolume() const;

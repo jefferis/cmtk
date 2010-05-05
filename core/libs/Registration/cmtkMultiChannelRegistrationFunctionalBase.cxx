@@ -65,7 +65,7 @@ MultiChannelRegistrationFunctionalBase
     {
     memcpy( this->m_ReferenceDims, channel->GetDims(), sizeof(this->m_ReferenceDims) );
     memcpy( this->m_ReferenceSize, channel->Size, sizeof(this->m_ReferenceSize) );
-    channel->GetCropRegion( this->m_ReferenceCropFrom, this->m_ReferenceCropTo );
+    this->m_ReferenceCropRegion = channel->CropRegion();
     }
   this->m_ReferenceChannels.push_back( channel );
   this->m_NumberOfChannels = this->m_ReferenceChannels.size() + this->m_FloatingChannels.size();
@@ -86,9 +86,9 @@ MultiChannelRegistrationFunctionalBase
     }
   else
     {
-    memcpy( this->m_FloatingDims, channel->GetDims(), sizeof(this->m_FloatingDims) );
+    this->m_FloatingDims = channel->GetDims();
     memcpy( this->m_FloatingSize, channel->Size, sizeof(this->m_FloatingSize) );
-    channel->GetCropRegion( this->m_FloatingCropFrom, this->m_FloatingCropTo );
+    this->m_FloatingCropRegion = channel->GetCropRegionCoordinates();
     for ( int dim = 0; dim < 3; ++dim ) 
       {
       this->m_FloatingInverseDelta[dim] = 1.0 / channel->m_Delta[dim];
@@ -104,7 +104,7 @@ MultiChannelRegistrationFunctionalBase
 {
   for ( int dim  = 0; dim < 3; ++dim )
     {
-    if ( imgA->GetDims(dim) != imgB->GetDims(dim) )
+    if ( imgA->GetDims()[dim] != imgB->GetDims()[dim] )
       {
       throw Exception( "MultiChannelRegistrationFunctionalBase::VerifyImageSize(): Image dimension mismatch" );
       }

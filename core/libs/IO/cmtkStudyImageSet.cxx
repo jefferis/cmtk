@@ -56,8 +56,8 @@ StudyImageSet::ReadVolume( const bool reRead, const char* )
     this->m_Volume = UniformVolume::SmartPtr( VolumeFromStudy::Read( this ) );
     if ( this->m_Volume ) 
       {
-      this->SetDims( this->m_Volume->GetDims()[0], this->m_Volume->GetDims()[1], this->m_Volume->GetDims()[2] );
-      this->m_DisplayedImageIndex = this->m_Volume->GetDims( AXIS_Z ) / 2 ;
+      this->m_Dims = this->m_Volume->GetDims();
+      this->m_DisplayedImageIndex = this->m_Dims[AXIS_Z] / 2 ;
       this->m_ZoomFactor = 1;
       const TypedArray *dataArray = this->m_Volume->GetData();
       if ( dataArray ) 

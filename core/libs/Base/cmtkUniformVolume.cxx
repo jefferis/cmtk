@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,14 +48,12 @@ UniformVolume::UniformVolume()
   memset( this->m_Dims, 0, sizeof( this->m_Dims ) );
   memset( Size, 0, sizeof( Size ) );
   memset( this->m_Delta, 0, sizeof( this->m_Delta ) );
-  this->SetCropRegion( (int*) NULL, (int*) NULL );
 }
 
 UniformVolume::UniformVolume
-( const int dims[3], const float size[3], TypedArray::SmartPtr& data )
+( const DataGrid::IndexType& dims, const float size[3], TypedArray::SmartPtr& data )
 {
   this->SetData( data );
-
   this->SetDims( dims );
   
   for ( int i=0; i<3; ++i ) {
@@ -62,12 +61,12 @@ UniformVolume::UniformVolume
     this->m_Delta[i] = ( this->m_Dims[i] == 1 ) ? 0 : Size[i] / (this->m_Dims[i] - 1);
   }
 
-  this->SetCropRegion( (int*) NULL, (int*) NULL );
+  this->CropRegion() = this->GetWholeImageRegion();
   this->CreateDefaultIndexToPhysicalMatrix();
 }
 
 UniformVolume::UniformVolume
-( const int dims[3], const double size[3], TypedArray::SmartPtr& data )
+( const DataGrid::IndexType& dims, const double size[3], TypedArray::SmartPtr& data )
 {
   this->SetData( data );
   this->SetDims( dims );
@@ -77,12 +76,12 @@ UniformVolume::UniformVolume
     this->m_Delta[i] = ( this->m_Dims[i] == 1 ) ? 0 : Size[i] / (this->m_Dims[i] - 1);
   }
 
-  this->SetCropRegion( (int*) NULL, (int*) NULL );
+  this->CropRegion() = this->GetWholeImageRegion();
   this->CreateDefaultIndexToPhysicalMatrix();
 }
 
 UniformVolume::UniformVolume
-( const int dims[3], const Types::Coordinate deltaX, const Types::Coordinate deltaY, const Types::Coordinate deltaZ, TypedArray::SmartPtr& data )
+( const DataGrid::IndexType& dims, const Types::Coordinate deltaX, const Types::Coordinate deltaY, const Types::Coordinate deltaZ, TypedArray::SmartPtr& data )
 {
   this->SetData( data );
   this->SetDims( dims );
@@ -94,7 +93,7 @@ UniformVolume::UniformVolume
   for ( int i=0; i<3; ++i )
     Size[i] = this->m_Delta[i] * (this->m_Dims[i]-1);
 
-  this->SetCropRegion( (int*) NULL, (int*) NULL );
+  this->CropRegion() = this->GetWholeImageRegion();
   this->CreateDefaultIndexToPhysicalMatrix();
 }
 
@@ -133,7 +132,7 @@ UniformVolume::UniformVolume
   
   this->m_IndexToPhysicalMatrix = other.m_IndexToPhysicalMatrix;
 
-  this->SetCropRegion( other.CropFromReal, other.CropToReal );
+  this->CropRegion() = other.CropRegion();
   this->SetOffset( other.m_Offset );
   this->m_MetaInformation = other.m_MetaInformation;
 }
@@ -236,7 +235,7 @@ UniformVolume::GetDownsampled( const int (&downsample)[3] ) const
   dsVolume->SetOffset( offset );
   
   // set crop region while considering new image offset
-  dsVolume->SetCropRegion( this->CropFromReal, this->CropToReal );
+  dsVolume->SetCropRegionCoordinates( this->GetCropRegionCoordinates() );
 
   dsVolume->m_MetaInformation = this->m_MetaInformation;
   dsVolume->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
@@ -316,30 +315,28 @@ UniformVolume::GetInterleavedPaddedSubVolume
   return volume;
 }
 
-void
+UniformVolume::RegionType
 UniformVolume::GetGridRange
-( const Vector3D& fromVOI, const Vector3D& toVOI, Rect3D& voi ) const
-{					      
-  voi.startX = std::max<GridIndexType>( 0, static_cast<GridIndexType>( (fromVOI[0]-this->m_Offset[0]) / this->m_Delta[0] ) );
-  voi.endX = 1+std::min( this->m_Dims[0]-1, 1+static_cast<GridIndexType>( (toVOI[0]-this->m_Offset[0]) / this->m_Delta[0] ) );
+( const Vector3D& fromVOI, const Vector3D& toVOI ) const
+{
+  Self::IndexType from, to;
 
-  voi.startY = std::max<GridIndexType>( 0, static_cast<GridIndexType>( (fromVOI[1]-this->m_Offset[1]) / this->m_Delta[1] ) );
-  voi.endY = 1+std::min( this->m_Dims[1]-1, 1+static_cast<GridIndexType>( (toVOI[1]-this->m_Offset[1]) / this->m_Delta[1] ) );
+  for ( size_t i = 0; i < 3; ++i )
+    {
+    from[i] = std::max<IndexType::ValueType>( 0, static_cast<IndexType::ValueType>( (fromVOI[i]-this->m_Offset[i]) / this->m_Delta[i] ) );
+    to[i] = 1+std::min( this->m_Dims[i]-1, 1+static_cast<IndexType::ValueType>( (toVOI[i]-this->m_Offset[i]) / this->m_Delta[i] ) );
+    }
 
-  voi.startZ = std::max<GridIndexType>( 0, static_cast<GridIndexType>( (fromVOI[2]-this->m_Offset[2]) / this->m_Delta[2] ) );
-  voi.endZ = 1+std::min( this->m_Dims[2]-1, 1+static_cast<GridIndexType>( (toVOI[2]-this->m_Offset[2]) / this->m_Delta[2] ) );
+  return UniformVolume::RegionType( from, to );
 }
 
 void
 UniformVolume::Mirror ( const int axis )
 {
   this->DataGrid::ApplyMirrorPlane( axis );
-
-  CropFrom[ axis ] = this->m_Dims[ axis ] - 1 - CropFrom[ axis ];
-  CropTo[ axis ] = this->m_Dims[ axis ] - 1 - CropTo[ axis ];
-
-  CropFromReal[ axis ] = Size[ axis ] - CropFromReal[ axis ];
-  CropToReal[ axis ] = Size[ axis ] - CropToReal[ axis ];
+  
+  this->CropRegion().From()[ axis ] = this->m_Dims[ axis ] - 1 - this->CropRegion().From()[ axis ];
+  this->CropRegion().To()[ axis ] = this->m_Dims[ axis ] - 1 - this->CropRegion().To()[ axis ];
 }
 
 ScalarImage*

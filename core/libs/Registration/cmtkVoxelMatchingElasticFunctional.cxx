@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -153,17 +154,17 @@ VoxelMatchingElasticFunctional_WarpTemplate<W>::SetWarpXform
       if ( StepScaleVector ) delete[] StepScaleVector;
       if ( VolumeOfInfluence ) delete[] VolumeOfInfluence;
       Dim = Warp->VariableParamVectorDim();
-      StepScaleVector = Memory::AllocateArray<Types::Coordinate>( Dim );
-      VolumeOfInfluence = Memory::AllocateArray<Rect3D>( Dim );
+      this->StepScaleVector = Memory::AllocateArray<Types::Coordinate>( Dim );
+      this->VolumeOfInfluence = Memory::AllocateArray<DataGrid::RegionType>( Dim );
       }
     
-    Rect3D *VOIptr = VolumeOfInfluence;
+    DataGrid::RegionType *VOIptr = this->VolumeOfInfluence;
     Vector3D fromVOI, toVOI;
     for ( size_t dim=0; dim<Dim; ++dim, ++VOIptr ) 
       {
       StepScaleVector[dim] = this->GetParamStep( dim );
       Warp->GetVolumeOfInfluence( dim, ReferenceFrom, ReferenceTo, fromVOI, toVOI );
-      this->GetReferenceGridRange( fromVOI, toVOI, *VOIptr );
+       *VOIptr = this->GetReferenceGridRange( fromVOI, toVOI );
       }
     
     WarpNeedsFixUpdate = true;
@@ -197,7 +198,6 @@ VoxelMatchingElasticFunctional_Template<VM,W>::UpdateWarpFixedParameters()
   double *mapRef = Memory::AllocateArray<double>( numCtrlPoints );
   double *mapMod = Memory::AllocateArray<double>( numCtrlPoints );
 
-  Rect3D voi;
   Vector3D fromVOI, toVOI;
   int pX, pY, pZ;
 
@@ -214,16 +214,16 @@ VoxelMatchingElasticFunctional_Template<VM,W>::UpdateWarpFixedParameters()
       /// We cannot use the precomputed table of VOIs here because in "fast"
       /// mode, these VOIs are smaller than we want them here.
       this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->ReferenceFrom, this->ReferenceTo, fromVOI, toVOI, 0 );
-      this->GetReferenceGridRange( fromVOI, toVOI, voi );
+      const DataGrid::RegionType voi = this->GetReferenceGridRange( fromVOI, toVOI );
       
-      int r = voi.startX + this->DimsX * ( voi.startY + this->DimsY * voi.startZ );
+      int r = voi.From()[0] + this->DimsX * ( voi.From()[1] + this->DimsY * voi.From()[2] );
       
       bool active = false;
-      for ( pZ = voi.startZ; (pZ < voi.endZ) && !active; ++pZ ) 
+      for ( pZ = voi.From()[2]; (pZ < voi.To()[2]) && !active; ++pZ ) 
 	{
-	for ( pY = voi.startY; (pY < voi.endY) && !active; ++pY ) 
+	for ( pY = voi.From()[1]; (pY < voi.To()[1]) && !active; ++pY ) 
 	  {
-	  for ( pX = voi.startX; (pX < voi.endX); ++pX, ++r ) 
+	  for ( pX = voi.From()[0]; (pX < voi.To()[0]); ++pX, ++r ) 
 	    {
 	    if ( ( this->Metric->GetSampleX( r ) != 0 ) || ( ( this->WarpedVolume[r] != unsetY ) && ( this->WarpedVolume[r] != 0 ) ) ) 
 	      {
@@ -231,9 +231,9 @@ VoxelMatchingElasticFunctional_Template<VM,W>::UpdateWarpFixedParameters()
 	      break;
 	      }
 	    }
-	  r += ( voi.startX + ( this->DimsX-voi.endX ) );
+	  r += ( voi.From()[0] + ( this->DimsX-voi.To()[0] ) );
 	  }
-	r += this->DimsX * ( voi.startY + ( this->DimsY-voi.endY ) );
+	r += this->DimsX * ( voi.From()[1] + ( this->DimsY-voi.To()[1] ) );
 	}
       
       if ( !active ) 
@@ -258,18 +258,18 @@ VoxelMatchingElasticFunctional_Template<VM,W>::UpdateWarpFixedParameters()
       // We cannot use the precomputed table of VOIs here because in "fast"
       // mode, these VOIs are smaller than we want them here.
       this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->ReferenceFrom, this->ReferenceTo, fromVOI, toVOI, 0 );
-      this->GetReferenceGridRange( fromVOI, toVOI, voi );
+      const DataGrid::RegionType voi = this->GetReferenceGridRange( fromVOI, toVOI );
       
-      int r = voi.startX + this->DimsX * ( voi.startY + this->DimsY * voi.startZ );
+      int r = voi.From()[0] + this->DimsX * ( voi.From()[1] + this->DimsY * voi.From()[2] );
       
-      const int endOfLine = ( voi.startX + ( this->DimsX-voi.endX) );
-      const int endOfPlane = this->DimsX * ( voi.startY + (this->DimsY-voi.endY) );
+      const int endOfLine = ( voi.From()[0] + ( this->DimsX-voi.To()[0]) );
+      const int endOfPlane = this->DimsX * ( voi.From()[1] + (this->DimsY-voi.To()[1]) );
       
-      for ( pZ = voi.startZ; pZ<voi.endZ; ++pZ ) 
+      for ( pZ = voi.From()[2]; pZ<voi.To()[2]; ++pZ ) 
 	{
-	for ( pY = voi.startY; pY<voi.endY; ++pY ) 
+	for ( pY = voi.From()[1]; pY<voi.To()[1]; ++pY ) 
 	  {
-	  for ( pX = voi.startX; pX<voi.endX; ++pX, ++r ) 
+	  for ( pX = voi.From()[0]; pX<voi.To()[0]; ++pX, ++r ) 
 	    {
 	    // Continue metric computation.
 	    if ( WarpedVolume[r] != unsetY ) 

@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -68,12 +69,6 @@ class DataGrid :
   /// Inherit class that handles meta information.
   public MetaInformationObject
 {
-  /// Number of grid samples in the three spatial dimensions
-  cmtkGetMacro3Array(int,Dims);
-
-  /// Data array (element type is variable)
-  cmtkGetSetMacro(TypedArray::SmartPtr,Data);
-
 public:
   /// This class.
   typedef DataGrid Self;
@@ -81,19 +76,28 @@ public:
   /// Smart pointer to DataGrid.
   typedef SmartPointer<Self> SmartPtr;
 
+  /// Region type.
+  typedef Region<3,int> RegionType;
+
+  /// Index type.
+  typedef RegionType::IndexType IndexType;
+
+  /// Number of grid samples in the three spatial dimensions
+  Self::IndexType m_Dims;
+
+  /// Data array (element type is variable)
+  cmtkGetSetMacro(TypedArray::SmartPtr,Data);
+
+public:
   /// Default constructor.
   DataGrid() : 
     m_Data( NULL )
-  {
-    memset( this->m_Dims, 0, sizeof(this->m_Dims) );
-  }
+  {}
   
   /// Constructor.
   DataGrid( const int* dims ) 
     : m_Data( NULL )
-  {
-    memcpy( this->m_Dims, dims, sizeof(this->m_Dims) );
-  }
+  {}
   
   /// Virtual destructor.
   virtual ~DataGrid() {}
@@ -103,15 +107,6 @@ public:
   {
     return (this->m_Dims[0] == other.m_Dims[0]) && (this->m_Dims[1] == other.m_Dims[1]) && (this->m_Dims[2] == other.m_Dims[2]);
   }
-
-  /// Index type.
-  typedef Index<3> IndexType;
-
-  /// Region type.
-  typedef Region<3> RegionType;
-
-  /// Get complete grid region.
-  virtual RegionType GetRegionComplete() const;
 
   /// Downsampling constructor function.
   virtual DataGrid* GetDownsampled( const int (&downsample)[3] ) const;
@@ -144,7 +139,13 @@ public:
    * This function updates the internal offsets for fast access to adjacent
    * voxel rows, columns, planes etc.
    */
-  void SetDims( const int dims[3] );
+  void SetDims( const Self::IndexType& dims );
+
+  /// Get dimensions array.
+  const Self::IndexType GetDims() const
+  {
+    return this->m_Dims;
+  }
 
   /** Create data array.
    *\param dataType ID of scalar data type for the array. This is the image pixel type.
@@ -230,9 +231,47 @@ public:
 
 private:
   /// Mirror about plane without allocating additional memory.
-  static void MirrorPlaneInPlace( TypedArray *const data, const int dims[3], const int axis = AXIS_X );
+  static void MirrorPlaneInPlace( TypedArray *const data, const Self::IndexType& dims, const int axis = AXIS_X );
 
 public:
+  /** Get cropped region reference.
+   */
+  Self::RegionType& CropRegion()
+  {
+    return this->m_CropRegion;
+  }
+
+  /** Get cropped region reference.
+   */
+  const Self::RegionType& CropRegion() const
+  {
+    return this->m_CropRegion;
+  }
+
+  /** Return number of voxels in the cropped remaining image.
+   */
+  int GetCropRegionNumVoxels() const;
+
+  /// Get whole image region.
+  const RegionType GetWholeImageRegion() const;
+
+  /// Get index increments for crop region.
+  const Self::IndexType GetCropRegionIncrements() const;
+
+  /** Automatically crop to minimal region above given threshold.
+   *@param threshold The cropping threshold.
+   *@param recrop If this flag is true, then the cropping will be performed
+   * inside an already existing cropping region. If this flag is false 
+   * (default), then any pre-set crop region is ignored.
+   */
+  void AutoCrop( const Types::DataItem threshold, const bool recrop = false, const int margin = 0 );
+
+  /// Fill volume outside current crop region with constant value.
+  void FillCropBackground( const Types::DataItem value );
+
+  /// Return data for cropped volume.
+  TypedArray* GetCroppedData() const;
+
   /// Accessor functions for protected member variables
   int GetNextI() const { return nextI; }
   int GetNextJ() const { return nextJ; }
@@ -331,6 +370,11 @@ protected:
 
   /// Offset to next column, row, and plane.
   int nextIJK;
+
+private:
+  /** Crop region.
+   */
+  Self::RegionType m_CropRegion;
 };
 
 //@}

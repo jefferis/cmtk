@@ -167,7 +167,7 @@ protected:
    * voxel range with respect to the reference colume grid that is affected by
    * the respective parameter.
    */
-  Rect3D *VolumeOfInfluence;
+  DataGrid::RegionType *VolumeOfInfluence;
 
   /// Coordinate of the beginning of the reference colume crop area.
   Vector3D ReferenceFrom;
@@ -389,26 +389,26 @@ public:
    *@param voi Volume-of-Influence for the parameter under consideration.
    *@return The metric after recomputation over the given volume-of-influence.
    */
-  typename Self::ReturnType EvaluateIncremental( const W* warp, SmartPointer<VM>& localMetric, const Rect3D* voi ) 
+  typename Self::ReturnType EvaluateIncremental( const W* warp, SmartPointer<VM>& localMetric, const DataGrid::RegionType& voi ) 
   {
     Vector3D *pVec;
     int pX, pY, pZ, offset, r;
     int fltIdx[3];
     Types::Coordinate fltFrac[3];
 
-    int endLineIncrement = ( voi->startX + (DimsX - voi->endX) );
-    int endPlaneIncrement = DimsX * ( voi->startY + (DimsY - voi->endY) );
+    int endLineIncrement = ( voi.From()[0] + (DimsX - voi.To()[0]) );
+    int endPlaneIncrement = DimsX * ( voi.From()[1] + (DimsY - voi.To()[2]) );
     
     const typename VM::Exchange unsetY = this->Metric->DataY.padding();
     localMetric->CopyUnsafe( *this->Metric );
-    r = voi->startX + DimsX * ( voi->startY + DimsY * voi->startZ );
-    for ( pZ = voi->startZ; pZ<voi->endZ; ++pZ ) 
+    r = voi.From()[0] + DimsX * ( voi.From()[1] + DimsY * voi.From()[2] );
+    for ( pZ = voi.From()[2]; pZ<voi.To()[2]; ++pZ ) 
       {
-      for ( pY = voi->startY; pY<voi->endY; ++pY ) 
+      for ( pY = voi.From()[1]; pY<voi.To()[1]; ++pY ) 
 	{
 	pVec = this->VectorCache;
-	warp->GetTransformedGridSequence( pVec, voi->endX-voi->startX, voi->startX, pY, pZ );
-	for ( pX = voi->startX; pX<voi->endX; ++pX, ++r, ++pVec ) 
+	warp->GetTransformedGridSequence( pVec, voi.From()[0]-voi.To()[0], voi.From()[0], pY, pZ );
+	for ( pX = voi.From()[0]; pX<voi.To()[0]; ++pX, ++r, ++pVec ) 
 	  {
 	  // Remove this sample from incremental metric according to "ground warp" image.
 	  const typename VM::Exchange sampleX = this->Metric->GetSampleX( r );
@@ -465,7 +465,7 @@ public:
 
     Types::Coordinate pOld;
     double upper, lower;
-    Rect3D *voi = this->VolumeOfInfluence;
+    const DataGrid::RegionType *voi = this->VolumeOfInfluence;
     for ( size_t dim = 0; dim < this->Dim; ++dim, ++voi ) 
       {
       if ( this->StepScaleVector[dim] <= 0 ) 
@@ -479,10 +479,10 @@ public:
 	Types::Coordinate thisStep = step * this->StepScaleVector[dim];
 	
 	p[dim] += thisStep;
-	upper = EvaluateIncremental( this->Warp, IncrementalMetric, voi );
+	upper = EvaluateIncremental( this->Warp, IncrementalMetric, *voi );
 	
 	p[dim] = pOld - thisStep;
-	lower = EvaluateIncremental( this->Warp, IncrementalMetric, voi );
+	lower = EvaluateIncremental( this->Warp, IncrementalMetric, *voi );
 	
 	p[dim] = pOld;
 	this->WeightedDerivative( lower, upper, this->Warp, dim, thisStep );
@@ -582,10 +582,10 @@ protected:
    SmartPointer<VM> IncrementalMetric;
    
    /// Shortcut variables for x, y, z dimension of the reference image.
-   GridIndexType DimsX, DimsY, DimsZ;
+   DataGrid::IndexType::ValueType DimsX, DimsY, DimsZ;
    
    /// Shorcut variables for x and y dimensions of the floating image.
-   GridIndexType FltDimsX, FltDimsY;
+   DataGrid::IndexType::ValueType FltDimsX, FltDimsY;
 };
 
 /** Create functional from matching template.

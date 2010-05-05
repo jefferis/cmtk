@@ -180,7 +180,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional
     { 
     Vector3D fromVOI, toVOI;
     xform0->GetVolumeOfInfluence( param, templateFrom, templateTo, fromVOI, toVOI );
-    this->m_TemplateGrid->GetGridRange( fromVOI, toVOI, this->m_VolumeOfInfluenceArray[param/3] );
+    this->m_VolumeOfInfluenceArray[param/3] = this->m_TemplateGrid->GetGridRange( fromVOI, toVOI );
     }
   
   this->m_NeedsUpdateInformationByControlPoint = true;
@@ -218,18 +218,18 @@ SplineWarpGroupwiseRegistrationRMIFunctional
     this->m_InformationByControlPoint[cp] = 0;
 #endif
 
-    const Rect3D& voi = this->m_VolumeOfInfluenceArray[cp];
+    std::vector<DataGrid::RegionType>::const_iterator voi = this->m_VolumeOfInfluenceArray.begin() + cp;
     for ( size_t img = this->m_ActiveImagesFrom; img < this->m_ActiveImagesTo; ++img )
       {
       const byte* dataPtrImg = this->m_Data[img];
       
       byte voiMin = 255, voiMax = 0;
-      for ( int z = voi.startZ; z < voi.endZ; ++z ) 
+      for ( int z = voi->From()[2]; z < voi->To()[2]; ++z ) 
 	{
-	for ( int y = voi.startY; y < voi.endY; ++y )
+	for ( int y = voi->From()[1]; y < voi->To()[1]; ++y )
 	  {
-	  size_t ofs = this->m_TemplateGrid->GetOffsetFromIndex( voi.startX, y, z );
-	  for ( size_t x = voi.startX; x < voi.endX; ++x, ++ofs )
+	  size_t ofs = this->m_TemplateGrid->GetOffsetFromIndex( voi->From()[0], y, z );
+	  for ( size_t x = voi->From()[0]; x < voi->To()[0]; ++x, ++ofs )
 	    {
 	    const byte data = dataPtrImg[ofs];
 	    if ( data != paddingValue )
@@ -243,16 +243,14 @@ SplineWarpGroupwiseRegistrationRMIFunctional
 #ifdef CMTK_BUILD_MPI
       tmpInformationByCP[ofs] = std::max( (byte)(voiMax-voiMin), tmpInformationByCP[ofs] );
 #else
-      this->m_InformationByControlPoint[cp] = 
-	std::max( (byte)(voiMax-voiMin), this->m_InformationByControlPoint[cp] );    
+      this->m_InformationByControlPoint[cp] = std::max( (byte)(voiMax-voiMin), this->m_InformationByControlPoint[cp] );    
 #endif
       }
     }
 
 #ifdef CMTK_BUILD_MPI
   this->m_InformationByControlPoint.resize( cpPerNode * this->m_SizeMPI );
-  MPI::COMM_WORLD.Allgather( &tmpInformationByCP[0], cpPerNode, MPI::CHAR,
-			     &this->m_InformationByControlPoint[0], cpPerNode, MPI::CHAR );
+  MPI::COMM_WORLD.Allgather( &tmpInformationByCP[0], cpPerNode, MPI::CHAR, &this->m_InformationByControlPoint[0], cpPerNode, MPI::CHAR );
 #endif
   
   this->UpdateActiveControlPoints();
@@ -303,11 +301,12 @@ SplineWarpGroupwiseRegistrationRMIFunctional::UpdateActiveControlPoints()
       const Vector3D templateTo(  this->m_TemplateGrid->m_Offset + this->m_TemplateGrid->Size );
       Vector3D fromVOI, toVOI;
       
-      const Rect3D* voi = &this->m_VolumeOfInfluenceArray[0];
+      std::vector<DataGrid::RegionType>::const_iterator voi = this->m_VolumeOfInfluenceArray.begin();
       for ( size_t cp = 0; cp < numberOfControlPoints; ++cp, ++voi )
 	{
 	this->m_ActiveControlPointFlags[cp] = (this->m_InformationByControlPoint[cp] > (this->m_HistogramBins / 4) );
-	if ( this->m_ActiveControlPointFlags[cp] ) ++this->m_NumberOfActiveControlPoints;
+	if ( this->m_ActiveControlPointFlags[cp] ) 
+	  ++this->m_NumberOfActiveControlPoints;
 	}
       
       StdErr << "Enabled " << this->m_NumberOfActiveControlPoints 
@@ -364,9 +363,9 @@ SplineWarpGroupwiseRegistrationRMIFunctional::InterpolateImageThread
   const UniformVolume* target = This->m_ImageVector[idx];
   const byte* dataPtr = static_cast<const byte*>( target->GetData()->GetDataPtr() );
 
-  const int dimsX = This->m_TemplateGrid->GetDims( AXIS_X );
-  const int dimsY = This->m_TemplateGrid->GetDims( AXIS_Y );
-  const int dimsZ = This->m_TemplateGrid->GetDims( AXIS_Z );
+  const int dimsX = This->m_TemplateGrid->GetDims()[AXIS_X];
+  const int dimsY = This->m_TemplateGrid->GetDims()[AXIS_Y];
+  const int dimsZ = This->m_TemplateGrid->GetDims()[AXIS_Z];
 
   std::vector<Vector3D> vectorList( dimsX );
   byte value;

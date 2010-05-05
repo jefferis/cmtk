@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -45,8 +46,8 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-DataGrid::RegionType
-DataGrid::GetRegionComplete() const
+const DataGrid::RegionType
+DataGrid::GetWholeImageRegion() const
 {
   const int zeroes[3] = {0,0,0};
   return Self::RegionType( Self::IndexType( zeroes ), Self::IndexType( this->m_Dims ) );
@@ -143,7 +144,7 @@ DataGrid::GetReoriented( const char* newOrientation ) const
   AnatomicalOrientation::PermutationMatrix pmatrix( this->m_Dims, NULL, curOrientation, newOrientation );
   
   int newDims[3] = { 0, 0, 0 }; 
-  pmatrix.GetPermutedArray( this->m_Dims, newDims );
+  pmatrix.GetPermutedArray( static_cast<const Self::IndexType::ValueType*>( this->m_Dims ), newDims );
   DataGrid* newDataGrid = new DataGrid( newDims );
   
   const TypedArray* oldData = this->GetData();
@@ -164,11 +165,11 @@ DataGrid::GetReoriented( const char* newOrientation ) const
     const size_t bytesPerPixel = oldData->GetItemSize();
 
     int fromPoint[3];
-    for ( fromPoint[2] = 0; fromPoint[2] < this->GetDims(2); fromPoint[2]++ )
+    for ( fromPoint[2] = 0; fromPoint[2] < this->m_Dims[2]; fromPoint[2]++ )
       {
-      for ( fromPoint[1] = 0; fromPoint[1] < this->GetDims(1); fromPoint[1]++ )
+      for ( fromPoint[1] = 0; fromPoint[1] < this->m_Dims[1]; fromPoint[1]++ )
 	{
-	for ( fromPoint[0] = 0; fromPoint[0] < this->GetDims(0); fromPoint[0]++, fromPtr += bytesPerPixel )
+	for ( fromPoint[0] = 0; fromPoint[0] < this->m_Dims[0]; fromPoint[0]++, fromPtr += bytesPerPixel )
 	  {
 	  memcpy( toPtr + bytesPerPixel * pmatrix.NewOffsetFromPoint( fromPoint ), fromPtr, bytesPerPixel );
 	  }
@@ -183,9 +184,9 @@ DataGrid::GetReoriented( const char* newOrientation ) const
 }
 
 void
-DataGrid::SetDims( const int dims[3] )
+DataGrid::SetDims( const Self::IndexType& dims )
 {
-  memcpy( this->m_Dims, dims, sizeof( this->m_Dims ) );
+  this->m_Dims = dims;
 
   nextI = 1;
   nextJ = nextI * this->m_Dims[0];
@@ -277,7 +278,7 @@ DataGrid::ApplyMirrorPlane( const int axis )
 
 void
 DataGrid::MirrorPlaneInPlace
-( TypedArray *const data, const int dims[3], const int axis )
+( TypedArray *const data, const Self::IndexType& dims, const int axis )
 {
   switch ( axis ) 
     {

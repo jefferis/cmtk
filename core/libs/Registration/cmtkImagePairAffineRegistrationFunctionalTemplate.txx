@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,13 +50,13 @@ ImagePairAffineRegistrationFunctionalTemplate<VM>
   this->Clipper.SetDeltaX( axesHashX[DimsX-1] - axesHashX[0] );
   this->Clipper.SetDeltaY( axesHashY[DimsY-1] - axesHashY[0] );
   this->Clipper.SetDeltaZ( axesHashZ[DimsZ-1] - axesHashZ[0] );
-  this->Clipper.SetClippingBoundaries( this->FloatingCropFromIndex, this->FloatingCropToIndex );
+  this->Clipper.SetClippingBoundaries( this->m_FloatingCropRegionFractional );
   
-  GridIndexType startZ, endZ;
+  DataGrid::IndexType::ValueType startZ, endZ;
   if ( this->ClipZ( this->Clipper, axesHashZ[0], startZ, endZ ) ) 
     {
-    startZ = std::max<GridIndexType>( startZ, this->ReferenceCropFrom[2] );
-    endZ = std::min<GridIndexType>( endZ, this->ReferenceCropTo[2] + 1 );
+    startZ = std::max<DataGrid::IndexType::ValueType>( startZ, this->m_ReferenceCropRegion.From()[2] );
+    endZ = std::min<DataGrid::IndexType::ValueType>( endZ, this->m_ReferenceCropRegion.To()[2] + 1 );
     
     const int numberOfTasks = std::min<size_t>( 4 * this->m_NumberOfThreads - 3, endZ - startZ + 1 );
     this->m_EvaluateTaskInfo.resize( numberOfTasks );
@@ -98,7 +99,7 @@ ImagePairAffineRegistrationFunctionalTemplate<VM>
   Vector3D rowStart;
   Vector3D planeStart;
   
-  GridIndexType pX, pY, pZ;
+  DataGrid::IndexType::ValueType pX, pY, pZ;
   // Loop over all remaining planes
   for ( pZ = info->StartZ + taskIdx; pZ < info->EndZ; pZ += taskCnt ) 
     {
@@ -107,11 +108,11 @@ ImagePairAffineRegistrationFunctionalTemplate<VM>
     
     planeStart = hashZ[pZ];
     
-    GridIndexType startY, endY;
+    DataGrid::IndexType::ValueType startY, endY;
     if ( me->ClipY( me->Clipper, planeStart, startY, endY ) ) 
       {	
-      startY = std::max<GridIndexType>( startY, me->ReferenceCropFrom[1] );
-      endY = std::min<GridIndexType>( endY, me->ReferenceCropTo[1] + 1 );
+      startY = std::max<DataGrid::IndexType::ValueType>( startY, me->m_ReferenceCropRegion.From()[1] );
+      endY = std::min<DataGrid::IndexType::ValueType>( endY, me->m_ReferenceCropRegion.To()[1] + 1 );
       r += startY * DimsX;
       
       // Loop over all remaining rows
@@ -119,11 +120,11 @@ ImagePairAffineRegistrationFunctionalTemplate<VM>
 	{
 	(rowStart = planeStart) += hashY[pY];
 	
-	GridIndexType startX, endX;
+	DataGrid::IndexType::ValueType startX, endX;
 	if ( me->ClipX( me->Clipper, rowStart, startX, endX ) ) 
 	  {	    
-	  startX = std::max<GridIndexType>( startX, me->ReferenceCropFrom[0] );
-	  endX = std::min<GridIndexType>( endX, me->ReferenceCropTo[0] + 1 );
+	  startX = std::max<DataGrid::IndexType::ValueType>( startX, me->m_ReferenceCropRegion.From()[0] );
+	  endX = std::min<DataGrid::IndexType::ValueType>( endX, me->m_ReferenceCropRegion.To()[0] + 1 );
 	  
 	  r += startX;
 	  // Loop over all remaining voxels in current row

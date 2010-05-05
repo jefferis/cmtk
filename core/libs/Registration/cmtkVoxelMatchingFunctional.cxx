@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,14 +48,15 @@ VoxelMatchingFunctional::InitFloating( UniformVolume::SmartPtr& floating )
 {
   FloatingGrid = floating;
   
-  memcpy( FloatingDims, FloatingGrid->GetDims(), sizeof(FloatingDims) );
+  this->FloatingDims = FloatingGrid->GetDims();
   memcpy( FloatingSize, FloatingGrid->Size, sizeof(FloatingSize) );
-  FloatingGrid->GetCropRegion( FloatingCropFrom, FloatingCropTo );
+
+  this->m_FloatingCropRegionCoordinates = FloatingGrid->GetCropRegionCoordinates();
   for ( int dim = 0; dim < 3; ++dim ) 
     {
     FloatingInverseDelta.XYZ[dim] = 1.0 / FloatingGrid->m_Delta[dim];
-    FloatingCropFromIndex[dim] = FloatingCropFrom[dim] * FloatingInverseDelta.XYZ[dim];
-    FloatingCropToIndex[dim] = FloatingCropTo[dim] * FloatingInverseDelta.XYZ[dim];
+    this->m_FloatingCropRegionFractional.From()[dim] = this->m_FloatingCropRegionCoordinates.From()[dim] * FloatingInverseDelta.XYZ[dim];
+    this->m_FloatingCropRegionFractional.To()[dim] = this->m_FloatingCropRegionCoordinates.To()[dim] * FloatingInverseDelta.XYZ[dim];
     }
   
   FloatingDataClass = floating->GetData()->GetDataClass();
@@ -65,9 +67,9 @@ VoxelMatchingFunctional::InitReference( UniformVolume::SmartPtr& reference )
 {
   ReferenceGrid = reference;
 
-  memcpy( ReferenceDims, ReferenceGrid->GetDims(), sizeof(ReferenceDims) );
+  this->ReferenceDims = ReferenceGrid->GetDims();
   memcpy( ReferenceSize, ReferenceGrid->Size, sizeof(ReferenceSize) );
-  ReferenceGrid->GetCropRegion( ReferenceCropFrom, ReferenceCropTo );
+  this->m_ReferenceCropRegion = ReferenceGrid->CropRegion();
 
   for ( int dim = 0; dim < 3; ++dim )
     this->ReferenceInvDelta[dim] = 1.0 / ReferenceGrid->m_Delta[dim];
@@ -75,22 +77,18 @@ VoxelMatchingFunctional::InitReference( UniformVolume::SmartPtr& reference )
   ReferenceDataClass = reference->GetData()->GetDataClass();
 }
 
-void
+const DataGrid::RegionType
 VoxelMatchingFunctional::GetReferenceGridRange
-( const Vector3D& fromVOI, const Vector3D& toVOI, Rect3D& voi )
-{					      
-  voi.startX = std::max( this->ReferenceCropFrom[0], static_cast<int>( fromVOI[0] * this->ReferenceInvDelta[0] ) );
-  voi.endX = 1+std::min( this->ReferenceCropTo[0]-1, 1+static_cast<int>( toVOI[0] * this->ReferenceInvDelta[0] ) );
-  
-  voi.startY = std::max( this->ReferenceCropFrom[1], static_cast<int>( fromVOI[1] * this->ReferenceInvDelta[1] ) );
-  voi.endY = 1+std::min( this->ReferenceCropTo[1]-1, 1+static_cast<int>( toVOI[1] * this->ReferenceInvDelta[1] ) );
-  
-  voi.startZ = std::max( this->ReferenceCropFrom[2], static_cast<int>( fromVOI[2] * this->ReferenceInvDelta[2] ) );
-  voi.endZ = 1+std::min( this->ReferenceCropTo[2]-1, 1+static_cast<int>( toVOI[2] * this->ReferenceInvDelta[2] ) );
-    
-  assert( (voi.startX+1) && (voi.endX<=ReferenceDims[0]) );
-  assert( (voi.startY+1) && (voi.endY<=ReferenceDims[1]) );
-  assert( (voi.startZ+1) && (voi.endZ<=ReferenceDims[2]) );
+( const Vector3D& fromVOI, const Vector3D& toVOI )
+{
+  DataGrid::IndexType from, to;
+  for ( int i = 0; i < 3; ++i )
+    {
+    from[i] = std::max( this->m_ReferenceCropRegion.From()[i], static_cast<int>( fromVOI[i] * this->ReferenceInvDelta[i] ) );
+    to[i] = 1+std::min( this->m_ReferenceCropRegion.To()[i]-1, 1+static_cast<int>( toVOI[i] * this->ReferenceInvDelta[i] ) );
+    }
+
+  return DataGrid::RegionType( from, to );
 }
 
 } // namespace cmtk

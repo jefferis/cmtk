@@ -46,10 +46,9 @@ class ImageOperationCropRegion
 {
 public:
   /// Constructor:
-  ImageOperationCropRegion( const int (&region)[6] ) 
+  ImageOperationCropRegion( const DataGrid::RegionType& region ) 
   {
-    for ( size_t i = 0; i<6; ++i )
-      this->m_Region[i] = region[i]; 
+    this->m_Region = region; 
   }
   
   /// Apply this operation to an image in place.
@@ -60,7 +59,7 @@ public:
   
 private:
   /// Cropping region: x0,y0,z0,x1,y1,z1
-  int m_Region[6];
+  DataGrid::RegionType m_Region;
 };
 
 } // namespace cmtk

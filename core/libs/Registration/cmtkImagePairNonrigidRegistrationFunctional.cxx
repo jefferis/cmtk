@@ -150,16 +150,16 @@ ImagePairNonrigidRegistrationFunctional::SetWarpXform
       {
       Dim = this->m_Warp->VariableParamVectorDim();
       this->m_StepScaleVector.resize( Dim );
-      VolumeOfInfluence = Memory::AllocateArray<Rect3D>( Dim );
+      VolumeOfInfluence = Memory::AllocateArray<DataGrid::RegionType>( Dim );
       }
     
-    Rect3D *VOIptr = VolumeOfInfluence;
+    DataGrid::RegionType *VOIptr = VolumeOfInfluence;
     Vector3D fromVOI, toVOI;
     for ( size_t dim=0; dim<Dim; ++dim, ++VOIptr ) 
       {
       this->m_StepScaleVector[dim] = this->GetParamStep( dim );
       this->m_Warp->GetVolumeOfInfluence( dim, ReferenceFrom, ReferenceTo, fromVOI, toVOI );
-      this->GetReferenceGridRange( fromVOI, toVOI, *VOIptr );
+      *VOIptr = this->GetReferenceGridRange( fromVOI, toVOI );
       }
     
     for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread ) 

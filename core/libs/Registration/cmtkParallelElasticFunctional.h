@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -155,26 +156,26 @@ public:
    *@param voi Volume-of-Influence for the parameter under consideration.
    *@return The metric after recomputation over the given volume-of-influence.
    */
-  typename Self::ReturnType EvaluateIncremental( const W* warp, VM *const localMetric, const Rect3D* voi, Vector3D *const vectorCache ) 
+  typename Self::ReturnType EvaluateIncremental( const W* warp, VM *const localMetric, const DataGrid::RegionType& voi, Vector3D *const vectorCache ) 
   {
     Vector3D *pVec;
     int pX, pY, pZ, offset, r;
     int fltIdx[3];
     Types::Coordinate fltFrac[3];
 
-    int endLineIncrement = ( voi->startX + ( this->DimsX - voi->endX) );
-    int endPlaneIncrement = this->DimsX * ( voi->startY + (this->DimsY - voi->endY) );
+    int endLineIncrement = ( voi.From()[0] + ( this->DimsX - voi.To()[0]) );
+    int endPlaneIncrement = this->DimsX * ( voi.From()[1] + (this->DimsY - voi.To()[1]) );
     
     const typename VM::Exchange unsetY = this->Metric->DataY.padding();
     localMetric->CopyUnsafe( *this->Metric );
-    r = voi->startX + this->DimsX * ( voi->startY + this->DimsY * voi->startZ );
-    for ( pZ = voi->startZ; pZ<voi->endZ; ++pZ ) 
+    r = voi.From()[0] + this->DimsX * ( voi.From()[1] + this->DimsY * voi.From()[2] );
+    for ( pZ = voi.From()[2]; pZ<voi.To()[2]; ++pZ ) 
       {
-      for ( pY = voi->startY; pY<voi->endY; ++pY ) 
+      for ( pY = voi.From()[1]; pY<voi.To()[1]; ++pY ) 
 	{
 	pVec = vectorCache;
-	warp->GetTransformedGridSequence( pVec,voi->endX-voi->startX, voi->startX, pY, pZ );
-	for ( pX = voi->startX; pX<voi->endX; ++pX, ++r, ++pVec ) 
+	warp->GetTransformedGridSequence( pVec,voi.To()[0]-voi.From()[0], voi.From()[0], pY, pZ );
+	for ( pX = voi.From()[0]; pX<voi.To()[0]; ++pX, ++r, ++pVec ) 
 	  {
 	  // Remove this sample from incremental metric according to "ground warp" image.
 	  const typename VM::Exchange sampleX = this->Metric->GetSampleX( r );
@@ -329,7 +330,7 @@ private:
     Types::Coordinate pOld;
     double upper, lower;
 
-    const Rect3D *voi = me->VolumeOfInfluence + taskIdx;
+    const DataGrid::RegionType *voi = me->VolumeOfInfluence + taskIdx;
     for ( size_t dim = taskIdx; dim < me->Dim; dim+=taskCnt, voi+=taskCnt ) 
       {
       if ( me->StepScaleVector[dim] <= 0 ) 
@@ -343,9 +344,9 @@ private:
 	pOld = p[dim];
 	
 	p[dim] += thisStep;
-	upper = me->EvaluateIncremental( myWarp, threadMetric, voi, vectorCache );
+	upper = me->EvaluateIncremental( myWarp, threadMetric, *voi, vectorCache );
 	p[dim] = pOld - thisStep;
-	lower = me->EvaluateIncremental( myWarp, threadMetric, voi, vectorCache );
+	lower = me->EvaluateIncremental( myWarp, threadMetric, *voi, vectorCache );
 	
 	p[dim] = pOld;
 	me->WeightedDerivative( lower, upper, myWarp, dim, thisStep );

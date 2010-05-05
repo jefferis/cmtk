@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -116,7 +117,7 @@ VolumeFromStudy::AssembleVolume( const StudyImageSet* study, const bool verbose 
 	if ( study->GetMultiFile() )
 	  InitSequence( image, study->size() );
 	else
-	  InitSequence( image, study->GetDims( AXIS_Z ) );
+	  InitSequence( image, study->m_Dims[AXIS_Z] );
 	}
       
       const char *error = FillPlane( nextPlane, image );

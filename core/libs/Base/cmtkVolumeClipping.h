@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,6 +37,7 @@
 
 #include <cmtkTypes.h>
 #include <cmtkVector3D.h>
+#include <cmtkUniformVolume.h>
 
 namespace
 cmtk
@@ -74,8 +76,7 @@ public:
    * region. If this parameter is a NULL pointer, the respective coordinate is
    * set to be the zero vector, ie. the origin of the coordinate space.
    */
-  void SetClippingBoundaries( const Types::Coordinate* clippingFrom,
-			      const Types::Coordinate* clippingTo );
+  void SetClippingBoundaries( const UniformVolume::CoordinateRegionType& region );
 
   /** Set clipped volumes spanning vector in x-direction.
    *@param deltaX The direction vector of the rows in the volume to be clipped.
@@ -178,11 +179,8 @@ public:
 	      const Types::Coordinate initToFactor = 1 ) const;
   
 private:
-  /// Front-lower-left corner of the clipping boundaries.
-  Types::Coordinate ClippingFrom[3];
-
-  /// Back-upper-right corner of the clipping boundaries.
-  Types::Coordinate ClippingTo[3];
+  /// Clipping boundaries.
+  UniformVolume::CoordinateRegionType m_ClippingRegion;
 
   /// Spanning vector of the clipped volume in x-direction.
   Vector3D DeltaX;

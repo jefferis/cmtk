@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -39,279 +40,35 @@ cmtk
 //@{
 
 void
-UniformVolume::SetCropRegion
-( const Types::Coordinate* cropFromReal, const Types::Coordinate* cropToReal )
+UniformVolume::SetCropRegionCoordinates
+( const UniformVolume::CoordinateRegionType& crop )
 {
-  if ( cropFromReal ) 
-    {
-    for ( int dim = 0; dim<3; ++dim )
-      {
-      this->CropFromReal[dim] = std::max<Types::Coordinate>( cropFromReal[dim], this->m_Offset[dim] );
-      }
-    } 
-  else
-    {
-    for ( int dim = 0; dim<3; ++dim )
-      {
-      this->CropFromReal[dim] = this->m_Offset[dim];
-      }
-    }
-
-  {
   for ( int dim = 0; dim<3; ++dim )
-    this->CropFrom[dim] = this->GetCoordIndex( dim, this->CropFromReal[dim] + this->m_Offset[dim] );
-  }
-
-  if ( cropToReal ) 
     {
-    for ( int dim = 0; dim<3; ++dim )
-      {
-      this->CropToReal[dim] = std::min<Types::Coordinate>( cropToReal[dim], this->Size[dim] + this->m_Offset[dim] );
-      }
-    } 
-  else
-    {
-    for ( int dim = 0; dim<3; ++dim )
-      {
-      this->CropToReal[dim] = this->Size[dim] + this->m_Offset[dim];
-      }
+    this->CropRegion().From()[dim] = this->GetCoordIndex( dim, std::max<Types::Coordinate>( crop.From()[dim], 0 ) + this->m_Offset[dim] );
+    this->CropRegion().To()[dim] = 1 + this->GetCoordIndex( dim, std::min<Types::Coordinate>( crop.To()[dim], this->Size[dim] ) + this->m_Offset[dim] );
     }
-  { 
-  for ( int dim = 0; dim<3; ++dim )
-    this->CropTo[dim] = 1 + this->GetCoordIndex( dim, this->CropToReal[dim] + this->m_Offset[dim] );
-  }
 }
 
-void
-UniformVolume::SetCropRegion( const int* cropFrom, const int* cropTo )
+const UniformVolume::CoordinateRegionType
+UniformVolume::GetCropRegionCoordinates
+() const
 {
-  this->SetCropRegionFrom( cropFrom );
-  this->SetCropRegionTo( cropTo );
-}
-
-void
-UniformVolume::SetCropRegionFrom( const int* cropFrom )
-{
-  if ( cropFrom ) 
-    {
-    for ( int dim = 0; dim < 3; ++dim )
-      {
-      // for negative values, go from upper boundary
-      if ( cropFrom[dim] >= 0 )
-	{
-	this->CropFrom[dim] = std::min<int>( this->m_Dims[dim], cropFrom[dim] );
-	}
-      else
-	{
-	this->CropFrom[dim] = std::max<int>( 0, this->m_Dims[dim] + cropFrom[dim] );
-	}
-      }
-    } 
-  else 
-    {
-    memset( this->CropFrom, 0, sizeof( this->CropFrom ) );
-    }
+  UniformVolume::CoordinateRegionType region;
 
   for ( int dim = 0; dim<3; ++dim )
-    this->CropFromReal[dim] = this->GetPlaneCoord( dim, this->CropFrom[dim] ) - this->m_Offset[dim];
-}
-
-void
-UniformVolume::SetCropRegionTo( const int* cropTo )
-{
-  if ( cropTo ) 
     {
-    for ( int dim = 0; dim < 3; ++dim )
-      {
-      // for negative crop indexes, go from upper boundary
-      if ( cropTo[dim] >= 0 )
-	{
-	this->CropTo[dim] = std::min<int>( this->m_Dims[dim], cropTo[dim] );
-	}
-      else
-	{
-	this->CropTo[dim] = std::max<int>( 0, this->m_Dims[dim] + cropTo[dim] );
-	}
-      }
-    } 
-  else
-    {
-    for ( int dim = 0; dim<3; ++dim )
-      this->CropTo[dim] = this->m_Dims[dim];
-    }
-
-  for ( int dim = 0; dim<3; ++dim )
-    this->CropToReal[dim] = this->GetPlaneCoord( dim, this->CropTo[dim]-1 ) - this->m_Offset[dim];
-}
-
-void
-UniformVolume::SetCropRegion( const Rect3D* crop )
-{
-  const int c0[3] = { crop->startX, crop->startY, crop->startZ };
-  const int c1[3] = { crop->endX, crop->endY, crop->endZ };
-
-  this->SetCropRegion( c0, c1 );
-}
-
-void
-UniformVolume::SetCropRegion( const CoordinateRect3D* crop )
-{
-  const Types::Coordinate c0[3] = { crop->startX, crop->startY, crop->startZ };
-  const Types::Coordinate c1[3] = { crop->endX, crop->endY, crop->endZ };
-
-  this->SetCropRegion( c0, c1 );
-}
-
-void
-UniformVolume::GetCropRegion
-( Types::Coordinate *const cropFromReal, Types::Coordinate *const cropToReal ) const
-{
-  memcpy( cropFromReal, CropFromReal, sizeof( CropFromReal ) );
-  memcpy( cropToReal, CropToReal, sizeof( CropToReal ) );
-}
-
-void
-UniformVolume::GetCropRegion
-( int *const cropFrom, int *const cropTo, int *const increments ) const
-{
-  memcpy( cropFrom, CropFrom, sizeof( CropFrom ) );
-  memcpy( cropTo, CropTo, sizeof( CropTo ) );
-  
-  if ( increments ) 
-    {
-    increments[0] = cropFrom[0] + this->m_Dims[0] * ( cropFrom[1] + this->m_Dims[1] * cropFrom[2] );
-    increments[1] = cropFrom[0] + (this->m_Dims[0] - cropTo[0]);
-    increments[2] = this->m_Dims[0] * ( cropFrom[1] + ( this->m_Dims[1] - cropTo[1]) );
-    }
-}
-
-int
-UniformVolume::GetCropRegionNumVoxels() const 
-{
-  return (CropTo[0] - CropFrom[0]) * (CropTo[1] - CropFrom[1]) * (CropTo[2] - CropFrom[2]);
-}
-
-void
-UniformVolume::AutoCrop
-( const Types::DataItem threshold, const bool recrop, const int margin )
-{
-  const TypedArray* data = this->GetData();
-  
-  int cropFrom[3], cropTo[3];
-
-  if ( ! recrop ) 
-    {
-    for ( int dim = 0; dim < 3; ++dim ) 
-      {
-      CropFrom[dim] = 0;
-      CropTo[dim] = this->m_Dims[dim];
-      }
+    region.From()[dim] = this->m_Delta[dim] * this->CropRegion().From()[dim];
+    region.To()[dim] = this->m_Delta[dim] * (this->CropRegion().To()[dim]-1);
     }
   
-  const size_t nextRow = this->m_Dims[0] - CropTo[0] + CropFrom[0];
-  const size_t nextPlane = this->m_Dims[0] * (this->m_Dims[1] - CropTo[1] + CropFrom[1]);
-  
-  bool first = true;
-  size_t offset = CropFrom[0] + this->m_Dims[0] * ( CropFrom[1] + this->m_Dims[1] * CropFrom[2] );
-
-  for ( int z = CropFrom[2]; z < CropTo[2]; ++z, offset += nextPlane )
-    for ( int y = CropFrom[1]; y < CropTo[1]; ++y, offset += nextRow )
-      for ( int x = CropFrom[0]; x < CropTo[0]; ++x, ++offset ) 
-	{
-	Types::DataItem value = 0;
-	if ( ! data->Get( value, offset ) || (value < threshold) ) continue;
-	
-	if ( first ) 
-	  {
-	  cropFrom[0] = cropTo[0] = x;
-	  cropFrom[1] = cropTo[1] = y;
-	  cropFrom[2] = cropTo[2] = z;
-	  first = false;
-	  } 
-	else
-	  {
-	  cropFrom[0] = std::min<int>( cropFrom[0], x );
-	  cropFrom[1] = std::min<int>( cropFrom[1], y );
-	  cropFrom[2] = std::min<int>( cropFrom[2], z );
-	  
-	  cropTo[0] = std::max<int>( cropTo[0], x );
-	  cropTo[1] = std::max<int>( cropTo[1], y );
-	  cropTo[2] = std::max<int>( cropTo[2], z );
-	  }
-	}
-  
-  for ( int dim = 0; dim < 3; ++dim )
-    ++cropTo[dim];
-  
-  if ( margin ) 
-    {
-    for ( int dim = 0; dim < 3; ++dim ) 
-      {
-      cropFrom[dim] = std::max<int>( 0, cropFrom[dim] - margin );
-      cropTo[dim] = std::min<int>( this->m_Dims[dim], cropTo[dim] + margin );
-      }
-    }
-  
-  this->SetCropRegion( cropFrom, cropTo );
-}
-
-void
-UniformVolume::FillCropBackground( const Types::DataItem value )
-{
-  const size_t planeSize = this->m_Dims[0] * this->m_Dims[1];
-
-  size_t offset = CropFrom[2] * planeSize;
-  this->m_Data->BlockSet( value, 0, offset );
-
-  for ( int z = CropFrom[2]; z < CropTo[2]; ++z ) 
-    {
-    size_t planeOffset = offset + CropFrom[1] * this->m_Dims[0];
-    this->m_Data->BlockSet( value, offset, planeOffset );
-
-    offset = planeOffset;
-    for ( int y = CropFrom[1]; y < CropTo[1]; ++y, offset += this->m_Dims[0] ) 
-      {
-      this->m_Data->BlockSet( value, offset, offset+CropFrom[0] );
-      this->m_Data->BlockSet( value, offset+CropTo[0], offset+this->m_Dims[0] );
-      }
-    
-    planeOffset = offset + (this->m_Dims[1]-CropTo[1]) * this->m_Dims[0];
-    this->m_Data->BlockSet( value, offset, planeOffset );
-    offset = planeOffset;
-    }
-  
-  this->m_Data->BlockSet( value, CropTo[2] * planeSize, this->m_Dims[2] * planeSize );
-}
-
-TypedArray*
-UniformVolume::GetCroppedData() const
-{
-  const TypedArray* srcData = this->GetData();
-  if ( ! srcData ) return NULL;
-
-  TypedArray* cropData = 
-    srcData->NewTemplateArray( this->GetCropRegionNumVoxels() );
-  
-  const size_t lineLength = CropTo[0] - CropFrom[0];
-  const size_t nextPlane = this->m_Dims[0] * (this->m_Dims[1] - (CropTo[1] - CropFrom[1]));
-  
-  size_t toOffset = 0;
-  size_t fromOffset = CropFrom[0] + this->m_Dims[0] * ( CropFrom[1] + this->m_Dims[1] * CropFrom[2] );
-
-  for ( int z = CropFrom[2]; z < CropTo[2]; ++z, fromOffset += nextPlane )
-    for ( int y = CropFrom[1]; y < CropTo[1]; ++y, fromOffset += this->m_Dims[0] ) 
-      {
-      srcData->BlockCopy( cropData, toOffset, fromOffset, lineLength );
-      toOffset += lineLength;
-      }
-  
-  return cropData;
+  return region;
 }
 
 UniformVolume* 
 UniformVolume::GetCroppedVolume() const
 {
-  const int cropDims[3] = { CropTo[0]-CropFrom[0], CropTo[1]-CropFrom[1], CropTo[2]-CropFrom[2] };
+  const UniformVolume::IndexType cropDims = this->CropRegion().To() - this->CropRegion().From();
   const Types::Coordinate cropSize[3] = { (cropDims[0]-1) * this->m_Delta[0], (cropDims[1]-1) * this->m_Delta[1], (cropDims[2]-1) * this->m_Delta[2] };
   UniformVolume* volume = new UniformVolume( cropDims, cropSize );
 
@@ -323,11 +80,11 @@ UniformVolume::GetCroppedVolume() const
   volume->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
   for ( int i = 0; i < 3; ++i )
     for ( int j = 0; j < 3; ++j )
-      volume->m_IndexToPhysicalMatrix[3][i] += this->CropFrom[j] * volume->m_IndexToPhysicalMatrix[j][i];
+      volume->m_IndexToPhysicalMatrix[3][i] += this->CropRegion().From()[j] * volume->m_IndexToPhysicalMatrix[j][i];
   
   // use m_Offset to keep track of new volume origin
   volume->SetOffset( this->m_Offset );
-  volume->m_Offset += Vector3D( this->CropFromReal );
+  volume->m_Offset += Vector3D( this->GetCropRegionCoordinates().From() );
 
   volume->m_MetaInformation[META_IMAGE_ORIENTATION]  = this->m_MetaInformation[META_IMAGE_ORIENTATION];
   volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL]  = this->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL];
