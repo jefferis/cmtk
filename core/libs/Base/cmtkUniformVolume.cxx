@@ -132,7 +132,7 @@ UniformVolume::UniformVolume
   
   this->m_IndexToPhysicalMatrix = other.m_IndexToPhysicalMatrix;
 
-  this->CropRegion() = other.CropRegion();
+  this->SetCropRegionCoordinates( other.GetCropRegionCoordinates() );
   this->SetOffset( other.m_Offset );
   this->m_MetaInformation = other.m_MetaInformation;
 }

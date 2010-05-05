@@ -340,7 +340,7 @@ public:
    */
   virtual Types::DataItem* GetSubArray( const size_t fromIdx, const size_t len, const Types::DataItem substPadding = 0 ) const 
   {
-    Types::DataItem* buffer = (Types::DataItem*) malloc( len * sizeof(Types::DataItem) );
+    Types::DataItem* buffer = static_cast<Types::DataItem*>( malloc( len * sizeof(Types::DataItem) ) );
     return this->GetSubArray( buffer, fromIdx, len, substPadding );
   }
 
@@ -529,7 +529,7 @@ public:
       value = 0;
       return false;
       }
-    value=(Types::DataItem) Data[index];
+    value = static_cast<Types::DataItem>( Data[index] );
     return true;
   }
 
@@ -547,7 +547,7 @@ public:
       if (PaddingFlag && (Padding==Data[index]))
 	values[i] = 0;
       else
-	values[i] = (Types::DataItem) Data[index];
+	values[i] = static_cast<Types::DataItem>( Data[index] );
   }
 
   /** Set an item in the array.

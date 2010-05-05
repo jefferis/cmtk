@@ -187,6 +187,7 @@ void
 DataGrid::SetDims( const Self::IndexType& dims )
 {
   this->m_Dims = dims;
+  this->m_CropRegion = this->GetWholeImageRegion();
 
   nextI = 1;
   nextJ = nextI * this->m_Dims[0];

@@ -97,7 +97,9 @@ public:
   DataGrid( const Self::IndexType& dims ) 
     : m_Dims( dims ), 
       m_Data( NULL )
-  {}
+  {
+    this->m_CropRegion = this->GetWholeImageRegion();
+  }
   
   /// Virtual destructor.
   virtual ~DataGrid() {}
