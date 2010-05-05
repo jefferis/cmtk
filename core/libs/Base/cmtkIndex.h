@@ -33,6 +33,8 @@
 
 #include <cmtkconfig.h>
 
+#include <fstream>
+
 namespace
 cmtk
 {
@@ -108,11 +110,29 @@ public:
       this->m_Index[i] -= rhs.m_Index[i];
     return *this;
   }
-  
+
 private:
   /// The actual index array.
   T m_Index[NDIM];
 };
+
+/// Stream input operator.
+template<size_t NDIM,typename T>
+std::ofstream& operator<<( std::ofstream& stream, const Index<NDIM,T>& index )
+{
+  for ( size_t i = 0; i < NDIM; ++i )
+    stream << index[i];
+  return stream;
+}
+
+/// Stream output operator.
+template<size_t NDIM,typename T>
+std::ofstream& operator>>( std::ofstream& stream, Index<NDIM,T>& index )
+{
+  for ( size_t i = 0; i < NDIM; ++i )
+    stream >> index[i];
+  return stream;
+}
 
 } // namespace cmtk
 

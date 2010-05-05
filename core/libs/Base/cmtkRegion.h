@@ -34,6 +34,7 @@
 #include <cmtkconfig.h>
 
 #include <cmtkIndex.h>
+#include <fstream>
 
 namespace
 cmtk
@@ -99,6 +100,20 @@ private:
   /// End index.
   IndexType m_RegionTo;
 };
+
+/// Stream input operator.
+template<size_t NDIM,typename T>
+std::ofstream& operator<<( std::ofstream& stream, const Region<NDIM,T>& region )
+{
+  return stream << region.From() << region.To();
+}
+
+/// Stream output operator.
+template<size_t NDIM,typename T>
+std::ofstream& operator>>( std::ofstream& stream, Region<NDIM,T>& region )
+{
+  return stream >> region.From() >> region.To();
+}
 
 } // namespace cmtk
 
