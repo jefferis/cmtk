@@ -1,6 +1,7 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
+//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -88,7 +89,7 @@ QtVolumeProperties::QtVolumeProperties( const Study* study )
 
 	gridLayout->addWidget( new QLabel( "Dimensions: ", gridBox ), 1, 0 );
 	QString dims;
-	dims.sprintf( "%d x %d x %d pixels", uniVolume->GetDims(AXIS_X), uniVolume->GetDims(AXIS_Y), uniVolume->GetDims(AXIS_Z) );
+	dims.sprintf( "%d x %d x %d pixels", uniVolume->GetDims()[AXIS_X], uniVolume->GetDims()[AXIS_Y], uniVolume->GetDims()[AXIS_Z] );
 	gridLayout->addWidget( new QLabel( dims, gridBox ), 1, 1 );
 
 	gridLayout->addWidget( new QLabel( "Total size: ", gridBox ), 2, 0 );

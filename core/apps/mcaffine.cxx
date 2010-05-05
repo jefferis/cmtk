@@ -1,6 +1,7 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -304,7 +305,7 @@ main( int argc, char* argv[] )
       }
     for ( std::list<cmtk::UniformVolume::SmartPtr>::iterator refIt = refChannelList.begin(); refIt != refChannelList.end(); ++refIt )
       {
-      (*refIt)->SetCropRegionFrom( xyz );
+      (*refIt)->CropRegion() = cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType( xyz ), (*refIt)->CropRegion().To() );
       }
     }
 
@@ -318,7 +319,7 @@ main( int argc, char* argv[] )
       }
     for ( std::list<cmtk::UniformVolume::SmartPtr>::iterator refIt = refChannelList.begin(); refIt != refChannelList.end(); ++refIt )
       {
-      (*refIt)->SetCropRegionTo( xyz );
+      (*refIt)->CropRegion() = cmtk::DataGrid::RegionType( (*refIt)->CropRegion().From(), cmtk::DataGrid::IndexType( xyz ) );
       }
     }
 

@@ -1,6 +1,7 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
+//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -174,7 +175,7 @@ protected:
   QMenu* ExportMenu;
 
   /// Store volume dimensions here for convenient access.
-  unsigned int VolumeDims[3];
+  DataGrid::IndexType VolumeDims;
 
   /// The scrolled view we display an image in.
   QtScrollRenderView* ScrollRenderViewAx;

@@ -1,6 +1,7 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
+//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -487,9 +488,7 @@ QtTriplanarWindow::UpdateDialog()
     const UniformVolume *volume = this->m_Study->GetVolume();
     if ( volume ) 
       {
-      VolumeDims[AXIS_X] = volume->GetDims( AXIS_X );
-      VolumeDims[AXIS_Y] = volume->GetDims( AXIS_Y );
-      VolumeDims[AXIS_Z] = volume->GetDims( AXIS_Z );
+      VolumeDims = volume->GetDims();
       
       ScrollRenderViewAx->slotSetNumberOfSlices( VolumeDims[AXIS_Z] );
       ScrollRenderViewSa->slotSetNumberOfSlices( VolumeDims[AXIS_X] );

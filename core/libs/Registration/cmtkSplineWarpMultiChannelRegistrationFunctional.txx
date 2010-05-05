@@ -1,6 +1,7 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -130,7 +131,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
     {
     Vector3D regionFrom, toRegion;
     this->m_Transformation.GetVolumeOfInfluence( idx * 3, referenceFrom, referenceTo, regionFrom, toRegion );
-    this->m_ReferenceChannels[0]->GetGridRange( regionFrom, toRegion, this->m_VolumeOfInfluenceVector[idx] );
+    this->m_VolumeOfInfluenceVector[idx] = this->m_ReferenceChannels[0]->GetGridRange( regionFrom, toRegion );
     }
 
   m_UpdateTransformationFixedControlPointsRequired = true;
@@ -161,7 +162,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   const Vector3D referenceFrom( this->m_ReferenceChannels[0]->m_Offset );
   const Vector3D referenceTo( this->m_ReferenceChannels[0]->Size );
   Vector3D regionFrom, regionTo;
-  Rect3D region;
+  DataGrid::RegionType region;
 
   std::vector<bool> active( numberOfControlPoints );
   std::fill( active.begin(), active.end(), true );
@@ -181,22 +182,22 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 	// We cannot use the precomputed table of VOIs here because in "fast"
 	// mode, these VOIs are smaller than we want them here.
 	this->m_Transformation.GetVolumeOfInfluence( 3 * cp, referenceFrom, referenceTo, regionFrom, regionTo, false /*fast*/ );
-	this->m_ReferenceChannels[0]->GetGridRange( regionFrom, regionTo, region );
+	region = this->m_ReferenceChannels[0]->GetGridRange( regionFrom, regionTo );
 	
 	for ( size_t channel = 0; channel < this->m_NumberOfChannels; ++channel )
 	  {
 	  histogram.SetRange( minValue[channel], maxValue[channel] );
 	  
-	  size_t r = region.startX + this->m_ReferenceDims[0] * ( region.startY + this->m_ReferenceDims[1] * region.startZ );
-	  const int endOfLine = ( region.startX + ( this->m_ReferenceDims[0]-region.endX) );
-	  const int endOfPlane = this->m_ReferenceDims[0] * ( region.startY + (this->m_ReferenceDims[1]-region.endY) );
+	  size_t r = region.From()[0] + this->m_ReferenceDims[0] * ( region.From()[1] + this->m_ReferenceDims[1] * region.From()[2] );
+	  const int endOfLine = ( region.From()[0] + ( this->m_ReferenceDims[0]-region.To()[0]) );
+	  const int endOfPlane = this->m_ReferenceDims[0] * ( region.From()[1] + (this->m_ReferenceDims[1]-region.To()[1]) );
 	  
 	  if ( channel < this->m_ReferenceChannels.size() )
 	    {
 	    const TypedArray* refChannel = this->m_ReferenceChannels[channel]->GetData();
-	    for ( int pZ = region.startZ; pZ<region.endZ; ++pZ, r += endOfPlane ) 
-	      for ( int pY = region.startY; pY<region.endY; ++pY, r += endOfLine ) 
-		for ( int pX = region.startX; pX<region.endX; ++pX, ++r ) 
+	    for ( int pZ = region.From()[2]; pZ<region.To()[2]; ++pZ, r += endOfPlane ) 
+	      for ( int pY = region.From()[1]; pY<region.To()[1]; ++pY, r += endOfLine ) 
+		for ( int pX = region.From()[0]; pX<region.To()[0]; ++pX, ++r ) 
 		  {
 		  Types::DataItem refValue;
 		  if ( refChannel->Get( refValue, r ) )
@@ -206,9 +207,9 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 	  else
 	    {
 	    const float* fltChannel = &(this->m_ReformattedFloatingChannels[channel-this->m_ReferenceChannels.size()][0]);
-	    for ( int pZ = region.startZ; pZ<region.endZ; ++pZ, r += endOfPlane ) 
-	      for ( int pY = region.startY; pY<region.endY; ++pY, r += endOfLine ) 
-		for ( int pX = region.startX; pX<region.endX; ++pX, ++r ) 
+	    for ( int pZ = region.From()[2]; pZ<region.To()[2]; ++pZ, r += endOfPlane ) 
+	      for ( int pY = region.From()[1]; pY<region.To()[1]; ++pY, r += endOfLine ) 
+		for ( int pX = region.From()[0]; pX<region.To()[0]; ++pX, ++r ) 
 		  {
 		  const float fltValue = fltChannel[r];
 		  if ( finite( fltValue ) )
@@ -267,22 +268,22 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 	// We cannot use the precomputed table of VOIs here because in "fast"
 	// mode, these VOIs are smaller than we want them here.
 	this->m_Transformation.GetVolumeOfInfluence( 3 * cp, referenceFrom, referenceTo, regionFrom, regionTo, false /*fast*/ );
-	this->m_ReferenceChannels[0]->GetGridRange( regionFrom, regionTo, region );
+	region = this->m_ReferenceChannels[0]->GetGridRange( regionFrom, regionTo );
 	
 	active[cp] = false;
 
 	for ( size_t channel = 0; channel < this->m_NumberOfChannels; ++channel )
 	  {
-	  size_t r = region.startX + this->m_ReferenceDims[0] * ( region.startY + this->m_ReferenceDims[1] * region.startZ );
-	  const int endOfLine = ( region.startX + ( this->m_ReferenceDims[0]-region.endX) );
-	  const int endOfPlane = this->m_ReferenceDims[0] * ( region.startY + (this->m_ReferenceDims[1]-region.endY) );
+	  size_t r = region.From()[0] + this->m_ReferenceDims[0] * ( region.From()[1] + this->m_ReferenceDims[1] * region.From()[2] );
+	  const int endOfLine = ( region.From()[0] + ( this->m_ReferenceDims[0]-region.To()[0]) );
+	  const int endOfPlane = this->m_ReferenceDims[0] * ( region.From()[1] + (this->m_ReferenceDims[1]-region.To()[1]) );
 	  
 	  if ( channel < this->m_ReferenceChannels.size() )
 	    {
 	    const TypedArray* refChannel = this->m_ReferenceChannels[channel]->GetData();
-	    for ( int pZ = region.startZ; pZ<region.endZ; ++pZ, r += endOfPlane ) 
-	      for ( int pY = region.startY; pY<region.endY; ++pY, r += endOfLine ) 
-		for ( int pX = region.startX; pX<region.endX; ++pX, ++r ) 
+	    for ( int pZ = region.From()[2]; pZ<region.To()[2]; ++pZ, r += endOfPlane ) 
+	      for ( int pY = region.From()[1]; pY<region.To()[1]; ++pY, r += endOfLine ) 
+		for ( int pX = region.From()[0]; pX<region.To()[0]; ++pX, ++r ) 
 		  {
 		  Types::DataItem refValue;
 		  if ( refChannel->Get( refValue, r ) && (refValue > minValue[channel] ) )
@@ -291,18 +292,18 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 		    active[cp] = true;
 
 		    channel = this->m_NumberOfChannels;
-		    pX = region.endX;
-		    pY = region.endY;
-		    pZ = region.endZ;
+		    pX = region.To()[0];
+		    pY = region.To()[1];
+		    pZ = region.To()[2];
 		    }
 		  }
 	    }
 	  else
 	    {
 	    const float* fltChannel = &(this->m_ReformattedFloatingChannels[channel-this->m_ReferenceChannels.size()][0]);
-	    for ( int pZ = region.startZ; pZ<region.endZ; ++pZ, r += endOfPlane ) 
-	      for ( int pY = region.startY; pY<region.endY; ++pY, r += endOfLine ) 
-		for ( int pX = region.startX; pX<region.endX; ++pX, ++r ) 
+	    for ( int pZ = region.From()[2]; pZ<region.To()[2]; ++pZ, r += endOfPlane ) 
+	      for ( int pY = region.From()[1]; pY<region.To()[1]; ++pY, r += endOfLine ) 
+		for ( int pX = region.From()[0]; pX<region.To()[0]; ++pX, ++r ) 
 		  {
 		  const float fltValue = fltChannel[r];
 		  if ( finite( fltValue ) && (fltValue > minValue[channel]) )
@@ -311,9 +312,9 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 		    active[cp] = true;
 
 		    channel = this->m_NumberOfChannels;
-		    pX = region.endX;
-		    pY = region.endY;
-		    pZ = region.endZ;
+		    pX = region.To()[0];
+		    pY = region.To()[1];
+		    pZ = region.To()[2];
 		    }
 		  }
 	    }
@@ -400,7 +401,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 template<class TMetricFunctional>
 void
 SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
-::BacktraceMetric( MetricData& metricData, const Rect3D& region )
+::BacktraceMetric( MetricData& metricData, const DataGrid::RegionType& region )
 {
 #ifdef CMTK_VAR_AUTO_ARRAYSIZE
   Types::DataItem values[ this->m_NumberOfChannels ];
@@ -408,12 +409,12 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   std::vector<Types::DataItem> values( this->m_NumberOfChannels );
 #endif
   
-  for ( int pZ = region.startZ; pZ < region.endZ; ++pZ ) 
+  for ( int pZ = region.From()[2]; pZ < region.To()[2]; ++pZ ) 
     {
-    for ( int pY = region.startY; pY < region.endY; ++pY ) 
+    for ( int pY = region.From()[1]; pY < region.To()[1]; ++pY ) 
       {
-      size_t rindex = region.startX + this->m_ReferenceDims[0] * ( pY + this->m_ReferenceDims[1] );
-      for ( int pX = region.startX; pX < region.endX; ++pX, ++rindex ) 
+      size_t rindex = region.From()[0] + this->m_ReferenceDims[0] * ( pY + this->m_ReferenceDims[1] );
+      for ( int pX = region.From()[0]; pX < region.To()[0]; ++pX, ++rindex ) 
 	{
 	bool allChannelsValid = true;
 
@@ -475,25 +476,25 @@ template<class TMetricFunctional>
 typename SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>::ReturnType
 SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 ::EvaluateIncremental
-( const SplineWarpXform* transformation, MetricData& metricData, const Rect3D& region )
+( const SplineWarpXform* transformation, MetricData& metricData, const DataGrid::RegionType& region )
 {
-  const size_t pixelsPerLineRegion = region.endX - region.startX;
+  const size_t pixelsPerLineRegion = region.To()[2] - region.From()[2];
   std::vector<Vector3D> pFloating( pixelsPerLineRegion );
 
   const int *dims = this->m_ReferenceDims;
   const int dimsX = dims[0], dimsY = dims[1];
 
-  for ( int pZ = region.startZ; pZ < region.endZ; ++pZ ) 
+  for ( int pZ = region.From()[2]; pZ < region.To()[2]; ++pZ ) 
     {
-    for ( int pY = region.startY; pY < region.endY; ++pY ) 
+    for ( int pY = region.From()[1]; pY < region.To()[1]; ++pY ) 
       {
-      transformation->GetTransformedGridSequence( &pFloating[0], pixelsPerLineRegion, region.startX, pY, pZ );
+      transformation->GetTransformedGridSequence( &pFloating[0], pixelsPerLineRegion, region.From()[0], pY, pZ );
 
-      size_t r = region.startX + dimsX * (pY + dimsY * pZ );
-      for ( int pX = region.startX; pX < region.endX; ++pX, ++r ) 
+      size_t r = region.From()[0] + dimsX * (pY + dimsY * pZ );
+      for ( int pX = region.From()[0]; pX < region.To()[0]; ++pX, ++r ) 
 	{
 	// Continue metric computation.
-	this->ContinueMetric( metricData, r, pFloating[pX-region.startX] );
+	this->ContinueMetric( metricData, r, pFloating[pX-region.From()[0]] );
 	}
       }
     }

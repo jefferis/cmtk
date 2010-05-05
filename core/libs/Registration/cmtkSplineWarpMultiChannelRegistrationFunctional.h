@@ -1,6 +1,7 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
+//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -162,19 +163,19 @@ private:
   virtual void ClearReformattedFloatingChannels();
 
   /** Evaluate metric after a local transformation change. */
-  typename Self::ReturnType EvaluateIncremental( const SplineWarpXform* warp, MetricData& metricData, const Rect3D& region );
+  typename Self::ReturnType EvaluateIncremental( const SplineWarpXform* warp, MetricData& metricData, const DataGrid::RegionType& region );
 
   /** Continue metric computation and store reformatted floating channels for local recomputation. */
   virtual void ContinueMetricStoreReformatted( MetricData& metricData, const size_t rindex, const Vector3D& fvector );
 
   /** Locally undo metric computation. */
-  virtual void BacktraceMetric( MetricData& metricData, const Rect3D& voi );
+  virtual void BacktraceMetric( MetricData& metricData, const DataGrid::RegionType& voi );
 
   /** Parameter step scale vector. */
   std::vector<Types::Coordinate> m_StepScaleVector;
 
   /** Table of volumes of influence per warp control point. */
-  std::vector<Rect3D> m_VolumeOfInfluenceVector;
+  std::vector<DataGrid::RegionType> m_VolumeOfInfluenceVector;
 
   /** Flag for entropy vs. intensity thresholding */
   bool m_AdaptiveFixEntropyThreshold;

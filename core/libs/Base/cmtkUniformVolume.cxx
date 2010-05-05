@@ -315,7 +315,7 @@ UniformVolume::GetInterleavedPaddedSubVolume
   return volume;
 }
 
-UniformVolume::RegionType
+const UniformVolume::RegionType
 UniformVolume::GetGridRange
 ( const Vector3D& fromVOI, const Vector3D& toVOI ) const
 {

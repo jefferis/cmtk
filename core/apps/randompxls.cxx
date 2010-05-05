@@ -1,6 +1,7 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
+//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -71,9 +72,9 @@ main( const int argc, const char *argv[] )
     int x, y, z;
     for ( bool okay = false; !okay; )
       {
-      x = static_cast<int>( cmtk::MathUtil::UniformRandom() * volume->GetDims(0) );
-      y = static_cast<int>( cmtk::MathUtil::UniformRandom() * volume->GetDims(1) );
-      z = static_cast<int>( cmtk::MathUtil::UniformRandom() * volume->GetDims(2) );
+      x = static_cast<int>( cmtk::MathUtil::UniformRandom() * volume->GetDims()[0] );
+      y = static_cast<int>( cmtk::MathUtil::UniformRandom() * volume->GetDims()[1] );
+      z = static_cast<int>( cmtk::MathUtil::UniformRandom() * volume->GetDims()[2] );
 
       okay = !UseImageAsMask || volume->GetDataAt( x, y, z );
       }

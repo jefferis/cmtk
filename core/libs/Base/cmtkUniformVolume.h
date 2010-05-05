@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -332,7 +332,7 @@ public:
   inline void FindVoxelUnsafe( const Vector3D& location, int *const idx, Types::Coordinate *const from, Types::Coordinate *const to ) const;
 
   /// Get 3D grid region from continuous lower and upper corner.
-  UniformVolume::RegionType GetGridRange( const Vector3D& fromVOI, const Vector3D& toVOI ) const;
+  const UniformVolume::RegionType GetGridRange( const Vector3D& fromVOI, const Vector3D& toVOI ) const;
  
   /// Get plane coordinate.
   virtual Types::Coordinate GetPlaneCoord( const int axis, const int plane ) const 

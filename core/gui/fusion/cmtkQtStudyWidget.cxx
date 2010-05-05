@@ -98,7 +98,7 @@ QtStudyWidget::slotSetStudy( Study::SmartPtr& study )
     if ( volume ) 
       {
       WindowLevelBox->slotSetStudy( this->m_Study );
-      ScrollRenderView->slotSetNumberOfSlices( volume->GetDims( AXIS_Z ) );
+      ScrollRenderView->slotSetNumberOfSlices( volume->GetDims()[AXIS_Z] );
       ScrollRenderView->slotRender();
       this->show();
       }

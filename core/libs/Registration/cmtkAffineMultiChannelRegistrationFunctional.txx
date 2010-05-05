@@ -1,6 +1,7 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
+//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -70,19 +71,19 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
 
   const VolumeAxesHash transformedAxes( *this->m_ReferenceChannels[0], &this->m_Transformation );
   
-  const int *dims = this->m_ReferenceDims;
+  const DataGrid::IndexType& dims = this->m_ReferenceDims;
   const int dimsX = dims[0], dimsY = dims[1], dimsZ = dims[2];
 
   this->m_VolumeClipper.SetDeltaX( transformedAxes[0][dimsX-1] - transformedAxes[0][0] );
   this->m_VolumeClipper.SetDeltaY( transformedAxes[1][dimsY-1] - transformedAxes[1][0] );
   this->m_VolumeClipper.SetDeltaZ( transformedAxes[2][dimsZ-1] - transformedAxes[2][0] );
-  this->m_VolumeClipper.SetClippingBoundaries( this->m_FloatingCropFrom, this->m_FloatingCropTo );
+  this->m_VolumeClipper.SetClippingBoundaries( this->m_FloatingCropRegion );
     
   int startZ, endZ;
   if ( this->ClipZ( this->m_VolumeClipper, transformedAxes[2][0], startZ, endZ ) ) 
     {
-    startZ = std::max<int>( startZ, this->m_ReferenceCropFrom[2] );
-    endZ = std::min<int>( endZ, this->m_ReferenceCropTo[2] );
+    startZ = std::max<int>( startZ, this->m_ReferenceCropRegion.From()[2] );
+    endZ = std::min<int>( endZ, this->m_ReferenceCropRegion.To()[2] );
 
     ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
     const size_t numberOfThreads = threadPool.GetNumberOfThreads();
@@ -134,8 +135,8 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
     int startY, endY;
     if ( constThis->ClipY( constThis->m_VolumeClipper, planeStart, startY, endY ) ) 
       {	  
-      startY = std::max<int>( startY, constThis->m_ReferenceCropFrom[1] );
-      endY = std::min<int>( endY, constThis->m_ReferenceCropTo[1] );
+      startY = std::max<int>( startY, constThis->m_ReferenceCropRegion.From()[1] );
+      endY = std::min<int>( endY, constThis->m_ReferenceCropRegion.To()[1] );
       r += startY * dimsX;
       
       // Loop over all remaining rows
@@ -146,8 +147,8 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
 	int startX, endX;
 	if ( constThis->ClipX( constThis->m_VolumeClipper, rowStart, startX, endX ) ) 
 	  {
-	  startX = std::max<int>( startX, constThis->m_ReferenceCropFrom[0] );
-	  endX = std::min<int>( endX, constThis->m_ReferenceCropTo[0] );
+	  startX = std::max<int>( startX, constThis->m_ReferenceCropRegion.From()[0] );
+	  endX = std::min<int>( endX, constThis->m_ReferenceCropRegion.To()[0] );
 	  
 	  r += startX;
 	  // Loop over all remaining voxels in current row
@@ -198,8 +199,8 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
   end = 1+std::min( (int)(this->m_ReferenceDims[2]-1), (int)(1 + ((this->m_ReferenceDims[2]-1)*toFactor) ) );
   
   // finally, apply cropping boundaries of the reference volume
-  start = std::max<int>( start, this->m_ReferenceCropFrom[2] );
-  end = std::min<int>( end, this->m_ReferenceCropTo[2] );
+  start = std::max<int>( start, this->m_ReferenceCropRegion.From()[2] );
+  end = std::min<int>( end, this->m_ReferenceCropRegion.To()[2] );
   
   // return true iff index range is non-empty.
   return (start < end );
@@ -235,8 +236,8 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
     }
   
   // finally, apply cropping boundaries of the reference volume
-  start = std::max<int>( start, this->m_ReferenceCropFrom[0] );
-  end = std::min<int>( end, this->m_ReferenceCropTo[0] );
+  start = std::max<int>( start, this->m_ReferenceCropRegion.From()[0] );
+  end = std::min<int>( end, this->m_ReferenceCropRegion.To()[0] );
   
   // return true iff index range is non-empty.
   return (start < end );
@@ -264,8 +265,8 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
     end = 1+std::min( this->m_ReferenceDims[1]-1, (int)(1+(this->m_ReferenceDims[1]-1)*toFactor ) );
     }
   // finally, apply cropping boundaries of the reference volume
-  start = std::max<int>( start, this->m_ReferenceCropFrom[1] );
-  end = std::min<int>( end, this->m_ReferenceCropTo[1] );
+  start = std::max<int>( start, this->m_ReferenceCropRegion.From()[1] );
+  end = std::min<int>( end, this->m_ReferenceCropRegion.To()[1] );
   
   // return true iff index range is non-empty.
   return (start < end );

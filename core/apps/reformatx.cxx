@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -124,20 +124,23 @@ bool OutPaddingValueFlag = true;
 const char* OutputImageName = "reformat.hdr";
 
 bool CropImages = false;
-int CropImagesRegionFrom[3] = { 0,0,0 };
-int CropImagesRegionTo[3] = { 0,0,0 };
-
-bool TargetImageOffsetReal = false;
-bool TargetImageOffsetPixels = false;
-cmtk::Vector3D TargetImageOffset( 0, 0, 0 );
+cmtk::DataGrid::RegionType CropImagesRegion;
 
 void
 CallbackCropImages( const char* arg )
 {
-  CropImages = (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d",
-			     &CropImagesRegionFrom[0], &CropImagesRegionFrom[1], &CropImagesRegionFrom[2],
-			     &CropImagesRegionTo[0], &CropImagesRegionTo[1], &CropImagesRegionTo[2] ) );
+  int cropFrom[3], cropTo[3];
+  CropImages = (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d", cropFrom, cropFrom+1, cropFrom+2, cropTo,cropTo+1,cropTo+2 ) );
+
+  if ( CropImages )
+    {
+    CropImagesRegion = cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType( cropFrom ), cmtk::DataGrid::IndexType( cropTo ) );
+    }
 }
+
+bool TargetImageOffsetReal = false;
+bool TargetImageOffsetPixels = false;
+cmtk::Vector3D TargetImageOffset( 0, 0, 0 );
 
 void
 CallbackTargetImageOffset( const char* arg )
@@ -242,7 +245,7 @@ ReformatPullback()
 
   if ( CropImages )
     {
-    targetVolume->SetCropRegion( CropImagesRegionFrom, CropImagesRegionTo );
+    targetVolume->CropRegion() = CropImagesRegion;
     targetVolume = cmtk::UniformVolume::SmartPtr( targetVolume->GetCroppedVolume() );
     }
   

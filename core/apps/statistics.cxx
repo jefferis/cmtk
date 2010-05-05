@@ -1,6 +1,7 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -120,11 +121,11 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
 
   int index = 0;
   cmtk::Types::DataItem value, neighbor, maskValue;
-  for ( int z = 0; z < volume->GetDims( cmtk::AXIS_Z ); ++z ) 
+  for ( int z = 0; z < volume->GetDims()[cmtk::AXIS_Z]; ++z ) 
     {
-    for ( int y = 0; y < volume->GetDims( cmtk::AXIS_Y ); ++y ) 
+    for ( int y = 0; y < volume->GetDims()[cmtk::AXIS_Y]; ++y ) 
       {
-      for ( int x = 0; x < volume->GetDims( cmtk::AXIS_X ); ++x, ++index ) 
+      for ( int x = 0; x < volume->GetDims()[cmtk::AXIS_X]; ++x, ++index ) 
 	{
 	if ( maskData && !(maskData->Get( maskValue, index ) && (maskValue != 0) ) )
 	  continue;
@@ -143,9 +144,9 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
 	      for ( int dy = -1; (dy < 2) && !isSurface; ++dy )
 		for ( int dx = -1; (dx < 2) && !isSurface; ++dx )
 		  if ( dx || dy || dz )
-		    if ( (dx+x)>=0 && (dx+x)<volume->GetDims( cmtk::AXIS_X ) && (dy+y)>=0 && (dy+y)<volume->GetDims( cmtk::AXIS_Y ) && (dz+z)>=0 && (dz+z)<volume->GetDims( cmtk::AXIS_Z ) ) 
+		    if ( (dx+x)>=0 && (dx+x)<volume->GetDims()[cmtk::AXIS_X] && (dy+y)>=0 && (dy+y)<volume->GetDims()[cmtk::AXIS_Y] && (dz+z)>=0 && (dz+z)<volume->GetDims()[cmtk::AXIS_Z] ) 
 		      {
-		      int offset = (x+dx) + volume->GetDims( cmtk::AXIS_X ) * ( ( y+dy ) + volume->GetDims( cmtk::AXIS_Y ) * (z+dz) );
+		      const int offset = (x+dx) + volume->GetDims()[cmtk::AXIS_X] * ( ( y+dy ) + volume->GetDims()[cmtk::AXIS_Y] * (z+dz) );
 		      if ( data->Get( neighbor, offset ) && ( neighbor != value ) )
 			isSurface = true;
 		      }

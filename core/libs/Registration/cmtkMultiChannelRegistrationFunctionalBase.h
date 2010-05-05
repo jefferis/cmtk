@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -142,7 +142,7 @@ protected:
   size_t m_NumberOfChannels;
 
   /// Grid dimensions of the reference volume.
-  DataGrid::IndexType m_ReferenceDims[3];
+  DataGrid::IndexType m_ReferenceDims;
 
   /// Extents of the reference volume in real-world coordinates.
   Types::Coordinate m_ReferenceSize[3];
