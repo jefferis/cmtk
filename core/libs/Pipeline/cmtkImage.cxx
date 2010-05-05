@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -84,7 +85,7 @@ Image::SetFromScalarImage
 {
   if ( scalarImage ) 
     {
-    this->SetDims( scalarImage->GetDims() );
+    this->SetDims( scalarImage->GetDims()[0], scalarImage->GetDims()[1] );
     TypedArray::SmartPtr pixelData = scalarImage->GetPixelData();
     if ( copyPixelData )
       pixelData = TypedArray::SmartPtr( pixelData->Clone() );
@@ -103,7 +104,7 @@ Image::SetFromScalarImage
 {
   if ( scalarImage )
     {
-    this->SetDims( scalarImage->GetDims() );
+    this->SetDims( scalarImage->GetDims()[0], scalarImage->GetDims()[1] );
     TypedArray::SmartPtr pixelData = scalarImage->GetPixelData();
     if ( pixelData )
       pixelData = TypedArray::SmartPtr( pixelData->Clone() );

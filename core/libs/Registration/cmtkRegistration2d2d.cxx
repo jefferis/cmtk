@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -52,7 +53,7 @@ cmtk
 void 
 Registration2d2d::Register
 ( CoordinateMatrix3x3& matrix, ScalarImage::SmartPtr& refImage,
-  ScalarImage::SmartPtr& fltImage, const IntROI2D* fltROI )
+  ScalarImage::SmartPtr& fltImage, const ScalarImage::RegionType* fltROI )
 {
   ScalarImage::SmartPtr roi( new ScalarImage( *(fltImage) ) );
 
@@ -61,8 +62,8 @@ Registration2d2d::Register
     roi->SetROI( *fltROI );
     Types::Coordinate v[8];
     matrix.Decompose( v );
-    v[0] += fltROI->From[AXIS_X] * roi->GetPixelSize( AXIS_X );
-    v[1] += fltROI->From[AXIS_Y] * roi->GetPixelSize( AXIS_Y );
+    v[0] += fltROI->From()[AXIS_X] * roi->GetPixelSize( AXIS_X );
+    v[1] += fltROI->From()[AXIS_Y] * roi->GetPixelSize( AXIS_Y );
     matrix.Compose( v );
     }
 

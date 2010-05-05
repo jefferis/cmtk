@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,7 +37,6 @@
 
 #include <cmtkMatrix3x3.h>
 #include <cmtkScalarImage.h>
-#include <cmtkRectangle.h>
 
 namespace
 cmtk
@@ -53,7 +53,7 @@ public:
   static void Register( CoordinateMatrix3x3& matrix, ScalarImage::SmartPtr& refImage, ScalarImage::SmartPtr& fltImage );
 
   /// Register two 2D images, where the second is cropped to a given ROI.
-  static void Register( CoordinateMatrix3x3& matrix, ScalarImage::SmartPtr& refImage, ScalarImage::SmartPtr& fltImage, const IntROI2D* fltROI );
+  static void Register( CoordinateMatrix3x3& matrix, ScalarImage::SmartPtr& refImage, ScalarImage::SmartPtr& fltImage, const ScalarImage::RegionType* fltROI );
 };
 
 //@}

@@ -145,7 +145,7 @@ DICOM::Read
   if ( document->getValue( DCM_PixelRepresentation, pixelRepresentation ) > 0)
     pixelDataSigned = (pixelRepresentation == 1);
   
-  unsigned long totalImageSizePixels = image->GetDims( AXIS_X ) * image->GetDims( AXIS_Y ) * image->GetNumberOfFrames();
+  unsigned long totalImageSizePixels = image->GetDims()[AXIS_X] * image->GetDims()[AXIS_Y] * image->GetNumberOfFrames();
 
   double rescaleIntercept, rescaleSlope;
   const bool haveRescaleIntercept = (0 != document->getValue( DCM_RescaleIntercept, rescaleIntercept ));

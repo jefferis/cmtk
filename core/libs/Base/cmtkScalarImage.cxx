@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -56,7 +57,7 @@ ScalarImage::ScalarImage() :
 }
 
 ScalarImage::ScalarImage
-( const unsigned int dimsx, const unsigned int dimsy, const unsigned int numberOfFrames ) :
+( const int dimsx, const int dimsy, const int numberOfFrames ) :
   HasROI( false )
 {
   this->m_Dims[0] = dimsx;
@@ -71,10 +72,10 @@ ScalarImage::ScalarImage
 
 ScalarImage::ScalarImage
 ( const ScalarImage& other, 
-  const unsigned int* roiFrom, const unsigned int* roiTo ) :
+  const int* roiFrom, const int* roiTo ) :
   HasROI( false )
 {
-  this->SetDims( other.GetDims( AXIS_X ), other.GetDims( AXIS_Y ) );
+  this->SetDims( other.m_Dims );
   this->SetPixelSize( other.GetPixelSize() );
 
   this->SetNumberOfFrames( other.GetNumberOfFrames() );
@@ -87,7 +88,8 @@ ScalarImage::ScalarImage
 
   if ( roiFrom && roiTo ) 
     {
-    this->SetDims( roiTo[0] - roiFrom[0], roiTo[1] - roiFrom[1] );
+    const Self::IndexType::ValueType dims[2] = { roiTo[0] - roiFrom[0], roiTo[1] - roiFrom[1] };
+    this->SetDims( Self::IndexType( dims ) );
     
     this->m_ImageOrigin += ( roiFrom[0] * other.GetPixelSize( AXIS_X ) * other.GetImageDirectionX() );
     this->m_ImageOrigin += ( roiFrom[1] * other.GetPixelSize( AXIS_Y ) * other.GetImageDirectionY() );
@@ -100,10 +102,10 @@ ScalarImage::ScalarImage
 	this->m_PixelData->SetPaddingPtr( otherData->GetPaddingPtr() );
       
       size_t offset = 0;
-      for ( unsigned int y = roiFrom[1]; y < roiTo[1]; ++y ) 
+      for ( int y = roiFrom[1]; y < roiTo[1]; ++y ) 
 	{
-	otherData->ConvertSubArray( this->m_PixelData->GetDataPtr( offset ), this->m_PixelData->GetType(), roiFrom[0] + y * other.GetDims( AXIS_X ), this->m_Dims[0] );
-	offset += this->m_Dims[0];
+	otherData->ConvertSubArray( this->m_PixelData->GetDataPtr( offset ), this->m_PixelData->GetType(), roiFrom[0] + y * other.m_Dims[AXIS_X], this->m_Dims[AXIS_X] );
+	offset += this->m_Dims[AXIS_X];
 	}
       }
     } 
@@ -117,10 +119,10 @@ ScalarImage::ScalarImage
 }
 
 ScalarImage::ScalarImage
-( const ScalarImage& other, const IntROI2D& roi ) :
+( const ScalarImage& other, const Self::RegionType& roi ) :
   HasROI( false )
 {
-  this->SetDims( roi.To[0] - roi.From[0], roi.To[1] - roi.From[1] );
+  this->SetDims( roi.To() - roi.From() );
   this->SetPixelSize( other.GetPixelSize() );
 
   this->SetNumberOfFrames( other.GetNumberOfFrames() );
@@ -131,8 +133,8 @@ ScalarImage::ScalarImage
   this->SetImageDirectionY( other.GetImageDirectionY() );
   this->SetImageSlicePosition( other.GetImageSlicePosition() );
 
-  this->m_ImageOrigin += ( roi.From[0] * other.GetPixelSize( AXIS_X ) * other.GetImageDirectionX() );
-  this->m_ImageOrigin += ( roi.From[1] * other.GetPixelSize( AXIS_Y ) * other.GetImageDirectionY() );
+  this->m_ImageOrigin += ( roi.From()[0] * other.GetPixelSize( AXIS_X ) * other.GetImageDirectionX() );
+  this->m_ImageOrigin += ( roi.From()[1] * other.GetPixelSize( AXIS_Y ) * other.GetImageDirectionY() );
   
   const TypedArray* otherData = other.GetPixelData();
   if ( otherData ) 
@@ -142,9 +144,9 @@ ScalarImage::ScalarImage
       this->m_PixelData->SetPaddingPtr( otherData->GetPaddingPtr() );
     
     size_t offset = 0;
-    for ( int y = roi.From[1]; y < roi.To[1]; ++y ) 
+    for ( int y = roi.From()[1]; y < roi.To()[1]; ++y ) 
       {
-      otherData->ConvertSubArray( this->m_PixelData->GetDataPtr( offset ), this->m_PixelData->GetType(), roi.From[0] + y * other.GetDims( AXIS_X ), this->m_Dims[0] );
+      otherData->ConvertSubArray( this->m_PixelData->GetDataPtr( offset ), this->m_PixelData->GetType(), roi.From()[0] + y * other.m_Dims[AXIS_X], this->m_Dims[0] );
       offset += this->m_Dims[0];
       }
     }
@@ -335,7 +337,7 @@ ScalarImage::GetPixelAtCubic
 }
 
 Vector3D 
-ScalarImage::GetImageOrigin( const unsigned int frame ) const 
+ScalarImage::GetImageOrigin( const int frame ) const 
 {
   Vector3D origin;
   if ( this->m_NumberOfFrames > 1 ) 
@@ -413,15 +415,15 @@ ScalarImage::Downsample
 
   // compensate for dimensions that connot be evenly divided by downsampling 
   // factor.
-  const unsigned int dimsY = (this->m_Dims[1] / factorY) * factorY;
-  const unsigned int dimsX = (this->m_Dims[0] / factorX) * factorX;
+  const int dimsY = (this->m_Dims[1] / factorY) * factorY;
+  const int dimsX = (this->m_Dims[0] / factorX) * factorX;
   const Types::DataItem factorXY = 1.0 / (factorX * factorY);
 
   int j = 0;
-  for ( unsigned int y = 0; y < dimsY; y += factorY, ++j ) 
+  for ( int y = 0; y < dimsY; y += factorY, ++j ) 
     {
     int i = 0;
-    for ( unsigned int x = 0; x < dimsX; x += factorX, ++i ) 
+    for ( int x = 0; x < dimsX; x += factorX, ++i ) 
       {
       Types::DataItem pixel = 0;
       for ( int yy = 0; yy < factorY; ++yy )
@@ -443,19 +445,19 @@ ScalarImage::GetMedianFiltered( const byte range ) const
 
   Types::DataItem *sort = Memory::AllocateArray<Types::DataItem>( range * range * range );
 
-  unsigned delta = (range-1) / 2;
-  unsigned offset = 0;
-  for ( unsigned y = 0; y < this->m_Dims[1]; ++y )
-    for ( unsigned x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
+  int delta = (range-1) / 2;
+  int offset = 0;
+  for ( int y = 0; y < this->m_Dims[1]; ++y )
+    for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
       {
-      const unsigned int xFrom = ( x > delta ) ? ( x - delta ) : 0;
-      const unsigned int yFrom = ( y > delta ) ? ( y - delta ) : 0;
-      const unsigned int xTo = std::min( x+delta+1, this->m_Dims[0] );
-      const unsigned int yTo = std::min( y+delta+1, this->m_Dims[1] );
+      const int xFrom = ( x > delta ) ? ( x - delta ) : 0;
+      const int yFrom = ( y > delta ) ? ( y - delta ) : 0;
+      const int xTo = std::min<int>( x+delta+1, this->m_Dims[0] );
+      const int yTo = std::min<int>( y+delta+1, this->m_Dims[1] );
       
-      unsigned int source = 0;
-      for ( unsigned int yy = yFrom; yy < yTo; ++yy )
-	for ( unsigned int xx = xFrom; xx < xTo; ++xx, ++source ) 
+      int source = 0;
+      for ( int yy = yFrom; yy < yTo; ++yy )
+	for ( int xx = xFrom; xx < xTo; ++xx, ++source ) 
 	  {
 	  this->m_PixelData->Get( sort[source], xx + this->m_Dims[0] * yy );
 	  }
@@ -469,8 +471,7 @@ ScalarImage::GetMedianFiltered( const byte range ) const
       if ( source % 2 )
 	result->Set( sort[source/2], offset );
       else
-	result->Set( (Types::DataItem) 
-		     ( 0.5 * (sort[source/2] + sort[source/2-1]) ), offset );
+	result->Set( static_cast<Types::DataItem>( ( 0.5 * (sort[source/2] + sort[source/2-1]) ) ), offset );
     }
 
   delete[] sort;
@@ -513,8 +514,8 @@ ScalarImage::GetFilteredData
 {
   if ( !this->m_PixelData ) return NULL;
 
-  const size_t filterXsize = filterX.size();
-  const size_t filterYsize = filterY.size();
+  const int filterXsize = filterX.size();
+  const int filterYsize = filterY.size();
 
   TypedArray *result = this->m_PixelData->NewTemplateArray( this->m_PixelData->GetDataSize() );
 
@@ -522,22 +523,22 @@ ScalarImage::GetFilteredData
   std::vector<Types::DataItem> pixelBufferFrom( maxDim );
   std::vector<Types::DataItem> pixelBufferTo( maxDim );
 
-  for ( unsigned int y=0; y < this->m_Dims[1]; ++y ) 
+  for ( int y=0; y < this->m_Dims[1]; ++y ) 
     {
     // copy row data to buffer
-    for ( unsigned int x=0; x < this->m_Dims[0]; ++x )
+    for ( int x=0; x < this->m_Dims[0]; ++x )
       if ( !this->m_PixelData->Get( pixelBufferFrom[x], x+y*this->m_Dims[0] ) ) 
 	pixelBufferFrom[x] = 0;
     
     // convolve row with filter
-    for ( unsigned int x=0; x < this->m_Dims[0]; ++x ) 
+    for ( int x=0; x < this->m_Dims[0]; ++x ) 
       {
       // this keeps track of outside FOV data
       Types::DataItem correctOverlap = 0;
       // central element first to initialize target value
       pixelBufferTo[x] = pixelBufferFrom[x] * filterX[0];
       // now convolve side elements
-      for ( unsigned int t=1; t < filterXsize; ++t ) 
+      for ( int t=1; t < filterXsize; ++t ) 
 	{
 	// is x-t still inside the image?
 	if ( x >= t )
@@ -557,21 +558,21 @@ ScalarImage::GetFilteredData
       pixelBufferTo[x] /= (1-correctOverlap);
     }
     
-    for ( unsigned int x=0; x < this->m_Dims[0]; ++x )
+    for ( int x=0; x < this->m_Dims[0]; ++x )
       result->Set( pixelBufferTo[x], x+y*this->m_Dims[0] );
   }
 
-  for ( unsigned int x=0; x < this->m_Dims[0]; ++x ) 
+  for ( int x=0; x < this->m_Dims[0]; ++x ) 
     {
-    for ( unsigned int y=0; y < this->m_Dims[1]; ++y )
+    for ( int y=0; y < this->m_Dims[1]; ++y )
       if ( !result->Get( pixelBufferFrom[y], x+this->m_Dims[0]*y ) ) 
 	pixelBufferFrom[y] = 0;
 
-    for ( unsigned int y=0; y < this->m_Dims[1]; ++y ) 
+    for ( int y=0; y < this->m_Dims[1]; ++y ) 
       {
       Types::DataItem correctOverlap = 0;
       pixelBufferTo[y] = pixelBufferFrom[y] * filterY[0];
-      for ( unsigned int t=1; t < filterYsize; ++t ) 
+      for ( int t=1; t < filterYsize; ++t ) 
 	{
 	if ( y >= t )
 	  pixelBufferTo[y] += pixelBufferFrom[y-t] * filterY[t];
@@ -588,7 +589,7 @@ ScalarImage::GetFilteredData
     }
     
     // write back convolved data
-    for ( unsigned int y=0; y < this->m_Dims[1]; ++y )
+    for ( int y=0; y < this->m_Dims[1]; ++y )
       result->Set( pixelBufferTo[y], x+this->m_Dims[0]*y );
   }
 
@@ -605,8 +606,8 @@ ScalarImage::GetSobel2DFiltered() const
   Types::DataItem fov[3][3];
   size_t offset = 0;
 
-  for ( unsigned int y = 0; y < this->m_Dims[1]; ++y )
-    for ( unsigned int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
+  for ( int y = 0; y < this->m_Dims[1]; ++y )
+    for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
       {
       Types::DataItem value = 0;
       if ( x && y && (x<this->m_Dims[0]-1) && (y<this->m_Dims[1]-1) ) 
@@ -639,8 +640,8 @@ ScalarImage::GetSobelFiltered( const bool horizontal, const bool absolute )
   size_t offset = 0;
 
   if ( horizontal )
-    for ( unsigned int y = 0; y < this->m_Dims[1]; ++y )
-      for ( unsigned int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
+    for ( int y = 0; y < this->m_Dims[1]; ++y )
+      for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
 	{
 	Types::DataItem value = 0;
 	if ( x && y && (x<this->m_Dims[0]-1) && (y<this->m_Dims[1]-1) ) 
@@ -656,8 +657,8 @@ ScalarImage::GetSobelFiltered( const bool horizontal, const bool absolute )
 	result->Set( value, offset );
 	}
   else
-    for ( unsigned int y = 0; y < this->m_Dims[1]; ++y )
-      for ( unsigned int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
+    for ( int y = 0; y < this->m_Dims[1]; ++y )
+      for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
 	{
 	Types::DataItem value = 0;
 	if ( x && y && (x<this->m_Dims[0]-1) && (y<this->m_Dims[1]-1) ) 
@@ -686,8 +687,8 @@ ScalarImage::GetLaplace2DFiltered() const
   Types::DataItem fov[3][3];
   size_t offset = 0;
 
-  for ( unsigned int y = 0; y < this->m_Dims[1]; ++y )
-    for ( unsigned int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
+  for ( int y = 0; y < this->m_Dims[1]; ++y )
+    for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
       {
       Types::DataItem value = 0;
       if ( x && y && (x<this->m_Dims[0]-1) && (y<this->m_Dims[1]-1) ) 
@@ -762,7 +763,7 @@ void ScalarImage::Mirror( const bool horizontal, const bool vertical )
 {
   if ( vertical ) 
     {
-    for ( unsigned int y = 0; y < this->m_Dims[1]/2; ++y ) 
+    for ( int y = 0; y < this->m_Dims[1]/2; ++y ) 
       {
       this->m_PixelData->BlockSwap( y * this->m_Dims[0], (this->m_Dims[1]-y-1) * this->m_Dims[0], this->m_Dims[0] );
       }
@@ -772,7 +773,7 @@ void ScalarImage::Mirror( const bool horizontal, const bool vertical )
   
   if ( horizontal ) 
     {
-    for ( unsigned int y = 0; y < this->m_Dims[1]; ++y ) 
+    for ( int y = 0; y < this->m_Dims[1]; ++y ) 
       {
       this->m_PixelData->BlockReverse( y * this->m_Dims[0], this->m_Dims[0] );
       }
@@ -814,7 +815,7 @@ ScalarImage::AdjustAspect( const bool interpolate )
 void
 ScalarImage::AdjustAspectY( const bool interpolate )
 {
-  unsigned int newDimsY = static_cast<unsigned int>( (this->m_Dims[1]-1) * this->m_PixelSize[1]/this->m_PixelSize[0] ) + 1;
+  int newDimsY = static_cast<int>( (this->m_Dims[1]-1) * this->m_PixelSize[1]/this->m_PixelSize[0] ) + 1;
   
   TypedArray *scaled = this->m_PixelData->NewTemplateArray( this->m_Dims[0] * newDimsY );
   
@@ -826,12 +827,12 @@ ScalarImage::AdjustAspectY( const bool interpolate )
     this->m_PixelData->GetSubArray( &(row1[0]), this->m_Dims[0], this->m_Dims[0] );
     
     Types::Coordinate scanLine = 0;
-    size_t ySource = 0;
+    int ySource = 0;
     size_t offset = 0;
-    for ( unsigned int y = 0; y < newDimsY; ++y ) 
+    for ( int y = 0; y < newDimsY; ++y ) 
       {
       Types::Coordinate factor = scanLine / this->m_PixelSize[1];
-      for ( unsigned int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
+      for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
 	{
 	scaled->Set( (1.0 - factor ) * row0[x] + factor * row1[x], offset );
 	}
@@ -854,8 +855,8 @@ ScalarImage::AdjustAspectY( const bool interpolate )
     
     Types::Coordinate scanLineOffset = this->m_PixelSize[1] / 2;
     Types::Coordinate scanLine = scanLineOffset; // correct offset for NN
-    size_t ySource = 0;
-    for ( unsigned int y = 0; y < newDimsY; ++y ) 
+    int ySource = 0;
+    for ( int y = 0; y < newDimsY; ++y ) 
       {
       memcpy( scaledPtr, pixelPtr, scaled->GetItemSize() * this->m_Dims[0] );
       scanLine += this->m_PixelSize[0];
@@ -877,18 +878,18 @@ ScalarImage::AdjustAspectY( const bool interpolate )
 void
 ScalarImage::AdjustAspectX( const bool interpolate )
 {
-  unsigned int newDimsX = static_cast<unsigned int>( (this->m_Dims[0]-1) * this->m_PixelSize[0]/this->m_PixelSize[1] ) + 1;
+  int newDimsX = static_cast<int>( (this->m_Dims[0]-1) * this->m_PixelSize[0]/this->m_PixelSize[1] ) + 1;
   
   TypedArray *scaled = this->m_PixelData->NewTemplateArray( newDimsX * this->m_Dims[1] );
   
   if ( interpolate ) 
     {
     std::vector<Types::Coordinate> factor( newDimsX );
-    std::vector<unsigned int> fromPixel( newDimsX );
+    std::vector<int> fromPixel( newDimsX );
     
     Types::Coordinate scanLine = 0;
-    size_t xSource = 0;
-    for ( unsigned int x = 0; x < newDimsX; ++x ) 
+    int xSource = 0;
+    for ( int x = 0; x < newDimsX; ++x ) 
       {
       fromPixel[x] = xSource;
       factor[x] = scanLine / this->m_PixelSize[0];
@@ -902,10 +903,10 @@ ScalarImage::AdjustAspectX( const bool interpolate )
     
     std::vector<Types::DataItem> rowFrom( this->m_Dims[0] );
     size_t offset = 0;
-    for ( unsigned int y = 0; y < this->m_Dims[1]; ++y ) 
+    for ( int y = 0; y < this->m_Dims[1]; ++y ) 
       {
       this->m_PixelData->GetSubArray( &(rowFrom[0]), y * this->m_Dims[0], this->m_Dims[0] );
-      for ( unsigned int x = 0; x < newDimsX; ++x, ++offset ) 
+      for ( int x = 0; x < newDimsX; ++x, ++offset ) 
 	{
 	scaled->Set( (1.0 - factor[x] ) * rowFrom[fromPixel[x]] + factor[x] * rowFrom[fromPixel[x]+1], offset );
 	}
@@ -914,9 +915,9 @@ ScalarImage::AdjustAspectX( const bool interpolate )
   else
     {
     Types::Coordinate scanLine = this->m_PixelSize[0] / 2; // correct offset for NN
-    size_t xSource = 0;
-    std::vector<unsigned int> fromPixel( newDimsX );
-    for ( unsigned int x = 0; x < newDimsX; ++x ) 
+    int xSource = 0;
+    std::vector<int> fromPixel( newDimsX );
+    for ( int x = 0; x < newDimsX; ++x ) 
       {
       fromPixel[x] = xSource * scaled->GetItemSize();
       scanLine += this->m_PixelSize[1];
@@ -931,9 +932,9 @@ ScalarImage::AdjustAspectX( const bool interpolate )
     char *scaledPtr = static_cast<char*>( scaled->GetDataPtr() );
     const char *pixelPtr = static_cast<char*>( this->m_PixelData->GetDataPtr() );
     
-    for ( unsigned int y = 0; y < this->m_Dims[1]; ++y ) 
+    for ( int y = 0; y < this->m_Dims[1]; ++y ) 
       {
-      for ( unsigned int x = 0; x < newDimsX; ++x ) 
+      for ( int x = 0; x < newDimsX; ++x ) 
 	{
 	memcpy( scaledPtr, pixelPtr+fromPixel[x], scaled->GetItemSize() );
 	scaledPtr += scaled->GetItemSize();
@@ -949,7 +950,7 @@ ScalarImage::AdjustAspectX( const bool interpolate )
 
 void
 ScalarImage::ProjectPixel
-( const Vector3D& v, unsigned int& i, unsigned int& j ) const
+( const Vector3D& v, int& i, int& j ) const
 {
   Vector3D p(v);
   p.XYZ[0] -= this->m_ImageOrigin[0];

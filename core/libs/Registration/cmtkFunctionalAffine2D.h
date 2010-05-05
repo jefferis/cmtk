@@ -45,7 +45,6 @@
 #include <cmtkJointHistogram.h>
 
 #include <cmtkScalarImageSimilarity.h>
-#include <cmtkRectangle.h>
 
 #include <vector>
 
@@ -82,10 +81,10 @@ public:
   typedef Functional Superclass;
 
   /// Contructor.
-  FunctionalAffine2D( ScalarImage::SmartPtr& refImage, ScalarImage::SmartPtr& fltImage, const IntROI2D* fltROI = NULL );
+  FunctionalAffine2D( ScalarImage::SmartPtr& refImage, ScalarImage::SmartPtr& fltImage, const ScalarImage::RegionType* fltROI = NULL );
 
   /// Contructor.
-  FunctionalAffine2D( std::vector<ScalarImage::SmartPtr>& refImage, std::vector<ScalarImage::SmartPtr>& fltImage, const IntROI2D* fltROI = NULL );
+  FunctionalAffine2D( std::vector<ScalarImage::SmartPtr>& refImage, std::vector<ScalarImage::SmartPtr>& fltImage, const ScalarImage::RegionType* fltROI = NULL );
 
   /// Virtual destructor (dummy).
   ~FunctionalAffine2D() {};

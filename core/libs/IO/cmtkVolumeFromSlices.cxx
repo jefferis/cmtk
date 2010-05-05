@@ -110,8 +110,8 @@ VolumeFromSlices::InitSequence
 
   ImagePosition = image->GetImageOrigin();
 
-  Dims[0] = image->GetDims( AXIS_X );
-  Dims[1] = image->GetDims( AXIS_Y );
+  Dims[0] = image->GetDims()[AXIS_X];
+  Dims[1] = image->GetDims()[AXIS_Y];
   Dims[2] = numberOfSlices;
 
   BytesPerPixel = image->GetPixelData()->GetItemSize();
@@ -187,7 +187,7 @@ VolumeFromSlices::FillPlane
   char* rawDataPtr = static_cast<char*>( VolumeDataArray->GetDataPtr() );
 
   unsigned int bytesPerBlock = BytesPerPixel * Dims[0] * Dims[1];
-  for ( unsigned int planeIdx = 0; planeIdx < image->GetNumberOfFrames(); ++planeIdx, ++plane ) 
+  for ( int planeIdx = 0; planeIdx < image->GetNumberOfFrames(); ++planeIdx, ++plane ) 
     {
     const char *check = this->CheckImage( plane, image, planeIdx );
     if ( check ) return check;
@@ -277,7 +277,7 @@ const char*
 VolumeFromSlices::CheckImage
 ( const int plane, const ScalarImage* image, const unsigned int frame )
 {
-  if ( ( static_cast<unsigned int>(Dims[0]) != image->GetDims( AXIS_X ) ) || ( static_cast<unsigned int>(Dims[1]) != image->GetDims( AXIS_Y ) ) )
+  if ( ( this->Dims[0] != image->GetDims()[AXIS_X] ) || ( this->Dims[1] != image->GetDims()[AXIS_Y] ) )
     return "Image size mismatch";
   
   if ( ( fabs( image->GetPixelSize( AXIS_X ) - Spacing[0] ) > CMTK_MAX_CALIB_ERROR ) ||

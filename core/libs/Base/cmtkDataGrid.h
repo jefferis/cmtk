@@ -40,7 +40,6 @@
 #include <cmtkTypedArray.h>
 #include <cmtkVector3D.h>
 #include <cmtkScalarImage.h>
-#include <cmtkRectangle.h>
 #include <cmtkIndex.h>
 #include <cmtkRegion.h>
 #include <cmtkMetaInformationObject.h>

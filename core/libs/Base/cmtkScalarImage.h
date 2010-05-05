@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2010 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -38,8 +39,9 @@
 
 #include <cmtkTypes.h>
 #include <cmtkTypedArray.h>
+#include <cmtkIndex.h>
+#include <cmtkRegion.h>
 #include <cmtkVector3D.h>
-#include <cmtkRectangle.h>
 #include <cmtkMatrix3x3.h>
 #include <cmtkInterpolator.h>
 
@@ -59,11 +61,8 @@ cmtk
  */
 class ScalarImage
 {
-  /// Image dimensions.
-  cmtkGetSetMacro2Array(unsigned int,Dims);
-
   /// Number of image frames for multi-frame images.
-  cmtkGetSetMacro(unsigned int,NumberOfFrames);
+  cmtkGetSetMacro(int,NumberOfFrames);
 
   /// Pixel data.
   cmtkGetSetMacro(TypedArray::SmartPtr,PixelData);
@@ -75,14 +74,26 @@ class ScalarImage
   cmtkGetSetMacro(Types::Coordinate,FrameToFrameSpacing);
 
 public:
+  /// This class.
+  typedef ScalarImage Self;
+
   /// Smart pointer to ScalarImage
-  typedef SmartPointer<ScalarImage> SmartPtr;
+  typedef SmartPointer<Self> SmartPtr;
+
+  /// Smart pointer to const ScalarImage
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
+  /// Pixel index type.
+  typedef Index<2,int> IndexType;
+
+  /// Region type.
+  typedef Region<2,int> RegionType;
 
   /// Default constructor creates empty image.
   ScalarImage();
 
   /// Constructor with separate x and y dimensions.
-  ScalarImage( const unsigned int dimsx, const unsigned int dimsy, const unsigned int numberOfFrames = 1 );
+  ScalarImage( const int dimsx, const int dimsy, const int numberOfFrames = 1 );
 
   /** Get ROI as sub-image.
    *\param roiFrom The (x,y) pixel of the original image that will make up the
@@ -94,14 +105,26 @@ public:
    * cropped image. The cropped image dimension is therefore
    * (1+roiTo[0]-roiFrom[0],1+roiTo[0]-roiFrom[0]).
    */
-  ScalarImage( const ScalarImage& other, const unsigned int* roiFrom = NULL, const unsigned int* roiTo = NULL );
+  ScalarImage( const ScalarImage& other, const int* roiFrom = NULL, const int* roiTo = NULL );
 
   /** Get ROI as sub-image.
    */
-  ScalarImage( const ScalarImage& other, const IntROI2D& roi );
+  ScalarImage( const ScalarImage& other, const Self::RegionType& roi );  
 
   /// Virtual destructor.
   virtual ~ScalarImage() {}
+
+  /// Set dimensions.
+  virtual void SetDims( const Self::IndexType& dims )
+  {
+    this->m_Dims = dims;
+  }
+
+  /// Get dimensions.
+  const Self::IndexType GetDims() const
+  {
+    return this->m_Dims;
+  }
 
   /** Interpolate sub-image with affine transformation.
    */
@@ -110,7 +133,7 @@ public:
     const;
 
   /// Set region of interest.
-  void SetROI( const IntROI2D& roi ) 
+  void SetROI( const Self::RegionType& roi ) 
   {
     ROI = roi;
     HasROI = true;
@@ -148,7 +171,7 @@ public:
   }
 
   /// Get image origin of given frame (default: 0).
-  Vector3D GetImageOrigin( const unsigned int frame = 0 ) const;
+  Vector3D GetImageOrigin( const int frame = 0 ) const;
 
   /** Direction of image rows relative to ImageOrigin.
    */
@@ -170,13 +193,13 @@ public:
   cmtkGetSetMacro(Types::Coordinate,ImageTiltAngle);
 
   /// Get number of pixels.
-  unsigned int GetNumberOfPixels() const 
+  int GetNumberOfPixels() const 
   { 
     return this->m_Dims[0] * this->m_Dims[1];
   }
 
   /// Get pixel at 2-D index.
-  Types::DataItem GetPixelAt( const unsigned int i, const unsigned int j ) const 
+  Types::DataItem GetPixelAt( const int i, const int j ) const 
   {
     Types::DataItem value;
     if ( this->m_PixelData->Get( value, i + this->m_Dims[0] * j ) ) 
@@ -197,7 +220,7 @@ public:
   bool GetPixelAtCubic( Types::DataItem& value, const Types::Coordinate i, const Types::Coordinate j ) const;
 
   /// Set pixel at 2-D index.
-  void SetPixelAt( const unsigned int i, const unsigned int j, const Types::DataItem data ) 
+  void SetPixelAt( const int i, const int j, const Types::DataItem data ) 
   {
     this->m_PixelData->Set( data, i + this->m_Dims[0] * j );
   }
@@ -317,7 +340,7 @@ public:
    *@param i Index of projected pixel in x direction.
    *@param j Index of projected pixel in y direction.
    */
-  void ProjectPixel( const Vector3D& v, unsigned int& i, unsigned int& j ) const;
+  void ProjectPixel( const Vector3D& v, int& i, int& j ) const;
   
   /// Subtract one image from another in place.
   ScalarImage& operator-=( const ScalarImage& );
@@ -326,8 +349,11 @@ public:
   virtual void Print() const;
 
 private:
+  /// Image dimensions
+  Self::IndexType m_Dims;
+
   /// Cropping region of interest.
-  IntROI2D ROI;
+  Self::RegionType ROI;
 
   /// Flag for validity of ROI.
   bool HasROI;

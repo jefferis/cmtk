@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+/
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -194,8 +195,8 @@ ScalarImageSimilarity::GetPatternIntensity
   TypedArray::SmartPtr diff( TypedArraySimilarity::GetDifferenceArray( image0->GetPixelData(), image1->GetPixelData(), scaleFactor ) );
   
   // first, loop over all pixels in the images.
-  const int dimsX = image0->GetDims(AXIS_X);
-  const int dimsY = image0->GetDims(AXIS_Y);
+  const int dimsX = image0->GetDims()[AXIS_X];
+  const int dimsY = image0->GetDims()[AXIS_Y];
 
   size_t offset = 0;
   for ( int j = 0; j < dimsY; ++j ) 

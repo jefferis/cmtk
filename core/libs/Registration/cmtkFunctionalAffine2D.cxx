@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -49,7 +50,7 @@ cmtk
 //@{
 
 FunctionalAffine2D::FunctionalAffine2D
-( ScalarImage::SmartPtr& refImage, ScalarImage::SmartPtr& fltImage, const IntROI2D* fltROI ) 
+( ScalarImage::SmartPtr& refImage, ScalarImage::SmartPtr& fltImage, const ScalarImage::RegionType* fltROI ) 
   : m_NumberDOFs( 6 ),
     m_SimilarityMeasure( ScalarImageSimilarity::MI ),
     m_HistogramEqualization( false ),
@@ -68,8 +69,8 @@ FunctionalAffine2D::FunctionalAffine2D
     }
   
   // initialize transformation
-  this->Parameters[0] = (fltROI) ? fltROI->From[0] * this->FltImages[0]->GetPixelSize(0) : 0;
-  this->Parameters[1] = (fltROI) ? fltROI->From[1] * this->FltImages[0]->GetPixelSize(1) : 0;
+  this->Parameters[0] = (fltROI) ? fltROI->From()[0] * this->FltImages[0]->GetPixelSize(0) : 0;
+  this->Parameters[1] = (fltROI) ? fltROI->From()[1] * this->FltImages[0]->GetPixelSize(1) : 0;
 
   // no rotation
   this->Parameters[2] = 0.0;
@@ -81,8 +82,8 @@ FunctionalAffine2D::FunctionalAffine2D
   this->Parameters[5] = 0.0;
 
   // center is center of ROI floating image.
-  this->Parameters[6] = 0.5 * this->FltImagesROI[0]->GetPixelSize( 0 ) * ( this->FltImagesROI[0]->GetDims(0)-1 );
-  this->Parameters[7] = 0.5 * this->FltImagesROI[0]->GetPixelSize( 0 ) * ( this->FltImagesROI[0]->GetDims(1)-1 );
+  this->Parameters[6] = 0.5 * this->FltImagesROI[0]->GetPixelSize( 0 ) * ( this->FltImagesROI[0]->GetDims()[0]-1 );
+  this->Parameters[7] = 0.5 * this->FltImagesROI[0]->GetPixelSize( 0 ) * ( this->FltImagesROI[0]->GetDims()[1]-1 );
   
   this->Transformation.Compose( this->Parameters.Elements );
 }
@@ -90,7 +91,7 @@ FunctionalAffine2D::FunctionalAffine2D
 FunctionalAffine2D::FunctionalAffine2D
 ( std::vector<ScalarImage::SmartPtr>& refImages, 
   std::vector<ScalarImage::SmartPtr>& fltImages,
-  const IntROI2D* fltROI ) 
+  const ScalarImage::RegionType* fltROI ) 
   : m_NumberDOFs( 6 ),
     m_SimilarityMeasure( ScalarImageSimilarity::MI ),
     m_HistogramEqualization( false ),
@@ -115,8 +116,8 @@ FunctionalAffine2D::FunctionalAffine2D
     }
   
   // initialize transformation
-  this->Parameters[0] = (fltROI) ? fltROI->From[0] * this->FltImages[0]->GetPixelSize(0) : 0;
-  this->Parameters[1] = (fltROI) ? fltROI->From[1] * this->FltImages[0]->GetPixelSize(1) : 0;
+  this->Parameters[0] = (fltROI) ? fltROI->From()[0] * this->FltImages[0]->GetPixelSize(0) : 0;
+  this->Parameters[1] = (fltROI) ? fltROI->From()[1] * this->FltImages[0]->GetPixelSize(1) : 0;
   
   // no rotation
   this->Parameters[2] = 0.0;
@@ -128,8 +129,8 @@ FunctionalAffine2D::FunctionalAffine2D
   this->Parameters[5] = 0.0;
 
   // center is center of ROI floating image.
-  this->Parameters[6] = 0.5 * this->FltImagesROI[0]->GetPixelSize( 0 ) * ( this->FltImagesROI[0]->GetDims(0)-1 );
-  this->Parameters[7] = 0.5 * this->FltImagesROI[0]->GetPixelSize( 0 ) * ( this->FltImagesROI[0]->GetDims(1)-1 );
+  this->Parameters[6] = 0.5 * this->FltImagesROI[0]->GetPixelSize( 0 ) * ( this->FltImagesROI[0]->GetDims()[0]-1 );
+  this->Parameters[7] = 0.5 * this->FltImagesROI[0]->GetPixelSize( 0 ) * ( this->FltImagesROI[0]->GetDims()[1]-1 );
   
   this->Transformation.Compose( this->Parameters.Elements );
 }
@@ -159,26 +160,26 @@ FunctionalAffine2D::GetParamStep
     case 2: 
     {
     // rotation
-    const Types::Coordinate minSize = std::min( FltImagesROI[0]->GetDims( AXIS_X ) * FltImagesROI[0]->GetPixelSize( AXIS_X ),
-					    FltImagesROI[0]->GetDims( AXIS_Y ) * FltImagesROI[0]->GetPixelSize( AXIS_Y ) );
+    const Types::Coordinate minSize = 
+      std::min( FltImagesROI[0]->GetDims()[AXIS_X] * FltImagesROI[0]->GetPixelSize( AXIS_X ), FltImagesROI[0]->GetDims()[AXIS_Y] * FltImagesROI[0]->GetPixelSize( AXIS_Y ) );
     return Units::Degrees( MathUtil::ArcTan( 2 * mmStep / minSize ) ).Value();
     }
     case 3: 
     {
     // scale x
-    const Types::Coordinate size = FltImagesROI[0]->GetDims( AXIS_X ) * FltImagesROI[0]->GetPixelSize( AXIS_X );
+    const Types::Coordinate size = FltImagesROI[0]->GetDims()[AXIS_X] * FltImagesROI[0]->GetPixelSize( AXIS_X );
     return 2 * mmStep / size;
     }
     case 4: 
     {
     // scale y
-    const Types::Coordinate size = FltImagesROI[0]->GetDims( AXIS_Y ) * FltImagesROI[0]->GetPixelSize( AXIS_Y );
+    const Types::Coordinate size = FltImagesROI[0]->GetDims()[AXIS_Y] * FltImagesROI[0]->GetPixelSize( AXIS_Y );
     return 2 * mmStep / size;
     }
     case 5:
     {
     // shear
-    const Types::Coordinate sizeYX = 2.0 / (FltImagesROI[0]->GetDims( AXIS_X ) * FltImagesROI[0]->GetPixelSize( AXIS_X ));
+    const Types::Coordinate sizeYX = 2.0 / (FltImagesROI[0]->GetDims()[AXIS_X] * FltImagesROI[0]->GetPixelSize( AXIS_X ));
     return sizeYX;
     }
     }

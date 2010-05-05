@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -46,9 +47,9 @@ ScalarImageSimilarity::GetRegionalMutualInformation
 ( const ScalarImage* image0, const ScalarImage* image1, const int radius )
 {
   // printf("REGIONAL MUTUAL INFORMATION\n");
-  const unsigned int* Dims = image0->GetDims();
-  int nrows = Dims[1];
-  int ncols = Dims[0];
+  const ScalarImage::IndexType& dims = image0->GetDims();
+  int nrows = dims[1];
+  int ncols = dims[0];
   
   int d = 2*radius+1;
   int N = (ncols-2*radius)*(nrows-2*radius);

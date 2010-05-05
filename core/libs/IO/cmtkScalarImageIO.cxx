@@ -186,8 +186,8 @@ ScalarImageIO::WriteAnalyze
   header.StoreField<short>( 40, 4 );
 
   // dimensions
-  header.StoreField<short>( 42, image->GetDims( AXIS_X ) );
-  header.StoreField<short>( 44, image->GetDims( AXIS_Y ) );
+  header.StoreField<short>( 42, image->GetDims()[AXIS_X] );
+  header.StoreField<short>( 44, image->GetDims()[AXIS_Y] );
   header.StoreField<short>( 46, 1 );
   header.StoreField<short>( 48, 1 ); // write dims 3-7
   header.StoreField<short>( 50, 0 ); // just for safety
