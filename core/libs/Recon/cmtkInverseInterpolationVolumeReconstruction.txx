@@ -1,6 +1,7 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
+//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -235,7 +236,7 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
   for ( int dim = 0; dim < 3; ++dim )
     {
     corners[0][dim] = std::max( currentCorrectedGridPoint[dim] - TInterpolator::RegionSizeLeftRight, 0 );
-    corners[1][dim] = std::min( currentCorrectedGridPoint[dim] + TInterpolator::RegionSizeLeftRight, correctedImage->GetDims(dim)-1 );
+    corners[1][dim] = std::min( currentCorrectedGridPoint[dim] + TInterpolator::RegionSizeLeftRight, correctedImage->GetDims()[dim]-1 );
     }
 
   Vector3D corners3D[8];

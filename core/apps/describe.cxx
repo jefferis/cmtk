@@ -128,7 +128,7 @@ main( int argc, char *argv[] )
 	{
 	fprintf( stdout, "FNAME\t%s\n", next );            
 	fprintf( stdout, "FORMAT\t%s\n", volume->m_MetaInformation[cmtk::META_FILEFORMAT_ORIGINAL].c_str() );
-	fprintf( stdout, "XDIM\t%d\nYDIM\t%d\nZDIM\t%d\n", volume->GetDims( cmtk::AXIS_X ), volume->GetDims( cmtk::AXIS_Y ), volume->GetDims( cmtk::AXIS_Z ) );
+	fprintf( stdout, "XDIM\t%d\nYDIM\t%d\nZDIM\t%d\n", volume->GetDims()[cmtk::AXIS_X], volume->GetDims()[cmtk::AXIS_Y], volume->GetDims()[cmtk::AXIS_Z] );
 	fprintf( stdout, "ORIENT\t%s\n", orientOriginal ? orientOriginal : "UNKNOWN" );
       
 	if ( uniform ) 
@@ -159,7 +159,7 @@ main( int argc, char *argv[] )
 	{
 	fprintf( stdout, "File: %s\n", next );            
 	fprintf( stdout, "File format: %s\n", volume->m_MetaInformation[cmtk::META_FILEFORMAT_ORIGINAL].c_str() );
-	fprintf( stdout, "%d x %d x %d voxels\n", volume->GetDims( cmtk::AXIS_X ), volume->GetDims( cmtk::AXIS_Y ), volume->GetDims( cmtk::AXIS_Z ) );
+	fprintf( stdout, "%d x %d x %d voxels\n", volume->GetDims()[cmtk::AXIS_X], volume->GetDims()[cmtk::AXIS_Y], volume->GetDims()[cmtk::AXIS_Z] );
 
 	fprintf( stdout, "Original image orientation: %s\n", orientOriginal ? orientOriginal : "UNKNOWN" );
       

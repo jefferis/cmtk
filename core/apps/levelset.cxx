@@ -1,6 +1,7 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
+//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -123,10 +124,10 @@ main( int argc, char* argv[] )
   cmtk::UniformVolume::SmartPtr levelset( volume->CloneGrid() );
   levelset->CreateDataArray( cmtk::TYPE_FLOAT );
   levelset->GetData()->Fill( -1.0 );
-  cmtk::Vector3D center( volume->GetDims(0)/2, volume->GetDims(1)/2, volume->GetDims(2)/2 );
+  cmtk::Vector3D center( volume->GetCenterCropRegion() );
 
   cmtk::UniformVolumePainter painter( levelset );
-  painter.DrawSphere( center, (levelset->GetDims(0)+levelset->GetDims(1)+levelset->GetDims(2))/6, 1.0 );
+  painter.DrawSphere( center, (levelset->GetDims()[0]+levelset->GetDims()[1]+levelset->GetDims()[2])/6, 1.0 );
 
   size_t nInsideOld = 0, nInside = 1;
 

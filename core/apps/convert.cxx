@@ -365,7 +365,7 @@ main( int argc, char* argv[] )
     {
     if ( CropImages )
       {
-      volume->SetCropRegion( CropImagesRegionFrom, CropImagesRegionTo );
+      volume->CropRegion() = CropImagesRegion;
       volume = cmtk::UniformVolume::SmartPtr( volume->GetCroppedVolume() );
       volumeData = volume->GetData();
       }
@@ -383,7 +383,7 @@ main( int argc, char* argv[] )
     
     if ( CropXformOutFileName )
       {
-      const DataGrid::CoordinateRegionType crop = volume->GetCropRegionCoordinates();
+      const cmtk::UniformVolume::CoordinateRegionType crop = volume->GetCropRegionCoordinates();
       
       cmtk::StudyList slist;
       cmtk::Study::SmartPtr refstudy = slist.AddStudy( OutFileName );
