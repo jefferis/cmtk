@@ -1,6 +1,7 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -35,6 +36,7 @@
 #include <cmtkConsole.h>
 #include <cmtkTimers.h>
 
+#include <cmtkRegion.h>
 #include <cmtkUniformVolume.h>
 #include <cmtkVolumeIO.h>
 
@@ -99,8 +101,7 @@ cmtk::Types::DataItem ReplaceInfNaN = 0;
 bool ReplaceInfNaNFlag = false;
 
 bool CropImages = false;
-int CropImagesRegionFrom[3] = { 0,0,0 };
-int CropImagesRegionTo[3] = { 0,0,0 };
+cmtk::DataGrid::RegionType CropImagesRegion;
 
 bool AutoCrop = false;
 cmtk::Types::DataItem AutoCropThreshold = 0;
@@ -126,9 +127,13 @@ InvertFunction( const cmtk::Types::DataItem value )
 void
 CallbackCropImages( const char* arg )
 {
-  CropImages = (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d",
-			     &CropImagesRegionFrom[0], &CropImagesRegionFrom[1], &CropImagesRegionFrom[2],
-			     &CropImagesRegionTo[0], &CropImagesRegionTo[1], &CropImagesRegionTo[2] ) );
+  int cropFrom[3], cropTo[3];
+  CropImages = (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d", cropFrom, cropFrom+1, cropFrom+2, cropTo,cropTo+1,cropTo+2 ) );
+
+  if ( CropImages )
+    {
+    CropImagesRegion = cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType( cropFrom ), cmtk::DataGrid::IndexType( cropTo ) );
+    }
 }
 
 bool BoundaryMap = false;
@@ -346,13 +351,13 @@ main( int argc, char* argv[] )
   if ( CropFileName ) 
     {
     std::ifstream cropStream( CropFileName );
-    int cropFrom[3], cropTo[3];
-    cropStream >> cropFrom[0] >> cropFrom[1] >> cropFrom[2] >> cropTo[0] >> cropTo[1] >> cropTo[2];
+    cmtk::DataGrid::RegionType crop;
+    cropStream >> crop;
     
     if ( Verbose )
-      cmtk::StdErr.printf( "Cropping between [%d,%d,%d] and [%d,%d,%d].\n", cropFrom[0], cropFrom[1], cropFrom[2], cropTo[0], cropTo[1], cropTo[2] );
+      cmtk::StdErr.printf( "Cropping between [%d,%d,%d] and [%d,%d,%d].\n", crop.From()[0], crop.From()[1], crop.From()[2], crop.To()[0], crop.To()[1], crop.To()[2] );
     
-    volume->SetCropRegion( cropFrom, cropTo );
+    volume->CropRegion() = crop;
     volume = cmtk::UniformVolume::SmartPtr( volume->GetCroppedVolume() );
     volumeData = volume->GetData();
     }
@@ -372,21 +377,19 @@ main( int argc, char* argv[] )
 
     if ( Verbose )
       {
-      int cropFrom[3], cropTo[3];
-      volume->GetCropRegion( cropFrom, cropTo );
-      printf( "AutoCrop %d,%d,%d,%d,%d,%d\n", cropFrom[0], cropFrom[1], cropFrom[2], cropTo[0], cropTo[1], cropTo[2] );
+      const cmtk::DataGrid::RegionType& crop = volume->CropRegion();
+      printf( "AutoCrop %d,%d,%d,%d,%d,%d\n", crop.From()[0], crop.From()[1], crop.From()[2], crop.To()[0], crop.To()[1], crop.To()[2] );
       }
-
+    
     if ( CropXformOutFileName )
       {
-      cmtk::Types::Coordinate cropFrom[3], cropTo[3];
-      volume->GetCropRegion( cropFrom, cropTo );
-
+      const DataGrid::CoordinateRegionType crop = volume->GetCropRegionCoordinates();
+      
       cmtk::StudyList slist;
       cmtk::Study::SmartPtr refstudy = slist.AddStudy( OutFileName );
       cmtk::Study::SmartPtr fltstudy = slist.AddStudy( InFileName );
       
-      const cmtk::Types::Coordinate parameters[15] = { cropFrom[0], cropFrom[1], cropFrom[2], 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 };
+      const cmtk::Types::Coordinate parameters[15] = { crop.From()[0], crop.From()[1], crop.From()[2], 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 };
       
       cmtk::AffineXform::SmartPtr affineXform( new cmtk::AffineXform( parameters ) );
       slist.AddXform( refstudy, fltstudy, affineXform );
