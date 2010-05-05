@@ -129,7 +129,7 @@ std::ofstream& operator<<( std::ofstream& stream, const Index<NDIM,T>& index )
 
 /// Stream output operator.
 template<size_t NDIM,typename T>
-std::ofstream& operator>>( std::ofstream& stream, Index<NDIM,T>& index )
+std::ifstream& operator>>( std::ifstream& stream, Index<NDIM,T>& index )
 {
   for ( size_t i = 0; i < NDIM; ++i )
     stream >> index[i];
