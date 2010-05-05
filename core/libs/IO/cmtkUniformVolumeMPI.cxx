@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -53,7 +54,7 @@ Broadcast
 {
   const size_t msgBufferHdrSize = 
     3 * sizeof(int) + // Dims[0..2]
-    6 * sizeof(int) + // CropFrom[0..2], CropTo[0..2]
+    6 * sizeof(int) + // CropRegion.From[0..2], CropRegion.To[0..2]
     3 * sizeof( Types::Coordinate ) + // Size[0..2]
     3 * sizeof( Types::Coordinate ) + // m_Offset[0..2]
     sizeof( ScalarDataType ); // data type
@@ -67,8 +68,9 @@ Broadcast
     MPI::CHAR.Pack( inOutPtr->GetDims(), 3 * sizeof( inOutPtr->GetDims()[0] ), msgBufferHdr, msgBufferHdrSize,
 		    position, comm );
 
-    int cropRegion[6];
-    inOutPtr->GetCropRegion( cropRegion, cropRegion+3 );
+    const cmtk::DataGrid::RegionType& cropRegion = inOutPtr->GetCropRegion();
+
+    const int crop[6] = { cropRegion.From()[0], cropRegion.From()[1], cropRegion.From()[2], cropRegion.To()[0], cropRegion.To()[1], cropRegion.To()[2] };
     MPI::CHAR.Pack( cropRegion, sizeof( cropRegion ), msgBufferHdr, msgBufferHdrSize, position, comm );
 
     MPI::CHAR.Pack( inOutPtr->Size, 3 * sizeof( inOutPtr->Size[0] ), msgBufferHdr, msgBufferHdrSize, position, comm );
@@ -90,21 +92,23 @@ Broadcast
     {
     // build received volume
     int dims[3];
-    int cropRegion[6];
+    int cropRegionFrom[3];
+    int cropRegionTo[3];
     Types::Coordinate size[3];
     Types::Coordinate offset[3];
     ScalarDataType dataType;
 
     int position = 0;
     MPI::CHAR.Unpack( msgBufferHdr, msgBufferHdrSize, dims, sizeof( dims ), position, comm );
-    MPI::CHAR.Unpack( msgBufferHdr, msgBufferHdrSize, cropRegion, sizeof( cropRegion ), position, comm );
+    MPI::CHAR.Unpack( msgBufferHdr, msgBufferHdrSize, cropRegionFrom, sizeof( cropRegionFrom ), position, comm );
+    MPI::CHAR.Unpack( msgBufferHdr, msgBufferHdrSize, cropRegionTo, sizeof( cropRegionTo ), position, comm );
     MPI::CHAR.Unpack( msgBufferHdr, msgBufferHdrSize, size, sizeof( size ), position, comm );
     MPI::CHAR.Unpack( msgBufferHdr, msgBufferHdrSize, offset, sizeof( offset ), position, comm );
     MPI::CHAR.Unpack( msgBufferHdr, msgBufferHdrSize, &dataType, sizeof( dataType ), position, comm );
 
     inOutPtr = UniformVolume::SmartPtr( new UniformVolume( dims, size ) );
     inOutPtr->SetOffset( Vector3D( offset ) );
-    inOutPtr->SetCropRegion( cropRegion, cropRegion+3 );
+    inOutPtr->CropRegion() = cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType( cropRegionFrom ), cmtk::DataGrid::IndexType( cropRegionTo ) );
     inOutPtr->CreateDataArray( dataType );
     }
   
