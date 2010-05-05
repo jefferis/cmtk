@@ -84,7 +84,7 @@ UniformVolume::GetCroppedVolume() const
   
   // use m_Offset to keep track of new volume origin
   volume->SetOffset( this->m_Offset );
-  volume->m_Offset += Vector3D( this->GetCropRegionCoordinates().From() );
+  volume->m_Offset += Vector3D( this->GetCropRegionCoordinates().From().begin() );
 
   volume->m_MetaInformation[META_IMAGE_ORIENTATION]  = this->m_MetaInformation[META_IMAGE_ORIENTATION];
   volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL]  = this->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL];

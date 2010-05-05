@@ -141,10 +141,10 @@ DataGrid::GetReoriented( const char* newOrientation ) const
     }
 
   // 1. get a permutation matrix
-  AnatomicalOrientation::PermutationMatrix pmatrix( this->m_Dims, NULL, curOrientation, newOrientation );
+  AnatomicalOrientation::PermutationMatrix pmatrix( this->m_Dims.begin(), NULL, curOrientation, newOrientation );
   
   int newDims[3] = { 0, 0, 0 }; 
-  pmatrix.GetPermutedArray( static_cast<const Self::IndexType::ValueType*>( this->m_Dims ), newDims );
+  pmatrix.GetPermutedArray( this->m_Dims.begin(), newDims );
   DataGrid* newDataGrid = new DataGrid( newDims );
   
   const TypedArray* oldData = this->GetData();

@@ -302,7 +302,7 @@ private:
     GetTransformedReferenceTP() : m_Offset( 0 ), m_Stride( 1 ) {};
     TypedArray::SmartPtr dataArray;
     const SplineWarpXform* splineXform;
-    const int* dims;
+    DataGrid::IndexType dims;
     /// Offset for blockwise distributed computation.
     size_t m_Offset;
     size_t m_Stride;

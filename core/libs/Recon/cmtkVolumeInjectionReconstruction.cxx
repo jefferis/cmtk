@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -250,7 +251,7 @@ VolumeInjectionReconstruction
       if ( passImageWeight > 0 )
 	{
 	const UniformVolume* passImage = this->m_OriginalPassImages[pass];
-	const int* passImageDims = passImage->GetDims();
+	const DataGrid::IndexType& passImageDims = passImage->GetDims();
 	const Xform* passImageXform = this->m_TransformationsToPassImages[pass];
 
 	const Vector3D vPass = passImageXform->Apply( vCorrected );
@@ -317,7 +318,7 @@ VolumeInjectionReconstruction
 ::VolumeInjectionIsotropic( const Types::Coordinate kernelSigma, const Types::Coordinate kernelRadius )
 {
   const size_t correctedImageNumPixels = this->m_CorrectedImage->GetNumberOfPixels();
-  const int *splattedImageDims = this->m_CorrectedImage->GetDims();
+  const DataGrid::IndexType& splattedImageDims = this->m_CorrectedImage->GetDims();
 
   this->m_CorrectedImage->GetData()->ClearArray();
   
@@ -474,7 +475,7 @@ VolumeInjectionReconstruction
   const size_t correctedImageNumPixels = correctedImage->GetNumberOfPixels();
   this->m_CorrectedImageLaplacians.resize( correctedImageNumPixels );
 
-  const int* correctedImageDims = correctedImage->GetDims();
+  const DataGrid::IndexType& correctedImageDims = correctedImage->GetDims();
   const int nextI = 1;
   const int nextJ = nextI * correctedImageDims[0];
   const int nextK = nextJ * correctedImageDims[1];
@@ -512,7 +513,7 @@ VolumeInjectionReconstruction
 {
   const UniformVolume* correctedImage = this->m_CorrectedImage;
   const size_t correctedImageNumPixels = correctedImage->GetNumberOfPixels();
-  const int* correctedImageDims = correctedImage->GetDims();
+  const DataGrid::IndexType& correctedImageDims = correctedImage->GetDims();
 
   const int nextI = 1;
   const int nextJ = nextI * correctedImageDims[0];

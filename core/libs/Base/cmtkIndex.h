@@ -61,16 +61,16 @@ public:
       this->m_Index[i] = indexArray[i];
   }
 
-  /// Get raw pointer to index array.
-  operator T*()
+  /// Get element reference.
+  T& operator[]( const size_t i )
   {
-    return this->m_Index;
+    return this->m_Index[i];
   }
 
-  /// Get raw pointer-to-const to index array.
-  operator const T*() const
+  /// Get const element reference.
+  const T& operator[]( const size_t i ) const
   {
-    return this->m_Index;
+    return this->m_Index[i];
   }
 
   /// Addition operator.
@@ -101,13 +101,46 @@ public:
     return *this;
   }
 
-  /// Comparison operator.
-  bool operator==( const Self& rhs )
+  /// Equality operator.
+  bool operator==( const Self& rhs ) const
   {
     for ( size_t i = 0; i<NDIM; ++i )
       if ( this->m_Index[i] != rhs.m_Index[i] )
 	return false;
     return true;
+  }
+
+  /// Comparison operator.
+  bool operator<( const Self& rhs ) const
+  {
+    for ( size_t i = 0; i<NDIM; ++i )
+      if ( this->m_Index[i] >= rhs.m_Index[i] )
+	return false;
+    return true;
+  }
+
+  /// Pointer to first array element.
+  T* begin()
+  {
+    return m_Index;
+  }
+
+  /// Pointer behind last array element.
+  T* end()
+  {
+    return m_Index+NDIM;
+  }
+
+  /// Pointer to first array element.
+  const T* begin() const
+  {
+    return m_Index;
+  }
+
+  /// Pointer behind last array element.
+  const T* end() const
+  {
+    return m_Index+NDIM;
   }
 
 private:

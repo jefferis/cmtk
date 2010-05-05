@@ -45,7 +45,7 @@ cmtk
 
 UniformVolume::UniformVolume()
 {
-  memset( this->m_Dims, 0, sizeof( this->m_Dims ) );
+  std::fill( this->m_Dims.begin(), this->m_Dims.end(), 0 );
   memset( Size, 0, sizeof( Size ) );
   memset( this->m_Delta, 0, sizeof( this->m_Delta ) );
 }
@@ -187,7 +187,7 @@ UniformVolume::GetReoriented( const char* newOrientation ) const
   const std::string curOrientation = this->m_MetaInformation[META_IMAGE_ORIENTATION];
   DataGrid::SmartPtr temp( DataGrid::GetReoriented( newOrientation ) );
 
-  AnatomicalOrientation::PermutationMatrix pmatrix( this->m_Dims, this->Size, curOrientation, newOrientation );
+  AnatomicalOrientation::PermutationMatrix pmatrix( this->m_Dims.begin(), this->Size, curOrientation, newOrientation );
   Types::Coordinate newSize[3];
   pmatrix.GetPermutedArray( this->Size, newSize );
 

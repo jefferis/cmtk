@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -38,7 +39,7 @@ void
 cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 ::UpdateCorrectionFactors()
 {
-  const int* dims = this->m_InputImage->GetDims();
+  const DataGrid::IndexType& dims = this->m_InputImage->GetDims();
 
   // All equation numbers refer to paper by Likar et al., IEEE-TMI 20(12):1398--1410, 2001.
   for ( unsigned int i = 0; i < PolynomialTypeAdd::NumberOfMonomials; ++i )
@@ -299,7 +300,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
 
-  const int* dims = ThisConst->m_InputImage->GetDims();
+  const DataGrid::IndexType& dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
 
   float* biasFieldPtrAdd = This->m_BiasFieldAdd->GetDataPtrTemplate();
@@ -360,7 +361,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
 
-  const int* dims = ThisConst->m_InputImage->GetDims();
+  const DataGrid::IndexType& dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
 
   float* biasFieldPtrAdd = This->m_BiasFieldAdd->GetDataPtrTemplate();
@@ -439,7 +440,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
 
-  const int* dims = ThisConst->m_InputImage->GetDims();
+  const DataGrid::IndexType& dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
 
   float* biasFieldPtrAdd = This->m_BiasFieldAdd->GetDataPtrTemplate();
@@ -492,7 +493,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
 
-  const int* dims = ThisConst->m_InputImage->GetDims();
+  const DataGrid::IndexType& dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
 
   float* biasFieldPtrAdd = This->m_BiasFieldAdd->GetDataPtrTemplate();
@@ -562,7 +563,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
 
-  const int* dims = ThisConst->m_InputImage->GetDims();
+  const DataGrid::IndexType& dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
 
   float* biasFieldPtrMul = This->m_BiasFieldMul->GetDataPtrTemplate();
@@ -615,7 +616,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = threadParameters->thisObject;
 
-  const int* dims = ThisConst->m_InputImage->GetDims();
+  const DataGrid::IndexType& dims = ThisConst->m_InputImage->GetDims();
   const UniformVolume* inputImage = ThisConst->m_InputImage;
 
   float* biasFieldPtrMul = This->m_BiasFieldMul->GetDataPtrTemplate();

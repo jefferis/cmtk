@@ -48,7 +48,7 @@ ImagePairRegistrationFunctional::InitFloating( UniformVolume::SmartPtr& floating
 {
   FloatingGrid = floating;
   
-  memcpy( FloatingDims, FloatingGrid->GetDims(), sizeof(FloatingDims) );
+  this->FloatingDims = FloatingGrid->GetDims();
   memcpy( FloatingSize, FloatingGrid->Size, sizeof(FloatingSize) );
   this->m_FloatingCropRegionCoordinates = FloatingGrid->GetCropRegionCoordinates();
   for ( int dim = 0; dim < 3; ++dim ) 
@@ -66,7 +66,7 @@ ImagePairRegistrationFunctional::InitReference( UniformVolume::SmartPtr& referen
 {
   ReferenceGrid = reference;
 
-  memcpy( ReferenceDims, ReferenceGrid->GetDims(), sizeof(ReferenceDims) );
+  this->ReferenceDims = ReferenceGrid->GetDims();
   memcpy( ReferenceSize, ReferenceGrid->Size, sizeof(ReferenceSize) );
   this->m_ReferenceCropRegion = ReferenceGrid->CropRegion();
 

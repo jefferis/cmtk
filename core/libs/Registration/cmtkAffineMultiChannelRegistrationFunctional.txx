@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -120,7 +120,7 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
   const Vector3D *transformedAxesY = (*params->m_TransformedAxes)[1];
   const Vector3D *transformedAxesZ = (*params->m_TransformedAxes)[2];
 
-  const int *dims = constThis->m_ReferenceDims;
+  const DataGrid::IndexType& dims = constThis->m_ReferenceDims;
   const int dimsX = dims[0], dimsY = dims[1];
 
   Vector3D pFloating, rowStart;

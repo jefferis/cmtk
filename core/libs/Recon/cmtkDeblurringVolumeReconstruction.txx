@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -41,7 +42,7 @@ DeblurringVolumeReconstruction<TPSF>
   this->m_InterpolatedPassImages.clear();
   
   const UniformVolume* correctedImage = this->m_CorrectedImage;
-  const int *correctedImageDims = correctedImage->GetDims();
+  const DataGrid::IndexType& correctedImageDims = correctedImage->GetDims();
 
   for ( int pass = 0; pass < this->m_NumberOfPasses; ++pass )
     {
@@ -49,7 +50,7 @@ DeblurringVolumeReconstruction<TPSF>
     UniformVolume::SmartPtr result( passImage->CloneGrid() );
     result->CreateDataArray( TYPE_FLOAT, true/*setToZero*/ );
     
-    const int *passImageDims = passImage->GetDims();
+    const DataGrid::IndexType& passImageDims = passImage->GetDims();
     const int passImageDimsX = passImageDims[0], passImageDimsY = passImageDims[1], passImageDimsZ = passImageDims[2];
     const size_t passImageDimsXY = passImageDimsX*passImageDimsY;
     const size_t passImageDimsXYZ = passImageDimsXY*passImageDimsZ;
@@ -125,7 +126,7 @@ DeblurringVolumeReconstruction<TPSF>
   for ( size_t i = 1; i <= numberOfPixels; ++i )
     g(i) = 0;
 
-  const int *correctedImageDims = correctedImage->GetDims();
+  const DataGrid::IndexType& correctedImageDims = correctedImage->GetDims();
   const int correctedImageDimsX = correctedImageDims[0], correctedImageDimsY = correctedImageDims[1];
   const int correctedImageDimsXY = correctedImageDimsX*correctedImageDimsY;
 
@@ -206,7 +207,7 @@ void
 DeblurringVolumeReconstruction<TPSF>
 ::GetBoundingBoxOfXformedPassNeighborhood
 ( int* correctedImageBoundingBox, const UniformVolume* correctedImage, const Vector3D& currentPassVoxel, const TPSF* psf,
-  const AffineXform* passToCorrectedXform, const int* correctedImageDims ) const
+  const AffineXform* passToCorrectedXform, const DataGrid::IndexType& correctedImageDims ) const
 {
   /* Compute the blurring neighborhood in the pass image 
    */

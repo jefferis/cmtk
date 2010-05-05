@@ -130,7 +130,7 @@ ReformatAndAdd
 
   if ( xform ) 
     {
-    const int *dims = referenceVolume->GetDims();
+    const cmtk::DataGrid::IndexType& dims = referenceVolume->GetDims();
 #pragma omp parallel for private(value)
     for ( int pZ = 0; pZ < dims[cmtk::AXIS_Z]; ++pZ ) 
       {
@@ -178,7 +178,7 @@ ReformatAndAdd
   const cmtk::UniformVolumeInterpolatorBase::SmartPtr interpolator( cmtk::ReformatVolume::CreateInterpolator( Interpolation, floatingVolume ) );  
   if ( xform ) 
     {
-    const int *dims = referenceVolume->GetDims();
+    const cmtk::DataGrid::IndexType& dims = referenceVolume->GetDims();
 
 #pragma omp parallel for private(value)
     for ( int pZ = 0; pZ < dims[cmtk::AXIS_Z]; ++pZ ) 

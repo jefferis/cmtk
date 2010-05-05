@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -43,8 +44,6 @@ UniformVolumeInterpolatorPartialVolume
 {
   value=0;
 
-  const int *imageDims = this->m_Volume->GetDims();
-
   const Types::Coordinate *Delta = this->m_Volume->GetDelta();
 
   Types::Coordinate lScaled[3];
@@ -53,11 +52,11 @@ UniformVolumeInterpolatorPartialVolume
     {
     lScaled[n] = (v[n]-this->m_Volume->m_Offset[n]) / Delta[n];
     imageGridPoint[n] = (int) floor( lScaled[n] );
-    if ( ( imageGridPoint[n] < 0 ) || ( imageGridPoint[n] >= imageDims[n]-1 ) )
+    if ( ( imageGridPoint[n] < 0 ) || ( imageGridPoint[n] >= this->m_VolumeDims[n]-1 ) )
       return false;
     }
   
-  const size_t offset = imageGridPoint[0] + imageDims[0] * ( imageGridPoint[1] + imageDims[1] * imageGridPoint[2]);
+  const size_t offset = imageGridPoint[0] + this->m_VolumeDims[0] * ( imageGridPoint[1] + this->m_VolumeDims[1] * imageGridPoint[2]);
   const TypedArray* gridData = this->m_Volume->GetData();
   
   bool done[8];
@@ -128,8 +127,7 @@ UniformVolumeInterpolatorPartialVolume
 {
   Types::DataItem value = 0;
 
-  const int *imageDims = this->m_Volume->GetDims();
-  const size_t offset = imageGridPoint[0] + imageDims[0] * ( imageGridPoint[1] + imageDims[1] * imageGridPoint[2]);
+  const size_t offset = imageGridPoint[0] + this->m_VolumeDims[0] * ( imageGridPoint[1] + this->m_VolumeDims[1] * imageGridPoint[2]);
   const TypedArray* gridData = this->m_Volume->GetData();
   
   bool done[8];

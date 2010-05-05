@@ -63,7 +63,7 @@ MultiChannelRegistrationFunctionalBase
     }
   else
     {
-    memcpy( this->m_ReferenceDims, channel->GetDims(), sizeof(this->m_ReferenceDims) );
+    this->m_ReferenceDims = channel->GetDims();
     memcpy( this->m_ReferenceSize, channel->Size, sizeof(this->m_ReferenceSize) );
     this->m_ReferenceCropRegion = channel->CropRegion();
     }

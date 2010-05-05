@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -165,7 +166,7 @@ main ( const int argc, const char* argv[] )
       }
     }  
   
-  const int* dims = scalarImage->GetDims();
+  const cmtk::DataGrid::IndexType& dims = scalarImage->GetDims();
 #pragma omp parallel for
   for ( int z = 0; z < dims[2]; ++z )
     {

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -114,8 +115,12 @@ private:
   /** Get a bounding box of the transformed pass-image pixel neighborhood.
    * (Transformed from pass-image space to corrected-image space)
    */
-  void GetBoundingBoxOfXformedPassNeighborhood
-  ( int* region, const UniformVolume* correctedImage, const Vector3D& currentPassVoxel, const TPSF* psf, const AffineXform* passToCorrectedXform, const int* correctedImageDims ) const;
+  void GetBoundingBoxOfXformedPassNeighborhood( int* region, 
+						const UniformVolume* correctedImage, 
+						const Vector3D& currentPassVoxel, 
+						const TPSF* psf, 
+						const AffineXform* passToCorrectedXform, 
+						const DataGrid::IndexType& correctedImageDims ) const;
 
   /// Glue class for function and gradient evaluation.
   class FunctionAndGradient : 

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -48,7 +49,7 @@ operator<<
 {
   const UniformVolume* templateGrid = func.GetTemplateGrid();
   stream.Begin( "template" );
-  stream.WriteIntArray( "dims", templateGrid->GetDims(), 3 );
+  stream.WriteIntArray( "dims", templateGrid->GetDims().begin(), 3 );
   stream.WriteCoordinateArray( "delta", templateGrid->GetDelta(), 3 );
   stream.WriteCoordinateArray( "size", templateGrid->Size, 3 );
   stream.WriteCoordinateArray( "origin", templateGrid->m_Offset.XYZ, 3 );

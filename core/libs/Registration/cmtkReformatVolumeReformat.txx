@@ -42,7 +42,7 @@ ReformatVolume::Reformat
 ( const UniformVolume* target, cmtk::XformList& targetToRef, const UniformVolume* reference, cmtk::XformList& refToFloat, Fct& fct, TInterpolator& interpolator )
 {
   TypedArray *result = NULL;
-  const int* dims = target->GetDims();
+  const DataGrid::IndexType& dims = target->GetDims();
 
   result = TypedArray::Create( fct.GetDataType( reference, interpolator ), target->GetNumberOfPixels() );
   if ( fct.UsePaddingValue )

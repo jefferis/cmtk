@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -140,7 +141,7 @@ ReformatVolume::GetTransformedReferenceGreyAvg( void *const arg )
   const SplineWarpXform* splineXform = params->splineXform;
   const Types::Coordinate* delta = params->delta;
   const Types::Coordinate* bbFrom = params->bbFrom;
-  const int* dims = params->dims;
+  const DataGrid::IndexType& dims = params->dims;
 
   const std::vector<SplineWarpXform::SmartPtr>* xformList = params->xformList;
   const std::vector<const UniformVolumeInterpolatorBase*>* interpolatorList = params->interpolatorList;

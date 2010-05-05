@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -397,7 +398,7 @@ Average
   const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT;
 
   const size_t nPixelsReference = referenceVolume->GetNumberOfPixels();
-  const int* referenceDims = referenceVolume->GetDims();
+  const cmtk::DataGrid::IndexType& referenceDims = referenceVolume->GetDims();
 
   bool labelFlags[256];
   memset( labelFlags, 0, sizeof( labelFlags ) );
@@ -553,7 +554,7 @@ AverageWindowed
   const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_WINDOW;
 
   const size_t nPixelsReference = referenceVolume->GetNumberOfPixels();
-  const int* referenceDims = referenceVolume->GetDims();
+  const cmtk::DataGrid::IndexType& referenceDims = referenceVolume->GetDims();
 
   bool labelFlags[256];
   memset( labelFlags, 0, sizeof( labelFlags ) );

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -46,7 +47,7 @@ operator<<
   ( ClassStream& stream, const AffineCongealingFunctional& func )
 {
   stream.Begin( "template" );
-  stream.WriteIntArray( "dims", func.m_TemplateGrid->GetDims(), 3 );
+  stream.WriteIntArray( "dims", func.m_TemplateGrid->GetDims().begin(), 3 );
   stream.WriteCoordinateArray( "delta", func.m_TemplateGrid->GetDelta(), 3 );
   stream.WriteCoordinateArray( "size", func.m_TemplateGrid->Size, 3 );
   stream.WriteCoordinateArray( "origin", func.m_TemplateGrid->m_Offset.XYZ, 3 );

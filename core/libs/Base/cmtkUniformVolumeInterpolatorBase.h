@@ -113,7 +113,7 @@ protected:
   const TypedArray* m_VolumeDataArray;
 
   /// Image dimensions.
-  const int* m_VolumeDims;
+  DataGrid::IndexType m_VolumeDims;
 
   /// Index increment when increasing "j" pixel index (i.e., moving to next image row).
   int m_NextJ;

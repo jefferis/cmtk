@@ -42,7 +42,7 @@ cmtk::ImageOperationMedialSkeleton
   skeleton->CreateDataArray( TYPE_COORDINATE );
   skeleton->GetData()->ClearArray();
 
-  const int* dims = iMap->GetDims();
+  const int* dims = iMap->GetDims().begin();
 #pragma omp parallel for
   for ( int k = 2; k < dims[2]-2; ++k )
     {

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -102,7 +103,7 @@ private:
   /// Get pass image region that contains all pixels dependent on currently considered corrected image pixel.
   void GetPassImageDependentPixelRegion
   ( int* region, const UniformVolume* correctedImage, const int* currentCorrectedGridPoint, 
-    const UniformVolume* passImage, const AffineXform* transformationToPassImage, const int* passImageDims );
+    const UniformVolume* passImage, const AffineXform* transformationToPassImage, const DataGrid::IndexType& passImageDims );
 
   /// Glue class for function and gradient evaluation.
   class FunctionAndGradient : 

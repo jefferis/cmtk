@@ -128,7 +128,7 @@ public:
     
     this->Metric->Reset();
 
-    const int *Dims = this->ReferenceGrid->GetDims();
+    const DataGrid::IndexType& Dims = this->ReferenceGrid->GetDims();
     const int DimsX = Dims[0], DimsY = Dims[1], DimsZ = Dims[2];
 
     this->Clipper.SetDeltaX( axesHashX[DimsX-1] - axesHashX[0] );
@@ -214,7 +214,7 @@ public:
     const Vector3D *hashX = (*info->AxesHash)[0], *hashY = (*info->AxesHash)[1], *hashZ = (*info->AxesHash)[2];
     Vector3D pFloating;
 
-    const int *Dims = me->ReferenceGrid->GetDims();
+    const DataGrid::IndexType& Dims = me->ReferenceGrid->GetDims();
     const int DimsX = Dims[0], DimsY = Dims[1];
 
     int fltIdx[3];

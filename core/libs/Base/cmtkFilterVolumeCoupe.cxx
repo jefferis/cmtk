@@ -322,7 +322,7 @@ FilterVolume::CoupeFilter
   if ( ! inputData ) return NULL;
 
   TypedArray* filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
-  const int* dims = volume->GetDims();
+  const int* dims = volume->GetDims().begin();
   const int dimX = dims[AXIS_X];
   const int dimY = dims[AXIS_Y];
   const int dimZ = dims[AXIS_Z];

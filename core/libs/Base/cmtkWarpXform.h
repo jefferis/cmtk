@@ -67,14 +67,20 @@ class WarpXform :
   public Xform 
 {
 public:
+  /// This class.
+  typedef WarpXform Self;
+
   /// Smart pointer to WarpXform
-  typedef SmartPointer<WarpXform> SmartPtr;
+  typedef SmartPointer<Self> SmartPtr;
 
   /// Smart pointer to const WarpXform
-  typedef SmartConstPointer<WarpXform> SmartConstPtr;
+  typedef SmartConstPointer<Self> SmartConstPtr;
 
+  /// Grid index type.
+  typedef Index<3,int> IndexType;
+  
   /// Dimensions of control point grid.
-  DataGrid::IndexType m_Dims;
+  Self::IndexType m_Dims;
 
   /// Domain of control point grid in world coordinates.
   Types::Coordinate Domain[3];
@@ -169,7 +175,7 @@ public:
   virtual ~WarpXform () {}
 
   /// Initialized internal data structures for new control point grid.
-  virtual void InitGrid( const Types::Coordinate domain[3], const DataGrid::IndexType& dims );
+  virtual void InitGrid( const Types::Coordinate domain[3], const Self::IndexType& dims );
 
   /// Check whether coordinate is in domain of transformation.
   virtual bool InDomain( const Vector3D& v ) const 
@@ -200,12 +206,12 @@ public:
 
   /** Return inverse consistency.
    */
-  virtual Types::Coordinate GetInverseConsistencyError( const WarpXform* inverse, const UniformVolume* volume, const UniformVolume::RegionType* voi = NULL ) const;
+  virtual Types::Coordinate GetInverseConsistencyError( const Self* inverse, const UniformVolume* volume, const UniformVolume::RegionType* voi = NULL ) const;
   
   /** Return derivative of inverse consistency.
    */
   virtual void GetDerivativeInverseConsistencyError
-  ( double& lower, double& upper, const WarpXform* inverse, const UniformVolume* volume, const UniformVolume::RegionType* voi, 
+  ( double& lower, double& upper, const Self* inverse, const UniformVolume* volume, const UniformVolume::RegionType* voi, 
     const unsigned int idx, const Types::Coordinate step );
   
   /// Set voxel-by-voxel map for incompressibility constraint.

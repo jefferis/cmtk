@@ -194,7 +194,7 @@ void
 VoxelMatchingMetric_Type<T,DT>::ImageData::PrecomputeIncrements
 ( const UniformVolume* volume )
 {
-  memcpy( ImageDims, volume->GetDims(), sizeof( ImageDims ) );
+  this->ImageDims = volume->GetDims();
   // pre-compute relative offsets for tri-linear model interpolation
   nextJ = volume->GetDims()[0];
   nextK = nextJ * volume->GetDims()[1];
@@ -209,7 +209,7 @@ void
 VoxelMatchingMetric_Type<T,DT>::ImageData::CopyFrom( const ImageData& src ) 
 {
   NumberOfSamples = src.NumberOfSamples;
-  memcpy( ImageDims, src.ImageDims, sizeof( ImageDims ) );
+  this->ImageDims = src.ImageDims;
   
   nextJ = src.nextJ;
   nextK = src.nextK;

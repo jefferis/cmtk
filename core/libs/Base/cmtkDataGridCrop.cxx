@@ -61,7 +61,7 @@ DataGrid::AutoCrop
 {
   const TypedArray* data = this->GetData();
   
-  IndexType cropFrom, cropTo;
+  Self::IndexType cropFrom = this->CropRegion().From(), cropTo = this->CropRegion().To();
   
   if ( ! recrop ) 
     {
@@ -75,9 +75,9 @@ DataGrid::AutoCrop
   const size_t nextRow = this->m_Dims[0] - cropTo[0] + this->m_CropRegion.From()[0];
   const size_t nextPlane = this->m_Dims[0] * (this->m_Dims[1] - cropTo[1] + this->m_CropRegion.From()[1]);
   
-  bool first = true;
   size_t offset = cropFrom[0] + this->m_Dims[0] * ( cropFrom[1] + this->m_Dims[1] * cropFrom[2] );
 
+  Self::IndexType newCropFrom = cropTo, newCropTo = cropFrom;
   for ( int z = cropFrom[2]; z < cropTo[2]; ++z, offset += nextPlane )
     for ( int y = cropFrom[1]; y < cropTo[1]; ++y, offset += nextRow )
       for ( int x = cropFrom[0]; x < cropTo[0]; ++x, ++offset ) 
@@ -85,38 +85,26 @@ DataGrid::AutoCrop
 	Types::DataItem value = 0;
 	if ( ! data->Get( value, offset ) || (value < threshold) ) continue;
 	
-	if ( first ) 
-	  {
-	  cropFrom[0] = cropTo[0] = x;
-	  cropFrom[1] = cropTo[1] = y;
-	  cropFrom[2] = cropTo[2] = z;
-	  first = false;
-	  } 
-	else
-	  {
-	  cropFrom[0] = std::min<int>( cropFrom[0], x );
-	  cropFrom[1] = std::min<int>( cropFrom[1], y );
-	  cropFrom[2] = std::min<int>( cropFrom[2], z );
-	  
-	  cropTo[0] = std::max<int>( cropTo[0], x );
-	  cropTo[1] = std::max<int>( cropTo[1], y );
-	  cropTo[2] = std::max<int>( cropTo[2], z );
-	  }
+	const int xyz[3] = { x, y, z };
+	newCropFrom = std::min( newCropFrom, Self::IndexType( xyz ) );
+	newCropTo = std::max( newCropTo,  Self::IndexType( xyz ) );
 	}
-  
-  for ( int dim = 0; dim < 3; ++dim )
-    ++cropTo[dim];
+
+    for ( int dim = 0; dim < 3; ++dim ) 
+      {
+      ++newCropTo[dim];
+      }
   
   if ( margin ) 
     {
     for ( int dim = 0; dim < 3; ++dim ) 
       {
-      cropFrom[dim] = std::max<int>( 0, cropFrom[dim] - margin );
-      cropTo[dim] = std::min<int>( this->m_Dims[dim], cropTo[dim] + margin );
+      newCropFrom[dim] = std::max<int>( 0, newCropFrom[dim] - margin );
+      newCropTo[dim] = std::min<int>( this->m_Dims[dim], newCropTo[dim] + margin );
       }
     }
   
-  this->m_CropRegion = Self::RegionType( cropFrom, cropTo );
+  this->m_CropRegion = Self::RegionType( newCropFrom, newCropTo );
 }
 
 void

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -53,10 +53,10 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
     UniformVolume::SmartPtr result( passImage->CloneGrid() );
     result->CreateDataArray( TYPE_FLOAT, true/*setToZero*/ );
     
-    const int *passImageDims = passImage->GetDims();
+    const DataGrid::IndexType& passImageDims = passImage->GetDims();
     const int passImageDimsX = passImageDims[0], passImageDimsY = passImageDims[1], passImageDimsZ = passImageDims[2];
     
-    const int *correctedImageDims = this->m_CorrectedImage->GetDims();
+    const DataGrid::IndexType& correctedImageDims = this->m_CorrectedImage->GetDims();
     const int correctedImageDimsX = correctedImageDims[0], correctedImageDimsY = correctedImageDims[1], correctedImageDimsZ = correctedImageDims[2];    
 
     const AffineXform* passXform = dynamic_cast<const AffineXform*>( this->m_TransformationsToPassImages[pass].GetPtr() )->GetInverse();
@@ -142,7 +142,7 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
   for ( size_t i = 1; i <= numberOfPixels; ++i )
     g(i) = 0;
 
-  const int *correctedImageDims = correctedImage->GetDims();
+  const DataGrid::IndexType& correctedImageDims = correctedImage->GetDims();
   const int correctedImageDimsX = correctedImageDims[0], correctedImageDimsY = correctedImageDims[1];
   const int correctedImageDimsXY = correctedImageDimsX*correctedImageDimsY;
 
@@ -153,7 +153,7 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
 
     const AffineXform* transformationToPassImage = dynamic_cast<const AffineXform*>( this->m_TransformationsToPassImages[pass].GetPtr() );
     const AffineXform* inverseTransformationToPassImage = transformationToPassImage->GetInverse();
-    const int *passImageDims = this->m_InterpolatedPassImages[pass]->GetDims();
+    const DataGrid::IndexType& passImageDims = this->m_InterpolatedPassImages[pass]->GetDims();
 
     const Types::Coordinate passImageWeight = this->m_PassWeights[pass];
 
@@ -166,8 +166,7 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
 	  { (offset % correctedImageDimsXY) % correctedImageDimsX, (offset % correctedImageDimsXY) / correctedImageDimsX, (offset / correctedImageDimsXY) };
 	
 	int passImageDependentRegion[6];
-	this->GetPassImageDependentPixelRegion
-	  ( passImageDependentRegion, correctedImage, correctedImageCurrentGridPoint, interpolatedPassImage, transformationToPassImage, passImageDims );
+	this->GetPassImageDependentPixelRegion( passImageDependentRegion, correctedImage, correctedImageCurrentGridPoint, interpolatedPassImage, transformationToPassImage, passImageDims );
 
 	Types::DataItem gradientData = 0;
 	Types::Coordinate from[3], to[3];
@@ -229,7 +228,7 @@ void
 InverseInterpolationVolumeReconstruction<TInterpolator>
 ::GetPassImageDependentPixelRegion
 ( int* region, const UniformVolume* correctedImage, const int* currentCorrectedGridPoint, 
-  const UniformVolume* passImage, const AffineXform* transformationToPassImage, const int* passImageDims )
+  const UniformVolume* passImage, const AffineXform* transformationToPassImage, const DataGrid::IndexType& passImageDims )
 {
   // compute neighborhood in corrected image from which interpolated pixels are affected by current corrected image pixel
   int corners[2][3];

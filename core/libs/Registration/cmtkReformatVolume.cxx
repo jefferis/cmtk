@@ -195,7 +195,7 @@ TypedArray*
 ReformatVolume::PlainReformat
 ( const int plane, TypedArray *const target, const size_t targetOffset )
 {
-  const int *Dims = ReferenceVolume->GetDims();
+  const DataGrid::IndexType& Dims = ReferenceVolume->GetDims();
   const int DimsX = Dims[0], DimsY = Dims[1];
   const int DataSize = DimsX * DimsY;
 
@@ -329,7 +329,7 @@ ReformatVolume::GetTransformedReferenceGrey( void *const arg )
   const UniformVolumeInterpolatorBase* interpolator = params->referenceInterpolator;
   const Types::Coordinate* delta = params->delta;
   const Types::Coordinate* bbFrom = params->bbFrom;
-  const int* dims = params->dims;
+  const DataGrid::IndexType& dims = params->dims;
 
   const Types::Coordinate minDelta = MathUtil::Min( 3, delta );
   
@@ -376,7 +376,7 @@ ReformatVolume::GetTransformedReferenceLabel( void *const arg )
   const SplineWarpXform* splineXform = params->splineXform;
   const Types::Coordinate* delta = params->delta;
   const Types::Coordinate* bbFrom = params->bbFrom;
-  const int* dims = params->dims;
+  const DataGrid::IndexType& dims = params->dims;
 
   const std::vector<SplineWarpXform::SmartPtr>* xformList = params->xformList;
   const std::vector<UniformVolume::SmartPtr>* volumeList = params->volumeList;
@@ -510,7 +510,7 @@ ReformatVolume::GetTransformedReferenceJacobianAvgThread
   const SplineWarpXform* splineXform = params->splineXform;
   const Types::Coordinate* delta = params->delta;
   const Types::Coordinate* bbFrom = params->bbFrom;
-  const int* dims = params->dims;
+  const DataGrid::IndexType& dims = params->dims;
 
   const std::vector<SplineWarpXform::SmartPtr>* xformList = params->xformList;
 

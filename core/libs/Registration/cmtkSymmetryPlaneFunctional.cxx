@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -86,7 +87,7 @@ SymmetryPlaneFunctional::Evaluate()
     
   m_Metric->Reset();
     
-  const int *Dims = m_Volume->GetDims();
+  const DataGrid::IndexType& Dims = m_Volume->GetDims();
   const int DimsX = Dims[0], DimsY = Dims[1], DimsZ = Dims[2];
 
   int fltIdx[3];

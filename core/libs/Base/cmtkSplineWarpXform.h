@@ -95,7 +95,7 @@ public:
   
   /** Construct new warp from volume size, grid dimensions and parameters
    */
-  SplineWarpXform( const Types::Coordinate domain[3], const int dims[3], CoordinateVector::SmartPtr& parameters, const AffineXform *initialXform = NULL );
+  SplineWarpXform( const Types::Coordinate domain[3], const Self::IndexType& dims, CoordinateVector::SmartPtr& parameters, const AffineXform *initialXform = NULL );
 
   /// Initialize control point positions, potentially with affine displacement.
   void InitControlPoints( const AffineXform* affineXform = NULL );

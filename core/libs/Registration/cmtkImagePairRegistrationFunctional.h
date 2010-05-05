@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -141,7 +142,7 @@ public:
 
 protected:
   /// Grid dimensions of the floating volume.
-  int FloatingDims[3];
+  DataGrid::IndexType FloatingDims;
 
   /// Extents of the floating volume in real-world coordinates.
   Types::Coordinate FloatingSize[3];
@@ -156,7 +157,7 @@ protected:
   UniformVolume::CoordinateRegionType m_FloatingCropFracIndex;
 
   /// Grid dimensions of the reference volume.
-  int ReferenceDims[3];
+  DataGrid::IndexType ReferenceDims;
 
   /// Extents of the reference volume in real-world coordinates.
   Types::Coordinate ReferenceSize[3];

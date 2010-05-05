@@ -441,7 +441,7 @@ public:
   Vector3D GetCenterCropRegion() const 
   {
     Self::CoordinateRegionType region = this->GetCropRegionCoordinates();
-    return this->m_Offset + 0.5 * ( Vector3D( region.From() ) + Vector3D( region.To() ) );
+    return this->m_Offset + 0.5 * ( Vector3D( region.From().begin() ) + Vector3D( region.To().begin() ) );
   }
   
   //@}

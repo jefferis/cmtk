@@ -125,13 +125,13 @@ SplineWarpXform
 }
 
 SplineWarpXform::SplineWarpXform
-( const Types::Coordinate domain[3], const int dims[3],
+( const Types::Coordinate domain[3], const Self::IndexType& dims,
   CoordinateVector::SmartPtr& parameters, 
   const AffineXform* initialXform )
 {
   this->Init();
   memcpy( Domain, domain, sizeof( Domain ) );
-  memcpy( this->m_Dims, dims, sizeof( this->m_Dims ) );
+  this->m_Dims = dims;
 
   if ( initialXform )
     {
@@ -237,7 +237,7 @@ SplineWarpXform::Clone () const
   newXform->m_NumberOfParameters = this->m_NumberOfParameters;
   newXform->NumberOfControlPoints = this->NumberOfControlPoints;
   
-  memcpy( newXform->m_Dims, this->m_Dims, sizeof( newXform->m_Dims ) );
+  newXform->m_Dims = this->m_Dims;
   memcpy( newXform->Domain, Domain, sizeof( newXform->Domain ) );
   memcpy( newXform->Spacing, Spacing, sizeof( newXform->Spacing ) );
   memcpy( newXform->InverseSpacing, InverseSpacing, sizeof( newXform->InverseSpacing ) );
@@ -267,7 +267,7 @@ SplineWarpXform::Clone () const
   newXform->nextIJK = this->nextIJK;
   memcpy( newXform->GridPointOffset, this->GridPointOffset, sizeof( this->GridPointOffset ) );
 
-  memcpy( newXform->VolumeDims, this->VolumeDims, sizeof( this->VolumeDims ) );
+  newXform->VolumeDims = this->VolumeDims;
 
   newXform->gX = this->gX;
   newXform->gY = this->gY;
@@ -289,7 +289,7 @@ SplineWarpXform::Refine()
 {
   if ( !this->m_ParameterVector ) return;
 
-  int newDims[3];
+  Self::IndexType newDims;
   for ( int dim=0; dim<3; ++dim ) 
     newDims[dim] = 2 * this->m_Dims[dim] - 3;
 
@@ -387,7 +387,7 @@ SplineWarpXform::Refine()
   this->m_Parameters = newCoefficients;
 
   this->DeleteParameterActiveFlags();
-  memcpy( this->m_Dims, newDims, sizeof(this->m_Dims) );
+  this->m_Dims = newDims;
 
   for ( int dim=0; dim<3; ++dim ) 
     {

@@ -481,7 +481,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   const size_t pixelsPerLineRegion = region.To()[2] - region.From()[2];
   std::vector<Vector3D> pFloating( pixelsPerLineRegion );
 
-  const int *dims = this->m_ReferenceDims;
+  const DataGrid::IndexType& dims = this->m_ReferenceDims;
   const int dimsX = dims[0], dimsY = dims[1];
 
   for ( int pZ = region.From()[2]; pZ < region.To()[2]; ++pZ ) 

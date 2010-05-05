@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -106,7 +107,7 @@ main( const int argc, const char* argv[] )
 
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, ReferenceImage->GetNumberOfPixels() ) );
 
-  const int* dims = ReferenceImage->GetDims();
+  const cmtk::DataGrid::IndexType& dims = ReferenceImage->GetDims();
   cmtk::Progress::Begin( 0, dims[2], 1, "Label image averaging" );
 #pragma omp parallel for
   for ( int z = 0; z < dims[2]; ++z )

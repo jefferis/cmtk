@@ -60,7 +60,7 @@ FilterVolume::GaussianFilter
   TypedArray* filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
   const DataGrid::IndexType& dims = volume->m_Dims;
-  FilterMask<3> filter( dims, volume->GetDelta(), radius, FilterMask<3>::Gaussian( width ) );
+  FilterMask<3> filter( dims.begin(), volume->GetDelta(), radius, FilterMask<3>::Gaussian( width ) );
 
   const int dimsX = dims[AXIS_X];
   const int dimsY = dims[AXIS_Y];
@@ -178,7 +178,7 @@ FilterVolume
   
   TypedArray* filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
-  const int* dims = volume->GetDims();
+  const int* dims = volume->GetDims().begin();
   FilterMask<3> filter( dims, volume->GetDelta(), filterRadius, FilterMask<3>::Gaussian( filterWidth ) );
   
   const unsigned int dimsX = dims[AXIS_X];
@@ -274,7 +274,7 @@ FilterVolume::StudholmeFilter
 
   TypedArray* filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
-  const int* dims = volume->GetDims();
+  const int* dims = volume->GetDims().begin();
   const unsigned int dimsX = dims[AXIS_X];
   const unsigned int dimsY = dims[AXIS_Y];
   const unsigned int dimsZ = dims[AXIS_Z];
@@ -423,7 +423,7 @@ FilterVolume::StudholmeFilter
  
   TypedArray* filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
-  const int* dims = volume->GetDims();
+  const int* dims = volume->GetDims().begin();
   FilterMask<3> filter( dims, volume->GetDelta(), filterRadius, FilterMask<3>::Gaussian( filterWidth ) );
   
   const unsigned int dimsX = dims[AXIS_X];

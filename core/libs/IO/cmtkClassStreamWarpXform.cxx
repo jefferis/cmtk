@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -116,7 +117,7 @@ ClassStream::PutWarp
     *this << (*warpXform->GetInitialAffineXform());
   
   this->WriteBool ( "absolute", (initialXform == NULL) );
-  this->WriteIntArray( "dims", warpXform->m_Dims, 3 );
+  this->WriteIntArray( "dims", warpXform->m_Dims.begin(), 3 );
 
   this->WriteCoordinateArray( "domain", warpXform->Domain, 3 );
   this->WriteCoordinateArray( "origin", warpXform->m_Offset.XYZ, 3 );

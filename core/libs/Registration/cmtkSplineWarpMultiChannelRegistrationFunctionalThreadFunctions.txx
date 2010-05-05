@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -51,7 +52,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   typename Self::MetricData metricData;
   metricData.Init( This );
 
-  const int *dims = constThis->m_ReferenceDims;
+  const DataGrid::IndexType& dims = constThis->m_ReferenceDims;
   const int dimsX = dims[0], dimsY = dims[1], dimsZ = dims[2];
   std::vector<Vector3D> pFloating( dimsX );
 

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -89,7 +90,7 @@ public:
     Types::DataItem ValueRange[2];
     
     /// Number of pixels per dimension in the original image.
-    int ImageDims[3];
+    DataGrid::IndexType ImageDims;
 
     /// Total number of pixels.
     size_t NumberOfSamples;
