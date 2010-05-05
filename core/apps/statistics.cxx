@@ -261,11 +261,11 @@ AnalyzeGrey( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData
     cmtk::ValueSequence<cmtk::Types::DataItem> seq;
     
     size_t index = 0;
-    for ( int z = 0; z < volume->GetDims( cmtk::AXIS_Z ); ++z ) 
+    for ( int z = 0; z < volume->GetDims()[cmtk::AXIS_Z]; ++z ) 
       {
-      for ( int y = 0; y < volume->GetDims( cmtk::AXIS_Y ); ++y ) 
+      for ( int y = 0; y < volume->GetDims()[cmtk::AXIS_Y]; ++y ) 
 	{
-	for ( int x = 0; x < volume->GetDims( cmtk::AXIS_X ); ++x, ++index ) 
+	for ( int x = 0; x < volume->GetDims()[cmtk::AXIS_X]; ++x, ++index ) 
 	  {
 	  if ( maskData && maskData->Get( maskValue, index ) && (maskValue == maskSelect) )
 	    {
@@ -308,11 +308,11 @@ AnalyzeGrey( const cmtk::UniformVolume* volume )
   cmtk::ValueSequence<cmtk::Types::DataItem> seq;
   
   size_t index = 0;
-  for ( int z = 0; z < volume->GetDims( cmtk::AXIS_Z ); ++z ) 
+  for ( int z = 0; z < volume->GetDims()[cmtk::AXIS_Z]; ++z ) 
     {
-    for ( int y = 0; y < volume->GetDims( cmtk::AXIS_Y ); ++y ) 
+    for ( int y = 0; y < volume->GetDims()[cmtk::AXIS_Y]; ++y ) 
       {
-      for ( int x = 0; x < volume->GetDims( cmtk::AXIS_X ); ++x, ++index ) 
+      for ( int x = 0; x < volume->GetDims()[cmtk::AXIS_X]; ++x, ++index ) 
 	{
 	if ( data->Get( value, index ) ) 
 	  {

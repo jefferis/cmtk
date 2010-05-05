@@ -101,7 +101,7 @@ VolumeFromFile::ReadDICOM( const char *path )
   DcmElement *delem = NULL;
   Uint16 tempUint16 = 0;
 
-  int dims[3];
+  int dims[3] = { 0, 0, 0 };
   if ( ( delem = document->search( DCM_Rows ) ) ) 
     {
     delem->getUint16(tempUint16);

@@ -43,7 +43,7 @@ cmtk::ImageOperationCropRegion
 ::New( const char* arg )
 {
   int from[3], to[3];
-  const bool okay = (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d", &from[0], &from[1], &from[2], &to[3], &to[4], &to[5] ) );
+  const bool okay = (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d", &from[0], &from[1], &from[2], &to[0], &to[1], &to[2] ) );
   if ( ! okay )
     {
     throw "Expected six comma-separated integer values.";

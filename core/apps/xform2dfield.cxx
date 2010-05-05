@@ -138,18 +138,19 @@ main ( const int argc, const char *argv[] )
   
   cmtk::DeformationField::SmartPtr dfield( new cmtk::DeformationField( volume ) );
   
-  cmtk::Progress::Begin( 0, volume->GetDims( cmtk::AXIS_Z ), 1, "Deformation field generation" );
+  const cmtk::DataGrid::IndexType& dims = volume->GetDims();
+  cmtk::Progress::Begin( 0, dims[cmtk::AXIS_Z], 1, "Deformation field generation" );
 #pragma omp parallel for
-  for ( int z = 0; z < volume->GetDims( cmtk::AXIS_Z ); ++z )
+  for ( int z = 0; z < dims[cmtk::AXIS_Z]; ++z )
     {
     cmtk::Vector3D v0, v1;
 
     cmtk::Progress::SetProgress( z );
 
-    size_t offset = 3 * z * volume->GetDims( cmtk::AXIS_X ) * volume->GetDims( cmtk::AXIS_Y );
-    for ( int y = 0; y < volume->GetDims( cmtk::AXIS_Y ); ++y )
+    size_t offset = 3 * z * dims[cmtk::AXIS_X] * dims[cmtk::AXIS_Y];
+    for ( int y = 0; y < dims[cmtk::AXIS_Y]; ++y )
       {
-      for ( int x = 0; x < volume->GetDims( cmtk::AXIS_X ); ++x, offset+=3 ) 
+      for ( int x = 0; x < dims[cmtk::AXIS_X]; ++x, offset+=3 ) 
 	{
 	volume->GetGridLocation( v0, x, y, z );
 	v1 = v0;

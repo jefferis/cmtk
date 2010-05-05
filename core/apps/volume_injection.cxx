@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -87,14 +88,19 @@ CallbackSetPassWeight( const char* argv )
     }
 }
 
-int CropFromIndex[3], CropToIndex[3];
 bool UseCropRegion = false;
+cmtk::DataGrid::RegionType CropRegion;
 
 void
 CallbackCrop( const char* arg )
 {
-  if ( 6 == sscanf( arg, "%d,%d,%d:%d,%d,%d", CropFromIndex, CropFromIndex+1, CropFromIndex+2, CropToIndex, CropToIndex+1, CropToIndex+2 ) )
-    UseCropRegion = true;
+  int cropFrom[3], cropTo[3];
+  UseCropRegion = (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d", cropFrom, cropFrom+1, cropFrom+2, cropTo,cropTo+1,cropTo+2 ) );
+
+  if ( UseCropRegion )
+    {
+    CropRegion = cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType( cropFrom ), cmtk::DataGrid::IndexType( cropTo ) );
+    }
   else
     {
     cmtk::StdErr.printf( "ERROR: string '%s' does not describe a valid crop region\n", arg );
@@ -241,7 +247,7 @@ main( const int argc, const char* argv[] )
   
   if ( UseCropRegion )
     {
-    ReconGrid->SetCropRegion( CropFromIndex, CropToIndex );
+    ReconGrid->CropRegion() = CropRegion;
     ReconGrid = cmtk::UniformVolume::SmartPtr( ReconGrid->GetCroppedVolume() );
     }
 

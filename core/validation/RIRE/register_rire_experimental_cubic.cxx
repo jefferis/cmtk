@@ -44,7 +44,7 @@
 void dumpVolume( const cmtk::UniformVolume *volume )
 {
   fprintf( stderr, "%d x %d x %d pixels, %f x %f x %f mm\n", 
-	   volume->GetDims( cmtk::AXIS_X ), volume->GetDims( cmtk::AXIS_Y ),volume->GetDims( cmtk::AXIS_Z ), 
+	   volume->GetDims()[cmtk::AXIS_X], volume->GetDims()[cmtk::AXIS_Y], volume->GetDims()[cmtk::AXIS_Z], 
 	   volume->Size[cmtk::AXIS_X], volume->Size[cmtk::AXIS_Y], volume->Size[cmtk::AXIS_Z] );
   
   const cmtk::TypedArray *data = volume->GetData();

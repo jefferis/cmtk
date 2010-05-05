@@ -95,8 +95,9 @@ public:
   {}
   
   /// Constructor.
-  DataGrid( const int* dims ) 
-    : m_Data( NULL )
+  DataGrid( const Self::IndexType& dims ) 
+    : m_Dims( dims ), 
+      m_Data( NULL )
   {}
   
   /// Virtual destructor.
@@ -105,7 +106,7 @@ public:
   /// Test whether this grid matches another one, i.e., has the same dimensions.
   bool GridMatches( const Self& other ) const
   {
-    return (this->m_Dims[0] == other.m_Dims[0]) && (this->m_Dims[1] == other.m_Dims[1]) && (this->m_Dims[2] == other.m_Dims[2]);
+    return (this->m_Dims == other.m_Dims);
   }
 
   /// Downsampling constructor function.

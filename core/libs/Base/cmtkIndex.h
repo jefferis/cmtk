@@ -61,18 +61,6 @@ public:
       this->m_Index[i] = indexArray[i];
   }
 
-  /// Access operator.
-  T& operator[]( const size_t idx )
-  {
-    return this->m_Index[idx];
-  }
-
-  /// Constant access operator.
-  const T& operator[]( const size_t idx ) const
-  {
-    return this->m_Index[idx];
-  }
-
   /// Get raw pointer to index array.
   operator T*()
   {
@@ -111,6 +99,15 @@ public:
     for ( size_t i = 0; i<NDIM; ++i )
       this->m_Index[i] -= rhs.m_Index[i];
     return *this;
+  }
+
+  /// Comparison operator.
+  bool operator==( const Self& rhs )
+  {
+    for ( size_t i = 0; i<NDIM; ++i )
+      if ( this->m_Index[i] != rhs.m_Index[i] )
+	return false;
+    return true;
   }
 
 private:

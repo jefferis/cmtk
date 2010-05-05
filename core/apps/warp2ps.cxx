@@ -178,16 +178,16 @@ main ( const int argc, const char* argv[] )
       {
       default:
       case 0:
-	CropRegion[2] = volume->GetDims( cmtk::AXIS_Y );
-	CropRegion[3] = volume->GetDims( cmtk::AXIS_Z );
+	CropRegion[2] = volume->GetDims()[cmtk::AXIS_Y];
+	CropRegion[3] = volume->GetDims()[cmtk::AXIS_Z];
 	break;
       case 1:
-	CropRegion[2] = volume->GetDims( cmtk::AXIS_X );
-	CropRegion[3] = volume->GetDims( cmtk::AXIS_Z );
+	CropRegion[2] = volume->GetDims()[cmtk::AXIS_X];
+	CropRegion[3] = volume->GetDims()[cmtk::AXIS_Z];
 	break;
       case 2:
-	CropRegion[2] = volume->GetDims( cmtk::AXIS_X );
-	CropRegion[3] = volume->GetDims( cmtk::AXIS_Y );
+	CropRegion[2] = volume->GetDims()[cmtk::AXIS_X];
+	CropRegion[3] = volume->GetDims()[cmtk::AXIS_Y];
 	break;
       }
     }
@@ -198,10 +198,10 @@ main ( const int argc, const char* argv[] )
     }
   
   if ( SliceIndex < 0 )
-    SliceIndex = volume->GetDims( Axis ) / 2;
+    SliceIndex = volume->GetDims()[Axis] / 2;
   
-  const cmtk::Types::Coordinate pixelSizeX = volume->Size[axisX] / (volume->GetDims(axisX)-1);
-  const cmtk::Types::Coordinate pixelSizeY = volume->Size[axisY] / (volume->GetDims(axisY)-1);
+  const cmtk::Types::Coordinate pixelSizeX = volume->Size[axisX] / (volume->GetDims()[axisX]-1);
+  const cmtk::Types::Coordinate pixelSizeY = volume->Size[axisY] / (volume->GetDims()[axisY]-1);
 
   const cmtk::Types::Coordinate xmin = CropRegion[0] * pixelSizeX * ScaleFactor;
   const cmtk::Types::Coordinate ymin = CropRegion[1] * pixelSizeY * ScaleFactor;
