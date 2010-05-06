@@ -243,6 +243,12 @@ public:
     return this->m_CropRegion;
   }
 
+  /** Set cropped region.
+   * This function can deal with negative crop region values, which refer to the upper grid
+   * boundary and are automatically converted.
+   */
+  void SetCropRegion( const Self::RegionType& region );
+
   /** Get cropped region reference.
    */
   const Self::RegionType& CropRegion() const

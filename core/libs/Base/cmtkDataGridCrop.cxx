@@ -36,6 +36,20 @@ namespace
 cmtk
 {
 
+void
+DataGrid::SetCropRegion( const Self::RegionType& region ) 
+{
+  this->m_CropRegion = region;
+  for ( int dim = 0; dim < 3; ++dim )
+    {
+    if ( this->m_CropRegion.From()[dim] < 0 )
+      this->m_CropRegion.From()[dim] = this->m_Dims[dim] + this->m_CropRegion.From()[dim];
+
+    if ( this->m_CropRegion.To()[dim] < 0 )
+      this->m_CropRegion.To()[dim] = this->m_Dims[dim] + this->m_CropRegion.To()[dim];
+    }
+}
+
 const DataGrid::IndexType
 DataGrid::GetCropRegionIncrements
 () const

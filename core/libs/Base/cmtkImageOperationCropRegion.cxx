@@ -34,7 +34,7 @@ cmtk::UniformVolume::SmartPtr
 cmtk::ImageOperationCropRegion
 ::Apply( cmtk::UniformVolume::SmartPtr& volume )
 {
-  volume->CropRegion() = this->m_Region;
+  volume->SetCropRegion( this->m_Region );
   return cmtk::UniformVolume::SmartPtr( volume->GetCroppedVolume() );    
 }
 
