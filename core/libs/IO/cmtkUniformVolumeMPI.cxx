@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -65,13 +65,12 @@ Broadcast
     {
     // send from this process
     int position = 0;
-    MPI::CHAR.Pack( inOutPtr->GetDims(), 3 * sizeof( inOutPtr->GetDims()[0] ), msgBufferHdr, msgBufferHdrSize,
-		    position, comm );
+    MPI::CHAR.Pack( inOutPtr->GetDims(), 3 * sizeof( inOutPtr->GetDims()[0] ), msgBufferHdr, msgBufferHdrSize, position, comm );
 
-    const cmtk::DataGrid::RegionType& cropRegion = inOutPtr->GetCropRegion();
+    const cmtk::DataGrid::RegionType& cropRegion = inOutPtr->CropRegion();
 
     const int crop[6] = { cropRegion.From()[0], cropRegion.From()[1], cropRegion.From()[2], cropRegion.To()[0], cropRegion.To()[1], cropRegion.To()[2] };
-    MPI::CHAR.Pack( cropRegion, sizeof( cropRegion ), msgBufferHdr, msgBufferHdrSize, position, comm );
+    MPI::CHAR.Pack( crop, sizeof( crop ), msgBufferHdr, msgBufferHdrSize, position, comm );
 
     MPI::CHAR.Pack( inOutPtr->Size, 3 * sizeof( inOutPtr->Size[0] ), msgBufferHdr, msgBufferHdrSize, position, comm );
 
