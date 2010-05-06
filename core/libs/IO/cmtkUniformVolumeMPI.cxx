@@ -65,7 +65,7 @@ Broadcast
     {
     // send from this process
     int position = 0;
-    MPI::CHAR.Pack( inOutPtr->GetDims(), 3 * sizeof( inOutPtr->GetDims()[0] ), msgBufferHdr, msgBufferHdrSize, position, comm );
+    MPI::CHAR.Pack( inOutPtr->GetDims().begin(), 3 * sizeof( inOutPtr->GetDims()[0] ), msgBufferHdr, msgBufferHdrSize, position, comm );
 
     const cmtk::DataGrid::RegionType& cropRegion = inOutPtr->CropRegion();
 
