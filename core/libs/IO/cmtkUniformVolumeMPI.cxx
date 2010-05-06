@@ -69,8 +69,10 @@ Broadcast
 
     const cmtk::DataGrid::RegionType& cropRegion = inOutPtr->CropRegion();
 
-    const int crop[6] = { cropRegion.From()[0], cropRegion.From()[1], cropRegion.From()[2], cropRegion.To()[0], cropRegion.To()[1], cropRegion.To()[2] };
-    MPI::CHAR.Pack( crop, sizeof( crop ), msgBufferHdr, msgBufferHdrSize, position, comm );
+    const int cropFrom[3] = { cropRegion.From()[0], cropRegion.From()[1], cropRegion.From()[2] };
+    const int cropTo[3] = { cropRegion.To()[0], cropRegion.To()[1], cropRegion.To()[2] };
+    MPI::CHAR.Pack( cropFrom, sizeof( cropFrom ), msgBufferHdr, msgBufferHdrSize, position, comm );
+    MPI::CHAR.Pack( cropTo, sizeof( cropTo ), msgBufferHdr, msgBufferHdrSize, position, comm );
 
     MPI::CHAR.Pack( inOutPtr->Size, 3 * sizeof( inOutPtr->Size[0] ), msgBufferHdr, msgBufferHdrSize, position, comm );
 
