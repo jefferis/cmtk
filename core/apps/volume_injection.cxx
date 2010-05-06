@@ -113,7 +113,7 @@ cmtk::UniformVolume::SmartPtr ReconGrid( NULL );
 void
 CallbackReconGrid( const char* arg )
 {
-  cmtk::UniformVolume::IndexType gridDims;
+  int gridDims[3] = { 0, 0, 0 };
   float gridDelta[3] = { 0, 0, 0 };
   float gridOffset[3] = { 0, 0, 0 };
 
@@ -124,7 +124,7 @@ CallbackReconGrid( const char* arg )
     exit( 1 );
     }
   
-  ReconGrid = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( gridDims, gridDelta[0], gridDelta[1], gridDelta[2] ) );
+  ReconGrid = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( cmtk::UniformVolume::IndexType( gridDims ), gridDelta[0], gridDelta[1], gridDelta[2] ) );
   
   if ( numArgs == 9 )
     {
