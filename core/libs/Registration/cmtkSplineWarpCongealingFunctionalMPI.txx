@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -310,7 +310,7 @@ SplineWarpCongealingFunctional
 	std::cerr << cpIndex << " / " << numberOfControlPoints << "\r";
 	}    
       
-      const DataGrid::RegionType* voi = ThisConst->m_VolumeOfInfluenceArray + cpIndex;
+      std::vector<DataGrid::RegionType>::const_iterator voi = ThisConst->m_VolumeOfInfluenceArray.begin() + cpIndex;
       const size_t pixelsPerLineVOI = (voi->To()[0]-voi->From()[0]);
       
       std::fill( threadStorage->m_FPlus.begin(), threadStorage->m_FPlus.end(), 0 );
