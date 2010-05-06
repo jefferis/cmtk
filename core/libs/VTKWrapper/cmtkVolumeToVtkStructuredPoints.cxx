@@ -95,7 +95,7 @@ void VolumeToVtkStructuredPoints::Execute()
   
   vtkStructuredPoints *output = this->GetOutput();
   
-  output->SetDimensions( this->m_Volume->GetDims().GetRawPtr() );
+  output->SetDimensions( this->m_Volume->GetDims().begin() );
 
   double ar[3];
   for ( int idx=0; idx<3; ++idx )
