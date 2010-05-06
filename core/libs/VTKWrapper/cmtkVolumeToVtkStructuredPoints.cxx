@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -95,7 +95,7 @@ void VolumeToVtkStructuredPoints::Execute()
   
   vtkStructuredPoints *output = this->GetOutput();
   
-  output->SetDimensions( this->m_Volume->GetDims() );
+  output->SetDimensions( this->m_Volume->GetDims().GetRawPtr() );
 
   double ar[3];
   for ( int idx=0; idx<3; ++idx )
