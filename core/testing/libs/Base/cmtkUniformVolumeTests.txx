@@ -42,11 +42,11 @@ testUniformVolumeMatches()
   const int dims2[3] = { 11, 12, 10 };
   const float size2[3] = { 11, 12, 10 };
   
-  cmtk::UniformVolume volume1a( dims1, size1a );
-  cmtk::UniformVolume volume1b( dims1, size1b );
-  cmtk::UniformVolume volume1c( dims1, size1b );
+  cmtk::UniformVolume volume1a( cmtk::UniformVolume::IndexType( dims1 ), size1a );
+  cmtk::UniformVolume volume1b( cmtk::UniformVolume::IndexType( dims1 ), size1b );
+  cmtk::UniformVolume volume1c( cmtk::UniformVolume::IndexType( dims1 ), size1b );
 
-  cmtk::UniformVolume volume2( dims2, size2 );
+  cmtk::UniformVolume volume2( cmtk::UniformVolume::IndexType( dims2 ), size2 );
 
   if ( volume1a.GridMatches( volume1b ) )
     return 1;

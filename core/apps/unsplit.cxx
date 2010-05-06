@@ -80,7 +80,7 @@ main( const int argc, const char* argv[] )
     return 1;
     }
 
-  int stackDims[3] = { 0,0,0 };
+  cmtk::UniformVolume::IndexType stackDims;
   cmtk::Types::Coordinate stackDelta[3] = { 1,1,1 };
   std::vector<cmtk::UniformVolume::SmartPtr> volumes;
   for ( std::list<const char*>::const_iterator it = inputFilePaths.begin(); it != inputFilePaths.end(); ++it )

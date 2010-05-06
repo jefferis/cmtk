@@ -38,9 +38,9 @@ testDataGridMatches()
   const int dims1[3] = { 10, 11, 12 };
   const int dims2[3] = { 11, 12, 10 };
   
-  cmtk::DataGrid grid1a( dims1 );
-  cmtk::DataGrid grid1b( dims1 );
-  cmtk::DataGrid grid2( dims2 );
+  cmtk::DataGrid grid1a( cmtk::DataGrid::IndexType( dims1 ) );
+  cmtk::DataGrid grid1b( cmtk::DataGrid::IndexType( dims1 ) );
+  cmtk::DataGrid grid2( cmtk::DataGrid::IndexType( dims2 ) );
 
   if ( !grid1a.GridMatches( grid1b ) )
     return 1;
