@@ -100,7 +100,7 @@ VolumeFromFile::ReadNRRD( const char* pathHdr )
 	}
       }
     const Types::Coordinate size[3] = { (dims[0]-1) * spacing[0], (dims[1]-1) * spacing[1], (dims[2]-1) * spacing[2] };
-    volume = new UniformVolume( dims, size );
+    volume = new UniformVolume( DataGrid::IndexType( dims ), size );
 
     ScalarDataType type = TYPE_NONE;
     switch ( nrrd->type )

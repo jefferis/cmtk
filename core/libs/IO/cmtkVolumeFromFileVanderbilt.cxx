@@ -97,7 +97,7 @@ VolumeFromFile::ReadVanderbilt( const char *path )
     size[i] = static_cast<Types::Coordinate>( (dims[i] - 1) * calib[i] );
 
   // create volume, for the time being with empty data array.
-  UniformVolume *volume = new UniformVolume( dims, size );
+  UniformVolume *volume = new UniformVolume( DataGrid::IndexType( dims ), size );
   volume->m_MetaInformation[META_IMAGE_ORIENTATION] = volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = orientation;
 
   // generate image filename from header file path.

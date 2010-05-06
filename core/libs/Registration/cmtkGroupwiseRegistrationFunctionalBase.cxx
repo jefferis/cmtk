@@ -99,7 +99,7 @@ GroupwiseRegistrationFunctionalBase::CreateTemplateGridFromTargets
 ( const std::vector<UniformVolume::SmartPtr>& targets, const int downsample )
 {
   Types::Coordinate templateSize[3] = {0,0,0};
-  int templateDims[3] = {0,0,0};
+  UniformVolume::IndexType templateDims;
   Types::Coordinate templateDelta = 1e10;
 
   for ( size_t i = 0; i < targets.size(); ++i )
@@ -123,7 +123,7 @@ GroupwiseRegistrationFunctionalBase::CreateTemplateGridFromTargets
 
 void
 GroupwiseRegistrationFunctionalBase::CreateTemplateGrid
-( const int (&dims)[3], const Types::Coordinate (&deltas)[3] )
+( const DataGrid::IndexType& dims, const Types::Coordinate (&deltas)[3] )
 {
   UniformVolume::SmartPtr templateGrid( new UniformVolume( dims, deltas ) );
   this->SetTemplateGrid( templateGrid );

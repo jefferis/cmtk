@@ -654,7 +654,7 @@ ReformatVolume::CreateTransformedReference
       volumeOffset[axis] = bbFrom[axis];
     }
   
-  int dims[3];
+  UniformVolume::IndexType dims;
   for ( int dim = 0; dim < 3; ++dim ) 
     {
     delta[dim] = this->ReferenceVolume->m_Delta[dim];

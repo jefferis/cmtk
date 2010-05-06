@@ -109,7 +109,7 @@ public:
 
   /** Create template grid based on geometry.
    */
-  virtual void CreateTemplateGrid( const int (&dims)[3], const Types::Coordinate (&deltas)[3] );
+  virtual void CreateTemplateGrid( const DataGrid::IndexType& dims, const Types::Coordinate (&deltas)[3] );
 
   /** Set template grid.
    *\param The template grid that defines size and resolution for the

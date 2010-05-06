@@ -97,7 +97,10 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
     return NULL;
     }
   
-  const DataGrid::IndexType::ValueType dims[3] = { header.GetField<short>( 42 ), header.GetField<short>( 44 ), header.GetField<short>( 46 ) };
+  DataGrid::IndexType dims;
+  dims[0] = header.GetField<short>( 42 );
+  dims[1] = header.GetField<short>( 44 );
+  dims[2] = header.GetField<short>( 46 );
   const int dims3 = header.GetField<short>( 48 );
 
   if ( (ndims > 3) && (dims3 > 1) ) 

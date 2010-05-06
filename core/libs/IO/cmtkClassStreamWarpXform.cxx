@@ -235,7 +235,7 @@ ClassStream::Get
       warpXform = NULL; // linear warp no longer supported
       break;
     case 1: 
-      warpXform = new SplineWarpXform( domain, dims, parameters, initialInverse );
+      warpXform = new SplineWarpXform( domain, SplineWarpXform::IndexType( dims ), parameters, initialInverse );
       break;
     };
   

@@ -100,7 +100,7 @@ UniformVolume::UniformVolume
 UniformVolume::UniformVolume 
 ( const UniformVolume& other, const Types::Coordinate resolution, const bool allowUpsampling ) 
 {
-  int newDims[3];
+  Self::IndexType newDims;
   for ( int dim=0; dim<3; ++dim ) 
     {
     Size[dim] = other.Size[dim];
@@ -256,7 +256,7 @@ UniformVolume*
 UniformVolume::GetInterleavedSubVolume
 ( const int axis, const int factor, const int idx ) const
 {
-  int dims[3];
+  Self::IndexType dims;
   Types::Coordinate size[3];
   for ( int dim = 0; dim < 3; ++dim )
     {

@@ -168,7 +168,7 @@ VolumeFromFile::ReadBioRad( const char* path )
   
   const Types::Coordinate volSize[3] = { (dims[0] - 1) * lensScale * pixelsizeX, (dims[1] - 1) * lensScale * pixelsizeY, (dims[2] - 1) * pixelsizeZ };
   
-  UniformVolume* volume = new UniformVolume( dims, volSize, dataArray );
+  UniformVolume* volume = new UniformVolume( DataGrid::IndexType( dims ), volSize, dataArray );
 
   if ( flipX )
     {

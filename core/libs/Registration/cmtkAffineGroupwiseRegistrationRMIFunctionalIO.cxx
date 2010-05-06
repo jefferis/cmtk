@@ -79,7 +79,7 @@ operator>>
   stream.ReadCoordinateArray( "origin", origin, 3 );
   stream.End();
 
-  UniformVolume::SmartPtr templateGrid( new UniformVolume( dims, size ) );
+  UniformVolume::SmartPtr templateGrid( new UniformVolume( UniformVolume::IndexType( dims ), size ) );
   templateGrid->SetOffset( Vector3D( origin ) );
 
   std::vector<UniformVolume::SmartPtr> imageVector;

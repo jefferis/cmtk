@@ -262,8 +262,7 @@ VolumeFromFile::ReadDICOM( const char *path )
       }
     }
   const Types::Coordinate size[3] = { pixelSize[0] * (dims[0]-1), pixelSize[1] * (dims[1]-1), pixelSize[1] * (dims[1]-1) };  
-  
-  UniformVolume *volume = new UniformVolume( dims, size, dataArray );
+  UniformVolume *volume = new UniformVolume( UniformVolume::IndexType( dims ), size, dataArray );
   
   return volume;
 }

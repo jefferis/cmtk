@@ -69,7 +69,7 @@ DataGrid::GetDownsampled( const int (&downsample)[3] ) const
   const int newDims[3] = { (this->m_Dims[0]-1) / downsample[0] + 1, (this->m_Dims[1]-1) / downsample[1] + 1, (this->m_Dims[2]-1) / downsample[2] + 1 };
 
   DataGrid* newDataGrid = new DataGrid;
-  newDataGrid->SetDims( newDims );
+  newDataGrid->SetDims( Self::IndexType( newDims ) );
   
   const TypedArray* thisData = this->GetData();
   if ( thisData )
@@ -143,8 +143,8 @@ DataGrid::GetReoriented( const char* newOrientation ) const
   // 1. get a permutation matrix
   AnatomicalOrientation::PermutationMatrix pmatrix( this->m_Dims.begin(), NULL, curOrientation, newOrientation );
   
-  int newDims[3] = { 0, 0, 0 }; 
-  pmatrix.GetPermutedArray( this->m_Dims.begin(), newDims );
+  Self::IndexType newDims; 
+  pmatrix.GetPermutedArray( this->m_Dims.begin(), newDims.begin() );
   DataGrid* newDataGrid = new DataGrid( newDims );
   
   const TypedArray* oldData = this->GetData();
