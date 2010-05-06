@@ -78,22 +78,25 @@ DataGrid::AutoCrop
   size_t offset = cropFrom[0] + this->m_Dims[0] * ( cropFrom[1] + this->m_Dims[1] * cropFrom[2] );
 
   Self::IndexType newCropFrom = cropTo, newCropTo = cropFrom;
-  for ( int z = cropFrom[2]; z < cropTo[2]; ++z, offset += nextPlane )
-    for ( int y = cropFrom[1]; y < cropTo[1]; ++y, offset += nextRow )
-      for ( int x = cropFrom[0]; x < cropTo[0]; ++x, ++offset ) 
+  Self::IndexType xyz;
+  for ( xyz[2] = cropFrom[2]; xyz[2] < cropTo[2]; ++xyz[2], offset += nextPlane )
+    for ( xyz[1] = cropFrom[1]; xyz[1] < cropTo[1]; ++xyz[1], offset += nextRow )
+      for ( xyz[0] = cropFrom[0]; xyz[0] < cropTo[0]; ++xyz[0], ++offset ) 
 	{
 	Types::DataItem value = 0;
 	if ( ! data->Get( value, offset ) || (value < threshold) ) continue;
 	
-	const int xyz[3] = { x, y, z };
-	newCropFrom = std::min( newCropFrom, Self::IndexType( xyz ) );
-	newCropTo = std::max( newCropTo,  Self::IndexType( xyz ) );
+	for ( int i = 0; i < 3; ++i )
+	  {
+	  newCropFrom[i] = std::min( newCropFrom[i], xyz[i] );
+	  newCropTo[i] = std::max( newCropTo[i], xyz[i] );
+	  }
 	}
-
-    for ( int dim = 0; dim < 3; ++dim ) 
-      {
-      ++newCropTo[dim];
-      }
+  
+  for ( int dim = 0; dim < 3; ++dim ) 
+    {
+    ++newCropTo[dim];
+    }
   
   if ( margin ) 
     {
