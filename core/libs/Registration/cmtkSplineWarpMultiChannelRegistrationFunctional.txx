@@ -129,9 +129,9 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   
   for ( size_t idx = 0; idx < numberOfControlPoints; ++idx ) 
     {
-    Vector3D regionFrom, toRegion;
-    this->m_Transformation.GetVolumeOfInfluence( idx * 3, referenceFrom, referenceTo, regionFrom, toRegion );
-    this->m_VolumeOfInfluenceVector[idx] = this->m_ReferenceChannels[0]->GetGridRange( regionFrom, toRegion );
+    Vector3D regionFrom, regionTo;
+    this->m_Transformation.GetVolumeOfInfluence( idx * 3, referenceFrom, referenceTo, regionFrom, regionTo );
+    this->m_VolumeOfInfluenceVector[idx] = this->m_ReferenceChannels[0]->GetGridRange( regionFrom, regionTo );
     }
 
   m_UpdateTransformationFixedControlPointsRequired = true;
@@ -478,7 +478,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 ::EvaluateIncremental
 ( const SplineWarpXform* transformation, MetricData& metricData, const DataGrid::RegionType& region )
 {
-  const size_t pixelsPerLineRegion = region.To()[2] - region.From()[2];
+  const size_t pixelsPerLineRegion = region.To()[0] - region.From()[0];
   std::vector<Vector3D> pFloating( pixelsPerLineRegion );
 
   const DataGrid::IndexType& dims = this->m_ReferenceDims;
