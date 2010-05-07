@@ -125,8 +125,7 @@ main( int argc, char* argv[] )
   levelset->CreateDataArray( cmtk::TYPE_FLOAT );
   levelset->GetData()->Fill( -1.0 );
 
-  cmtk::Vector3D center( volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2] );
-  center *= 0.5;
+  cmtk::Vector3D center( volume->GetDims()[0]/2, volume->GetDims()[1]/2, volume->GetDims()[2]/2 );
 
   cmtk::UniformVolumePainter painter( levelset );
   painter.DrawSphere( center, (levelset->GetDims()[0]+levelset->GetDims()[1]+levelset->GetDims()[2])/6, 1.0 );
