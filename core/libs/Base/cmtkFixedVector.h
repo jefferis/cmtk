@@ -30,8 +30,8 @@
 //
 */
 
-#ifndef __cmtkIndex_h_included_
-#define __cmtkIndex_h_included_
+#ifndef __cmtkFixedVector_h_included_
+#define __cmtkFixedVector_h_included_
 
 #include <cmtkconfig.h>
 
@@ -42,35 +42,35 @@ cmtk
 {
 /// Class for n-dimensional image index.
 template<size_t NDIM,typename T=int>
-class Index
+class FixedVector
 {
 public:
   /// This class.
-  typedef Index<NDIM,T> Self;
+  typedef FixedVector<NDIM,T> Self;
 
   /// Type of the stored values.
   typedef T ValueType;
 
   /// Default constructor.
-  Index() {}
+  FixedVector() {}
 
   /// Constructor from const int array.
-  Index( const T (&indexArray)[NDIM] )
+  FixedVector( const T (&indexArray)[NDIM] )
   {
     for ( size_t i = 0; i < NDIM; ++i )
-      this->m_Index[i] = indexArray[i];
+      this->m_FixedVector[i] = indexArray[i];
   }
 
   /// Get element reference.
   T& operator[]( const size_t i )
   {
-    return this->m_Index[i];
+    return this->m_FixedVector[i];
   }
 
   /// Get const element reference.
   const T& operator[]( const size_t i ) const
   {
-    return this->m_Index[i];
+    return this->m_FixedVector[i];
   }
 
   /// Addition operator.
@@ -83,7 +83,7 @@ public:
   Self& operator+=( const Self& rhs )
   {
     for ( size_t i = 0; i<NDIM; ++i )
-      this->m_Index[i] += rhs.m_Index[i];
+      this->m_FixedVector[i] += rhs.m_FixedVector[i];
     return *this;
   }
   
@@ -97,7 +97,7 @@ public:
   Self& operator-=( const Self& rhs )
   {
     for ( size_t i = 0; i<NDIM; ++i )
-      this->m_Index[i] -= rhs.m_Index[i];
+      this->m_FixedVector[i] -= rhs.m_FixedVector[i];
     return *this;
   }
 
@@ -105,16 +105,7 @@ public:
   bool operator==( const Self& rhs ) const
   {
     for ( size_t i = 0; i<NDIM; ++i )
-      if ( this->m_Index[i] != rhs.m_Index[i] )
-	return false;
-    return true;
-  }
-
-  /// Comparison operator.
-  bool operator<( const Self& rhs ) const
-  {
-    for ( size_t i = 0; i<NDIM; ++i )
-      if ( this->m_Index[i] >= rhs.m_Index[i] )
+      if ( this->m_FixedVector[i] != rhs.m_FixedVector[i] )
 	return false;
     return true;
   }
@@ -122,35 +113,35 @@ public:
   /// Pointer to first array element.
   T* begin()
   {
-    return m_Index;
+    return m_FixedVector;
   }
 
   /// Pointer behind last array element.
   T* end()
   {
-    return m_Index+NDIM;
+    return m_FixedVector+NDIM;
   }
 
   /// Pointer to first array element.
   const T* begin() const
   {
-    return m_Index;
+    return m_FixedVector;
   }
 
   /// Pointer behind last array element.
   const T* end() const
   {
-    return m_Index+NDIM;
+    return m_FixedVector+NDIM;
   }
 
 private:
   /// The actual index array.
-  T m_Index[NDIM];
+  T m_FixedVector[NDIM];
 };
 
 /// Stream input operator.
 template<size_t NDIM,typename T>
-std::ofstream& operator<<( std::ofstream& stream, const Index<NDIM,T>& index )
+std::ofstream& operator<<( std::ofstream& stream, const FixedVector<NDIM,T>& index )
 {
   for ( size_t i = 0; i < NDIM; ++i )
     stream << index[i];
@@ -159,7 +150,7 @@ std::ofstream& operator<<( std::ofstream& stream, const Index<NDIM,T>& index )
 
 /// Stream output operator.
 template<size_t NDIM,typename T>
-std::ifstream& operator>>( std::ifstream& stream, Index<NDIM,T>& index )
+std::ifstream& operator>>( std::ifstream& stream, FixedVector<NDIM,T>& index )
 {
   for ( size_t i = 0; i < NDIM; ++i )
     stream >> index[i];
@@ -168,4 +159,4 @@ std::ifstream& operator>>( std::ifstream& stream, Index<NDIM,T>& index )
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkIndex_h_included_
+#endif // #ifndef __cmtkFixedVector_h_included_

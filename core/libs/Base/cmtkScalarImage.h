@@ -39,7 +39,6 @@
 
 #include <cmtkTypes.h>
 #include <cmtkTypedArray.h>
-#include <cmtkIndex.h>
 #include <cmtkRegion.h>
 #include <cmtkVector3D.h>
 #include <cmtkMatrix3x3.h>
@@ -83,11 +82,11 @@ public:
   /// Smart pointer to const ScalarImage
   typedef SmartConstPointer<Self> SmartConstPtr;
 
-  /// Pixel index type.
-  typedef Index<2,int> IndexType;
-
   /// Region type.
   typedef Region<2,int> RegionType;
+
+  /// Pixel index type.
+  typedef RegionType::IndexType IndexType;
 
   /// Default constructor creates empty image.
   ScalarImage();

@@ -40,7 +40,7 @@
 #include <cmtkMacros.h>
 #include <cmtkVector.h>
 #include <cmtkVector3D.h>
-#include <cmtkRegion.h>
+#include <cmtkFixedVector.h>
 
 #include <cmtkVolume.h>
 #include <cmtkUniformVolume.h>
@@ -77,7 +77,7 @@ public:
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Grid index type.
-  typedef Index<3,int> IndexType;
+  typedef FixedVector<3,int> IndexType;
   
   /// Dimensions of control point grid.
   Self::IndexType m_Dims;

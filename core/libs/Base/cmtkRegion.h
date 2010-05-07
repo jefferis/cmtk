@@ -35,7 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkIndex.h>
+#include <cmtkFixedVector.h>
+
 #include <fstream>
 
 namespace
@@ -50,38 +51,38 @@ public:
   typedef Region<NDIM,T> Self;
 
   /// Index type.
-  typedef Index<NDIM,T> IndexType;
+  typedef FixedVector<NDIM,T> IndexType;
 
   /// Default constructor.
   Region() {}
 
   /// Constructor from two index, from and to.
-  Region( const IndexType& fromIndex, const IndexType& toIndex )
+  Region( const Self::IndexType& fromIndex, const Self::IndexType& toIndex )
   {
     this->m_RegionFrom = fromIndex;
     this->m_RegionTo = toIndex;
   }
   
   /// Get "from".
-  IndexType& From()
+  Self::IndexType& From()
   {
     return this->m_RegionFrom;
   }
 
   /// Get const "from".
-  const IndexType& From() const
+  const Self::IndexType& From() const
   {
     return this->m_RegionFrom;
   }
 
   /// Get "from".
-  IndexType& To()
+  Self::IndexType& To()
   {
     return this->m_RegionTo;
   }
 
   /// Get const "from".
-  const IndexType& To() const
+  const Self::IndexType& To() const
   {
     return this->m_RegionTo;
   }
@@ -97,10 +98,10 @@ public:
   
 private:
   /// Beginning index.
-  IndexType m_RegionFrom;
+  Self::IndexType m_RegionFrom;
 
   /// End index.
-  IndexType m_RegionTo;
+  Self::IndexType m_RegionTo;
 };
 
 /// Stream input operator.
