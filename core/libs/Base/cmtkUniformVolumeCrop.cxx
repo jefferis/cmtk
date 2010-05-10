@@ -65,13 +65,17 @@ UniformVolume::GetCropRegionCoordinates
   return region;
 }
 
-UniformVolume* 
+UniformVolume::SmartPtr
 UniformVolume::GetCroppedVolume() const
 {
-  const UniformVolume::IndexType cropDims = this->CropRegion().To() - this->CropRegion().From();
-  const Types::Coordinate cropSize[3] = { (cropDims[0]-1) * this->m_Delta[0], (cropDims[1]-1) * this->m_Delta[1], (cropDims[2]-1) * this->m_Delta[2] };
-  UniformVolume* volume = new UniformVolume( cropDims, cropSize );
-
+  const Self::IndexType cropDims = this->CropRegion().To() - this->CropRegion().From();
+  
+  Self::CoordinateVectorType cropSize( cropDims );
+  for ( size_t i = 0; i < 3; ++i )
+    (cropSize[i] -= 1) *= this->m_Delta[i];
+  
+  Self::SmartPtr volume( new UniformVolume( cropDims, cropSize ) );
+  
   // get cropped data.
   TypedArray::SmartPtr croppedData( this->GetCroppedData() );
   volume->SetData( croppedData );

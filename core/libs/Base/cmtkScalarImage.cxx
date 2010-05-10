@@ -167,9 +167,16 @@ ScalarImage::InterpolateFrom
   TypedArray* data = result->GetPixelData().GetPtr();
 
   // compute transformed region origin and pixel directions
-  Types::Coordinate origin[2] = { 0, 0 };
-  Types::Coordinate deltax[2] = { grid->m_PixelSize[0], 0 };
-  Types::Coordinate deltay[2] = { 0, grid->m_PixelSize[1] };
+  FixedVector<2,Types::Coordinate> origin;
+  origin[0] = origin[1] = 0;
+
+  FixedVector<2,Types::Coordinate> deltax;
+  deltax[0] = grid->m_PixelSize[0];
+  deltax[1] = 0;
+
+  FixedVector<2,Types::Coordinate> deltay;
+  deltay[0] = 0;
+  deltay[1] = grid->m_PixelSize[1];
 
   matrix->Multiply( origin );
   origin[0] /= this->m_PixelSize[0];
@@ -343,7 +350,7 @@ ScalarImage::GetImageOrigin( const int frame ) const
   if ( this->m_NumberOfFrames > 1 ) 
     {
     origin.SetNormal( this->m_ImageDirectionX, this->m_ImageDirectionY );
-    origin *= (frame * this->m_FrameToFrameSpacing) / origin.EuclidNorm();
+    origin *= (frame * this->m_FrameToFrameSpacing) / origin.RootSumOfSquares();
     origin += this->m_ImageOrigin;
     } 
   else
@@ -403,8 +410,8 @@ ScalarImage::Downsample
   newScalarImage->SetPixelSize( this->m_PixelSize[0] * factorX, this->m_PixelSize[1] * factorY );
   
   Vector3D imageOrigin( this->m_ImageOrigin );
-  imageOrigin += (0.5 * this->m_PixelSize[0] / this->m_ImageDirectionX.EuclidNorm()) * this->m_ImageDirectionX;
-  imageOrigin += (0.5 * this->m_PixelSize[1] / this->m_ImageDirectionY.EuclidNorm()) * this->m_ImageDirectionY;
+  imageOrigin += (0.5 * this->m_PixelSize[0] / this->m_ImageDirectionX.RootSumOfSquares()) * this->m_ImageDirectionX;
+  imageOrigin += (0.5 * this->m_PixelSize[1] / this->m_ImageDirectionY.RootSumOfSquares()) * this->m_ImageDirectionY;
 
   newScalarImage->SetImageOrigin( imageOrigin );
   newScalarImage->SetImageDirectionX( this->m_ImageDirectionX );
@@ -767,7 +774,7 @@ void ScalarImage::Mirror( const bool horizontal, const bool vertical )
       {
       this->m_PixelData->BlockSwap( y * this->m_Dims[0], (this->m_Dims[1]-y-1) * this->m_Dims[0], this->m_Dims[0] );
       }
-    this->m_ImageOrigin = this->m_ImageOrigin + ((this->m_Dims[1]-1) * this->m_PixelSize[1] / this->m_ImageDirectionY.EuclidNorm()) * this->m_ImageDirectionY;
+    this->m_ImageOrigin = this->m_ImageOrigin + ((this->m_Dims[1]-1) * this->m_PixelSize[1] / this->m_ImageDirectionY.RootSumOfSquares()) * this->m_ImageDirectionY;
     this->m_ImageDirectionY *= (-1.0);
     }
   
@@ -777,7 +784,7 @@ void ScalarImage::Mirror( const bool horizontal, const bool vertical )
       {
       this->m_PixelData->BlockReverse( y * this->m_Dims[0], this->m_Dims[0] );
       }
-    this->m_ImageOrigin = this->m_ImageOrigin + ((this->m_Dims[1]-1) * this->m_PixelSize[0] / this->m_ImageDirectionX.EuclidNorm()) * this->m_ImageDirectionX;
+    this->m_ImageOrigin = this->m_ImageOrigin + ((this->m_Dims[1]-1) * this->m_PixelSize[0] / this->m_ImageDirectionX.RootSumOfSquares()) * this->m_ImageDirectionX;
     this->m_ImageDirectionX *= (-1.0);
     }
 }
@@ -953,12 +960,10 @@ ScalarImage::ProjectPixel
 ( const Vector3D& v, int& i, int& j ) const
 {
   Vector3D p(v);
-  p.XYZ[0] -= this->m_ImageOrigin[0];
-  p.XYZ[1] -= this->m_ImageOrigin[1];
-  p.XYZ[2] -= this->m_ImageOrigin[2];
-
-  i = MathUtil::Round( ( p * this->m_ImageDirectionX ) / ( this->m_ImageDirectionX.Square() * this->m_PixelSize[0] ) );
-  j = MathUtil::Round( ( p * this->m_ImageDirectionY ) / ( this->m_ImageDirectionY.Square() * this->m_PixelSize[1] ) );
+  p -= this->m_ImageOrigin;
+  
+  i = MathUtil::Round( ( p * this->m_ImageDirectionX ) / ( this->m_ImageDirectionX.SumOfSquares() * this->m_PixelSize[0] ) );
+  j = MathUtil::Round( ( p * this->m_ImageDirectionY ) / ( this->m_ImageDirectionY.SumOfSquares() * this->m_PixelSize[1] ) );
 }
 
 void 
@@ -969,10 +974,10 @@ ScalarImage::Print() const
   StdErr.indent();
   StdErr.printf( "Dimensions: [%d,%d]\n", this->m_Dims[0], this->m_Dims[1] );
   StdErr.printf( "Pixel size: [%f,%f]\n", this->m_PixelSize[0], this->m_PixelSize[1] );
-  StdErr.printf( "Origin: [%f,%f,%f]\n", this->m_ImageOrigin.XYZ[0], this->m_ImageOrigin.XYZ[1], this->m_ImageOrigin.XYZ[2] );
+  StdErr.printf( "Origin: [%f,%f,%f]\n", this->m_ImageOrigin[0], this->m_ImageOrigin[1], this->m_ImageOrigin[2] );
 
-  StdErr.printf( "DirectionX: [%f,%f,%f]\n", this->m_ImageDirectionX.XYZ[0], this->m_ImageDirectionX.XYZ[1], this->m_ImageDirectionX.XYZ[2] );
-  StdErr.printf( "DirectionY: [%f,%f,%f]\n", this->m_ImageDirectionY.XYZ[0], this->m_ImageDirectionY.XYZ[1], this->m_ImageDirectionY.XYZ[2] );
+  StdErr.printf( "DirectionX: [%f,%f,%f]\n", this->m_ImageDirectionX[0], this->m_ImageDirectionX[1], this->m_ImageDirectionX[2] );
+  StdErr.printf( "DirectionY: [%f,%f,%f]\n", this->m_ImageDirectionY[0], this->m_ImageDirectionY[1], this->m_ImageDirectionY[2] );
   StdErr.unindent();
 }
 

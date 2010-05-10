@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,6 +36,7 @@
 #include <cmtkconfig.h>
 
 #include <cmtkMatrix3x3.h>
+#include <cmtkFixedVector.h>
 
 namespace
 cmtk
@@ -56,12 +58,11 @@ public:
 				 const bool sortAbsolute = true /**!< Flag for sorting by absolute eigenvalues (default) vs. sorting by actual eigenvalues.*/ );
   
   /// Get n-th eigenvector.
-  template <class T> void GetNthEigenvector( const size_t n, T *const evec ) const
+  const FixedVector<3,TFloat> GetNthEigenvector( const size_t n ) const
   {
-    for ( size_t i = 0; i < 3; ++i )
-      evec[i] = this->m_Eigenvectors[n][i];
+    return FixedVector<3,TFloat>( this->m_Eigenvectors[n] );
   }
-
+  
   /// Get n-th eigenvalue.
   TFloat GetNthEigenvalue( const size_t n ) const
   {

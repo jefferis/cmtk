@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -158,7 +159,7 @@ UniformVolume::GetVoxelIndexNoBounds
 {
   for ( int dim = 0; dim < 3; ++dim ) 
     {
-    idx[dim] = static_cast<int>( floor( (location.XYZ[dim]-this->m_Offset.XYZ[dim]) / this->m_Delta[dim]) );
+    idx[dim] = static_cast<int>( floor( (location[dim]-this->m_Offset[dim]) / this->m_Delta[dim]) );
     }
 }
 

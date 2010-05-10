@@ -63,21 +63,21 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-UniformVolume* 
+const UniformVolume::SmartPtr
 VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool readData )
 {
   CompressedStream hdrStream( pathHdr );
   if ( !hdrStream.IsValid() ) 
     {
     StdErr.printf( "ERROR: could not open Nifti header file %s\n", pathHdr );
-    return NULL;
+    return UniformVolume::SmartPtr( NULL );
     }
   
   nifti_1_header buffer;
   if ( sizeof(buffer) != hdrStream.Read( &buffer, 1, sizeof(buffer) ) ) 
     {
     StdErr.printf( "ERROR: could not read %d bytes from header file %s\n", int( sizeof( buffer ) ), pathHdr );
-    return NULL;
+    return UniformVolume::SmartPtr( NULL );
     }
   hdrStream.Close();
   
@@ -95,7 +95,7 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
   if ( ndims < 3 ) 
     {
     StdErr.printf( "ERROR: image dimension %d is smaller than 3 in file %s\n", ndims, pathHdr );
-    return NULL;
+    return UniformVolume::SmartPtr( NULL );
     }
   
   const DataGrid::IndexType::ValueType dims[3] = { header.GetField<short>( 42 ), header.GetField<short>( 44 ), header.GetField<short>( 46 ) };
@@ -109,9 +109,9 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
   float pixelDim[3];
   header.GetArray( pixelDim, 80, 3 );
 
-  float size[3] = { (dims[0] - 1) * fabs( pixelDim[0] ), (dims[1] - 1) * fabs( pixelDim[1] ), (dims[2] - 1) * fabs( pixelDim[2] ) };
+  Types::Coordinate size[3] = { (dims[0] - 1) * fabs( pixelDim[0] ), (dims[1] - 1) * fabs( pixelDim[1] ), (dims[2] - 1) * fabs( pixelDim[2] ) };
 
-  UniformVolume* volume = new UniformVolume( DataGrid::IndexType( dims ), size );
+  UniformVolume::SmartPtr volume( new UniformVolume( DataGrid::IndexType( dims ), UniformVolume::CoordinateVectorType( size ) ) );
   // Nifti is in RAS space.
   const char *const niftiSpace = "RAS";
   volume->m_MetaInformation[META_SPACE] = volume->m_MetaInformation[META_SPACE_ORIGINAL] = niftiSpace;
@@ -261,7 +261,7 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
 
 void
 VolumeFromFile::WriteNifti
-( const char* pathImg, const UniformVolume* volume, const bool )
+( const char* pathImg, const UniformVolume& volume, const bool )
 {
   bool detachedHeader = false;
 
@@ -273,7 +273,7 @@ VolumeFromFile::WriteNifti
     pathHdr.replace( suffixPos, 4, ".hdr" );
     }
   
-  UniformVolume::SmartPtr writeVolume( volume->Clone() );
+  UniformVolume::SmartPtr writeVolume( volume.Clone() );
   writeVolume->ChangeCoordinateSpace( "RAS" );
 
   const TypedArray* data = writeVolume->GetData();
@@ -300,7 +300,7 @@ VolumeFromFile::WriteNifti
   header.qform_code = 0;
   header.sform_code = 1;
 
-  AffineXform::MatrixType m4 = volume->m_IndexToPhysicalMatrix;
+  AffineXform::MatrixType m4 = volume.m_IndexToPhysicalMatrix;
   for ( int i = 0; i < 4; ++i )
     {
     header.srow_x[i] = static_cast<float>( m4[i][0] );

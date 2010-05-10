@@ -198,10 +198,10 @@ main ( const int argc, const char* argv[] )
 	
 	switch ( Mode )
 	  {
-	  case cmtk::X2S_EXTRACT_X: scalarImage->SetDataAt( v.XYZ[0], offset ); break;
-	  case cmtk::X2S_EXTRACT_Y: scalarImage->SetDataAt( v.XYZ[1], offset ); break;
-	  case cmtk::X2S_EXTRACT_Z: scalarImage->SetDataAt( v.XYZ[2], offset ); break;
-	  case cmtk::X2S_MAGNITUDE: scalarImage->SetDataAt( v.EuclidNorm(), offset ); break;
+	  case cmtk::X2S_EXTRACT_X: scalarImage->SetDataAt( v[0], offset ); break;
+	  case cmtk::X2S_EXTRACT_Y: scalarImage->SetDataAt( v[1], offset ); break;
+	  case cmtk::X2S_EXTRACT_Z: scalarImage->SetDataAt( v[2], offset ); break;
+	  case cmtk::X2S_MAGNITUDE: scalarImage->SetDataAt( v.RootSumOfSquares(), offset ); break;
 	  default: break;
 	  }
 	}
@@ -210,7 +210,7 @@ main ( const int argc, const char* argv[] )
 
   if ( OutImagePath ) 	 
     {
-    cmtk::VolumeIO::Write( scalarImage, OutImagePath, Verbose );
+    cmtk::VolumeIO::Write( *scalarImage, OutImagePath, Verbose );
     }
 }
 

@@ -174,17 +174,17 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
       centerOfMass[idx] *= (1.0 / count[idx]);
       if ( OutputExpNotation )
 	fprintf( stdout, "%03d\t%14d\t%14d\t%.4e\t(%e,%e,%e)\n", 
-		 (int)idx, count[idx], countSurface[idx], count[idx] * voxelVolume, centerOfMass[idx].XYZ[0], centerOfMass[idx].XYZ[1], centerOfMass[idx].XYZ[2] );
+		 (int)idx, count[idx], countSurface[idx], count[idx] * voxelVolume, centerOfMass[idx][0], centerOfMass[idx][1], centerOfMass[idx][2] );
       else
 	fprintf( stdout, "%03d\t%14d\t%14d\t%.4f\t(%f,%f,%f)\n", 
-		 (int)idx, count[idx], countSurface[idx], count[idx] * voxelVolume, centerOfMass[idx].XYZ[0], centerOfMass[idx].XYZ[1], centerOfMass[idx].XYZ[2] );
+		 (int)idx, count[idx], countSurface[idx], count[idx] * voxelVolume, centerOfMass[idx][0], centerOfMass[idx][1], centerOfMass[idx][2] );
       totalCount += count[idx];
       
       cmtk::Landmark* landmark = new cmtk::Landmark();
       char name[4];
       sprintf( name, "%3d", idx );
       landmark->SetName( name );
-      landmark->SetLocation( centerOfMass[idx].XYZ );
+      landmark->SetLocation( centerOfMass[idx].begin() );
       landmarkList.push_back( cmtk::Landmark::SmartPtr( landmark ) );
       }
     }

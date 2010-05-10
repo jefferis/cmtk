@@ -39,7 +39,6 @@
 
 #include <cmtkMacros.h>
 #include <cmtkVector.h>
-#include <cmtkVector3D.h>
 
 #include <cmtkUniformVolume.h>
 
@@ -80,7 +79,7 @@ public:
   }
   
   /// Constructor.
-  DeformationField( const Types::Coordinate domain[3], const DataGrid::IndexType& dims, const Types::Coordinate* offset = NULL ) 
+  DeformationField( const FixedVector<3,Types::Coordinate>& domain, const DataGrid::IndexType& dims, const Types::Coordinate* offset = NULL ) 
   {
     this->InitGrid( domain, dims );
     if ( offset )
@@ -99,7 +98,7 @@ public:
   virtual Self* Clone () const { return NULL; }
 
   /// Initialized internal data structures for new control point grid.
-  virtual void InitGrid( const Types::Coordinate domain[3], const DataGrid::IndexType& dims )
+  virtual void InitGrid( const FixedVector<3,Types::Coordinate>& domain, const DataGrid::IndexType& dims )
   {
     this->Superclass::InitGrid( domain, dims );
     for ( int dim = 0; dim < 3; ++dim )
@@ -117,11 +116,11 @@ public:
   void InitControlPoints( const AffineXform* affineXform = NULL );
 
   /// Apply transformation to vector in-place.
-  virtual void ApplyInPlace ( Vector3D& ) const;
+  virtual void ApplyInPlace ( Self::SpaceVectorType& ) const;
 
   /** Return origin of warped vector.
    */
-  virtual bool ApplyInverse ( const Vector3D&, Vector3D&, const Types::Coordinate = 0.01  ) const 
+  virtual bool ApplyInverse ( const Self::SpaceVectorType&, Self::SpaceVectorType&, const Types::Coordinate = 0.01  ) const 
   {
     // not implemented
     return false;
@@ -129,23 +128,23 @@ public:
 
   /** Return origin of warped vector.
    */
-  virtual bool ApplyInverseInPlace( Vector3D&, const Types::Coordinate = 0.01  ) const 
+  virtual bool ApplyInverseInPlace( Self::SpaceVectorType&, const Types::Coordinate = 0.01  ) const 
   {
     // not implemented
     return false;
   }
 
   /// Get a grid point from the deformed grid.
-  virtual void GetTransformedGrid( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const;
+  virtual void GetTransformedGrid( Self::SpaceVectorType& v, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get a sequence of grid points from the deformed grid. 
-  virtual void GetTransformedGridSequence( Vector3D *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const;
+  virtual void GetTransformedGridSequence( Self::SpaceVectorType *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get Jacobian matrix.
-  virtual void GetJacobian( const Vector3D& v, CoordinateMatrix3x3& J ) const;
+  virtual void GetJacobian( const Self::SpaceVectorType& v, CoordinateMatrix3x3& J ) const;
 
   /// Compute Jacobian determinant at a certain location.
-  virtual Types::Coordinate GetJacobianDeterminant ( const Vector3D& v ) const
+  virtual Types::Coordinate GetJacobianDeterminant ( const Self::SpaceVectorType& v ) const
   {
     CoordinateMatrix3x3 J;
     this->GetJacobian( v, J );

@@ -91,9 +91,9 @@ Image::SetFromScalarImage
       pixelData = TypedArray::SmartPtr( pixelData->Clone() );
     this->SetData( pixelData );
     this->SetSpacing( scalarImage->GetPixelSize() );
-    this->SetOrigin( scalarImage->GetImageOrigin().XYZ );
-    this->SetDirectionX( scalarImage->GetImageDirectionX().XYZ );
-    this->SetDirectionY( scalarImage->GetImageDirectionY().XYZ );
+    this->SetOrigin( scalarImage->GetImageOrigin().begin() );
+    this->SetDirectionX( scalarImage->GetImageDirectionX().begin() );
+    this->SetDirectionY( scalarImage->GetImageDirectionY().begin() );
     this->UpdateModifiedTime();
     }
 }
@@ -110,9 +110,9 @@ Image::SetFromScalarImage
       pixelData = TypedArray::SmartPtr( pixelData->Clone() );
     this->SetData( pixelData );
     this->SetSpacing( scalarImage->GetPixelSize() );
-    this->SetOrigin( scalarImage->GetImageOrigin().XYZ );
-    this->SetDirectionX( scalarImage->GetImageDirectionX().XYZ );
-    this->SetDirectionY( scalarImage->GetImageDirectionY().XYZ );
+    this->SetOrigin( scalarImage->GetImageOrigin().begin() );
+    this->SetDirectionX( scalarImage->GetImageDirectionX().begin() );
+    this->SetDirectionY( scalarImage->GetImageDirectionY().begin() );
     this->UpdateModifiedTime();
     }
 }
@@ -124,9 +124,9 @@ Image::GetScalarImage() const
 
   scalarImage->SetPixelData( Data );
   scalarImage->SetPixelSize( Spacing );
-  scalarImage->SetImageOrigin( Origin );
-  scalarImage->SetImageDirectionX( DirectionX );
-  scalarImage->SetImageDirectionY( DirectionY );
+  scalarImage->SetImageOrigin( Vector3D( Origin ) );
+  scalarImage->SetImageDirectionX( Vector3D( DirectionX ) );
+  scalarImage->SetImageDirectionY( Vector3D( DirectionY ) );
 
   return scalarImage;
 }

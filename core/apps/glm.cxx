@@ -453,7 +453,7 @@ main( int argc, char* argv[] )
     else
       {
       refVolume->SetData( fstatData );
-      cmtk::VolumeIO::Write( refVolume, outFileName, Verbose );
+      cmtk::VolumeIO::Write( *refVolume, outFileName, Verbose );
       }
       
     size_t p = 0;
@@ -470,7 +470,7 @@ main( int argc, char* argv[] )
       else
 	{
 	refVolume->SetData( modelData );
-	cmtk::VolumeIO::Write( refVolume, outFileName, Verbose );
+	cmtk::VolumeIO::Write( *refVolume, outFileName, Verbose );
 	}
 	  
       cmtk::TypedArray::SmartPtr modelTStat = glm.GetTStat( p );
@@ -481,7 +481,7 @@ main( int argc, char* argv[] )
       else
 	{
 	refVolume->SetData( modelTStat );
-	cmtk::VolumeIO::Write( refVolume, outFileName, Verbose );
+	cmtk::VolumeIO::Write( *refVolume, outFileName, Verbose );
 	}
       
       // increment actual parameter index.

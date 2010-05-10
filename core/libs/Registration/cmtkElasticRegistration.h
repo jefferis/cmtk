@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -193,7 +194,7 @@ protected:
   }
 
   /// Get reformatted floating image.
-  UniformVolume* GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator = Interpolators::LINEAR );
+  const UniformVolume::SmartPtr GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator = Interpolators::LINEAR );
 
 private:
   /// Level on which the last control grid refinement was performend.
@@ -224,7 +225,7 @@ private:
    *\param size Reference volume size.
    *\param initialAffine Initial affine transformation for the warp.
    */
-  WarpXform* MakeWarpXform( const Types::Coordinate* size, const AffineXform* initialAffine ) const;
+  const SplineWarpXform::SmartPtr MakeWarpXform( const Vector3D& size, const AffineXform* initialAffine ) const;
 
   /** Create functional with all settings and two given volume objects.
    *\todo Currently, if a tissue property map is used for local constraint

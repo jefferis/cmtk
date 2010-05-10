@@ -187,8 +187,8 @@ public:
 	    localMetric.Decrement( sampleX, this->m_WarpedVolume[r] );
 	  
 	  // Tell us whether the current location is still within the floating volume and get the respective voxel.
-	  Vector3D::CoordMultInPlace( *pVec, this->FloatingInverseDelta );
-	  if ( this->FloatingGrid->FindVoxelByIndex( *pVec, fltIdx, fltFrac ) ) 
+	  Vector3D::CoordMultInPlace( *pVec, this->m_FloatingInverseDelta );
+	  if ( this->m_FloatingGrid->FindVoxelByIndex( *pVec, fltIdx, fltFrac ) ) 
 	    {
 	    // Continue metric computation.
 	    localMetric.Increment( sampleX, this->m_Metric->GetSampleY( fltIdx, fltFrac ) );
@@ -393,8 +393,8 @@ private:
 	  {
 	  // Tell us whether the current location is still within the 
 	  // floating volume and get the respective voxel.
-	  Vector3D::CoordMultInPlace( *pVec, me->FloatingInverseDelta );
-	  if ( me->FloatingGrid->FindVoxelByIndex( *pVec, fltIdx, fltFrac ) ) 
+	  Vector3D::CoordMultInPlace( *pVec, me->m_FloatingInverseDelta );
+	  if ( me->m_FloatingGrid->FindVoxelByIndex( *pVec, fltIdx, fltFrac ) ) 
 	    {
 	    // Continue metric computation.
 	    warpedVolume[r] = me->m_Metric->GetSampleY( fltIdx, fltFrac );

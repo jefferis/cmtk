@@ -49,9 +49,9 @@ cmtk
 
 void
 VolumeFromFile::WriteMetaImage
-( const char* pathHdr, const UniformVolume* volume )
+( const char* pathHdr, const UniformVolume& volume )
 {
-  const TypedArray* data = volume->GetData();
+  const TypedArray* data = volume.GetData();
   if ( ! data ) return;
 
 #ifdef _MSC_VER
@@ -76,16 +76,16 @@ VolumeFromFile::WriteMetaImage
   fprintf( outfile, "BinaryDataByteOrderMSB = True\n" );
   fprintf( outfile, "ElementByteOrderMSB = True\n" );
 #endif
-  const AffineXform::MatrixType matrix = volume->GetImageToPhysicalMatrix();
+  const AffineXform::MatrixType matrix = volume.GetImageToPhysicalMatrix();
   fprintf( outfile, "TransformMatrix = %lf %lf %lf %lf %lf %lf %lf %lf %lf\n", 
 	   (double)matrix[0][0], (double)matrix[0][1], (double)matrix[0][2], 
 	   (double)matrix[1][0], (double)matrix[1][1], (double)matrix[1][2], 
 	   (double)matrix[2][0], (double)matrix[2][1], (double)matrix[2][2] );
   fprintf( outfile, "Offset = %lf %lf %lf\n", (double)matrix[3][0], (double)matrix[3][1], (double)matrix[3][2] );
   fprintf( outfile, "CenterOfRotation = 0 0 0\n" );
-  fprintf( outfile, "ElementSpacing = %f %f %f\n", volume->m_Delta[AXIS_X], volume->m_Delta[AXIS_Y], volume->m_Delta[AXIS_Z] );
-  fprintf( outfile, "DimSize = %d %d %d\n", volume->m_Dims[AXIS_X], volume->m_Dims[AXIS_Y], volume->m_Dims[AXIS_Z] );
-  fprintf( outfile, "AnatomicalOrientation = %s\n", volume->m_MetaInformation[META_SPACE].c_str() );
+  fprintf( outfile, "ElementSpacing = %f %f %f\n", volume.m_Delta[AXIS_X], volume.m_Delta[AXIS_Y], volume.m_Delta[AXIS_Z] );
+  fprintf( outfile, "DimSize = %d %d %d\n", volume.m_Dims[AXIS_X], volume.m_Dims[AXIS_Y], volume.m_Dims[AXIS_Z] );
+  fprintf( outfile, "AnatomicalOrientation = %s\n", volume.m_MetaInformation[META_SPACE].c_str() );
   fprintf( outfile, "ElementNumberOfChannels = 1\n" );
   
   fputs( "ElementType = ", outfile ) ;
@@ -123,12 +123,12 @@ VolumeFromFile::WriteMetaImage
 
 #ifdef __IGNORE__
   // re-arrange data in y-direction for maximum compatibility
-  const int* dims = volume->GetDims();
+  const int* dims = volume.GetDims();
   for ( int z = 0; z < dims[2]; ++z )
     {
     for ( int y = 0; y < dims[1]; ++y )
       {
-      const void* dataPtr = data->GetDataPtr( volume->GetOffsetOf( 0, dims[1]-1-y, z ) );
+      const void* dataPtr = data->GetDataPtr( volume.GetOffsetOf( 0, dims[1]-1-y, z ) );
       fwrite( dataPtr, data->GetItemSize(), dims[0], outfile );
       }
     }

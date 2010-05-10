@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -63,13 +64,13 @@ public:
   /// Get truncation radius.
   Types::Coordinate GetTruncationRadius( const int dim ) const
   {
-    return 4 * this->m_Radius.XYZ[dim];
+    return 4 * this->m_Radius[dim];
   }
 
   /// Get the weight for a neighbor based on its radius from the kernel center.
   Types::Coordinate GetWeight( const int dim, const Types::Coordinate r ) const
   {
-    Types::Coordinate rAbsRel = fabs( r / this->m_Radius.XYZ[dim] );
+    Types::Coordinate rAbsRel = fabs( r / this->m_Radius[dim] );
     if ( rAbsRel <= 4 )
       {
       rAbsRel *= (2.3548 / 2.0); // go from HWHM to FWHM to sigma

@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -42,7 +43,7 @@ cmtk
 //@{
 
 AnatomicalOrientation::PermutationMatrix::PermutationMatrix
-( const int* sourceDims, const Types::Coordinate* sourceSize, const std::string& curOrientation, const char newOrientation[3] ) 
+( const FixedVector<3,int>& sourceDims, const std::string& curOrientation, const char newOrientation[3] ) 
 {
   // Build a permutation matrix and store it in compressed form 
   for ( int i = 0; i < 3; i++ )
@@ -65,11 +66,8 @@ AnatomicalOrientation::PermutationMatrix::PermutationMatrix
         }
       }
     }
-  
-  // Calculate and store the permuted image dimensions
-  this->GetPermutedArray( sourceDims, this->m_NewDims );
-  if ( sourceSize )
-    this->GetPermutedArray( sourceSize, this->m_NewSize );
+
+  this->m_NewDims = this->GetPermutedArray( sourceDims );
 }
 
 AffineXform::MatrixType

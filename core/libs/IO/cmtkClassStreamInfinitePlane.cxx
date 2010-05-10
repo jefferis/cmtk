@@ -50,7 +50,7 @@ ClassStream::operator>>( InfinitePlane*& infinitePlane )
 
   Types::Coordinate planeOrigin[3];
   this->ReadCoordinateArray( "origin", planeOrigin, 3 );
-  infinitePlane->SetOrigin( planeOrigin );
+  infinitePlane->SetOrigin( Vector3D( planeOrigin ) );
 
   infinitePlane->SetRho( this->ReadCoordinate( "rho" ) );
   infinitePlane->SetTheta( Units::Degrees( this->ReadCoordinate( "theta" ) ) );
@@ -63,12 +63,12 @@ ClassStream&
 ClassStream::operator<<( const InfinitePlane* infinitePlane )
 {  
   this->Begin( "plane" );
-  this->WriteCoordinateArray( "origin", infinitePlane->GetOrigin().XYZ, 3 );
+  this->WriteCoordinateArray( "origin", infinitePlane->GetOrigin().begin(), 3 );
   this->WriteDouble( "rho", infinitePlane->GetRho() );
   this->WriteDouble( "theta", Units::Degrees( infinitePlane->GetTheta() ).Value() );
   this->WriteDouble( "phi", Units::Degrees( infinitePlane->GetPhi() ).Value() );
 
-  this->WriteCoordinateArray( "normal", infinitePlane->GetNormal().XYZ, 3 );
+  this->WriteCoordinateArray( "normal", infinitePlane->GetNormal().begin(), 3 );
   return *this;
 }
 

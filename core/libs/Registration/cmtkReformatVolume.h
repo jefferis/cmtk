@@ -148,7 +148,7 @@ public:
 
   /** Plain reformatting.
    */
-  UniformVolume* PlainReformat();
+  const UniformVolume::SmartPtr PlainReformat();
 
   /** Plain reformatting of a single plane.
    * This function reformats the floating data to a plane spatially identical 
@@ -278,7 +278,7 @@ private:
   UniformVolume::SmartConstPtr FloatingVolume;
 
   /// Make target volume matching (reoriented) reference volume.
-  UniformVolume* MakeTargetVolume() const;
+  const UniformVolume::SmartPtr MakeTargetVolume() const;
 
   /// Pointer to the affine transformation of the floating volume.
   AffineXform::SmartConstPtr m_AffineXform;

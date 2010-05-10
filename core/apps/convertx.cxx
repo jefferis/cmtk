@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -219,7 +220,7 @@ main( int argc, char* argv[] )
     cmtk::StdErr << "Writing to file " << imagePathOut << "\n";
     }
   
-  cmtk::VolumeIO::Write( volume, imagePathOut, Verbose );
+  cmtk::VolumeIO::Write( *volume, imagePathOut, Verbose );
   return 0;
 }
 #ifdef CMTK_SINGLE_COMMAND_BINARY

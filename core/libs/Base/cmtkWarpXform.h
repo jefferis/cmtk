@@ -39,7 +39,6 @@
 
 #include <cmtkMacros.h>
 #include <cmtkVector.h>
-#include <cmtkVector3D.h>
 #include <cmtkFixedVector.h>
 
 #include <cmtkVolume.h>
@@ -83,13 +82,13 @@ public:
   Self::IndexType m_Dims;
 
   /// Domain of control point grid in world coordinates.
-  Types::Coordinate Domain[3];
+  FixedVector<3,Types::Coordinate> Domain;
 
   /// Array of spacings between the control points.
   Types::Coordinate Spacing[3];
 
   /// Array of spacings between the control points.
-  Vector3D m_Offset;
+  Self::SpaceVectorType m_Offset;
 
   /// Get global scaling factor.
   virtual Types::Coordinate GetGlobalScaling() const
@@ -175,15 +174,15 @@ public:
   virtual ~WarpXform () {}
 
   /// Initialized internal data structures for new control point grid.
-  virtual void InitGrid( const Types::Coordinate domain[3], const Self::IndexType& dims );
+  virtual void InitGrid( const FixedVector<3,Types::Coordinate>& domain, const Self::IndexType& dims );
 
   /// Check whether coordinate is in domain of transformation.
-  virtual bool InDomain( const Vector3D& v ) const 
+  virtual bool InDomain( const Self::SpaceVectorType& v ) const 
   {
     return 
-      ( v.XYZ[0] >= 0 ) && ( v.XYZ[0] <= Domain[0] ) &&
-      ( v.XYZ[1] >= 0 ) && ( v.XYZ[1] <= Domain[1] ) &&
-      ( v.XYZ[2] >= 0 ) && ( v.XYZ[2] <= Domain[2] );
+      ( v[0] >= 0 ) && ( v[0] <= Domain[0] ) &&
+      ( v[1] >= 0 ) && ( v[1] <= Domain[1] ) &&
+      ( v[2] >= 0 ) && ( v[2] <= Domain[2] );
   }
   
   /// Update internal representation.
@@ -193,9 +192,9 @@ public:
   virtual void Refine() {}
 
   /// Return warped vector.
-  virtual Vector3D Apply ( const Vector3D& v ) const 
+  virtual Self::SpaceVectorType Apply ( const Self::SpaceVectorType& v ) const 
   {
-    Vector3D w(v);
+    Self::SpaceVectorType w(v);
     this->ApplyInPlace( w );
     return w;
   }
@@ -218,43 +217,47 @@ public:
   virtual void SetIncompressibilityMap( DataGrid::SmartPtr& incompressibility );
 
   /// Get the original position of a control point.
-  virtual void GetOriginalControlPointPosition( Vector3D& v, const Types::Coordinate x, const Types::Coordinate y, const Types::Coordinate z) const 
+  virtual void GetOriginalControlPointPosition( Self::SpaceVectorType& cp, const Types::Coordinate x, const Types::Coordinate y, const Types::Coordinate z) const 
   { 
-    v.Set( this->m_Offset[0] + x*this->Spacing[0], this->m_Offset[1] + y*this->Spacing[1], this->m_Offset[2] + z*this->Spacing[2] );
+    cp[0] = this->m_Offset[0] + x*this->Spacing[0];
+    cp[1] = this->m_Offset[1] + y*this->Spacing[1];
+    cp[2] = this->m_Offset[2] + z*this->Spacing[2];
   }
   
   /// Get the original position of a control point by index.
-  virtual void GetOriginalControlPointPositionByOffset( Vector3D& v, const size_t offset ) const 
+  virtual void GetOriginalControlPointPositionByOffset( Self::SpaceVectorType& v, const size_t offset ) const 
   {
     this->GetOriginalControlPointPosition( v, offset % this->m_Dims[0], (offset % (this->m_Dims[0]*this->m_Dims[1])) / this->m_Dims[0], offset / (this->m_Dims[0]*this->m_Dims[1]) ); 
   }
 
   /// Get shifted control point position.
-  virtual void GetShiftedControlPointPosition( Vector3D& v, const int x, const int y, const int z ) const 
+  virtual void GetShiftedControlPointPosition( Self::SpaceVectorType& v, const int x, const int y, const int z ) const 
   { 
     this->GetShiftedControlPointPositionByOffset( v, x + this->m_Dims[0] * (y + this->m_Dims[1] * z ) );
   }
 
   /// Get shifted control point position by offset.
-  virtual void GetShiftedControlPointPositionByOffset( Vector3D& v, const size_t offset ) const 
+  virtual void GetShiftedControlPointPositionByOffset( Self::SpaceVectorType& v, const size_t offset ) const 
   { 
-    v.Set( this->m_Parameters[offset*3], this->m_Parameters[offset*3+1], this->m_Parameters[offset*3+2] );
+    for ( size_t i = 0; i<3; ++i )
+      v[i] = this->m_Parameters[offset*3+i];
   }
 
   /// Set shifted control point position.
-  virtual void SetShiftedControlPointPositionByOffset( const Vector3D& v, const int x, const int y, const int z ) const 
+  virtual void SetShiftedControlPointPositionByOffset( const Self::SpaceVectorType& v, const int x, const int y, const int z ) const 
   { 
     this->SetShiftedControlPointPositionByOffset( v, x + this->m_Dims[0] * (y + this->m_Dims[1] * z ) );
   }
 
   /// Set shifted control point position by offset.
-  virtual void SetShiftedControlPointPositionByOffset( const Vector3D& v, const size_t offset ) const 
+  virtual void SetShiftedControlPointPositionByOffset( const Self::SpaceVectorType& v, const size_t offset ) const 
   { 
     for ( int idx = 0; idx < 3; ++idx )
-      this->m_Parameters[idx+offset*3] = v.XYZ[idx];
+      this->m_Parameters[idx+offset*3] = v[idx];
   }
 
-  virtual Types::Coordinate GetParamStep( const size_t, const Types::Coordinate* volSize, const Types::Coordinate mmStep = 1 ) const;
+  /// Get parameter step given a transformed volume size.
+  virtual Types::Coordinate GetParamStep( const size_t, const Self::SpaceVectorType& volSize, const Types::Coordinate mmStep = 1 ) const;
 
   /// Free bitset for active parameter flags if it exists.
   void DeleteParameterActiveFlags();

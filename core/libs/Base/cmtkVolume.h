@@ -39,6 +39,7 @@
 
 #include <cmtkMacros.h>
 #include <cmtkMathUtil.h>
+#include <cmtkFixedVector.h>
 #include <cmtkVector3D.h>
 #include <cmtkAffineXform.h>
 #include <cmtkInfinitePlane.h>
@@ -83,7 +84,7 @@ public:
   typedef Region<3,Types::Coordinate> CoordinateRegionType;
 
   /// Index type.
-  typedef CoordinateRegionType::IndexType CoordinateIndexType;
+  typedef CoordinateRegionType::IndexType CoordinateVectorType;
 
   /// Volume offset (coordinate of first voxel in RAS standard space).
   Vector3D m_Offset;
@@ -98,15 +99,8 @@ public:
   LandmarkList::SmartPtr m_LandmarkList;
 
   /// Spatial extent of the volume in world coordinates
-  Types::Coordinate Size[3];
+  FixedVector<3,Types::Coordinate> Size;
 
-  /// Constructor.
-  Volume () 
-  { 
-    Memory::Set<Types::Coordinate>( Size, 0, 3 );
-    this->m_Offset.Set( 0, 0, 0 );
-  };
-  
   /** Destructor.
    * Do nothing really; just be present and virtual.
    */

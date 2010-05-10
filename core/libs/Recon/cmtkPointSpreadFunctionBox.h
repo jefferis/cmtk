@@ -65,13 +65,13 @@ public:
   /// Get truncation radius.
   Types::Coordinate GetTruncationRadius( const int dim ) const
   {
-    return this->m_Radius.XYZ[dim];
+    return this->m_Radius[dim];
   }
 
   /// Get the weight for a neighbor based on its radius from the kernel center.
   Types::Coordinate GetWeight( const int dim, const Types::Coordinate r ) const
   {
-    if ( fabs( r ) <= this->m_Radius.XYZ[dim] )
+    if ( fabs( r ) <= this->m_Radius[dim] )
       {
       return 1.0;
       }

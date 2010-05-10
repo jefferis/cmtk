@@ -71,13 +71,13 @@ cmtk::SplineWarpXformITKIO
       xform.GetShiftedControlPointPositionByOffset( vx, cp );
 
       vx -= v;
-      stream << " " << vx.XYZ[0] << " " << vx.XYZ[1] << " " << vx.XYZ[2];
+      stream << " " << vx[0] << " " << vx[1] << " " << vx[2];
       }
     stream << "\n";
 
     // Origin of the control point grid must be transformed into physical coordinates of the reference image
     Vector3D origin( xform.m_Offset );
-    refVolume.GetImageToPhysicalMatrix().Multiply( origin.XYZ );    
+    refVolume.GetImageToPhysicalMatrix().Multiply( origin );
     
     // Fixed parameters:
     // * Grid Size

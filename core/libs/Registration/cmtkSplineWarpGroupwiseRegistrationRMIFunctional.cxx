@@ -229,7 +229,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional
 	for ( int y = voi->From()[1]; y < voi->To()[1]; ++y )
 	  {
 	  size_t ofs = this->m_TemplateGrid->GetOffsetFromIndex( voi->From()[0], y, z );
-	  for ( size_t x = voi->From()[0]; x < voi->To()[0]; ++x, ++ofs )
+	  for ( int x = voi->From()[0]; x < voi->To()[0]; ++x, ++ofs )
 	    {
 	    const byte data = dataPtrImg[ofs];
 	    if ( data != paddingValue )

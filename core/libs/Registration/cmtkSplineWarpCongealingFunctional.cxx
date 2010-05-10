@@ -246,7 +246,7 @@ SplineWarpCongealingFunctional
 	  for ( int y = voi->From()[1]; (y < voi->To()[1]) && !active; ++y )
 	    {
 	    size_t ofs = this->m_TemplateGrid->GetOffsetFromIndex( voi->From()[0], y, z );
-	    for ( size_t x = voi->From()[0]; (x < voi->To()[0])  && !active; ++x, ++ofs )
+	    for ( int x = voi->From()[0]; (x < voi->To()[0])  && !active; ++x, ++ofs )
 	      {
 	      if ( this->m_StandardDeviationByPixel[ofs] > 0 )
 		{
@@ -515,7 +515,9 @@ SplineWarpCongealingFunctional
 #pragma omp parallel for
 	for ( size_t param = 0; param < this->m_ParametersPerXform; param += 3 )
 	  {
-	  affineXform->RotateScaleShear( gX+param, gX+param );
+	  const Vector3D projected = affineXform->RotateScaleShear( Vector3D( gX+param ) );
+	  for ( size_t i = 0; i<3; ++i )
+	    gX[param+i] = projected[i];
 	  }
 	}
       }
@@ -534,7 +536,9 @@ SplineWarpCongealingFunctional
 #pragma omp parallel for
 	for ( size_t param = 0; param < this->m_ParametersPerXform; param += 3 )
 	  {
-	  affineXform->RotateScaleShear( gX+param, gX+param );
+	  const Vector3D projected = affineXform->RotateScaleShear( Vector3D( gX+param ) );
+	  for ( size_t i = 0; i<3; ++i )
+	    gX[param+i] = projected[i];
 	  }
 	}
       }

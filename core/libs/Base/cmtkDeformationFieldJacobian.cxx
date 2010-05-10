@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,6 +32,8 @@
 
 #include <cmtkDeformationField.h>
 
+#include <cmtkCubicSpline.h>
+
 namespace
 cmtk
 {
@@ -40,14 +43,14 @@ cmtk
 
 void
 DeformationField::GetJacobian
-( const Vector3D& v, CoordinateMatrix3x3& J ) const
+( const Self::SpaceVectorType& v, CoordinateMatrix3x3& J ) const
 {
   Types::Coordinate r[3], f[3];
   int grid[3];
   
   for ( int dim = 0; dim<3; ++dim ) 
     {
-    r[dim] = this->InverseSpacing[dim] * (v.XYZ[dim] - this->m_Offset[dim]);
+    r[dim] = this->InverseSpacing[dim] * (v[dim] - this->m_Offset[dim]);
     grid[dim] = static_cast<int>( r[dim]-1 );
     if ( (grid[dim] < 0) || (grid[dim] >= this->m_Dims[dim]-3) )
       {

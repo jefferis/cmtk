@@ -35,6 +35,7 @@
 
 #include <cmtkconfig.h>
 
+#include <algorithm>
 #include <fstream>
 
 namespace
@@ -54,50 +55,46 @@ public:
   /// Default constructor.
   FixedVector() {}
 
-  /// Constructor from const int array.
-  FixedVector( const T (&indexArray)[NDIM] )
+  /// Constructor from const pointer.
+  explicit FixedVector( const T *const ptr ) 
+  { 
+    for ( size_t i = 0; i < NDIM; ++i )
+      this->m_Data[i] = ptr[i];
+  }
+
+  /// Type conversion constructor template.
+  template<class T2>
+  explicit FixedVector( const FixedVector<NDIM,T2>& rhs )
   {
     for ( size_t i = 0; i < NDIM; ++i )
-      this->m_FixedVector[i] = indexArray[i];
+      this->m_Data[i] = static_cast<T>( rhs[i] );
   }
 
   /// Get element reference.
   T& operator[]( const size_t i )
   {
-    return this->m_FixedVector[i];
+    return this->m_Data[i];
   }
 
   /// Get const element reference.
   const T& operator[]( const size_t i ) const
   {
-    return this->m_FixedVector[i];
+    return this->m_Data[i];
   }
 
-  /// Addition operator.
-  const Self operator+( const Self& rhs ) const
-  {
-    return Self( *this ) += rhs;
-  }
-  
   /// In-place addition operator.
   Self& operator+=( const Self& rhs )
   {
     for ( size_t i = 0; i<NDIM; ++i )
-      this->m_FixedVector[i] += rhs.m_FixedVector[i];
+      this->m_Data[i] += rhs.m_Data[i];
     return *this;
-  }
-  
-  /// Subtraction operator.
-  const Self operator-( const Self& rhs ) const
-  {
-    return Self( *this ) -= rhs;
   }
   
   /// In-place subtraction operator.
   Self& operator-=( const Self& rhs )
   {
     for ( size_t i = 0; i<NDIM; ++i )
-      this->m_FixedVector[i] -= rhs.m_FixedVector[i];
+      this->m_Data[i] -= rhs.m_Data[i];
     return *this;
   }
 
@@ -105,39 +102,119 @@ public:
   bool operator==( const Self& rhs ) const
   {
     for ( size_t i = 0; i<NDIM; ++i )
-      if ( this->m_FixedVector[i] != rhs.m_FixedVector[i] )
+      if ( this->m_Data[i] != rhs.m_Data[i] )
 	return false;
     return true;
   }
 
+  /// Multiply by a scalar.
+  Self& operator*= ( const T a ) 
+  {
+    for ( size_t i=0; i<NDIM; ++i ) 
+      this->m_Data[i] *= a;
+    return *this;
+  }
+  
+  /// Divide by a scalar.
+  Self& operator/= ( const T a ) 
+  {
+    const T inv_a = static_cast<T>(1.0/a);
+    for ( size_t i=0; i<NDIM; ++i ) 
+      this->m_Data[i] *= inv_a;
+    return *this;
+  }
+  
+  /// Unary minus.
+  const Self operator-() 
+  { 
+    Self minus;
+    for ( size_t i=0; i<NDIM; ++i ) 
+      minus.m_Data = -this->m_Data;
+  }
+  
   /// Pointer to first array element.
   T* begin()
   {
-    return m_FixedVector;
+    return this->m_Data;
   }
 
   /// Pointer behind last array element.
   T* end()
   {
-    return m_FixedVector+NDIM;
+    return this->m_Data+NDIM;
   }
 
   /// Pointer to first array element.
   const T* begin() const
   {
-    return m_FixedVector;
+    return this->m_Data;
   }
 
   /// Pointer behind last array element.
   const T* end() const
   {
-    return m_FixedVector+NDIM;
+    return this->m_Data+NDIM;
   }
 
+  /// Maximum value.
+  T MaxValue() const
+  {
+    return *(std::max_element( this->begin(), this->end() ) );
+  }
+
+  /// Minimum value.
+  T MinValue() const
+  {
+    return *(std::min_element( this->begin(), this->end() ) );
+  }
+
+  /// Calculate sum of squares of vector elements (that is, square of Euclid's norm).
+  T SumOfSquares() const 
+  {
+    T sq = 0;
+    for ( size_t i = 0; i < NDIM; ++i )
+      sq += this->m_Data[i] * this->m_Data[i];
+
+    return sq;
+  }
+
+  /// Shorthand for root of sum of squares (i.e., Euclid's norm)
+  T RootSumOfSquares() const 
+  {
+    return sqrt( this->SumOfSquares() );
+  }
+  
 private:
   /// The actual index array.
-  T m_FixedVector[NDIM];
+  T m_Data[NDIM];
 };
+
+/// Addition operator.
+template<size_t NDIM,typename T>
+const FixedVector<NDIM,T>
+operator+( const FixedVector<NDIM,T>& lhs, const FixedVector<NDIM,T>& rhs )
+{
+  return FixedVector<NDIM,T>( lhs ) += rhs;
+}
+
+/// Subtraction operator.
+template<size_t NDIM,typename T>
+const FixedVector<NDIM,T>
+operator-( const FixedVector<NDIM,T>& lhs, const FixedVector<NDIM,T>& rhs )
+{
+  return FixedVector<NDIM,T>( lhs ) -= rhs;
+}
+
+/// Scalar multiplication operator.
+template<size_t NDIM,typename T>
+const FixedVector<NDIM,T>
+operator*( const T lhs, const FixedVector<NDIM,T>& rhs )
+{
+  FixedVector<NDIM,T> result( rhs );
+  for ( size_t i = 0; i<NDIM; ++i )
+    result[i] *= lhs;
+  return result;
+}
 
 /// Stream input operator.
 template<size_t NDIM,typename T>

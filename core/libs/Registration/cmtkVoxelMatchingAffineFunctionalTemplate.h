@@ -123,7 +123,7 @@ public:
    */
   virtual typename Self::ReturnType Evaluate() 
   {
-    const VolumeAxesHash axesHash( *this->ReferenceGrid, this->m_AffineXform, this->FloatingGrid->m_Delta, this->FloatingGrid->m_Offset.XYZ );
+    const VolumeAxesHash axesHash( *this->ReferenceGrid, this->m_AffineXform, this->FloatingGrid->m_Delta, this->FloatingGrid->m_Offset.begin() );
     const Vector3D *axesHashX = axesHash[0], *axesHashY = axesHash[1], *axesHashZ = axesHash[2];
     
     this->Metric->Reset();

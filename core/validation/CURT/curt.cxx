@@ -158,7 +158,7 @@ main( const int argc, const char* argv[] )
     refImage->SetDataAt( fltImage->GetDataAt( lookup[iRef] ), iRef );
     }
   
-  cmtk::VolumeIO::Write( refImage, "reformat.nii", verbose );
+  cmtk::VolumeIO::Write( *refImage, "reformat.nii", verbose );
 
   for ( size_t l = 0; l < pathsLbls.size(); ++l )
     {
@@ -171,6 +171,6 @@ main( const int argc, const char* argv[] )
     
     char output[PATH_MAX];
     snprintf( output, PATH_MAX, "labels%d.nii", static_cast<int>( l ) );
-    cmtk::VolumeIO::Write( refImage, output, verbose );    
+    cmtk::VolumeIO::Write( *refImage, output, verbose );    
     }
 }

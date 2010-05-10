@@ -119,7 +119,7 @@ public:
   AffineXform::SmartPtr GetTransformation() const;
   
   /// Get reformatted floating image.
-  UniformVolume* GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator = Interpolators::LINEAR );
+  const UniformVolume::SmartPtr GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator = Interpolators::LINEAR ) const;
 
   /// Add a number to the general list of numbers of DOFs.
   void AddNumberDOFs( const int numberDOFs ) 

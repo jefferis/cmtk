@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,6 +36,7 @@
 #include <cmtkconfig.h>
 
 #include <cmtkTypes.h>
+#include <cmtkFixedVector.h>
 #include <cmtkMatrix3x3.h>
 #include <cmtkConsole.h>
 #include <cmtkSmartPtr.h>
@@ -124,22 +126,23 @@ public:
   Self& operator=( const Matrix3x3<T>& other );
 
   /// Multiply with 3d vector (will implicitly be made homogeneous).
-  template<class T2> void Multiply( const T2 u[3], T2 v[3] ) const 
+  template<class T2> 
+  void Multiply( const FixedVector<3,T2>& u, FixedVector<3,T2>& v ) const 
   {
     for ( int idx=0; idx<3; ++idx ) 
       v[idx] = u[0]*Matrix[0][idx] + u[1]*Matrix[1][idx] + u[2]*Matrix[2][idx] + Matrix[3][idx];
   }
   
   /// Multiply in place with 3d vector (will implicitly be made homogeneous).
-  template<class T2> void Multiply( T2 v[3] ) const 
+  template<class T2> void Multiply( FixedVector<3,T2>& v ) const 
   {
-    const T2 u[3] = { v[0], v[1], v[2] };
+    const FixedVector<3,T2> u = v;
     this->Multiply( u, v );
   }
 
   /** Change reference coordinate system.
    */
-  Self& ChangeCoordinateSystem( const T (&newX)[3], const T (&newy)[3] );
+  Self& ChangeCoordinateSystem( const FixedVector<3,T>& newX, const  FixedVector<3,T>& newY );
 
   /// Return rotation around x axis.
   static Self RotateX( const T angle );

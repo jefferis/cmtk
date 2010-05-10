@@ -60,7 +60,7 @@ SplineWarpXform::SplineWarpXform
 ( const UniformVolume *volume, const Types::Coordinate delta, const bool exactDelta )
 {
   this->Init();
-  memcpy( Domain, volume->Size, sizeof( Domain ) );
+  this->Domain = volume->Size;
   this->m_InitialAffineXform = AffineXform::SmartPtr( NULL );
 
   if ( exactDelta ) 
@@ -87,8 +87,7 @@ SplineWarpXform::SplineWarpXform
 }
 
 SplineWarpXform::SplineWarpXform 
-( const Types::Coordinate domain[3], const Types::Coordinate delta,
-  const AffineXform* initialXform, const bool exactDelta  )
+( const FixedVector<3,Types::Coordinate>& domain, const Types::Coordinate delta, const AffineXform* initialXform, const bool exactDelta  )
 {
   this->Init( domain, delta, initialXform, exactDelta );
 }
@@ -96,10 +95,10 @@ SplineWarpXform::SplineWarpXform
 void
 SplineWarpXform
 ::Init
-( const Types::Coordinate domain[3], const Types::Coordinate delta, const AffineXform* initialXform, const bool exactDelta  )
+( const Self::SpaceVectorType& domain, const Types::Coordinate delta, const AffineXform* initialXform, const bool exactDelta  )
 {
   this->Init();
-  memcpy( Domain, domain, sizeof( Domain ) );
+  this->Domain = domain;
   this->m_InitialAffineXform = AffineXform::SmartPtr( initialXform->Clone() );
 
   if ( exactDelta ) 
@@ -125,12 +124,10 @@ SplineWarpXform
 }
 
 SplineWarpXform::SplineWarpXform
-( const Types::Coordinate domain[3], const Self::IndexType& dims,
-  CoordinateVector::SmartPtr& parameters, 
-  const AffineXform* initialXform )
+( const FixedVector<3,Types::Coordinate>& domain, const Self::IndexType& dims, CoordinateVector::SmartPtr& parameters, const AffineXform* initialXform )
 {
   this->Init();
-  memcpy( Domain, domain, sizeof( Domain ) );
+  this->Domain = domain;
   this->m_Dims = dims;
 
   if ( initialXform )
@@ -183,7 +180,7 @@ SplineWarpXform::InitControlPoints( const AffineXform* affineXform )
     ofs = this->m_Parameters;
     for ( unsigned int idx = 0; idx < NumberOfControlPoints; ++idx, ofs+=3 ) 
       {
-      Vector3D p( ofs );
+      Self::SpaceVectorType p( ofs );
       affineXform->ApplyInPlace( p );
       ofs[0] = p[0];
       ofs[1] = p[1];
@@ -238,7 +235,7 @@ SplineWarpXform::Clone () const
   newXform->NumberOfControlPoints = this->NumberOfControlPoints;
   
   newXform->m_Dims = this->m_Dims;
-  memcpy( newXform->Domain, Domain, sizeof( newXform->Domain ) );
+  newXform->Domain = this->Domain;
   memcpy( newXform->Spacing, Spacing, sizeof( newXform->Spacing ) );
   memcpy( newXform->InverseSpacing, InverseSpacing, sizeof( newXform->InverseSpacing ) );
   newXform->m_Offset = this->m_Offset;
@@ -421,8 +418,8 @@ SplineWarpXform::Refine()
 
 void 
 SplineWarpXform::GetVolumeOfInfluence 
-( const size_t idx, const Vector3D& fromVol, const Vector3D& toVol,
-  Vector3D& fromVOI, Vector3D& toVOI, const int fastMode ) const
+( const size_t idx, const Self::SpaceVectorType& fromVol, const Self::SpaceVectorType& toVol,
+  Self::SpaceVectorType& fromVOI, Self::SpaceVectorType& toVOI, const int fastMode ) const
 {
   int relIdx = idx / 3;
 
@@ -453,14 +450,13 @@ SplineWarpXform::GetVolumeOfInfluence
     zUp = Spacing[2] * std::min( this->m_Dims[2]-2, z+1 );
     }
   
-  fromVOI.Set
-    ( std::min( toVol[0], std::max(xLow, fromVol[0]) ), 
-      std::min( toVol[1], std::max(yLow, fromVol[1]) ), 
-      std::min( toVol[2], std::max(zLow, fromVol[2]) ) );
-  toVOI.Set
-    ( std::max( fromVol[0], std::min(xUp, toVol[0]) ), 
-      std::max( fromVol[1], std::min(yUp, toVol[1]) ), 
-      std::max( fromVol[2], std::min(zUp, toVol[2]) ) );
+  fromVOI[0] = std::min( toVol[0], std::max(xLow, fromVol[0]) );
+  fromVOI[1] = std::min( toVol[1], std::max(yLow, fromVol[1]) );
+  fromVOI[2] = std::min( toVol[2], std::max(zLow, fromVol[2]) );
+
+  toVOI[0] = std::max( fromVol[0], std::min(xUp, toVol[0]) ); 
+  toVOI[1] = std::max( fromVol[1], std::min(yUp, toVol[1]) );
+  toVOI[2] = std::max( fromVol[2], std::min(zUp, toVol[2]) );
 }
 
 void
@@ -489,7 +485,7 @@ SplineWarpXform::RegisterVolumeAxis
 
 void
 SplineWarpXform::RegisterVolumePoints
-( const DataGrid::IndexType& volDims, const Types::Coordinate delta[3], const Types::Coordinate origin[3] )
+( const DataGrid::IndexType& volDims, const Types::Coordinate delta[3], const Self::SpaceVectorType& origin )
 {
   this->RegisterVolumeAxis( volDims[0], delta[0], origin[0], this->m_Dims[0], this->InverseSpacing[0], gX, splineX, dsplineX );
   this->RegisterVolumeAxis( volDims[1], delta[1], origin[1], this->m_Dims[1], this->InverseSpacing[1], gY, splineY, dsplineY );
@@ -517,9 +513,9 @@ void SplineWarpXform::UnRegisterVolume()
   dsplineZ.resize( 0 );
 }
 
-Vector3D& 
+SplineWarpXform::SpaceVectorType& 
 SplineWarpXform::GetDeformedControlPointPosition
-( Vector3D& v, const int x, const int y, const int z) 
+( Self::SpaceVectorType& v, const int x, const int y, const int z) 
   const 
 {
   // Create a pointer to the front-lower-left corner of the c.p.g. cell.
@@ -553,7 +549,7 @@ SplineWarpXform::GetDeformedControlPointPosition
       mm += spline[m] * ll;
       coeff_mm += nextK;
       }
-    v.XYZ[dim] = mm;
+    v[dim] = mm;
     ++coeff;
     }
   
@@ -563,7 +559,7 @@ SplineWarpXform::GetDeformedControlPointPosition
 void
 SplineWarpXform
 ::GetTransformedGrid 
-( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const
+( Self::SpaceVectorType& v, const int idxX, const int idxY, const int idxZ ) const
 {
   const Types::Coordinate* coeff = this->m_Parameters + gX[idxX] + gY[idxY] + gZ[idxZ];
   const Types::Coordinate *spX = &splineX[idxX<<2], *spY = &splineY[idxY<<2], *spZ = &splineZ[idxZ<<2];
@@ -590,17 +586,17 @@ SplineWarpXform
 	mm += spZ[m] * ll;
 	coeff_mm += nextK;
 	}
-      v.XYZ[ dim ] = mm;
+      v[ dim ] = mm;
       ++coeff;
     }
 }
 
 void 
 SplineWarpXform::GetTransformedGridSequence
-( Vector3D *const vIn, const int numPoints, const int idxX, const int idxY, const int idxZ ) 
+( Self::SpaceVectorType *const vIn, const int numPoints, const int idxX, const int idxY, const int idxZ ) 
   const
 {
-  Vector3D *v = vIn;
+  Self::SpaceVectorType *v = vIn;
   const Types::Coordinate* coeff = m_Parameters + gX[idxX] + gY[idxY] + gZ[idxZ];
   const Types::Coordinate *spX = &splineX[idxX<<2], *spY = &splineY[idxY<<2], *spZ = &splineZ[idxZ<<2];
   
@@ -653,13 +649,13 @@ SplineWarpXform::GetTransformedGridSequence
     // do everything inside one cell
     do 
       {
-      Types::Coordinate* vPtr = v->XYZ;
+      Self::SpaceVectorType& vRef = *v;
       // compute transformed voxel by taking precomputed y- and z-contributions
       // and adding x. The loops to do this have been unrolled for increased
       // performance.
-      vPtr[0] = spX[0] * phiPtr[0] + spX[1] * phiPtr[3] + spX[2] * phiPtr[6] + spX[3] * phiPtr[9];
-      vPtr[1] = spX[0] * phiPtr[1] + spX[1] * phiPtr[4] + spX[2] * phiPtr[7] + spX[3] * phiPtr[10];
-      vPtr[2] = spX[0] * phiPtr[2] + spX[1] * phiPtr[5] + spX[2] * phiPtr[8] + spX[3] * phiPtr[11];
+      vRef[0] = spX[0] * phiPtr[0] + spX[1] * phiPtr[3] + spX[2] * phiPtr[6] + spX[3] * phiPtr[9];
+      vRef[1] = spX[0] * phiPtr[1] + spX[1] * phiPtr[4] + spX[2] * phiPtr[7] + spX[3] * phiPtr[10];
+      vRef[2] = spX[0] * phiPtr[2] + spX[1] * phiPtr[5] + spX[2] * phiPtr[8] + spX[3] * phiPtr[11];
       
       // go to next voxel
       ++i;
@@ -694,14 +690,14 @@ SplineWarpXform
 
 Types::Coordinate
 SplineWarpXform
-::GetGridEnergy( const Vector3D& v ) const
+::GetGridEnergy( const Self::SpaceVectorType& v ) const
 {
   Types::Coordinate r[3], f[3];
   int grid[3];
   
   for ( int dim = 0; dim<3; ++dim ) 
     {
-    r[dim] = InverseSpacing[dim] * v.XYZ[dim];
+    r[dim] = InverseSpacing[dim] * v[dim];
     grid[dim] = std::min( static_cast<int>( r[dim] ), this->m_Dims[dim]-4 );
     f[dim] = r[dim] - grid[dim];
     assert( (f[dim] >= 0.0) && (f[dim] <= 1.0) );
@@ -930,7 +926,7 @@ SplineWarpXform::GetInverseConsistencyError
   const DataGrid::RegionType* voi )
   const 
 {
-  Vector3D v, vv;
+  Self::SpaceVectorType v, vv;
   Types::Coordinate result = 0.0;
   int count = 0;
 
@@ -954,13 +950,13 @@ SplineWarpXform::GetInverseConsistencyError
   const int startZ = pVoi->From()[2] - (pVoi->From()[2] % dZ);
 
   const size_t length = pVoi->To()[0] - startX;
-  std::vector<Vector3D> vecArray( length );
+  std::vector<Self::SpaceVectorType> vecArray( length );
 
   for ( int z = startZ; z < pVoi->To()[2]; z += dZ ) 
     {
     for ( int y = startY; y < pVoi->To()[1]; y += dY ) 
       {
-      Vector3D* pVec = &vecArray[0];
+      Self::SpaceVectorType* pVec = &vecArray[0];
       this->GetTransformedGridSequence( pVec, length, startX, y, z );
 
       for ( int x = startX; x < pVoi->To()[0]; x += dX, pVec += dX ) 
@@ -968,9 +964,9 @@ SplineWarpXform::GetInverseConsistencyError
 	if ( inverse->InDomain( *pVec ) ) 
 	  {
 	  inverse->ApplyInPlace( *pVec );
-	  volume->GetGridLocation( v, x, y, z );
+	  v = volume->GetGridLocation( x, y, z );
 	  v -= *pVec;
-	  result += v.EuclidNorm();
+	  result += v.RootSumOfSquares();
 	  ++count;
 	  }
 	}
@@ -995,17 +991,17 @@ SplineWarpXform::GetPureDeformation( const bool includeScale ) const
     }
 
   Types::Coordinate* ptr = points;
-  Vector3D u;
+  Self::SpaceVectorType u;
   for ( size_t pointIdx = 0; pointIdx < numberOfParameters / 3; ++pointIdx, ptr += 3 ) 
     {
-    Vector3D v( ptr );
+    Self::SpaceVectorType v( ptr );
     
     // undo affine transformation component
     xform->ApplyInPlace( v );
     
     // copy the result into ouput array
     for ( unsigned int dim = 0; dim < 3; ++dim ) 
-      ptr[dim] = v.XYZ[dim];
+      ptr[dim] = v[dim];
     }
   
   return points;

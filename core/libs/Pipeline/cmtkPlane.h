@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -84,7 +85,7 @@ public:
   void GetPixelLocation( Vector3D& v, const unsigned int x, const unsigned int y ) const 
   {
     for ( int dim = 0; dim<3; ++dim )
-      v.XYZ[dim] = Origin[dim] + x * DirectionX[dim] * Spacing[0] + y * DirectionY[dim] * Spacing[1];
+      v[dim] = Origin[dim] + x * DirectionX[dim] * Spacing[0] + y * DirectionY[dim] * Spacing[1];
   }
 
   /** Project 3D coordinate onto plane.

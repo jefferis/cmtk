@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -59,10 +60,10 @@ main( const int argc, const char *argv[] )
   const cmtk::Types::Coordinate gridSpacing = atof( argv[2] );
   const cmtk::Types::Coordinate sigma = atof( argv[3] );
 
-  cmtk::UniformVolume *volume = cmtk::VolumeIO::ReadOriented( filenameIn, true );
+  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( filenameIn, true ) );
   if ( ! volume ) return 1;
 
-  cmtk::SplineWarpXform *warp = new cmtk::SplineWarpXform( volume, gridSpacing );
+  cmtk::SplineWarpXform::SmartPtr warp( new cmtk::SplineWarpXform( volume, gridSpacing ) );
 
   // seed RNG with (supposedly) random system time
   cmtk::MathUtil::NormalRandom( sigma, static_cast<unsigned int>( time( NULL ) ) );
@@ -108,8 +109,6 @@ main( const int argc, const char *argv[] )
       }
     }
   
-  delete volume;
-  delete warp;
   return 0;
 }
 

@@ -1,7 +1,9 @@
 /*
 //
 //  Copyright 2003 Calvin R. Maurer, Jr.
+//
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -47,6 +49,7 @@ template<class TDistanceDataType>
 UniformDistanceMap<TDistanceDataType>
 ::UniformDistanceMap
 ( const UniformVolume& volume, const byte flags, const Types::DataItem value, const Types::DataItem window )
+  : Superclass( volume.m_Dims, volume.Size )
 {
   this->BuildDistanceMap( volume, flags, value, window );
 
@@ -62,10 +65,6 @@ UniformDistanceMap<TDistanceDataType>
 ::BuildDistanceMap
 ( const UniformVolume& volume, const byte flags, const Types::DataItem value, const Types::DataItem window )
 {
-  this->SetDims( volume.GetDims() ); // set and update internals
-  memcpy( Size, volume.Size, sizeof( Size ) );
-  memcpy( this->m_Delta, volume.GetDelta(), sizeof( this->m_Delta ) );
-
   TypedArray::SmartPtr distanceArray = TypedArray::SmartPtr( TypedArray::Create( DataTypeTraits<DistanceDataType>::DataTypeID, volume.GetNumberOfPixels() ) );
   DistanceDataType *Distance = static_cast<DistanceDataType*>( distanceArray->GetDataPtr() );
 

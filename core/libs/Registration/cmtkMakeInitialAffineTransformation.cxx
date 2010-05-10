@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -112,7 +113,7 @@ MakeInitialAffineTransformation
   if ( centerXform )
     {
     const Vector3D center = referenceImage.GetCenterCropRegion();
-    xform->ChangeCenter( center.XYZ );
+    xform->ChangeCenter( center );
     }
 
   return xform;
@@ -125,7 +126,7 @@ MakeInitialAffineTransformation
   AffineXform* xform = new AffineXform;
   
   const Vector3D translation = floatingImage.GetCenterCropRegion() - referenceImage.GetCenterCropRegion();
-  xform->SetXlate( translation.XYZ );
+  xform->SetXlate( translation.begin() );
   
   return xform;
 }
@@ -137,7 +138,7 @@ MakeInitialAffineTransformation
   AffineXform* xform = new AffineXform;
   
   const Vector3D translation = floatingImage.GetCenterOfMass() - referenceImage.GetCenterOfMass();
-  xform->SetXlate( translation.XYZ );
+  xform->SetXlate( translation.begin() );
 
   return xform;
 }
@@ -161,7 +162,7 @@ MakeInitialAffineTransformation
   Matrix3x3<Types::Coordinate> xform3x3 = (pAxesRef * pAxesFlt);
 
   Vector3D xlation = centerOfMassRef;
-  xform3x3.Multiply( xlation.XYZ );
+  xform3x3.Multiply( xlation );
   xlation = centerOfMassFlt - xlation;
   
   // Assign xform3x3 as a submatrix of a 4x4
@@ -176,7 +177,7 @@ MakeInitialAffineTransformation
   xform4x4[3][3] = 1;
   
   AffineXform* xform = new AffineXform( xform4x4 );
-  xform->ChangeCenter( centerOfMassRef.XYZ );
+  xform->ChangeCenter( centerOfMassRef );
 
   Types::Coordinate* angles = xform->RetAngles();
   for ( int i = 0; i < 3; ++i )

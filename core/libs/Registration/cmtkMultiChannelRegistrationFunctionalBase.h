@@ -145,10 +145,10 @@ protected:
   DataGrid::IndexType m_ReferenceDims;
 
   /// Extents of the reference volume in real-world coordinates.
-  Types::Coordinate m_ReferenceSize[3];
+  UniformVolume::CoordinateVectorType m_ReferenceSize;
 
   /// Inverse pixel deltas of the reference volume.
-  Types::Coordinate m_ReferenceInvDelta[3];
+  UniformVolume::CoordinateVectorType m_ReferenceInvDelta;
 
   /// Rectangular crop region in the reference volume.
   DataGrid::RegionType m_ReferenceCropRegion;
@@ -157,10 +157,10 @@ protected:
   DataGrid::IndexType m_FloatingDims;
 
   /// Extents of the floating volume in real-world coordinates.
-  Types::Coordinate m_FloatingSize[3];
+  UniformVolume::CoordinateVectorType m_FloatingSize;
 
   /// Inverse pixel deltas of the floating volume.
-  Types::Coordinate m_FloatingInverseDelta[3];
+  UniformVolume::CoordinateVectorType m_FloatingInverseDelta;
 
   /// Coordinates of the floating image cropping region.
   UniformVolume::CoordinateRegionType m_FloatingCropRegion;

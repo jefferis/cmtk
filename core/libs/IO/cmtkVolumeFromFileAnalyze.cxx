@@ -67,7 +67,7 @@ const char* const IGS_LEGACY_ANALYZE_IO = "IGS_LEGACY_ANALYZE_IO";
 /** \addtogroup IO */
 //@{
 
-UniformVolume* 
+const UniformVolume::SmartPtr
 VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const bool readData )
 {
 #ifdef _MSC_VER
@@ -78,14 +78,14 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
   if ( !hdrFile ) 
     {
     StdErr.printf( "ERROR: could not open Analyze header file %s\n", pathHdr );
-    return NULL;
+    return UniformVolume::SmartPtr( NULL );
     }
   
   char buffer[348];
   if ( 348 != fread( buffer, 1, 348, hdrFile ) ) 
     {
     StdErr.printf( "ERROR: could not read 348 bytes from header file %s\n", pathHdr );
-    return NULL;
+    return UniformVolume::SmartPtr( NULL );
     }
   
   FileHeader header( buffer, bigEndian );
@@ -94,7 +94,7 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
   if ( ndims < 3 ) 
     {
     StdErr.printf( "ERROR: image dimension %d is smaller than 3 in file %s\n", ndims, pathHdr );
-    return NULL;
+    return UniformVolume::SmartPtr( NULL );
     }
   
   DataGrid::IndexType dims;
@@ -112,7 +112,7 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
   header.GetArray( pixelDim, 80, 3 );
 
 // use fabs to catch something weird in FSL's output
-  float size[3] = { (dims[0] - 1) * fabs( pixelDim[0] ), (dims[1] - 1) * fabs( pixelDim[1] ), (dims[2] - 1) * fabs( pixelDim[2] ) };
+  Types::Coordinate size[3] = { (dims[0] - 1) * fabs( pixelDim[0] ), (dims[1] - 1) * fabs( pixelDim[1] ), (dims[2] - 1) * fabs( pixelDim[2] ) };
   
   fclose( hdrFile );
 
@@ -180,7 +180,7 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
       }
     }
   
-  UniformVolume* volume = new UniformVolume( dims, size );
+  UniformVolume::SmartPtr volume( new UniformVolume( dims, UniformVolume::CoordinateVectorType( size ) ) );
   volume->m_MetaInformation[META_IMAGE_ORIENTATION] = volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = orientString;
 
   // Analyze is medical data, which we always treat in RAS space.
@@ -261,9 +261,9 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
 
 void
 VolumeFromFile::WriteAnalyzeHdr
-( const char* pathHdr, const UniformVolume* volume, const bool verbose )
+( const char* pathHdr, const UniformVolume& volume, const bool verbose )
 {
-  UniformVolume::SmartPtr writeVolume( volume->Clone() );
+  UniformVolume::SmartPtr writeVolume( volume.Clone() );
   if ( writeVolume->MetaKeyExists( META_SPACE_ORIGINAL ) )
     writeVolume->ChangeCoordinateSpace( writeVolume->m_MetaInformation[META_SPACE_ORIGINAL] );
 
@@ -295,7 +295,7 @@ VolumeFromFile::WriteAnalyzeHdr
       {
       StdErr << "INFO: WriteAnalyzeHdr will reorient output volume from '" << currentOrientation << "' to '" << writeOrientation << "'\n";
       }
-    reorientedVolume = UniformVolume::SmartPtr( volume->GetReoriented( writeOrientation ) );
+    reorientedVolume = UniformVolume::SmartPtr( volume.GetReoriented( writeOrientation ) );
     writeVolume = reorientedVolume;
     }
   

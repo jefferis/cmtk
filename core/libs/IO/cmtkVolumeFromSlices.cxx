@@ -171,7 +171,7 @@ VolumeFromSlices::FillPlane
       }
     
     // set world coordinate of the plane just read
-    Types::Coordinate slice_position = (ImagePosition - FirstImagePosition).EuclidNorm();
+    Types::Coordinate slice_position = (ImagePosition - FirstImagePosition).RootSumOfSquares();
     slice_position = 1e-6 * ( MathUtil::Round( 1e+6 * slice_position) );
     Points[2][plane] = slice_position;
     }
@@ -195,7 +195,7 @@ VolumeFromSlices::FillPlane
     memcpy( rawDataPtr + bytesPerBlock * plane, image->GetPixelData()->GetDataPtr(), bytesPerBlock );
     
     // set world coordinate of the plane just read
-    Types::Coordinate slicePosition = (ImagePosition - FirstImagePosition).EuclidNorm();
+    Types::Coordinate slicePosition = (ImagePosition - FirstImagePosition).RootSumOfSquares();
     slicePosition = 1e-6 * ( MathUtil::Round( 1e+6 * slicePosition) );
     Points[2][plane] = slicePosition;
     }
@@ -203,7 +203,7 @@ VolumeFromSlices::FillPlane
   return NULL;
 }
 
-UniformVolume* 
+UniformVolume::SmartPtr
 VolumeFromSlices::FinishVolume ( Types::Coordinate& sliceOffset, int& sliceDirection )
 {
   Types::Coordinate *next_point = Points[2];
@@ -232,7 +232,7 @@ VolumeFromSlices::FinishVolume ( Types::Coordinate& sliceOffset, int& sliceDirec
     VolumeDataArray = TypedArray::SmartPtr( this->EncapDataArray( SelectDataTypeInteger( BytesPerPixel, SignBit ), RawData, DataSize ) );
   
   const Types::Coordinate* aux[] = { Points[0], Points[1], Points[2] };
-  UniformVolume* Result = this->ConstructVolume( Dims, Size, aux, VolumeDataArray );
+  UniformVolume::SmartPtr Result = this->ConstructVolume( Dims, Size, aux, VolumeDataArray );
 
   // clear reference, since now linked by volume.
   VolumeDataArray = TypedArray::SmartPtr::Null; 
@@ -245,9 +245,9 @@ VolumeFromSlices::FinishVolume ( Types::Coordinate& sliceOffset, int& sliceDirec
   // actual image directions
   const Types::Coordinate spacing[3] = { (Size[0] / (Dims[0]-1)), (Size[1] / (Dims[1]-1)), (Size[2] / (Dims[2]-1)) };
 
-  this->ImageOrientation[0] *= spacing[0] / this->ImageOrientation[0].EuclidNorm();
-  this->ImageOrientation[1] *= spacing[1] / this->ImageOrientation[1].EuclidNorm();
-  this->IncrementVector *= spacing[2] / this->IncrementVector.EuclidNorm();
+  this->ImageOrientation[0] *= spacing[0] / this->ImageOrientation[0].RootSumOfSquares();
+  this->ImageOrientation[1] *= spacing[1] / this->ImageOrientation[1].RootSumOfSquares();
+  this->IncrementVector *= spacing[2] / this->IncrementVector.RootSumOfSquares();
   
   const Types::Coordinate directions[3][3] = 
     {
@@ -259,7 +259,7 @@ VolumeFromSlices::FinishVolume ( Types::Coordinate& sliceOffset, int& sliceDirec
   const Matrix3x3<Types::Coordinate> m3( directions );
   Matrix4x4<Types::Coordinate> m4( m3 );
   for ( int i = 0; i < 3; ++i )
-    m4[3][i] = this->FirstImagePosition.XYZ[i];
+    m4[3][i] = this->FirstImagePosition[i];
 
   Result->m_IndexToPhysicalMatrix = m4;
   const std::string orientationString0 = Result->GetOrientationFromDirections();
@@ -329,7 +329,7 @@ VolumeFromSlices::CheckImage
   else 
     {
     // Are we still going in the same direction?
-    if ( (imageToImage - IncrementVector).MaxNorm() > CMTK_MAX_LOCALIZE_ERROR )
+    if ( (imageToImage - IncrementVector).MaxValue() > CMTK_MAX_LOCALIZE_ERROR )
       {
       // Nope, but why? Let's give user some more hints
       if ( ( (imageToImage * IncrementVector) > 0 ) )
@@ -398,7 +398,7 @@ VolumeFromSlices::CheckImage ( const int plane, const ImageInfo& image )
   else 
     {
     // Are we still going in the same direction?
-    if ( (imageToImage - IncrementVector).MaxNorm() > CMTK_MAX_LOCALIZE_ERROR )
+    if ( (imageToImage - IncrementVector).MaxValue() > CMTK_MAX_LOCALIZE_ERROR )
       {
       // Nope, but why? Let's give user some more hints
       if ( ( (imageToImage * IncrementVector) > 0 ) )
@@ -416,9 +416,9 @@ VolumeFromSlices::CheckImage ( const int plane, const ImageInfo& image )
   return NULL;
 }
 
-UniformVolume* 
+UniformVolume::SmartPtr 
 VolumeFromSlices::ConstructVolume
-( const DataGrid::IndexType& dims, const Types::Coordinate size[3], const Types::Coordinate *points[3], TypedArray::SmartPtr& data ) const
+( const DataGrid::IndexType& dims, const UniformVolume::CoordinateVectorType& size, const Types::Coordinate *points[3], TypedArray::SmartPtr& data ) const
 {
   bool isUniform = true;
   Types::Coordinate error = 0;
@@ -433,14 +433,11 @@ VolumeFromSlices::ConstructVolume
       }
     }
   
-  UniformVolume *result = NULL;
   if ( !isUniform )
     {
     StdErr << "WARNING: not a uniform volume (error = " << error << ")\n";
     }
-  result = new UniformVolume( dims, size, data );
-  
-  return result;
+  return UniformVolume::SmartPtr( new UniformVolume( dims, size, data ) );
 }
 
 } // namespace cmtk

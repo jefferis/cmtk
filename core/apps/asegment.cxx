@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -107,7 +108,7 @@ main( const int argc, const char* argv[] )
   segment.SetVerbose( verbose );
   segment.SetFast( fast );
 
-  cmtk::VolumeIO::Write( segment.GetLabelMap(), outImageName );
+  cmtk::VolumeIO::Write( *(segment.GetLabelMap()), outImageName );
 
   return 0;
 }

@@ -181,15 +181,16 @@ AffineXform::DecomposeMatrix ()
   return this->Matrix.Decompose( this->m_Parameters, this->RetCenter(), this->m_LogScaleFactors );
 }
 
-void
+AffineXform::SpaceVectorType
 AffineXform::RotateScaleShear
-( Types::Coordinate vM[3], const Types::Coordinate v[3] ) const
+( const Self::SpaceVectorType& v ) const
 {
-  Types::Coordinate V[3];
-  V[0] = v[0] * Matrix[0][0] + v[1] * Matrix[1][0] + v[2] * Matrix[2][0];
-  V[1] = v[0] * Matrix[0][1] + v[1] * Matrix[1][1] + v[2] * Matrix[2][1];
-  V[2] = v[0] * Matrix[0][2] + v[1] * Matrix[1][2] + v[2] * Matrix[2][2];
-  memcpy( vM, V, 3 * sizeof( Types::Coordinate ) );
+  Self::SpaceVectorType Mv;
+  for ( size_t i = 0; i<3; ++i )
+    {
+    Mv[i] = v[0] * Matrix[0][i] + v[1] * Matrix[1][i] + v[2] * Matrix[2][i];
+    }
+  return Mv;
 }
 
 AffineXform* 
@@ -202,38 +203,34 @@ AffineXform::MakeInverse () const
   inverseXform->Matrix.Invert();
   inverseXform->DecomposeMatrix();
 
-  Types::Coordinate newCenter[3];
-  this->Matrix.Multiply( this->RetCenter(), newCenter );
+  Self::SpaceVectorType newCenter;
+  this->Matrix.Multiply( Self::SpaceVectorType( this->RetCenter() ), newCenter );
   inverseXform->ChangeCenter( newCenter );
-
+  
   if ( this->NumberDOFs == 7 ) 
     {
     inverseXform->m_Parameters[8] = (inverseXform->m_Parameters[7] = inverseXform->m_Parameters[6]);
     inverseXform->Matrix.Compose( inverseXform->m_Parameters, this->m_LogScaleFactors );
     }
-
+  
   inverseXform->m_MetaInformation[META_SPACE] = this->m_MetaInformation[META_SPACE];
-
+  
   return inverseXform;
 }
 
 void
-AffineXform::ChangeCenter ( const Types::Coordinate* newCenter ) 
+AffineXform::ChangeCenter ( const Self::SpaceVectorType& newCenter ) 
 {
-  Types::Coordinate* xlate = this->RetXlate();
-  Types::Coordinate* center = this->RetCenter();
-  Types::Coordinate deltaCenter[3] = { newCenter[0] - center[0], newCenter[1] - center[1], newCenter[2] - center[2] };
-  xlate[0] -= deltaCenter[0];
-  xlate[1] -= deltaCenter[1];
-  xlate[2] -= deltaCenter[2];
+  Self::SpaceVectorType xlate( this->RetXlate() );
+  Types::Coordinate *const center = this->RetCenter();
+  Self::SpaceVectorType deltaCenter = newCenter - Self::SpaceVectorType( center );
 
-  this->RotateScaleShear( deltaCenter, deltaCenter );
+  xlate -= deltaCenter;
+  deltaCenter = this->RotateScaleShear( deltaCenter );
+  xlate += deltaCenter;
   
-  xlate[0] += deltaCenter[0];
-  xlate[1] += deltaCenter[1];
-  xlate[2] += deltaCenter[2];
-
-  memcpy( center, newCenter, 3*sizeof(Types::Coordinate) );
+  for ( size_t i = 0; i<3; ++i )
+    center[i] = newCenter[i];
 }
 
 void
@@ -310,7 +307,7 @@ AffineXform::SetParameter ( const size_t idx, const Types::Coordinate p )
 
 Types::Coordinate
 AffineXform::GetParamStep
-( const size_t idx, const Types::Coordinate* volSize, const Types::Coordinate mmStep ) 
+( const size_t idx, const Self::SpaceVectorType& volSize, const Types::Coordinate mmStep ) 
   const
 {
   if ( (int)idx >= this->NumberDOFs ) return 0.0;
@@ -327,11 +324,11 @@ AffineXform::GetParamStep
       return mmStep * 180 / (M_PI * sqrt( MathUtil::Square( volSize[0] ) + MathUtil::Square( volSize[1] ) ) );
     case 6: case 7: case 8:
       if ( this->m_LogScaleFactors )
-	return log( 1 + 0.5 * mmStep / MathUtil::Max( 3, volSize ) );
+	return log( 1 + 0.5 * mmStep / volSize.MaxValue() );
       else
-	return 0.5 * mmStep / MathUtil::Max( 3, volSize );
+	return 0.5 * mmStep / volSize.MaxValue();
     case 9: case 10: case 11:
-      return 0.5 * mmStep / MathUtil::Max( 3, volSize );
+      return 0.5 * mmStep / volSize.MaxValue();
     }
   return mmStep;
 }
@@ -362,22 +359,22 @@ AffineXform::Insert( const AffineXform& other )
 
 void 
 AffineXform::RotateWXYZ
-( const Units::Radians angle, const Vector3D& direction,
+( const Units::Radians angle, const Self::SpaceVectorType& direction,
   const Types::Coordinate* center, Self::MatrixType *const accumulate )
 {
-  Vector3D unit( direction );
+  Self::SpaceVectorType unit( direction );
 
-  Vector3D center3D;
+  Self::SpaceVectorType center3D;
   if ( center ) 
-    center3D.Set( center );
+    center3D = Self::SpaceVectorType( center );
   else
-    center3D.Set( this->RetCenter() );
+    center3D = Self::SpaceVectorType( this->RetCenter() );
 
   if ( accumulate ) 
     {
     unit += center3D;
-    accumulate->Multiply( unit.XYZ );
-    accumulate->Multiply( center3D.XYZ );
+    accumulate->Multiply( unit );
+    accumulate->Multiply( center3D );
     unit -= center3D;
     }
 
@@ -393,9 +390,9 @@ AffineXform::RotateWXYZ
 
   this->Matrix *= xlate;
 
-  double x = unit.XYZ[0];
-  double y = unit.XYZ[1];
-  double z = unit.XYZ[2];
+  double x = unit[0];
+  double y = unit[1];
+  double z = unit[2];
 
   // make a normalized quaternion
   const double w = MathUtil::Cos(0.5*angle);

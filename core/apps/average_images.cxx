@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -151,7 +152,7 @@ main( const int argc, const char* argv[] )
   std::list<const char*>::const_iterator it;
   for ( it = imagePathList.begin(); it != imagePathList.end(); ++it ) 
     {
-    cmtk::UniformVolume::SmartPtr nextVolume( dynamic_cast<cmtk::UniformVolume*>( cmtk::VolumeIO::ReadOriented( *it, Verbose ) ) );
+    cmtk::UniformVolume::SmartPtr nextVolume( cmtk::VolumeIO::ReadOriented( *it, Verbose ) );
     
     if ( ! nextVolume ) 
       {
@@ -296,7 +297,7 @@ main( const int argc, const char* argv[] )
   cmtk::Progress::Done();
 
   volume->SetData( outputData );
-  cmtk::VolumeIO::Write( volume, OutputFileName, Verbose );
+  cmtk::VolumeIO::Write( *volume, OutputFileName, Verbose );
   
   return 0;
 }

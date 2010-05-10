@@ -161,7 +161,7 @@ main( const int argc, const char* argv[] )
 
   ReferenceImage->SetData( result );
 
-  cmtk::VolumeIO::Write( ReferenceImage, OutputImagePath, Verbose );
+  cmtk::VolumeIO::Write( *ReferenceImage, OutputImagePath, Verbose );
   return 0;
 }
 

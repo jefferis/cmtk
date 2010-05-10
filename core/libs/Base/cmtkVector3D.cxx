@@ -42,7 +42,7 @@ cmtk
 Vector3D& 
 Vector3D::SetNormal( const Vector3D& x, const Vector3D& y )
 {
-  this->Set( x.XYZ[1] * y.XYZ[2] - x.XYZ[2] * y.XYZ[1], x.XYZ[2] * y.XYZ[0] - x.XYZ[0] * y.XYZ[2], x.XYZ[0] * y.XYZ[1] - x.XYZ[1] * y.XYZ[0] );
+  this->Set( x[1] * y[2] - x[2] * y[1], x[2] * y[0] - x[0] * y[2], x[0] * y[1] - x[1] * y[0] );
 
   return *this;
 }
@@ -50,10 +50,10 @@ Vector3D::SetNormal( const Vector3D& x, const Vector3D& y )
 byte
 Vector3D::GetMaxComponentDimension() const
 {
-  if ( (XYZ[0] > XYZ[1]) && (XYZ[0] > XYZ[2]) )
+  if ( ((*this)[0] > (*this)[1]) && ((*this)[0] > (*this)[2]) )
     return AXIS_X;
 
-  if ( (XYZ[1] > XYZ[2]) )
+  if ( ((*this)[1] > (*this)[2]) )
     return AXIS_Y;
 
   return AXIS_Z;
@@ -69,7 +69,7 @@ void
 Vector3D::CoordMultInPlace( Vector3D& p, const Vector3D& q ) 
 {
   for ( int dim = 0; dim < 3; ++dim ) 
-    p.XYZ[dim] *= q.XYZ[dim];
+    p[dim] *= q[dim];
 }
 
 const Vector3D 

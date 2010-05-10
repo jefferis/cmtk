@@ -74,7 +74,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 template<class TMetricFunctional>
 void
 SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
-::InitTransformation( const Types::Coordinate* domain, const Types::Coordinate gridSpacing, const bool exact )
+::InitTransformation( const Vector3D& domain, const Types::Coordinate gridSpacing, const bool exact )
 {
   if ( this->m_ReferenceChannels.size() == 0 )
     {

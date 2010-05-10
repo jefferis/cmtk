@@ -38,7 +38,6 @@
 #include <cmtkWarpXform.h>
 
 #include <cmtkVector.h>
-#include <cmtkVector3D.h>
 #include <cmtkAffineXform.h>
 #include <cmtkCubicSpline.h>
 
@@ -87,15 +86,15 @@ public:
 
   /** Construct new warp from volume size and control grid density.
    */
-  SplineWarpXform( const Types::Coordinate domain[3], const Types::Coordinate delta, const AffineXform *initialXform = NULL, const bool exactDelta = false );
+  SplineWarpXform( const FixedVector<3,Types::Coordinate>& domain, const Types::Coordinate delta, const AffineXform *initialXform = NULL, const bool exactDelta = false );
 
   /** Initialize warp from volume size and control grid density.
    */
-  void Init( const Types::Coordinate domain[3], const Types::Coordinate delta, const AffineXform *initialXform = NULL, const bool exactDelta = false );
+  void Init( const Self::SpaceVectorType& domain, const Types::Coordinate delta, const AffineXform *initialXform = NULL, const bool exactDelta = false );
   
   /** Construct new warp from volume size, grid dimensions and parameters
    */
-  SplineWarpXform( const Types::Coordinate domain[3], const Self::IndexType& dims, CoordinateVector::SmartPtr& parameters, const AffineXform *initialXform = NULL );
+  SplineWarpXform( const FixedVector<3,Types::Coordinate>& domain, const Self::IndexType& dims, CoordinateVector::SmartPtr& parameters, const AffineXform *initialXform = NULL );
 
   /// Initialize control point positions, potentially with affine displacement.
   void InitControlPoints( const AffineXform* affineXform = NULL );
@@ -128,13 +127,13 @@ public:
 
   /** Return grid bending energy at arbitrary location.
    */
-  virtual Types::Coordinate GetGridEnergy( const Vector3D& v ) const;
+  virtual Types::Coordinate GetGridEnergy( const Self::SpaceVectorType& v ) const;
 
   /// Return derivative of grid energy with respect to one parameter.
   virtual void GetGridEnergyDerivative( double& lower, double& upper, const int param, const Types::Coordinate step ) const;
 
   /// Compute Jacobian determinant at a certain location.
-  virtual Types::Coordinate GetJacobianDeterminant ( const Vector3D& v ) const;
+  virtual Types::Coordinate GetJacobianDeterminant ( const Self::SpaceVectorType& v ) const;
 
   /// Compute Jacobian determinant at a certain reference image pixel.
   virtual Types::Coordinate GetJacobianDeterminant ( const int x, const int y, const int z ) const;
@@ -209,7 +208,7 @@ public:
    *@return True is the given inverse was succesfully comuted, false if the
    * given warped vector was outside the target domain of this transformation.
    */
-  virtual bool ApplyInverse ( const Vector3D& v, Vector3D& u, const Types::Coordinate accuracy = 0.01  ) const;
+  virtual bool ApplyInverse ( const Self::SpaceVectorType& v, Self::SpaceVectorType& u, const Types::Coordinate accuracy = 0.01  ) const;
 
   /** Return origin of warped vector.
    * Note that since this class of transformation is not closed under inversion
@@ -219,7 +218,7 @@ public:
    *@return True is the given inverse was succesfully comuted, false if the
    * given warped vector was outside the target domain of this transformation.
    */
-  virtual bool ApplyInverseInPlace( Vector3D& v, const Types::Coordinate accuracy = 0.01  ) const;
+  virtual bool ApplyInverseInPlace( Self::SpaceVectorType& v, const Types::Coordinate accuracy = 0.01  ) const;
 
   /** Return origin of warped vector.
    * Note that since this class of transformation is not closed under inversion
@@ -233,10 +232,10 @@ public:
    *@return True is the given inverse was succesfully comuted, false if the
    * given warped vector was outside the target domain of this transformation.
    */
-  virtual bool ApplyInverseInPlaceWithInitial( Vector3D& v, const Vector3D& initial, const Types::Coordinate accuracy = 0.01 ) const;
+  virtual bool ApplyInverseInPlaceWithInitial( Self::SpaceVectorType& v, const Self::SpaceVectorType& initial, const Types::Coordinate accuracy = 0.01 ) const;
 
   /// Replace existing vector with transformed location.
-  virtual void ApplyInPlace( Vector3D& v ) const 
+  virtual void ApplyInPlace( Self::SpaceVectorType& v ) const 
   {
     Types::Coordinate r[3], f[3];
     int grid[3];
@@ -247,7 +246,7 @@ public:
       {
       // This is the (real-valued) index of the control point grid cell the
       // given location is in.
-      r[dim] = this->InverseSpacing[dim] * v.XYZ[dim];
+      r[dim] = this->InverseSpacing[dim] * v[dim];
       // This is the actual cell index.
       grid[dim] = std::min<int>( static_cast<int>( r[dim] ), this->m_Dims[dim]-4 );
       // And here's the relative position within the cell.
@@ -286,31 +285,31 @@ public:
 	mm += CubicSpline::ApproxSpline( m, f[2] ) * ll;
 	coeff_mm += nextK;
 	}
-      v.XYZ[dim] = mm;
+      v[dim] = mm;
       ++coeff;
       }
   }
 
   /// Get volume influenced by one parameter.
-  virtual void GetVolumeOfInfluence( const size_t idx, const Vector3D&, const Vector3D&, Vector3D&, Vector3D&, const int = -1 ) const;
+  virtual void GetVolumeOfInfluence( const size_t idx, const Self::SpaceVectorType&, const Self::SpaceVectorType&, Self::SpaceVectorType&, Self::SpaceVectorType&, const int = -1 ) const;
   
   /// Register the grid points of the deformed uniform or non-uniform volume.
   void RegisterVolume( const UniformVolume* volume )
   {
-    this->RegisterVolumePoints( volume->m_Dims, volume->m_Delta, volume->m_Offset.XYZ );
+    this->RegisterVolumePoints( volume->m_Dims, volume->m_Delta, volume->m_Offset );
   }
 
   /// Unegister axes points, ie free all internal data structures.
   void UnRegisterVolume();
   
   /// Get a grid point from the deformed grid.
-  void GetTransformedGrid( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const;
+  void GetTransformedGrid( Self::SpaceVectorType& v, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get a sequence of grid points from the deformed grid. 
-  void GetTransformedGridSequence( Vector3D *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const;
+  void GetTransformedGridSequence( Self::SpaceVectorType *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get parameter stepping.
-  virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate* volSize, const Types::Coordinate mmStep = 1 ) const 
+  virtual Types::Coordinate GetParamStep( const size_t idx, const Self::SpaceVectorType& volSize, const Types::Coordinate mmStep = 1 ) const 
   {
     return 4 * WarpXform::GetParamStep( idx, volSize, mmStep );
   }
@@ -322,7 +321,7 @@ public:
    * the explicit 3D coordinate of the control point, because most spline
    * coefficients vanish at control points and need not be considered.
    */
-  virtual Vector3D& GetDeformedControlPointPosition( Vector3D&, const int, const int, const int ) const;
+  virtual Self::SpaceVectorType& GetDeformedControlPointPosition( Self::SpaceVectorType&, const int, const int, const int ) const;
   
   /** Return array of pre deformation vectors.
    * The newly alocated data array contains the control point positions
@@ -333,10 +332,10 @@ public:
   Types::Coordinate* GetPureDeformation( const bool includeScale = false ) const;
 
   /// Get local Jacobian.
-  virtual CoordinateMatrix3x3 GetJacobian( const Vector3D& v ) const;
+  virtual CoordinateMatrix3x3 GetJacobian( const Self::SpaceVectorType& v ) const;
 
   /// Get local Jacobian into existing matrix.
-  virtual void GetJacobian( const Vector3D& v, CoordinateMatrix3x3& J ) const;
+  virtual void GetJacobian( const Self::SpaceVectorType& v, CoordinateMatrix3x3& J ) const;
 
   /// Get local Jacobian at control point into existing matrix.
   virtual void GetJacobianAtControlPoint( const Types::Coordinate* cp, CoordinateMatrix3x3& J ) const;
@@ -346,10 +345,10 @@ public:
   
 private:
   /// Register axes points of the volume to be deformed.
-  void RegisterVolumePoints ( const DataGrid::IndexType&, const Types::Coordinate *const* );
+  void RegisterVolumePoints ( const DataGrid::IndexType&, const Self::SpaceVectorType& );
 
   /// Register axes points of the volume to be deformed.
-  void RegisterVolumePoints( const DataGrid::IndexType&, const Types::Coordinate[3], const Types::Coordinate[3] );
+  void RegisterVolumePoints( const DataGrid::IndexType&, const Types::Coordinate[3], const Self::SpaceVectorType& );
 
   /// Register a single axis of the uniform volume to be deformed.
   void RegisterVolumeAxis ( const DataGrid::IndexType::ValueType, const Types::Coordinate delta, const Types::Coordinate origin, const int, const Types::Coordinate, 
@@ -434,7 +433,7 @@ protected:
   static void GetJacobianFoldingConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 
   /// Find nearest (after deformation) control point.
-  void FindClosestControlPoint( const Vector3D& v, Vector3D& cp ) const;
+  void FindClosestControlPoint( const Self::SpaceVectorType& v, Self::SpaceVectorType& cp ) const;
 
   /// Friend declaration.
   friend class SplineWarpXformUniformVolume;

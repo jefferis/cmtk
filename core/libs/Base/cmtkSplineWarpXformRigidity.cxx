@@ -54,7 +54,7 @@ SplineWarpXform::GetRigidityConstraintSparse () const
     for ( int y = 1; y<this->m_Dims[1]-1; ++y, coeff+=2*nextI )
       for ( int x = 1; x<this->m_Dims[0]-1; ++x, coeff+=nextI )
 	{
-	this->GetJacobian( coeff, J );
+	this->GetJacobian( Self::SpaceVectorType( coeff ), J );
 	Constraint += this->GetRigidityConstraint( J );
 	}
   

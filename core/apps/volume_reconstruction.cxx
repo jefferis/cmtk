@@ -184,7 +184,7 @@ WriteOutputImage( cmtk::UniformVolume::SmartPtr& image, const char* path )
     outputImage = cmtk::UniformVolume::SmartPtr( outputImage->CloneGrid() );
     outputImage->SetData( cmtk::TypedArray::SmartPtr( image->GetData()->Convert( type ) ) );
     }
-  cmtk::VolumeIO::Write( outputImage, path, Verbose );
+  cmtk::VolumeIO::Write( *outputImage, path, Verbose );
 }
 
 template<class TRecon>

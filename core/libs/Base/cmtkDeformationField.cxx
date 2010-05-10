@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,7 +48,7 @@ DeformationField::InitControlPoints( const AffineXform* affineXform )
     {
     Types::Coordinate *ofs = this->m_Parameters;
 
-    Vector3D p;
+    Self::SpaceVectorType p;
     p[2] = this->m_Offset[2];
     for ( int z = 0; z < this->m_Dims[2]; ++z, p[2] += this->Spacing[2] ) 
       {
@@ -57,7 +58,7 @@ DeformationField::InitControlPoints( const AffineXform* affineXform )
 	p[0] = this->m_Offset[0];
 	for ( int x = 0; x < this->m_Dims[0]; ++x, p[0] += this->Spacing[0], ofs+=3 ) 
 	  {
-	  Vector3D q( p );
+	  Self::SpaceVectorType q( p );
 	  affineXform->ApplyInPlace( q );
 	  q -= p;
 
@@ -80,7 +81,7 @@ DeformationField::InitControlPoints( const AffineXform* affineXform )
 void
 DeformationField
 ::GetTransformedGrid 
-( Vector3D& v, const int idxX, const int idxY, const int idxZ ) const
+( Self::SpaceVectorType& v, const int idxX, const int idxY, const int idxZ ) const
 {
   const Types::Coordinate* coeff = this->m_Parameters + nextI * idxX + nextJ * idxY + nextK * idxZ;
 
@@ -91,10 +92,10 @@ DeformationField
 
 void 
 DeformationField::GetTransformedGridSequence
-( Vector3D *const vIn, const int numPoints, const int idxX, const int idxY, const int idxZ ) 
+( Self::SpaceVectorType *const vIn, const int numPoints, const int idxX, const int idxY, const int idxZ ) 
   const
 {
-  Vector3D *v = vIn;
+  Self::SpaceVectorType *v = vIn;
   const Types::Coordinate* coeff = this->m_Parameters + 3 * (idxX + nextJ * (idxY + nextK * idxZ ));
 
   const Types::Coordinate Y = this->m_Offset[1] + this->Spacing[1] * idxY;
@@ -102,15 +103,15 @@ DeformationField::GetTransformedGridSequence
 
   for ( int n = 0; n < numPoints; ++n, ++v, coeff += 3 )
     {
-    v[n].XYZ[0] = this->m_Offset[0] + this->Spacing[0] * idxX + coeff[0];
-    v[n].XYZ[1] = Y + coeff[1];
-    v[n].XYZ[2] = Z + coeff[2];
+    v[n][0] = this->m_Offset[0] + this->Spacing[0] * idxX + coeff[0];
+    v[n][1] = Y + coeff[1];
+    v[n][2] = Z + coeff[2];
     }
 }
 
 void
 DeformationField::ApplyInPlace
-( Vector3D& v ) const
+( Self::SpaceVectorType& v ) const
 {
   Types::Coordinate r[3], f[3];
   int grid[3];
@@ -120,7 +121,7 @@ DeformationField::ApplyInPlace
     {
     // This is the (real-valued) index of the control point grid cell the
     // given location is in.
-    r[dim] = this->InverseSpacing[dim] * ( v.XYZ[dim] - this->m_Offset.XYZ[dim] );
+    r[dim] = this->InverseSpacing[dim] * ( v[dim] - this->m_Offset[dim] );
     // This is the actual cell index.
     grid[dim] = std::min( static_cast<int>( r[dim] ), this->m_Dims[dim]-2 );
     // And here's the relative position within the cell.
@@ -158,7 +159,7 @@ DeformationField::ApplyInPlace
       mm +=  ( m ? f[2] : 1-f[2] ) * ll;
       coeff_mm += nextK;
       }
-    v.XYZ[dim] += mm;
+    v[dim] += mm;
     ++coeff;
     }
 }

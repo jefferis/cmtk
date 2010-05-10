@@ -392,7 +392,7 @@ main ( const int argc, const char* argv[] )
   cmtk::TypedArray::SmartPtr outputData( averageArray->Convert( DataType ) );
   referenceVolume->SetData( outputData );
   
-  cmtk::VolumeIO::Write( referenceVolume, outImage, Verbose );
+  cmtk::VolumeIO::Write( *referenceVolume, outImage, Verbose );
 
   for ( size_t idx = 0; idx < InListNames.size(); ++idx )
     delete studylist[idx];

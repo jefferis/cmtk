@@ -119,8 +119,8 @@ ClassStream::PutWarp
   this->WriteBool ( "absolute", (initialXform == NULL) );
   this->WriteIntArray( "dims", warpXform->m_Dims.begin(), 3 );
 
-  this->WriteCoordinateArray( "domain", warpXform->Domain, 3 );
-  this->WriteCoordinateArray( "origin", warpXform->m_Offset.XYZ, 3 );
+  this->WriteCoordinateArray( "domain", warpXform->Domain.begin(), 3 );
+  this->WriteCoordinateArray( "origin", warpXform->m_Offset.begin(), 3 );
   this->WriteCoordinateArray( "coefficients", nCoeff, warpXform->m_NumberOfParameters, 3 );
 
   const BitVector* activeFlags = warpXform->GetActiveFlags();
@@ -199,13 +199,13 @@ ClassStream::Get
   CoordinateVector::SmartPtr parameters( new CoordinateVector( numberOfParameters ) );
   Types::Coordinate *Coefficients = parameters->Elements;
   
-  Types::Coordinate domain[3];
-  Types::Coordinate origin[3];
+  Vector3D domain;
+  Vector3D origin;
 
-  if ( this->ReadCoordinateArray( "domain", domain, 3 ) != TYPEDSTREAM_OK )
-    this->ReadCoordinateArray( "extent", domain, 3 );
+  if ( this->ReadCoordinateArray( "domain", domain.begin(), 3 ) != TYPEDSTREAM_OK )
+    this->ReadCoordinateArray( "extent", domain.begin(), 3 );
   
-  int readOrigin = this->ReadCoordinateArray( "origin", origin, 3 );
+  int readOrigin = this->ReadCoordinateArray( "origin", origin.begin(), 3 );
   this->ReadCoordinateArray( "coefficients", Coefficients, numberOfParameters );
   if ( !absolute && (readOrigin == TYPEDSTREAM_OK) ) 
     {

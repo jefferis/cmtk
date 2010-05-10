@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -48,8 +49,8 @@ operator<<
   stream.Begin( "template" );
   stream.WriteIntArray( "dims", func.m_TemplateGrid->GetDims().begin(), 3 );
   stream.WriteCoordinateArray( "delta", func.m_TemplateGrid->GetDelta(), 3 );
-  stream.WriteCoordinateArray( "size", func.m_TemplateGrid->Size, 3 );
-  stream.WriteCoordinateArray( "origin", func.m_TemplateGrid->m_Offset.XYZ, 3 );
+  stream.WriteCoordinateArray( "size", func.m_TemplateGrid->Size.begin(), 3 );
+  stream.WriteCoordinateArray( "origin", func.m_TemplateGrid->m_Offset.begin(), 3 );
   stream.End();
   
   for ( size_t idx = 0; idx < func.m_XformVector.size(); ++idx )
@@ -79,7 +80,7 @@ operator>>
   stream.ReadCoordinateArray( "origin", origin, 3 );
   stream.End();
 
-  UniformVolume::SmartPtr templateGrid( new UniformVolume( UniformVolume::IndexType( dims ), size ) );
+  UniformVolume::SmartPtr templateGrid( new UniformVolume( UniformVolume::IndexType( dims ), UniformVolume::CoordinateVectorType( size ) ) );
   templateGrid->SetOffset( Vector3D( origin ) );
 
   std::vector<UniformVolume::SmartPtr> imageVector;

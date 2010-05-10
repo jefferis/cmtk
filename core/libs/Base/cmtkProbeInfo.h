@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -157,19 +158,19 @@ public:
    */
   Vector3D& GetPartialDerivatives ( Vector3D& d ) const 
   {
-    d.XYZ[0] = static_cast<Types::Coordinate>( Deltas[0] * 
+    d[0] = static_cast<Types::Coordinate>( Deltas[0] * 
 					   ( Offsets[2]*(Offsets[1]*Values[1]+Offsets[4]*Values[3])+
 					     Offsets[5]*(Offsets[1]*Values[5]+Offsets[4]*Values[7])-
 					     Offsets[2]*(Offsets[1]*Values[0]+Offsets[4]*Values[2])-
 					     Offsets[5]*(Offsets[1]*Values[4]+Offsets[4]*Values[6])) );
     
-    d.XYZ[1] = static_cast<Types::Coordinate>( Deltas[1] * 
+    d[1] = static_cast<Types::Coordinate>( Deltas[1] * 
 					   ( Offsets[2]*(Offsets[0]*Values[2]+Offsets[3]*Values[3])+
 					     Offsets[5]*(Offsets[0]*Values[6]+Offsets[3]*Values[7])-
 					     Offsets[2]*(Offsets[0]*Values[0]+Offsets[3]*Values[1])-
 					     Offsets[5]*(Offsets[0]*Values[4]+Offsets[3]*Values[5])) );
     
-    d.XYZ[2] = static_cast<Types::Coordinate>( Deltas[2] *
+    d[2] = static_cast<Types::Coordinate>( Deltas[2] *
 					   ( Offsets[1]*(Offsets[0]*Values[4]+Offsets[3]*Values[5])+
 					     Offsets[4]*(Offsets[0]*Values[6]+Offsets[3]*Values[7])-
 					     Offsets[1]*(Offsets[0]*Values[0]+Offsets[3]*Values[1])-

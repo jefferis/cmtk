@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -43,7 +44,7 @@ testMatrixEigensystem
   const T tolerance = 1e-6;
   
   cmtk::Matrix3x3<T> matrix( &m[0][0] );
-  cmtk::EigenSystemSymmetricMatrix3x3<double> es( matrix );
+  cmtk::EigenSystemSymmetricMatrix3x3<T> es( matrix );
   
   // compare eigenvalues
   for ( size_t i = 0; i<3; ++i )
@@ -60,8 +61,7 @@ testMatrixEigensystem
   // compare eigenvectors
   for ( size_t i = 0; i<3; ++i )
     {
-    T actual[3];
-    es.GetNthEigenvector( i, actual );
+    const cmtk::FixedVector<3,T> actual = es.GetNthEigenvector( i );
     for ( size_t j = 0; j<3; ++j )
       {
       if ( fabs( evecs[i][j] - actual[j] ) > tolerance )
@@ -69,8 +69,8 @@ testMatrixEigensystem
 	std::cerr << "Eigenvectors do not match." << std::endl;
 	for ( size_t ii = 0; ii<3; ++ii )
 	  {
-	  es.GetNthEigenvector( ii, actual );
-	  std::cerr << "  ACTUAL: " << actual[0] << " " << actual[1] << " " << actual[2] << std::endl;
+	  const cmtk::FixedVector<3,T> ev = es.GetNthEigenvector( ii );
+	  std::cerr << "  ACTUAL: " << ev[0] << " " << ev[1] << " " << ev[2] << std::endl;
 	  std::cerr << "  BASELN: " << evecs[ii][0] << " " << evecs[ii][1] << " " << evecs[ii][2] << " " << std::endl;
 	  }
 	return false;

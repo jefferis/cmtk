@@ -289,7 +289,7 @@ public:
   /// Get parameter stepping in milimeters.
   virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const 
   {
-    return Warp->GetParamStep( idx, FloatingSize, mmStep );
+    return Warp->GetParamStep( idx, Vector3D( this->FloatingSize ), mmStep );
   }
 
   /// Return the transformation's parameter vector dimension.

@@ -64,7 +64,7 @@ MultiChannelRegistrationFunctionalBase
   else
     {
     this->m_ReferenceDims = channel->GetDims();
-    memcpy( this->m_ReferenceSize, channel->Size, sizeof(this->m_ReferenceSize) );
+    this->m_ReferenceSize = channel->Size;
     this->m_ReferenceCropRegion = channel->CropRegion();
     }
   this->m_ReferenceChannels.push_back( channel );
@@ -87,7 +87,7 @@ MultiChannelRegistrationFunctionalBase
   else
     {
     this->m_FloatingDims = channel->GetDims();
-    memcpy( this->m_FloatingSize, channel->Size, sizeof(this->m_FloatingSize) );
+    this->m_FloatingSize = channel->Size;
     this->m_FloatingCropRegion = channel->GetCropRegionCoordinates();
     for ( int dim = 0; dim < 3; ++dim ) 
       {

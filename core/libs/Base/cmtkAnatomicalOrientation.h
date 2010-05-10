@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -36,6 +37,7 @@
 
 #include <cmtkSmartPtr.h>
 #include <cmtkTypes.h>
+#include <cmtkFixedVector.h>
 #include <cmtkMetaInformationObject.h>
 #include <cmtkAffineXform.h>
 
@@ -98,7 +100,7 @@ public:
     typedef SmartPointer<Self> SmartPtr;
 
     /// Constructor: determine axes permutation, flipping, and store local copy of reoriented dimensions array.
-    PermutationMatrix( const int* sourceDims, const Types::Coordinate* sourceSize, const std::string& curOrientation, const char newOrientation[3] );
+    PermutationMatrix( const FixedVector<3,int>& sourceDims, const std::string& curOrientation, const char newOrientation[3] );
    
     /** Takes the dimensions of a volume (e.g. a grid, a voxel)
      * and returns the dimensions of that volume after the
@@ -108,12 +110,14 @@ public:
      * permuted results.
      */ 
     template<class T>
-    void GetPermutedArray( const T* source, T* target ) const
+    const FixedVector<3,T> GetPermutedArray( const FixedVector<3,T>& source ) const
     {
+      FixedVector<3,T> target;
       for ( int i = 0; i < 3; i++ )
         {
         target[i] = source[this->m_Axes[i]];
         }
+      return target;
     }
 
     /** Permute index-to-physical matrix
@@ -151,24 +155,19 @@ public:
      * (where i is 0, 1, or 2, corresponding to X, Y, 
      *  and Z, respectively)
      */
-    int m_Axes[3];
+    FixedVector<3,int> m_Axes;
 
     /** Multiplies (flip direction) table.
      * m_Multipliers[i] contains -1 if the axis at 
      * m_Axes[i] is to be reversed from its direction
      * prior to re-orientation, and 1 otherwise
      */
-    int m_Multipliers[3];
-    
+    FixedVector<3,int> m_Multipliers;
+
     /** Dimension of the reoriented 
      * image in the direction of m_Axes[i]
      */
-    int m_NewDims[3];
-    
-    /** Size of the reoriented 
-     * image in the direction of m_Axes[i]
-     */
-    Types::Coordinate m_NewSize[3];
+    FixedVector<3,int> m_NewDims;
     
     /** m_Offsets[i] contains 0 if m_Multipliers[i] == 1,
      * and (m_NewDims[i] - 1) if m_Multipliers[i] == -1.
@@ -176,7 +175,7 @@ public:
      * the highest-valued pixel in direction i and iterating
      * backwards.)
      */
-    int m_Offsets[3];
+    FixedVector<3,int> m_Offsets;
   };
 
 private:

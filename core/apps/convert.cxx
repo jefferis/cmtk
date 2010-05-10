@@ -731,7 +731,7 @@ if ( Downsample )
     cmtk::StdErr << "Writing to file " << OutFileName << "\n";
     }
   
-  cmtk::VolumeIO::Write( volume, OutFileName, Verbose );
+  cmtk::VolumeIO::Write( *volume, OutFileName, Verbose );
   return 0;
 }
 #ifdef CMTK_SINGLE_COMMAND_BINARY

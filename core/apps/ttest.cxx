@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -335,7 +336,7 @@ main ( int argc, char* argv[] )
 	  }
 	
 	refVolume->SetData( cmtk::TypedArray::SmartPtr( tstatsData ) );
-	cmtk::VolumeIO::Write( refVolume, TStatFileName, Verbose );
+	cmtk::VolumeIO::Write( *refVolume, TStatFileName, Verbose );
 	}
 
       if ( AbsoluteOutput ) probData->ApplyFunctionDouble( cmtk::Wrappers::Abs );
@@ -368,7 +369,7 @@ main ( int argc, char* argv[] )
 	  }
 	
 	refVolume->SetData( probData );
-	cmtk::VolumeIO::Write( refVolume, OutFileName );
+	cmtk::VolumeIO::Write( *refVolume, OutFileName );
 	}
       break;
       }
@@ -389,7 +390,7 @@ main ( int argc, char* argv[] )
 	  }
 	
 	refVolume->SetData( cmtk::TypedArray::SmartPtr( tstatsData ) );
-	cmtk::VolumeIO::Write( refVolume, TStatFileName, Verbose );
+	cmtk::VolumeIO::Write( *refVolume, TStatFileName, Verbose );
 	}
       
       if ( AbsoluteOutput ) probData->ApplyFunctionDouble( cmtk::Wrappers::Abs );
@@ -407,7 +408,7 @@ main ( int argc, char* argv[] )
 	}
       
       refVolume->SetData( probData );
-      cmtk::VolumeIO::Write( refVolume, OutFileName );
+      cmtk::VolumeIO::Write( *refVolume, OutFileName );
       break;
       }
       case CORRELATION_PAIRED:
@@ -435,7 +436,7 @@ main ( int argc, char* argv[] )
 	  }
 	
 	refVolume->SetData( cmtk::TypedArray::SmartPtr( pData ) );
-	cmtk::VolumeIO::Write( refVolume, TStatFileName, Verbose );
+	cmtk::VolumeIO::Write( *refVolume, TStatFileName, Verbose );
 	}
       
       if ( Verbose )
@@ -444,7 +445,7 @@ main ( int argc, char* argv[] )
 	}
       
       refVolume->SetData( probData );
-      cmtk::VolumeIO::Write( refVolume, OutFileName );
+      cmtk::VolumeIO::Write( *refVolume, OutFileName );
       break;
       }
       case ZSCORES:
@@ -466,7 +467,7 @@ main ( int argc, char* argv[] )
 	}
       
       refVolume->SetData( zscoreData );
-      cmtk::VolumeIO::Write( refVolume, OutFileName );
+      cmtk::VolumeIO::Write( *refVolume, OutFileName );
       }
       break;
       }

@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -364,7 +365,7 @@ main( int argc, char** argv )
 #ifdef CMTK_BUILD_MPI
     if ( mpiRank == 0 )
 #endif
-      cmtk::VolumeIO::Write( average, OutImageName, Verbose );
+      cmtk::VolumeIO::Write( *average, OutImageName, Verbose );
     }
   
   free( referenceStudy );

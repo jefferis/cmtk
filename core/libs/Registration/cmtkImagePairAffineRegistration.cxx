@@ -102,7 +102,7 @@ ImagePairAffineRegistration::InitRegistration ()
   this->m_Xform = affineXform;
   
   Vector3D center = this->m_ReferenceVolume->GetCenterCropRegion();
-  affineXform->ChangeCenter( center.XYZ );
+  affineXform->ChangeCenter( center );
 
   if ( this->m_UseOriginalData ) 
     {
@@ -214,8 +214,8 @@ ImagePairAffineRegistration::GetTransformation() const
   return affineXform;
 }
 
-UniformVolume* 
-ImagePairAffineRegistration::GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator )
+const UniformVolume::SmartPtr
+ImagePairAffineRegistration::GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator ) const
 {
   ReformatVolume reformat;
   reformat.SetInterpolation( interpolator );

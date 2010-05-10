@@ -110,7 +110,7 @@ ImagePairNonrigidRegistration::InitRegistration ()
     }
   
   Vector3D center = this->m_FloatingVolume->GetCenterCropRegion();
-  this->m_InitialTransformation->ChangeCenter( center.XYZ );
+  this->m_InitialTransformation->ChangeCenter( center );
 
   Types::Coordinate currSampling = std::max( this->m_Sampling, 2 * std::min( this->m_ReferenceVolume->GetMinDelta(), this->m_FloatingVolume->GetMinDelta()));
 
@@ -129,7 +129,7 @@ ImagePairNonrigidRegistration::InitRegistration ()
     } 
   else
     {
-    WarpXform::SmartPtr warpXform( this->MakeWarpXform( this->m_ReferenceVolume->Size, this->m_InitialTransformation ) );
+    SplineWarpXform::SmartPtr warpXform( this->MakeWarpXform( this->m_ReferenceVolume->Size, this->m_InitialTransformation ) );
     
     if ( this->m_InverseConsistencyWeight > 0 ) 
       InverseWarpXform = SplineWarpXform::SmartPtr( this->MakeWarpXform( this->m_FloatingVolume->Size, this->m_InitialTransformation->GetInverse() ) );
@@ -182,7 +182,7 @@ ImagePairNonrigidRegistration::InitRegistration ()
 
 SplineWarpXform::SmartPtr
 ImagePairNonrigidRegistration::MakeWarpXform
-( const Types::Coordinate* size, const AffineXform* initialAffine ) const
+( const UniformVolume::CoordinateVectorType& size, const AffineXform* initialAffine ) const
 {
   SplineWarpXform::SmartPtr warpXform( new SplineWarpXform( size, this->m_GridSpacing, initialAffine, this->m_ExactGridSpacing ) );
   
@@ -368,8 +368,8 @@ ImagePairNonrigidRegistration::DoneResolution
   return this->Superclass::DoneResolution( v, functional, idx, total ) && !repeat;
 }
 
-UniformVolume* 
-ImagePairNonrigidRegistration::GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator )
+const UniformVolume::SmartPtr
+ImagePairNonrigidRegistration::GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator ) const
 {
   ReformatVolume reformat;
   reformat.SetInterpolation( interpolator );
@@ -384,7 +384,7 @@ ImagePairNonrigidRegistration::GetReformattedFloatingImage( Interpolators::Inter
     reformat.SetPaddingValue( this->m_ForceOutsideValue );
     }
   
-  UniformVolume* result = reformat.PlainReformat();
+  UniformVolume::SmartPtr result = reformat.PlainReformat();
 
   if ( this->m_ForceOutsideFlag )
     {

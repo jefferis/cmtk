@@ -65,8 +65,7 @@ cmtk::ImageOperationMedialSkeleton
 
 	  for ( int n = 0; n < 3-this->m_Dimensionality; ++n )
 	    {
-	    Vector3D ev;
-	    eigenSystem.GetNthEigenvector( n, ev.XYZ );
+	    const Vector3D ev = eigenSystem.GetNthEigenvector( n );
 
 	    if ( fabs( ev * gradient ) > 1e-2 )
 	      result = 0;

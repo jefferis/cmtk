@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -99,7 +100,7 @@ Xform::GetParamVector
 
 void
 Xform::GetVolumeOfInfluence
-( const size_t, const Vector3D& fromVol, const Vector3D& toVol, Vector3D& fromVOI, Vector3D& toVOI, const int ) const
+( const size_t, const Self::SpaceVectorType& fromVol, const Self::SpaceVectorType& toVol, Self::SpaceVectorType& fromVOI, Self::SpaceVectorType& toVOI, const int ) const
 {
   fromVOI = fromVol;
   toVOI = toVol;
@@ -113,10 +114,10 @@ Xform::GetLandmarksMSD( const MatchedLandmarkList* ll ) const
   MatchedLandmarkList::const_iterator it = ll->begin();
   while ( it != ll->end() )
     {
-    Vector3D source( (*it)->GetLocation() );
-    Vector3D target( (*it)->GetTargetLocation() );
+    Self::SpaceVectorType source( (*it)->GetLocation() );
+    Self::SpaceVectorType target( (*it)->GetTargetLocation() );
     this->ApplyInPlace( source );
-    MSD += (source - target).Square();
+    MSD += (source - target).SumOfSquares();
     ++it;
     }
   

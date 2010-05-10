@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -114,13 +115,13 @@ AffineRegistration::InitRegistration ()
   if ( this->m_InitialAlignCenters ) 
     {
     Vector3D deltaCenter = ( this->m_FloatingVolume->GetCenterCropRegion() - this->m_ReferenceVolume->GetCenterCropRegion() );
-    affineXform->SetXlate( deltaCenter.XYZ );
+    affineXform->SetXlate( deltaCenter.begin() );
     }
   
   this->m_Xform = affineXform;
   
   Vector3D center = this->m_ReferenceVolume->GetCenterCropRegion();
-  affineXform->ChangeCenter( center.XYZ );
+  affineXform->ChangeCenter( center );
 
   if ( this->m_UseOriginalData ) 
     {
@@ -216,8 +217,8 @@ AffineRegistration::GetTransformation() const
     }
 }
 
-UniformVolume* 
-AffineRegistration::GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator )
+const UniformVolume::SmartPtr
+AffineRegistration::GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator ) const
 {
   ReformatVolume reformat;
   reformat.SetInterpolation( interpolator );

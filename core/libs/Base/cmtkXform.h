@@ -37,8 +37,8 @@
 
 #include <cmtkMetaInformationObject.h>
 
-#include <cmtkVector3D.h>
 #include <cmtkVector.h>
+#include <cmtkFixedVector.h>
 #include <cmtkBitVector.h>
 
 #include <cmtkMatchedLandmarkList.h>
@@ -65,6 +65,9 @@ public:
   /// Smart pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
 
+  /// Three-dimensional vector type.
+  typedef FixedVector<3,Types::Coordinate> SpaceVectorType;
+
   /// Pointer to warp parameter array.
   Types::Coordinate *m_Parameters;
 
@@ -89,28 +92,28 @@ public:
   virtual ~Xform() {}
   
   /// Check whether coordinate is in domain of transformation.
-  virtual bool InDomain( const Vector3D& ) const { return true; }
+  virtual bool InDomain( const Self::SpaceVectorType& ) const { return true; }
   
   /// Get global scaling factor.
   virtual Types::Coordinate GetGlobalScaling() const { return 0.0; }
 
   /// Apply transformation to vector.
-  virtual Vector3D Apply ( const Vector3D& ) const = 0;
+  virtual Self::SpaceVectorType Apply ( const Self::SpaceVectorType& ) const = 0;
 
   /// Apply transformation to vector in-place.
-  virtual void ApplyInPlace ( Vector3D& ) const = 0;
+  virtual void ApplyInPlace ( Self::SpaceVectorType& ) const = 0;
 
   /** Return origin of warped vector.
    */
-  virtual bool ApplyInverse ( const Vector3D&, Vector3D&, const Types::Coordinate = 0.01  ) const = 0;
+  virtual bool ApplyInverse ( const Self::SpaceVectorType&, Self::SpaceVectorType&, const Types::Coordinate = 0.01  ) const = 0;
 
   /** Return origin of warped vector.
    */
-  virtual bool ApplyInverseInPlace( Vector3D&, const Types::Coordinate = 0.01  ) const = 0;
+  virtual bool ApplyInverseInPlace( Self::SpaceVectorType&, const Types::Coordinate = 0.01  ) const = 0;
 
   /** Return origin of warped vector.
    */
-  virtual bool ApplyInverseInPlaceWithInitial( Vector3D& v, const Vector3D&, const Types::Coordinate error = 0.01 ) const
+  virtual bool ApplyInverseInPlaceWithInitial( Self::SpaceVectorType& v, const Self::SpaceVectorType&, const Types::Coordinate error = 0.01 ) const
   {
     return this->ApplyInverseInPlace( v, error );
   }
@@ -168,13 +171,14 @@ public:
   /// Copy parameter vector to existing vector object.
   virtual CoordinateVector& GetParamVector( CoordinateVector& v, const size_t targetOffset = 0 ) const;
 
-  virtual Types::Coordinate GetParamStep( const size_t, const Types::Coordinate*, const Types::Coordinate step_mm = 1 ) const
+  /// Get parameter step given a transformed volume size.
+  virtual Types::Coordinate GetParamStep( const size_t, const Self::SpaceVectorType&, const Types::Coordinate step_mm = 1 ) const
   { 
     return step_mm;
   }
   
   /// Compute Jacobian determinant at a certain location.
-  virtual Types::Coordinate GetJacobianDeterminant ( const Vector3D& ) const = 0;
+  virtual Types::Coordinate GetJacobianDeterminant ( const Self::SpaceVectorType& ) const = 0;
   
   /** Return registration error for set of source/target landmarks.
    * What is actually returned is the mean squared distance of source
@@ -183,7 +187,7 @@ public:
   virtual Types::Coordinate GetLandmarksMSD( const MatchedLandmarkList* ll ) const;
   
   /// Get volume influenced by one parameter.
-  virtual void GetVolumeOfInfluence( const size_t idx, const Vector3D&, const Vector3D&, Vector3D&, Vector3D&, const int = -1 ) const;
+  virtual void GetVolumeOfInfluence( const size_t idx, const Self::SpaceVectorType&, const Self::SpaceVectorType&, Self::SpaceVectorType&, Self::SpaceVectorType&, const int = -1 ) const;
   
 protected:
   /** Encapsulated representation of the transformation parameters.

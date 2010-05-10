@@ -180,7 +180,7 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
       outputImage = cmtk::UniformVolume::SmartPtr( outputImage->CloneGrid() );
       outputImage->SetData( cmtk::TypedArray::SmartPtr( volRecon.GetCorrectedImage()->GetData()->Convert( volume->GetData()->GetType() ) ) );
       }
-    cmtk::VolumeIO::Write( outputImage, InjectedImagePath, Verbose );
+    cmtk::VolumeIO::Write( *outputImage, InjectedImagePath, Verbose );
     }
 
   volRecon.Optimize( NumberOfIterations );
@@ -329,7 +329,7 @@ main( int argc, char* argv[] )
     outputImage = cmtk::UniformVolume::SmartPtr( outputImage->CloneGrid() );
     outputImage->SetData( cmtk::TypedArray::SmartPtr( correctedVolume->GetData()->Convert( volume->GetData()->GetType() ) ) );
     }
-  cmtk::VolumeIO::Write( outputImage, OutputFilePath, Verbose);
+  cmtk::VolumeIO::Write( *outputImage, OutputFilePath, Verbose);
   
   return 0;
 }

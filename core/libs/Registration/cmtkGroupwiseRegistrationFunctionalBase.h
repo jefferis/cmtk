@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -109,7 +110,7 @@ public:
 
   /** Create template grid based on geometry.
    */
-  virtual void CreateTemplateGrid( const DataGrid::IndexType& dims, const Types::Coordinate (&deltas)[3] );
+  virtual void CreateTemplateGrid( const DataGrid::IndexType& dims, const UniformVolume::CoordinateVectorType& deltas );
 
   /** Set template grid.
    *\param The template grid that defines size and resolution for the
@@ -504,7 +505,7 @@ protected:
   virtual void PrepareTargetImages();
 
   /// Reformat one image to a given target grid.
-  virtual UniformVolume* GetReformattedImage( const UniformVolume::SmartPtr& targetGrid, const size_t idx ) const;
+  virtual const UniformVolume::SmartPtr GetReformattedImage( const UniformVolume::SmartPtr& targetGrid, const size_t idx ) const;
 
 private:
   /// Copy template data from TypedArray to byte vector.

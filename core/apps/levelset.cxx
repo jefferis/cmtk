@@ -190,7 +190,7 @@ main( int argc, char* argv[] )
     levelset->SetData( cmtk::TypedArray::SmartPtr( levelset->GetData()->Convert( cmtk::TYPE_BYTE ) ) );
     }
   
-  cmtk::VolumeIO::Write( levelset, outFile, verbose );
+  cmtk::VolumeIO::Write( *levelset, outFile, verbose );
 
 #ifdef CMTK_USE_SQLITE
   if ( updateDB )

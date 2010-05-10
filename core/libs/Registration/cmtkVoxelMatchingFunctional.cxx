@@ -48,15 +48,15 @@ VoxelMatchingFunctional::InitFloating( UniformVolume::SmartPtr& floating )
 {
   FloatingGrid = floating;
   
-  this->FloatingDims = FloatingGrid->GetDims();
-  memcpy( FloatingSize, FloatingGrid->Size, sizeof(FloatingSize) );
+  this->FloatingDims = this->FloatingGrid->GetDims();
+  this->FloatingSize = this->FloatingGrid->Size;
 
   this->m_FloatingCropRegionCoordinates = FloatingGrid->GetCropRegionCoordinates();
   for ( int dim = 0; dim < 3; ++dim ) 
     {
-    FloatingInverseDelta.XYZ[dim] = 1.0 / FloatingGrid->m_Delta[dim];
-    this->m_FloatingCropRegionFractional.From()[dim] = this->m_FloatingCropRegionCoordinates.From()[dim] * FloatingInverseDelta.XYZ[dim];
-    this->m_FloatingCropRegionFractional.To()[dim] = this->m_FloatingCropRegionCoordinates.To()[dim] * FloatingInverseDelta.XYZ[dim];
+    this->FloatingInverseDelta[dim] = 1.0 / FloatingGrid->m_Delta[dim];
+    this->m_FloatingCropRegionFractional.From()[dim] = this->m_FloatingCropRegionCoordinates.From()[dim] * FloatingInverseDelta[dim];
+    this->m_FloatingCropRegionFractional.To()[dim] = this->m_FloatingCropRegionCoordinates.To()[dim] * FloatingInverseDelta[dim];
     }
   
   FloatingDataClass = floating->GetData()->GetDataClass();
@@ -67,8 +67,8 @@ VoxelMatchingFunctional::InitReference( UniformVolume::SmartPtr& reference )
 {
   ReferenceGrid = reference;
 
-  this->ReferenceDims = ReferenceGrid->GetDims();
-  memcpy( ReferenceSize, ReferenceGrid->Size, sizeof(ReferenceSize) );
+  this->ReferenceDims = this->ReferenceGrid->GetDims();
+  this->ReferenceSize = this->ReferenceGrid->Size;
   this->m_ReferenceCropRegion = ReferenceGrid->CropRegion();
 
   for ( int dim = 0; dim < 3; ++dim )

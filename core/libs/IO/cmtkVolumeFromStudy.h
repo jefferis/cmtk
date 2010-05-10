@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -56,10 +57,10 @@ public:
   /** Build volume from slice images.
    *@see VolumeFromSlices#AssembleVolume
    */
-  virtual UniformVolume* AssembleVolume ( const StudyImageSet* study, const bool verbose = false );
+  virtual const UniformVolume::SmartPtr AssembleVolume ( const StudyImageSet* study, const bool verbose = false );
 
   /// Read from generic Study object.
-  static UniformVolume* Read( const Study* study, const bool verbose = false );
+  static const UniformVolume::SmartPtr Read( const Study* study, const bool verbose = false );
 };
 
 //@}

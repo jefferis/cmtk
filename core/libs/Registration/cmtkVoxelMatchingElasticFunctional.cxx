@@ -59,7 +59,7 @@ VoxelMatchingElasticFunctional::VoxelMatchingElasticFunctional
   Dim = 0;
 
   ReferenceFrom.Set( 0,0,0 );
-  ReferenceTo.Set( reference->Size );
+  ReferenceTo = reference->Size;
 
   this->m_AdaptiveFixParameters = false;
   this->m_AdaptiveFixThreshFactor = 0.5;

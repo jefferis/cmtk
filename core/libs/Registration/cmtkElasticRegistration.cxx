@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -113,7 +114,7 @@ ElasticRegistration::InitRegistration ()
   AffineXform::SmartPtr affineXform = this->m_InitialTransformation;
   AffineXform::SmartPtr initialInverse = AffineXform::SmartPtr::DynamicCastFrom( this->m_InitialTransformation->GetInverse() );
   
-  affineXform->ChangeCenter( this->m_FloatingVolume->GetCenterCropRegion().XYZ );
+  affineXform->ChangeCenter( this->m_FloatingVolume->GetCenterCropRegion() );
 
   Types::Coordinate currSampling = std::max( this->m_Sampling, 2 * std::min( this->m_ReferenceVolume->GetMinDelta(), this->m_FloatingVolume->GetMinDelta()));
 
@@ -200,13 +201,11 @@ ElasticRegistration::InitRegistration ()
   return this->Superclass::InitRegistration();
 }
 
-WarpXform*
+const SplineWarpXform::SmartPtr
 ElasticRegistration::MakeWarpXform
-( const Types::Coordinate* size, const AffineXform* initialAffine ) const
+( const Vector3D& size, const AffineXform* initialAffine ) const
 {
-  WarpXform* warpXform = NULL;
-  
-  warpXform = new SplineWarpXform( size, this->m_GridSpacing, initialAffine, this->m_ExactGridSpacing );
+  SplineWarpXform::SmartPtr warpXform( new SplineWarpXform( size, this->m_GridSpacing, initialAffine, this->m_ExactGridSpacing ) );
   
   warpXform->SetIgnoreEdge( this->IgnoreEdge );
   warpXform->SetFastMode( this->m_FastMode );
@@ -361,7 +360,7 @@ ElasticRegistration::DoneResolution
   return this->Superclass::DoneResolution( v, functional, idx, total ) && !repeat;
 }
 
-UniformVolume* 
+const UniformVolume::SmartPtr
 ElasticRegistration::GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator )
 {
   ReformatVolume reformat;

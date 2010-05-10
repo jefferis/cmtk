@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -82,7 +83,7 @@ AffineCongealingFunctional::InitializeXforms
     AffineXform::SmartPtr xform( new AffineXform );
     xform->SetNumberDOFs( this->m_XformNumberDOFs );
     xform->SetUseLogScaleFactors( true );
-    xform->SetCenter( centerTemplate.XYZ );
+    xform->SetCenter( centerTemplate.begin() );
     this->m_XformVector[imageIdx] = Xform::SmartPtr::DynamicCastFrom( xform );
  
     if ( alignCenters )
@@ -106,7 +107,7 @@ AffineCongealingFunctional::InitializeXforms
 	}
 
       center -= centerTemplate;
-      this->GetXformByIndex( imageIdx )->SetXlate( center.XYZ );
+      this->GetXformByIndex( imageIdx )->SetXlate( center.begin() );
       }
     }
 
@@ -118,14 +119,14 @@ AffineCongealingFunctional::InitializeXforms
     for ( size_t imageIdx = 0; imageIdx < numberOfImages; ++imageIdx )
       {
       for ( int dim = 0; dim < 3; ++dim )
-	firstOrderMoments[imageIdx].XYZ[dim] = log( firstOrderMoments[imageIdx].XYZ[dim] / fom0.XYZ[dim] );
+	firstOrderMoments[imageIdx][dim] = log( firstOrderMoments[imageIdx][dim] / fom0[dim] );
       avgScales += firstOrderMoments[imageIdx];
       }
     avgScales *= ( 1.0 /  numberOfImages );
     for ( size_t imageIdx = 0; imageIdx < numberOfImages; ++imageIdx )
       {
       firstOrderMoments[imageIdx] -= avgScales;
-      this->GetXformByIndex( imageIdx )->SetScales( firstOrderMoments[imageIdx].XYZ );
+      this->GetXformByIndex( imageIdx )->SetScales( firstOrderMoments[imageIdx].begin() );
       }
     }
 }
@@ -142,7 +143,7 @@ AffineCongealingFunctional::SetXforms
     xform->SetUseLogScaleFactors( true );
 
     const Vector3D center = this->m_ImageVector[i]->GetCenterCropRegion();
-    xform->ChangeCenter( center.XYZ );
+    xform->ChangeCenter( center );
 
     this->m_XformVector[i] = xform;
     }

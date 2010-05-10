@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -166,9 +167,9 @@ main ( const int argc, const char *argv[] )
 	else
 	  v1.Set( 1e10, 1e10, 1e10 );
 	
-	dfield->m_Parameters[offset+0] = v1.XYZ[0];
-	dfield->m_Parameters[offset+1] = v1.XYZ[1];
-	dfield->m_Parameters[offset+2] = v1.XYZ[2];
+	dfield->m_Parameters[offset+0] = v1[0];
+	dfield->m_Parameters[offset+1] = v1[1];
+	dfield->m_Parameters[offset+2] = v1[2];
 	}
       }
     }

@@ -79,7 +79,7 @@ cmtk::UniformVolumePainter::DrawSphere
 	  v[dim] /= radiusAbsolute[dim];
 	  }
 
-	if ( v.EuclidNorm() <= 1.0 )
+	if ( v.RootSumOfSquares() <= 1.0 )
 	  this->m_Volume->SetDataAt( value, offset );
 	}
       }

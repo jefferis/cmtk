@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -395,7 +396,7 @@ ElasticRegistrationCommandLine
 
   if ( this->m_ReformattedImagePath )
     {
-    VolumeIO::Write( UniformVolume::SmartPtr( this->GetReformattedFloatingImage() ), this->m_ReformattedImagePath, this->Verbose );
+    VolumeIO::Write( *(this->GetReformattedFloatingImage()), this->m_ReformattedImagePath, this->Verbose );
     }
 
 #ifdef CMTK_USE_SQLITE

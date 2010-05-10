@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,9 +36,8 @@
 #include <cmtkconfig.h>
 
 #include <cmtkTypes.h>
+#include <cmtkFixedVector.h>
 #include <cmtkConsole.h>
-
-#include <cmtkCubicSpline.h>
 
 namespace
 cmtk
@@ -133,7 +133,7 @@ public:
    * pointers. This is what allows us to overload this function based on the
    * array size (!) of its arguments.
    */
-  template<class T2> void Multiply( const T2 (&u)[2], T2 (&v)[2] ) const 
+  template<class T2> void Multiply( const FixedVector<2,T2>& u, FixedVector<2,T2>& v ) const 
   {
     for ( int idx=0; idx < 2; ++idx ) 
       v[idx] = u[0]*Matrix[0][idx] + u[1]*Matrix[1][idx] + Matrix[2][idx];
@@ -145,23 +145,23 @@ public:
    * pointers. This is what allows us to overload this function based on the
    * array size (!) of its arguments.
    */
-  template<class T2> void Multiply( const T2 (&u)[3], T2 (&v)[3] ) const 
+  template<class T2> void Multiply( const FixedVector<3,T2>& u,  FixedVector<3,T2>& v ) const 
   {
     for ( int idx=0; idx < 3; ++idx ) 
       v[idx] = u[0]*Matrix[0][idx] + u[1]*Matrix[1][idx] + u[2]*Matrix[2][idx];
   }
   
   /// Multiply in place with 3d vector (will implicitly be made homogeneous).
-  template<class T2> void Multiply( T2 (&v)[2] ) const 
+  template<class T2> void Multiply( FixedVector<2,T2>& v ) const 
   {
-    const T2 u[2] = { v[0], v[1] };
+    const FixedVector<2,T2> u( v );
     this->Multiply( u, v );
   }
-
+  
   /// Multiply in place with actual 3d vector.
-  template<class T2> void Multiply( T2 (&v)[3] ) const 
+  template<class T2> void Multiply( FixedVector<3,T2>& v ) const 
   {
-    const T2 u[3] = { v[0], v[1], v[2] };
+    const FixedVector<3,T2> u( v );
     this->Multiply( u, v );
   }
 

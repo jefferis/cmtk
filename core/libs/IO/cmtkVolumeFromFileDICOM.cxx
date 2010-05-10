@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2010 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -62,7 +63,7 @@ namespace
 cmtk
 {
 
-UniformVolume* 
+const UniformVolume::SmartPtr
 VolumeFromFile::ReadDICOM( const char *path )
 {
 #ifdef CMTK_HAVE_DCMTK_JPEG
@@ -262,9 +263,7 @@ VolumeFromFile::ReadDICOM( const char *path )
       }
     }
   const Types::Coordinate size[3] = { pixelSize[0] * (dims[0]-1), pixelSize[1] * (dims[1]-1), pixelSize[1] * (dims[1]-1) };  
-  UniformVolume *volume = new UniformVolume( UniformVolume::IndexType( dims ), size, dataArray );
-  
-  return volume;
+  return UniformVolume::SmartPtr( new UniformVolume( UniformVolume::IndexType( dims ), UniformVolume::CoordinateVectorType( size ), dataArray ) );
 }
 
 } // namespace cmtk

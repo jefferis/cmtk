@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -232,10 +233,9 @@ main( int argc, char *argv[] )
 	  uu = v;
 	  splineWarp->ApplyInPlace( uu );
 	  uu -= u;
-	  error = uu.EuclidNorm();
+	  error = uu.RootSumOfSquares();
 
-	  fprintf( stderr, "ERROR: %f %f %f is not inside target image or inversion failed (error = %f)\n", 
-		   u.XYZ[0], u.XYZ[1], u.XYZ[2], error );
+	  fprintf( stderr, "ERROR: %f %f %f is not inside target image or inversion failed (error = %f)\n", u[0], u[1], u[2], error );
 	  }
 	} 
       else
@@ -253,7 +253,7 @@ main( int argc, char *argv[] )
 	}
       if ( success || NoCheck ) 
 	{
-	const float outxyz[3]={(float) v.XYZ[0],(float) v.XYZ[1], (float) v.XYZ[2]};
+	const float outxyz[3]={(float) v[0],(float) v[1], (float) v[2]};
 	if (Verbose) 
 	  {
 	  if ( success )

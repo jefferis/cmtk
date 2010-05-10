@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -104,11 +105,11 @@ Slicer::Execute()
 
   Vector3D p( this->m_Plane->GetOrigin() );
   
-  Vector3D dirX = this->m_Plane->GetDirectionX();
-  Vector3D dirY = this->m_Plane->GetDirectionY();
+  Vector3D dirX = Vector3D( this->m_Plane->GetDirectionX() );
+  Vector3D dirY = Vector3D( this->m_Plane->GetDirectionY() );
 
-  dirX *= (this->m_Plane->GetSpacing()[0] / dirX.EuclidNorm());
-  dirY *= (this->m_Plane->GetSpacing()[1] / dirY.EuclidNorm());
+  dirX *= (this->m_Plane->GetSpacing()[0] / dirX.RootSumOfSquares());
+  dirY *= (this->m_Plane->GetSpacing()[1] / dirY.RootSumOfSquares());
 
   const unsigned int *dims = this->m_Plane->GetDims();
 
@@ -156,7 +157,7 @@ Slicer::Execute()
     
     if ( affineXform ) 
       {
-      affineXform->ApplyInPlace( dirX += p );
+      affineXform->Apply( dirX += p );
       affineXform->ApplyInPlace( dirY += p );
       affineXform->ApplyInPlace( p );
       dirX -= p;

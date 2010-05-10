@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -105,7 +106,7 @@ XformIO::ReadNrrd( const char* path, const bool )
 
     const Types::Coordinate size[3] = { (dims[0]-1) * spacing[0], (dims[1]-1) * spacing[1], (dims[2]-1) * spacing[2] };
     const Types::Coordinate origin[3] = { nrrd->spaceOrigin[0], nrrd->spaceOrigin[1], nrrd->spaceOrigin[2] };
-    dfield = DeformationField::SmartPtr( new DeformationField( size, DeformationField::IndexType( dims ), origin ) );
+    dfield = DeformationField::SmartPtr( new DeformationField( Vector3D( size ), DeformationField::IndexType( dims ), origin ) );
     
     ScalarDataType type = TYPE_NONE;
     switch ( nrrd->type )
@@ -239,7 +240,7 @@ XformIO::WriteNrrd
     nrrdAxisInfoSet_nva( nval, nrrdAxisInfoKind, kind );
     nrrdAxisInfoSet_va( nval, nrrdAxisInfoLabel, "Vx;Vy;Vz", "x", "y", "z" );
     
-    double origin[NRRD_DIM_MAX] = { dfield->m_Offset.XYZ[0], dfield->m_Offset.XYZ[1], dfield->m_Offset.XYZ[2] };
+    double origin[NRRD_DIM_MAX] = { dfield->m_Offset[0], dfield->m_Offset[1], dfield->m_Offset[2] };
     if ( nrrdSpaceOriginSet( nval, origin ) )
       {
       throw( biffGetDone(NRRD) );

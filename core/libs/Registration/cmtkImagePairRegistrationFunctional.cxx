@@ -46,34 +46,34 @@ cmtk
 void
 ImagePairRegistrationFunctional::InitFloating( UniformVolume::SmartPtr& floating )
 {
-  FloatingGrid = floating;
+  this->m_FloatingGrid = floating;
   
-  this->FloatingDims = FloatingGrid->GetDims();
-  memcpy( FloatingSize, FloatingGrid->Size, sizeof(FloatingSize) );
-  this->m_FloatingCropRegionCoordinates = FloatingGrid->GetCropRegionCoordinates();
+  this->m_FloatingDims = this->m_FloatingGrid->GetDims();
+  this->m_FloatingSize = this->m_FloatingGrid->Size;
+  this->m_FloatingCropRegionCoordinates = this->m_FloatingGrid->GetCropRegionCoordinates();
   for ( int dim = 0; dim < 3; ++dim ) 
     {
-    FloatingInverseDelta.XYZ[dim] = 1.0 / FloatingGrid->m_Delta[dim];
-    this->m_FloatingCropFracIndex.From()[dim] = this->m_FloatingCropRegionCoordinates.From()[dim] * this->FloatingInverseDelta.XYZ[dim];
-    this->m_FloatingCropFracIndex.To()[dim] = this->m_FloatingCropRegionCoordinates.To()[dim] * this->FloatingInverseDelta.XYZ[dim];
+    this->m_FloatingInverseDelta[dim] = 1.0 / this->m_FloatingGrid->m_Delta[dim];
+    this->m_FloatingCropRegionFractIndex.From()[dim] = this->m_FloatingCropRegionCoordinates.From()[dim] * this->m_FloatingInverseDelta[dim];
+    this->m_FloatingCropRegionFractIndex.To()[dim] = this->m_FloatingCropRegionCoordinates.To()[dim] * this->m_FloatingInverseDelta[dim];
     }
   
-  FloatingDataClass = floating->GetData()->GetDataClass();
+  this->m_FloatingDataClass = floating->GetData()->GetDataClass();
 }
 
 void
 ImagePairRegistrationFunctional::InitReference( UniformVolume::SmartPtr& reference )
 {
-  ReferenceGrid = reference;
+  this->m_ReferenceGrid = reference;
 
-  this->ReferenceDims = ReferenceGrid->GetDims();
-  memcpy( ReferenceSize, ReferenceGrid->Size, sizeof(ReferenceSize) );
-  this->m_ReferenceCropRegion = ReferenceGrid->CropRegion();
+  this->m_ReferenceDims = this->m_ReferenceGrid->GetDims();
+  this->m_ReferenceSize = this->m_ReferenceGrid->Size;
+  this->m_ReferenceCropRegion = this->m_ReferenceGrid->CropRegion();
 
   for ( int dim = 0; dim < 3; ++dim )
-    this->ReferenceInvDelta[dim] = 1.0 / ReferenceGrid->m_Delta[dim];
+    this->m_ReferenceInverseDelta[dim] = 1.0 / this->m_ReferenceGrid->m_Delta[dim];
 
-  ReferenceDataClass = reference->GetData()->GetDataClass();
+  this->m_ReferenceDataClass = reference->GetData()->GetDataClass();
 }
 
 const DataGrid::RegionType
@@ -83,8 +83,8 @@ ImagePairRegistrationFunctional::GetReferenceGridRange
   DataGrid::IndexType from, to;
   for ( int i = 0; i < 3; ++i )
     {
-    from[i] = std::max( this->m_ReferenceCropRegion.From()[i], static_cast<int>( fromVOI[i] * this->ReferenceInvDelta[i] ) );
-    to[i] = 1+std::min( this->m_ReferenceCropRegion.To()[i]-1, 1+static_cast<int>( toVOI[i] * this->ReferenceInvDelta[i] ) );
+    from[i] = std::max( this->m_ReferenceCropRegion.From()[i], static_cast<int>( fromVOI[i] * this->m_ReferenceInverseDelta[i] ) );
+    to[i] = 1+std::min( this->m_ReferenceCropRegion.To()[i]-1, 1+static_cast<int>( toVOI[i] * this->m_ReferenceInverseDelta[i] ) );
     }
 
   return DataGrid::RegionType( from, to );

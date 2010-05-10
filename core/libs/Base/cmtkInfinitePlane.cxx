@@ -54,9 +54,9 @@ InfinitePlane::InfinitePlane()
 void
 InfinitePlane::Update()
 {
-  Normal.XYZ[0] = MathUtil::Cos( Theta ) * MathUtil::Sin( Phi );
-  Normal.XYZ[1] = MathUtil::Sin( Theta ) * MathUtil::Sin( Phi );
-  Normal.XYZ[2] = MathUtil::Cos( Phi );
+  Normal[0] = MathUtil::Cos( Theta ) * MathUtil::Sin( Phi );
+  Normal[1] = MathUtil::Sin( Theta ) * MathUtil::Sin( Phi );
+  Normal[2] = MathUtil::Cos( Phi );
 
   SquareNormal = Normal * Normal;
 }
@@ -64,13 +64,13 @@ InfinitePlane::Update()
 void
 InfinitePlane::SetNormal( const Vector3D& normal )
 {
-  this->Normal = (1.0 / normal.EuclidNorm()) * normal;
+  this->Normal = (1.0 / normal.RootSumOfSquares()) * normal;
   
-  this->Phi = MathUtil::ArcCos( this->Normal.XYZ[2] );
+  this->Phi = MathUtil::ArcCos( this->Normal[2] );
 
   const Types::Coordinate sinPhi = MathUtil::Sin( this->Phi );
   if ( sinPhi != 0 )
-    this->Theta = MathUtil::ArcSin( this->Normal.XYZ[1] / sinPhi );
+    this->Theta = MathUtil::ArcSin( this->Normal[1] / sinPhi );
   else
     this->Theta = Units::Degrees( 0 );
 
@@ -124,7 +124,7 @@ InfinitePlane::GetAlignmentXform( const byte normalAxis ) const
     }
     }
   
-  alignment->ChangeCenter( this->GetOrigin().XYZ );
+  alignment->ChangeCenter( this->GetOrigin() );
   alignment->SetAngles( angles );
   
   xlate[normalAxis] = Rho;

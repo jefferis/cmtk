@@ -147,7 +147,7 @@ protected:
   DataGrid::IndexType FloatingDims;
 
   /// Extents of the floating volume in real-world coordinates.
-  Types::Coordinate FloatingSize[3];
+  UniformVolume::CoordinateVectorType FloatingSize;
 
   /// Inverse pixel sizes of the floating volume.
   Vector3D FloatingInverseDelta;
@@ -162,10 +162,10 @@ protected:
   DataGrid::IndexType ReferenceDims;
 
   /// Extents of the reference volume in real-world coordinates.
-  Types::Coordinate ReferenceSize[3];
+  UniformVolume::CoordinateVectorType ReferenceSize;
 
   /// Inverse pixel deltas of the reference volume.
-  Types::Coordinate ReferenceInvDelta[3];
+  UniformVolume::CoordinateVectorType ReferenceInvDelta;
 
   /** Find rectilinear area in original reference grid.
    *@param fromVOI Lower corner of area to find.

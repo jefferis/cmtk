@@ -204,7 +204,7 @@ Average
 	}
       else
 	{
-	cmtk::VolumeIO::Write( distanceMap, fname, Verbose );
+	cmtk::VolumeIO::Write( *distanceMap, fname, Verbose );
 	}
       }
 
@@ -220,7 +220,7 @@ Average
 	}
       else
 	{
-	cmtk::VolumeIO::Write( labelMap, fname, Verbose );
+	cmtk::VolumeIO::Write( *labelMap, fname, Verbose );
 	}
       }
     }
@@ -348,7 +348,7 @@ AverageWindowed
 	}
       else
 	{
-	cmtk::VolumeIO::Write( distanceMap, fname, Verbose );
+	cmtk::VolumeIO::Write( *distanceMap, fname, Verbose );
 	}
       }
 
@@ -364,7 +364,7 @@ AverageWindowed
 	}
       else
 	{
-	cmtk::VolumeIO::Write( labelMap, fname, Verbose );
+	cmtk::VolumeIO::Write( *labelMap, fname, Verbose );
 	}
       }
     }
@@ -520,7 +520,7 @@ Average
 	}
       else
 	{
-	cmtk::VolumeIO::Write( distanceMap, fname, Verbose );
+	cmtk::VolumeIO::Write( *distanceMap, fname, Verbose );
 	}
       }
 
@@ -536,7 +536,7 @@ Average
 	}
       else
 	{
-	cmtk::VolumeIO::Write( labelMap, fname, Verbose );
+	cmtk::VolumeIO::Write( *labelMap, fname, Verbose );
 	}
       }
     }
@@ -1026,6 +1026,6 @@ main ( const int argc, const char* argv[] )
       volume = *(volumeList.begin());
 
     volume->SetData( avgArray );
-    cmtk::VolumeIO::Write( volume, OutputFileName, Verbose );
+    cmtk::VolumeIO::Write( *volume, OutputFileName, Verbose );
     }
 }

@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -336,7 +337,7 @@ VolumeDCM::WriteToArchive( const std::string& fname ) const
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeFromStudy::Read( &studyImageSet ) );
   if ( volume )
     {
-    cmtk::VolumeIO::Write( volume, fname.c_str() );
+    cmtk::VolumeIO::Write( *volume, fname.c_str() );
     if ( Verbose )
       {
       cmtk::StdOut.printf( "\nOutput file:%s\nImage size: %3dx%3dx%3d pixels\nPixel size: %.4fx%.4fx%.4f mm\n\n", 

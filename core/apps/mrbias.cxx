@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -284,7 +285,7 @@ main( const int argc, const char *argv[] )
       cmtk::TypedArray::SmartPtr convertedData( outputImage->GetData()->Convert( inputImage->GetData()->GetType() ) );
       outputImage->SetData( convertedData );
       }
-    cmtk::VolumeIO::Write( outputImage, FNameOutputImage, Verbose );
+    cmtk::VolumeIO::Write( *outputImage, FNameOutputImage, Verbose );
 
 #ifdef CMTK_USE_SQLITE
     if ( updateDB )
@@ -298,7 +299,7 @@ main( const int argc, const char *argv[] )
   if ( FNameBiasFieldAdd && PolynomialDegreeAdd )
     {
     cmtk::UniformVolume::SmartPtr biasField( functional->GetBiasFieldAdd( true /*completeImage*/ ) );
-    cmtk::VolumeIO::Write( biasField, FNameBiasFieldAdd, Verbose );
+    cmtk::VolumeIO::Write( *biasField, FNameBiasFieldAdd, Verbose );
 
 #ifdef CMTK_USE_SQLITE
     if ( updateDB )
@@ -312,7 +313,7 @@ main( const int argc, const char *argv[] )
   if ( FNameBiasFieldMul && PolynomialDegreeMul )
     {
     cmtk::UniformVolume::SmartPtr biasField( functional->GetBiasFieldMul( true /*completeImage*/ ) );
-    cmtk::VolumeIO::Write( biasField, FNameBiasFieldMul, Verbose );
+    cmtk::VolumeIO::Write( *biasField, FNameBiasFieldMul, Verbose );
 
 #ifdef CMTK_USE_SQLITE
     if ( updateDB )

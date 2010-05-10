@@ -37,7 +37,6 @@
 
 #include <cmtkTypes.h>
 #include <cmtkVector.h>
-#include <cmtkVector3D.h>
 #include <cmtkXform.h>
 #include <cmtkMatrix4x4.h>
 
@@ -127,7 +126,7 @@ public:
    * sheared vector after return from the function.
    *@param v The vector to be rotated, scaled, and sheared.
    */
-  void RotateScaleShear ( Types::Coordinate[3], const Types::Coordinate[3] ) const;
+  Self::SpaceVectorType RotateScaleShear ( const Self::SpaceVectorType& ) const;
 
   /** Create identity transformation.
    */
@@ -240,7 +239,7 @@ public:
    * For an affine transformation, the Jacobian determinant is the product
    * of the anisotropic scale factors at any location.
    */
-  virtual Types::Coordinate GetJacobianDeterminant ( const Vector3D& ) const
+  virtual Types::Coordinate GetJacobianDeterminant ( const Self::SpaceVectorType& ) const
   { 
     return this->GetGlobalScaling(); 
   }
@@ -261,33 +260,33 @@ public:
    * accumulated transformation, and b) the new rotation is concatenated onto
    * the accumulated matrix by multiplication.
    */
-  void RotateWXYZ( const Units::Radians angle, const Vector3D& direction, const Types::Coordinate* origin = NULL, Self::MatrixType *const accumulate = NULL );
+  void RotateWXYZ( const Units::Radians angle, const Self::SpaceVectorType& direction, const Types::Coordinate* origin = NULL, Self::MatrixType *const accumulate = NULL );
 
   /// Change transformation coordinate system.
   void ChangeCoordinateSystem
-  ( const Vector3D& newX, const Vector3D newY )
+  ( const Self::SpaceVectorType& newX, const Self::SpaceVectorType& newY )
   {
-    this->Matrix.ChangeCoordinateSystem( newX.XYZ, newY.XYZ );
+    this->Matrix.ChangeCoordinateSystem( newX, newY );
     this->DecomposeMatrix();
   }
 
   /// Apply transformation to vector.
-  virtual Vector3D Apply ( const Vector3D& vec ) const 
+  virtual Self::SpaceVectorType Apply ( const Self::SpaceVectorType& vec ) const 
   {
-    Vector3D Result( vec );
+    Self::SpaceVectorType Result( vec );
     this->ApplyInPlace( Result );
     return Result;
   }
   
   /// Apply transformation to existing vector.
-  void ApplyInPlace( Vector3D& vec ) const 
+  void ApplyInPlace( Self::SpaceVectorType& vec ) const 
   {
-    this->Matrix.Multiply( vec.XYZ );
+    this->Matrix.Multiply( vec );
   }
 
   /** Return origin of warped vector.
    */
-  virtual bool ApplyInverse ( const Vector3D& v, Vector3D& u, const Types::Coordinate = 0.01  ) const
+  virtual bool ApplyInverse ( const Self::SpaceVectorType& v, Self::SpaceVectorType& u, const Types::Coordinate = 0.01  ) const
   {
     u = this->GetInverse()->Apply( v );
     return true;
@@ -295,7 +294,7 @@ public:
 
   /** Return origin of warped vector.
    */
-  virtual bool ApplyInverseInPlace( Vector3D& v, const Types::Coordinate = 0.01  ) const
+  virtual bool ApplyInverseInPlace( Self::SpaceVectorType& v, const Types::Coordinate = 0.01  ) const
   {
     this->GetInverse()->ApplyInPlace( v );
     return true;
@@ -357,7 +356,7 @@ public:
   }
   
   /// Add to transformation's translation vector.
-  void Translate( const Types::Coordinate delta[3] ) 
+  void Translate( const Self::SpaceVectorType& delta ) 
   { 
     for ( int dim = 0; dim < 3; ++dim ) 
       this->m_Parameters[dim] += delta[dim];
@@ -447,7 +446,7 @@ public:
    * the changed rotation center. The transformation matrix itself is not
    * changed.
    */
-  void ChangeCenter ( const Types::Coordinate* center );
+  void ChangeCenter ( const Self::SpaceVectorType& center );
 
   /// Get dimension of parameter vector.
   virtual size_t ParamVectorDim () const { return 15; }
@@ -488,7 +487,7 @@ public:
   virtual void SetParameter ( const size_t idx, const Types::Coordinate p );
 
   /// Get parameter stepping.
-  virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate* vol_size, const Types::Coordinate step_mm = 1 ) const;
+  virtual Types::Coordinate GetParamStep( const size_t idx, const Self::SpaceVectorType& volSize, const Types::Coordinate step_mm = 1 ) const;
   
   /// Assignment operator.
   AffineXform& operator=( const AffineXform& other );

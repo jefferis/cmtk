@@ -134,7 +134,7 @@ public:
    * in this->Dims. The returned pointers points to a newly allocated object, which can be
    * wrapped in an SmartPointer.
    */
-  virtual DataGrid* GetReoriented( const char* newOrientation = AnatomicalOrientation::ORIENTATION_STANDARD ) const;
+  const DataGrid::SmartPtr GetReoriented( const char* newOrientation = AnatomicalOrientation::ORIENTATION_STANDARD ) const;
   
   /** Set dimensions array.
    * This function updates the internal offsets for fast access to adjacent

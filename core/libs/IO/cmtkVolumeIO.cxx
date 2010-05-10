@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -67,10 +68,10 @@ cmtk
 
 bool VolumeIO::WriteCompressedOn = true;
 
-UniformVolume* 
+UniformVolume::SmartPtr
 VolumeIO::Read( const char* path, const bool verbose )
 {
-  UniformVolume *volume = NULL;
+  UniformVolume::SmartPtr volume( NULL );
 
   const char *translatedPath = MountPoints::Translate( path );
 
@@ -166,10 +167,10 @@ VolumeIO::Read( const char* path, const bool verbose )
   return volume;
 }
 
-UniformVolume* 
+UniformVolume::SmartPtr
 VolumeIO::ReadGrid( const char* path, const bool verbose )
 {
-  UniformVolume *volume = NULL;
+  UniformVolume::SmartPtr volume( NULL );
 
   const char *translatedPath = MountPoints::Translate( path );
 
@@ -209,18 +210,19 @@ VolumeIO::ReadGrid( const char* path, const bool verbose )
   return volume;
 }
 
-UniformVolume* 
+UniformVolume::SmartPtr
 VolumeIO
 ::ReadGridOriented( const char *path, const char* orientation, const bool verbose )
 {
   UniformVolume::SmartPtr volume( Self::ReadGrid( path, verbose ) );
-  if ( !volume ) return NULL;
+  if ( !volume ) 
+    return volume;
   
   const std::string orientationOriginal = volume->m_MetaInformation[META_IMAGE_ORIENTATION];
   if ( orientationOriginal == "" )
     {
     StdErr << "WARNING: image does not have valid orientation meta information; cannot reorient.\n";
-    return volume.ReleasePtr();
+    return volume;
     }
   else
     {
@@ -235,21 +237,22 @@ VolumeIO
       }
     }
 
-  return volume.ReleasePtr();
+  return volume;
 }
 
-UniformVolume* 
+UniformVolume::SmartPtr
 VolumeIO
 ::ReadOriented( const char *path, const char* orientation, const bool verbose )
 {
   UniformVolume::SmartPtr volume( VolumeIO::Read( path, verbose ) );
-  if ( !volume ) return NULL;
+  if ( !volume ) 
+    return volume;
 
   const std::string orientationOriginal = volume->m_MetaInformation[META_IMAGE_ORIENTATION];
   if ( orientationOriginal == "" )
     {
     StdErr << "WARNING: image does not have valid orientation meta information; cannot reorient.\n";
-    return volume.ReleasePtr();
+    return volume;
     }
   else
     {
@@ -263,12 +266,12 @@ VolumeIO
       return volume->GetReoriented( orientation );
       }
     }
-  return volume.ReleasePtr();
+  return volume;
 }
 
 void 
 VolumeIO::Write
-( const UniformVolume* volume, const char *pathAndFormat, const bool verbose )
+( const UniformVolume& volume, const char *pathAndFormat, const bool verbose )
 {
   const char* actualPath = pathAndFormat;
   FileFormatID fileFormat = FILEFORMAT_UNKNOWN;
@@ -370,15 +373,13 @@ VolumeIO::Write
 
 void
 VolumeIO::Write
-( const UniformVolume* volume, const FileFormatID format, const char* path, const bool verbose )
+( const UniformVolume& volume, const FileFormatID format, const char* path, const bool verbose )
 {
-  if ( volume == NULL ) return;
- 
-  const TypedArray *data = volume->GetData();
+  const TypedArray *data = volume.GetData();
   if ( data == NULL ) return;
 
-  ScalarImage image( volume->m_Dims[0], volume->m_Dims[1] );
-  image.SetPixelSize( volume->m_Delta[AXIS_X], volume->m_Delta[AXIS_Y] );
+  ScalarImage image( volume.m_Dims[0], volume.m_Dims[1] );
+  image.SetPixelSize( volume.m_Delta[AXIS_X], volume.m_Delta[AXIS_Y] );
 
   FileUtils::RecursiveMkPrefixDir( path );
   char *dirName = strdup( StrDir( path ) );
@@ -429,7 +430,7 @@ VolumeIO::Write
   free( dirName );
   free( baseName );
   
-  volume->m_MetaInformation[META_FS_PATH] = path;
+  volume.m_MetaInformation[META_FS_PATH] = path;
 }
 
 bool 
@@ -467,15 +468,6 @@ VolumeIO::WriteData
     return false;
     }
   return true;
-}
-
-char* 
-VolumeIO::MakeSliceFileName
-( const char *path, const char* suffix, const int index )
-{
-  static char fullname[PATH_MAX];
-  snprintf( fullname, sizeof( fullname ), path, index, suffix );
-  return fullname;
 }
 
 VolumeIO::Initializer::Initializer()

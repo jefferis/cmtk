@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -232,7 +233,7 @@ int main( int argc, char* argv[] )
       }      
     }
   
-  cmtk::VolumeIO::Write( volume, OutputFileName, Verbose );
+  cmtk::VolumeIO::Write( *volume, OutputFileName, Verbose );
 
 #ifdef CMTK_USE_SQLITE
   if ( updateDB )

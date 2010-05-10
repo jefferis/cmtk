@@ -504,14 +504,14 @@ Matrix4x4<T>::operator=( const Matrix3x3<T>& other )
 template<class T>
 Matrix4x4<T>& 
 Matrix4x4<T>::ChangeCoordinateSystem
-( const T (&newX)[3], const T (&newY)[3] )
+( const FixedVector<3,T>& newX, const FixedVector<3,T>& newY )
 {
   // rotate x axis to match new coordinate system
   Self rotate = RotateX( -atan2( newX[1], newX[2] ) );
   rotate *= RotateY( acos( newX[0] ) );
 
   // rotate previously rotated y axis further to match new coordinate system
-  T newYrot[3];
+  FixedVector<3,T> newYrot;
   rotate.Multiply( newY, newYrot );
   rotate *= RotateX( atan2( newYrot[2], newYrot[1] ) );
 

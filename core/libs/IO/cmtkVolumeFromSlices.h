@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -130,13 +130,13 @@ protected:
    * (-1) with increasing slice index.
    *@return The newly created volume object as returned by ConstructVolume().
    */
-  UniformVolume* FinishVolume( Types::Coordinate& sliceOffset, int& sliceDirection );
+  UniformVolume::SmartPtr FinishVolume( Types::Coordinate& sliceOffset, int& sliceDirection );
 
   /** Finish volume creation without additional information.
    * If the additional information returned by the previous FinishVolume(...)
    * function is not reuqired, this function may be called instead.
    */
-  UniformVolume* FinishVolume () 
+  UniformVolume::SmartPtr FinishVolume () 
   {
     Types::Coordinate dummy_c;
     int dummy_i;
@@ -165,7 +165,7 @@ protected:
    *@return The newly created instance of a class derived from Volume.
    *@see Volume
    */
-  virtual UniformVolume* ConstructVolume( const DataGrid::IndexType& Dims, const Types::Coordinate Size[3], const Types::Coordinate *Points[3], TypedArray::SmartPtr& Data ) const;
+  virtual UniformVolume::SmartPtr ConstructVolume( const DataGrid::IndexType& Dims, const UniformVolume::CoordinateVectorType& Size, const Types::Coordinate *Points[3], TypedArray::SmartPtr& Data ) const;
 
   /** Check image consistency.
    * This function is used to verify that all images share the same matrix 
@@ -212,7 +212,7 @@ private:
    * This array holds the extents of the 3D data in x-, y-, and z-direction.
    * All values are in real-world coordinates, ie. [mm].
    */
-  Types::Coordinate Size[3];
+  UniformVolume::CoordinateVectorType Size;
 
   /** Axes points of the constructed volume.
    * During assembly of the 3D data, this array is filled with the positions

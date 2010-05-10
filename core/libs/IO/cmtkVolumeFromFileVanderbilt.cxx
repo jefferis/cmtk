@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -37,11 +38,12 @@ namespace
 cmtk
 {
 
-UniformVolume*
+const UniformVolume::SmartPtr
 VolumeFromFile::ReadVanderbilt( const char *path )
 {
   FILE *fp = NULL;
-  if ( ! (fp = fopen( path, "r" )) ) return NULL;
+  if ( ! (fp = fopen( path, "r" )) ) 
+    return UniformVolume::SmartPtr( NULL );
   
   int dims[3] = { 1, 1, 1 };
   double calib[3] = { 0, 0, 0 };
@@ -97,7 +99,7 @@ VolumeFromFile::ReadVanderbilt( const char *path )
     size[i] = static_cast<Types::Coordinate>( (dims[i] - 1) * calib[i] );
 
   // create volume, for the time being with empty data array.
-  UniformVolume *volume = new UniformVolume( DataGrid::IndexType( dims ), size );
+  UniformVolume::SmartPtr volume( new UniformVolume( DataGrid::IndexType( dims ), UniformVolume::CoordinateVectorType( size ) ) );
   volume->m_MetaInformation[META_IMAGE_ORIENTATION] = volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = orientation;
 
   // generate image filename from header file path.

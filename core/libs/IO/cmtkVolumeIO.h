@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -76,16 +77,16 @@ public:
   typedef VolumeIO Self;
 
   /// Read volume data from filesystem.
-  static UniformVolume* Read( const char *path, const bool verbose = false );
+  static UniformVolume::SmartPtr Read( const char *path, const bool verbose = false );
 
   /// Read grid only from filesystem.
-  static UniformVolume* ReadGrid( const char *path, const bool verbose = false );
+  static UniformVolume::SmartPtr ReadGrid( const char *path, const bool verbose = false );
 
   /// Read grid only from filesystem and bring into standard "RAS" orientation.
-  static UniformVolume* ReadGridOriented( const char *path, const char* orientation, const bool verbose = false );
+  static UniformVolume::SmartPtr ReadGridOriented( const char *path, const char* orientation, const bool verbose = false );
 
   /// Read grid only from filesystem and bring into standard "RAS" orientation.
-  static UniformVolume* ReadGridOriented( const char *path, const bool verbose = false )
+  static UniformVolume::SmartPtr ReadGridOriented( const char *path, const bool verbose = false )
   {
     return Self::ReadGridOriented( path, AnatomicalOrientation::ORIENTATION_STANDARD, verbose );
   }
@@ -97,17 +98,17 @@ public:
    * with the P/A (posterior/anterior) direction, and the y axis is aligned with the I/S (inferior/superior) 
    * direction.
    */
-  static UniformVolume* ReadOriented( const char *path, const char* orientation, const bool verbose = false );
+  static UniformVolume::SmartPtr ReadOriented( const char *path, const char* orientation, const bool verbose = false );
 
   /** Read image from filesystem and reorient to align anatomy with coordinate axes of standard coordinate system ("RAS").
    */
-  static UniformVolume* ReadOriented( const char *path, const bool verbose = false )
+  static UniformVolume::SmartPtr ReadOriented( const char *path, const bool verbose = false )
   {
     return Self::ReadOriented( path, AnatomicalOrientation::ORIENTATION_STANDARD, verbose );
   }
 
   /// Write volume data to filesystem.
-  static void Write( const UniformVolume* volume, const FileFormatID format, const char *path, const bool verbose = false );
+  static void Write( const UniformVolume& volume, const FileFormatID format, const char *path, const bool verbose = false );
 
   /** Write volume data to filesystem with automatic format parsing.
    * The output file format is determined automatically from the output name suffix.
@@ -116,7 +117,7 @@ public:
    *  orientation of the image. To write a NIFTI hdr/img pair that avoids these problems,
    *  use the filename suffix ".img" (or write a single-file NIFTI using the ".nii" suffix).
    */
-  static void Write( const UniformVolume* volume, const char *pathAndFormat, const bool verbose = false );
+  static void Write( const UniformVolume& volume, const char *pathAndFormat, const bool verbose = false );
 
   /// Set flag for writing compressed images.
   static void SetWriteCompressedOn()
@@ -142,9 +143,6 @@ private:
 
   /// Write data block to disk.
   static bool WriteData( const char* path, const void *dataPtr, const size_t numberOfItems, const size_t itemSize = 1 );
-  
-  /// Generate slice image file name from path, suffix, and number.
-  static char* MakeSliceFileName( const char *path, const char* suffix, const int index );
   
 private:
   /** Initializer class.

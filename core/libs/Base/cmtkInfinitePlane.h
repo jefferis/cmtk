@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -152,7 +153,7 @@ public:
     
     // compute mirrored point
     for ( int dim = 0; dim < 3; ++dim )
-      point.XYZ[dim] -= intersect * Normal.XYZ[dim];
+      point[dim] -= intersect * Normal[dim];
 
     // move given origin back to its given location
     point += this->m_Origin;
@@ -177,7 +178,7 @@ public:
     
     // compute projected point
     for ( int dim = 0; dim < 3; ++dim )
-      point.XYZ[dim] -= intersect * Normal.XYZ[dim];
+      point[dim] -= intersect * Normal[dim];
     
     // move given origin back to its given location
     point += this->m_Origin;

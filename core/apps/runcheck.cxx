@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,7 +40,9 @@ main( const int argc, const char*[] )
 {
   if ( argc > 3 )
     {
-    cmtk::UniformVolume volume;
+    const cmtk::UniformVolume::IndexType::ValueType dims[3] = {2,2,2};
+    const cmtk::UniformVolume::CoordinateVectorType::ValueType size[3] = {1,1,1};
+    cmtk::UniformVolume volume( cmtk::UniformVolume::IndexType( dims ), cmtk::UniformVolume::CoordinateVectorType( size ) );
     }
 
   // if we got here, the program probably ran

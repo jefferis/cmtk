@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -50,54 +51,54 @@ class VolumeFromFile
 {
 public:
   /// Read volume from file automatically.
-  static UniformVolume* Read( const char *filename );
+  static const UniformVolume::SmartPtr Read( const char *filename );
 
 #ifdef CMTK_HAVE_DCMTK
   /// Read volume in multi-slice DICOM format.
-  static UniformVolume* ReadDICOM( const char *filename );
+  static const UniformVolume::SmartPtr ReadDICOM( const char *filename );
 #else
-  static UniformVolume* ReadDICOM( const char* )
+  static const UniformVolume::SmartPtr ReadDICOM( const char* )
   {
     throw Exception( "Library was configured without DICOM support." );
   }
 #endif
 
   /// Read volume in Vanderbilt format.
-  static UniformVolume* ReadVanderbilt( const char *filename );
+  static const UniformVolume::SmartPtr ReadVanderbilt( const char *filename );
 
   /// Read BioRad PIC file (confocal microscopy image).
-  static UniformVolume* ReadBioRad( const char* path );
+  static const UniformVolume::SmartPtr ReadBioRad( const char* path );
 
   /// Read Analyze 7.5 file (separate header file).
-  static UniformVolume* ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian = false, const bool readData = true );
+  static const UniformVolume::SmartPtr ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian = false, const bool readData = true );
 
   /// Read Nifti file.
-  static UniformVolume* ReadNifti( const char* pathHdr, const bool detached, const bool readData = true );
+  static const UniformVolume::SmartPtr ReadNifti( const char* pathHdr, const bool detached, const bool readData = true );
 
   /// Write Analyze 7.5 file (separate header file).
-  static void WriteAnalyzeHdr( const char* pathHdr, const UniformVolume* volume, const bool verbose = false );
+  static void WriteAnalyzeHdr( const char* pathHdr, const UniformVolume& volume, const bool verbose = false );
 
   /// Write Nifti file.
-  static void WriteNifti( const char* pathImg, const UniformVolume* volume, const bool verbose = false );
+  static void WriteNifti( const char* pathImg, const UniformVolume& volume, const bool verbose = false );
 
   /// Write MetaImage file.
-  static void WriteMetaImage( const char* pathHdr, const UniformVolume* volume );
+  static void WriteMetaImage( const char* pathHdr, const UniformVolume& volume );
 
 #ifdef CMTK_BUILD_NRRD
   /// Read NRRD file.
-  static UniformVolume* ReadNRRD( const char* path );
+  static const UniformVolume::SmartPtr ReadNRRD( const char* path );
 
   /// Write NRRD file.
-  static void WriteNRRD( const char* pathHdr, const UniformVolume* volume, const bool verbose = false );
+  static void WriteNRRD( const char* pathHdr, const UniformVolume& volume, const bool verbose = false );
 #else
   /// Read NRRD file.
-  static UniformVolume* ReadNRRD( const char* ) 
+  static const UniformVolume::SmartPtr ReadNRRD( const char* ) 
   {
     throw Exception( "Library was configured without Nrrd support." );
   }
 
   /// Write NRRD file.
-  static void WriteNRRD( const char*, const UniformVolume*, const bool = false )
+  static void WriteNRRD( const char*, const UniformVolume&, const bool = false )
   {
     throw Exception( "Library was configured without Nrrd support." );
   }

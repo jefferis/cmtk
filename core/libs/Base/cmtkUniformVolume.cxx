@@ -43,34 +43,12 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-UniformVolume::UniformVolume()
-{
-  std::fill( this->m_Dims.begin(), this->m_Dims.end(), 0 );
-  memset( Size, 0, sizeof( Size ) );
-  memset( this->m_Delta, 0, sizeof( this->m_Delta ) );
-}
-
 UniformVolume::UniformVolume
-( const DataGrid::IndexType& dims, const float size[3], TypedArray::SmartPtr& data )
+( const DataGrid::IndexType& dims, const Self::CoordinateVectorType& size, TypedArray::SmartPtr& data )
 {
   this->SetData( data );
   this->SetDims( dims );
   
-  for ( int i=0; i<3; ++i ) {
-    Size[i] = static_cast<Types::Coordinate>( size[i] );
-    this->m_Delta[i] = ( this->m_Dims[i] == 1 ) ? 0 : Size[i] / (this->m_Dims[i] - 1);
-  }
-
-  this->CropRegion() = this->GetWholeImageRegion();
-  this->CreateDefaultIndexToPhysicalMatrix();
-}
-
-UniformVolume::UniformVolume
-( const DataGrid::IndexType& dims, const double size[3], TypedArray::SmartPtr& data )
-{
-  this->SetData( data );
-  this->SetDims( dims );
-
   for ( int i=0; i<3; ++i ) {
     Size[i] = static_cast<Types::Coordinate>( size[i] );
     this->m_Delta[i] = ( this->m_Dims[i] == 1 ) ? 0 : Size[i] / (this->m_Dims[i] - 1);
@@ -181,19 +159,17 @@ UniformVolume::CloneGrid() const
   return clone;
 }
 
-UniformVolume*
+const UniformVolume::SmartPtr
 UniformVolume::GetReoriented( const char* newOrientation ) const
 {
   const std::string curOrientation = this->m_MetaInformation[META_IMAGE_ORIENTATION];
   DataGrid::SmartPtr temp( DataGrid::GetReoriented( newOrientation ) );
 
-  AnatomicalOrientation::PermutationMatrix pmatrix( this->m_Dims.begin(), this->Size, curOrientation, newOrientation );
-  Types::Coordinate newSize[3];
-  pmatrix.GetPermutedArray( this->Size, newSize );
-
-  UniformVolume* result = new UniformVolume( temp->GetDims(), newSize, temp->GetData() );
+  AnatomicalOrientation::PermutationMatrix pmatrix( this->m_Dims, curOrientation, newOrientation );
+  FixedVector<3,Types::Coordinate> newSize = pmatrix.GetPermutedArray( this->Size );
   
-  pmatrix.GetPermutedArray( this->m_Offset.XYZ, result->m_Offset.XYZ );
+  UniformVolume::SmartPtr result( new UniformVolume( temp->GetDims(), newSize, temp->GetData() ) );
+  result->m_Offset = pmatrix.GetPermutedArray( this->m_Offset );
   result->m_IndexToPhysicalMatrix = pmatrix.GetPermutedMatrix( this->m_IndexToPhysicalMatrix );
   result->m_MetaInformation = temp->m_MetaInformation;
   return result;
@@ -257,7 +233,8 @@ UniformVolume::GetInterleavedSubVolume
 ( const int axis, const int factor, const int idx ) const
 {
   Self::IndexType dims;
-  Types::Coordinate size[3];
+  Self::CoordinateVectorType size;
+
   for ( int dim = 0; dim < 3; ++dim )
     {
     dims[dim] = this->m_Dims[dim];
@@ -269,7 +246,7 @@ UniformVolume::GetInterleavedSubVolume
   size[axis] = (dims[axis]-1) * factor * this->m_Delta[axis];
   
   Vector3D offset( 0, 0, 0 );
-  offset.XYZ[axis] = idx * this->m_Delta[axis];
+  offset[axis] = idx * this->m_Delta[axis];
   
   UniformVolume* volume = new UniformVolume( dims, size );
   volume->SetOffset( offset );
@@ -346,7 +323,7 @@ UniformVolume::GetOrthoSlice
   ScalarImage* sliceImage = DataGrid::GetOrthoSlice( axis, plane );
   sliceImage->SetImageSlicePosition( this->GetPlaneCoord( axis, plane ) );
 
-  Vector3D imageOffset;
+  Vector3D imageOffset( 0, 0, 0 );
   switch ( axis ) 
     {
     case AXIS_X:
@@ -430,9 +407,9 @@ UniformVolume
 ::GetPrincipalAxes( Matrix3x3<Types::Coordinate>& directions, Vector3D& centerOfMass ) const
 {
   centerOfMass = this->GetCenterOfMass();
-  const Types::Coordinate xg = centerOfMass.X();
-  const Types::Coordinate yg = centerOfMass.Y();
-  const Types::Coordinate zg = centerOfMass.Z();
+  const Types::Coordinate xg = centerOfMass[0];
+  const Types::Coordinate yg = centerOfMass[1];
+  const Types::Coordinate zg = centerOfMass[2];
 
   Matrix3x3<Types::Coordinate> inertiaMatrix;
 
@@ -478,7 +455,13 @@ UniformVolume
 
   const EigenSystemSymmetricMatrix3x3<Types::Coordinate> eigensystem( inertiaMatrix );
   for ( int n = 0; n < 3; ++n )
-    eigensystem.GetNthEigenvector( n, directions[n] );
+    {
+    const Vector3D v = eigensystem.GetNthEigenvector( n );
+    for ( int i = 0; i < 3; ++i )
+      {
+      directions[n][i] = v[i];
+      }
+    }
   
   // correct for negative determinant
   const Types::Coordinate det = directions.Determinant();

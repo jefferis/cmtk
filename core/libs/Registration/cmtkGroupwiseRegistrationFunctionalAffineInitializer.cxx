@@ -66,7 +66,7 @@ GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms
     {
     AffineXform::SmartPtr xform( new AffineXform );
     xform->SetUseLogScaleFactors( true );
-    xform->SetCenter( centerTemplate.XYZ );
+    xform->SetCenter( centerTemplate.begin() );
  
     if ( alignCenters )
       {
@@ -89,7 +89,7 @@ GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms
 	}
 
       center -= centerTemplate;
-      xform->SetXlate( center.XYZ );
+      xform->SetXlate( center.begin() );
       this->m_XformVector[imageIdx] = xform;
       }
     }
@@ -102,15 +102,14 @@ GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms
     for ( size_t imageIdx = 0; imageIdx < numberOfImages; ++imageIdx )
       {
       for ( int dim = 0; dim < 3; ++dim )
-	firstOrderMoments[imageIdx].XYZ[dim] = 
-	  log( firstOrderMoments[imageIdx].XYZ[dim] / fom0.XYZ[dim] );
+	firstOrderMoments[imageIdx][dim] = log( firstOrderMoments[imageIdx][dim] / fom0[dim] );
       avgScales += firstOrderMoments[imageIdx];
       }
     avgScales *= ( 1.0 /  numberOfImages );
     for ( size_t imageIdx = 0; imageIdx < numberOfImages; ++imageIdx )
       {
       firstOrderMoments[imageIdx] -= avgScales;
-      AffineXform::SmartPtr::DynamicCastFrom( this->m_XformVector[imageIdx] )->SetScales( firstOrderMoments[imageIdx].XYZ );
+      AffineXform::SmartPtr::DynamicCastFrom( this->m_XformVector[imageIdx] )->SetScales( firstOrderMoments[imageIdx].begin() );
       }
     }
 }

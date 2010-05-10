@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -263,7 +264,7 @@ WriteDifference
 	  }
 	}
   
-  cmtk::VolumeIO::Write( diffVolume, outFileName );
+  cmtk::VolumeIO::Write( *diffVolume, outFileName );
 }
 
 void
@@ -297,7 +298,7 @@ WriteMirror
 	}
     }
 
-  cmtk::VolumeIO::Write( mirrorVolume, outFileName );
+  cmtk::VolumeIO::Write( *mirrorVolume, outFileName );
 }
 
 void
@@ -326,7 +327,7 @@ WriteMarkPlane
       }    
     }
 
-  cmtk::VolumeIO::Write( markVolume, outFileName );
+  cmtk::VolumeIO::Write( *markVolume, outFileName );
 }
 
 void
@@ -385,7 +386,7 @@ WriteAligned
       }
     }
 
-  cmtk::VolumeIO::Write( alignVolume, outFileName );
+  cmtk::VolumeIO::Write( *alignVolume, outFileName );
 }
 
 int

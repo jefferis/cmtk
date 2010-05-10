@@ -347,7 +347,7 @@ ImagePairNonrigidRegistrationCommandLine
 
   if ( this->m_ReformattedImagePath )
     {
-    VolumeIO::Write( UniformVolume::SmartPtr( this->GetReformattedFloatingImage() ), this->m_ReformattedImagePath, this->Verbose );
+    VolumeIO::Write( *(this->GetReformattedFloatingImage() ), this->m_ReformattedImagePath, this->Verbose );
     }
 }
 

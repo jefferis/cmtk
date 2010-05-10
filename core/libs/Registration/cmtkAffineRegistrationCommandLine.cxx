@@ -471,7 +471,7 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
 
   if ( this->m_ReformattedImagePath )
     {
-    VolumeIO::Write( UniformVolume::SmartPtr( this->GetReformattedFloatingImage() ), this->m_ReformattedImagePath, this->Verbose );
+    VolumeIO::Write( *(this->GetReformattedFloatingImage()), this->m_ReformattedImagePath, this->Verbose );
     }
 
 #ifdef CMTK_USE_SQLITE

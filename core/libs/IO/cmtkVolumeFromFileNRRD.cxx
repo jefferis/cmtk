@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -55,10 +56,10 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-UniformVolume* 
+const UniformVolume::SmartPtr
 VolumeFromFile::ReadNRRD( const char* pathHdr )
 {
-  UniformVolume* volume = NULL;
+  UniformVolume::SmartPtr volume( NULL );
   try 
     {
     Nrrd *nrrd = nrrdNew();
@@ -68,7 +69,7 @@ VolumeFromFile::ReadNRRD( const char* pathHdr )
     if ( nrrd->dim > 3 )
       {
       StdErr << "ERROR: for now, nrrd input can only handle data with dimension 3 or less.\n";
-      return NULL;
+      return UniformVolume::SmartPtr( NULL );
       }
 
     const int dims[3] = 
@@ -100,7 +101,7 @@ VolumeFromFile::ReadNRRD( const char* pathHdr )
 	}
       }
     const Types::Coordinate size[3] = { (dims[0]-1) * spacing[0], (dims[1]-1) * spacing[1], (dims[2]-1) * spacing[2] };
-    volume = new UniformVolume( DataGrid::IndexType( dims ), size );
+    volume = UniformVolume::SmartPtr( new UniformVolume( DataGrid::IndexType( dims ),UniformVolume::CoordinateVectorType( size ) ) );
 
     ScalarDataType type = TYPE_NONE;
     switch ( nrrd->type )
@@ -209,9 +210,9 @@ VolumeFromFile::ReadNRRD( const char* pathHdr )
 
 void
 VolumeFromFile::WriteNRRD
-( const char* pathHdr, const UniformVolume* volume, const bool )
+( const char* pathHdr, const UniformVolume& volume, const bool )
 {
-  UniformVolume::SmartPtr writeVolume( volume->Clone() );
+  UniformVolume::SmartPtr writeVolume( volume.Clone() );
   if ( writeVolume->MetaKeyExists( META_SPACE_ORIGINAL ) )
     writeVolume->ChangeCoordinateSpace( writeVolume->m_MetaInformation[META_SPACE_ORIGINAL] );
   

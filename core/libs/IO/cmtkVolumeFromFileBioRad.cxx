@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -67,7 +68,7 @@ typedef struct
   unsigned short dummy[3];  // 70   6       NOT USED (old ver.=real lens mag.)
 } FileHeaderBioRad;
 
-UniformVolume*
+const UniformVolume::SmartPtr
 VolumeFromFile::ReadBioRad( const char* path )
 {
   CompressedStream stream( path );
@@ -77,7 +78,7 @@ VolumeFromFile::ReadBioRad( const char* path )
   if ( 1 != stream.Read( &buffer, sizeof(buffer), 1 ) ) 
     {
     StdErr << "ERROR: cannot read header from BioRad file " << path << ". Bailing out.\n";
-    return NULL;
+    return UniformVolume::SmartPtr( NULL );
     }
   
   FileHeaderBioRad header;
@@ -94,13 +95,13 @@ VolumeFromFile::ReadBioRad( const char* path )
   if ( Memory::ByteSwap( header.file_id ) != 12345 ) 
     {
     StdErr << "ERROR: BioRad file " << path << " has invalid magic number. Bailing out.\n";
-    return NULL;
+    return UniformVolume::SmartPtr( NULL );
     }
 #else
   if ( header.file_id != 12345 ) 
     {
     StdErr << "ERROR: BioRad file " << path << " has invalid magic number. Bailing out.\n";
-    return NULL;
+    return UniformVolume::SmartPtr( NULL );
     }
 #endif
 
@@ -168,7 +169,7 @@ VolumeFromFile::ReadBioRad( const char* path )
   
   const Types::Coordinate volSize[3] = { (dims[0] - 1) * lensScale * pixelsizeX, (dims[1] - 1) * lensScale * pixelsizeY, (dims[2] - 1) * pixelsizeZ };
   
-  UniformVolume* volume = new UniformVolume( DataGrid::IndexType( dims ), volSize, dataArray );
+  UniformVolume::SmartPtr volume( new UniformVolume( DataGrid::IndexType( dims ), UniformVolume::CoordinateVectorType( volSize ), dataArray ) );
 
   if ( flipX )
     {

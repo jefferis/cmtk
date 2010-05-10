@@ -121,7 +121,7 @@ public:
   }
 
   /** Initialize transformation. */
-  virtual void InitTransformation( const Types::Coordinate* domain, const Types::Coordinate gridSpacing, const bool exact );
+  virtual void InitTransformation( const Vector3D& domain, const Types::Coordinate gridSpacing, const bool exact );
 
   /** Refine transformation control point grid by factor 2. */
   virtual void RefineTransformation();

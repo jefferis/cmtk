@@ -45,7 +45,7 @@ cmtk
 //@{
 
 CoordinateMatrix3x3
-SplineWarpXform::GetJacobian( const Vector3D& v ) const
+SplineWarpXform::GetJacobian( const Self::SpaceVectorType& v ) const
 {
   CoordinateMatrix3x3 J;
   this->GetJacobian( v, J );
@@ -216,14 +216,14 @@ SplineWarpXform::GetJacobianAtControlPoint
 
 void
 SplineWarpXform::GetJacobian
-( const Vector3D& v, CoordinateMatrix3x3& J ) const
+( const Self::SpaceVectorType& v, CoordinateMatrix3x3& J ) const
 {
   Types::Coordinate r[3], f[3];
   int grid[3];
   
   for ( int dim = 0; dim<3; ++dim ) 
     {
-    r[dim] = this->InverseSpacing[dim] * v.XYZ[dim];
+    r[dim] = this->InverseSpacing[dim] * v[dim];
     grid[dim] = std::min( static_cast<int>( r[dim] ), this->m_Dims[dim]-4 );
     f[dim] = r[dim] - grid[dim];
     assert( (f[dim] >= 0.0) && (f[dim] <= 1.0) );
@@ -331,7 +331,7 @@ SplineWarpXform::GetJacobianDeterminant
 
 Types::Coordinate
 SplineWarpXform::GetJacobianDeterminant
-( const Vector3D& v ) const
+( const Self::SpaceVectorType& v ) const
 {
   Types::Coordinate r[3], f[3];
   int grid[3];
@@ -341,7 +341,7 @@ SplineWarpXform::GetJacobianDeterminant
 
   for ( int dim = 0; dim<3; ++dim ) 
     {
-    r[dim] = InverseSpacing[dim] * v.XYZ[dim];
+    r[dim] = InverseSpacing[dim] * v[dim];
     grid[dim] = std::min( static_cast<int>( r[dim] ), this->m_Dims[dim]-4 );
     f[dim] = r[dim] - grid[dim];
     }
@@ -668,7 +668,7 @@ SplineWarpXform::GetJacobianConstraintSparse () const
   for ( int z = 1; z<this->m_Dims[2]-1; ++z, coeff+=2*nextJ )
     for ( int y = 1; y<this->m_Dims[1]-1; ++y, coeff+=2*nextI )
       for ( int x = 1; x<this->m_Dims[0]-1; ++x, coeff+=nextI )
-	Constraint += fabs( log ( this->GetJacobianDeterminant( coeff ) / GlobalScaling ) );
+	Constraint += fabs( log ( this->GetJacobianDeterminant( Self::SpaceVectorType( coeff ) ) / GlobalScaling ) );
   
   // Divide by number of control points to normalize with respect to the
   // number of local Jacobians in the computation.
@@ -800,7 +800,7 @@ SplineWarpXform::GetJacobianConstraintDerivative
   for ( int k = kFrom; k < kTo; ++k )
     for ( int j = jFrom; j < jTo; ++j )
       for ( int i = iFrom; i < iTo; ++i )
-	ground += fabs( log( this->GetJacobianDeterminant(coeff + i*nextI + j*nextJ + k*nextK) / GlobalScaling ) );
+	ground += fabs( log( this->GetJacobianDeterminant( Self::SpaceVectorType( coeff + i*nextI + j*nextJ + k*nextK ) ) / GlobalScaling ) );
 
   upper = -ground;
   lower = -ground;
@@ -810,13 +810,13 @@ SplineWarpXform::GetJacobianConstraintDerivative
   for ( int k = kFrom; k < kTo; ++k )
     for ( int j = jFrom; j < jTo; ++j )
       for ( int i = iFrom; i < iTo; ++i )
-	upper += fabs( log( this->GetJacobianDeterminant(coeff + i*nextI + j*nextJ + k*nextK) / GlobalScaling ) );
+	upper += fabs( log( this->GetJacobianDeterminant( Self::SpaceVectorType( coeff + i*nextI + j*nextJ + k*nextK ) ) / GlobalScaling ) );
 
   this->m_Parameters[param] = oldCoeff - step;
   for ( int k = kFrom; k < kTo; ++k )
     for ( int j = jFrom; j < jTo; ++j )
       for ( int i = iFrom; i < iTo; ++i )
-	lower += fabs( log( this->GetJacobianDeterminant(coeff + i*nextI + j*nextJ + k*nextK) / GlobalScaling ) );
+	lower += fabs( log( this->GetJacobianDeterminant( Self::SpaceVectorType( coeff + i*nextI + j*nextJ + k*nextK ) ) / GlobalScaling ) );
   this->m_Parameters[param] = oldCoeff;
 
   upper /= this->NumberOfControlPoints;

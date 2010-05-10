@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -63,24 +64,6 @@ DirectionSet::NormalizeEuclidNorm(const double value)
     // Divide Every Component by the Euclidean Norm
     // and multiply by normalization value..
     *direction *= value / euclid;
-    }
-}
-
-void
-DirectionSet::Reorient( const AffineXform* affineXform )
-{
-  // For Each Direction
-  for( size_t index = 0; index < this->GetNumberOfDirections(); index++ )
-    {
-    CoordinateVector::SmartPtr direction = (*this)[index];
-    
-    // For each point
-    Types::Coordinate *point = direction->Elements;
-    for( size_t i = 0; i < this->GetDimension(); i += 3, point += 3)
-      {
-      // Transform Point
-      affineXform->RotateScaleShear( point, point );
-      }
     }
 }
 

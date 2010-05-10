@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -45,11 +46,9 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-UniformVolume* 
+const UniformVolume::SmartPtr
 VolumeFromFile::Read( const char *path )
 {
-  UniformVolume *volume = NULL;
-
   FileFormatID id = FileFormat::Identify( path );
   switch ( id )
     {
@@ -62,11 +61,10 @@ VolumeFromFile::Read( const char *path )
     case FILEFORMAT_ANALYZE_HDR_BIGENDIAN:
       return VolumeFromFile::ReadAnalyzeHdr( path, true /* bigendian */ );
     default:
-      // for all other file formats, we shouldn't be in this function at all.
-      return NULL;
+      ;
     }
   
-  return volume;
+  return UniformVolume::SmartPtr( NULL );
 }
 
 } // namespace cmtk

@@ -269,23 +269,23 @@ VolumeInjectionReconstruction
 	Vector3D u, delta;
 	for ( int k = passGridFrom[2]; k < passGridTo[2]; ++k )
 	  {
-	  u.XYZ[2] = passImage->GetPlaneCoord( AXIS_Z, k );
-	  delta.XYZ[2] = (u.XYZ[2] - vPass.XYZ[2]) / correctedDelta[2];
+	  u[2] = passImage->GetPlaneCoord( AXIS_Z, k );
+	  delta[2] = (u[2] - vPass[2]) / correctedDelta[2];
 	      
 	  for ( int j = passGridFrom[1]; j < passGridTo[1]; ++j )
 	    {
-	    u.XYZ[1] = passImage->GetPlaneCoord( AXIS_Y, j );
-	    delta.XYZ[1] = (u.XYZ[1] - vPass.XYZ[1]) / correctedDelta[1];
+	    u[1] = passImage->GetPlaneCoord( AXIS_Y, j );
+	    delta[1] = (u[1] - vPass[1]) / correctedDelta[1];
 	    
 	    for ( int i = passGridFrom[0]; i < passGridTo[0]; ++i )
 	      {                
-	      u.XYZ[0] = passImage->GetPlaneCoord( AXIS_X, i );
-	      delta.XYZ[0] = (u.XYZ[0] - vPass.XYZ[0]) / correctedDelta[0];
+	      u[0] = passImage->GetPlaneCoord( AXIS_X, i );
+	      delta[0] = (u[0] - vPass[0]) / correctedDelta[0];
 	      
 	      Types::DataItem passImageData;
 	      if ( passImage->GetDataAt( passImageData, i, j, k ) ) 
 		{
-		const Types::Coordinate mahalanobis = delta.EuclidNorm();
+		const Types::Coordinate mahalanobis = delta.RootSumOfSquares();
 		if ( mahalanobis <= kernelRadiusFactor )
 		  {
 		  const ap::real_value_type kernelWeightPixel = passImageWeight * exp( mahalanobis*mahalanobis * minusOneOverTwoSigmaSquare );
@@ -394,18 +394,18 @@ VolumeInjectionReconstruction
 	    Vector3D u;
 	    for ( int k = targetGridFrom[2]; k < targetGridTo[2]; ++k )
 	      {
-	      u.XYZ[2] = this->m_CorrectedImage->GetPlaneCoord( AXIS_Z, k );
+	      u[2] = this->m_CorrectedImage->GetPlaneCoord( AXIS_Z, k );
 	      
 	      for ( int j = targetGridFrom[1]; j < targetGridTo[1]; ++j )
 		{
-		u.XYZ[1] = this->m_CorrectedImage->GetPlaneCoord( AXIS_Y, j );
+		u[1] = this->m_CorrectedImage->GetPlaneCoord( AXIS_Y, j );
 		
 		size_t splattedImageOffset = this->m_CorrectedImage->GetOffsetFromIndex( targetGridFrom[0], j, k );
 		for ( int i = targetGridFrom[0]; i < targetGridTo[0]; ++i, ++splattedImageOffset )
 		  {                
-		  u.XYZ[0] = this->m_CorrectedImage->GetPlaneCoord( AXIS_X, i );
+		  u[0] = this->m_CorrectedImage->GetPlaneCoord( AXIS_X, i );
 		  
-		  const Types::Coordinate distanceSquare = Vector3D::SquareEuclidDistance( u, v );
+		  const Types::Coordinate distanceSquare = ( u-v ).SumOfSquares();
 		  if ( distanceSquare <= kernelRadiusSquare )
 		    {
 		    const ap::real_value_type kernelWeightPixel = passImageWeight * exp( distanceSquare * minusOneOverTwoSigmaSquare );

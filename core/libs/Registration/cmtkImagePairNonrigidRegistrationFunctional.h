@@ -131,7 +131,7 @@ public:
   /// Get parameter stepping in milimeters.
   virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const 
   {
-    return this->m_Warp->GetParamStep( idx, FloatingSize, mmStep );
+    return this->m_Warp->GetParamStep( idx, this->m_FloatingSize, mmStep );
   }
 
   /// Return the transformation's parameter vector dimension.
@@ -224,7 +224,7 @@ protected:
 
     if ( this->m_InverseTransformation ) 
       {
-      result -= this->m_InverseConsistencyWeight * warp.GetInverseConsistencyError( this->m_InverseTransformation, this->ReferenceGrid );
+      result -= this->m_InverseConsistencyWeight * warp.GetInverseConsistencyError( this->m_InverseTransformation, this->m_ReferenceGrid );
       }
     
     return static_cast<Self::ReturnType>( result );

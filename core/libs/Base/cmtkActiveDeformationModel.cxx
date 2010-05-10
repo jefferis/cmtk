@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -136,7 +137,7 @@ ActiveDeformationModel<W>::MakeSamplePointsReference( const W* deformation )
     
     // copy the result into ouput array
     for ( unsigned int dim = 0; dim < 3; ++dim ) 
-      ptr[dim] = v.XYZ[dim];
+      ptr[dim] = v[dim];
     }
   
   return points;
@@ -168,7 +169,7 @@ ActiveDeformationModel<W>::MakeSamplePoints( const W* deformation )
     
     // copy the result into ouput array
     for ( unsigned int dim = 0; dim < 3; ++dim ) 
-      ptr[dim] = v.XYZ[dim];
+      ptr[dim] = v[dim];
     }
   
   return points;

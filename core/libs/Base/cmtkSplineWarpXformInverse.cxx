@@ -42,7 +42,7 @@ cmtk
 
 bool
 SplineWarpXform::ApplyInverse
-( const Vector3D& v, Vector3D& u, const Types::Coordinate accuracy ) const
+( const Self::SpaceVectorType& v, Self::SpaceVectorType& u, const Types::Coordinate accuracy ) const
 {
   u = v;
   return this->ApplyInverseInPlace( u, accuracy );
@@ -50,16 +50,16 @@ SplineWarpXform::ApplyInverse
 
 bool
 SplineWarpXform::ApplyInverseInPlace 
-( Vector3D& v, const Types::Coordinate accuracy ) const
+( Self::SpaceVectorType& v, const Types::Coordinate accuracy ) const
 {
-  Vector3D u;
+  Self::SpaceVectorType u;
   this->FindClosestControlPoint( v, u );
   return this->ApplyInverseInPlaceWithInitial( v, u, accuracy );
 }
 
 void
 SplineWarpXform::FindClosestControlPoint
-( const Vector3D& v, Vector3D& cp ) const
+( const Self::SpaceVectorType& v, Self::SpaceVectorType& cp ) const
 {
   // find closest control point -- we'll go from there.
   Types::Coordinate closestDistance = FLT_MAX;
@@ -83,11 +83,11 @@ SplineWarpXform::FindClosestControlPoint
 	  idx[dim] += dir * step;
 	  if ( (idx[dim] > 0) && (idx[dim] <= this->m_Dims[dim]-2) ) 
 	    {
-	    Vector3D cp;
+	    Self::SpaceVectorType cp;
 	    this->GetOriginalControlPointPosition( cp, idx[0], idx[1], idx[2] );
 	    this->ApplyInPlace( cp );
 	    cp -= v;
-	    const Types::Coordinate distance = cp.EuclidNorm();
+	    const Types::Coordinate distance = cp.RootSumOfSquares();
 	    if ( distance < closestDistance ) 
 	      {
 	      closestDistance = distance;
@@ -115,22 +115,22 @@ SplineWarpXform::FindClosestControlPoint
 
 bool
 SplineWarpXform::ApplyInverseInPlaceWithInitial
-( Vector3D& target, const Vector3D& initial, const Types::Coordinate accuracy ) 
+( Self::SpaceVectorType& target, const Self::SpaceVectorType& initial, const Types::Coordinate accuracy ) 
   const
 {
-  Vector3D u( initial );
+  Self::SpaceVectorType u( initial );
 
   // project into domain
   for ( int dim = 0; dim < 3; ++dim )
     {
-    u.XYZ[dim] = std::max<Types::Coordinate>( 0, std::min<Types::Coordinate>( u.XYZ[dim], this->Domain[dim] ) );
+    u[dim] = std::max<Types::Coordinate>( 0, std::min<Types::Coordinate>( u[dim], this->Domain[dim] ) );
     }
 
-  Vector3D vu( initial ), delta;
+  Self::SpaceVectorType vu( initial ), delta;
   this->ApplyInPlace( vu );
   ((delta = vu) -= target);
 
-  Types::Coordinate error = delta.EuclidNorm();
+  Types::Coordinate error = delta.RootSumOfSquares();
 
   Types::Coordinate step = 1.0;
   while ( ( error > accuracy) && (step > 0.001) ) 
@@ -139,7 +139,7 @@ SplineWarpXform::ApplyInverseInPlaceWithInitial
     CoordinateMatrix3x3 J;
     this->GetJacobian( u, J );
     J.Invert3x3();
-    J.GetTranspose().Multiply( delta.XYZ );
+    J.GetTranspose().Multiply( delta );
     
     // initialize line search
     (vu = u) -= (delta *= step);
@@ -150,17 +150,17 @@ SplineWarpXform::ApplyInverseInPlaceWithInitial
       // project into domain
       for ( int dim = 0; dim < 3; ++dim )
 	{
-	vu.XYZ[dim] = std::max<Types::Coordinate>( 0, std::min<Types::Coordinate>( vu.XYZ[dim], this->Domain[dim] ) );
+	vu[dim] = std::max<Types::Coordinate>( 0, std::min<Types::Coordinate>( vu[dim], this->Domain[dim] ) );
 	}
       }
     
-    Vector3D uNext( vu );
+    Self::SpaceVectorType uNext( vu );
     this->ApplyInPlace( vu );
     
     (delta = vu) -= target;
-    if ( error > delta.EuclidNorm() ) 
+    if ( error > delta.RootSumOfSquares() ) 
       {
-      error = delta.EuclidNorm();
+      error = delta.RootSumOfSquares();
       u = uNext;
       } 
     else

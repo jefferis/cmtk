@@ -112,7 +112,7 @@ cmtk::SplineWarpXformUniformVolume
 	mm += spZ[m] * ll;
 	coeff_mm += xform.nextK;
 	}
-      v.XYZ[ dim ] = mm;
+      v[ dim ] = mm;
       ++coeff;
     }
 }
@@ -177,13 +177,13 @@ cmtk::SplineWarpXformUniformVolume::GetTransformedGridSequence
     // do everything inside one cell
     do 
       {
-      Types::Coordinate* vPtr = v->XYZ;
+      Vector3D& vRef = *v;
       // compute transformed voxel by taking precomputed y- and z-contributions
       // and adding x. The loops to do this have been unrolled for increased
       // performance.
-      vPtr[0] = spX[0] * phiPtr[0] + spX[1] * phiPtr[3] + spX[2] * phiPtr[6] + spX[3] * phiPtr[9];
-      vPtr[1] = spX[0] * phiPtr[1] + spX[1] * phiPtr[4] + spX[2] * phiPtr[7] + spX[3] * phiPtr[10];
-      vPtr[2] = spX[0] * phiPtr[2] + spX[1] * phiPtr[5] + spX[2] * phiPtr[8] + spX[3] * phiPtr[11];
+      vRef[0] = spX[0] * phiPtr[0] + spX[1] * phiPtr[3] + spX[2] * phiPtr[6] + spX[3] * phiPtr[9];
+      vRef[1] = spX[0] * phiPtr[1] + spX[1] * phiPtr[4] + spX[2] * phiPtr[7] + spX[3] * phiPtr[10];
+      vRef[2] = spX[0] * phiPtr[2] + spX[1] * phiPtr[5] + spX[2] * phiPtr[8] + spX[3] * phiPtr[11];
       
       // go to next voxel
       ++i;

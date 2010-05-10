@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -169,7 +170,7 @@ CallbackOut( const char* argv )
 {
   if ( CheckStackOneImage( "Out" ) )
     {
-    cmtk::VolumeIO::Write( ImageStack.top(), argv, Verbose );
+    cmtk::VolumeIO::Write( *(ImageStack.top()), argv, Verbose );
     }
 }
 

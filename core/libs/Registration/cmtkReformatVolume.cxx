@@ -112,16 +112,16 @@ ReformatVolume::SetWarpXform( const WarpXform::SmartPtr& warpXform )
   this->m_WarpXform = warpXform;
 }
 
-UniformVolume* 
+const UniformVolume::SmartPtr
 ReformatVolume::MakeTargetVolume() const
 {
-  return ReferenceVolume->CloneGrid();
+  return UniformVolume::SmartPtr( ReferenceVolume->CloneGrid() );
 }
 
-UniformVolume* 
+const UniformVolume::SmartPtr
 ReformatVolume::PlainReformat()
 {
-  UniformVolume* targetVolume = this->MakeTargetVolume();
+  UniformVolume::SmartPtr targetVolume = this->MakeTargetVolume();
 
   if ( targetVolume ) 
     {
@@ -609,7 +609,7 @@ ReformatVolume::CreateTransformedReference
 {
   // default: no offset output desired, 
   // that means, reformat to original image domain
-  Types::Coordinate bbTo[3];
+  UniformVolume::CoordinateVectorType bbTo;
   for ( unsigned int axis = 0; axis < 3; ++axis ) 
     {
     bbFrom[axis] = 0;
@@ -622,28 +622,28 @@ ReformatVolume::CreateTransformedReference
     for ( unsigned int z = 0; z < 2; ++z ) 
       {
       if ( z )
-	u.XYZ[AXIS_Z] = this->ReferenceVolume->Size[AXIS_Z];
+	u[AXIS_Z] = this->ReferenceVolume->Size[AXIS_Z];
       else
-	u.XYZ[AXIS_Z] = 0;
+	u[AXIS_Z] = 0;
       
       for ( unsigned int y = 0; y < 2; ++y ) 
 	{
 	if ( y )
-	  u.XYZ[AXIS_Y] = this->ReferenceVolume->Size[AXIS_Y];
+	  u[AXIS_Y] = this->ReferenceVolume->Size[AXIS_Y];
 	else
-	  u.XYZ[AXIS_Y] = 0;
+	  u[AXIS_Y] = 0;
 	for ( unsigned int x = 0; x < 2; ++x ) 
 	  {
 	  if ( x )
-	    u.XYZ[AXIS_X] = this->ReferenceVolume->Size[AXIS_X];
+	    u[AXIS_X] = this->ReferenceVolume->Size[AXIS_X];
 	  else
-	    u.XYZ[AXIS_X] = 0;
+	    u[AXIS_X] = 0;
 	  
 	  v = this->m_WarpXform->Apply( u );
 	  for ( unsigned int axis = 0; axis < 3; ++axis ) 
 	    {
-	    bbFrom[axis] = std::min( bbFrom[axis], v.XYZ[axis] );
-	    bbTo[axis] = std::max( bbTo[axis], v.XYZ[axis] );
+	    bbFrom[axis] = std::min( bbFrom[axis], v[axis] );
+	    bbTo[axis] = std::max( bbTo[axis], v[axis] );
 	    }
 	  }
 	}

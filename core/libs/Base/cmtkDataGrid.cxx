@@ -126,7 +126,7 @@ DataGrid::GetDownsampled( const int (&downsample)[3] ) const
   return newDataGrid;
 }
 
-DataGrid*
+const DataGrid::SmartPtr
 DataGrid::GetReoriented( const char* newOrientation ) const
 {
   std::string curOrientation = this->m_MetaInformation[META_IMAGE_ORIENTATION];
@@ -141,10 +141,9 @@ DataGrid::GetReoriented( const char* newOrientation ) const
     }
 
   // 1. get a permutation matrix
-  AnatomicalOrientation::PermutationMatrix pmatrix( this->m_Dims.begin(), NULL, curOrientation, newOrientation );
+  AnatomicalOrientation::PermutationMatrix pmatrix( this->m_Dims, curOrientation, newOrientation );
   
-  Self::IndexType newDims; 
-  pmatrix.GetPermutedArray( this->m_Dims.begin(), newDims.begin() );
+  Self::IndexType newDims = pmatrix.GetPermutedArray( this->m_Dims );
   DataGrid* newDataGrid = new DataGrid( newDims );
   
   const TypedArray* oldData = this->GetData();
@@ -180,7 +179,8 @@ DataGrid::GetReoriented( const char* newOrientation ) const
   newDataGrid->m_MetaInformation = this->m_MetaInformation;
   newDataGrid->m_MetaInformation[META_IMAGE_ORIENTATION] = newOrientation;
   newDataGrid->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = this->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL];
-  return newDataGrid;
+
+  return Self::SmartPtr( newDataGrid );
 }
 
 void
@@ -530,8 +530,7 @@ DataGrid
 	Types::DataItem value;
 	if ( this->GetDataAt( value, x, y, z ) )
 	  {
-	  firstOrderMoment += 
-	    Vector3D( value * fabs(x - com.XYZ[0]), value * fabs(y - com.XYZ[1]), value * fabs(z - com.XYZ[2]) );
+	  firstOrderMoment += Vector3D( value * fabs(x - com[0]), value * fabs(y - com[1]), value * fabs(z - com[2]) );
 	  sumOfSamples += value;
 	  }
 	}

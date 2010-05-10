@@ -79,7 +79,7 @@ public:
     
     Vector3D scale( originalImage->m_Delta );
     scale *= psfScale;
-    scale.XYZ[interleaveAxis] *= numberOfPasses;
+    scale[interleaveAxis] *= numberOfPasses;
     for ( size_t i = 0; i < numberOfPasses; ++i )
       {
       typename TPSF::SmartPtr psf( new TPSF( scale ) );

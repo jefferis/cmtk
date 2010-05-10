@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -117,13 +118,13 @@ GroupwiseRegistrationFunctionalBase::CreateTemplateGridFromTargets
     templateSize[dim] = (templateDims[dim]-1) * templateDelta;
     }
   
-  UniformVolume::SmartPtr templateGrid( new UniformVolume( templateDims, templateSize ) );
+  UniformVolume::SmartPtr templateGrid( new UniformVolume( templateDims, Vector3D( templateSize ) ) );
   this->SetTemplateGrid( templateGrid, downsample );
 }
 
 void
 GroupwiseRegistrationFunctionalBase::CreateTemplateGrid
-( const DataGrid::IndexType& dims, const Types::Coordinate (&deltas)[3] )
+( const DataGrid::IndexType& dims, const UniformVolume::CoordinateVectorType& deltas )
 {
   UniformVolume::SmartPtr templateGrid( new UniformVolume( dims, deltas ) );
   this->SetTemplateGrid( templateGrid );
@@ -572,7 +573,7 @@ GroupwiseRegistrationFunctionalBase
     {
     writeVolume->SetDataAt( this->m_TemplateData[i], i );
     }
-  VolumeIO::Write( writeVolume, "template.nii", true );
+  VolumeIO::Write( *writeVolume, "template.nii", true );
 
   for ( size_t n = 0; n < this->m_ImageVector.size(); ++n )
     {
@@ -583,11 +584,11 @@ GroupwiseRegistrationFunctionalBase
 
     char path[PATH_MAX];
     sprintf( path, "target%02d.nii", static_cast<int>( n ) );
-    VolumeIO::Write( writeVolume, path, true );
+    VolumeIO::Write( *writeVolume, path, true );
     }
 }
 
-UniformVolume* 
+const UniformVolume::SmartPtr
 GroupwiseRegistrationFunctionalBase
 ::GetReformattedImage( const UniformVolume::SmartPtr& targetGrid, const size_t idx ) const
 {
@@ -604,7 +605,7 @@ GroupwiseRegistrationFunctionalBase
     reformat.SetPaddingValue( this->m_UserBackgroundValue );
     }
   
-  UniformVolume* result = reformat.PlainReformat();
+  UniformVolume::SmartPtr result = reformat.PlainReformat();
 
   if ( this->m_UserBackgroundFlag )
     {

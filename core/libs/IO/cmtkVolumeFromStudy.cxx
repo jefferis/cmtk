@@ -64,11 +64,12 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-UniformVolume*
+const UniformVolume::SmartPtr
 VolumeFromStudy::Read
 ( const Study* study, const bool verbose )
 {
-  if ( !study ) return NULL;
+  if ( !study ) 
+    return UniformVolume::SmartPtr( NULL );
 
   const StudyImageSet* studyImageSet = dynamic_cast<const StudyImageSet*>( study );
   if ( studyImageSet ) 
@@ -80,12 +81,13 @@ VolumeFromStudy::Read
     return VolumeIO::Read( study->GetFileSystemPath(), verbose );
 }
 
-UniformVolume* 
+const UniformVolume::SmartPtr
 VolumeFromStudy::AssembleVolume( const StudyImageSet* study, const bool verbose )
 {
-  if ( study->size() < 2 ) return NULL;
+  UniformVolume::SmartPtr Result( NULL );
   
-  UniformVolume* Result = NULL;
+  if ( study->size() < 2 ) 
+    return Result;
   
   try
     {
@@ -109,7 +111,8 @@ VolumeFromStudy::AssembleVolume( const StudyImageSet* study, const bool verbose 
       // TODO: when returning NULL here, we also should tell
       // VolumeFromSlices that we give up, so it can free its
       // temporary storage.
-      if ( !image ) return NULL;
+      if ( !image ) 
+	return UniformVolume::SmartPtr( NULL );
 
       if ( ! nextPlane ) 
 	{
@@ -127,7 +130,7 @@ VolumeFromStudy::AssembleVolume( const StudyImageSet* study, const bool verbose 
       if ( error ) 
 	{
 	StdErr.printf( "ERROR: %s: %s\n", fullpath, error );
-	return NULL;
+	return UniformVolume::SmartPtr( NULL );
 	}
       
       ++it;

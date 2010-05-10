@@ -119,16 +119,16 @@ dumpTransformationVanderbilt( const cmtk::AffineXform::MatrixType& matrix, const
   int pointIdx = 1;
   for ( int k=0; k<2; ++k ) 
     {
-    v.XYZ[2] = k ? size.XYZ[2] : 0;
+    v[2] = k ? size[2] : 0;
     for ( int j=0; j<2; ++j ) 
       {
-      v.XYZ[1] = j ? size.XYZ[1] : 0;
+      v[1] = j ? size[1] : 0;
       for ( int i=0; i<2; ++i, ++pointIdx ) 
 	{
-	v.XYZ[0] = i ? size.XYZ[0] : 0;
+	v[0] = i ? size[0] : 0;
 	cmtk::Vector3D w( v );
-	matrix.Multiply( w.XYZ );
-	fprintf( stdout, " %1d %10.4f %10.4f %10.4f %10.4f %11.4f %11.4f\n", pointIdx, v.XYZ[0], v.XYZ[1], v.XYZ[2], w.XYZ[0], w.XYZ[1], w.XYZ[2] );
+	matrix.Multiply( w );
+	fprintf( stdout, " %1d %10.4f %10.4f %10.4f %10.4f %11.4f %11.4f\n", pointIdx, v[0], v[1], v[2], w[0], w[1], w[2] );
 	}
       }
     }

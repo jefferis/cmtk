@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -138,7 +139,7 @@ main( int argc, char *argv[] )
 		   uniform->Size[0], uniform->Size[1], uniform->Size[2] );
 	  }
 	
-	fprintf( stdout, "XORIGIN\t%f\nYORIGIN\t%f\nZORIGIN\t%f\n", volume->m_Offset.XYZ[0], volume->m_Offset.XYZ[1], volume->m_Offset.XYZ[2] );
+	fprintf( stdout, "XORIGIN\t%f\nYORIGIN\t%f\nZORIGIN\t%f\n", volume->m_Offset[0], volume->m_Offset[1], volume->m_Offset[2] );
 	if ( volume->MetaKeyExists(cmtk::META_SPACE_UNITS_STRING ) )
 	  fprintf( stdout, "UNITS\t%s\n", volume->m_MetaInformation[cmtk::META_SPACE_UNITS_STRING].c_str() );
 	
@@ -174,7 +175,7 @@ main( int argc, char *argv[] )
 		   uniform->Size[0], uniform->Size[1], uniform->Size[2], spaceUnits );
 	  }
 
-	fprintf( stdout, "Volume origin (%f,%f,%f)\n", volume->m_Offset.XYZ[0], volume->m_Offset.XYZ[1], volume->m_Offset.XYZ[2] );
+	fprintf( stdout, "Volume origin (%f,%f,%f)\n", volume->m_Offset[0], volume->m_Offset[1], volume->m_Offset[2] );
       
 	if ( dataArray ) 
 	  {
@@ -195,7 +196,7 @@ main( int argc, char *argv[] )
       for ( ; it != ProbeListIndex.end(); ++it, ++index )
 	{
 	cmtk::Types::DataItem data;
-	if ( volume->GetDataAt( data, (int)it->XYZ[0], (int)it->XYZ[1], (int)it->XYZ[2] ) )
+	if ( volume->GetDataAt( data, (int)(*it)[0], (int)(*it)[1], (int)(*it)[2] ) )
 	  {
 	  fprintf( stdout, "Probe %02d = %f (%e)\n", (int)index, data, data );
 	  }
@@ -215,11 +216,11 @@ main( int argc, char *argv[] )
        
 	if ( PrintCOM )
 	  {
-	  fprintf( stdout, "COM\t%f %f %f\n", com.XYZ[0], com.XYZ[1], com.XYZ[2] );
+	  fprintf( stdout, "COM\t%f %f %f\n", com[0], com[1], com[2] );
 	  }
 	if ( PrintFOM )
 	  {
-	  fprintf( stdout, "FOM\t%f %f %f\n", fom.XYZ[0], fom.XYZ[1], fom.XYZ[2] );
+	  fprintf( stdout, "FOM\t%f %f %f\n", fom[0], fom[1], fom[2] );
 	  }
 	}
       }

@@ -77,16 +77,16 @@ public:
 
 protected:
   /// Pointer to the reference grid.
-  UniformVolume::SmartPtr ReferenceGrid;
+  UniformVolume::SmartPtr m_ReferenceGrid;
 
   /// Pointer to the floating grid.
-  UniformVolume::SmartPtr FloatingGrid;
+  UniformVolume::SmartPtr m_FloatingGrid;
 
   /// Data class of reference image.
-  DataClass ReferenceDataClass;
+  DataClass m_ReferenceDataClass;
 
   /// Data class of floating image.
-  DataClass FloatingDataClass;
+  DataClass m_FloatingDataClass;
 
   /// Rectangular crop region in the reference volume.
   DataGrid::RegionType m_ReferenceCropRegion;
@@ -119,8 +119,8 @@ public:
   ImagePairRegistrationFunctional ( ImagePairRegistrationFunctional& source ) : 
     m_MatchedLandmarkList( source.m_MatchedLandmarkList )
   {
-    this->InitFloating( source.FloatingGrid );
-    this->InitReference( source.ReferenceGrid );
+    this->InitFloating( source.m_FloatingGrid );
+    this->InitReference( source.m_ReferenceGrid );
     this->m_LandmarkErrorWeight = source.m_LandmarkErrorWeight;
   }
 
@@ -131,8 +131,8 @@ public:
   ImagePairRegistrationFunctional ( ImagePairRegistrationFunctional *const source ) : 
     m_MatchedLandmarkList( source->m_MatchedLandmarkList )
   {
-    this->InitFloating( source->FloatingGrid );
-    this->InitReference( source->ReferenceGrid );
+    this->InitFloating( source->m_FloatingGrid );
+    this->InitReference( source->m_ReferenceGrid );
     this->m_LandmarkErrorWeight = source->m_LandmarkErrorWeight;
   }
 
@@ -142,28 +142,28 @@ public:
 
 protected:
   /// Grid dimensions of the floating volume.
-  DataGrid::IndexType FloatingDims;
+  DataGrid::IndexType m_FloatingDims;
 
   /// Extents of the floating volume in real-world coordinates.
-  Types::Coordinate FloatingSize[3];
+  UniformVolume::CoordinateVectorType m_FloatingSize;
 
   /// Inverse pixel sizes of the floating volume.
-  Vector3D FloatingInverseDelta;
+  UniformVolume::CoordinateVectorType m_FloatingInverseDelta;
 
   /// Coordinates of the floating image's cropping region.
   UniformVolume::CoordinateRegionType m_FloatingCropRegionCoordinates;
  
   /// Fractional index starting coordinate of the floating's cropping region.
-  UniformVolume::CoordinateRegionType m_FloatingCropFracIndex;
+  UniformVolume::CoordinateRegionType m_FloatingCropRegionFractIndex;
 
   /// Grid dimensions of the reference volume.
-  DataGrid::IndexType ReferenceDims;
+  DataGrid::IndexType m_ReferenceDims;
 
   /// Extents of the reference volume in real-world coordinates.
-  Types::Coordinate ReferenceSize[3];
+  UniformVolume::CoordinateVectorType m_ReferenceSize;
 
   /// Inverse pixel deltas of the reference volume.
-  Types::Coordinate ReferenceInvDelta[3];
+  UniformVolume::CoordinateVectorType m_ReferenceInverseDelta;
 
   /** Find rectilinear area in original reference grid.
    *@param fromVOI Lower corner of area to find.

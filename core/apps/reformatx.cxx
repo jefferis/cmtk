@@ -420,7 +420,7 @@ ReformatPullback()
   if ( reformatData ) 
     {
     targetVolume->SetData( reformatData );
-    cmtk::VolumeIO::Write( targetVolume, OutputImageName, Verbose );
+    cmtk::VolumeIO::Write( *targetVolume, OutputImageName, Verbose );
 
 #ifdef CMTK_USE_SQLITE
     if ( updateDB )

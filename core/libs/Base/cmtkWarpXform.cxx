@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,6 +37,8 @@
 
 #include <string.h>
 
+#include <algorithm>
+
 namespace
 cmtk
 {
@@ -45,11 +48,11 @@ cmtk
 
 void
 WarpXform::InitGrid
-( const Types::Coordinate domain[3], const DataGrid::IndexType& dims )
+( const FixedVector<3,Types::Coordinate>& domain, const DataGrid::IndexType& dims )
 {
-  memcpy( Domain, domain, sizeof(Domain) );
+  this->Domain = domain;
   this->m_Dims = dims;
-  m_Offset.Set( 0, 0, 0 );
+  std::fill( this->m_Offset.begin(), this->m_Offset.end(), 0 );
   
   NumberOfControlPoints = this->m_Dims[0] * this->m_Dims[1] * this->m_Dims[2];
   this->AllocateParameterVector( 3 * NumberOfControlPoints );
@@ -81,10 +84,10 @@ WarpXform::GetDerivativeLandmarksMSD
   MatchedLandmarkList::const_iterator it = ll->begin();
   while ( it != ll->end() ) 
     {
-    Vector3D source( (*it)->GetLocation() );
-    Vector3D target( (*it)->GetTargetLocation() );
+    Self::SpaceVectorType source( (*it)->GetLocation() );
+    Self::SpaceVectorType target( (*it)->GetTargetLocation() );
     this->ApplyInPlace( source );
-    upperMSD += (source - target).Square();
+    upperMSD += (source - target).SumOfSquares();
     ++it;
     }
   
@@ -92,10 +95,10 @@ WarpXform::GetDerivativeLandmarksMSD
   it = ll->begin();
   while ( it != ll->end() ) 
     {
-    Vector3D source( (*it)->GetLocation() );
-    Vector3D target( (*it)->GetTargetLocation() );
+    Self::SpaceVectorType source( (*it)->GetLocation() );
+    Self::SpaceVectorType target( (*it)->GetTargetLocation() );
     this->ApplyInPlace( source );
-    lowerMSD += (source - target).Square();
+    lowerMSD += (source - target).SumOfSquares();
     ++it;
     }
   this->m_Parameters[idx] = pOld;
@@ -108,7 +111,7 @@ Types::Coordinate
 WarpXform::GetInverseConsistencyError
 ( const WarpXform* inverse, const UniformVolume* volume, const DataGrid::RegionType* voi ) const 
 {
-  Vector3D v, vv;
+  Self::SpaceVectorType v, vv;
   Types::Coordinate result = 0.0;
   int count = 0;
 
@@ -127,14 +130,14 @@ WarpXform::GetInverseConsistencyError
     for ( int y = pVoi->From()[1]; y < pVoi->To()[1]; ++y )
       for ( int x = pVoi->From()[0]; x < pVoi->To()[0]; ++x ) 
 	{
-	volume->GetGridLocation( v, x, y, z );
+	v = volume->GetGridLocation( x, y, z );
 	vv = v;
 	this->ApplyInPlace( vv );
 	if ( inverse->InDomain( vv ) ) 
 	  {
 	  inverse->ApplyInPlace( vv );
 	  v -= vv;
-	  result += v.EuclidNorm();
+	  result += v.RootSumOfSquares();
 	  ++count;
 	  }
 	}
@@ -162,7 +165,7 @@ WarpXform::GetDerivativeInverseConsistencyError
 
 Types::Coordinate 
 WarpXform::GetParamStep
-( const size_t idx, const Types::Coordinate*, const Types::Coordinate mmStep ) const
+( const size_t idx, const Self::SpaceVectorType&, const Types::Coordinate mmStep ) const
 {
   if ( this->m_ActiveFlags && ! (*this->m_ActiveFlags)[idx] ) return 0;
 
@@ -294,7 +297,7 @@ WarpXform::ReplaceInitialAffine( const AffineXform* newAffineXform )
   Types::Coordinate *coeff = this->m_Parameters;
   for ( unsigned int idx = 0; idx < NumberOfControlPoints; ++idx, coeff+=3 ) 
     {
-    Vector3D p( coeff );
+    Self::SpaceVectorType p( coeff );
     change.ApplyInPlace( p );
     coeff[0] = p[0];
     coeff[1] = p[1];
@@ -320,7 +323,7 @@ WarpXform::ConcatAffine( const AffineXform* affineXform )
   Types::Coordinate *coeff = this->m_Parameters;
   for ( unsigned int idx = 0; idx < NumberOfControlPoints; ++idx, coeff+=3 ) 
     {
-    Vector3D p( coeff );
+    Self::SpaceVectorType p( coeff );
     affineXform->ApplyInPlace( p );
     coeff[0] = p[0];
     coeff[1] = p[1];

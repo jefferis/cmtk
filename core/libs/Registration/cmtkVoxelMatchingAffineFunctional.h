@@ -84,7 +84,7 @@ public:
   /// Return parameter stepping.
   virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const 
   {
-    return this->m_AffineXform->GetParamStep( idx, FloatingSize, mmStep );
+    return this->m_AffineXform->GetParamStep( idx, Vector3D( FloatingSize ), mmStep );
   }
 
   /// Return the transformation's parameter vector dimension.

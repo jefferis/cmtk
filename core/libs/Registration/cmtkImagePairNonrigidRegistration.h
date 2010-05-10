@@ -190,7 +190,7 @@ protected:
   }
 
   /// Get reformatted floating image.
-  UniformVolume* GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator = Interpolators::LINEAR );
+  const UniformVolume::SmartPtr GetReformattedFloatingImage( Interpolators::InterpolationEnum interpolator = Interpolators::LINEAR ) const;
 
 private:
   /// (Optional) matched landmark list.
@@ -221,7 +221,7 @@ private:
    *\param size Reference volume size.
    *\param initialAffine Initial affine transformation for the warp.
    */
-  SplineWarpXform::SmartPtr MakeWarpXform( const Types::Coordinate* size, const AffineXform* initialAffine ) const;
+  SplineWarpXform::SmartPtr MakeWarpXform( const UniformVolume::CoordinateVectorType& size, const AffineXform* initialAffine ) const;
 
   /// Base class for registration level parameters.
   class LevelParameters

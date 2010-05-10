@@ -230,9 +230,9 @@ DeblurringVolumeReconstruction<TPSF>
       {
       for ( int c = 0; c < 2; ++c, ++neighborIdx )
         {
-        corners3D[neighborIdx].XYZ[0] = corners[a][0];
-        corners3D[neighborIdx].XYZ[1] = corners[b][1];
-        corners3D[neighborIdx].XYZ[2] = corners[c][2];
+        corners3D[neighborIdx][0] = corners[a][0];
+        corners3D[neighborIdx][1] = corners[b][1];
+        corners3D[neighborIdx][2] = corners[c][2];
 	passToCorrectedXform->ApplyInPlace( corners3D[neighborIdx] );
         }
       }

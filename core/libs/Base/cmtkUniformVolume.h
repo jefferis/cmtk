@@ -77,9 +77,6 @@ public:
   /// Points array type.
   typedef std::vector< std::vector<Types::Coordinate> > PointsArrayType;
 
-  /// Constructor: Create empty volume.
-  UniformVolume();
-
   /// Destructor.
   virtual ~UniformVolume() {}
 
@@ -97,14 +94,7 @@ public:
    *@param size Size of the volume in real-world coordinates.
    *@param data An existing TypedArray containing the scalar voxel data.
    */
-  UniformVolume( const DataGrid::IndexType& dims, const float size[3], TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null );
-
-  /** Create uniform volume "from scratch".
-   *@param dims Number of grid elements for the three spatial dimensions.
-   *@param size Size of the volume in real-world coordinates.
-   *@param data An existing TypedArray containing the scalar voxel data.
-   */
-  UniformVolume( const DataGrid::IndexType& dims, const double size[3], TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null );
+  UniformVolume( const DataGrid::IndexType& dims, const Self::CoordinateVectorType&, TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null );
 
   /** Create uniform volume "from scratch".
    *@param dims Number of grid elements for the three spatial dimensions.
@@ -162,11 +152,11 @@ public:
   /** Create a physical copy of this object.
    *@param copyData If true, the associated data array is also copied.
    */
-  virtual UniformVolume* Clone( const bool copyData );
-  virtual UniformVolume* Clone() const;
+  virtual Self* Clone( const bool copyData );
+  virtual Self* Clone() const;
 
   /// Create igsUniformObject with identical geometry but no data.
-  virtual UniformVolume* CloneGrid() const;
+  virtual Self* CloneGrid() const;
 
   virtual Types::Coordinate GetDelta( const int axis, const int = 0 ) const
   {
@@ -201,7 +191,7 @@ public:
   virtual TypedArray *Resample ( const UniformVolume& ) const;
 
   /// Get volume reoriented to a different anatomical axis alignment.
-  virtual UniformVolume* GetReoriented ( const char* newOrientation = AnatomicalOrientation::ORIENTATION_STANDARD ) const;
+  const UniformVolume::SmartPtr GetReoriented ( const char* newOrientation = AnatomicalOrientation::ORIENTATION_STANDARD ) const;
 
   /** Downsampling constructor function.
    *\param approxIsotropic If this is set (default: off), then the downsample
@@ -406,7 +396,7 @@ public:
    */
   virtual Vector3D GetGridLocation( const int x, const int y, const int z ) const 
   {
-    return Vector3D( this->m_Offset.XYZ[0] + x * this->m_Delta[0], this->m_Offset.XYZ[1] + y * this->m_Delta[1], this->m_Offset.XYZ[2] + z * this->m_Delta[2] );
+    return Vector3D( this->m_Offset[0] + x * this->m_Delta[0], this->m_Offset[1] + y * this->m_Delta[1], this->m_Offset[2] + z * this->m_Delta[2] );
   }
   
   /** Get a grid coordinate.
@@ -418,7 +408,7 @@ public:
    */
   virtual Vector3D& GetGridLocation( Vector3D& v, const int x, const int y, const int z ) const 
   {
-    return v.Set( this->m_Offset.XYZ[0] + x * this->m_Delta[0], this->m_Offset.XYZ[1] + y * this->m_Delta[1], this->m_Offset.XYZ[2] + z * this->m_Delta[2] );
+    return v.Set( this->m_Offset[0] + x * this->m_Delta[0], this->m_Offset[1] + y * this->m_Delta[1], this->m_Offset[2] + z * this->m_Delta[2] );
   }
   
   /** Get a grid coordinate by continuous pixel index.
@@ -430,9 +420,9 @@ public:
    */
   virtual Vector3D& GetGridLocation( Vector3D& v, const size_t idx ) const 
   {
-    return v.Set( this->m_Offset.XYZ[0] +  (idx % this->nextJ) * this->m_Delta[0], 
-		  this->m_Offset.XYZ[1] +  (idx % this->nextK) / this->nextJ * this->m_Delta[1], 
-		  this->m_Offset.XYZ[2] +  (idx / this->nextK) * this->m_Delta[2] );
+    return v.Set( this->m_Offset[0] +  (idx % this->nextJ) * this->m_Delta[0], 
+		  this->m_Offset[1] +  (idx % this->nextK) / this->nextJ * this->m_Delta[1], 
+		  this->m_Offset[2] +  (idx / this->nextK) * this->m_Delta[2] );
   }
 
   /** Calculate volume center.
@@ -441,7 +431,7 @@ public:
   Vector3D GetCenterCropRegion() const 
   {
     const Self::CoordinateRegionType region = this->GetCropRegionCoordinates();
-    return this->m_Offset + 0.5 * ( Vector3D( region.From().begin() ) + Vector3D( region.To().begin() ) );
+    return this->m_Offset + 0.5 * Vector3D( region.From() + region.To() );
   }
   
   //@}
@@ -456,7 +446,7 @@ public:
   
   /** Return cropped uniform volume.
    */
-  UniformVolume* GetCroppedVolume() const;
+  Self::SmartPtr GetCroppedVolume() const;
 
   /** Return projection (e.g., MIP, sum) along one axis.
    * This function calls its equivalent in DataGrid and adds calibration
@@ -472,7 +462,7 @@ public:
   {
     Vector3D com = this->Superclass::GetCenterOfMass();
     for ( int dim = 0; dim < 3; ++dim )
-      (com.XYZ[dim] *= this->m_Delta[dim]) += this->m_Offset[dim];
+      (com[dim] *= this->m_Delta[dim]) += this->m_Offset[dim];
     return com;
   }
   
@@ -482,8 +472,8 @@ public:
     Vector3D com = this->Superclass::GetCenterOfMass( firstOrderMoment );
     for ( int dim = 0; dim < 3; ++dim )
       {
-      (com.XYZ[dim] *= this->m_Delta[dim]) += this->m_Offset[dim];
-      firstOrderMoment.XYZ[dim] *= this->m_Delta[dim];
+      (com[dim] *= this->m_Delta[dim]) += this->m_Offset[dim];
+      firstOrderMoment[dim] *= this->m_Delta[dim];
       }
     return com;
   }

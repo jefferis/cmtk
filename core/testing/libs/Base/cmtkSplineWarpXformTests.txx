@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -152,7 +153,7 @@ testSplineWarpXformInverse()
       249.33391330000001, 355.91280690000002, 445.81271129999999, 248.44589859999999, 444.89687249999997, 445.23544709999999 };
 
   cmtk::CoordinateVector::SmartPtr vParameters( new cmtk::CoordinateVector( sizeof( nparameters ), parameters, false /*free*/ ) );
-  cmtk::SplineWarpXform splineWarp( domain, cmtk::SplineWarpXform::IndexType( dims ), vParameters );
+  cmtk::SplineWarpXform splineWarp( cmtk::Vector3D( domain ), cmtk::SplineWarpXform::IndexType( dims ), vParameters );
 
   int failed = 0, total = 0;
 #pragma omp parallel for reduction(+:failed) reduction(+:total)

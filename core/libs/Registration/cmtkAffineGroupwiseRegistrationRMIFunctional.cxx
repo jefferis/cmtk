@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -78,14 +79,14 @@ AffineGroupwiseRegistrationRMIFunctional::InitializeXforms
     AffineXform::SmartPtr xform( new AffineXform );
     xform->SetNumberDOFs( this->m_XformNumberDOFs );
     xform->SetUseLogScaleFactors( true );
-    xform->SetCenter( centerTemplate.XYZ );
+    xform->SetCenter( centerTemplate.begin() );
     this->m_XformVector[i] = xform;
  
     if ( alignCenters )
       {
       Vector3D center = this->m_ImageVector[i]->GetCenter();
       center -= centerTemplate;
-      this->GetXformByIndex(i)->SetXlate( center.XYZ );
+      this->GetXformByIndex(i)->SetXlate( center.begin() );
       }
     }
 }
@@ -102,7 +103,7 @@ AffineGroupwiseRegistrationRMIFunctional::SetXforms
     AffineXform::SmartPtr xform( new AffineXform( *(xformVector[i]) ) );
     xform->SetNumberDOFs( this->m_XformNumberDOFs );
     xform->SetUseLogScaleFactors( true );
-    xform->ChangeCenter( centerTemplate.XYZ );
+    xform->ChangeCenter( centerTemplate );
 
     this->m_XformVector[i] = xform;
     }

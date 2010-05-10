@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -98,7 +99,7 @@ main( const int argc, const char* argv[] )
 
       if ( firstXform )
 	{
-	affine->ChangeCenter( firstXform->RetCenter() );
+	affine->ChangeCenter( cmtk::Vector3D( firstXform->RetCenter() ) );
 	}
       else
 	{

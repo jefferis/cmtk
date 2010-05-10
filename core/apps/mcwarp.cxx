@@ -185,13 +185,11 @@ DoRegistration()
       }
     }
 
-  const cmtk::Types::Coordinate* referenceImageDomain = NULL;
+  const cmtk::Vector3D referenceImageDomain = (*refChannelList.begin())->Size;
+
   cmtk::Types::Coordinate minPixelSize = FLT_MAX;
   for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = refChannelList.begin(); it != refChannelList.end(); ++it )
     {
-    if ( !referenceImageDomain )
-      referenceImageDomain = (*it)->Size;
-
     minPixelSize = std::min( (*it)->GetMinDelta(), minPixelSize );
     }
   for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = fltChannelList.begin(); it != fltChannelList.end(); ++it )

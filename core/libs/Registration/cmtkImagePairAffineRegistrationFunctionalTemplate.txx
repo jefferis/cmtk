@@ -39,18 +39,18 @@ typename ImagePairAffineRegistrationFunctionalTemplate<VM>::ReturnType
 ImagePairAffineRegistrationFunctionalTemplate<VM>
 ::Evaluate() 
 {
-  const VolumeAxesHash axesHash( *this->ReferenceGrid, this->m_AffineXform, this->FloatingGrid->m_Delta, this->FloatingGrid->m_Offset.XYZ );
+  const VolumeAxesHash axesHash( *this->m_ReferenceGrid, this->m_AffineXform, this->m_FloatingGrid->m_Delta, this->m_FloatingGrid->m_Offset.begin() );
   const Vector3D *axesHashX = axesHash[0], *axesHashY = axesHash[1], *axesHashZ = axesHash[2];
   
   this->m_Metric->Reset();
   
-  const DataGrid::IndexType& Dims = this->ReferenceGrid->GetDims();
+  const DataGrid::IndexType& Dims = this->m_ReferenceGrid->GetDims();
   const int DimsX = Dims[0], DimsY = Dims[1], DimsZ = Dims[2];
   
   this->Clipper.SetDeltaX( axesHashX[DimsX-1] - axesHashX[0] );
   this->Clipper.SetDeltaY( axesHashY[DimsY-1] - axesHashY[0] );
   this->Clipper.SetDeltaZ( axesHashZ[DimsZ-1] - axesHashZ[0] );
-  this->Clipper.SetClippingBoundaries( this->m_FloatingCropRegionFractional );
+  this->Clipper.SetClippingBoundaries( this->m_FloatingCropRegionFractIndex );
   
   DataGrid::IndexType::ValueType startZ, endZ;
   if ( this->ClipZ( this->Clipper, axesHashZ[0], startZ, endZ ) ) 
@@ -90,7 +90,7 @@ ImagePairAffineRegistrationFunctionalTemplate<VM>
   const Vector3D *hashX = (*info->AxesHash)[0], *hashY = (*info->AxesHash)[1], *hashZ = (*info->AxesHash)[2];
   Vector3D pFloating;
   
-  const DataGrid::IndexType& Dims = me->ReferenceGrid->GetDims();
+  const DataGrid::IndexType& Dims = me->m_ReferenceGrid->GetDims();
   const int DimsX = Dims[0], DimsY = Dims[1];
   
   int fltIdx[3];
@@ -133,7 +133,7 @@ ImagePairAffineRegistrationFunctionalTemplate<VM>
 	    (pFloating = rowStart) += hashX[pX];
 	    
 	    // probe volume and get the respective voxel
-	    if ( me->FloatingGrid->FindVoxelByIndex( pFloating, fltIdx, fltFrac ) )
+	    if ( me->m_FloatingGrid->FindVoxelByIndex( pFloating, fltIdx, fltFrac ) )
 	      {
 	      // Continue metric computation.
 	      threadMetric->Increment( metric->GetSampleX( r ), metric->GetSampleY( fltIdx, fltFrac ) );

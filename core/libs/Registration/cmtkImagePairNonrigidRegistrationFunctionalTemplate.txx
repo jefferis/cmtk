@@ -37,10 +37,10 @@ void
 cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::MatchRefFltIntensities()
 {
   const Types::DataItem paddingValue = DataTypeTraits<Types::DataItem>::ChoosePaddingValue();
-  TypedArray::SmartPtr warpedArray( TypedArray::Create( TYPE_ITEM, this->m_WarpedVolume, this->FloatingGrid->GetNumberOfPixels(), false /*freeArray*/, true /*padding*/, &paddingValue ) );
+  TypedArray::SmartPtr warpedArray( TypedArray::Create( TYPE_ITEM, this->m_WarpedVolume, this->m_FloatingGrid->GetNumberOfPixels(), false /*freeArray*/, true /*padding*/, &paddingValue ) );
 
-  UniformVolume::SmartPtr floatingCopy( this->FloatingGrid->Clone( true /*copyData*/ ) );
-  floatingCopy->GetData()->ApplyFunctionObject( TypedArrayFunctionHistogramMatching( *warpedArray, *(this->ReferenceGrid->GetData()) ) );
+  UniformVolume::SmartPtr floatingCopy( this->m_FloatingGrid->Clone( true /*copyData*/ ) );
+  floatingCopy->GetData()->ApplyFunctionObject( TypedArrayFunctionHistogramMatching( *warpedArray, *(this->m_ReferenceGrid->GetData()) ) );
   this->m_Metric->SetFloatingVolume( floatingCopy );
 }
 
@@ -79,7 +79,7 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
 
   const Types::DataItem unsetY = DataTypeTraits<Types::DataItem>::ChoosePaddingValue();
 
-  if ( this->ReferenceDataClass == DATACLASS_LABEL ) 
+  if ( this->m_ReferenceDataClass == DATACLASS_LABEL ) 
     {
     this->m_Warp->SetParameterActive();
     

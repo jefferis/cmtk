@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -260,8 +261,8 @@ main ( const int argc, const char* argv[] )
 	volume->GetGridLocation( v0, idx[0], idx[1], idx[2] );
 	v1 += v0;
 	
-	outputX.push_back( ScaleFactor*v1.XYZ[axisX] );
-	outputY.push_back( ymax - ScaleFactor*v1.XYZ[axisY] );
+	outputX.push_back( ScaleFactor*v1[axisX] );
+	outputY.push_back( ymax - ScaleFactor*v1[axisY] );
 	}
       }
     DrawLine( outputX, outputY );
@@ -302,8 +303,8 @@ main ( const int argc, const char* argv[] )
 	volume->GetGridLocation( v0, idx[0], idx[1], idx[2] );
 	v1 += v0;
 	
-	outputX.push_back( ScaleFactor*v1.XYZ[axisX] );
-	outputY.push_back( ymax - ScaleFactor*v1.XYZ[axisY] );
+	outputX.push_back( ScaleFactor*v1[axisX] );
+	outputY.push_back( ymax - ScaleFactor*v1[axisY] );
 	}
       }
     DrawLine( outputX, outputY );

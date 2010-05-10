@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -69,10 +70,6 @@ public:
   /** Normalizes each direction vector to have euclid norm = value.
    */
   void NormalizeEuclidNorm( const double value = 1.0 );
-
-  /** Reorients the direction vectors based on an affine transformation.
-   */
-  void Reorient( const AffineXform* affineXform );
 
   /// Default constructor.
   DirectionSet() { Dimension = 0; }

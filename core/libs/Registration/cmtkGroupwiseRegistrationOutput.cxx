@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -258,11 +259,11 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
 	{
 	char fullPath[PATH_MAX];
 	snprintf( fullPath, sizeof( fullPath ), "%s/%s", this->m_OutputRootDirectory, path );
-	VolumeIO::Write( templateGrid, fullPath, this->m_Verbose );
+	VolumeIO::Write( *templateGrid, fullPath, this->m_Verbose );
 	}
       else
 	{
-	VolumeIO::Write( templateGrid, path, this->m_Verbose );
+	VolumeIO::Write( *templateGrid, path, this->m_Verbose );
 	}
       }
     }

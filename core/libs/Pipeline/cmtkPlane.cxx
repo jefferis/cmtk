@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -62,17 +63,17 @@ void Plane::CopyStructure( const Plane *plane )
 void Plane::Project( Vector3D& p, const Vector3D& q ) const
 {
   Vector3D v( q );
-  v.XYZ[0] -= Origin[0];
-  v.XYZ[1] -= Origin[1];
-  v.XYZ[2] -= Origin[2];
+  v[0] -= Origin[0];
+  v[1] -= Origin[1];
+  v[2] -= Origin[2];
 
-  p.XYZ[0] = 
-    ( v.XYZ[0] * DirectionX[0] + v.XYZ[1] * DirectionX[1] + v.XYZ[2] * DirectionX[2] ) /
+  p[0] = 
+    ( v[0] * DirectionX[0] + v[1] * DirectionX[1] + v[2] * DirectionX[2] ) /
     ( MathUtil::Square( DirectionX[0] ) + MathUtil::Square( DirectionX[1] ) + MathUtil::Square( DirectionX[2] ) );
-  p.XYZ[1] = 
-    ( v.XYZ[0] * DirectionY[0] + v.XYZ[1] * DirectionY[1] + v.XYZ[2] * DirectionY[2] ) /
+  p[1] = 
+    ( v[0] * DirectionY[0] + v[1] * DirectionY[1] + v[2] * DirectionY[2] ) /
     ( MathUtil::Square( DirectionY[0] ) + MathUtil::Square( DirectionY[1] ) + MathUtil::Square( DirectionY[2] ) );
-  p.XYZ[2] = 0;
+  p[2] = 0;
 }
 
 void
@@ -81,8 +82,8 @@ Plane::ProjectPixel( const Vector3D& v, unsigned int& i, unsigned int& j ) const
   Vector3D q(v), p;
   this->Project( p, q );
 
-  i = MathUtil::Round( p.XYZ[0] / Spacing[0] );
-  j = MathUtil::Round( p.XYZ[1] / Spacing[1] );
+  i = MathUtil::Round( p[0] / Spacing[0] );
+  j = MathUtil::Round( p[1] / Spacing[1] );
 }
 
 } // namespace cmtk

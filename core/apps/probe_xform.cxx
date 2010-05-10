@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -107,9 +108,9 @@ main( const int argc, const char* argv[] )
   for ( std::list<cmtk::Vector3D>::iterator probeIt = LocationList.begin(); probeIt != LocationList.end(); ++probeIt ) 
     {
     cmtk::Vector3D v( *probeIt );
-    cmtk::StdOut.printf( "%lf %lf %lf -> ", (double)probeIt->XYZ[0], (double)probeIt->XYZ[1], (double)probeIt->XYZ[2] );
+    cmtk::StdOut.printf( "%lf %lf %lf -> ", (double)(*probeIt)[0], (double)(*probeIt)[1], (double)(*probeIt)[2] );
     if ( XformList.ApplyInPlace( v ) )
-      cmtk::StdOut.printf( "%lf %lf %lf\n", (double)v.XYZ[0], (double)v.XYZ[1], (double)v.XYZ[2] );
+      cmtk::StdOut.printf( "%lf %lf %lf\n", (double)v[0], (double)v[1], (double)v[2] );
     else
       cmtk::StdOut.printf( "FAILED\n" );
     }
