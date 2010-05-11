@@ -51,7 +51,7 @@ VoxelMatchingFunctional::InitFloating( UniformVolume::SmartPtr& floating )
   this->FloatingDims = this->FloatingGrid->GetDims();
   this->FloatingSize = this->FloatingGrid->Size;
 
-  this->m_FloatingCropRegionCoordinates = FloatingGrid->GetCropRegionCoordinates();
+  this->m_FloatingCropRegionCoordinates = FloatingGrid->GetHighResCropRegion();
   for ( int dim = 0; dim < 3; ++dim ) 
     {
     this->FloatingInverseDelta[dim] = 1.0 / FloatingGrid->m_Delta[dim];
