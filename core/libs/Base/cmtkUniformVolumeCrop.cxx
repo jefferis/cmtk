@@ -46,7 +46,7 @@ UniformVolume::SetHighResCropRegion
   if ( !this->m_HighResCropRegion )
     this->m_HighResCropRegion = Self::CoordinateRegionType::SmartPtr( new CoordinateRegionType );
 
-  this->m_HighResCropRegion = crop;
+  *this->m_HighResCropRegion = crop;
 
   for ( int dim = 0; dim<3; ++dim )
     {
