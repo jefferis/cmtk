@@ -110,7 +110,7 @@ UniformVolume::UniformVolume
   
   this->m_IndexToPhysicalMatrix = other.m_IndexToPhysicalMatrix;
 
-  this->SetCropRegionCoordinates( other.GetCropRegionCoordinates() );
+  this->SetHighResCropRegion( other.GetHighResCropRegion() );
   this->SetOffset( other.m_Offset );
   this->m_MetaInformation = other.m_MetaInformation;
 }
@@ -211,7 +211,7 @@ UniformVolume::GetDownsampled( const int (&downsample)[3] ) const
   dsVolume->SetOffset( offset );
   
   // set crop region while considering new image offset
-  dsVolume->SetCropRegionCoordinates( this->GetCropRegionCoordinates() );
+  dsVolume->SetHighResCropRegion( this->GetHighResCropRegion() );
 
   dsVolume->m_MetaInformation = this->m_MetaInformation;
   dsVolume->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;

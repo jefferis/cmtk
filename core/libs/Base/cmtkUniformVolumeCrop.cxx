@@ -40,9 +40,14 @@ cmtk
 //@{
 
 void
-UniformVolume::SetCropRegionCoordinates
+UniformVolume::SetHighResCropRegion
 ( const UniformVolume::CoordinateRegionType& crop )
 {
+  if ( !this->m_HighResCropRegion )
+    this->m_HighResCropRegion = Self::CoordinateRegionType::SmartPtr( new CoordinateRegionType );
+
+  this->m_HighResCropRegion = crop;
+
   for ( int dim = 0; dim<3; ++dim )
     {
     this->CropRegion().From()[dim] = this->GetCoordIndex( dim, std::max<Types::Coordinate>( crop.From()[dim], 0 ) );
@@ -51,18 +56,24 @@ UniformVolume::SetCropRegionCoordinates
 }
 
 const UniformVolume::CoordinateRegionType
-UniformVolume::GetCropRegionCoordinates
+UniformVolume::GetHighResCropRegion
 () const
 {
-  UniformVolume::CoordinateRegionType region;
-
-  for ( int dim = 0; dim<3; ++dim )
+  if ( this->m_HighResCropRegion )
     {
-    region.From()[dim] = this->m_Offset[dim] + this->m_Delta[dim] * this->CropRegion().From()[dim];
-    region.To()[dim] = this->m_Offset[dim] + this->m_Delta[dim] * (this->CropRegion().To()[dim]-1);
+    return *this->m_HighResCropRegion;
     }
-  
-  return region;
+  else
+    {
+    UniformVolume::CoordinateRegionType region;
+    
+    for ( int dim = 0; dim<3; ++dim )
+      {
+      region.From()[dim] = this->m_Offset[dim] + this->m_Delta[dim] * this->CropRegion().From()[dim];
+      region.To()[dim] = this->m_Offset[dim] + this->m_Delta[dim] * (this->CropRegion().To()[dim]-1);
+      }
+    return region;
+    }
 }
 
 UniformVolume::SmartPtr
@@ -88,7 +99,7 @@ UniformVolume::GetCroppedVolume() const
   
   // use m_Offset to keep track of new volume origin
   volume->SetOffset( this->m_Offset );
-  volume->m_Offset += Vector3D( this->GetCropRegionCoordinates().From().begin() );
+  volume->m_Offset += Vector3D( this->GetHighResCropRegion().From().begin() );
 
   volume->m_MetaInformation[META_IMAGE_ORIENTATION]  = this->m_MetaInformation[META_IMAGE_ORIENTATION];
   volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL]  = this->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL];

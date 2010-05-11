@@ -425,24 +425,31 @@ public:
 		  this->m_Offset[2] +  (idx / this->nextK) * this->m_Delta[2] );
   }
 
+  //@}
+
+  /** Set cropped volume from real-world coordinates.
+   */
+  void SetHighResCropRegion( const Self::CoordinateRegionType& crop );
+
+  /** Get cropped volume in real-world coordinates.
+   */
+  const Self::CoordinateRegionType GetHighResCropRegion() const;
+
+  /// Catch calls to inherited SetCropRegion() and reset high-res crop region.
+  virtual void SetCropRegion( const Self::RegionType& region )
+  {
+    this->m_HighResCropRegion = Self::CoordinateRegionType::SmartPtr( NULL );
+    Superclass::SetCropRegion( region );
+  }
+
   /** Calculate volume center.
    *@return Returned is the center of the bounding box.
    */
   Vector3D GetCenterCropRegion() const 
   {
-    const Self::CoordinateRegionType region = this->GetCropRegionCoordinates();
+    const Self::CoordinateRegionType region = this->GetHighResCropRegion();
     return this->m_Offset + 0.5 * Vector3D( region.From() + region.To() );
   }
-  
-  //@}
-
-  /** Set cropped volume from real-world coordinates.
-   */
-  void SetCropRegionCoordinates( const Self::CoordinateRegionType& crop );
-
-  /** Get cropped volume in real-world coordinates.
-   */
-  const Self::CoordinateRegionType GetCropRegionCoordinates() const;
   
   /** Return cropped uniform volume.
    */
@@ -489,6 +496,12 @@ public:
   void GetPrincipalAxes( Matrix3x3<Types::Coordinate>& directions, Vector3D& centerOfMass ) const;
 
 private:
+  /** Optional high-resolution crop region.
+   * If this is unset (i.e., a NULL pointer), then calls to
+   * GetHighResCropRegion() will simply convert the grid-based crop region.
+   */
+  Self::CoordinateRegionType::SmartPtr m_HighResCropRegion;
+
   /** Friend declaration of WarpXform class.
    * This allows direct access to Dims and Delta fields in RegisterVolumePoints
    * member function of WarpXform.

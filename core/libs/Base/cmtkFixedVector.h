@@ -35,6 +35,9 @@
 
 #include <cmtkconfig.h>
 
+#include <cmtkSmartPtr.h>
+#include <cmtkSmartConstPtr.h>
+
 #include <algorithm>
 #include <fstream>
 
@@ -51,6 +54,12 @@ public:
 
   /// Type of the stored values.
   typedef T ValueType;
+
+  /// Smart pointer to this class.
+  typedef SmartPointer<Self> SmartPtr;
+
+  /// Smart pointer-to-const to this class.
+  typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Default constructor.
   FixedVector() {}

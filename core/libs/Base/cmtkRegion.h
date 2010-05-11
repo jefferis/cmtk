@@ -37,6 +37,9 @@
 
 #include <cmtkFixedVector.h>
 
+#include <cmtkSmartPtr.h>
+#include <cmtkSmartConstPtr.h>
+
 #include <fstream>
 
 namespace
@@ -52,6 +55,12 @@ public:
 
   /// Index type.
   typedef FixedVector<NDIM,T> IndexType;
+
+  /// Smart pointer to this class.
+  typedef SmartPointer<Self> SmartPtr;
+
+  /// Smart pointer-to-const to this class.
+  typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Default constructor.
   Region() {}

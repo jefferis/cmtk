@@ -246,7 +246,7 @@ public:
    * This function can deal with negative crop region values, which refer to the upper grid
    * boundary and are automatically converted.
    */
-  void SetCropRegion( const Self::RegionType& region );
+  virtual void SetCropRegion( const Self::RegionType& region );
 
   /** Get cropped region reference.
    */
