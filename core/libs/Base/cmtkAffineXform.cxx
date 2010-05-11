@@ -221,16 +221,20 @@ AffineXform::MakeInverse () const
 void
 AffineXform::ChangeCenter ( const Self::SpaceVectorType& newCenter ) 
 {
-  Self::SpaceVectorType xlate( this->RetXlate() );
+  Types::Coordinate *const xlate = this->RetXlate();
   Types::Coordinate *const center = this->RetCenter();
   Self::SpaceVectorType deltaCenter = newCenter - Self::SpaceVectorType( center );
-
-  xlate -= deltaCenter;
-  deltaCenter = this->RotateScaleShear( deltaCenter );
-  xlate += deltaCenter;
   
   for ( size_t i = 0; i<3; ++i )
+    xlate[i] -= deltaCenter[i];
+
+  deltaCenter = this->RotateScaleShear( deltaCenter );
+
+  for ( size_t i = 0; i<3; ++i )
+    {
+    xlate[i] += deltaCenter[i];
     center[i] = newCenter[i];
+    }
 }
 
 void
