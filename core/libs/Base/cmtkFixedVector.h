@@ -55,6 +55,12 @@ public:
   /// Default constructor.
   FixedVector() {}
 
+  /// Initialization constructor.
+  explicit FixedVector( const T value )
+  {
+    std::fill( this->begin(), this->end(), value );
+  }
+
   /// Constructor from const pointer.
   explicit FixedVector( const T *const ptr ) 
   { 

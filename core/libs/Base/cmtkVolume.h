@@ -87,7 +87,7 @@ public:
   typedef CoordinateRegionType::IndexType CoordinateVectorType;
 
   /// Volume offset (coordinate of first voxel in RAS standard space).
-  Vector3D m_Offset;
+  CoordinateVectorType m_Offset;
 
   /// Set volume offset.
   void SetOffset( const Vector3D& o )
@@ -100,6 +100,9 @@ public:
 
   /// Spatial extent of the volume in world coordinates
   FixedVector<3,Types::Coordinate> Size;
+
+  /// Default constructor.
+  Volume() : m_Offset( 0.0 ) {}
 
   /** Destructor.
    * Do nothing really; just be present and virtual.
