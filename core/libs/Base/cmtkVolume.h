@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -102,7 +102,7 @@ public:
   FixedVector<3,Types::Coordinate> Size;
 
   /// Default constructor.
-  Volume() : m_Offset( 0.0 ) {}
+  Volume() : m_Offset( CoordinateVectorType::Init( 0.0 ) ) {}
 
   /** Destructor.
    * Do nothing really; just be present and virtual.

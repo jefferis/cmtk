@@ -55,10 +55,21 @@ public:
   /// Default constructor.
   FixedVector() {}
 
-  /// Initialization constructor.
-  explicit FixedVector( const T value )
+  /// Initialization class: use this to select initialization constructor.
+  class Init
   {
-    std::fill( this->begin(), this->end(), value );
+  public:
+    /// Constructor: set initialization value.
+    Init( const T value ) : m_Value( value ) {}
+
+    /// Array initialization value.
+    T m_Value;
+  };
+
+  /// Initialization constructor.
+  explicit FixedVector( const Self::Init& init )
+  {
+    std::fill( this->begin(), this->end(), init.m_Value );
   }
 
   /// Constructor from const pointer.
