@@ -112,7 +112,11 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
   header.GetArray( pixelDim, 80, 3 );
 
 // use fabs to catch something weird in FSL's output
-  Types::Coordinate size[3] = { (dims[0] - 1) * fabs( pixelDim[0] ), (dims[1] - 1) * fabs( pixelDim[1] ), (dims[2] - 1) * fabs( pixelDim[2] ) };
+#ifndef CMTK_REGRESSION
+  const Types::Coordinate size[3] = { float((dims[0] - 1) * fabs( pixelDim[0] )), float((dims[1] - 1) * fabs( pixelDim[1] )), float((dims[2] - 1) * fabs( pixelDim[2] )) };
+#else
+  const Types::Coordinate size[3] = { (dims[0] - 1) * fabs( pixelDim[0] ), (dims[1] - 1) * fabs( pixelDim[1] ), (dims[2] - 1) * fabs( pixelDim[2] ) };
+#endif
   
   fclose( hdrFile );
 
