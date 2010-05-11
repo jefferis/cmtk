@@ -88,7 +88,7 @@ MultiChannelRegistrationFunctionalBase
     {
     this->m_FloatingDims = channel->GetDims();
     this->m_FloatingSize = channel->Size;
-    this->m_FloatingCropRegion = channel->GetCropRegionCoordinates();
+    this->m_FloatingCropRegion = channel->GetHighResCropRegion();
     for ( int dim = 0; dim < 3; ++dim ) 
       {
       this->m_FloatingInverseDelta[dim] = 1.0 / channel->m_Delta[dim];

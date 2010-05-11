@@ -50,7 +50,7 @@ ImagePairRegistrationFunctional::InitFloating( UniformVolume::SmartPtr& floating
   
   this->m_FloatingDims = this->m_FloatingGrid->GetDims();
   this->m_FloatingSize = this->m_FloatingGrid->Size;
-  this->m_FloatingCropRegionCoordinates = this->m_FloatingGrid->GetCropRegionCoordinates();
+  this->m_FloatingCropRegionCoordinates = this->m_FloatingGrid->GetHighResCropRegion();
   for ( int dim = 0; dim < 3; ++dim ) 
     {
     this->m_FloatingInverseDelta[dim] = 1.0 / this->m_FloatingGrid->m_Delta[dim];

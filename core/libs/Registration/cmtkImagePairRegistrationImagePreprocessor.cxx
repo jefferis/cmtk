@@ -163,8 +163,7 @@ ImagePairRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume
 	realCropTo[dim] = crop[3+dim];
 	}
       }
-    volume->SetCropRegionCoordinates( UniformVolume::CoordinateRegionType( UniformVolume::CoordinateRegionType::IndexType( realCropFrom ), 
-									   UniformVolume::CoordinateRegionType::IndexType( realCropTo ) ) );
+    volume->SetHighResCropRegion( UniformVolume::CoordinateRegionType( UniformVolume::CoordinateRegionType::IndexType( realCropFrom ), UniformVolume::CoordinateRegionType::IndexType( realCropTo ) ) );
     }
   
   if ( this->m_AutoCropFlag )
