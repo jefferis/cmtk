@@ -383,7 +383,7 @@ main( int argc, char* argv[] )
     
     if ( CropXformOutFileName )
       {
-      const cmtk::UniformVolume::CoordinateRegionType crop = volume->GetCropRegionCoordinates();
+      const cmtk::UniformVolume::CoordinateRegionType crop = volume->GetHighResCropRegion();
       
       cmtk::StudyList slist;
       cmtk::Study::SmartPtr refstudy = slist.AddStudy( OutFileName );
