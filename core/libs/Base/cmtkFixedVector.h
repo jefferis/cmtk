@@ -76,7 +76,7 @@ public:
   };
 
   /// Initialization constructor.
-  explicit FixedVector( const Self::Init& init )
+  explicit FixedVector( const typename Self::Init& init )
   {
     std::fill( this->begin(), this->end(), init.m_Value );
   }

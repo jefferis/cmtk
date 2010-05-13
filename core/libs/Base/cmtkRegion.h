@@ -66,32 +66,32 @@ public:
   Region() {}
 
   /// Constructor from two index, from and to.
-  Region( const Self::IndexType& fromIndex, const Self::IndexType& toIndex )
+  Region( const typename Self::IndexType& fromIndex, const typename Self::IndexType& toIndex )
   {
     this->m_RegionFrom = fromIndex;
     this->m_RegionTo = toIndex;
   }
   
   /// Get "from".
-  Self::IndexType& From()
+  typename Self::IndexType& From()
   {
     return this->m_RegionFrom;
   }
 
   /// Get const "from".
-  const Self::IndexType& From() const
+  const typename Self::IndexType& From() const
   {
     return this->m_RegionFrom;
   }
 
   /// Get "from".
-  Self::IndexType& To()
+  typename Self::IndexType& To()
   {
     return this->m_RegionTo;
   }
 
   /// Get const "from".
-  const Self::IndexType& To() const
+  const typename Self::IndexType& To() const
   {
     return this->m_RegionTo;
   }
@@ -107,10 +107,10 @@ public:
   
 private:
   /// Beginning index.
-  Self::IndexType m_RegionFrom;
+  typename Self::IndexType m_RegionFrom;
 
   /// End index.
-  Self::IndexType m_RegionTo;
+  typename Self::IndexType m_RegionTo;
 };
 
 /// Stream input operator.
