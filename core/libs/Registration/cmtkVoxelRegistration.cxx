@@ -124,10 +124,6 @@ VoxelRegistration::Register ()
     Functional::SmartPtr nextFunctional = FunctionalStack.top();
     FunctionalStack.pop();
     
-    // Reference functional as we still need if after the optimization when
-    // calling DoneResolution().
-    //    nextFunctional->Reference();
-
     this->m_Optimizer->SetFunctional( nextFunctional );
 
     int doneResolution = 0;
