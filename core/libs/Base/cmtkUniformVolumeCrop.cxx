@@ -69,8 +69,13 @@ UniformVolume::GetHighResCropRegion
     
     for ( int dim = 0; dim<3; ++dim )
       {
+#ifndef CMTK_REGRESSION
+      region.From()[dim] = this->m_Delta[dim] * this->CropRegion().From()[dim];
+      region.To()[dim] = this->m_Delta[dim] * (this->CropRegion().To()[dim]-1);
+#else
       region.From()[dim] = this->m_Offset[dim] + this->m_Delta[dim] * this->CropRegion().From()[dim];
       region.To()[dim] = this->m_Offset[dim] + this->m_Delta[dim] * (this->CropRegion().To()[dim]-1);
+#endif
       }
     return region;
     }
