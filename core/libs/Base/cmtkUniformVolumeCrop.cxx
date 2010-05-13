@@ -50,8 +50,13 @@ UniformVolume::SetHighResCropRegion
 
   for ( int dim = 0; dim<3; ++dim )
     {
-    this->CropRegion().From()[dim] = this->GetCoordIndex( dim, std::max<Types::Coordinate>( crop.From()[dim], 0 ) );
-    this->CropRegion().To()[dim] = 1 + this->GetCoordIndex( dim, std::min<Types::Coordinate>( crop.To()[dim], this->Size[dim] ) );
+#ifndef CMTK_REGRESSION
+    this->CropRegion().From()[dim] = std::max<Self::IndexType::ValueType>( static_cast<Self::IndexType::ValueType>( crop.From()[dim] / this->m_Delta[dim] ), 0 );
+    this->CropRegion().To()[dim] = 1 + std::min<Self::IndexType::ValueType>( static_cast<Self::IndexType::ValueType>( crop.To()[dim] / this->m_Delta[dim] ), this->m_Dims[dim]-1 );
+#else
+    this->CropRegion().From()[dim] = std::max<Self::IndexType::ValueType>( static_cast<Self::IndexType::ValueType>( (crop.From()[dim] - this->m_Offset[dim]) / this->m_Delta[dim] ), 0 );
+    this->CropRegion().To()[dim] = 1 + std::min<Self::IndexType::ValueType>( static_cast<Self::IndexType::ValueType>( (crop.To()[dim] - this->m_Offset[dim]) / this->m_Delta[dim] ), this->m_Dims[dim]-1 );
+#endif
     }
 }
 
