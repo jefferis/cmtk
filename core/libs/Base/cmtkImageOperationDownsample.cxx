@@ -35,7 +35,7 @@ cmtk::ImageOperationDownsample
 ::Apply( cmtk::UniformVolume::SmartPtr& volume )
 {
   const int factors[3] = { this->m_FactorX, this->m_FactorY, this->m_FactorZ };
-  return cmtk::UniformVolume::SmartPtr( volume->GetDownsampled( factors ) );
+  return cmtk::UniformVolume::SmartPtr( volume->GetDownsampledAndAveraged( factors ) );
 }
 
 void

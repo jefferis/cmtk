@@ -86,7 +86,9 @@ public:
   /// Index type.
   typedef CoordinateRegionType::IndexType CoordinateVectorType;
 
-  /// Volume offset (coordinate of first voxel in RAS standard space).
+  /** Volume offset (coordinate of first voxel in RAS standard space).
+   *\note This offset is NOT included in the volume size, m_Size.
+   */
   CoordinateVectorType m_Offset;
 
   /// Set volume offset.
@@ -98,7 +100,12 @@ public:
   /// List of landmarks defined in this volume.
   LandmarkList::SmartPtr m_LandmarkList;
 
-  /// Spatial extent of the volume in world coordinates
+  /** Spatial extent of the volume in world coordinates
+   *\note This is the actual size of the volume between first and last pixel. Therefore,
+   * if a non-zero volume coordinate offset is set in m_Offset, this does not affect 
+   * this field, because the volume size as the product of pixel size times number of pixels
+   * per dimension minus one remains unaffected.
+   */
   FixedVector<3,Types::Coordinate> Size;
 
   /// Default constructor.

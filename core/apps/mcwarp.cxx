@@ -132,7 +132,7 @@ MakeDownsampled( const cmtk::UniformVolume::SmartPtr& image, const int downsampl
     }
 
   if ( downsample > 1 )
-    result = cmtk::UniformVolume::SmartPtr( result->GetDownsampled( downsample, true /*approxIsotropic*/ ) );
+    result = cmtk::UniformVolume::SmartPtr( result->GetDownsampledAndAveraged( downsample, true /*approxIsotropic*/ ) );
   return result;
 }
 

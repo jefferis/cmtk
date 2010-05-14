@@ -198,10 +198,10 @@ public:
    * factors per dimension are adjusted so that the resulting output volume
    * is as close to isotropic as possible without interpolation.
    */
-  virtual UniformVolume* GetDownsampled( const int downsample, const bool approxIsotropic = false ) const;
+  virtual UniformVolume* GetDownsampledAndAveraged( const int downsample, const bool approxIsotropic = false ) const;
  
   /// Downsampling constructor function.
-  virtual UniformVolume* GetDownsampled( const int (&downsample)[3] ) const;
+  virtual UniformVolume* GetDownsampledAndAveraged( const int (&downsample)[3] ) const;
 
   /// Get interleaved sub-volume along given axis and with given interleave offset.
   UniformVolume* GetInterleavedSubVolume( const int axis, const int factor, const int idx ) const;
@@ -427,7 +427,7 @@ public:
 
   //@}
 
-  /** Set cropped volume from real-world coordinates.
+  /** Set cropping region in real-world coordinates.
    */
   void SetHighResCropRegion( const Self::CoordinateRegionType& crop );
 
@@ -448,7 +448,7 @@ public:
   Vector3D GetCenterCropRegion() const 
   {
     const Self::CoordinateRegionType region = this->GetHighResCropRegion();
-    return this->m_Offset + 0.5 * Vector3D( region.From() + region.To() );
+    return 0.5 * Vector3D( region.From() + region.To() );
   }
   
   /** Return cropped uniform volume.
@@ -497,8 +497,10 @@ public:
 
 private:
   /** Optional high-resolution crop region.
-   * If this is unset (i.e., a NULL pointer), then calls to
-   * GetHighResCropRegion() will simply convert the grid-based crop region.
+   * If this is unset (i.e., a NULL pointer), then calls to GetHighResCropRegion() will simply convert the grid-based crop region.
+   *
+   *\note The crop region includes the volume offset, m_Offset. Its upper limit can, therefore, be larger
+   *  than m_Size, which does NOT include m_Offset.
    */
   Self::CoordinateRegionType::SmartPtr m_HighResCropRegion;
 

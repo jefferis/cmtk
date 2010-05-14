@@ -176,7 +176,7 @@ UniformVolume::GetReoriented( const char* newOrientation ) const
 }
 
 UniformVolume* 
-UniformVolume::GetDownsampled( const int downsample, const bool approxIsotropic ) const
+UniformVolume::GetDownsampledAndAveraged( const int downsample, const bool approxIsotropic ) const
 {
   if ( approxIsotropic )
     {
@@ -184,19 +184,19 @@ UniformVolume::GetDownsampled( const int downsample, const bool approxIsotropic 
     const int downsampleByAxis[3] = { std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->m_Delta[0] / minDelta) ) ),
 				      std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->m_Delta[1] / minDelta) ) ),
 				      std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->m_Delta[2] / minDelta) ) ) };
-    return this->GetDownsampled( downsampleByAxis );
+    return this->GetDownsampledAndAveraged( downsampleByAxis );
     }
   else
     {
     const int downsampleByAxis[3] = { downsample, downsample, downsample };
-    return this->GetDownsampled( downsampleByAxis );
+    return this->GetDownsampledAndAveraged( downsampleByAxis );
     }
 }
 
 UniformVolume* 
-UniformVolume::GetDownsampled( const int (&downsample)[3] ) const
+UniformVolume::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
 {
-  DataGrid::SmartPtr newDataGrid( this->DataGrid::GetDownsampled( downsample ) );
+  DataGrid::SmartPtr newDataGrid( this->DataGrid::GetDownsampledAndAveraged( downsample ) );
   TypedArray::SmartPtr newData = newDataGrid->GetData();
 
   // create downsample grid

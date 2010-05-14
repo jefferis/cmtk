@@ -416,7 +416,7 @@ if ( Downsample )
       exit( 1 );
       }
     }
-  volume = cmtk::UniformVolume::SmartPtr( volume->GetDownsampled( factors ) );
+  volume = cmtk::UniformVolume::SmartPtr( volume->GetDownsampledAndAveraged( factors ) );
   volumeData = volume->GetData();
   }
 

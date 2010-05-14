@@ -108,8 +108,15 @@ UniformVolume::GetCroppedVolume() const
       volume->m_IndexToPhysicalMatrix[3][i] += this->CropRegion().From()[j] * volume->m_IndexToPhysicalMatrix[j][i];
   
   // use m_Offset to keep track of new volume origin
+#ifndef CMTK_REGRESSION
   volume->SetOffset( this->m_Offset );
   volume->m_Offset += Vector3D( this->GetHighResCropRegion().From().begin() );
+#else
+  Vector3D volumeOffset = this->m_Offset;
+  for ( int i = 0; i < 3; ++i )
+    volumeOffset += this->CropRegion().From()[i] * this->m_Delta[i];
+  volume->SetOffset( volumeOffset );
+#endif
 
   volume->m_MetaInformation[META_IMAGE_ORIENTATION]  = this->m_MetaInformation[META_IMAGE_ORIENTATION];
   volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL]  = this->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL];

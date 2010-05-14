@@ -161,7 +161,7 @@ GroupwiseRegistrationFunctionalBase::SetTemplateGrid
   
   if ( downsample > 1 )
     {
-    this->m_TemplateGrid = UniformVolume::SmartPtr( this->m_TemplateGrid->GetDownsampled( downsample, true /*approxIsotropic*/ ) );
+    this->m_TemplateGrid = UniformVolume::SmartPtr( this->m_TemplateGrid->GetDownsampledAndAveraged( downsample, true /*approxIsotropic*/ ) );
     }
   this->m_TemplateNumberOfPixels = this->m_TemplateGrid->GetNumberOfPixels();  
   

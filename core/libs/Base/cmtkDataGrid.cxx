@@ -64,7 +64,7 @@ DataGrid::CreateDataArray( const ScalarDataType dataType, const bool setToZero )
 }
 
 DataGrid* 
-DataGrid::GetDownsampled( const int (&downsample)[3] ) const
+DataGrid::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
 {
   const int newDims[3] = { (this->m_Dims[0]-1) / downsample[0] + 1, (this->m_Dims[1]-1) / downsample[1] + 1, (this->m_Dims[2]-1) / downsample[2] + 1 };
 

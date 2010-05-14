@@ -792,7 +792,7 @@ AddVolumeStudyList
 
   if ( DownsampleVolumeStr )
     {
-    floatingVolume = cmtk::UniformVolume::SmartPtr( floatingVolume->GetDownsampled( DownsampleVolume ) );
+    floatingVolume = cmtk::UniformVolume::SmartPtr( floatingVolume->GetDownsampledAndAveraged( DownsampleVolume ) );
     if ( Verbose )
       {
       cmtk::StdErr << "Downsampling atlas by factors " << DownsampleVolumeStr << "\n";
@@ -860,7 +860,7 @@ AddVolumeStudyList
 
   if ( DownsampleVolumeStr )
     {
-    floatingVolume = cmtk::UniformVolume::SmartPtr( floatingVolume->GetDownsampled( DownsampleVolume ) );
+    floatingVolume = cmtk::UniformVolume::SmartPtr( floatingVolume->GetDownsampledAndAveraged( DownsampleVolume ) );
     if ( Verbose )
       {
       cmtk::StdErr << "Downsampling atlas by factors " << DownsampleVolumeStr << "\n";

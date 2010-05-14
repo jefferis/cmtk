@@ -109,8 +109,8 @@ public:
     return (this->m_Dims == other.m_Dims);
   }
 
-  /// Downsampling constructor function.
-  virtual DataGrid* GetDownsampled( const int (&downsample)[3] ) const;
+  /// Downsampling and pixel-averaging constructor function.
+  virtual DataGrid* GetDownsampledAndAveraged( const int (&downsample)[3] ) const;
 
   /** Reorientation constructor function.
    *@param newOrientation Three letter orientation code that specifies the anatomically-based

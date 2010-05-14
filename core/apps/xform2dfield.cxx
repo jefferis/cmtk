@@ -134,7 +134,7 @@ main ( const int argc, const char *argv[] )
 	exit( 1 );
 	}
       }
-    volume = cmtk::UniformVolume::SmartPtr( volume->GetDownsampled( factors ) );
+    volume = cmtk::UniformVolume::SmartPtr( volume->GetDownsampledAndAveraged( factors ) );
     }
   
   cmtk::DeformationField::SmartPtr dfield( new cmtk::DeformationField( volume ) );
