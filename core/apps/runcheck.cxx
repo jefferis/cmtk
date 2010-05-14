@@ -42,7 +42,7 @@ main( const int argc, const char*[] )
     {
     const cmtk::UniformVolume::IndexType::ValueType dims[3] = {2,2,2};
     const cmtk::UniformVolume::CoordinateVectorType::ValueType size[3] = {1,1,1};
-    cmtk::UniformVolume volume( cmtk::UniformVolume::IndexType( dims ), cmtk::UniformVolume::CoordinateVectorType( size ) );
+    cmtk::UniformVolume::SmartPtr volume( new cmtk::UniformVolume( cmtk::UniformVolume::IndexType( dims ), cmtk::UniformVolume::CoordinateVectorType( size ) ) );
     }
 
   // if we got here, the program probably ran
