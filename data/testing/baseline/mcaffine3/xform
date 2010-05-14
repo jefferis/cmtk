@@ -9,8 +9,8 @@ registration {
 	floating_channel "rat2_fse_late.hdr"
 	affine_xform {
 		xlate 0 0.5 1 
-		rotate 8.060766269 5.141646452 0.4397858503 
-		scale 1.091653866 0.8601638505 1.153942652 
+		rotate 7.617470412 4.295775163 0.4501581581 
+		scale 1.091653866 0.8641321045 1.141653866 
 		shear 0 0 0 
 		center 31.5 31.5 7.200000286 
 	}

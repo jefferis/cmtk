@@ -50,13 +50,9 @@ UniformVolume::SetHighResCropRegion
 
   for ( int dim = 0; dim<3; ++dim )
     {
-#ifndef CMTK_REGRESSION
-    this->CropRegion().From()[dim] = std::max<Self::IndexType::ValueType>( static_cast<Self::IndexType::ValueType>( crop.From()[dim] / this->m_Delta[dim] ), 0 );
-    this->CropRegion().To()[dim] = 1 + std::min<Self::IndexType::ValueType>( static_cast<Self::IndexType::ValueType>( crop.To()[dim] / this->m_Delta[dim] ), this->m_Dims[dim]-1 );
-#else
     this->CropRegion().From()[dim] = std::max<Self::IndexType::ValueType>( static_cast<Self::IndexType::ValueType>( (crop.From()[dim] - this->m_Offset[dim]) / this->m_Delta[dim] ), 0 );
+//    this->CropRegion().From()[dim] = std::max<Self::IndexType::ValueType>( static_cast<Self::IndexType::ValueType>( ceil( (crop.From()[dim] - this->m_Offset[dim]) / this->m_Delta[dim] ) ), 0 );
     this->CropRegion().To()[dim] = 1 + std::min<Self::IndexType::ValueType>( static_cast<Self::IndexType::ValueType>( (crop.To()[dim] - this->m_Offset[dim]) / this->m_Delta[dim] ), this->m_Dims[dim]-1 );
-#endif
     }
 }
 
@@ -74,13 +70,10 @@ UniformVolume::GetHighResCropRegion
     
     for ( int dim = 0; dim<3; ++dim )
       {
-#ifndef CMTK_REGRESSION
-      region.From()[dim] = this->m_Delta[dim] * this->CropRegion().From()[dim];
-      region.To()[dim] = this->m_Delta[dim] * (this->CropRegion().To()[dim]-1);
-#else
-      region.From()[dim] = this->m_Offset[dim] + this->m_Delta[dim] * this->CropRegion().From()[dim];
-      region.To()[dim] = this->m_Offset[dim] + this->m_Delta[dim] * (this->CropRegion().To()[dim]-1);
-#endif
+      region.From()[dim] = this->m_Offset[dim] + this->m_Delta[dim] * (this->CropRegion().From()[dim]); // take a half pixel off to move between pixels
+      region.To()[dim] = this->m_Offset[dim] + this->m_Delta[dim] * (this->CropRegion().To()[dim]-1); // add a hald pixel to move between pixels
+//      region.From()[dim] = this->m_Offset[dim] + this->m_Delta[dim] * (this->CropRegion().From()[dim]-0.5); // take a half pixel off to move between pixels
+//      region.To()[dim] = this->m_Offset[dim] + this->m_Delta[dim] * (this->CropRegion().To()[dim]-1+0.5); // add a hald pixel to move between pixels
       }
     return region;
     }
@@ -108,16 +101,14 @@ UniformVolume::GetCroppedVolume() const
       volume->m_IndexToPhysicalMatrix[3][i] += this->CropRegion().From()[j] * volume->m_IndexToPhysicalMatrix[j][i];
   
   // use m_Offset to keep track of new volume origin
-#ifndef CMTK_REGRESSION
-  volume->SetOffset( this->m_Offset );
-  volume->m_Offset += Vector3D( this->GetHighResCropRegion().From().begin() );
-#else
   Vector3D volumeOffset = this->m_Offset;
   for ( int i = 0; i < 3; ++i )
-    volumeOffset += this->CropRegion().From()[i] * this->m_Delta[i];
+    volumeOffset[i] += (this->CropRegion().From()[i] * this->m_Delta[i]);
   volume->SetOffset( volumeOffset );
-#endif
 
+  if ( this->m_HighResCropRegion )
+    volume->SetHighResCropRegion( *this->m_HighResCropRegion );
+  
   volume->m_MetaInformation[META_IMAGE_ORIENTATION]  = this->m_MetaInformation[META_IMAGE_ORIENTATION];
   volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL]  = this->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL];
 
