@@ -74,9 +74,9 @@ Broadcast
     MPI::CHAR.Pack( cropFrom, sizeof( cropFrom ), msgBufferHdr, msgBufferHdrSize, position, comm );
     MPI::CHAR.Pack( cropTo, sizeof( cropTo ), msgBufferHdr, msgBufferHdrSize, position, comm );
 
-    MPI::CHAR.Pack( inOutPtr->Size, 3 * sizeof( inOutPtr->Size[0] ), msgBufferHdr, msgBufferHdrSize, position, comm );
+    MPI::CHAR.Pack( inOutPtr->Size.begin(), 3 * sizeof( inOutPtr->Size[0] ), msgBufferHdr, msgBufferHdrSize, position, comm );
 
-    MPI::CHAR.Pack( inOutPtr->m_Offset.XYZ, 3 * sizeof( inOutPtr->m_Offset[0] ), msgBufferHdr, msgBufferHdrSize, position, comm );
+    MPI::CHAR.Pack( inOutPtr->m_Offset.begin(), 3 * sizeof( inOutPtr->m_Offset[0] ), msgBufferHdr, msgBufferHdrSize, position, comm );
 
     ScalarDataType dataType = TYPE_NONE;
     const TypedArray* inData = inOutPtr->GetData();
@@ -107,7 +107,7 @@ Broadcast
     MPI::CHAR.Unpack( msgBufferHdr, msgBufferHdrSize, offset, sizeof( offset ), position, comm );
     MPI::CHAR.Unpack( msgBufferHdr, msgBufferHdrSize, &dataType, sizeof( dataType ), position, comm );
 
-    inOutPtr = UniformVolume::SmartPtr( new UniformVolume( dims, size ) );
+    inOutPtr = UniformVolume::SmartPtr( new UniformVolume( UniformVolume::IndexType( dims ), UniformVolume::CoordinateVectorType( size ) ) );
     inOutPtr->SetOffset( Vector3D( offset ) );
     inOutPtr->CropRegion() = cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType( cropRegionFrom ), cmtk::DataGrid::IndexType( cropRegionTo ) );
     inOutPtr->CreateDataArray( dataType );
