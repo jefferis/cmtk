@@ -74,10 +74,10 @@ int main ( const int argc, const char *argv[] )
   const vtkIdType numPoints = refPoints->GetNumberOfPoints();
   for ( vtkIdType id = 0; id < numPoints; ++id ) 
     {
-    refPoints->GetPoint( id, u.XYZ );
-    xfPoints->GetPoint( id, v.XYZ );
+    refPoints->GetPoint( id, u.begin() );
+    xfPoints->GetPoint( id, v.begin() );
     u -= v;
-    sqError += u.EuclidNorm();
+    sqError += u.RootSumOfSquares();
     }
   fprintf( stderr, "Matched %d points. FRE = %f [mm].\n", static_cast<int>( numPoints ), static_cast<float>( sqError / numPoints ) );
   
