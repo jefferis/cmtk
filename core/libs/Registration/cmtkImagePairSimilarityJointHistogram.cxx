@@ -56,16 +56,6 @@ ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram( const Self
   this->m_JointHistogram = other.m_JointHistogram;
 }
 
-ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
-( Self& other, const bool copyData )
-  : ImagePairSimilarityMeasure( other, copyData )
-{
-  this->m_NumberOfBinsX = other.m_NumberOfBinsX;
-  this->m_NumberOfBinsY = other.m_NumberOfBinsY;
-
-  this->m_JointHistogram = other.m_JointHistogram;
-}
-
 void
 ImagePairSimilarityJointHistogram::SetReferenceVolume( const UniformVolume::SmartConstPtr& refVolume )
 {

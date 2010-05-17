@@ -96,20 +96,4 @@ ImagePairSimilarityMeasure::ImagePairSimilarityMeasure
   this->m_FloatingImageInterpolator = other.m_FloatingImageInterpolator;
 }
 
-ImagePairSimilarityMeasure::ImagePairSimilarityMeasure
-( Self& other, const bool copyData )
-{
-  if ( copyData )
-    {
-    StdErr << "Not implemented: " << __FILE__ << ":" << __LINE__ << "\n";
-    exit(1);
-    }
-  else
-    {
-    this->m_ReferenceData = other.m_ReferenceData;
-    this->m_FloatingData = other.m_FloatingData;
-    this->m_FloatingImageInterpolator = other.m_FloatingImageInterpolator;
-    }
-}
-
 } // namespace cmtk

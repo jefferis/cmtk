@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -169,29 +170,6 @@ public:
       SumI[bin] -= other.SumI[bin];
       SumI2[bin] -= other.SumI2[bin];
     }
-  }
-
-  /// Copy constructor.
-  ImagePairSimilarityMeasureCR
-  ( Self& other, const bool copyData = false )
-    : ImagePairSimilarityMeasure( other, copyData ) 
-  {
-    NumBinsX = other.NumBinsX;
-    NumBinsY = other.NumBinsY;
-
-    SigmaSqJ = other.SigmaSqJ;
-    MuJ = other.MuJ;
-
-    SigmaSqI = other.SigmaSqI;
-    MuI = other.MuI;
-
-    HistogramI = new Histogram<unsigned int>( NumBinsX );
-    SumJ = Memory::AllocateArray<double>( NumBinsX );
-    SumJ2 = Memory::AllocateArray<double>( NumBinsX );
-
-    HistogramJ = new Histogram<unsigned int>( NumBinsY );
-    SumI = Memory::AllocateArray<double>( NumBinsY );
-    SumI2 = Memory::AllocateArray<double>( NumBinsY );
   }
 
   /// Copy constructor.

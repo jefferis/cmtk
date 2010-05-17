@@ -79,9 +79,6 @@ public:
   /// Copy constructor.
   ImagePairSimilarityMeasure( const Self& src );
 
-  /// Copy constructor.
-  ImagePairSimilarityMeasure( Self& other, const bool copyData = false );
-
   /// Set reference volume.
   virtual void SetReferenceVolume( const UniformVolume::SmartConstPtr& refVolume );
 

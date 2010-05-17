@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -74,11 +75,8 @@ public:
   ImagePairSimilarityMeasureMSD( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume,
 				 const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
 
-  /// UNDOCUMENTED
+  /// Copy constructor.
   ImagePairSimilarityMeasureMSD( const Self& other );
-  
-  /// UNDOCUMENTED
-  ImagePairSimilarityMeasureMSD( Self& other, const bool copyData = false );
   
   /// UNDOCUMENTED
   void Copy( const ImagePairSimilarityMeasureMSD& other, const bool copyData = false ) 

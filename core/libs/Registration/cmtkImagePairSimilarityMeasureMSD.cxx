@@ -44,14 +44,6 @@ ImagePairSimilarityMeasureMSD::ImagePairSimilarityMeasureMSD
 {}
 
 ImagePairSimilarityMeasureMSD::ImagePairSimilarityMeasureMSD
-( Self& other, const bool copyData ) :
-  ImagePairSimilarityMeasure( other, copyData )
-{
-  this->m_SumOfDifferences = other.m_SumOfDifferences;
-  this->m_NumberOfSamples = other.m_NumberOfSamples;
-}
-
-ImagePairSimilarityMeasureMSD::ImagePairSimilarityMeasureMSD
 ( const Self& other ) :
   ImagePairSimilarityMeasure( other )
 {

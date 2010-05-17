@@ -91,9 +91,6 @@ public:
   /// Copy constructor.
   ImagePairSimilarityJointHistogram( const Self& src );
 
-  /// Copy constructor.
-  ImagePairSimilarityJointHistogram( Self& other, const bool copyData = false );
-
   /// Copy operator.
   void CopyUnsafe( const ImagePairSimilarityJointHistogram& other )
   {

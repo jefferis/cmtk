@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -42,18 +43,6 @@ ImagePairSimilarityMeasureNCC::ImagePairSimilarityMeasureNCC
 ( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation )
   : ImagePairSimilarityMeasure( refVolume, fltVolume, interpolation )
 {}
-
-ImagePairSimilarityMeasureNCC
-::ImagePairSimilarityMeasureNCC( Self& other, const bool copyData ) :
-  ImagePairSimilarityMeasure( other, copyData )
-{
-  SumX = other.SumX;
-  SumY = other.SumY;
-  SumXY = other.SumXY;
-  SumSqX = other.SumSqX;
-  SumSqY = other.SumSqY;
-  Samples = other.Samples;
-}
 
 ImagePairSimilarityMeasureNCC
 ::ImagePairSimilarityMeasureNCC( const Self& other ) :
