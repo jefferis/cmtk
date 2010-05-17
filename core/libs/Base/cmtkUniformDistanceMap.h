@@ -51,9 +51,7 @@ cmtk
  *\author This class is based on code originally written by Calvin R. Maurer, Jr.
  */
 template<class TDistanceDataType>
-class UniformDistanceMap : 
-  /// We consider the distance map a volume image as well.
-  public UniformVolume
+class UniformDistanceMap
 {
 public:
   static const long int EDT_MAX_DISTANCE_SQUARED = 2147329548;
@@ -111,6 +109,12 @@ public:
    */
   UniformDistanceMap( const UniformVolume& volume, const byte flags = DEFAULT, const Types::DataItem value = 0, const Types::DataItem window = 0 );
 
+  // Get the computed distance map.
+  UniformVolume::SmartPtr Get()
+  {
+    return this->m_DistanceMap;
+  }
+
 private:
   /// Compute distance map.
   void BuildDistanceMap( const UniformVolume& volume, const byte flags, const Types::DataItem value=0, const Types::DataItem window = 0 );
@@ -145,6 +149,9 @@ private:
 
   /** Thread function for second phase (z) of EDT computation. */
   static void ComputeEDTThreadPhase2( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+
+  /// The computed distance map.
+  UniformVolume::SmartPtr m_DistanceMap;
 };
 
 //@}
