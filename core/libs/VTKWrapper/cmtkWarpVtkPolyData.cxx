@@ -86,22 +86,22 @@ void WarpVtkPolyData::Execute()
       {
       for ( int idx = 0; idx<numVectors; ++idx ) 
 	{
-	v.Set( inPointPtr+3*idx );
+	v = Vector3D( inPointPtr+3*idx );
 	this->m_WarpXform->ApplyInPlace( v );
-	outPointPtr[3*idx] = v.XYZ[0];
-	outPointPtr[3*idx+1] = v.XYZ[1];
-	outPointPtr[3*idx+2] = v.XYZ[2];
+	outPointPtr[3*idx] = v[0];
+	outPointPtr[3*idx+1] = v[1];
+	outPointPtr[3*idx+2] = v[2];
 	}
       } 
     else
       {
       for ( int idx = 0; idx<numVectors; ++idx ) 
 	{
-	v.Set( inPointPtr+3*idx );
+	v = Vector3D( inPointPtr+3*idx );
 	this->m_AffineXform->ApplyInPlace( v );
-	outPointPtr[3*idx] = v.XYZ[0];
-	outPointPtr[3*idx+1] = v.XYZ[1];
-	outPointPtr[3*idx+2] = v.XYZ[2];
+	outPointPtr[3*idx] = v[0];
+	outPointPtr[3*idx+1] = v[1];
+	outPointPtr[3*idx+2] = v[2];
 	}
       }
     
