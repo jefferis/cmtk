@@ -74,6 +74,12 @@ public:
   /// Smart pointer to const UniformVolume.
   typedef SmartConstPointer<Self> SmartConstPtr;
 
+  /// Region type.
+  typedef Superclass:: CoordinateRegionType CoordinateRegionType;
+
+  /// Index type.
+  typedef Superclass::CoordinateVectorType CoordinateVectorType;
+
   /// Points array type.
   typedef std::vector< std::vector<Types::Coordinate> > PointsArrayType;
 
