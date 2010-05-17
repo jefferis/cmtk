@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -42,14 +43,6 @@ VoxelMatchingMeanSquaredDifference::VoxelMatchingMeanSquaredDifference
 ( const UniformVolume* refVolume, const UniformVolume* fltVolume ) :
   VoxelMatchingMetricShort( refVolume, fltVolume )
 {}
-
-VoxelMatchingMeanSquaredDifference::VoxelMatchingMeanSquaredDifference
-( Self& other, const bool copyData ) :
-  VoxelMatchingMetricShort( other, copyData )
-{
-  Sum = other.Sum;
-  Samples = other.Samples;
-}
 
 VoxelMatchingMeanSquaredDifference::VoxelMatchingMeanSquaredDifference
 ( const Self& other ) :

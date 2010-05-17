@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -81,9 +82,6 @@ public:
     const unsigned int numBinsY = CMTK_HISTOGRAM_AUTOBINS,
     const Types::DataItem minBoundX = -HUGE_VAL, const Types::DataItem maxBoundX = HUGE_VAL,
     const Types::DataItem minBoundY = -HUGE_VAL, const Types::DataItem maxBoundY = HUGE_VAL );
-  
-  /// Copy constructor.
-  RegistrationJointHistogram ( RegistrationJointHistogram& other, const bool copyData = false );
   
   /// Copy constructor.
   RegistrationJointHistogram ( const RegistrationJointHistogram& other );

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -55,17 +56,6 @@ RegistrationJointHistogram<I>::RegistrationJointHistogram
     ( this->DataX.Init( refVolume, numBinsX, minBoundX, maxBoundX ),
       this->DataY.Init( fltVolume, numBinsY, minBoundY, maxBoundY ) );
 }
-
-template<cmtk::Interpolators::InterpolationEnum I>
-RegistrationJointHistogram<I>::RegistrationJointHistogram 
-( RegistrationJointHistogram& other, const bool copyData ) :
-#ifdef CMTK_PVI_HISTOGRAMS
-  JointHistogram<float>( other, copyData ),
-#else
-  JointHistogram<int>( other, copyData ),
-#endif
-  VoxelMatchingMetric<byte,TYPE_BYTE,I>( other, copyData )
-{}
 
 template<cmtk::Interpolators::InterpolationEnum I>
 RegistrationJointHistogram<I>::RegistrationJointHistogram

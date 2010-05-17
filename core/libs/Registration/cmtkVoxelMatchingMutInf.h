@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -80,9 +81,6 @@ public:
   VoxelMatchingMutInf ( const UniformVolume* refVolume, const UniformVolume* fltVolume, const unsigned int numRefBins = CMTK_HISTOGRAM_AUTOBINS, const unsigned int numFltBins = CMTK_HISTOGRAM_AUTOBINS )
     : RegistrationJointHistogram<I>( refVolume, fltVolume, numRefBins, numFltBins ) {};
   
-  /// Copy constructor.
-  VoxelMatchingMutInf( Self& other, const bool copyData = false ) : RegistrationJointHistogram<I>( other, copyData ) {}
-
   VoxelMatchingMutInf( const Self& other ) : RegistrationJointHistogram<I>( other ) {}
 
   /// Return mutual information.

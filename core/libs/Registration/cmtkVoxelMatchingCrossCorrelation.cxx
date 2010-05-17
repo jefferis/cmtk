@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -42,18 +43,6 @@ VoxelMatchingCrossCorrelation
 ::VoxelMatchingCrossCorrelation( const UniformVolume* refVolume, const UniformVolume* fltVolume ) :
   VoxelMatchingMetricShort( refVolume, fltVolume )
 {}
-
-VoxelMatchingCrossCorrelation
-::VoxelMatchingCrossCorrelation( Self& other, const bool copyData ) :
-  VoxelMatchingMetricShort( other, copyData )
-{
-  SumX = other.SumX;
-  SumY = other.SumY;
-  SumXY = other.SumXY;
-  SumSqX = other.SumSqX;
-  SumSqY = other.SumSqY;
-  Samples = other.Samples;
-}
 
 VoxelMatchingCrossCorrelation
 ::VoxelMatchingCrossCorrelation( const Self& other ) :

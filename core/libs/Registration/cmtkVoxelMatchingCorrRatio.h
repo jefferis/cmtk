@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -100,6 +101,28 @@ public:
     refVolume->GetData()->GetStatistics( MuI, SigmaSqI );
   }
 
+  /// Copy constructor.
+  VoxelMatchingCorrRatio ( const Self& other )
+    : VoxelMatchingMetric<short,TYPE_SHORT,I>( other ) 
+  {
+    NumBinsX = other.NumBinsX;
+    NumBinsY = other.NumBinsY;
+
+    SigmaSqJ = other.SigmaSqJ;
+    MuJ = other.MuJ;
+
+    SigmaSqI = other.SigmaSqI;
+    MuI = other.MuI;
+
+    HistogramI = new Histogram<unsigned int>( NumBinsX );
+    SumJ = Memory::AllocateArray<double>( NumBinsX );
+    SumJ2 = Memory::AllocateArray<double>( NumBinsX );
+
+    HistogramJ = new Histogram<unsigned int>( NumBinsY );
+    SumI = Memory::AllocateArray<double>( NumBinsY );
+    SumI2 = Memory::AllocateArray<double>( NumBinsY );
+  }
+  
   /// Destructor: free internal data structures.
   ~VoxelMatchingCorrRatio() 
   {
@@ -203,51 +226,6 @@ public:
     }
   }
 
-  /// Copy constructor.
-  VoxelMatchingCorrRatio
-  ( Self& other, const bool copyData = false )
-    : VoxelMatchingMetric<short,TYPE_SHORT,I>( other, copyData ) 
-  {
-    NumBinsX = other.NumBinsX;
-    NumBinsY = other.NumBinsY;
-
-    SigmaSqJ = other.SigmaSqJ;
-    MuJ = other.MuJ;
-
-    SigmaSqI = other.SigmaSqI;
-    MuI = other.MuI;
-
-    HistogramI = new Histogram<unsigned int>( NumBinsX );
-    SumJ = Memory::AllocateArray<double>( NumBinsX );
-    SumJ2 = Memory::AllocateArray<double>( NumBinsX );
-
-    HistogramJ = new Histogram<unsigned int>( NumBinsY );
-    SumI = Memory::AllocateArray<double>( NumBinsY );
-    SumI2 = Memory::AllocateArray<double>( NumBinsY );
-  }
-
-  /// Copy constructor.
-  VoxelMatchingCorrRatio ( const Self& other )
-    : VoxelMatchingMetric<short,TYPE_SHORT,I>( other ) 
-  {
-    NumBinsX = other.NumBinsX;
-    NumBinsY = other.NumBinsY;
-
-    SigmaSqJ = other.SigmaSqJ;
-    MuJ = other.MuJ;
-
-    SigmaSqI = other.SigmaSqI;
-    MuI = other.MuI;
-
-    HistogramI = new Histogram<unsigned int>( NumBinsX );
-    SumJ = Memory::AllocateArray<double>( NumBinsX );
-    SumJ2 = Memory::AllocateArray<double>( NumBinsX );
-
-    HistogramJ = new Histogram<unsigned int>( NumBinsY );
-    SumI = Memory::AllocateArray<double>( NumBinsY );
-    SumI2 = Memory::AllocateArray<double>( NumBinsY );
-  }
-  
   /// UNDOCUMENTED
   void Copy( const Self& other, const bool copyData = false ) 
   {

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -103,9 +104,6 @@ public:
   VoxelMatchingNormMutInf ( const UniformVolume* refVolume, const UniformVolume* fltVolume, const Types::DataItem minBoundRef, const Types::DataItem maxBoundRef,
 			    const Types::DataItem minBoundFlt, const Types::DataItem maxBoundFlt )
     : RegistrationJointHistogram<I>( refVolume, fltVolume, CMTK_HISTOGRAM_AUTOBINS, CMTK_HISTOGRAM_AUTOBINS, minBoundRef, maxBoundRef, minBoundFlt, maxBoundFlt ) {};
-  
-  /// UNDOCUMENTED
-  VoxelMatchingNormMutInf( Self& other, const bool copyData = false ) : RegistrationJointHistogram<I>( other, copyData ) {}
   
   /// UNDOCUMENTED
   VoxelMatchingNormMutInf( const Self& other ) : RegistrationJointHistogram<I>( other ) {}

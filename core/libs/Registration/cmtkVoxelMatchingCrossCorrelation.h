@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -77,9 +78,6 @@ public:
    */
   VoxelMatchingCrossCorrelation ( const UniformVolume* refVolume, const UniformVolume* fltVolume );
 
-  /// Copy constructor.
-  VoxelMatchingCrossCorrelation ( VoxelMatchingCrossCorrelation& other, const bool copyData = false );
-  
   /// Constant copy constructor.
   VoxelMatchingCrossCorrelation ( const Self& other );
   
