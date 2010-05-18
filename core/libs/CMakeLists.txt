@@ -1,6 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
-##  Copyright 2004-2009 SRI International
+##
+##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -37,6 +38,10 @@ IF(CMTK_USE_QT)
   SET(BUILD_LIBS_LIST ${BUILD_LIBS_LIST} Qt)
 ENDIF(CMTK_USE_QT)
 
+IF(CMTK_USE_CUDA)
+  SET(BUILD_LIBS_LIST ${BUILD_LIBS_LIST} GPU)
+ENDIF(CMTK_USE_CUDA)
+
 IF(CMTK_BUILD_UNSTABLE)
   SET(BUILD_LIBS_LIST ${BUILD_LIBS_LIST} Unstable)
 ENDIF(CMTK_BUILD_UNSTABLE)
@@ -44,4 +49,3 @@ ENDIF(CMTK_BUILD_UNSTABLE)
 FOREACH(lib ${BUILD_LIBS_LIST})
 	    ADD_SUBDIRECTORY(${lib})
 ENDFOREACH(lib ${BUILD_LIBS_LIST})
-

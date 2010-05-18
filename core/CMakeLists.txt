@@ -211,12 +211,21 @@ ENDIF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} STRL
 
 #-----------------------------------------------------------------------------
 # Check for, and configure, OpenCL
-#
+
 #INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles/FindOpenCL.cmake)
 #IF(OPENCL_FOUND)
 #  OPTION(CMTK_USE_OPENCL "Use OpenCL for GPU computing" OFF)
 #  MARK_AS_ADVANCED(CMTK_USE_OPENCL)
 #ENDIF(OPENCL_FOUND)
+
+#-----------------------------------------------------------------------------
+# Check for, and configure, CUDA
+
+INCLUDE(${CMAKE_ROOT}/Modules/FindCUDA.cmake)
+IF(CUDA_FOUND)
+  OPTION(CMTK_USE_CUDA "Use CUDA for GPU computing" OFF)
+  MARK_AS_ADVANCED(CMTK_USE_CUDA)
+ENDIF(CUDA_FOUND)
 
 #-----------------------------------------------------------------------------
 # Check whether compiler supports variable-size automatic arrays, i.e.,

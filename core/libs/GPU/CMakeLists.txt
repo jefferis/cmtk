@@ -29,25 +29,18 @@
 ##
 
 # Sources of non-templated classes.
-SET(cmtkVTKWrapper_SRCS
-  cmtkLandmarkListVTK.cxx
-  cmtkMatchedLandmarkListVTK.cxx
-  cmtkVolumeToVtkStructuredPoints.cxx
-  cmtkVtkADM.cxx
-  cmtkVtkIsoSurface.cxx
-  cmtkVtkLookupTable.cxx
-  cmtkWarpVtkPolyData.cxx
+SET(cmtkGPU_SRCS
 )
 
-ADD_LIBRARY(cmtkVTKWrapper ${cmtkVTKWrapper_SRCS})
+ADD_LIBRARY(cmtkGPU ${cmtkGPU_SRCS})
 
-TARGET_LINK_LIBRARIES(cmtkVTKWrapper cmtkIO cmtkBase cmtkSystem cmtkNumerics )
+TARGET_LINK_LIBRARIES(cmtkGPU cmtkBase cmtkSystem cmtkNumerics)
 
 IF(CMTK_LIBRARY_PROPERTIES)
-  SET_TARGET_PROPERTIES(cmtkVTKWrapper PROPERTIES ${CMTK_LIBRARY_PROPERTIES})
+  SET_TARGET_PROPERTIES(cmtkGPU PROPERTIES ${CMTK_LIBRARY_PROPERTIES})
 ENDIF(CMTK_LIBRARY_PROPERTIES)
 
-INSTALL(TARGETS cmtkVTKWrapper
+INSTALL(TARGETS cmtkGPU
   RUNTIME DESTINATION bin COMPONENT runtime
   LIBRARY DESTINATION lib COMPONENT runtime
   ARCHIVE DESTINATION lib COMPONENT libraries)
