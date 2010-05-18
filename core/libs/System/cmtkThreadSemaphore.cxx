@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,6 +32,8 @@
 
 #include <cmtkThreadSemaphore.h>
 
+#ifdef CMTK_USE_THREADS
+
 #ifdef _MSC_VER
 #  include <cmtkThreadSemaphoreWindows.txx>
 #elif defined(__APPLE__)
@@ -38,3 +41,27 @@
 #else
 #  include <cmtkThreadSemaphorePOSIX.txx>
 #endif
+
+#else // #ifdef CMTK_USE_THREADS
+
+namespace
+cmtk
+{
+
+ThreadSemaphore::ThreadSemaphore( const unsigned int )
+{}
+
+ThreadSemaphore::~ThreadSemaphore()
+{}
+
+void
+ThreadSemaphore::Post( const unsigned int )
+{}
+
+void
+ThreadSemaphore::Wait() 
+{}
+
+}
+
+#endif // #ifdef CMTK_USE_THREADS
