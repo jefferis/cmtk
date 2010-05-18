@@ -22,11 +22,11 @@
 //  with the Computational Morphometry Toolkit.  If not, see
 //  <http://www.gnu.org/licenses/>.
 //
-//  $Revision: 1652 $
+//  $Revision$
 //
-//  $LastChangedDate: 2010-05-14 14:45:52 -0700 (Fri, 14 May 2010) $
+//  $LastChangedDate$
 //
-//  $LastChangedBy: torstenrohlfing $
+//  $LastChangedBy$
 //
 */
 
