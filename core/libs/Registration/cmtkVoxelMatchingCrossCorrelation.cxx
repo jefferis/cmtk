@@ -58,7 +58,7 @@ VoxelMatchingCrossCorrelation
 
 void
 VoxelMatchingCrossCorrelation
-::CopyUnsafe( const VoxelMatchingCrossCorrelation& other, const bool )
+::Copy( const VoxelMatchingCrossCorrelation& other )
 {
   SumX = other.SumX;
   SumY = other.SumY;

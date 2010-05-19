@@ -79,13 +79,7 @@ public:
   ImagePairSimilarityMeasureMSD( const Self& other );
   
   /// UNDOCUMENTED
-  void Copy( const ImagePairSimilarityMeasureMSD& other, const bool copyData = false ) 
-  {
-    this->CopyUnsafe( other, copyData );
-  }
-
-  /// UNDOCUMENTED
-  void CopyUnsafe( const ImagePairSimilarityMeasureMSD& other, const bool copyData = false );
+  void Copy( const ImagePairSimilarityMeasureMSD& other );
   
   /** Add a pair of values to the metric.
    */

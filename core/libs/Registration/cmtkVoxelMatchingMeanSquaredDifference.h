@@ -76,13 +76,7 @@ public:
   VoxelMatchingMeanSquaredDifference( const Self& other );
   
   /// UNDOCUMENTED
-  void Copy( const VoxelMatchingMeanSquaredDifference& other, const bool copyData = false ) 
-  {
-    this->CopyUnsafe( other, copyData );
-  }
-
-  /// UNDOCUMENTED
-  void CopyUnsafe( const VoxelMatchingMeanSquaredDifference& other, const bool copyData = false );
+  void Copy( const VoxelMatchingMeanSquaredDifference& other );
   
   /** Add a pair of values to the metric.
    */

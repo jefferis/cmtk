@@ -82,13 +82,7 @@ public:
   ImagePairSimilarityMeasureNCC ( const Self& other );
   
   /// Copy.
-  void Copy ( const ImagePairSimilarityMeasureNCC& other, const bool copyData = false ) 
-  {
-    this->CopyUnsafe( other, copyData );
-  }
-  
-  /// Copy values, but do not create or check data structures.
-  void CopyUnsafe ( const ImagePairSimilarityMeasureNCC& other, const bool copyData = false );
+  void Copy ( const ImagePairSimilarityMeasureNCC& other );
 
   /** Add a pair of values to the metric.
    */

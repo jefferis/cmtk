@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -82,13 +82,7 @@ public:
   VoxelMatchingCrossCorrelation ( const Self& other );
   
   /// Copy.
-  void Copy ( const VoxelMatchingCrossCorrelation& other, const bool copyData = false ) 
-  {
-    this->CopyUnsafe( other, copyData );
-  }
-  
-  /// Copy values, but do not create or check data structures.
-  void CopyUnsafe ( const VoxelMatchingCrossCorrelation& other, const bool copyData = false );
+  void Copy ( const VoxelMatchingCrossCorrelation& other );
 
   /** Add a pair of values to the metric.
    */

@@ -53,8 +53,8 @@ VoxelMatchingMeanSquaredDifference::VoxelMatchingMeanSquaredDifference
 }
 
 void
-VoxelMatchingMeanSquaredDifference::CopyUnsafe
-( const VoxelMatchingMeanSquaredDifference& other, const bool )
+VoxelMatchingMeanSquaredDifference::Copy
+( const VoxelMatchingMeanSquaredDifference& other )
 {
   Sum = other.Sum;
   Samples = other.Samples;

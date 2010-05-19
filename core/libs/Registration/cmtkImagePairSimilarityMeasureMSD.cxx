@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -52,8 +53,8 @@ ImagePairSimilarityMeasureMSD::ImagePairSimilarityMeasureMSD
 }
 
 void
-ImagePairSimilarityMeasureMSD::CopyUnsafe
-( const ImagePairSimilarityMeasureMSD& other, const bool )
+ImagePairSimilarityMeasureMSD::Copy
+( const ImagePairSimilarityMeasureMSD& other )
 {
   this->m_SumOfDifferences = other.m_SumOfDifferences;
   this->m_NumberOfSamples = other.m_NumberOfSamples;

@@ -58,7 +58,7 @@ ImagePairSimilarityMeasureNCC
 
 void
 ImagePairSimilarityMeasureNCC
-::CopyUnsafe( const ImagePairSimilarityMeasureNCC& other, const bool )
+::Copy( const ImagePairSimilarityMeasureNCC& other )
 {
   SumX = other.SumX;
   SumY = other.SumY;
