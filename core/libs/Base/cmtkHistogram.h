@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -140,7 +141,7 @@ public:
    * structure is duplicated.
    *@return The newly created copy of this object.
    */
-  Histogram<T> *Clone ( const bool copyData = true ) const;
+  Self *Clone ( const bool copyData = true ) const;
 
   /** Reset computation.
    * This function has to be called before any other computation made with an
@@ -389,8 +390,7 @@ public:
 
   /** Compute approximate percentile value from histogram.
    */
-  Types::DataItem GetPercentile( const Types::DataItem percentile //!< The percentile to be computed. Value must be between 0 and 1.
-    ) const;
+  Types::DataItem GetPercentile( const Types::DataItem percentile /**!< The percentile to be computed. Value must be between 0 and 1.*/ ) const;
 };
 
 //@}
