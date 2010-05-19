@@ -42,7 +42,6 @@
 #include <cmtkFixedVector.h>
 #include <cmtkVector3D.h>
 #include <cmtkAffineXform.h>
-#include <cmtkInfinitePlane.h>
 #include <cmtkProbeInfo.h>
 #include <cmtkLandmarkList.h>
 #include <cmtkSmartPtr.h>

@@ -44,7 +44,7 @@
 #include <cmtkWarpXform.h>
 #include <cmtkSplineWarpXform.h>
 
-#include <cmtkInfinitePlane.h>
+#include <cmtkParametricPlane.h>
 
 #include <cmtkStudy.h>
 
@@ -203,17 +203,17 @@ private:
 public:
   /** Write infinite plane object.
    */
-  ClassStream& operator << ( const InfinitePlane *infinitePlane );
+  ClassStream& operator << ( const ParametricPlane *infinitePlane );
 
   /** Write infinite plane object.
    * This function works on a reference rather than a pointer. It immediately
    * calls the pointer-based function defined above for the actual writing.
    */
-  ClassStream& operator << ( const InfinitePlane& infinitePlane )
+  ClassStream& operator << ( const ParametricPlane& infinitePlane )
   { return (*this) << &infinitePlane; }
   
   /// Read infinite plane.
-  ClassStream& operator >> ( InfinitePlane*& infinitePlane );
+  ClassStream& operator >> ( ParametricPlane*& infinitePlane );
 
   /** Write landmark list.
    */

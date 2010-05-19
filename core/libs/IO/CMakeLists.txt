@@ -1,5 +1,6 @@
 ##
 ##  Copyright 2004-2010 SRI International
+##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
@@ -33,9 +34,9 @@ SET(cmtkIO_SRCS
   cmtkSplineWarpXformITKIO.cxx
   cmtkClassStreamAffineXform.cxx
   cmtkClassStreamHistogram.cxx
-  cmtkClassStreamInfinitePlane.cxx
   cmtkClassStreamJointHistogram.cxx
   cmtkClassStreamLandmarkList.cxx
+  cmtkClassStreamParametricPlane.cxx
   cmtkClassStreamStudyList.cxx
   cmtkClassStreamWarpXform.cxx
   cmtkFileFormat.cxx

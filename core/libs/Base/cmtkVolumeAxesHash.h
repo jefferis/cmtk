@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,7 +37,7 @@
 
 #include <cmtkVector3D.h>
 #include <cmtkAffineXform.h>
-#include <cmtkInfinitePlane.h>
+#include <cmtkParametricPlane.h>
 #include <cmtkUniformVolume.h>
 
 namespace
@@ -85,7 +86,7 @@ public:
    *@param mirrorPlane Mirror plane with respect to which the coordinates of
    * this volume and thus all hash values are mirrored.
    */
-  VolumeAxesHash( const UniformVolume& volume, const InfinitePlane& mirrorPlane, const Types::Coordinate* deltas = NULL );
+  VolumeAxesHash( const UniformVolume& volume, const ParametricPlane& mirrorPlane, const Types::Coordinate* deltas = NULL );
 
   /// Free all storage.
   ~VolumeAxesHash();

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -40,7 +41,7 @@
 #include <cmtkUniformVolume.h>
 #include <cmtkVoxelMatchingNormMutInf.h>
 
-#include <cmtkInfinitePlane.h>
+#include <cmtkParametricPlane.h>
 
 namespace
 cmtk
@@ -86,7 +87,7 @@ public:
 
   virtual void GetParamVector ( CoordinateVector& v )  
   {
-    this->m_InfinitePlane.GetParameters( v );
+    this->m_ParametricPlane.GetParameters( v );
   }
 
   /// Compute functional value.
@@ -95,7 +96,7 @@ public:
   /// Compute functional value.
   virtual Self::ReturnType EvaluateAt( CoordinateVector& v ) 
   {
-    this->m_InfinitePlane.SetParameters( v );
+    this->m_ParametricPlane.SetParameters( v );
     return this->Evaluate();
   }
 
@@ -113,7 +114,7 @@ private:
   VoxelMatchingNormMutInf<>* m_Metric;
 
   /// The symmetry plane.
-  InfinitePlane m_InfinitePlane;
+  ParametricPlane m_ParametricPlane;
 };
 
 //@}

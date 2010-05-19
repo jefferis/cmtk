@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,14 +40,14 @@ cmtk
 //@{
 
 ClassStream& 
-ClassStream::operator>>( InfinitePlane*& infinitePlane )
+ClassStream::operator>>( ParametricPlane*& infinitePlane )
 {
   infinitePlane = NULL;
 
   if ( this->Seek( "plane" ) != TYPEDSTREAM_OK )
     return *this;
   
-  infinitePlane = new InfinitePlane();
+  infinitePlane = new ParametricPlane();
 
   Types::Coordinate planeOrigin[3];
   this->ReadCoordinateArray( "origin", planeOrigin, 3 );
@@ -60,7 +61,7 @@ ClassStream::operator>>( InfinitePlane*& infinitePlane )
 }
 
 ClassStream&
-ClassStream::operator<<( const InfinitePlane* infinitePlane )
+ClassStream::operator<<( const ParametricPlane* infinitePlane )
 {  
   this->Begin( "plane" );
   this->WriteCoordinateArray( "origin", infinitePlane->GetOrigin().begin(), 3 );

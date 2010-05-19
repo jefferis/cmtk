@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,7 +30,7 @@
 //
 */
 
-#include <cmtkInfinitePlane.h>
+#include <cmtkParametricPlane.h>
 
 #include <cmtkMathUtil.h>
 
@@ -42,7 +43,7 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-InfinitePlane::InfinitePlane()
+ParametricPlane::ParametricPlane()
   : Rho( 0 ),
     Theta( 0 ),
     Phi( 0 )
@@ -52,7 +53,7 @@ InfinitePlane::InfinitePlane()
 }
 
 void
-InfinitePlane::Update()
+ParametricPlane::Update()
 {
   Normal[0] = MathUtil::Cos( Theta ) * MathUtil::Sin( Phi );
   Normal[1] = MathUtil::Sin( Theta ) * MathUtil::Sin( Phi );
@@ -62,7 +63,7 @@ InfinitePlane::Update()
 }
 
 void
-InfinitePlane::SetNormal( const Vector3D& normal )
+ParametricPlane::SetNormal( const Vector3D& normal )
 {
   this->Normal = (1.0 / normal.RootSumOfSquares()) * normal;
   
@@ -78,7 +79,7 @@ InfinitePlane::SetNormal( const Vector3D& normal )
 }
 
 AffineXform* 
-InfinitePlane::GetAlignmentXform( const byte normalAxis ) const
+ParametricPlane::GetAlignmentXform( const byte normalAxis ) const
 {
   Types::Coordinate angles[3] = { 0, 0, 0 };
   Types::Coordinate xlate[3] = { 0, 0, 0 };

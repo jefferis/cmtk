@@ -63,7 +63,6 @@ SET(cmtkBase_SRCS
   cmtkImageOperationScaleToRange.cxx
   cmtkImageOperationThreshold.cxx
   cmtkImageOperationRevert.cxx
-  cmtkInfinitePlane.cxx
   cmtkIntersection.cxx
   cmtkJointHistogram.cxx
   cmtkJointHistogramBase.cxx
@@ -76,6 +75,7 @@ SET(cmtkBase_SRCS
   cmtkMatrix3x3.cxx
   cmtkMatrix4x4.cxx
   cmtkMetaInformationObject.cxx
+  cmtkParametricPlane.cxx
   cmtkScalarImage.cxx
   cmtkSegmentationLabel.cxx
   cmtkSplineWarpXform.cxx

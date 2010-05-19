@@ -30,8 +30,8 @@
 //
 */
 
-#ifndef __cmtkInfinitePlane_h_included_
-#define __cmtkInfinitePlane_h_included_
+#ifndef __cmtkParametricPlane_h_included_
+#define __cmtkParametricPlane_h_included_
 
 #include <cmtkconfig.h>
 
@@ -51,11 +51,11 @@ cmtk
 
 /** Class for parameterized infinite planes.
  */
-class InfinitePlane 
+class ParametricPlane 
 {
 public:
   /// Default constructor.
-  InfinitePlane();
+  ParametricPlane();
 
   /** Origin of the coordinate system the plane parameters refer to.
    * This is NOT the origin of the plane. In fact, this coordinate does not
@@ -221,4 +221,4 @@ private:
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkInfinitePlane_h_included_
+#endif // #ifndef __cmtkParametricPlane_h_included_
