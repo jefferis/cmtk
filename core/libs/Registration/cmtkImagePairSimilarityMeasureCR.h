@@ -151,16 +151,18 @@ public:
   void Remove ( const Self& other )
   {
     HistogramI.RemoveHistogram( other.HistogramI );
-    for ( size_t bin = 0; bin < NumBinsX; ++bin ) {
+    for ( size_t bin = 0; bin < NumBinsX; ++bin )
+      {
       SumJ[bin] -= other.SumJ[bin];
       SumJ2[bin] -= other.SumJ2[bin];
-    }
-
+      }
+    
     HistogramJ.RemoveHistogram( other.HistogramJ );
-    for ( size_t bin = 0; bin < NumBinsY; ++bin ) {
+    for ( size_t bin = 0; bin < NumBinsY; ++bin ) 
+      {
       SumI[bin] -= other.SumI[bin];
       SumI2[bin] -= other.SumI2[bin];
-    }
+      }
   }
 
   /// Return correlation ratio.
