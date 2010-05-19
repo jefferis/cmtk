@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -36,6 +37,7 @@
 
 #include <cmtkTypes.h>
 #include <cmtkUnits.h>
+#include <cmtkFixedVector.h>
 #include <cmtkMathUtil.h>
 #include <cmtkSmartPtr.h>
 
@@ -67,34 +69,16 @@ public:
   /// Default constructor.
   FilterMaskPixel() {}
 
-  /// Copy constructor.
-  FilterMaskPixel( const FilterMaskPixel<DIM>& other ) 
-  { 
-    *this = other; 
-  }
-
   /// Explicit constructor.
   FilterMaskPixel
-  ( const int* location, const int relativeIndex, const Types::DataItem coefficient ) 
-  {
-    memcpy( this->Location, location, sizeof( this->Location ) );
-    this->RelativeIndex = relativeIndex;
-    this->Coefficient = coefficient;
-  }
-
-  /// Copy operator.
-  FilterMaskPixel<DIM>& operator=( const FilterMaskPixel<DIM>& other ) 
-  {
-    memcpy( this->Location, other.Location, sizeof( this->Location ) );
-    this->RelativeIndex = other.RelativeIndex;
-    this->PixelIndex = other.PixelIndex;
-    this->Coefficient = other.Coefficient;
-    this->Valid = other.Valid;
-    return *this;
-  }
+  ( const FixedVector<DIM,int>& location, const int relativeIndex, const Types::DataItem coefficient ) 
+    : Location( location ),
+      RelativeIndex ( relativeIndex ),
+      Coefficient( coefficient )
+  {}
 
   /// Relative location of this pixel.
-  int Location[DIM];
+  FixedVector<DIM,int> Location;
 
   /// Relative index of this pixel in source image from center of kernel.
   int RelativeIndex;
@@ -112,12 +96,6 @@ public:
    * iterations over the filter mask at one location.
    */
   bool Valid;
-
-  /// Print this object.
-  void Print() const
-  {
-    StdErr.printf( "loc=%d rel=%d coef=%lf\n", this->Location, this->RelativeIndex, static_cast<double>( this->Coefficient ) );
-  }
 };
 
 /** Filter mask.
@@ -141,10 +119,12 @@ public:
 
   /// Constructor.
   template<class F>
-  FilterMask( const int* dims, const Types::Coordinate* deltas, const Types::Coordinate radius, F filter ) 
+  FilterMask( const FixedVector<DIM,int>& dims, const Types::Coordinate* deltas, const Types::Coordinate radius, F filter ) 
   {
-    int pixel[DIM], width[DIM];
-    Types::Coordinate position[DIM];
+    FixedVector<DIM,int> pixel;
+    FixedVector<DIM,int> width;
+    FixedVector<DIM,Types::Coordinate> position;
+
     for ( int dim = 0; dim < DIM; ++dim ) 
       {
       pixel[dim] = - (width[dim] = 1+static_cast<int>( radius / deltas[dim] ));
@@ -208,7 +188,7 @@ public:
     }
     
     /// Get filter coefficient at relative location from filter center.
-    Types::DataItem operator() ( const Types::Coordinate* relativePosition ) 
+    Types::DataItem operator() ( const FixedVector<DIM,Types::Coordinate>& relativePosition ) 
     {
       Types::Coordinate distance = 0;
       for ( int i = 0; i < DIM; ++i ) 
@@ -223,15 +203,6 @@ public:
     /// Gaussian normalization factor.
     Types::Coordinate NormFactor;
   };
-
-  /// Print this object and all its mask pixels.
-  void Print() const
-  {
-    for ( typename Self::const_iterator it = this->begin(); it != this->end(); ++it )
-      {
-      it->Print();
-      }
-  }
 };
 
 } // namespace  cmtk

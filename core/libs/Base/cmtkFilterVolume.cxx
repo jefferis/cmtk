@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -52,7 +53,7 @@ cmtk
 
 TypedArray* 
 FilterVolume::GaussianFilter
-( const UniformVolume* volume, const Units::GaussianSigma& width, const Types::Coordinate radius, const TypedArray* maskData )
+( const UniformVolume* volume, const Units::GaussianSigma& kernelWidth, const Types::Coordinate radius, const TypedArray* maskData )
 {
   const TypedArray* inputData = volume->GetData();
   if ( ! inputData ) return NULL;
@@ -60,7 +61,7 @@ FilterVolume::GaussianFilter
   TypedArray* filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
   const DataGrid::IndexType& dims = volume->m_Dims;
-  FilterMask<3> filter( dims.begin(), volume->GetDelta(), radius, FilterMask<3>::Gaussian( width ) );
+  FilterMask<3> filter( dims, volume->GetDelta(), radius, FilterMask<3>::Gaussian( kernelWidth ) );
 
   const int dimsX = dims[AXIS_X];
   const int dimsY = dims[AXIS_Y];
@@ -178,7 +179,7 @@ FilterVolume
   
   TypedArray* filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
-  const int* dims = volume->GetDims().begin();
+  const DataGrid::IndexType& dims = volume->GetDims();
   FilterMask<3> filter( dims, volume->GetDelta(), filterRadius, FilterMask<3>::Gaussian( filterWidth ) );
   
   const unsigned int dimsX = dims[AXIS_X];
@@ -274,7 +275,7 @@ FilterVolume::StudholmeFilter
 
   TypedArray* filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
-  const int* dims = volume->GetDims().begin();
+  const DataGrid::IndexType& dims = volume->GetDims();
   const unsigned int dimsX = dims[AXIS_X];
   const unsigned int dimsY = dims[AXIS_Y];
   const unsigned int dimsZ = dims[AXIS_Z];
@@ -423,7 +424,7 @@ FilterVolume::StudholmeFilter
  
   TypedArray* filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
-  const int* dims = volume->GetDims().begin();
+  const DataGrid::IndexType& dims = volume->GetDims();
   FilterMask<3> filter( dims, volume->GetDelta(), filterRadius, FilterMask<3>::Gaussian( filterWidth ) );
   
   const unsigned int dimsX = dims[AXIS_X];
