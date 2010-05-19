@@ -40,36 +40,36 @@ cmtk
 //@{
 
 ClassStream& 
-ClassStream::operator>>( ParametricPlane*& infinitePlane )
+ClassStream::operator>>( ParametricPlane*& parametricPlane )
 {
-  infinitePlane = NULL;
+  parametricPlane = NULL;
 
   if ( this->Seek( "plane" ) != TYPEDSTREAM_OK )
     return *this;
   
-  infinitePlane = new ParametricPlane();
+  parametricPlane = new ParametricPlane();
 
   Types::Coordinate planeOrigin[3];
   this->ReadCoordinateArray( "origin", planeOrigin, 3 );
-  infinitePlane->SetOrigin( Vector3D( planeOrigin ) );
+  parametricPlane->SetOrigin( Vector3D( planeOrigin ) );
 
-  infinitePlane->SetRho( this->ReadCoordinate( "rho" ) );
-  infinitePlane->SetTheta( Units::Degrees( this->ReadCoordinate( "theta" ) ) );
-  infinitePlane->SetPhi( Units::Degrees( this->ReadCoordinate( "phi" ) ) );
+  parametricPlane->SetRho( this->ReadCoordinate( "rho" ) );
+  parametricPlane->SetTheta( Units::Degrees( this->ReadCoordinate( "theta" ) ) );
+  parametricPlane->SetPhi( Units::Degrees( this->ReadCoordinate( "phi" ) ) );
 
   return *this;
 }
 
 ClassStream&
-ClassStream::operator<<( const ParametricPlane* infinitePlane )
+ClassStream::operator<<( const ParametricPlane* parametricPlane )
 {  
   this->Begin( "plane" );
-  this->WriteCoordinateArray( "origin", infinitePlane->GetOrigin().begin(), 3 );
-  this->WriteDouble( "rho", infinitePlane->GetRho() );
-  this->WriteDouble( "theta", Units::Degrees( infinitePlane->GetTheta() ).Value() );
-  this->WriteDouble( "phi", Units::Degrees( infinitePlane->GetPhi() ).Value() );
+  this->WriteCoordinateArray( "origin", parametricPlane->GetOrigin().begin(), 3 );
+  this->WriteDouble( "rho", parametricPlane->GetRho() );
+  this->WriteDouble( "theta", Units::Degrees( parametricPlane->GetTheta() ).Value() );
+  this->WriteDouble( "phi", Units::Degrees( parametricPlane->GetPhi() ).Value() );
 
-  this->WriteCoordinateArray( "normal", infinitePlane->GetNormal().begin(), 3 );
+  this->WriteCoordinateArray( "normal", parametricPlane->GetNormal().begin(), 3 );
   return *this;
 }
 

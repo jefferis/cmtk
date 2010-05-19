@@ -201,19 +201,19 @@ private:
   ClassStream& PutWarp( const WarpXform* warpXform, const AffineXform* affineXform = NULL  );
 
 public:
-  /** Write infinite plane object.
+  /** Write parametric plane object.
    */
-  ClassStream& operator << ( const ParametricPlane *infinitePlane );
+  ClassStream& operator << ( const ParametricPlane *parametricPlane );
 
-  /** Write infinite plane object.
+  /** Write parametric plane object.
    * This function works on a reference rather than a pointer. It immediately
    * calls the pointer-based function defined above for the actual writing.
    */
-  ClassStream& operator << ( const ParametricPlane& infinitePlane )
-  { return (*this) << &infinitePlane; }
+  ClassStream& operator << ( const ParametricPlane& parametricPlane )
+  { return (*this) << &parametricPlane; }
   
-  /// Read infinite plane.
-  ClassStream& operator >> ( ParametricPlane*& infinitePlane );
+  /// Read parametric plane.
+  ClassStream& operator >> ( ParametricPlane*& parametricPlane );
 
   /** Write landmark list.
    */

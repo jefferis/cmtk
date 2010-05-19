@@ -206,7 +206,7 @@ bool ParseCommandLine ( const int argc, const char* argv[] )
       cmtk::ClassStream inStream( SymmetryParametersFile, cmtk::ClassStream::READ );
       if ( inStream.IsValid() ) 
 	{
-	cmtk::InfinitePlane *plane = NULL;
+	cmtk::ParametricPlane *plane = NULL;
 	inStream >> plane;
 	Rho = plane->GetRho(); 
 	Theta = plane->GetTheta();
@@ -230,7 +230,7 @@ bool ParseCommandLine ( const int argc, const char* argv[] )
 
 void
 WriteDifference
-( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::InfinitePlane& infinitePlane, const char* outFileName )
+( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::ParametricPlane& parametricPlane, const char* outFileName )
 {
   cmtk::UniformVolume::SmartPtr diffVolume( originalVolume->CloneGrid() );
   const cmtk::TypedArray* originalData = originalVolume->GetData();
@@ -252,7 +252,7 @@ WriteDifference
 	  }
 	originalVolume->GetGridLocation( v, x, y, z );
 	cmtk::Vector3D w(v);
-	infinitePlane.MirrorInPlace( w );
+	parametricPlane.MirrorInPlace( w );
 
 	if ( interpolator->GetDataAt( w, dataW ) )
 	  {
@@ -269,7 +269,7 @@ WriteDifference
 
 void
 WriteMirror
-( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::InfinitePlane& infinitePlane, const char* outFileName )
+( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::ParametricPlane& parametricPlane, const char* outFileName )
 {
   cmtk::UniformVolume::SmartPtr mirrorVolume( originalVolume->CloneGrid() );
   cmtk::TypedArray::SmartPtr mirrorData( originalVolume->GetData()->NewTemplateArray() );
@@ -285,7 +285,7 @@ WriteMirror
       for ( int x = 0; x < originalVolume->GetDims()[0]; ++x, ++offset ) 
 	{
 	originalVolume->GetGridLocation( v, x, y, z );
-	infinitePlane.MirrorInPlace( v );
+	parametricPlane.MirrorInPlace( v );
 
 	if ( interpolator->GetDataAt( v, data ) )
 	  {
@@ -303,7 +303,7 @@ WriteMirror
 
 void
 WriteMarkPlane
-( const cmtk::UniformVolume* originalVolume, const cmtk::InfinitePlane& infinitePlane, const cmtk::Types::DataItem markPlaneValue, const char* outFileName )
+( const cmtk::UniformVolume* originalVolume, const cmtk::ParametricPlane& parametricPlane, const cmtk::Types::DataItem markPlaneValue, const char* outFileName )
 {
   cmtk::UniformVolume::SmartPtr markVolume( originalVolume->CloneGrid() );
   cmtk::TypedArray::SmartPtr markData( originalVolume->GetData()->Clone() );
@@ -319,7 +319,7 @@ WriteMarkPlane
       for ( int x = 0; x < originalVolume->GetDims()[0]; ++x, ++offset ) 
 	{
 	originalVolume->GetGridLocation( v, x, y, z );
-	int newSideOfPlane = infinitePlane.GetWhichSide( v );
+	int newSideOfPlane = parametricPlane.GetWhichSide( v );
 	if ( ( newSideOfPlane != currentSideOfPlane ) && x )
 	  markData->Set( markPlaneValue, offset );
 	currentSideOfPlane = newSideOfPlane;
@@ -332,7 +332,7 @@ WriteMarkPlane
 
 void
 WriteAligned
-( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::InfinitePlane& infinitePlane, const InitialPlaneEnum initialPlane, 
+( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::ParametricPlane& parametricPlane, const InitialPlaneEnum initialPlane, 
   const char* outFileName )
 {
   const cmtk::TypedArray* originalData = originalVolume->GetData();
@@ -360,7 +360,7 @@ WriteAligned
     case SYMPL_INIT_YZ: normalAxis = 0; break;
     }
 
-  cmtk::AffineXform::SmartPtr alignment( infinitePlane.GetAlignmentXform( normalAxis ) );
+  cmtk::AffineXform::SmartPtr alignment( parametricPlane.GetAlignmentXform( normalAxis ) );
   int offset = 0;
   for ( int z = 0; z < originalVolume->GetDims()[2]; ++z ) 
     {
@@ -481,33 +481,33 @@ main ( const int argc, const char* argv[] )
       fprintf( stdout, "rho=%f, theta=%f, phi=%f\n", v[0], v[1], v[2] );
     }
   
-  cmtk::InfinitePlane infinitePlane;
-  infinitePlane.SetParameters( v );
+  cmtk::ParametricPlane parametricPlane;
+  parametricPlane.SetParameters( v );
   
   if ( SymmetryOutFileName )
     {
     cmtk::ClassStream stream( SymmetryOutFileName, cmtk::ClassStream::WRITE );
-    stream << infinitePlane;
+    stream << parametricPlane;
     stream.Close();
     }
 
   const cmtk::UniformVolumeInterpolatorBase::SmartPtr interpolator( cmtk::ReformatVolume::CreateInterpolator( Interpolation, originalVolume ) );;
   
   if ( DoWriteAligned ) 
-    WriteAligned( originalVolume, interpolator, infinitePlane, InitialPlane, AlignedOutFile );
+    WriteAligned( originalVolume, interpolator, parametricPlane, InitialPlane, AlignedOutFile );
 
   if ( DoWriteMarked ) 
-    WriteMarkPlane( originalVolume, infinitePlane, MarkPlaneValue, MarkedOutFile );
+    WriteMarkPlane( originalVolume, parametricPlane, MarkPlaneValue, MarkedOutFile );
 
   if ( DoWriteDifference )
-    WriteDifference( originalVolume, interpolator, infinitePlane, DifferenceOutFile );
+    WriteDifference( originalVolume, interpolator, parametricPlane, DifferenceOutFile );
 
   if ( DoWriteMirror )
-    WriteMirror( originalVolume, interpolator, infinitePlane, MirrorOutFile );
+    WriteMirror( originalVolume, interpolator, parametricPlane, MirrorOutFile );
 
   if ( WriteXformPath )
     {
-    cmtk::AffineXform::SmartPtr alignment( infinitePlane.GetAlignmentXform( 0 ) );
+    cmtk::AffineXform::SmartPtr alignment( parametricPlane.GetAlignmentXform( 0 ) );
     cmtk::XformIO::Write( alignment, WriteXformPath, Verbose );
     }
 }
