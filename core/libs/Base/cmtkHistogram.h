@@ -108,14 +108,6 @@ public:
       this->Reset();
   }
 
-  /// Copy another histogram without range checking.
-  Self& operator=( const Self& other ) 
-  {
-    this->Superclass::operator=( other );
-    this->m_Bins = other.m_Bins;
-    return *this;
-  }
-  
   /** Make an identical copy of this object.
    */
   Self *Clone () const;

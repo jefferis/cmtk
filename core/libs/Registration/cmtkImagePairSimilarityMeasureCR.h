@@ -38,6 +38,8 @@
 #include <cmtkImagePairSimilarityMeasure.h>
 #include <cmtkSmartPtr.h>
 
+#include <vector>
+
 namespace
 cmtk
 {
@@ -45,9 +47,6 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-#ifdef _MSC_VER
-#pragma warning (disable:4521)
-#endif
 /** Pairwise image similarity measure "correlation ratio".
  */
 class ImagePairSimilarityMeasureCR : 
@@ -70,28 +69,20 @@ public:
 				 const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
 
   /// Destructor: free internal data structures.
-  ~ImagePairSimilarityMeasureCR() 
-  {
-    delete HistogramI;
-    delete HistogramJ;
-    delete[] SumI;
-    delete[] SumI2;
-    delete[] SumJ;
-    delete[] SumJ2;
-  }
-
+  virtual ~ImagePairSimilarityMeasureCR() {}
+  
   /** Reset computation.
    * Initialize arrays that hold the sums of all floating values and their
    * squares, separated by histogram classes of the reference image.
    */
   virtual void Reset() 
   {
-    HistogramI->Reset();
-    HistogramJ->Reset();
-    memset( SumI, 0, NumBinsY * sizeof( *SumI ) );
-    memset( SumI2, 0, NumBinsY * sizeof( *SumI2 ) );
-    memset( SumJ, 0, NumBinsX * sizeof( *SumJ ) );
-    memset( SumJ2, 0, NumBinsX * sizeof( *SumJ2 ) );
+    HistogramI.Reset();
+    HistogramJ.Reset();
+    std::fill( SumI.begin(), SumI.end(), 0 );
+    std::fill( SumJ.begin(), SumJ.end(), 0 );
+    std::fill( SumI2.begin(), SumI2.end(), 0 );
+    std::fill( SumJ2.begin(), SumJ2.end(), 0 );
   }
 
   /** Continue incremental calculation.
@@ -101,17 +92,17 @@ public:
   template<class T> void Increment( const T a, const T b )
   {
     // what's the reference histogram bin?
-    size_t bin = HistogramI->ValueToBin( a );
+    size_t bin = HistogramI.ValueToBin( a );
     // count this sample
-    HistogramI->Increment( bin );
+    HistogramI.Increment( bin );
     // add floating value to sum of values for this class
     SumJ[bin] += b;
     // add squared floating value to sum of squared values for this class
     SumJ2[bin] += b * b;
 
     // same in reverse
-    bin = HistogramJ->ValueToBin( b );
-    HistogramJ->Increment( bin );
+    bin = HistogramJ.ValueToBin( b );
+    HistogramJ.Increment( bin );
     SumI[bin] += a;
     SumI2[bin] += a * a;
   }
@@ -121,17 +112,17 @@ public:
   template<class T> void Decrement( const T a, const T b )
   {
     // what's the reference histogram bin?
-    size_t bin = HistogramI->ValueToBin( a );
+    size_t bin = HistogramI.ValueToBin( a );
     // count this sample
-    HistogramI->Decrement( bin );
+    HistogramI.Decrement( bin );
     // add floating value to sum of values for this class
     SumJ[bin] -= b;
     // add squared floating value to sum of squared values for this class
     SumJ2[bin] -= b * b;
 
     // same in reverse
-    bin = HistogramJ->ValueToBin( b );
-    HistogramJ->Decrement( bin );
+    bin = HistogramJ.ValueToBin( b );
+    HistogramJ.Decrement( bin );
     SumI[bin] -= a;
     SumI2[bin] -= a * a;
   }
@@ -140,14 +131,14 @@ public:
    */
   void Add ( const Self& other )
   {
-    HistogramI->AddHistogram( other.HistogramI );
+    HistogramI.AddHistogram( other.HistogramI );
     for ( size_t bin = 0; bin < NumBinsX; ++bin ) 
       {
       SumJ[bin] += other.SumJ[bin];
       SumJ2[bin] += other.SumJ2[bin];
       }
     
-    HistogramJ->AddHistogram( other.HistogramJ );
+    HistogramJ.AddHistogram( other.HistogramJ );
     for ( size_t bin = 0; bin < NumBinsY; ++bin ) 
       {
       SumI[bin] += other.SumI[bin];
@@ -159,63 +150,19 @@ public:
    */
   void Remove ( const Self& other )
   {
-    HistogramI->RemoveHistogram( other.HistogramI );
+    HistogramI.RemoveHistogram( other.HistogramI );
     for ( size_t bin = 0; bin < NumBinsX; ++bin ) {
       SumJ[bin] -= other.SumJ[bin];
       SumJ2[bin] -= other.SumJ2[bin];
     }
 
-    HistogramJ->RemoveHistogram( other.HistogramJ );
+    HistogramJ.RemoveHistogram( other.HistogramJ );
     for ( size_t bin = 0; bin < NumBinsY; ++bin ) {
       SumI[bin] -= other.SumI[bin];
       SumI2[bin] -= other.SumI2[bin];
     }
   }
 
-  /// Copy constructor.
-  ImagePairSimilarityMeasureCR ( const Self& other )
-    : ImagePairSimilarityMeasure( other ) 
-  {
-    NumBinsX = other.NumBinsX;
-    NumBinsY = other.NumBinsY;
-
-    SigmaSqJ = other.SigmaSqJ;
-    MuJ = other.MuJ;
-
-    SigmaSqI = other.SigmaSqI;
-    MuI = other.MuI;
-
-    HistogramI = new Histogram<unsigned int>( NumBinsX );
-    SumJ = Memory::AllocateArray<double>( NumBinsX );
-    SumJ2 = Memory::AllocateArray<double>( NumBinsX );
-
-    HistogramJ = new Histogram<unsigned int>( NumBinsY );
-    SumI = Memory::AllocateArray<double>( NumBinsY );
-    SumI2 = Memory::AllocateArray<double>( NumBinsY );
-  }
-  
-  /// UNDOCUMENTED
-  void Copy( const Self& other ) 
-  {
-    *HistogramI = other.HistogramI;
-    for ( size_t bin = 0; bin < NumBinsX; ++bin ) 
-      {
-      SumJ[bin] = other.SumJ[bin];
-      SumJ2[bin] = other.SumJ2[bin];
-      }
-    SigmaSqJ = other.SigmaSqJ;
-    MuJ = other.MuJ;
-    
-    *HistogramJ = other.HistogramJ;
-    for ( size_t bin = 0; bin < NumBinsY; ++bin ) 
-      {
-      SumI[bin] = other.SumI[bin];
-      SumI2[bin] = other.SumI2[bin];
-      }
-    SigmaSqI = other.SigmaSqI;
-    MuI = other.MuI;
-  }
-  
   /// Return correlation ratio.
   Self::ReturnType Get () const;
 
@@ -224,13 +171,13 @@ private:
   size_t NumBinsX;
   
   /// Array with sums of all Y-values by X-bins.
-  double* SumJ;
+  std::vector<double> SumJ;
 
   /// Array with sums of squares of all Y-values by X-bins.
-  double* SumJ2;
+  std::vector<double> SumJ2;
 
   /// Histogram with counts of all X-values.
-  Histogram<unsigned int>* HistogramI;
+  Histogram<unsigned int> HistogramI;
 
   // Variance of complete floating image for normalization.
   Types::DataItem SigmaSqJ;
@@ -242,13 +189,13 @@ private:
   size_t NumBinsY;
   
   /// Array with sums of all X-values by Y-bins.
-  double* SumI;
+  std::vector<double> SumI;
 
   /// Array with sums of squares of all X-values by Y-bins.
-  double* SumI2;
+  std::vector<double> SumI2;
 
   /// Histogram with counts of all X-values.
-  Histogram<unsigned int>* HistogramJ;
+  Histogram<unsigned int> HistogramJ;
 
   // Variance of complete floating image for normalization.
   Types::DataItem SigmaSqI;

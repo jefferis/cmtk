@@ -56,18 +56,6 @@ ImagePairSimilarityMeasureNCC
   Samples = other.Samples;
 }
 
-void
-ImagePairSimilarityMeasureNCC
-::Copy( const ImagePairSimilarityMeasureNCC& other )
-{
-  SumX = other.SumX;
-  SumY = other.SumY;
-  SumXY = other.SumXY;
-  SumSqX = other.SumSqX;
-  SumSqY = other.SumSqY;
-  Samples = other.Samples;
-}
-
 ImagePairSimilarityMeasureNCC::ReturnType
 ImagePairSimilarityMeasureNCC
 ::Get() const

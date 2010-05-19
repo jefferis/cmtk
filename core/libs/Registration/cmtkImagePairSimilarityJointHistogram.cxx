@@ -47,15 +47,6 @@ ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram
   this->m_JointHistogram.Resize( this->m_NumberOfBinsX, this->m_NumberOfBinsY );
 }
 
-ImagePairSimilarityJointHistogram::ImagePairSimilarityJointHistogram( const Self& other )
-  : ImagePairSimilarityMeasure( other )
-{
-  this->m_NumberOfBinsX = other.m_NumberOfBinsX;
-  this->m_NumberOfBinsY = other.m_NumberOfBinsY;
-
-  this->m_JointHistogram = other.m_JointHistogram;
-}
-
 void
 ImagePairSimilarityJointHistogram::SetReferenceVolume( const UniformVolume::SmartConstPtr& refVolume )
 {

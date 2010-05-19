@@ -52,12 +52,4 @@ ImagePairSimilarityMeasureMSD::ImagePairSimilarityMeasureMSD
   this->m_NumberOfSamples = other.m_NumberOfSamples;
 }
 
-void
-ImagePairSimilarityMeasureMSD::Copy
-( const ImagePairSimilarityMeasureMSD& other )
-{
-  this->m_SumOfDifferences = other.m_SumOfDifferences;
-  this->m_NumberOfSamples = other.m_NumberOfSamples;
-}
-
 } // namespace cmtk

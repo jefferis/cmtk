@@ -102,16 +102,6 @@ public:
   /// Return number of histogram bins.
   virtual size_t GetNumBins() const = 0;
 
-  /// Copy operator.
-  Self& operator=( const Self& other )
-  {
-    this->m_BinWidth = other.m_BinWidth;
-    this->m_BinsLowerBound = other.m_BinsLowerBound;
-    this->m_BinsLowerBound = other.m_BinsLowerBound;
-    
-    return *this;
-  }
-
   /** Set data range corresponding to this histogram.
    */
   void SetRange ( const Types::DataItem rangeFrom, const Types::DataItem rangeTo ) 

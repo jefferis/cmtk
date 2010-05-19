@@ -88,15 +88,6 @@ public:
    */
   ImagePairSimilarityJointHistogram() {};
 
-  /// Copy constructor.
-  ImagePairSimilarityJointHistogram( const Self& src );
-
-  /// Copy operator.
-  void Copy( const ImagePairSimilarityJointHistogram& other )
-  {
-    this->m_JointHistogram.Copy( other.m_JointHistogram );
-  }
-
   /** Set reference volume.
    * In addition to setting the reference volume via the base class, this function
    * also performs pre-scaling and parameter selection using Self::PrescaleData().

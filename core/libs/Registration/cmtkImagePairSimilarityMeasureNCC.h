@@ -81,9 +81,6 @@ public:
   /// Constant copy constructor.
   ImagePairSimilarityMeasureNCC ( const Self& other );
   
-  /// Copy.
-  void Copy ( const ImagePairSimilarityMeasureNCC& other );
-
   /** Add a pair of values to the metric.
    */
   template<class T> void Increment( const T a, const T b )

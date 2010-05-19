@@ -78,9 +78,6 @@ public:
   /// Copy constructor.
   ImagePairSimilarityMeasureMSD( const Self& other );
   
-  /// UNDOCUMENTED
-  void Copy( const ImagePairSimilarityMeasureMSD& other );
-  
   /** Add a pair of values to the metric.
    */
   template<class T> void Increment( const T a, const T b )
