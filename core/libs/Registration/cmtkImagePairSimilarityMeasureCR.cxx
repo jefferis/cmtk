@@ -70,7 +70,7 @@ ImagePairSimilarityMeasureCR::ImagePairSimilarityMeasureCR
 ImagePairSimilarityMeasureCR::ReturnType
 ImagePairSimilarityMeasureCR::Get () const
 {
-  double invSampleCount = 1.0 / HistogramI.SampleCount();
+  const double invSampleCount = 1.0 / HistogramI.SampleCount();
   // initialize variable for the weighted sum of the sigma^2 values over all
   // reference intensity classes.
   double sumSigmaSquare = 0;
