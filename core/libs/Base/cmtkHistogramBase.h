@@ -97,7 +97,7 @@ public:
   }
 
   /// Virtual destructor.
-  ~HistogramBase() {}
+  virtual ~HistogramBase() {}
 
   /// Return number of histogram bins.
   size_t GetNumBins() const
