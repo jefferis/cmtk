@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -173,12 +174,6 @@ public:
   void Copy ( const Self& other ) 
   {
     this->Resize( other.NumBinsX, other.NumBinsY, false /*reset*/ );
-    this->CopyUnsafe( other );
-  }
-  
-  /// Copy another histogram without range checking.
-  void CopyUnsafe ( const Self& other ) 
-  {
     for ( size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx )
       this->JointBins[idx] = other.JointBins[idx];
   }

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -88,6 +89,9 @@ protected:
   Types::DataItem m_BinsUpperBound;
 
 public:
+  /// This class.
+  typedef HistogramBase Self;
+  
   /// Default constructor.
   HistogramBase()
   {
@@ -103,6 +107,17 @@ public:
   size_t GetNumBins() const
   { 
     return this->m_NumBins;
+  }
+
+  /// Copy operator.
+  Self& operator=( const Self& other )
+  {
+    this->m_NumBins = other.m_NumBins;
+    this->m_BinWidth = other.m_BinWidth;
+    this->m_BinsLowerBound = other.m_BinsLowerBound;
+    this->m_BinsLowerBound = other.m_BinsLowerBound;
+    
+    return *this;
   }
 
   /** Set data range corresponding to this histogram.

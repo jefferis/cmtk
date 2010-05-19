@@ -92,9 +92,9 @@ public:
   ImagePairSimilarityJointHistogram( const Self& src );
 
   /// Copy operator.
-  void CopyUnsafe( const ImagePairSimilarityJointHistogram& other )
+  void Copy( const ImagePairSimilarityJointHistogram& other )
   {
-    this->m_JointHistogram.CopyUnsafe( other.m_JointHistogram );
+    this->m_JointHistogram.Copy( other.m_JointHistogram );
   }
 
   /** Set reference volume.

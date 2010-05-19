@@ -171,7 +171,7 @@ public:
     int endPlaneIncrement = this->m_DimsX * ( voi.From()[1] + (this->m_DimsY - voi.To()[1]) );
     
     const Types::DataItem unsetY = DataTypeTraits<Types::DataItem>::ChoosePaddingValue();
-    localMetric.CopyUnsafe( *this->m_Metric );
+    localMetric.Copy( *this->m_Metric );
     r = voi.From()[0] + this->m_DimsX * ( voi.From()[1] + this->m_DimsY * voi.From()[2] );
     for ( pZ = voi.From()[2]; pZ<voi.To()[2]; ++pZ ) 
       {

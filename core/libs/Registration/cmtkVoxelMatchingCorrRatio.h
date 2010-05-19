@@ -227,15 +227,9 @@ public:
   }
 
   /// UNDOCUMENTED
-  void Copy( const Self& other, const bool copyData = false ) 
+  void Copy( const Self& other ) 
   {
-    this->CopyUnsafe( other, copyData );
-  }
-
-  /// UNDOCUMENTED
-  void CopyUnsafe( const Self& other, const bool = false ) 
-  {
-    HistogramI->CopyUnsafe( other.HistogramI );
+    *HistogramI = other.HistogramI;
     for ( size_t bin = 0; bin < NumBinsX; ++bin ) 
       {
       SumJ[bin] = other.SumJ[bin];
@@ -244,7 +238,7 @@ public:
     SigmaSqJ = other.SigmaSqJ;
     MuJ = other.MuJ;
     
-    HistogramJ->CopyUnsafe( other.HistogramJ );
+    *HistogramJ = other.HistogramJ;
     for ( size_t bin = 0; bin < NumBinsY; ++bin ) 
       {
       SumI[bin] = other.SumI[bin];

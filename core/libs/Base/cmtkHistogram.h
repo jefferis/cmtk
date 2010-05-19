@@ -70,6 +70,9 @@ public:
   /// This class.
   typedef Histogram<T> Self;
 
+  /// Parent class.
+  typedef HistogramBase Superclass;
+
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
@@ -130,9 +133,11 @@ public:
   }
 
   /// Copy another histogram without range checking.
-  void CopyUnsafe ( const Self& other ) 
+  Self& operator=( const Self& other ) 
   {
+    this->Superclass::operator=( other );
     memcpy( Bins, other.Bins, m_NumBins * sizeof( T ) );
+    return *this;
   }
 
   /** Make an identical copy of this object.
