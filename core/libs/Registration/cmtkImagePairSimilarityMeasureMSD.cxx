@@ -44,12 +44,4 @@ ImagePairSimilarityMeasureMSD::ImagePairSimilarityMeasureMSD
   : ImagePairSimilarityMeasure( refVolume, fltVolume, interpolation )
 {}
 
-ImagePairSimilarityMeasureMSD::ImagePairSimilarityMeasureMSD
-( const Self& other ) :
-  ImagePairSimilarityMeasure( other )
-{
-  this->m_SumOfDifferences = other.m_SumOfDifferences;
-  this->m_NumberOfSamples = other.m_NumberOfSamples;
-}
-
 } // namespace cmtk

@@ -44,30 +44,6 @@ VoxelMatchingCrossCorrelation
   VoxelMatchingMetricShort( refVolume, fltVolume )
 {}
 
-VoxelMatchingCrossCorrelation
-::VoxelMatchingCrossCorrelation( const Self& other ) :
-  VoxelMatchingMetricShort( other )
-{
-  SumX = other.SumX;
-  SumY = other.SumY;
-  SumXY = other.SumXY;
-  SumSqX = other.SumSqX;
-  SumSqY = other.SumSqY;
-  Samples = other.Samples;
-}
-
-void
-VoxelMatchingCrossCorrelation
-::Copy( const VoxelMatchingCrossCorrelation& other )
-{
-  SumX = other.SumX;
-  SumY = other.SumY;
-  SumXY = other.SumXY;
-  SumSqX = other.SumSqX;
-  SumSqY = other.SumSqY;
-  Samples = other.Samples;
-}
-
 VoxelMatchingCrossCorrelation::ReturnType
 VoxelMatchingCrossCorrelation
 ::Get() const

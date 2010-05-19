@@ -55,14 +55,6 @@ VoxelMatchingMetric<T,DT,I>::VoxelMatchingMetric
     }
 }
 
-template<class T,ScalarDataType DT,Interpolators::InterpolationEnum I>
-VoxelMatchingMetric<T,DT,I>::VoxelMatchingMetric
-( const Self& other )
-{
-  this->DataX.CopyFrom( other.DataX );
-  this->DataY.CopyFrom( other.DataY );
-}
-
 // instantiate necessary templates.
 template class VoxelMatchingMetric<short,TYPE_SHORT,Interpolators::LINEAR>;
 template class VoxelMatchingMetric<byte,TYPE_BYTE,Interpolators::LINEAR>;

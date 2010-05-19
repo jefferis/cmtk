@@ -83,9 +83,6 @@ public:
     const Types::DataItem minBoundX = -HUGE_VAL, const Types::DataItem maxBoundX = HUGE_VAL,
     const Types::DataItem minBoundY = -HUGE_VAL, const Types::DataItem maxBoundY = HUGE_VAL );
   
-  /// Copy constructor.
-  RegistrationJointHistogram ( const RegistrationJointHistogram& other );
-
   unsigned int SetDataX( const UniformVolume* volume, const unsigned int numBins, const Types::DataItem minBound = -HUGE_VAL, const Types::DataItem maxBound = HUGE_VAL );
 
   unsigned int SetDataY( const UniformVolume* volume, const unsigned int numBins, const Types::DataItem minBound = -HUGE_VAL, const Types::DataItem maxBound = HUGE_VAL );

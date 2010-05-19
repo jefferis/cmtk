@@ -48,9 +48,6 @@ cmtk
 
 /** \addtogroup Registration */
 //@{
-#ifdef _MSC_VER
-#pragma warning (disable:4521)
-#endif
 /** Mean squared difference metric.
  *\deprecated For future code, use cmtk::ImagePairSimilarityMetricMSD instead.
  */
@@ -72,12 +69,6 @@ public:
    */
   VoxelMatchingMeanSquaredDifference( const UniformVolume* refVolume, const UniformVolume* fltVolume );
 
-  /// Copy constructor.
-  VoxelMatchingMeanSquaredDifference( const Self& other );
-  
-  /// UNDOCUMENTED
-  void Copy( const VoxelMatchingMeanSquaredDifference& other );
-  
   /** Add a pair of values to the metric.
    */
   template<class T> void Increment( const T a, const T b )

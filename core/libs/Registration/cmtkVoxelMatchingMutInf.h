@@ -49,9 +49,6 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-#ifdef _MSC_VER
-#pragma warning (disable:4521)
-#endif
 /** Voxel metric "mutual information".
  *\deprecated For future code, use cmtk::ImagePairSimilarityMetricNCC instead.
  */
@@ -81,8 +78,6 @@ public:
   VoxelMatchingMutInf ( const UniformVolume* refVolume, const UniformVolume* fltVolume, const unsigned int numRefBins = CMTK_HISTOGRAM_AUTOBINS, const unsigned int numFltBins = CMTK_HISTOGRAM_AUTOBINS )
     : RegistrationJointHistogram<I>( refVolume, fltVolume, numRefBins, numFltBins ) {};
   
-  VoxelMatchingMutInf( const Self& other ) : RegistrationJointHistogram<I>( other ) {}
-
   /// Return mutual information.
   typename Self::ReturnType Get () const 
   {
@@ -90,8 +85,8 @@ public:
     
     this->GetMarginalEntropies(HX,HY);
     this->GetJointEntropy(HXY);
-
-	return static_cast<typename Self::ReturnType>( HX + HY - HXY );
+    
+    return static_cast<typename Self::ReturnType>( HX + HY - HXY );
   }
 };
 

@@ -44,20 +44,4 @@ VoxelMatchingMeanSquaredDifference::VoxelMatchingMeanSquaredDifference
   VoxelMatchingMetricShort( refVolume, fltVolume )
 {}
 
-VoxelMatchingMeanSquaredDifference::VoxelMatchingMeanSquaredDifference
-( const Self& other ) :
-  VoxelMatchingMetricShort( other )
-{
-  Sum = other.Sum;
-  Samples = other.Samples;
-}
-
-void
-VoxelMatchingMeanSquaredDifference::Copy
-( const VoxelMatchingMeanSquaredDifference& other )
-{
-  Sum = other.Sum;
-  Samples = other.Samples;
-}
-
 } // namespace cmtk

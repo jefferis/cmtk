@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -184,8 +185,7 @@ VoxelMatchingMetric_Type<T,DT>::ImageData::AllocDataArray
 ( const TypedArray* templateArray )
 {
   NumberOfSamples = templateArray->GetDataSize();
-  DataArray = TypedArray::SmartPtr
-    ( TypedArray::Create( DT, NumberOfSamples ) );
+  DataArray = TypedArray::SmartPtr( TypedArray::Create( DT, NumberOfSamples ) );
   Data = static_cast<T*>( DataArray->GetDataPtr() );
 }
 
@@ -202,21 +202,6 @@ VoxelMatchingMetric_Type<T,DT>::ImageData::PrecomputeIncrements
   nextIK = nextK + 1;
   nextJK = nextK + nextJ;
   nextIJK = nextJK + 1;
-}
-
-template<class T,ScalarDataType DT>
-void
-VoxelMatchingMetric_Type<T,DT>::ImageData::CopyFrom( const ImageData& src ) 
-{
-  NumberOfSamples = src.NumberOfSamples;
-  this->ImageDims = src.ImageDims;
-  
-  nextJ = src.nextJ;
-  nextK = src.nextK;
-  nextIJ = src.nextIJ;
-  nextIK = src.nextIK;
-  nextJK = src.nextJK;
-  nextIJK = src.nextIJK;
 }
 
 // instantiate necessary templates.

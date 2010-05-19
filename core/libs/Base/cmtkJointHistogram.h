@@ -43,9 +43,10 @@
 
 #include <cmtkHistogram.h>
 
-#include <stdio.h>
-
 #include <cmtkSmartPtr.h>
+
+#include <vector>
+#include <algorithm>
 
 namespace
 cmtk
@@ -83,7 +84,7 @@ protected:
   Types::DataItem BinOffsetY;
 
   /// Array of cross-modality (joint) bins.
-  T* JointBins;
+  std::vector<T> JointBins;
 
   /// Total number of bins, ie., NumBinsX*NumBinsY.
   size_t m_TotalNumberOfBins;
@@ -102,54 +103,22 @@ public:
     this->m_TotalNumberOfBins = NumBinsX = NumBinsY = 0; 
     BinWidthX = BinWidthY = 1.0;
     BinOffsetX = BinOffsetY = 0.0;
-    this->JointBins = NULL; 
   }
 
   /** Constructor.
    */
   JointHistogram( const size_t numBinsX, const size_t numBinsY, const bool reset = true ) 
   {
-    this->JointBins = NULL;
     this->m_TotalNumberOfBins = NumBinsX = NumBinsY = 0; 
     BinWidthX = BinWidthY = 1.0;
     BinOffsetX = BinOffsetY = 0.0;
     this->SetNumBins( numBinsX, numBinsY, reset );
   }
 
-  /// Copy constructor.
-  JointHistogram( const Self& other, const bool copyData = true ) 
-  {
-    this->JointBins = NULL;
-    this->m_TotalNumberOfBins = NumBinsX = NumBinsY = 0; 
-    BinWidthX = other.BinWidthX;
-    BinWidthY = other.BinWidthY;
-    BinOffsetX = other.BinOffsetX;
-    BinOffsetY = other.BinOffsetY;
-
-    this->SetNumBins( other.NumBinsX, other.NumBinsY, !copyData /*reset*/ );
-    if ( other.JointBins && copyData )
-      memcpy( this->JointBins, other.JointBins, this->m_TotalNumberOfBins * sizeof( T ) );
-  }
-
-  /** Destructor.
-   * All bin arrays and the precomputed data bin index arrays are
-   * de-allocated.
-   */
-  ~JointHistogram () 
-  {  
-    if ( this->JointBins ) 
-      delete[] this->JointBins; 
-  }
-
   /// Resize and allocate histogram bins.
   void Resize( const size_t numberOfBinsX, const size_t numberOfBinsY, const bool reset = true )
   {
-    if ( (numberOfBinsX != this->NumBinsX) || (numberOfBinsY != this->NumBinsY) )
-      {
-      this->SetNumBins( numberOfBinsX, numberOfBinsY );
-      }
-    if ( reset ) 
-      this->Reset();
+    this->SetNumBins( numberOfBinsX, numberOfBinsY, reset );
   }
 
   /** Make an identical copy of this object.
@@ -158,24 +127,9 @@ public:
    * structure is duplicated.
    *@return The newly created copy of this object.
    */
-  Self* Clone ( const bool copyData = true ) const 
+  Self* Clone () const 
   {
-    Self *clone = new Self( NumBinsX, NumBinsY, false );
-    
-    if ( copyData )
-      memcpy( clone->JointBins, this->JointBins, this->m_TotalNumberOfBins * sizeof( T ) );
-    else
-      clone->Reset();
-    
-    return clone;
-  }
-
-  /// Copy another histogram after matching target size.
-  void Copy ( const Self& other ) 
-  {
-    this->Resize( other.NumBinsX, other.NumBinsY, false /*reset*/ );
-    for ( size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx )
-      this->JointBins[idx] = other.JointBins[idx];
+    return new Self( *this );
   }
 
   /// Set histogram values from existing data array.
@@ -196,12 +150,6 @@ public:
     return bins;
   }
   
-  /// Get constant pointer to internal histogram values array.
-  const T* GetRawBins() const 
-  {
-    return this->JointBins;
-  }
-
   /** Set number of bins in x-direction.
    * This will re-allocate the histogram storage and clear all entries.
    */
@@ -223,14 +171,12 @@ public:
    */
   void SetNumBins( const size_t numBinsX, const size_t numBinsY, const bool reset = true ) 
   {
-    if ( this->JointBins ) 
-      delete[] this->JointBins;
-    
     this->NumBinsX = numBinsX;
     this->NumBinsY = numBinsY;
     this->m_TotalNumberOfBins = this->NumBinsX * this->NumBinsY;
 
-    this->JointBins = Memory::AllocateArray<T>( this->m_TotalNumberOfBins );
+    this->JointBins.resize( this->m_TotalNumberOfBins );
+    
     if ( reset ) 
       this->Reset();
   }
@@ -303,7 +249,7 @@ public:
    */
   void Reset () 
   {
-    memset( this->JointBins, 0, this->m_TotalNumberOfBins * sizeof( T ) );
+    std::fill( this->JointBins.begin(), this->JointBins.end(), 0 );
   }
   
   /** Return bin corresponding to a certain value of the X distribution.
@@ -702,23 +648,6 @@ public:
     return eta / (sigSquare * sampleCount); 
   }
   
-  /// Copy operator.
-  Self& operator=( const Self& other )
-  {
-    this->BinWidthX = other.BinWidthX;
-    this->BinWidthY = other.BinWidthY;
-    this->BinOffsetX = other.BinOffsetX;
-    this->BinOffsetY = other.BinOffsetY;
-    this->SetNumBins( other.NumBinsX, other.NumBinsY );
-
-    if ( other.JointBins )
-      memcpy( this->JointBins, other.JointBins, this->m_TotalNumberOfBins * sizeof( T ) );
-    else
-      this->JointBins = NULL;
-    
-    return *this;
-  }
-
 #ifdef _OPENMP
 private:
   /// If we have OpenMP, we may need a vector of double to store some intermediate results.

@@ -58,17 +58,6 @@ RegistrationJointHistogram<I>::RegistrationJointHistogram
 }
 
 template<cmtk::Interpolators::InterpolationEnum I>
-RegistrationJointHistogram<I>::RegistrationJointHistogram
-( const RegistrationJointHistogram& other ) :
-#ifdef CMTK_PVI_HISTOGRAMS
-  JointHistogram<float>( other ),
-#else
-  JointHistogram<int>( other ),
-#endif
-  VoxelMatchingMetric<byte,TYPE_BYTE,I>( other )
-{}
-
-template<cmtk::Interpolators::InterpolationEnum I>
 unsigned int
 RegistrationJointHistogram<I>::SetDataX 
 ( const UniformVolume* volume, const unsigned int numBins, 

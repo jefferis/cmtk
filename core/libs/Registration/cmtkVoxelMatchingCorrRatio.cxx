@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -42,7 +43,7 @@ template<Interpolators::InterpolationEnum I>
 typename VoxelMatchingCorrRatio<I>::ReturnType
 VoxelMatchingCorrRatio<I>::Get () const
 {
-  double invSampleCount = 1.0 / HistogramI->SampleCount();
+  double invSampleCount = 1.0 / HistogramI.SampleCount();
   // initialize variable for the weighted sum of the sigma^2 values over all
   // reference intensity classes.
   double sumSigmaSquare = 0;
@@ -50,14 +51,14 @@ VoxelMatchingCorrRatio<I>::Get () const
   for ( unsigned int j = 0; j < NumBinsX; ++j ) 
     {
     // are there any values in the current class?
-    if ( (*HistogramI)[j] ) 
+    if ( HistogramI[j] ) 
       {
       // compute mean floating value for this reference class
-      double mu = SumJ[j] / (*HistogramI)[j];
+      double mu = SumJ[j] / HistogramI[j];
       // compute variance of floating values for this reference class
-      double sigmaSq = ( mu*mu*(*HistogramI)[j] - 2.0*mu*SumJ[j] + SumJ2[j] ) / (*HistogramI)[j]; 
+      double sigmaSq = ( mu*mu*HistogramI[j] - 2.0*mu*SumJ[j] + SumJ2[j] ) / HistogramI[j]; 
       // update sum over all classes with weighted sigma^2 for this class.
-      sumSigmaSquare += (invSampleCount * (*HistogramI)[j]) * sigmaSq;
+      sumSigmaSquare += (invSampleCount * HistogramI[j]) * sigmaSq;
       }
     }
   
@@ -67,12 +68,12 @@ VoxelMatchingCorrRatio<I>::Get () const
   sumSigmaSquare = 0;
   for ( unsigned int i = 0; i < NumBinsY; ++i ) 
     {
-    if ( (*HistogramJ)[i] ) 
+    if ( HistogramJ[i] ) 
       {
-      double mu = SumI[i] / (*HistogramJ)[i];
-      double sigmaSq = ( mu*mu*(*HistogramJ)[i] - 2.0*mu*SumI[i] + SumI2[i] ) / (*HistogramJ)[i]; 
+      double mu = SumI[i] / HistogramJ[i];
+      double sigmaSq = ( mu*mu*HistogramJ[i] - 2.0*mu*SumI[i] + SumI2[i] ) / HistogramJ[i]; 
       // update sum over all classes with weighted sigma^2 for this class.
-      sumSigmaSquare += (invSampleCount * (*HistogramJ)[i]) * sigmaSq;
+      sumSigmaSquare += (invSampleCount * HistogramJ[i]) * sigmaSq;
       }
     }
   

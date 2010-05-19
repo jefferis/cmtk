@@ -78,12 +78,6 @@ public:
    */
   VoxelMatchingCrossCorrelation ( const UniformVolume* refVolume, const UniformVolume* fltVolume );
 
-  /// Constant copy constructor.
-  VoxelMatchingCrossCorrelation ( const Self& other );
-  
-  /// Copy.
-  void Copy ( const VoxelMatchingCrossCorrelation& other );
-
   /** Add a pair of values to the metric.
    */
   template<class T> void Increment( const T a, const T b )

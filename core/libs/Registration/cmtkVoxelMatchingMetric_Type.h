@@ -119,9 +119,6 @@ public:
     /// Allocate internal data array and create wrapper for reference counting.
     void AllocDataArray( const TypedArray* templateArray );
 
-    /// Copy from existing object.
-    void CopyFrom( const ImageData& src );
-    
     /** Initialize internal storage for one volume.
      * The volume's data is converted into an array of byte values that
      * directly represent the bin to sort the respective sample into. In 

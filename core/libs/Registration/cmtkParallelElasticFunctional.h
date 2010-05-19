@@ -167,7 +167,7 @@ public:
     int endPlaneIncrement = this->DimsX * ( voi.From()[1] + (this->DimsY - voi.To()[1]) );
     
     const typename VM::Exchange unsetY = this->Metric->DataY.padding();
-    localMetric->Copy( *this->Metric );
+    *localMetric = *this->Metric;
     r = voi.From()[0] + this->DimsX * ( voi.From()[1] + this->DimsY * voi.From()[2] );
     for ( pZ = voi.From()[2]; pZ<voi.To()[2]; ++pZ ) 
       {

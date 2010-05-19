@@ -75,9 +75,6 @@ public:
   ImagePairSimilarityMeasureMSD( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume,
 				 const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
 
-  /// Copy constructor.
-  ImagePairSimilarityMeasureMSD( const Self& other );
-  
   /** Add a pair of values to the metric.
    */
   template<class T> void Increment( const T a, const T b )

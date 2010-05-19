@@ -83,11 +83,6 @@ public:
    */
   ImagePairSimilarityMeasureMI() {};
 
-  /// Copy constructor.
-  ImagePairSimilarityMeasureMI( const Self& src )
-    : ImagePairSimilarityJointHistogram( src )
-  {}
-
   /// Get the value of the metric.
   Self::ReturnType Get() const 
   {

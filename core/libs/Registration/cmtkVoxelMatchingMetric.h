@@ -53,9 +53,6 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-#ifdef _MSC_VER
-#pragma warning (disable:4521)
-#endif
 /** Base class for voxel metrics with pre-converted image data.
  */
 template<class T, ScalarDataType DT, Interpolators::InterpolationEnum I=cmtk::Interpolators::LINEAR>
@@ -87,9 +84,6 @@ public:
   /** Default constructor.
    */
   VoxelMatchingMetric() {};
-
-  /// Copy constructor.
-  VoxelMatchingMetric( const Self& src );
 
   /// Get a value from the X distribution (reference image).
   T GetSampleX ( const size_t index ) const

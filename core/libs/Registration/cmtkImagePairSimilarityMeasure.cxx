@@ -88,12 +88,4 @@ ImagePairSimilarityMeasure::SetFloatingVolume( const UniformVolume::SmartConstPt
     }
 }
 
-ImagePairSimilarityMeasure::ImagePairSimilarityMeasure
-( const Self& other )
-{
-  this->m_ReferenceData = other.m_ReferenceData;
-  this->m_FloatingData = other.m_FloatingData;
-  this->m_FloatingImageInterpolator = other.m_FloatingImageInterpolator;
-}
-
 } // namespace cmtk

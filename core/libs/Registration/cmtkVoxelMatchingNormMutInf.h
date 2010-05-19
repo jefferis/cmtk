@@ -46,9 +46,6 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-#ifdef _MSC_VER
-#pragma warning (disable:4521)
-#endif
 /** Voxel metric "normalized mutual information".
  *\deprecated For future code, use cmtk::ImagePairSimilarityMetricNMI instead.
  */
@@ -105,9 +102,6 @@ public:
 			    const Types::DataItem minBoundFlt, const Types::DataItem maxBoundFlt )
     : RegistrationJointHistogram<I>( refVolume, fltVolume, CMTK_HISTOGRAM_AUTOBINS, CMTK_HISTOGRAM_AUTOBINS, minBoundRef, maxBoundRef, minBoundFlt, maxBoundFlt ) {};
   
-  /// UNDOCUMENTED
-  VoxelMatchingNormMutInf( const Self& other ) : RegistrationJointHistogram<I>( other ) {}
-
   /// Return normalized mutual information.
   typename Self::ReturnType Get () const 
   {
