@@ -29,7 +29,8 @@
 ##
 
 # Sources of non-templated classes.
-SET(cmtkGPU_SRCS_CUDA)
+SET(cmtkGPU_SRCS_CUDA
+  cmtkDeviceMemoryBaseCUDA)
 
 IF(cmtkGPU_SRCS_CUDA)
   CUDA_ADD_LIBRARY(cmtkGPU ${cmtkGPU_SRCS_CUDA})
