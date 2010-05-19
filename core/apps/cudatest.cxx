@@ -39,15 +39,41 @@
 int
 main( const int argc, const char*[] )
 {
-  int version;
+  int version = 0;
   if ( cudaDriverGetVersion( &version ) != cudaSuccess )
     {
-    std::cerr << "Call to cuDriverGetVersion() failed." << std::endl;
+    std::cerr << "Call to cudaDriverGetVersion() failed." << std::endl;
     return 1;
     }
   
   std::cerr << "Found CUDA driver version " << version << std::endl;
+
+  int deviceCount = 0;
+  if ( cudaGetDeviceCount( &deviceCount ) != cudaSuccess )
+    {
+    std::cerr << "Call to cudaGetDeviceCount() failed." << std::endl;
+    return 1;
+    }
   
+  std::cerr << "CUDA reports " << deviceCount << " device(s)." << std::endl;
+
+  for ( int device = 0; device < deviceCount; ++device )
+    {
+    std::cerr << std::endl << "Device #" << device << ":" << std::endl;
+    struct cudaDeviceProp props;
+    if ( cudaGetDeviceProperties( &props, device ) != cudaSuccess )
+      {
+      std::cerr << "\tFailed to get device properties." << std::endl;
+      }
+    else
+      {
+      std::cerr << "\tName: " << props.name << std::endl;
+      std::cerr << "\tTotal memory: " << props.totalGlobalMem << std::endl;
+      std::cerr << "\tMultiprocessor count: " << props.multiProcessorCount << std::endl;
+      std::cerr << "\tCompute capability: " << props.major << "." << props.minor << std::endl;
+      }
+    }
+
   // if we got here, the program probably ran
   return 0;
 }
