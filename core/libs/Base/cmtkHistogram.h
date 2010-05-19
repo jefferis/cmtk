@@ -39,7 +39,9 @@
 #include <cmtkSmartPtr.h>
 #include <cmtkMemory.h>
 
-#include <assert.h>
+#include <vector>
+#include <algorithm>
+#include <cassert>
 
 namespace
 cmtk
@@ -62,10 +64,6 @@ class Histogram :
   /// Inherit some non-template functions.
   public HistogramBase 
 {
-protected:
-  /// Array bins.
-  T* Bins;
-  
 public:
   /// This class.
   typedef Histogram<T> Self;
@@ -82,51 +80,29 @@ public:
   /** Constructor.
    */
   Histogram ( const size_t numBins = 0, const bool reset = true ) 
+    : m_Bins( numBins )
   {
-    this->m_NumBins = numBins;
-    if ( this->m_NumBins )
-      {
-      this->Bins = Memory::AllocateArray<T>( this->m_NumBins );
-      if ( reset ) this->Reset();
-      }
-    else
-      this->Bins = NULL;
+    if ( reset ) 
+      this->Reset();
   }
 
   /// Copy constructor.
   Histogram ( const Self* other, const bool copyData = true ) 
   {
-    this->m_NumBins = other->m_NumBins;
-    this->m_BinWidth = other->m_BinWidth;
-    this->Bins = Memory::AllocateArray<T>( this->m_NumBins );
-    
     if ( copyData )
-      memcpy( Bins, other->Bins, m_NumBins * sizeof( T ) );
+      this->m_Bins = other->m_Bins;
     else
       this->Reset();
   }
 
   /** Destructor.
-   * All bin arrays and the precomputed data bin index arrays are
-   * de-allocated.
    */
-  virtual ~Histogram () 
-  { 
-    if (this->Bins) delete[] this->Bins; 
-  }
+  virtual ~Histogram () {}
 
   /// Resize and allocate histogram bins.
   void Resize( const size_t numberOfBins, const bool reset = true )
   {
-    if ( numberOfBins != this->m_NumBins )
-      {
-      if ( this->Bins ) 
-	delete[] this->Bins;      
-
-      this->m_BinWidth = this->m_BinWidth * this->m_NumBins / numberOfBins;
-      this->m_NumBins = numberOfBins;
-      Bins = Memory::AllocateArray<T>( this->m_NumBins );
-      }
+    this->m_Bins.resize( numberOfBins );
 
     if ( reset ) 
       this->Reset();
@@ -136,17 +112,19 @@ public:
   Self& operator=( const Self& other ) 
   {
     this->Superclass::operator=( other );
-    memcpy( Bins, other.Bins, m_NumBins * sizeof( T ) );
+    this->m_Bins = other.m_Bins;
     return *this;
   }
-
+  
   /** Make an identical copy of this object.
-   *@param copyData If this is non-zero (default), then the current values in
-   * the histogram bins are also duplicated. If zero, only the histogram
-   * structure is duplicated.
-   *@return The newly created copy of this object.
    */
-  Self *Clone ( const bool copyData = true ) const;
+  Self *Clone () const;
+
+  /// Return number of histogram bins.
+  virtual size_t GetNumBins() const
+  {
+    return this->m_Bins.size();
+  }
 
   /** Reset computation.
    * This function has to be called before any other computation made with an
@@ -156,51 +134,31 @@ public:
    */
   void Reset ()
   {
-    memset( Bins, 0, m_NumBins * sizeof( T ) );
+    std::fill( this->m_Bins.begin(), this->m_Bins.end(), 0 );
   }
 
   /// Return number of values in a given bin using [] operator.
   const T operator[] ( const size_t index ) const 
   {
     assert( index < this->m_NumBins );
-    return Bins[index];
+    return this->m_Bins[index];
   }
 
   /// Return reference to given bin.
   T& operator[] ( const size_t index ) 
   {
     assert( index < this->m_NumBins );
-    return Bins[index];
+    return this->m_Bins[index];
   }
-
-  /// Set histogram values from existing data array.
-  void SetBins( const T* bins ) 
-  {
-    memcpy( Bins, bins, m_NumBins * sizeof( *Bins ) );
-  }
-
-  /// Get histogram values and put them into data array.
-  T* GetBins() const 
-  {
-    T *bins = Memory::AllocateArray<T>( m_NumBins );
-    memcpy( bins, Bins, m_NumBins * sizeof( *bins ) );
-    return bins;
-  }
-
-  /// Get constant pointer to internal histogram values array.
-  const T* GetRawBins() const 
-  {
-    return Bins;
-  }
-
+  
   /** Return total number of samples stored in the histogram.
    */
   T SampleCount () const 
   {
     T sampleCount = 0;
     
-    for ( size_t i=0; i<m_NumBins; ++i )
-      sampleCount += Bins[i];
+    for ( size_t i=0; i<this->m_Bins.size(); ++i )
+      sampleCount += this->m_Bins[i];
     
     return sampleCount;
   }
@@ -213,7 +171,7 @@ public:
    */
   T GetMaximumBinValue () const 
   {
-    return Bins[ this->GetMaximumBinIndex() ];
+    return this->m_Bins[ this->GetMaximumBinIndex() ];
   }
 
   /** Compute entropy of distribution.
@@ -237,9 +195,7 @@ public:
    */
   void Increment ( const size_t sample ) 
   {
-    assert( (sample+1) && (sample<m_NumBins) );
-
-    ++Bins[sample];
+    ++this->m_Bins[sample];
   }
 
   /** Add weighted symmetric kernel to histogram.
@@ -263,14 +219,12 @@ public:
    */
   void IncrementFractional ( const double bin ) 
   {
-    assert( (bin >= 0) && (bin < m_NumBins) );
-
     const T relative = static_cast<T>( bin - floor(bin) );
-    Bins[static_cast<size_t>(bin)] += (1 - relative);
-    if ( bin<(m_NumBins-1) )
-      Bins[static_cast<size_t>(bin+1)] += relative;
+    this->m_Bins[static_cast<size_t>(bin)] += (1 - relative);
+    if ( bin<(this->GetNumBins()-1) )
+      this->m_Bins[static_cast<size_t>(bin+1)] += relative;
   }
-
+  
   /** Increment the value of a histogram bin by a given weight.
    * The histogram field to increment is identified directly by its index;
    * no value-rescaling is done internally.
@@ -280,9 +234,7 @@ public:
    */
   void Increment ( const size_t sample, const double weight ) 
   {
-    assert( (sample+1) && (sample<m_NumBins) );
-
-    Bins[sample] += static_cast<T>( weight );
+    this->m_Bins[sample] += static_cast<T>( weight );
   }
 
   /** Decrement the value of a histogram bin by 1.
@@ -294,10 +246,8 @@ public:
    */
   void Decrement ( const size_t sample ) 
   {
-    assert( (sample+1) && (sample<m_NumBins) );
-    
-    assert( Bins[sample] >= 1 );
-    --Bins[sample];
+    assert( this->m_Bins[sample] >= 1 );
+    --this->m_Bins[sample];
   }
 
   /** Decrement the value of a histogram bins by fractions of 1.
@@ -311,12 +261,10 @@ public:
    */
   void DecrementFractional ( const double bin ) 
   {
-    assert( (bin >= 0) && (bin < m_NumBins) );
-
     T relative = static_cast<T>( bin - floor(bin) );
-    Bins[static_cast<size_t>(bin)] -= (1 - relative);
-    if ( bin<(m_NumBins-1) )
-      Bins[static_cast<size_t>(bin+1)] -= relative;
+    this->m_Bins[static_cast<size_t>(bin)] -= (1 - relative);
+    if ( bin<(this->GetNumBins()-1) )
+      this->m_Bins[static_cast<size_t>(bin+1)] -= relative;
   }
 
   /** Decrement the value of a histogram bin by given weight.
@@ -330,10 +278,8 @@ public:
    */
   void Decrement ( const size_t sample, const double weight ) 
   {
-    assert( (sample+1) && (sample<m_NumBins) );
-    
-    assert( Bins[sample] >= weight );
-    Bins[sample] -= static_cast<T>( weight );
+    assert( this->m_Bins[sample] >= weight );
+    this->m_Bins[sample] -= static_cast<T>( weight );
   }
 
   /** Add values from another histogram.
@@ -362,9 +308,9 @@ public:
   /// Convert this histogram to a cumulative histogram (in place).
   void ConvertToCumulative()
   {
-    for ( size_t idx = 1; idx < this->m_NumBins; ++idx )
+    for ( size_t idx = 1; idx < this->GetNumBins(); ++idx )
       {
-      this->Bins[idx] += this->Bins[idx-1];
+      this->m_Bins[idx] += this->m_Bins[idx-1];
       }
   }
   /** Normalize histogram values by their total sum.
@@ -382,6 +328,10 @@ public:
   /** Compute approximate percentile value from histogram.
    */
   Types::DataItem GetPercentile( const Types::DataItem percentile /**!< The percentile to be computed. Value must be between 0 and 1.*/ ) const;
+
+private:
+  /// Array bins.
+  std::vector<T> m_Bins;
 };
 
 //@}

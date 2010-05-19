@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -81,8 +82,8 @@ public:
    */
   virtual size_t ValueToBin ( const Types::DataItem value ) const 
   {
-    const size_t binIndex = static_cast<size_t>( (this->m_NumBins-1) * log(1 + value - this->m_BinsLowerBound) / log( this->m_BinsUpperBound ) );
-    return std::max<size_t>( 0, std::min( this->m_NumBins-1, binIndex ) );
+    const size_t binIndex = static_cast<size_t>( (this->GetNumBins()-1) * log(1 + value - this->m_BinsLowerBound) / log( this->m_BinsUpperBound ) );
+    return std::max<size_t>( 0, std::min( this->GetNumBins()-1, binIndex ) );
   }
 
   /** Return fractional bin corresponding to a value of the distribution.
@@ -93,16 +94,16 @@ public:
    */
   virtual Types::DataItem ValueToBinFractional ( const Types::DataItem value ) const 
   {
-    const Types::DataItem binIndex = (this->m_NumBins-1) * log(1 + value - this->m_BinsLowerBound) / log( this->m_BinsUpperBound );
-    return std::max<Types::DataItem>( 0, std::min<Types::DataItem>( this->m_NumBins-1, binIndex ) );
+    const Types::DataItem binIndex = (this->GetNumBins()-1) * log(1 + value - this->m_BinsLowerBound) / log( this->m_BinsUpperBound );
+    return std::max<Types::DataItem>( 0, std::min<Types::DataItem>( this->GetNumBins()-1, binIndex ) );
   }
   
   /** Get value range of a given bin.
    */
   virtual void GetRangeBin( const size_t bin, Types::DataItem& from, Types::DataItem& to ) const 
   {
-    from = exp( bin * log( this->m_BinsUpperBound ) / (this->m_NumBins-1) ) + this->m_BinsLowerBound - 1;
-    to = exp( (bin+1) * log( this->m_BinsUpperBound ) / (this->m_NumBins-1) ) + this->m_BinsLowerBound - 1;
+    from = exp( bin * log( this->m_BinsUpperBound ) / (this->GetNumBins()-1) ) + this->m_BinsLowerBound - 1;
+    to = exp( (bin+1) * log( this->m_BinsUpperBound ) / (this->GetNumBins()-1) ) + this->m_BinsLowerBound - 1;
   }
   
   /** Return center of values represented by a certain bin.
@@ -111,7 +112,7 @@ public:
    */
   virtual Types::DataItem BinToValue ( const size_t bin ) const 
   {
-    return exp( (0.5+bin) * log( this->m_BinsUpperBound ) / (this->m_NumBins-1) ) + this->m_BinsLowerBound - 1;
+    return exp( (0.5+bin) * log( this->m_BinsUpperBound ) / (this->GetNumBins()-1) ) + this->m_BinsLowerBound - 1;
   }
 };
 

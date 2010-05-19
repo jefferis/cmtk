@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -41,17 +42,9 @@ cmtk
 template<class T> 
 Histogram<T>*
 Histogram<T>
-::Clone ( const bool copyData ) const 
+::Clone () const 
 {
-  Histogram<T> *clone = 
-    new Histogram<T>( this->m_NumBins, CMTK_HISTOGRAM_NORESET );
-  
-  if ( copyData )
-    memcpy( clone->Bins, this->Bins, this->m_NumBins * sizeof( T ) );
-  else
-    clone->Reset();
-  
-  return clone;
+  return new Self( *this );
 }
 
 template<class T> 
@@ -59,14 +52,14 @@ size_t
 Histogram<T>
 ::GetMaximumBinIndex () const 
 {
-  T maximum = this->Bins[0];
+  T maximum = this->m_Bins[0];
   size_t maximumIndex = 0;
   
-  for ( size_t i = 0; i<this->m_NumBins; ++i ) 
+  for ( size_t i = 0; i<this->GetNumBins(); ++i ) 
     {
-    if ( this->Bins[ i ] > maximum ) 
+    if ( this->m_Bins[ i ] > maximum ) 
       {
-      maximum = this->Bins[ i ];
+      maximum = this->m_Bins[ i ];
       maximumIndex = i;
       }
     }
@@ -84,11 +77,11 @@ Histogram<T>
   if ( ! sampleCount ) 
     return MathUtil::GetDoubleNaN();
   
-  for ( size_t i=0; i<this->m_NumBins; ++i ) 
+  for ( size_t i=0; i<this->GetNumBins(); ++i ) 
     {
-    if ( this->Bins[i] ) 
+    if ( this->m_Bins[i] ) 
       {
-      const double pX = ((double)this->Bins[i]) / sampleCount;
+      const double pX = ((double)this->m_Bins[i]) / sampleCount;
       H -= pX*log(pX);
       }
     }
@@ -101,11 +94,11 @@ Histogram<T>
 ::AddHistogram
 ( const Self& other )
 {
-  assert( this->m_NumBins == other.m_NumBins );
+  assert( this->GetNumBins() == other.GetNumBins() );
   
-  for ( size_t i = 0; i<this->m_NumBins; ++i ) 
+  for ( size_t i = 0; i<this->GetNumBins(); ++i ) 
     {
-    this->Bins[i] += other.Bins[i];
+    this->m_Bins[i] += other.m_Bins[i];
     }
 }
 
@@ -115,12 +108,12 @@ Histogram<T>
 ::RemoveHistogram
 ( const Self& other ) 
 {
-  assert( this->m_NumBins == other.m_NumBins );
+  assert( this->GetNumBins() == other.GetNumBins() );
   
-  for ( size_t i = 0; i<this->m_NumBins; ++i ) 
+  for ( size_t i = 0; i<this->GetNumBins(); ++i ) 
     {
-    assert( this->Bins[i] >= other.Bins[i] );
-    this->Bins[i] -= other.Bins[i];
+    assert( this->m_Bins[i] >= other.m_Bins[i] );
+    this->m_Bins[i] -= other.m_Bins[i];
     }
 }
 
@@ -131,8 +124,8 @@ Histogram<T>
 ( const T normalizeTo ) 
 {
   T sampleCount = this->SampleCount();
-  for ( size_t i = 0; i < this->m_NumBins; ++i )
-    ( this->Bins[ i ] *= normalizeTo ) /= sampleCount;
+  for ( size_t i = 0; i < this->GetNumBins(); ++i )
+    ( this->m_Bins[ i ] *= normalizeTo ) /= sampleCount;
 }
 
 template<class T>
@@ -142,8 +135,8 @@ Histogram<T>
 ( const T normalizeTo ) 
 {
   T maximum = this->GetMaximumBinValue();
-  for ( size_t i = 0; i < this->m_NumBins; ++i )
-    ( this->Bins[ i ] *= normalizeTo ) /= maximum;
+  for ( size_t i = 0; i < this->GetNumBins(); ++i )
+    ( this->m_Bins[i] *= normalizeTo ) /= maximum;
 }
 
 template<class T>
@@ -153,14 +146,14 @@ Histogram<T>
 {
   const Types::DataItem threshold = percentile * this->SampleCount();
   Types::DataItem cumulative = 0;
-  for ( size_t i = 0; i < this->m_NumBins; ++i )
+  for ( size_t i = 0; i < this->GetNumBins(); ++i )
     {
     cumulative += (*this)[i];
     if ( cumulative >= threshold )
       return this->BinToValue( i );
     }
 
-  return this->m_BinsLowerBound + this->m_BinWidth * (this->m_NumBins - 1);
+  return this->m_BinsLowerBound + this->m_BinWidth * (this->GetNumBins() - 1);
 }
 
 

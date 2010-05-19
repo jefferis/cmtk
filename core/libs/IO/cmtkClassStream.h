@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,7 +37,6 @@
 
 #include <cmtkTypedStream.h>
 
-#include <cmtkHistogram.h>
 #include <cmtkJointHistogram.h>
 
 #include <cmtkAffineXform.h>
@@ -108,32 +108,6 @@ public:
   void Open( const char *dir, const char *archive, const FileMode mode ) {
     this->TypedStream::Open( dir, archive, (TypedStreamMode) mode );
   }
-
-  /// Write 1D float histogram.
-  ClassStream& operator << ( const Histogram<float> *histogram );
-
-  /** Write 1D float histogram.
-   * This function works on a reference rather than a pointer. It immediately
-   * calls the pointer-based function defined above for the actual writing.
-   */
-  ClassStream& operator << ( const Histogram<float>& histogram )
-  { return (*this) << &histogram; }
-  
-  /// Write 1D integer histogram.
-  ClassStream& operator << ( const Histogram<int> *histogram );
-
-  /** Write 1D integer histogram.
-   * This function works on a reference rather than a pointer. It immediately
-   * calls the pointer-based function defined above for the actual writing.
-   */
-  ClassStream& operator << ( const Histogram<int>& histogram )
-  { return (*this) << &histogram; }
-
-  /// Read 1D float histogram.
-  ClassStream& operator >> ( Histogram<float>*& histogram );
-
-  /// Read 1D integer histogram.
-  ClassStream& operator >> ( Histogram<int>*& histogram );
 
   /// Write 2D float histogram.
   ClassStream& operator << ( const JointHistogram<float> *histogram );

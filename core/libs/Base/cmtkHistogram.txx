@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,15 +48,14 @@ Histogram<T>
 ::AddWeightedSymmetricKernel 
 ( const size_t bin, const size_t kernelRadius, const T* kernel, const T factor ) 
 {
-//  assert( (0 <= bin) && (bin < this->m_NumBins) );
-  this->Bins[bin] += factor * kernel[0];
+  this->m_Bins[bin] += factor * kernel[0];
   for ( size_t idx = 1; idx < kernelRadius; ++idx )
     {
     const T increment = factor * kernel[idx];
-    if ( (bin + idx) < this->m_NumBins )
-      this->Bins[bin + idx] += increment;
+    if ( (bin + idx) < this->GetNumBins() )
+      this->m_Bins[bin + idx] += increment;
     if ( bin >= idx )
-      this->Bins[bin - idx] += increment;
+      this->m_Bins[bin - idx] += increment;
     }
 }
 
@@ -68,10 +68,10 @@ Histogram<T>
   const T relative = static_cast<T>( bin - floor(bin) );
   const size_t binIdx = static_cast<size_t>( bin );
   
-  if ( (binIdx > 0) && (binIdx+1 < this->m_NumBins) )
+  if ( (binIdx > 0) && (binIdx+1 < this->GetNumBins()) )
     {
-    this->Bins[binIdx] += (1-relative) * factor * kernel[0];
-    this->Bins[binIdx+1] += relative * factor * kernel[0];
+    this->m_Bins[binIdx] += (1-relative) * factor * kernel[0];
+    this->m_Bins[binIdx+1] += relative * factor * kernel[0];
     }
   
   for ( size_t idx = 1; idx < kernelRadius; ++idx )
@@ -79,17 +79,17 @@ Histogram<T>
     const T increment = factor * kernel[idx];
     
     const size_t upIdx = binIdx+idx+1;
-    if ( upIdx < this->m_NumBins )
+    if ( upIdx < this->GetNumBins() )
       {
-      this->Bins[upIdx-1] += (1-relative) * increment;
-      this->Bins[upIdx  ] += relative * increment;
+      this->m_Bins[upIdx-1] += (1-relative) * increment;
+      this->m_Bins[upIdx  ] += relative * increment;
       }
     
     const int dnIdx = binIdx-idx;
     if ( dnIdx >= 0 )
       {
-      this->Bins[dnIdx  ] += (1-relative) * increment;
-      this->Bins[dnIdx+1] += relative * increment;
+      this->m_Bins[dnIdx  ] += (1-relative) * increment;
+      this->m_Bins[dnIdx+1] += relative * increment;
       }
     }
 }
@@ -99,18 +99,18 @@ double
 Histogram<T>
 ::GetKullbackLeiblerDivergence( const Self& other ) const 
 {
-  assert( this->m_NumBins == other.m_NumBins );
+  assert( this->GetNumBins() == other.GetNumBins() );
 
   const T sampleCount = this->SampleCount();
   const T sampleCountOther = other.SampleCount();
 
   double dKL = 0;
-  for ( size_t i=0; i<this->m_NumBins; ++i ) 
+  for ( size_t i=0; i<this->GetNumBins(); ++i ) 
     {
-    if ( this->Bins[i] ) 
+    if ( this->m_Bins[i] ) 
       {
-      const double pX = ((double)this->Bins[i]) / sampleCount;
-      const double qX = ((double)other.Bins[i]) / sampleCountOther;
+      const double pX = ((double)this->m_Bins[i]) / sampleCount;
+      const double qX = ((double)other.m_Bins[i]) / sampleCountOther;
       dKL += pX*log(pX/qX);
       }
     }

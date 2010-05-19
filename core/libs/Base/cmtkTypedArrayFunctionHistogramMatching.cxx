@@ -52,10 +52,10 @@ cmtk::TypedArrayFunctionHistogramMatching
 ::TypedArrayFunctionHistogramMatching( const Self::HistogramType& variableHistogram, const Self::HistogramType& fixedHistogram )
   : m_Lookup( variableHistogram.GetNumBins() )
 {
-  this->m_FixedArrayHistogram = Self::HistogramType::SmartPtr( fixedHistogram.Clone( true /*copyData*/ ) );
+  this->m_FixedArrayHistogram = Self::HistogramType::SmartPtr( fixedHistogram.Clone() );
   this->m_FixedArrayHistogram->ConvertToCumulative();
   
-  this->m_VariableArrayHistogram = Self::HistogramType::SmartPtr( variableHistogram.Clone( true /*copyData*/ ) );
+  this->m_VariableArrayHistogram = Self::HistogramType::SmartPtr( variableHistogram.Clone() );
   this->m_VariableArrayHistogram->ConvertToCumulative();
   
   this->CreateLookup();

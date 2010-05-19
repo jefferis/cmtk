@@ -76,9 +76,6 @@ cmtk
 class HistogramBase
 {
 protected:
-  /// Number of data bins.
-  size_t m_NumBins;
-
   /// Width of data bins.
   Types::DataItem m_BinWidth;
 
@@ -95,7 +92,6 @@ public:
   /// Default constructor.
   HistogramBase()
   {
-    this->m_NumBins = 0;
     this->m_BinWidth = 1.0;
     this->m_BinsLowerBound = this->m_BinsUpperBound = 0.0;
   }
@@ -104,15 +100,11 @@ public:
   virtual ~HistogramBase() {}
 
   /// Return number of histogram bins.
-  size_t GetNumBins() const
-  { 
-    return this->m_NumBins;
-  }
+  virtual size_t GetNumBins() const = 0;
 
   /// Copy operator.
   Self& operator=( const Self& other )
   {
-    this->m_NumBins = other.m_NumBins;
     this->m_BinWidth = other.m_BinWidth;
     this->m_BinsLowerBound = other.m_BinsLowerBound;
     this->m_BinsLowerBound = other.m_BinsLowerBound;
@@ -126,14 +118,14 @@ public:
   {
     this->m_BinsLowerBound = rangeFrom;
     this->m_BinsUpperBound = rangeTo;
-    this->m_BinWidth = (rangeTo - rangeFrom) / (this->m_NumBins - 1);
+    this->m_BinWidth = (rangeTo - rangeFrom) / (this->GetNumBins() - 1);
   }
 
   /** Set data range corresponding to this histogram with upper and lower bound centered in first and last bin.
    */
   void SetRangeCentered( const Types::DataItem rangeFrom, const Types::DataItem rangeTo ) 
   {
-    this->m_BinWidth = (rangeTo - rangeFrom) / (this->m_NumBins - 1);
+    this->m_BinWidth = (rangeTo - rangeFrom) / (this->GetNumBins() - 1);
     this->m_BinsLowerBound = static_cast<Types::DataItem>( rangeFrom - 0.5 * this->m_BinWidth );
     this->m_BinsUpperBound = static_cast<Types::DataItem>( rangeTo + 0.5 * this->m_BinWidth );
   }
@@ -179,7 +171,7 @@ public:
   virtual size_t ValueToBin ( const Types::DataItem value ) const 
   {
     const size_t binIndex = static_cast<size_t>( (value - this->m_BinsLowerBound) / this->m_BinWidth );
-    return std::max<size_t>( 0, std::min( this->m_NumBins-1, binIndex ) );
+    return std::max<size_t>( 0, std::min( this->GetNumBins()-1, binIndex ) );
   }
   
   /** Return fractional bin corresponding to a value of the distribution.
@@ -191,7 +183,7 @@ public:
   virtual Types::DataItem ValueToBinFractional ( const Types::DataItem value ) const 
   {
     const Types::DataItem binIndex = (value - this->m_BinsLowerBound) / this->m_BinWidth;
-    return std::max<Types::DataItem>( 0, std::min<Types::DataItem>( static_cast<Types::DataItem>( this->m_NumBins-1 ), binIndex));
+    return std::max<Types::DataItem>( 0, std::min<Types::DataItem>( static_cast<Types::DataItem>( this->GetNumBins()-1 ), binIndex));
   }
   
   /** Return center of values represented by a certain bin.
