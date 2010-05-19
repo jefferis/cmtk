@@ -527,7 +527,7 @@ public:
     size_t idx = this->NumBinsX * sampleY;
     for ( size_t i = 0; i<NumBinsX; ++i, ++idx )
       {
-      this->JointBins[idx] += static_cast<T>( weight * other.GetBin( i ) );
+      this->JointBins[idx] += static_cast<T>( weight * other[i] );
       }
   }
   
@@ -545,7 +545,7 @@ public:
   {
     size_t idx = sampleX;
     for ( size_t j = 0; j<NumBinsY; ++j, idx += NumBinsX )
-      this->JointBins[idx] += static_cast<T>( weight * other.GetBin( j ) );
+      this->JointBins[idx] += static_cast<T>( weight * other[j] );
   }
   
   /** Subtract bin values from another histogram.

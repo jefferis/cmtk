@@ -155,7 +155,7 @@ Histogram<T>
   Types::DataItem cumulative = 0;
   for ( size_t i = 0; i < this->m_NumBins; ++i )
     {
-    cumulative += this->GetBin( i );
+    cumulative += (*this)[i];
     if ( cumulative >= threshold )
       return this->BinToValue( i );
     }

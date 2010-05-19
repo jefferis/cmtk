@@ -128,10 +128,10 @@ WriteHistogram( const cmtk::Histogram<double>& histogram, const char* outfile )
     std::ofstream stream( outfile );
     for ( unsigned int bin = 0; bin < histogram.GetNumBins(); ++bin ) 
       {
-      cumulative += histogram.GetBin( bin );
+      cumulative += histogram[bin];
       stream << bin << "\t"
 	     << histogram.BinToValue( bin ) << "\t"
-	     << histogram.GetBin( bin ) << "\t"
+	     << histogram[bin] << "\t"
 	     << cumulative << "\n";
       }
     } 
@@ -139,10 +139,10 @@ WriteHistogram( const cmtk::Histogram<double>& histogram, const char* outfile )
     {
     for ( unsigned int bin = 0; bin < histogram.GetNumBins(); ++bin ) 
       {
-      cumulative += histogram.GetBin( bin );
+      cumulative += histogram[bin];
       std::cout << bin << "\t"
 		<< histogram.BinToValue( bin ) << "\t"
-		<< histogram.GetBin( bin ) << "\t"
+		<< histogram[bin] << "\t"
 		<< cumulative << "\n";
       }
     }

@@ -230,7 +230,7 @@ FilterVolume
 		if ( subjectData->Get( valueSubj, srcOffset ) )
 		  {
 		  const size_t bin = histogram.ValueToBin( valueSubj );
-		  const Types::DataItem prob = it->Coefficient * histogram.GetBin( bin );
+		  const Types::DataItem prob = it->Coefficient * histogram[bin];
 		  
 		  average += value * prob;
 		  weight += prob;
@@ -506,7 +506,7 @@ FilterVolume::StudholmeFilter
 		  if ( (*subjectIt)->Get( valueSubj, srcOffset ) )
 		    {
 		    const size_t binY = histogram.ValueToBinY( valueSubj );
-		    prob *= histogram.GetBin( binX, binY ) / avgHistogram->GetBin( binX );
+		    prob *= histogram.GetBin( binX, binY ) / (*avgHistogram)[binX];
 		    }
 		  ++subjectIt;
 		  }

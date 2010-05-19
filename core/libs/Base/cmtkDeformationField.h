@@ -152,7 +152,7 @@ public:
   }
   
   /// Return 1.0 since deformation field DOFs are always direct deformations in space units.
-  virtual Types::Coordinate GetParamStep( const size_t, const Self::SpaceVectorType& volSize, const Types::Coordinate mmStep = 1 ) const
+  virtual Types::Coordinate GetParamStep( const size_t, const Self::SpaceVectorType&, const Types::Coordinate mmStep = 1 ) const
   {
     return mmStep;
   }

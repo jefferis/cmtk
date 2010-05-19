@@ -522,7 +522,7 @@ public:
    *@return A histogram object filled with the relative frequencies of values 
    * in this array.
    */
-  virtual Histogram<unsigned int>* GetHistogram( const unsigned int numberOfBins ) const = 0;
+  virtual Histogram<unsigned int>::SmartPtr GetHistogram( const unsigned int numberOfBins ) const = 0;
 
   /** Set data block to constant value.
    */

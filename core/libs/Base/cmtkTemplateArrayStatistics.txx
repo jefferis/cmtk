@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -66,10 +67,10 @@ TemplateArray<T>::GetStatistics
 }
 
 template<class T>
-Histogram<unsigned int>*
+Histogram<unsigned int>::SmartPtr
 TemplateArray<T>::GetHistogram( const unsigned int numberOfBins ) const
 {
-  Histogram<unsigned int>* histogram = new Histogram<unsigned int>( numberOfBins );
+  Histogram<unsigned int>::SmartPtr histogram( new Histogram<unsigned int>( numberOfBins ) );
 
   T min, max;
   this->GetRangeTemplate( min, max );

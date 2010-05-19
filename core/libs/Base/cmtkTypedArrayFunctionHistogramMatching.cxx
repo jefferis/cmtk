@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -38,10 +39,10 @@ cmtk::TypedArrayFunctionHistogramMatching
 ( const TypedArray& variableArray, const TypedArray& fixedArray, const size_t numberOfHistogramBins )
   : m_Lookup( numberOfHistogramBins )
 {  
-  this->m_FixedArrayHistogram = Self::HistogramType::SmartPtr( fixedArray.GetHistogram( numberOfHistogramBins ) );
+  this->m_FixedArrayHistogram = fixedArray.GetHistogram( numberOfHistogramBins );
   this->m_FixedArrayHistogram->ConvertToCumulative();
   
-  this->m_VariableArrayHistogram = Self::HistogramType::SmartPtr( variableArray.GetHistogram( numberOfHistogramBins ) );
+  this->m_VariableArrayHistogram = variableArray.GetHistogram( numberOfHistogramBins );
   this->m_VariableArrayHistogram->ConvertToCumulative();
   
   this->CreateLookup();
@@ -68,14 +69,14 @@ cmtk::TypedArrayFunctionHistogramMatching
   std::vector<double> normalizedVariableHistogram( variableNumBins );
   for ( size_t l = 0; l < variableNumBins; ++l )
     {
-    normalizedVariableHistogram[l] =  1.0 * this->m_VariableArrayHistogram->GetBin(l) / this->m_VariableArrayHistogram->GetBin( variableNumBins-1 );
+    normalizedVariableHistogram[l] =  1.0 * (*(this->m_VariableArrayHistogram))[l] / (*(this->m_VariableArrayHistogram))[variableNumBins-1];
     }
   
   const size_t fixedNumBins = this->m_FixedArrayHistogram->GetNumBins();
   std::vector<double> normalizedFixedHistogram( fixedNumBins );
   for ( size_t l = 0; l < fixedNumBins; ++l )
     {
-    normalizedFixedHistogram[l] = 1.0 * this->m_FixedArrayHistogram->GetBin(l) / this->m_FixedArrayHistogram->GetBin( fixedNumBins-1 );
+    normalizedFixedHistogram[l] = 1.0 * (*(this->m_FixedArrayHistogram))[l] / (*(this->m_FixedArrayHistogram))[fixedNumBins-1];
     }
   
   size_t j = 0;

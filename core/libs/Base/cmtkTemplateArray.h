@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2010 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -669,7 +670,7 @@ public:
    *@return A histogram object filled with the relative frequencies of values 
    * in this array.
    */
-  virtual Histogram<unsigned int>* GetHistogram( const unsigned int numberOfBins ) const;
+  virtual Histogram<unsigned int>::SmartPtr GetHistogram( const unsigned int numberOfBins ) const;
 
   virtual void ApplyFunctionObject( const TypedArrayFunction& f );
 };

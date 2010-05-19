@@ -123,7 +123,7 @@ JointHistogram<T>::GetMarginalX() const
   this->GetRangeX( rangeXfrom, rangeXto );
   marg->SetRange( rangeXfrom, rangeXto  );
   for ( size_t i = 0; i < NumBinsX; ++i )
-    marg->SetBin( i, this->ProjectToX( i ) );
+    (*marg)[i] = this->ProjectToX( i );
   
   return marg;
 }
@@ -138,7 +138,7 @@ JointHistogram<T>::GetMarginalY() const
   this->GetRangeY( rangeYfrom, rangeYto );
   marg->SetRange( rangeYfrom, rangeYto  );
   for ( size_t i = 0; i < NumBinsY; ++i )
-    marg->SetBin( i, this->ProjectToY( i ) );
+    (*marg)[i] = this->ProjectToY( i );
   
   return marg;
 }

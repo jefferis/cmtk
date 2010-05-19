@@ -154,20 +154,6 @@ public:
     memset( Bins, 0, m_NumBins * sizeof( T ) );
   }
 
-  /// Return number of values in a given bin.
-  T GetBin ( const size_t index ) const 
-  {
-    assert( index < this->m_NumBins );
-    return Bins[index];
-  }
-
-  /// Set value of a bin.
-  void SetBin ( const size_t index, const T value ) 
-  {
-    assert( index < this->m_NumBins );
-    Bins[index] = value;
-  }
-
   /// Return number of values in a given bin using [] operator.
   const T operator[] ( const size_t index ) const 
   {
