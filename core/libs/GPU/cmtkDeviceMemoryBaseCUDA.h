@@ -69,6 +69,15 @@ public:
   
   /// Destructor: free memory through CUDA.
   ~DeviceMemoryBaseCUDA();
+
+  /// Copy from host to device memory.
+  void CopyToDevice( const void *const srcPtrHost, const size_t count );
+  
+  /// Copy from device to host memory.
+  void CopyFromDevice( void *const dstPtrHost, const size_t count ) const;
+  
+  /// Copy between two device memory locations.
+  void CopyToDevice( const Self& srcPtrDevice, const size_t count );
   
 protected:
   /// Constructor: allocate memory through CUDA.

@@ -53,4 +53,25 @@ DeviceMemoryBaseCUDA
     cudaFree( this->m_PointerDevice );
 }
 
+void
+DeviceMemoryBaseCUDA
+::CopyToDevice( const void *const srcPtrHost, const size_t count )
+{
+  cudaMemcpy( this->m_PointerDevice, srcPtrHost, count, cudaMemcpyHostToDevice );
+}
+  
+void
+DeviceMemoryBaseCUDA
+::CopyFromDevice( void *const dstPtrHost, const size_t count ) const
+{
+  cudaMemcpy( dstPtrHost, this->m_PointerDevice, count, cudaMemcpyDeviceToHost );
+} 
+
+void
+DeviceMemoryBaseCUDA
+::CopyToDevice( const Self& srcPtrDevice, const size_t count )
+{
+  cudaMemcpy( this->m_PointerDevice, srcPtrDevice.m_PointerDevice, count, cudaMemcpyDeviceToDevice );
+}
+
 } // namespace cmtk
