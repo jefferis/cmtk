@@ -32,21 +32,15 @@
 
 #include <cmtkconfig.h>
 
-#include <cuda.h>
+#include <cuda_runtime_api.h>
 
 #include <iostream>
 
 int
 main( const int argc, const char*[] )
 {
-  if ( cuInit(0) != CUDA_SUCCESS )
-    {
-    std::cerr << "Call to cuInit() failed." << std::endl;
-    return 1;
-    }
-
   int version;
-  if ( cuDriverGetVersion( &version ) != CUDA_SUCCESS )
+  if ( cudaDriverGetVersion( &version ) != cudaSuccess )
     {
     std::cerr << "Call to cuDriverGetVersion() failed." << std::endl;
     return 1;
