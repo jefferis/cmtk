@@ -224,7 +224,7 @@ IF(CMTK_CONFIG_GPU)
     OPTION(CMTK_USE_OPENCL "Use OpenCL for GPU computing" OFF)
   ENDIF(OPENCL_FOUND)
 ELSE(CMTK_CONFIG_GPU)
-  UNSET(CMTK_USE_OPENCL CACHE)
+  SET(CMTK_USE_OPENCL NOTFOUND CACHE STRING "Use OpenCL for GPU computing" FORCE)
 ENDIF(CMTK_CONFIG_GPU)
 
 #-----------------------------------------------------------------------------
@@ -243,7 +243,7 @@ IF(CMTK_CONFIG_GPU)
     OPTION(CMTK_USE_CUDA "Use CUDA for GPU computing" OFF)
   ENDIF(CUDA_FOUND)
 ELSE(CMTK_CONFIG_GPU)
-  UNSET(CMTK_USE_CUDA CACHE)
+  SET(CMTK_USE_CUDA NOTFOUND CACHE STRING "Use CUDA for GPU computing" FORCE)
 ENDIF(CMTK_CONFIG_GPU)
 
 #-----------------------------------------------------------------------------
