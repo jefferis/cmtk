@@ -1,6 +1,6 @@
 PROJECT(D4CMTK)
 
-##  Copyright 2004-2009 SRI International
+##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -31,6 +31,7 @@ SET(DCMTK_PREFIX ${CMAKE_BINARY_DIR})
 SET(DCM_DICT_DEFAULT_PATH "/dicom.dic;${DCMTK_PREFIX}/lib/dicom.dic;${CMAKE_INSTALL_PREFIX}/lib/dicom.dic")
 
 SET(WITH_ZLIB 1)
+
 IF(CMTK_BUILD_SMP)
   SET(WITH_THREADS 1)
 ENDIF(CMTK_BUILD_SMP)

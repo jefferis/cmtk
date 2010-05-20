@@ -352,7 +352,11 @@ ENDIF(CMTK_USE_DCMTK)
 MESSAGE( STATUS "Building bundled zlib library" ) 	 
 SET(CMTK_BUILD_ZLIB 1) 	 
 SET(ZLIB_FOUND 1) 	 
-SET(ZLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/zlib CACHE PATH "Directory containing zlib.h header file" FORCE) 	 
+SET(ZLIB_INCLUDE_DIRS 
+  ${CMAKE_CURRENT_BINARY_DIR}/Utilities/zlib
+  ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/zlib)
+INCLUDE_DIRECTORIES(BEFORE
+  ${ZLIB_INCLUDE_DIRS})
 
 #-----------------------------------------------------------------------------
 # Add an option to use or not use sqlite3 library
@@ -546,8 +550,6 @@ CPACK_ADD_COMPONENT_GROUP(development
 # Create the list of include directories needed for header files.
 INCLUDE(${CMTK_SOURCE_DIR}/cmtkIncludeDirectories.cmake)
 
-# This should be the only INCLUDE_DIRECTORIES command in the entire
-# tree.
 INCLUDE_DIRECTORIES(
   ${CMTK_INCLUDE_DIRS_BUILD_TREE}
   ${CMTK_INCLUDE_DIRS_BUILD_TREE_CXX}
