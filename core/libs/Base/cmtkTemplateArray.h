@@ -106,12 +106,11 @@ public:
       {
       if ( Data ) 
 	{
-	free( Data );
+	Memory::DeleteArray( Data );
 	}
-      Data = (T*) malloc( DataSize * sizeof(T) );
+      Data = Memory::AllocateArray<T>( DataSize );
       if ( Data == NULL ) 
 	{
-	StdErr << "ERROR: malloc() returned NULL in TemplateArray::Alloc(). Are we out of memory?\n";
 	this->DataSize = 0;
 	}
       FreeArray = true;
@@ -131,7 +130,7 @@ public:
   {
     if ( Data && FreeArray ) 
       {
-      free( Data );
+      Memory::DeleteArray( Data );
       } 
     Data = NULL;
   }
@@ -148,7 +147,7 @@ public:
   TemplateArray ( void *const data, const size_t datasize, const bool freeArray, const bool paddingflag, const void* paddingData ) 
   {
     m_DataType = TypeTraits::GetScalarDataType();
-    Data = (T*) data;
+    Data = static_cast<T*>( data );
     DataSize = datasize;
     FreeArray = freeArray;
     PaddingFlag = paddingflag;
@@ -249,7 +248,7 @@ public:
   /// Allocate and copy continuous subarray.
   virtual TypedArray* CloneSubArray ( const size_t fromIdx, const size_t len ) const
   {
-    T* CloneData = (T*) malloc( len * sizeof(T) );
+    T* CloneData = Memory::AllocateArray<T>( len );
     memcpy( CloneData, Data+fromIdx, len * sizeof( T ) );
     return this->NewTemplateArray( CloneData, len, true/*freeArray*/, PaddingFlag, &Padding );
   }
@@ -317,13 +316,13 @@ public:
 	if (value == Padding)
 	  toPtr[i] = substPadding;
 	else
-	  toPtr[i] = (Types::DataItem) value;
+	  toPtr[i] = static_cast<Types::DataItem>( value );
 	}
       } 
     else
       {
       for ( size_t i = 0; i<len; ++i, ++index )
-	toPtr[i]=(Types::DataItem) Data[index];
+	toPtr[i] = static_cast<Types::DataItem>( Data[index] );
       }
     return toPtr;
   }
@@ -341,7 +340,7 @@ public:
    */
   virtual Types::DataItem* GetSubArray( const size_t fromIdx, const size_t len, const Types::DataItem substPadding = 0 ) const 
   {
-    Types::DataItem* buffer = static_cast<Types::DataItem*>( malloc( len * sizeof(Types::DataItem) ) );
+    Types::DataItem* buffer = Memory::AllocateArray<Types::DataItem>( len );
     return this->GetSubArray( buffer, fromIdx, len, substPadding );
   }
 
@@ -453,8 +452,8 @@ public:
    */
   virtual void Threshold( const Types::DataItem threshLo, const Types::DataItem threshHi ) 
   {
-    T lo = TypeTraits::Convert( threshLo );
-    T hi = TypeTraits::Convert( threshHi );
+    const T lo = TypeTraits::Convert( threshLo );
+    const T hi = TypeTraits::Convert( threshHi );
 #pragma omp parallel for    
     for ( size_t i = 0; i < this->DataSize; ++i )
       if ( ! PaddingFlag || (Data[i] != Padding ) ) 
@@ -473,8 +472,8 @@ public:
    */
   virtual void ThresholdToPadding( const Types::DataItem threshLo, const Types::DataItem threshHi ) 
   {
-    T lo = TypeTraits::Convert( threshLo );
-    T hi = TypeTraits::Convert( threshHi );
+    const T lo = TypeTraits::Convert( threshLo );
+    const T hi = TypeTraits::Convert( threshHi );
 #pragma omp parallel for    
     for ( size_t i = 0; i < this->DataSize; ++i )
       if ( ! PaddingFlag || (Data[i] != Padding ) ) 
@@ -586,14 +585,14 @@ public:
   }
   
   /** Get the whole array data as an exchange type array.
-   *@return Pointer to a memory region allocated by malloc(). This region is
+   *@return Pointer to a memory region allocated by Memory::AllocateArray(). This region is
    * filled with all values in the present array as Types::DataItem values. The created
    * array is not maintained by this object. The caller has to make sure free()
    * is called for it.
    */
   virtual Types::DataItem* GetData () const 
   {
-    Types::DataItem* Result = (Types::DataItem*) malloc( DataSize * sizeof( Types::DataItem ) );
+    Types::DataItem* Result = Memory::AllocateArray<Types::DataItem>( DataSize );
     if ( Result ) 
       {
       for ( size_t idx = 0; idx < DataSize; ++idx )
