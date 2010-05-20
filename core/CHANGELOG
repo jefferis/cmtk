@@ -28,7 +28,7 @@ Release CMTK-1.3.1:
 - Added: SmartConstPointer, based on concepts in Meyer's "More Effective C++"
     book.
 - Removed: unused classes from the deprecated "Pipeline" library
-- Documentation: descibe library groups in doxygen documentation
+- Documentation: describe library groups in doxygen documentation
 - Libraries: all reconstruction-related classes were consolidated in a new
     component library, "cmtkRecon"
 - Removed: unused cmtk::DirectionSetOptimizer class.
