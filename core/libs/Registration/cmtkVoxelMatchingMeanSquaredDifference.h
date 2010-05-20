@@ -94,7 +94,7 @@ public:
     Samples = 0;
   }
 
-  /// UNDOCUMENTED
+  /// Get similarity measure value.
   Self::ReturnType Get() const 
   {
     return static_cast<Self::ReturnType>( Sum / Samples );
@@ -115,10 +115,10 @@ public:
   }
 
 private:
-  /// UNDOCUMENTED
+  /// Sum of all value pair differences.
   double Sum;
 
-  /// UNDOCUMENTED
+  /// Counter for number of sample pairs.
   int Samples;
 };
 
