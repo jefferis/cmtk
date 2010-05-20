@@ -124,18 +124,6 @@ public:
     this->m_LandmarkErrorWeight = source.m_LandmarkErrorWeight;
   }
 
-  /** Copy constructor.
-   * Init pointers to volume and transformation objects and initialize
-   * internal data structures.
-   */
-  ImagePairRegistrationFunctional ( ImagePairRegistrationFunctional *const source ) : 
-    m_MatchedLandmarkList( source->m_MatchedLandmarkList )
-  {
-    this->InitFloating( source->m_FloatingGrid );
-    this->InitReference( source->m_ReferenceGrid );
-    this->m_LandmarkErrorWeight = source->m_LandmarkErrorWeight;
-  }
-
   /** Destructor.
    */
   virtual ~ImagePairRegistrationFunctional() {}
