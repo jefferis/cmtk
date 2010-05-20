@@ -248,13 +248,10 @@ public:
   {
   public:
     /// Long option constructor.
-    Key( const std::string& keyString ) : m_KeyChar( 0 ), m_KeyString( keyString ) {}
+    explicit Key( const std::string& keyString ) : m_KeyChar( 0 ), m_KeyString( keyString ) {}
 
     /// Short and long option constructor.
-    Key( const char keyChar, const std::string& keyString ) : m_KeyChar( keyChar ), m_KeyString( keyString ) {}
-
-    /// Copy constructor.
-    Key( const Key& other ) : m_KeyChar( other.m_KeyChar ), m_KeyString( other.m_KeyString ) {}
+    explicit Key( const char keyChar, const std::string& keyString ) : m_KeyChar( keyChar ), m_KeyString( keyString ) {}
 
     /// Short option key.
     char m_KeyChar;
