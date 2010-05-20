@@ -81,9 +81,9 @@ ImagePairSimilarityMeasureCR::Get () const
     if ( HistogramI[j] ) 
       {
       // compute mean floating value for this reference class
-      double mu = SumJ[j] / HistogramI[j];
+      const double mu = SumJ[j] / HistogramI[j];
       // compute variance of floating values for this reference class
-      double sigmaSq = ( mu*mu*HistogramI[j] - 2.0*mu*SumJ[j] + SumJ2[j] ) / HistogramI[j]; 
+      const double sigmaSq = ( mu*mu*HistogramI[j] - 2.0*mu*SumJ[j] + SumJ2[j] ) / HistogramI[j]; 
       // update sum over all classes with weighted sigma^2 for this class.
       sumSigmaSquare += (invSampleCount * HistogramI[j]) * sigmaSq;
       }
@@ -97,8 +97,8 @@ ImagePairSimilarityMeasureCR::Get () const
     {
     if ( HistogramJ[i] ) 
       {
-      double mu = SumI[i] / HistogramJ[i];
-      double sigmaSq = ( mu*mu*HistogramJ[i] - 2.0*mu*SumI[i] + SumI2[i] ) / HistogramJ[i]; 
+      const double mu = SumI[i] / HistogramJ[i];
+      const double sigmaSq = ( mu*mu*HistogramJ[i] - 2.0*mu*SumI[i] + SumI2[i] ) / HistogramJ[i]; 
       // update sum over all classes with weighted sigma^2 for this class.
       sumSigmaSquare += (invSampleCount * HistogramJ[i]) * sigmaSq;
       }
