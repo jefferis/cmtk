@@ -126,18 +126,6 @@ public:
     this->m_LandmarkErrorWeight = source.m_LandmarkErrorWeight;
   }
 
-  /** Copy constructor.
-   * Init pointers to volume and transformation objects and initialize
-   * internal data structures.
-   */
-  VoxelMatchingFunctional ( VoxelMatchingFunctional *const source ) : 
-    m_MatchedLandmarkList( source->m_MatchedLandmarkList )
-  {
-    this->InitFloating( source->FloatingGrid );
-    this->InitReference( source->ReferenceGrid );
-    this->m_LandmarkErrorWeight = source->m_LandmarkErrorWeight;
-  }
-
   /** Destructor.
    */
   virtual ~VoxelMatchingFunctional() {}
