@@ -32,6 +32,6 @@
 
 /** \defgroup Registration
  *\title Registration library
- * This library provides classes related to computaing and processing registrations
+ * This library provides classes related to computing and processing registrations
  * between images.
  */
