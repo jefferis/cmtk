@@ -35,6 +35,7 @@
 #include <cmtkconfig.h>
 
 #include <cmtkFunctional.h>
+#include <cmtkCannotBeCopied.h>
 
 namespace
 cmtk
@@ -44,7 +45,9 @@ cmtk
 //@{
 
 /// Base class for all optimizers and meta optimizers.
-class OptimizerBase
+class OptimizerBase :
+    /// Inherit to prevent object copying.
+    private CannotBeCopied
 {
 public:
   /// This class.
