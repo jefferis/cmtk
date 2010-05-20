@@ -114,18 +114,6 @@ public:
     this->m_LandmarkErrorWeight = 0;
   }
 
-  /** Copy constructor.
-   * Init pointers to volume and transformation objects and initialize
-   * internal data structures.
-   */
-  VoxelMatchingFunctional ( VoxelMatchingFunctional& source ) : 
-    m_MatchedLandmarkList( source.m_MatchedLandmarkList )
-  {
-    this->InitFloating( source.FloatingGrid );
-    this->InitReference( source.ReferenceGrid );
-    this->m_LandmarkErrorWeight = source.m_LandmarkErrorWeight;
-  }
-
   /** Destructor.
    */
   virtual ~VoxelMatchingFunctional() {}
@@ -168,6 +156,9 @@ protected:
   const DataGrid::RegionType GetReferenceGridRange ( const Vector3D& fromVOI, const Vector3D& toVOI );
 
 private:
+  /// Private copy constructor: prevent copying.
+  VoxelMatchingFunctional ( const VoxelMatchingFunctional& ) {}
+
   /// Initialize internal data structures for floating image.
   void InitFloating( UniformVolume::SmartPtr& floating );
 
@@ -206,20 +197,6 @@ public:
   ( UniformVolume::SmartPtr& reference, 
     UniformVolume::SmartPtr& floating )
   { Metric = SmartPointer<VM>( new VM( reference, floating ) ); }
- 
-  /** Copy constructor.
-   * Init pointers to volume and transformation objects and initialize
-   * internal data structures.
-   */
-  VoxelMatchingFunctional_Template( VoxelMatchingFunctional_Template<VM>& source )
-  { Metric = source.Metric; }
- 
-  /** Copy constructor.
-   * Init pointers to volume and transformation objects and initialize
-   * internal data structures.
-   */
-  VoxelMatchingFunctional_Template( VoxelMatchingFunctional_Template<VM> *const source )
-  { Metric = source->Metric; }
  
   /** Destructor.
    * Delete metric object.

@@ -112,18 +112,6 @@ public:
     this->m_LandmarkErrorWeight = 0;
   }
 
-  /** Copy constructor.
-   * Init pointers to volume and transformation objects and initialize
-   * internal data structures.
-   */
-  ImagePairRegistrationFunctional ( ImagePairRegistrationFunctional& source ) : 
-    m_MatchedLandmarkList( source.m_MatchedLandmarkList )
-  {
-    this->InitFloating( source.m_FloatingGrid );
-    this->InitReference( source.m_ReferenceGrid );
-    this->m_LandmarkErrorWeight = source.m_LandmarkErrorWeight;
-  }
-
   /** Destructor.
    */
   virtual ~ImagePairRegistrationFunctional() {}
@@ -166,6 +154,9 @@ protected:
   const DataGrid::RegionType GetReferenceGridRange ( const Vector3D& fromVOI, const Vector3D& toVOI );
 
 private:
+  /// Private copy constructor: prevent copying.
+  ImagePairRegistrationFunctional ( const ImagePairRegistrationFunctional& ) {}
+
   /// Initialize internal data structures for floating image.
   void InitFloating( UniformVolume::SmartPtr& floating );
 
