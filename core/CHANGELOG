@@ -20,7 +20,7 @@ Release CMTK-1.3.1:
 - Added: CMake configuration of CUDA and OpenCL support for future GPU
     computations. Currently unused and experimental.
 - Refactored: UniformDistanceMap is now a factory class and no longer directly
-    inherits from UniformVolume.x
+    inherits from UniformVolume.
 - API: renamed "GetDownsampled" member in DataGrid and UniformVolume classes
     to "GetDownsampledAndAveraged" to clarify that this is a
     downsampling-and-averaging operation, not just a downsampling.
