@@ -132,14 +132,14 @@ public:
   /// Return number of values in a given bin using [] operator.
   const T operator[] ( const size_t index ) const 
   {
-    assert( index < this->m_NumBins );
+    assert( index < this->GetNumBins() );
     return this->m_Bins[index];
   }
 
   /// Return reference to given bin.
   T& operator[] ( const size_t index ) 
   {
-    assert( index < this->m_NumBins );
+    assert( index < this->GetNumBins() );
     return this->m_Bins[index];
   }
   
