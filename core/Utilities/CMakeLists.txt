@@ -1,5 +1,6 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
+##
 ##  Copyright 2004-2009 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
@@ -32,8 +33,9 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
-SUBDIRS(zlib)
-INCLUDE_DIRECTORIES( ${ZLIB_INCLUDE_DIR} )
+IF(CMTK_BUILD_ZLIB)
+  SUBDIRS(zlib)
+ENDIF(CMTK_BUILD_ZLIB)
 
 IF(CMTK_BUILD_NRRD)
   SUBDIRS(NrrdIO)

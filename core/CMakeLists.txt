@@ -349,14 +349,19 @@ ENDIF(CMTK_USE_DCMTK)
 #-----------------------------------------------------------------------------
 # Add an option to use or not use zlib library
 
-MESSAGE( STATUS "Building bundled zlib library" ) 	 
-SET(CMTK_BUILD_ZLIB 1) 	 
-SET(ZLIB_FOUND 1) 	 
-SET(ZLIB_INCLUDE_DIRS 
-  ${CMAKE_CURRENT_BINARY_DIR}/Utilities/zlib
-  ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/zlib)
-INCLUDE_DIRECTORIES(BEFORE
-  ${ZLIB_INCLUDE_DIRS})
+FIND_PACKAGE(ZLIB)
+IF(ZLIB_FOUND)
+  MESSAGE( STATUS "Using system zlib" ) 	 
+ELSEIF(ZLIB_FOUND)
+  MESSAGE( STATUS "Building bundled zlib" ) 	 
+  SET(CMTK_BUILD_ZLIB 1) 	 
+  SET(ZLIB_FOUND 1) 	 
+  SET(ZLIB_INCLUDE_DIRS 
+    ${CMAKE_CURRENT_BINARY_DIR}/Utilities/zlib
+    ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/zlib)
+  INCLUDE_DIRECTORIES(BEFORE
+    ${ZLIB_INCLUDE_DIRS})
+ENDIF(ZLIB_FOUND)
 
 #-----------------------------------------------------------------------------
 # Add an option to use or not use sqlite3 library
