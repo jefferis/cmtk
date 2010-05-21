@@ -224,14 +224,15 @@ IF(CMTK_CONFIG_GPU)
     OPTION(CMTK_USE_OPENCL "Use OpenCL for GPU computing" OFF)
   ENDIF(OPENCL_FOUND)
 ELSE(CMTK_CONFIG_GPU)
-  SET(CMTK_USE_OPENCL NOTFOUND CACHE STRING "Use OpenCL for GPU computing" FORCE)
+  IF(CMTK_USE_OPENCL)
+    SET(CMTK_USE_OPENCL NOTFOUND CACHE STRING "Use OpenCL for GPU computing" FORCE)
+  ENDIF(CMTK_USE_OPENCL)
 ENDIF(CMTK_CONFIG_GPU)
 
 #-----------------------------------------------------------------------------
 # Check for, and configure, CUDA
 
 IF(CMTK_CONFIG_GPU)
-
   # check using cmake's own FindCUDA above v2.8 or use our own for earlier versions
   IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} STRLESS 2.8)
     INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles/FindCUDA.cmake)
@@ -243,7 +244,9 @@ IF(CMTK_CONFIG_GPU)
     OPTION(CMTK_USE_CUDA "Use CUDA for GPU computing" OFF)
   ENDIF(CUDA_FOUND)
 ELSE(CMTK_CONFIG_GPU)
-  SET(CMTK_USE_CUDA NOTFOUND CACHE STRING "Use CUDA for GPU computing" FORCE)
+  IF(CMTK_USE_CUDA)
+    SET(CMTK_USE_CUDA NOTFOUND CACHE STRING "Use CUDA for GPU computing" FORCE)
+  ENDIF(CMTK_USE_CUDA)
 ENDIF(CMTK_CONFIG_GPU)
 
 #-----------------------------------------------------------------------------
