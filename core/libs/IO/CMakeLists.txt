@@ -83,7 +83,7 @@ ENDIF(CMTK_USE_MPI)
 
 ADD_LIBRARY(cmtkIO ${cmtkIO_SRCS})
 
-TARGET_LINK_LIBRARIES(cmtkIO cmtkBase cmtkSystem cmtkNumerics cmtkZlib)
+TARGET_LINK_LIBRARIES(cmtkIO cmtkBase cmtkSystem cmtkNumerics ${CMTK_ZLIB_LIB})
 IF(CMTK_BUILD_SQLITE)
   TARGET_LINK_LIBRARIES(cmtkIO sqlite3)
 ENDIF(CMTK_BUILD_SQLITE)

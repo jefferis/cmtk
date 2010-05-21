@@ -1,5 +1,6 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
+##
 ##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
@@ -53,7 +54,7 @@ SET(cmtkSystem_SRCS
 
 ADD_LIBRARY(cmtkSystem ${cmtkSystem_SRCS})
 
-TARGET_LINK_LIBRARIES(cmtkSystem cmtkZlib mxml)
+TARGET_LINK_LIBRARIES(cmtkSystem ${CMTK_ZLIB_LIB} mxml)
 
 IF(CMTK_LIBRARY_PROPERTIES)
   SET_TARGET_PROPERTIES(cmtkSystem PROPERTIES ${CMTK_LIBRARY_PROPERTIES})
