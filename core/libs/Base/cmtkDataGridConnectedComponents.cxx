@@ -66,14 +66,14 @@ cmtk::DataGridMorphologicalOperators::GetConnectedComponents( const bool sortByS
 	// foreground pixel?
 	if ( this->m_DataGrid->GetDataAt( offset ) != 0 )
 	  {
-	  // loop over z,y,x -- going backwards keeps component numbers small
-	  for ( int dim = 2; dim>=0; --dim )
+	  // loop over x,y,z neighbor
+	  for ( int dim = 0; dim < 3; ++dim )
 	    {
 	    // is there a preceding neighbor in this direction?
 	    if ( index[dim] )
 	      {
 	      // get component ID for that neighbor
-	      int existing = result[offset - relative[dim]];
+	      const int existing = result[offset - relative[dim]];
 	      // is there something there?
 	      if ( existing )
 		{
