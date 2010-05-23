@@ -74,6 +74,9 @@ public:
   /// Smart pointer to DataGrid.
   typedef SmartPointer<Self> SmartPtr;
 
+  /// Smart pointer-to-const to DataGrid.
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
   /// Region type.
   typedef Region<3,int> RegionType;
 
