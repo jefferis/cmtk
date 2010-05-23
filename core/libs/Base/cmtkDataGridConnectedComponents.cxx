@@ -106,7 +106,7 @@ cmtk::DataGridMorphologicalOperators::GetConnectedComponents( const bool sortByS
   for ( int component = 0; component < nextComponent; ++component )
     {
     int mapTo = component;
-    while ( linkMap.find( mapTo ) != linkMap.end() )
+    while ( (linkMap.find( mapTo ) != linkMap.end()) && (mapTo != linkMap[mapTo]) )
       mapTo = linkMap[mapTo];
     
     linkMap[component] = mapTo;
