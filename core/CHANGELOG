@@ -1,5 +1,7 @@
 Release CMTK-1.3.1:
 
+- Added: connected components operator; also added this as a function to
+    convertx tool.
 - Configuration/build: when system zlib is installed, we use it instead of the
     bundled zlib. This is necessary to avoid version issues when Qt support is
     activated, because Qt is linked against the system zlib.
