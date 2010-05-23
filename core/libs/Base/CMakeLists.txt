@@ -1,5 +1,5 @@
 ##
-##  Copyright 1997-2009 Torsten Rohlfing
+##  Copyright 1997-2010 Torsten Rohlfing
 ##
 ##  Copyright 2004-2010 SRI International
 ##
@@ -39,6 +39,7 @@ SET(cmtkBase_SRCS
   cmtkBitVector.cxx
   cmtkControlPoint.cxx
   cmtkDataGrid.cxx
+  cmtkDataGridConnectedComponents.cxx
   cmtkDataGridCrop.cxx
   cmtkDataGridFilter.cxx
   cmtkDataGridMorphologicalOperators.cxx

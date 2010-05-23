@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
-//  Copyright 1997-2009 Torsten Rohlfing
+//
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -60,7 +61,7 @@ public:
   typedef DataGridMorphologicalOperators Self;
 
   /// Constructor: link to DataGrid object.
-  DataGridMorphologicalOperators( DataGrid::SmartPtr dataGrid );
+  DataGridMorphologicalOperators( const DataGrid::SmartConstPtr& dataGrid );
 
   /** Eliminating padding data by neighborhood voting.
    *\return Returns "true" if data was actually changed, "false" if no change
@@ -86,9 +87,16 @@ public:
   /// Get data after dilation operator.
   TypedArray::SmartPtr GetDilated( const int iterations = 1 /**!< Number of dilation iterations. */ ) const;
 
+  /** Get connected components.
+   * All pixels with non-zero values are considered "foreground," and the result
+   * of this function is a partitioning of the foreground into connected components.
+   * Connectivity is determined based on 8 neighbours in the 3D grid.
+   */
+  TypedArray::SmartPtr GetConnectedComponents( const bool sortBySize /**!< If this flag is set, the components are numbered in descending order of their size */) const;
+
 private:
   /// The DataGrid object we're working on.
-  DataGrid::SmartPtr m_DataGrid;
+  DataGrid::SmartConstPtr m_DataGrid;
 };
 
 } // namespace cmtk

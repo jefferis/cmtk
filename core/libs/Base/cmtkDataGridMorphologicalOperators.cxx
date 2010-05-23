@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -39,7 +40,7 @@ cmtk
 {
 
 DataGridMorphologicalOperators
-::DataGridMorphologicalOperators( DataGrid::SmartPtr dataGrid ) 
+::DataGridMorphologicalOperators( const DataGrid::SmartConstPtr& dataGrid ) 
   : m_DataGrid( dataGrid ) 
 {
   if ( !this->m_DataGrid->GetData() )
