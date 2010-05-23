@@ -77,8 +77,8 @@ cmtk::DataGridMorphologicalOperators::GetConnectedComponents( const bool sortByS
 	      // is there something there?
 	      if ( existing )
 		{
-		// did we already get a component ID from another neighbor?
-		if ( component )
+		// did we already get a different component ID from another neighbor?
+		if ( component && (component != existing) )
 		  {
 		  // link old and new component via this pixel
 		  linkMap[component] = existing;
