@@ -67,7 +67,7 @@ cmtk::DataGridMorphologicalOperators::GetConnectedComponents( const bool sortByS
 	if ( this->m_DataGrid->GetDataAt( offset ) != 0 )
 	  {
 	  // loop over z,y,x -- going backwards keeps component numbers small
-	  for ( int dim = 3; dim>=0; --dim )
+	  for ( int dim = 2; dim>=0; --dim )
 	    {
 	    // is there a preceding neighbor in this direction?
 	    if ( index[dim] )
