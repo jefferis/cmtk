@@ -30,6 +30,8 @@
 
 #include <cmtkDataGridMorphologicalOperators.h>
 
+#include <cmtkUnionFind.h>
+
 #include <map>
 #include <vector>
 
@@ -49,7 +51,7 @@ cmtk::DataGridMorphologicalOperators::GetConnectedComponents( const bool sortByS
   relative[1] = this->m_DataGrid->GetNextJ();
   relative[2] = this->m_DataGrid->GetNextK();
 
-  std::map<int,int> linkMap;
+  UnionFind<int> connected;
   int nextComponent = 0;
 
   DataGrid::IndexType index;
@@ -81,7 +83,7 @@ cmtk::DataGridMorphologicalOperators::GetConnectedComponents( const bool sortByS
 		if ( component > existing ) // note: this implies "component != 0" because "existing" is at least 0.
 		  {
 		  // link old and new component via this pixel
-		  linkMap[component] = existing;
+		  connected.Union( connected.Find( component ), connected.Find( existing ) );
 		  }
 		// mark current pixel as belonging to the same component
 		component = existing;
@@ -93,6 +95,7 @@ cmtk::DataGridMorphologicalOperators::GetConnectedComponents( const bool sortByS
 	  if ( !component )
 	    {
 	    component = ++nextComponent;
+	    connected.Insert( component );
 	    }
 	  }
 	
@@ -103,13 +106,10 @@ cmtk::DataGridMorphologicalOperators::GetConnectedComponents( const bool sortByS
     }
   
   // now collapse all component indexes into their unique representative
+  std::map<int,int> linkMap;
   for ( int component = 0; component < nextComponent; ++component )
     {
-    int mapTo = component;
-    while ( (linkMap.find( mapTo ) != linkMap.end()) && (mapTo != linkMap[mapTo]) )
-      mapTo = linkMap[mapTo];
-    
-    linkMap[component] = mapTo;
+    linkMap[component] = connected.FindKey( component );
     }
   
   // re-number components
