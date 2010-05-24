@@ -36,7 +36,7 @@
 #include <vector>
 
 cmtk::TypedArray::SmartPtr
-cmtk::DataGridMorphologicalOperators::GetConnectedComponents( const bool sortBySize ) const
+cmtk::DataGridMorphologicalOperators::GetBinaryConnectedComponents( const bool sortBySize ) const
 {
   const size_t numberOfPixels = this->m_DataGrid->GetNumberOfPixels();
 
@@ -52,7 +52,7 @@ cmtk::DataGridMorphologicalOperators::GetConnectedComponents( const bool sortByS
   relative[2] = this->m_DataGrid->GetNextK();
 
   UnionFind<int> connected;
-  int nextComponent = 0;
+  int nextComponent = 1;
 
   DataGrid::IndexType index;
   size_t offset = 0;
@@ -94,7 +94,7 @@ cmtk::DataGridMorphologicalOperators::GetConnectedComponents( const bool sortByS
 	  // none of the neighbors is foreground, so use next available component ID.
 	  if ( !component )
 	    {
-	    component = ++nextComponent;
+	    component = nextComponent++;
 	    connected.Insert( component );
 	    }
 	  }
@@ -107,16 +107,28 @@ cmtk::DataGridMorphologicalOperators::GetConnectedComponents( const bool sortByS
   
   // now collapse all component indexes into their unique representative
   std::map<int,int> linkMap;
-  for ( int component = 0; component < nextComponent; ++component )
+  for ( int component = 1; component < nextComponent; ++component )
     {
     linkMap[component] = connected.FindKey( component );
+    }
+  
+  // re-number components and count pixels.
+  for ( size_t px = 0; px < numberOfPixels; ++px )
+    {
+    const int component = linkMap[result[px]];
+    result[px] = component;
+    }
+
+  // sort components by region size
+  if ( sortBySize )
+    {
     }
   
   // re-number components
   TypedArray::SmartPtr resultArray( TypedArray::Create( TYPE_INT, numberOfPixels ) );
   for ( size_t px = 0; px < numberOfPixels; ++px )
     {
-    resultArray->Set( linkMap[result[px]], px );
+    resultArray->Set( result[px], px );
     }
   
   return resultArray;

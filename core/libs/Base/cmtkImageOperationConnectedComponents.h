@@ -53,7 +53,7 @@ public:
   virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
   {
     cmtk::DataGridMorphologicalOperators ops( volume );
-    volume->SetData( ops.GetConnectedComponents( this->m_SortBySize ) );
+    volume->SetData( ops.GetBinaryConnectedComponents( this->m_SortBySize ) );
     return volume;
   }
   
