@@ -34,9 +34,10 @@
 
 #include <map>
 #include <vector>
+#include <list>
 
 cmtk::TypedArray::SmartPtr
-cmtk::DataGridMorphologicalOperators::GetBinaryConnectedComponents( const bool sortBySize ) const
+cmtk::DataGridMorphologicalOperators::GetBinaryConnectedComponents() const
 {
   const size_t numberOfPixels = this->m_DataGrid->GetNumberOfPixels();
 
@@ -112,24 +113,55 @@ cmtk::DataGridMorphologicalOperators::GetBinaryConnectedComponents( const bool s
     linkMap[component] = connected.FindKey( component );
     }
   
-  // re-number components and count pixels.
+  // re-number components
+  TypedArray::SmartPtr resultArray( TypedArray::Create( TYPE_INT, numberOfPixels ) );
   for ( size_t px = 0; px < numberOfPixels; ++px )
     {
-    const int component = linkMap[result[px]];
-    result[px] = component;
+    resultArray->Set( linkMap[result[px]], px );
+    }
+  
+  return resultArray;
+}
+
+cmtk::TypedArray::SmartPtr 
+cmtk::DataGridMorphologicalOperators::GetRegionsRenumberedBySize() const
+{
+  const size_t numberOfPixels = this->m_DataGrid->GetNumberOfPixels();
+  
+  // first, count pixels in each region
+  std::map<int,int> regionSizeMap;
+  for ( size_t px = 0; px < numberOfPixels; ++px )
+    {
+    const int value = static_cast<int>( this->m_DataGrid->GetDataAt( px ) );
+    if ( value )
+      ++regionSizeMap[value];
     }
 
-  // sort components by region size
-  if ( sortBySize )
+  // now create list sorted by region size
+  std::list< std::pair<int,int> > sortedList;
+  for ( std::map<int,int>::const_iterator it = regionSizeMap.begin(); it != regionSizeMap.end(); ++it )
     {
+    std::list< std::pair<int,int> >::iterator ins = sortedList.begin();
+    while ( (ins != sortedList.end()) && (ins->second >= it->second) )
+      ++ins;
+    
+    sortedList.insert( ins, *it );
+    }
+
+  // create renumbering lookup map
+  std::map<int,int> renumberMap;
+  int component = 1;
+  for ( std::list< std::pair<int,int> >::iterator it = sortedList.begin(); it != sortedList.end(); ++it )
+    {
+    renumberMap[it->first] = component++;
     }
   
   // re-number components
   TypedArray::SmartPtr resultArray( TypedArray::Create( TYPE_INT, numberOfPixels ) );
   for ( size_t px = 0; px < numberOfPixels; ++px )
     {
-    resultArray->Set( result[px], px );
+    resultArray->Set( renumberMap[static_cast<int>( this->m_DataGrid->GetDataAt( px ) )], px );
     }
   
-  return resultArray;
+  return resultArray;  
 }

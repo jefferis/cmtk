@@ -46,32 +46,20 @@ class ImageOperationConnectedComponents
   : public ImageOperation
 {
 public:
-  /// Constructor:
-  ImageOperationConnectedComponents( const bool sortBySize ) : m_SortBySize( sortBySize ) {}
-  
   /// Apply this operation to an image in place.
   virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
   {
     cmtk::DataGridMorphologicalOperators ops( volume );
-    volume->SetData( ops.GetBinaryConnectedComponents( this->m_SortBySize ) );
+    volume->SetData( ops.GetBinaryConnectedComponents() );
+    volume->SetData( ops.GetRegionsRenumberedBySize() );
     return volume;
   }
   
   /// Create new connected components operation.
   static void New()
   {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConnectedComponents( false ) ) );
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConnectedComponents() ) );
   }
-
-  /// Create new sorted-by-size connected components operation.
-  static void NewSorted()
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConnectedComponents( true ) ) );
-  }
-
-private:
-  /// Multi-valued flag: if this is set, a multi-valued boundary map will be created, otherwise a binary map.
-  bool m_SortBySize;
 };
 
 } // namespace cmtk

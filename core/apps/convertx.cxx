@@ -153,8 +153,7 @@ main( int argc, char* argv[] )
     cl.AddCallback( Key( "revert" ), &cmtk::ImageOperationRevert::New, "Revert a binary mask, i.e., exchange foreground and background." );
     cl.AddCallback( Key( "erode" ), &cmtk::ImageOperationErodeDilate::NewErode, "Morphological erosion operator" );
     cl.AddCallback( Key( "dilate" ), &cmtk::ImageOperationErodeDilate::NewDilate, "Morphological dilation operator" );
-    cl.AddCallback( Key( "connected-components" ), &cmtk::ImageOperationConnectedComponents::New, "Create connected components map" );
-    cl.AddCallback( Key( "connected-components-sort" ), &cmtk::ImageOperationConnectedComponents::NewSorted, "Create connected components map with components sorted by increasing size" );
+    cl.AddCallback( Key( "connected-components" ), &cmtk::ImageOperationConnectedComponents::New, "Create connected components map with regions numbered by decreasing component size" );
     cl.AddCallback( Key( "boundary-map" ), &cmtk::ImageOperationBoundaryMap::New, "Create boundary map" );
     cl.AddCallback( Key( "multi-boundary-map" ), &cmtk::ImageOperationBoundaryMap::NewMulti, "Create multi-valued boundary map" );
 

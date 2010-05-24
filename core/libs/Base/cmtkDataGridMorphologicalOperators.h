@@ -92,7 +92,13 @@ public:
    * of this function is a partitioning of the foreground into connected components.
    * Connectivity is determined based on 8 neighbours in the 3D grid.
    */
-  TypedArray::SmartPtr GetBinaryConnectedComponents( const bool sortBySize /**!< If this flag is set, the components are numbered in descending order of their size */) const;
+  TypedArray::SmartPtr GetBinaryConnectedComponents() const;
+
+  /** Get data with region labels renumbered by decreasing region size.
+   * This is typically run after GetBinaryConnectedComponents() to order the
+   * components and be able to easily select, say, the largest k components.
+   */
+  TypedArray::SmartPtr GetRegionsRenumberedBySize() const;
 
 private:
   /// The DataGrid object we're working on.
