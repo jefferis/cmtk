@@ -172,6 +172,7 @@ IF(NOT CMTK_USE_MPI)
     convertxBinarize
     convertxBoundaryMap
     convertxBoundaryMapMultiValue
+    convertxConnectedComponents
     convertxCropThresholdWriteRegion
     convertxCropRegion1
     convertxCropRegion2

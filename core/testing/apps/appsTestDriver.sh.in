@@ -322,6 +322,10 @@ case ${RUNTEST} in
 	run convertx --boundary-map parc1.hdr ${tmpdir}/boundary_map.hdr
 	check_results boundary_map.img
 	;;
+    convertxConnectedComponents)
+        run convertx --connected-components binary_mask.nii ${tmpdir}/connected.hdr
+	check_results connected.img
+	;;
     convertxDistanceUnsigned)
         run convertx --distance-map parc1_bin.hdr ${tmpdir}/dmap.hdr
 	check_results dmap.img
