@@ -57,6 +57,7 @@
 #include <cmtkImageOperationCropThreshold.h>
 #include <cmtkImageOperationScaleToRange.h>
 #include <cmtkImageOperationThreshold.h>
+#include <cmtkImageOperationSetPadding.h>
 #include <cmtkImageOperationMedianFilter.h>
 #include <cmtkImageOperationMedialSkeleton.h>
 #include <cmtkImageOperationGaussFilter.h>
@@ -88,9 +89,6 @@ bool Verbose = false;
 int
 main( int argc, char* argv[] )
 {
-  cmtk::Types::DataItem paddingDataValue = 0.0;
-  bool paddingDataFlag = false;
-
   const char* imagePathIn = NULL;
   const char* imagePathOut = NULL;
 
@@ -112,7 +110,8 @@ main( int argc, char* argv[] )
 #endif
 
     cl.BeginGroup( "Input", "Input Image Controls" );
-    cl.AddOption( Key( "set-padding" ), &paddingDataValue, "Set padding data for input image. All pixels in the input image that have this value will be ignored in all operations.", &paddingDataFlag );
+    cl.AddCallback( Key( "set-padding" ), &cmtk::ImageOperationSetPadding::New, "Set padding value: all pixels in the input image that have this value will be ignored in all subsequent operations." );
+    cl.AddCallback( Key( "unset-padding" ), &cmtk::ImageOperationSetPadding::NewUnset, "Unset padding value: for all subsequent operations, all pixels will be treated according to their value." );
     cl.EndGroup();
 
     cl.BeginGroup( "Conversion", "Data Type Conversion" );
@@ -208,11 +207,6 @@ main( int argc, char* argv[] )
       cmtk::StdErr << "ERROR: image seems to contain no data.\n";
       exit( 1 );
       }
-    }
-  
-  if ( paddingDataFlag ) 
-    {
-    volume->GetData()->SetPaddingValue( paddingDataValue );
     }
   
   volume = cmtk::ImageOperation::ApplyAll( volume );
