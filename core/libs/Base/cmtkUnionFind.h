@@ -83,8 +83,11 @@ public:
   /// Union operation.
   void Union( const FindResultType& s1, const FindResultType& s2 )
   {
-    s1->insert( s2->begin(), s2->end() );
-    this->m_List.erase( s2 );
+    if ( s1 != s2 )
+      {
+      s1->insert( s2->begin(), s2->end() );
+      this->m_List.erase( s2 );
+      }
   }
 
   /// Insert a new key by itself.
