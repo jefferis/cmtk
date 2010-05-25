@@ -103,7 +103,7 @@ CongealingFunctionalBase<TXform,THistogramBinType>
   size_t numberOfOutsidePixels = 0;
   for ( size_t task = 0; task < this->m_NumberOfTasks; ++task )
     {
-    numberOfOutsidePixels += this->m_TaskInfo[task];
+    numberOfOutsidePixels += this->m_TaskInfo[task].m_NumberOfOutsidePixels;
     }
 }
 
