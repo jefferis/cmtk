@@ -74,7 +74,7 @@ public:
   SymmetryPlaneFunctional( UniformVolume::SmartPtr& volume );
 
   /// Constructor with value range limits.
-  SymmetryPlaneFunctional( UniformVolume::SmartPtr& volume, const Types::DataItem minValue, const Types::DataItem maxValue );
+  SymmetryPlaneFunctional( UniformVolume::SmartPtr& volume, const Types::DataItemRange& valueRange );
 
   /// Destructor.
   virtual ~SymmetryPlaneFunctional() {}

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -119,9 +120,7 @@ JointHistogram<T>::GetMarginalX() const
 {
   Histogram<T>* marg = new Histogram<T>( NumBinsX );
   
-  Types::DataItem rangeXfrom, rangeXto;
-  this->GetRangeX( rangeXfrom, rangeXto );
-  marg->SetRange( rangeXfrom, rangeXto  );
+  marg->SetRange( this->GetRangeX() );
   for ( size_t i = 0; i < NumBinsX; ++i )
     (*marg)[i] = this->ProjectToX( i );
   
@@ -134,9 +133,7 @@ JointHistogram<T>::GetMarginalY() const
 {
   Histogram<T>* marg = new Histogram<T>( NumBinsY );
   
-  Types::DataItem rangeYfrom, rangeYto;
-  this->GetRangeY( rangeYfrom, rangeYto );
-  marg->SetRange( rangeYfrom, rangeYto  );
+  marg->SetRange( this->GetRangeY() );
   for ( size_t i = 0; i < NumBinsY; ++i )
     (*marg)[i] = this->ProjectToY( i );
   

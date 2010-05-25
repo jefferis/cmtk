@@ -356,11 +356,10 @@ VolumeFromFile::WriteNifti
   header.pixdim[5] = 0.0;
   
   // determine data range;
-  Types::DataItem dataMin, dataMax;
-  data->GetRange( dataMin, dataMax );
-  header.cal_max = static_cast<float>( dataMax );
-  header.cal_min = static_cast<float>( dataMin );
-
+  const Types::DataItemRange dataRange = data->GetRange();
+  header.cal_max = static_cast<float>( dataRange.m_UpperBound );
+  header.cal_min = static_cast<float>( dataRange.m_LowerBound );
+  
 #ifdef _MSC_VER
   const char *const modestr = "w9b";
 #else

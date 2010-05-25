@@ -100,10 +100,10 @@ public:
   
   /** Get value range of a given bin.
    */
-  virtual void GetRangeBin( const size_t bin, Types::DataItem& from, Types::DataItem& to ) const 
+  virtual const Types::DataItemRange GetRangeBin( const size_t bin ) const 
   {
-    from = exp( bin * log( this->m_BinsUpperBound ) / (this->GetNumBins()-1) ) + this->m_BinsLowerBound - 1;
-    to = exp( (bin+1) * log( this->m_BinsUpperBound ) / (this->GetNumBins()-1) ) + this->m_BinsLowerBound - 1;
+    return Types::DataItemRange( exp( bin * log( this->m_BinsUpperBound ) / (this->GetNumBins()-1) ) + this->m_BinsLowerBound - 1,
+				 exp( (bin+1) * log( this->m_BinsUpperBound ) / (this->GetNumBins()-1) ) + this->m_BinsLowerBound - 1 );
   }
   
   /** Return center of values represented by a certain bin.

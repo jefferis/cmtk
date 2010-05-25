@@ -41,6 +41,7 @@
 #include <cmtkTypedArray.h>
 #include <cmtkMathUtil.h>
 
+#include <cmtkTypes.h>
 #include <cmtkHistogram.h>
 
 #include <cmtkSmartPtr.h>
@@ -195,50 +196,48 @@ public:
 
   /** Set value range of the X distribution.
    */
-  void SetRangeX( const Types::DataItem from, const Types::DataItem to ) 
+  void SetRangeX( const Types::DataItemRange& range ) 
   {
-    this->BinOffsetX = from;
-    this->BinWidthX = ( to - from ) / ( this->NumBinsX - 1 );
+    this->BinOffsetX = range.m_LowerBound;
+    this->BinWidthX = range.Width() / ( this->NumBinsX - 1 );
   }
 
   /** Set value range of the Y distribution.
    */
-  void SetRangeY( const Types::DataItem from, const Types::DataItem to ) 
+  void SetRangeY( const Types::DataItemRange& range ) 
   {
-    this->BinOffsetY = from;
-    this->BinWidthY = ( to - from ) / ( this->NumBinsY - 1 );
+    this->BinOffsetY = range.m_LowerBound;
+    this->BinWidthY = range.Width() / ( this->NumBinsY - 1 );
   }
   
   /** Set value range of the X distribution where upper and lower bound are centered in first and last histogram bins.
    */
-  void SetRangeCenteredX( const Types::DataItem from, const Types::DataItem to ) 
+  void SetRangeCenteredX( const Types::DataItemRange& range ) 
   {
-    this->BinWidthX = ( to - from ) / (this->NumBinsX - 1);
+    this->BinWidthX = range.Width() / (this->NumBinsX - 1);
     this->BinOffsetX = - this->BinWidthX / 2;
   }
 
   /** Set value range of the Y distribution where upper and lower bound are centered in first and last histogram bins.
    */
-  void SetRangeCenteredY( const Types::DataItem from, const Types::DataItem to ) 
+  void SetRangeCenteredY( const Types::DataItemRange& range ) 
   {
-    this->BinWidthY = ( to - from ) / (this->NumBinsY - 1);
+    this->BinWidthY = range.Width() / (this->NumBinsY - 1);
     this->BinOffsetY = - this->BinWidthY / 2;
   }
   
   /** Get value range of the X distribution.
    */
-  void GetRangeX( Types::DataItem& from, Types::DataItem& to ) const 
+  const Types::DataItemRange GetRangeX() const 
   {
-    from = this->BinOffsetX;
-    to = from + this->BinWidthX * ( this->NumBinsX - 1);
+    return Types::DataItemRange( this->BinOffsetX, this->BinOffsetX + this->BinWidthX * ( this->NumBinsX - 1) );
   }
   
   /** Get value range of the Y distribution.
    */
-  void GetRangeY( Types::DataItem& from, Types::DataItem& to ) const 
+  const Types::DataItemRange GetRangeY() const 
   {
-    from = this->BinOffsetY;
-    to = from + this->BinWidthY * ( this->NumBinsY - 1 );
+    return Types::DataItemRange( this->BinOffsetY, this->BinOffsetY + this->BinWidthY * ( this->NumBinsY - 1) );
   }
   
   /** Reset computation.

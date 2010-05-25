@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -234,14 +235,13 @@ ScalarImageIO::WriteAnalyze
   header.StoreField<float>( 108, 0.0f );
 
   // determine data range;
-  Types::DataItem dataMin, dataMax;
-  data->GetRange( dataMin, dataMax );
+  const Types::DataItemRange dataRange = data->GetRange();
 
-  header.StoreField<float>( 124, static_cast<float>( dataMax ) ); // cal_max
-  header.StoreField<float>( 128, static_cast<float>( dataMin ) ); // cal_min
+  header.StoreField<float>( 124, static_cast<float>( dataRange.m_UpperBound ) ); // cal_max
+  header.StoreField<float>( 128, static_cast<float>( dataRange.m_LowerBound ) ); // cal_min
 
-  header.StoreField<int>( 140, static_cast<int>( dataMax ) );
-  header.StoreField<int>( 144, static_cast<int>( dataMin ) );
+  header.StoreField<int>( 140, static_cast<int>( dataRange.m_UpperBound ) );
+  header.StoreField<int>( 144, static_cast<int>( dataRange.m_LowerBound ) );
 
   // slice orientation always axial from caudal to cranial
   header.StoreField<byte>( 252, 0 );

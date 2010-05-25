@@ -451,19 +451,17 @@ if ( Downsample )
 	cmtk::StdErr.printf( "Thresholding at max level %f.\n", ThresholdMax );
       }
     
-    cmtk::Types::DataItem min, max;
-    volumeData->GetRange( min, max );
+    const cmtk::Types::DataItemRange range = volumeData->GetRange();
     
     if ( ! HaveThreshold ) 
-      Threshold = min;
+      Threshold = range.m_LowerBound;
     if ( ! HaveThresholdMax ) 
-      ThresholdMax = max;
+      ThresholdMax = range.m_UpperBound;
     
     if ( ThresholdToPadding )
-      volumeData->ThresholdToPadding( Threshold, ThresholdMax );
+      volumeData->ThresholdToPadding( cmtk::Types::DataItemRange( Threshold, ThresholdMax ) );
     else
-      volumeData->Threshold( Threshold, ThresholdMax );
-    //    volume->FillCropBackground( 100 );
+      volumeData->Threshold( cmtk::Types::DataItemRange( Threshold, ThresholdMax ) );
     }
   
   if ( HaveRescaleSlope ) 
@@ -487,16 +485,15 @@ if ( Downsample )
 	cmtk::StdErr.printf( "Rescaling to max level %f.\n", RescaleMax );
       }
 
-    cmtk::Types::DataItem min, max;
-    volumeData->GetRange( min, max );
+    const cmtk::Types::DataItemRange range = volumeData->GetRange();
 
     if ( ! HaveRescaleMin ) 
-      RescaleMin = min;
+      RescaleMin = range.m_LowerBound;
     if ( ! HaveRescaleMax ) 
-      RescaleMax = max;
+      RescaleMax = range.m_UpperBound;
 
-    const cmtk::Types::DataItem factor = (RescaleMax - RescaleMin) / (max-min);
-    const cmtk::Types::DataItem offset = RescaleMin - min * factor;
+    const cmtk::Types::DataItem factor = (RescaleMax - RescaleMin) / range.Width();
+    const cmtk::Types::DataItem offset = RescaleMin - range.m_LowerBound * factor;
     volumeData->Rescale( factor, offset );
     }
   
@@ -602,9 +599,8 @@ if ( Downsample )
     {
     if ( Verbose )
       cmtk::StdErr << "Inverting value range.\n";
-    cmtk::Types::DataItem min, max;
-    volume->GetData()->GetRange( min, max );
-    volume->GetData()->Rescale( -1, max + min );
+    const cmtk::Types::DataItemRange range = volume->GetData()->GetRange();
+    volume->GetData()->Rescale( -1, range.m_UpperBound + range.m_LowerBound );
     }
   
   if ( ApplyGamma ) 

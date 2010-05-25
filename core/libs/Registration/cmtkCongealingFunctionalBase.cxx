@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -113,9 +114,7 @@ CongealingFunctionalBase<TXform,THistogramBinType>
     data->PruneHistogram( true, false, this->m_HistogramBins );
     }
   
-  Types::DataItem min, max;
-  data->GetRange( min, max );
-  data->Rescale( 1.0 * (this->m_HistogramBins-1) / (max-min), this->m_HistogramKernelRadiusMax );
+  data->Rescale( 1.0 * (this->m_HistogramBins-1) / data->GetRange().Width(), this->m_HistogramKernelRadiusMax );
   
   newTargetImage->SetData( TypedArray::SmartPtr( data->Convert( TYPE_BYTE ) ) );
   return newTargetImage;

@@ -37,8 +37,6 @@
 
 #include <cmtkTypedStream.h>
 
-#include <cmtkJointHistogram.h>
-
 #include <cmtkAffineXform.h>
 
 #include <cmtkWarpXform.h>
@@ -109,31 +107,6 @@ public:
     this->TypedStream::Open( dir, archive, (TypedStreamMode) mode );
   }
 
-  /// Write 2D float histogram.
-  ClassStream& operator << ( const JointHistogram<float> *histogram );
-
-  /** Write 2D float histogram.
-   * This function works on a reference rather than a pointer. It immediately
-   * calls the pointer-based function defined above for the actual writing.
-   */
-  ClassStream& operator << ( const JointHistogram<float>& histogram )
-  { return (*this) << &histogram; }
-  
-  /// Write 2D integer histogram.
-  ClassStream& operator << ( const JointHistogram<int> *histogram );
-
-  /** Write 2D integer histogram.
-   * This function works on a reference rather than a pointer. It immediately
-   * calls the pointer-based function defined above for the actual writing.
-   */
-  ClassStream& operator << ( const JointHistogram<int>& histogram )
-  { return (*this) << &histogram; }
-
-  /// Read 2D float histogram.
-  ClassStream& operator >> ( JointHistogram<float>*& histogram );
-
-  /// Read 2D integer histogram.
-  ClassStream& operator >> ( JointHistogram<int>*& histogram );
   /** Write generic transformation object.
    * This function determines the virtual type of the transformation object
    * (spline or linear deformation) using a dynamic_cast. It then calls the

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -51,9 +52,8 @@ LabelCombinationMultiClassSTAPLE
   int numberOfClasses = 1;
   for ( size_t k = 0; k < numberOfInputs; ++k )
     {
-    Types::DataItem min, max;
-    data[k]->GetRange( min, max );
-    numberOfClasses = std::max( numberOfClasses, 1+static_cast<int>( max ) );
+    const Types::DataItemRange range = data[k]->GetRange();
+    numberOfClasses = std::max( numberOfClasses, 1+static_cast<int>( range.m_UpperBound ) );
     }
 
   // allocate priors vector

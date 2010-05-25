@@ -45,6 +45,8 @@
 
 #include <cmtkInterpolator.h>
 
+#include <vector>
+
 namespace
 cmtk
 {
@@ -178,25 +180,23 @@ VoxelMatchingElasticFunctional_Template<VM,W>::UpdateWarpFixedParameters()
   if ( !this->ConsistencyHistogram ) 
     {
     this->ConsistencyHistogram = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
-    unsigned int numSamplesX = this->Metric->DataX.NumberOfSamples;
-    Types::DataItem fromX, toX;
-    this->Metric->DataX.GetValueRange( fromX, toX );
-    unsigned int numBinsX = this->ConsistencyHistogram->CalcNumBins( numSamplesX, fromX, toX );
+    const unsigned int numSamplesX = this->Metric->DataX.NumberOfSamples;
+    const Types::DataItemRange rangeX = this->Metric->DataX.GetValueRange();
+    const unsigned int numBinsX = this->ConsistencyHistogram->CalcNumBins( numSamplesX, rangeX );
     
-    unsigned int numSamplesY = this->Metric->DataY.NumberOfSamples;
-    Types::DataItem fromY, toY;
-    this->Metric->DataY.GetValueRange( fromY, toY );
-    unsigned int numBinsY = this->ConsistencyHistogram->CalcNumBins( numSamplesY, fromY, toY );
+    const unsigned int numSamplesY = this->Metric->DataY.NumberOfSamples;
+    const Types::DataItemRange rangeY = this->Metric->DataY.GetValueRange();
+    unsigned int numBinsY = this->ConsistencyHistogram->CalcNumBins( numSamplesY, rangeY );
     
     this->ConsistencyHistogram->SetNumBins( numBinsX, numBinsY );
-    this->ConsistencyHistogram->SetRangeX( fromX, toX );
-    this->ConsistencyHistogram->SetRangeY( fromY, toY );
+    this->ConsistencyHistogram->SetRangeX( rangeX );
+    this->ConsistencyHistogram->SetRangeY( rangeY );
     }
   
   int numCtrlPoints = this->Dim / 3;
   
-  double *mapRef = Memory::AllocateArray<double>( numCtrlPoints );
-  double *mapMod = Memory::AllocateArray<double>( numCtrlPoints );
+  std::vector<double> mapRef( numCtrlPoints );
+  std::vector<double> mapMod( numCtrlPoints );
 
   Vector3D fromVOI, toVOI;
   int pX, pY, pZ;
@@ -318,9 +318,6 @@ VoxelMatchingElasticFunctional_Template<VM,W>::UpdateWarpFixedParameters()
   
   fprintf( stderr, "Deactivated %d out of %d parameters.\n", inactive, (int)this->Dim );
   
-  delete[] mapRef;
-  delete[] mapMod;
-
   this->WarpNeedsFixUpdate = false;
 }
 

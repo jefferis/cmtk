@@ -145,8 +145,7 @@ FilterVolume
   const TypedArray* inputData = volume->GetData();
   if ( ! inputData ) return NULL;
  
-  Types::DataItem minSubj, maxSubj;
-  subjectData->GetRange( minSubj, maxSubj );
+  const Types::DataItemRange rangeSubj = subjectData->GetRange();
   
   const size_t numBins = 1024;
 #ifdef _OPENMP
@@ -155,11 +154,11 @@ FilterVolume
   for ( size_t thread = 0; thread < maxThreads; ++thread )
     {
     histograms[thread] = Histogram<Types::DataItem>::SmartPtr( new Histogram<Types::DataItem>( numBins ) );
-    histograms[thread]->SetRange( minSubj, maxSubj );
+    histograms[thread]->SetRange( rangeSubj );
     }
 #else // #ifdef _OPENMP
   Histogram<Types::DataItem> histogram( numBins );
-  histogram.SetRange( minSubj, maxSubj );
+  histogram.SetRange( rangeSubj );
 #endif // #ifdef _OPENMP
 
   const size_t iKernelRadius = 1 + static_cast<size_t>( 2 * iFilterSigma.Value() * numBins );
@@ -269,9 +268,8 @@ FilterVolume::StudholmeFilter
   const TypedArray* inputData = volume->GetData();
   if ( ! inputData ) return NULL;
  
-  Types::DataItem minAvg, maxAvg;
-  averageData->GetRange( minAvg, maxAvg );
-  const size_t numBins = std::min( 128, 1 + static_cast<int>((maxAvg-minAvg) / binWidth) );
+  const Types::DataItemRange range = averageData->GetRange();
+  const size_t numBins = std::min( 128, 1 + static_cast<int>((range.Width()) / binWidth) );
 
   TypedArray* filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
@@ -288,8 +286,8 @@ FilterVolume::StudholmeFilter
   for ( size_t idx = 0; idx < numberOfThreads; ++idx )
     {
     histogramByThread[idx].SetNumBins( numBins, numBins );
-    histogramByThread[idx].SetRangeX( minAvg, maxAvg );
-    histogramByThread[idx].SetRangeY( minAvg, maxAvg );
+    histogramByThread[idx].SetRangeX( range );
+    histogramByThread[idx].SetRangeY( range );
     
     FilterMask<3>::SmartPtr filter( new FilterMask<3>( dims, volume->GetDelta(), filterRadius, FilterMask<3>::Gaussian( filterWidth ) ) );    
     filterByThread[idx] = filter;
@@ -414,13 +412,12 @@ FilterVolume::StudholmeFilter
   const TypedArray* inputData = volume->GetData();
   if ( ! inputData ) return NULL;
  
-  Types::DataItem minAvg, maxAvg;
-  averageData->GetRange( minAvg, maxAvg );
+  const Types::DataItemRange range = averageData->GetRange();
 
-  const size_t numBins = std::min( 128, 1 + static_cast<int>((maxAvg-minAvg) / binWidth) );
+  const size_t numBins = std::min( 128, 1 + static_cast<int>( range.Width() / binWidth ) );
   JointHistogram<Types::DataItem> histogram( numBins, numBins );
-  histogram.SetRangeX( minAvg, maxAvg );
-  histogram.SetRangeY( minAvg, maxAvg );
+  histogram.SetRangeX( range );
+  histogram.SetRangeY( range );
  
   TypedArray* filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   

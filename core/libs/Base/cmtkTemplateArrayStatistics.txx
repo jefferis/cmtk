@@ -71,10 +71,7 @@ Histogram<unsigned int>::SmartPtr
 TemplateArray<T>::GetHistogram( const unsigned int numberOfBins ) const
 {
   Histogram<unsigned int>::SmartPtr histogram( new Histogram<unsigned int>( numberOfBins ) );
-
-  T min, max;
-  this->GetRangeTemplate( min, max );
-  histogram->SetRange( min, max );
+  histogram->SetRange( Types::DataItemRange( this->GetRangeTemplate() ) );
   
   for ( size_t idx = 0; idx < DataSize; ++idx )
     if ( !this->PaddingFlag || (this->Data[idx] != this->Padding) )

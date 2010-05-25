@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -161,11 +162,8 @@ protected:
   /// Relative weights of the passes in the correction; can be used to underweight or even exclude passes.
   std::vector<Types::Coordinate> m_PassWeights;
 
-  /// Original volume pixel intensity minimum.
-  Types::DataItem m_OriginalImageMax;
-
-  /// Original volume pixel intensity minimum.
-  Types::DataItem m_OriginalImageMin;
+  /// Original volume pixel intensity range.
+  Types::DataItemRange m_OriginalImageRange;
 
   /// Original pass images.
   std::vector<UniformVolume::SmartPtr> m_OriginalPassImages;

@@ -96,18 +96,15 @@ public:
     size_t NumberOfSamples;
 
     /// Get value range of distribution as stored herein.
-    void GetValueRange( Types::DataItem& min, Types::DataItem& max ) 
+    const Types::DataItemRange GetValueRange() const
     {
-      min = ValueRange[0];
-      max = ValueRange[1];
+      return Types::DataItemRange( ValueRange[0], ValueRange[1] );
     }
 
     /// Convert value to bin.
     byte ValueToIndex( const Types::DataItem value )
     {
-      return static_cast<byte>
-	( (std::min( std::max( value, this->ValueRange[0] ), 
-		     this->ValueRange[1] )- this->BinOffset) / BinWidth );
+      return static_cast<byte>( (std::min( std::max( value, this->ValueRange[0] ), this->ValueRange[1] )- this->BinOffset) / BinWidth );
     }
     
     /// Default constructor.
@@ -137,9 +134,7 @@ public:
      *@return The number of bins required to hold the data. Note that there 
      * will be an extra bin allocated to hold non-existing data values.
      */
-    size_t Init
-    ( const UniformVolume* volume, const size_t defNumBins,
-      const Types::DataItem minBound = -HUGE_VAL, const Types::DataItem maxBound = HUGE_VAL );
+    size_t Init( const UniformVolume* volume, const size_t defNumBins, const Types::DataItemRange& bounds = Types::DataItemRange( -HUGE_VAL, HUGE_VAL ) );
     
     /** Initialize internal storage for one (reference of model) volume.
      * The volume's data is converted into an array of byte values that 

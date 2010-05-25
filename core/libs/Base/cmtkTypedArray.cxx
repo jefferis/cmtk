@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2010 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -43,13 +44,12 @@ cmtk
 
 void
 TypedArray
-::RescaleToRange( const Types::DataItem min, const Types::DataItem max )
+::RescaleToRange( const Types::DataItemRange& toRange )
 {
-  Types::DataItem cMin, cMax;
-  this->GetRange( cMin, cMax );
-
-  const Types::DataItem scale = (max-min) / (cMax-cMin);
-  const Types::DataItem offset = min - (cMin * scale);
+  const Types::DataItemRange fromRange = this->GetRange();
+  
+  const Types::DataItem scale = toRange.Width() / fromRange.Width();
+  const Types::DataItem offset = toRange.m_LowerBound - (fromRange.m_LowerBound * scale);
 
   this->Rescale( scale, offset );
 }
@@ -196,8 +196,11 @@ TypedArray
   const size_t oneBinFraction = this->GetDataSize() / numberOfBinsTarget;
   size_t accumulatedNumberOfSamples = 0;
 
-  Types::DataItem min, max;
-  this->GetRange( min, max );
+  const Types::DataItemRange range = this->GetRange();
+
+  Types::DataItem min = range.m_LowerBound;
+  Types::DataItem max = range.m_UpperBound;
+
   const Types::DataItem originalMax = max;
 
   if ( pruneHi )
@@ -226,7 +229,7 @@ TypedArray
       }
     }
   
-  this->Threshold( min, max );
+  this->Threshold( Types::DataItemRange( min, max ) );
 }
 
 } // namespace cmtk

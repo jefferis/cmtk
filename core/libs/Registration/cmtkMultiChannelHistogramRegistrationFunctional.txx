@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -61,13 +62,12 @@ void
 MultiChannelHistogramRegistrationFunctional<TDataType,TInterpolator,THashKeyType,NBitsPerChannel>
 ::AddReferenceChannel( UniformVolume::SmartPtr& channel )
 {
-  Types::DataItem min, max;
   const Types::DataItem maxBinIndex = (1<<NBitsPerChannel) - 1;
 
-  channel->GetData()->GetRange( min, max );
+  const Types::DataItemRange range = channel->GetData()->GetRange();
 
-  const Types::DataItem scale = maxBinIndex / (max-min);
-  const Types::DataItem offset = -(min/scale);
+  const Types::DataItem scale = maxBinIndex / range.Width();
+  const Types::DataItem offset = -(range.m_LowerBound/scale);
 
   this->m_HashKeyScaleRef.push_back( static_cast<TDataType>( scale ) );
   this->m_HashKeyOffsRef.push_back( static_cast<TDataType>( offset ) );
@@ -91,13 +91,12 @@ void
 MultiChannelHistogramRegistrationFunctional<TDataType,TInterpolator,THashKeyType,NBitsPerChannel>
 ::AddFloatingChannel( UniformVolume::SmartPtr& channel )
 {
-  Types::DataItem min, max;
   const Types::DataItem maxBinIndex = (1<<NBitsPerChannel) - 1;
 
-  channel->GetData()->GetRange( min, max );
+  const Types::DataItemRange range = channel->GetData()->GetRange();
 
-  const Types::DataItem scale = maxBinIndex / (max-min);
-  const Types::DataItem offset = -(min/scale);
+  const Types::DataItem scale = maxBinIndex / range.Width();
+  const Types::DataItem offset = -(range.m_LowerBound/scale);
 
   this->m_HashKeyScaleFlt.push_back( static_cast<TDataType>( scale ) );
   this->m_HashKeyOffsFlt.push_back( static_cast<TDataType>( offset ) );

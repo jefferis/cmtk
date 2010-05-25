@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -62,9 +63,10 @@ StudyImageSet::ReadVolume( const bool reRead, const char* )
       const TypedArray *dataArray = this->m_Volume->GetData();
       if ( dataArray ) 
 	{
-	dataArray->GetRange( this->m_MinimumValue, this->m_MaximumValue );
-	this->m_Black = this->m_MinimumValue;
-	this->m_White = this->m_MaximumValue;
+	const Types::DataItemRange range = dataArray->GetRange();
+	this->m_Black = this->m_MinimumValue = range.m_LowerBound;
+	this->m_White = this->m_MaximumValue = range.m_UpperBound;
+
 	this->m_StandardColormap = 0;
 	this->m_ReverseColormap = false;
 	}

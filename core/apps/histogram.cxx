@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -68,8 +69,7 @@ void
 ComputeHistogram
 ( std::list<cmtk::TypedArray::SmartPtr>& dataList, cmtk::Histogram<double>& histogram )
 {
-  cmtk::Types::DataItem rangeFrom, rangeTo;
-  histogram.GetRange( rangeFrom, rangeTo );
+  const cmtk::Types::DataItemRange range = histogram.GetRange();
 
   std::list<cmtk::TypedArray::SmartPtr>::const_iterator it = dataList.begin();
   for ( ; it != dataList.end(); ++it )
@@ -81,7 +81,7 @@ ComputeHistogram
     for ( size_t offset = 0; offset < size; ++offset )
       if ( data->Get( value, offset ) )
 	{
-	if ( !Truncate || ((value >= rangeFrom) && (value <= rangeTo)) )
+	if ( !Truncate || ((value >= range.m_LowerBound) && (value <= range.m_UpperBound)) )
 	  histogram.Increment( histogram.ValueToBin( value ) );
 	}
     }
@@ -96,8 +96,7 @@ void
 ComputeHistogram
 ( std::list<cmtk::TypedArray::SmartPtr>& dataList, const cmtk::TypedArray* mask, const int maskValue, cmtk::Histogram<double>& histogram )
 {
-  cmtk::Types::DataItem rangeFrom, rangeTo;
-  histogram.GetRange( rangeFrom, rangeTo );
+  const cmtk::Types::DataItemRange range = histogram.GetRange();
 
   std::list<cmtk::TypedArray::SmartPtr>::const_iterator it = dataList.begin();
   for ( ; it != dataList.end(); ++it )
@@ -108,7 +107,7 @@ ComputeHistogram
     cmtk::Types::DataItem value, mv;
     for ( size_t offset = 0; offset < size; ++offset )
       if ( data->Get( value, offset ) )
-	if ( !Truncate || ((value >= rangeFrom) && (value <= rangeTo)) )
+	if ( !Truncate || ((value >= range.m_LowerBound) && (value <= range.m_UpperBound)) )
 	  if ( mask->Get( mv, offset ) && ( mv == maskValue ) )
 	    histogram.Increment( histogram.ValueToBin( value ) );
     }
@@ -214,18 +213,17 @@ main ( const int argc, const char* argv[] )
       }
     dataList.push_back( data );
     
-    cmtk::Types::DataItem min, max;
-    data->GetRange( min, max );
+    const cmtk::Types::DataItemRange range = data->GetRange();
     
     if ( it == inFileList.begin() )
       {
-      minData = min;
-      maxData = max;
+      minData = range.m_LowerBound;
+      maxData = range.m_UpperBound;
       }
     else
       {
-      minData = std::min( minData, min );
-      maxData = std::max( maxData, max );
+      minData = std::min( minData, range.m_LowerBound );
+      maxData = std::max( maxData, range.m_UpperBound );
       }
     }
   
@@ -239,11 +237,11 @@ main ( const int argc, const char* argv[] )
   cmtk::Histogram<double> histogram( bins );
   if ( UserMinMaxValue )
     {
-    histogram.SetRange( UserMinValue, UserMaxValue );
+    histogram.SetRange( cmtk::Types::DataItemRange( UserMinValue, UserMaxValue ) );
     } 
   else
     {
-    histogram.SetRange( minData, maxData );
+    histogram.SetRange( cmtk::Types::DataItemRange( minData, maxData ) );
     }
   
   if ( ! maskFile ) 

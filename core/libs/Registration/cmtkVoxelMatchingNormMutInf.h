@@ -98,9 +98,8 @@ public:
    *@param minBoundFlt Upper bound for floating image values; all actual pixel
    * values above this bound will be sorted into the highest histogram bin.
    */
-  VoxelMatchingNormMutInf ( const UniformVolume* refVolume, const UniformVolume* fltVolume, const Types::DataItem minBoundRef, const Types::DataItem maxBoundRef,
-			    const Types::DataItem minBoundFlt, const Types::DataItem maxBoundFlt )
-    : RegistrationJointHistogram<I>( refVolume, fltVolume, CMTK_HISTOGRAM_AUTOBINS, CMTK_HISTOGRAM_AUTOBINS, minBoundRef, maxBoundRef, minBoundFlt, maxBoundFlt ) {};
+  VoxelMatchingNormMutInf ( const UniformVolume* refVolume, const UniformVolume* fltVolume, const Types::DataItemRange& rangeRef, const Types::DataItemRange& rangeFlt )
+    : RegistrationJointHistogram<I>( refVolume, fltVolume, CMTK_HISTOGRAM_AUTOBINS, CMTK_HISTOGRAM_AUTOBINS, rangeRef, rangeFlt ) {};
   
   /// Return normalized mutual information.
   typename Self::ReturnType Get () const 

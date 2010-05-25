@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,102 +37,97 @@ cmtk
 
 /** \addtogroup Registration */
 //@{
-void
+const Types::DataItemRange
 TypedArraySimilarityMemory::GetRangeX
-( const TypedArray* array, const size_t numBins, 
-  Types::DataItem& min, Types::DataItem& max )
+( const TypedArray* array, const size_t numBins )
 {
   if ( ! this->ValidX )
     this->NumberBinsX = numBins;
 
-  if ( ! this->ValidX || this->RepeatCheck ) {
-    array->GetRange( min, max );
-    if ( ! this->ValidX ) {
-      this->RangeMinX = min;
-      this->RangeMaxX = max;
+  if ( ! this->ValidX || this->RepeatCheck ) 
+    {
+    const Types::DataItemRange range = array->GetRange();
+    if ( ! this->ValidX ) 
+      {
+      this->RangeX.m_LowerBound = range.m_LowerBound;
+      this->RangeX.m_UpperBound = range.m_UpperBound;
       this->ValidX = true;
-    } else if ( (min < this->RangeMinX) || (max > this->RangeMaxX ) ) {
-      Types::DataItem binDelta = 
-	(this->RangeMaxX - this->RangeMinX) / (this->NumberBinsX - 1);
-      
-      if ( min < this->RangeMinX ) {
-	size_t addBins = 
-	  1 + static_cast<size_t>( (this->RangeMinX - min) / binDelta);
-	this->RangeMinX -= ( binDelta * addBins );
-	this->NumberBinsY += addBins;
-      }
-
-      if ( max > this->RangeMaxX ) {
-	size_t addBins = 
-	  1 + static_cast<size_t>( (max - this->RangeMaxX) / binDelta);
-	this->RangeMaxX += ( binDelta * addBins );
-	this->NumberBinsY += addBins;
-      }
+      } 
+    else
+      if ( (range.m_LowerBound < this->RangeX.m_LowerBound) || (range.m_UpperBound > this->RangeX.m_UpperBound ) ) 
+	{
+	Types::DataItem binDelta = (this->RangeX.m_UpperBound - this->RangeX.m_LowerBound) / (this->NumberBinsX - 1);
+	
+	if ( range.m_LowerBound < this->RangeX.m_LowerBound ) 
+	  {
+	  const size_t addBins = 1 + static_cast<size_t>( (this->RangeX.m_LowerBound - range.m_LowerBound) / binDelta);
+	  this->RangeX.m_LowerBound -= ( binDelta * addBins );
+	  this->NumberBinsY += addBins;
+	  }
+	
+	if ( range.m_UpperBound > this->RangeX.m_UpperBound ) 
+	  {
+	  const size_t addBins = 1 + static_cast<size_t>( (range.m_UpperBound - this->RangeX.m_UpperBound) / binDelta);
+	  this->RangeX.m_UpperBound += ( binDelta * addBins );
+	  this->NumberBinsY += addBins;
+	  }
+	}
     }
-  }
   
-  min = this->RangeMinX;
-  max = this->RangeMaxX;
+  return this->RangeX;
 }
 
-void
+const Types::DataItemRange
 TypedArraySimilarityMemory::GetRangeY
-( const TypedArray* array, const size_t numBins, 
-  Types::DataItem& min, Types::DataItem& max )
+( const TypedArray* array, const size_t numBins )
 {
   if ( ! this->ValidY )
     this->NumberBinsY = numBins;
 
-  if ( ! this->ValidY || this->RepeatCheck ) {
-    array->GetRange( min, max );
-    if ( ! this->ValidY ) {
-      this->RangeMinY = min;
-      this->RangeMaxY = max;
+  if ( ! this->ValidY || this->RepeatCheck ) 
+    {
+    const Types::DataItemRange range = array->GetRange();
+    if ( ! this->ValidY ) 
+      {
+      this->RangeY.m_LowerBound = range.m_LowerBound;
+      this->RangeY.m_UpperBound = range.m_UpperBound;
       this->ValidY = true;
-    } else if ( (min < this->RangeMinY) || (max > this->RangeMaxY ) ) {
-      Types::DataItem binDelta = 
-	(this->RangeMaxY - this->RangeMinY) / (this->NumberBinsY - 1);
-      
-      if ( min < this->RangeMinY ) {
-	size_t addBins = 
-	  1 + static_cast<size_t>( (this->RangeMinY - min) / binDelta);
-	this->RangeMinY -= ( binDelta * addBins );
-	this->NumberBinsY += addBins;
-      }
-      
-      if ( max > this->RangeMaxY ) {
-	size_t addBins = 
-	  1 + static_cast<size_t>( (max - this->RangeMaxY) / binDelta);
-	this->RangeMaxY += ( binDelta * addBins );
-	this->NumberBinsY += addBins;
-      }
+      } 
+    else
+      if ( (range.m_LowerBound < this->RangeY.m_LowerBound) || (range.m_UpperBound > this->RangeY.m_UpperBound ) ) 
+	{
+	Types::DataItem binDelta = (this->RangeY.m_UpperBound - this->RangeY.m_LowerBound) / (this->NumberBinsY - 1);
+	
+	if ( range.m_LowerBound < this->RangeY.m_LowerBound ) 
+	  {
+	  const size_t addBins = 1 + static_cast<size_t>( (this->RangeY.m_LowerBound - range.m_LowerBound) / binDelta);
+	  this->RangeY.m_LowerBound -= ( binDelta * addBins );
+	  this->NumberBinsY += addBins;
+	  }
+	
+	if ( range.m_UpperBound > this->RangeY.m_UpperBound ) 
+	  {
+	  const size_t addBins = 1 + static_cast<size_t>( (range.m_UpperBound - this->RangeY.m_UpperBound) / binDelta);
+	  this->RangeY.m_UpperBound += ( binDelta * addBins );
+	  this->NumberBinsY += addBins;
+	  }
+	}
     }
-  }
   
-  min = this->RangeMinY;
-  max = this->RangeMaxY;
+  return this->RangeY;
 }
 
-JointHistogram<unsigned int>*
+JointHistogram<unsigned int>::SmartPtr
 TypedArraySimilarityMemory::CreateHistogram
 ( const TypedArray* array0, const TypedArray* array1 )
 {
-  unsigned int dataSize = array0->GetDataSize();
-
-  size_t numBins = std::max<unsigned>
-    ( std::min<unsigned>
-      ( static_cast<unsigned>( sqrt( (float)dataSize ) ),
-	this->MaxNumBins ), this->MinNumBins );
+  const unsigned int dataSize = array0->GetDataSize();
+  const size_t numBins = std::max<unsigned>( std::min<unsigned>( static_cast<unsigned>( sqrt( (float)dataSize ) ), this->MaxNumBins ), this->MinNumBins );
   
-  Types::DataItem minX, maxX, minY, maxY;
-  this->GetRangeX( array0, numBins, minX, maxX );
-  this->GetRangeY( array1, numBins, minY, maxY );
+  JointHistogram<unsigned int>::SmartPtr histogram( new JointHistogram<unsigned int>( this->NumberBinsX, this->NumberBinsY ) );
   
-  JointHistogram<unsigned int>* histogram =
-    new JointHistogram<unsigned int>( this->NumberBinsX, this->NumberBinsY );
-
-  histogram->SetRangeX( minX, maxX );
-  histogram->SetRangeY( minY, maxY );
+  histogram->SetRangeX( this->GetRangeX( array0, numBins ) );
+  histogram->SetRangeY( this->GetRangeY( array1, numBins ) );
 
   return histogram;
 }

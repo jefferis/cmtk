@@ -1,5 +1,9 @@
 Release CMTK-1.3.1:
 
+- Removed: support for writing joint histograms.
+- Refactored: value ranges are now handled by Types::Range<T> class
+    template. The specialization typedef'ed as Types::DataItemRange is now
+    used for more intuitive handling of item ranges.
 - Fixed: selection of floating image interpolation method was implemented in
     warpx tool, but not exposed at the command line.
 - Fixed: auto-cropping by threshold was implemented in image pair registration

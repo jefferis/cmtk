@@ -331,9 +331,8 @@ CallbackThreshBelow( const char* argv )
     
     cmtk::TypedArray::SmartPtr data = ImageStack.top()->GetData();
     
-    cmtk::Types::DataItem min, max;
-    data->GetRange( min, max );
-    data->Threshold( threshold, max );
+    const cmtk::Types::DataItemRange range = data->GetRange();
+    data->Threshold( cmtk::Types::DataItemRange( threshold, range.m_UpperBound ) );
     }
 }
     
@@ -346,9 +345,8 @@ CallbackThreshAbove( const char* argv )
     
     cmtk::TypedArray::SmartPtr data = ImageStack.top()->GetData();
     
-    cmtk::Types::DataItem min, max;
-    data->GetRange( min, max );
-    data->Threshold( min, threshold );
+    const cmtk::Types::DataItemRange range = data->GetRange();
+    data->Threshold( cmtk::Types::DataItemRange( range.m_LowerBound, threshold ) );
     }
 }
     

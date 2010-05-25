@@ -80,15 +80,16 @@ public:
   ( const UniformVolume* refVolume, const UniformVolume* fltVolume,
     const unsigned int numBinsX = CMTK_HISTOGRAM_AUTOBINS, 
     const unsigned int numBinsY = CMTK_HISTOGRAM_AUTOBINS,
-    const Types::DataItem minBoundX = -HUGE_VAL, const Types::DataItem maxBoundX = HUGE_VAL,
-    const Types::DataItem minBoundY = -HUGE_VAL, const Types::DataItem maxBoundY = HUGE_VAL );
+    const Types::DataItemRange& boundsX = Types::DataItemRange( -HUGE_VAL, HUGE_VAL ),
+    const Types::DataItemRange& boundsY = Types::DataItemRange( -HUGE_VAL, HUGE_VAL ) );
   
-  unsigned int SetDataX( const UniformVolume* volume, const unsigned int numBins, const Types::DataItem minBound = -HUGE_VAL, const Types::DataItem maxBound = HUGE_VAL );
+  unsigned int SetDataX( const UniformVolume* volume, const unsigned int numBins, const Types::DataItemRange& bounds = Types::DataItemRange( -HUGE_VAL, HUGE_VAL ) );
 
-  unsigned int SetDataY( const UniformVolume* volume, const unsigned int numBins, const Types::DataItem minBound = -HUGE_VAL, const Types::DataItem maxBound = HUGE_VAL );
+  unsigned int SetDataY( const UniformVolume* volume, const unsigned int numBins, const Types::DataItemRange& bounds = Types::DataItemRange( -HUGE_VAL, HUGE_VAL ) );
   
   void SetDataXY( const UniformVolume* volumeX, const unsigned int numBinsX, const UniformVolume* volumeY, const unsigned int numBinsY,
-		  const Types::DataItem minBoundX = -HUGE_VAL, const Types::DataItem maxBoundX = HUGE_VAL, const Types::DataItem minBoundY = -HUGE_VAL, const Types::DataItem maxBoundY = HUGE_VAL );
+		  const Types::DataItemRange& boundsX = Types::DataItemRange( -HUGE_VAL, HUGE_VAL ),
+		  const Types::DataItemRange& boundsY = Types::DataItemRange( -HUGE_VAL, HUGE_VAL ) );
 
   /** Continue incremental calculation by fractional voxel index.
    * For a given pair of reference and floating sample, the computation 

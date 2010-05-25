@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -128,8 +129,8 @@ InverseInterpolationVolumeReconstructionBase
     nbd(i) = nbdAll;
     if ( this->m_NeighorhoodMinPixelValues(i) > this->m_NeighorhoodMaxPixelValues(i) )
       {
-      this->m_NeighorhoodMinPixelValues(i) = this->m_OriginalImageMin;
-      this->m_NeighorhoodMaxPixelValues(i) = this->m_OriginalImageMax;
+      this->m_NeighorhoodMinPixelValues(i) = this->m_OriginalImageRange.m_LowerBound;
+      this->m_NeighorhoodMaxPixelValues(i) = this->m_OriginalImageRange.m_UpperBound;
       }
     }
 

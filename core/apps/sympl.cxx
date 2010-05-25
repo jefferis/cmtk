@@ -346,8 +346,7 @@ WriteAligned
   cmtk::UniformVolume::SmartPtr alignVolume( originalVolume->CloneGrid() );
   alignVolume->SetData( alignData );
 
-  cmtk::Types::DataItem minData, maxData;
-  originalData->GetRange( minData, maxData );
+  const cmtk::Types::DataItem maxData = originalData->GetRange().m_UpperBound;
 
   cmtk::Vector3D v;	
   cmtk::Types::DataItem data;
@@ -458,12 +457,14 @@ main ( const int argc, const char* argv[] )
       cmtk::SmartPointer<cmtk::SymmetryPlaneFunctional> functional( NULL );
       if ( MinValueSet || MaxValueSet ) 
 	{
-	cmtk::Types::DataItem minValue = 0, maxValue = 0;
-	volume->GetData()->GetRange( minValue, maxValue );
+	cmtk::Types::DataItemRange valueRange = volume->GetData()->GetRange();
 	
-	if ( MinValueSet ) minValue = MinValue;
-	if ( MaxValueSet ) maxValue = MaxValue;
-	functional = cmtk::SmartPointer<cmtk::SymmetryPlaneFunctional>( new cmtk::SymmetryPlaneFunctional( volume, minValue, maxValue ) );
+	if ( MinValueSet ) 
+	  valueRange.m_LowerBound = MinValue;
+	if ( MaxValueSet ) 
+	  valueRange.m_UpperBound = MaxValue;
+	
+	functional = cmtk::SmartPointer<cmtk::SymmetryPlaneFunctional>( new cmtk::SymmetryPlaneFunctional( volume, valueRange ) );
 	} 
       else
 	{

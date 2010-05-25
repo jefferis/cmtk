@@ -145,15 +145,9 @@ main( int argc, char *argv[] )
 	
 	if ( dataArray ) 
 	  {
-	  cmtk::Types::DataItem min = 0, max = 0;
-	  if ( dataArray->GetRange( min, max ) ) 
-	    {
-	    fprintf( stdout, "DTYPE\t%s\nMINDATA\t%f\nMAXDATA\t%f\n", cmtk::DataTypeName[ dataArray->GetType() ], static_cast<float>( min ), static_cast<float>( max ) );
-	    } 
-	  else
-	    {
-	    fprintf( stdout, "DTYPE\t%s\nMINDATA\tNAN\nMAXDATA\tNAN\n", cmtk::DataTypeName[ dataArray->GetType() ] );
-	    }
+	  const cmtk::Types::DataItemRange range = dataArray->GetRange();
+	  fprintf( stdout, "DTYPE\t%s\nMINDATA\t%f\nMAXDATA\t%f\n", cmtk::DataTypeName[ dataArray->GetType() ], 
+		   static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
 	  }
 	}
       else
@@ -179,15 +173,13 @@ main( int argc, char *argv[] )
       
 	if ( dataArray ) 
 	  {
-	  cmtk::Types::DataItem min = 0, max = 0;
-	  if ( dataArray->GetRange( min, max ) ) 
-	    {
-	    cmtk::StdOut.printf( "Data type %s, range [%f .. %f]\n", cmtk::DataTypeName[ dataArray->GetType() ], static_cast<float>( min ), static_cast<float>( max ) );
-	    } 
-	  else
-	    {
-	    cmtk::StdOut << "Image does not contain valid data.\n";
-	    }
+	  const cmtk::Types::DataItemRange range = dataArray->GetRange();
+	  cmtk::StdOut.printf( "Data type %s, range [%f .. %f]\n", cmtk::DataTypeName[ dataArray->GetType() ], 
+			       static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
+	  } 
+	else
+	  {
+	  cmtk::StdOut << "Image does not contain valid data.\n";
 	  }
 	}
      

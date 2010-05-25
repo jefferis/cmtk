@@ -245,7 +245,7 @@ public:
 
   /** Scale values in the array to a given target range.
    */
-  virtual void RescaleToRange( const Types::DataItem min, const Types::DataItem max );
+  virtual void RescaleToRange( const Types::DataItemRange& toRange );
 
   /** Apply gamma correction.
    *@param gamma The gamma correction coefficient.
@@ -300,13 +300,13 @@ public:
    * All values above upper threshold are set to upper thrershold. All values
    * below lower threshold are set to lower threshold.
    */
-  virtual void Threshold( const Types::DataItem threshLo, const Types::DataItem threshHi ) = 0;
+  virtual void Threshold( const Types::DataItemRange& range ) = 0;
 
   /** Threshold data.
    * All values outside the threshold range are set to the Padding (padding)
    * value.
    */
-  virtual void ThresholdToPadding( const Types::DataItem threshLo, const Types::DataItem threshHi ) = 0;
+  virtual void ThresholdToPadding( const Types::DataItemRange& range ) = 0;
 
   /** Prune histogram to trim noise.
    * This function trims values on the upper and lower end of the value range by
@@ -464,8 +464,8 @@ public:
   /// Check for padding data or zero at given location.
   virtual bool IsPaddingOrZeroAt( const size_t index ) const = 0;
 
-  /// Calculate minimum and maximum data value.
-  virtual bool GetRange ( Types::DataItem& min, Types::DataItem& max ) const = 0;
+  /// Calculate and return minimum and maximum data value.
+  virtual const Types::DataItemRange GetRange() const = 0;
 
   /// Calculate entropy of distribution of values in this array.
   virtual double GetEntropy( const bool fractional = CMTK_HISTOGRAM_DISCRETE, const int numberOfBins = 128 ) const = 0;

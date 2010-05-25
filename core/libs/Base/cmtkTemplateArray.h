@@ -450,10 +450,10 @@ public:
    * All values above upper threshold are set to upper thrershold. All values
    * below lower threshold are set to lower threshold.
    */
-  virtual void Threshold( const Types::DataItem threshLo, const Types::DataItem threshHi ) 
+  virtual void Threshold( const Types::DataItemRange& range ) 
   {
-    const T lo = TypeTraits::Convert( threshLo );
-    const T hi = TypeTraits::Convert( threshHi );
+    const T lo = TypeTraits::Convert( range.m_LowerBound );
+    const T hi = TypeTraits::Convert( range.m_UpperBound );
 #pragma omp parallel for    
     for ( size_t i = 0; i < this->DataSize; ++i )
       if ( ! PaddingFlag || (Data[i] != Padding ) ) 
@@ -470,10 +470,10 @@ public:
    * All values outside the threshold range are set to the Padding (padding)
    * value.
    */
-  virtual void ThresholdToPadding( const Types::DataItem threshLo, const Types::DataItem threshHi ) 
+  virtual void ThresholdToPadding( const Types::DataItemRange& range ) 
   {
-    const T lo = TypeTraits::Convert( threshLo );
-    const T hi = TypeTraits::Convert( threshHi );
+    const T lo = TypeTraits::Convert( range.m_LowerBound );
+    const T hi = TypeTraits::Convert( range.m_UpperBound );
 #pragma omp parallel for    
     for ( size_t i = 0; i < this->DataSize; ++i )
       if ( ! PaddingFlag || (Data[i] != Padding ) ) 
@@ -642,10 +642,10 @@ public:
   }
 
   /// Calculate minimum and maximum data value.
-  virtual bool GetRange ( Types::DataItem& min, Types::DataItem& max ) const;
+  virtual const Types::DataItemRange GetRange() const;
 
   /// Calculate minimum and maximum data value.
-  virtual bool GetRangeTemplate( T& min, T& max ) const;
+  virtual const Types::Range<T> GetRangeTemplate() const;
 
   /// Calculate entropy of distribution of values in this array.
   virtual double GetEntropy( const bool fractional = CMTK_HISTOGRAM_DISCRETE, const int numberOfBins = 128 ) const;

@@ -50,10 +50,10 @@ ClassStream::operator >> ( JointHistogram<float>*& histogram )
 
   int numBinsY = this->ReadInt( "NumBinsY" );
   histogram = new JointHistogram<float>( numBinsX, numBinsY );
-  histogram->SetRangeX( range[0], range[1] );
+  histogram->SetRangeX( Types::DataItemRange( range[0], range[1] ) );
 
   this->ReadItemArray( "RangeY", range, 2 );
-  histogram->SetRangeY( range[0], range[1] );
+  histogram->SetRangeY( Types::DataItemRange( range[0], range[1] ) );
 
   float *bins = Memory::AllocateArray<float>( numBinsX * numBinsY );
   this->ReadFloatArray( "Bins", bins, numBinsX * numBinsY );
@@ -77,10 +77,10 @@ ClassStream::operator >> ( JointHistogram<int>*& histogram )
 
   int numBinsY = this->ReadInt( "NumBinsY" );
   histogram = new JointHistogram<int>( numBinsX, numBinsY );
-  histogram->SetRangeX( range[0], range[1] );
+  histogram->SetRangeX( Types::DataItemRange( range[0], range[1] ) );
 
   this->ReadItemArray( "RangeY", range, 2 );
-  histogram->SetRangeY( range[0], range[1] );
+  histogram->SetRangeY( Types::DataItemRange( range[0], range[1] ) );
 
   int *bins = Memory::AllocateArray<int>( numBinsX * numBinsY );
   this->ReadIntArray( "Bins", bins, numBinsX * numBinsY );
@@ -101,8 +101,7 @@ ClassStream::operator << ( const JointHistogram<float> *histogram )
   this->Begin( "JointHistogram" );
   this->WriteInt( "NumBinsX", numBinsX);
 
-  Types::DataItem range[2];
-  histogram->GetRangeX( range[0], range[1] );
+  const Types::DataItemRange rangeX = histogram->GetRangeX();
   this->WriteItemArray( "RangeX", range, 2 );
 
   this->WriteInt( "NumBinsY", numBinsY );

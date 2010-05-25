@@ -81,9 +81,8 @@ ReformatVolume::SetReferenceVolume
   this->ReferenceVolume = referenceVolume;
   if ( this->ReferenceVolume && this->ReferenceVolume->GetData() ) 
     {
-    Types::DataItem min, max;
-    this->ReferenceVolume->GetData()->GetRange( min, max );
-    this->MaximumValue = std::max( max, this->MaximumValue );
+    const Types::DataItemRange range = this->ReferenceVolume->GetData()->GetRange();
+    this->MaximumValue = std::max( range.m_UpperBound, this->MaximumValue );
     }			       
 }
 
@@ -94,9 +93,8 @@ ReformatVolume::SetFloatingVolume
   FloatingVolume = floatingVolume;
   if ( FloatingVolume && FloatingVolume->GetData() ) 
     {
-    Types::DataItem min, max;
-    FloatingVolume->GetData()->GetRange( min, max );
-    this->MaximumValue = std::max( max, this->MaximumValue );
+    const Types::DataItemRange range = FloatingVolume->GetData()->GetRange();
+    this->MaximumValue = std::max( range.m_UpperBound, this->MaximumValue );
     }			       
 }
 

@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -102,21 +103,18 @@ Study::UpdateFromVolume()
   const TypedArray *dataArray = this->m_Volume->GetData();
   if ( dataArray ) 
     {
-    if ( dataArray->GetRange( this->m_MinimumValue, this->m_MaximumValue ) )
-      {
-      const Types::DataItem perc01 = dataArray->GetPercentile( 0.01, 1024 );
-      const Types::DataItem perc99 = dataArray->GetPercentile( 0.99, 1024 );
+    const Types::DataItemRange range = dataArray->GetRange();
+    this->m_MinimumValue = range.m_LowerBound;
+    this->m_MaximumValue = range.m_UpperBound;
 
-      this->m_Black = std::min( std::max( this->m_Black, perc01 ), this->m_MaximumValue );
-      this->m_White = std::max( std::min( this->m_White, perc99 ), this->m_MinimumValue );
-      }  
-    else
-      {
-      this->m_Black = this->m_White = this->m_MinimumValue = this->m_MaximumValue = 0.0;
-      }
+    const Types::DataItem perc01 = dataArray->GetPercentile( 0.01, 1024 );
+    const Types::DataItem perc99 = dataArray->GetPercentile( 0.99, 1024 );
+    
+    this->m_Black = std::min( std::max( this->m_Black, perc01 ), this->m_MaximumValue );
+    this->m_White = std::max( std::min( this->m_White, perc99 ), this->m_MinimumValue );
     }
 }
-  
+
 const char*
 Study::SetMakeName( const char* name, const int suffix )
 {
@@ -202,15 +200,13 @@ Study::ReadVolume( const bool reRead, const char* orientation )
       const TypedArray *dataArray = this->m_Volume->GetData();
       if ( dataArray ) 
 	{
-	if ( dataArray->GetRange( this->m_MinimumValue, this->m_MaximumValue ) )
-	  {
-	  this->m_Black = dataArray->GetPercentile( 0.01, 1024 );
-	  this->m_White = dataArray->GetPercentile( 0.99, 1024 );
-	  }
-	else
-	  {
-	  this->m_Black = this->m_White = this->m_MinimumValue = this->m_MaximumValue = 0.0;
-	  }
+	const Types::DataItemRange range = dataArray->GetRange();
+	this->m_MinimumValue = range.m_UpperBound;
+	this->m_MaximumValue = range.m_LowerBound;
+
+	this->m_Black = dataArray->GetPercentile( 0.01, 1024 );
+	this->m_White = dataArray->GetPercentile( 0.99, 1024 );
+
 	this->m_StandardColormap = 0;
 	this->m_ReverseColormap = false;
 	}

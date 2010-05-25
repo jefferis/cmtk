@@ -104,40 +104,35 @@ public:
 
   /** Set data range corresponding to this histogram.
    */
-  void SetRange ( const Types::DataItem rangeFrom, const Types::DataItem rangeTo ) 
+  void SetRange ( const Types::DataItemRange& range ) 
   {
-    this->m_BinsLowerBound = rangeFrom;
-    this->m_BinsUpperBound = rangeTo;
-    this->m_BinWidth = (rangeTo - rangeFrom) / (this->GetNumBins() - 1);
+    this->m_BinsLowerBound = range.m_LowerBound;
+    this->m_BinsUpperBound = range.m_UpperBound;
+    this->m_BinWidth = range.Width() / (this->GetNumBins() - 1);
   }
-
+  
   /** Set data range corresponding to this histogram with upper and lower bound centered in first and last bin.
    */
-  void SetRangeCentered( const Types::DataItem rangeFrom, const Types::DataItem rangeTo ) 
+  void SetRangeCentered( const Types::DataItemRange& range ) 
   {
-    this->m_BinWidth = (rangeTo - rangeFrom) / (this->GetNumBins() - 1);
-    this->m_BinsLowerBound = static_cast<Types::DataItem>( rangeFrom - 0.5 * this->m_BinWidth );
-    this->m_BinsUpperBound = static_cast<Types::DataItem>( rangeTo + 0.5 * this->m_BinWidth );
+    this->m_BinWidth = range.Width() / (this->GetNumBins() - 1);
+    this->m_BinsLowerBound = static_cast<Types::DataItem>( range.m_LowerBound - 0.5 * this->m_BinWidth );
+    this->m_BinsUpperBound = static_cast<Types::DataItem>( range.m_UpperBound + 0.5 * this->m_BinWidth );
   }
 
   /** Get value range of the distribution.
    */
-  void GetRange( Types::DataItem& from, Types::DataItem& to ) const 
+  const Types::DataItemRange GetRange() const 
   {
-    from = this->m_BinsLowerBound;
-    to = this->m_BinsUpperBound;
+    return Types::DataItemRange( this->m_BinsLowerBound, this->m_BinsUpperBound );
   }
 
-  /// Get lower bound of value range.
-  Types::DataItem GetRangeFrom() const
+  /** Get value range of a given bin.
+   */
+  virtual const Types::DataItemRange GetRangeBin( const size_t bin ) const 
   {
-    return this->m_BinsLowerBound;
-  }
-
-  /// Get upper bound of value range.
-  Types::DataItem GetRangeTo() const
-  {
-    return this->m_BinsUpperBound;
+    const Types::DataItem from = this->m_BinsLowerBound + this->m_BinWidth * bin;
+    return Types::DataItemRange( from, from + this->m_BinWidth );
   }
 
   /// Get bin width.
@@ -145,15 +140,7 @@ public:
   {
     return this->m_BinWidth;
   }
-
-  /** Get value range of a given bin.
-   */
-  virtual void GetRangeBin( const size_t bin, Types::DataItem& from, Types::DataItem& to ) const 
-  {
-    from = this->m_BinsLowerBound + this->m_BinWidth * bin;
-    to = from + this->m_BinWidth;
-  }
-
+  
   /** Return bin corresponding to a certain value of the distribution.
    *@param value A value from the distribution.
    *@return The index of the bin corresponding to the given value.

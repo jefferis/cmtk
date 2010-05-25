@@ -51,12 +51,12 @@ SymmetryPlaneFunctional::SymmetryPlaneFunctional
 
 SymmetryPlaneFunctional::SymmetryPlaneFunctional
 ( UniformVolume::SmartPtr& volume, 
-  const Types::DataItem minValue, const Types::DataItem maxValue )
+  const Types::DataItemRange& valueRange )
   : m_Volume( NULL )
 {
   this->SetVolume( volume );
   
-  m_Metric = new VoxelMatchingNormMutInf<>( volume, volume, minValue, maxValue, minValue, maxValue );
+  m_Metric = new VoxelMatchingNormMutInf<>( volume, volume, valueRange, valueRange );
 }
 
 Types::Coordinate 

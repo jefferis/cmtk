@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,7 +37,6 @@
 
 #include <cmtkVolumeIO.h>
 #include <cmtkMountPoints.h>
-#include <cmtkClassStream.h>
 
 #include <cmtkJointHistogram.h>
 #include <cmtkLinearInterpolator.h>
@@ -90,7 +90,6 @@ const char* MaskFileName = NULL;
 
 unsigned int ForceMaxLabel = 0;
 
-const char* HistogramFileName = NULL;
 const char* HistogramTextFileName = NULL;
 
 bool 
@@ -121,7 +120,6 @@ ParseCommandLine( int argc, char* argv[] )
     
     cl.AddOption( Key( "force-max" ), &ForceMaxLabel, "Force maximum label value" );
     
-    cl.AddOption( Key( "histogram-file" ), &HistogramFileName, "Output file name for histogram (typedstream format)." );
     cl.AddOption( Key( "histogram-text-file" ), &HistogramTextFileName, "Output file name for histogram (plain text format)." );
     
     if (!cl.Parse()) return false;
@@ -155,23 +153,19 @@ AnalyseStudies
   cmtk::JointHistogram<int> *histogram = NULL;
   if ( LabelMode ) 
     {
-    cmtk::Types::DataItem min0, max0, min1, max1;
-    data0->GetRange( min0, max0 );
-    data1->GetRange( min1, max1 );
+    const cmtk::Types::DataItemRange range0 = data0->GetRange();
+    const cmtk::Types::DataItemRange range1 = data1->GetRange();
 
-    histogram = new cmtk::JointHistogram<int>( 1+static_cast<size_t>(max0-min0), 1+static_cast<size_t>(max1-min1) );
-    histogram->SetRangeCenteredX( min0, max0 );
-    histogram->SetRangeCenteredY( min1, max1 );
+    histogram = new cmtk::JointHistogram<int>( 1+static_cast<size_t>( range0.Width() ), 1+static_cast<size_t>( range1.Width() ) );
+    histogram->SetRangeCenteredX( range0 );
+    histogram->SetRangeCenteredY( range1 );
     }
   else
     {
     histogram = new cmtk::JointHistogram<int>( 256, 256 );
     
-    cmtk::Types::DataItem min, max;
-    data0->GetRange( min, max );
-    histogram->SetRangeCenteredX( min, max );
-    data1->GetRange( min, max );
-    histogram->SetRangeCenteredY( min, max );
+    histogram->SetRangeCenteredX( data0->GetRange() );
+    histogram->SetRangeCenteredY( data1->GetRange() );
     }
   
   unsigned int recog = 0, subst = 0, reject = 0;
@@ -310,16 +304,6 @@ main ( int argc, char* argv[] )
   
   fprintf( stdout, "SIM\tDIFF\tMSD\tMAD\tNCC\tHXY\tMI\tNMI\nSIMval\t%d\t%.1f\t%.3f\t%.4f\t%.5f\t%.5f\t%.5f\n",
 	   countVoxelsUnequal, sumSq / voxelCount, sumAbs / voxelCount, ccMetric.Get(), hXY, hX + hY - hXY, ( hX + hY ) / hXY );
-  
-  if ( HistogramFileName )
-    {
-    cmtk::ClassStream histogramStream( HistogramFileName, cmtk::ClassStream::WRITE );
-    if ( histogramStream.IsValid() ) 
-      {
-      histogramStream << *histogram;
-      histogramStream.Close();
-      }
-    }
   
   if ( HistogramTextFileName )
     {

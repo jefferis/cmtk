@@ -145,7 +145,7 @@ main( const int argc, const char* argv[] )
   bool firstImage = true;
   cmtk::Types::DataItem refMean, refVariance;
 
-  cmtk::Types::DataItem imagesMinValue = 0, imagesMaxValue = 0;
+  cmtk::Types::DataItemRange imagesValueRange;
 
   std::list<cmtk::TypedArray::SmartPtr> dataList;
 
@@ -197,17 +197,15 @@ main( const int argc, const char* argv[] )
 	}
       }
     
-    cmtk::Types::DataItem dataMin, dataMax;
-    data->GetRange( dataMin, dataMax );
+    const cmtk::Types::DataItemRange dataRange = data->GetRange();
     if ( firstImage )
       {
-      imagesMinValue = dataMin;
-      imagesMaxValue = dataMax;
+      imagesValueRange = dataRange;
       }
     else
       {
-      imagesMinValue = std::min( imagesMinValue, dataMin );
-      imagesMaxValue = std::max( imagesMaxValue, dataMax );
+      imagesValueRange.m_LowerBound = std::min( imagesValueRange.m_LowerBound, dataRange.m_LowerBound );
+      imagesValueRange.m_UpperBound = std::min( imagesValueRange.m_UpperBound, dataRange.m_UpperBound );
       }
     
     dataList.push_back( data );
@@ -215,7 +213,7 @@ main( const int argc, const char* argv[] )
 
   // this is only used in "Entropy" mode, but we'll instantiate it anyway to save time
   cmtk::Histogram<float> histogram( NumberHistogramBins, true /*reset*/ );
-  histogram.SetRange( imagesMinValue, imagesMaxValue );
+  histogram.SetRange( imagesValueRange );
   
   if ( ! outputData ) 
     {

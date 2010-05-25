@@ -102,9 +102,9 @@ public:
   }
 
   /// Get value range of X data (reference data).
-  void GetDataRangeX( Types::DataItem& min, Types::DataItem& max ) const
+  const Types::DataItemRange GetDataRangeX() const
   {
-    this->m_ReferenceData->GetRange( min, max );
+    return this->m_ReferenceData->GetRange();
   }
   
   /// Interpolate a value from the Y distribution (floating image).
@@ -120,9 +120,9 @@ public:
   }
   
   /// Get value range of Y data (floating data).
-  void GetDataRangeY( Types::DataItem& min, Types::DataItem& max ) const
+  const Types::DataItemRange GetDataRangeY() const
   {
-    this->m_FloatingData->GetRange( min, max );
+    return this->m_FloatingData->GetRange();
   }
   
   /// Get scaled floating value if this metric rescales (implemented in derived classes), or input value if it does not (done here as the default).

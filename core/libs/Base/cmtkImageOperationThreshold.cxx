@@ -41,18 +41,17 @@ cmtk::ImageOperationThreshold::Apply( cmtk::UniformVolume::SmartPtr& volume )
     }
   else
     {
-    cmtk::Types::DataItem min, max;
-    volumeData->GetRange( min, max );
+    cmtk::Types::DataItemRange range = volumeData->GetRange();
     
     if ( this->m_Above )
-      max = this->m_Threshold;
+      range.m_UpperBound = this->m_Threshold;
     else
-      min = this->m_Threshold;
+      range.m_LowerBound = this->m_Threshold;
     
     if ( this->m_ToPadding )
-      volumeData->ThresholdToPadding( min, max );
+      volumeData->ThresholdToPadding( range );
     else
-      volumeData->Threshold( min, max );
+      volumeData->Threshold( range );
     }
   
   return volume;

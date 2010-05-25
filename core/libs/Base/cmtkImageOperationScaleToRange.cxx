@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009 SRI International
+//  Copyright 2009-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -38,7 +38,7 @@ cmtk::ImageOperationScaleToRange::New( const char* range )
   double rangeFrom, rangeTo;
   if ( 2 == sscanf( range, "%lf:%lf", &rangeFrom, &rangeTo ) )
     {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationScaleToRange( rangeFrom, rangeTo ) ) );
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationScaleToRange( Types::DataItemRange( rangeFrom, rangeTo ) ) ) );
     }
   else
     {
@@ -50,6 +50,6 @@ cmtk::UniformVolume::SmartPtr
 cmtk::ImageOperationScaleToRange::Apply( cmtk::UniformVolume::SmartPtr& volume )
 {
   cmtk::TypedArray::SmartPtr volumeData = volume->GetData();
-  volumeData->RescaleToRange( this->m_ToRangeFrom, this->m_ToRangeTo );
+  volumeData->RescaleToRange( this->m_ToRange );
   return volume;
 }

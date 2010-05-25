@@ -172,7 +172,7 @@ main( const int argc, const char *argv[] )
       {
       maskImage = cmtk::UniformVolume::SmartPtr( inputImage->Clone( true /*copyData*/ ) );
       maskImage->GetData()->SetPaddingValue( 0.0 );
-      maskImage->GetData()->ThresholdToPadding( ThresholdForegroundMin, ThresholdForegroundMax );
+      maskImage->GetData()->ThresholdToPadding( cmtk::Types::DataItemRange( ThresholdForegroundMin, ThresholdForegroundMax ) );
       }  
     }
 

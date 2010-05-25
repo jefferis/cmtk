@@ -54,18 +54,16 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
     {
     this->m_ConsistencyHistogram = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
     const unsigned int numSamplesX = this->m_Metric->GetNumberOfSamplesX();
-    Types::DataItem fromX, toX;
-    this->m_Metric->GetDataRangeX( fromX, toX );
-    const unsigned int numBinsX = this->m_ConsistencyHistogram->CalcNumBins( numSamplesX, fromX, toX );
+    const Types::DataItemRange rangeX = this->m_Metric->GetDataRangeX();
+    const unsigned int numBinsX = this->m_ConsistencyHistogram->CalcNumBins( numSamplesX, rangeX );
     
     const unsigned int numSamplesY = this->m_Metric->GetNumberOfSamplesY();
-    Types::DataItem fromY, toY;
-    this->m_Metric->GetDataRangeY( fromY, toY );
-    const unsigned int numBinsY = this->m_ConsistencyHistogram->CalcNumBins( numSamplesY, fromY, toY );
+    const Types::DataItemRange rangeY = this->m_Metric->GetDataRangeY();
+    const unsigned int numBinsY = this->m_ConsistencyHistogram->CalcNumBins( numSamplesY, rangeY );
     
     this->m_ConsistencyHistogram->SetNumBins( numBinsX, numBinsY );
-    this->m_ConsistencyHistogram->SetRangeX( fromX, toX );
-    this->m_ConsistencyHistogram->SetRangeY( fromY, toY );
+    this->m_ConsistencyHistogram->SetRangeX( rangeX );
+    this->m_ConsistencyHistogram->SetRangeY( rangeY );
     }
   
   int numCtrlPoints = this->Dim / 3;

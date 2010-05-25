@@ -97,13 +97,12 @@ void
 AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData ) 
 {
   const cmtk::TypedArray* data = volume->GetData();
-  cmtk::Types::DataItem min, max;
-  data->GetRange( min, max );
+  cmtk::Types::DataItemRange range = data->GetRange();
   
   if ( MaskOutputAllUpTo )
-    max = MaskOutputAllUpTo;
+    range.m_UpperBound = MaskOutputAllUpTo;
 
-  const unsigned int numberOfLabels = static_cast<unsigned int>( max + 1 );
+  const unsigned int numberOfLabels = static_cast<unsigned int>( range.m_UpperBound + 1 );
 
   // Number of label voxels.
   std::vector<unsigned int> count( numberOfLabels );
@@ -133,7 +132,7 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
 	if ( data->Get( value, index ) ) 
 	  {
 	  const unsigned int labelIdx = static_cast<unsigned int>( value );
-	  if ( value <= max )
+	  if ( value <= range.m_UpperBound )
 	    {
 	    ++count[labelIdx];
 	    volume->GetGridLocation( v, x, y, z );
@@ -219,16 +218,11 @@ void
 AnalyzeGrey( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData ) 
 {
   const cmtk::TypedArray* data = volume->GetData();
-  cmtk::Types::DataItem min, max;
-  data->GetRange( min, max );  
 
   cmtk::Histogram<unsigned int> histogram( NumberOfHistogramBins );
-  histogram.SetRange( min, max );
+  histogram.SetRange( data->GetRange() );
   
-  cmtk::Types::DataItem maskMin, maskMax;
-  maskData->GetRange( maskMin, maskMax );
-
-  int maxLabel = static_cast<int>( maskMax )+1;
+  int maxLabel = static_cast<int>( maskData->GetRange().m_UpperBound )+1;
   if ( MaskOutputAllUpTo )
     maxLabel = MaskOutputAllUpTo;
     
@@ -298,8 +292,6 @@ void
 AnalyzeGrey( const cmtk::UniformVolume* volume ) 
 {
   const cmtk::TypedArray* data = volume->GetData();
-  cmtk::Types::DataItem min, max;
-  data->GetRange( min, max );  
 
   if ( ! WriteAsColumn )
     fprintf( stdout, "min\tmax\tmean\tsdev\tn\tEntropy\tsum\n" );

@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -152,6 +153,41 @@ const ScalarDataType TYPE_ITEM = TYPE_DOUBLE;
 #define CMTK_ITEM_NAN CMTK_DOUBLE_NAN
 #endif // #ifdef CMTK_DATA_FLOAT
 
+namespace Types
+{
+
+/// Range of DataItem values specified as lower and upper bound.
+template<class T>
+class Range
+{
+public:
+  /// Default constructor: do nothing at all.
+  Range() {}
+
+  /// Constructor.
+  Range( const T& lowerBound, const T& upperBound ) : m_LowerBound( lowerBound ), m_UpperBound( upperBound ) {}
+
+  /// Conversion constructor.
+  template<class T2>
+  explicit Range( const Range<T2>& range ) : m_LowerBound( range.m_LowerBound ), m_UpperBound( range.m_UpperBound ) {}
+
+  /// Compute "width" of range, i.e., upper minus lower bound.
+  T Width() const
+  {
+    return this->m_UpperBound - this->m_LowerBound;
+  }
+
+  /// Lower bound.
+  T m_LowerBound;
+
+  /// Upper bound.
+  T m_UpperBound;
+};
+
+/// Convenience declaration: range of DataItem values.
+typedef Range<DataItem> DataItemRange;
+
+}
 
 #ifdef CMTK_COORDINATES_FLOAT
 /** @memo Definition of the coordinate data type

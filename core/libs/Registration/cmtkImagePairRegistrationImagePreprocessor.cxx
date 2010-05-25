@@ -105,7 +105,7 @@ ImagePairRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume
 
   if ( this->m_LowerThresholdActive || this->m_UpperThresholdActive )
     {
-    data->Threshold( this->m_LowerThresholdValue, this->m_UpperThresholdValue );
+    data->Threshold( Types::DataItemRange( this->m_LowerThresholdValue, this->m_UpperThresholdValue ) );
     }
 
   if ( this->m_PruneHistogramBins )

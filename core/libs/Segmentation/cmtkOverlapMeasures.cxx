@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -50,11 +51,10 @@ OverlapMeasures::OverlapMeasures( const std::vector<TypedArray::SmartPtr>& dataA
   this->m_MaxLabelValue = 0;
   for ( size_t i = 0; i < this->m_DataArrays.size(); ++i )
     {
-    Types::DataItem min, max;
-    this->m_DataArrays[i]->GetRange( min, max );
-    this->m_MaxLabelValue = std::max<unsigned int>( this->m_MaxLabelValue, static_cast<unsigned int>( max ) );
+    const Types::DataItemRange range = this->m_DataArrays[i]->GetRange();
+    this->m_MaxLabelValue = std::max<unsigned int>( this->m_MaxLabelValue, static_cast<unsigned int>( range.m_UpperBound ) );
     }
-
+  
   // set size limits
   this->m_NumberOfImages = this->m_DataArrays.size();
 

@@ -46,7 +46,7 @@ class ImageOperationScaleToRange
 {
 public:
   /// Constructor.
-  ImageOperationScaleToRange( const double toRangeFrom, const double toRangeTo ) : m_ToRangeFrom( toRangeFrom ), m_ToRangeTo( toRangeTo ) {}
+  ImageOperationScaleToRange( const Types::DataItemRange& toRange ) : m_ToRange( toRange ) {}
   
   /// Apply this operation to an image in place.
   virtual cmtk::UniformVolume::SmartPtr Apply( cmtk::UniformVolume::SmartPtr& volume );
@@ -56,10 +56,7 @@ public:
   
 private:
   /// Start of range we're scaling to.
-  double m_ToRangeFrom;
-
-  /// End of range we're scaling to.
-  double m_ToRangeTo;
+  Types::DataItemRange m_ToRange;
 };
 
 } // namespace cmtk

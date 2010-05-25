@@ -129,13 +129,13 @@ void
 VolumeInjectionReconstruction
 ::SetupHistogramKernels( const TypedArray* originalData )
 {
-  originalData->GetRange( this->m_OriginalImageMin, this->m_OriginalImageMax );
-  this->m_CorrectedImageHistogram->SetRange( this->m_OriginalImageMin, this->m_OriginalImageMax );
-  this->m_OriginalImageHistogram->SetRange( this->m_OriginalImageMin, this->m_OriginalImageMax );
+  this->m_OriginalImageRange = originalData->GetRange();
+  this->m_CorrectedImageHistogram->SetRange( this->m_OriginalImageRange );
+  this->m_OriginalImageHistogram->SetRange( this->m_OriginalImageRange );
   originalData->GetEntropy( *this->m_OriginalImageHistogram, true /*fractional*/ );
   
   const HistogramType::BinType noiseSigma = TypedArrayNoiseEstimatorNaiveGaussian( originalData, Self::NumberOfHistogramBins ).GetNoiseLevelSigma();
-  const HistogramType::BinType kernelSigma = Self::NumberOfHistogramBins * noiseSigma / (this->m_OriginalImageMax-this->m_OriginalImageMin);
+  const HistogramType::BinType kernelSigma = Self::NumberOfHistogramBins * noiseSigma / this->m_OriginalImageRange.Width();
   size_t kernelRadius = static_cast<size_t>( 1 + 2 * kernelSigma );
 
   // We now make sure kernel radius is large enough to cover any gaps in the original image histogram.
@@ -226,8 +226,8 @@ VolumeInjectionReconstruction
   this->m_NeighorhoodMinPixelValues.setbounds( 1, correctedImageNumPixels );
   for ( size_t i = 1; i <= correctedImageNumPixels; ++i )
     {
-    this->m_NeighorhoodMaxPixelValues(i) = this->m_OriginalImageMin;
-    this->m_NeighorhoodMinPixelValues(i) = this->m_OriginalImageMax;
+    this->m_NeighorhoodMaxPixelValues(i) = this->m_OriginalImageRange.m_LowerBound;
+    this->m_NeighorhoodMinPixelValues(i) = this->m_OriginalImageRange.m_UpperBound;
     }
 
   Progress::Begin( 0, correctedImageNumPixels, 1e5, "Anisotropic Volume Injection" );
@@ -326,8 +326,8 @@ VolumeInjectionReconstruction
   this->m_NeighorhoodMinPixelValues.setbounds( 1, correctedImageNumPixels );
   for ( size_t i = 1; i <= correctedImageNumPixels; ++i )
     {
-    this->m_NeighorhoodMaxPixelValues(i) = this->m_OriginalImageMin;
-    this->m_NeighorhoodMinPixelValues(i) = this->m_OriginalImageMax;
+    this->m_NeighorhoodMaxPixelValues(i) = this->m_OriginalImageRange.m_LowerBound;
+    this->m_NeighorhoodMinPixelValues(i) = this->m_OriginalImageRange.m_UpperBound;
     }
 
   const int kernelRadiusIndex[3] = 

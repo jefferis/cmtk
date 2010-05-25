@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -42,10 +43,9 @@ cmtk::TypedArrayFunctionHistogramEqualization
   (*this->m_Histogram)[0] = 0; // this effectively stretches the distribution
   this->m_Histogram->ConvertToCumulative();
 
-  Types::DataItem min, max;
-  variableArray.GetRange( min, max );
-  this->m_MinValue = min;
-  this->m_ScaleFactor = 1.0 * (max-min) / (*this->m_Histogram)[numberOfHistogramBins-1];
+  const Types::DataItemRange range = variableArray.GetRange();
+  this->m_MinValue = range.m_LowerBound;
+  this->m_ScaleFactor = 1.0 * range.Width() / (*this->m_Histogram)[numberOfHistogramBins-1];
 }
 
 cmtk::Types::DataItem 

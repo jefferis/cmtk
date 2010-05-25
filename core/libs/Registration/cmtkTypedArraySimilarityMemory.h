@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -73,14 +74,14 @@ public:
    * If this object is not yet initialized, the given array is queried for
    * its value range, and this object is initialized accordingly.
    */
-  void GetRangeX( const TypedArray* array, const size_t numBins, Types::DataItem& min, Types::DataItem& max );
+  const Types::DataItemRange GetRangeX( const TypedArray* array, const size_t numBins );
 
   /** Get range of Y distribution.
    * If this object is not yet initialized, the given array is queried for
    * its value range, and this object is initialized accordingly.
    */
-  void GetRangeY( const TypedArray* array, const size_t numBins, Types::DataItem& min, Types::DataItem& max );
-
+  const Types::DataItemRange GetRangeY( const TypedArray* array, const size_t numBins );
+  
   /// Set minimum number of histogram bins.
   void SetMinNumBins( const size_t minNumBins ) { MinNumBins = minNumBins; }
 
@@ -88,7 +89,7 @@ public:
   void SetMaxNumBins( const size_t maxNumBins ) { MaxNumBins = maxNumBins; }
 
   /// Create histogram based on memorized settings.
-  JointHistogram<unsigned int>* CreateHistogram( const TypedArray* array0, const TypedArray* array1 );
+  JointHistogram<unsigned int>::SmartPtr CreateHistogram( const TypedArray* array0, const TypedArray* array1 );
 
 private:
   /// Repeat range check with each call to GetRangeX and GetRangeY.
@@ -97,11 +98,8 @@ private:
   /// Flag whether memory for X distribution is already initialized.
   bool ValidX;
 
-  /// Remembered minimum X value.
-  Types::DataItem RangeMinX;
-
-  /// Remembered maximum X value.
-  Types::DataItem RangeMaxX;
+  /// Remembered range of X values.
+  Types::DataItemRange RangeX;
 
   /// Remembered number of bins for the X distribution.
   size_t NumberBinsX;
@@ -109,11 +107,8 @@ private:
   /// Flag whether memory for X distribution is already initialized.
   bool ValidY;
 
-  /// Remembered minimum Y value.
-  Types::DataItem RangeMinY;
-
-  /// Remembered maximum Y value.
-  Types::DataItem RangeMaxY;
+  /// Remembered range of Y values.
+  Types::DataItemRange RangeY;
 
   /// Remembered number of bins for the Y distribution.
   size_t NumberBinsY;

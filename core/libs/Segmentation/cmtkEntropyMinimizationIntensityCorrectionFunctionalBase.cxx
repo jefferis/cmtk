@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,10 +48,9 @@ EntropyMinimizationIntensityCorrectionFunctionalBase
   this->m_InputImage = inputImage;
   this->m_NumberOfPixels = this->m_InputImage->GetNumberOfPixels();
   
-  Types::DataItem min, max;
-  this->m_InputImage->GetData()->GetRange( min, max );
-  this->m_InputImageRange = max-min;
-
+  const Types::DataItemRange range = this->m_InputImage->GetData()->GetRange();
+  this->m_InputImageRange = range.Width();
+  
   if ( this->m_UseLogIntensities )
     {
     this->m_EntropyHistogram = HistogramType::SmartPtr( new LogHistogramType( this->m_NumberOfHistogramBins ) );
@@ -60,11 +60,11 @@ EntropyMinimizationIntensityCorrectionFunctionalBase
     this->m_EntropyHistogram = HistogramType::SmartPtr( new HistogramType( this->m_NumberOfHistogramBins ) );
     }
   // extend value range to accomodate corrected intensities without overflows
-  this->m_EntropyHistogram->SetRange( min - this->m_InputImageRange, max + this->m_InputImageRange );
-
+  this->m_EntropyHistogram->SetRange( Types::DataItemRange( range.m_LowerBound - this->m_InputImageRange, range.m_UpperBound + this->m_InputImageRange ) );
+  
   if ( this->m_ForegroundMask.size() )
     this->UpdateCorrectionFactors();
-
+  
   this->m_BiasFieldAdd = FloatArray::SmartPtr( new FloatArray( this->m_NumberOfPixels ) );
   this->m_BiasFieldAdd->Fill( 0.0 );
   this->m_BiasFieldMul = FloatArray::SmartPtr( new FloatArray( this->m_NumberOfPixels ) );

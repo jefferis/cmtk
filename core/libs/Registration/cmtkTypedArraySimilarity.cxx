@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -63,11 +64,8 @@ TypedArraySimilarity::GetMutualInformation
     
     histogram = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>( numBins, numBins ) );
     
-    Types::DataItem minX, maxX, minY, maxY;
-    array0->GetRange( minX, maxX );
-    array1->GetRange( minY, maxY );
-    histogram->SetRangeX( minX, maxX );
-    histogram->SetRangeY( minY, maxY );
+    histogram->SetRangeX( array0->GetRange() );
+    histogram->SetRangeY( array1->GetRange() );
     }
 
   Types::DataItem value0, value1;
@@ -90,8 +88,7 @@ TypedArraySimilarity::GetCorrelationRatio
   if ( ! CheckArrayDimensions( array0, array1 ) ) return MathUtil::GetFloatNaN();
 
   // determine reference image value range.
-  Types::DataItem min, max;
-  array0->GetRange( min, max );
+  const Types::DataItemRange range = array0->GetRange();
 
   // get pixel count and determine histogram size.
   const unsigned int dataSize = array0->GetDataSize();
@@ -101,14 +98,14 @@ TypedArraySimilarity::GetCorrelationRatio
   // discrete data types.
   if ( (array0->GetType() != TYPE_FLOAT) && (array0->GetType() != TYPE_DOUBLE) ) 
     {
-    numBins = std::min( numBins, static_cast<unsigned int>(max-min+1) );
+    numBins = std::min( numBins, static_cast<unsigned int>(range.Width()+1) );
     }
   
   // create histogram to count floating pixels in each reference class
   Histogram<unsigned int> histogram( numBins );
 
   // set value range for histogram to range of reference image.
-  histogram.SetRange( min, max );
+  histogram.SetRange( range );
 
   // initialize arrays that hold the sums of all floating values and their
   // squares, separated by histogram classes of the reference image.
@@ -182,11 +179,8 @@ TypedArraySimilarity::GetNormalizedMutualInformation
     size_t numBins = std::max<unsigned>( std::min<unsigned>( static_cast<unsigned>( sqrt( (float)dataSize ) ), 128 ), 8 );
     
     histogram = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>( numBins, numBins ) );
-    Types::DataItem minX, maxX, minY, maxY;
-    array0->GetRange( minX, maxX );
-    array1->GetRange( minY, maxY );
-    histogram->SetRangeX( minX, maxX );
-    histogram->SetRangeY( minY, maxY );
+    histogram->SetRangeX( array0->GetRange() );
+    histogram->SetRangeY( array1->GetRange() );
     }
   
   Types::DataItem value0, value1;
@@ -231,9 +225,7 @@ TypedArraySimilarity::ReturnType
 TypedArraySimilarity::GetPeakSignalToNoiseRatio
 ( const TypedArray* data, const TypedArray* signal )
 {
-  Types::DataItem minSignal, maxSignal;
-  signal->GetRange( minSignal, maxSignal );
-  return -10.0 * log( -GetMinusMeanSquaredDifference( data, signal ) / (maxSignal-minSignal) ) / log( 10.0 );
+  return -10.0 * log( -GetMinusMeanSquaredDifference( data, signal ) / signal->GetRange().Width() ) / log( 10.0 );
 }
 
 TypedArraySimilarity::ReturnType 

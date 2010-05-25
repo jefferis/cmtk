@@ -33,10 +33,10 @@
 
 size_t
 cmtk::JointHistogramBase::CalcNumBins
-( const size_t numberOfSamples, const Types::DataItem dataFrom, const Types::DataItem dataTo ) 
+( const size_t numberOfSamples, const Types::DataItemRange& valueRange ) 
 {
   const size_t side = static_cast<size_t>( sqrt( static_cast<float>( numberOfSamples )) );
-  const size_t dataRange = static_cast<size_t>( dataTo - dataFrom + 1 );
+  const size_t dataRange = static_cast<size_t>( valueRange.Width() + 1 );
   const int upperLimit = std::min<size_t>( std::min<size_t>( dataRange, 128), side );
   return std::max<size_t>( 8, upperLimit );
 }
@@ -44,7 +44,5 @@ cmtk::JointHistogramBase::CalcNumBins
 size_t 
 cmtk::JointHistogramBase::CalcNumBins ( const UniformVolume* volume ) 
 {
-  Types::DataItem min, max;
-  volume->GetData()->GetRange( min, max );
-  return Self::CalcNumBins( volume->GetCropRegionNumVoxels(), min, max ) ;
+  return Self::CalcNumBins( volume->GetCropRegionNumVoxels(), volume->GetData()->GetRange() ) ;
 }

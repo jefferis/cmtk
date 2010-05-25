@@ -54,10 +54,7 @@ TemplateArray<T>
   if ( fractional ) 
     {
     Histogram<double> histogram( numberOfBins );
-    
-    Types::DataItem min, max;
-    this->GetRange( min, max );
-    histogram.SetRange( min, max );
+    histogram.SetRange( this->GetRange() );
     
     for ( size_t idx = 0; idx < DataSize; ++idx )
       if ( !PaddingFlag || (Data[idx] != Padding) )
@@ -67,10 +64,7 @@ TemplateArray<T>
   else 
     {
     Histogram<unsigned int> histogram( numberOfBins );
-    
-    Types::DataItem min, max;
-    this->GetRange( min, max );
-    histogram.SetRange( min, max );
+    histogram.SetRange( this->GetRange() );
     
     for ( size_t idx = 0; idx < DataSize; ++idx )
       if ( !PaddingFlag || (Data[idx] != Padding) )
@@ -123,25 +117,22 @@ TemplateArray<T>
   return histogram.GetEntropy();
 }
 
-template<class T> bool
+template<class T>
+const Types::DataItemRange
 TemplateArray<T>
-::GetRange ( Types::DataItem& min, Types::DataItem& max ) const 
+::GetRange() const 
 {
-  T minT = 0, maxT = 0;
-  if ( this->GetRangeTemplate( minT, maxT ) ) 
-    {
-    min = static_cast<Types::DataItem>( minT );
-    max = static_cast<Types::DataItem>( maxT );
-    return true;
-    }
-  return false;
+  return Types::DataItemRange( this->GetRangeTemplate() );
 }
 
-template<class T> bool
+template<class T> 
+const Types::Range<T>
 TemplateArray<T>
-::GetRangeTemplate( T& min, T& max ) 
+::GetRangeTemplate() 
   const 
 {
+  Types::Range<T> range( 0, 0 );
+  
   // find first finite and non-Padding element
   size_t idx = 0;
   if ( PaddingFlag )
@@ -156,38 +147,40 @@ TemplateArray<T>
     }
   
   // didn't find any? return with error flag.
-  if ( !(idx < DataSize) ) 
+  if ( idx < DataSize) 
     {
-    return false;
-    }
+    // otherwise: search for min/max from here
+    range.m_LowerBound = range.m_UpperBound = Data[idx];
 
-  // otherwise: search for min/max from here
-  min = Data[idx];
-  max = min;
-
-  if ( PaddingFlag ) 
-    {
-    for ( ; idx < DataSize; ++idx ) 
+    if ( PaddingFlag ) 
       {
-      if ( (Data[idx] != Padding) && finite(Data[idx]) ) 
+      for ( ; idx < DataSize; ++idx ) 
 	{
-	if (Data[idx] > max) max = Data[idx];
-	if (Data[idx] < min) min = Data[idx];
+	if ( (Data[idx] != Padding) && finite(Data[idx]) ) 
+	  {
+	  if (Data[idx] > range.m_UpperBound) 
+	    range.m_UpperBound = Data[idx];
+	  if (Data[idx] < range.m_LowerBound) 
+	    range.m_LowerBound = Data[idx];
+	  }
+	}
+      } 
+    else
+      {
+      for ( ; idx < DataSize; ++idx ) 
+	{
+	if ( finite(Data[idx]) )
+	  {
+	  if (Data[idx] > range.m_UpperBound) 
+	    range.m_UpperBound = Data[idx];
+	  if (Data[idx] < range.m_LowerBound) 
+	    range.m_LowerBound = Data[idx];
+	  }
 	}
       }
-    } 
-  else
-    {
-    for ( ; idx < DataSize; ++idx ) 
-      {
-      if ( finite(Data[idx]) )
-	{
-	if (Data[idx] > max) max = Data[idx];
-	if (Data[idx] < min) min = Data[idx];
-	}
-      }
     }
-  return true;
+
+  return range;
 }
 
 /**\todo This should somehow preserve PaddingFlag and Padding of the original 
@@ -220,19 +213,18 @@ TemplateArray<T>
 {
   if ( gamma > 0 ) 
     {
-    T min, max;
-    this->GetRangeTemplate( min, max );
+    Types::Range<T> range = this->GetRangeTemplate();
     
-    T range = max - min;
-    const double scale = 1.0 / range;
-
+    const T diff = range.m_UpperBound - range.m_LowerBound;
+    const double scale = 1.0 / diff;
+    
 #pragma omp parallel for if (DataSize>1e5)
     for ( size_t i = 0; i < DataSize; ++i )
       if ( ! PaddingFlag || (Data[i] != Padding ) ) 
 	{
-	if ( Data[i] > min ) 
+	if ( Data[i] > range.m_LowerBound ) 
 	  {
-	  Data[i] = min + TypeTraits::Convert( range * exp( log( scale * (Data[i]-min) ) / gamma ) );
+	  Data[i] = range.m_LowerBound + TypeTraits::Convert( diff * exp( log( scale * (Data[i]-range.m_LowerBound) ) / gamma ) );
 	  }
 	}
     }

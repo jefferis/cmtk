@@ -384,11 +384,6 @@ main ( const int argc, const char* argv[] )
       }
     }
   
-  cmtk::Types::DataItem min, max;
-  averageArray->GetRange( min, max );
-  //  cmtk::Types::DataItem factor = 255.0 / (max-min);
-  //  averageArray->Rescale( factor, -min / factor, 0, 255 );
-
   cmtk::TypedArray::SmartPtr outputData( averageArray->Convert( DataType ) );
   referenceVolume->SetData( outputData );
   

@@ -144,17 +144,16 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 {
   this->m_UpdateTransformationFixedControlPointsRequired = false;
 
-  std::vector<Types::DataItem> minValue( this->m_NumberOfChannels );
-  std::vector<Types::DataItem> maxValue( this->m_NumberOfChannels );
+  std::vector<Types::DataItemRange> valueRange( this->m_NumberOfChannels );
 
   size_t channel = 0;
   for ( size_t ref = 0; ref < this->m_ReferenceChannels.size(); ++ref, ++channel )
     {
-    this->m_ReferenceChannels[ref]->GetData()->GetRange( minValue[channel], maxValue[channel] );
+    valueRange[channel] = this->m_ReferenceChannels[ref]->GetData()->GetRange();
     }
   for ( size_t flt = 0; flt < this->m_FloatingChannels.size(); ++flt, ++channel )
     {
-    this->m_FloatingChannels[flt]->GetData()->GetRange( minValue[channel], maxValue[channel] );
+    valueRange[channel] = this->m_FloatingChannels[flt]->GetData()->GetRange();
     }
   
   const size_t numberOfControlPoints = this->m_Transformation.VariableParamVectorDim() / 3;
@@ -186,7 +185,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 	
 	for ( size_t channel = 0; channel < this->m_NumberOfChannels; ++channel )
 	  {
-	  histogram.SetRange( minValue[channel], maxValue[channel] );
+	  histogram.SetRange( valueRange[channel] );
 	  
 	  size_t r = region.From()[0] + this->m_ReferenceDims[0] * ( region.From()[1] + this->m_ReferenceDims[1] * region.From()[2] );
 	  const int endOfLine = ( region.From()[0] + ( this->m_ReferenceDims[0]-region.To()[0]) );
@@ -258,9 +257,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
       // scale min values with threshold factor
       for ( size_t channel = 0; channel < this->m_NumberOfChannels; ++channel )
 	{
-//	fprintf( stderr, "%3d\t%10f\t%10f\t", channel, minValue[channel], maxValue[channel] );
-	minValue[channel] = minValue[channel] + (maxValue[channel] - minValue[channel]) * this->m_AdaptiveFixThreshFactor;
-//	fprintf( stderr, "%10f\n", minValue[channel] );
+	valueRange[channel].m_LowerBound = valueRange[channel].m_LowerBound + valueRange[channel].Width() * this->m_AdaptiveFixThreshFactor;
 	}
       
       for ( size_t cp = 0; cp < numberOfControlPoints; ++cp ) 
@@ -286,7 +283,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 		for ( int pX = region.From()[0]; pX<region.To()[0]; ++pX, ++r ) 
 		  {
 		  Types::DataItem refValue;
-		  if ( refChannel->Get( refValue, r ) && (refValue > minValue[channel] ) )
+		  if ( refChannel->Get( refValue, r ) && (refValue > valueRange[channel].m_LowerBound ) )
 		    {
 		    /* found pixel over threshold; set flag and terminate loops */
 		    active[cp] = true;
@@ -306,7 +303,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
 		for ( int pX = region.From()[0]; pX<region.To()[0]; ++pX, ++r ) 
 		  {
 		  const float fltValue = fltChannel[r];
-		  if ( finite( fltValue ) && (fltValue > minValue[channel]) )
+		  if ( finite( fltValue ) && (fltValue > valueRange[channel].m_LowerBound) )
 		    {
 		    /* found pixel over threshold; set flag and terminate loops */
 		    active[cp] = true;

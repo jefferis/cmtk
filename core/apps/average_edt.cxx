@@ -728,7 +728,7 @@ AddVolumeFile
 
     if ( ScaleIntensitiesToLabels )
       {
-      nextVolume->GetData()->RescaleToRange( 0, NumberOfLabels-1 );
+      nextVolume->GetData()->RescaleToRange( cmtk::Types::DataItemRange( 0, NumberOfLabels-1 ) );
       }
     
     if ( nextVolume->GetData()->GetType() != cmtk::TYPE_BYTE )
@@ -787,7 +787,7 @@ AddVolumeStudyList
 
   if ( ScaleIntensitiesToLabels )
     {
-    floatingVolume->GetData()->RescaleToRange( 0, NumberOfLabels-1);
+    floatingVolume->GetData()->RescaleToRange( cmtk::Types::DataItemRange( 0, NumberOfLabels-1) );
     }
 
   if ( DownsampleVolumeStr )
@@ -883,7 +883,7 @@ AddVolumeStudyList
 
   if ( ScaleIntensitiesToLabels )
     {
-    dataVolume->GetData()->RescaleToRange( 0, NumberOfLabels-1 );
+    dataVolume->GetData()->RescaleToRange( cmtk::Types::DataItemRange( 0, NumberOfLabels-1 ) );
     }
 
   if ( dataVolume->GetData()->GetType() != cmtk::TYPE_BYTE )

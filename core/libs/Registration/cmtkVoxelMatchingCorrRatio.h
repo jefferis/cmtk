@@ -78,17 +78,14 @@ public:
       NumBinsY = std::max<unsigned>( std::min<unsigned>( fltVolume->GetNumberOfPixels(), 128 ), 8 );
     HistogramJ.Resize( NumBinsY );
 
-    Types::DataItem from, to;
-    refVolume->GetData()->GetRange( from, to );
-    HistogramI.SetRange( from, to );
+    HistogramI.SetRange( refVolume->GetData()->GetRange() );
 
     SumJ.resize( NumBinsX );
     SumJ2.resize( NumBinsX );
     
     fltVolume->GetData()->GetStatistics( MuJ, SigmaSqJ );
 
-    fltVolume->GetData()->GetRange( from, to );
-    HistogramJ.SetRange( from, to );
+    HistogramJ.SetRange( fltVolume->GetData()->GetRange() );
 
     SumI.resize( NumBinsY );
     SumI2.resize( NumBinsY );

@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -117,12 +118,11 @@ int main ( const int argc, const char* argv[] )
   if ( AdjustAspect ) 
     mip->AdjustAspect();
   
-  cmtk::Types::DataItem min, max;
-  mip->GetPixelData()->GetRange( min, max );
+  const cmtk::Types::DataItemRange range = mip->GetPixelData()->GetRange();
   if ( isnan( Black ) )
-    Black = min;
+    Black = range.m_LowerBound;
   if ( isnan( White ) )
-    White = max;
+    White = range.m_UpperBound;
 
   if ( Write16Bit )
     cmtk::PGM::Write16bit( OutFileName, mip, Black, White );

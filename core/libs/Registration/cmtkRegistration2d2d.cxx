@@ -107,8 +107,6 @@ Registration2d2d::Register
   static int cnt = 0;
   char fname[12];
   snprintf( fname, sizeof( fname ), "fin%03d.pgm", cnt++ );
-  Types::DataItem min, max;
-  finalImage->GetPixelData()->GetRange( min, max );
   PGM::Write16bit( fname, finalImage );
 }
 

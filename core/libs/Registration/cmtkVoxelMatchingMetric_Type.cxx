@@ -51,8 +51,7 @@ VoxelMatchingMetric_Type<T,DT>::ImageData::Init
   Data = static_cast<T*>( DataArray->GetDataPtr() );
   NumberOfSamples = this->DataArray->GetDataSize();
 
-  DataArray->GetRange( ValueRange[0], ValueRange[1] );
-  BinOffset = ValueRange[0];
+  BinOffset = DataArray->GetRange().m_LowerBound;
   BinWidth = 1;
 
   if ( srcArray->GetPaddingFlag() )
@@ -68,11 +67,11 @@ VoxelMatchingMetric_Type<T,DT>::ImageData::Init
 template<class T,ScalarDataType DT>
 size_t
 VoxelMatchingMetric_Type<T,DT>::ImageData::Init
-( const UniformVolume* volume, const size_t defNumBins, const Types::DataItem minBound, const Types::DataItem maxBound )
+( const UniformVolume* volume, const size_t defNumBins, const Types::DataItemRange& bounds )
 {
   const TypedArray* data = volume->GetData();
   this->AllocDataArray( data );
-
+  
   Types::DataItem value = 0, minValue = FLT_MAX, maxValue = -FLT_MAX;
 
   const DataGrid::IndexType cropFrom = volume->CropRegion().From();
@@ -95,8 +94,8 @@ VoxelMatchingMetric_Type<T,DT>::ImageData::Init
       }
     }
   
-  minValue = std::max( minValue, minBound );
-  maxValue = std::min( maxValue, maxBound );
+  minValue = std::max( minValue, bounds.m_LowerBound );
+  maxValue = std::min( maxValue, bounds.m_UpperBound );
   
   unsigned int defaultValue = 0;
   unsigned int numBins = defNumBins;
