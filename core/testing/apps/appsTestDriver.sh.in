@@ -1303,20 +1303,20 @@ case ${RUNTEST} in
 	check_results sequence.txt
 	;;
     similarityGrey)
-	run_eval "${BINDIR}/similarity --histogram-file ${tmpdir}/histogram --histogram-text-file ${tmpdir}/histogram.txt rat_fse_erly.hdr rat_fse_late.hdr > ${tmpdir}/similarity.txt"
-	check_results histogram histogram.txt similarity.txt
+	run_eval "${BINDIR}/similarity --histogram-text-file ${tmpdir}/histogram.txt rat_fse_erly.hdr rat_fse_late.hdr > ${tmpdir}/similarity.txt"
+	check_results histogram.txt similarity.txt
 	;;
     similarityLabels)
-	run_eval "${BINDIR}/similarity --labels --histogram-file ${tmpdir}/histogram --histogram-text-file ${tmpdir}/histogram.txt parc1.hdr parc2.hdr > ${tmpdir}/similarity.txt"
-	check_results histogram histogram.txt similarity.txt
+	run_eval "${BINDIR}/similarity --labels --histogram-text-file ${tmpdir}/histogram.txt parc1.hdr parc2.hdr > ${tmpdir}/similarity.txt"
+	check_results histogram.txt similarity.txt
 	;;
     similarityGreyMask)
-	run_eval "${BINDIR}/similarity --mask rat_fse_erly.hdr --histogram-file ${tmpdir}/histogram --histogram-text-file ${tmpdir}/histogram.txt rat_fse_erly.hdr rat_fse_late.hdr > ${tmpdir}/similarity.txt"
-	check_results histogram histogram.txt similarity.txt
+	run_eval "${BINDIR}/similarity --mask rat_fse_erly.hdr --histogram-text-file ${tmpdir}/histogram.txt rat_fse_erly.hdr rat_fse_late.hdr > ${tmpdir}/similarity.txt"
+	check_results histogram.txt similarity.txt
 	;;
     similarityLabelsMask)
-	run_eval "${BINDIR}/similarity --mask parc3_bin.hdr --labels --histogram-file ${tmpdir}/histogram --histogram-text-file ${tmpdir}/histogram.txt parc1.hdr parc2.hdr > ${tmpdir}/similarity.txt"
-	check_results histogram histogram.txt similarity.txt
+	run_eval "${BINDIR}/similarity --mask parc3_bin.hdr --labels --histogram-text-file ${tmpdir}/histogram.txt parc1.hdr parc2.hdr > ${tmpdir}/similarity.txt"
+	check_results histogram.txt similarity.txt
 	;;
     splitAxial)
 	run split --output-xform-path ${tmpdir}/split_ax_%1d.xform --axial spgr_3t.hdr ${tmpdir}/split_ax_%1d.hdr
