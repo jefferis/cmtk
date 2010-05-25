@@ -32,6 +32,8 @@
 
 #include <cmtkTypedArrayFunctionHistogramMatching.h>
 
+#include <vector>
+
 template<class VM>
 void
 cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::MatchRefFltIntensities()
@@ -51,15 +53,15 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
   if ( !this->m_ConsistencyHistogram ) 
     {
     this->m_ConsistencyHistogram = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
-    unsigned int numSamplesX = this->m_Metric->GetNumberOfSamplesX();
+    const unsigned int numSamplesX = this->m_Metric->GetNumberOfSamplesX();
     Types::DataItem fromX, toX;
     this->m_Metric->GetDataRangeX( fromX, toX );
-    unsigned int numBinsX = this->m_ConsistencyHistogram->CalcNumBins( numSamplesX, fromX, toX );
+    const unsigned int numBinsX = this->m_ConsistencyHistogram->CalcNumBins( numSamplesX, fromX, toX );
     
-    unsigned int numSamplesY = this->m_Metric->GetNumberOfSamplesY();
+    const unsigned int numSamplesY = this->m_Metric->GetNumberOfSamplesY();
     Types::DataItem fromY, toY;
     this->m_Metric->GetDataRangeY( fromY, toY );
-    unsigned int numBinsY = this->m_ConsistencyHistogram->CalcNumBins( numSamplesY, fromY, toY );
+    const unsigned int numBinsY = this->m_ConsistencyHistogram->CalcNumBins( numSamplesY, fromY, toY );
     
     this->m_ConsistencyHistogram->SetNumBins( numBinsX, numBinsY );
     this->m_ConsistencyHistogram->SetRangeX( fromX, toX );
@@ -68,8 +70,8 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
   
   int numCtrlPoints = this->Dim / 3;
   
-  double *mapRef = Memory::AllocateArray<double>( numCtrlPoints );
-  double *mapMod = Memory::AllocateArray<double>( numCtrlPoints );
+  std::vector<double> mapRef( numCtrlPoints );
+  std::vector<double> mapMod( numCtrlPoints );
 
   DataGrid::RegionType voi;
   Vector3D fromVOI, toVOI;
@@ -190,9 +192,6 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
   
   fprintf( stderr, "Deactivated %d out of %d parameters.\n", inactive, (int)this->Dim );
   
-  delete[] mapRef;
-  delete[] mapMod;
-
   this->WarpNeedsFixUpdate = false;
 }
 
