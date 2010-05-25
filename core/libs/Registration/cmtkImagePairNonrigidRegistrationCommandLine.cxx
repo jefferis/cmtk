@@ -179,6 +179,15 @@ ImagePairNonrigidRegistrationCommandLine
     metricGroup->AddSwitch( Key( "msd" ), 4, "Mean Squared Difference metric" );
     metricGroup->AddSwitch( Key( "ncc" ), 5, "Normalized Cross Correlation metric" );
 
+    cl.BeginGroup( "Interpolation", "Floating Image Interpolation Options" );
+    cmtk::CommandLine::EnumGroup<Interpolators::InterpolationEnum>::SmartPtr kernelGroup = 
+      cl.AddEnum( "interpolation", &this->m_FloatingImageInterpolation, "Interpolation method for floating image sampling:" );
+    kernelGroup->AddSwitch( Key( "nearest-neighbor" ), Interpolators::NEAREST_NEIGHBOR, "Nearest neighbor interpolation (for intensity and label data)" );
+    kernelGroup->AddSwitch( Key( "linear" ), Interpolators::LINEAR, "Trilinear interpolation" );
+    kernelGroup->AddSwitch( Key( "cubic" ), Interpolators::CUBIC, "Tricubic interpolation" );
+    kernelGroup->AddSwitch( Key( "cosine-sinc" ), Interpolators::COSINE_SINC, "Cosine-windowed sinc interpolation (most accurate but slowest)" );
+    kernelGroup->AddSwitch( Key( "partial-volume" ), Interpolators::PARTIALVOLUME, "Partial volume interpolation (for label data)" );
+
     cl.AddSwitch( Key( "match-histograms" ), &this->m_MatchFltToRefHistogram, true, "Match floating image histogram to reference image histogram." );
     cl.AddSwitch( Key( "repeat-match-histograms" ), &this->m_RepeatMatchFltToRefHistogram, true, "Repeat histogram matching after every level of the registration to account for volume changes. When registering masked data, it is advisable to also use the --force-outside-value option to prevent poorly matched histograms." );
     cl.AddOption( Key( "force-outside-value" ), &forceOutsideValue, "Force values outside field of view to this value rather than drop incomplete pixel pairs", &forceOutsideFlag );

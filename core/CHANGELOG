@@ -1,5 +1,7 @@
 Release CMTK-1.3.1:
 
+- Fixed: selection of floating image interpolation method was implemented in
+    warpx tool, but not exposed at the command line.
 - Fixed: auto-cropping by threshold was implemented in image pair registration
     preprocessor class, but not exposed through the command line interface.
 - Added: padding in convertx tool can now be turned on and off multiple times
