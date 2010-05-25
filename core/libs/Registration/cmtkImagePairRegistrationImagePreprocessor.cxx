@@ -81,6 +81,7 @@ ImagePairRegistration::ImagePreprocessor::AttachToCommandLine
   
   cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "crop-index-" ), this->m_Key ) ), &this->m_CropIndex, "Cropping region in pixel index coordinates [parsed as %d,%d,%d,%d,%d,%d for i0,j0,k0,i1,j1,k1]" );
   cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "crop-world-" ), this->m_Key ) ), &this->m_CropWorld, "Cropping region in world coordinates [parsed as %f,%f,%f,%f,%f,%f for x0,y0,z0,x1,y1,z1]" );
+  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "crop-thresh-" ), this->m_Key ) ), &this->m_AutoCropLevel, "Automatic cropping based on threshold", &this->m_AutoCropFlag );
   
   cl.EndGroup();
 }
