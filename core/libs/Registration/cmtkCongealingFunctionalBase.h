@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -82,6 +83,9 @@ public:
   /// Base type for histogram bins.
   typedef THistogramBinType HistogramBinType;
 
+  /// Exception for "bad transformation".
+  class BadXform {};
+
   /// Constructor.
   CongealingFunctionalBase();
 
@@ -156,6 +160,12 @@ protected:
   /** Maximal radius of histogram kernels.
    */
   size_t m_HistogramKernelRadiusMax;
+
+  /** Threshold for maximum fraction of reformatted pixels from any given image that may be outside FOV.
+   * If the number of outside pixels for any one image exceeds this threshold (as a fraction of
+   * total number of reformatted pixels) then an exception is thrown.
+   */
+  float m_MaxRelativeNumberOutsidePixels;
 
 private:
   /// Crop image histograms to get rid of high-intensity low-probability samples.

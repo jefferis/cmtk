@@ -53,7 +53,8 @@ template<class TXform,class THistogramBinType>
 CongealingFunctionalBase<TXform,THistogramBinType>::CongealingFunctionalBase() :
   m_HistogramBins( 64 ),
   m_HistogramKernelRadiusMax( 0 ),
-  m_CropImageHistograms( false )
+  m_CropImageHistograms( false ),
+  m_MaxRelativeNumberOutsidePixels( 1 )
 {
   ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
   this->m_NumberOfThreads = threadPool.GetNumberOfThreads();
@@ -100,10 +101,17 @@ CongealingFunctionalBase<TXform,THistogramBinType>
   else
     threadPool.Run( InterpolateImageThread, this->m_TaskInfo );
 
+  // Sum number of pixels outside FOV from all tasks.
   size_t numberOfOutsidePixels = 0;
   for ( size_t task = 0; task < this->m_NumberOfTasks; ++task )
     {
     numberOfOutsidePixels += this->m_TaskInfo[task].m_NumberOfOutsidePixels;
+    }
+
+  // Check whether more than defined proportion threshold was outside
+  if ( numberOfOutsidePixels > static_cast<size_t>( this->m_MaxRelativeNumberOutsidePixels * this->m_TemplateNumberOfSamples ) )
+    {
+    throw  Self::BadXform();
     }
 }
 
@@ -219,6 +227,7 @@ CongealingFunctionalBase<TXform,THistogramBinType>::InterpolateImageProbabilisti
   const Self* This = threadParameters->thisObject;
   const size_t idx = threadParameters->m_Idx;
   byte* destination = threadParameters->m_Destination;
+  threadParameters->m_NumberOfOutsidePixels = 0;
 
   const TXform* xform = This->GetXformByIndex(idx);
   const UniformVolume* target = This->m_ImageVector[idx];
@@ -247,6 +256,7 @@ CongealingFunctionalBase<TXform,THistogramBinType>::InterpolateImageProbabilisti
     else
       {
       *wptr = backgroundValue;
+      ++threadParameters->m_NumberOfOutsidePixels;
       }
     }
 }
