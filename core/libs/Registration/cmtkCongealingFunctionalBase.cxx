@@ -99,6 +99,12 @@ CongealingFunctionalBase<TXform,THistogramBinType>
     threadPool.Run( InterpolateImageProbabilisticThread, this->m_TaskInfo );
   else
     threadPool.Run( InterpolateImageThread, this->m_TaskInfo );
+
+  size_t numberOfOutsidePixels = 0;
+  for ( size_t task = 0; task < this->m_NumberOfTasks; ++task )
+    {
+    numberOfOutsidePixels += this->m_TaskInfo[task];
+    }
 }
 
 template<class TXform,class THistogramBinType>
@@ -167,6 +173,7 @@ CongealingFunctionalBase<TXform,THistogramBinType>::InterpolateImageThread
 
   const byte paddingValue = This->m_PaddingValue;
   const byte backgroundValue = This->m_UserBackgroundFlag ? This->m_PrivateUserBackgroundValue : paddingValue;
+  threadParameters->m_NumberOfOutsidePixels = 0;
 
   Vector3D v;
   byte value;
@@ -193,6 +200,7 @@ CongealingFunctionalBase<TXform,THistogramBinType>::InterpolateImageThread
 	else
 	  {
 	  *wptr = backgroundValue;
+	  ++threadParameters->m_NumberOfOutsidePixels;
 	  }
 	
 	++wptr;

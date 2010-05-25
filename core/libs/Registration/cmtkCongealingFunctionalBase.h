@@ -175,6 +175,9 @@ private:
 
     /// Pointer to storage that will hold the reformatted pixel data.
     byte* m_Destination;    
+
+    /// Return parameter: number of reformatted pixels outside floating image field of view. This is to detect pathological transformation parameters.
+    size_t m_NumberOfOutsidePixels;
   };
   
   /// Task info blocks.
