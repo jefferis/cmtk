@@ -111,7 +111,7 @@ CongealingFunctionalBase<TXform,THistogramBinType>
   // Check whether more than defined proportion threshold was outside
   if ( numberOfOutsidePixels > static_cast<size_t>( this->m_MaxRelativeNumberOutsidePixels * this->m_TemplateNumberOfSamples ) )
     {
-    throw  Self::BadXform();
+    throw typename Self::BadXform();
     }
 }
 
