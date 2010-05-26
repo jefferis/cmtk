@@ -273,9 +273,15 @@ VolumeIO::Write
   const char* actualPath = pathAndFormat;
   FileFormatID fileFormat = FILEFORMAT_UNKNOWN;
 
-  const char* suffix = strrchr( pathAndFormat, '.' );
+  const char* suffix = strrchr( pathAndFormat, '.' );  
   if ( suffix )
     {
+    // check whether we have a compression-related suffix
+    if ( ! strcmp( suffix, ".gz" ) )
+      {
+      // include actual suffix
+      }
+
     if ( ! strcmp( ".hdr", suffix ) )
       {
       fileFormat = FILEFORMAT_ANALYZE_HDR;
@@ -358,8 +364,8 @@ VolumeIO::Write
 
   if ( fileFormat == FILEFORMAT_UNKNOWN )
     {
-    StdErr << "Fileformat not recognized; writing RAW3D instead.\n";
-    fileFormat = FILEFORMAT_RAW3D;
+    StdErr << "Fileformat not recognized; writing single-file NIFTI instead.\n";
+    fileFormat = FILEFORMAT_NIFTI_SINGLEFILE;
     }
   
   char absolutePath[PATH_MAX];
