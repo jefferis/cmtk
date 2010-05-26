@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -61,9 +62,8 @@ VtkADM::CreatePipeline()
   VolumeToVtkStructuredPoints *wrapper = VolumeToVtkStructuredPoints::New();
   wrapper->SetVolume( uniformVolume );
 
-  Types::DataItem min, max;
-  uniformVolume->GetData()->GetRange( min, max );
-  int maxContour = static_cast<int>( max );
+  const Types::DataItem max = uniformVolume->GetData()->GetRange().m_UpperBound;
+  const int maxContour = static_cast<int>( max );
 
   vtkDiscreteMarchingCubes *marchingCubes = vtkDiscreteMarchingCubes::New();
   marchingCubes->SetInput( wrapper->GetOutput() );
