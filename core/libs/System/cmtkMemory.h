@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -33,6 +34,8 @@
 #define __cmtkMemory_h_included_
 
 #include <cmtkconfig.h>
+
+#include <cstdio> // thanks to Hans Johnson for pointing this out
 
 #ifdef HAVE_MALLOC_H
 #  include <malloc.h>
