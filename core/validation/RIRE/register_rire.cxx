@@ -51,9 +51,8 @@ void dumpVolume( const cmtk::UniformVolume *volume )
   const cmtk::TypedArray *data = volume->GetData();
   if ( data ) 
     {
-    cmtk::Types::DataItem min, max;
-    data->GetRange( min, max );
-    fprintf( stderr, "data range: %f .. %f\n", (float) min, (float) max );
+    const cmtk::Types::DataItemRange range = data->GetRange();
+    fprintf( stderr, "data range: %f .. %f\n", (float) range.m_LowerBound, (float) range.m_UpperBound );
     }
 }
 

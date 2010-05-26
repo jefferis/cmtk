@@ -1,7 +1,8 @@
  /*
 //
 //  Copyright 1997-2004 Torsten Rohlfing
-//  Copyright 2009 SRI International
+//
+//  Copyright 2009-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -50,9 +51,8 @@ void dumpVolume( const cmtk::UniformVolume *volume )
   const cmtk::TypedArray *data = volume->GetData();
   if ( data ) 
     {
-    cmtk::Types::DataItem min, max;
-    data->GetRange( min, max );
-    fprintf( stderr, "data range: %f .. %f\n", (float) min, (float) max );
+    const cmtk::Types::DataItemRange range = data->GetRange();
+    fprintf( stderr, "data range: %f .. %f\n", (float) range.m_LowerBound, (float) range.m_UpperBound );
     }
 }
 
