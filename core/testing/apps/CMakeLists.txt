@@ -197,6 +197,10 @@ IF(NOT CMTK_USE_MPI)
     convertxAnalyzeToNifti
     convertxNiftiDetachedToNifti
     convertxAnalyzeToNiftiDetached 
+    convertxUncompressedNIFTI1
+    convertxUncompressedNIFTI2
+    convertxUncompressedNIFTI3
+    convertxUncompressedNIFTI4
     convertxThresholdBelow
     convertxThresholdAbove
     convertxThresholdBelowToPadding

@@ -280,6 +280,12 @@ VolumeIO::Write
     if ( ! strcmp( suffix, ".gz" ) )
       {
       // include actual suffix
+      while ( suffix != pathAndFormat )
+	{
+	--suffix;
+	if ( *suffix == '.' )
+	  break;
+	}
       }
 
     if ( ! strcmp( ".hdr", suffix ) )
@@ -288,13 +294,13 @@ VolumeIO::Write
       }
     else
       {
-      if ( ! strcmp( ".img", suffix ) )
+      if ( ! strcmp( ".img", suffix ) || ! strcmp( ".img.gz", suffix ) )
 	{
 	fileFormat = FILEFORMAT_NIFTI_DETACHED;
 	}
       else
 	{
-	if ( ! strcmp( ".nii", suffix ) )
+	if ( ! strcmp( ".nii", suffix ) || ! strcmp( ".nii.gz", suffix ) )
 	  {
 	  fileFormat = FILEFORMAT_NIFTI_SINGLEFILE;
 	  }

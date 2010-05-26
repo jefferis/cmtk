@@ -261,10 +261,22 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
 
 void
 VolumeFromFile::WriteNifti
-( const char* pathImg, const UniformVolume& volume, const bool )
+( const char* path, const UniformVolume& volume, const bool )
 {
   bool detachedHeader = false;
+  bool forceCompressed = false;
 
+  std::string pathImg( path );
+
+  // first, look for .gz
+  size_t suffixPosGz = pathImg.rfind( ".gz" );
+  if ( suffixPosGz != std::string::npos )
+    {
+    // found: set force compression flag and remove .gz from path
+    forceCompressed = true;
+    pathImg = pathImg.substr( 0, suffixPosGz );
+    }
+  
   std::string pathHdr( pathImg );
   size_t suffixPos = pathHdr.rfind( ".img" );
   if ( suffixPos != std::string::npos )
@@ -389,17 +401,15 @@ VolumeFromFile::WriteNifti
     header.vox_offset = 352;
     }
   
-  char path[PATH_MAX];
-  strcpy( path, pathImg );
-  if ( VolumeIO::GetWriteCompressed() )
+  if ( VolumeIO::GetWriteCompressed() || forceCompressed )
     {
     struct stat buf;
-    if ( ! stat( path, &buf ) )
+    if ( ! stat( pathImg.c_str(), &buf ) )
       {
       StdErr << "WARNING: NIFTI file '" << path << "' will be written compressed, but uncompressed file exists!\n";
       }
     
-    gzFile imgFile = gzopen( strcat( path, ".gz" ), modestr );
+    gzFile imgFile = gzopen( (pathImg+".gz").c_str(), modestr );
     if ( imgFile ) 
       {
       if ( ! detachedHeader )
@@ -412,14 +422,14 @@ VolumeFromFile::WriteNifti
       const size_t dataSize = data->GetItemSize() * data->GetDataSize();
       if ( dataSize != static_cast<size_t>( gzwrite( imgFile, data->GetDataPtr(), dataSize ) ) )
 	{
-	StdErr << "WARNING: gzwrite() returned error when writing to " << path << "\n";
+	StdErr << "WARNING: gzwrite() returned error when writing to " << pathImg << "\n";
 	}
       gzclose( imgFile );
       }
     }
   else
     {
-    FILE *imgFile = fopen( pathImg, modestr );
+    FILE *imgFile = fopen( pathImg.c_str(), modestr );
     if ( imgFile ) 
       {
       if ( ! detachedHeader )

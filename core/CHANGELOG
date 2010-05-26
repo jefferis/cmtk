@@ -1,5 +1,13 @@
 Release CMTK-1.3.1:
 
+- Improved: CMTK can now determine whether to write compressed (gz) or
+    uncompressed NIFTI images based on the given file name, e.g., image.nii.gz
+    for compressed vs. image.nii for uncompressed. Note that for this to work
+    as expected the "CMTK_WRITE_UNCOMPRESSED" environment vairbale must be
+    set, because otherwise images will be written compressed by
+    default. Also note that CMTK's behaviour with respect to writing
+    compressed  vs. uncompressed files has not changed for all other file
+    formats (Issue #4852).
 - Fixed: when using an unknown image file format suffix, CMTK would state that
     it would write a RAW3D file instead, but then write nothing. This now
     defaults to single-file NIFTI, which is actually written (Issue #4852).

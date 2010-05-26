@@ -436,6 +436,26 @@ case ${RUNTEST} in
 	run convertx spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.img
 	check_results spgr_brain_1.hdr spgr_brain_1.img
 	;;
+    convertxUncompressedNIFTI1)
+        export CMTK_WRITE_UNCOMPRESSED=1
+        run convertx parc1_bin.hdr ${tmpdir}/out.nii
+	if [ ! -e ${tmpdir}/out.nii ]; then exit 1; fi
+	;;
+    convertxUncompressedNIFTI2)
+        export CMTK_WRITE_UNCOMPRESSED=1
+        run convertx parc1_bin.hdr ${tmpdir}/out.nii.gz
+	if [ ! -e ${tmpdir}/out.nii.gz ]; then exit 1; fi
+	;;
+    convertxUncompressedNIFTI3)
+        unset CMTK_WRITE_UNCOMPRESSED
+        run convertx parc1_bin.hdr ${tmpdir}/out.nii
+	if [ ! -e ${tmpdir}/out.nii.gz ]; then exit 1; fi
+	;;
+    convertxUncompressedNIFTI4)
+        unset CMTK_WRITE_UNCOMPRESSED
+        run convertx parc1_bin.hdr ${tmpdir}/out.nii.gz
+	if [ ! -e ${tmpdir}/out.nii.gz ]; then exit 1; fi
+	;;
     convertxThresholdBelow)
 	run convertx --set-padding 0 --thresh-below 100 spgr_brain_1.hdr ${tmpdir}/thresh.hdr
 	check_results thresh.img
