@@ -43,7 +43,7 @@
 #include <cmtkProgress.h>
 #include <cmtkTypes.h>
 
-#include <stdio.h>
+#include <cstdio>
 
 #ifdef HAVE_UNISTD_H
 #  include <unistd.h>
@@ -323,11 +323,7 @@ VolumeIO::Write
     actualPath = colon+1;
     unsigned int formatLength = colon - pathAndFormat - 1;
     
-    if ( ! strncmp( "RAW3D", pathAndFormat, formatLength ) ) 
-      {
-      fileFormat = FILEFORMAT_RAW3D;
-      } 
-    else if ( ! strncmp( "ANALYZE", pathAndFormat, formatLength ) ) 
+    if ( ! strncmp( "ANALYZE", pathAndFormat, formatLength ) ) 
       {
       fileFormat = FILEFORMAT_ANALYZE_HDR;
       } 
@@ -343,22 +339,6 @@ VolumeIO::Write
       {
       fileFormat = FILEFORMAT_METAIMAGE;
       } 
-    else if ( ! strncmp( "NRRD", pathAndFormat, formatLength ) ) 
-      {
-      fileFormat = FILEFORMAT_NRRD;
-      } 
-    else if ( ! strncmp( "VANDERBILT", pathAndFormat, formatLength ) ) 
-      {
-      fileFormat = FILEFORMAT_VANDERBILT;
-      } 
-    else if ( ! strncmp( "RAW", pathAndFormat, formatLength ) ) 
-      {
-      fileFormat = FILEFORMAT_RAW;
-      } 
-    else if ( ! strncmp( "PGM", pathAndFormat, formatLength ) ) 
-      {
-      fileFormat = FILEFORMAT_PGM;
-      }
     }
 #endif
 
@@ -390,20 +370,6 @@ VolumeIO::Write
 
   switch ( format ) 
     {
-    case FILEFORMAT_VANDERBILT: 
-    {
-    // get image data as short array
-    short *shortData = static_cast<short*>( data->ConvertArray( TYPE_SHORT ) );
-#ifndef WORDS_BIGENDIAN
-    // change endianness from Sun to whatever we're currently on.
-    //    data->ChangeEndianness();
-#endif
-    WriteData( path, shortData, data->GetDataSize(), sizeof( *shortData ) );
-    
-    // free using allocator used by the array object
-    data->Free( shortData );
-    }
-    break;
     case FILEFORMAT_ANALYZE_HDR: 
     {
     VolumeFromFile::WriteAnalyzeHdr( path, volume, verbose );
@@ -434,43 +400,6 @@ VolumeIO::Write
   free( baseName );
   
   volume.m_MetaInformation[META_FS_PATH] = path;
-}
-
-bool 
-VolumeIO::WriteData
-( const char* path, const void *dataPtr, const size_t numberOfItems, const size_t itemSize )
-{
-  FILE *fp = fopen( path, "w" );
-  if ( fp ) 
-    {
-    Progress::Begin( 0, 1 + numberOfItems / (1<<20), 1, "Writing volume data" );
-    unsigned int step = 0;
-    
-    // if bigger than 1 MB, write in 1 MB chunks to allow progress reports
-    const char* charDataPtr = static_cast<const char*>( dataPtr );
-    size_t itemsLeft = numberOfItems;
-    while ( itemsLeft ) 
-      {
-      if ( itemsLeft < (1<<20) ) 
-	{
-	fwrite( charDataPtr, itemSize, itemsLeft, fp );
-	itemsLeft = 0;
-	} 
-      else
-	{
-	fwrite( charDataPtr, itemSize, (1<<20), fp );
-	charDataPtr += (1<<20) * itemSize;
-	itemsLeft -= (1<<20);
-	}
-      Progress::SetProgress( ++step );
-      }
-    fclose( fp );
-    } 
-  else
-    {
-    return false;
-    }
-  return true;
 }
 
 VolumeIO::Initializer::Initializer()

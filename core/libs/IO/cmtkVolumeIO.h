@@ -141,10 +141,6 @@ private:
   /// Global setting: write compressed images.
   static bool WriteCompressedOn;
 
-  /// Write data block to disk.
-  static bool WriteData( const char* path, const void *dataPtr, const size_t numberOfItems, const size_t itemSize = 1 );
-  
-private:
   /** Initializer class.
    * An object of this class is automatically instantiated when a program is run.
    * Its constructor takes care of initializing VolumeIO, e.g., by evaluating the
