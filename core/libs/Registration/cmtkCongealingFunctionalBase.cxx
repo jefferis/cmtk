@@ -54,7 +54,7 @@ CongealingFunctionalBase<TXform,THistogramBinType>::CongealingFunctionalBase() :
   m_HistogramBins( 64 ),
   m_HistogramKernelRadiusMax( 0 ),
   m_CropImageHistograms( false ),
-  m_MaxRelativeNumberOutsidePixels( 1 )
+  m_MaxRelativeNumberOutsidePixels( 0.99 ) // if there is an image with more then 99% pixels outside FOV, registration probably failed
 {
   ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
   this->m_NumberOfThreads = threadPool.GetNumberOfThreads();
