@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -57,43 +58,55 @@ GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms
 
   const Vector3D centerTemplate = this->m_TemplateGrid->GetCenterCropRegion();
   
+  std::vector<Vector3D> centers( numberOfImages );
   std::vector<Vector3D> firstOrderMoments;
   if ( initScales )
     firstOrderMoments.resize( numberOfImages );
-
   this->m_XformVector.resize( numberOfImages );
+
+  Vector3D centerAverage;
+  std::fill( centerAverage.begin(), centerAverage.end(), 0 );
+
+  // first get all image centers (either FOV or center of mass)
+  for ( size_t imageIdx = 0; imageIdx < numberOfImages; ++imageIdx )
+    {
+    if ( alignCenters )
+      {
+      if ( alignCenterOfMass )
+	{
+	if ( initScales )
+	  {
+	  centers[imageIdx] = this->m_ImageVector[imageIdx]->GetCenterOfMass( firstOrderMoments[imageIdx] );
+	  }
+	else
+	  {
+	  centers[imageIdx] = this->m_ImageVector[imageIdx]->GetCenterOfMass();
+	  }
+	}
+      else
+	{
+	centers[imageIdx] = this->m_ImageVector[imageIdx]->GetCenter();
+	}
+      }
+    centerAverage += centers[imageIdx];
+    }
+
+  // compute average of all image centers
+  centerAverage *= (1.0 / numberOfImages);
+  
+  // now make sure every image gests shifted so their center align, and the overall shift is zero
   for ( size_t imageIdx = 0; imageIdx < numberOfImages; ++imageIdx )
     {
     AffineXform::SmartPtr xform( new AffineXform );
     xform->SetUseLogScaleFactors( true );
     xform->SetCenter( centerTemplate.begin() );
  
-    if ( alignCenters )
-      {
-      Vector3D center;
-      
-      if ( alignCenterOfMass )
-	{
-	if ( initScales )
-	  {
-	  center = this->m_ImageVector[imageIdx]->GetCenterOfMass( firstOrderMoments[imageIdx] );
-	  }
-	else
-	  {
-	  center = this->m_ImageVector[imageIdx]->GetCenterOfMass();
-	  }
-	}
-      else
-	{
-	center = this->m_ImageVector[imageIdx]->GetCenter();
-	}
-
-      center -= centerTemplate;
-      xform->SetXlate( center.begin() );
-      this->m_XformVector[imageIdx] = xform;
-      }
+    const Vector3D delta( centers[imageIdx] - centerAverage );
+    
+    xform->SetXlate( delta.begin() );
+    this->m_XformVector[imageIdx] = xform;
     }
-
+  
   // convert first order moments to scale with average log factor 0
   if ( initScales )
     {
