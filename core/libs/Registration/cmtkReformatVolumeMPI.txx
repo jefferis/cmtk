@@ -75,14 +75,11 @@ ReformatVolume::GetTransformedReference
   int maxLabel = 0;
   if ( dataClass == DATACLASS_LABEL ) 
     {
-    Types::DataItem min, max;
-    ReferenceVolume->GetData()->GetRange( min, max );
-    maxLabel = static_cast<int>( max );
+    maxLabel = static_cast<int>( ReferenceVolume->GetData()->GetRange().m_UpperBound );
     
     for ( unsigned int img = 0; img < numberOfImages-1; ++img ) 
       {
-      (*volumeList)[img]->GetData()->GetRange( min, max );
-      maxLabel = std::max( maxLabel, static_cast<int>( max ) );
+      maxLabel = std::max( maxLabel, static_cast<int>( (*volumeList)[img]->GetData()->GetRange().m_UpperLimit ) );
       }
     }
   
