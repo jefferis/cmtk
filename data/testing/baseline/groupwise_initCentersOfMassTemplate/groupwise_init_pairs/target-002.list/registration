@@ -4,7 +4,7 @@ registration {
 	reference_study "spgr_brain_1.hdr"
 	floating_study "spgr_brain_3.hdr"
 	affine_xform {
-		xlate 2.207935936 -21.16280134 2.90671363 
+		xlate 1.875530505 0.5135698583 1.335704323 
 		rotate 0 0 0 
 		log_scale 0 0 0 
 		shear 0 0 0 

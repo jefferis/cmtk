@@ -8,7 +8,7 @@ template {
 }
 target "spgr_brain_1.hdr"
 affine_xform {
-	xlate -5.353617092 -17.96124547 1.805169188 
+	xlate -5.686022524 3.715125728 0.234159881 
 	rotate 0 0 0 
 	log_scale 0 0 0 
 	shear 0 0 0 
@@ -16,7 +16,7 @@ affine_xform {
 }
 target "spgr_brain_2.hdr"
 affine_xform {
-	xlate 4.142897451 -25.90506678 0.001145103727 
+	xlate 3.810492019 -4.228695586 -1.569864204 
 	rotate 0 0 0 
 	log_scale 0 0 0 
 	shear 0 0 0 
@@ -24,7 +24,7 @@ affine_xform {
 }
 target "spgr_brain_3.hdr"
 affine_xform {
-	xlate 2.207935936 -21.16280134 2.90671363 
+	xlate 1.875530505 0.5135698583 1.335704323 
 	rotate 0 0 0 
 	log_scale 0 0 0 
 	shear 0 0 0 
