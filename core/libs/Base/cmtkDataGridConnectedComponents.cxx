@@ -139,7 +139,7 @@ cmtk::DataGridMorphologicalOperators::GetRegionsRenumberedBySize() const
 
   // now create list sorted by region size
   std::list< std::pair<int,int> > sortedList;
-  for ( std::map<int,int>::const_iterator it = regionSizeMap.begin(); it != regionSizeMap.end(); ++it )
+  for ( std::map<int,int>::iterator it = regionSizeMap.begin(); it != regionSizeMap.end(); ++it )
     {
     std::list< std::pair<int,int> >::iterator ins = sortedList.begin();
     while ( (ins != sortedList.end()) && (ins->second >= it->second) )
