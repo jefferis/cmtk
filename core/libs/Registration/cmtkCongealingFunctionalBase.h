@@ -83,9 +83,6 @@ public:
   /// Base type for histogram bins.
   typedef THistogramBinType HistogramBinType;
 
-  /// Exception for "bad transformation".
-  class BadXform {};
-
   /// Constructor.
   CongealingFunctionalBase();
 

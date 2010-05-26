@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -344,27 +345,35 @@ main( int argc, char* argv[] )
       if ( (downsample > downsampleTo) || RefineTransformationGrid )
 	accuracy = std::max<cmtk::Types::Coordinate>( accuracy, .25*exploration );
       
-      // do we have a normal subgroup?
-      if ( NormalGroupFirstN )
+      try
 	{
-	// yes: first run normal group by itself
-	cmtk::StdErr << "Running normal subgroup...\n";
-	functional->SetForceZeroSum( ForceZeroSum );
-	functional->SetActiveImagesFromTo( 0, NormalGroupFirstN );
-	functional->SetActiveXformsFromTo( 0, NormalGroupFirstN );
-	optimizer.Optimize( v, exploration, accuracy );
-	
-	// second: run abnormal group, but keep using normal group's data for reference
-	cmtk::StdErr << "Running diseased subgroup...\n";
-	functional->SetForceZeroSum( false ); // no point here
-	functional->SetActiveImagesFromTo( 0, imageListOriginal.size() );
-	functional->SetActiveXformsFromTo( NormalGroupFirstN, imageListOriginal.size() );
-	optimizer.Optimize( v, exploration, accuracy );
+	// do we have a normal subgroup?
+	if ( NormalGroupFirstN )
+	  {
+	  // yes: first run normal group by itself
+	  cmtk::StdErr << "Running normal subgroup...\n";
+	  functional->SetForceZeroSum( ForceZeroSum );
+	  functional->SetActiveImagesFromTo( 0, NormalGroupFirstN );
+	  functional->SetActiveXformsFromTo( 0, NormalGroupFirstN );
+	  optimizer.Optimize( v, exploration, accuracy );
+	  
+	  // second: run abnormal group, but keep using normal group's data for reference
+	  cmtk::StdErr << "Running diseased subgroup...\n";
+	  functional->SetForceZeroSum( false ); // no point here
+	  functional->SetActiveImagesFromTo( 0, imageListOriginal.size() );
+	  functional->SetActiveXformsFromTo( NormalGroupFirstN, imageListOriginal.size() );
+	  optimizer.Optimize( v, exploration, accuracy );
+	  }
+	else
+	  {
+	  optimizer.Optimize( v, exploration, accuracy );
+	  }
 	}
-      else
+      catch ( cmtk::GroupwiseRegistrationFunctionalBase::BadXform )
 	{
-	optimizer.Optimize( v, exploration, accuracy );
-	}
+	cmtk::StdErr << "FAILED: at least one image has too few pixels in the template area.\n";
+	return 1;
+	}	
       }
     }
 

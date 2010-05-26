@@ -72,6 +72,9 @@ public:
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
+  /// Exception for "bad transformation".
+  class BadXform {};
+
   /// Constructor.
   GroupwiseRegistrationFunctionalBase();
 

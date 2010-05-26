@@ -1,5 +1,10 @@
 Release CMTK-1.3.1:
 
+- Added: groupwise registration tools now abort with an error when at least
+    one of the input images get transformed too far outside the FOV. This is
+    detected in cmtk::CongealingFunctionalBase and defaults to requiring at
+    least 1% of reformatted pixels to be inside the FOV of every image. At
+    present, this is not configurable at run time.
 - Removed: support for writing joint histograms.
 - Refactored: value ranges are now handled by Types::Range<T> class
     template. The specialization typedef'ed as Types::DataItemRange is now
