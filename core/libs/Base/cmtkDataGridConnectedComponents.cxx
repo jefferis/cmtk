@@ -145,7 +145,11 @@ cmtk::DataGridMorphologicalOperators::GetRegionsRenumberedBySize() const
     while ( (ins != sortedList.end()) && (ins->second >= it->second) )
       ++ins;
     
+#ifdef __SUNPRO_CC
+    sortedList.insert( ins, std::pair<int,int>( it->first, it->second ) );
+#else
     sortedList.insert( ins, *it );
+#endif
     }
 
   // create renumbering lookup map
