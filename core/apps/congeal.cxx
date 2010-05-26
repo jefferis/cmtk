@@ -45,6 +45,7 @@
 #include <cmtkClassStream.h>
 
 #include <cmtkAffineCongealingFunctional.h>
+#include <cmtkGroupwiseRegistrationFunctionalAffineInitializer.h>
 #include <cmtkBestDirectionOptimizer.h>
 
 #include <cmtkGroupwiseRegistrationOutput.h>
@@ -350,7 +351,7 @@ main( int argc, char* argv[] )
     if ( downsampleFrom == downsample )
       {
       if ( !TransformationsFromArchive )
-	functional->InitializeXforms( true /*alignCenters*/, AlignCentersOfMass, InitScales );
+	cmtk::GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms( *functional, true /*alignCenters*/, AlignCentersOfMass, InitScales );
       functional->SetFreeAndRereadImages( true ); // can now get rid of unused original images
       functional->GetParamVector( v );
       }

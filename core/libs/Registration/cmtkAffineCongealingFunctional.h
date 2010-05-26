@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -85,12 +86,6 @@ public:
 
   /// Set number of degrees of freedom per transformation.
   void SetXformNumberDOFs( const int numberDOFs );
-
-  /** Initialize affine transformations.
-   *\param alignCenter If this flag is set, the centers of all target images
-   * will be aligned with the center of the template grid via translations.
-   */
-  void InitializeXforms( const bool alignCenters = true, const bool alignCenterOfMass = false, const bool initScales = false );
 
   /** Set affine transformations.
    */

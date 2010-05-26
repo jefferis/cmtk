@@ -90,7 +90,7 @@ public:
   }
 
   /// Evaluate functional.
-  virtual Self::ReturnType Evaluate() = 0;
+  virtual Self::ReturnType Evaluate() { return 0; } // cannot make this abstract because we need to instantiate this for generic initialization
 
   /// Evaluate functional with new parameter vector.
   virtual Self::ReturnType EvaluateAt( ParameterVectorType& v )

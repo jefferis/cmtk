@@ -1,5 +1,8 @@
 Release CMTK-1.3.1:
 
+- Refactored: consolidated affine initialization of groupwise registration
+    functionals to reduce code duplication and thus avoid residual unfixed
+    bugs.
 - Improved: when initializing groupwise registrations, translations are now
     computed with a zero sum over all images. Previously, we aligned all
     centers with the template FOV center, but there is no reason why this

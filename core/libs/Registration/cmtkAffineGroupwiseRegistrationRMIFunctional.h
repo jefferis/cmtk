@@ -53,9 +53,10 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-/** Functional for affine groupwise registration.
+/** Functional for affine groupwise registration using "RMI" metric..
  */
 class AffineGroupwiseRegistrationRMIFunctional : 
+  /// Inherit general RMI-based groupwise registration.
   public GroupwiseRegistrationRMIFunctional<AffineXform>
 {
 public:
@@ -76,12 +77,6 @@ public:
 
   /// Set number of degrees of freedom per transformation.
   void SetXformNumberDOFs( const int numberDOFs );
-
-  /** Initialize affine transformations.
-   *\param alignCenter If this flag is set, the centers of all target images
-   * will be aligned with the center of the template grid via translations.
-   */
-  void InitializeXforms( const bool alignCenters = true );
 
   /** Set affine transformations.
    */

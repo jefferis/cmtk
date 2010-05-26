@@ -464,7 +464,7 @@ protected:
    *  Sufficient memory (for as many pixels as there are in the template grid)
    *  must be allocated there.
    */
-  virtual void InterpolateImage( const size_t idx, byte* const destination ) = 0;
+  virtual void InterpolateImage( const size_t /*idx*/, byte* const /*destination*/ ) {} // cannot make this pure virtual because we need to instantiate for affine initialization
 
   /// Vector of reformatted and rescaled image data.
   std::vector<byte*> m_Data;
@@ -513,6 +513,9 @@ protected:
 private:
   /// Copy template data from TypedArray to byte vector.
   void CopyTemplateData();
+
+  /// Initializer class shall be our friend.
+  friend class GroupwiseRegistrationFunctionalAffineInitializer;
 };
 
 //@}

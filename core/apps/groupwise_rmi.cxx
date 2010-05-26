@@ -43,6 +43,7 @@
 #include <cmtkClassStream.h>
 
 #include <cmtkAffineGroupwiseRegistrationRMIFunctional.h>
+#include <cmtkGroupwiseRegistrationFunctionalAffineInitializer.h>
 #include <cmtkBestDirectionOptimizer.h>
 
 #include <cmtkGroupwiseRegistrationOutput.h>
@@ -63,7 +64,9 @@ bool ForceZeroSum = false;
 size_t ForceZeroSumFirstN = 0;
 size_t NormalGroupFirstN = 0;
 
+bool UseSmoothSigmaFactor = false;
 cmtk::Types::Coordinate SmoothSigmaFactor = -1.0;
+
 byte UserBackgroundValue = 0;
 bool UserBackgroundFlag = false;
 
@@ -79,6 +82,10 @@ const char* AverageImagePath = "average_groupwise_rmi.hdr";
 cmtk::Interpolators::InterpolationEnum AverageImageInterpolation = cmtk::Interpolators::LINEAR;
 
 std::vector<int> NumberDOFs;
+
+bool AlignCentersOfMass = false;
+bool InitScales = false;
+bool HistogramMatching = false;
 
 cmtk::Types::Coordinate Accuracy = 0.01;
 cmtk::Types::Coordinate Exploration = 0.25;
@@ -137,14 +144,24 @@ main( int argc, char* argv[] )
     cl.AddOption( Key( 'd', "downsample-from" ), &DownsampleFrom, "Initial downsampling factor [4]." );
     cl.AddOption( Key( 'D', "downsample-to" ), &DownsampleTo, "Final downsampling factor [1]." );
     cl.AddOption( Key( 's', "sampling-density" ), &SamplingDensity, "Probabilistic sampling density [default: off]." );
-    cl.AddOption( Key( "smooth" ), &SmoothSigmaFactor, "Sigma of Gaussian smoothing kernel in multiples of template image pixel size [default: off] )" );
+
+    cl.BeginGroup( "Image", "Image Options and Operations" );
     cl.AddOption( Key( 'B', "force-background" ), &UserBackgroundValue, "Force background pixels (outside FOV) to given (bin) value.", &UserBackgroundFlag );
+    cl.AddOption( Key( "smooth" ), &SmoothSigmaFactor, "Sigma of Gaussian smoothing kernel in multiples of template image pixel size.", &UseSmoothSigmaFactor );
+    cl.AddSwitch( Key( "match-histograms" ), &HistogramMatching, true, "Match all image histograms to template data (or first image, if no template image is given)" );
+    cl.EndGroup();
 
     cl.AddVector( Key( "dofs" ), NumberDOFs, "Set sequence of numbers of DOFs for optimization schedule [can be repeated]. Supported values are: 0, 3, 6, 7, 9, 12." );
     cl.AddSwitch( Key( 'z', "zero-sum" ), &ForceZeroSum, true, "Enforce zero-sum computation." );
     cl.AddOption( Key( 'N', "normal-group-first-n" ), &NormalGroupFirstN, "First N images are from the normal group and should be registered unbiased." );
     cl.AddOption( Key( 'Z', "zero-sum-first-n" ), &ForceZeroSumFirstN, "Enforce zero-sum computation for first N images.", &ForceZeroSum ); 
     
+    cl.BeginGroup( "Initialization", "Transformation Initialization" );
+    cl.AddSwitch( Key( "align-bounding-boxes" ), &AlignCentersOfMass, false, "Initially align centers of bounding boxes of all images by translations" );
+    cl.AddSwitch( Key( "align-centers-of-mass" ), &AlignCentersOfMass, true, "Initially align centers of mass by translations" );
+    cl.AddSwitch( Key( "init-scales" ), &InitScales, true, "Initialize scale factors using first-order moments" );
+    cl.EndGroup();
+
     cl.AddOption( Key( 'e', "exploration" ), &Exploration, "Exploration of optimization in pixels [0.25]" );
     cl.AddOption( Key( 'a', "accuracy" ), &Accuracy, "Accuracy of optimization in pixels [0.01]" );
     cl.AddOption( Key( 'r', "repeat-level" ), &OptimizerRepeatLevel, "Number of repetitions per optimization level [5]" );
@@ -267,7 +284,7 @@ main( int argc, char* argv[] )
       functional->CreateTemplateGridFromTargets( imageListOriginal, std::max( 1, downsample ) );
 
     cmtk::UniformVolume::SmartPtr templateGrid = functional->GetTemplateGrid();
-    if ( (SmoothSigmaFactor > 0.0) && downsample )
+    if ( UseSmoothSigmaFactor && downsample )
       {
       functional->SetGaussianSmoothImagesSigma( SmoothSigmaFactor * templateGrid->GetMinDelta() );
       }
@@ -283,7 +300,7 @@ main( int argc, char* argv[] )
     if ( downsampleFrom == downsample )
       {
       if ( !TransformationsFromArchive )
-	functional->InitializeXforms( true /*alignCenters*/ );
+	cmtk::GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms( *functional, true /*alignCenters*/, AlignCentersOfMass, InitScales );
       functional->SetFreeAndRereadImages( true ); //
       functional->GetParamVector( v );
       }

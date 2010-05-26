@@ -68,30 +68,6 @@ AffineGroupwiseRegistrationRMIFunctional
 }
 
 void
-AffineGroupwiseRegistrationRMIFunctional::InitializeXforms
-( const bool alignCenters )
-{
-  const Vector3D centerTemplate = this->m_TemplateGrid->GetCenterCropRegion();
-  
-  this->m_XformVector.resize( this->m_ImageVector.size() );
-  for ( size_t i = 0; i < this->m_ImageVector.size(); ++i )
-    {
-    AffineXform::SmartPtr xform( new AffineXform );
-    xform->SetNumberDOFs( this->m_XformNumberDOFs );
-    xform->SetUseLogScaleFactors( true );
-    xform->SetCenter( centerTemplate.begin() );
-    this->m_XformVector[i] = xform;
- 
-    if ( alignCenters )
-      {
-      Vector3D center = this->m_ImageVector[i]->GetCenter();
-      center -= centerTemplate;
-      this->GetXformByIndex(i)->SetXlate( center.begin() );
-      }
-    }
-}
-
-void
 AffineGroupwiseRegistrationRMIFunctional::SetXforms
 ( const std::vector<AffineXform::SmartPtr>& xformVector )
 {

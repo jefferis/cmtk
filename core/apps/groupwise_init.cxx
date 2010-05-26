@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -42,6 +43,7 @@
 #include <cmtkUniformVolume.h>
 #include <cmtkClassStream.h>
 
+#include <cmtkGroupwiseRegistrationFunctionalBase.h>
 #include <cmtkGroupwiseRegistrationFunctionalAffineInitializer.h>
 #include <cmtkGroupwiseRegistrationOutput.h>
 
@@ -120,7 +122,7 @@ main( int argc, char* argv[] )
     exit( 1 );
     }
 
-  cmtk::GroupwiseRegistrationFunctionalAffineInitializer::SmartPtr initializer( new cmtk::GroupwiseRegistrationFunctionalAffineInitializer );
+  cmtk::GroupwiseRegistrationFunctionalBase::SmartPtr initializer( new cmtk::GroupwiseRegistrationFunctionalBase );
 
   int idx = 0;
   for ( std::vector<const char*>::const_iterator fnIt = fileNameList.begin(); fnIt != fileNameList.end(); ++fnIt, ++idx )
@@ -155,7 +157,7 @@ main( int argc, char* argv[] )
 			 templateGrid->m_Dims[0], templateGrid->m_Dims[1], templateGrid->m_Dims[2], templateGrid->m_Delta[0], templateGrid->m_Delta[1], templateGrid->m_Delta[2] );
     }
   
-  initializer->InitializeXforms( true /*alignCenters*/, AlignCentersOfMass, InitScales );
+  cmtk::GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms( *initializer, true /*alignCenters*/, AlignCentersOfMass, InitScales );
 
   cmtk::GroupwiseRegistrationOutput output;
   if ( PreDefinedTemplatePath )

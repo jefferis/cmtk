@@ -41,28 +41,19 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-GroupwiseRegistrationFunctionalAffineInitializer::GroupwiseRegistrationFunctionalAffineInitializer()
-{
-  this->m_ParametersPerXform = AffineXform::TotalNumberOfParameters;
-}
-
-GroupwiseRegistrationFunctionalAffineInitializer::~GroupwiseRegistrationFunctionalAffineInitializer()
-{
-}
-
 void
 GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms
-( const bool alignCenters, const bool alignCenterOfMass, const bool initScales )
+( GroupwiseRegistrationFunctionalBase& functional, const bool alignCenters, const bool alignCenterOfMass, const bool initScales )
 {
-  const size_t numberOfImages = this->m_ImageVector.size();
+  const size_t numberOfImages = functional.m_ImageVector.size();
 
-  const Vector3D centerTemplate = this->m_TemplateGrid->GetCenterCropRegion();
+  const Vector3D centerTemplate = functional.m_TemplateGrid->GetCenterCropRegion();
   
   std::vector<Vector3D> centers( numberOfImages );
   std::vector<Vector3D> firstOrderMoments;
   if ( initScales )
     firstOrderMoments.resize( numberOfImages );
-  this->m_XformVector.resize( numberOfImages );
+  functional.m_XformVector.resize( numberOfImages );
 
   Vector3D centerAverage;
   std::fill( centerAverage.begin(), centerAverage.end(), 0 );
@@ -76,16 +67,16 @@ GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms
 	{
 	if ( initScales )
 	  {
-	  centers[imageIdx] = this->m_ImageVector[imageIdx]->GetCenterOfMass( firstOrderMoments[imageIdx] );
+	  centers[imageIdx] = functional.m_ImageVector[imageIdx]->GetCenterOfMass( firstOrderMoments[imageIdx] );
 	  }
 	else
 	  {
-	  centers[imageIdx] = this->m_ImageVector[imageIdx]->GetCenterOfMass();
+	  centers[imageIdx] = functional.m_ImageVector[imageIdx]->GetCenterOfMass();
 	  }
 	}
       else
 	{
-	centers[imageIdx] = this->m_ImageVector[imageIdx]->GetCenter();
+	centers[imageIdx] = functional.m_ImageVector[imageIdx]->GetCenter();
 	}
       }
     centerAverage += centers[imageIdx];
@@ -104,7 +95,7 @@ GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms
     const Vector3D delta( centers[imageIdx] - centerAverage );
     
     xform->SetXlate( delta.begin() );
-    this->m_XformVector[imageIdx] = xform;
+    functional.m_XformVector[imageIdx] = xform;
     }
   
   // convert first order moments to scale with average log factor 0
@@ -122,7 +113,7 @@ GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms
     for ( size_t imageIdx = 0; imageIdx < numberOfImages; ++imageIdx )
       {
       firstOrderMoments[imageIdx] -= avgScales;
-      AffineXform::SmartPtr::DynamicCastFrom( this->m_XformVector[imageIdx] )->SetScales( firstOrderMoments[imageIdx].begin() );
+      AffineXform::SmartPtr::DynamicCastFrom( functional.m_XformVector[imageIdx] )->SetScales( firstOrderMoments[imageIdx].begin() );
       }
     }
 }

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -55,45 +56,24 @@ cmtk
 
 /** Affine initialization of groupwise registration functionals.
  */
-class GroupwiseRegistrationFunctionalAffineInitializer : 
-  public GroupwiseRegistrationFunctionalBase
+class GroupwiseRegistrationFunctionalAffineInitializer
 {
 public:
-  /// Type of parent class.
-  typedef GroupwiseRegistrationFunctionalBase Superclass;
-
   /// Type of this class.
   typedef GroupwiseRegistrationFunctionalAffineInitializer Self;
 
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
-  /// Constructor.
-  GroupwiseRegistrationFunctionalAffineInitializer();
-
-  /// Destructor.
-  virtual ~GroupwiseRegistrationFunctionalAffineInitializer();
-
   /** Initialize affine transformations.
    */
-  void InitializeXforms
-  ( const bool alignCenters = true, //!< If set, the centers of all target images will be aligned with the center of the template grid via translations.
-    const bool alignCenterOfMass = false, //!< If set, target images will be aligned via translations according to their centers of mass.
+  static void InitializeXforms
+  ( GroupwiseRegistrationFunctionalBase& functional, //!<The functional to initialize.
+    const bool alignCenters = true, //!< If set, the centers of all target images will be aligned with the center of the template grid via translations.
+    const bool alignCenterOfMass = false, ///!< If set, target images will be aligned via translations according to their centers of mass.
     const bool initScales = false //!< If set, approximate initial scaling factors will be computed based on image centers of mass and moments.
     );
-
-  /// Dummy function.
-  virtual Self::ReturnType Evaluate() { return 0; }
-
-  /// Dummy function.
-  virtual void InterpolateImage( const size_t, byte *const ) {}
 };
-
-/// Class stream write function.
-ClassStream& operator<<( ClassStream& stream, const GroupwiseRegistrationFunctionalAffineInitializer& func );
-
-/// Class stream read function.
-ClassStream& operator>>( ClassStream& stream, GroupwiseRegistrationFunctionalAffineInitializer& func );
 
 //@}
 
