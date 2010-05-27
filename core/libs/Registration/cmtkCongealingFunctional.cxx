@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -41,15 +42,15 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-template<class TXform,class THistogramBinType>
-CongealingFunctional<TXform,THistogramBinType>::CongealingFunctional() 
+template<class TXform>
+CongealingFunctional<TXform>::CongealingFunctional() 
   : m_NeedsUpdateStandardDeviationByPixel( true )
 {
   this->SetNumberOfHistogramBins( this->m_HistogramBins );
 }
 
-template<class TXform,class THistogramBinType>
-CongealingFunctional<TXform,THistogramBinType>::~CongealingFunctional()
+template<class TXform>
+CongealingFunctional<TXform>::~CongealingFunctional()
 {
   for ( size_t idx = 0; idx < this->m_HistogramKernel.size(); ++idx )
     if ( this->m_HistogramKernel[idx] )
@@ -57,9 +58,9 @@ CongealingFunctional<TXform,THistogramBinType>::~CongealingFunctional()
   this->m_HistogramKernel.clear();
 }
 
-template<class TXform,class THistogramBinType>
+template<class TXform>
 void
-CongealingFunctional<TXform,THistogramBinType>
+CongealingFunctional<TXform>
 ::SetNumberOfHistogramBins( const size_t numberOfHistogramBins )
 {
   this->m_HistogramBins = numberOfHistogramBins;
@@ -69,9 +70,9 @@ CongealingFunctional<TXform,THistogramBinType>
   this->Superclass::SetNumberOfHistogramBins( numberOfHistogramBins );
 }
 
-template<class TXform,class THistogramBinType>
+template<class TXform>
 void
-CongealingFunctional<TXform,THistogramBinType>::CreateGaussianKernels()
+CongealingFunctional<TXform>::CreateGaussianKernels()
 {
   for ( size_t idx = 0; idx < this->m_HistogramKernel.size(); ++idx )
     if ( this->m_HistogramKernel[idx] )
@@ -104,9 +105,9 @@ CongealingFunctional<TXform,THistogramBinType>::CreateGaussianKernels()
     }
 }
 
-template<class TXform,class THistogramBinType>
+template<class TXform>
 void
-CongealingFunctional<TXform,THistogramBinType>::SetTemplateGrid
+CongealingFunctional<TXform>::SetTemplateGrid
 ( UniformVolume::SmartPtr& templateGrid,
   const int downsample,
   const bool useTemplateData )
@@ -115,9 +116,9 @@ CongealingFunctional<TXform,THistogramBinType>::SetTemplateGrid
   this->m_NeedsUpdateStandardDeviationByPixel = true;
 }
 
-template<class TXform,class THistogramBinType>
-typename CongealingFunctional<TXform,THistogramBinType>::ReturnType
-CongealingFunctional<TXform,THistogramBinType>::Evaluate()
+template<class TXform>
+typename CongealingFunctional<TXform>::ReturnType
+CongealingFunctional<TXform>::Evaluate()
 {
   if ( this->m_NeedsUpdateStandardDeviationByPixel )
     this->UpdateStandardDeviationByPixel();
@@ -158,9 +159,9 @@ CongealingFunctional<TXform,THistogramBinType>::Evaluate()
     return -FLT_MAX;
 }
 
-template<class TXform,class THistogramBinType>
+template<class TXform>
 void
-CongealingFunctional<TXform,THistogramBinType>::EvaluateThread
+CongealingFunctional<TXform>::EvaluateThread
 ( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t )
 {
   EvaluateThreadParameters* threadParameters = static_cast<EvaluateThreadParameters*>( args );
@@ -230,9 +231,9 @@ CongealingFunctional<TXform,THistogramBinType>::EvaluateThread
   threadParameters->m_Count = count;
 }
 
-template<class TXform,class THistogramBinType>
+template<class TXform>
 void
-CongealingFunctional<TXform,THistogramBinType>::EvaluateProbabilisticThread
+CongealingFunctional<TXform>::EvaluateProbabilisticThread
 ( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t )
 {
   EvaluateThreadParameters* threadParameters = static_cast<EvaluateThreadParameters*>( args );
@@ -306,9 +307,9 @@ CongealingFunctional<TXform,THistogramBinType>::EvaluateProbabilisticThread
   threadParameters->m_Count = count;
 }
 
-template<class TXform,class THistogramBinType>
+template<class TXform>
 bool
-CongealingFunctional<TXform,THistogramBinType>
+CongealingFunctional<TXform>
 ::Wiggle()
 {
   bool wiggle = this->Superclass::Wiggle();
@@ -321,9 +322,9 @@ CongealingFunctional<TXform,THistogramBinType>
   return wiggle;
 }
 
-template<class TXform,class THistogramBinType>
+template<class TXform>
 void
-CongealingFunctional<TXform,THistogramBinType>
+CongealingFunctional<TXform>
 ::UpdateStandardDeviationByPixel()
 {
   if ( this->m_ProbabilisticSamples.size() )
@@ -364,9 +365,9 @@ CongealingFunctional<TXform,THistogramBinType>
   this->m_NeedsUpdateStandardDeviationByPixel = false;
 }
 
-template<class TXform,class THistogramBinType>
+template<class TXform>
 void
-CongealingFunctional<TXform,THistogramBinType>
+CongealingFunctional<TXform>
 ::UpdateStandardDeviationByPixelThreadFunc
 ( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {

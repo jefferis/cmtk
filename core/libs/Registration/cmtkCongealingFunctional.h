@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -62,7 +63,7 @@ cmtk
  *     Population Registration of 3D Data", ICCV 2005, Computer Vision for
  *     Biomedical Image Applications; Beijing, China
  */
-template<class TXform,class THistogramBinType=unsigned int>
+template<class TXform>
 class CongealingFunctional : 
   /** Inherit from template congealing base class. */
   public CongealingFunctionalBase<TXform>
@@ -72,7 +73,7 @@ public:
   typedef CongealingFunctionalBase<TXform> Superclass;
 
   /// Type of this class.
-  typedef CongealingFunctional<TXform,THistogramBinType> Self;
+  typedef CongealingFunctional<TXform> Self;
 
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
@@ -84,7 +85,7 @@ public:
   typedef typename XformType::SmartPtr XformPointer;
 
   /// Base type for histogram bins.
-  typedef THistogramBinType HistogramBinType;
+  typedef unsigned int HistogramBinType;
 
   /// Histogram type.
   typedef Histogram<HistogramBinType> HistogramType;
