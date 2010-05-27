@@ -1,5 +1,11 @@
 Release CMTK-1.3.1:
 
+- Refactored: completely reorganised the groupwise registration functional
+    hierarchy - instead of redundant member functions in leaf classes, we are
+    now using template specialization to inject the necessary transformation
+    model-dependent code at the base of the hierarchy. 
+- Fixed: previously undetected bug in AffineGroupwiseRegistrationRMI
+    functional effectively led to inverse transformations to be computed.
 - API: renamed CongealingFunctionalBase to more appropriate
     GroupwiseRegistrationFunctionalXformTemplate and removed unused second
     template parameter (histogram bin type) from several classes.

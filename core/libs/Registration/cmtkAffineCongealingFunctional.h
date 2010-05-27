@@ -38,13 +38,7 @@
 #include <cmtkCongealingFunctional.h>
 
 #include <cmtkSmartPtr.h>
-
-#include <cmtkUniformVolume.h>
 #include <cmtkAffineXform.h>
-#include <cmtkHistogram.h>
-
-#include <vector>
-
 #include <cmtkClassStream.h>
 
 namespace
@@ -78,62 +72,8 @@ public:
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
-  /// Constructor.
-  AffineCongealingFunctional();
-
-  /// Destructor.
-  virtual ~AffineCongealingFunctional();
-
-  /// Set number of degrees of freedom per transformation.
-  void SetXformNumberDOFs( const int numberDOFs );
-
-  /** Set affine transformations.
-   */
-  void SetXforms( const std::vector<AffineXform::SmartPtr>& xformVector );
-
-protected:
-  /// Number of DOFs per transformation.
-  int m_XformNumberDOFs;
-
-  /** Interpolate given moving image to template.
-   * This function overrides the interpolation function provided by the base
-   * class. It makes use of the fact that affine transformations preserve
-   * parallel lines for more efficient computation.
-   *\param idx Index of of to reformat to template. This also determines which
-   *  transformation is used.
-   *\param destination The reformatted pixel data is stored in this array.
-   *  Sufficient memory (for as many pixels as there are in the template grid)
-   *  must be allocated there.
-   */
-  virtual void InterpolateImage( const size_t idx, byte* const destination );
-
-private:
-  /// Thread function parameters for image interpolation.
-  class InterpolateImageThreadParameters : 
-    /// Inherit from generic thread parameters.
-    public ThreadParameters<Self>
-  {
-  public:
-    /// Index of the image to be interpolated.
-    size_t m_Idx;
-
-    /// Pointer to storage that will hold the reformatted pixel data.
-    byte* m_Destination;
-
-    const Vector3D* m_HashX;
-    const Vector3D* m_HashY;
-    const Vector3D* m_HashZ;
-  };
-
-  /// Image interpolation thread function.
-  static void InterpolateImageThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
-
-  /// Image interpolation with probabilistic sampling thread function.
-  static void InterpolateImageProbabilisticThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
-
   friend ClassStream& operator<<( ClassStream& stream, const AffineCongealingFunctional& func );
   friend ClassStream& operator>>( ClassStream& stream, AffineCongealingFunctional& func );
-
 };
 
 /// Class stream write function.

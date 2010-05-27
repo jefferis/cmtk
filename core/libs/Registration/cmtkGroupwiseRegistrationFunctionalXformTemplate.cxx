@@ -50,36 +50,10 @@ cmtk
 //@{
 
 template<class TXform>
-GroupwiseRegistrationFunctionalXformTemplate<TXform>::GroupwiseRegistrationFunctionalXformTemplate() :
-  m_HistogramBins( 64 ),
-  m_HistogramKernelRadiusMax( 0 ),
-  m_MaxRelativeNumberOutsidePixels( 0.99 ), // if there is an image with more then 99% pixels outside FOV, registration probably failed
-  m_CropImageHistograms( false )
+GroupwiseRegistrationFunctionalXformTemplate<TXform>::GroupwiseRegistrationFunctionalXformTemplate()
 {
-  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
-  this->m_NumberOfThreads = threadPool.GetNumberOfThreads();
-  this->m_NumberOfTasks = 4 * this->m_NumberOfThreads - 3;
-  this->m_TaskInfo.resize( this->m_NumberOfTasks );
-}
-
-template<class TXform>
-GroupwiseRegistrationFunctionalXformTemplate<TXform>::~GroupwiseRegistrationFunctionalXformTemplate()
-{
-}
-
-template<class TXform>
-void
-GroupwiseRegistrationFunctionalXformTemplate<TXform>
-::SetNumberOfHistogramBins( const size_t numberOfHistogramBins )
-{
-  this->m_HistogramBins = numberOfHistogramBins;
-  if ( this->m_OriginalImageVector.size() )
-    {
-    std::cerr << "WARNING: you called GroupwiseRegistrationFunctionalBase::SetNumberOfHistogramBins(),\n"
-	      << "         but target images were already set. To be safe, I am re-generating\n"
-	      << "         pre-scaled images.\n\n";
-    this->SetTargetImages( this->m_OriginalImageVector );
-    }
+  // allocate storage for four times me parallel tasks than threads in the global thread pool.
+  this->m_InterpolateTaskInfo.resize( 4 * ThreadPool::GetGlobalThreadPool().GetNumberOfThreads() );
 }
 
 template<class TXform>
@@ -88,24 +62,24 @@ GroupwiseRegistrationFunctionalXformTemplate<TXform>
 ::InterpolateImage
 ( const size_t idx, byte* const destination )
 { 
-  for ( size_t task = 0; task < this->m_NumberOfTasks; ++task )
+  for ( size_t task = 0; task < this->m_InterpolateTaskInfo.size(); ++task )
     {
-    this->m_TaskInfo[task].thisObject = this;
-    this->m_TaskInfo[task].m_Idx = idx;    
-    this->m_TaskInfo[task].m_Destination = destination;    
+    this->m_InterpolateTaskInfo[task].thisObject = this;
+    this->m_InterpolateTaskInfo[task].m_Idx = idx;    
+    this->m_InterpolateTaskInfo[task].m_Destination = destination;    
     }
 
   ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
-  if ( m_ProbabilisticSamples.size() )
-    threadPool.Run( InterpolateImageProbabilisticThread, this->m_TaskInfo );
+  if ( this->m_ProbabilisticSamples.size() )
+    threadPool.Run( InterpolateImageProbabilisticThread, this->m_InterpolateTaskInfo );
   else
-    threadPool.Run( InterpolateImageThread, this->m_TaskInfo );
+    threadPool.Run( InterpolateImageThread, this->m_InterpolateTaskInfo );
 
   // Sum number of pixels outside FOV from all tasks.
   size_t numberOfOutsidePixels = 0;
-  for ( size_t task = 0; task < this->m_NumberOfTasks; ++task )
+  for ( size_t task = 0; task < this->m_InterpolateTaskInfo.size(); ++task )
     {
-    numberOfOutsidePixels += this->m_TaskInfo[task].m_NumberOfOutsidePixels;
+    numberOfOutsidePixels += this->m_InterpolateTaskInfo[task].m_NumberOfOutsidePixels;
     }
 
   // Check whether more than defined proportion threshold was outside
@@ -113,56 +87,6 @@ GroupwiseRegistrationFunctionalXformTemplate<TXform>
     {
     throw typename Self::BadXform();
     }
-}
-
-template<class TXform>
-UniformVolume*
-GroupwiseRegistrationFunctionalXformTemplate<TXform>
-::PrepareSingleImage( UniformVolume::SmartPtr& image )
-{
-  UniformVolume* newTargetImage = this->Superclass::PrepareSingleImage( image );
-
-  TypedArray::SmartPtr data = newTargetImage->GetData();
-  if ( this->m_CropImageHistograms )
-    {
-    data->PruneHistogram( true, false, this->m_HistogramBins );
-    }
-  
-  data->Rescale( 1.0 * (this->m_HistogramBins-1) / data->GetRange().Width(), this->m_HistogramKernelRadiusMax );
-  
-  newTargetImage->SetData( TypedArray::SmartPtr( data->Convert( TYPE_BYTE ) ) );
-  return newTargetImage;
-}
-
-template<class TXform>
-void
-GroupwiseRegistrationFunctionalXformTemplate<TXform>
-::PrepareTargetImages()
-{
-  this->m_ImageVector.resize( this->m_OriginalImageVector.size() );
-
-#ifdef CMTK_BUILD_MPI
-  // using MPI, prepare only some of the images locally, obtain others from other nodes
-  const size_t imageFrom = this->m_RankMPI;
-  const size_t imageSkip = this->m_SizeMPI;
-#else
-  const size_t imageFrom = 0;
-  const size_t imageSkip = 1;
-#endif
-  for ( size_t i = imageFrom; i < this->m_ImageVector.size(); i += imageSkip )
-    {
-    this->m_ImageVector[i] = UniformVolume::SmartPtr( this->PrepareSingleImage( this->m_OriginalImageVector[i] ) );
-    }
-  
-#ifdef CMTK_BUILD_MPI
-  // obtain filtered, scaled image data from other nodes
-  for ( size_t i = 0; i < this->m_ImageVector.size(); ++i )
-    {
-    cmtk::mpi::Broadcast( MPI::COMM_WORLD, this->m_ImageVector[i], i % this->m_SizeMPI );
-    }
-#endif
-
-  this->m_PrivateUserBackgroundValue = this->m_UserBackgroundValue + this->m_HistogramKernelRadiusMax;
 }
 
 template<class TXform>

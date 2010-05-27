@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkGroupwiseRegistrationFunctionalBase.h>
+#include <cmtkGroupwiseRegistrationFunctionalXformTemplateBase.h>
 
 #include <cmtkSmartPtr.h>
 #include <cmtkThreads.h>
@@ -62,11 +62,11 @@ cmtk
 template<class TXform>
 class GroupwiseRegistrationFunctionalXformTemplate : 
   /** Inherit from generic groupwise functional. */
-  public GroupwiseRegistrationFunctionalBase
+  public GroupwiseRegistrationFunctionalXformTemplateBase<TXform>
 {
 public:
   /// Type of this class.
-  typedef GroupwiseRegistrationFunctionalBase Superclass;
+  typedef GroupwiseRegistrationFunctionalXformTemplateBase<TXform> Superclass;
   
   /// Type of this class.
   typedef GroupwiseRegistrationFunctionalXformTemplate<TXform> Self;
@@ -74,62 +74,11 @@ public:
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
-  /// Transformation type.
-  typedef TXform XformType;
-
-  /// Smart pointer to transformation type.
-  typedef typename XformType::SmartPtr XformPointer;
-
   /// Constructor.
   GroupwiseRegistrationFunctionalXformTemplate();
 
   /// Destructor.
-  virtual ~GroupwiseRegistrationFunctionalXformTemplate();
-
-  /// Set number of histogram bins.
-  virtual void SetNumberOfHistogramBins( const size_t numberOfHistogramBins );
-
-  /// Set number of histogram bins.
-  virtual void SetCropImageHistograms( const bool crop = true )
-  {
-    this->m_CropImageHistograms = crop;
-  }
-
-  /** Get coordinate transformation for one image in the group.
-   *\param idx Index of the volume/transformation.
-   *\return Transformation for the selected volume.
-   */
-  virtual const XformType* GetXformByIndex( const size_t idx ) const
-  {
-    return XformType::SmartPtr::DynamicCastFrom( this->m_XformVector[idx] );
-  }
-
-  /** Get coordinate transformation for one image in the group.
-   *\param idx Index of the volume/transformation.
-   *\return Transformation for the selected volume.
-   */
-  virtual typename XformType::SmartPtr GetXformByIndex( const size_t idx )
-  {
-    return XformType::SmartPtr::DynamicCastFrom( this->m_XformVector[idx] );
-  }
-  
-  /** Get coordinate transformation for one active image in the group.
-   *\param idx Index of the volume/transformation.
-   *\return Transformation for the selected volume.
-   */
-  virtual const XformType* GetActiveXformByIndex( const size_t idx ) const
-  {
-    return XformType::SmartPtr::DynamicCastFrom( this->m_XformVector[idx + this->m_ActiveXformsFrom] );
-  }
-
-  /** Get coordinate transformation for one active image in the group.
-   *\param idx Index of the volume/transformation.
-   *\return Transformation for the selected volume.
-   */
-  virtual typename XformType::SmartPtr GetActiveXformByIndex( const size_t idx )
-  {
-    return XformType::SmartPtr::DynamicCastFrom( this->m_XformVector[idx + this->m_ActiveXformsFrom] );
-  }
+  virtual ~GroupwiseRegistrationFunctionalXformTemplate() {}
 
 protected:
   /** Interpolate given moving image to template.
@@ -141,30 +90,7 @@ protected:
    */
   virtual void InterpolateImage( const size_t idx, byte* const destination );
 
-  /// Number of running threads in my pool.
-  size_t m_NumberOfThreads;
-
-  /// Number of parallel tasks to partition the computation into.
-  size_t m_NumberOfTasks;
-
-  /** Number of (usable) histogram bins.
-   */
-  size_t m_HistogramBins;
-
-  /** Maximal radius of histogram kernels.
-   */
-  size_t m_HistogramKernelRadiusMax;
-
-  /** Threshold for maximum fraction of reformatted pixels from any given image that may be outside FOV.
-   * If the number of outside pixels for any one image exceeds this threshold (as a fraction of
-   * total number of reformatted pixels) then an exception is thrown.
-   */
-  float m_MaxRelativeNumberOutsidePixels;
-
 private:
-  /// Crop image histograms to get rid of high-intensity low-probability samples.
-  bool m_CropImageHistograms;
-
   /// Thread parameters with no further data.
   typedef ThreadParameters<Self> ThreadParametersType;
 
@@ -185,27 +111,19 @@ private:
   };
   
   /// Task info blocks.
-  std::vector<InterpolateImageThreadParameters> m_TaskInfo;
+  std::vector<InterpolateImageThreadParameters> m_InterpolateTaskInfo;
 
   /// Image interpolation thread function.
   static void InterpolateImageThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCont );
 
   /// Image interpolation thread function with probabilistic sampling.
   static void InterpolateImageProbabilisticThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCont );
-  
-  /// Prepare data for one image.
-  virtual UniformVolume* PrepareSingleImage( UniformVolume::SmartPtr& image );
-
-  /// Smooth and pre-scale target images.
-  virtual void PrepareTargetImages();
-
-protected:
-  /** User-defined background value from parent class, transformed to histogram bin index. */
-  byte m_PrivateUserBackgroundValue;
 };
 
 //@}
 
 } // namespace cmtk
+
+#include <cmtkGroupwiseRegistrationFunctionalXformTemplate_Affine.h>
 
 #endif // #ifndef __cmtkGroupwiseRegistrationFunctionalXformTemplate_h_included_

@@ -380,6 +380,12 @@ public:
   void DebugWriteImages();
 
 protected:
+  /// Number of threads in thread pool (for allocation of temporary thread memory).
+  size_t m_NumberOfThreads;
+
+  /// Number of tasks for thread pool (for allocation of task arguments and results).
+  size_t m_NumberOfTasks;
+
   /// Flag for freeing and re-reading original images if using smoothed data.
   bool m_FreeAndRereadImages;
 

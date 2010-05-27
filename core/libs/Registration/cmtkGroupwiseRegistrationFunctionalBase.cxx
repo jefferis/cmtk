@@ -37,6 +37,7 @@
 #include <cmtkMathUtil.h>
 #include <cmtkVolumeIO.h>
 #include <cmtkConsole.h>
+#include <cmtkThreadPool.h>
 
 #include <cmtkAnatomicalOrientation.h>
 
@@ -75,6 +76,9 @@ GroupwiseRegistrationFunctionalBase
     m_UserBackgroundFlag( false ),
     m_ParametersPerXform( 0 )
 {
+  this->m_NumberOfThreads = ThreadPool::GetGlobalThreadPool().GetNumberOfThreads();
+  this->m_NumberOfTasks = 4 * this->m_NumberOfThreads - 3;
+
   this->m_Data.clear();
 #ifdef CMTK_BUILD_MPI
   this->m_RankMPI = MPI::COMM_WORLD.Get_rank();

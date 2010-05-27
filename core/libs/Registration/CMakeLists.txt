@@ -30,9 +30,7 @@
 
 # Sources of non-templated classes.
 SET(cmtkRegistration_SRCS
-  cmtkAffineCongealingFunctional.cxx
   cmtkAffineCongealingFunctionalIO.cxx
-  cmtkAffineGroupwiseRegistrationRMIFunctional.cxx
   cmtkAffineGroupwiseRegistrationRMIFunctionalIO.cxx
   cmtkAffineRegistrationCommandLine.cxx
   cmtkAffineRegistration.cxx
@@ -45,6 +43,7 @@ SET(cmtkRegistration_SRCS
   cmtkGroupwiseRegistrationFunctionalAffineInitializer.cxx
   cmtkGroupwiseRegistrationFunctionalBase.cxx
   cmtkGroupwiseRegistrationFunctionalXformTemplate.cxx
+  cmtkGroupwiseRegistrationFunctionalXformTemplateBase.cxx
   cmtkGroupwiseRegistrationOutput.cxx
   cmtkGroupwiseRegistrationRMIFunctional.cxx
   cmtkImagePairRegistration.cxx

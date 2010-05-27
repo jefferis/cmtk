@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -73,8 +74,6 @@ GroupwiseRegistrationRMIFunctional<TXform>
 ::Evaluate()
 {
   ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
-  const size_t numberOfThreads = threadPool.GetNumberOfThreads();
-  const size_t numberOfTasks = 4 * numberOfThreads - 3;
   const size_t numberOfImages = this->m_ImageVector.size();
 
   this->m_CovarianceMatrix.Resize( numberOfImages, numberOfImages ); // needs no reset
@@ -86,11 +85,11 @@ GroupwiseRegistrationRMIFunctional<TXform>
   this->m_SumsVector.resize( numberOfImages );
   std::fill( this->m_SumsVector.begin(), this->m_SumsVector.end(), 0 );
 
-  this->m_ThreadSumOfProductsMatrix.resize( numberOfThreads );
-  this->m_ThreadSumsVector.resize( numberOfThreads );
+  this->m_ThreadSumOfProductsMatrix.resize( this->m_NumberOfThreads );
+  this->m_ThreadSumsVector.resize( this->m_NumberOfThreads );
 
-  std::vector<EvaluateThreadParameters> params( numberOfTasks );
-  for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx )
+  std::vector<EvaluateThreadParameters> params( this->m_NumberOfTasks );
+  for ( size_t taskIdx = 0; taskIdx < this->m_NumberOfTasks; ++taskIdx )
     {
     params[taskIdx].thisObject = this;
     }
