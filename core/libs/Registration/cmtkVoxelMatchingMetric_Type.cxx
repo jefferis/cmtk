@@ -51,7 +51,8 @@ VoxelMatchingMetric_Type<T,DT>::ImageData::Init
   Data = static_cast<T*>( DataArray->GetDataPtr() );
   NumberOfSamples = this->DataArray->GetDataSize();
 
-  BinOffset = DataArray->GetRange().m_LowerBound;
+  this->m_ValueRange = DataArray->GetRange();
+  BinOffset = this->m_ValueRange.m_LowerBound;
   BinWidth = 1;
 
   if ( srcArray->GetPaddingFlag() )
@@ -172,10 +173,9 @@ VoxelMatchingMetric_Type<T,DT>::ImageData::Init
       } 
     }
   
-  ValueRange[0] = 0;
-  ValueRange[1] = static_cast<Types::DataItem>( numBins - 1 );
+  this->m_ValueRange = Types::DataItemRange( 0, static_cast<Types::DataItem>( numBins - 1 ) );
   
-  return Padding = numBins;
+  return (Padding = numBins);
 }
 
 template<class T,ScalarDataType DT>

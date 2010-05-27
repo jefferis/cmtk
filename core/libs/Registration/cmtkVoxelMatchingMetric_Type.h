@@ -87,7 +87,7 @@ public:
     Types::DataItem BinWidth;
     
     /// Value range.
-    Types::DataItem ValueRange[2];
+    Types::DataItemRange m_ValueRange;
     
     /// Number of pixels per dimension in the original image.
     DataGrid::IndexType ImageDims;
@@ -98,13 +98,13 @@ public:
     /// Get value range of distribution as stored herein.
     const Types::DataItemRange GetValueRange() const
     {
-      return Types::DataItemRange( ValueRange[0], ValueRange[1] );
+      return this->m_ValueRange;
     }
 
     /// Convert value to bin.
     byte ValueToIndex( const Types::DataItem value )
     {
-      return static_cast<byte>( (std::min( std::max( value, this->ValueRange[0] ), this->ValueRange[1] )- this->BinOffset) / BinWidth );
+      return static_cast<byte>( (std::min( std::max( value, this->m_ValueRange.m_LowerBound ), this->m_ValueRange.m_UpperBound )- this->BinOffset) / BinWidth );
     }
     
     /// Default constructor.
