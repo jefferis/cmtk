@@ -2,16 +2,22 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
-Release Notes -- CMTK 1.3.0
+Release Notes -- CMTK 1.3.1
 ===========================
 
-This is a major feature release of CMTK. It adds support for storing images
-and registration transformations between them in an SQLite database. This
-database can then be queried to identify transformations between any two given
-images.
+This is a bugfix and minor feature release of CMTK.
 
-In addition, many new features have been added, numerous bugs fixed, and
-overall code quality and design have been improved in many places.
+The major change in this release relates to the bundled zlib library. First,
+the library code has been updated to the latest available release,
+1.2.5. Second, on systems where zlib is already installed, CMTK will now
+require to use that and will refuse to build and use the bundled zlib. This is
+to avoid version problems when Qt support is also activated, as Qt is commonly
+dynamically linked against the system zlib.
+
+The second relevant change relates to writing of compressed vs. uncompressed
+image files. When writing images in NIFTI format, comp[ression can now be
+activated by appending ".gz" to the output path, even when the
+CMTK_WRITE_UNCOMPRESSED environment variable is defined.
 
 For a complete list of changes and fixes, see the CHANGELOG file.
 

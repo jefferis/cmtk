@@ -145,9 +145,12 @@ main( int argc, char *argv[] )
 	
 	if ( dataArray ) 
 	  {
-	  const cmtk::Types::DataItemRange range = dataArray->GetRange();
-	  fprintf( stdout, "DTYPE\t%s\nMINDATA\t%f\nMAXDATA\t%f\n", cmtk::DataTypeName[ dataArray->GetType() ], 
-		   static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
+	  fprintf( stdout, "DTYPE\t%s\n", cmtk::DataTypeName[ dataArray->GetType() ] );
+	  if ( dataArray->GetDataSize() )
+	    {
+	    const cmtk::Types::DataItemRange range = dataArray->GetRange();
+	    fprintf( stdout, "MINDATA\t%f\nMAXDATA\t%f\n", static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
+	    }
 	  }
 	}
       else
@@ -173,9 +176,16 @@ main( int argc, char *argv[] )
       
 	if ( dataArray ) 
 	  {
-	  const cmtk::Types::DataItemRange range = dataArray->GetRange();
-	  cmtk::StdOut.printf( "Data type %s, range [%f .. %f]\n", cmtk::DataTypeName[ dataArray->GetType() ], 
-			       static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
+	  cmtk::StdOut.printf( "Data type %s", cmtk::DataTypeName[ dataArray->GetType() ] );
+	  if ( dataArray->GetDataSize() )
+	    {
+	    const cmtk::Types::DataItemRange range = dataArray->GetRange();
+	    cmtk::StdOut.printf( ", range [%f .. %f]\n", static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
+	    }
+	  else
+	    {
+	    cmtk::StdOut << "\n";
+	    }
 	  } 
 	else
 	  {
