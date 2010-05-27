@@ -34,7 +34,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCongealingFunctionalBase.h>
+#include <cmtkGroupwiseRegistrationFunctionalXformTemplate.h>
 
 #include <cmtkSmartPtr.h>
 #include <cmtkThreads.h>
@@ -58,11 +58,11 @@ cmtk
  */
 template<class TXform>
 class GroupwiseRegistrationRMIFunctional : 
-  public CongealingFunctionalBase<TXform>
+  public GroupwiseRegistrationFunctionalXformTemplate<TXform>
 {
 public:
   /// Type of this class.
-  typedef CongealingFunctionalBase<TXform> Superclass;
+  typedef GroupwiseRegistrationFunctionalXformTemplate<TXform> Superclass;
 
   /// Type of this class.
   typedef GroupwiseRegistrationRMIFunctional<TXform> Self;

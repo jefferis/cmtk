@@ -38,13 +38,13 @@ SET(cmtkRegistration_SRCS
   cmtkAffineRegistration.cxx
   cmtkBestDirectionOptimizer.cxx
   cmtkBestNeighbourOptimizer.cxx
-  cmtkCongealingFunctionalBase.cxx
   cmtkCongealingFunctional.cxx
   cmtkElasticRegistrationCommandLine.cxx
   cmtkElasticRegistration.cxx
   cmtkFunctionalAffine2D.cxx
   cmtkGroupwiseRegistrationFunctionalAffineInitializer.cxx
   cmtkGroupwiseRegistrationFunctionalBase.cxx
+  cmtkGroupwiseRegistrationFunctionalXformTemplate.cxx
   cmtkGroupwiseRegistrationOutput.cxx
   cmtkGroupwiseRegistrationRMIFunctional.cxx
   cmtkImagePairRegistration.cxx

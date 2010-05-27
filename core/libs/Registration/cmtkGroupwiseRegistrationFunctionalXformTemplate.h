@@ -30,8 +30,8 @@
 //
 */
 
-#ifndef __cmtkCongealingFunctionalBase_h_included_
-#define __cmtkCongealingFunctionalBase_h_included_
+#ifndef __cmtkGroupwiseRegistrationFunctionalXformTemplate_h_included_
+#define __cmtkGroupwiseRegistrationFunctionalXformTemplate_h_included_
 
 #include <cmtkconfig.h>
 
@@ -60,7 +60,7 @@ cmtk
 /** Base class for groupwise registration functionals.
  */
 template<class TXform>
-class CongealingFunctionalBase : 
+class GroupwiseRegistrationFunctionalXformTemplate : 
   /** Inherit from generic groupwise functional. */
   public GroupwiseRegistrationFunctionalBase
 {
@@ -69,7 +69,7 @@ public:
   typedef GroupwiseRegistrationFunctionalBase Superclass;
   
   /// Type of this class.
-  typedef CongealingFunctionalBase<TXform> Self;
+  typedef GroupwiseRegistrationFunctionalXformTemplate<TXform> Self;
 
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
@@ -81,10 +81,10 @@ public:
   typedef typename XformType::SmartPtr XformPointer;
 
   /// Constructor.
-  CongealingFunctionalBase();
+  GroupwiseRegistrationFunctionalXformTemplate();
 
   /// Destructor.
-  virtual ~CongealingFunctionalBase();
+  virtual ~GroupwiseRegistrationFunctionalXformTemplate();
 
   /// Set number of histogram bins.
   virtual void SetNumberOfHistogramBins( const size_t numberOfHistogramBins );
@@ -208,4 +208,4 @@ protected:
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkCongealingFunctionalBase_h_included_
+#endif // #ifndef __cmtkGroupwiseRegistrationFunctionalXformTemplate_h_included_

@@ -32,7 +32,7 @@
 
 //#define DEBUG_COMM
 
-#include <cmtkCongealingFunctionalBase.h>
+#include <cmtkGroupwiseRegistrationFunctionalXformTemplate.h>
 
 #include <cmtkMathUtil.h>
 #include <cmtkVolumeIO.h>
@@ -50,7 +50,7 @@ cmtk
 //@{
 
 template<class TXform>
-CongealingFunctionalBase<TXform>::CongealingFunctionalBase() :
+GroupwiseRegistrationFunctionalXformTemplate<TXform>::GroupwiseRegistrationFunctionalXformTemplate() :
   m_HistogramBins( 64 ),
   m_HistogramKernelRadiusMax( 0 ),
   m_MaxRelativeNumberOutsidePixels( 0.99 ), // if there is an image with more then 99% pixels outside FOV, registration probably failed
@@ -63,13 +63,13 @@ CongealingFunctionalBase<TXform>::CongealingFunctionalBase() :
 }
 
 template<class TXform>
-CongealingFunctionalBase<TXform>::~CongealingFunctionalBase()
+GroupwiseRegistrationFunctionalXformTemplate<TXform>::~GroupwiseRegistrationFunctionalXformTemplate()
 {
 }
 
 template<class TXform>
 void
-CongealingFunctionalBase<TXform>
+GroupwiseRegistrationFunctionalXformTemplate<TXform>
 ::SetNumberOfHistogramBins( const size_t numberOfHistogramBins )
 {
   this->m_HistogramBins = numberOfHistogramBins;
@@ -84,7 +84,7 @@ CongealingFunctionalBase<TXform>
 
 template<class TXform>
 void
-CongealingFunctionalBase<TXform>
+GroupwiseRegistrationFunctionalXformTemplate<TXform>
 ::InterpolateImage
 ( const size_t idx, byte* const destination )
 { 
@@ -117,7 +117,7 @@ CongealingFunctionalBase<TXform>
 
 template<class TXform>
 UniformVolume*
-CongealingFunctionalBase<TXform>
+GroupwiseRegistrationFunctionalXformTemplate<TXform>
 ::PrepareSingleImage( UniformVolume::SmartPtr& image )
 {
   UniformVolume* newTargetImage = this->Superclass::PrepareSingleImage( image );
@@ -136,7 +136,7 @@ CongealingFunctionalBase<TXform>
 
 template<class TXform>
 void
-CongealingFunctionalBase<TXform>
+GroupwiseRegistrationFunctionalXformTemplate<TXform>
 ::PrepareTargetImages()
 {
   this->m_ImageVector.resize( this->m_OriginalImageVector.size() );
@@ -167,7 +167,7 @@ CongealingFunctionalBase<TXform>
 
 template<class TXform>
 void
-CongealingFunctionalBase<TXform>::InterpolateImageThread
+GroupwiseRegistrationFunctionalXformTemplate<TXform>::InterpolateImageThread
 ( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
@@ -219,7 +219,7 @@ CongealingFunctionalBase<TXform>::InterpolateImageThread
 
 template<class TXform>
 void
-CongealingFunctionalBase<TXform>::InterpolateImageProbabilisticThread
+GroupwiseRegistrationFunctionalXformTemplate<TXform>::InterpolateImageProbabilisticThread
 ( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
@@ -268,5 +268,5 @@ CongealingFunctionalBase<TXform>::InterpolateImageProbabilisticThread
 #include <cmtkAffineXform.h>
 #include <cmtkSplineWarpXform.h>
 
-template class cmtk::CongealingFunctionalBase<cmtk::AffineXform>;
-template class cmtk::CongealingFunctionalBase<cmtk::SplineWarpXform>;
+template class cmtk::GroupwiseRegistrationFunctionalXformTemplate<cmtk::AffineXform>;
+template class cmtk::GroupwiseRegistrationFunctionalXformTemplate<cmtk::SplineWarpXform>;

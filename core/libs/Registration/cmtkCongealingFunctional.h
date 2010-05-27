@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCongealingFunctionalBase.h>
+#include <cmtkGroupwiseRegistrationFunctionalXformTemplate.h>
 
 #include <cmtkSmartPtr.h>
 #include <cmtkThreads.h>
@@ -66,11 +66,11 @@ cmtk
 template<class TXform>
 class CongealingFunctional : 
   /** Inherit from template congealing base class. */
-  public CongealingFunctionalBase<TXform>
+  public GroupwiseRegistrationFunctionalXformTemplate<TXform>
 {
 public:
   /// Type of parent class.
-  typedef CongealingFunctionalBase<TXform> Superclass;
+  typedef GroupwiseRegistrationFunctionalXformTemplate<TXform> Superclass;
 
   /// Type of this class.
   typedef CongealingFunctional<TXform> Self;

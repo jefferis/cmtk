@@ -1,5 +1,8 @@
 Release CMTK-1.3.1:
 
+- API: renamed CongealingFunctionalBase to more appropriate
+    GroupwiseRegistrationFunctionalXformTemplate and removed unused second
+    template parameter (histogram bin type) from several classes.
 - Improved: CMTK can now determine whether to write compressed (gz) or
     uncompressed NIFTI images based on the given file name, e.g., image.nii.gz
     for compressed vs. image.nii for uncompressed. Note that for this to work
