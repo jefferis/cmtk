@@ -49,8 +49,8 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-template<class TXform,class THistogramBinType>
-CongealingFunctionalBase<TXform,THistogramBinType>::CongealingFunctionalBase() :
+template<class TXform>
+CongealingFunctionalBase<TXform>::CongealingFunctionalBase() :
   m_HistogramBins( 64 ),
   m_HistogramKernelRadiusMax( 0 ),
   m_MaxRelativeNumberOutsidePixels( 0.99 ), // if there is an image with more then 99% pixels outside FOV, registration probably failed
@@ -62,14 +62,14 @@ CongealingFunctionalBase<TXform,THistogramBinType>::CongealingFunctionalBase() :
   this->m_TaskInfo.resize( this->m_NumberOfTasks );
 }
 
-template<class TXform,class THistogramBinType>
-CongealingFunctionalBase<TXform,THistogramBinType>::~CongealingFunctionalBase()
+template<class TXform>
+CongealingFunctionalBase<TXform>::~CongealingFunctionalBase()
 {
 }
 
-template<class TXform,class THistogramBinType>
+template<class TXform>
 void
-CongealingFunctionalBase<TXform,THistogramBinType>
+CongealingFunctionalBase<TXform>
 ::SetNumberOfHistogramBins( const size_t numberOfHistogramBins )
 {
   this->m_HistogramBins = numberOfHistogramBins;
@@ -82,9 +82,9 @@ CongealingFunctionalBase<TXform,THistogramBinType>
     }
 }
 
-template<class TXform,class THistogramBinType>
+template<class TXform>
 void
-CongealingFunctionalBase<TXform,THistogramBinType>
+CongealingFunctionalBase<TXform>
 ::InterpolateImage
 ( const size_t idx, byte* const destination )
 { 
@@ -115,9 +115,9 @@ CongealingFunctionalBase<TXform,THistogramBinType>
     }
 }
 
-template<class TXform,class THistogramBinType>
+template<class TXform>
 UniformVolume*
-CongealingFunctionalBase<TXform,THistogramBinType>
+CongealingFunctionalBase<TXform>
 ::PrepareSingleImage( UniformVolume::SmartPtr& image )
 {
   UniformVolume* newTargetImage = this->Superclass::PrepareSingleImage( image );
@@ -134,9 +134,9 @@ CongealingFunctionalBase<TXform,THistogramBinType>
   return newTargetImage;
 }
 
-template<class TXform,class THistogramBinType>
+template<class TXform>
 void
-CongealingFunctionalBase<TXform,THistogramBinType>
+CongealingFunctionalBase<TXform>
 ::PrepareTargetImages()
 {
   this->m_ImageVector.resize( this->m_OriginalImageVector.size() );
@@ -165,9 +165,9 @@ CongealingFunctionalBase<TXform,THistogramBinType>
   this->m_PrivateUserBackgroundValue = this->m_UserBackgroundValue + this->m_HistogramKernelRadiusMax;
 }
 
-template<class TXform,class THistogramBinType>
+template<class TXform>
 void
-CongealingFunctionalBase<TXform,THistogramBinType>::InterpolateImageThread
+CongealingFunctionalBase<TXform>::InterpolateImageThread
 ( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
@@ -217,9 +217,9 @@ CongealingFunctionalBase<TXform,THistogramBinType>::InterpolateImageThread
     }
 }
 
-template<class TXform,class THistogramBinType>
+template<class TXform>
 void
-CongealingFunctionalBase<TXform,THistogramBinType>::InterpolateImageProbabilisticThread
+CongealingFunctionalBase<TXform>::InterpolateImageProbabilisticThread
 ( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
@@ -270,7 +270,3 @@ CongealingFunctionalBase<TXform,THistogramBinType>::InterpolateImageProbabilisti
 
 template class cmtk::CongealingFunctionalBase<cmtk::AffineXform>;
 template class cmtk::CongealingFunctionalBase<cmtk::SplineWarpXform>;
-
-template class cmtk::CongealingFunctionalBase<cmtk::AffineXform,int>;
-template class cmtk::CongealingFunctionalBase<cmtk::SplineWarpXform,int>;
-

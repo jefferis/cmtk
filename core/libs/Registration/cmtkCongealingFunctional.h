@@ -65,11 +65,11 @@ cmtk
 template<class TXform,class THistogramBinType=unsigned int>
 class CongealingFunctional : 
   /** Inherit from template congealing base class. */
-  public CongealingFunctionalBase<TXform,THistogramBinType>
+  public CongealingFunctionalBase<TXform>
 {
 public:
   /// Type of parent class.
-  typedef CongealingFunctionalBase<TXform,THistogramBinType> Superclass;
+  typedef CongealingFunctionalBase<TXform> Superclass;
 
   /// Type of this class.
   typedef CongealingFunctional<TXform,THistogramBinType> Self;

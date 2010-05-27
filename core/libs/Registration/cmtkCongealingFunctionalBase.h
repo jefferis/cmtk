@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -59,7 +59,7 @@ cmtk
 
 /** Base class for groupwise registration functionals.
  */
-template<class TXform,class THistogramBinType=unsigned int>
+template<class TXform>
 class CongealingFunctionalBase : 
   /** Inherit from generic groupwise functional. */
   public GroupwiseRegistrationFunctionalBase
@@ -69,7 +69,7 @@ public:
   typedef GroupwiseRegistrationFunctionalBase Superclass;
   
   /// Type of this class.
-  typedef CongealingFunctionalBase<TXform,THistogramBinType> Self;
+  typedef CongealingFunctionalBase<TXform> Self;
 
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
@@ -79,9 +79,6 @@ public:
 
   /// Smart pointer to transformation type.
   typedef typename XformType::SmartPtr XformPointer;
-
-  /// Base type for histogram bins.
-  typedef THistogramBinType HistogramBinType;
 
   /// Constructor.
   CongealingFunctionalBase();
