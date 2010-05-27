@@ -124,10 +124,13 @@ TypedArraySimilarityMemory::CreateHistogram
   const unsigned int dataSize = array0->GetDataSize();
   const size_t numBins = std::max<unsigned>( std::min<unsigned>( static_cast<unsigned>( sqrt( (float)dataSize ) ), this->MaxNumBins ), this->MinNumBins );
   
+  Types::DataItemRange rangeX = this->GetRangeX( array0, numBins );
+  Types::DataItemRange rangeY = this->GetRangeY( array1, numBins );
+
   JointHistogram<unsigned int>::SmartPtr histogram( new JointHistogram<unsigned int>( this->NumberBinsX, this->NumberBinsY ) );
   
-  histogram->SetRangeX( this->GetRangeX( array0, numBins ) );
-  histogram->SetRangeY( this->GetRangeY( array1, numBins ) );
+  histogram->SetRangeX( rangeX );
+  histogram->SetRangeY( rangeY );
 
   return histogram;
 }
