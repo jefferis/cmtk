@@ -268,42 +268,8 @@ size_t CompressedStream::Read ( void *data, size_t size, size_t count )
   return fread( data, size, count, File ); 
 }
 
-size_t
-CompressedStream::Read ( void*& data ) 
-{
-  if ( m_FilePointerMode == FILE_POINTER_ZLIB ) 
-    {
-    gzseek( GzFile, 0, SEEK_END );
-    size_t length = gztell( GzFile );
-    gzseek( GzFile, 0, SEEK_SET );
-    
-    data = Memory::AllocateArray<char>( length );
-    if ( length != static_cast<size_t>( gzread( GzFile, data, length ) ) ) 
-      {
-      Memory::DeleteArray( data );
-      data = NULL;
-      length = 0;
-      }
-    
-    return length;
-    }
-
-  fseek( File, 0, SEEK_END );
-  size_t length = ftell( File );
-  fseek( File, 0, SEEK_SET );
-  
-  data = Memory::AllocateArray<char>( length );
-  if ( length != fread( data, 1, length, File ) ) 
-    {
-    Memory::DeleteArray( data );
-    data = NULL;
-    length = 0;
-    }
-  
-  return length;
-}
-
-int CompressedStream::Get ( char &c)
+int
+CompressedStream::Get ( char &c)
 {
   int data;
   if ( m_FilePointerMode == FILE_POINTER_ZLIB )

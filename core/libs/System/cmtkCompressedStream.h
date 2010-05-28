@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -94,9 +95,6 @@ public:
 
   /// Read block of data.
   size_t Read ( void *data, size_t size, size_t count );
-
-  /// Read complete data.
-  size_t Read ( void*& data );
 
   /// Read a single character from the stream.
   int Get ( char &c);
