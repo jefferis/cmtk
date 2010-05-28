@@ -280,7 +280,7 @@ CompressedStream::Read ( void*& data )
     data = Memory::AllocateArray<char>( length );
     if ( length != static_cast<size_t>( gzread( GzFile, data, length ) ) ) 
       {
-      Memory::Delete( data );
+      Memory::DeleteArray( data );
       data = NULL;
       length = 0;
       }
@@ -295,7 +295,7 @@ CompressedStream::Read ( void*& data )
   data = Memory::AllocateArray<char>( length );
   if ( length != fread( data, 1, length, File ) ) 
     {
-    Memory::Delete( data );
+    Memory::DeleteArray( data );
     data = NULL;
     length = 0;
     }
