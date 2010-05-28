@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -49,6 +50,7 @@
 #endif
 
 #include <cmtkConsole.h>
+#include <cmtkMemory.h>
 
 #if defined(_MSC_VER)
 #define CMTK_FILE_MODE "rb"
@@ -275,10 +277,10 @@ CompressedStream::Read ( void*& data )
     size_t length = gztell( GzFile );
     gzseek( GzFile, 0, SEEK_SET );
     
-    data = malloc( length );
+    data = Memory::AllocateArray<char>( length );
     if ( length != static_cast<size_t>( gzread( GzFile, data, length ) ) ) 
       {
-      free( data );
+      Memory::Delete( data );
       data = NULL;
       length = 0;
       }
@@ -290,10 +292,10 @@ CompressedStream::Read ( void*& data )
   size_t length = ftell( File );
   fseek( File, 0, SEEK_SET );
   
-  data = malloc( length );
+  data = Memory::AllocateArray<char>( length );
   if ( length != fread( data, 1, length, File ) ) 
     {
-    free( data );
+    Memory::Delete( data );
     data = NULL;
     length = 0;
     }
