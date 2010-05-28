@@ -111,6 +111,15 @@ SET(testList ${testList}
   groupwise_rmiBackground 
   groupwise_rmiZeroSumSmooth)
 
+# ==========================================
+# Tests for "congeal_warp" tool
+SET(testList ${testList} 
+  groupwise_rmi_warpFromInit
+  groupwise_rmi_warpFitFromInit
+  groupwise_rmi_warpFromInitZeroSum
+  groupwise_rmi_warpUseTemplate
+  )
+
 IF(NOT CMTK_USE_MPI)
   # ==========================================
   # Tests for xml and wiki markups
@@ -623,6 +632,11 @@ SET_TESTS_PROPERTIES(congeal_warpFromInit PROPERTIES TIMEOUT 4800)
 SET_TESTS_PROPERTIES(congeal_warpFitFromInit PROPERTIES TIMEOUT 4800)
 SET_TESTS_PROPERTIES(congeal_warpFromInitZeroSum PROPERTIES TIMEOUT 4800)
 SET_TESTS_PROPERTIES(congeal_warpUseTemplate PROPERTIES TIMEOUT 6400)
+
+SET_TESTS_PROPERTIES(groupwise_rmi_warpFromInit PROPERTIES TIMEOUT 4800)
+SET_TESTS_PROPERTIES(groupwise_rmi_warpFitFromInit PROPERTIES TIMEOUT 4800)
+SET_TESTS_PROPERTIES(groupwise_rmi_warpFromInitZeroSum PROPERTIES TIMEOUT 4800)
+SET_TESTS_PROPERTIES(groupwise_rmi_warpUseTemplate PROPERTIES TIMEOUT 6400)
 
 IF(NOT CMTK_USE_MPI)
   # ==========================================

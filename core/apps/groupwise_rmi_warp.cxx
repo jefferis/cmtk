@@ -66,6 +66,7 @@ int RefineTransformationGrid = 0;
 
 cmtk::Types::Coordinate GridSpacing = 40.0;
 bool ForceZeroSum = false;
+bool ForceZeroSumNoAffine = false;
 size_t ForceZeroSumFirstN = 0;
 size_t NormalGroupFirstN = 0;
 
@@ -91,6 +92,9 @@ const char* OutputArchive = "groupwise_rmi_warp.xforms";
 const char* OutputStudyListGroup = "groupwise_rmi_warp.list";
 const char* OutputStudyListIndividual = "groupwise_rmi_warp_pairs";
 const char* AverageImagePath = "average_groupwise_rmi_warp.hdr";
+
+float UserBackgroundValue = 0;
+bool UserBackgroundFlag = false;
 
 int
 main( int argc, char ** argv )
@@ -127,6 +131,7 @@ main( int argc, char ** argv )
     cl.AddSwitch( Key( "no-output-average" ), &AverageImagePath, (const char*)NULL, "Do not write average image." );
 
     cl.AddOption( Key( 's', "sampling-density" ), &SamplingDensity, "Probabilistic sampling density [default: off]." );
+    cl.AddOption( Key( 'B', "force-background" ), &UserBackgroundValue, "Force background pixels (outside FOV) to given value.", &UserBackgroundFlag );
 
     cl.AddOption( Key( 'p', "partial-gradient-thresh" ), &PartialGradientThreshold, "Threshold factor for partial gradient zeroing [default: 0.01; <0 turn off]" );
     cl.AddSwitch( Key( "deactivate-uninformative" ), &DeactivateUninformative, true, "Deactivate uninformative control points [default: on]" );
@@ -136,6 +141,7 @@ main( int argc, char ** argv )
 
     cl.AddOption( Key( "grid-spacing" ), &GridSpacing, "Control point grid spacing." );
     cl.AddSwitch( Key( 'z', "zero-sum" ), &ForceZeroSum, true, "Enforce zero-sum computation." );
+    cl.AddSwitch( Key( "zero-sum-no-affine" ), &ForceZeroSumNoAffine, true, "Enforce zero-sum computation EXCLUDING affine components." );
     cl.AddOption( Key( 'N', "normal-group-first-n" ), &NormalGroupFirstN, "First N images are from the normal group and should be registered unbiased." );
     cl.AddOption( Key( 'Z', "zero-sum-first-n" ), &ForceZeroSumFirstN, "Enforce zero-sum computation for first N images.", &ForceZeroSum );
 
@@ -176,6 +182,9 @@ main( int argc, char ** argv )
   FunctionalType::SmartPtr functional( new FunctionalType );
   functional->SetForceZeroSum( ForceZeroSum );
   functional->SetForceZeroSumFirstN( ForceZeroSumFirstN );
+//  functional->SetForceZeroSumNoAffine( ForceZeroSumNoAffine );
+  if ( UserBackgroundFlag )
+    functional->SetUserBackgroundValue( UserBackgroundValue );
   
   // disable parameters with less than 1% of maximum contribution
   functional->SetPartialGradientMode( (PartialGradientThreshold > 0) , PartialGradientThreshold );
