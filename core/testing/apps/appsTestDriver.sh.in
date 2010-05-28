@@ -261,6 +261,14 @@ case ${RUNTEST} in
 	run congeal_warp -v --zero-sum --force-background 0 -O ${tmpdir} --grid-spacing 200 --refine-grid 1 -e 2 -a 1 --downsample-from 2 --downsample-to 1 groupwise_init_brain123.xforms
 	check_results congeal_warp.xforms average_congeal_warp.img
 	;;
+    congeal_warpFromInitNoBG)
+	run congeal_warp -v -O ${tmpdir} --grid-spacing 200 --refine-grid 1 -e 2 -a 1 --downsample-from 2 --downsample-to 1 groupwise_init_brain123.xforms
+	check_results congeal_warp.xforms average_congeal_warp.img
+	;;
+    congeal_warpUseTemplateNoBG)
+	run congeal_warp -v -O ${tmpdir} --grid-spacing 200 --refine-grid 1 -e 2 -a 1 --downsample-from 2 --downsample-to 2 --template-with-data spgr_brain_1.hdr groupwise_init_brain123.xforms
+	check_results congeal_warp.xforms average_congeal_warp.img
+	;;
     convertAutoCrop)
 	run_eval "${BINDIR}/convert -v --crop-xform-out ${tmpdir}/crop.xform --auto-crop 1 spgr_brain_1.hdr ${tmpdir}/cropped.nii  > ${tmpdir}/crop.txt"
 	cat ${tmpdir}/crop.xform/registration | sed 's/reference_study ".*"/reference_study ""/g' > ${tmpdir}/crop.xform/registration.tmp && mv ${tmpdir}/crop.xform/registration.tmp ${tmpdir}/crop.xform/registration
