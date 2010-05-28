@@ -83,58 +83,15 @@ public:
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
-  /// Constructor.
-  SplineWarpCongealingFunctional();
-
-  /// Destructor.
-  virtual ~SplineWarpCongealingFunctional();
-
   /** Initialize spline warp transformations.
    */
-  void InitializeXforms( const Types::Coordinate gridSpacing, //!< Control point grid spacing in real-world units
-			 std::vector<AffineXform::SmartPtr> initialAffineXformsVector, //!< Vector of initial affine coordinate transformations
-			 const bool exactSpacing = true //!< If set, the control point spacing will be exactly as given in the first parameter
+  virtual void InitializeXformsFromAffine( const Types::Coordinate gridSpacing, //!< Control point grid spacing in real-world units
+					   std::vector<AffineXform::SmartPtr> initialAffineXformsVector, //!< Vector of initial affine coordinate transformations
+					   const bool exactSpacing = true //!< If set, the control point spacing will be exactly as given in the first parameter
     );
 
-  /** Initialize spline warp transformations.
-   */
-  void InitializeXforms( const Types::Coordinate gridSpacing, //!< Control point grid spacing in real-world units
-			 const bool exactSpacing = true  //!< If set, the control point spacing will be exactly as given in the first parameter
-    )
-  {
-    this->InitializeXforms( gridSpacing, this->m_InitialAffineXformsVector, exactSpacing );
-  }
-
   /// Refine transformation control point grids.
-  void RefineTransformationGrids();
-
-  /// Set flag for exclusion of affine components in unbiased groupwise deformation.
-  void SetForceZeroSumNoAffine( const bool noaffine = true )
-  {
-    this->m_ForceZeroSumNoAffine = noaffine;
-  }
-
-  /// Set partial gradient mode.
-  void SetPartialGradientMode( const bool partialGradientMode = false, const float partialGradientThreshold = 0.0 )
-  {
-    this->m_PartialGradientMode = partialGradientMode;
-    this->m_PartialGradientThreshold = partialGradientThreshold;
-  }
-
-  /// Set deactivate uninformative control points mode.
-  void SetDeactivateUninformativeMode( const bool dum = true )
-  {
-    this->m_DeactivateUninformativeMode = dum;
-  }
-
-  /** Set range of currently active transformations.
-   * Call inherited function, then update local step size array.
-   */
-  virtual void SetActiveXformsFromTo( const size_t from, const size_t to )
-  {
-    this->Superclass::SetActiveXformsFromTo( from, to );
-    this->UpdateParamStepArray();
-  }
+  virtual void RefineTransformationGrids();
 
   /// Call inherited function and allocate local storage.
   virtual void SetTemplateGrid( UniformVolume::SmartPtr& templateGrid, const int downsample = 1, const bool useTemplateData = false );
@@ -157,113 +114,12 @@ public:
    */
   virtual Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step = 1 );
 
-  /// Reset gradient dimensions, etc.
-  virtual bool Wiggle();
-
-protected:
-  /** Interpolate given moving image to template.
-   * This function overrides the interpolation function provided by the base
-   * class. It makes use of the fact that affine transformations preserve
-   * parallel lines for more efficient computation.
-   *\param idx Index of of to reformat to template. This also determines which
-   *  transformation is used.
-   *\param destination The reformatted pixel data is stored in this array.
-   *  Sufficient memory (for as many pixels as there are in the template grid)
-   *  must be allocated there.
-   */
-  virtual void InterpolateImage( const size_t idx, byte* const destination );
-
-  /** Enforce gradient to be zero-sum over all images.
-   * This function essentially calls the inherited function of the same name. However,
-   * if this->m_ForceZeroSumNoAffine is true, then the initial affine transformations
-   * of each warp are eliminated from the gradient prior to calling the inherited
-   * function, and they are re-applied afterwards. This way, the unbiased property of
-   * the transformation set is made invariant under the affine transformation components.
-   */
-  virtual void ForceZeroSumGradient( CoordinateVector& g ) const;
-
 private:
-  /// Flag for correction of affine components in unbiased warp.
-  bool m_ForceZeroSumNoAffine;
-
-  /// Flag for fast warp mode, i.e., reduced control point influence volume.
-  bool m_WarpFastMode;
-
-  /// Weight for jacobian constraint term.
-  float m_JacobianConstraintWeight;
-
-  /// Weight for grid bending energy term.
-  float m_BendingEnergyWeight;
-
-  /** Flag for partial gradient computation.
-   * If this is set, gradient components under a given threshold are deactivated
-   * and not used for gradient approximation.
-   */
-  bool m_PartialGradientMode;
-
-  /// Threshold for partial gradient computation.
-  Types::Coordinate m_PartialGradientThreshold;
-
-  /// Deactivate uninformative control points mode.
-  bool m_DeactivateUninformativeMode;
-
-  /// List of flags for deactivated control points.
-  std::vector<bool> m_ActiveControlPointFlags;
-
-  /// Number of deactivated control points.
-  size_t m_NumberOfActiveControlPoints;
-
-  /// Update standard deviation by pixel.
-  virtual void UpdateStandardDeviationByPixel();
-
   /// Update deactivated control points.
   virtual void UpdateActiveControlPoints();
-
-  /// Update volumes of influence for warp parameters.
-  virtual void UpdateVolumesOfInfluence();
-
-  /** Update list of probabilistic samples.
-   * Call inherited function, then determine which parameters of the current
-   * warp affect samples in the list and deactivate all others.
-   */
-  virtual void UpdateProbabilisticSamples();
-
-  /// Initial affine transformations.
-  std::vector<AffineXform::SmartPtr> m_InitialAffineXformsVector;
-
-  /// Rotation components of initial affine transformations.
-  std::vector<AffineXform::SmartPtr> m_InitialRotationsVector;
-
-  /// Current parameter steppings for the warp parameters.
-  std::vector<Types::Coordinate> m_ParamStepArray;
-
-  /// Update parameter steppings for the warp parameters.
-  virtual bool UpdateParamStepArray();
-
-  /// Volumes of influence for the warp parameters.
-  std::vector<DataGrid::RegionType> m_VolumeOfInfluenceArray;
-
-  /// Maximum number of pixels in any VOI.
-  size_t m_MaximumNumberOfPixelsVOI;
-
-  /// Maximum number of pixels per line in any VOI.
-  size_t m_MaximumNumberOfPixelsPerLineVOI;
-
-  /// Thread function parameters for image interpolation.
-  class InterpolateImageThreadParameters : 
-    /// Inherit from generic thread parameters.
-    public ThreadParameters<Self>
-  {
-  public:
-    /// Index of the image to be interpolated.
-    size_t m_Idx;
-
-    /// Pointer to storage that will hold the reformatted pixel data.
-    byte* m_Destination;
-  };
-
-  /// Image interpolation thread function.
-  static void InterpolateImageThread( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
+  
+  /// Update standard deviation by pixel.
+  virtual void UpdateStandardDeviationByPixel();
 
   /// Entropies over all images by pixel for fast local recomputation.
   std::vector<double> m_EntropyByPixel;

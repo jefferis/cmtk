@@ -125,5 +125,6 @@ private:
 } // namespace cmtk
 
 #include <cmtkGroupwiseRegistrationFunctionalXformTemplate_Affine.h>
+#include <cmtkGroupwiseRegistrationFunctionalXformTemplate_SplineWarp.h>
 
 #endif // #ifndef __cmtkGroupwiseRegistrationFunctionalXformTemplate_h_included_

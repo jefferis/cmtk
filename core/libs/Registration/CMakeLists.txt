@@ -43,6 +43,7 @@ SET(cmtkRegistration_SRCS
   cmtkGroupwiseRegistrationFunctionalAffineInitializer.cxx
   cmtkGroupwiseRegistrationFunctionalBase.cxx
   cmtkGroupwiseRegistrationFunctionalXformTemplate.cxx
+  cmtkGroupwiseRegistrationFunctionalXformTemplate_SplineWarp.cxx
   cmtkGroupwiseRegistrationFunctionalXformTemplateBase.cxx
   cmtkGroupwiseRegistrationOutput.cxx
   cmtkGroupwiseRegistrationRMIFunctional.cxx

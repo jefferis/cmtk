@@ -70,51 +70,6 @@ public:
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
-  /// Constructor.
-  SplineWarpGroupwiseRegistrationRMIFunctional();
-
-  /// Destructor.
-  virtual ~SplineWarpGroupwiseRegistrationRMIFunctional();
-
-  /** Initialize spline warp transformations.
-   */
-  void InitializeXforms( const Types::Coordinate gridSpacing, std::vector<AffineXform::SmartPtr> initialAffineXformsVector );
-
-  /** Initialize spline warp transformations.
-   */
-  void InitializeXforms( const Types::Coordinate gridSpacing )
-  {
-    this->InitializeXforms( gridSpacing, this->m_InitialAffineXformsVector );
-  }
-
-  /// Refine transformation control point grids.
-  void RefineTransformationGrids();
-
-  /// Set partial gradient mode.
-  void SetPartialGradientMode( const bool partialGradientMode = false, const Types::Coordinate partialGradientThreshold = 0.0 )
-  {
-    this->m_PartialGradientMode = partialGradientMode;
-    this->m_PartialGradientThreshold = partialGradientThreshold;
-  }
-
-  /// Set deactivate uninformative control points mode.
-  void SetDeactivateUninformativeMode( const bool dum = true )
-  {
-    this->m_DeactivateUninformativeMode = dum;
-  }
-
-  /** Set range of currently active transformations.
-   * Call inherited function, then update local step size array.
-   */
-  virtual void SetActiveXformsFromTo( const size_t from, const size_t to )
-  {
-    this->Superclass::SetActiveXformsFromTo( from, to );
-    this->UpdateParamStepArray();
-  }
-
-  /// Call inherited function and allocate local storage.
-  virtual void SetTemplateGrid( UniformVolume::SmartPtr& templateGrid, const int downsample = 1,const bool useTemplateData = false );
-    
   /// Evaluate functional with currently set parameters.
   virtual Self::ReturnType Evaluate();
 
@@ -133,50 +88,10 @@ public:
    */
   virtual Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step = 1 );
 
-  /// Reset gradient dimensions, etc.
-  virtual bool Wiggle();
-
-protected:
-  /** Interpolate given moving image to template.
-   * This function overrides the interpolation function provided by the base
-   * class. It makes use of the fact that affine transformations preserve
-   * parallel lines for more efficient computation.
-   *\param idx Index of of to reformat to template. This also determines which
-   *  transformation is used.
-   *\param destination The reformatted pixel data is stored in this array.
-   *  Sufficient memory (for as many pixels as there are in the template grid)
-   *  must be allocated there.
-   */
-  virtual void InterpolateImage( const size_t idx, byte* const destination );
-
 private:
-  /// Flag for fast warp mode, i.e., reduced control point influence volume.
-  bool m_WarpFastMode;
-
-  /** Flag for partial gradient computation.
-   * If this is set, gradient components under a given threshold are deactivated
-   * and not used for gradient approximation.
-   */
-  bool m_PartialGradientMode;
-
-  /// Threshold for partial gradient computation.
-  Types::Coordinate m_PartialGradientThreshold;
-
-  /// Deactivate uninformative control points mode.
-  bool m_DeactivateUninformativeMode;
-
-  /// List of flags for deactivated control points.
-  std::vector<bool> m_ActiveControlPointFlags;
-
-  /// Update volumes of influence for warp parameters.
-  virtual void UpdateVolumesOfInfluence();
-
-  /// Number of deactivated control points.
-  size_t m_NumberOfActiveControlPoints;
-
   /// Update deactivated control points.
   virtual void UpdateActiveControlPoints();
-
+  
   /// Local information measure for neighborhood of each control point.
   std::vector<byte> m_InformationByControlPoint;
 
@@ -188,40 +103,6 @@ private:
 
   /// Update control point schedule for gradient approximation.
   virtual void UpdateControlPointSchedule();
-
-  /** Update list of probabilistic samples.
-   * Call inherited function, then determine which parameters of the current
-   * warp affect samples in the list and deactivate all others.
-   */
-  virtual void UpdateProbabilisticSamples();
-
-  /// Initial affine transformations.
-  std::vector<AffineXform::SmartPtr> m_InitialAffineXformsVector;
-
-  /// Current parameter steppings for the warp parameters.
-  std::vector<Types::Coordinate> m_ParamStepArray;
-
-  /// Update parameter steppings for the warp parameters.
-  virtual bool UpdateParamStepArray();
-
-  /// Volumes of influence for the warp parameters.
-  std::vector<DataGrid::RegionType> m_VolumeOfInfluenceArray;
-
-  /// Thread function parameters for image interpolation.
-  class InterpolateImageThreadParameters : 
-    /// Inherit from generic thread parameters.
-    public ThreadParameters<Self>
-  {
-  public:
-    /// Index of the image to be interpolated.
-    size_t m_Idx;
-
-    /// Pointer to storage that will hold the reformatted pixel data.
-    byte* m_Destination;
-  };
-
-  /// Image interpolation thread function.
-  static CMTK_THREAD_RETURN_TYPE InterpolateImageThread( void* args );
 
   /// Processing schedule for overlap-free parallel processing of control points.
   std::vector<int> m_ControlPointSchedule;
