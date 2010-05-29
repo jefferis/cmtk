@@ -36,10 +36,7 @@
 #include <cmtkconfig.h>
 
 #include <cmtkCongealingFunctional.h>
-
-#include <cmtkSmartPtr.h>
 #include <cmtkAffineXform.h>
-#include <cmtkClassStream.h>
 
 namespace
 cmtk
@@ -58,20 +55,7 @@ cmtk
  *     Population Registration of 3D Data", ICCV 2005, Computer Vision for
  *     Biomedical Image Applications; Beijing, China
  */
-class AffineCongealingFunctional : 
-  /** Inherit from templated base class. */
-  public CongealingFunctional<AffineXform>
-{
-public:
-  /// Type of parent class.
-  typedef CongealingFunctional<AffineXform> Superclass;
-
-  /// Type of this class.
-  typedef AffineCongealingFunctional Self;
-
-  /// Smart pointer.
-  typedef SmartPointer<Self> SmartPtr;
-};
+typedef CongealingFunctional<AffineXform> AffineCongealingFunctional;
 
 //@}
 

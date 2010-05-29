@@ -36,10 +36,7 @@
 #include <cmtkconfig.h>
 
 #include <cmtkGroupwiseRegistrationRMIFunctional.h>
-
-#include <cmtkSmartPtr.h>
 #include <cmtkAffineXform.h>
-#include <cmtkClassStream.h>
 
 namespace
 cmtk
@@ -50,20 +47,7 @@ cmtk
 
 /** Functional for affine groupwise registration using "RMI" metric..
  */
-class AffineGroupwiseRegistrationRMIFunctional : 
-  /// Inherit general RMI-based groupwise registration.
-  public GroupwiseRegistrationRMIFunctional<AffineXform>
-{
-public:
-  /// Type of parent class.
-  typedef GroupwiseRegistrationRMIFunctional<AffineXform> Superclass;
-
-  /// Type of this class.
-  typedef AffineGroupwiseRegistrationRMIFunctional Self;
-
-  /// Smart pointer.
-  typedef SmartPointer<Self> SmartPtr;
-};
+typedef GroupwiseRegistrationRMIFunctional<AffineXform> AffineGroupwiseRegistrationRMIFunctional;
 
 //@}
 
