@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkAffineCongealingFunctional.h>
+#include <cmtkGroupwiseRegistrationFunctionalXformTemplate.h>
 
 #include <cmtkVolumeIO.h>
 #include <cmtkClassStreamAffineXform.h>
@@ -44,7 +44,7 @@ cmtk
 
 ClassStream& 
 operator<<
-  ( ClassStream& stream, const AffineCongealingFunctional& func )
+  ( ClassStream& stream, const GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func )
 {
   stream.Begin( "template" );
   stream.WriteIntArray( "dims", func.m_TemplateGrid->GetDims().begin(), 3 );
@@ -64,7 +64,7 @@ operator<<
 
 ClassStream& 
 operator>>
-  ( ClassStream& stream, AffineCongealingFunctional& func )
+  ( ClassStream& stream, GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func )
 {
   if ( ! stream.Seek( "template" ) )
     {

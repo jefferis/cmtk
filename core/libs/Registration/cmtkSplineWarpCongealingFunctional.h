@@ -238,17 +238,7 @@ private:
   /// Reorder gradient components received from other nodes into final gradient vector.
   void ReorderGradientComponents( Types::Coordinate *const dst, const Types::Coordinate* src, const size_t fromCpIdx, const size_t toCpIdx );
 #endif
-
-  /// Function friends.
-  friend ClassStream& operator<<( ClassStream& stream, const SplineWarpCongealingFunctional& func );
-  friend ClassStream& operator>>( ClassStream& stream, SplineWarpCongealingFunctional& func );
 };
-
-/// Class stream write function.
-ClassStream& operator<<( ClassStream& stream, const SplineWarpCongealingFunctional& func );
-
-/// Class stream read function.
-ClassStream& operator>>( ClassStream& stream, SplineWarpCongealingFunctional& func );
 
 //@}
 

@@ -34,6 +34,7 @@
 #define __cmtkGroupwiseRegistrationFunctionalXformTemplate_Affine_h_included_
 
 #include <cmtkVolumeAxesHash.h>
+#include <cmtkClassStream.h>
 
 namespace
 cmtk
@@ -243,7 +244,13 @@ private:
     const Vector3D* m_HashY;
     const Vector3D* m_HashZ;
   };
+
+  friend ClassStream& operator<<( ClassStream& stream, const GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func );
+  friend ClassStream& operator>>( ClassStream& stream, GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func );
 };
+
+ClassStream& operator<<( ClassStream& stream, const GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func );
+ClassStream& operator>>( ClassStream& stream, GroupwiseRegistrationFunctionalXformTemplate<AffineXform>& func );
 
 } // namespace cmtk
 

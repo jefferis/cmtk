@@ -30,16 +30,11 @@
 //
 */
 
-#include <cmtkSplineWarpGroupwiseRegistrationRMIFunctional.h>
+#include <cmtkGroupwiseRegistrationFunctionalXformTemplate.h>
 
 #include <cmtkUniformVolume.h>
 #include <cmtkVolumeIO.h>
 #include <cmtkClassStreamAffineXform.h>
-#include <cmtkConsole.h>
-
-#ifdef CMTK_BUILD_MPI
-#  include <cmtkMPI.h>
-#endif
 
 namespace
 cmtk
@@ -50,7 +45,7 @@ cmtk
 
 ClassStream& 
 operator<<
-  ( ClassStream& stream, const SplineWarpGroupwiseRegistrationRMIFunctional& func )
+  ( ClassStream& stream, const GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>& func )
 {
   stream.Begin( "template" );
   stream.WriteIntArray( "dims", func.m_TemplateGrid->GetDims().begin(), 3 );
@@ -70,7 +65,7 @@ operator<<
 
 ClassStream& 
 operator>>
-  ( ClassStream& stream, SplineWarpGroupwiseRegistrationRMIFunctional& func )
+( ClassStream& stream,  GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>& func )
 {
   if ( ! stream.Seek( "template" ) )
     {
@@ -85,7 +80,7 @@ operator>>
   Types::Coordinate origin[3];
   stream.ReadCoordinateArray( "origin", origin, 3 );
   stream.End();
-
+  
   UniformVolume::SmartPtr templateGrid( new UniformVolume( UniformVolume::IndexType( dims ), UniformVolume::CoordinateVectorType( size ) ) );
   templateGrid->SetOffset( Vector3D( origin ) );
 

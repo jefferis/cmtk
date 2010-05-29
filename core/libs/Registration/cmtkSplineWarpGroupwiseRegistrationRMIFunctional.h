@@ -144,17 +144,7 @@ private:
 #ifdef CMTK_BUILD_MPI
   void ReorderGradientComponents( Types::Coordinate *const dst, const Types::Coordinate* src, const size_t fromCpIdx, const size_t toCpIdx );
 #endif
-
-  /// Function friends.
-  friend ClassStream& operator<<( ClassStream& stream, const SplineWarpGroupwiseRegistrationRMIFunctional& func );
-  friend ClassStream& operator>>( ClassStream& stream, SplineWarpGroupwiseRegistrationRMIFunctional& func );
 };
-
-/// Class stream write function.
-ClassStream& operator<<( ClassStream& stream, const SplineWarpGroupwiseRegistrationRMIFunctional& func );
-
-/// Class stream read function.
-ClassStream& operator>>( ClassStream& stream, SplineWarpGroupwiseRegistrationRMIFunctional& func );
 
 //@}
 

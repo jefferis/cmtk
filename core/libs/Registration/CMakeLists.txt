@@ -30,8 +30,6 @@
 
 # Sources of non-templated classes.
 SET(cmtkRegistration_SRCS
-  cmtkAffineCongealingFunctionalIO.cxx
-  cmtkAffineGroupwiseRegistrationRMIFunctionalIO.cxx
   cmtkAffineRegistrationCommandLine.cxx
   cmtkAffineRegistration.cxx
   cmtkBestDirectionOptimizer.cxx
@@ -43,7 +41,9 @@ SET(cmtkRegistration_SRCS
   cmtkGroupwiseRegistrationFunctionalAffineInitializer.cxx
   cmtkGroupwiseRegistrationFunctionalBase.cxx
   cmtkGroupwiseRegistrationFunctionalXformTemplate.cxx
+  cmtkGroupwiseRegistrationFunctionalXformTemplate_Affine_IO.cxx
   cmtkGroupwiseRegistrationFunctionalXformTemplate_SplineWarp.cxx
+  cmtkGroupwiseRegistrationFunctionalXformTemplate_SplineWarp_IO.cxx
   cmtkGroupwiseRegistrationFunctionalXformTemplateBase.cxx
   cmtkGroupwiseRegistrationOutput.cxx
   cmtkGroupwiseRegistrationRMIFunctional.cxx
@@ -76,10 +76,8 @@ SET(cmtkRegistration_SRCS
   cmtkScalarImageSimilarity.cxx
   cmtkScalarImageSimilarityRMI.cxx
   cmtkSplineWarpCongealingFunctional.cxx
-  cmtkSplineWarpCongealingFunctionalIO.cxx
   cmtkSplineWarpCongealingFunctionalStaticThreadStorage.cxx
   cmtkSplineWarpGroupwiseRegistrationRMIFunctional.cxx
-  cmtkSplineWarpGroupwiseRegistrationRMIFunctionalIO.cxx
   cmtkSymmetricElasticFunctional.cxx
   cmtkSymmetryPlaneFunctional.cxx
   cmtkTypedArraySimilarity.cxx

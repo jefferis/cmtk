@@ -214,7 +214,13 @@ private:
 
   /// Image interpolation thread function.
   static void InterpolateImageThread( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
+
+  friend ClassStream& operator<<( ClassStream& stream, const GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>& func );
+  friend ClassStream& operator>>( ClassStream& stream, GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>& func );
 };
+
+ClassStream& operator<<( ClassStream& stream, const GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>& func );
+ClassStream& operator>>( ClassStream& stream, GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>& func );
 
 } // namespace cmtk
 

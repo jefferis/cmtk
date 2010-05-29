@@ -63,16 +63,7 @@ public:
 
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
-
-  friend ClassStream& operator<<( ClassStream& stream, const AffineGroupwiseRegistrationRMIFunctional& func );
-  friend ClassStream& operator>>( ClassStream& stream, AffineGroupwiseRegistrationRMIFunctional& func );
 };
-
-/// Class stream write function.
-ClassStream& operator<<( ClassStream& stream, const AffineGroupwiseRegistrationRMIFunctional& func );
-
-/// Class stream read function.
-ClassStream& operator>>( ClassStream& stream, AffineGroupwiseRegistrationRMIFunctional& func );
 
 //@}
 
