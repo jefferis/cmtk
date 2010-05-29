@@ -57,7 +57,15 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-/** Base class for groupwise registration functionals.
+/** Base class template for groupwise registration functionals.
+ * This class template adds to its base class all basic functionality that depends
+ * on the coordinate transformation model (affine vs. nonrigid) but does not require
+ * implementation by explicit specialization. In other words, this class provides the
+ * interface that is common to all transformation models.
+ * 
+ * The next level of derived classes exist in several specialized variants
+ * that implement the transformation-dependent interfaces, i.e., member functions
+ * that exist only for certain transformation models.
  */
 template<class TXform>
 class GroupwiseRegistrationFunctionalXformTemplateBase : 

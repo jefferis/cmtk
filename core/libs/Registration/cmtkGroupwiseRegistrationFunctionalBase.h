@@ -57,6 +57,9 @@ cmtk
 //@{
 
 /** Base class for groupwise registration functionals.
+ * This class provides the lowest-level components of groupwise image registration, such as
+ * image IO, preprocessing, generic access to transformation and image vectors, and parameters
+ * common to all algorithms such as zero-sum optimization.
  */
 class GroupwiseRegistrationFunctionalBase : 
   /** Inherit from abstract functional base class. */

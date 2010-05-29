@@ -57,7 +57,9 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-/** Base class for groupwise registration functionals.
+/** Trannsformation-dependent class template for groupwise registration functionals.
+ * This template provides the common generic interface for all transformation-model dependent 
+ * specialized templates.
  */
 template<class TXform>
 class GroupwiseRegistrationFunctionalXformTemplate : 

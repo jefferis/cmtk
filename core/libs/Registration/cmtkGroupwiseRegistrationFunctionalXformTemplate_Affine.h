@@ -40,7 +40,9 @@ namespace
 cmtk
 {
 
-/** Base class for groupwise registration functionals.
+/** Template specialization for groupwise affine registration functionals.
+ * This class is the specialization of the generic transformation-dependent
+ * functional class template, specialized for affine transformations.
  */
 template<>
 class GroupwiseRegistrationFunctionalXformTemplate<AffineXform> : 

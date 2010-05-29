@@ -39,7 +39,12 @@ namespace
 cmtk
 {
 
-/** Base class for groupwise registration functionals.
+/** Template specialization for groupwise nonrigid registration functionals.
+ * This class is the specialization of the generic transformation-dependent
+ * functional class template, specialized for nonrigid (B-spline FFD) transformations.
+ *
+ * As such, this class provides functionality such as: initialization of
+ * FFDs from affine transformations, grid refinement, and deformation constraints.
  */
 template<>
 class GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform> : 
