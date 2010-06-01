@@ -201,7 +201,7 @@ TemplateArray<T>
 ::ConvertSubArray 
 ( const ScalarDataType dtype, const size_t fromIdx, const size_t len ) const 
 {
-  void* data = malloc( len * TypeItemSize( dtype ) );
+  void* data = Memory::AllocateArray<char>( len * TypeItemSize( dtype ) );
   this->ConvertSubArray( data, dtype, fromIdx, len );
   return data;
 }
