@@ -74,7 +74,8 @@ GroupwiseRegistrationFunctionalBase
     m_GaussianSmoothImagesSigma( -1.0 ),
     m_UserBackgroundValue( 0 ),
     m_UserBackgroundFlag( false ),
-    m_ParametersPerXform( 0 )
+    m_ParametersPerXform( 0 ),
+    m_RepeatIntensityHistogramMatching( false )
 {
   this->m_NumberOfThreads = ThreadPool::GetGlobalThreadPool().GetNumberOfThreads();
   this->m_NumberOfTasks = 4 * this->m_NumberOfThreads - 3;

@@ -70,6 +70,12 @@ public:
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
+  /// Constructor.
+  SplineWarpGroupwiseRegistrationRMIFunctional() : 
+    m_NeedsUpdateInformationByControlPoint( false ),  
+    m_ControlPointScheduleOverlapFreeMaxLength( 0 ) 
+  {}
+
   /// Evaluate functional with currently set parameters.
   virtual Self::ReturnType Evaluate();
 
