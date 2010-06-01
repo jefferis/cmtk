@@ -57,14 +57,14 @@
 bool Verbose = false;
 bool Help = false;
 
-int NumberOfThreads = 0;
-
 int DownsampleFrom = 4;
 int DownsampleTo = 1;
 
 int RefineTransformationGrid = 0;
 
 cmtk::Types::Coordinate GridSpacing = 40.0;
+bool GridSpacingExact = true;
+
 bool ForceZeroSum = false;
 bool ForceZeroSumNoAffine = false;
 size_t ForceZeroSumFirstN = 0;
@@ -88,10 +88,12 @@ bool DisableOptimization = false;
 
 const char* AffineGroupRegistration = NULL;
 
+const char* OutputRootDirectory = NULL;
 const char* OutputArchive = "groupwise_rmi_warp.xforms";
 const char* OutputStudyListGroup = "groupwise_rmi_warp.list";
 const char* OutputStudyListIndividual = "groupwise_rmi_warp_pairs";
 const char* AverageImagePath = "average_groupwise_rmi_warp.hdr";
+cmtk::Interpolators::InterpolationEnum AverageImageInterpolation = cmtk::Interpolators::LINEAR;
 
 float UserBackgroundValue = 0;
 bool UserBackgroundFlag = false;
@@ -126,10 +128,14 @@ main( int argc, char ** argv )
     cl.AddOption( Key( 'D', "downsample-to" ), &DownsampleTo, "Final downsampling factor [1]." );
     cl.AddOption( Key( 'r', "refine-grid" ), &RefineTransformationGrid, "Number of times to refine transformation grid [default: 0]." );
 
+    cl.BeginGroup( "Output", "Output Options" );
+    cl.AddOption( Key( 'O', "output-root" ), &OutputRootDirectory, "Root directory for all output files." );
     cl.AddOption( Key( 'o', "output" ), &OutputArchive, "Output filename for groupwise registration archive." );
-    cl.AddOption( Key( 'O', "output-average" ), &AverageImagePath, "Output filename for registered average image." );
+    cl.AddOption( Key( "output-average" ), &AverageImagePath, "Output filename for registered average image." );
     cl.AddSwitch( Key( "no-output-average" ), &AverageImagePath, (const char*)NULL, "Do not write average image." );
-
+    cl.AddSwitch( Key( "average-cubic" ), &AverageImageInterpolation, cmtk::Interpolators::CUBIC, "Use cubic interpolation for average image (default: linear)" );
+    cl.EndGroup();
+    
     cl.AddOption( Key( 's', "sampling-density" ), &SamplingDensity, "Probabilistic sampling density [default: off]." );
     cl.AddOption( Key( 'B', "force-background" ), &UserBackgroundValue, "Force background pixels (outside FOV) to given value.", &UserBackgroundFlag );
 
@@ -140,6 +146,7 @@ main( int argc, char ** argv )
     cl.AddOption( Key( "smooth" ), &SmoothSigmaFactor, "Sigma of Gaussian smoothing kernel in multiples of template image pixel size [default: off] )" );
 
     cl.AddOption( Key( "grid-spacing" ), &GridSpacing, "Control point grid spacing." );
+    cl.AddSwitch( Key( "grid-spacing-fit" ), &GridSpacingExact, false, "Use grid spacing that fits volume FOV" );
     cl.AddSwitch( Key( 'z', "zero-sum" ), &ForceZeroSum, true, "Enforce zero-sum computation." );
     cl.AddSwitch( Key( "zero-sum-no-affine" ), &ForceZeroSumNoAffine, true, "Enforce zero-sum computation EXCLUDING affine components." );
     cl.AddOption( Key( 'N', "normal-group-first-n" ), &NormalGroupFirstN, "First N images are from the normal group and should be registered unbiased." );
@@ -150,7 +157,6 @@ main( int argc, char ** argv )
     cl.AddOption( Key( 'S', "step-factor" ), &OptimizerStepFactor, "Step factor for successive optimization passes [0.5]" );
     cl.AddOption( Key( "delta-f-threshold" ), &OptimizerDeltaFThreshold, "Optional threshold to terminate optimization (level) if relative change of target function drops below this value." );
 
-    cl.AddOption( Key( "threads" ), &NumberOfThreads, "Number of parallel threads [automatic]" );
     cl.AddSwitch( Key( "disable-optimization" ), &DisableOptimization, true, "Disable optimization and output initial configuration." );
       
     cl.Parse();
@@ -173,16 +179,11 @@ main( int argc, char ** argv )
     }
 #endif
 
-  if ( NumberOfThreads > 0 )
-    {
-    cmtk::Threads::SetNumberOfThreads( NumberOfThreads );
-    }
-
   typedef cmtk::SplineWarpGroupwiseRegistrationRMIFunctional FunctionalType;
   FunctionalType::SmartPtr functional( new FunctionalType );
   functional->SetForceZeroSum( ForceZeroSum );
   functional->SetForceZeroSumFirstN( ForceZeroSumFirstN );
-//  functional->SetForceZeroSumNoAffine( ForceZeroSumNoAffine );
+  functional->SetForceZeroSumNoAffine( ForceZeroSumNoAffine );
   if ( UserBackgroundFlag )
     functional->SetUserBackgroundValue( UserBackgroundValue );
   
@@ -199,7 +200,7 @@ main( int argc, char ** argv )
   functional->GetOriginalTargetImages( imageListOriginal );
 
   cmtk::UniformVolume::SmartPtr originalTemplateGrid = functional->GetTemplateGrid();
-  functional->InitializeXforms( GridSpacing ); // must do this before downsampling template grid
+  functional->InitializeXforms( GridSpacing, GridSpacingExact ); // must do this before downsampling template grid
 
   const double timeBaselineProcess = cmtk::Timers::GetTimeProcess();
 
@@ -237,6 +238,8 @@ main( int argc, char ** argv )
 	functional->SetProbabilisticSampleUpdatesAfter( 10 );
 	}
       
+      functional->AllocateStorage();
+
       cmtk::BestDirectionOptimizer optimizer( OptimizerStepFactor );
       optimizer.SetAggressiveMode( OptimizerAggressive );
       optimizer.SetDeltaFThreshold( OptimizerDeltaFThreshold );
@@ -295,9 +298,11 @@ main( int argc, char ** argv )
 
   cmtk::GroupwiseRegistrationOutput output;
   output.SetFunctional( functional );
+  output.SetOutputRootDirectory( OutputRootDirectory );
+
   output.WriteGroupwiseArchive( OutputArchive );
   output.WriteXformsSeparateArchives( OutputStudyListIndividual, AverageImagePath );
-  output.WriteAverageImage( AverageImagePath );
+  output.WriteAverageImage( AverageImagePath, AverageImageInterpolation );
 
 #ifdef CMTK_BUILD_MPI    
   MPI::Finalize();

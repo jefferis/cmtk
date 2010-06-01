@@ -694,10 +694,6 @@ case ${RUNTEST} in
 	run groupwise_rmi_warp -v --force-background 0 -O ${tmpdir} --grid-spacing 200 --grid-spacing-fit --refine-grid 1 -e 4 -a 1 --downsample-from 2 --downsample-to 1 groupwise_init_brain123.xforms
 	check_results groupwise_rmi_warp.xforms average_groupwise_rmi_warp.img
 	;;
-    groupwise_rmi_warpUseTemplate)
-	run groupwise_rmi_warp -v --force-background 0 -O ${tmpdir} --grid-spacing 200 --refine-grid 1 -e 2 -a 1 --downsample-from 2 --downsample-to 2 --template-with-data spgr_brain_1.hdr groupwise_init_brain123.xforms
-	check_results groupwise_rmi_warp.xforms average_groupwise_rmi_warp.img
-	;;
     groupwise_rmi_warpFromInitZeroSum)
 	run groupwise_rmi_warp -v --zero-sum --force-background 0 -O ${tmpdir} --grid-spacing 200 --refine-grid 1 -e 2 -a 1 --downsample-from 2 --downsample-to 1 groupwise_init_brain123.xforms
 	check_results groupwise_rmi_warp.xforms average_groupwise_rmi_warp.img

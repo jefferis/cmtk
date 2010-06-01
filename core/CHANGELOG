@@ -1,5 +1,7 @@
 Release CMTK-1.3.1:
 
+- Added: several features previously implemented only in congeal_warp have
+    been ported into groupwise_rmi_warp. Also added tests for the latter.
 - Refactored: completely reorganised the groupwise registration functional
     hierarchy - instead of redundant member functions in leaf classes, we are
     now using template specialization to inject the necessary transformation

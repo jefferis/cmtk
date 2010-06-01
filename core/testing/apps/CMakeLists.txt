@@ -119,7 +119,6 @@ SET(testList ${testList}
   groupwise_rmi_warpFromInit
   groupwise_rmi_warpFitFromInit
   groupwise_rmi_warpFromInitZeroSum
-  groupwise_rmi_warpUseTemplate
   )
 
 IF(NOT CMTK_USE_MPI)
@@ -637,10 +636,7 @@ SET_TESTS_PROPERTIES(congeal_warpUseTemplate PROPERTIES TIMEOUT 6400)
 SET_TESTS_PROPERTIES(congeal_warpFromInitNoBG PROPERTIES TIMEOUT 4800)
 SET_TESTS_PROPERTIES(congeal_warpUseTemplateNoBG PROPERTIES TIMEOUT 6400)
 
-SET_TESTS_PROPERTIES(groupwise_rmi_warpFromInit PROPERTIES TIMEOUT 4800)
-SET_TESTS_PROPERTIES(groupwise_rmi_warpFitFromInit PROPERTIES TIMEOUT 4800)
-SET_TESTS_PROPERTIES(groupwise_rmi_warpFromInitZeroSum PROPERTIES TIMEOUT 4800)
-SET_TESTS_PROPERTIES(groupwise_rmi_warpUseTemplate PROPERTIES TIMEOUT 6400)
+SET_TESTS_PROPERTIES(groupwise_rmi_warpFromInit groupwise_rmi_warpFitFromInit groupwise_rmi_warpFromInitZeroSum PROPERTIES TIMEOUT 4800)
 
 IF(NOT CMTK_USE_MPI)
   # ==========================================
