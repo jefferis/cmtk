@@ -19,11 +19,11 @@
 ##  with the Computational Morphometry Toolkit.  If not, see
 ##  <http://www.gnu.org/licenses/>.
 ##
-##  $Revision: 916 $
+##  $Revision$
 ##
-##  $LastChangedDate: 2009-11-26 13:16:50 -0800 (Thu, 26 Nov 2009) $
+##  $LastChangedDate$
 ##
-##  $LastChangedBy: torsten_at_home $
+##  $LastChangedBy$
 ##
 
 SET(BUILD_APPS "ON")

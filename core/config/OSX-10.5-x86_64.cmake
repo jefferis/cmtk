@@ -1,6 +1,7 @@
 ##
-##  Copyright 1997-2009 Torsten Rohlfing
-##  Copyright 2004-2009 SRI International
+##  Copyright 2010 Greg Jefferis
+##
+##  Copyright 2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -27,5 +28,7 @@
 ##  $LastChangedBy$
 ##
 
-SET(CMAKE_CXX_FLAGS "-march=pentium4 -mmmx -msse -msse2 -mfpmath=sse")
-SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS})
+# 64 bit for OS X >=10.5
+SET(CMAKE_OSX_ARCHITECTURES "x86_64")
+SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.5")
+SET(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.5.sdk")
