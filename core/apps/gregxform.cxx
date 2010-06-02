@@ -116,6 +116,12 @@ main( int argc, char *argv[] )
     }
 
   cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( StudyList, Verbose ) );
+  if ( ! xform )
+    {
+    cmtk::StdErr << "ERROR: could not read transformation\n";
+    exit( 1 );
+    }
+
   cmtk::WarpXform::SmartPtr warpXform = cmtk::WarpXform::SmartPtr::DynamicCastFrom( xform );
   cmtk::AffineXform::SmartPtr affineXform = cmtk::AffineXform::SmartPtr::DynamicCastFrom( xform );
   cmtk::SplineWarpXform::SmartPtr splineWarp = cmtk::SplineWarpXform::SmartPtr ::DynamicCastFrom( warpXform );

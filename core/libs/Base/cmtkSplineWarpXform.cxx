@@ -699,8 +699,7 @@ SplineWarpXform
     {
     r[dim] = InverseSpacing[dim] * v[dim];
     grid[dim] = std::min( static_cast<int>( r[dim] ), this->m_Dims[dim]-4 );
-    f[dim] = r[dim] - grid[dim];
-    assert( (f[dim] >= 0.0) && (f[dim] <= 1.0) );
+    f[dim] = std::max<Types::Coordinate>( 0, std::min<Types::Coordinate>( 1.0, r[dim] - grid[dim] ) );
     }
   
   const Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + this->m_Dims[0] * (grid[1] + this->m_Dims[1] * grid[2]) );

@@ -136,26 +136,17 @@ SplineWarpXform::GetJacobianSequence
       // compute transformed voxel by taking precomputed y- and z-contributions
       // and adding x. The loops to do this have been unrolled for increased
       // performance.
-      J[0][0] = this->InverseSpacing[0] * 
-	( dspX[0] * phiPtrX[0] + dspX[1] * phiPtrX[3] + dspX[2] * phiPtrX[6] + dspX[3] * phiPtrX[9] );
-      J[0][1] = this->InverseSpacing[0] * 
-	( dspX[0] * phiPtrX[1] + dspX[1] * phiPtrX[4] + dspX[2] * phiPtrX[7] + dspX[3] * phiPtrX[10] );
-      J[0][2] = this->InverseSpacing[0] * 
-	( dspX[0] * phiPtrX[2] + dspX[1] * phiPtrX[5] + dspX[2] * phiPtrX[8] + dspX[3] * phiPtrX[11] );
+      J[0][0] = this->InverseSpacing[0] * ( dspX[0] * phiPtrX[0] + dspX[1] * phiPtrX[3] + dspX[2] * phiPtrX[6] + dspX[3] * phiPtrX[9] );
+      J[0][1] = this->InverseSpacing[0] * ( dspX[0] * phiPtrX[1] + dspX[1] * phiPtrX[4] + dspX[2] * phiPtrX[7] + dspX[3] * phiPtrX[10] );
+      J[0][2] = this->InverseSpacing[0] * ( dspX[0] * phiPtrX[2] + dspX[1] * phiPtrX[5] + dspX[2] * phiPtrX[8] + dspX[3] * phiPtrX[11] );
 
-      J[1][0] = this->InverseSpacing[1] * 
-	( spX[0] * phiPtrY[0] + spX[1] * phiPtrY[3] + spX[2] * phiPtrY[6] + spX[3] * phiPtrY[9] );
-      J[1][1] = this->InverseSpacing[1] * 
-	( spX[0] * phiPtrY[1] + spX[1] * phiPtrY[4] + spX[2] * phiPtrY[7] + spX[3] * phiPtrY[10] );
-      J[1][2] = this->InverseSpacing[1] * 
-	( spX[0] * phiPtrY[2] + spX[1] * phiPtrY[5] + spX[2] * phiPtrY[8] + spX[3] * phiPtrY[11] );
+      J[1][0] = this->InverseSpacing[1] * ( spX[0] * phiPtrY[0] + spX[1] * phiPtrY[3] + spX[2] * phiPtrY[6] + spX[3] * phiPtrY[9] );
+      J[1][1] = this->InverseSpacing[1] * ( spX[0] * phiPtrY[1] + spX[1] * phiPtrY[4] + spX[2] * phiPtrY[7] + spX[3] * phiPtrY[10] );
+      J[1][2] = this->InverseSpacing[1] * ( spX[0] * phiPtrY[2] + spX[1] * phiPtrY[5] + spX[2] * phiPtrY[8] + spX[3] * phiPtrY[11] );
 
-      J[2][0] = this->InverseSpacing[2] * 
-	( spX[0] * phiPtrZ[0] + spX[1] * phiPtrZ[3] + spX[2] * phiPtrZ[6] + spX[3] * phiPtrZ[9] );
-      J[2][1] = this->InverseSpacing[2] * 
-	( spX[0] * phiPtrZ[1] + spX[1] * phiPtrZ[4] + spX[2] * phiPtrZ[7] + spX[3] * phiPtrZ[10] );
-      J[2][2] = this->InverseSpacing[2] * 
-	( spX[0] * phiPtrZ[2] + spX[1] * phiPtrZ[5] + spX[2] * phiPtrZ[8] + spX[3] * phiPtrZ[11] );
+      J[2][0] = this->InverseSpacing[2] * ( spX[0] * phiPtrZ[0] + spX[1] * phiPtrZ[3] + spX[2] * phiPtrZ[6] + spX[3] * phiPtrZ[9] );
+      J[2][1] = this->InverseSpacing[2] * ( spX[0] * phiPtrZ[1] + spX[1] * phiPtrZ[4] + spX[2] * phiPtrZ[7] + spX[3] * phiPtrZ[10] );
+      J[2][2] = this->InverseSpacing[2] * ( spX[0] * phiPtrZ[2] + spX[1] * phiPtrZ[5] + spX[2] * phiPtrZ[8] + spX[3] * phiPtrZ[11] );
 
       array[i-x].Set( &J[0][0] );
 
@@ -225,8 +216,7 @@ SplineWarpXform::GetJacobian
     {
     r[dim] = this->InverseSpacing[dim] * v[dim];
     grid[dim] = std::min( static_cast<int>( r[dim] ), this->m_Dims[dim]-4 );
-    f[dim] = r[dim] - grid[dim];
-    assert( (f[dim] >= 0.0) && (f[dim] <= 1.0) );
+    f[dim] = std::max<Types::Coordinate>( 0, std::min<Types::Coordinate>( 1.0, r[dim] - grid[dim] ) );
     }
 
   const Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + this->m_Dims[0] * (grid[1] + this->m_Dims[1] * grid[2]) );
@@ -343,7 +333,7 @@ SplineWarpXform::GetJacobianDeterminant
     {
     r[dim] = InverseSpacing[dim] * v[dim];
     grid[dim] = std::min( static_cast<int>( r[dim] ), this->m_Dims[dim]-4 );
-    f[dim] = r[dim] - grid[dim];
+    f[dim] = std::max<Types::Coordinate>( 0, std::min<Types::Coordinate>( 1.0, r[dim] - grid[dim] ) );
     }
   
   const Types::Coordinate* coeff = this->m_Parameters + 3 * ( grid[0] + this->m_Dims[0] * (grid[1] + this->m_Dims[1] * grid[2]) );
