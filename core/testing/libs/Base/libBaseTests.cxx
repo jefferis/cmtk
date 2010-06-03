@@ -37,6 +37,7 @@
 #include "cmtkUniformVolumeTests.txx"
 #include "cmtkScalarImageTests.txx"
 #include "cmtkTypedArrayFunctionHistogramMatchingTests.txx"
+#include "cmtkRegionTests.txx"
 
 /** Set up table of test names and function pointers */
 typedef int (*testFuncPtr)();
@@ -55,6 +56,8 @@ const testNameAndFunctionPointer testTable[] =
   { "MathUtilEigensystem",           &testMathUtilEigensystem },
   { "MathUtilEigenvalues",           &testMathUtilEigenvalues },
   { "MathUtilUniformRandom",         &testMathUtilUniformRandom },
+  { "RegionSizeInt",                 &testRegionSizeInt },
+  { "RegionSizeFloat",               &testRegionSizeFloat },
   { "ScalarImage",                   &testScalarImage },
   { "SplineWarpXform",               &testSplineWarpXform },
   { "SplineWarpXformInverse",        &testSplineWarpXformInverse },

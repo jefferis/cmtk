@@ -1,6 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
-##  Copyright 2004-2009 SRI International
+##
+##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -41,6 +42,12 @@ ENDFOREACH(D ${DRIVERS})
 # ==========================================
 # Tests for "cmtk::DataGrid" class
 SET(Tests ${Tests} DataGridMatches)
+
+# ==========================================
+# Tests for "cmtk::Region" class
+SET(Tests ${Tests} 
+  RegionSizeInt
+  RegionSizeFloat)
 
 # ==========================================
 # Tests for "cmtk::ScalarImage" class

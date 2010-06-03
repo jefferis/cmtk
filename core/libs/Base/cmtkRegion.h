@@ -99,8 +99,8 @@ public:
   /// Compute region size (e.g., number of pixels for grid regions).
   T Size() const
   {
-    T size = 0;
-    for ( size_t i = 0; i < NDIM; ++i )
+    T size = (this->m_RegionTo[0]-this->m_RegionFrom[0]);
+    for ( size_t i = 1; i < NDIM; ++i )
       size *= (this->m_RegionTo[i]-this->m_RegionFrom[i]);
     return size;
   }
