@@ -201,8 +201,8 @@ Study::ReadVolume( const bool reRead, const char* orientation )
       if ( dataArray ) 
 	{
 	const Types::DataItemRange range = dataArray->GetRange();
-	this->m_MinimumValue = range.m_UpperBound;
-	this->m_MaximumValue = range.m_LowerBound;
+	this->m_MinimumValue = range.m_LowerBound;
+	this->m_MaximumValue = range.m_UpperBound;
 
 	this->m_Black = dataArray->GetPercentile( 0.01, 1024 );
 	this->m_White = dataArray->GetPercentile( 0.99, 1024 );
