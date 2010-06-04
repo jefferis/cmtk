@@ -53,7 +53,7 @@ main( const int argc, const char* argv[] )
   try
     {
     cmtk::CommandLine cl( argc, argv );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Apply coordinate transformation to point coordinates in VTK file" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Apply coordinate transformation to point coordinates in VTK file (standard input) and write equivalent file with transformed points to standard output." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] transformation" );      
 
     typedef cmtk::CommandLine::Key Key;
