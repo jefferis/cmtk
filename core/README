@@ -19,12 +19,17 @@ image files. When writing images in NIFTI format, comp[ression can now be
 activated by appending ".gz" to the output path, even when the
 CMTK_WRITE_UNCOMPRESSED environment variable is defined.
 
+This release is the first for which we provide two separate builds (32 and
+64bit) for Mac OS X on Intel. These were created with backward compatibility
+activated, so they should run on OS X versions older than 10.6 as well.
+
 For a complete list of changes and fixes, see the CHANGELOG file.
 
 CMTK has been built and tested on the following platforms:
 
 - Linux 32bit (Fedora 12), gcc 4.4.3
 - Linux 64bit (Fedora 12), gcc 4.4.3
+- Linux 64bit (Fedora 13), gcc 4.4.4
 - Cygwin, gcc 4.3.4
 - Windows XP, VisualStudio 9 (2008 Express Edition)
 - Windows XP, VisualStudio 10 (2010 Express Edition)
