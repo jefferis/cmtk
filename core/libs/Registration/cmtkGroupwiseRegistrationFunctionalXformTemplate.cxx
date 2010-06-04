@@ -188,9 +188,3 @@ GroupwiseRegistrationFunctionalXformTemplate<TXform>::InterpolateImageProbabilis
 //@}
 
 } // namespace cmtk
-
-#include <cmtkAffineXform.h>
-#include <cmtkSplineWarpXform.h>
-
-template class cmtk::GroupwiseRegistrationFunctionalXformTemplate<cmtk::AffineXform>;
-template class cmtk::GroupwiseRegistrationFunctionalXformTemplate<cmtk::SplineWarpXform>;
