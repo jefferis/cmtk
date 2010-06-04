@@ -66,51 +66,58 @@ main( const int argc, const char* argv[] )
     }
   catch ( cmtk::CommandLine::Exception ex )
     {
-      cmtk::StdErr << ex << "\n";
-      exit( 1 );
+    cmtk::StdErr << ex << "\n";
+    exit( 1 );
     }
-
+  
   cmtk::Xform::SmartPtr xform = cmtk::XformIO::Read( XformPath, Verbose );
   if ( !xform )
     {
-      exit( 1 );
+    exit( 1 );
     }
-
+  
+  // First, read everything up to and including the "POINTS" line and write everything to output unchanged
   std::string line;
   while ( !std::cin.eof() )
     {
-      std::getline( std::cin, line );
-      std::cout << line << std::endl;
-
-      if ( ! line.compare( 0, 6, "POINTS" ) )
-	break;
-    }
-
-  if ( ! std::cin.eof() )
-    {
-      std::stringstream sstream( line.substr( 7 ) );
-      size_t npoints;
-
-      sstream >> npoints;
-
-      cmtk::FixedVector<3,double> xyz;
-      for ( size_t n = 0; n<npoints; ++n )
-	{
-	  std::cin >> xyz[0] >> xyz[1] >> xyz[2];
-	  
-	  if ( Inverse )
-	    xform->ApplyInverseInPlace( xyz );
-	  else
-	    xform->ApplyInPlace( xyz );
-	  
-	  std::cout << xyz[0] << " " << xyz[1] << " " << xyz[2] << std::endl;
-	}
+    std::getline( std::cin, line );
+    std::cout << line << std::endl;
+    
+    if ( ! line.compare( 0, 6, "POINTS" ) )
+      break;
     }
   
+  // If we're not at EOF, then "line" must be "POINTS <npoints> ..."
+  if ( ! std::cin.eof() )
+    {
+    // Parse number of points out of line
+    std::stringstream sstream( line.substr( 7 ) );
+    size_t npoints;
+    sstream >> npoints;
+    
+    // Repeat npoints times
+    cmtk::FixedVector<3,double> xyz;
+    for ( size_t n = 0; n<npoints; ++n )
+      {
+      // Read original point coordinates from file
+      std::cin >> xyz[0] >> xyz[1] >> xyz[2];
+      
+      // Apply transformation (or inverse)
+      if ( Inverse )
+	xform->ApplyInverseInPlace( xyz );
+      else
+	xform->ApplyInPlace( xyz );
+      
+      // Write transformed point to output
+      std::cout << xyz[0] << " " << xyz[1] << " " << xyz[2] << std::endl;
+      }
+    }
+
+  // Everything else remains unchanged, so copy from input to output.
   while ( !std::cin.eof() )
     {
-      std::getline( std::cin, line );
-      std::cout << line << std::endl;
+    std::getline( std::cin, line );
+    std::cout << line << std::endl;
     }
 
   // if we got here, the program probably ran
