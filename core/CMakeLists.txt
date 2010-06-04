@@ -323,6 +323,27 @@ ENDIF(CMTK_NUMERICS_DOUBLE)
 MARK_AS_ADVANCED(CMTK_NUMERICS_DOUBLE)
 
 #-----------------------------------------------------------------------------
+# Add an option to use or not use zlib library
+
+FIND_PACKAGE(ZLIB)
+IF(ZLIB_FOUND)
+  MESSAGE( STATUS "Using system zlib" )
+  SET(CMTK_ZLIB_LIB "")
+ELSE(ZLIB_FOUND)
+  MESSAGE( STATUS "Building bundled zlib" ) 	 
+  SET(CMTK_BUILD_ZLIB 1)
+  SET(ZLIB_FOUND 1) 	 
+
+  SET(ZLIB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Utilities/zlib")
+  SET(ZCONF_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/Utilities/zlib")
+  SET(CMTK_ZLIB_LIB cmtkZlib)
+  SET(ZLIB_LIBRARY "")
+  INCLUDE_DIRECTORIES(BEFORE
+    ${ZLIB_INCLUDE_DIR}
+    ${ZCONF_INCLUDE_DIR})
+ENDIF(ZLIB_FOUND)
+
+#-----------------------------------------------------------------------------
 # Add an option to build with DICOM support
 
 OPTION(CMTK_USE_DCMTK "Build with DICOM support" ON)
@@ -348,25 +369,6 @@ IF(CMTK_USE_DCMTK)
   
   SET(DCM_DICT_DEFAULT_PATH "${DCMTK_DICTIONARY_DIR}")
 ENDIF(CMTK_USE_DCMTK)
-
-#-----------------------------------------------------------------------------
-# Add an option to use or not use zlib library
-
-FIND_PACKAGE(ZLIB)
-IF(ZLIB_FOUND)
-  MESSAGE( STATUS "Using system zlib" )
-  SET(CMTK_ZLIB_LIB "")
-ELSE(ZLIB_FOUND)
-  MESSAGE( STATUS "Building bundled zlib" ) 	 
-  SET(CMTK_BUILD_ZLIB 1)
-  SET(ZLIB_FOUND 1) 	 
-
-  SET(ZLIB_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/Utilities/zlib;${CMAKE_CURRENT_BINARY_DIR}/Utilities/zlib")
-  SET(CMTK_ZLIB_LIB cmtkZlib)
-  SET(ZLIB_LIBRARY "")
-  INCLUDE_DIRECTORIES(BEFORE
-    ${ZLIB_INCLUDE_DIRS})
-ENDIF(ZLIB_FOUND)
 
 #-----------------------------------------------------------------------------
 # Add an option to use or not use sqlite3 library
