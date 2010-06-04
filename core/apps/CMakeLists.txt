@@ -89,6 +89,7 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
       unsplit
       volume_injection
       volume_reconstruction
+      vtkxform
       warp
       warpx
       warp2ps
