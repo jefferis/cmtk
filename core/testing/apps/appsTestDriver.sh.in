@@ -1576,6 +1576,14 @@ case ${RUNTEST} in
 	run warpx --fast --max-stepsize 8 --grid-spacing 90 --min-stepsize 1 --refine 1 --class-ref label --class-flt label -o ${tmpdir} --initial parc1_parc2_9dof.xform parc1.hdr parc2.hdr
 	check_results registration
 	;;
+    vtkxform)
+        run_eval "${BINDIR}/vtkxform vol001_mr_t0t1.list < polydata_ascii.vtk > ${tmpdir}/output.vtk"
+	check_results output.vtk
+	;;
+    vtkxformInverse)
+        run_eval "${BINDIR}/vtkxform --inverse vol001_mr_t0t1.list < polydata_ascii.vtk > ${tmpdir}/output.vtk"
+	check_results output.vtk
+	;;
     xform2dfieldWarpNrrd)
 	run xform2dfield -v ${tmpdir}/dfield.nhdr vol001_mr_t0_crop.hdr vol001_mr_t0t1_warp.xform
 	check_results dfield.nhdr dfield.raw

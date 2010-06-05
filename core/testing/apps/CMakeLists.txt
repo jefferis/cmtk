@@ -596,6 +596,12 @@ IF(NOT CMTK_USE_MPI)
     xform2scalarWarpInverseError
     xform2scalarWarpOnly)
 
+  # ==========================================
+  # Tests for "vtkxform" tool
+  SET(testList ${testList} 
+    vtkxform
+    vtkxformInverse)
+
   IF(CMTK_BUILD_NRRD)
     SET(testList ${testList} 
       xform2scalarDfield)
