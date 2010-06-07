@@ -86,7 +86,7 @@ ClassStream::PutWarp
       for ( int y=0; y<warpXform->m_Dims[1]; ++y )
 	for ( int x=0; x<warpXform->m_Dims[0]; ++x, oCoeff+=3, p+=3 ) 
 	  {
-	  Vector3D P( oCoeff );
+	  FixedVector<3,Types::Coordinate> P( oCoeff );
 	  initialXform->ApplyInPlace( P );
 	  p[0] = P[0]; p[1] = P[1]; p[2] = P[2];
 	  

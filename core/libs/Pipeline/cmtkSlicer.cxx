@@ -103,10 +103,9 @@ Slicer::Execute()
   image->SetDataType( volume->GetData()->GetType() );
   TypedArray::SmartPtr data = image->GetData();
 
-  Vector3D p( this->m_Plane->GetOrigin() );
-  
-  Vector3D dirX = Vector3D( this->m_Plane->GetDirectionX() );
-  Vector3D dirY = Vector3D( this->m_Plane->GetDirectionY() );
+  FixedVector<3,Types::Coordinate> p( this->m_Plane->GetOrigin() );
+  FixedVector<3,Types::Coordinate> dirX( this->m_Plane->GetDirectionX() );
+  FixedVector<3,Types::Coordinate> dirY( this->m_Plane->GetDirectionY() );
 
   dirX *= (this->m_Plane->GetSpacing()[0] / dirX.RootSumOfSquares());
   dirY *= (this->m_Plane->GetSpacing()[1] / dirY.RootSumOfSquares());

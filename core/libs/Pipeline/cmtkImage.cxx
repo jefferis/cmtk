@@ -124,9 +124,9 @@ Image::GetScalarImage() const
 
   scalarImage->SetPixelData( Data );
   scalarImage->SetPixelSize( Spacing );
-  scalarImage->SetImageOrigin( Vector3D( Origin ) );
-  scalarImage->SetImageDirectionX( Vector3D( DirectionX ) );
-  scalarImage->SetImageDirectionY( Vector3D( DirectionY ) );
+  scalarImage->SetImageOrigin( FixedVector<3,Types::Coordinate>( Origin ) );
+  scalarImage->SetImageDirectionX( FixedVector<3,Types::Coordinate>( DirectionX ) );
+  scalarImage->SetImageDirectionY( FixedVector<3,Types::Coordinate>( DirectionY ) );
 
   return scalarImage;
 }

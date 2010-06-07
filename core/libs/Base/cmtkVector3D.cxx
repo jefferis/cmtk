@@ -47,24 +47,6 @@ Vector3D::SetNormal( const Vector3D& x, const Vector3D& y )
   return *this;
 }
 
-byte
-Vector3D::GetMaxComponentDimension() const
-{
-  if ( ((*this)[0] > (*this)[1]) && ((*this)[0] > (*this)[2]) )
-    return AXIS_X;
-
-  if ( ((*this)[1] > (*this)[2]) )
-    return AXIS_Y;
-
-  return AXIS_Z;
-}
-
-const Vector3D 
-Vector3D::CoordMult ( const Vector3D& p, const Vector3D& q ) 
-{
-  return Vector3D( p[0]*q[0], p[1]*q[1], p[2]*q[2]);
-}
-
 void
 Vector3D::CoordMultInPlace( Vector3D& p, const Vector3D& q ) 
 {

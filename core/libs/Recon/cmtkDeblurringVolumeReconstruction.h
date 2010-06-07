@@ -77,7 +77,7 @@ public:
   { 
     this->m_FunctionAndGradient = new typename Self::FunctionAndGradient( this );
     
-    Vector3D scale( originalImage->m_Delta );
+    cmtk::FixedVector<3,cmtk::Types::Coordinate> scale( originalImage->m_Delta );
     scale *= psfScale;
     scale[interleaveAxis] *= numberOfPasses;
     for ( size_t i = 0; i < numberOfPasses; ++i )

@@ -165,7 +165,7 @@ GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
 #pragma omp parallel for
 	for ( size_t param = 0; param < this->m_ParametersPerXform; param += 3 )
 	  {
-	  const Vector3D projected = affineXform->RotateScaleShear( Vector3D( gX+param ) );
+	  const FixedVector<3,Types::Coordinate> projected( affineXform->RotateScaleShear( FixedVector<3,Types::Coordinate>( gX+param ) ) );
 	  for ( size_t i = 0; i<3; ++i )
 	    gX[param+i] = projected[i];
 	  }
@@ -186,7 +186,7 @@ GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
 #pragma omp parallel for
 	for ( size_t param = 0; param < this->m_ParametersPerXform; param += 3 )
 	  {
-	  const Vector3D projected = affineXform->RotateScaleShear( Vector3D( gX+param ) );
+	  const FixedVector<3,Types::Coordinate> projected( affineXform->RotateScaleShear( FixedVector<3,Types::Coordinate>( gX+param ) ) );
 	  for ( size_t i = 0; i<3; ++i )
 	    gX[param+i] = projected[i];
 	  }

@@ -64,13 +64,13 @@ VolumeAxesHash::VolumeAxesHash
   
   if ( otherOrigin )
     {
-    V -= Vector3D( otherOrigin );
+    V -= FixedVector<3,Types::Coordinate>( otherOrigin );
     }
   
   // Apply post-transformation scaling
   if ( deltas ) 
     {
-    Vector3D deltasV( deltas );
+    FixedVector<3,Types::Coordinate> deltasV( deltas );
     dX = Vector3D::CoordDiv( dX, deltasV );
     dY = Vector3D::CoordDiv( dY, deltasV );
     dZ = Vector3D::CoordDiv( dZ, deltasV );
@@ -99,7 +99,7 @@ VolumeAxesHash::VolumeAxesHash
   // Apply post-transformation scaling
   if ( deltas ) 
     {
-    Vector3D deltasV( deltas );
+    FixedVector<3,Types::Coordinate> deltasV( deltas );
     dX = Vector3D::CoordDiv( dX, deltasV );
     dY = Vector3D::CoordDiv( dY, deltasV );
     dZ = Vector3D::CoordDiv( dZ, deltasV );

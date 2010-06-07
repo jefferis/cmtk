@@ -75,22 +75,6 @@ public:
     (*this)[0] = (*this)[1] = (*this)[2] = (Types::Coordinate) v;
   }
 
-  /// Create vector from array of double precision numbers
-  explicit Vector3D ( const double *array ) 
-  { 
-    (*this)[0]=(Types::Coordinate)array[0]; 
-    (*this)[1]=(Types::Coordinate)array[1]; 
-    (*this)[2]=(Types::Coordinate)array[2]; 
-  }
-
-  /// Create vector from array of floats
-  explicit Vector3D ( const float *array ) 
-  { 
-    (*this)[0]=(Types::Coordinate)array[0]; 
-    (*this)[1]=(Types::Coordinate)array[1]; 
-    (*this)[2]=(Types::Coordinate)array[2]; 
-  }
-
   /// Create vector from three single components
   explicit Vector3D ( const Types::Coordinate x, const Types::Coordinate y, const Types::Coordinate z ) 
   {
@@ -114,26 +98,6 @@ public:
 
   /// Set this vector to be the normal vector of two other vectors.
   Vector3D& SetNormal( const Vector3D& x, const Vector3D& y );
-
-  /// Calculate maximum vector norm.
-  Types::Coordinate MaxNorm () const 
-  { 
-    return (Types::Coordinate) std::max( fabs((*this)[0]), std::max( fabs((*this)[1]), fabs((*this)[2]) ) );
-  }
-  
-  /// Get dimension with maximum vector component.
-  byte GetMaxComponentDimension() const;
-
-  /// Test if vector is all zero.
-  bool IsNull () const 
-  { 
-    for ( int dim=0; dim<3; ++dim )
-      if ( (*this)[dim] != 0 ) return false;
-    return true;
-  }
-  
-  /// Coordinatewise multiplication.
-  static const Vector3D CoordMult( const Vector3D&, const Vector3D& );
 
   /// Coordinatewise in place multiplication.
   static void CoordMultInPlace( Vector3D& p, const Vector3D& q );

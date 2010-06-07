@@ -123,7 +123,7 @@ GroupwiseRegistrationFunctionalBase::CreateTemplateGridFromTargets
     templateSize[dim] = (templateDims[dim]-1) * templateDelta;
     }
   
-  UniformVolume::SmartPtr templateGrid( new UniformVolume( templateDims, Vector3D( templateSize ) ) );
+  UniformVolume::SmartPtr templateGrid( new UniformVolume( templateDims, FixedVector<3,Types::Coordinate>( templateSize ) ) );
   this->SetTemplateGrid( templateGrid, downsample );
 }
 

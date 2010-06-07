@@ -82,7 +82,8 @@ public:
   }
 
   /// Constructor from const pointer.
-  explicit FixedVector( const T *const ptr ) 
+  template<class T2>
+  explicit FixedVector( const T2 *const ptr ) 
   { 
     for ( size_t i = 0; i < NDIM; ++i )
       this->m_Data[i] = ptr[i];
@@ -204,12 +205,22 @@ public:
     return sq;
   }
 
+  /// Calculate maximum absolute value in the vector.
+  T MaxAbsValue() const 
+  {
+    T maxAbs = fabs( this->m_Data[0] );
+    for ( size_t i = 0; i < NDIM; ++i )
+      maxAbs = std::max<T>( maxAbs, fabs( this->m_Data[0] ) );
+    
+    return maxAbs;
+  }
+
   /// Shorthand for root of sum of squares (i.e., Euclid's norm)
   T RootSumOfSquares() const 
   {
     return sqrt( this->SumOfSquares() );
   }
-  
+
 private:
   /// The actual index array.
   T m_Data[NDIM];

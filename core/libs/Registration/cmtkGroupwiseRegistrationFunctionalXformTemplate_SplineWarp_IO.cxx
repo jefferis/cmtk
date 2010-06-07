@@ -82,7 +82,7 @@ operator>>
   stream.End();
   
   UniformVolume::SmartPtr templateGrid( new UniformVolume( UniformVolume::IndexType( dims ), UniformVolume::CoordinateVectorType( size ) ) );
-  templateGrid->SetOffset( Vector3D( origin ) );
+  templateGrid->SetOffset( FixedVector<3,Types::Coordinate>( origin ) );
 
   std::vector<UniformVolume::SmartPtr> imageVector;
   std::vector<AffineXform::SmartPtr> xformVector;

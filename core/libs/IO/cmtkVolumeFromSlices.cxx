@@ -304,13 +304,13 @@ VolumeFromSlices::CheckImage
   // Second++ slice: Compute slice-to-slice vector
   Vector3D imageToImage = image->GetImageOrigin( frame ) - ImagePosition;
   
-  if ( imageToImage.MaxNorm() < CMTK_MAX_LOCALIZE_ERROR )
+  if ( imageToImage.MaxAbsValue() < CMTK_MAX_LOCALIZE_ERROR )
     {
     StdErr.printf( "Two slices at position (%f,%f,%f)\n", (float)ImagePosition[0], (float)ImagePosition[1], (float)ImagePosition[2] );
     return "Encountered two slices in identical location.";
     }
   else
-    imageToImage /= imageToImage.MaxNorm();
+    imageToImage /= imageToImage.MaxAbsValue();
   
   // Check whether slice-to-slice direction is orthogonal to image
   // axes.
@@ -329,7 +329,7 @@ VolumeFromSlices::CheckImage
   else 
     {
     // Are we still going in the same direction?
-    if ( (imageToImage - IncrementVector).MaxValue() > CMTK_MAX_LOCALIZE_ERROR )
+    if ( (imageToImage - IncrementVector).MaxAbsValue() > CMTK_MAX_LOCALIZE_ERROR )
       {
       // Nope, but why? Let's give user some more hints
       if ( ( (imageToImage * IncrementVector) > 0 ) )
@@ -379,10 +379,10 @@ VolumeFromSlices::CheckImage ( const int plane, const ImageInfo& image )
   // Second++ slice: Compute slice-to-slice vector
   Vector3D imageToImage = image.ImagePosition - ImagePosition;
   
-  if ( imageToImage.MaxNorm() < CMTK_MAX_LOCALIZE_ERROR )
+  if ( imageToImage.MaxAbsValue() < CMTK_MAX_LOCALIZE_ERROR )
     return "Encountered two slices in identical location.";
   else
-    imageToImage /= imageToImage.MaxNorm();
+    imageToImage /= imageToImage.MaxAbsValue();
   
   // Check whether slice-to-slice direction is orthogonal to image
   // axes.
@@ -398,7 +398,7 @@ VolumeFromSlices::CheckImage ( const int plane, const ImageInfo& image )
   else 
     {
     // Are we still going in the same direction?
-    if ( (imageToImage - IncrementVector).MaxValue() > CMTK_MAX_LOCALIZE_ERROR )
+    if ( (imageToImage - IncrementVector).MaxAbsValue() > CMTK_MAX_LOCALIZE_ERROR )
       {
       // Nope, but why? Let's give user some more hints
       if ( ( (imageToImage * IncrementVector) > 0 ) )

@@ -771,7 +771,7 @@ QtTriplanarWindow::slotGoToLandmark()
   const Landmark* lm = ll->FindByName( LandmarkBox->currentText().toLatin1() );
   if ( lm ) 
     {
-    this->slotMouse3D( Qt::LeftButton, Vector3D( lm->GetLocation() ) );
+    this->slotMouse3D( Qt::LeftButton, FixedVector<3,Types::Coordinate>( lm->GetLocation() ) );
     }
 }
 
@@ -798,7 +798,7 @@ QtTriplanarWindow::slotExportLandmarks()
       {
       for ( LandmarkList::const_iterator it = ll->begin(); it != ll->end(); ++it )
 	{
-	Vector3D v( (*it)->GetLocation() );
+	FixedVector<3,Types::Coordinate> v( (*it)->GetLocation() );
 	QString n( (*it)->GetName() );
 
 	stream << v[0] << "\t" << v[1] << "\t" << v[2] << "\t" << (const char*)(n.toLatin1()) << std::endl;
@@ -856,7 +856,7 @@ QtTriplanarWindow::slotImportLandmarks()
       if ( lm )
 	{
 	this->LandmarkBox->setCurrentIndex( this->LandmarkBox->findText( lm->GetName() ) );
-	this->slotMouse3D( Qt::LeftButton, Vector3D( lm->GetLocation() ) );
+	this->slotMouse3D( Qt::LeftButton, FixedVector<3,Types::Coordinate>( lm->GetLocation() ) );
 	}
 
       LandmarkBox->setEnabled( true );
