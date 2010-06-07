@@ -54,6 +54,7 @@ cmtk
 
 /** Vectors in 3D space.
  *@author Torsten Rohlfing
+ *\deprecated This class will soon disappear and replaced with a simple typedef.
  */
 class Vector3D 
   : public FixedVector<3,Types::Coordinate>
