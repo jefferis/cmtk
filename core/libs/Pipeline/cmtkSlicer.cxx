@@ -157,7 +157,7 @@ Slicer::Execute()
     
     if ( affineXform ) 
       {
-      affineXform->Apply( dirX += p );
+      affineXform->ApplyInPlace( dirX += p );
       affineXform->ApplyInPlace( dirY += p );
       affineXform->ApplyInPlace( p );
       dirX -= p;
