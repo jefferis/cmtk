@@ -1,4 +1,4 @@
-Release CMTK-1.3.1:
+Release CMTK-1.3.1 (2010-06-07):
 
 - Added: "vtkxform" tool to apply transformation to point coordinates in VTK
     files (does not require VTK support to be enabled or VTK to be
