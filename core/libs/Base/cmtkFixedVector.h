@@ -209,8 +209,8 @@ public:
   T MaxAbsValue() const 
   {
     T maxAbs = fabs( this->m_Data[0] );
-    for ( size_t i = 0; i < NDIM; ++i )
-      maxAbs = std::max<T>( maxAbs, fabs( this->m_Data[0] ) );
+    for ( size_t i = 1; i < NDIM; ++i )
+      maxAbs = std::max<T>( maxAbs, fabs( this->m_Data[i] ) );
     
     return maxAbs;
   }
