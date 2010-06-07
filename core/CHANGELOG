@@ -245,6 +245,7 @@ Release CMTK-1.2.1 (2010-02-01):
     to replace this if needed.
 - Removed: obsolete IO code for DCM tags etc.
 
+
 Release CMTK-1.2.0 (2010-01-06):
 
 - Added: cmtk::Console can now determine terminal line width on POSIX systems,
@@ -745,6 +746,7 @@ Release CMTK-0.2.3 (2009-03-20):
 - Testing: added tests and data for "model" tool
 - Testing: added tests for some igsMathUtil functions
 
+
 Release IGS-2.2.0 (2009-01-27):
 
 - Added: experimental single-binary command wrapper, "cmtk"
@@ -780,6 +782,7 @@ Release IGS-2.2.0 (2009-01-27):
 - Removed: reformat tool long obsoleted by reformatx
 
 - Testing: added tests for "sequence" tool
+
 
 Release IGS-2.1.6 (2008-11-05):
 
