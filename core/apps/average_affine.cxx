@@ -99,7 +99,7 @@ main( const int argc, const char* argv[] )
 
       if ( firstXform )
 	{
-	affine->ChangeCenter( cmtk::Vector3D( firstXform->RetCenter() ) );
+	affine->ChangeCenter( cmtk::FixedVector<3,cmtk::Types::Coordinate>( firstXform->RetCenter() ) );
 	}
       else
 	{

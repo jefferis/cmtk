@@ -195,7 +195,10 @@ main( int argc, char *argv[] )
     
     if ( numRead == 3 ) 
       {
-      cmtk::Vector3D v( xyz ), u(v), uu;
+      cmtk::FixedVector<3,cmtk::Types::Coordinate> v( xyz );
+      cmtk::FixedVector<3,cmtk::Types::Coordinate> u( v );
+      cmtk::FixedVector<3,cmtk::Types::Coordinate> uu;
+
       float error = 0;
       bool success = true;
       if ( splineWarp && ! AffineOnly ) 

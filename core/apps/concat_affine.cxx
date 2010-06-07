@@ -96,7 +96,7 @@ main( const int argc, const char* argv[] )
       concat.Concat( *affine );
       if ( firstXform )
 	{
-	concat.ChangeCenter( cmtk::Vector3D( affine->RetCenter() ) );
+	concat.ChangeCenter( cmtk::FixedVector<3,cmtk::Types::Coordinate>( affine->RetCenter() ) );
 	firstXform = false;
 	}
       
