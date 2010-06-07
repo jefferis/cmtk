@@ -43,11 +43,11 @@ testUniformVolumeMatches()
   const int dims2[3] = { 11, 12, 10 };
   const cmtk::Types::Coordinate size2[3] = { 11, 12, 10 };
   
-  cmtk::UniformVolume volume1a = cmtk::UniformVolume( cmtk::UniformVolume::IndexType( dims1 ), cmtk::Vector3D( size1a ) );
-  cmtk::UniformVolume volume1b = cmtk::UniformVolume( cmtk::UniformVolume::IndexType( dims1 ), cmtk::Vector3D( size1b ) );
-  cmtk::UniformVolume volume1c = cmtk::UniformVolume( cmtk::UniformVolume::IndexType( dims1 ), cmtk::Vector3D( size1b ) );
+  cmtk::UniformVolume volume1a = cmtk::UniformVolume( cmtk::UniformVolume::IndexType( dims1 ), cmtk::FixedVector<3,cmtk::Types::Coordinate>( size1a ) );
+  cmtk::UniformVolume volume1b = cmtk::UniformVolume( cmtk::UniformVolume::IndexType( dims1 ), cmtk::FixedVector<3,cmtk::Types::Coordinate>( size1b ) );
+  cmtk::UniformVolume volume1c = cmtk::UniformVolume( cmtk::UniformVolume::IndexType( dims1 ), cmtk::FixedVector<3,cmtk::Types::Coordinate>( size1b ) );
 
-  cmtk::UniformVolume volume2 = cmtk::UniformVolume( cmtk::UniformVolume::IndexType( dims2 ), cmtk::Vector3D( size2 ) );
+  cmtk::UniformVolume volume2 = cmtk::UniformVolume( cmtk::UniformVolume::IndexType( dims2 ), cmtk::FixedVector<3,cmtk::Types::Coordinate>( size2 ) );
 
   if ( volume1a.GridMatches( volume1b ) )
     return 1;
