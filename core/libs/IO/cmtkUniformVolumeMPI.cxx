@@ -108,7 +108,7 @@ Broadcast
     MPI::CHAR.Unpack( msgBufferHdr, msgBufferHdrSize, &dataType, sizeof( dataType ), position, comm );
 
     inOutPtr = UniformVolume::SmartPtr( new UniformVolume( UniformVolume::IndexType( dims ), UniformVolume::CoordinateVectorType( size ) ) );
-    inOutPtr->SetOffset( Vector3D( offset ) );
+    inOutPtr->SetOffset( FixedVector<3,Types::Coordinate>( offset ) );
     inOutPtr->CropRegion() = cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType( cropRegionFrom ), cmtk::DataGrid::IndexType( cropRegionTo ) );
     inOutPtr->CreateDataArray( dataType );
     }
