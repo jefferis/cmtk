@@ -96,7 +96,7 @@ main( const int argc, const char* argv[] )
     sstream >> npoints;
     
     // Repeat npoints times
-    cmtk::FixedVector<3,double> xyz;
+    cmtk::Xform::SpaceVectorType xyz;
     for ( size_t n = 0; n<npoints; ++n )
       {
       // Read original point coordinates from file

@@ -242,10 +242,21 @@ operator-( const FixedVector<NDIM,T>& lhs, const FixedVector<NDIM,T>& rhs )
   return FixedVector<NDIM,T>( lhs ) -= rhs;
 }
 
-/// Scalar multiplication operator.
+/// Scalar product operator.
 template<size_t NDIM,typename T>
+T
+operator* ( const FixedVector<NDIM,T> &lhs, const FixedVector<NDIM,T>& rhs ) 
+{
+  T product = lhs[0] * rhs[0];
+  for ( size_t i = 1; i<NDIM; ++i )
+    product += lhs[i] * rhs[i];
+  return product;
+}
+
+/// Scalar multiplication operator.
+template<size_t NDIM,typename T,typename T2>
 const FixedVector<NDIM,T>
-operator*( const T lhs, const FixedVector<NDIM,T>& rhs )
+operator*( const T2 lhs, const FixedVector<NDIM,T>& rhs )
 {
   FixedVector<NDIM,T> result( rhs );
   for ( size_t i = 0; i<NDIM; ++i )
@@ -270,6 +281,33 @@ std::ifstream& operator>>( std::ifstream& stream, FixedVector<NDIM,T>& index )
     stream >> index[i];
   return stream;
 }
+
+/// Fixed vector static initializer class template.
+template<size_t NDIM,typename T>
+class FixedVectorStaticInitializer
+{
+};
+
+/// Fixed vector static initializer class template.
+template<typename T>
+class FixedVectorStaticInitializer<3,T>
+{
+public:
+  /// The vector type.
+  typedef FixedVector<3,T> VectorType;
+
+  /// Static initializer for three-dimensional vector.
+  static const VectorType Init( const T& x0, const T& x1, const T& x2 )
+  {
+    VectorType v;
+
+    v[0] = x0;
+    v[1] = x1;
+    v[2] = x2;
+    
+    return v;
+  }
+};
 
 } // namespace cmtk
 

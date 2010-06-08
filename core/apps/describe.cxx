@@ -60,9 +60,6 @@ bool Verbose = false;
 
 const char* ReadOrientation = NULL;
 
-bool PrintCOM = false;
-bool PrintFOM = false;
-
 bool MachineReadable = false;
 
 std::list<cmtk::Vector3D> ProbeListIndex;
@@ -100,9 +97,6 @@ main( int argc, char *argv[] )
 
     cl.AddSwitch( Key( "read-ras" ), &ReadOrientation, "RAS", "Read image in RAS orientation" );
     
-    cl.AddSwitch( Key( "print-com" ), &PrintCOM, true, "Compute and print center of mass." );
-    cl.AddSwitch( Key( "print-fom" ), &PrintFOM, true, "Compute and print first-order moments." );
-
     cl.AddCallback( Key( "probe-index" ), CallbackProbeIndex, "Add pixel index for probing." );
 
     cl.Parse();
@@ -205,24 +199,6 @@ main( int argc, char *argv[] )
 	else
 	  {
 	  fprintf( stdout, "Probe %02d = NAN\n", (int)index );
-	  }
-	}
-     
-      if ( PrintCOM || PrintFOM )
-	{
-	cmtk::Vector3D com, fom;
-	if ( PrintFOM )
-	  com = volume->GetCenterOfMass( fom );
-	else
-	  com = volume->GetCenterOfMass();
-       
-	if ( PrintCOM )
-	  {
-	  fprintf( stdout, "COM\t%f %f %f\n", com[0], com[1], com[2] );
-	  }
-	if ( PrintFOM )
-	  {
-	  fprintf( stdout, "FOM\t%f %f %f\n", fom[0], fom[1], fom[2] );
 	  }
 	}
       }

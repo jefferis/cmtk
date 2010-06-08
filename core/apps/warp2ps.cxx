@@ -217,7 +217,7 @@ main ( const int argc, const char* argv[] )
   std::cout << "2 setlinejoin\n";
   std::cout << LineWidth << " setlinewidth\n";
 
-  cmtk::Vector3D v0, v1;
+  cmtk::UniformVolume::CoordinateVectorType v0, v1;
   std::vector<double> outputX;
   std::vector<double> outputY;
 
@@ -238,8 +238,7 @@ main ( const int argc, const char* argv[] )
     for ( idx[axisX] = CropRegion[0]; idx[axisX] < CropRegion[2]; idx[axisX] += SamplingFactorInLine ) 
       {      
       bool success = true;
-      volume->GetGridLocation( v1, idx[0], idx[1], idx[2] );
-      v0 = v1;
+      v0 = v1 = volume->GetGridLocation( idx[0], idx[1], idx[2] );
       if ( xform )
 	{
 	if ( InvertXform )
@@ -258,7 +257,7 @@ main ( const int argc, const char* argv[] )
       if ( success )
 	{
 	v1 -= v0;
-	volume->GetGridLocation( v0, idx[0], idx[1], idx[2] );
+	v0 = volume->GetGridLocation( idx[0], idx[1], idx[2] );
 	v1 += v0;
 	
 	outputX.push_back( ScaleFactor*v1[axisX] );
@@ -280,8 +279,7 @@ main ( const int argc, const char* argv[] )
     for ( idx[axisY] = CropRegion[1]; idx[axisY] < CropRegion[3]; idx[axisY] += SamplingFactorInLine ) 
       {
       bool success = true;
-      volume->GetGridLocation( v1, idx[0], idx[1], idx[2] );
-      v0 = v1;
+      v0 = v1 = volume->GetGridLocation( idx[0], idx[1], idx[2] );
       if ( xform )
 	{
 	if ( InvertXform )
@@ -300,7 +298,7 @@ main ( const int argc, const char* argv[] )
       if ( success )
 	{
 	v1 -= v0;
-	volume->GetGridLocation( v0, idx[0], idx[1], idx[2] );
+	v0 = volume->GetGridLocation( idx[0], idx[1], idx[2] );
 	v1 += v0;
 	
 	outputX.push_back( ScaleFactor*v1[axisX] );

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -67,10 +68,10 @@ public:
   void Add( const Xform::SmartPtr& xform, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
   
   /// Apply a sequence of (inverse) transformations.
-  bool ApplyInPlace( Vector3D& v );
+  bool ApplyInPlace( Xform::SpaceVectorType& v );
   
   /// Get the Jacobian determinant of a sequence of transformations.
-  bool GetJacobian( const Vector3D& v, Types::DataItem& jacobian, const bool correctGlobalScale = true );
+  bool GetJacobian( const Xform::SpaceVectorType& v, Types::DataItem& jacobian, const bool correctGlobalScale = true );
 };
 
 //@}

@@ -113,7 +113,7 @@ TData
 DataGrid::TrilinearInterpolation
 ( const TData* dataPtr, 
   const int X, const int Y, const int Z,
-  const Vector3D& Location, const Types::Coordinate* from, 
+  const Self::SpaceVectorType& Location, const Types::Coordinate* from, 
   const Types::Coordinate* to ) const
 {
   const size_t offset = X+this->m_Dims[0]*(Y+this->m_Dims[1]*Z);

@@ -153,8 +153,7 @@ main ( const int argc, const char *argv[] )
       {
       for ( int x = 0; x < dims[cmtk::AXIS_X]; ++x, offset+=3 ) 
 	{
-	volume->GetGridLocation( v0, x, y, z );
-	v1 = v0;
+	v1 = v0 = volume->GetGridLocation( x, y, z );
 
 	bool invalid = true;
 	if ( (!Mask) || (volume->GetDataAt( x, y, z ) > 0) )

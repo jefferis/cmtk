@@ -40,7 +40,7 @@
 #include <cmtkTypes.h>
 #include <cmtkTypedArray.h>
 #include <cmtkRegion.h>
-#include <cmtkVector3D.h>
+#include <cmtkFixedVector.h>
 #include <cmtkMatrix3x3.h>
 #include <cmtkInterpolator.h>
 
@@ -87,6 +87,9 @@ public:
 
   /// Pixel index type.
   typedef RegionType::IndexType IndexType;
+
+  /// Space vector type.
+  typedef FixedVector<3,Types::Coordinate> SpaceVectorType;
 
   /// Default constructor creates empty image.
   ScalarImage();
@@ -161,24 +164,24 @@ public:
 
   /** Origin of image in world coordinates.
    */
-  Vector3D m_ImageOrigin;
+  Self::SpaceVectorType m_ImageOrigin;
 
   /// Set image origin.
-  void SetImageOrigin( const Vector3D& imageOrigin ) 
+  void SetImageOrigin( const Self::SpaceVectorType& imageOrigin ) 
   {
     this->m_ImageOrigin = imageOrigin;
   }
 
   /// Get image origin of given frame (default: 0).
-  Vector3D GetImageOrigin( const int frame = 0 ) const;
+  Self::SpaceVectorType GetImageOrigin( const int frame = 0 ) const;
 
   /** Direction of image rows relative to ImageOrigin.
    */
-  cmtkGetSetMacro(Vector3D,ImageDirectionX);
+  cmtkGetSetMacro(Self::SpaceVectorType,ImageDirectionX);
 
   /** Direction of image columns relative to ImageOrigin.
    */
-  cmtkGetSetMacro(Vector3D,ImageDirectionY);
+  cmtkGetSetMacro(Self::SpaceVectorType,ImageDirectionY);
 
   /** Image position from coordinate origin along axial direction.
    * This field is only meaningful if this 2D image is part of a 3D image.
@@ -339,7 +342,7 @@ public:
    *@param i Index of projected pixel in x direction.
    *@param j Index of projected pixel in y direction.
    */
-  void ProjectPixel( const Vector3D& v, int& i, int& j ) const;
+  void ProjectPixel( const Self::SpaceVectorType& v, int& i, int& j ) const;
   
   /// Subtract one image from another in place.
   ScalarImage& operator-=( const ScalarImage& );

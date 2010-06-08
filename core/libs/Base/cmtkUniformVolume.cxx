@@ -203,11 +203,11 @@ UniformVolume::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
   UniformVolume* dsVolume = new UniformVolume( newDataGrid->GetDims(), downsample[0] * this->m_Delta[0], downsample[1] * this->m_Delta[1], downsample[2] * this->m_Delta[2], newData );
 
   // compute shift of volume origin
-  const Vector3D shift( (downsample[0]-1)*this->m_Delta[0]/2, (downsample[1]-1)*this->m_Delta[1]/2, (downsample[2]-1)*this->m_Delta[2]/2 );
+  const Types::Coordinate shift[3] = { (downsample[0]-1)*this->m_Delta[0]/2, (downsample[1]-1)*this->m_Delta[1]/2, (downsample[2]-1)*this->m_Delta[2]/2 };
   
   // apply shift to origin
-  Vector3D offset( this->m_Offset );
-  offset += shift;
+  Self::CoordinateVectorType offset( this->m_Offset );
+  offset += Self::CoordinateVectorType( shift );
   dsVolume->SetOffset( offset );
   
   // set crop region while considering new image offset
@@ -245,7 +245,7 @@ UniformVolume::GetInterleavedSubVolume
     ++dims[axis];
   size[axis] = (dims[axis]-1) * factor * this->m_Delta[axis];
   
-  Vector3D offset( 0, 0, 0 );
+  Self::CoordinateVectorType offset( Self::CoordinateVectorType::Init( 0 ) );
   offset[axis] = idx * this->m_Delta[axis];
   
   UniformVolume* volume = new UniformVolume( dims, size );
@@ -294,7 +294,7 @@ UniformVolume::GetInterleavedPaddedSubVolume
 
 const UniformVolume::RegionType
 UniformVolume::GetGridRange
-( const Vector3D& fromVOI, const Vector3D& toVOI ) const
+( const Self::CoordinateVectorType& fromVOI, const Self::CoordinateVectorType& toVOI ) const
 {
   Self::IndexType from, to;
 
@@ -323,28 +323,33 @@ UniformVolume::GetOrthoSlice
   ScalarImage* sliceImage = DataGrid::GetOrthoSlice( axis, plane );
   sliceImage->SetImageSlicePosition( this->GetPlaneCoord( axis, plane ) );
 
-  Vector3D imageOffset( 0, 0, 0 );
+  Self::CoordinateVectorType imageOffset( Self::CoordinateVectorType::Init( 0 ) );
+  Self::CoordinateVectorType directionX( Self::CoordinateVectorType::Init( 0 ) );
+  Self::CoordinateVectorType directionY( Self::CoordinateVectorType::Init( 0 ) );
   switch ( axis ) 
     {
     case AXIS_X:
       sliceImage->SetPixelSize( this->GetDelta( AXIS_Y, 0 ), this->GetDelta( AXIS_Z, 0 ) );
-      imageOffset.Set( this->GetPlaneCoord(AXIS_X, plane), this->GetPlaneCoord(AXIS_Y, 0), this->GetPlaneCoord(AXIS_Z, 0) );
-      sliceImage->SetImageDirectionX( Vector3D( 0, 1, 0 ) );
-      sliceImage->SetImageDirectionY( Vector3D( 0, 0, 1 ) );
+      imageOffset[0] = this->GetPlaneCoord( AXIS_X, plane );
+      directionX[1] = 1;
+      directionY[2] = 1;
       break;
     case AXIS_Y:
       sliceImage->SetPixelSize( this->GetDelta( AXIS_X, 0 ), this->GetDelta( AXIS_Z, 0 ) );
-      imageOffset.Set( this->GetPlaneCoord(AXIS_X, 0), this->GetPlaneCoord(AXIS_Y, plane), this->GetPlaneCoord(AXIS_Z, 0) );
-      sliceImage->SetImageDirectionX( Vector3D( 1, 0, 0 ) );
-      sliceImage->SetImageDirectionY( Vector3D( 0, 0, 1 ) );
+      imageOffset[1] = this->GetPlaneCoord( AXIS_X, plane );
+      directionX[0] = 1;
+      directionY[2] = 1;
       break;
     case AXIS_Z:
       sliceImage->SetPixelSize( this->GetDelta( AXIS_X, 0 ), this->GetDelta( AXIS_Y, 0 ) );
-      imageOffset.Set( this->GetPlaneCoord(AXIS_X, 0), this->GetPlaneCoord(AXIS_Y, 0), this->GetPlaneCoord(AXIS_Z, plane) );
-      sliceImage->SetImageDirectionX( Vector3D( 1, 0, 0 ) );
-      sliceImage->SetImageDirectionY( Vector3D( 0, 1, 0 ) );
+      imageOffset[2] = this->GetPlaneCoord( AXIS_X, plane );
+      directionX[0] = 1;
+      directionY[1] = 1;
       break;
     }
+
+  sliceImage->SetImageDirectionX( directionX );
+  sliceImage->SetImageDirectionY( directionY );
   
   sliceImage->SetImageOrigin( imageOffset );
   return sliceImage;
@@ -404,7 +409,7 @@ UniformVolume::GetOrthoSliceInterp
 
 void
 UniformVolume
-::GetPrincipalAxes( Matrix3x3<Types::Coordinate>& directions, Vector3D& centerOfMass ) const
+::GetPrincipalAxes( Matrix3x3<Types::Coordinate>& directions, Self::CoordinateVectorType& centerOfMass ) const
 {
   centerOfMass = this->GetCenterOfMass();
   const Types::Coordinate xg = centerOfMass[0];
@@ -456,7 +461,7 @@ UniformVolume
   const EigenSystemSymmetricMatrix3x3<Types::Coordinate> eigensystem( inertiaMatrix );
   for ( int n = 0; n < 3; ++n )
     {
-    const Vector3D v = eigensystem.GetNthEigenvector( n );
+    const Self::CoordinateVectorType v = eigensystem.GetNthEigenvector( n );
     for ( int i = 0; i < 3; ++i )
       {
       directions[n][i] = v[i];
@@ -532,14 +537,15 @@ UniformVolume::GetImageToPhysicalMatrix() const
   return matrix;
 }
 
-Vector3D
+UniformVolume::CoordinateVectorType
 UniformVolume
 ::IndexToPhysical( const Types::Coordinate i, const Types::Coordinate j, const Types::Coordinate k ) const
 {
   const AffineXform::MatrixType& matrix = this->m_IndexToPhysicalMatrix;
-  return Vector3D( i * matrix[0][0] + j * matrix[1][0] + k * matrix[2][0] + matrix[3][0],
-		   i * matrix[0][1] + j * matrix[1][1] + k * matrix[2][1] + matrix[3][1],
-		   i * matrix[0][2] + j * matrix[1][2] + k * matrix[2][2] + matrix[3][2] );  
+  const Types::Coordinate phys[3] = { i * matrix[0][0] + j * matrix[1][0] + k * matrix[2][0] + matrix[3][0],
+				      i * matrix[0][1] + j * matrix[1][1] + k * matrix[2][1] + matrix[3][1],
+				      i * matrix[0][2] + j * matrix[1][2] + k * matrix[2][2] + matrix[3][2] };
+  return Self::CoordinateVectorType( phys );  
 }
 
 } // namespace cmtk

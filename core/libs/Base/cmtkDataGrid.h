@@ -38,7 +38,7 @@
 #include <cmtkMacros.h>
 #include <cmtkTypes.h>
 #include <cmtkTypedArray.h>
-#include <cmtkVector3D.h>
+#include <cmtkFixedVector.h>
 #include <cmtkScalarImage.h>
 #include <cmtkRegion.h>
 #include <cmtkMetaInformationObject.h>
@@ -82,6 +82,9 @@ public:
 
   /// Index type.
   typedef RegionType::IndexType IndexType;
+
+  /// Space vector type.
+  typedef FixedVector<3,Types::Coordinate> SpaceVectorType;
 
   /// Number of grid samples in the three spatial dimensions
   Self::IndexType m_Dims;
@@ -292,10 +295,10 @@ public:
   int GetNextIJK() const { return nextIJK; }
   
   /// Get center of mass of pixel data.
-  virtual Vector3D GetCenterOfMass() const;
+  virtual FixedVector<3,Types::Coordinate> GetCenterOfMassGrid() const;
   
   /// Get center of mass and first-order moments of pixel data.
-  virtual Vector3D GetCenterOfMass( Vector3D& firstOrderMoment ) const;
+  virtual FixedVector<3,Types::Coordinate> GetCenterOfMassGrid( FixedVector<3,Types::Coordinate>& firstOrderMoment ) const;
   
   /// Return maximum-intensity projection MIP along one axis.
   template<class TAccumulator>
@@ -330,7 +333,7 @@ protected:
    * given location, so that the interpolation could be completed successfully,
    * False otherwise.
    */
-  bool TrilinearInterpolation( Types::DataItem&, const int, const int, const int, const Vector3D&, const Types::Coordinate*, const Types::Coordinate* ) const;
+  bool TrilinearInterpolation( Types::DataItem&, const int, const int, const int, const Self::SpaceVectorType&, const Types::Coordinate*, const Types::Coordinate* ) const;
 
   /** Utility function for trilinear interpolation from a primitive data array.
    * This function is provided for computational efficiency when a large number 
@@ -348,7 +351,7 @@ protected:
    */
   template<class TData>
   inline TData TrilinearInterpolation
-  ( const TData* dataPtr, const int x, const int y, const int z, const Vector3D& gridPosition, const Types::Coordinate* cellFrom, 
+  ( const TData* dataPtr, const int x, const int y, const int z, const Self::SpaceVectorType& gridPosition, const Types::Coordinate* cellFrom, 
     const Types::Coordinate* cellTo ) const;
 
   /** Utility function for trilinear interpolation from multiple primitive data arrays of identical grid structure.

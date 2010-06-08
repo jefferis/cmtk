@@ -40,7 +40,6 @@
 #include <cmtkconfig.h>
 
 #include <cmtkTypes.h>
-#include <cmtkVector3D.h>
 #include <cmtkVolume.h>
 #include <cmtkUniformVolume.h>
 
@@ -242,13 +241,13 @@ private:
   Types::Coordinate Spacing[2];
 
   /// X-coordinate of image origin.
-  Vector3D FirstImagePosition;
+  ScalarImage::SpaceVectorType FirstImagePosition;
 
   /// X-coordinate of image origin.
-  Vector3D ImagePosition;
+  ScalarImage::SpaceVectorType ImagePosition;
 
   /// X-coordinate of image origin.
-  Vector3D ImageOrientation[2];
+  ScalarImage::SpaceVectorType ImageOrientation[2];
 
   /// Coordinate increment in x-direction for every block copy operation.
   int IncX;
@@ -265,7 +264,7 @@ private:
    * be in the very same direction in order to make up a rectangular 3D
    * volume.
    */
-  Vector3D IncrementVector;
+  ScalarImage::SpaceVectorType IncrementVector;
 
   /** Flag for pixel padding.
    * If this flag is set, PaddingValue defines a non-data value for padded

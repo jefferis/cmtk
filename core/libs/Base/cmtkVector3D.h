@@ -96,31 +96,12 @@ public:
     return *this;
   }
 
-  /// Set this vector to be the normal vector of two other vectors.
-  Vector3D& SetNormal( const Vector3D& x, const Vector3D& y );
-
   /// Coordinatewise in place multiplication.
   static void CoordMultInPlace( Vector3D& p, const Vector3D& q );
   
   /// Coordinatewise divison.
   static const Vector3D CoordDiv( const Vector3D&, const Vector3D& );
 };
-
-inline Types::Coordinate
-operator* ( const Vector3D& p, const Vector3D& q ) 
-{
-  return p[0]*q[0]+p[1]*q[1]+p[2]*q[2];
-}
-
-/// Stream output operator.
-inline
-Console& operator<< ( Console& stream, const Vector3D& v )
-{
-  for ( int i = 0; i < 3; ++i )
-    stream << v[i] << "\t";
-  stream << "\n";
-  return stream;
-}
 
 //@}
 

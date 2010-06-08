@@ -48,7 +48,7 @@ ParametricPlane::ParametricPlane()
     Theta( 0 ),
     Phi( 0 )
 {
-  this->m_Origin.Set( 0, 0, 0 );
+  this->m_Origin = Self::CoordinateVectorType( Self::CoordinateVectorType::Init( 0 ) );
   this->Update();
 }
 
@@ -63,7 +63,7 @@ ParametricPlane::Update()
 }
 
 void
-ParametricPlane::SetNormal( const Vector3D& normal )
+ParametricPlane::SetNormal( const Self::CoordinateVectorType& normal )
 {
   this->Normal = (1.0 / normal.RootSumOfSquares()) * normal;
   

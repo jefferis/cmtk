@@ -237,7 +237,6 @@ WriteDifference
   cmtk::TypedArray::SmartPtr diffData = cmtk::TypedArray::SmartPtr( cmtk::TypedArray::Create( GetSignedDataType( originalData->GetType() ), originalData->GetDataSize() ) );
   diffVolume->SetData( diffData );
 
-  cmtk::Vector3D v;	
   cmtk::Types::DataItem dataV, dataW;
 
   int offset = 0;
@@ -250,8 +249,7 @@ WriteDifference
 	  diffData->SetPaddingAt( offset );
 	  continue;
 	  }
-	originalVolume->GetGridLocation( v, x, y, z );
-	cmtk::Vector3D w(v);
+	cmtk::UniformVolume::CoordinateVectorType w = originalVolume->GetGridLocation( x, y, z );
 	parametricPlane.MirrorInPlace( w );
 
 	if ( interpolator->GetDataAt( w, dataW ) )
@@ -275,7 +273,6 @@ WriteMirror
   cmtk::TypedArray::SmartPtr mirrorData( originalVolume->GetData()->NewTemplateArray() );
   mirrorVolume->SetData( mirrorData );
 
-  cmtk::Vector3D v;	
   cmtk::Types::DataItem data;
 
   int offset = 0;
@@ -284,7 +281,7 @@ WriteMirror
     for ( int y = 0; y < originalVolume->GetDims()[1]; ++y )
       for ( int x = 0; x < originalVolume->GetDims()[0]; ++x, ++offset ) 
 	{
-	originalVolume->GetGridLocation( v, x, y, z );
+	cmtk::UniformVolume::CoordinateVectorType v = originalVolume->GetGridLocation( x, y, z );
 	parametricPlane.MirrorInPlace( v );
 
 	if ( interpolator->GetDataAt( v, data ) )
@@ -309,7 +306,6 @@ WriteMarkPlane
   cmtk::TypedArray::SmartPtr markData( originalVolume->GetData()->Clone() );
   markVolume->SetData( markData );
 
-  cmtk::Vector3D v;	
   int offset = 0;
   for ( int z = 0; z < originalVolume->GetDims()[2]; ++z ) 
     {
@@ -318,8 +314,7 @@ WriteMarkPlane
       int currentSideOfPlane = 0;
       for ( int x = 0; x < originalVolume->GetDims()[0]; ++x, ++offset ) 
 	{
-	originalVolume->GetGridLocation( v, x, y, z );
-	int newSideOfPlane = parametricPlane.GetWhichSide( v );
+	int newSideOfPlane = parametricPlane.GetWhichSide( originalVolume->GetGridLocation( x, y, z ) );
 	if ( ( newSideOfPlane != currentSideOfPlane ) && x )
 	  markData->Set( markPlaneValue, offset );
 	currentSideOfPlane = newSideOfPlane;
@@ -348,7 +343,6 @@ WriteAligned
 
   const cmtk::Types::DataItem maxData = originalData->GetRange().m_UpperBound;
 
-  cmtk::Vector3D v;	
   cmtk::Types::DataItem data;
 
   int normalAxis = 0;
@@ -367,7 +361,7 @@ WriteAligned
       {
       for ( int x = 0; x < originalVolume->GetDims()[0]; ++x, ++offset ) 
 	{
-	originalVolume->GetGridLocation( v, x, y, z );
+	cmtk::UniformVolume::CoordinateVectorType v = originalVolume->GetGridLocation( x, y, z );
 	alignment->ApplyInPlace( v );
 
 	if ( interpolator->GetDataAt( v, data ) )

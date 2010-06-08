@@ -176,9 +176,8 @@ main ( const int argc, const char* argv[] )
       for ( int x = 0; x < dims[0]; ++x, ++offset )
 	{
 	// Get current grid location.
-	cmtk::Vector3D v;
-	scalarImage->GetGridLocation( v, x, y, z );
-	const cmtk::Vector3D v0( v );
+	cmtk::UniformVolume::CoordinateVectorType v = scalarImage->GetGridLocation( x, y, z );
+	const cmtk::UniformVolume::CoordinateVectorType v0( v );
 
 	// Apply transformation and subtract original coordinate
 	xformList.ApplyInPlace( v );

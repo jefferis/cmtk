@@ -30,13 +30,15 @@
 
 #include <cmtkUniformVolume.h>
 
-void
+const cmtk::UniformVolume::CoordinateVectorType
 cmtk::UniformVolume
-::GetGradientAt( Vector3D& g, const int i, const int j, const int k )
+::GetGradientAt( const int i, const int j, const int k )
 {
+  Self::CoordinateVectorType g;
   g[0] = (this->GetDataAt( i+1, j, k ) - this->GetDataAt( i-1, j, k )) / (2*this->m_Delta[0]);
   g[1] = (this->GetDataAt( i, j+1, k ) - this->GetDataAt( i, j-1, k )) / (2*this->m_Delta[1]);
   g[2] = (this->GetDataAt( i, j, k+1 ) - this->GetDataAt( i, j, k-1 )) / (2*this->m_Delta[2]);
+  return g;
 }
 
 void

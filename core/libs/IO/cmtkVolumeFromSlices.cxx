@@ -302,7 +302,7 @@ VolumeFromSlices::CheckImage
     }
   
   // Second++ slice: Compute slice-to-slice vector
-  Vector3D imageToImage = image->GetImageOrigin( frame ) - ImagePosition;
+  ScalarImage::SpaceVectorType imageToImage = image->GetImageOrigin( frame ) - ImagePosition;
   
   if ( imageToImage.MaxAbsValue() < CMTK_MAX_LOCALIZE_ERROR )
     {
@@ -377,7 +377,7 @@ VolumeFromSlices::CheckImage ( const int plane, const ImageInfo& image )
       }
   
   // Second++ slice: Compute slice-to-slice vector
-  Vector3D imageToImage = image.ImagePosition - ImagePosition;
+  ScalarImage::SpaceVectorType imageToImage = image.ImagePosition - ImagePosition;
   
   if ( imageToImage.MaxAbsValue() < CMTK_MAX_LOCALIZE_ERROR )
     return "Encountered two slices in identical location.";

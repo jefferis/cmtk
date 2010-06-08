@@ -65,7 +65,7 @@ ReformatVolume::Reformat
 	{
 	if ( !targetData || (targetData->Get( targetValue, offset ) && (targetValue != 0))) 
 	  {
-	  target->GetGridLocation( vRef, x, y, z );
+	  vRef = target->GetGridLocation( x, y, z );
 	  if ( targetToRef.ApplyInPlace( vRef ) && fct( value, vRef, refToFloat, interpolator ) ) 
 	    {
 	    result->Set( value, offset );

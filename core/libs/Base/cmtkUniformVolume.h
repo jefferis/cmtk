@@ -147,7 +147,7 @@ public:
    * This function applies the index-to-physical transformation matrix to the given pixel index. 
    * The index itself can be fractional.
    */
-  virtual Vector3D IndexToPhysical( const Types::Coordinate i, const Types::Coordinate j, const Types::Coordinate k ) const;
+  virtual Self::CoordinateVectorType IndexToPhysical( const Types::Coordinate i, const Types::Coordinate j, const Types::Coordinate k ) const;
 
   /** Get matrix that maps form image coordinates to physical space.
    * The returned matrix is computed by removing pixel size from the one stored
@@ -248,7 +248,7 @@ public:
    *
    *\warning No parameter range checking is currently performed!
    */
-  virtual void GetGradientAt( Vector3D& g, const int i, const int j, const int k );
+  virtual const Self::CoordinateVectorType GetGradientAt( const int i, const int j, const int k );
 
   /** Get data Hessian matrix at pixel using central differences.
    * This function cannot be called for pixels within a two-pixel distance from the
@@ -259,14 +259,14 @@ public:
   virtual void GetHessianAt( Matrix3x3<Types::DataItem>& H, const int i, const int j, const int k );
 
   /// Get data value at specified coordinate.
-  template<class TData> inline bool ProbeData( TData& result, const TData* dataPtr, const Vector3D& location ) const;
+  template<class TData> inline bool ProbeData( TData& result, const TData* dataPtr, const Self::CoordinateVectorType& location ) const;
 
   /// Get data values from multiple arrays at specified coordinate.
   template<class TData,class TOutputIterator> inline bool ProbeData
-  ( const TOutputIterator& result, const std::vector<TData*>& dataPtr, const Vector3D& location ) const;
+  ( const TOutputIterator& result, const std::vector<TData*>& dataPtr, const Self::CoordinateVectorType& location ) const;
 
   /// Return linearly interpolated voxel without applying a transformation.
-  inline bool ProbeNoXform ( ProbeInfo&, const Vector3D& ) const;
+  inline bool ProbeNoXform ( ProbeInfo&, const Self::CoordinateVectorType& ) const;
 
   /** Find a voxel in the volume.
    *@param location Real-world coordinates of the location that is to be 
@@ -280,7 +280,7 @@ public:
    * lies within the model volume. If zero is returned, the location is outside
    * and all other output values (see parameters) are invalid.
    */
-  inline bool FindVoxel( const Vector3D& location, int *const idx, Types::Coordinate *const from, Types::Coordinate *const to ) const;
+  inline bool FindVoxel( const Self::CoordinateVectorType& location, int *const idx, Types::Coordinate *const from, Types::Coordinate *const to ) const;
   
   /** Find a voxel in the volume.
    *@param location Real-world coordinates of the location that is to be 
@@ -292,7 +292,7 @@ public:
    * lies within the model volume. If zero is returned, the location is outside
    * and all other output values (see parameters) are invalid.
    */
-  inline bool FindVoxel( const Vector3D& location, int *const idx ) const;
+  inline bool FindVoxel( const Self::CoordinateVectorType& location, int *const idx ) const;
 
   /** Find a grid index inside or outside the volume.
    *@param location Real-world coordinates of the location that is to be 
@@ -301,7 +301,7 @@ public:
    * voxel containing the given location. Values range from 0 to 
    * ModelDims[dim-1].
    */
-  inline void GetVoxelIndexNoBounds( const Vector3D& location, int *const idx ) const;
+  inline void GetVoxelIndexNoBounds( const Self::CoordinateVectorType& location, int *const idx ) const;
 
   /** Find a voxel in the volume by fractional index.
    *@param fracIndex Fractional 3D voxel index.
@@ -311,24 +311,24 @@ public:
    * within the model volume. If false is returned, the location is outside
    * and all other output values (see parameters) are invalid.
    */
-  inline bool FindVoxelByIndex( const Vector3D& fracIndex, int *const idx, Types::Coordinate *const frac ) const;
+  inline bool FindVoxelByIndex( const Self::CoordinateVectorType& fracIndex, int *const idx, Types::Coordinate *const frac ) const;
 
   /** Find a voxel in the volume by fractional index without range checking.
    *@param fracIndex Fractional 3D voxel index.
    *@param idx Output: integer 3D voxel index.
    *@param frac Output: fractional within-voxel location.
    */
-  inline void FindVoxelByIndexUnsafe( const Vector3D& fracIndex, int *const idx, Types::Coordinate *const frac ) const;
+  inline void FindVoxelByIndexUnsafe( const Self::CoordinateVectorType& fracIndex, int *const idx, Types::Coordinate *const frac ) const;
 
   /** Find voxel without range checking.
    * This function is identical to FindVoxel except that no range checking is
    * performed. Therefore, it provides additional performance if for every call
    * to this function it is known that the respective voxel actually exists.
    */
-  inline void FindVoxelUnsafe( const Vector3D& location, int *const idx, Types::Coordinate *const from, Types::Coordinate *const to ) const;
+  inline void FindVoxelUnsafe( const Self::CoordinateVectorType& location, int *const idx, Types::Coordinate *const from, Types::Coordinate *const to ) const;
 
   /// Get 3D grid region from continuous lower and upper corner.
-  const UniformVolume::RegionType GetGridRange( const Vector3D& fromVOI, const Vector3D& toVOI ) const;
+  const UniformVolume::RegionType GetGridRange( const Self::CoordinateVectorType& fromVOI, const Self::CoordinateVectorType& toVOI ) const;
  
   /// Get plane coordinate.
   virtual Types::Coordinate GetPlaneCoord( const int axis, const int plane ) const 
@@ -358,7 +358,7 @@ public:
   /** Get grid index corresponding (as close as possible) to coordinate.
    *\return True if given point is inside image, false if outside.
    */
-  virtual bool GetClosestGridPointIndex( const Vector3D v, int *const xyz ) const 
+  virtual bool GetClosestGridPointIndex( const Self::CoordinateVectorType v, int *const xyz ) const 
   {
     for ( int dim = 0; dim < 3; ++dim )
       {
@@ -382,7 +382,7 @@ public:
   /** Get grid index corresponding to coordinate by truncation, not rounding.
    *\return True if given point is inside image, false if outside.
    */
-  virtual bool GetTruncGridPointIndex( const Vector3D v, int *const xyz ) const 
+  virtual bool GetTruncGridPointIndex( const Self::CoordinateVectorType v, int *const xyz ) const 
   {
     for ( int dim = 0; dim < 3; ++dim )
       {
@@ -398,23 +398,12 @@ public:
    * grid deltas.
    *@param x,y,z The indices of the intended grid element with respect to the
    * three coordinate axes. Valid range is from 0 to Dims[...]-1.
-   *@return The location of the given grid element as a Vector3D.
+   *@return The location of the given grid element as a Self::CoordinateVectorType.
    */
-  virtual Vector3D GetGridLocation( const int x, const int y, const int z ) const 
+  virtual const Self::CoordinateVectorType GetGridLocation( const int x, const int y, const int z ) const 
   {
-    return Vector3D( this->m_Offset[0] + x * this->m_Delta[0], this->m_Offset[1] + y * this->m_Delta[1], this->m_Offset[2] + z * this->m_Delta[2] );
-  }
-  
-  /** Get a grid coordinate.
-   * This function directly calculates the grid location from the volume's
-   * grid deltas.
-   *@param x,y,z The indices of the intended grid element with respect to the
-   * three coordinate axes. Valid range is from 0 to Dims[...]-1.
-   *@return The location of the given grid element as a Vector3D.
-   */
-  virtual Vector3D& GetGridLocation( Vector3D& v, const int x, const int y, const int z ) const 
-  {
-    return v.Set( this->m_Offset[0] + x * this->m_Delta[0], this->m_Offset[1] + y * this->m_Delta[1], this->m_Offset[2] + z * this->m_Delta[2] );
+    const Types::Coordinate loc[3] = { this->m_Offset[0] + x * this->m_Delta[0], this->m_Offset[1] + y * this->m_Delta[1], this->m_Offset[2] + z * this->m_Delta[2] };
+    return Self::CoordinateVectorType( loc );
   }
   
   /** Get a grid coordinate by continuous pixel index.
@@ -422,13 +411,14 @@ public:
    * grid deltas.
    *@param idx The index of the intended grid element. 
    * Valid range is from 0 to (Dims[0]*Dims[1]*Dims[2])-1.
-   *@return The location of the given grid element as a Vector3D.
+   *@return The location of the given grid element as a Self::CoordinateVectorType.
    */
-  virtual Vector3D& GetGridLocation( Vector3D& v, const size_t idx ) const 
+  virtual const Self::CoordinateVectorType GetGridLocation( const size_t idx ) const 
   {
-    return v.Set( this->m_Offset[0] +  (idx % this->nextJ) * this->m_Delta[0], 
-		  this->m_Offset[1] +  (idx % this->nextK) / this->nextJ * this->m_Delta[1], 
-		  this->m_Offset[2] +  (idx / this->nextK) * this->m_Delta[2] );
+    const Types::Coordinate loc[3] = { this->m_Offset[0] +  (idx % this->nextJ) * this->m_Delta[0], 
+				       this->m_Offset[1] +  (idx % this->nextK) / this->nextJ * this->m_Delta[1], 
+				       this->m_Offset[2] +  (idx / this->nextK) * this->m_Delta[2] };
+    return Self::CoordinateVectorType( loc );
   }
 
   //@}
@@ -451,10 +441,10 @@ public:
   /** Calculate volume center.
    *@return Returned is the center of the bounding box.
    */
-  Vector3D GetCenterCropRegion() const 
+  Self::CoordinateVectorType GetCenterCropRegion() const 
   {
     const Self::CoordinateRegionType region = this->GetHighResCropRegion();
-    return 0.5 * Vector3D( region.From() + region.To() );
+    return 0.5 * ( region.From() + region.To() );
   }
   
   /** Return cropped uniform volume.
@@ -471,18 +461,18 @@ public:
   ScalarImage* ComputeProjection( const int axis ) const;
   
   /// Get center of mass of pixel data.
-  virtual Vector3D GetCenterOfMass() const
+  virtual Self::CoordinateVectorType GetCenterOfMass() const
   {
-    Vector3D com = this->Superclass::GetCenterOfMass();
+    Self::CoordinateVectorType com = this->Superclass::GetCenterOfMassGrid();
     for ( int dim = 0; dim < 3; ++dim )
       (com[dim] *= this->m_Delta[dim]) += this->m_Offset[dim];
     return com;
   }
   
   /// Get center of mass of pixel data.
-  virtual Vector3D GetCenterOfMass( Vector3D& firstOrderMoment ) const
+  virtual Self::CoordinateVectorType GetCenterOfMass( Self::CoordinateVectorType& firstOrderMoment ) const
   {
-    Vector3D com = this->Superclass::GetCenterOfMass( firstOrderMoment );
+    Self::CoordinateVectorType com = this->Superclass::GetCenterOfMassGrid( firstOrderMoment );
     for ( int dim = 0; dim < 3; ++dim )
       {
       (com[dim] *= this->m_Delta[dim]) += this->m_Offset[dim];
@@ -499,7 +489,7 @@ public:
    * and directions[2] are the two remaining principal directions, with the norm of directions[1]
    * larger than, or equal to, the norm of directions[2].
    */
-  void GetPrincipalAxes( Matrix3x3<Types::Coordinate>& directions, Vector3D& centerOfMass ) const;
+  void GetPrincipalAxes( Matrix3x3<Types::Coordinate>& directions, Self::CoordinateVectorType& centerOfMass ) const;
 
 private:
   /** Optional high-resolution crop region.

@@ -38,6 +38,7 @@
 
 #include <cmtkMatrix.h>
 #include <cmtkCubicSpline.h>
+#include <cmtkSurfaceNormal.h>
 
 namespace
 cmtk
@@ -343,13 +344,13 @@ ScalarImage::GetPixelAtCubic
   return true;
 }
 
-Vector3D 
+ScalarImage::SpaceVectorType 
 ScalarImage::GetImageOrigin( const int frame ) const 
 {
-  Vector3D origin;
+  Self::SpaceVectorType origin;
   if ( this->m_NumberOfFrames > 1 ) 
     {
-    origin.SetNormal( this->m_ImageDirectionX, this->m_ImageDirectionY );
+    origin = SurfaceNormal( this->m_ImageDirectionX, this->m_ImageDirectionY ).Get();
     origin *= (frame * this->m_FrameToFrameSpacing) / origin.RootSumOfSquares();
     origin += this->m_ImageOrigin;
     } 
@@ -409,7 +410,7 @@ ScalarImage::Downsample
   
   newScalarImage->SetPixelSize( this->m_PixelSize[0] * factorX, this->m_PixelSize[1] * factorY );
   
-  Vector3D imageOrigin( this->m_ImageOrigin );
+  Self::SpaceVectorType imageOrigin( this->m_ImageOrigin );
   imageOrigin += (0.5 * this->m_PixelSize[0] / this->m_ImageDirectionX.RootSumOfSquares()) * this->m_ImageDirectionX;
   imageOrigin += (0.5 * this->m_PixelSize[1] / this->m_ImageDirectionY.RootSumOfSquares()) * this->m_ImageDirectionY;
 
@@ -957,9 +958,9 @@ ScalarImage::AdjustAspectX( const bool interpolate )
 
 void
 ScalarImage::ProjectPixel
-( const Vector3D& v, int& i, int& j ) const
+( const Self::SpaceVectorType& v, int& i, int& j ) const
 {
-  Vector3D p(v);
+  Self::SpaceVectorType p(v);
   p -= this->m_ImageOrigin;
   
   i = MathUtil::Round( ( p * this->m_ImageDirectionX ) / ( this->m_ImageDirectionX.SumOfSquares() * this->m_PixelSize[0] ) );

@@ -1,8 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
-//
-//  Copyright 2004-2009 SRI International
+//  Copyright 2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,7 +28,12 @@
 //
 */
 
-#include <cmtkVector3D.h>
+#ifndef __cmtkSurfaceNormal_h_included_
+#define __cmtkSurfaceNormal_h_included_
+
+#include <cmtkconfig.h>
+
+#include <cmtkFixedVector.h>
 
 namespace
 cmtk
@@ -39,17 +42,36 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-void
-Vector3D::CoordMultInPlace( Vector3D& p, const Vector3D& q ) 
+/// Class that computes the surface normal.
+class
+SurfaceNormal
 {
-  for ( int dim = 0; dim < 3; ++dim ) 
-    p[dim] *= q[dim];
-}
+public:
+  /// This class.
+  typedef SurfaceNormal Self;
 
-const Vector3D 
-Vector3D::CoordDiv ( const Vector3D& p, const Vector3D& q ) 
-{
-  return Vector3D( p[0]/q[0], p[1]/q[1], p[2]/q[2]);
-}
+  /// Space vector type.
+  typedef FixedVector<3,Types::Coordinate> SpaceVectorType;
+
+  /// Constructor: takes two non-collinear vectors that span the surface.
+  SurfaceNormal( const SpaceVectorType& s1, const SpaceVectorType& s2 )
+  {
+    this->m_Normal = FixedVectorStaticInitializer<3,Types::Coordinate>::Init( s1[1] * s2[2] - s1[2] * s2[1], s1[2] * s2[0] - s1[0] * s2[2], s1[0] * s2[1] - s1[1] * s2[0] );
+  }
+
+  /// Get the normal vector.
+  const SpaceVectorType& Get() const
+  {
+    return this->m_Normal;
+  }
+
+private:
+  /// The surface normal vector.
+  SpaceVectorType m_Normal;
+};
+
+//@}
 
 } // namespace cmtk
+
+#endif // #ifndef __cmtkSurfaceNormal_h_included_

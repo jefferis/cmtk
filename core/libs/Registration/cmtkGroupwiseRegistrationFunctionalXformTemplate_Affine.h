@@ -163,7 +163,7 @@ protected:
     int yFrom = rowFrom % dimsY;
     int zFrom = rowFrom / dimsY;
     
-    Vector3D planeStart, rowStart;
+    UniformVolume::CoordinateVectorType planeStart, rowStart;
     byte *wptr = destination + rowFrom * dimsX;
     for ( int z = zFrom; (z < dimsZ) && rowsToDo; ++z ) 
       {
@@ -204,7 +204,7 @@ protected:
     const byte paddingValue = This->m_PaddingValue;
     const byte backgroundValue = This->m_UserBackgroundFlag ? This->m_PrivateUserBackgroundValue : paddingValue;
     
-    Vector3D v;
+    UniformVolume::CoordinateVectorType v;
     byte value;
     const byte* dataPtr = static_cast<const byte*>( target->GetData()->GetDataPtr() );
     
@@ -215,7 +215,7 @@ protected:
     for ( size_t i = startIdx; i < endIdx; ++i, ++wptr )
       {
       const size_t offset = This->m_ProbabilisticSamples[i];
-      This->m_TemplateGrid->GetGridLocation( v, offset );
+      v = This->m_TemplateGrid->GetGridLocation( offset );
       xform->ApplyInPlace( v );
       
       if ( target->ProbeData( value, dataPtr, v ) )

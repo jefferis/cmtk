@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,7 +40,7 @@ cmtk::XformList::Add
 }
 
 bool
-cmtk::XformList::ApplyInPlace( Vector3D& v )
+cmtk::XformList::ApplyInPlace( Xform::SpaceVectorType& v )
 {
   for ( iterator it = this->begin(); it != this->end(); ++it ) 
     {
@@ -77,9 +78,9 @@ cmtk::XformList::ApplyInPlace( Vector3D& v )
 
 bool
 cmtk::XformList::GetJacobian
-( const Vector3D& v, Types::DataItem& jacobian, const bool correctGlobalScale )
+( const Xform::SpaceVectorType& v, Types::DataItem& jacobian, const bool correctGlobalScale )
 {
-  Vector3D vv( v );
+  Xform::SpaceVectorType vv( v );
 
   jacobian = static_cast<Types::DataItem>( 1.0 );
   for ( iterator it = this->begin(); it != this->end(); ++it ) 

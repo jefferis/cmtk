@@ -101,7 +101,7 @@ UniformVolume::GetCroppedVolume() const
       volume->m_IndexToPhysicalMatrix[3][i] += this->CropRegion().From()[j] * volume->m_IndexToPhysicalMatrix[j][i];
   
   // use m_Offset to keep track of new volume origin
-  Vector3D volumeOffset = this->m_Offset;
+  Self::CoordinateVectorType volumeOffset = this->m_Offset;
   for ( int i = 0; i < 3; ++i )
     volumeOffset[i] += (this->CropRegion().From()[i] * this->m_Delta[i]);
   volume->SetOffset( volumeOffset );

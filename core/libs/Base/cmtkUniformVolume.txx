@@ -42,11 +42,11 @@ cmtk
 template<class TData> 
 inline bool
 UniformVolume::ProbeData 
-( TData& result, const TData* dataPtr, const Vector3D& location ) const
+( TData& result, const TData* dataPtr, const Self::CoordinateVectorType& location ) const
 {
   result=0;
   
-  Vector3D l( location );
+  Self::CoordinateVectorType l( location );
   l -= this->m_Offset;
 
   const int idxX=(int) floor(l[0]/this->m_Delta[0]);
@@ -70,9 +70,9 @@ UniformVolume::ProbeData
 template<class TData,class TOutputIterator> 
 inline bool
 UniformVolume::ProbeData 
-( const TOutputIterator& result, const std::vector<TData*>& dataPtr, const Vector3D& location ) const
+( const TOutputIterator& result, const std::vector<TData*>& dataPtr, const Self::CoordinateVectorType& location ) const
 {
-  Vector3D l( location );
+  Self::CoordinateVectorType l( location );
   l -= this->m_Offset;
 
   const Types::Coordinate fracX = l[0]/this->m_Delta[0];
@@ -96,9 +96,9 @@ UniformVolume::ProbeData
 
 inline bool
 UniformVolume::ProbeNoXform
-( ProbeInfo& probeInfo, const Vector3D& location ) const
+( ProbeInfo& probeInfo, const Self::CoordinateVectorType& location ) const
 {
-  Vector3D l( location );
+  Self::CoordinateVectorType l( location );
   l -= this->m_Offset;
 
   const int idxX=(int) floor(l[0]/this->m_Delta[0]);
@@ -121,9 +121,9 @@ UniformVolume::ProbeNoXform
 
 inline bool
 UniformVolume::FindVoxel
-( const Vector3D& location, int *const idx, Types::Coordinate *const from, Types::Coordinate *const to ) const
+( const Self::CoordinateVectorType& location, int *const idx, Types::Coordinate *const from, Types::Coordinate *const to ) const
 {
-  Vector3D l( location );
+  Self::CoordinateVectorType l( location );
   l -= this->m_Offset;
 
   for ( int dim = 0; dim < 3; ++dim ) 
@@ -139,9 +139,9 @@ UniformVolume::FindVoxel
 
 inline bool
 UniformVolume::FindVoxel
-( const Vector3D& location, int *const idx ) const
+( const Self::CoordinateVectorType& location, int *const idx ) const
 {
-  Vector3D l( location );
+  Self::CoordinateVectorType l( location );
   l -= this->m_Offset;
   
   for ( int dim = 0; dim < 3; ++dim ) 
@@ -155,7 +155,7 @@ UniformVolume::FindVoxel
 
 inline void
 UniformVolume::GetVoxelIndexNoBounds
-( const Vector3D& location, int *const idx ) const
+( const Self::CoordinateVectorType& location, int *const idx ) const
 {
   for ( int dim = 0; dim < 3; ++dim ) 
     {
@@ -165,7 +165,7 @@ UniformVolume::GetVoxelIndexNoBounds
 
 inline bool
 UniformVolume::FindVoxelByIndex
-( const Vector3D& fracIndex, int *const idx, Types::Coordinate *const frac ) const
+( const Self::CoordinateVectorType& fracIndex, int *const idx, Types::Coordinate *const frac ) const
 {
   for ( int dim = 0; dim < 3; ++dim ) 
     {
@@ -180,7 +180,7 @@ UniformVolume::FindVoxelByIndex
 
 inline void
 UniformVolume::FindVoxelByIndexUnsafe
-( const Vector3D& fracIndex, int *const idx, Types::Coordinate *const frac ) const
+( const Self::CoordinateVectorType& fracIndex, int *const idx, Types::Coordinate *const frac ) const
 {
   for ( int dim = 0; dim < 3; ++dim ) 
     {
@@ -191,7 +191,7 @@ UniformVolume::FindVoxelByIndexUnsafe
 
 inline void
 UniformVolume::FindVoxelUnsafe
-( const Vector3D& location, int *const idx, Types::Coordinate *const from, Types::Coordinate *const to ) const
+( const Self::CoordinateVectorType& location, int *const idx, Types::Coordinate *const from, Types::Coordinate *const to ) const
 {
   for ( int dim = 0; dim < 3; ++dim ) 
     {

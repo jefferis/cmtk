@@ -37,7 +37,6 @@
 
 #include <cmtkMacros.h>
 #include <cmtkVector.h>
-#include <cmtkVector3D.h>
 #include <cmtkAffineXform.h>
 #include <cmtkMathUtil.h>
 #include <cmtkUnits.h>
@@ -54,6 +53,15 @@ cmtk
 class ParametricPlane 
 {
 public:
+  /// This class.
+  typedef ParametricPlane Self;
+
+  /// Smart pointer.
+  typedef SmartPointer<Self> SmartPtr;
+
+  /// Coordinate vector.
+  typedef FixedVector<3,Types::Coordinate> CoordinateVectorType;
+
   /// Default constructor.
   ParametricPlane();
 
@@ -62,7 +70,7 @@ public:
    * even need to be on the plane itself. It is merely the coordinate in space
    * relative to which the plane is parameterized.
    */
-  cmtkGetSetMacro(Vector3D,Origin);
+  cmtkGetSetMacro(Self::CoordinateVectorType,Origin);
 
   /// Set parameter Rho.
   void SetRho( const Types::Coordinate rho ) 
@@ -101,7 +109,7 @@ public:
   }
 
   /// Set normal vector and determine rotation angles from it.
-  void SetNormal( const Vector3D& normal );
+  void SetNormal( const Self::CoordinateVectorType& normal );
 
   /// Get all parameters.
   void GetParameters( CoordinateVector& v ) const 
@@ -123,26 +131,26 @@ public:
    *@return 0, if given point is on the plane; +1 if point is on the same side
    * as Origin; -1, if point is on the other side, seen from Origin.
    */
-  char GetWhichSide( const Vector3D& point ) const 
+  char GetWhichSide( const Self::CoordinateVectorType& point ) const 
   {
     // move given origin to coordinate origin
-    Vector3D p = point;
+    Self::CoordinateVectorType p = point;
     p -= this->m_Origin;
     
     // compute line parameter of orthogonal projection of "point" onto this plane
-    const Types::Coordinate intersect = Normal * p - Rho;
+    const Types::Coordinate intersect = Normal*p - Rho;
     return (intersect < 0) ? -1 : (intersect > 0) ? 1 : 0;
   }
   
   /// Mirror point with respect to plane.
-  void Mirror( Vector3D& toPoint, const Vector3D& fromPoint ) const 
+  void Mirror( Self::CoordinateVectorType& toPoint, const Self::CoordinateVectorType& fromPoint ) const 
   {
     toPoint = fromPoint;
     this->MirrorInPlace( toPoint );
   }
   
   /// Mirror point in-place with respect to plane.
-  void MirrorInPlace( Vector3D& point ) const 
+  void MirrorInPlace( Self::CoordinateVectorType& point ) const 
   {
     // move given origin to coordinate origin
     point -= this->m_Origin;
@@ -160,14 +168,14 @@ public:
   }
 
   /// Project point onto plane.
-  void Project( Vector3D& toPoint, const Vector3D& fromPoint ) const 
+  void Project( Self::CoordinateVectorType& toPoint, const Self::CoordinateVectorType& fromPoint ) const 
   {
     toPoint = fromPoint;
     this->ProjectInPlace( toPoint );
   }
 
   /// Project point onto plane in-place.
-  void ProjectInPlace( Vector3D& point ) const 
+  void ProjectInPlace( Self::CoordinateVectorType& point ) const 
   {
     // move given origin to coordinate origin
     point -= this->m_Origin;
@@ -195,7 +203,7 @@ public:
 
   /** Return normal vector.
    */
-  const Vector3D& GetNormal() const { return Normal; }
+  const Self::CoordinateVectorType& GetNormal() const { return Normal; }
 
 private:
   /// Radius of tangent sphere with center at Origin.
@@ -208,7 +216,7 @@ private:
   Units::Degrees Phi;
 
   /// Plane normal.
-  Vector3D Normal;
+  Self::CoordinateVectorType Normal;
 
   /// Square norm of plane normal.
   Types::Coordinate SquareNormal;

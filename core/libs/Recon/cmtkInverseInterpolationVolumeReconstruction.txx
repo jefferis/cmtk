@@ -64,7 +64,7 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
 #pragma omp parallel for
     for ( int x = 0; x < passImageDimsX; ++x )
       {
-      Vector3D v;
+      UniformVolume::CoordinateVectorType v;
       int correctedImageGridPoint[3];
       Types::Coordinate from[3], to[3];
     
@@ -74,7 +74,7 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
 	  {
           Types::DataItem interpolatedData = 0;
 	  Types::Coordinate totalWeight = 0;
-          passImage->GetGridLocation( v, x, y, z );
+          v = passImage->GetGridLocation( x, y, z );
 	  passXform->ApplyInPlace( v );
 
           if ( this->m_CorrectedImage->FindVoxel( v, correctedImageGridPoint, from, to ) )
@@ -181,8 +181,7 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
 		{
 		Types::DataItem weight = 0;
 	      
-		Vector3D v;
-		interpolatedPassImage->GetGridLocation( v, i, j, k );
+		UniformVolume::CoordinateVectorType v = interpolatedPassImage->GetGridLocation( i, j, k );
 		inverseTransformationToPassImage->ApplyInPlace( v );
 	      
 		int correctedImageGridPoint[3];
@@ -238,7 +237,7 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
     corners[1][dim] = std::min( currentCorrectedGridPoint[dim] + TInterpolator::RegionSizeLeftRight, correctedImage->GetDims()[dim]-1 );
     }
 
-  Vector3D corners3D[8];
+  UniformVolume::CoordinateVectorType corners3D[8];
   int neighborIdx = 0;
   for ( int a = 0; a < 2 ; ++a )
     {
@@ -246,7 +245,7 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
       {
       for ( int c = 0; c < 2; ++c, ++neighborIdx )
 	{
-	correctedImage->GetGridLocation( corners3D[neighborIdx], corners[a][0], corners[b][1], corners[c][2] );
+	corners3D[neighborIdx] = correctedImage->GetGridLocation( corners[a][0], corners[b][1], corners[c][2] );
 	transformationToPassImage->ApplyInPlace( corners3D[neighborIdx] );
 	}
       }

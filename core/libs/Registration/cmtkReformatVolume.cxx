@@ -166,7 +166,7 @@ ReformatVolume::PlainReformat()
 	  {
 	  for ( int pX = 0; pX<dims[0]; ++pX, ++offset ) 
 	    {	    
-	    ReferenceVolume->GetGridLocation( pFlt, pX, pY, pZ );
+	    pFlt = ReferenceVolume->GetGridLocation( pX, pY, pZ );
 	    this->m_AffineXform->ApplyInPlace( pFlt );
 	    
 	    if ( interpolator->GetDataAt( pFlt, value ) )
@@ -244,7 +244,7 @@ ReformatVolume::PlainReformat
       {
       for ( int pX = 0; pX<DimsX; ++pX, ++offset ) 
 	{	    
-	ReferenceVolume->GetGridLocation( pMod, pX, pY, plane );
+	pMod = ReferenceVolume->GetGridLocation( pX, pY, plane );
 	this->m_AffineXform->ApplyInPlace( pMod );
 
 	if ( interpolator->GetDataAt( pMod, value ) )

@@ -241,8 +241,7 @@ VolumeInjectionReconstruction
     ap::real_value_type sum = 0;
     ap::real_value_type weight = 0;
 
-    Vector3D vCorrected;
-    correctedImage->GetGridLocation( vCorrected, correctedPx );
+    const UniformVolume::CoordinateVectorType vCorrected = correctedImage->GetGridLocation( correctedPx );
     
     for ( int pass = 0; pass < this->m_NumberOfPasses; ++pass )
       {
@@ -254,7 +253,7 @@ VolumeInjectionReconstruction
 	const DataGrid::IndexType& passImageDims = passImage->GetDims();
 	const Xform* passImageXform = this->m_TransformationsToPassImages[pass];
 
-	const Vector3D vPass = passImageXform->Apply( vCorrected );
+	const  UniformVolume::CoordinateVectorType vPass = passImageXform->Apply( vCorrected );
 
 	int passGridPosition[3];
 	passImage->GetVoxelIndexNoBounds( vPass, passGridPosition );
@@ -266,7 +265,7 @@ VolumeInjectionReconstruction
 	  passGridTo[n] = std::min( passGridPosition[n] + static_cast<int>( kernelRadiusFactor ) + 1, passImageDims[n] );
 	  }
 
-	Vector3D u, delta;
+	UniformVolume::CoordinateVectorType u, delta;
 	for ( int k = passGridFrom[2]; k < passGridTo[2]; ++k )
 	  {
 	  u[2] = passImage->GetPlaneCoord( AXIS_Z, k );
@@ -369,8 +368,7 @@ VolumeInjectionReconstruction
 	  int x, y, z;
 	  passImage->GetIndexFromOffset( offset, x, y, z );
 	  
-	  Vector3D v;
-	  passImage->GetGridLocation( v, x, y, z );
+	  UniformVolume::CoordinateVectorType v = passImage->GetGridLocation( x, y, z );
 	  if ( passImageXformInverse )
 	    {
 	    passImageXformInverse->ApplyInPlace( v );
@@ -391,7 +389,7 @@ VolumeInjectionReconstruction
 	      targetGridTo[n] = std::min( targetGridPosition[n] + kernelRadiusIndex[n] + 1, splattedImageDims[n] );
 	      }
 	    
-	    Vector3D u;
+	    UniformVolume::CoordinateVectorType u;
 	    for ( int k = targetGridFrom[2]; k < targetGridTo[2]; ++k )
 	      {
 	      u[2] = this->m_CorrectedImage->GetPlaneCoord( AXIS_Z, k );

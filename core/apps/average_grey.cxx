@@ -183,12 +183,12 @@ ReformatAndAdd
 #pragma omp parallel for private(value)
     for ( int pZ = 0; pZ < dims[cmtk::AXIS_Z]; ++pZ ) 
       {
-      cmtk::Vector3D pFlt;
+      cmtk::UniformVolume::CoordinateVectorType pFlt;
       size_t offset = pZ * dims[cmtk::AXIS_X] * dims[cmtk::AXIS_Y];
       for ( int pY = 0; pY < dims[cmtk::AXIS_Y]; ++pY ) 
 	for ( int pX = 0; pX < dims[cmtk::AXIS_X]; ++pX, ++offset ) 
 	  {
-	  referenceVolume->GetGridLocation( pFlt, pX, pY, pZ );
+	  pFlt = referenceVolume->GetGridLocation( pX, pY, pZ );
 	  xformGlobal->ApplyInPlace( pFlt );
 	  
 	  bool success = xform->InDomain( pFlt );

@@ -201,7 +201,7 @@ DataGrid::SetDims( const Self::IndexType& dims )
 bool
 DataGrid::TrilinearInterpolation
 ( Types::DataItem& value, const int X, const int Y, const int Z,
-  const Vector3D& Location, const Types::Coordinate* from, 
+  const Self::SpaceVectorType& Location, const Types::Coordinate* from, 
   const Types::Coordinate* to ) const
 {
   Types::DataItem corners[8];
@@ -489,11 +489,11 @@ DataGrid::SetOrthoSlice
     }
 }
 
-Vector3D
+FixedVector<3,Types::Coordinate>
 DataGrid
-::GetCenterOfMass() const
+::GetCenterOfMassGrid() const
 {
-  Vector3D com( 0, 0, 0 );
+  FixedVector<3,Types::Coordinate> com( FixedVector<3,Types::Coordinate>::Init( 0 ) );
 
   double sumOfSamples = 0;
   size_t ofs = 0;
@@ -504,7 +504,8 @@ DataGrid
 	Types::DataItem value;
 	if ( this->GetDataAt( value, x, y, z ) )
 	  {
-	  com += Vector3D( value * x, value * y, value * z );
+	  const Types::Coordinate pixelCOM[3] = { value * x, value * y, value * z };
+	  com += Self::SpaceVectorType( pixelCOM );
 	  sumOfSamples += value;
 	  }
 	}
@@ -514,12 +515,12 @@ DataGrid
   return com;
 }
 
-Vector3D
+FixedVector<3,Types::Coordinate>
 DataGrid
-::GetCenterOfMass( Vector3D& firstOrderMoment ) const
+::GetCenterOfMassGrid(  FixedVector<3,Types::Coordinate>& firstOrderMoment ) const
 {
-  Vector3D com = this->Self::GetCenterOfMass(); // do not use overloaded function
-  firstOrderMoment.Set( 0, 0, 0 );
+  FixedVector<3,Types::Coordinate> com = this->Self::GetCenterOfMassGrid(); // do not use overloaded function
+  firstOrderMoment = FixedVector<3,Types::Coordinate>( FixedVector<3,Types::Coordinate>::Init( 0 ) );
 
   double sumOfSamples = 0;
   size_t ofs = 0;
@@ -530,7 +531,8 @@ DataGrid
 	Types::DataItem value;
 	if ( this->GetDataAt( value, x, y, z ) )
 	  {
-	  firstOrderMoment += Vector3D( value * fabs(x - com[0]), value * fabs(y - com[1]), value * fabs(z - com[2]) );
+	  const Types::Coordinate pixelMoment[3] = { value * fabs(x - com[0]), value * fabs(y - com[1]), value * fabs(z - com[2]) };
+	  firstOrderMoment += Self::SpaceVectorType( pixelMoment );
 	  sumOfSamples += value;
 	  }
 	}

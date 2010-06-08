@@ -69,7 +69,7 @@ DeblurringVolumeReconstruction<TPSF>
       
       /* Get a bounding box for the transformed neighborhood (pass- to corrected-image)
            */
-      const Vector3D curPassVec3D( passImage->GetGridLocation( curPassVox[0], curPassVox[1], curPassVox[2] ) );
+      const UniformVolume::CoordinateVectorType curPassVec3D = passImage->GetGridLocation( curPassVox[0], curPassVox[1], curPassVox[2] );
       int corrBoundingBox[6];
       this->GetBoundingBoxOfXformedPassNeighborhood( corrBoundingBox, correctedImage, curPassVec3D, passImagePSF, passToCorrectedXform, correctedImageDims );
       
@@ -83,9 +83,9 @@ DeblurringVolumeReconstruction<TPSF>
 	  {
 	  for (int i = corrBoundingBox[0]; i <= corrBoundingBox[3]; ++i)
 	    {
-	    Vector3D curNeighbVec3D;
+	    UniformVolume::CoordinateVectorType curNeighbVec3D;
 	    Types::Coordinate from[3], to[3];
-	    correctedImage->GetGridLocation( curNeighbVec3D, i, j, k );
+	    curNeighbVec3D = correctedImage->GetGridLocation( i, j, k );
 	    correctedToPassXform->ApplyInPlace( curNeighbVec3D );
             
 	    int neighborPassVox[3];
@@ -146,8 +146,7 @@ DeblurringVolumeReconstruction<TPSF>
 	{
 	const int corrCenterVox[3] = { (offset % correctedImageDimsXY) % correctedImageDimsX, (offset % correctedImageDimsXY) / correctedImageDimsX, (offset / correctedImageDimsXY) };
 
-        Vector3D curCenterVec3D;
-        correctedImage->GetGridLocation( curCenterVec3D, corrCenterVox[0], corrCenterVox[1], corrCenterVox[2] );
+        UniformVolume::CoordinateVectorType curCenterVec3D = correctedImage->GetGridLocation( corrCenterVox[0], corrCenterVox[1], corrCenterVox[2] );
         transformationToPassImage->ApplyInPlace( curCenterVec3D );
 
 	/* compute neighborhood in blurred (pass) image from which blurred pixels 
@@ -177,8 +176,7 @@ DeblurringVolumeReconstruction<TPSF>
 		{
 		Types::DataItem weight = 0;
 		
-		Vector3D passNeighbVec3D;
-		blurredPassImage->GetGridLocation( passNeighbVec3D, i, j, k );
+		const UniformVolume::CoordinateVectorType passNeighbVec3D = blurredPassImage->GetGridLocation( i, j, k );
                 
 		weight = passImageWeight;
 		for ( int dim = 0; dim < 3; ++dim )

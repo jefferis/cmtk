@@ -116,8 +116,6 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
   std::vector<cmtk::Vector3D> centerOfMass( numberOfLabels );
   std::fill( centerOfMass.begin(), centerOfMass.end(), cmtk::Vector3D(0,0,0) );
 
-  cmtk::Vector3D v;
-
   int index = 0;
   cmtk::Types::DataItem value, neighbor, maskValue;
   for ( int z = 0; z < volume->GetDims()[cmtk::AXIS_Z]; ++z ) 
@@ -135,8 +133,7 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
 	  if ( value <= range.m_UpperBound )
 	    {
 	    ++count[labelIdx];
-	    volume->GetGridLocation( v, x, y, z );
-	    centerOfMass[labelIdx] += v;
+	    centerOfMass[labelIdx] += volume->GetGridLocation( x, y, z );
 	    
 	    bool isSurface = false;
 	    for ( int dz = -1; (dz < 2) && !isSurface; ++dz )
