@@ -30,8 +30,9 @@
 //
 */
 
-/** \defgroup Base
- *\title Base library
- * This library provides classes for basic objects, such as volumes, transformations,
- * vectors, functionals, and meta information.
+/** \defgroup VTKWrapper
+ *\title VTK Wrapper Library
+ * This library provides classes that wrap CMTK objects in VTK data structures
+ * and exchange data between the two toolkits.
+ *\deprecated This library will be removed soon.
  */
