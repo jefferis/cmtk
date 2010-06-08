@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -81,12 +82,11 @@ void WarpVtkPolyData::Execute()
     outCoordArray->SetNumberOfComponents( 3 );
     float *outPointPtr = dynamic_cast<vtkFloatArray*>( outCoordArray )->WritePointer( 0, 3*numVectors );
     
-    Vector3D v;
     if ( this->m_WarpXform ) 
       {
       for ( int idx = 0; idx<numVectors; ++idx ) 
 	{
-	v = Vector3D( inPointPtr+3*idx );
+	FixedVector<3,Types::Coordinate> v( inPointPtr+3*idx );
 	this->m_WarpXform->ApplyInPlace( v );
 	outPointPtr[3*idx] = v[0];
 	outPointPtr[3*idx+1] = v[1];
@@ -97,7 +97,7 @@ void WarpVtkPolyData::Execute()
       {
       for ( int idx = 0; idx<numVectors; ++idx ) 
 	{
-	v = Vector3D( inPointPtr+3*idx );
+	FixedVector<3,Types::Coordinate> v( inPointPtr+3*idx );
 	this->m_AffineXform->ApplyInPlace( v );
 	outPointPtr[3*idx] = v[0];
 	outPointPtr[3*idx+1] = v[1];
