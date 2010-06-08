@@ -169,14 +169,14 @@ IF(CMTK_USE_PTHREADS)
 
   ADD_DEFINITIONS(-DCMTK_USE_THREADS)
 
-  IF(CMAKE_SYSTEM MATCHES "SunOS.*")
+  IF(${CMAKE_SYSTEM} MATCHES "SunOS.*")
     IF(CMAKE_COMPILER_IS_GNUCXX)
       SET(CMTK_REQUIRED_CXX_FLAGS "${CMTK_REQUIRED_CXX_FLAGS} -D_PTHREADS")
     ELSE(CMAKE_COMPILER_IS_GNUCXX)
       SET(CMTK_REQUIRED_CXX_FLAGS "${CMTK_REQUIRED_CXX_FLAGS} -mt")
       SET(CMTK_REQUIRED_C_FLAGS "${CMTK_REQUIRED_C_FLAGS} -mt")
     ENDIF(CMAKE_COMPILER_IS_GNUCXX)
-  ENDIF(CMAKE_SYSTEM MATCHES "SunOS.*")
+  ENDIF(${CMAKE_SYSTEM} MATCHES "SunOS.*")
 ENDIF(CMTK_USE_PTHREADS)
 
 # mingw thread support
@@ -324,6 +324,13 @@ MARK_AS_ADVANCED(CMTK_NUMERICS_DOUBLE)
 
 #-----------------------------------------------------------------------------
 # Add an option to use or not use zlib library
+
+# clear cache if configured to use cmtkZlib with a previous, broken CMake file
+IF(${ZLIB_LIBRARY} MATCHES ".*cmtkZlib.*" )
+  MESSAGE( STATUS "Clearing invalid zlib configuration" )
+  SET(ZLIB_LIBRARY NOTFOUND CACHE STRING "" FORCE)
+  SET(ZLIB_INCLUDE_DIR NOTFOUND CACHE STRING "" FORCE)
+ENDIF(${ZLIB_LIBRARY} MATCHES ".*cmtkZlib.*" )
 
 FIND_PACKAGE(ZLIB)
 IF(ZLIB_FOUND)
