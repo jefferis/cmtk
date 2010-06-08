@@ -38,8 +38,10 @@ cmtk::AffineXformUniformVolume::AffineXformUniformVolume( const UniformVolume& v
     m_VolumeAxesZ( volume.m_Dims[2] )
 {
   // define volume corners
-  Vector3D dX(1,0,0), dY(0,1,0), dZ(0,0,1);
-  Vector3D V(0,0,0);
+  UniformVolume::CoordinateVectorType dX = FixedVectorStaticInitializer<3,Types::Coordinate>::Init(1,0,0);
+  UniformVolume::CoordinateVectorType dY = FixedVectorStaticInitializer<3,Types::Coordinate>::Init(0,1,0);
+  UniformVolume::CoordinateVectorType dZ = FixedVectorStaticInitializer<3,Types::Coordinate>::Init(0,0,1);
+  UniformVolume::CoordinateVectorType V = FixedVectorStaticInitializer<3,Types::Coordinate>::Init(0,0,0);
   
   xform.ApplyInPlace(V);
   xform.ApplyInPlace(dX);

@@ -65,7 +65,7 @@ cmtk
 
 ScalarImage* 
 DICOM::Read 
-( const char *path, const Study* study, const int index )
+( const char *path )
 {
   ScalarImage* image = NULL;
 
@@ -234,7 +234,8 @@ DICOM::Read
   
   // Use table position to set image position as long as we don't know
   // better.
-  Vector3D imageOrigin( 0.0, 0.0, sliceLocation );
+  ScalarImage::SpaceVectorType imageOrigin( ScalarImage::SpaceVectorType::Init( 0 ) );
+  imageOrigin[2] = sliceLocation;
       
   // get original image position from file.
   const char *image_position_s = NULL;
@@ -249,44 +250,35 @@ DICOM::Read
     }
   if ( image_position_s ) 
     {
-    double x, y, z;
-    if ( 3 == sscanf( image_position_s,"%lf%*c%lf%*c%lf", &x, &y, &z ) ) 
+    double xyz[3];
+    if ( 3 == sscanf( image_position_s,"%lf%*c%lf%*c%lf", xyz, xyz+1, xyz+2 ) ) 
       {
-      imageOrigin.Set( x, y, z );
+      imageOrigin = ScalarImage::SpaceVectorType( xyz );
       }
     }
   
   image->SetImageOrigin( imageOrigin );
   
   // get original image direction from file.
-  Vector3D imageDirectionX( 1, 0, 0 );
-  Vector3D imageDirectionY( 0, 1, 0 );
+  ScalarImage::SpaceVectorType imageDirectionX( ScalarImage::SpaceVectorType::Init(0) );
+  imageDirectionX[0] = 1;
+  ScalarImage::SpaceVectorType imageDirectionY( ScalarImage::SpaceVectorType::Init(0) );
+  imageDirectionY[1] = 1;
+
   const char *image_orientation_s = NULL;
   document->getValue( DCM_ImageOrientationPatient, image_orientation_s );
   if ( image_orientation_s ) 
     {
-    double xx, xy, xz, yx, yy, yz;
-    if ( 6 == sscanf( image_orientation_s, "%lf%*c%lf%*c%lf%*c%lf%*c%lf%*c%lf", &xx, &xy, &xz, &yx, &yy, &yz ) ) 
+    double dx[3], dy[3];
+    if ( 6 == sscanf( image_orientation_s, "%lf%*c%lf%*c%lf%*c%lf%*c%lf%*c%lf", dx, dx+1, dx+2, dy, dy+1, dy+2 ) ) 
       {
-      imageDirectionX.Set( xx, xy, xz );
-      imageDirectionY.Set( yx, yy, yz );
+      imageDirectionX = ScalarImage::SpaceVectorType( dx );
+      imageDirectionY = ScalarImage::SpaceVectorType( dy );
       }
     }
   
   image->SetImageDirectionX( imageDirectionX );
   image->SetImageDirectionY( imageDirectionY );
-
-  if ( study && study->GetCustomCalibration() ) 
-    {
-    image->SetPixelSize( study->GetCalibration( AXIS_X ), study->GetCalibration( AXIS_Y ) );
-    
-    Types::Coordinate slicePosition = index*study->GetCalibration( AXIS_Z );
-    image->SetImageSlicePosition( slicePosition );
-    image->SetImageOrigin( Vector3D(0, 0, slicePosition ) );
-    
-    image->SetImageDirectionX( Vector3D( 1, 0, 0 ) );
-    image->SetImageDirectionY( Vector3D( 0, 1, 0 ) );
-    }
 
   return image;
 }

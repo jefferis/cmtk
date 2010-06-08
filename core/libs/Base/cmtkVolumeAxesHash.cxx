@@ -43,8 +43,10 @@ VolumeAxesHash::VolumeAxesHash
 ( const UniformVolume& volume, const AffineXform* xform, const Types::Coordinate* deltas, const Types::Coordinate* otherOrigin )
 {
   // define volume corners
-  Vector3D dX(1,0,0), dY(0,1,0), dZ(0,0,1);
-  Vector3D V(volume.m_Offset);
+  UniformVolume::CoordinateVectorType dX = FixedVectorStaticInitializer<3,Types::Coordinate>::Init(1,0,0);
+  UniformVolume::CoordinateVectorType dY = FixedVectorStaticInitializer<3,Types::Coordinate>::Init(0,1,0);
+  UniformVolume::CoordinateVectorType dZ = FixedVectorStaticInitializer<3,Types::Coordinate>::Init(0,0,1);
+  UniformVolume::CoordinateVectorType V( volume.m_Offset );
   
   dX += volume.m_Offset;
   dY += volume.m_Offset;
@@ -70,11 +72,11 @@ VolumeAxesHash::VolumeAxesHash
   // Apply post-transformation scaling
   if ( deltas ) 
     {
-    FixedVector<3,Types::Coordinate> deltasV( deltas );
-    dX = Vector3D::CoordDiv( dX, deltasV );
-    dY = Vector3D::CoordDiv( dY, deltasV );
-    dZ = Vector3D::CoordDiv( dZ, deltasV );
-    V = Vector3D::CoordDiv( V, deltasV );
+    const UniformVolume::CoordinateVectorType deltasV( deltas );
+    dX /= deltasV;
+    dY /= deltasV;
+    dZ /= deltasV;
+    V /= deltasV;
     }
   
   this->MakeHash( volume, V, dX, dY, dZ );
@@ -84,9 +86,11 @@ VolumeAxesHash::VolumeAxesHash
 ( const UniformVolume& volume, const ParametricPlane& mirrorPlane, const Types::Coordinate* deltas )
 {
   // define volume corners
-  Vector3D dX(1,0,0), dY(0,1,0), dZ(0,0,1);
-  Vector3D V(volume.m_Offset);
-    
+  UniformVolume::CoordinateVectorType dX = FixedVectorStaticInitializer<3,Types::Coordinate>::Init(1,0,0);
+  UniformVolume::CoordinateVectorType dY = FixedVectorStaticInitializer<3,Types::Coordinate>::Init(0,1,0);
+  UniformVolume::CoordinateVectorType dZ = FixedVectorStaticInitializer<3,Types::Coordinate>::Init(0,0,1);
+  UniformVolume::CoordinateVectorType V( volume.m_Offset );
+  
   // apply mirror transformation  
   mirrorPlane.MirrorInPlace(V);
   mirrorPlane.MirrorInPlace(dX);
@@ -99,11 +103,11 @@ VolumeAxesHash::VolumeAxesHash
   // Apply post-transformation scaling
   if ( deltas ) 
     {
-    FixedVector<3,Types::Coordinate> deltasV( deltas );
-    dX = Vector3D::CoordDiv( dX, deltasV );
-    dY = Vector3D::CoordDiv( dY, deltasV );
-    dZ = Vector3D::CoordDiv( dZ, deltasV );
-    V = Vector3D::CoordDiv( V, deltasV );
+    const UniformVolume::CoordinateVectorType deltasV( deltas );
+    dX /= deltasV;
+    dY /= deltasV;
+    dZ /= deltasV;
+    V /= deltasV;
     }
 
   this->MakeHash( volume, V, dX, dY, dZ );

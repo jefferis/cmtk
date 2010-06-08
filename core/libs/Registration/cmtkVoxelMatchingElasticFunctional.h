@@ -416,7 +416,7 @@ public:
 	    localMetric->Decrement( sampleX, WarpedVolume[r] );
 	    
 	  // Tell us whether the current location is still within the floating volume and get the respective voxel.
-	  Vector3D::CoordMultInPlace( *pVec, this->FloatingInverseDelta );
+	  *pVec *= this->FloatingInverseDelta;
 	  if ( this->FloatingGrid->FindVoxelByIndex( *pVec, fltIdx, fltFrac ) ) 
 	    {
 	    // Compute data index of the floating voxel in the floating volume.
@@ -532,7 +532,7 @@ public:
 	for ( pX = 0; pX<DimsX; ++pX, ++r, ++pVec )
 	  {
 	  // Tell us whether the current location is still within the floating volume and get the respective voxel.
-	  Vector3D::CoordMultInPlace( *pVec, this->FloatingInverseDelta );
+	  *pVec *= this->FloatingInverseDelta;
 	  if ( this->FloatingGrid->FindVoxelByIndex( *pVec, fltIdx, fltFrac ) ) 
 	    {
 	    // Compute data index of the floating voxel in the

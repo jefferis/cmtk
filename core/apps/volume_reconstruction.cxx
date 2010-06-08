@@ -94,12 +94,12 @@ cmtk::Types::Coordinate PointSpreadFunctionScale = 1.0;
 void
 CallbackSetPSF( const char* arg )
 {
-  float x, y, z;
-  if ( 3 != sscanf( arg, "%f,%f,%f", &x, &y, &z ) )
+  float xyz[3];
+  if ( 3 != sscanf( arg, "%f,%f,%f", xyz, xyz+1, xyz+2 ) )
     {
     throw "ERROR: point spread function size must be given as three comma-separated real values: x,y,z\n";
     }
-  PointSpreadFunction.Set( x, y, z );
+  PointSpreadFunction = cmtk::Vector3D( xyz );
   PointSpreadFunctionSet = true;
 }
 
@@ -169,7 +169,7 @@ CallbackReconGrid( const char* arg )
 
   if ( numArgs == 9 )
     {
-    ReconGrid->SetOffset( cmtk::Vector3D( gridOffset[0], gridOffset[1], gridOffset[2] ) );
+    ReconGrid->SetOffset( cmtk::Vector3D( gridOffset ) );
     }
 }
 

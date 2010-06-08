@@ -112,15 +112,22 @@ void ImageInfo::SetBytesPerPixel ( const int bpp )
 
 void ImageInfo::SetImagePosition ( const double x, const double y, const double z )
 {
-  ImagePosition.Set( x, y, z );
+  ImagePosition[0] = x;
+  ImagePosition[1] = y;
+  ImagePosition[2] = z;
 }
 
 void 
 ImageInfo::SetImageOrientation
 ( const double xx, const double xy, const double xz, const double yx, const double yy, const double yz )
 {
-  ImageOrientation[0].Set( xx, xy, xz );
-  ImageOrientation[1].Set( yx, yy, yz );
+  ImageOrientation[0][0] = xx;
+  ImageOrientation[0][1] = xy;
+  ImageOrientation[0][2] = xz;
+
+  ImageOrientation[1][0] = yx;
+  ImageOrientation[1][1] = yy;
+  ImageOrientation[1][2] = yz;
 }
 
 } // namespace cmtk

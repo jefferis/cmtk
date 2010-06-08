@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -34,7 +35,6 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkStudy.h>
 #include <cmtkScalarImage.h>
 
 namespace
@@ -51,7 +51,7 @@ class DICOM
 public:
   /** Read ScalarImage from DICOM file.
    */
-  static ScalarImage* Read( const char *path, const Study* study = NULL, const int index = 0 );
+  static ScalarImage* Read( const char *path );
 };
 
 //@}

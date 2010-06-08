@@ -106,7 +106,7 @@ VolumeFromStudy::AssembleVolume( const StudyImageSet* study, const bool verbose 
       char fullpath[PATH_MAX];
       snprintf( fullpath, sizeof( fullpath ), "%s/%s", MountPoints::Translate( study->GetImageDirectory() ), it->c_str() );
       
-      ScalarImage::SmartPtr image = ScalarImage::SmartPtr( DICOM::Read( fullpath, study, nextPlane ) );
+      ScalarImage::SmartPtr image = ScalarImage::SmartPtr( DICOM::Read( fullpath ) );
 
       // TODO: when returning NULL here, we also should tell
       // VolumeFromSlices that we give up, so it can free its

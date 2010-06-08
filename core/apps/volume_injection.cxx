@@ -128,7 +128,7 @@ CallbackReconGrid( const char* arg )
   
   if ( numArgs == 9 )
     {
-    ReconGrid->SetOffset( cmtk::Vector3D( gridOffset[0], gridOffset[1], gridOffset[2] ) );
+    ReconGrid->SetOffset( cmtk::UniformVolume::CoordinateVectorType( gridOffset ) );
     }
 }
 

@@ -660,15 +660,14 @@ QtTriplanarWindow
 void
 QtTriplanarWindow::slotGoToLocation( const QString& xyz )
 {
-  float x, y, z;
-  if ( 3 != sscanf( xyz.toLatin1(), "%f,%f,%f", &x, &y, &z ) )
+  float v[3];
+  if ( 3 != sscanf( xyz.toLatin1(), "%f,%f,%f", v, v+1, v+2 ) )
     {
     qWarning( "QtTriplanarWindow::slotGoToLocation needs 3D coordinate as 'x,y,z'.\n" );
     }
   else
     {
-    const Vector3D location ( x, y, z );
-    this->slotMouse3D( Qt::LeftButton, location );
+    this->slotMouse3D( Qt::LeftButton, UniformVolume::CoordinateVectorType( v ) );
     }
 }
 
@@ -756,8 +755,8 @@ QtTriplanarWindow::slotGoToLocation()
   if ( ! volume ) return;
 
   // Pretend there was a button event at the given location
-  const Vector3D location ( LocationEntryX->text().toDouble(), LocationEntryY->text().toDouble(), LocationEntryZ->text().toDouble() );
-  this->slotMouse3D( Qt::LeftButton, location );
+  const double location[3] = { LocationEntryX->text().toDouble(), LocationEntryY->text().toDouble(), LocationEntryZ->text().toDouble() };
+  this->slotMouse3D( Qt::LeftButton, UniformVolume::CoordinateVectorType( location ) );
 }
 
 void

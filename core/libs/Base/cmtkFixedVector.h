@@ -142,6 +142,14 @@ public:
     return *this;
   }
   
+  /// Elementwise multiplication with another vector.
+  Self& operator*=( const Self& rhs )
+  {
+    for ( size_t i=0; i<NDIM; ++i ) 
+      this->m_Data[i] *= rhs[i];
+    return *this;
+  }
+
   /// Divide by a scalar.
   Self& operator/= ( const T a ) 
   {
@@ -151,6 +159,14 @@ public:
     return *this;
   }
   
+  /// Elementwise dvision with another vector.
+  Self& operator/=( const Self& rhs )
+  {
+    for ( size_t i=0; i<NDIM; ++i ) 
+      this->m_Data[i] /= rhs[i];
+    return *this;
+  }
+
   /// Unary minus.
   const Self operator-() 
   { 

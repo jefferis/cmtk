@@ -71,7 +71,7 @@ cmtk::UniformVolumePainter::DrawSphere
 	{
 	const Types::Coordinate X = this->m_Volume->GetPlaneCoord( 0, i );
 	
-	Vector3D v( X, Y, Z );
+	UniformVolume::CoordinateVectorType v = FixedVectorStaticInitializer<3,Types::Coordinate>::Init( X, Y, Z );
 	v -= centerAbsolute;
 
 	for ( int dim = 0; dim < 3; ++dim )

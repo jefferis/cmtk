@@ -59,7 +59,7 @@ ImagePairNonrigidRegistrationFunctional::ImagePairNonrigidRegistrationFunctional
     
   Dim = 0;
 
-  ReferenceFrom.Set( 0,0,0 );
+  ReferenceFrom = UniformVolume::CoordinateVectorType( UniformVolume::CoordinateVectorType::Init( 0 ) );
   ReferenceTo = reference->Size;
 
   this->m_AdaptiveFixParameters = false;

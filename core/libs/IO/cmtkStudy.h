@@ -99,9 +99,6 @@ class Study
   /// Voxel dimensions of the volume image.
   cmtkGetSetMacro3Array(Types::Coordinate,Calibration);
 
-  /// Flag for custom calibration.
-  cmtkGetSetMacro(bool,CustomCalibration);
-
   /// Minimum value.
   cmtkGetSetMacro(Types::DataItem,MinimumValue);
 

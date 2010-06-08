@@ -219,7 +219,7 @@ VolumeFromFile::ReadDICOM( const char *path )
     }
     
   // get original image position from file.
-  Vector3D imageOrigin( 0, 0, 0 );
+  UniformVolume::CoordinateVectorType imageOrigin( UniformVolume::CoordinateVectorType::Init( 0 ) );
   const char *image_position_s = NULL;
   if ( ! document->getValue( DCM_ImagePositionPatient, image_position_s ) ) 
     {
@@ -232,16 +232,19 @@ VolumeFromFile::ReadDICOM( const char *path )
     }
   if ( image_position_s ) 
     {
-    double x, y, z;
-    if ( 3 == sscanf( image_position_s,"%lf%*c%lf%*c%lf", &x, &y, &z ) ) 
+    double xyz[3];
+    if ( 3 == sscanf( image_position_s,"%lf%*c%lf%*c%lf", xyz, xyz+1, xyz+2 ) ) 
       {
-      imageOrigin.Set( x, y, z );
+      imageOrigin = UniformVolume::CoordinateVectorType( xyz );
       }
     }
     
   // get original image direction from file.
-  Vector3D imageOrientationX( 1, 0, 0 );
-  Vector3D imageOrientationY( 0, 1, 0 );
+  UniformVolume::CoordinateVectorType imageOrientationX( UniformVolume::CoordinateVectorType::Init( 0 ) );
+  imageOrientationX[0] = 1;
+  UniformVolume::CoordinateVectorType imageOrientationY( UniformVolume::CoordinateVectorType::Init( 0 ) );
+  imageOrientationY[1] = 1;
+
   const char *image_orientation_s = NULL;
 #ifdef DCM_ImageOrientation
   if ( ! document->getValue( DCM_ImageOrientation, image_orientation_s ) )
@@ -255,11 +258,11 @@ VolumeFromFile::ReadDICOM( const char *path )
       }
   if ( image_orientation_s ) 
     {
-    double xx, xy, xz, yx, yy, yz;
-    if ( 6 == sscanf( image_orientation_s, "%lf%*c%lf%*c%lf%*c%lf%*c%lf%*c%lf", &xx, &xy, &xz, &yx, &yy, &yz ) ) 
+    double dx[3], dy[3];
+    if ( 6 == sscanf( image_orientation_s, "%lf%*c%lf%*c%lf%*c%lf%*c%lf%*c%lf", dx, dx+1, dx+2, dy, dy+1, dy+2 ) ) 
       {
-      imageOrientationX.Set( xx, xy, xz );
-      imageOrientationY.Set( yx, yy, yz );
+      imageOrientationX = UniformVolume::CoordinateVectorType( dx );
+      imageOrientationY = UniformVolume::CoordinateVectorType( dy );
       }
     }
   const Types::Coordinate size[3] = { pixelSize[0] * (dims[0]-1), pixelSize[1] * (dims[1]-1), pixelSize[1] * (dims[1]-1) };  

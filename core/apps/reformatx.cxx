@@ -103,7 +103,7 @@ CallbackTargetVolume( const char* arg )
 
   if ( numArgs == 9 )
     {
-    UserDefinedTargetVolume->SetOffset( cmtk::Vector3D( gridOffset[0], gridOffset[1], gridOffset[2] ) );
+    UserDefinedTargetVolume->SetOffset( cmtk::UniformVolume::CoordinateVectorType( gridOffset ) );
     }
 }
 
@@ -140,7 +140,7 @@ CallbackCropImages( const char* arg )
 
 bool TargetImageOffsetReal = false;
 bool TargetImageOffsetPixels = false;
-cmtk::Vector3D TargetImageOffset( 0, 0, 0 );
+cmtk::UniformVolume::CoordinateVectorType TargetImageOffset( cmtk::UniformVolume::CoordinateVectorType::Init( 0 ) );
 
 void
 CallbackTargetImageOffset( const char* arg )

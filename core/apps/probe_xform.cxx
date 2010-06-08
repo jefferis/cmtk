@@ -53,10 +53,10 @@ std::list<cmtk::Vector3D> LocationList;
 void
 AddProbeLocation( const char* argv )
 {
-  double x, y, z;
-  if ( 3 == sscanf( argv, "%lf,%lf,%lf", &x, &y, &z ) ) 
+  double xyz[3];
+  if ( 3 == sscanf( argv, "%lf,%lf,%lf", xyz, xyz+1, xyz+2 ) ) 
     {
-    LocationList.push_back( cmtk::Vector3D( x, y, z ) );
+    LocationList.push_back( cmtk::Xform::SpaceVectorType( xyz ) );
     } 
   else
     {

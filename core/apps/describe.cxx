@@ -67,10 +67,10 @@ std::list<cmtk::Vector3D> ProbeListIndex;
 void
 CallbackProbeIndex( const char* arg )
 {
-  int x, y, z;
-  if ( 3 == sscanf( arg, "%d,%d,%d", &x, &y, &z ) )
+  int xyz[3];
+  if ( 3 == sscanf( arg, "%d,%d,%d", xyz, xyz+1, xyz+2 ) )
     {
-    ProbeListIndex.push_back( cmtk::Vector3D( x, y, z ) );
+    ProbeListIndex.push_back( cmtk::UniformVolume::CoordinateVectorType( xyz ) );
     }
 }
 

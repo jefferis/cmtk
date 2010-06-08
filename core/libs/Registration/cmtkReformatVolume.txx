@@ -160,20 +160,21 @@ ReformatVolume::GetTransformedReferenceGreyAvg( void *const arg )
   int cy = (params->ThisThreadIndex / dims[0]) % dims[1];
   int cz = params->ThisThreadIndex / (dims[0] * dims[1]) ;
 
-  Types::Coordinate x = bbFrom[0] + cx * delta[0];
-  Types::Coordinate y = bbFrom[1] + cy * delta[1];
-  Types::Coordinate z = bbFrom[2] + cz * delta[2];
+  UniformVolume::CoordinateVectorType xyz;
+  xyz[0] = bbFrom[0] + cx * delta[0];
+  xyz[1] = bbFrom[1] + cy * delta[1];
+  xyz[2] = bbFrom[2] + cz * delta[2];
   
   const size_t numberOfPixels = dims[0] * dims[1] * dims[2];
   const size_t statusUpdateIncrement = std::max<size_t>( 1, numberOfPixels / 100 );
 
-  Vector3D u, v;
+  UniformVolume::CoordinateVectorType u, v;
   for ( size_t offset = params->ThisThreadIndex; offset < numberOfPixels; offset += params->NumberOfThreads ) 
     {
     if ( ! params->ThisThreadIndex && ! (offset % statusUpdateIncrement) ) 
       Progress::SetProgress( offset );
 
-    v.Set( x, y, z );
+    v = xyz;
     const bool success = splineXform->ApplyInverseInPlace( v, 0.1 * minDelta );
     u = v;
     
@@ -215,11 +216,11 @@ ReformatVolume::GetTransformedReferenceGreyAvg( void *const arg )
 	{
 	cz += cy / dims[1];
 	cy %= dims[1];
-	z = bbFrom[2] + cz * delta[2];
+	xyz[2] = bbFrom[2] + cz * delta[2];
 	}
-      y = bbFrom[1] + cy * delta[1];
+      xyz[1] = bbFrom[1] + cy * delta[1];
       }
-    x = bbFrom[0] + cx * delta[0];
+    xyz[0] = bbFrom[0] + cx * delta[0];
     }
 
   return CMTK_THREAD_RETURN_VALUE;

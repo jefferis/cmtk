@@ -331,28 +331,28 @@ ReformatVolume::GetTransformedReferenceGrey( void *const arg )
 
   const Types::Coordinate minDelta = MathUtil::Min( 3, delta );
   
-  Vector3D u, v;
   Types::Coordinate x, y, z;
 
   Types::DataItem value;
-  z = bbFrom[2];
+
+  UniformVolume::CoordinateVectorType u, v;
+  v[2] = bbFrom[2];
   size_t offset = 0;
   for ( int cz = 0; cz < dims[2]; ++cz, z += delta[2] ) 
     {
     if ( ! params->ThisThreadIndex ) Progress::SetProgress( cz );
-    y = bbFrom[1];
+    v[1] = bbFrom[1];
     for ( int cy = 0; cy < dims[1]; ++cy, y += delta[1] ) 
       {
-      x = bbFrom[0];
+      v[0] = bbFrom[0];
       for ( int cx = 0; cx < dims[0]; ++cx, x += delta[0], ++offset ) 
 	{
-	v.Set( x, y, z );
-	const bool success = splineXform->ApplyInverseInPlace( v, 0.1 * minDelta );
 	u = v;
+	const bool success = splineXform->ApplyInverseInPlace( u, 0.1 * minDelta );
 	
 	if ( success ) 
 	  {
-	  if ( interpolator->GetDataAt( v, value ) )
+	  if ( interpolator->GetDataAt( u, value ) )
 	    dataArray->Set( value, offset );
 	  else
 	    dataArray->SetPaddingAt( offset );
@@ -381,24 +381,23 @@ ReformatVolume::GetTransformedReferenceLabel( void *const arg )
 
   const Types::Coordinate minDelta = MathUtil::Min( 3, delta );
   
-  Vector3D u, v;
-  Types::Coordinate x, y, z;
+  UniformVolume::CoordinateVectorType u, v, xyz;
 
   std::vector<ProbeInfo> probe( params->numberOfImages );
   std::vector<Types::Coordinate> labelCount( params->maxLabel+1 );
     
-  z = bbFrom[2];
+  xyz[2] = bbFrom[2];
   size_t offset = 0;
-  for ( int cz = 0; cz < dims[2]; ++cz, z += delta[2] ) 
+  for ( int cz = 0; cz < dims[2]; ++cz, xyz[2] += delta[2] ) 
     {
     if ( ! params->ThisThreadIndex ) Progress::SetProgress( cz );
-    y = bbFrom[1];
-    for ( int cy = 0; cy < dims[1]; ++cy, y += delta[1] ) 
+    xyz[1] = bbFrom[1];
+    for ( int cy = 0; cy < dims[1]; ++cy, xyz[1] += delta[1] ) 
       {
-      x = bbFrom[0];
-      for ( int cx = 0; cx < dims[0]; ++cx, x += delta[0], ++offset ) 
+      xyz[0] = bbFrom[0];
+      for ( int cx = 0; cx < dims[0]; ++cx, xyz[0] += delta[0], ++offset ) 
 	{
-	v.Set( x, y, z );
+	v = xyz;
 	const bool success = splineXform->ApplyInverseInPlace( v, 0.1 * minDelta );
 	u = v;
 	
@@ -514,8 +513,7 @@ ReformatVolume::GetTransformedReferenceJacobianAvgThread
 
   const Types::Coordinate minDelta = MathUtil::Min( 3, delta );
   
-  Vector3D u, v;
-  Types::Coordinate x, y, z;
+  UniformVolume::CoordinateVectorType u, v, xyz;
 
   const size_t numberOfXforms = xformList->size();
   std::vector<const SplineWarpXform*> xforms( numberOfXforms );
@@ -528,19 +526,19 @@ ReformatVolume::GetTransformedReferenceJacobianAvgThread
   Vector<Types::Coordinate> values( params->IncludeReferenceData ? numberOfXforms+1 : numberOfXforms );
   const size_t margin = numberOfXforms / 20; // margin for center 90%
 
-  z = bbFrom[2] + czFrom * delta[2];
+  xyz[2] = bbFrom[2] + czFrom * delta[2];
   size_t offset = czFrom * dims[0] * dims[1];
 
-  for ( int cz = czFrom; cz < czTo; ++cz, z += delta[2] ) 
+  for ( int cz = czFrom; cz < czTo; ++cz, xyz[2] += delta[2] ) 
     {
     if ( ! params->ThisThreadIndex ) Progress::SetProgress( cz );
-    y = bbFrom[1];
-    for ( int cy = 0; cy < dims[1]; ++cy, y += delta[1] ) 
+    xyz[1] = bbFrom[1];
+    for ( int cy = 0; cy < dims[1]; ++cy, xyz[1] += delta[1] ) 
       {
-      x = bbFrom[0];
-      for ( int cx = 0; cx < dims[0]; ++cx, x += delta[0], ++offset ) 
+      xyz[0] = bbFrom[0];
+      for ( int cx = 0; cx < dims[0]; ++cx, xyz[0] += delta[0], ++offset ) 
 	{
-	v.Set( x, y, z );
+	v = xyz;
 	const bool success = splineXform->ApplyInverseInPlace( v, 0.1 * minDelta );
 	u = v;
 	
@@ -556,7 +554,7 @@ ReformatVolume::GetTransformedReferenceJacobianAvgThread
 			Types::Coordinate sum = params->IncludeReferenceData ? 1.0 : 0.0;
 	    for ( unsigned int img = 0; img < numberOfXforms; ++img )
 	      sum += xforms[img]->GetJacobianDeterminant( u ) / xforms[img]->GetGlobalScaling();
-		dataArray->Set( static_cast<Types::DataItem>( refJacobian * sum / numberOfXforms ), offset );
+	    dataArray->Set( static_cast<Types::DataItem>( refJacobian * sum / numberOfXforms ), offset );
 	    break;
 	    }
 	    case MODE_MEDIAN:
