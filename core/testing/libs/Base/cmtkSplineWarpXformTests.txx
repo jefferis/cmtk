@@ -156,10 +156,10 @@ testSplineWarpXformInverse()
   cmtk::SplineWarpXform splineWarp( cmtk::FixedVector<3,cmtk::Types::Coordinate>( domain ), cmtk::SplineWarpXform::IndexType( dims ), vParameters );
 
   int failed = 0, total = 0;
-  cmtk::Xform::SpaceVectorType vX, u, v;
 #pragma omp parallel for reduction(+:failed) reduction(+:total)
   for ( int k = 0; k < (int)domain[2]; k += 4 )
     {
+    cmtk::Xform::SpaceVectorType v, vX, u;
     v[2] = k;
     for ( int j = 0; j < (int)domain[1]; j += 8 )
       {
