@@ -91,10 +91,10 @@ public:
 
   /// Type conversion constructor template.
   template<class T2>
-  explicit FixedVector( const FixedVector<NDIM,T2>& rhs )
+  FixedVector( const FixedVector<NDIM,T2>& rhs )
   {
     for ( size_t i = 0; i < NDIM; ++i )
-      this->m_Data[i] = static_cast<T>( rhs[i] );
+      this->m_Data[i] = rhs[i];
   }
 
   /// Get element reference.
@@ -153,9 +153,8 @@ public:
   /// Divide by a scalar.
   Self& operator/= ( const T a ) 
   {
-    const T inv_a = static_cast<T>(1.0/a);
     for ( size_t i=0; i<NDIM; ++i ) 
-      this->m_Data[i] *= inv_a;
+      this->m_Data[i] /= a;
     return *this;
   }
   

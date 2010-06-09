@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -72,10 +73,10 @@ public:
   UniformVolumePainter( UniformVolume::SmartPtr& volume, const CoordinateModeEnum coordinateMode = Self::COORDINATES_INDEXED ) : m_Volume( volume ), m_CoordinateMode( coordinateMode ) {}
 
   /// Draw a sphere.
-  void DrawSphere( const Vector3D& center, const Types::Coordinate radius, const Types::DataItem value );
+  void DrawSphere( const UniformVolume::CoordinateVectorType& center, const Types::Coordinate radius, const Types::DataItem value );
 
   /// Draw a box.
-  void DrawBox( const Vector3D& boxFrom, const Vector3D& boxTo, const Types::DataItem value );
+  void DrawBox( const UniformVolume::CoordinateVectorType& boxFrom, const UniformVolume::CoordinateVectorType& boxTo, const Types::DataItem value );
 
 private:
   /// Pointer to target volume.

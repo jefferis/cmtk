@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -33,9 +34,9 @@
 
 void
 cmtk::UniformVolumePainter::DrawSphere
-( const Vector3D& center, const Types::Coordinate radius, const Types::DataItem value )
+( const UniformVolume::CoordinateVectorType& center, const Types::Coordinate radius, const Types::DataItem value )
 {
-  Vector3D centerAbsolute( center );
+  UniformVolume::CoordinateVectorType centerAbsolute( center );
   Types::Coordinate radiusAbsolute[3] = { radius, radius, radius };
   
   switch ( this->m_CoordinateMode )
@@ -88,7 +89,7 @@ cmtk::UniformVolumePainter::DrawSphere
 
 void
 cmtk::UniformVolumePainter::DrawBox
-( const Vector3D& boxFrom, const Vector3D& boxTo, const Types::DataItem value )
+( const UniformVolume::CoordinateVectorType& boxFrom, const UniformVolume::CoordinateVectorType& boxTo, const Types::DataItem value )
 {
   int indexFrom[3], indexTo[3];
 
