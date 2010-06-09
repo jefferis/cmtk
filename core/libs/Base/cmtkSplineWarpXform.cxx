@@ -675,17 +675,22 @@ Types::Coordinate
 SplineWarpXform
 ::GetGridEnergy() const
 {
-  double Energy = 0;
+  double energy = 0;
 
-  const Types::Coordinate* coeff = m_Parameters + nextI + nextJ + nextK;
-  for ( int z = 1; z<this->m_Dims[2]-1; ++z, coeff+=2*nextJ )
-    for ( int y = 1; y<this->m_Dims[1]-1; ++y, coeff+=2*nextI )
-      for ( int x = 1; x<this->m_Dims[0]-1; ++x, coeff+=nextI ) 
+#pragma omp parallel for reduction(+:energy)
+  for ( int z = 1; z<this->m_Dims[2]-1; ++z )
+    {
+    for ( int y = 1; y<this->m_Dims[1]-1; ++y )
+      {
+      for ( int x = 1; x<this->m_Dims[0]-1; ++x ) 
 	{
-	Energy += this->GetGridEnergy( coeff );
+	const Types::Coordinate* coeff = this->m_Parameters + x * nextI + y * nextJ + z * nextK;
+	energy += this->GetGridEnergy( coeff );
 	}
+      }
+    }
   
-  return Energy / (( this->m_Dims[0] - 2 ) * ( this->m_Dims[1] - 2 ) * ( this->m_Dims[2] - 2 ));
+  return energy / (( this->m_Dims[0] - 2 ) * ( this->m_Dims[1] - 2 ) * ( this->m_Dims[2] - 2 ));
 }
 
 Types::Coordinate
