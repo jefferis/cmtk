@@ -55,8 +55,8 @@ TypedArray::SmartPtr
 DataGridFilter::GetDataMedianFiltered( const int radiusX, const int radiusY, const int radiusZ ) const
 {
   const TypedArray* data = this->m_DataGrid->GetData();
-  TypedArray::SmartPtr result( data->NewTemplateArray( data->GetDataSize() ) );
-
+  TypedArray::SmartPtr result = TypedArray::Create( data->GetType(), data->GetDataSize() );
+  
   const int widthX = 1 + 2*radiusX;
   const int widthY = 1 + 2*radiusY;
   const int widthZ = 1 + 2*radiusZ;
@@ -128,7 +128,7 @@ TypedArray::SmartPtr
 DataGridFilter::GetDataSobelFiltered() const
 {
   const TypedArray* data = this->m_DataGrid->GetData();
-  TypedArray::SmartPtr result( data->NewTemplateArray( data->GetDataSize() ) );
+  TypedArray::SmartPtr result = TypedArray::Create( data->GetType(), data->GetDataSize() );
 
   Types::DataItem value = 0;
   Types::DataItem fov[3][3][3];
@@ -190,7 +190,7 @@ DataGridFilter::GetDataKernelFiltered
   const std::vector<Types::DataItem>& filterY,
   const std::vector<Types::DataItem>& filterZ ) const
 {
-  TypedArray::SmartPtr result( this->m_DataGrid->GetData()->NewTemplateArray( this->m_DataGrid->GetNumberOfPixels() ) );
+  TypedArray::SmartPtr result = TypedArray::Create( this->m_DataGrid->GetData()->GetType(), this->m_DataGrid->GetNumberOfPixels() );
   
   ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
   const size_t numberOfTasks = 4 * threadPool.GetNumberOfThreads() - 3;

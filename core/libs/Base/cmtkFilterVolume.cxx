@@ -39,6 +39,7 @@
 
 #include <cmtkProgress.h>
 #include <cmtkThreads.h>
+#include <cmtkException.h>
 
 #ifdef _OPENMP
 #  include <omp.h>
@@ -51,14 +52,15 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-TypedArray* 
+TypedArray::SmartPtr
 FilterVolume::GaussianFilter
 ( const UniformVolume* volume, const Units::GaussianSigma& kernelWidth, const Types::Coordinate radius, const TypedArray* maskData )
 {
   const TypedArray* inputData = volume->GetData();
-  if ( ! inputData ) return NULL;
+  if ( ! inputData ) 
+    throw( Exception( "Missing image data" ) );
   
-  TypedArray* filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
+  TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
   const DataGrid::IndexType& dims = volume->m_Dims;
   FilterMask<3> filter( dims, volume->GetDelta(), radius, FilterMask<3>::Gaussian( kernelWidth ) );
@@ -135,7 +137,7 @@ printBlock
     std::cout << block[i] << "   ";
 }
 
-TypedArray* 
+TypedArray::SmartPtr
 FilterVolume
 ::RohlfingFilter
 ( const UniformVolume* volume, const TypedArray* subjectData,
@@ -143,7 +145,8 @@ FilterVolume
   const Units::GaussianSigma& filterWidth, const Types::Coordinate filterRadius )
 {
   const TypedArray* inputData = volume->GetData();
-  if ( ! inputData ) return NULL;
+  if ( ! inputData )
+    throw( Exception( "Missing image data" ) );
  
   const Types::DataItemRange rangeSubj = subjectData->GetRange();
   
@@ -176,7 +179,7 @@ FilterVolume
     iKernel[0] = 1.0;
     }
   
-  TypedArray* filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
+  TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
   const DataGrid::IndexType& dims = volume->GetDims();
   FilterMask<3> filter( dims, volume->GetDelta(), filterRadius, FilterMask<3>::Gaussian( filterWidth ) );
@@ -258,7 +261,7 @@ FilterVolume
   return filtered;
 }
 
-TypedArray* 
+TypedArray::SmartPtr
 FilterVolume::StudholmeFilter
 ( const UniformVolume* volume, const TypedArray* subjectData,
   const TypedArray* averageData, const TypedArray* maskData,
@@ -266,12 +269,13 @@ FilterVolume::StudholmeFilter
   const Units::GaussianSigma& filterWidth, const Types::Coordinate filterRadius )
 {
   const TypedArray* inputData = volume->GetData();
-  if ( ! inputData ) return NULL;
+  if ( ! inputData )
+    throw( Exception( "Missing image data" ) );
  
   const Types::DataItemRange range = averageData->GetRange();
   const size_t numBins = std::min( 128, 1 + static_cast<int>((range.Width()) / binWidth) );
 
-  TypedArray* filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
+  TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
   const DataGrid::IndexType& dims = volume->GetDims();
   const unsigned int dimsX = dims[AXIS_X];
@@ -401,7 +405,7 @@ FilterVolume::StudholmeFilter
   return filtered;
 }
 
-TypedArray* 
+TypedArray::SmartPtr
 FilterVolume::StudholmeFilter
 ( const UniformVolume* volume, 
   std::list<TypedArray::SmartPtr> subjectData,
@@ -410,7 +414,8 @@ FilterVolume::StudholmeFilter
   const Units::GaussianSigma& filterWidth, const Types::Coordinate filterRadius )
 {
   const TypedArray* inputData = volume->GetData();
-  if ( ! inputData ) return NULL;
+  if ( ! inputData ) 
+    throw( Exception( "Missing image data" ) );
  
   const Types::DataItemRange range = averageData->GetRange();
 
@@ -419,7 +424,7 @@ FilterVolume::StudholmeFilter
   histogram.SetRangeX( range );
   histogram.SetRangeY( range );
  
-  TypedArray* filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
+  TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
   const DataGrid::IndexType& dims = volume->GetDims();
   FilterMask<3> filter( dims, volume->GetDelta(), filterRadius, FilterMask<3>::Gaussian( filterWidth ) );

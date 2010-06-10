@@ -64,7 +64,7 @@ public:
    * example, to replace the one held by the input image. The data type of the
    * array is identical to the input array.
    */
-  static TypedArray* GaussianFilter( const UniformVolume* volume, const Units::GaussianSigma& width, const Types::Coordinate radius = 1.0, const TypedArray* maskData = NULL );
+  static TypedArray::SmartPtr GaussianFilter( const UniformVolume* volume, const Units::GaussianSigma& width, const Types::Coordinate radius = 1.0, const TypedArray* maskData = NULL );
 
   /** Apply Coupe denoising filter.
    *\param volume Input 3D image.
@@ -74,7 +74,7 @@ public:
    * example, to replace the one held by the input image. The data type of the
    * array is identical to the input array.
    */
-  static TypedArray* CoupeFilter
+  static TypedArray::SmartPtr CoupeFilter
   ( const UniformVolume* volume, 
     const int windowRadius,
     const float beta = 0.5 );
@@ -90,7 +90,7 @@ public:
    * example, to replace the one held by the input image. The data type of the
    * array is identical to the input array.
    */
-  static TypedArray* RohlfingFilter
+  static TypedArray::SmartPtr RohlfingFilter
   ( const UniformVolume* volume, const TypedArray* subjectData,
     const TypedArray* maskData, const Units::GaussianSigma& iFilterSigma,
     const Units::GaussianSigma& filterWidth, const Types::Coordinate filterRadius );
@@ -113,7 +113,7 @@ public:
    * example, to replace the one held by the input image. The data type of the
    * array is identical to the input array.
    */
-  static TypedArray* StudholmeFilter
+  static TypedArray::SmartPtr StudholmeFilter
   ( const UniformVolume* volume, const TypedArray* subjectData,
     const TypedArray* averageData, const TypedArray* maskData,
     std::list<TypedArray::SmartPtr> imgList, const Types::DataItem binWidth,
@@ -139,7 +139,7 @@ public:
    * example, to replace the one held by the input image. The data type of the
    * array is identical to the input array.
    */
-  static TypedArray* StudholmeFilter
+  static TypedArray::SmartPtr StudholmeFilter
   ( const UniformVolume* volume, 
     std::list<TypedArray::SmartPtr> subjectData,
     const TypedArray* averageData, const TypedArray* maskData,

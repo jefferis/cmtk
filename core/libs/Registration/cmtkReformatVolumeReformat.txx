@@ -37,14 +37,13 @@ cmtk
 //@{
 
 template<class TInterpolator, class Fct> 
-TypedArray* 
+TypedArray::SmartPtr
 ReformatVolume::Reformat
 ( const UniformVolume* target, cmtk::XformList& targetToRef, const UniformVolume* reference, cmtk::XformList& refToFloat, Fct& fct, TInterpolator& interpolator )
 {
-  TypedArray *result = NULL;
   const DataGrid::IndexType& dims = target->GetDims();
 
-  result = TypedArray::Create( fct.GetDataType( reference, interpolator ), target->GetNumberOfPixels() );
+  TypedArray::SmartPtr result = TypedArray::Create( fct.GetDataType( reference, interpolator ), target->GetNumberOfPixels() );
   if ( fct.UsePaddingValue )
     result->SetPaddingValue( fct.PaddingValue );
   const TypedArray* targetData = target->GetData();

@@ -103,7 +103,7 @@ protected:
    * By default, the image data is encapsulated into a newly created
    * TypedArray object.
    */
-  virtual TypedArray* EncapDataArray( const ScalarDataType dtype, void *const data, const int data_size ) const;
+  virtual TypedArray::SmartPtr EncapDataArray( const ScalarDataType dtype, void *const data, const int data_size ) const;
   
   /** Copy one slice of data into field.
    * This function rearranges the bytes in the given 2D image so that after

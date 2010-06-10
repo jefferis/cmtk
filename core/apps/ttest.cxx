@@ -283,8 +283,7 @@ main ( int argc, char* argv[] )
       }
     else
       {
-      cmtk::UniformVolume::SmartPtr volume
-	( cmtk::VolumeIO::ReadOriented( MaskFileName, Verbose ) );
+      cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( MaskFileName, Verbose ) );
       if ( volume ) 
 	maskData = volume->GetData();
       if ( ! maskData )
@@ -303,7 +302,7 @@ main ( int argc, char* argv[] )
       case TTEST:
       {
       // allocated by GetUnpairedTTest; freed by SP:
-      cmtk::TypedArray *tstatsData = NULL, *avgXData = NULL, *avgYData = NULL;
+      cmtk::TypedArray::SmartPtr tstatsData, avgXData, avgYData;
       
       if ( TextFileMode )
 	{
@@ -375,7 +374,7 @@ main ( int argc, char* argv[] )
       }
       case TTEST_PAIRED:
       {
-      cmtk::TypedArray *tstatsData = NULL;
+      cmtk::TypedArray::SmartPtr tstatsData;
       
       if ( !dataY.empty() )
 	{
@@ -413,7 +412,7 @@ main ( int argc, char* argv[] )
       }
       case CORRELATION_PAIRED:
       {
-      cmtk::TypedArray *pData = NULL;
+      cmtk::TypedArray::SmartPtr pData;
       if ( !dataY.empty() )
 	{
 	probData = cmtk::TypedArray::SmartPtr( cmtk::HypothesisTests::GetPairedCorrelation( dataX, dataY, &pData, maskData ) );

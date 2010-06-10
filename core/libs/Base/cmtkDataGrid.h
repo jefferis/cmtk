@@ -231,14 +231,14 @@ public:
    *@param axis Coordinate axis normal to mirror plane. Default is AXIS_X
    * (mirror about mid-sagittal plane).
    */
-  TypedArray* GetDataMirrorPlane( const int axis = AXIS_X ) const;
+  TypedArray::SmartPtr GetDataMirrorPlane( const int axis = AXIS_X ) const;
 
   /// Replace data with mirrored version.
   void ApplyMirrorPlane( const int axis = AXIS_X );
 
 private:
   /// Mirror about plane without allocating additional memory.
-  static void MirrorPlaneInPlace( TypedArray *const data, const Self::IndexType& dims, const int axis = AXIS_X );
+  static void MirrorPlaneInPlace( TypedArray& data, const Self::IndexType& dims, const int axis = AXIS_X );
 
 public:
   /** Get cropped region reference.
@@ -283,7 +283,7 @@ public:
   void FillCropBackground( const Types::DataItem value );
 
   /// Return data for cropped volume.
-  TypedArray* GetCroppedData() const;
+  TypedArray::SmartPtr GetCroppedData() const;
 
   /// Accessor functions for protected member variables
   int GetNextI() const { return nextI; }
@@ -313,7 +313,7 @@ public:
   virtual void SetOrthoSlice( const int axis, const unsigned int idx, const ScalarImage* slice );
 
   /// Return data after mirror operator.
-  TypedArray* GetDataMirrored( const int axis = AXIS_X ) const;
+  TypedArray::SmartPtr GetDataMirrored( const int axis = AXIS_X ) const;
 
   /// Print object.
   void Print() const;

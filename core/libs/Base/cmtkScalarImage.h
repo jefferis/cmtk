@@ -266,7 +266,7 @@ public:
   /** Return median-filtered image data.
    *@param range Field of view of the median operator.
    */
-  TypedArray* GetMedianFiltered( const byte range ) const;
+  TypedArray::SmartPtr GetMedianFiltered( const byte range ) const;
 
   /// Replace pixel data with median-filtered data.
   ScalarImage* ApplyMedianFilter( const byte range ) 
@@ -280,7 +280,7 @@ public:
    * coordinates. This value is internally converted to the effective kernel
    * size in pixels.
    */
-  TypedArray* GetGaussFiltered( const Types::Coordinate stdDev ) const;
+  TypedArray::SmartPtr GetGaussFiltered( const Types::Coordinate stdDev ) const;
 
   /// Replace pixel data with Gauss-filtered data.
   ScalarImage* ApplyGaussFilter( const Types::Coordinate stdDev ) 
@@ -294,7 +294,7 @@ public:
    * computed the gradient magnitude at a certian location as the square root
    * of the squared horizontal and vertical Sobel operators.
    */
-  TypedArray* GetSobel2DFiltered() const;
+  TypedArray::SmartPtr GetSobel2DFiltered() const;
 
   /// Replace pixel data with Sobel-filtered data.
   ScalarImage* ApplySobel2DFilter() 
@@ -306,7 +306,7 @@ public:
   /** Return Laplace-filtered (edge-enhanced) image data.
    * This function implements the 2-D Laplace edge operator.
    */
-  TypedArray* GetLaplace2DFiltered() const;
+  TypedArray::SmartPtr GetLaplace2DFiltered() const;
 
   /// Replace pixel data with Laplace-filtered data.
   ScalarImage* ApplyLaplace2DFilter() 
@@ -318,7 +318,7 @@ public:
   /** Return Sobel-filtered (edge-enhanced) image data.
    * This function implements the 1-D Sobel edge operator.
    */
-  TypedArray* GetSobelFiltered( const bool horizontal, const bool absolute = false ) const;
+  TypedArray::SmartPtr GetSobelFiltered( const bool horizontal, const bool absolute = false ) const;
   
   /// Replace pixel data with 1-D Sobel-filtered data.
   ScalarImage* ApplySobelFilter( const bool horizontal, const bool absolute = false ) 
@@ -361,7 +361,7 @@ private:
   bool HasROI;
 
   // Return filtered image data using client-provided symmetric kernels.
-  TypedArray* GetFilteredData( const std::vector<Types::DataItem>& filterX, const std::vector<Types::DataItem>& filterY ) const;
+  TypedArray::SmartPtr GetFilteredData( const std::vector<Types::DataItem>& filterX, const std::vector<Types::DataItem>& filterY ) const;
 
   /// Adjust aspect ratio by stretching in Y-direction.
   void AdjustAspectY( const bool interpolate = false );

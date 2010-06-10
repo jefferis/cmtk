@@ -189,15 +189,15 @@ ReformatVolume::PlainReformat()
   return targetVolume;
 }
 
-TypedArray* 
+TypedArray::SmartPtr
 ReformatVolume::PlainReformat
-( const int plane, TypedArray *const target, const size_t targetOffset )
+( const int plane, TypedArray::SmartPtr& target, const size_t targetOffset )
 {
   const DataGrid::IndexType& Dims = ReferenceVolume->GetDims();
   const int DimsX = Dims[0], DimsY = Dims[1];
   const int DataSize = DimsX * DimsY;
 
-  TypedArray *result = target;
+  TypedArray::SmartPtr result = target;
   if ( ! result ) 
     {
     result = TypedArray::Create( FloatingVolume->GetData()->GetType(), DataSize );

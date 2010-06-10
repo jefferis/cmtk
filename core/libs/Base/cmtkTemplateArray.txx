@@ -187,7 +187,7 @@ TemplateArray<T>
  * array.
  */
 template<class T>
-TypedArray* 
+TypedArray::SmartPtr
 TemplateArray<T>
 ::Convert( const ScalarDataType dtype ) const 
 {

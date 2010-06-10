@@ -111,7 +111,7 @@ public:
    * entropy of the difference array is minimized. The resulting scale factor
    * is returned via a reference argument.
    */
-  static TypedArray* GetDifferenceArray( const TypedArray* array0, const TypedArray* array1, Types::DataItem &scaleFactor );
+  static TypedArray::SmartPtr GetDifferenceArray( const TypedArray* array0, const TypedArray* array1, Types::DataItem &scaleFactor );
 
   /// Compute entropy of difference of two images.
   static ReturnType GetDifferenceArrayEntropy( const TypedArray* array0, const TypedArray* array1, Types::DataItem &scaleFactor );

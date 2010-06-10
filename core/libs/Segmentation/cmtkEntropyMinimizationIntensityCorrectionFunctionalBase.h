@@ -136,7 +136,7 @@ public:
   /// Set additive bias field.
   virtual void SetBiasFieldAdd( const UniformVolume* biasFieldAdd )
   {
-    biasFieldAdd->GetData()->BlockCopy( this->m_BiasFieldAdd.GetPtr(), 0, 0, this->m_BiasFieldAdd->GetDataSize() );
+    biasFieldAdd->GetData()->BlockCopy( *(this->m_BiasFieldAdd), 0, 0, this->m_BiasFieldAdd->GetDataSize() );
   }
 
   /// Get multiplicative bias field.
@@ -153,7 +153,7 @@ public:
   /// Set multiplicative bias field.
   virtual void SetBiasFieldMul( const UniformVolume* biasFieldMul )
   {
-    biasFieldMul->GetData()->BlockCopy( this->m_BiasFieldMul.GetPtr(), 0, 0, this->m_BiasFieldMul->GetDataSize() );
+    biasFieldMul->GetData()->BlockCopy( *(this->m_BiasFieldMul), 0, 0, this->m_BiasFieldMul->GetDataSize() );
   }
 
   /// Evaluate functional.

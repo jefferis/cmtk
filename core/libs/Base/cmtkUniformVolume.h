@@ -194,7 +194,7 @@ public:
    * resampled volume data. NULL is returned if sufficient memory is not
    * available.
    */
-  virtual TypedArray *Resample ( const UniformVolume& ) const;
+  virtual TypedArray::SmartPtr Resample ( const UniformVolume& ) const;
 
   /// Get volume reoriented to a different anatomical axis alignment.
   const UniformVolume::SmartPtr GetReoriented ( const char* newOrientation = AnatomicalOrientation::ORIENTATION_STANDARD ) const;

@@ -117,7 +117,7 @@ PGM::Read( const char* filename )
   
   int dim = dimsx * dimsy;
   
-  TypedArray* pixelData;
+  TypedArray::SmartPtr pixelData;
   switch ( bytesperpixel ) 
     {
     case 1:

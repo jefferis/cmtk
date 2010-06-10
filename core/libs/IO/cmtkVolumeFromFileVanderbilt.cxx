@@ -113,7 +113,7 @@ VolumeFromFile::ReadVanderbilt( const char *path )
 
   // open image file and read data.
   CompressedStream imageStream( imageFilename );
-  TypedArray* data = TypedArray::Create( TYPE_SHORT, dims[0] * dims[1] * dims[2] );
+  TypedArray::SmartPtr data = TypedArray::Create( TYPE_SHORT, dims[0] * dims[1] * dims[2] );
   imageStream.Read( data->GetDataPtr(), data->GetItemSize(), data->GetDataSize() );
   
 #ifndef WORDS_BIGENDIAN

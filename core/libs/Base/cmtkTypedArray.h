@@ -99,9 +99,9 @@ public:
    *@return A pointer to a new typed array object, or NULL if an error 
    * occurred.
    */
-  static Self* Create
+  static Self::SmartPtr Create
   ( const ScalarDataType dtype, void *const data, const size_t size, const bool freeArray = true, const bool paddingFlag = false, const void* paddingData = NULL );
-
+  
   /** Create typed data array, allocating new memory for the items array.
    *@param dtype Type specifier.
    *@param size Number of items in the array to be allocated. Memory will be
@@ -110,7 +110,7 @@ public:
    *@return A pointer to a new typed array object, or NULL if an error
    * occurred.
    */
-  static Self* Create( const ScalarDataType dtype, const size_t size );
+  static Self::SmartPtr Create( const ScalarDataType dtype, const size_t size );
 
 protected:
   /** Scalar data type ID.
@@ -185,20 +185,14 @@ public:
    * This function sets all values stored in the present array from a memory
    * region with Types::DataItem values.
    *@param data Pointer to an array of Types::DataItem values.
-   *@param datasize Number of items in the array. If omitted, the current array
-   * size is used to determine how many values to read. In this case, the
-   * caller must make sure there is a sufficient number of values. If this
-   * parameter IS given, this objects' array is set to the given size. If
-   * necessary, this may involve freeing the old storage and allocating it 
-   * anew.
-   * Control over the source array is not taken by this object. Instead, the
-   * calling routine is responsible for de-allocating the array afterwards.
+   * Control over the source array is not taken by this object. If it is on the heap, 
+   * then the calling routine remains responsible for de-allocating the array afterwards.
    */
-  virtual void SetData( Types::DataItem *const data, const size_t datasize = 0 ) = 0;
+  virtual void SetData( Types::DataItem *const data ) = 0;
 
   /** Convert to typed array of any given template type.
    */
-  virtual Self* Convert(  const ScalarDataType dtype ) const = 0;
+  virtual Self::SmartPtr Convert(  const ScalarDataType dtype ) const = 0;
 
   /** Convert a sub-array to any given primitive data type.
    */
@@ -327,45 +321,8 @@ public:
    * read by the source object's Get method and stored by the destination
    * object's Set method. 
    */
-  virtual void Clone ( const Self& other ) 
-  {
-    this->m_DataClass = other.m_DataClass;
-    PaddingFlag = other.PaddingFlag;
-    this->Alloc( other.DataSize );
-    
-    Types::DataItem value;
-    for ( size_t idx = 0; idx < DataSize; ++idx ) 
-      {
-      if (other.Get(value,idx))
-	this->Set(value,idx);
-      }
-  }
+  virtual Self* Clone() const = 0;
   
-  /** Clone an existing TypedArray to a new object.
-   * This function calls CloneSubArray() for the actual cloning.
-   *@see #CloneSubArray
-   */
-  virtual Self* Clone () const 
-  {
-    return this->CloneSubArray( 0, DataSize );
-  }
-  
-  virtual Self* NewTemplateArray
-  ( void *const data, const size_t datasize, const bool freeArray, const bool paddingFlag, const void* paddingData ) const = 0;
-
-  virtual Self* NewTemplateArray( Types::DataItem *const data, const size_t datasize ) const = 0;
-
-  virtual Self* NewTemplateArray ( const size_t datasize = 0 ) const = 0;
-
-  /** Allocate and copy a continuous part of the array.
-   *@param fromIdx Index element in this object that becomes the first element
-   * in the cloned object.
-   *@param len Number of elements copied into the cloned object. Also the 
-   * number of elements in the resulting cloned object.
-   */
-  virtual Self* CloneSubArray
-  ( const size_t fromIdx, const size_t len ) const = 0;
-
   /// Default constructor.
   TypedArray () 
   {
@@ -373,14 +330,6 @@ public:
     PaddingFlag = false;
     FreeArray = false;
     this->m_DataClass = DATACLASS_GREY;
-  }
-  
-  /** Constructor.
-   * Create array by conversion from an existing one.
-   */
-  TypedArray ( const Self& other ) 
-  {
-    this->Clone( other );
   }
   
   /** Destructor.
@@ -538,9 +487,9 @@ public:
   /** Copy data block to other array.
    * This is really just a convenience wrapper for ConvertSubArray().
    */
-  virtual void BlockCopy( Self *const target, const size_t toOffset, const size_t fromOffset, const size_t blockLength ) const 
+  virtual void BlockCopy( Self& target, const size_t toOffset, const size_t fromOffset, const size_t blockLength ) const 
   {
-    this->ConvertSubArray( target->GetDataPtr( toOffset ), target->GetType(), fromOffset, blockLength );
+    this->ConvertSubArray( target.GetDataPtr( toOffset ), target.GetType(), fromOffset, blockLength );
   }
 
   /** Exchange two data blocks.

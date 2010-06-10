@@ -305,7 +305,7 @@ FilterVolume::ComputeNLWithinWindow
     //std::cout << numNeighborsUsed<< "\n";
 }
 
-TypedArray* 
+TypedArray::SmartPtr
 FilterVolume::CoupeFilter
 ( const UniformVolume* volume, 
   const int windowRadius,
@@ -319,9 +319,10 @@ FilterVolume::CoupeFilter
   bool BLOCKWISE_NLM = true;
 
   const TypedArray* inputData = volume->GetData();
-  if ( ! inputData ) return NULL;
+  if ( ! inputData ) 
+    return TypedArray::SmartPtr( NULL );
 
-  TypedArray* filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
+  TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   const int* dims = volume->GetDims().begin();
   const int dimX = dims[AXIS_X];
   const int dimY = dims[AXIS_Y];
@@ -361,7 +362,7 @@ FilterVolume::CoupeFilter
   
   /*  Figure out where the blocks will be
    */
-  TypedArray* blockLocations = TypedArray::Create(  TYPE_INT, inputData->GetDataSize() );
+  TypedArray::SmartPtr blockLocations = TypedArray::Create(  TYPE_INT, inputData->GetDataSize() );
   int blockCount = 0;
   for ( int z = blockRadius; z < dimZ - blockRadius; z++ )
     for ( int y = blockRadius; y < dimY - blockRadius ; y++ )
@@ -384,8 +385,8 @@ FilterVolume::CoupeFilter
   /*  Precompute the local means and local variances maps
    */
   CoupeBlock curBlock;
-  TypedArray* localMeansMap = TypedArray::Create( TYPE_DOUBLE, inputData->GetDataSize() );
-  TypedArray* localVariancesMap = TypedArray::Create( TYPE_DOUBLE, inputData->GetDataSize() );
+  TypedArray::SmartPtr localMeansMap = TypedArray::Create( TYPE_DOUBLE, inputData->GetDataSize() );
+  TypedArray::SmartPtr localVariancesMap = TypedArray::Create( TYPE_DOUBLE, inputData->GetDataSize() );
   for ( int z = blockRadius; z < dimZ - blockRadius; z++ )
     for ( int y = blockRadius; y < dimY - blockRadius ; y++ )
       for ( int x = blockRadius; x < dimX - blockRadius; x++ )

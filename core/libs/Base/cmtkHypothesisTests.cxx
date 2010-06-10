@@ -44,16 +44,16 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-TypedArray* 
+TypedArray::SmartPtr
 HypothesisTests::GetUnpairedTwoTailedTTest
 ( std::vector<TypedArray::SmartPtr>& dataX, 
   std::vector<TypedArray::SmartPtr>& dataY,
-  TypedArray** tstatData, TypedArray** avgXData, 
-  TypedArray** avgYData, const TypedArray* mask )
+  TypedArray::SmartPtr* tstatData, TypedArray::SmartPtr* avgXData, 
+  TypedArray::SmartPtr* avgYData, const TypedArray* mask )
 {
   const unsigned int length = dataX[0]->GetDataSize();
 
-  TypedArray* probData = TypedArray::Create( TYPE_FLOAT, length );
+  TypedArray::SmartPtr probData = TypedArray::Create( TYPE_FLOAT, length );
 
   if ( tstatData )
     *tstatData = TypedArray::Create( TYPE_FLOAT, length );
@@ -119,22 +119,21 @@ HypothesisTests::GetUnpairedTwoTailedTTest
   return probData;
 }
 
-TypedArray* 
+TypedArray::SmartPtr
 HypothesisTests::GetPairedTwoTailedTTest
 ( std::vector<TypedArray::SmartPtr>& dataX, 
   std::vector<TypedArray::SmartPtr>& dataY,
-  TypedArray** tstatData, TypedArray** avgXData, 
-  TypedArray** avgYData, const TypedArray* mask )
+  TypedArray::SmartPtr* tstatData, TypedArray::SmartPtr* avgXData, 
+  TypedArray::SmartPtr* avgYData, const TypedArray* mask )
 {
   if ( dataX.size() != dataY.size() )
     {
-    StdErr << "Cannot perform paired t-test if numbers of X and Y samples isn't equal.\n";
-    return NULL;
+    throw( Exception( "Cannot perform paired t-test if numbers of X and Y samples isn't equal" ) );
     }
       
   const unsigned int length = dataX[0]->GetDataSize();
 
-  TypedArray* probData = TypedArray::Create( TYPE_FLOAT, length );
+  TypedArray::SmartPtr probData = TypedArray::Create( TYPE_FLOAT, length );
 
   if ( tstatData )
     *tstatData = TypedArray::Create( TYPE_FLOAT, length );
@@ -205,19 +204,18 @@ HypothesisTests::GetPairedTwoTailedTTest
   return probData;
 }
 
-TypedArray* 
+TypedArray::SmartPtr 
 HypothesisTests::GetPairedCorrelation
-( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray** pData, const TypedArray* mask )
+( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray::SmartPtr* pData, const TypedArray* mask )
 {
   if ( dataX.size() != dataY.size() )
     {
-    StdErr << "Cannot perform paired correlation if numbers of X and Y samples isn't equal.\n";
-    return NULL;
+    throw( Exception( "Cannot perform paired correlation if numbers of X and Y samples isn't equal" ) );
     }
   
   const unsigned int length = dataX[0]->GetDataSize();
 
-  TypedArray* correlationData = TypedArray::Create( TYPE_FLOAT, length );
+  TypedArray::SmartPtr correlationData = TypedArray::Create( TYPE_FLOAT, length );
   if ( pData )
     *pData = TypedArray::Create( TYPE_FLOAT, length );
 
@@ -259,15 +257,15 @@ HypothesisTests::GetPairedCorrelation
   return correlationData;
 }
 
-TypedArray* 
+TypedArray::SmartPtr
 HypothesisTests::GetOneSampleTTest
 ( std::vector<TypedArray::SmartPtr>& dataX, 
-  TypedArray** tstatData, TypedArray** avgXData, 
+  TypedArray::SmartPtr* tstatData, TypedArray::SmartPtr* avgXData, 
   const TypedArray* mask )
 {
   const unsigned int length = dataX[0]->GetDataSize();
 
-  TypedArray* probData = TypedArray::Create( TYPE_FLOAT, length );
+  TypedArray::SmartPtr probData = TypedArray::Create( TYPE_FLOAT, length );
 
   if ( tstatData )
     *tstatData = TypedArray::Create( TYPE_FLOAT, length );
@@ -323,7 +321,7 @@ HypothesisTests::GetOneSampleTTest
   return probData;
 }
 
-TypedArray* 
+TypedArray::SmartPtr
 HypothesisTests::GetHeritability
 ( std::vector<TypedArray::SmartPtr>& dataX, 
   std::vector<TypedArray::SmartPtr>& dataY,
@@ -331,7 +329,7 @@ HypothesisTests::GetHeritability
 {
   const size_t length = dataX[0]->GetDataSize();
 
-  TypedArray* outData = TypedArray::Create( TYPE_FLOAT, length );
+  TypedArray::SmartPtr outData = TypedArray::Create( TYPE_FLOAT, length );
   
   const unsigned int dataXsize = dataX.size();
   std::vector<float> valuesX( dataXsize );
@@ -348,7 +346,7 @@ HypothesisTests::GetHeritability
   return outData;
 }
 
-TypedArray* 
+TypedArray::SmartPtr
 HypothesisTests::GetZScores
 ( std::vector<TypedArray::SmartPtr>& dataX,
   std::vector<TypedArray::SmartPtr>& dataY,
@@ -356,7 +354,7 @@ HypothesisTests::GetZScores
 {
   const size_t length = dataX[0]->GetDataSize();
 
-  TypedArray* outData = TypedArray::Create( TYPE_FLOAT, length );
+  TypedArray::SmartPtr outData = TypedArray::Create( TYPE_FLOAT, length );
   
   const unsigned int dataXsize = dataX.size();
   std::vector<Types::DataItem> valuesX( dataXsize );
@@ -405,7 +403,7 @@ HypothesisTests::GetZScores
   return outData;
 }
 
-TypedArray* 
+TypedArray::SmartPtr
 HypothesisTests::GetGeneticCovariance
 ( std::vector<TypedArray::SmartPtr>& dataMZ, 
   std::vector<TypedArray::SmartPtr>& dataDZ,
@@ -413,7 +411,7 @@ HypothesisTests::GetGeneticCovariance
 {
   const size_t length = dataMZ[0]->GetDataSize();
 
-  TypedArray* outData = TypedArray::Create( TYPE_FLOAT, length );
+  TypedArray::SmartPtr outData = TypedArray::Create( TYPE_FLOAT, length );
   
   const unsigned int dataMZsize = dataMZ.size();
   std::vector<Types::DataItem> valuesMZ( dataMZsize );

@@ -76,7 +76,7 @@ DataGrid::ComputeProjection
     }
   
   const TypedArray* data = this->GetData();
-  TypedArray* projectData = data->NewTemplateArray( dims[0] * dims[1] );
+  TypedArray::SmartPtr projectData = TypedArray::Create( data->GetType(), dims[0] * dims[1] );
   
   for ( unsigned int y = 0; y < dims[1]; ++y ) 
     {

@@ -112,78 +112,75 @@ TypedArray
     }
 }
 
-TypedArray*
+TypedArray::SmartPtr
 TypedArray
 ::Create
-( const ScalarDataType dtype, void *const data, const size_t size,
-  const bool freeArray, const bool paddingFlag, const void* paddingData ) 
+( const ScalarDataType dtype, void *const data, const size_t size, const bool freeArray, const bool paddingFlag, const void* paddingData ) 
 {
-  TypedArray *instance = NULL;
   switch (dtype) 
     {
     case TYPE_BYTE: 
-      instance = new ByteArray( data, size, freeArray, paddingFlag, paddingData );
+      return Self::SmartPtr( new ByteArray( data, size, freeArray, paddingFlag, paddingData ) );
       break;
     case TYPE_CHAR: 
-      instance = new CharArray( data, size, freeArray, paddingFlag, paddingData );
+      return Self::SmartPtr( new CharArray( data, size, freeArray, paddingFlag, paddingData ) );
       break;
     case TYPE_SHORT: 
-      instance = new ShortArray( data, size, freeArray, paddingFlag, paddingData );
+      return Self::SmartPtr( new ShortArray( data, size, freeArray, paddingFlag, paddingData ) );
       break;
     case TYPE_USHORT: 
-      instance = new UShortArray( data, size, freeArray, paddingFlag, paddingData );
+      return Self::SmartPtr( new UShortArray( data, size, freeArray, paddingFlag, paddingData ) );
       break;
     case TYPE_INT: 
-      instance = new IntArray( data, size, freeArray, paddingFlag, paddingData );
+      return Self::SmartPtr( new IntArray( data, size, freeArray, paddingFlag, paddingData ) );
       break;
     case TYPE_FLOAT: 
-      instance = new FloatArray( data, size, freeArray, paddingFlag, paddingData );
+      return Self::SmartPtr( new FloatArray( data, size, freeArray, paddingFlag, paddingData ) );
       break;
     case TYPE_DOUBLE: 
-      instance = new DoubleArray( data, size, freeArray, paddingFlag, paddingData );
+      return Self::SmartPtr( new DoubleArray( data, size, freeArray, paddingFlag, paddingData ) );
       break;
     default:
-      fprintf(stderr,"TypedArray::Create - Data type %d unknown.",dtype);
-      abort();
+      break;
     }
   
-  return instance;
+  fprintf(stderr,"TypedArray::Create - Data type %d unknown.",dtype);
+  return Self::SmartPtr();
 }
 
-TypedArray*
+TypedArray::SmartPtr
 TypedArray
 ::Create( const ScalarDataType dtype, const size_t size )
 {
-  TypedArray *instance = NULL;
   switch ( dtype ) 
     {
     case TYPE_BYTE:   
-      instance = new ByteArray( size );
+      return Self::SmartPtr( new ByteArray( size ) );
       break;
     case TYPE_CHAR:   
-      instance = new CharArray( size );
+      return Self::SmartPtr( new CharArray( size ) );
       break;
     case TYPE_SHORT:  
-      instance = new ShortArray( size );
+      return Self::SmartPtr( new ShortArray( size ) );
       break;
     case TYPE_USHORT:  
-      instance = new UShortArray( size );
+      return Self::SmartPtr( new UShortArray( size ) );
       break;
     case TYPE_INT:    
-      instance = new IntArray( size );
+      return Self::SmartPtr( new IntArray( size ) );
       break;
     case TYPE_FLOAT:  
-      instance = new FloatArray( size );
+      return Self::SmartPtr( new FloatArray( size ) );
       break;
     case TYPE_DOUBLE:
-      instance = new DoubleArray( size );
+      return Self::SmartPtr( new DoubleArray( size ) );
       break;
     default:
-      fprintf( stderr, "TypedArray::Create - Data type %d unknown.", dtype );
-      abort();
+      break;
     }
-  
-  return instance;
+
+  fprintf( stderr, "TypedArray::Create - Data type %d unknown.", dtype );
+  return Self::SmartPtr();
 }
 
 void 

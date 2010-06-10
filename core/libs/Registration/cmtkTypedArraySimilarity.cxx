@@ -256,14 +256,13 @@ TypedArraySimilarity::GetCrossCorrelation
   return sumOfProducts / ( sqrt( sumOfSquares0 ) * sqrt( sumOfSquares1 ) );
 }
 
-TypedArray*
+TypedArray::SmartPtr
 TypedArraySimilarity::GetDifferenceArray
-( const TypedArray* array0, const TypedArray* array1,
-  Types::DataItem &scaleFactor )
+( const TypedArray* array0, const TypedArray* array1, Types::DataItem &scaleFactor )
 {
   const size_t numberOfPixels = array0->GetDataSize();
   
-  TypedArray *differenceArray = TypedArray::Create( GetSignedDataType( array0->GetType() ), numberOfPixels );
+  TypedArray::SmartPtr differenceArray = TypedArray::Create( GetSignedDataType( array0->GetType() ), numberOfPixels );
   
   Types::DataItem value0, value1;
   Types::DataItem ATA = 0.0, ATB = 0.0;

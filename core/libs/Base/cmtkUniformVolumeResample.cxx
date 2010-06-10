@@ -43,7 +43,7 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-TypedArray*
+TypedArray::SmartPtr
 UniformVolume::Resample( const UniformVolume& other ) const 
 {
   const TypedArray* fromData = other.GetData();
@@ -56,52 +56,38 @@ UniformVolume::Resample( const UniformVolume& other ) const
   // Info blocks for parallel tasks that do the resampling.
   std::vector<UniformVolume::ResampleTaskInfo> taskInfoVector( numberOfTasks );
    
-  Types::DataItem *resampledData = NULL;
-  try
+  Types::DataItem *resampledData = Memory::AllocateArray<Types::DataItem>( this->GetNumberOfPixels() );
+  
+  for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
     {
-    resampledData = Memory::AllocateArray<Types::DataItem>( this->GetNumberOfPixels() );
-     
-    for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
-      {
-      taskInfoVector[taskIdx].thisObject = this;
-      taskInfoVector[taskIdx].GridLookup = &gridLookup;
-      taskInfoVector[taskIdx].OtherVolume = &other;
-      taskInfoVector[taskIdx].FromData = fromData;
-      taskInfoVector[taskIdx].ResampledData = resampledData;
-      }
-     
-    switch ( fromData->GetDataClass() ) 
-      {
-      case DATACLASS_GREY:
-      default:
-      {
-      threadPool.Run( UniformVolume::ResampleThreadPoolExecuteGrey, taskInfoVector );
-      }
-      break;
-      case DATACLASS_LABEL:
-      {
-      threadPool.Run( UniformVolume::ResampleThreadPoolExecuteLabels, taskInfoVector );
-      break;
-      }
-      }
+    taskInfoVector[taskIdx].thisObject = this;
+    taskInfoVector[taskIdx].GridLookup = &gridLookup;
+    taskInfoVector[taskIdx].OtherVolume = &other;
+    taskInfoVector[taskIdx].FromData = fromData;
+    taskInfoVector[taskIdx].ResampledData = resampledData;
+    }
+  
+  switch ( fromData->GetDataClass() ) 
+    {
+    case DATACLASS_GREY:
+    default:
+    {
+    threadPool.Run( UniformVolume::ResampleThreadPoolExecuteGrey, taskInfoVector );
+    }
+    break;
+    case DATACLASS_LABEL:
+    {
+    threadPool.Run( UniformVolume::ResampleThreadPoolExecuteLabels, taskInfoVector );
+    break;
+    }
     }
    
-  catch ( const std::bad_alloc& ) 
-    {
-    resampledData = NULL;
-    }
-   
-  if ( resampledData == NULL ) 
-    {
-    return NULL;
-    }
-   
-  TypedArray *Result = fromData->NewTemplateArray( resampledData, this->GetNumberOfPixels() );
+  TypedArray::SmartPtr result = TypedArray::Create( fromData->GetType(), this->GetNumberOfPixels() );
+  result->SetData( resampledData );
+  result->SetDataClass( fromData->GetDataClass() );
   delete[] resampledData;
-   
-  Result->SetDataClass( fromData->GetDataClass() );
-   
-  return Result;
+    
+  return result;
 }
 
 void

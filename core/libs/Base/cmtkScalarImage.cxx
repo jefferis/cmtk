@@ -40,6 +40,8 @@
 #include <cmtkCubicSpline.h>
 #include <cmtkSurfaceNormal.h>
 
+#include <cmtkException.h>
+
 namespace
 cmtk
 {
@@ -444,12 +446,13 @@ ScalarImage::Downsample
   return newScalarImage;  
 }
 
-TypedArray* 
+TypedArray::SmartPtr
 ScalarImage::GetMedianFiltered( const byte range ) const
 {
-  if ( !this->m_PixelData ) return NULL;
+  if ( !this->m_PixelData )
+    throw( Exception( "No image data in ScalarImage::GetMedianFiltered()" ) );
 
-  TypedArray *result = this->m_PixelData->NewTemplateArray( this->m_PixelData->GetDataSize() );
+  TypedArray::SmartPtr result = TypedArray::Create( this->m_PixelData->GetType(), this->m_PixelData->GetDataSize() );
 
   Types::DataItem *sort = Memory::AllocateArray<Types::DataItem>( range * range * range );
 
@@ -487,7 +490,7 @@ ScalarImage::GetMedianFiltered( const byte range ) const
   return result;
 }
 
-TypedArray*
+TypedArray::SmartPtr
 ScalarImage::GetGaussFiltered( const Types::Coordinate stdDev ) const
 {
   const Types::Coordinate stdDevPixelX = stdDev / this->m_PixelSize[0];
@@ -511,22 +514,21 @@ ScalarImage::GetGaussFiltered( const Types::Coordinate stdDev ) const
     filterY[y] = 1.0/(sqrt(2*M_PI) * stdDevPixelY) * exp( -MathUtil::Square( 1.0 * y / stdDevPixelY ) / 2);
     }
   
-  TypedArray *result = this->GetFilteredData( filterX, filterY );
-  
-  return result;
+  return this->GetFilteredData( filterX, filterY );
 }
 
-TypedArray* 
+TypedArray::SmartPtr
 ScalarImage::GetFilteredData
 ( const std::vector<Types::DataItem>& filterX, const std::vector<Types::DataItem>& filterY ) const
 {
-  if ( !this->m_PixelData ) return NULL;
+  if ( !this->m_PixelData )
+    throw( Exception( "No image data in ScalarImage::GetFilteredData()" ) );
 
   const int filterXsize = filterX.size();
   const int filterYsize = filterY.size();
 
-  TypedArray *result = this->m_PixelData->NewTemplateArray( this->m_PixelData->GetDataSize() );
-
+  TypedArray::SmartPtr result = TypedArray::Create( this->m_PixelData->GetType(), this->m_PixelData->GetDataSize() );
+  
   size_t maxDim = std::max( this->m_Dims[0], this->m_Dims[1] );
   std::vector<Types::DataItem> pixelBufferFrom( maxDim );
   std::vector<Types::DataItem> pixelBufferTo( maxDim );
@@ -604,12 +606,13 @@ ScalarImage::GetFilteredData
   return result;
 }
 
-TypedArray*
+TypedArray::SmartPtr
 ScalarImage::GetSobel2DFiltered() const
 {
-  if ( !this->m_PixelData ) return NULL;
+  if ( !this->m_PixelData )
+    throw( Exception( "No image data in ScalarImage::GetSobel2DFiltered()" ) );
 
-  TypedArray *result = this->m_PixelData->NewTemplateArray( this->m_PixelData->GetDataSize() );
+  TypedArray::SmartPtr result = TypedArray::Create( this->m_PixelData->GetType(), this->m_PixelData->GetDataSize() );
   
   Types::DataItem fov[3][3];
   size_t offset = 0;
@@ -634,13 +637,14 @@ ScalarImage::GetSobel2DFiltered() const
   return result;
 }
 
-TypedArray* 
+TypedArray::SmartPtr
 ScalarImage::GetSobelFiltered( const bool horizontal, const bool absolute ) 
   const
 {
-  if ( !this->m_PixelData ) return NULL;
+  if ( !this->m_PixelData )
+    throw( Exception( "No image data in ScalarImage::GetSobelFiltered()" ) );
 
-  TypedArray *result = ( absolute ) ?
+  TypedArray::SmartPtr result = ( absolute ) ?
     TypedArray::Create( GetUnsignedDataType( this->m_PixelData->GetType() ), this->m_PixelData->GetDataSize() ) :
     TypedArray::Create( GetSignedDataType( this->m_PixelData->GetType() ), this->m_PixelData->GetDataSize() );
   
@@ -685,12 +689,13 @@ ScalarImage::GetSobelFiltered( const bool horizontal, const bool absolute )
   return result;
 }
 
-TypedArray*
+TypedArray::SmartPtr
 ScalarImage::GetLaplace2DFiltered() const
 {
-  if ( !this->m_PixelData ) return NULL;
+  if ( !this->m_PixelData )
+    throw( Exception( "No image data in ScalarImage::GetLaplace2DFiltered()" ) );
 
-  TypedArray *result = this->m_PixelData->NewTemplateArray( this->m_PixelData->GetDataSize() );
+  TypedArray::SmartPtr result = TypedArray::Create( this->m_PixelData->GetType(), this->m_PixelData->GetDataSize() );
   
   Types::DataItem fov[3][3];
   size_t offset = 0;
@@ -825,7 +830,7 @@ ScalarImage::AdjustAspectY( const bool interpolate )
 {
   int newDimsY = static_cast<int>( (this->m_Dims[1]-1) * this->m_PixelSize[1]/this->m_PixelSize[0] ) + 1;
   
-  TypedArray *scaled = this->m_PixelData->NewTemplateArray( this->m_Dims[0] * newDimsY );
+  TypedArray::SmartPtr scaled = TypedArray::Create( this->m_PixelData->GetType(), this->m_Dims[0] * newDimsY );
   
   if ( interpolate ) 
     {
@@ -880,7 +885,7 @@ ScalarImage::AdjustAspectY( const bool interpolate )
   
   this->m_PixelSize[1] = this->m_PixelSize[0];
   this->m_Dims[1] = newDimsY;
-  this->SetPixelData( TypedArray::SmartPtr( scaled ) );
+  this->SetPixelData( scaled );
 }
 
 void
@@ -888,7 +893,7 @@ ScalarImage::AdjustAspectX( const bool interpolate )
 {
   int newDimsX = static_cast<int>( (this->m_Dims[0]-1) * this->m_PixelSize[0]/this->m_PixelSize[1] ) + 1;
   
-  TypedArray *scaled = this->m_PixelData->NewTemplateArray( newDimsX * this->m_Dims[1] );
+  TypedArray::SmartPtr scaled = TypedArray::Create( this->m_PixelData->GetType(), newDimsX * this->m_Dims[1] );
   
   if ( interpolate ) 
     {
@@ -953,7 +958,7 @@ ScalarImage::AdjustAspectX( const bool interpolate )
   
   this->m_PixelSize[0] = this->m_PixelSize[1];
   this->m_Dims[0] = newDimsX;
-  this->SetPixelData( TypedArray::SmartPtr( scaled ) );
+  this->SetPixelData( scaled );
 }
 
 void

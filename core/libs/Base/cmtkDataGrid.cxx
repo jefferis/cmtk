@@ -74,7 +74,7 @@ DataGrid::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
   const TypedArray* thisData = this->GetData();
   if ( thisData )
     {
-    TypedArray* newData = thisData->NewTemplateArray( newDataGrid->GetNumberOfPixels() );
+    TypedArray::SmartPtr newData = TypedArray::Create( thisData->GetType(), newDataGrid->GetNumberOfPixels() );
 
 #pragma omp parallel for
     for ( int z = 0; z < newDims[2]; ++z )
@@ -262,24 +262,24 @@ DataGrid::TrilinearInterpolation
   return false;
 }
 
-TypedArray*
+TypedArray::SmartPtr
 DataGrid::GetDataMirrorPlane( const int axis ) const
 {
-  TypedArray* Result = this->GetData()->Clone();
-  this->MirrorPlaneInPlace( Result, this->m_Dims, axis );
+  TypedArray::SmartPtr result( this->GetData()->Clone() );
+  this->MirrorPlaneInPlace( *result, this->m_Dims, axis );
   
-  return Result;
+  return result;
 }
 
 void
 DataGrid::ApplyMirrorPlane( const int axis )
 {
-  this->MirrorPlaneInPlace( this->GetData().GetPtr(), this->m_Dims, axis );
+  this->MirrorPlaneInPlace( *(this->GetData()), this->m_Dims, axis );
 }
 
 void
 DataGrid::MirrorPlaneInPlace
-( TypedArray *const data, const Self::IndexType& dims, const int axis )
+( TypedArray& data, const Self::IndexType& dims, const int axis )
 {
   switch ( axis ) 
     {
@@ -288,7 +288,7 @@ DataGrid::MirrorPlaneInPlace
     int offset = 0;
     for ( int z = 0; z < dims[2]; ++z )
       for ( int y = 0; y < dims[1]; ++y, offset += dims[0] )
-	data->BlockReverse( offset, dims[0] );
+	data.BlockReverse( offset, dims[0] );
     }
     break;
     case AXIS_Y: 
@@ -297,7 +297,7 @@ DataGrid::MirrorPlaneInPlace
     for ( int z = 0; z < dims[2]; ++z, zOffset += dims[0] * dims[1] ) 
       {
       for ( int y = 0; y < (dims[1] / 2); ++y )
-	data->BlockSwap( zOffset + y * dims[0], zOffset + (dims[1] - 1 - y) * dims[0], dims[0] );
+	data.BlockSwap( zOffset + y * dims[0], zOffset + (dims[1] - 1 - y) * dims[0], dims[0] );
       }
     }
     break;
@@ -306,21 +306,22 @@ DataGrid::MirrorPlaneInPlace
     size_t blockSize = dims[0] * dims[1];
     for ( int z = 0; z < (dims[2] / 2); ++z ) 
       {
-      data->BlockSwap( z * blockSize, (dims[2] - 1 - z) * blockSize, blockSize );
+      data.BlockSwap( z * blockSize, (dims[2] - 1 - z) * blockSize, blockSize );
       }
     }
     break;
     }
 }
 
-TypedArray* 
+TypedArray::SmartPtr
 DataGrid::GetDataMirrored
 ( const int axis ) const
 {
   const TypedArray* dataArray = this->GetData();
-  if ( ! dataArray ) return NULL;
+  if ( ! dataArray ) 
+    throw( Exception( "No input data in DataGrid::GetDataMirrored()" ) );
   
-  TypedArray* mirroredArray = dataArray->NewTemplateArray();
+  TypedArray::SmartPtr mirroredArray = TypedArray::Create( dataArray->GetType(), dataArray->GetDataSize() );
   
   Progress::Begin( 0, this->m_Dims[2], 1, "Mirror image" );
 
@@ -335,7 +336,7 @@ DataGrid::GetDataMirrored
 	  {
 	  for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
 	    {
-	    dataArray->BlockCopy( mirroredArray, offset, offset, this->m_Dims[0] );
+	    dataArray->BlockCopy( *mirroredArray, offset, offset, this->m_Dims[0] );
 	    mirroredArray->BlockReverse( offset, this->m_Dims[0] );
 	    }      
 	  }
@@ -389,7 +390,7 @@ DataGrid::GetOrthoSlice
     }
   
   const TypedArray* data = this->GetData();
-  TypedArray* sliceData = data->NewTemplateArray( dims[0] * dims[1] );
+  TypedArray::SmartPtr sliceData = TypedArray::Create( data->GetType(), dims[0] * dims[1] );
   if ( data->GetPaddingFlag() ) 
     {
     sliceData->SetPaddingValue( data->GetPaddingValue() );
@@ -481,7 +482,7 @@ DataGrid::SetOrthoSlice
 	{
 	unsigned int offsetX = offset + incX;
 	
-	sliceData->BlockCopy( data.GetPtr(), offset, sliceOffset, 1 );
+	sliceData->BlockCopy( *data, offset, sliceOffset, 1 );
 	offset = offsetX;
 	}
       offset = offsetY;

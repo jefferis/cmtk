@@ -52,35 +52,35 @@ class HypothesisTests
 {
 public:
   /// Test Jacobian maps of two populations for statistical independence.
-  static TypedArray* GetUnpairedTwoTailedTTest
-  ( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray** tstatData, TypedArray** avgXData, TypedArray** avgYData,
+  static TypedArray::SmartPtr GetUnpairedTwoTailedTTest
+  ( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray::SmartPtr* tstatData, TypedArray::SmartPtr* avgXData, TypedArray::SmartPtr* avgYData,
     const TypedArray* mask = NULL );
 
   /// Test parameter maps of two populations for statistical independence.
-  static TypedArray* GetPairedTwoTailedTTest
-  ( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray** tstatData, TypedArray** avgXData, TypedArray** avgYData, 
+  static TypedArray::SmartPtr GetPairedTwoTailedTTest
+  ( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray::SmartPtr* tstatData, TypedArray::SmartPtr* avgXData, TypedArray::SmartPtr* avgYData, 
     const TypedArray* mask = NULL );
 
   /// Get pixel-wise correlation between two sets of input images.
-  static TypedArray* 
-  GetPairedCorrelation( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray** pData = NULL, const TypedArray* mask = NULL );
+  static TypedArray::SmartPtr 
+  GetPairedCorrelation( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, TypedArray::SmartPtr* pData = NULL, const TypedArray* mask = NULL );
 
   /// Test mean of Jacobian map of a single population for difference from zero.
-  static TypedArray* 
-  GetOneSampleTTest( std::vector<TypedArray::SmartPtr>& dataX, TypedArray** tstatData, TypedArray** avgXData, const TypedArray* mask = NULL );
+  static TypedArray::SmartPtr 
+  GetOneSampleTTest( std::vector<TypedArray::SmartPtr>& dataX, TypedArray::SmartPtr* tstatData, TypedArray::SmartPtr* avgXData, const TypedArray* mask = NULL );
 
   /// Get pixelwise heritability of two populations.
-  static TypedArray* 
+  static TypedArray::SmartPtr 
   GetHeritability( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, const TypedArray* mask = NULL );
   
   /** Get pixelwise z-scores.
     * The X distribution is taken as the "true" or "reference" distribution.
     * The Y distribution is taken as the "test" or "sample" distribution.
     */
-  static TypedArray* GetZScores( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, const TypedArray* mask = NULL );
+  static TypedArray::SmartPtr GetZScores( std::vector<TypedArray::SmartPtr>& dataX, std::vector<TypedArray::SmartPtr>& dataY, const TypedArray* mask = NULL );
   
   /// Get pixelwise genetic covariance from MZ and DZ twin data.
-  static TypedArray* GetGeneticCovariance( std::vector<TypedArray::SmartPtr>& dataMZ, std::vector<TypedArray::SmartPtr>& dataDZ, const TypedArray* mask = NULL );
+  static TypedArray::SmartPtr GetGeneticCovariance( std::vector<TypedArray::SmartPtr>& dataMZ, std::vector<TypedArray::SmartPtr>& dataDZ, const TypedArray* mask = NULL );
 };
 
 //@}

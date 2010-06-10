@@ -61,6 +61,9 @@ public:
   /// This type.
   typedef TemplateArray<T> Self;
 
+  /// Base class.
+  typedef TypedArray Superclass;
+
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
@@ -72,15 +75,18 @@ public:
   {
     return Self::SmartPtr( new Self( size ) );
   }
+
+  /// Clone this object.
+  virtual Self* Clone() const
+  {
+    Self* clone = new Self( this->DataSize );
+    memcpy( clone->Data, this->Data, this->DataSize * sizeof( T ) );
+    clone->Padding = this->Padding;
+    clone->PaddingFlag = this->PaddingFlag;
+    clone->m_DataClass = this->m_DataClass;
+    return clone;
+  }
   
-private:
-  /// The acutal data array.
-  T *Data;
-
-  /// Value used for missing data.
-  T Padding;
-
-public:
   /// Return const pointer to actual data.
   const T* GetDataPtrConcrete() const { return this->Data; }
 
@@ -94,7 +100,6 @@ public:
     this->PaddingFlag = true;
   }
   
-public:
   /** Allocate data array.
    *@param datasize Number of data items to allocate memory for.
    *@param allocWith Type of memory handler to be used.
@@ -216,43 +221,6 @@ public:
     return (PaddingFlag && (Data[index]==Padding)) || Data[index] == (T)0;
   }
   
-  /** Allocate new template array.
-   * This function creates a new array with the same template parameters it
-   * was defined with itself.
-   */
-  virtual TypedArray* NewTemplateArray
-  ( void *const data, const size_t datasize, const bool freeArray, const bool paddingflag, const void* paddingData ) const
-  {
-    return new Self( data, datasize, freeArray, paddingflag, paddingData );
-  }
-  
-  virtual TypedArray* NewTemplateArray ( Types::DataItem *const data, const size_t datasize ) const 
-  {
-    TypedArray *Result = this->NewTemplateArray( datasize );
-    Result->SetData( data );
-    
-    return Result;
-  }
-
-  virtual TypedArray* NewTemplateArray ( const size_t datasize = 0 ) const 
-  {
-    Self *result = NULL;
-    if ( ! datasize )
-      result = new Self( this->GetDataSize() );
-    else
-      result = new Self( datasize );
-    if ( PaddingFlag ) result->SetPaddingValueTemplate( Padding );
-    return result;
-  }
-
-  /// Allocate and copy continuous subarray.
-  virtual TypedArray* CloneSubArray ( const size_t fromIdx, const size_t len ) const
-  {
-    T* CloneData = Memory::AllocateArray<T>( len );
-    memcpy( CloneData, Data+fromIdx, len * sizeof( T ) );
-    return this->NewTemplateArray( CloneData, len, true/*freeArray*/, PaddingFlag, &Padding );
-  }
-
   virtual void SetPaddingAt ( const size_t index = 0 ) 
   {
     if ( !PaddingFlag ) 
@@ -359,7 +327,7 @@ public:
 
   /** Convert to typed array of any given template type.
    */
-  virtual TypedArray* Convert(  const ScalarDataType dtype ) const;
+  virtual TypedArray::SmartPtr Convert(  const ScalarDataType dtype ) const;
 
 
   /** Convert a sub-array to any given primitive data type.
@@ -605,19 +573,11 @@ public:
    * This function sets all values stored in the present array from a memory
    * region with Types::DataItem values.
    *@param data Pointer to an array of Types::DataItem values.
-   *@param datasize Number of items in the array. If omitted, the current array
-   * size is used to determine how many values to read. In this case, the
-   * caller must make sure there is a sufficient number of values. If this
-   * parameter IS given, this objects' array is set to the given size. If
-   * necessary, this may involve freeing the old storage and allocating it 
-   * anew.
-   * Control over the source array is not taken by this object. Instead, the
-   * calling routine is responsible for de-allocating the array afterwards.
+   * Control over the source array is not taken by this object. If it is on the heap, 
+   * then the calling routine remains responsible for de-allocating the array afterwards.
    */
-  virtual void SetData ( Types::DataItem *const data, const size_t datasize = 0 ) 
+  virtual void SetData ( Types::DataItem *const data ) 
   {
-    if ( datasize && (datasize != DataSize) ) 
-      this->Alloc( datasize );
 #pragma omp parallel for    
     for ( size_t idx = 0; idx < this->DataSize; ++idx )
       Data[idx] = this->ConvertItem( data[idx] );
@@ -672,6 +632,13 @@ public:
   virtual Histogram<unsigned int>::SmartPtr GetHistogram( const unsigned int numberOfBins ) const;
 
   virtual void ApplyFunctionObject( const TypedArrayFunction& f );
+
+private:
+  /// The acutal data array.
+  T *Data;
+
+  /// Value used for missing data.
+  T Padding;
 };
 
 /**@name Shortcut class typedefs for typed arrays. */

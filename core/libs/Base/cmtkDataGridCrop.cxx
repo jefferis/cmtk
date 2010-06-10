@@ -152,14 +152,14 @@ DataGrid::FillCropBackground( const Types::DataItem value )
   this->m_Data->BlockSet( value, this->m_CropRegion.To()[2] * planeSize, this->m_Dims[2] * planeSize );
 }
 
-TypedArray*
+TypedArray::SmartPtr
 DataGrid::GetCroppedData() const
 {
   const TypedArray* srcData = this->GetData();
-  if ( ! srcData ) return NULL;
+  if ( ! srcData ) 
+    throw( Exception( "No input data in DataGrid::GetCroppedData()" ) );
 
-  TypedArray* cropData = 
-    srcData->NewTemplateArray( this->GetCropRegionNumVoxels() );
+  TypedArray::SmartPtr cropData = TypedArray::Create( srcData->GetType(), this->GetCropRegionNumVoxels() );
   
   const size_t lineLength = this->m_CropRegion.To()[0] - this->m_CropRegion.From()[0];
   const size_t nextPlane = this->m_Dims[0] * (this->m_Dims[1] - (this->m_CropRegion.To()[1] - this->m_CropRegion.From()[1]));
@@ -170,7 +170,7 @@ DataGrid::GetCroppedData() const
   for ( int z = this->m_CropRegion.From()[2]; z < this->m_CropRegion.To()[2]; ++z, fromOffset += nextPlane )
     for ( int y = this->m_CropRegion.From()[1]; y < this->m_CropRegion.To()[1]; ++y, fromOffset += this->m_Dims[0] ) 
       {
-      srcData->BlockCopy( cropData, toOffset, fromOffset, lineLength );
+      srcData->BlockCopy( *cropData, toOffset, fromOffset, lineLength );
       toOffset += lineLength;
       }
   

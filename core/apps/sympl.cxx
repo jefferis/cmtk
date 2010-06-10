@@ -269,9 +269,7 @@ void
 WriteMirror
 ( const cmtk::UniformVolume* originalVolume, const cmtk::UniformVolumeInterpolatorBase* interpolator, const cmtk::ParametricPlane& parametricPlane, const char* outFileName )
 {
-  cmtk::UniformVolume::SmartPtr mirrorVolume( originalVolume->CloneGrid() );
-  cmtk::TypedArray::SmartPtr mirrorData( originalVolume->GetData()->NewTemplateArray() );
-  mirrorVolume->SetData( mirrorData );
+  cmtk::TypedArray::SmartPtr mirrorData = cmtk::TypedArray::Create( originalVolume->GetData()->GetType(), originalVolume->GetData()->GetDataSize() );
 
   cmtk::Types::DataItem data;
 
@@ -295,6 +293,8 @@ WriteMirror
 	}
     }
 
+  cmtk::UniformVolume::SmartPtr mirrorVolume( originalVolume->CloneGrid() );
+  mirrorVolume->SetData( mirrorData );
   cmtk::VolumeIO::Write( *mirrorVolume, outFileName );
 }
 
@@ -332,7 +332,7 @@ WriteAligned
 {
   const cmtk::TypedArray* originalData = originalVolume->GetData();
 
-  cmtk::TypedArray::SmartPtr alignData( originalData->NewTemplateArray() );
+  cmtk::TypedArray::SmartPtr alignData = cmtk::TypedArray::Create( originalData->GetType(), originalData->GetDataSize() );
   if ( PadOutValueSet )
     {
     alignData->SetPaddingValue( PadOutValue );

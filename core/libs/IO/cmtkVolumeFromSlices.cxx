@@ -119,7 +119,7 @@ VolumeFromSlices::InitSequence
 
   DataSize = Dims[0] * Dims[1] * Dims[2];
 
-  VolumeDataArray = TypedArray::SmartPtr( image->GetPixelData()->NewTemplateArray( DataSize ) );
+  VolumeDataArray = TypedArray::Create( image->GetPixelData()->GetType(), DataSize );
   
   // Allocate array for axis sample points
   for ( unsigned int idx = 0; idx<3; ++idx )
@@ -144,7 +144,7 @@ VolumeFromSlices::AllocDataArray
   return Memory::AllocateArray<char>( bytesPerPixel * dataSize );
 }
 
-TypedArray* 
+TypedArray::SmartPtr
 VolumeFromSlices::EncapDataArray ( const ScalarDataType dtype, void *const data, const int data_size ) 
   const
 {

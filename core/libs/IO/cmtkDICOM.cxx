@@ -158,7 +158,7 @@ DICOM::Read
   
   pixelDataSigned = pixelDataSigned || (rescaleIntercept < 0);
   
-  TypedArray* pixelDataArray( NULL );
+  TypedArray::SmartPtr pixelDataArray;
 
 #ifdef DCM_VariablePixelData
   DcmElement *delem = document->search( DCM_VariablePixelData );
