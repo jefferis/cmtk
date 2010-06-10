@@ -68,9 +68,9 @@ public:
   typedef DataTypeTraits<T> TypeTraits;
 
   /// Create array of this type.
-  static Self* Create( const size_t size )
+  static Self::SmartPtr Create( const size_t size )
   {
-    return new Self( size );
+    return Self::SmartPtr( new Self( size ) );
   }
   
 private:

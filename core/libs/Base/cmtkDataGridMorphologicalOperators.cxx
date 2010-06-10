@@ -130,7 +130,7 @@ DataGridMorphologicalOperators::GetEroded( const int iterations ) const
   const byte* data = static_cast<const byte*>( dataArray->GetDataPtr() );
   byte *tmp = Memory::AllocateArray<byte>(  dataArray->GetDataSize()  );
 
-  ByteArray* erodedArray = ByteArray::Create( dataArray->GetDataSize() );
+  ByteArray::SmartPtr erodedArray = ByteArray::Create( dataArray->GetDataSize() );
   byte* eroded = erodedArray->GetDataPtrConcrete();
   
   memcpy( eroded, data, erodedArray->GetDataSizeBytes() );
@@ -174,7 +174,7 @@ DataGridMorphologicalOperators::GetEroded( const int iterations ) const
   
   delete[] tmp;
   
-  return TypedArray::SmartPtr( erodedArray );
+  return erodedArray;
 }
 
 TypedArray::SmartPtr
@@ -189,7 +189,7 @@ DataGridMorphologicalOperators::GetDilated( const int iterations ) const
   const byte* data = static_cast<const byte*>( dataArray->GetDataPtr() );
   byte *tmp = Memory::AllocateArray<byte>(  dataArray->GetDataSize()  );
   
-  ByteArray* dilatedArray = ByteArray::Create( dataArray->GetDataSize() );
+  ByteArray::SmartPtr dilatedArray = ByteArray::Create( dataArray->GetDataSize() );
   byte* dilated = dilatedArray->GetDataPtrConcrete();
   
   memcpy( dilated, data, dilatedArray->GetDataSizeBytes() );
@@ -232,14 +232,14 @@ DataGridMorphologicalOperators::GetDilated( const int iterations ) const
   
   delete[] tmp;
   
-  return TypedArray::SmartPtr( dilatedArray );
+  return dilatedArray;
 }
 
 TypedArray::SmartPtr 
 DataGridMorphologicalOperators::GetBoundaryMap( const bool multiValued ) const
 {
   TypedArray::SmartPtr dataArray = this->m_DataGrid->GetData();
-  ShortArray* boundaryArray = ShortArray::Create( dataArray->GetDataSize() );
+  ShortArray::SmartPtr boundaryArray = ShortArray::Create( dataArray->GetDataSize() );
   short* boundary = boundaryArray->GetDataPtrConcrete();
 
 #pragma omp parallel for
@@ -284,7 +284,7 @@ DataGridMorphologicalOperators::GetBoundaryMap( const bool multiValued ) const
       } // for y
     } // for z
   
-  return TypedArray::SmartPtr( boundaryArray );
+  return boundaryArray;
 }
 
 } // namespace cmtk

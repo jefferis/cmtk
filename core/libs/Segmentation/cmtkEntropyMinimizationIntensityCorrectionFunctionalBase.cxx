@@ -65,9 +65,9 @@ EntropyMinimizationIntensityCorrectionFunctionalBase
   if ( this->m_ForegroundMask.size() )
     this->UpdateCorrectionFactors();
   
-  this->m_BiasFieldAdd = FloatArray::SmartPtr( new FloatArray( this->m_NumberOfPixels ) );
+  this->m_BiasFieldAdd = FloatArray::Create( this->m_NumberOfPixels );
   this->m_BiasFieldAdd->Fill( 0.0 );
-  this->m_BiasFieldMul = FloatArray::SmartPtr( new FloatArray( this->m_NumberOfPixels ) );
+  this->m_BiasFieldMul = FloatArray::Create( this->m_NumberOfPixels );
   this->m_BiasFieldAdd->Fill( 1.0 );
 
   this->m_OutputImage = UniformVolume::SmartPtr( this->m_InputImage->CloneGrid() );
