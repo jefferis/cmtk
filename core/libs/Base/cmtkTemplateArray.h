@@ -71,9 +71,9 @@ public:
   typedef DataTypeTraits<T> TypeTraits;
 
   /// Create array of this type.
-  static Self::SmartPtr Create( const size_t size )
+  static typename Self::SmartPtr Create( const size_t size )
   {
-    return Self::SmartPtr( new Self( size ) );
+    return typename Self::SmartPtr( new Self( size ) );
   }
 
   /// Clone this object.
