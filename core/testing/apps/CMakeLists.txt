@@ -649,7 +649,7 @@ IF(NOT CMTK_USE_MPI)
   # Set up test properties, now that the tests 
   # have been defined.
 
-  SET_TESTS_PROPERTIES(avg_admLabels filmFourthOrder jidbGaussian jidbGaussianScale volume_reconstructionGaussianPSF volume_reconstructionNoXform PROPERTIES TIMEOUT 1200)
+  SET_TESTS_PROPERTIES(avg_admLabels filmFourthOrder jidbGaussian jidbGaussianScale volume_reconstructionGaussianPSF volume_reconstructionNoXform PROPERTIES TIMEOUT 1800)
   SET_TESTS_PROPERTIES(filmCubic PROPERTIES TIMEOUT 1800)
   SET_TESTS_PROPERTIES(filmMSDLinearNoTrunc PROPERTIES TIMEOUT 3600)
   SET_TESTS_PROPERTIES(filmMISincRefSPGR PROPERTIES TIMEOUT 3600)
