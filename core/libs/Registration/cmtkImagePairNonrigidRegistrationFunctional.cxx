@@ -166,7 +166,7 @@ ImagePairNonrigidRegistrationFunctional::SetWarpXform
       {
       if ( thread ) 
 	{
-	this->m_ThreadWarp[thread] = SplineWarpXform::SmartPtr( this->m_Warp->Clone() );
+	this->m_ThreadWarp[thread] = this->m_Warp->Clone();
 	this->m_ThreadWarp[thread]->RegisterVolume( this->m_ReferenceGrid );
 	} 
       else 

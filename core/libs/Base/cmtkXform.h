@@ -118,8 +118,11 @@ public:
     return this->ApplyInverseInPlace( v, error );
   }
 
-  /// Clone transformation.
-  virtual Self* Clone () const = 0;
+  /// Clone and return smart pointer.
+  Self::SmartPtr Clone () const 
+  {
+    return Self::SmartPtr( this->CloneVirtual() );
+  }
 
   /// Return number of coefficients in parameter vector.
   virtual size_t ParamVectorDim () const 
@@ -200,6 +203,9 @@ protected:
   /** Allocate parameter vector.
    */
   void AllocateParameterVector( const size_t numberOfParameters );
+
+  /// Actual virtual clone constructor function.
+  virtual Self* CloneVirtual () const = 0;
 };
 
 //@}

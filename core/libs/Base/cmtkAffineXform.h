@@ -83,25 +83,6 @@ public:
   /// Create identity transformation.
   void MakeIdentityXform ();
 
-protected:
-  /** Compose this object's transformation matrix from parameter vector.
-   */
-  void ComposeMatrix();
-
-  /** Decompose this object's transformation matrix into parameter vector.
-   */
-  bool DecomposeMatrix();
-
-  /** Actual number of degrees of freedom.
-   * This value should be one out of four choices: 6 (rigid transformation), 
-   * 7 (rigid with global scaling), 9 (rigid with componentwise scaling), or
-   * 12 (full affine). The number of elements of the parameter vector does NOT
-   * change, even in the 7 DOF case. Then, all scaling factors are simply kept
-   * equal.
-   */
-  int NumberDOFs;
-
-public:
   /** Homogeneous transformation matrix.
    * Vectors are transformed by right-multiplication with this matrix, i.e.
    * v being a vector, the transformed vector is (v Matrix).
@@ -205,12 +186,12 @@ public:
     InverseXform = Self::SmartPtr::Null; 
   }
   
-  /// Clone this object.
-  virtual Self* Clone () const
+  /// Clone and return smart pointer.
+  Self::SmartPtr Clone () const 
   {
-    return new AffineXform( *this );
+    return Self::SmartPtr( this->CloneVirtual() );
   }
-  
+
   /// Clone inverse of this transformation.
   virtual Self* MakeInverse () const;
 
@@ -494,6 +475,30 @@ public:
 
   /// Print object.
   virtual void Print() const;
+
+protected:
+  /// Clone this object.
+  virtual Self* CloneVirtual() const
+  {
+    return new AffineXform( *this );
+  }
+  
+  /** Compose this object's transformation matrix from parameter vector.
+   */
+  void ComposeMatrix();
+
+  /** Decompose this object's transformation matrix into parameter vector.
+   */
+  bool DecomposeMatrix();
+
+  /** Actual number of degrees of freedom.
+   * This value should be one out of four choices: 6 (rigid transformation), 
+   * 7 (rigid with global scaling), 9 (rigid with componentwise scaling), or
+   * 12 (full affine). The number of elements of the parameter vector does NOT
+   * change, even in the 7 DOF case. Then, all scaling factors are simply kept
+   * equal.
+   */
+  int NumberDOFs;
 
 private:
   /// Flag for logarithmic vs. ordinary scale factors.

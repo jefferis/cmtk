@@ -76,17 +76,6 @@ public:
     return typename Self::SmartPtr( new Self( size ) );
   }
 
-  /// Clone this object.
-  virtual Self* Clone() const
-  {
-    Self* clone = new Self( this->DataSize );
-    memcpy( clone->Data, this->Data, this->DataSize * sizeof( T ) );
-    clone->Padding = this->Padding;
-    clone->PaddingFlag = this->PaddingFlag;
-    clone->m_DataClass = this->m_DataClass;
-    return clone;
-  }
-  
   /// Return const pointer to actual data.
   const T* GetDataPtrConcrete() const { return this->Data; }
 
@@ -98,46 +87,6 @@ public:
   {
     this->Padding = paddingData;
     this->PaddingFlag = true;
-  }
-  
-  /** Allocate data array.
-   *@param datasize Number of data items to allocate memory for.
-   *@param allocWith Type of memory handler to be used.
-   */
-  virtual void Alloc ( const size_t datasize ) 
-  {
-    DataSize = datasize;
-    if ( DataSize ) 
-      {
-      if ( Data ) 
-	{
-	Memory::DeleteArray( Data );
-	}
-      Data = Memory::AllocateArray<T>( DataSize );
-      if ( Data == NULL ) 
-	{
-	this->DataSize = 0;
-	}
-      FreeArray = true;
-      } 
-    else
-      {
-      Data = NULL;
-      FreeArray = false;
-      }
-  }
-  
-  /** De-allocate data array.
-   * The array is freed using the same memory handler that allocated it.
-   * In any case, the current Data pointer is set to NULL.
-   */
-  virtual void FreeData() 
-  {
-    if ( Data && FreeArray ) 
-      {
-      Memory::DeleteArray( Data );
-      } 
-    Data = NULL;
   }
   
   /** Constructor.
@@ -633,12 +582,64 @@ public:
 
   virtual void ApplyFunctionObject( const TypedArrayFunction& f );
 
+protected:
+  /// Clone this object.
+  virtual Self* CloneVirtual() const
+  {
+    Self* clone = new Self( this->DataSize );
+    memcpy( clone->Data, this->Data, this->DataSize * sizeof( T ) );
+    clone->Padding = this->Padding;
+    clone->PaddingFlag = this->PaddingFlag;
+    clone->m_DataClass = this->m_DataClass;
+    return clone;
+  }
+
 private:
   /// The acutal data array.
   T *Data;
 
   /// Value used for missing data.
   T Padding;
+
+  /** Allocate data array.
+   *@param datasize Number of data items to allocate memory for.
+   *@param allocWith Type of memory handler to be used.
+   */
+  virtual void Alloc ( const size_t datasize ) 
+  {
+    DataSize = datasize;
+    if ( DataSize ) 
+      {
+      if ( Data ) 
+	{
+	Memory::DeleteArray( Data );
+	}
+      Data = Memory::AllocateArray<T>( DataSize );
+      if ( Data == NULL ) 
+	{
+	this->DataSize = 0;
+	}
+      FreeArray = true;
+      } 
+    else
+      {
+      Data = NULL;
+      FreeArray = false;
+      }
+  }
+  
+  /** De-allocate data array.
+   * The array is freed using the same memory handler that allocated it.
+   * In any case, the current Data pointer is set to NULL.
+   */
+  virtual void FreeData() 
+  {
+    if ( Data && FreeArray ) 
+      {
+      Memory::DeleteArray( Data );
+      } 
+    Data = NULL;
+  }
 };
 
 /**@name Shortcut class typedefs for typed arrays. */

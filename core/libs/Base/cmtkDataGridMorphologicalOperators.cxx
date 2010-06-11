@@ -54,7 +54,7 @@ DataGridMorphologicalOperators::EliminatePaddingVoting( const int iterations )
   for ( int it = 0; (it < iterations) && changed; ++it )
     {
     const TypedArray* data = this->m_DataGrid->GetData();
-    TypedArray* result = data->Clone();
+    TypedArray::SmartPtr result = data->Clone();
     
     if ( !data->GetPaddingFlag() ) return changed;
     const Types::DataItem dataPadding = data->GetPaddingValue();

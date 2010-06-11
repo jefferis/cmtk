@@ -92,11 +92,6 @@ public:
   /// Destructor.
   virtual ~DeformationField () {}
 
-  /** Clone transformation.
-   *\todo This still needs to be implemented.
-   */
-  virtual Self* Clone () const { return NULL; }
-
   /// Initialized internal data structures for new control point grid.
   virtual void InitGrid( const FixedVector<3,Types::Coordinate>& domain, const DataGrid::IndexType& dims )
   {
@@ -156,6 +151,12 @@ public:
   {
     return mmStep;
   }
+
+protected:
+  /** Clone transformation.
+   *\todo This still needs to be implemented.
+   */
+  virtual Self* CloneVirtual () const { return NULL; }
 };
 
 //@}

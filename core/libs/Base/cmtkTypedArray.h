@@ -112,28 +112,6 @@ public:
    */
   static Self::SmartPtr Create( const ScalarDataType dtype, const size_t size );
 
-protected:
-  /** Scalar data type ID.
-   * This field is not yet actually used anywhere. It merely serves a debugging
-   * purpose since it allows easy identification of the type of this array from
-   * inspecting its data.
-   */
-  ScalarDataType m_DataType;
-
-  /// If not zero, the object should free the allocated array.
-  bool FreeArray;
-
-  /// The size of the data array, i.e. the number of items allocated.
-  size_t DataSize;
-
-  /** If true, PaddingFlag indicates there are items with no data present.
-   */
-  bool PaddingFlag;
-
-  /// Allocate array for the given number of elements.
-  virtual void Alloc ( const size_t datasize ) = 0;
-
-public:
   /** Free data allocated by this object. */
   static void Free( void *const data )
   {
@@ -321,7 +299,10 @@ public:
    * read by the source object's Get method and stored by the destination
    * object's Set method. 
    */
-  virtual Self* Clone() const = 0;
+  Self::SmartPtr Clone() const 
+  {
+    return Self::SmartPtr( this->CloneVirtual() );
+  }
   
   /// Default constructor.
   TypedArray () 
@@ -507,6 +488,30 @@ public:
   /** Apply function class to the values of this array.
    */
   virtual void ApplyFunctionObject( const TypedArrayFunction& f ) = 0;
+
+protected:
+  /** Scalar data type ID.
+   * This field is not yet actually used anywhere. It merely serves a debugging
+   * purpose since it allows easy identification of the type of this array from
+   * inspecting its data.
+   */
+  ScalarDataType m_DataType;
+
+  /// If not zero, the object should free the allocated array.
+  bool FreeArray;
+
+  /// The size of the data array, i.e. the number of items allocated.
+  size_t DataSize;
+
+  /** If true, PaddingFlag indicates there are items with no data present.
+   */
+  bool PaddingFlag;
+
+  /// Allocate array for the given number of elements.
+  virtual void Alloc ( const size_t datasize ) = 0;
+
+  /// Virtual clone function: only to be calle by Clone().
+  virtual Self* CloneVirtual() const = 0; 
 };
 
 //@}

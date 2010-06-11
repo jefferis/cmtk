@@ -99,7 +99,7 @@ SplineWarpXform
 {
   this->Init();
   this->Domain = domain;
-  this->m_InitialAffineXform = AffineXform::SmartPtr( initialXform->Clone() );
+  this->m_InitialAffineXform = initialXform->Clone();
 
   if ( exactDelta ) 
     {
@@ -132,7 +132,7 @@ SplineWarpXform::SplineWarpXform
 
   if ( initialXform )
     {
-    this->m_InitialAffineXform = AffineXform::SmartPtr( initialXform->Clone() );
+    this->m_InitialAffineXform = initialXform->Clone();
     GlobalScaling = this->m_InitialAffineXform->GetGlobalScaling();
     } 
   else
@@ -225,7 +225,7 @@ SplineWarpXform::Update
 }
 
 SplineWarpXform* 
-SplineWarpXform::Clone () const
+SplineWarpXform::CloneVirtual() const
 {
   SplineWarpXform *newXform = new SplineWarpXform();
 

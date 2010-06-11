@@ -96,14 +96,17 @@ public:
    */
   SplineWarpXform( const FixedVector<3,Types::Coordinate>& domain, const Self::IndexType& dims, CoordinateVector::SmartPtr& parameters, const AffineXform *initialXform = NULL );
 
+  /// Clone and return smart pointer.
+  Self::SmartPtr Clone () const 
+  {
+    return Self::SmartPtr( this->CloneVirtual() );
+  }
+
   /// Initialize control point positions, potentially with affine displacement.
   void InitControlPoints( const AffineXform* affineXform = NULL );
 
   /// Update internal representation.
   virtual void Update( const bool exactDelta = false );
-
-  /// Clone transformation.
-  virtual SplineWarpXform* Clone () const;
 
   /** Create inverse transformation.
    * This function returns NULL as there is no explicit inverse of a spline
@@ -358,6 +361,9 @@ private:
   Types::Coordinate GetRigidityConstraint( const CoordinateMatrix3x3& J ) const;
 
 protected:
+  /// Clone transformation.
+  virtual SplineWarpXform* CloneVirtual () const;
+
   /// Dimensions of the volume image linked to this transformation.
   DataGrid::IndexType VolumeDims;
 

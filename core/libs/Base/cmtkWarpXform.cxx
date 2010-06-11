@@ -308,7 +308,7 @@ WarpXform::ReplaceInitialAffine( const AffineXform* newAffineXform )
   // if the current transformation is linked somewhere else.
   if ( newAffineXform )
     {
-    this->m_InitialAffineXform = AffineXform::SmartPtr( newAffineXform->Clone() );
+    this->m_InitialAffineXform = AffineXform::SmartPtr::DynamicCastFrom( newAffineXform->Clone() );
     }
   else
     {
@@ -333,7 +333,7 @@ WarpXform::ConcatAffine( const AffineXform* affineXform )
   // Finally, generate combined affine transformation. We want to create a new
   // object here if the current transformation is linked somewhere else.
   if ( this->m_InitialAffineXform.GetReferenceCount() != 1 )
-    this->m_InitialAffineXform = AffineXform::SmartPtr( this->m_InitialAffineXform->Clone() );
+    this->m_InitialAffineXform = this->m_InitialAffineXform->Clone();
   this->m_InitialAffineXform->Concat( *affineXform );
 }
 
