@@ -40,14 +40,6 @@ cmtk
 //@{
 
 template<class T> 
-Histogram<T>*
-Histogram<T>
-::Clone () const 
-{
-  return new Self( *this );
-}
-
-template<class T> 
 size_t
 Histogram<T>
 ::GetMaximumBinIndex () const 

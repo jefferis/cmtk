@@ -87,10 +87,10 @@ public:
   }
 
   /// Copy constructor.
-  Histogram ( const Self* other, const bool copyData = true ) 
+  Histogram ( const Self& other, const bool copyData = true ) 
   {
     if ( copyData )
-      this->m_Bins = other->m_Bins;
+      this->m_Bins = other.m_Bins;
     else
       this->Reset();
   }
@@ -108,9 +108,11 @@ public:
       this->Reset();
   }
 
-  /** Make an identical copy of this object.
-   */
-  Self *Clone () const;
+  /// Make an identical copy of this object.
+  Self::SmartPtr Clone () const
+  {
+    return Self::SmartPtr( this->CloneVirtual() );
+  }
 
   /// Return number of histogram bins.
   virtual size_t GetNumBins() const
@@ -320,6 +322,13 @@ public:
   /** Compute approximate percentile value from histogram.
    */
   Types::DataItem GetPercentile( const Types::DataItem percentile /**!< The percentile to be computed. Value must be between 0 and 1.*/ ) const;
+
+protected:
+  /// Make an identical copy of this object including derived class objects
+  virtual Self* CloneVirtual() const
+  {
+    return new Self( *this );
+  }
 
 private:
   /// Array bins.

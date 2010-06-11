@@ -68,13 +68,19 @@ public:
   LogHistogram ( const size_t numBins = 0, const bool reset = true ) : Histogram<T>( numBins, reset ) {}
 
   /// Copy constructor.
-  LogHistogram ( const Self* other, const bool copyData = true ) : Histogram<T>( other, copyData ) {}
+  LogHistogram ( const Self& other, const bool copyData = true ) : Histogram<T>( other, copyData ) {}
 
   /** Destructor.
    * All bin arrays and the precomputed data bin index arrays are
    * de-allocated.
    */
   virtual ~LogHistogram() {}
+
+  /// Make an identical copy of this object.
+  Self::SmartPtr Clone () const
+  {
+    return Self::SmartPtr( this->CloneVirtual() );
+  }
 
   /** Return bin corresponding to a certain value of the distribution.
    *@param value A value from the distribution.
@@ -113,6 +119,13 @@ public:
   virtual Types::DataItem BinToValue ( const size_t bin ) const 
   {
     return exp( (0.5+bin) * log( this->m_BinsUpperBound ) / (this->GetNumBins()-1) ) + this->m_BinsLowerBound - 1;
+  }
+
+protected:
+  /// Make an identical copy of this object including derived class objects
+  virtual Self* CloneVirtual() const
+  {
+    return new Self( *this );
   }
 };
 
