@@ -243,15 +243,15 @@ GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
   const UniformVolume* target = This->m_ImageVector[idx];
   const byte* dataPtr = static_cast<const byte*>( target->GetData()->GetDataPtr() );
 
-  Vector3D v;
-  byte value;
-
   const byte paddingValue = This->m_PaddingValue;
   const byte backgroundValue = This->m_UserBackgroundFlag ? This->m_PrivateUserBackgroundValue : paddingValue;
 
   const int dimsX = This->m_TemplateGrid->GetDims()[AXIS_X];
   const int dimsY = This->m_TemplateGrid->GetDims()[AXIS_Y];
   const int dimsZ = This->m_TemplateGrid->GetDims()[AXIS_Z];
+
+  std::vector<Xform::SpaceVectorType> v( dimsX );
+  byte value;
 
   const int rowCount = ( dimsY * dimsZ );
   const int rowFrom = ( rowCount / taskCnt ) * taskIdx;
@@ -266,10 +266,10 @@ GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
     {
     for ( int y = yFrom; (y < dimsY) && rowsToDo; yFrom = 0, ++y, --rowsToDo )
       {
+      xform->GetTransformedGridSequence( dimsX, &v[0], 0, y, z );
       for ( int x = 0; x < dimsX; ++x )
 	{
-	xform->GetTransformedGrid( v, x, y, z );
-	if ( target->ProbeData( value, dataPtr, v ) )
+	if ( target->ProbeData( value, dataPtr, v[x] ) )
 	  {
 	  *wptr = value;
 	  }

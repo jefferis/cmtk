@@ -1,5 +1,8 @@
 Release CMTK-1.3.2:
 
+- API: change interface of SplineWarpXform::getTransformedGridSequence() to
+    isolate "number of points" parameter and make it harder to use this
+    incorrectly.
 - Refactored: use more smart pointers in more places. Standardize Clone() and
     Create() member functions of different classes.
 - Improved: parallelized computation of FFD smoothness constraint. This

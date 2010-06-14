@@ -593,7 +593,7 @@ SplineWarpXform
 
 void 
 SplineWarpXform::GetTransformedGridSequence
-( Self::SpaceVectorType *const vIn, const int numPoints, const int idxX, const int idxY, const int idxZ ) 
+( const int numPoints, Self::SpaceVectorType *const vIn, const int idxX, const int idxY, const int idxZ ) 
   const
 {
   Self::SpaceVectorType *v = vIn;
@@ -961,7 +961,7 @@ SplineWarpXform::GetInverseConsistencyError
     for ( int y = startY; y < pVoi->To()[1]; y += dY ) 
       {
       Self::SpaceVectorType* pVec = &vecArray[0];
-      this->GetTransformedGridSequence( pVec, length, startX, y, z );
+      this->GetTransformedGridSequence( length, pVec, startX, y, z );
 
       for ( int x = startX; x < pVoi->To()[0]; x += dX, pVec += dX ) 
 	{

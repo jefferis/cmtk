@@ -309,7 +309,7 @@ public:
   void GetTransformedGrid( Self::SpaceVectorType& v, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get a sequence of grid points from the deformed grid. 
-  void GetTransformedGridSequence( Self::SpaceVectorType *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const;
+  void GetTransformedGridSequence( const int numPoints, Self::SpaceVectorType *const v, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get parameter stepping.
   virtual Types::Coordinate GetParamStep( const size_t idx, const Self::SpaceVectorType& volSize, const Types::Coordinate mmStep = 1 ) const 
