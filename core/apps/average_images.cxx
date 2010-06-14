@@ -212,7 +212,7 @@ main( const int argc, const char* argv[] )
     }
 
   // this is only used in "Entropy" mode, but we'll instantiate it anyway to save time
-  cmtk::Histogram<float> histogram( NumberHistogramBins, true /*reset*/ );
+  cmtk::Histogram<float> histogram( NumberHistogramBins );
   histogram.SetRange( imagesValueRange );
   
   if ( ! outputData ) 

@@ -65,10 +65,7 @@ public:
 
   /** Constructor.
    */
-  LogHistogram ( const size_t numBins = 0, const bool reset = true ) : Histogram<T>( numBins, reset ) {}
-
-  /// Copy constructor.
-  LogHistogram ( const Self& other, const bool copyData = true ) : Histogram<T>( other, copyData ) {}
+  LogHistogram ( const size_t numBins = 0 ) : Superclass( numBins ) {}
 
   /** Destructor.
    * All bin arrays and the precomputed data bin index arrays are

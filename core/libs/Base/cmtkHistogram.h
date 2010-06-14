@@ -79,21 +79,7 @@ public:
 
   /** Constructor.
    */
-  Histogram ( const size_t numBins = 0, const bool reset = true ) 
-    : m_Bins( numBins )
-  {
-    if ( reset ) 
-      this->Reset();
-  }
-
-  /// Copy constructor.
-  Histogram ( const Self& other, const bool copyData = true ) 
-  {
-    if ( copyData )
-      this->m_Bins = other.m_Bins;
-    else
-      this->Reset();
-  }
+  Histogram ( const size_t numBins = 0 ) : m_Bins( numBins ) {}
 
   /** Destructor.
    */
