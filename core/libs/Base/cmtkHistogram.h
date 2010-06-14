@@ -109,9 +109,9 @@ public:
   }
 
   /// Make an identical copy of this object.
-  Self::SmartPtr Clone () const
+  typename Self::SmartPtr Clone () const
   {
-    return Self::SmartPtr( this->CloneVirtual() );
+    return typename Self::SmartPtr( this->CloneVirtual() );
   }
 
   /// Return number of histogram bins.
