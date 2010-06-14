@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -55,41 +56,6 @@ ImageInfo::ImageInfo ()
 ImageInfo::~ImageInfo () 
 {
   free(imagepath);
-}
-
-ImageInfo* ImageInfo::Clone() const
-{
-  ImageInfo *instance = new ImageInfo;
-
-  instance->imagepath = strdup( imagepath );
-
-  for ( int dim = 0; dim<3; ++dim )
-    instance->dims[dim] = dims[dim];
-  instance->offset = offset;
-  instance->bytesperpixel = bytesperpixel;
-  instance->swapbytes = swapbytes;
-  instance->signbit = signbit;
-  instance->datatype = datatype;
-
-  instance->minimum = minimum;
-  instance->maximum = maximum;
-  instance->black = black;
-  instance->white = white;
-
-  instance->custom = custom;
-  instance->slicedistance = slicedistance;
-  instance->calibrationx = calibrationx;
-  instance->calibrationy = calibrationy;
-  instance->original_calibrationx = original_calibrationx;
-  instance->original_calibrationy = original_calibrationy;
-  instance->tablepos = tablepos;
-  instance->original_tablepos = original_tablepos;
-
-  instance->ImagePosition = ImagePosition;
-  instance->ImageOrientation[0] = ImageOrientation[0];
-  instance->ImageOrientation[1] = ImageOrientation[1];
-  
-  return instance;
 }
 
 const char*

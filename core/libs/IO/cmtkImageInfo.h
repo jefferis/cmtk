@@ -158,9 +158,6 @@ public:
   /// Free allocated data.
   ~ImageInfo ();
 
-  /// Generate a duplicate of this object.
-  ImageInfo* Clone() const;
-
   /// Return image format's standard file suffix.
   static const char* ImageSuffix ( const int format );
 
