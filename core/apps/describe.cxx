@@ -103,11 +103,11 @@ main( int argc, char *argv[] )
 
     for ( const char* next = cl.GetNext(); next; next = cl.GetNextOptional() ) 
       {
-      cmtk::Volume::SmartPtr volume;
+      cmtk::UniformVolume::SmartPtr volume;
       if ( ReadOrientation )
-	volume = cmtk::Volume::SmartPtr( cmtk::VolumeIO::ReadOriented( next, ReadOrientation ) );
+	volume = cmtk::VolumeIO::ReadOriented( next, ReadOrientation );
       else
- 	volume = cmtk::Volume::SmartPtr( cmtk::VolumeIO::Read( next ) );
+ 	volume = cmtk::VolumeIO::Read( next );
       
       if ( ! volume ) 
 	{
@@ -116,7 +116,6 @@ main( int argc, char *argv[] )
 	}
       
       const char* orientOriginal = volume->m_MetaInformation[cmtk::META_IMAGE_ORIENTATION_ORIGINAL].c_str();
-      const cmtk::UniformVolume* uniform = cmtk::UniformVolume::SmartPtr::DynamicCastFrom( volume );
       const cmtk::TypedArray* dataArray = volume->GetData();
       
       if ( MachineReadable )
@@ -126,13 +125,10 @@ main( int argc, char *argv[] )
 	fprintf( stdout, "XDIM\t%d\nYDIM\t%d\nZDIM\t%d\n", volume->GetDims()[cmtk::AXIS_X], volume->GetDims()[cmtk::AXIS_Y], volume->GetDims()[cmtk::AXIS_Z] );
 	fprintf( stdout, "ORIENT\t%s\n", orientOriginal ? orientOriginal : "UNKNOWN" );
       
-	if ( uniform ) 
-	  {
-	  fprintf( stdout, "GRID\tUniform\nXPIX\t%f\nYPIX\t%f\nZPIX\t%f\nXFOV\t%f\nYFOV\t%f\nZFOV\t%f\n",
-		   uniform->m_Delta[0], uniform->m_Delta[1], uniform->m_Delta[2],
-		   uniform->Size[0], uniform->Size[1], uniform->Size[2] );
-	  }
-	
+	fprintf( stdout, "GRID\tUniform\nXPIX\t%f\nYPIX\t%f\nZPIX\t%f\nXFOV\t%f\nYFOV\t%f\nZFOV\t%f\n",
+		 volume->m_Delta[0], volume->m_Delta[1], volume->m_Delta[2],
+		 volume->Size[0], volume->Size[1], volume->Size[2] );
+
 	fprintf( stdout, "XORIGIN\t%f\nYORIGIN\t%f\nZORIGIN\t%f\n", volume->m_Offset[0], volume->m_Offset[1], volume->m_Offset[2] );
 	if ( volume->MetaKeyExists(cmtk::META_SPACE_UNITS_STRING ) )
 	  fprintf( stdout, "UNITS\t%s\n", volume->m_MetaInformation[cmtk::META_SPACE_UNITS_STRING].c_str() );
@@ -159,14 +155,18 @@ main( int argc, char *argv[] )
 	if ( volume->MetaKeyExists(cmtk::META_SPACE_UNITS_STRING ) )
 	  spaceUnits = volume->m_MetaInformation[cmtk::META_SPACE_UNITS_STRING].c_str();
 	
-	if ( uniform ) 
-	  {
-	  fprintf( stdout, "Uniform volume\n%f x %f x %f [%s] voxel size\n%f x %f x %f [%s] volume size\n",
-		   uniform->m_Delta[0], uniform->m_Delta[1], uniform->m_Delta[2], spaceUnits,
-		   uniform->Size[0], uniform->Size[1], uniform->Size[2], spaceUnits );
-	  }
-
+	fprintf( stdout, "Uniform volume\n%f x %f x %f [%s] voxel size\n%f x %f x %f [%s] volume size\n",
+		 volume->m_Delta[0], volume->m_Delta[1], volume->m_Delta[2], spaceUnits,
+		 volume->Size[0], volume->Size[1], volume->Size[2], spaceUnits );
+	
 	fprintf( stdout, "Volume origin (%f,%f,%f)\n", volume->m_Offset[0], volume->m_Offset[1], volume->m_Offset[2] );
+
+	const cmtk::AffineXform::MatrixType a2p = volume->GetImageToPhysicalMatrix();
+	fprintf( stdout, "Image-to-physical matrix:\n (%f,%f,%f,%f) \n (%f,%f,%f,%f) \n (%f,%f,%f,%f) \n (%f,%f,%f,%f) \n", 
+		 a2p[0][0], a2p[0][1], a2p[0][2], a2p[0][3], 
+		 a2p[1][0], a2p[1][1], a2p[1][2], a2p[1][3], 
+		 a2p[2][0], a2p[2][1], a2p[2][2], a2p[2][3],
+		 a2p[3][0], a2p[3][1], a2p[3][2], a2p[3][3] );
       
 	if ( dataArray ) 
 	  {
