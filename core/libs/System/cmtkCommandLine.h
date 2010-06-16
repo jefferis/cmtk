@@ -684,29 +684,13 @@ private:
 
 public:
   /// Constructor.
-  CommandLine( int argc, char* argv[], const int properties = PROPS_NOXML ) 
-  {
-    this->SetDefaultInfo();    
-    ArgC = argc;
-    ArgV = const_cast<const char**>( argv );
-    this->m_Properties = properties;
+  CommandLine( int argc, char* argv[], const int properties = PROPS_NOXML );
 
-    this->BeginGroup( "MAIN", "Main Options" );
-  }
+  /// Constructor using const inputs.
+  CommandLine( const int argc, const char* argv[], const int properties = PROPS_NOXML );
 
-  /// Constructor.
-  CommandLine( const int argc, const char* argv[], const int properties = PROPS_NOXML ) 
-  {
-    this->SetDefaultInfo();
-    ArgC = argc;
-    ArgV = argv;
-    this->m_Properties = properties;
-
-    this->BeginGroup( "MAIN", "Main Options" );
-  }
-
-  /// Destructor.
-  ~CommandLine() {};
+  /// Destructor: spit out a warning if there are unused extra arguments on the command line.
+  ~CommandLine();
 
   /// Forward declaration.
   class EnumGroupBase;

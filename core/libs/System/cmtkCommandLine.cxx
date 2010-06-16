@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -43,11 +44,44 @@ cmtk
 /** \addtogroup System */
 //@{
 
+CommandLine::CommandLine( int argc, char* argv[], const int properties ) 
+{
+  this->SetDefaultInfo();    
+  this->ArgC = argc;
+  this->ArgV = const_cast<const char**>( argv );
+  this->m_Properties = properties;
+  
+  this->BeginGroup( "MAIN", "Main Options" );
+}
+
+CommandLine::CommandLine( const int argc, const char* argv[], const int properties ) 
+{
+  this->SetDefaultInfo();
+  this->ArgC = argc;
+  this->ArgV = argv;
+  this->m_Properties = properties;
+  
+  this->BeginGroup( "MAIN", "Main Options" );
+}
+
+CommandLine::~CommandLine()
+{
+  if ( this->Index < this->ArgC-1 )
+    {
+    StdErr << "WARNING: the following command line arguments were not used: \n";
+    for ( size_t i = this->Index; i < this->ArgC; ++i )
+      {
+      StdErr << this->ArgV[i] << " ";
+      }
+    StdErr << "\n";
+    }
+}
+
 void 
 CommandLine::SetDefaultInfo()
 {
   this->m_ProgramInfo[PRG_LCNSE] = "http://www.fsf.org/licensing/licenses/gpl.html";
-  this->m_ProgramInfo[PRG_CNTRB] = "Torsten Rohlfing";
+  this->m_ProgramInfo[PRG_CNTRB] = "Torsten Rohlfing, Michael P. Hasak, Greg Jefferis, Calvin R. Maurer, Daniel B. Russakoff";
   this->m_ProgramInfo[PRG_ACKNL] = "CMTK is supported by the National Institute of Biomedical Imaging and BioEngineering under Grant EB008381";
   this->m_ProgramInfo[PRG_CATEG] = "CMTK.Miscellaneous";
   this->m_ProgramInfo[PRG_DOCUM] = "https://neuro.sri.com/cmtk/wiki/";
