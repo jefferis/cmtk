@@ -36,9 +36,9 @@
 #include <cmtkConsole.h>
 
 #include <cmtkXformIO.h>
+#include <cmtkXformList.h>
 
 #include <cmtkXform.h>
-#include <cmtkVector3D.h>
 
 #include <iostream>
 #include <sstream>
@@ -46,9 +46,10 @@
 int
 main( const int argc, const char* argv[] )
 {
-  const char* XformPath = NULL;
-  bool Verbose = false;
-  bool Inverse = false;
+  bool verbose = false;
+
+  cmtk::Types::Coordinate inversionTolerance = 0.001;
+  cmtk::XformList xformList;
 
   try
     {
@@ -57,24 +58,33 @@ main( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] transformation" );      
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( "inverse" ), &Inverse, true, "Apply inverse of given transformation" );
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Print each point to STDERR (as well as stdout)" );
+    cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Print each point to STDERR (as well as stdout)" );
+    cl.AddOption( Key( "inversion-tolerance" ), &inversionTolerance, "Numerical tolerance of B-spline inversion in mm. Smaller values will lead to more accurate inversion, but may increase failure rate." );
 
     cl.Parse();
 
-    XformPath = cl.GetNext();
+    const char* next = cl.GetNextOptional();
+    while (next)
+      {
+      bool inverse = false;
+      if ( !strcmp( next, "-i" ) || !strcmp( next, "--inverse" ) )
+	{
+	inverse = true;
+	next = cl.GetNext();
+	}
+
+      cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( next, verbose ) );
+      xformList.Add( xform, inverse );
+      next = cl.GetNextOptional();
+      }
     }
   catch ( cmtk::CommandLine::Exception ex )
     {
     cmtk::StdErr << ex << "\n";
     exit( 1 );
     }
-  
-  cmtk::Xform::SmartPtr xform = cmtk::XformIO::Read( XformPath, Verbose );
-  if ( !xform )
-    {
-    exit( 1 );
-    }
+
+  xformList.SetEpsilon( inversionTolerance );
   
   // First, read everything up to and including the "POINTS" line and write everything to output unchanged
   std::string line;
@@ -102,11 +112,8 @@ main( const int argc, const char* argv[] )
       // Read original point coordinates from file
       std::cin >> xyz[0] >> xyz[1] >> xyz[2];
       
-      // Apply transformation (or inverse)
-      if ( Inverse )
-	xform->ApplyInverseInPlace( xyz );
-      else
-	xform->ApplyInPlace( xyz );
+      // Apply transformation sequence
+      const bool valid = xformList.ApplyInPlace( xyz );
       
       // Write transformed point to output
       std::cout << xyz[0] << " " << xyz[1] << " " << xyz[2] << std::endl;
