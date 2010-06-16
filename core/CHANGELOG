@@ -1,5 +1,9 @@
 Release CMTK-1.3.2:
 
+- Added: cmtk::CommandLine class prints warning message if not all command
+    line arguments are actually used. This usually points to a usage error.
+- Added: 'vtkxform' tool now accepts list of transformations, each of which
+    can be inverted.
 - API: change interface of SplineWarpXform::getTransformedGridSequence() to
     isolate "number of points" parameter and make it harder to use this
     incorrectly.
