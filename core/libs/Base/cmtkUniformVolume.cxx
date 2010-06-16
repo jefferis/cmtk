@@ -506,11 +506,19 @@ UniformVolume
   AnatomicalOrientation::GetImageToSpaceAxesPermutation( axesPermutation, newSpace.c_str(), currentSpace.c_str() );
 
   AffineXform::MatrixType newMatrix;
-  for ( int i = 0; i < 4; ++i )
-    for ( int j = 0; j < 3; ++j )
-      for ( int j2 = 0; j2 < 3; ++j2 )
-	if ( axesPermutation[j][j2] )
+  for ( int j = 0; j < 3; ++j )
+    {
+    for ( int j2 = 0; j2 < 3; ++j2 )
+      {
+      if ( axesPermutation[j][j2] )
+	{
+	for ( int i = 0; i < 4; ++i )
+	  {
 	  newMatrix[i][j] = axesPermutation[j][j2] * this->m_IndexToPhysicalMatrix[i][j2];
+	  }
+	}
+      }
+    }
   
   this->m_MetaInformation[META_SPACE] = newSpace;
   this->m_IndexToPhysicalMatrix = newMatrix;
