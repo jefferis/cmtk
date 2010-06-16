@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -100,7 +101,7 @@ AnatomicalOrientation
       if ( orientation[j] == spaceAxes[i] )
 	 imageToSpaceAxesPermutation[j][i] = 1;
       else 
-	if ( OnSameAxis( orientation[j], spaceAxes[i] ) )
+	if ( Self::OnSameAxis( orientation[j], spaceAxes[i] ) )
 	  imageToSpaceAxesPermutation[j][i] = -1;
 	else
 	  imageToSpaceAxesPermutation[j][i] = 0;
