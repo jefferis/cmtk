@@ -259,6 +259,14 @@ int main( const int argc, const char* argv[] )
 
   if ( (!ImportHdrFile && LegacyMode == 0) || (LegacyMode < 0) )
     header.StoreFieldString( 344, "SRI1", 4 );
+  else
+    {
+    // in "legacy" mode, remove "SRI1" tag even if present in imported header
+    if ( LegacyMode > 0 )
+      {
+      header.StoreFieldString( 344, "\0x\0x\0x\0x", 4 );
+      }
+    }
   
   if ( Description )
     {
