@@ -61,10 +61,6 @@ int
 main ( const int argc, const char *argv[] ) 
 {
   cmtk::UniformVolume::SmartPtr volume;
-
-  cmtk::WarpXform::SmartPtr warpXform;
-  cmtk::AffineXform::SmartPtr inverseInitial;
-
   cmtk::XformList xformList;
 
   try
@@ -144,7 +140,7 @@ main ( const int argc, const char *argv[] )
 #pragma omp parallel for
   for ( int z = 0; z < dims[cmtk::AXIS_Z]; ++z )
     {
-    cmtk::Vector3D v0, v1;
+    cmtk::Xform::SpaceVectorType v0, v1;
 
     cmtk::Progress::SetProgress( z );
 
