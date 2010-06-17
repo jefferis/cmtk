@@ -117,10 +117,10 @@ public:
   }
 
   /// Create interpolator object for given volume according to interpolation mode set in this object.
-  UniformVolumeInterpolatorBase* CreateInterpolator( const UniformVolume::SmartConstPtr& volume );
+  UniformVolumeInterpolatorBase::SmartPtr CreateInterpolator( const UniformVolume::SmartConstPtr& volume );
 
   /// Create interpolator object for given volume according to interpolation mode set in this object.
-  static UniformVolumeInterpolatorBase* CreateInterpolator( const cmtk::Interpolators::InterpolationEnum interpolation, const UniformVolume::SmartConstPtr& volume );
+  static UniformVolumeInterpolatorBase::SmartPtr CreateInterpolator( const cmtk::Interpolators::InterpolationEnum interpolation, const UniformVolume::SmartConstPtr& volume );
 
   /// Set user-defined data type.
   void SetUserDataType( const ScalarDataType dataType ) 

@@ -84,7 +84,7 @@ ImagePairSimilarityMeasure::SetFloatingVolume( const UniformVolume::SmartConstPt
     }
   else
     {
-    this->m_FloatingImageInterpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( ReformatVolume::CreateInterpolator( this->m_InterpolationMethod, fltVolume ) );
+    this->m_FloatingImageInterpolator = ReformatVolume::CreateInterpolator( this->m_InterpolationMethod, fltVolume );
     }
 }
 

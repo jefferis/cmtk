@@ -661,7 +661,7 @@ ReformatVolume::CreateTransformedReference
   return new UniformVolume( dims, bbTo );
 }
 
-UniformVolumeInterpolatorBase*
+UniformVolumeInterpolatorBase::SmartPtr
 ReformatVolume::CreateInterpolator
 ( const cmtk::Interpolators::InterpolationEnum interpolation, const UniformVolume::SmartConstPtr& volume )
 {
@@ -671,28 +671,28 @@ ReformatVolume::CreateInterpolator
     case cmtk::Interpolators::LINEAR:
     {
     typedef UniformVolumeInterpolator<cmtk::Interpolators::Linear> TInterpolator;
-    return new TInterpolator( volume );
+    return TInterpolator::SmartPtr( new TInterpolator( volume ) );
     }
     case cmtk::Interpolators::CUBIC:
     {
     typedef UniformVolumeInterpolator<cmtk::Interpolators::Cubic> TInterpolator;
-    return new TInterpolator( volume );
+    return TInterpolator::SmartPtr( new TInterpolator( volume ) );
     }
     case cmtk::Interpolators::COSINE_SINC:
     {
     typedef UniformVolumeInterpolator< cmtk::Interpolators::CosineSinc<> > TInterpolator;
-    return new TInterpolator( volume );
+    return TInterpolator::SmartPtr( new TInterpolator( volume ) );
     }
     case cmtk::Interpolators::PARTIALVOLUME:
     {
     typedef UniformVolumeInterpolatorPartialVolume TInterpolator;
-    return new TInterpolator( volume );
+    return TInterpolator::SmartPtr( new TInterpolator( volume ) );
     }
     }  
-  return NULL;
+  return UniformVolumeInterpolatorBase::SmartPtr( NULL );
 }
 
-UniformVolumeInterpolatorBase*
+UniformVolumeInterpolatorBase::SmartPtr
 ReformatVolume::CreateInterpolator
 ( const UniformVolume::SmartConstPtr& volume )
 {
