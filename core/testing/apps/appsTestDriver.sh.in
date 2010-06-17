@@ -1581,7 +1581,7 @@ case ${RUNTEST} in
 	check_results output.vtk
 	;;
     vtkxformInverse)
-        run_eval "${BINDIR}/vtkxform --inverse vol001_mr_t0t1.list < polydata_ascii.vtk > ${tmpdir}/output.vtk"
+        run_eval "${BINDIR}/vtkxform -- --inverse vol001_mr_t0t1.list < polydata_ascii.vtk > ${tmpdir}/output.vtk"
 	check_results output.vtk
 	;;
     xform2dfieldWarpNrrd)
