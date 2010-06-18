@@ -1,5 +1,7 @@
 Release CMTK-1.3.2:
 
+- Refactored: thread function within thread pool is now provided with thread
+    index directly, rather having to perform a lookup (Issue #4939).
 - Added: cmtk::CommandLine class prints warning message if not all command
     line arguments are actually used. This usually points to a usage error.
 - Added: 'vtkxform' tool now accepts list of transformations, each of which

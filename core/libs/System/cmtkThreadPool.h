@@ -152,8 +152,26 @@ public:
     );
 
   /// This function is run as a thread.
-  void ThreadFunction();
+  void ThreadFunction( const size_t threadIdx /**!< Index of the actual thread in the pool. */ );
   
+  /** Get reference to global thread pool.
+   * This is shared by all functions in the process and allows re-use of the same "physical" threads 
+   * for all types of computations. The thread pool itself is a local static instance within this
+   * function, thus making sure it is initialized properly (see Effective C++, 3rd, Item 4).
+   */
+  static Self& GetGlobalThreadPool();
+
+  /// Thread function arguments: identify pool and index of thread in it.
+  class ThreadPoolArg
+  {
+  public:
+    /// The thread pool.
+    ThreadPool* m_Pool;
+
+    /// Index of thread in pool.
+    size_t m_Index;
+  };
+
 private:
   /// Semaphore to signal running threads when tasks are waiting.
   ThreadSemaphore m_TaskWaitingSemaphore;
@@ -176,6 +194,9 @@ private:
   /// Task function parameter pointers.
   std::vector<void*> m_TaskParameters;
 
+  /// Thread function parameters.
+  std::vector<Self::ThreadPoolArg> m_ThreadArgs;
+  
   /// Number of running threads.
   size_t m_NumberOfThreads;
 
@@ -189,9 +210,6 @@ private:
 #endif
 #endif
   
-  /// Get index of currently running thread (called from inside ThreadFunction()).
-  size_t GetMyThreadIndex() const;
-
   /// Flag whether threads for this pool are running.
   bool m_ThreadsRunning;
 
@@ -206,21 +224,12 @@ private:
 
   /// End threads for this pool.
   void EndThreads();
-
-public:
-  /** Get reference to global thread pool.
-   * This is shared by all functions in the process and allows re-use of the same "physical" threads 
-   * for all types of computations. The thread pool itself is a local static instance within this
-   * function, thus making sure it is initialized properly (see Effective C++, 3rd, Item 4).
-   */
-  static Self& GetGlobalThreadPool();
 };
 
 } // namespace cmtk
 
 /// This is the actual low-level thread function. It calls ThreadFunction() for the cmtk::ThreadPool instance given as the function parameter.
-extern "C" CMTK_THREAD_RETURN_TYPE cmtkThreadPoolThreadFunction( CMTK_THREAD_ARG_TYPE arg //!< This is a pointer to the cmtk::ThreadPool instance.
-  );
+extern "C" CMTK_THREAD_RETURN_TYPE cmtkThreadPoolThreadFunction( CMTK_THREAD_ARG_TYPE arg /**!< This is a pointer to the cmtk::ThreadPool instance.*/ );
 
 #include <cmtkThreadPool.txx>
 

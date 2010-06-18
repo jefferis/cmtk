@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -57,6 +58,7 @@ ThreadPool::ThreadPool( const size_t nThreads )
   this->m_ThreadHandles.resize( this->m_NumberOfThreads, 0 );
 #endif
 #endif
+  this->m_ThreadArgs.resize( this->m_NumberOfThreads );
 }
 
 void
@@ -72,8 +74,12 @@ ThreadPool::StartThreads()
     
     for ( size_t idx = 0; idx < this->m_NumberOfThreads; ++idx ) 
       {
-      // nothing happened yet, so set status to OK
-      const int status = pthread_create( &this->m_ThreadID[idx], &attr, cmtkThreadPoolThreadFunction, static_cast<CMTK_THREAD_ARG_TYPE>( this ) );
+      // set thread function arguments
+      this->m_ThreadArgs[idx].m_Pool = this;
+      this->m_ThreadArgs[idx].m_Index = idx;
+
+      // start thread
+      const int status = pthread_create( &this->m_ThreadID[idx], &attr, cmtkThreadPoolThreadFunction, static_cast<CMTK_THREAD_ARG_TYPE>( &this->m_ThreadArgs[idx] ) );
       
       if ( status ) 
 	{
@@ -86,11 +92,16 @@ ThreadPool::StartThreads()
 #elif defined(_MSC_VER)
     for ( size_t idx = 0; idx < this->m_NumberOfThreads; ++idx ) 
       {
+      // set thread function arguments
+      this->m_ThreadArgs[idx].m_Pool = this;
+      this->m_ThreadArgs[idx].m_Index = idx;
+
       // nothing happened yet, so set status to OK
       int status = 0;
-      
+
+      // start thread
       this->m_ThreadHandles[idx] = CreateThread( NULL /*default security attributes*/, 0/*use default stack size*/, (LPTHREAD_START_ROUTINE) cmtkThreadPoolThreadFunction, 
-						 static_cast<CMTK_THREAD_ARG_TYPE>( this ),  0/*use default creation flags*/, &this->m_ThreadID[idx] );
+						 static_cast<CMTK_THREAD_ARG_TYPE>(  &this->m_ThreadArgs[idx] ),  0/*use default creation flags*/, &this->m_ThreadID[idx] );
       if ( this->m_ThreadHandles[idx] == NULL ) 
 	{
 	status = -1;
@@ -143,7 +154,7 @@ ThreadPool::EndThreads()
 }
 
 void
-ThreadPool::ThreadFunction()
+ThreadPool::ThreadFunction( const size_t threadIdx )
 {
 #ifdef _OPENMP
   // Disable OpenMP inside thread
@@ -151,8 +162,6 @@ ThreadPool::ThreadFunction()
 #endif
 
 #ifdef CMTK_BUILD_SMP
-  const size_t threadIdx = this->GetMyThreadIndex();
-
   // wait for task waiting
   this->m_TaskWaitingSemaphore.Wait();
   while ( this->m_ContinueThreads )
@@ -175,22 +184,6 @@ ThreadPool::ThreadFunction()
 #endif // #ifdef CMTK_BUILD_SMP
 }
 
-size_t 
-ThreadPool::GetMyThreadIndex() const
-{
-#ifdef CMTK_BUILD_SMP
-#ifdef _MSC_VER
-  const DWORD self = GetCurrentThreadId();
-#else
-  const pthread_t self = pthread_self();
-#endif // #ifdef _MSC_VER
-  for ( size_t idx = 0; idx < this->m_ThreadID.size(); ++idx )
-    if ( self == this->m_ThreadID[idx] )
-      return idx;
-#endif // #ifdef CMTK_BUILD_SMP
-  return static_cast<size_t>( -1 );
-}
-
 ThreadPool& 
 ThreadPool::GetGlobalThreadPool()
 {
@@ -203,6 +196,6 @@ ThreadPool::GetGlobalThreadPool()
 CMTK_THREAD_RETURN_TYPE
 cmtkThreadPoolThreadFunction( CMTK_THREAD_ARG_TYPE arg )
 {
-  static_cast<cmtk::ThreadPool*>( arg )->ThreadFunction();
+  static_cast<cmtk::ThreadPool::ThreadPoolArg*>( arg )->m_Pool->ThreadFunction( static_cast<cmtk::ThreadPool::ThreadPoolArg*>( arg )->m_Index );
   return CMTK_THREAD_RETURN_VALUE;
 }
