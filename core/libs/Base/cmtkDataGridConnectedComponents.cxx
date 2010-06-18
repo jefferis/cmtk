@@ -138,20 +138,20 @@ cmtk::DataGridMorphologicalOperators::GetRegionsRenumberedBySize() const
     }
 
   // now create list sorted by region size
-  std::list< std::pair<int,int> > sortedList;
+  std::list< std::pair<const int,int> > sortedList;
   for ( std::map<int,int>::const_iterator it = regionSizeMap.begin(); it != regionSizeMap.end(); ++it )
     {
-    std::list< std::pair<int,int> >::iterator ins = sortedList.begin();
+    std::list< std::pair<const int,int> >::iterator ins = sortedList.begin();
     while ( (ins != sortedList.end()) && (ins->second >= it->second) )
       ++ins;
     
-    sortedList.insert( ins, std::pair<int,int>( it->first, it->second ) ); // need to explicitly create new pair because some STL implementation have it->first as "const".
+    sortedList.insert( ins, *it ); // need to explicitly create new pair because some STL implementation have it->first as "const".
     }
 
   // create renumbering lookup map
   std::map<int,int> renumberMap;
   int component = 1;
-  for ( std::list< std::pair<int,int> >::iterator it = sortedList.begin(); it != sortedList.end(); ++it )
+  for ( std::list< std::pair<const int,int> >::iterator it = sortedList.begin(); it != sortedList.end(); ++it )
     {
     renumberMap[it->first] = component++;
     }
