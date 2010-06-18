@@ -283,7 +283,7 @@ protected:
   }
   
   /// Return weighted combination of similarity and grid energy derivatives.
-  void WeightedDerivative( double& lower, double& upper, typename W::SmartPtr& warp, const int param, const Types::Coordinate step ) const;
+  void WeightedDerivative( double& lower, double& upper, W& warp, const int param, const Types::Coordinate step ) const;
 
 public:
   /// Get parameter stepping in milimeters.
@@ -485,7 +485,7 @@ public:
 	lower = EvaluateIncremental( this->Warp, IncrementalMetric, *voi );
 	
 	p[dim] = pOld;
-	this->WeightedDerivative( lower, upper, this->Warp, dim, thisStep );
+	this->WeightedDerivative( lower, upper, *(this->Warp), dim, thisStep );
 	
 	if ( (upper > current ) || (lower > current) ) 
 	  {

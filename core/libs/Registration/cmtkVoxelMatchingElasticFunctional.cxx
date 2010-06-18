@@ -80,13 +80,12 @@ VoxelMatchingElasticFunctional::~VoxelMatchingElasticFunctional()
 template<class W>
 void
 VoxelMatchingElasticFunctional_WarpTemplate<W>::WeightedDerivative
-( double& lower, double& upper, typename W::SmartPtr& warp, 
-  const int param, const Types::Coordinate step ) const
+( double& lower, double& upper, W& warp, const int param, const Types::Coordinate step ) const
 {
   if ( this->m_JacobianConstraintWeight > 0 )
     {
     double lowerConstraint = 0, upperConstraint = 0;
-    warp->GetJacobianConstraintDerivative( lowerConstraint, upperConstraint, param, VolumeOfInfluence[param], step );
+    warp.GetJacobianConstraintDerivative( lowerConstraint, upperConstraint, param, VolumeOfInfluence[param], step );
     lower -= this->m_JacobianConstraintWeight * lowerConstraint;
     upper -= this->m_JacobianConstraintWeight * upperConstraint;
     } 
@@ -97,11 +96,11 @@ VoxelMatchingElasticFunctional_WarpTemplate<W>::WeightedDerivative
 
     if ( this->m_RigidityConstraintMap )
       {
-      warp->GetRigidityConstraintDerivative( lowerConstraint, upperConstraint, param, VolumeOfInfluence[param], step, this->m_RigidityConstraintMap );
+      warp.GetRigidityConstraintDerivative( lowerConstraint, upperConstraint, param, VolumeOfInfluence[param], step, this->m_RigidityConstraintMap );
       }
     else
       {
-      warp->GetRigidityConstraintDerivative( lowerConstraint, upperConstraint, param, VolumeOfInfluence[param], step );
+      warp.GetRigidityConstraintDerivative( lowerConstraint, upperConstraint, param, VolumeOfInfluence[param], step );
       }
     lower -= this->m_RigidityConstraintWeight * lowerConstraint;
     upper -= this->m_RigidityConstraintWeight * upperConstraint;
@@ -110,7 +109,7 @@ VoxelMatchingElasticFunctional_WarpTemplate<W>::WeightedDerivative
   if ( this->m_GridEnergyWeight > 0 ) 
     {
     double lowerEnergy = 0, upperEnergy = 0;
-    warp->GetGridEnergyDerivative( lowerEnergy, upperEnergy, param, step );
+    warp.GetGridEnergyDerivative( lowerEnergy, upperEnergy, param, step );
     lower -= this->m_GridEnergyWeight * lowerEnergy;
     upper -= this->m_GridEnergyWeight * upperEnergy;
     }
@@ -126,14 +125,14 @@ VoxelMatchingElasticFunctional_WarpTemplate<W>::WeightedDerivative
     if ( this->m_MatchedLandmarkList.GetPtr() ) 
       {
       double lowerMSD, upperMSD;
-      warp->GetDerivativeLandmarksMSD( lowerMSD, upperMSD, this->m_MatchedLandmarkList, param, step );
+      warp.GetDerivativeLandmarksMSD( lowerMSD, upperMSD, this->m_MatchedLandmarkList, param, step );
       lower -= this->m_LandmarkErrorWeight * lowerMSD;
       upper -= this->m_LandmarkErrorWeight * upperMSD;
       }
     if ( InverseTransformation ) 
       {
       double lowerIC, upperIC;
-      warp->GetDerivativeInverseConsistencyError( lowerIC, upperIC, this->InverseTransformation, this->ReferenceGrid, &(this->VolumeOfInfluence[param]), param, step );
+      warp.GetDerivativeInverseConsistencyError( lowerIC, upperIC, this->InverseTransformation, this->ReferenceGrid, &(this->VolumeOfInfluence[param]), param, step );
       lower -= InverseConsistencyWeight * lowerIC;
       upper -= InverseConsistencyWeight * upperIC;
       }
