@@ -47,7 +47,7 @@ ReformatVolume::GetTransformedReference
   UniformVolume* result = NULL;
   unsigned int numberOfImages = 0;
 
-  std::vector<const UniformVolumeInterpolatorBase*> interpolatorList;
+  std::vector<UniformVolumeInterpolatorBase::SmartConstPtr> interpolatorList;
   interpolatorList.push_back( this->CreateInterpolator( this->ReferenceVolume ) );
   if ( volumeList )
     {
@@ -143,7 +143,7 @@ ReformatVolume::GetTransformedReferenceGreyAvg( void *const arg )
   const DataGrid::IndexType& dims = params->dims;
 
   const std::vector<SplineWarpXform::SmartPtr>* xformList = params->xformList;
-  const std::vector<const UniformVolumeInterpolatorBase*>* interpolatorList = params->interpolatorList;
+  const std::vector<UniformVolumeInterpolatorBase::SmartConstPtr>* interpolatorList = params->interpolatorList;
 
   Types::Coordinate minDelta = std::min( delta[0], std::min( delta[1], delta[2] ) );
   

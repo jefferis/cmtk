@@ -311,7 +311,7 @@ private:
     unsigned int numberOfImages;
     const std::vector<SplineWarpXform::SmartPtr>* xformList;
     const std::vector<UniformVolume::SmartPtr>* volumeList;
-    const std::vector<const UniformVolumeInterpolatorBase*>* interpolatorList;
+    const std::vector<UniformVolumeInterpolatorBase::SmartConstPtr>* interpolatorList;
     const UniformVolumeInterpolatorBase* referenceInterpolator;
     int maxLabel;
     AveragingMode avgMode;
