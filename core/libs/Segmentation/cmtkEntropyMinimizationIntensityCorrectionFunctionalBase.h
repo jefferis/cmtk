@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -83,10 +84,10 @@ public:
   virtual size_t GetNumberOfMonomialsMul() const = 0; 
 
   /// Set input image.
-  virtual void SetInputImage( UniformVolume::SmartPtr& inputImage );
+  virtual void SetInputImage( UniformVolume::SmartConstPtr& inputImage );
 
   /// Set foreground mask.
-  virtual void SetForegroundMask( UniformVolume::SmartPtr& foregroundMask );
+  virtual void SetForegroundMask( const UniformVolume& foregroundMask );
 
   /// Set sampling density.
   virtual void SetSamplingDensity( const float samplingDensity )
@@ -134,9 +135,9 @@ public:
   }
 
   /// Set additive bias field.
-  virtual void SetBiasFieldAdd( const UniformVolume* biasFieldAdd )
+  virtual void SetBiasFieldAdd( const UniformVolume& biasFieldAdd )
   {
-    biasFieldAdd->GetData()->BlockCopy( *(this->m_BiasFieldAdd), 0, 0, this->m_BiasFieldAdd->GetDataSize() );
+    biasFieldAdd.GetData()->BlockCopy( *(this->m_BiasFieldAdd), 0, 0, this->m_BiasFieldAdd->GetDataSize() );
   }
 
   /// Get multiplicative bias field.
@@ -151,9 +152,9 @@ public:
   }
 
   /// Set multiplicative bias field.
-  virtual void SetBiasFieldMul( const UniformVolume* biasFieldMul )
+  virtual void SetBiasFieldMul( const UniformVolume& biasFieldMul )
   {
-    biasFieldMul->GetData()->BlockCopy( *(this->m_BiasFieldMul), 0, 0, this->m_BiasFieldMul->GetDataSize() );
+    biasFieldMul.GetData()->BlockCopy( *(this->m_BiasFieldMul), 0, 0, this->m_BiasFieldMul->GetDataSize() );
   }
 
   /// Evaluate functional.
@@ -173,7 +174,7 @@ public:
 
 protected:
   /// Original input image.
-  UniformVolume::SmartPtr m_InputImage;
+  UniformVolume::SmartConstPtr m_InputImage;
 
   /// Input intensity image range.
   Types::DataItem m_InputImageRange;

@@ -43,7 +43,7 @@ namespace cmtk
 //@{
 void
 EntropyMinimizationIntensityCorrectionFunctionalBase
-::SetInputImage( UniformVolume::SmartPtr& inputImage )
+::SetInputImage( UniformVolume::SmartConstPtr& inputImage )
 {
   this->m_InputImage = inputImage;
   this->m_NumberOfPixels = this->m_InputImage->GetNumberOfPixels();
@@ -76,23 +76,23 @@ EntropyMinimizationIntensityCorrectionFunctionalBase
 
 void
 EntropyMinimizationIntensityCorrectionFunctionalBase
-::SetForegroundMask( UniformVolume::SmartPtr& foregroundMask )
+::SetForegroundMask( const UniformVolume& foregroundMask )
 {
-  const size_t maskPixels = foregroundMask->GetNumberOfPixels();
+  const size_t maskPixels = foregroundMask.GetNumberOfPixels();
 
   this->m_ForegroundMask.resize( maskPixels );
   if ( (this->m_SamplingDensity > 0) && (this->m_SamplingDensity < 1) )
     {
     for ( size_t i = 0; i < maskPixels; ++i )
       {
-      this->m_ForegroundMask[i] = (foregroundMask->GetDataAt( i ) > 0) && (MathUtil::UniformRandom() <= this->m_SamplingDensity);
+      this->m_ForegroundMask[i] = (foregroundMask.GetDataAt( i ) > 0) && (MathUtil::UniformRandom() <= this->m_SamplingDensity);
       }
     }
   else
     {
     for ( size_t i = 0; i < maskPixels; ++i )
       {
-      this->m_ForegroundMask[i] = (foregroundMask->GetDataAt( i ) > 0);
+      this->m_ForegroundMask[i] = (foregroundMask.GetDataAt( i ) > 0);
       }
     }
   

@@ -200,7 +200,7 @@ main( const int argc, const char *argv[] )
 	cmtk::StdErr << "ERROR: Could not read additive bias field image " << ImportBiasFieldAdd << "\n";
 	exit( 1 );
 	}
-      functional->SetBiasFieldAdd( biasAdd );
+      functional->SetBiasFieldAdd( *biasAdd );
       }
 
     if ( ImportBiasFieldMul )
@@ -211,7 +211,7 @@ main( const int argc, const char *argv[] )
 	cmtk::StdErr << "ERROR: Could not read multiplicative bias field image " << ImportBiasFieldMul << "\n";
 	exit( 1 );
 	}
-      functional->SetBiasFieldMul( biasMul );
+      functional->SetBiasFieldMul( *biasMul );
       }
 
     outputImage = functional->GetOutputImage( true /*update*/ );
@@ -241,7 +241,7 @@ main( const int argc, const char *argv[] )
       functional->SetInputImage( inputImage );
       if ( maskImage && maskImage->GetData() )
 	{
-	functional->SetForegroundMask( maskImage );
+	functional->SetForegroundMask( *maskImage );
 	}
       else
 	{
