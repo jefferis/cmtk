@@ -36,6 +36,8 @@
 
 #define CMTK_ROOT_PATH_SRI24 "@CMTK_ROOT_PATH_SRI24@"
 
+#define CMTK_BINARY_DIR "@CMTK_BINARY_DIR@"
+
 #cmakedefine HAVE_DIRENT_H 1
 #cmakedefine HAVE_EXECINFO_H 1
 #cmakedefine HAVE_FCNTL_H 1
