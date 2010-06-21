@@ -115,7 +115,7 @@ cmtk::DataGridMorphologicalOperators::GetBinaryConnectedComponents() const
   
   // re-number components
   TypedArray::SmartPtr resultArray( TypedArray::Create( TYPE_INT, numberOfPixels ) );
-//#pragma omp parallel for
+#pragma omp parallel for
   for ( size_t px = 0; px < numberOfPixels; ++px )
     {
     resultArray->Set( linkMap[result[px]], px );
