@@ -46,12 +46,16 @@ void
 cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
 ::SetBiasFieldAdd( const UniformVolume& biasFieldAdd )
 {
+  this->Superclass::SetBiasFieldAdd( biasFieldAdd );
+  this->m_BiasFieldAddCUDA->CopyToDevice( this->m_BiasFieldAdd->GetDataPtrTemplate(), this->m_BiasFieldAdd->GetDataSize() );
 }
 
 void
 cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
 ::SetBiasFieldMul( const UniformVolume& biasFieldMul )
 {
+  this->Superclass::SetBiasFieldMul( biasFieldMul );
+  this->m_BiasFieldMulCUDA->CopyToDevice( this->m_BiasFieldMul->GetDataPtrTemplate(), this->m_BiasFieldMul->GetDataSize() );
 }
   
 void

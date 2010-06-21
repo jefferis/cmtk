@@ -38,6 +38,7 @@
 #include <cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.h>
 
 #include "cmtkDeviceMemoryCUDA.h"
+#include "cmtkUniformVolumeCUDA.h"
 
 namespace
 cmtk
