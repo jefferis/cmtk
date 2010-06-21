@@ -70,7 +70,7 @@ cmtk::DataGridMorphologicalOperators::GetBinaryConnectedComponents() const
 	if ( this->m_DataGrid->GetDataAt( offset ) != 0 )
 	  {
 	  // loop over x,y,z neighbor
-	  for ( int dim = 0; dim < 3; ++dim )
+	  for ( int dim = 2; dim >= 0; --dim )
 	    {
 	    // is there a preceding neighbor in this direction?
 	    if ( index[dim] )
@@ -81,7 +81,7 @@ cmtk::DataGridMorphologicalOperators::GetBinaryConnectedComponents() const
 	      if ( existing )
 		{
 		// did we already get a different component ID from another neighbor?
-		if ( component > existing ) // note: this implies "component != 0" because "existing" is at least 0.
+		if ( component && (component != existing) ) // note: this implies "component != 0" because "existing" is at least 1 in this branch.
 		  {
 		  // link old and new component via this pixel
 		  connected.Union( connected.Find( component ), connected.Find( existing ) );
@@ -115,6 +115,7 @@ cmtk::DataGridMorphologicalOperators::GetBinaryConnectedComponents() const
   
   // re-number components
   TypedArray::SmartPtr resultArray( TypedArray::Create( TYPE_INT, numberOfPixels ) );
+//#pragma omp parallel for
   for ( size_t px = 0; px < numberOfPixels; ++px )
     {
     resultArray->Set( linkMap[result[px]], px );
