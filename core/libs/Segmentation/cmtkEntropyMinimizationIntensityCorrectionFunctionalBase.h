@@ -178,9 +178,6 @@ protected:
   /// Input intensity image range.
   Types::DataItem m_InputImageRange;
 
-  /// Input image pixel aspects.
-  //  Types::Coordinate m_InputImagePixelAspect[3];
-
   /// Evolving corrected output image.
   UniformVolume::SmartPtr m_OutputImage;
 
@@ -220,7 +217,6 @@ protected:
   /// Update additive bias image.
   virtual void UpdateBiasFieldMul( const bool foregroundOnly = true ) = 0;
 
-protected:
   /// Number of input image pixels.
   size_t m_NumberOfPixels;
 
