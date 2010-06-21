@@ -33,6 +33,8 @@
 
 #include <cmtkconfig.h>
 
+#include "cmtkDeviceMemoryBaseCUDA.h"
+
 namespace
 cmtk
 {
@@ -56,8 +58,11 @@ public:
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
+  /// Base class.
+  typedef DeviceMemoryBaseCUDA Superclass;
+
   /// Create new object and allocate memory.
-  Self::SmartPtr Alloc( const size_t nItems )
+  static Self::SmartPtr Create( const size_t nItems )
   {
     return Self::SmartPtr( new Self( nItems ) );
   }
@@ -74,6 +79,24 @@ public:
     return static_cast<T*>( this->m_PointerDevice );
   }
 
+  /// Copy from host to device memory.
+  void CopyToDevice( const T *const srcPtrHost, const size_t count )
+  {
+    this->Superclass::CopyToDevice( srcPtrHost, count * sizeof( T ) );
+  }
+  
+  /// Copy from device to host memory.
+  void CopyFromDevice( void *const dstPtrHost, const size_t count ) const
+  {
+    this->Superclass::CopyFromDevice( dstPtrHost, count * sizeof( T ) );
+  }
+  
+  /// Copy between two device memory locations.
+  void CopyToDevice( const Self& srcPtrDevice, const size_t count )
+  {
+    this->Superclass::CopyToDevice( srcPtrDevice, count * sizeof( T ) );
+  }
+  
 private:
   /// Constructor: allocate memory through CUDA.
   DeviceMemoryCUDA( const size_t n /**!< Number of items. */ ) : DeviceMemoryBaseCUDA( n, sizeof( T ) ) {}
