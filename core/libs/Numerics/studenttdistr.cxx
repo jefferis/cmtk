@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -69,6 +70,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #include "studenttdistr.h"
+
+namespace
+alglib
+{
 
 /*************************************************************************
 Student's t distribution
@@ -248,5 +253,4 @@ ap::real_value_type invstudenttdistribution(int k, ap::real_value_type p)
     return result;
 }
 
-
-
+} // namespace alglib

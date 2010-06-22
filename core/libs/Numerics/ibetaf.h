@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -75,6 +76,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gammaf.h"
 #include "normaldistr.h"
 
+namespace
+alglib
+{
 
 /*************************************************************************
 Incomplete beta integral
@@ -150,5 +154,6 @@ Copyright 1984, 1996, 2000 by Stephen L. Moshier
 *************************************************************************/
 ap::real_value_type invincompletebeta(ap::real_value_type a, ap::real_value_type b, ap::real_value_type y);
 
+} // namespace alglib
 
 #endif

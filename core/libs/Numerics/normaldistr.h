@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -71,6 +72,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define _normaldistr_h
 
 #include "ap.h"
+
+namespace
+alglib
+{
 
 /*************************************************************************
 Error function
@@ -200,5 +205,6 @@ Copyright 1984, 1987, 1988, 1992, 2000 by Stephen L. Moshier
 *************************************************************************/
 ap::real_value_type invnormaldistribution(ap::real_value_type y0);
 
+} // namespace alglib
 
 #endif

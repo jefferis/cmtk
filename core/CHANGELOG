@@ -1,5 +1,8 @@
 Release CMTK-1.3.2:
 
+- API: some Numerics functions from AlgLib were moved into ::alglib namespace
+    to avoid clashes with functions also defined elsewhere (e.g., gamma, erf,
+    etc).
 - Refactored: thread function within thread pool is now provided with thread
     index directly, rather having to perform a lookup (Issue #4939).
 - Added: cmtk::CommandLine class prints warning message if not all command

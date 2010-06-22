@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -166,7 +167,7 @@ MathUtil::PairedTTest
 
   t = (avgX - avgY) * sqrt( (nValues * (nValues-1)) / SSD );
   
-  double s = studenttdistribution(nValues-1, t);
+  double s = alglib::studenttdistribution(nValues-1, t);
   double p1 = 2 * ap::minreal(s, 1-s);
 
   return (T) p1; // probability
@@ -197,7 +198,7 @@ MathUtil::TTest
   avgX = MathUtil::Mean<T>( valuesX );
   avgY = MathUtil::Mean<T>( valuesY );
   
-  studentttest2( apValuesX, nValuesX, apValuesY, nValuesY, t_temp, p1, p2, p3 );
+  alglib::studentttest2( apValuesX, nValuesX, apValuesY, nValuesY, t_temp, p1, p2, p3 );
 
   t = static_cast<T>( t_temp );
 
@@ -214,12 +215,12 @@ MathUtil::TTest
   const size_t nValuesX = valuesX.size();
 
   avgX = Mean( valuesX );
-  T varianceX = Variance( valuesX, avgX, true /*unbiased*/ );
+  const T varianceX = Variance( valuesX, avgX, true /*unbiased*/ );
 
   t = avgX * nValuesX / sqrt( varianceX );
 
-  double s = studenttdistribution(nValuesX-1, t);
-  double p1 = 2 * ap::minreal(s, 1-s);
+  const double s = alglib::studenttdistribution(nValuesX-1, t);
+  const double p1 = 2 * ap::minreal(s, 1-s);
 
   return (T) p1; // probability
 }

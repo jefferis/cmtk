@@ -70,6 +70,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "gammaf.h"
 
+namespace
+alglib
+{
+
 ap::real_value_type gammastirf(ap::real_value_type x);
 
 /*************************************************************************
@@ -364,5 +368,4 @@ ap::real_value_type gammastirf(ap::real_value_type x)
     return result;
 }
 
-
-
+} // namespace alglib

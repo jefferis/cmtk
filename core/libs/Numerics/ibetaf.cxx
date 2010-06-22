@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -69,6 +70,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #include "ibetaf.h"
+
+namespace 
+alglib
+{
 
 ap::real_value_type incompletebetafe(ap::real_value_type a,
      ap::real_value_type b,
@@ -986,5 +991,4 @@ ap::real_value_type incompletebetaps(ap::real_value_type a, ap::real_value_type 
     return result;
 }
 
-
-
+} // namespace alglib

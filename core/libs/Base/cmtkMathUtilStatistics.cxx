@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -62,7 +63,7 @@ MathUtil::ProbabilityFromTStat
   else
     stat = df/(df+t*t);
 
-  return incompletebeta( 0.5*df, 0.5, stat );
+  return alglib::incompletebeta( 0.5*df, 0.5, stat );
 }
 
 } // namespace cmtk

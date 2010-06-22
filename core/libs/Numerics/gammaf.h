@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -72,6 +73,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ap.h"
 
+namespace
+alglib
+{
+
 /*************************************************************************
 Gamma function
 
@@ -129,5 +134,6 @@ Translated to AlgoPascal by Bochkanov Sergey (2005, 2006, 2007).
 *************************************************************************/
 ap::real_value_type lngamma(ap::real_value_type x, ap::real_value_type& sgngam);
 
+} // namespace alglib
 
 #endif

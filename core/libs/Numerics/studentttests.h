@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -70,6 +71,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ibetaf.h"
 #include "studenttdistr.h"
 
+namespace
+alglib
+{
 
 /*************************************************************************
 One-sample t-test
@@ -209,5 +213,6 @@ void unequalvariancettest(const ap::real_1d_array& x,
      ap::real_value_type& lefttail,
      ap::real_value_type& righttail);
 
+} // namespace alglib
 
 #endif
