@@ -28,29 +28,31 @@
 //
 */
 
-#include "cmtkUniformVolumeCUDA.h"
+#ifndef __cmtkUniformVolumeOnDeviceCUDA_h_included_
+#define __cmtkUniformVolumeOnDeviceCUDA_h_included_
 
-cmtk::UniformVolumeCUDA::
-UniformVolumeCUDA( const UniformVolume& volume )
+/** \addtogroup GPU */
+//@{
+
+namespace
+cmtk
 {
-  this->m_OnDevice = DeviceMemoryCUDA<UniformVolumeOnDeviceCUDA>::Create( 1 );
-  this->m_OnDeviceData = DeviceMemoryCUDA<float>::Create( volume.GetNumberOfPixels() );
 
-  // set volume parameters
-  UniformVolumeOnDeviceCUDA onDevice;
-  for ( size_t i = 0; i < 3; ++i )
-    {
-    onDevice.m_Dims[i] = volume.m_Dims[i];
-    onDevice.m_Delta[i] = volume.m_Delta[i];
-    }
-
-  // convert volume data to float and copy to device
-  { // new scope to get rid of converted array ASAP.
-  TypedArray::SmartPtr floatData = volume.GetData()->Convert( TYPE_FLOAT );
-  this->m_OnDeviceData->CopyToDevice( static_cast<float*>( floatData->GetDataPtr() ), volume.GetNumberOfPixels() );
-  }
+/// Copy from host to device.
+typedef struct 
+{
+  /// Volume dimensions.
+  int m_Dims[3];
   
-  // set device pointer to data, then copy whole structure to device.
-  onDevice.m_Data = this->m_OnDeviceData->Ptr();
-  this->m_OnDevice->CopyToDevice( &onDevice, 1 );
-}
+  /// Pixel sizes.
+  float m_Delta[3];
+  
+  /// Pointer to volume data.
+  float* m_Data;
+} UniformVolumeOnDeviceCUDA;
+
+} // namespace cmtk
+
+//@}
+
+#endif // #ifndef __cmtkUniformVolumeOnDeviceCUDA_h_included_

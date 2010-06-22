@@ -28,9 +28,13 @@
 //
 */
 
+#ifndef __cmtkUniformVolumeCUDA_h_included_
+#define __cmtkUniformVolumeCUDA_h_included_
+
 #include <cmtkconfig.h>
 
 #include "cmtkDeviceMemoryCUDA.h"
+#include "cmtkUniformVolumeOnDeviceCUDA.h"
 
 #include <cmtkUniformVolume.h>
 
@@ -57,28 +61,29 @@ public:
     return Self::SmartPtr( new Self( volume ) );
   }
   
-  /// Copy from host to device.
-  typedef struct 
+  /// Return device representation of volume.
+  DeviceMemoryCUDA<UniformVolumeOnDeviceCUDA>& GetOnDevice()
   {
-    /// Volume dimensions.
-    int m_Dims[3];
-    
-    /// Pixel sizes.
-    float m_Delta[3];
-    
-    /// Pointer to volume data.
-    float* m_Data;
-  } OnDevice;
+    return *(this->m_OnDevice);
+  }
+
+  /// Return device data pointer.
+  DeviceMemoryCUDA<float>& GetDataOnDevice()
+  {
+    return *(this->m_OnDeviceData);
+  }
 
 private:
   /// Constructor.
   UniformVolumeCUDA( const UniformVolume& volume );
 
   /// Managed device memory pointer to parameter block.
-  DeviceMemoryCUDA<OnDevice>::SmartPtr m_OnDevice;
+  DeviceMemoryCUDA<UniformVolumeOnDeviceCUDA>::SmartPtr m_OnDevice;
 
   /// Managed device memory pointer to volume data.
   DeviceMemoryCUDA<float>::SmartPtr m_OnDeviceData;
 };
 
 } // namespace cmtk
+
+#endif // #ifndef __cmtkUniformVolumeCUDA_h_included_

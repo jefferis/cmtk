@@ -28,29 +28,24 @@
 //
 */
 
-#include "cmtkUniformVolumeCUDA.h"
+#include <cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDA_functions.h>
 
-cmtk::UniformVolumeCUDA::
-UniformVolumeCUDA( const UniformVolume& volume )
+__global__
+void
+cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDAUpdateOutputImageAddKernel
+( float* input, float* output, float* add, int numberOfPixels )
 {
-  this->m_OnDevice = DeviceMemoryCUDA<UniformVolumeOnDeviceCUDA>::Create( 1 );
-  this->m_OnDeviceData = DeviceMemoryCUDA<float>::Create( volume.GetNumberOfPixels() );
+  int tx = threadIdx.x;
 
-  // set volume parameters
-  UniformVolumeOnDeviceCUDA onDevice;
-  for ( size_t i = 0; i < 3; ++i )
-    {
-    onDevice.m_Dims[i] = volume.m_Dims[i];
-    onDevice.m_Delta[i] = volume.m_Delta[i];
-    }
-
-  // convert volume data to float and copy to device
-  { // new scope to get rid of converted array ASAP.
-  TypedArray::SmartPtr floatData = volume.GetData()->Convert( TYPE_FLOAT );
-  this->m_OnDeviceData->CopyToDevice( static_cast<float*>( floatData->GetDataPtr() ), volume.GetNumberOfPixels() );
-  }
-  
-  // set device pointer to data, then copy whole structure to device.
-  onDevice.m_Data = this->m_OnDeviceData->Ptr();
-  this->m_OnDevice->CopyToDevice( &onDevice, 1 );
+  output[tx] = input[tx] + add[tx];
 }
+
+void
+cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDAUpdateOutputImage( float* input, float* output, float* add, int numberOfPixels )
+{
+  dim3 dimBlock( 1, 1 );
+  dim3 dimGrid( 1, 1 );
+
+  cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDAUpdateOutputImageAddKernel<<<dimGrid,dimBlock>>>( input, output, biasAdd, this->m_NumberOfPixels );
+}
+

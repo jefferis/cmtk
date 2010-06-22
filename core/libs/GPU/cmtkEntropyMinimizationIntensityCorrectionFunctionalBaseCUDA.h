@@ -77,11 +77,20 @@ public:
   virtual void SetBiasFieldMul( const UniformVolume& biasFieldMul );
   
 protected:
+  /// Input image in CUDA memory.
+  UniformVolumeCUDA::SmartPtr m_InputImageCUDA;
+
+  /// Number of image pixels.
+  size_t m_NumberOfPixels;
+
   /// Additive bias field in device memory.
   DeviceMemoryCUDA<float>::SmartPtr m_BiasFieldAddCUDA;
 
   /// Multiplicative bias field.
   DeviceMemoryCUDA<float>::SmartPtr m_BiasFieldMulCUDA;
+
+  /// Output image data.
+  DeviceMemoryCUDA<float>::SmartPtr m_OutputDataCUDA;
 
   /// Jointly update both bias images.
   virtual void UpdateBiasFields( const bool foregroundOnly = true );
@@ -91,6 +100,9 @@ protected:
 
   /// Update additive bias image.
   virtual void UpdateBiasFieldMul( const bool foregroundOnly = true );
+
+  /// Update output image.
+  virtual void UpdateOutputImage( const bool foregroundOnly = true );
 };
 
 //@}

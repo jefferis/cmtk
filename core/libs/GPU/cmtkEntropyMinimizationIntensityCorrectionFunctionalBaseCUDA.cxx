@@ -31,15 +31,17 @@
 */
 
 #include "cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDA.h"
+#include "cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDA_functions.h"
+
+#include "cmtkUniformVolumeCUDA.h"
 
 void
 cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
 ::SetInputImage( UniformVolume::SmartConstPtr& inputImage )
 {
   this->Superclass::SetInputImage( inputImage );
-
-  this->m_BiasFieldAddCUDA = DeviceMemoryCUDA<float>::Create( inputImage->GetNumberOfPixels() );
-  this->m_BiasFieldMulCUDA = DeviceMemoryCUDA<float>::Create( inputImage->GetNumberOfPixels() );
+  this->m_InputImageCUDA = UniformVolumeCUDA::Create( *inputImage );
+  this->m_NumberOfPixels = inputImage->GetNumberOfPixels();
 }
 
 void
@@ -62,16 +64,36 @@ void
 cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
 ::UpdateBiasFields( const bool foregroundOnly )
 {
+  this->UpdateBiasFieldAdd( foregroundOnly );
+  this->UpdateBiasFieldMul( foregroundOnly );
 }
 
 void
 cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
 ::UpdateBiasFieldAdd( const bool foregroundOnly )
 {
+  if ( !this->m_BiasFieldAddCUDA )
+    this->m_BiasFieldAddCUDA = DeviceMemoryCUDA<float>::Create( this->m_NumberOfPixels );
 }
 
 void
 cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
 ::UpdateBiasFieldMul( const bool foregroundOnly )
 {
+  if ( !this->m_BiasFieldMulCUDA )
+    this->m_BiasFieldMulCUDA = DeviceMemoryCUDA<float>::Create( this->m_NumberOfPixels );
+}
+
+void
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
+::UpdateOutputImage( const bool foregroundOnly )
+{
+  if ( !this->m_OutputDataCUDA )
+    this->m_OutputDataCUDA = DeviceMemoryCUDA<float>::Create( this->m_NumberOfPixels );
+
+  float* input = this->m_InputImageCUDA->GetDataOnDevice().Ptr();
+  float* output = this->m_OutputDataCUDA->Ptr();
+  float* biasAdd = this->m_BiasFieldAddCUDA->Ptr();
+
+  cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDAUpdateOutputImage( input, output, biasAdd, this->m_NumberOfPixels );
 }
