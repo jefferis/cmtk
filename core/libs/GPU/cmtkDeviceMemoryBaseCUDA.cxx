@@ -42,7 +42,7 @@ DeviceMemoryBaseCUDA
   if ( cudaMalloc( &(this->m_PointerDevice), n * size ) != cudaSuccess )
     {
     this->m_PointerDevice = NULL;
-//    throw( Self::bad_alloc );
+    throw( Self::bad_alloc() );
     }
 }
 
