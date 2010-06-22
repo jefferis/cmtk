@@ -172,6 +172,8 @@ public:
     Self minus;
     for ( size_t i=0; i<NDIM; ++i ) 
       minus.m_Data = -this->m_Data;
+
+    return minus;
   }
   
   /// Pointer to first array element.
