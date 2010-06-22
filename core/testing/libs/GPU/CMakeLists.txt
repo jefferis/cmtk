@@ -29,17 +29,22 @@
 ##
 
 # ==========================================
-# Delegate testing to separate subdirs for each library
+# Setup binary test drivers
 
-SET(CMTK_DATADIR @CMTK_DATA_ROOT@/testing/inputs)
-ADD_DEFINITIONS(-DCMTK_DATADIR=\\\"${CMTK_DATADIR}\\\")
+SET(CMTK_LIBRARIES "cmtkGPU;cmtkBase;cmtkNumerics;cmtkSystem")
+SET(DRIVERS libGPUTests)
 
-SUBDIRS(System)
-SUBDIRS(Registration)
-SUBDIRS(IO)
-SUBDIRS(Base)
+FOREACH(D ${DRIVERS})
+  ADD_EXECUTABLE(${D} ${D}.cxx)
+  TARGET_LINK_LIBRARIES(${D} ${CMTK_LIBRARIES} ${CMTK_SYSTEM_LIBRARIES})
+ENDFOREACH(D ${DRIVERS})
 
-IF(CMTK_CONFIG_GPU)
-  SUBDIRS(GPU)
-ENDIF(CMTK_CONFIG_GPU)
+# ==========================================
+# Tests for "cmtk::DeviceMemoryCUDA" class
+IF(CMTK_USE_CUDA)
+  SET(Tests ${Tests} DeviceMemoryCUDA)
+ENDIF(CMTK_USE_CUDA)
 
+FOREACH(T ${Tests})
+	  ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libBaseTests ${T})
+ENDFOREACH(T Tests)
