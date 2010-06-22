@@ -30,7 +30,7 @@
 
 #include <cmtkDeviceMemoryCUDA.h>
 
-// test "Size" member function for int regions
+// test "DeviceMemoryCUDA" class
 int
 testDeviceMemoryCUDA()
 {
