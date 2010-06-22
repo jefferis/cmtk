@@ -28,11 +28,11 @@
 //
 */
 
-#include "cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDA_functions.h"
+#include "cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA_functions.h"
 
 __global__
 void
-cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDAUpdateOutputImageAddKernel
+cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImageAddKernel
 ( float* input, float* output, float* add, int numberOfPixels )
 {
   int tx = threadIdx.x;
@@ -41,11 +41,11 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDAUpdateOutputImageAdd
 }
 
 void
-cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDAUpdateOutputImage( float* input, float* output, float* biasAdd, int numberOfPixels )
+cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImage( float* input, float* output, float* biasAdd, int numberOfPixels )
 {
   dim3 dimBlock( 1, 1 );
   dim3 dimGrid( 1, 1 );
 
-  cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDAUpdateOutputImageAddKernel<<<dimGrid,dimBlock>>>( input, output, biasAdd, numberOfPixels );
+  cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImageAddKernel<<<dimGrid,dimBlock>>>( input, output, biasAdd, numberOfPixels );
 }
 

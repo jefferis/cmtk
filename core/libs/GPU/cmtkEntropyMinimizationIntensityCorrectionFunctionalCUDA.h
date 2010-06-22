@@ -30,8 +30,8 @@
 //
 */
 
-#ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDA_h_included_
-#define __cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDA_h_included_
+#ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA_h_included_
+#define __cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA_h_included_
 
 #include <cmtkconfig.h>
 
@@ -47,13 +47,13 @@ cmtk
 /** \addtogroup GPU */
 //@{
 /// Base class for GPU implementation entropy-minimzation MR bias correction functional using CUDA.
-class EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
+class EntropyMinimizationIntensityCorrectionFunctionalCUDA
     /// Inherit non-GPU base class.
   : public EntropyMinimizationIntensityCorrectionFunctionalBase
 {
 public:
   /// This class type.
-  typedef EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA Self;
+  typedef EntropyMinimizationIntensityCorrectionFunctionalCUDA Self;
 
   /// Pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
@@ -62,10 +62,10 @@ public:
   typedef EntropyMinimizationIntensityCorrectionFunctionalBase Superclass;
 
   /// Constructor.
-  EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA() {}
+  EntropyMinimizationIntensityCorrectionFunctionalCUDA( const size_t degreeAdd = 0, const size_t degreeMul = 0 ) : m_PolyDegreeAdd( degreeAdd ), m_PolyDegreeMul( degreeMul ) {}
 
   /// Virtual destructor.
-  virtual ~EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA() {}
+  virtual ~EntropyMinimizationIntensityCorrectionFunctionalCUDA() {}
 
   /// Set input image.
   virtual void SetInputImage( UniformVolume::SmartConstPtr& inputImage );
@@ -75,8 +75,38 @@ public:
 
   /// Set multiplicative bias field.
   virtual void SetBiasFieldMul( const UniformVolume& biasFieldMul );
+
+  /// Set multiplicative bias field polynomial degree.
+  virtual void SetDegreeMul( const size_t degree )
+  {
+    this->m_PolyDegreeMul = degree;
+  }
+
+  /// Set multiplicative bias field polynomial degree.
+  virtual void SetDegreeAdd( const size_t degree )
+  {
+    this->m_PolyDegreeAdd = degree;
+  }
+
+  /// Get number of additive monomials.
+  virtual size_t GetNumberOfMonomialsAdd() const;
+
+  /// Get number of multiplicative monomials.
+  virtual size_t GetNumberOfMonomialsMul() const;
+
+  /// Return parameter vector length.
+  virtual size_t ParamVectorDim() const
+  {
+    return GetNumberOfMonomialsAdd() + GetNumberOfMonomialsMul();
+  }
   
 protected:
+  /// Additive bias field polynomial degree.
+  size_t m_PolyDegreeAdd;
+
+  /// Multiplicative bias field polynomial degree.
+  size_t m_PolyDegreeMul;
+
   /// Input image in CUDA memory.
   UniformVolumeCUDA::SmartPtr m_InputImageCUDA;
 
@@ -91,6 +121,9 @@ protected:
 
   /// Output image data.
   DeviceMemoryCUDA<float>::SmartPtr m_OutputDataCUDA;
+
+  /// Update polynomial correctionfactors from input image.
+  virtual void UpdateCorrectionFactors();
 
   /// Jointly update both bias images.
   virtual void UpdateBiasFields( const bool foregroundOnly = true );
@@ -109,5 +142,5 @@ protected:
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDA_h_included_
+#endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA_h_included_
 

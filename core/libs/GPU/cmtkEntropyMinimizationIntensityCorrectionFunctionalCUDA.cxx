@@ -30,13 +30,54 @@
 //
 */
 
-#include "cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDA.h"
-#include "cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDA_functions.h"
+#include "cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA.h"
+#include "cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA_functions.h"
 
 #include "cmtkUniformVolumeCUDA.h"
+#include <cmtkPolynomial.h>
+
+size_t
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
+::GetNumberOfMonomialsAdd() const 
+{
+  switch ( this->m_PolyDegreeAdd )
+    {
+    case 1:
+      return Polynomial<1,Types::Coordinate>::NumberOfMonomials;
+    case 2:
+      return Polynomial<2,Types::Coordinate>::NumberOfMonomials;
+    case 3:
+      return Polynomial<3,Types::Coordinate>::NumberOfMonomials;
+    case 4:
+      return Polynomial<4,Types::Coordinate>::NumberOfMonomials;
+    default:
+      break;
+    }
+  return 0;
+}
+
+size_t
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
+::GetNumberOfMonomialsMul() const 
+{
+  switch ( this->m_PolyDegreeMul )
+    {
+    case 1:
+      return Polynomial<1,Types::Coordinate>::NumberOfMonomials;
+    case 2:
+      return Polynomial<2,Types::Coordinate>::NumberOfMonomials;
+    case 3:
+      return Polynomial<3,Types::Coordinate>::NumberOfMonomials;
+    case 4:
+      return Polynomial<4,Types::Coordinate>::NumberOfMonomials;
+    default:
+      break;
+    }
+  return 0;
+}
 
 void
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
 ::SetInputImage( UniformVolume::SmartConstPtr& inputImage )
 {
   this->Superclass::SetInputImage( inputImage );
@@ -45,7 +86,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
 }
 
 void
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
 ::SetBiasFieldAdd( const UniformVolume& biasFieldAdd )
 {
   this->Superclass::SetBiasFieldAdd( biasFieldAdd );
@@ -53,7 +94,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
 }
 
 void
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
 ::SetBiasFieldMul( const UniformVolume& biasFieldMul )
 {
   this->Superclass::SetBiasFieldMul( biasFieldMul );
@@ -61,7 +102,13 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
 }
   
 void
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
+::UpdateCorrectionFactors()
+{
+}
+
+void
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
 ::UpdateBiasFields( const bool foregroundOnly )
 {
   this->UpdateBiasFieldAdd( foregroundOnly );
@@ -69,7 +116,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
 }
 
 void
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
 ::UpdateBiasFieldAdd( const bool foregroundOnly )
 {
   if ( !this->m_BiasFieldAddCUDA )
@@ -77,7 +124,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
 }
 
 void
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
 ::UpdateBiasFieldMul( const bool foregroundOnly )
 {
   if ( !this->m_BiasFieldMulCUDA )
@@ -85,7 +132,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
 }
 
 void
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
 ::UpdateOutputImage( const bool foregroundOnly )
 {
   if ( !this->m_OutputDataCUDA )
@@ -95,5 +142,5 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalBaseCUDA
   float* output = this->m_OutputDataCUDA->Ptr();
   float* biasAdd = this->m_BiasFieldAddCUDA->Ptr();
 
-  cmtkEntropyMinimizationIntensityCorrectionFunctionalBaseCUDAUpdateOutputImage( input, output, biasAdd, this->m_NumberOfPixels );
+  cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImage( input, output, biasAdd, this->m_NumberOfPixels );
 }
