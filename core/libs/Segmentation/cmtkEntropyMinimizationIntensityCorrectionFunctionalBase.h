@@ -201,7 +201,7 @@ protected:
    *\param allPixels If this flag is set, any existing image foreground mask is ignored
    * and all image pixels are updated. Default: only update foreground pixels.
    */
-  void UpdateOutputImage( const bool foregroundOnly = true );
+  virtual void UpdateOutputImage( const bool foregroundOnly = true );
 
   /// Additive bias field.
   FloatArray::SmartPtr m_BiasFieldAdd;
