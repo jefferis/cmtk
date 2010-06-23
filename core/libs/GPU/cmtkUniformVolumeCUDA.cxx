@@ -34,7 +34,6 @@ cmtk::UniformVolumeCUDA::
 UniformVolumeCUDA( const UniformVolume& volume )
 {
   this->m_OnDevice = DeviceMemoryCUDA<UniformVolumeOnDeviceCUDA>::Create( 1 );
-  this->m_OnDeviceData = DeviceMemoryCUDA<float>::Create( volume.GetNumberOfPixels() );
 
   // set volume parameters
   UniformVolumeOnDeviceCUDA onDevice;
@@ -45,12 +44,16 @@ UniformVolumeCUDA( const UniformVolume& volume )
     }
 
   // convert volume data to float and copy to device
-  { // new scope to get rid of converted array ASAP.
-  TypedArray::SmartPtr floatData = volume.GetData()->Convert( TYPE_FLOAT );
-  this->m_OnDeviceData->CopyToDevice( static_cast<float*>( floatData->GetDataPtr() ), volume.GetNumberOfPixels() );
-  }
-  
-  // set device pointer to data, then copy whole structure to device.
-  onDevice.m_Data = this->m_OnDeviceData->Ptr();
+  if ( volume.GetData() )
+    {
+    TypedArray::SmartPtr floatData = volume.GetData()->Convert( TYPE_FLOAT );
+
+    this->m_OnDeviceData = DeviceMemoryCUDA<float>::Create( volume.GetNumberOfPixels() );
+    this->m_OnDeviceData->CopyToDevice( static_cast<float*>( floatData->GetDataPtr() ), volume.GetNumberOfPixels() );
+    
+    // set device pointer to data, then copy whole structure to device.
+    onDevice.m_Data = this->m_OnDeviceData->Ptr();
+    }
+
   this->m_OnDevice->CopyToDevice( &onDevice, 1 );
 }

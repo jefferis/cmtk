@@ -36,6 +36,21 @@ testUniformVolumeCUDA()
 {
   try
     {
+    const int dims[3] = { 10, 10, 10 };
+    const float size[3] = { 9, 9, 9 };
+
+    cmtk::UniformVolume volume( (cmtk::FixedVector<3,int>( dims )), cmtk::FixedVector<3,float>( size ) );
+
+    // first, try to create representation of actually empty volume.
+    cmtk::UniformVolumeCUDA::SmartPtr volumeCUDA = cmtk::UniformVolumeCUDA::Create( volume );
+
+    // second, allocate pixel data and create another device instance.
+    volume.CreateDataArray( cmtk::TYPE_INT );
+    volumeCUDA = cmtk::UniformVolumeCUDA::Create( volume );    
+
+    // third, change pixel data to double precision float and create another device instance.
+    volume.CreateDataArray( cmtk::TYPE_DOUBLE );
+    volumeCUDA = cmtk::UniformVolumeCUDA::Create( volume );    
     }
   catch ( cmtk::DeviceMemoryBaseCUDA::bad_alloc )
     {
