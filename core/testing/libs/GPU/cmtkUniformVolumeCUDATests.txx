@@ -1,8 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
-//
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,27 +28,21 @@
 //
 */
 
-#include <iostream>
-#include <cstring>
+#include <cmtkUniformVolumeCUDA.h>
 
-#include <cmtkTestFunctionMap.h>
-
-#include "cmtkDeviceMemoryCUDATests.txx"
-#include "cmtkUniformVolumeCUDATests.txx"
-
+// test "UniformVolumeCUDA" class
 int
-main( const int argc, const char* argv[] )
+testUniformVolumeCUDA()
 {
-  cmtk::TestFunctionMap map;
-  map.AddTest( "DeviceMemoryCUDA", &testDeviceMemoryCUDA );
-  map.AddTest( "UniformVolumeCUDA", &testUniformVolumeCUDA );
-
-  // is test name given on command line?
-  if ( argc < 2 )
+  try
     {
     }
-  else
+  catch ( cmtk::DeviceMemoryBaseCUDA::bad_alloc )
     {
-    return map.RunTestByName( argv[1] );
+    std::cerr << "Caught bad_alloc()" << std::endl;
+    return 1;
     }
+  
+  return 0;
 }
+

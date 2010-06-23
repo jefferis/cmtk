@@ -35,14 +35,22 @@ SET(CMTK_LIBRARIES "cmtkGPU;cmtkBase;cmtkNumerics;cmtkSystem")
 SET(DRIVERS libGPUTests)
 
 FOREACH(D ${DRIVERS})
-  ADD_EXECUTABLE(${D} ${D}.cxx)
+  CUDA_ADD_EXECUTABLE(${D} ${D}.cxx)
   TARGET_LINK_LIBRARIES(${D} ${CMTK_LIBRARIES} ${CMTK_SYSTEM_LIBRARIES})
 ENDFOREACH(D ${DRIVERS})
 
-# ==========================================
-# Tests for "cmtk::DeviceMemoryCUDA" class
 IF(CMTK_USE_CUDA)
-  SET(Tests ${Tests} DeviceMemoryCUDA)
+
+  # ==========================================
+  # Tests for "cmtk::DeviceMemoryCUDA" class
+  SET(Tests ${Tests} 
+    DeviceMemoryCUDA)
+  
+  # ==========================================
+  # Tests for "cmtk::UniformVolumeCUDA" class
+  SET(Tests ${Tests} 
+    UniformVolumeCUDA)
+  
 ENDIF(CMTK_USE_CUDA)
 
 FOREACH(T ${Tests})
