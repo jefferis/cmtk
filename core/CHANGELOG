@@ -1,5 +1,7 @@
 Release CMTK-1.3.2:
 
+- Testing: added test name to function mapper cmtk::TestFunctionMap to
+    simplify writing of test drivers.
 - API: some Numerics functions from AlgLib were moved into ::alglib namespace
     to avoid clashes with functions also defined elsewhere (e.g., gamma, erf,
     etc).

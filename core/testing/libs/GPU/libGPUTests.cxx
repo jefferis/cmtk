@@ -33,52 +33,22 @@
 #include <iostream>
 #include <cstring>
 
+#include <cmtkTestFunctionMap.h>
+
 #include "cmtkDeviceMemoryCUDATests.txx"
-
-/** Set up table of test names and function pointers */
-typedef int (*testFuncPtr)();
-
-typedef 
-struct __testNameAndFunctionPointer
-{
-  const char* name;
-  const testFuncPtr func;
-} testNameAndFunctionPointer;
-
-const testNameAndFunctionPointer testTable[] =
-{
-  { "DeviceMemoryCUDA",               &testDeviceMemoryCUDA },
-  { NULL, NULL }
-};
 
 int
 main( const int argc, const char* argv[] )
 {
-  int testNumber = -1;
+  cmtk::TestFunctionMap map;
+  map.AddTest( "DeviceMemoryCUDA", &testDeviceMemoryCUDA );
+
   // is test name given on command line?
   if ( argc < 2 )
     {
-    // no: ask user in dialog mode
-    for ( size_t i = 0; testTable[i].name; ++i )
-      {
-      std::cout << i << ". " << testTable[i].name << std::endl;
-      }
-    std::cout << "Run test number: ";
-    std::cin >> testNumber;
     }
   else
     {
-    // batch mode: find test by name given on command line
-    for ( size_t i = 0; testTable[i].name; ++i )
-      {
-      if ( !std::strcmp( argv[1], testTable[i].name ) )
-	testNumber = i;
-      }
+    return map.RunTestByName( argv[1] );
     }
-
-  // run test, or return error if none found
-  if ( testNumber < 0 )
-    return 2;
-  else
-    return testTable[testNumber].func();
 }
