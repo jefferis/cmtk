@@ -92,9 +92,9 @@ public:
   }
   
   /// Copy between two device memory locations.
-  void CopyToDevice( const Self& srcPtrDevice, const size_t count )
+  void CopyOnDevice( const Self& srcPtrDevice, const size_t count )
   {
-    this->Superclass::CopyToDevice( srcPtrDevice, count * sizeof( T ) );
+    this->Superclass::CopyOnDevice( srcPtrDevice, count * sizeof( T ) );
   }
   
 private:

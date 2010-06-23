@@ -47,6 +47,8 @@ cmtk
 
 /// Resource managing class for raw memory allocated on a GPU device through CUDA.
 class DeviceMemoryBaseCUDA
+    /// Make sure this is never copied.
+  : private CannotBeCopied
 {
 public:
   /// This class.
@@ -77,7 +79,7 @@ public:
   void CopyFromDevice( void *const dstPtrHost, const size_t count ) const;
   
   /// Copy between two device memory locations.
-  void CopyToDevice( const Self& srcPtrDevice, const size_t count );
+  void CopyOnDevice( const Self& srcPtrDevice, const size_t count );
   
 protected:
   /// Constructor: allocate memory through CUDA.

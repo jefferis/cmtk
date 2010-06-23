@@ -69,7 +69,7 @@ DeviceMemoryBaseCUDA
 
 void
 DeviceMemoryBaseCUDA
-::CopyToDevice( const Self& srcPtrDevice, const size_t count )
+::CopyOnDevice( const Self& srcPtrDevice, const size_t count )
 {
   cudaMemcpy( this->m_PointerDevice, srcPtrDevice.m_PointerDevice, count, cudaMemcpyDeviceToDevice );
 }
