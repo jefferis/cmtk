@@ -33,19 +33,33 @@
 __global__
 void
 cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImageAddKernel
-( float* input, float* output, float* add, int numberOfPixels )
+( float* output, float* input, float* add, int numberOfPixels )
 {
   int tx = threadIdx.x;
 
   output[tx] = input[tx] + add[tx];
 }
 
+__global__
 void
-cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImage( float* input, float* output, float* biasAdd, int numberOfPixels )
+cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImageMulKernel
+( float* output, float* input, float* mul, int numberOfPixels )
+{
+  int tx = threadIdx.x;
+
+  output[tx] = input[tx] * mul[tx];
+}
+
+void
+cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImage( float* input, float* output, float* biasAdd, float* biasMul, int numberOfPixels )
 {
   dim3 dimBlock( 1, 1 );
   dim3 dimGrid( 1, 1 );
 
-  cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImageAddKernel<<<dimGrid,dimBlock>>>( input, output, biasAdd, numberOfPixels );
+  if ( biasMul )
+    cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImageMulKernel<<<dimGrid,dimBlock>>>( output, input, biasMul, numberOfPixels );
+
+  if ( biasAdd )
+    cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImageAddKernel<<<dimGrid,dimBlock>>>( output, input, biasAdd, numberOfPixels );
 }
 

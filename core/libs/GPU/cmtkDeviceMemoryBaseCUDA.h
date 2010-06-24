@@ -64,26 +64,26 @@ public:
   class bad_alloc : public std::bad_alloc {};
   
   /// Create new object and allocate memory.
-  Self::SmartPtr Alloc( const size_t nItems, const size_t itemSize )
+  Self::SmartPtr Alloc( const size_t nBytes, const size_t padToMultiple = 1 )
   {
-    return Self::SmartPtr( new Self( nItems, itemSize ) );
+    return Self::SmartPtr( new Self( nBytes, padToMultiple ) );
   }
   
   /// Destructor: free memory through CUDA.
   ~DeviceMemoryBaseCUDA();
 
   /// Copy from host to device memory.
-  void CopyToDevice( const void *const srcPtrHost, const size_t count );
+  void CopyToDevice( const void *const srcPtrHost, const size_t nBytes );
   
   /// Copy from device to host memory.
-  void CopyFromDevice( void *const dstPtrHost, const size_t count ) const;
+  void CopyFromDevice( void *const dstPtrHost, const size_t nBytes ) const;
   
   /// Copy between two device memory locations.
-  void CopyOnDevice( const Self& srcPtrDevice, const size_t count );
+  void CopyOnDevice( const Self& srcPtrDevice, const size_t nBytes );
   
 protected:
   /// Constructor: allocate memory through CUDA.
-  DeviceMemoryBaseCUDA( const size_t n /**!< Number of items to allocate */, const size_t size /**!< Item size, e.g., sizeof( float ) */ );
+  DeviceMemoryBaseCUDA( const size_t nBytes /**!< Number of bytes to allocate */, const size_t padToMultiple = 1 /**!< Pad to allocate nearest multiple of this many bytes. */ );
 
   /** Raw pointer to allocated device memory.
    * Note that this is a device memory space pointer, which is not valid in

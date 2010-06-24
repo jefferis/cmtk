@@ -37,9 +37,10 @@ cmtk
 {
 
 DeviceMemoryBaseCUDA
-::DeviceMemoryBaseCUDA( const size_t n, const size_t size )
+::DeviceMemoryBaseCUDA( const size_t nBytes, const size_t padToMultiple )
 {
-  if ( cudaMalloc( &(this->m_PointerDevice), n * size ) != cudaSuccess )
+  const size_t totalBytes = (((nBytes-1) / padToMultiple)+1) * padToMultiple;
+  if ( cudaMalloc( &(this->m_PointerDevice), totalBytes ) != cudaSuccess )
     {
     this->m_PointerDevice = NULL;
     throw( Self::bad_alloc() );
@@ -55,23 +56,23 @@ DeviceMemoryBaseCUDA
 
 void
 DeviceMemoryBaseCUDA
-::CopyToDevice( const void *const srcPtrHost, const size_t count )
+::CopyToDevice( const void *const srcPtrHost, const size_t nBytes )
 {
-  cudaMemcpy( this->m_PointerDevice, srcPtrHost, count, cudaMemcpyHostToDevice );
+  cudaMemcpy( this->m_PointerDevice, srcPtrHost, nBytes, cudaMemcpyHostToDevice );
 }
   
 void
 DeviceMemoryBaseCUDA
-::CopyFromDevice( void *const dstPtrHost, const size_t count ) const
+::CopyFromDevice( void *const dstPtrHost, const size_t nBytes ) const
 {
-  cudaMemcpy( dstPtrHost, this->m_PointerDevice, count, cudaMemcpyDeviceToHost );
+  cudaMemcpy( dstPtrHost, this->m_PointerDevice, nBytes, cudaMemcpyDeviceToHost );
 } 
 
 void
 DeviceMemoryBaseCUDA
-::CopyOnDevice( const Self& srcPtrDevice, const size_t count )
+::CopyOnDevice( const Self& srcPtrDevice, const size_t nBytes )
 {
-  cudaMemcpy( this->m_PointerDevice, srcPtrDevice.m_PointerDevice, count, cudaMemcpyDeviceToDevice );
+  cudaMemcpy( this->m_PointerDevice, srcPtrDevice.m_PointerDevice, nBytes, cudaMemcpyDeviceToDevice );
 }
 
 } // namespace cmtk

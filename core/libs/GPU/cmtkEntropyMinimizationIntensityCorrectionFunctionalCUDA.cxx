@@ -140,7 +140,8 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
 
   float* input = this->m_InputImageCUDA->GetDataOnDevice().Ptr();
   float* output = this->m_OutputDataCUDA->Ptr();
-  float* biasAdd = this->m_BiasFieldAddCUDA->Ptr();
+  float* biasAdd = this->m_BiasFieldAddCUDA ? this->m_BiasFieldAddCUDA->Ptr() : NULL;
+  float* biasMul = this->m_BiasFieldAddCUDA ? this->m_BiasFieldAddCUDA->Ptr() : NULL;
 
-  cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImage( input, output, biasAdd, this->m_NumberOfPixels );
+  cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImage( input, output, biasAdd, biasMul, this->m_NumberOfPixels );
 }
