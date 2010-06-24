@@ -33,6 +33,7 @@
 #include <cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.h>
 
 #include <cmtkThreadPool.h>
+#include <cmtkException.h>
 
 #include <algorithm>
 
@@ -79,6 +80,11 @@ EntropyMinimizationIntensityCorrectionFunctionalBase
 ::SetForegroundMask( const UniformVolume& foregroundMask )
 {
   const size_t maskPixels = foregroundMask.GetNumberOfPixels();
+
+  if ( maskPixels != this->m_NumberOfPixels )
+    {
+    throw Exception( "Number of mask pixels does not match number of input image pixels." );
+    }
 
   this->m_ForegroundMask.resize( maskPixels );
   if ( (this->m_SamplingDensity > 0) && (this->m_SamplingDensity < 1) )
