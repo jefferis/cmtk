@@ -73,10 +73,6 @@ EntropyMinimizationIntensityCorrectionFunctionalBase
 
   this->m_OutputImage = UniformVolume::SmartPtr( this->m_InputImage->CloneGrid() );
   this->m_OutputImage->CreateDataArray( TYPE_FLOAT );
-
-  this->PrecomputeRelativeCoordinates( this->m_RelativeX, inputImage->m_Dims[0] );
-  this->PrecomputeRelativeCoordinates( this->m_RelativeY, inputImage->m_Dims[1] );
-  this->PrecomputeRelativeCoordinates( this->m_RelativeZ, inputImage->m_Dims[2] );
 }
 
 void
@@ -171,15 +167,6 @@ EntropyMinimizationIntensityCorrectionFunctionalBase
       outputData->SetPaddingAt( ofs );
       }
     }
-}
-
-void
-EntropyMinimizationIntensityCorrectionFunctionalBase
-::PrecomputeRelativeCoordinates( std::vector<Types::Coordinate>& rVector, const int dim )
-{
-  rVector.resize( dim );
-  for ( int i = 0; i < dim; ++i )
-    rVector[i] = 2.0*(i-dim/2) / dim;
 }
 
 } // namespace cmtk
