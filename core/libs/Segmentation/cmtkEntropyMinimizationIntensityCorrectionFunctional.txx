@@ -62,15 +62,15 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   size_t ofs = 0;
   for ( int z = 0; z < dims[2]; ++z )
     {
-    const Types::Coordinate Z = 2.0*(z-dims[2]/2) / dims[2];
+    const Types::Coordinate Z = this->m_RelativeZ[z];
 
     for ( int y = 0; y < dims[1]; ++y )
       {
-      const Types::Coordinate Y = 2.0*(y-dims[1]/2) / dims[1];
+      const Types::Coordinate Y = this->m_RelativeY[y];
 
       for ( int x = 0; x < dims[0]; ++x, ++ofs )
 	{
-	const Types::Coordinate X = 2.0*(x-dims[0]/2) / dims[0];
+	const Types::Coordinate X =  this->m_RelativeX[x];
 
 	if ( this->m_ForegroundMask[ofs] )
 	  {
@@ -115,15 +115,15 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   ofs = 0;
   for ( int z = 0; z < dims[2]; ++z )
     {
-    const Types::Coordinate Z = 2.0*(z-dims[2]/2) / dims[2];
+    const Types::Coordinate Z = this->m_RelativeZ[z];
 
     for ( int y = 0; y < dims[1]; ++y )
       {
-      const Types::Coordinate Y = 2.0*(y-dims[1]/2) / dims[1];
+      const Types::Coordinate Y = this->m_RelativeY[y];
 
       for ( int x = 0; x < dims[0]; ++x, ++ofs )
 	{
-	const Types::Coordinate X = 2.0*(x-dims[0]/2) / dims[0];
+	const Types::Coordinate X = this->m_RelativeX[x];
 
 	if ( this->m_ForegroundMask[ofs] )
 	  {
@@ -168,15 +168,15 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   ofs = 0;
   for ( int z = 0; z < dims[2]; ++z )
     {
-    const Types::Coordinate Z = 2.0*(z-dims[2]/2) / dims[2];
+    const Types::Coordinate Z = this->m_RelativeZ[z];
 
     for ( int y = 0; y < dims[1]; ++y )
       {
-      const Types::Coordinate Y = 2.0*(y-dims[1]/2) / dims[1];
+      const Types::Coordinate Y = this->m_RelativeY[y];
 
       for ( int x = 0; x < dims[0]; ++x, ++ofs )
 	{
-	const Types::Coordinate X = 2.0*(x-dims[0]/2) / dims[0];
+	const Types::Coordinate X = this->m_RelativeX[x];
 
 	if ( this->m_ForegroundMask[ofs] )
 	  {
@@ -315,15 +315,15 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   size_t ofs = zFrom * dims[0] * dims[1];
   for ( int z = zFrom; z < zTo; ++z )
     {
-    const Types::Coordinate Z = 2.0*(z-dims[2]/2) / dims[2];
+    const Types::Coordinate Z = ThisConst->m_RelativeZ[z];
 
     for ( int y = 0; y < dims[1]; ++y )
       {
-      const Types::Coordinate Y = 2.0*(y-dims[1]/2) / dims[1];
+      const Types::Coordinate Y = ThisConst->m_RelativeY[y];
 
       for ( int x = 0; x < dims[0]; ++x, ++ofs )
 	{
-	const Types::Coordinate X = 2.0*(x-dims[0]/2) / dims[0];
+	const Types::Coordinate X = ThisConst->m_RelativeX[x];
 
 	Types::Coordinate normMul = 1.0;
 	Types::Coordinate normAdd = 0.0;
@@ -376,15 +376,15 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   size_t ofs = zFrom * dims[0] * dims[1];
   for ( int z = zFrom; z < zTo; ++z )
     {
-    const Types::Coordinate Z = 2.0*(z-dims[2]/2) / dims[2];
+    const Types::Coordinate Z = ThisConst->m_RelativeZ[z];
 
     for ( int y = 0; y < dims[1]; ++y )
       {
-      const Types::Coordinate Y = 2.0*(y-dims[1]/2) / dims[1];
+      const Types::Coordinate Y = ThisConst->m_RelativeY[y];
 
       for ( int x = 0; x < dims[0]; ++x, ++ofs )
 	{
-	const Types::Coordinate X = 2.0*(x-dims[0]/2) / dims[0];
+	const Types::Coordinate X = ThisConst->m_RelativeX[x];
 
 	Types::Coordinate normMul = 1.0;
 	Types::Coordinate normAdd = 0.0;
@@ -453,15 +453,15 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   size_t ofs = zFrom * dims[0] * dims[1];
   for ( int z = zFrom; z < zTo; ++z )
     {
-    const Types::Coordinate Z = 2.0*(z-dims[2]/2) / dims[2];
+    const Types::Coordinate Z = ThisConst->m_RelativeZ[z];
 
     for ( int y = 0; y < dims[1]; ++y )
       {
-      const Types::Coordinate Y = 2.0*(y-dims[1]/2) / dims[1];
+      const Types::Coordinate Y = ThisConst->m_RelativeY[y];
 
       for ( int x = 0; x < dims[0]; ++x, ++ofs )
 	{
-	const Types::Coordinate X = 2.0*(x-dims[0]/2) / dims[0];
+	const Types::Coordinate X = ThisConst->m_RelativeX[x];
 
 	Types::Coordinate normAdd = 0.0;
 	if ( This->m_ForegroundMask[ofs] )
@@ -506,15 +506,15 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   size_t ofs = zFrom * dims[0] * dims[1];
   for ( int z = zFrom; z < zTo; ++z )
     {
-    const Types::Coordinate Z = 2.0*(z-dims[2]/2) / dims[2];
+    const Types::Coordinate Z = ThisConst->m_RelativeZ[z];
 
     for ( int y = 0; y < dims[1]; ++y )
       {
-      const Types::Coordinate Y = 2.0*(y-dims[1]/2) / dims[1];
+      const Types::Coordinate Y = ThisConst->m_RelativeY[y];
 
       for ( int x = 0; x < dims[0]; ++x, ++ofs )
 	{
-	const Types::Coordinate X = 2.0*(x-dims[0]/2) / dims[0];
+	const Types::Coordinate X = ThisConst->m_RelativeX[x];
 
 	Types::Coordinate normAdd = 0.0;
 	Types::DataItem value;
@@ -576,15 +576,15 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   size_t ofs = zFrom * dims[0] * dims[1];
   for ( int z = zFrom; z < zTo; ++z )
     {
-    const Types::Coordinate Z = 2.0*(z-dims[2]/2) / dims[2];
+    const Types::Coordinate Z = ThisConst->m_RelativeZ[z];
 
     for ( int y = 0; y < dims[1]; ++y )
       {
-      const Types::Coordinate Y = 2.0*(y-dims[1]/2) / dims[1];
+      const Types::Coordinate Y = ThisConst->m_RelativeY[y];
 
       for ( int x = 0; x < dims[0]; ++x, ++ofs )
 	{
-	const Types::Coordinate X = 2.0*(x-dims[0]/2) / dims[0];
+	const Types::Coordinate X = ThisConst->m_RelativeX[x];
 
 	Types::Coordinate normMul = 1.0;
 	if ( This->m_ForegroundMask[ofs] )
@@ -629,15 +629,15 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
   size_t ofs = zFrom * dims[0] * dims[1];
   for ( int z = zFrom; z < zTo; ++z )
     {
-    const Types::Coordinate Z = 2.0*(z-dims[2]/2) / dims[2];
+    const Types::Coordinate Z = ThisConst->m_RelativeZ[z];
 
     for ( int y = 0; y < dims[1]; ++y )
       {
-      const Types::Coordinate Y = 2.0*(y-dims[1]/2) / dims[1];
+      const Types::Coordinate Y = ThisConst->m_RelativeY[y];
 
       for ( int x = 0; x < dims[0]; ++x, ++ofs )
 	{
-	const Types::Coordinate X = 2.0*(x-dims[0]/2) / dims[0];
+	const Types::Coordinate X = ThisConst->m_RelativeX[x];
 
 	Types::Coordinate normMul = 1.0;
 	Types::DataItem value;

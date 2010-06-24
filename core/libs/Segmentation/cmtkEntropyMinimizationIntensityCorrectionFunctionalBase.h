@@ -179,6 +179,15 @@ protected:
   /// Input intensity image range.
   Types::DataItem m_InputImageRange;
 
+  /// Pre-computed relative X coordinates for each pixel index i.
+  std::vector<Types::Coordinate> m_RelativeX;
+
+  /// Pre-computed relative Y coordinates for each pixel index j.
+  std::vector<Types::Coordinate> m_RelativeY;
+
+  /// Pre-computed relative Z coordinates for each pixel index k.
+  std::vector<Types::Coordinate> m_RelativeZ;
+
   /// Evolving corrected output image.
   UniformVolume::SmartPtr m_OutputImage;
 
@@ -245,6 +254,9 @@ private:
 
   /// Thread function: update output image.
   static void UpdateOutputImageThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
+
+  /// Pre-compute relative coordinates for one image coordinate axis.
+  void PrecomputeRelativeCoordinates( std::vector<Types::Coordinate>& rVector, const int dim );
 };
 
 //@}
