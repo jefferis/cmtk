@@ -70,6 +70,9 @@ public:
   /// Set input image.
   virtual void SetInputImage( UniformVolume::SmartConstPtr& inputImage );
 
+  /// Set foreground mask.
+  virtual void SetForegroundMask( const UniformVolume& foregroundMask );
+
   /// Set additive bias field.
   virtual void SetBiasFieldAdd( const UniformVolume& biasFieldAdd );
 
@@ -107,11 +110,14 @@ protected:
   /// Multiplicative bias field polynomial degree.
   size_t m_PolyDegreeMul;
 
+  /// Number of image pixels.
+  size_t m_NumberOfPixels;
+
   /// Input image in CUDA memory.
   UniformVolumeCUDA::SmartPtr m_InputImageCUDA;
 
-  /// Number of image pixels.
-  size_t m_NumberOfPixels;
+  /// Foreground mask in CUDA memory.
+  UniformVolumeCUDA::SmartPtr m_ForegroundMaskCUDA;
 
   /// Additive bias field in device memory.
   DeviceMemoryCUDA<float>::SmartPtr m_BiasFieldAddCUDA;
