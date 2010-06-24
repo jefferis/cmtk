@@ -42,6 +42,9 @@
 
 #include <iostream>
 #include <sstream>
+#include <algorithm>
+#include <iomanip>
+#include <iterator>
 
 int
 main( const int argc, const char* argv[] )
@@ -86,6 +89,9 @@ main( const int argc, const char* argv[] )
 
   xformList.SetEpsilon( inversionTolerance );
   
+  // Is VTK file stored in binary format?
+  bool binaryMode = false;
+
   // First, read everything up to and including the "POINTS" line and write everything to output unchanged
   std::string line;
   while ( !std::cin.eof() )
@@ -93,6 +99,9 @@ main( const int argc, const char* argv[] )
     std::getline( std::cin, line );
     std::cout << line << std::endl;
     
+    if ( ! line.compare( 0, 6, "BINARY" ) )
+      binaryMode = true;
+
     if ( ! line.compare( 0, 6, "POINTS" ) )
       break;
     }
@@ -110,21 +119,52 @@ main( const int argc, const char* argv[] )
     for ( size_t n = 0; n<npoints; ++n )
       {
       // Read original point coordinates from file
-      std::cin >> xyz[0] >> xyz[1] >> xyz[2];
+      if ( binaryMode )
+	{
+	float xyzFloat[3];
+	std::cin.read( reinterpret_cast<char*>( &xyzFloat[0] ), sizeof( xyzFloat ) );
+
+#ifndef WORDS_BIGENDIAN
+	for ( size_t i = 0; i<3; ++i )
+	  cmtk::Memory::ByteSwapInPlace( xyzFloat[i] );
+#endif // #ifndef WORDS_BIGENDIAN
+
+	xyz = cmtk::FixedVector<3,float>( xyzFloat );
+	}
+      else
+	{
+	std::cin >> xyz[0] >> xyz[1] >> xyz[2];
+	}
       
       // Apply transformation sequence
       const bool valid = xformList.ApplyInPlace( xyz );
       
       // Write transformed point to output
-      std::cout << xyz[0] << " " << xyz[1] << " " << xyz[2] << std::endl;
+      // Read original point coordinates from file
+      if ( binaryMode )
+	{
+	float xyzFloat[3] = { xyz[0], xyz[1], xyz[2] };
+
+#ifndef WORDS_BIGENDIAN
+	for ( size_t i = 0; i<3; ++i )
+	  cmtk::Memory::ByteSwapInPlace( xyzFloat[i] );
+#endif // #ifndef WORDS_BIGENDIAN
+
+	std::cout.write( reinterpret_cast<const char*>( &xyzFloat[0] ), sizeof( xyzFloat ) );
+	}
+      else
+	{
+	std::cout << xyz[0] << " " << xyz[1] << " " << xyz[2] << std::endl;
+	}
       }
     }
 
   // Everything else remains unchanged, so copy from input to output.
-  while ( !std::cin.eof() )
+  char c = std::cin.get();
+  while ( std::cin.good() )
     {
-    std::getline( std::cin, line );
-    std::cout << line << std::endl;
+    std::cout << c;
+    c = std::cin.get();
     }
 
   // if we got here, the program probably ran
