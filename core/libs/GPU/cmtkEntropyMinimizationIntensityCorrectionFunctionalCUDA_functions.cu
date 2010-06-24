@@ -53,7 +53,7 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImageMulKern
 void
 cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImage( float* input, float* output, float* biasAdd, float* biasMul, int numberOfPixels )
 {
-  dim3 dimBlock( 1, 1 );
+  dim3 dimBlock( 512, 1 );
   dim3 dimGrid( 1, 1 );
 
   if ( biasMul )

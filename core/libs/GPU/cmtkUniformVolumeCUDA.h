@@ -56,9 +56,9 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Create device representation of volume object.
-  static Self::SmartPtr Create( const UniformVolume& volume )
+  static Self::SmartPtr Create( const UniformVolume& volume, const size_t padDataToMultiple = 1 /**!< Allocate device memory for data as multiple of this value.*/ )
   {
-    return Self::SmartPtr( new Self( volume ) );
+    return Self::SmartPtr( new Self( volume, padDataToMultiple ) );
   }
   
   /// Return device representation of volume.
@@ -75,7 +75,7 @@ public:
 
 private:
   /// Constructor.
-  UniformVolumeCUDA( const UniformVolume& volume );
+  UniformVolumeCUDA( const UniformVolume& volume, const size_t padDataToMultiple = 1 );
 
   /// Managed device memory pointer to parameter block.
   DeviceMemoryCUDA<UniformVolumeOnDeviceCUDA>::SmartPtr m_OnDevice;
