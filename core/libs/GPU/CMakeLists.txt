@@ -31,8 +31,8 @@
 # Sources of non-templated classes.
 SET(cmtkGPU_SRCS_CUDA
   cmtkDeviceMemoryCUDA.cxx
-  cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA.cxx
-  cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA_kernels.cu
+  cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.cxx
+  cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.cu
   cmtkDeviceUniformVolume.cxx)
 
 IF(cmtkGPU_SRCS_CUDA)
