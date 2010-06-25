@@ -35,15 +35,15 @@
 
 #include <cmtkTestFunctionMap.h>
 
-#include "cmtkDeviceMemoryCUDATests.txx"
-#include "cmtkUniformVolumeCUDATests.txx"
+#include "cmtkDeviceMemoryTests.txx"
+#include "cmtkDeviceUniformVolumeTests.txx"
 
 int
 main( const int argc, const char* argv[] )
 {
   cmtk::TestFunctionMap map;
-  map.AddTest( "DeviceMemoryCUDA", &testDeviceMemoryCUDA );
-  map.AddTest( "UniformVolumeCUDA", &testUniformVolumeCUDA );
+  map.AddTest( "DeviceMemory", &testDeviceMemory );
+  map.AddTest( "DeviceUniformVolume", &testDeviceUniformVolume );
 
   // is test name given on command line?
   if ( argc < 2 )

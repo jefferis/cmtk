@@ -42,14 +42,14 @@ ENDFOREACH(D ${DRIVERS})
 IF(CMTK_USE_CUDA)
 
   # ==========================================
-  # Tests for "cmtk::DeviceMemoryCUDA" class
+  # Tests for "cmtk::DeviceMemory" class
   SET(Tests ${Tests} 
-    DeviceMemoryCUDA)
+    DeviceMemory)
   
   # ==========================================
-  # Tests for "cmtk::UniformVolumeCUDA" class
+  # Tests for "cmtk::UniformVolume" class
   SET(Tests ${Tests} 
-    UniformVolumeCUDA)
+    DeviceUniformVolume)
   
 ENDIF(CMTK_USE_CUDA)
 
