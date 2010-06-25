@@ -37,9 +37,10 @@ int
 testDeviceMemory()
 {
   size_t memFreeBefore, memTotalBefore;
-  if ( cudaMemGetInfo( &memFreeBefore, &memTotalBefore ) != cudaSuccess )
+  cudaError_t status = cudaMemGetInfo( &memFreeBefore, &memTotalBefore );
+  if ( status != cudaSuccess )
     {
-    std::cerr << "Call to cudaMemGetInfo() failed." << std::endl;
+    std::cerr << "Call to cudaMemGetInfo() failed with error " << status << std::endl;
     return 1;
     }
 
