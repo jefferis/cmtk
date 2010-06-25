@@ -28,11 +28,11 @@
 //
 */
 
-#include <cmtkUniformVolumeCUDA.h>
+#include <cmtkDeviceUniformVolume.h>
 
-// test "UniformVolumeCUDA" class
+// test "DeviceUniformVolume" class
 int
-testUniformVolumeCUDA()
+testDeviceUniformVolume()
 {
   try
     {
@@ -42,17 +42,17 @@ testUniformVolumeCUDA()
     cmtk::UniformVolume volume( (cmtk::FixedVector<3,int>( dims )), cmtk::FixedVector<3,float>( size ) );
 
     // first, try to create representation of actually empty volume.
-    cmtk::UniformVolumeCUDA::SmartPtr volumeCUDA = cmtk::UniformVolumeCUDA::Create( volume );
+    cmtk::DeviceUniformVolume::SmartPtr volumeDevice = cmtk::DeviceUniformVolume::Create( volume );
 
     // second, allocate pixel data and create another device instance.
     volume.CreateDataArray( cmtk::TYPE_INT );
-    volumeCUDA = cmtk::UniformVolumeCUDA::Create( volume );    
+    volumeDevice = cmtk::DeviceUniformVolume::Create( volume );    
 
     // third, change pixel data to double precision float and create another device instance.
     volume.CreateDataArray( cmtk::TYPE_DOUBLE );
-    volumeCUDA = cmtk::UniformVolumeCUDA::Create( volume );    
+    volumeDevice = cmtk::DeviceUniformVolume::Create( volume );    
     }
-  catch ( cmtk::DeviceMemoryBaseCUDA::bad_alloc )
+  catch ( std::bad_alloc )
     {
     std::cerr << "Caught bad_alloc()" << std::endl;
     return 1;

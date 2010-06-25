@@ -28,10 +28,10 @@
 //
 */
 
-#ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA_functions_included_
-#define __cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA_functions_included_
+#ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_functions_included_
+#define __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_functions_included_
 
-/// Execute UpdateOutputImage using CUDA kernel.
-void cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImage( float* input, float* output, float* biasAdd, float* biasMul, int numberOfPixels );
+/// Execute UpdateOutputImage using Device kernel.
+void cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( float* input, float* output, float* biasAdd, float* biasMul, int numberOfPixels );
 
-#endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA_functions_included_
+#endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_functions_included_

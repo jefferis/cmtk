@@ -36,7 +36,7 @@ DeviceUniformVolume( const UniformVolume& volume, const size_t padDataToMultiple
   this->m_OnDevice = DeviceMemory<UniformVolumeOnDevice>::Create( 1 );
 
   // set volume parameters
-  UniformVolumeOnDeviceCUDA onDevice;
+  UniformVolumeOnDevice onDevice;
   for ( size_t i = 0; i < 3; ++i )
     {
     onDevice.m_Dims[i] = volume.m_Dims[i];

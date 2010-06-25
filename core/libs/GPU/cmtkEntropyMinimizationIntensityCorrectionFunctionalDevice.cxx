@@ -80,7 +80,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice
 ::SetInputImage( UniformVolume::SmartConstPtr& inputImage )
 {
   this->Superclass::SetInputImage( inputImage );
-  this->m_InputImageDevice = UniformVolumeDevice::Create( *inputImage, 512 );
+  this->m_InputImageDevice = DeviceUniformVolume::Create( *inputImage, 512 );
   this->m_NumberOfPixels = inputImage->GetNumberOfPixels();
 }
 
@@ -89,7 +89,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice
 ::SetForegroundMask( const UniformVolume& foregroundMask )
 {
   this->Superclass::SetForegroundMask( foregroundMask );
-  this->m_ForegroundMaskDevice = UniformVolumeDevice::Create( foregroundMask, 512 );
+  this->m_ForegroundMaskDevice = DeviceUniformVolume::Create( foregroundMask, 512 );
 }
 
 void

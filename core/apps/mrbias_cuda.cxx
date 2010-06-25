@@ -41,7 +41,7 @@
 
 #include <cmtkBestDirectionOptimizer.h>
 #include <cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.h>
-#include <cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA.h>
+#include <cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.h>
 
 #include <math.h>
 #include <vector>
@@ -183,7 +183,7 @@ main( const int argc, const char *argv[] )
   cmtk::UniformVolume::SmartPtr outputImage;
   if ( ImportBiasFieldAdd || ImportBiasFieldMul )
     {
-    functional = FunctionalPointer( new cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA( 1, 1 ) );
+    functional = FunctionalPointer( new cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice( 1, 1 ) );
 
     if ( SamplingDensity > 0 )
       functional->SetSamplingDensity( SamplingDensity );
@@ -230,7 +230,7 @@ main( const int argc, const char *argv[] )
       const size_t degreeAdd = std::min<size_t>( polynomialDegree, PolynomialDegreeAdd );
       const size_t degreeMul = std::min<size_t>( polynomialDegree, PolynomialDegreeMul );
 
-      functional = FunctionalPointer( new cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA( degreeAdd, degreeMul ) );
+      functional = FunctionalPointer( new cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice( degreeAdd, degreeMul ) );
 //      functional = cmtk::CreateEntropyMinimizationIntensityCorrectionFunctional( degreeAdd, degreeMul, functional );
       functional->SetUseLogIntensities( LogIntensities );
 

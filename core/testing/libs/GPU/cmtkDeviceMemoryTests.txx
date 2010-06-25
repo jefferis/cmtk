@@ -28,13 +28,13 @@
 //
 */
 
-#include <cmtkDeviceMemoryCUDA.h>
+#include <cmtkDeviceMemory.h>
 
 #include <cuda_runtime_api.h>
 
-// test "DeviceMemoryCUDA" class
+// test "DeviceMemory" class
 int
-testDeviceMemoryCUDA()
+testDeviceMemory()
 {
   size_t memFreeBefore, memTotalBefore;
   if ( cudaMemGetInfo( &memFreeBefore, &memTotalBefore ) != cudaSuccess )
@@ -46,22 +46,22 @@ testDeviceMemoryCUDA()
   try
     {
     float floatHost[100];
-    cmtk::DeviceMemoryCUDA<float>::SmartPtr floatCUDA = cmtk::DeviceMemoryCUDA<float>::Create( 100 );
-    floatCUDA->CopyToDevice( floatHost, 100 );
-    floatCUDA->CopyFromDevice( floatHost, 100 );
+    cmtk::DeviceMemory<float>::SmartPtr floatDevice = cmtk::DeviceMemory<float>::Create( 100 );
+    floatDevice->CopyToDevice( floatHost, 100 );
+    floatDevice->CopyFromDevice( floatHost, 100 );
 
     int intHost[100];
-    cmtk::DeviceMemoryCUDA<int>::SmartPtr intCUDA = cmtk::DeviceMemoryCUDA<int>::Create( 100 );
-    intCUDA->CopyToDevice( intHost, 100 );
-    intCUDA->CopyFromDevice( intHost, 100 );
+    cmtk::DeviceMemory<int>::SmartPtr intDevice = cmtk::DeviceMemory<int>::Create( 100 );
+    intDevice->CopyToDevice( intHost, 100 );
+    intDevice->CopyFromDevice( intHost, 100 );
 
     char charHost[100];
-    cmtk::DeviceMemoryCUDA<char>::SmartPtr charCUDA = cmtk::DeviceMemoryCUDA<char>::Create( 100 );
-    charCUDA->CopyToDevice( charHost, 100 );
-    charCUDA->CopyFromDevice( charHost, 100 );
+    cmtk::DeviceMemory<char>::SmartPtr charDevice = cmtk::DeviceMemory<char>::Create( 100 );
+    charDevice->CopyToDevice( charHost, 100 );
+    charDevice->CopyFromDevice( charHost, 100 );
 
-    cmtk::DeviceMemoryCUDA<float>::SmartPtr float2CUDA = cmtk::DeviceMemoryCUDA<float>::Create( 100 );
-    float2CUDA->CopyOnDevice( *floatCUDA, 100 );
+    cmtk::DeviceMemory<float>::SmartPtr float2Device = cmtk::DeviceMemory<float>::Create( 100 );
+    float2Device->CopyOnDevice( *floatDevice, 100 );
 
     size_t memFreeAfter, memTotalAfter;
     if ( cudaMemGetInfo( &memFreeAfter, &memTotalAfter ) != cudaSuccess )
@@ -72,11 +72,11 @@ testDeviceMemoryCUDA()
 
     if ( memFreeBefore == memFreeAfter )
       {
-      std::cerr << "Free CUDA device memory constant despite allocation at" << memFreeBefore << std::endl;
+      std::cerr << "Free device memory constant despite allocation at" << memFreeBefore << std::endl;
       return 1;
       }  
     }
-  catch ( cmtk::DeviceMemoryBaseCUDA::bad_alloc )
+  catch ( std::bad_alloc )
     {
     std::cerr << "Caught bad_alloc()" << std::endl;
     return 1;
@@ -91,13 +91,13 @@ testDeviceMemoryCUDA()
 
   if ( memTotalBefore != memTotalAfter )
     {
-    std::cerr << "Total CUDA device memory changed by " << (memTotalBefore - memTotalAfter) << std::endl;
+    std::cerr << "Total device memory changed by " << (memTotalBefore - memTotalAfter) << std::endl;
     return 1;
     }
   
   if ( memFreeBefore != memFreeAfter )
     {
-    std::cerr << "Free CUDA device memory changed by" << (memFreeBefore - memFreeAfter) << std::endl;
+    std::cerr << "Free device memory changed by" << (memFreeBefore - memFreeAfter) << std::endl;
     return 1;
     }
   
