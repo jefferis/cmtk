@@ -28,12 +28,12 @@
 //
 */
 
-#ifndef __cmtkDeviceMemoryCUDA_h_included_
-#define __cmtkDeviceMemoryCUDA_h_included_
+#ifndef __cmtkDeviceMemory_h_included_
+#define __cmtkDeviceMemory_h_included_
 
 #include <cmtkconfig.h>
 
-#include "cmtkDeviceMemoryBaseCUDA.h"
+#include "cmtkDeviceMemoryCUDA.h"
 
 namespace
 cmtk
@@ -42,15 +42,15 @@ cmtk
 /** \addtogroup GPU */
 //@{
 
-/// Resource managing class template for type-specific memory allocated on a GPU device through CUDA.
-template<typename T>
-class DeviceMemoryCUDA :
+/// Resource managing class template for type-specific memory allocated on a GPU device through .
+template<typename T,class DeviceMemoryGPU = DeviceMemoryCUDA>
+class DeviceMemory :
     /// Inherit privately from raw pointer base class.
-    private DeviceMemoryBaseCUDA
+    private DeviceMemoryGPU
 {
 public:
   /// This class.
-  typedef DeviceMemoryCUDA<T> Self;
+  typedef DeviceMemory<T,DeviceMemoryGPU> Self;
   
   /// Smart pointer-to-const.
   typedef SmartConstPointer<Self> SmartConstPtr;
@@ -59,7 +59,7 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Base class.
-  typedef DeviceMemoryBaseCUDA Superclass;
+  typedef DeviceMemoryGPU Superclass;
 
   /// Create new object and allocate memory.
   static Self::SmartPtr Create( const size_t nItems, /**!< Allocate (at least) this many items of type T.*/ const size_t padToMultiple = 1 /**!< Pad number of allocated elements to next multiple of this number.*/  )
@@ -98,12 +98,12 @@ public:
   }
   
 private:
-  /// Constructor: allocate memory through CUDA.
-  DeviceMemoryCUDA( const size_t n, /**!< Number of items.*/ const size_t padToMultiple = 1 ) : DeviceMemoryBaseCUDA( n * sizeof( T ), padToMultiple * sizeof( T ) ) {}
+  /// Constructor: allocate memory through .
+  DeviceMemory( const size_t n, /**!< Number of items.*/ const size_t padToMultiple = 1 ) : DeviceMemoryGPU( n * sizeof( T ), padToMultiple * sizeof( T ) ) {}
 };
 
 //@}
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkDeviceMemoryCUDA_h_included_
+#endif // #ifndef __cmtkDeviceMemory_h_included_

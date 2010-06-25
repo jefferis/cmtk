@@ -28,8 +28,8 @@
 //
 */
 
-#ifndef __cmtkDeviceMemoryBaseCUDA_h_included_
-#define __cmtkDeviceMemoryBaseCUDA_h_included_
+#ifndef __cmtkDeviceMemoryCUDA_h_included_
+#define __cmtkDeviceMemoryCUDA_h_included_
 
 #include <cmtkconfig.h>
 
@@ -46,13 +46,13 @@ cmtk
 //@{
 
 /// Resource managing class for raw memory allocated on a GPU device through CUDA.
-class DeviceMemoryBaseCUDA
+class DeviceMemoryCUDA
     /// Make sure this is never copied.
   : private CannotBeCopied
 {
 public:
   /// This class.
-  typedef DeviceMemoryBaseCUDA Self;
+  typedef DeviceMemoryCUDA Self;
 
   /// Smart pointer-to-const.
   typedef SmartConstPointer<Self> SmartConstPtr;
@@ -63,15 +63,16 @@ public:
   /// Exception for failed allocation.
   class bad_alloc : public std::bad_alloc {};
   
+  /// Destructor: free memory through CUDA.
+  virtual ~DeviceMemoryCUDA();
+
+protected:
   /// Create new object and allocate memory.
   Self::SmartPtr Alloc( const size_t nBytes, const size_t padToMultiple = 1 )
   {
     return Self::SmartPtr( new Self( nBytes, padToMultiple ) );
   }
   
-  /// Destructor: free memory through CUDA.
-  ~DeviceMemoryBaseCUDA();
-
   /// Copy from host to device memory.
   void CopyToDevice( const void *const srcPtrHost, const size_t nBytes );
   
@@ -81,9 +82,8 @@ public:
   /// Copy between two device memory locations.
   void CopyOnDevice( const Self& srcPtrDevice, const size_t nBytes );
   
-protected:
   /// Constructor: allocate memory through CUDA.
-  DeviceMemoryBaseCUDA( const size_t nBytes /**!< Number of bytes to allocate */, const size_t padToMultiple = 1 /**!< Pad to allocate nearest multiple of this many bytes. */ );
+  DeviceMemoryCUDA( const size_t nBytes /**!< Number of bytes to allocate */, const size_t padToMultiple = 1 /**!< Pad to allocate nearest multiple of this many bytes. */ );
 
   /** Raw pointer to allocated device memory.
    * Note that this is a device memory space pointer, which is not valid in
@@ -96,4 +96,4 @@ protected:
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkDeviceMemoryBaseCUDA_h_included_
+#endif // #ifndef __cmtkDeviceMemoryCUDA_h_included_

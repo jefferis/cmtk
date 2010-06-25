@@ -28,8 +28,8 @@
 //
 */
 
-#ifndef __cmtkUniformVolumeOnDeviceCUDA_h_included_
-#define __cmtkUniformVolumeOnDeviceCUDA_h_included_
+#ifndef __cmtkUniformVolumeOnDevice_h_included_
+#define __cmtkUniformVolumeOnDevice_h_included_
 
 /** \addtogroup GPU */
 //@{
@@ -49,10 +49,10 @@ typedef struct
   
   /// Pointer to volume data.
   float* m_Data;
-} UniformVolumeOnDeviceCUDA;
+} UniformVolumeOnDevice;
 
 } // namespace cmtk
 
 //@}
 
-#endif // #ifndef __cmtkUniformVolumeOnDeviceCUDA_h_included_
+#endif // #ifndef __cmtkUniformVolumeOnDevice_h_included_

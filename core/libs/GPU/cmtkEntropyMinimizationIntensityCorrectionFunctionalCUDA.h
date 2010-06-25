@@ -37,8 +37,8 @@
 
 #include <cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.h>
 
-#include "cmtkDeviceMemoryCUDA.h"
-#include "cmtkUniformVolumeCUDA.h"
+#include "cmtkDeviceMemory.h"
+#include "cmtkDeviceUniformVolume.h"
 
 namespace
 cmtk
@@ -120,13 +120,13 @@ protected:
   UniformVolumeCUDA::SmartPtr m_ForegroundMaskCUDA;
 
   /// Additive bias field in device memory.
-  DeviceMemoryCUDA<float>::SmartPtr m_BiasFieldAddCUDA;
+  DeviceMemory<float>::SmartPtr m_BiasFieldAddCUDA;
 
   /// Multiplicative bias field.
-  DeviceMemoryCUDA<float>::SmartPtr m_BiasFieldMulCUDA;
+  DeviceMemory<float>::SmartPtr m_BiasFieldMulCUDA;
 
   /// Output image data.
-  DeviceMemoryCUDA<float>::SmartPtr m_OutputDataCUDA;
+  DeviceMemory<float>::SmartPtr m_OutputDataCUDA;
 
   /// Update polynomial correctionfactors from input image.
   virtual void UpdateCorrectionFactors();

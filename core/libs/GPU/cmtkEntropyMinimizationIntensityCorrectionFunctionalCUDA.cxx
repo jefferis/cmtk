@@ -33,7 +33,6 @@
 #include "cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA.h"
 #include "cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA_functions.h"
 
-#include "cmtkUniformVolumeCUDA.h"
 #include <cmtkPolynomial.h>
 
 size_t
@@ -305,7 +304,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
 ::UpdateBiasFieldAdd( const bool foregroundOnly )
 {
   if ( !this->m_BiasFieldAddCUDA )
-    this->m_BiasFieldAddCUDA = DeviceMemoryCUDA<float>::Create( this->m_NumberOfPixels, 512 );
+    this->m_BiasFieldAddCUDA = DeviceMemory<float>::Create( this->m_NumberOfPixels, 512 );
 }
 
 void
@@ -313,7 +312,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
 ::UpdateBiasFieldMul( const bool foregroundOnly )
 {
   if ( !this->m_BiasFieldMulCUDA )
-    this->m_BiasFieldMulCUDA = DeviceMemoryCUDA<float>::Create( this->m_NumberOfPixels, 512 );
+    this->m_BiasFieldMulCUDA = DeviceMemory<float>::Create( this->m_NumberOfPixels, 512 );
 }
 
 void
@@ -321,7 +320,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
 ::UpdateOutputImage( const bool foregroundOnly )
 {
   if ( !this->m_OutputDataCUDA )
-    this->m_OutputDataCUDA = DeviceMemoryCUDA<float>::Create( this->m_NumberOfPixels, 512 );
+    this->m_OutputDataCUDA = DeviceMemory<float>::Create( this->m_NumberOfPixels, 512 );
 
   float* input = this->m_InputImageCUDA->GetDataOnDevice().Ptr();
   float* output = this->m_OutputDataCUDA->Ptr();

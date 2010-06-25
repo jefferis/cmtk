@@ -28,7 +28,7 @@
 //
 */
 
-#include "cmtkDeviceMemoryBaseCUDA.h"
+#include "cmtkDeviceMemoryCUDA.h"
 
 #include <cuda_runtime_api.h>
 
@@ -36,8 +36,8 @@ namespace
 cmtk
 {
 
-DeviceMemoryBaseCUDA
-::DeviceMemoryBaseCUDA( const size_t nBytes, const size_t padToMultiple )
+DeviceMemoryCUDA
+::DeviceMemoryCUDA( const size_t nBytes, const size_t padToMultiple )
 {
   const size_t totalBytes = (((nBytes-1) / padToMultiple)+1) * padToMultiple;
   if ( cudaMalloc( &(this->m_PointerDevice), totalBytes ) != cudaSuccess )
@@ -47,29 +47,29 @@ DeviceMemoryBaseCUDA
     }
 }
 
-DeviceMemoryBaseCUDA
-::~DeviceMemoryBaseCUDA()
+DeviceMemoryCUDA
+::~DeviceMemoryCUDA()
 {
   if ( this->m_PointerDevice )
     cudaFree( this->m_PointerDevice );
 }
 
 void
-DeviceMemoryBaseCUDA
+DeviceMemoryCUDA
 ::CopyToDevice( const void *const srcPtrHost, const size_t nBytes )
 {
   cudaMemcpy( this->m_PointerDevice, srcPtrHost, nBytes, cudaMemcpyHostToDevice );
 }
   
 void
-DeviceMemoryBaseCUDA
+DeviceMemoryCUDA
 ::CopyFromDevice( void *const dstPtrHost, const size_t nBytes ) const
 {
   cudaMemcpy( dstPtrHost, this->m_PointerDevice, nBytes, cudaMemcpyDeviceToHost );
 } 
 
 void
-DeviceMemoryBaseCUDA
+DeviceMemoryCUDA
 ::CopyOnDevice( const Self& srcPtrDevice, const size_t nBytes )
 {
   cudaMemcpy( this->m_PointerDevice, srcPtrDevice.m_PointerDevice, nBytes, cudaMemcpyDeviceToDevice );

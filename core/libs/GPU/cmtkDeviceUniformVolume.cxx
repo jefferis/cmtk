@@ -28,12 +28,12 @@
 //
 */
 
-#include "cmtkUniformVolumeCUDA.h"
+#include "cmtkDeviceUniformVolume.h"
 
-cmtk::UniformVolumeCUDA::
-UniformVolumeCUDA( const UniformVolume& volume, const size_t padDataToMultiple )
+cmtk::DeviceUniformVolume::
+DeviceUniformVolume( const UniformVolume& volume, const size_t padDataToMultiple )
 {
-  this->m_OnDevice = DeviceMemoryCUDA<UniformVolumeOnDeviceCUDA>::Create( 1 );
+  this->m_OnDevice = DeviceMemory<UniformVolumeOnDevice>::Create( 1 );
 
   // set volume parameters
   UniformVolumeOnDeviceCUDA onDevice;
@@ -48,7 +48,7 @@ UniformVolumeCUDA( const UniformVolume& volume, const size_t padDataToMultiple )
     {
     TypedArray::SmartPtr floatData = volume.GetData()->Convert( TYPE_FLOAT );
 
-    this->m_OnDeviceData = DeviceMemoryCUDA<float>::Create( volume.GetNumberOfPixels(), padDataToMultiple );
+    this->m_OnDeviceData = DeviceMemory<float>::Create( volume.GetNumberOfPixels(), padDataToMultiple );
     this->m_OnDeviceData->CopyToDevice( static_cast<float*>( floatData->GetDataPtr() ), volume.GetNumberOfPixels() );
     
     // set device pointer to data, then copy whole structure to device.
