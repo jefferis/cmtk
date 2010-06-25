@@ -31,7 +31,7 @@
 #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_functions_included_
 #define __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_functions_included_
 
-/// Execute UpdateOutputImage using Device kernel.
-void cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( float* input, float* output, float* biasAdd, float* biasMul, int numberOfPixels );
+/// Update output image using either additive or multiplicative bias field.
+void cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( float* input, float* output, int order, int multiply );
 
 #endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_functions_included_

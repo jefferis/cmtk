@@ -40,7 +40,6 @@
 #include <cmtkVolumeIO.h>
 
 #include <cmtkBestDirectionOptimizer.h>
-#include <cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.h>
 #include <cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.h>
 
 #include <math.h>
@@ -52,9 +51,6 @@
 #endif
 
 bool Verbose = false;
-
-const char* ImportBiasFieldAdd = NULL;
-const char* ImportBiasFieldMul = NULL;
 
 const char* FNameBiasFieldAdd = NULL;
 const char* FNameBiasFieldMul = NULL;
@@ -123,9 +119,7 @@ main( const int argc, const char *argv[] )
     cl.AddOption( Key( "step-min" ), &StepMin, "Minimum (final) search step size." );
     cl.EndGroup();
 
-    cl.BeginGroup( "Bias Field I/O", "Import and Output of Bias Fields" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );;
-    cl.AddOption( Key( "import-bias-add" ), &ImportBiasFieldAdd, "Import additive bias field (disables optimization)." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddOption( Key( "import-bias-mul" ), &ImportBiasFieldMul, "Import multiplicative bias field (disables optimization)." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.BeginGroup( "Bias Field I/O", "Output of Bias Fields" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );;
     cl.AddOption( Key( "write-bias-add" ), &FNameBiasFieldAdd, "File name for output of additive bias field." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddOption( Key( "write-bias-mul" ), &FNameBiasFieldMul, "File name for output of multiplicative bias field." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.EndGroup();
@@ -181,103 +175,64 @@ main( const int argc, const char *argv[] )
   FunctionalPointer functional( NULL );
   
   cmtk::UniformVolume::SmartPtr outputImage;
-  if ( ImportBiasFieldAdd || ImportBiasFieldMul )
-    {
-    functional = FunctionalPointer( new cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice( 1, 1 ) );
 
+  cmtk::CoordinateVector v;
+  size_t polynomialDegreeFrom = std::max( PolynomialDegreeAdd, PolynomialDegreeMul );
+  const size_t polynomialDegreeTo = polynomialDegreeFrom + 1;
+  if ( IncrementalPolynomials )
+    polynomialDegreeFrom = 1;
+  
+  for ( size_t polynomialDegree = polynomialDegreeFrom; polynomialDegree < polynomialDegreeTo; ++polynomialDegree )
+    {
+    const size_t degreeAdd = std::min<size_t>( polynomialDegree, PolynomialDegreeAdd );
+    const size_t degreeMul = std::min<size_t>( polynomialDegree, PolynomialDegreeMul );
+    
+    functional = cmtk::CreateEntropyMinimizationIntensityCorrectionFunctionalDevice( degreeAdd, degreeMul, functional );
+    functional->SetUseLogIntensities( LogIntensities );
+    
     if ( SamplingDensity > 0 )
       functional->SetSamplingDensity( SamplingDensity );
-
+    
     if ( NumberOfHistogramBins )
       functional->SetNumberOfHistogramBins( NumberOfHistogramBins );
-
+    
     functional->SetInputImage( inputImage );
+    if ( maskImage && maskImage->GetData() )
+      {
+      functional->SetForegroundMask( *maskImage );
+      }
+    else
+      {
+      cmtk::StdErr << "ERROR: please use a mask image. Seriously.\n";
+      exit( 1 );
+      }
+    functional->GetParamVector( v );
     
-    if ( ImportBiasFieldAdd )
+    if ( Verbose )
       {
-      cmtk::UniformVolume::SmartPtr biasAdd( cmtk::VolumeIO::ReadOriented( ImportBiasFieldAdd, Verbose ) );
-      if ( ! biasAdd || ! biasAdd->GetData() )
-	{
-	cmtk::StdErr << "ERROR: Could not read additive bias field image " << ImportBiasFieldAdd << "\n";
-	exit( 1 );
-	}
-      functional->SetBiasFieldAdd( *biasAdd );
+      cmtk::StdErr.printf( "Estimating bias field with order %d multiplicative / %d additive polynomials.\nNumber of parameters: %d\n", degreeMul, degreeAdd, v.Dim );
       }
-
-    if ( ImportBiasFieldMul )
-      {
-      cmtk::UniformVolume::SmartPtr biasMul( cmtk::VolumeIO::ReadOriented( ImportBiasFieldMul, Verbose ) );
-      if ( ! biasMul || ! biasMul->GetData() )
-	{
-	cmtk::StdErr << "ERROR: Could not read multiplicative bias field image " << ImportBiasFieldMul << "\n";
-	exit( 1 );
-	}
-      functional->SetBiasFieldMul( *biasMul );
-      }
-
-    outputImage = functional->GetOutputImage( true /*update*/ );
-    }
-  else
-    {
-    cmtk::CoordinateVector v;
-    size_t polynomialDegreeFrom = std::max( PolynomialDegreeAdd, PolynomialDegreeMul );
-    const size_t polynomialDegreeTo = polynomialDegreeFrom + 1;
-    if ( IncrementalPolynomials )
-      polynomialDegreeFrom = 1;
     
-    for ( size_t polynomialDegree = polynomialDegreeFrom; polynomialDegree < polynomialDegreeTo; ++polynomialDegree )
+    if ( (PolynomialDegreeAdd > 0) || (PolynomialDegreeMul > 0) )
       {
-      const size_t degreeAdd = std::min<size_t>( polynomialDegree, PolynomialDegreeAdd );
-      const size_t degreeMul = std::min<size_t>( polynomialDegree, PolynomialDegreeMul );
-
-      functional = FunctionalPointer( new cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice( degreeAdd, degreeMul ) );
-//      functional = cmtk::CreateEntropyMinimizationIntensityCorrectionFunctional( degreeAdd, degreeMul, functional );
-      functional->SetUseLogIntensities( LogIntensities );
-
-      if ( SamplingDensity > 0 )
-	functional->SetSamplingDensity( SamplingDensity );
-      
-      if ( NumberOfHistogramBins )
-	functional->SetNumberOfHistogramBins( NumberOfHistogramBins );
-      
-      functional->SetInputImage( inputImage );
-      if ( maskImage && maskImage->GetData() )
+      try
 	{
-	functional->SetForegroundMask( *maskImage );
+	cmtk::Optimizer::SmartPtr optimizer;
+	optimizer = cmtk::Optimizer::SmartPtr( new cmtk::BestDirectionOptimizer );
+	optimizer->SetFunctional( functional );
+	
+	optimizer->Optimize( v, StepMax, StepMin );
 	}
-      else
+      catch ( const char* cp )
 	{
-	cmtk::StdErr << "ERROR: please use a mask image. Seriously.\n";
-	exit( 1 );
+	cmtk::StdErr << "EXCEPTION: " << cp << "\n";
 	}
-      functional->GetParamVector( v );
-      
-      if ( Verbose )
-	{
-	cmtk::StdErr.printf( "Estimating bias field with order %d multiplicative / %d additive polynomials.\nNumber of parameters: %d\n", degreeMul, degreeAdd, v.Dim );
-	}
-
-      if ( (PolynomialDegreeAdd > 0) || (PolynomialDegreeMul > 0) )
-	{
-	try
-	  {
-	  cmtk::Optimizer::SmartPtr optimizer;
-	  optimizer = cmtk::Optimizer::SmartPtr( new cmtk::BestDirectionOptimizer );
-	  optimizer->SetFunctional( functional );
-	  
-	  optimizer->Optimize( v, StepMax, StepMin );
-	  }
-	catch ( const char* cp )
-	  {
-	  cmtk::StdErr << "EXCEPTION: " << cp << "\n";
-	  }
-	v.Print();
-	}
+      v.Print();
       }
-
-    // make sure everything is according to optimum parameters
-    outputImage = functional->GetOutputImage( v, false/*foregroundOnly*/ );
     }
+  
+  // make sure everything is according to optimum parameters
+  outputImage = functional->GetOutputImage( v, false/*foregroundOnly*/ );
   
   if ( FNameOutputImage )
     {

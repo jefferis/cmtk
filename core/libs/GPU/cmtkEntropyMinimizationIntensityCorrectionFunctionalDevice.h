@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.h>
+#include <cmtkEntropyMinimizationIntensityCorrectionFunctional.h>
 
 #include "cmtkDeviceMemory.h"
 #include "cmtkDeviceUniformVolume.h"
@@ -47,22 +47,20 @@ cmtk
 /** \addtogroup GPU */
 //@{
 /// Base class for GPU implementation entropy-minimzation MR bias correction functional using Device.
+template<unsigned int NOrderAdd,unsigned int NOrderMul>
 class EntropyMinimizationIntensityCorrectionFunctionalDevice
     /// Inherit non-GPU base class.
-  : public EntropyMinimizationIntensityCorrectionFunctionalBase
+  : public EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul>
 {
 public:
   /// This class type.
-  typedef EntropyMinimizationIntensityCorrectionFunctionalDevice Self;
+  typedef EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul> Self;
 
   /// Pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
 
   /// Superclass type.
-  typedef EntropyMinimizationIntensityCorrectionFunctionalBase Superclass;
-
-  /// Constructor.
-  EntropyMinimizationIntensityCorrectionFunctionalDevice( const size_t degreeAdd = 0, const size_t degreeMul = 0 ) : m_PolyDegreeAdd( degreeAdd ), m_PolyDegreeMul( degreeMul ) {}
+  typedef EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul> Superclass;
 
   /// Virtual destructor.
   virtual ~EntropyMinimizationIntensityCorrectionFunctionalDevice() {}
@@ -70,83 +68,46 @@ public:
   /// Set input image.
   virtual void SetInputImage( UniformVolume::SmartConstPtr& inputImage );
 
-  /// Set foreground mask.
-  virtual void SetForegroundMask( const UniformVolume& foregroundMask );
-
-  /// Set additive bias field.
-  virtual void SetBiasFieldAdd( const UniformVolume& biasFieldAdd );
-
-  /// Set multiplicative bias field.
-  virtual void SetBiasFieldMul( const UniformVolume& biasFieldMul );
-
-  /// Set multiplicative bias field polynomial degree.
-  virtual void SetDegreeMul( const size_t degree )
-  {
-    this->m_PolyDegreeMul = degree;
-  }
-
-  /// Set multiplicative bias field polynomial degree.
-  virtual void SetDegreeAdd( const size_t degree )
-  {
-    this->m_PolyDegreeAdd = degree;
-  }
-
-  /// Get number of additive monomials.
-  virtual size_t GetNumberOfMonomialsAdd() const;
-
-  /// Get number of multiplicative monomials.
-  virtual size_t GetNumberOfMonomialsMul() const;
-
-  /// Return parameter vector length.
-  virtual size_t ParamVectorDim() const
-  {
-    return GetNumberOfMonomialsAdd() + GetNumberOfMonomialsMul();
-  }
-  
 protected:
-  /// Additive bias field polynomial degree.
-  size_t m_PolyDegreeAdd;
-
-  /// Multiplicative bias field polynomial degree.
-  size_t m_PolyDegreeMul;
-
   /// Number of image pixels.
   size_t m_NumberOfPixels;
 
   /// Input image in device memory.
   DeviceUniformVolume::SmartPtr m_InputImageDevice;
 
-  /// Foreground mask in Device memory.
-  DeviceUniformVolume::SmartPtr m_ForegroundMaskDevice;
-
-  /// Additive bias field in device memory.
-  DeviceMemory<float>::SmartPtr m_BiasFieldAddDevice;
-
-  /// Multiplicative bias field.
-  DeviceMemory<float>::SmartPtr m_BiasFieldMulDevice;
-
   /// Output image data.
   DeviceMemory<float>::SmartPtr m_OutputDataDevice;
-
-  /// Update polynomial correctionfactors from input image.
-  virtual void UpdateCorrectionFactors();
-
-  /// Jointly update both bias images.
-  virtual void UpdateBiasFields( const bool foregroundOnly = true );
-
-  /// Update additive bias image.
-  virtual void UpdateBiasFieldAdd( const bool foregroundOnly = true );
-
-  /// Update additive bias image.
-  virtual void UpdateBiasFieldMul( const bool foregroundOnly = true );
 
   /// Update output image.
   virtual void UpdateOutputImage( const bool foregroundOnly = true );
 };
 
+/// Create functional templated over polynomial degrees.
+template<unsigned int NDegreeMul>
+EntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr
+CreateEntropyMinimizationIntensityCorrectionFunctionalDevice
+( const unsigned int polynomialDegreeAdd );
+
+/// Create functional templated over polynomial degrees.
+EntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr
+CreateEntropyMinimizationIntensityCorrectionFunctionalDevice
+( const unsigned int polynomialDegreeAdd, const unsigned int polynomialDegreeMul );
+
+/** Create functional templated over polynomial degrees with initialization from old functional.
+ * This function creates a new functional and copies the polynomial coefficients from an existing
+ * functional of equal or lower polynomial degrees into the correct locations of the new functional's
+ * parameter vector. This is for incremental computation.
+ */
+EntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr
+CreateEntropyMinimizationIntensityCorrectionFunctionalDevice
+( const unsigned int polynomialDegreeAdd, const unsigned int polynomialDegreeMul,
+  EntropyMinimizationIntensityCorrectionFunctionalBase::SmartPtr oldFunctional );
+
 //@}
 
 } // namespace cmtk
+
+#include "cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.txx"
 
 #endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_h_included_
 
