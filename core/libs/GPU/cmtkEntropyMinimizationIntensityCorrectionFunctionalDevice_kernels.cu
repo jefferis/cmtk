@@ -61,26 +61,13 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( flo
     cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImageAddKernel<<<dimGrid,dimBlock>>>( output, input, biasAdd );
 }
 
-__global__
-void
-cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAComputeMonomials1
-( float* output, float* weights, int slice, int dims0, int dims1, int dims2 )
-{
-  int x = blockIdx.x * 16 + threadIdx.x;
-  int y = blockIdx.y * 16 + threadIdx.y;
-  int z = threadIdx.z + slice;
-
-  int offset = x + dims0 * (y + dims1 * z );
-  output[offset] +=
-    weights[0] * 2.0 * (x-dims0/2) / dims0 + 
-    weights[1] * 2.0 * (y-dims1/2) / dims1 +
-    weights[2] * 2.0 * (z-dims2/2) / dims2;
-}
+__constant__ float weights[19];
+__constant__ float correction[19];
 
 __global__
 void
-cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAComputeMonomials2
-( float* output, float* weights, int slice, int dims0, int dims1, int dims2 )
+cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAComputeMonomials
+( float* output, int slice, int dims0, int dims1, int dims2 )
 {
   int x = blockIdx.x * 16 + threadIdx.x;
   int y = blockIdx.y * 16 + threadIdx.y;
@@ -91,38 +78,28 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAComputeMonomials2
   float Z = 2.0 * (z-dims2/2) / dims2;
 
   int offset = x + dims0 * (y + dims1 * (z+slice) );
-  output[offset] +=
-    weights[0] * X * X +
-    weights[1] * X * Y +
-    weights[2] * X * Z +
-    weights[3] * Y * Y +
-    weights[4] * Y * Z +
-    weights[5] * Z * Z;
-}
+  float bias =
+    weights[0] * (X - correction[0]) + 
+    weights[1] * (Y - correction[1]) +
+    weights[2] * (Z - correction[2]);
 
-__global__
-void
-cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAComputeMonomials3
-( float* output, float* weights, int slice, int dims0, int dims1, int dims2 )
-{
-  int x = blockIdx.x * 16 + threadIdx.x;
-  int y = blockIdx.y * 16 + threadIdx.y;
-  int z = threadIdx.z + slice;
-
-  float X = 2.0 * (x-dims0/2) / dims0;
-  float Y = 2.0 * (y-dims1/2) / dims1;
-  float Z = 2.0 * (z-dims2/2) / dims2;
-
-  int offset = x + dims0 * (y + dims1 * (z+slice) );
-  output[offset] +=
-    weights[ 0] * X * X * X +
-    weights[ 1] * X * X * Y +
-    weights[ 2] * X * X * Z +
-    weights[ 3] * X * Y * Y +
-    weights[ 4] * X * Y * Z +
-    weights[ 5] * X * Z * Z +
-    weights[ 6] * Y * Y * Y +
-    weights[ 7] * Y * Y * Z +
-    weights[ 8] * Y * Z * Z +
-    weights[ 9] * Z * Z * Z;
+  bias +=
+    weights[3] * (X * X - correction[3])+
+    weights[4] * (X * Y - correction[4])+
+    weights[5] * (X * Z - correction[5]) +
+    weights[6] * (Y * Y - correction[6]) +
+    weights[7] * (Y * Z - correction[7]) +
+    weights[8] * (Z * Z - correction[8]);
+  
+  bias +=
+    weights[ 9] * (X * X * X - correction[ 9]) +
+    weights[10] * (X * X * Y - correction[10]) +
+    weights[11] * (X * X * Z - correction[11]) +
+    weights[12] * (X * Y * Y - correction[12]) +
+    weights[13] * (X * Y * Z - correction[13]) +
+    weights[14] * (X * Z * Z - correction[14]) +
+    weights[15] * (Y * Y * Y - correction[15]) +
+    weights[16] * (Y * Y * Z - correction[16]) +
+    weights[17] * (Y * Z * Z - correction[17]) +
+    weights[18] * (Z * Z * Z - correction[18]);
 }
