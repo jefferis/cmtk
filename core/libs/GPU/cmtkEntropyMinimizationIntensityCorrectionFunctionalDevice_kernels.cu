@@ -35,7 +35,7 @@ __constant__ float correction[19];
 
 __global__
 void
-cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAComputeMonomials
+cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel
 ( float* output, float* input, int degree, int multiply, int slice, int dims0, int dims1, int dims2 )
 {
   int x = blockIdx.x * 16 + threadIdx.x;
@@ -94,6 +94,15 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAComputeMonomials
 }
 
 void
-cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( float* input, float* output, int order, int multiply )
-{
+cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( float* output, float* input, const int dims0, const int dims1, const int dims2, const int degree, const int multiply )
+{ 
+  dim3 dimBlock( 16, 16, 8 );
+
+  const int planesPerKernel = 1+((dims2-1)/8);
+  dim3 dimGrid( 1+((dims0-1)/16), 1+((dims1-1)/16), planesPerKernel ); 	 
+  
+  for ( int slice = 0; slice < dims2; slice += planesPerKernel )
+    {
+      cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel<<<dimGrid,dimBlock>>>( output, input, degree, multiply, slice, dims0, dims1, dims2 );
+    }
 }

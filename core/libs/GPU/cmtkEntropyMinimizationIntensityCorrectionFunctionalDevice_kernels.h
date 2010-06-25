@@ -32,6 +32,6 @@
 #define __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_functions_included_
 
 /// Update output image using either additive or multiplicative bias field.
-void cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( float* input, float* output, int order, int multiply );
+void cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( float* output, float* input, const int dims0, const int dims1, const int dims2, const int degree, const int multiply );
 
 #endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_functions_included_

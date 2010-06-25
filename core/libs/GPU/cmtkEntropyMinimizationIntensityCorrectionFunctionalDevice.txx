@@ -54,14 +54,18 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul
   float* input = this->m_InputImageDevice->GetDataOnDevice().Ptr();
   float* output = this->m_OutputDataDevice->Ptr();
 
+  const int dims0 = this->m_InputImage->m_Dims[0];
+  const int dims1 = this->m_InputImage->m_Dims[1];
+  const int dims2 = this->m_InputImage->m_Dims[2];
+
   if ( Self::PolynomialTypeMul::NumberOfMonomials )
     {
-    cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( input, output, NOrderMul, 1 /*multiply*/ );
+    cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( output, input, dims0, dims1, dims2, NOrderMul, 1 /*multiply*/ );
     input = output; // if additive bias also, apply to output of multiplicative stage
     }
 
   if ( Self::PolynomialTypeAdd::NumberOfMonomials )
     {
-    cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( input, output, NOrderAdd, 0 /*multiply*/ );
+    cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( output, input, dims0, dims1, dims2, NOrderAdd, 0 /*multiply*/ );
     }
 }
