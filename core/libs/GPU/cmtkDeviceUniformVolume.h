@@ -62,7 +62,7 @@ public:
   }
   
   /// Return device representation of volume.
-  DeviceMemory<UniformVolumeOnDeviceCUDA>& GetOnDevice()
+  DeviceMemory<UniformVolumeOnDevice>& GetOnDevice()
   {
     return *(this->m_OnDevice);
   }
@@ -78,7 +78,7 @@ private:
   DeviceUniformVolume( const UniformVolume& volume, const size_t padDataToMultiple = 1 );
 
   /// Managed device memory pointer to parameter block.
-  DeviceMemory<UniformVolumeOnDeviceCUDA>::SmartPtr m_OnDevice;
+  DeviceMemory<UniformVolumeOnDevice>::SmartPtr m_OnDevice;
 
   /// Managed device memory pointer to volume data.
   DeviceMemory<float>::SmartPtr m_OnDeviceData;

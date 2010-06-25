@@ -30,13 +30,13 @@
 //
 */
 
-#include "cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA.h"
-#include "cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA_kernels.h"
+#include "cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.h"
+#include "cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.h"
 
 #include <cmtkPolynomial.h>
 
 size_t
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice
 ::GetNumberOfMonomialsAdd() const 
 {
   switch ( this->m_PolyDegreeAdd )
@@ -56,7 +56,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
 }
 
 size_t
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice
 ::GetNumberOfMonomialsMul() const 
 {
   switch ( this->m_PolyDegreeMul )
@@ -76,40 +76,40 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
 }
 
 void
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice
 ::SetInputImage( UniformVolume::SmartConstPtr& inputImage )
 {
   this->Superclass::SetInputImage( inputImage );
-  this->m_InputImageCUDA = UniformVolumeCUDA::Create( *inputImage, 512 );
+  this->m_InputImageDevice = UniformVolumeDevice::Create( *inputImage, 512 );
   this->m_NumberOfPixels = inputImage->GetNumberOfPixels();
 }
 
 void
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice
 ::SetForegroundMask( const UniformVolume& foregroundMask )
 {
   this->Superclass::SetForegroundMask( foregroundMask );
-  this->m_ForegroundMaskCUDA = UniformVolumeCUDA::Create( foregroundMask, 512 );
+  this->m_ForegroundMaskDevice = UniformVolumeDevice::Create( foregroundMask, 512 );
 }
 
 void
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice
 ::SetBiasFieldAdd( const UniformVolume& biasFieldAdd )
 {
   this->Superclass::SetBiasFieldAdd( biasFieldAdd );
-  this->m_BiasFieldAddCUDA->CopyToDevice( this->m_BiasFieldAdd->GetDataPtrTemplate(), this->m_BiasFieldAdd->GetDataSize() );
+  this->m_BiasFieldAddDevice->CopyToDevice( this->m_BiasFieldAdd->GetDataPtrTemplate(), this->m_BiasFieldAdd->GetDataSize() );
 }
 
 void
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice
 ::SetBiasFieldMul( const UniformVolume& biasFieldMul )
 {
   this->Superclass::SetBiasFieldMul( biasFieldMul );
-  this->m_BiasFieldMulCUDA->CopyToDevice( this->m_BiasFieldMul->GetDataPtrTemplate(), this->m_BiasFieldMul->GetDataSize() );
+  this->m_BiasFieldMulDevice->CopyToDevice( this->m_BiasFieldMul->GetDataPtrTemplate(), this->m_BiasFieldMul->GetDataSize() );
 }
   
 void
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice
 ::UpdateCorrectionFactors()
 {
 #if 0
@@ -292,7 +292,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
 }
 
 void
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice
 ::UpdateBiasFields( const bool foregroundOnly )
 {
   this->UpdateBiasFieldAdd( foregroundOnly );
@@ -300,32 +300,32 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
 }
 
 void
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice
 ::UpdateBiasFieldAdd( const bool foregroundOnly )
 {
-  if ( !this->m_BiasFieldAddCUDA )
-    this->m_BiasFieldAddCUDA = DeviceMemory<float>::Create( this->m_NumberOfPixels, 512 );
+  if ( !this->m_BiasFieldAddDevice )
+    this->m_BiasFieldAddDevice = DeviceMemory<float>::Create( this->m_NumberOfPixels, 512 );
 }
 
 void
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice
 ::UpdateBiasFieldMul( const bool foregroundOnly )
 {
-  if ( !this->m_BiasFieldMulCUDA )
-    this->m_BiasFieldMulCUDA = DeviceMemory<float>::Create( this->m_NumberOfPixels, 512 );
+  if ( !this->m_BiasFieldMulDevice )
+    this->m_BiasFieldMulDevice = DeviceMemory<float>::Create( this->m_NumberOfPixels, 512 );
 }
 
 void
-cmtk::EntropyMinimizationIntensityCorrectionFunctionalCUDA
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice
 ::UpdateOutputImage( const bool foregroundOnly )
 {
-  if ( !this->m_OutputDataCUDA )
-    this->m_OutputDataCUDA = DeviceMemory<float>::Create( this->m_NumberOfPixels, 512 );
+  if ( !this->m_OutputDataDevice )
+    this->m_OutputDataDevice = DeviceMemory<float>::Create( this->m_NumberOfPixels, 512 );
 
-  float* input = this->m_InputImageCUDA->GetDataOnDevice().Ptr();
-  float* output = this->m_OutputDataCUDA->Ptr();
-  float* biasAdd = this->m_BiasFieldAddCUDA ? this->m_BiasFieldAddCUDA->Ptr() : NULL;
-  float* biasMul = this->m_BiasFieldAddCUDA ? this->m_BiasFieldAddCUDA->Ptr() : NULL;
+  float* input = this->m_InputImageDevice->GetDataOnDevice().Ptr();
+  float* output = this->m_OutputDataDevice->Ptr();
+  float* biasAdd = this->m_BiasFieldAddDevice ? this->m_BiasFieldAddDevice->Ptr() : NULL;
+  float* biasMul = this->m_BiasFieldAddDevice ? this->m_BiasFieldAddDevice->Ptr() : NULL;
 
-  cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDAUpdateOutputImage( input, output, biasAdd, biasMul, this->m_NumberOfPixels );
+  cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( input, output, biasAdd, biasMul, this->m_NumberOfPixels );
 }

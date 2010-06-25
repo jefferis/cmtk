@@ -30,8 +30,8 @@
 //
 */
 
-#ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA_h_included_
-#define __cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA_h_included_
+#ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_h_included_
+#define __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_h_included_
 
 #include <cmtkconfig.h>
 
@@ -46,14 +46,14 @@ cmtk
 
 /** \addtogroup GPU */
 //@{
-/// Base class for GPU implementation entropy-minimzation MR bias correction functional using CUDA.
-class EntropyMinimizationIntensityCorrectionFunctionalCUDA
+/// Base class for GPU implementation entropy-minimzation MR bias correction functional using Device.
+class EntropyMinimizationIntensityCorrectionFunctionalDevice
     /// Inherit non-GPU base class.
   : public EntropyMinimizationIntensityCorrectionFunctionalBase
 {
 public:
   /// This class type.
-  typedef EntropyMinimizationIntensityCorrectionFunctionalCUDA Self;
+  typedef EntropyMinimizationIntensityCorrectionFunctionalDevice Self;
 
   /// Pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
@@ -62,10 +62,10 @@ public:
   typedef EntropyMinimizationIntensityCorrectionFunctionalBase Superclass;
 
   /// Constructor.
-  EntropyMinimizationIntensityCorrectionFunctionalCUDA( const size_t degreeAdd = 0, const size_t degreeMul = 0 ) : m_PolyDegreeAdd( degreeAdd ), m_PolyDegreeMul( degreeMul ) {}
+  EntropyMinimizationIntensityCorrectionFunctionalDevice( const size_t degreeAdd = 0, const size_t degreeMul = 0 ) : m_PolyDegreeAdd( degreeAdd ), m_PolyDegreeMul( degreeMul ) {}
 
   /// Virtual destructor.
-  virtual ~EntropyMinimizationIntensityCorrectionFunctionalCUDA() {}
+  virtual ~EntropyMinimizationIntensityCorrectionFunctionalDevice() {}
 
   /// Set input image.
   virtual void SetInputImage( UniformVolume::SmartConstPtr& inputImage );
@@ -113,20 +113,20 @@ protected:
   /// Number of image pixels.
   size_t m_NumberOfPixels;
 
-  /// Input image in CUDA memory.
-  UniformVolumeCUDA::SmartPtr m_InputImageCUDA;
+  /// Input image in device memory.
+  DeviceUniformVolume::SmartPtr m_InputImageDevice;
 
-  /// Foreground mask in CUDA memory.
-  UniformVolumeCUDA::SmartPtr m_ForegroundMaskCUDA;
+  /// Foreground mask in Device memory.
+  DeviceUniformVolume::SmartPtr m_ForegroundMaskDevice;
 
   /// Additive bias field in device memory.
-  DeviceMemory<float>::SmartPtr m_BiasFieldAddCUDA;
+  DeviceMemory<float>::SmartPtr m_BiasFieldAddDevice;
 
   /// Multiplicative bias field.
-  DeviceMemory<float>::SmartPtr m_BiasFieldMulCUDA;
+  DeviceMemory<float>::SmartPtr m_BiasFieldMulDevice;
 
   /// Output image data.
-  DeviceMemory<float>::SmartPtr m_OutputDataCUDA;
+  DeviceMemory<float>::SmartPtr m_OutputDataDevice;
 
   /// Update polynomial correctionfactors from input image.
   virtual void UpdateCorrectionFactors();
@@ -148,5 +148,5 @@ protected:
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA_h_included_
+#endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_h_included_
 
