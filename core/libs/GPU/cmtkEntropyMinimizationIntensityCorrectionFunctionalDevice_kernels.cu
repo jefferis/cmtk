@@ -30,6 +30,8 @@
 
 #include "cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.h"
 
+#include <cstdio>
+
 __constant__ float deviceWeights[19];
 __constant__ float deviceCorrections[19];
 
@@ -99,13 +101,13 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
 { 
   dim3 dimBlock( 16, 16, 8 );
 
-  const int planesPerKernel = 1+((dims2-1)/8);
-  dim3 dimGrid( 1+((dims0-1)/16), 1+((dims1-1)/16), planesPerKernel ); 	 
+  const int nSlices = 1+((dims2-1)/8);
+  dim3 dimGrid( 1+((dims0-1)/16), 1+((dims1-1)/16), nSlices );
 
   cudaMemcpy( deviceWeights, weights, nargs * sizeof( *weights ), cudaMemcpyHostToDevice );
   cudaMemcpy( deviceCorrections, corrections, nargs * sizeof( *corrections ), cudaMemcpyHostToDevice );
   
-  for ( int slice = 0; slice < dims2; slice += planesPerKernel )
+  for ( int slice = 0; slice < dims2; slice += 8 )
     {
       cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel<<<dimGrid,dimBlock>>>( output, input, degree, multiply, slice, dims0, dims1, dims2 );
     }

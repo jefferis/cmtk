@@ -68,6 +68,20 @@ public:
   /// Set input image.
   virtual void SetInputImage( UniformVolume::SmartConstPtr& inputImage );
 
+  /// GPU-based functional evaluation for given parameter vector.
+  virtual typename Self::ReturnType EvaluateAt( CoordinateVector& v )
+  {
+    this->SetParamVector( v );
+    this->UpdateOutputImageDevice();
+    return this->Evaluate();
+  }
+
+  /** GPU-based implementation of gradient evaluation.
+   * This function uses UpdateOutputImageDevice to update the output image using
+   * the computation device.
+   */
+  virtual typename Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step );
+
 protected:
   /// Number of image pixels.
   size_t m_NumberOfPixels;
@@ -79,7 +93,7 @@ protected:
   DeviceMemory<float>::SmartPtr m_OutputDataDevice;
 
   /// Update output image.
-  virtual void UpdateOutputImage( const bool foregroundOnly = true );
+  void UpdateOutputImageDevice();
 };
 
 /// Create functional templated over polynomial degrees.

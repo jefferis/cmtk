@@ -43,10 +43,56 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul
   this->m_NumberOfPixels = inputImage->GetNumberOfPixels();
 }
 
+#pragma GCC diagnostic ignored "-Wtype-limits"
+template<unsigned int NOrderAdd,unsigned int NOrderMul>
+typename cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul>::ReturnType
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul>
+::EvaluateWithGradient
+( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step )
+{ 
+  const typename Self::ReturnType baseValue = this->EvaluateAt( v );
+  
+  for ( size_t dim = 0; dim < this->VariableParamVectorDim(); ++dim ) 
+    {
+    const Types::Coordinate stepScale = this->GetParamStep( dim, step );
+    if ( stepScale <= 0 ) 
+      {
+      g[dim] = 0;
+      } 
+    else
+      {
+      const Types::Coordinate v0 = v[dim];
+      
+      v[dim] += stepScale;
+      this->SetParamVector( v );
+      this->UpdateOutputImageDevice();
+      const typename Self::ReturnType upper = this->Evaluate();
+      
+      v[dim] = v0 - stepScale;
+      this->SetParamVector( v );
+      this->UpdateOutputImageDevice();
+      const  typename Self::ReturnType lower = this->Evaluate();
+      
+      v[dim] = v0;
+      
+      if ( (upper > baseValue) || (lower > baseValue) ) 
+	{
+	g[dim] = upper-lower;
+	} 
+      else 
+	{
+	g[dim] = 0;
+	}
+      }
+    }  
+
+  return baseValue;
+}
+
 template<unsigned int NOrderAdd,unsigned int NOrderMul>
 void
 cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul>
-::UpdateOutputImage( const bool foregroundOnly )
+::UpdateOutputImageDevice()
 {
   if ( !this->m_OutputDataDevice )
     this->m_OutputDataDevice = DeviceMemory<float>::Create( this->m_NumberOfPixels, 512 );
@@ -80,4 +126,6 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul
       }
     cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( output, input, dims0, dims1, dims2, NOrderAdd, 0 /*multiply*/, Self::PolynomialTypeAdd::NumberOfMonomials, &parameters[0], &corrections[0] );
     }
+
+  this->m_OutputDataDevice->CopyFromDevice( this->m_OutputImage->GetData()->GetDataPtr(), this->m_NumberOfPixels );
 }
