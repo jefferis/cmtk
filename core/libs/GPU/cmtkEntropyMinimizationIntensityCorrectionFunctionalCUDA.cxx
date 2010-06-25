@@ -31,7 +31,7 @@
 */
 
 #include "cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA.h"
-#include "cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA_functions.h"
+#include "cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA_kernels.h"
 
 #include <cmtkPolynomial.h>
 
