@@ -28,7 +28,7 @@
 //
 */
 
-#include "cmtkEntropyMinimizationIntensityCorrectionFunctionalCUDA_kernels.h"
+#include "cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.h"
 
 __global__
 void
