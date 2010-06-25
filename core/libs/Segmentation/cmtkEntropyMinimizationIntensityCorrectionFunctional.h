@@ -145,23 +145,9 @@ public:
    */
   virtual typename Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step );
 
-private:
+protected:
   /// Keep a copy of the current parameter vector.
   CoordinateVector m_ParameterVector;
-
-  /** Number of parallel threads.
-   * Because the constructor allocated temporary storage for monomial
-   * computation, we need to know in advance how many threads there will
-   * be, and make sure we never exceed this number later when calling the
-   * thread functions.
-   */
-  size_t m_NumberOfThreads;
-
-  /// Maximum number of monomials per thread (maximum of additive and multiplicative polynomial number of monomials).
-  size_t m_MonomialsPerThread;
-
-  /// Temporary storage for evaluating monomials.
-  Types::Coordinate* m_MonomialsVec;
 
   /// Additive correction term coefficients.
   Types::Coordinate m_StepSizeAdd[1+PolynomialTypeAdd::NumberOfMonomials];
@@ -186,6 +172,21 @@ private:
 
   /// Multiplicative correction constants for additive polynomials.
   Types::Coordinate m_MulCorrectionMul[1+PolynomialTypeMul::NumberOfMonomials];
+
+private:
+  /** Number of parallel threads.
+   * Because the constructor allocated temporary storage for monomial
+   * computation, we need to know in advance how many threads there will
+   * be, and make sure we never exceed this number later when calling the
+   * thread functions.
+   */
+  size_t m_NumberOfThreads;
+
+  /// Maximum number of monomials per thread (maximum of additive and multiplicative polynomial number of monomials).
+  size_t m_MonomialsPerThread;
+
+  /// Temporary storage for evaluating monomials.
+  Types::Coordinate* m_MonomialsVec;
 
   /// Update polynomial correctionfactors from input image.
   virtual void UpdateCorrectionFactors();

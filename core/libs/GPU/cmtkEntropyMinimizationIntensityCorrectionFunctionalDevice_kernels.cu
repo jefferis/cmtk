@@ -30,8 +30,8 @@
 
 #include "cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.h"
 
-__constant__ float weights[19];
-__constant__ float correction[19];
+__constant__ float deviceWeights[19];
+__constant__ float deviceCorrections[19];
 
 __global__
 void
@@ -53,34 +53,34 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel
   const float in = input[offset];
   
   float bias =
-    weights[0] * (X - correction[0]) + 
-    weights[1] * (Y - correction[1]) +
-    weights[2] * (Z - correction[2]);
+    deviceWeights[0] * (X - deviceCorrections[0]) + 
+    deviceWeights[1] * (Y - deviceCorrections[1]) +
+    deviceWeights[2] * (Z - deviceCorrections[2]);
 
   if ( degree > 1 )
     {
       bias +=
-	weights[3] * (X * X - correction[3])+
-	weights[4] * (X * Y - correction[4])+
-	weights[5] * (X * Z - correction[5]) +
-	weights[6] * (Y * Y - correction[6]) +
-	weights[7] * (Y * Z - correction[7]) +
-	weights[8] * (Z * Z - correction[8]);
+	deviceWeights[3] * (X * X - deviceCorrections[3])+
+	deviceWeights[4] * (X * Y - deviceCorrections[4])+
+	deviceWeights[5] * (X * Z - deviceCorrections[5]) +
+	deviceWeights[6] * (Y * Y - deviceCorrections[6]) +
+	deviceWeights[7] * (Y * Z - deviceCorrections[7]) +
+	deviceWeights[8] * (Z * Z - deviceCorrections[8]);
     }
   
   if ( degree > 2 )
     {
       bias +=
-	weights[ 9] * (X * X * X - correction[ 9]) +
-	weights[10] * (X * X * Y - correction[10]) +
-	weights[11] * (X * X * Z - correction[11]) +
-	weights[12] * (X * Y * Y - correction[12]) +
-	weights[13] * (X * Y * Z - correction[13]) +
-	weights[14] * (X * Z * Z - correction[14]) +
-	weights[15] * (Y * Y * Y - correction[15]) +
-	weights[16] * (Y * Y * Z - correction[16]) +
-	weights[17] * (Y * Z * Z - correction[17]) +
-	weights[18] * (Z * Z * Z - correction[18]);
+	deviceWeights[ 9] * (X * X * X - deviceCorrections[ 9]) +
+	deviceWeights[10] * (X * X * Y - deviceCorrections[10]) +
+	deviceWeights[11] * (X * X * Z - deviceCorrections[11]) +
+	deviceWeights[12] * (X * Y * Y - deviceCorrections[12]) +
+	deviceWeights[13] * (X * Y * Z - deviceCorrections[13]) +
+	deviceWeights[14] * (X * Z * Z - deviceCorrections[14]) +
+	deviceWeights[15] * (Y * Y * Y - deviceCorrections[15]) +
+	deviceWeights[16] * (Y * Y * Z - deviceCorrections[16]) +
+	deviceWeights[17] * (Y * Z * Z - deviceCorrections[17]) +
+	deviceWeights[18] * (Z * Z * Z - deviceCorrections[18]);
     }
 
   if ( multiply )
@@ -94,12 +94,16 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel
 }
 
 void
-cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( float* output, float* input, const int dims0, const int dims1, const int dims2, const int degree, const int multiply )
+cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
+( float* output, float* input, const int dims0, const int dims1, const int dims2, const int degree, const int multiply, const int nargs, const float* weights, const float* corrections )
 { 
   dim3 dimBlock( 16, 16, 8 );
 
   const int planesPerKernel = 1+((dims2-1)/8);
   dim3 dimGrid( 1+((dims0-1)/16), 1+((dims1-1)/16), planesPerKernel ); 	 
+
+  cudaMemcpy( deviceWeights, weights, nargs * sizeof( *weights ), cudaMemcpyHostToDevice );
+  cudaMemcpy( deviceCorrections, corrections, nargs * sizeof( *corrections ), cudaMemcpyHostToDevice );
   
   for ( int slice = 0; slice < dims2; slice += planesPerKernel )
     {

@@ -60,12 +60,24 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul
 
   if ( Self::PolynomialTypeMul::NumberOfMonomials )
     {
-    cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( output, input, dims0, dims1, dims2, NOrderMul, 1 /*multiply*/ );
+    std::vector<float> parameters( Self::PolynomialTypeMul::NumberOfMonomials ), corrections( Self::PolynomialTypeMul::NumberOfMonomials );
+    for ( size_t i = 0; i < Self::PolynomialTypeMul::NumberOfMonomials; ++i )
+      {
+      parameters[i] = static_cast<float>( this->m_CoefficientsMul[i] );
+      corrections[i] = static_cast<float>( this->m_AddCorrectionMul[i] );
+      }
+    cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( output, input, dims0, dims1, dims2, NOrderMul, 1 /*multiply*/, Self::PolynomialTypeMul::NumberOfMonomials, &parameters[0], &corrections[0] );
     input = output; // if additive bias also, apply to output of multiplicative stage
     }
 
   if ( Self::PolynomialTypeAdd::NumberOfMonomials )
     {
-    cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( output, input, dims0, dims1, dims2, NOrderAdd, 0 /*multiply*/ );
+    std::vector<float> parameters( Self::PolynomialTypeAdd::NumberOfMonomials ), corrections( Self::PolynomialTypeAdd::NumberOfMonomials );
+    for ( size_t i = 0; i < Self::PolynomialTypeAdd::NumberOfMonomials; ++i )
+      {
+      parameters[i] = static_cast<float>( this->m_CoefficientsMul[i] );
+      corrections[i] = static_cast<float>( this->m_AddCorrectionMul[i] );
+      }
+    cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( output, input, dims0, dims1, dims2, NOrderAdd, 0 /*multiply*/, Self::PolynomialTypeAdd::NumberOfMonomials, &parameters[0], &corrections[0] );
     }
 }
