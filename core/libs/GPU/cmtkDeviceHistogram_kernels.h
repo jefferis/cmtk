@@ -1,8 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
-//
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,29 +28,10 @@
 //
 */
 
-#include <iostream>
-#include <cstring>
+#ifndef __cmtkDeviceHistogram_kernels_h_included_
+#define __cmtkDeviceHistogram_kernels_h_included_
 
-#include <cmtkTestFunctionMap.h>
+/// Compute vector of p*log(p) from histogram on device.
+void cmtkDeviceHistogramPLogP( float* result, const float* dataPtr, int numberOfBins );
 
-#include "cmtkDeviceHistogramTests.txx"
-#include "cmtkDeviceMemoryTests.txx"
-#include "cmtkDeviceUniformVolumeTests.txx"
-
-int
-main( const int argc, const char* argv[] )
-{
-  cmtk::TestFunctionMap map;
-  map.AddTest( "DeviceHistogramEntropy", &testDeviceHistogramEntropy );
-  map.AddTest( "DeviceMemory", &testDeviceMemory );
-  map.AddTest( "DeviceUniformVolume", &testDeviceUniformVolume );
-
-  // is test name given on command line?
-  if ( argc < 2 )
-    {
-    }
-  else
-    {
-    return map.RunTestByName( argv[1] );
-    }
-}
+#endif // #ifndef __cmtkDeviceHistogram_kernels_h_included_

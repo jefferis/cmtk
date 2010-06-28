@@ -96,10 +96,22 @@ public:
   {
     this->Superclass::CopyOnDevice( srcPtrDevice, count * sizeof( T ) );
   }
+
+  /// Clear device memory (set to all zeroes).
+  void SetToZero()
+  {
+    this->Superclass::Memset( 0, this->m_NumberOfItems * sizeof( T ) );
+  }
   
 private:
-  /// Constructor: allocate memory through .
-  DeviceMemory( const size_t n, /**!< Number of items.*/ const size_t padToMultiple = 1 ) : DeviceMemoryGPU( n * sizeof( T ), padToMultiple * sizeof( T ) ) {}
+  /// Number of items allocated.
+  size_t m_NumberOfItems;
+
+  /// Constructor: allocate memory on device through base class.
+  DeviceMemory( const size_t n, /**!< Number of items.*/ const size_t padToMultiple = 1 ) 
+    : DeviceMemoryGPU( n * sizeof( T ), padToMultiple * sizeof( T ) ),
+      m_NumberOfItems( n )
+  {}
 };
 
 //@}

@@ -42,6 +42,11 @@ ENDFOREACH(D ${DRIVERS})
 IF(CMTK_USE_CUDA)
 
   # ==========================================
+  # Tests for "cmtk::DeviceHistogram" class
+  SET(Tests ${Tests} 
+    DeviceHistogramEntropy)
+  
+  # ==========================================
   # Tests for "cmtk::DeviceMemory" class
   SET(Tests ${Tests} 
     DeviceMemory)

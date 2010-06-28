@@ -75,4 +75,11 @@ DeviceMemoryCUDA
   cudaMemcpy( this->m_PointerDevice, srcPtrDevice.m_PointerDevice, nBytes, cudaMemcpyDeviceToDevice );
 }
 
+void
+DeviceMemoryCUDA
+::Memset( const int value, const size_t nBytes )
+{
+  cudaMemset( this->m_PointerDevice, value, nBytes );
+}
+
 } // namespace cmtk

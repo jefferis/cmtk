@@ -30,13 +30,17 @@
 
 # Sources of non-templated classes.
 SET(cmtkGPU_SRCS_CUDA
+  cmtkDeviceHistogram_kernels.cu
   cmtkDeviceMemoryCUDA.cxx
-  cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.cxx
-  cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.cu
-  cmtkDeviceUniformVolume.cxx)
+  cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.cu)
+
+SET(cmtkGPU_SRCS
+  cmtkDeviceHistogram.cxx
+  cmtkDeviceUniformVolume.cxx
+  cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.cxx)
 
 IF(cmtkGPU_SRCS_CUDA)
-  CUDA_ADD_LIBRARY(cmtkGPU ${cmtkGPU_SRCS_CUDA})
+  CUDA_ADD_LIBRARY(cmtkGPU ${cmtkGPU_SRCS_CUDA} ${cmtkGPU_SRCS})
   
   TARGET_LINK_LIBRARIES(cmtkGPU cmtkBase cmtkSystem cmtkNumerics)
   

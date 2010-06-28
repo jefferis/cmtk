@@ -82,6 +82,9 @@ protected:
   /// Copy between two device memory locations.
   void CopyOnDevice( const Self& srcPtrDevice, const size_t nBytes );
   
+  /// Copy between two device memory locations.
+  void Memset( const int value, const size_t nBytes );
+  
   /// Constructor: allocate memory through CUDA.
   DeviceMemoryCUDA( const size_t nBytes /**!< Number of bytes to allocate */, const size_t padToMultiple = 1 /**!< Pad to allocate nearest multiple of this many bytes. */ );
 
