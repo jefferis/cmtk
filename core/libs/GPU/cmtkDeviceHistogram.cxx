@@ -55,7 +55,7 @@ float
 cmtk::DeviceHistogram
 ::GetEntropy() const
 {
-  cmtkDeviceHistogramPLogP( this->m_OnDeviceResult->Ptr(), this->m_OnDeviceData->Ptr(), this->m_NumberOfBinsPadded );
+  cmtkDeviceHistogramEntropy( this->m_OnDeviceResult->Ptr(), this->m_OnDeviceData->Ptr(), this->m_NumberOfBinsPadded );
 
   float result;
   this->m_OnDeviceResult->CopyFromDevice( &result, 1 );

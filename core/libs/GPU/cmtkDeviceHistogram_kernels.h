@@ -32,6 +32,6 @@
 #define __cmtkDeviceHistogram_kernels_h_included_
 
 /// Compute vector of p*log(p) from histogram on device.
-void cmtkDeviceHistogramPLogP( float* result, const float* dataPtr, int numberOfBins );
+void cmtkDeviceHistogramEntropy( float* result, const float* dataPtr, int numberOfBins );
 
 #endif // #ifndef __cmtkDeviceHistogram_kernels_h_included_

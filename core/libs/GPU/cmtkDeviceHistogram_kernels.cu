@@ -32,7 +32,7 @@
 
 __global__
 void 
-cmtkDeviceHistogramPLogPKernel( float* result, const float *dataPtr )
+cmtkDeviceHistogramEntropyKernel( float* result, const float *dataPtr )
 {
   int tx = threadIdx.x;
 
@@ -80,10 +80,10 @@ cmtkDeviceHistogramPLogPKernel( float* result, const float *dataPtr )
 }
 
 void
-cmtkDeviceHistogramPLogP( float* result, const float* dataPtr, int numberOfBins )
+cmtkDeviceHistogramEntropy( float* result, const float* dataPtr, int numberOfBins )
 {
   dim3 dimBlock( numberOfBins, 1 );
   dim3 dimGrid( 1, 1 );
   
-  cmtkDeviceHistogramPLogPKernel<<<dimGrid,dimBlock>>>( result, dataPtr );
+  cmtkDeviceHistogramEntropyKernel<<<dimGrid,dimBlock>>>( result, dataPtr );
 }
