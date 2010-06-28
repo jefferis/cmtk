@@ -101,6 +101,13 @@ cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const i
 void
 cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, int numberOfBins, int numberOfSamples )
 {
+  // first, clear histogram memory on device
+  if ( cudaMemset( histPtr, 0, sizeof( float ) * numberOfBins ) != cudaSuccess )
+    {
+      fputs( "ERROR: cudaMemset() failed.\n", stderr );
+      exit( 1 );
+    }
+
   // how many local copies of the histogram can we fit in shared memory?
   int device;
   cudaDeviceProp dprop;
