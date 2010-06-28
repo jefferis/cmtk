@@ -33,6 +33,8 @@
 #include <cstdio>
 #include <cstdlib>
 
+extern __shared__ float shared[];
+
 __global__
 void 
 cmtkDeviceHistogramEntropyKernel( float* result, const float *dataPtr )
@@ -40,7 +42,7 @@ cmtkDeviceHistogramEntropyKernel( float* result, const float *dataPtr )
   int tx = threadIdx.x;
 
   // first, load data into shared memory
-  __shared__ float working[512]; // allocate maximum we possibly need
+  float *working = &shared[0];
   working[tx] = dataPtr[tx];
   __syncthreads();
 
@@ -52,7 +54,7 @@ cmtkDeviceHistogramEntropyKernel( float* result, const float *dataPtr )
       working[tx] = sum;
       __syncthreads();
     }
-  
+
   // third, normalize
   if ( working[tx] )
     {
@@ -87,19 +89,25 @@ cmtkDeviceHistogramEntropy( float* result, const float* dataPtr, int numberOfBin
 {
   dim3 dimBlock( numberOfBins, 1 );
   dim3 dimGrid( 1, 1 );
-  
-  cmtkDeviceHistogramEntropyKernel<<<dimGrid,dimBlock>>>( result, dataPtr );
+
+  // start kernel and allocate shared memory for "numberOfBins" floats
+  cmtkDeviceHistogramEntropyKernel<<<dimGrid,dimBlock,numberOfBins*sizeof(float)>>>( result, dataPtr );
 }
 
 __global__
 void 
-cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const int numberOfBins )
+cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const int *maskPtr, const int numberOfBins, const int iterations )
 {
   int tx = threadIdx.x;
+
+  int offset = tx;
+  for ( int i = 0; i < iterations; ++i, offset += blockDim.x )
+    {
+    }
 }
 
 void
-cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, int numberOfBins, int numberOfSamples )
+cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* maskPtr, int numberOfBins, int numberOfSamples )
 {
   // first, clear histogram memory on device
   if ( cudaMemset( histPtr, 0, sizeof( float ) * numberOfBins ) != cudaSuccess )
@@ -122,9 +130,9 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, int numberOfB
     nLocalHistogramsSharedMemory = 512;
 
   dim3 dimBlock( nLocalHistogramsSharedMemory, 1 );
-  dim3 dimGrid( numberOfSamples / nLocalHistogramsSharedMemory, 1 );
+  dim3 dimGrid( 1, 1 );
   
-  cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock>>>( histPtr, dataPtr, numberOfBins );  
+  cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock>>>( histPtr, dataPtr, maskPtr, numberOfBins, numberOfSamples / nLocalHistogramsSharedMemory );
 
   const int residualSamples = numberOfSamples - nLocalHistogramsSharedMemory * (numberOfSamples / nLocalHistogramsSharedMemory);
   if ( residualSamples )
@@ -132,6 +140,6 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, int numberOfB
       dim3 dimBlock( residualSamples, 1 );
       dim3 dimGrid( 1, 1 );
       
-      cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock>>>( histPtr, dataPtr + numberOfSamples - residualSamples, numberOfBins );
+      cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock>>>( histPtr, dataPtr + numberOfSamples - residualSamples, maskPtr + numberOfSamples - residualSamples, numberOfBins, 1 );
     }
 }

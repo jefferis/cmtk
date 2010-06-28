@@ -35,7 +35,7 @@
 //@{
 
 /// Populate histogram from data, entirely on device.
-void cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, int numberOfBins, int numberOfSamples );
+void cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* maskPtr, int numberOfBins, int numberOfSamples );
 
 /// Compute entropy from histogram on device.
 void cmtkDeviceHistogramEntropy( float* result, const float* dataPtr, int numberOfBins );
