@@ -117,6 +117,18 @@ cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const i
       int index = truncf( (1+binIndex) * maskPtr[offset] );
       ++working[ index ];
     }
+
+  // finally, add all thread working histograms to output histogram
+  for ( int idx = tx; idx < numberOfBins; idx += blockDim.x )
+    {
+      float sum = 0;
+      for ( int hx = 0; hx < blockDim.x; ++hx )
+	{
+	  sum += working[ idx + hx*numberOfBins ];
+	}
+      histPtr[idx] += sum;
+    }
+  histPtr[0] = 0;
 }
 
 void
