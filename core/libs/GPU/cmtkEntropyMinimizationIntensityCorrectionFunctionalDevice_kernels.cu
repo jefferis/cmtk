@@ -99,15 +99,16 @@ void
 cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
 ( float* output, float* input, const int dims0, const int dims1, const int dims2, const int degree, const int multiply, const int nargs, const float* weights, const float* corrections )
 { 
-  dim3 dimBlock( 16, 16, 8 );
+  const int planesPerSlice = 8; // create 16*16*8 = 512 threads per block
+  dim3 dimBlock( 16, 16, planesPerSlice );
 
-  const int nSlices = 1+((dims2-1)/8);
+  const int nSlices = 1+((dims2-1)/planesPerSlice);
   dim3 dimGrid( 1+((dims0-1)/16), 1+((dims1-1)/16), nSlices );
 
   cudaMemcpy( deviceWeights, weights, nargs * sizeof( *weights ), cudaMemcpyHostToDevice );
   cudaMemcpy( deviceCorrections, corrections, nargs * sizeof( *corrections ), cudaMemcpyHostToDevice );
   
-  for ( int slice = 0; slice < dims2; slice += 8 )
+  for ( int slice = 0; slice < dims2; slice += planesPerSlice )
     {
       cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel<<<dimGrid,dimBlock>>>( output, input, degree, multiply, slice, dims0, dims1, dims2 );
     }
