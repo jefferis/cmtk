@@ -42,28 +42,41 @@ cmtkDeviceHistogramPLogPKernel( float* result, const float *dataPtr )
   __syncthreads();
 
   // second, compute sum of all bin values via butterfly
-  for ( int bit = 1; bit <= blockDim.x; bit <<= 1 )
+  for ( int bit = 1; bit < blockDim.x; bit <<= 1 )
     {
-      working[tx] += working[tx^bit];
+      const float sum = working[tx] + working[tx^bit];
+      __syncthreads();
+      working[tx] = sum;
       __syncthreads();
     }
   
   // third, normalize
-  working[tx] = dataPtr[tx] / working[tx];
-  __syncthreads();
-
+  if ( working[tx] )
+    {
+      working[tx] = dataPtr[tx] / working[tx];
+    }
+  
   // fourth, do p*log(p)
-  working[tx] *= log( working[tx] );
+  if ( working[tx] > 0 )
+    {
+      working[tx] *= log( working[tx] );
+    }
+  else
+    {
+      working[tx] = 0;
+    }
   __syncthreads();
 
   // fifth, another butterfly to compute \sum[p*log(p)]
-  for ( int bit = 1; bit <= blockDim.x; bit <<= 1 )
+  for ( int bit = 1; bit < blockDim.x; bit <<= 1 )
     {
-      working[tx] += working[tx^bit];
+      const float sum = working[tx] + working[tx^bit];
+      __syncthreads();
+      working[tx] = sum;
       __syncthreads();
     }
 
-  result[tx] = working[tx];
+  result[tx] = -working[tx];
 }
 
 void
