@@ -30,6 +30,9 @@
 
 #include "cmtkDeviceHistogram_kernels.h"
 
+#include <cstdio>
+#include <cstdlib>
+
 __global__
 void 
 cmtkDeviceHistogramEntropyKernel( float* result, const float *dataPtr )
@@ -86,4 +89,42 @@ cmtkDeviceHistogramEntropy( float* result, const float* dataPtr, int numberOfBin
   dim3 dimGrid( 1, 1 );
   
   cmtkDeviceHistogramEntropyKernel<<<dimGrid,dimBlock>>>( result, dataPtr );
+}
+
+__global__
+void 
+cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const int numberOfBins )
+{
+  int tx = threadIdx.x;
+}
+
+void
+cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, int numberOfBins, int numberOfSamples )
+{
+  // how many local copies of the histogram can we fit in shared memory?
+  int device;
+  cudaDeviceProp dprop;
+  if ( (cudaGetDevice( &device ) != cudaSuccess) || (cudaGetDeviceProperties( &dprop, device ) != cudaSuccess ) )
+    {
+      fputs( "ERROR: could not get device properties.\n", stderr );
+      exit( 1 );
+    }
+  
+  int nLocalHistogramsSharedMemory = dprop.sharedMemPerBlock / (sizeof(float) * numberOfBins);
+  if ( nLocalHistogramsSharedMemory > 512 )
+    nLocalHistogramsSharedMemory = 512;
+
+  dim3 dimBlock( nLocalHistogramsSharedMemory, 1 );
+  dim3 dimGrid( numberOfSamples / nLocalHistogramsSharedMemory, 1 );
+  
+  cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock>>>( histPtr, dataPtr, numberOfBins );  
+
+  const int residualSamples = numberOfSamples - nLocalHistogramsSharedMemory * (numberOfSamples / nLocalHistogramsSharedMemory);
+  if ( residualSamples )
+    {
+      dim3 dimBlock( residualSamples, 1 );
+      dim3 dimGrid( 1, 1 );
+      
+      cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock>>>( histPtr, dataPtr + numberOfSamples - residualSamples, numberOfBins );
+    }
 }

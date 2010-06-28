@@ -31,7 +31,15 @@
 #ifndef __cmtkDeviceHistogram_kernels_h_included_
 #define __cmtkDeviceHistogram_kernels_h_included_
 
-/// Compute vector of p*log(p) from histogram on device.
+/** \addtogroup GPU */
+//@{
+
+/// Populate histogram from data, entirely on device.
+void cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, int numberOfBins, int numberOfSamples );
+
+/// Compute entropy from histogram on device.
 void cmtkDeviceHistogramEntropy( float* result, const float* dataPtr, int numberOfBins );
+
+//@}
 
 #endif // #ifndef __cmtkDeviceHistogram_kernels_h_included_
