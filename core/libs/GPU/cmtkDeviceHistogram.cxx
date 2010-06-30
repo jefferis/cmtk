@@ -38,7 +38,8 @@
 cmtk::DeviceHistogram
 ::DeviceHistogram( const size_t numberOfBins )
 {
-  this->m_NumberOfBinsPadded = Self::GetNextPowerOfTwo( numberOfBins );
+  this->m_NumberOfBins = numberOfBins;
+  this->m_NumberOfBinsPadded = Self::GetNextPowerOfTwo( this->m_NumberOfBins );
   if ( this->m_NumberOfBinsPadded > 512 )
     {
     throw Exception( "Exceeded maximum number of histogram bins (512)" );
@@ -49,6 +50,20 @@ cmtk::DeviceHistogram
 
   this->m_OnDeviceResult = DeviceMemory<float>::Create( this->m_NumberOfBinsPadded );
   this->m_OnDeviceResult->SetToZero();
+}
+
+void
+cmtk::DeviceHistogram
+::Populate( DeviceMemory<float>& dataOnDevice, const float rangeFrom, const float rangeTo )
+{
+  cmtkDeviceHistogramPopulate( this->m_OnDeviceResult->Ptr(), dataOnDevice.Ptr(), NULL, rangeFrom, rangeTo, this->m_NumberOfBins, dataOnDevice.GetNumberOfItems() );
+}
+
+void
+cmtk::DeviceHistogram
+::Populate( DeviceMemory<float>& dataOnDevice, DeviceMemory<int>& maskOnDevice, const float rangeFrom, const float rangeTo )
+{
+  cmtkDeviceHistogramPopulate( this->m_OnDeviceResult->Ptr(), dataOnDevice.Ptr(), maskOnDevice.Ptr(), rangeFrom, rangeTo, this->m_NumberOfBins, dataOnDevice.GetNumberOfItems() );
 }
 
 float

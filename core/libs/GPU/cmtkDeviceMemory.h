@@ -102,6 +102,12 @@ public:
   {
     this->Superclass::Memset( 0, this->m_NumberOfItems * sizeof( T ) );
   }
+
+  /// Get number of items.
+  size_t GetNumberOfItems() const
+  {
+    return this->m_NumberOfItems;
+  }
   
 private:
   /// Number of items allocated.

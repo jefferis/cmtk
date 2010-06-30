@@ -64,12 +64,21 @@ public:
     return *(this->m_OnDeviceData);
   }
 
+  /// Populate histogram from data on device.
+  void Populate( DeviceMemory<float>& dataOnDevice, const float rangeFrom, const float rangeTo );
+
+  /// Populate histogram from data on device using binary mask.
+  void Populate( DeviceMemory<float>& dataOnDevice, DeviceMemory<int>& maskOnDevice, const float rangeFrom, const float rangeTo );
+
   /// Get entropy.
   float GetEntropy() const;
 
 private:
   /// Constructor.
   DeviceHistogram( const size_t numberOfBins );
+
+  /// User-selected number of bins.
+  size_t m_NumberOfBins;
 
   /// Number of bins after padding to power of 2.
   size_t m_NumberOfBinsPadded;
