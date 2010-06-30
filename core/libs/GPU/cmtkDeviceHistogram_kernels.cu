@@ -96,7 +96,7 @@ cmtkDeviceHistogramEntropy( float* result, const float* dataPtr, int numberOfBin
 
 __global__
 void 
-cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const int *maskPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int iterations )
+cmtkDeviceHistogramPopulateWithMaskKernel( float* histPtr, const float *dataPtr, const int *maskPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int iterations )
 {
   int tx = threadIdx.x;
 
@@ -108,12 +108,12 @@ cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const i
     working[i] = 0;
 
   // populate histogram bins
-  const float binScale = (numberOfBins-1) / (rangeTo - rangeFrom);
+  const float binScale = (numberOfBins-2) / (rangeTo - rangeFrom);
   
   int offset = tx;
   for ( int i = 0; i < iterations; ++i, offset += blockDim.x )
     {
-      float binIndex = fmaxf( 0, fminf( numberOfBins-1, (dataPtr[offset] - rangeFrom) * binScale ) );
+      float binIndex = fmaxf( 0, fminf( numberOfBins-2, (dataPtr[offset] - rangeFrom) * binScale ) );
       int index = truncf( (1+binIndex) * maskPtr[offset] );
       ++working[ index ];
     }
@@ -129,6 +129,41 @@ cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const i
       histPtr[idx] += sum;
     }
   histPtr[0] = 0;
+}
+
+__global__
+void 
+cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int iterations )
+{
+  int tx = threadIdx.x;
+
+  // working histogram for this thread in shared memory
+  float* working = &shared[numberOfBins*tx];
+
+  // start by resetting all histogram bins to 0
+  for ( int i = 0; i < numberOfBins; ++i )
+    working[i] = 0;
+
+  // populate histogram bins
+  const float binScale = (numberOfBins-2) / (rangeTo - rangeFrom);
+  
+  int offset = tx;
+  for ( int i = 0; i < iterations; ++i, offset += blockDim.x )
+    {
+      int index = truncf( fmaxf( 0, fminf( numberOfBins-2, (dataPtr[offset] - rangeFrom) * binScale ) ) );
+      ++working[ index ];
+    }
+
+  // finally, add all thread working histograms to output histogram
+  for ( int idx = tx; idx < numberOfBins; idx += blockDim.x )
+    {
+      float sum = 0;
+      for ( int hx = 0; hx < blockDim.x; ++hx )
+	{
+	  sum += working[ idx + hx*numberOfBins ];
+	}
+      histPtr[idx] += sum;
+    }
 }
 
 void
@@ -156,8 +191,11 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* ma
   
   dim3 dimBlock( nThreads, 1 );
   dim3 dimGrid( 1, 1 );
-  
-  cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock,nThreads*numberOfBins*sizeof(float)>>>( histPtr, dataPtr, maskPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples / nThreads );
+
+  if ( maskPtr )
+    cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock,nThreads*numberOfBins*sizeof(float)>>>( histPtr, dataPtr, maskPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples / nThreads );
+  else
+    cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock,nThreads*numberOfBins*sizeof(float)>>>( histPtr, dataPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples / nThreads );
 
   const int residualSamples = numberOfSamples - nThreads * (numberOfSamples / nThreads);
   if ( residualSamples )
@@ -165,6 +203,9 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* ma
       dim3 dimBlock( residualSamples, 1 );
       dim3 dimGrid( 1, 1 );
       
-      cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock,residualSamples*numberOfBins*sizeof(float)>>>( histPtr, dataPtr + numberOfSamples - residualSamples, maskPtr + numberOfSamples - residualSamples, rangeFrom, rangeTo, numberOfBins, 1 );
+      if ( maskPtr )
+	cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock,residualSamples*numberOfBins*sizeof(float)>>>( histPtr, dataPtr + numberOfSamples - residualSamples, maskPtr + numberOfSamples - residualSamples, rangeFrom, rangeTo, numberOfBins, 1 );
+      else
+	cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock,residualSamples*numberOfBins*sizeof(float)>>>( histPtr, dataPtr + numberOfSamples - residualSamples, rangeFrom, rangeTo, numberOfBins, 1 );
     }
 }
