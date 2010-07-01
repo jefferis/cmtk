@@ -101,34 +101,33 @@ cmtkDeviceHistogramPopulateWithMaskKernel( float* histPtr, const float *dataPtr,
   int tx = threadIdx.x;
 
   // working histogram for this thread in shared memory
-  float* working = &shared[numberOfBins*tx];
+  float* working = &shared[(numberOfBins+1)*tx];
 
   // start by resetting all histogram bins to 0
-  for ( int i = 0; i < numberOfBins; ++i )
+  for ( int i = 0; i <= numberOfBins; ++i )
     working[i] = 0;
 
   // populate histogram bins
-  const float binScale = (numberOfBins-2) / (rangeTo - rangeFrom);
+  const float binScale = (numberOfBins-1) / (rangeTo - rangeFrom);
   
   int offset = tx;
   for ( int i = 0; i < iterations; ++i, offset += blockDim.x )
     {
-      float binIndex = fmaxf( 0, fminf( numberOfBins-2, (dataPtr[offset] - rangeFrom) * binScale ) );
+      float binIndex = fmaxf( 0, fminf( numberOfBins-1, (dataPtr[offset] - rangeFrom) * binScale ) );
       int index = truncf( (1+binIndex) * maskPtr[offset] );
       ++working[ index ];
     }
 
   // finally, add all thread working histograms to output histogram
-  for ( int idx = tx; idx < numberOfBins; idx += blockDim.x )
+  for ( int idx = 1+tx; idx <= numberOfBins; idx += blockDim.x )
     {
       float sum = 0;
       for ( int hx = 0; hx < blockDim.x; ++hx )
 	{
-	  sum += working[ idx + hx*numberOfBins ];
+	  sum += shared[ idx + hx*(1+numberOfBins) ];
 	}
-      histPtr[idx] += sum;
+      histPtr[idx-1] += sum;
     }
-  histPtr[0] = 0;
 }
 
 __global__
@@ -145,12 +144,12 @@ cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const f
     working[i] = 0;
 
   // populate histogram bins
-  const float binScale = (numberOfBins-2) / (rangeTo - rangeFrom);
+  const float binScale = (numberOfBins-1) / (rangeTo - rangeFrom);
   
   int offset = tx;
   for ( int i = 0; i < iterations; ++i, offset += blockDim.x )
     {
-      int index = truncf( fmaxf( 0, fminf( numberOfBins-2, (dataPtr[offset] - rangeFrom) * binScale ) ) );
+      int index = truncf( fmaxf( 0, fminf( numberOfBins-1, (dataPtr[offset] - rangeFrom) * binScale ) ) );
       ++working[ index ];
     }
 
@@ -160,7 +159,7 @@ cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const f
       float sum = 0;
       for ( int hx = 0; hx < blockDim.x; ++hx )
 	{
-	  sum += working[ idx + hx*numberOfBins ];
+	  sum += shared[ idx + hx*numberOfBins ];
 	}
       histPtr[idx] += sum;
     }
@@ -169,13 +168,6 @@ cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const f
 void
 cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* maskPtr, const float rangeFrom, const float rangeTo, int numberOfBins, int numberOfSamples )
 {
-  // first, clear histogram memory on device
-  if ( cudaMemset( histPtr, 0, sizeof( float ) * numberOfBins ) != cudaSuccess )
-    {
-      fputs( "ERROR: cudaMemset() failed.\n", stderr );
-      exit( 1 );
-    }
-
   // how many local copies of the histogram can we fit in shared memory?
   int device;
   cudaDeviceProp dprop;
@@ -185,15 +177,15 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* ma
       exit( 1 );
     }
   
-  int nThreads = dprop.sharedMemPerBlock / (sizeof(float) * numberOfBins);
+  int nThreads = dprop.sharedMemPerBlock / (sizeof(float) * (1+numberOfBins));
   if ( nThreads > 512 )
     nThreads = 512;
-  
+
   dim3 dimBlock( nThreads, 1 );
   dim3 dimGrid( 1, 1 );
 
   if ( maskPtr )
-    cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock,nThreads*numberOfBins*sizeof(float)>>>( histPtr, dataPtr, maskPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples / nThreads );
+    cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock,nThreads*(numberOfBins+1)*sizeof(float)>>>( histPtr, dataPtr, maskPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples / nThreads );
   else
     cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock,nThreads*numberOfBins*sizeof(float)>>>( histPtr, dataPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples / nThreads );
 
@@ -204,7 +196,7 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* ma
       dim3 dimGrid( 1, 1 );
       
       if ( maskPtr )
-	cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock,residualSamples*numberOfBins*sizeof(float)>>>( histPtr, dataPtr + numberOfSamples - residualSamples, maskPtr + numberOfSamples - residualSamples, rangeFrom, rangeTo, numberOfBins, 1 );
+	cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock,residualSamples*(numberOfBins+1)*sizeof(float)>>>( histPtr, dataPtr + numberOfSamples - residualSamples, maskPtr + numberOfSamples - residualSamples, rangeFrom, rangeTo, numberOfBins, 1 );
       else
 	cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock,residualSamples*numberOfBins*sizeof(float)>>>( histPtr, dataPtr + numberOfSamples - residualSamples, rangeFrom, rangeTo, numberOfBins, 1 );
     }
