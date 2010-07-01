@@ -67,10 +67,16 @@ main( const int argc, const char*[] )
       }
     else
       {
-      std::cerr << "\tName: " << props.name << std::endl;
-      std::cerr << "\tTotal memory: " << props.totalGlobalMem << std::endl;
+      std::cerr << "\tName: " << props.name << std::endl << std::endl;
       std::cerr << "\tMultiprocessor count: " << props.multiProcessorCount << std::endl;
       std::cerr << "\tCompute capability: " << props.major << "." << props.minor << std::endl;
+      std::cerr << "\tTotal memory: " << props.totalGlobalMem << std::endl;
+      std::cerr << "\tConstant memory: " << props.totalConstMem << std::endl;
+      std::cerr << "\tShared memory per block: " << props.sharedMemPerBlock << std::endl << std::endl;
+      std::cerr << "\tWarp size: " << props.warpSize << std::endl;
+      std::cerr << "\tMax threads per block: " << props.maxThreadsPerBlock << std::endl;
+      std::cerr << "\tMaximum thread block size: (" << props.maxThreadsDim[0] << "," << props.maxThreadsDim[1] << "," << props.maxThreadsDim[2] << ")" << std::endl;
+      std::cerr << "\tMaximum grid size size: (" << props.maxGridSize[0] << "," << props.maxGridSize[1] << "," << props.maxGridSize[2] << ")" << std::endl;
       }
     }
 
