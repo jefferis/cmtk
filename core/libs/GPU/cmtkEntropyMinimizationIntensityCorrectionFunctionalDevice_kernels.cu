@@ -101,9 +101,7 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
 { 
   const int planesPerSlice = 8; // create 16*16*8 = 512 threads per block
   dim3 dimBlock( 16, 16, planesPerSlice );
-
-  const int nSlices = 1+((dims2-1)/planesPerSlice);
-  dim3 dimGrid( 1+((dims0-1)/16), 1+((dims1-1)/16), nSlices );
+  dim3 dimGrid( 1+((dims0-1)/16), 1+((dims1-1)/16) );
 
   cudaMemcpy( deviceWeights, weights, nargs * sizeof( *weights ), cudaMemcpyHostToDevice );
   cudaMemcpy( deviceCorrections, corrections, nargs * sizeof( *corrections ), cudaMemcpyHostToDevice );
