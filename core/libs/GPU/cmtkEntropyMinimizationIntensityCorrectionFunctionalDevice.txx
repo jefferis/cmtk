@@ -142,8 +142,8 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul
     std::vector<float> parameters( Self::PolynomialTypeAdd::NumberOfMonomials ), corrections( Self::PolynomialTypeAdd::NumberOfMonomials );
     for ( size_t i = 0; i < Self::PolynomialTypeAdd::NumberOfMonomials; ++i )
       {
-      parameters[i] = static_cast<float>( this->m_CoefficientsMul[i] );
-      corrections[i] = static_cast<float>( this->m_AddCorrectionMul[i] );
+      parameters[i] = static_cast<float>( this->m_CoefficientsAdd[i] );
+      corrections[i] = static_cast<float>( this->m_AddCorrectionAdd[i] );
       }
     cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( output, input, dims0, dims1, dims2, NOrderAdd, 0 /*multiply*/, Self::PolynomialTypeAdd::NumberOfMonomials, &parameters[0], &corrections[0] );
     }
