@@ -64,11 +64,14 @@ public:
     return *(this->m_OnDeviceData);
   }
 
+  /// Reset histogram, i.e., set all bins to zero.
+  void Reset();
+
   /// Populate histogram from data on device.
-  void Populate( DeviceMemory<float>& dataOnDevice, const float rangeFrom, const float rangeTo );
+  void Populate( const DeviceMemory<float>& dataOnDevice, const float rangeFrom, const float rangeTo );
 
   /// Populate histogram from data on device using binary mask.
-  void Populate( DeviceMemory<float>& dataOnDevice, DeviceMemory<int>& maskOnDevice, const float rangeFrom, const float rangeTo );
+  void Populate( const DeviceMemory<float>& dataOnDevice, const DeviceMemory<int>& maskOnDevice, const float rangeFrom, const float rangeTo );
 
   /// Get entropy.
   float GetEntropy() const;

@@ -54,16 +54,23 @@ cmtk::DeviceHistogram
 
 void
 cmtk::DeviceHistogram
-::Populate( DeviceMemory<float>& dataOnDevice, const float rangeFrom, const float rangeTo )
+::Reset()
 {
-  cmtkDeviceHistogramPopulate( this->m_OnDeviceResult->Ptr(), dataOnDevice.Ptr(), NULL, rangeFrom, rangeTo, this->m_NumberOfBins, dataOnDevice.GetNumberOfItems() );
+  this->m_OnDeviceData->SetToZero();
 }
 
 void
 cmtk::DeviceHistogram
-::Populate( DeviceMemory<float>& dataOnDevice, DeviceMemory<int>& maskOnDevice, const float rangeFrom, const float rangeTo )
+::Populate( const DeviceMemory<float>& dataOnDevice, const float rangeFrom, const float rangeTo )
 {
-  cmtkDeviceHistogramPopulate( this->m_OnDeviceResult->Ptr(), dataOnDevice.Ptr(), maskOnDevice.Ptr(), rangeFrom, rangeTo, this->m_NumberOfBins, dataOnDevice.GetNumberOfItems() );
+  cmtkDeviceHistogramPopulate( this->m_OnDeviceData->Ptr(), dataOnDevice.Ptr(), NULL, rangeFrom, rangeTo, this->m_NumberOfBins, dataOnDevice.GetNumberOfItems() );
+}
+
+void
+cmtk::DeviceHistogram
+::Populate( const DeviceMemory<float>& dataOnDevice, const DeviceMemory<int>& maskOnDevice, const float rangeFrom, const float rangeTo )
+{
+  cmtkDeviceHistogramPopulate( this->m_OnDeviceData->Ptr(), dataOnDevice.Ptr(), maskOnDevice.Ptr(), rangeFrom, rangeTo, this->m_NumberOfBins, dataOnDevice.GetNumberOfItems() );
 }
 
 float
