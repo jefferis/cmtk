@@ -1,4 +1,4 @@
-Release CMTK-1.3.2:
+Release CMTK-1.4.0:
 
 - Added: class for histogram population and entropy computation on GPU
     device.
