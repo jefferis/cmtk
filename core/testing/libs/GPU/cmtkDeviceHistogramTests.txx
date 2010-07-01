@@ -31,7 +31,9 @@
 #include <cmtkDeviceHistogram.h>
 
 #include <cuda_runtime_api.h>
+
 #include <cmath>
+#include <cmtkFixedVector.h>
 
 int
 checkEntropy( const std::string& testName, const float hData[100], cmtk::DeviceHistogram& dHist, const float baseline )
@@ -88,6 +90,81 @@ testDeviceHistogramEntropy()
       floatHost[1+(i<<1)] = 0;
       }
     if ( checkEntropy( "50OneZeroPairs100", floatHost, *histogram100, 3.91202 ) || checkEntropy( "50OneZeroPairs200", floatHost, *histogram200, 3.91202 ) )
+      return 1;
+    }
+  catch ( std::bad_alloc )
+    {
+    std::cerr << "Caught bad_alloc()" << std::endl;
+    return 1;
+    }
+
+  return 0;
+}
+
+template<size_t NBINS>
+int
+compareHistogramToBaseline( const cmtk::DeviceHistogram& histD, const float* base )
+{
+  cmtk::FixedVector<NBINS,float> histogram;
+  histD.GetDataOnDevice().CopyFromDevice( &histogram[0], NBINS );
+  
+  for ( size_t j = 0; j < NBINS; ++j )
+    {
+    if ( histogram[j] != base[j] )
+      {
+      std::cerr << "actual\tbaseline" << std::endl;
+      for ( size_t i = 0; i < NBINS; ++i )
+	{
+	std::cerr << histogram[i] << "\t" << base[i] << std::endl;
+	}
+      std::cerr << std::endl;
+      return 1;
+      }
+    }
+  
+  return 0;
+}
+
+int
+testDeviceHistogramPopulate()
+{
+  try
+    {
+    cmtk::DeviceHistogram::SmartPtr histogramD = cmtk::DeviceHistogram::Create( 4 );
+
+    const float data[10] = { 0, 6, 3, 7, 2, 2, 8, 8, 1, 10 };
+    cmtk::DeviceMemory<float>::SmartPtr dataD = cmtk::DeviceMemory<float>::Create( 10, data );
+
+    // reset histogram
+    histogramD->Reset();
+
+    const float baseline0[4] = { 0, 0, 0, 0 };
+    if ( compareHistogramToBaseline<4>( *histogramD, baseline0 ) )
+      return 1;
+
+    // populate histogram from data
+    histogramD->Populate( *dataD, 0.0 /*rangeFrom*/, 10.0 /*rangeTo*/ );
+
+    const float baseline1[4] = { 5, 1, 3, 1 };
+    if ( compareHistogramToBaseline<4>( *histogramD, baseline1 ) )
+      return 1;
+
+    // add same data to histogram second time without reset
+    histogramD->Populate( *dataD, 0.0 /*rangeFrom*/, 10.0 /*rangeTo*/ );
+
+    const float baseline2[4] = { 10, 2, 6, 2 };
+    if ( compareHistogramToBaseline<4>( *histogramD, baseline2 ) )
+      return 1;
+    
+    // reset and populate histogram using mask
+    const int mask[10] = { 0, 0, 1, 1, 0, 0, 0, 1, 1, 1 };
+    cmtk::DeviceMemory<int>::SmartPtr maskD = cmtk::DeviceMemory<int>::Create( 10, mask );
+
+    histogramD->Reset();
+    histogramD->Populate( *dataD, *maskD, 0.0 /*rangeFrom*/, 10.0 /*rangeTo*/ );
+
+    const float baseline3[4] = { 2, 0, 2, 1 };
+    if ( compareHistogramToBaseline<4>( *histogramD, baseline3 ) )
       return 1;
     }
   catch ( std::bad_alloc )
