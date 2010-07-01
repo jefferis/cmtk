@@ -1,5 +1,7 @@
 Release CMTK-1.3.2:
 
+- Added: class for histogram population and entropy computation on GPU
+    device.
 - Added: vtkxform tool can now read (and write) binary-coded VTK files.
 - Added: first utility classes (memory allocation and resource management,
     volume data transfer) for GPU computation using CUDA.
