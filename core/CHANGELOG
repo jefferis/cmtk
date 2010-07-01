@@ -1,5 +1,6 @@
 Release CMTK-1.4.0:
 
+- Removed: building against VTK is no longer supported.
 - Added: class for histogram population and entropy computation on GPU
     device.
 - Added: vtkxform tool can now read (and write) binary-coded VTK files.
