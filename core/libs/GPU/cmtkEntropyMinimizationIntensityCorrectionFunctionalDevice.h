@@ -38,6 +38,7 @@
 #include <cmtkEntropyMinimizationIntensityCorrectionFunctional.h>
 
 #include "cmtkDeviceMemory.h"
+#include "cmtkDeviceHistogram.h"
 #include "cmtkDeviceUniformVolume.h"
 
 namespace
@@ -62,18 +63,24 @@ public:
   /// Superclass type.
   typedef EntropyMinimizationIntensityCorrectionFunctional<NOrderAdd,NOrderMul> Superclass;
 
+  /// Return type of the functional evaluation.
+  typedef typename Superclass::ReturnType ReturnType;
+
   /// Virtual destructor.
   virtual ~EntropyMinimizationIntensityCorrectionFunctionalDevice() {}
 
   /// Set input image.
   virtual void SetInputImage( UniformVolume::SmartConstPtr& inputImage );
 
+  /// Set foreground mask.
+  virtual void SetForegroundMask( const UniformVolume& foregroundMask );
+
   /// GPU-based functional evaluation for given parameter vector.
   virtual typename Self::ReturnType EvaluateAt( CoordinateVector& v )
   {
     this->SetParamVector( v );
     this->UpdateOutputImageDevice();
-    return this->Evaluate();
+    return this->EvaluateDevice();
   }
 
   /** GPU-based implementation of gradient evaluation.
@@ -89,11 +96,20 @@ protected:
   /// Input image in device memory.
   DeviceUniformVolume::SmartPtr m_InputImageDevice;
 
+  /// Binary foreground mask in device memory.
+  DeviceMemory<int>::SmartPtr m_ForegroundMaskDevice;
+
   /// Output image data.
   DeviceMemory<float>::SmartPtr m_OutputDataDevice;
 
-  /// Update output image.
+  /// Image histogram on device.
+  DeviceHistogram::SmartPtr m_HistogramDevice;
+
+  /// Update output image on device.
   void UpdateOutputImageDevice();
+
+  /// Evaluate corrected image entropy on device.
+  typename Self::ReturnType EvaluateDevice();
 };
 
 /// Create functional templated over polynomial degrees.

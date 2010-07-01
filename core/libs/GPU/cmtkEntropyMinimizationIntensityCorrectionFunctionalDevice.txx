@@ -41,6 +41,27 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul
   this->Superclass::SetInputImage( inputImage );
   this->m_InputImageDevice = DeviceUniformVolume::Create( *inputImage, 512 );
   this->m_NumberOfPixels = inputImage->GetNumberOfPixels();
+
+  this->m_HistogramDevice = DeviceHistogram::Create( this->m_NumberOfHistogramBins );
+}
+
+template<unsigned int NOrderAdd,unsigned int NOrderMul>
+void
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul>
+::SetForegroundMask( const UniformVolume& foregroundMask )
+{
+  this->Superclass::SetForegroundMask( foregroundMask );
+
+  std::vector<int> maskCopy( this->m_NumberOfPixels );
+  for ( size_t i = 0; i < this->m_NumberOfPixels; ++i )
+    {
+    if ( this->m_ForegroundMask[i] )
+      maskCopy[i] = 1;
+    else
+      maskCopy[i] = 0;
+    }
+
+  this->m_ForegroundMaskDevice = DeviceMemory<int>::Create( this->m_NumberOfPixels, &maskCopy[0], 512 );
 }
 
 #pragma GCC diagnostic ignored "-Wtype-limits"
@@ -66,12 +87,12 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul
       v[dim] += stepScale;
       this->SetParamVector( v );
       this->UpdateOutputImageDevice();
-      const typename Self::ReturnType upper = this->Evaluate();
+      const typename Self::ReturnType upper = this->EvaluateDevice();
       
       v[dim] = v0 - stepScale;
       this->SetParamVector( v );
       this->UpdateOutputImageDevice();
-      const  typename Self::ReturnType lower = this->Evaluate();
+      const  typename Self::ReturnType lower = this->EvaluateDevice();
       
       v[dim] = v0;
       
@@ -126,6 +147,16 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul
       }
     cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( output, input, dims0, dims1, dims2, NOrderAdd, 0 /*multiply*/, Self::PolynomialTypeAdd::NumberOfMonomials, &parameters[0], &corrections[0] );
     }
+}
 
-  this->m_OutputDataDevice->CopyFromDevice( this->m_OutputImage->GetData()->GetDataPtr(), this->m_NumberOfPixels );
+template<unsigned int NOrderAdd,unsigned int NOrderMul>
+typename cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul>::ReturnType 
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul>
+::EvaluateDevice()
+{
+  const Types::DataItemRange range = this->m_EntropyHistogram->GetRange();
+  this->m_HistogramDevice->Reset();
+  this->m_HistogramDevice->Populate( *this->m_OutputDataDevice, *this->m_ForegroundMaskDevice, range.m_LowerBound, range.m_UpperBound );
+
+  return this->m_HistogramDevice->GetEntropy();
 }

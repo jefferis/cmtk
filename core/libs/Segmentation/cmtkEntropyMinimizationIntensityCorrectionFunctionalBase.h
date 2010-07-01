@@ -221,7 +221,7 @@ protected:
   /// Number of input image pixels.
   size_t m_NumberOfPixels;
 
-private:  
+protected:  
   /** Sampling density.
    * This defines the fraction of foreground pixels that are considered in
    * the computation.
@@ -233,7 +233,8 @@ private:
 
   /// Flag for using log-intensities for entropy estimation.
   bool m_UseLogIntensities;
-  
+
+private:  
   /// Class for output image update thread parameters.
   class UpdateOutputImageThreadParameters :
     public ThreadParameters<Self>

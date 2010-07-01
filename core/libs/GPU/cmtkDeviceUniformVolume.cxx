@@ -33,8 +33,6 @@
 cmtk::DeviceUniformVolume::
 DeviceUniformVolume( const UniformVolume& volume, const size_t padDataToMultiple )
 {
-  this->m_OnDevice = DeviceMemory<UniformVolumeOnDevice>::Create( 1 );
-
   // set volume parameters
   UniformVolumeOnDevice onDevice;
   for ( size_t i = 0; i < 3; ++i )
@@ -48,12 +46,11 @@ DeviceUniformVolume( const UniformVolume& volume, const size_t padDataToMultiple
     {
     TypedArray::SmartPtr floatData = volume.GetData()->Convert( TYPE_FLOAT );
 
-    this->m_OnDeviceData = DeviceMemory<float>::Create( volume.GetNumberOfPixels(), padDataToMultiple );
-    this->m_OnDeviceData->CopyToDevice( static_cast<float*>( floatData->GetDataPtr() ), volume.GetNumberOfPixels() );
+    this->m_OnDeviceData = DeviceMemory<float>::Create( volume.GetNumberOfPixels(), static_cast<float*>( floatData->GetDataPtr() ), padDataToMultiple );
     
     // set device pointer to data, then copy whole structure to device.
     onDevice.m_Data = this->m_OnDeviceData->Ptr();
     }
 
-  this->m_OnDevice->CopyToDevice( &onDevice, 1 );
+  this->m_OnDevice = DeviceMemory<UniformVolumeOnDevice>::Create( 1, &onDevice );
 }
