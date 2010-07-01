@@ -2,8 +2,14 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
-Release Notes -- CMTK 1.3.2
+Release Notes -- CMTK 1.4.0
 ===========================
+
+This release adds initial support for GPU computation, currently implemented
+only for the CUDA programming model.
+
+This release removes support for building classes for data exchange
+(encapsulation) with VTK, The Visualization Toolkit.
 
 For a complete list of changes and fixes, see the CHANGELOG file.
 
