@@ -63,7 +63,7 @@ void
 cmtk::DeviceHistogram
 ::Populate( const DeviceMemory<float>& dataOnDevice, const float rangeFrom, const float rangeTo )
 {
-  cmtkDeviceHistogramPopulate( this->m_OnDeviceData->Ptr(), dataOnDevice.Ptr(), NULL, rangeFrom, rangeTo, this->m_NumberOfBins, dataOnDevice.GetNumberOfItems() );
+  cmtkDeviceHistogramPopulate( this->m_OnDeviceData->Ptr(), dataOnDevice.Ptr(), rangeFrom, rangeTo, this->m_NumberOfBins, dataOnDevice.GetNumberOfItems() );
 }
 
 void

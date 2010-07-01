@@ -166,6 +166,37 @@ cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const f
 }
 
 void
+cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float rangeFrom, const float rangeTo, int numberOfBins, int numberOfSamples )
+{
+  // how many local copies of the histogram can we fit in shared memory?
+  int device;
+  cudaDeviceProp dprop;
+  if ( (cudaGetDevice( &device ) != cudaSuccess) || (cudaGetDeviceProperties( &dprop, device ) != cudaSuccess ) )
+    {
+      fputs( "ERROR: could not get device properties.\n", stderr );
+      exit( 1 );
+    }
+  
+  int nThreads = dprop.sharedMemPerBlock / (sizeof(float) * numberOfBins);
+  if ( nThreads > 512 )
+    nThreads = 512;
+
+  dim3 dimBlock( nThreads, 1 );
+  dim3 dimGrid( 1, 1 );
+
+  cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock,nThreads*numberOfBins*sizeof(float)>>>( histPtr, dataPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples / nThreads );
+
+  const int residualSamples = numberOfSamples - nThreads * (numberOfSamples / nThreads);
+  if ( residualSamples )
+    {
+      dim3 dimBlock( residualSamples, 1 );
+      dim3 dimGrid( 1, 1 );
+      
+      cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock,residualSamples*numberOfBins*sizeof(float)>>>( histPtr, dataPtr + numberOfSamples - residualSamples, rangeFrom, rangeTo, numberOfBins, 1 );
+    }
+}
+
+void
 cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* maskPtr, const float rangeFrom, const float rangeTo, int numberOfBins, int numberOfSamples )
 {
   // how many local copies of the histogram can we fit in shared memory?
@@ -184,10 +215,7 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* ma
   dim3 dimBlock( nThreads, 1 );
   dim3 dimGrid( 1, 1 );
 
-  if ( maskPtr )
-    cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock,nThreads*(numberOfBins+1)*sizeof(float)>>>( histPtr, dataPtr, maskPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples / nThreads );
-  else
-    cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock,nThreads*numberOfBins*sizeof(float)>>>( histPtr, dataPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples / nThreads );
+  cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock,nThreads*(numberOfBins+1)*sizeof(float)>>>( histPtr, dataPtr, maskPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples / nThreads );
 
   const int residualSamples = numberOfSamples - nThreads * (numberOfSamples / nThreads);
   if ( residualSamples )
@@ -195,9 +223,6 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* ma
       dim3 dimBlock( residualSamples, 1 );
       dim3 dimGrid( 1, 1 );
       
-      if ( maskPtr )
-	cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock,residualSamples*(numberOfBins+1)*sizeof(float)>>>( histPtr, dataPtr + numberOfSamples - residualSamples, maskPtr + numberOfSamples - residualSamples, rangeFrom, rangeTo, numberOfBins, 1 );
-      else
-	cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock,residualSamples*numberOfBins*sizeof(float)>>>( histPtr, dataPtr + numberOfSamples - residualSamples, rangeFrom, rangeTo, numberOfBins, 1 );
+      cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock,residualSamples*(numberOfBins+1)*sizeof(float)>>>( histPtr, dataPtr + numberOfSamples - residualSamples, maskPtr + numberOfSamples - residualSamples, rangeFrom, rangeTo, numberOfBins, 1 );
     }
 }
