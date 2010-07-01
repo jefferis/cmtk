@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,10 +40,6 @@
 
 #include <list>
 
-#ifdef CMTK_HAVE_VTK
-#  include <vtkPoints.h>
-#endif
-
 namespace
 cmtk
 {
@@ -67,19 +64,6 @@ public:
 
   /// Find landmark by name and return constant pointer.
   const Landmark::SmartPtr FindByName( const char* name ) const;
-
-#ifdef CMTK_HAVE_VTK
-  /// Get landmarks as vtkPoints list.
-  vtkPoints* GetVtkPoints() const;
-
-  /** Get matched landmarks as two vtkPoints lists.
-   * The landmarks in this list and the list given as the "targetLL" parameter
-   * are matched using their name and inserted into two vtkPoints objects. The
-   * order of insertion is determined by their order in this object. Landmarks
-   * that have no equally named counterpart in the other list will be ignored.
-   */
-  vtkPoints* GetMatchedVtkPoints( vtkPoints*& targetPoints, const LandmarkList *targetLL ) const;
-#endif
 };
 
 //@}
