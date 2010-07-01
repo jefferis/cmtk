@@ -409,29 +409,6 @@ SET(MXML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Utilities/mxml")
 
 
 #-----------------------------------------------------------------------------
-# Add an option to use or not use VTK
-
-OPTION(CMTK_USE_VTK "Use VTK (The Visualization Toolkit) (some optional GUI applications need this)" OFF)
-IF(CMTK_USE_VTK)
-  FIND_PACKAGE(VTK)
-  IF (VTK_FOUND)
-    INCLUDE (${VTK_USE_FILE})
-
-    ADD_DEFINITIONS(-DCMTK_HAVE_VTK)
-    SET(CMTK_VTK_LIBS vtkHybrid vtkGraphics vtkCommon)
-    # Test for VTK using std libs
-    IF(WIN32) # It seems that the following message is only relavant for MSVC 6 installs
-      IF(NOT VTK_USE_ANSI_STDLIB)
-        MESSAGE("Warning.  Your VTK was not built with the VTK_USE_ANSI_STDLIB "
-          "option ON.  Link errors may occur.  Consider re-building VTK "
-          "with this option ON.  For MSVC 6, you MUST turn on the VTK "
-          "option. CMTK will not link otherwise.")
-      ENDIF(NOT VTK_USE_ANSI_STDLIB)
-    ENDIF(WIN32)
-  ENDIF (VTK_FOUND)
-ENDIF(CMTK_USE_VTK)
-
-#-----------------------------------------------------------------------------
 # Add an option to enable or disable QT support and GUI applications
 
 IF(NOT CMTK_USE_MPI)
