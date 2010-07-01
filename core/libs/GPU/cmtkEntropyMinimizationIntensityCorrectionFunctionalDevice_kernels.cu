@@ -40,58 +40,58 @@ void
 cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel
 ( float* output, float* input, int degree, int multiply, int slice, int dims0, int dims1, int dims2 )
 {
-  int x = blockIdx.x * 16 + threadIdx.x;
-  int y = blockIdx.y * 16 + threadIdx.y;
-  int z = threadIdx.z + slice;
+  const int x = blockIdx.x * 16 + threadIdx.x;
+  const int y = blockIdx.y * 16 + threadIdx.y;
+  const int z = threadIdx.z + slice;
 
-  if ( (x >= dims0) || (y >= dims1) || (z >= dims2) )
-    return;
-
-  float X = 2.0 * (x-dims0/2) / dims0;
-  float Y = 2.0 * (y-dims1/2) / dims1;
-  float Z = 2.0 * (z-dims2/2) / dims2;
-
-  int offset = x + dims0 * (y + dims1 * (z+slice) );
-  const float in = input[offset];
-  
-  float bias =
-    deviceWeights[0] * (X - deviceCorrections[0]) + 
-    deviceWeights[1] * (Y - deviceCorrections[1]) +
-    deviceWeights[2] * (Z - deviceCorrections[2]);
-
-  if ( degree > 1 )
+  if ( (x<dims0) && (y<dims1) && (z<dims2) )
     {
-      bias +=
-	deviceWeights[3] * (X * X - deviceCorrections[3])+
-	deviceWeights[4] * (X * Y - deviceCorrections[4])+
-	deviceWeights[5] * (X * Z - deviceCorrections[5]) +
-	deviceWeights[6] * (Y * Y - deviceCorrections[6]) +
-	deviceWeights[7] * (Y * Z - deviceCorrections[7]) +
-	deviceWeights[8] * (Z * Z - deviceCorrections[8]);
-    }
-  
-  if ( degree > 2 )
-    {
-      bias +=
-	deviceWeights[ 9] * (X * X * X - deviceCorrections[ 9]) +
-	deviceWeights[10] * (X * X * Y - deviceCorrections[10]) +
-	deviceWeights[11] * (X * X * Z - deviceCorrections[11]) +
-	deviceWeights[12] * (X * Y * Y - deviceCorrections[12]) +
-	deviceWeights[13] * (X * Y * Z - deviceCorrections[13]) +
-	deviceWeights[14] * (X * Z * Z - deviceCorrections[14]) +
-	deviceWeights[15] * (Y * Y * Y - deviceCorrections[15]) +
-	deviceWeights[16] * (Y * Y * Z - deviceCorrections[16]) +
-	deviceWeights[17] * (Y * Z * Z - deviceCorrections[17]) +
-	deviceWeights[18] * (Z * Z * Z - deviceCorrections[18]);
-    }
-
-  if ( multiply )
-    {
-      output[offset] = in * bias;
-    }
-  else
-    {
-      output[offset] = in + bias;
+      const float X = 2.0 * (x-dims0/2) / dims0;
+      const float Y = 2.0 * (y-dims1/2) / dims1;
+      const float Z = 2.0 * (z-dims2/2) / dims2;
+      
+      const int offset = x + dims0 * (y + dims1 * (z+slice) );
+      const float in = input[offset];
+      
+      float bias =
+	deviceWeights[0] * (X - deviceCorrections[0]) + 
+	deviceWeights[1] * (Y - deviceCorrections[1]) +
+	deviceWeights[2] * (Z - deviceCorrections[2]);
+      
+      if ( degree > 1 )
+	{
+	  bias +=
+	    deviceWeights[3] * (X * X - deviceCorrections[3]) +
+	    deviceWeights[4] * (X * Y - deviceCorrections[4]) +
+	    deviceWeights[5] * (X * Z - deviceCorrections[5]) +
+	    deviceWeights[6] * (Y * Y - deviceCorrections[6]) +
+	    deviceWeights[7] * (Y * Z - deviceCorrections[7]) +
+	    deviceWeights[8] * (Z * Z - deviceCorrections[8]);
+	}
+      
+      if ( degree > 2 )
+	{
+	  bias +=
+	    deviceWeights[ 9] * (X * X * X - deviceCorrections[ 9]) +
+	    deviceWeights[10] * (X * X * Y - deviceCorrections[10]) +
+	    deviceWeights[11] * (X * X * Z - deviceCorrections[11]) +
+	    deviceWeights[12] * (X * Y * Y - deviceCorrections[12]) +
+	    deviceWeights[13] * (X * Y * Z - deviceCorrections[13]) +
+	    deviceWeights[14] * (X * Z * Z - deviceCorrections[14]) +
+	    deviceWeights[15] * (Y * Y * Y - deviceCorrections[15]) +
+	    deviceWeights[16] * (Y * Y * Z - deviceCorrections[16]) +
+	    deviceWeights[17] * (Y * Z * Z - deviceCorrections[17]) +
+	    deviceWeights[18] * (Z * Z * Z - deviceCorrections[18]);
+	}
+      
+      if ( multiply )
+	{
+	  output[offset] = in * bias;
+	}
+      else
+	{
+	  output[offset] = in + bias;
+	}
     }
 }
 
