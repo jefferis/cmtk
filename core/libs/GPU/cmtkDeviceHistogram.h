@@ -64,6 +64,12 @@ public:
     return *(this->m_OnDeviceData);
   }
 
+  /// Return device data pointer.
+  const DeviceMemory<float>& GetDataOnDevice() const
+  {
+    return *(this->m_OnDeviceData);
+  }
+
   /// Reset histogram, i.e., set all bins to zero.
   void Reset();
 
