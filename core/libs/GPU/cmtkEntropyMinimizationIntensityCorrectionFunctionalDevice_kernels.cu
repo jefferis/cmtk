@@ -33,8 +33,8 @@
 #include <cstdio>
 #include <algorithm>
 
-__constant__ float deviceWeights[19];
-__constant__ float deviceCorrections[19];
+__constant__ float deviceWeights[34];
+__constant__ float deviceCorrections[34];
 
 __global__
 void
