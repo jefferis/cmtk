@@ -40,8 +40,8 @@ void
 cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel
 ( float* output, float* input, int degree, int multiply, int slice, int dims0, int dims1, int dims2 )
 {
-  const int x = blockIdx.x * 16 + threadIdx.x;
-  const int y = blockIdx.y * 16 + threadIdx.y;
+  const int x = blockIdx.x * blockDim.x + threadIdx.x;
+  const int y = blockIdx.y * blockDim.y + threadIdx.y;
   const int z = threadIdx.z + slice;
 
   if ( (x<dims0) && (y<dims1) && (z<dims2) )
