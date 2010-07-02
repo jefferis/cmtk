@@ -213,7 +213,6 @@ ENDIF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} STRL
 # Enable GPU support
 
 OPTION(CMTK_CONFIG_GPU "Configure GPU computing" OFF)
-MARK_AS_ADVANCED(CMTK_CONFIG_GPU)
 
 #-----------------------------------------------------------------------------
 # Check for, and configure, OpenCL
