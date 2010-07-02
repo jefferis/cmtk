@@ -173,7 +173,7 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float r
   cudaDeviceProp dprop;
   if ( (cudaGetDevice( &device ) != cudaSuccess) || (cudaGetDeviceProperties( &dprop, device ) != cudaSuccess ) )
     {
-      fputs( "ERROR: could not get device properties.\n", stderr );
+      fprintf( stderr, "ERROR: cudaGetDevice() failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
       exit( 1 );
     }
   
@@ -189,7 +189,7 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float r
   const cudaError_t kernelError = cudaGetLastError();
   if ( kernelError != cudaSuccess )
     {
-      fprintf( stderr, "ERROR: CUDA kernel failed with error code %d\n", static_cast<int>( kernelError ) );
+      fprintf( stderr, "ERROR: CUDA kernel failed with error %s\n",cudaGetErrorString( kernelError ) );
       exit( 1 );      
     }
 
@@ -204,7 +204,7 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float r
       const cudaError_t kernelError = cudaGetLastError();
       if ( kernelError != cudaSuccess )
 	{
-	  fprintf( stderr, "ERROR: CUDA kernel failed with error code %d\n", static_cast<int>( kernelError ) );
+	  fprintf( stderr, "ERROR: CUDA kernel failed with error %s\n",cudaGetErrorString( kernelError ) );
 	  exit( 1 );      
 	}
     }
@@ -218,7 +218,7 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* ma
   cudaDeviceProp dprop;
   if ( (cudaGetDevice( &device ) != cudaSuccess) || (cudaGetDeviceProperties( &dprop, device ) != cudaSuccess ) )
     {
-      fputs( "ERROR: could not get device properties.\n", stderr );
+      fprintf( stderr, "ERROR: cudaGetDevice() failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
       exit( 1 );
     }
   
@@ -234,7 +234,7 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* ma
   const cudaError_t kernelError = cudaGetLastError();
   if ( kernelError != cudaSuccess )
     {
-      fprintf( stderr, "ERROR: CUDA kernel failed with error code %d\n", static_cast<int>( kernelError ) );
+      fprintf( stderr, "ERROR: CUDA kernel failed with error %s\n",cudaGetErrorString( kernelError ) );
       exit( 1 );      
     }
   
@@ -249,7 +249,7 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* ma
       const cudaError_t kernelError = cudaGetLastError();
       if ( kernelError != cudaSuccess )
 	{
-	  fprintf( stderr, "ERROR: CUDA kernel failed with error code %d\n", static_cast<int>( kernelError ) );
+	  fprintf( stderr, "ERROR: CUDA kernel failed with error %s\n",cudaGetErrorString( kernelError ) );
 	  exit( 1 );      
 	}
     }

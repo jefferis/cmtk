@@ -85,7 +85,7 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel
 	    deviceWeights[17] * (Y * Z * Z - deviceCorrections[17]) +
 	    deviceWeights[18] * (Z * Z * Z - deviceCorrections[18]);
 	}
-      
+
       if ( multiply )
 	{
 	  output[offset] = in * (bias+1);
@@ -108,7 +108,7 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
   cudaDeviceProp dprop;
   if ( (cudaGetDevice( &device ) != cudaSuccess) || (cudaGetDeviceProperties( &dprop, device ) != cudaSuccess ) )
     {
-      fputs( "ERROR: could not get device properties\n", stderr );
+      fprintf( stderr, "ERROR: cudaGetDevice() failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
       exit( 1 );
     }
   
@@ -120,7 +120,7 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
   if ( (cudaMemcpy( deviceWeights, weights, nargs * sizeof( *weights ), cudaMemcpyHostToDevice ) != cudaSuccess) ||
        (cudaMemcpy( deviceCorrections, corrections, nargs * sizeof( *corrections ), cudaMemcpyHostToDevice ) != cudaSuccess) )
     {
-      fputs( "ERROR: cudaMemcpy to constant memory failed\n", stderr );
+      fprintf( stderr, "ERROR: cudaMemcpy() to constant memory failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
       exit( 1 );      
     }
     
@@ -129,7 +129,7 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
   const cudaError_t kernelError = cudaGetLastError();
   if ( kernelError != cudaSuccess )
     {
-      fprintf( stderr, "ERROR: CUDA kernel failed with error code %d\n", static_cast<int>( kernelError ) );
+      fprintf( stderr, "ERROR: CUDA kernel failed with error %s\n",cudaGetErrorString( kernelError ) );
       exit( 1 );      
     }
 }

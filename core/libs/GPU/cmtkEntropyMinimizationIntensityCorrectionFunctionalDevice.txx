@@ -152,12 +152,11 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul
 {
   const Types::DataItemRange range = this->m_EntropyHistogram->GetRange();
   this->m_HistogramDevice->Reset();
-
   this->m_HistogramDevice->Populate( *this->m_OutputDataDevice, *this->m_ForegroundMaskDevice, range.m_LowerBound, range.m_UpperBound );
 
   const float entropy = this->m_HistogramDevice->GetEntropy();
 
   std::cerr << entropy << std::endl;
 
-  return entropy;
+  return -entropy;
 }
