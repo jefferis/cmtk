@@ -101,6 +101,13 @@ void
 cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
 ( float* output, float* input, const int dims0, const int dims1, const int dims2, const int degree, const int multiply, const int nargs, const float* weights, const float* corrections )
 { 
+  if ( (cudaMemcpyToSymbol( deviceWeights, weights, nargs * sizeof( *weights ), 0, cudaMemcpyHostToDevice ) != cudaSuccess) ||
+       (cudaMemcpyToSymbol( deviceCorrections, corrections, nargs * sizeof( *corrections ), 0, cudaMemcpyHostToDevice ) != cudaSuccess) )
+    {
+      fprintf( stderr, "ERROR: cudaMemcpy() to constant memory failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
+      exit( 1 );      
+    }
+    
   const int nPixels = dims0 * dims1 * dims2;
 
   // how many local copies of the histogram can we fit in shared memory?
@@ -117,13 +124,6 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
   dim3 dimBlock( nThreads, 1, 1 );
   dim3 dimGrid( 1+(nPixels-1)/nThreads, 1 );
   
-  if ( (cudaMemcpy( deviceWeights, weights, nargs * sizeof( *weights ), cudaMemcpyHostToDevice ) != cudaSuccess) ||
-       (cudaMemcpy( deviceCorrections, corrections, nargs * sizeof( *corrections ), cudaMemcpyHostToDevice ) != cudaSuccess) )
-    {
-      fprintf( stderr, "ERROR: cudaMemcpy() to constant memory failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
-      exit( 1 );      
-    }
-    
   cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel<<<dimGrid,dimBlock>>>( output, input, degree, multiply, nPixels, dims0, dims1, dims2 );
 
   const cudaError_t kernelError = cudaGetLastError();
