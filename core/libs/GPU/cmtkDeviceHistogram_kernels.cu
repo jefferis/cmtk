@@ -99,6 +99,8 @@ void
 cmtkDeviceHistogramPopulateWithMaskKernel( float* histPtr, const float *dataPtr, const int *maskPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples )
 {
   int tx = threadIdx.x;
+  int offs = tx + blockDim.x * blockIdx.x;
+  int skip = blockDim.x * gridDim.x;
 
   // working histogram for this thread in shared memory
   float* working = &shared[(numberOfBins+1)*tx];
@@ -110,7 +112,7 @@ cmtkDeviceHistogramPopulateWithMaskKernel( float* histPtr, const float *dataPtr,
   // populate histogram bins
   const float binScale = (numberOfBins-1) / (rangeTo - rangeFrom);
   
-  for ( int offset = tx; offset < numberOfSamples; offset += blockDim.x )
+  for ( int offset = offs; offset < numberOfSamples; offset += skip )
     {
       float binIndex = fmaxf( 0, fminf( numberOfBins-1, (dataPtr[offset] - rangeFrom) * binScale ) );
       int index = truncf( (1+binIndex) * maskPtr[offset] );
@@ -209,7 +211,7 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* ma
     nThreads = dprop.maxThreadsPerBlock;
 
   dim3 dimBlock( nThreads, 1 );
-  dim3 dimGrid( 1, 1 );
+  dim3 dimGrid( 64, 1 );
   
   cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock,nThreads*(numberOfBins+1)*sizeof(float)>>>( histPtr, dataPtr, maskPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples );
   
