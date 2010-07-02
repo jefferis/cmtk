@@ -35,10 +35,10 @@
 //@{
 
 /// Populate histogram from data, entirely on device.
-void cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float rangeFrom, const float rangeTo, int numberOfBins, int numberOfSamples );
+void cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples );
 
 /// Populate histogram from data using binary mask, entirely on device.
-void cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* maskPtr, const float rangeFrom, const float rangeTo, int numberOfBins, int numberOfSamples );
+void cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* maskPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples );
 
 /// Compute entropy from histogram on device.
 void cmtkDeviceHistogramEntropy( float* result, const float* dataPtr, int numberOfBins );

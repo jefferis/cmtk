@@ -96,7 +96,7 @@ cmtkDeviceHistogramEntropy( float* result, const float* dataPtr, int numberOfBin
 
 __global__
 void 
-cmtkDeviceHistogramPopulateWithMaskKernel( float* histPtr, const float *dataPtr, const int *maskPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int iterations )
+cmtkDeviceHistogramPopulateWithMaskKernel( float* histPtr, const float *dataPtr, const int *maskPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples )
 {
   int tx = threadIdx.x;
 
@@ -110,8 +110,7 @@ cmtkDeviceHistogramPopulateWithMaskKernel( float* histPtr, const float *dataPtr,
   // populate histogram bins
   const float binScale = (numberOfBins-1) / (rangeTo - rangeFrom);
   
-  int offset = tx;
-  for ( int i = 0; i < iterations; ++i, offset += blockDim.x )
+  for ( int offset = tx; offset < numberOfSamples; offset += blockDim.x )
     {
       float binIndex = fmaxf( 0, fminf( numberOfBins-1, (dataPtr[offset] - rangeFrom) * binScale ) );
       int index = truncf( (1+binIndex) * maskPtr[offset] );
@@ -132,7 +131,7 @@ cmtkDeviceHistogramPopulateWithMaskKernel( float* histPtr, const float *dataPtr,
 
 __global__
 void 
-cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int iterations )
+cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples )
 {
   int tx = threadIdx.x;
 
@@ -146,13 +145,12 @@ cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const f
   // populate histogram bins
   const float binScale = (numberOfBins-1) / (rangeTo - rangeFrom);
   
-  int offset = tx;
-  for ( int i = 0; i < iterations; ++i, offset += blockDim.x )
+  for ( int offset = tx; offset < numberOfSamples; offset += blockDim.x )
     {
       int index = truncf( fmaxf( 0, fminf( numberOfBins-1, (dataPtr[offset] - rangeFrom) * binScale ) ) );
       ++working[ index ];
     }
-
+  
   // finally, add all thread working histograms to output histogram
   for ( int idx = tx; idx < numberOfBins; idx += blockDim.x )
     {
@@ -166,7 +164,7 @@ cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const f
 }
 
 void
-cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float rangeFrom, const float rangeTo, int numberOfBins, int numberOfSamples )
+cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples )
 {
   // how many local copies of the histogram can we fit in shared memory?
   int device;
@@ -184,7 +182,7 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float r
   dim3 dimBlock( nThreads, 1 );
   dim3 dimGrid( 1, 1 );
 
-  cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock,nThreads*numberOfBins*sizeof(float)>>>( histPtr, dataPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples / nThreads );
+  cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock,nThreads*numberOfBins*sizeof(float)>>>( histPtr, dataPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples );
 
   const cudaError_t kernelError = cudaGetLastError();
   if ( kernelError != cudaSuccess )
@@ -192,26 +190,10 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float r
       fprintf( stderr, "ERROR: CUDA kernel failed with error %s\n",cudaGetErrorString( kernelError ) );
       exit( 1 );      
     }
-
-  const int residualSamples = numberOfSamples - nThreads * (numberOfSamples / nThreads);
-  if ( residualSamples )
-    {
-      dim3 dimBlock( residualSamples, 1 );
-      dim3 dimGrid( 1, 1 );
-      
-      cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock,residualSamples*numberOfBins*sizeof(float)>>>( histPtr, dataPtr + numberOfSamples - residualSamples, rangeFrom, rangeTo, numberOfBins, 1 );
-
-      const cudaError_t kernelError = cudaGetLastError();
-      if ( kernelError != cudaSuccess )
-	{
-	  fprintf( stderr, "ERROR: CUDA kernel failed with error %s\n",cudaGetErrorString( kernelError ) );
-	  exit( 1 );      
-	}
-    }
 }
 
 void
-cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* maskPtr, const float rangeFrom, const float rangeTo, int numberOfBins, int numberOfSamples )
+cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* maskPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples )
 {
   // how many local copies of the histogram can we fit in shared memory?
   int device;
@@ -229,28 +211,12 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* ma
   dim3 dimBlock( nThreads, 1 );
   dim3 dimGrid( 1, 1 );
   
-  cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock,nThreads*(numberOfBins+1)*sizeof(float)>>>( histPtr, dataPtr, maskPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples / nThreads );
+  cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock,nThreads*(numberOfBins+1)*sizeof(float)>>>( histPtr, dataPtr, maskPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples );
   
   const cudaError_t kernelError = cudaGetLastError();
   if ( kernelError != cudaSuccess )
     {
       fprintf( stderr, "ERROR: CUDA kernel failed with error %s\n",cudaGetErrorString( kernelError ) );
       exit( 1 );      
-    }
-  
-  const int residualSamples = numberOfSamples - nThreads * (numberOfSamples / nThreads);
-  if ( residualSamples )
-    {
-      dim3 dimBlock( residualSamples, 1 );
-      dim3 dimGrid( 1, 1 );
-      
-      cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock,residualSamples*(numberOfBins+1)*sizeof(float)>>>( histPtr, dataPtr + numberOfSamples - residualSamples, maskPtr + numberOfSamples - residualSamples, rangeFrom, rangeTo, numberOfBins, 1 );
-
-      const cudaError_t kernelError = cudaGetLastError();
-      if ( kernelError != cudaSuccess )
-	{
-	  fprintf( stderr, "ERROR: CUDA kernel failed with error %s\n",cudaGetErrorString( kernelError ) );
-	  exit( 1 );      
-	}
     }
 }
