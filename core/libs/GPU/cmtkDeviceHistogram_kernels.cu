@@ -96,43 +96,6 @@ cmtkDeviceHistogramEntropy( float* result, const float* dataPtr, int numberOfBin
 
 __global__
 void 
-cmtkDeviceHistogramPopulateWithMaskKernel( float* histPtr, const float *dataPtr, const int *maskPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples )
-{
-  int tx = threadIdx.x;
-  int offs = tx + blockDim.x * blockIdx.x;
-  int skip = blockDim.x * gridDim.x;
-
-  // working histogram for this thread in shared memory
-  float* working = &shared[(numberOfBins+1)*tx];
-
-  // start by resetting all histogram bins to 0
-  for ( int i = 0; i <= numberOfBins; ++i )
-    working[i] = 0;
-
-  // populate histogram bins
-  const float binScale = (numberOfBins-1) / (rangeTo - rangeFrom);
-  
-  for ( int offset = offs; offset < numberOfSamples; offset += skip )
-    {
-      float binIndex = fmaxf( 0, fminf( numberOfBins-1, (dataPtr[offset] - rangeFrom) * binScale ) );
-      int index = truncf( (1+binIndex) * maskPtr[offset] );
-      ++working[ index ];
-    }
-
-  // finally, add all thread working histograms to output histogram
-  for ( int idx = 1+tx; idx <= numberOfBins; idx += blockDim.x )
-    {
-      float sum = 0;
-      for ( int hx = 0; hx < blockDim.x; ++hx )
-	{
-	  sum += shared[ idx + hx*(1+numberOfBins) ];
-	}
-      histPtr[idx-1] += sum;
-    }
-}
-
-__global__
-void 
 cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples )
 {
   int tx = threadIdx.x;
@@ -155,6 +118,8 @@ cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const f
       ++working[ index ];
     }
   
+  __syncthreads();
+
   // finally, add all thread working histograms to output histogram
   for ( int idx = tx; idx < numberOfBins; idx += blockDim.x )
     {
@@ -179,9 +144,9 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float r
       exit( 1 );
     }
   
-  int nThreads = dprop.sharedMemPerBlock / (sizeof(float) * numberOfBins);
-  if ( nThreads > 512 )
-    nThreads = 512;
+  int nThreads = (dprop.sharedMemPerBlock-48) / (sizeof(float) * numberOfBins); // subtract 48 for static shared memory needed by kernel
+  if ( nThreads > dprop.maxThreadsPerBlock )
+    nThreads = dprop.maxThreadsPerBlock;
 
   dim3 dimBlock( nThreads, 1 );
   dim3 dimGrid( 1, 1 );
@@ -193,6 +158,45 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float r
     {
       fprintf( stderr, "ERROR: CUDA kernel failed with error %s\n",cudaGetErrorString( kernelError ) );
       exit( 1 );      
+    }
+}
+
+__global__
+void 
+cmtkDeviceHistogramPopulateWithMaskKernel( float* histPtr, const float *dataPtr, const int *maskPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples )
+{
+  int tx = threadIdx.x;
+  int offs = tx + blockDim.x * blockIdx.x;
+  int skip = blockDim.x * gridDim.x;
+
+  // working histogram for this thread in shared memory
+  float* working = &shared[(numberOfBins+1)*tx];
+
+  // start by resetting all histogram bins to 0
+  for ( int i = 0; i <= numberOfBins; ++i )
+    working[i] = 0;
+
+  // populate histogram bins
+  const float binScale = (numberOfBins-1) / (rangeTo - rangeFrom);
+  
+  for ( int offset = offs; offset < numberOfSamples; offset += skip )
+    {
+      float binIndex = fmaxf( 0, fminf( numberOfBins-1, (dataPtr[offset] - rangeFrom) * binScale ) );
+      int index = truncf( (1+binIndex) * maskPtr[offset] );
+      ++working[ index ];
+    }
+
+  __syncthreads();
+
+  // finally, add all thread working histograms to output histogram
+  for ( int idx = 1+tx; idx <= numberOfBins; idx += blockDim.x )
+    {
+      float sum = 0;
+      for ( int hx = 0; hx < blockDim.x; ++hx )
+	{
+	  sum += shared[ idx + hx*(1+numberOfBins) ];
+	}
+      histPtr[idx-1] += sum;
     }
 }
 
@@ -208,7 +212,7 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* ma
       exit( 1 );
     }
   
-  int nThreads = dprop.sharedMemPerBlock / (sizeof(float) * (1+numberOfBins));
+  int nThreads = (dprop.sharedMemPerBlock-48) / (sizeof(float) * (numberOfBins+1)); // subtract 48 for static shared memory needed by kernel
   if ( nThreads > dprop.maxThreadsPerBlock )
     nThreads = dprop.maxThreadsPerBlock;
 
