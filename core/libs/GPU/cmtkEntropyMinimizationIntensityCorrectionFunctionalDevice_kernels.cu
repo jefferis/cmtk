@@ -86,6 +86,26 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel
 	    deviceWeights[18] * (Z * Z * Z - deviceCorrections[18]);
 	}
 
+      if ( degree > 3 )
+	{
+	  bias +=
+	    deviceWeights[19] * (X * X * X * X - deviceCorrections[19]) +
+	    deviceWeights[20] * (X * X * X * Y - deviceCorrections[20]) +
+	    deviceWeights[21] * (X * X * X * Z - deviceCorrections[21]) +
+	    deviceWeights[22] * (X * X * Y * Y - deviceCorrections[22]) +
+	    deviceWeights[23] * (X * X * Y * Z - deviceCorrections[23]) +
+	    deviceWeights[24] * (X * X * Z * Z - deviceCorrections[24]) +
+	    deviceWeights[25] * (X * Y * Y * Y - deviceCorrections[25]) +
+	    deviceWeights[26] * (X * Y * Y * Z - deviceCorrections[26]) +
+	    deviceWeights[27] * (X * Y * Z * Z - deviceCorrections[27]) +
+	    deviceWeights[28] * (X * Z * Z * Z - deviceCorrections[28]) +
+	    deviceWeights[29] * (Y * Y * Y * Y - deviceCorrections[29]) +
+	    deviceWeights[30] * (Y * Y * Y * Z - deviceCorrections[30]) +
+	    deviceWeights[31] * (Y * Y * Z * Z - deviceCorrections[31]) +
+	    deviceWeights[32] * (Y * Z * Z * Z - deviceCorrections[32]) +
+	    deviceWeights[33] * (Z * Z * Z * Z - deviceCorrections[33]);
+	}
+
       if ( multiply )
 	{
 	  output[offset] = in * (bias+1);
