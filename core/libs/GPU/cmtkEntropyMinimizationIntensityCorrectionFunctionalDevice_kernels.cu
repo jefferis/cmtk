@@ -46,7 +46,7 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel
   if ( offset < nPixels )
     {
       const int z = offset / (dims1*dims2);
-      const int y = (offset - z*(dims1*dims2)) / dims1;
+      const int y = (offset - z*(dims1*dims2)) / dims0;
       const int x = offset % dims1;
 
       const float X = 2.0f * (x-dims0/2) / dims0;
