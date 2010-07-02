@@ -136,6 +136,8 @@ void
 cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples )
 {
   int tx = threadIdx.x;
+  int offs = tx + blockDim.x * blockIdx.x;
+  int skip = blockDim.x * gridDim.x;
 
   // working histogram for this thread in shared memory
   float* working = &shared[numberOfBins*tx];
@@ -147,7 +149,7 @@ cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const f
   // populate histogram bins
   const float binScale = (numberOfBins-1) / (rangeTo - rangeFrom);
   
-  for ( int offset = tx; offset < numberOfSamples; offset += blockDim.x )
+  for ( int offset = offs; offset < numberOfSamples; offset += skip )
     {
       int index = truncf( fmaxf( 0, fminf( numberOfBins-1, (dataPtr[offset] - rangeFrom) * binScale ) ) );
       ++working[ index ];
