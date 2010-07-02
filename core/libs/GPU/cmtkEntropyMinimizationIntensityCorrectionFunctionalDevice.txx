@@ -85,14 +85,10 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul
       const Types::Coordinate v0 = v[dim];
       
       v[dim] += stepScale;
-      this->SetParamVector( v );
-      this->UpdateOutputImageDevice();
-      const typename Self::ReturnType upper = this->EvaluateDevice();
+      const typename Self::ReturnType upper = this->EvaluateAt( v );
       
       v[dim] = v0 - stepScale;
-      this->SetParamVector( v );
-      this->UpdateOutputImageDevice();
-      const  typename Self::ReturnType lower = this->EvaluateDevice();
+      const  typename Self::ReturnType lower = this->EvaluateAt( v );
       
       v[dim] = v0;
       
@@ -156,7 +152,12 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul
 {
   const Types::DataItemRange range = this->m_EntropyHistogram->GetRange();
   this->m_HistogramDevice->Reset();
+
   this->m_HistogramDevice->Populate( *this->m_OutputDataDevice, *this->m_ForegroundMaskDevice, range.m_LowerBound, range.m_UpperBound );
 
-  return this->m_HistogramDevice->GetEntropy();
+  const float entropy = this->m_HistogramDevice->GetEntropy();
+
+  std::cerr << entropy << std::endl;
+
+  return entropy;
 }

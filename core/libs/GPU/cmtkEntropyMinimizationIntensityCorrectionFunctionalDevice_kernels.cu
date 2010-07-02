@@ -31,6 +31,7 @@
 #include "cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.h"
 
 #include <cstdio>
+#include <algorithm>
 
 __constant__ float deviceWeights[19];
 __constant__ float deviceCorrections[19];
@@ -38,19 +39,20 @@ __constant__ float deviceCorrections[19];
 __global__
 void
 cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel
-( float* output, float* input, int degree, int multiply, int slice, int dims0, int dims1, int dims2 )
-{
-  const int x = blockIdx.x * blockDim.x + threadIdx.x;
-  const int y = blockIdx.y * blockDim.y + threadIdx.y;
-  const int z = threadIdx.z + slice;
+( float* output, float* input, int degree, int multiply, int nPixels, int dims0, int dims1, int dims2 )
+{  
+  const int offset = blockIdx.x * blockDim.x + threadIdx.x;
 
-  if ( (x<dims0) && (y<dims1) && (z<dims2) )
+  if ( offset < nPixels )
     {
-      const float X = 2.0 * (x-dims0/2) / dims0;
-      const float Y = 2.0 * (y-dims1/2) / dims1;
-      const float Z = 2.0 * (z-dims2/2) / dims2;
+      const int z = offset / (dims1*dims2);
+      const int y = (offset - z*(dims1*dims2)) / dims1;
+      const int x = offset % dims1;
+
+      const float X = 2.0f * (x-dims0/2) / dims0;
+      const float Y = 2.0f * (y-dims1/2) / dims1;
+      const float Z = 2.0f * (z-dims2/2) / dims2;
       
-      const int offset = x + dims0 * (y + dims1 * (z+slice) );
       const float in = input[offset];
       
       float bias =
@@ -86,7 +88,7 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel
       
       if ( multiply )
 	{
-	  output[offset] = in * bias;
+	  output[offset] = in * (bias+1);
 	}
       else
 	{
@@ -99,15 +101,35 @@ void
 cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
 ( float* output, float* input, const int dims0, const int dims1, const int dims2, const int degree, const int multiply, const int nargs, const float* weights, const float* corrections )
 { 
-  const int planesPerSlice = 8; // create 16*16*8 = 512 threads per block
-  dim3 dimBlock( 16, 16, planesPerSlice );
-  dim3 dimGrid( 1+((dims0-1)/16), 1+((dims1-1)/16) );
+  const int nPixels = dims0 * dims1 * dims2;
 
-  cudaMemcpy( deviceWeights, weights, nargs * sizeof( *weights ), cudaMemcpyHostToDevice );
-  cudaMemcpy( deviceCorrections, corrections, nargs * sizeof( *corrections ), cudaMemcpyHostToDevice );
-  
-  for ( int slice = 0; slice < dims2; slice += planesPerSlice )
+  // how many local copies of the histogram can we fit in shared memory?
+  int device;
+  cudaDeviceProp dprop;
+  if ( (cudaGetDevice( &device ) != cudaSuccess) || (cudaGetDeviceProperties( &dprop, device ) != cudaSuccess ) )
     {
-      cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel<<<dimGrid,dimBlock>>>( output, input, degree, multiply, slice, dims0, dims1, dims2 );
+      fputs( "ERROR: could not get device properties\n", stderr );
+      exit( 1 );
+    }
+  
+  const int nThreads = std::min<int>( nPixels, dprop.maxThreadsPerBlock );
+  
+  dim3 dimBlock( nThreads, 1, 1 );
+  dim3 dimGrid( 1+(nPixels-1)/nThreads, 1 );
+  
+  if ( (cudaMemcpy( deviceWeights, weights, nargs * sizeof( *weights ), cudaMemcpyHostToDevice ) != cudaSuccess) ||
+       (cudaMemcpy( deviceCorrections, corrections, nargs * sizeof( *corrections ), cudaMemcpyHostToDevice ) != cudaSuccess) )
+    {
+      fputs( "ERROR: cudaMemcpy to constant memory failed\n", stderr );
+      exit( 1 );      
+    }
+    
+  cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel<<<dimGrid,dimBlock>>>( output, input, degree, multiply, nPixels, dims0, dims1, dims2 );
+
+  const cudaError_t kernelError = cudaGetLastError();
+  if ( kernelError != cudaSuccess )
+    {
+      fprintf( stderr, "ERROR: CUDA kernel failed with error code %d\n", static_cast<int>( kernelError ) );
+      exit( 1 );      
     }
 }

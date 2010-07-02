@@ -186,6 +186,13 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float r
 
   cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock,nThreads*numberOfBins*sizeof(float)>>>( histPtr, dataPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples / nThreads );
 
+  const cudaError_t kernelError = cudaGetLastError();
+  if ( kernelError != cudaSuccess )
+    {
+      fprintf( stderr, "ERROR: CUDA kernel failed with error code %d\n", static_cast<int>( kernelError ) );
+      exit( 1 );      
+    }
+
   const int residualSamples = numberOfSamples - nThreads * (numberOfSamples / nThreads);
   if ( residualSamples )
     {
@@ -193,6 +200,13 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float r
       dim3 dimGrid( 1, 1 );
       
       cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock,residualSamples*numberOfBins*sizeof(float)>>>( histPtr, dataPtr + numberOfSamples - residualSamples, rangeFrom, rangeTo, numberOfBins, 1 );
+
+      const cudaError_t kernelError = cudaGetLastError();
+      if ( kernelError != cudaSuccess )
+	{
+	  fprintf( stderr, "ERROR: CUDA kernel failed with error code %d\n", static_cast<int>( kernelError ) );
+	  exit( 1 );      
+	}
     }
 }
 
@@ -209,14 +223,21 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* ma
     }
   
   int nThreads = dprop.sharedMemPerBlock / (sizeof(float) * (1+numberOfBins));
-  if ( nThreads > 512 )
-    nThreads = 512;
+  if ( nThreads > dprop.maxThreadsPerBlock )
+    nThreads = dprop.maxThreadsPerBlock;
 
   dim3 dimBlock( nThreads, 1 );
   dim3 dimGrid( 1, 1 );
-
+  
   cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock,nThreads*(numberOfBins+1)*sizeof(float)>>>( histPtr, dataPtr, maskPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples / nThreads );
-
+  
+  const cudaError_t kernelError = cudaGetLastError();
+  if ( kernelError != cudaSuccess )
+    {
+      fprintf( stderr, "ERROR: CUDA kernel failed with error code %d\n", static_cast<int>( kernelError ) );
+      exit( 1 );      
+    }
+  
   const int residualSamples = numberOfSamples - nThreads * (numberOfSamples / nThreads);
   if ( residualSamples )
     {
@@ -224,5 +245,12 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* ma
       dim3 dimGrid( 1, 1 );
       
       cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock,residualSamples*(numberOfBins+1)*sizeof(float)>>>( histPtr, dataPtr + numberOfSamples - residualSamples, maskPtr + numberOfSamples - residualSamples, rangeFrom, rangeTo, numberOfBins, 1 );
+
+      const cudaError_t kernelError = cudaGetLastError();
+      if ( kernelError != cudaSuccess )
+	{
+	  fprintf( stderr, "ERROR: CUDA kernel failed with error code %d\n", static_cast<int>( kernelError ) );
+	  exit( 1 );      
+	}
     }
 }
