@@ -35,10 +35,23 @@
 //@{
 
 /// Populate histogram from data, entirely on device.
-void cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples );
+void cmtkDeviceHistogramPopulate( float* histPtr, /**!< Device pointer to histogram data (output). */
+				  const float* dataPtr, /**!< Device pointer to input image data. */
+				  const float rangeFrom, /**!< Histogram range from this value. */
+				  const float rangeTo, /**!< Histogram range to this value. */
+				  const bool logScale, /**!< Use log scale for value-to-bin mapping to make entropy scale-invariant. */
+				  const int numberOfBins, /**!< Number of histogram bins. */
+				  const int numberOfSamples /**!< Number of data samples */ );
 
 /// Populate histogram from data using binary mask, entirely on device.
-void cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* maskPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples );
+void cmtkDeviceHistogramPopulate( float* histPtr, /**!< Device pointer to histogram data (output). */
+				  const float* dataPtr, /**!< Device pointer to input image data. */
+				  const int* maskPtr, /**!< Device pointer to binary mask data (0=background, 1=foreground). */ 
+				  const float rangeFrom, /**!< Histogram range from this value. */
+				  const float rangeTo, /**!< Histogram range to this value. */
+				  const bool logScale, /**!< Use log scale for value-to-bin mapping to make entropy scale-invariant. */
+				  const int numberOfBins, /**!< Number of histogram bins. */
+				  const int numberOfSamples /**!< Number of data samples */ );
 
 /// Compute entropy from histogram on device.
 void cmtkDeviceHistogramEntropy( float* result, const float* dataPtr, int numberOfBins );

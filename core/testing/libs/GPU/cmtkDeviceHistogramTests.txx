@@ -176,3 +176,54 @@ testDeviceHistogramPopulate()
   return 0;
 }
 
+int
+testDeviceHistogramPopulateLog()
+{
+  try
+    {
+    cmtk::DeviceHistogram::SmartPtr histogramD = cmtk::DeviceHistogram::Create( 4 );
+
+    const float data[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    cmtk::DeviceMemory<float>::SmartPtr dataD = cmtk::DeviceMemory<float>::Create( 10, data );
+
+    // reset histogram
+    histogramD->Reset();
+
+    const float baseline0[4] = { 0, 0, 0, 0 };
+    if ( compareHistogramToBaseline<4>( *histogramD, baseline0 ) )
+      return 1;
+
+    // populate histogram from data
+    histogramD->Populate( *dataD, 0.0 /*rangeFrom*/, 9.0 /*rangeTo*/, true /*logScale*/ );
+
+    const float baseline1[4] = { 4, 3, 3, 0 };
+    if ( compareHistogramToBaseline<4>( *histogramD, baseline1 ) )
+      return 1;
+
+    // add same data to histogram second time without reset
+    histogramD->Populate( *dataD, 0.0 /*rangeFrom*/, 9.0 /*rangeTo*/, true /*logScale*/ );
+
+    const float baseline2[4] = { 8, 6, 6, 0 };
+    if ( compareHistogramToBaseline<4>( *histogramD, baseline2 ) )
+      return 1;
+    
+    // reset and populate histogram using mask
+    const int mask[10] = { 0, 0, 1, 1, 0, 0, 0, 1, 1, 1 };
+    cmtk::DeviceMemory<int>::SmartPtr maskD = cmtk::DeviceMemory<int>::Create( 10, mask );
+
+    histogramD->Reset();
+    histogramD->Populate( *dataD, *maskD, 0.0 /*rangeFrom*/, 9.0 /*rangeTo*/, true /*logScale*/ );
+
+    const float baseline3[4] = { 2, 0, 3, 0 };
+    if ( compareHistogramToBaseline<4>( *histogramD, baseline3 ) )
+      return 1;
+    }
+  catch ( std::bad_alloc )
+    {
+    std::cerr << "Caught bad_alloc()" << std::endl;
+    return 1;
+    }
+
+  return 0;
+}
+

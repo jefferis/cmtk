@@ -45,7 +45,8 @@ IF(CMTK_USE_CUDA)
   # Tests for "cmtk::DeviceHistogram" class
   SET(Tests ${Tests} 
     DeviceHistogramEntropy
-    DeviceHistogramPopulate)
+    DeviceHistogramPopulate
+    DeviceHistogramPopulateLog)
   
   # ==========================================
   # Tests for "cmtk::DeviceMemory" class

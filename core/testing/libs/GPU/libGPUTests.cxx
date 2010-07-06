@@ -45,6 +45,7 @@ main( const int argc, const char* argv[] )
   cmtk::TestFunctionMap map;
   map.AddTest( "DeviceHistogramEntropy", &testDeviceHistogramEntropy );
   map.AddTest( "DeviceHistogramPopulate", &testDeviceHistogramPopulate );
+  map.AddTest( "DeviceHistogramPopulateLog", &testDeviceHistogramPopulateLog );
   map.AddTest( "DeviceMemory", &testDeviceMemory );
   map.AddTest( "DeviceUniformVolume", &testDeviceUniformVolume );
 

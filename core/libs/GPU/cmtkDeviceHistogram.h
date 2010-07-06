@@ -74,10 +74,10 @@ public:
   void Reset();
 
   /// Populate histogram from data on device.
-  void Populate( const DeviceMemory<float>& dataOnDevice, const float rangeFrom, const float rangeTo );
+  void Populate( const DeviceMemory<float>& dataOnDevice, const float rangeFrom, const float rangeTo, const bool logScale = false );
 
   /// Populate histogram from data on device using binary mask.
-  void Populate( const DeviceMemory<float>& dataOnDevice, const DeviceMemory<int>& maskOnDevice, const float rangeFrom, const float rangeTo );
+  void Populate( const DeviceMemory<float>& dataOnDevice, const DeviceMemory<int>& maskOnDevice, const float rangeFrom, const float rangeTo, const bool logScale = false );
 
   /// Get entropy.
   float GetEntropy() const;
