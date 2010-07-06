@@ -1014,6 +1014,18 @@ case ${RUNTEST} in
 	unset CMTK_NUM_THREADS
 	check_results corrected.img bias_mul.img bias_add.img
 	;;
+    mrbiasMulIncrementalCUDA)
+	run mrbias_cuda --incremental -M 2 --write-bias-mul ${tmpdir}/bias_mul.hdr --thresh-min 100 spgr_3t.hdr ${tmpdir}/corrected.hdr
+	check_results corrected.img bias_mul.img
+	;;
+    mrbiasMulLogIntensityCUDA)
+	run mrbias_cuda --log-intensities -M 2 --write-bias-mul ${tmpdir}/bias_mul.hdr --thresh-min 100 spgr_3t.hdr ${tmpdir}/corrected.hdr
+	check_results corrected.img bias_mul.img
+	;;
+    mrbiasAddMulMaskCUDA)
+	run mrbias_cuda -A 1 -M 2 --mask spgr_3t_mask.hdr --write-bias-add ${tmpdir}/bias_add.hdr --write-bias-mul ${tmpdir}/bias_mul.hdr spgr_3t.hdr ${tmpdir}/corrected.hdr
+	check_results corrected.img bias_mul.img bias_add.img
+	;;
     overlap)
 	run_eval "${BINDIR}/overlap parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
 	check_results overlap.txt

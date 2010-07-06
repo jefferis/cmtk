@@ -476,7 +476,16 @@ IF(NOT CMTK_USE_MPI)
   # ==========================================
   # Tests for "mrbias" tool
   SET(testList ${testList} 
-    mrbiasMulIncremental mrbiasMulLogIntensity mrbiasAddMulMask)
+    mrbiasMulIncremental
+    mrbiasMulLogIntensity
+    mrbiasAddMulMask)
+
+  IF(CMTK_USE_CUDA)
+    SET(testList ${testList} 
+      mrbiasMulIncrementalCUDA
+      mrbiasMulLogIntensityCUDA
+      mrbiasAddMulMaskCUDA)
+  ENDIF(CMTK_USE_CUDA)
 
   # ==========================================
   # Tests for "reformatx" tool
