@@ -86,7 +86,7 @@ public:
   virtual ~Histogram () {}
 
   /// Resize and allocate histogram bins.
-  void Resize( const size_t numberOfBins, const bool reset = true )
+  virtual void Resize( const size_t numberOfBins, const bool reset = true )
   {
     this->m_Bins.resize( numberOfBins );
 

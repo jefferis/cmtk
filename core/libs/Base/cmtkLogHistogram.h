@@ -65,13 +65,20 @@ public:
 
   /** Constructor.
    */
-  LogHistogram ( const size_t numBins = 0 ) : Superclass( numBins ) {}
+  LogHistogram ( const size_t numBins = 0 ) : Superclass( numBins ), m_LogNumBins( log( numBins ) ) {}
 
   /** Destructor.
    * All bin arrays and the precomputed data bin index arrays are
    * de-allocated.
    */
   virtual ~LogHistogram() {}
+
+  /// Resize and allocate histogram bins.
+  virtual void Resize( const size_t numberOfBins, const bool reset = true )
+  {
+    this->Superclass::Resize( numberOfBins, reset );
+    this->m_LogNumBins = log( numberOfBins );
+  }
 
   /// Make an identical copy of this object.
   typename Self::SmartPtr Clone () const
@@ -85,8 +92,7 @@ public:
    */
   virtual size_t ValueToBin ( const Types::DataItem value ) const 
   {
-    const size_t binIndex = static_cast<size_t>( (this->GetNumBins()-1) * log(1 + value - this->m_BinsLowerBound) / log( this->m_BinsUpperBound ) );
-    return std::max<size_t>( 0, std::min( this->GetNumBins()-1, binIndex ) );
+    return static_cast<size_t>( this->ValueToBinFractional( value ) );
   }
 
   /** Return fractional bin corresponding to a value of the distribution.
@@ -97,16 +103,15 @@ public:
    */
   virtual Types::DataItem ValueToBinFractional ( const Types::DataItem value ) const 
   {
-    const Types::DataItem binIndex = (this->GetNumBins()-1) * log(1 + value - this->m_BinsLowerBound) / log( this->m_BinsUpperBound );
-    return std::max<Types::DataItem>( 0, std::min<Types::DataItem>( this->GetNumBins()-1, binIndex ) );
+    const Types::DataItem binIndex = this->Superclass::ValueToBinFractional( value );
+    return (this->GetNumBins()-1) * std::max<Types::DataItem>( 0.0, std::min<Types::DataItem>( 1.0, log( 1+binIndex ) / this->m_LogNumBins ) );
   }
   
   /** Get value range of a given bin.
    */
   virtual const Types::DataItemRange GetRangeBin( const size_t bin ) const 
   {
-    return Types::DataItemRange( exp( bin * log( this->m_BinsUpperBound ) / (this->GetNumBins()-1) ) + this->m_BinsLowerBound - 1,
-				 exp( (bin+1) * log( this->m_BinsUpperBound ) / (this->GetNumBins()-1) ) + this->m_BinsLowerBound - 1 );
+    return Types::DataItemRange( this->BinToValue( bin ), this->BinToValue( bin+1 ) );
   }
   
   /** Return center of values represented by a certain bin.
@@ -115,7 +120,7 @@ public:
    */
   virtual Types::DataItem BinToValue ( const size_t bin ) const 
   {
-    return exp( (0.5+bin) * log( this->m_BinsUpperBound ) / (this->GetNumBins()-1) ) + this->m_BinsLowerBound - 1;
+    return this->Superclass::BinToValue( exp( static_cast<Types::DataItem>( bin ) / (this->GetNumBins()-1) * this->m_LogNumBins ) - 1 );
   }
 
 protected:
@@ -124,6 +129,10 @@ protected:
   {
     return new Self( *this );
   }
+
+private:
+  /// Pre-computed log of number of bins.
+  double m_LogNumBins;
 };
 
 //@}

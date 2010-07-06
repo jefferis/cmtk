@@ -1,5 +1,6 @@
 Release CMTK-1.4.0:
 
+- Improved: log-Intensity histograms are now value scale invariant.
 - Removed: building against VTK is no longer supported.
 - Added: class for histogram population and entropy computation on GPU
     device.
