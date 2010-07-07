@@ -28,32 +28,41 @@
 ##  $LastChangedBy$
 ##
 
-# Sources of non-templated classes.
-SET(cmtkGPU_SRCS_CUDA
-  cmtkDeviceHistogram_kernels.cu
-  cmtkDeviceMemoryCUDA.cxx
-  cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.cu)
-
+# Sources of non-specific classes.
 SET(cmtkGPU_SRCS
   cmtkDeviceHistogram.cxx
   cmtkDeviceUniformVolume.cxx
   cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.cxx)
 
-IF(cmtkGPU_SRCS_CUDA)
+IF(CMTK_USE_CUDA)
+  SET(cmtkGPU_SRCS_CUDA
+    cmtkDeviceHistogram_kernels.cu
+    cmtkDeviceMemoryCUDA.cxx
+    cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.cu)
+
   CUDA_ADD_LIBRARY(cmtkGPU ${cmtkGPU_SRCS_CUDA} ${cmtkGPU_SRCS})
+ENDIF(CMTK_USE_CUDA)
+
+IF(CMTK_USE_OPENCL)
+  SET(cmtkGPU_SRCS_OPENCL
+    cmtkDeviceHistogram_kernels.cxx
+    cmtkDeviceMemoryCL.cxx
+    )
   
-  TARGET_LINK_LIBRARIES(cmtkGPU cmtkBase cmtkSystem cmtkNumerics)
-  
-  IF(CMTK_LIBRARY_PROPERTIES)
-    SET_TARGET_PROPERTIES(cmtkGPU PROPERTIES ${CMTK_LIBRARY_PROPERTIES})
-  ENDIF(CMTK_LIBRARY_PROPERTIES)
-  
-  INSTALL(TARGETS cmtkGPU
-    RUNTIME DESTINATION bin COMPONENT runtime
-    LIBRARY DESTINATION lib COMPONENT runtime
-    ARCHIVE DESTINATION lib COMPONENT libraries)
-  
-  FILE(GLOB files_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
-  FILE(GLOB files_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx")
-  INSTALL(FILES ${files_h} ${files_txx} DESTINATION include/cmtk COMPONENT development)
-ENDIF(cmtkGPU_SRCS_CUDA)
+  ADD_LIBRARY(cmtkGPU ${cmtkGPU_SRCS_OPENCL} ${cmtkGPU_SRCS})
+ENDIF(CMTK_USE_OPENCL)
+
+TARGET_LINK_LIBRARIES(cmtkGPU cmtkBase cmtkSystem cmtkNumerics)
+
+IF(CMTK_LIBRARY_PROPERTIES)
+  SET_TARGET_PROPERTIES(cmtkGPU PROPERTIES ${CMTK_LIBRARY_PROPERTIES})
+ENDIF(CMTK_LIBRARY_PROPERTIES)
+
+INSTALL(TARGETS cmtkGPU
+  RUNTIME DESTINATION bin COMPONENT runtime
+  LIBRARY DESTINATION lib COMPONENT runtime
+  ARCHIVE DESTINATION lib COMPONENT libraries)
+
+FILE(GLOB files_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+FILE(GLOB files_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx")
+INSTALL(FILES ${files_h} ${files_txx} DESTINATION include/cmtk COMPONENT development)

@@ -33,7 +33,11 @@
 
 #include <cmtkconfig.h>
 
-#include "cmtkDeviceMemoryCUDA.h"
+#ifdef CMTK_USE_CUDA
+#  include "cmtkDeviceMemoryCUDA.h"
+#else
+#  include "cmtkDeviceMemoryCL.h"
+#endif
 
 namespace
 cmtk
@@ -43,7 +47,11 @@ cmtk
 //@{
 
 /// Resource managing class template for type-specific memory allocated on a GPU device through .
+#ifdef CMTK_USE_CUDA
 template<typename T,class DeviceMemoryGPU = DeviceMemoryCUDA>
+#else
+template<typename T,class DeviceMemoryGPU = DeviceMemoryCL>
+#endif
 class DeviceMemory :
     /// Inherit privately from raw pointer base class.
     private DeviceMemoryGPU
