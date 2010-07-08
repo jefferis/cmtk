@@ -45,6 +45,7 @@ ENDIF(CMTK_USE_CUDA)
 
 IF(CMTK_USE_OPENCL)
   SET(cmtkGPU_SRCS_OPENCL
+    cmtkDeviceContextCL.cxx
     cmtkDeviceHistogram_kernels.cxx
     cmtkDeviceMemoryCL.cxx
     )
