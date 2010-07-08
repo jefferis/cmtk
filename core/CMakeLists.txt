@@ -217,21 +217,21 @@ OPTION(CMTK_CONFIG_GPU "Configure GPU computing" OFF)
 #-----------------------------------------------------------------------------
 # Check for, and configure, OpenCL
 
-IF(CMTK_CONFIG_GPU)
-  INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles/FindOpenCL.cmake)
-  IF(OPENCL_FOUND)
-    OPTION(CMTK_USE_OPENCL "Use OpenCL for GPU computing" OFF)
-  ENDIF(OPENCL_FOUND)
-
-  IF(CMTK_USE_OPENCL)
-    ADD_DEFINITIONS(-DCMTK_USE_OPENCL)
-  ENDIF(CMTK_USE_OPENCL)
-
-ELSE(CMTK_CONFIG_GPU)
-  IF(CMTK_USE_OPENCL)
-    SET(CMTK_USE_OPENCL OFF CACHE BOOL "Use OpenCL for GPU computing")
-  ENDIF(CMTK_USE_OPENCL)
-ENDIF(CMTK_CONFIG_GPU)
+##IF(CMTK_CONFIG_GPU)
+##  INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles/FindOpenCL.cmake)
+##  IF(OPENCL_FOUND)
+##    OPTION(CMTK_USE_OPENCL "Use OpenCL for GPU computing" OFF)
+##  ENDIF(OPENCL_FOUND)
+##
+##  IF(CMTK_USE_OPENCL)
+##    ADD_DEFINITIONS(-DCMTK_USE_OPENCL)
+##  ENDIF(CMTK_USE_OPENCL)
+##
+##ELSE(CMTK_CONFIG_GPU)
+##  IF(CMTK_USE_OPENCL)
+##    SET(CMTK_USE_OPENCL OFF CACHE BOOL "Use OpenCL for GPU computing")
+##  ENDIF(CMTK_USE_OPENCL)
+##ENDIF(CMTK_CONFIG_GPU)
 
 #-----------------------------------------------------------------------------
 # Check for, and configure, CUDA
