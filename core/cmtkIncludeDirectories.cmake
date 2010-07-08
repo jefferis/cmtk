@@ -38,6 +38,7 @@ SET(CMTK_INCLUDE_DIRS_BUILD_TREE ${CMTK_BINARY_DIR})
 
 # These directories are always needed.
 SET(CMTK_INCLUDE_DIRS_BUILD_TREE ${CMTK_INCLUDE_DIRS_BUILD_TREE}
+  ${CMTK_SOURCE_DIR}/libs
   ${CMTK_SOURCE_DIR}/libs/System
   ${CMTK_SOURCE_DIR}/libs/Numerics
   ${CMTK_SOURCE_DIR}/libs/Base
