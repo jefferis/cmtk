@@ -210,12 +210,13 @@ CallbackFill( const double value)
     ImageStackType::iterator it = ImageStack.begin();
     while ( it != ImageStack.end() )
       {
-      (*it)->SetData( cmtk::TypedArray::SmartPtr( ImageStack.front()->GetData()->Convert( ResultType ) ) );
+      (*it)->SetData( cmtk::TypedArray::SmartPtr( (*it)->GetData()->Convert( ResultType ) ) );
       (*it)->GetData()->Fill( value );
 
-      ++it;
-      if ( ! ApplyNextToAll )
-	break;
+      if ( ApplyNextToAll )
+	++it;
+      else
+	it = ImageStack.end();
       }
     ApplyNextToAll = false;
     }
@@ -226,8 +227,18 @@ CallbackAbs()
 {
   if ( CheckStackOneImage( "Abs" ) )
     {
-    ImageStack.front()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.front()->GetData()->Convert( ResultType ) ) );
-    ImageStack.front()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Abs );
+    ImageStackType::iterator it = ImageStack.begin();
+    while ( it != ImageStack.end() )
+      {
+      (*it)->SetData( cmtk::TypedArray::SmartPtr( (*it)->GetData()->Convert( ResultType ) ) );
+      (*it)->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Abs );
+      
+      if ( ApplyNextToAll )
+	++it;
+      else
+	it = ImageStack.end();
+      }
+    ApplyNextToAll = false;
     }
 }
     
@@ -236,8 +247,18 @@ CallbackTrunc()
 {
   if ( CheckStackOneImage( "Trunc" ) )
     {
-    ImageStack.front()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.front()->GetData()->Convert( ResultType ) ) );
-    ImageStack.front()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Trunc );
+    ImageStackType::iterator it = ImageStack.begin();
+    while ( it != ImageStack.end() )
+      {
+      (*it)->SetData( cmtk::TypedArray::SmartPtr( (*it)->GetData()->Convert( ResultType ) ) );
+      (*it)->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Trunc );
+      
+      if ( ApplyNextToAll )
+	++it;
+      else
+	it = ImageStack.end();
+      }
+    ApplyNextToAll = false;
     }
 }
     
@@ -246,8 +267,18 @@ CallbackLog()
 {
   if ( CheckStackOneImage( "Log" ) )
     {
-    ImageStack.front()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.front()->GetData()->Convert( ResultType ) ) );
-    ImageStack.front()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Log );
+    ImageStackType::iterator it = ImageStack.begin();
+    while ( it != ImageStack.end() )
+      {
+      (*it)->SetData( cmtk::TypedArray::SmartPtr( (*it)->GetData()->Convert( ResultType ) ) );
+      (*it)->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Log );
+      
+      if ( ApplyNextToAll )
+	++it;
+      else
+	it = ImageStack.end();
+      }
+    ApplyNextToAll = false;
     }
 }
     
@@ -256,8 +287,18 @@ CallbackLogit()
 {
   if ( CheckStackOneImage( "Logit" ) )
     {
-    ImageStack.front()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.front()->GetData()->Convert( ResultType ) ) );
-    ImageStack.front()->GetData()->ApplyFunctionDouble( cmtk::Logit );
+    ImageStackType::iterator it = ImageStack.begin();
+    while ( it != ImageStack.end() )
+      {
+      (*it)->SetData( cmtk::TypedArray::SmartPtr( (*it)->GetData()->Convert( ResultType ) ) );
+      (*it)->GetData()->ApplyFunctionDouble( cmtk::Logit );
+      
+      if ( ApplyNextToAll )
+	++it;
+      else
+	it = ImageStack.end();
+      }
+    ApplyNextToAll = false;
     }
 }
     
@@ -266,8 +307,18 @@ CallbackLogistic()
 {
   if ( CheckStackOneImage( "Logistic" ) )
     {
-    ImageStack.front()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.front()->GetData()->Convert( ResultType ) ) );
-    ImageStack.front()->GetData()->ApplyFunctionDouble( cmtk::Logistic );
+    ImageStackType::iterator it = ImageStack.begin();
+    while ( it != ImageStack.end() )
+      {
+      (*it)->SetData( cmtk::TypedArray::SmartPtr( (*it)->GetData()->Convert( ResultType ) ) );
+      (*it)->GetData()->ApplyFunctionDouble( cmtk::Logistic );
+      
+      if ( ApplyNextToAll )
+	++it;
+      else
+	it = ImageStack.end();
+      }
+    ApplyNextToAll = false;
     }
 }
     
@@ -276,8 +327,18 @@ CallbackExp()
 {
   if ( CheckStackOneImage( "Exp" ) )
     {
-    ImageStack.front()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.front()->GetData()->Convert( ResultType ) ) );
-    ImageStack.front()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Exp );
+    ImageStackType::iterator it = ImageStack.begin();
+    while ( it != ImageStack.end() )
+      {
+      (*it)->SetData( cmtk::TypedArray::SmartPtr( (*it)->GetData()->Convert( ResultType ) ) );
+      (*it)->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Exp );
+      
+      if ( ApplyNextToAll )
+	++it;
+      else
+	it = ImageStack.end();
+      }
+    ApplyNextToAll = false;
     }
 }
 
@@ -286,8 +347,18 @@ CallbackSqr()
 {
   if ( CheckStackOneImage( "Sqr" ) )
     {
-    ImageStack.front()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.front()->GetData()->Convert( ResultType ) ) );
-    ImageStack.front()->GetData()->ApplyFunctionDouble( cmtk::Square );
+    ImageStackType::iterator it = ImageStack.begin();
+    while ( it != ImageStack.end() )
+      {
+      (*it)->SetData( cmtk::TypedArray::SmartPtr( (*it)->GetData()->Convert( ResultType ) ) );
+      (*it)->GetData()->ApplyFunctionDouble( cmtk::Square );
+      
+      if ( ApplyNextToAll )
+	++it;
+      else
+	it = ImageStack.end();
+      }
+    ApplyNextToAll = false;
     }
 }
 
@@ -296,8 +367,18 @@ CallbackSqrt()
 {
   if ( CheckStackOneImage( "Sqrt" ) )
     {
-    ImageStack.front()->SetData( cmtk::TypedArray::SmartPtr( ImageStack.front()->GetData()->Convert( ResultType ) ) );
-    ImageStack.front()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Sqrt );
+    ImageStackType::iterator it = ImageStack.begin();
+    while ( it != ImageStack.end() )
+      {
+      (*it)->SetData( cmtk::TypedArray::SmartPtr( (*it)->GetData()->Convert( ResultType ) ) );
+      (*it)->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Sqrt );
+      
+      if ( ApplyNextToAll )
+	++it;
+      else
+	it = ImageStack.end();
+      }
+    ApplyNextToAll = false;
     }
 }
         
@@ -308,10 +389,20 @@ CallbackThreshBelow( const char* argv )
     {
     const float threshold = atof( argv );
     
-    cmtk::TypedArray::SmartPtr data = ImageStack.front()->GetData();
-    
-    const cmtk::Types::DataItemRange range = data->GetRange();
-    data->Threshold( cmtk::Types::DataItemRange( threshold, range.m_UpperBound ) );
+    ImageStackType::iterator it = ImageStack.begin();
+    while ( it != ImageStack.end() )
+      {
+      cmtk::TypedArray::SmartPtr data = (*it)->GetData();
+      
+      const cmtk::Types::DataItemRange range = data->GetRange();
+      data->Threshold( cmtk::Types::DataItemRange( threshold, range.m_UpperBound ) );
+      
+      if ( ApplyNextToAll )
+	++it;
+      else
+	it = ImageStack.end();
+      }
+    ApplyNextToAll = false;
     }
 }
     
@@ -322,10 +413,20 @@ CallbackThreshAbove( const char* argv )
     {
     const float threshold = atof( argv );
     
-    cmtk::TypedArray::SmartPtr data = ImageStack.front()->GetData();
-    
-    const cmtk::Types::DataItemRange range = data->GetRange();
-    data->Threshold( cmtk::Types::DataItemRange( range.m_LowerBound, threshold ) );
+    ImageStackType::iterator it = ImageStack.begin();
+    while ( it != ImageStack.end() )
+      {
+      cmtk::TypedArray::SmartPtr data = (*it)->GetData();
+      
+      const cmtk::Types::DataItemRange range = data->GetRange();
+      data->Threshold( cmtk::Types::DataItemRange( range.m_LowerBound, threshold ) );
+      
+      if ( ApplyNextToAll )
+	++it;
+      else
+	it = ImageStack.end();
+      }
+    ApplyNextToAll = false;
     }
 }
     
