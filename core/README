@@ -6,17 +6,18 @@ Release Notes -- CMTK 1.4.0
 ===========================
 
 This release adds initial support for GPU computation, currently implemented
-only for the CUDA programming model.
+only for the CUDA programming model. The library design facilitiates future
+implementation of algorithms using OpenCL, but for now we found CUDA to be the
+more robust and elegant programming interface.
 
-This release removes support for building classes for data exchange
-(encapsulation) with VTK, The Visualization Toolkit.
+Note that this release removes direct support for building against VTK, The
+Visualization Toolkit.
 
 For a complete list of changes and fixes, see the CHANGELOG file.
 
 CMTK has been built and tested on the following platforms:
 
-- Linux 32bit (Fedora 12), gcc 4.4.3
-- Linux 64bit (Fedora 12), gcc 4.4.3
+- Linux 32bit (Fedora 13), gcc 4.4.4
 - Linux 64bit (Fedora 13), gcc 4.4.4
 - Cygwin, gcc 4.3.4
 - Windows XP, VisualStudio 9 (2008 Express Edition)
