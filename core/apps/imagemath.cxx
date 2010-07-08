@@ -436,29 +436,36 @@ CallbackScalarMul( const double c )
   if ( ! CheckStackOneImage( "ScalarMul" ) )
     return;
   
-  cmtk::UniformVolume::SmartPtr p = ImageStack.front();
-  ImageStack.pop_front();
-
-  const size_t numberOfPixels = p->GetNumberOfPixels();
-
-  cmtk::TypedArray::SmartPtr mul( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-  
-#pragma omp parallel for
-  for ( size_t i = 0; i < numberOfPixels; ++i )
+  ImageStackType::iterator it = ImageStack.begin();
+  while ( it != ImageStack.end() )
     {
-    cmtk::Types::DataItem pv;
-    if ( p->GetDataAt( pv, i ) )
+    cmtk::UniformVolume& p = **it;
+    const size_t numberOfPixels = p.GetNumberOfPixels();
+    
+    cmtk::TypedArray::SmartPtr mul( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+    
+#pragma omp parallel for
+    for ( size_t i = 0; i < numberOfPixels; ++i )
       {
-      mul->Set( c * pv, i );
+      cmtk::Types::DataItem pv;
+      if ( p.GetDataAt( pv, i ) )
+	{
+	mul->Set( c * pv, i );
+	}
+      else
+	{
+	mul->SetPaddingAt( i );
+	}
       }
+    
+    p.SetData( mul );
+    
+    if ( ApplyNextToAll )
+      ++it;
     else
-      {
-      mul->SetPaddingAt( i );
-      }
+      it = ImageStack.end();
     }
-  
-  p->SetData( mul );
-  ImageStack.push_front( p );
+  ApplyNextToAll = false;
 }
 
 void
@@ -467,29 +474,35 @@ CallbackScalarAdd( const double c )
   if ( ! CheckStackOneImage( "ScalarAdd" ) )
     return;
   
-  cmtk::UniformVolume::SmartPtr p = ImageStack.front();
-  ImageStack.pop_front();
-
-  const size_t numberOfPixels = p->GetNumberOfPixels();
-
-  cmtk::TypedArray::SmartPtr add( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-  
-#pragma omp parallel for
-  for ( size_t i = 0; i < numberOfPixels; ++i )
+  ImageStackType::iterator it = ImageStack.begin();
+  while ( it != ImageStack.end() )
     {
-    cmtk::Types::DataItem pv;
-    if ( p->GetDataAt( pv, i ) )
+    cmtk::UniformVolume& p = **it;
+    const size_t numberOfPixels = p.GetNumberOfPixels();
+    
+    cmtk::TypedArray::SmartPtr add( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+#pragma omp parallel for
+    for ( size_t i = 0; i < numberOfPixels; ++i )
       {
-      add->Set( c + pv, i );
+      cmtk::Types::DataItem pv;
+      if ( p.GetDataAt( pv, i ) )
+	{
+	add->Set( c + pv, i );
+	}
+      else
+	{
+	add->SetPaddingAt( i );
+	}
       }
+    
+    p.SetData( add );
+    
+    if ( ApplyNextToAll )
+      ++it;
     else
-      {
-      add->SetPaddingAt( i );
-      }
+      it = ImageStack.end();
     }
-  
-  p->SetData( add );
-  ImageStack.push_front( p );
+  ApplyNextToAll = false;
 }
 
 void
