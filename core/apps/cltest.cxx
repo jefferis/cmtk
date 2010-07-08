@@ -34,30 +34,51 @@
 
 #include <CL/opencl.h>
 
+#include <cstdlib>
 #include <iostream>
+#include <vector>
 
 int
 main( const int argc, const char*[] )
 {
-  int version = 0;
+  cl_int error = CL_SUCCESS;
+
+  cl_context_properties props[] = { CL_CONTEXT_PLATFORM, NULL };
+  cl_context context = clCreateContextFromType( props, CL_DEVICE_TYPE_ALL, NULL, NULL, &error );
+
+  if ( error != CL_SUCCESS )
+    {
+    std::cerr << "clCreateContextFromType() failed with error " << error << std::endl;
+    exit( 1 );
+    }
+
+  size_t nDevices = 0;
+  error = clGetContextInfo( context, CL_CONTEXT_DEVICES, 0, NULL, &nDevices );
+  if ( error != CL_SUCCESS )
+    {
+    std::cerr << "clGetContextInfo() failed" << std::endl;
+    exit( 1 );
+    }
+  
+  std::vector<cl_device_id> deviceIDs( nDevices );
+  
+  error = clGetContextInfo( context, CL_CONTEXT_DEVICES, nDevices, &deviceIDs[0], NULL );  
+  if ( error != CL_SUCCESS )
+    {
+    std::cerr << "clGetContextInfo() failed" << std::endl;
+    exit( 1 );
+    }
+
+  for ( size_t id = 0; id < deviceIDs.size(); ++id )
+    {
+    std::cerr << std::endl << "Device #" << id << ":" << std::endl;
+
+    size_t result;
+    error = clGetDeviceInfo( deviceIDs[id], CL_DEVICE_MAX_COMPUTE_UNITS, NULL, NULL, &result );
+    std::cerr << "\tMax compute units count: " << result << std::endl;
+    }
+
 #if 0
-  if ( cudaDriverGetVersion( &version ) != cudaSuccess )
-    {
-    std::cerr << "Call to cudaDriverGetVersion() failed." << std::endl;
-    return 1;
-    }
-  
-  std::cerr << "Found CUDA driver version " << version << std::endl;
-
-  int deviceCount = 0;
-  if ( cudaGetDeviceCount( &deviceCount ) != cudaSuccess )
-    {
-    std::cerr << "Call to cudaGetDeviceCount() failed." << std::endl;
-    return 1;
-    }
-  
-  std::cerr << "CUDA reports " << deviceCount << " device(s)." << std::endl;
-
   for ( int device = 0; device < deviceCount; ++device )
     {
     std::cerr << std::endl << "Device #" << device << ":" << std::endl;
