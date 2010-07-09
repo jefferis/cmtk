@@ -767,7 +767,7 @@ case ${RUNTEST} in
 	check_results logodds_add.img
 	;;
     imagemathLogOddsAdd2)
-	run imagemath --float --in pbmap_wm_2.nii pbmap_wm_1.nii --logit-all --average --logistic-all --out ${tmpdir}/logodds_add.hdr
+	run imagemath --float --in pbmap_wm_2.nii pbmap_wm_1.nii --all --logit --average --all --logistic --out ${tmpdir}/logodds_add.hdr
 	check_results logodds_add.img
 	;;
     imagemathMatchHistograms)

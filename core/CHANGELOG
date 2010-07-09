@@ -1,5 +1,9 @@
 Release CMTK-1.4.0 (2010-07-08):
 
+- Added: "imagemath" tool now supports applying single-image operations to the
+    entire stack.
+- Improved: "imagemath" tool now uses deque, not stack, to implement image
+    stack. This way we can perform all-image operations more easily.
 - Improved: log-Intensity histograms are now value scale invariant.
 - Removed: building against VTK is no longer supported.
 - Added: class for histogram population and entropy computation on GPU
