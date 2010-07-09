@@ -66,4 +66,4 @@ INSTALL(TARGETS cmtkGPU
 
 FILE(GLOB files_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 FILE(GLOB files_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx")
-INSTALL(FILES ${files_h} ${files_txx} DESTINATION include/cmtk COMPONENT development)
+INSTALL(FILES ${files_h} ${files_txx} DESTINATION include/cmtk/GPU COMPONENT development)

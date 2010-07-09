@@ -123,4 +123,4 @@ INSTALL(TARGETS cmtkBase
 
 FILE(GLOB files_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 FILE(GLOB files_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx")
-INSTALL(FILES ${files_h} ${files_txx} DESTINATION include/cmtk COMPONENT headers)
+INSTALL(FILES ${files_h} ${files_txx} DESTINATION include/cmtk/Base COMPONENT headers)
