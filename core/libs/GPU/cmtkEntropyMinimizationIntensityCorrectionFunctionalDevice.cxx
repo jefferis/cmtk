@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.h>
+#include "cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.h"
 
 #include <cmtkConsole.h>
 
