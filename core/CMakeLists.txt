@@ -373,12 +373,18 @@ ENDIF(CMTK_USE_DCMTK)
 #-----------------------------------------------------------------------------
 # Add an option to use or not use sqlite3 library
 
-OPTION(CMTK_BUILD_SQLITE "Build sqlite3 library for database support" OFF)
-IF(CMTK_BUILD_SQLITE)
-  MESSAGE(STATUS "Building bundled sqlite3 library" ) 	 
-  SET(SQLITE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/sqlite3 CACHE PATH "Directory containing sqlite3.h header file" FORCE)
+OPTION(CMTK_USE_SQLITE "Use sqlite3 library for database support" OFF)
+IF(CMTK_USE_SQLITE)
+  INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles/FindSQLite3.cmake)
+
+  IF(NOT SQLITE3_FOUND)
+    MESSAGE(STATUS "Building bundled sqlite3 library" ) 
+    SET(CMTK_BUILD_SQLITE ON)
+    SET(SQLITE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/sqlite3 CACHE PATH "Directory containing sqlite3.h header file" FORCE)
+  ENDIF(NOT SQLITE3_FOUND)
+
   ADD_DEFINITIONS(-DCMTK_USE_SQLITE)
-ENDIF(CMTK_BUILD_SQLITE)
+ENDIF(CMTK_USE_SQLITE)
 
 #-----------------------------------------------------------------------------
 # Add an option to use or not use TEEM (for NrrdIO support)
