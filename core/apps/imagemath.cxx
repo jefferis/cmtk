@@ -511,30 +511,37 @@ CallbackScalarXor( const long int c )
   if ( ! CheckStackOneImage( "ScalarXor" ) )
     return;
   
-  cmtk::UniformVolume::SmartPtr p = ImageStack.front();
-  ImageStack.pop_front();
-
-  const size_t numberOfPixels = p->GetNumberOfPixels();
-
-  cmtk::TypedArray::SmartPtr out( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-  
-#pragma omp parallel for
-  for ( size_t i = 0; i < numberOfPixels; ++i )
+  ImageStackType::iterator it = ImageStack.begin();
+  while ( it != ImageStack.end() )
     {
-    cmtk::Types::DataItem pv;
-    if ( p->GetDataAt( pv, i ) )
+    cmtk::UniformVolume& p = **it;
+    const size_t numberOfPixels = p.GetNumberOfPixels();
+    
+    cmtk::TypedArray::SmartPtr out( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+    
+#pragma omp parallel for
+    for ( size_t i = 0; i < numberOfPixels; ++i )
       {
-      const long int iv = static_cast<long int>( pv );
-      out->Set( iv ^ c, i );
+      cmtk::Types::DataItem pv;
+      if ( p.GetDataAt( pv, i ) )
+	{
+	const long int iv = static_cast<long int>( pv );
+	out->Set( iv ^ c, i );
+	}
+      else
+	{
+	out->SetPaddingAt( i );
+	}
       }
+    
+    p.SetData( out );
+
+    if ( ApplyNextToAll )
+      ++it;
     else
-      {
-      out->SetPaddingAt( i );
-      }
+      it = ImageStack.end();
     }
-  
-  p->SetData( out );
-  ImageStack.push_front( p );
+  ApplyNextToAll = false;
 }
 
 void
@@ -543,30 +550,37 @@ CallbackScalarAnd( const long int c )
   if ( ! CheckStackOneImage( "ScalarAnd" ) )
     return;
   
-  cmtk::UniformVolume::SmartPtr p = ImageStack.front();
-  ImageStack.pop_front();
-
-  const size_t numberOfPixels = p->GetNumberOfPixels();
-
-  cmtk::TypedArray::SmartPtr out( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-  
-#pragma omp parallel for
-  for ( size_t i = 0; i < numberOfPixels; ++i )
+  ImageStackType::iterator it = ImageStack.begin();
+  while ( it != ImageStack.end() )
     {
-    cmtk::Types::DataItem pv;
-    if ( p->GetDataAt( pv, i ) )
+    cmtk::UniformVolume& p = **it;
+    const size_t numberOfPixels = p.GetNumberOfPixels();
+    
+    cmtk::TypedArray::SmartPtr out( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+    
+#pragma omp parallel for
+    for ( size_t i = 0; i < numberOfPixels; ++i )
       {
-      const long int iv = static_cast<long int>( pv );
-      out->Set( iv & c, i );
+      cmtk::Types::DataItem pv;
+      if ( p.GetDataAt( pv, i ) )
+	{
+	const long int iv = static_cast<long int>( pv );
+	out->Set( iv & c, i );
+	}
+      else
+	{
+	out->SetPaddingAt( i );
+	}
       }
+    
+    p.SetData( out );
+
+    if ( ApplyNextToAll )
+      ++it;
     else
-      {
-      out->SetPaddingAt( i );
-      }
+      it = ImageStack.end();
     }
-  
-  p->SetData( out );
-  ImageStack.push_front( p );
+  ApplyNextToAll = false;
 }
 
 void
@@ -575,29 +589,36 @@ CallbackOneOver()
   if ( ! CheckStackOneImage( "OneOver" ) )
     return;
   
-  cmtk::UniformVolume::SmartPtr p = ImageStack.front();
-  ImageStack.pop_front();
-
-  const size_t numberOfPixels = p->GetNumberOfPixels();
-
-  cmtk::TypedArray::SmartPtr inv( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-  
-#pragma omp parallel for
-  for ( size_t i = 0; i < numberOfPixels; ++i )
+  ImageStackType::iterator it = ImageStack.begin();
+  while ( it != ImageStack.end() )
     {
-    cmtk::Types::DataItem pv;
-    if ( p->GetDataAt( pv, i ) )
+    cmtk::UniformVolume& p = **it;
+    const size_t numberOfPixels = p.GetNumberOfPixels();
+    
+    cmtk::TypedArray::SmartPtr inv( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+    
+#pragma omp parallel for
+    for ( size_t i = 0; i < numberOfPixels; ++i )
       {
-      inv->Set( 1.0 / pv, i );
+      cmtk::Types::DataItem pv;
+      if ( p.GetDataAt( pv, i ) )
+	{
+	inv->Set( 1.0 / pv, i );
+	}
+      else
+	{
+	inv->SetPaddingAt( i );
+	}
       }
+    
+    p.SetData( inv );
+
+    if ( ApplyNextToAll )
+      ++it;
     else
-      {
-      inv->SetPaddingAt( i );
-      }
+      it = ImageStack.end();
     }
-  
-  p->SetData( inv );
-  ImageStack.push_front( p );
+  ApplyNextToAll = false;
 }
 
 void
