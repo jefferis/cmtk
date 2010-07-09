@@ -31,7 +31,6 @@
 #include "cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.h"
 
 #include <cstdio>
-#include <algorithm>
 
 __constant__ float deviceWeights[34];
 __constant__ float deviceCorrections[34];
@@ -139,7 +138,9 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
       exit( 1 );
     }
   
-  const int nThreads = std::min<int>( nPixels, dprop.maxThreadsPerBlock );
+  int nThreads = nPixels;
+  if ( nThreads > dprop.maxThreadsPerBlock )
+    nThreads = dprop.maxThreadsPerBlock;
   
   dim3 dimBlock( nThreads, 1, 1 );
   dim3 dimGrid( 1+(nPixels-1)/nThreads, 1 );
