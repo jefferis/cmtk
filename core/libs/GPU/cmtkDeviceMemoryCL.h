@@ -45,7 +45,9 @@ cmtk
 /** \addtogroup GPU */
 //@{
 
-/// Resource managing class for raw memory allocated on a GPU device through CL.
+/** Resource managing class for raw memory allocated on a GPU device through OpenCL.
+ *\warning This is a skeleton only and not currently implemented.
+ */
 class DeviceMemoryCL
     /// Make sure this is never copied.
   : private CannotBeCopied

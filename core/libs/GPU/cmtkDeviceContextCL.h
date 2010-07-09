@@ -46,7 +46,10 @@ cmtk
 /** \addtogroup GPU */
 //@{
 
-/// Device context wrapper for OpenCL.
+/** Device context wrapper for OpenCL.
+ *\warning This is a skeleton only and not currently implemented. The implemented parts
+ * do not work because nVidia's OpenCL library is pissy about function call parameters.
+ */
 class DeviceContextCL
     /// Make sure this is not copied.
   : private CannotBeCopied
