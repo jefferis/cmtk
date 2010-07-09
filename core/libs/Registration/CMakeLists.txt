@@ -97,11 +97,11 @@ SET(cmtkRegistration_SRCS
   cmtkXformListEntry.cxx
 )
 
-IF(CMTK_BUILD_SQLITE)
+IF(CMTK_USE_SQLITE)
   SET(cmtkRegistration_SRCS ${cmtkRegistration_SRCS}
     cmtkImageXformDB.cxx
     cmtkRegistrationDatabaseUpdater.cxx)
-ENDIF(CMTK_BUILD_SQLITE)
+ENDIF(CMTK_USE_SQLITE)
 
 ADD_LIBRARY(cmtkRegistration ${cmtkRegistration_SRCS})
 
