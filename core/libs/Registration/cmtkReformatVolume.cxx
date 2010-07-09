@@ -331,21 +331,19 @@ ReformatVolume::GetTransformedReferenceGrey( void *const arg )
 
   const Types::Coordinate minDelta = MathUtil::Min( 3, delta );
   
-  Types::Coordinate x, y, z;
-
   Types::DataItem value;
 
   UniformVolume::CoordinateVectorType u, v;
   v[2] = bbFrom[2];
   size_t offset = 0;
-  for ( int cz = 0; cz < dims[2]; ++cz, z += delta[2] ) 
+  for ( int cz = 0; cz < dims[2]; ++cz, v[2] += delta[2] ) 
     {
     if ( ! params->ThisThreadIndex ) Progress::SetProgress( cz );
     v[1] = bbFrom[1];
-    for ( int cy = 0; cy < dims[1]; ++cy, y += delta[1] ) 
+    for ( int cy = 0; cy < dims[1]; ++cy, v[1] += delta[1] ) 
       {
       v[0] = bbFrom[0];
-      for ( int cx = 0; cx < dims[0]; ++cx, x += delta[0], ++offset ) 
+      for ( int cx = 0; cx < dims[0]; ++cx, v[0] += delta[0], ++offset ) 
 	{
 	u = v;
 	const bool success = splineXform->ApplyInverseInPlace( u, 0.1 * minDelta );
