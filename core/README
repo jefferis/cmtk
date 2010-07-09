@@ -10,9 +10,11 @@ only for the CUDA programming model. The library design facilitiates future
 implementation of algorithms using OpenCL, but for now we found CUDA to be the
 more robust and elegant programming interface.
 
-Due to limited access to appropriately equipped build systems binary packages
-with CUDA support will be made available for 32bit and 64bit Linux only. CUDA
-Release 3.0 (or later) must be installed to run tools with GPU support.
+Due to limited access to appropriately equipped build systems CUDA support
+will tested only on 32bit and 64bit Linux, although binary packages built
+using VisualStudio 2008 on Windoes will also be provided. CUDA Release 3.0 (or
+later) must be installed to run tools with GPU support, but non-CUDA tools
+should run on all systems.
 
 Note that this release removes direct support for building against VTK, The
 Visualization Toolkit.
