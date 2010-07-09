@@ -1,5 +1,7 @@
-Release CMTK-1.4.0 (2010-07-08):
+Release CMTK-1.4.0 (2010-07-09):
 
+- Improved: bundled SQLite is now only built if no system-wide library is
+    found.
 - Added: "imagemath" tool now supports applying single-image operations to the
     entire stack.
 - Improved: "imagemath" tool now uses deque, not stack, to implement image
