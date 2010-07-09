@@ -40,7 +40,7 @@
 #include <cmtkVolumeIO.h>
 
 #include <cmtkBestDirectionOptimizer.h>
-#include <cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.h>
+#include <GPU/cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.h>
 
 #include <math.h>
 #include <vector>
