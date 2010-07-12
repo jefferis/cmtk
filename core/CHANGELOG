@@ -1,4 +1,4 @@
-Release CMTK-1.4.0 (2010-07-09):
+Release CMTK-1.4.0 (2010-07-12):
 
 - Fixed: header files are now installed in library-specific subdirectories,
     which is consistent with the source tree.
