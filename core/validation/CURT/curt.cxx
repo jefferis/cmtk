@@ -77,9 +77,9 @@ main( const int argc, const char* argv[] )
   try
     {
     cmtk::CommandLine cl( argc, argv, cmtk::CommandLine::PROPS_XML );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "MR Image Intensity Bias Field Correction" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This program corrects intensity inhomogeneity artifacts in MR images using a bias field estimated via entropy minimization." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Artifact Correction" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Completely Useless Registration Tool" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "For experimental demonstration ONLY! This program coregisters two intensity images by simple permutation and reformats one or more matching label maps accordingly." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Validation" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Be verbose" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
