@@ -65,7 +65,7 @@ public:
 
   /** Constructor.
    */
-  LogHistogram ( const size_t numBins = 0 ) : Superclass( numBins ), m_LogNumBins( log( numBins ) ) {}
+  LogHistogram ( const size_t numBins = 0 ) : Superclass( numBins ), m_LogNumBins( log( static_cast<double>( numBins ) ) ) {}
 
   /** Destructor.
    * All bin arrays and the precomputed data bin index arrays are
@@ -77,7 +77,7 @@ public:
   virtual void Resize( const size_t numberOfBins, const bool reset = true )
   {
     this->Superclass::Resize( numberOfBins, reset );
-    this->m_LogNumBins = log( numberOfBins );
+    this->m_LogNumBins = log( static_cast<double>( numberOfBins ) );
   }
 
   /// Make an identical copy of this object.
