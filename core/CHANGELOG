@@ -1,7 +1,7 @@
 Release CMTK-1.4.1:
 
-- Fixed: mrbias_cuda tool and curt validation tool now properly self-identify
-    on the command line and via XML.
+- r1996 - fixed: mrbias_cuda tool and curt validation tool now properly
+    self-identify on the command line and via XML.
 
 
 Release CMTK-1.4.0 (2010-07-12):
