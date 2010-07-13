@@ -1340,12 +1340,16 @@ main( int argc, char *argv[] )
     cl.EndGroup();
 
     cl.Parse();
-
     }
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
     exit( 1 );
+    }
+
+  if ( ImageStack.size() > 1 )
+    {
+    cmtk::StdErr << "WARNING: more than one image left on stack. Are you sure you aren't missing something?\n";
     }
   
   return 0;
