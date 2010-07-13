@@ -1,6 +1,6 @@
 Release CMTK-1.4.1:
 
-- r2000 - fixed: require compatible version of SQLite (>= 3.5.0), otherwise
+- r2003 - fixed: require compatible version of SQLite (>= 3.5.0), otherwise
     build bundled library.
 - r1999 - added: "--product" operation for imagemath tool.
 - r1996 - fixed: mrbias_cuda tool and curt validation tool now properly
