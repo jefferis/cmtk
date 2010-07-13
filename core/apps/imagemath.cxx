@@ -661,26 +661,35 @@ CallbackMul()
   
   cmtk::UniformVolume::SmartPtr p = ImageStack.front();
   ImageStack.pop_front();
-  cmtk::UniformVolume::SmartPtr q = ImageStack.front();
-  ImageStack.pop_front();
-  
+
   const size_t numberOfPixels = p->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr mul( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
   
-#pragma omp parallel for
-  for ( size_t i = 0; i < numberOfPixels; ++i )
+  while ( ! ImageStack.empty() )
     {
-    cmtk::Types::DataItem pv, qv;
-    if ( p->GetDataAt( pv, i ) && q->GetDataAt( qv, i ) )
+    cmtk::UniformVolume::SmartPtr q = ImageStack.front();
+    ImageStack.pop_front();
+    
+#pragma omp parallel for
+    for ( size_t i = 0; i < numberOfPixels; ++i )
       {
-      mul->Set( pv*qv, i );
+      cmtk::Types::DataItem pv, qv;
+      if ( p->GetDataAt( pv, i ) && q->GetDataAt( qv, i ) )
+	{
+	mul->Set( pv*qv, i );
+	}
+      else
+	{
+	mul->SetPaddingAt( i );
+	}
       }
-    else
-      {
-      mul->SetPaddingAt( i );
-      }
+    
+    if ( !ApplyNextToAll )
+      break;
     }
-  
+
+  ApplyNextToAll = false;
+    
   p->SetData( mul );
   ImageStack.push_front( p );
 }
@@ -769,6 +778,15 @@ CallbackSum()
   while ( ImageStack.size() > 1 )
     {
     CallbackAdd();
+    }
+}
+
+void
+CallbackProduct()
+{
+  while ( ImageStack.size() > 1 )
+    {
+    CallbackMul();
     }
 }
 
@@ -1302,6 +1320,7 @@ main( int argc, char *argv[] )
 
     cl.BeginGroup( "Contract multiple images", "Operators that contract the entire stack into a single image" );
     cl.AddCallback( Key( "sum" ), CallbackSum, "Sum all images on stack, place result on stack" );
+    cl.AddCallback( Key( "product" ), CallbackProduct, "Compute product of all images on stack, place result on stack" );
     cl.AddCallback( Key( "average" ), CallbackAverage, "Average all images on stack, place result on stack" );
     cl.AddCallback( Key( "combine-pca" ), CallbackCombinePCA, "Combine images using PCA by projecting onto direction of largest correlation" );
     cl.AddCallback( Key( "max-value" ), CallbackMaxValue, "For each pixel, compute maximum VALUE over all images, place result on stack" );
