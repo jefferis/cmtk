@@ -37,7 +37,6 @@
 
 #include <cmtkFunctional.h>
 
-#include <cmtkMacros.h>
 #include <cmtkUniformVolume.h>
 #include <cmtkVoxelMatchingNormMutInf.h>
 
