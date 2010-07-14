@@ -93,6 +93,7 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
       split
       statistics
       sympl
+      symplx
       ttest
       unsplit
       volume_injection

@@ -35,12 +35,12 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkImagePairSimilarityMeasure.h>
+#include "Registration/cmtkImagePairSimilarityMeasure.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkTypedArray.h>
-#include <cmtkMathUtil.h>
-#include <cmtkSmartPtr.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkTypedArray.h"
+#include "Base/cmtkMathUtil.h"
+#include "System/cmtkSmartPtr.h"
 
 namespace
 cmtk
@@ -72,7 +72,7 @@ public:
    *@param refVolume The reference (fixed) volume.
    *@param modVolume The model (transformed) volume.
    */
-  ImagePairSimilarityMeasureMSD( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume,
+  ImagePairSimilarityMeasureMSD( const UniformVolume::SmartConstPtr& refVolume, const UniformVolume::SmartConstPtr& fltVolume,
 				 const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
 
   /** Add a pair of values to the metric.
