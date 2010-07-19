@@ -166,10 +166,10 @@ cmtkDeviceHistogramPopulateLogKernel( float* histPtr, float* localPtr, const flo
 void
 cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float rangeFrom, const float rangeTo, const bool logScale, const int numberOfBins, const int numberOfSamples )
 {
-  dim3 dimBlock( 64, 1 );
-  dim3 dimGrid( 64, 1 );
+  dim3 dimBlock( 256, 1 );
+  dim3 dimGrid( 16, 1 );
 
-  const size_t nThreads = 64*64;
+  const size_t nThreads = 16*256;
   const size_t lBytes = sizeof(float) * (numberOfBins+1) * nThreads;
 
   float* localPtr;
@@ -268,10 +268,10 @@ cmtkDeviceHistogramPopulateLogWithMaskKernel( float* histPtr, float* localPtr, c
 void
 cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* maskPtr, const float rangeFrom, const float rangeTo, const bool logScale, const int numberOfBins, const int numberOfSamples )
 {
-  dim3 dimBlock( 64, 1 );
-  dim3 dimGrid( 64, 1 );
+  dim3 dimBlock( 256, 1 );
+  dim3 dimGrid( 16, 1 );
 
-  const size_t nThreads = 64*64;
+  const size_t nThreads = 16*256;
   const size_t lBytes = sizeof(float) * (numberOfBins+1) * nThreads;
 
   float* localPtr;
