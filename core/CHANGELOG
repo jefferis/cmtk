@@ -1,5 +1,7 @@
 Release CMTK-1.4.1:
 
+(r2016) Added: new "symplx" tool that will extend, and ultimately replace, the
+    current "sympl" tool for symmetry plane computation.
 (r2006) Improved: imagemath tool now prints a warning when more than one image
     is left on the operation stack. This often indicates a problem with the
     specified image operations.
