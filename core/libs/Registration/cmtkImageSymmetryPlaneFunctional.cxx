@@ -43,40 +43,17 @@ cmtk
 
 ImageSymmetryPlaneFunctional::ImageSymmetryPlaneFunctional
 ( UniformVolume::SmartConstPtr& volume ) 
-  : m_Volume( volume ),
-    m_Metric( new ImagePairSimilarityMeasureMSD( this->m_Volume, this->m_Volume ) ),
-    m_FixOffset( false )
+  : ImageSymmetryPlaneFunctionalBase( volume ),
+    m_Metric( new ImagePairSimilarityMeasureMSD( this->m_Volume, this->m_Volume ) )
 {
 }
 
 ImageSymmetryPlaneFunctional::ImageSymmetryPlaneFunctional
 ( UniformVolume::SmartConstPtr& volume, 
   const Types::DataItemRange& valueRange )
-  : m_Volume( Self::ApplyThresholds( *volume, valueRange ) ),
-    m_Metric( new ImagePairSimilarityMeasureMSD( this->m_Volume, this->m_Volume ) ),
-    m_FixOffset( false )
+  : ImageSymmetryPlaneFunctionalBase( volume, valueRange ),
+    m_Metric( new ImagePairSimilarityMeasureMSD( this->m_Volume, this->m_Volume ) )
 {
-}
-
-Types::Coordinate 
-ImageSymmetryPlaneFunctional::GetParamStep 
-( const size_t idx, const Types::Coordinate mmStep ) 
-  const
-{
-  switch ( idx ) 
-    {
-    // plane offset is a translation
-    case 0:
-      if ( this->m_FixOffset )
-	return 0;
-      else
-	return mmStep;
-      // the other two parameters are rotations
-    case 1:
-    case 2:
-      return mmStep / sqrt( MathUtil::Square( 0.5 * m_Volume->Size[0] ) + MathUtil::Square( 0.5 * m_Volume->Size[1] ) + MathUtil::Square( 0.5 * m_Volume->Size[2] ) ) * 90/M_PI;
-    }
-  return mmStep;
 }
 
 ImageSymmetryPlaneFunctional::ReturnType
@@ -126,14 +103,5 @@ ImageSymmetryPlaneFunctional::Evaluate()
   
   return metric.Get();
 }
-
-UniformVolume::SmartPtr 
-ImageSymmetryPlaneFunctional::ApplyThresholds( const UniformVolume& volume, const Types::DataItemRange& valueRange )
-{
-  UniformVolume::SmartPtr result( volume.Clone() );
-  result->GetData()->Threshold( valueRange );
-  return result;
-}
-
 
 } // namespace cmtk

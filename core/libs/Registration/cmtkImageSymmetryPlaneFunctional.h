@@ -35,9 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkFunctional.h"
-#include "Base/cmtkParametricPlane.h"
-#include "Base/cmtkUniformVolume.h"
+#include "cmtkImageSymmetryPlaneFunctionalBase.h"
+
 #include "Registration/cmtkImagePairSimilarityMeasure.h"
 #include "Registration/cmtkImagePairSimilarityMeasureMSD.h"
 
@@ -52,7 +51,7 @@ cmtk
  */
 class ImageSymmetryPlaneFunctional :
   /// Inherit functional interface.
-  public Functional 
+  public ImageSymmetryPlaneFunctionalBase
 {
 public:
   /// This class.
@@ -62,7 +61,7 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Superclass
-  typedef Functional Superclass;
+  typedef ImageSymmetryPlaneFunctionalBase Superclass;
 
   /// Type of metric we're using.
   typedef ImagePairSimilarityMeasureMSD MetricType;
@@ -76,52 +75,12 @@ public:
   /// Destructor.
   virtual ~ImageSymmetryPlaneFunctional() {}
 
-  /// Get parameter vector.
-  virtual void GetParamVector ( CoordinateVector& v )  
-  {
-    this->m_ParametricPlane.GetParameters( v );
-  }
-
   /// Compute functional value.
   virtual Self::ReturnType Evaluate();
 
-  /// Compute functional value.
-  virtual Self::ReturnType EvaluateAt( CoordinateVector& v ) 
-  {
-    this->m_ParametricPlane.SetParameters( v );
-    return this->Evaluate();
-  }
-
-  /// Return the symmetry plane's parameter vector dimension.
-  virtual size_t ParamVectorDim() const { return 6; }
-
-  /// Return the number of variable parameters of the transformation.
-  virtual size_t VariableParamVectorDim() const { return 3; }
-
-  /// Return the parameter stepping for 1 mm optimization steps.
-  virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const;
-
-  /// Set fix offset flag.
-  void SetFixOffset( const bool fixOffset )
-  {
-    this->m_FixOffset = fixOffset;
-  }
-
 private:
-  /// Volume image.
-  UniformVolume::SmartConstPtr m_Volume;
-
   /// Image similarity measure.
   Self::MetricType::SmartPtr m_Metric;
-
-  /// The symmetry plane.
-  ParametricPlane m_ParametricPlane;
-
-  /// Flag for fixing offset parameter: resulting plane will go through volume center of mass.
-  bool m_FixOffset;
-  
-  /// Apply thresholding to volume data.
-  static UniformVolume::SmartPtr ApplyThresholds( const UniformVolume& volume, const Types::DataItemRange& valueRange );
 };
 
 //@}
