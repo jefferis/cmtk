@@ -39,8 +39,8 @@ cmtk
 DeviceMemoryCUDA
 ::DeviceMemoryCUDA( const size_t nBytes, const size_t padToMultiple )
 {
-  const size_t totalBytes = (((nBytes-1) / padToMultiple)+1) * padToMultiple;
-  if ( cudaMalloc( &(this->m_PointerDevice), totalBytes ) != cudaSuccess )
+  this->m_NumberOfBytesAllocated = (((nBytes-1) / padToMultiple)+1) * padToMultiple;
+  if ( cudaMalloc( &(this->m_PointerDevice), this->m_NumberOfBytesAllocated ) != cudaSuccess )
     {
     this->m_PointerDevice = NULL;
     throw( Self::bad_alloc() );

@@ -66,6 +66,12 @@ public:
   /// Destructor: free memory through CUDA.
   virtual ~DeviceMemoryCUDA();
 
+  /// Get number of bytes allocated on device.
+  size_t GetNumberOfBytesAllocated()
+  {
+    return this->m_NumberOfBytesAllocated;
+  }
+
 protected:
   /// Create new object and allocate memory.
   Self::SmartPtr Alloc( const size_t nBytes, const size_t padToMultiple = 1 )
@@ -93,6 +99,9 @@ protected:
    * host memory and can, therefore, not be dereferenced in host code.
    */
   void* m_PointerDevice;
+
+  /// Total number of bytes allocated on device.
+  size_t m_NumberOfBytesAllocated;
 };
 
 //@}
