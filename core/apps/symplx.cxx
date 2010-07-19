@@ -75,6 +75,8 @@ cmtk::Types::Coordinate Rho;
 cmtk::Units::Degrees Theta;
 cmtk::Units::Degrees Phi;
 
+bool FixOffset = false;
+
 bool DoWriteMirror = false;
 const char* MirrorOutFile = "symmetry_mirror.hdr";
 
@@ -135,6 +137,7 @@ bool ParseCommandLine ( const int argc, const char* argv[] )
 		  "which is derived directly from the original full-resolution images.");
     cl.AddOption( Key( 'l', "levels" ), &Levels, "Number of resolution levels. The algorithm will create (levels-1) resampled images with increasingly coarse resolution and use these "
 		  "in successive order of increasing resolution before using the original images at the final level." );
+    cl.AddSwitch( Key( "fix-offset" ), &FixOffset, true, "Fix symmetry plane offset. Reduces computation time and forces symmetry plane to cross center of mass, but may lead to less-than-accurate result." );
     cl.EndGroup();
     
     cl.BeginGroup( "Initial", "Initial approximate symmetry plane orientation" );
@@ -463,6 +466,8 @@ main ( const int argc, const char* argv[] )
 	{
 	functional = cmtk::SmartPointer<cmtk::ImageSymmetryPlaneFunctional>( new cmtk::ImageSymmetryPlaneFunctional( volume ) );
 	}
+
+      functional->SetFixOffset( FixOffset );
       
       // Instantiate programm progress indicator.
       cmtk::ProgressConsole progressIndicator( "Intensity Bias Field Correction" );
