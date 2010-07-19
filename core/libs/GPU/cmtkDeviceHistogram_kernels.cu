@@ -132,7 +132,7 @@ cmtkDeviceHistogramPopulateKernel( float* histPtr, float* localPtr, const float 
   
   for ( int offset = offs; offset < numberOfSamples; offset += skip )
     {
-      int index = 1+truncf( fmaxf( 0, fminf( numberOfBins-1, (dataPtr[offset] - rangeFrom) * binScale ) ) );
+      int index = 1+truncf( fmaxf( 0, fminf( numberOfBins-1, (dataPtr[offset] - rangeFrom) * binScale ) ) ); // 1+... for consistency with masked computation; bin0 is ignored in final analysis.
       ++working[ index ];
     }
 }
@@ -166,15 +166,6 @@ cmtkDeviceHistogramPopulateLogKernel( float* histPtr, float* localPtr, const flo
 void
 cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float rangeFrom, const float rangeTo, const bool logScale, const int numberOfBins, const int numberOfSamples )
 {
-  // how many local copies of the histogram can we fit in shared memory?
-  int device;
-  cudaDeviceProp dprop;
-  if ( (cudaGetDevice( &device ) != cudaSuccess) || (cudaGetDeviceProperties( &dprop, device ) != cudaSuccess ) )
-    {
-      fprintf( stderr, "ERROR: cudaGetDevice() failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
-      exit( 1 );
-    }
-  
   dim3 dimBlock( 64, 1 );
   dim3 dimGrid( 64, 1 );
 
@@ -277,15 +268,6 @@ cmtkDeviceHistogramPopulateLogWithMaskKernel( float* histPtr, float* localPtr, c
 void
 cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* maskPtr, const float rangeFrom, const float rangeTo, const bool logScale, const int numberOfBins, const int numberOfSamples )
 {
-  // how many local copies of the histogram can we fit in shared memory?
-  int device;
-  cudaDeviceProp dprop;
-  if ( (cudaGetDevice( &device ) != cudaSuccess) || (cudaGetDeviceProperties( &dprop, device ) != cudaSuccess ) )
-    {
-      fprintf( stderr, "ERROR: cudaGetDevice() failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
-      exit( 1 );
-    }
-  
   dim3 dimBlock( 64, 1 );
   dim3 dimGrid( 64, 1 );
 
