@@ -96,14 +96,32 @@ cmtkDeviceHistogramEntropy( float* result, const float* dataPtr, int numberOfBin
 
 __global__
 void 
-cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples )
+cmtkDeviceHistogramConsolidate( float* histPtr, float* localPtr, const int numberOfBins, const int numberOfThreads )
+{
+  int tx = threadIdx.x;
+
+  // finally, add all thread working histograms to output histogram
+  for ( int idx = 1+tx; idx <= numberOfBins; idx += blockDim.x )
+    {
+      float sum = 0;
+      for ( int hx = 0; hx < numberOfThreads; ++hx )
+	{
+	  sum += localPtr[ idx + hx*(1+numberOfBins) ];
+	}
+      histPtr[idx-1] += sum;
+    }
+}
+
+__global__
+void 
+cmtkDeviceHistogramPopulateKernel( float* histPtr, float* localPtr, const float *dataPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples )
 {
   int tx = threadIdx.x;
   int offs = tx + blockDim.x * blockIdx.x;
   int skip = blockDim.x * gridDim.x;
 
-  // working histogram for this thread in shared memory
-  float* working = &shared[numberOfBins*tx];
+  // working histogram for this thread
+  float* working = localPtr + (numberOfBins+1)*offs;
 
   // start by resetting all histogram bins to 0
   for ( int i = 0; i < numberOfBins; ++i )
@@ -114,34 +132,21 @@ cmtkDeviceHistogramPopulateKernel( float* histPtr, const float *dataPtr, const f
   
   for ( int offset = offs; offset < numberOfSamples; offset += skip )
     {
-      int index = truncf( fmaxf( 0, fminf( numberOfBins-1, (dataPtr[offset] - rangeFrom) * binScale ) ) );
+      int index = 1+truncf( fmaxf( 0, fminf( numberOfBins-1, (dataPtr[offset] - rangeFrom) * binScale ) ) );
       ++working[ index ];
-    }
-  
-  __syncthreads();
-
-  // finally, add all thread working histograms to output histogram
-  for ( int idx = tx; idx < numberOfBins; idx += blockDim.x )
-    {
-      float sum = 0;
-      for ( int hx = 0; hx < blockDim.x; ++hx )
-	{
-	  sum += shared[ idx + hx*numberOfBins ];
-	}
-      histPtr[idx] += sum;
     }
 }
 
 __global__
 void 
-cmtkDeviceHistogramPopulateLogKernel( float* histPtr, const float *dataPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples )
+cmtkDeviceHistogramPopulateLogKernel( float* histPtr, float* localPtr, const float *dataPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples )
 {
   int tx = threadIdx.x;
   int offs = tx + blockDim.x * blockIdx.x;
   int skip = blockDim.x * gridDim.x;
 
-  // working histogram for this thread in shared memory
-  float* working = &shared[numberOfBins*tx];
+  // working histogram for this thread
+  float* working = localPtr + (numberOfBins+1)*offs;
 
   // start by resetting all histogram bins to 0
   for ( int i = 0; i < numberOfBins; ++i )
@@ -153,21 +158,8 @@ cmtkDeviceHistogramPopulateLogKernel( float* histPtr, const float *dataPtr, cons
   
   for ( int offset = offs; offset < numberOfSamples; offset += skip )
     {
-      int index = truncf( (numberOfBins-1) * fmaxf( 0, fminf( 1, log((1 + dataPtr[offset]-rangeFrom)*binScale)/logNumBins ) ) );
+      int index = 1+truncf( (numberOfBins-1) * fmaxf( 0, fminf( 1, log((1 + dataPtr[offset]-rangeFrom)*binScale)/logNumBins ) ) );
       ++working[ index ];
-    }
-  
-  __syncthreads();
-
-  // finally, add all thread working histograms to output histogram
-  for ( int idx = tx; idx < numberOfBins; idx += blockDim.x )
-    {
-      float sum = 0;
-      for ( int hx = 0; hx < blockDim.x; ++hx )
-	{
-	  sum += shared[ idx + hx*numberOfBins ];
-	}
-      histPtr[idx] += sum;
     }
 }
 
@@ -183,79 +175,89 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const float r
       exit( 1 );
     }
   
-  int nThreads = (dprop.sharedMemPerBlock-48) / (sizeof(float) * numberOfBins); // subtract 48 for static shared memory needed by kernel
-  if ( nThreads > dprop.maxThreadsPerBlock )
-    nThreads = dprop.maxThreadsPerBlock;
+  dim3 dimBlock( 64, 1 );
+  dim3 dimGrid( 64, 1 );
 
-  dim3 dimBlock( nThreads, 1 );
-  dim3 dimGrid( 1, 1 );
+  const size_t nThreads = 64*64;
+  const size_t lBytes = sizeof(float) * (numberOfBins+1) * nThreads;
+
+  float* localPtr;
+  if ( cudaMalloc( &localPtr, lBytes ) != cudaSuccess )
+    {
+      fprintf( stderr, "ERROR: cudaMalloc() failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
+      exit( 1 );
+    }
+
+  if ( cudaMemset( localPtr, 0, lBytes ) != cudaSuccess )
+    {
+      fprintf( stderr, "ERROR: cudaMemset() failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
+      exit( 1 );
+    }
 
   if ( logScale )
-    cmtkDeviceHistogramPopulateLogKernel<<<dimGrid,dimBlock,nThreads*numberOfBins*sizeof(float)>>>( histPtr, dataPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples );
+    cmtkDeviceHistogramPopulateLogKernel<<<dimGrid,dimBlock>>>( histPtr, localPtr, dataPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples );
   else
-    cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock,nThreads*numberOfBins*sizeof(float)>>>( histPtr, dataPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples );
-  
-  const cudaError_t kernelError = cudaGetLastError();
+    cmtkDeviceHistogramPopulateKernel<<<dimGrid,dimBlock>>>( histPtr, localPtr, dataPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples );
+
+  cudaError_t kernelError = cudaGetLastError();
   if ( kernelError != cudaSuccess )
     {
-      fprintf( stderr, "ERROR: CUDA kernel failed with error %s\n",cudaGetErrorString( kernelError ) );
+      fprintf( stderr, "ERROR: CUDA kernel failed with error %s\n", cudaGetErrorString( kernelError ) );
       exit( 1 );      
     }
+
+  dim3 dimBlock2( 256, 1 );
+  dim3 dimGrid2( 1, 1 );
+
+  cmtkDeviceHistogramConsolidate<<<dimGrid2,dimBlock2>>>( histPtr, localPtr, numberOfBins, nThreads );
+  
+  kernelError = cudaGetLastError();
+  if ( kernelError != cudaSuccess )
+    {
+      fprintf( stderr, "ERROR: CUDA kernel failed with error %s\n", cudaGetErrorString( kernelError ) );
+      exit( 1 );      
+    }
+
+  cudaFree( localPtr );
 }
+
 
 __global__
 void 
-cmtkDeviceHistogramPopulateWithMaskKernel( float* histPtr, const float *dataPtr, const int *maskPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples )
+cmtkDeviceHistogramPopulateWithMaskKernel( float* histPtr, float* localPtr, const float *dataPtr, const int *maskPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples )
 {
   int tx = threadIdx.x;
   int offs = tx + blockDim.x * blockIdx.x;
   int skip = blockDim.x * gridDim.x;
 
   // working histogram for this thread in shared memory
-  float* working = &shared[(numberOfBins+1)*tx];
-
-  // start by resetting all histogram bins to 0
-  for ( int i = 0; i <= numberOfBins; ++i )
-    working[i] = 0;
+  float* working = localPtr + (numberOfBins+1)*offs;
 
   // populate histogram bins
   const float binScale = (numberOfBins-1) / (rangeTo - rangeFrom);
   
   for ( int offset = offs; offset < numberOfSamples; offset += skip )
     {
-      float binIndex = fmaxf( 0, fminf( numberOfBins-1, (dataPtr[offset] - rangeFrom) * binScale ) );
-      int index = truncf( (1+binIndex) * maskPtr[offset] );
+      const float d = (dataPtr[offset] - rangeFrom) * binScale;
+      const float m = maskPtr[offset];
+      
+      float binIndex = fmaxf( 0, fminf( numberOfBins-1, d ) );
+      const int index = truncf( (1+binIndex) * m );
+      
       ++working[ index ];
-    }
-
-  __syncthreads();
-
-  // finally, add all thread working histograms to output histogram
-  for ( int idx = 1+tx; idx <= numberOfBins; idx += blockDim.x )
-    {
-      float sum = 0;
-      for ( int hx = 0; hx < blockDim.x; ++hx )
-	{
-	  sum += shared[ idx + hx*(1+numberOfBins) ];
-	}
-      histPtr[idx-1] += sum;
     }
 }
 
 __global__
 void 
-cmtkDeviceHistogramPopulateLogWithMaskKernel( float* histPtr, const float *dataPtr, const int *maskPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples )
+cmtkDeviceHistogramPopulateLogWithMaskKernel( float* histPtr, float* localPtr, const float *dataPtr, const int *maskPtr, const float rangeFrom, const float rangeTo, const int numberOfBins, const int numberOfSamples )
 {
   int tx = threadIdx.x;
   int offs = tx + blockDim.x * blockIdx.x;
   int skip = blockDim.x * gridDim.x;
 
   // working histogram for this thread in shared memory
-  float* working = &shared[(numberOfBins+1)*tx];
-
-  // start by resetting all histogram bins to 0
-  for ( int i = 0; i <= numberOfBins; ++i )
-    working[i] = 0;
+  float* working = localPtr + (numberOfBins+1)*offs;
 
   // populate histogram bins
   const float binScale = (numberOfBins-1) / (rangeTo - rangeFrom);
@@ -263,22 +265,12 @@ cmtkDeviceHistogramPopulateLogWithMaskKernel( float* histPtr, const float *dataP
   
   for ( int offset = offs; offset < numberOfSamples; offset += skip )
     {
-      float binIndex = (numberOfBins-1) * fmaxf( 0, fminf( 1, log((1 + dataPtr[offset]-rangeFrom)*binScale)/logNumBins ) );
-      int index = truncf( (1+binIndex) * maskPtr[offset] );
+      const float d = log((1 + dataPtr[offset]-rangeFrom)*binScale);
+      const float m = maskPtr[offset];
+      
+      float binIndex = (numberOfBins-1) * fmaxf( 0, fminf( 1, d / logNumBins ) );
+      const int index = truncf( (1+binIndex) * m );
       ++working[ index ];
-    }
-
-  __syncthreads();
-
-  // finally, add all thread working histograms to output histogram
-  for ( int idx = 1+tx; idx <= numberOfBins; idx += blockDim.x )
-    {
-      float sum = 0;
-      for ( int hx = 0; hx < blockDim.x; ++hx )
-	{
-	  sum += shared[ idx + hx*(1+numberOfBins) ];
-	}
-      histPtr[idx-1] += sum;
     }
 }
 
@@ -294,22 +286,48 @@ cmtkDeviceHistogramPopulate( float* histPtr, const float* dataPtr, const int* ma
       exit( 1 );
     }
   
-  int nThreads = (dprop.sharedMemPerBlock-48) / (sizeof(float) * (numberOfBins+1)); // subtract 48 for static shared memory needed by kernel
-  if ( nThreads > dprop.maxThreadsPerBlock )
-    nThreads = dprop.maxThreadsPerBlock;
-
-  dim3 dimBlock( nThreads, 1 );
+  dim3 dimBlock( 64, 1 );
   dim3 dimGrid( 64, 1 );
 
+  const size_t nThreads = 64*64;
+  const size_t lBytes = sizeof(float) * (numberOfBins+1) * nThreads;
+
+  float* localPtr;
+  if ( cudaMalloc( &localPtr, lBytes ) != cudaSuccess )
+    {
+      fprintf( stderr, "ERROR: cudaMalloc() failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
+      exit( 1 );
+    }
+
+  if ( cudaMemset( localPtr, 0, lBytes ) != cudaSuccess )
+    {
+      fprintf( stderr, "ERROR: cudaMemset() failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
+      exit( 1 );
+    }
+
   if ( logScale )
-    cmtkDeviceHistogramPopulateLogWithMaskKernel<<<dimGrid,dimBlock,nThreads*(numberOfBins+1)*sizeof(float)>>>( histPtr, dataPtr, maskPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples );
+    cmtkDeviceHistogramPopulateLogWithMaskKernel<<<dimGrid,dimBlock>>>( histPtr, localPtr, dataPtr, maskPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples );
   else
-    cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock,nThreads*(numberOfBins+1)*sizeof(float)>>>( histPtr, dataPtr, maskPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples );
-  
-  const cudaError_t kernelError = cudaGetLastError();
+    cmtkDeviceHistogramPopulateWithMaskKernel<<<dimGrid,dimBlock>>>( histPtr, localPtr, dataPtr, maskPtr, rangeFrom, rangeTo, numberOfBins, numberOfSamples );
+
+  cudaError_t kernelError = cudaGetLastError();
   if ( kernelError != cudaSuccess )
     {
-      fprintf( stderr, "ERROR: CUDA kernel failed with error %s\n",cudaGetErrorString( kernelError ) );
+      fprintf( stderr, "ERROR: CUDA kernel failed with error %s\n", cudaGetErrorString( kernelError ) );
       exit( 1 );      
     }
+
+  dim3 dimBlock2( 256, 1 );
+  dim3 dimGrid2( 1, 1 );
+
+  cmtkDeviceHistogramConsolidate<<<dimGrid2,dimBlock2>>>( histPtr, localPtr, numberOfBins, nThreads );
+  
+  kernelError = cudaGetLastError();
+  if ( kernelError != cudaSuccess )
+    {
+      fprintf( stderr, "ERROR: CUDA kernel failed with error %s\n", cudaGetErrorString( kernelError ) );
+      exit( 1 );      
+    }
+
+  cudaFree( localPtr );
 }
