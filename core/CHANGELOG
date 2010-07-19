@@ -1,5 +1,7 @@
 Release CMTK-1.4.1:
 
+(r2019) Refactored: split new symmetry plane functional into base class and
+    metric-dependent class. Base class will be shared by GPU implementation.
 (r2016) Added: new "symplx" tool that will extend, and ultimately replace, the
     current "sympl" tool for symmetry plane computation.
 (r2012) Fixed: concurrent memory access problems in GPU kernel to populate
