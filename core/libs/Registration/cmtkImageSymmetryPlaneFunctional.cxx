@@ -44,17 +44,18 @@ cmtk
 ImageSymmetryPlaneFunctional::ImageSymmetryPlaneFunctional
 ( UniformVolume::SmartConstPtr& volume ) 
   : m_Volume( volume ),
-    m_Metric( new ImagePairSimilarityMeasureMSD( this->m_Volume, this->m_Volume ) )
+    m_Metric( new ImagePairSimilarityMeasureMSD( this->m_Volume, this->m_Volume ) ),
+    m_FixOffset( false )
 {
 }
 
 ImageSymmetryPlaneFunctional::ImageSymmetryPlaneFunctional
 ( UniformVolume::SmartConstPtr& volume, 
   const Types::DataItemRange& valueRange )
-  : m_Volume( volume ),
-    m_Metric( new ImagePairSimilarityMeasureMSD( this->m_Volume, this->m_Volume ) )
+  : m_Volume( Self::ApplyThresholds( *volume, valueRange ) ),
+    m_Metric( new ImagePairSimilarityMeasureMSD( this->m_Volume, this->m_Volume ) ),
+    m_FixOffset( false )
 {
-  throw Exception( "NOT IMPLEMENTED YET" );
 }
 
 Types::Coordinate 
@@ -66,7 +67,10 @@ ImageSymmetryPlaneFunctional::GetParamStep
     {
     // plane offset is a translation
     case 0:
-      return mmStep;
+      if ( this->m_FixOffset )
+	return 0;
+      else
+	return mmStep;
       // the other two parameters are rotations
     case 1:
     case 2:
@@ -107,8 +111,7 @@ ImageSymmetryPlaneFunctional::Evaluate()
 	{
 	(pFloating = rowStart) += HashX[pX];
 	
-	// Tell us whether the current location is still within the model
-	// volume and get the respective voxel.
+	// Is the current location still within the floating image, then get the respective voxel.
 	if ( m_Volume->FindVoxelByIndex( pFloating, fltIdx, fltFrac ) ) 
 	  {
 	  // Compute data index of the model voxel in the model volume.
@@ -123,5 +126,14 @@ ImageSymmetryPlaneFunctional::Evaluate()
   
   return metric.Get();
 }
+
+UniformVolume::SmartPtr 
+ImageSymmetryPlaneFunctional::ApplyThresholds( const UniformVolume& volume, const Types::DataItemRange& valueRange )
+{
+  UniformVolume::SmartPtr result( volume.Clone() );
+  result->GetData()->Threshold( valueRange );
+  return result;
+}
+
 
 } // namespace cmtk

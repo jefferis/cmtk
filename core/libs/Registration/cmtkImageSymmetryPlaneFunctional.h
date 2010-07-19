@@ -101,6 +101,12 @@ public:
   /// Return the parameter stepping for 1 mm optimization steps.
   virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const;
 
+  /// Set fix offset flag.
+  void SetFixOffset( const bool fixOffset )
+  {
+    this->m_FixOffset = fixOffset;
+  }
+
 private:
   /// Volume image.
   UniformVolume::SmartConstPtr m_Volume;
@@ -110,6 +116,12 @@ private:
 
   /// The symmetry plane.
   ParametricPlane m_ParametricPlane;
+
+  /// Flag for fixing offset parameter: resulting plane will go through volume center of mass.
+  bool m_FixOffset;
+  
+  /// Apply thresholding to volume data.
+  static UniformVolume::SmartPtr ApplyThresholds( const UniformVolume& volume, const Types::DataItemRange& valueRange );
 };
 
 //@}
