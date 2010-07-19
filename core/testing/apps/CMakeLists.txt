@@ -520,8 +520,15 @@ IF(NOT CMTK_USE_MPI)
   SET(testList ${testList} similarityGrey similarityLabels similarityGreyMask similarityLabelsMask)
 
   # ==========================================
-  # Tests for "symmetry_plane" tool
+  # Tests for "sympl" tool
   SET(testList ${testList} symmetry_plane symmetry_planeThresh)
+
+  # ==========================================
+  # Tests for "symplx" tool
+  SET(testList ${testList} 
+    symplx_Default
+    symplx_Thresh
+    symplx_FixOffset)
 
   # ==========================================
   # Tests for "statistics" tool
