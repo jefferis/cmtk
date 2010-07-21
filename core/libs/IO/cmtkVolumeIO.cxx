@@ -32,15 +32,15 @@
 
 #include "cmtkVolumeIO.h"
 
-#include "IO/cmtkMountPoints.h"
+#include "System/cmtkStrUtility.h"
+#include "System/cmtkFileUtil.h"
+#include "System/cmtkProgress.h"
+#include "System/cmtkMountPoints.h"
+
 #include "IO/cmtkStudy.h"
 #include "IO/cmtkClassStream.h"
 #include "IO/cmtkVolumeFromFile.h"
 #include "IO/cmtkPGM.h"
-
-#include "System/cmtkStrUtility.h"
-#include "System/cmtkFileUtil.h"
-#include "System/cmtkProgress.h"
 
 #include "Base/cmtkTypes.h"
 

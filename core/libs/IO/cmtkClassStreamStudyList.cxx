@@ -32,9 +32,10 @@
 
 #include "cmtkClassStreamStudyList.h"
 
+#include "System/cmtkMountPoints.h"
+
 #include "IO/cmtkClassStream.h"
 #include "IO/cmtkClassStreamAffineXform.h"
-#include "IO/cmtkMountPoints.h"
 
 namespace
 cmtk

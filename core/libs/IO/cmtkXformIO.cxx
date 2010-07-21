@@ -34,8 +34,8 @@
 
 #include "System/cmtkConsole.h"
 #include "System/cmtkFileUtil.h"
+#include "System/cmtkMountPoints.h"
 
-#include "IO/cmtkMountPoints.h"
 #include "IO/cmtkFileFormat.h"
 #include "IO/cmtkClassStream.h"
 #include "IO/cmtkClassStreamAffineXform.h"

@@ -41,7 +41,7 @@ namespace
 cmtk
 {
 
-/** \addtogroup IO */
+/** \addtogroup System */
 //@{
 
 /** Name of the shell variable defining the directory translation.

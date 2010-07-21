@@ -40,7 +40,7 @@ namespace
 cmtk
 {
 
-/** \addtogroup IO */
+/** \addtogroup System */
 //@{
 
 char MountPoints::Buffer[PATH_MAX];

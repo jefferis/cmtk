@@ -37,6 +37,7 @@
 #include "System/cmtkTimers.h"
 #include "System/cmtkCommandLine.h"
 #include "System/cmtkCompressedStream.h"
+#include "System/cmtkMountPoints.h"
 
 #include "Base/cmtkTypes.h"
 #include "Base/cmtkAnatomicalOrientation.h"
@@ -47,7 +48,6 @@
 #include "Registration/cmtkProtocolCallback.h"
 #include "Registration/cmtkMakeInitialAffineTransformation.h"
 
-#include "IO/cmtkMountPoints.h"
 #include "IO/cmtkVolumeIO.h"
 #include "IO/cmtkClassStream.h"
 #include "IO/cmtkClassStreamAffineXform.h"

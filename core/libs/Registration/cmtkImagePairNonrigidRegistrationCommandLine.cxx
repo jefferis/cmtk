@@ -37,8 +37,8 @@
 #include "System/cmtkTimers.h"
 #include "System/cmtkThreads.h"
 #include "System/cmtkCompressedStream.h"
+#include "System/cmtkMountPoints.h"
 
-#include "IO/cmtkMountPoints.h"
 #include "IO/cmtkXformIO.h"
 #include "IO/cmtkClassStream.h"
 #include "IO/cmtkClassStreamAffineXform.h"

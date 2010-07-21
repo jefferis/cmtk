@@ -38,11 +38,11 @@
 #include "System/cmtkStrUtility.h"
 #include "System/cmtkConsole.h"
 #include "System/cmtkCompressedStream.h"
+#include "System/cmtkMountPoints.h"
 
 #include "IO/cmtkTypedStream.h"
 #include "IO/cmtkClassStream.h"
 #include "IO/cmtkClassStreamAffineXform.h"
-#include "IO/cmtkMountPoints.h"
 
 namespace
 cmtk

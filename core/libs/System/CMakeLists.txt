@@ -42,6 +42,7 @@ SET(cmtkSystem_SRCS
   cmtkCompressedStream.cxx
   cmtkConsole.cxx
   cmtkFileUtil.cxx
+  cmtkMountPoints.cxx
   cmtkProgress.cxx	
   cmtkProgressConsole.cxx	
   cmtkStackBacktrace

@@ -41,7 +41,6 @@ SET(cmtkIO_SRCS
   cmtkGroupwiseRegistrationFunctionalIO.cxx
   cmtkImageInfo.cxx
   cmtkImageOperationApplyMask.cxx
-  cmtkMountPoints.cxx
   cmtkPGM.cxx
   cmtkResourceFile.cxx
   cmtkScalarImageIO.cxx
