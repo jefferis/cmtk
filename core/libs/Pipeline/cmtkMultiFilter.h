@@ -34,8 +34,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkSource.h>
-#include <cmtkPipelineObject.h>
+#include "Pipeline/cmtkSource.h"
+#include "Pipeline/cmtkPipelineObject.h"
 
 #include <list>
 

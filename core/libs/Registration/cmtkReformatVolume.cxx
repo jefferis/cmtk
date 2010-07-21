@@ -30,30 +30,30 @@
 //
 */
 
-#include <cmtkReformatVolume.h>
 
-#include <cmtkVector.h>
-#include <cmtkAffineXform.h>
-#include <cmtkWarpXform.h>
-#include <cmtkSplineWarpXform.h>
-#include <cmtkSplineWarpXformUniformVolume.h>
-#include <cmtkAnatomicalOrientation.h>
-#include <cmtkTypedArray.h>
-#include <cmtkTemplateArray.h>
-#include <cmtkMathUtil.h>
+#include "System/cmtkProgress.h"
+#include "System/cmtkConsole.h"
 
-#include <cmtkProgress.h>
-#include <cmtkConsole.h>
+#include "Registration/cmtkReformatVolume.h"
 
-#include <assert.h>
+#include "Base/cmtkVector.h"
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkWarpXform.h"
+#include "Base/cmtkSplineWarpXform.h"
+#include "Base/cmtkSplineWarpXformUniformVolume.h"
+#include "Base/cmtkAnatomicalOrientation.h"
+#include "Base/cmtkTypedArray.h"
+#include "Base/cmtkTemplateArray.h"
+#include "Base/cmtkMathUtil.h"
+#include "Base/cmtkUniformVolumeInterpolator.h"
+#include "Base/cmtkSincInterpolator.h"
+#include "Base/cmtkLinearInterpolator.h"
+#include "Base/cmtkCubicInterpolator.h"
+#include "Base/cmtkUniformVolumeInterpolatorPartialVolume.h"
+
+#include <cassert>
 #include <algorithm>
 #include <vector>
-
-#include <cmtkUniformVolumeInterpolator.h>
-#include <cmtkSincInterpolator.h>
-#include <cmtkLinearInterpolator.h>
-#include <cmtkCubicInterpolator.h>
-#include <cmtkUniformVolumeInterpolatorPartialVolume.h>
 
 namespace
 cmtk

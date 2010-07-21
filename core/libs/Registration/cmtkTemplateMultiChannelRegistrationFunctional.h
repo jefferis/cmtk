@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkMultiChannelRMIRegistrationFunctional.h>
+#include "Registration/cmtkMultiChannelRMIRegistrationFunctional.h"
 
 namespace
 cmtk

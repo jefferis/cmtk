@@ -34,15 +34,15 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkArrayFilter.h>
+#include "Pipeline/cmtkArrayFilter.h"
 
-#include <cmtkImageRGB.h>
-#include <cmtkMacros.h>
+#include "Pipeline/cmtkImageRGB.h"
+#include "Base/cmtkMacros.h"
 
-#include <cmtkImageEdgeOperator.h>
-#include <cmtkColormap.h>
-#include <cmtkImageToImageRGB.h>
-#include <cmtkFusionAlpha.h>
+#include "Pipeline/cmtkImageEdgeOperator.h"
+#include "Pipeline/cmtkColormap.h"
+#include "Pipeline/cmtkImageToImageRGB.h"
+#include "Pipeline/cmtkFusionAlpha.h"
 
 namespace
 cmtk

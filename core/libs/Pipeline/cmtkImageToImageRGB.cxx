@@ -29,7 +29,7 @@
 //
 */
 
-#include <cmtkImageToImageRGB.h>
+#include "Pipeline/cmtkImageToImageRGB.h"
 
 namespace
 cmtk

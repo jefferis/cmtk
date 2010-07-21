@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009,2010 SRI International
+//  Copyright 2009-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -28,7 +28,7 @@
 //
 */
 
-#include <cmtkImageOperationDistanceMap.h>
+#include "cmtkImageOperationDistanceMap.h"
 
 cmtk::UniformVolume::SmartPtr  
 cmtk::ImageOperationDistanceMap

@@ -32,27 +32,24 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCommandLine.h>
-#include <cmtkConsole.h>
-#include <cmtkTimers.h>
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkConsole.h"
+#include "System/cmtkTimers.h"
 
-#include <cmtkRegion.h>
-#include <cmtkUniformVolume.h>
-#include <cmtkVolumeIO.h>
+#include "Base/cmtkRegion.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkDataGridMorphologicalOperators.h"
+#include "Base/cmtkDataGridFilter.h"
+#include "Base/cmtkUniformVolumeFilter.h"
+#include "Base/cmtkMathFunctionWrappers.h"
+#include "Base/cmtkTypedArrayFunctionHistogramEqualization.h"
 
-#include <cmtkDataGridMorphologicalOperators.h>
-#include <cmtkDataGridFilter.h>
-#include <cmtkUniformVolumeFilter.h>
+#include "IO/cmtkVolumeIO.h"
+#include "IO/cmtkStudyList.h"
+#include "IO/cmtkClassStreamStudyList.h"
 
-#include <cmtkStudyList.h>
-#include <cmtkClassStreamStudyList.h>
-
-#include <math.h>
-#include <cmtkMathFunctionWrappers.h>
-#include <cmtkTypedArrayFunctionHistogramEqualization.h>
-
-#include <stdlib.h>
-
+#include <cmath>
+#include <cstdlib>
 #include <iostream>
 #include <fstream>
 #include <set>

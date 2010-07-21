@@ -35,8 +35,9 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCongealingFunctional.h>
-#include <cmtkAffineXform.h>
+#include "Registration/cmtkCongealingFunctional.h"
+
+#include "Base/cmtkAffineXform.h"
 
 namespace
 cmtk

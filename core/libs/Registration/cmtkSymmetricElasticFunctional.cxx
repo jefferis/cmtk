@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,19 +30,17 @@
 //
 */
 
-#include <cmtkSymmetricElasticFunctional.h>
+#include "Registration/cmtkSymmetricElasticFunctional.h"
 
-#include <cmtkVoxelMatchingMutInf.h>
-#include <cmtkVoxelMatchingNormMutInf.h>
-#include <cmtkVoxelMatchingCorrRatio.h>
-#include <cmtkVoxelMatchingMeanSquaredDifference.h>
-#include <cmtkVoxelMatchingCrossCorrelation.h>
+#include "Registration/cmtkVoxelMatchingMutInf.h"
+#include "Registration/cmtkVoxelMatchingNormMutInf.h"
+#include "Registration/cmtkVoxelMatchingCorrRatio.h"
+#include "Registration/cmtkVoxelMatchingMeanSquaredDifference.h"
+#include "Registration/cmtkVoxelMatchingCrossCorrelation.h"
 
-#include <cmtkSplineWarpXform.h>
-
-#include <cmtkInterpolator.h>
-
-#include <cmtkUniformVolume.h>
+#include "Base/cmtkSplineWarpXform.h"
+#include "Base/cmtkInterpolator.h"
+#include "Base/cmtkUniformVolume.h"
 
 namespace
 cmtk

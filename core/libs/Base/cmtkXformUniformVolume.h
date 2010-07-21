@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCannotBeCopied.h>
-#include <cmtkSmartPtr.h>
+#include "System/cmtkCannotBeCopied.h"
+#include "System/cmtkSmartPtr.h"
 
-#include <cmtkVector3D.h>
+#include "Base/cmtkVector3D.h"
 
 namespace
 cmtk

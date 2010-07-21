@@ -30,15 +30,7 @@
 //
 */
 
-#include <cmtkConsole.h>
-
-#ifdef HAVE_STDARG_H
-#  include <stdarg.h>
-#endif
-
-#ifdef HAVE_STDIO_H
-#  include <stdio.h>
-#endif
+#include "cmtkConsole.h"
 
 #ifdef HAVE_UNISTD_H
 #  include <unistd.h>
@@ -53,6 +45,8 @@
 #endif
 
 #include <algorithm>
+#include <cstdarg>
+#include <cstdio>
 
 namespace
 cmtk
@@ -135,7 +129,6 @@ Console::printf( const char* format, ... )
   if ( this->m_RankMPI < 0 ) this->m_RankMPI = MPI::COMM_WORLD.Get_rank();
     if ( this->m_RankMPI ) return;
 #endif
-#ifdef HAVE_STDARG_H
   char buffer[1024];
 
   va_list args;
@@ -147,7 +140,6 @@ Console::printf( const char* format, ... )
 
   LockingPtr<std::ostream> pStream( this->m_Stream, this->m_MutexLock );
   *pStream << buffer;
-#endif
 }
 
 void 

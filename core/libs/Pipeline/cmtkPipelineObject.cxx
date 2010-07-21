@@ -29,7 +29,7 @@
 //
 */
 
-#include <cmtkPipelineObject.h>
+#include "Pipeline/cmtkPipelineObject.h"
 
 namespace
 cmtk

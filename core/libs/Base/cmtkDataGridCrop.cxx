@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkDataGrid.h>
+#include "cmtkDataGrid.h"
 
 namespace
 cmtk

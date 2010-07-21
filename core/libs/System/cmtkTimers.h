@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,14 +35,6 @@
 
 #include <cmtkconfig.h>
 
-#ifdef _MSC_VER
-#  include <time.h>
-#endif
-
-#ifdef HAVE_TIME_H
-#  include <time.h>
-#endif
-
 #ifdef HAVE_SYS_TIME_H
 #  include <sys/time.h>
 #endif
@@ -55,6 +48,7 @@
 #endif
 
 #include <iostream>
+#include <ctime>
 
 namespace
 cmtk

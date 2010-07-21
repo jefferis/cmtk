@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,10 +30,10 @@
 //
 */
 
-#include <cmtkDataGridMorphologicalOperators.h>
+#include "cmtkDataGridMorphologicalOperators.h"
 
-#include <cmtkTemplateArray.h>
-#include <cmtkException.h>
+#include "Base/cmtkTemplateArray.h"
+#include "System/cmtkException.h"
 
 namespace
 cmtk

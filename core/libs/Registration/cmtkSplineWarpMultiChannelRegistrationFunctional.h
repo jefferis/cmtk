@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,14 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkMultiChannelRMIRegistrationFunctional.h>
-#include <cmtkTemplateMultiChannelRegistrationFunctional.h>
-#include <cmtkAffineMultiChannelRegistrationFunctional.h>
+#include "Registration/cmtkMultiChannelRMIRegistrationFunctional.h"
+#include "Registration/cmtkTemplateMultiChannelRegistrationFunctional.h"
+#include "Registration/cmtkAffineMultiChannelRegistrationFunctional.h"
 
-#include <cmtkSplineWarpXform.h>
+#include "Base/cmtkSplineWarpXform.h"
 
-#include <cmtkThreads.h>
-#include <cmtkMutexLock.h>
+#include "System/cmtkThreads.h"
+#include "System/cmtkMutexLock.h"
 
 #include <list>
 
@@ -237,7 +237,7 @@ private:
 
 } // namespace cmtk
 
-#include <cmtkSplineWarpMultiChannelRegistrationFunctional.txx>
-#include <cmtkSplineWarpMultiChannelRegistrationFunctionalThreadFunctions.txx>
+#include "cmtkSplineWarpMultiChannelRegistrationFunctional.txx"
+#include "cmtkSplineWarpMultiChannelRegistrationFunctionalThreadFunctions.txx"
 
 #endif // #ifndef __cmtkSplineWarpMultiChannelRegistrationFunctional_h_included_

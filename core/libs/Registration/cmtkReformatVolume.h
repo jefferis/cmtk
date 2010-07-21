@@ -35,34 +35,30 @@
 
 #include <cmtkconfig.h>
 
-#include <math.h>
-
 #ifdef HAVE_VALUES_H
 #  include <values.h>
 #endif
 
-#ifndef HAVE_STDDEF_H
-#  include <stddef.h>
-#endif
+#include "Base/cmtkVolume.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkInterpolator.h"
+#include "Base/cmtkUniformVolumeInterpolator.h"
+#include "Base/cmtkTypedArray.h"
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkWarpXform.h"
+#include "Base/cmtkSplineWarpXform.h"
+#include "Base/cmtkMathUtil.h"
+#include "System/cmtkProgress.h"
 
+#include "Base/cmtkMacros.h"
+#include "System/cmtkThreads.h"
+#include "Base/cmtkBitVector.h"
+
+#include "Registration/cmtkXformList.h"
+
+#include <cstddef>
+#include <cmath>
 #include <vector>
-
-#include <cmtkVolume.h>
-#include <cmtkUniformVolume.h>
-#include <cmtkInterpolator.h>
-#include <cmtkUniformVolumeInterpolator.h>
-#include <cmtkTypedArray.h>
-#include <cmtkAffineXform.h>
-#include <cmtkWarpXform.h>
-#include <cmtkSplineWarpXform.h>
-#include <cmtkMathUtil.h>
-#include <cmtkProgress.h>
-
-#include <cmtkMacros.h>
-#include <cmtkThreads.h>
-#include <cmtkBitVector.h>
-
-#include <cmtkXformList.h>
 
 namespace
 cmtk
@@ -339,6 +335,6 @@ private:
 
 } // namespace cmtk
 
-#include <cmtkReformatVolumeReformat.txx>
+#include "cmtkReformatVolumeReformat.txx"
 
 #endif // #ifndef __cmtkReformatVolume_h_included_

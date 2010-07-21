@@ -30,9 +30,9 @@
 //
 */
 
-#include <cmtkImageInfo.h>
+#include "cmtkImageInfo.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace
 cmtk

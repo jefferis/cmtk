@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkUniformVolume.h>
+#include "Base/cmtkUniformVolume.h"
 
 // test "GridMatches" function
 int

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,9 +30,12 @@
 //
 */
 
-#include <cmtkQtFusionSlicer.h>
+#include "cmtkQtFusionSlicer.h"
 
-#include <cmtkQtFusionGlobal.h>
+#include "cmtkQtFusionGlobal.h"
+#include "cmtkQtSimpleFusionApp.h"
+
+#include "Pipeline/cmtkRendererCollection.h"
 
 #include <qlayout.h>
 #include <qgroupbox.h>
@@ -41,9 +45,6 @@
 #include <qpushbutton.h>
 
 #include <QVBoxLayout>
-
-#include <cmtkQtSimpleFusionApp.h>
-#include <cmtkRendererCollection.h>
 
 namespace
 cmtk

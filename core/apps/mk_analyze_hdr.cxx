@@ -32,14 +32,15 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCommandLine.h>
-#include <cmtkConsole.h>
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkConsole.h"
 
-#include <cmtkAnalyze.h>
-#include <cmtkFileHeader.h>
-#include <cmtkTypes.h>
+#include "IO/cmtkAnalyze.h"
+#include "IO/cmtkFileHeader.h"
 
-#include <stdio.h>
+#include "Base/cmtkTypes.h"
+
+#include <cstdio>
 
 bool Verbose = false;
 

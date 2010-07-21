@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,10 +30,10 @@
 //
 */
 
-#include <cmtkTimers.h>
+#include "cmtkTimers.h"
 
-#include <string.h>
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
 #include <errno.h>
 
 #ifdef HAVE_SYS_IOCTL_H

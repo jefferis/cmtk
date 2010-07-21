@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,16 +30,16 @@
 //
 */
 
-#include <cmtkQtImageOperators.h>
+#include "cmtkQtImageOperators.h"
 
-#include <math.h>
+#include <cmath>
 
 #include <qinputdialog.h>
 
-#include <cmtkQtProgress.h>
+#include "Qt/cmtkQtProgress.h"
 
-#include <cmtkTypedArrayFunctionHistogramEqualization.h>
-#include <cmtkDataGridFilter.h>
+#include "Base/cmtkTypedArrayFunctionHistogramEqualization.h"
+#include "Base/cmtkDataGridFilter.h"
 
 namespace
 cmtk

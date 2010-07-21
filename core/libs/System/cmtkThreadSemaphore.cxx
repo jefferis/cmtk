@@ -30,16 +30,16 @@
 //
 */
 
-#include <cmtkThreadSemaphore.h>
+#include "cmtkThreadSemaphore.h"
 
 #ifdef CMTK_USE_THREADS
 
 #ifdef _MSC_VER
-#  include <cmtkThreadSemaphoreWindows.txx>
+#  include "cmtkThreadSemaphoreWindows.txx"
 #elif defined(__APPLE__)
-#  include <cmtkThreadSemaphoreAppleIsRetarded.txx>
+#  include "cmtkThreadSemaphoreAppleIsRetarded.txx"
 #else
-#  include <cmtkThreadSemaphorePOSIX.txx>
+#  include "cmtkThreadSemaphorePOSIX.txx"
 #endif
 
 #else // #ifdef CMTK_USE_THREADS

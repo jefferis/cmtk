@@ -28,7 +28,7 @@
 //
 */
 
-#include <cmtkImageOperationCropRegion.h>
+#include "cmtkImageOperationCropRegion.h"
 
 cmtk::UniformVolume::SmartPtr 
 cmtk::ImageOperationCropRegion

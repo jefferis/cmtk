@@ -35,17 +35,17 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkMacros.h>
-#include <cmtkTypes.h>
-#include <cmtkTypedArray.h>
-#include <cmtkFixedVector.h>
-#include <cmtkScalarImage.h>
-#include <cmtkRegion.h>
-#include <cmtkMetaInformationObject.h>
-#include <cmtkAnatomicalOrientation.h>
+#include "Base/cmtkMacros.h"
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkTypedArray.h"
+#include "Base/cmtkFixedVector.h"
+#include "Base/cmtkScalarImage.h"
+#include "Base/cmtkRegion.h"
+#include "Base/cmtkMetaInformationObject.h"
+#include "Base/cmtkAnatomicalOrientation.h"
 
-#include <cmtkSmartPtr.h>
-#include <cmtkThreads.h>
+#include "System/cmtkSmartPtr.h"
+#include "System/cmtkThreads.h"
 
 #include <vector>
 
@@ -394,6 +394,6 @@ private:
 
 } // namespace cmtk
 
-#include <cmtkDataGrid.txx>
+#include "cmtkDataGrid.txx"
 
 #endif // #ifndef __cmtkDataGrid_h_included_

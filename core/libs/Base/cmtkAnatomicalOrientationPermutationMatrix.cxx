@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkAnatomicalOrientation.h>
+#include "cmtkAnatomicalOrientation.h"
 
 #include <string>
 #include <iostream>

@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkAffineXformUniformVolume.h>
+#include "cmtkAffineXformUniformVolume.h"
 
 cmtk::AffineXformUniformVolume::AffineXformUniformVolume( const UniformVolume& volume, const AffineXform& xform )
   : m_VolumeAxesX( volume.m_Dims[0] ),

@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -29,24 +30,16 @@
 //
 */
 
-#include <cmtkThreads.h>
+#include "cmtkThreads.h"
 
 // GJ: use sysctl library to query cpu number on apple macosx
 #ifdef __APPLE__
 #include <sys/sysctl.h>
 #endif
 
-#include <stdlib.h>
-
 #ifdef HAVE_UNISTD_H
 #  include <unistd.h>
 #endif
-
-#ifdef HAVE_LIMITS_H
-#  include <limits.h>
-#endif
-
-#include <iostream>
 
 #ifdef CMTK_USE_THREADS
 #  include <pthread.h>
@@ -57,6 +50,10 @@
 #  include <omp.h>
 #endif // _OPENMP
 
+#include <climits>
+#include <cstdlib>
+#include <iostream>
+
 #include <algorithm>
 
 #ifndef _SC_NPROCESSORS_ONLN
@@ -65,7 +62,7 @@
 #  endif
 #endif
 
-#include <cmtkConsole.h>
+#include "System/cmtkConsole.h"
 
 namespace
 cmtk

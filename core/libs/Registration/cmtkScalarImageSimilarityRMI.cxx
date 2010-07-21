@@ -30,9 +30,9 @@
 //
 */
 
-#include <cmtkScalarImageSimilarity.h>
+#include "cmtkScalarImageSimilarity.h"
 
-#include <cmtkMathUtil.h>
+#include "Base/cmtkMathUtil.h"
 
 namespace
 cmtk

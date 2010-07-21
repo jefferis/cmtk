@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkMatrix.h>
-#include <ap.h>
+#include "Base/cmtkMatrix.h"
+#include "Numerics/ap.h"
 
 namespace
 cmtk
@@ -95,6 +96,6 @@ private:
 
 } // namespace cmtk
 
-#include <cmtkQRDecomposition.txx>
+#include "cmtkQRDecomposition.txx"
 
 #endif // #ifndef __cmtkQRDecomposition_h_included_

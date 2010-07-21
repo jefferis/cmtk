@@ -30,17 +30,17 @@
 //
 */
 
-#include <cmtkScalarImage.h>
+#include "cmtkScalarImage.h"
 
-#include <stdlib.h>
-#include <assert.h>
-#include <math.h>
+#include "Base/cmtkMatrix.h"
+#include "Base/cmtkCubicSpline.h"
+#include "Base/cmtkSurfaceNormal.h"
 
-#include <cmtkMatrix.h>
-#include <cmtkCubicSpline.h>
-#include <cmtkSurfaceNormal.h>
+#include "System/cmtkException.h"
 
-#include <cmtkException.h>
+#include <cstdlib>
+#include <cassert>
+#include <cmath>
 
 namespace
 cmtk

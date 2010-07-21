@@ -29,7 +29,7 @@
 //
 */
 
-#include <cmtkReformatVolume.h>
+#include "Registration/cmtkReformatVolume.h"
 
 namespace
 cmtk

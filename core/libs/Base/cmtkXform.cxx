@@ -30,12 +30,12 @@
 //
 */
 
-#include <cmtkXform.h>
+#include "cmtkXform.h"
 
-#include <cmtkVolume.h>
+#include "Base/cmtkVolume.h"
 
-#include <math.h>
-#include <stdio.h>
+#include <cmath>
+#include <cstdio>
 
 namespace
 cmtk

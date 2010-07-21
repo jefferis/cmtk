@@ -41,8 +41,8 @@
 
 #include <QGroupBox>
 
-#include <cmtkQtRenderImageRGB.h>
-#include <cmtkImageRGB.h>
+#include "Qt/cmtkQtRenderImageRGB.h"
+#include "Pipeline/cmtkImageRGB.h"
 
 namespace
 cmtk

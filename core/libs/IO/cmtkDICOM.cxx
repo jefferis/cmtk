@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -29,12 +30,11 @@
 //
 */
 
-#include <cmtkDICOM.h>
+#include "cmtkDICOM.h"
 
-#include <cmtkTypedArray.h>
+#include "Base/cmtkTypedArray.h"
 
-#include <string.h>
-#include <stdio.h>
+#include "System/cmtkConsole.h"
 
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmimgle/didocu.h>
@@ -48,13 +48,10 @@
 #  include <sys/types.h>
 #endif
 
-#ifdef HAVE_TIME_H
-#  include <time.h>
-#endif
-
 #include <memory>
-
-#include <cmtkConsole.h>
+#include <cstring>
+#include <cstdio>
+#include <ctime>
 
 namespace
 cmtk

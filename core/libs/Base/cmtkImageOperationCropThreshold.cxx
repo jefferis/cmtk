@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009 SRI International
+//  Copyright 2009-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -28,7 +28,7 @@
 //
 */
 
-#include <cmtkImageOperationCropThreshold.h>
+#include "cmtkImageOperationCropThreshold.h"
 
 cmtk::UniformVolume::SmartPtr
 cmtk::ImageOperationCropThreshold::Apply( cmtk::UniformVolume::SmartPtr& volume )

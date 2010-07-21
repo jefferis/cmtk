@@ -35,25 +35,25 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkMacros.h>
-#include <cmtkSmartPtr.h>
-#include <cmtkSmartConstPtr.h>
-#include <cmtkException.h>
+#include "Base/cmtkMacros.h"
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkMathUtil.h"
+#include "Base/cmtkDataTypeTraits.h"
+#include "Base/cmtkHistogram.h"
+#include "Base/cmtkTypedArrayFunction.h"
 
-#include <math.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include "System/cmtkSmartPtr.h"
+#include "System/cmtkSmartConstPtr.h"
+#include "System/cmtkException.h"
+
+#include <cmath>
+#include <cstdlib>
+#include <cstdio>
+#include <climits>
+
 #include <memory.h>
-#include <limits.h>
 
 #include <vector>
-
-#include <cmtkTypes.h>
-#include <cmtkMathUtil.h>
-#include <cmtkDataTypeTraits.h>
-#include <cmtkHistogram.h>
-
-#include <cmtkTypedArrayFunction.h>
 
 #ifdef DEBUG
 #define CheckBounds(index,bound) \

@@ -30,10 +30,10 @@
 //
 */
 
-#include <cmtkSplineWarpXform.h>
+#include "cmtkSplineWarpXform.h"
 
-#include <cmtkMathUtil.h>
-#include <cmtkThreadPool.h>
+#include "Base/cmtkMathUtil.h"
+#include "System/cmtkThreadPool.h"
 
 #include <vector>
 

@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -29,10 +30,10 @@
 //
 */
 
-#include <cmtkScalarImageSimilarity.h>
-#include <cmtkVolumeIO.h>
+#include "Registration/cmtkScalarImageSimilarity.h"
+#include "IO/cmtkVolumeIO.h"
 
-#include <math.h>
+#include <cmath>
 
 #ifdef HAVE_IEEEFP_H
 #  include <ieeefp.h>

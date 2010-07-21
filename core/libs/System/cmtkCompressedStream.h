@@ -35,11 +35,11 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCannotBeCopied.h>
+#include "System/cmtkCannotBeCopied.h"
 
-#include <cmtkException.h>
+#include "System/cmtkException.h"
 
-#include <stdio.h>
+#include <cstdio>
 
 #include <zlib.h>
 

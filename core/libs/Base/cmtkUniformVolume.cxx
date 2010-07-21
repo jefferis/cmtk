@@ -30,11 +30,11 @@
 //
 */
 
-#include <cmtkUniformVolume.h>
-#include <cmtkAnatomicalOrientation.h>
+#include "cmtkUniformVolume.h"
 
-#include <cmtkAffineXform.h>
-#include <cmtkEigenSystemSymmetricMatrix3x3.h>
+#include "Base/cmtkAnatomicalOrientation.h"
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkEigenSystemSymmetricMatrix3x3.h"
 
 namespace
 cmtk

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,19 +30,19 @@
 //
 */
 
-#include <cmtkGeneralLinearModel.h>
+#include "cmtkGeneralLinearModel.h"
 
-#include <math.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cmath>
+#include <cstdlib>
+#include <cstdio>
 
 #ifdef HAVE_IEEEFP_H
 #  include <ieeefp.h>
 #endif
 
-#include <cmtkProgress.h>
+#include "System/cmtkProgress.h"
 
-#include <cmtkMathUtil.h>
+#include "Base/cmtkMathUtil.h"
 
 namespace
 cmtk

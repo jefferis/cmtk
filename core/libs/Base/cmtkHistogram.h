@@ -35,9 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkHistogramBase.h>
-#include <cmtkSmartPtr.h>
-#include <cmtkMemory.h>
+#include "Base/cmtkHistogramBase.h"
+
+#include "System/cmtkSmartPtr.h"
+#include "System/cmtkMemory.h"
 
 #include <vector>
 #include <algorithm>
@@ -325,6 +326,6 @@ private:
 
 } // namespace cmtk
 
-#include <cmtkHistogram.txx>
+#include "cmtkHistogram.txx"
 
 #endif // #ifndef __cmtkHistogram_h_included_

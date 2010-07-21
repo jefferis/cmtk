@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkGroupwiseRegistrationRMIFunctional.h>
-#include <cmtkAffineXform.h>
+#include "Registration/cmtkGroupwiseRegistrationRMIFunctional.h"
+#include "Base/cmtkAffineXform.h"
 
 namespace
 cmtk

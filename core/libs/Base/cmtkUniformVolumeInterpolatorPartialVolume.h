@@ -35,11 +35,11 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkUniformVolumeInterpolatorBase.h>
+#include "Base/cmtkUniformVolumeInterpolatorBase.h"
 
-#include <cmtkSmartPtr.h>
-#include <cmtkVector3D.h>
-#include <cmtkUniformVolume.h>
+#include "Base/cmtkVector3D.h"
+#include "Base/cmtkUniformVolume.h"
+#include "System/cmtkSmartPtr.h"
 
 namespace
 cmtk

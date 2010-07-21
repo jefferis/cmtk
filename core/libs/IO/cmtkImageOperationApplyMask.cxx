@@ -28,9 +28,9 @@
 //
 */
 
-#include <cmtkImageOperationApplyMask.h>
+#include "cmtkImageOperationApplyMask.h"
 
-#include <cmtkVolumeIO.h>
+#include "IO/cmtkVolumeIO.h"
 
 cmtk::UniformVolume::SmartPtr
 cmtk::ImageOperationApplyMask

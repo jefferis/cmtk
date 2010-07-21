@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkQtRenderImageRGB.h>
+#include "cmtkQtRenderImageRGB.h"
 
 #include <iostream>
 #include <qpainter.h>

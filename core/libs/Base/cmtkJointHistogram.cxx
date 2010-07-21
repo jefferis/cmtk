@@ -30,8 +30,9 @@
 //
 */
 
-#include <cmtkJointHistogram.h>
-#include <cmtkMathUtil.h>
+#include "cmtkJointHistogram.h"
+
+#include "Base/cmtkMathUtil.h"
 
 namespace
 cmtk

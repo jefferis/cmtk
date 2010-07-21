@@ -30,11 +30,11 @@
 //
 */
 
-#include <cmtkVolumeClipping.h>
+#include "cmtkVolumeClipping.h"
 
-#include <cmtkMathUtil.h>
+#include "Base/cmtkMathUtil.h"
 
-#include <string.h>
+#include <cstring>
 
 namespace
 cmtk

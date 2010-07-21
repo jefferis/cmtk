@@ -35,15 +35,13 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkWarpXform.h>
+#include "Base/cmtkWarpXform.h"
+#include "Base/cmtkMacros.h"
+#include "Base/cmtkVector.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkAffineXform.h"
 
-#include <cmtkMacros.h>
-#include <cmtkVector.h>
-
-#include <cmtkUniformVolume.h>
-
-#include <cmtkAffineXform.h>
-#include <cmtkSmartPtr.h>
+#include "System/cmtkSmartPtr.h"
 
 namespace
 cmtk

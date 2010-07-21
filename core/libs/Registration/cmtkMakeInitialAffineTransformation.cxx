@@ -30,9 +30,9 @@
 //
 */
 
-#include <cmtkMakeInitialAffineTransformation.h>
+#include "cmtkMakeInitialAffineTransformation.h"
 
-#include <cmtkAffineXform.h>
+#include "Base/cmtkAffineXform.h"
 
 namespace
 cmtk

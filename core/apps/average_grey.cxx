@@ -32,25 +32,26 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkTypedArray.h>
-#include <cmtkTemplateArray.h>
-#include <cmtkVector3D.h>
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkConsole.h"
+#include "System/cmtkStrUtility.h"
+#include "System/cmtkMemory.h"
 
-#include <cmtkTypedStreamStudylist.h>
-#include <cmtkVolumeIO.h>
+#include "Base/cmtkTypedArray.h"
+#include "Base/cmtkTemplateArray.h"
+#include "Base/cmtkVector3D.h"
+#include "Base/cmtkXform.h"
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkWarpXform.h"
+#include "Base/cmtkUniformVolumeInterpolator.h"
+#include "Base/cmtkSincInterpolator.h"
+#include "Base/cmtkLinearInterpolator.h"
+#include "Base/cmtkCubicInterpolator.h"
 
-#include <cmtkXform.h>
-#include <cmtkAffineXform.h>
-#include <cmtkWarpXform.h>
+#include "IO/cmtkTypedStreamStudylist.h"
+#include "IO/cmtkVolumeIO.h"
 
-#include <cmtkReformatVolume.h>
-#include <cmtkUniformVolumeInterpolator.h>
-#include <cmtkSincInterpolator.h>
-#include <cmtkLinearInterpolator.h>
-#include <cmtkCubicInterpolator.h>
-
-#include <stdio.h>
-#include <string.h>
+#include "Registration/cmtkReformatVolume.h"
 
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
@@ -63,11 +64,8 @@
 #include <iostream>
 #include <list>
 #include <vector>
-
-#include <cmtkCommandLine.h>
-#include <cmtkConsole.h>
-#include <cmtkStrUtility.h>
-#include <cmtkMemory.h>
+#include <cstdio>
+#include <cstring>
 
 bool Verbose = false;
 

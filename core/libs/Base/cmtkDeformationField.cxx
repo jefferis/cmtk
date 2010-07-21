@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkDeformationField.h>
+#include "cmtkDeformationField.h"
 
 namespace
 cmtk

@@ -34,13 +34,13 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkMultiFilter.h>
+#include "Pipeline/cmtkMultiFilter.h"
 
-#include <cmtkPlane.h>
-#include <cmtkVolumeWrapper.h>
+#include "Pipeline/cmtkPlane.h"
+#include "Pipeline/cmtkVolumeWrapper.h"
 
-#include <cmtkTypes.h>
-#include <cmtkMacros.h>
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkMacros.h"
 
 namespace
 cmtk

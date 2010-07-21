@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkXformList.h>
+#include "Registration/cmtkXformList.h"
 
 void
 cmtk::XformList::Add

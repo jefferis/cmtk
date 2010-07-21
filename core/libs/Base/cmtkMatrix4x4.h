@@ -35,11 +35,12 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkTypes.h>
-#include <cmtkFixedVector.h>
-#include <cmtkMatrix3x3.h>
-#include <cmtkConsole.h>
-#include <cmtkSmartPtr.h>
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkFixedVector.h"
+#include "Base/cmtkMatrix3x3.h"
+
+#include "System/cmtkConsole.h"
+#include "System/cmtkSmartPtr.h"
 
 namespace
 cmtk

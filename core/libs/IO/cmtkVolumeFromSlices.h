@@ -39,15 +39,14 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkTypes.h>
-#include <cmtkVolume.h>
-#include <cmtkUniformVolume.h>
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkVolume.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkScalarImage.h"
 
-#include <cmtkImageInfo.h>
+#include "IO/cmtkImageInfo.h"
 
-#include <cmtkScalarImage.h>
-
-#include <stdio.h>
+#include <cstdio>
 
 /**@name Error bounds for various floating point situations.
  */

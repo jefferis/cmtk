@@ -35,16 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkJointHistogramBase.h>
+#include "Base/cmtkJointHistogramBase.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkTypedArray.h"
+#include "Base/cmtkMathUtil.h"
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkHistogram.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkTypedArray.h>
-#include <cmtkMathUtil.h>
-
-#include <cmtkTypes.h>
-#include <cmtkHistogram.h>
-
-#include <cmtkSmartPtr.h>
+#include "System/cmtkSmartPtr.h"
 
 #include <vector>
 #include <algorithm>

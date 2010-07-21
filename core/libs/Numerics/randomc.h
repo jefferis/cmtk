@@ -29,7 +29,7 @@
 //
 */
 
-#include <ap.h>
+#include "ap.h"
 
 /*****************************   randomc.h   **********************************
 * Author:        Agner Fog

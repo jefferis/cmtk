@@ -33,8 +33,8 @@
 #  include <omp.h>
 #endif
 
-#include <cmtkThreads.h>
-#include <cmtkConsole.h>
+#include "System/cmtkThreads.h"
+#include "System/cmtkConsole.h"
 
 template<class TParam> 
 void

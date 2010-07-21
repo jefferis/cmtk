@@ -2,6 +2,8 @@
 //
 //  Copyright 2010 Torsten Rohlfing
 //
+//  Copyright 2010 SRI International
+//
 //  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
@@ -33,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkImageOperation.h>
-#include <cmtkDataGridMorphologicalOperators.h>
+#include "Base/cmtkImageOperation.h"
+#include "Base/cmtkDataGridMorphologicalOperators.h"
 
 namespace
 cmtk

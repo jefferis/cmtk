@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkFunctional.h>
-#include <cmtkCannotBeCopied.h>
+#include "Base/cmtkFunctional.h"
+#include "System/cmtkCannotBeCopied.h"
 
 namespace
 cmtk

@@ -34,7 +34,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkXform.h>
+#include "Base/cmtkXform.h"
 
 namespace
 cmtk

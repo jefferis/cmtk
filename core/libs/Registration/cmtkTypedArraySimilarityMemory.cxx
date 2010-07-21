@@ -29,7 +29,7 @@
 //  $LastChangedBy$
 //
 */
-#include <cmtkTypedArraySimilarityMemory.h>
+#include "cmtkTypedArraySimilarityMemory.h"
 
 namespace
 cmtk

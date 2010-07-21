@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,11 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include <math.h>
-#include <cmath>
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkMathUtil.h"
 
-#include <cmtkTypes.h>
-#include <cmtkMathUtil.h>
+#include <cmath>
 
 namespace
 cmtk

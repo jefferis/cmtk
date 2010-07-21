@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -29,17 +30,14 @@
 //
 */
 
-#include <cmtkStrUtility.h>
+#include "cmtkStrUtility.h"
 
-#include <string.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdlib>
+#include <climits>
 
 #ifdef _MSC_VER
 #  include <direct.h>
-#endif
-
-#ifdef HAVE_LIMITS_H
-#  include <limits.h>
 #endif
 
 namespace

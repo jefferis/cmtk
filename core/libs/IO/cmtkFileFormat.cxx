@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -29,7 +30,10 @@
 //
 */
 
-#include <cmtkFileFormat.h>
+#include "cmtkFileFormat.h"
+
+#include "Base/cmtkTypes.h"
+#include "System/cmtkCompressedStream.h"
 
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
@@ -39,12 +43,9 @@
 #  include <sys/stat.h>
 #endif
 
-#include <stdio.h>
-#include <string.h>
-#include <limits.h>
-
-#include <cmtkTypes.h>
-#include <cmtkCompressedStream.h>
+#include <cstdio>
+#include <cstring>
+#include <climits>
 
 namespace
 cmtk

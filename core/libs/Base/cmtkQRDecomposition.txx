@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,8 +30,8 @@
 //
 */
 
-#include <sevd.h>
-#include <qr.h>
+#include "Numerics/sevd.h"
+#include "Numerics/qr.h"
 
 namespace
 cmtk
@@ -43,7 +44,6 @@ template<class TFloat>
 QRDecomposition<TFloat>
 ::QRDecomposition( const Matrix2D<TFloat>& matrix )
 {
-
   m = matrix.GetNumberOfRows();
   n = matrix.GetNumberOfColumns();
 

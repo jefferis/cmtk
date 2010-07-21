@@ -33,8 +33,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkImageOperation.h>
-#include <cmtkDataGridMorphologicalOperators.h>
+#include "Base/cmtkImageOperation.h"
+#include "Base/cmtkDataGridMorphologicalOperators.h"
 
 namespace
 cmtk

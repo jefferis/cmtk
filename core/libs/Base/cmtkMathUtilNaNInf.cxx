@@ -29,9 +29,9 @@
 //
 */
 
-#include <cmtkMathUtil.h>
+#include "Base/cmtkMathUtil.h"
 
-#include <math.h>
+#include <cmath>
 
 namespace
 cmtk

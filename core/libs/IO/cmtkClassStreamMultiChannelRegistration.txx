@@ -29,9 +29,9 @@
 //
 */
 
-#include <cmtkClassStreamAffineXform.h>
-#include <cmtkVolumeIO.h>
-#include <cmtkConsole.h>
+#include "IO/cmtkClassStreamAffineXform.h"
+#include "IO/cmtkVolumeIO.h"
+#include "System/cmtkConsole.h"
 
 namespace
 cmtk

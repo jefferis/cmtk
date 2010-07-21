@@ -30,14 +30,13 @@
 //
 */
 
-#include <cmtkSplineWarpXform.h>
+#include "cmtkSplineWarpXform.h"
 
-#include <cmtkMathUtil.h>
-#include <cmtkBitVector.h>
+#include "Base/cmtkMathUtil.h"
+#include "Base/cmtkBitVector.h"
 
 #include <vector>
-
-#include <assert.h>
+#include <cassert>
 
 namespace
 cmtk

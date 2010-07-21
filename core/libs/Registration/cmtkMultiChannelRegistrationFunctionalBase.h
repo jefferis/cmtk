@@ -35,13 +35,13 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkFunctional.h>
+#include "Base/cmtkFunctional.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkSmartPtr.h>
+#include "Base/cmtkUniformVolume.h"
+#include "System/cmtkSmartPtr.h"
 
-#include <cmtkUniformVolumeInterpolator.h>
-#include <cmtkLinearInterpolator.h>
+#include "Base/cmtkUniformVolumeInterpolator.h"
+#include "Base/cmtkLinearInterpolator.h"
 
 #include <vector>
 

@@ -35,9 +35,9 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkImagePairAffineRegistrationFunctional.h>
+#include "Registration/cmtkImagePairAffineRegistrationFunctional.h"
 
-#include <cmtkInterpolator.h>
+#include "Base/cmtkInterpolator.h"
 
 namespace
 cmtk
@@ -182,6 +182,6 @@ private:
 
 } // namespace cmtk
 
-#include <cmtkImagePairAffineRegistrationFunctionalTemplate.txx>
+#include "cmtkImagePairAffineRegistrationFunctionalTemplate.txx"
 
 #endif // #ifndef __cmtkImagePairAffineRegistrationFunctionalTemplate_h_included_

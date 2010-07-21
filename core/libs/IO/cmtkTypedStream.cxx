@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,23 +30,18 @@
 //
 */
 
-#include <cmtkTypedStream.h>
+#include "cmtkTypedStream.h"
 
-#include <cmtkFileUtil.h>
-#include <cmtkConsole.h>
+#include "System/cmtkFileUtil.h"
+#include "System/cmtkConsole.h"
 
-#include <string.h>
+#include <cstring>
+#include <cstdlib>
+#include <cstdarg>
+#include <climits>
 
 #ifdef HAVE_MALLOC_H
 #  include <malloc.h>
-#endif
-
-#ifdef HAVE_STDLIB_H
-#  include <stdlib.h>
-#endif
-
-#ifdef HAVE_STDARG_H
-#  include <stdarg.h>
 #endif
 
 #ifdef HAVE_SYS_TIME_H
@@ -54,10 +50,6 @@
 
 #ifdef HAVE_SYS_STAT_H
 #  include <sys/stat.h>
-#endif
-
-#ifdef HAVE_LIMITS_H
-#  include <limits.h>
 #endif
 
 namespace
@@ -858,7 +850,6 @@ TypedStream
     return TYPEDSTREAM_ERROR;
     }
 
-#ifdef HAVE_STDARG_H
   static char buffer[1024];
 
   va_list args;
@@ -870,8 +861,6 @@ TypedStream
     gzprintf( GzFile, "! %s\n", buffer );
   else
     fprintf( File, "! %s\n", buffer );
-
-#endif // #ifdef HAVE_STDARG_H
 
   return TYPEDSTREAM_OK;
 }
@@ -1543,7 +1532,7 @@ TypedStream
 ::DebugOutput( const char* format, ... )
 {
   if ( DebugFlag != TYPEDSTREAM_DEBUG_ON ) return;
-#ifdef HAVE_STDARG_H
+
   static char buffer[1024];
 
   va_list args;
@@ -1553,7 +1542,6 @@ TypedStream
 
   fputs( buffer, stderr );
   fputs( "\n", stderr );
-#endif
 }
 
 } // namespace cmtk

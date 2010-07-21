@@ -33,7 +33,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkSQLite.h>
+#include "IO/cmtkSQLite.h"
 
 namespace
 cmtk

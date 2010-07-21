@@ -30,9 +30,9 @@
 //
 */
 
-#include <cmtkScalarImageSimilarity.h>
+#include "cmtkScalarImageSimilarity.h"
 
-#include <cmtkHistogram.h>
+#include "Base/cmtkHistogram.h"
 
 #include <vector>
 

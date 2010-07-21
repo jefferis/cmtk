@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -29,14 +30,10 @@
 //
 */
 
-#include <cmtkException.h>
+#include "System/cmtkException.h"
 
-#ifdef HAVE_STDARG_H
-#  include <stdarg.h>
-#  include <stdio.h>
-#else
-#  include <string.h>
-#endif
+#include <cstdarg>
+#include <cstdio>
 
 namespace
 cmtk
@@ -53,30 +50,20 @@ Exception::Exception( const void *fromObject, const char *errorMsgFormat, ... )
 {
   FromObject = fromObject;
 
-#ifdef HAVE_STDARG_H
   va_list args;
   va_start(args, errorMsgFormat);
   vsnprintf( ExceptionErrorMessageBuffer, MESSAGE_BUFFER_SIZE, errorMsgFormat, args );
   va_end(args);
-#else
-  strncpy( ExceptionErrorMessageBuffer, errorMsgFormat, MESSAGE_BUFFER_SIZE );
-  ExceptionErrorMessageBuffer[MESSAGE_BUFFER_SIZE-1] = 0;
-#endif
 
   ErrorMsg = ExceptionErrorMessageBuffer;
 }
 
 char* Exception::FormatErrorMsg( const char* format, ... )
 {
-#ifdef HAVE_STDARG_H
   va_list args;
   va_start(args, format);
   vsnprintf( ExceptionErrorMessageBuffer, MESSAGE_BUFFER_SIZE, format, args );
   va_end(args);
-#else
-  strncpy( ExceptionErrorMessageBuffer, format, MESSAGE_BUFFER_SIZE );
-  ExceptionErrorMessageBuffer[MESSAGE_BUFFER_SIZE-1] = 0;
-#endif
   
   return ExceptionErrorMessageBuffer;
 }

@@ -32,23 +32,23 @@
 
 //#define DEBUG_COMM
 
-#include <cmtkGroupwiseRegistrationFunctionalBase.h>
+#include "Registration/cmtkGroupwiseRegistrationFunctionalBase.h"
 
-#include <cmtkMathUtil.h>
-#include <cmtkVolumeIO.h>
-#include <cmtkConsole.h>
-#include <cmtkThreadPool.h>
+#include "Base/cmtkMathUtil.h"
+#include "IO/cmtkVolumeIO.h"
+#include "System/cmtkConsole.h"
+#include "System/cmtkThreadPool.h"
 
-#include <cmtkAnatomicalOrientation.h>
+#include "Base/cmtkAnatomicalOrientation.h"
 
-#include <cmtkInterpolator.h>
-#include <cmtkTypedArrayFunctionHistogramMatching.h>
-#include <cmtkUniformVolumeFilter.h>
-#include <cmtkReformatVolume.h>
+#include "Base/cmtkInterpolator.h"
+#include "Base/cmtkTypedArrayFunctionHistogramMatching.h"
+#include "Base/cmtkUniformVolumeFilter.h"
+#include "Registration/cmtkReformatVolume.h"
 
 #ifdef CMTK_BUILD_MPI
 #  include <mpi.h>
-#  include <cmtkMPI.h>
+#  include "IO/cmtkMPI.h"
 #endif
 
 namespace

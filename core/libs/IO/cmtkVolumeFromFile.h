@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkUniformVolume.h>
-#include <cmtkException.h>
+#include "Base/cmtkUniformVolume.h"
+#include "System/cmtkException.h"
 
 namespace
 cmtk

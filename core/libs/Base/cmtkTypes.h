@@ -35,21 +35,15 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkMathUtil.h>
+#include "Base/cmtkMathUtil.h"
 
-#include <stdlib.h>
-#include <limits.h>
-
-#ifdef HAVE_FLOAT_H
-#  include <float.h>
-#endif
+#include <cstdlib>
+#include <climits>
+#include <cfloat>
+#include <cstddef>
 
 #ifdef HAVE_VALUES_H
 #  include <values.h>
-#endif
-
-#ifndef HAVE_STDDEF_H
-#  include <stddef.h>
 #endif
 
 #ifdef _MSC_VER

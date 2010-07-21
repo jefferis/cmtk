@@ -30,37 +30,33 @@
 //
 */
 
-#include <cmtkImagePairAffineRegistrationCommandLine.h>
+#include "cmtkImagePairAffineRegistrationCommandLine.h"
 
-#include <cmtkConsole.h>
-#include <cmtkThreads.h>
-#include <cmtkTimers.h>
-#include <cmtkCommandLine.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkThreads.h"
+#include "System/cmtkTimers.h"
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkCompressedStream.h"
 
-#include <cmtkTypes.h>
-#include <cmtkRegistrationCallback.h>
-#include <cmtkProtocolCallback.h>
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkAnatomicalOrientation.h"
+#include "Base/cmtkTransformChangeToSpaceAffine.h"
+#include "Base/cmtkTransformChangeFromSpaceAffine.h"
 
-#include <cmtkMountPoints.h>
-#include <cmtkVolumeIO.h>
-#include <cmtkAnatomicalOrientation.h>
+#include "Registration/cmtkRegistrationCallback.h"
+#include "Registration/cmtkProtocolCallback.h"
+#include "Registration/cmtkMakeInitialAffineTransformation.h"
 
-#include <cmtkClassStream.h>
-#include <cmtkClassStreamAffineXform.h>
-#include <cmtkCompressedStream.h>
-#include <cmtkXformIO.h>
+#include "IO/cmtkMountPoints.h"
+#include "IO/cmtkVolumeIO.h"
+#include "IO/cmtkClassStream.h"
+#include "IO/cmtkClassStreamAffineXform.h"
+#include "IO/cmtkXformIO.h"
+#include "IO/cmtkAffineXformITKIO.h"
 
 #ifdef CMTK_USE_SQLITE
-#  include <cmtkImageXformDB.h>
+#  include "Registration/cmtkImageXformDB.h"
 #endif
-
-#include <cmtkMakeInitialAffineTransformation.h>
-#include <cmtkTransformChangeToSpaceAffine.h>
-#include <cmtkTransformChangeFromSpaceAffine.h>
-#include <cmtkAffineXformITKIO.h>
-
-#include <stdio.h>
-#include <string.h>
 
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
@@ -74,11 +70,13 @@
 #  include <sys/utsname.h>
 #endif
 
-#include <iostream>
-
 #ifdef _MSC_VER
 #  include <direct.h>
 #endif
+
+#include <cstdio>
+#include <cstring>
+#include <iostream>
 
 namespace 
 cmtk

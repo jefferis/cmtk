@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -34,11 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkUnits.h>
-#include <cmtkMatrix.h>
-
-#include <math.h>
-#include <stdlib.h>
+#include "Base/cmtkUnits.h"
+#include "Base/cmtkMatrix.h"
 
 #ifdef HAVE_STDINT_H
 #  include <stdint.h>
@@ -49,14 +47,15 @@ typedef unsigned int uint32_t;
 #endif
 
 #include <algorithm>
+#include <cfloat>
+#include <cmath>
+#include <cstdlib>
 
 #ifndef M_PI
 #define M_PI            3.14159265358979323846
 #endif
 
 #ifdef _MSC_VER
-#include <float.h>
-
 /* Some useful constants taken from SGI's math.h */
 #define M_E             2.7182818284590452354
 #define M_LOG2E         1.4426950408889634074
@@ -423,6 +422,6 @@ private:
 
 } // namespace cmtk
 
-#include <cmtkMathUtilStatistics.txx>
+#include "cmtkMathUtilStatistics.txx"
 
 #endif // #ifndef __cmtkMathUtil_h_included_

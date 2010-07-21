@@ -35,12 +35,12 @@
 
 #include <cmtkconfig.h>
 
-#include <stdio.h>
-#include <assert.h>
+#include "Registration/cmtkRegistrationJointHistogram.h"
+#include "Base/cmtkInterpolator.h"
+#include "System/cmtkSmartPtr.h"
 
-#include <cmtkRegistrationJointHistogram.h>
-#include <cmtkInterpolator.h>
-#include <cmtkSmartPtr.h>
+#include <cstdio>
+#include <cassert>
 
 namespace
 cmtk

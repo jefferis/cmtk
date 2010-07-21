@@ -35,13 +35,12 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkMacros.h>
+#include "Pipeline/cmtkPlane.h"
 
-#include <cmtkPlane.h>
-
-#include <cmtkTypes.h>
-#include <cmtkTypedArray.h>
-#include <cmtkScalarImage.h>
+#include "Base/cmtkMacros.h"
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkTypedArray.h"
+#include "Base/cmtkScalarImage.h"
 
 namespace
 cmtk

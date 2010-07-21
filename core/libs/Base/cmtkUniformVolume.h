@@ -35,9 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkVolume.h>
-#include <cmtkSmartPtr.h>
-#include <cmtkSmartConstPtr.h>
+#include "Base/cmtkVolume.h"
+
+#include "System/cmtkSmartPtr.h"
+#include "System/cmtkSmartConstPtr.h"
 
 #include <algorithm>
 
@@ -547,6 +548,6 @@ private:
 
 } // namespace cmtk
 
-#include <cmtkUniformVolume.txx>
+#include "cmtkUniformVolume.txx"
 
 #endif // #ifndef __cmtkUniformVolume_h_included_

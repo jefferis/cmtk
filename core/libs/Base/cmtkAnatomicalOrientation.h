@@ -35,11 +35,12 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkSmartPtr.h>
-#include <cmtkTypes.h>
-#include <cmtkFixedVector.h>
-#include <cmtkMetaInformationObject.h>
-#include <cmtkAffineXform.h>
+#include "System/cmtkSmartPtr.h"
+
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkFixedVector.h"
+#include "Base/cmtkMetaInformationObject.h"
+#include "Base/cmtkAffineXform.h"
 
 #include <vector>
 

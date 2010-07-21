@@ -28,10 +28,10 @@
 //
 */
 
-#include <cmtkRegistrationDatabaseUpdater.h>
+#include "cmtkRegistrationDatabaseUpdater.h"
 
-#include <cmtkConsole.h>
-#include <cmtkException.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkException.h"
 
 void
 cmtk::RegistrationDatabaseUpdater::UpdateDB() const

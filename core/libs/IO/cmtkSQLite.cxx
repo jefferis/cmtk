@@ -28,11 +28,11 @@
 //
 */
 
-#include <cmtkSQLite.h>
+#include "cmtkSQLite.h"
 
-#include <cmtkConsole.h>
+#include "System/cmtkConsole.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 
 cmtk::SQLite::SQLite
 ( const std::string& dbPath, const bool readOnly )

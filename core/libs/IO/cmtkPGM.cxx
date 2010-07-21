@@ -30,15 +30,14 @@
 //
 */
 
-#include <cmtkPGM.h>
+#include "cmtkPGM.h"
 
-#include <cmtkCompressedStream.h>
-#include <cmtkImageInfo.h>
+#include "System/cmtkCompressedStream.h"
+#include "System/cmtkConsole.h"
+#include "IO/cmtkImageInfo.h"
 
-#include <stdlib.h>
-#include <string.h>
-
-#include <cmtkConsole.h>
+#include <cstdlib>
+#include <cstring>
 
 #ifdef HAVE_MALLOC_H
 #  include <malloc.h>

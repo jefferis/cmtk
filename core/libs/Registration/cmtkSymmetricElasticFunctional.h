@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,15 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkFunctional.h>
+#include "Base/cmtkMacros.h"
+#include "Base/cmtkFunctional.h"
 
 #ifdef CMTK_BUILD_SMP
-#  include <cmtkParallelElasticFunctional.h>
+#  include "Registration/cmtkParallelElasticFunctional.h"
 #else
-#  include <cmtkVoxelMatchingElasticFunctional.h>
+#  include "Registration/cmtkVoxelMatchingElasticFunctional.h"
 #endif
-
-#include <cmtkMacros.h>
 
 namespace
 cmtk

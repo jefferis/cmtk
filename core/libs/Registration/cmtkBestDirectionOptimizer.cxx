@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,11 +30,11 @@
 //
 */
 
-#include <cmtkBestDirectionOptimizer.h>
+#include "cmtkBestDirectionOptimizer.h"
 
-#include <cmtkTypes.h>
-#include <cmtkConsole.h>
-#include <cmtkProgress.h>
+#include "Base/cmtkTypes.h"
+#include "System/cmtkConsole.h"
+#include "System/cmtkProgress.h"
 
 #include <algorithm>
 

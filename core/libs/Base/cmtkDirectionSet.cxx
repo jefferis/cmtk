@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkDirectionSet.h>
+#include "cmtkDirectionSet.h"
 
 namespace
 cmtk

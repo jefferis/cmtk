@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,12 +30,12 @@
 //
 */
 
-#include <cmtkAtlasSegmentation.h>
+#include "cmtkAtlasSegmentation.h"
 
-#include <cmtkRegistrationCallback.h>
-#include <cmtkAffineRegistration.h>
-#include <cmtkElasticRegistration.h>
-#include <cmtkReformatVolume.cxx>
+#include "Registration/cmtkRegistrationCallback.h"
+#include "Registration/cmtkAffineRegistration.h"
+#include "Registration/cmtkElasticRegistration.h"
+#include "Registration/cmtkReformatVolume.h"
 
 cmtk::AtlasSegmentation::AtlasSegmentation
 ( UniformVolume::SmartPtr& targetImage, UniformVolume::SmartPtr& atlasImage, UniformVolume::SmartPtr& atlasLabels )  

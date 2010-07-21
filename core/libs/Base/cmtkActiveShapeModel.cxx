@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,14 +30,14 @@
 //
 */
 
-#include <cmtkActiveShapeModel.h>
+#include "Base/cmtkActiveShapeModel.h"
 
-#include <cmtkMatrix.h>
-#include <cmtkMathUtil.h>
+#include "Base/cmtkMatrix.h"
+#include "Base/cmtkMathUtil.h"
 
-#include <cmtkConsole.h>
+#include "System/cmtkConsole.h"
 
-#include <math.h>
+#include <cmath>
 #include <algorithm>
 
 namespace

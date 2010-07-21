@@ -30,11 +30,12 @@
 //
 */
 
-#include <cmtkActiveDeformationModel.h>
+#include "cmtkActiveDeformationModel.h"
 
-#include <cmtkConsole.h>
-#include <cmtkVector3D.h>
-#include <cmtkAffineXform.h>
+#include "System/cmtkConsole.h"
+
+#include "Base/cmtkVector3D.h"
+#include "Base/cmtkAffineXform.h"
 
 namespace
 cmtk

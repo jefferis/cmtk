@@ -35,16 +35,15 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkMacros.h>
+#include "Base/cmtkMacros.h"
+#include "Base/cmtkVolume.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkWarpXform.h"
+#include "Base/cmtkLandmarkList.h"
+#include "Base/cmtkSegmentationLabel.h"
 
-#include <cmtkVolume.h>
-#include <cmtkUniformVolume.h>
-#include <cmtkAffineXform.h>
-#include <cmtkWarpXform.h>
-#include <cmtkLandmarkList.h>
-#include <cmtkFileFormat.h>
-
-#include <cmtkSegmentationLabel.h>
+#include "IO/cmtkFileFormat.h"
 
 namespace
 cmtk

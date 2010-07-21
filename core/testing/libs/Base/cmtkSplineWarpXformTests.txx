@@ -32,8 +32,8 @@
 #include <cstring>
 #include <iostream>
 
-#include <cmtkTypes.h>
-#include <cmtkSplineWarpXform.h>
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkSplineWarpXform.h"
 
 int
 testSplineWarpXform()

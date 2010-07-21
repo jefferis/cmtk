@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -29,16 +30,16 @@
 //
 */
 
-#include <cmtkColormap.h>
+#include "cmtkColormap.h"
 
-#include <math.h>
+#include <cmath>
 
 #ifdef HAVE_IEEEFP_H
 #  include <ieeefp.h>
 #endif
 
-#include <cmtkTypedArray.h>
-#include <cmtkSegmentationLabel.h>
+#include "Base/cmtkTypedArray.h"
+#include "Base/cmtkSegmentationLabel.h"
 
 namespace
 cmtk

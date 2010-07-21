@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,16 +35,16 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkGroupwiseRegistrationFunctionalXformTemplate.h>
+#include "Registration/cmtkGroupwiseRegistrationFunctionalXformTemplate.h"
 
-#include <cmtkSmartPtr.h>
-#include <cmtkThreads.h>
-#include <cmtkMutexLock.h>
+#include "System/cmtkSmartPtr.h"
+#include "System/cmtkThreads.h"
+#include "System/cmtkMutexLock.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkXform.h>
-#include <cmtkMathUtil.h>
-#include <cmtkMatrix.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkXform.h"
+#include "Base/cmtkMathUtil.h"
+#include "Base/cmtkMatrix.h"
 
 #include <vector>
 

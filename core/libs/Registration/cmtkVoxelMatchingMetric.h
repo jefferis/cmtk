@@ -35,16 +35,16 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkVoxelMatchingMetric_Type.h>
+#include "Registration/cmtkVoxelMatchingMetric_Type.h"
 
-#include <cmtkInterpolator.h>
-#include <cmtkUniformVolume.h>
-#include <cmtkTypes.h>
-#include <cmtkSmartPtr.h>
+#include "System/cmtkSmartPtr.h"
 
-#include <cmtkFunctional.h>
+#include "Base/cmtkInterpolator.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkFunctional.h"
 
-#include <assert.h>
+#include <cassert>
 
 namespace
 cmtk
@@ -117,6 +117,6 @@ typedef VoxelMatchingMetric<byte,TYPE_BYTE,Interpolators::NEAREST_NEIGHBOR> Voxe
 
 } // namespace cmtk
 
-#include <cmtkVoxelMatchingMetric.txx>
+#include "cmtkVoxelMatchingMetric.txx"
 
 #endif // #ifndef __cmtkVoxelMatchingMetric_h_included_

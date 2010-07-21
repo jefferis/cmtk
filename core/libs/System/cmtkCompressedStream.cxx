@@ -30,11 +30,15 @@
 //
 */
 
-#include <cmtkCompressedStream.h>
+#include "System/cmtkCompressedStream.h"
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkMemory.h"
+
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <climits>
 #include <errno.h>
 
 #ifdef HAVE_SYS_TYPES_H
@@ -44,13 +48,6 @@
 #ifdef _MSC_VER
 #  include <process.h>
 #endif
-
-#ifdef HAVE_LIMITS_H
-#  include <limits.h>
-#endif
-
-#include <cmtkConsole.h>
-#include <cmtkMemory.h>
 
 #if defined(_MSC_VER)
 #define CMTK_FILE_MODE "rb"

@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkSmartPtr.h>
-#include <cmtkSmartConstPtr.h>
+#include "System/cmtkSmartPtr.h"
+#include "System/cmtkSmartConstPtr.h"
 
 #include <algorithm>
 #include <fstream>

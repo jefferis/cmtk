@@ -34,7 +34,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkMutexLock.h>
+#include "System/cmtkMutexLock.h"
 
 #ifdef(CMTK_USE_THREADS)
 #  include <pthread.h>

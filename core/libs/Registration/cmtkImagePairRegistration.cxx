@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,16 +30,15 @@
 //
 */
 
-#include <cmtkImagePairRegistration.h>
+#include "cmtkImagePairRegistration.h"
 
-#include <cmtkVector.h>
-#include <cmtkXform.h>
-#include <cmtkAffineXform.h>
+#include "Base/cmtkVector.h"
+#include "Base/cmtkXform.h"
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkFunctional.h"
 
-#include <cmtkFunctional.h>
-
-#include <cmtkTimers.h>
-#include <cmtkProgress.h>
+#include "System/cmtkTimers.h"
+#include "System/cmtkProgress.h"
 
 #ifdef HAVE_SYS_UTSNAME_H
 #  include <sys/utsname.h>

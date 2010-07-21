@@ -28,7 +28,7 @@
 //  $LastChangedBy$
 //
 */
-#include <cmtkCommandLine.h>
+#include "cmtkCommandLine.h"
 
 void 
 cmtk::CommandLine::Callback::Evaluate

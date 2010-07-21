@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,9 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkUniformVolume.h>
-#include <cmtkSmartPtr.h>
-#include <cmtkThreads.h>
+#include "Base/cmtkUniformVolume.h"
+
+#include "System/cmtkSmartPtr.h"
+#include "System/cmtkThreads.h"
 
 #include <vector>
 

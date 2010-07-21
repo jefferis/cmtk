@@ -30,13 +30,12 @@
 //
 */
 
-#include <cmtkWarpXform.h>
+#include "cmtkWarpXform.h"
 
-#include <cmtkMathUtil.h>
-#include <cmtkUniformVolume.h>
+#include "Base/cmtkMathUtil.h"
+#include "Base/cmtkUniformVolume.h"
 
-#include <string.h>
-
+#include <cstring>
 #include <algorithm>
 
 namespace

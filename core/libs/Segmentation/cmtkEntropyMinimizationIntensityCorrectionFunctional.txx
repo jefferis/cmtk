@@ -30,8 +30,8 @@
 //
 */
 
-#include <cmtkThreads.h>
-#include <cmtkMemory.h>
+#include "System/cmtkThreads.h"
+#include "System/cmtkMemory.h"
 
 #pragma GCC diagnostic ignored "-Wtype-limits"
 template<unsigned int NOrderAdd,unsigned int NOrderMul>

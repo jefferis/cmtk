@@ -38,7 +38,7 @@
 #include <string>
 #include <vector>
 
-#include <cmtkException.h>
+#include "System/cmtkException.h"
 
 namespace
 cmtk

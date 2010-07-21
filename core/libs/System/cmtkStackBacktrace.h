@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,9 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#ifdef HAVE_SIGNAL_H
-#  include <signal.h>
-#endif
+#include <csignal>
 
 namespace
 cmtk
@@ -75,14 +74,11 @@ public:
 
 } // namespace cmtk
 
-#ifdef HAVE_SIGNAL_H
 #ifndef _MSC_VER
 /// Signal handler.
 extern "C" void cmtkStackBacktraceSignalHandler( int sig, siginfo_t *info, void *secret );
 #else
 extern "C" void cmtkStackBacktraceSignalHandler( int sig );
 #endif
-#endif
-
 
 #endif // #ifndef __cmtkStackBacktrace_h_included_

@@ -32,30 +32,28 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCommandLine.h>
-#include <cmtkConsole.h>
-#include <cmtkProgressConsole.h>
-#include <cmtkThreads.h>
-#include <cmtkTimers.h>
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkConsole.h"
+#include "System/cmtkProgressConsole.h"
+#include "System/cmtkThreads.h"
+#include "System/cmtkTimers.h"
+#include "System/cmtkStrUtility.h"
 
-#include <cmtkClassStream.h>
-#include <cmtkTypedStreamStudylist.h>
+#include "IO/cmtkClassStream.h"
+#include "IO/cmtkTypedStreamStudylist.h"
+#include "IO/cmtkVolumeIO.h"
 
-#include <cmtkActiveDeformationModel.h>
-#include <cmtkReformatVolume.h>
-#include <cmtkUniformVolume.h>
-#include <cmtkVolumeIO.h>
-#include <cmtkStrUtility.h>
+#include "Base/cmtkActiveDeformationModel.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkFilterMask.h"
 
-#include <cmtkFilterMask.h>
+#include "Registration/cmtkReformatVolume.h"
 
-#include <string.h>
-
+#include <cstring>
 #include <map>
 #include <string>
 #include <vector>
 #include <list>
-
 #include <iostream>
 
 #ifdef CMTK_BUILD_MPI

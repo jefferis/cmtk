@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkTypes.h>
-#include <cmtkVector3D.h>
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkVector3D.h"
 
 namespace
 cmtk

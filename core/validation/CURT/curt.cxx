@@ -30,13 +30,13 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCommandLine.h>
-#include <cmtkConsole.h>
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkConsole.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkVolumeIO.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkTypedArrayFunctionHistogramMatching.h"
 
-#include <cmtkTypedArrayFunctionHistogramMatching.h>
+#include "IO/cmtkVolumeIO.h"
 
 #include <vector>
 #include <algorithm>

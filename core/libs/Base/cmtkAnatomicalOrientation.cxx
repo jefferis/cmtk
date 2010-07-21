@@ -30,12 +30,12 @@
 //
 */
 
-#include <cmtkAnatomicalOrientation.h>
+#include "cmtkAnatomicalOrientation.h"
 
-#include <cmtkConsole.h>
+#include "System/cmtkConsole.h"
 
-#include <math.h>
-#include <assert.h>
+#include <cmath>
+#include <cassert>
 
 #include <string>
 

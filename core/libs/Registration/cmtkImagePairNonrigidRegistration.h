@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkImagePairRegistration.h>
-#include <cmtkSplineWarpXform.h>
+#include "Base/cmtkSplineWarpXform.h"
+#include "Registration/cmtkImagePairRegistration.h"
 
-#include <string.h>
+#include <cstring>
 
 namespace
 cmtk

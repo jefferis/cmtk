@@ -35,20 +35,20 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkImagePairRegistrationFunctional.h>
-#include <cmtkImagePairSimilarityMeasure.h>
+#include "Registration/cmtkImagePairRegistrationFunctional.h"
+#include "Registration/cmtkImagePairSimilarityMeasure.h"
 
-#include <cmtkThreads.h>
-#include <cmtkThreadPool.h>
+#include "System/cmtkThreads.h"
+#include "System/cmtkThreadPool.h"
 
-#include <cmtkSplineWarpXform.h>
-#include <cmtkJointHistogram.h>
+#include "Base/cmtkSplineWarpXform.h"
+#include "Base/cmtkJointHistogram.h"
 
 #ifdef HAVE_IEEEFP_H
 #  include <ieeefp.h>
 #endif
 
-#include <math.h>
+#include <cmath>
 
 namespace
 cmtk

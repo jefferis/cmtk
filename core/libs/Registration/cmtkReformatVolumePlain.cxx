@@ -29,8 +29,8 @@
 //
 */
 
-#include <cmtkReformatVolume.h>
-#include <cmtkUniformVolumeInterpolator.h>
+#include "Registration/cmtkReformatVolume.h"
+#include "Base/cmtkUniformVolumeInterpolator.h"
 
 namespace
 cmtk

@@ -34,7 +34,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCannotBeCopied.h>
+#include "System/cmtkCannotBeCopied.h"
 
 #if defined(CMTK_USE_THREADS)
 #  ifdef __APPLE__

@@ -30,9 +30,10 @@
 //
 */
 
-#include <cmtkException.h>
-#include <cmtkMathUtil.h>
-#include <cmtkTypes.h>
+#include "System/cmtkException.h"
+
+#include "Base/cmtkMathUtil.h"
+#include "Base/cmtkTypes.h"
 
 #include <algorithm>
 

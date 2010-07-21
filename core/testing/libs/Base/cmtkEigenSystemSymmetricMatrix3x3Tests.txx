@@ -30,11 +30,11 @@
 //
 */
 
-#include <cmtkMatrix3x3.h>
-#include <cmtkEigenSystemSymmetricMatrix3x3.h>
+#include "Base/cmtkMatrix3x3.h"
+#include "Base/cmtkEigenSystemSymmetricMatrix3x3.h"
 
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 template<class T>
 bool

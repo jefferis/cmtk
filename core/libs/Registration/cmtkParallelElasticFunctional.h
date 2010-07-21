@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkVoxelMatchingElasticFunctional.h>
+#include "Registration/cmtkVoxelMatchingElasticFunctional.h"
 
-#include <cmtkThreads.h>
-#include <cmtkThreadPool.h>
+#include "System/cmtkThreads.h"
+#include "System/cmtkThreadPool.h"
 
 namespace
 cmtk

@@ -32,15 +32,15 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCommandLine.h>
-#include <cmtkConsole.h>
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkConsole.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkUniformVolumePainter.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkUniformVolumePainter.h"
 
-#include <cmtkVolumeIO.h>
+#include "IO/cmtkVolumeIO.h"
 
-#include <stdio.h>
+#include <cstdio>
 
 bool Verbose = false;
 

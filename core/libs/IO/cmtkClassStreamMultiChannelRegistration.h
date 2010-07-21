@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -32,9 +33,10 @@
 #ifndef __cmtkClassStreamMultiChannelRegistration_h_included_
 #define __cmtkClassStreamMultiChannelRegistration_h_included_
 
-#include <cmtkClassStream.h>
-#include <cmtkAffineMultiChannelRegistrationFunctional.h>
-#include <cmtkSplineWarpMultiChannelRegistrationFunctional.h>
+#include "IO/cmtkClassStream.h"
+
+#include "Registration/cmtkAffineMultiChannelRegistrationFunctional.h"
+#include "Registration/cmtkSplineWarpMultiChannelRegistrationFunctional.h"
 
 namespace 
 cmtk
@@ -59,6 +61,6 @@ ClassStream& operator << ( ClassStream& stream, const SplineWarpMultiChannelRegi
 
 } // namespace cmtk
 
-#include <cmtkClassStreamMultiChannelRegistration.txx>
+#include "cmtkClassStreamMultiChannelRegistration.txx"
 
 #endif // #ifndef __cmtkClassStreamMultiChannelRegistration_h_included_

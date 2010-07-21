@@ -32,21 +32,20 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkConsole.h>
-#include <cmtkCommandLine.h>
-#include <cmtkTimers.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkTimers.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkFilterVolume.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkFilterVolume.h"
 
-#include <cmtkVolumeIO.h>
-#include <cmtkClassStream.h>
+#include "IO/cmtkVolumeIO.h"
+#include "IO/cmtkClassStream.h"
 
-#include <cmtkAffineGroupwiseRegistrationRMIFunctional.h>
-#include <cmtkGroupwiseRegistrationFunctionalAffineInitializer.h>
-#include <cmtkBestDirectionOptimizer.h>
-
-#include <cmtkGroupwiseRegistrationOutput.h>
+#include "Registration/cmtkAffineGroupwiseRegistrationRMIFunctional.h"
+#include "Registration/cmtkGroupwiseRegistrationFunctionalAffineInitializer.h"
+#include "Registration/cmtkBestDirectionOptimizer.h"
+#include "Registration/cmtkGroupwiseRegistrationOutput.h"
 
 #include <vector>
 

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,26 +30,22 @@
 //
 */
 
-#include <cmtkImagePairAffineRegistration.h>
+#include "cmtkImagePairAffineRegistration.h"
 
-#include <cmtkVector.h>
+#include "System/cmtkTimers.h"
 
-#include <cmtkXform.h>
-#include <cmtkAffineXform.h>
-#include <cmtkTypedArrayFunctionHistogramMatching.h>
+#include "Base/cmtkVector.h"
+#include "Base/cmtkXform.h"
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkTypedArrayFunctionHistogramMatching.h"
+#include "Base/cmtkVolume.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkFunctional.h"
 
-#include <cmtkVolume.h>
-#include <cmtkUniformVolume.h>
-#include <cmtkFunctional.h>
-
-#include <cmtkImagePairAffineRegistrationFunctional.h>
-
-#include <cmtkOptimizer.h>
-#include <cmtkBestNeighbourOptimizer.h>
-
-#include <cmtkReformatVolume.h>
-
-#include <cmtkTimers.h>
+#include "Registration/cmtkImagePairAffineRegistrationFunctional.h"
+#include "Registration/cmtkOptimizer.h"
+#include "Registration/cmtkBestNeighbourOptimizer.h"
+#include "Registration/cmtkReformatVolume.h"
 
 namespace
 cmtk

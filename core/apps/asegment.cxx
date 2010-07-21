@@ -32,14 +32,15 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCommandLine.h>
-#include <cmtkConsole.h>
-#include <cmtkProgressConsole.h>
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkConsole.h"
+#include "System/cmtkProgressConsole.h"
+
+#include "IO/cmtkVolumeIO.h"
+
+#include "Segmentation/cmtkAtlasSegmentation.h"
 
 #include <list>
-
-#include <cmtkVolumeIO.h>
-#include <cmtkAtlasSegmentation.h>
 
 int
 main( const int argc, const char* argv[] )

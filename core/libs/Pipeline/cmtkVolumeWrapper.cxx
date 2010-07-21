@@ -29,7 +29,7 @@
 //
 */
 
-#include <cmtkVolumeWrapper.h>
+#include "Pipeline/cmtkVolumeWrapper.h"
 
 namespace
 cmtk

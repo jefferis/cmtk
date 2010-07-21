@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkVoxelMatchingMeanSquaredDifference.h>
+#include "cmtkVoxelMatchingMeanSquaredDifference.h"
 
 namespace
 cmtk

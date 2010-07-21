@@ -32,20 +32,21 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkConsole.h>
-#include <cmtkCommandLine.h>
-#include <cmtkProgress.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkProgress.h"
 
-#include <cmtkClassStream.h>
-#include <cmtkClassStreamAffineXform.h>
-#include <cmtkVolumeIO.h>
+#include "Base/cmtkSplineWarpXform.h"
+#include "Base/cmtkDeformationField.h"
 
-#include <cmtkSplineWarpXform.h>
-#include <cmtkDeformationField.h>
-#include <cmtkXformIO.h>
-#include <cmtkXformList.h>
+#include "IO/cmtkXformIO.h"
+#include "IO/cmtkClassStream.h"
+#include "IO/cmtkClassStreamAffineXform.h"
+#include "IO/cmtkVolumeIO.h"
 
-#include <stdio.h>
+#include "Registration/cmtkXformList.h"
+
+#include <cstdio>
 
 bool Verbose = false;
 bool Mask = false;

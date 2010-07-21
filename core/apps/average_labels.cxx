@@ -32,13 +32,13 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkConsole.h>
-#include <cmtkCommandLine.h>
-#include <cmtkProgress.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkProgress.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkVolumeIO.h>
-#include <cmtkXformIO.h>
+#include "Base/cmtkUniformVolume.h"
+#include "IO/cmtkVolumeIO.h"
+#include "IO/cmtkXformIO.h"
 
 #include <queue>
 

@@ -32,17 +32,17 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkConsole.h>
-#include <cmtkCommandLine.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkCommandLine.h"
 
-#include <cmtkXform.h>
-#include <cmtkVector3D.h>
+#include "Base/cmtkXform.h"
+#include "Base/cmtkVector3D.h"
 
-#include <cmtkXformIO.h>
+#include "IO/cmtkXformIO.h"
 
-#include <cmtkXformList.h>
+#include "Registration/cmtkXformList.h"
 
-#include <stdio.h>
+#include <cstdio>
 #include <list>
 
 bool Help = false;

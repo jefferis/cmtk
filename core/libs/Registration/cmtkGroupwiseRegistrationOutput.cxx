@@ -30,19 +30,15 @@
 //
 */
 
-#include <cmtkGroupwiseRegistrationOutput.h>
+#include "cmtkGroupwiseRegistrationOutput.h"
 
-#include <cmtkGroupwiseRegistrationFunctionalIO.h>
-#include <cmtkClassStream.h>
-#include <cmtkStudyList.h>
-#include <cmtkClassStreamStudyList.h>
+#include "IO/cmtkGroupwiseRegistrationFunctionalIO.h"
+#include "IO/cmtkClassStream.h"
+#include "IO/cmtkStudyList.h"
+#include "IO/cmtkClassStreamStudyList.h"
+#include "IO/cmtkVolumeIO.h"
 
-#include <cmtkVolumeIO.h>
-
-#ifdef HAVE_LIMITS_H
-#  include <limits.h>
-#endif
-
+#include <climits>
 #include <vector>
 
 namespace

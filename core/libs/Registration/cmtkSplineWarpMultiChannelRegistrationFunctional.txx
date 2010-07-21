@@ -30,10 +30,11 @@
 //
 */
 
-#include <cmtkVolumeIO.h>
-#include <cmtkTypes.h>
+#include "IO/cmtkVolumeIO.h"
 
-#include <math.h>
+#include "Base/cmtkTypes.h"
+
+#include <cmath>
 
 #ifdef HAVE_IEEEFP_H
 #  include <ieeefp.h>

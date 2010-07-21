@@ -30,11 +30,11 @@
 //
 */
 
-#include <cmtkThreadPool.h>
+#include "cmtkThreadPool.h"
 
-#include <cmtkThreads.h>
-#include <cmtkMutexLock.h>
-#include <cmtkConsole.h>
+#include "System/cmtkThreads.h"
+#include "System/cmtkMutexLock.h"
+#include "System/cmtkConsole.h"
 
 namespace
 cmtk

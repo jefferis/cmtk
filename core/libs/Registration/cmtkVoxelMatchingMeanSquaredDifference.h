@@ -35,12 +35,13 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkVoxelMatchingMetric.h>
+#include "Registration/cmtkVoxelMatchingMetric.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkTypedArray.h>
-#include <cmtkMathUtil.h>
-#include <cmtkSmartPtr.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkTypedArray.h"
+#include "Base/cmtkMathUtil.h"
+
+#include "System/cmtkSmartPtr.h"
 
 namespace
 cmtk

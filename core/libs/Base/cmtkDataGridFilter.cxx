@@ -30,12 +30,12 @@
 //
 */
 
-#include <cmtkDataGridFilter.h>
+#include "cmtkDataGridFilter.h"
 
-#include <cmtkException.h>
-#include <cmtkMemory.h>
-#include <cmtkProgress.h>
-#include <cmtkThreadPool.h>
+#include "System/cmtkException.h"
+#include "System/cmtkMemory.h"
+#include "System/cmtkProgress.h"
+#include "System/cmtkThreadPool.h"
 
 #include <vector>
 

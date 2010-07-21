@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkImage.h>
+#include "Pipeline/cmtkImage.h"
 
 namespace
 cmtk

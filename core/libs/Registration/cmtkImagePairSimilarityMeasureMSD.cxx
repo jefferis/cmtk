@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkImagePairSimilarityMeasureMSD.h>
+#include "cmtkImagePairSimilarityMeasureMSD.h"
 
 namespace
 cmtk

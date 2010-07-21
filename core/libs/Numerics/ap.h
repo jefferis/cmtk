@@ -67,9 +67,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef AP_H
 #define AP_H
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
-#include <math.h>
+#include <cmath>
 
 /********************************************************************
 Array bounds check

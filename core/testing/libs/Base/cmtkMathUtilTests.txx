@@ -30,7 +30,7 @@
 */
 #include <iostream>
 
-#include <cmtkMathUtil.h>
+#include "Base/cmtkMathUtil.h"
 
 // test whether uniform random numbers are reasonably uniform; does NOT test whether they are random!
 int

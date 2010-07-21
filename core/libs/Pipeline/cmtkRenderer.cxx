@@ -29,9 +29,9 @@
 //
 */
 
-#include <cmtkRenderer.h>
+#include "Pipeline/cmtkRenderer.h"
 
-#include <cmtkRendererCollection.h>
+#include "Pipeline/cmtkRendererCollection.h"
 
 namespace
 cmtk

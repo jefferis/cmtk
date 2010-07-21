@@ -29,9 +29,9 @@
 //
 */
 
-#include <cmtkQtIcons.h>
+#include "cmtkQtIcons.h"
 
-#include <xpm/icon_main_window.xpm>
+#include "xpm/icon_main_window.xpm"
 //Added by qt3to4:
 #include <QPixmap>
 

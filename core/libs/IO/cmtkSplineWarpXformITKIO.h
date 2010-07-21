@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009 SRI International
+//  Copyright 2009-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -33,8 +33,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkSplineWarpXform.h>
-#include <cmtkUniformVolume.h>
+#include "Base/cmtkSplineWarpXform.h"
+#include "Base/cmtkUniformVolume.h"
 
 #include <string>
 

@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -34,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkDataGridFilter.h>
-#include <cmtkUniformVolume.h>
+#include "Base/cmtkDataGridFilter.h"
+#include "Base/cmtkUniformVolume.h"
 
 namespace
 cmtk

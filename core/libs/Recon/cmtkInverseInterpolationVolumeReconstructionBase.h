@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,16 +35,17 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkVolumeInjectionReconstruction.h>
+#include "Recon/cmtkVolumeInjectionReconstruction.h"
 
-#include <cmtkAffineRegistration.h>
-#include <cmtkAffineXform.h>
-#include <cmtkUniformVolume.h>
+#include "Registration/cmtkAffineRegistration.h"
+
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkUniformVolume.h"
+
+#include "Numerics/ap.h"
+#include "Numerics/lbfgsb.h"
 
 #include <vector>
-
-#include <ap.h>
-#include <lbfgsb.h>
 
 namespace
 cmtk

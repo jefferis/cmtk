@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkThreads.h>
-#include <cmtkThreadParameters.h>
+#include "System/cmtkThreads.h"
+#include "System/cmtkThreadParameters.h"
 
 namespace
 cmtk
@@ -132,6 +133,6 @@ private:
 
 } // namespace cmtk
 
-#include <cmtkThreadParameterArray.txx>
+#include "cmtkThreadParameterArray.txx"
 
 #endif // #ifndef __cmtkThreadParameterArray_h_included_

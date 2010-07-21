@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,7 +30,7 @@
 //
 */
 
-#include <cmtkQtTriplanarViewer.h>
+#include "cmtkQtTriplanarViewer.h"
 
 #include <qmenu.h>
 #include <qmenubar.h>
@@ -38,10 +39,9 @@
 #include <qlayout.h>
 #include <QVBoxLayout>
 
-#include <cmtkQtImageOperators.h>
-
-#include <cmtkAnatomicalOrientation.h>
-#include <cmtkStudy.h>
+#include "Qt/cmtkQtImageOperators.h"
+#include "Base/cmtkAnatomicalOrientation.h"
+#include "IO/cmtkStudy.h"
 
 namespace
 cmtk

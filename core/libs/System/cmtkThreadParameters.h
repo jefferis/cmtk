@@ -32,7 +32,7 @@
 #ifndef __cmtkThreadParameters_h_included_
 #define __cmtkThreadParameters_h_included_
 
-#include <cmtkThreadSystemTypes.h>
+#include "System/cmtkThreadSystemTypes.h"
 
 namespace
 cmtk

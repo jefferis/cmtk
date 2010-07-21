@@ -30,8 +30,6 @@
 //
 */
 
-#include <cmtkSplineWarpMultiChannelRegistrationFunctional.h>
-
 namespace
 cmtk
 {

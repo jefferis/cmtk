@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkImagePairAffineRegistration.h>
+#include "Registration/cmtkImagePairAffineRegistration.h"
 
 namespace 
 cmtk

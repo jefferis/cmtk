@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkTypes.h>
+#include "Base/cmtkTypes.h"
 
 #include <stack>
-#include <stdio.h>
+#include <cstdio>
 
 #include <zlib.h>
 

@@ -35,13 +35,13 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkImagePairSimilarityMeasure.h>
-#include <cmtkUniformVolume.h>
-#include <cmtkTypedArray.h>
+#include "Registration/cmtkImagePairSimilarityMeasure.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkTypedArray.h"
 
-#include <cmtkMathUtil.h>
+#include "Base/cmtkMathUtil.h"
 
-#include <cmtkSmartPtr.h>
+#include "System/cmtkSmartPtr.h"
 
 namespace
 cmtk

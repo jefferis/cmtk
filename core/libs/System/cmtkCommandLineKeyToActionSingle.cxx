@@ -29,7 +29,7 @@
 //
 */
 
-#include <cmtkCommandLine.h>
+#include "cmtkCommandLine.h"
 
 mxml_node_t*
 cmtk::CommandLine::KeyToActionSingle

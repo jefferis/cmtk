@@ -28,11 +28,11 @@
 //  $LastChangedBy$
 //
 */
-#include <stdlib.h>
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
 
-#include <cmtkStackBacktrace.h>
+#include "System/cmtkStackBacktrace.h"
 
 // deliberately crash to test stack trace output
 int

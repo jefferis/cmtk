@@ -30,11 +30,12 @@
 //
 */
 
-#include <cmtkVolumeInjectionReconstruction.h>
-#include <cmtkHistogramBase.h>
-#include <cmtkTypedArrayNoiseEstimatorNaiveGaussian.h>
-#include <cmtkVolumeIO.h>
-#include <cmtkProgress.h>
+#include "cmtkVolumeInjectionReconstruction.h"
+
+#include "Base/cmtkHistogramBase.h"
+#include "Base/cmtkTypedArrayNoiseEstimatorNaiveGaussian.h"
+#include "IO/cmtkVolumeIO.h"
+#include "System/cmtkProgress.h"
 
 #include <algorithm>
 

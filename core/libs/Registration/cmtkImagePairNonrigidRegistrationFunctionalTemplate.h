@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkImagePairNonrigidRegistrationFunctional.h>
+#include "Registration/cmtkImagePairNonrigidRegistrationFunctional.h"
 
-#include <cmtkSplineWarpXform.h>
-#include <cmtkDataTypeTraits.h>
+#include "Base/cmtkSplineWarpXform.h"
+#include "Base/cmtkDataTypeTraits.h"
 
 namespace
 cmtk
@@ -435,6 +435,6 @@ private:
 
 } // namespace cmtk
 
-#include <cmtkImagePairNonrigidRegistrationFunctionalTemplate.txx>
+#include "cmtkImagePairNonrigidRegistrationFunctionalTemplate.txx"
 
 #endif // __cmtkImagePairNonrigidRegistrationFunctionalTemplate_h_included_

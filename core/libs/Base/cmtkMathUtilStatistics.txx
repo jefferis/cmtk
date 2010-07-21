@@ -30,8 +30,8 @@
 //
 */
 
-#include <sevd.h>
-#include <studentttests.h>
+#include "Numerics/sevd.h"
+#include "Numerics/studentttests.h"
 
 namespace
 cmtk

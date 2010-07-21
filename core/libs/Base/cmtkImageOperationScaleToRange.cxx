@@ -28,9 +28,9 @@
 //
 */
 
-#include <cmtkImageOperationScaleToRange.h>
+#include "cmtkImageOperationScaleToRange.h"
 
-#include <cmtkCommandLine.h>
+#include "System/cmtkCommandLine.h"
 
 void
 cmtk::ImageOperationScaleToRange::New( const char* range )

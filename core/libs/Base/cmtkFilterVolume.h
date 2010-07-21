@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -37,9 +38,9 @@
 #define COUPE_BLOCK_SIZE 27
 #define COUPE_BLOCK_RADIUS 1
 
-#include <cmtkUniformVolume.h>
-#include <cmtkTypedArray.h>
-#include <cmtkUnits.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkTypedArray.h"
+#include "Base/cmtkUnits.h"
 
 namespace
 cmtk

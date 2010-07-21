@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkImagePairSimilarityMeasure.h>
-#include <cmtkSmartPtr.h>
+#include "Registration/cmtkImagePairSimilarityMeasure.h"
+#include "System/cmtkSmartPtr.h"
 
 #include <vector>
 

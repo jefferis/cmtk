@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkVector3D.h>
-#include <cmtkAffineXform.h>
-#include <cmtkParametricPlane.h>
-#include <cmtkUniformVolume.h>
+#include "Base/cmtkVector3D.h"
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkParametricPlane.h"
+#include "Base/cmtkUniformVolume.h"
 
 namespace
 cmtk
@@ -99,10 +99,10 @@ public:
 
 private:
   /// Array of pointers to transformed axes points.
-  Vector3D **m_Hash;
+  FixedVector<3,UniformVolume::SpaceVectorType*> m_Hash;
 
   /// Create the actual hash: allocate and fill according to given offset and delta vectors.
-  void MakeHash( const UniformVolume& volume, const Vector3D& offset, const Vector3D& dX, const Vector3D& dY, const Vector3D& dZ );
+  void MakeHash( const UniformVolume& volume, const UniformVolume::SpaceVectorType& offset, const UniformVolume::SpaceVectorType& dX, const UniformVolume::SpaceVectorType& dY, const UniformVolume::SpaceVectorType& dZ );
 
 };
 

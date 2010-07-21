@@ -30,13 +30,11 @@
 //
 */
 
-#include <cmtkVolumeFromFile.h>
+#include "cmtkVolumeFromFile.h"
 
-
-#include <cmtkTypedArray.h>
-
-#include <string.h>
-#include <stdio.h>
+#include "Base/cmtkTypedArray.h"
+#include "System/cmtkConsole.h"
+#include "System/cmtkException.h"
 
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmimgle/didocu.h>
@@ -50,14 +48,10 @@
 #  include <sys/types.h>
 #endif
 
-#ifdef HAVE_TIME_H
-#  include <time.h>
-#endif
-
 #include <memory>
-
-#include <cmtkConsole.h>
-#include <cmtkException.h>
+#include <cstring>
+#include <cstdio>
+#include <ctime>
 
 namespace
 cmtk

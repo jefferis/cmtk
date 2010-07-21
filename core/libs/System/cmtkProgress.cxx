@@ -29,8 +29,8 @@
 //
 */
 
-#include <cmtkProgress.h>
-#include <cmtkConsole.h>
+#include "cmtkProgress.h"
+#include "System/cmtkConsole.h"
 
 #ifdef CMTK_USE_OPENMP
 #  include <omp.h>

@@ -28,9 +28,9 @@
 //
 */
 
-#include <cmtkDataGridMorphologicalOperators.h>
+#include "cmtkDataGridMorphologicalOperators.h"
 
-#include <cmtkUnionFind.h>
+#include "Base/cmtkUnionFind.h"
 
 #include <map>
 #include <vector>

@@ -30,13 +30,14 @@
 //
 */
 
-#include <cmtkVolumeFromFile.h>
+#include "cmtkVolumeFromFile.h"
 
-#include <cmtkCompressedStream.h>
-#include <cmtkTypes.h>
-#include <cmtkConsole.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkCompressedStream.h"
 
-#include <stdio.h>
+#include "Base/cmtkTypes.h"
+
+#include <cstdio>
 
 namespace
 cmtk

@@ -32,19 +32,19 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkConsole.h>
-#include <cmtkCommandLine.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkCommandLine.h"
 
-#include <cmtkVolumeIO.h>
-#include <cmtkHistogram.h>
-#include <cmtkVolume.h>
-#include <cmtkTypedArray.h>
+#include "IO/cmtkVolumeIO.h"
+
+#include "Base/cmtkHistogram.h"
+#include "Base/cmtkVolume.h"
+#include "Base/cmtkTypedArray.h"
 
 #include <iostream>
 #include <fstream>
 #include <list>
-
-#include <stdio.h>
+#include <cstdio>
 
 bool Verbose = false;
 

@@ -34,10 +34,10 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkGroupwiseRegistrationFunctionalBase.h>
-#include <cmtkSmartPtr.h>
-#include <cmtkReformatVolume.h>
-#include <cmtkInterpolator.h>
+#include "Registration/cmtkGroupwiseRegistrationFunctionalBase.h"
+#include "System/cmtkSmartPtr.h"
+#include "Registration/cmtkReformatVolume.h"
+#include "Base/cmtkInterpolator.h"
 
 namespace
 cmtk

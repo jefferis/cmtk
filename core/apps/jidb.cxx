@@ -32,23 +32,23 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCommandLine.h>
-#include <cmtkConsole.h>
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkConsole.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkVolumeIO.h>
-#include <cmtkVector3D.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkVector3D.h"
 
-#include <cmtkAffineRegistration.h>
-#include <cmtkProtocolCallback.h>
+#include "Registration/cmtkAffineRegistration.h"
+#include "Registration/cmtkProtocolCallback.h"
 
-#include <cmtkPointSpreadFunctionBox.h>
-#include <cmtkPointSpreadFunctionGaussian.h>
-#include <cmtkDeblurringVolumeReconstruction.h>
+#include "Recon/cmtkPointSpreadFunctionBox.h"
+#include "Recon/cmtkPointSpreadFunctionGaussian.h"
+#include "Recon/cmtkDeblurringVolumeReconstruction.h"
 
-#include <cmtkClassStream.h>
-#include <cmtkClassStreamXform.h>
-#include <cmtkClassStreamAffineXform.h>
+#include "IO/cmtkVolumeIO.h"
+#include "IO/cmtkClassStream.h"
+#include "IO/cmtkClassStreamXform.h"
+#include "IO/cmtkClassStreamAffineXform.h"
 
 #include <algorithm>
 #include <map>

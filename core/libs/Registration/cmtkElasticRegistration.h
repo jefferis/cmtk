@@ -35,11 +35,11 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkVoxelRegistration.h>
-#include <cmtkWarpXform.h>
-#include <cmtkMatchedLandmarkList.h>
+#include "Registration/cmtkVoxelRegistration.h"
+#include "Base/cmtkWarpXform.h"
+#include "Base/cmtkMatchedLandmarkList.h"
 
-#include <string.h>
+#include <cstring>
 
 namespace
 cmtk

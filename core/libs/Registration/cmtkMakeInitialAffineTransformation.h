@@ -34,8 +34,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkUniformVolume.h>
-#include <cmtkAffineXform.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkAffineXform.h"
 
 #include <string>
 

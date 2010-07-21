@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,15 +35,15 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkStudy.h>
-#include <cmtkStudyList.h>
+#include "IO/cmtkStudy.h"
+#include "IO/cmtkStudyList.h"
 
-#include <cmtkSlicer.h>
-#include <cmtkVolumeWrapper.h>
-#include <cmtkInterpolator.h>
+#include "Pipeline/cmtkSlicer.h"
+#include "Pipeline/cmtkVolumeWrapper.h"
+#include "Base/cmtkInterpolator.h"
 
-#include <cmtkAffineXform.h>
-#include <cmtkWarpXform.h>
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkWarpXform.h"
 
 #include <map>
 

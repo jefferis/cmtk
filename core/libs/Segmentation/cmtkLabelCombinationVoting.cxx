@@ -29,7 +29,7 @@
 //
 */
 
-#include <cmtkLabelCombinationVoting.h>
+#include "Segmentation/cmtkLabelCombinationVoting.h"
 
 namespace
 cmtk

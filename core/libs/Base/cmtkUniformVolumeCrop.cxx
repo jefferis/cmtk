@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkUniformVolume.h>
+#include "cmtkUniformVolume.h"
 
 namespace
 cmtk

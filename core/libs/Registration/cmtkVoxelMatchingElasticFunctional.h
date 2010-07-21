@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,18 +35,18 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkVoxelMatchingFunctional.h>
+#include "Registration/cmtkVoxelMatchingFunctional.h"
 
-#include <cmtkVector.h>
-#include <cmtkWarpXform.h>
-#include <cmtkJointHistogram.h>
-#include <cmtkUniformVolume.h>
+#include "Base/cmtkVector.h"
+#include "Base/cmtkWarpXform.h"
+#include "Base/cmtkJointHistogram.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkMacros.h"
+#include "Base/cmtkMathUtil.h"
 
-#include <cmtkMacros.h>
-#include <cmtkMathUtil.h>
-#include <cmtkException.h>
+#include "System/cmtkException.h"
 
-#include <assert.h>
+#include <cassert>
 
 #ifdef HAVE_IEEEFP_H
 #  include <ieeefp.h>

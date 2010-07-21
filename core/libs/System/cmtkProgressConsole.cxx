@@ -29,10 +29,10 @@
 //
 */
 
-#include <cmtkProgressConsole.h>
+#include "cmtkProgressConsole.h"
 
-#include <cmtkConsole.h>
-#include <cmtkTimers.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkTimers.h"
 
 #ifdef CMTK_USE_OPENMP
 #  include <omp.h>

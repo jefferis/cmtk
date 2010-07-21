@@ -30,11 +30,11 @@
 //
 */
 
-#include <cmtkHypothesisTests.h>
+#include "cmtkHypothesisTests.h"
 
-#include <cmtkVector3D.h>
-#include <cmtkMathUtil.h>
-#include <cmtkConsole.h>
+#include "Base/cmtkVector3D.h"
+#include "Base/cmtkMathUtil.h"
+#include "System/cmtkConsole.h"
 
 #include <vector>
 

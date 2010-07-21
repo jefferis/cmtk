@@ -33,7 +33,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkImageXformDB.h>
+#include "Registration/cmtkImageXformDB.h"
 
 #include <string>
 

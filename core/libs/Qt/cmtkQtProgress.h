@@ -34,7 +34,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkProgress.h>
+#include "System/cmtkProgress.h"
 
 #include <qwidget.h>
 #include <qstatusbar.h>

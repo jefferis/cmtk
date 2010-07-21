@@ -28,7 +28,7 @@
 //
 */
 
-#include <cmtkUniformVolume.h>
+#include "cmtkUniformVolume.h"
 
 const cmtk::UniformVolume::CoordinateVectorType
 cmtk::UniformVolume

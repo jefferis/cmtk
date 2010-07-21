@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,15 +32,15 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCommandLine.h>
-#include <cmtkConsole.h>
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkConsole.h"
 
-#include <cmtkXformIO.h>
-#include <cmtkVolumeIO.h>
+#include "IO/cmtkXformIO.h"
+#include "IO/cmtkVolumeIO.h"
 
-#include <cmtkWarpXform.h>
-#include <cmtkSplineWarpXform.h>
-#include <cmtkDeformationField.h>
+#include "Base/cmtkWarpXform.h"
+#include "Base/cmtkSplineWarpXform.h"
+#include "Base/cmtkDeformationField.h"
 
 const char* inXformPath = NULL;
 const char* outXformPath = NULL;

@@ -32,21 +32,21 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCommandLine.h>
-#include <cmtkConsole.h>
-#include <cmtkProgressConsole.h>
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkConsole.h"
+#include "System/cmtkProgressConsole.h"
 
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkTypedArray.h"
+#include "Base/cmtkHistogram.h"
+#include "Base/cmtkMathUtil.h"
+#include "Base/cmtkMathFunctionWrappers.h"
+
+#include "IO/cmtkVolumeIO.h"
+
+#include <cmath>
 #include <list>
 #include <algorithm>
-
-#include <cmtkVolumeIO.h>
-#include <cmtkUniformVolume.h>
-#include <cmtkTypedArray.h>
-#include <cmtkHistogram.h>
-#include <cmtkMathUtil.h>
-
-#include <math.h>
-#include <cmtkMathFunctionWrappers.h>
 
 bool Verbose = false;
 const char* OutputFileName = "average.hdr";

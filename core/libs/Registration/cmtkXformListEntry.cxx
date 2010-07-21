@@ -29,7 +29,7 @@
 //
 */
 
-#include <cmtkXformListEntry.h>
+#include "Registration/cmtkXformListEntry.h"
 
 cmtk::XformListEntry::XformListEntry
 ( const Xform::SmartPtr& xform, const bool inverse, const Types::Coordinate globalScale )

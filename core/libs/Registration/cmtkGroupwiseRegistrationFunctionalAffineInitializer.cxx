@@ -30,9 +30,9 @@
 //
 */
 
-#include <cmtkGroupwiseRegistrationFunctionalAffineInitializer.h>
+#include "Registration/cmtkGroupwiseRegistrationFunctionalAffineInitializer.h"
 
-#include <cmtkMathUtil.h>
+#include "Base/cmtkMathUtil.h"
 
 namespace
 cmtk

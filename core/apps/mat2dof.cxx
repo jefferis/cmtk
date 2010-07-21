@@ -32,20 +32,20 @@
 
 #include <cmtkconfig.h>
 
+#include "System/cmtkConsole.h"
+#include "System/cmtkCommandLine.h"
+
+#include "Base/cmtkVector.h"
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkMatrix4x4.h"
+
+#include "IO/cmtkStudyList.h"
+#include "IO/cmtkClassStream.h"
+#include "IO/cmtkClassStreamAffineXform.h"
+#include "IO/cmtkClassStreamStudyList.h"
+
 #include <fstream>
 #include <iostream>
-
-#include <cmtkConsole.h>
-#include <cmtkCommandLine.h>
-
-#include <cmtkVector.h>
-#include <cmtkAffineXform.h>
-#include <cmtkMatrix4x4.h>
-
-#include <cmtkStudyList.h>
-#include <cmtkClassStream.h>
-#include <cmtkClassStreamAffineXform.h>
-#include <cmtkClassStreamStudyList.h>
 
 void
 ReadMatrix( cmtk::Types::Coordinate (&matrix)[4][4], std::istream& stream, const bool matrix3x3 )

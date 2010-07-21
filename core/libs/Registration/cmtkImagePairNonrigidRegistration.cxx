@@ -30,23 +30,20 @@
 //
 */
 
-#include <cmtkImagePairNonrigidRegistration.h>
+#include "cmtkImagePairNonrigidRegistration.h"
 
-#include <cmtkLandmarkList.h>
-#include <cmtkMatchedLandmarkList.h>
+#include "Base/cmtkLandmarkList.h"
+#include "Base/cmtkMatchedLandmarkList.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkSplineWarpXform.h"
+#include "Base/cmtkTypedArrayFunctionHistogramMatching.h"
 
-#include <cmtkImagePairNonrigidRegistrationFunctional.h>
-#include <cmtkImagePairSymmetricNonrigidRegistrationFunctional.h>
-
-#include <cmtkOptimizer.h>
-#include <cmtkBestNeighbourOptimizer.h>
-#include <cmtkBestDirectionOptimizer.h>
-
-#include <cmtkUniformVolume.h>
-#include <cmtkSplineWarpXform.h>
-#include <cmtkTypedArrayFunctionHistogramMatching.h>
-
-#include <cmtkReformatVolume.h>
+#include "Registration/cmtkImagePairNonrigidRegistrationFunctional.h"
+#include "Registration/cmtkImagePairSymmetricNonrigidRegistrationFunctional.h"
+#include "Registration/cmtkOptimizer.h"
+#include "Registration/cmtkBestNeighbourOptimizer.h"
+#include "Registration/cmtkBestDirectionOptimizer.h"
+#include "Registration/cmtkReformatVolume.h"
 
 #include <algorithm>
 

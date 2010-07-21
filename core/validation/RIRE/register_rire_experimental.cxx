@@ -32,11 +32,10 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkVolumeIO.h>
-#include <cmtkImagePairAffineRegistration.h>
-#include <cmtkAnatomicalOrientation.h>
-
-#include <cmtkTimers.h>
+#include "IO/cmtkVolumeIO.h"
+#include "Registration/cmtkImagePairAffineRegistration.h"
+#include "Base/cmtkAnatomicalOrientation.h"
+#include "System/cmtkTimers.h"
 
 #include <algorithm>
 

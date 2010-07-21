@@ -32,14 +32,14 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkConsole.h>
-#include <cmtkCommandLine.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkCommandLine.h"
 
-#include <cmtkVolumeIO.h>
-#include <cmtkStudy.h>
-#include <cmtkStudyImageSet.h>
-#include <cmtkVolumeFromStudy.h>
-#include <cmtkFileFormat.h>
+#include "IO/cmtkVolumeIO.h"
+#include "IO/cmtkStudy.h"
+#include "IO/cmtkStudyImageSet.h"
+#include "IO/cmtkVolumeFromStudy.h"
+#include "IO/cmtkFileFormat.h"
 
 #ifndef CMTK_HAVE_DCMTK
 #error Build system is broken: this application should not be build if CMTK_HAVE_DCMTK is not set.

@@ -32,20 +32,21 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkConsole.h>
-#include <cmtkCommandLine.h>
-#include <cmtkProgressConsole.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkProgressConsole.h"
 
-#include <cmtkVolumeIO.h>
-#include <cmtkMathUtil.h>
-#include <cmtkUniformVolume.h>
-#include <cmtkUniformVolumePainter.h>
-#include <cmtkUniformVolumeFilter.h>
+#include "IO/cmtkVolumeIO.h"
+
+#include "Base/cmtkMathUtil.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkUniformVolumePainter.h"
+#include "Base/cmtkUniformVolumeFilter.h"
 
 #include <algorithm>
 
 #ifdef CMTK_USE_SQLITE
-#  include <cmtkImageXformDB.h>
+#  include "Registration/cmtkImageXformDB.h"
 #endif
 
 #ifdef CMTK_SINGLE_COMMAND_BINARY

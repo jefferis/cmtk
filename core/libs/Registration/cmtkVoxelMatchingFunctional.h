@@ -35,23 +35,21 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkMathUtil.h>
-#include <cmtkTypes.h>
+#include "Base/cmtkMathUtil.h"
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkFunctional.h"
+#include "Base/cmtkVector.h"
+#include "Base/cmtkVolume.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkMatchedLandmarkList.h"
 
-#include <cmtkFunctional.h>
-
-#include <cmtkVector.h>
-#include <cmtkVolume.h>
-#include <cmtkUniformVolume.h>
-#include <cmtkMatchedLandmarkList.h>
-
-#include <cmtkException.h>
+#include "System/cmtkException.h"
 
 #if defined(CMTK_BUILD_SMP)
-#  include <cmtkLockingPtr.h>
+#  include "System/cmtkLockingPtr.h"
 #endif
 
-#include <assert.h>
+#include <cassert>
 
 namespace
 cmtk

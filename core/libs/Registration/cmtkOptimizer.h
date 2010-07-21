@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,17 +35,16 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkOptimizerBase.h>
-#include <cmtkMacros.h>
+#include "Registration/cmtkOptimizerBase.h"
+#include "Registration/cmtkRegistrationCallback.h"
 
-#include <cmtkFunctional.h>
-#include <cmtkVector.h>
+#include "Base/cmtkMacros.h"
+#include "Base/cmtkFunctional.h"
+#include "Base/cmtkVector.h"
 
-#include <cmtkRegistrationCallback.h>
+#include "System/cmtkSmartPtr.h"
 
 #include <vector>
-
-#include <cmtkSmartPtr.h>
 
 namespace
 cmtk

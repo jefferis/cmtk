@@ -30,12 +30,11 @@
 //
 */
 
-#include <cmtkMathUtil.h>
+#include "cmtkMathUtil.h"
 
-#include <cmtkTypes.h>
-#include <cmtkConsole.h>
-
-#include <ibetaf.h>
+#include "Base/cmtkTypes.h"
+#include "System/cmtkConsole.h"
+#include "Numerics/ibetaf.h"
 
 namespace
 cmtk

@@ -29,9 +29,9 @@
 //
 */
 
-#include <cmtkProtocolCallback.h>
+#include "Registration/cmtkProtocolCallback.h"
 
-#include <cmtkMathUtil.h>
+#include "Base/cmtkMathUtil.h"
 
 namespace
 cmtk

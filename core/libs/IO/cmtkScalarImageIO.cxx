@@ -30,14 +30,14 @@
 //
 */
 
-#include <cmtkScalarImageIO.h>
+#include "cmtkScalarImageIO.h"
 
-#include <stdio.h>
+#include <cstdio>
 
-#include <cmtkTypes.h>
-#include <cmtkFileHeader.h>
-#include <cmtkCompressedStream.h>
-#include <cmtkAnalyze.h>
+#include "Base/cmtkTypes.h"
+#include "System/cmtkCompressedStream.h"
+#include "IO/cmtkFileHeader.h"
+#include "IO/cmtkAnalyze.h"
 
 namespace
 cmtk

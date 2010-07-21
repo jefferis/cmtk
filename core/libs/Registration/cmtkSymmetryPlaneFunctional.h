@@ -35,12 +35,11 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkFunctional.h>
+#include "Base/cmtkFunctional.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkParametricPlane.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkVoxelMatchingNormMutInf.h>
-
-#include <cmtkParametricPlane.h>
+#include "Registration/cmtkVoxelMatchingNormMutInf.h"
 
 namespace
 cmtk

@@ -34,12 +34,12 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCannotBeCopied.h>
+#include "System/cmtkCannotBeCopied.h"
 
-#include <cmtkThreadSystemTypes.h>
-#include <cmtkThreadSemaphore.h>
-#include <cmtkMutexLock.h>
-#include <cmtkSmartPtr.h>
+#include "System/cmtkThreadSystemTypes.h"
+#include "System/cmtkThreadSemaphore.h"
+#include "System/cmtkMutexLock.h"
+#include "System/cmtkSmartPtr.h"
 
 #include <vector>
 
@@ -74,7 +74,7 @@ cmtk
  *
  *\code
  * #include <vector>
- * #include <cmtkThreadPool.h>
+ * #include "System/cmtkThreadPool.h"
  *
  * class ComputationClass
  * {
@@ -231,6 +231,6 @@ private:
 /// This is the actual low-level thread function. It calls ThreadFunction() for the cmtk::ThreadPool instance given as the function parameter.
 extern "C" CMTK_THREAD_RETURN_TYPE cmtkThreadPoolThreadFunction( CMTK_THREAD_ARG_TYPE arg /**!< This is a pointer to the cmtk::ThreadPool instance.*/ );
 
-#include <cmtkThreadPool.txx>
+#include "cmtkThreadPool.txx"
 
 #endif // #ifndef __cmtkThreadPool_h_included_

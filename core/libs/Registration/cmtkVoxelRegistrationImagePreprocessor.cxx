@@ -30,11 +30,12 @@
 //
 */
 
-#include <cmtkVoxelRegistration.h>
+#include "Registration/cmtkVoxelRegistration.h"
 
-#include <cmtkCommandLine.h>
-#include <cmtkTypedArrayFunctionHistogramEqualization.h>
-#include <cmtkDataGridFilter.h>
+#include "System/cmtkCommandLine.h"
+
+#include "Base/cmtkTypedArrayFunctionHistogramEqualization.h"
+#include "Base/cmtkDataGridFilter.h"
 
 namespace
 cmtk

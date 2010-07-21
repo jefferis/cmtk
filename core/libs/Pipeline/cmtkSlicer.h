@@ -34,17 +34,17 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkFilter.h>
+#include "Pipeline/cmtkFilter.h"
 
-#include <cmtkMacros.h>
+#include "Base/cmtkMacros.h"
 
-#include <cmtkPlane.h>
-#include <cmtkImage.h>
-#include <cmtkVolumeWrapper.h>
-#include <cmtkInterpolator.h>
+#include "Pipeline/cmtkPlane.h"
+#include "Pipeline/cmtkImage.h"
+#include "Pipeline/cmtkVolumeWrapper.h"
+#include "Base/cmtkInterpolator.h"
 
-#include <cmtkWarpXform.h>
-#include <cmtkSplineWarpXform.h>
+#include "Base/cmtkWarpXform.h"
+#include "Base/cmtkSplineWarpXform.h"
 
 namespace
 cmtk

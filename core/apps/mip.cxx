@@ -32,14 +32,15 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCommandLine.h>
-#include <cmtkMathUtil.h>
+#include "System/cmtkCommandLine.h"
 
-#include <cmtkPGM.h>
-#include <cmtkVolumeIO.h>
-#include <cmtkDataGrid.h>
-#include <cmtkAccumulatorMax.h>
-#include <cmtkAccumulatorAvg.h>
+#include "IO/cmtkPGM.h"
+#include "IO/cmtkVolumeIO.h"
+
+#include "Base/cmtkDataGrid.h"
+#include "Base/cmtkAccumulatorMax.h"
+#include "Base/cmtkAccumulatorAvg.h"
+#include "Base/cmtkMathUtil.h"
 
 #include <iostream>
 

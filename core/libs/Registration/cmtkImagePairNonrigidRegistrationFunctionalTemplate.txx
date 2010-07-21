@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkTypedArrayFunctionHistogramMatching.h>
+#include "Base/cmtkTypedArrayFunctionHistogramMatching.h"
 
 #include <vector>
 

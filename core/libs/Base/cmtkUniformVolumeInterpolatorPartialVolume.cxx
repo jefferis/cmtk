@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkUniformVolumeInterpolatorPartialVolume.h>
+#include "cmtkUniformVolumeInterpolatorPartialVolume.h"
 
 namespace cmtk
 {

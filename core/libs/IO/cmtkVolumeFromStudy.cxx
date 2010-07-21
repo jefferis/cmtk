@@ -30,32 +30,29 @@
 //
 */
 
-#include <cmtkVolumeFromStudy.h>
+#include "cmtkVolumeFromStudy.h"
 
-#include <cmtkMountPoints.h>
-#include <cmtkCompressedStream.h>
+#include "IO/cmtkMountPoints.h"
+#include "IO/cmtkVolumeIO.h"
+#include "IO/cmtkVolumeFromFile.h"
+#include "IO/cmtkDICOM.h"
 
-#include <cmtkVolume.h>
-#include <cmtkVolumeIO.h>
-#include <cmtkLandmarkList.h>
-#include <cmtkUniformVolume.h>
-#include <cmtkVolumeFromFile.h>
-#include <cmtkDICOM.h>
+#include "System/cmtkCompressedStream.h"
+#include "System/cmtkProgress.h"
+#include "System/cmtkConsole.h"
 
-#include <cmtkProgress.h>
-#include <cmtkConsole.h>
+#include "Base/cmtkVolume.h"
+#include "Base/cmtkLandmarkList.h"
+#include "Base/cmtkUniformVolume.h"
 
-#include <string.h>
+#include <cstring>
+#include <climits>
 
 #ifdef DEBUG
-#  include <stdio.h>
+#  include <cstdio>
 #endif
 
 #include <memory>
-
-#ifdef HAVE_LIMITS_H
-#  include <limits.h>
-#endif
 
 namespace
 cmtk

@@ -30,12 +30,12 @@
 //
 */
 
-#include <cmtkSplineWarpGroupwiseRegistrationRMIFunctional.h>
+#include "cmtkSplineWarpGroupwiseRegistrationRMIFunctional.h"
 
-#include <cmtkMathUtil.h>
-#include <cmtkMatrix.h>
+#include "Base/cmtkMathUtil.h"
+#include "Base/cmtkMatrix.h"
 
-#include <cmtkThreadParameterArray.h>
+#include "System/cmtkThreadParameterArray.h"
 
 #include <algorithm>
 

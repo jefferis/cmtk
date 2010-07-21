@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,17 +30,12 @@
 //
 */
 
-#include <cmtkRegistrationCallback.h>
+#include "Registration/cmtkRegistrationCallback.h"
 
-#ifdef HAVE_STDARG_H
-#  include <stdarg.h>
-#endif
+#include "System/cmtkConsole.h"
 
-#ifdef HAVE_SIGNAL_H
-#  include <signal.h>
-#endif
-
-#include <cmtkConsole.h>
+#include <cstdarg>
+#include <csignal>
 
 namespace
 cmtk
@@ -92,7 +88,6 @@ RegistrationCallback::Comment ( const char* )
 void
 RegistrationCallback::FormatComment( const char* format, ... )
 {
-#ifdef HAVE_STDARG_H
   static char buffer[1024];
 
   va_list args;
@@ -101,7 +96,6 @@ RegistrationCallback::FormatComment( const char* format, ... )
   va_end(args);
 
   this->Comment( buffer );
-#endif
 }
 
 } // namespace cmtk

@@ -32,15 +32,16 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCommandLine.h>
-#include <cmtkConsole.h>
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkConsole.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkFileFormat.h>
-#include <cmtkVolumeIO.h>
-#include <cmtkVector3D.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkVector3D.h"
 
-#include <stdio.h>
+#include "IO/cmtkFileFormat.h"
+#include "IO/cmtkVolumeIO.h"
+
+#include <cstdio>
 #include <list>
 
 #ifdef CMTK_BUILD_MPI

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,17 +35,16 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkFunctional.h>
+#include "System/cmtkSmartPtr.h"
 
-#include <cmtkMacros.h>
-#include <cmtkSmartPtr.h>
-#include <cmtkScalarImage.h>
-#include <cmtkMatrix3x3.h>
+#include "Base/cmtkFunctional.h"
+#include "Base/cmtkMacros.h"
+#include "Base/cmtkScalarImage.h"
+#include "Base/cmtkMatrix3x3.h"
+#include "Base/cmtkHistogram.h"
+#include "Base/cmtkJointHistogram.h"
 
-#include <cmtkHistogram.h>
-#include <cmtkJointHistogram.h>
-
-#include <cmtkScalarImageSimilarity.h>
+#include "Registration/cmtkScalarImageSimilarity.h"
 
 #include <vector>
 

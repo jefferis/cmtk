@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -34,9 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#ifdef HAVE_LIMITS_H
-#  include <limits.h>
-#endif
+#include <climits>
 
 namespace
 cmtk

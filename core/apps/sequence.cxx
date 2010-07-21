@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -31,23 +32,20 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCommandLine.h>
-#include <cmtkConsole.h>
-#include <cmtkValueSequence.h>
-#include <cmtkTypes.h>
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkConsole.h"
 
-#include <iostream>
-#include <stdio.h>
-#include <math.h>
+#include "Base/cmtkValueSequence.h"
+#include "Base/cmtkTypes.h"
 
 #ifdef HAVE_IEEEFP_H
 #  include <ieeefp.h>
 #endif
 
-#ifdef _MSC_VER
-#  include <float.h>
-#endif
-
+#include <cfloat>
+#include <iostream>
+#include <cstdio>
+#include <cmath>
 #include <list>
 #include <vector>
 

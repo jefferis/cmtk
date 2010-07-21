@@ -35,9 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkTypes.h>
-#include <cmtkMathUtil.h>
-#include <cmtkSmartPtr.h>
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkMathUtil.h"
+
+#include "System/cmtkSmartPtr.h"
 
 #include <algorithm>
 

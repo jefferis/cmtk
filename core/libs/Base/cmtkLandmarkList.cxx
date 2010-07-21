@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkLandmarkList.h>
+#include "cmtkLandmarkList.h"
 
 namespace
 cmtk

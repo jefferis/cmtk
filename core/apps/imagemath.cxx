@@ -32,21 +32,21 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCommandLine.h>
-#include <cmtkConsole.h>
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkConsole.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkFileFormat.h>
-#include <cmtkVolumeIO.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkMathFunctionWrappers.h"
+#include "Base/cmtkTypedArrayFunctionHistogramMatching.h"
 
-#include <cmtkLabelCombinationVoting.h>
-#include <cmtkLabelCombinationSTAPLE.h>
-#include <cmtkLabelCombinationMultiClassSTAPLE.h>
+#include "IO/cmtkFileFormat.h"
+#include "IO/cmtkVolumeIO.h"
 
-#include <math.h>
-#include <cmtkMathFunctionWrappers.h>
-#include <cmtkTypedArrayFunctionHistogramMatching.h>
+#include "Segmentation/cmtkLabelCombinationVoting.h"
+#include "Segmentation/cmtkLabelCombinationSTAPLE.h"
+#include "Segmentation/cmtkLabelCombinationMultiClassSTAPLE.h"
 
+#include <cmath>
 #include <queue>
 #include <vector>
 

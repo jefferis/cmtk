@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,17 +30,17 @@
 //
 */
 
-#include <cmtkQtSliderEntry.h>
+#include "cmtkQtSliderEntry.h"
 
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 
 #include <qfont.h>
 
 #include <QGridLayout>
 #include <QLabel>
 
-#include <cmtkMathUtil.h>
+#include "Base/cmtkMathUtil.h"
 
 namespace
 cmtk

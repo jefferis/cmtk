@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009 SRI International
+//  Copyright 2009-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -28,6 +28,6 @@
 //
 */
 
-#include <cmtkImageOperation.h>
+#include "cmtkImageOperation.h"
 
 std::list<cmtk::ImageOperation::SmartPtr> cmtk::ImageOperation::m_ImageOperationList;

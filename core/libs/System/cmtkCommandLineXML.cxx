@@ -30,11 +30,11 @@
 */
 #include <cmtkconfig.h>
 
-#include <cmtkCommandLine.h>
+#include "cmtkCommandLine.h"
 
 #include <mxml.h>
 
-#include <stdio.h>
+#include <cstdio>
 
 namespace
 cmtk

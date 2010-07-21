@@ -30,14 +30,14 @@
 //
 */
 
-#include <cmtkImagePairAffineRegistrationFunctional.h>
+#include "Registration/cmtkImagePairAffineRegistrationFunctional.h"
 
-#include <cmtkImagePairAffineRegistrationFunctionalTemplate.h>
-#include <cmtkImagePairSimilarityMeasureCR.h>
-#include <cmtkImagePairSimilarityMeasureMSD.h>
-#include <cmtkImagePairSimilarityMeasureNCC.h>
-#include <cmtkImagePairSimilarityMeasureNMI.h>
-#include <cmtkImagePairSimilarityMeasureMI.h>
+#include "Registration/cmtkImagePairAffineRegistrationFunctionalTemplate.h"
+#include "Registration/cmtkImagePairSimilarityMeasureCR.h"
+#include "Registration/cmtkImagePairSimilarityMeasureMSD.h"
+#include "Registration/cmtkImagePairSimilarityMeasureNCC.h"
+#include "Registration/cmtkImagePairSimilarityMeasureNMI.h"
+#include "Registration/cmtkImagePairSimilarityMeasureMI.h"
 
 namespace
 cmtk

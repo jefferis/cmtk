@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkTypedArray.h>
+#include "Base/cmtkTypedArray.h"
+#include "Base/cmtkTypedArrayFunction.h"
 
-#include <cmtkConsole.h>
-#include <cmtkTypedArrayFunction.h>
+#include "System/cmtkConsole.h"
 
 namespace
 cmtk
@@ -672,7 +672,7 @@ typedef TemplateArray<double> DoubleArray;
 
 } // namespace cmtk
 
-#include <cmtkTemplateArray.txx>
-#include <cmtkTemplateArrayStatistics.txx>
+#include "cmtkTemplateArray.txx"
+#include "cmtkTemplateArrayStatistics.txx"
 
 #endif // #ifndef __cmtkTemplateArray_h_included_

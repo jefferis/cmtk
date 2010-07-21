@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,19 +32,18 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkQtTriplanarViewer.h>
-#include <cmtkQtProgress.h>
+#include "Qt/cmtkQtTriplanarViewer.h"
+#include "Qt/cmtkQtProgress.h"
+
+#include "System/cmtkCommandLine.h"
+#include "IO/cmtkStudy.h"
 
 #include <qapplication.h>
 #include <QPlastiqueStyle>
 
-#include <string.h>
-
+#include <cstring>
 #include <list>
 #include <string>
-
-#include <cmtkCommandLine.h>
-#include <cmtkStudy.h>
 
 int
 main( int argc, char* argv[] )

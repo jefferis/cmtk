@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2008-2009 SRI International
+//  Copyright 2008-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -28,7 +28,7 @@
 //
 */
 
-#include <cmtkTypedArrayNoiseEstimatorNaiveGaussian.h>
+#include "cmtkTypedArrayNoiseEstimatorNaiveGaussian.h"
 
 namespace
 cmtk

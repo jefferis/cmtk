@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,12 +35,12 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkPipelineObject.h>
-#include <cmtkRGB.h>
+#include "Pipeline/cmtkPipelineObject.h"
+#include "Pipeline/cmtkRGB.h"
 
-#include <cmtkTypedArray.h>
+#include "Base/cmtkTypedArray.h"
 
-#include <cmtkStudy.h>
+#include "IO/cmtkStudy.h"
 
 namespace
 cmtk

@@ -30,16 +30,14 @@
 //
 */
 
-#include <cmtkStudy.h>
-#include <cmtkFileFormat.h>
-#include <cmtkVolumeIO.h>
-#include <cmtkClassStream.h>
+#include "cmtkStudy.h"
+
+#include "IO/cmtkFileFormat.h"
+#include "IO/cmtkVolumeIO.h"
+#include "IO/cmtkClassStream.h"
 
 #include <string>
-
-#ifdef HAVE_LIMITS_H
-#  include <limits.h>
-#endif
+#include <climits>
 
 namespace
 cmtk

@@ -32,9 +32,10 @@
 
 #include <algorithm>
 
-#include <cmtkInverseInterpolationVolumeReconstructionBase.h>
-#include <cmtkHistogramBase.h>
-#include <cmtkProgress.h>
+#include "cmtkInverseInterpolationVolumeReconstructionBase.h"
+
+#include "Base/cmtkHistogramBase.h"
+#include "System/cmtkProgress.h"
 
 namespace
 cmtk

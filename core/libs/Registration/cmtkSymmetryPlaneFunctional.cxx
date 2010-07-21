@@ -30,9 +30,9 @@
 //
 */
 
-#include <cmtkSymmetryPlaneFunctional.h>
+#include "cmtkSymmetryPlaneFunctional.h"
 
-#include <cmtkVolumeAxesHash.h>
+#include "Base/cmtkVolumeAxesHash.h"
 
 namespace
 cmtk

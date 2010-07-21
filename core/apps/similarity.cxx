@@ -32,22 +32,22 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCommandLine.h>
-#include <cmtkConsole.h>
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkConsole.h"
 
-#include <cmtkVolumeIO.h>
-#include <cmtkMountPoints.h>
+#include "IO/cmtkVolumeIO.h"
+#include "IO/cmtkMountPoints.h"
 
-#include <cmtkJointHistogram.h>
-#include <cmtkLinearInterpolator.h>
-#include <cmtkUniformVolumeInterpolatorBase.h>
-#include <cmtkUniformVolumeInterpolator.h>
-#include <cmtkUniformVolumeInterpolatorPartialVolume.h>
+#include "Base/cmtkJointHistogram.h"
+#include "Base/cmtkLinearInterpolator.h"
+#include "Base/cmtkUniformVolumeInterpolatorBase.h"
+#include "Base/cmtkUniformVolumeInterpolator.h"
+#include "Base/cmtkUniformVolumeInterpolatorPartialVolume.h"
 
-#include <cmtkVoxelMatchingCrossCorrelation.h>
+#include "Registration/cmtkVoxelMatchingCrossCorrelation.h"
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>

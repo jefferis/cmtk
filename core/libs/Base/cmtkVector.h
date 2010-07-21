@@ -35,17 +35,17 @@
 
 #include <cmtkconfig.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <math.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cassert>
+#include <cmath>
+#include <cstring>
 
 #include <algorithm>
 
-#include <cmtkMathUtil.h>
-#include <cmtkTypes.h>
-#include <cmtkSmartPtr.h>
+#include "Base/cmtkMathUtil.h"
+#include "Base/cmtkTypes.h"
+#include "System/cmtkSmartPtr.h"
 
 namespace
 cmtk
@@ -419,6 +419,6 @@ typedef Vector<float> FloatVector;
 
 } // namespace cmtk
 
-#include <cmtkVector.txx>
+#include "cmtkVector.txx"
 
 #endif // #ifndef __cmtkVector_h_included_

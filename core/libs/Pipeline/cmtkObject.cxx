@@ -29,12 +29,12 @@
 //
 */
 
-#include <cmtkObject.h>
+#include "Pipeline/cmtkObject.h"
 
-#include <string.h>
+#include <cstring>
 // GJ replaced above with:
 #ifdef __APPLE__
-#  include <stdlib.h>
+#  include <cstdlib>
 #else
 #  include <malloc.h>
 #endif

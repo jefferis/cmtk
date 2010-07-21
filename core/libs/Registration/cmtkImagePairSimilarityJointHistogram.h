@@ -35,11 +35,11 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkImagePairSimilarityMeasure.h>
+#include "Registration/cmtkImagePairSimilarityMeasure.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkFunctional.h>
-#include <cmtkJointHistogram.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkFunctional.h"
+#include "Base/cmtkJointHistogram.h"
 
 #include <algorithm>
 

@@ -1,6 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
-##  Copyright 2004-2009 SRI International
+##
+##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -59,13 +60,6 @@ SET(fusion_MOC_SRCS
   cmtkQtStudyWidget.h
   cmtkQtVolumeProperties.h
 )
-
-#-------------------------------
-# Generate Cpp/H Files
-#-------------------------------
-#IF(QT_WRAP_UI)
-#  QT_WRAP_UI(fusion fusion_UI_H fusion_UI_CPP ${fusion_UI_SRCS} )
-#ENDIF(QT_WRAP_UI)
 
 #-------------------------------
 # Generate Moc Files

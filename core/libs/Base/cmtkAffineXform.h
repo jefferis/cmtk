@@ -35,14 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkTypes.h>
-#include <cmtkVector.h>
-#include <cmtkXform.h>
-#include <cmtkMatrix4x4.h>
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkVector.h"
+#include "Base/cmtkXform.h"
+#include "Base/cmtkMatrix4x4.h"
 
-#include <cmtkSmartPtr.h>
+#include "System/cmtkSmartPtr.h"
 
-#include <cmtkUnits.h>
+#include "Base/cmtkUnits.h"
 
 namespace
 cmtk

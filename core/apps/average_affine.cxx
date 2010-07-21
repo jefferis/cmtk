@@ -32,13 +32,13 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkConsole.h>
-#include <cmtkCommandLine.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkCommandLine.h"
 
-#include <cmtkAffineXform.h>
-#include <cmtkXformIO.h>
-#include <cmtkClassStream.h>
-#include <cmtkClassStreamAffineXform.h>
+#include "Base/cmtkAffineXform.h"
+#include "IO/cmtkXformIO.h"
+#include "IO/cmtkClassStream.h"
+#include "IO/cmtkClassStreamAffineXform.h"
 
 #include <list>
 

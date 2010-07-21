@@ -35,9 +35,9 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkTypes.h>
-#include <cmtkVector3D.h>
-#include <cmtkUniformVolume.h>
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkVector3D.h"
+#include "Base/cmtkUniformVolume.h"
 
 namespace
 cmtk

@@ -28,7 +28,7 @@
 //
 */
 
-#include <cmtkTypedArrayNoiseEstimatorBrummer.h>
+#include "cmtkTypedArrayNoiseEstimatorBrummer.h"
 
 namespace
 cmtk

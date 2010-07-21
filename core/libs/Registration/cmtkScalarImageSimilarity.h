@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -34,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkScalarImage.h>
-#include <cmtkTypedArraySimilarity.h>
+#include "Base/cmtkScalarImage.h"
+#include "Registration/cmtkTypedArraySimilarity.h"
 
 #include <vector>
 

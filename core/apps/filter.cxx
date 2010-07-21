@@ -32,21 +32,21 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkConsole.h>
-#include <cmtkCommandLine.h>
-#include <cmtkProgressConsole.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkProgressConsole.h"
 
-#include <string.h>
-#include <list>
+#include "IO/cmtkVolumeIO.h"
 
-#include <cmtkVolumeIO.h>
-#include <cmtkFilterVolume.h>
-
-#include <cmtkUnits.h>
+#include "Base/cmtkFilterVolume.h"
+#include "Base/cmtkUnits.h"
 
 #ifdef CMTK_USE_SQLITE
-#  include <cmtkImageXformDB.h>
+#  include "Registration/cmtkImageXformDB.h"
 #endif
+
+#include <cstring>
+#include <list>
 
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 namespace cmtk

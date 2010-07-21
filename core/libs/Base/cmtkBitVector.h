@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkTypes.h>
-#include <cmtkSmartPtr.h>
+#include "Base/cmtkTypes.h"
+#include "System/cmtkSmartPtr.h"
 
 namespace
 cmtk

@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009 SRI International
+//  Copyright 2009-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -28,7 +28,7 @@
 //
 */
 
-#include <cmtkImageOperationRevert.h>
+#include "cmtkImageOperationRevert.h"
 
 cmtk::UniformVolume::SmartPtr
 cmtk::ImageOperationRevert::Apply( cmtk::UniformVolume::SmartPtr& volume )

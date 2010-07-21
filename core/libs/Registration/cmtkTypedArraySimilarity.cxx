@@ -30,11 +30,10 @@
 //
 */
 
-#include <cmtkTypedArraySimilarity.h>
+#include "cmtkTypedArraySimilarity.h"
 
-#include <cmtkHistogram.h>
-
-#include <cmtkMathUtil.h>
+#include "Base/cmtkHistogram.h"
+#include "Base/cmtkMathUtil.h"
 
 namespace
 cmtk

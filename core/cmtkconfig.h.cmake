@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -41,21 +42,12 @@
 #cmakedefine HAVE_DIRENT_H 1
 #cmakedefine HAVE_EXECINFO_H 1
 #cmakedefine HAVE_FCNTL_H 1
-#cmakedefine HAVE_FLOAT_H 1
 #cmakedefine HAVE_IEEEFP_H 1
 #cmakedefine HAVE_INTTYPES_H 1
-#cmakedefine HAVE_LIMITS_H 1
 #cmakedefine HAVE_MALLOC_H 1
 #cmakedefine HAVE_PTHREAD_H 1
-#cmakedefine HAVE_SIGNAL_H 1
-#cmakedefine HAVE_STDARG_H 1
-#cmakedefine HAVE_STDDEF_H 1
 #cmakedefine HAVE_STDINT_H 1
-#cmakedefine HAVE_STDIO_H 1
-#cmakedefine HAVE_STDLIB_H 1
-#cmakedefine HAVE_STRING_H 1
 #cmakedefine HAVE_TERMIOS_H 1
-#cmakedefine HAVE_TIME_H 1
 #cmakedefine HAVE_UNISTD_H 1
 #cmakedefine HAVE_VALUES_H 1
 #cmakedefine HAVE_VARARGS_H 1

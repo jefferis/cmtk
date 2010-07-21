@@ -29,16 +29,16 @@
 //
 */
 
-#include <cmtkVoxelRegistration.h>
+#include "Registration/cmtkVoxelRegistration.h"
 
-#include <cmtkVector.h>
-#include <cmtkXform.h>
-#include <cmtkAffineXform.h>
+#include "Base/cmtkVector.h"
+#include "Base/cmtkXform.h"
+#include "Base/cmtkAffineXform.h"
 
-#include <cmtkFunctional.h>
+#include "Base/cmtkFunctional.h"
 
-#include <cmtkTimers.h>
-#include <cmtkProgress.h>
+#include "System/cmtkTimers.h"
+#include "System/cmtkProgress.h"
 
 #ifdef HAVE_SYS_UTSNAME_H
 #  include <sys/utsname.h>

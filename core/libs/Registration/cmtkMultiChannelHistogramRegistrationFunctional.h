@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,13 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkMultiChannelRegistrationFunctional.h>
+#include "Registration/cmtkMultiChannelRegistrationFunctional.h"
 
-#include <cmtkHashMapSTL.h>
-#include <cmtkUniformVolume.h>
-#include <cmtkSmartPtr.h>
-#include <cmtkUniformVolumeInterpolator.h>
-#include <cmtkLinearInterpolator.h>
+#include <Base/cmtkHashMapSTL.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkUniformVolumeInterpolator.h"
+#include "Base/cmtkLinearInterpolator.h"
+
+#include "System/cmtkSmartPtr.h"
 
 #include <vector>
 
@@ -167,7 +168,7 @@ private:
 
 } // namespace cmtk
 
-#include <cmtkMultiChannelHistogramRegistrationFunctional.txx>
-#include <cmtkMultiChannelHistogramRegistrationFunctionalMetricData.txx>
+#include "cmtkMultiChannelHistogramRegistrationFunctional.txx"
+#include "cmtkMultiChannelHistogramRegistrationFunctionalMetricData.txx"
 
 #endif // #ifndef __cmtkMultiChannelHistogramRegistrationFunctional_h_included_

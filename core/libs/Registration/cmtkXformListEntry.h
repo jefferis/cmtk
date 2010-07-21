@@ -34,9 +34,9 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkXform.h>
-#include <cmtkAffineXform.h>
-#include <cmtkWarpXform.h>
+#include "Base/cmtkXform.h"
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkWarpXform.h"
 
 namespace
 cmtk

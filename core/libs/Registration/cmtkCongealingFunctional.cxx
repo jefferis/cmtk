@@ -30,10 +30,10 @@
 //
 */
 
-#include <cmtkCongealingFunctional.h>
+#include "cmtkCongealingFunctional.h"
 
-#include <cmtkMathUtil.h>
-#include <cmtkScaleHistogramValueTrait.h>
+#include "Base/cmtkMathUtil.h"
+#include "Registration/cmtkScaleHistogramValueTrait.h"
 
 namespace
 cmtk
@@ -506,8 +506,8 @@ CongealingFunctional<TXform>
 
 } // namespace cmtk
 
-#include <cmtkAffineXform.h>
-#include <cmtkSplineWarpXform.h>
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkSplineWarpXform.h"
 
 template class cmtk::CongealingFunctional<cmtk::AffineXform>;
 template class cmtk::CongealingFunctional<cmtk::SplineWarpXform>;

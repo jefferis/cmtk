@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkJointHistogram.h>
+#include "Base/cmtkJointHistogram.h"
 
 namespace
 cmtk

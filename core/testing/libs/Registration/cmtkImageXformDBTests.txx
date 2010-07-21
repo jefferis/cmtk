@@ -28,7 +28,7 @@
 //
 */
 
-#include <cmtkImageXformDB.h>
+#include "Registration/cmtkImageXformDB.h"
 
 // test database creation
 int

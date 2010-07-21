@@ -35,14 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkGroupwiseRegistrationFunctionalBase.h>
+#include "Registration/cmtkGroupwiseRegistrationFunctionalBase.h"
 
-#include <cmtkSmartPtr.h>
-#include <cmtkThreads.h>
-#include <cmtkThreadPool.h>
+#include "System/cmtkSmartPtr.h"
+#include "System/cmtkThreads.h"
+#include "System/cmtkThreadPool.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkXform.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkXform.h"
 
 #include <vector>
 

@@ -33,11 +33,9 @@
 #ifndef __cmtkXformList_h_included_
 #define __cmtkXformList_h_included_
 
-#ifdef HAVE_CMTKCONFIG_H
-#  include <cmtkconfig.h>
-#endif
+#include <cmtkconfig.h>
 
-#include <cmtkXformListEntry.h>
+#include "Registration/cmtkXformListEntry.h"
 
 namespace
 cmtk

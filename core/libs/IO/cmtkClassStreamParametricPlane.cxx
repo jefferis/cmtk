@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkClassStream.h>
+#include "cmtkClassStream.h"
 
 namespace
 cmtk

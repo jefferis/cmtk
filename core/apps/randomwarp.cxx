@@ -32,20 +32,19 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkConsole.h>
+#include "System/cmtkConsole.h"
 
-#include <cmtkVolumeIO.h>
-#include <cmtkSplineWarpXform.h>
-#include <cmtkClassStream.h>
-#include <cmtkMathUtil.h>
+#include "IO/cmtkVolumeIO.h"
+#include "IO/cmtkClassStream.h"
+
+#include "Base/cmtkSplineWarpXform.h"
+#include "Base/cmtkMathUtil.h"
 
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
 #endif
 
-#ifdef HAVE_TIME_H
-#  include <time.h>
-#endif
+#include <ctime>
 
 int
 main( const int argc, const char *argv[] )

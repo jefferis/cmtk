@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCannotBeCopied.h>
+#include "System/cmtkCannotBeCopied.h"
 
 #include <map>
 #include <list>
@@ -43,12 +43,12 @@
 #include <sstream>
 #include <vector>
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
-#include <cmtkSmartPtr.h>
-#include <cmtkConsole.h>
-#include <cmtkCommandLineTypeTraits.h>
+#include "System/cmtkSmartPtr.h"
+#include "System/cmtkConsole.h"
+#include "System/cmtkCommandLineTypeTraits.h"
 
 #include <mxml.h>
 
@@ -1192,10 +1192,10 @@ Console& operator<<( Console& console, CommandLine::Exception e );
 
 } // namespace cmtk
 
-#include <cmtkCommandLineItem.txx>
-#include <cmtkCommandLineOption.txx>
-#include <cmtkCommandLineConvert.txx>
-#include <cmtkCommandLineList.txx>
-#include <cmtkCommandLineVector.txx>
+#include "cmtkCommandLineItem.txx"
+#include "cmtkCommandLineOption.txx"
+#include "cmtkCommandLineConvert.txx"
+#include "cmtkCommandLineList.txx"
+#include "cmtkCommandLineVector.txx"
 
 #endif // #ifndef __cmtkCommandLine_h_included_

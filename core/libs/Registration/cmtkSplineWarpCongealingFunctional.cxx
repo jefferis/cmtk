@@ -30,13 +30,13 @@
 //
 */
 
-#include <cmtkSplineWarpCongealingFunctional.h>
+#include "cmtkSplineWarpCongealingFunctional.h"
 
-#include <cmtkMathUtil.h>
-#include <cmtkMatrix.h>
+#include "Base/cmtkMathUtil.h"
+#include "Base/cmtkMatrix.h"
 
-#include <cmtkThreadPool.h>
-#include <cmtkThreadParameterArray.h>
+#include "System/cmtkThreadPool.h"
+#include "System/cmtkThreadParameterArray.h"
 
 #include <algorithm>
 

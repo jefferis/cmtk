@@ -30,8 +30,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkTypedArrayNoiseEstimatorBrummer.h>
-#include <cmtkHistogram.h>
+#include "Base/cmtkHistogram.h"
+#include "Unstable/cmtkTypedArrayNoiseEstimatorBrummer.h"
 
 namespace 
 cmtk

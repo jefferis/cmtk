@@ -35,13 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkAffineRegistration.h>
-#include <cmtkAffineXform.h>
-#include <cmtkXform.h>
-#include <cmtkUniformVolume.h>
+#include "Registration/cmtkAffineRegistration.h"
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkXform.h"
+#include "Base/cmtkUniformVolume.h"
+
+#include "Numerics/ap.h"
 
 #include <vector>
-#include <ap.h>
 
 namespace
 cmtk

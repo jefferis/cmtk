@@ -34,8 +34,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkFilter.h>
-#include <cmtkImage.h>
+#include "Pipeline/cmtkFilter.h"
+#include "Pipeline/cmtkImage.h"
 
 namespace
 cmtk

@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkUniformVolumePainter.h>
+#include "cmtkUniformVolumePainter.h"
 
 void
 cmtk::UniformVolumePainter::DrawSphere

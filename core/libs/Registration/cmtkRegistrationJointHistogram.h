@@ -35,9 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkVoxelMatchingMetric.h>
-#include <cmtkJointHistogram.h>
-#include <cmtkInterpolator.h>
+#include "Base/cmtkJointHistogram.h"
+#include "Base/cmtkInterpolator.h"
+
+#include "Registration/cmtkVoxelMatchingMetric.h"
 
 #ifndef CMTK_HISTOGRAM_AUTOBINS
 /// Constant for number of bins to be determined automatically.

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,14 +32,14 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkTimers.h>
-#include <cmtkMemory.h>
-#include <cmtkImagePairAffineRegistrationCommandLine.h>
+#include "System/cmtkTimers.h"
+#include "System/cmtkMemory.h"
+#include "System/cmtkProgressConsole.h"
 
-#include <stdio.h>
-#include <string.h>
+#include "Registration/cmtkImagePairAffineRegistrationCommandLine.h"
 
-#include <cmtkProgressConsole.h>
+#include <cstdio>
+#include <cstring>
 
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 namespace cmtk

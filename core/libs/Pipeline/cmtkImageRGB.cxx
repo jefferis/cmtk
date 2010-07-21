@@ -31,7 +31,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkImageRGB.h>
+#include "Pipeline/cmtkImageRGB.h"
 
 namespace
 cmtk

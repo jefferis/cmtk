@@ -32,17 +32,18 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkConsole.h>
-#include <cmtkCommandLine.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkCommandLine.h"
 
-#include <cmtkTypedArray.h>
-#include <cmtkAffineXform.h>
-#include <cmtkSplineWarpXform.h>
-#include <cmtkDeformationField.h>
+#include "Base/cmtkTypedArray.h"
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkSplineWarpXform.h"
+#include "Base/cmtkDeformationField.h"
 
-#include <cmtkVolumeIO.h>
-#include <cmtkXformIO.h>
-#include <cmtkXformList.h>
+#include "IO/cmtkVolumeIO.h"
+#include "IO/cmtkXformIO.h"
+
+#include "Registration/cmtkXformList.h"
 
 bool Verbose = false;
 

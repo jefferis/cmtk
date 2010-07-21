@@ -28,7 +28,7 @@
 //
 */
 
-#include <cmtkCommandLine.h>
+#include "cmtkCommandLine.h"
 
 #include <sstream>
 

@@ -30,17 +30,17 @@
 //
 */
 
-#include <cmtkFunctionalAffine2D.h>
+#include "cmtkFunctionalAffine2D.h"
 
-#include <cmtkConsole.h>
+#include "System/cmtkConsole.h"
 
-#include <cmtkScalarImage.h>
-#include <cmtkTypedArraySimilarity.h>
-#include <cmtkScalarImageSimilarity.h>
+#include "Base/cmtkScalarImage.h"
+#include "Base/cmtkMathUtil.h"
 
-#include <cmtkMathUtil.h>
+#include "Registration/cmtkTypedArraySimilarity.h"
+#include "Registration/cmtkScalarImageSimilarity.h"
 
-#include <cmtkPGM.h>
+#include "IO/cmtkPGM.h"
 
 namespace
 cmtk

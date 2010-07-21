@@ -32,28 +32,26 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkConsole.h>
-#include <cmtkCommandLine.h>
-#include <cmtkVolumeIO.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkCommandLine.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkUniformVolumeInterpolator.h>
-#include <cmtkLinearInterpolator.h>
-#include <cmtkCubicInterpolator.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkUniformVolumeInterpolator.h"
+#include "Base/cmtkLinearInterpolator.h"
+#include "Base/cmtkCubicInterpolator.h"
+#include "Base/cmtkUniformVolumeFilter.h"
 
-#include <cmtkUniformVolumeFilter.h>
+#include "Registration/cmtkMultiChannelRMIRegistrationFunctional.h"
+#include "Registration/cmtkMultiChannelHistogramRegistrationFunctional.h"
+#include "Registration/cmtkAffineMultiChannelRegistrationFunctional.h"
+#include "Registration/cmtkSplineWarpMultiChannelRegistrationFunctional.h"
+#include "Registration/cmtkSplineWarpMultiChannelIntensityCorrectionRegistrationFunctional.h"
 
-#include <cmtkMultiChannelRMIRegistrationFunctional.h>
-#include <cmtkMultiChannelHistogramRegistrationFunctional.h>
+#include "Registration/cmtkBestDirectionOptimizer.h"
+#include "Registration/cmtkRegistrationCallback.h"
 
-#include <cmtkAffineMultiChannelRegistrationFunctional.h>
-#include <cmtkSplineWarpMultiChannelRegistrationFunctional.h>
-#include <cmtkSplineWarpMultiChannelIntensityCorrectionRegistrationFunctional.h>
-
-#include <cmtkBestDirectionOptimizer.h>
-#include <cmtkRegistrationCallback.h>
-
-#include <cmtkClassStreamMultiChannelRegistration.h>
+#include "IO/cmtkClassStreamMultiChannelRegistration.h"
+#include "IO/cmtkVolumeIO.h"
 
 #include <list>
 #include <queue>

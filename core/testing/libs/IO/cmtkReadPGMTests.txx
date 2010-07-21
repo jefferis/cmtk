@@ -29,8 +29,8 @@
 //
 */
 
-#include <cmtkPGM.h>
-#include <cmtkScalarImage.h>
+#include "IO/cmtkPGM.h"
+#include "Base/cmtkScalarImage.h"
 
 // test whether  we can read 8bit and 16bit PGM files.
 int

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,9 +30,26 @@
 //
 */
 
-#include <cmtkQtSimpleFusionMainWindow.h>
+#include "cmtkQtSimpleFusionMainWindow.h"
 
-#include <cmtkQtSimpleFusionApp.h>
+#include "cmtkQtSimpleFusionApp.h"
+#include "cmtkQtFusionSlicer.h"
+#include "cmtkQtSeparateView.h"
+#include "cmtkQtFusionAlpha.h"
+#include "cmtkQtFusionEdge.h"
+#include "cmtkQtVolumeProperties.h"
+#include "cmtkQtStudyWidget.h"
+
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkSegmentationLabel.h"
+#include "Base/cmtkTypedArrayFunctionHistogramEqualization.h"
+#include "Base/cmtkDataGridFilter.h"
+
+#include "IO/cmtkClassStreamStudyList.h"
+#include "IO/cmtkResourceFile.h"
+#include "IO/cmtkSegmentationLabelIO.h"
+
+#include "Qt/cmtkQtTriplanarViewer.h"
 
 #include <qapplication.h>
 #include <qmessagebox.h>
@@ -42,25 +60,6 @@
 
 #include <iostream>
 #include <fstream>
-
-#include <cmtkAffineXform.h>
-#include <cmtkClassStreamStudyList.h>
-#include <cmtkResourceFile.h>
-
-#include <cmtkQtFusionSlicer.h>
-#include <cmtkQtTriplanarViewer.h>
-#include <cmtkQtVolumeProperties.h>
-#include <cmtkQtStudyWidget.h>
-
-#include <cmtkQtSeparateView.h>
-#include <cmtkQtFusionAlpha.h>
-#include <cmtkQtFusionEdge.h>
-
-#include <cmtkSegmentationLabel.h>
-#include <cmtkSegmentationLabelIO.h>
-
-#include <cmtkTypedArrayFunctionHistogramEqualization.h>
-#include <cmtkDataGridFilter.h>
 
 namespace
 cmtk

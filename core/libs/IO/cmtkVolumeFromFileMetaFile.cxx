@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,16 +30,15 @@
 //
 */
 
-#include <cmtkVolumeFromFile.h>
+#include "cmtkVolumeFromFile.h"
 
-#include <cmtkConsole.h>
-#include <cmtkUniformVolume.h>
+#include "System/cmtkCompressedStream.h"
+#include "System/cmtkConsole.h"
+#include "Base/cmtkUniformVolume.h"
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
-#include <cmtkCompressedStream.h>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
 
 namespace
 cmtk

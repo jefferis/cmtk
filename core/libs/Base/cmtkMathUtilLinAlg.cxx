@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,18 +30,18 @@
 //
 */
 
-#include <cmtkMathUtil.h>
+#include "Base/cmtkMathUtil.h"
+#include "Base/cmtkMatrix.h"
 
-#include <cmtkMatrix.h>
-#include <cmtkConsole.h>
+#include "System/cmtkConsole.h"
 
-#include <math.h>
+#include "Numerics/sevd.h"
+#include "Numerics/spddet.h"
+#include "Numerics/svd.h"
+
+#include <cmath>
 #include <algorithm>
 #include <vector>
-
-#include <sevd.h>
-#include <spddet.h>
-#include <svd.h>
 
 namespace
 cmtk

@@ -30,9 +30,9 @@
 //
 */
 
-#include <cmtkStudyImageSet.h>
+#include "cmtkStudyImageSet.h"
 
-#include <cmtkVolumeFromStudy.h>
+#include "IO/cmtkVolumeFromStudy.h"
 
 namespace
 cmtk

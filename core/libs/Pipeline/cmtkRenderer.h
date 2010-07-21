@@ -32,8 +32,8 @@
 #ifndef __cmtkRenderer_h_included_
 #define __cmtkRenderer_h_included_
 
-#include <cmtkPipelineObject.h>
-#include <cmtkImageRGB.h>
+#include "Pipeline/cmtkPipelineObject.h"
+#include "Pipeline/cmtkImageRGB.h"
 
 namespace
 cmtk

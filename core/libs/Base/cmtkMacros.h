@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,11 +35,11 @@
 
 #include <cmtkconfig.h>
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 #include <vector>
 
-#include <cmtkTypes.h>
+#include "Base/cmtkTypes.h"
 
 /** Trap for abstract class member functions.
  * In DEBUG mode (that is, when compiled with DEBUG defined, a call to this

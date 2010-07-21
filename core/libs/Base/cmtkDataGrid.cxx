@@ -30,14 +30,12 @@
 //
 */
 
-#include <cmtkDataGrid.h>
+#include "cmtkDataGrid.h"
 
-#ifdef HAVE_STDLIB_H
-#  include <stdlib.h>
-#endif
+#include <cstdlib>
 
-#include <cmtkConsole.h>
-#include <cmtkProgress.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkProgress.h"
 
 namespace
 cmtk

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,9 +30,12 @@
 //
 */
 
-#include <cmtkQtTriplanarWindow.h>
+#include "cmtkQtTriplanarWindow.h"
 
-#include <cmtkQtIcons.h>
+#include "Base/cmtkLandmark.h"
+#include "Base/cmtkLandmarkList.h"
+#include "IO/cmtkClassStream.h"
+#include "Qt/cmtkQtIcons.h"
 
 #include <qapplication.h>
 #include <qmessagebox.h>
@@ -46,10 +49,6 @@
 #include <QGridLayout>
 #include <QPixmap>
 #include <QPainter>
-
-#include <cmtkLandmark.h>
-#include <cmtkLandmarkList.h>
-#include <cmtkClassStream.h>
 
 #include <iostream>
 #include <fstream>

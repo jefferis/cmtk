@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkSmartPtr.h>
-#include <cmtkLandmark.h>
+#include "System/cmtkSmartPtr.h"
+#include "Base/cmtkLandmark.h"
 
 #include <list>
 

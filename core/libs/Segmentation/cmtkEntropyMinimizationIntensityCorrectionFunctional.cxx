@@ -30,9 +30,9 @@
 //
 */
 
-#include <cmtkEntropyMinimizationIntensityCorrectionFunctional.h>
+#include "cmtkEntropyMinimizationIntensityCorrectionFunctional.h"
 
-#include <cmtkConsole.h>
+#include "System/cmtkConsole.h"
 
 namespace
 cmtk

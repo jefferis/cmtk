@@ -35,13 +35,15 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkInverseInterpolationVolumeReconstructionBase.h>
+#include "Recon/cmtkInverseInterpolationVolumeReconstructionBase.h"
 
-#include <cmtkAffineRegistration.h>
-#include <cmtkAffineXform.h>
-#include <cmtkUniformVolume.h>
+#include "Registration/cmtkAffineRegistration.h"
 
-#include <ap.h>
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkUniformVolume.h"
+
+#include "Numerics/ap.h"
+
 #include <vector>
 
 namespace
@@ -149,7 +151,7 @@ private:
   friend class Self::FunctionAndGradient;
 };
 
-#include <cmtkDeblurringVolumeReconstruction.txx>
+#include "cmtkDeblurringVolumeReconstruction.txx"
 
 //@}
 

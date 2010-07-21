@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkTypedArrayFunctionHistogramEqualization.h>
+#include "cmtkTypedArrayFunctionHistogramEqualization.h"
 
 #include <vector>
 #include <algorithm>

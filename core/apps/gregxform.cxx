@@ -32,15 +32,15 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCommandLine.h>
-#include <cmtkConsole.h>
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkConsole.h"
 
-#include <cmtkXformIO.h>
+#include "IO/cmtkXformIO.h"
 
-#include <cmtkAffineXform.h>
-#include <cmtkWarpXform.h>
-#include <cmtkSplineWarpXform.h>
-#include <cmtkMathUtil.h>
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkWarpXform.h"
+#include "Base/cmtkSplineWarpXform.h"
+#include "Base/cmtkMathUtil.h"
 
 #include <cstdio>
 #include <cmath>

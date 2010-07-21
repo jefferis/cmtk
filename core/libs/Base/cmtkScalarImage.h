@@ -35,19 +35,18 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkMacros.h>
+#include "Base/cmtkMacros.h"
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkTypedArray.h"
+#include "Base/cmtkRegion.h"
+#include "Base/cmtkFixedVector.h"
+#include "Base/cmtkMatrix3x3.h"
+#include "Base/cmtkInterpolator.h"
 
-#include <cmtkTypes.h>
-#include <cmtkTypedArray.h>
-#include <cmtkRegion.h>
-#include <cmtkFixedVector.h>
-#include <cmtkMatrix3x3.h>
-#include <cmtkInterpolator.h>
-
-#include <assert.h>
+#include <cassert>
 #include <vector>
 
-#include <cmtkSmartPtr.h>
+#include "System/cmtkSmartPtr.h"
 
 namespace
 cmtk

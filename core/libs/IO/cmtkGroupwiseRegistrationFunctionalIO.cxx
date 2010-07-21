@@ -30,11 +30,11 @@
 //
 */
 
-#include <cmtkGroupwiseRegistrationFunctionalIO.h>
+#include "cmtkGroupwiseRegistrationFunctionalIO.h"
 
-#include <cmtkAffineXform.h>
-#include <cmtkSplineWarpXform.h>
-#include <cmtkClassStreamAffineXform.h>
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkSplineWarpXform.h"
+#include "IO/cmtkClassStreamAffineXform.h"
 
 namespace
 cmtk

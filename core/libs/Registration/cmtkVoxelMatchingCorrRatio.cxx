@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkVoxelMatchingCorrRatio.h>
+#include "cmtkVoxelMatchingCorrRatio.h"
 
 namespace
 cmtk

@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009,2010 SRI International
+//  Copyright 2009-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -28,9 +28,9 @@
 //
 */
 
-#include <cmtkImageOperationMedialSkeleton.h>
+#include "cmtkImageOperationMedialSkeleton.h"
 
-#include <cmtkEigenSystemSymmetricMatrix3x3.h>
+#include "Base/cmtkEigenSystemSymmetricMatrix3x3.h"
 
 cmtk::UniformVolume::SmartPtr  
 cmtk::ImageOperationMedialSkeleton

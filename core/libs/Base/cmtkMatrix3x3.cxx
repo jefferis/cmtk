@@ -30,13 +30,13 @@
 //
 */
 
-#include <cmtkMatrix3x3.h>
+#include "cmtkMatrix3x3.h"
 
-#include <string.h>
-#include <math.h>
+#include "System/cmtkConsole.h"
+#include "Base/cmtkMathUtil.h"
 
-#include <cmtkConsole.h>
-#include <cmtkMathUtil.h>
+#include <cstring>
+#include <cmath>
 
 namespace
 cmtk

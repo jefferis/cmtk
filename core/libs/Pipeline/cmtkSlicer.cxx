@@ -30,15 +30,15 @@
 //
 */
 
-#include <cmtkSlicer.h>
+#include "Pipeline/cmtkSlicer.h"
 
-#include <cmtkAffineXform.h>
-#include <cmtkUniformVolumeInterpolator.h>
-#include <cmtkLinearInterpolator.h>
-#include <cmtkCubicInterpolator.h>
-#include <cmtkSincInterpolator.h>
-#include <cmtkNearestNeighborInterpolator.h>
-#include <cmtkUniformVolumeInterpolatorPartialVolume.h>
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkUniformVolumeInterpolator.h"
+#include "Base/cmtkLinearInterpolator.h"
+#include "Base/cmtkCubicInterpolator.h"
+#include "Base/cmtkSincInterpolator.h"
+#include "Base/cmtkNearestNeighborInterpolator.h"
+#include "Base/cmtkUniformVolumeInterpolatorPartialVolume.h"
 
 namespace 
 cmtk

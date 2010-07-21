@@ -30,18 +30,18 @@
 //
 */
 
-#include <cmtkVoxelMatchingAffineFunctional.h>
+#include "Registration/cmtkVoxelMatchingAffineFunctional.h"
 
 #ifdef CMTK_BUILD_SMP
-#  include <cmtkThreads.h>
+#  include "System/cmtkThreads.h"
 #endif
 
-#include <cmtkVoxelMatchingAffineFunctionalTemplate.h>
-#include <cmtkVoxelMatchingMutInf.h>
-#include <cmtkVoxelMatchingNormMutInf.h>
-#include <cmtkVoxelMatchingCorrRatio.h>
-#include <cmtkVoxelMatchingMeanSquaredDifference.h>
-#include <cmtkVoxelMatchingCrossCorrelation.h>
+#include "Registration/cmtkVoxelMatchingAffineFunctionalTemplate.h"
+#include "Registration/cmtkVoxelMatchingMutInf.h"
+#include "Registration/cmtkVoxelMatchingNormMutInf.h"
+#include "Registration/cmtkVoxelMatchingCorrRatio.h"
+#include "Registration/cmtkVoxelMatchingMeanSquaredDifference.h"
+#include "Registration/cmtkVoxelMatchingCrossCorrelation.h"
 
 namespace
 cmtk

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,8 +32,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkQtSimpleFusionMainWindow.h>
-#include <cmtkQtFusionGlobal.h>
+#include "cmtkQtSimpleFusionMainWindow.h"
+#include "cmtkQtFusionGlobal.h"
 
 #include <qapplication.h>
 #include <qmessagebox.h>

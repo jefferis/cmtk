@@ -30,21 +30,23 @@
 //
 */
 
-#include <cmtkVolumeFromFile.h>
+#include "cmtkVolumeFromFile.h"
 
-#include <cmtkVolumeIO.h>
-#include <cmtkAnalyze.h>
-#include <cmtkFileHeader.h>
-#include <cmtkConsole.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkCompressedStream.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkAnatomicalOrientation.h>
+#include "IO/cmtkVolumeIO.h"
+#include "IO/cmtkAnalyze.h"
+#include "IO/cmtkFileHeader.h"
 
-#include <nifti1.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkAnatomicalOrientation.h"
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include "nifti1.h"
+
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
 
 #ifdef HAVE_ZLIB
 #  include <zlib.h>
@@ -53,8 +55,6 @@
 #ifdef HAVE_SYS_STAT_H
 #  include <sys/stat.h>
 #endif
-
-#include <cmtkCompressedStream.h>
 
 namespace
 cmtk

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,9 +30,9 @@
 //
 */
 
-#include <cmtkQtWindowLevelDialog.h>
+#include "cmtkQtWindowLevelDialog.h"
 
-#include <cmtkQtIcons.h>
+#include "Qt/cmtkQtIcons.h"
 
 #include <qlayout.h>
 #include <qboxlayout.h>

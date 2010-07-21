@@ -30,7 +30,9 @@
 //
 */
 
-#include <cmtkVolumeAxesHash.h>
+#include "cmtkVolumeAxesHash.h"
+
+#include <cassert>
 
 namespace
 cmtk
@@ -115,16 +117,13 @@ VolumeAxesHash::VolumeAxesHash
 
 void
 VolumeAxesHash::MakeHash
-( const UniformVolume& volume, const Vector3D& offset, const Vector3D& dX, const Vector3D& dY, const Vector3D& dZ )
+( const UniformVolume& volume, const UniformVolume::SpaceVectorType& offset, const UniformVolume::SpaceVectorType& dX, const UniformVolume::SpaceVectorType& dY, const UniformVolume::SpaceVectorType& dZ )
 {
   int DimsX = volume.m_Dims[0], DimsY = volume.m_Dims[1], DimsZ = volume.m_Dims[2];
   
-  this->m_Hash = Memory::AllocateArray<Vector3D*>( 3 );
-  assert( this->m_Hash != NULL );
-
   for ( int dim = 0; dim<3; ++dim ) 
     {
-    this->m_Hash[dim] = Memory::AllocateArray<Vector3D>( volume.m_Dims[dim] );
+    this->m_Hash[dim] = Memory::AllocateArray<UniformVolume::SpaceVectorType>( volume.m_Dims[dim] );
     assert( this->m_Hash[dim] != NULL );
     }
 
@@ -143,14 +142,11 @@ VolumeAxesHash::MakeHash
 
 VolumeAxesHash::~VolumeAxesHash()
 {
-  assert( this->m_Hash != NULL );
-
   for ( int dim = 0; dim<3; ++dim ) 
     {
     assert( this->m_Hash[dim] != NULL );
     delete[] this->m_Hash[dim];
     }
-  delete[] this->m_Hash;
 }
 
 } // namespace cmtk

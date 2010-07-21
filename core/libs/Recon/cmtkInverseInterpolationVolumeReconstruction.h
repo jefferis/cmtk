@@ -35,14 +35,17 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkInverseInterpolationVolumeReconstructionBase.h>
+#include "Recon/cmtkInverseInterpolationVolumeReconstructionBase.h"
 
-#include <cmtkAffineRegistration.h>
-#include <cmtkAffineXform.h>
-#include <cmtkUniformVolume.h>
-#include <cmtkProgress.h>
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkUniformVolume.h"
 
-#include <ap.h>
+#include "Registration/cmtkAffineRegistration.h"
+
+#include "System/cmtkProgress.h"
+
+#include "Numerics/ap.h"
+
 #include <vector>
 
 namespace
@@ -142,7 +145,7 @@ private:
 
 } // namespace cmtk
 
-#include <cmtkInverseInterpolationVolumeReconstruction.txx>
+#include "cmtkInverseInterpolationVolumeReconstruction.txx"
 
 #endif // #ifndef __cmtkInverseInterpolationVolumeReconstruction_h_included_
 

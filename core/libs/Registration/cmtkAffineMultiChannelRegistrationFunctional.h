@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,14 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkTemplateMultiChannelRegistrationFunctional.h>
+#include "Registration/cmtkTemplateMultiChannelRegistrationFunctional.h"
 
-#include <cmtkAffineXform.h>
-#include <cmtkVolumeClipping.h>
-#include <cmtkVolumeAxesHash.h>
+#include "Base/cmtkAffineXform.h"
+#include "Base/cmtkVolumeClipping.h"
+#include "Base/cmtkVolumeAxesHash.h"
 
-#include <cmtkThreads.h>
-#include <cmtkMutexLock.h>
+#include "System/cmtkThreads.h"
+#include "System/cmtkMutexLock.h"
 
 namespace
 cmtk
@@ -199,6 +199,6 @@ private:
 
 } // namespace cmtk
 
-#include <cmtkAffineMultiChannelRegistrationFunctional.txx>
+#include "cmtkAffineMultiChannelRegistrationFunctional.txx"
 
 #endif // #ifndef __cmtkAffineMultiChannelRegistrationFunctional_h_included_

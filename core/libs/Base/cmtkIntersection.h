@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -32,7 +33,7 @@
 #ifndef __cmtkIntersection_h_included_
 #define __cmtkIntersection_h_included_
 
-#include <cmtkVector3D.h>
+#include "Base/cmtkVector3D.h"
 
 namespace
 cmtk

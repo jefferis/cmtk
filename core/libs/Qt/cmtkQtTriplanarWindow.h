@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,16 +49,16 @@
 #include <QGridLayout>
 #include <QActionGroup>
 
-#include <cmtkMacros.h>
-#include <cmtkStudy.h>
+#include "Base/cmtkMacros.h"
+#include "IO/cmtkStudy.h"
 
-#include <cmtkImage.h>
-#include <cmtkColormap.h>
-#include <cmtkImageToImageRGB.h>
+#include "Pipeline/cmtkImage.h"
+#include "Pipeline/cmtkColormap.h"
+#include "Pipeline/cmtkImageToImageRGB.h"
 
-#include <cmtkQtProgress.h>
-#include <cmtkQtScrollRenderView.h>
-#include <cmtkQtWindowLevelControls.h>
+#include "Qt/cmtkQtProgress.h"
+#include "Qt/cmtkQtScrollRenderView.h"
+#include "Qt/cmtkQtWindowLevelControls.h"
 
 namespace
 cmtk

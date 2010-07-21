@@ -32,22 +32,21 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkConsole.h>
-#include <cmtkCommandLine.h>
-#include <cmtkTimers.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkTimers.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkFilterVolume.h>
-#include <cmtkTypedArrayFunctionHistogramMatching.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkFilterVolume.h"
+#include "Base/cmtkTypedArrayFunctionHistogramMatching.h"
+#include "Base/cmtkWarpXform.h"
 
-#include <cmtkVolumeIO.h>
-#include <cmtkClassStream.h>
+#include "Registration/cmtkSplineWarpCongealingFunctional.h"
+#include "Registration/cmtkBestDirectionOptimizer.h"
+#include "Registration/cmtkGroupwiseRegistrationOutput.h"
 
-#include <cmtkWarpXform.h>
-#include <cmtkSplineWarpCongealingFunctional.h>
-#include <cmtkBestDirectionOptimizer.h>
-
-#include <cmtkGroupwiseRegistrationOutput.h>
+#include "IO/cmtkVolumeIO.h"
+#include "IO/cmtkClassStream.h"
 
 #include <vector>
 

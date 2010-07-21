@@ -32,30 +32,30 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkConsole.h>
-#include <cmtkCommandLine.h>
-#include <cmtkProgressConsole.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkProgressConsole.h"
 
-#include <cmtkXform.h>
-#include <cmtkUniformVolume.h>
-#include <cmtkTypedArray.h>
+#include "Base/cmtkXform.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkTypedArray.h"
 
-#include <cmtkXformIO.h>
-#include <cmtkVolumeIO.h>
+#include "Base/cmtkUniformVolumeInterpolatorPartialVolume.h"
+#include "Base/cmtkSincInterpolator.h"
+#include "Base/cmtkLinearInterpolator.h"
+#include "Base/cmtkCubicInterpolator.h"
+#include "Base/cmtkNearestNeighborInterpolator.h"
+#include "Base/cmtkAnatomicalOrientation.h"
 
-#include <cmtkUniformVolumeInterpolatorPartialVolume.h>
-#include <cmtkSincInterpolator.h>
-#include <cmtkLinearInterpolator.h>
-#include <cmtkCubicInterpolator.h>
-#include <cmtkNearestNeighborInterpolator.h>
+#include "IO/cmtkXformIO.h"
+#include "IO/cmtkVolumeIO.h"
 
-#include <cmtkReformatVolume.h>
-#include <cmtkReformatVolumeJacobian.cxx>
-#include <cmtkReformatVolumePlain.cxx>
-#include <cmtkAnatomicalOrientation.h>
+#include "Registration/cmtkReformatVolume.h"
+#include "Registration/cmtkReformatVolumeJacobian.cxx"
+#include "Registration/cmtkReformatVolumePlain.cxx"
 
 #ifdef CMTK_USE_SQLITE
-#  include <cmtkImageXformDB.h>
+#  include "Registration/cmtkImageXformDB.h"
 #endif
 
 #ifdef CMTK_SINGLE_COMMAND_BINARY

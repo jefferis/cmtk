@@ -30,18 +30,13 @@
 //
 */
 
-#include <cmtkStackBacktrace.h>
+#include "cmtkStackBacktrace.h"
 
-#ifdef HAVE_STDIO_H
-#  include <stdio.h>
-#endif
+#include <cstdlib>
+#include <cstdio>
 
 #ifdef HAVE_EXECINFO_H
 #  include <execinfo.h>
-#endif
-
-#ifdef HAVE_STDLIB_H
-#  include <stdlib.h>
 #endif
 
 namespace
@@ -51,12 +46,9 @@ cmtk
 /** \addtogroup System */
 //@{
 
-#ifdef HAVE_SIGNAL_H
-
 StackBacktrace
 ::StackBacktrace()
 {
-#ifdef HAVE_SIGNAL_H
 #ifndef _MSC_VER
   struct sigaction sa;
 
@@ -68,7 +60,6 @@ StackBacktrace
   sigaction(SIGUSR1, &sa, NULL);
 #else
 #endif // #ifndef _MSC_VER
-#endif
 }
 
 int StackBacktrace::ExitCode = 1;
@@ -113,5 +104,4 @@ cmtkStackBacktraceSignalHandler
   exit( cmtk::StackBacktrace::ExitCode );
 }
 #endif // #ifndef _MSC_VER
-#endif
 

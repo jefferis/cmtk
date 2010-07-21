@@ -32,18 +32,18 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkConsole.h>
-#include <cmtkCommandLine.h>
-#include <cmtkProgressConsole.h>
-#include <cmtkMemory.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkProgressConsole.h"
+#include "System/cmtkMemory.h"
 
-#include <cmtkTypedArray.h>
-#include <cmtkUniformVolume.h>
-#include <cmtkGeneralLinearModel.h>
+#include "Base/cmtkTypedArray.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkGeneralLinearModel.h"
 
-#include <cmtkVolumeIO.h>
+#include "IO/cmtkVolumeIO.h"
 
-#include <cmtkMathFunctionWrappers.h>
+#include "Base/cmtkMathFunctionWrappers.h"
 
 #include <iostream>
 #include <fstream>
@@ -53,9 +53,8 @@
 #include <list>
 #include <set>
 #include <string>
-
-#include <stdio.h>
-#include <limits.h>
+#include <cstdio>
+#include <climits>
 
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 namespace cmtk

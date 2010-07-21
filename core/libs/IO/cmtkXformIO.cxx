@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -29,17 +30,17 @@
 //
 */
 
-#include <cmtkXformIO.h>
+#include "cmtkXformIO.h"
 
-#include <cmtkConsole.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkFileUtil.h"
 
-#include <cmtkMountPoints.h>
-#include <cmtkFileFormat.h>
-#include <cmtkClassStream.h>
-#include <cmtkClassStreamAffineXform.h>
-#include <cmtkTypedStreamStudylist.h>
-#include <cmtkFileUtil.h>
-#include <cmtkAffineXformITKIO.h>
+#include "IO/cmtkMountPoints.h"
+#include "IO/cmtkFileFormat.h"
+#include "IO/cmtkClassStream.h"
+#include "IO/cmtkClassStreamAffineXform.h"
+#include "IO/cmtkTypedStreamStudylist.h"
+#include "IO/cmtkAffineXformITKIO.h"
 
 namespace
 cmtk

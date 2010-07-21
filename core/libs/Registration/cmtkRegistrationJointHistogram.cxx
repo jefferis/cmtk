@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkRegistrationJointHistogram.h>
+#include "cmtkRegistrationJointHistogram.h"
 
 namespace
 cmtk

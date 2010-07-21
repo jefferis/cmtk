@@ -35,17 +35,17 @@
 
 #include <cmtkconfig.h>
 
+#include "Base/cmtkFunctional.h"
+#include "System/cmtkSmartPtr.h"
+#include "System/cmtkThreads.h"
+
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkDataGrid.h"
+#include "Base/cmtkHistogram.h"
+#include "Base/cmtkLogHistogram.h"
+#include "Base/cmtkTemplateArray.h"
+
 #include <vector>
-
-#include <cmtkFunctional.h>
-#include <cmtkSmartPtr.h>
-#include <cmtkThreads.h>
-
-#include <cmtkUniformVolume.h>
-#include <cmtkDataGrid.h>
-#include <cmtkHistogram.h>
-#include <cmtkLogHistogram.h>
-#include <cmtkTemplateArray.h>
 
 namespace
 cmtk

@@ -30,20 +30,19 @@
 //
 */
 
-#include <cmtkVolumeIO.h>
+#include "cmtkVolumeIO.h"
 
-#include <cmtkMountPoints.h>
-#include <cmtkStudy.h>
-#include <cmtkClassStream.h>
-#include <cmtkVolumeFromFile.h>
-#include <cmtkPGM.h>
+#include "IO/cmtkMountPoints.h"
+#include "IO/cmtkStudy.h"
+#include "IO/cmtkClassStream.h"
+#include "IO/cmtkVolumeFromFile.h"
+#include "IO/cmtkPGM.h"
 
-#include <cmtkStrUtility.h>
-#include <cmtkFileUtil.h>
-#include <cmtkProgress.h>
-#include <cmtkTypes.h>
+#include "System/cmtkStrUtility.h"
+#include "System/cmtkFileUtil.h"
+#include "System/cmtkProgress.h"
 
-#include <cstdio>
+#include "Base/cmtkTypes.h"
 
 #ifdef HAVE_UNISTD_H
 #  include <unistd.h>
@@ -53,11 +52,9 @@
 #  include <libgen.h>
 #endif
 
-#ifdef HAVE_LIMITS_H
-#  include <limits.h>
-#endif
-
-#include <math.h>
+#include <climits>
+#include <cmath>
+#include <cstdio>
 
 namespace
 cmtk

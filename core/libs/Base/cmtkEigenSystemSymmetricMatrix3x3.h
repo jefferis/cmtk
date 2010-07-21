@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkMatrix3x3.h>
-#include <cmtkFixedVector.h>
+#include "Base/cmtkMatrix3x3.h"
+#include "Base/cmtkFixedVector.h"
 
 namespace
 cmtk
@@ -93,6 +93,6 @@ private:
 
 } // namespace cmtk
 
-#include <cmtkEigenSystemSymmetricMatrix3x3.txx>
+#include "cmtkEigenSystemSymmetricMatrix3x3.txx"
 
 #endif // #ifndef __cmtkEigenSystemSymmetricMatrix3x3_h_included_

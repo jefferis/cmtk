@@ -38,7 +38,7 @@
 
 #include <mpi.h>
 
-#include <cmtkSmartPtr.h>
+#include "System/cmtkSmartPtr.h"
 
 namespace cmtk
 {

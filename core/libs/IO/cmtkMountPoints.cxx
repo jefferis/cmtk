@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,14 +30,11 @@
 //
 */
 
-#include <cmtkMountPoints.h>
+#include "cmtkMountPoints.h"
 
-#include <stdlib.h>
-#include <string.h>
-
-#ifdef HAVE_LIMITS_H
-#  include <limits.h>
-#endif
+#include <cstdlib>
+#include <cstring>
+#include <climits>
 
 namespace
 cmtk

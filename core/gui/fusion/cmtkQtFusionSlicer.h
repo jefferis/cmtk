@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -38,15 +39,17 @@
 #include <qcombobox.h>
 #include <qstringlist.h>
 
-#include <cmtkTypes.h>
-#include <cmtkInterpolator.h>
+#include "Base/cmtkTypes.h"
+#include "Base/cmtkInterpolator.h"
 
-#include <cmtkStudy.h>
-#include <cmtkStudyList.h>
-#include <cmtkFusionSlicers.h>
+#include "IO/cmtkStudy.h"
+#include "IO/cmtkStudyList.h"
 
-#include <cmtkQtStudyNamesBox.h>
-#include <cmtkQtSliderEntry.h>
+#include "Pipeline/cmtkFusionSlicers.h"
+
+#include "Qt/cmtkQtSliderEntry.h"
+
+#include "cmtkQtStudyNamesBox.h"
 
 namespace
 cmtk

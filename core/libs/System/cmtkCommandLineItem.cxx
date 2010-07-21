@@ -28,7 +28,7 @@
 //  $LastChangedBy$
 //
 */
-#include <cmtkCommandLine.h>
+#include "cmtkCommandLine.h"
 
 long int
 cmtk::CommandLine::Item

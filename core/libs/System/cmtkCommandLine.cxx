@@ -30,12 +30,11 @@
 //
 */
 
-#include <cmtkCommandLine.h>
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkConsole.h"
 
-#include <string.h>
+#include <cstring>
 #include <sstream>
-
-#include <cmtkConsole.h>
 
 namespace
 cmtk

@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkScalarImage.h>
+#include "Base/cmtkScalarImage.h"
 
 namespace
 cmtk

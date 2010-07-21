@@ -36,10 +36,10 @@
 
 #include <qwidget.h>
 
-#include <cmtkStudy.h>
+#include "IO/cmtkStudy.h"
 
-#include <cmtkVolume.h>
-#include <cmtkUniformVolume.h>
+#include "Base/cmtkVolume.h"
+#include "Base/cmtkUniformVolume.h"
 
 
 namespace

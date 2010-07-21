@@ -28,7 +28,7 @@
 //
 */
 
-#include <cmtkMetaInformationObject.h>
+#include "cmtkMetaInformationObject.h"
 
 const std::string& 
 cmtk::MetaInformationObject::GetMetaInfo( const std::string& key ) const

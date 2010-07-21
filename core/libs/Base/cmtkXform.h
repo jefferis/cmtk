@@ -35,15 +35,15 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkMetaInformationObject.h>
+#include "Base/cmtkMetaInformationObject.h"
 
-#include <cmtkVector.h>
-#include <cmtkFixedVector.h>
-#include <cmtkBitVector.h>
+#include "Base/cmtkVector.h"
+#include "Base/cmtkFixedVector.h"
+#include "Base/cmtkBitVector.h"
 
-#include <cmtkMatchedLandmarkList.h>
+#include "Base/cmtkMatchedLandmarkList.h"
 
-#include <cmtkSmartPtr.h>
+#include "System/cmtkSmartPtr.h"
 
 namespace
 cmtk

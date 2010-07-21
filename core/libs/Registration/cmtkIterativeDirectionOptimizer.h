@@ -34,7 +34,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkOptimizer.h>
+#include "Registration/cmtkOptimizer.h"
 
 namespace 
 cmtk

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,14 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.h>
-#include <cmtkPolynomial.h>
-#include <cmtkSmartPtr.h>
+#include "Segmentation/cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkDataGrid.h>
+#include "Base/cmtkPolynomial.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkDataGrid.h"
 
-#include <cmtkThreadPool.h>
+#include "System/cmtkThreadPool.h"
+#include "System/cmtkSmartPtr.h"
 
 namespace
 cmtk
@@ -244,7 +245,7 @@ CreateEntropyMinimizationIntensityCorrectionFunctional
 
 } // namespace cmtk
 
-#include <cmtkEntropyMinimizationIntensityCorrectionFunctional.txx>
+#include "cmtkEntropyMinimizationIntensityCorrectionFunctional.txx"
 
 #endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctional_h_included_
 

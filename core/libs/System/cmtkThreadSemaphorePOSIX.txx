@@ -32,7 +32,7 @@
 
 #include <iostream>
 #include <errno.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace
 cmtk

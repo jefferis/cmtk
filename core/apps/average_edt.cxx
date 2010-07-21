@@ -32,29 +32,28 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkConsole.h>
-#include <cmtkCommandLine.h>
-#include <cmtkStrUtility.h>
-#include <cmtkTimers.h>
+#include "System/cmtkConsole.h"
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkStrUtility.h"
+#include "System/cmtkTimers.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkUniformDistanceMap.h>
-#include <cmtkTypedArray.h>
-#include <cmtkTemplateArray.h>
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkUniformDistanceMap.h"
+#include "Base/cmtkTypedArray.h"
+#include "Base/cmtkTemplateArray.h"
+#include "Base/cmtkLinearInterpolator.h"
+#include "Base/cmtkUniformVolumeInterpolator.h"
+#include "Base/cmtkXformUniformVolume.h"
+#include "Base/cmtkAffineXformUniformVolume.h"
+#include "Base/cmtkSplineWarpXformUniformVolume.h"
 
-#include <cmtkXformUniformVolume.h>
-#include <cmtkAffineXformUniformVolume.h>
-#include <cmtkSplineWarpXformUniformVolume.h>
+#include "IO/cmtkFileFormat.h"
+#include "IO/cmtkVolumeIO.h"
+#include "IO/cmtkTypedStreamStudylist.h"
 
-#include <cmtkFileFormat.h>
-#include <cmtkVolumeIO.h>
-#include <cmtkTypedStreamStudylist.h>
+#include "Registration/cmtkReformatVolume.h"
 
-#include <cmtkReformatVolume.h>
-#include <cmtkLinearInterpolator.h>
-#include <cmtkUniformVolumeInterpolator.h>
-
-#include <math.h>
+#include <cmath>
 #include <list>
 
 bool Verbose = false;

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,13 +30,11 @@
 //
 */
 
-#include <cmtkMathUtil.h>
+#include "cmtkMathUtil.h"
 
-#ifdef HAVE_TIME_H
-#  include <time.h>
-#endif
+#include "Numerics/randomc.h"
 
-#include <randomc.h>
+#include <ctime>
 
 namespace
 cmtk

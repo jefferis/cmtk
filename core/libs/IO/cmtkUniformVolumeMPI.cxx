@@ -34,8 +34,9 @@
 
 #ifdef CMTK_BUILD_MPI
 
-#include <cmtkMPI.h>
-#include <cmtkUniformVolume.h>
+#include "Base/cmtkUniformVolume.h"
+
+#include "IO/cmtkMPI.h"
 
 #include <mpi.h>
 

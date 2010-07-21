@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkImagePairSimilarityJointHistogram.h>
+#include "Registration/cmtkImagePairSimilarityJointHistogram.h"
 
 namespace
 cmtk

@@ -28,9 +28,9 @@
 //
 */
 
-#include <cmtkImageXformDB.h>
+#include "Registration/cmtkImageXformDB.h"
 
-#include <cmtkConsole.h>
+#include "System/cmtkConsole.h"
 
 #include <string>
 #include <sstream>

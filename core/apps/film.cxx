@@ -32,25 +32,25 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkCommandLine.h>
-#include <cmtkConsole.h>
-#include <cmtkProgressConsole.h>
+#include "System/cmtkCommandLine.h"
+#include "System/cmtkConsole.h"
+#include "System/cmtkProgressConsole.h"
 
-#include <cmtkUniformVolume.h>
-#include <cmtkVolumeIO.h>
-#include <cmtkVector3D.h>
+#include "Registration/cmtkAffineRegistration.h"
+#include "Registration/cmtkProtocolCallback.h"
 
-#include <cmtkAffineRegistration.h>
-#include <cmtkProtocolCallback.h>
+#include "Base/cmtkLinearInterpolator.h"
+#include "Base/cmtkCubicInterpolator.h"
+#include "Base/cmtkSincInterpolator.h"
+#include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkVector3D.h"
 
-#include <cmtkLinearInterpolator.h>
-#include <cmtkCubicInterpolator.h>
-#include <cmtkSincInterpolator.h>
-#include <cmtkInverseInterpolationVolumeReconstruction.h>
+#include "Recon/cmtkInverseInterpolationVolumeReconstruction.h"
 
-#include <cmtkClassStream.h>
-#include <cmtkClassStreamXform.h>
-#include <cmtkClassStreamAffineXform.h>
+#include "IO/cmtkClassStream.h"
+#include "IO/cmtkClassStreamXform.h"
+#include "IO/cmtkClassStreamAffineXform.h"
+#include "IO/cmtkVolumeIO.h"
 
 #include <algorithm>
 #include <map>

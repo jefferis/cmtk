@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009 SRI International
+//  Copyright 2009-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -28,10 +28,10 @@
 //
 */
 
-#include <cmtkImageOperationHistogramEqualization.h>
+#include "cmtkImageOperationHistogramEqualization.h"
 
-#include <cmtkCommandLine.h>
-#include <cmtkTypedArrayFunctionHistogramEqualization.h>
+#include "Base/cmtkTypedArrayFunctionHistogramEqualization.h"
+#include "System/cmtkCommandLine.h"
 
 void
 cmtk::ImageOperationHistogramEqualization::New()

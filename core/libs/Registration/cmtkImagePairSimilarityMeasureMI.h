@@ -35,9 +35,9 @@
 
 #include <cmtkconfig.h>
 
-#include <cmtkImagePairSimilarityJointHistogram.h>
+#include "Registration/cmtkImagePairSimilarityJointHistogram.h"
 
-#include <cmtkUniformVolume.h>
+#include "Base/cmtkUniformVolume.h"
 
 namespace
 cmtk

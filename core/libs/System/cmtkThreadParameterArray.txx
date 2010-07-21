@@ -29,7 +29,7 @@
 //
 */
 
-#include <cmtkConsole.h>
+#include "System/cmtkConsole.h"
 
 namespace
 cmtk

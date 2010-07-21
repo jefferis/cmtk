@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmtkThreadPool.h>
+#include "System/cmtkThreadPool.h"
 
 namespace
 cmtk

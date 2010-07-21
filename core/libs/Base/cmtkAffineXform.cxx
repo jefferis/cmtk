@@ -30,12 +30,12 @@
 //
 */
 
-#include <cmtkAffineXform.h>
+#include "Base/cmtkAffineXform.h"
 
-#include <cmtkMathUtil.h>
-#include <cmtkUniformVolume.h>
+#include "Base/cmtkMathUtil.h"
+#include "Base/cmtkUniformVolume.h"
 
-#include <cmtkConsole.h>
+#include "System/cmtkConsole.h"
 
 #include <algorithm>
 
