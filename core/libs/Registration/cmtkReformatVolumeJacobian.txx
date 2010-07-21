@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,7 +31,6 @@
 */
 
 #include "Registration/cmtkReformatVolume.h"
-#include "Base/cmtkUniformVolumeInterpolator.h"
 
 namespace
 cmtk
@@ -41,15 +41,10 @@ cmtk
 
 template <class TInterpolator>
 bool
-ReformatVolume::Plain::operator()
-  ( Types::DataItem& value, const Vector3D& inRef, XformList& refToFloat, TInterpolator& interpolator )
+ReformatVolume
+::Jacobian::operator()( Types::DataItem& value, const Vector3D& inRef, XformList& refToFloat, TInterpolator& )
 {
-  Vector3D inFlt( inRef );
-  if ( ! refToFloat.ApplyInPlace( inFlt ) ) 
-    return false;
-
-  return interpolator->GetDataAt( inFlt, value ); 
+  return refToFloat.GetJacobian( inRef, value, this->CorrectGlobalScale );
 }
 
 } // namespace cmtk
-

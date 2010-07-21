@@ -70,8 +70,6 @@ SET(cmtkRegistration_SRCS
   cmtkMultiLevelOptimizer.cxx
   cmtkProtocolCallback.cxx
   cmtkReformatVolume.cxx
-  cmtkReformatVolumeJacobian.cxx
-  cmtkReformatVolumePlain.cxx
   cmtkRegistration2d2d.cxx
   cmtkRegistrationCallback.cxx
   cmtkRegistrationJointHistogram.cxx

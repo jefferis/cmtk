@@ -336,5 +336,7 @@ private:
 } // namespace cmtk
 
 #include "cmtkReformatVolumeReformat.txx"
+#include "cmtkReformatVolumePlain.txx"
+#include "cmtkReformatVolumeJacobian.txx"
 
 #endif // #ifndef __cmtkReformatVolume_h_included_

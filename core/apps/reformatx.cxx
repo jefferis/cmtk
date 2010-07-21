@@ -51,8 +51,6 @@
 #include "IO/cmtkVolumeIO.h"
 
 #include "Registration/cmtkReformatVolume.h"
-#include "Registration/cmtkReformatVolumeJacobian.cxx"
-#include "Registration/cmtkReformatVolumePlain.cxx"
 
 #ifdef CMTK_USE_SQLITE
 #  include "Registration/cmtkImageXformDB.h"
