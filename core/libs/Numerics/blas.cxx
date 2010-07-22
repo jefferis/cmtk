@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -80,7 +81,7 @@ ap::real_value_type vectornorm2(const ap::real_1d_array& x, int i1, int i2)
     }
     if( n==1 )
     {
-        result = fabs(x(i1));
+        result = std::fabs(x(i1));
         return result;
     }
     scl = 0;
@@ -89,7 +90,7 @@ ap::real_value_type vectornorm2(const ap::real_1d_array& x, int i1, int i2)
     {
         if( x(ix)!=0 )
         {
-            absxi = fabs(x(ix));
+            absxi = std::fabs(x(ix));
             if( scl<absxi )
             {
                 ssq = 1+ssq*ap::sqr(scl/absxi);
@@ -101,7 +102,7 @@ ap::real_value_type vectornorm2(const ap::real_1d_array& x, int i1, int i2)
             }
         }
     }
-    result = scl*sqrt(ssq);
+    result = scl*std::sqrt(ssq);
     return result;
 }
 
@@ -113,10 +114,10 @@ int vectoridxabsmax(const ap::real_1d_array& x, int i1, int i2)
     ap::real_value_type a;
 
     result = i1;
-    a = fabs(x(result));
+    a = std::fabs(x(result));
     for(i = i1+1; i <= i2; i++)
     {
-        if( fabs(x(i))>fabs(x(result)) )
+        if( std::fabs(x(i))>std::fabs(x(result)) )
         {
             result = i;
         }
@@ -132,10 +133,10 @@ int columnidxabsmax(const ap::real_2d_array& x, int i1, int i2, int j)
     ap::real_value_type a;
 
     result = i1;
-    a = fabs(x(result,j));
+    a = std::fabs(x(result,j));
     for(i = i1+1; i <= i2; i++)
     {
-        if( fabs(x(i,j))>fabs(x(result,j)) )
+        if( std::fabs(x(i,j))>std::fabs(x(result,j)) )
         {
             result = i;
         }
@@ -151,10 +152,10 @@ int rowidxabsmax(const ap::real_2d_array& x, int j1, int j2, int i)
     ap::real_value_type a;
 
     result = j1;
-    a = fabs(x(i,result));
+    a = std::fabs(x(i,result));
     for(j = j1+1; j <= j2; j++)
     {
-        if( fabs(x(i,j))>fabs(x(i,result)) )
+        if( std::fabs(x(i,j))>std::fabs(x(i,result)) )
         {
             result = j;
         }
@@ -183,7 +184,7 @@ ap::real_value_type upperhessenberg1norm(const ap::real_2d_array& a,
     {
         for(j = ap::maxint(j1, j1+i-i1-1); j <= j2; j++)
         {
-            work(j) = work(j)+fabs(a(i,j));
+            work(j) = work(j)+std::fabs(a(i,j));
         }
     }
     result = 0;
@@ -385,8 +386,8 @@ ap::real_value_type pythag2(ap::real_value_type x, ap::real_value_type y)
     ap::real_value_type yabs;
     ap::real_value_type z;
 
-    xabs = fabs(x);
-    yabs = fabs(y);
+    xabs = std::fabs(x);
+    yabs = std::fabs(y);
     w = ap::maxreal(xabs, yabs);
     z = ap::minreal(xabs, yabs);
     if( z==0 )
@@ -395,7 +396,7 @@ ap::real_value_type pythag2(ap::real_value_type x, ap::real_value_type y)
     }
     else
     {
-        result = w*sqrt(1+ap::sqr(z/w));
+        result = w*std::sqrt(1+ap::sqr(z/w));
     }
     return result;
 }

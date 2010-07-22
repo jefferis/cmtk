@@ -153,8 +153,8 @@ ap::real_value_type studenttdistribution(int k, ap::real_value_type t)
     z = 1.0+x*x/rk;
     if( k%2!=0 )
     {
-        xsqk = x/sqrt(rk);
-        p = atan(xsqk);
+    xsqk = x/std::sqrt(rk);
+    p = std::atan(xsqk);
         if( k>1 )
         {
             f = 1.0;
@@ -181,7 +181,7 @@ ap::real_value_type studenttdistribution(int k, ap::real_value_type t)
             f = f+tz;
             j = j+2;
         }
-        p = f*x/sqrt(z*rk);
+        p = f*x/std::sqrt(z*rk);
     }
     if( t<0 )
     {
@@ -227,8 +227,8 @@ ap::real_value_type invstudenttdistribution(int k, ap::real_value_type p)
             return result;
         }
         z = 1.0-2.0*p;
-        z = invincompletebeta(0.5, 0.5*rk, fabs(z));
-        t = sqrt(rk*z/(1.0-z));
+        z = invincompletebeta(0.5, 0.5*rk, std::fabs(z));
+        t = std::sqrt(rk*z/(1.0-z));
         if( p<0.5 )
         {
             t = -t;
@@ -248,7 +248,7 @@ ap::real_value_type invstudenttdistribution(int k, ap::real_value_type p)
         result = rflg*ap::maxrealnumber;
         return result;
     }
-    t = sqrt(rk/z-rk);
+    t = std::sqrt(rk/z-rk);
     result = rflg*t;
     return result;
 }

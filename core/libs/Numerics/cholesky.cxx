@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -142,7 +143,7 @@ bool spdmatrixcholesky(ap::real_2d_array& a, int n, bool isupper)
                 result = false;
                 return result;
             }
-            ajj = sqrt(ajj);
+            ajj = std::sqrt(ajj);
             a(j,j) = ajj;
             
             //
@@ -179,7 +180,7 @@ bool spdmatrixcholesky(ap::real_2d_array& a, int n, bool isupper)
                 result = false;
                 return result;
             }
-            ajj = sqrt(ajj);
+            ajj = std::sqrt(ajj);
             a(j,j) = ajj;
             
             //
@@ -248,7 +249,7 @@ bool choleskydecomposition(ap::real_2d_array& a, int n, bool isupper)
                 result = false;
                 return result;
             }
-            ajj = sqrt(ajj);
+            ajj = std::sqrt(ajj);
             a(j,j) = ajj;
             
             //
@@ -288,7 +289,7 @@ bool choleskydecomposition(ap::real_2d_array& a, int n, bool isupper)
                 result = false;
                 return result;
             }
-            ajj = sqrt(ajj);
+            ajj = std::sqrt(ajj);
             a(j,j) = ajj;
             
             //

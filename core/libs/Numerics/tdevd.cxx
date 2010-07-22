@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -311,8 +312,8 @@ bool tridiagonalevd(ap::real_1d_array& d,
     eps2 = ap::sqr(eps);
     safmin = ap::minrealnumber;
     safmax = ap::maxrealnumber;
-    ssfmax = sqrt(safmax)/3;
-    ssfmin = sqrt(safmin)/eps2;
+    ssfmax = std::sqrt(safmax)/3;
+    ssfmin = std::sqrt(safmin)/eps2;
     
     //
     // Prepare Z
@@ -402,13 +403,13 @@ bool tridiagonalevd(ap::real_1d_array& d,
         {
             for(m = l1; m <= nm1; m++)
             {
-                tst = fabs(e(m));
+                tst = std::fabs(e(m));
                 if( tst==0 )
                 {
                     gotoflag = true;
                     break;
                 }
-                if( tst<=sqrt(fabs(d(m)))*sqrt(fabs(d(m+1)))*eps )
+                if( tst<=std::sqrt(std::fabs(d(m)))*std::sqrt(std::fabs(d(m+1)))*eps )
                 {
                     e(m) = 0;
                     gotoflag = true;
@@ -439,14 +440,14 @@ bool tridiagonalevd(ap::real_1d_array& d,
         //
         if( l==lend )
         {
-            anorm = fabs(d(l));
+            anorm = std::fabs(d(l));
         }
         else
         {
-            anorm = ap::maxreal(fabs(d(l))+fabs(e(l)), fabs(e(lend-1))+fabs(d(lend)));
+            anorm = ap::maxreal(std::fabs(d(l))+std::fabs(e(l)), std::fabs(e(lend-1))+std::fabs(d(lend)));
             for(i = l+1; i <= lend-1; i++)
             {
-                anorm = ap::maxreal(anorm, fabs(d(i))+fabs(e(i))+fabs(e(i-1)));
+                anorm = ap::maxreal(anorm, std::fabs(d(i))+std::fabs(e(i))+std::fabs(e(i-1)));
             }
         }
         iscale = 0;
@@ -474,7 +475,7 @@ bool tridiagonalevd(ap::real_1d_array& d,
         //
         // Choose between QL and QR iteration
         //
-        if( fabs(d(lend))<fabs(d(l)) )
+        if( std::fabs(d(lend))<std::fabs(d(l)) )
         {
             lend = lsv;
             l = lendsv;
@@ -495,8 +496,8 @@ bool tridiagonalevd(ap::real_1d_array& d,
                     lendm1 = lend-1;
                     for(m = l; m <= lendm1; m++)
                     {
-                        tst = ap::sqr(fabs(e(m)));
-                        if( tst<=eps2*fabs(d(m))*fabs(d(m+1))+safmin )
+                        tst = ap::sqr(std::fabs(e(m)));
+                        if( tst<=eps2*std::fabs(d(m))*std::fabs(d(m+1))+safmin )
                         {
                             gotoflag = true;
                             break;
@@ -656,8 +657,8 @@ bool tridiagonalevd(ap::real_1d_array& d,
                     lendp1 = lend+1;
                     for(m = l; m >= lendp1; m--)
                     {
-                        tst = ap::sqr(fabs(e(m-1)));
-                        if( tst<=eps2*fabs(d(m))*fabs(d(m-1))+safmin )
+                        tst = ap::sqr(std::fabs(e(m-1)));
+                        if( tst<=eps2*std::fabs(d(m))*std::fabs(d(m-1))+safmin )
                         {
                             gotoflag = true;
                             break;
@@ -988,10 +989,10 @@ void tdevde2(const ap::real_value_type& a,
 
     sm = a+c;
     df = a-c;
-    adf = fabs(df);
+    adf = std::fabs(df);
     tb = b+b;
-    ab = fabs(tb);
-    if( fabs(a)>fabs(c) )
+    ab = std::fabs(tb);
+    if( std::fabs(a)>std::fabs(c) )
     {
         acmx = a;
         acmn = c;
@@ -1003,13 +1004,13 @@ void tdevde2(const ap::real_value_type& a,
     }
     if( adf>ab )
     {
-        rt = adf*sqrt(1+ap::sqr(ab/adf));
+        rt = adf*std::sqrt(1+ap::sqr(ab/adf));
     }
     else
     {
         if( adf<ab )
         {
-            rt = ab*sqrt(1+ap::sqr(adf/ab));
+            rt = ab*std::sqrt(1+ap::sqr(adf/ab));
         }
         else
         {
@@ -1017,7 +1018,7 @@ void tdevde2(const ap::real_value_type& a,
             //
             // Includes case AB=ADF=0
             //
-            rt = ab*sqrt(ap::real_value_type(2));
+            rt = ab*std::sqrt(ap::real_value_type(2));
         }
     }
     if( sm<0 )
@@ -1105,10 +1106,10 @@ void tdevdev2(const ap::real_value_type& a,
     //
     sm = a+c;
     df = a-c;
-    adf = fabs(df);
+    adf = std::fabs(df);
     tb = b+b;
-    ab = fabs(tb);
-    if( fabs(a)>fabs(c) )
+    ab = std::fabs(tb);
+    if( std::fabs(a)>std::fabs(c) )
     {
         acmx = a;
         acmn = c;
@@ -1120,13 +1121,13 @@ void tdevdev2(const ap::real_value_type& a,
     }
     if( adf>ab )
     {
-        rt = adf*sqrt(1+ap::sqr(ab/adf));
+        rt = adf*std::sqrt(1+ap::sqr(ab/adf));
     }
     else
     {
         if( adf<ab )
         {
-            rt = ab*sqrt(1+ap::sqr(adf/ab));
+            rt = ab*std::sqrt(1+ap::sqr(adf/ab));
         }
         else
         {
@@ -1134,7 +1135,7 @@ void tdevdev2(const ap::real_value_type& a,
             //
             // Includes case AB=ADF=0
             //
-            rt = ab*sqrt(ap::real_value_type(2));
+            rt = ab*std::sqrt(ap::real_value_type(2));
         }
     }
     if( sm<0 )
@@ -1188,11 +1189,11 @@ void tdevdev2(const ap::real_value_type& a,
         cs = df-rt;
         sgn2 = -1;
     }
-    acs = fabs(cs);
+    acs = std::fabs(cs);
     if( acs>ab )
     {
         ct = -tb/cs;
-        sn1 = 1/sqrt(1+ct*ct);
+        sn1 = 1/std::sqrt(1+ct*ct);
         cs1 = ct*sn1;
     }
     else
@@ -1205,7 +1206,7 @@ void tdevdev2(const ap::real_value_type& a,
         else
         {
             tn = -cs/tb;
-            cs1 = 1/sqrt(1+tn*tn);
+            cs1 = 1/std::sqrt(1+tn*tn);
             sn1 = tn*cs1;
         }
     }
@@ -1225,13 +1226,13 @@ ap::real_value_type tdevdpythag(ap::real_value_type a, ap::real_value_type b)
 {
     ap::real_value_type result;
 
-    if( fabs(a)<fabs(b) )
+    if( std::fabs(a)<std::fabs(b) )
     {
-        result = fabs(b)*sqrt(1+ap::sqr(a/b));
+        result = std::fabs(b)*std::sqrt(1+ap::sqr(a/b));
     }
     else
     {
-        result = fabs(a)*sqrt(1+ap::sqr(b/a));
+        result = std::fabs(a)*std::sqrt(1+ap::sqr(b/a));
     }
     return result;
 }
@@ -1246,11 +1247,11 @@ ap::real_value_type tdevdextsign(ap::real_value_type a, ap::real_value_type b)
 
     if( b>=0 )
     {
-        result = fabs(a);
+        result = std::fabs(a);
     }
     else
     {
-        result = -fabs(a);
+        result = -std::fabs(a);
     }
     return result;
 }

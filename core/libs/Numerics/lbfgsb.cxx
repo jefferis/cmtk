@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -168,7 +169,7 @@ void lbfgsbbmv(const int&,
     }
     for(i = 1; i <= col; i++)
     {
-        p(i) = v(i)/sqrt(sy(i,i));
+        p(i) = v(i)/std::sqrt(sy(i,i));
     }
     ap::vmove(workvec.getvector(1, col), p.getvector(col+1, col+col));
     lbfgsbdtrsl(wt, col, workvec, 1, info);
@@ -179,7 +180,7 @@ void lbfgsbbmv(const int&,
     }
     for(i = 1; i <= col; i++)
     {
-        p(i) = -p(i)/sqrt(sy(i,i));
+        p(i) = -p(i)/std::sqrt(sy(i,i));
     }
     for(i = 1; i <= col; i++)
     {
@@ -308,7 +309,7 @@ void lbfgsbcauchy(const int& n,
                 }
                 else
                 {
-                    if( fabs(neggi)<=0 )
+                    if( std::fabs(neggi)<=0 )
                     {
                         iwhere(i) = -3;
                     }
@@ -358,7 +359,7 @@ void lbfgsbcauchy(const int& n,
                 {
                     nfree = nfree-1;
                     iorder(nfree) = i;
-                    if( fabs(neggi)>0 )
+                    if( std::fabs(neggi)>0 )
                     {
                         bnded = false;
                     }
@@ -1085,7 +1086,7 @@ void lbfgsblnsrlb(const int& n,
     {
         v = ap::vdotproduct(d.getvector(1, n), d.getvector(1, n));
         dtd = v;
-        dnrm = sqrt(dtd);
+        dnrm = std::sqrt(dtd);
         stpmx = big;
         if( cnstnd )
         {
@@ -1286,7 +1287,7 @@ void lbfgsbprojgr(const int& n,
                 }
             }
         }
-        sbgnrm = ap::maxreal(sbgnrm, fabs(gi));
+        sbgnrm = ap::maxreal(sbgnrm, std::fabs(gi));
     }
 }
 
@@ -1612,7 +1613,7 @@ void lbfgsbdcsrch(const ap::real_value_type& f,
             task = 3;
             addinfo = 4;
         }
-        if( f<=ftest&&fabs(g)<=gtol*(-ginit) )
+        if( f<=ftest&&std::fabs(g)<=gtol*(-ginit) )
         {
             task = 4;
             addinfo = -1;
@@ -1641,12 +1642,12 @@ void lbfgsbdcsrch(const ap::real_value_type& f,
         }
         if( brackt )
         {
-            if( fabs(sty-stx)>=0.66*width1 )
+            if( std::fabs(sty-stx)>=0.66*width1 )
             {
                 stp = stx+0.5*(sty-stx);
             }
             width1 = width;
-            width = fabs(sty-stx);
+            width = std::fabs(sty-stx);
         }
         if( brackt )
         {
@@ -1716,12 +1717,12 @@ void lbfgsbdcstep(ap::real_value_type& stx,
     ap::real_value_type stpq;
     ap::real_value_type theta;
 
-    sgnd = dp*(dx/fabs(dx));
+    sgnd = dp*(dx/std::fabs(dx));
     if( fp>fx )
     {
         theta = 3*(fx-fp)/(stp-stx)+dx+dp;
-        s = ap::maxreal(fabs(theta), ap::maxreal(fabs(dx), fabs(dp)));
-        gamma = s*sqrt(ap::sqr(theta/s)-dx/s*(dp/s));
+        s = ap::maxreal(std::fabs(theta), ap::maxreal(std::fabs(dx), std::fabs(dp)));
+        gamma = s*std::sqrt(ap::sqr(theta/s)-dx/s*(dp/s));
         if( stp<stx )
         {
             gamma = -gamma;
@@ -1731,7 +1732,7 @@ void lbfgsbdcstep(ap::real_value_type& stx,
         r = p/q;
         stpc = stx+r*(stp-stx);
         stpq = stx+dx/((fx-fp)/(stp-stx)+dx)/2*(stp-stx);
-        if( fabs(stpc-stx)<fabs(stpq-stx) )
+        if( std::fabs(stpc-stx)<std::fabs(stpq-stx) )
         {
             stpf = stpc;
         }
@@ -1746,8 +1747,8 @@ void lbfgsbdcstep(ap::real_value_type& stx,
         if( sgnd<0 )
         {
             theta = 3*(fx-fp)/(stp-stx)+dx+dp;
-            s = ap::maxreal(fabs(theta), ap::maxreal(fabs(dx), fabs(dp)));
-            gamma = s*sqrt(ap::sqr(theta/s)-dx/s*(dp/s));
+            s = ap::maxreal(std::fabs(theta), ap::maxreal(std::fabs(dx), std::fabs(dp)));
+            gamma = s*std::sqrt(ap::sqr(theta/s)-dx/s*(dp/s));
             if( stp>stx )
             {
                 gamma = -gamma;
@@ -1757,7 +1758,7 @@ void lbfgsbdcstep(ap::real_value_type& stx,
             r = p/q;
             stpc = stp+r*(stx-stp);
             stpq = stp+dp/(dp-dx)*(stx-stp);
-            if( fabs(stpc-stp)>fabs(stpq-stp) )
+            if( std::fabs(stpc-stp)>std::fabs(stpq-stp) )
             {
                 stpf = stpc;
             }
@@ -1769,11 +1770,11 @@ void lbfgsbdcstep(ap::real_value_type& stx,
         }
         else
         {
-            if( fabs(dp)<fabs(dx) )
+            if( std::fabs(dp)<std::fabs(dx) )
             {
                 theta = 3*(fx-fp)/(stp-stx)+dx+dp;
-                s = ap::maxreal(fabs(theta), ap::maxreal(fabs(dx), fabs(dp)));
-                gamma = s*sqrt(ap::maxreal(ap::real_value_type(0), ap::sqr(theta/s)-dx/s*(dp/s)));
+                s = ap::maxreal(std::fabs(theta), ap::maxreal(std::fabs(dx), std::fabs(dp)));
+                gamma = s*std::sqrt(ap::maxreal(ap::real_value_type(0), ap::sqr(theta/s)-dx/s*(dp/s)));
                 if( stp>stx )
                 {
                     gamma = -gamma;
@@ -1799,7 +1800,7 @@ void lbfgsbdcstep(ap::real_value_type& stx,
                 stpq = stp+dp/(dp-dx)*(stx-stp);
                 if( brackt )
                 {
-                    if( fabs(stpc-stp)<fabs(stpq-stp) )
+                    if( std::fabs(stpc-stp)<std::fabs(stpq-stp) )
                     {
                         stpf = stpc;
                     }
@@ -1818,7 +1819,7 @@ void lbfgsbdcstep(ap::real_value_type& stx,
                 }
                 else
                 {
-                    if( fabs(stpc-stp)>fabs(stpq-stp) )
+                    if( std::fabs(stpc-stp)>std::fabs(stpq-stp) )
                     {
                         stpf = stpc;
                     }
@@ -1835,8 +1836,8 @@ void lbfgsbdcstep(ap::real_value_type& stx,
                 if( brackt )
                 {
                     theta = 3*(fp-fy)/(sty-stp)+dy+dp;
-                    s = ap::maxreal(fabs(theta), ap::maxreal(fabs(dy), fabs(dp)));
-                    gamma = s*sqrt(ap::sqr(theta/s)-dy/s*(dp/s));
+                    s = ap::maxreal(std::fabs(theta), ap::maxreal(std::fabs(dy), std::fabs(dp)));
+                    gamma = s*std::sqrt(ap::sqr(theta/s)-dy/s*(dp/s));
                     if( stp>sty )
                     {
                         gamma = -gamma;
@@ -1926,7 +1927,7 @@ bool lbfgsbdpofa(ap::real_2d_array& a, const int& n)
             result = false;
             return result;
         }
-        a(j,j) = sqrt(s);
+        a(j,j) = std::sqrt(s);
     }
     result = true;
     return result;
@@ -2404,13 +2405,13 @@ lbfgsbminimize
     ap::vmove(xdiff.getvector(1, n), xold.getvector(1, n));
     ap::vsub(xdiff.getvector(1, n), x.getvector(1, n));
     tf = ap::vdotproduct(xdiff.getvector(1, n), xdiff.getvector(1, n));
-    tf = sqrt(tf);
+    tf = std::sqrt(tf);
     if( tf<=epsx )
       {
       info = 2;
       return;
       }
-    ddum = ap::maxreal(fabs(fold), ap::maxreal(fabs(f), ap::real_value_type(1)));
+    ddum = ap::maxreal(std::fabs(fold), ap::maxreal(std::fabs(f), ap::real_value_type(1)));
     if( fold-f<=epsf*ddum )
       {
       info = 1;

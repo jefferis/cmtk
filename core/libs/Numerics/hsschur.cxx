@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -416,12 +417,12 @@ void internalschurdecomposition(ap::real_2d_array& h,
             //
             for(k = i; k >= l+1; k--)
             {
-                tst1 = fabs(h(k-1,k-1))+fabs(h(k,k));
+                tst1 = std::fabs(h(k-1,k-1))+std::fabs(h(k,k));
                 if( tst1==0 )
                 {
                     tst1 = upperhessenberg1norm(h, l, i, l, i, work);
                 }
-                if( fabs(h(k,k-1))<=ap::maxreal(ulp*tst1, smlnum) )
+                if( std::fabs(h(k,k-1))<=ap::maxreal(ulp*tst1, smlnum) )
                 {
                     break;
                 }
@@ -463,7 +464,7 @@ void internalschurdecomposition(ap::real_2d_array& h,
                 //
                 for(ii = i-ns+1; ii <= i; ii++)
                 {
-                    wr(ii) = cnst*(fabs(h(ii,ii-1))+fabs(h(ii,ii)));
+                    wr(ii) = cnst*(std::fabs(h(ii,ii-1))+std::fabs(h(ii,ii)));
                     wi(ii) = 0;
                 }
             }
@@ -534,7 +535,7 @@ void internalschurdecomposition(ap::real_2d_array& h,
                             ap::vmove(&vv(1), &v(1), ap::vlen(1,p1));
                             matrixvectormultiply(h, l, l+nv, l, l+nv-1, false, v, 1, nv, 1.0, vv, 1, nv+1, -2*wr(j));
                             itemp = vectoridxabsmax(vv, 1, nv+1);
-                            temp = 1/ap::maxreal(fabs(vv(itemp)), smlnum);
+                            temp = 1/ap::maxreal(std::fabs(vv(itemp)), smlnum);
                             p1 = nv+1;
                             ap::vmul(&vv(1), ap::vlen(1,p1), temp);
                             absw = pythag2(wr(j), wi(j));
@@ -549,7 +550,7 @@ void internalschurdecomposition(ap::real_2d_array& h,
                     // reset it to the unit vector.
                     //
                     itemp = vectoridxabsmax(v, 1, nv);
-                    temp = fabs(v(itemp));
+                    temp = std::fabs(v(itemp));
                     if( temp==0 )
                     {
                         v(1) = 1;
@@ -797,12 +798,12 @@ void internalauxschur(bool wantt,
             //
             for(k = i; k >= l+1; k--)
             {
-                tst1 = fabs(h(k-1,k-1))+fabs(h(k,k));
+                tst1 = std::fabs(h(k-1,k-1))+std::fabs(h(k,k));
                 if( tst1==0 )
                 {
                     tst1 = upperhessenberg1norm(h, l, i, l, i, work);
                 }
-                if( fabs(h(k,k-1))<=ap::maxreal(ulp*tst1, smlnum) )
+                if( std::fabs(h(k,k-1))<=ap::maxreal(ulp*tst1, smlnum) )
                 {
                     break;
                 }
@@ -842,7 +843,7 @@ void internalauxschur(bool wantt,
                 //
                 // Exceptional shift.
                 //
-                s = fabs(h(i,i-1))+fabs(h(i-1,i-2));
+                s = std::fabs(h(i,i-1))+std::fabs(h(i-1,i-2));
                 h44 = dat1*s+h(i,i);
                 h33 = h44;
                 h43h34 = dat2*s*s;
@@ -866,9 +867,9 @@ void internalauxschur(bool wantt,
                     //
                     // Real roots: use Wilkinson's shift twice
                     //
-                    disc = sqrt(disc);
+		disc = std::sqrt(disc);
                     ave = 0.5*(h33+h44);
-                    if( fabs(h33)-fabs(h44)>0 )
+                    if( std::fabs(h33)-std::fabs(h44)>0 )
                     {
                         h33 = h33*h44-h43h34;
                         h44 = h33/(extschursign(disc, ave)+ave);
@@ -902,7 +903,7 @@ void internalauxschur(bool wantt,
                 v1 = (h33s*h44s-h43h34)/h21+h12;
                 v2 = h22-h11-h33s-h44s;
                 v3 = h(m+2,m+1);
-                s = fabs(v1)+fabs(v2)+fabs(v3);
+                s = std::fabs(v1)+std::fabs(v2)+std::fabs(v3);
                 v1 = v1/s;
                 v2 = v2/s;
                 v3 = v3/s;
@@ -915,8 +916,8 @@ void internalauxschur(bool wantt,
                 }
                 h00 = h(m-1,m-1);
                 h10 = h(m,m-1);
-                tst1 = fabs(v1)*(fabs(h00)+fabs(h11)+fabs(h22));
-                if( fabs(h10)*(fabs(v2)+fabs(v3))<=ulp*tst1 )
+                tst1 = std::fabs(v1)*(std::fabs(h00)+std::fabs(h11)+std::fabs(h22));
+                if( std::fabs(h10)*(std::fabs(v2)+std::fabs(v3))<=ulp*tst1 )
                 {
                     break;
                 }
@@ -1196,9 +1197,9 @@ void aux2x2schur(ap::real_value_type& a,
             {
                 temp = a-d;
                 p = 0.5*temp;
-                bcmax = ap::maxreal(fabs(b), fabs(c));
-                bcmis = ap::minreal(fabs(b), fabs(c))*extschursigntoone(b)*extschursigntoone(c);
-                scl = ap::maxreal(fabs(p), bcmax);
+                bcmax = ap::maxreal(std::fabs(b), std::fabs(c));
+                bcmis = ap::minreal(std::fabs(b), std::fabs(c))*extschursigntoone(b)*extschursigntoone(c);
+                scl = ap::maxreal(std::fabs(p), bcmax);
                 z = p/scl*p+bcmax/scl*bcmis;
                 
                 //
@@ -1233,7 +1234,7 @@ void aux2x2schur(ap::real_value_type& a,
                     //
                     sigma = b+c;
                     tau = pythag2(sigma, temp);
-                    cs = sqrt(0.5*(1+fabs(sigma)/tau));
+                    cs = sqrt(0.5*(1+std::fabs(sigma)/tau));
                     sn = -p/(tau*cs)*extschursign(ap::real_value_type(1), sigma);
                     
                     //
@@ -1266,10 +1267,10 @@ void aux2x2schur(ap::real_value_type& a,
                                 //
                                 // Real eigenvalues: reduce to upper triangular form
                                 //
-                                sab = sqrt(fabs(b));
-                                sac = sqrt(fabs(c));
+                                sab = sqrt(std::fabs(b));
+                                sac = sqrt(std::fabs(c));
                                 p = extschursign(sab*sac, c);
-                                tau = 1/sqrt(fabs(b+c));
+                                tau = 1/sqrt(std::fabs(b+c));
                                 a = temp+p;
                                 d = temp-p;
                                 b = b-c;
@@ -1307,7 +1308,7 @@ void aux2x2schur(ap::real_value_type& a,
     }
     else
     {
-        rt1i = sqrt(fabs(b))*sqrt(fabs(c));
+        rt1i = sqrt(std::fabs(b))*sqrt(std::fabs(c));
         rt2i = -rt1i;
     }
 }
@@ -1319,11 +1320,11 @@ ap::real_value_type extschursign(ap::real_value_type a, ap::real_value_type b)
 
     if( b>=0 )
     {
-        result = fabs(a);
+        result = std::fabs(a);
     }
     else
     {
-        result = -fabs(a);
+        result = -std::fabs(a);
     }
     return result;
 }

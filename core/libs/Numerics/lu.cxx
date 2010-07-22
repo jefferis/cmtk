@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -296,7 +297,7 @@ void ludecomposition(ap::real_2d_array& a,
         jp = j;
         for(i = j+1; i <= m; i++)
         {
-            if( fabs(a(i,j))>fabs(a(jp,j)) )
+            if( std::fabs(a(i,j))>std::fabs(a(jp,j)) )
             {
                 jp = i;
             }
@@ -443,7 +444,7 @@ void rmatrixlu2(ap::real_2d_array& a,
         jp = j;
         for(i = j+1; i <= m-1; i++)
         {
-            if( fabs(a(i,j))>fabs(a(jp,j)) )
+            if( std::fabs(a(i,j))>std::fabs(a(jp,j)) )
             {
                 jp = i;
             }

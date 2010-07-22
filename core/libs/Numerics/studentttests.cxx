@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -161,7 +161,7 @@ void studentttest1(const ap::real_1d_array& x,
         {
             xvariance = 0;
         }
-        xstddev = sqrt(xvariance);
+        xstddev = std::sqrt(xvariance);
     }
     if( xstddev==0 )
     {
@@ -174,7 +174,7 @@ void studentttest1(const ap::real_1d_array& x,
     //
     // Statistic (t)
     //
-    t = (xmean-mean)/(xstddev/sqrt(ap::real_value_type(n)));
+    t = (xmean-mean)/(xstddev/std::sqrt(ap::real_value_type(n)));
     s = studenttdistribution(n-1, t);
     bothtails = 2*ap::minreal(s, 1-s);
     lefttail = s;
@@ -270,7 +270,7 @@ void studentttest2(const ap::real_1d_array& x,
     {
         s = s+ap::sqr(y(i)-ymean);
     }
-    s = sqrt(s*(ap::real_value_type(1)/ap::real_value_type(n)+ap::real_value_type(1)/ap::real_value_type(m))/(n+m-2));
+    s = std::sqrt(s*(ap::real_value_type(1)/ap::real_value_type(n)+ap::real_value_type(1)/ap::real_value_type(m))/(n+m-2));
     if( s==0 )
     {
         bothtails = 1.0;
@@ -400,7 +400,7 @@ void unequalvariancettest(const ap::real_1d_array& x,
     //
     // Statistic (t)
     //
-    t = (xmean-ymean)/sqrt(xvar/n+yvar/m);
+    t = (xmean-ymean)/std::sqrt(xvar/n+yvar/m);
     c = xvar/n/(xvar/n+yvar/m);
     df = (n-1)*(m-1)/((m-1)*ap::sqr(c)+(n-1)*(1-ap::sqr(c)));
     if( t>0 )

@@ -110,7 +110,7 @@ ap::real_value_type erf(ap::real_value_type x)
     ap::real_value_type q;
 
     s = ap::sign(x);
-    x = fabs(x);
+    x = std::fabs(x);
     if( x<0.5 )
     {
         xsq = x*x;
@@ -150,7 +150,7 @@ Complementary error function
                             -
                  2         | |          2
   erfc(x)  =  --------     |    exp( - t  ) dt
-              sqrt(pi)   | |
+              std::sqrt(pi)   | |
                           -
                            x
 
@@ -207,7 +207,7 @@ ap::real_value_type erfc(ap::real_value_type x)
     q = 6089.5424232724435504633068+x*q;
     q = 4958.82756472114071495438422+x*q;
     q = 1826.3348842295112595576438+x*q;
-    result = exp(-ap::sqr(x))*p/q;
+    result = std::exp(-ap::sqr(x))*p/q;
     return result;
 }
 
@@ -222,14 +222,14 @@ function, integrated from minus infinity to x:
                             -
                   1        | |          2
    ndtr(x)  = ---------    |    exp( - t /2 ) dt
-              sqrt(2pi)  | |
+              std::sqrt(2pi)  | |
                           -
                          -inf.
 
             =  ( 1 + erf(z) ) / 2
             =  erfc(z) / 2
 
-where z = x/sqrt(2). Computation is via the functions
+where z = x/std::sqrt(2). Computation is via the functions
 erf and erfc.
 
 
@@ -261,7 +261,7 @@ ap::real_value_type inverf(ap::real_value_type e)
 {
     ap::real_value_type result;
 
-    result = invnormaldistribution(0.5*(e+1))/sqrt(ap::real_value_type(2));
+    result = invnormaldistribution(0.5*(e+1))/std::sqrt(ap::real_value_type(2));
     return result;
 }
 
@@ -275,11 +275,11 @@ minus infinity to x) is equal to y.
 
 
 For small arguments 0 < y < exp(-2), the program computes
-z = sqrt( -2.0 * log(y) );  then the approximation is
+z = std::sqrt( -2.0 * log(y) );  then the approximation is
 x = z - log(z)/z  - (1/z) P(1/z) / Q(1/z).
 There are two rational functions P/Q, one for 0 < y < exp(-32)
 and the other for y up to exp(-2).  For larger arguments,
-w = y - 0.5, and  x/sqrt(2pi) = w + w**3 R(w**2)/S(w**2)).
+w = y - 0.5, and  x/std::sqrt(2pi) = w + w**3 R(w**2)/S(w**2)).
 
 ACCURACY:
 
@@ -352,8 +352,8 @@ ap::real_value_type invnormaldistribution(ap::real_value_type y0)
         result = x;
         return result;
     }
-    x = sqrt(-2.0*log(y));
-    x0 = x-log(x)/x;
+    x = std::sqrt(-2.0*std::log(y));
+    x0 = x-std::log(x)/x;
     z = 1.0/x;
     if( x<8.0 )
     {

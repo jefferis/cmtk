@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -108,7 +109,7 @@ ap::real_value_type gamma(ap::real_value_type x)
     ap::real_value_type sgngam;
 
     sgngam = 1;
-    q = fabs(x);
+    q = std::fabs(x);
     if( q>33.0 )
     {
         if( x<0.0 )
@@ -125,8 +126,8 @@ ap::real_value_type gamma(ap::real_value_type x)
                 p = p+1;
                 z = q-p;
             }
-            z = q*sin(ap::pi()*z);
-            z = fabs(z);
+            z = q*std::sin(ap::pi()*z);
+            z = std::fabs(z);
             z = ap::pi()/(z*gammastirf(q));
         }
         else
@@ -260,8 +261,8 @@ ap::real_value_type lngamma(ap::real_value_type x, ap::real_value_type& sgngam)
             p = p+1;
             z = p-q;
         }
-        z = q*sin(ap::pi()*z);
-        result = logpi-log(z)-w;
+        z = q*std::sin(ap::pi()*z);
+        result = logpi-std::log(z)-w;
         return result;
     }
     if( x<13 )
@@ -292,7 +293,7 @@ ap::real_value_type lngamma(ap::real_value_type x, ap::real_value_type& sgngam)
         }
         if( u==2 )
         {
-            result = log(z);
+            result = std::log(z);
             return result;
         }
         p = p-2;
@@ -311,10 +312,10 @@ ap::real_value_type lngamma(ap::real_value_type x, ap::real_value_type& sgngam)
         c = -2532523.07177582951285+x*c;
         c = -2018891.41433532773231+x*c;
         p = x*b/c;
-        result = log(z)+p;
+        result = std::log(z)+p;
         return result;
     }
-    q = (x-0.5)*log(x)-x+ls2pi;
+    q = (x-0.5)*std::log(x)-x+ls2pi;
     if( x>100000000 )
     {
         result = q;
@@ -354,15 +355,15 @@ ap::real_value_type gammastirf(ap::real_value_type x)
     stir = 3.47222221605458667310E-3+w*stir;
     stir = 8.33333333333482257126E-2+w*stir;
     w = 1+w*stir;
-    y = exp(x);
+    y = std::exp(x);
     if( x>143.01608 )
     {
-        v = pow((ap::real_value_type)x, (ap::real_value_type)(0.5*x-0.25));
+        v = std::pow((ap::real_value_type)x, (ap::real_value_type)(0.5*x-0.25));
         y = v*(v/y);
     }
     else
     {
-        y = pow((ap::real_value_type)x, (ap::real_value_type)(x-0.5))/y;
+        y = std::pow((ap::real_value_type)x, (ap::real_value_type)(x-0.5))/y;
     }
     result = 2.50662827463100050242*y*w;
     return result;
