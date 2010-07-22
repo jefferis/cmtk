@@ -128,7 +128,7 @@ VolumeIO::Read( const char* path, const bool verbose )
       for ( size_t i = 0; i < dataArray->GetDataSize(); ++i )
 	{
 	Types::DataItem v;
-	if ( dataArray->Get( v, i ) && std::isnan( v ) )
+	if ( dataArray->Get( v, i ) && MathUtil::IsNaN( v ) )
 	  dataArray->SetPaddingAt( i );
 	}
       }
