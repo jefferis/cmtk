@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -404,7 +405,7 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
     // (By setting TOL to be negative, algorithm will compute
     // singular values to absolute accuracy ABS(TOL)*norm(input matrix))
     //
-    tolmul = ap::maxreal(ap::real_value_type(10), ap::minreal(ap::real_value_type(100), pow((ap::real_value_type)eps, (ap::real_value_type)-0.125)));
+    tolmul = ap::maxreal(ap::real_value_type(10), ap::minreal(ap::real_value_type(100), std::pow((ap::real_value_type)eps, (ap::real_value_type)-0.125)));
     tol = tolmul*eps;
     if( !isfractionalaccuracyrequired )
     {
@@ -417,11 +418,11 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
     smax = 0;
     for(i = 1; i <= n; i++)
     {
-        smax = ap::maxreal(smax, fabs(d(i)));
+        smax = ap::maxreal(smax, std::fabs(d(i)));
     }
     for(i = 1; i <= n-1; i++)
     {
-        smax = ap::maxreal(smax, fabs(e(i)));
+        smax = ap::maxreal(smax, std::fabs(e(i)));
     }
     sminl = 0;
     if( tol>=0 )
@@ -430,13 +431,13 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
         //
         // Relative accuracy desired
         //
-        sminoa = fabs(d(1));
+        sminoa = std::fabs(d(1));
         if( sminoa!=0 )
         {
             mu = sminoa;
             for(i = 2; i <= n; i++)
             {
-                mu = fabs(d(i))*(mu/(mu+fabs(e(i-1))));
+                mu = std::fabs(d(i))*(mu/(mu+std::fabs(e(i-1))));
                 sminoa = ap::minreal(sminoa, mu);
                 if( sminoa==0 )
                 {
@@ -444,7 +445,7 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
                 }
             }
         }
-        sminoa = sminoa/sqrt(ap::real_value_type(n));
+        sminoa = sminoa/std::sqrt(ap::real_value_type(n));
         thresh = ap::maxreal(tol*sminoa, maxitr*n*n*unfl);
     }
     else
@@ -453,7 +454,7 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
         //
         // Absolute accuracy desired
         //
-        thresh = ap::maxreal(fabs(tol)*smax, maxitr*n*n*unfl);
+        thresh = ap::maxreal(std::fabs(tol)*smax, maxitr*n*n*unfl);
     }
     
     //
@@ -493,18 +494,18 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
         //
         // Find diagonal block of matrix to work on
         //
-        if( tol<0&&fabs(d(m))<=thresh )
+        if( tol<0&&std::fabs(d(m))<=thresh )
         {
             d(m) = 0;
         }
-        smax = fabs(d(m));
+        smax = std::fabs(d(m));
         smin = smax;
         matrixsplitflag = false;
         for(lll = 1; lll <= m-1; lll++)
         {
             ll = m-lll;
-            abss = fabs(d(ll));
-            abse = fabs(e(ll));
+            abss = std::fabs(d(ll));
+            abse = std::fabs(e(ll));
             if( tol<0&&abss<=thresh )
             {
                 d(ll) = 0;
@@ -601,17 +602,17 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
         // Very strange that LAPACK still contains it.
         //
         bchangedir = false;
-        if( idir==1&&fabs(d(ll))<1.0E-3*fabs(d(m)) )
+        if( idir==1&&std::fabs(d(ll))<1.0E-3*std::fabs(d(m)) )
         {
             bchangedir = true;
         }
-        if( idir==2&&fabs(d(m))<1.0E-3*fabs(d(ll)) )
+        if( idir==2&&std::fabs(d(m))<1.0E-3*std::fabs(d(ll)) )
         {
             bchangedir = true;
         }
         if( ll!=oldll||m!=oldm||bchangedir )
         {
-            if( fabs(d(ll))>=fabs(d(m)) )
+            if( std::fabs(d(ll))>=std::fabs(d(m)) )
             {
                 
                 //
@@ -639,7 +640,7 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
             // Run convergence test in forward direction
             // First apply standard test to bottom of matrix
             //
-	if( fabs(e(m-1))<=fabs(tol)*fabs(d(m))||(tol<0&&fabs(e(m-1))<=thresh) )
+	if( std::fabs(e(m-1))<=std::fabs(tol)*std::fabs(d(m))||(tol<0&&std::fabs(e(m-1))<=thresh) )
             {
                 e(m-1) = 0;
                 continue;
@@ -651,19 +652,19 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
                 // If relative accuracy desired,
                 // apply convergence criterion forward
                 //
-                mu = fabs(d(ll));
+                mu = std::fabs(d(ll));
                 sminl = mu;
                 iterflag = false;
                 for(lll = ll; lll <= m-1; lll++)
                 {
-                    if( fabs(e(lll))<=tol*mu )
+                    if( std::fabs(e(lll))<=tol*mu )
                     {
                         e(lll) = 0;
                         iterflag = true;
                         break;
                     }
                     sminlo = sminl;
-                    mu = fabs(d(lll+1))*(mu/(mu+fabs(e(lll))));
+                    mu = std::fabs(d(lll+1))*(mu/(mu+std::fabs(e(lll))));
                     sminl = ap::minreal(sminl, mu);
                 }
                 if( iterflag )
@@ -679,7 +680,7 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
             // Run convergence test in backward direction
             // First apply standard test to top of matrix
             //
-	if( fabs(e(ll))<=fabs(tol)*fabs(d(ll))||(tol<0&&fabs(e(ll))<=thresh) )
+	if( std::fabs(e(ll))<=std::fabs(tol)*std::fabs(d(ll))||(tol<0&&std::fabs(e(ll))<=thresh) )
             {
                 e(ll) = 0;
                 continue;
@@ -691,19 +692,19 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
                 // If relative accuracy desired,
                 // apply convergence criterion backward
                 //
-                mu = fabs(d(m));
+                mu = std::fabs(d(m));
                 sminl = mu;
                 iterflag = false;
                 for(lll = m-1; lll >= ll; lll--)
                 {
-                    if( fabs(e(lll))<=tol*mu )
+                    if( std::fabs(e(lll))<=tol*mu )
                     {
                         e(lll) = 0;
                         iterflag = true;
                         break;
                     }
                     sminlo = sminl;
-                    mu = fabs(d(lll))*(mu/(mu+fabs(e(lll))));
+                    mu = std::fabs(d(lll))*(mu/(mu+std::fabs(e(lll))));
                     sminl = ap::minreal(sminl, mu);
                 }
                 if( iterflag )
@@ -735,12 +736,12 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
             //
             if( idir==1 )
             {
-                sll = fabs(d(ll));
+                sll = std::fabs(d(ll));
                 svd2x2(d(m-1), e(m-1), d(m), shift, r);
             }
             else
             {
-                sll = fabs(d(m));
+                sll = std::fabs(d(m));
                 svd2x2(d(ll), e(ll), d(ll+1), shift, r);
             }
             
@@ -812,7 +813,7 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
                 //
                 // Test convergence
                 //
-                if( fabs(e(m-1))<=thresh )
+                if( std::fabs(e(m-1))<=thresh )
                 {
                     e(m-1) = 0;
                 }
@@ -863,7 +864,7 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
                 //
                 // Test convergence
                 //
-                if( fabs(e(ll))<=thresh )
+                if( std::fabs(e(ll))<=thresh )
                 {
                     e(ll) = 0;
                 }
@@ -882,7 +883,7 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
                 // Chase bulge from top to bottom
                 // Save cosines and sines for later singular vector updates
                 //
-                f = (fabs(d(ll))-shift)*(extsignbdsqr(ap::real_value_type(1), d(ll))+shift/d(ll));
+                f = (std::fabs(d(ll))-shift)*(extsignbdsqr(ap::real_value_type(1), d(ll))+shift/d(ll));
                 g = e(ll);
                 for(i = ll; i <= m-1; i++)
                 {
@@ -930,7 +931,7 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
                 //
                 // Test convergence
                 //
-                if( fabs(e(m-1))<=thresh )
+                if( std::fabs(e(m-1))<=thresh )
                 {
                     e(m-1) = 0;
                 }
@@ -942,7 +943,7 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
                 // Chase bulge from bottom to top
                 // Save cosines and sines for later singular vector updates
                 //
-                f = (fabs(d(m))-shift)*(extsignbdsqr(ap::real_value_type(1), d(m))+shift/d(m));
+                f = (std::fabs(d(m))-shift)*(extsignbdsqr(ap::real_value_type(1), d(m))+shift/d(m));
                 g = e(m-1);
                 for(i = m; i >= ll+1; i--)
                 {
@@ -974,7 +975,7 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
                 //
                 // Test convergence
                 //
-                if( fabs(e(ll))<=thresh )
+                if( std::fabs(e(ll))<=thresh )
                 {
                     e(ll) = 0;
                 }
@@ -1083,11 +1084,11 @@ ap::real_value_type extsignbdsqr(ap::real_value_type a, ap::real_value_type b)
 
     if( b>=0 )
     {
-        result = fabs(a);
+        result = std::fabs(a);
     }
     else
     {
-        result = -fabs(a);
+        result = -std::fabs(a);
     }
     return result;
 }
@@ -1105,9 +1106,9 @@ void svd2x2(ap::real_value_type f, ap::real_value_type g, ap::real_value_type h,
     ap::real_value_type ga;
     ap::real_value_type ha;
 
-    fa = fabs(f);
-    ga = fabs(g);
-    ha = fabs(h);
+    fa = std::fabs(f);
+    ga = std::fabs(g);
+    ha = std::fabs(h);
     fhmn = ap::minreal(fa, ha);
     fhmx = ap::maxreal(fa, ha);
     if( fhmn==0 )
@@ -1119,7 +1120,7 @@ void svd2x2(ap::real_value_type f, ap::real_value_type g, ap::real_value_type h,
         }
         else
         {
-            ssmax = ap::maxreal(fhmx, ga)*sqrt(1+ap::sqr(ap::minreal(fhmx, ga)/ap::maxreal(fhmx, ga)));
+            ssmax = ap::maxreal(fhmx, ga)*std::sqrt(1+ap::sqr(ap::minreal(fhmx, ga)/ap::maxreal(fhmx, ga)));
         }
     }
     else
@@ -1129,7 +1130,7 @@ void svd2x2(ap::real_value_type f, ap::real_value_type g, ap::real_value_type h,
             aas = 1+fhmn/fhmx;
             at = (fhmx-fhmn)/fhmx;
             au = ap::sqr(ga/fhmx);
-            c = 2/(sqrt(aas*aas+au)+sqrt(at*at+au));
+            c = 2/(std::sqrt(aas*aas+au)+std::sqrt(at*at+au));
             ssmin = fhmn*c;
             ssmax = fhmx/c;
         }
@@ -1151,7 +1152,7 @@ void svd2x2(ap::real_value_type f, ap::real_value_type g, ap::real_value_type h,
             {
                 aas = 1+fhmn/fhmx;
                 at = (fhmx-fhmn)/fhmx;
-                c = 1/(sqrt(1+ap::sqr(aas*au))+sqrt(1+ap::sqr(at*au)));
+                c = 1/(std::sqrt(1+ap::sqr(aas*au))+std::sqrt(1+ap::sqr(at*au)));
                 ssmin = fhmn*c*au;
                 ssmin = ssmin+ssmin;
                 ssmax = ga/(c+c);
@@ -1198,9 +1199,9 @@ void svdv2x2(ap::real_value_type f,
     ap::real_value_type v;
 
     ft = f;
-    fa = fabs(ft);
+    fa = std::fabs(ft);
     ht = h;
-    ha = fabs(h);
+    ha = std::fabs(h);
     
     //
     // PMAX points to the maximum absolute element of matrix
@@ -1225,7 +1226,7 @@ void svdv2x2(ap::real_value_type f,
         ha = temp;
     }
     gt = g;
-    ga = fabs(gt);
+    ga = std::fabs(gt);
     if( ga==0 )
     {
         
@@ -1288,14 +1289,14 @@ void svdv2x2(ap::real_value_type f,
             t = 2-l;
             mm = m*m;
             tt = t*t;
-            s = sqrt(tt+mm);
+            s = std::sqrt(tt+mm);
             if( l==0 )
             {
-                r = fabs(m);
+                r = std::fabs(m);
             }
             else
             {
-                r = sqrt(l*l+mm);
+                r = std::sqrt(l*l+mm);
             }
             a = 0.5*(s+r);
             ssmin = ha/a;
@@ -1319,7 +1320,7 @@ void svdv2x2(ap::real_value_type f,
             {
                 t = (m/(s+t)+m/(r+l))*(1+a);
             }
-            l = sqrt(t*t+4);
+            l = std::sqrt(t*t+4);
             crt = 2/l;
             srt = t/l;
             clt = (crt+srt*m)/a;
