@@ -30,6 +30,8 @@
 //
 */
 
+#include "Base/cmtkTransformedVolumeAxes.h"
+
 namespace
 cmtk
 {
@@ -39,7 +41,7 @@ typename ImagePairAffineRegistrationFunctionalTemplate<VM>::ReturnType
 ImagePairAffineRegistrationFunctionalTemplate<VM>
 ::Evaluate() 
 {
-  const VolumeAxesHash axesHash( *this->m_ReferenceGrid, this->m_AffineXform, this->m_FloatingGrid->m_Delta, this->m_FloatingGrid->m_Offset.begin() );
+  const TransformedVolumeAxes axesHash( *this->m_ReferenceGrid, this->m_AffineXform, this->m_FloatingGrid->m_Delta, this->m_FloatingGrid->m_Offset.begin() );
   const Vector3D *axesHashX = axesHash[0], *axesHashY = axesHash[1], *axesHashZ = axesHash[2];
   
   this->m_Metric->Reset();

@@ -30,7 +30,7 @@
 //
 */
 
-#include "cmtkVolumeAxesHash.h"
+#include "cmtkTransformedVolumeAxes.h"
 
 #include <cassert>
 
@@ -41,7 +41,7 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-VolumeAxesHash::VolumeAxesHash
+TransformedVolumeAxes::TransformedVolumeAxes
 ( const UniformVolume& volume, const AffineXform* xform, const Types::Coordinate* deltas, const Types::Coordinate* otherOrigin )
 {
   // define volume corners
@@ -84,7 +84,7 @@ VolumeAxesHash::VolumeAxesHash
   this->MakeHash( volume, V, dX, dY, dZ );
 }
 
-VolumeAxesHash::VolumeAxesHash
+TransformedVolumeAxes::TransformedVolumeAxes
 ( const UniformVolume& volume, const ParametricPlane& mirrorPlane, const Types::Coordinate* deltas )
 {
   // define volume corners
@@ -116,7 +116,7 @@ VolumeAxesHash::VolumeAxesHash
 }
 
 void
-VolumeAxesHash::MakeHash
+TransformedVolumeAxes::MakeHash
 ( const UniformVolume& volume, const UniformVolume::SpaceVectorType& offset, const UniformVolume::SpaceVectorType& dX, const UniformVolume::SpaceVectorType& dY, const UniformVolume::SpaceVectorType& dZ )
 {
   int DimsX = volume.m_Dims[0], DimsY = volume.m_Dims[1], DimsZ = volume.m_Dims[2];
@@ -140,7 +140,7 @@ VolumeAxesHash::MakeHash
     (this->m_Hash[2][idx] = deltaZ*idx*dZ) += offset;
 }
 
-VolumeAxesHash::~VolumeAxesHash()
+TransformedVolumeAxes::~TransformedVolumeAxes()
 {
   for ( int dim = 0; dim<3; ++dim ) 
     {

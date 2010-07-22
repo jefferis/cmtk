@@ -69,7 +69,7 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
 {
   this->m_MetricData.Init( this );
 
-  const VolumeAxesHash transformedAxes( *this->m_ReferenceChannels[0], &this->m_Transformation );
+  const TransformedVolumeAxes transformedAxes( *this->m_ReferenceChannels[0], &this->m_Transformation );
   
   const DataGrid::IndexType& dims = this->m_ReferenceDims;
   const int dimsX = dims[0], dimsY = dims[1], dimsZ = dims[2];

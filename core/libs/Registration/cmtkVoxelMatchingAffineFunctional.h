@@ -41,7 +41,6 @@
 #include "Base/cmtkVolume.h"
 #include "Base/cmtkUniformVolume.h"
 #include "Base/cmtkVolumeClipping.h"
-#include "Base/cmtkVolumeAxesHash.h"
 #include "Base/cmtkMathUtil.h"
 #include "Base/cmtkTypes.h"
 

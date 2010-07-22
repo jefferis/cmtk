@@ -30,8 +30,8 @@
 //
 */
 
-#ifndef __cmtkVolumeAxesHash_h_included_
-#define __cmtkVolumeAxesHash_h_included_
+#ifndef __cmtkTransformedVolumeAxes_h_included_
+#define __cmtkTransformedVolumeAxes_h_included_
 
 #include <cmtkconfig.h>
 
@@ -58,11 +58,11 @@ cmtk
  * The vectors from the arrays can therefore directly be used for probing
  * the other Volume using the ProbeNoXform member function.
  */
-class VolumeAxesHash
+class TransformedVolumeAxes
 {
 public:
   /// This class.
-  typedef VolumeAxesHash Self;
+  typedef TransformedVolumeAxes Self;
 
   /// Smart pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
@@ -80,16 +80,16 @@ public:
    * array of Vector3D objects that contain the vector hashes for the X-, Y-, 
    * and Z-axis.
    */
-  VolumeAxesHash( const UniformVolume& volume, const AffineXform* xform = NULL, const Types::Coordinate* deltas = NULL, const Types::Coordinate* otherOrigin = NULL );
+  TransformedVolumeAxes( const UniformVolume& volume, const AffineXform* xform = NULL, const Types::Coordinate* deltas = NULL, const Types::Coordinate* otherOrigin = NULL );
   
   /** Constructor using mirror plane.
    *@param mirrorPlane Mirror plane with respect to which the coordinates of
    * this volume and thus all hash values are mirrored.
    */
-  VolumeAxesHash( const UniformVolume& volume, const ParametricPlane& mirrorPlane, const Types::Coordinate* deltas = NULL );
+  TransformedVolumeAxes( const UniformVolume& volume, const ParametricPlane& mirrorPlane, const Types::Coordinate* deltas = NULL );
 
   /// Free all storage.
-  ~VolumeAxesHash();
+  ~TransformedVolumeAxes();
 
   /// Access operator.
   const Vector3D* operator[]( const size_t index ) const
@@ -110,4 +110,4 @@ private:
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkVolumeAxesHash_h_included_
+#endif // #ifndef __cmtkTransformedVolumeAxes_h_included_

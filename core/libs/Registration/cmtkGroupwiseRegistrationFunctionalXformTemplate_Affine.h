@@ -33,7 +33,7 @@
 #ifndef __cmtkGroupwiseRegistrationFunctionalXformTemplate_Affine_h_included_
 #define __cmtkGroupwiseRegistrationFunctionalXformTemplate_Affine_h_included_
 
-#include "Base/cmtkVolumeAxesHash.h"
+#include "Base/cmtkTransformedVolumeAxes.h"
 #include "IO/cmtkClassStream.h"
 
 namespace
@@ -112,7 +112,7 @@ protected:
    */
   virtual void InterpolateImage( const size_t idx, byte* const destination )
   {
-    const VolumeAxesHash gridHash( *this->m_TemplateGrid, this->GetXformByIndex( idx ) );
+    const TransformedVolumeAxes gridHash( *this->m_TemplateGrid, this->GetXformByIndex( idx ) );
     
     ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
 

@@ -44,7 +44,6 @@
 #include "Base/cmtkMathUtil.h"
 #include "Base/cmtkTypes.h"
 #include "Base/cmtkVolumeClipping.h"
-#include "Base/cmtkVolumeAxesHash.h"
 
 #include "System/cmtkException.h"
 #include "System/cmtkThreadPool.h"

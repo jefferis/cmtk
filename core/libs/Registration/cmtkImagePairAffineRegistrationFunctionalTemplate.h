@@ -38,6 +38,7 @@
 #include "Registration/cmtkImagePairAffineRegistrationFunctional.h"
 
 #include "Base/cmtkInterpolator.h"
+#include "Base/cmtkTransformedVolumeAxes.h"
 
 namespace
 cmtk
@@ -153,7 +154,7 @@ public:
     /// Pointer to the functional object that created the thread.
     Self *thisObject;
     /// Axes hash.
-    const VolumeAxesHash* AxesHash;
+    const TransformedVolumeAxes* AxesHash;
     /// First plane of clipped reference volume.
     DataGrid::IndexType::ValueType StartZ;
     /// Last plane of clipped reference volume.

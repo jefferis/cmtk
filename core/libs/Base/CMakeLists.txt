@@ -86,6 +86,7 @@ SET(cmtkBase_SRCS
   cmtkSplineWarpXformUniformVolume.cxx
   cmtkTransformChangeToSpaceAffine.cxx
   cmtkTransformChangeFromSpaceAffine.cxx
+  cmtkTransformedVolumeAxes.cxx
   cmtkTypedArray.cxx
   cmtkTypedArrayFunctionHistogramMatching.cxx
   cmtkTypedArrayFunctionHistogramEqualization.cxx
@@ -102,7 +103,6 @@ SET(cmtkBase_SRCS
   cmtkUniformVolumeResample.cxx
   cmtkVolumeClipping.cxx
   cmtkVolume.cxx
-  cmtkVolumeAxesHash.cxx
   cmtkVolumeGridToGridLookup.cxx
   cmtkWarpXform.cxx
   cmtkXform.cxx

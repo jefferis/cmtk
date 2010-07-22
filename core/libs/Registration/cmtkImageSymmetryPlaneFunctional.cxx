@@ -32,7 +32,7 @@
 
 #include "cmtkImageSymmetryPlaneFunctional.h"
 
-#include "Base/cmtkVolumeAxesHash.h"
+#include "Base/cmtkTransformedVolumeAxes.h"
 
 namespace
 cmtk
@@ -59,7 +59,7 @@ ImageSymmetryPlaneFunctional::ImageSymmetryPlaneFunctional
 ImageSymmetryPlaneFunctional::ReturnType
 ImageSymmetryPlaneFunctional::Evaluate()
 {
-  const VolumeAxesHash gridHash( *m_Volume, this->m_ParametricPlane, m_Volume->GetDelta() );
+  const TransformedVolumeAxes gridHash( *m_Volume, this->m_ParametricPlane, m_Volume->GetDelta() );
   const Vector3D *HashX = gridHash[0], *HashY = gridHash[1], *HashZ = gridHash[2];
 
   Vector3D pFloating;

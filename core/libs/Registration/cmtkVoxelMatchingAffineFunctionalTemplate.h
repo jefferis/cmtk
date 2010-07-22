@@ -37,6 +37,8 @@
 #include "Registration/cmtkVoxelMatchingAffineFunctional.h"
 #include "Registration/cmtkVoxelMatchingFunctional.h"
 
+#include "Base/cmtkTransformedVolumeAxes.h"
+
 namespace
 cmtk
 {
@@ -123,7 +125,7 @@ public:
    */
   virtual typename Self::ReturnType Evaluate() 
   {
-    const VolumeAxesHash axesHash( *this->ReferenceGrid, this->m_AffineXform, this->FloatingGrid->m_Delta, this->FloatingGrid->m_Offset.begin() );
+    const TransformedVolumeAxes axesHash( *this->ReferenceGrid, this->m_AffineXform, this->FloatingGrid->m_Delta, this->FloatingGrid->m_Offset.begin() );
     const Vector3D *axesHashX = axesHash[0], *axesHashY = axesHash[1], *axesHashZ = axesHash[2];
     
     this->Metric->Reset();
@@ -183,7 +185,7 @@ public:
     /// Pointer to the functional object that created the thread.
     Self *thisObject;
     /// Axes hash.
-    const VolumeAxesHash* AxesHash;
+    const TransformedVolumeAxes* AxesHash;
     /// First plane of clipped reference volume.
     DataGrid::IndexType::ValueType StartZ;
     /// Last plane of clipped reference volume.

@@ -39,7 +39,7 @@
 
 #include "Base/cmtkAffineXform.h"
 #include "Base/cmtkVolumeClipping.h"
-#include "Base/cmtkVolumeAxesHash.h"
+#include "Base/cmtkTransformedVolumeAxes.h"
 
 #include "System/cmtkThreads.h"
 #include "System/cmtkMutexLock.h"
@@ -174,7 +174,7 @@ private:
   {
   public:
     /** Pointer to transformed reference axes arrays. */
-    const VolumeAxesHash* m_TransformedAxes;
+    const TransformedVolumeAxes* m_TransformedAxes;
 
     /** First clipped pixel index in z direction. */
     int m_StartZ;
