@@ -120,9 +120,9 @@ int main ( const int argc, const char* argv[] )
     mip->AdjustAspect();
   
   const cmtk::Types::DataItemRange range = mip->GetPixelData()->GetRange();
-  if ( isnan( Black ) )
+  if ( std::isnan( Black ) )
     Black = range.m_LowerBound;
-  if ( isnan( White ) )
+  if ( std::isnan( White ) )
     White = range.m_UpperBound;
 
   if ( Write16Bit )

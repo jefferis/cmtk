@@ -311,7 +311,7 @@ GeneralLinearModel::FitModel
 	  // compute T-statistics
 	  double tStat = static_cast<double>( srp * sqrt( df / (1.0-R2) ) );
 	  // export T-statistics (set to zero if NAN)
-	  if ( isnan( tStat ) ) 
+	  if ( std::isnan( tStat ) ) 
 	    tStat = 0;
 	  this->TStat[p]->Set( tStat, n ); 
 	  }
