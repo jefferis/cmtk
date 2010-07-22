@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -175,7 +176,7 @@ public:
         ap::complex result;
         real_value_type e;
         real_value_type f;
-        if( fabs(z.y)<fabs(z.x) )
+        if( std::fabs(z.y)<std::fabs(z.x) )
         {
             e = z.y/z.x;
             f = z.x+z.y*e;
