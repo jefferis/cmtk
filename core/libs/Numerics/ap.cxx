@@ -437,10 +437,10 @@ int ap::round(ap::real_value_type x)
 int ap::trunc(ap::real_value_type x)
 { return int(x>0 ? std::floor(x) : std::ceil(x)); }
 
-int ap::istd::floor(ap::real_value_type x)
+int ap::ifloor(ap::real_value_type x)
 { return int(std::floor(x)); }
 
-int ap::istd::ceil(ap::real_value_type x)
+int ap::iceil(ap::real_value_type x)
 { return int(std::ceil(x)); }
 
 ap::real_value_type ap::pi()
