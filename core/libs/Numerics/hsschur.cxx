@@ -867,7 +867,7 @@ void internalauxschur(bool wantt,
                     //
                     // Real roots: use Wilkinson's shift twice
                     //
-		disc = std::std::sqrt(disc);
+		disc = std::sqrt(disc);
                     ave = 0.5*(h33+h44);
                     if( std::fabs(h33)-std::fabs(h44)>0 )
                     {
