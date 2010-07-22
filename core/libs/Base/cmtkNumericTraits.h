@@ -68,7 +68,7 @@ public:
   static char ConvertFromDataItem( const Types::DataItem value )
   {
     using namespace std;
-    if ( isnan( value ) )
+    if ( MathUtil::IsNaN( value ) )
       {
       return DefaultPaddingValue;
       }
@@ -88,7 +88,7 @@ public:
   static unsigned char ConvertFromDataItem( const Types::DataItem value )
   {
     using namespace std;
-    if ( isnan( value ) )
+    if ( MathUtil::IsNaN( value ) )
       {
       return DefaultPaddingValue;
       }
@@ -108,7 +108,7 @@ public:
   static short ConvertFromDataItem( const Types::DataItem value )
   {
     using namespace std;
-    if ( isnan( value ) )
+    if ( MathUtil::IsNaN( value ) )
       {
       return DefaultPaddingValue;
       }

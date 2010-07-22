@@ -84,7 +84,7 @@ public:
   static inline float Convert ( const T value, const bool paddingFlag = false, const float paddingData = 0 ) 
   { 
     using namespace std;
-    if ( isnan( value ) )
+    if ( MathUtil::IsNaN( value ) )
       if ( paddingFlag )
 	return paddingData;
       else
@@ -124,7 +124,7 @@ public:
   static inline double Convert ( const T value, const bool paddingFlag = false, const double paddingData = 0 ) 
   { 
     using namespace std;
-    if ( isnan( value ) )
+    if ( MathUtil::IsNaN( value ) )
       if ( paddingFlag )
 	return paddingData;
       else
@@ -170,7 +170,7 @@ public:
   static inline byte Convert ( const T value, const bool paddingFlag = false, const byte paddingData = 0 ) 
   { 
     using namespace std;
-    if ( isnan( value ) )
+    if ( MathUtil::IsNaN( value ) )
       if ( paddingFlag )
 	return paddingData;
       else
@@ -216,7 +216,7 @@ public:
   static inline char Convert ( const T value, const bool paddingFlag = false, const char paddingData = 0 ) 
   { 
     using namespace std;
-    if ( isnan( value ) )
+    if ( MathUtil::IsNaN( value ) )
       if ( paddingFlag )
 	return paddingData;
       else
@@ -262,7 +262,7 @@ public:
   static inline signed short Convert ( const T value, const bool paddingFlag = false, const signed short paddingData = 0 ) 
   { 
     using namespace std;
-    if ( isnan( value ) )
+    if ( MathUtil::IsNaN( value ) )
       if ( paddingFlag )
 	return paddingData;
       else
@@ -308,7 +308,7 @@ public:
   static inline unsigned short Convert ( const T value, const bool paddingFlag = false, const unsigned short paddingData = 0 ) 
   { 
     using namespace std;
-    if ( isnan( value ) )
+    if ( MathUtil::IsNaN( value ) )
       if ( paddingFlag )
 	return paddingData;
       else
@@ -354,7 +354,7 @@ public:
   static inline int Convert ( const T value, const bool paddingFlag = false, const int paddingData = 0 ) 
   { 
     using namespace std;
-    if ( isnan( value ) )
+    if ( MathUtil::IsNaN( value ) )
       if ( paddingFlag )
 	return paddingData;
       else
