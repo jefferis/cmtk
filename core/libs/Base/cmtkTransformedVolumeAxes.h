@@ -97,6 +97,12 @@ public:
     return this->m_Hash[index];
   }
 
+  /// Get dimensions.
+  const FixedVector<3,int>& Dims() const
+  {
+    return this->m_Dims;
+  }
+
 private:
   /// Array of pointers to transformed axes points.
   FixedVector<3,UniformVolume::SpaceVectorType*> m_Hash;

@@ -31,6 +31,7 @@
 # Sources of non-specific classes.
 SET(cmtkGPU_SRCS
   cmtkDeviceHistogram.cxx
+  cmtkDeviceTransformedVolumeAxes.cxx
   cmtkDeviceUniformVolume.cxx
   cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.cxx)
 
