@@ -867,7 +867,7 @@ void internalauxschur(bool wantt,
                     //
                     // Real roots: use Wilkinson's shift twice
                     //
-		disc = std::sqrt(disc);
+		disc = std::std::sqrt(disc);
                     ave = 0.5*(h33+h44);
                     if( std::fabs(h33)-std::fabs(h44)>0 )
                     {
@@ -1212,7 +1212,7 @@ void aux2x2schur(ap::real_value_type& a,
                     //
                     // Real eigenvalues. Compute A and D.
                     //
-                    z = p+extschursign(sqrt(scl)*sqrt(z), p);
+                    z = p+extschursign(std::sqrt(scl)*std::sqrt(z), p);
                     a = d+z;
                     d = d-bcmax/z*bcmis;
                     
@@ -1234,7 +1234,7 @@ void aux2x2schur(ap::real_value_type& a,
                     //
                     sigma = b+c;
                     tau = pythag2(sigma, temp);
-                    cs = sqrt(0.5*(1+std::fabs(sigma)/tau));
+                    cs = std::sqrt(0.5*(1+std::fabs(sigma)/tau));
                     sn = -p/(tau*cs)*extschursign(ap::real_value_type(1), sigma);
                     
                     //
@@ -1267,10 +1267,10 @@ void aux2x2schur(ap::real_value_type& a,
                                 //
                                 // Real eigenvalues: reduce to upper triangular form
                                 //
-                                sab = sqrt(std::fabs(b));
-                                sac = sqrt(std::fabs(c));
+                                sab = std::sqrt(std::fabs(b));
+                                sac = std::sqrt(std::fabs(c));
                                 p = extschursign(sab*sac, c);
-                                tau = 1/sqrt(std::fabs(b+c));
+                                tau = 1/std::sqrt(std::fabs(b+c));
                                 a = temp+p;
                                 d = temp-p;
                                 b = b-c;
@@ -1308,7 +1308,7 @@ void aux2x2schur(ap::real_value_type& a,
     }
     else
     {
-        rt1i = sqrt(std::fabs(b))*sqrt(std::fabs(c));
+        rt1i = std::sqrt(std::fabs(b))*std::sqrt(std::fabs(c));
         rt2i = -rt1i;
     }
 }

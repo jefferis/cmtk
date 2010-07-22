@@ -549,7 +549,7 @@ void internaltrevc(const ap::real_2d_array& t,
                 wi = 0;
                 if( ip!=0 )
                 {
-                    wi = sqrt(std::fabs(t(ki,ki-1)))*sqrt(std::fabs(t(ki-1,ki)));
+                    wi = std::sqrt(std::fabs(t(ki,ki-1)))*std::sqrt(std::fabs(t(ki-1,ki)));
                 }
                 smin = ap::maxreal(ulp*(std::fabs(wr)+std::fabs(wi)), smlnum);
                 if( ip==0 )
@@ -995,7 +995,7 @@ void internaltrevc(const ap::real_2d_array& t,
                 wi = 0;
                 if( ip!=0 )
                 {
-                    wi = sqrt(std::fabs(t(ki,ki+1)))*sqrt(std::fabs(t(ki+1,ki)));
+                    wi = std::sqrt(std::fabs(t(ki,ki+1)))*std::sqrt(std::fabs(t(ki+1,ki)));
                 }
                 smin = ap::maxreal(ulp*(std::fabs(wr)+std::fabs(wi)), smlnum);
                 if( ip==0 )
