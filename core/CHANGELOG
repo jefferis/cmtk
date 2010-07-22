@@ -1,6 +1,6 @@
 Release CMTK-1.4.1:
 
-(r2024) Refactored: all cmtk header files are now included via paths relative
+(r2035) Refactored: all cmtk header files are now included via paths relative
     to the library parent directory. Also made sure all C standard headers are
     included as their C++ standard equivalents.
 (r2019) Refactored: split new symmetry plane functional into base class and
