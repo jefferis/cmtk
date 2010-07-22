@@ -101,6 +101,9 @@ private:
   /// Array of pointers to transformed axes points.
   FixedVector<3,UniformVolume::SpaceVectorType*> m_Hash;
 
+  /// Dimensions of the transformed grid: numbers of samples per axis.
+  FixedVector<3,int> m_Dims;
+
   /// Create the actual hash: allocate and fill according to given offset and delta vectors.
   void MakeHash( const UniformVolume& volume, const UniformVolume::SpaceVectorType& offset, const UniformVolume::SpaceVectorType& dX, const UniformVolume::SpaceVectorType& dY, const UniformVolume::SpaceVectorType& dZ );
 

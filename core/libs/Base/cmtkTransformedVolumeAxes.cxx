@@ -119,11 +119,10 @@ void
 TransformedVolumeAxes::MakeHash
 ( const UniformVolume& volume, const UniformVolume::SpaceVectorType& offset, const UniformVolume::SpaceVectorType& dX, const UniformVolume::SpaceVectorType& dY, const UniformVolume::SpaceVectorType& dZ )
 {
-  int DimsX = volume.m_Dims[0], DimsY = volume.m_Dims[1], DimsZ = volume.m_Dims[2];
-  
+  this->m_Dims = volume.m_Dims;  
   for ( int dim = 0; dim<3; ++dim ) 
     {
-    this->m_Hash[dim] = Memory::AllocateArray<UniformVolume::SpaceVectorType>( volume.m_Dims[dim] );
+    this->m_Hash[dim] = Memory::AllocateArray<UniformVolume::SpaceVectorType>( this->m_Dims[dim] );
     assert( this->m_Hash[dim] != NULL );
     }
 
@@ -132,11 +131,13 @@ TransformedVolumeAxes::MakeHash
   const Types::Coordinate deltaZ = volume.m_Delta[2];
   
   int idx;
-  for ( idx=0; idx<DimsX; ++idx )
+  for ( idx=0; idx < this->m_Dims[0]; ++idx )
     this->m_Hash[0][idx] = deltaX*idx*dX;
-  for ( idx=0; idx<DimsY; ++idx )
+
+  for ( idx=0; idx < this->m_Dims[1]; ++idx )
     this->m_Hash[1][idx] = deltaY*idx*dY;
-  for ( idx=0; idx<DimsZ; ++idx )
+
+  for ( idx=0; this->m_Dims[2]; ++idx )
     (this->m_Hash[2][idx] = deltaZ*idx*dZ) += offset;
 }
 
