@@ -38,15 +38,18 @@ float
 cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( void* array )
 {
   // Set texture parameters
-  texRef.addressMode[0] = cudaAddressModeWrap; 
-  texRef.addressMode[1] = cudaAddressModeWrap; 
+  texRef.addressMode[0] = cudaAddressModeWrap;
+  texRef.addressMode[1] = cudaAddressModeWrap;
+  texRef.addressMode[2] = cudaAddressModeWrap;
   texRef.filterMode = cudaFilterModeLinear; 
-  texRef.normalized = false; 
+  texRef.normalized = true; 
 
   cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
   
   // Bind the array to the texture reference 
   cudaBindTextureToArray( texRef, (struct cudaArray*) array, channelDesc );
+
+  cudaUnbindTexture( textRef );
 
   return 0;
 }
