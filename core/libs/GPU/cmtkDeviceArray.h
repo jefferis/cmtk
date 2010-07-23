@@ -54,7 +54,7 @@ class DeviceArrayTemplate :
 {
 public:
   /// This class.
-  typedef DeviceArray<T,DeviceArrayGPU> Self;
+  typedef DeviceArrayTemplate<DeviceArrayGPU> Self;
   
   /// Smart pointer-to-const.
   typedef SmartConstPointer<Self> SmartConstPtr;
@@ -65,6 +65,9 @@ public:
   /// Base class.
   typedef DeviceArrayGPU Superclass;
 
+  /// Device array pointer type forwarded.
+  typedef typename Superclass::DeviceArrayPointer DeviceArrayPointer;
+
   /// Create new object and allocate memory.
   static typename Self::SmartPtr Create( const FixedVector<3,int>& dims3 /**!< Array dimensions */ )
   {
@@ -73,16 +76,16 @@ public:
   
   /// Create new object, allocate, and initialize memory.
   static typename Self::SmartPtr Create( const FixedVector<3,int>& dims3, /**!< Array dimensions */
-					 const T* initFrom, /**!< Initialize from this region in host memory.*/ )
+					 const float* initFrom /**!< Initialize from this region in host memory.*/ )
   {
     Self* newObject = new Self( dims3 );
-    newObject->CopyToDevice( initFrom, nItems );
+    newObject->CopyToDevice( initFrom );
     return typename Self::SmartPtr( newObject );
   }
   
 private:
   /// Constructor: allocate memory on device through base class.
-  DeviceArray(  const FixedVector<3,int>& dims3 ) 
+  DeviceArrayTemplate(  const FixedVector<3,int>& dims3 ) 
     : DeviceArrayGPU( dims3 )
   {}
 };

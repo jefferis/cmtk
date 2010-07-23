@@ -28,9 +28,10 @@
 //
 */
 
-#include "cmtkDeviceUniformVolumeTexture.h"
+#include "cmtkDeviceUniformVolumeArray.h"
 
-cmtk::DeviceUniformVolumeTexture::
-DeviceUniformVolumeTexture( const UniformVolume& volume )
+cmtk::DeviceUniformVolumeArray::
+DeviceUniformVolumeArray( const UniformVolume& volume )
+  :  m_DeviceArrayPointer( DeviceArray::Create( volume.m_Dims ) )
 {
 }

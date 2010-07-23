@@ -37,7 +37,7 @@
 
 #include "Registration/cmtkImageSymmetryPlaneFunctionalBase.h"
 
-#include "GPU/cmtkDeviceUniformVolumeTexture.h"
+#include "GPU/cmtkDeviceUniformVolumeArray.h"
 
 namespace
 cmtk
@@ -76,7 +76,7 @@ public:
 
 private:
   /// Volume on compute device.
-  DeviceUniformVolumeTexture::SmartPtr m_VolumeOnDevice;
+  DeviceUniformVolumeArray::SmartPtr m_VolumeOnDevice;
 };
 
 //@}

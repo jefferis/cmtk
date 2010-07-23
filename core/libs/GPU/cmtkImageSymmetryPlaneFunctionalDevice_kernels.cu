@@ -28,14 +28,14 @@
 //
 */
 
-#include "cmtkImageSymmetryPlaneFunctionalDevice_kernels.h"
+//#include "cmtkImageSymmetryPlaneFunctionalDevice_kernels.h"
 
 #include <cuda_runtime_api.h>
 
 texture<float, 3, cudaReadModeElementType> texRef;
 
 float
-cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( cmtk::DeviceArrayCUDA& array )
+cmtkImageSymmetryPlaneFunctionalDeviceEvaluate() //( cmtk::DeviceArrayCUDA& array )
 {
   // Set texture parameters
   texRef.addressMode[0] = cudaAddressModeWrap; 
@@ -46,7 +46,7 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( cmtk::DeviceArrayCUDA& array )
   cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
   
   // Bind the array to the texture reference 
-  cudaBindTextureToArray( texRef, array.GetArrayOnDevice(), channelDesc );
+  cudaBindTextureToArray( texRef, NULL, /*array.GetArrayOnDevice(),*/ channelDesc );
 
   return 0;
 }

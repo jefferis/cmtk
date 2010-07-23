@@ -28,8 +28,8 @@
 //
 */
 
-#ifndef __cmtkDeviceUniformVolumeTexture_h_included_
-#define __cmtkDeviceUniformVolumeTexture_h_included_
+#ifndef __cmtkDeviceUniformVolumeArray_h_included_
+#define __cmtkDeviceUniformVolumeArray_h_included_
 
 #include <cmtkconfig.h>
 
@@ -45,11 +45,11 @@ cmtk
 //@{
 
 /// Representation of a uniform volume as 3D texture in device memory.
-class DeviceUniformVolumeTexture
+class DeviceUniformVolumeArray
 {
 public:
   /// This class.
-  typedef DeviceUniformVolumeTexture Self;
+  typedef DeviceUniformVolumeArray Self;
 
   /// Smart pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
@@ -61,19 +61,19 @@ public:
   }
 
   /// Get volume array on device.
-  DeviceArray::DeviceArrayPointer GetDeviceArrayPtr()
+  DeviceArray::SmartPtr& GetDeviceArrayPtr()
   {
     return this->m_DeviceArrayPointer;
   }
   
 private:
   /// Constructor.
-  DeviceUniformVolumeTexture( const UniformVolume& volume );
+  DeviceUniformVolumeArray( const UniformVolume& volume );
 
   /// Device array pointer.
-  DeviceArray::DeviceArrayPointer m_DeviceArrayPointer;
+  DeviceArray::SmartPtr m_DeviceArrayPointer;
 };
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkDeviceUniformVolumeTexture_h_included_
+#endif // #ifndef __cmtkDeviceUniformVolumeArray_h_included_

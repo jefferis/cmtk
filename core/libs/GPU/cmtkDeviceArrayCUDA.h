@@ -86,15 +86,16 @@ public:
     return this->m_DeviceArrayPtr;
   }
 
+protected:
+  /// Constructor: allocate array through CUDA.
+  DeviceArrayCUDA( const FixedVector<3,int>& dims3 );
+
 private:
   /// Array dimensions.
   FixedVector<3,int> m_Dims;
 
   /// Opaque pointer to array on device.
   DeviceArrayPointer m_DeviceArrayPtr;
-
-  /// Constructor: allocate array through CUDA.
-  DeviceArrayCUDA( const FixedVector<3,int>& dims3 );
 };
 
 } // namespace cmtk
