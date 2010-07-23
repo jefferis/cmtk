@@ -212,6 +212,16 @@ public:
     return *(std::min_element( this->begin(), this->end() ) );
   }
 
+  /// Calculate sum of vector elements.
+  T Sum() const 
+  {
+    T sum = this->m_Data[0];
+    for ( size_t i = 1; i < NDIM; ++i )
+      sum += this->m_Data[i];
+
+    return sum;
+  }
+
   /// Calculate sum of squares of vector elements (that is, square of Euclid's norm).
   T SumOfSquares() const 
   {
