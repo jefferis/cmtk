@@ -68,12 +68,6 @@ public:
   /// Exception for failed allocation.
   class bad_alloc : public std::bad_alloc {};
   
-  /// Create new object and allocate memory.
-  Self::SmartPtr Alloc( const FixedVector<3,int>& dims3 )
-  {
-    return Self::SmartPtr( new Self( dims3 ) );
-  }
-  
   /// Destructor: free memory through CUDA.
   virtual ~DeviceArrayCUDA() {}
 

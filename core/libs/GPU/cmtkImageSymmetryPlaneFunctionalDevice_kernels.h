@@ -31,8 +31,8 @@
 #ifndef __cmtkImageSymmetryPlaneFunctionalDevice_kernels_h_included_
 #define __cmtkImageSymmetryPlaneFunctionalDevice_kernels_h_included_
 
-#include "GPU/cmtkDeviceArrayCUDA.h"
+//#include "GPU/cmtkDeviceArrayCUDA.h"
 
-float cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( cmtk::DeviceArray& array );
+float cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( void* array );
 
 #endif // #ifndef __cmtkImageSymmetryPlaneFunctionalDevice_kernels_h_included_

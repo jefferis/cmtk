@@ -61,7 +61,7 @@ ImageSymmetryPlaneFunctionalDevice::ImageSymmetryPlaneFunctionalDevice
 ImageSymmetryPlaneFunctionalDevice::ReturnType
 ImageSymmetryPlaneFunctionalDevice::Evaluate()
 {
-  return cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( *(this->m_VolumeOnDevice->GetDeviceArrayPtr()) );
+  return cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( this->m_VolumeOnDevice->GetDeviceArrayPtr()->GetArrayOnDevice() );
 }
 
 } // namespace cmtk

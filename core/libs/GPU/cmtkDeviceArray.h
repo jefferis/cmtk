@@ -49,8 +49,8 @@ cmtk
 /// Resource managing class template for type-specific memory allocated on a GPU device through .
 template<class DeviceArrayGPU>
 class DeviceArrayTemplate :
-    /// Inherit privately from raw pointer base class.
-    private DeviceArrayGPU
+    /// Inherit from GPU-specific pointer base class.
+    public DeviceArrayGPU
 {
 public:
   /// This class.
@@ -64,9 +64,6 @@ public:
 
   /// Base class.
   typedef DeviceArrayGPU Superclass;
-
-  /// Device array pointer type forwarded.
-  typedef typename Superclass::DeviceArrayPointer DeviceArrayPointer;
 
   /// Create new object and allocate memory.
   static typename Self::SmartPtr Create( const FixedVector<3,int>& dims3 /**!< Array dimensions */ )
