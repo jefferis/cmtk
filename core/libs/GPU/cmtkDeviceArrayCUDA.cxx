@@ -62,5 +62,5 @@ void
 cmtk::DeviceArrayCUDA
 ::CopyToDevice( const float* data )
 {
-  cudaMemcpyToArray( this->m_DeviceArrayPtr, 0, 0, data, this->m_Dims[0]*this->m_Dims[1]*this->m_Dims[2], cudaMemcpyHostToDevice);
+  cudaMemcpyToArray( this->m_DeviceArrayPtr, 0, 0, data, this->m_Dims.Sum(), cudaMemcpyHostToDevice);
 }
