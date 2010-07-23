@@ -49,7 +49,7 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( void* array )
   // Bind the array to the texture reference 
   cudaBindTextureToArray( texRef, (struct cudaArray*) array, channelDesc );
 
-  cudaUnbindTexture( textRef );
+  cudaUnbindTexture( texRef );
 
   return 0;
 }
