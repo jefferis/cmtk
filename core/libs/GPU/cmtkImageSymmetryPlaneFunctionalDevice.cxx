@@ -63,7 +63,7 @@ ImageSymmetryPlaneFunctionalDevice::ImageSymmetryPlaneFunctionalDevice
 ImageSymmetryPlaneFunctionalDevice::ReturnType
 ImageSymmetryPlaneFunctionalDevice::Evaluate()
 {
-  return cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( this->m_VolumeOnDevice->GetDeviceArrayPtr()->GetArrayOnDevice() );
+  return cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( this->m_Volume->m_Dims.begin(), this->m_VolumeOnDevice->GetDeviceArrayPtr()->GetArrayOnDevice(), &(this->m_VolumeAxesTNL[0]) );
 }
 
 void

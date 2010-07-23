@@ -32,11 +32,22 @@
 
 #include <cuda_runtime_api.h>
 
+#include <cstdio>
+
+/// Texture reference to volume data.
 texture<float, 3, cudaReadModeElementType> texRef;
 
+__constant__ float deviceAxesTNL[16384];
+
 float
-cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( void* array )
+cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, const float* axesTNL )
 {
+  if ( (cudaMemcpyToSymbol( deviceAxesTNL, axesTNL, 3*(dims3[0]+dims3[1]+dims3[2])*sizeof( *axesTNL ), 0, cudaMemcpyHostToDevice ) != cudaSuccess) )
+    {
+      fprintf( stderr, "ERROR: cudaMemcpy() to constant memory failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
+      exit( 1 );      
+    }
+  
   // Set texture parameters
   texRef.addressMode[0] = cudaAddressModeWrap;
   texRef.addressMode[1] = cudaAddressModeWrap;
