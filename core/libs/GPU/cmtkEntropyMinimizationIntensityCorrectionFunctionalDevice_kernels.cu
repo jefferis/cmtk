@@ -143,7 +143,7 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
     nThreads = dprop.maxThreadsPerBlock;
   
   dim3 dimBlock( nThreads, 1, 1 );
-  dim3 dimGrid( 1+(nPixels-1)/nThreads, 1 );
+  dim3 dimGrid( (nPixels+nThreads-1)/nThreads, 1 );
   
   cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel<<<dimGrid,dimBlock>>>( output, input, degree, multiply, nPixels, dims0, dims1, dims2 );
 
