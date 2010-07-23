@@ -43,23 +43,43 @@ __constant__ float deviceAxesTNL[16384];
 __global__
 void cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel( const int dims0, const int dims1, const int dims2 )
 {
-  const int x = threadIdx.x;
+  const int tx = threadIdx.x;
+
+  __shared__ float sq[32];
+  sq[tx] = 0;
+
   const int y = threadIdx.y;
   const int z = blockIdx.x;
 
-  const int offsetX = 3 * x;
   const int offsetY = 3 * (dims0 + y);
   const int offsetZ = 3 * (dims0 + dims1 + z);
 
-  const float xX = deviceAxesTNL[offsetX] + deviceAxesTNL[offsetY] + deviceAxesTNL[offsetZ];
-  const float yX = deviceAxesTNL[offsetX+1] + deviceAxesTNL[offsetY+1] + deviceAxesTNL[offsetZ+1];
-  const float zX = deviceAxesTNL[offsetX+2] + deviceAxesTNL[offsetY+2] + deviceAxesTNL[offsetZ+2];
+  const float xX0 = deviceAxesTNL[offsetY] + deviceAxesTNL[offsetZ];
+  const float yX0 = deviceAxesTNL[offsetY+1] + deviceAxesTNL[offsetZ+1];
+  const float zX0 = deviceAxesTNL[offsetY+2] + deviceAxesTNL[offsetZ+2];
 
-  const float data = tex3D( texRef, x, y, z );
-  const float dataX = tex3D( texRefX, xX, yX, zX );
+  for ( int x = tx; x < dims0; x += blockDim.x )
+    {
+      const int offsetX = 3 * x;
+      const float xX = deviceAxesTNL[offsetX] + xX0;
+      const float yX = deviceAxesTNL[offsetX+1] + yX0;
+      const float zX = deviceAxesTNL[offsetX+2] + zX0;
+      
+      const float data = tex3D( texRef, x, y, z );
+      const float dataX = tex3D( texRefX, xX, yX, zX );
+      
+      const float diff = data-dataX;
+      sq[tx] += diff*diff;
+    }
 
-  const float diff = data-dataX;
-  const float sq = diff*diff;
+  // compute sum via butterfly
+  for ( int bit = 1; bit < blockDim.x; bit <<= 1 )
+    {
+      const float sum = sq[tx] + sq[tx^bit];
+      __syncthreads();
+      sq[tx] = sum;
+      __syncthreads();
+    }
 }
 
 float
@@ -78,7 +98,7 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
   texRef.filterMode = cudaFilterModeLinear; 
   texRef.normalized = true; 
 
-  cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
+  cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc( 32, 0, 0, 0, cudaChannelFormatKindFloat );
   
   // Bind the array to the texture reference 
   cudaBindTextureToArray( texRef, (struct cudaArray*) array, channelDesc );
@@ -92,7 +112,7 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
 
   cudaBindTextureToArray( texRefX, (struct cudaArray*) array, channelDesc );
 
-  dim3 dimBlock( dims3[0], dims3[1], 1 );
+  dim3 dimBlock( 32, dims3[1], 1 );
   dim3 dimGrid( dims3[2], 1 );
   
   cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel<<<dimGrid,dimBlock>>>( dims3[0], dims3[1], dims3[2] );
