@@ -33,6 +33,7 @@
 
 #include <cmtkconfig.h>
 
+#include "System/cmtkCannotBeCopied.h"
 #include "System/cmtkSmartConstPtr.h"
 #include "System/cmtkSmartPtr.h"
 

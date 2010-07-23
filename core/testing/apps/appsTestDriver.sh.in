@@ -1438,6 +1438,18 @@ case ${RUNTEST} in
 	run symplx --sampling 1 --levels 4 --accuracy 0.1 --fix-offset --cubic --write-aligned ${tmpdir}/aligned.hdr -o ${tmpdir}/parameters cad001_ct.hdr
 	check_results parameters aligned.img
 	;;
+    symplx_DefaultCUDA)
+	run symplx_cuda --sampling 1 --levels 4 --accuracy 0.1 --write-xform ${tmpdir}/xform --sinc --write-subtract ${tmpdir}/subtract.hdr -o ${tmpdir}/parameters cad001_ct.hdr
+	check_results parameters xform subtract.img
+	;;
+    symplx_ThreshCUDA)
+	run symplx_cuda --sampling 1 --levels 4 --accuracy 0.1 --min-value -224 --max-value 176 --cubic --write-aligned ${tmpdir}/aligned.hdr -o ${tmpdir}/parameters cad001_ct.hdr
+	check_results parameters aligned.img
+	;;
+    symplx_FixOffsetCUDA)
+	run symplx_cuda --sampling 1 --levels 4 --accuracy 0.1 --fix-offset --cubic --write-aligned ${tmpdir}/aligned.hdr -o ${tmpdir}/parameters cad001_ct.hdr
+	check_results parameters aligned.img
+	;;
     ttestDefault)
 	run ttest -o ${tmpdir}/ttest.hdr --tstats-file ${tmpdir}/tstats.hdr jacobian-01.nii jacobian-02.nii -- jacobian-03.nii jacobian-04.nii
 	check_results ttest.img tstats.img

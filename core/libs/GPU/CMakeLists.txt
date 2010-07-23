@@ -33,12 +33,16 @@ SET(cmtkGPU_SRCS
   cmtkDeviceHistogram.cxx
   cmtkDeviceTransformedVolumeAxes.cxx
   cmtkDeviceUniformVolume.cxx
-  cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.cxx)
+  cmtkDeviceUniformVolumeTexture.cxx
+  cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.cxx
+  cmtkImageSymmetryPlaneFunctionalDevice.cxx
+  )
 
 IF(CMTK_USE_CUDA)
   SET(cmtkGPU_SRCS_CUDA
     cmtkDeviceHistogram_kernels.cu
     cmtkDeviceMemoryCUDA.cxx
+    cmtkDeviceArrayCUDA.cxx
     cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.cu)
 
   CUDA_ADD_LIBRARY(cmtkGPU ${cmtkGPU_SRCS_CUDA} ${cmtkGPU_SRCS})

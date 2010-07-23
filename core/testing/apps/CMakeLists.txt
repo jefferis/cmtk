@@ -530,6 +530,13 @@ IF(NOT CMTK_USE_MPI)
     symplx_Thresh
     symplx_FixOffset)
 
+  IF(CMTK_USE_CUDA)
+    SET(testList ${testList} 
+      symplx_DefaultCUDA
+      symplx_ThreshCUDA
+      symplx_FixOffsetCUDA)
+  ENDIF(CMTK_USE_CUDA)
+
   # ==========================================
   # Tests for "statistics" tool
   SET(testList ${testList} 
