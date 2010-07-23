@@ -77,6 +77,16 @@ public:
 private:
   /// Volume on compute device.
   DeviceUniformVolumeArray::SmartPtr m_VolumeOnDevice;
+
+  /** Transformed, Normalized, and Linearized volume axes.
+   * This vector contains the transformed volume axes computed using
+   * cmtk::TransformedVolumeAxes, converted to normalized coordinates (0..1 per axis),
+   * and linearized (i.e., x axis samples, followed by y axis samples, followed by z axis samples).
+   */
+  std::vector<float> m_VolumeAxesTNL;
+
+  /// Transform, normalize, and linearize volume axes.
+  void TransformNormalizeLinearizeAxes();
 };
 
 //@}

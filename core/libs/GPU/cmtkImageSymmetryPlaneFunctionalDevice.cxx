@@ -46,7 +46,8 @@ cmtk
 ImageSymmetryPlaneFunctionalDevice::ImageSymmetryPlaneFunctionalDevice
 ( UniformVolume::SmartConstPtr& volume ) 
   : ImageSymmetryPlaneFunctionalBase( volume ),
-    m_VolumeOnDevice( DeviceUniformVolumeArray::Create( *(this->m_Volume) ) )
+    m_VolumeOnDevice( DeviceUniformVolumeArray::Create( *(this->m_Volume) ) ),
+    m_VolumeAxesTNL( 3 * this->m_Volume->m_Dims.Sum() )
 {
 }
 
@@ -54,7 +55,8 @@ ImageSymmetryPlaneFunctionalDevice::ImageSymmetryPlaneFunctionalDevice
 ( UniformVolume::SmartConstPtr& volume, 
   const Types::DataItemRange& valueRange )
   : ImageSymmetryPlaneFunctionalBase( volume, valueRange ),
-    m_VolumeOnDevice( DeviceUniformVolumeArray::Create( *(this->m_Volume) ) )
+    m_VolumeOnDevice( DeviceUniformVolumeArray::Create( *(this->m_Volume) ) ),
+    m_VolumeAxesTNL( 3 * this->m_Volume->m_Dims.Sum() )
 {
 }
 
@@ -63,5 +65,26 @@ ImageSymmetryPlaneFunctionalDevice::Evaluate()
 {
   return cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( this->m_VolumeOnDevice->GetDeviceArrayPtr()->GetArrayOnDevice() );
 }
+
+void
+ImageSymmetryPlaneFunctionalDevice::TransformNormalizeLinearizeAxes()
+{
+  const TransformedVolumeAxes gridHash( *(this->m_Volume), this->m_ParametricPlane, this->m_Volume->Size.begin() );
+
+  size_t ofs = 0;
+  for ( size_t dim = 0; dim < 3; ++dim )
+    {
+    const size_t cnt = this->m_Volume->m_Dims[dim];
+    for ( size_t idx = 0; idx < cnt; ++idx )
+      {
+      const Vector3D& v = gridHash[dim][idx];
+      for ( int comp = 0; comp < 3; ++comp )
+	{
+	this->m_VolumeAxesTNL[ofs++] = v[comp];
+	}
+      }
+    }
+}
+
 
 } // namespace cmtk
