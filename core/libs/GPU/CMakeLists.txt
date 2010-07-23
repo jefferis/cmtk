@@ -33,7 +33,7 @@ SET(cmtkGPU_SRCS
   cmtkDeviceHistogram.cxx
   cmtkDeviceTransformedVolumeAxes.cxx
   cmtkDeviceUniformVolume.cxx
-  cmtkDeviceUniformVolumeTexture.cxx
+  cmtkDeviceUniformVolumeArray.cxx
   cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.cxx
   cmtkImageSymmetryPlaneFunctionalDevice.cxx
   )
