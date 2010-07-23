@@ -28,9 +28,11 @@
 //
 */
 
-#include "cmtkDeviceUniformVolumeTexture.h"
+#ifndef __cmtkImageSymmetryPlaneFunctionalDevice_kernels_h_included_
+#define __cmtkImageSymmetryPlaneFunctionalDevice_kernels_h_included_
 
-cmtk::DeviceUniformVolumeTexture::
-DeviceUniformVolumeTexture( const UniformVolume& volume )
-{
-}
+#include "GPU/cmtkDeviceArrayCUDA.h"
+
+float cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( cmtk::DeviceArrayCUDA& array );
+
+#endif // #ifndef __cmtkImageSymmetryPlaneFunctionalDevice_kernels_h_included_

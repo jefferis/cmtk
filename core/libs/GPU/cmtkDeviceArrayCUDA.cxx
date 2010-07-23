@@ -30,3 +30,29 @@
 
 #include "cmtkDeviceArrayCUDA.h"
 
+#include <cuda_runtime_api.h>
+
+cmtk::DeviceArrayCUDA
+::DeviceArrayCUDA( const FixedVector<3,int>& dims3 )
+  : m_Dims( dims3 )
+{
+  const struct cudaChannelFormatDesc desc = cudaCreateChannelDesc( 32, 0, 0, 0, cudaChannelFormatKindFloat );
+  
+  struct cudaExtent extent;
+  extent.width = this->m_Dims[0];
+  extent.height = this->m_Dims[1];
+  extent.depth = this->m_Dims[2];
+  
+  if ( cudaMalloc3DArray( &(this->m_DeviceArrayPtr), &desc, extent ) != cudaSuccess )
+    {
+    this->m_DeviceArrayPtr = NULL;
+    throw( Self::bad_alloc() );
+    }
+}
+
+void
+cmtk::DeviceArrayCUDA
+::CopyToDevice( const float* data )
+{
+  cudaMemcpyToArray( this->m_DeviceArrayPtr, 0, 0, data, this->m_Dims[0]*this->m_Dims[1]*this->m_Dims[2], cudaMemcpyHostToDevice);
+}

@@ -28,9 +28,25 @@
 //
 */
 
-#include "cmtkDeviceUniformVolumeTexture.h"
+#include "cmtkImageSymmetryPlaneFunctionalDevice_kernels.h"
 
-cmtk::DeviceUniformVolumeTexture::
-DeviceUniformVolumeTexture( const UniformVolume& volume )
+#include <cuda_runtime_api.h>
+
+texture<float, 3, cudaReadModeElementType> texRef;
+
+float
+cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( cmtk::DeviceArrayCUDA& array )
 {
+  // Set texture parameters
+  texRef.addressMode[0] = cudaAddressModeWrap; 
+  texRef.addressMode[1] = cudaAddressModeWrap; 
+  texRef.filterMode = cudaFilterModeLinear; 
+  texRef.normalized = false; 
+
+  cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
+  
+  // Bind the array to the texture reference 
+  cudaBindTextureToArray( texRef, array.GetArrayOnDevice(), channelDesc );
+
+  return 0;
 }

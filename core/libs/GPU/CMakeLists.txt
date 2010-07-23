@@ -43,7 +43,9 @@ IF(CMTK_USE_CUDA)
     cmtkDeviceHistogram_kernels.cu
     cmtkDeviceMemoryCUDA.cxx
     cmtkDeviceArrayCUDA.cxx
-    cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.cu)
+    cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.cu
+    cmtkImageSymmetryPlaneFunctionalDevice_kernels.cu
+    )
 
   CUDA_ADD_LIBRARY(cmtkGPU ${cmtkGPU_SRCS_CUDA} ${cmtkGPU_SRCS})
 ENDIF(CMTK_USE_CUDA)

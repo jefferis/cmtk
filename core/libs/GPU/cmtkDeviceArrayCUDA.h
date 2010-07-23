@@ -35,12 +35,14 @@
 #include "System/cmtkSmartConstPtr.h"
 #include "System/cmtkSmartPtr.h"
 
-namespace
-cmtk
-{
+#include "Base/cmtkFixedVector.h"
 
 /// Forward declaration.
 struct cudaArray;
+
+namespace
+cmtk
+{
 
 /** \addtogroup GPU */
 //@{
@@ -59,16 +61,40 @@ public:
   
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
+
+  /// Device array pointer.
+  typedef struct cudaArray* DeviceArrayPointer;
   
   /// Exception for failed allocation.
   class bad_alloc : public std::bad_alloc {};
   
+  /// Create new object and allocate memory.
+  Self::SmartPtr Alloc( const FixedVector<3,int>& dims3 )
+  {
+    return Self::SmartPtr( new Self( dims3 ) );
+  }
+  
   /// Destructor: free memory through CUDA.
-  virtual ~DeviceArrayCUDA();
+  virtual ~DeviceArrayCUDA() {}
+
+  /// Copy to device.
+  void CopyToDevice( const float* data );
+
+  /// Get device array pointer.
+  DeviceArrayPointer GetArrayOnDevice()
+  {
+    return this->m_DeviceArrayPtr;
+  }
 
 private:
+  /// Array dimensions.
+  FixedVector<3,int> m_Dims;
+
   /// Opaque pointer to array on device.
-  struct cudaArray* m_DeviceArrayPtr;
+  DeviceArrayPointer m_DeviceArrayPtr;
+
+  /// Constructor: allocate array through CUDA.
+  DeviceArrayCUDA( const FixedVector<3,int>& dims3 );
 };
 
 } // namespace cmtk

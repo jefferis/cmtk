@@ -34,6 +34,8 @@
 
 #include "Base/cmtkTransformedVolumeAxes.h"
 
+#include "GPU/cmtkImageSymmetryPlaneFunctionalDevice_kernels.h"
+
 namespace
 cmtk
 {
@@ -59,7 +61,7 @@ ImageSymmetryPlaneFunctionalDevice::ImageSymmetryPlaneFunctionalDevice
 ImageSymmetryPlaneFunctionalDevice::ReturnType
 ImageSymmetryPlaneFunctionalDevice::Evaluate()
 {
-  return 0;
+  return cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( this->m_VolumeOnDevice->GetDeviceArrayPtr() );
 }
 
 } // namespace cmtk

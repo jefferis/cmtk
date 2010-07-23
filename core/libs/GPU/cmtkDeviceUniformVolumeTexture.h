@@ -33,7 +33,7 @@
 
 #include <cmtkconfig.h>
 
-#include "cmtkDeviceMemory.h"
+#include "cmtkDeviceArray.h"
 
 #include "Base/cmtkUniformVolume.h"
 
@@ -55,14 +55,23 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Create device representation of volume object.
-  static Self::SmartPtr Create( const UniformVolume& volume, const size_t padDataToMultiple = 1 /**!< Allocate device memory for data as multiple of this value.*/ )
+  static Self::SmartPtr Create( const UniformVolume& volume )
   {
-    return Self::SmartPtr( new Self( volume, padDataToMultiple ) );
+    return Self::SmartPtr( new Self( volume ) );
+  }
+
+  /// Get volume array on device.
+  DeviceArray::DeviceArrayPointer GetDeviceArrayPtr()
+  {
+    return this->m_DeviceArrayPointer;
   }
   
 private:
   /// Constructor.
-  DeviceUniformVolumeTexture( const UniformVolume& volume, const size_t padDataToMultiple = 1 );
+  DeviceUniformVolumeTexture( const UniformVolume& volume );
+
+  /// Device array pointer.
+  DeviceArray::DeviceArrayPointer m_DeviceArrayPointer;
 };
 
 } // namespace cmtk
