@@ -174,7 +174,7 @@ public:
 
   /** Convert a sub-array to any given primitive data type.
    *\return Newly allocated memory of given type. Caller is responsible for freeing this memory with a call to
-   * Memory::FreeArray().
+   * Memory::DeleteArray().
    */
   virtual void* ConvertSubArray( const ScalarDataType dtype, const size_t fromIdx, const size_t len ) const = 0;
 
@@ -185,7 +185,7 @@ public:
   /** Convert the array to any given data type.
    * This function uses ConvertSubArray to convert the complete array.
    *\return Newly allocated memory of given type. Caller is responsible for freeing this memory with a call to
-   * Memory::FreeArray().
+   * Memory::DeleteArray().
    *@see ConvertSubArray
    */
   virtual void* ConvertArray ( const ScalarDataType dtype ) const 
