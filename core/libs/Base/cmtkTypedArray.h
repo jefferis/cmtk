@@ -173,6 +173,8 @@ public:
   virtual Self::SmartPtr Convert(  const ScalarDataType dtype ) const = 0;
 
   /** Convert a sub-array to any given primitive data type.
+   *\return Newly allocated memory of given type. Caller is responsible for freeing this memory with a call to
+   * Memory::FreeArray().
    */
   virtual void* ConvertSubArray( const ScalarDataType dtype, const size_t fromIdx, const size_t len ) const = 0;
 
@@ -182,6 +184,8 @@ public:
 
   /** Convert the array to any given data type.
    * This function uses ConvertSubArray to convert the complete array.
+   *\return Newly allocated memory of given type. Caller is responsible for freeing this memory with a call to
+   * Memory::FreeArray().
    *@see ConvertSubArray
    */
   virtual void* ConvertArray ( const ScalarDataType dtype ) const 
