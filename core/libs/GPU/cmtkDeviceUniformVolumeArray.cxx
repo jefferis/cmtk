@@ -30,8 +30,24 @@
 
 #include "cmtkDeviceUniformVolumeArray.h"
 
+#include "System/cmtkMemory.h"
+
 cmtk::DeviceUniformVolumeArray::
 DeviceUniformVolumeArray( const UniformVolume& volume )
   :  m_DeviceArrayPointer( DeviceArray::Create( volume.m_Dims ) )
 {
+  const TypedArray::SmartPtr data = volume.GetData();
+  if ( data )
+    {
+    if ( data->GetType() == TYPE_FLOAT )
+      {
+      m_DeviceArrayPointer->CopyToDevice( static_cast<const float*>( data->GetDataPtr() ) );
+      }
+    else
+      {
+      float* fData = static_cast<float*>( data->ConvertArray( TYPE_FLOAT ) );
+      m_DeviceArrayPointer->CopyToDevice( fData );
+      Memory::DeleteArray( fData );
+      }
+    }
 }
