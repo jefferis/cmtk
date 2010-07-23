@@ -50,6 +50,14 @@ cmtk::DeviceArrayCUDA
     }
 }
 
+
+cmtk::DeviceArrayCUDA
+::~DeviceArrayCUDA()
+{
+  if ( this->m_DeviceArrayPtr )
+    cudaFreeArray( this->m_DeviceArrayPtr );
+}
+
 void
 cmtk::DeviceArrayCUDA
 ::CopyToDevice( const float* data )

@@ -68,8 +68,8 @@ public:
   /// Exception for failed allocation.
   class bad_alloc : public std::bad_alloc {};
   
-  /// Destructor: free memory through CUDA.
-  virtual ~DeviceArrayCUDA() {}
+  /// Destructor: free array through CUDA.
+  virtual ~DeviceArrayCUDA();
 
   /// Copy to device.
   void CopyToDevice( const float* data );
