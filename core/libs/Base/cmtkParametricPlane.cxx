@@ -58,8 +58,8 @@ ParametricPlane::Update()
   Normal[0] = MathUtil::Cos( Theta ) * MathUtil::Sin( Phi );
   Normal[1] = MathUtil::Sin( Theta ) * MathUtil::Sin( Phi );
   Normal[2] = MathUtil::Cos( Phi );
-
-  SquareNormal = Normal * Normal;
+  
+  this->SquareNormal = Normal * Normal;
 }
 
 void
@@ -132,6 +132,43 @@ ParametricPlane::GetAlignmentXform( const byte normalAxis ) const
   alignment->SetXlate( xlate );
 
   return alignment;
+}
+
+AffineXform::MatrixType
+ParametricPlane::GetMirrorXformMatrix() const
+{
+  // put together zero-offset mirror matrix
+  AffineXform::MatrixType m;
+  for ( int i = 0; i < 3; ++i ) 
+    {
+    for ( int j = 0; j < 3; ++j ) 
+      {
+      m[i][j] = -2.0 * this->Normal[i]*this->Normal[j] / this->SquareNormal;
+      }
+    m[i][i] += 1; // add delta_ij for diagonal
+    }
+
+  for ( int j = 0; j < 3; ++j ) 
+    {
+    m[3][j] = -this->Rho * this->Normal[j] / this->SquareNormal;
+    }
+
+  for ( int i = 0; i < 3; ++i ) 
+    {
+    m[i][3] = 0;
+    }
+  m[3][3] = 1;
+
+  // apply origin before and after mirror
+  AffineXform::MatrixType po = AffineXform::MatrixType::IdentityMatrix, mo = AffineXform::MatrixType::IdentityMatrix;
+  for ( int j = 0; j < 3; ++j ) 
+    {
+    mo[3][j] = -1.0 * (po[3][j] = this->m_Origin[j]);
+    }  
+
+  m = po * m * mo;
+
+  return m;
 }
 
 } // namespace cmtk

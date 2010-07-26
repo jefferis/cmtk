@@ -201,6 +201,9 @@ public:
    */
   AffineXform* GetAlignmentXform( const byte normalAxis = 0 ) const;
 
+  /// Get affine transformation matrix of the mirror transform.
+  AffineXform::MatrixType GetMirrorXformMatrix() const;
+
   /** Return normal vector.
    */
   const Self::CoordinateVectorType& GetNormal() const { return Normal; }
