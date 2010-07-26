@@ -50,6 +50,12 @@ SET(Tests ${Tests}
   RegionSizeFloat)
 
 # ==========================================
+# Tests for "cmtk::ParametricPlane" class
+SET(Tests ${Tests} 
+  ParametricPlaneMirror
+  ParametricPlaneMirrorOffset)
+
+# ==========================================
 # Tests for "cmtk::ScalarImage" class
 SET(Tests ${Tests} ScalarImage)
 

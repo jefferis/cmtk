@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -29,74 +30,47 @@
 //
 */
 
+#include "System/cmtkTestFunctionMap.h"
+
+#include "cmtkDataGridTests.txx"
 #include "cmtkEigenSystemSymmetricMatrix3x3Tests.txx"
 #include "cmtkMathUtilTests.txx"
 #include "cmtkMathUtilLinAlgTests.txx"
-#include "cmtkSplineWarpXformTests.txx"
-#include "cmtkDataGridTests.txx"
-#include "cmtkUniformVolumeTests.txx"
-#include "cmtkScalarImageTests.txx"
-#include "cmtkTypedArrayFunctionHistogramMatchingTests.txx"
+#include "cmtkParametricPlaneTests.txx"
 #include "cmtkRegionTests.txx"
-
-/** Set up table of test names and function pointers */
-typedef int (*testFuncPtr)();
-
-typedef 
-struct __testNameAndFunctionPointer
-{
-  const char* name;
-  const testFuncPtr func;
-} testNameAndFunctionPointer;
-
-const testNameAndFunctionPointer testTable[] =
-{
-  { "DataGridMatches",               &testDataGridMatches },
-  { "EigenSystemSymmetricMatrix3x3", &testEigenSystemSymmetricMatrix3x3 },
-  { "MathUtilEigensystem",           &testMathUtilEigensystem },
-  { "MathUtilEigenvalues",           &testMathUtilEigenvalues },
-  { "MathUtilUniformRandom",         &testMathUtilUniformRandom },
-  { "RegionSizeInt",                 &testRegionSizeInt },
-  { "RegionSizeFloat",               &testRegionSizeFloat },
-  { "ScalarImage",                   &testScalarImage },
-  { "SplineWarpXform",               &testSplineWarpXform },
-  { "SplineWarpXformInverse",        &testSplineWarpXformInverse },
-  { "TypedArrayMatchHistogram1",     &testTypedArrayMatchHistogram1 },
-  { "TypedArrayMatchHistogram2",     &testTypedArrayMatchHistogram2 },
-  { "TypedArrayMatchHistogram3",     &testTypedArrayMatchHistogram3 },
-  { "TypedArrayMatchHistogram4",     &testTypedArrayMatchHistogram4 },
-  { "UniformVolumeMatches",          &testUniformVolumeMatches },
-  { NULL, NULL }
-};
+#include "cmtkScalarImageTests.txx"
+#include "cmtkSplineWarpXformTests.txx"
+#include "cmtkTypedArrayFunctionHistogramMatchingTests.txx"
+#include "cmtkUniformVolumeTests.txx"
 
 int
 main( const int argc, const char* argv[] )
 {
-  int testNumber = -1;
+  cmtk::TestFunctionMap map;
+  map.AddTest( "DataGridMatches",               &testDataGridMatches );
+  map.AddTest( "EigenSystemSymmetricMatrix3x3", &testEigenSystemSymmetricMatrix3x3 );
+  map.AddTest( "MathUtilEigensystem",           &testMathUtilEigensystem );
+  map.AddTest( "MathUtilEigenvalues",           &testMathUtilEigenvalues );
+  map.AddTest( "MathUtilUniformRandom",         &testMathUtilUniformRandom );
+  map.AddTest( "ParametricPlaneMirror",         &testParametricPlaneMirror );
+  map.AddTest( "ParametricPlaneMirrorOffset",   &testParametricPlaneMirrorOffset );
+  map.AddTest( "RegionSizeInt",                 &testRegionSizeInt );
+  map.AddTest( "RegionSizeFloat",               &testRegionSizeFloat );
+  map.AddTest( "ScalarImage",                   &testScalarImage );
+  map.AddTest( "SplineWarpXform",               &testSplineWarpXform );
+  map.AddTest( "SplineWarpXformInverse",        &testSplineWarpXformInverse );
+  map.AddTest( "TypedArrayMatchHistogram1",     &testTypedArrayMatchHistogram1 );
+  map.AddTest( "TypedArrayMatchHistogram2",     &testTypedArrayMatchHistogram2 );
+  map.AddTest( "TypedArrayMatchHistogram3",     &testTypedArrayMatchHistogram3 );
+  map.AddTest( "TypedArrayMatchHistogram4",     &testTypedArrayMatchHistogram4 );
+  map.AddTest( "UniformVolumeMatches",          &testUniformVolumeMatches );
+
   // is test name given on command line?
   if ( argc < 2 )
     {
-    // no: ask user in dialog mode
-    for ( size_t i = 0; testTable[i].name; ++i )
-      {
-      std::cout << i << ". " << testTable[i].name << std::endl;
-      }
-    std::cout << "Run test number: ";
-    std::cin >> testNumber;
     }
   else
     {
-    // batch mode: find test by name given on command line
-    for ( size_t i = 0; testTable[i].name; ++i )
-      {
-      if ( !std::strcmp( argv[1], testTable[i].name ) )
-	testNumber = i;
-      }
+    return map.RunTestByName( argv[1] );
     }
-
-  // run test, or return error if none found
-  if ( testNumber < 0 )
-    return 2;
-  else
-    return testTable[testNumber].func();
 }

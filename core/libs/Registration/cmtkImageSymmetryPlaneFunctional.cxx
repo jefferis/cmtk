@@ -89,7 +89,7 @@ ImageSymmetryPlaneFunctional::Evaluate()
 	(pFloating = rowStart) += HashX[pX];
 	
 	// Is the current location still within the floating image, then get the respective voxel.
-	if ( m_Volume->FindVoxelByIndex( pFloating, fltIdx, fltFrac ) ) 
+	if ( m_Volume->FindVoxelByIndex( pFloating, fltIdx, fltFrac ) )
 	  {
 	  // Compute data index of the model voxel in the model volume.
 	  int offset = fltIdx[0] + DimsX * (fltIdx[1] + DimsY * fltIdx[2]);
