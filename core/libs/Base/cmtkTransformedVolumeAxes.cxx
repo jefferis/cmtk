@@ -137,7 +137,7 @@ TransformedVolumeAxes::MakeHash
   for ( idx=0; idx < this->m_Dims[1]; ++idx )
     this->m_Hash[1][idx] = deltaY*idx*dY;
 
-  for ( idx=0; this->m_Dims[2]; ++idx )
+  for ( idx=0; idx < this->m_Dims[2]; ++idx )
     (this->m_Hash[2][idx] = deltaZ*idx*dZ) += offset;
 }
 
