@@ -118,9 +118,11 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
 
   // alocate memory for partial sums of squares
   float* partialSums;
-  if ( cudaMalloc( &partialSums, 16*16*dims3[2]*sizeof(float) ) != cudaSuccess )
+
+  cudaError_t cudaError = cudaMalloc( &partialSums, 16*16*dims3[2]*sizeof(float) );
+  if ( cudaError != cudaSuccess )
     {
-      fprintf( stderr, "ERROR: cudaMalloc failed with error '%s'\n", cudaGetErrorString( cudaGetLastError() ) );
+      fprintf( stderr, "ERROR: cudaMalloc failed with error '%s'\n", cudaGetErrorString( cudaError ) );
       exit( 1 );      
     }
 
@@ -129,20 +131,20 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
   
   cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel<<<dimGrid,dimBlock>>>( partialSums, matrix, dims3[0], dims3[1], dims3[2] );
 
-  cudaError_t kernelError = cudaGetLastError();
-  if ( kernelError != cudaSuccess )
+  cudaError = cudaGetLastError();
+  if ( cudaError != cudaSuccess )
     {
-      fprintf( stderr, "ERROR: CUDA kernel failed with error '%s'\n", cudaGetErrorString( kernelError ) );
+      fprintf( stderr, "ERROR: CUDA kernel failed with error '%s'\n", cudaGetErrorString( cudaError ) );
       exit( 1 );      
     }
 
   const int nPixels = dims3[0]*dims3[1]*dims3[2];
   cmtkImageSymmetryPlaneFunctionalDeviceConsolidateKernel<<<dimGrid,dimBlock>>>( partialSums, nPixels );
 
-  kernelError = cudaGetLastError();
-  if ( kernelError != cudaSuccess )
+  cudaError = cudaGetLastError();
+  if ( cudaError != cudaSuccess )
     {
-      fprintf( stderr, "ERROR: CUDA kernel failed with error '%s'\n", cudaGetErrorString( kernelError ) );
+      fprintf( stderr, "ERROR: CUDA kernel failed with error '%s'\n", cudaGetErrorString( cudaError ) );
       exit( 1 );      
     }
 
@@ -154,7 +156,7 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
   float result;
   if ( cudaMemcpy( &result, partialSums, sizeof( float ), cudaMemcpyDeviceToHost ) != cudaSuccess )
     {
-      fprintf( stderr, "ERROR: cudaMemcpy failed with error '%s'\n", cudaGetErrorString( kernelError ) );
+      fprintf( stderr, "ERROR: cudaMemcpy failed with error '%s'\n", cudaGetErrorString( cudaError ) );
       exit( 1 );      
     }  
 
