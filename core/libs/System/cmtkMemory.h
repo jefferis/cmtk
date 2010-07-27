@@ -35,9 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include <exception>
-#include <iostream>
-#include <typeinfo>
+#include <cstdlib>
 
 namespace
 cmtk
@@ -61,16 +59,7 @@ inline
 T*
 AllocateArray( const size_t size )
 {
-  try
-    {
-    return new T[size];
-    }
-  catch ( const std::exception& e )
-    {
-    std::cerr << "cmtk::Memory::AllocateArray caught exception '" << e.what() << "' allocating " << size << " objects of type " << typeid(T).name() << std::endl;
-    throw;
-    }
-  return NULL;
+  return new T[size];
 }
 
 /// Delete an array allocated using AllocateArray().

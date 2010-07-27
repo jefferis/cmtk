@@ -63,7 +63,7 @@ DeviceMemoryCUDA
   
 void
 DeviceMemoryCUDA
-::CopyFromDevice( void *const dstPtrHost, const size_t nBytes ) const
+::CopyToHost( void *const dstPtrHost, const size_t nBytes ) const
 {
   cudaMemcpy( dstPtrHost, this->m_PointerDevice, nBytes, cudaMemcpyDeviceToHost );
 } 

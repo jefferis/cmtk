@@ -84,7 +84,7 @@ protected:
   void CopyToDevice( const void *const srcPtrHost, const size_t nBytes );
   
   /// Copy from device to host memory.
-  void CopyFromDevice( void *const dstPtrHost, const size_t nBytes ) const;
+  void CopyToHost( void *const dstPtrHost, const size_t nBytes ) const;
   
   /// Copy between two device memory locations.
   void CopyOnDevice( const Self& srcPtrDevice, const size_t nBytes );

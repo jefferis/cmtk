@@ -35,6 +35,7 @@
 
 #include <fstream>
 #include <string>
+#include <typeinfo>
 
 void
 cmtk::SplineWarpXformITKIO

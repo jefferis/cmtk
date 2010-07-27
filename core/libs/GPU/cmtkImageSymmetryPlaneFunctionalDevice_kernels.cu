@@ -30,6 +30,9 @@
 
 #include "cmtkImageSymmetryPlaneFunctionalDevice_kernels.h"
 
+#include "System/cmtkMemory.h"
+#include "GPU/cmtkDeviceMemory.h"
+
 #include <cuda_runtime_api.h>
 
 #include <cstdio>
@@ -117,21 +120,14 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
   cudaBindTextureToArray( texRefX, (struct cudaArray*) array, channelDesc );
 
   // alocate memory for partial sums of squares
-  float* partialSums;
-
-  cudaError_t cudaError = cudaMalloc( &partialSums, 16*16*dims3[2]*sizeof(float) );
-  if ( cudaError != cudaSuccess )
-    {
-      fprintf( stderr, "ERROR: cudaMalloc failed with error '%s'\n", cudaGetErrorString( cudaError ) );
-      exit( 1 );      
-    }
+  cmtk::DeviceMemory<float>::SmartPtr partialSums = cmtk::DeviceMemory<float>::Create( 16*16*dims3[2] );
 
   dim3 dimBlock( 16, 16, 1 );
   dim3 dimGrid( dims3[2], 1 );
   
-  cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel<<<dimGrid,dimBlock>>>( partialSums, matrix, dims3[0], dims3[1], dims3[2] );
+  cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel<<<dimGrid,dimBlock>>>( partialSums->Ptr(), matrix, dims3[0], dims3[1], dims3[2] );
 
-  cudaError = cudaGetLastError();
+  cudaError_t cudaError = cudaGetLastError();
   if ( cudaError != cudaSuccess )
     {
       fprintf( stderr, "ERROR: CUDA kernel failed with error '%s'\n", cudaGetErrorString( cudaError ) );
@@ -139,7 +135,7 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
     }
 
   const int nPixels = dims3[0]*dims3[1]*dims3[2];
-  cmtkImageSymmetryPlaneFunctionalDeviceConsolidateKernel<<<dimGrid,dimBlock>>>( partialSums, nPixels );
+  cmtkImageSymmetryPlaneFunctionalDeviceConsolidateKernel<<<dimGrid,dimBlock>>>( partialSums->Ptr(), nPixels );
 
   cudaError = cudaGetLastError();
   if ( cudaError != cudaSuccess )
@@ -148,17 +144,11 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
       exit( 1 );      
     }
 
-  cudaFree( partialSums );
-
   cudaUnbindTexture( texRef );
   cudaUnbindTexture( texRefX );
 
   float result;
-  if ( cudaMemcpy( &result, partialSums, sizeof( float ), cudaMemcpyDeviceToHost ) != cudaSuccess )
-    {
-      fprintf( stderr, "ERROR: cudaMemcpy failed with error '%s'\n", cudaGetErrorString( cudaError ) );
-      exit( 1 );      
-    }  
+  partialSums->CopyToHost( &result, 1 );
 
   return result;
 }

@@ -79,6 +79,6 @@ cmtk::DeviceHistogram
   cmtkDeviceHistogramEntropy( this->m_OnDeviceResult->Ptr(), this->m_OnDeviceData->Ptr(), this->m_NumberOfBinsPadded );
 
   float result;
-  this->m_OnDeviceResult->CopyFromDevice( &result, 1 );
+  this->m_OnDeviceResult->CopyToHost( &result, 1 );
   return result;
 }

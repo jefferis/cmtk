@@ -49,17 +49,17 @@ testDeviceMemory()
     float floatHost[100];
     cmtk::DeviceMemory<float>::SmartPtr floatDevice = cmtk::DeviceMemory<float>::Create( 100 );
     floatDevice->CopyToDevice( floatHost, 100 );
-    floatDevice->CopyFromDevice( floatHost, 100 );
+    floatDevice->CopyToHost( floatHost, 100 );
 
     int intHost[100];
     cmtk::DeviceMemory<int>::SmartPtr intDevice = cmtk::DeviceMemory<int>::Create( 100 );
     intDevice->CopyToDevice( intHost, 100 );
-    intDevice->CopyFromDevice( intHost, 100 );
+    intDevice->CopyToHost( intHost, 100 );
 
     char charHost[100];
     cmtk::DeviceMemory<char>::SmartPtr charDevice = cmtk::DeviceMemory<char>::Create( 100 );
     charDevice->CopyToDevice( charHost, 100 );
-    charDevice->CopyFromDevice( charHost, 100 );
+    charDevice->CopyToHost( charHost, 100 );
 
     cmtk::DeviceMemory<float>::SmartPtr float2Device = cmtk::DeviceMemory<float>::Create( 100 );
     float2Device->CopyOnDevice( *floatDevice, 100 );

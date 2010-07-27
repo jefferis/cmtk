@@ -105,9 +105,9 @@ public:
   }
   
   /// Copy from device to host memory.
-  void CopyFromDevice( void *const dstPtrHost, const size_t count ) const
+  void CopyToHost( void *const dstPtrHost, const size_t count ) const
   {
-    this->Superclass::CopyFromDevice( dstPtrHost, count * sizeof( T ) );
+    this->Superclass::CopyToHost( dstPtrHost, count * sizeof( T ) );
   }
   
   /// Copy between two device memory locations.

@@ -106,7 +106,7 @@ int
 compareHistogramToBaseline( const cmtk::DeviceHistogram& histD, const float* base )
 {
   cmtk::FixedVector<NBINS,float> histogram;
-  histD.GetDataOnDevice().CopyFromDevice( &histogram[0], NBINS );
+  histD.GetDataOnDevice().CopyToHost( &histogram[0], NBINS );
   
   for ( size_t j = 0; j < NBINS; ++j )
     {
