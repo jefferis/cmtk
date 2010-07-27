@@ -55,7 +55,7 @@ cmtk::DeviceArrayCUDA
   cudaError = cudaMalloc3DArray( &(this->m_DeviceArrayPtr), &desc, extent );
   if ( cudaError != cudaSuccess )
     {
-    fprintf( stderr, "ERROR: cudaMalloc3DArray() failed with error '%s'\n", cudaGetErrorString( cudaError ) );
+    fprintf( stderr, "ERROR: cudaMalloc3DArray() failed to allocate %dx%dx%d array with error '%s'\n", dims3[0], dims3[1], dims3[2], cudaGetErrorString( cudaError ) );
     this->m_DeviceArrayPtr = NULL;
     throw( Self::bad_alloc() );
     }
