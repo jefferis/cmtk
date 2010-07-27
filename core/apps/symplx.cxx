@@ -470,7 +470,7 @@ main ( const int argc, const char* argv[] )
       functional->SetFixOffset( FixOffset );
       
       // Instantiate programm progress indicator.
-      cmtk::ProgressConsole progressIndicator( "Intensity Bias Field Correction" );
+      cmtk::ProgressConsole progressIndicator( "Symmetry Plane Computation" );
 
       optimizer.SetFunctional( cmtk::Functional::SmartPtr::DynamicCastFrom( functional ) );
       optimizer.Optimize( v, pow( 2.0, Levels-level-1 ), Accuracy * pow( 2.0, Levels-level-1 ) );
