@@ -80,7 +80,7 @@ void
 cmtk::DeviceArrayCUDA
 ::CopyToDevice( const float* data )
 {
-  const cudaError_t cudaError = cudaMemcpyToArray( this->m_DeviceArrayPtr, 0, 0, data, this->m_Dims.Sum(), cudaMemcpyHostToDevice);
+  const cudaError_t cudaError = cudaMemcpyToArray( this->m_DeviceArrayPtr, 0, 0, data, this->m_Dims.Product() * sizeof( float ), cudaMemcpyHostToDevice);
   if ( cudaError != cudaSuccess )
     {
     fprintf( stderr, "ERROR: cudaMemcpyToArray() failed with error '%s'\n", cudaGetErrorString( cudaError ) );
