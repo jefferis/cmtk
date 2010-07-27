@@ -32,6 +32,8 @@
 
 #include <cuda_runtime_api.h>
 
+#include <cstdio>
+
 namespace 
 cmtk
 {
@@ -40,8 +42,10 @@ DeviceMemoryCUDA
 ::DeviceMemoryCUDA( const size_t nBytes, const size_t padToMultiple )
 {
   this->m_NumberOfBytesAllocated = (((nBytes-1) / padToMultiple)+1) * padToMultiple;
-  if ( cudaMalloc( &(this->m_PointerDevice), this->m_NumberOfBytesAllocated ) != cudaSuccess )
+  const cudaError_t cudaError = cudaMalloc( &(this->m_PointerDevice), this->m_NumberOfBytesAllocated );
+  if ( cudaError != cudaSuccess )
     {
+    fprintf( stderr, "ERROR: cudaMalloc failed to allocate %d bytes with error '%s'\n",this->m_NumberOfBytesAllocated, cudaGetErrorString( cudaError ) );
     this->m_PointerDevice = NULL;
     throw( Self::bad_alloc() );
     }
