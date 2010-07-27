@@ -32,19 +32,30 @@
 
 #include <cuda_runtime_api.h>
 
+#include <cstdio>
+
 cmtk::DeviceArrayCUDA
 ::DeviceArrayCUDA( const FixedVector<3,int>& dims3 )
   : m_Dims( dims3 )
 {
   const struct cudaChannelFormatDesc desc = cudaCreateChannelDesc( 32, 0, 0, 0, cudaChannelFormatKindFloat );
   
+  cudaError_t cudaError = cudaGetLastError();
+  if ( cudaError != cudaSuccess )
+    {
+    fprintf( stderr, "ERROR: cudaCreateChannelDesc() failed with error '%s'\n", cudaGetErrorString( cudaError ) );
+    exit( 1 );      
+    }
+  
   struct cudaExtent extent;
   extent.width = this->m_Dims[0];
   extent.height = this->m_Dims[1];
   extent.depth = this->m_Dims[2];
   
-  if ( cudaMalloc3DArray( &(this->m_DeviceArrayPtr), &desc, extent ) != cudaSuccess )
+  cudaError = cudaMalloc3DArray( &(this->m_DeviceArrayPtr), &desc, extent );
+  if ( cudaError != cudaSuccess )
     {
+    fprintf( stderr, "ERROR: cudaMalloc3DArray() failed with error '%s'\n", cudaGetErrorString( cudaError ) );
     this->m_DeviceArrayPtr = NULL;
     throw( Self::bad_alloc() );
     }
