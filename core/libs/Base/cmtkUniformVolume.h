@@ -59,9 +59,6 @@ class UniformVolume :
   /// Inherit from generic Volume class.
   public Volume 
 {
-  /// Grid spacing for three dimensions
-  cmtkGetSetMacro3Array(Types::Coordinate,Delta); 
-
 public:
   /// This class.
   typedef UniformVolume Self;
@@ -81,8 +78,20 @@ public:
   /// Index type.
   typedef Superclass::CoordinateVectorType CoordinateVectorType;
 
-  /// Points array type.
-  typedef std::vector< std::vector<Types::Coordinate> > PointsArrayType;
+  /// Grid spacing for three dimensions
+  CoordinateVectorType m_Delta; 
+
+  /// Get pixel size vector.
+  const CoordinateVectorType& Deltas() const
+  {
+    return this->m_Delta;
+  }
+
+  /// Get pixel size vector.
+  CoordinateVectorType& Deltas()
+  {
+    return this->m_Delta;
+  }
 
   /// Destructor.
   virtual ~UniformVolume() {}
@@ -176,7 +185,7 @@ public:
    */
   virtual Types::Coordinate GetMinDelta () const 
   {
-    return MathUtil::Min( 3, this->m_Delta );
+    return this->m_Delta.MinValue();
   }
   
   /** Get maximum grid spacing for all dimensions.
@@ -185,7 +194,7 @@ public:
    */
   virtual Types::Coordinate GetMaxDelta () const 
   {
-    return MathUtil::Max( 3, this->m_Delta );
+    return this->m_Delta.MaxValue();
   }
 
   /** Resample other volume.

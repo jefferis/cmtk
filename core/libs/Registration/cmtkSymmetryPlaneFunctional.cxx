@@ -80,7 +80,7 @@ SymmetryPlaneFunctional::GetParamStep
 SymmetryPlaneFunctional::ReturnType
 SymmetryPlaneFunctional::Evaluate()
 {
-  const TransformedVolumeAxes gridHash( *m_Volume, this->m_ParametricPlane, m_Volume->GetDelta() );
+  const TransformedVolumeAxes gridHash( *m_Volume, this->m_ParametricPlane, m_Volume->Deltas().begin() );
   const Vector3D *HashX = gridHash[0], *HashY = gridHash[1], *HashZ = gridHash[2];
 
   Vector3D pFloating;

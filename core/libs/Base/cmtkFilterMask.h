@@ -120,7 +120,7 @@ public:
 
   /// Constructor.
   template<class F>
-  FilterMask( const FixedVector<DIM,int>& dims, const Types::Coordinate* deltas, const Types::Coordinate radius, F filter ) 
+  FilterMask( const FixedVector<DIM,int>& dims, const FixedVector<DIM,Types::Coordinate>& deltas, const Types::Coordinate radius, F filter ) 
   {
     FixedVector<DIM,int> pixel;
     FixedVector<DIM,int> width;

@@ -44,20 +44,21 @@ UniformVolumeInterpolatorPartialVolume
 {
   value=0;
 
-  const Types::Coordinate *Delta = this->m_Volume->GetDelta();
+  const UniformVolume& volume = *(this->m_Volume);
+  const UniformVolume::CoordinateVectorType& deltas = volume.Deltas();
 
   Types::Coordinate lScaled[3];
   int imageGridPoint[3];
   for ( int n = 0; n < 3; ++n )
     {
-    lScaled[n] = (v[n]-this->m_Volume->m_Offset[n]) / Delta[n];
+    lScaled[n] = (v[n]-volume.m_Offset[n]) / deltas[n];
     imageGridPoint[n] = (int) floor( lScaled[n] );
     if ( ( imageGridPoint[n] < 0 ) || ( imageGridPoint[n] >= this->m_VolumeDims[n]-1 ) )
       return false;
     }
   
   const size_t offset = imageGridPoint[0] + this->m_VolumeDims[0] * ( imageGridPoint[1] + this->m_VolumeDims[1] * imageGridPoint[2]);
-  const TypedArray* gridData = this->m_Volume->GetData();
+  const TypedArray& gridData = *(volume.GetData());
   
   bool done[8];
   Types::DataItem corners[8];
@@ -70,7 +71,7 @@ UniformVolumeInterpolatorPartialVolume
       {
       for ( int i = 0; i < 2; ++i, ++idx )
 	{
-	const bool dataHere = gridData->Get( corners[idx], offset + i + j * this->m_NextJ + k * this->m_NextK );
+	const bool dataHere = gridData.Get( corners[idx], offset + i + j * this->m_NextJ + k * this->m_NextK );
 	done[idx] = !dataHere;
 	dataPresent |= dataHere;
 	}
@@ -128,7 +129,7 @@ UniformVolumeInterpolatorPartialVolume
   Types::DataItem value = 0;
 
   const size_t offset = imageGridPoint[0] + this->m_VolumeDims[0] * ( imageGridPoint[1] + this->m_VolumeDims[1] * imageGridPoint[2]);
-  const TypedArray* gridData = this->m_Volume->GetData();
+  const TypedArray& gridData = *(this->m_Volume->GetData());
   
   bool done[8];
   Types::DataItem corners[8];
@@ -141,7 +142,7 @@ UniformVolumeInterpolatorPartialVolume
       {
       for ( int i = 0; i < 2; ++i, ++idx )
 	{
-	const bool dataHere = gridData->Get( corners[idx], offset + i + j * this->m_NextJ + k * this->m_NextK );
+	const bool dataHere = gridData.Get( corners[idx], offset + i + j * this->m_NextJ + k * this->m_NextK );
 	done[idx] = !dataHere;
 	dataPresent |= dataHere;
 	}

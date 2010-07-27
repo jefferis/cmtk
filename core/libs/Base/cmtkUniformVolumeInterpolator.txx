@@ -41,13 +41,14 @@ bool
 UniformVolumeInterpolator<TInterpolationFunction>
 ::GetDataAt(const Vector3D& v, Types::DataItem& value) const
 {
-  const Types::Coordinate *Delta = this->m_Volume->GetDelta();
+  const UniformVolume& volume = *(this->m_Volume);
+  const UniformVolume::CoordinateVectorType& delta = volume.Deltas();
 
   Types::Coordinate lScaled[3];
   int imageGridPoint[3];
   for ( int n = 0; n < 3; ++n )
     {
-    lScaled[n] = (v[n] - this->m_Volume->m_Offset[n]) / Delta[n];
+    lScaled[n] = (v[n] - volume.m_Offset[n]) / delta[n];
     imageGridPoint[n] = (int) floor( lScaled[n] );
     if ( ( imageGridPoint[n] < 0 ) || ( imageGridPoint[n] >= this->m_VolumeDims[n]-1 ) )
       return false;
@@ -86,7 +87,7 @@ UniformVolumeInterpolator<TInterpolationFunction>
     for ( int j = jMin; j < jMax; ++j )
       {
       const Types::Coordinate weightJK = interpolationWeights[1][j] * interpolationWeights[2][k];
-      size_t offset = this->m_Volume->GetOffsetFromIndex( xx + iMin, yy + j, zz + k );
+      size_t offset = volume.GetOffsetFromIndex( xx + iMin, yy + j, zz + k );
       for ( int i = iMin; i < iMax; ++i, ++offset )
         {
         if ( this->m_VolumeDataArray->Get( data, offset ) )

@@ -484,7 +484,7 @@ SplineWarpXform::RegisterVolumeAxis
 
 void
 SplineWarpXform::RegisterVolumePoints
-( const DataGrid::IndexType& volDims, const Types::Coordinate delta[3], const Self::SpaceVectorType& origin )
+( const DataGrid::IndexType& volDims, const Self::SpaceVectorType& delta, const Self::SpaceVectorType& origin )
 {
   this->RegisterVolumeAxis( volDims[0], delta[0], origin[0], this->m_Dims[0], this->InverseSpacing[0], gX, splineX, dsplineX );
   this->RegisterVolumeAxis( volDims[1], delta[1], origin[1], this->m_Dims[1], this->InverseSpacing[1], gY, splineY, dsplineY );

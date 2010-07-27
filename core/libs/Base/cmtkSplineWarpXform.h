@@ -350,7 +350,7 @@ private:
   void RegisterVolumePoints ( const DataGrid::IndexType&, const Self::SpaceVectorType& );
 
   /// Register axes points of the volume to be deformed.
-  void RegisterVolumePoints( const DataGrid::IndexType&, const Types::Coordinate[3], const Self::SpaceVectorType& );
+  void RegisterVolumePoints( const DataGrid::IndexType&, const Self::SpaceVectorType&, const Self::SpaceVectorType& );
 
   /// Register a single axis of the uniform volume to be deformed.
   void RegisterVolumeAxis ( const DataGrid::IndexType::ValueType, const Types::Coordinate delta, const Types::Coordinate origin, const int, const Types::Coordinate, 

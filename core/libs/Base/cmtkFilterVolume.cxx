@@ -63,7 +63,7 @@ FilterVolume::GaussianFilter
   TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
   const DataGrid::IndexType& dims = volume->m_Dims;
-  FilterMask<3> filter( dims, volume->GetDelta(), radius, FilterMask<3>::Gaussian( kernelWidth ) );
+  FilterMask<3> filter( dims, volume->Deltas(), radius, FilterMask<3>::Gaussian( kernelWidth ) );
 
   const int dimsX = dims[AXIS_X];
   const int dimsY = dims[AXIS_Y];
@@ -182,7 +182,7 @@ FilterVolume
   TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
   const DataGrid::IndexType& dims = volume->GetDims();
-  FilterMask<3> filter( dims, volume->GetDelta(), filterRadius, FilterMask<3>::Gaussian( filterWidth ) );
+  FilterMask<3> filter( dims, volume->Deltas(), filterRadius, FilterMask<3>::Gaussian( filterWidth ) );
   
   const unsigned int dimsX = dims[AXIS_X];
   const unsigned int dimsY = dims[AXIS_Y];
@@ -293,7 +293,7 @@ FilterVolume::StudholmeFilter
     histogramByThread[idx].SetRangeX( range );
     histogramByThread[idx].SetRangeY( range );
     
-    FilterMask<3>::SmartPtr filter( new FilterMask<3>( dims, volume->GetDelta(), filterRadius, FilterMask<3>::Gaussian( filterWidth ) ) );    
+    FilterMask<3>::SmartPtr filter( new FilterMask<3>( dims, volume->Deltas(), filterRadius, FilterMask<3>::Gaussian( filterWidth ) ) );    
     filterByThread[idx] = filter;
     }
   
@@ -427,7 +427,7 @@ FilterVolume::StudholmeFilter
   TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
   
   const DataGrid::IndexType& dims = volume->GetDims();
-  FilterMask<3> filter( dims, volume->GetDelta(), filterRadius, FilterMask<3>::Gaussian( filterWidth ) );
+  FilterMask<3> filter( dims, volume->Deltas(), filterRadius, FilterMask<3>::Gaussian( filterWidth ) );
   
   const unsigned int dimsX = dims[AXIS_X];
   const unsigned int dimsY = dims[AXIS_Y];
