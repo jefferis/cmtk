@@ -108,7 +108,12 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
   texRef.normalized = true; 
 
   // Bind the array to the texture reference 
-  cudaBindTextureToArray( texRef, (struct cudaArray*) array, channelDesc );
+  cudaError_t cudaError = cudaBindTextureToArray( texRef, (struct cudaArray*) array, channelDesc );
+  if ( cudaError != cudaSuccess )
+    {
+      fprintf( stderr, "ERROR: cudaBindTextureToArray failed with error '%s'\n", cudaGetErrorString( cudaError ) );
+      exit( 1 );      
+    }
 
   // Set texture parameters for fixed image indexed access
   texRefX.addressMode[0] = cudaAddressModeClamp;
@@ -117,7 +122,12 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
   texRefX.filterMode = cudaFilterModePoint; 
   texRefX.normalized = false; 
 
-  cudaBindTextureToArray( texRefX, (struct cudaArray*) array, channelDesc );
+  cudaError = cudaBindTextureToArray( texRefX, (struct cudaArray*) array, channelDesc );
+  if ( cudaError != cudaSuccess )
+    {
+      fprintf( stderr, "ERROR: cudaBindTextureToArray failed with error '%s'\n", cudaGetErrorString( cudaError ) );
+      exit( 1 );      
+    }
 
   // alocate memory for partial sums of squares
   cmtk::DeviceMemory<float>::SmartPtr partialSums = cmtk::DeviceMemory<float>::Create( 16*16*dims3[2] );
@@ -127,7 +137,7 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
   
   cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel<<<dimGrid,dimBlock>>>( partialSums->Ptr(), matrix, dims3[0], dims3[1], dims3[2] );
 
-  cudaError_t cudaError = cudaGetLastError();
+  cudaError = cudaGetLastError();
   if ( cudaError != cudaSuccess )
     {
       fprintf( stderr, "ERROR: CUDA kernel failed with error '%s'\n", cudaGetErrorString( cudaError ) );
