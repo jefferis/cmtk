@@ -142,11 +142,12 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
     }
 
   // alocate memory for partial sums of squares
-  cmtk::DeviceMemory<float>::SmartPtr partialSums = cmtk::DeviceMemory<float>::Create( 16*16*dims3[2] );
-
   dim3 dimBlock( 16, 16, 1 );
   dim3 dimGrid( dims3[2], 1 );
-  
+
+  const int nPartials = dimBlock.x * dimBlock.y * dimBlock.z * dimGrid.x * dimGrid.y;
+  cmtk::DeviceMemory<float>::SmartPtr partialSums = cmtk::DeviceMemory<float>::Create( nPartials );
+
   cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel<<<dimGrid,dimBlock>>>( partialSums->Ptr(), matrix, dims3[0], dims3[1], dims3[2] );
 
   cudaError = cudaGetLastError();
@@ -156,8 +157,7 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
       exit( 1 );      
     }
 
-  const int nPixels = dims3[0]*dims3[1]*dims3[2];
-  cmtkImageSymmetryPlaneFunctionalDeviceConsolidateKernel<<<dimGrid,dimBlock>>>( partialSums->Ptr(), nPixels );
+  cmtkImageSymmetryPlaneFunctionalDeviceConsolidateKernel<<<dimGrid,dimBlock>>>( partialSums->Ptr(), nPartials );
 
   cudaError = cudaGetLastError();
   if ( cudaError != cudaSuccess )
