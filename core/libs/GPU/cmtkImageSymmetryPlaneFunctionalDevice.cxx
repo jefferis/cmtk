@@ -32,8 +32,6 @@
 
 #include "cmtkImageSymmetryPlaneFunctionalDevice.h"
 
-#include "Base/cmtkTransformedVolumeAxes.h"
-
 #include "GPU/cmtkImageSymmetryPlaneFunctionalDevice_kernels.h"
 
 namespace
@@ -46,8 +44,7 @@ cmtk
 ImageSymmetryPlaneFunctionalDevice::ImageSymmetryPlaneFunctionalDevice
 ( UniformVolume::SmartConstPtr& volume ) 
   : ImageSymmetryPlaneFunctionalBase( volume ),
-    m_VolumeOnDevice( DeviceUniformVolumeArray::Create( *(this->m_Volume) ) ),
-    m_VolumeAxesTNL( 3 * this->m_Volume->m_Dims.Sum() )
+    m_VolumeOnDevice( DeviceUniformVolumeArray::Create( *(this->m_Volume) ) )
 {
 }
 
@@ -55,36 +52,27 @@ ImageSymmetryPlaneFunctionalDevice::ImageSymmetryPlaneFunctionalDevice
 ( UniformVolume::SmartConstPtr& volume, 
   const Types::DataItemRange& valueRange )
   : ImageSymmetryPlaneFunctionalBase( volume, valueRange ),
-    m_VolumeOnDevice( DeviceUniformVolumeArray::Create( *(this->m_Volume) ) ),
-    m_VolumeAxesTNL( 3 * this->m_Volume->m_Dims.Sum() )
+    m_VolumeOnDevice( DeviceUniformVolumeArray::Create( *(this->m_Volume) ) )
 {
 }
 
 ImageSymmetryPlaneFunctionalDevice::ReturnType
 ImageSymmetryPlaneFunctionalDevice::Evaluate()
 {
-  return cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( this->m_Volume->m_Dims.begin(), this->m_VolumeOnDevice->GetDeviceArrayPtr()->GetArrayOnDevice(), &(this->m_VolumeAxesTNL[0]) );
-}
+  const AffineXform::MatrixType mirrorMatrix = this->m_ParametricPlane.GetMirrorXformMatrix();
 
-void
-ImageSymmetryPlaneFunctionalDevice::TransformNormalizeLinearizeAxes()
-{
-  const TransformedVolumeAxes gridHash( *(this->m_Volume), this->m_ParametricPlane, this->m_Volume->Size.begin() );
-
-  size_t ofs = 0;
-  for ( size_t dim = 0; dim < 3; ++dim )
+  float matrix[4][4];
+  for ( size_t j = 0; j < 4; ++j )
     {
-    const size_t cnt = this->m_Volume->m_Dims[dim];
-    for ( size_t idx = 0; idx < cnt; ++idx )
+    for ( size_t i = 0; i < 4; ++i )
       {
-      const Vector3D& v = gridHash[dim][idx];
-      for ( int comp = 0; comp < 3; ++comp )
-	{
-	this->m_VolumeAxesTNL[ofs++] = v[comp];
-	}
+      matrix[j][i] = static_cast<float>( mirrorMatrix[j][i] );
       }
     }
-}
 
+  FixedVector<3,float> deltas = this->m_Volume->Deltas();
+  
+  return cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( this->m_Volume->m_Dims.begin(), this->m_VolumeOnDevice->GetDeviceArrayPtr()->GetArrayOnDevice(), matrix, deltas.begin() );
+}
 
 } // namespace cmtk

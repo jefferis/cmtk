@@ -38,10 +38,8 @@
 texture<float, 3, cudaReadModeElementType> texRef;
 texture<float, 3, cudaReadModeElementType> texRefX;
 
-__constant__ float deviceAxesTNL[16384];
-
 __global__
-void cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel( const int dims0, const int dims1, const int dims2 )
+void cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel( const float matrix[4][4], const float delta[3], const int dims0, const int dims1, const int dims2 )
 {
   const int tx = threadIdx.x;
 
@@ -51,22 +49,23 @@ void cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel( const int dims0, cons
   const int y = threadIdx.y;
   const int z = blockIdx.x;
 
-  const int offsetY = 3 * (dims0 + y);
-  const int offsetZ = 3 * (dims0 + dims1 + z);
+  const float Y = y * delta[1];
+  const float Z = z * delta[2];
 
-  const float xX0 = deviceAxesTNL[offsetY] + deviceAxesTNL[offsetZ];
-  const float yX0 = deviceAxesTNL[offsetY+1] + deviceAxesTNL[offsetZ+1];
-  const float zX0 = deviceAxesTNL[offsetY+2] + deviceAxesTNL[offsetZ+2];
+  const float mXo = Y * matrix[1][0] + Z * matrix[2][0] + matrix[3][0];
+  const float mYo = Y * matrix[1][1] + Z * matrix[2][1] + matrix[3][1];
+  const float mZo = Y * matrix[1][2] + Z * matrix[2][2] + matrix[3][2];
 
   for ( int x = tx; x < dims0; x += blockDim.x )
     {
-      const int offsetX = 3 * x;
-      const float xX = deviceAxesTNL[offsetX] + xX0;
-      const float yX = deviceAxesTNL[offsetX+1] + yX0;
-      const float zX = deviceAxesTNL[offsetX+2] + zX0;
-      
+      const float X = x * delta[0];
+
+      const float mX = X * matrix[0][0] + mXo;
+      const float mY = X * matrix[0][1] + mYo;
+      const float mZ = X * matrix[0][2] + mZo;
+
       const float data = tex3D( texRef, x, y, z );
-      const float dataX = tex3D( texRefX, xX, yX, zX );
+      const float dataX = tex3D( texRefX, mX, mY, mZ );
       
       const float diff = data-dataX;
       sq[tx] += diff*diff;
@@ -83,14 +82,8 @@ void cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel( const int dims0, cons
 }
 
 float
-cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, const float* axesTNL )
+cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, const float matrix[4][4], const float delta[3] )
 {
-  if ( (cudaMemcpyToSymbol( deviceAxesTNL, axesTNL, 3*(dims3[0]+dims3[1]+dims3[2])*sizeof( *axesTNL ), 0, cudaMemcpyHostToDevice ) != cudaSuccess) )
-    {
-      fprintf( stderr, "ERROR: cudaMemcpy() to constant memory failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
-      exit( 1 );      
-    }
-  
   // Set texture parameters
   texRef.addressMode[0] = cudaAddressModeWrap;
   texRef.addressMode[1] = cudaAddressModeWrap;
@@ -115,7 +108,7 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
   dim3 dimBlock( 32, dims3[1], 1 );
   dim3 dimGrid( dims3[2], 1 );
   
-  cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel<<<dimGrid,dimBlock>>>( dims3[0], dims3[1], dims3[2] );
+  cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel<<<dimGrid,dimBlock>>>( matrix, delta, dims3[0], dims3[1], dims3[2] );
 
   const cudaError_t kernelError = cudaGetLastError();
   if ( kernelError != cudaSuccess )
