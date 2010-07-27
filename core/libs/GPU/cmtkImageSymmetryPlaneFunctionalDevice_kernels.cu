@@ -157,7 +157,9 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
       exit( 1 );      
     }
 
-  cmtkImageSymmetryPlaneFunctionalDeviceConsolidateKernel<<<dimGrid,dimBlock>>>( partialSums->Ptr(), nPartials );
+  dim3 dimBlock2( 512, 1, 1 );
+  dim3 dimGrid2( 1, 1 );
+  cmtkImageSymmetryPlaneFunctionalDeviceConsolidateKernel<<<dimGrid2,dimBlock2>>>( partialSums->Ptr(), nPartials );
 
   cudaError = cudaGetLastError();
   if ( cudaError != cudaSuccess )
