@@ -127,7 +127,7 @@ public:
   {
     return this->m_NumberOfItems;
   }
-  
+
 private:
   /// Number of items allocated.
   size_t m_NumberOfItems;

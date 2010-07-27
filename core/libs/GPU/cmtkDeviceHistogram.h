@@ -97,11 +97,6 @@ private:
 
   /// Managed device memory pointer to result of histogram operations.
   mutable DeviceMemory<float>::SmartPtr m_OnDeviceResult;
-
-  /** Utility function: get next power of two.
-   *\url http://en.wikipedia.org/wiki/Power_of_two#Algorithm_to_find_the_next-highest_power_of_two 
-   */
-  static size_t GetNextPowerOfTwo( size_t k );
 };
 
 } // namespace cmtk

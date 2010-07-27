@@ -32,14 +32,13 @@
 #include "cmtkDeviceHistogram_kernels.h"
 
 #include "System/cmtkException.h"
-
-#include <climits>
+#include "System/cmtkMemory.h"
 
 cmtk::DeviceHistogram
 ::DeviceHistogram( const size_t numberOfBins )
 {
   this->m_NumberOfBins = numberOfBins;
-  this->m_NumberOfBinsPadded = Self::GetNextPowerOfTwo( this->m_NumberOfBins );
+  this->m_NumberOfBinsPadded = cmtk::Memory::GetNextPowerOfTwo( this->m_NumberOfBins );
   if ( this->m_NumberOfBinsPadded > 512 )
     {
     throw Exception( "Exceeded maximum number of histogram bins (512)" );
@@ -82,21 +81,4 @@ cmtk::DeviceHistogram
   float result;
   this->m_OnDeviceResult->CopyFromDevice( &result, 1 );
   return result;
-}
-
-size_t
-cmtk::DeviceHistogram
-::GetNextPowerOfTwo( size_t k )
-{
-
-// http://en.wikipedia.org/wiki/Power_of_two#Algorithm_to_find_the_next-highest_power_of_two 
-
-  if (k == 0)
-    return 1;
-  
-  k--;
-  for (int i=1; i<sizeof(size_t)*CHAR_BIT; i<<=1)
-    k = k | k >> i;
-
-  return k+1;
 }

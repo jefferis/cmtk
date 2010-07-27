@@ -35,12 +35,6 @@
 
 #include <cmtkconfig.h>
 
-#include <cstdio> // thanks to Hans Johnson for pointing this out
-
-#ifdef HAVE_MALLOC_H
-#  include <malloc.h>
-#endif
-
 #include <exception>
 #include <iostream>
 #include <typeinfo>
@@ -55,6 +49,11 @@ cmtk
 /// Memory-related helper functions.
 namespace Memory
 {
+
+/** Utility function: get next power of two.
+   *\url http://en.wikipedia.org/wiki/Power_of_two#Algorithm_to_find_the_next-highest_power_of_two 
+   */
+size_t GetNextPowerOfTwo( size_t k );
 
 /// Safe allocation of C++ array with catching and output of exceptions
 template<class T>
@@ -144,15 +143,7 @@ void ByteSwapInPlace( T& value )
  *@return The number of bytes allocated by the process the calling function
  * is located in.
  */
-inline size_t Used () 
-{
-#ifdef HAVE_MALLINFO
-  struct mallinfo stats = mallinfo();
-  return stats.uordblks + stats.usmblks;
-#else
-  return 0;
-#endif
-}
+size_t Used();
 
 /** Print memory usage.
  *@param msg An optional message to be printed with the amount of bytes 
@@ -160,14 +151,7 @@ inline size_t Used ()
  * The parameter may be omitted or given as NULL if no additional message is 
  * required.
  */
-inline void Info ( const char *msg = NULL ) 
-{
-  int used = Used();
-  if (msg )
-    printf("%d bytes in use %s\n",used,msg);
-  else
-    printf("%d bytes in use.\n",used);
-}
+void Info ( const char *msg = NULL );
 
 /** Print difference of memory usage.
  *@param before Number of bytes allocated before the inspected operation. This
@@ -175,14 +159,7 @@ inline void Info ( const char *msg = NULL )
  *@param msg Name of the operation the memory allocation of which was 
  * inspected.
  */
-inline void Diff ( const size_t before, const char *msg ) 
-{
-  int diff = Used()-before;
-  if (diff<0)
-    printf("%s freed %d bytes.\n",msg,-diff);
-  else
-    printf("%s allocated %d bytes.\n",msg,diff);
-}
+void Diff ( const size_t before, const char *msg );
 
 } // namespace Memory
 
