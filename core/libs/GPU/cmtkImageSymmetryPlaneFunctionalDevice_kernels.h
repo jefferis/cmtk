@@ -33,6 +33,6 @@
 
 //#include "GPU/cmtkDeviceArrayCUDA.h"
 
-float cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3 /**!< Volume dimensions */, void* array /**!< Device array with volume data */, const float matrix[4][4] /**!< Mirror matrix */, const float delta[3] /**!< Volume deltas, i.e., pixel size */ );
+float cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3 /**!< Volume dimensions */, void* array /**!< Device array with volume data */, const float matrix[4][4] /**!< Mirror matrix: from index to image coordinates, then mirror, then to normalized [0..1] coordinates */ );
 
 #endif // #ifndef __cmtkImageSymmetryPlaneFunctionalDevice_kernels_h_included_

@@ -71,8 +71,26 @@ ImageSymmetryPlaneFunctionalDevice::Evaluate()
     }
 
   FixedVector<3,float> deltas = this->m_Volume->Deltas();
+
+  // multiply deltas for index-to-image space conversion
+  for ( size_t j = 0; j < 3; ++j )
+    {
+    for ( size_t i = 0; i < 3; ++i )
+      {
+      matrix[j][i] *= deltas[j];
+      }
+    }
+
+  // divide by size to get to normalized image coordinates after mirror
+  for ( size_t j = 0; j < 4; ++j ) // here, need to run up to 3 because translation is also in output space
+    {
+    for ( size_t i = 0; i < 3; ++i )
+      {
+      matrix[j][i] /= this->m_Volume->Size[i];
+      }
+    }
   
-  return cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( this->m_Volume->m_Dims.begin(), this->m_VolumeOnDevice->GetDeviceArrayPtr()->GetArrayOnDevice(), matrix, deltas.begin() );
+  return cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( this->m_Volume->m_Dims.begin(), this->m_VolumeOnDevice->GetDeviceArrayPtr()->GetArrayOnDevice(), matrix );
 }
 
 } // namespace cmtk
