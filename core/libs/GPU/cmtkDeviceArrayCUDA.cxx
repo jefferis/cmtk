@@ -78,12 +78,12 @@ cmtk::DeviceArrayCUDA
 {
   cudaMemcpy3DParms copyParams = {0};
   
-  copyParams.srcPtr   = make_cudaPitchedPtr((void*)data, this->m_Dims[0]*sizeof(float), this->m_Dims[0], this->m_Dims[1] );  
+  copyParams.srcPtr   = make_cudaPitchedPtr( (void*)data, this->m_Dims[0]*sizeof(float), this->m_Dims[0], this->m_Dims[1] );  
   copyParams.dstArray = this->m_DeviceArrayPtr;
   copyParams.extent   = make_cudaExtent( this->m_Dims[0], this->m_Dims[1], this->m_Dims[2] );
   copyParams.kind     = cudaMemcpyHostToDevice;
 
-  const cudaError_t cudaError = cudaMemcpy3D(&copyParams);
+  const cudaError_t cudaError = cudaMemcpy3D( &copyParams );
   if ( cudaError != cudaSuccess )
     {
     fprintf( stderr, "ERROR: cudaMemcpyToArray() failed with error '%s'\n", cudaGetErrorString( cudaError ) );
