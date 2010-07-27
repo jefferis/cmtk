@@ -39,13 +39,9 @@ texture<float, 3, cudaReadModeElementType> texRef;
 texture<float, 3, cudaReadModeElementType> texRefX;
 
 __global__
-void cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel( const float matrix[4][4], const int dims0, const int dims1, const int dims2 )
+void cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel( float* squares, const float matrix[4][4], const int dims0, const int dims1, const int dims2 )
 {
   const int tx = threadIdx.x;
-
-  __shared__ float sq[32];
-  sq[tx] = 0;
-
   const int y = threadIdx.y;
   const int z = blockIdx.x;
 
@@ -53,6 +49,7 @@ void cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel( const float matrix[4]
   const float mYo = y * matrix[1][1] + z * matrix[2][1] + matrix[3][1];
   const float mZo = y * matrix[1][2] + z * matrix[2][2] + matrix[3][2];
 
+  float sq = 0;
   for ( int x = tx; x < dims0; x += blockDim.x )
     {
       const float mX = x * matrix[0][0] + mXo;
@@ -63,17 +60,11 @@ void cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel( const float matrix[4]
       const float dataX = tex3D( texRefX, mX, mY, mZ );
       
       const float diff = data-dataX;
-      sq[tx] += diff*diff;
+      sq += diff*diff;
     }
 
-  // compute sum via butterfly
-  for ( int bit = 1; bit < blockDim.x; bit <<= 1 )
-    {
-      const float sum = sq[tx] + sq[tx^bit];
-      __syncthreads();
-      sq[tx] = sum;
-      __syncthreads();
-    }
+  const int idx = tx + blockDim.x * ( y + blockDim.y * z );
+  squares[idx] = sq;
 }
 
 float
@@ -103,7 +94,8 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
   dim3 dimBlock( 32, dims3[1], 1 );
   dim3 dimGrid( dims3[2], 1 );
   
-  cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel<<<dimGrid,dimBlock>>>( matrix, dims3[0], dims3[1], dims3[2] );
+  float * squares = NULL;
+  cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel<<<dimGrid,dimBlock>>>( squares, matrix, dims3[0], dims3[1], dims3[2] );
 
   const cudaError_t kernelError = cudaGetLastError();
   if ( kernelError != cudaSuccess )
