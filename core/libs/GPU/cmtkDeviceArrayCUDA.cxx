@@ -67,7 +67,7 @@ cmtk::DeviceArrayCUDA
 {
   if ( this->m_DeviceArrayPtr )
     {
-    const cudaError_t = cudaFreeArray( this->m_DeviceArrayPtr );
+    const cudaError_t cudaError = cudaFreeArray( this->m_DeviceArrayPtr );
     if ( cudaError != cudaSuccess )
       {
       fprintf( stderr, "ERROR: cudaFreeArray() failed with error '%s'\n", cudaGetErrorString( cudaError ) );
