@@ -99,6 +99,13 @@ float
 cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, const float matrix[4][4] )
 {
   cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc( 32, 0, 0, 0, cudaChannelFormatKindFloat );
+  cudaError_t cudaError = cudaGetLastError();
+  if ( cudaError != cudaSuccess )
+    {
+      fprintf( stderr, "ERROR: cudaCreateChannelDesc failed with error '%s'\n", cudaGetErrorString( cudaError ) );
+      exit( 1 );      
+    }
+
   
   // Set texture parameters for moving image interpolated access
   texRef.addressMode[0] = cudaAddressModeWrap;
@@ -108,7 +115,7 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
   texRef.normalized = true; 
 
   // Bind the array to the texture reference 
-  cudaError_t cudaError = cudaBindTextureToArray( texRef, (struct cudaArray*) array, channelDesc );
+  cudaError = cudaBindTextureToArray( texRef, (struct cudaArray*) array, channelDesc );
   if ( cudaError != cudaSuccess )
     {
       fprintf( stderr, "ERROR: cudaBindTextureToArray failed with error '%s'\n", cudaGetErrorString( cudaError ) );
