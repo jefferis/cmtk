@@ -222,6 +222,16 @@ public:
     return sum;
   }
 
+  /// Calculate product of vector elements.
+  T Product() const 
+  {
+    T product = this->m_Data[0];
+    for ( size_t i = 1; i < NDIM; ++i )
+      product *= this->m_Data[i];
+
+    return product;
+  }
+
   /// Calculate sum of squares of vector elements (that is, square of Euclid's norm).
   T SumOfSquares() const 
   {
