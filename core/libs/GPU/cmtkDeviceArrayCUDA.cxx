@@ -31,6 +31,7 @@
 #include "cmtkDeviceArrayCUDA.h"
 
 #include <cuda_runtime_api.h>
+#include <cuda_runtime.h>
 
 #include <cstdio>
 
@@ -47,12 +48,7 @@ cmtk::DeviceArrayCUDA
     exit( 1 );      
     }
   
-  struct cudaExtent extent;
-  extent.width = this->m_Dims[0];
-  extent.height = this->m_Dims[1];
-  extent.depth = this->m_Dims[2];
-  
-  cudaError = cudaMalloc3DArray( &(this->m_DeviceArrayPtr), &desc, extent );
+  cudaError = cudaMalloc3DArray( &(this->m_DeviceArrayPtr), &desc, make_cudaExtent( this->m_Dims[0], this->m_Dims[1], this->m_Dims[2] ) );
   if ( cudaError != cudaSuccess )
     {
     fprintf( stderr, "ERROR: cudaMalloc3DArray() failed to allocate %dx%dx%d array with error '%s'\n", dims3[0], dims3[1], dims3[2], cudaGetErrorString( cudaError ) );
@@ -80,7 +76,14 @@ void
 cmtk::DeviceArrayCUDA
 ::CopyToDevice( const float* data )
 {
-  const cudaError_t cudaError = cudaMemcpyToArray( this->m_DeviceArrayPtr, 0, 0, data, this->m_Dims.Product() * sizeof( float ), cudaMemcpyHostToDevice);
+  cudaMemcpy3DParms copyParams = {0};
+  
+  copyParams.srcPtr   = make_cudaPitchedPtr((void*)data, this->m_Dims[0]*sizeof(float), this->m_Dims[0], this->m_Dims[1] );  
+  copyParams.dstArray = this->m_DeviceArrayPtr;
+  copyParams.extent   = make_cudaExtent( this->m_Dims[0], this->m_Dims[1], this->m_Dims[2] );
+  copyParams.kind     = cudaMemcpyHostToDevice;
+
+  const cudaError_t cudaError = cudaMemcpy3D(&copyParams);
   if ( cudaError != cudaSuccess )
     {
     fprintf( stderr, "ERROR: cudaMemcpyToArray() failed with error '%s'\n", cudaGetErrorString( cudaError ) );
