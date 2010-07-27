@@ -39,7 +39,7 @@ cmtk::DeviceArrayCUDA
 ::DeviceArrayCUDA( const FixedVector<3,int>& dims3 )
   : m_Dims( dims3 )
 {
-  const struct cudaChannelFormatDesc desc = cudaCreateChannelDesc( 32, 0, 0, 0, cudaChannelFormatKindFloat );
+  const struct cudaChannelFormatDesc desc = cudaCreateChannelDesc<float>();
   
   cudaError_t cudaError = cudaGetLastError();
   if ( cudaError != cudaSuccess )

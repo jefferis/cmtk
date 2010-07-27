@@ -105,7 +105,7 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
       exit( 1 );      
     }
   
-  cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc( 32, 0, 0, 0, cudaChannelFormatKindFloat );
+  cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc<float>();
   cudaError = cudaGetLastError();
   if ( cudaError != cudaSuccess )
     {
