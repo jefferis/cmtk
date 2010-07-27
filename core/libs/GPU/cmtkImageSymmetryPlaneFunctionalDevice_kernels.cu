@@ -98,14 +98,20 @@ void cmtkImageSymmetryPlaneFunctionalDeviceConsolidateKernel( float* squares, co
 float
 cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, const float matrix[4][4] )
 {
-  cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc( 32, 0, 0, 0, cudaChannelFormatKindFloat );
   cudaError_t cudaError = cudaGetLastError();
+  if ( cudaError != cudaSuccess )
+    {
+      fprintf( stderr, "ERROR: something failed with error '%s'\n", cudaGetErrorString( cudaError ) );
+      exit( 1 );      
+    }
+  
+  cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc( 32, 0, 0, 0, cudaChannelFormatKindFloat );
+  cudaError = cudaGetLastError();
   if ( cudaError != cudaSuccess )
     {
       fprintf( stderr, "ERROR: cudaCreateChannelDesc failed with error '%s'\n", cudaGetErrorString( cudaError ) );
       exit( 1 );      
     }
-
   
   // Set texture parameters for moving image interpolated access
   texRef.addressMode[0] = cudaAddressModeWrap;
