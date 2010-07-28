@@ -113,12 +113,6 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluateMSD( const int* dims3, void* array
       exit( 1 );      
     }
   
-  cudaError_t cudaError = cudaGetLastError();
-  if ( cudaError != cudaSuccess )
-    {
-      fprintf( stderr, "ERROR: something failed with error '%s'\n", cudaGetErrorString( cudaError ) );
-    }
-  
   cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc<float>();
   cudaError = cudaGetLastError();
   if ( cudaError != cudaSuccess )

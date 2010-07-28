@@ -89,11 +89,4 @@ cmtk::DeviceArrayCUDA
     fprintf( stderr, "ERROR: cudaMemcpyToArray() failed with error '%s'\n", cudaGetErrorString( cudaError ) );
     exit( 1 );      
     }
-
-  cudaError_t error = cudaGetLastError();
-  if ( cudaError != cudaSuccess )
-    {
-    fprintf( stderr, "ERROR: something else failed with error '%s'\n", cudaGetErrorString( error ) );
-    exit( 1 );      
-    }
 }
