@@ -1,5 +1,7 @@
 Release CMTK-1.4.1:
 
+(r2094) Added: GPU-supported symmetry plane computation tool, "symplx_cuda",
+    which is used analogously to CPU-based "symplx" tool.
 (r2060) Added: cmtk::ParametricPlane class can now provide the 4x4 matrix of
     the reflection transformation w.r.t. the plane.
 (r2035) Refactored: all cmtk header files are now included via paths relative
