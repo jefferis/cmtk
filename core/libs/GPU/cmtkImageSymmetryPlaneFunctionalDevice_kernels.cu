@@ -186,9 +186,5 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluateMSD( const int* dims3, void* array
   float result;
   partialSums->CopyToHost( &result, 1 );
 
-  result /= dims3[0]*dims3[1]*dims3[2];
-
-  fprintf( stderr, "%f\n", result );
-
-  return result;
+  return result / dims3[0]*dims3[1]*dims3[2];
 }
