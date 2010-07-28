@@ -1,5 +1,7 @@
 Release CMTK-1.4.1:
 
+(r2060) Added: cmtk::ParametricPlane class can now provide the 4x4 matrix of
+    the reflection transformation w.r.t. the plane.
 (r2035) Refactored: all cmtk header files are now included via paths relative
     to the library parent directory. Also made sure all C standard headers are
     included as their C++ standard equivalents.
