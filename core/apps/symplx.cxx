@@ -48,6 +48,7 @@
 
 #include "System/cmtkCommandLine.h"
 #include "System/cmtkConsole.h"
+#include "System/cmtkProgress.h"
 #include "System/cmtkProgressConsole.h"
 
 #include "IO/cmtkClassStream.h"
@@ -431,6 +432,10 @@ main ( const int argc, const char* argv[] )
   else
     {
     cmtk::BestNeighbourOptimizer optimizer;
+
+    // Instantiate programm progress indicator.
+    cmtk::ProgressConsole progressIndicator( "Symmetry Plane Computation" );
+    cmtk::Progress::Begin( 0, Levels, 1, "Symmetry Plane Computation" );
     
     for ( int level = 0; level < Levels; ++level ) 
       {      
@@ -469,13 +474,14 @@ main ( const int argc, const char* argv[] )
 
       functional->SetFixOffset( FixOffset );
       
-      // Instantiate programm progress indicator.
-      cmtk::ProgressConsole progressIndicator( "Symmetry Plane Computation" );
-
       optimizer.SetFunctional( cmtk::Functional::SmartPtr::DynamicCastFrom( functional ) );
       optimizer.Optimize( v, pow( 2.0, Levels-level-1 ), Accuracy * pow( 2.0, Levels-level-1 ) );
-      
+
+      cmtk::Progress::SetProgress( level );
       }
+
+    cmtk::Progress::Done();
+
     if ( Verbose )
       fprintf( stdout, "rho=%f, theta=%f, phi=%f\n", v[0], v[1], v[2] );
     }
