@@ -62,6 +62,7 @@ SET(cmtkRegistration_SRCS
   cmtkImagePairSimilarityMeasureMSD.cxx
   cmtkImagePairSimilarityMeasureNCC.cxx
   cmtkImagePairSymmetricNonrigidRegistrationFunctional.cxx
+  cmtkImageSymmetryPlaneCommandLineBase.cxx
   cmtkImageSymmetryPlaneFunctional.cxx
   cmtkImageSymmetryPlaneFunctionalBase.cxx
   cmtkIterativeDirectionOptimizer.cxx
