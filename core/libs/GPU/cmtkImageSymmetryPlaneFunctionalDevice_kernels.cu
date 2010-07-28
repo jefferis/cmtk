@@ -88,6 +88,8 @@ void cmtkImageSymmetryPlaneFunctionalDeviceConsolidateKernel( float* squares, co
       squares[tx] += squares[i];
     }
 
+  __syncthreads();
+
   if ( tx == 0 )
     {
       for ( int i = 1; i < blockDim.x; ++i )
