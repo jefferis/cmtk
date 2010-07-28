@@ -90,7 +90,7 @@ ImageSymmetryPlaneFunctionalDevice::Evaluate()
       }
     }
   
-  return cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( this->m_Volume->m_Dims.begin(), this->m_VolumeOnDevice->GetDeviceArrayPtr()->GetArrayOnDevice(), matrix );
+  return -cmtkImageSymmetryPlaneFunctionalDeviceEvaluateMSD( this->m_Volume->m_Dims.begin(), this->m_VolumeOnDevice->GetDeviceArrayPtr()->GetArrayOnDevice(), matrix );
 }
 
 } // namespace cmtk

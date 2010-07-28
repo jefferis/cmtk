@@ -38,48 +38,55 @@
 #include <cstdio>
 
 /// Texture reference to volume data.
-texture<float, 3, cudaReadModeElementType> texRef;
-texture<float, 3, cudaReadModeElementType> texRefX;
+texture<float, 3, cudaReadModeElementType> texRefMov;
+texture<float, 3, cudaReadModeElementType> texRefFix;
+
+__constant__ float deviceMatrix[4][4];
 
 __global__
-void cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel( float* squares, const float matrix[4][4], const int dims0, const int dims1, const int dims2 )
+void
+cmtkImageSymmetryPlaneFunctionalDeviceEvaluateMSDKernel( float* squares, const int dims0, const int dims1, const int dims2 )
 {
   const int tx = threadIdx.x;
   const int ty = threadIdx.y;
 
-  const int z = blockIdx.x;
-
-  const float mXz = z * matrix[2][0] + matrix[3][0];
-  const float mYz = z * matrix[2][1] + matrix[3][1];
-  const float mZz = z * matrix[2][2] + matrix[3][2];
-
   float sq = 0;
-  for ( int y = ty; y < dims1; y += blockDim.y )
-    {
-      const float mXyz = y * matrix[1][0] + mXz;
-      const float mYyz = y * matrix[1][1] + mYz;
-      const float mZyz = y * matrix[1][2] + mZz;
 
-      for ( int x = tx; x < dims0; x += blockDim.x )
+  for ( int z = blockIdx.x; z < dims2; z += blockDim.x )
+    {
+      const float mXz = z * deviceMatrix[2][0] + deviceMatrix[3][0];
+      const float mYz = z * deviceMatrix[2][1] + deviceMatrix[3][1];
+      const float mZz = z * deviceMatrix[2][2] + deviceMatrix[3][2];
+      
+      for ( int y = ty; y < dims1; y += blockDim.y )
 	{
-	  const float mX = x * matrix[0][0] + mXyz;
-	  const float mY = x * matrix[0][1] + mYyz;
-	  const float mZ = x * matrix[0][2] + mZyz;
+	  const float mXyz = y * deviceMatrix[1][0] + mXz;
+	  const float mYyz = y * deviceMatrix[1][1] + mYz;
+	  const float mZyz = y * deviceMatrix[1][2] + mZz;
 	  
-	  const float data = tex3D( texRef, x, y, z );
-	  const float dataX = tex3D( texRefX, mX, mY, mZ );
-	  
-	  const float diff = data-dataX;
-	  sq += diff*diff;
+	  for ( int x = tx; x < dims0; x += blockDim.x )
+	    {
+	      const float dataFix = tex3D( texRefFix, x, y, z );
+
+	      const float mX = x * deviceMatrix[0][0] + mXyz;
+	      const float mY = x * deviceMatrix[0][1] + mYyz;
+	      const float mZ = x * deviceMatrix[0][2] + mZyz;
+	      
+	      const float dataMov = tex3D( texRefMov, mX, mY, mZ );
+	      
+	      const float diff = dataMov-dataFix;
+	      sq += diff*diff;
+	      sq += deviceMatrix[0][0];
+	    }
 	}
     }
 
-  const int idx = tx + blockDim.x * ( ty + blockDim.y * z );
+  const int idx = tx + blockDim.x * ( ty + blockDim.y * blockIdx.x );
   squares[idx] = sq;
 }
 
 __global__
-void cmtkImageSymmetryPlaneFunctionalDeviceConsolidateKernel( float* squares, const int n )
+void cmtkImageSymmetryPlaneFunctionalDeviceConsolidateMSDKernel( float* squares, const int n )
 {
   const int tx = threadIdx.x;
 
@@ -98,8 +105,14 @@ void cmtkImageSymmetryPlaneFunctionalDeviceConsolidateKernel( float* squares, co
 }
 
 float
-cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, const float matrix[4][4] )
+cmtkImageSymmetryPlaneFunctionalDeviceEvaluateMSD( const int* dims3, void* array, const float matrix[4][4] )
 {
+  if ( (cudaMemcpyToSymbol( deviceMatrix, matrix, 16 * sizeof( float ), 0, cudaMemcpyHostToDevice ) != cudaSuccess) )
+    {
+      fprintf( stderr, "ERROR: cudaMemcpyToSymbol() to constant memory failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
+      exit( 1 );      
+    }
+  
   cudaError_t cudaError = cudaGetLastError();
   if ( cudaError != cudaSuccess )
     {
@@ -114,29 +127,29 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
       exit( 1 );      
     }
   
-  // Set texture parameters for moving image interpolated access
-  texRef.addressMode[0] = cudaAddressModeWrap;
-  texRef.addressMode[1] = cudaAddressModeWrap;
-  texRef.addressMode[2] = cudaAddressModeWrap;
-  texRef.filterMode = cudaFilterModeLinear; 
-  texRef.normalized = true; 
+  // Set texture parameters for fixed image indexed access
+  texRefFix.addressMode[0] = cudaAddressModeClamp;
+  texRefFix.addressMode[1] = cudaAddressModeClamp;
+  texRefFix.addressMode[2] = cudaAddressModeClamp;
+  texRefFix.filterMode = cudaFilterModePoint; 
+  texRefFix.normalized = false; 
 
-  // Bind the array to the texture reference 
-  cudaError = cudaBindTextureToArray( texRef, (struct cudaArray*) array, channelDesc );
+  cudaError = cudaBindTextureToArray( texRefFix, (struct cudaArray*) array, channelDesc );
   if ( cudaError != cudaSuccess )
     {
       fprintf( stderr, "ERROR: cudaBindTextureToArray failed with error '%s'\n", cudaGetErrorString( cudaError ) );
       exit( 1 );      
     }
 
-  // Set texture parameters for fixed image indexed access
-  texRefX.addressMode[0] = cudaAddressModeClamp;
-  texRefX.addressMode[1] = cudaAddressModeClamp;
-  texRefX.addressMode[2] = cudaAddressModeClamp;
-  texRefX.filterMode = cudaFilterModePoint; 
-  texRefX.normalized = false; 
+  // Set texture parameters for moving image interpolated access
+  texRefMov.addressMode[0] = cudaAddressModeWrap;
+  texRefMov.addressMode[1] = cudaAddressModeWrap;
+  texRefMov.addressMode[2] = cudaAddressModeWrap;
+  texRefMov.filterMode = cudaFilterModeLinear; 
+  texRefMov.normalized = true; 
 
-  cudaError = cudaBindTextureToArray( texRefX, (struct cudaArray*) array, channelDesc );
+  // Bind the array to the texture reference 
+  cudaError = cudaBindTextureToArray( texRefMov, (struct cudaArray*) array, channelDesc );
   if ( cudaError != cudaSuccess )
     {
       fprintf( stderr, "ERROR: cudaBindTextureToArray failed with error '%s'\n", cudaGetErrorString( cudaError ) );
@@ -144,13 +157,12 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
     }
 
   // alocate memory for partial sums of squares
-  dim3 dimBlock( 16, 16, 1 );
-  dim3 dimGrid( dims3[2], 1 );
+  dim3 dimBlock( 16, 16 );
 
-  const int nPartials = dimBlock.x * dimBlock.y * dimBlock.z * dimGrid.x * dimGrid.y;
+  const int nPartials = dimBlock.x * dimBlock.y * dimBlock.z * dims3[2];
   cmtk::DeviceMemory<float>::SmartPtr partialSums = cmtk::DeviceMemory<float>::Create( nPartials );
 
-  cmtkImageSymmetryPlaneFunctionalDeviceEvaluateKernel<<<dimGrid,dimBlock>>>( partialSums->Ptr(), matrix, dims3[0], dims3[1], dims3[2] );
+  cmtkImageSymmetryPlaneFunctionalDeviceEvaluateMSDKernel<<<dims3[2],dimBlock>>>( partialSums->Ptr(), dims3[0], dims3[1], dims3[2] );
 
   cudaError = cudaGetLastError();
   if ( cudaError != cudaSuccess )
@@ -159,9 +171,7 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
       exit( 1 );      
     }
 
-  dim3 dimBlock2( 512, 1, 1 );
-  dim3 dimGrid2( 1, 1 );
-  cmtkImageSymmetryPlaneFunctionalDeviceConsolidateKernel<<<dimGrid2,dimBlock2>>>( partialSums->Ptr(), nPartials );
+  cmtkImageSymmetryPlaneFunctionalDeviceConsolidateMSDKernel<<<1,512>>>( partialSums->Ptr(), nPartials );
 
   cudaError = cudaGetLastError();
   if ( cudaError != cudaSuccess )
@@ -170,11 +180,15 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluate( const int* dims3, void* array, c
       exit( 1 );      
     }
 
-  cudaUnbindTexture( texRef );
-  cudaUnbindTexture( texRefX );
+  cudaUnbindTexture( texRefMov );
+  cudaUnbindTexture( texRefFix );
 
   float result;
   partialSums->CopyToHost( &result, 1 );
+
+  result /= dims3[0]*dims3[1]*dims3[2];
+
+  fprintf( stderr, "%f\n", result );
 
   return result;
 }
