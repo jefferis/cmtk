@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -94,6 +95,27 @@ public:
     Self::ProgressInstance = progressInstance;
   }
   
+protected:
+  /// Check if we're at the top level of the task hierarchy.
+  bool IsTopLevel() const
+  {
+    return m_RangeStack.size() == 1;
+  }
+
+  /// Return the name of the current task (at the lowest level of nested ranges).
+  const std::string GetCurrentTaskName() const;
+
+  /// Compute current completion fraction from range stack.
+  double GetFractionComplete() const;
+
+  /// Set total number of steps to complete.
+  virtual void BeginVirtual( const double start, const double end, const double increment, const std::string& taskName = std::string("") );
+
+  /** Clean up progress output.
+   * This member function can be overriden by derived classes.
+   */
+  virtual void DoneVirtual();
+
 private:
   /// Instance of a derived class that handles GUI interaction etc.
   static Self* ProgressInstance;
@@ -134,27 +156,6 @@ private:
 
   /// Stack of nested progress ranges.
   RangeStackType m_RangeStack;
-
-protected:
-  /// Check if we're at the top level of the task hierarchy.
-  bool IsTopLevel() const
-  {
-    return m_RangeStack.size() == 1;
-  }
-
-  /// Return the name of the current task (at the lowest level of nested ranges).
-  const std::string GetCurrentTaskName() const;
-
-  /// Compute current completion fraction from range stack.
-  double GetFractionComplete() const;
-
-  /// Set total number of steps to complete.
-  virtual void BeginVirtual( const double start, const double end, const double increment, const std::string& taskName = std::string("") );
-
-  /** Clean up progress output.
-   * This member function can be overriden by derived classes.
-   */
-  virtual void DoneVirtual();
 };
 
 //@}
