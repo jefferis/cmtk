@@ -1,5 +1,7 @@
 Release CMTK-1.4.1:
 
+(r2111) Refactored: simple two-phase levelset evolution moved from "levelset"
+    tool into a new Segmentation/ library class, cmtk::SimpleLevelset.
 (r2107) Refactored: UniformVolume::Clone and CloneGrid now return smart
     rather than dumb pointers.
 (r2103) Added: GPU/cmtkCUDA.h defines macros to safely call CUDA API functions
