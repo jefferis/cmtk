@@ -1,6 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
-##  Copyright 2004-2009 SRI International
+##
+##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -30,7 +31,7 @@
 INCLUDE(${CMAKE_SOURCE_DIR}/libs/cmtkLibInitSrcs.cmake)
 
 ADD_EXECUTABLE(triplanar ${CMTK_LIB_INIT_SRCS} main.cxx)
-TARGET_LINK_LIBRARIES(triplanar ${CMTK_LIBRARIES} ${CMTK_VTK_LIBS} ${QT_LIBRARIES} ${CMTK_SYSTEM_LIBRARIES})
+TARGET_LINK_LIBRARIES(triplanar ${CMTK_LIBRARIES} ${QT_LIBRARIES} ${CMTK_SYSTEM_LIBRARIES})
 
 INSTALL(TARGETS triplanar RUNTIME DESTINATION bin COMPONENT gui)
 
