@@ -39,6 +39,7 @@ SET(cmtkGPU_SRCS
 
 IF(CMTK_USE_CUDA)
   SET(cmtkGPU_SRCS_CUDA
+    cmtkDeviceImageConvolution_kernels.cu
     cmtkDeviceHistogram_kernels.cu
     cmtkDeviceMemoryCUDA.cxx
     cmtkDeviceArrayCUDA.cxx
