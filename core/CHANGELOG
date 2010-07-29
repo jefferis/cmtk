@@ -1,5 +1,7 @@
 Release CMTK-1.4.1:
 
+(r2103) Added: GPU/cmtkCUDA.h defines macros to safely call CUDA API functions
+    and check their error codes.
 (r2097) Added: a new class, cmtk::ImageSymmetryPlaneCommandLine, together with
     a derived class template unifies the tools for CPU-based and GPU-based
     symmetry plane computation.
