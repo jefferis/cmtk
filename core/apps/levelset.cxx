@@ -38,16 +38,13 @@
 
 #include "IO/cmtkVolumeIO.h"
 
-#include "Base/cmtkMathUtil.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkUniformVolumePainter.h"
-#include "Base/cmtkUniformVolumeFilter.h"
-
 #include <algorithm>
 
 #ifdef CMTK_USE_SQLITE
 #  include "Registration/cmtkImageXformDB.h"
 #endif
+
+#include "Segmentation/cmtkSimpleLevelset.h"
 
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 namespace cmtk
@@ -120,79 +117,16 @@ main( int argc, char* argv[] )
   cmtk::ProgressConsole progressIndicator( "LevelsetSegmentation" );
 
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( inFile, verbose ) );
-  const size_t numberOfPixels = volume->GetNumberOfPixels();
 
-  cmtk::UniformVolume::SmartPtr levelset( volume->CloneGrid() );
-  levelset->CreateDataArray( cmtk::TYPE_FLOAT );
-  levelset->GetData()->Fill( -1.0 );
+  cmtk::SimpleLevelset levelset( volume );
+  levelset.SetFilterSigma( filterSigma );
+  levelset.SetTimeDelta( delta );
+  levelset.SetLevelsetThreshold( levelsetThreshold );
 
-  cmtk::FixedVector<3,int> center( volume->GetDims() );
-  center /= 2;
+  levelset.InitializeCenteredSphere();
+  levelset.Evolve( numberOfIterations, forceIterations );
 
-  cmtk::UniformVolumePainter painter( levelset );
-  painter.DrawSphere( center, (levelset->GetDims()[0]+levelset->GetDims()[1]+levelset->GetDims()[2])/6, 1.0 );
-
-  size_t nInsideOld = 0, nInside = 1;
-
-  cmtk::Progress::Begin( 0, numberOfIterations, 1, "Levelset Evolution" );
-  for ( int it = 0; (it < numberOfIterations) && ((nInside!=nInsideOld) || forceIterations); ++it )
-    {
-    cmtk::Progress::SetProgress( it );
-
-    nInsideOld = nInside;
-    nInside = 0;
-    cmtk::Types::DataItem insideSum = 0, outsideSum = 0;
-
-    levelset->SetData( cmtk::UniformVolumeFilter( levelset ).GetDataGaussFiltered( filterSigma ) );
-#pragma omp parallel for reduction(+:nInside) reduction(+:insideSum) reduction(+:outsideSum)
-    for ( size_t n = 0; n < numberOfPixels; ++n )
-      {
-      if ( levelset->GetDataAt( n ) > 0 )
-	{
-	insideSum += volume->GetDataAt( n );
-	++nInside;
-	}
-      else
-	outsideSum += volume->GetDataAt( n );
-      }
-
-    const size_t nOutside = numberOfPixels - nInside;
-    const cmtk::Types::DataItem ratioInOut = 1.0 * nInside / nOutside;
-    
-    const cmtk::Types::DataItem mInside = insideSum / nInside;
-    const cmtk::Types::DataItem mOutside = outsideSum / nOutside;
-
-    if ( verbose )
-      std::cerr << it << " IN: " << nInside << "  " << mInside << "  OUT: " << nOutside << "  " << mOutside << "\r";
-    
-#pragma omp parallel for
-    for ( size_t n = 0; n < numberOfPixels; ++n )
-      {
-      const cmtk::Types::DataItem data = volume->GetDataAt( n );
-      const cmtk::Types::DataItem zInside = fabs( mInside - data );
-      const cmtk::Types::DataItem zOutside = fabs( mOutside - data );
-      cmtk::Types::DataItem newLevel = levelset->GetDataAt( n );
-      if ( zInside>zOutside )
-	{
-	newLevel -= delta * ratioInOut;
-	}
-      else
-	{
-	newLevel += delta / ratioInOut;
-	}
-      levelset->SetDataAt( std::min<cmtk::Types::DataItem>( levelsetThreshold, std::max<cmtk::Types::DataItem>( -levelsetThreshold, newLevel ) ), n );
-      }
-    }
-
-  cmtk::Progress::Done();
-
-  if ( binarize )
-    {
-    levelset->GetData()->Binarize( 0.5 );
-    levelset->SetData( cmtk::TypedArray::SmartPtr( levelset->GetData()->Convert( cmtk::TYPE_BYTE ) ) );
-    }
-  
-  cmtk::VolumeIO::Write( *levelset, outFile, verbose );
+  cmtk::VolumeIO::Write( *levelset.GetLevelset( binarize ), outFile, verbose );
 
 #ifdef CMTK_USE_SQLITE
   if ( updateDB )

@@ -31,12 +31,13 @@
 # Sources of non-templated classes.
 SET(cmtkSegmentation_SRCS
   cmtkAtlasSegmentation.cxx
+  cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.cxx
+  cmtkEntropyMinimizationIntensityCorrectionFunctional.cxx
   cmtkLabelCombinationMultiClassSTAPLE.cxx
   cmtkLabelCombinationSTAPLE.cxx
   cmtkLabelCombinationVoting.cxx
   cmtkOverlapMeasures.cxx
-  cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.cxx
-  cmtkEntropyMinimizationIntensityCorrectionFunctional.cxx
+  cmtkSimpleLevelset.cxx
 )
 
 ADD_LIBRARY(cmtkSegmentation ${cmtkSegmentation_SRCS})

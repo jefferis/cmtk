@@ -33,7 +33,7 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkUniformVolume.h"
+#include "Segmentation/cmtkSimpleLevelset.h"
 
 namespace
 cmtk
@@ -45,53 +45,13 @@ cmtk
 /** Class for computing a simple levelset evolution on the GPU
  */
 class SimpleLevelsetDevice
+    /// Inherit from CPU-based levelset class.
+  : public SimpleLevelset
 {
 public:
-  /// Constructor.
-  SimpleLevelsetDevice( UniformVolume::SmartConstPtr& volume ) : m_Volume( volume ) {}
-
-  /// Set filter sigma parameter.
-  void SetFilterSigma( const float filterSigma )
-  {
-    this->m_FilterSigma = filterSigma;
-  }
-
-  /// Set evolution time delta.
-  void SetTimeDelta( const float timeDelta )
-  {
-    this->m_TimeDelta = timeDelta;
-  }
-
-  /// Set levelset threshold.
-  void SetLevelsetThreshold( const float levelsetThreshold )
-  {
-    this->m_LevelsetThreshold = levelsetThreshold;
-  }
-  
-  /// Initialize levelset with a centered sphere.
-  void InitializeCenteredSphere();
-
-  /// Levelset evolution.
-  void Evolve( const int numberOfIterations /**!< Number of iterations */, const bool forceIterations = false /**!< If this is set, evolution continues until maximum iteration count is reached, even when convergence is detected */ );
-
-  /// Return levelset, optionally converting to a binarized byte pixel representation.
-  UniformVolume::SmartPtr& GetLevelset( const bool binarize = false, const float threshold = 0.5 );
-
-private:
-  /// The volume to compute a levelset segmentation for.
-  UniformVolume::SmartConstPtr m_Volume;
-
-  /// The evolving levelset.
-  UniformVolume::SmartPtr m_Levelset;
-
-  /// Sigma parameter of the Gaussian filter kernel.
-  float m_FilterSigma;
-
-  /// Delta time constant.
-  float m_TimeDelta;
-
-  /// Levelset threshold.
-  float m_LevelsetThreshold;
+  /// Levelset evolution on GPU.
+  virtual void Evolve( const int numberOfIterations /**!< Number of iterations */, 
+		       const bool forceIterations = false /**!< If this is set, evolution continues until maximum iteration count is reached, even when convergence is detected */ );
 };
 
 } // namespace cmtk
