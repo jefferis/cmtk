@@ -141,7 +141,7 @@ GroupwiseRegistrationFunctionalBase::SetTemplateGrid
   const int downsample,
   const bool useTemplateData )
 { 
-  this->m_TemplateGrid = UniformVolume::SmartPtr( templateGrid->Clone() );
+  this->m_TemplateGrid = templateGrid->Clone();
   this->m_UseTemplateData = useTemplateData;
   
   if ( this->m_UseTemplateData && ! this->m_TemplateGrid->GetData() )
@@ -233,7 +233,7 @@ GroupwiseRegistrationFunctionalBase
   this->m_ProbabilisticSampleUpdatesSince = 0;
 }
 
-UniformVolume*
+UniformVolume::SmartPtr
 GroupwiseRegistrationFunctionalBase
 ::PrepareSingleImage( UniformVolume::SmartPtr& image )
 {
@@ -265,15 +265,15 @@ GroupwiseRegistrationFunctionalBase
       }
     else
       {
-      data = TypedArray::SmartPtr( image->GetData()->Clone() );
+      data = image->GetData()->Clone();
       }
     }
   
-  UniformVolume* newTargetImage = image->CloneGrid();
+  UniformVolume::SmartPtr newTargetImage = image->CloneGrid();
   newTargetImage->SetData( data );
   return newTargetImage;
 }
-  
+
 void
 GroupwiseRegistrationFunctionalBase
 ::PrepareTargetImages()
@@ -281,7 +281,7 @@ GroupwiseRegistrationFunctionalBase
   this->m_ImageVector.resize( this->m_OriginalImageVector.size() );
   for ( size_t i = 0; i < this->m_OriginalImageVector.size(); ++i )
     {
-    this->m_ImageVector[i] = UniformVolume::SmartPtr( this->PrepareSingleImage( this->m_OriginalImageVector[i] ) );
+    this->m_ImageVector[i] = this->PrepareSingleImage( this->m_OriginalImageVector[i] );
     }
 }
 

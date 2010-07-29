@@ -78,11 +78,11 @@ GroupwiseRegistrationFunctionalXformTemplateBase<TXform>
 }
 
 template<class TXform>
-UniformVolume*
+UniformVolume::SmartPtr
 GroupwiseRegistrationFunctionalXformTemplateBase<TXform>
 ::PrepareSingleImage( UniformVolume::SmartPtr& image )
 {
-  UniformVolume* newTargetImage = this->Superclass::PrepareSingleImage( image );
+  UniformVolume::SmartPtr newTargetImage = this->Superclass::PrepareSingleImage( image );
 
   TypedArray::SmartPtr data = newTargetImage->GetData();
   if ( this->m_CropImageHistograms )

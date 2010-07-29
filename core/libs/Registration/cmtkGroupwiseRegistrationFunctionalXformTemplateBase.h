@@ -162,7 +162,7 @@ private:
   bool m_CropImageHistograms;
 
   /// Prepare data for one image.
-  virtual UniformVolume* PrepareSingleImage( UniformVolume::SmartPtr& image );
+  virtual UniformVolume::SmartPtr PrepareSingleImage( UniformVolume::SmartPtr& image );
 
   /// Smooth and pre-scale target images.
   virtual void PrepareTargetImages();

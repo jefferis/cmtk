@@ -116,15 +116,15 @@ UniformVolume::UniformVolume
 }
 
 UniformVolume*
-UniformVolume::Clone( const bool copyData )
+UniformVolume::CloneVirtual( const bool copyData )
 {
   if ( copyData ) 
     {
-    return this->Clone();
+    return this->CloneVirtual();
     } 
   else 
     {
-    UniformVolume *result = this->CloneGrid();
+    UniformVolume *result = this->CloneGridVirtual();
     result->SetData( this->GetData() );
     
     return result;
@@ -132,9 +132,9 @@ UniformVolume::Clone( const bool copyData )
 }
 
 UniformVolume*
-UniformVolume::Clone() const
+UniformVolume::CloneVirtual() const
 {
-  UniformVolume *result = this->CloneGrid();
+  UniformVolume *result = this->CloneGridVirtual();
   
   if ( this->GetData() )
     {
@@ -150,7 +150,7 @@ UniformVolume::Clone() const
 }
 
 UniformVolume*
-UniformVolume::CloneGrid() const
+UniformVolume::CloneGridVirtual() const
 {
   UniformVolume* clone = new UniformVolume( this->m_Dims, Size );
   clone->SetOffset( this->m_Offset );

@@ -168,11 +168,21 @@ public:
   /** Create a physical copy of this object.
    *@param copyData If true, the associated data array is also copied.
    */
-  virtual Self* Clone( const bool copyData );
-  virtual Self* Clone() const;
+  Self::SmartPtr Clone( const bool copyData )
+  {
+    return Self::SmartPtr( this->CloneVirtual( copyData ) );
+  }
+
+  Self::SmartPtr Clone() const
+  {
+    return Self::SmartPtr( this->CloneVirtual() );
+  }
 
   /// Create igsUniformObject with identical geometry but no data.
-  virtual Self* CloneGrid() const;
+  Self::SmartPtr CloneGrid() const
+  {
+    return Self::SmartPtr( this->CloneGridVirtual() );
+  }
 
   virtual Types::Coordinate GetDelta( const int axis, const int = 0 ) const
   {
@@ -500,6 +510,16 @@ public:
    * larger than, or equal to, the norm of directions[2].
    */
   void GetPrincipalAxes( Matrix3x3<Types::Coordinate>& directions, Self::CoordinateVectorType& centerOfMass ) const;
+
+protected:
+  /** Create a physical copy of this object.
+   *@param copyData If true, the associated data array is also copied.
+   */
+  virtual Self* CloneVirtual( const bool copyData );
+  virtual Self* CloneVirtual() const;
+
+  /// Virtual grid cloning constructor.
+  virtual Self* CloneGridVirtual() const;
 
 private:
   /** Optional high-resolution crop region.
