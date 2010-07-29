@@ -194,7 +194,7 @@ public:
       Types::Coordinate distance = 0;
       for ( int i = 0; i < DIM; ++i ) 
 	distance += relativePosition[i] * relativePosition[i];
-	  return static_cast<Types::DataItem>( NormFactor * exp( -distance * MathUtil::Square( InvStandardDeviation ) / 2 ) );
+      return static_cast<Types::DataItem>( NormFactor * exp( -distance * MathUtil::Square( InvStandardDeviation ) / 2 ) );
     }
     
   private:
