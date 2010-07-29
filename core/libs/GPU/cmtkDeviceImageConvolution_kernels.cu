@@ -31,11 +31,11 @@
 #include "cmtkDeviceImageConvolution_kernels.h"
 
 #include "System/cmtkMemory.h"
+
+#include "GPU/cmtkCUDA.h"
 #include "GPU/cmtkDeviceMemory.h"
 
 #include <cuda_runtime_api.h>
-
-#include <cstdio>
 
 /// Texture reference to volume data.
 texture<float, 3, cudaReadModeElementType> texRef;
@@ -70,48 +70,32 @@ cmtkDeviceImageConvolution( const int* dims3, void* array, const int kernelLengt
   texRef.filterMode = cudaFilterModePoint; 
   texRef.normalized = false; 
 
-  cudaError_t cudaError = cudaBindTextureToArray( texRef, (struct cudaArray*) array, cudaCreateChannelDesc<float>() );
-  if ( cudaError != cudaSuccess )
-    {
-      fprintf( stderr, "ERROR: cudaBindTextureToArray failed with error '%s'\n", cudaGetErrorString( cudaError ) );
-      exit( 1 );      
-    }
+  cmtkCheckCallCUDA( cudaBindTextureToArray( texRef, (struct cudaArray*) array, cudaCreateChannelDesc<float>() ) );
 
   const int nPixels = dims3[0] * dims3[1] * dims3[2];
   cmtk::DeviceMemory<float>::SmartPtr temporary = cmtk::DeviceMemory<float>::Create( nPixels );
 
-  if ( (cudaMemcpyToSymbol( deviceKernel, kernelX, kernelLengthX * sizeof( float ), 0, cudaMemcpyHostToDevice ) != cudaSuccess) )
-    {
-      fprintf( stderr, "ERROR: cudaMemcpyToSymbol() to constant memory failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
-      exit( 1 );      
-    }
+  cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceKernel, kernelX, kernelLengthX * sizeof( float ), 0, cudaMemcpyHostToDevice ) );
   
   dim3 threads;
   dim3 blocks;
 
   cmtkDeviceImageConvolutionKernelX<<<threads,blocks>>>( temporary->Ptr(), dims3[0], dims3[1], dims3[2], kernelLengthX );
+  cmtkCheckLastErrorCUDA;
 
-  cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, temporary->Ptr(), nPixels, cudaMemcpyDeviceToDevice );
+  cmtkCheckCallCUDA( cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, temporary->Ptr(), nPixels, cudaMemcpyDeviceToDevice ) );
 
-  if ( (cudaMemcpyToSymbol( deviceKernel, kernelY, kernelLengthY * sizeof( float ), 0, cudaMemcpyHostToDevice ) != cudaSuccess) )
-    {
-      fprintf( stderr, "ERROR: cudaMemcpyToSymbol() to constant memory failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
-      exit( 1 );      
-    }
-  
+  cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceKernel, kernelY, kernelLengthY * sizeof( float ), 0, cudaMemcpyHostToDevice ) );
   cmtkDeviceImageConvolutionKernelY<<<threads,blocks>>>( temporary->Ptr(), dims3[0], dims3[1], dims3[2], kernelLengthY );
+  cmtkCheckLastErrorCUDA;
 
-  cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, temporary->Ptr(), nPixels, cudaMemcpyDeviceToDevice );
+  cmtkCheckCallCUDA( cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, temporary->Ptr(), nPixels, cudaMemcpyDeviceToDevice ) );
 
-  if ( (cudaMemcpyToSymbol( deviceKernel, kernelZ, kernelLengthZ * sizeof( float ), 0, cudaMemcpyHostToDevice ) != cudaSuccess) )
-    {
-      fprintf( stderr, "ERROR: cudaMemcpyToSymbol() to constant memory failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
-      exit( 1 );      
-    }
-  
+  cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceKernel, kernelZ, kernelLengthZ * sizeof( float ), 0, cudaMemcpyHostToDevice ) );  
   cmtkDeviceImageConvolutionKernelZ<<<threads,blocks>>>( temporary->Ptr(), dims3[0], dims3[1], dims3[2], kernelLengthZ );
-
-  cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, temporary->Ptr(), nPixels, cudaMemcpyDeviceToDevice );
+  cmtkCheckLastErrorCUDA;
   
-  cudaUnbindTexture( texRef );
+  cmtkCheckCallCUDA( cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, temporary->Ptr(), nPixels, cudaMemcpyDeviceToDevice ) );
+  
+  cmtkCheckCallCUDA( cudaUnbindTexture( texRef ) );
 }

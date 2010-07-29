@@ -30,7 +30,7 @@
 
 #include "cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.h"
 
-#include <cstdio>
+#include "GPU/cmtkCUDA.h"
 
 __constant__ float deviceWeights[34];
 __constant__ float deviceCorrections[34];
@@ -120,23 +120,17 @@ void
 cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
 ( float* output, float* input, const int dims0, const int dims1, const int dims2, const int degree, const int multiply, const int nargs, const float* weights, const float* corrections )
 { 
-  if ( (cudaMemcpyToSymbol( deviceWeights, weights, nargs * sizeof( *weights ), 0, cudaMemcpyHostToDevice ) != cudaSuccess) ||
-       (cudaMemcpyToSymbol( deviceCorrections, corrections, nargs * sizeof( *corrections ), 0, cudaMemcpyHostToDevice ) != cudaSuccess) )
-    {
-      fprintf( stderr, "ERROR: cudaMemcpy() to constant memory failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
-      exit( 1 );      
-    }
-    
+  cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceWeights, weights, nargs * sizeof( *weights ), 0, cudaMemcpyHostToDevice ) );
+  cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceCorrections, corrections, nargs * sizeof( *corrections ), 0, cudaMemcpyHostToDevice ) );
+
   const int nPixels = dims0 * dims1 * dims2;
 
   // how many local copies of the histogram can we fit in shared memory?
   int device;
+  cmtkCheckCallCUDA( cudaGetDevice( &device ) );
+
   cudaDeviceProp dprop;
-  if ( (cudaGetDevice( &device ) != cudaSuccess) || (cudaGetDeviceProperties( &dprop, device ) != cudaSuccess ) )
-    {
-      fprintf( stderr, "ERROR: cudaGetDevice() failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
-      exit( 1 );
-    }
+  cmtkCheckCallCUDA( cudaGetDeviceProperties( &dprop, device ) );
   
   int nThreads = nPixels;
   if ( nThreads > dprop.maxThreadsPerBlock )
@@ -146,11 +140,5 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
   dim3 dimGrid( (nPixels+nThreads-1)/nThreads, 1 );
   
   cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel<<<dimGrid,dimBlock>>>( output, input, degree, multiply, nPixels, dims0, dims1, dims2 );
-
-  const cudaError_t kernelError = cudaGetLastError();
-  if ( kernelError != cudaSuccess )
-    {
-      fprintf( stderr, "ERROR: CUDA kernel failed with error %s\n",cudaGetErrorString( kernelError ) );
-      exit( 1 );      
-    }
+  cmtkCheckLastErrorCUDA;
 }

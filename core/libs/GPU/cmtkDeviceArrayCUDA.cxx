@@ -33,28 +33,14 @@
 #include <cuda_runtime_api.h>
 #include <cuda_runtime.h>
 
-#include <cstdio>
+#include "GPU/cmtkCUDA.h"
 
 cmtk::DeviceArrayCUDA
 ::DeviceArrayCUDA( const FixedVector<3,int>& dims3 )
   : m_Dims( dims3 )
 {
   const struct cudaChannelFormatDesc desc = cudaCreateChannelDesc<float>();
-  
-  cudaError_t cudaError = cudaGetLastError();
-  if ( cudaError != cudaSuccess )
-    {
-    fprintf( stderr, "ERROR: cudaCreateChannelDesc() failed with error '%s'\n", cudaGetErrorString( cudaError ) );
-    exit( 1 );      
-    }
-  
-  cudaError = cudaMalloc3DArray( &(this->m_DeviceArrayPtr), &desc, make_cudaExtent( this->m_Dims[0], this->m_Dims[1], this->m_Dims[2] ) );
-  if ( cudaError != cudaSuccess )
-    {
-    fprintf( stderr, "ERROR: cudaMalloc3DArray() failed to allocate %dx%dx%d array with error '%s'\n", dims3[0], dims3[1], dims3[2], cudaGetErrorString( cudaError ) );
-    this->m_DeviceArrayPtr = NULL;
-    throw( Self::bad_alloc() );
-    }
+  cmtkCheckCallCUDA( cudaMalloc3DArray( &(this->m_DeviceArrayPtr), &desc, make_cudaExtent( this->m_Dims[0], this->m_Dims[1], this->m_Dims[2] ) ) );
 }
 
 
@@ -62,14 +48,7 @@ cmtk::DeviceArrayCUDA
 ::~DeviceArrayCUDA()
 {
   if ( this->m_DeviceArrayPtr )
-    {
-    const cudaError_t cudaError = cudaFreeArray( this->m_DeviceArrayPtr );
-    if ( cudaError != cudaSuccess )
-      {
-      fprintf( stderr, "ERROR: cudaFreeArray() failed with error '%s'\n", cudaGetErrorString( cudaError ) );
-      exit( 1 );      
-      }
-    }
+    cmtkCheckCallCUDA( cudaFreeArray( this->m_DeviceArrayPtr ) );
 }
 
 void
@@ -83,10 +62,5 @@ cmtk::DeviceArrayCUDA
   copyParams.extent   = make_cudaExtent( this->m_Dims[0], this->m_Dims[1], this->m_Dims[2] );
   copyParams.kind     = cudaMemcpyHostToDevice;
 
-  const cudaError_t cudaError = cudaMemcpy3D( &copyParams );
-  if ( cudaError != cudaSuccess )
-    {
-    fprintf( stderr, "ERROR: cudaMemcpyToArray() failed with error '%s'\n", cudaGetErrorString( cudaError ) );
-    exit( 1 );      
-    }
+  cmtkCheckCallCUDA( cudaMemcpy3D( &copyParams ) );
 }

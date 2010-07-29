@@ -31,11 +31,11 @@
 #include "cmtkImageSymmetryPlaneFunctionalDevice_kernels.h"
 
 #include "System/cmtkMemory.h"
+
+#include "GPU/cmtkCUDA.h"
 #include "GPU/cmtkDeviceMemory.h"
 
 #include <cuda_runtime_api.h>
-
-#include <cstdio>
 
 /// Texture reference to volume data.
 texture<float, 3, cudaReadModeElementType> texRefMov;
@@ -107,20 +107,8 @@ void cmtkImageSymmetryPlaneFunctionalDeviceConsolidateMSDKernel( float* squares,
 float
 cmtkImageSymmetryPlaneFunctionalDeviceEvaluateMSD( const int* dims3, void* array, const float matrix[4][4] )
 {
-  if ( (cudaMemcpyToSymbol( deviceMatrix, matrix, 16 * sizeof( float ), 0, cudaMemcpyHostToDevice ) != cudaSuccess) )
-    {
-      fprintf( stderr, "ERROR: cudaMemcpyToSymbol() to constant memory failed with error %s\n",cudaGetErrorString( cudaGetLastError() ) );
-      exit( 1 );      
-    }
-  
-  cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc<float>();
-  cudaError_t cudaError = cudaGetLastError();
-  if ( cudaError != cudaSuccess )
-    {
-      fprintf( stderr, "ERROR: cudaCreateChannelDesc failed with error '%s'\n", cudaGetErrorString( cudaError ) );
-      exit( 1 );      
-    }
-  
+  cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceMatrix, matrix, 16 * sizeof( float ), 0, cudaMemcpyHostToDevice ) );
+
   // Set texture parameters for fixed image indexed access
   texRefFix.addressMode[0] = cudaAddressModeClamp;
   texRefFix.addressMode[1] = cudaAddressModeClamp;
@@ -128,12 +116,7 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluateMSD( const int* dims3, void* array
   texRefFix.filterMode = cudaFilterModePoint; 
   texRefFix.normalized = false; 
 
-  cudaError = cudaBindTextureToArray( texRefFix, (struct cudaArray*) array, channelDesc );
-  if ( cudaError != cudaSuccess )
-    {
-      fprintf( stderr, "ERROR: cudaBindTextureToArray failed with error '%s'\n", cudaGetErrorString( cudaError ) );
-      exit( 1 );      
-    }
+  cmtkCheckCallCUDA( cudaBindTextureToArray( texRefFix, (struct cudaArray*) array, cudaCreateChannelDesc<float>() ) );
 
   // Set texture parameters for moving image interpolated access
   texRefMov.addressMode[0] = cudaAddressModeWrap;
@@ -143,12 +126,7 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluateMSD( const int* dims3, void* array
   texRefMov.normalized = true; 
 
   // Bind the array to the texture reference 
-  cudaError = cudaBindTextureToArray( texRefMov, (struct cudaArray*) array, channelDesc );
-  if ( cudaError != cudaSuccess )
-    {
-      fprintf( stderr, "ERROR: cudaBindTextureToArray failed with error '%s'\n", cudaGetErrorString( cudaError ) );
-      exit( 1 );      
-    }
+  cmtkCheckCallCUDA( cudaBindTextureToArray( texRefMov, (struct cudaArray*) array, cudaCreateChannelDesc<float>() ) );
 
   // alocate memory for partial sums of squares
   dim3 dimBlock( 16, 16 );
@@ -157,25 +135,13 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluateMSD( const int* dims3, void* array
   cmtk::DeviceMemory<float>::SmartPtr partialSums = cmtk::DeviceMemory<float>::Create( nPartials );
 
   cmtkImageSymmetryPlaneFunctionalDeviceEvaluateMSDKernel<<<dims3[2],dimBlock>>>( partialSums->Ptr(), dims3[0], dims3[1], dims3[2] );
-
-  cudaError = cudaGetLastError();
-  if ( cudaError != cudaSuccess )
-    {
-      fprintf( stderr, "ERROR: CUDA kernel failed with error '%s'\n", cudaGetErrorString( cudaError ) );
-      exit( 1 );      
-    }
+  cmtkCheckLastErrorCUDA;
 
   cmtkImageSymmetryPlaneFunctionalDeviceConsolidateMSDKernel<<<1,512>>>( partialSums->Ptr(), nPartials );
+  cmtkCheckLastErrorCUDA;
 
-  cudaError = cudaGetLastError();
-  if ( cudaError != cudaSuccess )
-    {
-      fprintf( stderr, "ERROR: CUDA kernel failed with error '%s'\n", cudaGetErrorString( cudaError ) );
-      exit( 1 );      
-    }
-
-  cudaUnbindTexture( texRefMov );
-  cudaUnbindTexture( texRefFix );
+  cmtkCheckCallCUDA( cudaUnbindTexture( texRefMov ) );
+  cmtkCheckCallCUDA( cudaUnbindTexture( texRefFix ) );
 
   float result;
   partialSums->CopyToHost( &result, 1 );

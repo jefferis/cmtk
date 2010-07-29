@@ -30,9 +30,9 @@
 
 #include "cmtkDeviceMemoryCUDA.h"
 
-#include <cuda_runtime_api.h>
+#include "GPU/cmtkCUDA.h"
 
-#include <cstdio>
+#include <cuda_runtime_api.h>
 
 namespace 
 cmtk
@@ -42,48 +42,43 @@ DeviceMemoryCUDA
 ::DeviceMemoryCUDA( const size_t nBytes, const size_t padToMultiple )
 {
   this->m_NumberOfBytesAllocated = (((nBytes-1) / padToMultiple)+1) * padToMultiple;
-  const cudaError_t cudaError = cudaMalloc( &(this->m_PointerDevice), this->m_NumberOfBytesAllocated );
-  if ( cudaError != cudaSuccess )
-    {
-    fprintf( stderr, "ERROR: cudaMalloc failed to allocate %d bytes with error '%s'\n",this->m_NumberOfBytesAllocated, cudaGetErrorString( cudaError ) );
-    this->m_PointerDevice = NULL;
-    throw( Self::bad_alloc() );
-    }
+
+  cmtkCheckCallCUDA( cudaMalloc( &(this->m_PointerDevice), this->m_NumberOfBytesAllocated ) );
 }
 
 DeviceMemoryCUDA
 ::~DeviceMemoryCUDA()
 {
   if ( this->m_PointerDevice )
-    cudaFree( this->m_PointerDevice );
+    cmtkCheckCallCUDA( cudaFree( this->m_PointerDevice ) );
 }
 
 void
 DeviceMemoryCUDA
 ::CopyToDevice( const void *const srcPtrHost, const size_t nBytes )
 {
-  cudaMemcpy( this->m_PointerDevice, srcPtrHost, nBytes, cudaMemcpyHostToDevice );
+  cmtkCheckCallCUDA( cudaMemcpy( this->m_PointerDevice, srcPtrHost, nBytes, cudaMemcpyHostToDevice ) );
 }
   
 void
 DeviceMemoryCUDA
 ::CopyToHost( void *const dstPtrHost, const size_t nBytes ) const
 {
-  cudaMemcpy( dstPtrHost, this->m_PointerDevice, nBytes, cudaMemcpyDeviceToHost );
+  cmtkCheckCallCUDA( cudaMemcpy( dstPtrHost, this->m_PointerDevice, nBytes, cudaMemcpyDeviceToHost ) );
 } 
 
 void
 DeviceMemoryCUDA
 ::CopyOnDevice( const Self& srcPtrDevice, const size_t nBytes )
 {
-  cudaMemcpy( this->m_PointerDevice, srcPtrDevice.m_PointerDevice, nBytes, cudaMemcpyDeviceToDevice );
+  cmtkCheckCallCUDA( cudaMemcpy( this->m_PointerDevice, srcPtrDevice.m_PointerDevice, nBytes, cudaMemcpyDeviceToDevice ) );
 }
 
 void
 DeviceMemoryCUDA
 ::Memset( const int value, const size_t nBytes )
 {
-  cudaMemset( this->m_PointerDevice, value, nBytes );
+  cmtkCheckCallCUDA( cudaMemset( this->m_PointerDevice, value, nBytes ) );
 }
 
 } // namespace cmtk
