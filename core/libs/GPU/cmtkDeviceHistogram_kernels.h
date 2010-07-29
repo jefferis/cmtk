@@ -31,6 +31,8 @@
 #ifndef __cmtkDeviceHistogram_kernels_h_included_
 #define __cmtkDeviceHistogram_kernels_h_included_
 
+#include <cmtkconfig.h>
+
 /** \addtogroup GPU */
 //@{
 

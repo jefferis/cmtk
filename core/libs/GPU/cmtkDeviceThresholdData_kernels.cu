@@ -28,18 +28,25 @@
 //
 */
 
-#ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels_included_
-#define __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels_included_
+#include "cmtkDeviceThresholdData_kernels.h"
 
-#include <cmtkconfig.h>
+#include "GPU/cmtkCUDA.h"
 
-/** \addtogroup GPU */
-//@{
+#include <cuda_runtime_api.h>
 
-/// Update output image using either additive or multiplicative bias field.
-void cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
-( float* output, float* input, const int dims0, const int dims1, const int dims2, const int degree, const int multiply, const int nargs, const float* weights, const float* corrections );
+__device__
+void
+cmtkDeviceThresholdDataKernel( float* dest, const int n, const float lowerThreshold, const float upperThreshold )
+{
+  for ( int i = threadIdx.x; i < n; i += blockDim.x )
+    {
+      dest[idx] = fmaxf( lowerThreshold, fminf( upperThreshold, dest[idx] ) );
+    }
+}
 
-//@}
-
-#endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels_included_
+void
+cmtkDeviceThresholdData( float* dest, const int n, const float lowerThreshold, const float upperThreshold )
+{
+  cmtkDeviceThresholdDataKernel<<<1,512>>>( dest, n, lowerThreshold, upperThreshold );
+  cmtkCheckLastErrorCUDA;
+}

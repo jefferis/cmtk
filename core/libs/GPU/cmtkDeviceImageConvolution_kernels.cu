@@ -115,7 +115,7 @@ cmtkDeviceImageConvolutionKernelZ( float* dest, int dims0, int dims1, int dims2,
 }
 
 void
-cmtkDeviceImageConvolution( const int* dims3, void* array, const int kernelLengthX, const float* kernelX, const int kernelLengthY, const float* kernelY, const int kernelLengthZ, const float* kernelZ )
+cmtkDeviceImageConvolution( float* dest, const int* dims3, void* array, const int kernelLengthX, const float* kernelX, const int kernelLengthY, const float* kernelY, const int kernelLengthZ, const float* kernelZ )
 {
   // Set texture parameters for fixed image indexed access
   texRef.addressMode[0] = cudaAddressModeClamp;
@@ -127,28 +127,41 @@ cmtkDeviceImageConvolution( const int* dims3, void* array, const int kernelLengt
   cmtkCheckCallCUDA( cudaBindTextureToArray( texRef, (struct cudaArray*) array, cudaCreateChannelDesc<float>() ) );
 
   const int nPixels = dims3[0] * dims3[1] * dims3[2];
-  cmtk::DeviceMemory<float>::SmartPtr temporary = cmtk::DeviceMemory<float>::Create( nPixels );
 
   cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceKernel, kernelX, kernelLengthX * sizeof( float ), 0, cudaMemcpyHostToDevice ) );
   
   dim3 threads( 32 );
   dim3 blocks( nPixels/32+1 );
 
-  cmtkDeviceImageConvolutionKernelX<<<threads,blocks>>>( temporary->Ptr(), dims3[0], dims3[1], dims3[2], kernelLengthX, (kernelLengthX-1)>>1 );
+  cmtkDeviceImageConvolutionKernelX<<<threads,blocks>>>( dest, dims3[0], dims3[1], dims3[2], kernelLengthX, (kernelLengthX-1)>>1 );
   cmtkCheckLastErrorCUDA;
 
-  cmtkCheckCallCUDA( cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, temporary->Ptr(), nPixels, cudaMemcpyDeviceToDevice ) );
+  cmtkCheckCallCUDA( cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, dest, nPixels, cudaMemcpyDeviceToDevice ) );
 
   cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceKernel, kernelY, kernelLengthY * sizeof( float ), 0, cudaMemcpyHostToDevice ) );
-  cmtkDeviceImageConvolutionKernelY<<<threads,blocks>>>( temporary->Ptr(), dims3[0], dims3[1], dims3[2], kernelLengthY, (kernelLengthY-1)>>1 );
+  cmtkDeviceImageConvolutionKernelY<<<threads,blocks>>>( dest, dims3[0], dims3[1], dims3[2], kernelLengthY, (kernelLengthY-1)>>1 );
   cmtkCheckLastErrorCUDA;
 
-  cmtkCheckCallCUDA( cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, temporary->Ptr(), nPixels, cudaMemcpyDeviceToDevice ) );
+  cmtkCheckCallCUDA( cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, dest, nPixels, cudaMemcpyDeviceToDevice ) );
 
   cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceKernel, kernelZ, kernelLengthZ * sizeof( float ), 0, cudaMemcpyHostToDevice ) );  
-  cmtkDeviceImageConvolutionKernelZ<<<threads,blocks>>>( temporary->Ptr(), dims3[0], dims3[1], dims3[2], kernelLengthZ, (kernelLengthZ-1)>>1 );
+  cmtkDeviceImageConvolutionKernelZ<<<threads,blocks>>>( dest, dims3[0], dims3[1], dims3[2], kernelLengthZ, (kernelLengthZ-1)>>1 );
   cmtkCheckLastErrorCUDA;
   
+  cmtkCheckCallCUDA( cudaUnbindTexture( texRef ) );
+}
+
+void
+cmtkDeviceImageConvolutionInPlace( const int* dims3, void* array, const int kernelLengthX, const float* kernelX, const int kernelLengthY, const float* kernelY, const int kernelLengthZ, const float* kernelZ )
+{
+  const int nPixels = dims3[0] * dims3[1] * dims3[2];
+  cmtk::DeviceMemory<float>::SmartPtr temporary = cmtk::DeviceMemory<float>::Create( nPixels );
+
+  // call out-of-place-place convolution
+
+  cmtkDeviceImageConvolution( temporary->Ptr(), dims3, array, kernelLengthX, kernelX, kernelLengthY, kernelY, kernelLengthZ, kernelZ );
+  
+  // copy back into original array
   cmtkCheckCallCUDA( cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, temporary->Ptr(), nPixels, cudaMemcpyDeviceToDevice ) );
   
   cmtkCheckCallCUDA( cudaUnbindTexture( texRef ) );

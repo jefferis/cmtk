@@ -71,8 +71,11 @@ public:
   /// Destructor: free array through CUDA.
   virtual ~DeviceArrayCUDA();
 
-  /// Copy to device.
+  /// Copy host linear memory to device.
   void CopyToDevice( const float* data );
+
+  /// Copy from linear device memory to device array.
+  void CopyOnDevice( const float* data );
 
   /// Get device array pointer.
   DeviceArrayPointer GetArrayOnDevice()

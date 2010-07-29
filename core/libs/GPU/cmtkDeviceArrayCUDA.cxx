@@ -64,3 +64,17 @@ cmtk::DeviceArrayCUDA
 
   cmtkCheckCallCUDA( cudaMemcpy3D( &copyParams ) );
 }
+
+void
+cmtk::DeviceArrayCUDA
+::CopyOnDevice( const float* data )
+{
+  cudaMemcpy3DParms copyParams = {0};
+  
+  copyParams.srcPtr   = make_cudaPitchedPtr( (void*)data, this->m_Dims[0]*sizeof(float), this->m_Dims[0], this->m_Dims[1] );  
+  copyParams.dstArray = this->m_DeviceArrayPtr;
+  copyParams.extent   = make_cudaExtent( this->m_Dims[0], this->m_Dims[1], this->m_Dims[2] );
+  copyParams.kind     = cudaMemcpyDeviceToDevice;
+
+  cmtkCheckCallCUDA( cudaMemcpy3D( &copyParams ) );
+}

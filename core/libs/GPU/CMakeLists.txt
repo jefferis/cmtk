@@ -35,6 +35,7 @@ SET(cmtkGPU_SRCS
   cmtkDeviceUniformVolumeArray.cxx
   cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.cxx
   cmtkImageSymmetryPlaneFunctionalDevice.cxx
+  cmtkSimpleLevelsetDevice.cxx
   )
 
 IF(CMTK_USE_CUDA)

@@ -28,18 +28,19 @@
 //
 */
 
-#ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels_included_
-#define __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels_included_
+#ifndef __cmtkDeviceThresholdData_kernels_h_included_
+#define __cmtkDeviceThresholdData_kernels_h_included_
 
 #include <cmtkconfig.h>
 
 /** \addtogroup GPU */
 //@{
 
-/// Update output image using either additive or multiplicative bias field.
-void cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
-( float* output, float* input, const int dims0, const int dims1, const int dims2, const int degree, const int multiply, const int nargs, const float* weights, const float* corrections );
+/** Threshold data on device.
+ */
+void
+cmtkDeviceThresholdData( float* dest, const int n, const float lowerThreshold, const float upperThreshold );
 
 //@}
 
-#endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels_included_
+#endif // #ifndef __cmtkDeviceThresholdData_kernels_h_included_
