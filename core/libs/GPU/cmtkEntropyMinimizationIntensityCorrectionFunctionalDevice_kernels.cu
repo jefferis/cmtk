@@ -46,7 +46,7 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel
     {
       const int x = offset % dims0;
       const int y = (offset / dims0) % dims1;
-      const int z = offset / (dims0 * dims1) ;
+      const int z = offset / (dims0 * dims1);
 
       const float X = 2.0f * (x-dims0/2) / dims0;
       const float Y = 2.0f * (y-dims1/2) / dims1;

@@ -44,20 +44,74 @@ __constant__ float deviceKernel[128];
 
 __global__
 void
-cmtkDeviceImageConvolutionKernelX( float* dest, int dims0, int dims1, int dims2, int kernelLength )
+cmtkDeviceImageConvolutionKernelX( float* dest, int dims0, int dims1, int dims2, int kernelLength, int kernelCenter )
 {
+  const int offs = threadIdx.x + blockDim.x * blockIdx.x;
+
+  const int x = offs % dims0;
+  const int y = (offs / dims0) % dims1;
+  const int z = offs / (dims0 * dims1);
+
+  float sum = 0, total = 0;
+  for ( int i = 0; i < kernelLength; ++i )
+    {
+      const int xx = x + i - kernelCenter;
+      
+      const float w = ( (xx>=0) && (xx<dims0) ) ? deviceKernel[i] : 0;
+      
+      sum += w * tex3D( texRef, xx, y, z );
+      total += w;
+    }
+  
+  dest[offs] = sum / total;
 }
 
 __global__
 void
-cmtkDeviceImageConvolutionKernelY( float* dest, int dims0, int dims1, int dims2, int kernelLength )
+cmtkDeviceImageConvolutionKernelY( float* dest, int dims0, int dims1, int dims2, int kernelLength, int kernelCenter )
 {
+  const int offs = threadIdx.x + blockDim.x * blockIdx.x;
+
+  const int x = offs % dims0;
+  const int y = (offs / dims0) % dims1;
+  const int z = offs / (dims0 * dims1);
+
+  float sum = 0, total = 0;
+  for ( int i = 0; i < kernelLength; ++i )
+    {
+      const int yy = y + i - kernelCenter;
+      
+      const float w = ( (yy>=0) && (yy<dims1) ) ? deviceKernel[i] : 0;
+      
+      sum += w * tex3D( texRef, x, yy, z );
+      total += w;
+    }
+  
+  dest[offs] = sum / total;
 }
 
 __global__
 void
-cmtkDeviceImageConvolutionKernelZ( float* dest, int dims0, int dims1, int dims2, int kernelLength )
+cmtkDeviceImageConvolutionKernelZ( float* dest, int dims0, int dims1, int dims2, int kernelLength, int kernelCenter )
 {
+  const int offs = threadIdx.x + blockDim.x * blockIdx.x;
+
+  const int x = offs % dims0;
+  const int y = (offs / dims0) % dims1;
+  const int z = offs / (dims0 * dims1);
+
+  float sum = 0, total = 0;
+  for ( int i = 0; i < kernelLength; ++i )
+    {
+      const int zz = z + i - kernelCenter;
+      
+      const float w = ( (zz>=0) && (zz<dims2) ) ? deviceKernel[i] : 0;
+      
+      sum += w * tex3D( texRef, x, y, zz );
+      total += w;
+    }
+  
+  dest[offs] = sum / total;
 }
 
 void
@@ -77,22 +131,22 @@ cmtkDeviceImageConvolution( const int* dims3, void* array, const int kernelLengt
 
   cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceKernel, kernelX, kernelLengthX * sizeof( float ), 0, cudaMemcpyHostToDevice ) );
   
-  dim3 threads;
-  dim3 blocks;
+  dim3 threads( 32 );
+  dim3 blocks( nPixels/32+1 );
 
-  cmtkDeviceImageConvolutionKernelX<<<threads,blocks>>>( temporary->Ptr(), dims3[0], dims3[1], dims3[2], kernelLengthX );
+  cmtkDeviceImageConvolutionKernelX<<<threads,blocks>>>( temporary->Ptr(), dims3[0], dims3[1], dims3[2], kernelLengthX, (kernelLengthX-1)>>1 );
   cmtkCheckLastErrorCUDA;
 
   cmtkCheckCallCUDA( cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, temporary->Ptr(), nPixels, cudaMemcpyDeviceToDevice ) );
 
   cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceKernel, kernelY, kernelLengthY * sizeof( float ), 0, cudaMemcpyHostToDevice ) );
-  cmtkDeviceImageConvolutionKernelY<<<threads,blocks>>>( temporary->Ptr(), dims3[0], dims3[1], dims3[2], kernelLengthY );
+  cmtkDeviceImageConvolutionKernelY<<<threads,blocks>>>( temporary->Ptr(), dims3[0], dims3[1], dims3[2], kernelLengthY, (kernelLengthY-1)>>1 );
   cmtkCheckLastErrorCUDA;
 
   cmtkCheckCallCUDA( cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, temporary->Ptr(), nPixels, cudaMemcpyDeviceToDevice ) );
 
   cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceKernel, kernelZ, kernelLengthZ * sizeof( float ), 0, cudaMemcpyHostToDevice ) );  
-  cmtkDeviceImageConvolutionKernelZ<<<threads,blocks>>>( temporary->Ptr(), dims3[0], dims3[1], dims3[2], kernelLengthZ );
+  cmtkDeviceImageConvolutionKernelZ<<<threads,blocks>>>( temporary->Ptr(), dims3[0], dims3[1], dims3[2], kernelLengthZ, (kernelLengthZ-1)>>1 );
   cmtkCheckLastErrorCUDA;
   
   cmtkCheckCallCUDA( cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, temporary->Ptr(), nPixels, cudaMemcpyDeviceToDevice ) );
