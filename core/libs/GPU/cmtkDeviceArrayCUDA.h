@@ -68,6 +68,9 @@ public:
   /// Exception for failed allocation.
   class bad_alloc : public std::bad_alloc {};
   
+  /// Constructor: allocate array through CUDA.
+  DeviceArrayCUDA( const FixedVector<3,int>& dims3 );
+
   /// Destructor: free array through CUDA.
   virtual ~DeviceArrayCUDA();
 
@@ -82,10 +85,6 @@ public:
   {
     return this->m_DeviceArrayPtr;
   }
-
-protected:
-  /// Constructor: allocate array through CUDA.
-  DeviceArrayCUDA( const FixedVector<3,int>& dims3 );
 
 private:
   /// Array dimensions.

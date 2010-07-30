@@ -69,6 +69,12 @@ public:
   /// Base class.
   typedef DeviceMemoryGPU Superclass;
 
+  /// Constructor: allocate memory on device through base class.
+  DeviceMemory( const size_t n, /**!< Number of items.*/ const size_t padToMultiple = 1 ) 
+    : DeviceMemoryGPU( n * sizeof( T ), padToMultiple * sizeof( T ) ),
+      m_NumberOfItems( n )
+  {}
+
   /// Create new object and allocate memory.
   static typename Self::SmartPtr Create( const size_t nItems, /**!< Allocate (at least) this many items of type T.*/ 
 					 const size_t padToMultiple = 1 /**!< Pad number of allocated elements to next multiple of this number.*/  )
@@ -131,12 +137,6 @@ public:
 private:
   /// Number of items allocated.
   size_t m_NumberOfItems;
-
-  /// Constructor: allocate memory on device through base class.
-  DeviceMemory( const size_t n, /**!< Number of items.*/ const size_t padToMultiple = 1 ) 
-    : DeviceMemoryGPU( n * sizeof( T ), padToMultiple * sizeof( T ) ),
-      m_NumberOfItems( n )
-  {}
 };
 
 //@}

@@ -65,6 +65,11 @@ public:
   /// Base class.
   typedef DeviceArrayGPU Superclass;
 
+  /// Constructor: allocate memory on device through base class.
+  DeviceArrayTemplate(  const FixedVector<3,int>& dims3 ) 
+    : DeviceArrayGPU( dims3 )
+  {}
+
   /// Create new object and allocate memory.
   static typename Self::SmartPtr Create( const FixedVector<3,int>& dims3 /**!< Array dimensions */ )
   {
@@ -79,12 +84,6 @@ public:
     newObject->CopyToDevice( initFrom );
     return typename Self::SmartPtr( newObject );
   }
-  
-private:
-  /// Constructor: allocate memory on device through base class.
-  DeviceArrayTemplate(  const FixedVector<3,int>& dims3 ) 
-    : DeviceArrayGPU( dims3 )
-  {}
 };
 
 #ifdef CMTK_USE_CUDA
