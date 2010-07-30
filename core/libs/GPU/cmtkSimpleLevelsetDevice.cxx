@@ -70,7 +70,7 @@ cmtk::SimpleLevelsetDevice
     {
     Progress::SetProgress( it );
 
-    cmtkDeviceImageConvolution( temporary->Ptr(), this->m_Volume->GetDims().begin(), deviceLevelset->GetDeviceArrayPtr()->GetArrayOnDevice(), kernelX.size(), &kernelX[0], kernelY.size(), &kernelY[0], kernelZ.size(), &kernelZ[0] );
+    DeviceImageConvolution( temporary->Ptr(), this->m_Volume->GetDims().begin(), deviceLevelset->GetDeviceArrayPtr()->GetArrayOnDevice(), kernelX.size(), &kernelX[0], kernelY.size(), &kernelY[0], kernelZ.size(), &kernelZ[0] );
     
     float insideSum, outsideSum;
     SimpleLevelsetDeviceUpdateInsideOutside( temporary->Ptr(), deviceVolume->GetDataOnDevice().Ptr(), numberOfPixels, &insideSum, &outsideSum, &nInside );
