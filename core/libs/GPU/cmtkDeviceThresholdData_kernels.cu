@@ -45,7 +45,7 @@ cmtkDeviceThresholdDataKernel( float* dest, const int n, const float lowerThresh
 }
 
 void
-cmtkDeviceThresholdData( float* dest, const int n, const float lowerThreshold, const float upperThreshold )
+cmtk::DeviceThresholdData( float* dest, const int n, const float lowerThreshold, const float upperThreshold )
 {
   cmtkDeviceThresholdDataKernel<<<1,512>>>( dest, n, lowerThreshold, upperThreshold );
   cmtkCheckLastErrorCUDA;

@@ -33,13 +33,19 @@
 
 #include <cmtkconfig.h>
 
+namespace
+cmtk
+{
+
 /** \addtogroup GPU */
 //@{
 
 /** Threshold data on device.
  */
 void
-cmtkDeviceThresholdData( float* dest, const int n, const float lowerThreshold, const float upperThreshold );
+DeviceThresholdData( float* dest, const int n, const float lowerThreshold, const float upperThreshold );
+
+} // namespace cmtk
 
 //@}
 
