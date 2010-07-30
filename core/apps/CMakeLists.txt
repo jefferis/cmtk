@@ -46,6 +46,7 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
   
   IF(CMTK_USE_CUDA)
     SET(CUDA_APPS 
+      levelset_cuda
       mrbias_cuda
       symplx_cuda)
   ENDIF(CMTK_USE_CUDA)
