@@ -30,7 +30,7 @@
 
 #include "cmtkSimpleLevelsetDevice.h"
 
-#include "Base/cmtkFilterMask.h"
+#include "Base/cmtkGaussianKernel.h"
 #include "Base/cmtkUnits.h"
 
 #include "System/cmtkProgress.h"
@@ -48,13 +48,12 @@ void
 cmtk::SimpleLevelsetDevice
 ::Evolve( const int numberOfIterations, const bool forceIterations )
 {
-//  const double normFactor = 1.0/(sqrt(2*M_PI) * sigma);
-//  for ( size_t i = 0; i < radius; ++i )
-//    {
-//    this->m_HistogramKernel[idx][i] = cmtk::ScaleHistogramValueTrait<HistogramBinType>::Scale( normFactor * exp( -MathUtil::Square( 1.0 * i / sigma ) / 2 ) );
-//    }
+  FixedVector< 3, std::vector<float> > kernels;
 
-  std::vector<float> kernelX, kernelY, kernelZ;
+  for ( int dim = 0; dim < 3; ++dim )
+    {
+    kernels[dim] = GaussianKernel<float>::GetSymmetricKernel( Units::GaussianSigma( this->m_FilterSigma / this->m_Volume->Deltas()[dim] ), 0.01 /*maxError*/ );
+    }
 
   const size_t numberOfPixels = this->m_Levelset->GetNumberOfPixels();
 
@@ -70,7 +69,8 @@ cmtk::SimpleLevelsetDevice
     {
     Progress::SetProgress( it );
 
-    DeviceImageConvolution( temporary->Ptr(), this->m_Volume->GetDims().begin(), deviceLevelset->GetDeviceArrayPtr()->GetArrayOnDevice(), kernelX.size(), &kernelX[0], kernelY.size(), &kernelY[0], kernelZ.size(), &kernelZ[0] );
+    DeviceImageConvolution( temporary->Ptr(), this->m_Volume->GetDims().begin(), deviceLevelset->GetDeviceArrayPtr()->GetArrayOnDevice(), 
+			    kernels[0].size(), &kernels[0][0], kernels[1].size(), &kernels[1][0], kernels[2].size(), &kernels[2][0] );
     
     float insideSum, outsideSum;
     SimpleLevelsetDeviceUpdateInsideOutside( temporary->Ptr(), deviceVolume->GetDataOnDevice().Ptr(), numberOfPixels, &insideSum, &outsideSum, &nInside );
