@@ -69,6 +69,22 @@ public:
     return kernel;
   }
 
+  /// Create half kernel, starting with center element.
+  static std::vector<TFloat> GetHalfKernel( const Units::GaussianSigma& sigma /**!< Sigma parameter (standard deviation) of the kernel */, 
+					    const TFloat maxError = 1e-5 /**!< Maximum approximation error: the kernel radius is computed so that truncated elements are below this value */ )
+  {
+    const double normFactor = 1.0/(sqrt(2*M_PI) * sigma.Value());
+    const size_t radius = Self::GetRadius( sigma, normFactor, maxError );
+    
+    std::vector<TFloat> kernel( radius + 1 );
+    for ( size_t i = 0; i <= radius; ++i )
+      {
+      kernel[i] = normFactor * exp( -MathUtil::Square( 1.0 * i / sigma.Value() ) / 2 );
+      }
+    
+    return kernel;
+  }
+
 private:
   /// Compute kernel radius based on maximum approximation error and normalization factor.
   static TFloat GetRadius(  const Units::GaussianSigma& sigma, const TFloat normFactor, const TFloat maxError )
