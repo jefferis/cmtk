@@ -129,7 +129,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul
       parameters[i] = static_cast<float>( this->m_CoefficientsMul[i] );
       corrections[i] = static_cast<float>( this->m_AddCorrectionMul[i] );
       }
-    cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( output, input, dims0, dims1, dims2, NOrderMul, 1 /*multiply*/, Self::PolynomialTypeMul::NumberOfMonomials, &parameters[0], &corrections[0] );
+    EntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( output, input, dims0, dims1, dims2, NOrderMul, 1 /*multiply*/, Self::PolynomialTypeMul::NumberOfMonomials, &parameters[0], &corrections[0] );
     input = output; // if additive bias also, apply to output of multiplicative stage
     }
 
@@ -141,7 +141,7 @@ cmtk::EntropyMinimizationIntensityCorrectionFunctionalDevice<NOrderAdd,NOrderMul
       parameters[i] = static_cast<float>( this->m_CoefficientsAdd[i] );
       corrections[i] = static_cast<float>( this->m_AddCorrectionAdd[i] );
       }
-    cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( output, input, dims0, dims1, dims2, NOrderAdd, 0 /*multiply*/, Self::PolynomialTypeAdd::NumberOfMonomials, &parameters[0], &corrections[0] );
+    EntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage( output, input, dims0, dims1, dims2, NOrderAdd, 0 /*multiply*/, Self::PolynomialTypeAdd::NumberOfMonomials, &parameters[0], &corrections[0] );
     }
 }
 

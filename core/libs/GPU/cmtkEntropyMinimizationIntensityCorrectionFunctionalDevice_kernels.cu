@@ -117,7 +117,7 @@ cmtkEntropyMinimizationIntensityCorrectionFunctionalUpdateOutputImageKernel
 }
 
 void
-cmtkEntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
+cmtk::EntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
 ( float* output, float* input, const int dims0, const int dims1, const int dims2, const int degree, const int multiply, const int nargs, const float* weights, const float* corrections )
 { 
   cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceWeights, weights, nargs * sizeof( *weights ), 0, cudaMemcpyHostToDevice ) );

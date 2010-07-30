@@ -46,6 +46,7 @@ IF(CMTK_USE_CUDA)
     cmtkDeviceArrayCUDA.cxx
     cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.cu
     cmtkImageSymmetryPlaneFunctionalDevice_kernels.cu
+    cmtkSimpleLevelsetDevice_kernels.cu
     )
 
   CUDA_ADD_LIBRARY(cmtkGPU ${cmtkGPU_SRCS_CUDA} ${cmtkGPU_SRCS})

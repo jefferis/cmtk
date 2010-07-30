@@ -36,9 +36,13 @@
 #include "System/cmtkProgress.h"
 
 #include "GPU/cmtkDeviceMemory.h"
+#include "GPU/cmtkDeviceUniformVolume.h"
 #include "GPU/cmtkDeviceUniformVolumeArray.h"
 #include "GPU/cmtkDeviceImageConvolution_kernels.h"
 #include "GPU/cmtkDeviceThresholdData_kernels.h"
+#include "GPU/cmtkSimpleLevelsetDevice_kernels.h"
+
+#include <vector>
 
 void
 cmtk::SimpleLevelsetDevice
@@ -50,26 +54,27 @@ cmtk::SimpleLevelsetDevice
 //    this->m_HistogramKernel[idx][i] = cmtk::ScaleHistogramValueTrait<HistogramBinType>::Scale( normFactor * exp( -MathUtil::Square( 1.0 * i / sigma ) / 2 ) );
 //    }
 
+  std::vector<float> kernelX, kernelY, kernelZ;
+
   const size_t numberOfPixels = this->m_Levelset->GetNumberOfPixels();
 
-  DeviceUniformVolumeArray::SmartPtr deviceVolume = DeviceUniformVolumeArray::Create( *(this->m_Volume) );
+  DeviceUniformVolume::SmartPtr deviceVolume = DeviceUniformVolume::Create( *(this->m_Volume) );
   DeviceUniformVolumeArray::SmartPtr deviceLevelset = DeviceUniformVolumeArray::Create( *(this->m_Levelset) );
   
   DeviceMemory<float>::SmartPtr temporary = DeviceMemory<float>::Create( numberOfPixels );
 
-  size_t nInsideOld = 0, nInside = 1;
+  int nInsideOld = 0, nInside = 1;
 
   Progress::Begin( 0, numberOfIterations, 1, "Levelset Evolution" );
   for ( int it = 0; (it < numberOfIterations) && ((nInside!=nInsideOld) || forceIterations); ++it )
     {
     Progress::SetProgress( it );
 
-//    cmtkDeviceImageConvolutionInPlace();
-
-//    cmtkSimpleLevelsetDeviceStage1();
-//    cmtkSimpleLevelsetDeviceStage2();
-
-    cmtkDeviceThresholdData( temporary->Ptr(), numberOfPixels, -this->m_LevelsetThreshold, this->m_LevelsetThreshold );
+    cmtkDeviceImageConvolution( temporary->Ptr(), this->m_Volume->GetDims().begin(), deviceLevelset->GetDeviceArrayPtr()->GetArrayOnDevice(), kernelX.size(), &kernelX[0], kernelY.size(), &kernelY[0], kernelZ.size(), &kernelZ[0] );
+    
+    float insideSum, outsideSum;
+    SimpleLevelsetDeviceUpdateInsideOutside( temporary->Ptr(), deviceVolume->GetDataOnDevice().Ptr(), numberOfPixels, &insideSum, &outsideSum, &nInside );
+    SimpleLevelsetDeviceUpdateLevelset( temporary->Ptr(), deviceVolume->GetDataOnDevice().Ptr(), numberOfPixels, insideSum / nInside, outsideSum / (numberOfPixels-nInside), this->m_TimeDelta, this->m_LevelsetThreshold );
     }
 
   temporary->CopyToHost( this->m_Levelset->GetData()->GetDataPtr(), numberOfPixels );

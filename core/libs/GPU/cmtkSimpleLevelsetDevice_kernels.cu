@@ -28,24 +28,16 @@
 //
 */
 
-#ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels_included_
-#define __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels_included_
+#include "cmtkSimpleLevelsetDevice_kernels.h"
 
-#include <cmtkconfig.h>
+#include "GPU/cmtkCUDA.h"
 
-/** \addtogroup GPU */
-//@{
-
-namespace
-cmtk
+void
+cmtk::SimpleLevelsetDeviceUpdateInsideOutside( float* levelset, float* volume, const int nPixels, float* insideSum, float* outsideSum, int* nInside )
 {
+}
 
-/// Update output image using either additive or multiplicative bias field.
-void EntropyMinimizationIntensityCorrectionFunctionalDeviceUpdateOutputImage
-( float* output, float* input, const int dims0, const int dims1, const int dims2, const int degree, const int multiply, const int nargs, const float* weights, const float* corrections );
-
-} // namespace cmtk
-
-//@}
-
-#endif // #ifndef __cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels_included_
+void
+cmtk::SimpleLevelsetDeviceUpdateLevelset( float* levelset, float* volume, const int nPixels, const float mInside, const float mOutside, const float timeDelta, const float levelsetThreshold )
+{
+}

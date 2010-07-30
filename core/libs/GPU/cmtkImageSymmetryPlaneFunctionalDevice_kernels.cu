@@ -105,7 +105,7 @@ void cmtkImageSymmetryPlaneFunctionalDeviceConsolidateMSDKernel( float* squares,
 }
 
 float
-cmtkImageSymmetryPlaneFunctionalDeviceEvaluateMSD( const int* dims3, void* array, const float matrix[4][4] )
+cmtk::ImageSymmetryPlaneFunctionalDeviceEvaluateMSD( const int* dims3, void* array, const float matrix[4][4] )
 {
   cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceMatrix, matrix, 16 * sizeof( float ), 0, cudaMemcpyHostToDevice ) );
 
