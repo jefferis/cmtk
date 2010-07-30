@@ -33,6 +33,10 @@
 
 #include <cmtkconfig.h>
 
+namespace
+cmtk
+{
+
 /** \addtogroup GPU */
 //@{
 
@@ -41,13 +45,15 @@
  * given target memory, the input array's content is destroyed in the process.
  */
 void
-cmtkDeviceImageConvolution( float* dest, const int* dims3, void* array, const int kernelLengthX, const float* kernelX, const int kernelLengthY, const float* kernelY, const int kernelLengthZ, const float* kernelZ );
+DeviceImageConvolution( float* dest, const int* dims3, void* array, const int kernelLengthX, const float* kernelX, const int kernelLengthY, const float* kernelY, const int kernelLengthZ, const float* kernelZ );
 
 /** In-place convolution of a 3D image (CUDA array) with a separable 3D kernel.
  */
 void
-cmtkDeviceImageConvolutionInPlace( const int* dims3, void* array, const int kernelLengthX, const float* kernelX, const int kernelLengthY, const float* kernelY, const int kernelLengthZ, const float* kernelZ );
+DeviceImageConvolutionInPlace( const int* dims3, void* array, const int kernelLengthX, const float* kernelX, const int kernelLengthY, const float* kernelY, const int kernelLengthZ, const float* kernelZ );
 
 //@}
+
+} // namespace cmtk
 
 #endif // #ifndef __cmtkDeviceImageConvolution_kernels_h_included_

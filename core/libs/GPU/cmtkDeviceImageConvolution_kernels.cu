@@ -115,7 +115,7 @@ cmtkDeviceImageConvolutionKernelZ( float* dest, int dims0, int dims1, int dims2,
 }
 
 void
-cmtkDeviceImageConvolution( float* dest, const int* dims3, void* array, const int kernelLengthX, const float* kernelX, const int kernelLengthY, const float* kernelY, const int kernelLengthZ, const float* kernelZ )
+cmtk::DeviceImageConvolution( float* dest, const int* dims3, void* array, const int kernelLengthX, const float* kernelX, const int kernelLengthY, const float* kernelY, const int kernelLengthZ, const float* kernelZ )
 {
   // Set texture parameters for fixed image indexed access
   texRef.addressMode[0] = cudaAddressModeClamp;
@@ -152,7 +152,7 @@ cmtkDeviceImageConvolution( float* dest, const int* dims3, void* array, const in
 }
 
 void
-cmtkDeviceImageConvolutionInPlace( const int* dims3, void* array, const int kernelLengthX, const float* kernelX, const int kernelLengthY, const float* kernelY, const int kernelLengthZ, const float* kernelZ )
+cmtk::DeviceImageConvolutionInPlace( const int* dims3, void* array, const int kernelLengthX, const float* kernelX, const int kernelLengthY, const float* kernelY, const int kernelLengthZ, const float* kernelZ )
 {
   const int nPixels = dims3[0] * dims3[1] * dims3[2];
   cmtk::DeviceMemory<float>::SmartPtr temporary = cmtk::DeviceMemory<float>::Create( nPixels );
