@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -77,7 +78,8 @@ public:
   Console& FormatText( const std::string& text, //!< The text to format with line breaks.
 		       const size_t margin = 0, //!< Left margin: this many space characters are printed at the beginning of each line.
 		       const size_t width = 0, //<! Line width including margin. Default: determine based on terminal width, or default to 80 if that fails.
-		       const int firstLine = 0 ); //!< Relative indent of first line, i.e., firstLine = -margin means no indentation of first line.
+		       const int firstLine = 0 //!< Relative indent of first line, i.e., firstLine = -margin means no indentation of first line.
+    );
 
   /// Formatted output.
   void printf ( const char* format, ... );
