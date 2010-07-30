@@ -127,12 +127,14 @@ public:
   /// Create initial approximation using isotropic volume injection.
   void VolumeInjectionIsotropic
   ( const Types::Coordinate kernelSigma, //!< Gaussian kernel sigma (standard deviation) parameter
-    const Types::Coordinate kernelRadius ); //!< Gaussian kernel cut-off radius.
+    const Types::Coordinate kernelRadius //!< Gaussian kernel cut-off radius.
+    );
 
   /// Create initial approximation using anisotropic volume injection.
   void VolumeInjectionAnisotropic
   ( const Types::Coordinate kernelSigmaFactor, //!< Gaussian kernel sigma (standard deviation) factor (multiple of per-dimension pass image spacing)
-    const Types::Coordinate kernelRadiusFactor ); //!< Gaussian kernel cut-off radius factor (multiple of per-dimension pass image spacing)
+    const Types::Coordinate kernelRadiusFactor //!< Gaussian kernel cut-off radius factor (multiple of per-dimension pass image spacing)
+    );
 
   /// Returns the corrected image.
   UniformVolume::SmartPtr& GetCorrectedImage();
