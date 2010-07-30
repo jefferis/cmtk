@@ -38,9 +38,6 @@ namespace
 cmtk 
 {
 
-/** \addtogroup Registration */
-//@{
-
 template <class TInterpolator>
 void
 InverseInterpolationVolumeReconstruction<TInterpolator>

@@ -41,9 +41,6 @@ namespace
 cmtk
 {
 
-/** \addtogroup Registration */
-//@{
-
 InverseInterpolationVolumeReconstructionBase
 ::InverseInterpolationVolumeReconstructionBase( const UniformVolume* originalImage, const int interleaveFactor, const int interleaveAxis )
   : VolumeInjectionReconstruction( originalImage, interleaveFactor, interleaveAxis ),
