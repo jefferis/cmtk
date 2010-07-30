@@ -76,8 +76,12 @@ public:
 		       const bool forceIterations = false /**!< If this is set, evolution continues until maximum iteration count is reached, even when convergence is detected */,
 		       const bool verbose = false /**!< Verbose flag */ );
 
-  /// Return levelset, optionally converting to a binarized byte pixel representation.
-  UniformVolume::SmartPtr& GetLevelset( const bool binarize = false, const float threshold = 0.5 );
+  /** Return levelset, optionally converting to a binarized byte pixel representation.
+   *\warning If the levelset is retrieved with the "binarize" flag set, then the
+   *  levelset stored in this object will remain binarized after the call and
+   *  should be re-initialized before calling "Evolve" again.
+   */
+  UniformVolume::SmartPtr& GetLevelset( const bool binarize = false, /**!< If set, levelset is binarized and converted to byte data */ const float threshold = 0.5 /**!< Threshold for optional binarization */ );
 
 protected:
   /// The volume to compute a levelset segmentation for.
