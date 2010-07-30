@@ -49,6 +49,15 @@ class SimpleLevelsetDevice
   : public SimpleLevelset
 {
 public:
+  /// This class.
+  typedef SimpleLevelsetDevice Self;
+
+  /// Parent class.
+  typedef SimpleLevelset Superclass;
+
+  /// Constructor.
+  SimpleLevelsetDevice( UniformVolume::SmartConstPtr& volume ) : Superclass( volume ) {}
+
   /// Levelset evolution on GPU.
   virtual void Evolve( const int numberOfIterations /**!< Number of iterations */, 
 		       const bool forceIterations = false /**!< If this is set, evolution continues until maximum iteration count is reached, even when convergence is detected */ );
