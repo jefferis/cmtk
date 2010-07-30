@@ -34,6 +34,7 @@
 
 #include "GPU/cmtkCUDA.h"
 #include "GPU/cmtkDeviceMemory.h"
+#include "GPU/cmtkSumReduction_kernel.h"
 
 #include <cuda_runtime_api.h>
 
@@ -85,25 +86,6 @@ cmtkImageSymmetryPlaneFunctionalDeviceEvaluateMSDKernel( float* squares, const i
   squares[idx] = sq;
 }
 
-__global__
-void cmtkImageSymmetryPlaneFunctionalDeviceConsolidateMSDKernel( float* squares, const int n )
-{
-  const int tx = threadIdx.x;
-
-  for ( int i = tx + blockDim.x; i < n; i += blockDim.x )
-    {
-      squares[tx] += squares[i];
-    }
-
-  __syncthreads();
-
-  if ( tx == 0 )
-    {
-      for ( int i = 1; i < blockDim.x; ++i )
-	squares[0] += squares[i];
-    }
-}
-
 float
 cmtk::ImageSymmetryPlaneFunctionalDeviceEvaluateMSD( const int* dims3, void* array, const float matrix[4][4] )
 {
@@ -132,19 +114,13 @@ cmtk::ImageSymmetryPlaneFunctionalDeviceEvaluateMSD( const int* dims3, void* arr
   dim3 dimBlock( 16, 16 );
 
   const int nPartials = dimBlock.x * dimBlock.y * dimBlock.z * dims3[2];
-  cmtk::DeviceMemory<float>::SmartPtr partialSums = cmtk::DeviceMemory<float>::Create( nPartials );
-
-  cmtkImageSymmetryPlaneFunctionalDeviceEvaluateMSDKernel<<<dims3[2],dimBlock>>>( partialSums->Ptr(), dims3[0], dims3[1], dims3[2] );
+  cmtk::DeviceMemory<float> partialSums( nPartials );
+  
+  cmtkImageSymmetryPlaneFunctionalDeviceEvaluateMSDKernel<<<dims3[2],dimBlock>>>( partialSums.Ptr(), dims3[0], dims3[1], dims3[2] );
   cmtkCheckLastErrorCUDA;
-
-  cmtkImageSymmetryPlaneFunctionalDeviceConsolidateMSDKernel<<<1,512>>>( partialSums->Ptr(), nPartials );
-  cmtkCheckLastErrorCUDA;
-
+  
   cmtkCheckCallCUDA( cudaUnbindTexture( texRefMov ) );
   cmtkCheckCallCUDA( cudaUnbindTexture( texRefFix ) );
 
-  float result;
-  partialSums->CopyToHost( &result, 1 );
-
-  return result / dims3[0]*dims3[1]*dims3[2];
+  return cmtk::SumReduction( partialSums.Ptr(), nPartials ) / dims3[0]*dims3[1]*dims3[2];
 }

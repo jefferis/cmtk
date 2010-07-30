@@ -52,6 +52,7 @@ void
 SimpleLevelsetDeviceUpdateLevelset(  float* levelset /**!< Input: current levelset */, float* volume /**!< Input: image data */, const int nPixels /**!< Input: number of pixels */,
 				     const float mInside /**!< Input: mean value of data in the "inside" region */, 
 				     const float mOutside /**!< Input: mean value of data in the "outside" region */, 
+				     const float ratioInOut /**!< Input: ratio of inside and outside pixel counts. */,
 				     const float timeDelta /**!< Input: levelset evolution time constant */,
 				     const float levelsetThreshold /**!< Input: levelset threshold */ );
 } // namespace cmtk

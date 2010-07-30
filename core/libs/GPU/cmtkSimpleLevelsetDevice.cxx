@@ -74,7 +74,9 @@ cmtk::SimpleLevelsetDevice
     
     float insideSum, outsideSum;
     SimpleLevelsetDeviceUpdateInsideOutside( temporary->Ptr(), deviceVolume->GetDataOnDevice().Ptr(), numberOfPixels, &insideSum, &outsideSum, &nInside );
-    SimpleLevelsetDeviceUpdateLevelset( temporary->Ptr(), deviceVolume->GetDataOnDevice().Ptr(), numberOfPixels, insideSum / nInside, outsideSum / (numberOfPixels-nInside), this->m_TimeDelta, this->m_LevelsetThreshold );
+
+    const int nOutside = numberOfPixels - nInside;
+    SimpleLevelsetDeviceUpdateLevelset( temporary->Ptr(), deviceVolume->GetDataOnDevice().Ptr(), numberOfPixels, insideSum / nInside, outsideSum / nOutside, 1.0 * nInside / nOutside, this->m_TimeDelta, this->m_LevelsetThreshold );
     }
 
   temporary->CopyToHost( this->m_Levelset->GetData()->GetDataPtr(), numberOfPixels );
