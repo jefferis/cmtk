@@ -159,7 +159,7 @@ cmtk::DeviceImageConvolutionInPlace( const int* dims3, void* array, const int ke
 
   // call out-of-place-place convolution
 
-  cmtkDeviceImageConvolution( temporary->Ptr(), dims3, array, kernelLengthX, kernelX, kernelLengthY, kernelY, kernelLengthZ, kernelZ );
+  DeviceImageConvolution( temporary->Ptr(), dims3, array, kernelLengthX, kernelX, kernelLengthY, kernelY, kernelLengthZ, kernelZ );
   
   // copy back into original array
   cmtkCheckCallCUDA( cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, temporary->Ptr(), nPixels, cudaMemcpyDeviceToDevice ) );
