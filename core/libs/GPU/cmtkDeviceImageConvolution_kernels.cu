@@ -130,8 +130,8 @@ cmtk::DeviceImageConvolution( float* dest, const int* dims3, void* array, const 
 
   cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceKernel, kernelX, kernelLengthX * sizeof( float ), 0, cudaMemcpyHostToDevice ) );
   
-  dim3 threads( 32 );
-  dim3 blocks( nPixels/32+1 );
+  dim3 threads( 512 );
+  dim3 blocks( nPixels/512+1 );
 
   cmtkDeviceImageConvolutionKernelX<<<threads,blocks>>>( dest, dims3[0], dims3[1], dims3[2], kernelLengthX, (kernelLengthX-1)>>1 );
   cmtkCheckLastErrorCUDA;
