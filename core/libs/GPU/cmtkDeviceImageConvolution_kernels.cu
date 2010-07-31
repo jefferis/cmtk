@@ -136,13 +136,19 @@ cmtk::DeviceImageConvolution( float* dest, const int* dims3, void* array, const 
   cmtkDeviceImageConvolutionKernelX<<<threads,blocks>>>( dest, dims3[0], dims3[1], dims3[2], kernelLengthX, (kernelLengthX-1)>>1 );
   cmtkCheckLastErrorCUDA;
 
-  cmtkCheckCallCUDA( cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, dest, nPixels, cudaMemcpyDeviceToDevice ) );
+  cudaMemcpy3DParms copyParams = {0};
+  copyParams.srcPtr   = make_cudaPitchedPtr( (void*)dest, dims3[0]*sizeof(float), dims3[0], dims3[1] );  
+  copyParams.dstArray = (struct cudaArray*) array;
+  copyParams.extent   = make_cudaExtent( dims3[0], dims3[1], dims3[2] );
+  copyParams.kind     = cudaMemcpyDeviceToDevice;
+
+  cmtkCheckCallCUDA( cudaMemcpy3D( &copyParams ) );
 
   cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceKernel, kernelY, kernelLengthY * sizeof( float ), 0, cudaMemcpyHostToDevice ) );
   cmtkDeviceImageConvolutionKernelY<<<threads,blocks>>>( dest, dims3[0], dims3[1], dims3[2], kernelLengthY, (kernelLengthY-1)>>1 );
   cmtkCheckLastErrorCUDA;
 
-  cmtkCheckCallCUDA( cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, dest, nPixels, cudaMemcpyDeviceToDevice ) );
+  cmtkCheckCallCUDA( cudaMemcpy3D( &copyParams ) );
 
   cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceKernel, kernelZ, kernelLengthZ * sizeof( float ), 0, cudaMemcpyHostToDevice ) );  
   cmtkDeviceImageConvolutionKernelZ<<<threads,blocks>>>( dest, dims3[0], dims3[1], dims3[2], kernelLengthZ, (kernelLengthZ-1)>>1 );
@@ -158,11 +164,16 @@ cmtk::DeviceImageConvolutionInPlace( const int* dims3, void* array, const int ke
   cmtk::DeviceMemory<float> temporary( nPixels );
   
   // call out-of-place-place convolution
-  
   DeviceImageConvolution( temporary.Ptr(), dims3, array, kernelLengthX, kernelX, kernelLengthY, kernelY, kernelLengthZ, kernelZ );
   
   // copy back into original array
-  cmtkCheckCallCUDA( cudaMemcpyToArray( (struct cudaArray*) array, 0, 0, temporary.Ptr(), nPixels, cudaMemcpyDeviceToDevice ) );
+  cudaMemcpy3DParms copyParams = {0};
+  copyParams.srcPtr   = make_cudaPitchedPtr( (void*)temporary.Ptr(), dims3[0]*sizeof(float), dims3[0], dims3[1] );  
+  copyParams.dstArray = (struct cudaArray*) array;
+  copyParams.extent   = make_cudaExtent( dims3[0], dims3[1], dims3[2] );
+  copyParams.kind     = cudaMemcpyDeviceToDevice;
+
+  cmtkCheckCallCUDA( cudaMemcpy3D( &copyParams ) );
   
   cmtkCheckCallCUDA( cudaUnbindTexture( texRef ) );
 }
