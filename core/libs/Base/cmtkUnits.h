@@ -84,11 +84,17 @@ public:
   /// Right-hand scalar multiplication.
   friend const T operator*( const T& lhs, const double rhs )
   {
-    return T( rhs * lhs.Value() );
+    return T( lhs.Value() * rhs );
+  }
+
+  /// Right-hand scalar division.
+  friend const T operator/( const T& lhs, const double rhs )
+  {
+    return T( lhs.Value() / rhs );
   }
 
   /// Addition.
-  friend const T operator*( const T& lhs, const T& rhs )
+  friend const T operator+( const T& lhs, const T& rhs )
   {
     return T( lhs.Value() + rhs.Value() );
   }
