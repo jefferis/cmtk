@@ -5,6 +5,17 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 1.4.1
 ===========================
 
+This is a bug fix and minor feature release.
+
+This release adds GPU-accelerated versions of two more tools: image symmetry
+plane computation ("symplx_cuda") and simple two-phase levelset segmentation
+("levelset_cuda"). The previously released "mrbias_cuda" tool was broken and
+is also fixed with this release.
+
+The entire library has been refactored to use relative paths for header file
+inclusion, which should reduce the file system scan operations and thus
+improve build times.
+
 For a complete list of changes and fixes, see the CHANGELOG file.
 
 CMTK has been built and tested on the following platforms:
