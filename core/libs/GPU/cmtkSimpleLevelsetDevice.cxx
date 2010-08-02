@@ -77,6 +77,8 @@ cmtk::SimpleLevelsetDevice
 
     const int nOutside = numberOfPixels - nInside;
     SimpleLevelsetDeviceUpdateLevelset( temporary->Ptr(), deviceVolume->GetDataOnDevice().Ptr(), numberOfPixels, insideSum / nInside, outsideSum / nOutside, 1.0 * nInside / nOutside, this->m_TimeDelta, this->m_LevelsetThreshold );
+
+    deviceLevelset->GetDeviceArrayPtr()->CopyOnDeviceToArray( temporary->Ptr() );
     }
 
   temporary->CopyToHost( this->m_Levelset->GetData()->GetDataPtr(), numberOfPixels );
