@@ -41,8 +41,8 @@ namespace cmtk
 namespace apps
 {
 namespace levelset_cuda
-#endif
 {
+#endif
 int
 main( const int argc, const char* argv[] )
 {
