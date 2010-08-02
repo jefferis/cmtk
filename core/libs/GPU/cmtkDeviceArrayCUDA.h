@@ -78,7 +78,10 @@ public:
   void CopyToDevice( const float* data );
 
   /// Copy from linear device memory to device array.
-  void CopyOnDevice( const float* data );
+  void CopyOnDeviceToArray( const float* data );
+
+  /// Copy from device array to linear device memory.
+  void CopyOnDeviceToLinear( float* data );
 
   /// Get device array pointer.
   DeviceArrayPointer GetArrayOnDevice()
