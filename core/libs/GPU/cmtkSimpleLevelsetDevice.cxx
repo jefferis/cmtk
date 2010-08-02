@@ -52,7 +52,7 @@ cmtk::SimpleLevelsetDevice
 
   for ( int dim = 0; dim < 3; ++dim )
     {
-    kernels[dim] = GaussianKernel<float>::GetSymmetricKernel( Units::GaussianSigma( this->m_FilterSigma / this->m_Volume->Deltas()[dim] ), 0.01 /*maxError*/ );
+    kernels[dim] = GaussianKernel<float>::GetSymmetricKernel( this->m_FilterSigma / this->m_Volume->Deltas()[dim], 0.01 /*maxError*/ );
     }
 
   const size_t numberOfPixels = this->m_Levelset->GetNumberOfPixels();
