@@ -30,6 +30,7 @@
 //
 */
 
+// Define this to debug the MPI communication:
 //#define DEBUG_COMM
 
 #include "Registration/cmtkGroupwiseRegistrationFunctionalBase.h"
@@ -246,11 +247,8 @@ GroupwiseRegistrationFunctionalBase
   TypedArray::SmartPtr data;
   if ( this->m_GaussianSmoothImagesSigma > 0 )
     {
-    const Types::Coordinate gaussianSigma = this->m_GaussianSmoothImagesSigma * this->m_TemplateGrid->GetMinDelta();
-
-    UniformVolumeFilter filter( image );
-    data = filter.GetDataGaussFiltered( Units::GaussianSigma( gaussianSigma ) );
-
+    data = UniformVolumeFilter( image ).GetDataGaussFiltered( Units::GaussianSigma( this->m_GaussianSmoothImagesSigma * this->m_TemplateGrid->GetMinDelta() ) );
+    
     if ( this->m_FreeAndRereadImages )
       {
       image->SetData( TypedArray::SmartPtr::Null );
