@@ -33,6 +33,7 @@
 #include "cmtkUniformVolumeFilter.h"
 
 #include "Base/cmtkDataGridFilter.h"
+#include "Base/cmtkGaussianKernel.h"
 
 #include <vector>
 
@@ -44,39 +45,12 @@ cmtk
 //@{
 
 TypedArray::SmartPtr
-UniformVolumeFilter::GetDataGaussFiltered( const Types::Coordinate stdDev ) const
+UniformVolumeFilter::GetDataGaussFiltered( const Units::GaussianSigma& sigma ) const
 {
-  const Types::Coordinate stdDevPixelX = stdDev / this->m_UniformVolume->m_Delta[0];
-  const Types::Coordinate stdDevPixelY = stdDev / this->m_UniformVolume->m_Delta[1];
-  const Types::Coordinate stdDevPixelZ = stdDev / this->m_UniformVolume->m_Delta[2];
-
-  const unsigned int stdDevDiscreteX = static_cast<unsigned int>( ceil( stdDevPixelX ) );
-  const unsigned int stdDevDiscreteY = static_cast<unsigned int>( ceil( stdDevPixelY ) );
-  const unsigned int stdDevDiscreteZ = static_cast<unsigned int>( ceil( stdDevPixelZ ) );
-
-  const unsigned int filterLengthX = std::min<unsigned int>( this->m_UniformVolume->m_Dims[0], 3 * stdDevDiscreteX + 1 );
-  const unsigned int filterLengthY = std::min<unsigned int>( this->m_UniformVolume->m_Dims[1], 3 * stdDevDiscreteY + 1 );
-  const unsigned int filterLengthZ = std::min<unsigned int>( this->m_UniformVolume->m_Dims[2], 3 * stdDevDiscreteZ + 1 );
-
-  std::vector<Types::DataItem> filterX( filterLengthX );
-  for ( unsigned int x=0; x < filterLengthX; ++x ) 
-    {
-    filterX[x] = 1.0/(sqrt(2*M_PI) * stdDevPixelX) * exp( -MathUtil::Square( 1.0 * x / stdDevPixelX ) / 2 );
-    }
-  
-  std::vector<Types::DataItem> filterY( filterLengthY );
-  for ( unsigned int y=0; y < filterLengthY; ++y ) 
-    {
-    filterY[y] = 1.0/(sqrt(2*M_PI) * stdDevPixelY) * exp( -MathUtil::Square( 1.0 * y / stdDevPixelY ) / 2);
-    }
-  
-  std::vector<Types::DataItem> filterZ( filterLengthZ );
-  for ( unsigned int z=0; z < filterLengthZ; ++z ) 
-    {
-    filterZ[z] = 1.0/(sqrt(2*M_PI) * stdDevPixelZ) * exp( -MathUtil::Square( 1.0 * z / stdDevPixelZ ) / 2);
-    }
-  
-  return DataGridFilter::GetDataKernelFiltered( filterX, filterY, filterZ );
+  const Types::Coordinate maxError = 0.01;
+  return DataGridFilter::GetDataKernelFiltered( GaussianKernel<Types::Coordinate>::GetHalfKernel( Units::GaussianSigma( sigma.Value() / this->m_UniformVolume->Deltas()[0] ), maxError ),
+						GaussianKernel<Types::Coordinate>::GetHalfKernel( Units::GaussianSigma( sigma.Value() / this->m_UniformVolume->Deltas()[1] ), maxError ),
+						GaussianKernel<Types::Coordinate>::GetHalfKernel( Units::GaussianSigma( sigma.Value() / this->m_UniformVolume->Deltas()[2] ), maxError ) );
 }
 
 } // namespace cmtk

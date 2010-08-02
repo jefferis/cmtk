@@ -47,7 +47,7 @@ class ImageOperationGaussFilter
 {
 public:
   /// Constructor:
-  ImageOperationGaussFilter( const double sigma ) : m_Sigma( sigma ) {}
+  ImageOperationGaussFilter( const Units::GaussianSigma& sigma ) : m_Sigma( sigma ) {}
   
   /// Apply this operation to an image in place.
   virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
@@ -59,18 +59,18 @@ public:
   /// Create a new filter based on sigma parameter.
   static void NewSigma( const double sigma )
   {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationGaussFilter( sigma ) ) );
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationGaussFilter( Units::GaussianSigma( sigma ) ) ) );
   }
   
   /// Create a new filter based on full-width-at-half-maximum parameter.
   static void NewFWHM( const double fwhm )
   {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationGaussFilter( fwhm / 2.3548 ) ) );
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationGaussFilter( Units::GaussianFWHM( fwhm ) ) ) );
   }
   
 private:
   /// Kernel with specified by coefficient sigma.
-  double m_Sigma;
+  Units::GaussianSigma m_Sigma;
 };
 
 } // namespace cmtk

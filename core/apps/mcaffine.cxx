@@ -110,7 +110,7 @@ MakeDownsampled( const cmtk::UniformVolume::SmartPtr& image, const int downsampl
 
   if ( (smoothSigmaFactor > 0) && downsample )
     {
-    const cmtk::Types::Coordinate sigma = smoothSigmaFactor * downsample * image->GetMinDelta();
+    const cmtk::Units::GaussianSigma sigma( smoothSigmaFactor * downsample * image->GetMinDelta() );
     result->SetData( cmtk::UniformVolumeFilter( image ).GetDataGaussFiltered( sigma ) );
     }
   else

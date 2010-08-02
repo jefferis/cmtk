@@ -249,7 +249,7 @@ GroupwiseRegistrationFunctionalBase
     const Types::Coordinate gaussianSigma = this->m_GaussianSmoothImagesSigma * this->m_TemplateGrid->GetMinDelta();
 
     UniformVolumeFilter filter( image );
-    data = filter.GetDataGaussFiltered( gaussianSigma );
+    data = filter.GetDataGaussFiltered( Units::GaussianSigma( gaussianSigma ) );
 
     if ( this->m_FreeAndRereadImages )
       {

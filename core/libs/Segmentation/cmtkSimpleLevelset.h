@@ -34,6 +34,7 @@
 #include <cmtkconfig.h>
 
 #include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkUnits.h"
 
 namespace
 cmtk
@@ -51,7 +52,7 @@ public:
   SimpleLevelset( UniformVolume::SmartConstPtr& volume ) : m_Volume( volume ) {}
 
   /// Set filter sigma parameter.
-  void SetFilterSigma( const Types::Coordinate filterSigma )
+  void SetFilterSigma( const Units::GaussianSigma filterSigma )
   {
     this->m_FilterSigma = filterSigma;
   }
@@ -91,7 +92,7 @@ protected:
   UniformVolume::SmartPtr m_Levelset;
 
   /// Sigma parameter of the Gaussian filter kernel.
-  Types::Coordinate m_FilterSigma;
+  Units::GaussianSigma m_FilterSigma;
 
   /// Delta time constant.
   Types::Coordinate m_TimeDelta;

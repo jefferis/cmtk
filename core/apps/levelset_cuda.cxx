@@ -119,7 +119,7 @@ main( int argc, char* argv[] )
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( inFile, verbose ) );
 
   cmtk::SimpleLevelsetDevice levelset( volume );
-  levelset.SetFilterSigma( filterSigma );
+  levelset.SetFilterSigma( Units::GaussianSigma( filterSigma ) );
   levelset.SetTimeDelta( delta );
   levelset.SetLevelsetThreshold( levelsetThreshold );
 

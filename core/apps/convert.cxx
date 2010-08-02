@@ -36,6 +36,7 @@
 #include "System/cmtkConsole.h"
 #include "System/cmtkTimers.h"
 
+#include "Base/cmtkUnits.h"
 #include "Base/cmtkRegion.h"
 #include "Base/cmtkUniformVolume.h"
 #include "Base/cmtkDataGridMorphologicalOperators.h"
@@ -527,7 +528,7 @@ if ( Downsample )
     if ( Verbose )
       cmtk::StdErr.printf( "Gaussian filter with sigma = %f [mm].\n", GaussFilterSigma );
 
-    volume->SetData( cmtk::UniformVolumeFilter( volume ).GetDataGaussFiltered( GaussFilterSigma ) );
+    volume->SetData( cmtk::UniformVolumeFilter( volume ).GetDataGaussFiltered( cmtk::Units::GaussianSigma( GaussFilterSigma ) ) );
     }
   
   if ( ApplySobelFilter ) 

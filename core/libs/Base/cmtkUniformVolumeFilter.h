@@ -37,6 +37,7 @@
 
 #include "Base/cmtkDataGridFilter.h"
 #include "Base/cmtkUniformVolume.h"
+#include "Base/cmtkUnits.h"
 
 namespace
 cmtk
@@ -59,7 +60,7 @@ public:
   explicit UniformVolumeFilter( UniformVolume::SmartPtr volume ) : DataGridFilter( volume ), m_UniformVolume( volume ) {}
 
   /// Gaussian filter (using faster, separable filtering).
-  TypedArray::SmartPtr GetDataGaussFiltered( const Types::Coordinate stdDev ) const;
+  TypedArray::SmartPtr GetDataGaussFiltered( const Units::GaussianSigma& stdDev ) const;
 
 private:
   /// The UniformVolume object we're working on.
