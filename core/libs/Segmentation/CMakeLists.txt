@@ -38,6 +38,7 @@ SET(cmtkSegmentation_SRCS
   cmtkLabelCombinationVoting.cxx
   cmtkOverlapMeasures.cxx
   cmtkSimpleLevelset.cxx
+  cmtkSimpleLevelsetCommandLineBase.cxx
 )
 
 ADD_LIBRARY(cmtkSegmentation ${cmtkSegmentation_SRCS})
