@@ -92,7 +92,7 @@ private:
     if ( maxError >= normFactor ) // if normFactor is less than max error, then we really need no kernel at all
       return 0;
     else
-      return 1 + static_cast<size_t>( sqrt( -2.0 * log( maxError / normFactor ) ) * sigma.Value() );
+      return static_cast<size_t>( sqrt( -2.0 * log( maxError / normFactor ) ) * sigma.Value() );
   }
 };
 
