@@ -27,10 +27,6 @@ CMTK has been built and tested on the following platforms:
 - Windows XP, VisualStudio 9 (2008 Express Edition)
 - Windows XP, VisualStudio 10 (2010 Express Edition)
 - MacOS X, PowerPC, gcc 4.0.1
-- Solaris, x86_64, gcc 3.4.3
-- Solaris, x86_64, gcc 4.3.4
-- Solaris, i386, Sun C++ 5.10
-- Solaris, x86_64, Sun C++ 5.10
 
 
 ==========================================================================
