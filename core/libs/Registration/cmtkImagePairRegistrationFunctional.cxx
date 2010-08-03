@@ -80,11 +80,14 @@ const DataGrid::RegionType
 ImagePairRegistrationFunctional::GetReferenceGridRange
 ( const Vector3D& fromVOI, const Vector3D& toVOI )
 {
+  const FixedVector<3,int>& cropRegionFrom = this->m_ReferenceCropRegion.From();
+  const FixedVector<3,int>& cropRegionTo = this->m_ReferenceCropRegion.To();
+
   DataGrid::IndexType from, to;
   for ( int i = 0; i < 3; ++i )
     {
-    from[i] = std::max( this->m_ReferenceCropRegion.From()[i], static_cast<int>( fromVOI[i] * this->m_ReferenceInverseDelta[i] ) );
-    to[i] = 1+std::min( this->m_ReferenceCropRegion.To()[i]-1, 1+static_cast<int>( toVOI[i] * this->m_ReferenceInverseDelta[i] ) );
+    from[i] = std::min( cropRegionTo[i]-1, std::max( cropRegionFrom[i], static_cast<int>( fromVOI[i] * this->m_ReferenceInverseDelta[i] ) ) );
+    to[i] = 1+std::max( cropRegionFrom[i], std::min( cropRegionTo[i]-1, 1+static_cast<int>( toVOI[i] * this->m_ReferenceInverseDelta[i] ) ) );
     }
 
   return DataGrid::RegionType( from, to );
