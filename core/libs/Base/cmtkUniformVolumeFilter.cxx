@@ -45,9 +45,8 @@ cmtk
 //@{
 
 TypedArray::SmartPtr
-UniformVolumeFilter::GetDataGaussFiltered( const Units::GaussianSigma& sigma ) const
+UniformVolumeFilter::GetDataGaussFiltered( const Units::GaussianSigma& sigma, const Types::Coordinate maxError ) const
 {
-  const Types::Coordinate maxError = 0.01;
   return DataGridFilter::GetDataKernelFiltered( GaussianKernel<Types::DataItem>::GetHalfKernel( sigma / this->m_UniformVolume->Deltas()[0], maxError ),
 						GaussianKernel<Types::DataItem>::GetHalfKernel( sigma / this->m_UniformVolume->Deltas()[1], maxError ),
 						GaussianKernel<Types::DataItem>::GetHalfKernel( sigma / this->m_UniformVolume->Deltas()[2], maxError ) );
