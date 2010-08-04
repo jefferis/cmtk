@@ -34,8 +34,8 @@
 
 #include "Base/cmtkVolume.h"
 
-#include <cmath>
-#include <cstdio>
+#include <math.h>
+#include <stdio.h>
 
 namespace
 cmtk

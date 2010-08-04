@@ -48,7 +48,7 @@
 #  include <ieeefp.h>
 #endif
 
-#include <cmath>
+#include <math.h>
 
 namespace
 cmtk

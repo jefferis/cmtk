@@ -29,7 +29,7 @@
 //
 */
 
-#include <cmath>
+#include <math.h>
 #include <algorithm>
 
 #include "Base/cmtkTypedArray.h"

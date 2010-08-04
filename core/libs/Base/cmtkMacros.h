@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include <cstdlib>
-#include <cstring>
+#include <stdlib.h>
+#include <string.h>
 #include <vector>
 
 #include "Base/cmtkTypes.h"

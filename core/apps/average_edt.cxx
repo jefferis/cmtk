@@ -53,7 +53,7 @@
 
 #include "Registration/cmtkReformatVolume.h"
 
-#include <cmath>
+#include <math.h>
 #include <list>
 
 bool Verbose = false;

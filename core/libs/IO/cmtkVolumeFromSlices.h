@@ -46,7 +46,7 @@
 
 #include "IO/cmtkImageInfo.h"
 
-#include <cstdio>
+#include <stdio.h>
 
 /**@name Error bounds for various floating point situations.
  */

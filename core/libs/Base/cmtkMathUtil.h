@@ -48,8 +48,8 @@ typedef unsigned int uint32_t;
 
 #include <algorithm>
 #include <cfloat>
-#include <cmath>
-#include <cstdlib>
+#include <math.h>
+#include <stdlib.h>
 
 #ifndef M_PI
 #define M_PI            3.14159265358979323846

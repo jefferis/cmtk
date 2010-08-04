@@ -57,10 +57,10 @@
 #  include "Registration/cmtkImageXformDB.h"
 #endif
 
-#include <cstdlib>
-#include <cstdio>
-#include <cstring>
-#include <csignal>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <signal.h>
 
 #include <iostream>
 #include <algorithm>

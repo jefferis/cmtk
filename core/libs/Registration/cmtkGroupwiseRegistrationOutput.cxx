@@ -38,7 +38,7 @@
 #include "IO/cmtkClassStreamStudyList.h"
 #include "IO/cmtkVolumeIO.h"
 
-#include <climits>
+#include <limits.h>
 #include <vector>
 
 namespace

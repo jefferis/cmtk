@@ -52,9 +52,9 @@
 #  include <libgen.h>
 #endif
 
-#include <climits>
-#include <cmath>
-#include <cstdio>
+#include <limits.h>
+#include <math.h>
+#include <stdio.h>
 
 namespace
 cmtk

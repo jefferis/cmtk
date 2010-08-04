@@ -31,10 +31,10 @@
 
 #include "Pipeline/cmtkObject.h"
 
-#include <cstring>
+#include <string.h>
 // GJ replaced above with:
 #ifdef __APPLE__
-#  include <cstdlib>
+#  include <stdlib.h>
 #else
 #  include <malloc.h>
 #endif

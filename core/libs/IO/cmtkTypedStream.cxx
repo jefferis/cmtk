@@ -35,10 +35,10 @@
 #include "System/cmtkFileUtil.h"
 #include "System/cmtkConsole.h"
 
-#include <cstring>
-#include <cstdlib>
+#include <string.h>
+#include <stdlib.h>
 #include <cstdarg>
-#include <climits>
+#include <limits.h>
 
 #ifdef HAVE_MALLOC_H
 #  include <malloc.h>

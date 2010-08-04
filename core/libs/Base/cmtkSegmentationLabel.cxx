@@ -32,7 +32,7 @@
 
 #include "cmtkSegmentationLabel.h"
 
-#include <cstdio>
+#include <stdio.h>
 
 namespace cmtk
 {

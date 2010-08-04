@@ -32,7 +32,7 @@
 
 #include "cmtkDataGrid.h"
 
-#include <cstdlib>
+#include <stdlib.h>
 
 #include "System/cmtkConsole.h"
 #include "System/cmtkProgress.h"

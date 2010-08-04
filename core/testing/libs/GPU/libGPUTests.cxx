@@ -31,7 +31,7 @@
 */
 
 #include <iostream>
-#include <cstring>
+#include <string.h>
 
 #include "System/cmtkTestFunctionMap.h"
 

@@ -42,7 +42,7 @@
 #include "Registration/cmtkBestDirectionOptimizer.h"
 #include <GPU/cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.h>
 
-#include <cmath>
+#include <math.h>
 #include <vector>
 #include <algorithm>
 

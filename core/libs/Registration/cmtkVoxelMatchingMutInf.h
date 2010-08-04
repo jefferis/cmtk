@@ -39,7 +39,7 @@
 #include "Base/cmtkInterpolator.h"
 #include "System/cmtkSmartPtr.h"
 
-#include <cstdio>
+#include <stdio.h>
 #include <cassert>
 
 namespace

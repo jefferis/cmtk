@@ -38,8 +38,8 @@
 
 #include "System/cmtkConsole.h"
 
-#include <cstring>
-#include <cmath>
+#include <string.h>
+#include <math.h>
 #include <vector>
 
 namespace

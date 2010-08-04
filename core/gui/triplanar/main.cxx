@@ -41,7 +41,7 @@
 #include <qapplication.h>
 #include <QPlastiqueStyle>
 
-#include <cstring>
+#include <string.h>
 #include <list>
 #include <string>
 

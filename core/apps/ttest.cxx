@@ -43,9 +43,9 @@
 
 #include "IO/cmtkVolumeIO.h"
 
-#include <cstdio>
-#include <cstring>
-#include <cmath>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
 
 #include <iostream>
 #include <fstream>

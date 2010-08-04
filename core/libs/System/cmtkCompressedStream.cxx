@@ -35,10 +35,10 @@
 #include "System/cmtkConsole.h"
 #include "System/cmtkMemory.h"
 
-#include <cstdlib>
-#include <cstring>
-#include <cstdio>
-#include <climits>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <limits.h>
 #include <errno.h>
 
 #ifdef HAVE_SYS_TYPES_H

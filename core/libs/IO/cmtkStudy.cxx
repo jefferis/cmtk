@@ -37,7 +37,7 @@
 #include "IO/cmtkClassStream.h"
 
 #include <string>
-#include <climits>
+#include <limits.h>
 
 namespace
 cmtk

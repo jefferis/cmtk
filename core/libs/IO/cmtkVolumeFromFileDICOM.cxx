@@ -49,8 +49,8 @@
 #endif
 
 #include <memory>
-#include <cstring>
-#include <cstdio>
+#include <string.h>
+#include <stdio.h>
 #include <ctime>
 
 namespace

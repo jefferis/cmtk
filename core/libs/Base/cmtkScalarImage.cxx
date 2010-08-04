@@ -38,9 +38,9 @@
 
 #include "System/cmtkException.h"
 
-#include <cstdlib>
+#include <stdlib.h>
 #include <cassert>
-#include <cmath>
+#include <math.h>
 
 namespace
 cmtk

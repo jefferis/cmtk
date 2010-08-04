@@ -74,8 +74,8 @@
 #  include <direct.h>
 #endif
 
-#include <cstdio>
-#include <cstring>
+#include <stdio.h>
+#include <string.h>
 #include <iostream>
 
 namespace 

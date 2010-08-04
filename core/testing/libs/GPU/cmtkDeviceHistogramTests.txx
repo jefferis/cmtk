@@ -32,7 +32,7 @@
 
 #include <cuda_runtime_api.h>
 
-#include <cmath>
+#include <math.h>
 #include "Base/cmtkFixedVector.h"
 
 int

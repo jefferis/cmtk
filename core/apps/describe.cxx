@@ -41,7 +41,7 @@
 #include "IO/cmtkFileFormat.h"
 #include "IO/cmtkVolumeIO.h"
 
-#include <cstdio>
+#include <stdio.h>
 #include <list>
 
 #ifdef CMTK_BUILD_MPI

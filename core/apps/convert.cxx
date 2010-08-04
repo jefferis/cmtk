@@ -49,8 +49,8 @@
 #include "IO/cmtkStudyList.h"
 #include "IO/cmtkClassStreamStudyList.h"
 
-#include <cmath>
-#include <cstdlib>
+#include <math.h>
+#include <stdlib.h>
 #include <iostream>
 #include <fstream>
 #include <set>

@@ -46,7 +46,7 @@
 
 #include <algorithm>
 #include <cstdarg>
-#include <cstdio>
+#include <stdio.h>
 
 namespace
 cmtk

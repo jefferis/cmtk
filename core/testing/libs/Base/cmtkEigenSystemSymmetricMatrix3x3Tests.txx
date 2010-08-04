@@ -34,7 +34,7 @@
 #include "Base/cmtkEigenSystemSymmetricMatrix3x3.h"
 
 #include <iostream>
-#include <cmath>
+#include <math.h>
 
 template<class T>
 bool

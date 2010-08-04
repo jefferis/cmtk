@@ -53,7 +53,7 @@
 #include "IO/cmtkClassStream.h"
 
 #include <stack>
-#include <cstring>
+#include <string.h>
 
 namespace
 cmtk

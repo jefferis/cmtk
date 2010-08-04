@@ -36,8 +36,8 @@
 #  include <malloc.h>
 #endif
 
-#include <cstdio> // thanks to Hans Johnson for pointing this out
-#include <climits>
+#include <stdio.h> // thanks to Hans Johnson for pointing this out
+#include <limits.h>
 
 namespace
 cmtk

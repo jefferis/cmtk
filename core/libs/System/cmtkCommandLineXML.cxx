@@ -34,7 +34,7 @@
 
 #include <mxml.h>
 
-#include <cstdio>
+#include <stdio.h>
 
 namespace
 cmtk

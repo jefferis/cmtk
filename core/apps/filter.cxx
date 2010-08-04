@@ -45,7 +45,7 @@
 #  include "Registration/cmtkImageXformDB.h"
 #endif
 
-#include <cstring>
+#include <string.h>
 #include <list>
 
 #ifdef CMTK_SINGLE_COMMAND_BINARY

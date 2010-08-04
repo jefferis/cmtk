@@ -42,7 +42,7 @@
 
 #include "System/cmtkSmartPtr.h"
 
-#include <cmath>
+#include <math.h>
 #include <vector>
 
 namespace

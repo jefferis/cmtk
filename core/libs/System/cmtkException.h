@@ -36,7 +36,7 @@
 #include <cmtkconfig.h>
 
 #include <exception>
-#include <cstdlib>
+#include <stdlib.h>
 #include <string>
 
 #include "System/cmtkConsole.h"

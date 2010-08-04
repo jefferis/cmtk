@@ -55,7 +55,7 @@
 #include "Registration/cmtkBestNeighbourOptimizer.h"
 #include "Registration/cmtkReformatVolume.h"
 
-#include <cstdio>
+#include <stdio.h>
 
 bool Verbose = false;
 

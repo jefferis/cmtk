@@ -33,7 +33,7 @@
 #include "System/cmtkException.h"
 
 #include <cstdarg>
-#include <cstdio>
+#include <stdio.h>
 
 namespace
 cmtk

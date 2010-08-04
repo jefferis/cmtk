@@ -38,8 +38,8 @@
 #include "Base/cmtkTypes.h"
 #include "Base/cmtkMathUtil.h"
 
-#include <cmath>
-#include <cstdlib>
+#include <math.h>
+#include <stdlib.h>
 #include <limits>
 
 namespace

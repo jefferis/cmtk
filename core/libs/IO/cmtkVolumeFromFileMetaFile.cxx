@@ -36,9 +36,9 @@
 #include "System/cmtkConsole.h"
 #include "Base/cmtkUniformVolume.h"
 
-#include <cstdio>
-#include <cstring>
-#include <cstdlib>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 namespace
 cmtk

@@ -42,8 +42,8 @@
 #include "Base/cmtkSplineWarpXform.h"
 #include "Base/cmtkMathUtil.h"
 
-#include <cstdio>
-#include <cmath>
+#include <stdio.h>
+#include <math.h>
 
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 namespace cmtk

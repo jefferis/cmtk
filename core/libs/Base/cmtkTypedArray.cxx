@@ -33,7 +33,7 @@
 #include "Base/cmtkTypedArray.h"
 #include "Base/cmtkTemplateArray.h"
 
-#include <cmath>
+#include <math.h>
 
 namespace
 cmtk

@@ -33,7 +33,7 @@
 #include "System/cmtkCommandLine.h"
 #include "System/cmtkConsole.h"
 
-#include <cstring>
+#include <string.h>
 #include <sstream>
 
 namespace

@@ -38,7 +38,7 @@
 #endif
 
 #include <iostream>
-#include <cmath>
+#include <math.h>
 
 // Check TypedArraySimilarity result against baseline.
 int

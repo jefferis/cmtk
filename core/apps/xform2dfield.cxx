@@ -46,7 +46,7 @@
 
 #include "Registration/cmtkXformList.h"
 
-#include <cstdio>
+#include <stdio.h>
 
 bool Verbose = false;
 bool Mask = false;

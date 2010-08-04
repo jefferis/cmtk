@@ -32,8 +32,8 @@
 
 #include "cmtkStackBacktrace.h"
 
-#include <cstdlib>
-#include <cstdio>
+#include <stdlib.h>
+#include <stdio.h>
 
 #ifdef HAVE_EXECINFO_H
 #  include <execinfo.h>

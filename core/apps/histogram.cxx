@@ -44,7 +44,7 @@
 #include <iostream>
 #include <fstream>
 #include <list>
-#include <cstdio>
+#include <stdio.h>
 
 bool Verbose = false;
 

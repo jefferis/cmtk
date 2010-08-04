@@ -38,7 +38,7 @@
 #  include <omp.h>
 #endif
 
-#include <cstdlib>
+#include <stdlib.h>
 
 namespace
 cmtk

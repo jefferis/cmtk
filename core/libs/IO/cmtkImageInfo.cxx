@@ -32,7 +32,7 @@
 
 #include "cmtkImageInfo.h"
 
-#include <cstdlib>
+#include <stdlib.h>
 
 namespace
 cmtk

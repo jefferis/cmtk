@@ -40,7 +40,7 @@
 #include "Base/cmtkMathUtil.h"
 #include "Base/cmtkAnatomicalOrientation.h"
 
-#include <cmath>
+#include <math.h>
 
 namespace
 cmtk

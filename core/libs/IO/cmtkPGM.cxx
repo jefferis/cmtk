@@ -36,8 +36,8 @@
 #include "System/cmtkConsole.h"
 #include "IO/cmtkImageInfo.h"
 
-#include <cstdlib>
-#include <cstring>
+#include <stdlib.h>
+#include <string.h>
 
 #ifdef HAVE_MALLOC_H
 #  include <malloc.h>

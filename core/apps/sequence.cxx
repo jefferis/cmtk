@@ -44,8 +44,8 @@
 
 #include <cfloat>
 #include <iostream>
-#include <cstdio>
-#include <cmath>
+#include <stdio.h>
+#include <math.h>
 #include <list>
 #include <vector>
 

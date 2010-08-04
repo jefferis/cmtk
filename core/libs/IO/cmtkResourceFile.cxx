@@ -32,8 +32,8 @@
 
 #include "cmtkResourceFile.h"
 
-#include <cstring>
-#include <climits>
+#include <string.h>
+#include <limits.h>
 #include <fstream>
 #include <algorithm>
 

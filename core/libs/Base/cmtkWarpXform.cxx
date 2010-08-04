@@ -35,7 +35,7 @@
 #include "Base/cmtkMathUtil.h"
 #include "Base/cmtkUniformVolume.h"
 
-#include <cstring>
+#include <string.h>
 #include <algorithm>
 
 namespace

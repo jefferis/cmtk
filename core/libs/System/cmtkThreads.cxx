@@ -50,8 +50,8 @@
 #  include <omp.h>
 #endif // _OPENMP
 
-#include <climits>
-#include <cstdlib>
+#include <limits.h>
+#include <stdlib.h>
 #include <iostream>
 
 #include <algorithm>

@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include <cstdlib>
+#include <stdlib.h>
 
 #include "Base/cmtkTypes.h"
 #include "Base/cmtkVector3D.h"

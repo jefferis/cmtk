@@ -34,7 +34,7 @@
 
 #include "System/cmtkConsole.h"
 
-#include <cmath>
+#include <math.h>
 #include <cassert>
 
 #include <string>

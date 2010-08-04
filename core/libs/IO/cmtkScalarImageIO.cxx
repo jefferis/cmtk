@@ -32,7 +32,7 @@
 
 #include "cmtkScalarImageIO.h"
 
-#include <cstdio>
+#include <stdio.h>
 
 #include "Base/cmtkTypes.h"
 #include "System/cmtkCompressedStream.h"

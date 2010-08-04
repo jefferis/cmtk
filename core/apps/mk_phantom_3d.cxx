@@ -40,7 +40,7 @@
 
 #include "IO/cmtkVolumeIO.h"
 
-#include <cstdio>
+#include <stdio.h>
 
 bool Verbose = false;
 

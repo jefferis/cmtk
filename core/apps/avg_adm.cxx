@@ -49,7 +49,7 @@
 
 #include "Registration/cmtkReformatVolume.h"
 
-#include <cstring>
+#include <string.h>
 #include <map>
 #include <string>
 #include <vector>

@@ -40,7 +40,7 @@
 
 #include "Base/cmtkTypes.h"
 
-#include <cstdio>
+#include <stdio.h>
 
 bool Verbose = false;
 

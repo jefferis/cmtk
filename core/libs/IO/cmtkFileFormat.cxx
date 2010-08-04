@@ -43,9 +43,9 @@
 #  include <sys/stat.h>
 #endif
 
-#include <cstdio>
-#include <cstring>
-#include <climits>
+#include <stdio.h>
+#include <string.h>
+#include <limits.h>
 
 namespace
 cmtk

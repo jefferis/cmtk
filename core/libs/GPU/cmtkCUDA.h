@@ -35,8 +35,8 @@
 
 #include <cuda_runtime_api.h>
 
-#include <cstdio>
-#include <cstdlib>
+#include <stdio.h>
+#include <stdlib.h>
 
 #define cmtkCheckCallCUDA(cmd) \
   { const cudaError_t cudaError = cmd; if ( cudaError != cudaSuccess ) { fprintf( stderr, "CUDA command failed with error '%s' at %s:%d\n", cudaGetErrorString( cudaError ), __FILE__, __LINE__ ); exit(1); } }

@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include <csignal>
+#include <signal.h>
 
 namespace
 cmtk

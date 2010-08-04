@@ -33,7 +33,7 @@
 #include "Pipeline/cmtkRendererCollection.h"
 
 #ifdef DEBUG
-#  include <cstdio>
+#  include <stdio.h>
 #endif
 
 namespace

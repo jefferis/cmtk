@@ -32,7 +32,7 @@
 
 #include "Base/cmtkTypes.h"
 
-#include <cstring>
+#include <string.h>
 
 namespace
 cmtk

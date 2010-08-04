@@ -34,7 +34,7 @@
 
 #include <CL/opencl.h>
 
-#include <cstdlib>
+#include <stdlib.h>
 #include <iostream>
 #include <vector>
 

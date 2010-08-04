@@ -36,8 +36,8 @@
 
 #include "System/cmtkProgressConsole.h"
 
-#include <cstdio>
-#include <cstring>
+#include <stdio.h>
+#include <string.h>
 
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 namespace cmtk

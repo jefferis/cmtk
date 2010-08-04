@@ -32,7 +32,7 @@
 
 #include "cmtkVolumeFromFile.h"
 
-#include <cstdio>
+#include <stdio.h>
 
 #include "IO/cmtkFileFormat.h"
 #include "Base/cmtkTypedArray.h"

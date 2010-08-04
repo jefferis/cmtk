@@ -32,8 +32,8 @@
 
 #include "cmtkQtSliderEntry.h"
 
-#include <cstdlib>
-#include <cmath>
+#include <stdlib.h>
+#include <math.h>
 
 #include <qfont.h>
 

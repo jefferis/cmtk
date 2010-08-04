@@ -30,8 +30,8 @@
 
 #include "cmtkDeviceHistogram_kernels.h"
 
-#include <cstdio>
-#include <cstdlib>
+#include <stdio.h>
+#include <stdlib.h>
 
 void
 cmtkDeviceHistogramEntropy( float* result, const float* dataPtr, int numberOfBins )

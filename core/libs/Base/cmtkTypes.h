@@ -37,8 +37,8 @@
 
 #include "Base/cmtkMathUtil.h"
 
-#include <cstdlib>
-#include <climits>
+#include <stdlib.h>
+#include <limits.h>
 #include <cfloat>
 #include <cstddef>
 

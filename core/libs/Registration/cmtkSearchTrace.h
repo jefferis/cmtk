@@ -32,7 +32,7 @@
 #ifndef __cmtkSearchTrace_h_included_
 #define __cmtkSearchTrace_h_included_
 
-#include <cstdlib>
+#include <stdlib.h>
 
 namespace
 cmtk

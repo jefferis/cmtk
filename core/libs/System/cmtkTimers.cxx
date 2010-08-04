@@ -32,8 +32,8 @@
 
 #include "cmtkTimers.h"
 
-#include <cstring>
-#include <cstdio>
+#include <string.h>
+#include <stdio.h>
 #include <errno.h>
 
 #ifdef HAVE_SYS_IOCTL_H

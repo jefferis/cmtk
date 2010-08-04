@@ -32,7 +32,7 @@
 
 #include "cmtkQtSimpleFusionApp.h"
 
-#include <cstring>
+#include <string.h>
 
 #include <qpixmap.h>
 #include <qimage.h>

@@ -32,9 +32,9 @@
 
 #include "cmtkFileUtil.h"
 
-#include <cstring>
-#include <climits>
-#include <cstdlib>
+#include <string.h>
+#include <limits.h>
+#include <stdlib.h>
 
 #ifdef HAVE_UNISTD_H
 #  include <unistd.h>

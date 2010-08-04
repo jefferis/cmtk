@@ -32,9 +32,9 @@
 
 #include "cmtkGeneralLinearModel.h"
 
-#include <cmath>
-#include <cstdlib>
-#include <cstdio>
+#include <math.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #ifdef HAVE_IEEEFP_H
 #  include <ieeefp.h>

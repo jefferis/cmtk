@@ -35,7 +35,7 @@
 #include <string>
 #include <sstream>
 
-#include <cstdlib>
+#include <stdlib.h>
 #include <cassert>
 
 cmtk::ImageXformDB

@@ -68,10 +68,10 @@
 #  include <direct.h>
 #endif // #ifdef _MSC_VER
 
-#include <cstdlib>
-#include <cstdio>
-#include <cstring>
-#include <csignal>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <signal.h>
 #include <iostream>
 
 namespace

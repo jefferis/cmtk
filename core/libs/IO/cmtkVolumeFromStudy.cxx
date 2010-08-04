@@ -45,11 +45,11 @@
 #include "Base/cmtkLandmarkList.h"
 #include "Base/cmtkUniformVolume.h"
 
-#include <cstring>
-#include <climits>
+#include <string.h>
+#include <limits.h>
 
 #ifdef DEBUG
-#  include <cstdio>
+#  include <stdio.h>
 #endif
 
 #include <memory>

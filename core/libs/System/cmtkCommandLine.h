@@ -43,8 +43,8 @@
 #include <sstream>
 #include <vector>
 
-#include <cstdlib>
-#include <cstring>
+#include <stdlib.h>
+#include <string.h>
 
 #include "System/cmtkSmartPtr.h"
 #include "System/cmtkConsole.h"

@@ -39,7 +39,7 @@
 
 #include "System/cmtkException.h"
 
-#include <cstdio>
+#include <stdio.h>
 
 #include <zlib.h>
 

@@ -64,8 +64,8 @@
 #include <iostream>
 #include <list>
 #include <vector>
-#include <cstdio>
-#include <cstring>
+#include <stdio.h>
+#include <string.h>
 
 bool Verbose = false;
 

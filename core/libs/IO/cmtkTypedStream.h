@@ -38,7 +38,7 @@
 #include "Base/cmtkTypes.h"
 
 #include <stack>
-#include <cstdio>
+#include <stdio.h>
 
 #include <zlib.h>
 

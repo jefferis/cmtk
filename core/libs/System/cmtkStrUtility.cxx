@@ -32,9 +32,9 @@
 
 #include "cmtkStrUtility.h"
 
-#include <cstring>
-#include <cstdlib>
-#include <climits>
+#include <string.h>
+#include <stdlib.h>
+#include <limits.h>
 
 #ifdef _MSC_VER
 #  include <direct.h>

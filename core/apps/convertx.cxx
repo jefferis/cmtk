@@ -42,7 +42,7 @@
 #include "IO/cmtkStudyList.h"
 #include "IO/cmtkClassStreamStudyList.h"
 
-#include <cmath>
+#include <math.h>
 
 #include "Base/cmtkMathFunctionWrappers.h"
 #include "Base/cmtkImageOperation.h"
@@ -64,7 +64,7 @@
 #include "Base/cmtkImageOperationDistanceMap.h"
 #include "Base/cmtkImageOperationRevert.h"
 
-#include <cstdlib>
+#include <stdlib.h>
 #include <iostream>
 #include <fstream>
 #include <set>

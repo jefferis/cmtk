@@ -39,7 +39,7 @@
 #include "Numerics/spddet.h"
 #include "Numerics/svd.h"
 
-#include <cmath>
+#include <math.h>
 #include <algorithm>
 #include <vector>
 

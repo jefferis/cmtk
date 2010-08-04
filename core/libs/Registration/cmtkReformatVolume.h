@@ -57,7 +57,7 @@
 #include "Registration/cmtkXformList.h"
 
 #include <cstddef>
-#include <cmath>
+#include <math.h>
 #include <vector>
 
 namespace

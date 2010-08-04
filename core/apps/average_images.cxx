@@ -44,7 +44,7 @@
 
 #include "IO/cmtkVolumeIO.h"
 
-#include <cmath>
+#include <math.h>
 #include <list>
 #include <algorithm>
 

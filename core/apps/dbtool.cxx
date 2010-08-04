@@ -33,7 +33,7 @@
 #include "System/cmtkCommandLine.h"
 #include "Registration/cmtkImageXformDB.h"
 
-#include <cstring>
+#include <string.h>
 
 bool DebugMode = false;
 

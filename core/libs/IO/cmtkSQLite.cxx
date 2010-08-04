@@ -32,7 +32,7 @@
 
 #include "System/cmtkConsole.h"
 
-#include <cstdlib>
+#include <stdlib.h>
 
 cmtk::SQLite::SQLite
 ( const std::string& dbPath, const bool readOnly )

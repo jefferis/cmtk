@@ -42,7 +42,7 @@
 
 #include "Registration/cmtkXformList.h"
 
-#include <cstdio>
+#include <stdio.h>
 #include <list>
 
 bool Help = false;

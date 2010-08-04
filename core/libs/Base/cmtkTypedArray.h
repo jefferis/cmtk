@@ -46,10 +46,10 @@
 #include "System/cmtkSmartConstPtr.h"
 #include "System/cmtkException.h"
 
-#include <cmath>
-#include <cstdlib>
-#include <cstdio>
-#include <climits>
+#include <math.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <limits.h>
 
 #include <memory.h>
 

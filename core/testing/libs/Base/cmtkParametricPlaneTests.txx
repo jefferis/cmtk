@@ -31,7 +31,7 @@
 #include "Base/cmtkParametricPlane.h"
 
 #include <algorithm>
-#include <cmath>
+#include <math.h>
 #include <iostream>
 
 // test parametric plane reflection with zero offset

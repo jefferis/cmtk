@@ -46,7 +46,7 @@
 #include "Segmentation/cmtkLabelCombinationSTAPLE.h"
 #include "Segmentation/cmtkLabelCombinationMultiClassSTAPLE.h"
 
-#include <cmath>
+#include <math.h>
 #include <queue>
 #include <vector>
 

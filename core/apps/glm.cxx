@@ -53,8 +53,8 @@
 #include <list>
 #include <set>
 #include <string>
-#include <cstdio>
-#include <climits>
+#include <stdio.h>
+#include <limits.h>
 
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 namespace cmtk

@@ -39,7 +39,7 @@
 #include "Base/cmtkWarpXform.h"
 #include "Base/cmtkMatchedLandmarkList.h"
 
-#include <cstring>
+#include <string.h>
 
 namespace
 cmtk

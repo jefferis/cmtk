@@ -37,8 +37,8 @@
 
 #include "System/cmtkMemory.h"
 
-#include <cstdlib>
-#include <cstdio>
+#include <stdlib.h>
+#include <stdio.h>
 #include <vector>
 
 #ifdef _OPENMP

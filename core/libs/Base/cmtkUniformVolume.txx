@@ -30,7 +30,7 @@
 //
 */
 
-#include <cmath>
+#include <math.h>
 
 namespace
 cmtk

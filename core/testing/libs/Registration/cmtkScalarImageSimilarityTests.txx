@@ -33,7 +33,7 @@
 #include "Registration/cmtkScalarImageSimilarity.h"
 #include "IO/cmtkVolumeIO.h"
 
-#include <cmath>
+#include <math.h>
 
 #ifdef HAVE_IEEEFP_H
 #  include <ieeefp.h>

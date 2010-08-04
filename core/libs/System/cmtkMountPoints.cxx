@@ -32,9 +32,9 @@
 
 #include "cmtkMountPoints.h"
 
-#include <cstdlib>
-#include <cstring>
-#include <climits>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
 
 namespace
 cmtk

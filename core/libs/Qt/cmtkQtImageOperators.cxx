@@ -32,7 +32,7 @@
 
 #include "cmtkQtImageOperators.h"
 
-#include <cmath>
+#include <math.h>
 
 #include <qinputdialog.h>
 
