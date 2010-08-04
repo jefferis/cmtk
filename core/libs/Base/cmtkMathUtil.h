@@ -91,12 +91,7 @@ public:
   template<class T>
   static bool IsNaN( const T value )
   {
-    // if "isnan" is a macro, use without namespace
-#ifdef isnan
     return isnan( value );
-#else
-    return std::isnan( value );
-#endif
   }
 
   /// Get double-precision not-a-number (NaN) value.
