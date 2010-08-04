@@ -422,40 +422,34 @@ SplineWarpXform::GetVolumeOfInfluence
 {
   int relIdx = idx / 3;
 
-  int x =  ( relIdx %  this->m_Dims[0] );
-  int y = ( (relIdx /  this->m_Dims[0]) % this->m_Dims[1] );
-  int z = ( (relIdx /  this->m_Dims[0]) / this->m_Dims[1] );
-
-  Types::Coordinate xLow, yLow, zLow, xUp, yUp, zUp;
+  const int xyz[3] = { ( relIdx %  this->m_Dims[0] ), 
+		       ( (relIdx /  this->m_Dims[0]) % this->m_Dims[1] ), 
+		       ( (relIdx /  this->m_Dims[0]) / this->m_Dims[1] ) };
+  
+  Types::Coordinate xyzLow[3], xyzUp[3];
 
   if ( (fastMode==1) || (this->m_FastMode && (fastMode<0)) ) 
     {
-    xLow = Spacing[0] * std::max( 0, x-2 );
-    yLow = Spacing[1] * std::max( 0, y-2 );
-    zLow = Spacing[2] * std::max( 0, z-2 );
-    
-    xUp = Spacing[0] * std::min( this->m_Dims[0]-3, x );
-    yUp = Spacing[1] * std::min( this->m_Dims[1]-3, y );
-    zUp = Spacing[2] * std::min( this->m_Dims[2]-3, z );
+    for ( int dim = 0; dim < 3; ++dim )
+      {
+      xyzLow[dim] = Spacing[dim] * std::max( 0, xyz[dim]-2 );
+      xyzUp[dim] = Spacing[dim] * std::min( this->m_Dims[dim]-3, xyz[dim] );
+      }
     } 
   else
     {
-    xLow = Spacing[0] * std::max( 0, x-3 );
-    yLow = Spacing[1] * std::max( 0, y-3 );
-    zLow = Spacing[2] * std::max( 0, z-3 );
-    
-    xUp = Spacing[0] * std::min( this->m_Dims[0]-2, x+1 );
-    yUp = Spacing[1] * std::min( this->m_Dims[1]-2, y+1 );
-    zUp = Spacing[2] * std::min( this->m_Dims[2]-2, z+1 );
+    for ( int dim = 0; dim < 3; ++dim )
+      {
+      xyzLow[dim] = Spacing[dim] * std::max( 0, xyz[dim]-3 );
+      xyzUp[dim] = Spacing[dim] * std::min( this->m_Dims[dim]-2, xyz[dim]+1 );
+      }
     }
   
-  fromVOI[0] = std::min( toVol[0], std::max(xLow, fromVol[0]) );
-  fromVOI[1] = std::min( toVol[1], std::max(yLow, fromVol[1]) );
-  fromVOI[2] = std::min( toVol[2], std::max(zLow, fromVol[2]) );
-
-  toVOI[0] = std::max( fromVol[0], std::min(xUp, toVol[0]) ); 
-  toVOI[1] = std::max( fromVol[1], std::min(yUp, toVol[1]) );
-  toVOI[2] = std::max( fromVol[2], std::min(zUp, toVol[2]) );
+  for ( int dim = 0; dim < 3; ++dim )
+    {
+    fromVOI[dim] = std::min( toVol[dim], std::max( xyzLow[dim], fromVol[dim]) );
+    toVOI[dim] = std::max( fromVol[dim], std::min( xyzUp[dim], toVol[dim]) ); 
+    }
 }
 
 void
