@@ -1,8 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -137,7 +136,7 @@ void generatereflection(ap::real_1d_array& x, int n, ap::real_value_type& tau)
     mx = 0;
     for(j = 2; j <= n; j++)
     {
-    mx = ap::maxreal(std::fabs(x(j)), mx);
+        mx = ap::maxreal(fabs(x(j)), mx);
     }
     xnorm = 0;
     if( mx!=0 )
@@ -146,7 +145,7 @@ void generatereflection(ap::real_1d_array& x, int n, ap::real_value_type& tau)
         {
             xnorm = xnorm+ap::sqr(x(j)/mx);
         }
-        xnorm = std::sqrt(xnorm)*mx;
+        xnorm = sqrt(xnorm)*mx;
     }
     if( xnorm==0 )
     {
@@ -161,8 +160,8 @@ void generatereflection(ap::real_1d_array& x, int n, ap::real_value_type& tau)
     //
     // general case
     //
-    mx = ap::maxreal(std::fabs(alpha), std::fabs(xnorm));
-    beta = -mx*std::sqrt(ap::sqr(alpha/mx)+ap::sqr(xnorm/mx));
+    mx = ap::maxreal(fabs(alpha), fabs(xnorm));
+    beta = -mx*sqrt(ap::sqr(alpha/mx)+ap::sqr(xnorm/mx));
     if( alpha<0 )
     {
         beta = -beta;

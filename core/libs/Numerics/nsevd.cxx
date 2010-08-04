@@ -1,8 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -486,7 +485,7 @@ void internaltrevc(const ap::real_2d_array& t,
         work(j) = 0;
         for(i = 1; i <= j-1; i++)
         {
-            work(j) = work(j)+std::fabs(t(i,j));
+            work(j) = work(j)+fabs(t(i,j));
         }
     }
     
@@ -549,9 +548,9 @@ void internaltrevc(const ap::real_2d_array& t,
                 wi = 0;
                 if( ip!=0 )
                 {
-                    wi = std::sqrt(std::fabs(t(ki,ki-1)))*std::sqrt(std::fabs(t(ki-1,ki)));
+                    wi = sqrt(fabs(t(ki,ki-1)))*sqrt(fabs(t(ki-1,ki)));
                 }
-                smin = ap::maxreal(ulp*(std::fabs(wr)+std::fabs(wi)), smlnum);
+                smin = ap::maxreal(ulp*(fabs(wr)+fabs(wi)), smlnum);
                 if( ip==0 )
                 {
                     
@@ -697,7 +696,7 @@ void internaltrevc(const ap::real_2d_array& t,
                         k2 = ki+n;
                         ap::vmove(vr.getcolumn(iis, 1, ki), work.getvector(k1, k2));
                         ii = columnidxabsmax(vr, 1, ki, iis);
-                        remax = 1/std::fabs(vr(ii,iis));
+                        remax = 1/fabs(vr(ii,iis));
                         ap::vmul(vr.getcolumn(iis, 1, ki), remax);
                         for(k = ki+1; k <= n; k++)
                         {
@@ -713,7 +712,7 @@ void internaltrevc(const ap::real_2d_array& t,
                             ap::vmove(vr.getcolumn(ki, 1, n), temp.getvector(1, n));
                         }
                         ii = columnidxabsmax(vr, 1, n, ki);
-                        remax = 1/std::fabs(vr(ii,ki));
+                        remax = 1/fabs(vr(ii,ki));
                         ap::vmul(vr.getcolumn(ki, 1, n), remax);
                     }
                 }
@@ -727,7 +726,7 @@ void internaltrevc(const ap::real_2d_array& t,
                     //     [ (T(KI-1,KI-1) T(KI-1,KI) ) - (WR + I* WI)]*X = 0.
                     //     [ (T(KI,KI-1)   T(KI,KI)   )               ]
                     //
-                    if( std::fabs(t(ki-1,ki))>=std::fabs(t(ki,ki-1)) )
+                    if( fabs(t(ki-1,ki))>=fabs(t(ki,ki-1)) )
                     {
                         work(ki-1+n) = 1;
                         work(ki+n2) = wi/t(ki-1,ki);
@@ -898,7 +897,7 @@ void internaltrevc(const ap::real_2d_array& t,
                         emax = 0;
                         for(k = 1; k <= ki; k++)
                         {
-                            emax = ap::maxreal(emax, std::fabs(vr(k,iis-1))+std::fabs(vr(k,iis)));
+                            emax = ap::maxreal(emax, fabs(vr(k,iis-1))+fabs(vr(k,iis)));
                         }
                         remax = 1/emax;
                         ap::vmul(vr.getcolumn(iis-1, 1, ki), remax);
@@ -930,7 +929,7 @@ void internaltrevc(const ap::real_2d_array& t,
                         emax = 0;
                         for(k = 1; k <= n; k++)
                         {
-                            emax = ap::maxreal(emax, std::fabs(vr(k,ki-1))+std::fabs(vr(k,ki)));
+                            emax = ap::maxreal(emax, fabs(vr(k,ki-1))+fabs(vr(k,ki)));
                         }
                         remax = 1/emax;
                         ap::vmul(vr.getcolumn(ki-1, 1, n), remax);
@@ -995,9 +994,9 @@ void internaltrevc(const ap::real_2d_array& t,
                 wi = 0;
                 if( ip!=0 )
                 {
-                    wi = std::sqrt(std::fabs(t(ki,ki+1)))*std::sqrt(std::fabs(t(ki+1,ki)));
+                    wi = sqrt(fabs(t(ki,ki+1)))*sqrt(fabs(t(ki+1,ki)));
                 }
-                smin = ap::maxreal(ulp*(std::fabs(wr)+std::fabs(wi)), smlnum);
+                smin = ap::maxreal(ulp*(fabs(wr)+fabs(wi)), smlnum);
                 if( ip==0 )
                 {
                     
@@ -1072,7 +1071,7 @@ void internaltrevc(const ap::real_2d_array& t,
                                 ap::vmul(&work(ki+n), ap::vlen(ki+n,n+n), scl);
                             }
                             work(j+n) = x(1,1);
-                            vmax = ap::maxreal(std::fabs(work(j+n)), vmax);
+                            vmax = ap::maxreal(fabs(work(j+n)), vmax);
                             vcrit = bignum/vmax;
                         }
                         else
@@ -1119,7 +1118,7 @@ void internaltrevc(const ap::real_2d_array& t,
                             }
                             work(j+n) = x(1,1);
                             work(j+1+n) = x(2,1);
-                            vmax = ap::maxreal(std::fabs(work(j+n)), ap::maxreal(std::fabs(work(j+1+n)), vmax));
+                            vmax = ap::maxreal(fabs(work(j+n)), ap::maxreal(fabs(work(j+1+n)), vmax));
                             vcrit = bignum/vmax;
                         }
                     }
@@ -1131,7 +1130,7 @@ void internaltrevc(const ap::real_2d_array& t,
                     {
                         ap::vmove(vl.getcolumn(iis, ki, n), work.getvector(ki+n, n+n));
                         ii = columnidxabsmax(vl, ki, n, iis);
-                        remax = 1/std::fabs(vl(ii,iis));
+                        remax = 1/fabs(vl(ii,iis));
                         ap::vmul(vl.getcolumn(iis, ki, n), remax);
                         for(k = 1; k <= ki-1; k++)
                         {
@@ -1147,7 +1146,7 @@ void internaltrevc(const ap::real_2d_array& t,
                             ap::vmove(vl.getcolumn(ki, 1, n), temp.getvector(1, n));
                         }
                         ii = columnidxabsmax(vl, 1, n, ki);
-                        remax = 1/std::fabs(vl(ii,ki));
+                        remax = 1/fabs(vl(ii,ki));
                         ap::vmul(vl.getcolumn(ki, 1, n), remax);
                     }
                 }
@@ -1161,7 +1160,7 @@ void internaltrevc(const ap::real_2d_array& t,
                     //   ((T(KI,KI)    T(KI,KI+1) )' - (WR - I* WI))*X = 0.
                     //   ((T(KI+1,KI) T(KI+1,KI+1))                )
                     //
-                    if( std::fabs(t(ki,ki+1))>=std::fabs(t(ki+1,ki)) )
+                    if( fabs(t(ki,ki+1))>=fabs(t(ki+1,ki)) )
                     {
                         work(ki+n) = wi/t(ki,ki+1);
                         work(ki+1+n2) = 1;
@@ -1247,7 +1246,7 @@ void internaltrevc(const ap::real_2d_array& t,
                             }
                             work(j+n) = x(1,1);
                             work(j+n2) = x(1,2);
-                            vmax = ap::maxreal(std::fabs(work(j+n)), ap::maxreal(std::fabs(work(j+n2)), vmax));
+                            vmax = ap::maxreal(fabs(work(j+n)), ap::maxreal(fabs(work(j+n2)), vmax));
                             vcrit = bignum/vmax;
                         }
                         else
@@ -1304,10 +1303,10 @@ void internaltrevc(const ap::real_2d_array& t,
                             work(j+n2) = x(1,2);
                             work(j+1+n) = x(2,1);
                             work(j+1+n2) = x(2,2);
-                            vmax = ap::maxreal(std::fabs(x(1,1)), vmax);
-                            vmax = ap::maxreal(std::fabs(x(1,2)), vmax);
-                            vmax = ap::maxreal(std::fabs(x(2,1)), vmax);
-                            vmax = ap::maxreal(std::fabs(x(2,2)), vmax);
+                            vmax = ap::maxreal(fabs(x(1,1)), vmax);
+                            vmax = ap::maxreal(fabs(x(1,2)), vmax);
+                            vmax = ap::maxreal(fabs(x(2,1)), vmax);
+                            vmax = ap::maxreal(fabs(x(2,2)), vmax);
                             vcrit = bignum/vmax;
                         }
                     }
@@ -1322,7 +1321,7 @@ void internaltrevc(const ap::real_2d_array& t,
                         emax = 0;
                         for(k = ki; k <= n; k++)
                         {
-                            emax = ap::maxreal(emax, std::fabs(vl(k,iis))+std::fabs(vl(k,iis+1)));
+                            emax = ap::maxreal(emax, fabs(vl(k,iis))+fabs(vl(k,iis+1)));
                         }
                         remax = 1/emax;
                         ap::vmul(vl.getcolumn(iis, ki, n), remax);
@@ -1354,7 +1353,7 @@ void internaltrevc(const ap::real_2d_array& t,
                         emax = 0;
                         for(k = 1; k <= n; k++)
                         {
-                            emax = ap::maxreal(emax, std::fabs(vl(k,ki))+std::fabs(vl(k,ki+1)));
+                            emax = ap::maxreal(emax, fabs(vl(k,ki))+fabs(vl(k,ki+1)));
                         }
                         remax = 1/emax;
                         ap::vmul(vl.getcolumn(ki, 1, n), remax);
@@ -1493,7 +1492,7 @@ void internalhsevdlaln2(const bool& ltrans,
             // C = ca A - w D
             //
             csr = ca*a(1,1)-wr*d1;
-            cnorm = std::fabs(csr);
+            cnorm = fabs(csr);
             
             //
             // If | C | < SMINI, use C = SMINI
@@ -1508,7 +1507,7 @@ void internalhsevdlaln2(const bool& ltrans,
             //
             // Check scaling for  X = B / C
             //
-            bnorm = std::fabs(b(1,1));
+            bnorm = fabs(b(1,1));
             if( cnorm<1&&bnorm>1 )
             {
                 if( bnorm>bignum*cnorm )
@@ -1521,7 +1520,7 @@ void internalhsevdlaln2(const bool& ltrans,
             // Compute X
             //
             x(1,1) = b(1,1)*scl/csr;
-            xnorm = std::fabs(x(1,1));
+            xnorm = fabs(x(1,1));
         }
         else
         {
@@ -1533,7 +1532,7 @@ void internalhsevdlaln2(const bool& ltrans,
             //
             csr = ca*a(1,1)-wr*d1;
             csi = -wi*d1;
-            cnorm = std::fabs(csr)+std::fabs(csi);
+            cnorm = fabs(csr)+fabs(csi);
             
             //
             // If | C | < SMINI, use C = SMINI
@@ -1549,7 +1548,7 @@ void internalhsevdlaln2(const bool& ltrans,
             //
             // Check scaling for  X = B / C
             //
-            bnorm = std::fabs(b(1,1))+std::fabs(b(1,2));
+            bnorm = fabs(b(1,1))+fabs(b(1,2));
             if( cnorm<1&&bnorm>1 )
             {
                 if( bnorm>bignum*cnorm )
@@ -1564,7 +1563,7 @@ void internalhsevdlaln2(const bool& ltrans,
             internalhsevdladiv(scl*b(1,1), scl*b(1,2), csr, csi, tmp1, tmp2);
             x(1,1) = tmp1;
             x(1,2) = tmp2;
-            xnorm = std::fabs(x(1,1))+std::fabs(x(1,2));
+            xnorm = fabs(x(1,1))+fabs(x(1,2));
         }
     }
     else
@@ -1599,9 +1598,9 @@ void internalhsevdlaln2(const bool& ltrans,
             icmax = 0;
             for(j = 1; j <= 4; j++)
             {
-                if( std::fabs(crv4(j))>cmax )
+                if( fabs(crv4(j))>cmax )
                 {
-                    cmax = std::fabs(crv4(j));
+                    cmax = fabs(crv4(j));
                     icmax = j;
                 }
             }
@@ -1611,7 +1610,7 @@ void internalhsevdlaln2(const bool& ltrans,
             //
             if( cmax<smini )
             {
-                bnorm = ap::maxreal(std::fabs(b(1,1)), std::fabs(b(2,1)));
+                bnorm = ap::maxreal(fabs(b(1,1)), fabs(b(2,1)));
                 if( smini<1&&bnorm>1 )
                 {
                     if( bnorm>bignum*smini )
@@ -1641,7 +1640,7 @@ void internalhsevdlaln2(const bool& ltrans,
             //
             // If smaller pivot < SMINI, use SMINI
             //
-            if( std::fabs(ur22)<smini )
+            if( fabs(ur22)<smini )
             {
                 ur22 = smini;
                 info = 1;
@@ -1657,10 +1656,10 @@ void internalhsevdlaln2(const bool& ltrans,
                 br2 = b(2,1);
             }
             br2 = br2-lr21*br1;
-            bbnd = ap::maxreal(std::fabs(br1*(ur22*ur11r)), std::fabs(br2));
-            if( bbnd>1&&std::fabs(ur22)<1 )
+            bbnd = ap::maxreal(fabs(br1*(ur22*ur11r)), fabs(br2));
+            if( bbnd>1&&fabs(ur22)<1 )
             {
-                if( bbnd>=bignum*std::fabs(ur22) )
+                if( bbnd>=bignum*fabs(ur22) )
                 {
                     scl = 1/bbnd;
                 }
@@ -1677,7 +1676,7 @@ void internalhsevdlaln2(const bool& ltrans,
                 x(1,1) = xr1;
                 x(2,1) = xr2;
             }
-            xnorm = ap::maxreal(std::fabs(xr1), std::fabs(xr2));
+            xnorm = ap::maxreal(fabs(xr1), fabs(xr2));
             
             //
             // Further scaling if  norm(A) norm(X) > overflow
@@ -1710,9 +1709,9 @@ void internalhsevdlaln2(const bool& ltrans,
             icmax = 0;
             for(j = 1; j <= 4; j++)
             {
-                if( std::fabs(crv4(j))+std::fabs(civ4(j))>cmax )
+                if( fabs(crv4(j))+fabs(civ4(j))>cmax )
                 {
-                    cmax = std::fabs(crv4(j))+std::fabs(civ4(j));
+                    cmax = fabs(crv4(j))+fabs(civ4(j));
                     icmax = j;
                 }
             }
@@ -1722,7 +1721,7 @@ void internalhsevdlaln2(const bool& ltrans,
             //
             if( cmax<smini )
             {
-                bnorm = ap::maxreal(std::fabs(b(1,1))+std::fabs(b(1,2)), std::fabs(b(2,1))+std::fabs(b(2,2)));
+                bnorm = ap::maxreal(fabs(b(1,1))+fabs(b(1,2)), fabs(b(2,1))+fabs(b(2,2)));
                 if( smini<1&&bnorm>1 )
                 {
                     if( bnorm>bignum*smini )
@@ -1757,7 +1756,7 @@ void internalhsevdlaln2(const bool& ltrans,
                 //
                 // Code when off-diagonals of pivoted C are real
                 //
-                if( std::fabs(ur11)>std::fabs(ui11) )
+                if( fabs(ur11)>fabs(ui11) )
                 {
                     temp = ui11/ur11;
                     ur11r = 1/(ur11*(1+ap::sqr(temp)));
@@ -1791,7 +1790,7 @@ void internalhsevdlaln2(const bool& ltrans,
                 ur22 = cr22-ur12*lr21+ui12*li21;
                 ui22 = -ur12*li21-ui12*lr21;
             }
-            u22abs = std::fabs(ur22)+std::fabs(ui22);
+            u22abs = fabs(ur22)+fabs(ui22);
             
             //
             // If smaller pivot < SMINI, use SMINI
@@ -1818,7 +1817,7 @@ void internalhsevdlaln2(const bool& ltrans,
             }
             br2 = br2-lr21*br1+li21*bi1;
             bi2 = bi2-li21*br1-lr21*bi1;
-            bbnd = ap::maxreal((std::fabs(br1)+std::fabs(bi1))*(u22abs*(std::fabs(ur11r)+std::fabs(ui11r))), std::fabs(br2)+std::fabs(bi2));
+            bbnd = ap::maxreal((fabs(br1)+fabs(bi1))*(u22abs*(fabs(ur11r)+fabs(ui11r))), fabs(br2)+fabs(bi2));
             if( bbnd>1&&u22abs<1 )
             {
                 if( bbnd>=bignum*u22abs )
@@ -1847,7 +1846,7 @@ void internalhsevdlaln2(const bool& ltrans,
                 x(1,2) = xi1;
                 x(2,2) = xi2;
             }
-            xnorm = ap::maxreal(std::fabs(xr1)+std::fabs(xi1), std::fabs(xr2)+std::fabs(xi2));
+            xnorm = ap::maxreal(fabs(xr1)+fabs(xi1), fabs(xr2)+fabs(xi2));
             
             //
             // Further scaling if  norm(A) norm(X) > overflow
@@ -1880,7 +1879,7 @@ void internalhsevdladiv(const ap::real_value_type& a,
     ap::real_value_type e;
     ap::real_value_type f;
 
-    if( std::fabs(d)<std::fabs(c) )
+    if( fabs(d)<fabs(c) )
     {
         e = d/c;
         f = c+d*e;

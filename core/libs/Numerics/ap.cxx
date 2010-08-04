@@ -1,8 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2009 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -145,7 +144,7 @@ const ap::complex ap::operator/(const ap::complex& lhs, const ap::complex& rhs)
     ap::complex result;
     ap::real_value_type e;
     ap::real_value_type f;
-    if( std::fabs(rhs.y)<std::fabs(rhs.x) )
+    if( fabs(rhs.y)<fabs(rhs.x) )
     {
         e = rhs.y/rhs.x;
         f = rhs.x+rhs.y*e;
@@ -167,7 +166,7 @@ const ap::complex ap::operator/(const ap::real_value_type& lhs, const ap::comple
     ap::complex result;
     ap::real_value_type e;
     ap::real_value_type f;
-    if( std::fabs(rhs.y)<std::fabs(rhs.x) )
+    if( fabs(rhs.y)<fabs(rhs.x) )
     {
         e = rhs.y/rhs.x;
         f = rhs.x+rhs.y*e;
@@ -194,8 +193,8 @@ ap::real_value_type ap::abscomplex(const ap::complex &z)
     ap::real_value_type yabs;
     ap::real_value_type v;
 
-    xabs = std::fabs(z.x);
-    yabs = std::fabs(z.y);
+    xabs = fabs(z.x);
+    yabs = fabs(z.y);
     w = xabs>yabs ? xabs : yabs;
     v = xabs<yabs ? xabs : yabs; 
     if( v==0 )
@@ -203,7 +202,7 @@ ap::real_value_type ap::abscomplex(const ap::complex &z)
     else
     {
         ap::real_value_type t = v/w;
-        return w*std::sqrt(1+t*t);
+        return w*sqrt(1+t*t);
     }
 }
 
@@ -432,16 +431,16 @@ int ap::randominteger(int maxv)
 {  return rand()%maxv; }
 
 int ap::round(ap::real_value_type x)
-{ return int(std::floor(x+0.5)); }
+{ return int(floor(x+0.5)); }
 
 int ap::trunc(ap::real_value_type x)
-{ return int(x>0 ? std::floor(x) : std::ceil(x)); }
+{ return int(x>0 ? floor(x) : ceil(x)); }
 
 int ap::ifloor(ap::real_value_type x)
-{ return int(std::floor(x)); }
+{ return int(floor(x)); }
 
 int ap::iceil(ap::real_value_type x)
-{ return int(std::ceil(x)); }
+{ return int(ceil(x)); }
 
 ap::real_value_type ap::pi()
 { return 3.14159265358979323846; }

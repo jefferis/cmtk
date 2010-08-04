@@ -368,10 +368,10 @@ void generaterotation(ap::real_value_type f, ap::real_value_type g, ap::real_val
         {
             f1 = f;
             g1 = g;
-            r = std::sqrt(ap::sqr(f1)+ap::sqr(g1));
+            r = sqrt(ap::sqr(f1)+ap::sqr(g1));
             cs = f1/r;
             sn = g1/r;
-            if( std::fabs(f)>std::fabs(g)&&cs<0 )
+            if( fabs(f)>fabs(g)&&cs<0 )
             {
                 cs = -cs;
                 sn = -sn;

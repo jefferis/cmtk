@@ -146,8 +146,8 @@ ap::real_value_type incompletebeta(ap::real_value_type a, ap::real_value_type b,
     big = 4.503599627370496e15;
     biginv = 2.22044604925031308085e-16;
     maxgam = 171.624376956302725;
-    minlog = std::log(ap::minrealnumber);
-    maxlog = std::log(ap::maxrealnumber);
+    minlog = log(ap::minrealnumber);
+    maxlog = log(ap::maxrealnumber);
     ap::ap_error::make_assertion(a>0&&b>0, "Domain error in IncompleteBeta");
     ap::ap_error::make_assertion(x>=0&&x<=1, "Domain error in IncompleteBeta");
     if( x==0 )
@@ -202,12 +202,12 @@ ap::real_value_type incompletebeta(ap::real_value_type a, ap::real_value_type b,
     {
         w = incompletebetafe2(a, b, x, big, biginv)/xc;
     }
-    y = a*std::log(x);
-    t = b*std::log(xc);
-    if( a+b<maxgam&&std::fabs(y)<maxlog&&std::fabs(t)<maxlog )
+    y = a*log(x);
+    t = b*log(xc);
+    if( a+b<maxgam&&fabs(y)<maxlog&&fabs(t)<maxlog )
     {
-        t = std::pow(xc, b);
-        t = t*std::pow(x, a);
+        t = pow(xc, b);
+        t = t*pow(x, a);
         t = t/a;
         t = t*w;
         t = t*(gamma(a+b)/(gamma(a)*gamma(b)));
@@ -229,14 +229,14 @@ ap::real_value_type incompletebeta(ap::real_value_type a, ap::real_value_type b,
         return result;
     }
     y = y+t+lngamma(a+b, sg)-lngamma(a, sg)-lngamma(b, sg);
-    y = y+std::log(w/a);
+    y = y+log(w/a);
     if( y<minlog )
     {
         t = 0.0;
     }
     else
     {
-        t = std::exp(y);
+        t = exp(y);
     }
     if( flag==1 )
     {
@@ -379,17 +379,17 @@ ap::real_value_type invincompletebeta(ap::real_value_type a, ap::real_value_type
             }
             lgm = (yp*yp-3.0)/6.0;
             x = 2.0/(1.0/(2.0*aaa-1.0)+1.0/(2.0*bbb-1.0));
-            d = yp*std::sqrt(x+lgm)/x-(1.0/(2.0*bbb-1.0)-1.0/(2.0*aaa-1.0))*(lgm+5.0/6.0-2.0/(3.0*x));
+            d = yp*sqrt(x+lgm)/x-(1.0/(2.0*bbb-1.0)-1.0/(2.0*aaa-1.0))*(lgm+5.0/6.0-2.0/(3.0*x));
             d = 2.0*d;
-            if( d<std::log(ap::minrealnumber) )
+            if( d<log(ap::minrealnumber) )
             {
                 x = 0;
                 break;
             }
-            x = aaa/(aaa+bbb*std::exp(d));
+            x = aaa/(aaa+bbb*exp(d));
             yyy = incompletebeta(aaa, bbb, x);
             yp = (yyy-y0)/y0;
-            if( std::fabs(yp)<0.2 )
+            if( fabs(yp)<0.2 )
             {
                 mainlooppos = newt;
                 continue;
@@ -435,13 +435,13 @@ ap::real_value_type invincompletebeta(ap::real_value_type a, ap::real_value_type
                     }
                     yyy = incompletebeta(aaa, bbb, x);
                     yp = (x1-x0)/(x1+x0);
-                    if( std::fabs(yp)<dithresh )
+                    if( fabs(yp)<dithresh )
                     {
                         mainlooppos = newt;
                         continue;
                     }
                     yp = (yyy-y0)/y0;
-                    if( std::fabs(yp)<dithresh )
+                    if( fabs(yp)<dithresh )
                     {
                         mainlooppos = newt;
                         continue;
@@ -623,17 +623,17 @@ ap::real_value_type invincompletebeta(ap::real_value_type a, ap::real_value_type
                     mainlooppos = breaknewtcycle;
                     continue;
                 }
-                d = (aaa-1.0)*std::log(x)+(bbb-1.0)*std::log(1.0-x)+lgm;
-                if( d<std::log(ap::minrealnumber) )
+                d = (aaa-1.0)*log(x)+(bbb-1.0)*log(1.0-x)+lgm;
+                if( d<log(ap::minrealnumber) )
                 {
                     break;
                 }
-                if( d>std::log(ap::maxrealnumber) )
+                if( d>log(ap::maxrealnumber) )
                 {
                     mainlooppos = breaknewtcycle;
                     continue;
                 }
-                d = std::exp(d);
+                d = exp(d);
                 d = (yyy-y0)/d;
                 xt = x-d;
                 if( xt<=x0 )
@@ -657,7 +657,7 @@ ap::real_value_type invincompletebeta(ap::real_value_type a, ap::real_value_type
                     }
                 }
                 x = xt;
-                if( std::fabs(d/x)<128.0*ap::machineepsilon )
+                if( fabs(d/x)<128.0*ap::machineepsilon )
                 {
                     break;
                 }
@@ -774,7 +774,7 @@ ap::real_value_type incompletebetafe(ap::real_value_type a,
         }
         if( r!=0 )
         {
-            t = std::fabs((ans-r)/r);
+            t = fabs((ans-r)/r);
             ans = r;
         }
         else
@@ -793,14 +793,14 @@ ap::real_value_type incompletebetafe(ap::real_value_type a,
         k6 = k6-1.0;
         k7 = k7+2.0;
         k8 = k8+2.0;
-        if( std::fabs(qk)+std::fabs(pk)>big )
+        if( fabs(qk)+fabs(pk)>big )
         {
             pkm2 = pkm2*biginv;
             pkm1 = pkm1*biginv;
             qkm2 = qkm2*biginv;
             qkm1 = qkm1*biginv;
         }
-        if( std::fabs(qk)<biginv||std::fabs(pk)<biginv )
+        if( fabs(qk)<biginv||fabs(pk)<biginv )
         {
             pkm2 = pkm2*big;
             pkm1 = pkm1*big;
@@ -890,7 +890,7 @@ ap::real_value_type incompletebetafe2(ap::real_value_type a,
         }
         if( r!=0 )
         {
-            t = std::fabs((ans-r)/r);
+            t = fabs((ans-r)/r);
             ans = r;
         }
         else
@@ -909,14 +909,14 @@ ap::real_value_type incompletebetafe2(ap::real_value_type a,
         k6 = k6+1.0;
         k7 = k7+2.0;
         k8 = k8+2.0;
-        if( std::fabs(qk)+std::fabs(pk)>big )
+        if( fabs(qk)+fabs(pk)>big )
         {
             pkm2 = pkm2*biginv;
             pkm1 = pkm1*biginv;
             qkm2 = qkm2*biginv;
             qkm1 = qkm1*biginv;
         }
-        if( std::fabs(qk)<biginv||std::fabs(pk)<biginv )
+        if( fabs(qk)<biginv||fabs(pk)<biginv )
         {
             pkm2 = pkm2*big;
             pkm1 = pkm1*big;
@@ -959,7 +959,7 @@ ap::real_value_type incompletebetaps(ap::real_value_type a, ap::real_value_type 
     n = 2.0;
     s = 0.0;
     z = ap::machineepsilon*ai;
-    while(std::fabs(v)>z)
+    while(fabs(v)>z)
     {
         u = (n-b)*x/n;
         t = t*u;
@@ -969,22 +969,22 @@ ap::real_value_type incompletebetaps(ap::real_value_type a, ap::real_value_type 
     }
     s = s+t1;
     s = s+ai;
-    u = a*std::log(x);
-    if( a+b<maxgam&&std::fabs(u)<std::log(ap::maxrealnumber) )
+    u = a*log(x);
+    if( a+b<maxgam&&fabs(u)<log(ap::maxrealnumber) )
     {
         t = gamma(a+b)/(gamma(a)*gamma(b));
-        s = s*t*std::pow(x, a);
+        s = s*t*pow(x, a);
     }
     else
     {
-        t = lngamma(a+b, sg)-lngamma(a, sg)-lngamma(b, sg)+u+std::log(s);
-        if( t<std::log(ap::minrealnumber) )
+        t = lngamma(a+b, sg)-lngamma(a, sg)-lngamma(b, sg)+u+log(s);
+        if( t<log(ap::minrealnumber) )
         {
             s = 0.0;
         }
         else
         {
-            s = std::exp(t);
+            s = exp(t);
         }
     }
     result = s;

@@ -65,21 +65,21 @@ testParametricPlaneMirror()
     VectorType mv = v;
     pm.Multiply( mv );
     
-    if ( std::sqrt( (mv-pv).SumOfSquares() ) > 1e-5 )
+    if ( sqrt( (mv-pv).SumOfSquares() ) > 1e-5 )
       {
       std::cerr << "ParametricPlane::MirrorInPlace and mirror matrix produce different results." << std::endl;
       return 1;
       }
     
     pm.Multiply( mv );
-    if ( std::sqrt( (mv-v).SumOfSquares() ) > 1e-5 )
+    if ( sqrt( (mv-v).SumOfSquares() ) > 1e-5 )
       {
       std::cerr << "ParametricPlane mirror matrix applied twice does not return to original point." << std::endl;
       return 1;
       }
     
     plane.MirrorInPlace( pv );
-    if ( std::sqrt( (pv-v).SumOfSquares() ) > 1e-5 )
+    if ( sqrt( (pv-v).SumOfSquares() ) > 1e-5 )
       {
       std::cerr << "ParametricPlane::MirrorInPlane applied twice does not return to original point." << std::endl;
       return 1;
@@ -122,21 +122,21 @@ testParametricPlaneMirrorOffset()
     VectorType mv = v;
     pm.Multiply( mv );
     
-    if ( std::sqrt( (mv-pv).SumOfSquares() ) > 1e-5 )
+    if ( sqrt( (mv-pv).SumOfSquares() ) > 1e-5 )
       {
       std::cerr << "ParametricPlane::MirrorInPlace and mirror matrix produce different results." << std::endl;
       return 1;
       }
     
     pm.Multiply( mv );
-    if ( std::sqrt( (mv-v).SumOfSquares() ) > 1e-5 )
+    if ( sqrt( (mv-v).SumOfSquares() ) > 1e-5 )
       {
       std::cerr << "ParametricPlane mirror matrix applied twice does not return to original point." << std::endl;
       return 1;
       }
     
     plane.MirrorInPlace( pv );
-    if ( std::sqrt( (pv-v).SumOfSquares() ) > 1e-5 )
+    if ( sqrt( (pv-v).SumOfSquares() ) > 1e-5 )
       {
       std::cerr << "ParametricPlane::MirrorInPlane applied twice does not return to original point." << std::endl;
       return 1;
