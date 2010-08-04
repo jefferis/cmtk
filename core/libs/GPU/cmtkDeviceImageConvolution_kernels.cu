@@ -133,7 +133,7 @@ cmtk::DeviceImageConvolution( float* dest, const int* dims3, void* array, const 
   dim3 threads( 512 );
   dim3 blocks( nPixels/512+1 );
 
-  cmtkDeviceImageConvolutionKernelX<<<threads,blocks>>>( dest, dims3[0], dims3[1], dims3[2], kernelLengthX, (kernelLengthX-1)>>1 );
+  cmtkDeviceImageConvolutionKernelX<<<blocks,threads>>>( dest, dims3[0], dims3[1], dims3[2], kernelLengthX, (kernelLengthX-1)>>1 );
   cmtkCheckLastErrorCUDA;
 
   cudaMemcpy3DParms copyParams = {0};
@@ -145,13 +145,13 @@ cmtk::DeviceImageConvolution( float* dest, const int* dims3, void* array, const 
   cmtkCheckCallCUDA( cudaMemcpy3D( &copyParams ) );
 
   cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceKernel, kernelY, kernelLengthY * sizeof( float ), 0, cudaMemcpyHostToDevice ) );
-  cmtkDeviceImageConvolutionKernelY<<<threads,blocks>>>( dest, dims3[0], dims3[1], dims3[2], kernelLengthY, (kernelLengthY-1)>>1 );
+  cmtkDeviceImageConvolutionKernelY<<<blocks,threads>>>( dest, dims3[0], dims3[1], dims3[2], kernelLengthY, (kernelLengthY-1)>>1 );
   cmtkCheckLastErrorCUDA;
 
   cmtkCheckCallCUDA( cudaMemcpy3D( &copyParams ) );
 
   cmtkCheckCallCUDA( cudaMemcpyToSymbol( deviceKernel, kernelZ, kernelLengthZ * sizeof( float ), 0, cudaMemcpyHostToDevice ) );  
-  cmtkDeviceImageConvolutionKernelZ<<<threads,blocks>>>( dest, dims3[0], dims3[1], dims3[2], kernelLengthZ, (kernelLengthZ-1)>>1 );
+  cmtkDeviceImageConvolutionKernelZ<<<blocks,threads>>>( dest, dims3[0], dims3[1], dims3[2], kernelLengthZ, (kernelLengthZ-1)>>1 );
   cmtkCheckLastErrorCUDA;
   
   cmtkCheckCallCUDA( cudaUnbindTexture( texRef ) );
