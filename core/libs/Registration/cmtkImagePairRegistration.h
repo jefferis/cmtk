@@ -179,6 +179,9 @@ protected:
     /// Flag for histogram equalization.
     bool m_HistogramEqualization;
 
+    /// Radius for median filter (0 - no filtering).
+    int m_MedianFilterRadius;
+
     /// Flag for application of Sobel edge detection filter.
     bool m_SobelFilter;
 

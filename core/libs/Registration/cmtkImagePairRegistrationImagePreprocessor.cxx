@@ -52,6 +52,7 @@ ImagePairRegistration::ImagePreprocessor::ImagePreprocessor( const char* name, c
     m_UsePruneHistogramBins( false ),
     m_PruneHistogramBins( 0 ),
     m_HistogramEqualization( false ),
+    m_MedianFilterRadius( 0 ),
     m_SobelFilter( false ),
     m_CropIndex( NULL ),
     m_CropWorld( NULL ),
@@ -77,6 +78,7 @@ ImagePairRegistration::ImagePreprocessor::AttachToCommandLine
   
   cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "prune-histogram-" ), this->m_Key ) ), &this->m_PruneHistogramBins, "Number of bins for histogram-based pruning", &this->m_UsePruneHistogramBins );
   cl.AddSwitch( CommandLine::Key( strcat( strcpy( buffer, "histogram-equalization-" ), this->m_Key ) ), &this->m_HistogramEqualization, true, "Apply histogram equalization" );
+  cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "median-filter-radius-" ), this->m_Key ) ), &this->m_MedianFilterRadius, "Apply median filter with given radius" );
   cl.AddSwitch( CommandLine::Key( strcat( strcpy( buffer, "sobel-filter-" ), this->m_Key ) ), &this->m_SobelFilter, true, "Apply Sobel edge detection filter" );
   
   cl.AddOption( CommandLine::Key( strcat( strcpy( buffer, "crop-index-" ), this->m_Key ) ), &this->m_CropIndex, "Cropping region in pixel index coordinates [parsed as %d,%d,%d,%d,%d,%d for i0,j0,k0,i1,j1,k1]" );
@@ -118,6 +120,11 @@ ImagePairRegistration::ImagePreprocessor::GetProcessedImage( const UniformVolume
     data->ApplyFunctionObject( TypedArrayFunctionHistogramEqualization( *data ) );
     }
 
+  if ( this->m_MedianFilterRadius ) 
+    {
+    volume->SetData( DataGridFilter( volume ).GetDataMedianFiltered( this->m_MedianFilterRadius ) );
+    }
+  
   if ( this->m_SobelFilter ) 
     {
     volume->SetData( DataGridFilter( volume ).GetDataSobelFiltered() );
