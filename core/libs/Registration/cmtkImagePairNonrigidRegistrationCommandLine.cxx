@@ -173,6 +173,7 @@ ImagePairNonrigidRegistrationCommandLine
     metricGroup->AddSwitch( Key( "nmi" ), 0, "Normalized Mutual Information metric" );
     metricGroup->AddSwitch( Key( "mi" ), 1, "Standard Mutual Information metric" );
     metricGroup->AddSwitch( Key( "cr" ), 2, "Correlation Ratio metric" );
+    metricGroup->AddSwitch( Key( "rms" ), 3, "Root of Mean Squaresa metric (this is the square root of MSD)" );
     metricGroup->AddSwitch( Key( "msd" ), 4, "Mean Squared Difference metric" );
     metricGroup->AddSwitch( Key( "ncc" ), 5, "Normalized Cross Correlation metric" );
 

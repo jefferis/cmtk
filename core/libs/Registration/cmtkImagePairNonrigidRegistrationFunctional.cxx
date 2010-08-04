@@ -39,6 +39,7 @@
 
 #include "Registration/cmtkImagePairSimilarityMeasureCR.h"
 #include "Registration/cmtkImagePairSimilarityMeasureMSD.h"
+#include "Registration/cmtkImagePairSimilarityMeasureRMS.h"
 #include "Registration/cmtkImagePairSimilarityMeasureNCC.h"
 #include "Registration/cmtkImagePairSimilarityMeasureNMI.h"
 #include "Registration/cmtkImagePairSimilarityMeasureMI.h"
@@ -193,7 +194,7 @@ ImagePairNonrigidRegistrationFunctional::Create
     case 2:
       return new ImagePairNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureCR>( refVolume, fltVolume, interpolation );
     case 3:
-      return NULL; // masked NMI retired
+      return new ImagePairNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureRMS>( refVolume, fltVolume, interpolation );
     case 4:
       return new ImagePairNonrigidRegistrationFunctionalTemplate<ImagePairSimilarityMeasureMSD>( refVolume, fltVolume, interpolation );
     case 5:

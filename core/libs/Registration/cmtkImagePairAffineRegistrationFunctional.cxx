@@ -35,6 +35,7 @@
 #include "Registration/cmtkImagePairAffineRegistrationFunctionalTemplate.h"
 #include "Registration/cmtkImagePairSimilarityMeasureCR.h"
 #include "Registration/cmtkImagePairSimilarityMeasureMSD.h"
+#include "Registration/cmtkImagePairSimilarityMeasureRMS.h"
 #include "Registration/cmtkImagePairSimilarityMeasureNCC.h"
 #include "Registration/cmtkImagePairSimilarityMeasureNMI.h"
 #include "Registration/cmtkImagePairSimilarityMeasureMI.h"
@@ -61,7 +62,7 @@ ImagePairAffineRegistrationFunctional
     case 2:
       return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureCR>( refVolume, fltVolume, interpolation, affineXform );
     case 3:
-      return NULL; // masked nmi retired
+      return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureRMS>( refVolume, fltVolume, interpolation, affineXform );
     case 4:
       return new ImagePairAffineRegistrationFunctionalTemplate<ImagePairSimilarityMeasureMSD>( refVolume, fltVolume, interpolation, affineXform );
     case 5:
