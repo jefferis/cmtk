@@ -1,6 +1,6 @@
 Release CMTK-1.4.1:
 
-(r2156) Added: root mean squares image similarity measure fore "registrationx"
+(r2156) Added: root mean squares image similarity measure for "registrationx"
     and "warpx" tools. This is of course very similar to mean squares (MSD),
     but exhibits different sensitivity to outliers.
 (r2138) Added: GPU-accelerated levelset tool for CUDA, "levelset_cuda."
