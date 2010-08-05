@@ -446,6 +446,7 @@ IF(NOT CMTK_USE_MPI)
   # Tests for "registrationx" tool
   SET(testList ${testList} 
     registrationxAffineMrMrMSD
+    registrationxShearNoScaleMrMrMSD
     registrationxFromList
     registrationxWithInitial
     registrationxWithInitialInverse

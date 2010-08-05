@@ -1170,6 +1170,10 @@ case ${RUNTEST} in
 	run registrationx --init fov --dofs 6,9 --msd --match-histograms -o ${tmpdir} pat001_mr_T1.hdr pat002_mr_T2.hdr
 	check_results registration
 	;;
+    registrationxShearNoScaleMrMrMSD)
+	run registrationx --auto-multi-levels 4 --init fov --dofs 603 --msd --match-histograms -o ${tmpdir} pat001_mr_T1.hdr pat002_mr_T2.hdr
+	check_results registration
+	;;
     registrationxFromList)
 	run registrationx -v --dofs 0 -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
