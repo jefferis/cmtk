@@ -85,7 +85,12 @@ UniformVolume::Resample( const UniformVolume& other ) const
   TypedArray::SmartPtr result = TypedArray::Create( fromData->GetType(), this->GetNumberOfPixels() );
   result->SetData( resampledData );
   result->SetDataClass( fromData->GetDataClass() );
-  delete[] resampledData;
+  if ( fromData->GetPaddingFlag() )
+    {
+    result->SetPaddingValue( fromData->GetPaddingValue() );
+    }
+
+  Memory::DeleteArray( resampledData );
     
   return result;
 }
