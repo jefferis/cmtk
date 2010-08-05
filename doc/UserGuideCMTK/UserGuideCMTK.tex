@@ -424,10 +424,10 @@ reformatx  -o reformat.nii --floating img3.nii \
         img1.nii img1_to_2.xform --inverse img3_to_2.xform
 \end{verbatim} 
 By default, \verb|reformatx| uses trilinear interpolation, but it also
-supports cubic (\verb|--cubic|) and cosine-windowed sinc
-(\verb|--sinc-cosine|) interpolation for intensity images, partial volume
-interpolation~\cite{MaesCollVand:1997} (\verb|--pvi|) for label images, and
-nearest neighbor (\verb|--nn|) interpolation for all types of images.
+supports cubic ({\tt --cubic}) and cosine-windowed sinc
+({\tt --sinc-cosine}) interpolation for intensity images, partial volume
+interpolation~\cite{MaesCollVand:1997} ({\tt --pv}) for label images, and
+nearest neighbor ({\tt --nn}) interpolation for all types of images.
 
 \subsection{Jacobian Determinant Maps}
 
