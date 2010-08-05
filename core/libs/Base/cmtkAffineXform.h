@@ -435,7 +435,7 @@ public:
   /** Get dimension of variable parameter vector.
    * The rotation center is not considered variable, therefore 6 is returned.
    */
-  virtual size_t VariableParamVectorDim () const { return NumberDOFs; }
+  virtual size_t VariableParamVectorDim () const { return std::min( 12, NumberDOFs ); }
 
   /// Set the number of degrees of freedom for this object.
   virtual void SetNumberDOFs ( const int numberDOFs = 12 );
