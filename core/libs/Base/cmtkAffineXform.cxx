@@ -326,12 +326,23 @@ AffineXform::GetParamStep
       return mmStep * 180 / (M_PI * sqrt( MathUtil::Square( volSize[0] ) + MathUtil::Square( volSize[2] ) ) );
     case 5:
       return mmStep * 180 / (M_PI * sqrt( MathUtil::Square( volSize[0] ) + MathUtil::Square( volSize[1] ) ) );
-    case 6: case 7: case 8:
-      if ( this->m_LogScaleFactors )
-	return log( 1 + 0.5 * mmStep / volSize.MaxValue() );
+    case 6: 
+    case 7:
+    case 8:
+      if ( this->NumberDOFs == 603 )
+	{ // special case: 6 DOFs rigid plus 3 DOFs shear, but no scale
+	return 0;
+	}
       else
-	return 0.5 * mmStep / volSize.MaxValue();
-    case 9: case 10: case 11:
+	{
+	if ( this->m_LogScaleFactors )
+	  return log( 1 + 0.5 * mmStep / volSize.MaxValue() );
+	else
+	  return 0.5 * mmStep / volSize.MaxValue();
+	}
+    case 9: 
+    case 10:
+    case 11:
       return 0.5 * mmStep / volSize.MaxValue();
     }
   return mmStep;

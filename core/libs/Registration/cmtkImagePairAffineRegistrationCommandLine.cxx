@@ -143,7 +143,9 @@ ImagePairAffineRegistrationCommandLine
     cl.EndGroup();
 
     cl.BeginGroup( "Transformation", "Transformation parameters" );
-    cl.AddVector( Key( "dofs" ), this->NumberDOFs, "Add number of degrees of freedom [can be repeated]" );
+    cl.AddVector( Key( "dofs" ), this->NumberDOFs, "Add number of degrees of freedom. This can be 3 (translation), 6 (rigid: translation and rotation), "
+		  "7 (rigid plus global scale), 9 (rigid plus anisotropic scales), 12 (rigid plus scales plus shears), or 603 (rigid plus shears, but no scale). "
+		  "This option can be repeated, in which case DOFs are used for successive optimization runs in the order that they appear." );
     cl.AddVector( Key( "dofs-final" ), this->NumberDOFsFinal, "Add number of degrees of freedom for final level only [can be repeated]" );
     
     CommandLine::EnumGroup<MakeInitialAffineTransformation::Mode>::SmartPtr

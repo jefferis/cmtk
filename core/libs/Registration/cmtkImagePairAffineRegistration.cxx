@@ -181,12 +181,11 @@ ImagePairAffineRegistration::EnterResolution
   AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( this->m_Xform );
   if ( affineXform ) 
     {
-    int numberDOFs = std::min<int>( 12, *NumberDOFsIterator );
-    affineXform->SetNumberDOFs( numberDOFs );
+    affineXform->SetNumberDOFs( *NumberDOFsIterator );
     if ( this->m_Callback ) 
       {
       char buffer[64];
-      snprintf( buffer, sizeof( buffer ), "Setting Number DOFs to %d.", numberDOFs );
+      snprintf( buffer, sizeof( buffer ), "Setting Number DOFs to %d.",  *NumberDOFsIterator );
       this->m_Callback->Comment( buffer );
       }
     }
