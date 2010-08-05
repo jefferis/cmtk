@@ -1,5 +1,8 @@
 Release CMTK-1.4.1:
 
+(r2166) Added: "registrationx" tool now supports special number of degrees of
+    freedom, "603", which produces a rigid transformation plus shears, but without
+    scaling (i.e., it uses 6+0+3 parameters of the affine transformation)
 (r2160) Added: on-the-fly median filtering for "registrationx" and "warpx"
     tools.
 (r2156) Added: root mean squares image similarity measure for "registrationx"
