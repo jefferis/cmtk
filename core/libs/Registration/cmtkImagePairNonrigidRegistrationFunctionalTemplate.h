@@ -182,22 +182,25 @@ public:
 	for ( pX = voi.From()[0]; pX<voi.To()[0]; ++pX, ++r, ++pVec ) 
 	  {
 	  // Remove this sample from incremental metric according to "ground warp" image.
-	  const Types::DataItem sampleX = this->m_Metric->GetSampleX( r );
-	  if ( this->m_WarpedVolume[r] != unsetY )
-	    localMetric.Decrement( sampleX, this->m_WarpedVolume[r] );
-	  
-	  // Tell us whether the current location is still within the floating volume and get the respective voxel.
-	  *pVec *= this->m_FloatingInverseDelta;
-	  if ( this->m_FloatingGrid->FindVoxelByIndex( *pVec, fltIdx, fltFrac ) ) 
+	  Types::DataItem sampleX;
+	  if ( this->m_Metric->GetSampleX( sampleX, r ) )
 	    {
-	    // Continue metric computation.
-	    localMetric.Increment( sampleX, this->m_Metric->GetSampleY( fltIdx, fltFrac ) );
-	    } 
-	  else
-	    {
-	    if ( this->m_ForceOutsideFlag )
+	    if ( this->m_WarpedVolume[r] != unsetY )
+	      localMetric.Decrement( sampleX, this->m_WarpedVolume[r] );
+	    
+	    // Tell us whether the current location is still within the floating volume and get the respective voxel.
+	    *pVec *= this->m_FloatingInverseDelta;
+	    if ( this->m_FloatingGrid->FindVoxelByIndex( *pVec, fltIdx, fltFrac ) ) 
 	      {
-	      localMetric.Increment( sampleX, this->m_ForceOutsideValueRescaled );
+	      // Continue metric computation.
+	      localMetric.Increment( sampleX, this->m_Metric->GetSampleY( fltIdx, fltFrac ) );
+	      } 
+	    else
+	      {
+	      if ( this->m_ForceOutsideFlag )
+		{
+		localMetric.Increment( sampleX, this->m_ForceOutsideValueRescaled );
+		}
 	      }
 	    }
 	  }
@@ -398,7 +401,12 @@ private:
 	    {
 	    // Continue metric computation.
 	    warpedVolume[r] = me->m_Metric->GetSampleY( fltIdx, fltFrac );
-	    threadMetric.Increment( me->m_Metric->GetSampleX(r), warpedVolume[r] );
+	    
+	    Types::DataItem value;
+	    if ( me->m_Metric->GetSampleX( value, r ) )
+	      {
+	      threadMetric.Increment( value, warpedVolume[r] );
+	      }
 	    } 
 	  else 
 	    {
