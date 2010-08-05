@@ -138,7 +138,11 @@ ImagePairAffineRegistrationFunctionalTemplate<VM>
 	    if ( me->m_FloatingGrid->FindVoxelByIndex( pFloating, fltIdx, fltFrac ) )
 	      {
 	      // Continue metric computation.
-	      threadMetric->Increment( metric->GetSampleX( r ), metric->GetSampleY( fltIdx, fltFrac ) );
+	      Types::DataItem sampleX;
+	      if ( metric->GetSampleX( sampleX, r ) )
+		{
+		threadMetric->Increment( sampleX, metric->GetSampleY( fltIdx, fltFrac ) );
+		}
 	      }
 	    }
 	  r += (DimsX-endX);

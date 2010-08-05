@@ -94,6 +94,12 @@ public:
     return data;
   }
 
+  /// Get a value from the X distribution (reference image).
+  bool GetSampleX ( Types::DataItem& sample, const size_t index ) const
+  { 
+    return this->m_ReferenceData->Get( sample, index );
+  }
+  
   /// Get number of samples in the X data (reference image pixels).
   size_t GetNumberOfSamplesX() const
   {
