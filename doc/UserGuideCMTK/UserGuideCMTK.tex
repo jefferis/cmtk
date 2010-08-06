@@ -123,14 +123,15 @@ Since one of the primary strengths of CMTK is its selection of powerful and
 well-tested registration tools, we shall first clarify some important
 registration terminology. \index{Registration!terminology} In pairwise
 registration, \index{Registration!pairwise} throughout this guide as well as
-in all tools and source code, we shall refer to one image as the reference and
-the other as the floating image. Others may refer to these as the fixed and
-the moving image, respectively. By definition, all coordinate transformations
-computed by CMTK are functions that map {\em from\/} the space of the
-reference (fixed) image {\em to\/} the space of the floating (moving)
-image. As a result, when reformatting one image to match the other, it is the
-floating image by default that will be transformed to match the reference
-image.
+in all tools and source code, we shall refer to one image as the reference
+\index{Image!reference} and the other as the floating
+image. \index{Image!floating} Others may refer to these as the fixed
+\index{Image!fixed} and the moving image, \index{Image!moving}
+respectively. By definition, all coordinate transformations computed by CMTK
+are functions that map {\em from\/} the space of the reference (fixed) image
+{\em to\/} the space of the floating (moving) image. As a result, when
+reformatting one image to match the other, it is the floating image by default
+that will be transformed to match the reference image.
 
 Note that when we speak about transforming coordinates of features, such as
 landmarks or the nodes in a mesh, then the coordinates of the reference image
@@ -238,6 +239,7 @@ format, {\tt image-1.nii},  {\tt image-2.nii}, and so on.
 \label{fig:InterleavedExample}
 \end{figure}
 
+\index{Image!interleaved MR}
 When MR images are acquired as multiple interleaved sparse image stacks
 (``passes''), subject motion between the passes can lead to characteristic
 artifacts in the final, interleaved image stack (see
@@ -304,7 +306,7 @@ as well as non-human images (Fig.~\ref{fig:Mrbias}), and on brain as well as
 non-brain anatomy, such as abdominal images.
 
 To generate foreground masks automatically, CMTK provides a very simple
-``levelset-type'' segmentation tool:
+``levelset-type'' segmentation tool: \index{Segmentation!levelset}
 \begin{verbatim}
 levelset --binarize spgr.nii foreground.nii
 \end{verbatim}
@@ -358,11 +360,11 @@ parameters are automatically determined for a 4-level multi-resolution
 procedure. 
 
 At each resolution level, the registration first optimizes 6 degrees of
-freedom (DOF), i.e., translation and rotation of a 3D rigid
-transformation. Afterwards, 9 DOFs are optimized, i.e., three anisotropic
-scale factors in addition to the translational and rotational
-parameters. Supported DOF numbers are: 0 (no registration, for testing),
-3 (translation only), 6 (rigid: translation, rotation),  7 (similarity:
+freedom \index{degrees of freedom} (DOF), i.e., translation and rotation of a
+3D rigid transformation. Afterwards, 9 DOFs are optimized, i.e., three
+anisotropic scale factors in addition to the translational and rotational
+parameters. Supported DOF numbers are: 0 (no registration, for testing), 3
+(translation only), 6 (rigid: translation, rotation),  7 (similarity:
 translation, rotation, global scale), 9 (translation, rotation, anisotropic
 scale), and 12 (full affine: translation, rotation, scale, and shears).
 
@@ -376,9 +378,10 @@ squared difference (\verb|--msd|), normalized cross-correlation
 In the above example, the registration transformation is initialized (via
 \verb|--initxlate|) by translating the floating image's center to that of the
 reference image. For more complex initializations, the
-\verb|make_initial_affine| tool can be used, which supports centers of mass,
-principal axes~\cite{AlpeBradKenn:1990}, and image orientation vectors (e.g.,
-as provided by the original DICOM data).
+\verb|make_initial_affine| tool \index{CMTK Tools!make\_initial\_affine@{\tt make\_initial\_affine}} can
+be used, which supports centers of mass, principal
+axes~\cite{AlpeBradKenn:1990}, \index{Registration!principal axes} and image
+orientation vectors (e.g., as provided by the original DICOM data).
 
 For example, in order to first initialize a transformation using principal
 axes and then use the result as the initial transformation for intensity-based
@@ -413,10 +416,11 @@ bending energy:
 \begin{verbatim}
 warp -o ffd5.xform --grid-spacing 40 --refine 3 --energy-weight 1e-1 \
         --initial affine.xform ref.nii flt.nii
-\end{verbatim}
-To prevent folding of the deformation grid, it is possible to instead
-constrain the Jacobian determinant of the deformation to be nonzero, which is
-achieved by changing the above command as follows:
+\end{verbatim} 
+To prevent folding of the deformation grid, it is possible to
+instead constrain the Jacobian determinant \index{Jacobian!registration
+constraint} of the deformation to be nonzero, which is achieved by changing
+the above command as follows:
 \begin{verbatim}
 warp -o ffd5.xform --grid-spacing 40 --refine 3 --jacobian-weight 1e-5 \
         --initial affine.xform ref.nii flt.nii
@@ -445,6 +449,7 @@ nearest neighbor ({\tt --nn}) interpolation for all types of images.
 
 \subsection{Jacobian Determinant Maps}
 
+\index{Jacobian!determinant maps}
 Jacobian determinant maps, which are a staple ingredient of deformation-based
 morphometry studies~\cite{AshbHuttFrac:1998}, can also be computed using the
 \verb|reformatx| tool. In the simplest case, we may want to compute the
@@ -484,6 +489,7 @@ nonrigid transformations are inverted numerically).
 
 \subsection{Statistical Testing}
 
+\index{Jacobian determinant maps}
 For group comparisons of, for example, Jacobian determinant maps between
 different subject groups, the \verb|ttest| tool \index{CMTK
 Tools!ttest@{\tt ttest}} computes different types of t-tests (all
@@ -513,12 +519,13 @@ t-test, that is, a test for significant differences from zero:
 ttest -o pvalues.nii --tstats-file tstats.nii jacobianA1.nii jacobianA2.nii
 \end{verbatim} 
 
-\subsection{General Linear Modeling}
-
-\cite{FrisHolmWors:1995}
+%%\subsection{General Linear Modeling}
+%%
+%%\cite{FrisHolmWors:1995}
 
 \subsection{Atlas-based Segmentation}
 
+\index{Segmentation!atlas-based}
 Atlas-based segmentation uses correspondence between a previously segmented
 image (the atlas) and a new, unsegmented image to create a segmentation of the
 latter~\cite{MillChriAmit:1993}. This relatively simple idea can easily be
@@ -537,7 +544,7 @@ image. The tool will then register the atlas to the new image, reformat that
 atlas label map onto it, and write the result to the file
 \verb|output_labels.nii|.
 
-The standard atlas of CMTK is the SRI24
+The standard atlas of CMTK is the SRI24 \index{Atlas!SRI24}
 atlas~\cite{RohlZahrSull:2008,RohlZahrSull:2010}, which comprises several
 different channels of MR image information, as well as scalar diffusion
 measures, tissue probability maps, and segmentation maps. If CMTK is
@@ -548,8 +555,9 @@ tool, \verb|asegment_sri24|, which uses the SRI24 atlas is also built.
 This tool, by default, registers a given image to the SPGR channel of the
 SRI24 atlas. It then creates and writes a segmentation map based on the
 ``tzo116plus'' label map, which derived from the ``automatic anatomic
-labelling'' (AAL) parcellation map by Tzourio-Mazoyer {\em et
-al.\/}~\cite{TzouLandPapa:2002}. This is achieved simply by running
+labelling'' (AAL) \index{Atlas!AAL template} parcellation map by
+Tzourio-Mazoyer {\em et al.\/}~\cite{TzouLandPapa:2002}. This is achieved
+simply by running
 \begin{verbatim}
 asegment_sri24 input_image.nii output_segmentation.nii
 \end{verbatim} 
@@ -562,9 +570,9 @@ for T1-weighted SPGR, which is the default,``\verb|early-fse|'' for early-echo
 Likewise, different label maps are available for the output, selected by the
 \verb|--label-map| command line option: ``\verb|tzo116plus|'' for the extended
 Tzourio-Mazoyer map, ``\verb|lpba40|'' for a segmentation based on the
-40-subject LONI Probabilistic Brain Atlas~\cite{ShatMirzAdis:2008}, and
-``\verb|tissue|'' for a maximum-likelihood three-tissue (CSF, WM, GM)
-segmentation.
+40-subject LONI Probabilistic Brain Atlas~\cite{ShatMirzAdis:2008} (LPBA40),
+\index{Atlas!LPBA40} and ``\verb|tissue|'' for a maximum-likelihood
+three-tissue (CSF, WM, GM) segmentation.
 
 \begin{figure}[tb]
 \centerline{\includegraphics[width=\linewidth]{img/slicer-asegment_sri24}}
@@ -575,7 +583,7 @@ segmentation.
 
 The integration of a complete atlas-based segmentation workflow with a
 pre-defined atlas is particularly convenient when using CMTK's tools from
-within the 3D
+within the \index{Slicer software} 3D
 Slicer\footnote{http://www.slicer.org}. Fig.~\ref{fig:SlicerSRI24} shows an
 example of the Slicer-generated user interface for the \verb|asegment_sri24|
 tool, as well as the result of an atlas-based segmentation using the
@@ -584,7 +592,7 @@ tool, as well as the result of an atlas-based segmentation using the
 \clearpage
 \section{Atlas Construction}
 
-\index{Atlas}
+\index{Atlas!construction}
 In addition to being useful for atlas-based segmentation, CMTK also provides
 tools that can be used in the construction of atlases. Indeed, its tools have
 been used to create several published brain atlases of humans and different
@@ -596,10 +604,15 @@ Based on pairwise registrations between images in a group and a single selected
 reference image, an atlas can be created as the average intensity image
 deformed by the inverse average deformation~\cite{GuimMeunThir:2000}.
 
-\cite{JeffPottChan:2007}
-
-\cite{FranRuecSchn:2001,FranRuecSchn:2002}
-
+As CMTK's {\tt warp} tool computes nonrigid transformations based on the
+B-spline free-form deformation model, computing the average deformation field
+is related to the concept of the Active Deformation Model (ADM) intoduced by
+Frangi {\em et al.\/}~\cite{FranRuecSchn:2001,FranRuecSchn:2002}. The tool to
+compute the average image in average coordinates is, somewhat consequently,
+called {\tt avg\_adm}. A typical processing sequence using this tool for
+averaging five images would first compute (using {\tt warp}) the nonrigid
+transformations from a selected reference to the other images, then apply {\tt
+avg\_adm} to compute the actual average:
 \begin{verbatim}
 warp -o xform01 img0.nii img1.nii
 warp -o xform02 img0.nii img2.nii
@@ -608,6 +621,10 @@ warp -o xform04 img0.nii img4.nii
 avg_adm -o atlas.nii xform01 xform02 xform03 xform04
 \end{verbatim}
 \index{CMTK Tools!avg\_adm@{\tt avg\_adm}}
+\index{CMTK Tools!warp@{\tt warp}}
+
+CMTK's tools have been used in this way to create a registration template for
+a study of the olfactory system of the fruit fly~\cite{JeffPottChan:2007}.
 
 \subsection{Iterative Shape Averaging}
 
@@ -627,19 +644,27 @@ sh iterative_shape_averaging.sh ref_image.nii flt_image1.nii flt_image2.nii
 \subsection{Groupwise Population Registration}
 
 \index{Registration!groupwise} 
+Direct groupwise registration avoids the need to select an image as the
+(initial or final) reference and is, therefore, considered unbiased with
+respect to such choice.
 
-\cite{Learned-Miller:2006}
-\cite{BalcGollShen:2007}
-\cite{RohlZahrSull:2008,RohlZahrSull:2010}
+CMTK implements a groupwise registration algorithm called
+``congealing''~\cite{Learned-Miller:2006}, both using the affine and the
+B-spline FFD transformation models~\cite{BalcGollShen:2007}.
 
-\index{CMTK Tools!congeal@{\tt congeal}}
-\index{CMTK Tools!congeal\_warp@{\tt congeal\_warp}}
+\index{CMTK Tools!congeal@{\tt congeal}} \index{CMTK Tools!congeal\_warp@{\tt
+congeal\_warp}} The two command line tools, {\tt congeal} and {\tt
+congeal\_warp} were used, among other applications, to create the publicly
+available SRI24 atlas \index{Atlas!SRI24} of normal human brain
+anatomy~\cite{RohlZahrSull:2008,RohlZahrSull:2010}.
 
 \clearpage
 \section{More Gory Details}
 
 \subsection{Registration Options for Image Pre-Processing}
 
+\index{CMTK Tools!registration@{\tt registration}}
+\index{CMTK Tools!warp@{\tt warp}}
 Both the affine and nonrigid pairwise image registration, \verb|registration|
 and \verb|warp|, support a number of pre-processing operations that can be
 applied to the reference and floating image on-the-fly, prior to
@@ -678,21 +703,22 @@ floating image FOV can be defined using the \verb|--force-outside-value|
 option. This artificially inreases the overlapping image region that can be
 considered for registration, which may help increase registration robustness. 
 
-\subsection{Nonrigid Registration Options}
-
-\verb|--delay-refine|
-
-\verb|--exact-spacing|
-
-\verb|--restrict|
-
-\verb|--accurate|
-
-\verb|--delta-f-threshold|
-
-\verb|--ic-weight| \cite{ChriJohn:2001}
-
-\verb|--relax| \cite{RohlMaurBlue:2003b}
+%%\subsection{Nonrigid Registration Options}
+%%
+%%Other potentially 
+%%\verb|--delay-refine|
+%%
+%%\verb|--exact-spacing|
+%%
+%%\verb|--restrict|
+%%
+%%\verb|--accurate|
+%%
+%%\verb|--delta-f-threshold|
+%%
+%%\verb|--ic-weight| \cite{ChriJohn:2001}
+%%
+%%\verb|--relax| \cite{RohlMaurBlue:2003b}
 
 \clearpage
 \section*{Acknowledgments}
@@ -721,3 +747,4 @@ and working on the MacOS platform.
 \printindex
 
 \end{document}
+
