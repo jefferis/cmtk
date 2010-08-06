@@ -41,7 +41,6 @@
 
 #include "System/cmtkProgress.h"
 #include "System/cmtkProgressConsole.h"
-#include "System/cmtkCommandLine.h"
 
 cmtk::ImageSymmetryPlaneCommandLineBase
 ::ImageSymmetryPlaneCommandLineBase()
@@ -66,8 +65,71 @@ cmtk::ImageSymmetryPlaneCommandLineBase
     m_SymmetryParameters( NULL ),
     m_SymmetryParametersFile( NULL ),
     m_InFileName( NULL ),
-    m_InitialPlane( SYMPL_INIT_YZ )
-{}
+    m_InitialPlane( SYMPL_INIT_YZ ),
+    m_CommandLine( CommandLine::PROPS_XML )
+{
+  this->m_CommandLine.SetProgramInfo( CommandLine::PRG_TITLE, "Symmetry plane computation" );
+  this->m_CommandLine.SetProgramInfo( CommandLine::PRG_DESCR, "Compute the approximate symmetry plane of an image to determine, for example, the mid-sagittal plane in human brain images. "
+				      "Various forms of output are supported, e.g., writing the input image with the symmetry plane drawn into it, or the input image realigned along the symmetry plane." );
+  this->m_CommandLine.SetProgramInfo( CommandLine::PRG_CATEG, "CMTK.Registration" );
+  
+  typedef CommandLine::Key Key;
+  this->m_CommandLine.AddSwitch( Key( 'v', "verbose" ), &this->m_Verbose, true, "Turn on verbosity mode." )->SetProperties( CommandLine::PROPS_NOXML );
+  
+  this->m_CommandLine.BeginGroup( "Optimization", "Optimization" );
+  this->m_CommandLine.AddOption( Key( 'a', "accuracy" ), &this->m_Accuracy, "Accuracy (final optimization step size in [mm]." );
+  this->m_CommandLine.AddOption( Key( 's', "sampling" ), &this->m_Sampling, "Resampled image resolution. This is the resolution [in mm] of the first (finest) resampled image in the multi-scale pyramid, "
+				 "which is derived directly from the original full-resolution images.");
+  this->m_CommandLine.AddOption( Key( 'l', "levels" ), &this->m_Levels, "Number of resolution levels. The algorithm will create (levels-1) resampled images with increasingly coarse resolution and use these "
+				 "in successive order of increasing resolution before using the original images at the final level." );
+  this->m_CommandLine.AddSwitch( Key( "fix-offset" ), &this->m_FixOffset, true, "Fix symmetry plane offset. Reduces computation time and forces symmetry plane to cross center of mass, but may lead to less-than-accurate result." );
+  this->m_CommandLine.EndGroup();
+  
+  this->m_CommandLine.BeginGroup( "Initial", "Initial approximate symmetry plane orientation" );
+  CommandLine::EnumGroup<InitialPlaneEnum>::SmartPtr
+    initialPlane = this->m_CommandLine.AddEnum( "initial-plane", &this->m_InitialPlane, "Initial orientation of symmetry plane. This should be the closest orthogonal plane to the expected actual symmetry plane." );
+  initialPlane->AddSwitch( Key( "initial-axial" ), SYMPL_INIT_XY, "Approximately axial symmetry" );
+  initialPlane->AddSwitch( Key( "initial-coronal" ), SYMPL_INIT_XZ, "Approximately coronal symmetry" );
+  initialPlane->AddSwitch( Key( "initial-sagittal" ), SYMPL_INIT_YZ, "Approximately sagittal symmetry" );
+  initialPlane->AddSwitch( Key( "initial-xy" ), SYMPL_INIT_XY, "Approximately XY plane symmetry" );
+  initialPlane->AddSwitch( Key( "initial-xz" ), SYMPL_INIT_XZ, "Approximately XZ plane symmetry" );
+  initialPlane->AddSwitch( Key( "initial-yz" ), SYMPL_INIT_YZ, "Approximately YZ plane symmetry" );
+  this->m_CommandLine.EndGroup();
+  
+  this->m_CommandLine.BeginGroup( "Pre-computed", "Pre-computed symmetry" )->SetProperties( CommandLine::PROPS_ADVANCED | CommandLine::PROPS_NOXML );
+  this->m_CommandLine.AddOption( Key( "output-only" ), &this->m_SymmetryParameters, "Give symmetry parameters [Rho Theta Phi] as option, skip search.", &this->m_DisableOptimization );
+  this->m_CommandLine.AddOption( Key( "output-only-file" ), &this->m_SymmetryParametersFile, "Read symmetry parameters from file, skip search.", &this->m_DisableOptimization );
+  this->m_CommandLine.EndGroup();
+  
+  this->m_CommandLine.BeginGroup( "Preprocessing", "Data pre-processing" )->SetProperties( CommandLine::PROPS_ADVANCED );
+  this->m_CommandLine.AddOption( Key( "min-value" ), &this->m_MinValue, "Force minumum data value.", &this->m_MinValueSet );
+  this->m_CommandLine.AddOption( Key( "max-value" ), &this->m_MaxValue, "Force maximum data value.", &this->m_MaxValueSet );
+  this->m_CommandLine.EndGroup();
+  
+  this->m_CommandLine.BeginGroup( "OutputImages", "Output of Images" );
+  CommandLine::EnumGroup<Interpolators::InterpolationEnum>::SmartPtr interpGroup = this->m_CommandLine.AddEnum( "interpolation", &this->m_Interpolation, "Interpolation method used for reformatted output data" );
+  interpGroup->AddSwitch( Key( 'L', "linear" ), Interpolators::LINEAR, "Use linear image interpolation for output." );
+  interpGroup->AddSwitch( Key( 'C', "cubic" ), Interpolators::CUBIC, "Use cubic image interpolation for output." );
+  interpGroup->AddSwitch( Key( 'S', "sinc" ), Interpolators::COSINE_SINC, "Use cosine-windowed sinc image interpolation for output." );
+  
+  this->m_CommandLine.AddOption( Key( 'P', "pad-out" ), &this->m_PadOutValue, "Padding value for output images.", &this->m_PadOutValueSet )->SetProperties( CommandLine::PROPS_ADVANCED );
+  this->m_CommandLine.AddOption( Key( "mark-value" ), &this->m_MarkPlaneValue, "Data value to mark (draw) symmetry plane." );
+  this->m_CommandLine.AddOption( Key( "write-marked" ), &this->m_MarkedOutFile, "File name for output image with marked symmetry plane." )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OUTPUT );
+  this->m_CommandLine.AddOption( Key( "write-aligned" ), &this->m_AlignedOutFile, "File name for symmetry plane-aligned output image." )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OUTPUT );
+  this->m_CommandLine.AddSwitch( Key( "mark-aligned" ), &this->m_MarkPlaneAligned, true, "Mark symmetry plane in aligned output image." );
+  this->m_CommandLine.AddOption( Key( "write-subtract" ), &this->m_DifferenceOutFile, "File name for mirror subtraction image." )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OUTPUT );
+  this->m_CommandLine.AddOption( Key( "write-mirror" ), &this->m_MirrorOutFile, "File name for image mirrored w.r.t. symmetry plane." )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OUTPUT );
+  this->m_CommandLine.EndGroup();
+  
+  this->m_CommandLine.BeginGroup( "OutputParameters", "Output of Parameters" )->SetProperties( CommandLine::PROPS_ADVANCED );
+  this->m_CommandLine.AddOption( Key( 'o', "outfile" ), &this->m_SymmetryOutFileName, "File name for symmetry plane parameter output." )->SetProperties( CommandLine::PROPS_FILENAME | CommandLine::PROPS_OUTPUT );
+  this->m_CommandLine.AddOption( Key( "write-xform" ), &this->m_WriteXformPath, "Write affine alignment transformation to file" )
+    ->SetProperties( CommandLine::PROPS_XFORM | CommandLine::PROPS_OUTPUT )
+    ->SetAttribute( "reference", "InputImage" );
+  this->m_CommandLine.EndGroup();
+  
+  this->m_CommandLine.AddParameter( &this->m_InFileName, "InputImage", "Input image path" )->SetProperties( CommandLine::PROPS_IMAGE );
+}
 
 int
 cmtk::ImageSymmetryPlaneCommandLineBase
@@ -208,70 +270,7 @@ cmtk::ImageSymmetryPlaneCommandLineBase
 {
   try
     {
-    CommandLine cl( CommandLine::PROPS_XML  );
-    cl.SetProgramInfo( CommandLine::PRG_TITLE, "Symmetry plane computation" );
-    cl.SetProgramInfo( CommandLine::PRG_DESCR, "Compute the approximate symmetry plane of an image to determine, for example, the mid-sagittal plane in human brain images. "
-		       "Various forms of output are supported, e.g., writing the input image with the symmetry plane drawn into it, or the input image realigned along the symmetry plane." );
-    cl.SetProgramInfo( CommandLine::PRG_CATEG, "CMTK.Registration" );
-    
-    typedef CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &this->m_Verbose, true, "Turn on verbosity mode." )->SetProperties( CommandLine::PROPS_NOXML );
-    
-    cl.BeginGroup( "Optimization", "Optimization" );
-    cl.AddOption( Key( 'a', "accuracy" ), &this->m_Accuracy, "Accuracy (final optimization step size in [mm]." );
-    cl.AddOption( Key( 's', "sampling" ), &this->m_Sampling, "Resampled image resolution. This is the resolution [in mm] of the first (finest) resampled image in the multi-scale pyramid, "
-		  "which is derived directly from the original full-resolution images.");
-    cl.AddOption( Key( 'l', "levels" ), &this->m_Levels, "Number of resolution levels. The algorithm will create (levels-1) resampled images with increasingly coarse resolution and use these "
-		  "in successive order of increasing resolution before using the original images at the final level." );
-    cl.AddSwitch( Key( "fix-offset" ), &this->m_FixOffset, true, "Fix symmetry plane offset. Reduces computation time and forces symmetry plane to cross center of mass, but may lead to less-than-accurate result." );
-    cl.EndGroup();
-    
-    cl.BeginGroup( "Initial", "Initial approximate symmetry plane orientation" );
-    CommandLine::EnumGroup<InitialPlaneEnum>::SmartPtr
-      initialPlane = cl.AddEnum( "initial-plane", &this->m_InitialPlane, "Initial orientation of symmetry plane. This should be the closest orthogonal plane to the expected actual symmetry plane." );
-    initialPlane->AddSwitch( Key( "initial-axial" ), SYMPL_INIT_XY, "Approximately axial symmetry" );
-    initialPlane->AddSwitch( Key( "initial-coronal" ), SYMPL_INIT_XZ, "Approximately coronal symmetry" );
-    initialPlane->AddSwitch( Key( "initial-sagittal" ), SYMPL_INIT_YZ, "Approximately sagittal symmetry" );
-    initialPlane->AddSwitch( Key( "initial-xy" ), SYMPL_INIT_XY, "Approximately XY plane symmetry" );
-    initialPlane->AddSwitch( Key( "initial-xz" ), SYMPL_INIT_XZ, "Approximately XZ plane symmetry" );
-    initialPlane->AddSwitch( Key( "initial-yz" ), SYMPL_INIT_YZ, "Approximately YZ plane symmetry" );
-    cl.EndGroup();
-    
-    cl.BeginGroup( "Pre-computed", "Pre-computed symmetry" )->SetProperties( CommandLine::PROPS_ADVANCED | CommandLine::PROPS_NOXML );
-    cl.AddOption( Key( "output-only" ), &this->m_SymmetryParameters, "Give symmetry parameters [Rho Theta Phi] as option, skip search.", &this->m_DisableOptimization );
-    cl.AddOption( Key( "output-only-file" ), &this->m_SymmetryParametersFile, "Read symmetry parameters from file, skip search.", &this->m_DisableOptimization );
-    cl.EndGroup();
-    
-    cl.BeginGroup( "Preprocessing", "Data pre-processing" )->SetProperties( CommandLine::PROPS_ADVANCED );
-    cl.AddOption( Key( "min-value" ), &this->m_MinValue, "Force minumum data value.", &this->m_MinValueSet );
-    cl.AddOption( Key( "max-value" ), &this->m_MaxValue, "Force maximum data value.", &this->m_MaxValueSet );
-    cl.EndGroup();
-    
-    cl.BeginGroup( "OutputImages", "Output of Images" );
-    CommandLine::EnumGroup<Interpolators::InterpolationEnum>::SmartPtr interpGroup = cl.AddEnum( "interpolation", &this->m_Interpolation, "Interpolation method used for reformatted output data" );
-    interpGroup->AddSwitch( Key( 'L', "linear" ), Interpolators::LINEAR, "Use linear image interpolation for output." );
-    interpGroup->AddSwitch( Key( 'C', "cubic" ), Interpolators::CUBIC, "Use cubic image interpolation for output." );
-    interpGroup->AddSwitch( Key( 'S', "sinc" ), Interpolators::COSINE_SINC, "Use cosine-windowed sinc image interpolation for output." );
-    
-    cl.AddOption( Key( 'P', "pad-out" ), &this->m_PadOutValue, "Padding value for output images.", &this->m_PadOutValueSet )->SetProperties( CommandLine::PROPS_ADVANCED );
-    cl.AddOption( Key( "mark-value" ), &this->m_MarkPlaneValue, "Data value to mark (draw) symmetry plane." );
-    cl.AddOption( Key( "write-marked" ), &this->m_MarkedOutFile, "File name for output image with marked symmetry plane." )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OUTPUT );
-    cl.AddOption( Key( "write-aligned" ), &this->m_AlignedOutFile, "File name for symmetry plane-aligned output image." )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OUTPUT );
-    cl.AddSwitch( Key( "mark-aligned" ), &this->m_MarkPlaneAligned, true, "Mark symmetry plane in aligned output image." );
-    cl.AddOption( Key( "write-subtract" ), &this->m_DifferenceOutFile, "File name for mirror subtraction image." )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OUTPUT );
-    cl.AddOption( Key( "write-mirror" ), &this->m_MirrorOutFile, "File name for image mirrored w.r.t. symmetry plane." )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OUTPUT );
-    cl.EndGroup();
-
-    cl.BeginGroup( "OutputParameters", "Output of Parameters" )->SetProperties( CommandLine::PROPS_ADVANCED );
-    cl.AddOption( Key( 'o', "outfile" ), &this->m_SymmetryOutFileName, "File name for symmetry plane parameter output." )->SetProperties( CommandLine::PROPS_FILENAME | CommandLine::PROPS_OUTPUT );
-    cl.AddOption( Key( "write-xform" ), &this->m_WriteXformPath, "Write affine alignment transformation to file" )
-      ->SetProperties( CommandLine::PROPS_XFORM | CommandLine::PROPS_OUTPUT )
-      ->SetAttribute( "reference", "InputImage" );
-    cl.EndGroup();
-    
-    cl.AddParameter( &this->m_InFileName, "InputImage", "Input image path" )->SetProperties( CommandLine::PROPS_IMAGE );
-    
-    if ( ! cl.Parse( argc, argv ) ) return false;
+    if ( ! this->m_CommandLine.Parse( argc, argv ) ) return false;
     
     if ( this->m_SymmetryParameters ) 
       {

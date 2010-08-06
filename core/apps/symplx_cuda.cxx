@@ -40,6 +40,9 @@
 int
 main ( const int argc, const char* argv[] ) 
 {
-  return cmtk::ImageSymmetryPlaneCommandLine<cmtk::ImageSymmetryPlaneFunctionalDevice>().Run( argc, argv );
+  cmtk::ImageSymmetryPlaneCommandLine<cmtk::ImageSymmetryPlaneFunctionalDevice> sympl;
+  sympl.GetCommandLine().SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Registration.GPU" );
+
+  return sympl.Run( argc, argv );
 }
 

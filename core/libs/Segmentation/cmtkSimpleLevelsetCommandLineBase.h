@@ -37,6 +37,8 @@
 
 #include "Segmentation/cmtkSimpleLevelset.h"
 
+#include "System/cmtkCommandLine.h"
+
 namespace
 cmtk
 {
@@ -57,6 +59,12 @@ public:
 
   /// Initialize from command line arguments.
   int Init( const int argc, const char* argv[] );
+
+  /// Reference to command line object.
+  CommandLine& GetCommandLine()
+  {
+    return this->m_CommandLine;
+  }
 
 protected:
   ///Verbose mode.
@@ -93,6 +101,10 @@ protected:
   /// Update this image/transformation database with the newly created levelset image.
   const char* m_UpdateDB;
 #endif  
+
+private:
+  /// The command line parser object.
+  cmtk::CommandLine m_CommandLine;
 };
 
 } // namespace cmtk

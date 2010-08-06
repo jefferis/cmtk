@@ -47,6 +47,7 @@ int
 main( const int argc, const char* argv[] )
 {
   cmtk::SimpleLevelsetCommandLine<cmtk::SimpleLevelsetDevice> levelset;
+  levelset.GetCommandLine().SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation.GPU" );
 
   const int init = levelset.Init( argc, argv );
   if ( init )

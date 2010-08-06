@@ -35,8 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCannotBeCopied.h"
 #include "Registration/cmtkImageSymmetryPlaneFunctionalBase.h"
+
+#include "System/cmtkCannotBeCopied.h"
+#include "System/cmtkCommandLine.h"
 
 namespace
 cmtk
@@ -59,6 +61,12 @@ public:
    * from main() via either "return" or "exit()".
    */
   int Run( const int argc, const char* argv[] );
+
+  /// Get reference to command line parser object.
+  CommandLine& GetCommandLine()
+  {
+    return this->m_CommandLine;
+  }
 
 protected:
   /// Create functional for volume.
@@ -180,6 +188,9 @@ private:
 
   /// Write image aligned w.r.t. the symmetry plane.
   void WriteAligned( UniformVolume::SmartConstPtr& originalVolume ) const;
+
+private:
+  CommandLine m_CommandLine;
 };
 
 } // namespace cmtk
