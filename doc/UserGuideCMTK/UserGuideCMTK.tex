@@ -61,6 +61,7 @@ map generation, and statistical hypothesis testing.
 \clearpage
 \section{Introduction}
 
+\index{CMTK!licensing}
 The Computational Morphometry Toolkit, or short CMTK, is a set of software
 tools that perform various types of processing and analysis on
 three-dimensional (3D) image data. CMTK is available both in source code
@@ -81,6 +82,7 @@ svn co https://nitrc.org/svn/cmtk/trunk/doc/UserGuideCMTK/
 
 \subsection{Coordinate Conventions}
 
+\index{Coordinate system}
 For medical image data, CMTK uses an anatomy-based coordinate system, which we
 refer to as ``RAS'' coordinates. This means that the $x$ direction of the
 coordinate space increases towards the anatomical ``Right,'' the $y$ direction
@@ -306,14 +308,14 @@ as well as non-human images (Fig.~\ref{fig:Mrbias}), and on brain as well as
 non-brain anatomy, such as abdominal images.
 
 To generate foreground masks automatically, CMTK provides a very simple
-``levelset-type'' segmentation tool: \index{Segmentation!levelset}
+``level set-type'' segmentation tool: \index{Segmentation!level set}
 \begin{verbatim}
 levelset --binarize spgr.nii foreground.nii
 \end{verbatim}
 In very broad terms, the tool implements an extreme simplification of the
 algorithm for segmentation without edges by Chan \&
 Vese~\cite{ChanVese:2001}. By default, the tool writes an image that is the
-resulting levelset function, but using the \verb|--binarize| switch turns the
+resulting level set function, but using the \verb|--binarize| switch turns the
 output into a thresholded, binary mask that is appropriate for use by the
 \verb|mrbias| tool.
 
@@ -489,7 +491,7 @@ nonrigid transformations are inverted numerically).
 
 \subsection{Statistical Testing}
 
-\index{Jacobian determinant maps}
+\index{Jacobian!determinant maps}
 For group comparisons of, for example, Jacobian determinant maps between
 different subject groups, the \verb|ttest| tool \index{CMTK
 Tools!ttest@{\tt ttest}} computes different types of t-tests (all
@@ -606,7 +608,7 @@ deformed by the inverse average deformation~\cite{GuimMeunThir:2000}.
 
 As CMTK's {\tt warp} tool computes nonrigid transformations based on the
 B-spline free-form deformation model, computing the average deformation field
-is related to the concept of the Active Deformation Model (ADM) intoduced by
+is related to the concept of the Active Deformation Model (ADM) introduced by
 Frangi {\em et al.\/}~\cite{FranRuecSchn:2001,FranRuecSchn:2002}. The tool to
 compute the average image in average coordinates is, somewhat consequently,
 called {\tt avg\_adm}. A typical processing sequence using this tool for
@@ -700,7 +702,7 @@ differences metric.
 
 {\em Setting value outside FOV:\/} A default value for data outside the
 floating image FOV can be defined using the \verb|--force-outside-value|
-option. This artificially inreases the overlapping image region that can be
+option. This artificially increases the overlapping image region that can be
 considered for registration, which may help increase registration robustness. 
 
 %%\subsection{Nonrigid Registration Options}
@@ -719,6 +721,27 @@ considered for registration, which may help increase registration robustness.
 %%\verb|--ic-weight| \cite{ChriJohn:2001}
 %%
 %%\verb|--relax| \cite{RohlMaurBlue:2003b}
+
+\subsection{GPU-Accelerated Tools}
+
+\index{GPU}
+Starting with the 1.4 release series, CMTK is adding support for accelerating
+computations using general-purpose graphics processing units (GPGPU). As of
+release 1.4.2, GPU support is available for level set segmentation,
+\index{Segmentation!level set}, MR bias field correction, and image symmetry
+plane computation.
+
+For the time being, GPU support is limited to the nVidia CUDA programming
+model, but OpenCL may be supported in future releases. \index{GPU!CUDA}
+\index{GPU!OpenCL} The command line tools that provide CUDA support are
+distinguished from their CPU-only counterparts by the suffix ``{\tt \_cuda}''
+such that the GPU-analog for the {\tt mrbias} tool would be {\tt
+  mrbias\_cuda}. We chose to separate CPU and GPU tools so that both could be
+built jointly on a system with GPU hardware and drivers, but the CPU tools
+could still be used on a system without these capabilities.
+
+Note that while every effort is made to keep the command line syntax and
+semantics identical for CPU and GPU tools, this is not always fully possible.
 
 \clearpage
 \section*{Acknowledgments}
