@@ -1,6 +1,6 @@
 Release CMTK-1.4.1:
 
-(r2174) Refactored: command line arguments now passed to CommandLine::Parse,
+(r2176) Refactored: command line arguments now passed to CommandLine::Parse,
     rather than constructor.
 (r2171) Fixed: "new" registration classes (exposed in "registrationx" and
     "warpx" tools) now respect reference image padding. Also fixed bug that
