@@ -65,11 +65,11 @@ unsigned int FirstLabel = 0;
 bool ByLabel = false;
 
 int
-main ( int argc, char* argv[] ) 
+main ( const int argc, const char* argv[] ) 
 {
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Overlap computation" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute overlap measures between two or more images" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] image0 image1 [image2 ...]" );
@@ -85,7 +85,7 @@ main ( int argc, char* argv[] )
     cl.AddOption( Key( 'f', "first-label" ), &FirstLabel, "Index of first label value [default: 0]; labels below this one are ignored" );
     cl.AddSwitch( Key( "by-label" ), &ByLabel, true, "Analysis by label, i.e., separately for each label in given (detected) range" );
     
-    if (!cl.Parse()) 
+    if ( !cl.Parse( argc, argv ) ) 
       {
       exit( 1 );
       }

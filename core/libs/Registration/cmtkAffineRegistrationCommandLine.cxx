@@ -86,7 +86,7 @@ cmtk
 
 AffineRegistrationCommandLine
 ::AffineRegistrationCommandLine 
-( int argc, char* argv[] ) 
+( const int argc, const char* argv[] ) 
   : m_InitialXformPath( NULL ),
     m_ReformattedImagePath( NULL ),
     m_OutputPathITK( NULL ),
@@ -116,7 +116,7 @@ AffineRegistrationCommandLine
 
   try 
     {
-    CommandLine cl( argc, argv, CommandLine::PROPS_XML );
+    CommandLine cl( CommandLine::PROPS_XML );
     cl.SetProgramInfo( CommandLine::PRG_TITLE, "Rigid and affine registration" );
     cl.SetProgramInfo( CommandLine::PRG_DESCR, "This program performs rigid and affine image registration using multi-resolution optimization of voxel-based image similarity measures." );
     cl.SetProgramInfo( CommandLine::PRG_CATEG, "CMTK.Registration" );
@@ -191,7 +191,7 @@ AffineRegistrationCommandLine
     cl.AddParameter( &clArg1, "ReferenceImage", "Reference (fixed) image path" )->SetProperties( CommandLine::PROPS_IMAGE );
     cl.AddParameter( &clArg2, "FloatingImage", "Floating (moving) image path" )->SetProperties( CommandLine::PROPS_IMAGE | CommandLine::PROPS_OPTIONAL );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
     }
   catch ( const CommandLine::Exception& ex )
     {

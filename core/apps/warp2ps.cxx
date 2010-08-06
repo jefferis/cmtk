@@ -90,7 +90,7 @@ main ( const int argc, const char* argv[] )
 {
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Deformation to PostScript" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Write deformation field as deformed grid in PostScript format for visualization and illustration" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] referenceImage xform" );
@@ -113,7 +113,7 @@ main ( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'b', "box" ), &DrawBox, true, "Draw reference bounding box" );
     cl.AddCallback( Key( 'C', "crop" ), SetCropRegion, "Set in-plane crop region as 'x0,y0:x1,y1'" );
 
-    if ( ! cl.Parse() ) return 1;
+    if ( ! cl.Parse( argc, argv ) ) return 1;
     
     RefFileName = cl.GetNext();
     InListName = cl.GetNext();

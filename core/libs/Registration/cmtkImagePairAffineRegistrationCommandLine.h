@@ -71,7 +71,7 @@ public:
    * cases, an information text describing the known options will have been
    * written to the standard error stream before throwing the exception.
    */
-  ImagePairAffineRegistrationCommandLine ( int argc, char *argv [] );
+  ImagePairAffineRegistrationCommandLine ( const int argc, const char *argv [] );
 
   /** Perform registration.
    */

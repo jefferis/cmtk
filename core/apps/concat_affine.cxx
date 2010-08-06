@@ -54,7 +54,7 @@ main( const int argc, const char* argv[] )
 
   try 
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Concatenate affine transformations" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] x0 [x1 ...] \n WHERE x0 ... xN is [{-i,--inverse}] affine transformation #" );
 
@@ -65,7 +65,7 @@ main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'a', "append" ), &AppendToOutput, true, "Append to output file [default: overwrite]." );
     cl.AddSwitch( Key( 'I', "invert-output" ), &InvertOutput, true, "Invert concatenated transformation before output [default: no]." );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     const char* next = cl.GetNextOptional();
     while ( next ) 

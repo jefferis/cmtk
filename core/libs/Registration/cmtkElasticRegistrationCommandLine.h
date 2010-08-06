@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -66,7 +67,7 @@ public:
    *@param argv Array of command line arguments; this should be the argv
    * parameter of the main() function.
    */
-  ElasticRegistrationCommandLine ( int argc, char *argv[] );
+  ElasticRegistrationCommandLine ( const int argc, const char *argv[] );
 
   /// Destructor.
   ~ElasticRegistrationCommandLine ();

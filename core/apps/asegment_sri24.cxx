@@ -56,7 +56,7 @@ main( const int argc, const char* argv[] )
   
   try
     {
-    cmtk::CommandLine  cl( argc, argv, cmtk::CommandLine::PROPS_XML );
+    cmtk::CommandLine  cl( cmtk::CommandLine::PROPS_XML );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Segmentation using SRI24 atlas" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Register a target image to a selected channel of the SRI24 atlas, then reformat one of the atlas label maps to the target image." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation" );
@@ -83,7 +83,7 @@ main( const int argc, const char* argv[] )
     cl.AddParameter( &outImageName, "OutputImage", "Output image path. This is where the reformatted label map is written." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_LABELS | cmtk::CommandLine::PROPS_OUTPUT );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
     }
   catch ( const cmtk::CommandLine::Exception& e )
     {

@@ -900,7 +900,7 @@ main ( const int argc, const char* argv[] )
 {
   try 
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Shape-based averaging" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Average segmentations (label fields) using the Euclidean Distance Transform." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] list0 [list1 ...]" );
@@ -926,7 +926,7 @@ main ( const int argc, const char* argv[] )
     cl.AddOption( Key( "write-dmap" ), &WriteDistanceMapNameMask, "Write intermediate distance maps [file name mask]" );
     cl.AddOption( Key( "write-lmap" ), &WriteLabelMapNameMask, "Write intermediate label maps [file name mask]" );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     const char* next = cl.GetNext();
     while ( next )

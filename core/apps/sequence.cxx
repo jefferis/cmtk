@@ -62,7 +62,7 @@ main( const int argc, const char* argv[] )
 {
   try 
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Value sequence" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Analyze sequence of numerical values, which is read from standard input" );
 
@@ -73,7 +73,7 @@ main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'a', "abs" ), &AbsoluteValues, true, "Use absolute values." );
     cl.AddOption( Key( 'f', "format" ), &OutputFormat, "Output number format in printf() style." );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
     }
   catch ( const cmtk::CommandLine::Exception& e ) 
     {

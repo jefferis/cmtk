@@ -79,11 +79,11 @@ FILE *outfile = stdout;
 FILE *infile=stdin;
 
 int
-main( int argc, char *argv[] )
+main( const int argc, const char *argv[] )
 {
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Apply coordinate transformations to lists of point coordinates" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] transformation" );      
 
@@ -105,7 +105,7 @@ main( int argc, char *argv[] )
     cl.AddSwitch( Key( 'g', "return-global-scaling" ), &ReturnGlobalScaling, true, "Return global scaling factor ie the scaling due to initial affine" );
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Print each point to STDERR (as well as stdout)" );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     StudyList = cl.GetNext();
     }

@@ -208,7 +208,7 @@ cmtk::ImageSymmetryPlaneCommandLineBase
 {
   try
     {
-    CommandLine cl( argc, argv, CommandLine::PROPS_XML  );
+    CommandLine cl( CommandLine::PROPS_XML  );
     cl.SetProgramInfo( CommandLine::PRG_TITLE, "Symmetry plane computation" );
     cl.SetProgramInfo( CommandLine::PRG_DESCR, "Compute the approximate symmetry plane of an image to determine, for example, the mid-sagittal plane in human brain images. "
 		       "Various forms of output are supported, e.g., writing the input image with the symmetry plane drawn into it, or the input image realigned along the symmetry plane." );
@@ -271,7 +271,7 @@ cmtk::ImageSymmetryPlaneCommandLineBase
     
     cl.AddParameter( &this->m_InFileName, "InputImage", "Input image path" )->SetProperties( CommandLine::PROPS_IMAGE );
     
-    if ( ! cl.Parse() ) return false;
+    if ( ! cl.Parse( argc, argv ) ) return false;
     
     if ( this->m_SymmetryParameters ) 
       {

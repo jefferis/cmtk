@@ -92,7 +92,7 @@ ElasticRegistrationCommandLine* ElasticRegistrationCommandLine::StaticThis = NUL
 
 ElasticRegistrationCommandLine
 ::ElasticRegistrationCommandLine
-( int argc, char *argv[] ) :
+( const int argc, const char *argv[] ) :
 #ifdef CMTK_USE_SQLITE
   m_UpdateDB( NULL ),
 #endif
@@ -124,7 +124,7 @@ ElasticRegistrationCommandLine
 
   try
     {
-    CommandLine cl( argc, argv, CommandLine::PROPS_XML );
+    CommandLine cl( CommandLine::PROPS_XML );
     cl.SetProgramInfo( CommandLine::PRG_TITLE, "B-spline nonrigid registration" );
     cl.SetProgramInfo( CommandLine::PRG_DESCR, "This program performs nonrigid image registration using multi-resolution optimization of voxel-based image similarity measures "
 		       "and a multi-resolution B-spline transformation model." );
@@ -222,7 +222,7 @@ ElasticRegistrationCommandLine
     cl.AddParameter( &clArg3, "InitialXform", "Initial affine transformation from reference to floating image" )
       ->SetProperties( CommandLine::PROPS_NOXML | CommandLine::PROPS_XFORM | CommandLine::PROPS_OPTIONAL );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
     }
   catch ( const CommandLine::Exception& ex )
     {

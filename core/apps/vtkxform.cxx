@@ -56,7 +56,7 @@ main( const int argc, const char* argv[] )
 
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Apply coordinate transformation to point coordinates in VTK file (standard input) and write equivalent file with transformed points to standard output." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] transformation" );      
 
@@ -64,7 +64,7 @@ main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Print each point to STDERR (as well as stdout)" );
     cl.AddOption( Key( "inversion-tolerance" ), &inversionTolerance, "Numerical tolerance of B-spline inversion in mm. Smaller values will lead to more accurate inversion, but may increase failure rate." );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     const char* next = cl.GetNextOptional();
     while (next)

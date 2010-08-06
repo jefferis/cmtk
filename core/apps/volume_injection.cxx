@@ -154,7 +154,7 @@ main( const int argc, const char* argv[] )
   */
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Volume injection" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Reconstruction a high-resolution volume from multiple co-registered (low-resolution) images using forward volume injection" ); 
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] refImage xform0 inImage0 [xform1 inImage1 ...]" );
@@ -176,7 +176,7 @@ main( const int argc, const char* argv[] )
 
     cl.AddSwitch( Key( 'F', "write-images-as-float" ), &WriteImagesAsFloat, true, "Write output images as floating point [default: same as input]" );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     ImagePaths.push_back( cl.GetNext() );
     XformPaths.push_back( NULL );

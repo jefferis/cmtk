@@ -55,7 +55,7 @@ main( const int argc, const char* argv[] )
 {
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Label image averaging" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Average co-registered label images using partial volumes" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] reference xform0 atlas0 [xform1 atlas1 ...]" );
@@ -65,7 +65,7 @@ main( const int argc, const char* argv[] )
 
     cl.AddOption( Key( 'o', "output" ), &OutputImagePath, "Output image path" );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
     
     const char* refImagePath = cl.GetNext();
     ReferenceImage = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( refImagePath, Verbose ) );

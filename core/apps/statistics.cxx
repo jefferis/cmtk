@@ -345,11 +345,11 @@ AnalyzeGrey( const cmtk::UniformVolume* volume )
 }
 
 int
-main ( int argc, char* argv[] ) 
+main ( const int argc, const char* argv[] ) 
 {
   try 
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Image statistics" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Statistical computations on image pixel intensities, i.e., means and standard deviations" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] ImageFile0 [ImageFile1 ...]" );
@@ -376,7 +376,7 @@ main ( int argc, char* argv[] )
     
     cl.AddCallback( Key( 'p', "percentile" ), CallbackAddPercentile, "Add value to list of percentile to compute." );
     
-    cl.Parse();
+    cl.Parse( argc, argv );
         
     const char* next = cl.GetNext();
     while ( next )

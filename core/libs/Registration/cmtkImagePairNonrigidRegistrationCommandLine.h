@@ -67,7 +67,7 @@ public:
    *@param argv Array of command line arguments; this should be the argv
    * parameter of the main() function.
    */
-  ImagePairNonrigidRegistrationCommandLine ( int argc, char *argv[] );
+  ImagePairNonrigidRegistrationCommandLine ( const int argc, const char *argv[] );
 
   /// Destructor.
   ~ImagePairNonrigidRegistrationCommandLine ();

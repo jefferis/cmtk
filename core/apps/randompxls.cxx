@@ -49,14 +49,14 @@ main( const int argc, const char *argv[] )
 {
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     typedef cmtk::CommandLine::Key Key;
     
     cl.AddSwitch( Key( 'i', "write-index" ), &WriteIndex, true, "For each rancom pixel, write its index, not its location in world coordinates." );
     cl.AddOption( Key( 'n', "num-points" ), &NumberOfPoints, "Number of points to generate." );
     cl.AddSwitch( Key( 'm', "mask" ), &UseImageAsMask, true, "Use image data as a mask: only generates points with non-zero pixels." );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     ImageFileName = cl.GetNext();
     }

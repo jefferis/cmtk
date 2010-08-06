@@ -89,7 +89,7 @@ main( const int argc, const char* argv[] )
   
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Matrix to degrees of freedom" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Convert transformation matrix to degrees of freedom" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] < matrix" );
@@ -106,7 +106,7 @@ main( const int argc, const char* argv[] )
     cl.AddOption( Key( 'l', "list" ), &OutList, "Write output in list format to this archive" );
     cl.AddOption( Key( 'A', "append" ), &OutList, "Append output to this archive", &AppendToOutput );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     InputFileName = cl.GetNextOptional();
     }

@@ -126,7 +126,7 @@ main( int argc, char* argv[] )
 
   try 
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Affine population registration" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool registers a population of input images simultaneously, without a template, using the 'congealing' algorithm" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] image0 [image1 ...]" );
@@ -184,7 +184,7 @@ main( int argc, char* argv[] )
     cl.AddSwitch( Key( "disable-optimization" ), &DisableOptimization, true, "Disable optimization and output initial configuration." );
     cl.EndGroup();
       
-    cl.Parse();
+    cl.Parse( argc, const_cast<const char**>( argv ) );
 
     const char* next = cl.GetNext();
     while ( next )

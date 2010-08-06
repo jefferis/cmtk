@@ -58,7 +58,7 @@ cmtk::SimpleLevelsetCommandLineBase::Init( const int argc, const char* argv[] )
 {
   try
     {
-    cmtk::CommandLine cl( argc, argv, cmtk::CommandLine::PROPS_XML );
+    cmtk::CommandLine cl( cmtk::CommandLine::PROPS_XML );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Levelset segmentation" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Levelset-type segmentation of foreground/background using minimum regional variance energy" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation" );
@@ -86,7 +86,7 @@ cmtk::SimpleLevelsetCommandLineBase::Init( const int argc, const char* argv[] )
     cl.AddParameter( &this->m_InFile, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &this->m_OutFile, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_LABELS | cmtk::CommandLine::PROPS_OUTPUT );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
     }
   catch ( const cmtk::CommandLine::Exception& ex )
     {

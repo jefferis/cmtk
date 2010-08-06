@@ -93,11 +93,11 @@ unsigned int ForceMaxLabel = 0;
 const char* HistogramTextFileName = NULL;
 
 bool 
-ParseCommandLine( int argc, char* argv[] )
+ParseCommandLine( const int argc, const char* argv[] )
 {
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Image similarity" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute similarity between two images" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] image0 image1" );
@@ -122,7 +122,7 @@ ParseCommandLine( int argc, char* argv[] )
     
     cl.AddOption( Key( "histogram-text-file" ), &HistogramTextFileName, "Output file name for histogram (plain text format)." );
     
-    if (!cl.Parse()) return false;
+    if ( !cl.Parse( argc, argv ) ) return false;
     
     Study0 = cl.GetNext();
     Study1 = cl.GetNext();
@@ -258,7 +258,7 @@ AnalyseStudies
 }
 
 int
-main ( int argc, char* argv[] ) 
+main ( const int argc, const char* argv[] ) 
 {
   if ( ! ParseCommandLine( argc, argv ) ) return 1;
 

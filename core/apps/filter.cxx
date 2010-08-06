@@ -85,12 +85,13 @@ std::list<const char*> ImageNameList;
 const char* updateDB = NULL;
 #endif
 
-int main( int argc, char* argv[] )
+int 
+main( const int argc, const char* argv[] )
 {
   cmtk::ProgressConsole progressIndicator( "Image Filtering" );
   try 
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Filter a volume image" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] input output\n"
 		       "[options] [-s,--studholme] input output average subject img0 [img1...]\n"
@@ -117,7 +118,7 @@ int main( int argc, char* argv[] )
     cl.EndGroup();
 #endif
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     InputFileName = cl.GetNext();
     OutputFileName = cl.GetNext();

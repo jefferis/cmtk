@@ -76,7 +76,7 @@ main( const int argc, const char* argv[] )
 
   try
     {
-    cmtk::CommandLine cl( argc, argv, cmtk::CommandLine::PROPS_XML );
+    cmtk::CommandLine cl( cmtk::CommandLine::PROPS_XML );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Completely Useless Registration Tool" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "For experimental demonstration ONLY! This program coregisters two intensity images by simple permutation and reformats one or more matching label maps accordingly." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Validation" );
@@ -93,7 +93,7 @@ main( const int argc, const char* argv[] )
     cl.AddParameter( &pathMov, "MovingImage", "Moving image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameterVector( &pathsLbls, "LabelImages", "Label image paths" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     
-    cl.Parse();
+    cl.Parse( argc, argv );
     }
   catch ( const cmtk::CommandLine::Exception& e )
     {

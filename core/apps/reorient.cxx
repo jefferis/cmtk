@@ -55,11 +55,11 @@ const char* OldOrientation = NULL;
 const char* NewOrientation = cmtk::AnatomicalOrientation::ORIENTATION_STANDARD;
 
 int
-main( int argc, char* argv[] )
+main( const int argc, const char* argv[] )
 {
   try 
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Reorientation" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Convert between image orientations, i.e., physically re-order pixel array and adapt stored anatomical orientation information" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] new-orientation infile outfile" );
@@ -70,7 +70,7 @@ main( int argc, char* argv[] )
     cl.AddOption( Key( 'i', "input-orientation" ), &OldOrientation, "Override input orientation. This is a three-letter code, e.g., 'RAS', 'LPI', etc." );
     cl.AddOption( Key( 'o', "output-orientation" ), &NewOrientation, "Override output orientation. Default is 'RAS', or the closest match supported by the output image file format" );
     
-    if ( ! cl.Parse() ) return 1;
+    if ( ! cl.Parse( argc, argv ) ) return 1;
        
     InFileName = cl.GetNext();
     OutFileName = cl.GetNext();

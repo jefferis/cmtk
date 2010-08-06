@@ -86,7 +86,7 @@ main( int argc, char *argv[] )
 
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Describe image file formats and parameters" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool prints a detailed description of the input image(s)" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] imageFile0 [imageFile1 ...]" );
@@ -100,7 +100,7 @@ main( int argc, char *argv[] )
     
     cl.AddCallback( Key( "probe-index" ), CallbackProbeIndex, "Add pixel index for probing." );
 
-    cl.Parse();
+    cl.Parse( argc, const_cast<const char**>( argv ) );
 
     for ( const char* next = cl.GetNext(); next; next = cl.GetNextOptional() ) 
       {

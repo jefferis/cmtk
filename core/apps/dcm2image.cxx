@@ -592,7 +592,7 @@ main ( int argc, char *argv[] )
 
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "DICOM to Image" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Combine sets of DICOM slices to 3D image stacks" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] directory" );
@@ -609,7 +609,7 @@ main ( int argc, char *argv[] )
     cl.AddOption( Key( "tolerance" ), &Tolerance, "Tolerance for floating-point comparisons (must be >= 0; 0 = exact matches only; default: 1e-5)" );
     cl.AddSwitch( Key( "ge-extensions" ), &WithExtensionsGE, true, "Enable GE extensions (e.g., detect image type magnitude vs. complex)" );
 
-    if ( ! cl.Parse() )
+    if ( ! cl.Parse( argc, const_cast<const char**>( argv ) ) )
       return 1;
 
     const char* next = cl.GetNext();

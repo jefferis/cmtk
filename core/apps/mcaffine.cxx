@@ -219,11 +219,11 @@ DoRegistration()
 }
 
 int
-main( int argc, char* argv[] ) 
+main( const int argc, const char* argv[] ) 
 {
   try 
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Multi-channel affine registration" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Multi-channel affine image registration using histogram-based or covariance-based joint entropy measures" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] refChannel0 [refChannel1 ...] -- fltChannel0 [fltChannel1 ...]" );    
@@ -256,7 +256,7 @@ main( int argc, char* argv[] )
     cl.AddOption( Key( "crop-reference-from-index" ), &cropReferenceFromIndex, "Crop reference image from index x,y,z." );
     cl.AddOption( Key( "crop-reference-to-index" ), &cropReferenceToIndex, "Crop reference image to index x,y,z." );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     const char* next = cl.GetNext();
     while ( next && strcmp( next, "--" ) ) 

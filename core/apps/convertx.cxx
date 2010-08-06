@@ -86,7 +86,7 @@ namespace convert
 bool Verbose = false;
 
 int
-main( int argc, char* argv[] )
+main( const int argc, const char* argv[] )
 {
   const char* imagePathIn = NULL;
   const char* imagePathOut = NULL;
@@ -97,7 +97,7 @@ main( int argc, char* argv[] )
 
   try 
     {
-    cmtk::CommandLine cl( argc, argv );  
+    cmtk::CommandLine cl;  
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Convert between image file formats and data types. Also apply simple, general-purpose image operations in the process. "
 		       "An arbitrary number of operations can be specified on the command line, which will be applied exactly in the order given." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] infile outfile" );
@@ -183,7 +183,7 @@ main( int argc, char* argv[] )
     cl.AddParameter( &imagePathIn, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &imagePathOut, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
 
-    if ( ! cl.Parse() ) 
+    if ( ! cl.Parse( argc, argv ) ) 
       return 1;
     }
   catch ( const cmtk::CommandLine::Exception& ex ) 

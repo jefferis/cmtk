@@ -1259,11 +1259,11 @@ CallbackCombinePCA()
 }
 
 int
-main( int argc, char *argv[] )
+main( const int argc, const char *argv[] )
 {
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Image operations" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Perform operations on images using stack-based postfix notation.\n\n"
 		       "Images can be read from files and pushed onto the stack. Images on the stack can be processed and combined via different operators. "
@@ -1339,7 +1339,7 @@ main( int argc, char *argv[] )
     cl.AddCallback( Key( "stack-entropy-labels" ), CallbackStackEntropyLabels, "Compute stack entropy at each pixel from integer (label) input images" );
     cl.EndGroup();
 
-    cl.Parse();
+    cl.Parse( argc, argv );
     }
   catch ( const cmtk::CommandLine::Exception& e )
     {

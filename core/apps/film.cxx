@@ -185,14 +185,14 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
   
 
 int
-main( int argc, char* argv[] )
+main( const int argc, const char* argv[] )
 {
   /*
   // Parse command line
   */
   try
     {
-    cmtk::CommandLine cl( argc, argv, cmtk::CommandLine::PROPS_XML );
+    cmtk::CommandLine cl( cmtk::CommandLine::PROPS_XML );
     typedef cmtk::CommandLine::Key Key;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Fix interleaved motion using inverse interpolation" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool splits an interleaved input image into the pass images, co-registers them, and reconstructs a motion-corrected image" );
@@ -256,7 +256,7 @@ main( int argc, char* argv[] )
     cl.AddParameter( &InputFilePath, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &OutputFilePath, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
     }
   catch ( const cmtk::CommandLine::Exception& e )
     {

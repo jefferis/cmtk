@@ -66,7 +66,7 @@ main ( const int argc, const char *argv[] )
 
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Transformation to Deformation Field" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Convert parametric rigid or nonrigid transformation to deformation field, sampled at pixel locations of a given refernece image" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] outFile referenceImage [-i|--inverse] inList0 [[-i|--inverse] inList1 ...]" );
@@ -78,7 +78,7 @@ main ( const int argc, const char *argv[] )
     cl.AddOption( Key( "inversion-tolerance-factor" ), &InversionToleranceFactor, "Factor for numerical tolerance of B-spline inversion [multiples of minimum grid pixel size; default=0.1]" );
     cl.AddOption( Key( "downsample" ), &Downsample, "Downsample grid by factors 'x,y,z' or by single factor 'xyz'" );
  
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     OutFileName = cl.GetNext();
     RefFileName = cl.GetNext();

@@ -56,7 +56,7 @@ main( const int argc, const char* argv[] )
 {
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Split images" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Split volume image into sub-images, i.e., to separate interleaved images into passes" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] inImage outImage" );
@@ -77,7 +77,7 @@ main( const int argc, const char* argv[] )
 
     cl.AddOption( Key( "output-xform-path" ), &OutputXformPath, "Optional path template (fprintf-style) for output affine transformation that maps input image coordinates to each output image." );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     InputFilePath = cl.GetNext();
     OutputFilePath = cl.GetNext();

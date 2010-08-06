@@ -210,7 +210,7 @@ main ( const int argc, const char* argv[] )
 {
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Average grey-level images" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] list0 [list1 ...]" );
 
@@ -239,7 +239,7 @@ main ( const int argc, const char* argv[] )
     cl.AddCallback( Key( "replace-from" ), AddReplaceFrom, "Replace from pattern" );
     cl.AddCallback( Key( "replace-to" ), AddReplaceTo, "Replace to pattern" );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     const char *next = cl.GetNext();
     while ( next )

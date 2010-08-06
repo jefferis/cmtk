@@ -295,7 +295,7 @@ main( const int argc, const char* argv[] )
   */
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Volume reconstruction" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Iterative volume reconstruction from co-registered images using inverse interpolation or joint deblurring" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] refImage xform0 inImage0 [xform1 inImage1 ...]" );
@@ -335,7 +335,7 @@ main( const int argc, const char* argv[] )
     
     cl.AddSwitch( Key( 'F', "write-images-as-float" ), &WriteImagesAsFloat, true, "Write output images as floating point" );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     ImagePaths.push_back( cl.GetNext() );
     XformPaths.push_back( NULL );

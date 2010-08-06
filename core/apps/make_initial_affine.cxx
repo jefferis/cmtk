@@ -69,7 +69,7 @@ main( const int argc, const char* argv[] )
 
   try
     {
-    cmtk::CommandLine cl( argc, argv, cmtk::CommandLine::PROPS_XML );
+    cmtk::CommandLine cl( cmtk::CommandLine::PROPS_XML );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Initialize affine transformation" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute initial affine transformation by aligning centers of mass or principal axes" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Registration" );
@@ -102,7 +102,7 @@ main( const int argc, const char* argv[] )
       ->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT )
       ->SetAttribute( "reference", "FloatingImage" );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
     }
   catch ( const cmtk::CommandLine::Exception& ex )
     {

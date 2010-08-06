@@ -75,7 +75,7 @@ main( const int argc, const char* argv[] )
 {
   try 
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Generate phantom image" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Generate 3D digital phantom images using a selection of drawing commands" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] command0 [command1 ...]\n"
@@ -107,7 +107,7 @@ main( const int argc, const char* argv[] )
     cl.AddOption( Key( "import-grid" ), &InputImageName, "Import image grid only, ignore data", &InputImageGridOnly );
     cl.AddOption( Key( 'o', "outfile" ), &OutputFileName, "File name for output image" );
     
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     cmtk::UniformVolume::SmartPtr volume;
     if ( InputImageName )

@@ -71,7 +71,7 @@ main( const int argc, const char* argv[] )
 {
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Probe transformation at user-defined coordinates" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] [--inverse] xform0 [[--inverse] xform1 ...]" );
     
@@ -79,7 +79,7 @@ main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
     cl.AddCallback( Key( 'p', "probe" ), AddProbeLocation, "Probe location" );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
     
     const char* next = cl.GetNext();
     while ( next ) 

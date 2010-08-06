@@ -86,7 +86,7 @@ int main( const int argc, const char* argv[] )
 {
   try 
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Make Analyze header file" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Make header file according Analzye 7.5 format based on user-supplied parameters for geometry, data type, orientation, etc." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] [output.hdr]" );
@@ -123,7 +123,7 @@ int main( const int argc, const char* argv[] )
     cl.AddOption( Key( 'I', "import" ), &ImportHdrFile, "Import data from given header file." );
     cl.AddOption( Key( "description" ), &Description, "Set description string [max. 80 characters]" );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     HdrFileName = cl.GetNext();
   }

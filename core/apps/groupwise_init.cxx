@@ -86,7 +86,7 @@ main( int argc, char* argv[] )
 
   try 
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Affine initialization for groupwise registration" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute initial affine alignment for a group of input images, which can be used as an input for groupwise registration" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] image0 [image1 ...]" );
@@ -106,7 +106,7 @@ main( int argc, char* argv[] )
     cl.AddSwitch( Key( "align-centers-of-mass" ), &AlignCentersOfMass, true, "Initially align centers of mass [default: centers of Bounding Boxes]" );
     cl.AddSwitch( Key( "init-scales" ), &InitScales, true, "Initialize scale factors using first-order moments [default: off]" );
 
-    cl.Parse();
+    cl.Parse( argc, const_cast<const char**>( argv ) );
 
     const char* next = cl.GetNext();
     while ( next )

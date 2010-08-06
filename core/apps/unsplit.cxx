@@ -52,7 +52,7 @@ main( const int argc, const char* argv[] )
 
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Unsplit images" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Join separate image stacks into a single interleaved image volume" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] inImage0 inImage1 ..." );
@@ -66,7 +66,7 @@ main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'y', "coronal" ), &axis, 1, "Interleaved coronal images (along y axis)" );
     cl.AddSwitch( Key( 'x', "sagittal" ), &axis, 0, "Interleaved sagittal images (along x axis)" );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     const char *next = cl.GetNext();
     while ( next )

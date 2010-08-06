@@ -206,11 +206,11 @@ bool FlipZ = false;
 int EliminatePaddingVoting = 0;
 
 int
-main( int argc, char* argv[] )
+main( const int argc, const char* argv[] )
 {
   try 
     {
-    cmtk::CommandLine cl( argc, argv );  
+    cmtk::CommandLine cl;  
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Convert between image formats" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] infile outfile" );
 
@@ -278,7 +278,7 @@ main( int argc, char* argv[] )
     cl.AddCallback( Key( "map-to" ), Map, "Map to value (alternates with --map-from and can be repeated)." );
     cl.AddSwitch( Key( "map-only" ), &MapOnly, true,"Output only successfully mapped values; set all others to zero" );
     
-    if ( ! cl.Parse() ) return 1;
+    if ( ! cl.Parse( argc, argv ) ) return 1;
     
     InFileName = cl.GetNext();
     OutFileName = cl.GetNext();

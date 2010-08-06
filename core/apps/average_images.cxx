@@ -95,7 +95,7 @@ main( const int argc, const char* argv[] )
 {
   try 
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Average images" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] image0 ..." );
 
@@ -124,7 +124,7 @@ main( const int argc, const char* argv[] )
     typeGroup->AddSwitch( Key( "double" ), cmtk::TYPE_DOUBLE, "Double-precision float." );
     cl.EndGroup();
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     const char* next = cl.GetNext();
     while ( next )

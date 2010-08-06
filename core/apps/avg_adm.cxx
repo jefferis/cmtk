@@ -115,7 +115,7 @@ main( int argc, char** argv )
 
   try 
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Average using ADM" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute average-shape average-intensity images and deformation maps using an active deformation model." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] list0 [list1 ...]" );
@@ -154,7 +154,7 @@ main( int argc, char** argv )
     cl.AddCallback( Key( "replace-from" ), AddReplaceFrom, "Replace from pattern" );
     cl.AddCallback( Key( "replace-to" ), AddReplaceTo, "Replace to pattern" );
 
-    cl.Parse();
+    cl.Parse( argc, const_cast<const char**>( argv ) );
 
     inFileList.push_back( cl.GetNext() );
     

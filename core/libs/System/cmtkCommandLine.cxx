@@ -43,21 +43,11 @@ cmtk
 /** \addtogroup System */
 //@{
 
-CommandLine::CommandLine( int argc, char* argv[], const int properties ) 
+CommandLine::CommandLine( const int properties ) 
+  : ArgC( 0 ),
+    ArgV( NULL )
 {
   this->SetDefaultInfo();    
-  this->ArgC = argc;
-  this->ArgV = const_cast<const char**>( argv );
-  this->m_Properties = properties;
-  
-  this->BeginGroup( "MAIN", "Main Options" );
-}
-
-CommandLine::CommandLine( const int argc, const char* argv[], const int properties ) 
-{
-  this->SetDefaultInfo();
-  this->ArgC = argc;
-  this->ArgV = argv;
   this->m_Properties = properties;
   
   this->BeginGroup( "MAIN", "Main Options" );
@@ -104,8 +94,11 @@ CommandLine
 }
 
 bool
-CommandLine::Parse()
+CommandLine::Parse( const int argc, const char* argv[] )
 {
+  this->ArgC = argc;
+  this->ArgV = argv;
+
   this->Index = 1;
   while ( (this->Index < this->ArgC) && (this->ArgV[this->Index][0] == '-') ) 
     {

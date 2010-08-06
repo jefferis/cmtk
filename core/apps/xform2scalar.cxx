@@ -81,7 +81,7 @@ main ( const int argc, const char* argv[] )
 {
   try
     {
-    cmtk::CommandLine cl( argc, argv, cmtk::CommandLine::PROPS_XML );
+    cmtk::CommandLine cl( cmtk::CommandLine::PROPS_XML );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Extract scalar measures from transformations and deformation fields" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool extracts scalar measures from transformations and deformation fields, sampled at grid locations, and writes the results to an image. "
 		       "Examples of supported scalar measures are: x,y,z component of the transformation, magnitude of the transformation, and Jacobian determinants." );
@@ -112,7 +112,7 @@ main ( const int argc, const char* argv[] )
     cl.AddParameter( &InputGridPath, "InputImage", "Input grid path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameterVector( &InputXformPaths, "InputTransformation", "Input transformation paths. Use '--inverse' prefix to invert the following transformation." );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
     }
   catch ( const cmtk::CommandLine::Exception& e )
     {

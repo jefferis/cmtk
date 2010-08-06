@@ -282,11 +282,11 @@ Import
 }
 
 int
-main( int argc, char* argv[] )
+main( const int argc, const char* argv[] )
 {
   try 
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "General Linear Model" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Statistical modeling of pixel intensities in multiple images using a General Linear Model." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] ctlfile imgfile_pattern [ctlfile imgfile_pattern ...]" );
@@ -305,7 +305,7 @@ main( int argc, char* argv[] )
     
     cl.AddOption( Key( 'O', "output-pattern" ), &OutputFilePatt, "Filename pattern for output (default: 'model_%s_%02d_%s.hdr') with %d for parameter number" );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     CtlFileName.push_back( cl.GetNext() );
     ImgFilePatt.push_back( cl.GetNext() );

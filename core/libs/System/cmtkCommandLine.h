@@ -683,11 +683,8 @@ private:
   };
 
 public:
-  /// Constructor.
-  CommandLine( int argc, char* argv[], const int properties = PROPS_NOXML );
-
   /// Constructor using const inputs.
-  CommandLine( const int argc, const char* argv[], const int properties = PROPS_NOXML );
+  CommandLine( const int properties = PROPS_NOXML );
 
   /// Destructor: spit out a warning if there are unused extra arguments on the command line.
   ~CommandLine();
@@ -1092,7 +1089,7 @@ public:
   void EndGroup();
 
   /// Parse command line.
-  bool Parse();
+  bool Parse( const int argc, const char* argv[] );
 
   /// Help text indentation.
   static const int HelpTextIndent = 10;

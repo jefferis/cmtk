@@ -438,11 +438,11 @@ ReformatPullback()
 }
 
 int 
-main( const int argc, char* argv[] )
+main( const int argc, const char* argv[] )
 {
   try 
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Volume reformatter" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Extended volume reformatter tool to compute reformatted images and Jacobian maps from arbitrary sequences of concatenated transformations" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] --floating floatingImg target x0 [x1 ...]\n  OR\n"
@@ -503,7 +503,7 @@ main( const int argc, char* argv[] )
     cl.EndGroup();
 #endif
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     if ( ! UserDefinedTargetVolume )
       TargetVolumeName = cl.GetNext();

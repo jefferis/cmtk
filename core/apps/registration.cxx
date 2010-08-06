@@ -51,7 +51,7 @@ namespace registration
 #endif
 int
 main
-( int argc, char *argv[] )
+( const int argc, const char *argv[] )
 {
 #ifdef DEBUG
   int entry_mem = cmtk::Memory::Used();

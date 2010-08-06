@@ -117,11 +117,12 @@ typedef enum
 /// Initial plane orientation: default to sagittal for human images.
 InitialPlaneEnum InitialPlane = SYMPL_INIT_YZ;
 
-bool ParseCommandLine ( const int argc, const char* argv[] )
+bool
+ParseCommandLine ( const int argc, const char* argv[] )
 {
   try
     {
-    cmtk::CommandLine cl( argc, argv, cmtk::CommandLine::PROPS_XML  );
+    cmtk::CommandLine cl( cmtk::CommandLine::PROPS_XML  );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Symmetry plane computation" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute the approximate symmetry plane of an image to determine, for example, the mid-sagittal plane in human brain images. "
 		       "Various forms of output are supported, e.g., writing the input image with the symmetry plane drawn into it, or the input image realigned along the symmetry plane." );
@@ -188,7 +189,7 @@ bool ParseCommandLine ( const int argc, const char* argv[] )
     
     cl.AddParameter( &InFileName, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     
-    if ( ! cl.Parse() ) return false;
+    if ( ! cl.Parse( argc, argv ) ) return false;
     
     if ( SymmetryParameters ) 
       {

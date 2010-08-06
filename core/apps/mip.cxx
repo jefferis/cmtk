@@ -65,7 +65,7 @@ ParseCommandLine( const int argc, const char* argv[] )
 {
   try 
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Maximum Intensity Projection" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute 2D Maximum Intensity Projection image from a 3D volume image along one of the coordinate directions" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] input output" );
@@ -85,7 +85,7 @@ ParseCommandLine( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'S', "sum" ), &SumProjection, true, "Sum projection." );
     cl.AddSwitch( Key( "write-16bit" ), &Write16Bit, true, "Write output as non-standard 16bit PGM image (doubles dynamic range but cannot be properly read by all readers)." );
     
-    if ( ! cl.Parse() ) return false;
+    if ( ! cl.Parse( argc, argv ) ) return false;
     
     InFileName = cl.GetNext();
     OutFileName = cl.GetNext();

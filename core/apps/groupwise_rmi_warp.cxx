@@ -115,7 +115,7 @@ main( int argc, char ** argv )
 
   try 
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Nonrigid RMI population registration" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] affineGroupwiseAlignment" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Image Registration" );
@@ -158,7 +158,7 @@ main( int argc, char ** argv )
 
     cl.AddSwitch( Key( "disable-optimization" ), &DisableOptimization, true, "Disable optimization and output initial configuration." );
       
-    cl.Parse();
+    cl.Parse( argc, const_cast<const char**>( argv ) );
 
     AffineGroupRegistration = cl.GetNext();
     }

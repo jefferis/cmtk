@@ -152,7 +152,7 @@ main ( const int argc, const char* argv[] )
 {
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Image histogram" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Create a histogram of image intensities and write as tab-separated text file to standard output" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] image" );
@@ -172,7 +172,7 @@ main ( const int argc, const char* argv[] )
     cl.AddOption( Key( 'o', "outfile" ), &outFile, "File name pattern for histograms" );
     cl.AddOption( Key( 'm', "mask" ), &maskFile, "File name for multi-valued mask file" );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     const char* next = cl.GetNext();
     while ( next )

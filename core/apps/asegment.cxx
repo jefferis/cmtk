@@ -55,7 +55,7 @@ main( const int argc, const char* argv[] )
 
   try
     {
-    cmtk::CommandLine  cl( argc, argv, cmtk::CommandLine::PROPS_XML );
+    cmtk::CommandLine  cl( cmtk::CommandLine::PROPS_XML );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Atlas-based segmentation" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Register a target image to an atlas, using affine followed by nonrigid B-spline registration, then reformat the atlas label map to the target image." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation" );
@@ -73,7 +73,7 @@ main( const int argc, const char* argv[] )
     cl.AddParameter( &outImageName, "OutputImage", "Output image path. This is where the reformatted label map is written." )
       ->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_LABELS | cmtk::CommandLine::PROPS_OUTPUT );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
     }
   catch ( const cmtk::CommandLine::Exception& e )
     {

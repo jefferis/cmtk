@@ -52,13 +52,13 @@ int main ( const int argc, const char* argv[] )
 {
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     typedef cmtk::CommandLine::Key Key;
 
     cl.AddOption( Key( 'f', "fractional" ), &Fractional, "Write fractional deformation. Range: 0=affine to 1=full nonrigid; Default: 1" );
     cl.AddSwitch( Key( 'd', "deformation-only" ), &DeformationOnly, true, "Write only deformation part of transformation (minus global affine component)" );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     inXformPath = cl.GetNext();
     outXformPath = cl.GetNext();

@@ -109,7 +109,7 @@ main( const int argc, const char* argv[] )
 
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Regression" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Linear (and higher-order polynomial) regression of deformation fields and images." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] controlFile" );
@@ -122,7 +122,7 @@ main( const int argc, const char* argv[] )
     cl.AddOption( Key( 's', "substitution" ), &pathPrintf, "Printf format string for ID-to-path substitition" );
     cl.AddOption( Key( 'O', "order" ), &order, "Polynonial order of the regression [default: 1=linear]" );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     controlFileName = cl.GetNext();
     }

@@ -62,7 +62,7 @@ namespace ttest
 typedef enum { TTEST, TTEST_PAIRED, CORRELATION_PAIRED, ZSCORES } ModeEnum;
 
 int
-main ( int argc, char* argv[] ) 
+main ( const int argc, const char* argv[] ) 
 {
   bool Verbose = false;
 
@@ -89,7 +89,7 @@ main ( int argc, char* argv[] )
   
   try
     {
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "T-tests" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Pixelwise tests of statistical significance. Also compute correlations and z-scores" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] imageX0 [imageX1 ...] -- imageY0 [imageY1] ...\n"
@@ -116,7 +116,7 @@ main ( int argc, char* argv[] )
     cl.AddOption( Key( 'o', "outfile" ), &OutFileName, "Output file name" );
     cl.AddOption( Key( "tstats-file" ), &TStatFileName, "T-statistics output file name (for correlation: p-value output file)" );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     const char* next = cl.GetNext();
     while ( next && strcmp( next, "--" ) ) 
