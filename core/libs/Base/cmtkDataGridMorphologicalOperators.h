@@ -67,7 +67,7 @@ public:
    *\return Returns "true" if data was actually changed, "false" if no change
    *  was necessary or possible.
    */
-  bool EliminatePaddingVoting( const int iterations = 1 /**!< Number of elimination iterations.*/ );
+  bool EliminatePaddingVoting( const int iterations = 1 /*!< Number of elimination iterations.*/ );
 
   /** Return map of region boundaries.
    * This function returns a byte data array where each pixel is one if it is
@@ -82,10 +82,10 @@ public:
   TypedArray::SmartPtr GetBoundaryMap( const bool multiValued = false ) const;
 
   /// Get data after erosion operator.
-  TypedArray::SmartPtr GetEroded( const int iterations = 1 /**!< Number of erosion iterations. */ ) const;
+  TypedArray::SmartPtr GetEroded( const int iterations = 1 /*!< Number of erosion iterations. */ ) const;
   
   /// Get data after dilation operator.
-  TypedArray::SmartPtr GetDilated( const int iterations = 1 /**!< Number of dilation iterations. */ ) const;
+  TypedArray::SmartPtr GetDilated( const int iterations = 1 /*!< Number of dilation iterations. */ ) const;
 
   /** Get connected components of a binary image.
    * All pixels with non-zero values are considered "foreground," and the result

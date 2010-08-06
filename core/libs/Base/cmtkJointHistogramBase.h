@@ -56,7 +56,7 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Calculate optimum number of histogram bins.
-  static size_t CalcNumBins( const size_t numberOfSamples /**!< Number of data values. */, const Types::DataItemRange& valueRange /**!< Range of values in the data.*/ );
+  static size_t CalcNumBins( const size_t numberOfSamples /*!< Number of data values. */, const Types::DataItemRange& valueRange /*!< Range of values in the data.*/ );
 
   /// Calculate optimum number of histogram bins for given volume.
   static size_t CalcNumBins ( const UniformVolume* volume );

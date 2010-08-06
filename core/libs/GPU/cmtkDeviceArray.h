@@ -71,14 +71,14 @@ public:
   {}
 
   /// Create new object and allocate memory.
-  static typename Self::SmartPtr Create( const FixedVector<3,int>& dims3 /**!< Array dimensions */ )
+  static typename Self::SmartPtr Create( const FixedVector<3,int>& dims3 /*!< Array dimensions */ )
   {
     return typename Self::SmartPtr( new Self( dims3 ) );
   }
   
   /// Create new object, allocate, and initialize memory.
-  static typename Self::SmartPtr Create( const FixedVector<3,int>& dims3, /**!< Array dimensions */
-					 const float* initFrom /**!< Initialize from this region in host memory.*/ )
+  static typename Self::SmartPtr Create( const FixedVector<3,int>& dims3, /*!< Array dimensions */
+					 const float* initFrom /*!< Initialize from this region in host memory.*/ )
   {
     Self* newObject = new Self( dims3 );
     newObject->CopyToDevice( initFrom );

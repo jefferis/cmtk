@@ -53,7 +53,7 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Create device representation of volume object.
-  static Self::SmartPtr Create( const size_t numberOfBins /**!< Allocate device memory for data as multiple of this value.*/ )
+  static Self::SmartPtr Create( const size_t numberOfBins /*!< Allocate device memory for data as multiple of this value.*/ )
   {
     return Self::SmartPtr( new Self( numberOfBins ) );
   }

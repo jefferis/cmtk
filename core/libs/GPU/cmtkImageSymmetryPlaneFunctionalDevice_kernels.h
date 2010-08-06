@@ -39,8 +39,8 @@ cmtk
 {
 
 /// Evaluate Mean Squared Difference for symmetry plane computation on GPU.
-float ImageSymmetryPlaneFunctionalDeviceEvaluateMSD( const int* dims3 /**!< Volume dimensions */, void* array /**!< Device array with volume data */, 
-						     const float matrix[4][4] /**!< Mirror matrix: from index to image coordinates, then mirror, then to normalized [0..1] coordinates */ );
+float ImageSymmetryPlaneFunctionalDeviceEvaluateMSD( const int* dims3 /*!< Volume dimensions */, void* array /*!< Device array with volume data */, 
+						     const float matrix[4][4] /*!< Mirror matrix: from index to image coordinates, then mirror, then to normalized [0..1] coordinates */ );
 
 } // namespace cmtk
 

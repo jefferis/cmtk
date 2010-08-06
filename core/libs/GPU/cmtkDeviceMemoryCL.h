@@ -88,7 +88,7 @@ protected:
   void Memset( const int value, const size_t nBytes );
   
   /// Constructor: allocate memory through CL.
-  DeviceMemoryCL( const size_t nBytes /**!< Number of bytes to allocate */, const size_t padToMultiple = 1 /**!< Pad to allocate nearest multiple of this many bytes. */ );
+  DeviceMemoryCL( const size_t nBytes /*!< Number of bytes to allocate */, const size_t padToMultiple = 1 /*!< Pad to allocate nearest multiple of this many bytes. */ );
 
   /** Raw pointer to allocated device memory.
    * Note that this is a device memory space pointer, which is not valid in

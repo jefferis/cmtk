@@ -64,8 +64,8 @@ public:
   }
 
   /// Set output transformation.
-  void SetOutputXform( const std::string& path, /**!< Path to the output transformation.*/
-		       const bool invertible /**!< Flag whether the output transformation is invertible (i.e., affine). */ )
+  void SetOutputXform( const std::string& path, /*!< Path to the output transformation.*/
+		       const bool invertible /*!< Flag whether the output transformation is invertible (i.e., affine). */ )
   {
     this->m_OutputXformPath = path;
     this->m_OutputXformInvertible = invertible;

@@ -56,7 +56,7 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Create device representation of volume object.
-  static Self::SmartPtr Create( const UniformVolume& volume, const size_t padDataToMultiple = 1 /**!< Allocate device memory for data as multiple of this value.*/ )
+  static Self::SmartPtr Create( const UniformVolume& volume, const size_t padDataToMultiple = 1 /*!< Allocate device memory for data as multiple of this value.*/ )
   {
     return Self::SmartPtr( new Self( volume, padDataToMultiple ) );
   }

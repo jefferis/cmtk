@@ -65,7 +65,7 @@ public:
   class bad_alloc : public std::bad_alloc {};
   
   /// Constructor: allocate memory through CUDA.
-  DeviceMemoryCUDA( const size_t nBytes /**!< Number of bytes to allocate */, const size_t padToMultiple = 1 /**!< Pad to allocate nearest multiple of this many bytes. */ );
+  DeviceMemoryCUDA( const size_t nBytes /*!< Number of bytes to allocate */, const size_t padToMultiple = 1 /*!< Pad to allocate nearest multiple of this many bytes. */ );
 
   /// Destructor: free memory through CUDA.
   virtual ~DeviceMemoryCUDA();

@@ -60,8 +60,8 @@ public:
   explicit UniformVolumeFilter( UniformVolume::SmartPtr volume ) : DataGridFilter( volume ), m_UniformVolume( volume ) {}
 
   /// Gaussian filter (using faster, separable filtering).
-  TypedArray::SmartPtr GetDataGaussFiltered( const Units::GaussianSigma& sigma, /**!< Kernel parameter "sigma" (standard deviation) */
-					     const Types::Coordinate maxError = 0.01 /**!< Maximum approximation error: the kernel is truncated when it falls below this threshold */ ) const;
+  TypedArray::SmartPtr GetDataGaussFiltered( const Units::GaussianSigma& sigma, /*!< Kernel parameter "sigma" (standard deviation) */
+					     const Types::Coordinate maxError = 0.01 /*!< Maximum approximation error: the kernel is truncated when it falls below this threshold */ ) const;
 
 private:
   /// The UniformVolume object we're working on.

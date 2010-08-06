@@ -82,8 +82,8 @@ public:
   typedef SQLite Superclass;
 
   /// Constructor: open ImageXformDB database.
-  ImageXformDB( const std::string& dbPath, /**!< Path to the database file. */
-		const bool readOnly = false /**!< If this flag is set, the database is opened read-only. If false, the database is opened for read/write, and a non-existing database will be created. */);
+  ImageXformDB( const std::string& dbPath, /*!< Path to the database file. */
+		const bool readOnly = false /*!< If this flag is set, the database is opened read-only. If false, the database is opened for read/write, and a non-existing database will be created. */);
 
   /** Add an image to a coordinate space, each identified by its file system path.
    * If the given image already exists in the database, no change is made.
@@ -93,23 +93,23 @@ public:
    *  live in the old image space, especially if that space was defined by the reassigned image
    *  in the first place.
    */
-  void AddImage( const std::string& imagePath /**!< File system path of the new image*/,
-		 const std::string& spacePath = "" /**!< File system path of an existing image that lives in the same space*/ );
+  void AddImage( const std::string& imagePath /*!< File system path of the new image*/,
+		 const std::string& spacePath = "" /*!< File system path of an existing image that lives in the same space*/ );
   
   /** Add a transformation between two images.
    *\return True if the operation was successful, false otherwise. Failure may be due to source and target image being in the same
    * space to begin with.
    */
-  bool AddImagePairXform( const std::string& xformPath, /**!< File system path of the tranformation */
+  bool AddImagePairXform( const std::string& xformPath, /*!< File system path of the tranformation */
 			  const bool invertible, /**<! Flag: does the transformation have an explicit inverse (i.e., is it affine)? */
-			  const std::string& imagePathSrc, /**!< File system path of the source image */
-			  const std::string& imagePathTrg /**!< File system path of the target image */ );
+			  const std::string& imagePathSrc, /*!< File system path of the source image */
+			  const std::string& imagePathTrg /*!< File system path of the target image */ );
   
   /** Add a refined transformation based on an existing transformation.
    *\return True if the operation was successful, false otherwise. Failure may be due to absence of the specified original
    *  transformation in the database.
    */
-  bool AddRefinedXform( const std::string& xformPath, /**!< File system path of the new tranformation */
+  bool AddRefinedXform( const std::string& xformPath, /*!< File system path of the new tranformation */
 			const bool invertible, /**<! Flag: does the transformation have an explicit inverse (i.e., is it affine)? */
 			const std::string& xformInitPath, /** Path of the transformation that was used to initialize the computation of the new transformation. */
 			const bool initInverse = false /** Flag whether the new transformation is based on the inverse of the initial transformation, i.e., from and to space need to be switched. */ );
@@ -132,10 +132,10 @@ public:
    *\return True if transformation exists. If false, the two given images may still be connected via a chain of
    * multiple, concatenated transformations.
    */
-  bool FindXform( const std::string& imagePathSrc, /**!< File system path of the source image */
-		  const std::string& imagePathTrg, /**!< File system path of the target image */
-		  std::string& xformPath, /**!< File system path of the transformation. Only valid if function returns "true." Path can be empty if both images are already in the same space. */
-		  bool& inverse /**!< If this is set, the given transformation needs to be inverted. */) const;
+  bool FindXform( const std::string& imagePathSrc, /*!< File system path of the source image */
+		  const std::string& imagePathTrg, /*!< File system path of the target image */
+		  std::string& xformPath, /*!< File system path of the transformation. Only valid if function returns "true." Path can be empty if both images are already in the same space. */
+		  bool& inverse /*!< If this is set, the given transformation needs to be inverted. */) const;
 
   /** Find all transformations between two images.
    * Only forward transformations are returned. To find inverse transformations,
@@ -145,8 +145,8 @@ public:
    * (i.e., nonrigid) transformations are listed first, followed by explicitly invertible 
    * (i.e., affine) transformations.mations.
    */
-  const std::vector<std::string> FindAllXforms( const std::string& imagePathSrc, /**!< File system path of the source image */
-						const std::string& imagePathTrg /**!< File system path of the target image */ ) const;
+  const std::vector<std::string> FindAllXforms( const std::string& imagePathSrc, /*!< File system path of the source image */
+						const std::string& imagePathTrg /*!< File system path of the target image */ ) const;
 
   /** Get the refinement level of a transformation in the database.
    *\return The level of the given transformation: 0 for an original transformation,

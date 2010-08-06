@@ -152,7 +152,7 @@ public:
     );
 
   /// This function is run as a thread.
-  void ThreadFunction( const size_t threadIdx /**!< Index of the actual thread in the pool. */ );
+  void ThreadFunction( const size_t threadIdx /*!< Index of the actual thread in the pool. */ );
   
   /** Get reference to global thread pool.
    * This is shared by all functions in the process and allows re-use of the same "physical" threads 
@@ -229,7 +229,7 @@ private:
 } // namespace cmtk
 
 /// This is the actual low-level thread function. It calls ThreadFunction() for the cmtk::ThreadPool instance given as the function parameter.
-extern "C" CMTK_THREAD_RETURN_TYPE cmtkThreadPoolThreadFunction( CMTK_THREAD_ARG_TYPE arg /**!< This is a pointer to the cmtk::ThreadPool instance.*/ );
+extern "C" CMTK_THREAD_RETURN_TYPE cmtkThreadPoolThreadFunction( CMTK_THREAD_ARG_TYPE arg /*!< This is a pointer to the cmtk::ThreadPool instance.*/ );
 
 #include "cmtkThreadPool.txx"
 

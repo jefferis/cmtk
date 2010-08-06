@@ -75,8 +75,8 @@ public:
   };
 
   /// Constructor: open SQLite database.
-  SQLite( const std::string& dbPath, /**!< Path to the SQLite3 database file. */
-	  const bool readOnly = false /**!< If this flag is set, the database is opened read-only. If false, the database is opened for read/write, and a non-existing database will be created. */);
+  SQLite( const std::string& dbPath, /*!< Path to the SQLite3 database file. */
+	  const bool readOnly = false /*!< If this flag is set, the database is opened read-only. If false, the database is opened for read/write, and a non-existing database will be created. */);
   
   /// Destructor: close database.
   virtual ~SQLite();

@@ -308,7 +308,7 @@ public:
 
   /** Compute approximate percentile value from histogram.
    */
-  Types::DataItem GetPercentile( const Types::DataItem percentile /**!< The percentile to be computed. Value must be between 0 and 1.*/ ) const;
+  Types::DataItem GetPercentile( const Types::DataItem percentile /*!< The percentile to be computed. Value must be between 0 and 1.*/ ) const;
 
 protected:
   /// Make an identical copy of this object including derived class objects
