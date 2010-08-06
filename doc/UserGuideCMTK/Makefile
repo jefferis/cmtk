@@ -17,7 +17,7 @@ ${NAME}.ind: ${NAME}.idx
 	makeindex ${NAME}.idx
 
 
-${NAME}.dvi: ${NAME}.tex  ${NAME.ind} ${BIBTEXDATABSENAME}.bib
+${NAME}.dvi: ${NAME}.tex  ${NAME}.ind ${BIBTEXDATABSENAME}.bib
 	latex ${NAME}.tex
 	bibtex ${NAME}
 	latex ${NAME}.tex

@@ -10,7 +10,9 @@
 
 \usepackage[dvipdfm]{graphicx}
 \usepackage{url}
-\usepackage{makeidx,showidx}
+
+\usepackage{makeidx}
+\makeindex 
 
 \usepackage[dvipdfm,
 bookmarks,
@@ -119,8 +121,8 @@ toolkit\footnote{\url{http://qt.nokia.com}} (version 4.3.0 or higher), and the
 
 Since one of the primary strengths of CMTK is its selection of powerful and
 well-tested registration tools, we shall first clarify some important
-registration terminology. \index{registration!terminology} In pairwise
-registration, \index{registration!pairwise} throughout this guide as well as
+registration terminology. \index{Registration!terminology} In pairwise
+registration, \index{Registration!pairwise} throughout this guide as well as
 in all tools and source code, we shall refer to one image as the reference and
 the other as the floating image. Others may refer to these as the fixed and
 the moving image, respectively. By definition, all coordinate transformations
@@ -205,7 +207,9 @@ DICOM format to a single-file 3D image. To this end, CMTK provides a tool that
 can search through a file system tree, find all DICOM files in it, group the
 ones that form 3D image volumes, and write each of these volumes into a
 separate file in one of the supported formats.
+\index{DICOM}
 
+\index{CMTK Tools!dcm2image@{\tt dcm2image}}
 For example, the command
 \begin{verbatim}
 dcm2image --recurse --out-pattern image%N.nii /path/to/dicom
@@ -241,6 +245,8 @@ Fig.~\ref{fig:InterleavedExample} for an example). CMTK implements an
 algorithm for post-reconstruction correction of these
 artifacts~\cite{RohlRadePfef:2008a} in the \verb|film| tool (for ``Fix
 InterLeaved Motion'').
+\index{CMTK Tools!film@{\tt film}}
+\index{Artifacts!motion}
 
 The \verb|film| tool operates in three stages: first, the interleaved image
 stack is separated into the original passes, and all passes are co-registered
@@ -260,9 +266,11 @@ data.
 
 \subsection{MR Intensity Bias Field Correction}
 
+\index{Artifacts!intensity bias field}
 CMTK implements a model-free algorithm for intensity bias field correction
 based on minimization of image entropy~\cite{LikaVierPern:2001}. The
-\verb|mrbias| tool, which implements this algorithm, is typically called as
+\verb|mrbias| tool, \index{CMTK Tools!mrbias@{\tt mrbias}}
+which implements this algorithm, is typically called as
 follows:
 \begin{verbatim}
 mrbias --degree-mul 2 --mask foreground.nii spgr.nii spgr_corrected.nii
@@ -331,14 +339,14 @@ parameters. [Locust images courtesy of U.~Homberg, Universit\"at Marburg
 
 \subsection{Affine Image Registration}
 
-The basic pairwise image registration \index{registration!pairwise}
+The basic pairwise image registration \index{Registration!pairwise}
 tool in CMTK, \verb|registration|, \index{CMTK
-Tools!registration} implements an algorithm similar to the multi-resolution
+Tools!registration@{\tt registration}} implements an algorithm similar to the multi-resolution
 algorithm by Studholme {\em et al.\/}~\cite{StudHillHawk:1997}. More technical
 detail about our implementation in particular can be found in
 Ref.~\cite{Rohlfing:2000}, albeit only in German.
 
-In order to compute an affine registration \index{registration!affine} between
+In order to compute an affine registration \index{Registration!affine} between
 two images, the registration tool can be run as follows:
 \begin{verbatim}
 registration --initxlate --dofs 6,9 --auto-multi-level 4 \
@@ -383,7 +391,7 @@ registration --initial initial.xform --dofs 6,9 --auto-multi-level 4 \
 
 \subsection{Nonrigid Image Registration}
 
-Pairwise nonrigid image registration \index{registration!nonrigid}  in CMTK
+Pairwise nonrigid image registration \index{Registration!nonrigid}  in CMTK
 implements an algorithm introduced by Rueckert {\em et
 al.\/}~\cite{RuecSonoHaye:1999}, which uses as its transformation model
 multi-resolution free-form deformations based on cubic spline interpolation
@@ -391,6 +399,7 @@ between sparse, uniformly distributed control points. Our particular
 implementation, which uses SMP parallelism to take advantage of multi-CPU
 systems, was described in Ref.~\cite{RohlMaur:2003}.
 
+\index{CMTK Tools!warp@{\tt warp}}
 A very simple nonrigid registration using a 40\,mm control point grid,
 registering floating image \verb|flt.nii| to reference image \verb|ref.nii|
 based on an affine transformation \verb|affine.xform| can be run as follows:
@@ -415,6 +424,7 @@ warp -o ffd5.xform --grid-spacing 40 --refine 3 --jacobian-weight 1e-5 \
 
 \subsection{Reformating Registered Images}
 
+\index{CMTK Tools!reformatx@{\tt reformatx}}
 To reformat the registered floating image following the examples in
 the previous section, run
 \begin{verbatim}
@@ -475,9 +485,10 @@ nonrigid transformations are inverted numerically).
 \subsection{Statistical Testing}
 
 For group comparisons of, for example, Jacobian determinant maps between
-different subject groups, the \verb|ttest| tool computes different types of
-t-tests (all two-tailed) and statistics. In the simplest case, two populations
-A and B of maps can be tested against one another as follows:
+different subject groups, the \verb|ttest| tool \index{CMTK
+Tools!ttest@{\tt ttest}} computes different types of t-tests (all
+two-tailed) and statistics. In the simplest case, two populations A and B of
+maps can be tested against one another as follows:
 \begin{verbatim}
 ttest -o pvalues.nii --tstats-file tstats.nii \
         jacobianA1.nii jacobianA2.nii -- jacobianB1.nii jacobianB2.nii
@@ -517,6 +528,7 @@ integrated atlas-based segmentation tool, which can be run as follows:
 \begin{verbatim}
 asegment input_image.nii atlas_image.nii atlas_labels.nii output_labels.nii
 \end{verbatim}
+\index{CMTK Tools!asegment@{\tt asegment}}
 Here, it is assumed that \verb|input_image.nii| is a new, unsegmented image,
 for example an MR scan of a new subject, \verb|atlas_image.nii| is the
 intensity image of the atlas, and \verb|atlas_labels.nii| is the label image
@@ -572,6 +584,7 @@ tool, as well as the result of an atlas-based segmentation using the
 \clearpage
 \section{Atlas Construction}
 
+\index{Atlas}
 In addition to being useful for atlas-based segmentation, CMTK also provides
 tools that can be used in the construction of atlases. Indeed, its tools have
 been used to create several published brain atlases of humans and different
@@ -594,6 +607,7 @@ warp -o xform03 img0.nii img3.nii
 warp -o xform04 img0.nii img4.nii
 avg_adm -o atlas.nii xform01 xform02 xform03 xform04
 \end{verbatim}
+\index{CMTK Tools!avg\_adm@{\tt avg\_adm}}
 
 \subsection{Iterative Shape Averaging}
 
@@ -612,11 +626,14 @@ sh iterative_shape_averaging.sh ref_image.nii flt_image1.nii flt_image2.nii
 
 \subsection{Groupwise Population Registration}
 
-\index{registration!groupwise} 
+\index{Registration!groupwise} 
 
 \cite{Learned-Miller:2006}
 \cite{BalcGollShen:2007}
 \cite{RohlZahrSull:2008,RohlZahrSull:2010}
+
+\index{CMTK Tools!congeal@{\tt congeal}}
+\index{CMTK Tools!congeal\_warp@{\tt congeal\_warp}}
 
 \clearpage
 \section{More Gory Details}
