@@ -13,7 +13,11 @@ ${NAME}.bbl: ${BIBTEXDATABSENAME}.bib ${NAME}.aux
 	bibtex ${NAME}
 
 
-${NAME}.dvi: ${NAME}.tex  ${BIBTEXDATABSENAME}.bib
+${NAME}.ind: ${NAME}.idx
+	makeindex ${NAME}.idx
+
+
+${NAME}.dvi: ${NAME}.tex  ${NAME.ind} ${BIBTEXDATABSENAME}.bib
 	latex ${NAME}.tex
 	bibtex ${NAME}
 	latex ${NAME}.tex

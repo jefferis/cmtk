@@ -10,6 +10,7 @@
 
 \usepackage[dvipdfm]{graphicx}
 \usepackage{url}
+\usepackage{makeidx,showidx}
 
 \usepackage[dvipdfm,
 bookmarks,
@@ -118,12 +119,13 @@ toolkit\footnote{\url{http://qt.nokia.com}} (version 4.3.0 or higher), and the
 
 Since one of the primary strengths of CMTK is its selection of powerful and
 well-tested registration tools, we shall first clarify some important
-registration terminology. In pairwise registration, throughout this guide as
-well as in all tools and source code, we shall refer to one image as the
-reference and the other as the floating image. Others may refer to these as
-the fixed and the moving image, respectively. By definition, all coordinate
-transformations computed by CMTK are functions that map {\em from\/} the space
-of the reference (fixed) image {\em to\/} the space of the floating (moving)
+registration terminology. \index{registration!terminology} In pairwise
+registration, \index{registration!pairwise} throughout this guide as well as
+in all tools and source code, we shall refer to one image as the reference and
+the other as the floating image. Others may refer to these as the fixed and
+the moving image, respectively. By definition, all coordinate transformations
+computed by CMTK are functions that map {\em from\/} the space of the
+reference (fixed) image {\em to\/} the space of the floating (moving)
 image. As a result, when reformatting one image to match the other, it is the
 floating image by default that will be transformed to match the reference
 image.
@@ -329,14 +331,15 @@ parameters. [Locust images courtesy of U.~Homberg, Universit\"at Marburg
 
 \subsection{Affine Image Registration}
 
-The basic pairwise image registration tool in CMTK, \verb|registration|,
-implements an algorithm similar to the multi-resolution algorithm by Studholme
-{\em et al.\/}~\cite{StudHillHawk:1997}. More technical detail about our
-implementation in particular can be found in Ref.~\cite{Rohlfing:2000}, albeit
-only in German.
+The basic pairwise image registration \index{registration!pairwise}
+tool in CMTK, \verb|registration|, \index{CMTK
+Tools!registration} implements an algorithm similar to the multi-resolution
+algorithm by Studholme {\em et al.\/}~\cite{StudHillHawk:1997}. More technical
+detail about our implementation in particular can be found in
+Ref.~\cite{Rohlfing:2000}, albeit only in German.
 
-In order to compute an affine registration between two images, the
-registration tool can be run as follows:
+In order to compute an affine registration \index{registration!affine} between
+two images, the registration tool can be run as follows:
 \begin{verbatim}
 registration --initxlate --dofs 6,9 --auto-multi-level 4 \
         -o affine.xform ref.nii flt.nii
@@ -380,12 +383,13 @@ registration --initial initial.xform --dofs 6,9 --auto-multi-level 4 \
 
 \subsection{Nonrigid Image Registration}
 
-Pairwise nonrigid image registration in CMTK implements an algorithm
-introduced by Rueckert {\em et al.\/}~\cite{RuecSonoHaye:1999}, which uses
-as its transformation model multi-resolution free-form deformations based on
-cubic spline interpolation between sparse, uniformly distributed control
-points. Our particular implementation, which uses SMP parallelism to take
-advantage of multi-CPU systems, was described in Ref.~\cite{RohlMaur:2003}.
+Pairwise nonrigid image registration \index{registration!nonrigid}  in CMTK
+implements an algorithm introduced by Rueckert {\em et
+al.\/}~\cite{RuecSonoHaye:1999}, which uses as its transformation model
+multi-resolution free-form deformations based on cubic spline interpolation
+between sparse, uniformly distributed control points. Our particular
+implementation, which uses SMP parallelism to take advantage of multi-CPU
+systems, was described in Ref.~\cite{RohlMaur:2003}.
 
 A very simple nonrigid registration using a 40\,mm control point grid,
 registering floating image \verb|flt.nii| to reference image \verb|ref.nii|
@@ -570,7 +574,26 @@ tool, as well as the result of an atlas-based segmentation using the
 
 In addition to being useful for atlas-based segmentation, CMTK also provides
 tools that can be used in the construction of atlases. Indeed, its tools have
-been used to create various published atlases.
+been used to create several published brain atlases of humans and different
+insect species.
+
+\subsection{Averaging Pairwise Correspondences}
+
+Based on pairwise registrations between images in a group and a single selected
+reference image, an atlas can be created as the average intensity image
+deformed by the inverse average deformation~\cite{GuimMeunThir:2000}.
+
+\cite{JeffPottChan:2007}
+
+\cite{FranRuecSchn:2001,FranRuecSchn:2002}
+
+\begin{verbatim}
+warp -o xform01 img0.nii img1.nii
+warp -o xform02 img0.nii img2.nii
+warp -o xform03 img0.nii img3.nii
+warp -o xform04 img0.nii img4.nii
+avg_adm -o atlas.nii xform01 xform02 xform03 xform04
+\end{verbatim}
 
 \subsection{Iterative Shape Averaging}
 
@@ -579,17 +602,17 @@ first used to create a standard atlas of the honeybee
 brain~\cite{BranRohlRyba:2005}, and has since been applied to other insect
 species as well~\cite{KuryRohlKrof:2008,KvelLofaRyba:2009}.
 
+CMTK provides a shell script, {\tt iterative\_shape\_averaging.sh}, that
+largely automates the iterative averaging process. To average three images,
+one of which has been selected as the initial reference image, this script can
+be called as follows:
 \begin{verbatim}
-sh iterative_shape_averaging.sh ref_image.nii flt_image1.nii  flt_image2.nii
+sh iterative_shape_averaging.sh ref_image.nii flt_image1.nii flt_image2.nii
 \end{verbatim}
 
-\subsection{Averaging Pairwise Correspondences}
-
-\cite{GuimMeunThir:2000}
-
-\cite{JeffPottChan:2007}
-
 \subsection{Groupwise Population Registration}
+
+\index{registration!groupwise} 
 
 \cite{Learned-Miller:2006}
 \cite{BalcGollShen:2007}
@@ -644,8 +667,6 @@ considered for registration, which may help increase registration robustness.
 
 \verb|--exact-spacing|
 
-\verb|--delay-refine|
-
 \verb|--restrict|
 
 \verb|--accurate|
@@ -679,5 +700,7 @@ and working on the MacOS platform.
 
 \bibliographystyle{UserGuideCMTK}
 \bibliography{UserGuideCMTK}
+
+\printindex
 
 \end{document}
