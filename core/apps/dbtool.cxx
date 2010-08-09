@@ -95,7 +95,7 @@ listSpace( const int argc, const char* argv[] )
 
     bool sortById = false;
 
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "List image space contents" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This command queries the database to list all images that are in the same space as the given one." );
 
@@ -105,7 +105,7 @@ listSpace( const int argc, const char* argv[] )
     cl.AddParameter( &dbpath, "Database", "Database path." );
     cl.AddParameter( &image, "Image", "Query image path." );
     
-    cl.Parse();
+    cl.Parse( argc, argv );
     
     try
       {
@@ -145,7 +145,7 @@ getXform( const int argc, const char* argv[] )
     
     bool all = false;
 
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Get transformation link between two images" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This command queries the database to find transformation links that map from a given reference to a given floating image space." );
 
@@ -156,7 +156,7 @@ getXform( const int argc, const char* argv[] )
     cl.AddParameter( &rimage, "RefImage", "Reference image path: this is the image FROM which to map." );
     cl.AddParameter( &fimage, "FltImage", "Floating image path. this is the image TO which to map." );
     
-    cl.Parse();
+    cl.Parse( argc, argv );
     
     try
       {
@@ -223,7 +223,7 @@ main( const int argc, const char* argv[] )
     {
     const char* command;
 
-    cmtk::CommandLine cl( argc, argv );
+    cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Image/transformation database maintenance and query tool" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool modifies and queries the database of images and transformations between them." );
 
@@ -233,7 +233,7 @@ main( const int argc, const char* argv[] )
 
     cl.AddParameter( &command, "Command", "Database command. One of \"add_images\", \"list_space\", \"get_xform\". Use '<command> --help' for detailed help." );
 
-    cl.Parse();
+    cl.Parse( argc, argv );
 
     // get effective argc and argv for command
     const int cargc = argc-cl.GetNextIndex()+1;
