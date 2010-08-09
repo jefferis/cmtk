@@ -107,10 +107,10 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
       xform2dfield
       xform2scalar)
 
-    IF(CMTK_BUILD_SQLITE)
+    IF(CMTK_USE_SQLITE)
       SET(APPS ${APPS}
 	dbtool)
-    ENDIF(CMTK_BUILD_SQLITE)
+    ENDIF(CMTK_USE_SQLITE)
 
     IF(CMTK_ROOT_PATH_SRI24)
       SET(APPS ${APPS} asegment_sri24)
