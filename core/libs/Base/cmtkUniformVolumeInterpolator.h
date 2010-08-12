@@ -72,7 +72,7 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /// Constructor.
-  UniformVolumeInterpolator( const UniformVolume::SmartConstPtr& volume = UniformVolume::SmartPtr::Null )
+  UniformVolumeInterpolator( const UniformVolume& volume )
     : UniformVolumeInterpolatorBase( volume )
   {
   }

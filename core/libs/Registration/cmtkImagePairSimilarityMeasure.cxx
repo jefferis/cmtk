@@ -74,11 +74,11 @@ ImagePairSimilarityMeasure::SetFloatingVolume( const UniformVolume::SmartConstPt
       case DATACLASS_UNKNOWN :
       case DATACLASS_GREY :
 	this->m_InterpolationMethod = Interpolators::LINEAR;
-	this->m_FloatingImageInterpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear>( fltVolume ) );
+	this->m_FloatingImageInterpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear>( *fltVolume ) );
 	break;
       case DATACLASS_LABEL :
 	this->m_InterpolationMethod = Interpolators::NEAREST_NEIGHBOR;
-	this->m_FloatingImageInterpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new cmtk::UniformVolumeInterpolator<cmtk::Interpolators::NearestNeighbor>( fltVolume ) );
+	this->m_FloatingImageInterpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new cmtk::UniformVolumeInterpolator<cmtk::Interpolators::NearestNeighbor>( *fltVolume ) );
 	break;
       }
     }

@@ -189,7 +189,7 @@ void InitializeReformatVolume( cmtk::TypedArray::SmartPtr& reformatData, cmtk::U
       }
 
     cmtk::ReformatVolume::Plain plain( DataType );
-    typename TInterpolator::SmartPtr interpolator ( new TInterpolator (floatingVolume) );
+    typename TInterpolator::SmartPtr interpolator ( new TInterpolator(*floatingVolume) );
     if ( OutPaddingValueFlag )
       plain.SetPaddingValue( OutPaddingValue );
     reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::Reformat( targetVolume, TargetToReference, referenceVolume, ReferenceToFloating, plain, interpolator ) );

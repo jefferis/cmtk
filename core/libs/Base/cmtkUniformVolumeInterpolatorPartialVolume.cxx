@@ -44,21 +44,18 @@ UniformVolumeInterpolatorPartialVolume
 {
   value=0;
 
-  const UniformVolume& volume = *(this->m_Volume);
-  const UniformVolume::CoordinateVectorType& deltas = volume.Deltas();
-
   Types::Coordinate lScaled[3];
   int imageGridPoint[3];
   for ( int n = 0; n < 3; ++n )
     {
-    lScaled[n] = (v[n]-volume.m_Offset[n]) / deltas[n];
+    lScaled[n] = (v[n]-this->m_VolumeOffset[n]) / this->m_VolumeDeltas[n];
     imageGridPoint[n] = (int) floor( lScaled[n] );
     if ( ( imageGridPoint[n] < 0 ) || ( imageGridPoint[n] >= this->m_VolumeDims[n]-1 ) )
       return false;
     }
   
   const size_t offset = imageGridPoint[0] + this->m_VolumeDims[0] * ( imageGridPoint[1] + this->m_VolumeDims[1] * imageGridPoint[2]);
-  const TypedArray& gridData = *(volume.GetData());
+  const TypedArray& gridData = *(this->m_VolumeDataArray);
   
   bool done[8];
   Types::DataItem corners[8];

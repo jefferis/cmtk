@@ -669,22 +669,22 @@ ReformatVolume::CreateInterpolator
     case cmtk::Interpolators::LINEAR:
     {
     typedef UniformVolumeInterpolator<cmtk::Interpolators::Linear> TInterpolator;
-    return TInterpolator::SmartPtr( new TInterpolator( volume ) );
+    return TInterpolator::SmartPtr( new TInterpolator( *volume ) );
     }
     case cmtk::Interpolators::CUBIC:
     {
     typedef UniformVolumeInterpolator<cmtk::Interpolators::Cubic> TInterpolator;
-    return TInterpolator::SmartPtr( new TInterpolator( volume ) );
+    return TInterpolator::SmartPtr( new TInterpolator( *volume ) );
     }
     case cmtk::Interpolators::COSINE_SINC:
     {
     typedef UniformVolumeInterpolator< cmtk::Interpolators::CosineSinc<> > TInterpolator;
-    return TInterpolator::SmartPtr( new TInterpolator( volume ) );
+    return TInterpolator::SmartPtr( new TInterpolator( *volume ) );
     }
     case cmtk::Interpolators::PARTIALVOLUME:
     {
     typedef UniformVolumeInterpolatorPartialVolume TInterpolator;
-    return TInterpolator::SmartPtr( new TInterpolator( volume ) );
+    return TInterpolator::SmartPtr( new TInterpolator( *volume ) );
     }
     }  
   return UniformVolumeInterpolatorBase::SmartPtr( NULL );

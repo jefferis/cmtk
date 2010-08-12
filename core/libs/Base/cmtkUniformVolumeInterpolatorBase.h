@@ -62,7 +62,7 @@ public:
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Constructor.
-  UniformVolumeInterpolatorBase( const UniformVolume::SmartConstPtr& volume = UniformVolume::SmartPtr::Null )
+  UniformVolumeInterpolatorBase( const UniformVolume& volume )
   {
     this->SetVolume( volume );
   }
@@ -75,12 +75,12 @@ public:
    * from. It may also perform some pre-computations to speed up interpolation,
    * such as indexing etc. It does not perform any interpolation itself.
    */
-  virtual void SetVolume( const UniformVolume::SmartConstPtr& volume )
+  virtual void SetVolume( const UniformVolume& volume )
   {
-    this->m_Volume = volume;
-
-    this->m_VolumeDataArray = this->m_Volume->GetData();
-    this->m_VolumeDims = this->m_Volume->GetDims();
+    this->m_VolumeDataArray = volume.GetData();
+    this->m_VolumeDims = volume.GetDims();
+    this->m_VolumeDeltas = volume.Deltas();
+    this->m_VolumeOffset = volume.m_Offset;
     this->m_NextJ = this->m_VolumeDims[0];
     this->m_NextK = this->m_NextJ * this->m_VolumeDims[1];    
   }
@@ -110,16 +110,28 @@ protected:
   UniformVolume::SmartConstPtr m_Volume;
 
   /// Pointer to volume data array.
-  const TypedArray* m_VolumeDataArray;
+  TypedArray::SmartConstPtr m_VolumeDataArray;
 
   /// Image dimensions.
   DataGrid::IndexType m_VolumeDims;
+  
+  /// Image pixel size.
+  UniformVolume::CoordinateVectorType m_VolumeDeltas;
+
+  /// Image offset vector.
+  UniformVolume::CoordinateVectorType m_VolumeOffset;
 
   /// Index increment when increasing "j" pixel index (i.e., moving to next image row).
   int m_NextJ;
 
   /// Index increment when increasing "k" pixel index (i.e., moving to next image plane).
   int m_NextK;
+
+  /// Get offset from pixel index.
+  size_t GetOffsetFromIndex( const int i, const int j, const int k ) const
+  {
+    return i + j * this->m_NextJ + k * this->m_NextK;
+  }
 };
 
 //@}

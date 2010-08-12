@@ -50,7 +50,7 @@ MultiChannelRegistrationFunctional<TInterpolator>
 ::AddFloatingChannel( UniformVolume::SmartPtr& channel )
 {
   this->Superclass::AddFloatingChannel( channel );
-  this->m_FloatingInterpolators.push_back( typename TInterpolator::SmartPtr( new TInterpolator( channel ) ) );
+  this->m_FloatingInterpolators.push_back( typename TInterpolator::SmartPtr( new TInterpolator( *channel ) ) );
 }
 
 } // namespace cmtk

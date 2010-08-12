@@ -119,31 +119,31 @@ Slicer::Execute()
     case cmtk::Interpolators::LINEAR:
     {
     typedef cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> TInterpolator;
-    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( volume ) );
+    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( *volume ) );
     break;
     }
     case cmtk::Interpolators::NEAREST_NEIGHBOR:
     {
     typedef cmtk::UniformVolumeInterpolator<cmtk::Interpolators::NearestNeighbor> TInterpolator;
-    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( volume ) );
+    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( *volume ) );
     break;
     }
     case cmtk::Interpolators::CUBIC:
     {
     typedef cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Cubic> TInterpolator;
-    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( volume ) );
+    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( *volume ) );
     break;
     }
     case cmtk::Interpolators::COSINE_SINC:
     {
     typedef cmtk::UniformVolumeInterpolator< cmtk::Interpolators::CosineSinc<> > TInterpolator;
-    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( volume ) );
+    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( *volume ) );
     break;
     }
     case cmtk::Interpolators::PARTIALVOLUME:
     {
     typedef cmtk::UniformVolumeInterpolatorPartialVolume TInterpolator;
-    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( volume ) );
+    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( *volume ) );
     break;
     }
     }
@@ -249,31 +249,31 @@ Slicer::ExecuteSplineWarp
     case cmtk::Interpolators::LINEAR:
     {
     typedef cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> TInterpolator;
-    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( volume ) );
+    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( *volume ) );
     break;
     }
     case cmtk::Interpolators::NEAREST_NEIGHBOR:
     {
     typedef cmtk::UniformVolumeInterpolator<cmtk::Interpolators::NearestNeighbor> TInterpolator;
-    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( volume ) );
+    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( *volume ) );
     break;
     }
     case cmtk::Interpolators::CUBIC:
     {
     typedef cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Cubic> TInterpolator;
-    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( volume ) );
+    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( *volume ) );
     break;
     }
     case cmtk::Interpolators::COSINE_SINC:
     {
     typedef cmtk::UniformVolumeInterpolator< cmtk::Interpolators::CosineSinc<> > TInterpolator;
-    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( volume ) );
+    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( *volume ) );
     break;
     }
     case cmtk::Interpolators::PARTIALVOLUME:
     {
     typedef cmtk::UniformVolumeInterpolatorPartialVolume TInterpolator;
-    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( volume ) );
+    interpolator = cmtk::UniformVolumeInterpolatorBase::SmartPtr( new TInterpolator( *volume ) );
     break;
     }
     }
