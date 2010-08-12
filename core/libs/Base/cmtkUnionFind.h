@@ -43,7 +43,7 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-/// Class template for (relatively) efficient uni-find algorithm.
+/// Class template for (relatively) efficient union-find algorithm.
 template<class T>
 class UnionFind
 {
