@@ -59,9 +59,7 @@ ImagePairNonrigidRegistration::ImagePairNonrigidRegistration ()
     InverseWarpXform( NULL ),
     m_MatchFltToRefHistogram( false ),
     m_RepeatMatchFltToRefHistogram( false ),
-    m_InverseConsistencyWeight( 0.0 ),
-    m_ForceOutsideFlag( false ),
-    m_ForceOutsideValue( 0.0 )
+    m_InverseConsistencyWeight( 0.0 )
 {
   this->m_Metric = 0;
   this->m_Algorithm = 3;

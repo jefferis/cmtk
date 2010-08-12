@@ -142,13 +142,6 @@ protected:
   /// Weighting factor of landmark registration error vs. image similarity.
   cmtkGetSetMacro(float,LandmarkErrorWeight);
 
-  /// Set flag and value for forcing values outside the floating image.
-  virtual void SetForceOutside( const bool flag = true, const Types::DataItem value = 0 )
-  {
-    this->m_ForceOutsideFlag = flag;
-    this->m_ForceOutsideValue = value;
-  }
-
   /** Default constructor.
    * Set initial values for some flags.
    */
@@ -207,12 +200,6 @@ private:
 
   /// Have we already run the current level before refining the grid?
   bool RefineDelayed;
-
-  /// Flag for forcing pixel values outside the floating image.
-  bool m_ForceOutsideFlag;
-
-  /// Value for forcing pixel values outside the floating image.
-  Types::DataItem m_ForceOutsideValue;
 
   /** Create warp transformation with current settings.
    * This function is used to create the standard warp, as well as the

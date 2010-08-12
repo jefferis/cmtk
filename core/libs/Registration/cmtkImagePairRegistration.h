@@ -124,6 +124,12 @@ protected:
    */
   Types::Coordinate m_Sampling;
 
+  /// Flag for forcing pixel values outside the floating image.
+  bool m_ForceOutsideFlag;
+
+  /// Value for forcing pixel values outside the floating image.
+  Types::DataItem m_ForceOutsideValue;
+
   /// First data volume.
   cmtkGetSetMacro(UniformVolume::SmartPtr,Volume_1);
 
@@ -141,6 +147,13 @@ protected:
    * depending on whether registration was instructed to switch the two or not.
    */
   cmtkGetSetMacro(UniformVolume::SmartPtr,FloatingVolume);
+
+  /// Set flag and value for forcing values outside the floating image.
+  virtual void SetForceOutside( const bool flag = true, const Types::DataItem value = 0 )
+  {
+    this->m_ForceOutsideFlag = flag;
+    this->m_ForceOutsideValue = value;
+  }
 
   /// Local class for preprocessing image data, e.g., by histogram operations, thresholding, and cropping.
   class ImagePreprocessor

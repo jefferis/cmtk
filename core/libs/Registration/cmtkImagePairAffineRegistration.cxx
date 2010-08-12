@@ -163,7 +163,9 @@ ImagePairAffineRegistration
     nextFlt = this->m_FloatingVolume;
     }
   
-  return ImagePairAffineRegistrationFunctional::Create( this->m_Metric, nextRef, nextFlt, this->m_FloatingImageInterpolation, affineXform );
+  ImagePairAffineRegistrationFunctional *functional = ImagePairAffineRegistrationFunctional::Create( this->m_Metric, nextRef, nextFlt, this->m_FloatingImageInterpolation, affineXform );
+  functional->SetForceOutside( this->m_ForceOutsideFlag, this->m_ForceOutsideValue );
+  return functional;
 }
 
 void

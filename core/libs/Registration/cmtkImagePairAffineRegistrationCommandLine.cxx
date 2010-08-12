@@ -107,6 +107,9 @@ ImagePairAffineRegistrationCommandLine
 
   Verbose = 0;
 
+  bool forceOutsideFlag = false;
+  Types::DataItem forceOutsideValue = 0;
+
   const char* inStudylist = NULL;
   const char *InitialStudylist = NULL;
   Study1 = Study2 = NULL;
@@ -180,6 +183,7 @@ ImagePairAffineRegistrationCommandLine
     kernelGroup->AddSwitch( Key( "partial-volume" ), Interpolators::PARTIALVOLUME, "Partial volume interpolation (for label data)" );
 
     cl.AddSwitch( Key( "match-histograms" ), &this->m_MatchFltToRefHistogram, true, "Match floating image histogram to reference image histogram." );
+    cl.AddOption( Key( "force-outside-value" ), &forceOutsideValue, "Force values outside field of view to this value rather than drop incomplete pixel pairs", &forceOutsideFlag );
 
     this->m_PreprocessorRef.AttachToCommandLine( cl );
     this->m_PreprocessorFlt.AttachToCommandLine( cl );
@@ -338,6 +342,11 @@ ImagePairAffineRegistrationCommandLine
     {
     RegistrationCallback::SmartPtr callback( new ProtocolCallback( this->m_ProtocolFileName ) );
     this->SetCallback( callback );
+    }
+
+  if ( forceOutsideFlag )
+    {
+    this->SetForceOutside( true, forceOutsideValue );
     }
 }
 
