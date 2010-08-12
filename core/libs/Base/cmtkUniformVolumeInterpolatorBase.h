@@ -85,12 +85,6 @@ public:
     this->m_NextK = this->m_NextJ * this->m_VolumeDims[1];    
   }
   
-  /// Get smart pointer to linked volume.
-  virtual UniformVolume::SmartConstPtr GetVolume() const
-  {
-    return this->m_Volume;
-  } 
-
   /** Get data at location.
    *
    * This function performs interpolation of one value from m_Volume at location
@@ -105,10 +99,13 @@ public:
   /// Get data at a pre-computed relative pixel index. This is faster if we already know the pixel index and fractional coordinate of a location.
   virtual Types::DataItem GetDataDirect( const int* imageGridPoint, const Types::Coordinate* insidePixel ) const = 0;
 
-protected:
-  /// Pointer to volume that we interpolate from.
-  UniformVolume::SmartConstPtr m_Volume;
+  /// Get data type of input volume.
+  virtual ScalarDataType GetVolumeDataType() const
+  {
+    return this->m_VolumeDataArray->GetType();
+  }
 
+protected:
   /// Pointer to volume data array.
   TypedArray::SmartConstPtr m_VolumeDataArray;
 

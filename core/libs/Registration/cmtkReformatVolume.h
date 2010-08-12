@@ -212,7 +212,7 @@ public:
       if ( this->DataType != TYPE_NONE )
 	return this->DataType;
       else
-	return fltInterpolator->GetVolume()->GetData()->GetType(); 
+	return fltInterpolator->GetVolumeDataType(); 
     }
 
   protected:

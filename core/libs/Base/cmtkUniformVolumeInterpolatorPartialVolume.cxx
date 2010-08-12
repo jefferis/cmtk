@@ -126,7 +126,7 @@ UniformVolumeInterpolatorPartialVolume
   Types::DataItem value = 0;
 
   const size_t offset = imageGridPoint[0] + this->m_VolumeDims[0] * ( imageGridPoint[1] + this->m_VolumeDims[1] * imageGridPoint[2]);
-  const TypedArray& gridData = *(this->m_Volume->GetData());
+  const TypedArray& gridData = *(this->m_VolumeDataArray);
   
   bool done[8];
   Types::DataItem corners[8];
