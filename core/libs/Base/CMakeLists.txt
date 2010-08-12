@@ -98,6 +98,7 @@ SET(cmtkBase_SRCS
   cmtkUniformVolumeCrop.cxx
   cmtkUniformVolumeDifferential.cxx
   cmtkUniformVolumeFilter.cxx
+  cmtkUniformVolumeInterpolatorBase.cxx
   cmtkUniformVolumeInterpolatorPartialVolume.cxx
   cmtkUniformVolumePainter.cxx
   cmtkUniformVolumeResample.cxx

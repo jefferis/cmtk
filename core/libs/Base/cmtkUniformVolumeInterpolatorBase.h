@@ -75,15 +75,7 @@ public:
    * from. It may also perform some pre-computations to speed up interpolation,
    * such as indexing etc. It does not perform any interpolation itself.
    */
-  virtual void SetVolume( const UniformVolume& volume )
-  {
-    this->m_VolumeDataArray = volume.GetData();
-    this->m_VolumeDims = volume.GetDims();
-    this->m_VolumeDeltas = volume.Deltas();
-    this->m_VolumeOffset = volume.m_Offset;
-    this->m_NextJ = this->m_VolumeDims[0];
-    this->m_NextK = this->m_NextJ * this->m_VolumeDims[1];    
-  }
+  virtual void SetVolume( const UniformVolume& volume );
   
   /** Get data at location.
    *
