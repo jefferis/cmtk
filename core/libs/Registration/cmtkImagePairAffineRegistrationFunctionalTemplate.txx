@@ -84,10 +84,10 @@ ImagePairAffineRegistrationFunctionalTemplate<VM>
   typename Self::EvaluateTaskInfo *info = static_cast<typename Self::EvaluateTaskInfo*>( args );
   
   Self *me = info->thisObject;
-  const VM* metric = me->m_Metric;
+  VM& metric = dynamic_cast<VM&>( *(me->m_Metric) );
   
-  VM* threadMetric = me->m_ThreadMetric[threadIdx];
-  threadMetric->Reset();
+  VM& threadMetric = *(me->m_ThreadMetric[threadIdx]);
+  threadMetric.Reset();
   
   const Vector3D *hashX = (*info->AxesHash)[0], *hashY = (*info->AxesHash)[1], *hashZ = (*info->AxesHash)[2];
   Vector3D pFloating;
@@ -132,16 +132,23 @@ ImagePairAffineRegistrationFunctionalTemplate<VM>
 	  // Loop over all remaining voxels in current row
 	  for ( pX = startX; pX<endX; ++pX, ++r ) 
 	    {
-	    (pFloating = rowStart) += hashX[pX];
-	    
-	    // probe volume and get the respective voxel
-	    if ( me->m_FloatingGrid->FindVoxelByIndex( pFloating, fltIdx, fltFrac ) )
+	    // Continue metric computation.
+	    Types::DataItem sampleX;
+	    if ( metric.GetSampleX( sampleX, r ) )
 	      {
-	      // Continue metric computation.
-	      Types::DataItem sampleX;
-	      if ( metric->GetSampleX( sampleX, r ) )
+	      (pFloating = rowStart) += hashX[pX];
+	      
+	      // probe volume and get the respective voxel
+	      if ( me->m_FloatingGrid->FindVoxelByIndex( pFloating, fltIdx, fltFrac ) )
 		{
-		threadMetric->Increment( sampleX, metric->GetSampleY( fltIdx, fltFrac ) );
+		threadMetric.Increment( sampleX, metric.GetSampleY( fltIdx, fltFrac ) );
+		}
+	      else
+		{ 
+		if ( me->m_ForceOutsideFlag ) 
+		  {
+		  threadMetric.Increment( sampleX, me->m_ForceOutsideValueRescaled );		
+		  }
 		}
 	      }
 	    }
@@ -162,7 +169,7 @@ ImagePairAffineRegistrationFunctionalTemplate<VM>
     }
   
   me->m_MetricMutex.Lock();
-  me->m_Metric->Add( *threadMetric );
+  metric.Add( threadMetric );
   me->m_MetricMutex.Unlock();
 }
 

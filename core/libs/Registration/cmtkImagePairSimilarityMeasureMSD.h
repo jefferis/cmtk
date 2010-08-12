@@ -99,7 +99,7 @@ public:
   }
   
   /// Get the value of the metric.
-  Self::ReturnType Get() const 
+  virtual Self::ReturnType Get() const 
   {
     return static_cast<Self::ReturnType>( this->m_SumOfDifferences / this->m_NumberOfSamples );
   }

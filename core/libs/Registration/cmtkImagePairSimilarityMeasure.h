@@ -136,6 +136,9 @@ public:
     return value;
   }
 
+  /// Get the value of the metric.
+  virtual Self::ReturnType Get() const = 0;
+
 private:
   /// Smart pointer to reference volume.
   UniformVolume::SmartConstPtr m_ReferenceVolume;

@@ -105,9 +105,6 @@ public:
    */
   cmtkGetSetMacroDefault(double,GridEnergyWeight,0);
 
-  /// Set flag and value for forcing values outside the floating image.
-  virtual void SetForceOutside( const bool flag = true, const Types::DataItem value = 0 ) = 0;
-
   /** Set Warp transformation.
    * This virtual function will be overridden by the derived classes that add
    * the actual warp transformation as a template parameters. It serves as a
@@ -178,12 +175,6 @@ protected:
 
   /// Baseline transformed volume.
   Types::DataItem *m_WarpedVolume;
-
-  /// Flag for forcing pixel values outside the floating image.
-  bool m_ForceOutsideFlag;
-
-  /// Rescaled byte value for forcing pixel values outside the floating image.
-  Types::DataItem m_ForceOutsideValueRescaled;
 
   /// Shortcut variables for x, y, z dimension of the reference image.
   DataGrid::IndexType::ValueType m_DimsX, m_DimsY, m_DimsZ;

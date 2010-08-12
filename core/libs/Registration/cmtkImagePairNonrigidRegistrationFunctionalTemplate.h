@@ -369,7 +369,7 @@ private:
     Vector3D *vectorCache = me->m_ThreadVectorCache[threadIdx];
     
     Types::DataItem* warpedVolume = me->m_WarpedVolume;
-    const Types::DataItem unsetY = DataTypeTraits<Types::DataItem>::ChoosePaddingValue();
+    const Types::DataItem unsetY = ( me->m_ForceOutsideFlag ) ? me->m_ForceOutsideValueRescaled : DataTypeTraits<Types::DataItem>::ChoosePaddingValue();
     
     Vector3D *pVec;
     int pX, pY, pZ;

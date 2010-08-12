@@ -90,10 +90,10 @@ public:
   {
     this->m_NumberOfThreads = ThreadPool::GetGlobalThreadPool().GetNumberOfThreads();
 
-    this->m_Metric = new VM( reference, floating, interpolation );
+    this->m_Metric = ImagePairSimilarityMeasure::SmartPtr( new VM( reference, floating, interpolation ) );
     this->m_ThreadMetric = Memory::AllocateArray<VM*>( m_NumberOfThreads );
     for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
-      this->m_ThreadMetric[thread] = new VM( *(this->m_Metric) );
+      this->m_ThreadMetric[thread] = new VM( dynamic_cast<const VM&>( *(this->m_Metric) ) );
   }
 
   /// Destructor.
@@ -102,8 +102,6 @@ public:
     for ( size_t thread = 0; thread < m_NumberOfThreads; ++thread )
       delete m_ThreadMetric[thread];
     Memory::DeleteArray( this->m_ThreadMetric );
-
-    delete this->m_Metric;
   }
 
   /// Evaluate with new parameter vector.
@@ -173,10 +171,6 @@ public:
     * functional by finite-difference approximation.
     */
   static void EvaluateThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
-
-private:
-  /// The metric (similarity measure) object.
-  VM* m_Metric;
 };
 
 //@}

@@ -75,7 +75,7 @@ public:
 				 const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
 
   /// Get the value of the metric.
-  Self::ReturnType Get() const 
+  virtual Self::ReturnType Get() const 
   {
     return -sqrt( -this->Superclass::Get() );
   }

@@ -166,7 +166,7 @@ public:
   }
 
   /// Return correlation ratio.
-  Self::ReturnType Get () const;
+  virtual Self::ReturnType Get () const;
 
 private:
   /// Number of bins for the X-distribution.

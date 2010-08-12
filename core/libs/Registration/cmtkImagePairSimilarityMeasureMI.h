@@ -84,7 +84,7 @@ public:
   ImagePairSimilarityMeasureMI() {};
 
   /// Get the value of the metric.
-  Self::ReturnType Get() const 
+  virtual Self::ReturnType Get() const 
   {
     double HX, HY, HXY;
     

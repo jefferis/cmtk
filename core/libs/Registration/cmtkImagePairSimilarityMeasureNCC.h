@@ -113,7 +113,7 @@ public:
   }
   
   /// Compute cross correlation.
-  Self::ReturnType Get() const;
+  virtual Self::ReturnType Get() const;
 
   void Add ( const Self& other )
   {

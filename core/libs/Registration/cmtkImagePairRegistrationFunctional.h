@@ -46,6 +46,8 @@
 #include "System/cmtkException.h"
 #include "System/cmtkLockingPtr.h"
 
+#include "Registration/cmtkImagePairSimilarityMeasure.h"
+
 #include <cassert>
 
 namespace
@@ -102,7 +104,8 @@ public:
    *@param floating The floating (i.e. transformed) volume.
    */
   ImagePairRegistrationFunctional( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating )
-    : m_MatchedLandmarkList( NULL )
+    : m_MatchedLandmarkList( NULL ),
+      m_ForceOutsideFlag( false )
   {
     this->InitFloating( floating );
     this->InitReference( reference );
@@ -113,7 +116,19 @@ public:
    */
   virtual ~ImagePairRegistrationFunctional() {}
 
+  /// Set flag and value for forcing values outside the floating image.
+  /// Set flag and value for forcing values outside the floating image.
+  virtual void SetForceOutside
+  ( const bool flag = true, const Types::DataItem value = 0 )
+  {
+    this->m_ForceOutsideFlag = flag;
+    this->m_ForceOutsideValueRescaled = this->m_Metric->GetFloatingValueScaled( value );
+  }
+
 protected:
+  /// The metric (similarity measure) object.
+  ImagePairSimilarityMeasure::SmartPtr m_Metric;
+
   /// Grid dimensions of the floating volume.
   DataGrid::IndexType m_FloatingDims;
 
@@ -137,6 +152,12 @@ protected:
 
   /// Inverse pixel deltas of the reference volume.
   UniformVolume::CoordinateVectorType m_ReferenceInverseDelta;
+
+  /// Flag for forcing pixel values outside the floating image.
+  bool m_ForceOutsideFlag;
+
+  /// Rescaled byte value for forcing pixel values outside the floating image.
+  Types::DataItem m_ForceOutsideValueRescaled;
 
   /** Find rectilinear area in original reference grid.
    *@param fromVOI Lower corner of area to find.
