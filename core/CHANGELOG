@@ -1,5 +1,11 @@
 Release CMTK-1.4.2:
 
+(r2197) Improved: UniformVolumeInterpoaltor classes now convert input data to
+    Types::DataItem and cache the converted array for faster computation. This
+    particularly speeds up higher-order interpolation with cubic or sinc
+    kernels.
+
+
 Release CMTK-1.4.1 (2010-08-09):
 
 (r2178) Improved: when run as Slicer plugins, GPU-accelerated command line
