@@ -54,8 +54,7 @@ UniformVolumeInterpolatorPartialVolume
       return false;
     }
   
-  const size_t offset = imageGridPoint[0] + this->m_VolumeDims[0] * ( imageGridPoint[1] + this->m_VolumeDims[1] * imageGridPoint[2]);
-  const TypedArray& gridData = *(this->m_VolumeDataArray);
+  const size_t offset = this->GetOffsetFromIndex( imageGridPoint[0], imageGridPoint[1], imageGridPoint[2] );
   
   bool done[8];
   Types::DataItem corners[8];
@@ -68,7 +67,8 @@ UniformVolumeInterpolatorPartialVolume
       {
       for ( int i = 0; i < 2; ++i, ++idx )
 	{
-	const bool dataHere = gridData.Get( corners[idx], offset + i + j * this->m_NextJ + k * this->m_NextK );
+	corners[idx] = this->m_VolumeDataArray[offset + this->GetOffsetFromIndex( i, j, k )];
+	const bool dataHere = finite( corners[idx] );
 	done[idx] = !dataHere;
 	dataPresent |= dataHere;
 	}
@@ -125,8 +125,7 @@ UniformVolumeInterpolatorPartialVolume
 {
   Types::DataItem value = 0;
 
-  const size_t offset = imageGridPoint[0] + this->m_VolumeDims[0] * ( imageGridPoint[1] + this->m_VolumeDims[1] * imageGridPoint[2]);
-  const TypedArray& gridData = *(this->m_VolumeDataArray);
+  const size_t offset = this->GetOffsetFromIndex( imageGridPoint[0], imageGridPoint[1], imageGridPoint[2] );
   
   bool done[8];
   Types::DataItem corners[8];
@@ -139,7 +138,8 @@ UniformVolumeInterpolatorPartialVolume
       {
       for ( int i = 0; i < 2; ++i, ++idx )
 	{
-	const bool dataHere = gridData.Get( corners[idx], offset + i + j * this->m_NextJ + k * this->m_NextK );
+	corners[idx] = this->m_VolumeDataArray[offset + this->GetOffsetFromIndex( i, j, k )];
+	const bool dataHere = finite( corners[idx] );
 	done[idx] = !dataHere;
 	dataPresent |= dataHere;
 	}

@@ -72,7 +72,6 @@ bool MassPreservingReformat = false;
 bool TargetMask = false;
 
 const char* TargetVolumeName = NULL;
-const char* ReferenceVolumeName = NULL;
 const char* FloatingVolumeName = NULL;
 
 cmtk::UniformVolume::SmartPtr UserDefinedTargetVolume;
@@ -175,7 +174,7 @@ CallbackTargetImageOffsetPixels( const char* arg )
 }
 
 template<class TInterpolator>
-void InitializeReformatVolume( cmtk::TypedArray::SmartPtr& reformatData, cmtk::UniformVolume::SmartPtr& targetVolume, cmtk::UniformVolume::SmartPtr& referenceVolume, cmtk::UniformVolume::SmartPtr& floatingVolume )
+void InitializeReformatVolume( cmtk::TypedArray::SmartPtr& reformatData, cmtk::UniformVolume::SmartPtr& targetVolume, cmtk::UniformVolume::SmartPtr& floatingVolume )
 {
   switch ( Mode ) 
     {
@@ -192,13 +191,13 @@ void InitializeReformatVolume( cmtk::TypedArray::SmartPtr& reformatData, cmtk::U
     typename TInterpolator::SmartPtr interpolator ( new TInterpolator(*floatingVolume) );
     if ( OutPaddingValueFlag )
       plain.SetPaddingValue( OutPaddingValue );
-    reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::Reformat( targetVolume, TargetToReference, referenceVolume, ReferenceToFloating, plain, interpolator ) );
+    reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::Reformat( targetVolume, TargetToReference, ReferenceToFloating, plain, floatingVolume, interpolator ) );
 
     if ( MassPreservingReformat )
       {
       cmtk::ReformatVolume::Jacobian jacobian( cmtk::TYPE_DOUBLE, false /*correctGlobalScale*/ );
       cmtk::XformList emptyXformList;
-      cmtk::TypedArray::SmartPtr jacobianData( cmtk::ReformatVolume::Reformat( targetVolume, emptyXformList, referenceVolume, TargetToReference, jacobian, TInterpolator::SmartPtr::Null ) );
+      cmtk::TypedArray::SmartPtr jacobianData( cmtk::ReformatVolume::Reformat( targetVolume, emptyXformList, TargetToReference, jacobian, NULL, TInterpolator::SmartConstPtr::Null ) );
       
       const size_t nPixels = reformatData->GetDataSize();
       for ( size_t i = 0; i < nPixels; ++i )
@@ -217,7 +216,7 @@ void InitializeReformatVolume( cmtk::TypedArray::SmartPtr& reformatData, cmtk::U
     cmtk::ReformatVolume::Jacobian jacobian( DataType, JacobianCorrectGlobal );
     if ( OutPaddingValueFlag )
       jacobian.SetPaddingValue( OutPaddingValue );
-    reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::Reformat( targetVolume, TargetToReference, referenceVolume, ReferenceToFloating, jacobian, TInterpolator::SmartPtr::Null ) );
+    reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::Reformat( targetVolume, TargetToReference, ReferenceToFloating, jacobian, NULL, TInterpolator::SmartConstPtr::Null ) );
     break;
     }
     }
@@ -272,17 +271,6 @@ ReformatPullback()
       }
     }
   
-  cmtk::UniformVolume::SmartPtr referenceVolume;
-  if ( ReferenceVolumeName ) 
-    {
-    referenceVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( ReferenceVolumeName, Verbose ) );
-    if ( ! referenceVolume ) 
-      {
-      cmtk::StdErr << "ERROR: reference volume " << ReferenceVolumeName << " could not be read\n";
-      exit( 1 );
-      }
-    }
-
   cmtk::UniformVolume::SmartPtr floatingVolume;
   if ( FloatingVolumeName )
     {
@@ -326,19 +314,19 @@ ReformatPullback()
     case cmtk::Interpolators::LINEAR:
     {
     typedef cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> TInterpolator;
-    InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, referenceVolume, floatingVolume );
+    InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, floatingVolume );
     break;
     }
     case cmtk::Interpolators::CUBIC:
     {
     typedef cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Cubic> TInterpolator;
-    InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, referenceVolume, floatingVolume );
+    InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, floatingVolume );
     break;
     }
     case cmtk::Interpolators::NEAREST_NEIGHBOR:
     {
     typedef cmtk::UniformVolumeInterpolator<cmtk::Interpolators::NearestNeighbor> TInterpolator;
-    InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, referenceVolume, floatingVolume );
+    InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, floatingVolume );
     break;
     }
     case cmtk::Interpolators::COSINE_SINC:
@@ -348,25 +336,25 @@ ReformatPullback()
       case 2:
       {
       typedef cmtk::UniformVolumeInterpolator< cmtk::Interpolators::CosineSinc<2> > TInterpolator;
-      InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, referenceVolume, floatingVolume );
+      InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, floatingVolume );
       break;
       }
       case 3:
       {
       typedef cmtk::UniformVolumeInterpolator< cmtk::Interpolators::CosineSinc<3> > TInterpolator;
-      InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, referenceVolume, floatingVolume );
+      InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, floatingVolume );
       break;
       }
       case 4:
       {
       typedef cmtk::UniformVolumeInterpolator< cmtk::Interpolators::CosineSinc<4> > TInterpolator;
-      InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, referenceVolume, floatingVolume );
+      InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, floatingVolume );
       break;
       }
       case 5:
       {
       typedef cmtk::UniformVolumeInterpolator< cmtk::Interpolators::CosineSinc<5> > TInterpolator;
-      InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, referenceVolume, floatingVolume );
+      InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, floatingVolume );
       break;
       }      
       default:
@@ -381,25 +369,25 @@ ReformatPullback()
       case 2:
       {
       typedef cmtk::UniformVolumeInterpolator< cmtk::Interpolators::HammingSinc<2> > TInterpolator;
-      InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, referenceVolume, floatingVolume );
+      InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, floatingVolume );
       break;
       }
       case 3:
       {
       typedef cmtk::UniformVolumeInterpolator< cmtk::Interpolators::HammingSinc<3> > TInterpolator;
-      InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, referenceVolume, floatingVolume );
+      InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, floatingVolume );
       break;
       }
       case 4:
       {
       typedef cmtk::UniformVolumeInterpolator< cmtk::Interpolators::HammingSinc<4> > TInterpolator;
-      InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, referenceVolume, floatingVolume );
+      InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, floatingVolume );
       break;
       }
       case 5:
       {
       typedef cmtk::UniformVolumeInterpolator< cmtk::Interpolators::HammingSinc<5> > TInterpolator;
-      InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, referenceVolume, floatingVolume );
+      InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, floatingVolume );
       break;
       }
       default:
@@ -410,7 +398,7 @@ ReformatPullback()
     case cmtk::Interpolators::PARTIALVOLUME:
     {
     typedef cmtk::UniformVolumeInterpolatorPartialVolume TInterpolator;
-    InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, referenceVolume, floatingVolume );
+    InitializeReformatVolume<TInterpolator>( reformatData, targetVolume, floatingVolume );
     break;
     }
     }

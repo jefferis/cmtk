@@ -75,7 +75,6 @@ UniformVolumeInterpolator<TInterpolationFunction>
   const int kMin = std::max( 0, -zz );
   const int kMax = std::min( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[2] - zz );
 
-  Types::DataItem data;
   Types::DataItem interpolatedData = 0;
   Types::Coordinate totalWeight = 0;
 
@@ -87,7 +86,8 @@ UniformVolumeInterpolator<TInterpolationFunction>
       size_t offset = this->GetOffsetFromIndex( xx + iMin, yy + j, zz + k );
       for ( int i = iMin; i < iMax; ++i, ++offset )
         {
-        if ( this->m_VolumeDataArray->Get( data, offset ) )
+	const Types::DataItem data = this->m_VolumeDataArray[offset];
+	if ( finite( data ) )
           {
 	  const Types::Coordinate weightIJK = interpolationWeights[0][i] * weightJK;
 	  interpolatedData += static_cast<Types::DataItem>( data * weightIJK );
@@ -133,7 +133,6 @@ UniformVolumeInterpolator<TInterpolationFunction>
   const int kMin = std::max( 0, -zz );
   const int kMax = std::min( 2 * TInterpolationFunction::RegionSizeLeftRight, this->m_VolumeDims[2] - zz );
 
-  Types::DataItem data;
   Types::DataItem interpolatedData = 0;
   Types::Coordinate totalWeight = 0;
 
@@ -145,7 +144,8 @@ UniformVolumeInterpolator<TInterpolationFunction>
       size_t offset = (xx + iMin) + (yy + j) * this->m_NextJ + (zz + k) * this->m_NextK;
       for ( int i = iMin; i < iMax; ++i, ++offset )
         {
-        if ( this->m_VolumeDataArray->Get( data, offset ) )
+        const Types::DataItem data = this->m_VolumeDataArray[offset];
+	if ( finite( data ) )
           {
 	  const Types::Coordinate weightIJK = interpolationWeights[0][i] * weightJK;
           interpolatedData += static_cast<Types::DataItem>( data * weightIJK );

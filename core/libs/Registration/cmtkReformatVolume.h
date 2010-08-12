@@ -175,7 +175,7 @@ public:
   
   /// Complex reformat.
   template<class TInterpolator, class Fct> static TypedArray::SmartPtr Reformat
-  ( const UniformVolume* target, cmtk::XformList& targetToRef, const UniformVolume* reference, cmtk::XformList& refToFloat, Fct& fct, TInterpolator& interpolator = TInterpolator::Null );
+  ( const UniformVolume* target, cmtk::XformList& targetToRef, cmtk::XformList& refToFloat, Fct& fct, const UniformVolume* floating = NULL, TInterpolator& interpolator = TInterpolator::Null );
   
   /// Constants for extended reformatting mode.
   typedef enum 
@@ -207,12 +207,12 @@ public:
     bool operator()( Types::DataItem& value, const Vector3D& inRef, cmtk::XformList& refToFloat, TInterpolatorInstantiationPtr& interpolator );
     
     /// Return preferred data type for reformatted data.
-    ScalarDataType GetDataType( const UniformVolume*, const UniformVolumeInterpolatorBase* fltInterpolator ) const
+    ScalarDataType GetDataType( const UniformVolume& fltImage ) const
     { 
       if ( this->DataType != TYPE_NONE )
 	return this->DataType;
       else
-	return fltInterpolator->GetVolumeDataType(); 
+	return fltImage.GetData()->GetType(); 
     }
 
   protected:
@@ -243,7 +243,7 @@ public:
     bool operator()( Types::DataItem& value, const Vector3D& inRef, cmtk::XformList& refToFloat, TInterpolatorInstantiationPtr& interpolator );
     
     /** Return preferred data type for reformatted data. */
-    ScalarDataType GetDataType( const UniformVolume*, const UniformVolumeInterpolatorBase* ) const
+    ScalarDataType GetDataType( const UniformVolume& ) const
     { 
       if ( this->DataType != TYPE_NONE )
 	return this->DataType;

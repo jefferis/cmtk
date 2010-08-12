@@ -32,11 +32,21 @@
 
 #include "cmtkUniformVolumeInterpolatorBase.h"
 
+#include <limits>
+
 void
 cmtk::UniformVolumeInterpolatorBase
 ::SetVolume( const UniformVolume& volume )
 {
-  this->m_VolumeDataArray = volume.GetData();
+  const TypedArray& data = *(volume.GetData());
+  const size_t nPixels = data.GetDataSize();
+  this->m_VolumeDataArray.resize( nPixels );
+  for ( size_t n = 0; n < nPixels; ++n )
+    {
+    if ( !data.Get( this->m_VolumeDataArray[n], n ) )
+      this->m_VolumeDataArray[n] = std::numeric_limits<Types::DataItem>::infinity();
+    }
+  
   this->m_VolumeDims = volume.GetDims();
   this->m_VolumeDeltas = volume.Deltas();
   this->m_VolumeOffset = volume.m_Offset;

@@ -41,6 +41,8 @@
 #include "Base/cmtkVector3D.h"
 #include "Base/cmtkUniformVolume.h"
 
+#include <vector>
+
 namespace
 cmtk
 {
@@ -91,15 +93,9 @@ public:
   /// Get data at a pre-computed relative pixel index. This is faster if we already know the pixel index and fractional coordinate of a location.
   virtual Types::DataItem GetDataDirect( const int* imageGridPoint, const Types::Coordinate* insidePixel ) const = 0;
 
-  /// Get data type of input volume.
-  virtual ScalarDataType GetVolumeDataType() const
-  {
-    return this->m_VolumeDataArray->GetType();
-  }
-
 protected:
   /// Pointer to volume data array.
-  TypedArray::SmartConstPtr m_VolumeDataArray;
+  std::vector<Types::DataItem> m_VolumeDataArray;
 
   /// Image dimensions.
   DataGrid::IndexType m_VolumeDims;
