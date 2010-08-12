@@ -445,8 +445,6 @@ Average
       cmtk::UniformVolume::SmartPtr insideDistanceMap = cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags + cmtk::UniformDistanceMap<float>::INSIDE, label ).Get();
       cmtk::UniformVolume::SmartPtr inOutDistanceMap = cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags, label ).Get();
       
-      cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> interpolator( *inOutDistanceMap );
-      
       const float* insideDistancePtr = static_cast<const float*>( insideDistanceMap->GetData()->GetDataPtr() );
       float* inOutDistancePtr = static_cast<float*>( inOutDistanceMap->GetData()->GetDataPtr() );
       
@@ -459,6 +457,8 @@ Average
 	  inOutDistancePtr[i] = inOutDistancePtr[i];
 	}
 
+      cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> interpolator( *inOutDistanceMap );
+      
       // accumulate interpolated distances for this label
       cmtk::Vector3D v;
       cmtk::Types::DataItem dvalue;
@@ -608,7 +608,6 @@ AverageWindowed
 
       cmtk::UniformVolume::SmartPtr insideDistanceMap = cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags + cmtk::UniformDistanceMap<float>::INSIDE, label, FeatureWindowRadius ).Get();
       cmtk::UniformVolume::SmartPtr inOutDistanceMap = cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags, label, FeatureWindowRadius ).Get();
-      cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> interpolator( *inOutDistanceMap );
       
       const float* insideDistancePtr = static_cast<const float*>( insideDistanceMap->GetData()->GetDataPtr() );
       float* inOutDistancePtr = static_cast<float*>( inOutDistanceMap->GetData()->GetDataPtr() );
@@ -621,6 +620,8 @@ AverageWindowed
 	else
 	  inOutDistancePtr[i] = inOutDistancePtr[i];
 	}
+
+      cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> interpolator( *inOutDistanceMap );
 
       // accumulate interpolated distances for this label
 #pragma omp parallel for
