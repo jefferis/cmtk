@@ -1,9 +1,7 @@
 Release CMTK-1.4.2:
 
-(r2200) Fixed: "--force-outside" command line argument was previously offered
-    by "registrationx" tool, but the functionality was not implemented in the
-    registration classes. This has now been added and unified with the
-    corresponding functionality for nonrigid registration.
+(r2202) Added: "--force-outside-value" command line argument now also offered
+    and implemented for affine registration.
 (r2197) Improved: UniformVolumeInterpoaltor classes now convert input data to
     Types::DataItem and cache the converted array for faster computation. This
     particularly speeds up higher-order interpolation with cubic or sinc
