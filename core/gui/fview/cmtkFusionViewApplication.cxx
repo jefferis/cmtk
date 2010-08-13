@@ -35,6 +35,8 @@
 #include <IO/cmtkVolumeIO.h>
 
 #include <QtGui/QActionGroup>
+#include <QtGui/QPainter>
+#include <QtGui/QImage>
 
 cmtk::FusionViewApplication
 ::FusionViewApplication( int argc, char* argv[] ) 
@@ -130,4 +132,8 @@ void
 cmtk::FusionViewApplication
 ::UpdateWidget( QWidget* widget, const UniformVolume& slice, const float blackLevel, const float whiteLevel )
 {
+  QImage image( slice.GetDims()[0], slice.GetDims()[1], QImage::Format_RGB32 );
+
+  QPainter painter( widget );
+  painter.drawImage( QPoint( 0, 0 ), image );
 }
