@@ -99,9 +99,9 @@ public:
   {}
   
   /// Constructor.
-  DataGrid( const Self::IndexType& dims ) 
+  DataGrid( const Self::IndexType& dims, TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null ) 
     : m_Dims( dims ), 
-      m_Data( NULL )
+      m_Data( data )
   {
     this->m_CropRegion = this->GetWholeImageRegion();
   }
@@ -308,6 +308,13 @@ public:
    */
   virtual ScalarImage* GetOrthoSlice( const int axis, const unsigned int plane ) const;
   
+  /** Extract orthogonal slice as a data grid object.
+   */
+  Self::SmartPtr ExtractSlice( const int axis, const unsigned int plane ) const
+  {
+    return Self::SmartPtr( this->ExtractSliceVirtual( axis, plane ) );
+  }
+  
   /** Set orthogonal slice from a 2D image.
    */
   virtual void SetOrthoSlice( const int axis, const unsigned int idx, const ScalarImage* slice );
@@ -388,6 +395,10 @@ private:
   /** Crop region.
    */
   Self::RegionType m_CropRegion;
+
+  /** Extract orthogonal slice as a data grid object.
+   */
+  virtual Self* ExtractSliceVirtual( const int axis, const unsigned int plane ) const;
 };
 
 //@}

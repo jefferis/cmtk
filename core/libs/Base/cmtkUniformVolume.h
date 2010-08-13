@@ -110,7 +110,7 @@ public:
    *@param size Size of the volume in real-world coordinates.
    *@param data An existing TypedArray containing the scalar voxel data.
    */
-  UniformVolume( const DataGrid::IndexType& dims, const Self::CoordinateVectorType&, TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null );
+  UniformVolume( const DataGrid::IndexType& dims, const Self::CoordinateVectorType& size, TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null );
 
   /** Create uniform volume "from scratch".
    *@param dims Number of grid elements for the three spatial dimensions.
@@ -245,6 +245,13 @@ public:
    * each axis -- non-uniform spacings will lead to incorrect results.
    */
   virtual ScalarImage* GetOrthoSlice( const int axis, const unsigned int plane ) const;
+
+  /** Extract orthogonal slice as a new volume.
+   */
+  Self::SmartPtr ExtractSlice( const int axis, const unsigned int plane ) const
+  {
+    return Self::SmartPtr( this->ExtractSliceVirtual( axis, plane ) );
+  }
 
   /** Return interpolated orthogonal slice.
    * This function calls its non-interpolating counterpart twice and performs
@@ -571,6 +578,10 @@ private:
 
   /// Multi-threaded resampling for label data (using partial volume averaging).
   static void ResampleThreadPoolExecuteLabels( void *const arg, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCnt );
+
+  /** Extract orthogonal slice as a new volume.
+   */
+  virtual Self* ExtractSliceVirtual( const int axis, const unsigned int plane ) const;
 };
 
 //@}

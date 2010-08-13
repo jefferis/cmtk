@@ -425,6 +425,78 @@ DataGrid::GetOrthoSlice
   return sliceImage;
 }
 
+DataGrid*
+DataGrid::ExtractSliceVirtual
+( const int axis, const unsigned int plane ) const
+{
+  unsigned int dims[2], depth, incX, incY, incZ;
+
+  switch ( axis ) 
+    {
+    case AXIS_X:
+      dims[0] = this->m_Dims[1];
+      dims[1] = this->m_Dims[2];
+      depth = this->m_Dims[0];
+      incX = this->m_Dims[0];
+      incY = this->m_Dims[0] * this->m_Dims[1];
+      incZ = 1;
+      break;
+    case AXIS_Y:
+      dims[0] = this->m_Dims[0];
+      dims[1] = this->m_Dims[2];
+      depth = this->m_Dims[1];
+      incX = 1;
+      incY = this->m_Dims[0] * this->m_Dims[1];
+      incZ = this->m_Dims[0];
+      break;
+    case AXIS_Z:
+    default:
+      dims[0] = this->m_Dims[0];
+      dims[1] = this->m_Dims[1];
+      depth = this->m_Dims[2];
+      incX = 1;
+      incY = this->m_Dims[0];
+      incZ = this->m_Dims[0] * this->m_Dims[1];
+      break;
+    }
+  
+  const TypedArray& data = *(this->GetData());
+  TypedArray::SmartPtr sliceData = TypedArray::Create( data.GetType(), dims[0] * dims[1] );
+  if ( data.GetPaddingFlag() ) 
+    {
+    sliceData->SetPaddingValue( data.GetPaddingValue() );
+    }
+
+  if ( plane >= this->m_Dims[axis] ) 
+    { 
+    sliceData->ClearArray( true /* PaddingData */ );
+    } 
+  else
+    {
+    const unsigned int itemSize = data.GetItemSize();
+    
+    unsigned int sliceOffset = 0;
+    unsigned int offset = plane * incZ;
+    for ( unsigned int y = 0; y < dims[1]; ++y ) 
+      {
+      unsigned int offsetY = offset + incY;
+      for ( unsigned int x = 0; x < dims[0]; ++x, ++sliceOffset ) 
+	{
+	unsigned int offsetX = offset + incX;
+	
+	memcpy( sliceData->GetDataPtr( sliceOffset ), data.GetDataPtr( offset ), itemSize );
+	offset = offsetX;
+	}
+      offset = offsetY;
+      }
+    }
+  
+  IndexType newDims = this->m_Dims;
+  newDims[axis] = 1;
+
+  return new DataGrid( newDims, sliceData );
+}
+
 void 
 DataGrid::SetOrthoSlice
 ( const int axis, const unsigned int idx, const ScalarImage* slice )

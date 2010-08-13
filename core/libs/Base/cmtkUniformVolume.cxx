@@ -355,6 +355,19 @@ UniformVolume::GetOrthoSlice
   return sliceImage;
 }
 
+UniformVolume*
+UniformVolume::ExtractSliceVirtual
+( const int axis, const unsigned int plane ) const
+{
+  DataGrid::SmartPtr sliceGrid = this->DataGrid::ExtractSlice( axis, plane );
+  Self* sliceVolume = new Self( sliceGrid->m_Dims, this->m_Delta[0], this->m_Delta[1], this->m_Delta[2], sliceGrid->m_Data );
+
+  sliceVolume->m_Offset = this->m_Offset;
+  sliceVolume->m_Offset[axis] += plane * this->m_Delta[axis];
+
+  return sliceVolume;
+}
+
 ScalarImage*
 UniformVolume::GetNearestOrthoSlice
 ( const int axis, const Types::Coordinate location ) const
