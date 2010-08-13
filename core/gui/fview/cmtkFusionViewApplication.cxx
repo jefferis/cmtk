@@ -30,8 +30,6 @@
 
 #include "cmtkFusionViewApplication.h"
 
-#include <ui_fviewMainWindow.h>
-
 #include <System/cmtkCommandLine.h>
 
 #include <IO/cmtkVolumeIO.h>
@@ -71,8 +69,7 @@ cmtk::FusionViewApplication
     exit( 1 );
     }
   
-  Ui::fviewMainWindow ui;
-  ui.setupUi( this->m_MainWindow );
+  this->m_MainWindowUI.setupUi( this->m_MainWindow );
   this->m_MainWindow->show();
 }
 

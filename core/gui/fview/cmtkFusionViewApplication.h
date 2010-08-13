@@ -36,6 +36,8 @@
 
 #include <Base/cmtkUniformVolume.h>
 
+#include <ui_fviewMainWindow.h>
+
 namespace
 cmtk
 {
@@ -43,6 +45,8 @@ cmtk
 /// Application class for fusion viewer.
 class FusionViewApplication : public QApplication
 {
+  Q_OBJECT
+
 public:
   /// Constructor.
   FusionViewApplication( int argc, char* argv[] );
@@ -50,6 +54,9 @@ public:
 private:
   /// Application main window.
   QMainWindow* m_MainWindow;
+
+  /// Designed-generated User Interface for the main window.
+  Ui::fviewMainWindow m_MainWindowUI;
 
   /// The fixed volume.
   UniformVolume::SmartConstPtr m_FixedVolume;
