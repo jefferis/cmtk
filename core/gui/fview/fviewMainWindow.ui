@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>fviewMainWindow</class>
+ <widget class="QMainWindow" name="fviewMainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>808</width>
+    <height>611</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>CMTK Fusion Viewer</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <layout class="QGridLayout" name="gridLayout" rowstretch="1,0,0" columnstretch="1,1">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetMaximumSize</enum>
+      </property>
+      <item row="2" column="0">
+       <widget class="QSlider" name="sliceSlider">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSlider" name="alphaSlider">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="sliceLabel">
+        <property name="text">
+         <string>Slice</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="alphaLabel">
+        <property name="text">
+         <string>Transparency</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QGroupBox" name="fixedImgGroupBox">
+        <property name="title">
+         <string>Fixed Image</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
+          <widget class="QLabel" name="fixedImgWidget">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>1</horstretch>
+             <verstretch>1</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QGroupBox" name="movingImgGroupBox">
+        <property name="title">
+         <string>Moving/Fused Image</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="0">
+          <widget class="QLabel" name="movingImgWidget">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>1</horstretch>
+             <verstretch>1</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>808</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_File">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="action_Quit"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <widget class="QMenu" name="menuSlice_Orientation">
+     <property name="title">
+      <string>Slice &amp;Orientation</string>
+     </property>
+     <addaction name="actionAxisl_XY"/>
+     <addaction name="actionCoronal_XZ"/>
+     <addaction name="actionSagittal_YZ"/>
+    </widget>
+    <widget class="QMenu" name="menu_Zoom">
+     <property name="title">
+      <string>&amp;Zoom</string>
+     </property>
+     <addaction name="action_100"/>
+     <addaction name="separator"/>
+     <addaction name="action_200"/>
+     <addaction name="action_400"/>
+     <addaction name="separator"/>
+     <addaction name="action_50"/>
+    </widget>
+    <addaction name="menuSlice_Orientation"/>
+    <addaction name="separator"/>
+    <addaction name="menu_Zoom"/>
+   </widget>
+   <addaction name="menu_File"/>
+   <addaction name="menuView"/>
+  </widget>
+  <action name="action_Quit">
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+  </action>
+  <action name="action_Zoom">
+   <property name="text">
+    <string>&amp;Zoom</string>
+   </property>
+  </action>
+  <action name="actionAxisl_XY">
+   <property name="text">
+    <string>&amp;Axial (XY)</string>
+   </property>
+  </action>
+  <action name="actionCoronal_XZ">
+   <property name="text">
+    <string>&amp;Coronal (XZ)</string>
+   </property>
+  </action>
+  <action name="actionSagittal_YZ">
+   <property name="text">
+    <string>&amp;Sagittal (YZ)</string>
+   </property>
+  </action>
+  <action name="action_100">
+   <property name="text">
+    <string>&amp;100%</string>
+   </property>
+  </action>
+  <action name="action_200">
+   <property name="text">
+    <string>&amp;200%</string>
+   </property>
+  </action>
+  <action name="action_400">
+   <property name="text">
+    <string>&amp;400%</string>
+   </property>
+  </action>
+  <action name="action_50">
+   <property name="text">
+    <string>&amp;50%</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>action_Quit</sender>
+   <signal>activated()</signal>
+   <receiver>fviewMainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>403</x>
+     <y>305</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

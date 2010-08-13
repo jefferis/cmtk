@@ -28,12 +28,12 @@
 ##  $LastChangedBy$
 ##
 
-SET(CMTK_LIBRARIES "cmtkQt;cmtkPipeline;cmtkSegmentation;cmtkRegistration;cmtkIO;cmtkBase;cmtkNumerics;cmtkSystem")
+INCLUDE(${CMAKE_SOURCE_DIR}/libs/cmtkLibInitSrcs.cmake)
 
-SUBDIRS(triplanar)
-SUBDIRS(fview)
+QT4_WRAP_UI(FVIEW_UIS_H fviewMainWindow.ui)
 
-IF (BUILD_FUSION)
-  SUBDIRS(fusion)
-ENDIF (BUILD_FUSION)
+ADD_EXECUTABLE(fview ${CMTK_LIB_INIT_SRCS} main.cxx ${FVIEW_UIS_H})
+TARGET_LINK_LIBRARIES(fview ${CMTK_LIBRARIES} ${QT_LIBRARIES} ${CMTK_SYSTEM_LIBRARIES})
+
+INSTALL(TARGETS fview RUNTIME DESTINATION bin COMPONENT gui)
 
