@@ -1,8 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
-//
-//  Copyright 2004-2010 SRI International
+//  Copyright 2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,15 +28,36 @@
 //
 */
 
-#include <cmtkconfig.h>
+#ifndef __cmtkFusionViewApplication_h_included_
+#define __cmtkFusionViewApplication_h_included_
 
-#include "System/cmtkCommandLine.h"
+#include <QtGui/QApplication>
+#include <QtGui/QMainWindow>
 
-#include "cmtkFusionViewApplication.h"
+#include <Base/cmtkUniformVolume.h>
 
-int
-main( int argc, char* argv[] )
+namespace
+cmtk
 {
-  cmtk::FusionViewApplication app( argc, argv );
-  return app.exec();
-}
+
+/// Application class for fusion viewer.
+class FusionViewApplication : public QApplication
+{
+public:
+  /// Constructor.
+  FusionViewApplication( int argc, char* argv[] );
+
+private:
+  /// Application main window.
+  QMainWindow* m_MainWindow;
+
+  /// The fixed volume.
+  UniformVolume::SmartConstPtr m_FixedVolume;
+
+  /// The moving volume.
+  UniformVolume::SmartConstPtr m_MovingVolume;
+};
+
+} // namespace cmtk
+
+#endif // #ifndef __cmtkFusionViewApplication_h_included_

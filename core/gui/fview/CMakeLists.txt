@@ -32,7 +32,23 @@ INCLUDE(${CMAKE_SOURCE_DIR}/libs/cmtkLibInitSrcs.cmake)
 
 QT4_WRAP_UI(FVIEW_UIS_H fviewMainWindow.ui)
 
-ADD_EXECUTABLE(fview ${CMTK_LIB_INIT_SRCS} main.cxx ${FVIEW_UIS_H})
+SET(fview_SRCS
+  cmtkFusionViewApplication.cxx
+  )
+
+SET(fview_MOC_SRCS
+  cmtkFusionViewApplication.h
+  )
+
+INCLUDE_DIRECTORIES(
+  ${CMAKE_CURRENT_BINARY_DIR}
+  )
+
+IF(QT_WRAP_CPP)
+  QT_WRAP_CPP(fview fview_SRCS ${fview_MOC_SRCS} )
+ENDIF(QT_WRAP_CPP)
+
+ADD_EXECUTABLE(fview ${CMTK_LIB_INIT_SRCS} main.cxx ${fview_SRCS} ${FVIEW_UIS_H})
 TARGET_LINK_LIBRARIES(fview ${CMTK_LIBRARIES} ${QT_LIBRARIES} ${CMTK_SYSTEM_LIBRARIES})
 
 INSTALL(TARGETS fview RUNTIME DESTINATION bin COMPONENT gui)

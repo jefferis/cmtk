@@ -16,39 +16,39 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <layout class="QGridLayout" name="gridLayout" rowstretch="1,0,0" columnstretch="1,1">
+     <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,1,0,0,0" columnstretch="1,1">
       <property name="sizeConstraint">
        <enum>QLayout::SetMaximumSize</enum>
       </property>
-      <item row="2" column="0">
-       <widget class="QSlider" name="sliceSlider">
+      <item row="4" column="0">
+       <widget class="QSlider" name="blackSliderFix">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QSlider" name="alphaSlider">
+      <item row="4" column="1">
+       <widget class="QSlider" name="blackSliderMov">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="sliceLabel">
+      <item row="3" column="0">
+       <widget class="QLabel" name="bwLabelFix">
         <property name="text">
          <string>Slice</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="alphaLabel">
+      <item row="3" column="1">
+       <widget class="QLabel" name="bwLabelMov">
         <property name="text">
          <string>Transparency</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
+      <item row="2" column="0">
        <widget class="QGroupBox" name="fixedImgGroupBox">
         <property name="title">
          <string>Fixed Image</string>
@@ -70,7 +70,7 @@
         </layout>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item row="2" column="1">
        <widget class="QGroupBox" name="movingImgGroupBox">
         <property name="title">
          <string>Moving/Fused Image</string>
@@ -90,6 +90,60 @@
           </widget>
          </item>
         </layout>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QSlider" name="whiteSliderFix">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QSlider" name="whiteSliderMov">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QSlider" name="sliceSlider">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSlider" name="alphaSlider">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="sliceLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Slice</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="alphaLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Transparency</string>
+        </property>
        </widget>
       </item>
      </layout>
