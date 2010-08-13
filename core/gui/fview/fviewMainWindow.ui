@@ -37,14 +37,14 @@
       <item row="3" column="0">
        <widget class="QLabel" name="bwLabelFix">
         <property name="text">
-         <string>Slice</string>
+         <string>Fixed Image Black / White</string>
         </property>
        </widget>
       </item>
       <item row="3" column="1">
        <widget class="QLabel" name="bwLabelMov">
         <property name="text">
-         <string>Transparency</string>
+         <string>Moving Image Black / White</string>
         </property>
        </widget>
       </item>
@@ -195,6 +195,20 @@
      <addaction name="actionZoom300"/>
      <addaction name="actionZoom400"/>
     </widget>
+    <widget class="QMenu" name="menuInterpolation">
+     <property name="title">
+      <string>Interpolation</string>
+     </property>
+     <addaction name="actionLinear"/>
+     <addaction name="actionCubic"/>
+     <addaction name="actionSinc"/>
+     <addaction name="separator"/>
+     <addaction name="action_Nearest_Neighbour"/>
+     <addaction name="actionPartial_Volume"/>
+    </widget>
+    <addaction name="actionAnnotations"/>
+    <addaction name="separator"/>
+    <addaction name="menuInterpolation"/>
     <addaction name="menuSlice_Orientation"/>
     <addaction name="separator"/>
     <addaction name="menu_Zoom"/>
@@ -288,6 +302,36 @@
    </property>
    <property name="text">
     <string>25%</string>
+   </property>
+  </action>
+  <action name="actionLinear">
+   <property name="text">
+    <string>&amp;Linear</string>
+   </property>
+  </action>
+  <action name="actionCubic">
+   <property name="text">
+    <string>&amp;Cubic</string>
+   </property>
+  </action>
+  <action name="actionSinc">
+   <property name="text">
+    <string>&amp;Sinc</string>
+   </property>
+  </action>
+  <action name="action_Nearest_Neighbour">
+   <property name="text">
+    <string>&amp;Nearest Neighbour</string>
+   </property>
+  </action>
+  <action name="actionPartial_Volume">
+   <property name="text">
+    <string>&amp;Partial Volume</string>
+   </property>
+  </action>
+  <action name="actionAnnotations">
+   <property name="text">
+    <string>Annotations</string>
    </property>
   </action>
  </widget>

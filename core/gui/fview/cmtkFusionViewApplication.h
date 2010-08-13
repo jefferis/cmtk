@@ -66,6 +66,21 @@ private:
 
   /// The slice axis (0=x, sagittal; 1=y, coronal; 2=z, axial).
   int m_SliceAxis;
+
+  /// Slice index in the fixed image along the slice axis.
+  int m_SliceIndex;
+
+  /// Data for the current fixed image slice.
+  UniformVolume::SmartConstPtr m_FixedSlice;
+
+  /// Update displayed fixed image slice.
+  void UpdateFixedSlice();
+
+  /// Update displayed moving image slice.
+  void UpdateMovingSlice();
+
+  /// Update widget using slice data, black and white levels.
+  void UpdateWidget( QWidget* widget, const UniformVolume& slice, const float blackLevel, const float whiteLevel );
 };
 
 } // namespace cmtk

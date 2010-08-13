@@ -79,11 +79,15 @@ cmtk::FusionViewApplication
 
   const Types::DataItemRange rangeFix = this->m_FixedVolume->GetData()->GetRange();
   this->m_MainWindowUI.blackSliderFix->setRange( rangeFix.m_LowerBound, rangeFix.m_UpperBound );
+  this->m_MainWindowUI.blackSliderFix->setValue( rangeFix.m_LowerBound );
   this->m_MainWindowUI.whiteSliderFix->setRange( rangeFix.m_LowerBound, rangeFix.m_UpperBound );
+  this->m_MainWindowUI.whiteSliderFix->setValue( rangeFix.m_UpperBound );
   
   const Types::DataItemRange rangeMov = this->m_MovingVolume->GetData()->GetRange();
   this->m_MainWindowUI.blackSliderMov->setRange( rangeMov.m_LowerBound, rangeMov.m_UpperBound );
+  this->m_MainWindowUI.blackSliderMov->setValue( rangeMov.m_LowerBound );
   this->m_MainWindowUI.whiteSliderMov->setRange( rangeMov.m_LowerBound, rangeMov.m_UpperBound );
+  this->m_MainWindowUI.whiteSliderMov->setValue( rangeMov.m_UpperBound );
   
   QActionGroup* zoomGroup = new QActionGroup( this->m_MainWindow );
   zoomGroup->setExclusive( true );
@@ -103,3 +107,27 @@ cmtk::FusionViewApplication
   this->m_MainWindow->show();
 }
 
+void
+cmtk::FusionViewApplication
+::UpdateFixedSlice()
+{
+  if ( this->m_SliceIndex != this->m_MainWindowUI.sliceSlider->value() )
+    {
+    this->m_SliceIndex = this->m_MainWindowUI.sliceSlider->value();
+    this->m_FixedSlice = this->m_FixedVolume->ExtractSlice( this->m_SliceAxis, this->m_SliceIndex );
+    }
+  
+  this->UpdateWidget( this->m_MainWindowUI.fixedImgWidget, *(this->m_FixedSlice), this->m_MainWindowUI.blackSliderFix->value(), this->m_MainWindowUI.whiteSliderFix->value() );
+}
+
+void
+cmtk::FusionViewApplication
+::UpdateMovingSlice()
+{
+}
+
+void
+cmtk::FusionViewApplication
+::UpdateWidget( QWidget* widget, const UniformVolume& slice, const float blackLevel, const float whiteLevel )
+{
+}
