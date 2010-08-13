@@ -63,6 +63,9 @@ private:
 
   /// The moving volume.
   UniformVolume::SmartConstPtr m_MovingVolume;
+
+  /// The slice axis (0=x, sagittal; 1=y, coronal; 2=z, axial).
+  int m_SliceAxis;
 };
 
 } // namespace cmtk

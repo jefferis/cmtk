@@ -178,20 +178,22 @@
      <property name="title">
       <string>Slice &amp;Orientation</string>
      </property>
-     <addaction name="actionAxisl_XY"/>
-     <addaction name="actionCoronal_XZ"/>
-     <addaction name="actionSagittal_YZ"/>
+     <addaction name="actionSliceAxial_XY"/>
+     <addaction name="actionSliceCoronal_XZ"/>
+     <addaction name="actionSliceSagittal_YZ"/>
     </widget>
     <widget class="QMenu" name="menu_Zoom">
      <property name="title">
       <string>&amp;Zoom</string>
      </property>
-     <addaction name="action_100"/>
+     <addaction name="actionZoom25"/>
+     <addaction name="actionZoom50"/>
      <addaction name="separator"/>
-     <addaction name="action_200"/>
-     <addaction name="action_400"/>
+     <addaction name="actionZoom100"/>
      <addaction name="separator"/>
-     <addaction name="action_50"/>
+     <addaction name="actionZoom200"/>
+     <addaction name="actionZoom300"/>
+     <addaction name="actionZoom400"/>
     </widget>
     <addaction name="menuSlice_Orientation"/>
     <addaction name="separator"/>
@@ -210,39 +212,82 @@
     <string>&amp;Zoom</string>
    </property>
   </action>
-  <action name="actionAxisl_XY">
+  <action name="actionSliceAxial_XY">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Axial (XY)</string>
    </property>
   </action>
-  <action name="actionCoronal_XZ">
+  <action name="actionSliceCoronal_XZ">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Coronal (XZ)</string>
    </property>
   </action>
-  <action name="actionSagittal_YZ">
+  <action name="actionSliceSagittal_YZ">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Sagittal (YZ)</string>
    </property>
   </action>
-  <action name="action_100">
+  <action name="actionZoom100">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;100%</string>
    </property>
   </action>
-  <action name="action_200">
+  <action name="actionZoom200">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;200%</string>
    </property>
   </action>
-  <action name="action_400">
+  <action name="actionZoom400">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;400%</string>
    </property>
   </action>
-  <action name="action_50">
+  <action name="actionZoom50">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;50%</string>
+   </property>
+  </action>
+  <action name="actionZoom300">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;300%</string>
+   </property>
+  </action>
+  <action name="actionZoom25">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>25%</string>
    </property>
   </action>
  </widget>
