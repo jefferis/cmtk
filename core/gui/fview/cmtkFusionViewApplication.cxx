@@ -77,7 +77,11 @@ cmtk::FusionViewApplication
   this->m_MainWindowUI.setupUi( this->m_MainWindow );
 
   this->m_MainWindowUI.alphaSlider->setRange( 0, 1000 );
+
+  this->m_SliceIndex = this->m_FixedVolume->GetDims()[this->m_SliceAxis] / 2;  
   this->m_MainWindowUI.sliceSlider->setRange( 0, this->m_FixedVolume->GetDims()[this->m_SliceAxis] );
+  this->m_MainWindowUI.sliceSlider->setValue( this->m_SliceIndex );
+  QObject::connect( this->m_MainWindowUI.sliceSlider, SIGNAL( valueChanged( int ) ), this, SLOT( SetFixedSlice( int ) ) );
 
   const Types::DataItemRange rangeFix = this->m_FixedVolume->GetData()->GetRange();
   this->m_MainWindowUI.blackSliderFix->setRange( rangeFix.m_LowerBound, rangeFix.m_UpperBound );
@@ -111,15 +115,27 @@ cmtk::FusionViewApplication
 
 void
 cmtk::FusionViewApplication
+::SetFixedSlice( int slice )
+{
+  if ( this->m_SliceIndex != slice )
+    {
+    this->m_SliceIndex = slice;
+    this->m_FixedSlice = this->m_FixedVolume->ExtractSlice( this->m_SliceAxis, this->m_SliceIndex );
+    this->UpdateFixedSlice();
+    }
+}
+
+void
+cmtk::FusionViewApplication
 ::UpdateFixedSlice()
 {
-  if ( this->m_SliceIndex != this->m_MainWindowUI.sliceSlider->value() )
+  this->m_ColorTableFix.resize( 256 );
+  for ( int i = 0; i < 256; ++i )
     {
-    this->m_SliceIndex = this->m_MainWindowUI.sliceSlider->value();
-    this->m_FixedSlice = this->m_FixedVolume->ExtractSlice( this->m_SliceAxis, this->m_SliceIndex );
+    this->m_ColorTableFix[i] = QColor( i, i, i ).rgb();
     }
-  
-  this->UpdateWidget( this->m_MainWindowUI.fixedImgWidget, *(this->m_FixedSlice), this->m_MainWindowUI.blackSliderFix->value(), this->m_MainWindowUI.whiteSliderFix->value() );
+
+  this->UpdateWidget( this->m_MainWindowUI.fixedImgWidget, *(this->m_FixedSlice), this->m_ColorTableFix, this->m_MainWindowUI.blackSliderFix->value(), this->m_MainWindowUI.whiteSliderFix->value() );
 }
 
 void
@@ -130,10 +146,22 @@ cmtk::FusionViewApplication
 
 void
 cmtk::FusionViewApplication
-::UpdateWidget( QWidget* widget, const UniformVolume& slice, const float blackLevel, const float whiteLevel )
+::UpdateWidget( QWidget* widget, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel )
 {
-  QImage image( slice.GetDims()[0], slice.GetDims()[1], QImage::Format_RGB32 );
+  QImage image( slice.GetDims()[0], slice.GetDims()[1], QImage::Format_Indexed8 );
+  image.setColorTable( colorTable );
 
+  const float scaleLevel = 1.0 / (whiteLevel-blackLevel);
+  
+  size_t idx = 0;
+  for ( int y = 0; y < slice.GetDims()[1]; ++y )
+    {
+    for ( int x = 0; x < slice.GetDims()[0]; ++x, ++idx )
+      {
+      image.setPixel( x, y, static_cast<int>( 255 * std::min<float>( 1, std::max<float>( 0, (slice.GetDataAt( idx ) - blackLevel) * scaleLevel ) ) ) );
+      }
+    }
+  
   QPainter painter( widget );
   painter.drawImage( QPoint( 0, 0 ), image );
 }

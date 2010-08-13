@@ -51,6 +51,10 @@ public:
   /// Constructor.
   FusionViewApplication( int argc, char* argv[] );
 
+private slots:
+  /// Update displayed fixed image slice.
+  void SetFixedSlice( int slice );
+
 private:
   /// Application main window.
   QMainWindow* m_MainWindow;
@@ -73,6 +77,9 @@ private:
   /// Data for the current fixed image slice.
   UniformVolume::SmartConstPtr m_FixedSlice;
 
+  /// Color table for fixed image.
+  QVector<QRgb> m_ColorTableFix;
+
   /// Update displayed fixed image slice.
   void UpdateFixedSlice();
 
@@ -80,7 +87,7 @@ private:
   void UpdateMovingSlice();
 
   /// Update widget using slice data, black and white levels.
-  void UpdateWidget( QWidget* widget, const UniformVolume& slice, const float blackLevel, const float whiteLevel );
+  void UpdateWidget( QWidget* widget, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel );
 };
 
 } // namespace cmtk
