@@ -433,6 +433,7 @@ VolumeList::WriteToArchive()
       {					       
       // if there's a "number" tag, get rid of it.
       std::string uniquePath = it->first;
+      replacein( uniquePath, "%n", "" );
       replacein( uniquePath, "%N", "" );
 
       char finalPath[PATH_MAX];
