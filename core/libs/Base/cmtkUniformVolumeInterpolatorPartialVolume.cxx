@@ -32,6 +32,8 @@
 
 #include "cmtkUniformVolumeInterpolatorPartialVolume.h"
 
+#include <math.h>
+
 namespace cmtk
 {
 
