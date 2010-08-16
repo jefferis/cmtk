@@ -124,9 +124,7 @@ public:
   /// Test whether this grid matches another one, i.e., has the same pixel sizes.
   bool GridMatches( const Self& other ) const
   {
-    return Superclass::GridMatches( other ) 
-      && (this->m_Delta[0] == other.m_Delta[0]) && (this->m_Delta[1] == other.m_Delta[1]) && (this->m_Delta[2] == other.m_Delta[2])
-      && (this->m_Offset[0] == other.m_Offset[0]) && (this->m_Offset[1] == other.m_Offset[1]) && (this->m_Offset[2] == other.m_Offset[2]);
+    return Superclass::GridMatches( other ) && (this->m_Delta == other.m_Delta) && (this->m_Offset == other.m_Offset);
   }
 
   /** Coordinate transformation from index to physical position.
