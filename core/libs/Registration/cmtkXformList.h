@@ -35,7 +35,9 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkXformListEntry.h"
+#include <Registration/cmtkXformListEntry.h>
+
+#include <System/cmtkSmartPtr.h>
 
 namespace
 cmtk
@@ -53,6 +55,15 @@ private:
   Types::Coordinate m_Epsilon;
   
 public:
+  /// This class.
+  typedef XformList Self;
+
+  /// Smart pointer.
+  typedef SmartPointer<Self> SmartPtr;
+
+  /// Smart pointer to const.
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
   /// Constructor.
   XformList( const Types::Coordinate epsilon = 0.0 ) : m_Epsilon( epsilon ) {};
   
@@ -66,10 +77,10 @@ public:
   void Add( const Xform::SmartPtr& xform, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
   
   /// Apply a sequence of (inverse) transformations.
-  bool ApplyInPlace( Xform::SpaceVectorType& v );
+  bool ApplyInPlace( Xform::SpaceVectorType& v ) const;
   
   /// Get the Jacobian determinant of a sequence of transformations.
-  bool GetJacobian( const Xform::SpaceVectorType& v, Types::DataItem& jacobian, const bool correctGlobalScale = true );
+  bool GetJacobian( const Xform::SpaceVectorType& v, Types::DataItem& jacobian, const bool correctGlobalScale = true ) const;
 };
 
 //@}

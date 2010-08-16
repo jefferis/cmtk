@@ -40,7 +40,7 @@ cmtk
 template<class TInterpolator, class Fct> 
 TypedArray::SmartPtr
 ReformatVolume::Reformat
-( const UniformVolume* target, cmtk::XformList& targetToRef, cmtk::XformList& refToFloat, Fct& fct, const UniformVolume* floating, TInterpolator& interpolator )
+( const UniformVolume* target, const cmtk::XformList& targetToRef, const cmtk::XformList& refToFloat, Fct& fct, const UniformVolume* floating, TInterpolator& interpolator )
 {
   const DataGrid::IndexType& dims = target->GetDims();
 

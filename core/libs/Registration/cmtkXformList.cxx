@@ -30,7 +30,7 @@
 //
 */
 
-#include "Registration/cmtkXformList.h"
+#include "cmtkXformList.h"
 
 void
 cmtk::XformList::Add
@@ -40,9 +40,9 @@ cmtk::XformList::Add
 }
 
 bool
-cmtk::XformList::ApplyInPlace( Xform::SpaceVectorType& v )
+cmtk::XformList::ApplyInPlace( Xform::SpaceVectorType& v ) const
 {
-  for ( iterator it = this->begin(); it != this->end(); ++it ) 
+  for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
     {
     if ( (*it)->Inverse ) 
       {
@@ -78,12 +78,12 @@ cmtk::XformList::ApplyInPlace( Xform::SpaceVectorType& v )
 
 bool
 cmtk::XformList::GetJacobian
-( const Xform::SpaceVectorType& v, Types::DataItem& jacobian, const bool correctGlobalScale )
+( const Xform::SpaceVectorType& v, Types::DataItem& jacobian, const bool correctGlobalScale ) const
 {
   Xform::SpaceVectorType vv( v );
 
   jacobian = static_cast<Types::DataItem>( 1.0 );
-  for ( iterator it = this->begin(); it != this->end(); ++it ) 
+  for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
     {
     if ( (*it)->Inverse ) 
       {

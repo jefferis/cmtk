@@ -30,8 +30,8 @@
 //
 */
 
-#include "Registration/cmtkReformatVolume.h"
-#include "Base/cmtkUniformVolumeInterpolator.h"
+#include <Registration/cmtkReformatVolume.h>
+#include <Base/cmtkUniformVolumeInterpolator.h>
 
 namespace
 cmtk
@@ -43,7 +43,7 @@ cmtk
 template <class TInterpolator>
 bool
 ReformatVolume::Plain::operator()
-  ( Types::DataItem& value, const Vector3D& inRef, XformList& refToFloat, TInterpolator& interpolator )
+  ( Types::DataItem& value, const Vector3D& inRef, const XformList& refToFloat, TInterpolator& interpolator )
 {
   Vector3D inFlt( inRef );
   if ( ! refToFloat.ApplyInPlace( inFlt ) ) 

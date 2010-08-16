@@ -39,22 +39,22 @@
 #  include <values.h>
 #endif
 
-#include "Base/cmtkVolume.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkInterpolator.h"
-#include "Base/cmtkUniformVolumeInterpolator.h"
-#include "Base/cmtkTypedArray.h"
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkWarpXform.h"
-#include "Base/cmtkSplineWarpXform.h"
-#include "Base/cmtkMathUtil.h"
-#include "System/cmtkProgress.h"
+#include <Base/cmtkVolume.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkInterpolator.h>
+#include <Base/cmtkUniformVolumeInterpolator.h>
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkWarpXform.h>
+#include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkMathUtil.h>
+#include <System/cmtkProgress.h>
 
-#include "Base/cmtkMacros.h"
-#include "System/cmtkThreads.h"
-#include "Base/cmtkBitVector.h"
+#include <Base/cmtkMacros.h>
+#include <System/cmtkThreads.h>
+#include <Base/cmtkBitVector.h>
 
-#include "Registration/cmtkXformList.h"
+#include <Registration/cmtkXformList.h>
 
 #include <cstddef>
 #include <math.h>
@@ -175,7 +175,7 @@ public:
   
   /// Complex reformat.
   template<class TInterpolator, class Fct> static TypedArray::SmartPtr Reformat
-  ( const UniformVolume* target, cmtk::XformList& targetToRef, cmtk::XformList& refToFloat, Fct& fct, const UniformVolume* floating = NULL, TInterpolator& interpolator = TInterpolator::Null );
+  ( const UniformVolume* target, const cmtk::XformList& targetToRef, const cmtk::XformList& refToFloat, Fct& fct, const UniformVolume* floating = NULL, TInterpolator& interpolator = TInterpolator::Null );
   
   /// Constants for extended reformatting mode.
   typedef enum 
@@ -204,7 +204,7 @@ public:
 
     /** Query operator. */
     template <class TInterpolatorInstantiationPtr>
-    bool operator()( Types::DataItem& value, const Vector3D& inRef, cmtk::XformList& refToFloat, TInterpolatorInstantiationPtr& interpolator );
+    bool operator()( Types::DataItem& value, const Vector3D& inRef, const cmtk::XformList& refToFloat, TInterpolatorInstantiationPtr& interpolator );
     
     /// Return preferred data type for reformatted data.
     ScalarDataType GetDataType( const UniformVolume& fltImage ) const
@@ -240,7 +240,7 @@ public:
     
     /** Query operator. */
     template <class TInterpolatorInstantiationPtr>
-    bool operator()( Types::DataItem& value, const Vector3D& inRef, cmtk::XformList& refToFloat, TInterpolatorInstantiationPtr& interpolator );
+    bool operator()( Types::DataItem& value, const Vector3D& inRef, const cmtk::XformList& refToFloat, TInterpolatorInstantiationPtr& interpolator );
     
     /** Return preferred data type for reformatted data. */
     ScalarDataType GetDataType( const UniformVolume& ) const

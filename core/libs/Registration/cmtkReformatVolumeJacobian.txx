@@ -42,7 +42,7 @@ cmtk
 template <class TInterpolator>
 bool
 ReformatVolume
-::Jacobian::operator()( Types::DataItem& value, const Vector3D& inRef, XformList& refToFloat, TInterpolator& )
+::Jacobian::operator()( Types::DataItem& value, const Vector3D& inRef, const XformList& refToFloat, TInterpolator& )
 {
   return refToFloat.GetJacobian( inRef, value, this->CorrectGlobalScale );
 }
