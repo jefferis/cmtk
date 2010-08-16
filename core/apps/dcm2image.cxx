@@ -352,6 +352,7 @@ VolumeDCM::WriteToArchive( const std::string& fname ) const
   if ( Verbose )
     {
     cmtk::StdOut << "DICOM Information: \n";
+    cmtk::StdOut << "  Description: " << first->SeriesDescription << "\n";
     cmtk::StdOut << "  Series:      " << first->SeriesUID << "\n";
     cmtk::StdOut << "  Study:       " << first->StudyUID << "\n";
     cmtk::StdOut << "  Acquisition: " << first->AcquisitionNumber << "\n";
