@@ -43,7 +43,9 @@ cmtk::FusionViewApplication
 ::FusionViewApplication( int argc, char* argv[] ) 
   : QApplication( argc, argv ),
     m_MainWindow( new QMainWindow ),
-    m_SliceAxis( 2 )
+    m_SliceAxis( 2 ),
+    m_Interpolator( Interpolators::LINEAR ),
+    m_ZoomFactor( 1.0 )
 {
   CommandLine cl;
   cl.SetProgramInfo( CommandLine::PRG_TITLE, "Fusion viewer." );
@@ -100,11 +102,6 @@ cmtk::FusionViewApplication
 
   this->m_MainWindowUI.alphaSlider->setRange( 0, 1000 );
 
-  this->m_SliceIndex = this->m_FixedVolume->GetDims()[this->m_SliceAxis] / 2;  
-  this->m_MainWindowUI.sliceSlider->setRange( 0, this->m_FixedVolume->GetDims()[this->m_SliceAxis] );
-  this->m_MainWindowUI.sliceSlider->setValue( this->m_SliceIndex );
-  QObject::connect( this->m_MainWindowUI.sliceSlider, SIGNAL( valueChanged( int ) ), this, SLOT( SetFixedSlice( int ) ) );
-
   const Types::DataItemRange rangeFix = this->m_FixedVolume->GetData()->GetRange();
   this->m_MainWindowUI.blackSliderFix->setRange( rangeFix.m_LowerBound, rangeFix.m_UpperBound );
   this->m_MainWindowUI.blackSliderFix->setValue( rangeFix.m_LowerBound );
@@ -119,12 +116,20 @@ cmtk::FusionViewApplication
   
   QActionGroup* zoomGroup = new QActionGroup( this->m_MainWindow );
   zoomGroup->setExclusive( true );
+  this->m_MainWindowUI.actionZoom25->setData( QVariant( 0.25 ) );
   zoomGroup->addAction( this->m_MainWindowUI.actionZoom25 );
+  this->m_MainWindowUI.actionZoom50->setData( QVariant( 0.50 ) );
   zoomGroup->addAction( this->m_MainWindowUI.actionZoom50 );
+  this->m_MainWindowUI.actionZoom100->setData( QVariant( 1.00 ) );
   zoomGroup->addAction( this->m_MainWindowUI.actionZoom100 );
+  this->m_MainWindowUI.actionZoom200->setData( QVariant( 2.00 ) );
   zoomGroup->addAction( this->m_MainWindowUI.actionZoom200 );
+  this->m_MainWindowUI.actionZoom300->setData( QVariant( 3.00 ) );
   zoomGroup->addAction( this->m_MainWindowUI.actionZoom300 );
+  this->m_MainWindowUI.actionZoom400->setData( QVariant( 4.00 ) );
   zoomGroup->addAction( this->m_MainWindowUI.actionZoom400 );
+
+  QObject::connect( zoomGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( changeZoom( QAction* ) ) );
   
   QActionGroup* sliceGroup = new QActionGroup( this->m_MainWindow );
   sliceGroup->setExclusive( true );
@@ -134,18 +139,30 @@ cmtk::FusionViewApplication
   
   QActionGroup* interpGroup = new QActionGroup( this->m_MainWindow );
   interpGroup->setExclusive( true );
+  this->m_MainWindowUI.actionInterpLinear->setData( QVariant( Interpolators::LINEAR ) );
   interpGroup->addAction( this->m_MainWindowUI.actionInterpLinear );
+  this->m_MainWindowUI.actionInterpCubic->setData( QVariant( Interpolators::CUBIC ) );
   interpGroup->addAction( this->m_MainWindowUI.actionInterpCubic );
+  this->m_MainWindowUI.actionInterpSinc->setData( QVariant( Interpolators::COSINE_SINC ) );
   interpGroup->addAction( this->m_MainWindowUI.actionInterpSinc );
+  this->m_MainWindowUI.actionInterpNearestNeighbour->setData( QVariant( Interpolators::NEAREST_NEIGHBOR ) );
   interpGroup->addAction( this->m_MainWindowUI.actionInterpNearestNeighbour );
+  this->m_MainWindowUI.actionInterpPartialVolume->setData( QVariant( Interpolators::PARTIALVOLUME ) );
   interpGroup->addAction( this->m_MainWindowUI.actionInterpPartialVolume );
   
+  this->m_SliceIndex = this->m_FixedVolume->GetDims()[this->m_SliceAxis] / 2;  
+  this->m_MainWindowUI.sliceSlider->setRange( 0, this->m_FixedVolume->GetDims()[this->m_SliceAxis]-1 );
+  this->m_MainWindowUI.sliceSlider->setValue( this->m_SliceIndex );
+  QObject::connect( this->m_MainWindowUI.sliceSlider, SIGNAL( valueChanged( int ) ), this, SLOT( setFixedSlice( int ) ) );
+
+  this->setFixedSlice( this->m_MainWindowUI.sliceSlider->value() );
+
   this->m_MainWindow->show();
 }
 
 void
 cmtk::FusionViewApplication
-::SetFixedSlice( int slice )
+::setFixedSlice( int slice )
 {
   if ( this->m_SliceIndex != slice )
     {
@@ -154,7 +171,7 @@ cmtk::FusionViewApplication
     this->UpdateFixedSlice();
 
     ReformatVolume::Plain plain( TYPE_FLOAT );
-    UniformVolumeInterpolatorBase::SmartPtr interpolator ( ReformatVolume::CreateInterpolator( Interpolators::LINEAR, this->m_MovingVolume ) );
+    UniformVolumeInterpolatorBase::SmartPtr interpolator ( ReformatVolume::CreateInterpolator( this->m_Interpolator, this->m_MovingVolume ) );
 
     const XformList noXforms;
     TypedArray::SmartPtr reformatData( ReformatVolume::Reformat( this->m_FixedSlice, this->m_XformList, noXforms, plain, this->m_MovingVolume, interpolator ) );
@@ -165,6 +182,24 @@ cmtk::FusionViewApplication
     this->m_MovingSlice = movingSlice;
     this->UpdateMovingSlice();
     }
+}
+
+void
+cmtk::FusionViewApplication
+::changeZoom( QAction* action )
+{
+  this->m_ZoomFactor = action->data().toFloat();
+  this->UpdateFixedSlice();
+  this->UpdateMovingSlice();
+}
+
+void
+cmtk::FusionViewApplication
+::changeInterpolator( QAction* action )
+{
+  this->m_Interpolator = static_cast<Interpolators::InterpolationEnum>( action->data().toInt() );
+  this->UpdateFixedSlice();
+  this->UpdateMovingSlice();
 }
 
 void
@@ -213,6 +248,9 @@ cmtk::FusionViewApplication
   
   QGraphicsScene* scene = new QGraphicsScene;
   scene->addPixmap( QPixmap::fromImage( image ) );
-  
+
+  QTransform zoomTransform = QTransform::fromScale( this->m_ZoomFactor, -this->m_ZoomFactor );
+  view->setTransform( zoomTransform );
+
   view->setScene( scene );
 }

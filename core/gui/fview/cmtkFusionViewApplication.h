@@ -56,7 +56,13 @@ public:
 
 private slots:
   /// Update displayed fixed image slice.
-  void SetFixedSlice( int slice );
+  void setFixedSlice( int slice );
+
+  /// Update zoom factor from UI.
+  void changeZoom( QAction* action /*!< Action to set new zoom factor. */ );
+
+  /// Update interpolator from UI.
+  void changeInterpolator( QAction* action /*!< Action to set new interpolator. */ );
 
 private:
   /// Application main window.
@@ -80,6 +86,9 @@ private:
   /// Slice index in the fixed image along the slice axis.
   int m_SliceIndex;
 
+  /// Interpolator for the moving image.
+  Interpolators::InterpolationEnum m_Interpolator;
+
   /// Data for the current fixed image slice.
   UniformVolume::SmartConstPtr m_FixedSlice;
 
@@ -91,6 +100,9 @@ private:
 
   /// Color table for moving image.
   QVector<QRgb> m_ColorTableMov;
+
+  /// Zoom scale factor.
+  float m_ZoomFactor;
 
   /// Update displayed fixed image slice.
   void UpdateFixedSlice();
