@@ -199,12 +199,12 @@
      <property name="title">
       <string>Interpolation</string>
      </property>
-     <addaction name="actionLinear"/>
-     <addaction name="actionCubic"/>
-     <addaction name="actionSinc"/>
+     <addaction name="actionInterpLinear"/>
+     <addaction name="actionInterpCubic"/>
+     <addaction name="actionInterpSinc"/>
      <addaction name="separator"/>
-     <addaction name="action_Nearest_Neighbour"/>
-     <addaction name="actionPartial_Volume"/>
+     <addaction name="actionInterpNearestNeighbour"/>
+     <addaction name="actionInterpPartialVolume"/>
     </widget>
     <addaction name="actionAnnotations"/>
     <addaction name="separator"/>
@@ -304,27 +304,42 @@
     <string>25%</string>
    </property>
   </action>
-  <action name="actionLinear">
+  <action name="actionInterpLinear">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Linear</string>
    </property>
   </action>
-  <action name="actionCubic">
+  <action name="actionInterpCubic">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Cubic</string>
    </property>
   </action>
-  <action name="actionSinc">
+  <action name="actionInterpSinc">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Sinc</string>
    </property>
   </action>
-  <action name="action_Nearest_Neighbour">
+  <action name="actionInterpNearestNeighbour">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Nearest Neighbour</string>
    </property>
   </action>
-  <action name="actionPartial_Volume">
+  <action name="actionInterpPartialVolume">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Partial Volume</string>
    </property>

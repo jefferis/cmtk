@@ -87,7 +87,7 @@ private:
   void UpdateMovingSlice();
 
   /// Update widget using slice data, black and white levels.
-  void UpdateWidget( QWidget* widget, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel );
+  void UpdateWidget( QLabel* widget, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel );
 };
 
 } // namespace cmtk

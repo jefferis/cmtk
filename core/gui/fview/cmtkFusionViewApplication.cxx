@@ -110,6 +110,14 @@ cmtk::FusionViewApplication
   sliceGroup->addAction( this->m_MainWindowUI.actionSliceCoronal_XZ );
   sliceGroup->addAction( this->m_MainWindowUI.actionSliceSagittal_YZ );
   
+  QActionGroup* interpGroup = new QActionGroup( this->m_MainWindow );
+  interpGroup->setExclusive( true );
+  interpGroup->addAction( this->m_MainWindowUI.actionInterpLinear );
+  interpGroup->addAction( this->m_MainWindowUI.actionInterpCubic );
+  interpGroup->addAction( this->m_MainWindowUI.actionInterpSinc );
+  interpGroup->addAction( this->m_MainWindowUI.actionInterpNearestNeighbour );
+  interpGroup->addAction( this->m_MainWindowUI.actionInterpPartialVolume );
+  
   this->m_MainWindow->show();
 }
 
@@ -146,7 +154,7 @@ cmtk::FusionViewApplication
 
 void
 cmtk::FusionViewApplication
-::UpdateWidget( QWidget* widget, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel )
+::UpdateWidget( QLabel* widget, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel )
 {
   QImage image( slice.GetDims()[0], slice.GetDims()[1], QImage::Format_Indexed8 );
   image.setColorTable( colorTable );
@@ -162,6 +170,5 @@ cmtk::FusionViewApplication
       }
     }
   
-  QPainter painter( widget );
-  painter.drawImage( QPoint( 0, 0 ), image );
+  widget->setPixmap( QPixmap::fromImage( image ) );
 }
