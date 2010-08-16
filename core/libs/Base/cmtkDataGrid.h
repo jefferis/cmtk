@@ -391,14 +391,14 @@ protected:
   /// Offset to next column, row, and plane.
   int nextIJK;
 
+  /** Extract orthogonal slice as a data grid object.
+   */
+  virtual Self* ExtractSliceVirtual( const int axis, const unsigned int plane ) const;
+
 private:
   /** Crop region.
    */
   Self::RegionType m_CropRegion;
-
-  /** Extract orthogonal slice as a data grid object.
-   */
-  virtual Self* ExtractSliceVirtual( const int axis, const unsigned int plane ) const;
 };
 
 //@}

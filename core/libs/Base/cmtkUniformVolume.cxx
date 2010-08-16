@@ -359,7 +359,7 @@ UniformVolume*
 UniformVolume::ExtractSliceVirtual
 ( const int axis, const unsigned int plane ) const
 {
-  DataGrid::SmartPtr sliceGrid = this->DataGrid::ExtractSlice( axis, plane );
+  DataGrid::SmartPtr sliceGrid( this->DataGrid::ExtractSliceVirtual( axis, plane ) );
   Self* sliceVolume = new Self( sliceGrid->m_Dims, this->m_Delta[0], this->m_Delta[1], this->m_Delta[2], sliceGrid->m_Data );
 
   sliceVolume->m_Offset = this->m_Offset;
