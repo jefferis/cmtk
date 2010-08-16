@@ -36,6 +36,9 @@
 
 #include <Base/cmtkUniformVolume.h>
 
+#include <Registration/cmtkXformList.h>
+#include <Registration/cmtkReformatVolume.h>
+
 #include <ui_fviewMainWindow.h>
 
 namespace
@@ -68,6 +71,9 @@ private:
   /// The moving volume.
   UniformVolume::SmartConstPtr m_MovingVolume;
 
+  /// The list of concatenated transformations.
+  XformList m_XformList;
+
   /// The slice axis (0=x, sagittal; 1=y, coronal; 2=z, axial).
   int m_SliceAxis;
 
@@ -77,8 +83,14 @@ private:
   /// Data for the current fixed image slice.
   UniformVolume::SmartConstPtr m_FixedSlice;
 
+  /// Data for the current moving image slice.
+  UniformVolume::SmartConstPtr m_MovingSlice;
+
   /// Color table for fixed image.
   QVector<QRgb> m_ColorTableFix;
+
+  /// Color table for moving image.
+  QVector<QRgb> m_ColorTableMov;
 
   /// Update displayed fixed image slice.
   void UpdateFixedSlice();
@@ -86,8 +98,8 @@ private:
   /// Update displayed moving image slice.
   void UpdateMovingSlice();
 
-  /// Update widget using slice data, black and white levels.
-  void UpdateWidget( QLabel* widget, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel );
+  /// Update graphics view using slice data, black and white levels.
+  void UpdateView( QGraphicsView* view, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel );
 };
 
 } // namespace cmtk

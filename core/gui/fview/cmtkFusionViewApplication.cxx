@@ -33,6 +33,7 @@
 #include <System/cmtkCommandLine.h>
 
 #include <IO/cmtkVolumeIO.h>
+#include <IO/cmtkXformIO.h>
 
 #include <QtGui/QActionGroup>
 #include <QtGui/QPainter>
@@ -56,6 +57,27 @@ cmtk::FusionViewApplication
   try
     {
     cl.Parse( argc, const_cast<const char**>( argv ) );
+
+    const char* next = cl.GetNextOptional();
+    while ( next ) 
+      {
+      if ( ! strcmp( next, "-j" ) || ! strcmp( next, "--jacobian" ) )
+	break;
+      
+      const bool inverse = ! strcmp( next, "-i" ) || ! strcmp( next, "--inverse" );
+      if ( inverse ) 
+	next = cl.GetNext();
+      
+      Xform::SmartPtr xform( XformIO::Read( next ) );
+      if ( ! xform ) 
+	{
+	cmtk::StdErr << "ERROR: could not read target-to-reference transformation from " << next << "\n";
+	exit( 1 );
+	}
+      
+      this->m_XformList.Add( xform, inverse );
+      next = cl.GetNextOptional();
+      }
     }
   catch ( const CommandLine::Exception& ex )
     {
@@ -130,6 +152,18 @@ cmtk::FusionViewApplication
     this->m_SliceIndex = slice;
     this->m_FixedSlice = this->m_FixedVolume->ExtractSlice( this->m_SliceAxis, this->m_SliceIndex );
     this->UpdateFixedSlice();
+
+    ReformatVolume::Plain plain( TYPE_FLOAT );
+    UniformVolumeInterpolatorBase::SmartPtr interpolator ( ReformatVolume::CreateInterpolator( Interpolators::LINEAR, this->m_MovingVolume ) );
+
+    const XformList noXforms;
+    TypedArray::SmartPtr reformatData( ReformatVolume::Reformat( this->m_FixedSlice, this->m_XformList, noXforms, plain, this->m_MovingVolume, interpolator ) );
+
+    UniformVolume::SmartPtr movingSlice = this->m_FixedSlice->CloneGrid();
+    movingSlice->SetData( reformatData );
+
+    this->m_MovingSlice = movingSlice;
+    this->UpdateMovingSlice();
     }
 }
 
@@ -143,18 +177,25 @@ cmtk::FusionViewApplication
     this->m_ColorTableFix[i] = QColor( i, i, i ).rgb();
     }
 
-  this->UpdateWidget( this->m_MainWindowUI.fixedImgWidget, *(this->m_FixedSlice), this->m_ColorTableFix, this->m_MainWindowUI.blackSliderFix->value(), this->m_MainWindowUI.whiteSliderFix->value() );
+  this->UpdateView( this->m_MainWindowUI.fixedView, *(this->m_FixedSlice), this->m_ColorTableFix, this->m_MainWindowUI.blackSliderFix->value(), this->m_MainWindowUI.whiteSliderFix->value() );
 }
 
 void
 cmtk::FusionViewApplication
 ::UpdateMovingSlice()
 {
+  this->m_ColorTableMov.resize( 256 );
+  for ( int i = 0; i < 256; ++i )
+    {
+    this->m_ColorTableMov[i] = QColor( i, i, i ).rgb();
+    }
+
+  this->UpdateView( this->m_MainWindowUI.movingView, *(this->m_MovingSlice), this->m_ColorTableMov, this->m_MainWindowUI.blackSliderMov->value(), this->m_MainWindowUI.whiteSliderMov->value() );
 }
 
 void
 cmtk::FusionViewApplication
-::UpdateWidget( QLabel* widget, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel )
+::UpdateView( QGraphicsView* view, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel )
 {
   QImage image( slice.GetDims()[0], slice.GetDims()[1], QImage::Format_Indexed8 );
   image.setColorTable( colorTable );
@@ -170,5 +211,8 @@ cmtk::FusionViewApplication
       }
     }
   
-  widget->setPixmap( QPixmap::fromImage( image ) );
+  QGraphicsScene* scene = new QGraphicsScene;
+  scene->addPixmap( QPixmap::fromImage( image ) );
+  
+  view->setScene( scene );
 }
