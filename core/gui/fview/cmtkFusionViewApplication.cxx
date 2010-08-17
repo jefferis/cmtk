@@ -44,6 +44,7 @@ cmtk::FusionViewApplication
   : QApplication( argc, argv ),
     m_MainWindow( new QMainWindow ),
     m_SliceAxis( 2 ),
+    m_SliceIndex( -1 ),
     m_Interpolator( Interpolators::LINEAR ),
     m_ZoomFactor( 1.0 ),
     m_Transparency( 1.0 )
@@ -150,15 +151,13 @@ cmtk::FusionViewApplication
   interpGroup->addAction( this->m_MainWindowUI.actionInterpPartialVolume );
   
   this->m_MainWindowUI.alphaSlider->setRange( 0, 1000 );
+  this->m_MainWindowUI.alphaSlider->setValue( this->m_Transparency * 1000 );
   QObject::connect( this->m_MainWindowUI.alphaSlider, SIGNAL( valueChanged( int ) ), this, SLOT( setTransparency( int ) ) );
-
+  
   this->m_SliceIndex = this->m_FixedVolume->GetDims()[this->m_SliceAxis] / 2;  
   this->m_MainWindowUI.sliceSlider->setRange( 0, this->m_FixedVolume->GetDims()[this->m_SliceAxis]-1 );
-  this->m_MainWindowUI.sliceSlider->setValue( this->m_SliceIndex );
   QObject::connect( this->m_MainWindowUI.sliceSlider, SIGNAL( valueChanged( int ) ), this, SLOT( setFixedSlice( int ) ) );
-
-  this->m_MainWindowUI.sliceSlider->setValue( this->m_Transparency * 1000 );
-  this->setFixedSlice( this->m_MainWindowUI.sliceSlider->value() );
+  this->m_MainWindowUI.sliceSlider->setValue( this->m_SliceIndex );
 
   this->m_MainWindow->show();
 }
@@ -239,6 +238,7 @@ cmtk::FusionViewApplication
 
   this->MakeImage( this->m_MovingImage, *(this->m_MovingSlice), this->m_ColorTableMov, this->m_MainWindowUI.blackSliderMov->value(), this->m_MainWindowUI.whiteSliderMov->value() );
 
+  this->m_FusedImage = QImage( this->m_MovingImage.width(), this->m_MovingImage.height(), QImage::Format_RGB32 );
   for ( int y = 0; y < this->m_MovingImage.height(); ++y )
     {
     for ( int x = 0; x < this->m_MovingImage.width(); ++x )
@@ -249,11 +249,11 @@ cmtk::FusionViewApplication
       rgbMov = QColor( this->m_Transparency * rgbMov.red() + (1.0-this->m_Transparency) * rgbFix.red(),
 		       this->m_Transparency * rgbMov.green() + (1.0-this->m_Transparency) * rgbFix.green(),
 		       this->m_Transparency * rgbMov.blue() + (1.0-this->m_Transparency) * rgbFix.blue() );
-      this->m_MovingImage.setPixel( x, y, rgbMov.rgb() );
+      this->m_FusedImage.setPixel( x, y, rgbMov.rgb() );
       }
     }
 
-  this->UpdateView( this->m_MainWindowUI.movingView, this->m_MovingImage );
+  this->UpdateView( this->m_MainWindowUI.movingView, this->m_FusedImage );
 }
 
 void

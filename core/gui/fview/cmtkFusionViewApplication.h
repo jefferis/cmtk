@@ -110,6 +110,9 @@ private:
   /// QImage for the current moving slice.
   QImage m_MovingImage;
 
+  /// QImage for the current fused slice.
+  QImage m_FusedImage;
+
   /// Zoom scale factor.
   float m_ZoomFactor;
 
