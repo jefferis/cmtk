@@ -48,7 +48,8 @@ cmtk::FusionViewApplication
     m_SliceIndex( -1 ),
     m_Interpolator( Interpolators::LINEAR ),
     m_ZoomFactor( 1.0 ),
-    m_Transparency( 1.0 )
+    m_Transparency( 1.0 ),
+    m_CursorDisplayed( false )
 {
   CommandLine cl;
   cl.SetProgramInfo( CommandLine::PRG_TITLE, "Fusion viewer." );
@@ -168,6 +169,8 @@ cmtk::FusionViewApplication
   
   this->changeSliceDirection( AXIS_Z );
   QObject::connect( this->m_MainWindowUI.sliceSlider, SIGNAL( valueChanged( int ) ), this, SLOT( setFixedSlice( int ) ) );
+
+  QObject::connect( this->m_MainWindowUI.actionLinkedCursor, SIGNAL( toggled( bool ) ), this, SLOT( setLinkedCursorFlag( bool ) ) );  
     
   QObject::connect( this->m_MainWindowUI.fixedView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), this, SLOT( fixedViewScrolled() ) );
   QObject::connect( this->m_MainWindowUI.fixedView->verticalScrollBar(), SIGNAL( valueChanged( int ) ), this, SLOT( fixedViewScrolled() ) );
@@ -184,6 +187,13 @@ cmtk::FusionViewApplication
 {
   this->m_Transparency = static_cast<float>( slice ) / 1000;
   this->UpdateMovingImage();
+}
+
+void
+cmtk::FusionViewApplication
+::setLinkedCursorFlag( bool flag )
+{
+  this->m_CursorDisplayed = flag;
 }
 
 void

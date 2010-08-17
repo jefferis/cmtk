@@ -61,6 +61,9 @@ private slots:
   /// Update moving image transparency.
   void setTransparency( int slice );
 
+  /// Update moving image transparency.
+  void setLinkedCursorFlag( bool flag );
+
   /// Update zoom factor from UI.
   void changeZoom( QAction* action /*!< Action to set new zoom factor. */ );
 
@@ -139,6 +142,12 @@ private:
 
   /// Moving image transparency.
   float m_Transparency;
+
+  /// Flag for linked cursor display.
+  float m_CursorDisplayed;
+
+  /// Linked cursor position.
+  float m_CursorPosition[2];
 
   /// Update displayed fixed image slice.
   void UpdateFixedImage();

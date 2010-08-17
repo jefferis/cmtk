@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,1,0,0,0" columnstretch="1,1">
+     <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,1,0,0,0,0" columnstretch="1,1">
       <property name="sizeConstraint">
        <enum>QLayout::SetMaximumSize</enum>
       </property>
@@ -86,20 +86,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QSlider" name="sliceSlider">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QSlider" name="alphaSlider">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="sliceLabel">
         <property name="sizePolicy">
@@ -110,6 +96,9 @@
         </property>
         <property name="text">
          <string>Slice</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
@@ -124,7 +113,75 @@
         <property name="text">
          <string>Transparency</string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
        </widget>
+      </item>
+      <item row="1" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="labelSliceFrom">
+          <property name="minimumSize">
+           <size>
+            <width>8</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>I</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSlider" name="sliceSlider">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelSliceTo">
+          <property name="minimumSize">
+           <size>
+            <width>8</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>S</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QLabel" name="labelAlphaFixed">
+          <property name="text">
+           <string>Fixed Image</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSlider" name="alphaSlider">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelAlphaMoving">
+          <property name="text">
+           <string>Moving Image</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>
@@ -186,12 +243,18 @@
      <addaction name="actionInterpNearestNeighbour"/>
      <addaction name="actionInterpPartialVolume"/>
     </widget>
+    <widget class="QMenu" name="menuAnnotations">
+     <property name="title">
+      <string>&amp;Annotations</string>
+     </property>
+     <addaction name="actionLinkedCursor"/>
+    </widget>
     <addaction name="menu_Zoom"/>
     <addaction name="separator"/>
     <addaction name="menuInterpolation"/>
     <addaction name="menuSlice_Orientation"/>
     <addaction name="separator"/>
-    <addaction name="actionAnnotations"/>
+    <addaction name="menuAnnotations"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menuView"/>
@@ -327,9 +390,12 @@
     <string>&amp;Partial Volume</string>
    </property>
   </action>
-  <action name="actionAnnotations">
+  <action name="actionLinkedCursor">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>Annotations</string>
+    <string>Linked &amp;Cursor</string>
    </property>
   </action>
  </widget>
