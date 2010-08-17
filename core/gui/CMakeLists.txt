@@ -32,8 +32,3 @@ SET(CMTK_LIBRARIES "cmtkQt;cmtkPipeline;cmtkSegmentation;cmtkRegistration;cmtkIO
 
 SUBDIRS(triplanar)
 SUBDIRS(fview)
-
-IF (BUILD_FUSION)
-  SUBDIRS(fusion)
-ENDIF (BUILD_FUSION)
-
