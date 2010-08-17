@@ -44,7 +44,7 @@ cmtk::FusionViewApplication
 ::FusionViewApplication( int argc, char* argv[] ) 
   : QApplication( argc, argv ),
     m_MainWindow( new QMainWindow ),
-    m_SliceAxis( 2 ),
+    m_SliceAxis( -1 ),
     m_SliceIndex( -1 ),
     m_Interpolator( Interpolators::LINEAR ),
     m_ZoomFactor( 1.0 ),
@@ -139,9 +139,12 @@ cmtk::FusionViewApplication
   QActionGroup* sliceGroup = new QActionGroup( this->m_MainWindow );
   sliceGroup->setExclusive( true );
   sliceGroup->addAction( this->m_MainWindowUI.actionSliceAxial_XY );
+  this->m_MainWindowUI.actionSliceAxial_XY->setData( QVariant( AXIS_Z ) );
   sliceGroup->addAction( this->m_MainWindowUI.actionSliceCoronal_XZ );
+  this->m_MainWindowUI.actionSliceCoronal_XZ->setData( QVariant( AXIS_Y ) );
   sliceGroup->addAction( this->m_MainWindowUI.actionSliceSagittal_YZ );
-
+  this->m_MainWindowUI.actionSliceSagittal_YZ->setData( QVariant( AXIS_X ) );
+  
   QObject::connect( sliceGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( changeSliceDirection( QAction* ) ) );
   
   QActionGroup* interpGroup = new QActionGroup( this->m_MainWindow );
@@ -163,11 +166,9 @@ cmtk::FusionViewApplication
   this->m_MainWindowUI.alphaSlider->setValue( this->m_Transparency * 1000 );
   QObject::connect( this->m_MainWindowUI.alphaSlider, SIGNAL( valueChanged( int ) ), this, SLOT( setTransparency( int ) ) );
   
-  this->setFixedSlice( this->m_FixedVolume->GetDims()[this->m_SliceAxis] / 2 ); 
-  this->m_MainWindowUI.sliceSlider->setRange( 0, this->m_FixedVolume->GetDims()[this->m_SliceAxis]-1 );
+  this->changeSliceDirection( AXIS_Z );
   QObject::connect( this->m_MainWindowUI.sliceSlider, SIGNAL( valueChanged( int ) ), this, SLOT( setFixedSlice( int ) ) );
-  this->m_MainWindowUI.sliceSlider->setValue( this->m_SliceIndex );
-
+    
   QObject::connect( this->m_MainWindowUI.fixedView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), this, SLOT( fixedViewScrolled() ) );
   QObject::connect( this->m_MainWindowUI.fixedView->verticalScrollBar(), SIGNAL( valueChanged( int ) ), this, SLOT( fixedViewScrolled() ) );
 
@@ -234,7 +235,23 @@ void
 cmtk::FusionViewApplication
 ::changeSliceDirection( QAction* action )
 {
-  this->UpdateMovingSlice();
+  this->changeSliceDirection( action->data().toInt() );
+}
+
+void
+cmtk::FusionViewApplication
+::changeSliceDirection( const int sliceAxis )
+{
+  if ( sliceAxis != this->m_SliceAxis )
+    {
+    this->m_SliceAxis = sliceAxis;
+
+    this->setFixedSlice( this->m_FixedVolume->GetDims()[this->m_SliceAxis] / 2 ); 
+    this->m_MainWindowUI.sliceSlider->setRange( 0, this->m_FixedVolume->GetDims()[this->m_SliceAxis]-1 );
+    this->m_MainWindowUI.sliceSlider->setValue( this->m_SliceIndex );
+
+    this->UpdateMovingSlice();
+    }
 }
 
 void
@@ -318,15 +335,22 @@ void
 cmtk::FusionViewApplication
 ::MakeImage( QImage& image, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel )
 {
-  image = QImage( slice.GetDims()[0], slice.GetDims()[1], QImage::Format_Indexed8 );
+  // table: which are the x and y directions for slices along the three orthogonal orientations?
+  const int idxX[3] = { 1, 0, 0 };
+  const int idxY[3] = { 2, 2, 1 };
+
+  int dimX = slice.GetDims()[idxX[this->m_SliceAxis]];
+  int dimY = slice.GetDims()[idxY[this->m_SliceAxis]];
+
+  image = QImage( dimX, dimY, QImage::Format_Indexed8 );
   image.setColorTable( colorTable );
   
   const float scaleLevel = 1.0 / (whiteLevel-blackLevel);
   
   size_t idx = 0;
-  for ( int y = 0; y < slice.GetDims()[1]; ++y )
+  for ( int y = 0; y < dimY; ++y )
     {
-    for ( int x = 0; x < slice.GetDims()[0]; ++x, ++idx )
+    for ( int x = 0; x < dimX; ++x, ++idx )
       {
       image.setPixel( x, y, static_cast<int>( 255 * std::min<float>( 1, std::max<float>( 0, (slice.GetDataAt( idx ) - blackLevel) * scaleLevel ) ) ) );
       }

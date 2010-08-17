@@ -82,6 +82,9 @@ private slots:
   /// Scroll bars in fixed image view changed.
   void movingViewScrolled();
 
+  /// Update slice direction from integer.
+  void changeSliceDirection( const int sliceAxis );
+
 private:
   /// Application main window.
   QMainWindow* m_MainWindow;
