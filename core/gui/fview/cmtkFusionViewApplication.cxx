@@ -163,7 +163,7 @@ cmtk::FusionViewApplication
   this->m_MainWindowUI.alphaSlider->setValue( this->m_Transparency * 1000 );
   QObject::connect( this->m_MainWindowUI.alphaSlider, SIGNAL( valueChanged( int ) ), this, SLOT( setTransparency( int ) ) );
   
-  this->m_SliceIndex = this->m_FixedVolume->GetDims()[this->m_SliceAxis] / 2;  
+  this->setFixedSlice( this->m_FixedVolume->GetDims()[this->m_SliceAxis] / 2 ); 
   this->m_MainWindowUI.sliceSlider->setRange( 0, this->m_FixedVolume->GetDims()[this->m_SliceAxis]-1 );
   QObject::connect( this->m_MainWindowUI.sliceSlider, SIGNAL( valueChanged( int ) ), this, SLOT( setFixedSlice( int ) ) );
   this->m_MainWindowUI.sliceSlider->setValue( this->m_SliceIndex );
