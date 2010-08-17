@@ -67,6 +67,9 @@ private slots:
   /// Update interpolator from UI.
   void changeInterpolator( QAction* action /*!< Action to set new interpolator. */ );
 
+  /// Update slice direction from UI.
+  void changeSliceDirection( QAction* action /*!< Action to set new slice direction. */ );
+
 private:
   /// Application main window.
   QMainWindow* m_MainWindow;
@@ -120,10 +123,13 @@ private:
   float m_Transparency;
 
   /// Update displayed fixed image slice.
-  void UpdateFixedSlice();
+  void UpdateFixedImage();
+
+  /// Update interpolated moving image slice.
+  void UpdateMovingSlice();
 
   /// Update displayed moving image slice.
-  void UpdateMovingSlice();
+  void UpdateMovingImage();
 
   /// Make a QImage from slice data and color table.
   void MakeImage( QImage& image, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel );

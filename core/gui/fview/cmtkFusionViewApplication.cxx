@@ -136,6 +136,8 @@ cmtk::FusionViewApplication
   sliceGroup->addAction( this->m_MainWindowUI.actionSliceAxial_XY );
   sliceGroup->addAction( this->m_MainWindowUI.actionSliceCoronal_XZ );
   sliceGroup->addAction( this->m_MainWindowUI.actionSliceSagittal_YZ );
+
+  QObject::connect( sliceGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( changeSliceDirection( QAction* ) ) );
   
   QActionGroup* interpGroup = new QActionGroup( this->m_MainWindow );
   interpGroup->setExclusive( true );
@@ -149,6 +151,8 @@ cmtk::FusionViewApplication
   interpGroup->addAction( this->m_MainWindowUI.actionInterpNearestNeighbour );
   this->m_MainWindowUI.actionInterpPartialVolume->setData( QVariant( Interpolators::PARTIALVOLUME ) );
   interpGroup->addAction( this->m_MainWindowUI.actionInterpPartialVolume );
+
+  QObject::connect( interpGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( changeInterpolator( QAction* ) ) );
   
   this->m_MainWindowUI.alphaSlider->setRange( 0, 1000 );
   this->m_MainWindowUI.alphaSlider->setValue( this->m_Transparency * 1000 );
@@ -167,7 +171,7 @@ cmtk::FusionViewApplication
 ::setTransparency( int slice )
 {
   this->m_Transparency = static_cast<float>( slice ) / 1000;
-  this->UpdateMovingSlice();
+  this->UpdateMovingImage();
 }
 
 void
@@ -178,18 +182,8 @@ cmtk::FusionViewApplication
     {
     this->m_SliceIndex = slice;
     this->m_FixedSlice = this->m_FixedVolume->ExtractSlice( this->m_SliceAxis, this->m_SliceIndex );
-    this->UpdateFixedSlice();
+    this->UpdateFixedImage();
 
-    ReformatVolume::Plain plain( TYPE_FLOAT );
-    UniformVolumeInterpolatorBase::SmartPtr interpolator ( ReformatVolume::CreateInterpolator( this->m_Interpolator, this->m_MovingVolume ) );
-
-    const XformList noXforms;
-    TypedArray::SmartPtr reformatData( ReformatVolume::Reformat( this->m_FixedSlice, this->m_XformList, noXforms, plain, this->m_MovingVolume, interpolator ) );
-
-    UniformVolume::SmartPtr movingSlice = this->m_FixedSlice->CloneGrid();
-    movingSlice->SetData( reformatData );
-
-    this->m_MovingSlice = movingSlice;
     this->UpdateMovingSlice();
     }
 }
@@ -199,8 +193,8 @@ cmtk::FusionViewApplication
 ::changeZoom( QAction* action )
 {
   this->m_ZoomFactor = action->data().toFloat();
-  this->UpdateFixedSlice();
-  this->UpdateMovingSlice();
+  this->UpdateFixedImage();
+  this->UpdateMovingImage();
 }
 
 void
@@ -208,13 +202,36 @@ cmtk::FusionViewApplication
 ::changeInterpolator( QAction* action )
 {
   this->m_Interpolator = static_cast<Interpolators::InterpolationEnum>( action->data().toInt() );
-  this->UpdateFixedSlice();
   this->UpdateMovingSlice();
 }
 
 void
 cmtk::FusionViewApplication
-::UpdateFixedSlice()
+::changeSliceDirection( QAction* action )
+{
+  this->UpdateMovingSlice();
+}
+
+void
+cmtk::FusionViewApplication
+::UpdateMovingSlice()
+{
+  ReformatVolume::Plain plain( TYPE_FLOAT );
+  UniformVolumeInterpolatorBase::SmartPtr interpolator ( ReformatVolume::CreateInterpolator( this->m_Interpolator, this->m_MovingVolume ) );
+  
+  const XformList noXforms;
+  TypedArray::SmartPtr reformatData( ReformatVolume::Reformat( this->m_FixedSlice, this->m_XformList, noXforms, plain, this->m_MovingVolume, interpolator ) );
+  
+  UniformVolume::SmartPtr movingSlice = this->m_FixedSlice->CloneGrid();
+  movingSlice->SetData( reformatData );
+  
+  this->m_MovingSlice = movingSlice;
+  this->UpdateMovingImage();
+}
+
+void
+cmtk::FusionViewApplication
+::UpdateFixedImage()
 {
   this->m_ColorTableFix.resize( 256 );
   for ( int i = 0; i < 256; ++i )
@@ -228,7 +245,7 @@ cmtk::FusionViewApplication
 
 void
 cmtk::FusionViewApplication
-::UpdateMovingSlice()
+::UpdateMovingImage()
 {
   this->m_ColorTableMov.resize( 256 );
   for ( int i = 0; i < 256; ++i )
