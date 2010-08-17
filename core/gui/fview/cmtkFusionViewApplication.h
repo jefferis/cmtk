@@ -70,6 +70,12 @@ private slots:
   /// Update slice direction from UI.
   void changeSliceDirection( QAction* action /*!< Action to set new slice direction. */ );
 
+  /// Fixed image black/white has changed.
+  void fixedBlackWhiteChanged();
+
+  /// Moving image black/white has changed.
+  void movingBlackWhiteChanged();
+
   /// Scroll bars in fixed image view changed.
   void fixedViewScrolled();
 

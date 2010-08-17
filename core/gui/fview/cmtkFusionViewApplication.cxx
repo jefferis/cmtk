@@ -106,14 +106,18 @@ cmtk::FusionViewApplication
   const Types::DataItemRange rangeFix = this->m_FixedVolume->GetData()->GetRange();
   this->m_MainWindowUI.blackSliderFix->setRange( rangeFix.m_LowerBound, rangeFix.m_UpperBound );
   this->m_MainWindowUI.blackSliderFix->setValue( rangeFix.m_LowerBound );
+  QObject::connect( this->m_MainWindowUI.blackSliderFix, SIGNAL( valueChanged( int ) ), this, SLOT( fixedBlackWhiteChanged() ) );
   this->m_MainWindowUI.whiteSliderFix->setRange( rangeFix.m_LowerBound, rangeFix.m_UpperBound );
   this->m_MainWindowUI.whiteSliderFix->setValue( rangeFix.m_UpperBound );
+  QObject::connect( this->m_MainWindowUI.whiteSliderFix, SIGNAL( valueChanged( int ) ), this, SLOT( fixedBlackWhiteChanged() ) );
   
   const Types::DataItemRange rangeMov = this->m_MovingVolume->GetData()->GetRange();
   this->m_MainWindowUI.blackSliderMov->setRange( rangeMov.m_LowerBound, rangeMov.m_UpperBound );
   this->m_MainWindowUI.blackSliderMov->setValue( rangeMov.m_LowerBound );
+  QObject::connect( this->m_MainWindowUI.blackSliderMov, SIGNAL( valueChanged( int ) ), this, SLOT( movingBlackWhiteChanged() ) );
   this->m_MainWindowUI.whiteSliderMov->setRange( rangeMov.m_LowerBound, rangeMov.m_UpperBound );
   this->m_MainWindowUI.whiteSliderMov->setValue( rangeMov.m_UpperBound );
+  QObject::connect( this->m_MainWindowUI.whiteSliderMov, SIGNAL( valueChanged( int ) ), this, SLOT( movingBlackWhiteChanged() ) );
   
   QActionGroup* zoomGroup = new QActionGroup( this->m_MainWindow );
   zoomGroup->setExclusive( true );
@@ -210,6 +214,20 @@ cmtk::FusionViewApplication
 {
   this->m_Interpolator = static_cast<Interpolators::InterpolationEnum>( action->data().toInt() );
   this->UpdateMovingSlice();
+}
+
+void
+cmtk::FusionViewApplication
+::fixedBlackWhiteChanged()
+{
+  this->UpdateFixedImage();
+}
+
+void
+cmtk::FusionViewApplication
+::movingBlackWhiteChanged()
+{
+  this->UpdateMovingImage();
 }
 
 void
