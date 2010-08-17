@@ -186,12 +186,12 @@
      <addaction name="actionInterpNearestNeighbour"/>
      <addaction name="actionInterpPartialVolume"/>
     </widget>
-    <addaction name="actionAnnotations"/>
+    <addaction name="menu_Zoom"/>
     <addaction name="separator"/>
     <addaction name="menuInterpolation"/>
     <addaction name="menuSlice_Orientation"/>
     <addaction name="separator"/>
-    <addaction name="menu_Zoom"/>
+    <addaction name="actionAnnotations"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menuView"/>
