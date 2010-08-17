@@ -70,6 +70,12 @@ private slots:
   /// Update slice direction from UI.
   void changeSliceDirection( QAction* action /*!< Action to set new slice direction. */ );
 
+  /// Scroll bars in fixed image view changed.
+  void fixedViewScrolled();
+
+  /// Scroll bars in fixed image view changed.
+  void movingViewScrolled();
+
 private:
   /// Application main window.
   QMainWindow* m_MainWindow;

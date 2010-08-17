@@ -38,6 +38,7 @@
 #include <QtGui/QActionGroup>
 #include <QtGui/QPainter>
 #include <QtGui/QImage>
+#include <QtGui/QScrollBar>
 
 cmtk::FusionViewApplication
 ::FusionViewApplication( int argc, char* argv[] ) 
@@ -163,6 +164,12 @@ cmtk::FusionViewApplication
   QObject::connect( this->m_MainWindowUI.sliceSlider, SIGNAL( valueChanged( int ) ), this, SLOT( setFixedSlice( int ) ) );
   this->m_MainWindowUI.sliceSlider->setValue( this->m_SliceIndex );
 
+  QObject::connect( this->m_MainWindowUI.fixedView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), this, SLOT( fixedViewScrolled() ) );
+  QObject::connect( this->m_MainWindowUI.fixedView->verticalScrollBar(), SIGNAL( valueChanged( int ) ), this, SLOT( fixedViewScrolled() ) );
+
+  QObject::connect( this->m_MainWindowUI.movingView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), this, SLOT( movingViewScrolled() ) );
+  QObject::connect( this->m_MainWindowUI.movingView->verticalScrollBar(), SIGNAL( valueChanged( int ) ), this, SLOT( movingViewScrolled() ) );
+
   this->m_MainWindow->show();
 }
 
@@ -210,6 +217,22 @@ cmtk::FusionViewApplication
 ::changeSliceDirection( QAction* action )
 {
   this->UpdateMovingSlice();
+}
+
+void
+cmtk::FusionViewApplication
+::movingViewScrolled()
+{
+  this->m_MainWindowUI.fixedView->horizontalScrollBar()->setValue( this->m_MainWindowUI.movingView->horizontalScrollBar()->value() );
+  this->m_MainWindowUI.fixedView->verticalScrollBar()->setValue( this->m_MainWindowUI.movingView->verticalScrollBar()->value() );
+}
+
+void
+cmtk::FusionViewApplication
+::fixedViewScrolled()
+{
+  this->m_MainWindowUI.movingView->horizontalScrollBar()->setValue( this->m_MainWindowUI.fixedView->horizontalScrollBar()->value() );
+  this->m_MainWindowUI.movingView->verticalScrollBar()->setValue( this->m_MainWindowUI.fixedView->verticalScrollBar()->value() );
 }
 
 void
