@@ -58,6 +58,9 @@ private slots:
   /// Update displayed fixed image slice.
   void setFixedSlice( int slice );
 
+  /// Update moving image transparency.
+  void setTransparency( int slice );
+
   /// Update zoom factor from UI.
   void changeZoom( QAction* action /*!< Action to set new zoom factor. */ );
 
@@ -101,8 +104,17 @@ private:
   /// Color table for moving image.
   QVector<QRgb> m_ColorTableMov;
 
+  /// QImage for the current fixed slice.
+  QImage m_FixedImage;
+
+  /// QImage for the current moving slice.
+  QImage m_MovingImage;
+
   /// Zoom scale factor.
   float m_ZoomFactor;
+
+  /// Moving image transparency.
+  float m_Transparency;
 
   /// Update displayed fixed image slice.
   void UpdateFixedSlice();
@@ -110,8 +122,11 @@ private:
   /// Update displayed moving image slice.
   void UpdateMovingSlice();
 
+  /// Make a QImage from slice data and color table.
+  void MakeImage( QImage& image, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel );
+
   /// Update graphics view using slice data, black and white levels.
-  void UpdateView( QGraphicsView* view, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel );
+  void UpdateView( QGraphicsView* view, const QImage& image );
 };
 
 } // namespace cmtk

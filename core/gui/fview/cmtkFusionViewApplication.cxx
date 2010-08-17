@@ -45,7 +45,8 @@ cmtk::FusionViewApplication
     m_MainWindow( new QMainWindow ),
     m_SliceAxis( 2 ),
     m_Interpolator( Interpolators::LINEAR ),
-    m_ZoomFactor( 1.0 )
+    m_ZoomFactor( 1.0 ),
+    m_Transparency( 1.0 )
 {
   CommandLine cl;
   cl.SetProgramInfo( CommandLine::PRG_TITLE, "Fusion viewer." );
@@ -100,8 +101,6 @@ cmtk::FusionViewApplication
 
   this->m_MainWindowUI.setupUi( this->m_MainWindow );
 
-  this->m_MainWindowUI.alphaSlider->setRange( 0, 1000 );
-
   const Types::DataItemRange rangeFix = this->m_FixedVolume->GetData()->GetRange();
   this->m_MainWindowUI.blackSliderFix->setRange( rangeFix.m_LowerBound, rangeFix.m_UpperBound );
   this->m_MainWindowUI.blackSliderFix->setValue( rangeFix.m_LowerBound );
@@ -150,14 +149,26 @@ cmtk::FusionViewApplication
   this->m_MainWindowUI.actionInterpPartialVolume->setData( QVariant( Interpolators::PARTIALVOLUME ) );
   interpGroup->addAction( this->m_MainWindowUI.actionInterpPartialVolume );
   
+  this->m_MainWindowUI.alphaSlider->setRange( 0, 1000 );
+  QObject::connect( this->m_MainWindowUI.alphaSlider, SIGNAL( valueChanged( int ) ), this, SLOT( setTransparency( int ) ) );
+
   this->m_SliceIndex = this->m_FixedVolume->GetDims()[this->m_SliceAxis] / 2;  
   this->m_MainWindowUI.sliceSlider->setRange( 0, this->m_FixedVolume->GetDims()[this->m_SliceAxis]-1 );
   this->m_MainWindowUI.sliceSlider->setValue( this->m_SliceIndex );
   QObject::connect( this->m_MainWindowUI.sliceSlider, SIGNAL( valueChanged( int ) ), this, SLOT( setFixedSlice( int ) ) );
 
+  this->m_MainWindowUI.sliceSlider->setValue( this->m_Transparency * 1000 );
   this->setFixedSlice( this->m_MainWindowUI.sliceSlider->value() );
 
   this->m_MainWindow->show();
+}
+
+void
+cmtk::FusionViewApplication
+::setTransparency( int slice )
+{
+  this->m_Transparency = static_cast<float>( slice ) / 1000;
+  this->UpdateMovingSlice();
 }
 
 void
@@ -212,7 +223,8 @@ cmtk::FusionViewApplication
     this->m_ColorTableFix[i] = QColor( i, i, i ).rgb();
     }
 
-  this->UpdateView( this->m_MainWindowUI.fixedView, *(this->m_FixedSlice), this->m_ColorTableFix, this->m_MainWindowUI.blackSliderFix->value(), this->m_MainWindowUI.whiteSliderFix->value() );
+  this->MakeImage( this->m_FixedImage, *(this->m_FixedSlice), this->m_ColorTableFix, this->m_MainWindowUI.blackSliderFix->value(), this->m_MainWindowUI.whiteSliderFix->value() );
+  this->UpdateView( this->m_MainWindowUI.fixedView, this->m_FixedImage );
 }
 
 void
@@ -225,16 +237,32 @@ cmtk::FusionViewApplication
     this->m_ColorTableMov[i] = QColor( i, i, i ).rgb();
     }
 
-  this->UpdateView( this->m_MainWindowUI.movingView, *(this->m_MovingSlice), this->m_ColorTableMov, this->m_MainWindowUI.blackSliderMov->value(), this->m_MainWindowUI.whiteSliderMov->value() );
+  this->MakeImage( this->m_MovingImage, *(this->m_MovingSlice), this->m_ColorTableMov, this->m_MainWindowUI.blackSliderMov->value(), this->m_MainWindowUI.whiteSliderMov->value() );
+
+  for ( int y = 0; y < this->m_MovingImage.height(); ++y )
+    {
+    for ( int x = 0; x < this->m_MovingImage.width(); ++x )
+      {
+      QColor rgbMov( this->m_MovingImage.pixel( x, y ) );
+      const QColor rgbFix( this->m_FixedImage.pixel( x, y ) );
+
+      rgbMov = QColor( this->m_Transparency * rgbMov.red() + (1.0-this->m_Transparency) * rgbFix.red(),
+		       this->m_Transparency * rgbMov.green() + (1.0-this->m_Transparency) * rgbFix.green(),
+		       this->m_Transparency * rgbMov.blue() + (1.0-this->m_Transparency) * rgbFix.blue() );
+      this->m_MovingImage.setPixel( x, y, rgbMov.rgb() );
+      }
+    }
+
+  this->UpdateView( this->m_MainWindowUI.movingView, this->m_MovingImage );
 }
 
 void
 cmtk::FusionViewApplication
-::UpdateView( QGraphicsView* view, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel )
+::MakeImage( QImage& image, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel )
 {
-  QImage image( slice.GetDims()[0], slice.GetDims()[1], QImage::Format_Indexed8 );
+  image = QImage( slice.GetDims()[0], slice.GetDims()[1], QImage::Format_Indexed8 );
   image.setColorTable( colorTable );
-
+  
   const float scaleLevel = 1.0 / (whiteLevel-blackLevel);
   
   size_t idx = 0;
@@ -245,7 +273,12 @@ cmtk::FusionViewApplication
       image.setPixel( x, y, static_cast<int>( 255 * std::min<float>( 1, std::max<float>( 0, (slice.GetDataAt( idx ) - blackLevel) * scaleLevel ) ) ) );
       }
     }
-  
+}
+
+void
+cmtk::FusionViewApplication
+::UpdateView( QGraphicsView* view, const QImage& image )
+{
   QGraphicsScene* scene = new QGraphicsScene;
   scene->addPixmap( QPixmap::fromImage( image ) );
 
