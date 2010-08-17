@@ -336,12 +336,22 @@ cmtk::FusionViewApplication
 ::MakeImage( QImage& image, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel )
 {
   // table: which are the x and y directions for slices along the three orthogonal orientations?
-  const int idxX[3] = { 1, 0, 0 };
-  const int idxY[3] = { 2, 2, 1 };
+  const int idxXtable[3] = { 1, 0, 0 };
+  const int idxYtable[3] = { 2, 2, 1 };
 
-  int dimX = slice.GetDims()[idxX[this->m_SliceAxis]];
-  int dimY = slice.GetDims()[idxY[this->m_SliceAxis]];
+  const int idxX = idxXtable[this->m_SliceAxis];
+  const int idxY = idxYtable[this->m_SliceAxis];
+  
+  int dimX = slice.GetDims()[idxX];
+  int dimY = slice.GetDims()[idxY];
 
+  const float dX = slice.Deltas()[idxX];
+  const float dY = slice.Deltas()[idxY];
+
+  // make sure pixels are displayed square
+  this->m_ScalePixels[0] = std::max<float>( 1.0, dX / dY );
+  this->m_ScalePixels[1] = std::max<float>( 1.0, dY / dX );
+  
   image = QImage( dimX, dimY, QImage::Format_Indexed8 );
   image.setColorTable( colorTable );
   
@@ -364,7 +374,7 @@ cmtk::FusionViewApplication
   QGraphicsScene* scene = new QGraphicsScene;
   scene->addPixmap( QPixmap::fromImage( image ) );
 
-  QTransform zoomTransform = QTransform::fromScale( this->m_ZoomFactor, -this->m_ZoomFactor );
+  QTransform zoomTransform = QTransform::fromScale( this->m_ZoomFactor * this->m_ScalePixels[0], -this->m_ZoomFactor * this->m_ScalePixels[1] );
   view->setTransform( zoomTransform );
 
   view->setScene( scene );

@@ -134,6 +134,9 @@ private:
   /// Zoom scale factor.
   float m_ZoomFactor;
 
+  /// Scale factors for non-square pixels.
+  float m_ScalePixels[2];
+
   /// Moving image transparency.
   float m_Transparency;
 
