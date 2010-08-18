@@ -1,6 +1,6 @@
 Release CMTK-1.4.2:
 
-(r2233) Added: new, lightweight "fview" fusion viewer replaces old, broken,
+(r2252) Added: new, lightweight "fview" fusion viewer replaces old, broken,
     and incomplete "fusion" application.
 (r2213) Bugfix: UniformVolume::GridMatches sometimes returned "false" due to
     differences below the numerical relevance threshold.
