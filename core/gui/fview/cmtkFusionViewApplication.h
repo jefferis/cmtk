@@ -35,8 +35,8 @@
 #include <QtGui/QMainWindow>
 
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkXformList.h>
 
-#include <Registration/cmtkXformList.h>
 #include <Registration/cmtkReformatVolume.h>
 
 #include <ui_fviewMainWindow.h>

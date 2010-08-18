@@ -95,8 +95,6 @@ SET(cmtkRegistration_SRCS
   cmtkVoxelMatchingMetric_Type.cxx
   cmtkVoxelRegistration.cxx
   cmtkVoxelRegistrationImagePreprocessor.cxx
-  cmtkXformList.cxx
-  cmtkXformListEntry.cxx
 )
 
 IF(CMTK_USE_SQLITE)

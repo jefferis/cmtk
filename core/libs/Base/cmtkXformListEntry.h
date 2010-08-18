@@ -30,12 +30,14 @@
 //
 */
 
-#ifndef __cmtkXformList_h_included_
-#define __cmtkXformList_h_included_
+#ifndef __cmtkXformListEntry_h_included_
+#define __cmtkXformListEntry_h_included_
 
 #include <cmtkconfig.h>
 
-#include <Registration/cmtkXformListEntry.h>
+#include <Base/cmtkXform.h>
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkWarpXform.h>
 
 #include <System/cmtkSmartPtr.h>
 
@@ -43,54 +45,54 @@ namespace
 cmtk
 {
 
-/** \addtogroup Registration */
+/** \addtogroup Base */
 //@{
-/// A transformation list.
-class XformList :
-  /// Inherit STL list.
-  public std::list< XformListEntry::SmartConstPtr > 
+/// An entry in a transformation sequence.
+class XformListEntry 
 {
-private:
-  /// Error threshold for inverse approximation.
-  Types::Coordinate m_Epsilon;
-  
 public:
   /// This class.
-  typedef XformList Self;
+  typedef XformListEntry Self;
 
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
-  /// Smart pointer to const.
+  /// Smart pointer-to-const.
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Constructor.
-  XformList( const Types::Coordinate epsilon = 0.0 ) : m_Epsilon( epsilon ) {};
+  XformListEntry( const Xform::SmartConstPtr& xform = Xform::SmartConstPtr::Null, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
   
-  /// Set epsilon.
-  void SetEpsilon( const Types::Coordinate epsilon ) 
+  /// Destructor.
+  ~XformListEntry();
+  
+  /// The actual transformation.
+  const Xform::SmartConstPtr m_Xform;
+  
+  /// The actual inverse if transformation is affine.
+  const AffineXform* InverseAffineXform;
+  
+  /// The actual transformation as spline warp.
+  const WarpXform* m_WarpXform;
+  
+  /// Apply forward (false) or inverse (true) transformation.
+  bool Inverse;
+  
+  /// Global scale for normalizing the Jacobian.
+  Types::Coordinate GlobalScale;
+
+  /// Is this an affine transformation?
+  bool IsAffine() const
   {
-    this->m_Epsilon = epsilon;
+    return (this->m_WarpXform == NULL);
   }
-  
-  /// Add a transformation
-  void Add( const Xform::SmartConstPtr& xform, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
-  
-  /// Apply a sequence of (inverse) transformations.
-  bool ApplyInPlace( Xform::SpaceVectorType& v ) const;
-  
-  /// Get the Jacobian determinant of a sequence of transformations.
-  bool GetJacobian( const Xform::SpaceVectorType& v, Types::DataItem& jacobian, const bool correctGlobalScale = true ) const;
 
-  /// Is this transformation list all affine?
-  bool AllAffine() const;
-
-  /// Make all-affine copy of this transformation list.
-  Self MakeAllAffine() const;
+  /// Make a copy of this entry in which all nonrigid transformations are replaced with their associated affine initializers.
+  Self::SmartPtr CopyAsAffine() const;
 };
 
 //@}
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkXformList_h_included_
+#endif // #ifndef __cmtkXformListEntry_h_included_

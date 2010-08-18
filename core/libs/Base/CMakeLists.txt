@@ -107,6 +107,8 @@ SET(cmtkBase_SRCS
   cmtkVolumeGridToGridLookup.cxx
   cmtkWarpXform.cxx
   cmtkXform.cxx
+  cmtkXformList.cxx
+  cmtkXformListEntry.cxx
 )
 
 ADD_LIBRARY(cmtkBase ${cmtkBase_SRCS})

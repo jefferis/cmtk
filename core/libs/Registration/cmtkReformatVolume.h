@@ -48,13 +48,12 @@
 #include <Base/cmtkWarpXform.h>
 #include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkMathUtil.h>
-#include <System/cmtkProgress.h>
-
 #include <Base/cmtkMacros.h>
-#include <System/cmtkThreads.h>
 #include <Base/cmtkBitVector.h>
+#include <Base/cmtkXformList.h>
 
-#include <Registration/cmtkXformList.h>
+#include <System/cmtkThreads.h>
+#include <System/cmtkProgress.h>
 
 #include <cstddef>
 #include <math.h>
