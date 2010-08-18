@@ -212,6 +212,8 @@ cmtk::FusionViewApplication
     this->UpdateFixedImage();
 
     this->UpdateMovingSlice();
+
+    this->m_MainWindowUI.sliceLabel->setText( QString("Slice: %1").arg( this->m_SliceIndex ) );
     }
 }
 
@@ -266,6 +268,12 @@ cmtk::FusionViewApplication
     this->m_MainWindowUI.sliceSlider->setValue( this->m_SliceIndex );
 
     this->UpdateMovingSlice();
+
+    const char* labelFrom[3] = { "Left", "Posterior", "Inferior" };
+    const char* labelTo[3] = { "Right", "Anterior", "Superior" };
+
+    this->m_MainWindowUI.sliceLabelFrom->setText( labelFrom[this->m_SliceAxis] );
+    this->m_MainWindowUI.sliceLabelTo->setText( labelTo[this->m_SliceAxis] );
     }
 }
 
