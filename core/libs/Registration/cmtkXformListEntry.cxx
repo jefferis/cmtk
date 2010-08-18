@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -32,7 +33,7 @@
 #include "Registration/cmtkXformListEntry.h"
 
 cmtk::XformListEntry::XformListEntry
-( const Xform::SmartPtr& xform, const bool inverse, const Types::Coordinate globalScale )
+( const Xform::SmartConstPtr& xform, const bool inverse, const Types::Coordinate globalScale )
   : m_Xform( xform ), 
     InverseAffineXform( NULL ), 
     m_WarpXform( NULL ),
@@ -41,9 +42,9 @@ cmtk::XformListEntry::XformListEntry
 {
   if ( this->m_Xform ) 
     {
-    this->m_WarpXform = dynamic_cast<const WarpXform*>( this->m_Xform.GetPtr() );
+    this->m_WarpXform = dynamic_cast<const WarpXform*>( this->m_Xform.GetConstPtr() );
     
-    const AffineXform::SmartPtr affineXform( AffineXform::SmartPtr::DynamicCastFrom( this->m_Xform ) );
+    AffineXform::SmartConstPtr affineXform( AffineXform::SmartConstPtr::DynamicCastFrom( this->m_Xform ) );
     if ( affineXform ) 
       {
       this->InverseAffineXform = affineXform->MakeInverse();
@@ -56,4 +57,17 @@ cmtk::XformListEntry::~XformListEntry()
   // we got the inverse affine from AffineXform::MakeInverse, so we
   // need to get rid of it explicitly.
   delete this->InverseAffineXform;
+}
+
+cmtk::XformListEntry::SmartPtr 
+cmtk::XformListEntry::CopyAsAffine() const
+{
+  if ( this->m_WarpXform )
+    {
+    return Self::SmartPtr( new Self( this->m_WarpXform->m_InitialAffineXform, this->Inverse, this->GlobalScale ) );
+    }
+  else
+    {
+    return Self::SmartPtr( new Self( this->m_Xform, this->Inverse, this->GlobalScale ) );
+    }
 }

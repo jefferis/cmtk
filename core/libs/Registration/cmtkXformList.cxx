@@ -34,9 +34,9 @@
 
 void
 cmtk::XformList::Add
-( const Xform::SmartPtr& xform, const bool inverse, const Types::Coordinate globalScale  )
+( const Xform::SmartConstPtr& xform, const bool inverse, const Types::Coordinate globalScale  )
 {
-  this->push_back( SmartPointer<XformListEntry>( new XformListEntry( xform, inverse, globalScale ) ) );
+  this->push_back( XformListEntry::SmartConstPtr( new XformListEntry( xform, inverse, globalScale ) ) );
 }
 
 bool
@@ -126,3 +126,26 @@ cmtk::XformList::GetJacobian
   return true;
 }
 
+bool
+cmtk::XformList::AllAffine() const
+{
+  for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
+    {
+    if ( !(*it)->IsAffine() )
+      return false;
+    }
+  return true;
+}
+
+cmtk::XformList
+cmtk::XformList::MakeAllAffine() const
+{
+  cmtk::XformList allAffine;
+
+  for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
+    {
+    allAffine.push_back( (*it)->CopyAsAffine() );
+    }
+
+  return allAffine;
+}

@@ -48,7 +48,7 @@ cmtk
 /// A transformation list.
 class XformList :
   /// Inherit STL list.
-  public std::list< SmartPointer<XformListEntry> > 
+  public std::list< XformListEntry::SmartConstPtr > 
 {
 private:
   /// Error threshold for inverse approximation.
@@ -74,13 +74,19 @@ public:
   }
   
   /// Add a transformation
-  void Add( const Xform::SmartPtr& xform, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
+  void Add( const Xform::SmartConstPtr& xform, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
   
   /// Apply a sequence of (inverse) transformations.
   bool ApplyInPlace( Xform::SpaceVectorType& v ) const;
   
   /// Get the Jacobian determinant of a sequence of transformations.
   bool GetJacobian( const Xform::SpaceVectorType& v, Types::DataItem& jacobian, const bool correctGlobalScale = true ) const;
+
+  /// Is this transformation list all affine?
+  bool AllAffine() const;
+
+  /// Make all-affine copy of this transformation list.
+  Self MakeAllAffine() const;
 };
 
 //@}

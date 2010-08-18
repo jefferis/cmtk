@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,9 +35,11 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkXform.h"
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkWarpXform.h"
+#include <Base/cmtkXform.h>
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkWarpXform.h>
+
+#include <System/cmtkSmartPtr.h>
 
 namespace
 cmtk
@@ -48,14 +51,23 @@ cmtk
 class XformListEntry 
 {
 public:
+  /// This class.
+  typedef XformListEntry Self;
+
+  /// Smart pointer.
+  typedef SmartPointer<Self> SmartPtr;
+
+  /// Smart pointer-to-const.
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
   /// Constructor.
-  XformListEntry( const Xform::SmartPtr& xform = Xform::SmartPtr::Null, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
+  XformListEntry( const Xform::SmartConstPtr& xform = Xform::SmartConstPtr::Null, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
   
   /// Destructor.
   ~XformListEntry();
   
   /// The actual transformation.
-  const Xform::SmartPtr m_Xform;
+  const Xform::SmartConstPtr m_Xform;
   
   /// The actual inverse if transformation is affine.
   const AffineXform* InverseAffineXform;
@@ -68,6 +80,15 @@ public:
   
   /// Global scale for normalizing the Jacobian.
   Types::Coordinate GlobalScale;
+
+  /// Is this an affine transformation?
+  bool IsAffine() const
+  {
+    return (this->m_WarpXform == NULL);
+  }
+
+  /// Make a copy of this entry in which all nonrigid transformations are replaced with their associated affine initializers.
+  Self::SmartPtr CopyAsAffine() const;
 };
 
 //@}
