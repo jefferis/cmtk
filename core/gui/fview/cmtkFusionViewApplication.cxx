@@ -35,6 +35,8 @@
 #include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkXformIO.h>
 
+#include <Qt/cmtkQtIcons.h>
+
 #include <QtGui/QActionGroup>
 #include <QtGui/QPainter>
 #include <QtGui/QImage>
@@ -103,6 +105,7 @@ cmtk::FusionViewApplication
     }
 
   this->m_MainWindowUI.setupUi( this->m_MainWindow );
+  this->m_MainWindow->setWindowIcon( QtIcons::WindowIcon() );
 
   const Types::DataItemRange rangeFix = this->m_FixedVolume->GetData()->GetRange();
   this->m_MainWindowUI.blackSliderFix->setRange( rangeFix.m_LowerBound, rangeFix.m_UpperBound );
