@@ -191,13 +191,13 @@ void InitializeReformatVolume( cmtk::TypedArray::SmartPtr& reformatData, cmtk::U
     typename TInterpolator::SmartPtr interpolator ( new TInterpolator(*floatingVolume) );
     if ( OutPaddingValueFlag )
       plain.SetPaddingValue( OutPaddingValue );
-    reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::Reformat( targetVolume, TargetToReference, ReferenceToFloating, plain, floatingVolume, interpolator ) );
+    reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::ReformatMasked( targetVolume, TargetToReference, ReferenceToFloating, plain, floatingVolume, interpolator ) );
 
     if ( MassPreservingReformat )
       {
       cmtk::ReformatVolume::Jacobian jacobian( cmtk::TYPE_DOUBLE, false /*correctGlobalScale*/ );
       cmtk::XformList emptyXformList;
-      cmtk::TypedArray::SmartPtr jacobianData( cmtk::ReformatVolume::Reformat( targetVolume, emptyXformList, TargetToReference, jacobian, NULL, TInterpolator::SmartConstPtr::Null ) );
+      cmtk::TypedArray::SmartPtr jacobianData( cmtk::ReformatVolume::ReformatMasked( targetVolume, emptyXformList, TargetToReference, jacobian, NULL, TInterpolator::SmartConstPtr::Null ) );
       
       const size_t nPixels = reformatData->GetDataSize();
       for ( size_t i = 0; i < nPixels; ++i )
@@ -216,7 +216,7 @@ void InitializeReformatVolume( cmtk::TypedArray::SmartPtr& reformatData, cmtk::U
     cmtk::ReformatVolume::Jacobian jacobian( DataType, JacobianCorrectGlobal );
     if ( OutPaddingValueFlag )
       jacobian.SetPaddingValue( OutPaddingValue );
-    reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::Reformat( targetVolume, TargetToReference, ReferenceToFloating, jacobian, NULL, TInterpolator::SmartConstPtr::Null ) );
+    reformatData = cmtk::TypedArray::SmartPtr( cmtk::ReformatVolume::ReformatMasked( targetVolume, TargetToReference, ReferenceToFloating, jacobian, NULL, TInterpolator::SmartConstPtr::Null ) );
     break;
     }
     }

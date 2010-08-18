@@ -98,6 +98,12 @@ private:
   /// The list of concatenated transformations.
   XformList m_XformList;
 
+  /** The list of all-affine concatenated transformations.
+   * these are the same transformations as in m_XformList, but every nonrigid
+   * transformation therein is replaced with its affine initializer.
+   */
+  XformList m_XformListAllAffine;
+
   /// The slice axis (0=x, sagittal; 1=y, coronal; 2=z, axial).
   int m_SliceAxis;
 

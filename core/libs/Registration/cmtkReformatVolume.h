@@ -172,8 +172,12 @@ public:
   UniformVolume* GetTransformedReferenceJacobianAvg
   ( const std::vector<SplineWarpXform::SmartPtr>* xformList, Types::Coordinate *const volumeOffset = NULL, const bool includeReferenceData = true );
   
-  /// Complex reformat.
-  template<class TInterpolator, class Fct> static TypedArray::SmartPtr Reformat
+  /// Complex reformat using target data as the mask.
+  template<class TInterpolator, class Fct> static TypedArray::SmartPtr ReformatMasked
+  ( const UniformVolume* target, const cmtk::XformList& targetToRef, const cmtk::XformList& refToFloat, Fct& fct, const UniformVolume* floating = NULL, TInterpolator& interpolator = TInterpolator::Null );
+  
+  /// Complex reformat without mask.
+  template<class TInterpolator, class Fct> static TypedArray::SmartPtr ReformatUnmasked
   ( const UniformVolume* target, const cmtk::XformList& targetToRef, const cmtk::XformList& refToFloat, Fct& fct, const UniformVolume* floating = NULL, TInterpolator& interpolator = TInterpolator::Null );
   
   /// Constants for extended reformatting mode.

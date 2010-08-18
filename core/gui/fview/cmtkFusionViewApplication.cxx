@@ -92,6 +92,8 @@ cmtk::FusionViewApplication
     throw(ex);
     }
 
+  this->m_XformListAllAffine = this->m_XformList.MakeAllAffine();
+
   this->m_FixedVolume = VolumeIO::Read( imagePathFix );
   if ( ! this->m_FixedVolume )
     {
@@ -288,7 +290,7 @@ cmtk::FusionViewApplication
   UniformVolumeInterpolatorBase::SmartPtr interpolator ( ReformatVolume::CreateInterpolator( this->m_Interpolator, this->m_MovingVolume ) );
   
   const XformList noXforms;
-  TypedArray::SmartPtr reformatData( ReformatVolume::Reformat( this->m_FixedSlice, this->m_XformList, noXforms, plain, this->m_MovingVolume, interpolator ) );
+  TypedArray::SmartPtr reformatData( ReformatVolume::ReformatUnmasked( this->m_FixedSlice, this->m_XformListAllAffine, noXforms, plain, this->m_MovingVolume, interpolator ) );
   
   UniformVolume::SmartPtr movingSlice = this->m_FixedSlice->CloneGrid();
   movingSlice->SetData( reformatData );

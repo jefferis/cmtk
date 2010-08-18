@@ -39,7 +39,7 @@ cmtk
 
 template<class TInterpolator, class Fct> 
 TypedArray::SmartPtr
-ReformatVolume::Reformat
+ReformatVolume::ReformatMasked
 ( const UniformVolume* target, const cmtk::XformList& targetToRef, const cmtk::XformList& refToFloat, Fct& fct, const UniformVolume* floating, TInterpolator& interpolator )
 {
   const DataGrid::IndexType& dims = target->GetDims();
@@ -80,6 +80,49 @@ ReformatVolume::Reformat
 	  result->SetPaddingAt( offset );
 	  }
 	}
+      }
+    }
+  
+  Progress::Done();
+  return result;
+}
+
+template<class TInterpolator, class Fct> 
+TypedArray::SmartPtr
+ReformatVolume::ReformatUnmasked
+( const UniformVolume* target, const cmtk::XformList& targetToRef, const cmtk::XformList& refToFloat, Fct& fct, const UniformVolume* floating, TInterpolator& interpolator )
+{
+  const DataGrid::IndexType& dims = target->GetDims();
+
+  TypedArray::SmartPtr result = TypedArray::Create( fct.GetDataType( *floating ), target->GetNumberOfPixels() );
+  if ( fct.UsePaddingValue )
+    result->SetPaddingValue( fct.PaddingValue );
+  const TypedArray* targetData = target->GetData();
+  
+  Progress::Begin( 0, dims[2], 1, "Volume reformatting" );
+  
+#pragma omp parallel for
+  for ( int z = 0; z < dims[2]; z++ ) 
+    {
+    Vector3D vRef;
+    Types::DataItem value, targetValue;
+    size_t offset = z * dims[0] * dims[1];
+    Progress::SetProgress( z );
+    
+    for ( int y = 0; y < dims[1]; y++ ) 
+      {
+      for ( int x = 0; x < dims[0]; x++, offset++ ) 
+	{
+	vRef = target->GetGridLocation( x, y, z );
+	if ( targetToRef.ApplyInPlace( vRef ) && fct( value, vRef, refToFloat, interpolator ) ) 
+	  {
+	  result->Set( value, offset );
+	  } 
+	else
+	  {
+	  result->SetPaddingAt( offset );
+	  }
+	} 
       }
     }
   
