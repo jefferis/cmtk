@@ -61,8 +61,11 @@ private slots:
   /// Update moving image transparency.
   void setTransparency( int slice );
 
-  /// Update moving image transparency.
+  /// Update flag for displaying linked cursors.
   void setLinkedCursorFlag( bool flag );
+
+  /// Update flag for affine-only transformations.
+  void setAffineOnly( bool affineOnly );
 
   /// Update zoom factor from UI.
   void changeZoom( QAction* action /*!< Action to set new zoom factor. */ );

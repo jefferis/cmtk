@@ -177,6 +177,8 @@ cmtk::FusionViewApplication
   QObject::connect( this->m_MainWindowUI.sliceSlider, SIGNAL( valueChanged( int ) ), this, SLOT( setFixedSlice( int ) ) );
 
   QObject::connect( this->m_MainWindowUI.actionLinkedCursor, SIGNAL( toggled( bool ) ), this, SLOT( setLinkedCursorFlag( bool ) ) );  
+
+  QObject::connect( this->m_MainWindowUI.actionAffineOnly, SIGNAL( toggled( bool ) ), this, SLOT( setAffineOnly( bool ) ) );  
     
   // synchronize sliders of the two graphics views
   QObject::connect( this->m_MainWindowUI.fixedView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), 
@@ -237,6 +239,14 @@ cmtk::FusionViewApplication
 ::changeInterpolator( QAction* action )
 {
   this->m_Interpolator = static_cast<Interpolators::InterpolationEnum>( action->data().toInt() );
+  this->UpdateMovingSlice();
+}
+
+void
+cmtk::FusionViewApplication
+::setAffineOnly( bool affineOnly )
+{
+  this->m_AffineOnly = affineOnly;
   this->UpdateMovingSlice();
 }
 
