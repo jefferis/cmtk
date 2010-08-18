@@ -35,15 +35,15 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkMetaInformationObject.h"
+#include <Base/cmtkMetaInformationObject.h>
 
-#include "Base/cmtkVector.h"
-#include "Base/cmtkFixedVector.h"
-#include "Base/cmtkBitVector.h"
+#include <Base/cmtkVector.h>
+#include <Base/cmtkFixedVector.h>
+#include <Base/cmtkBitVector.h>
 
-#include "Base/cmtkMatchedLandmarkList.h"
+#include <Base/cmtkMatchedLandmarkList.h>
 
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkSmartPtr.h>
 
 namespace
 cmtk
@@ -64,6 +64,9 @@ public:
 
   /// Smart pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
+
+  /// Smart pointer-to-const for this class.
+  typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Three-dimensional vector type.
   typedef FixedVector<3,Types::Coordinate> SpaceVectorType;
