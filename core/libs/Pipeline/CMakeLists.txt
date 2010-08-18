@@ -31,9 +31,6 @@
 # Sources of non-templated classes.
 SET(cmtkPipeline_SRCS
   cmtkColormap.cxx
-  cmtkFusionAlpha.cxx
-  cmtkFusionEdge.cxx
-  cmtkFusionSlicers.cxx
   cmtkImage.cxx
   cmtkImageEdgeOperator.cxx
   cmtkImageRGB.cxx
