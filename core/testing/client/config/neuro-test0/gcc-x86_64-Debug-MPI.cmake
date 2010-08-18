@@ -1,5 +1,6 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
+##
 ##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
@@ -54,7 +55,6 @@ CMAKE_CXX_COMPILER:PATH=/usr/lib64/openmpi/bin/mpic++
 
 BUILD_TESTING:BOOL=ON
 CMTK_DATA_ROOT:PATH=/home/testrunner/nitrc/data
-BUILD_FUSION:BOOL=OFF
 BUILD_GUI:BOOL=OFF
 CMAKE_BUILD_TYPE:STRING=Debug
 CMAKE_CXX_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse -Wall -Wextra -Wno-deprecated -Wno-unknown-pragmas

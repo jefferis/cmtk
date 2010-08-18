@@ -1,5 +1,6 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
+##
 ##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
@@ -49,7 +50,6 @@ FILE(WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
 BUILDNAME:STRING=Linux-gcc-i686-Release
 BUILD_TESTING:BOOL=ON
 CMTK_DATA_ROOT:PATH=/home/testrunner/nitrc/data
-BUILD_FUSION:BOOL=ON
 BUILD_GUI:BOOL=ON
 BUILD_VALIDATION:BOOL=ON
 CMAKE_BUILD_TYPE:STRING=Release
