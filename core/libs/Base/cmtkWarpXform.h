@@ -35,22 +35,22 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkXform.h"
+#include <Base/cmtkXform.h>
 
-#include "Base/cmtkMacros.h"
-#include "Base/cmtkVector.h"
-#include "Base/cmtkFixedVector.h"
+#include <Base/cmtkMacros.h>
+#include <Base/cmtkVector.h>
+#include <Base/cmtkFixedVector.h>
 
-#include "Base/cmtkVolume.h"
-#include "Base/cmtkUniformVolume.h"
+#include <Base/cmtkVolume.h>
+#include <Base/cmtkUniformVolume.h>
 
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkBitVector.h"
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkBitVector.h>
 
-#include "Base/cmtkControlPoint.h"
-#include "Base/cmtkMatchedLandmarkList.h"
+#include <Base/cmtkControlPoint.h>
+#include <Base/cmtkMatchedLandmarkList.h>
 
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkSmartPtr.h>
 
 namespace
 cmtk
