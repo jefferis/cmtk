@@ -229,7 +229,7 @@ void
 cmtk::FusionViewApplication
 ::changeZoom( QAction* action )
 {
-  this->m_ZoomFactor = action->data().toFloat();
+  this->m_ZoomFactor = static_cast<float>( action->data().toDouble() ); // older Qt doesn't have QVariant::toFloat()
   this->UpdateFixedImage();
   this->UpdateMovingImage();
 }
