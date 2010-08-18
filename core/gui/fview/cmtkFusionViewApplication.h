@@ -104,6 +104,9 @@ private:
    */
   XformList m_XformListAllAffine;
 
+  /// Flag to apply only affine transformation components.
+  bool m_AffineOnly;
+
   /// The slice axis (0=x, sagittal; 1=y, coronal; 2=z, axial).
   int m_SliceAxis;
 

@@ -46,6 +46,7 @@ cmtk::FusionViewApplication
 ::FusionViewApplication( int argc, char* argv[] ) 
   : QApplication( argc, argv ),
     m_MainWindow( new QMainWindow ),
+    m_AffineOnly( false ),
     m_SliceAxis( -1 ),
     m_SliceIndex( -1 ),
     m_Interpolator( Interpolators::LINEAR ),
@@ -94,13 +95,13 @@ cmtk::FusionViewApplication
 
   this->m_XformListAllAffine = this->m_XformList.MakeAllAffine();
 
-  this->m_FixedVolume = VolumeIO::Read( imagePathFix );
+  this->m_FixedVolume = VolumeIO::ReadOriented( imagePathFix );
   if ( ! this->m_FixedVolume )
     {
     exit( 1 );
     }
 
-  this->m_MovingVolume = VolumeIO::Read( imagePathMov );
+  this->m_MovingVolume = VolumeIO::ReadOriented( imagePathMov );
   if ( ! this->m_MovingVolume )
     {
     exit( 1 );
@@ -291,7 +292,7 @@ cmtk::FusionViewApplication
   UniformVolumeInterpolatorBase::SmartPtr interpolator ( ReformatVolume::CreateInterpolator( this->m_Interpolator, this->m_MovingVolume ) );
   
   const XformList noXforms;
-  TypedArray::SmartPtr reformatData( ReformatVolume::ReformatUnmasked( this->m_FixedSlice, this->m_XformListAllAffine, noXforms, plain, this->m_MovingVolume, interpolator ) );
+  TypedArray::SmartPtr reformatData( ReformatVolume::ReformatUnmasked( this->m_FixedSlice, this->m_AffineOnly ? this->m_XformListAllAffine :  this->m_XformList, noXforms, plain, this->m_MovingVolume, interpolator ) );
   
   UniformVolume::SmartPtr movingSlice = this->m_FixedSlice->CloneGrid();
   movingSlice->SetData( reformatData );
@@ -387,7 +388,7 @@ cmtk::FusionViewApplication
   QGraphicsScene* scene = new QGraphicsScene;
   scene->addPixmap( QPixmap::fromImage( image ) );
 
-  QTransform zoomTransform = QTransform::fromScale( this->m_ZoomFactor * this->m_ScalePixels[0], -this->m_ZoomFactor * this->m_ScalePixels[1] );
+  QTransform zoomTransform = QTransform::fromScale( -this->m_ZoomFactor * this->m_ScalePixels[0], -this->m_ZoomFactor * this->m_ScalePixels[1] );
   view->setTransform( zoomTransform );
 
   view->setScene( scene );
