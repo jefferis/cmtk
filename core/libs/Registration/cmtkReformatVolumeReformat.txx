@@ -104,7 +104,7 @@ ReformatVolume::ReformatUnmasked
   for ( int z = 0; z < dims[2]; z++ ) 
     {
     Vector3D vRef;
-    Types::DataItem value, targetValue;
+    Types::DataItem value;
     size_t offset = z * dims[0] * dims[1];
     Progress::SetProgress( z );
     
