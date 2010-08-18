@@ -32,13 +32,13 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkConsole.h"
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkConsole.h>
 
-#include "IO/cmtkXformIO.h"
-#include "Registration/cmtkXformList.h"
+#include <Base/cmtkXform.h>
+#include <Base/cmtkXformList.h>
 
-#include "Base/cmtkXform.h"
+#include <IO/cmtkXformIO.h>
 
 #include <iostream>
 #include <sstream>

@@ -32,19 +32,18 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkProgress.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkProgress.h>
 
-#include "Base/cmtkSplineWarpXform.h"
-#include "Base/cmtkDeformationField.h"
+#include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkDeformationField.h>
+#include <Base/cmtkXformList.h>
 
-#include "IO/cmtkXformIO.h"
-#include "IO/cmtkClassStream.h"
-#include "IO/cmtkClassStreamAffineXform.h"
-#include "IO/cmtkVolumeIO.h"
-
-#include "Registration/cmtkXformList.h"
+#include <IO/cmtkXformIO.h>
+#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamAffineXform.h>
+#include <IO/cmtkVolumeIO.h>
 
 #include <stdio.h>
 

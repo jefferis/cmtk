@@ -32,15 +32,14 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkCommandLine.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkCommandLine.h>
 
-#include "Base/cmtkXform.h"
-#include "Base/cmtkVector3D.h"
+#include <Base/cmtkXform.h>
+#include <Base/cmtkVector3D.h>
+#include <Base/cmtkXformList.h>
 
-#include "IO/cmtkXformIO.h"
-
-#include "Registration/cmtkXformList.h"
+#include <IO/cmtkXformIO.h>
 
 #include <stdio.h>
 #include <list>
