@@ -172,11 +172,16 @@ cmtk::FusionViewApplication
 
   QObject::connect( this->m_MainWindowUI.actionLinkedCursor, SIGNAL( toggled( bool ) ), this, SLOT( setLinkedCursorFlag( bool ) ) );  
     
-  QObject::connect( this->m_MainWindowUI.fixedView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), this, SLOT( fixedViewScrolled() ) );
-  QObject::connect( this->m_MainWindowUI.fixedView->verticalScrollBar(), SIGNAL( valueChanged( int ) ), this, SLOT( fixedViewScrolled() ) );
+  // synchronize sliders of the two graphics views
+  QObject::connect( this->m_MainWindowUI.fixedView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), 
+		    this->m_MainWindowUI.movingView->horizontalScrollBar(), SLOT( setValue( int ) ) );
+  QObject::connect( this->m_MainWindowUI.fixedView->verticalScrollBar(), SIGNAL( valueChanged( int ) ), 
+		    this->m_MainWindowUI.movingView->verticalScrollBar(), SLOT( setValue( int) ) );
 
-  QObject::connect( this->m_MainWindowUI.movingView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), this, SLOT( movingViewScrolled() ) );
-  QObject::connect( this->m_MainWindowUI.movingView->verticalScrollBar(), SIGNAL( valueChanged( int ) ), this, SLOT( movingViewScrolled() ) );
+  QObject::connect( this->m_MainWindowUI.movingView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), 
+		    this->m_MainWindowUI.fixedView->horizontalScrollBar(), SLOT( setValue( int ) ) );
+  QObject::connect( this->m_MainWindowUI.movingView->verticalScrollBar(), SIGNAL( valueChanged( int ) ), 
+		    this->m_MainWindowUI.fixedView->verticalScrollBar(), SLOT( setValue( int ) ) );
 
   this->m_MainWindow->show();
 }
@@ -262,22 +267,6 @@ cmtk::FusionViewApplication
 
     this->UpdateMovingSlice();
     }
-}
-
-void
-cmtk::FusionViewApplication
-::movingViewScrolled()
-{
-  this->m_MainWindowUI.fixedView->horizontalScrollBar()->setValue( this->m_MainWindowUI.movingView->horizontalScrollBar()->value() );
-  this->m_MainWindowUI.fixedView->verticalScrollBar()->setValue( this->m_MainWindowUI.movingView->verticalScrollBar()->value() );
-}
-
-void
-cmtk::FusionViewApplication
-::fixedViewScrolled()
-{
-  this->m_MainWindowUI.movingView->horizontalScrollBar()->setValue( this->m_MainWindowUI.fixedView->horizontalScrollBar()->value() );
-  this->m_MainWindowUI.movingView->verticalScrollBar()->setValue( this->m_MainWindowUI.fixedView->verticalScrollBar()->value() );
 }
 
 void

@@ -79,12 +79,6 @@ private slots:
   /// Moving image black/white has changed.
   void movingBlackWhiteChanged();
 
-  /// Scroll bars in fixed image view changed.
-  void fixedViewScrolled();
-
-  /// Scroll bars in fixed image view changed.
-  void movingViewScrolled();
-
   /// Update slice direction from integer.
   void changeSliceDirection( const int sliceAxis );
 
