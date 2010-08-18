@@ -268,8 +268,9 @@ cmtk::FusionViewApplication
     {
     this->m_SliceAxis = sliceAxis;
 
-    this->setFixedSlice( this->m_FixedVolume->GetDims()[this->m_SliceAxis] / 2 ); 
+    this->m_SliceIndex = -1; // unset previously set slice index to ensure update of moving slice
     this->m_MainWindowUI.sliceSlider->setRange( 0, this->m_FixedVolume->GetDims()[this->m_SliceAxis]-1 );
+    this->setFixedSlice( this->m_FixedVolume->GetDims()[this->m_SliceAxis] / 2 ); 
     this->m_MainWindowUI.sliceSlider->setValue( this->m_SliceIndex );
 
     this->UpdateMovingSlice();
