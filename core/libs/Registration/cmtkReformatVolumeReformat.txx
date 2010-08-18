@@ -97,8 +97,7 @@ ReformatVolume::ReformatUnmasked
   TypedArray::SmartPtr result = TypedArray::Create( fct.GetDataType( *floating ), target->GetNumberOfPixels() );
   if ( fct.UsePaddingValue )
     result->SetPaddingValue( fct.PaddingValue );
-  const TypedArray* targetData = target->GetData();
-  
+
   Progress::Begin( 0, dims[2], 1, "Volume reformatting" );
   
 #pragma omp parallel for
