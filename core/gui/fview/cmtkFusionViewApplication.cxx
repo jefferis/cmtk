@@ -67,7 +67,8 @@ cmtk::FusionViewApplication
   cl.AddParameter( &imagePathMov, "MovingImage", "Moving image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
 
   std::vector<std::string> xformList;
-  cl.AddParameterVector( &xformList, "XformList", "List of concatenated transformations. Insert '--inverse' to use the inverse of the transformation listed next." )->SetProperties( cmtk::CommandLine::PROPS_XFORM );  
+  cl.AddParameterVector( &xformList, "XformList", "List of concatenated transformations. Insert '--inverse' to use the inverse of the transformation listed next." )
+    ->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OPTIONAL );  
   
   try
     {
