@@ -790,7 +790,7 @@ QtTriplanarWindow::slotExportLandmarks()
   
   if ( ! path.isEmpty() ) 
     {
-    std::ofstream stream( path.toLatin1() );
+    std::ofstream stream( path.toLatin1().constData() );
     
     if ( stream.good() )
       {
@@ -826,7 +826,7 @@ QtTriplanarWindow::slotImportLandmarks()
   
   if ( ! path.isEmpty() ) 
     {
-    std::ifstream stream( path.toLatin1() );
+    std::ifstream stream( path.toLatin1().constData() );
 
     unsigned int cnt = 0;
     if ( stream.good() ) 
