@@ -31,15 +31,22 @@
 #ifndef __cmtkFusionViewApplication_h_included_
 #define __cmtkFusionViewApplication_h_included_
 
-#include <QtGui/QApplication>
-#include <QtGui/QMainWindow>
+#include <cmtkconfig.h>
 
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkXformList.h>
 
 #include <Registration/cmtkReformatVolume.h>
 
+#include <Qt/cmtkQGraphicsPixmapItemEvents.h>
+
 #include <ui_fviewMainWindow.h>
+
+#include <QtGui/QApplication>
+#include <QtGui/QMainWindow>
+#include <QtGui/QGraphicsView>
+#include <QtGui/QGraphicsScene>
+#include <QtGui/QGraphicsSceneMouseEvent>
 
 namespace
 cmtk
@@ -88,6 +95,9 @@ private slots:
   /// Update slice direction from integer.
   void changeSliceDirection( const int sliceAxis );
 
+  /// Mouse button pressed in one of the graphics views.
+  void mousePressed( QGraphicsSceneMouseEvent* event );
+
 private:
   /// Application main window.
   QMainWindow* m_MainWindow;
@@ -112,7 +122,16 @@ private:
     QVector<QRgb> m_ColorTable;
 
     /// QImage for the current slice.
-    QImage m_Image;    
+    QImage m_Image;
+
+    /// The graphics view (this is a link to the view created from the main window uic).
+    QGraphicsView* m_View;
+
+    /// The graphics scene for this volume.
+    QGraphicsScene* m_Scene;
+
+    /// The pixmap graphics item with mouse events.
+    QGraphicsPixmapItemEvents* m_PixmapItem;
   };
 
   /// The fixed volume data.
@@ -172,8 +191,8 @@ private:
   /// Make a QImage from slice data and color table.
   void MakeImage( QImage& image, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel );
 
-  /// Update graphics view using slice data, black and white levels.
-  void UpdateView( QGraphicsView* view, const QImage& image );
+  /// Update graphics view using a given image.
+  void UpdateView( Self::Data& data, QImage& image );
 };
 
 } // namespace cmtk

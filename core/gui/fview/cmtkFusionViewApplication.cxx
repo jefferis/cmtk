@@ -98,6 +98,20 @@ cmtk::FusionViewApplication
   this->m_MainWindowUI.setupUi( this->m_MainWindow );
   this->m_MainWindow->setWindowIcon( QtIcons::WindowIcon() );
 
+  this->m_Fixed.m_Scene = new QGraphicsScene;
+  this->m_Fixed.m_PixmapItem = new QGraphicsPixmapItemEvents;
+  this->m_Fixed.m_Scene->addItem( this->m_Fixed.m_PixmapItem );
+  QObject::connect( this->m_Fixed.m_PixmapItem, SIGNAL( mousePressed( QGraphicsSceneMouseEvent* ) ), this, SLOT( mousePressed( QGraphicsSceneMouseEvent* ) ) );
+  this->m_Fixed.m_View = this->m_MainWindowUI.fixedView;
+  this->m_Fixed.m_View->setScene( this->m_Fixed.m_Scene );
+
+  this->m_Moving.m_Scene = new QGraphicsScene;
+  this->m_Moving.m_PixmapItem = new QGraphicsPixmapItemEvents;
+  this->m_Moving.m_Scene->addItem( this->m_Moving.m_PixmapItem );
+  QObject::connect( this->m_Moving.m_PixmapItem, SIGNAL( mousePressed( QGraphicsSceneMouseEvent* ) ), this, SLOT( mousePressed( QGraphicsSceneMouseEvent* ) ) );
+  this->m_Moving.m_View = this->m_MainWindowUI.movingView;
+  this->m_Moving.m_View->setScene( this->m_Moving.m_Scene );
+
   QObject::connect( this->m_MainWindowUI.blackSliderFix, SIGNAL( valueChanged( int ) ), this, SLOT( fixedBlackWhiteChanged() ) );
   QObject::connect( this->m_MainWindowUI.whiteSliderFix, SIGNAL( valueChanged( int ) ), this, SLOT( fixedBlackWhiteChanged() ) );
   
@@ -251,6 +265,19 @@ cmtk::FusionViewApplication
 
 void
 cmtk::FusionViewApplication
+::mousePressed( QGraphicsSceneMouseEvent* event )  
+{
+  this->m_CursorPosition[0] = event->pos().x();
+  this->m_CursorPosition[1] = event->pos().y();
+
+  if ( this->m_CursorDisplayed )
+    {
+    
+    }
+}
+
+void
+cmtk::FusionViewApplication
 ::changeSliceDirection( const int sliceAxis )
 {
   if ( sliceAxis != this->m_SliceAxis )
@@ -303,7 +330,7 @@ cmtk::FusionViewApplication
   const float white = this->m_Fixed.m_DataRange.m_LowerBound + this->m_Fixed.m_DataRange.Width() * this->m_MainWindowUI.whiteSliderFix->value() / 500;
 
   this->MakeImage( this->m_Fixed.m_Image, *(this->m_Fixed.m_Slice), this->m_Fixed.m_ColorTable, black, white );
-  this->UpdateView( this->m_MainWindowUI.fixedView, this->m_Fixed.m_Image );
+  this->UpdateView( this->m_Fixed, this->m_Fixed.m_Image );
 }
 
 void
@@ -336,7 +363,7 @@ cmtk::FusionViewApplication
       }
     }
 
-  this->UpdateView( this->m_MainWindowUI.movingView, this->m_FusedImage );
+  this->UpdateView( this->m_Moving, this->m_FusedImage );
 }
 
 void
@@ -377,13 +404,11 @@ cmtk::FusionViewApplication
 
 void
 cmtk::FusionViewApplication
-::UpdateView( QGraphicsView* view, const QImage& image )
+::UpdateView( Self::Data& data, QImage& image )
 {
-  QGraphicsScene* scene = new QGraphicsScene;
-  scene->addPixmap( QPixmap::fromImage( image ) );
+  data.m_PixmapItem->setPixmap( QPixmap::fromImage( image ) );
+  data.m_Scene->setSceneRect( data.m_PixmapItem->boundingRect() );
 
   QTransform zoomTransform = QTransform::fromScale( -this->m_ZoomFactor * this->m_ScalePixels[0], -this->m_ZoomFactor * this->m_ScalePixels[1] );
-  view->setTransform( zoomTransform );
-
-  view->setScene( scene );
+  data.m_View->setTransform( zoomTransform );
 }
