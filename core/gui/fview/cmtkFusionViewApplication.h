@@ -95,8 +95,14 @@ private:
   /// The fixed volume.
   UniformVolume::SmartConstPtr m_FixedVolume;
 
+  /// Data range of the fixed volume.
+  Types::DataItemRange m_FixedDataRange;
+
   /// The moving volume.
   UniformVolume::SmartConstPtr m_MovingVolume;
+
+  /// Data range of the moving volume.
+  Types::DataItemRange m_MovingDataRange;
 
   /// The list of concatenated transformations.
   XformList m_XformList;

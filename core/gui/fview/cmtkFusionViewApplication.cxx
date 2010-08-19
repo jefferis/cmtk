@@ -100,30 +100,22 @@ cmtk::FusionViewApplication
     {
     exit( 1 );
     }
+  this->m_FixedDataRange = this->m_FixedVolume->GetData()->GetRange();
 
   this->m_MovingVolume = VolumeIO::ReadOriented( imagePathMov );
   if ( ! this->m_MovingVolume )
     {
     exit( 1 );
     }
+  this->m_MovingDataRange = this->m_MovingVolume->GetData()->GetRange();
 
   this->m_MainWindowUI.setupUi( this->m_MainWindow );
   this->m_MainWindow->setWindowIcon( QtIcons::WindowIcon() );
 
-  const Types::DataItemRange rangeFix = this->m_FixedVolume->GetData()->GetRange();
-  this->m_MainWindowUI.blackSliderFix->setRange( rangeFix.m_LowerBound, rangeFix.m_UpperBound );
-  this->m_MainWindowUI.blackSliderFix->setValue( rangeFix.m_LowerBound );
   QObject::connect( this->m_MainWindowUI.blackSliderFix, SIGNAL( valueChanged( int ) ), this, SLOT( fixedBlackWhiteChanged() ) );
-  this->m_MainWindowUI.whiteSliderFix->setRange( rangeFix.m_LowerBound, rangeFix.m_UpperBound );
-  this->m_MainWindowUI.whiteSliderFix->setValue( rangeFix.m_UpperBound );
   QObject::connect( this->m_MainWindowUI.whiteSliderFix, SIGNAL( valueChanged( int ) ), this, SLOT( fixedBlackWhiteChanged() ) );
   
-  const Types::DataItemRange rangeMov = this->m_MovingVolume->GetData()->GetRange();
-  this->m_MainWindowUI.blackSliderMov->setRange( rangeMov.m_LowerBound, rangeMov.m_UpperBound );
-  this->m_MainWindowUI.blackSliderMov->setValue( rangeMov.m_LowerBound );
   QObject::connect( this->m_MainWindowUI.blackSliderMov, SIGNAL( valueChanged( int ) ), this, SLOT( movingBlackWhiteChanged() ) );
-  this->m_MainWindowUI.whiteSliderMov->setRange( rangeMov.m_LowerBound, rangeMov.m_UpperBound );
-  this->m_MainWindowUI.whiteSliderMov->setValue( rangeMov.m_UpperBound );
   QObject::connect( this->m_MainWindowUI.whiteSliderMov, SIGNAL( valueChanged( int ) ), this, SLOT( movingBlackWhiteChanged() ) );
   
   QActionGroup* zoomGroup = new QActionGroup( this->m_MainWindow );
@@ -321,7 +313,10 @@ cmtk::FusionViewApplication
     this->m_ColorTableFix[i] = QColor( i, i, i ).rgb();
     }
 
-  this->MakeImage( this->m_FixedImage, *(this->m_FixedSlice), this->m_ColorTableFix, this->m_MainWindowUI.blackSliderFix->value(), this->m_MainWindowUI.whiteSliderFix->value() );
+  const float black = this->m_FixedDataRange.m_LowerBound + this->m_FixedDataRange.Width() * this->m_MainWindowUI.blackSliderFix->value() / 500;
+  const float white = this->m_FixedDataRange.m_LowerBound + this->m_FixedDataRange.Width() * this->m_MainWindowUI.whiteSliderFix->value() / 500;
+
+  this->MakeImage( this->m_FixedImage, *(this->m_FixedSlice), this->m_ColorTableFix, black, white );
   this->UpdateView( this->m_MainWindowUI.fixedView, this->m_FixedImage );
 }
 
@@ -335,7 +330,10 @@ cmtk::FusionViewApplication
     this->m_ColorTableMov[i] = QColor( i, i, i ).rgb();
     }
 
-  this->MakeImage( this->m_MovingImage, *(this->m_MovingSlice), this->m_ColorTableMov, this->m_MainWindowUI.blackSliderMov->value(), this->m_MainWindowUI.whiteSliderMov->value() );
+  const float black = this->m_MovingDataRange.m_LowerBound + this->m_MovingDataRange.Width() * this->m_MainWindowUI.blackSliderMov->value() / 500;
+  const float white = this->m_MovingDataRange.m_LowerBound + this->m_MovingDataRange.Width() * this->m_MainWindowUI.whiteSliderMov->value() / 500;
+
+  this->MakeImage( this->m_MovingImage, *(this->m_MovingSlice), this->m_ColorTableMov, black, white );
 
   this->m_FusedImage = QImage( this->m_MovingImage.width(), this->m_MovingImage.height(), QImage::Format_RGB32 );
   for ( int y = 0; y < this->m_MovingImage.height(); ++y )
