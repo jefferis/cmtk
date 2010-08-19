@@ -95,19 +95,19 @@ cmtk::FusionViewApplication
 
   this->m_XformListAllAffine = this->m_XformList.MakeAllAffine();
 
-  this->m_FixedVolume = VolumeIO::ReadOriented( imagePathFix );
-  if ( ! this->m_FixedVolume )
+  this->m_Fixed.m_Volume = VolumeIO::ReadOriented( imagePathFix );
+  if ( ! this->m_Fixed.m_Volume )
     {
     exit( 1 );
     }
-  this->m_FixedDataRange = this->m_FixedVolume->GetData()->GetRange();
+  this->m_Fixed.m_DataRange = this->m_Fixed.m_Volume->GetData()->GetRange();
 
-  this->m_MovingVolume = VolumeIO::ReadOriented( imagePathMov );
-  if ( ! this->m_MovingVolume )
+  this->m_Moving.m_Volume = VolumeIO::ReadOriented( imagePathMov );
+  if ( ! this->m_Moving.m_Volume )
     {
     exit( 1 );
     }
-  this->m_MovingDataRange = this->m_MovingVolume->GetData()->GetRange();
+  this->m_Moving.m_DataRange = this->m_Moving.m_Volume->GetData()->GetRange();
 
   this->m_MainWindowUI.setupUi( this->m_MainWindow );
   this->m_MainWindow->setWindowIcon( QtIcons::WindowIcon() );
@@ -208,7 +208,7 @@ cmtk::FusionViewApplication
   if ( this->m_SliceIndex != slice )
     {
     this->m_SliceIndex = slice;
-    this->m_FixedSlice = this->m_FixedVolume->ExtractSlice( this->m_SliceAxis, this->m_SliceIndex );
+    this->m_Fixed.m_Slice = this->m_Fixed.m_Volume->ExtractSlice( this->m_SliceAxis, this->m_SliceIndex );
     this->UpdateFixedImage();
 
     this->UpdateMovingSlice();
@@ -272,8 +272,8 @@ cmtk::FusionViewApplication
     this->m_SliceAxis = sliceAxis;
 
     this->m_SliceIndex = -1; // unset previously set slice index to ensure update of moving slice
-    this->m_MainWindowUI.sliceSlider->setRange( 0, this->m_FixedVolume->GetDims()[this->m_SliceAxis]-1 );
-    this->setFixedSlice( this->m_FixedVolume->GetDims()[this->m_SliceAxis] / 2 ); 
+    this->m_MainWindowUI.sliceSlider->setRange( 0, this->m_Fixed.m_Volume->GetDims()[this->m_SliceAxis]-1 );
+    this->setFixedSlice( this->m_Fixed.m_Volume->GetDims()[this->m_SliceAxis] / 2 ); 
     this->m_MainWindowUI.sliceSlider->setValue( this->m_SliceIndex );
 
     this->UpdateMovingSlice();
@@ -291,15 +291,15 @@ cmtk::FusionViewApplication
 ::UpdateMovingSlice()
 {
   ReformatVolume::Plain plain( TYPE_FLOAT );
-  UniformVolumeInterpolatorBase::SmartPtr interpolator ( ReformatVolume::CreateInterpolator( this->m_Interpolator, this->m_MovingVolume ) );
+  UniformVolumeInterpolatorBase::SmartPtr interpolator ( ReformatVolume::CreateInterpolator( this->m_Interpolator, this->m_Moving.m_Volume ) );
   
   const XformList noXforms;
-  TypedArray::SmartPtr reformatData( ReformatVolume::ReformatUnmasked( this->m_FixedSlice, this->m_AffineOnly ? this->m_XformListAllAffine :  this->m_XformList, noXforms, plain, this->m_MovingVolume, interpolator ) );
+  TypedArray::SmartPtr reformatData( ReformatVolume::ReformatUnmasked( this->m_Fixed.m_Slice, this->m_AffineOnly ? this->m_XformListAllAffine :  this->m_XformList, noXforms, plain, this->m_Moving.m_Volume, interpolator ) );
   
-  UniformVolume::SmartPtr movingSlice = this->m_FixedSlice->CloneGrid();
+  UniformVolume::SmartPtr movingSlice = this->m_Fixed.m_Slice->CloneGrid();
   movingSlice->SetData( reformatData );
   
-  this->m_MovingSlice = movingSlice;
+  this->m_Moving.m_Slice = movingSlice;
   this->UpdateMovingImage();
 }
 
@@ -307,41 +307,41 @@ void
 cmtk::FusionViewApplication
 ::UpdateFixedImage()
 {
-  this->m_ColorTableFix.resize( 256 );
+  this->m_Fixed.m_ColorTable.resize( 256 );
   for ( int i = 0; i < 256; ++i )
     {
-    this->m_ColorTableFix[i] = QColor( i, i, i ).rgb();
+    this->m_Fixed.m_ColorTable[i] = QColor( i, i, i ).rgb();
     }
 
-  const float black = this->m_FixedDataRange.m_LowerBound + this->m_FixedDataRange.Width() * this->m_MainWindowUI.blackSliderFix->value() / 500;
-  const float white = this->m_FixedDataRange.m_LowerBound + this->m_FixedDataRange.Width() * this->m_MainWindowUI.whiteSliderFix->value() / 500;
+  const float black = this->m_Fixed.m_DataRange.m_LowerBound + this->m_Fixed.m_DataRange.Width() * this->m_MainWindowUI.blackSliderFix->value() / 500;
+  const float white = this->m_Fixed.m_DataRange.m_LowerBound + this->m_Fixed.m_DataRange.Width() * this->m_MainWindowUI.whiteSliderFix->value() / 500;
 
-  this->MakeImage( this->m_FixedImage, *(this->m_FixedSlice), this->m_ColorTableFix, black, white );
-  this->UpdateView( this->m_MainWindowUI.fixedView, this->m_FixedImage );
+  this->MakeImage( this->m_Fixed.m_Image, *(this->m_Fixed.m_Slice), this->m_Fixed.m_ColorTable, black, white );
+  this->UpdateView( this->m_MainWindowUI.fixedView, this->m_Fixed.m_Image );
 }
 
 void
 cmtk::FusionViewApplication
 ::UpdateMovingImage()
 {
-  this->m_ColorTableMov.resize( 256 );
+  this->m_Moving.m_ColorTable.resize( 256 );
   for ( int i = 0; i < 256; ++i )
     {
-    this->m_ColorTableMov[i] = QColor( i, i, i ).rgb();
+    this->m_Moving.m_ColorTable[i] = QColor( i, i, i ).rgb();
     }
 
-  const float black = this->m_MovingDataRange.m_LowerBound + this->m_MovingDataRange.Width() * this->m_MainWindowUI.blackSliderMov->value() / 500;
-  const float white = this->m_MovingDataRange.m_LowerBound + this->m_MovingDataRange.Width() * this->m_MainWindowUI.whiteSliderMov->value() / 500;
+  const float black = this->m_Moving.m_DataRange.m_LowerBound + this->m_Moving.m_DataRange.Width() * this->m_MainWindowUI.blackSliderMov->value() / 500;
+  const float white = this->m_Moving.m_DataRange.m_LowerBound + this->m_Moving.m_DataRange.Width() * this->m_MainWindowUI.whiteSliderMov->value() / 500;
 
-  this->MakeImage( this->m_MovingImage, *(this->m_MovingSlice), this->m_ColorTableMov, black, white );
+  this->MakeImage( this->m_Moving.m_Image, *(this->m_Moving.m_Slice), this->m_Moving.m_ColorTable, black, white );
 
-  this->m_FusedImage = QImage( this->m_MovingImage.width(), this->m_MovingImage.height(), QImage::Format_RGB32 );
-  for ( int y = 0; y < this->m_MovingImage.height(); ++y )
+  this->m_FusedImage = QImage( this->m_Moving.m_Image.width(), this->m_Moving.m_Image.height(), QImage::Format_RGB32 );
+  for ( int y = 0; y < this->m_Moving.m_Image.height(); ++y )
     {
-    for ( int x = 0; x < this->m_MovingImage.width(); ++x )
+    for ( int x = 0; x < this->m_Moving.m_Image.width(); ++x )
       {
-      QColor rgbMov( this->m_MovingImage.pixel( x, y ) );
-      const QColor rgbFix( this->m_FixedImage.pixel( x, y ) );
+      QColor rgbMov( this->m_Moving.m_Image.pixel( x, y ) );
+      const QColor rgbFix( this->m_Fixed.m_Image.pixel( x, y ) );
 
       rgbMov = QColor( this->m_Transparency * rgbMov.red() + (1.0-this->m_Transparency) * rgbFix.red(),
 		       this->m_Transparency * rgbMov.green() + (1.0-this->m_Transparency) * rgbFix.green(),

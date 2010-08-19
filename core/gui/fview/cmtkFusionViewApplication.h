@@ -51,6 +51,9 @@ class FusionViewApplication : public QApplication
   Q_OBJECT
 
 public:
+  /// This class.
+  typedef FusionViewApplication Self;
+
   /// Constructor.
   FusionViewApplication( int argc, char* argv[] );
 
@@ -92,17 +95,31 @@ private:
   /// Designed-generated User Interface for the main window.
   Ui::fviewMainWindow m_MainWindowUI;
 
-  /// The fixed volume.
-  UniformVolume::SmartConstPtr m_FixedVolume;
+  /// Class to bundle fixed and moving image objects.
+  class Data
+  {
+  public:
+    /// The volume.
+    UniformVolume::SmartConstPtr m_Volume;
 
-  /// Data range of the fixed volume.
-  Types::DataItemRange m_FixedDataRange;
+    /// Data range.
+    Types::DataItemRange m_DataRange;
 
-  /// The moving volume.
-  UniformVolume::SmartConstPtr m_MovingVolume;
+    /// Data for the current image slice.
+    UniformVolume::SmartConstPtr m_Slice;
 
-  /// Data range of the moving volume.
-  Types::DataItemRange m_MovingDataRange;
+    /// Color table.
+    QVector<QRgb> m_ColorTable;
+
+    /// QImage for the current slice.
+    QImage m_Image;    
+  };
+
+  /// The fixed volume data.
+  Self::Data m_Fixed;
+
+  /// The fixed volume data.
+  Self::Data m_Moving;
 
   /// The list of concatenated transformations.
   XformList m_XformList;
@@ -124,24 +141,6 @@ private:
 
   /// Interpolator for the moving image.
   Interpolators::InterpolationEnum m_Interpolator;
-
-  /// Data for the current fixed image slice.
-  UniformVolume::SmartConstPtr m_FixedSlice;
-
-  /// Data for the current moving image slice.
-  UniformVolume::SmartConstPtr m_MovingSlice;
-
-  /// Color table for fixed image.
-  QVector<QRgb> m_ColorTableFix;
-
-  /// Color table for moving image.
-  QVector<QRgb> m_ColorTableMov;
-
-  /// QImage for the current fixed slice.
-  QImage m_FixedImage;
-
-  /// QImage for the current moving slice.
-  QImage m_MovingImage;
 
   /// QImage for the current fused slice.
   QImage m_FusedImage;
