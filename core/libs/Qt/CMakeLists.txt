@@ -45,6 +45,7 @@ SET(cmtkQt_SRCS
 )
 
 SET(cmtkQt_MOC_SRCS
+  cmtkQGraphicsPixmapItemEvents.h
   cmtkQtImageOperators.h
   cmtkQtRenderImageRGB.h
   cmtkQtScrollRenderView.h
