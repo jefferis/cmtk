@@ -1,5 +1,7 @@
 Release CMTK-1.4.2:
 
+(r2268) Fixed: various compile errors when compiling Qt support classes using
+    Sun/Oracle compiler.
 (r2261) Refactored: new "XformListIO" class provides a static member function
     that assembles lists of transformations with optional inversions from
     string vectors as supplied by the command line parse. This new class is
