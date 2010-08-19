@@ -47,6 +47,7 @@
 #include <QtGui/QGraphicsView>
 #include <QtGui/QGraphicsScene>
 #include <QtGui/QGraphicsSceneMouseEvent>
+#include <QtGui/QGraphicsLineItem>
 
 namespace
 cmtk
@@ -132,6 +133,9 @@ private:
 
     /// The pixmap graphics item with mouse events.
     QGraphicsPixmapItemEvents* m_PixmapItem;
+
+    /// The line items for the cross cursor.
+    QGraphicsLineItem* m_CursorLines[2];
   };
 
   /// The fixed volume data.
@@ -139,6 +143,9 @@ private:
 
   /// The fixed volume data.
   Self::Data m_Moving;
+
+  /// Initialize the view data for the given volume (fixed or moving).
+  void InitViewData( Self::Data& data, /*!< Bundled data for given volume.*/ QGraphicsView* view /*!< The view we want to attach this volume to.*/ );
 
   /// The list of concatenated transformations.
   XformList m_XformList;

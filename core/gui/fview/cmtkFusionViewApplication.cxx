@@ -55,7 +55,7 @@ cmtk::FusionViewApplication
     m_Interpolator( Interpolators::LINEAR ),
     m_ZoomFactor( 1.0 ),
     m_Transparency( 1.0 ),
-    m_CursorDisplayed( false )
+    m_CursorDisplayed( true )
 {
   CommandLine cl;
   cl.SetProgramInfo( CommandLine::PRG_TITLE, "Fusion viewer." );
@@ -87,6 +87,8 @@ cmtk::FusionViewApplication
     exit( 1 );
     }
   this->m_Fixed.m_DataRange = this->m_Fixed.m_Volume->GetData()->GetRange();
+  this->m_CursorPosition[0] = this->m_Fixed.m_Volume->GetDims()[0] / 2;
+  this->m_CursorPosition[1] = this->m_Fixed.m_Volume->GetDims()[1] / 2;
 
   this->m_Moving.m_Volume = VolumeIO::ReadOriented( imagePathMov );
   if ( ! this->m_Moving.m_Volume )
@@ -98,19 +100,8 @@ cmtk::FusionViewApplication
   this->m_MainWindowUI.setupUi( this->m_MainWindow );
   this->m_MainWindow->setWindowIcon( QtIcons::WindowIcon() );
 
-  this->m_Fixed.m_Scene = new QGraphicsScene;
-  this->m_Fixed.m_PixmapItem = new QGraphicsPixmapItemEvents;
-  this->m_Fixed.m_Scene->addItem( this->m_Fixed.m_PixmapItem );
-  QObject::connect( this->m_Fixed.m_PixmapItem, SIGNAL( mousePressed( QGraphicsSceneMouseEvent* ) ), this, SLOT( mousePressed( QGraphicsSceneMouseEvent* ) ) );
-  this->m_Fixed.m_View = this->m_MainWindowUI.fixedView;
-  this->m_Fixed.m_View->setScene( this->m_Fixed.m_Scene );
-
-  this->m_Moving.m_Scene = new QGraphicsScene;
-  this->m_Moving.m_PixmapItem = new QGraphicsPixmapItemEvents;
-  this->m_Moving.m_Scene->addItem( this->m_Moving.m_PixmapItem );
-  QObject::connect( this->m_Moving.m_PixmapItem, SIGNAL( mousePressed( QGraphicsSceneMouseEvent* ) ), this, SLOT( mousePressed( QGraphicsSceneMouseEvent* ) ) );
-  this->m_Moving.m_View = this->m_MainWindowUI.movingView;
-  this->m_Moving.m_View->setScene( this->m_Moving.m_Scene );
+  this->InitViewData( this->m_Fixed, this->m_MainWindowUI.fixedView );
+  this->InitViewData( this->m_Moving, this->m_MainWindowUI.movingView );
 
   QObject::connect( this->m_MainWindowUI.blackSliderFix, SIGNAL( valueChanged( int ) ), this, SLOT( fixedBlackWhiteChanged() ) );
   QObject::connect( this->m_MainWindowUI.whiteSliderFix, SIGNAL( valueChanged( int ) ), this, SLOT( fixedBlackWhiteChanged() ) );
@@ -188,6 +179,25 @@ cmtk::FusionViewApplication
 
 void
 cmtk::FusionViewApplication
+::InitViewData( Self::Data& data, QGraphicsView* view )
+{
+  const QPen redPen( QColor( 255, 0, 0 ) );
+
+  data.m_Scene = new QGraphicsScene;
+  (data.m_CursorLines[0] = data.m_Scene->addLine( 0, 0, 0, 0, redPen ))->setZValue( 100 );
+  (data.m_CursorLines[1] = data.m_Scene->addLine( 0, 0, 0, 0, redPen ))->setZValue( 100 );
+  (data.m_PixmapItem = new QGraphicsPixmapItemEvents)->setZValue( 0 );
+  data.m_Scene->addItem( data.m_PixmapItem );
+
+  QObject::connect( data.m_PixmapItem, SIGNAL( mousePressed( QGraphicsSceneMouseEvent* ) ), this, SLOT( mousePressed( QGraphicsSceneMouseEvent* ) ) );
+
+  data.m_View = view;
+  data.m_View->setScene( data.m_Scene );
+}
+
+
+void
+cmtk::FusionViewApplication
 ::setTransparency( int slice )
 {
   this->m_Transparency = static_cast<float>( slice ) / 1000;
@@ -199,6 +209,12 @@ cmtk::FusionViewApplication
 ::setLinkedCursorFlag( bool flag )
 {
   this->m_CursorDisplayed = flag;
+
+  for ( int i = 0; i < 2; ++i )
+    {
+    this->m_Fixed.m_CursorLines[i]->setVisible( this->m_CursorDisplayed );
+    this->m_Moving.m_CursorLines[i]->setVisible( this->m_CursorDisplayed );
+    }
 }
 
 void
@@ -272,7 +288,8 @@ cmtk::FusionViewApplication
 
   if ( this->m_CursorDisplayed )
     {
-    
+    this->UpdateView( this->m_Fixed, this->m_Fixed.m_Image );
+    this->UpdateView( this->m_Moving, this->m_FusedImage );
     }
 }
 
@@ -407,7 +424,15 @@ cmtk::FusionViewApplication
 ::UpdateView( Self::Data& data, QImage& image )
 {
   data.m_PixmapItem->setPixmap( QPixmap::fromImage( image ) );
-  data.m_Scene->setSceneRect( data.m_PixmapItem->boundingRect() );
+
+  const QRectF bb = data.m_PixmapItem->boundingRect();
+  data.m_Scene->setSceneRect( bb );
+
+  if ( this->m_CursorDisplayed )
+    {
+    data.m_CursorLines[0]->setLine( this->m_CursorPosition[0], bb.top(), this->m_CursorPosition[0], bb.bottom() );
+    data.m_CursorLines[1]->setLine( bb.left(), this->m_CursorPosition[1], bb.right(), this->m_CursorPosition[1] );
+    }
 
   QTransform zoomTransform = QTransform::fromScale( -this->m_ZoomFactor * this->m_ScalePixels[0], -this->m_ZoomFactor * this->m_ScalePixels[1] );
   data.m_View->setTransform( zoomTransform );
