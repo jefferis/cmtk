@@ -60,6 +60,7 @@ SET(cmtkIO_SRCS
   cmtkVolumeFromSlices.cxx
   cmtkVolumeIO.cxx
   cmtkXformIO.cxx
+  cmtkXformListIO.cxx
   cmtkXformIONrrd.cxx
 )
 

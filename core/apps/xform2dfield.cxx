@@ -41,17 +41,23 @@
 #include <Base/cmtkXformList.h>
 
 #include <IO/cmtkXformIO.h>
+#include <IO/cmtkXformListIO.h>
 #include <IO/cmtkClassStream.h>
 #include <IO/cmtkClassStreamAffineXform.h>
 #include <IO/cmtkVolumeIO.h>
 
 #include <stdio.h>
 
+#include <vector>
+#include <string>
+
 bool Verbose = false;
 bool Mask = false;
 
 const char* RefFileName = NULL;
 const char *OutFileName = NULL;
+
+std::vector<std::string> InputXformPaths;
 
 const char* Downsample = NULL;
 
@@ -61,14 +67,12 @@ int
 main ( const int argc, const char *argv[] ) 
 {
   cmtk::UniformVolume::SmartPtr volume;
-  cmtk::XformList xformList;
 
   try
     {
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Transformation to Deformation Field" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Convert parametric rigid or nonrigid transformation to deformation field, sampled at pixel locations of a given refernece image" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] outFile referenceImage [-i|--inverse] inList0 [[-i|--inverse] inList1 ...]" );
     
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
@@ -76,25 +80,12 @@ main ( const int argc, const char *argv[] )
 
     cl.AddOption( Key( "inversion-tolerance-factor" ), &InversionToleranceFactor, "Factor for numerical tolerance of B-spline inversion [multiples of minimum grid pixel size; default=0.1]" );
     cl.AddOption( Key( "downsample" ), &Downsample, "Downsample grid by factors 'x,y,z' or by single factor 'xyz'" );
+
+    cl.AddParameter( &OutFileName, "OutputPath", "Path for the output deformation field." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddParameter( &RefFileName, "ReferenceImage", "Input reference grid path. The dimensions and pixel size of this image determine the geometry of the output." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameterVector( &InputXformPaths, "XformList", "List of concatenated transformations. Insert '--inverse' to use the inverse of the transformation listed next." )->SetProperties( cmtk::CommandLine::PROPS_XFORM );  
  
     cl.Parse( argc, argv );
-
-    OutFileName = cl.GetNext();
-    RefFileName = cl.GetNext();
-    const char* next = cl.GetNextOptional();
-    while (next)
-      {
-      bool inverse = false;
-      if ( !strcmp( next, "-i" ) || !strcmp( next, "--inverse" ) )
-	{
-	inverse = true;
-	next = cl.GetNext();
-	}
-
-      cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( next, Verbose ) );
-      xformList.Add( xform, inverse );
-      next = cl.GetNextOptional();
-      }
     }
   catch ( const cmtk::CommandLine::Exception& e )
     {
@@ -112,6 +103,7 @@ main ( const int argc, const char *argv[] )
     exit(1);
     }          
 
+  cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( InputXformPaths );
   xformList.SetEpsilon( InversionToleranceFactor * volume->GetMinDelta() );
   
   if ( Downsample )

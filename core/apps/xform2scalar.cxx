@@ -42,7 +42,7 @@
 #include <Base/cmtkXformList.h>
 
 #include <IO/cmtkVolumeIO.h>
-#include <IO/cmtkXformIO.h>
+#include <IO/cmtkXformListIO.h>
 
 bool Verbose = false;
 
@@ -109,8 +109,8 @@ main ( const int argc, const char* argv[] )
     cl.AddOption( Key( 'o', "output" ), &OutImagePath, "Output path for image with extracted scalar data." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     
     cl.AddParameter( &InputGridPath, "InputImage", "Input grid path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameterVector( &InputXformPaths, "InputTransformation", "Input transformation paths. Use '--inverse' prefix to invert the following transformation." );
-
+    cl.AddParameterVector( &InputXformPaths, "XformList", "List of concatenated transformations. Insert '--inverse' to use the inverse of the transformation listed next." )->SetProperties( cmtk::CommandLine::PROPS_XFORM );  
+    
     cl.Parse( argc, argv );
     }
   catch ( const cmtk::CommandLine::Exception& e )
@@ -127,44 +127,8 @@ main ( const int argc, const char* argv[] )
     }
   scalarImage->CreateDataArray( DataType );
 
-  cmtk::XformList xformList;
-  cmtk::XformList xformListAffine;
-
-  for ( size_t i = 0; i < InputXformPaths.size(); ++i )
-    {
-    bool inverse = false;
-    if ( InputXformPaths[i] == std::string( "--inverse" ) )
-      {
-      inverse = true;
-      ++i;
-
-      if ( i >= InputXformPaths.size() )
-	{
-	cmtk::StdErr << "ERROR: '--inverse' cannot be the last command line argument\n";
-	exit(1);
-	}
-      }
-
-    cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( InputXformPaths[i].c_str(), Verbose ) );
-    if ( ! xform ) 
-      {
-      cmtk::StdErr << "Could not read transformation from file " << InputXformPaths[i] << "\n";
-      exit(1);
-      }
-
-    xformList.Add( xform, inverse );
-
-    const cmtk::SplineWarpXform* splineWarp = cmtk::SplineWarpXform::SmartPtr ::DynamicCastFrom( xform );  
-    if ( splineWarp )
-      {
-	  const cmtk::Xform::SmartPtr affine( cmtk::Xform::SmartPtr::DynamicCastFrom( splineWarp->GetInitialAffineXform() ) );
-      xformListAffine.Add( affine );
-      }
-    else
-      {
-      xformListAffine.Add( xform );
-      }
-    }  
+  cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( InputXformPaths );
+  cmtk::XformList xformListAffine = xformList.MakeAllAffine();
   
   const cmtk::DataGrid::IndexType& dims = scalarImage->GetDims();
 #pragma omp parallel for

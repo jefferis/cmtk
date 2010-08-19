@@ -33,7 +33,7 @@
 #include <System/cmtkCommandLine.h>
 
 #include <IO/cmtkVolumeIO.h>
-#include <IO/cmtkXformIO.h>
+#include <IO/cmtkXformListIO.h>
 
 #include <Qt/cmtkQtIcons.h>
 
@@ -72,34 +72,13 @@ cmtk::FusionViewApplication
   try
     {
     cl.Parse( argc, const_cast<const char**>( argv ) );
-
-    for ( std::vector<std::string>::const_iterator it = xformList.begin(); it != xformList.end(); ++it )
-      {
-      const bool inverse = (*it == "-i" ) || (*it == "--inverse" );
-      if ( inverse ) 
-	{
-	++it;
-	if ( it == xformList.end() )
-	  {
-	  cmtk::StdErr << "ERROR: '--inverse' / '-i' must be followed by at least one more transformation\n";
-	  }
-	}
-
-      Xform::SmartPtr xform( XformIO::Read( it->c_str() ) );
-      if ( ! xform ) 
-	{
-	cmtk::StdErr << "ERROR: could not read target-to-reference transformation from " << *it << "\n";
-	exit( 1 );
-	}
-      
-      this->m_XformList.Add( xform, inverse );
-      }
     }
   catch ( const CommandLine::Exception& ex )
     {
     throw(ex);
     }
 
+  this->m_XformList = XformListIO::MakeFromStringList( xformList );
   this->m_XformListAllAffine = this->m_XformList.MakeAllAffine();
 
   this->m_Fixed.m_Volume = VolumeIO::ReadOriented( imagePathFix );
