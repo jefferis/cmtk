@@ -40,6 +40,7 @@
 
 #include "Base/cmtkTypedArrayFunctionHistogramEqualization.h"
 #include "Base/cmtkDataGridFilter.h"
+#include "Base/cmtkMathFunctionWrappers.h"
 
 namespace
 cmtk
@@ -133,7 +134,7 @@ QtImageOperators::slotOperatorAbs()
 {
   if ( this->StudyDataValid() ) 
     {
-    (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunctionDouble( fabs );
+    (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Abs );
     emit dataChanged( *(this->CurrentStudy) );
     }
 }
@@ -143,7 +144,7 @@ QtImageOperators::slotOperatorLog()
 {
   if ( this->StudyDataValid() ) 
     {
-    (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunctionDouble( log );
+    (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Log );
     emit dataChanged( *(this->CurrentStudy) );
     }
 }
@@ -153,7 +154,7 @@ QtImageOperators::slotOperatorExp()
 {
   if ( this->StudyDataValid() ) 
     {
-    (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunctionDouble( exp );
+    (*(this->CurrentStudy))->GetVolume()->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Exp );
     emit dataChanged( *(this->CurrentStudy) );
     }
 }
