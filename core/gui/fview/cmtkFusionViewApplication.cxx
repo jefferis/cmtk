@@ -42,6 +42,9 @@
 #include <QtGui/QImage>
 #include <QtGui/QScrollBar>
 
+#include <vector>
+#include <string>
+
 cmtk::FusionViewApplication
 ::FusionViewApplication( int argc, char* argv[] ) 
   : QApplication( argc, argv ),
@@ -63,29 +66,33 @@ cmtk::FusionViewApplication
   const char* imagePathMov;
   cl.AddParameter( &imagePathMov, "MovingImage", "Moving image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
 
+  std::vector<std::string> xformList;
+  cl.AddParameterVector( &xformList, "XformList", "List of concatenated transformations. Insert '--inverse' to use the inverse of the transformation listed next." )->SetProperties( cmtk::CommandLine::PROPS_XFORM );  
+  
   try
     {
     cl.Parse( argc, const_cast<const char**>( argv ) );
 
-    const char* next = cl.GetNextOptional();
-    while ( next ) 
+    for ( std::vector<std::string>::const_iterator it = xformList.begin(); it != xformList.end(); ++it )
       {
-      if ( ! strcmp( next, "-j" ) || ! strcmp( next, "--jacobian" ) )
-	break;
-      
-      const bool inverse = ! strcmp( next, "-i" ) || ! strcmp( next, "--inverse" );
+      const bool inverse = (*it == "-i" ) || (*it == "--inverse" );
       if ( inverse ) 
-	next = cl.GetNext();
-      
-      Xform::SmartPtr xform( XformIO::Read( next ) );
+	{
+	++it;
+	if ( it == xformList.end() )
+	  {
+	  cmtk::StdErr << "ERROR: '--inverse' / '-i' must be followed by at least one more transformation\n";
+	  }
+	}
+
+      Xform::SmartPtr xform( XformIO::Read( it->c_str() ) );
       if ( ! xform ) 
 	{
-	cmtk::StdErr << "ERROR: could not read target-to-reference transformation from " << next << "\n";
+	cmtk::StdErr << "ERROR: could not read target-to-reference transformation from " << *it << "\n";
 	exit( 1 );
 	}
       
       this->m_XformList.Add( xform, inverse );
-      next = cl.GetNextOptional();
       }
     }
   catch ( const CommandLine::Exception& ex )
