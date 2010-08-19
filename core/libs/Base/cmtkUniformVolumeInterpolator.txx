@@ -30,6 +30,10 @@
 //
 */
 
+#ifdef HAVE_IEEEFP_H
+#  include <ieeefp.h>
+#endif
+
 namespace
 cmtk
 {
