@@ -464,6 +464,22 @@ cmtk::FusionViewApplication
 	data.m_ColorTable[i] = QColor( i, 0, i ).rgb();
 	}
       break;
+    case 7: // blue to red
+      for ( int i = 0; i < 256; ++i )
+	{
+	QColor color;
+	color.setHsv( 255-i, 255, 255 );
+	data.m_ColorTable[i] = color.rgb();
+	}
+      break;
+    case 8: // red to blue
+      for ( int i = 0; i < 256; ++i )
+	{
+	QColor color;
+	color.setHsv( i, 255, 255 );
+	data.m_ColorTable[i] = color.rgb();
+	}
+      break;
     }
 }
 
