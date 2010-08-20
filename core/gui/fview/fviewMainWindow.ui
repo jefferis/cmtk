@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,1,0,0,0,0" columnstretch="1,1">
+     <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,1,0,0,0" columnstretch="1,1">
       <property name="sizeConstraint">
        <enum>QLayout::SetMaximumSize</enum>
       </property>
@@ -212,7 +212,7 @@
      <height>23</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_File">
+   <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>&amp;File</string>
     </property>
@@ -222,15 +222,7 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="menuSlice_Orientation">
-     <property name="title">
-      <string>Slice &amp;Orientation</string>
-     </property>
-     <addaction name="actionSliceAxial_XY"/>
-     <addaction name="actionSliceCoronal_XZ"/>
-     <addaction name="actionSliceSagittal_YZ"/>
-    </widget>
-    <widget class="QMenu" name="menu_Zoom">
+    <widget class="QMenu" name="menuZoom">
      <property name="title">
       <string>&amp;Zoom</string>
      </property>
@@ -243,6 +235,73 @@
      <addaction name="actionZoom300"/>
      <addaction name="actionZoom400"/>
     </widget>
+    <widget class="QMenu" name="menuAnnotations">
+     <property name="title">
+      <string>&amp;Annotations</string>
+     </property>
+     <addaction name="actionLinkedCursor"/>
+    </widget>
+    <widget class="QMenu" name="menuFixed_Image_Color_Map">
+     <property name="title">
+      <string>&amp;Fixed Image Color Map</string>
+     </property>
+     <addaction name="actionFixedGrey"/>
+     <addaction name="separator"/>
+     <addaction name="actionFixedRed"/>
+     <addaction name="actionFixedGreen"/>
+     <addaction name="actionFixedBlue"/>
+     <addaction name="separator"/>
+     <addaction name="actionFixedCyan"/>
+     <addaction name="actionFixedYellow"/>
+     <addaction name="actionFixedMagenta"/>
+     <addaction name="separator"/>
+     <addaction name="actionFixedBlueRed"/>
+     <addaction name="actionFixedRedBlue"/>
+     <addaction name="actionFixedLabels"/>
+    </widget>
+    <widget class="QMenu" name="menuMoving_Image_Color_Map">
+     <property name="title">
+      <string>&amp;Moving Image Color Map</string>
+     </property>
+     <addaction name="actionMovingGrey"/>
+     <addaction name="separator"/>
+     <addaction name="actionMovingRed"/>
+     <addaction name="actionMovingGreen"/>
+     <addaction name="actionMovingBlue"/>
+     <addaction name="separator"/>
+     <addaction name="actionMovingCyan"/>
+     <addaction name="actionMovingYellow"/>
+     <addaction name="actionMovingMagenta"/>
+     <addaction name="separator"/>
+     <addaction name="actionMovingBlueRed"/>
+     <addaction name="actionMovingRedBlue"/>
+     <addaction name="actionMovingLabels"/>
+    </widget>
+    <addaction name="menuZoom"/>
+    <addaction name="separator"/>
+    <addaction name="menuAnnotations"/>
+    <addaction name="separator"/>
+    <addaction name="menuFixed_Image_Color_Map"/>
+    <addaction name="menuMoving_Image_Color_Map"/>
+   </widget>
+   <widget class="QMenu" name="menuTransform">
+    <property name="title">
+     <string>&amp;Transform</string>
+    </property>
+    <addaction name="actionAffineOnly"/>
+   </widget>
+   <widget class="QMenu" name="menuSlice">
+    <property name="title">
+     <string>&amp;Slice</string>
+    </property>
+    <widget class="QMenu" name="menuSlice_Orientation">
+     <property name="title">
+      <string>Slice &amp;Orientation</string>
+     </property>
+     <addaction name="actionSliceAxial_XY"/>
+     <addaction name="actionSliceCoronal_XZ"/>
+     <addaction name="actionSliceSagittal_YZ"/>
+    </widget>
     <widget class="QMenu" name="menuInterpolation">
      <property name="title">
       <string>Interpolation</string>
@@ -254,28 +313,26 @@
      <addaction name="actionInterpNearestNeighbour"/>
      <addaction name="actionInterpPartialVolume"/>
     </widget>
-    <widget class="QMenu" name="menuAnnotations">
-     <property name="title">
-      <string>&amp;Annotations</string>
-     </property>
-     <addaction name="actionLinkedCursor"/>
-    </widget>
-    <addaction name="menu_Zoom"/>
-    <addaction name="separator"/>
-    <addaction name="menuInterpolation"/>
     <addaction name="menuSlice_Orientation"/>
-    <addaction name="separator"/>
-    <addaction name="menuAnnotations"/>
+    <addaction name="menuInterpolation"/>
    </widget>
-   <widget class="QMenu" name="menuTransform">
-    <property name="title">
-     <string>&amp;Transform</string>
+   <widget class="QMenu" name="menuHelp">
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
     </property>
-    <addaction name="actionAffineOnly"/>
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>false</bool>
+    </property>
+    <addaction name="actionAbout"/>
    </widget>
-   <addaction name="menu_File"/>
+   <addaction name="menuFile"/>
    <addaction name="menuView"/>
+   <addaction name="menuSlice"/>
    <addaction name="menuTransform"/>
+   <addaction name="menuHelp"/>
   </widget>
   <action name="action_Quit">
    <property name="text">
@@ -470,6 +527,182 @@
    </property>
    <property name="shortcut">
     <string>Alt+A</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About...</string>
+   </property>
+  </action>
+  <action name="actionMoving_Image_Color_Map">
+   <property name="text">
+    <string>&amp;Moving Image Color Map</string>
+   </property>
+  </action>
+  <action name="actionFixedGrey">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Black/&amp;White</string>
+   </property>
+  </action>
+  <action name="actionFixedRed">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Red</string>
+   </property>
+  </action>
+  <action name="actionFixedGreen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Green</string>
+   </property>
+  </action>
+  <action name="actionFixedBlue">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Blue</string>
+   </property>
+  </action>
+  <action name="actionFixedCyan">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Cyan</string>
+   </property>
+  </action>
+  <action name="actionFixedYellow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Yellow</string>
+   </property>
+  </action>
+  <action name="actionFixedMagenta">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Magenta</string>
+   </property>
+  </action>
+  <action name="actionFixedBlueRed">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Blue to Red</string>
+   </property>
+  </action>
+  <action name="actionFixedRedBlue">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Red to Blue</string>
+   </property>
+  </action>
+  <action name="actionFixedLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Labels</string>
+   </property>
+  </action>
+  <action name="actionMovingGrey">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Black / &amp;White</string>
+   </property>
+  </action>
+  <action name="actionMovingRed">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Red</string>
+   </property>
+  </action>
+  <action name="actionMovingGreen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Green</string>
+   </property>
+  </action>
+  <action name="actionMovingBlue">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Blue</string>
+   </property>
+  </action>
+  <action name="actionMovingCyan">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Cyan</string>
+   </property>
+  </action>
+  <action name="actionMovingYellow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Yellow</string>
+   </property>
+  </action>
+  <action name="actionMovingMagenta">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Magenta</string>
+   </property>
+  </action>
+  <action name="actionMovingBlueRed">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Blue to Red</string>
+   </property>
+  </action>
+  <action name="actionMovingRedBlue">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Red to Blue</string>
+   </property>
+  </action>
+  <action name="actionMovingLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Labels</string>
    </property>
   </action>
  </widget>

@@ -119,6 +119,9 @@ private:
     /// Data for the current image slice.
     UniformVolume::SmartConstPtr m_Slice;
 
+    /// Color map index: this selects one of the predefined color maps.
+    int m_ColorMapIndex;
+
     /// Color table.
     QVector<QRgb> m_ColorTable;
 
@@ -194,6 +197,9 @@ private:
 
   /// Update displayed moving image slice.
   void UpdateMovingImage();
+
+  /// Make a color table based on the color map index.
+  void MakeColorTable( Self::Data& data );
 
   /// Make a QImage from slice data and color table.
   void MakeImage( QImage& image, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel );

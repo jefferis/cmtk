@@ -130,7 +130,33 @@ cmtk::FusionViewApplication
   zoomGroup->addAction( this->m_MainWindowUI.actionZoom400 );
 
   QObject::connect( zoomGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( changeZoom( QAction* ) ) );
-  
+
+  QActionGroup* fixedColorGroup = new QActionGroup( this->m_MainWindow );
+  fixedColorGroup->setExclusive( true );
+  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedGrey );
+  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedRed );
+  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedGreen );
+  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedBlue );
+  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedCyan );
+  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedYellow );
+  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedMagenta );
+  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedBlueRed );
+  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedRedBlue );
+  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedLabels );
+
+  QActionGroup* movingColorGroup = new QActionGroup( this->m_MainWindow );
+  movingColorGroup->setExclusive( true );
+  movingColorGroup->addAction( this->m_MainWindowUI.actionMovingGrey );
+  movingColorGroup->addAction( this->m_MainWindowUI.actionMovingRed );
+  movingColorGroup->addAction( this->m_MainWindowUI.actionMovingGreen );
+  movingColorGroup->addAction( this->m_MainWindowUI.actionMovingBlue );
+  movingColorGroup->addAction( this->m_MainWindowUI.actionMovingCyan );
+  movingColorGroup->addAction( this->m_MainWindowUI.actionMovingYellow );
+  movingColorGroup->addAction( this->m_MainWindowUI.actionMovingMagenta );
+  movingColorGroup->addAction( this->m_MainWindowUI.actionMovingBlueRed );
+  movingColorGroup->addAction( this->m_MainWindowUI.actionMovingRedBlue );
+  movingColorGroup->addAction( this->m_MainWindowUI.actionMovingLabels );
+
   QActionGroup* sliceGroup = new QActionGroup( this->m_MainWindow );
   sliceGroup->setExclusive( true );
   sliceGroup->addAction( this->m_MainWindowUI.actionSliceAxial_XY );
@@ -186,6 +212,8 @@ void
 cmtk::FusionViewApplication
 ::InitViewData( Self::Data& data, QGraphicsView* view )
 {
+  data.m_ColorMapIndex = 0;
+
   const QPen redPen( QColor( 255, 0, 0 ) );
 
   data.m_Scene = new QGraphicsScene;
@@ -347,13 +375,63 @@ cmtk::FusionViewApplication
 
 void
 cmtk::FusionViewApplication
+::MakeColorTable( Self::Data& data )
+{
+  data.m_ColorTable.resize( 256 );
+
+  switch ( data.m_ColorMapIndex )
+    {
+    default:
+    case 0: // black/white
+      for ( int i = 0; i < 256; ++i )
+	{
+	this->m_Fixed.m_ColorTable[i] = QColor( i, i, i ).rgb();
+	}
+      break;
+    case 1: // red
+      for ( int i = 0; i < 256; ++i )
+	{
+	this->m_Fixed.m_ColorTable[i] = QColor( i, 0, 0 ).rgb();
+	}
+      break;
+    case 2: // green
+      for ( int i = 0; i < 256; ++i )
+	{
+	this->m_Fixed.m_ColorTable[i] = QColor( 0, i, 0 ).rgb();
+	}
+      break;
+    case 3: // blue
+      for ( int i = 0; i < 256; ++i )
+	{
+	this->m_Fixed.m_ColorTable[i] = QColor( 0, 0, i ).rgb();
+	}
+      break;
+    case 4: // cyan
+      for ( int i = 0; i < 256; ++i )
+	{
+	this->m_Fixed.m_ColorTable[i] = QColor( 0, i, i ).rgb();
+	}
+      break;
+    case 5: // yellow
+      for ( int i = 0; i < 256; ++i )
+	{
+	this->m_Fixed.m_ColorTable[i] = QColor( i, i, 0 ).rgb();
+	}
+      break;
+    case 6: // magenta
+      for ( int i = 0; i < 256; ++i )
+	{
+	this->m_Fixed.m_ColorTable[i] = QColor( i, 0, i ).rgb();
+	}
+      break;
+    }
+}
+
+void
+cmtk::FusionViewApplication
 ::UpdateFixedImage()
 {
-  this->m_Fixed.m_ColorTable.resize( 256 );
-  for ( int i = 0; i < 256; ++i )
-    {
-    this->m_Fixed.m_ColorTable[i] = QColor( i, i, i ).rgb();
-    }
+  this->MakeColorTable( this->m_Fixed );
 
   const float black = this->m_Fixed.m_DataRange.m_LowerBound + this->m_Fixed.m_DataRange.Width() * this->m_MainWindowUI.blackSliderFix->value() / 500;
   const float white = this->m_Fixed.m_DataRange.m_LowerBound + this->m_Fixed.m_DataRange.Width() * this->m_MainWindowUI.whiteSliderFix->value() / 500;
@@ -366,11 +444,7 @@ void
 cmtk::FusionViewApplication
 ::UpdateMovingImage()
 {
-  this->m_Moving.m_ColorTable.resize( 256 );
-  for ( int i = 0; i < 256; ++i )
-    {
-    this->m_Moving.m_ColorTable[i] = QColor( i, i, i ).rgb();
-    }
+  this->MakeColorTable( this->m_Moving );
 
   const float black = this->m_Moving.m_DataRange.m_LowerBound + this->m_Moving.m_DataRange.Width() * this->m_MainWindowUI.blackSliderMov->value() / 500;
   const float white = this->m_Moving.m_DataRange.m_LowerBound + this->m_Moving.m_DataRange.Width() * this->m_MainWindowUI.whiteSliderMov->value() / 500;
