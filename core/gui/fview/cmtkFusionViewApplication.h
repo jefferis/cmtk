@@ -81,6 +81,12 @@ private slots:
   /// Update zoom factor from UI.
   void changeZoom( QAction* action /*!< Action to set new zoom factor. */ );
 
+  /// Change fixed image color map.
+  void changeFixedColor( QAction* );
+
+  /// Change moving image color map.
+  void changeMovingColor( QAction* );
+
   /// Update interpolator from UI.
   void changeInterpolator( QAction* action /*!< Action to set new interpolator. */ );
 

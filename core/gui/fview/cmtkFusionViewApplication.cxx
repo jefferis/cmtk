@@ -133,29 +133,53 @@ cmtk::FusionViewApplication
 
   QActionGroup* fixedColorGroup = new QActionGroup( this->m_MainWindow );
   fixedColorGroup->setExclusive( true );
+  this->m_MainWindowUI.actionFixedGrey->setData( QVariant( 0 ) );
   fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedGrey );
+  this->m_MainWindowUI.actionFixedRed->setData( QVariant( 1 ) );
   fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedRed );
+  this->m_MainWindowUI.actionFixedGreen->setData( QVariant( 2 ) );
   fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedGreen );
+  this->m_MainWindowUI.actionFixedBlue->setData( QVariant( 3 ) );
   fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedBlue );
+  this->m_MainWindowUI.actionFixedCyan->setData( QVariant( 4 ) );
   fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedCyan );
+  this->m_MainWindowUI.actionFixedYellow->setData( QVariant( 5 ) );
   fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedYellow );
+  this->m_MainWindowUI.actionFixedMagenta->setData( QVariant( 6 ) );
   fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedMagenta );
+  this->m_MainWindowUI.actionFixedBlueRed->setData( QVariant( 7 ) );
   fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedBlueRed );
+  this->m_MainWindowUI.actionFixedRedBlue->setData( QVariant( 8 ) );
   fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedRedBlue );
+  this->m_MainWindowUI.actionFixedLabels->setData( QVariant( 9 ) );
   fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedLabels );
+
+  QObject::connect( fixedColorGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( changeFixedColor( QAction* ) ) );
 
   QActionGroup* movingColorGroup = new QActionGroup( this->m_MainWindow );
   movingColorGroup->setExclusive( true );
+  this->m_MainWindowUI.actionMovingGrey->setData( QVariant( 0 ) );
   movingColorGroup->addAction( this->m_MainWindowUI.actionMovingGrey );
+  this->m_MainWindowUI.actionMovingRed->setData( QVariant( 1 ) );
   movingColorGroup->addAction( this->m_MainWindowUI.actionMovingRed );
+  this->m_MainWindowUI.actionMovingGreen->setData( QVariant( 2 ) );
   movingColorGroup->addAction( this->m_MainWindowUI.actionMovingGreen );
+  this->m_MainWindowUI.actionMovingBlue->setData( QVariant( 3 ) );
   movingColorGroup->addAction( this->m_MainWindowUI.actionMovingBlue );
+  this->m_MainWindowUI.actionMovingCyan->setData( QVariant( 4 ) );
   movingColorGroup->addAction( this->m_MainWindowUI.actionMovingCyan );
+  this->m_MainWindowUI.actionMovingYellow->setData( QVariant( 5 ) );
   movingColorGroup->addAction( this->m_MainWindowUI.actionMovingYellow );
+  this->m_MainWindowUI.actionMovingMagenta->setData( QVariant( 6 ) );
   movingColorGroup->addAction( this->m_MainWindowUI.actionMovingMagenta );
+  this->m_MainWindowUI.actionMovingBlueRed->setData( QVariant( 7 ) );
   movingColorGroup->addAction( this->m_MainWindowUI.actionMovingBlueRed );
+  this->m_MainWindowUI.actionMovingRedBlue->setData( QVariant( 8 ) );
   movingColorGroup->addAction( this->m_MainWindowUI.actionMovingRedBlue );
+  this->m_MainWindowUI.actionMovingLabels->setData( QVariant( 9 ) );
   movingColorGroup->addAction( this->m_MainWindowUI.actionMovingLabels );
+
+  QObject::connect( movingColorGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( changeMovingColor( QAction* ) ) );
 
   QActionGroup* sliceGroup = new QActionGroup( this->m_MainWindow );
   sliceGroup->setExclusive( true );
@@ -234,6 +258,22 @@ cmtk::FusionViewApplication
 ::setTransparency( int slice )
 {
   this->m_Transparency = static_cast<float>( slice ) / 1000;
+  this->UpdateMovingImage();
+}
+
+void
+cmtk::FusionViewApplication
+::changeFixedColor( QAction* action )
+{
+  this->m_Fixed.m_ColorMapIndex = action->data().toInt();
+  this->UpdateFixedImage();
+}
+
+void
+cmtk::FusionViewApplication
+::changeMovingColor( QAction* action )
+{
+  this->m_Moving.m_ColorMapIndex = action->data().toInt();
   this->UpdateMovingImage();
 }
 
@@ -385,43 +425,43 @@ cmtk::FusionViewApplication
     case 0: // black/white
       for ( int i = 0; i < 256; ++i )
 	{
-	this->m_Fixed.m_ColorTable[i] = QColor( i, i, i ).rgb();
+	data.m_ColorTable[i] = QColor( i, i, i ).rgb();
 	}
       break;
     case 1: // red
       for ( int i = 0; i < 256; ++i )
 	{
-	this->m_Fixed.m_ColorTable[i] = QColor( i, 0, 0 ).rgb();
+	data.m_ColorTable[i] = QColor( i, 0, 0 ).rgb();
 	}
       break;
     case 2: // green
       for ( int i = 0; i < 256; ++i )
 	{
-	this->m_Fixed.m_ColorTable[i] = QColor( 0, i, 0 ).rgb();
+	data.m_ColorTable[i] = QColor( 0, i, 0 ).rgb();
 	}
       break;
     case 3: // blue
       for ( int i = 0; i < 256; ++i )
 	{
-	this->m_Fixed.m_ColorTable[i] = QColor( 0, 0, i ).rgb();
+	data.m_ColorTable[i] = QColor( 0, 0, i ).rgb();
 	}
       break;
     case 4: // cyan
       for ( int i = 0; i < 256; ++i )
 	{
-	this->m_Fixed.m_ColorTable[i] = QColor( 0, i, i ).rgb();
+	data.m_ColorTable[i] = QColor( 0, i, i ).rgb();
 	}
       break;
     case 5: // yellow
       for ( int i = 0; i < 256; ++i )
 	{
-	this->m_Fixed.m_ColorTable[i] = QColor( i, i, 0 ).rgb();
+	data.m_ColorTable[i] = QColor( i, i, 0 ).rgb();
 	}
       break;
     case 6: // magenta
       for ( int i = 0; i < 256; ++i )
 	{
-	this->m_Fixed.m_ColorTable[i] = QColor( i, 0, i ).rgb();
+	data.m_ColorTable[i] = QColor( i, 0, i ).rgb();
 	}
       break;
     }
