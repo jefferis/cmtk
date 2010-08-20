@@ -175,7 +175,7 @@ private:
   float m_ZoomFactor;
 
   /// Scale factors for non-square pixels.
-  float m_ScalePixels[2];
+  FixedVector<3,float> m_ScalePixels;
 
   /// Moving image transparency.
   float m_Transparency;
@@ -183,8 +183,8 @@ private:
   /// Flag for linked cursor display.
   float m_CursorDisplayed;
 
-  /// Linked cursor position.
-  float m_CursorPosition[2];
+  /// Linked cursor position in 3D.
+  FixedVector<3,float> m_CursorPosition;
 
   /// Update displayed fixed image slice.
   void UpdateFixedImage();
@@ -200,6 +200,20 @@ private:
 
   /// Update graphics view using a given image.
   void UpdateView( Self::Data& data, QImage& image );
+
+  /// Get 3D coordinate axis corresponding to 2D x axis.
+  int GetAxis2DX() const
+  {
+    static const int idxXtable[3] = { 1, 0, 0 };
+    return idxXtable[this->m_SliceAxis];
+  }
+  
+  /// Get 3D coordinate axis corresponding to 2D y axis.
+  int GetAxis2DY() const
+  {
+    static const int idxYtable[3] = { 2, 2, 1 };
+    return idxYtable[this->m_SliceAxis];
+  }
 };
 
 } // namespace cmtk

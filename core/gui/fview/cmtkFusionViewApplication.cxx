@@ -88,8 +88,12 @@ cmtk::FusionViewApplication
     exit( 1 );
     }
   this->m_Fixed.m_DataRange = this->m_Fixed.m_Volume->GetData()->GetRange();
-  this->m_CursorPosition[0] = this->m_Fixed.m_Volume->GetDims()[0] / 2;
-  this->m_CursorPosition[1] = this->m_Fixed.m_Volume->GetDims()[1] / 2;
+
+  // per-dimension scale factors make sure non-square pixels are displayed square
+  this->m_ScalePixels = this->m_Fixed.m_Volume->Deltas();
+  this->m_ScalePixels *= 1.0 / this->m_ScalePixels.MinValue();
+
+  (this->m_CursorPosition = this->m_Fixed.m_Volume->GetDims() ) *= 0.5;
 
   this->m_Moving.m_Volume = VolumeIO::ReadOriented( imagePathMov );
   if ( ! this->m_Moving.m_Volume )
@@ -225,6 +229,8 @@ cmtk::FusionViewApplication
   if ( this->m_SliceIndex != slice )
     {
     this->m_SliceIndex = slice;
+    this->m_CursorPosition[this->m_SliceAxis] = this->m_SliceIndex;
+
     this->m_Fixed.m_Slice = this->m_Fixed.m_Volume->ExtractSlice( this->m_SliceAxis, this->m_SliceIndex );
     this->UpdateFixedImage();
 
@@ -284,8 +290,11 @@ void
 cmtk::FusionViewApplication
 ::mousePressed( QGraphicsSceneMouseEvent* event )  
 {
-  this->m_CursorPosition[0] = event->pos().x();
-  this->m_CursorPosition[1] = event->pos().y();
+  const int idxX = this->GetAxis2DX();
+  const int idxY = this->GetAxis2DY();
+
+  this->m_CursorPosition[idxX] = event->pos().x() / this->m_ScalePixels[idxX];
+  this->m_CursorPosition[idxY] = event->pos().y() / this->m_ScalePixels[idxY];
 
   if ( this->m_CursorDisplayed )
     {
@@ -303,10 +312,12 @@ cmtk::FusionViewApplication
     this->m_SliceAxis = sliceAxis;
 
     this->m_SliceIndex = -1; // unset previously set slice index to ensure update of moving slice
+    const int newSliceIndex = static_cast<int>( this->m_CursorPosition[this->m_SliceAxis] ); // store to safeguard against unwanted updates
     this->m_MainWindowUI.sliceSlider->setRange( 0, this->m_Fixed.m_Volume->GetDims()[this->m_SliceAxis]-1 );
-    this->setFixedSlice( this->m_Fixed.m_Volume->GetDims()[this->m_SliceAxis] / 2 ); 
-    this->m_MainWindowUI.sliceSlider->setValue( this->m_SliceIndex );
 
+    this->setFixedSlice( newSliceIndex );
+    this->m_MainWindowUI.sliceSlider->setValue( this->m_SliceIndex );
+    
     this->UpdateMovingSlice();
 
     const char* labelFrom[3] = { "Left", "Posterior", "Inferior" };
@@ -388,23 +399,12 @@ void
 cmtk::FusionViewApplication
 ::MakeImage( QImage& image, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel )
 {
-  // table: which are the x and y directions for slices along the three orthogonal orientations?
-  const int idxXtable[3] = { 1, 0, 0 };
-  const int idxYtable[3] = { 2, 2, 1 };
-
-  const int idxX = idxXtable[this->m_SliceAxis];
-  const int idxY = idxYtable[this->m_SliceAxis];
+  const int idxX = this->GetAxis2DX();
+  const int idxY = this->GetAxis2DY();
   
   int dimX = slice.GetDims()[idxX];
   int dimY = slice.GetDims()[idxY];
 
-  const float dX = slice.Deltas()[idxX];
-  const float dY = slice.Deltas()[idxY];
-
-  // make sure pixels are displayed square
-  this->m_ScalePixels[0] = std::max<float>( 1.0, dX / dY );
-  this->m_ScalePixels[1] = std::max<float>( 1.0, dY / dX );
-  
   image = QImage( dimX, dimY, QImage::Format_Indexed8 );
   image.setColorTable( colorTable );
   
@@ -429,12 +429,15 @@ cmtk::FusionViewApplication
   const QRectF bb = data.m_PixmapItem->boundingRect();
   data.m_Scene->setSceneRect( bb );
 
+  const int idxX = this->GetAxis2DX();
+  const int idxY = this->GetAxis2DY();
+  
   if ( this->m_CursorDisplayed )
-    {
-    data.m_CursorLines[0]->setLine( this->m_CursorPosition[0], bb.top(), this->m_CursorPosition[0], bb.bottom() );
-    data.m_CursorLines[1]->setLine( bb.left(), this->m_CursorPosition[1], bb.right(), this->m_CursorPosition[1] );
+    {    
+    data.m_CursorLines[0]->setLine( this->m_CursorPosition[idxX], bb.top(), this->m_CursorPosition[idxX], bb.bottom() );
+    data.m_CursorLines[1]->setLine( bb.left(), this->m_CursorPosition[idxY], bb.right(), this->m_CursorPosition[idxY] );
     }
 
-  QTransform zoomTransform = QTransform::fromScale( -this->m_ZoomFactor * this->m_ScalePixels[0], -this->m_ZoomFactor * this->m_ScalePixels[1] );
+  QTransform zoomTransform = QTransform::fromScale( -this->m_ZoomFactor * this->m_ScalePixels[idxX], -this->m_ZoomFactor * this->m_ScalePixels[idxY] );
   data.m_View->setTransform( zoomTransform );
 }
