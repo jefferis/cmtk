@@ -2,14 +2,10 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
-Release Notes -- CMTK 1.4.2
+Release Notes -- CMTK 1.4.3
 ===========================
 
 This is a bug fix and minor feature release.
-
-This release replaces the old, broken, and unmaintainable "fusion" application
-with "fview", a new, lightweight viewer for co-registered images based on
-arbitrary transformation sequences.
 
 For a complete list of changes and fixes, see the CHANGELOG file.
 
