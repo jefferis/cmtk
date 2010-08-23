@@ -57,7 +57,11 @@ ReformatVolume::ReformatMasked
     Vector3D vRef;
     Types::DataItem value, targetValue;
     size_t offset = z * dims[0] * dims[1];
-    Progress::SetProgress( z );
+
+#ifdef _OPENMP
+    if ( ! omp_get_thread_num() )
+#endif
+      Progress::SetProgress( z );
     
     for ( int y = 0; y < dims[1]; y++ ) 
       {
@@ -106,7 +110,11 @@ ReformatVolume::ReformatUnmasked
     Vector3D vRef;
     Types::DataItem value;
     size_t offset = z * dims[0] * dims[1];
-    Progress::SetProgress( z );
+
+#ifdef _OPENMP
+    if ( ! omp_get_thread_num() )
+#endif
+      Progress::SetProgress( z );
     
     for ( int y = 0; y < dims[1]; y++ ) 
       {
