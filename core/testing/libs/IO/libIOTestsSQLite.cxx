@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 2004-2010 SRI International
+//
 //  Copyright 1997-2009 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -73,7 +74,7 @@ main( const int argc, const char* argv[] )
     // batch mode: find test by name given on command line
     for ( size_t i = 0; testTable[i].name; ++i )
       {
-      if ( !std::strcmp( argv[1], testTable[i].name ) )
+      if ( !strcmp( argv[1], testTable[i].name ) )
 	testNumber = i;
       }
     }
