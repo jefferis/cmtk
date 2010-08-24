@@ -1,5 +1,7 @@
 Release CMTK-1.4.3:
 
+(r2283) Fixed: because gcc/OpenMP breaks POSIX semaphores on Cygwin, use
+    CMTK's mutex/condition implementation instead (Issue #4779)
 (r2281) Fixed: "reformatx" tool did not properly initiatialize thread system,
     therefore running too many OpenMP threads even when CMTK_NUM_THREADS was
     set.
