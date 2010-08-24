@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -37,7 +38,7 @@
 #include "System/cmtkCannotBeCopied.h"
 
 #if defined(CMTK_USE_THREADS)
-#  ifdef __APPLE__
+#  if defined(__APPLE__) || defined(__CYGWIN__)
 #    include <pthread.h>
 #  else
 #    include <semaphore.h>
@@ -76,7 +77,7 @@ public:
   void Wait();
 
 #if defined(CMTK_USE_THREADS)
-#  if defined(__APPLE__)
+#  if defined(__APPLE__) || defined(__CYGWIN__)
 private:
   /// Counter (Apple only).
   long int m_Counter;
