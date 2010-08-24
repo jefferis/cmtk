@@ -1,6 +1,8 @@
 Release CMTK-1.4.3:
 
-
+(r2281) Fixed: "reformatx" tool did not properly initiatialize thread system,
+    therefore running too many OpenMP threads even when CMTK_NUM_THREADS was
+    set.
 
 
 Release CMTK-1.4.2 (2010-08-23):
