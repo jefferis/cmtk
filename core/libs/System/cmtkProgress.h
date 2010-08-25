@@ -120,7 +120,7 @@ private:
   /// Instance of a derived class that handles GUI interaction etc.
   static Self* ProgressInstance;
 
-  /// Class to current progress range, whcih can be nested.
+  /// Class to current progress range, which can be nested.
   class Range
   {
   public:
