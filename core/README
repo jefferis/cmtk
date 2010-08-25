@@ -5,7 +5,8 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 1.4.3
 ===========================
 
-This is a bug fix and minor feature release.
+This is a bug fix and minor feature release with some performance improvements
+in the histogram-based image similarity measures.
 
 For a complete list of changes and fixes, see the CHANGELOG file.
 
