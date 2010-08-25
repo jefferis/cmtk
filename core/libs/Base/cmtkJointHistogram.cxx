@@ -47,10 +47,10 @@ JointHistogram<T>::GetMarginalEntropies ( double& HX, double& HY )
 {
   const T sampleCount = this->SampleCount();
 
-#ifdef _OPENMP
+#ifdef ENTROPY_OPENMP
   this->m_plogp.resize( this->m_TotalNumberOfBins );
 
-#pragma omp parallel for
+#pragma omp parallel for if (NumBinsX>64)
   for ( size_t i=0; i<NumBinsX; ++i ) 
     {
     const double project = this->ProjectToX( i );
@@ -70,7 +70,7 @@ JointHistogram<T>::GetMarginalEntropies ( double& HX, double& HY )
     HX += this->m_plogp[i];
     }
 
-#pragma omp parallel for  
+#pragma omp parallel for if (NumBinsY>64)
   for ( size_t j=0; j<NumBinsY; ++j ) 
     {
     const double project = this->ProjectToY( j );
@@ -121,10 +121,10 @@ JointHistogram<T>::GetJointEntropy() const
   
   const T sampleCount = this->SampleCount();
   
-#ifdef _OPENMP
+#ifdef ENTROPY_OPENMP
   this->m_plogp.resize( this->m_TotalNumberOfBins );
   
-#pragma omp parallel for
+#pragma omp parallel for if (this->m_TotalNumberOfBins>512)
   for ( size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx )
     {
     if ( JointBins[idx] ) 
