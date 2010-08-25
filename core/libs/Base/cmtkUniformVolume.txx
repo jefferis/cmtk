@@ -49,18 +49,24 @@ UniformVolume::ProbeData
   Self::CoordinateVectorType l( location );
   l -= this->m_Offset;
 
-  const int idxX=(int) floor(l[0]/this->m_Delta[0]);
-  if ( (idxX < 0) || (idxX>=this->m_Dims[0]-1) )
+  if ( l[0] < 0 )
+    return false;
+  const int idxX=(int) (l[0]/this->m_Delta[0]);
+  if ( idxX>=this->m_Dims[0]-1 )
     return false;
 
-  const int idxY=(int) floor(l[1]/this->m_Delta[1]);
-  if ( (idxY < 0) || (idxY>=this->m_Dims[1]-1) )
+  if ( l[1] < 0 )
+    return false;
+  const int idxY=(int) (l[1]/this->m_Delta[1]);
+  if ( idxY>=this->m_Dims[1]-1 )
     return false;
 
-  const int idxZ=(int) floor(l[2]/this->m_Delta[2]);
-  if ( (idxZ < 0) || (idxZ>=this->m_Dims[2]-1) )
+  if ( l[2] < 0 )
     return false;
-
+  const int idxZ=(int) (l[2]/this->m_Delta[2]);
+  if ( idxZ>=this->m_Dims[2]-1 )
+    return false;
+  
   const Types::Coordinate from[3] = { idxX*this->m_Delta[0], idxY*this->m_Delta[1], idxZ*this->m_Delta[2] };
   const Types::Coordinate to[3] = { from[0]+this->m_Delta[0], from[1]+this->m_Delta[1], from[2]+this->m_Delta[2] };
   result = this->TrilinearInterpolation( dataPtr, idxX, idxY, idxZ, l, from, to );
@@ -75,19 +81,25 @@ UniformVolume::ProbeData
   Self::CoordinateVectorType l( location );
   l -= this->m_Offset;
 
+  if ( l[0] < 0 )
+    return false;
   const Types::Coordinate fracX = l[0]/this->m_Delta[0];
-  const int idxX = static_cast<int>( floor(fracX) ) ;
-  if ( (idxX<0) || (idxX>=this->m_Dims[0]-1) )
+  const int idxX = static_cast<int>( fracX ) ;
+  if ( idxX>=this->m_Dims[0]-1 )
     return false;
 
+  if ( l[1] < 0 )
+    return false;
   const Types::Coordinate fracY = l[1]/this->m_Delta[1];
-  const int idxY = static_cast<int>( floor(fracY) ) ;
-  if ( (idxY<0) || (idxY>=this->m_Dims[1]-1) )
+  const int idxY = static_cast<int>( fracY ) ;
+  if ( idxY>=this->m_Dims[1]-1 )
     return false;
-
+  
+  if ( l[2] < 0 )
+    return false;
   const Types::Coordinate fracZ = l[2]/this->m_Delta[2];
-  const int idxZ = static_cast<int>( floor(fracZ) ) ;
-  if ( (idxZ<0) || (idxZ>=this->m_Dims[2]-1) )
+  const int idxZ = static_cast<int>( fracZ ) ;
+  if ( idxZ>=this->m_Dims[2]-1 )
     return false;
   
   this->TrilinearInterpolation( result, dataPtr, idxX, idxY, idxZ, fracX - idxX, fracY - idxY, fracZ - idxZ );
@@ -101,16 +113,22 @@ UniformVolume::ProbeNoXform
   Self::CoordinateVectorType l( location );
   l -= this->m_Offset;
 
-  const int idxX=(int) floor(l[0]/this->m_Delta[0]);
-  if ( (idxX<0) || (idxX>=this->m_Dims[0]-1) )
+  if ( l[0] < 0 )
+    return false;
+  const int idxX=(int) (l[0]/this->m_Delta[0]);
+  if ( idxX>=this->m_Dims[0]-1 )
     return false;
 
-  const int idxY=(int) floor(l[1]/this->m_Delta[1]);
-  if ( (idxY<0) || (idxY>=this->m_Dims[1]-1) )
+  if ( l[1] < 0 )
+    return false;
+  const int idxY=(int) (l[1]/this->m_Delta[1]);
+  if ( idxY>=this->m_Dims[1]-1 )
     return false;
 
-  const int idxZ=(int) floor(l[2]/this->m_Delta[2]);
-  if ( (idxZ<0) || (idxZ>=this->m_Dims[2]-1) )
+  if ( l[2] < 0 )
+    return false;
+  const int idxZ=(int) (l[2]/this->m_Delta[2]);
+  if ( idxZ>=this->m_Dims[2]-1 )
     return false;
 
   const Types::Coordinate from[3] = { idxX*this->m_Delta[0], idxY*this->m_Delta[1], idxZ*this->m_Delta[2] };
@@ -128,8 +146,10 @@ UniformVolume::FindVoxel
 
   for ( int dim = 0; dim < 3; ++dim ) 
     {
-    idx[dim] = static_cast<int>( floor(l[dim] / this->m_Delta[dim]) );
-    if ( (idx[dim]<0) || (idx[dim]>=(this->m_Dims[dim]-1)) ) 
+    if ( l[dim] < 0 )
+      return false;
+    idx[dim] = static_cast<int>( l[dim] / this->m_Delta[dim] );
+    if ( idx[dim]>=(this->m_Dims[dim]-1) ) 
       return false;
     (to[dim] = (from[dim] = this->m_Offset[dim] + (idx[dim] * this->m_Delta[dim]))) += this->m_Delta[dim];
     }
@@ -146,8 +166,10 @@ UniformVolume::FindVoxel
   
   for ( int dim = 0; dim < 3; ++dim ) 
     {
-    idx[dim] = static_cast<int>( floor(l[dim] / this->m_Delta[dim]) );
-    if ( (idx[dim]<0) || (idx[dim]>=(this->m_Dims[dim]-1)) ) 
+    if ( l[dim] < 0 )
+      return false;
+    idx[dim] = static_cast<int>( l[dim] / this->m_Delta[dim] );
+    if ( idx[dim]>=(this->m_Dims[dim]-1) ) 
       return false;
     }
   return true;
@@ -169,8 +191,10 @@ UniformVolume::FindVoxelByIndex
 {
   for ( int dim = 0; dim < 3; ++dim ) 
     {
-    idx[dim] = static_cast<int>( floor(fracIndex[dim]) );
-    if ( (idx[dim]<0) || (idx[dim] >= (this->m_Dims[dim]-1)) ) 
+    if ( fracIndex[dim]<0 )
+      return false;
+    idx[dim] = static_cast<int>( fracIndex[dim] );
+    if ( (idx[dim] >= (this->m_Dims[dim]-1)) ) 
       return false;
     frac[dim] = fracIndex[dim] - idx[dim];
   }
@@ -184,7 +208,7 @@ UniformVolume::FindVoxelByIndexUnsafe
 {
   for ( int dim = 0; dim < 3; ++dim ) 
     {
-    idx[dim] = static_cast<int>( floor(fracIndex[dim]) );
+    idx[dim] = static_cast<int>( fracIndex[dim] );
     frac[dim] = fracIndex[dim] - idx[dim];
     }
 }
@@ -195,7 +219,7 @@ UniformVolume::FindVoxelUnsafe
 {
   for ( int dim = 0; dim < 3; ++dim ) 
     {
-    idx[dim] = static_cast<int>( floor((location[dim]-this->m_Offset[dim]) / this->m_Delta[dim]) );
+    idx[dim] = static_cast<int>( (location[dim]-this->m_Offset[dim]) / this->m_Delta[dim] );
     (to[dim] = from[dim] = this->m_Offset[dim] + idx[dim] * this->m_Delta[dim]) += this->m_Delta[dim];
     }
 }
