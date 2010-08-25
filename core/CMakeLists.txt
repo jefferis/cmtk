@@ -246,7 +246,7 @@ ENDIF(COMPILER_VAR_AUTO_ARRAYSIZE)
 # Configure Dart testing support.  This should be done before any
 # MESSAGE(FATAL_ERROR ...) commands are invoked.
 
-INCLUDE(${CMAKE_ROOT}/Modules/Dart.cmake)
+INCLUDE(${CMAKE_ROOT}/Modules/CTest.cmake)
 MARK_AS_ADVANCED(TCL_TCLSH DART_ROOT)
 ENABLE_TESTING()
 IF(BUILD_TESTING)
