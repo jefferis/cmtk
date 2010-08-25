@@ -1,8 +1,12 @@
 Release CMTK-1.4.3:
 
+(r2294) Improved: eliminating calls to floor() improved registration times by
+    another ~10%.
 (r2287) Improved: apparently using histogram entropy is computed faster
     without OpenMP parallelization, reducing test times for the "warp" tool by
-    about 30%. This should be noticable in production use also.
+    about 30%. This should be noticable in production use also. No surprise,
+    actually, because most entropy evaluations are done in parallel on a
+    higher level anyway.
 (r2283) Fixed: because gcc/OpenMP breaks POSIX semaphores on Cygwin, use
     CMTK's mutex/condition implementation instead (Issue #4779)
 (r2281) Fixed: "reformatx" tool did not properly initiatialize thread system,
