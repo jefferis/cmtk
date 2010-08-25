@@ -610,7 +610,7 @@ SplineWarpXform::GetTransformedGridSequence
   // pre-compute the contributions of all control points in y- and z-direction
   // along the way
   Types::Coordinate phiComp;
-#ifdef __GNUC__
+#ifdef CMTK_VAR_AUTO_ARRAYSIZE
   Types::Coordinate phiHat[3*numberOfCells]; // GNU compiler can have variable-sized automatic arrays
 #else
   std::vector<Types::Coordinate> phiHat( 3*numberOfCells );
@@ -951,7 +951,7 @@ SplineWarpXform::GetInverseConsistencyError
   const int startZ = pVoi->From()[2] - (pVoi->From()[2] % dZ);
 
   const size_t length = pVoi->To()[0] - startX;
-#ifdef __GNUC__
+#ifdef CMTK_VAR_AUTO_ARRAYSIZE
   Self::SpaceVectorType vecArray[length];
 #else
   std::vector<Self::SpaceVectorType> vecArray( length );
