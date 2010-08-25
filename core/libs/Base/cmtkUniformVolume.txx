@@ -73,39 +73,6 @@ UniformVolume::ProbeData
   return true;
 }
 
-template<class TData,class TOutputIterator> 
-inline bool
-UniformVolume::ProbeData 
-( const TOutputIterator& result, const std::vector<TData*>& dataPtr, const Self::CoordinateVectorType& location ) const
-{
-  Self::CoordinateVectorType l( location );
-  l -= this->m_Offset;
-
-  if ( l[0] < 0 )
-    return false;
-  const Types::Coordinate fracX = l[0]/this->m_Delta[0];
-  const int idxX = static_cast<int>( fracX ) ;
-  if ( idxX>=this->m_Dims[0]-1 )
-    return false;
-
-  if ( l[1] < 0 )
-    return false;
-  const Types::Coordinate fracY = l[1]/this->m_Delta[1];
-  const int idxY = static_cast<int>( fracY ) ;
-  if ( idxY>=this->m_Dims[1]-1 )
-    return false;
-  
-  if ( l[2] < 0 )
-    return false;
-  const Types::Coordinate fracZ = l[2]/this->m_Delta[2];
-  const int idxZ = static_cast<int>( fracZ ) ;
-  if ( idxZ>=this->m_Dims[2]-1 )
-    return false;
-  
-  this->TrilinearInterpolation( result, dataPtr, idxX, idxY, idxZ, fracX - idxX, fracY - idxY, fracZ - idxZ );
-  return true;
-}
-
 inline bool
 UniformVolume::ProbeNoXform
 ( ProbeInfo& probeInfo, const Self::CoordinateVectorType& location ) const

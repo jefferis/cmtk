@@ -286,10 +286,6 @@ public:
   /// Get data value at specified coordinate.
   template<class TData> inline bool ProbeData( TData& result, const TData* dataPtr, const Self::CoordinateVectorType& location ) const;
 
-  /// Get data values from multiple arrays at specified coordinate.
-  template<class TData,class TOutputIterator> inline bool ProbeData
-  ( const TOutputIterator& result, const std::vector<TData*>& dataPtr, const Self::CoordinateVectorType& location ) const;
-
   /// Return linearly interpolated voxel without applying a transformation.
   inline bool ProbeNoXform ( ProbeInfo&, const Self::CoordinateVectorType& ) const;
 
