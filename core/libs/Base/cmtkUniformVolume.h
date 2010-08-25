@@ -334,20 +334,6 @@ public:
    */
   inline bool FindVoxelByIndex( const Self::CoordinateVectorType& fracIndex, int *const idx, Types::Coordinate *const frac ) const;
 
-  /** Find a voxel in the volume by fractional index without range checking.
-   *@param fracIndex Fractional 3D voxel index.
-   *@param idx Output: integer 3D voxel index.
-   *@param frac Output: fractional within-voxel location.
-   */
-  inline void FindVoxelByIndexUnsafe( const Self::CoordinateVectorType& fracIndex, int *const idx, Types::Coordinate *const frac ) const;
-
-  /** Find voxel without range checking.
-   * This function is identical to FindVoxel except that no range checking is
-   * performed. Therefore, it provides additional performance if for every call
-   * to this function it is known that the respective voxel actually exists.
-   */
-  inline void FindVoxelUnsafe( const Self::CoordinateVectorType& location, int *const idx, Types::Coordinate *const from, Types::Coordinate *const to ) const;
-
   /// Get 3D grid region from continuous lower and upper corner.
   const UniformVolume::RegionType GetGridRange( const Self::CoordinateVectorType& fromVOI, const Self::CoordinateVectorType& toVOI ) const;
  

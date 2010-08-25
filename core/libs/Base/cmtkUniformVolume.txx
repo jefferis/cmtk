@@ -169,28 +169,6 @@ UniformVolume::FindVoxelByIndex
   return true;
 }
 
-inline void
-UniformVolume::FindVoxelByIndexUnsafe
-( const Self::CoordinateVectorType& fracIndex, int *const idx, Types::Coordinate *const frac ) const
-{
-  for ( int dim = 0; dim < 3; ++dim ) 
-    {
-    idx[dim] = static_cast<int>( fracIndex[dim] );
-    frac[dim] = fracIndex[dim] - idx[dim];
-    }
-}
-
-inline void
-UniformVolume::FindVoxelUnsafe
-( const Self::CoordinateVectorType& location, int *const idx, Types::Coordinate *const from, Types::Coordinate *const to ) const
-{
-  for ( int dim = 0; dim < 3; ++dim ) 
-    {
-    idx[dim] = static_cast<int>( (location[dim]-this->m_Offset[dim]) / this->m_Delta[dim] );
-    (to[dim] = from[dim] = this->m_Offset[dim] + idx[dim] * this->m_Delta[dim]) += this->m_Delta[dim];
-    }
-}
-
 template<class TAccumulator>
 ScalarImage*
 UniformVolume::ComputeProjection( const int axis ) const
