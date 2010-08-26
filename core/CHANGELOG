@@ -1,5 +1,7 @@
 Release CMTK-1.4.3:
 
+(r2307) Refactored: eliminated several hundred lines of unused and obsolete
+    code, including several classes.
 (r2294) Improved: eliminating calls to floor() improved registration times by
     another ~10%.
 (r2287) Improved: apparently using histogram entropy is computed faster
