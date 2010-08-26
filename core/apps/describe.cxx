@@ -112,7 +112,7 @@ main( int argc, char *argv[] )
       
       if ( ! volume ) 
 	{
-	fputs( "Could not read volume data.\n", stderr );
+	fprintf( stderr, "Could not read volume data for %s.\n", next );
 	continue;
 	}
       
