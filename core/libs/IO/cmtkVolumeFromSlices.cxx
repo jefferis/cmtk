@@ -51,56 +51,6 @@ cmtk
 
 void 
 VolumeFromSlices::InitSequence
-( const ImageInfo& image, const int slice_count )
-{ 
-  Progress::Begin( 0, slice_count, 1, "Volume image stacking" );
-
-  Padding = false;
-
-  if ( (image.calibrationx == 0) || (image.calibrationy==0) ) 
-    {
-    HandleError( "Image calibration is zero. Using 1 as default." );
-    Spacing[0] = Spacing[1] = 1;
-    } 
-  else
-    {
-    Spacing[0] = image.calibrationx;
-    Spacing[1] = image.calibrationy;
-    }
-
-  ImagePosition = image.ImagePosition;
-
-  Dims[0] = image.dims[0];
-  Dims[1] = image.dims[1];
-  Dims[2] = slice_count;
-
-  BytesPerPixel = image.bytesperpixel;
-  SignBit = image.signbit;
-
-  // Determine parameters for the axis swapping and reversal to occur during
-  // volume assembly.
-  this->DataSize = this->Dims[0] * this->Dims[1] * this->Dims[2];
-
-  this->RawData = this->AllocDataArray( BytesPerPixel, DataSize );
-
-  // Allocate array for axis sample points
-  for ( unsigned int idx = 0; idx<3; ++idx )
-    Points[idx] = Memory::AllocateArray<Types::Coordinate>( Dims[idx] );
-
-  // Set sample points for uniform original x- and y-axis
-  for ( unsigned int dim=0; dim<2; ++dim ) 
-    {
-    for ( int idx=0; idx < Dims[dim]; ++idx ) 
-      {
-      Points[dim][idx] = idx * Spacing[dim];
-      }
-    // Set size in axis direction.
-    Size[dim] = (Dims[dim]-1) * Spacing[dim];
-    }
-}
-
-void 
-VolumeFromSlices::InitSequence
 ( const ScalarImage* image, const unsigned int numberOfSlices )
 { 
   Padding = false;

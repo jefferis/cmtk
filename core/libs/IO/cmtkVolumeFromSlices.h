@@ -88,10 +88,6 @@ public:
 protected:
   /** Start creation of new volume.
    */
-  void InitSequence( const ImageInfo&, const int );
-
-  /** Start creation of new volume.
-   */
   void InitSequence( const ScalarImage* image, const unsigned int numberOfSlices );
 
   /** Allocate memory for the 3D image data. 
