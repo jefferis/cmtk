@@ -46,7 +46,6 @@ SET(cmtkIO_SRCS
   cmtkScalarImageIO.cxx
   cmtkSegmentationLabelIO.cxx
   cmtkStudy.cxx
-  cmtkStudyImageSet.cxx
   cmtkStudyList.cxx
   cmtkTypedStream.cxx
   cmtkTypedStreamStudylist.cxx

@@ -76,16 +76,6 @@ public:
     m_ImageDirectory( NULL ), 
     m_ImageFormat( FILEFORMAT_UNKNOWN )
   {}
-
-  /** Read volume data.
-   *@param reRead If this is false, then the volume is only read if it has not
-   * been read before. Otherwise, it is re-read in any case.
-   *@return True if reading was successful; the "Volume" field has a pointer to
-   * the resulting image volume.
-   *\note Parameter "orientation" is not used here; it is only present to
-   *  avoid hiding the inherited virtual function.
-   */
-    virtual bool ReadVolume( const bool reRead = false, const char* = NULL );
 };
 
 //@}
