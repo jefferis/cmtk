@@ -52,7 +52,7 @@ RegistrationJointHistogram<I>::RegistrationJointHistogram
 #endif
   VoxelMatchingMetric<byte,TYPE_BYTE,I>( refVolume, fltVolume, false /* initData */ )
 {
-  this->SetNumBins( this->DataX.Init( refVolume, numBinsX, boundsX ), this->DataY.Init( fltVolume, numBinsY, boundsY ) );
+  this->Resize( this->DataX.Init( refVolume, numBinsX, boundsX ), this->DataY.Init( fltVolume, numBinsY, boundsY ) );
 }
 
 template<cmtk::Interpolators::InterpolationEnum I>
@@ -62,7 +62,7 @@ RegistrationJointHistogram<I>::SetDataX
   const Types::DataItemRange& bounds )
 {
   this->VoxelMatchingMetric<byte,TYPE_BYTE,I>::SetDataX( volume );
-  this->SetNumBinsX( this->DataX.Init( volume, numBins, bounds ) );
+  this->Resize( this->DataX.Init( volume, numBins, bounds ), this->GetNumBinsY() );
   return NumBinsX;
 }
 
@@ -73,7 +73,7 @@ RegistrationJointHistogram<I>::SetDataY
   const Types::DataItemRange& bounds )
 {
   this->VoxelMatchingMetric<byte,TYPE_BYTE,I>::SetDataY( volume );
-  this->SetNumBinsY( this->DataY.Init( volume, numBins, bounds ) );
+  this->Resize( this->GetNumBinsX(), this->DataY.Init( volume, numBins, bounds ) );
   return NumBinsY;
 }
 
@@ -85,7 +85,7 @@ RegistrationJointHistogram<I>::SetDataXY
   const Types::DataItemRange& boundsX, const Types::DataItemRange& boundsY )
 {
   this->VoxelMatchingMetric<byte,TYPE_BYTE,I>::SetDataXY( volumeX, volumeY );
-  this->SetNumBins( this->DataX.Init( volumeX, numBinsX, boundsX ), this->DataY.Init( volumeY, numBinsY, boundsY ) );
+  this->Resize( this->DataX.Init( volumeX, numBinsX, boundsX ), this->DataY.Init( volumeY, numBinsY, boundsY ) );
 }
 
 // instantiate required templates

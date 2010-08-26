@@ -61,7 +61,7 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
     const Types::DataItemRange rangeY = this->m_Metric->GetDataRangeY();
     const unsigned int numBinsY = this->m_ConsistencyHistogram->CalcNumBins( numSamplesY, rangeY );
     
-    this->m_ConsistencyHistogram->SetNumBins( numBinsX, numBinsY );
+    this->m_ConsistencyHistogram->Resize( numBinsX, numBinsY );
     this->m_ConsistencyHistogram->SetRangeX( rangeX );
     this->m_ConsistencyHistogram->SetRangeY( rangeY );
     }

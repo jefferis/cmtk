@@ -111,13 +111,7 @@ public:
     this->m_TotalNumberOfBins = NumBinsX = NumBinsY = 0; 
     BinWidthX = BinWidthY = 1.0;
     BinOffsetX = BinOffsetY = 0.0;
-    this->SetNumBins( numBinsX, numBinsY, reset );
-  }
-
-  /// Resize and allocate histogram bins.
-  void Resize( const size_t numberOfBinsX, const size_t numberOfBinsY, const bool reset = true )
-  {
-    this->SetNumBins( numberOfBinsX, numberOfBinsY, reset );
+    this->Resize( numBinsX, numBinsY, reset );
   }
 
   /** Make an identical copy of this object.
@@ -131,47 +125,11 @@ public:
     return new Self( *this );
   }
 
-  /// Set histogram values from existing data array.
-  void SetBins( const T* bins ) 
+  /// Resize and allocate histogram bins.
+  void Resize( const size_t numberOfBinsX, const size_t numberOfBinsY, const bool reset = true )
   {
-    for ( size_t ofs = 0; ofs < this->m_TotalNumberOfBins; ++ofs )
-      this->JointBins[ ofs ] = bins[ ofs ];
-  }
-
-  /// Get histogram values and put them into data array.
-  T* GetBins() const 
-  {
-    T *bins = Memory::AllocateArray<T>( this->m_TotalNumberOfBins );
-    
-    for ( size_t ofs = 0; ofs < this->m_TotalNumberOfBins; ++ofs )
-      bins[ ofs ] = this->JointBins[ ofs ];
-    
-    return bins;
-  }
-  
-  /** Set number of bins in x-direction.
-   * This will re-allocate the histogram storage and clear all entries.
-   */
-  void SetNumBinsX( const size_t numBinsX ) 
-  {
-    this->SetNumBins( numBinsX, NumBinsY );
-  }
-
-  /** Set number of bins in y-direction.
-   * This will re-allocate the histogram storage and clear all entries.
-   */
-  void SetNumBinsY( const size_t numBinsY ) 
-  {
-    this->SetNumBins( NumBinsX, numBinsY );
-  }
-  
-  /** Set number of bins in x- and y-direction.
-   * This will re-allocate the histogram storage and clear all entries.
-   */
-  void SetNumBins( const size_t numBinsX, const size_t numBinsY, const bool reset = true ) 
-  {
-    this->NumBinsX = numBinsX;
-    this->NumBinsY = numBinsY;
+    this->NumBinsX = numberOfBinsX;
+    this->NumBinsY = numberOfBinsY;
     this->m_TotalNumberOfBins = this->NumBinsX * this->NumBinsY;
 
     this->JointBins.resize( this->m_TotalNumberOfBins );
@@ -339,11 +297,9 @@ public:
   {
     T sampleCount = 0;
     
-    size_t idx = 0;
-    for ( size_t i=0; i<NumBinsY; ++i ) 
+    for ( size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx )
       {
-      for ( size_t j=0; j<NumBinsX; ++j, ++idx )
-	sampleCount += this->JointBins[idx];
+      sampleCount += this->JointBins[idx];
       }
     
     return sampleCount;

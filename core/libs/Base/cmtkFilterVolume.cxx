@@ -289,7 +289,7 @@ FilterVolume::StudholmeFilter
   
   for ( size_t idx = 0; idx < numberOfThreads; ++idx )
     {
-    histogramByThread[idx].SetNumBins( numBins, numBins );
+    histogramByThread[idx].Resize( numBins, numBins );
     histogramByThread[idx].SetRangeX( range );
     histogramByThread[idx].SetRangeY( range );
     

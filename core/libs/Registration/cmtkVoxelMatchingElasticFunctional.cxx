@@ -187,7 +187,7 @@ VoxelMatchingElasticFunctional_Template<VM,W>::UpdateWarpFixedParameters()
     const Types::DataItemRange rangeY = this->Metric->DataY.GetValueRange();
     unsigned int numBinsY = this->ConsistencyHistogram->CalcNumBins( numSamplesY, rangeY );
     
-    this->ConsistencyHistogram->SetNumBins( numBinsX, numBinsY );
+    this->ConsistencyHistogram->Resize( numBinsX, numBinsY );
     this->ConsistencyHistogram->SetRangeX( rangeX );
     this->ConsistencyHistogram->SetRangeY( rangeY );
     }
