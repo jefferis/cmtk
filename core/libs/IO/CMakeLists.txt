@@ -39,7 +39,6 @@ SET(cmtkIO_SRCS
   cmtkClassStreamWarpXform.cxx
   cmtkFileFormat.cxx
   cmtkGroupwiseRegistrationFunctionalIO.cxx
-  cmtkImageInfo.cxx
   cmtkImageOperationApplyMask.cxx
   cmtkPGM.cxx
   cmtkResourceFile.cxx

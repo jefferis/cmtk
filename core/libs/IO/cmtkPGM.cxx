@@ -34,7 +34,6 @@
 
 #include "System/cmtkCompressedStream.h"
 #include "System/cmtkConsole.h"
-#include "IO/cmtkImageInfo.h"
 
 #include <stdlib.h>
 #include <string.h>
