@@ -43,17 +43,6 @@ cmtk
 /** \addtogroup Pipeline */
 //@{
 
-/** Export color mode.
- */
-typedef enum {
-  /// Automatically determine if image is color or greyscale.
-  EXPORTCOLOR_AUTO,
-  /// Always export color image.
-  EXPORTCOLOR_RGB,
-  /// Always export greyscale image.
-  EXPORTCOLOR_GREY
-} ExportColorMode;
-
 /** General renderer template class.
  * This class provides a virtual "Render()" function as a common access path
  * for client code. It also provides an ImageRGB input object representing
@@ -63,12 +52,6 @@ class Renderer
   : public PipelineObject 
 {
 public:
-  /// Export color mode.
-  cmtkClassParameter(ExportColorMode,ExportColorMode);
-
-  /// Image compression mode.
-  igsClassParameter(int,CompressionMode);
-
   /// Calls to this function should make derived objects update their display.
   virtual void Render();
 
@@ -92,16 +75,6 @@ public:
    *@see Active
    */
   virtual int IsActive() const { return Active; }
-
-  /** Write the input image to an RGB PPM file.
-   *@param filename Output filename.
-   *@param cmtc Number of descriptive comment strings to write into the output
-   * file. These comments may be used to add additional information such as
-   * pixel size, image history etc. to the image file.
-   *@param cmtv Array of pointers to the comment strings to be written to the
-   * input file. This array has to contain at least "cmtc" valid entries.
-   */
-  virtual void WritePPM( const char* filename, const int cmtc = 0, const char** cmtv = NULL );
 
 protected:
   /// Default constructor.
@@ -147,9 +120,6 @@ private:
    * actually updating anything, thus avoiding recursion.
    */
   bool RenderPending;
-
-  /// Determine effective color mode.
-  ExportColorMode GetEffectiveExportColorMode( const ImageRGB* capture ) const;
 
   /// Convenience declaration for calls to parent class' functions.
   typedef PipelineObject Superclass;
