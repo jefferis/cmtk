@@ -95,11 +95,6 @@ void ImageToImageRGB::Execute()
       if ( inPtr->GetPaddingFlag() )
 	this->MarkPaddingData( output->GetDims( AXIS_X ), output->GetDims( AXIS_Y ), static_cast<RGBA*>( outPtr ), inPtr );
       break;
-    case AlphaModeRamp:
-      this->m_Colormap->Apply( outPtr, inPtr, AlphaRampFrom, AlphaRampTo );
-      if ( inPtr->GetPaddingFlag() )
-	this->MarkPaddingData( output->GetDims( AXIS_X ), output->GetDims( AXIS_Y ), static_cast<RGBA*>( outPtr ), inPtr );
-      break;
     }
   
   this->UpdateExecuteTime();

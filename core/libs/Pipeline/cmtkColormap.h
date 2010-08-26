@@ -117,23 +117,6 @@ public:
    */
   void Apply( void *const outPtr, const TypedArray* inPtr, const bool generateAlpha = false );
 
-  /** Apply this colormap and an alpha ramp to get an RGBA presentation.
-   *@param outPtr Pointer to a suffiently big memory segment that will hold
-   * the resulting RGBA data. The data will be stored as four unsigned
-   * 8-bit values per pixel, representing the red, green, and blue components
-   * of that pixel plus its transparency (0=transparent, 255=opaque). 
-   * Transparency is linearly interpolated between these over the range defined
-   * by the "alphaRampFrom" and "alphaRangeTo" parameters.
-   *@param inPtr Pointer to a TypedArray object containing the data to be 
-   * converted. The primitive data type can be any of the types supported by
-   * TypedArray, eg. byte, short, float etc.
-   *@param alphaRampFrom All data values below this threshold will be given
-   * complete transparency (alpha=0).
-   *@param alphaRampTo All data values above this threshold will be set to 
-   * opaque (alpha=255).
-   */
-  void Apply( void *const outPtr, const TypedArray* inPtr, const double alphaRampFrom, const double alphaRampTo );
-
   /// Set colormap parameters from Study object.
   void SetFromStudy( const Study* study );
 
@@ -199,19 +182,6 @@ private:
    */
   template<class T>
   void ApplyPrimitive( RGBA *const outPtr, const T* inPtr, const unsigned int count, const bool nullFlag, const T nullData ) const;
-
-  /** Apply table lookup for a particular primitive data type.
-   *@param T Template parameter specifying the primitive data type to lookup
-   * in the color table, eg. byte, short, float etc.
-   *@param outPtr Pointer to an array holding the RGB pixel data after table
-   * lookup.
-   *@param inPtr Pointer to the primitive data array of type T.
-   *@param count Number of values in the array pointed to by inPtr. As inPtr
-   * is not a TypedArray anymore, we have to make this explicit.
-   *@see Apply
-   */
-  template<class T>
-  void ApplyPrimitive( RGBA *const outPtr, const T* inPtr, const unsigned int count, const bool nullFlag, const T nullData, const T alphaRampFrom, const T alphaRampTo ) const;
 
   /// Label color map: is system-defined by default or can be read from file.
   SegmentationLabelMap LabelColorMap;

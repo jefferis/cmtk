@@ -63,9 +63,7 @@ public:
     /// Do not use alpha channel (generate 3 byte-per-pixel RGB data).
     AlphaModeNone,
     /// Use constant alpha value (opaque).
-    AlphaModeConst,
-    /// Use linear alpha ramp.
-    AlphaModeRamp
+    AlphaModeConst
   } igsAlphaMode;
   
   /** This flag detemines if and how an alpha (transparancy) ramp is used.
@@ -75,18 +73,6 @@ public:
    */
   igsClassParameter(igsAlphaMode,AlphaMode);
   
-  /** Lower bound of the transparency ramp.
-   * All pixels with data values less than this value will be assigned complete
-   * transparency (alpha=0) in the output image.
-   */
-  igsClassParameter(double,AlphaRampFrom);
-
-  /** Upper bound of the transparency ramp.
-   * All pixels with data values higher than this value will be assigned 
-   * complete opacity (alpha=1) in the output image.
-   */
-  igsClassParameter(double,AlphaRampTo);
-
   /// Use checkerboard pattern to fill PaddingData areas.
   igsClassParameter(bool,CheckerboxPadding);
 

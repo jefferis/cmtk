@@ -207,53 +207,6 @@ Colormap::Apply( void *const outPtr, const TypedArray* inPtr, const bool generat
     }
 }
 
-void 
-Colormap::Apply
-( void *const outPtr, const TypedArray* inPtr, const double alphaRampFrom, const double alphaRampTo )
-{
-  if ( ( outPtr == NULL ) || (inPtr == NULL) ) return;
-  
-  if ( (LookupTable == NULL) || (!TableEntries) ) 
-    {
-    memset( outPtr, 0, 4 * inPtr->GetDataSize() );
-    return;
-    }
-  
-  int size = inPtr->GetDataSize();
-  switch ( inPtr->GetType() ) 
-    {
-    case TYPE_BYTE:
-      ApplyPrimitive<byte>( (RGBA*) outPtr,  (byte*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((byte*)inPtr->GetPaddingPtr()), (byte) alphaRampFrom, (byte) alphaRampTo );
-      break;
-    case TYPE_CHAR:
-      ApplyPrimitive<char>( (RGBA*) outPtr, (char*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((char*)inPtr->GetPaddingPtr()), (char) alphaRampFrom, (char) alphaRampTo );
-      break;
-    case TYPE_SHORT:
-      ApplyPrimitive<short>( (RGBA*) outPtr, (short*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((short*)inPtr->GetPaddingPtr()), (short) alphaRampFrom, (short) alphaRampTo );
-      break;
-    case TYPE_USHORT:
-      ApplyPrimitive<unsigned short>( (RGBA*) outPtr, (unsigned short*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((unsigned short*)inPtr->GetPaddingPtr()),
-				      (unsigned short) alphaRampFrom, (unsigned short) alphaRampTo );
-      break;
-    case TYPE_INT:
-      ApplyPrimitive<int>( (RGBA*) outPtr, (int*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((int*)inPtr->GetPaddingPtr()), (int) alphaRampFrom, (int) alphaRampTo );
-      break;
-    case TYPE_UINT:
-      ApplyPrimitive<unsigned int>( (RGBA*) outPtr, (unsigned int*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((unsigned int*)inPtr->GetPaddingPtr()),
-				    (unsigned int) alphaRampFrom, (unsigned int) alphaRampTo );
-      break;
-    case TYPE_FLOAT:
-      ApplyPrimitive<float>( (RGBA*) outPtr, (float*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((float*)inPtr->GetPaddingPtr()), (float) alphaRampFrom, (float) alphaRampTo );
-      break;
-    case TYPE_DOUBLE:
-      ApplyPrimitive<double>( (RGBA*) outPtr, (double*)inPtr->GetDataPtr(), size, inPtr->GetPaddingFlag(), *((double*)inPtr->GetPaddingPtr()), (double) alphaRampFrom, (double) alphaRampTo );
-      break;
-    case TYPE_NONE:
-      break;
-    }
-}
-
-
 template<class T>
 void Colormap::ApplyPrimitive
 ( RGB *const outPtr, const T* inPtr, const unsigned int count,
@@ -330,62 +283,6 @@ void Colormap::ApplyPrimitive
 	outPtr[index] = LookupTable[ (int)( (data - DataRange[0]) * InvDataRangeWidth ) ];
       
       outPtr[index].Alpha = 255;
-      }
-    }
-}
-
-template<class T>
-void Colormap::ApplyPrimitive
-( RGBA *const outPtr, const T* inPtr, const unsigned int count, const bool paddingFlag, const T paddingData, const T alphaRampFrom, const T alphaRampTo ) const
-{
-  const double alphaSlope = static_cast<double>( 255.0 / (alphaRampTo - alphaRampFrom) );
-
-  if ( Reverse ) 
-    {
-    for ( unsigned int index = 0; index < count; ++index ) 
-      {
-      T data = inPtr[index];
-      if ( (paddingFlag && (data == paddingData)) || !finite( data ) ) 
-	data = 0;
-      
-      if ( data <= DataRange[0] ) 
-	outPtr[index] = LookupTable[LookupTableEntries-1];
-      else if ( inPtr[index] >= DataRange[1] ) 
-	outPtr[index] = LookupTable[0];
-      else
-	outPtr[index] = LookupTable[ LookupTableEntries - 1 - (int)( (data - DataRange[0]) * InvDataRangeWidth ) ];
-      
-      if ( data <= alphaRampFrom )
-	outPtr[index].Alpha = 0;
-      else
-	if ( data >= alphaRampTo )
-	  outPtr[index].Alpha = 255;
-	else
-	  outPtr[index].Alpha = (byte) ((data - alphaRampFrom ) * alphaSlope);
-      }
-    } 
-  else
-    {
-    for ( unsigned int index = 0; index < count; ++index ) 
-      {
-      T data = inPtr[index];
-      if ( (paddingFlag && (data == paddingData)) || !finite( data ) ) 
-	data = 0;
-      
-      if ( data <= DataRange[0] ) 
-	outPtr[index] = LookupTable[0];
-      else if ( data >= DataRange[1] ) 
-	outPtr[index] = LookupTable[LookupTableEntries-1];
-      else
-	outPtr[index] = LookupTable[ (int)( (data - DataRange[0]) * InvDataRangeWidth ) ];
-      
-      if ( data <= alphaRampFrom )
-	outPtr[index].Alpha = 0;
-      else
-	if ( data >= alphaRampTo )
-	  outPtr[index].Alpha = 255;
-	else
-	  outPtr[index].Alpha = (byte) ((data - alphaRampFrom ) * alphaSlope);
       }
     }
 }
