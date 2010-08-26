@@ -380,16 +380,6 @@ public:
    * reference and model image is computed.
    *@param HXY Upon return, this reference holds the estimated joint entropy.
    */
-  void GetJointEntropy ( double& HXY ) const
-  {
-    HXY = this->GetJointEntropy();
-  }
-  
-  /** Compute joint entropy.
-   * From the joint bins, an estimate to the joint entropy of both, 
-   * reference and model image is computed.
-   *@param HXY Upon return, this reference holds the estimated joint entropy.
-   */
   double GetJointEntropy() const;
   
   /** Increment the value of a histogram bin by 1.
@@ -597,7 +587,7 @@ public:
   {
     double hX, hY, hXY;
     this->GetMarginalEntropies( hX, hY );
-    this->GetJointEntropy( hXY );
+    hXY = this->GetJointEntropy();
     if ( hXY > 0 )
       if ( normalized ) 
 	return (hX + hY) / hXY;

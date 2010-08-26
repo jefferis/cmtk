@@ -296,9 +296,9 @@ main ( const int argc, const char* argv[] )
   
   cmtk::JointHistogram<int>::SmartPtr histogram( AnalyseStudies( voxelCount, sumAbs, sumSq, sumMult, countVoxelsUnequal, ccMetric, mask ) );
   
-  double hX, hY, hXY;
-  histogram->GetJointEntropy( hXY );
+  double hX, hY;
   histogram->GetMarginalEntropies( hX, hY );
+  const double hXY = histogram->GetJointEntropy();
   
   fprintf( stdout, "STAT\tN\tHX\tHY\nSTATval\t%d\t%.5f\t%.5f\n\n", voxelCount, hX, hY );
   

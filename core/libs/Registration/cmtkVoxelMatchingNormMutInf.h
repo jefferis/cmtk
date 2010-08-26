@@ -104,10 +104,9 @@ public:
   /// Return normalized mutual information.
   typename Self::ReturnType Get () const 
   {
-    double HX, HY, HXY;
-    
+    double HX, HY;
     this->GetMarginalEntropies(HX,HY);
-    this->GetJointEntropy(HXY);
+    const double HXY = this->GetJointEntropy();
     
     return static_cast<typename Self::ReturnType>( (HX + HY) / HXY );
   }

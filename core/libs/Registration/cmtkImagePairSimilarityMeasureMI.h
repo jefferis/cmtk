@@ -86,10 +86,9 @@ public:
   /// Get the value of the metric.
   virtual Self::ReturnType Get() const 
   {
-    double HX, HY, HXY;
-    
+    double HX, HY;    
     this->m_JointHistogram.GetMarginalEntropies(HX,HY);
-    this->m_JointHistogram.GetJointEntropy(HXY);
+    const double HXY = this->m_JointHistogram.GetJointEntropy();
     
     return static_cast<Self::ReturnType>( HX + HY - HXY );
   }
