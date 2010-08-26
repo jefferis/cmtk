@@ -634,18 +634,6 @@ public:
     
     return eta / (sigSquare * sampleCount); 
   }
-  
-#ifdef _OPENMP
-private:
-  /// If we have OpenMP, we may need a vector of double to store some intermediate results.
-  mutable std::vector<double> m_plogp;
-
-  /// Parallel computation of marginal entropies using OpenMP: only called when sufficient threads and sufficient data are given.
-  void GetMarginalEntropiesOMP( double& HX, double& HY ) const;
-
-  /// Parallel computation of joint entropy using OpenMP: only called when sufficient threads and sufficient data are given.
-  double GetJointEntropyOMP() const;
-#endif
 };
 
 //@}
