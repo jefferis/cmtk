@@ -36,7 +36,7 @@
 
 #ifdef _MSC_VER
 #  include "cmtkThreadSemaphoreWindows.txx"
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) || defined(__CYGWIN__)
 #  include "cmtkThreadSemaphoreAppleIsRetarded.txx"
 #else
 #  include "cmtkThreadSemaphorePOSIX.txx"
