@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,29 +48,5 @@ cmtk
 //@{
 
 long CurrentTime = 1;
-
-void
-Object::SetParameterString
-( char*& to, const char* from )
-{
-  if ( (to != NULL) ) 
-    {
-    if ( from != NULL )
-      if ( !strcmp( to, from ) ) return;
-    free(to); 
-    to = NULL; 
-    } 
-  else
-    {
-    if ( from == NULL ) return;
-    }
-  
-  if ( from != NULL ) 
-    { 
-    to = strdup(from); 
-    } 
-  
-  this->UpdateModifiedTime();
-}
 
 } // namespace cmtk

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -65,37 +66,6 @@
              void Set##name( const type v ) { if ( this->m_##name != v ) this->UpdateModifiedTime(); this->m_##name = v; } \
              type Get##name() const { return this->m_##name; } \
              void Get##name( type& to ) { to = this->m_##name; }
-
-/** Macro to define a protected string class parameter and public read and 
- * write access member functions.
- */
-#define igsClassParameterString(name) \
-  public: char *name; \
-             void Set##name( const char* v ) { \
-                this->SetParameterString( name, v ); } \
-             char* Get##name() { return name; } \
-             const char* Get##name() const { return name; } \
-             void Get##name( char*& to ) { to = name; }
-
-/** Macro to define a protected pointer class parameter and public read and 
- * write access member functions.
- */
-#define igsClassParameterPtr(t,name) \
-  protected: t *name; \
-  public:    void Set##name( t *const v ) { if ( name != v ) this->UpdateModifiedTime(); name = v; } \
-             t* Get##name() { return name; } \
-             const t* Get##name() const { return name; } \
-             void Get##name( t*& to ) { to = name; }
-
-/** Macro to define a protected pointer class parameter and public read and 
- * write access member functions.
- */
-#define igsClassParameterObject(t,name) \
-  protected: t *name; \
-  public:    void Set##name( t *const v ) { if ( name != v ) this->UpdateModifiedTime(); if (v) v->Reference(); if (name) name->Delete(); name = v; } \
-             t* Get##name() { return name; } \
-             const t* Get##name() const { return name; } \
-             void Get##name( t*& to ) { to = name; }
 
 /** Macro to define a protected 2D array class parameter and public read and 
  * write access member functions.
@@ -242,20 +212,6 @@ public:
     this->UpdateModifiedTime();
     return true;
   }
-
-  /** Replace string parameter.
-   * This function replaces a string parameter of an arbitrary derived class.
-   * It is safe in that it will accept any combination of NULL and non-NULL
-   * pointers for previous and new value of the respective parameter.
-   * If a change actually occurred, the derived object's UpdateModifiedTime()
-   * function is called.
-   *@param to Reference to the char pointer to be set to the new value.
-   *@param from Pointer to the new value to be assigned to "to". Assignment
-   * will be done by a call to "strdup", so the caller is free to use and
-   * deallocate the source string after return from this function.
-   *@see PipelineObject#UpdateModifiedTime
-   */
-  void SetParameterString( char*& to, const char *from );
 
   /** Default constructor.
    * Set the reference counter to zero initially.
