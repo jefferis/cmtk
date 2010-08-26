@@ -1,5 +1,7 @@
 Release CMTK-1.4.3:
 
+(r2309) Fixed: because gcc/OpenMP breaks POSIX semaphores on Cygwin, use
+    CMTK's mutex/condition implementation instead (Issue #4779)
 (r2307) Refactored: eliminated several hundred lines of unused and obsolete
     code, including several classes.
 (r2294) Improved: eliminating calls to floor() improved registration times by
@@ -9,8 +11,6 @@ Release CMTK-1.4.3:
     about 30%. This should be noticable in production use also. No surprise,
     actually, because most entropy evaluations are done in parallel on a
     higher level anyway.
-(r2283) Fixed: because gcc/OpenMP breaks POSIX semaphores on Cygwin, use
-    CMTK's mutex/condition implementation instead (Issue #4779)
 (r2281) Fixed: "reformatx" tool did not properly initiatialize thread system,
     therefore running too many OpenMP threads even when CMTK_NUM_THREADS was
     set.
