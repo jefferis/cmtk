@@ -103,35 +103,6 @@ VolumeFromSlices::EncapDataArray ( const ScalarDataType dtype, void *const data,
 
 const char* 
 VolumeFromSlices::FillPlane 
-( unsigned int& plane, const void *data, const ImageInfo& image )
-{
-  const char *check = this->CheckImage( plane, image );
-  if ( check ) return check;
-
-  int bytesPerBlock = BytesPerPixel*Dims[0]*Dims[1];
-  for ( int planeIdx = 0; planeIdx < image.dims[2]; ++planeIdx, ++plane ) 
-    {
-    const size_t offset = (planeIdx * Dims[0] * Dims[1]) * this->BytesPerPixel;
-    memcpy( this->RawData+offset, ((char*)data)+offset, bytesPerBlock );
-    
-    if ( image.Padding ) 
-      {
-      Padding = true;
-      memcpy( &PaddingValue, &image.PaddingValue, sizeof( PaddingValue) );
-      }
-    
-    // set world coordinate of the plane just read
-    Types::Coordinate slice_position = (ImagePosition - FirstImagePosition).RootSumOfSquares();
-    slice_position = 1e-6 * ( MathUtil::Round( 1e+6 * slice_position) );
-    Points[2][plane] = slice_position;
-    }
-  
-  Progress::SetProgress( plane );
-  return NULL;
-}
-
-const char* 
-VolumeFromSlices::FillPlane 
 ( unsigned int& plane, const ScalarImage* image )
 {
   char* rawDataPtr = static_cast<char*>( VolumeDataArray->GetDataPtr() );
@@ -293,75 +264,6 @@ VolumeFromSlices::CheckImage
   
   // Finally, save essential information about current image.
   ImagePosition = image->GetImageOrigin( frame );
-  
-  return NULL;
-}
-
-const char* 
-VolumeFromSlices::CheckImage ( const int plane, const ImageInfo& image ) 
-{
-  if ( ( Dims[0] != image.dims[0] ) || ( Dims[1] != image.dims[1] ) )
-    return "Image size mismatch";
-  
-  if ( image.bytesperpixel != BytesPerPixel )
-    return "Data type mismatch";
-
-  if ( ( fabs( image.calibrationx - Spacing[0] ) > CMTK_MAX_CALIB_ERROR ) || ( fabs( image.calibrationy - Spacing[1] ) > CMTK_MAX_CALIB_ERROR ) )
-    return "Calibration mismatch";
-  
-  // not too many things can go wrong for the very first slice.
-  if ( plane == 0 ) 
-    {
-    FirstImagePosition = ImagePosition = image.ImagePosition;
-    ImageOrientation[0] = image.ImageOrientation[0];
-    ImageOrientation[1] = image.ImageOrientation[1];
-    return NULL;
-    }
-  
-  // check whether this slice is parallel to the previous one
-  for ( int axis = 0; axis<2; ++axis )
-    for ( int dim = 0; dim<3; ++dim )
-      {
-      if ( fabs( ImageOrientation[axis][dim] - image.ImageOrientation[axis][dim] ) > CMTK_MAX_CALIB_ERROR )
-	return "Non-parallel image planes";
-      }
-  
-  // Second++ slice: Compute slice-to-slice vector
-  ScalarImage::SpaceVectorType imageToImage = image.ImagePosition - ImagePosition;
-  
-  if ( imageToImage.MaxAbsValue() < CMTK_MAX_LOCALIZE_ERROR )
-    return "Encountered two slices in identical location.";
-  else
-    imageToImage /= imageToImage.MaxAbsValue();
-  
-  // Check whether slice-to-slice direction is orthogonal to image
-  // axes.
-  const Types::Coordinate scalarX = imageToImage * ImageOrientation[0];
-  const Types::Coordinate scalarY = imageToImage * ImageOrientation[1];
-  if ( ( fabs( scalarX ) > CMTK_MAX_ANGLE_ERROR ) || ( fabs( scalarY ) > CMTK_MAX_ANGLE_ERROR ) )
-    return "Data grid must be orthogonal.";
-
-  // if this is the second slice, save increment vector for further tests.
-  if ( plane == 1 )
-    IncrementVector = imageToImage;
-  // otherwise, perform these tests
-  else 
-    {
-    // Are we still going in the same direction?
-    if ( (imageToImage - IncrementVector).MaxAbsValue() > CMTK_MAX_LOCALIZE_ERROR )
-      {
-      // Nope, but why? Let's give user some more hints
-      if ( ( (imageToImage * IncrementVector) > 0 ) )
-	// Basically same direction, so FOV has changed
-	return "Field-of-view mismatch";
-      else
-	// Completely different direction: We're going backwards
-	return "Encountered altering slice direction.";
-      }
-    }
-  
-  // Finally, save essential information about current image.
-  ImagePosition = image.ImagePosition;
   
   return NULL;
 }

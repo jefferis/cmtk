@@ -44,8 +44,6 @@
 #include "Base/cmtkUniformVolume.h"
 #include "Base/cmtkScalarImage.h"
 
-#include "IO/cmtkImageInfo.h"
-
 #include <stdio.h>
 
 /**@name Error bounds for various floating point situations.
@@ -105,13 +103,6 @@ protected:
    * all slices have been copied to the 3D array, the xy-plane is always axial
    * with respect to the patient.
    */
-  const char* FillPlane ( unsigned int&, const void*, const ImageInfo& );
-
-  /** Copy one slice of data into field.
-   * This function rearranges the bytes in the given 2D image so that after
-   * all slices have been copied to the 3D array, the xy-plane is always axial
-   * with respect to the patient.
-   */
   const char* FillPlane ( unsigned int& plane, const ScalarImage* image );
 
   /** Finish volume creation and free temporary storage.
@@ -160,17 +151,6 @@ protected:
    *@see Volume
    */
   virtual UniformVolume::SmartPtr ConstructVolume( const DataGrid::IndexType& Dims, const UniformVolume::CoordinateVectorType& Size, const Types::Coordinate *Points[3], TypedArray::SmartPtr& Data ) const;
-
-  /** Check image consistency.
-   * This function is used to verify that all images share the same matrix 
-   * size, identical pixel calibrations, and the same primitive data type. 
-   * Also, slices with zero distance and changing directions of the table
-   * position are detected and reported.
-   *@param plane Index of this image in the sequence.
-   *@param image A reference to a structure describing the next image.
-   *@return A pointer to an error message, of NULL if image was okay.
-   */
-  const char* CheckImage ( const int plane, const ImageInfo& image );
 
   /** Check image consistency.
    * This function is used to verify that all images share the same matrix 
