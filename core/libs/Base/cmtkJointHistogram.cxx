@@ -34,6 +34,10 @@
 
 #include "Base/cmtkMathUtil.h"
 
+#ifdef _OPENMP
+#  include <omp.h>
+#endif
+
 namespace
 cmtk
 {
@@ -47,50 +51,6 @@ JointHistogram<T>::GetMarginalEntropies ( double& HX, double& HY )
 {
   const T sampleCount = this->SampleCount();
 
-#ifdef ENTROPY_OPENMP
-  this->m_plogp.resize( this->m_TotalNumberOfBins );
-
-#pragma omp parallel for if (NumBinsX>64)
-  for ( size_t i=0; i<NumBinsX; ++i ) 
-    {
-    const double project = this->ProjectToX( i );
-    if ( project ) 
-      {
-      const double pX = project / sampleCount;
-      this->m_plogp[i] = - (pX * log(pX));
-      }
-    else
-      this->m_plogp[i] = 0;
-    }
-
-// serial loop here to get same results as non-parallel implementation
-  HX = this->m_plogp[0];
-  for ( size_t i=1; i<NumBinsX; ++i ) 
-    {
-    HX += this->m_plogp[i];
-    }
-
-#pragma omp parallel for if (NumBinsY>64)
-  for ( size_t j=0; j<NumBinsY; ++j ) 
-    {
-    const double project = this->ProjectToY( j );
-    if ( project ) 
-      {
-      const double pY = project / sampleCount;
-      this->m_plogp[j] = - (pY * log(pY));
-      }
-    else
-      this->m_plogp[j] = 0;
-    }
-
-// serial loop here to get same results as non-parallel implementation
-  HY = this->m_plogp[0];
-  for ( size_t j=1; j<NumBinsY; ++j ) 
-    {
-    HY += this->m_plogp[j];
-    }
-  
-#else // #ifdef _OPENMP
   HX = HY = 0;
   for ( size_t i=0; i<NumBinsX; ++i ) 
     {
@@ -111,7 +71,6 @@ JointHistogram<T>::GetMarginalEntropies ( double& HX, double& HY )
       HY -= pY * log(pY);
       }
   }
-#endif // #ifdef _OPENMP
 }
 
 template<class T> double
@@ -120,32 +79,6 @@ JointHistogram<T>::GetJointEntropy() const
   double HXY = 0;
   
   const T sampleCount = this->SampleCount();
-  
-#ifdef ENTROPY_OPENMP
-  this->m_plogp.resize( this->m_TotalNumberOfBins );
-  
-#pragma omp parallel for if (this->m_TotalNumberOfBins>512)
-  for ( size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx )
-    {
-    if ( JointBins[idx] ) 
-      {
-      const double pXY = ((double)JointBins[idx]) / sampleCount;
-      this->m_plogp[idx] = pXY * log( pXY );
-      }
-    else
-      {
-      this->m_plogp[idx] = 0;
-      }
-    }
-  
-  size_t idx = 0;
-// no omp here to make sure we get reproducible results
-  for ( size_t i=0; i<NumBinsY; ++i ) 
-    {
-    for ( size_t j=0; j<NumBinsX; ++j, ++idx )
-      HXY -= this->m_plogp[idx];
-    }
-#else // #ifdef _OPENMP
   for ( size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx )
     {
     if ( JointBins[idx] ) 
@@ -154,7 +87,6 @@ JointHistogram<T>::GetJointEntropy() const
       HXY -= pXY * log(pXY);
       }
     }
-#endif // #ifdef _OPENMP
   
   return HXY;
 }
@@ -184,6 +116,91 @@ JointHistogram<T>::GetMarginalY() const
   
   return marg;
 }
+
+#ifdef _OPENMP
+template<class T> void 
+JointHistogram<T>::GetMarginalEntropiesOMP ( double& HX, double& HY ) 
+  const 
+{
+  const T sampleCount = this->SampleCount();
+
+  this->m_plogp.resize( this->m_TotalNumberOfBins );
+
+#pragma omp parallel for
+  for ( size_t i=0; i<NumBinsX; ++i ) 
+    {
+    const double project = this->ProjectToX( i );
+    if ( project ) 
+      {
+      const double pX = project / sampleCount;
+      this->m_plogp[i] = - (pX * log(pX));
+      }
+    else
+      this->m_plogp[i] = 0;
+    }
+
+// serial loop here to get same results as non-parallel implementation
+  HX = this->m_plogp[0];
+  for ( size_t i=1; i<NumBinsX; ++i ) 
+    {
+    HX += this->m_plogp[i];
+    }
+
+#pragma omp parallel for
+  for ( size_t j=0; j<NumBinsY; ++j ) 
+    {
+    const double project = this->ProjectToY( j );
+    if ( project ) 
+      {
+      const double pY = project / sampleCount;
+      this->m_plogp[j] = - (pY * log(pY));
+      }
+    else
+      this->m_plogp[j] = 0;
+    }
+
+// serial loop here to get same results as non-parallel implementation
+  HY = this->m_plogp[0];
+  for ( size_t j=1; j<NumBinsY; ++j ) 
+    {
+    HY += this->m_plogp[j];
+    }
+}
+
+template<class T> double
+JointHistogram<T>::GetJointEntropyOMP() const 
+{
+  double HXY = 0;
+  
+  const T sampleCount = this->SampleCount();
+  
+  this->m_plogp.resize( this->m_TotalNumberOfBins );
+  
+#pragma omp parallel for
+  for ( size_t idx = 0; idx < this->m_TotalNumberOfBins; ++idx )
+    {
+    if ( JointBins[idx] ) 
+      {
+      const double pXY = ((double)JointBins[idx]) / sampleCount;
+      this->m_plogp[idx] = pXY * log( pXY );
+      }
+    else
+      {
+      this->m_plogp[idx] = 0;
+      }
+    }
+  
+  size_t idx = 0;
+// no omp here to make sure we get reproducible results
+  for ( size_t i=0; i<NumBinsY; ++i ) 
+    {
+    for ( size_t j=0; j<NumBinsX; ++j, ++idx )
+      HXY -= this->m_plogp[idx];
+    }
+
+  return HXY;
+}
+#endif // #ifdef _OPENMP
 
 template class JointHistogram<int>;
 template class JointHistogram<unsigned int>;
