@@ -115,18 +115,6 @@ public:
 
   /// Remove and delete given study object.
   void DeleteStudy( const unsigned int studyIndex );
-
-  /// Print studylist information.
-  void Print() const;
-
-  /// Get all target studies for a given reference study.
-  std::list<Study::SmartPtr> GetTargetStudyList( const Study* referenceStudy );
-
-  /// Get all independent (non-target) studies for a given reference study.
-  std::list<Study::SmartPtr> GetIndependentStudyList( const Study* referenceStudy );
-
-  /// Test whether two studies are connected.
-  bool Connected( const Study::SmartPtr& s1, const Study::SmartPtr& s2 );
 };
 
 //@}
