@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,8 +32,6 @@
 
 #include "Pipeline/cmtkRenderer.h"
 
-#include "Pipeline/cmtkRendererCollection.h"
-
 namespace
 cmtk
 {
@@ -50,20 +49,6 @@ Renderer::Renderer()
 Renderer::~Renderer()
 {
   if ( Input != NULL ) Input->Delete();
-  if ( RendererCollectionInstance != NULL ) {
-    // this is a hack to avoid recursive destructor calls:
-    this->Reference();
-    RendererCollectionInstance->RemoveRenderer( this );
-  }
-}
-
-void
-Renderer::RegisterToCollection()
-{
-  if ( RendererCollectionInstance == NULL ) {
-    RendererCollectionInstance = RendererCollection::New();
-  }
-  RendererCollectionInstance->AddRenderer( this );
 }
 
 void

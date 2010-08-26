@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -108,9 +109,6 @@ protected:
 
   /// Destructor.
   ~Renderer();
-
-  /// Register to global list of all active renderers.
-  virtual void RegisterToCollection();
 
   /// Image to be displayed.
   ImageRGB* Input;
