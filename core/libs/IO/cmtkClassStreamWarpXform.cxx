@@ -44,86 +44,28 @@ cmtk
 ClassStream& 
 ClassStream::operator << ( const WarpXform *warpXform )
 {
-  const SplineWarpXform *splineWarpXform = dynamic_cast<const SplineWarpXform*>( warpXform );
-  if ( splineWarpXform ) return (*this << splineWarpXform );
-
-  return *this;
-}
-
-ClassStream& 
-ClassStream::Put
-( const WarpXform *warpXform,
-  const AffineXform* initialXform )
-{
-  const SplineWarpXform* splineWarpXform = dynamic_cast<const SplineWarpXform*>( warpXform );
-  if ( splineWarpXform )
-    return this->PutWarp( splineWarpXform, initialXform );
-  
-  return *this;
-}
-
-ClassStream& 
-ClassStream::Put
-( const SplineWarpXform *splineWarpXform,
-  const AffineXform* initialXform )
-{
-  this->Begin( "spline_warp" );
-  return this->PutWarp( splineWarpXform, initialXform );
+  return this->PutWarp( warpXform );
 }
 
 ClassStream& 
 ClassStream::PutWarp
-( const WarpXform *warpXform, 
-  const AffineXform* initialXform )
+( const WarpXform *warpXform )
 {
-  Types::Coordinate *nCoeff;
-  // Undo initial transformation.
-  if ( initialXform ) 
-    {
-    Types::Coordinate *oCoeff = warpXform->m_Parameters;
-    nCoeff = Memory::AllocateArray<Types::Coordinate>( warpXform->m_NumberOfParameters );
-    Types::Coordinate *p = nCoeff;
-    for ( int z=0; z<warpXform->m_Dims[2]; ++z )
-      for ( int y=0; y<warpXform->m_Dims[1]; ++y )
-	for ( int x=0; x<warpXform->m_Dims[0]; ++x, oCoeff+=3, p+=3 ) 
-	  {
-	  FixedVector<3,Types::Coordinate> P( oCoeff );
-	  initialXform->ApplyInPlace( P );
-	  p[0] = P[0]; p[1] = P[1]; p[2] = P[2];
-	  
-	  // Undo offset tranformation; regain deltas.
-	  p[0] -= (warpXform->m_Offset[0] + x * warpXform->Spacing[0]);
-	  p[1] -= (warpXform->m_Offset[1] + y * warpXform->Spacing[1]);
-	  p[2] -= (warpXform->m_Offset[2] + z * warpXform->Spacing[2]);
-	  
-	  // Is this correct, anyway? a) we may have to use the INVERSE
-	  // affine transformation, as it is with respect to the model while
-	  // the warp refers to the reference. b) we should do deformed-affine
-	  // to get the relative offset.
-	  
-	  // Filter out unreasonably small values induced by rounding errors.
-	  for ( int i=0; i<3; ++i ) 
-	    {
-	    if ( fabs( p[i] ) < 1e-5 )
-	      p[i] = 0;
-	    }
-	  }
-    } 
-  else
-    {
-    nCoeff = warpXform->m_Parameters;
-    }
+  const Types::Coordinate *nCoeff = warpXform->m_Parameters;
+  
+  if ( dynamic_cast<const SplineWarpXform*>( warpXform ) )
+    this->Begin( "spline_warp" );
   
   if ( warpXform->GetInitialAffineXform() )
     *this << (*warpXform->GetInitialAffineXform());
   
-  this->WriteBool ( "absolute", (initialXform == NULL) );
+  this->WriteBool ( "absolute", true );
   this->WriteIntArray( "dims", warpXform->m_Dims.begin(), 3 );
-
+  
   this->WriteCoordinateArray( "domain", warpXform->Domain.begin(), 3 );
   this->WriteCoordinateArray( "origin", warpXform->m_Offset.begin(), 3 );
   this->WriteCoordinateArray( "coefficients", nCoeff, warpXform->m_NumberOfParameters, 3 );
-
+  
   const BitVector* activeFlags = warpXform->GetActiveFlags();
   if ( activeFlags ) 
     {
@@ -131,8 +73,6 @@ ClassStream::PutWarp
     }			 
   
   this->End();
-  
-  if ( initialXform ) delete[] nCoeff;
   
   return *this;
 }

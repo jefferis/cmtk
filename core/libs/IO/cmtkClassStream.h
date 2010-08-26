@@ -110,10 +110,6 @@ public:
    */
   ClassStream& operator << ( const WarpXform *warpXform );
 
-  /// Write spline transformation object.
-  ClassStream& operator << ( const SplineWarpXform *splineWarpXform )
-  { return this->Put( splineWarpXform ); }
-
   /** Write spline transformation object.
    * This function works on a reference rather than a pointer. It immediately
    * calls the pointer-based function defined above for the actual writing.
@@ -121,9 +117,6 @@ public:
   ClassStream& operator << ( const SplineWarpXform& splineWarpXform )
   { return (*this) << &splineWarpXform; }
   
-  /// Write spline transformation object.
-  ClassStream& Put ( const SplineWarpXform* splineWarpXform, const AffineXform* affineXform = NULL  );
-
   /// Read (spline or linear) warp transformation.
   ClassStream& operator >> ( WarpXform::SmartPtr& warpXform );
 
@@ -136,12 +129,9 @@ public:
   /// Actually read warp transformation object.
   ClassStream& Get ( WarpXform*& warpXform, const AffineXform* affineXform = NULL  );
 
-  /// Write linear or spline transformation object.
-  ClassStream& Put ( const WarpXform* warpXform, const AffineXform* affineXform = NULL  );
-
 private:
   /// Write actual warp transformation object.
-  ClassStream& PutWarp( const WarpXform* warpXform, const AffineXform* affineXform = NULL  );
+  ClassStream& PutWarp( const WarpXform* warpXform  );
 
 public:
   /** Write parametric plane object.
