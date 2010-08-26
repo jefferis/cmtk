@@ -49,20 +49,17 @@ UniformVolume::ProbeData
   Self::CoordinateVectorType l( location );
   l -= this->m_Offset;
 
-  if ( l[0] < 0 )
+  if ( (l[0] < 0) || (l[1] < 0) || (l[2] < 0) )
     return false;
+  
   const int idxX=(int) (l[0]/this->m_Delta[0]);
   if ( idxX>=this->m_Dims[0]-1 )
     return false;
-
-  if ( l[1] < 0 )
-    return false;
+  
   const int idxY=(int) (l[1]/this->m_Delta[1]);
   if ( idxY>=this->m_Dims[1]-1 )
     return false;
 
-  if ( l[2] < 0 )
-    return false;
   const int idxZ=(int) (l[2]/this->m_Delta[2]);
   if ( idxZ>=this->m_Dims[2]-1 )
     return false;
@@ -80,20 +77,17 @@ UniformVolume::ProbeNoXform
   Self::CoordinateVectorType l( location );
   l -= this->m_Offset;
 
-  if ( l[0] < 0 )
+  if ( (l[0] < 0) || (l[1] < 0) || (l[2] < 0) )
     return false;
+  
   const int idxX=(int) (l[0]/this->m_Delta[0]);
   if ( idxX>=this->m_Dims[0]-1 )
     return false;
 
-  if ( l[1] < 0 )
-    return false;
   const int idxY=(int) (l[1]/this->m_Delta[1]);
   if ( idxY>=this->m_Dims[1]-1 )
     return false;
 
-  if ( l[2] < 0 )
-    return false;
   const int idxZ=(int) (l[2]/this->m_Delta[2]);
   if ( idxZ>=this->m_Dims[2]-1 )
     return false;
@@ -111,10 +105,11 @@ UniformVolume::FindVoxel
   Self::CoordinateVectorType l( location );
   l -= this->m_Offset;
 
+  if ( (l[0] < 0) || (l[1] < 0) || (l[2] < 0) )
+    return false;
+  
   for ( int dim = 0; dim < 3; ++dim ) 
     {
-    if ( l[dim] < 0 )
-      return false;
     idx[dim] = static_cast<int>( l[dim] / this->m_Delta[dim] );
     if ( idx[dim]>=(this->m_Dims[dim]-1) ) 
       return false;
@@ -131,10 +126,11 @@ UniformVolume::FindVoxel
   Self::CoordinateVectorType l( location );
   l -= this->m_Offset;
   
+  if ( (l[0] < 0) || (l[1] < 0) || (l[2] < 0) )
+    return false;
+  
   for ( int dim = 0; dim < 3; ++dim ) 
     {
-    if ( l[dim] < 0 )
-      return false;
     idx[dim] = static_cast<int>( l[dim] / this->m_Delta[dim] );
     if ( idx[dim]>=(this->m_Dims[dim]-1) ) 
       return false;
@@ -156,10 +152,11 @@ inline bool
 UniformVolume::FindVoxelByIndex
 ( const Self::CoordinateVectorType& fracIndex, int *const idx, Types::Coordinate *const frac ) const
 {
+  if ( (fracIndex[0]<0) || (fracIndex[1]<0) || (fracIndex[2]<0) )
+    return false;
+  
   for ( int dim = 0; dim < 3; ++dim ) 
     {
-    if ( fracIndex[dim]<0 )
-      return false;
     idx[dim] = static_cast<int>( fracIndex[dim] );
     if ( (idx[dim] >= (this->m_Dims[dim]-1)) ) 
       return false;
