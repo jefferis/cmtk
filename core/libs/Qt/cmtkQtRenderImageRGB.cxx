@@ -137,32 +137,6 @@ QtRenderImageRGB::DrawCrosshair
   painter.drawLine( crosshairX, 0, crosshairX, realHeight-1 );
 }
 
-ImageRGB*
-QtRenderImageRGB::CaptureDisplay()
-{
-  ImageRGB* image = ImageRGB::New();
-  image->CopyStructure( Input );
-  image->SetAlphaChannel( IMAGE_RGB );
-
-  QPixmap* capture = new QPixmap( ZoomFactorPercent * image->GetDims( AXIS_X ) / 100, ZoomFactorPercent * image->GetDims( AXIS_Y ) / 100 );
-  this->RenderTo( capture );
-  QImage qimage = capture->toImage().convertToFormat( QImage::Format_RGB32 );
-  delete capture;
-
-  byte* toPtr = image->GetDataPtr( true /* forceAlloc */ );
-  const byte* fromPtr = qimage.bits();
-  unsigned int numPixels = image->GetNumPixels();
-  for ( unsigned int idx = 0; idx < numPixels; ++idx ) 
-    {
-    for ( unsigned int i = 0; i < 3; ++i, ++toPtr, ++fromPtr ) 
-      {
-      *toPtr = *fromPtr;
-      }
-    ++fromPtr;
-    }
-  return image;
-}
-
 QPixmap
 QtRenderImageRGB::GetPixmap()
 {

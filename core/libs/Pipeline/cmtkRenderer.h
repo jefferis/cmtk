@@ -86,19 +86,6 @@ protected:
   /// Image to be displayed.
   ImageRGB* Input;
 
-  /** Capture displayed RGB image.
-   * By default, the captured image is only the input image. However, derived
-   * classes can capture actual displays which may contain annotations etc.
-   * If the input image is returned, its reference counter is incremented.
-   * Callers to this funciton can and should therefore call "Delete()" once
-   * they are done with the object returned by this function.
-   */
-  virtual ImageRGB* CaptureDisplay() 
-  {
-    if ( Input ) Input->Reference();
-    return Input;
-  }
-
 private:
   /** Active flag.
    * If this flag is set, the renderer is active. It will display its 

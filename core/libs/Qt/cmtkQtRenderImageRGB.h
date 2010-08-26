@@ -139,12 +139,6 @@ protected:
   /// React to mouse dragging (generate a signal).
   virtual void mouseMoveEvent( QMouseEvent *e );
 
-  /** Capture displayed RGB image.
-   * Capture actual display of this widget, potentially with annotations, axes,
-   * crosshair, etc.
-   */
-  virtual ImageRGB* CaptureDisplay();
-
 private:
   /// Intermediate QImage object for painting.
   QImage Image;
