@@ -84,14 +84,6 @@ public:
     const Types::DataItemRange& boundsX = Types::DataItemRange( -HUGE_VAL, HUGE_VAL ),
     const Types::DataItemRange& boundsY = Types::DataItemRange( -HUGE_VAL, HUGE_VAL ) );
   
-  unsigned int SetDataX( const UniformVolume* volume, const unsigned int numBins, const Types::DataItemRange& bounds = Types::DataItemRange( -HUGE_VAL, HUGE_VAL ) );
-
-  unsigned int SetDataY( const UniformVolume* volume, const unsigned int numBins, const Types::DataItemRange& bounds = Types::DataItemRange( -HUGE_VAL, HUGE_VAL ) );
-  
-  void SetDataXY( const UniformVolume* volumeX, const unsigned int numBinsX, const UniformVolume* volumeY, const unsigned int numBinsY,
-		  const Types::DataItemRange& boundsX = Types::DataItemRange( -HUGE_VAL, HUGE_VAL ),
-		  const Types::DataItemRange& boundsY = Types::DataItemRange( -HUGE_VAL, HUGE_VAL ) );
-
   /** Continue incremental calculation by fractional voxel index.
    * For a given pair of reference and floating sample, the computation 
    * proceeds. This means the bin counters for both given samples are 

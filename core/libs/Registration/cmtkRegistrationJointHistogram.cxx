@@ -55,39 +55,6 @@ RegistrationJointHistogram<I>::RegistrationJointHistogram
   this->Resize( this->DataX.Init( refVolume, numBinsX, boundsX ), this->DataY.Init( fltVolume, numBinsY, boundsY ) );
 }
 
-template<cmtk::Interpolators::InterpolationEnum I>
-unsigned int
-RegistrationJointHistogram<I>::SetDataX 
-( const UniformVolume* volume, const unsigned int numBins, 
-  const Types::DataItemRange& bounds )
-{
-  this->VoxelMatchingMetric<byte,TYPE_BYTE,I>::SetDataX( volume );
-  this->Resize( this->DataX.Init( volume, numBins, bounds ), this->GetNumBinsY() );
-  return NumBinsX;
-}
-
-template<cmtk::Interpolators::InterpolationEnum I>
-unsigned int
-RegistrationJointHistogram<I>::SetDataY 
-( const UniformVolume* volume, const unsigned int numBins, 
-  const Types::DataItemRange& bounds )
-{
-  this->VoxelMatchingMetric<byte,TYPE_BYTE,I>::SetDataY( volume );
-  this->Resize( this->GetNumBinsX(), this->DataY.Init( volume, numBins, bounds ) );
-  return NumBinsY;
-}
-
-template<cmtk::Interpolators::InterpolationEnum I>
-void
-RegistrationJointHistogram<I>::SetDataXY
-( const UniformVolume* volumeX, const unsigned int numBinsX, 
-  const UniformVolume* volumeY, const unsigned int numBinsY,
-  const Types::DataItemRange& boundsX, const Types::DataItemRange& boundsY )
-{
-  this->VoxelMatchingMetric<byte,TYPE_BYTE,I>::SetDataXY( volumeX, volumeY );
-  this->Resize( this->DataX.Init( volumeX, numBinsX, boundsX ), this->DataY.Init( volumeY, numBinsY, boundsY ) );
-}
-
 // instantiate required templates
 template class RegistrationJointHistogram<Interpolators::LINEAR>;
 template class RegistrationJointHistogram<Interpolators::NEAREST_NEIGHBOR>;
