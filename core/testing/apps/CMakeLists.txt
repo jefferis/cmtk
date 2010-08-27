@@ -72,7 +72,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "dbtool"
-IF(CMTK_BUILD_SQLITE)
+IF(CMTK_USE_SQLITE)
   SET(testList ${testList}
     dbtool_AddImages
     dbtool_AddImages2
@@ -83,7 +83,7 @@ IF(CMTK_BUILD_SQLITE)
     dbtool_GetXform4
     dbtool_GetXform5
     dbtool_GetXform6)
-ENDIF(CMTK_BUILD_SQLITE)  
+ENDIF(CMTK_USE_SQLITE)  
   
 # ==========================================
 # Tests for "describe" tool
@@ -316,10 +316,10 @@ IF(NOT CMTK_USE_MPI)
       make_initial_affineDirectionVectorsNrrdSaCoNative)
   ENDIF(CMTK_BUILD_NRRD)
 
-  IF(CMTK_BUILD_SQLITE)
+  IF(CMTK_USE_SQLITE)
     SET(testList ${testList}
       make_initial_affineDB)
-  ENDIF(CMTK_BUILD_SQLITE)  
+  ENDIF(CMTK_USE_SQLITE)  
   
   # ==========================================
   # Tests for "mat2dof" tool
@@ -466,13 +466,13 @@ IF(NOT CMTK_USE_MPI)
     registrationxAutoLevelsLabelsPV
     registrationxAutoLevelsCt3)
 
-  IF(CMTK_BUILD_SQLITE)
+  IF(CMTK_USE_SQLITE)
     SET(testList ${testList} 
       registrationxFromListDB
       registrationxWithInitialDB
       registrationxWithInitialInverseDB
       )
-  ENDIF(CMTK_BUILD_SQLITE)  
+  ENDIF(CMTK_USE_SQLITE)  
   
   # ==========================================
   # Tests for "mrbias" tool

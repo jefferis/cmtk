@@ -33,9 +33,9 @@
 SET(CMTK_LIBRARIES "cmtkRegistration;cmtkIO;cmtkBase;cmtkNumerics;cmtkSystem")
 
 SET(DRIVERS libRegistrationTests)
-IF(CMTK_BUILD_SQLITE)
+IF(CMTK_USE_SQLITE)
   SET(DRIVERS ${DRIVERS} libRegistrationTestsSQLite)
-ENDIF(CMTK_BUILD_SQLITE)
+ENDIF(CMTK_USE_SQLITE)
 
 FOREACH(D ${DRIVERS})
   ADD_EXECUTABLE(${D} ${D}.cxx)
@@ -58,7 +58,7 @@ ENDFOREACH(T Tests)
 
 # ==========================================
 # Tests for "cmtk::XformImageDB" class
-IF(CMTK_BUILD_SQLITE)
+IF(CMTK_USE_SQLITE)
   SET(Tests
     ImageXformDBCreate 
     ImageXformDBAddImage
@@ -80,5 +80,5 @@ IF(CMTK_BUILD_SQLITE)
   FOREACH(T ${Tests})
     ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libRegistrationTestsSQLite ${T})
   ENDFOREACH(T Tests)
-ENDIF(CMTK_BUILD_SQLITE)
+ENDIF(CMTK_USE_SQLITE)
 
