@@ -42,11 +42,12 @@ cmtk
 /** \addtogroup Base */
 //@{
 
+/// Classes for type-safe values with physical units, and automatic conversions between them.
 namespace
 Units
 {
 
-/// Angle of rotation in degrees.
+/// Base class for a value with a physical unit.
 class UnitBase
 {
 public:
