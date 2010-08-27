@@ -190,7 +190,6 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
       cmtk::ReformatVolume reformat;
       reformat.SetReferenceVolume( templateGrid );
       reformat.SetFloatingVolume( floatingVolume );
-      reformat.SetCheckerboardMode( false );
       reformat.SetInterpolation( interp );
       
       AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( this->m_Functional->GetGenericXformByIndex( idx ) );

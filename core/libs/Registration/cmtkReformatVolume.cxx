@@ -66,9 +66,7 @@ ReformatVolume::ReformatVolume()
     ReferenceVolume( NULL ),
     FloatingVolume( NULL ),
     m_AffineXform( NULL ),
-    m_WarpXform( NULL ),
-    MaximumValue( 0 ),
-    CheckerboardMode( false )    
+    m_WarpXform( NULL )
 {
   Interpolation = cmtk::Interpolators::LINEAR;
   this->m_UsePaddingValue = false;
@@ -79,11 +77,6 @@ ReformatVolume::SetReferenceVolume
 ( const UniformVolume::SmartConstPtr& referenceVolume )
 {
   this->ReferenceVolume = referenceVolume;
-  if ( this->ReferenceVolume && this->ReferenceVolume->GetData() ) 
-    {
-    const Types::DataItemRange range = this->ReferenceVolume->GetData()->GetRange();
-    this->MaximumValue = std::max( range.m_UpperBound, this->MaximumValue );
-    }			       
 }
 
 void 
@@ -91,11 +84,6 @@ ReformatVolume::SetFloatingVolume
 ( const UniformVolume::SmartConstPtr& floatingVolume )
 {
   FloatingVolume = floatingVolume;
-  if ( FloatingVolume && FloatingVolume->GetData() ) 
-    {
-    const Types::DataItemRange range = FloatingVolume->GetData()->GetRange();
-    this->MaximumValue = std::max( range.m_UpperBound, this->MaximumValue );
-    }			       
 }
 
 void
@@ -153,10 +141,7 @@ ReformatVolume::PlainReformat()
 	    if ( interpolator->GetDataAt( pFlt, value ) )
 	      targetData->Set( value, offset );	      
 	    else
-	      if ( CheckerboardMode )
-		targetData->Set( ((pX>>3)%2)==((pY>>3)%2) ? 0 : MaximumValue, offset );
-	      else
-		targetData->SetPaddingAt( offset );
+	      targetData->SetPaddingAt( offset );
 	    }
 	  }
 	} 
@@ -172,10 +157,7 @@ ReformatVolume::PlainReformat()
 	    if ( interpolator->GetDataAt( pFlt, value ) )
 	      targetData->Set( value, offset );
 	    else
-	      if ( CheckerboardMode )
-		targetData->Set( ((pX>>3)%2)==((pY>>3)%2) ? 0 : MaximumValue, offset );
-	      else
-		targetData->SetPaddingAt( offset );
+	      targetData->SetPaddingAt( offset );
 	    }
 	  }
 	}
@@ -229,10 +211,7 @@ ReformatVolume::PlainReformat
 	if ( interpolator->GetDataAt( pMod, value ) )
 	  result->Set( value, offset );	      
 	else
-	  if ( CheckerboardMode )
-	    result->Set( ((pX>>3)%2)==((pY>>3)%2) ? 0 : MaximumValue, offset );
-	  else
-	    result->SetPaddingAt( offset );
+	  result->SetPaddingAt( offset );
  	}
        }
     } 
@@ -250,10 +229,7 @@ ReformatVolume::PlainReformat
 	if ( interpolator->GetDataAt( pMod, value ) )
 	  result->Set( value, offset );
 	else
-	  if ( CheckerboardMode )
-	    result->Set( ((pX>>3)%2)==((pY>>3)%2) ? 0 : MaximumValue, offset );
-	  else
-	    result->SetPaddingAt( offset );
+	  result->SetPaddingAt( offset );
 	}
       }
     }

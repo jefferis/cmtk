@@ -135,12 +135,6 @@ public:
   /// Set the local deformation to be applied to the reference grid.
   void SetWarpXform( const WarpXform::SmartPtr& warpXform );
 
-  /// Set flag for checkerboard mode.
-  void SetCheckerboardMode( const bool checkerboardMode = true ) 
-  {
-    CheckerboardMode = checkerboardMode;
-  }
-
   /** Plain reformatting.
    */
   const UniformVolume::SmartPtr PlainReformat();
@@ -284,15 +278,6 @@ private:
   
   /// Pointer to the local deformation of the reference grid.
   WarpXform::SmartConstPtr m_WarpXform;
-
-  /** Maximum value in reference and floating image.
-   * This field is updated by both SetXXXVolume methods. Its value is used for
-   * the optional generation of a checkerboard pattern.
-   */
-  Types::DataItem MaximumValue;
-
-  /// Flag for checkerboard mode.
-  bool CheckerboardMode;
 
   class GetTransformedReferenceTP : 
     public ThreadParameters<ReformatVolume>

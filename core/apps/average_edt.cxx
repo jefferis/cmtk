@@ -874,7 +874,6 @@ AddVolumeStudyList
   reformat.SetAffineXform( affineXform );
   reformat.SetWarpXform( studylist.GetWarpXform() );
   reformat.SetInterpolation( cmtk::Interpolators::PARTIALVOLUME );
-  reformat.SetCheckerboardMode( false );
   reformat.SetUsePaddingValue( true );
   reformat.SetPaddingValue( 255 );
 
