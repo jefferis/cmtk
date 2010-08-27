@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -63,26 +64,24 @@ typedef enum {
   FILEFORMAT_RAW = 8,
   /// Path is some raw binary file (3-D).
   FILEFORMAT_RAW3D = 9,
-  /// Path is an Accuray image file
-  FILEFORMAT_ACCURAY = 10,
   /// Path is a BioRad .PIC image file.
-  FILEFORMAT_BIORAD = 11,
+  FILEFORMAT_BIORAD = 10,
   /// Path is a NRRD file.
-  FILEFORMAT_NIFTI_DETACHED = 12,
+  FILEFORMAT_NIFTI_DETACHED = 11,
   /// Path is a NRRD file.
-  FILEFORMAT_NIFTI_SINGLEFILE = 13,
+  FILEFORMAT_NIFTI_SINGLEFILE = 12,
   /// Path is an Analyze AVW file.
-  FILEFORMAT_ANALYZE_AVW = 14,
+  FILEFORMAT_ANALYZE_AVW = 13,
   /// Path is a MetaImage file.
-  FILEFORMAT_METAIMAGE = 15,
+  FILEFORMAT_METAIMAGE = 14,
   /// Path is a NRRD file.
-  FILEFORMAT_NRRD = 16,
+  FILEFORMAT_NRRD = 15,
   /// Path is an Analyze header file in little endian.
-  FILEFORMAT_ANALYZE_HDR = 17,
+  FILEFORMAT_ANALYZE_HDR = 16,
   /// Path is an Analyze header file in little endian.
-  FILEFORMAT_ANALYZE_HDR_BIGENDIAN = 18,
+  FILEFORMAT_ANALYZE_HDR_BIGENDIAN = 17,
   /// Path is an ITK transformation file.
-  FILEFORMAT_ITK_TFM = 19,
+  FILEFORMAT_ITK_TFM = 18,
   /** File type cannot be determined.
    * This ID always has to be the last one!
    */

@@ -78,7 +78,6 @@ const FileFormatMagic FileFormatMagicNumbers[] = {
   { 0, "# AmiraMesh 3D", 14 },
   { 0, NULL, 0 }, // RAW
   { 0, NULL, 0 }, // RAW3D
-  { 0, "W\\YX", 4 }, // ACCURAY
   { 54, "\x39\x30", 2 }, // BIORAD
   { 344, "ni1\x00", 4 }, // Nifti, detached header
   { 344, "n+1\x00", 4 }, // Nifti, single file
@@ -113,8 +112,6 @@ const char* FileFormatName[] =
   "RAW-DATA",
   /// Path is some raw binary file (3-D).
   "RAW3D",
-  /// Path is an Accuray file.
-  "ACCURAY",
   /// Path is a BioRad .PIC file.
   "BIORAD",
   /// Nifti, detached header
@@ -185,8 +182,6 @@ FileFormat::Describe( const FileFormatID id )
       return "Vanderbilt header/image file combination [File].";
     case FILEFORMAT_AMIRA:
       return "AmiraMesh image file [File].";
-    case FILEFORMAT_ACCURAY:
-      return "Accuray image file [File].";
     case FILEFORMAT_BIORAD:
       return "BioRad image file [File].";
     case FILEFORMAT_NIFTI_DETACHED:
