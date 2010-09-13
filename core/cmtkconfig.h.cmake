@@ -40,6 +40,8 @@
 
 #define CMTK_BINARY_DIR "@CMTK_BINARY_DIR@"
 
+#define CMAKE_DCMDICTPATH "@CMAKE_DCMDICTPATH@"
+
 #cmakedefine HAVE_DIRENT_H 1
 #cmakedefine HAVE_EXECINFO_H 1
 #cmakedefine HAVE_FCNTL_H 1
