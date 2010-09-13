@@ -1,5 +1,6 @@
 Release CMTK-1.4.3:
 
+(r2324) Fixed: broken Makefiles when source path contained space.
 (r2317) Refactored: eliminated several hundred lines of unused and obsolete
     code, including several classes.
 (r2309) Fixed: because gcc/OpenMP breaks POSIX semaphores on Cygwin, use
