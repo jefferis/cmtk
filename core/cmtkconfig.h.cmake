@@ -35,6 +35,7 @@
 #ifndef __cmtkconfig_h_included__
 #define __cmtkconfig_h_included__
 
+#define CMTK_VERSION_STRING "@CMTK_VERSION_STRING@"
 #define CMTK_ROOT_PATH_SRI24 "@CMTK_ROOT_PATH_SRI24@"
 
 #define CMTK_BINARY_DIR "@CMTK_BINARY_DIR@"

@@ -41,7 +41,6 @@ SET(CMTK_VERSION_MINOR "4")
 SET(CMTK_VERSION_PATCH "3svn")
 
 SET(CMTK_VERSION_STRING "${CMTK_VERSION_MAJOR}.${CMTK_VERSION_MINOR}.${CMTK_VERSION_PATCH}")
-ADD_DEFINITIONS(-DCMTK_VERSION=${CMTK_VERSION_STRING})
 
 #-----------------------------------------------------------------------------
 # Test for some required system information.

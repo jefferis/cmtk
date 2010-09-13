@@ -74,7 +74,7 @@ CommandLine::SetDefaultInfo()
   this->m_ProgramInfo[PRG_ACKNL] = "CMTK is supported by the National Institute of Biomedical Imaging and BioEngineering under Grant EB008381";
   this->m_ProgramInfo[PRG_CATEG] = "CMTK.Miscellaneous";
   this->m_ProgramInfo[PRG_DOCUM] = "https://neuro.sri.com/cmtk/wiki/";
-  this->m_ProgramInfo[PRG_VERSN] = CMTK_VERSION;
+  this->m_ProgramInfo[PRG_VERSN] = CMTK_VERSION_STRING;
 }
 
 CommandLine::KeyActionGroupType::SmartPtr&
