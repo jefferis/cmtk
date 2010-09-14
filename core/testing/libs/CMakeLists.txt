@@ -31,9 +31,6 @@
 # ==========================================
 # Delegate testing to separate subdirs for each library
 
-SET(CMTK_DATADIR @CMTK_DATA_ROOT@/testing/inputs)
-ADD_DEFINITIONS(-DCMTK_DATADIR=\\\"${CMTK_DATADIR}\\\")
-
 SUBDIRS(System)
 SUBDIRS(Registration)
 SUBDIRS(IO)
