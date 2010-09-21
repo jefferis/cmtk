@@ -108,9 +108,6 @@ public:
   /// Return 1 if and only if end of file reached.
   int Feof () const;
 
-  /// Return true if and only if this stream is an ordinary file.
-  bool IsRegularFile () const { return (m_FilePointerMode == FILE_POINTER_FILE); }
-
   /** Return base name of a path without compression suffix.
    */
   static std::string GetBaseName( const std::string& path );
