@@ -59,28 +59,27 @@ main( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Split images" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Split volume image into sub-images, i.e., to separate interleaved images into passes" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] inImage outImage" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation" );
 
-    cl.AddSwitch( Key( 'a', "axial" ), &Axis, (int)cmtk::AXIS_Z, "Interleaved axial images [default]" );
+    cl.AddSwitch( Key( 'a', "axial" ), &Axis, (int)cmtk::AXIS_Z, "Interleaved axial images" );
     cl.AddSwitch( Key( 's', "sagittal" ), &Axis, (int)cmtk::AXIS_X, "Interleaved sagittal images" );
     cl.AddSwitch( Key( 'c', "coronal" ), &Axis, (int)cmtk::AXIS_Y, "Interleaved coronal images" );
 
     cl.AddSwitch( Key( 'x', "interleave-x" ), &Axis, (int)cmtk::AXIS_X, "Interleaved along x axis" );
     cl.AddSwitch( Key( 'y', "interleave-y" ), &Axis, (int)cmtk::AXIS_Y, "Interleaved along y axis" );
-    cl.AddSwitch( Key( 'z', "interleave-z" ), &Axis, (int)cmtk::AXIS_Z, "Interleaved along z axis [default]" );
+    cl.AddSwitch( Key( 'z', "interleave-z" ), &Axis, (int)cmtk::AXIS_Z, "Interleaved along z axis" );
 
-    cl.AddOption( Key( 'f', "factor" ), &Factor, "Interleave factor [default: 2]" );
-    cl.AddSwitch( Key( 'p', "padded" ), &Padded, true, "Padded output, i.e., fill in removed slices [default: off]" );
+    cl.AddOption( Key( 'f', "factor" ), &Factor, "Interleave factor. This is the number of subimages generated." );
+    cl.AddSwitch( Key( 'p', "padded" ), &Padded, true, "Padded output, i.e., fill in removed slices" );
 
     cl.AddOption( Key( "output-xform-path" ), &OutputXformPath, "Optional path template (fprintf-style) for output affine transformation that maps input image coordinates to each output image." );
 
-    cl.Parse( argc, argv );
+    cl.AddParameter( &InputFilePath, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &OutputFilePath, "OutputImagePattern", "Output image path pattern. Use '%d' to substitute subimage index." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
 
-    InputFilePath = cl.GetNext();
-    OutputFilePath = cl.GetNext();
+    cl.Parse( argc, argv );
     }
   catch ( const cmtk::CommandLine::Exception& e )
     {
