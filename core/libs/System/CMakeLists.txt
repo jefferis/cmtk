@@ -40,6 +40,9 @@ SET(cmtkSystem_SRCS
   cmtkCommandLineNonOptionParameter.cxx
   cmtkCommandLineNonOptionParameterVector.cxx
   cmtkCompressedStream.cxx
+  cmtkCompressedStreamFile.cxx
+  cmtkCompressedStreamPipe.cxx
+  cmtkCompressedStreamZlib.cxx
   cmtkConsole.cxx
   cmtkFileUtil.cxx
   cmtkMemory.cxx
@@ -53,6 +56,13 @@ SET(cmtkSystem_SRCS
   cmtkThreadSemaphore.cxx
   cmtkTimers.cxx
 )
+
+IF(FOUND_BZIP2)
+  SET(cmtkSystem_SRCS
+    ${cmtkSystem_SRCS}
+    cmtkCompressedStreamBZip2.cxx
+    )
+ENDIF(FOUND_BZIP2)
 
 ADD_LIBRARY(cmtkSystem ${cmtkSystem_SRCS})
 

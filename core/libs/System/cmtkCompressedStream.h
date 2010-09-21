@@ -38,16 +38,29 @@
 #include "System/cmtkCannotBeCopied.h"
 
 #include "System/cmtkException.h"
+#include "System/cmtkSmartPtr.h"
 
 #include <stdio.h>
 
 #include <zlib.h>
+
+#ifdef CMTK_HAVE_BZIP2
+#  include <bzlib.h>
+#endif
 
 #ifdef HAVE_SYS_STAT_H
 #  include <sys/stat.h>
 #endif
 
 #include <string>
+
+#if defined(_MSC_VER)
+#define CMTK_FILE_MODE "rb"
+#elif defined(__linux__)
+#define CMTK_FILE_MODE "r"
+#else
+#define CMTK_FILE_MODE "rb"
+#endif
 
 namespace
 cmtk
@@ -66,23 +79,26 @@ public:
   typedef CompressedStream Self;
   
   /// Create stream object without opening any files.
-  CompressedStream() : m_FilePointerMode( FILE_POINTER_INVALID ) {}
-
+  CompressedStream() : m_Reader( NULL ) {};
+  
   /// Create stream from filename.
   CompressedStream ( const char *filename );
   
   /// Dispose stream object.
   ~CompressedStream ();
-
+  
   /// Return validity of stream.
-  bool IsValid() const { return m_FilePointerMode != FILE_POINTER_INVALID; }
-
+  bool IsValid() const
+  {
+    return (this->m_Reader != NULL); 
+  }
+  
   /// Open new stream from filename.
   bool Open( const char *filename );
   
   /// Close current file stream.
   void Close();
-
+  
   /** Set filepointer.
    * If the object represents a pipe with on-the-fly decompression, only
    * the set mode "SEEK_CUR" is supported and will be simulated by successive
@@ -91,22 +107,40 @@ public:
    * whence.
    *@param whence File pointer set mode as defined for fseek.
    */
-  int Seek ( long int offset, int whence );
+  int Seek ( long int offset, int whence )
+  {
+    return this->m_Reader->Seek( offset, whence );
+  }
 
   /// Read block of data.
-  size_t Read ( void *data, size_t size, size_t count );
+  size_t Read ( void *data, size_t size, size_t count )
+  {
+    return this->m_Reader->Read( data, size, count );
+  }
 
   /// Read a single character from the stream.
-  int Get ( char &c);
+  int Get ( char &c)
+  {
+    return this->m_Reader->Get( c );
+  }
 
   /// Get string function
-  char *Gets ( char *const buffer, const int len );
+  char *Gets ( char *const buffer, const int len )
+  {
+    return this->m_Reader->Gets( buffer, len );
+  }
 
   /// Return number of bytes read from stream.
-  int Tell () const;
+  int Tell () const
+  {
+    return this->m_Reader->Tell();
+  }
 
   /// Return 1 if and only if end of file reached.
-  int Feof () const;
+  bool Feof () const
+  {
+    return this->m_Reader->Feof();
+  }
 
   /** Return base name of a path without compression suffix.
    */
@@ -121,40 +155,6 @@ public:
   static int Stat( const char *path, struct stat *const buf = NULL );
 
 private:
-  /// File pointer to read from.
-  FILE *File;
-
-  /// GZIP file pointer when using zlib decompression.
-  gzFile GzFile;
-
-  /// Enum for different internal file modes.
-  typedef enum 
-  {
-    /// All file pointers are invalid.
-    FILE_POINTER_INVALID,
-    /// File pointer points to open regular file.
-    FILE_POINTER_FILE,
-    /// File pointer points to open pipe.
-    FILE_POINTER_PIPE,
-    /// GzFile pointer points to open zlib file object.
-    FILE_POINTER_ZLIB
-  } FilePointerMode;
-
-  /// Flag indicating whether stream is file, pipe, or zlib file.
-  FilePointerMode m_FilePointerMode;
-
-#ifdef _MSC_VER
-  /** Temporary filename.
-   * On platforms where no on-the-fly decompression by via a pipe is possible
-   * (i.e. Windows), this holds the name of a temporary file used to hold
-   * the decompressed input file.
-   */
-  char TempName[256];
-#endif
-
-  /// Count number of bytes read from file or pipe.
-  long int BytesRead;
-
   /** Open decompressing pipe.
    * A suffix is appended to the desired filename, unless the name has
    * has already been given this suffix. Afterwards, a pipe through a
@@ -183,6 +183,254 @@ private:
   
   /// The suffix-to-archiver assignment table.
   static const ArchiveLookupEntry ArchiveLookup[];
+
+private:
+  /// Abstract base class for low-level reader engines.
+  class ReaderBase
+  {
+  public:
+    /// This class.
+    typedef ReaderBase Self;
+    
+    /// Smart pointer to this class.
+    typedef SmartPointer<Self> SmartPtr;
+
+    /// Close current file stream.
+    virtual void Close() = 0;
+    
+    /** Set filepointer.
+      * If the object represents a pipe with on-the-fly decompression, only
+      * the set mode "SEEK_CUR" is supported and will be simulated by successive
+      * reading of 8kB data blocks from the pipe.
+      *@param offset Offset the file pointer is set to, depending on the value of
+      * whence.
+      *@param whence File pointer set mode as defined for fseek.
+      */
+    virtual int Seek ( long int offset, int whence ) = 0;
+    
+    /// Read block of data.
+    virtual size_t Read ( void *data, size_t size, size_t count ) = 0;
+    
+    /// Read a single character from the stream.
+    virtual bool Get ( char &c) = 0;
+    
+    /// Get string function
+    virtual char *Gets ( char *const buffer, const int len ) = 0;
+    
+    /// Return number of bytes read from stream.
+    virtual int Tell () const = 0;
+    
+    /// Return 1 if and only if end of file reached.
+    virtual bool Feof () const = 0;
+  };
+
+  /// Class for uncompressed file-based reader engine.
+  class File
+    : public ReaderBase
+  {
+  public:
+    /// This class.
+    typedef File Self;
+    
+    /// Smart pointer to this class.
+    typedef SmartPointer<Self> SmartPtr;
+
+    /// Open new stream from filename.
+    File( const char *filename );
+    
+    /// Close current file stream.
+    virtual void Close();
+    
+    /** Set filepointer.
+      * If the object represents a pipe with on-the-fly decompression, only
+      * the set mode "SEEK_CUR" is supported and will be simulated by successive
+      * reading of 8kB data blocks from the pipe.
+      *@param offset Offset the file pointer is set to, depending on the value of
+      * whence.
+      *@param whence File pointer set mode as defined for fseek.
+      */
+    virtual int Seek ( long int offset, int whence );
+    
+    /// Read block of data.
+    virtual size_t Read ( void *data, size_t size, size_t count );
+    
+    /// Read a single character from the stream.
+    virtual bool Get ( char &c);
+    
+    /// Get string function
+    virtual char *Gets ( char *const buffer, const int len );
+    
+    /// Return number of bytes read from stream.
+    virtual int Tell () const;
+    
+    /// Return 1 if and only if end of file reached.
+    virtual bool Feof () const;
+
+  private:
+    /// File pointer.
+    FILE* m_File;    
+  };
+
+  /// Class for reader engine using pipe.
+  class Pipe
+    : public ReaderBase
+  {
+  public:
+    /// This class.
+    typedef Pipe Self;
+    
+    /// Smart pointer to this class.
+    typedef SmartPointer<Self> SmartPtr;
+
+    /// Open new pipe from filename.
+    Pipe( const char* filename, const char* command );
+    
+    /// Close current file stream.
+    virtual void Close();
+    
+    /** Set filepointer.
+      * If the object represents a pipe with on-the-fly decompression, only
+      * the set mode "SEEK_CUR" is supported and will be simulated by successive
+      * reading of 8kB data blocks from the pipe.
+      *@param offset Offset the file pointer is set to, depending on the value of
+      * whence.
+      *@param whence File pointer set mode as defined for fseek.
+      */
+    virtual int Seek ( long int offset, int whence );
+    
+    /// Read block of data.
+    virtual size_t Read ( void *data, size_t size, size_t count );
+    
+    /// Read a single character from the stream.
+    virtual bool Get ( char &c);
+    
+    /// Get string function
+    virtual char *Gets ( char *const buffer, const int len );
+    
+    /// Return number of bytes read from stream.
+    virtual int Tell () const;
+    
+    /// Return 1 if and only if end of file reached.
+    virtual bool Feof () const;
+
+  private:
+    /// Block size for seek() operation.
+    static const size_t BlockSize = 8192;
+
+    /// File pointer.
+    FILE* m_File;    
+    
+    /// Count number of bytes read from file or pipe.
+    long int m_BytesRead;
+
+#ifdef _MSC_VER
+    /** Temporary filename.
+   * On platforms where no on-the-fly decompression by via a pipe is possible
+   * (i.e. Windows), this holds the name of a temporary file used to hold
+   * the decompressed input file.
+   */
+    char m_TempName[256];
+#endif
+  };
+
+  /// Class for Zlib-based reader engine.
+  class Zlib 
+    : public ReaderBase
+  {
+  public:
+    /// This class.
+    typedef Zlib Self;
+    
+    /// Smart pointer to this class.
+    typedef SmartPointer<Self> SmartPtr;
+
+    /// Open new stream from filename.
+    Zlib( const char *filename );
+    
+    /// Close current file stream.
+    virtual void Close();
+    
+    /** Set filepointer.
+      * If the object represents a pipe with on-the-fly decompression, only
+      * the set mode "SEEK_CUR" is supported and will be simulated by successive
+      * reading of 8kB data blocks from the pipe.
+      *@param offset Offset the file pointer is set to, depending on the value of
+      * whence.
+      *@param whence File pointer set mode as defined for fseek.
+      */
+    virtual int Seek ( long int offset, int whence );
+    
+    /// Read block of data.
+    virtual size_t Read ( void *data, size_t size, size_t count );
+    
+    /// Read a single character from the stream.
+    virtual bool Get ( char &c);
+    
+    /// Get string function
+    virtual char *Gets ( char *const buffer, const int len );
+    
+    /// Return number of bytes read from stream.
+    virtual int Tell () const;
+    
+    /// Return 1 if and only if end of file reached.
+    virtual bool Feof () const;
+
+  private:
+    /// GZIP file pointer when using zlib decompression.
+    gzFile m_GzFile;    
+  };
+
+#ifdef CMTK_HAVE_BZIP2
+  /// Class for BZip2-based reader engine.
+  class BZip2 
+    : public ReaderBase
+  {
+  public:
+    /// This class.
+    typedef BZip2 Self;
+    
+    /// Smart pointer to this class.
+    typedef SmartPointer<Self> SmartPtr;
+
+    /// Open new stream from filename.
+    BZip2( const char *filename );
+    
+    /// Close current file stream.
+    virtual void Close();
+    
+    /** Set filepointer.
+      * If the object represents a pipe with on-the-fly decompression, only
+      * the set mode "SEEK_CUR" is supported and will be simulated by successive
+      * reading of 8kB data blocks from the pipe.
+      *@param offset Offset the file pointer is set to, depending on the value of
+      * whence.
+      *@param whence File pointer set mode as defined for fseek.
+      */
+    virtual int Seek ( long int offset, int whence );
+    
+    /// Read block of data.
+    virtual size_t Read ( void *data, size_t size, size_t count );
+    
+    /// Read a single character from the stream.
+    virtual bool Get ( char &c);
+    
+    /// Get string function
+    virtual char *Gets ( char *const buffer, const int len );
+    
+    /// Return number of bytes read from stream.
+    virtual int Tell () const;
+    
+    /// Return 1 if and only if end of file reached.
+    virtual bool Feof () const;
+
+  private:
+    /// GZIP file pointer when using zlib decompression.
+    BZFILE* m_BzFile;    
+  };
+#endif
+
+  /// The low-level reader object.
+  ReaderBase::SmartPtr m_Reader;
 };
 
 //@}

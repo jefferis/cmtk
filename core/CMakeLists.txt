@@ -332,6 +332,16 @@ ELSE(ZLIB_FOUND)
 ENDIF(ZLIB_FOUND)
 
 #-----------------------------------------------------------------------------
+# Add an option to use or not use bzip2 library
+
+FIND_PACKAGE(BZip2)
+IF(BZIP2_FOUND)
+  MESSAGE( STATUS "Using system libbz2" )
+  SET(CMTK_LIBBZ2_LIB "")
+  ADD_DEFINITIONS(-DCMTK_HAVE_BZIP2)
+ENDIF(BZIP2_FOUND)
+
+#-----------------------------------------------------------------------------
 # Add an option to build with DICOM support
 
 OPTION(CMTK_USE_DCMTK "Build with DICOM support" ON)
