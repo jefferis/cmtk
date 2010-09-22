@@ -1,5 +1,9 @@
 Release CMTK-1.4.3:
 
+(r2334) Added: by default, CMTK is now built with support for on-the-fly
+    decompression of bzip2-compressed files if libbzip2 and its header are
+    installed on the build system. Also rewrote the decompression class,
+    cmtk::CompressedStream, from scratch to be more easily extended.
 (r2329) Improved: poor description of command line arguments in "split" tool.
 (r2327) Fixed: broken Makefiles when source path contained space.
 (r2317) Refactored: eliminated several hundred lines of unused and obsolete
