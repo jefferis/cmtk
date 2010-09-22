@@ -44,7 +44,7 @@
 
 #include <zlib.h>
 
-#ifdef CMTK_HAVE_BZIP2
+#ifdef CMTK_USE_BZIP2
 #  include <bzlib.h>
 #endif
 
@@ -306,7 +306,7 @@ private:
     FILE* m_File;    
     
     /// Count number of bytes read from file or pipe.
-    long int m_BytesRead;
+    size_t m_BytesRead;
 
 #ifdef _MSC_VER
     /** Temporary filename.
@@ -358,11 +358,11 @@ private:
     virtual bool Feof () const;
 
   private:
-    /// GZIP file pointer when using zlib decompression.
+    /// Zlib file pointer.
     gzFile m_GzFile;    
   };
 
-#ifdef CMTK_HAVE_BZIP2
+#ifdef CMTK_USE_BZIP2
   /// Class for BZip2-based reader engine.
   class BZip2 
     : public ReaderBase
@@ -403,8 +403,14 @@ private:
     virtual bool Feof () const;
 
   private:
-    /// GZIP file pointer when using zlib decompression.
+    /// BZip2 file pointer.
     BZFILE* m_BzFile;    
+
+    /// BZip2 error variable.
+    int m_BzError;
+
+    /// Count number of bytes read from file or pipe.
+    size_t m_BytesRead;
   };
 #endif
 

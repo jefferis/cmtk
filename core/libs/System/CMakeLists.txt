@@ -57,12 +57,12 @@ SET(cmtkSystem_SRCS
   cmtkTimers.cxx
 )
 
-IF(FOUND_BZIP2)
+IF(CMTK_USE_BZIP2)
   SET(cmtkSystem_SRCS
     ${cmtkSystem_SRCS}
     cmtkCompressedStreamBZip2.cxx
     )
-ENDIF(FOUND_BZIP2)
+ENDIF(CMTK_USE_BZIP2)
 
 ADD_LIBRARY(cmtkSystem ${cmtkSystem_SRCS})
 

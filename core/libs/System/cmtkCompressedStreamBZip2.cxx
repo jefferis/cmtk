@@ -44,7 +44,8 @@ cmtk
 /** \addtogroup System */
 //@{
 
-CompressedStreamBZip2BZip2( const char* filename )
+CompressedStream::BZip2::BZip2( const char* filename ) 
+  : m_BytesRead( 0 )
 {
   this->m_BzFile = BZ2_bzopen( filename, CMTK_FILE_MODE );
   if ( !this->m_BzFile ) 
@@ -54,41 +55,44 @@ CompressedStreamBZip2BZip2( const char* filename )
 }
 
 void 
-CompressedStreamBZip2::Close()
+CompressedStream::BZip2::Close()
 {
   BZ2_bzclose( this->m_BzFile );
 }
 
 int
-CompressedStreamBZip2::Seek ( long int offset, int whence ) 
+CompressedStream::BZip2::Seek ( long int offset, int whence ) 
 {
   return gzseek( this->m_BzFile, offset, whence );
 }
 
 size_t
-CompressedStreamBZip2::Read ( void *data, size_t size, size_t count ) 
+CompressedStream::BZip2::Read ( void *data, size_t size, size_t count ) 
 {
-  const size_t bytesRead = BZ2_bzread( this->m_BzFile, data, size * count );
+  const size_t bytesRead = BZ2_bzRead( &this->m_BzError, this->m_BzFile, data, size * count );
   this->m_BytesRead += bytesRead;
   return bytesRead / size;
 }
 
 bool
-CompressedStreamBZip2::Get ( char &c)
+CompressedStream::BZip2::Get ( char &c)
 {
-  return false;
+  if ( this->Feof() || !this->Read( &c, sizeof(char), 1 ) )
+    return false;
+
+  return true;
 }
 
 int
-CompressedStreamBZip2::Tell () const 
+CompressedStream::BZip2::Tell () const 
 {
   return this->m_BytesRead;
 }
 
 bool
-CompressedStreamBZip2::Feof () const 
+CompressedStream::BZip2::Feof () const 
 {
-  return bzerror == BZ_STREAM_END;
+  return this->m_BzError == BZ_STREAM_END;
 }
 
 } // namespace cmtk
