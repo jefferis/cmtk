@@ -35,16 +35,6 @@
 #include "System/cmtkConsole.h"
 #include "System/cmtkMemory.h"
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <limits.h>
-#include <errno.h>
-
-#ifdef HAVE_SYS_TYPES_H
-#  include <sys/types.h>
-#endif
-
 #include <bzlib.h>
 
 namespace
@@ -87,12 +77,6 @@ bool
 CompressedStreamBZip2::Get ( char &c)
 {
   return false;
-}
-
-char*
-CompressedStreamBZip2::Gets ( char *const buffer, const int len )
-{
-  return NULL;
 }
 
 int

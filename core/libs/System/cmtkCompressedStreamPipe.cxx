@@ -36,14 +36,9 @@
 #include "System/cmtkMemory.h"
 
 #include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
 #include <limits.h>
 #include <errno.h>
-
-#ifdef HAVE_SYS_TYPES_H
-#  include <sys/types.h>
-#endif
 
 namespace
 cmtk
@@ -115,7 +110,7 @@ CompressedStream::Pipe::Seek ( long int offset, int whence )
   this->m_BytesRead += offset;
   while ( offset ) 
     {
-    if (offset<Self::BlockSize) 
+    if ( offset < Self::BlockSize ) 
       {
       result += fread( buffer, sizeof(char), offset, this->m_File );
       offset=0;
@@ -146,12 +141,6 @@ CompressedStream::Pipe::Get ( char &c)
     }
 
   return false;
-}
-
-char*
-CompressedStream::Pipe::Gets ( char *const buffer, const int len )
-{
-  return fgets( buffer, len, this->m_File );
 }
 
 int

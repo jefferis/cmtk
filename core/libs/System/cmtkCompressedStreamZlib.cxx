@@ -35,16 +35,6 @@
 #include "System/cmtkConsole.h"
 #include "System/cmtkMemory.h"
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <limits.h>
-#include <errno.h>
-
-#ifdef HAVE_SYS_TYPES_H
-#  include <sys/types.h>
-#endif
-
 #include <zlib.h>
 
 namespace
@@ -92,12 +82,6 @@ CompressedStream::Zlib::Get ( char &c)
     }
 
   return false;
-}
-
-char*
-CompressedStream::Zlib::Gets ( char *const buffer, const int len )
-{
-  return gzgets( this->m_GzFile, buffer, len );
 }
 
 int

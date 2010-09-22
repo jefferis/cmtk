@@ -36,14 +36,8 @@
 #include "System/cmtkMemory.h"
 
 #include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
-#include <limits.h>
 #include <errno.h>
-
-#ifdef HAVE_SYS_TYPES_H
-#  include <sys/types.h>
-#endif
 
 namespace
 cmtk
@@ -90,12 +84,6 @@ CompressedStream::File::Get ( char &c)
     }
 
   return false;
-}
-
-char*
-CompressedStream::File::Gets ( char *const buffer, const int len )
-{
-  return fgets( buffer, len, this->m_File );
 }
 
 int

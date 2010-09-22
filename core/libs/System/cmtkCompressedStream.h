@@ -124,12 +124,6 @@ public:
     return this->m_Reader->Get( c );
   }
 
-  /// Get string function
-  char *Gets ( char *const buffer, const int len )
-  {
-    return this->m_Reader->Gets( buffer, len );
-  }
-
   /// Return number of bytes read from stream.
   int Tell () const
   {
@@ -214,9 +208,6 @@ private:
     /// Read a single character from the stream.
     virtual bool Get ( char &c) = 0;
     
-    /// Get string function
-    virtual char *Gets ( char *const buffer, const int len ) = 0;
-    
     /// Return number of bytes read from stream.
     virtual int Tell () const = 0;
     
@@ -256,9 +247,6 @@ private:
     
     /// Read a single character from the stream.
     virtual bool Get ( char &c);
-    
-    /// Get string function
-    virtual char *Gets ( char *const buffer, const int len );
     
     /// Return number of bytes read from stream.
     virtual int Tell () const;
@@ -303,9 +291,6 @@ private:
     
     /// Read a single character from the stream.
     virtual bool Get ( char &c);
-    
-    /// Get string function
-    virtual char *Gets ( char *const buffer, const int len );
     
     /// Return number of bytes read from stream.
     virtual int Tell () const;
@@ -366,9 +351,6 @@ private:
     /// Read a single character from the stream.
     virtual bool Get ( char &c);
     
-    /// Get string function
-    virtual char *Gets ( char *const buffer, const int len );
-    
     /// Return number of bytes read from stream.
     virtual int Tell () const;
     
@@ -413,9 +395,6 @@ private:
     
     /// Read a single character from the stream.
     virtual bool Get ( char &c);
-    
-    /// Get string function
-    virtual char *Gets ( char *const buffer, const int len );
     
     /// Return number of bytes read from stream.
     virtual int Tell () const;
