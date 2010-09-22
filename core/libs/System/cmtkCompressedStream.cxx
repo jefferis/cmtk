@@ -161,6 +161,12 @@ CompressedStream::OpenDecompressionPipe
       {
       this->m_Reader = ReaderBase::SmartPtr( new Self::Zlib( fname ) );
       }
+#ifdef CMTK_USE_BZIP2
+    else if ( !strcmp( compressedSuffix, ".bz2" ) ) 
+      {
+      this->m_Reader = ReaderBase::SmartPtr( new Self::BZip2( fname ) );
+      }
+#endif
     else
       {
       this->m_Reader = ReaderBase::SmartPtr( new Self::Pipe( filename, command ) );

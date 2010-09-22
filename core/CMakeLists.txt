@@ -337,8 +337,10 @@ ENDIF(ZLIB_FOUND)
 FIND_PACKAGE(BZip2)
 IF(BZIP2_FOUND)
   MESSAGE( STATUS "Using system libbz2" )
-  SET(CMTK_LIBBZ2_LIB "")
-  ADD_DEFINITIONS(-DCMTK_HAVE_BZIP2)
+  SET(CMTK_BZIP2_LIBS ${BZIP2_LIBRARIES})
+  OPTION(CMTK_USE_BZIP2 "Compile support for on-the-fly BZip2 decompression" ON)
+  MARK_AS_ADVANCED(CMTK_USE_BZIP2)
+  ADD_DEFINITIONS(-DCMTK_USE_BZIP2)
 ENDIF(BZIP2_FOUND)
 
 #-----------------------------------------------------------------------------

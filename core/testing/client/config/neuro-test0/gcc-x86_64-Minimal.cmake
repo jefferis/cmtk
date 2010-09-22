@@ -54,6 +54,7 @@ CMAKE_CXX_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse -Wall 
 CMAKE_CXX_FLAGS_DEBUG:STRING=-g -DDEBUG
 CMAKE_C_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse
 CMTK_BUILD_NRRD:BOOL=OFF
+CMTK_USE_BZIP2:BOOL=OFF
 ")
 
 CTEST_START(Continuous)

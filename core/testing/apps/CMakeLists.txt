@@ -100,6 +100,10 @@ IF(CMTK_BUILD_NRRD)
   SET(testList ${testList} describeMRNrrd1 describeMRNrrd2)
 ENDIF(CMTK_BUILD_NRRD)
 
+IF(CMTK_USE_BZIP2)
+  SET(testList ${testList} describeBZip2a describeBZip2b)
+ENDIF(CMTK_USE_BZIP2)
+
 # ==========================================
 # Tests for "groupwise_init" tool
 SET(testList ${testList} groupwise_initCentersOfMass groupwise_initCentersOfMassTemplate)
