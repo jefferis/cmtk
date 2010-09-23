@@ -1,5 +1,8 @@
 Release CMTK-1.4.3:
 
+(r2337) Added: "describe" tool now prints machine-readable image-to-physical
+    space transformation matrix. Also transposed matrix output to make it
+    compatible with "mat2dof" tool.
 (r2334) Added: by default, CMTK is now built with support for on-the-fly
     decompression of bzip2-compressed files if libbzip2 and its header are
     installed on the build system. Also rewrote the decompression class,
