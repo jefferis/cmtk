@@ -173,7 +173,7 @@ ImageFileDCM::Match( const ImageFileDCM& other ) const
 
 ImageFileDCM::ImageFileDCM( const char* filename )
 {
-  if ( cmtk::FileFormat::Identify( filename ) != cmtk::FILEFORMAT_DICOM )
+  if ( cmtk::FileFormat::Identify( filename, false /*decompress*/ ) != cmtk::FILEFORMAT_DICOM ) // need to disable "decompress" in Identify() because DCMTK cannot currently read using on-the-fly decompression.
     throw(0);
 
   const char *last_slash = strrchr( filename, CMTK_PATH_SEPARATOR );

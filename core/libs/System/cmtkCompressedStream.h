@@ -97,6 +97,12 @@ public:
     return (this->m_Reader != NULL); 
   }
   
+  /// Return flag whether this stream is actually using decompression or simply reads a file as-is.
+  bool IsCompressed() const
+  {
+    return this->m_Compressed;
+  }
+  
   /// Open new stream from filename.
   bool Open( const char *filename );
   
@@ -462,9 +468,11 @@ private:
     lzmadec_FILE* m_File;    
   };
 
-
   /// The low-level reader object.
   ReaderBase::SmartPtr m_Reader;
+
+  /// Flag whether current stream is from a compressed source.
+  bool m_Compressed;
 };
 
 //@}

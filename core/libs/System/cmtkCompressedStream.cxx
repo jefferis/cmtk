@@ -77,7 +77,8 @@ CompressedStream::ArchiveLookup[] = {
 };
 
 CompressedStream::CompressedStream ( const char *filename ) 
-  : m_Reader( NULL )
+  : m_Reader( NULL ),
+    m_Compressed( false )
 {
   this->Open( filename );
 }
@@ -99,15 +100,15 @@ CompressedStream::Open ( const char *filename )
   
   const char *suffix = strrchr( filename, '.' );
   
-  int compressed = 0;
+  this->m_Compressed = false;
   
   if ( suffix )
-    for ( int i=0; ArchiveLookup[i].suffix && !compressed; ++i )
-      compressed = compressed || ! strcmp( ArchiveLookup[i].suffix, suffix );
+    for ( int i=0; ArchiveLookup[i].suffix && !this->m_Compressed; ++i )
+      this->m_Compressed = this->m_Compressed || ! strcmp( ArchiveLookup[i].suffix, suffix );
 
   try
     {
-    if ( !compressed )
+    if ( !this->m_Compressed )
       {
       this->m_Reader = ReaderBase::SmartPtr( new Self::File( filename ) );
       }
@@ -123,6 +124,7 @@ CompressedStream::Open ( const char *filename )
       bool result = false;
       for ( int i=0; ArchiveLookup[i].suffix && !result; ++i )
 	result = this->OpenDecompressionPipe( filename, suffix, ArchiveLookup[i].command, ArchiveLookup[i].suffix );
+      this->m_Compressed = true;
       }
     }
   catch ( ... )

@@ -69,6 +69,7 @@ struct
 /// Magic number records for known file types.
 const FileFormatMagic FileFormatMagicNumbers[] = {
   { 0, NULL, 0 }, // NEXIST
+  { 0, NULL, 0 }, // ARCHIVE
   { 0, NULL, 0 }, // STUDY
   { 0, NULL, 0 }, // STUDYLIST
   { 0, "! TYPEDSTREAM", 13 }, // TypedStream archive
@@ -94,6 +95,8 @@ const char* FileFormatName[] =
 {
   /// File of this name does not exist.
   "",
+  /// File is a compressed archive.
+  "COMPRESSED-ARCHIVE",
   /// Path is a typedstream study directory.
   "STUDY",
   /// Path is a typedstream studylist directory.
@@ -135,7 +138,7 @@ const char* FileFormatName[] =
 };
 
 FileFormatID 
-FileFormat::Identify( const char* path )
+FileFormat::Identify( const char* path, const bool decompress )
 {
   struct stat buf;
   if ( CompressedStream::Stat( path, &buf ) < 0 ) 
@@ -144,7 +147,7 @@ FileFormat::Identify( const char* path )
   if ( buf.st_mode & S_IFDIR ) 
     return FileFormat::IdentifyDirectory( path );
   else if ( buf.st_mode & S_IFREG ) 
-    return FileFormat::IdentifyFile( path );
+    return FileFormat::IdentifyFile( path, decompress );
 
   return FILEFORMAT_NEXIST;
 }
@@ -231,11 +234,14 @@ FileFormat::IdentifyDirectory( const char* path )
 }
 
 FileFormatID 
-FileFormat::IdentifyFile( const char* path )
+FileFormat::IdentifyFile( const char* path, const bool decompress )
 {
   CompressedStream stream( path );
   if ( ! stream.IsValid() )
     return FILEFORMAT_NEXIST;
+
+  if ( stream.IsCompressed() && !decompress )
+    return FILEFORMAT_COMPRESSED_ARCHIVE;
     
   char buffer[348];
   memset( buffer, 0, sizeof( buffer ) );
