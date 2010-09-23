@@ -424,6 +424,7 @@ private:
   };
 #endif
 
+#ifdef CMTK_USE_LZMA
   /// Class for Zlib-based reader engine.
   class LZMA 
     : public ReaderBase
@@ -467,6 +468,7 @@ private:
     /// LZMA file pointer.
     lzmadec_FILE* m_File;    
   };
+#endif // #ifdef CMTK_USE_LZMA
 
   /// The low-level reader object.
   ReaderBase::SmartPtr m_Reader;
