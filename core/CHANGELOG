@@ -1,12 +1,12 @@
 Release CMTK-1.4.3:
 
-(r2345) Fixed: prevent "dcm2image" tool from trying to read compressed (using
-    gzip, etc.) DICOM files, as these cannot be read by DCMTK right now.
-(r2341) Added: by default, CMTK is now built with support for on-the-fly
+(r2347) Added: by default, CMTK is now built with support for on-the-fly
     decompression of bzip2 and lzma-compressed files if libbzip2 and/or
     liblzmadec and their respective header files are installed on the build
     system. Also rewrote the decompression class, cmtk::CompressedStream, from
     scratch to be more easily extended.
+(r2345) Fixed: prevent "dcm2image" tool from trying to read compressed (using
+    gzip, etc.) DICOM files, as these cannot be read by DCMTK right now.
 (r2337) Added: "describe" tool now prints machine-readable image-to-physical
     space transformation matrix. Also transposed matrix output to make it
     compatible with "mat2dof" tool.
