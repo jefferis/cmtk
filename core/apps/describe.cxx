@@ -134,6 +134,13 @@ main( int argc, char *argv[] )
 	if ( volume->MetaKeyExists(cmtk::META_SPACE_UNITS_STRING ) )
 	  fprintf( stdout, "UNITS\t%s\n", volume->m_MetaInformation[cmtk::META_SPACE_UNITS_STRING].c_str() );
 	
+	const cmtk::AffineXform::MatrixType a2p = volume->GetImageToPhysicalMatrix();
+	fprintf( stdout, "I2PMAT0\t%f\t%f\t%f\t%f\nI2PMAT1\t%f\t%f\t%f\t%f\nI2PMAT2\t%f\t%f\t%f\t%f\nI2PMAT3\t%f\t%f\t%f\t%f\n", 
+		 a2p[0][0], a2p[1][0], a2p[2][0], a2p[3][0], 
+		 a2p[0][1], a2p[1][1], a2p[2][1], a2p[3][1], 
+		 a2p[0][2], a2p[1][2], a2p[2][2], a2p[3][2],
+		 a2p[0][3], a2p[1][3], a2p[2][3], a2p[3][3] );
+	
 	if ( dataArray ) 
 	  {
 	  fprintf( stdout, "DTYPE\t%s\n", cmtk::DataTypeName[ dataArray->GetType() ] );
@@ -163,11 +170,11 @@ main( int argc, char *argv[] )
 	fprintf( stdout, "Volume origin (%f,%f,%f)\n", volume->m_Offset[0], volume->m_Offset[1], volume->m_Offset[2] );
 
 	const cmtk::AffineXform::MatrixType a2p = volume->GetImageToPhysicalMatrix();
-	fprintf( stdout, "Image-to-physical matrix:\n (%f,%f,%f,%f) \n (%f,%f,%f,%f) \n (%f,%f,%f,%f) \n (%f,%f,%f,%f) \n", 
-		 a2p[0][0], a2p[0][1], a2p[0][2], a2p[0][3], 
-		 a2p[1][0], a2p[1][1], a2p[1][2], a2p[1][3], 
-		 a2p[2][0], a2p[2][1], a2p[2][2], a2p[2][3],
-		 a2p[3][0], a2p[3][1], a2p[3][2], a2p[3][3] );
+	fprintf( stdout, "\nImage-to-physical matrix:\n  %f %f %f %f \n %f %f %f %f \n %f %f %f %f \n %f %f %f %f \n\n", 
+		 a2p[0][0], a2p[1][0], a2p[2][0], a2p[3][0], 
+		 a2p[0][1], a2p[1][1], a2p[2][1], a2p[3][1], 
+		 a2p[0][2], a2p[1][2], a2p[2][2], a2p[3][2],
+		 a2p[0][3], a2p[1][3], a2p[2][3], a2p[3][3] );
       
 	if ( dataArray ) 
 	  {
