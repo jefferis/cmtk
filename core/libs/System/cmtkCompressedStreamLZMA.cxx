@@ -32,9 +32,7 @@
 
 #include "System/cmtkCompressedStream.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <errno.h>
+#include <lzmadec.h>
 
 namespace
 cmtk
@@ -43,9 +41,9 @@ cmtk
 /** \addtogroup System */
 //@{
 
-CompressedStream::File::File( const char* filename )
+CompressedStream::LZMA::LZMA( const char* filename )
 {
-  this->m_File = fopen( filename, CMTK_FILE_MODE );
+  this->m_File = lzmadec_open( filename );
   if ( !this->m_File ) 
     {
     throw 0;
@@ -53,27 +51,27 @@ CompressedStream::File::File( const char* filename )
 }
 
 void 
-CompressedStream::File::Close()
+CompressedStream::LZMA::Close()
 {
-  fclose( this->m_File );
+  lzmadec_close( this->m_File );
 }
 
 int
-CompressedStream::File::Seek ( long int offset, int whence ) 
+CompressedStream::LZMA::Seek ( long int offset, int whence ) 
 {
-  return fseek( this->m_File, offset, whence );
+  return lzmadec_seek( this->m_File, offset, whence );
 }
 
 size_t
-CompressedStream::File::Read( void *data, size_t size, size_t count ) 
+CompressedStream::LZMA::Read ( void *data, size_t size, size_t count ) 
 {
-  return fread( data, size, count, this->m_File );
+  return lzmadec_read( this->m_File, reinterpret_cast<uint8_t*>( data ), size * count ) / size;
 }
 
 bool
-CompressedStream::File::Get ( char &c)
+CompressedStream::LZMA::Get ( char &c)
 {
-  const int data = fgetc( this->m_File );
+  const int data = lzmadec_getc( this->m_File );
   if ( data != EOF ) 
     {
     c=(char) data;
@@ -84,15 +82,15 @@ CompressedStream::File::Get ( char &c)
 }
 
 int
-CompressedStream::File::Tell () const 
+CompressedStream::LZMA::Tell () const 
 {
-  return ftell( this->m_File );
+  return lzmadec_tell( this->m_File );
 }
 
 bool
-CompressedStream::File::Feof () const 
+CompressedStream::LZMA::Feof () const 
 {
-  return feof( this->m_File );
+  return lzmadec_eof( this->m_File );
 }
 
 } // namespace cmtk

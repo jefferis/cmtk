@@ -59,15 +59,21 @@ cmtk
 const CompressedStream::ArchiveLookupEntry 
 CompressedStream::ArchiveLookup[] = {
 #ifdef _MSC_VER
-  {".gz",  "gzip -cd %s > %s"},
-  {".Z",   "gunzip -cd %s > %s"},
-  {".bz",  "bzip -Q -cd %s > %s"},
-  {".bz2", "bzip2 -cd %s > %s"},
+  {".Z",    "gunzip -cd %s > %s"},
+  {".bz",   "bzip -Q -cd %s > %s"},
+  {".bz2",  "bzip2 -cd %s > %s"},
+  {".lzma", "lzma -cd %s > %s"},
+  {".xz",   "xz -cd %s > %s"},
 #else
-  {".gz",  "gzip -cd %s"},
-  {".Z",   "gunzip -c %s"},
-  {".bz",  "bzip -Q -cd %s"},
-  {".bz2", "bzip2 -cd %s"},
+  {".Z",    "gunzip -c %s"},
+  {".bz",   "bzip -Q -cd %s"},
+#  ifndef CMTK_USE_BZIP2
+  {".bz2",  "bzip2 -cd %s"},
+#  endif
+#  ifndef CMTK_USE_LZMA
+  {".lzma", "lzma -cd %s"},
+  {".xz",   "xz -cd %s"},
+#  endif
 #endif
   { NULL,   NULL} 
 };
@@ -165,6 +171,12 @@ CompressedStream::OpenDecompressionPipe
     else if ( !strcmp( compressedSuffix, ".bz2" ) ) 
       {
       this->m_Reader = ReaderBase::SmartPtr( new Self::BZip2( fname ) );
+      }
+#endif
+#ifdef CMTK_USE_LZMA
+    else if ( !strcmp( compressedSuffix, ".7z" ) ) 
+      {
+      this->m_Reader = ReaderBase::SmartPtr( new Self::LZMA( fname ) );
       }
 #endif
     else

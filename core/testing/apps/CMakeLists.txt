@@ -104,6 +104,10 @@ IF(CMTK_USE_BZIP2)
   SET(testList ${testList} describeBZip2a describeBZip2b)
 ENDIF(CMTK_USE_BZIP2)
 
+IF(CMTK_USE_LZMA)
+  SET(testList ${testList} describeLZMAa describeLZMAb)
+ENDIF(CMTK_USE_LZMA)
+
 # ==========================================
 # Tests for "groupwise_init" tool
 SET(testList ${testList} groupwise_initCentersOfMass groupwise_initCentersOfMassTemplate)

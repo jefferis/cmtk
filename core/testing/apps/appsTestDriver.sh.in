@@ -546,6 +546,14 @@ case ${RUNTEST} in
         run_eval "${BINDIR}/describe -m bzip_test.nii.bz2 > ${tmpdir}/describe.txt"
 	check_results describe.txt
 	;;
+    describeLZMAa)
+        run_eval "${BINDIR}/describe -m lzma_test.nii > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
+    describeLZMAb)
+        run_eval "${BINDIR}/describe -m lzma_test.nii.lzma > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
     describeMR1)
 	run_eval "${BINDIR}/describe -m parc1_bin.hdr > ${tmpdir}/describe.txt"
 	check_results describe.txt

@@ -48,6 +48,10 @@
 #  include <bzlib.h>
 #endif
 
+#ifdef CMTK_USE_LZMA
+#  include <lzmadec.h>
+#endif
+
 #ifdef HAVE_SYS_STAT_H
 #  include <sys/stat.h>
 #endif
@@ -413,6 +417,51 @@ private:
     size_t m_BytesRead;
   };
 #endif
+
+  /// Class for Zlib-based reader engine.
+  class LZMA 
+    : public ReaderBase
+  {
+  public:
+    /// This class.
+    typedef LZMA Self;
+    
+    /// Smart pointer to this class.
+    typedef SmartPointer<Self> SmartPtr;
+
+    /// Open new stream from filename.
+    LZMA( const char *filename );
+    
+    /// Close current file stream.
+    virtual void Close();
+    
+    /** Set filepointer.
+      * If the object represents a pipe with on-the-fly decompression, only
+      * the set mode "SEEK_CUR" is supported and will be simulated by successive
+      * reading of 8kB data blocks from the pipe.
+      *@param offset Offset the file pointer is set to, depending on the value of
+      * whence.
+      *@param whence File pointer set mode as defined for fseek.
+      */
+    virtual int Seek ( long int offset, int whence );
+    
+    /// Read block of data.
+    virtual size_t Read ( void *data, size_t size, size_t count );
+    
+    /// Read a single character from the stream.
+    virtual bool Get ( char &c);
+    
+    /// Return number of bytes read from stream.
+    virtual int Tell () const;
+    
+    /// Return 1 if and only if end of file reached.
+    virtual bool Feof () const;
+
+  private:
+    /// LZMA file pointer.
+    lzmadec_FILE* m_File;    
+  };
+
 
   /// The low-level reader object.
   ReaderBase::SmartPtr m_Reader;

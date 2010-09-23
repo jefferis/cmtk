@@ -32,9 +32,6 @@
 
 #include "System/cmtkCompressedStream.h"
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkMemory.h"
-
 #include <zlib.h>
 
 namespace

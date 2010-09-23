@@ -344,6 +344,18 @@ IF(BZIP2_FOUND)
 ENDIF(BZIP2_FOUND)
 
 #-----------------------------------------------------------------------------
+# Add an option to use or not use lzma decompression library
+
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles/FindLZMA.cmake)
+IF(LZMA_FOUND)
+  MESSAGE( STATUS "Using system lzma library" )
+  SET(CMTK_LZMA_LIBS ${LZMA_LIBRARY})
+  OPTION(CMTK_USE_LZMA "Compile support for on-the-fly LZMA decompression" ON)
+  MARK_AS_ADVANCED(CMTK_USE_LZMA)
+  ADD_DEFINITIONS(-DCMTK_USE_LZMA)
+ENDIF(LZMA_FOUND)
+
+#-----------------------------------------------------------------------------
 # Add an option to build with DICOM support
 
 OPTION(CMTK_USE_DCMTK "Build with DICOM support" ON)
