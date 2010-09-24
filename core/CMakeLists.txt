@@ -125,6 +125,12 @@ IF(CMTK_SINGLE_COMMAND_BINARY)
   ADD_DEFINITIONS(-DCMTK_SINGLE_COMMAND_BINARY)
 ENDIF(CMTK_SINGLE_COMMAND_BINARY)
 
+OPTION(CMTK_BUILD_DEMO "Build demonstration code. Strange things will happen if you turn this on." OFF)
+MARK_AS_ADVANCED(CMTK_BUILD_DEMO)
+IF(CMTK_BUILD_DEMO)
+  ADD_DEFINITIONS(-DCMTK_BUILD_DEMO)
+ENDIF(CMTK_BUILD_DEMO)
+
 #-----------------------------------------------------------------------------
 # Add an option to use or not to use MPI distributed-memory parallelism
 
