@@ -38,8 +38,8 @@
 #  include <ieeefp.h>
 #endif
 
-#include "Base/cmtkTypedArray.h"
-#include "Base/cmtkSegmentationLabel.h"
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkSegmentationLabel.h>
 
 namespace
 cmtk
@@ -61,6 +61,7 @@ Colormap::Colormap()
   SetStandardColormap( PALETTE_GRAY );
   DataRange[0] = 0;
   DataRange[1] = 4095;
+  Gamma = 0;
   Reverse = false;
 
   CreateSystemLabelColorMap( this->LabelColorMap );
