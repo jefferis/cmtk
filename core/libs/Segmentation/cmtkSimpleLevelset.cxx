@@ -30,13 +30,17 @@
 
 #include "cmtkSimpleLevelset.h"
 
-#include "Base/cmtkMathUtil.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkUniformVolumePainter.h"
-#include "Base/cmtkUniformVolumeFilter.h"
-#include "Base/cmtkUnits.h"
+#include <Base/cmtkMathUtil.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkUniformVolumePainter.h>
+#include <Base/cmtkUniformVolumeFilter.h>
+#include <Base/cmtkUnits.h>
 
-#include "System/cmtkProgress.h"
+#include <System/cmtkProgress.h>
+
+#ifdef CMTK_BUILD_DEMO
+#  include <IO/cmtkVolumeIO.h>
+#endif // #ifdef CMTK_BUILD_DEMO
 
 void
 cmtk::SimpleLevelset
@@ -108,6 +112,14 @@ cmtk::SimpleLevelset
 	}
       this->m_Levelset->SetDataAt( std::min<Types::DataItem>( this->m_LevelsetThreshold, std::max<Types::DataItem>( -this->m_LevelsetThreshold, newLevel ) ), n );
       }
+
+#ifdef CMTK_BUILD_DEMO
+    UniformVolume::SmartConstPtr slice = this->m_Levelset->ExtractSlice( AXIS_Z, this->m_Levelset->m_Dims[2] / 2 );
+    
+    char path[PATH_MAX];
+    snprintf( path, PATH_MAX, "levelset-%03d.nii", it );
+    VolumeIO::Write( *slice, path );
+#endif
     }
 
   Progress::Done();

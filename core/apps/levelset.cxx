@@ -32,8 +32,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Segmentation/cmtkSimpleLevelsetCommandLine.h"
-#include "Segmentation/cmtkSimpleLevelset.h"
+#include <Segmentation/cmtkSimpleLevelsetCommandLine.h>
+#include <Segmentation/cmtkSimpleLevelset.h>
 
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 namespace cmtk
