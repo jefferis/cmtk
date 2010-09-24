@@ -363,9 +363,9 @@ IF(LZMA_FOUND)
   MARK_AS_ADVANCED(CMTK_USE_LZMA)
 ENDIF(LZMA_FOUND)
 
-IF(CMTK_USE_LMZA)
+IF(CMTK_USE_LZMA)
   ADD_DEFINITIONS(-DCMTK_USE_LZMA)
-ENDIF(CMTK_USE_LMZA)
+ENDIF(CMTK_USE_LZMA)
 
 #-----------------------------------------------------------------------------
 # Add an option to build with DICOM support
