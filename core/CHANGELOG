@@ -1,6 +1,6 @@
 Release CMTK-1.4.3:
 
-(r2347) Added: by default, CMTK is now built with support for on-the-fly
+(r2349) Added: by default, CMTK is now built with support for on-the-fly
     decompression of bzip2 and lzma-compressed files if libbzip2 and/or
     liblzmadec and their respective header files are installed on the build
     system. Also rewrote the decompression class, cmtk::CompressedStream, from
