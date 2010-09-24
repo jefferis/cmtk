@@ -828,7 +828,10 @@ ScalarImage::AdjustAspect( const bool interpolate )
 void
 ScalarImage::AdjustAspectY( const bool interpolate )
 {
-  int newDimsY = static_cast<int>( (this->m_Dims[1]-1) * this->m_PixelSize[1]/this->m_PixelSize[0] ) + 1;
+  if ( this->m_Dims[0] < 2 )
+    return;
+  
+  const int newDimsY = static_cast<int>( (this->m_Dims[1]-1) * this->m_PixelSize[1]/this->m_PixelSize[0] ) + 1;
   
   TypedArray::SmartPtr scaled = TypedArray::Create( this->m_PixelData->GetType(), this->m_Dims[0] * newDimsY );
   
@@ -891,7 +894,10 @@ ScalarImage::AdjustAspectY( const bool interpolate )
 void
 ScalarImage::AdjustAspectX( const bool interpolate )
 {
-  int newDimsX = static_cast<int>( (this->m_Dims[0]-1) * this->m_PixelSize[0]/this->m_PixelSize[1] ) + 1;
+  if ( this->m_Dims[1] < 2 )
+    return;
+  
+  const int newDimsX = static_cast<int>( (this->m_Dims[0]-1) * this->m_PixelSize[0]/this->m_PixelSize[1] ) + 1;
   
   TypedArray::SmartPtr scaled = TypedArray::Create( this->m_PixelData->GetType(), newDimsX * this->m_Dims[1] );
   
