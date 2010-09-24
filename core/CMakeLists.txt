@@ -340,8 +340,11 @@ IF(BZIP2_FOUND)
   SET(CMTK_BZIP2_LIBS ${BZIP2_LIBRARIES})
   OPTION(CMTK_USE_BZIP2 "Compile support for on-the-fly BZip2 decompression" ON)
   MARK_AS_ADVANCED(CMTK_USE_BZIP2)
-  ADD_DEFINITIONS(-DCMTK_USE_BZIP2)
 ENDIF(BZIP2_FOUND)
+
+IF(CMTK_USE_BZIP2)
+  ADD_DEFINITIONS(-DCMTK_USE_BZIP2)
+ENDIF(CMTK_USE_BZIP2)
 
 #-----------------------------------------------------------------------------
 # Add an option to use or not use lzma decompression library
@@ -352,8 +355,11 @@ IF(LZMA_FOUND)
   SET(CMTK_LZMA_LIBS ${LZMA_LIBRARY})
   OPTION(CMTK_USE_LZMA "Compile support for on-the-fly LZMA decompression" ON)
   MARK_AS_ADVANCED(CMTK_USE_LZMA)
-  ADD_DEFINITIONS(-DCMTK_USE_LZMA)
 ENDIF(LZMA_FOUND)
+
+IF(CMTK_USE_LMZA)
+  ADD_DEFINITIONS(-DCMTK_USE_LZMA)
+ENDIF(CMTK_USE_LMZA)
 
 #-----------------------------------------------------------------------------
 # Add an option to build with DICOM support
