@@ -94,7 +94,7 @@ QtScrollRenderView::QtScrollRenderView
   this->setLayout(vbox);
 
   // export slider's signal
-  QObject::connect( ImageIndexSlider, SIGNAL( valueChanged( int ) ), SIGNAL( indexChanged( int ) ) );
+//  QObject::connect( ImageIndexSlider, SIGNAL( valueChanged( int ) ), SIGNAL( indexChanged( int ) ) );
 }
 
 QtScrollRenderView::~QtScrollRenderView()

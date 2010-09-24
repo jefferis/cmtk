@@ -56,6 +56,8 @@ QtRenderImageRGB::QtRenderImageRGB
     CrosshairMode( false ),
     Image()
 {
+  CrosshairPosition[0] = CrosshairPosition[1] = 0;
+
   this->setBaseSize( 512, 512 );
   //  this->setMouseTracking( true );
   this->setCursor( QCursor( Qt::CrossCursor ) );

@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include "Pipeline/cmtkRenderer.h"
+#include <Pipeline/cmtkRenderer.h>
 
 #include <qobject.h>
 #include <qwidget.h>
@@ -43,8 +43,8 @@
 #include <qpixmap.h>
 #include <qpaintdevice.h>
 
-#include "Base/cmtkMacros.h"
-#include "Base/cmtkTypes.h"
+#include <Base/cmtkMacros.h>
+#include <Base/cmtkTypes.h>
 
 #include <QMouseEvent>
 #include <QPaintEvent>
