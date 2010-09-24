@@ -61,6 +61,12 @@ Colormap::Colormap()
   SetStandardColormap( PALETTE_GRAY );
   DataRange[0] = 0;
   DataRange[1] = 4095;
+  HueRange[0] = 0;
+  HueRange[1] = 4095;
+  ValueRange[0] = 0;
+  ValueRange[1] = 4095;
+  SaturationRange[0] = 0;
+  SaturationRange[1] = 4095;
   Gamma = 0;
   Reverse = false;
 
