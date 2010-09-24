@@ -30,13 +30,12 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkConsole.h"
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkConsole.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkTypedArrayFunctionHistogramMatching.h"
+#include <Base/cmtkUniformVolume.h>
 
-#include "IO/cmtkVolumeIO.h"
+#include <IO/cmtkVolumeIO.h>
 
 #include <vector>
 #include <algorithm>
@@ -72,7 +71,6 @@ main( const int argc, const char* argv[] )
   std::vector<std::string> pathsLbls;
 
   bool padZero = false;
-  bool collapse = false;
 
   try
     {
@@ -86,7 +84,6 @@ main( const int argc, const char* argv[] )
 
     cl.BeginGroup( "Preprocessing", "Input Image Preprocessing" );
     cl.AddSwitch( Key( "pad" ), &padZero, true, "Pad (ignore) zero-filled areas in both images" );
-    cl.AddSwitch( Key( "collapse" ), &collapse, true, "Collapse transformation for equal reference image values to the same floating image pixel." );
     cl.EndGroup();
 
     cl.AddParameter( &pathFix, "FixedImage", "Fixed image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
@@ -104,58 +101,41 @@ main( const int argc, const char* argv[] )
   cmtk::UniformVolume::SmartPtr refImage( cmtk::VolumeIO::ReadOriented( pathFix, verbose ) );
   cmtk::UniformVolume::SmartPtr fltImage( cmtk::VolumeIO::ReadOriented( pathMov, verbose ) );
 
-  if ( padZero )
-    {
-    refImage->GetData()->SetPaddingValue( 0 );
-    fltImage->GetData()->SetPaddingValue( 0 );
-    }
-
+  // Get sorted list of all reference pixels
   const size_t nPixelsRef = refImage->GetNumberOfPixels();
   std::vector<IndexValue> refIndexValue( nPixelsRef );
+  size_t nRef = 0;
   for ( size_t i = 0; i < nPixelsRef; ++i )
-    refIndexValue[i] = IndexValue( i, refImage->GetDataAt( i ) );
+    {
+    const cmtk::Types::DataItem value = refImage->GetDataAt( i );
+    if ( value || !padZero )
+      {
+      refIndexValue[nRef++] = IndexValue( i, value );
+      }
+    }
+  refIndexValue.resize( nRef );
   std::sort( refIndexValue.begin(), refIndexValue.end() );
-
+  
+  // Get sorted list of all floating pixels
   const size_t nPixelsFlt = fltImage->GetNumberOfPixels();
   std::vector<IndexValue> fltIndexValue( nPixelsFlt );
+  size_t nFlt = 0;
   for ( size_t i = 0; i < nPixelsFlt; ++i )
-    fltIndexValue[i] = IndexValue( i, fltImage->GetDataAt( i ) );
+    {
+    const cmtk::Types::DataItem value = fltImage->GetDataAt( i );
+    if ( value || !padZero )
+      {
+      fltIndexValue[nFlt++] = IndexValue( i, value );
+      }
+    }
+  fltIndexValue.resize( nFlt );
   std::sort( fltIndexValue.begin(), fltIndexValue.end() );
-
-  std::vector<size_t> refIndexLookup( nPixelsRef );
-  for ( size_t i = 0; i < nPixelsRef; ++i )
-    {
-    refIndexLookup[refIndexValue[i].m_Index] = i;
-    }
-
-  const double factor = double( nPixelsFlt ) / double( nPixelsRef );
-  std::vector<size_t> lookup( nPixelsRef );
-
-  if ( collapse )
-    {
-    for ( size_t iRef = 0; iRef < nPixelsRef; ++iRef )
-      {
-      const size_t rangeStart = iRef;
-      for ( const double rangeValue = refIndexValue[iRef].m_Value; (iRef < nPixelsRef) && (refIndexValue[iRef].m_Value == rangeValue); ++iRef );
-      
-      const size_t translation = fltIndexValue[static_cast<size_t>( 0.5 * factor * (rangeStart + iRef))].m_Index;
-      for ( size_t ii = rangeStart; ii < iRef; ++ii )
-	{
-	lookup[refIndexValue[ii].m_Index] = translation;
-	}
-      }
-    }
-  else
-    {
-    for ( size_t iRef = 0; iRef < nPixelsRef; ++iRef )
-      {
-      lookup[iRef] = fltIndexValue[static_cast<size_t>(refIndexLookup[iRef]*factor)].m_Index;
-      }
-    }
   
-  for ( size_t iRef = 0; iRef < nPixelsRef; ++iRef )
+  const double factor = double( nFlt ) / double( nRef );
+  
+  for ( size_t i = 0; i < nRef; ++i )
     {
-    refImage->SetDataAt( fltImage->GetDataAt( lookup[iRef] ), iRef );
+    refImage->SetDataAt( fltImage->GetDataAt( fltIndexValue[static_cast<size_t>(0.5+i*factor)].m_Index ), refIndexValue[i].m_Index );
     }
   
   cmtk::VolumeIO::Write( *refImage, "reformat.nii", verbose );
@@ -164,9 +144,9 @@ main( const int argc, const char* argv[] )
     {
     cmtk::UniformVolume::SmartPtr lblImage( cmtk::VolumeIO::ReadOriented( pathsLbls[l].c_str(), verbose ) );
     
-    for ( size_t iRef = 0; iRef < nPixelsRef; ++iRef )
+    for ( size_t i = 0; i < nRef; ++i )
       {
-      refImage->SetDataAt( lblImage->GetDataAt( lookup[iRef] ), iRef );
+      refImage->SetDataAt( lblImage->GetDataAt( fltIndexValue[static_cast<size_t>(0.5+i*factor)].m_Index ), refIndexValue[i].m_Index );
       }
     
     char output[PATH_MAX];
