@@ -128,6 +128,7 @@ ENDIF(CMTK_SINGLE_COMMAND_BINARY)
 OPTION(CMTK_BUILD_DEMO "Build demonstration code. Strange things will happen if you turn this on." OFF)
 MARK_AS_ADVANCED(CMTK_BUILD_DEMO)
 IF(CMTK_BUILD_DEMO)
+  MESSAGE( WARNING "Demo mode is enabled. Make sure not to use this build for production use!")
   ADD_DEFINITIONS(-DCMTK_BUILD_DEMO)
 ENDIF(CMTK_BUILD_DEMO)
 
