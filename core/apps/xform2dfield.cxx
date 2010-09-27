@@ -35,6 +35,7 @@
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkProgress.h>
+#include <System/cmtkThreads.h>
 
 #include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkDeformationField.h>
@@ -66,6 +67,8 @@ cmtk::Types::Coordinate InversionToleranceFactor = 0.1;
 int
 main ( const int argc, const char *argv[] ) 
 {
+  cmtk::Threads::GetNumberOfThreads();
+
   cmtk::UniformVolume::SmartPtr volume;
 
   try
