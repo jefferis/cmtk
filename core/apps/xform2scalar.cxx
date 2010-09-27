@@ -78,6 +78,8 @@ std::vector<std::string> InputXformPaths;
 int
 main ( const int argc, const char* argv[] ) 
 {
+  cmtk::Threads::GetNumberOfThreads();
+
   try
     {
     cmtk::CommandLine cl( cmtk::CommandLine::PROPS_XML );
