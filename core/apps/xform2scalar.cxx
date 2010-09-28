@@ -92,8 +92,7 @@ main ( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode on." );
 
     cl.BeginGroup( "operation", "Operating Options" );
-    cmtk::CommandLine::EnumGroup<cmtk::XformToScalarMode>::SmartPtr
-      modeGroup = cl.AddEnum( "mode", &Mode, "Mode of operation: type of scalar measure to be extracted." );
+    cmtk::CommandLine::EnumGroup<cmtk::XformToScalarMode>::SmartPtr modeGroup = cl.AddEnum( "mode", &Mode, "Mode of operation: type of scalar measure to be extracted." );
     modeGroup->AddSwitch( Key( "x-component" ), cmtk::X2S_EXTRACT_X, "X component of transformation vector." );
     modeGroup->AddSwitch( Key( "y-component" ), cmtk::X2S_EXTRACT_Y, "Y component of transformation vector." );
     modeGroup->AddSwitch( Key( "z-component" ), cmtk::X2S_EXTRACT_Z, "Z component of transformation vector." );

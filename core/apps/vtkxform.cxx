@@ -39,6 +39,7 @@
 #include <Base/cmtkXformList.h>
 
 #include <IO/cmtkXformIO.h>
+#include <IO/cmtkXformListIO.h>
 
 #include <iostream>
 #include <sstream>
@@ -52,7 +53,8 @@ main( const int argc, const char* argv[] )
   bool verbose = false;
 
   cmtk::Types::Coordinate inversionTolerance = 0.001;
-  cmtk::XformList xformList;
+
+  std::vector<std::string> inputXformPaths;
 
   try
     {
@@ -64,22 +66,9 @@ main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Print each point to STDERR (as well as stdout)" );
     cl.AddOption( Key( "inversion-tolerance" ), &inversionTolerance, "Numerical tolerance of B-spline inversion in mm. Smaller values will lead to more accurate inversion, but may increase failure rate." );
 
+    cl.AddParameterVector( &inputXformPaths, "XformList", "List of concatenated transformations. Insert '--inverse' to use the inverse of the transformation listed next." )->SetProperties( cmtk::CommandLine::PROPS_XFORM );  
+
     cl.Parse( argc, argv );
-
-    const char* next = cl.GetNextOptional();
-    while (next)
-      {
-      bool inverse = false;
-      if ( !strcmp( next, "-i" ) || !strcmp( next, "--inverse" ) )
-	{
-	inverse = true;
-	next = cl.GetNext();
-	}
-
-      cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( next, verbose ) );
-      xformList.Add( xform, inverse );
-      next = cl.GetNextOptional();
-      }
     }
   catch ( cmtk::CommandLine::Exception ex )
     {
@@ -87,6 +76,7 @@ main( const int argc, const char* argv[] )
     exit( 1 );
     }
 
+  cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( inputXformPaths );
   xformList.SetEpsilon( inversionTolerance );
   
   // Is VTK file stored in binary format?
