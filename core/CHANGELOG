@@ -1,4 +1,4 @@
-Release CMTK-1.4.3:
+Release CMTK-1.4.3 (2010-08-28):
 
 (r2365) Fixed: "xform2dfield" and "xform2scalar" tools did not respect
     CMTK_NUM_THREADS variable, as they were only using OpenMP directly.
