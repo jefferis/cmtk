@@ -55,36 +55,6 @@ void SplineWarpXform::Init ()
   this->GlobalScaling = 1.0;
 }
 
-SplineWarpXform::SplineWarpXform
-( const UniformVolume *volume, const Types::Coordinate delta, const bool exactDelta )
-{
-  this->Init();
-  this->Domain = volume->Size;
-  this->m_InitialAffineXform = AffineXform::SmartPtr( NULL );
-
-  if ( exactDelta ) 
-    {
-    for ( int dim=0; dim<3; ++dim ) 
-      {
-      Spacing[dim] = delta;
-      this->m_Dims[dim] = static_cast<int>( 4 + (Domain[dim] / Spacing[dim]) );
-      Domain[dim] = (this->m_Dims[dim] - 3) * Spacing[dim];
-      }
-    } 
-  else
-    {
-    for ( int dim=0; dim<3; ++dim )
-      this->m_Dims[dim] = 2 + std::max( 2, 1+static_cast<int>( Domain[dim]/delta ) );
-    }
-  
-  NumberOfControlPoints = this->m_Dims[0] * this->m_Dims[1] * this->m_Dims[2];
-  this->AllocateParameterVector( 3 * NumberOfControlPoints );
-  
-  this->Update( exactDelta );
-  this->InitControlPoints( this->m_InitialAffineXform );
-  this->RegisterVolume( volume );
-}
-
 SplineWarpXform::SplineWarpXform 
 ( const FixedVector<3,Types::Coordinate>& domain, const Types::Coordinate delta, const AffineXform* initialXform, const bool exactDelta  )
 {

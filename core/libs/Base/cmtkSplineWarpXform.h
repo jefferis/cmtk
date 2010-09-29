@@ -79,10 +79,6 @@ public:
    */
   SplineWarpXform();
 
-  /** Construct new warp from volume and control grid density.
-   */
-  SplineWarpXform( const UniformVolume *volume,  const Types::Coordinate delta, const bool exactDelta = false );
-
   /** Construct new warp from volume size and control grid density.
    */
   SplineWarpXform( const FixedVector<3,Types::Coordinate>& domain, const Types::Coordinate delta, const AffineXform *initialXform = NULL, const bool exactDelta = false );

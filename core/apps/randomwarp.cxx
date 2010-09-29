@@ -62,7 +62,7 @@ main( const int argc, const char *argv[] )
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( filenameIn, true ) );
   if ( ! volume ) return 1;
 
-  cmtk::SplineWarpXform::SmartPtr warp( new cmtk::SplineWarpXform( volume, gridSpacing ) );
+  cmtk::SplineWarpXform::SmartPtr warp( new cmtk::SplineWarpXform( volume->Size, gridSpacing ) );
 
   // seed RNG with (supposedly) random system time
   cmtk::MathUtil::NormalRandom( sigma, static_cast<unsigned int>( time( NULL ) ) );
