@@ -1,3 +1,35 @@
+/*
+//
+//  Copyright 1997-2009 Torsten Rohlfing
+//
+//  Copyright 2004-2010 SRI International
+//
+//  This file is part of the Computational Morphometry Toolkit.
+//
+//  http://www.nitrc.org/projects/cmtk/
+//
+//  The Computational Morphometry Toolkit is free software: you can
+//  redistribute it and/or modify it under the terms of the GNU General Public
+//  License as published by the Free Software Foundation, either version 3 of
+//  the License, or (at your option) any later version.
+//
+//  The Computational Morphometry Toolkit is distributed in the hope that it
+//  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+//  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along
+//  with the Computational Morphometry Toolkit.  If not, see
+//  <http://www.gnu.org/licenses/>.
+//
+//  $Revision: 2373 $
+//
+//  $LastChangedDate: 2010-09-29 11:17:31 -0700 (Wed, 29 Sep 2010) $
+//
+//  $LastChangedBy: torstenrohlfing $
+//
+*/
+
 /*************************************************************************
 Copyright (c) 2007-2008, Sergey Bochkanov (ALGLIB project).
 
@@ -673,157 +705,6 @@ void lrunserialize(const ap::real_1d_array& ra, ap::linearmodel& lm)
     ap::ap_error::make_assertion(ap::round(ra(0))==lrvnum, "LRUnserialize: incorrect array!");
     lm.w.setbounds(0, ap::round(ra(1))-1);
     ap::vmove(&lm.w(0), &ra(1), ap::vlen(0,ap::round(ra(1))-1));
-}
-
-
-/*************************************************************************
-Obsolete subroutine, use LRBuildS
-
-  -- ALGLIB --
-     Copyright 26.04.2008 by Bochkanov Sergey
-
-References:
-1. Numerical Recipes in C, "15.2 Fitting Data to a Straight Line"
-*************************************************************************/
-void lrlines(const ap::real_2d_array& xy,
-     const ap::real_1d_array& s,
-     int n,
-     int& info,
-     ap::real_value_type& a,
-     ap::real_value_type& b,
-     ap::real_value_type& vara,
-     ap::real_value_type& varb,
-     ap::real_value_type& covab,
-     ap::real_value_type& corrab,
-     ap::real_value_type& p)
-{
-    int i;
-    ap::real_value_type ss;
-    ap::real_value_type sx;
-    ap::real_value_type sxx;
-    ap::real_value_type sy;
-    ap::real_value_type stt;
-    ap::real_value_type e1;
-    ap::real_value_type e2;
-    ap::real_value_type t;
-    ap::real_value_type chi2;
-
-    if( n<2 )
-    {
-        info = -1;
-        return;
-    }
-    for(i = 0; i <= n-1; i++)
-    {
-        if( s(i)<=0 )
-        {
-            info = -2;
-            return;
-        }
-    }
-    info = 1;
-    
-    //
-    // Calculate S, SX, SY, SXX
-    //
-    ss = 0;
-    sx = 0;
-    sy = 0;
-    sxx = 0;
-    for(i = 0; i <= n-1; i++)
-    {
-        t = ap::sqr(s(i));
-        ss = ss+1/t;
-        sx = sx+xy(i,0)/t;
-        sy = sy+xy(i,1)/t;
-        sxx = sxx+ap::sqr(xy(i,0))/t;
-    }
-    
-    //
-    // Test for condition number
-    //
-    t = sqrt(4*ap::sqr(sx)+ap::sqr(ss-sxx));
-    e1 = 0.5*(ss+sxx+t);
-    e2 = 0.5*(ss+sxx-t);
-    if( ap::minreal(e1, e2)<=1000*ap::machineepsilon*ap::maxreal(e1, e2) )
-    {
-        info = -3;
-        return;
-    }
-    
-    //
-    // Calculate A, B
-    //
-    a = 0;
-    b = 0;
-    stt = 0;
-    for(i = 0; i <= n-1; i++)
-    {
-        t = (xy(i,0)-sx/ss)/s(i);
-        b = b+t*xy(i,1)/s(i);
-        stt = stt+ap::sqr(t);
-    }
-    b = b/stt;
-    a = (sy-sx*b)/ss;
-    
-    //
-    // Calculate goodness-of-fit
-    //
-    if( n>2 )
-    {
-        chi2 = 0;
-        for(i = 0; i <= n-1; i++)
-        {
-            chi2 = chi2+ap::sqr((xy(i,1)-a-b*xy(i,0))/s(i));
-        }
-        p = incompletegammac(ap::real_value_type(n-2)/ap::real_value_type(2), chi2/2);
-    }
-    else
-    {
-        p = 1;
-    }
-    
-    //
-    // Calculate other parameters
-    //
-    vara = (1+ap::sqr(sx)/(ss*stt))/ss;
-    varb = 1/stt;
-    covab = -sx/(ss*stt);
-    corrab = covab/sqrt(vara*varb);
-}
-
-
-/*************************************************************************
-Obsolete subroutine, use LRBuild
-
-  -- ALGLIB --
-     Copyright 02.08.2008 by Bochkanov Sergey
-*************************************************************************/
-void lrline(const ap::real_2d_array& xy,
-     int n,
-     int& info,
-     ap::real_value_type& a,
-     ap::real_value_type& b)
-{
-    ap::real_1d_array s;
-    int i;
-    ap::real_value_type vara;
-    ap::real_value_type varb;
-    ap::real_value_type covab;
-    ap::real_value_type corrab;
-    ap::real_value_type p;
-
-    if( n<2 )
-    {
-        info = -1;
-        return;
-    }
-    s.setbounds(0, n-1);
-    for(i = 0; i <= n-1; i++)
-    {
-        s(i) = 1;
-    }
-    lrlines(xy, s, n, info, a, b, vara, varb, covab, corrab, p);
 }
 
 

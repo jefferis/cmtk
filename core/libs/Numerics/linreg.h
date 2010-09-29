@@ -1,3 +1,35 @@
+/*
+//
+//  Copyright 1997-2009 Torsten Rohlfing
+//
+//  Copyright 2004-2010 SRI International
+//
+//  This file is part of the Computational Morphometry Toolkit.
+//
+//  http://www.nitrc.org/projects/cmtk/
+//
+//  The Computational Morphometry Toolkit is free software: you can
+//  redistribute it and/or modify it under the terms of the GNU General Public
+//  License as published by the Free Software Foundation, either version 3 of
+//  the License, or (at your option) any later version.
+//
+//  The Computational Morphometry Toolkit is distributed in the hope that it
+//  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+//  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License along
+//  with the Computational Morphometry Toolkit.  If not, see
+//  <http://www.gnu.org/licenses/>.
+//
+//  $Revision: 2373 $
+//
+//  $LastChangedDate: 2010-09-29 11:17:31 -0700 (Wed, 29 Sep 2010) $
+//
+//  $LastChangedBy: torstenrohlfing $
+//
+*/
+
 /*************************************************************************
 Copyright (c) 2007-2008, Sergey Bochkanov (ALGLIB project).
 
@@ -320,41 +352,5 @@ OUTPUT PARAMETERS:
      Copyright 15.03.2009 by Bochkanov Sergey
 *************************************************************************/
 void lrunserialize(const ap::real_1d_array& ra, ap::linearmodel& lm);
-
-
-/*************************************************************************
-Obsolete subroutine, use LRBuildS
-
-  -- ALGLIB --
-     Copyright 26.04.2008 by Bochkanov Sergey
-
-References:
-1. Numerical Recipes in C, "15.2 Fitting Data to a Straight Line"
-*************************************************************************/
-void lrlines(const ap::real_2d_array& xy,
-     const ap::real_1d_array& s,
-     int n,
-     int& info,
-     ap::real_value_type& a,
-     ap::real_value_type& b,
-     ap::real_value_type& vara,
-     ap::real_value_type& varb,
-     ap::real_value_type& covab,
-     ap::real_value_type& corrab,
-     ap::real_value_type& p);
-
-
-/*************************************************************************
-Obsolete subroutine, use LRBuild
-
-  -- ALGLIB --
-     Copyright 02.08.2008 by Bochkanov Sergey
-*************************************************************************/
-void lrline(const ap::real_2d_array& xy,
-     int n,
-     int& info,
-     ap::real_value_type& a,
-     ap::real_value_type& b);
-
 
 #endif
