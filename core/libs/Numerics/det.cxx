@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -123,48 +124,3 @@ ap::real_value_type rmatrixdet(ap::real_2d_array a, int n)
     result = rmatrixludet(a, pivots, n);
     return result;
 }
-
-
-/*************************************************************************
-Obsolete 1-based subroutine.
-See RMatrixDetLU for 0-based replacement.
-*************************************************************************/
-ap::real_value_type determinantlu(const ap::real_2d_array& a,
-     const ap::integer_1d_array& pivots,
-     int n)
-{
-    ap::real_value_type result;
-    int i;
-    int s;
-
-    result = 1;
-    s = 1;
-    for(i = 1; i <= n; i++)
-    {
-        result = result*a(i,i);
-        if( pivots(i)!=i )
-        {
-            s = -s;
-        }
-    }
-    result = result*s;
-    return result;
-}
-
-
-/*************************************************************************
-Obsolete 1-based subroutine.
-See RMatrixDet for 0-based replacement.
-*************************************************************************/
-ap::real_value_type determinant(ap::real_2d_array a, int n)
-{
-    ap::real_value_type result;
-    ap::integer_1d_array pivots;
-
-    ludecomposition(a, n, n, pivots);
-    result = determinantlu(a, pivots, n);
-    return result;
-}
-
-
-

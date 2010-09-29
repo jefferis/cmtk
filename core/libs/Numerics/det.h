@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -102,22 +103,5 @@ Result: determinant of matrix A.
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
 ap::real_value_type rmatrixdet(ap::real_2d_array a, int n);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine.
-See RMatrixDetLU for 0-based replacement.
-*************************************************************************/
-ap::real_value_type determinantlu(const ap::real_2d_array& a,
-     const ap::integer_1d_array& pivots,
-     int n);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine.
-See RMatrixDet for 0-based replacement.
-*************************************************************************/
-ap::real_value_type determinant(ap::real_2d_array a, int n);
-
 
 #endif

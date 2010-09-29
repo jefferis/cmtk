@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -198,37 +199,6 @@ bool rmatrixbdsvd(ap::real_1d_array& d,
     }
     result = bidiagonalsvddecompositioninternal(d1, e1, n, isupper, isfractionalaccuracyrequired, u, 0, nru, c, 0, ncc, vt, 0, ncvt);
     ap::vmove(&d(0), &d1(1), ap::vlen(0,n-1));
-    return result;
-}
-
-
-/*************************************************************************
-Obsolete 1-based subroutine. See RMatrixBDSVD for 0-based replacement.
-
-History:
-    * 31 March, 2007.
-        changed MAXITR from 6 to 12.
-
-  -- LAPACK routine (version 3.0) --
-     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-     Courant Institute, Argonne National Lab, and Rice University
-     October 31, 1999.
-*************************************************************************/
-bool bidiagonalsvddecomposition(ap::real_1d_array& d,
-     ap::real_1d_array e,
-     int n,
-     bool isupper,
-     bool isfractionalaccuracyrequired,
-     ap::real_2d_array& u,
-     int nru,
-     ap::real_2d_array& c,
-     int ncc,
-     ap::real_2d_array& vt,
-     int ncvt)
-{
-    bool result;
-
-    result = bidiagonalsvddecompositioninternal(d, e, n, isupper, isfractionalaccuracyrequired, u, 1, nru, c, 1, ncc, vt, 1, ncvt);
     return result;
 }
 
