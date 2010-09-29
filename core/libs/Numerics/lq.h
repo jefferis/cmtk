@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -152,38 +153,5 @@ void rmatrixlqunpackl(const ap::real_2d_array& a,
      int m,
      int n,
      ap::real_2d_array& l);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine
-See RMatrixLQ for 0-based replacement.
-*************************************************************************/
-void lqdecomposition(ap::real_2d_array& a,
-     int m,
-     int n,
-     ap::real_1d_array& tau);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine
-See RMatrixLQUnpackQ for 0-based replacement.
-*************************************************************************/
-void unpackqfromlq(const ap::real_2d_array& a,
-     int m,
-     int n,
-     const ap::real_1d_array& tau,
-     int qrows,
-     ap::real_2d_array& q);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine
-*************************************************************************/
-void lqdecompositionunpacked(ap::real_2d_array a,
-     int m,
-     int n,
-     ap::real_2d_array& l,
-     ap::real_2d_array& q);
-
 
 #endif
