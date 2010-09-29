@@ -125,25 +125,6 @@ Copyright 1984, 1987, 1995, 2000 by Stephen L. Moshier
 ap::real_value_type studenttdistribution(int k, ap::real_value_type t);
 
 
-/*************************************************************************
-Functional inverse of Student's t distribution
-
-Given probability p, finds the argument t such that stdtr(k,t)
-is equal to p.
-
-ACCURACY:
-
-Tested at random 1 <= k <= 100.  The "domain" refers to p:
-                     Relative error:
-arithmetic   domain     # trials      peak         rms
-   IEEE    .001,.999     25000       5.7e-15     8.0e-16
-   IEEE    10^-6,.001    25000       2.0e-12     2.9e-14
-
-Cephes Math Library Release 2.8:  June, 2000
-Copyright 1984, 1987, 1995, 2000 by Stephen L. Moshier
-*************************************************************************/
-ap::real_value_type invstudenttdistribution(int k, ap::real_value_type p);
-
 } // namespace alglib
 
 #endif
