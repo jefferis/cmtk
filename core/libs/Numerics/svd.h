@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -127,21 +128,6 @@ Output parameters:
      Copyright 2005 by Bochkanov Sergey
 *************************************************************************/
 bool rmatrixsvd(ap::real_2d_array a,
-     int m,
-     int n,
-     int uneeded,
-     int vtneeded,
-     int additionalmemory,
-     ap::real_1d_array& w,
-     ap::real_2d_array& u,
-     ap::real_2d_array& vt);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine.
-See RMatrixSVD for 0-based replacement.
-*************************************************************************/
-bool svddecomposition(ap::real_2d_array a,
      int m,
      int n,
      int uneeded,

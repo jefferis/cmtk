@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -297,83 +298,5 @@ void rmatrixbdunpackdiagonals(const ap::real_2d_array& b,
      bool& isupper,
      ap::real_1d_array& d,
      ap::real_1d_array& e);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine.
-See RMatrixBD for 0-based replacement.
-*************************************************************************/
-void tobidiagonal(ap::real_2d_array& a,
-     int m,
-     int n,
-     ap::real_1d_array& tauq,
-     ap::real_1d_array& taup);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine.
-See RMatrixBDUnpackQ for 0-based replacement.
-*************************************************************************/
-void unpackqfrombidiagonal(const ap::real_2d_array& qp,
-     int m,
-     int n,
-     const ap::real_1d_array& tauq,
-     int qcolumns,
-     ap::real_2d_array& q);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine.
-See RMatrixBDMultiplyByQ for 0-based replacement.
-*************************************************************************/
-void multiplybyqfrombidiagonal(const ap::real_2d_array& qp,
-     int m,
-     int n,
-     const ap::real_1d_array& tauq,
-     ap::real_2d_array& z,
-     int zrows,
-     int zcolumns,
-     bool fromtheright,
-     bool dotranspose);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine.
-See RMatrixBDUnpackPT for 0-based replacement.
-*************************************************************************/
-void unpackptfrombidiagonal(const ap::real_2d_array& qp,
-     int m,
-     int n,
-     const ap::real_1d_array& taup,
-     int ptrows,
-     ap::real_2d_array& pt);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine.
-See RMatrixBDMultiplyByP for 0-based replacement.
-*************************************************************************/
-void multiplybypfrombidiagonal(const ap::real_2d_array& qp,
-     int m,
-     int n,
-     const ap::real_1d_array& taup,
-     ap::real_2d_array& z,
-     int zrows,
-     int zcolumns,
-     bool fromtheright,
-     bool dotranspose);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine.
-See RMatrixBDUnpackDiagonals for 0-based replacement.
-*************************************************************************/
-void unpackdiagonalsfrombidiagonal(const ap::real_2d_array& b,
-     int m,
-     int n,
-     bool& isupper,
-     ap::real_1d_array& d,
-     ap::real_1d_array& e);
-
 
 #endif
