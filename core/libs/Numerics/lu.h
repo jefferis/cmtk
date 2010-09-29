@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -122,27 +123,5 @@ void rmatrixlu(ap::real_2d_array& a,
      int m,
      int n,
      ap::integer_1d_array& pivots);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine. Left for backward compatibility.
-See RMatrixLU for 0-based replacement.
-*************************************************************************/
-void ludecomposition(ap::real_2d_array& a,
-     int m,
-     int n,
-     ap::integer_1d_array& pivots);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine. Left for backward compatibility.
-*************************************************************************/
-void ludecompositionunpacked(ap::real_2d_array a,
-     int m,
-     int n,
-     ap::real_2d_array& l,
-     ap::real_2d_array& u,
-     ap::integer_1d_array& pivots);
-
 
 #endif
