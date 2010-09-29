@@ -34,11 +34,14 @@
 #include <System/cmtkConsole.h>
 
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkValueSequence.h>
 
 #include <IO/cmtkVolumeIO.h>
 
 #include <vector>
 #include <algorithm>
+
+#include <stdio.h>
 
 class
 IndexValue
@@ -72,6 +75,8 @@ main( const int argc, const char* argv[] )
 
   bool padZero = false;
 
+  const char* ic_error_path = NULL;
+
   try
     {
     cmtk::CommandLine cl( cmtk::CommandLine::PROPS_XML );
@@ -85,6 +90,8 @@ main( const int argc, const char* argv[] )
     cl.BeginGroup( "Preprocessing", "Input Image Preprocessing" );
     cl.AddSwitch( Key( "pad" ), &padZero, true, "Pad (ignore) zero-filled areas in both images" );
     cl.EndGroup();
+
+    cl.AddOption( Key( "ic-error-file" ), &ic_error_path, "If given, inverse consistency error statistics are written to this file." );
 
     cl.AddParameter( &pathFix, "FixedImage", "Fixed image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &pathMov, "MovingImage", "Moving image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
@@ -152,5 +159,26 @@ main( const int argc, const char* argv[] )
     char output[PATH_MAX];
     snprintf( output, PATH_MAX, "labels%d.nii", static_cast<int>( l ) );
     cmtk::VolumeIO::Write( *refImage, output, verbose );    
+    }
+
+  if ( ic_error_path )
+    {
+    cmtk::ValueSequence<double> sequence;
+
+    for ( size_t i = 0; i < nRef; ++i )
+      {
+      const cmtk::Vector3D v0 = refImage->GetGridLocation( refIndexValue[i].m_Index );
+      const cmtk::Vector3D v1 = refImage->GetGridLocation( refIndexValue[static_cast<size_t>( 0.5+static_cast<size_t>(0.5+i*factor)/factor)].m_Index );
+      
+      const double error = sqrt( (v0-v1).SumOfSquares() );
+      sequence.Proceed( error );
+      }
+
+    FILE* fp = fopen( ic_error_path, "w" );
+    if ( fp )
+      {
+      fprintf( fp, "MIN\t%lf\nMAX\t%lf\nMEAN\t%lf\nSDEV\t%lf\n", sequence.GetMinimum(), sequence.GetMaximum(), sequence.GetAverage(), sqrt( sequence.GetVariance() ) );
+      fclose( fp );
+      }
     }
 }
