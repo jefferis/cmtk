@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -174,27 +175,5 @@ void smatrixtdunpackq(const ap::real_2d_array& a,
      const bool& isupper,
      const ap::real_1d_array& tau,
      ap::real_2d_array& q);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine
-*************************************************************************/
-void totridiagonal(ap::real_2d_array& a,
-     int n,
-     bool isupper,
-     ap::real_1d_array& tau,
-     ap::real_1d_array& d,
-     ap::real_1d_array& e);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine
-*************************************************************************/
-void unpackqfromtridiagonal(const ap::real_2d_array& a,
-     const int& n,
-     const bool& isupper,
-     const ap::real_1d_array& tau,
-     ap::real_2d_array& q);
-
 
 #endif

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -112,17 +113,5 @@ bool smatrixevd(ap::real_2d_array a,
      bool isupper,
      ap::real_1d_array& d,
      ap::real_2d_array& z);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine
-*************************************************************************/
-bool symmetricevd(ap::real_2d_array a,
-     int n,
-     int zneeded,
-     bool isupper,
-     ap::real_1d_array& d,
-     ap::real_2d_array& z);
-
 
 #endif

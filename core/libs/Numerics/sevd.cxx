@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -115,31 +116,3 @@ bool smatrixevd(ap::real_2d_array a,
     result = smatrixtdevd(d, e, n, zneeded, z);
     return result;
 }
-
-
-/*************************************************************************
-Obsolete 1-based subroutine
-*************************************************************************/
-bool symmetricevd(ap::real_2d_array a,
-     int n,
-     int zneeded,
-     bool isupper,
-     ap::real_1d_array& d,
-     ap::real_2d_array& z)
-{
-    bool result;
-    ap::real_1d_array tau;
-    ap::real_1d_array e;
-
-    ap::ap_error::make_assertion(zneeded==0||zneeded==1, "SymmetricEVD: incorrect ZNeeded");
-    totridiagonal(a, n, isupper, tau, d, e);
-    if( zneeded==1 )
-    {
-        unpackqfromtridiagonal(a, n, isupper, tau, z);
-    }
-    result = tridiagonalevd(d, e, n, zneeded, z);
-    return result;
-}
-
-
-
