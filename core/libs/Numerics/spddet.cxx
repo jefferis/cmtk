@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -127,42 +128,3 @@ ap::real_value_type spdmatrixdet(ap::real_2d_array a, int n, bool isupper)
     }
     return result;
 }
-
-
-/*************************************************************************
-Obsolete subroutine
-*************************************************************************/
-ap::real_value_type determinantcholesky(const ap::real_2d_array& a, int n)
-{
-    ap::real_value_type result;
-    int i;
-
-    result = 1;
-    for(i = 1; i <= n; i++)
-    {
-        result = result*ap::sqr(a(i,i));
-    }
-    return result;
-}
-
-
-/*************************************************************************
-Obsolete subroutine
-*************************************************************************/
-ap::real_value_type determinantspd(ap::real_2d_array a, int n, bool isupper)
-{
-    ap::real_value_type result;
-
-    if( !choleskydecomposition(a, n, isupper) )
-    {
-        result = -1;
-    }
-    else
-    {
-        result = determinantcholesky(a, n);
-    }
-    return result;
-}
-
-
-

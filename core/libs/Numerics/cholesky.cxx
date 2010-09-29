@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -199,117 +200,4 @@ bool spdmatrixcholesky(ap::real_2d_array& a, int n, bool isupper)
     }
     return result;
 }
-
-
-/*************************************************************************
-Obsolete 1-based subroutine.
-*************************************************************************/
-bool choleskydecomposition(ap::real_2d_array& a, int n, bool isupper)
-{
-    bool result;
-    int i;
-    int j;
-    ap::real_value_type ajj;
-    ap::real_value_type v;
-    int jm1;
-    int jp1;
-
-    
-    //
-    //     Test the input parameters.
-    //
-    ap::ap_error::make_assertion(n>=0, "Error in CholeskyDecomposition: incorrect function arguments");
-    
-    //
-    //     Quick return if possible
-    //
-    result = true;
-    if( n==0 )
-    {
-        return result;
-    }
-    if( isupper )
-    {
-        
-        //
-        // Compute the Cholesky factorization A = U'*U.
-        //
-        for(j = 1; j <= n; j++)
-        {
-            
-            //
-            // Compute U(J,J) and test for non-positive-definiteness.
-            //
-            jm1 = j-1;
-            v = ap::vdotproduct(a.getcolumn(j, 1, jm1), a.getcolumn(j, 1, jm1));
-            ajj = a(j,j)-v;
-            if( ajj<=0 )
-            {
-                result = false;
-                return result;
-            }
-            ajj = sqrt(ajj);
-            a(j,j) = ajj;
-            
-            //
-            // Compute elements J+1:N of row J.
-            //
-            if( j<n )
-            {
-                for(i = j+1; i <= n; i++)
-                {
-                    jm1 = j-1;
-                    v = ap::vdotproduct(a.getcolumn(i, 1, jm1), a.getcolumn(j, 1, jm1));
-                    a(j,i) = a(j,i)-v;
-                }
-                v = 1/ajj;
-                jp1 = j+1;
-                ap::vmul(&a(j, jp1), ap::vlen(jp1,n), v);
-            }
-        }
-    }
-    else
-    {
-        
-        //
-        // Compute the Cholesky factorization A = L*L'.
-        //
-        for(j = 1; j <= n; j++)
-        {
-            
-            //
-            // Compute L(J,J) and test for non-positive-definiteness.
-            //
-            jm1 = j-1;
-            v = ap::vdotproduct(&a(j, 1), &a(j, 1), ap::vlen(1,jm1));
-            ajj = a(j,j)-v;
-            if( ajj<=0 )
-            {
-                result = false;
-                return result;
-            }
-            ajj = sqrt(ajj);
-            a(j,j) = ajj;
-            
-            //
-            // Compute elements J+1:N of column J.
-            //
-            if( j<n )
-            {
-                for(i = j+1; i <= n; i++)
-                {
-                    jm1 = j-1;
-                    v = ap::vdotproduct(&a(i, 1), &a(j, 1), ap::vlen(1,jm1));
-                    a(i,j) = a(i,j)-v;
-                }
-                v = 1/ajj;
-                jp1 = j+1;
-                ap::vmul(a.getcolumn(j, jp1, n), v);
-            }
-        }
-    }
-    return result;
-}
-
-
 
