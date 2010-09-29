@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -162,36 +163,5 @@ void rmatrixqrunpackr(const ap::real_2d_array& a,
      int m,
      int n,
      ap::real_2d_array& r);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine. See RMatrixQR for 0-based replacement.
-*************************************************************************/
-void qrdecomposition(ap::real_2d_array& a,
-     int m,
-     int n,
-     ap::real_1d_array& tau);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine. See RMatrixQRUnpackQ for 0-based replacement.
-*************************************************************************/
-void unpackqfromqr(const ap::real_2d_array& a,
-     int m,
-     int n,
-     const ap::real_1d_array& tau,
-     int qcolumns,
-     ap::real_2d_array& q);
-
-
-/*************************************************************************
-Obsolete 1-based subroutine. See RMatrixQR for 0-based replacement.
-*************************************************************************/
-void qrdecompositionunpacked(ap::real_2d_array a,
-     int m,
-     int n,
-     ap::real_2d_array& q,
-     ap::real_2d_array& r);
-
 
 #endif
