@@ -14,14 +14,15 @@ CMTK has been built and tested on the following platforms:
 
 - Linux 32bit (Fedora 13), gcc 4.4.4
 - Linux 64bit (Fedora 13), gcc 4.4.4
+- Linux 64bit (Fedora 14), gcc 4.5.1
 - Linux, i386, Oracle/SunStudio C++ 5.11 (Express June 2010)
-- Cygwin, gcc 4.3.4
+- Cygwin, gcc 4.5.0
 - Windows XP, VisualStudio 9 (2008 Express Edition)
 - Windows XP, VisualStudio 10 (2010 Express Edition)
 - MacOS X, PowerPC, gcc 4.0.1
 - OpenSolaris, SunStudio 12.1, i386 (CC 5.10)
 - OpenSolaris, SunStudio 12.1, x86_64 (CC 5.10)
-- OpenSolaris, Oracle/SunStudio Express June 2010 (CC 5.11), x86_64
+- OpenSolaris, Oracle/SunStudio 12.2, x86_64
 
 ==========================================================================
 
