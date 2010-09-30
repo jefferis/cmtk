@@ -47,10 +47,10 @@ double
 MathUtil::UniformRandom()
 {
 
- int seed = (int)time(0) + (int)( 1000 * rand() );
- CRandomMersenne randGen( seed );
- double result = randGen.Random();
- return result;
+  static const int seed = (int)time(0) + (int)( 1000 * rand() );
+  static CRandomMersenne randGen( seed );
+
+  return randGen.Random();
 }
 
 } // namespace cmtk
