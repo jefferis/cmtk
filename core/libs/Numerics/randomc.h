@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -204,8 +205,6 @@ public:
       RandomInit(seed); LastInterval = 0;}
    void RandomInit(int seed);          // Re-seed
    void RandomInitByArray(int const seeds[], int NumSeeds); // Seed by more than 32 bits
-   int IRandom (int min, int max);     // Output random integer
-   int IRandomX(int min, int max);     // Output random integer, exact
    ap::real_value_type Random();                    // Output random float
    uint32_t BRandom();                 // Output random bits
 private:
@@ -220,7 +219,6 @@ private:
 class CRandomMother {                  // Encapsulate random number generator
 public:
    void RandomInit(int seed);          // Initialization
-   int IRandom(int min, int max);      // Get integer random number in desired interval
    ap::real_value_type Random();                    // Get floating point random number
    uint32_t BRandom();                 // Output random bits
    CRandomMother(int seed) {           // Constructor

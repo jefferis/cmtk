@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -142,72 +143,3 @@ ap::real_value_type CRandomMersenne::Random() {
 }
 
 
-int CRandomMersenne::IRandom(int min, int max) {
-   // Output random integer in the interval min <= x <= max
-   // Relative error on frequencies < 2^-32
-   if (max <= min) {
-      if (max == min) return min; else return 0x80000000;
-   }
-   // Multiply interval with random and truncate
-   int r = int((ap::real_value_type)(uint32_t)(max - min + 1) * Random() + min); 
-   if (r > max) r = max;
-   return r;
-}
-
-
-int CRandomMersenne::IRandomX(int min, int max) {
-   // Output random integer in the interval min <= x <= max
-   // Each output value has exactly the same probability.
-   // This is obtained by rejecting certain bit values so that the number
-   // of possible bit values is divisible by the interval length
-   if (max <= min) {
-      if (max == min) return min; else return 0x80000000;
-   }
-#ifdef  INT64_SUPPORTED
-   // 64 bit integers available. Use multiply and shift method
-   uint32_t interval;                    // Length of interval
-   uint64_t longran;                     // Random bits * interval
-   uint32_t iran;                        // Longran / 2^32
-   uint32_t remainder;                   // Longran % 2^32
-
-   interval = uint32_t(max - min + 1);
-   if (interval != LastInterval) {
-      // Interval length has changed. Must calculate rejection limit
-      // Reject when remainder >= 2^32 / interval * interval
-      // RLimit will be 0 if interval is a power of 2. No rejection then
-      RLimit = uint32_t(((uint64_t)1 << 32) / interval) * interval - 1;
-      LastInterval = interval;
-   }
-   do { // Rejection loop
-      longran  = (uint64_t)BRandom() * interval;
-      iran = (uint32_t)(longran >> 32);
-      remainder = (uint32_t)longran;
-   } while (remainder > RLimit);
-   // Convert back to signed and return result
-   return (int32_t)iran + min;
-
-#else
-   // 64 bit integers not available. Use modulo method
-   uint32_t interval;                    // Length of interval
-   uint32_t bran;                        // Random bits
-   uint32_t iran;                        // bran / interval
-   uint32_t remainder;                   // bran % interval
-
-   interval = uint32_t(max - min + 1);
-   if (interval != LastInterval) {
-      // Interval length has changed. Must calculate rejection limit
-      // Reject when iran = 2^32 / interval
-      // We can't make 2^32 so we use 2^32-1 and correct afterwards
-      RLimit = (uint32_t)0xFFFFFFFF / interval;
-      if ((uint32_t)0xFFFFFFFF % interval == interval - 1) RLimit++;
-   }
-   do { // Rejection loop
-      bran = BRandom();
-      iran = bran / interval;
-      remainder = bran % interval;
-   } while (iran >= RLimit);
-   // Convert back to signed and return result
-   return (int32_t)remainder + min;
-
-#endif
-}
