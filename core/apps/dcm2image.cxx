@@ -81,7 +81,7 @@ namespace apps
 namespace dcm2image
 {
 #endif
-const char* OutPathPattern = "%03d.hdr";
+const char* OutPathPattern = "%03d.nii";
 const char* SearchRootDir = ".";
 
 std::ofstream cnull( "/dev/null" );
