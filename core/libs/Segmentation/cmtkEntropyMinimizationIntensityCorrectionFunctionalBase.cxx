@@ -37,6 +37,10 @@
 
 #include <algorithm>
 
+#ifdef CMTK_BUILD_DEMO
+#  include <IO/cmtkVolumeIO.h>
+#endif // #ifdef CMTK_BUILD_DEMO
+
 namespace cmtk
 {
 
@@ -114,6 +118,26 @@ EntropyMinimizationIntensityCorrectionFunctionalBase
   this->UpdateBiasFields( foregroundOnly );
   this->UpdateOutputImage( foregroundOnly );
   return this->m_OutputImage;
+}
+
+EntropyMinimizationIntensityCorrectionFunctionalBase::ReturnType
+EntropyMinimizationIntensityCorrectionFunctionalBase
+::EvaluateAt( CoordinateVector& v )
+{
+  this->SetParamVector( v );
+  this->UpdateBiasFields();
+  this->UpdateOutputImage();
+  
+#ifdef CMTK_BUILD_DEMO
+  static int it = 0;
+  UniformVolume::SmartConstPtr slice = this->m_OutputImage->ExtractSlice( AXIS_Z, this->m_OutputImage->m_Dims[2] / 2 );
+  
+  char path[PATH_MAX];
+  snprintf( path, PATH_MAX, "mrbias-%03d.nii", it++ );
+  VolumeIO::Write( *slice, path );
+#endif
+  
+  return this->Evaluate();
 }
 
 void

@@ -164,13 +164,7 @@ public:
   }
 
   /// Evaluate functional for given parameter vector.
-  virtual Self::ReturnType EvaluateAt( CoordinateVector& v )
-  {
-    this->SetParamVector( v );
-    this->UpdateBiasFields();
-    this->UpdateOutputImage();
-    return this->Evaluate();
-  }
+  virtual Self::ReturnType EvaluateAt( CoordinateVector& v );
 
 protected:
   /// Original input image.

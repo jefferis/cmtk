@@ -35,10 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkImagePairNonrigidRegistrationFunctional.h"
+#include <Registration/cmtkImagePairNonrigidRegistrationFunctional.h>
 
-#include "Base/cmtkSplineWarpXform.h"
-#include "Base/cmtkDataTypeTraits.h"
+#include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkDataTypeTraits.h>
+
+#ifdef CMTK_BUILD_DEMO
+#  include <IO/cmtkXformIO.h>
+#endif // #ifdef CMTK_BUILD_DEMO
 
 namespace
 cmtk
@@ -246,6 +250,12 @@ public:
   virtual typename Self::ReturnType EvaluateAt ( CoordinateVector& v )
   {
     this->m_ThreadWarp[0]->SetParamVector( v );
+#ifdef CMTK_BUILD_DEMO
+    static int it = 0;
+    char path[PATH_MAX];
+    snprintf( path, PATH_MAX, "warp-%03d.xform", it++ );
+    XformIO::Write( this->m_ThreadWarp[0], path );
+#endif
     return this->Evaluate();
   }
 

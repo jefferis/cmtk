@@ -35,10 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkImagePairAffineRegistrationFunctional.h"
+#include <Registration/cmtkImagePairAffineRegistrationFunctional.h>
 
-#include "Base/cmtkInterpolator.h"
-#include "Base/cmtkTransformedVolumeAxes.h"
+#include <Base/cmtkInterpolator.h>
+#include <Base/cmtkTransformedVolumeAxes.h>
+
+#ifdef CMTK_BUILD_DEMO
+#  include <IO/cmtkXformIO.h>
+#endif // #ifdef CMTK_BUILD_DEMO
 
 namespace
 cmtk
@@ -108,6 +112,12 @@ public:
   virtual typename Self::ReturnType EvaluateAt ( CoordinateVector& v ) 
   {
     this->m_AffineXform->SetParamVector( v );
+#ifdef CMTK_BUILD_DEMO
+    static int it = 0;
+    char path[PATH_MAX];
+    snprintf( path, PATH_MAX, "registration-%03d.xform", it++ );
+    XformIO::Write( this->m_AffineXform, path );
+#endif
     return this->Evaluate();
   }
 
