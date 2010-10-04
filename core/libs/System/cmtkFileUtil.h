@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -45,10 +46,14 @@ cmtk
  */
 namespace FileUtils
 {
-/// Recursively create a new directory.
+/** Recursively create a new directory.
+ *\return Zero if operation was successful, mkdir() error code otherwise.
+ */
 int RecursiveMkDir( const char *filename, const int permissions = 0755 );
 
-/// Recursively create all directories on a full filename's prefix.
+/** Recursively create all directories on a full filename's prefix.
+ *\return Zero if operation was successful, mkdir() error code otherwise.
+ */
 int RecursiveMkPrefixDir( const char *filename, const int permissions = 0755 );
 
 /// Make an absolute path name from a (possibly) relative path.
