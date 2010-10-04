@@ -32,6 +32,7 @@
 
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkFileUtils.h>
 
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkValueSequence.h>
@@ -174,11 +175,19 @@ main( const int argc, const char* argv[] )
       sequence.Proceed( error );
       }
 
-    FILE* fp = fopen( ic_error_path, "w" );
-    if ( fp )
+    if ( ! cmtk::FileUtils::RecursiveMkPrefixDir( ic_error_path ) )
       {
-      fprintf( fp, "MIN\t%lf\nMAX\t%lf\nMEAN\t%lf\nSDEV\t%lf\n", sequence.GetMinimum(), sequence.GetMaximum(), sequence.GetAverage(), sqrt( sequence.GetVariance() ) );
-      fclose( fp );
+      FILE* fp = fopen( ic_error_path, "w" );
+      if ( fp )
+	{
+	fprintf( fp, "MIN\t%lf\nMAX\t%lf\nMEAN\t%lf\nSDEV\t%lf\n", sequence.GetMinimum(), sequence.GetMaximum(), sequence.GetAverage(), sqrt( sequence.GetVariance() ) );
+	fclose( fp );
+	}
+      }
+    else
+      {
+      cmtk::StdErr << "Could not open file '" << ic_error_path << "' for writing\n";
+      exit( 1 );
       }
     }
 }

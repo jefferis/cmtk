@@ -32,8 +32,8 @@
 
 #include "cmtkTypedStream.h"
 
-#include "System/cmtkFileUtil.h"
-#include "System/cmtkConsole.h"
+#include <System/cmtkFileUtils.h>
+#include <System/cmtkConsole.h>
 
 #include <string.h>
 #include <stdlib.h>

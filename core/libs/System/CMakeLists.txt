@@ -44,7 +44,7 @@ SET(cmtkSystem_SRCS
   cmtkCompressedStreamPipe.cxx
   cmtkCompressedStreamZlib.cxx
   cmtkConsole.cxx
-  cmtkFileUtil.cxx
+  cmtkFileUtils.cxx
   cmtkMemory.cxx
   cmtkMountPoints.cxx
   cmtkProgress.cxx	
