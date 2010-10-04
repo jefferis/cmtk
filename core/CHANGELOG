@@ -1,5 +1,10 @@
 Release CMTK-1.4.4:
 
+(r2390) Changed: by default, the DICOM image stacker, "dcm2image," now writes
+    NIFTI files with attached header (.nii) rather than Analyze hdr/img
+    pairs. This is because Analyze format does not properly represent the
+    image location and orientation information obtained from the DICOM input
+    images.
 (r2380) Removed: several hundred lines of unused, obsolete code was removed
     from the Numerics library.
 
