@@ -214,6 +214,8 @@ AffineXform::MakeInverse () const
     }
   
   inverseXform->m_MetaInformation[META_SPACE] = this->m_MetaInformation[META_SPACE];
+  inverseXform->m_MetaInformation[META_XFORM_FIXED_IMAGE_PATH] = this->m_MetaInformation[META_XFORM_FIXED_IMAGE_PATH];
+  inverseXform->m_MetaInformation[META_XFORM_MOVING_IMAGE_PATH] = this->m_MetaInformation[META_XFORM_MOVING_IMAGE_PATH];
   
   return inverseXform;
 }

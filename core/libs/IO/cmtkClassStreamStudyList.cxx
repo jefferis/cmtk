@@ -104,12 +104,19 @@ ClassStreamStudyList::Merge
     if ( referenceStudy && floatingStudy ) 
       {
       AffineXform::SmartPtr affineXform;
-      classStream >> affineXform;
+      classStream >> affineXform;      
+
+      affineXform->SetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, referenceStudy );
+      affineXform->SetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, floatingStudy );
       
       WarpXform::SmartPtr warpXform;
       classStream.Get( warpXform, affineXform );
       
+      warpXform->SetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, referenceStudy );
+      warpXform->SetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, floatingStudy );
+      
       AffineXform::SmartPtr inverse = affineXform->GetInverse();
+      
       WarpXform::SmartPtr nullWarp( NULL );
       if ( !legacy )
 	{

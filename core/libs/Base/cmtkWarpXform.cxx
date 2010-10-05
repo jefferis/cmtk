@@ -313,6 +313,8 @@ WarpXform::ReplaceInitialAffine( const AffineXform* newAffineXform )
     {
     this->m_InitialAffineXform = AffineXform::SmartPtr( new AffineXform );
     }
+  this->m_InitialAffineXform->m_MetaInformation[META_XFORM_FIXED_IMAGE_PATH] = this->m_MetaInformation[META_XFORM_FIXED_IMAGE_PATH];
+  this->m_InitialAffineXform->m_MetaInformation[META_XFORM_MOVING_IMAGE_PATH] = this->m_MetaInformation[META_XFORM_MOVING_IMAGE_PATH];
 }
 
 void

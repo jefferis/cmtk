@@ -77,6 +77,9 @@ operator >> ( ClassStream& stream, AffineXform& affineXform )
   CoordinateVector pVector( 15 );
   Types::Coordinate* parameters = pVector.Elements;
 
+  const char *referenceStudy = NULL;
+  const char *floatingStudy = NULL;
+
   if ( stream.Seek( "affine_xform", true /*forward*/ ) != TYPEDSTREAM_OK )
     {
     stream.Rewind();
@@ -84,6 +87,10 @@ operator >> ( ClassStream& stream, AffineXform& affineXform )
       {
       throw Exception( "Did not find 'registration' section in affine xform archive" );
       }
+    
+    referenceStudy = stream.ReadString( "reference_study", NULL );
+    floatingStudy = stream.ReadString( "floating_study", NULL );
+    
     if ( stream.Seek( "affine_xform", true /*forward*/ ) != TYPEDSTREAM_OK )
       {
       throw Exception( "Did not find 'affine_xform' section in affine xform archive" );
@@ -122,7 +129,14 @@ operator >> ( ClassStream& stream, AffineXform& affineXform )
 
   affineXform.SetUseLogScaleFactors( logScaleFactors );
   affineXform.SetParamVector( pVector );
+
   affineXform.m_MetaInformation[META_SPACE] = AnatomicalOrientation::ORIENTATION_STANDARD;
+
+  if ( referenceStudy )
+    affineXform.SetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, referenceStudy );
+
+  if ( floatingStudy )
+    affineXform.SetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, floatingStudy );
 
   return stream;
 }
