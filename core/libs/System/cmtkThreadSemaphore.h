@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCannotBeCopied.h"
+#include <System/cmtkCannotBeCopied.h>
 
 #if defined(CMTK_USE_THREADS)
 #  if defined(__APPLE__) || defined(__CYGWIN__)

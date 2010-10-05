@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkMacros.h"
-#include "Base/cmtkTypes.h"
+#include <Base/cmtkMacros.h>
+#include <Base/cmtkTypes.h>
 
 #include <map>
 

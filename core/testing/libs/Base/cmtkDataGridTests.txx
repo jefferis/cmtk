@@ -29,7 +29,7 @@
 //
 */
 
-#include "Base/cmtkDataGrid.h"
+#include <Base/cmtkDataGrid.h>
 
 // test "GridMatches" function
 int

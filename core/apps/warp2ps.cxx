@@ -32,16 +32,16 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkCommandLine.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkCommandLine.h>
 
 #include <iostream>
 
-#include "Base/cmtkVector3D.h"
-#include "Base/cmtkSplineWarpXform.h"
+#include <Base/cmtkVector3D.h>
+#include <Base/cmtkSplineWarpXform.h>
 
-#include "IO/cmtkVolumeIO.h"
-#include "IO/cmtkXformIO.h"
+#include <IO/cmtkVolumeIO.h>
+#include <IO/cmtkXformIO.h>
 
 bool Verbose = false;
 

@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkHistogram.h"
-#include "System/cmtkSmartPtr.h"
+#include <Base/cmtkHistogram.h>
+#include <System/cmtkSmartPtr.h>
 #include <math.h>
 
 namespace

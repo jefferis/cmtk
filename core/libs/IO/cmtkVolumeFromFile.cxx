@@ -34,9 +34,9 @@
 
 #include <stdio.h>
 
-#include "IO/cmtkFileFormat.h"
-#include "Base/cmtkTypedArray.h"
-#include "System/cmtkCompressedStream.h"
+#include <IO/cmtkFileFormat.h>
+#include <Base/cmtkTypedArray.h>
+#include <System/cmtkCompressedStream.h>
 
 namespace
 cmtk

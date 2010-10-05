@@ -32,9 +32,9 @@
 
 #include "cmtkHypothesisTests.h"
 
-#include "Base/cmtkVector3D.h"
-#include "Base/cmtkMathUtil.h"
-#include "System/cmtkConsole.h"
+#include <Base/cmtkVector3D.h>
+#include <Base/cmtkMathUtil.h>
+#include <System/cmtkConsole.h>
 
 #include <vector>
 

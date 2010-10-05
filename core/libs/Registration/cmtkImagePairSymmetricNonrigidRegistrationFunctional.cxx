@@ -32,16 +32,16 @@
 
 #include "cmtkImagePairSymmetricNonrigidRegistrationFunctional.h"
 
-#include "Registration/cmtkImagePairSymmetricNonrigidRegistrationFunctionalTemplate.h"
-#include "Registration/cmtkImagePairSimilarityMeasureCR.h"
-#include "Registration/cmtkImagePairSimilarityMeasureMSD.h"
-#include "Registration/cmtkImagePairSimilarityMeasureNCC.h"
-#include "Registration/cmtkImagePairSimilarityMeasureNMI.h"
-#include "Registration/cmtkImagePairSimilarityMeasureMI.h"
+#include <Registration/cmtkImagePairSymmetricNonrigidRegistrationFunctionalTemplate.h>
+#include <Registration/cmtkImagePairSimilarityMeasureCR.h>
+#include <Registration/cmtkImagePairSimilarityMeasureMSD.h>
+#include <Registration/cmtkImagePairSimilarityMeasureNCC.h>
+#include <Registration/cmtkImagePairSimilarityMeasureNMI.h>
+#include <Registration/cmtkImagePairSimilarityMeasureMI.h>
 
-#include "Base/cmtkInterpolator.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkSplineWarpXform.h"
+#include <Base/cmtkInterpolator.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkSplineWarpXform.h>
 
 namespace
 cmtk

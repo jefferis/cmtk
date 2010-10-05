@@ -28,7 +28,7 @@
 //
 */
 
-#include "GPU/cmtkDeviceMemory.h"
+#include <GPU/cmtkDeviceMemory.h>
 
 #include <cuda_runtime_api.h>
 

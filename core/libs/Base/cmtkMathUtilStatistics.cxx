@@ -32,8 +32,8 @@
 
 #include "cmtkMathUtil.h"
 
-#include "Base/cmtkTypes.h"
-#include "System/cmtkConsole.h"
+#include <Base/cmtkTypes.h>
+#include <System/cmtkConsole.h>
 #include "Numerics/ibetaf.h"
 
 namespace

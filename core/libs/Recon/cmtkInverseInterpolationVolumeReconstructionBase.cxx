@@ -34,8 +34,8 @@
 
 #include "cmtkInverseInterpolationVolumeReconstructionBase.h"
 
-#include "Base/cmtkHistogramBase.h"
-#include "System/cmtkProgress.h"
+#include <Base/cmtkHistogramBase.h>
+#include <System/cmtkProgress.h>
 
 namespace
 cmtk

@@ -37,8 +37,8 @@
 
 #include "cmtkImageSymmetryPlaneFunctionalBase.h"
 
-#include "Registration/cmtkImagePairSimilarityMeasure.h"
-#include "Registration/cmtkImagePairSimilarityMeasureMSD.h"
+#include <Registration/cmtkImagePairSimilarityMeasure.h>
+#include <Registration/cmtkImagePairSimilarityMeasureMSD.h>
 
 namespace
 cmtk

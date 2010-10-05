@@ -32,7 +32,7 @@
 
 #include "cmtkScalarImageSimilarity.h"
 
-#include "Base/cmtkHistogram.h"
+#include <Base/cmtkHistogram.h>
 
 #include <vector>
 

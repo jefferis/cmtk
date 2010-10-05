@@ -32,9 +32,9 @@
 
 #include "cmtkBestDirectionOptimizer.h"
 
-#include "Base/cmtkTypes.h"
-#include "System/cmtkConsole.h"
-#include "System/cmtkProgress.h"
+#include <Base/cmtkTypes.h>
+#include <System/cmtkConsole.h>
+#include <System/cmtkProgress.h>
 
 #include <algorithm>
 

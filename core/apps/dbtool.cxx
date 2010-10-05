@@ -30,8 +30,8 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCommandLine.h"
-#include "Registration/cmtkImageXformDB.h"
+#include <System/cmtkCommandLine.h>
+#include <Registration/cmtkImageXformDB.h>
 
 #include <string.h>
 

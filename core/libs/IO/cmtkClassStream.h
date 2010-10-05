@@ -35,15 +35,15 @@
 
 #include <cmtkconfig.h>
 
-#include "IO/cmtkTypedStream.h"
-#include "IO/cmtkStudy.h"
+#include <IO/cmtkTypedStream.h>
+#include <IO/cmtkStudy.h>
 
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkWarpXform.h"
-#include "Base/cmtkSplineWarpXform.h"
-#include "Base/cmtkParametricPlane.h"
-#include "Base/cmtkLandmark.h"
-#include "Base/cmtkLandmarkList.h"
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkWarpXform.h>
+#include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkParametricPlane.h>
+#include <Base/cmtkLandmark.h>
+#include <Base/cmtkLandmarkList.h>
 
 namespace
 cmtk

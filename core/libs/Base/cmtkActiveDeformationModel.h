@@ -34,9 +34,9 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkActiveShapeModel.h"
-#include "Base/cmtkWarpXform.h"
-#include "Base/cmtkSplineWarpXform.h"
+#include <Base/cmtkActiveShapeModel.h>
+#include <Base/cmtkWarpXform.h>
+#include <Base/cmtkSplineWarpXform.h>
 
 #include <list>
 

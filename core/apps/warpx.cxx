@@ -32,9 +32,9 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkImagePairNonrigidRegistrationCommandLine.h"
+#include <Registration/cmtkImagePairNonrigidRegistrationCommandLine.h>
 
-#include "System/cmtkProgressConsole.h"
+#include <System/cmtkProgressConsole.h>
 
 #include <stdio.h>
 #include <string.h>

@@ -35,12 +35,12 @@
 
 #include <cmtkconfig.h>
 
-#include "Pipeline/cmtkMultiFilter.h"
+#include <Pipeline/cmtkMultiFilter.h>
 
-#include "Pipeline/cmtkColormap.h"
-#include "Pipeline/cmtkImage.h"
-#include "Pipeline/cmtkImageRGB.h"
-#include "Base/cmtkMacros.h"
+#include <Pipeline/cmtkColormap.h>
+#include <Pipeline/cmtkImage.h>
+#include <Pipeline/cmtkImageRGB.h>
+#include <Base/cmtkMacros.h>
 
 namespace
 cmtk

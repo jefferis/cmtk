@@ -30,7 +30,7 @@
 
 #include "cmtkImageOperationScaleToRange.h"
 
-#include "System/cmtkCommandLine.h"
+#include <System/cmtkCommandLine.h>
 
 void
 cmtk::ImageOperationScaleToRange::New( const char* range )

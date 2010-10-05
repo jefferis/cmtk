@@ -32,21 +32,21 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkCommandLine.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkCommandLine.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkMatrix4x4.h"
-#include "Base/cmtkTransformChangeToSpaceAffine.h"
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkMatrix4x4.h>
+#include <Base/cmtkTransformChangeToSpaceAffine.h>
 
-#include "Registration/cmtkMakeInitialAffineTransformation.h"
+#include <Registration/cmtkMakeInitialAffineTransformation.h>
 
-#include "IO/cmtkVolumeIO.h"
-#include "IO/cmtkXformIO.h"
+#include <IO/cmtkVolumeIO.h>
+#include <IO/cmtkXformIO.h>
 
 #ifdef CMTK_USE_SQLITE
-#  include "Registration/cmtkImageXformDB.h"
+#  include <Registration/cmtkImageXformDB.h>
 #endif
 
 int

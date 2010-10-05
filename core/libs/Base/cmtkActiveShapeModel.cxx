@@ -30,12 +30,12 @@
 //
 */
 
-#include "Base/cmtkActiveShapeModel.h"
+#include <Base/cmtkActiveShapeModel.h>
 
-#include "Base/cmtkMatrix.h"
-#include "Base/cmtkMathUtil.h"
+#include <Base/cmtkMatrix.h>
+#include <Base/cmtkMathUtil.h>
 
-#include "System/cmtkConsole.h"
+#include <System/cmtkConsole.h>
 
 #include <math.h>
 #include <algorithm>

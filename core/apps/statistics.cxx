@@ -32,21 +32,21 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkCommandLine.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkCommandLine.h>
 
-#include "IO/cmtkVolumeIO.h"
-#include "IO/cmtkClassStream.h"
-#include "IO/cmtkTypedStreamStudylist.h"
+#include <IO/cmtkVolumeIO.h>
+#include <IO/cmtkClassStream.h>
+#include <IO/cmtkTypedStreamStudylist.h>
 
-#include "Base/cmtkSplineWarpXform.h"
-#include "Base/cmtkHistogram.h"
-#include "Base/cmtkValueSequence.h"
-#include "Base/cmtkLandmark.h"
-#include "Base/cmtkLandmarkList.h"
-#include "Base/cmtkMathFunctionWrappers.h"
+#include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkHistogram.h>
+#include <Base/cmtkValueSequence.h>
+#include <Base/cmtkLandmark.h>
+#include <Base/cmtkLandmarkList.h>
+#include <Base/cmtkMathFunctionWrappers.h>
 
-#include "Registration/cmtkReformatVolume.h"
+#include <Registration/cmtkReformatVolume.h>
 
 #include <stdio.h>
 #include <string.h>

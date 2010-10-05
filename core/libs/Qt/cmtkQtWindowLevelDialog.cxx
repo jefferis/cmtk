@@ -32,7 +32,7 @@
 
 #include "cmtkQtWindowLevelDialog.h"
 
-#include "Qt/cmtkQtIcons.h"
+#include <Qt/cmtkQtIcons.h>
 
 #include <qlayout.h>
 #include <qboxlayout.h>

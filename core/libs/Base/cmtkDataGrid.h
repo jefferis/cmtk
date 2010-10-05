@@ -35,17 +35,17 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkMacros.h"
-#include "Base/cmtkTypes.h"
-#include "Base/cmtkTypedArray.h"
-#include "Base/cmtkFixedVector.h"
-#include "Base/cmtkScalarImage.h"
-#include "Base/cmtkRegion.h"
-#include "Base/cmtkMetaInformationObject.h"
-#include "Base/cmtkAnatomicalOrientation.h"
+#include <Base/cmtkMacros.h>
+#include <Base/cmtkTypes.h>
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkFixedVector.h>
+#include <Base/cmtkScalarImage.h>
+#include <Base/cmtkRegion.h>
+#include <Base/cmtkMetaInformationObject.h>
+#include <Base/cmtkAnatomicalOrientation.h>
 
-#include "System/cmtkSmartPtr.h"
-#include "System/cmtkThreads.h"
+#include <System/cmtkSmartPtr.h>
+#include <System/cmtkThreads.h>
 
 #include <vector>
 

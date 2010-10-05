@@ -32,8 +32,8 @@
 
 #include "cmtkProgressConsole.h"
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkTimers.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkTimers.h>
 
 #include <stdlib.h>
 

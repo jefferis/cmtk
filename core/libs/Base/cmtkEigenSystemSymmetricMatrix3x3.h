@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkMatrix3x3.h"
-#include "Base/cmtkFixedVector.h"
+#include <Base/cmtkMatrix3x3.h>
+#include <Base/cmtkFixedVector.h>
 
 namespace
 cmtk

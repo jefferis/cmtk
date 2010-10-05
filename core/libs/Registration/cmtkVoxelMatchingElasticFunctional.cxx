@@ -30,20 +30,20 @@
 //
 */
 
-#include "Registration/cmtkVoxelMatchingElasticFunctional.h"
+#include <Registration/cmtkVoxelMatchingElasticFunctional.h>
 
 #ifdef CMTK_BUILD_SMP
-#  include "Registration/cmtkParallelElasticFunctional.h"
+#  include <Registration/cmtkParallelElasticFunctional.h>
 #endif
 
-#include "Registration/cmtkVoxelMatchingMutInf.h"
-#include "Registration/cmtkVoxelMatchingNormMutInf.h"
-#include "Registration/cmtkVoxelMatchingCorrRatio.h"
-#include "Registration/cmtkVoxelMatchingMeanSquaredDifference.h"
-#include "Registration/cmtkVoxelMatchingCrossCorrelation.h"
+#include <Registration/cmtkVoxelMatchingMutInf.h>
+#include <Registration/cmtkVoxelMatchingNormMutInf.h>
+#include <Registration/cmtkVoxelMatchingCorrRatio.h>
+#include <Registration/cmtkVoxelMatchingMeanSquaredDifference.h>
+#include <Registration/cmtkVoxelMatchingCrossCorrelation.h>
 
-#include "Base/cmtkInterpolator.h"
-#include "Base/cmtkSplineWarpXform.h"
+#include <Base/cmtkInterpolator.h>
+#include <Base/cmtkSplineWarpXform.h>
 
 #include <vector>
 

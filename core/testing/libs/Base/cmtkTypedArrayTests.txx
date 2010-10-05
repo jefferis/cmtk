@@ -32,4 +32,4 @@
 #include <math.h>
 #include <algorithm>
 
-#include "Base/cmtkTypedArray.h"
+#include <Base/cmtkTypedArray.h>

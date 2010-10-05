@@ -36,7 +36,7 @@
 #  include <ieeefp.h>
 #endif
 
-#include "Base/cmtkTypedArrayFunctionHistogramMatching.h"
+#include <Base/cmtkTypedArrayFunctionHistogramMatching.h>
 
 namespace
 cmtk

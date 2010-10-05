@@ -32,14 +32,14 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkConsole.h"
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkConsole.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkVector3D.h"
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkVector3D.h>
 
-#include "IO/cmtkFileFormat.h"
-#include "IO/cmtkVolumeIO.h"
+#include <IO/cmtkFileFormat.h>
+#include <IO/cmtkVolumeIO.h>
 
 #include <stdio.h>
 #include <list>

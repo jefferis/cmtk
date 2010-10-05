@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkMacros.h"
-#include "Base/cmtkWarpXform.h"
-#include "Base/cmtkVolume.h"
-#include "Base/cmtkTypedArray.h"
+#include <Base/cmtkMacros.h>
+#include <Base/cmtkWarpXform.h>
+#include <Base/cmtkVolume.h>
+#include <Base/cmtkTypedArray.h>
 
 #include <vector>
 

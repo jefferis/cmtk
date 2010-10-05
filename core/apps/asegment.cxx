@@ -32,13 +32,13 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkConsole.h"
-#include "System/cmtkProgressConsole.h"
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkConsole.h>
+#include <System/cmtkProgressConsole.h>
 
-#include "IO/cmtkVolumeIO.h"
+#include <IO/cmtkVolumeIO.h>
 
-#include "Segmentation/cmtkAtlasSegmentation.h"
+#include <Segmentation/cmtkAtlasSegmentation.h>
 
 #include <list>
 

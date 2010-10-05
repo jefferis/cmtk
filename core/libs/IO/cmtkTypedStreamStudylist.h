@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkWarpXform.h"
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkWarpXform.h>
 
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkSmartPtr.h>
 
 namespace
 cmtk

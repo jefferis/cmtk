@@ -30,7 +30,7 @@
 //
 */
 
-#include "Pipeline/cmtkObject.h"
+#include <Pipeline/cmtkObject.h>
 
 #include <string.h>
 // GJ replaced above with:

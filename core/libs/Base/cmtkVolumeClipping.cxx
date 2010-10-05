@@ -32,7 +32,7 @@
 
 #include "cmtkVolumeClipping.h"
 
-#include "Base/cmtkMathUtil.h"
+#include <Base/cmtkMathUtil.h>
 
 #include <string.h>
 

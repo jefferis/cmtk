@@ -32,8 +32,8 @@
 
 #include "cmtkDataGridMorphologicalOperators.h"
 
-#include "Base/cmtkTemplateArray.h"
-#include "System/cmtkException.h"
+#include <Base/cmtkTemplateArray.h>
+#include <System/cmtkException.h>
 
 namespace
 cmtk

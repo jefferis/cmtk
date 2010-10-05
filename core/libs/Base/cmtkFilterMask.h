@@ -35,12 +35,12 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkTypes.h"
-#include "Base/cmtkUnits.h"
-#include "Base/cmtkFixedVector.h"
-#include "Base/cmtkMathUtil.h"
+#include <Base/cmtkTypes.h>
+#include <Base/cmtkUnits.h>
+#include <Base/cmtkFixedVector.h>
+#include <Base/cmtkMathUtil.h>
 
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkSmartPtr.h>
 
 #include <math.h>
 #include <vector>

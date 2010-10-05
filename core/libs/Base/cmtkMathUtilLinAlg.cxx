@@ -30,10 +30,10 @@
 //
 */
 
-#include "Base/cmtkMathUtil.h"
-#include "Base/cmtkMatrix.h"
+#include <Base/cmtkMathUtil.h>
+#include <Base/cmtkMatrix.h>
 
-#include "System/cmtkConsole.h"
+#include <System/cmtkConsole.h>
 
 #include "Numerics/sevd.h"
 #include "Numerics/spddet.h"

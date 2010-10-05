@@ -40,7 +40,7 @@
 #include <QGridLayout>
 #include <QLabel>
 
-#include "Base/cmtkMathUtil.h"
+#include <Base/cmtkMathUtil.h>
 
 namespace
 cmtk

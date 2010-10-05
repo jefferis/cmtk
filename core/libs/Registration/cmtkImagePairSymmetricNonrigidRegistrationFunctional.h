@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkFunctional.h"
-#include "Base/cmtkSplineWarpXform.h"
+#include <Base/cmtkFunctional.h>
+#include <Base/cmtkSplineWarpXform.h>
 
-#include "Base/cmtkMacros.h"
+#include <Base/cmtkMacros.h>
 
 namespace
 cmtk

@@ -39,7 +39,7 @@
 #include <stdlib.h>
 #include <string>
 
-#include "System/cmtkConsole.h"
+#include <System/cmtkConsole.h>
 
 namespace
 cmtk

@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkXformUniformVolume.h"
+#include <Base/cmtkXformUniformVolume.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkSplineWarpXform.h"
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkSplineWarpXform.h>
 
 namespace
 cmtk

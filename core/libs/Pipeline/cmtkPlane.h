@@ -35,11 +35,11 @@
 
 #include <cmtkconfig.h>
 
-#include "Pipeline/cmtkPipelineObject.h"
+#include <Pipeline/cmtkPipelineObject.h>
 
-#include "Base/cmtkMacros.h"
-#include "Base/cmtkTypes.h"
-#include "Base/cmtkVector3D.h"
+#include <Base/cmtkMacros.h>
+#include <Base/cmtkTypes.h>
+#include <Base/cmtkVector3D.h>
 
 namespace
 cmtk

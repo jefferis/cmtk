@@ -35,9 +35,9 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkRegistrationJointHistogram.h"
-#include "Base/cmtkInterpolator.h"
-#include "System/cmtkSmartPtr.h"
+#include <Registration/cmtkRegistrationJointHistogram.h>
+#include <Base/cmtkInterpolator.h>
+#include <System/cmtkSmartPtr.h>
 
 #include <stdio.h>
 #include <cassert>

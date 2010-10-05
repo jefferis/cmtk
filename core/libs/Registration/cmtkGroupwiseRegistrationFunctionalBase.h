@@ -35,12 +35,12 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkFunctional.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkXform.h"
+#include <Base/cmtkFunctional.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkXform.h>
 
-#include "System/cmtkSmartPtr.h"
-#include "System/cmtkThreads.h"
+#include <System/cmtkSmartPtr.h>
+#include <System/cmtkThreads.h>
 
 #include <vector>
 

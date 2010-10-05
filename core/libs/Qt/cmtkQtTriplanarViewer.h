@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Qt/cmtkQtTriplanarWindow.h"
-#include "Qt/cmtkQtWindowLevelDialog.h"
+#include <Qt/cmtkQtTriplanarWindow.h>
+#include <Qt/cmtkQtWindowLevelDialog.h>
 
 #include <qlistwidget.h>
 

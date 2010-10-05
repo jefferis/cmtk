@@ -39,7 +39,7 @@
 #include <string.h>
 #include <vector>
 
-#include "Base/cmtkTypes.h"
+#include <Base/cmtkTypes.h>
 
 /** Trap for abstract class member functions.
  * In DEBUG mode (that is, when compiled with DEBUG defined, a call to this

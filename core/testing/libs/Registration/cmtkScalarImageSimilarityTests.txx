@@ -30,8 +30,8 @@
 //
 */
 
-#include "Registration/cmtkScalarImageSimilarity.h"
-#include "IO/cmtkVolumeIO.h"
+#include <Registration/cmtkScalarImageSimilarity.h>
+#include <IO/cmtkVolumeIO.h>
 
 #include <math.h>
 

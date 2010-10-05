@@ -35,14 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkVoxelMatchingMetric_Type.h"
+#include <Registration/cmtkVoxelMatchingMetric_Type.h>
 
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkSmartPtr.h>
 
-#include "Base/cmtkInterpolator.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkTypes.h"
-#include "Base/cmtkFunctional.h"
+#include <Base/cmtkInterpolator.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkTypes.h>
+#include <Base/cmtkFunctional.h>
 
 #include <cassert>
 

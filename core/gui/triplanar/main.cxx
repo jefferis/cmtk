@@ -32,11 +32,11 @@
 
 #include <cmtkconfig.h>
 
-#include "Qt/cmtkQtTriplanarViewer.h"
-#include "Qt/cmtkQtProgress.h"
+#include <Qt/cmtkQtTriplanarViewer.h>
+#include <Qt/cmtkQtProgress.h>
 
-#include "System/cmtkCommandLine.h"
-#include "IO/cmtkStudy.h"
+#include <System/cmtkCommandLine.h>
+#include <IO/cmtkStudy.h>
 
 #include <qapplication.h>
 #include <QPlastiqueStyle>

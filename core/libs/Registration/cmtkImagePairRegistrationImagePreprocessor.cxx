@@ -32,9 +32,9 @@
 
 #include "cmtkImagePairRegistration.h"
 
-#include "System/cmtkCommandLine.h"
-#include "Base/cmtkTypedArrayFunctionHistogramEqualization.h"
-#include "Base/cmtkDataGridFilter.h"
+#include <System/cmtkCommandLine.h>
+#include <Base/cmtkTypedArrayFunctionHistogramEqualization.h>
+#include <Base/cmtkDataGridFilter.h>
 
 namespace
 cmtk

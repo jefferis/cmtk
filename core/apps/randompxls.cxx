@@ -32,11 +32,11 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkCommandLine.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkCommandLine.h>
 
-#include "IO/cmtkVolumeIO.h"
-#include "Base/cmtkMathUtil.h"
+#include <IO/cmtkVolumeIO.h>
+#include <Base/cmtkMathUtil.h>
 
 unsigned int NumberOfPoints = 0;
 bool UseImageAsMask = false;

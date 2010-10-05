@@ -35,11 +35,11 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkAnatomicalOrientation.h"
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkAnatomicalOrientation.h>
 
-#include "IO/cmtkFileFormat.h"
-#include "IO/cmtkTypedStream.h"
+#include <IO/cmtkFileFormat.h>
+#include <IO/cmtkTypedStream.h>
 
 namespace
 cmtk

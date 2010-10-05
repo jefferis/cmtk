@@ -32,11 +32,11 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkTimers.h"
-#include "System/cmtkMemory.h"
-#include "System/cmtkProgressConsole.h"
+#include <System/cmtkTimers.h>
+#include <System/cmtkMemory.h>
+#include <System/cmtkProgressConsole.h>
 
-#include "Registration/cmtkImagePairAffineRegistrationCommandLine.h"
+#include <Registration/cmtkImagePairAffineRegistrationCommandLine.h>
 
 #include <stdio.h>
 #include <string.h>

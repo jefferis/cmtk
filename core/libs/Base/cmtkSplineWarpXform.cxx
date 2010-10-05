@@ -32,8 +32,8 @@
 
 #include "cmtkSplineWarpXform.h"
 
-#include "Base/cmtkMathUtil.h"
-#include "Base/cmtkBitVector.h"
+#include <Base/cmtkMathUtil.h>
+#include <Base/cmtkBitVector.h>
 
 #include <vector>
 #include <cassert>

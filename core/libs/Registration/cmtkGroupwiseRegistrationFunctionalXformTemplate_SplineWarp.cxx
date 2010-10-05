@@ -1,4 +1,4 @@
-#include "Registration/cmtkGroupwiseRegistrationFunctionalXformTemplate.h"
+#include <Registration/cmtkGroupwiseRegistrationFunctionalXformTemplate.h>
 
 namespace
 cmtk

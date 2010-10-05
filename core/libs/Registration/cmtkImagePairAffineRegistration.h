@@ -35,11 +35,11 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkInterpolator.h"
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkInterpolator.h>
 
-#include "Registration/cmtkImagePairRegistration.h"
-#include "Registration/cmtkMakeInitialAffineTransformation.h"
+#include <Registration/cmtkImagePairRegistration.h>
+#include <Registration/cmtkMakeInitialAffineTransformation.h>
 
 #include <vector>
 

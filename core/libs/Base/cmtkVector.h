@@ -43,9 +43,9 @@
 
 #include <algorithm>
 
-#include "Base/cmtkMathUtil.h"
-#include "Base/cmtkTypes.h"
-#include "System/cmtkSmartPtr.h"
+#include <Base/cmtkMathUtil.h>
+#include <Base/cmtkTypes.h>
+#include <System/cmtkSmartPtr.h>
 
 namespace
 cmtk

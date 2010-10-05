@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include "IO/cmtkClassStream.h"
-#include "Base/cmtkAffineXform.h"
+#include <IO/cmtkClassStream.h>
+#include <Base/cmtkAffineXform.h>
 
 namespace
 cmtk

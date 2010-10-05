@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkMacros.h"
-#include "Base/cmtkTypes.h"
+#include <Base/cmtkMacros.h>
+#include <Base/cmtkTypes.h>
 
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkSmartPtr.h>
 
 namespace
 cmtk

@@ -30,9 +30,9 @@
 //
 */
 
-#include "Registration/cmtkImagePairRegistrationFunctional.h"
+#include <Registration/cmtkImagePairRegistrationFunctional.h>
 
-#include "Base/cmtkVector.h"
+#include <Base/cmtkVector.h>
 
 #include <assert.h>
 

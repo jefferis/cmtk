@@ -34,11 +34,11 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkVector.h"
-#include "Base/cmtkVector3D.h"
-#include "Base/cmtkAffineXform.h"
+#include <Base/cmtkVector.h>
+#include <Base/cmtkVector3D.h>
+#include <Base/cmtkAffineXform.h>
 
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkSmartPtr.h>
 
 namespace
 cmtk

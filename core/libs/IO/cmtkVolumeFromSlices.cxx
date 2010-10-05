@@ -32,13 +32,13 @@
 
 #include "cmtkVolumeFromSlices.h"
 
-#include "System/cmtkProgress.h"
+#include <System/cmtkProgress.h>
 
-#include "Base/cmtkVolume.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkMathUtil.h"
-#include "Base/cmtkAnatomicalOrientation.h"
+#include <Base/cmtkVolume.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkMathUtil.h>
+#include <Base/cmtkAnatomicalOrientation.h>
 
 #include <math.h>
 

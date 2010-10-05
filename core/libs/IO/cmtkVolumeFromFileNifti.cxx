@@ -32,15 +32,15 @@
 
 #include "cmtkVolumeFromFile.h"
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkCompressedStream.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkCompressedStream.h>
 
-#include "IO/cmtkVolumeIO.h"
-#include "IO/cmtkAnalyze.h"
-#include "IO/cmtkFileHeader.h"
+#include <IO/cmtkVolumeIO.h>
+#include <IO/cmtkAnalyze.h>
+#include <IO/cmtkFileHeader.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkAnatomicalOrientation.h"
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkAnatomicalOrientation.h>
 
 #include "nifti1.h"
 

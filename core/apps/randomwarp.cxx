@@ -32,13 +32,13 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkConsole.h"
+#include <System/cmtkConsole.h>
 
-#include "IO/cmtkVolumeIO.h"
-#include "IO/cmtkClassStream.h"
+#include <IO/cmtkVolumeIO.h>
+#include <IO/cmtkClassStream.h>
 
-#include "Base/cmtkSplineWarpXform.h"
-#include "Base/cmtkMathUtil.h"
+#include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkMathUtil.h>
 
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>

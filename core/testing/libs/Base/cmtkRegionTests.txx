@@ -28,8 +28,8 @@
 //
 */
 
-#include "Base/cmtkFixedVector.h"
-#include "Base/cmtkRegion.h"
+#include <Base/cmtkFixedVector.h>
+#include <Base/cmtkRegion.h>
 
 // test "Size" member function for int regions
 int

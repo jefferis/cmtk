@@ -35,7 +35,7 @@
 
 #include "cmtkDeviceArray.h"
 
-#include "Base/cmtkUniformVolume.h"
+#include <Base/cmtkUniformVolume.h>
 
 namespace
 cmtk

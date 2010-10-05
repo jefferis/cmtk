@@ -30,8 +30,8 @@
 //
 */
 
-#include "Base/cmtkTypedArray.h"
-#include "Base/cmtkTemplateArray.h"
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkTemplateArray.h>
 
 #include <math.h>
 

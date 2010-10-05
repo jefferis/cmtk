@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkScalarImage.h"
-#include "Registration/cmtkTypedArraySimilarity.h"
+#include <Base/cmtkScalarImage.h>
+#include <Registration/cmtkTypedArraySimilarity.h>
 
 #include <vector>
 

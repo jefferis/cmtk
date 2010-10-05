@@ -32,9 +32,9 @@
 
 #include "cmtkVolumeFromFile.h"
 
-#include "Base/cmtkTypedArray.h"
-#include "System/cmtkConsole.h"
-#include "System/cmtkException.h"
+#include <Base/cmtkTypedArray.h>
+#include <System/cmtkConsole.h>
+#include <System/cmtkException.h>
 
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmimgle/didocu.h>

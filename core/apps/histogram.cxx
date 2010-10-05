@@ -32,14 +32,14 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkCommandLine.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkCommandLine.h>
 
-#include "IO/cmtkVolumeIO.h"
+#include <IO/cmtkVolumeIO.h>
 
-#include "Base/cmtkHistogram.h"
-#include "Base/cmtkVolume.h"
-#include "Base/cmtkTypedArray.h"
+#include <Base/cmtkHistogram.h>
+#include <Base/cmtkVolume.h>
+#include <Base/cmtkTypedArray.h>
 
 #include <iostream>
 #include <fstream>

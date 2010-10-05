@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkMatrix.h"
+#include <Base/cmtkMatrix.h>
 #include "Numerics/ap.h"
 
 namespace

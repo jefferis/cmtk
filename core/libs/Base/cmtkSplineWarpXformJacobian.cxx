@@ -32,8 +32,8 @@
 
 #include "cmtkSplineWarpXform.h"
 
-#include "Base/cmtkMathUtil.h"
-#include "System/cmtkThreadPool.h"
+#include <Base/cmtkMathUtil.h>
+#include <System/cmtkThreadPool.h>
 
 #include <vector>
 

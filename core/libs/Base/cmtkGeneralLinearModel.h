@@ -35,11 +35,11 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkTypedArray.h"
-#include "Base/cmtkMatrix.h"
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkMatrix.h>
 
-#include "System/cmtkSmartPtr.h"
-#include "System/cmtkThreads.h"
+#include <System/cmtkSmartPtr.h>
+#include <System/cmtkThreads.h>
 
 #include <vector>
 

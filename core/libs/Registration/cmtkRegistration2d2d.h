@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkMatrix3x3.h"
-#include "Base/cmtkScalarImage.h"
+#include <Base/cmtkMatrix3x3.h>
+#include <Base/cmtkScalarImage.h>
 
 namespace
 cmtk

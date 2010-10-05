@@ -32,14 +32,14 @@
 
 //#define DEBUG_COMM
 
-#include "Registration/cmtkGroupwiseRegistrationFunctionalXformTemplateBase.h"
+#include <Registration/cmtkGroupwiseRegistrationFunctionalXformTemplateBase.h>
 
-#include "Base/cmtkMathUtil.h"
-#include "IO/cmtkVolumeIO.h"
+#include <Base/cmtkMathUtil.h>
+#include <IO/cmtkVolumeIO.h>
 
 #ifdef CMTK_BUILD_MPI
 #  include <mpi.h>
-#  include "IO/cmtkMPI.h"
+#  include <IO/cmtkMPI.h>
 #endif
 
 namespace
@@ -131,8 +131,8 @@ GroupwiseRegistrationFunctionalXformTemplateBase<TXform>
 
 } // namespace cmtk
 
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkSplineWarpXform.h"
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkSplineWarpXform.h>
 
 template class cmtk::GroupwiseRegistrationFunctionalXformTemplateBase<cmtk::AffineXform>;
 template class cmtk::GroupwiseRegistrationFunctionalXformTemplateBase<cmtk::SplineWarpXform>;

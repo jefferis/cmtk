@@ -30,9 +30,9 @@
 //
 */
 
-#include "Segmentation/cmtkOverlapMeasures.h"
+#include <Segmentation/cmtkOverlapMeasures.h>
 
-#include "System/cmtkProgress.h"
+#include <System/cmtkProgress.h>
 
 #ifdef _OPENMP
 #  include <omp.h>

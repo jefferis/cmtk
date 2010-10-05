@@ -32,26 +32,26 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkStrUtility.h"
-#include "System/cmtkTimers.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkStrUtility.h>
+#include <System/cmtkTimers.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkUniformDistanceMap.h"
-#include "Base/cmtkTypedArray.h"
-#include "Base/cmtkTemplateArray.h"
-#include "Base/cmtkLinearInterpolator.h"
-#include "Base/cmtkUniformVolumeInterpolator.h"
-#include "Base/cmtkXformUniformVolume.h"
-#include "Base/cmtkAffineXformUniformVolume.h"
-#include "Base/cmtkSplineWarpXformUniformVolume.h"
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkUniformDistanceMap.h>
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkTemplateArray.h>
+#include <Base/cmtkLinearInterpolator.h>
+#include <Base/cmtkUniformVolumeInterpolator.h>
+#include <Base/cmtkXformUniformVolume.h>
+#include <Base/cmtkAffineXformUniformVolume.h>
+#include <Base/cmtkSplineWarpXformUniformVolume.h>
 
-#include "IO/cmtkFileFormat.h"
-#include "IO/cmtkVolumeIO.h"
-#include "IO/cmtkTypedStreamStudylist.h"
+#include <IO/cmtkFileFormat.h>
+#include <IO/cmtkVolumeIO.h>
+#include <IO/cmtkTypedStreamStudylist.h>
 
-#include "Registration/cmtkReformatVolume.h"
+#include <Registration/cmtkReformatVolume.h>
 
 #include <math.h>
 #include <list>

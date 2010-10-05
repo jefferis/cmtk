@@ -33,8 +33,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkImageOperation.h"
-#include "Base/cmtkDataGridFilter.h"
+#include <Base/cmtkImageOperation.h>
+#include <Base/cmtkDataGridFilter.h>
 
 namespace
 cmtk

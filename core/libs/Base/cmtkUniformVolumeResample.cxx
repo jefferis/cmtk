@@ -32,9 +32,9 @@
 
 #include "cmtkUniformVolume.h"
 
-#include "Base/cmtkVolumeGridToGridLookup.h"
+#include <Base/cmtkVolumeGridToGridLookup.h>
 
-#include "System/cmtkThreadPool.h"
+#include <System/cmtkThreadPool.h>
 
 namespace
 cmtk

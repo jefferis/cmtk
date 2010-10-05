@@ -30,13 +30,13 @@
 //
 */
 
-#include "Registration/cmtkImagePairSimilarityMeasure.h"
+#include <Registration/cmtkImagePairSimilarityMeasure.h>
 
-#include "Base/cmtkUniformVolumeInterpolator.h"
-#include "Base/cmtkLinearInterpolator.h"
-#include "Base/cmtkNearestNeighborInterpolator.h"
+#include <Base/cmtkUniformVolumeInterpolator.h>
+#include <Base/cmtkLinearInterpolator.h>
+#include <Base/cmtkNearestNeighborInterpolator.h>
 
-#include "Registration/cmtkReformatVolume.h"
+#include <Registration/cmtkReformatVolume.h>
 
 namespace
 cmtk

@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkElasticRegistration.h"
+#include <Registration/cmtkElasticRegistration.h>
 
 namespace
 cmtk

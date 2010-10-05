@@ -32,29 +32,29 @@
 
 #include "cmtkAffineRegistrationCommandLine.h"
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkThreads.h"
-#include "System/cmtkTimers.h"
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkCompressedStream.h"
-#include "System/cmtkMountPoints.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkThreads.h>
+#include <System/cmtkTimers.h>
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkCompressedStream.h>
+#include <System/cmtkMountPoints.h>
 
-#include "Base/cmtkTypes.h"
-#include "Base/cmtkAnatomicalOrientation.h"
-#include "Base/cmtkTransformChangeToSpaceAffine.h"
-#include "Base/cmtkTransformChangeFromSpaceAffine.h"
+#include <Base/cmtkTypes.h>
+#include <Base/cmtkAnatomicalOrientation.h>
+#include <Base/cmtkTransformChangeToSpaceAffine.h>
+#include <Base/cmtkTransformChangeFromSpaceAffine.h>
 
-#include "IO/cmtkVolumeIO.h"
-#include "IO/cmtkClassStream.h"
-#include "IO/cmtkClassStreamAffineXform.h"
-#include "IO/cmtkXformIO.h"
-#include "IO/cmtkAffineXformITKIO.h"
+#include <IO/cmtkVolumeIO.h>
+#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamAffineXform.h>
+#include <IO/cmtkXformIO.h>
+#include <IO/cmtkAffineXformITKIO.h>
 
-#include "Registration/cmtkRegistrationCallback.h"
-#include "Registration/cmtkProtocolCallback.h"
+#include <Registration/cmtkRegistrationCallback.h>
+#include <Registration/cmtkProtocolCallback.h>
 
 #ifdef CMTK_USE_SQLITE
-#  include "Registration/cmtkImageXformDB.h"
+#  include <Registration/cmtkImageXformDB.h>
 #endif
 
 #ifdef HAVE_SYS_TYPES_H

@@ -35,14 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkTemplateMultiChannelRegistrationFunctional.h"
+#include <Registration/cmtkTemplateMultiChannelRegistrationFunctional.h>
 
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkVolumeClipping.h"
-#include "Base/cmtkTransformedVolumeAxes.h"
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkVolumeClipping.h>
+#include <Base/cmtkTransformedVolumeAxes.h>
 
-#include "System/cmtkThreads.h"
-#include "System/cmtkMutexLock.h"
+#include <System/cmtkThreads.h>
+#include <System/cmtkMutexLock.h>
 
 namespace
 cmtk

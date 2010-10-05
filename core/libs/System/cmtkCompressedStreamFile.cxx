@@ -30,7 +30,7 @@
 //
 */
 
-#include "System/cmtkCompressedStream.h"
+#include <System/cmtkCompressedStream.h>
 
 #include <stdlib.h>
 #include <stdio.h>

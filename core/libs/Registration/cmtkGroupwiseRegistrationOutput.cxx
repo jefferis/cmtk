@@ -32,11 +32,11 @@
 
 #include "cmtkGroupwiseRegistrationOutput.h"
 
-#include "IO/cmtkGroupwiseRegistrationFunctionalIO.h"
-#include "IO/cmtkClassStream.h"
-#include "IO/cmtkStudyList.h"
-#include "IO/cmtkClassStreamStudyList.h"
-#include "IO/cmtkVolumeIO.h"
+#include <IO/cmtkGroupwiseRegistrationFunctionalIO.h>
+#include <IO/cmtkClassStream.h>
+#include <IO/cmtkStudyList.h>
+#include <IO/cmtkClassStreamStudyList.h>
+#include <IO/cmtkVolumeIO.h>
 
 #include <limits.h>
 #include <vector>

@@ -32,17 +32,17 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkProgressConsole.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkProgressConsole.h>
 
-#include "IO/cmtkVolumeIO.h"
+#include <IO/cmtkVolumeIO.h>
 
-#include "Base/cmtkFilterVolume.h"
-#include "Base/cmtkUnits.h"
+#include <Base/cmtkFilterVolume.h>
+#include <Base/cmtkUnits.h>
 
 #ifdef CMTK_USE_SQLITE
-#  include "Registration/cmtkImageXformDB.h"
+#  include <Registration/cmtkImageXformDB.h>
 #endif
 
 #include <string.h>

@@ -32,7 +32,7 @@
 
 #include "cmtkSplineWarpXform.h"
 
-#include "Base/cmtkMathUtil.h"
+#include <Base/cmtkMathUtil.h>
 
 namespace
 cmtk

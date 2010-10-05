@@ -36,13 +36,13 @@
 
 #include "cmtkVolumeFromFile.h"
 
-#include "IO/cmtkVolumeIO.h"
+#include <IO/cmtkVolumeIO.h>
 
-#include "Base/cmtkTypes.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkAnatomicalOrientation.h"
+#include <Base/cmtkTypes.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkAnatomicalOrientation.h>
 
-#include "System/cmtkConsole.h"
+#include <System/cmtkConsole.h>
 
 #ifdef CMTK_BUILD_NRRD_TEEM
 #  include <teem/nrrd.h>

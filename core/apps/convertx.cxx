@@ -32,37 +32,37 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkConsole.h"
-#include "System/cmtkTimers.h"
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkConsole.h>
+#include <System/cmtkTimers.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "IO/cmtkVolumeIO.h"
+#include <Base/cmtkUniformVolume.h>
+#include <IO/cmtkVolumeIO.h>
 
-#include "IO/cmtkStudyList.h"
-#include "IO/cmtkClassStreamStudyList.h"
+#include <IO/cmtkStudyList.h>
+#include <IO/cmtkClassStreamStudyList.h>
 
 #include <math.h>
 
-#include "Base/cmtkMathFunctionWrappers.h"
-#include "Base/cmtkImageOperation.h"
-#include "Base/cmtkImageOperationFlip.h"
-#include "IO/cmtkImageOperationApplyMask.h"
-#include "Base/cmtkImageOperationErodeDilate.h"
-#include "Base/cmtkImageOperationBoundaryMap.h"
-#include "Base/cmtkImageOperationConnectedComponents.h"
-#include "Base/cmtkImageOperationDownsample.h"
-#include "Base/cmtkImageOperationHistogramEqualization.h"
-#include "Base/cmtkImageOperationCropRegion.h"
-#include "Base/cmtkImageOperationCropThreshold.h"
-#include "Base/cmtkImageOperationScaleToRange.h"
-#include "Base/cmtkImageOperationThreshold.h"
-#include "Base/cmtkImageOperationSetPadding.h"
-#include "Base/cmtkImageOperationMedianFilter.h"
-#include "Base/cmtkImageOperationMedialSkeleton.h"
-#include "Base/cmtkImageOperationGaussFilter.h"
-#include "Base/cmtkImageOperationDistanceMap.h"
-#include "Base/cmtkImageOperationRevert.h"
+#include <Base/cmtkMathFunctionWrappers.h>
+#include <Base/cmtkImageOperation.h>
+#include <Base/cmtkImageOperationFlip.h>
+#include <IO/cmtkImageOperationApplyMask.h>
+#include <Base/cmtkImageOperationErodeDilate.h>
+#include <Base/cmtkImageOperationBoundaryMap.h>
+#include <Base/cmtkImageOperationConnectedComponents.h>
+#include <Base/cmtkImageOperationDownsample.h>
+#include <Base/cmtkImageOperationHistogramEqualization.h>
+#include <Base/cmtkImageOperationCropRegion.h>
+#include <Base/cmtkImageOperationCropThreshold.h>
+#include <Base/cmtkImageOperationScaleToRange.h>
+#include <Base/cmtkImageOperationThreshold.h>
+#include <Base/cmtkImageOperationSetPadding.h>
+#include <Base/cmtkImageOperationMedianFilter.h>
+#include <Base/cmtkImageOperationMedialSkeleton.h>
+#include <Base/cmtkImageOperationGaussFilter.h>
+#include <Base/cmtkImageOperationDistanceMap.h>
+#include <Base/cmtkImageOperationRevert.h>
 
 #include <stdlib.h>
 #include <iostream>

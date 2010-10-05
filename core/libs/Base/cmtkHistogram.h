@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkHistogramBase.h"
+#include <Base/cmtkHistogramBase.h>
 
-#include "System/cmtkSmartPtr.h"
-#include "System/cmtkMemory.h"
+#include <System/cmtkSmartPtr.h>
+#include <System/cmtkMemory.h>
 
 #include <vector>
 #include <algorithm>

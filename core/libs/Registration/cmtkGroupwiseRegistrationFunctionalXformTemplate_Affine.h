@@ -33,8 +33,8 @@
 #ifndef __cmtkGroupwiseRegistrationFunctionalXformTemplate_Affine_h_included_
 #define __cmtkGroupwiseRegistrationFunctionalXformTemplate_Affine_h_included_
 
-#include "Base/cmtkTransformedVolumeAxes.h"
-#include "IO/cmtkClassStream.h"
+#include <Base/cmtkTransformedVolumeAxes.h>
+#include <IO/cmtkClassStream.h>
 
 namespace
 cmtk

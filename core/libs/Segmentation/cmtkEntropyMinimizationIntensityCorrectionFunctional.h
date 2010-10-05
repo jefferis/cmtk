@@ -35,14 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include "Segmentation/cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.h"
+#include <Segmentation/cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.h>
 
-#include "Base/cmtkPolynomial.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkDataGrid.h"
+#include <Base/cmtkPolynomial.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkDataGrid.h>
 
-#include "System/cmtkThreadPool.h"
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkThreadPool.h>
+#include <System/cmtkSmartPtr.h>
 
 namespace
 cmtk

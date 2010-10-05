@@ -32,7 +32,7 @@
 
 #include "cmtkQtWindowLevelControls.h"
 
-#include "Pipeline/cmtkColormap.h"
+#include <Pipeline/cmtkColormap.h>
 
 #include <qcombobox.h>
 

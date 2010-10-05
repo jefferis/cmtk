@@ -30,10 +30,10 @@
 //
 */
 
-#include "Registration/cmtkGroupwiseRegistrationRMIFunctional.h"
+#include <Registration/cmtkGroupwiseRegistrationRMIFunctional.h>
 
-#include "Base/cmtkMathUtil.h"
-#include "System/cmtkThreadPool.h"
+#include <Base/cmtkMathUtil.h>
+#include <System/cmtkThreadPool.h>
 
 #include <algorithm>
 
@@ -387,8 +387,8 @@ GroupwiseRegistrationRMIFunctional<TXform>
 
 } // namespace cmtk
 
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkSplineWarpXform.h"
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkSplineWarpXform.h>
 
 template class cmtk::GroupwiseRegistrationRMIFunctional<cmtk::AffineXform>;
 template class cmtk::GroupwiseRegistrationRMIFunctional<cmtk::SplineWarpXform>;

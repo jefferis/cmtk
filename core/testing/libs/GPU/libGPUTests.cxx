@@ -33,7 +33,7 @@
 #include <iostream>
 #include <string.h>
 
-#include "System/cmtkTestFunctionMap.h"
+#include <System/cmtkTestFunctionMap.h>
 
 #include "cmtkDeviceHistogramTests.txx"
 #include "cmtkDeviceMemoryTests.txx"

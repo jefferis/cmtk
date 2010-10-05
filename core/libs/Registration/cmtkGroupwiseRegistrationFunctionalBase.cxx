@@ -33,23 +33,23 @@
 // Define this to debug the MPI communication:
 //#define DEBUG_COMM
 
-#include "Registration/cmtkGroupwiseRegistrationFunctionalBase.h"
+#include <Registration/cmtkGroupwiseRegistrationFunctionalBase.h>
 
-#include "Base/cmtkMathUtil.h"
-#include "IO/cmtkVolumeIO.h"
-#include "System/cmtkConsole.h"
-#include "System/cmtkThreadPool.h"
+#include <Base/cmtkMathUtil.h>
+#include <IO/cmtkVolumeIO.h>
+#include <System/cmtkConsole.h>
+#include <System/cmtkThreadPool.h>
 
-#include "Base/cmtkAnatomicalOrientation.h"
+#include <Base/cmtkAnatomicalOrientation.h>
 
-#include "Base/cmtkInterpolator.h"
-#include "Base/cmtkTypedArrayFunctionHistogramMatching.h"
-#include "Base/cmtkUniformVolumeFilter.h"
-#include "Registration/cmtkReformatVolume.h"
+#include <Base/cmtkInterpolator.h>
+#include <Base/cmtkTypedArrayFunctionHistogramMatching.h>
+#include <Base/cmtkUniformVolumeFilter.h>
+#include <Registration/cmtkReformatVolume.h>
 
 #ifdef CMTK_BUILD_MPI
 #  include <mpi.h>
-#  include "IO/cmtkMPI.h"
+#  include <IO/cmtkMPI.h>
 #endif
 
 namespace

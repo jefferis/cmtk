@@ -33,8 +33,8 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkSmartPtr.h"
-#include "Base/cmtkUniformVolume.h"
+#include <System/cmtkSmartPtr.h>
+#include <Base/cmtkUniformVolume.h>
 
 #include <list>
 

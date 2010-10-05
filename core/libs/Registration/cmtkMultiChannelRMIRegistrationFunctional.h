@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkMultiChannelRegistrationFunctional.h"
+#include <Registration/cmtkMultiChannelRegistrationFunctional.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "System/cmtkSmartPtr.h"
+#include <Base/cmtkUniformVolume.h>
+#include <System/cmtkSmartPtr.h>
 
 #include <vector>
 

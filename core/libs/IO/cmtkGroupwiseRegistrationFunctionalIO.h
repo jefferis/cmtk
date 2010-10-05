@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include "IO/cmtkClassStream.h"
-#include "Registration/cmtkGroupwiseRegistrationFunctionalBase.h"
+#include <IO/cmtkClassStream.h>
+#include <Registration/cmtkGroupwiseRegistrationFunctionalBase.h>
 
 namespace
 cmtk

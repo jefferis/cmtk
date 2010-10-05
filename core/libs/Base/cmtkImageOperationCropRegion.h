@@ -33,7 +33,7 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkImageOperation.h"
+#include <Base/cmtkImageOperation.h>
 
 namespace
 cmtk

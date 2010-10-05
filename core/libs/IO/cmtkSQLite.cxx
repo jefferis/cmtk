@@ -30,7 +30,7 @@
 
 #include "cmtkSQLite.h"
 
-#include "System/cmtkConsole.h"
+#include <System/cmtkConsole.h>
 
 #include <stdlib.h>
 

@@ -35,18 +35,18 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkMathUtil.h"
-#include "Base/cmtkTypes.h"
-#include "Base/cmtkFunctional.h"
-#include "Base/cmtkVector.h"
-#include "Base/cmtkVolume.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkMatchedLandmarkList.h"
+#include <Base/cmtkMathUtil.h>
+#include <Base/cmtkTypes.h>
+#include <Base/cmtkFunctional.h>
+#include <Base/cmtkVector.h>
+#include <Base/cmtkVolume.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkMatchedLandmarkList.h>
 
-#include "System/cmtkException.h"
-#include "System/cmtkLockingPtr.h"
+#include <System/cmtkException.h>
+#include <System/cmtkLockingPtr.h>
 
-#include "Registration/cmtkImagePairSimilarityMeasure.h"
+#include <Registration/cmtkImagePairSimilarityMeasure.h>
 
 #include <cassert>
 

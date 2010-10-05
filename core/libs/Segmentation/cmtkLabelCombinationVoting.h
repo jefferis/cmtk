@@ -34,8 +34,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkTypedArray.h"
-#include "System/cmtkSmartPtr.h"
+#include <Base/cmtkTypedArray.h>
+#include <System/cmtkSmartPtr.h>
 
 #include <vector>
 

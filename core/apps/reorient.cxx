@@ -32,11 +32,11 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkConsole.h"
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkConsole.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "IO/cmtkVolumeIO.h"
+#include <Base/cmtkUniformVolume.h>
+#include <IO/cmtkVolumeIO.h>
 
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 namespace cmtk

@@ -33,7 +33,7 @@
 
 #include <cmtkconfig.h>
 
-#include "Segmentation/cmtkSimpleLevelset.h"
+#include <Segmentation/cmtkSimpleLevelset.h>
 
 namespace
 cmtk

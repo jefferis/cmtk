@@ -31,11 +31,11 @@
 #ifndef __cmtkDeviceArrayCUDA_h_included_
 #define __cmtkDeviceArrayCUDA_h_included_
 
-#include "System/cmtkCannotBeCopied.h"
-#include "System/cmtkSmartConstPtr.h"
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkCannotBeCopied.h>
+#include <System/cmtkSmartConstPtr.h>
+#include <System/cmtkSmartPtr.h>
 
-#include "Base/cmtkFixedVector.h"
+#include <Base/cmtkFixedVector.h>
 
 /// Forward declaration.
 struct cudaArray;

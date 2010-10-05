@@ -32,11 +32,11 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkConsole.h"
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkConsole.h>
 
-#include "Base/cmtkValueSequence.h"
-#include "Base/cmtkTypes.h"
+#include <Base/cmtkValueSequence.h>
+#include <Base/cmtkTypes.h>
 
 #ifdef HAVE_IEEEFP_H
 #  include <ieeefp.h>

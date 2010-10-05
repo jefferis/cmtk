@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkThreads.h"
-#include "System/cmtkThreadParameters.h"
+#include <System/cmtkThreads.h>
+#include <System/cmtkThreadParameters.h>
 
 namespace
 cmtk

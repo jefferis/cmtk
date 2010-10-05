@@ -33,7 +33,7 @@
 #ifndef __cmtkIntersection_h_included_
 #define __cmtkIntersection_h_included_
 
-#include "Base/cmtkVector3D.h"
+#include <Base/cmtkVector3D.h>
 
 namespace
 cmtk

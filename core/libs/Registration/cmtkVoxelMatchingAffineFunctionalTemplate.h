@@ -34,10 +34,10 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkVoxelMatchingAffineFunctional.h"
-#include "Registration/cmtkVoxelMatchingFunctional.h"
+#include <Registration/cmtkVoxelMatchingAffineFunctional.h>
+#include <Registration/cmtkVoxelMatchingFunctional.h>
 
-#include "Base/cmtkTransformedVolumeAxes.h"
+#include <Base/cmtkTransformedVolumeAxes.h>
 
 namespace
 cmtk

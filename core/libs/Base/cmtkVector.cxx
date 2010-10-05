@@ -29,7 +29,7 @@
 //
 */
 
-#include "Base/cmtkVector.h"
+#include <Base/cmtkVector.h>
 
 const char* DimensionMismatchError = "Vector dimension mismatch.";
 

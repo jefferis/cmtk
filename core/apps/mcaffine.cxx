@@ -32,24 +32,24 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkCommandLine.h"
-#include "IO/cmtkVolumeIO.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkCommandLine.h>
+#include <IO/cmtkVolumeIO.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkUniformVolumeInterpolator.h"
-#include "Base/cmtkLinearInterpolator.h"
-#include "Base/cmtkCubicInterpolator.h"
-#include "Base/cmtkUniformVolumeFilter.h"
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkUniformVolumeInterpolator.h>
+#include <Base/cmtkLinearInterpolator.h>
+#include <Base/cmtkCubicInterpolator.h>
+#include <Base/cmtkUniformVolumeFilter.h>
 
-#include "Registration/cmtkAffineMultiChannelRegistrationFunctional.h"
-#include "Registration/cmtkMultiChannelRMIRegistrationFunctional.h"
-#include "Registration/cmtkMultiChannelHistogramRegistrationFunctional.h"
-#include "Registration/cmtkBestNeighbourOptimizer.h"
-#include "Registration/cmtkRegistrationCallback.h"
+#include <Registration/cmtkAffineMultiChannelRegistrationFunctional.h>
+#include <Registration/cmtkMultiChannelRMIRegistrationFunctional.h>
+#include <Registration/cmtkMultiChannelHistogramRegistrationFunctional.h>
+#include <Registration/cmtkBestNeighbourOptimizer.h>
+#include <Registration/cmtkRegistrationCallback.h>
 
-#include "IO/cmtkClassStreamMultiChannelRegistration.h"
-#include "IO/cmtkXformIO.h"
+#include <IO/cmtkClassStreamMultiChannelRegistration.h>
+#include <IO/cmtkXformIO.h>
 
 #include <vector>
 #include <algorithm>

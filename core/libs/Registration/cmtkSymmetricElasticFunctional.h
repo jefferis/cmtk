@@ -35,13 +35,13 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkMacros.h"
-#include "Base/cmtkFunctional.h"
+#include <Base/cmtkMacros.h>
+#include <Base/cmtkFunctional.h>
 
 #ifdef CMTK_BUILD_SMP
-#  include "Registration/cmtkParallelElasticFunctional.h"
+#  include <Registration/cmtkParallelElasticFunctional.h>
 #else
-#  include "Registration/cmtkVoxelMatchingElasticFunctional.h"
+#  include <Registration/cmtkVoxelMatchingElasticFunctional.h>
 #endif
 
 namespace

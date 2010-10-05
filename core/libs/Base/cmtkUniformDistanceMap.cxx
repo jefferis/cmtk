@@ -34,9 +34,9 @@
 
 #include "cmtkUniformDistanceMap.h"
 
-#include "Base/cmtkDataTypeTraits.h"
+#include <Base/cmtkDataTypeTraits.h>
 
-#include "System/cmtkThreadPool.h"
+#include <System/cmtkThreadPool.h>
 
 namespace
 cmtk

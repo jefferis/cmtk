@@ -32,7 +32,7 @@
 
 #include "cmtkAnatomicalOrientation.h"
 
-#include "System/cmtkConsole.h"
+#include <System/cmtkConsole.h>
 
 #include <math.h>
 #include <cassert>

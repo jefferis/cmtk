@@ -32,7 +32,7 @@
 
 #include "cmtkImageSymmetryPlaneFunctionalDevice.h"
 
-#include "GPU/cmtkImageSymmetryPlaneFunctionalDevice_kernels.h"
+#include <GPU/cmtkImageSymmetryPlaneFunctionalDevice_kernels.h>
 
 namespace
 cmtk

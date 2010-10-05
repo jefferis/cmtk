@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCannotBeCopied.h"
+#include <System/cmtkCannotBeCopied.h>
 
-#include "System/cmtkException.h"
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkException.h>
+#include <System/cmtkSmartPtr.h>
 
 #include <stdio.h>
 

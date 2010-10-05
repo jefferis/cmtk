@@ -32,13 +32,13 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkConsole.h"
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkConsole.h>
 
-#include "IO/cmtkAnalyze.h"
-#include "IO/cmtkFileHeader.h"
+#include <IO/cmtkAnalyze.h>
+#include <IO/cmtkFileHeader.h>
 
-#include "Base/cmtkTypes.h"
+#include <Base/cmtkTypes.h>
 
 #include <stdio.h>
 

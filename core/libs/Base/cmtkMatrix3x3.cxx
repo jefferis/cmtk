@@ -32,8 +32,8 @@
 
 #include "cmtkMatrix3x3.h"
 
-#include "System/cmtkConsole.h"
-#include "Base/cmtkMathUtil.h"
+#include <System/cmtkConsole.h>
+#include <Base/cmtkMathUtil.h>
 
 #include <string.h>
 #include <math.h>

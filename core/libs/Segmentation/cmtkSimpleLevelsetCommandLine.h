@@ -35,14 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkProgressConsole.h"
+#include <System/cmtkProgressConsole.h>
 
-#include "Segmentation/cmtkSimpleLevelsetCommandLineBase.h"
+#include <Segmentation/cmtkSimpleLevelsetCommandLineBase.h>
 
-#include "IO/cmtkVolumeIO.h"
+#include <IO/cmtkVolumeIO.h>
 
 #ifdef CMTK_USE_SQLITE
-#  include "Registration/cmtkImageXformDB.h"
+#  include <Registration/cmtkImageXformDB.h>
 #endif
 
 

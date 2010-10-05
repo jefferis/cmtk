@@ -35,18 +35,18 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkImagePairRegistrationFunctional.h"
+#include <Registration/cmtkImagePairRegistrationFunctional.h>
 
-#include "Base/cmtkVector.h"
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkVolume.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkMathUtil.h"
-#include "Base/cmtkTypes.h"
-#include "Base/cmtkVolumeClipping.h"
+#include <Base/cmtkVector.h>
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkVolume.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkMathUtil.h>
+#include <Base/cmtkTypes.h>
+#include <Base/cmtkVolumeClipping.h>
 
-#include "System/cmtkException.h"
-#include "System/cmtkThreadPool.h"
+#include <System/cmtkException.h>
+#include <System/cmtkThreadPool.h>
 
 #include <cassert>
 

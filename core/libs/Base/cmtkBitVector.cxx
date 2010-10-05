@@ -32,7 +32,7 @@
 
 #include "cmtkBitVector.h"
 
-#include "System/cmtkMemory.h"
+#include <System/cmtkMemory.h>
 
 #include <memory.h>
 

@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkMathUtil.h"
+#include <Base/cmtkMathUtil.h>
 
 #include <stdlib.h>
 #include <limits.h>

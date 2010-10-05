@@ -30,6 +30,6 @@
 //
 */
 
-#include "System/cmtkStackBacktrace.h"
+#include <System/cmtkStackBacktrace.h>
 
 namespace cmtk { static StackBacktrace StackBacktraceInstance; }

@@ -35,14 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkMultiChannelRegistrationFunctional.h"
+#include <Registration/cmtkMultiChannelRegistrationFunctional.h>
 
 #include <Base/cmtkHashMapSTL.h>
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkUniformVolumeInterpolator.h"
-#include "Base/cmtkLinearInterpolator.h"
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkUniformVolumeInterpolator.h>
+#include <Base/cmtkLinearInterpolator.h>
 
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkSmartPtr.h>
 
 #include <vector>
 

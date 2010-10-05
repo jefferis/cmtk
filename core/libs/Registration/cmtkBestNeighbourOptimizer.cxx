@@ -32,10 +32,10 @@
 
 #include "cmtkBestNeighbourOptimizer.h"
 
-#include "Registration/cmtkSearchTrace.h"
+#include <Registration/cmtkSearchTrace.h>
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkProgress.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkProgress.h>
 
 namespace
 cmtk

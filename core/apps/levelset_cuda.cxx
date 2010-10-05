@@ -32,8 +32,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Segmentation/cmtkSimpleLevelsetCommandLine.h"
-#include "GPU/cmtkSimpleLevelsetDevice.h"
+#include <Segmentation/cmtkSimpleLevelsetCommandLine.h>
+#include <GPU/cmtkSimpleLevelsetDevice.h>
 
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 namespace cmtk

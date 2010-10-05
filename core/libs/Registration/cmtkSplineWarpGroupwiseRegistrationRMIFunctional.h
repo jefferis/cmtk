@@ -35,16 +35,16 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkGroupwiseRegistrationRMIFunctional.h"
+#include <Registration/cmtkGroupwiseRegistrationRMIFunctional.h>
 
-#include "System/cmtkSmartPtr.h"
-#include "System/cmtkThreads.h"
+#include <System/cmtkSmartPtr.h>
+#include <System/cmtkThreads.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkSplineWarpXform.h"
-#include "Base/cmtkHistogram.h"
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkHistogram.h>
 
-#include "IO/cmtkClassStream.h"
+#include <IO/cmtkClassStream.h>
 
 #include <vector>
 

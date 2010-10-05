@@ -32,14 +32,14 @@
 
 //#define DEBUG_COMM
 
-#include "Registration/cmtkGroupwiseRegistrationFunctionalXformTemplate.h"
+#include <Registration/cmtkGroupwiseRegistrationFunctionalXformTemplate.h>
 
-#include "Base/cmtkMathUtil.h"
-#include "IO/cmtkVolumeIO.h"
+#include <Base/cmtkMathUtil.h>
+#include <IO/cmtkVolumeIO.h>
 
 #ifdef CMTK_BUILD_MPI
 #  include <mpi.h>
-#  include "IO/cmtkMPI.h"
+#  include <IO/cmtkMPI.h>
 #endif
 
 namespace

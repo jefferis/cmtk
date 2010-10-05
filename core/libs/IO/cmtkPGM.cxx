@@ -32,8 +32,8 @@
 
 #include "cmtkPGM.h"
 
-#include "System/cmtkCompressedStream.h"
-#include "System/cmtkConsole.h"
+#include <System/cmtkCompressedStream.h>
+#include <System/cmtkConsole.h>
 
 #include <stdlib.h>
 #include <string.h>

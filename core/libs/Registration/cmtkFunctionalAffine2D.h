@@ -35,16 +35,16 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkSmartPtr.h>
 
-#include "Base/cmtkFunctional.h"
-#include "Base/cmtkMacros.h"
-#include "Base/cmtkScalarImage.h"
-#include "Base/cmtkMatrix3x3.h"
-#include "Base/cmtkHistogram.h"
-#include "Base/cmtkJointHistogram.h"
+#include <Base/cmtkFunctional.h>
+#include <Base/cmtkMacros.h>
+#include <Base/cmtkScalarImage.h>
+#include <Base/cmtkMatrix3x3.h>
+#include <Base/cmtkHistogram.h>
+#include <Base/cmtkJointHistogram.h>
 
-#include "Registration/cmtkScalarImageSimilarity.h"
+#include <Registration/cmtkScalarImageSimilarity.h>
 
 #include <vector>
 

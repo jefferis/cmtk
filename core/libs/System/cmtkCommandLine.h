@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCannotBeCopied.h"
+#include <System/cmtkCannotBeCopied.h>
 
 #include <map>
 #include <list>
@@ -46,9 +46,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "System/cmtkSmartPtr.h"
-#include "System/cmtkConsole.h"
-#include "System/cmtkCommandLineTypeTraits.h"
+#include <System/cmtkSmartPtr.h>
+#include <System/cmtkConsole.h>
+#include <System/cmtkCommandLineTypeTraits.h>
 
 #include <mxml.h>
 

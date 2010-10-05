@@ -35,9 +35,9 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkMultiChannelRMIRegistrationFunctional.h"
-#include "Registration/cmtkTemplateMultiChannelRegistrationFunctional.h"
-#include "Registration/cmtkSplineWarpMultiChannelRegistrationFunctional.h"
+#include <Registration/cmtkMultiChannelRMIRegistrationFunctional.h>
+#include <Registration/cmtkTemplateMultiChannelRegistrationFunctional.h>
+#include <Registration/cmtkSplineWarpMultiChannelRegistrationFunctional.h>
 
 namespace
 cmtk

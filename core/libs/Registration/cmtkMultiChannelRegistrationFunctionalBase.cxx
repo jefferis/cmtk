@@ -32,9 +32,9 @@
 
 #include "cmtkMultiChannelRegistrationFunctionalBase.h"
 
-#include "System/cmtkException.h"
-#include "Base/cmtkMathUtil.h"
-#include "Base/cmtkTypes.h"
+#include <System/cmtkException.h>
+#include <Base/cmtkMathUtil.h>
+#include <Base/cmtkTypes.h>
 
 #include <algorithm>
 

@@ -32,17 +32,17 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkCommandLine.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkCommandLine.h>
 
-#include "Base/cmtkVector.h"
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkMatrix4x4.h"
+#include <Base/cmtkVector.h>
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkMatrix4x4.h>
 
-#include "IO/cmtkStudyList.h"
-#include "IO/cmtkClassStream.h"
-#include "IO/cmtkClassStreamAffineXform.h"
-#include "IO/cmtkClassStreamStudyList.h"
+#include <IO/cmtkStudyList.h>
+#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamAffineXform.h>
+#include <IO/cmtkClassStreamStudyList.h>
 
 #include <fstream>
 #include <iostream>

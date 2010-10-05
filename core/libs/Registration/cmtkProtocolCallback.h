@@ -34,7 +34,7 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkRegistrationCallback.h"
+#include <Registration/cmtkRegistrationCallback.h>
 
 namespace
 cmtk

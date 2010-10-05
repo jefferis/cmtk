@@ -34,18 +34,18 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkVoxelMatchingFunctional.h"
+#include <Registration/cmtkVoxelMatchingFunctional.h>
 
-#include "Base/cmtkVector.h"
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkVolume.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkVolumeClipping.h"
-#include "Base/cmtkMathUtil.h"
-#include "Base/cmtkTypes.h"
+#include <Base/cmtkVector.h>
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkVolume.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkVolumeClipping.h>
+#include <Base/cmtkMathUtil.h>
+#include <Base/cmtkTypes.h>
 
-#include "System/cmtkException.h"
-#include "System/cmtkThreadPool.h"
+#include <System/cmtkException.h>
+#include <System/cmtkThreadPool.h>
 
 #include <cassert>
 

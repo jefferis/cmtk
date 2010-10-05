@@ -30,7 +30,7 @@
 
 #include "cmtkDeviceUniformVolumeArray.h"
 
-#include "System/cmtkMemory.h"
+#include <System/cmtkMemory.h>
 
 cmtk::DeviceUniformVolumeArray::
 DeviceUniformVolumeArray( const UniformVolume& volume )

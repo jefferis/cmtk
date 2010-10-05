@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include "IO/cmtkStudy.h"
-#include "IO/cmtkFileFormat.h"
+#include <IO/cmtkStudy.h>
+#include <IO/cmtkFileFormat.h>
 
 #include <list>
 #include <string>

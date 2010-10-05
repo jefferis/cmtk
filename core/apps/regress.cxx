@@ -32,16 +32,16 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkCommandLine.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkCommandLine.h>
 
-#include "Base/cmtkGeneralLinearModel.h"
-#include "Base/cmtkWarpXform.h"
-#include "Base/cmtkSplineWarpXform.h"
+#include <Base/cmtkGeneralLinearModel.h>
+#include <Base/cmtkWarpXform.h>
+#include <Base/cmtkSplineWarpXform.h>
 
-#include "IO/cmtkFileFormat.h"
-#include "IO/cmtkXformIO.h"
-#include "IO/cmtkVolumeIO.h"
+#include <IO/cmtkFileFormat.h>
+#include <IO/cmtkXformIO.h>
+#include <IO/cmtkVolumeIO.h>
 
 #include <string>
 #include <vector>

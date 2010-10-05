@@ -35,11 +35,11 @@
 
 #include <cmtkconfig.h>
 
-#include "IO/cmtkStudy.h"
-#include "IO/cmtkStudyImageSet.h"
-#include "IO/cmtkVolumeFromSlices.h"
+#include <IO/cmtkStudy.h>
+#include <IO/cmtkStudyImageSet.h>
+#include <IO/cmtkVolumeFromSlices.h>
 
-#include "Base/cmtkUniformVolume.h"
+#include <Base/cmtkUniformVolume.h>
 
 namespace
 cmtk

@@ -32,29 +32,29 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkProgressConsole.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkProgressConsole.h>
 #include <System/cmtkThreads.h>
 
-#include "Base/cmtkXform.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkTypedArray.h"
+#include <Base/cmtkXform.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkTypedArray.h>
 
-#include "Base/cmtkUniformVolumeInterpolatorPartialVolume.h"
-#include "Base/cmtkSincInterpolator.h"
-#include "Base/cmtkLinearInterpolator.h"
-#include "Base/cmtkCubicInterpolator.h"
-#include "Base/cmtkNearestNeighborInterpolator.h"
-#include "Base/cmtkAnatomicalOrientation.h"
+#include <Base/cmtkUniformVolumeInterpolatorPartialVolume.h>
+#include <Base/cmtkSincInterpolator.h>
+#include <Base/cmtkLinearInterpolator.h>
+#include <Base/cmtkCubicInterpolator.h>
+#include <Base/cmtkNearestNeighborInterpolator.h>
+#include <Base/cmtkAnatomicalOrientation.h>
 
-#include "IO/cmtkXformIO.h"
-#include "IO/cmtkVolumeIO.h"
+#include <IO/cmtkXformIO.h>
+#include <IO/cmtkVolumeIO.h>
 
-#include "Registration/cmtkReformatVolume.h"
+#include <Registration/cmtkReformatVolume.h>
 
 #ifdef CMTK_USE_SQLITE
-#  include "Registration/cmtkImageXformDB.h"
+#  include <Registration/cmtkImageXformDB.h>
 #endif
 
 #ifdef CMTK_SINGLE_COMMAND_BINARY

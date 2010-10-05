@@ -35,17 +35,17 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkWarpXform.h"
-#include "Base/cmtkVector.h"
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkCubicSpline.h"
+#include <Base/cmtkWarpXform.h>
+#include <Base/cmtkVector.h>
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkCubicSpline.h>
 
 #include <cassert>
 #include <vector>
 #include <algorithm>
   
-#include "System/cmtkSmartPtr.h"
-#include "System/cmtkThreads.h"
+#include <System/cmtkSmartPtr.h>
+#include <System/cmtkThreads.h>
 
 namespace
 cmtk

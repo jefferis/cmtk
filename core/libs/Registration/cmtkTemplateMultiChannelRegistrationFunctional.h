@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkMultiChannelRMIRegistrationFunctional.h"
+#include <Registration/cmtkMultiChannelRMIRegistrationFunctional.h>
 
 namespace
 cmtk

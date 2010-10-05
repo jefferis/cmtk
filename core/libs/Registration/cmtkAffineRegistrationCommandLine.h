@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkAffineRegistration.h"
+#include <Registration/cmtkAffineRegistration.h>
 
 namespace 
 cmtk

@@ -32,7 +32,7 @@
 
 #include "cmtkMakeInitialAffineTransformation.h"
 
-#include "Base/cmtkAffineXform.h"
+#include <Base/cmtkAffineXform.h>
 
 namespace
 cmtk

@@ -29,7 +29,7 @@
 //
 */
 
-#include "Pipeline/cmtkImageEdgeOperator.h"
+#include <Pipeline/cmtkImageEdgeOperator.h>
 
 namespace
 cmtk

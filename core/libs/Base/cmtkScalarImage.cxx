@@ -32,11 +32,11 @@
 
 #include "cmtkScalarImage.h"
 
-#include "Base/cmtkMatrix.h"
-#include "Base/cmtkCubicSpline.h"
-#include "Base/cmtkSurfaceNormal.h"
+#include <Base/cmtkMatrix.h>
+#include <Base/cmtkCubicSpline.h>
+#include <Base/cmtkSurfaceNormal.h>
 
-#include "System/cmtkException.h"
+#include <System/cmtkException.h>
 
 #include <stdlib.h>
 #include <cassert>

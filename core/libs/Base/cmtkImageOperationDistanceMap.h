@@ -33,8 +33,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkImageOperation.h"
-#include "Base/cmtkUniformDistanceMap.h"
+#include <Base/cmtkImageOperation.h>
+#include <Base/cmtkUniformDistanceMap.h>
 
 namespace
 cmtk

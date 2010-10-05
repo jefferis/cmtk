@@ -42,7 +42,7 @@
 #include <algorithm>
 #include <cassert>
 
-#include "System/cmtkSafeCounter.h"
+#include <System/cmtkSafeCounter.h>
 
 namespace
 cmtk

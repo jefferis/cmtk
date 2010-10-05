@@ -32,28 +32,28 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkConsole.h"
-#include "System/cmtkProgress.h"
-#include "System/cmtkProgressConsole.h"
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkConsole.h>
+#include <System/cmtkProgress.h>
+#include <System/cmtkProgressConsole.h>
 
-#include "Base/cmtkTypes.h"
-#include "Base/cmtkUnits.h"
-#include "Base/cmtkTypedArray.h"
-#include "Base/cmtkVolume.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkUniformVolumeInterpolator.h"
-#include "Base/cmtkSincInterpolator.h"
-#include "Base/cmtkLinearInterpolator.h"
-#include "Base/cmtkCubicInterpolator.h"
+#include <Base/cmtkTypes.h>
+#include <Base/cmtkUnits.h>
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkVolume.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkUniformVolumeInterpolator.h>
+#include <Base/cmtkSincInterpolator.h>
+#include <Base/cmtkLinearInterpolator.h>
+#include <Base/cmtkCubicInterpolator.h>
 
-#include "IO/cmtkVolumeIO.h"
-#include "IO/cmtkXformIO.h"
-#include "IO/cmtkClassStream.h"
+#include <IO/cmtkVolumeIO.h>
+#include <IO/cmtkXformIO.h>
+#include <IO/cmtkClassStream.h>
 
-#include "Registration/cmtkSymmetryPlaneFunctional.h"
-#include "Registration/cmtkBestNeighbourOptimizer.h"
-#include "Registration/cmtkReformatVolume.h"
+#include <Registration/cmtkSymmetryPlaneFunctional.h>
+#include <Registration/cmtkBestNeighbourOptimizer.h>
+#include <Registration/cmtkReformatVolume.h>
 
 #include <stdio.h>
 

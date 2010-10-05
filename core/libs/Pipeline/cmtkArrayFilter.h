@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Pipeline/cmtkSource.h"
-#include "Pipeline/cmtkPipelineObject.h"
+#include <Pipeline/cmtkSource.h>
+#include <Pipeline/cmtkPipelineObject.h>
 
 namespace
 cmtk

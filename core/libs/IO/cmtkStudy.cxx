@@ -32,9 +32,9 @@
 
 #include "cmtkStudy.h"
 
-#include "IO/cmtkFileFormat.h"
-#include "IO/cmtkVolumeIO.h"
-#include "IO/cmtkClassStream.h"
+#include <IO/cmtkFileFormat.h>
+#include <IO/cmtkVolumeIO.h>
+#include <IO/cmtkClassStream.h>
 
 #include <string>
 #include <limits.h>

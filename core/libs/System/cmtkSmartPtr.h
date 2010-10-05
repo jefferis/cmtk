@@ -42,7 +42,7 @@
 #include <algorithm>
 #include <cassert>
 
-#include "System/cmtkSmartConstPtr.h"
+#include <System/cmtkSmartConstPtr.h>
 
 namespace
 cmtk

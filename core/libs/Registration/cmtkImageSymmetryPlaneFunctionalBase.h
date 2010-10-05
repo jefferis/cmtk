@@ -35,9 +35,9 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkFunctional.h"
-#include "Base/cmtkParametricPlane.h"
-#include "Base/cmtkUniformVolume.h"
+#include <Base/cmtkFunctional.h>
+#include <Base/cmtkParametricPlane.h>
+#include <Base/cmtkUniformVolume.h>
 
 namespace
 cmtk

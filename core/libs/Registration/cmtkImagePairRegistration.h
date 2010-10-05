@@ -35,22 +35,22 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkTimers.h"
-#include "System/cmtkCommandLine.h"
+#include <System/cmtkTimers.h>
+#include <System/cmtkCommandLine.h>
 
-#include "Base/cmtkMacros.h"
-#include "Base/cmtkTypes.h"
-#include "Base/cmtkXform.h"
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkFunctional.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkVector.h"
-#include "Base/cmtkInterpolator.h"
+#include <Base/cmtkMacros.h>
+#include <Base/cmtkTypes.h>
+#include <Base/cmtkXform.h>
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkFunctional.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkVector.h>
+#include <Base/cmtkInterpolator.h>
 
-#include "Registration/cmtkRegistrationCallback.h"
-#include "Registration/cmtkOptimizer.h"
+#include <Registration/cmtkRegistrationCallback.h>
+#include <Registration/cmtkOptimizer.h>
 
-#include "IO/cmtkClassStream.h"
+#include <IO/cmtkClassStream.h>
 
 #include <stack>
 #include <string.h>

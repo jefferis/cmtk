@@ -35,12 +35,12 @@
 
 #include <cmtkconfig.h>
 
-#include "Recon/cmtkInverseInterpolationVolumeReconstructionBase.h"
+#include <Recon/cmtkInverseInterpolationVolumeReconstructionBase.h>
 
-#include "Registration/cmtkAffineRegistration.h"
+#include <Registration/cmtkAffineRegistration.h>
 
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkUniformVolume.h"
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkUniformVolume.h>
 
 #include "Numerics/ap.h"
 

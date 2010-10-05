@@ -34,12 +34,12 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCannotBeCopied.h"
+#include <System/cmtkCannotBeCopied.h>
 
-#include "System/cmtkThreadSystemTypes.h"
-#include "System/cmtkThreadSemaphore.h"
-#include "System/cmtkMutexLock.h"
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkThreadSystemTypes.h>
+#include <System/cmtkThreadSemaphore.h>
+#include <System/cmtkMutexLock.h>
+#include <System/cmtkSmartPtr.h>
 
 #include <vector>
 
@@ -74,7 +74,7 @@ cmtk
  *
  *\code
  * #include <vector>
- * #include "System/cmtkThreadPool.h"
+ * #include <System/cmtkThreadPool.h>
  *
  * class ComputationClass
  * {

@@ -30,9 +30,9 @@
 //
 */
 
-#include "Registration/cmtkVoxelMatchingFunctional.h"
+#include <Registration/cmtkVoxelMatchingFunctional.h>
 
-#include "Base/cmtkVector.h"
+#include <Base/cmtkVector.h>
 
 #include <assert.h>
 

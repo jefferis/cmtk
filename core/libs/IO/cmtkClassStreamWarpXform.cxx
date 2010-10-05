@@ -32,7 +32,7 @@
 
 #include "cmtkClassStream.h"
 
-#include "IO/cmtkClassStreamAffineXform.h"
+#include <IO/cmtkClassStreamAffineXform.h>
 
 namespace
 cmtk

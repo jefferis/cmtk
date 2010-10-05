@@ -30,10 +30,10 @@
 //
 */
 
-#include "Segmentation/cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.h"
+#include <Segmentation/cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.h>
 
-#include "System/cmtkThreadPool.h"
-#include "System/cmtkException.h"
+#include <System/cmtkThreadPool.h>
+#include <System/cmtkException.h>
 
 #include <algorithm>
 

@@ -32,7 +32,7 @@
 
 #include "cmtkSymmetryPlaneFunctional.h"
 
-#include "Base/cmtkTransformedVolumeAxes.h"
+#include <Base/cmtkTransformedVolumeAxes.h>
 
 namespace
 cmtk

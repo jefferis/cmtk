@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkSegmentationLabel.h"
-#include "System/cmtkCompressedStream.h"
+#include <Base/cmtkSegmentationLabel.h>
+#include <System/cmtkCompressedStream.h>
 
 #include <iostream>
 

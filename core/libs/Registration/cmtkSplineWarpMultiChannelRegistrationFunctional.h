@@ -35,14 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkMultiChannelRMIRegistrationFunctional.h"
-#include "Registration/cmtkTemplateMultiChannelRegistrationFunctional.h"
-#include "Registration/cmtkAffineMultiChannelRegistrationFunctional.h"
+#include <Registration/cmtkMultiChannelRMIRegistrationFunctional.h>
+#include <Registration/cmtkTemplateMultiChannelRegistrationFunctional.h>
+#include <Registration/cmtkAffineMultiChannelRegistrationFunctional.h>
 
-#include "Base/cmtkSplineWarpXform.h"
+#include <Base/cmtkSplineWarpXform.h>
 
-#include "System/cmtkThreads.h"
-#include "System/cmtkMutexLock.h"
+#include <System/cmtkThreads.h>
+#include <System/cmtkMutexLock.h>
 
 #include <list>
 

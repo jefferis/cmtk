@@ -35,12 +35,12 @@
 
 #include <cmtkconfig.h>
 
-#include "Recon/cmtkVolumeInjectionReconstruction.h"
+#include <Recon/cmtkVolumeInjectionReconstruction.h>
 
-#include "Registration/cmtkAffineRegistration.h"
+#include <Registration/cmtkAffineRegistration.h>
 
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkUniformVolume.h"
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkUniformVolume.h>
 
 #include "Numerics/ap.h"
 #include "Numerics/lbfgsb.h"

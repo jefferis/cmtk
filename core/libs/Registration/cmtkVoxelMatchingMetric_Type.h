@@ -35,11 +35,11 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkTypes.h"
-#include "Base/cmtkNumericTraits.h"
-#include "Base/cmtkInterpolator.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkTypedArray.h"
+#include <Base/cmtkTypes.h>
+#include <Base/cmtkNumericTraits.h>
+#include <Base/cmtkInterpolator.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkTypedArray.h>
 
 #include <algorithm>
 

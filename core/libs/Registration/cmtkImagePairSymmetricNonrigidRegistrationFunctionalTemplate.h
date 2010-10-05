@@ -37,10 +37,10 @@
 
 #include "cmtkImagePairSymmetricNonrigidRegistrationFunctionalTemplate.h"
 
-#include "Base/cmtkFunctional.h"
-#include "Base/cmtkMacros.h"
+#include <Base/cmtkFunctional.h>
+#include <Base/cmtkMacros.h>
 
-#include "Registration/cmtkImagePairNonrigidRegistrationFunctionalTemplate.h"
+#include <Registration/cmtkImagePairNonrigidRegistrationFunctionalTemplate.h>
 
 namespace
 cmtk

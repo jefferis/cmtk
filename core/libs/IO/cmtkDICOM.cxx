@@ -32,9 +32,9 @@
 
 #include "cmtkDICOM.h"
 
-#include "Base/cmtkTypedArray.h"
+#include <Base/cmtkTypedArray.h>
 
-#include "System/cmtkConsole.h"
+#include <System/cmtkConsole.h>
 
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmimgle/didocu.h>

@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkUnits.h"
-#include "Base/cmtkMatrix.h"
+#include <Base/cmtkUnits.h>
+#include <Base/cmtkMatrix.h>
 
 #ifdef HAVE_STDINT_H
 #  include <stdint.h>

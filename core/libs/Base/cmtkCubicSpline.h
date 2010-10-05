@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkTypes.h"
-#include "Base/cmtkMathUtil.h"
+#include <Base/cmtkTypes.h>
+#include <Base/cmtkMathUtil.h>
 
 namespace
 cmtk

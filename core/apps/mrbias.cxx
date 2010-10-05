@@ -32,22 +32,22 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkConsole.h"
-#include "System/cmtkProgressConsole.h"
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkConsole.h>
+#include <System/cmtkProgressConsole.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "IO/cmtkVolumeIO.h"
+#include <Base/cmtkUniformVolume.h>
+#include <IO/cmtkVolumeIO.h>
 
-#include "Registration/cmtkBestDirectionOptimizer.h"
-#include "Segmentation/cmtkEntropyMinimizationIntensityCorrectionFunctional.h"
+#include <Registration/cmtkBestDirectionOptimizer.h>
+#include <Segmentation/cmtkEntropyMinimizationIntensityCorrectionFunctional.h>
 
 #include <math.h>
 #include <vector>
 #include <algorithm>
 
 #ifdef CMTK_USE_SQLITE
-#  include "Registration/cmtkImageXformDB.h"
+#  include <Registration/cmtkImageXformDB.h>
 #endif
 
 bool Verbose = false;

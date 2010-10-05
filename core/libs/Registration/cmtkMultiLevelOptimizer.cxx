@@ -32,7 +32,7 @@
 
 #include "cmtkMultiLevelOptimizer.h"
 
-#include "System/cmtkException.h"
+#include <System/cmtkException.h>
 
 namespace
 cmtk

@@ -35,9 +35,9 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkImageSymmetryPlaneFunctionalBase.h"
+#include <Registration/cmtkImageSymmetryPlaneFunctionalBase.h>
 
-#include "GPU/cmtkDeviceUniformVolumeArray.h"
+#include <GPU/cmtkDeviceUniformVolumeArray.h>
 
 namespace
 cmtk

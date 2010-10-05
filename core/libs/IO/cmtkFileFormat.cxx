@@ -32,8 +32,8 @@
 
 #include "cmtkFileFormat.h"
 
-#include "Base/cmtkTypes.h"
-#include "System/cmtkCompressedStream.h"
+#include <Base/cmtkTypes.h>
+#include <System/cmtkCompressedStream.h>
 
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>

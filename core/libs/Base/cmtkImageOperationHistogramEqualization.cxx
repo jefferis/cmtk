@@ -30,8 +30,8 @@
 
 #include "cmtkImageOperationHistogramEqualization.h"
 
-#include "Base/cmtkTypedArrayFunctionHistogramEqualization.h"
-#include "System/cmtkCommandLine.h"
+#include <Base/cmtkTypedArrayFunctionHistogramEqualization.h>
+#include <System/cmtkCommandLine.h>
 
 void
 cmtk::ImageOperationHistogramEqualization::New()

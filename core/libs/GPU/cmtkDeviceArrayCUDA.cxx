@@ -33,7 +33,7 @@
 #include <cuda_runtime_api.h>
 #include <cuda_runtime.h>
 
-#include "GPU/cmtkCUDA.h"
+#include <GPU/cmtkCUDA.h>
 
 cmtk::DeviceArrayCUDA
 ::DeviceArrayCUDA( const FixedVector<3,int>& dims3 )

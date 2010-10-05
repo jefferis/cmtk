@@ -32,9 +32,9 @@
 
 #include "cmtkSimpleLevelsetCommandLineBase.h"
 
-#include "System/cmtkConsole.h"
+#include <System/cmtkConsole.h>
 
-#include "IO/cmtkVolumeIO.h"
+#include <IO/cmtkVolumeIO.h>
 
 cmtk::SimpleLevelsetCommandLineBase::SimpleLevelsetCommandLineBase()
   : m_Verbose( false ),

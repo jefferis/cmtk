@@ -30,8 +30,8 @@
 
 #include "cmtkRegistrationDatabaseUpdater.h"
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkException.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkException.h>
 
 void
 cmtk::RegistrationDatabaseUpdater::UpdateDB() const

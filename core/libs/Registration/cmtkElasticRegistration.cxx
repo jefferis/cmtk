@@ -32,18 +32,18 @@
 
 #include "cmtkElasticRegistration.h"
 
-#include "Base/cmtkLandmarkList.h"
-#include "Base/cmtkMatchedLandmarkList.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkSplineWarpXform.h"
-#include "Base/cmtkTypedArrayFunctionHistogramMatching.h"
+#include <Base/cmtkLandmarkList.h>
+#include <Base/cmtkMatchedLandmarkList.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkTypedArrayFunctionHistogramMatching.h>
 
-#include "Registration/cmtkVoxelMatchingElasticFunctional.h"
-#include "Registration/cmtkSymmetricElasticFunctional.h"
-#include "Registration/cmtkOptimizer.h"
-#include "Registration/cmtkBestNeighbourOptimizer.h"
-#include "Registration/cmtkBestDirectionOptimizer.h"
-#include "Registration/cmtkReformatVolume.h"
+#include <Registration/cmtkVoxelMatchingElasticFunctional.h>
+#include <Registration/cmtkSymmetricElasticFunctional.h>
+#include <Registration/cmtkOptimizer.h>
+#include <Registration/cmtkBestNeighbourOptimizer.h>
+#include <Registration/cmtkBestDirectionOptimizer.h>
+#include <Registration/cmtkReformatVolume.h>
 
 #include <algorithm>
 

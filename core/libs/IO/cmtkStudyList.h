@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include "IO/cmtkStudy.h"
+#include <IO/cmtkStudy.h>
 
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkWarpXform.h"
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkWarpXform.h>
 
 #include <map>
 #include <list>

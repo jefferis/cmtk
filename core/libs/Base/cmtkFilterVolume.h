@@ -38,9 +38,9 @@
 #define COUPE_BLOCK_SIZE 27
 #define COUPE_BLOCK_RADIUS 1
 
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkTypedArray.h"
-#include "Base/cmtkUnits.h"
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkUnits.h>
 
 namespace
 cmtk

@@ -32,7 +32,7 @@
 
 #include <algorithm>
 
-#include "Base/cmtkHistogramBase.h"
+#include <Base/cmtkHistogramBase.h>
 
 template<class TPSF>
 void

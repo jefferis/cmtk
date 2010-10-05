@@ -32,7 +32,7 @@
 
 #include "cmtkEntropyMinimizationIntensityCorrectionFunctional.h"
 
-#include "System/cmtkConsole.h"
+#include <System/cmtkConsole.h>
 
 namespace
 cmtk

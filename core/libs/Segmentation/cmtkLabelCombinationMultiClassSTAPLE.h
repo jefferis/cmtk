@@ -35,9 +35,9 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkTypedArray.h"
-#include "System/cmtkSmartPtr.h"
-#include "Base/cmtkMatrix.h"
+#include <Base/cmtkTypedArray.h>
+#include <System/cmtkSmartPtr.h>
+#include <Base/cmtkMatrix.h>
 
 #include <vector>
 

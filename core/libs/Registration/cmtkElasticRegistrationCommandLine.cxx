@@ -32,29 +32,29 @@
 
 #include "cmtkElasticRegistrationCommandLine.h"
 
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkConsole.h"
-#include "System/cmtkTimers.h"
-#include "System/cmtkThreads.h"
-#include "System/cmtkCompressedStream.h"
-#include "System/cmtkMountPoints.h"
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkConsole.h>
+#include <System/cmtkTimers.h>
+#include <System/cmtkThreads.h>
+#include <System/cmtkCompressedStream.h>
+#include <System/cmtkMountPoints.h>
 
-#include "IO/cmtkXformIO.h"
-#include "IO/cmtkClassStream.h"
-#include "IO/cmtkClassStreamAffineXform.h"
-#include "IO/cmtkTypedStreamStudylist.h"
-#include "IO/cmtkVolumeIO.h"
-#include "IO/cmtkSplineWarpXformITKIO.h"
+#include <IO/cmtkXformIO.h>
+#include <IO/cmtkClassStream.h>
+#include <IO/cmtkClassStreamAffineXform.h>
+#include <IO/cmtkTypedStreamStudylist.h>
+#include <IO/cmtkVolumeIO.h>
+#include <IO/cmtkSplineWarpXformITKIO.h>
 
-#include "Base/cmtkAnatomicalOrientation.h"
-#include "Base/cmtkTransformChangeFromSpaceAffine.h"
+#include <Base/cmtkAnatomicalOrientation.h>
+#include <Base/cmtkTransformChangeFromSpaceAffine.h>
 
-#include "Registration/cmtkVoxelMatchingElasticFunctional.h"
-#include "Registration/cmtkSymmetricElasticFunctional.h"
-#include "Registration/cmtkProtocolCallback.h"
+#include <Registration/cmtkVoxelMatchingElasticFunctional.h>
+#include <Registration/cmtkSymmetricElasticFunctional.h>
+#include <Registration/cmtkProtocolCallback.h>
 
 #ifdef CMTK_USE_SQLITE
-#  include "Registration/cmtkImageXformDB.h"
+#  include <Registration/cmtkImageXformDB.h>
 #endif
 
 #include <stdlib.h>

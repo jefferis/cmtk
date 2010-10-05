@@ -30,7 +30,7 @@
 
 #include "cmtkDataGridMorphologicalOperators.h"
 
-#include "Base/cmtkUnionFind.h"
+#include <Base/cmtkUnionFind.h>
 
 #include <map>
 #include <vector>

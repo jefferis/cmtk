@@ -32,7 +32,7 @@
 #include <string.h>
 #include <iostream>
 
-#include "System/cmtkStackBacktrace.h"
+#include <System/cmtkStackBacktrace.h>
 
 // deliberately crash to test stack trace output
 int

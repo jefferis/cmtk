@@ -30,17 +30,17 @@
 //
 */
 
-#include "Registration/cmtkSymmetricElasticFunctional.h"
+#include <Registration/cmtkSymmetricElasticFunctional.h>
 
-#include "Registration/cmtkVoxelMatchingMutInf.h"
-#include "Registration/cmtkVoxelMatchingNormMutInf.h"
-#include "Registration/cmtkVoxelMatchingCorrRatio.h"
-#include "Registration/cmtkVoxelMatchingMeanSquaredDifference.h"
-#include "Registration/cmtkVoxelMatchingCrossCorrelation.h"
+#include <Registration/cmtkVoxelMatchingMutInf.h>
+#include <Registration/cmtkVoxelMatchingNormMutInf.h>
+#include <Registration/cmtkVoxelMatchingCorrRatio.h>
+#include <Registration/cmtkVoxelMatchingMeanSquaredDifference.h>
+#include <Registration/cmtkVoxelMatchingCrossCorrelation.h>
 
-#include "Base/cmtkSplineWarpXform.h"
-#include "Base/cmtkInterpolator.h"
-#include "Base/cmtkUniformVolume.h"
+#include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkInterpolator.h>
+#include <Base/cmtkUniformVolume.h>
 
 namespace
 cmtk

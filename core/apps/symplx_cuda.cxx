@@ -32,10 +32,10 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkImageSymmetryPlaneCommandLineBase.h"
-#include "Registration/cmtkImageSymmetryPlaneCommandLine.h"
+#include <Registration/cmtkImageSymmetryPlaneCommandLineBase.h>
+#include <Registration/cmtkImageSymmetryPlaneCommandLine.h>
 
-#include "GPU/cmtkImageSymmetryPlaneFunctionalDevice.h"
+#include <GPU/cmtkImageSymmetryPlaneFunctionalDevice.h>
 
 int
 main ( const int argc, const char* argv[] ) 

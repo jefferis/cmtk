@@ -32,7 +32,7 @@
 
 #include <cmtkconfig.h>
 
-#include "Pipeline/cmtkPlane.h"
+#include <Pipeline/cmtkPlane.h>
 
 namespace
 cmtk

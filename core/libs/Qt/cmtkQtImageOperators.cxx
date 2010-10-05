@@ -36,11 +36,11 @@
 
 #include <qinputdialog.h>
 
-#include "Qt/cmtkQtProgress.h"
+#include <Qt/cmtkQtProgress.h>
 
-#include "Base/cmtkTypedArrayFunctionHistogramEqualization.h"
-#include "Base/cmtkDataGridFilter.h"
-#include "Base/cmtkMathFunctionWrappers.h"
+#include <Base/cmtkTypedArrayFunctionHistogramEqualization.h>
+#include <Base/cmtkDataGridFilter.h>
+#include <Base/cmtkMathFunctionWrappers.h>
 
 namespace
 cmtk

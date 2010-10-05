@@ -34,13 +34,13 @@
 
 #include <cmtkconfig.h>
 
-#include "Pipeline/cmtkPipelineObject.h"
+#include <Pipeline/cmtkPipelineObject.h>
 
-#include "Base/cmtkVolume.h"
-#include "Base/cmtkUniformVolume.h"
+#include <Base/cmtkVolume.h>
+#include <Base/cmtkUniformVolume.h>
 
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkWarpXform.h"
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkWarpXform.h>
 
 namespace
 cmtk

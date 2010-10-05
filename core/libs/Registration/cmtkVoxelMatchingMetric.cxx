@@ -32,7 +32,7 @@
 
 #include "cmtkVoxelMatchingMetric.h"
 
-#include "Base/cmtkJointHistogram.h"
+#include <Base/cmtkJointHistogram.h>
 
 namespace
 cmtk

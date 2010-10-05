@@ -33,8 +33,8 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkSmartConstPtr.h"
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkSmartConstPtr.h>
+#include <System/cmtkSmartPtr.h>
 
 #include <new>
 

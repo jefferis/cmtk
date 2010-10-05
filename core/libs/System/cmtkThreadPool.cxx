@@ -32,9 +32,9 @@
 
 #include "cmtkThreadPool.h"
 
-#include "System/cmtkThreads.h"
-#include "System/cmtkMutexLock.h"
-#include "System/cmtkConsole.h"
+#include <System/cmtkThreads.h>
+#include <System/cmtkMutexLock.h>
+#include <System/cmtkConsole.h>
 
 namespace
 cmtk

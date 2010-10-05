@@ -36,7 +36,7 @@
 #include "cmtkDeviceMemory.h"
 #include "cmtkUniformVolumeOnDevice.h"
 
-#include "Base/cmtkUniformVolume.h"
+#include <Base/cmtkUniformVolume.h>
 
 namespace
 cmtk

@@ -32,8 +32,8 @@
 
 #include "cmtkStudyList.h"
 
-#include "System/cmtkConsole.h"
-#include "Base/cmtkSplineWarpXform.h"
+#include <System/cmtkConsole.h>
+#include <Base/cmtkSplineWarpXform.h>
 
 namespace
 cmtk

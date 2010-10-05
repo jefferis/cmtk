@@ -30,17 +30,17 @@
 
 #include "cmtkSimpleLevelsetDevice.h"
 
-#include "Base/cmtkGaussianKernel.h"
-#include "Base/cmtkUnits.h"
+#include <Base/cmtkGaussianKernel.h>
+#include <Base/cmtkUnits.h>
 
-#include "System/cmtkProgress.h"
+#include <System/cmtkProgress.h>
 
-#include "GPU/cmtkDeviceMemory.h"
-#include "GPU/cmtkDeviceUniformVolume.h"
-#include "GPU/cmtkDeviceUniformVolumeArray.h"
-#include "GPU/cmtkDeviceImageConvolution_kernels.h"
-#include "GPU/cmtkDeviceThresholdData_kernels.h"
-#include "GPU/cmtkSimpleLevelsetDevice_kernels.h"
+#include <GPU/cmtkDeviceMemory.h>
+#include <GPU/cmtkDeviceUniformVolume.h>
+#include <GPU/cmtkDeviceUniformVolumeArray.h>
+#include <GPU/cmtkDeviceImageConvolution_kernels.h>
+#include <GPU/cmtkDeviceThresholdData_kernels.h>
+#include <GPU/cmtkSimpleLevelsetDevice_kernels.h>
 
 #include <vector>
 

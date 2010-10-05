@@ -40,9 +40,9 @@
 #  include <ieeefp.h>
 #endif
 
-#include "System/cmtkProgress.h"
+#include <System/cmtkProgress.h>
 
-#include "Base/cmtkMathUtil.h"
+#include <Base/cmtkMathUtil.h>
 
 namespace
 cmtk

@@ -30,7 +30,7 @@
 
 #include "cmtkImageOperationApplyMask.h"
 
-#include "IO/cmtkVolumeIO.h"
+#include <IO/cmtkVolumeIO.h>
 
 cmtk::UniformVolume::SmartPtr
 cmtk::ImageOperationApplyMask

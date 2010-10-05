@@ -35,18 +35,18 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkCongealingFunctional.h"
+#include <Registration/cmtkCongealingFunctional.h>
 
-#include "System/cmtkSmartPtr.h"
-#include "System/cmtkThreads.h"
-#include "System/cmtkMutexLock.h"
-#include "System/cmtkThreadSemaphore.h"
+#include <System/cmtkSmartPtr.h>
+#include <System/cmtkThreads.h>
+#include <System/cmtkMutexLock.h>
+#include <System/cmtkThreadSemaphore.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkSplineWarpXform.h"
-#include "Base/cmtkHistogram.h"
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkHistogram.h>
 
-#include "IO/cmtkClassStream.h"
+#include <IO/cmtkClassStream.h>
 
 #include <vector>
 

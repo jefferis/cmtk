@@ -35,20 +35,20 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkDataGrid.h"
+#include <Base/cmtkDataGrid.h>
 
-#include "Base/cmtkMacros.h"
-#include "Base/cmtkMathUtil.h"
-#include "Base/cmtkFixedVector.h"
-#include "Base/cmtkVector3D.h"
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkProbeInfo.h"
-#include "Base/cmtkLandmarkList.h"
-#include "Base/cmtkAnatomicalOrientation.h"
+#include <Base/cmtkMacros.h>
+#include <Base/cmtkMathUtil.h>
+#include <Base/cmtkFixedVector.h>
+#include <Base/cmtkVector3D.h>
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkProbeInfo.h>
+#include <Base/cmtkLandmarkList.h>
+#include <Base/cmtkAnatomicalOrientation.h>
 
-#include "System/cmtkSmartPtr.h"
-#include "System/cmtkThreads.h"
-#include "System/cmtkMemory.h"
+#include <System/cmtkSmartPtr.h>
+#include <System/cmtkThreads.h>
+#include <System/cmtkMemory.h>
 
 #include <algorithm>
 

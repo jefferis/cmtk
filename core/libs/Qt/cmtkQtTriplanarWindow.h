@@ -49,16 +49,16 @@
 #include <QGridLayout>
 #include <QActionGroup>
 
-#include "Base/cmtkMacros.h"
-#include "IO/cmtkStudy.h"
+#include <Base/cmtkMacros.h>
+#include <IO/cmtkStudy.h>
 
-#include "Pipeline/cmtkImage.h"
-#include "Pipeline/cmtkColormap.h"
-#include "Pipeline/cmtkImageToImageRGB.h"
+#include <Pipeline/cmtkImage.h>
+#include <Pipeline/cmtkColormap.h>
+#include <Pipeline/cmtkImageToImageRGB.h>
 
-#include "Qt/cmtkQtProgress.h"
-#include "Qt/cmtkQtScrollRenderView.h"
-#include "Qt/cmtkQtWindowLevelControls.h"
+#include <Qt/cmtkQtProgress.h>
+#include <Qt/cmtkQtScrollRenderView.h>
+#include <Qt/cmtkQtWindowLevelControls.h>
 
 namespace
 cmtk

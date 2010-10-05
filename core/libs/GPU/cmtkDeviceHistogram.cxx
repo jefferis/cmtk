@@ -31,8 +31,8 @@
 #include "cmtkDeviceHistogram.h"
 #include "cmtkDeviceHistogram_kernels.h"
 
-#include "System/cmtkException.h"
-#include "System/cmtkMemory.h"
+#include <System/cmtkException.h>
+#include <System/cmtkMemory.h>
 
 cmtk::DeviceHistogram
 ::DeviceHistogram( const size_t numberOfBins )

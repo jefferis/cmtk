@@ -30,9 +30,9 @@
 //
 */
 
-#include "Registration/cmtkRegistrationCallback.h"
+#include <Registration/cmtkRegistrationCallback.h>
 
-#include "System/cmtkConsole.h"
+#include <System/cmtkConsole.h>
 
 #include <cstdarg>
 #include <signal.h>

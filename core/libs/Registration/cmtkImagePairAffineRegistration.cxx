@@ -32,20 +32,20 @@
 
 #include "cmtkImagePairAffineRegistration.h"
 
-#include "System/cmtkTimers.h"
+#include <System/cmtkTimers.h>
 
-#include "Base/cmtkVector.h"
-#include "Base/cmtkXform.h"
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkTypedArrayFunctionHistogramMatching.h"
-#include "Base/cmtkVolume.h"
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkFunctional.h"
+#include <Base/cmtkVector.h>
+#include <Base/cmtkXform.h>
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkTypedArrayFunctionHistogramMatching.h>
+#include <Base/cmtkVolume.h>
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkFunctional.h>
 
-#include "Registration/cmtkImagePairAffineRegistrationFunctional.h"
-#include "Registration/cmtkOptimizer.h"
-#include "Registration/cmtkBestNeighbourOptimizer.h"
-#include "Registration/cmtkReformatVolume.h"
+#include <Registration/cmtkImagePairAffineRegistrationFunctional.h>
+#include <Registration/cmtkOptimizer.h>
+#include <Registration/cmtkBestNeighbourOptimizer.h>
+#include <Registration/cmtkReformatVolume.h>
 
 namespace
 cmtk

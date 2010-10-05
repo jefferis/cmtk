@@ -30,7 +30,7 @@
 
 #include "cmtkImageOperationMedialSkeleton.h"
 
-#include "Base/cmtkEigenSystemSymmetricMatrix3x3.h"
+#include <Base/cmtkEigenSystemSymmetricMatrix3x3.h>
 
 cmtk::UniformVolume::SmartPtr  
 cmtk::ImageOperationMedialSkeleton

@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCannotBeCopied.h"
+#include <System/cmtkCannotBeCopied.h>
 
 #include <iostream>
 #include <string>
@@ -44,8 +44,8 @@
 #  include <mpi.h>
 #endif
 
-#include "System/cmtkMutexLock.h"
-#include "System/cmtkLockingPtr.h"
+#include <System/cmtkMutexLock.h>
+#include <System/cmtkLockingPtr.h>
 
 namespace
 cmtk

@@ -32,7 +32,7 @@
 
 #include "cmtkXform.h"
 
-#include "Base/cmtkVolume.h"
+#include <Base/cmtkVolume.h>
 
 #include <math.h>
 #include <stdio.h>

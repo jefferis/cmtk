@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkImageSymmetryPlaneFunctionalBase.h"
+#include <Registration/cmtkImageSymmetryPlaneFunctionalBase.h>
 
-#include "System/cmtkCannotBeCopied.h"
-#include "System/cmtkCommandLine.h"
+#include <System/cmtkCannotBeCopied.h>
+#include <System/cmtkCommandLine.h>
 
 namespace
 cmtk

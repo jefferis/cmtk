@@ -29,7 +29,7 @@
 //
 */
 
-#include "Base/cmtkScalarImage.h"
+#include <Base/cmtkScalarImage.h>
 
 // test "GridMatches" function
 int

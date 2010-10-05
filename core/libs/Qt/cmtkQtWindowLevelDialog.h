@@ -36,7 +36,7 @@
 
 #include <qdialog.h>
 
-#include "Qt/cmtkQtWindowLevelControls.h"
+#include <Qt/cmtkQtWindowLevelControls.h>
 
 namespace
 cmtk

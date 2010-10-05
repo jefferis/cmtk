@@ -32,7 +32,7 @@
 
 #include "cmtkVolumeGridToGridLookup.h"
 
-#include "Base/cmtkVolume.h"
+#include <Base/cmtkVolume.h>
 
 namespace
 cmtk

@@ -29,7 +29,7 @@
 //
 */
 
-#include "Qt/cmtkQtProgress.h"
+#include <Qt/cmtkQtProgress.h>
 
 #include <qapplication.h>
 #include <qprogressbar.h>

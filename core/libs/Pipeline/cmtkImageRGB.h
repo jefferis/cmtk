@@ -35,11 +35,11 @@
 
 #include <cmtkconfig.h>
 
-#include "Pipeline/cmtkPlane.h"
-#include "Pipeline/cmtkImage.h"
-#include "Pipeline/cmtkRGB.h"
+#include <Pipeline/cmtkPlane.h>
+#include <Pipeline/cmtkImage.h>
+#include <Pipeline/cmtkRGB.h>
 
-#include "Base/cmtkTypes.h"
+#include <Base/cmtkTypes.h>
 
 namespace
 cmtk

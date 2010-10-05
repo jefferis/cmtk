@@ -30,11 +30,11 @@
 //
 */
 
-#include "Registration/cmtkGroupwiseRegistrationFunctionalXformTemplate.h"
+#include <Registration/cmtkGroupwiseRegistrationFunctionalXformTemplate.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "IO/cmtkVolumeIO.h"
-#include "IO/cmtkClassStreamAffineXform.h"
+#include <Base/cmtkUniformVolume.h>
+#include <IO/cmtkVolumeIO.h>
+#include <IO/cmtkClassStreamAffineXform.h>
 
 namespace
 cmtk

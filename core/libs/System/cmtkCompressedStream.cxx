@@ -30,10 +30,10 @@
 //
 */
 
-#include "System/cmtkCompressedStream.h"
+#include <System/cmtkCompressedStream.h>
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkMemory.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkMemory.h>
 
 #include <stdlib.h>
 #include <string.h>

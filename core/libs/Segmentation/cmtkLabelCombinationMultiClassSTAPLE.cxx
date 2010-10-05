@@ -30,10 +30,10 @@
 //
 */
 
-#include "Segmentation/cmtkLabelCombinationMultiClassSTAPLE.h"
-#include "Segmentation/cmtkLabelCombinationVoting.h"
+#include <Segmentation/cmtkLabelCombinationMultiClassSTAPLE.h>
+#include <Segmentation/cmtkLabelCombinationVoting.h>
 
-#include "System/cmtkProgress.h"
+#include <System/cmtkProgress.h>
 
 namespace
 cmtk

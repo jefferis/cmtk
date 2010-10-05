@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkImagePairNonrigidRegistration.h"
+#include <Registration/cmtkImagePairNonrigidRegistration.h>
 
 namespace
 cmtk

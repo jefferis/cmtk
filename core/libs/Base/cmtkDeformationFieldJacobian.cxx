@@ -32,7 +32,7 @@
 
 #include "cmtkDeformationField.h"
 
-#include "Base/cmtkCubicSpline.h"
+#include <Base/cmtkCubicSpline.h>
 
 namespace
 cmtk

@@ -35,9 +35,9 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkVoxelRegistration.h"
-#include "Base/cmtkWarpXform.h"
-#include "Base/cmtkMatchedLandmarkList.h"
+#include <Registration/cmtkVoxelRegistration.h>
+#include <Base/cmtkWarpXform.h>
+#include <Base/cmtkMatchedLandmarkList.h>
 
 #include <string.h>
 

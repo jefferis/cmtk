@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkLandmark.h"
+#include <Base/cmtkLandmark.h>
 
 namespace
 cmtk

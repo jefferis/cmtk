@@ -30,7 +30,7 @@
 //
 */
 
-#include "IO/cmtkSQLite.h"
+#include <IO/cmtkSQLite.h>
 
 // test SQLite database creation
 int

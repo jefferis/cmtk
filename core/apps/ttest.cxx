@@ -32,16 +32,16 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkSmartPtr.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkTypedArray.h"
-#include "Base/cmtkMathFunctionWrappers.h"
-#include "Base/cmtkHypothesisTests.h"
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkMathFunctionWrappers.h>
+#include <Base/cmtkHypothesisTests.h>
 
-#include "IO/cmtkVolumeIO.h"
+#include <IO/cmtkVolumeIO.h>
 
 #include <stdio.h>
 #include <string.h>

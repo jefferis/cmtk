@@ -33,10 +33,10 @@
 #ifndef __cmtkClassStreamMultiChannelRegistration_h_included_
 #define __cmtkClassStreamMultiChannelRegistration_h_included_
 
-#include "IO/cmtkClassStream.h"
+#include <IO/cmtkClassStream.h>
 
-#include "Registration/cmtkAffineMultiChannelRegistrationFunctional.h"
-#include "Registration/cmtkSplineWarpMultiChannelRegistrationFunctional.h"
+#include <Registration/cmtkAffineMultiChannelRegistrationFunctional.h>
+#include <Registration/cmtkSplineWarpMultiChannelRegistrationFunctional.h>
 
 namespace 
 cmtk

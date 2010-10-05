@@ -30,9 +30,9 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkTypedArray.h"
-#include "Base/cmtkTypedArrayNoiseEstimatorNaiveGaussian.h"
-#include "Base/cmtkHistogram.h"
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkTypedArrayNoiseEstimatorNaiveGaussian.h>
+#include <Base/cmtkHistogram.h>
 
 namespace 
 cmtk

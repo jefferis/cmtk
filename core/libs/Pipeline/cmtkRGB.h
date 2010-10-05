@@ -33,7 +33,7 @@
 #ifndef __cmtkRGB_h_included_
 #define __cmtkRGB_h_included_
 
-#include "Base/cmtkTypes.h"
+#include <Base/cmtkTypes.h>
 
 namespace
 cmtk

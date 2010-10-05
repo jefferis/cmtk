@@ -31,16 +31,16 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkProgressConsole.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkProgressConsole.h>
 
-#include "Base/cmtkTypedArray.h"
-#include "Base/cmtkUniformVolume.h"
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkUniformVolume.h>
 
-#include "Segmentation/cmtkOverlapMeasures.h"
+#include <Segmentation/cmtkOverlapMeasures.h>
 
-#include "IO/cmtkVolumeIO.h"
+#include <IO/cmtkVolumeIO.h>
 
 #include <vector>
 

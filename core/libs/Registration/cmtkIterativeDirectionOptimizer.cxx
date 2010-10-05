@@ -32,7 +32,7 @@
 
 #include "cmtkIterativeDirectionOptimizer.h"
 
-#include "System/cmtkProgress.h"
+#include <System/cmtkProgress.h>
 
 #include <vector>
 

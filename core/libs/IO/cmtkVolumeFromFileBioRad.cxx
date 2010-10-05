@@ -32,10 +32,10 @@
 
 #include "cmtkVolumeFromFile.h"
 
-#include "System/cmtkConsole.h"
-#include "System/cmtkCompressedStream.h"
+#include <System/cmtkConsole.h>
+#include <System/cmtkCompressedStream.h>
 
-#include "Base/cmtkTypes.h"
+#include <Base/cmtkTypes.h>
 
 #include <stdio.h>
 

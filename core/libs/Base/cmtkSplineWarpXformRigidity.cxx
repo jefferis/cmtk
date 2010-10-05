@@ -32,7 +32,7 @@
 
 #include "cmtkSplineWarpXform.h"
 
-#include "Base/cmtkQRDecomposition.h"
+#include <Base/cmtkQRDecomposition.h>
 
 #include <vector>
 

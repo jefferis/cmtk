@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkTypedArray.h"
-#include "Base/cmtkFunctional.h"
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkFunctional.h>
 
-#include "Registration/cmtkTypedArraySimilarityMemory.h"
+#include <Registration/cmtkTypedArraySimilarityMemory.h>
 
 #include <vector>
 

@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include "Segmentation/cmtkEntropyMinimizationIntensityCorrectionFunctional.h"
+#include <Segmentation/cmtkEntropyMinimizationIntensityCorrectionFunctional.h>
 
 #include "cmtkDeviceMemory.h"
 #include "cmtkDeviceHistogram.h"

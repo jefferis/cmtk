@@ -32,7 +32,7 @@
 
 #include "cmtkXformIO.h"
 
-#include "Base/cmtkDeformationField.h"
+#include <Base/cmtkDeformationField.h>
 
 #ifdef CMTK_BUILD_NRRD_TEEM
 #  include <teem/nrrd.h>

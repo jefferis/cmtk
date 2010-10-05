@@ -35,14 +35,14 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkOptimizerBase.h"
-#include "Registration/cmtkRegistrationCallback.h"
+#include <Registration/cmtkOptimizerBase.h>
+#include <Registration/cmtkRegistrationCallback.h>
 
-#include "Base/cmtkMacros.h"
-#include "Base/cmtkFunctional.h"
-#include "Base/cmtkVector.h"
+#include <Base/cmtkMacros.h>
+#include <Base/cmtkFunctional.h>
+#include <Base/cmtkVector.h>
 
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkSmartPtr.h>
 
 #include <vector>
 

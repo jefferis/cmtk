@@ -30,8 +30,8 @@
 //
 */
 
-#include "Base/cmtkMatrix3x3.h"
-#include "Base/cmtkEigenSystemSymmetricMatrix3x3.h"
+#include <Base/cmtkMatrix3x3.h>
+#include <Base/cmtkEigenSystemSymmetricMatrix3x3.h>
 
 #include <iostream>
 #include <math.h>

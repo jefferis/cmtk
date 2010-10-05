@@ -30,7 +30,7 @@
 
 #include "cmtkDeviceMemoryCUDA.h"
 
-#include "GPU/cmtkCUDA.h"
+#include <GPU/cmtkCUDA.h>
 
 #include <cuda_runtime_api.h>
 

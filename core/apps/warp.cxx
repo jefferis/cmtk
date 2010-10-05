@@ -32,9 +32,9 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkElasticRegistrationCommandLine.h"
+#include <Registration/cmtkElasticRegistrationCommandLine.h>
 
-#include "System/cmtkProgressConsole.h"
+#include <System/cmtkProgressConsole.h>
 
 #include <stdio.h>
 #include <string.h>

@@ -40,8 +40,8 @@
 #include <qlayout.h>
 #include <qboxlayout.h>
 
-#include "Qt/cmtkQtSliderEntry.h"
-#include "IO/cmtkStudy.h"
+#include <Qt/cmtkQtSliderEntry.h>
+#include <IO/cmtkStudy.h>
 
 namespace
 cmtk

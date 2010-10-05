@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkVoxelRegistration.h"
+#include <Registration/cmtkVoxelRegistration.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkInterpolator.h"
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkInterpolator.h>
 
 #include <vector>
 

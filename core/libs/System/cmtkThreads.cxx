@@ -62,7 +62,7 @@
 #  endif
 #endif
 
-#include "System/cmtkConsole.h"
+#include <System/cmtkConsole.h>
 
 namespace
 cmtk

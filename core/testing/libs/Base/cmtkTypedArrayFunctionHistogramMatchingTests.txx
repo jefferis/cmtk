@@ -32,8 +32,8 @@
 #include <math.h>
 #include <algorithm>
 
-#include "Base/cmtkTypedArray.h"
-#include "Base/cmtkTypedArrayFunctionHistogramMatching.h"
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkTypedArrayFunctionHistogramMatching.h>
 
 // test "TypedArray::MatchHistogramToReference" function
 int

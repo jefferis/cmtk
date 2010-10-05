@@ -39,9 +39,9 @@
 #include <qlayout.h>
 #include <QVBoxLayout>
 
-#include "Qt/cmtkQtImageOperators.h"
-#include "Base/cmtkAnatomicalOrientation.h"
-#include "IO/cmtkStudy.h"
+#include <Qt/cmtkQtImageOperators.h>
+#include <Base/cmtkAnatomicalOrientation.h>
+#include <IO/cmtkStudy.h>
 
 namespace
 cmtk

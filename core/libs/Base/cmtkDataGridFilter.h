@@ -35,8 +35,8 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCannotBeCopied.h"
-#include "Base/cmtkDataGrid.h"
+#include <System/cmtkCannotBeCopied.h>
+#include <Base/cmtkDataGrid.h>
 
 namespace
 cmtk

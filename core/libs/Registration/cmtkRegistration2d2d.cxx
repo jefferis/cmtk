@@ -32,15 +32,15 @@
 
 #include "cmtkRegistration2d2d.h"
 
-#include "Base/cmtkVector.h"
+#include <Base/cmtkVector.h>
 
-#include "Registration/cmtkFunctionalAffine2D.h"
-#include "Registration/cmtkOptimizer.h"
-#include "Registration/cmtkBestNeighbourOptimizer.h"
-#include "Registration/cmtkTypedArraySimilarity.h"
-#include "Registration/cmtkProtocolCallback.h"
+#include <Registration/cmtkFunctionalAffine2D.h>
+#include <Registration/cmtkOptimizer.h>
+#include <Registration/cmtkBestNeighbourOptimizer.h>
+#include <Registration/cmtkTypedArraySimilarity.h>
+#include <Registration/cmtkProtocolCallback.h>
 
-#include "IO/cmtkPGM.h"
+#include <IO/cmtkPGM.h>
 
 namespace
 cmtk

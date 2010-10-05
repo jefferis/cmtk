@@ -30,7 +30,7 @@
 //
 */
 
-#include "Pipeline/cmtkRenderer.h"
+#include <Pipeline/cmtkRenderer.h>
 
 namespace
 cmtk

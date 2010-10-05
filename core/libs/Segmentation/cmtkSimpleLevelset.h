@@ -33,8 +33,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkUnits.h"
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkUnits.h>
 
 namespace
 cmtk

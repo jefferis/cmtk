@@ -33,7 +33,7 @@
 #ifndef __cmtkGroupwiseRegistrationFunctionalXformTemplate_SplineWarp_h_included_
 #define __cmtkGroupwiseRegistrationFunctionalXformTemplate_SplineWarp_h_included_
 
-#include "Base/cmtkSplineWarpXform.h"
+#include <Base/cmtkSplineWarpXform.h>
 
 namespace
 cmtk

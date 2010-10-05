@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkTypedArray.h"
-#include "Base/cmtkTypedArrayFunction.h"
+#include <Base/cmtkTypedArray.h>
+#include <Base/cmtkTypedArrayFunction.h>
 
-#include "System/cmtkConsole.h"
+#include <System/cmtkConsole.h>
 
 namespace
 cmtk

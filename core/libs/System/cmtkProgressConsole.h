@@ -34,7 +34,7 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkProgress.h"
+#include <System/cmtkProgress.h>
 
 #include <string>
 

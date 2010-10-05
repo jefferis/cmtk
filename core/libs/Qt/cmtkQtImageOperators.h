@@ -39,8 +39,8 @@
 #include <qwidget.h>
 #include <qmenu.h>
 
-#include "IO/cmtkStudy.h"
-#include "Qt/cmtkQtProgress.h"
+#include <IO/cmtkStudy.h>
+#include <Qt/cmtkQtProgress.h>
 
 namespace
 cmtk

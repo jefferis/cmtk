@@ -35,16 +35,16 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkMacros.h"
-#include "Base/cmtkTypes.h"
-#include "Base/cmtkMathUtil.h"
-#include "Base/cmtkDataTypeTraits.h"
-#include "Base/cmtkHistogram.h"
-#include "Base/cmtkTypedArrayFunction.h"
+#include <Base/cmtkMacros.h>
+#include <Base/cmtkTypes.h>
+#include <Base/cmtkMathUtil.h>
+#include <Base/cmtkDataTypeTraits.h>
+#include <Base/cmtkHistogram.h>
+#include <Base/cmtkTypedArrayFunction.h>
 
-#include "System/cmtkSmartPtr.h"
-#include "System/cmtkSmartConstPtr.h"
-#include "System/cmtkException.h"
+#include <System/cmtkSmartPtr.h>
+#include <System/cmtkSmartConstPtr.h>
+#include <System/cmtkException.h>
 
 #include <math.h>
 #include <stdlib.h>

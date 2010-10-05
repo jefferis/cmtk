@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkVector.h"
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkVector.h>
 
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkSmartPtr.h>
 
 #include <vector>
 

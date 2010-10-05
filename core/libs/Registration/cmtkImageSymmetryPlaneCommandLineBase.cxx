@@ -32,15 +32,15 @@
 
 #include "cmtkImageSymmetryPlaneCommandLineBase.h"
 
-#include "IO/cmtkClassStream.h"
-#include "IO/cmtkVolumeIO.h"
-#include "IO/cmtkXformIO.h"
+#include <IO/cmtkClassStream.h>
+#include <IO/cmtkVolumeIO.h>
+#include <IO/cmtkXformIO.h>
 
-#include "Registration/cmtkBestNeighbourOptimizer.h"
-#include "Registration/cmtkReformatVolume.h"
+#include <Registration/cmtkBestNeighbourOptimizer.h>
+#include <Registration/cmtkReformatVolume.h>
 
-#include "System/cmtkProgress.h"
-#include "System/cmtkProgressConsole.h"
+#include <System/cmtkProgress.h>
+#include <System/cmtkProgressConsole.h>
 
 cmtk::ImageSymmetryPlaneCommandLineBase
 ::ImageSymmetryPlaneCommandLineBase()

@@ -30,8 +30,8 @@
 
 #include "cmtkSplineWarpXformITKIO.h"
 
-#include "IO/cmtkAffineXformITKIO.h"
-#include "Base/cmtkTransformChangeToSpaceAffine.h"
+#include <IO/cmtkAffineXformITKIO.h>
+#include <Base/cmtkTransformChangeToSpaceAffine.h>
 
 #include <fstream>
 #include <string>

@@ -28,12 +28,12 @@
 //
 */
 
-#include "GPU/cmtkDeviceHistogram.h"
+#include <GPU/cmtkDeviceHistogram.h>
 
 #include <cuda_runtime_api.h>
 
 #include <math.h>
-#include "Base/cmtkFixedVector.h"
+#include <Base/cmtkFixedVector.h>
 
 int
 checkEntropy( const std::string& testName, const float hData[100], cmtk::DeviceHistogram& dHist, const float baseline )

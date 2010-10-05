@@ -32,8 +32,8 @@
 
 #include "cmtkUniformVolumeFilter.h"
 
-#include "Base/cmtkDataGridFilter.h"
-#include "Base/cmtkGaussianKernel.h"
+#include <Base/cmtkDataGridFilter.h>
+#include <Base/cmtkGaussianKernel.h>
 
 #include <vector>
 

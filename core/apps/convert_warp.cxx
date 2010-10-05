@@ -32,15 +32,15 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCommandLine.h"
-#include "System/cmtkConsole.h"
+#include <System/cmtkCommandLine.h>
+#include <System/cmtkConsole.h>
 
-#include "IO/cmtkXformIO.h"
-#include "IO/cmtkVolumeIO.h"
+#include <IO/cmtkXformIO.h>
+#include <IO/cmtkVolumeIO.h>
 
-#include "Base/cmtkWarpXform.h"
-#include "Base/cmtkSplineWarpXform.h"
-#include "Base/cmtkDeformationField.h"
+#include <Base/cmtkWarpXform.h>
+#include <Base/cmtkSplineWarpXform.h>
+#include <Base/cmtkDeformationField.h>
 
 const char* inXformPath = NULL;
 const char* outXformPath = NULL;

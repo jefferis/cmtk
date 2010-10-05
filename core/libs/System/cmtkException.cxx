@@ -30,7 +30,7 @@
 //
 */
 
-#include "System/cmtkException.h"
+#include <System/cmtkException.h>
 
 #include <cstdarg>
 #include <stdio.h>

@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkMemory.h"
+#include <System/cmtkMemory.h>
 
 namespace
 cmtk

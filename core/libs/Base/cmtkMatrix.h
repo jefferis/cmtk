@@ -39,8 +39,8 @@
 #include <vector>
 #include <iostream>
 
-#include "System/cmtkSmartPtr.h"
-#include "System/cmtkMemory.h"
+#include <System/cmtkSmartPtr.h>
+#include <System/cmtkMemory.h>
 
 namespace
 cmtk

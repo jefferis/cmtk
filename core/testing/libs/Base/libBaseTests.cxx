@@ -30,7 +30,7 @@
 //
 */
 
-#include "System/cmtkTestFunctionMap.h"
+#include <System/cmtkTestFunctionMap.h>
 
 #include "cmtkDataGridTests.txx"
 #include "cmtkEigenSystemSymmetricMatrix3x3Tests.txx"

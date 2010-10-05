@@ -28,7 +28,7 @@
 //
 */
 
-#include "GPU/cmtkDeviceUniformVolume.h"
+#include <GPU/cmtkDeviceUniformVolume.h>
 
 // test "DeviceUniformVolume" class
 int

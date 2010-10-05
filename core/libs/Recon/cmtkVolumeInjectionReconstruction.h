@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkAffineRegistration.h"
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkXform.h"
-#include "Base/cmtkUniformVolume.h"
+#include <Registration/cmtkAffineRegistration.h>
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkXform.h>
+#include <Base/cmtkUniformVolume.h>
 
 #include "Numerics/ap.h"
 

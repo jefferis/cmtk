@@ -28,7 +28,7 @@
 //
 */
 
-#include "Base/cmtkParametricPlane.h"
+#include <Base/cmtkParametricPlane.h>
 
 #include <algorithm>
 #include <math.h>

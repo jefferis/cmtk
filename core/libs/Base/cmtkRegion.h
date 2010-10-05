@@ -35,10 +35,10 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkFixedVector.h"
+#include <Base/cmtkFixedVector.h>
 
-#include "System/cmtkSmartPtr.h"
-#include "System/cmtkSmartConstPtr.h"
+#include <System/cmtkSmartPtr.h>
+#include <System/cmtkSmartConstPtr.h>
 
 #include <fstream>
 

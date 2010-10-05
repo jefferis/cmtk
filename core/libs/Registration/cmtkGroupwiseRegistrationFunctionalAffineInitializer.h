@@ -35,17 +35,17 @@
 
 #include <cmtkconfig.h>
 
-#include "Registration/cmtkGroupwiseRegistrationFunctionalBase.h"
+#include <Registration/cmtkGroupwiseRegistrationFunctionalBase.h>
 
-#include "System/cmtkSmartPtr.h"
+#include <System/cmtkSmartPtr.h>
 
-#include "Base/cmtkUniformVolume.h"
-#include "Base/cmtkAffineXform.h"
-#include "Base/cmtkHistogram.h"
+#include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkAffineXform.h>
+#include <Base/cmtkHistogram.h>
 
 #include <vector>
 
-#include "IO/cmtkClassStream.h"
+#include <IO/cmtkClassStream.h>
 
 namespace
 cmtk

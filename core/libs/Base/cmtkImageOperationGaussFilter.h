@@ -33,8 +33,8 @@
 
 #include <cmtkconfig.h>
 
-#include "Base/cmtkImageOperation.h"
-#include "Base/cmtkUniformVolumeFilter.h"
+#include <Base/cmtkImageOperation.h>
+#include <Base/cmtkUniformVolumeFilter.h>
 
 namespace
 cmtk

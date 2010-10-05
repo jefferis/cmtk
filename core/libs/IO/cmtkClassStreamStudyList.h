@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include "IO/cmtkStudyList.h"
+#include <IO/cmtkStudyList.h>
 
 namespace
 cmtk

@@ -35,11 +35,11 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkSmartPtr.h"
-#include "System/cmtkConsole.h"
+#include <System/cmtkSmartPtr.h>
+#include <System/cmtkConsole.h>
 
-#include "Base/cmtkVector.h"
-#include "Base/cmtkTypes.h"
+#include <Base/cmtkVector.h>
+#include <Base/cmtkTypes.h>
 
 #ifdef HAVE_UNISTD_H
 #  include <unistd.h>

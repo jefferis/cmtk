@@ -34,10 +34,10 @@
 
 #include <stdio.h>
 
-#include "Base/cmtkTypes.h"
-#include "System/cmtkCompressedStream.h"
-#include "IO/cmtkFileHeader.h"
-#include "IO/cmtkAnalyze.h"
+#include <Base/cmtkTypes.h>
+#include <System/cmtkCompressedStream.h>
+#include <IO/cmtkFileHeader.h>
+#include <IO/cmtkAnalyze.h>
 
 namespace
 cmtk

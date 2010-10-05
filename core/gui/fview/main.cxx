@@ -32,7 +32,7 @@
 
 #include <cmtkconfig.h>
 
-#include "System/cmtkCommandLine.h"
+#include <System/cmtkCommandLine.h>
 
 #include "cmtkFusionViewApplication.h"
 

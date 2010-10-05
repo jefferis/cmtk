@@ -32,10 +32,10 @@
 
 #include "cmtkAtlasSegmentation.h"
 
-#include "Registration/cmtkRegistrationCallback.h"
-#include "Registration/cmtkAffineRegistration.h"
-#include "Registration/cmtkElasticRegistration.h"
-#include "Registration/cmtkReformatVolume.h"
+#include <Registration/cmtkRegistrationCallback.h>
+#include <Registration/cmtkAffineRegistration.h>
+#include <Registration/cmtkElasticRegistration.h>
+#include <Registration/cmtkReformatVolume.h>
 
 cmtk::AtlasSegmentation::AtlasSegmentation
 ( UniformVolume::SmartPtr& targetImage, UniformVolume::SmartPtr& atlasImage, UniformVolume::SmartPtr& atlasLabels )  
