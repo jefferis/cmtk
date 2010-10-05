@@ -138,25 +138,25 @@ AffineXform::MatrixType
 ParametricPlane::GetMirrorXformMatrix() const
 {
   // put together zero-offset mirror matrix
-  AffineXform::MatrixType m = AffineXform::MatrixType::IdentityMatrix;
+  AffineXform::MatrixType M = AffineXform::MatrixType::IdentityMatrix;
 
   for ( int i = 0; i < 3; ++i ) 
     {
     for ( int j = 0; j < 3; ++j ) 
       {
-      m[i][j] -= 2.0 * this->Normal[i]*this->Normal[j] / this->SquareNormal;
+      M[i][j] -= 2.0 * this->Normal[i]*this->Normal[j] / this->SquareNormal;
       }
     }
 
   FixedVector<3,Types::Coordinate> mo = this->m_Origin;
-  m.Multiply( mo );
+  mo *= M;
 
   for ( int j = 0; j < 3; ++j ) 
     {
-    m[3][j] = this->m_Origin[j] - mo[j] + 2 * this->Rho * this->Normal[j] / this->SquareNormal;
+    M[3][j] = this->m_Origin[j] - mo[j] + 2 * this->Rho * this->Normal[j] / this->SquareNormal;
     }
 
-  return m;
+  return M;
 }
 
 } // namespace cmtk

@@ -126,29 +126,6 @@ public:
   /// 3x3 submatrix assignment operator.
   Self& operator=( const Matrix3x3<T>& other );
 
-  /// Multiply with 3d vector (will implicitly be made homogeneous).
-  template<class T2> 
-  void Multiply( const FixedVector<3,T2>& u, FixedVector<3,T2>& v ) const 
-  {
-    for ( int idx=0; idx<3; ++idx ) 
-      v[idx] = u[0]*Matrix[0][idx] + u[1]*Matrix[1][idx] + u[2]*Matrix[2][idx] + Matrix[3][idx];
-  }
-  
-  /// Multiply in place with 3d vector (will implicitly be made homogeneous).
-  template<class T2> FixedVector<3,T2> Multiply( const FixedVector<3,T2>& u ) const 
-  {
-    FixedVector<3,T2> v;
-    this->Multiply( u, v );
-    return v;
-  }
-
-  /// Multiply in place with 3d vector (will implicitly be made homogeneous).
-  template<class T2> void MultiplyInPlace( FixedVector<3,T2>& v ) const 
-  {
-    const FixedVector<3,T2> u = v;
-    this->Multiply( u, v );
-  }
-
   /** Change reference coordinate system.
    */
   Self& ChangeCoordinateSystem( const FixedVector<3,T>& newX, const  FixedVector<3,T>& newY );
@@ -182,6 +159,25 @@ private:
 };
 
 template<typename T> const Matrix4x4<T> Matrix4x4<T>::IdentityMatrix;
+
+/// In-place multiplication with 3d vector operation (will implicitly be made homogeneous).
+template<class T,class T2> 
+FixedVector<3,T2>&
+operator*=( FixedVector<3,T2>& u, const Matrix4x4<T>& M )
+{
+  return u = u*M;
+}
+
+/// Multiplication with 3d vector operation (will implicitly be made homogeneous).
+template<class T,class T2> 
+FixedVector<3,T2>
+operator*( const FixedVector<3,T2>& u, const Matrix4x4<T>& M )
+{
+  FixedVector<3,T2> v;
+  for ( int idx=0; idx<3; ++idx ) 
+    v[idx] = u[0]*M[0][idx] + u[1]*M[1][idx] + u[2]*M[2][idx] + M[3][idx];
+  return v;
+}
 
 /// Output object to console.
 template<class T>

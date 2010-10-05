@@ -62,8 +62,7 @@ testParametricPlaneMirror()
     
     MatrixType pm = plane.GetMirrorXformMatrix();
     
-    VectorType mv = v;
-    pm.Multiply( mv );
+    VectorType mv = v * pm;
     
     if ( sqrt( (mv-pv).SumOfSquares() ) > 1e-5 )
       {
@@ -71,7 +70,7 @@ testParametricPlaneMirror()
       return 1;
       }
     
-    pm.Multiply( mv );
+    mv *= pm;
     if ( sqrt( (mv-v).SumOfSquares() ) > 1e-5 )
       {
       std::cerr << "ParametricPlane mirror matrix applied twice does not return to original point." << std::endl;
@@ -119,8 +118,7 @@ testParametricPlaneMirrorOffset()
     
     MatrixType pm = plane.GetMirrorXformMatrix();
     
-    VectorType mv = v;
-    pm.Multiply( mv );
+    VectorType mv = v * pm;
     
     if ( sqrt( (mv-pv).SumOfSquares() ) > 1e-5 )
       {
@@ -128,7 +126,7 @@ testParametricPlaneMirrorOffset()
       return 1;
       }
     
-    pm.Multiply( mv );
+    mv *= pm;
     if ( sqrt( (mv-v).SumOfSquares() ) > 1e-5 )
       {
       std::cerr << "ParametricPlane mirror matrix applied twice does not return to original point." << std::endl;

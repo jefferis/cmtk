@@ -413,7 +413,7 @@ public:
   virtual const Self::CoordinateVectorType IndexToPhysical( const Self::CoordinateVectorType& idxV ) const 
   {
     const Self::CoordinateVectorType v( idxV );
-    return this->m_IndexToPhysicalMatrix.Multiply( v );
+    return v * this->m_IndexToPhysicalMatrix;
   }
   
   /** Get a grid coordinate by continuous pixel index.

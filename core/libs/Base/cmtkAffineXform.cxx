@@ -203,8 +203,7 @@ AffineXform::MakeInverse () const
   inverseXform->Matrix.Invert();
   inverseXform->DecomposeMatrix();
 
-  Self::SpaceVectorType newCenter;
-  this->Matrix.Multiply( Self::SpaceVectorType( this->RetCenter() ), newCenter );
+  const Self::SpaceVectorType newCenter = Self::SpaceVectorType( this->RetCenter() ) * this->Matrix;
   inverseXform->ChangeCenter( newCenter );
   
   if ( this->NumberDOFs == 7 ) 
@@ -390,8 +389,8 @@ AffineXform::RotateWXYZ
   if ( accumulate ) 
     {
     unit += center3D;
-    accumulate->Multiply( unit );
-    accumulate->Multiply( center3D );
+    unit *= *accumulate;
+    center3D *= *accumulate;
     unit -= center3D;
     }
 

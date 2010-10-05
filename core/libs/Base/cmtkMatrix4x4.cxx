@@ -512,8 +512,7 @@ Matrix4x4<T>::ChangeCoordinateSystem
   rotate *= RotateY( acos( newX[0] ) );
 
   // rotate previously rotated y axis further to match new coordinate system
-  FixedVector<3,T> newYrot;
-  rotate.Multiply( newY, newYrot );
+  const FixedVector<3,T> newYrot = newY * rotate;
   rotate *= RotateX( atan2( newYrot[2], newYrot[1] ) );
 
   // z axis now matches automatically

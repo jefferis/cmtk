@@ -77,8 +77,7 @@ cmtk::SplineWarpXformITKIO
     stream << "\n";
 
     // Origin of the control point grid must be transformed into physical coordinates of the reference image
-    Vector3D origin( xform.m_Offset );
-    refVolume.GetImageToPhysicalMatrix().Multiply( origin );
+    Vector3D origin( xform.m_Offset * refVolume.GetImageToPhysicalMatrix() );
     
     // Fixed parameters:
     // * Grid Size

@@ -262,7 +262,7 @@ public:
   /// Apply transformation to existing vector.
   void ApplyInPlace( Self::SpaceVectorType& vec ) const 
   {
-    this->Matrix.Multiply( vec );
+    vec *= this->Matrix;
   }
 
   /** Return origin of warped vector.
