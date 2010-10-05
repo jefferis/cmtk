@@ -105,6 +105,7 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
       warpx
       warp2ps
       xform2dfield
+      xform2itk
       xform2scalar)
 
     IF(CMTK_USE_SQLITE)
