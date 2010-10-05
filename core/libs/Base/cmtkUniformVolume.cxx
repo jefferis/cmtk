@@ -558,15 +558,4 @@ UniformVolume::GetImageToPhysicalMatrix() const
   return matrix;
 }
 
-UniformVolume::CoordinateVectorType
-UniformVolume
-::IndexToPhysical( const Types::Coordinate i, const Types::Coordinate j, const Types::Coordinate k ) const
-{
-  const AffineXform::MatrixType& matrix = this->m_IndexToPhysicalMatrix;
-  const Types::Coordinate phys[3] = { i * matrix[0][0] + j * matrix[1][0] + k * matrix[2][0] + matrix[3][0],
-				      i * matrix[0][1] + j * matrix[1][1] + k * matrix[2][1] + matrix[3][1],
-				      i * matrix[0][2] + j * matrix[1][2] + k * matrix[2][2] + matrix[3][2] };
-  return Self::CoordinateVectorType( phys );  
-}
-
 } // namespace cmtk

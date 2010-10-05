@@ -919,7 +919,7 @@ QtTriplanarWindow::UpdateGridInfo()
   const UniformVolume* volume = this->m_Study->GetVolume();
   if ( volume->IndexIsInRange( GridIndex[0], GridIndex[1], GridIndex[2] ) )
     {
-    const FixedVector<3,float> v = volume->GetGridLocationPhysical( GridIndex );
+    const FixedVector<3,float> v = volume->IndexToPhysical( GridIndex );
 
     Types::DataItem value;
     if ( volume->GetDataAt( value, GridIndex[0], GridIndex[1], GridIndex[2] ) )

@@ -151,12 +151,6 @@ public:
    */
   virtual void CreateDefaultIndexToPhysicalMatrix();
 
-  /** Get physical location of indexed pixel.
-   * This function applies the index-to-physical transformation matrix to the given pixel index. 
-   * The index itself can be fractional.
-   */
-  virtual Self::CoordinateVectorType IndexToPhysical( const Types::Coordinate i, const Types::Coordinate j, const Types::Coordinate k ) const;
-
   /** Get matrix that maps form image coordinates to physical space.
    * The returned matrix is computed by removing pixel size from the one stored
    * in m_IndexToPhysicalMatrix.
@@ -412,11 +406,11 @@ public:
   }
   
   /** Get a grid location in physical coordinates.
-   *@param x,y,z The indices of the intended grid element with respect to the
-   * three coordinate axes. Valid range is from 0 to Dims[...]-1.
+   *@param idxX The index of the intended grid element with respect to the
+   * three coordinate axes. Valid range is from 0 to Dims[...]-1. Fractional coordinates are permitted.
    *@return The location in image coordinates of the given grid element as a Self::CoordinateVectorType.
    */
-  virtual const Self::CoordinateVectorType GetGridLocationPhysical( const Self::IndexType& idxV ) const 
+  virtual const Self::CoordinateVectorType IndexToPhysical( const Self::CoordinateVectorType& idxV ) const 
   {
     const Self::CoordinateVectorType v( idxV );
     return this->m_IndexToPhysicalMatrix.Multiply( v );
