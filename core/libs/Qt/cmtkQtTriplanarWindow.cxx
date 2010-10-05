@@ -254,7 +254,7 @@ QtTriplanarWindow::QtTriplanarWindow()
   ScrollRenderViewAx->slotConnectImage( ImageToImageRGBAx->GetOutput() );
 
   QObject::connect( ScrollRenderViewAx, SIGNAL( indexChanged( int ) ), this, SLOT( slotSwitchImageAx( int ) ) );
-  QObject::connect( ScrollRenderViewAx, SIGNAL( signalMouse3D( Qt::MouseButton, const Vector3D& ) ), this, SLOT( slotMouse3D( Qt::MouseButton, const Vector3D& ) ) );
+  QObject::connect( ScrollRenderViewAx, SIGNAL( signalMouse3D( Qt::MouseButton, const Vector3D& ) ), this, SLOT( slotMouseAx( Qt::MouseButton, const Vector3D& ) ) );
   
   // set up sagittal viewer
   PipelineImageSa = Image::New();
@@ -266,7 +266,7 @@ QtTriplanarWindow::QtTriplanarWindow()
 
   PipelineImageCo = Image::New();
   QObject::connect( ScrollRenderViewSa, SIGNAL( indexChanged( int ) ), this, SLOT( slotSwitchImageSa( int ) ) );
-  QObject::connect( ScrollRenderViewSa, SIGNAL( signalMouse3D( Qt::MouseButton, const Vector3D& ) ), this, SLOT( slotMouse3D( Qt::MouseButton, const Vector3D& ) ) );
+  QObject::connect( ScrollRenderViewSa, SIGNAL( signalMouse3D( Qt::MouseButton, const Vector3D& ) ), this, SLOT( slotMouseSa( Qt::MouseButton, const Vector3D& ) ) );
 
   // set up coronal viewer
   ImageToImageRGBCo = ImageToImageRGB::New();
@@ -276,7 +276,7 @@ QtTriplanarWindow::QtTriplanarWindow()
   ScrollRenderViewCo->slotConnectImage( ImageToImageRGBCo->GetOutput() );
 
   QObject::connect( ScrollRenderViewCo, SIGNAL( indexChanged( int ) ), this, SLOT( slotSwitchImageCo( int ) ) );
-  QObject::connect( ScrollRenderViewCo, SIGNAL( signalMouse3D( Qt::MouseButton, const Vector3D& ) ), this, SLOT( slotMouse3D( Qt::MouseButton, const Vector3D& ) ) );
+  QObject::connect( ScrollRenderViewCo, SIGNAL( signalMouse3D( Qt::MouseButton, const Vector3D& ) ), this, SLOT( slotMouseCo( Qt::MouseButton, const Vector3D& ) ) );
 
   this->m_ProgressReporter = new QtProgress( this );
 }
@@ -723,17 +723,95 @@ QtTriplanarWindow
 
   if ( volume )
     {
-    unsigned int sliceSa = volume->GetClosestCoordIndex( AXIS_X, v[AXIS_X] );
+    const unsigned int sliceSa = volume->GetClosestCoordIndex( AXIS_X, v[AXIS_X] );
     ScrollRenderViewSa->slotSetSlice( sliceSa );
     ScrollRenderViewSa->slotRender();
     
-    unsigned int sliceCo = volume->GetClosestCoordIndex( AXIS_Y, v[AXIS_Y] );
+    const unsigned int sliceCo = volume->GetClosestCoordIndex( AXIS_Y, v[AXIS_Y] );
     ScrollRenderViewCo->slotSetSlice( sliceCo );
     ScrollRenderViewCo->slotRender();
     
-    unsigned int sliceAx = volume->GetClosestCoordIndex( AXIS_Z, v[AXIS_Z] );
+    const unsigned int sliceAx = volume->GetClosestCoordIndex( AXIS_Z, v[AXIS_Z] );
     ScrollRenderViewAx->slotSetSlice( sliceAx );
     ScrollRenderViewAx->slotRender();
+    }
+}
+
+void 
+QtTriplanarWindow
+::slotMouseAx( Qt::MouseButton, const Vector3D& v )
+{
+// if we don't have a study yet, simply ignore.
+  if ( ! this->m_Study )
+    return;
+
+  const UniformVolume *volume = this->m_Study->GetVolume();
+
+  unsigned int i=0, j=0;
+  PipelineImageAx->ProjectPixel( v, i, j );
+  ScrollRenderViewAx->GetRenderImage()->SetCrosshairPosition( i, j );
+
+  if ( volume )
+    {
+    const unsigned int sliceSa = volume->GetClosestCoordIndex( AXIS_X, v[AXIS_X] );
+    ScrollRenderViewSa->slotSetSlice( sliceSa );
+    ScrollRenderViewSa->slotRender();
+    
+    const unsigned int sliceCo = volume->GetClosestCoordIndex( AXIS_Y, v[AXIS_Y] );
+    ScrollRenderViewCo->slotSetSlice( sliceCo );
+    ScrollRenderViewCo->slotRender();
+    }
+}
+
+void 
+QtTriplanarWindow
+::slotMouseSa( Qt::MouseButton, const Vector3D& v )
+{
+// if we don't have a study yet, simply ignore.
+  if ( ! this->m_Study )
+    return;
+
+  const UniformVolume *volume = this->m_Study->GetVolume();
+
+  unsigned int i=0, j=0;
+  PipelineImageSa->ProjectPixel( v, i, j );
+  ScrollRenderViewSa->GetRenderImage()->SetCrosshairPosition( i, j );
+
+  if ( volume )
+    {
+    const unsigned int sliceAx = volume->GetClosestCoordIndex( AXIS_Z, v[AXIS_Z] );
+    ScrollRenderViewAx->slotSetSlice( sliceAx );
+    ScrollRenderViewAx->slotRender();
+    
+    const unsigned int sliceCo = volume->GetClosestCoordIndex( AXIS_Y, v[AXIS_Y] );
+    ScrollRenderViewCo->slotSetSlice( sliceCo );
+    ScrollRenderViewCo->slotRender();
+    }
+}
+
+void 
+QtTriplanarWindow
+::slotMouseCo( Qt::MouseButton, const Vector3D& v )
+{
+// if we don't have a study yet, simply ignore.
+  if ( ! this->m_Study )
+    return;
+
+  const UniformVolume *volume = this->m_Study->GetVolume();
+
+  unsigned int i=0, j=0;
+  PipelineImageCo->ProjectPixel( v, i, j );
+  ScrollRenderViewCo->GetRenderImage()->SetCrosshairPosition( i, j );
+
+  if ( volume )
+    {
+    const unsigned int sliceAx = volume->GetClosestCoordIndex( AXIS_Z, v[AXIS_Z] );
+    ScrollRenderViewAx->slotSetSlice( sliceAx );
+    ScrollRenderViewAx->slotRender();
+    
+    const unsigned int sliceSa = volume->GetClosestCoordIndex( AXIS_X, v[AXIS_X] );
+    ScrollRenderViewSa->slotSetSlice( sliceSa );
+    ScrollRenderViewSa->slotRender();
     }
 }
 

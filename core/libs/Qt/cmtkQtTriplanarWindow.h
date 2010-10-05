@@ -146,6 +146,15 @@ protected slots:
   /// Three-dimensional mouse event.
   void slotMouse3D( Qt::MouseButton, const Vector3D& );
 
+  /// Three-dimensional mouse event from axial slice.
+  void slotMouseAx( Qt::MouseButton, const Vector3D& );
+
+  /// Three-dimensional mouse event from sagittal slice.
+  void slotMouseSa( Qt::MouseButton, const Vector3D& );
+
+  /// Three-dimensional mouse event from coronal slice.
+  void slotMouseCo( Qt::MouseButton, const Vector3D& );
+
   /// This slot is called when the "Center" button is clicked.
   void slotCenter();
 
