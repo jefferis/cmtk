@@ -90,8 +90,8 @@ operator >> ( ClassStream& stream, AffineXform& affineXform )
     
     referenceStudy = stream.ReadString( "reference_study", NULL );
     floatingStudy = stream.ReadString( "floating_study", NULL );
-    
-    if ( stream.Seek( "affine_xform", true /*forward*/ ) != TYPEDSTREAM_OK )
+
+    if ( stream.Seek( "affine_xform", false /*forward*/ ) != TYPEDSTREAM_OK )
       {
       throw Exception( "Did not find 'affine_xform' section in affine xform archive" );
       }
