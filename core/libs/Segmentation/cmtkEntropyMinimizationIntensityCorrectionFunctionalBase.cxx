@@ -130,6 +130,7 @@ EntropyMinimizationIntensityCorrectionFunctionalBase
   
 #ifdef CMTK_BUILD_DEMO
   static int it = 0;
+  this->UpdateOutputImage( false /*foregroundOnly*/ );
   UniformVolume::SmartConstPtr slice = this->m_OutputImage->ExtractSlice( AXIS_Z, this->m_OutputImage->m_Dims[2] / 2 );
   
   char path[PATH_MAX];

@@ -22,7 +22,11 @@ where
 
 ; <tt>--binarize</tt> / <tt>-b</tt> : Binarize levelset and write as byte mask, rather than write floating-point levelset function itself.
 
-=== These parameters of control the evolution of the levelset function ===
+=== These parameters control the initialization of the levelset function ===
+
+; <tt>--scale-initial-sphere</tt> <tt><double></tt> : Scale factor to reduce or increase the size of the initial foreground region sphere. '''[Default value: 1]'''
+
+=== These parameters control the evolution of the levelset function ===
 
 ; <tt>--iterations</tt> <tt><integer></tt> / <tt>-n</tt> <tt><integer></tt> : Maximum number of iterations '''[Default value: 100]'''
 

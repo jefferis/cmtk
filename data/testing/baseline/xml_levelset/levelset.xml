@@ -88,10 +88,37 @@ binarize
 </parameters>
 <parameters advanced="true">
 <label>
+Levelset Initialization
+</label>
+<description>
+These parameters control the initialization of the levelset function
+</description>
+<double>
+<default>
+1
+</default>
+<description>
+Scale factor to reduce or increase the size of the initial foreground region sphere.
+</description>
+<name>
+scale_initial_sphere
+</name>
+<label>
+scale_initial_sphere
+</label>
+<longflag>
+--scale_initial_sphere
+</longflag>
+
+</double>
+
+</parameters>
+<parameters advanced="true">
+<label>
 Levelset Evolution Parameters
 </label>
 <description>
-These parameters of control the evolution of the levelset function
+These parameters control the evolution of the levelset function
 </description>
 <integer>
 <default>

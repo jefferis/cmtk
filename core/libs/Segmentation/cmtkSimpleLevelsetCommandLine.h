@@ -73,6 +73,7 @@ public:
     cmtk::ProgressConsole progressIndicator( "LevelsetSegmentation" );
     
     SimpleLevelsetImplementation levelset( this->m_Volume );
+    levelset.SetScaleInitialSphere( this->m_ScaleInitialSphere );
     levelset.SetFilterSigma( cmtk::Units::GaussianSigma( this->m_FilterSigma ) );
     levelset.SetTimeDelta( this->m_TimeDelta );
     levelset.SetLevelsetThreshold( this->m_LevelsetThreshold );

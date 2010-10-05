@@ -301,8 +301,12 @@ IF(NOT CMTK_USE_MPI)
 
   # ==========================================
   # Tests for "levelset" tool
-  SET(testList ${testList} levelsetDefault)
-
+  SET(testList ${testList} 
+    levelsetDefault
+    levelsetScaleInitial
+    levelsetBinarizeFastWideBinary
+    )
+  
   # ==========================================
   # Tests for "make_initial_affine" tool
   SET(testList ${testList} 

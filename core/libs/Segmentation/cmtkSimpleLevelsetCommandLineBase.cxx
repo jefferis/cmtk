@@ -38,6 +38,7 @@
 
 cmtk::SimpleLevelsetCommandLineBase::SimpleLevelsetCommandLineBase()
   : m_Verbose( false ),
+    m_ScaleInitialSphere( 1.0 ),
     m_FilterSigma( 2.0 ),    
     m_TimeDelta( 0.1 ),
     m_LevelsetThreshold( 1.0 ),
@@ -61,7 +62,11 @@ cmtk::SimpleLevelsetCommandLineBase::SimpleLevelsetCommandLineBase()
   
   this->m_CommandLine.AddSwitch( Key( 'b', "binarize" ), &this->m_Binarize, true, "Binarize levelset and write as byte mask, rather than write floating-point levelset function itself." );
   
-  this->m_CommandLine.BeginGroup( "Levelset Evolution Parameters", "These parameters of control the evolution of the levelset function" )->SetProperties( CommandLine::PROPS_ADVANCED );
+  this->m_CommandLine.BeginGroup( "Levelset Initialization", "These parameters control the initialization of the levelset function" )->SetProperties( CommandLine::PROPS_ADVANCED );
+  this->m_CommandLine.AddOption( Key( "scale-initial-sphere" ), &this->m_ScaleInitialSphere, "Scale factor to reduce or increase the size of the initial foreground region sphere." );
+  this->m_CommandLine.EndGroup();
+
+  this->m_CommandLine.BeginGroup( "Levelset Evolution Parameters", "These parameters control the evolution of the levelset function" )->SetProperties( CommandLine::PROPS_ADVANCED );
   this->m_CommandLine.AddOption( Key( 'n', "iterations" ), &this->m_NumberOfIterations, "Maximum number of iterations" );
   this->m_CommandLine.AddSwitch( Key( 'f', "force-iterations" ), &this->m_ForceIterations, true, "Force given number of iterations, even when convergence has been detected" );
   

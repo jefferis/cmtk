@@ -54,7 +54,7 @@ cmtk::SimpleLevelset
   center /= 2;
   
   UniformVolumePainter painter( this->m_Levelset );
-  painter.DrawSphere( center, (this->m_Levelset->GetDims()[0]+this->m_Levelset->GetDims()[1]+this->m_Levelset->GetDims()[2])/6, 1.0 );
+  painter.DrawSphere( center, this->m_ScaleInitialSphere * ((this->m_Levelset->GetDims()[0]+this->m_Levelset->GetDims()[1]+this->m_Levelset->GetDims()[2])/6), 1.0 );
 }
 
 void

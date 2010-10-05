@@ -822,6 +822,14 @@ case ${RUNTEST} in
 	run levelset -v vol001_mr_t1.hdr ${tmpdir}/levelset.hdr
 	check_results levelset.img
 	;;
+    levelsetScaleInitial)
+        run levelset -v --scale-initial-sphere 0.5 vol001_mr_t1.hdr ${tmpdir}/levelset.hdr
+	check_results levelset.img
+	;;
+    levelsetBinarizeFastWideBinary)
+        run levelset -v --binarize --delta 1.0 --filter-sigma 4.0 vol001_mr_t1.hdr ${tmpdir}/levelset.hdr
+	check_results levelset.img
+	;;
     make_initial_affineCenterOfMass)
 	run make_initial_affine --xform-ras --mode centers-of-mass box1.hdr box3.hdr ${tmpdir}/xform
 	check_results xform

@@ -51,6 +51,12 @@ public:
   /// Constructor.
   SimpleLevelset( UniformVolume::SmartConstPtr& volume ) : m_Volume( volume ) {}
 
+  /// Set initial sphere scale factor.
+  void SetScaleInitialSphere( const Types::Coordinate scale )
+  {
+    this->m_ScaleInitialSphere = scale;
+  }
+
   /// Set filter sigma parameter.
   void SetFilterSigma( const Units::GaussianSigma filterSigma )
   {
@@ -90,6 +96,9 @@ protected:
 
   /// The evolving levelset.
   UniformVolume::SmartPtr m_Levelset;
+
+  /// Initial sphere scale factor.
+  Types::Coordinate m_ScaleInitialSphere;
 
   /// Sigma parameter of the Gaussian filter kernel.
   Units::GaussianSigma m_FilterSigma;

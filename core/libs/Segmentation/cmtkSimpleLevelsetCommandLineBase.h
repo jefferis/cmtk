@@ -70,6 +70,9 @@ protected:
   ///Verbose mode.
   bool m_Verbose;
 
+  /// Initial sphere scale factor.
+  Types::Coordinate m_ScaleInitialSphere;
+
   /// Gaussian smoothing kernel sigma in mm.
   Types::Coordinate m_FilterSigma;
 
