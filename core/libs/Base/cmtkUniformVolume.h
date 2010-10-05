@@ -400,17 +400,26 @@ public:
     return true;
   }
 
-  /** Get a grid coordinate.
-   * This function directly calculates the grid location from the volume's
-   * grid deltas.
+  /** Get a grid location in image coordinates.
    *@param x,y,z The indices of the intended grid element with respect to the
    * three coordinate axes. Valid range is from 0 to Dims[...]-1.
-   *@return The location of the given grid element as a Self::CoordinateVectorType.
+   *@return The location in image coordinates of the given grid element as a Self::CoordinateVectorType.
    */
   virtual const Self::CoordinateVectorType GetGridLocation( const int x, const int y, const int z ) const 
   {
     const Types::Coordinate loc[3] = { this->m_Offset[0] + x * this->m_Delta[0], this->m_Offset[1] + y * this->m_Delta[1], this->m_Offset[2] + z * this->m_Delta[2] };
     return Self::CoordinateVectorType( loc );
+  }
+  
+  /** Get a grid location in physical coordinates.
+   *@param x,y,z The indices of the intended grid element with respect to the
+   * three coordinate axes. Valid range is from 0 to Dims[...]-1.
+   *@return The location in image coordinates of the given grid element as a Self::CoordinateVectorType.
+   */
+  virtual const Self::CoordinateVectorType GetGridLocationPhysical( const Self::IndexType& idxV ) const 
+  {
+    const Self::CoordinateVectorType v( idxV );
+    return this->m_IndexToPhysicalMatrix.Multiply( v );
   }
   
   /** Get a grid coordinate by continuous pixel index.

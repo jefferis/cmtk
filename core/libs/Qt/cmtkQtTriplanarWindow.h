@@ -220,7 +220,7 @@ protected:
 
 private:
   /// The pixel grid index of the current location.
-  int GridIndex[3];
+  DataGrid::IndexType GridIndex;
 
   /// Status bar output of grid coordinate.
   QLabel* GridIndexInfo;

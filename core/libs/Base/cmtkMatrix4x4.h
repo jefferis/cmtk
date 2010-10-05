@@ -135,7 +135,15 @@ public:
   }
   
   /// Multiply in place with 3d vector (will implicitly be made homogeneous).
-  template<class T2> void Multiply( FixedVector<3,T2>& v ) const 
+  template<class T2> FixedVector<3,T2> Multiply( const FixedVector<3,T2>& u ) const 
+  {
+    FixedVector<3,T2> v;
+    this->Multiply( u, v );
+    return v;
+  }
+
+  /// Multiply in place with 3d vector (will implicitly be made homogeneous).
+  template<class T2> void MultiplyInPlace( FixedVector<3,T2>& v ) const 
   {
     const FixedVector<3,T2> u = v;
     this->Multiply( u, v );

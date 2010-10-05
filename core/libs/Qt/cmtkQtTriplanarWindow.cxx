@@ -919,11 +919,13 @@ QtTriplanarWindow::UpdateGridInfo()
   const UniformVolume* volume = this->m_Study->GetVolume();
   if ( volume->IndexIsInRange( GridIndex[0], GridIndex[1], GridIndex[2] ) )
     {
+    const FixedVector<3,float> v = volume->GetGridLocationPhysical( GridIndex );
+
     Types::DataItem value;
     if ( volume->GetDataAt( value, GridIndex[0], GridIndex[1], GridIndex[2] ) )
-      str.sprintf( "Pixel Index: [%d,%d,%d] Value: %f", GridIndex[0], GridIndex[1], GridIndex[2], value );
+      str.sprintf( "Pixel Index: [%d,%d,%d] RAS: [%g,%g,%g] Value: %g", GridIndex[0], GridIndex[1], GridIndex[2], v[0], v[1], v[2], value );
     else
-      str.sprintf( "Pixel Index: [%d,%d,%d]", GridIndex[0], GridIndex[1], GridIndex[2] );
+      str.sprintf( "Pixel Index: [%d,%d,%d] RAS: [%g,%g,%g]", GridIndex[0], GridIndex[1], GridIndex[2], v[0], v[1], v[2] );
     }
   GridIndexInfo->setText( str );
 }
