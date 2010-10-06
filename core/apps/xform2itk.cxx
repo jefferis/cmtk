@@ -63,8 +63,8 @@ main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode" );
 
     cl.BeginGroup( "Output", "Output parameters" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
-    cl.AddOption( Key( 'f', "fixed-image" ), &fixedImagePath, "Override transformation's fixed/reference image (if any) with this one." );
-    cl.AddOption( Key( 'm', "moving-image" ), &movingImagePath, "Override transformation's moving/floating image (if any) with this one." );
+    cl.AddOption( Key( "fixed-image" ), &fixedImagePath, "Override transformation's fixed/reference image (if any) with this one." );
+    cl.AddOption( Key( "moving-image" ), &movingImagePath, "Override transformation's moving/floating image (if any) with this one." );
     cl.EndGroup();
     
     cl.AddParameter( &inputPath, "InputPath", "CMTK input transformation path" )->SetProperties( cmtk::CommandLine::PROPS_XFORM );
