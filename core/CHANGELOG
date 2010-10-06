@@ -1,5 +1,9 @@
 Release CMTK-1.4.4:
 
+(r2408) Fixed: average images created by the groupwise registration tools did
+    not have proper coordinate space information. Also made the default output
+    image type NIFTI (instead of Analyze) to produce files with fully
+    specified coordinate systems.
 (r2395) Fixed/Added: triplanar viewer now displays RAS physical coordinates of
     current location; also fixed problem with repeated slice position change
     after a single mouse click.
