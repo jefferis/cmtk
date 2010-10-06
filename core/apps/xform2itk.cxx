@@ -81,6 +81,11 @@ main( const int argc, const char* argv[] )
     }
 
   cmtk::AffineXform::SmartConstPtr xform = cmtk::AffineXform::SmartConstPtr::DynamicCastFrom( cmtk::XformIO::Read( inputPath, verbose ) );
+  if ( !xform )
+    {
+    cmtk::StdErr << "ERROR: could not read transformation from '" << inputPath << "'\n";
+    exit( 1 );
+    }
 
   if ( !fixedImagePath )
     {
@@ -105,14 +110,14 @@ main( const int argc, const char* argv[] )
   cmtk::UniformVolume::SmartConstPtr fixedImage = cmtk::VolumeIO::ReadGridOriented( cmtk::MountPoints::Translate( fixedImagePath ), verbose );
   if ( ! fixedImage )
     {
-    cmtk::StdErr << "ERROR: could not read fixed image " << fixedImagePath << "\n";
+    cmtk::StdErr << "ERROR: could not read fixed image '" << fixedImagePath << "'\n";
     exit( 1 );
     }
 
   cmtk::UniformVolume::SmartConstPtr movingImage = cmtk::VolumeIO::ReadGridOriented( cmtk::MountPoints::Translate( movingImagePath ), verbose );
   if ( ! movingImage )
     {
-    cmtk::StdErr << "ERROR: could not read moving image " << movingImagePath << "\n";
+    cmtk::StdErr << "ERROR: could not read moving image '" << movingImagePath << "'\n";
     exit( 1 );
     }
 
