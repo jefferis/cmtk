@@ -34,7 +34,6 @@
 
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkConsole.h>
-#include <System/cmtkMountPoints.h>
 
 #include <IO/cmtkVolumeIO.h>
 
