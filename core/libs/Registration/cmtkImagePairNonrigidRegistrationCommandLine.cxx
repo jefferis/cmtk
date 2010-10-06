@@ -42,7 +42,6 @@
 #include <IO/cmtkXformIO.h>
 #include <IO/cmtkClassStream.h>
 #include <IO/cmtkClassStreamAffineXform.h>
-#include <IO/cmtkTypedStreamStudylist.h>
 #include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkSplineWarpXformITKIO.h>
 
