@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkMountPoints.h>
 
 #include <Base/cmtkMetaInformationObject.h>
 #include <Base/cmtkAffineXform.h>
@@ -83,22 +84,32 @@ main( const int argc, const char* argv[] )
 
   if ( !fixedImagePath )
     {
+    if ( !xform->MetaKeyExists( cmtk::META_XFORM_FIXED_IMAGE_PATH ) )
+      {
+      cmtk::StdErr << "ERROR: could not deduce fixed image path from transformation; must be explicitly provided on the command line instead\n";
+      exit( 1 );
+      }
     fixedImagePath = xform->GetMetaInfo( cmtk::META_XFORM_FIXED_IMAGE_PATH ).c_str();
     }
 
   if ( !movingImagePath )
     {
+    if ( !xform->MetaKeyExists( cmtk::META_XFORM_MOVING_IMAGE_PATH ) )
+      {
+      cmtk::StdErr << "ERROR: could not deduce moving image path from transformation; must be explicitly provided on the command line instead\n";
+      exit( 1 );
+      }
     movingImagePath = xform->GetMetaInfo( cmtk::META_XFORM_MOVING_IMAGE_PATH ).c_str();
     }
 
-  cmtk::UniformVolume::SmartConstPtr fixedImage = cmtk::VolumeIO::ReadGridOriented( fixedImagePath, verbose );
+  cmtk::UniformVolume::SmartConstPtr fixedImage = cmtk::VolumeIO::ReadGridOriented( cmtk::MountPoints::Translate( fixedImagePath ), verbose );
   if ( ! fixedImage )
     {
     cmtk::StdErr << "ERROR: could not read fixed image " << fixedImagePath << "\n";
     exit( 1 );
     }
 
-  cmtk::UniformVolume::SmartConstPtr movingImage = cmtk::VolumeIO::ReadGridOriented( movingImagePath, verbose );
+  cmtk::UniformVolume::SmartConstPtr movingImage = cmtk::VolumeIO::ReadGridOriented( cmtk::MountPoints::Translate( movingImagePath ), verbose );
   if ( ! movingImage )
     {
     cmtk::StdErr << "ERROR: could not read moving image " << movingImagePath << "\n";

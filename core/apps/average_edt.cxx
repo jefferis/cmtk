@@ -870,8 +870,7 @@ AddVolumeStudyList
   cmtk::ReformatVolume reformat;
   reformat.SetReferenceVolume( referenceVolume );
   reformat.SetFloatingVolume( floatingVolume );
-  cmtk::AffineXform::SmartPtr affineXform = studylist.GetAffineXform()->GetInverse();
-  reformat.SetAffineXform( affineXform );
+  reformat.SetAffineXform( studylist.GetAffineXform() );
   reformat.SetWarpXform( studylist.GetWarpXform() );
   reformat.SetInterpolation( cmtk::Interpolators::PARTIALVOLUME );
   reformat.SetUsePaddingValue( true );

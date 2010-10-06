@@ -122,7 +122,7 @@ TypedStreamStudylist::Read( const char *studylistpath )
     }
   
   classStream >> this->m_AffineXform;
-  if ( !legacy )
+  if ( legacy )
     {
     this->m_AffineXform = AffineXform::SmartPtr( this->m_AffineXform->MakeInverse() );
     }

@@ -78,7 +78,7 @@ XformIO::Read( const char* path, const bool verbose )
     if ( studylist.GetWarpXform() )
       return studylist.GetWarpXform();
     else
-      return Xform::SmartPtr( studylist.GetAffineXform()->MakeInverse() );
+      return studylist.GetAffineXform();
     }
     case FILEFORMAT_TYPEDSTREAM: 
     {
