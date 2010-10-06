@@ -59,7 +59,7 @@ main( const int argc, const char* argv[] )
   bool verbose = false;
 
   bool centerXform = false;
-  bool writeXformNativeSpace = false;
+  bool writeXformNativeSpaces = false;
 
   int mode = 0;
 
@@ -87,7 +87,7 @@ main( const int argc, const char* argv[] )
     modeGroup->AddSwitch( Key( "identity" ), -1, "Create only an identity transformation" );
     
     cl.AddSwitch( Key( 'C', "center-xform" ), &centerXform, true, "Set transformation center (for rotation, scale) to center of reference image." );
-    cl.AddSwitch( Key( "native-space" ), &writeXformNative, true, "Write transformation between the native image spaces, rather than in CMTK standard RAS space." );
+    cl.AddSwitch( Key( "native-space" ), &writeXformNativeSpaces, true, "Write transformation between the native image spaces, rather than in CMTK standard RAS space." );
     cl.EndGroup();
     
 #ifdef CMTK_USE_SQLITE
@@ -143,7 +143,7 @@ main( const int argc, const char* argv[] )
 
   if ( xform )
     {
-    if ( writeXformNative )
+    if ( writeXformNativeSpaces )
       {
       cmtk::TransformChangeToSpaceAffine toNative( *xform, *referenceImage, *floatingImage );
       cmtk::XformIO::Write( &toNative.GetTransformation(), outputXformPath, verbose );
