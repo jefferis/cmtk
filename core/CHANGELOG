@@ -1,6 +1,6 @@
 Release CMTK-1.4.4:
 
-(r2414) Changed: "make_initial_affine" now defaults to writing transformations
+(r2416) Changed: "make_initial_affine" now defaults to writing transformations
     in CMTK standard RAS space, rather than between native image spaces. This
     makes much more sense, because in all likelihood it will be other CMTK
     tools reading these transformations.
