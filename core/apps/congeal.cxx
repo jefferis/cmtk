@@ -81,7 +81,7 @@ const char* OutputRootDirectory = NULL;
 const char* OutputArchive = "congeal.xforms";
 const char* OutputStudyListGroup = "congeal.list";
 const char* OutputStudyListIndividual = "congeal_pairs";
-const char* AverageImagePath = "average_congeal.hdr";
+const char* AverageImagePath = "average_congeal.nii";
 cmtk::Interpolators::InterpolationEnum AverageImageInterpolation = cmtk::Interpolators::LINEAR;
 
 std::vector<int> NumberDOFs;

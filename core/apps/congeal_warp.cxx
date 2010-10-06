@@ -102,7 +102,7 @@ const char* OutputRootDirectory = NULL;
 const char* OutputArchive = "congeal_warp.xforms";
 const char* OutputStudyListGroup = "congeal_warp.list";
 const char* OutputStudyListIndividual = "congeal_warp_pairs";
-const char* AverageImagePath = "average_congeal_warp.hdr";
+const char* AverageImagePath = "average_congeal_warp.nii";
 cmtk::Interpolators::InterpolationEnum AverageImageInterpolation = cmtk::Interpolators::LINEAR;
 
 byte UserBackgroundValue = 0;

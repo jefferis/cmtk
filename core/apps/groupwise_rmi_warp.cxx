@@ -91,7 +91,7 @@ const char* OutputRootDirectory = NULL;
 const char* OutputArchive = "groupwise_rmi_warp.xforms";
 const char* OutputStudyListGroup = "groupwise_rmi_warp.list";
 const char* OutputStudyListIndividual = "groupwise_rmi_warp_pairs";
-const char* AverageImagePath = "average_groupwise_rmi_warp.hdr";
+const char* AverageImagePath = "average_groupwise_rmi_warp.nii";
 cmtk::Interpolators::InterpolationEnum AverageImageInterpolation = cmtk::Interpolators::LINEAR;
 
 float UserBackgroundValue = 0;

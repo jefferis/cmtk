@@ -57,7 +57,7 @@ const char* OutputRootDirectory = NULL;
 const char* OutputArchive = "groupwise_init.xforms";
 const char* OutputStudyListGroup = "groupwise_init.list";
 const char* OutputStudyListIndividual = "groupwise_init_pairs";
-const char* AverageImagePath = "groupwise_init_average.hdr";
+const char* AverageImagePath = "groupwise_init_average.nii";
 cmtk::Interpolators::InterpolationEnum AverageImageInterpolation = cmtk::Interpolators::LINEAR;
 
 bool AlignCentersOfMass = false;

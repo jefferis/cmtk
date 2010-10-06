@@ -77,7 +77,7 @@ const char* OutputRootDirectory = NULL;
 const char* OutputArchive = "groupwise_rmi.xforms";
 const char* OutputStudyListGroup = "groupwise_rmi.list";
 const char* OutputStudyListIndividual = "groupwise_rmi_pairs";
-const char* AverageImagePath = "average_groupwise_rmi.hdr";
+const char* AverageImagePath = "average_groupwise_rmi.nii";
 cmtk::Interpolators::InterpolationEnum AverageImageInterpolation = cmtk::Interpolators::LINEAR;
 
 std::vector<int> NumberDOFs;
