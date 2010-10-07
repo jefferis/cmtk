@@ -831,55 +831,55 @@ case ${RUNTEST} in
 	check_results levelset.img
 	;;
     make_initial_affineCenterOfMass)
-	run make_initial_affine --xform-ras --mode centers-of-mass box1.hdr box3.hdr ${tmpdir}/xform
+	run make_initial_affine --mode centers-of-mass box1.hdr box3.hdr ${tmpdir}/xform
 	check_results xform
 	;;
     make_initial_affinePrincipalAxes1)
-	run make_initial_affine --xform-ras --mode principal-axes box1.hdr box2.hdr ${tmpdir}/xform
+	run make_initial_affine --mode principal-axes box1.hdr box2.hdr ${tmpdir}/xform
 	check_results xform
 	;;
     make_initial_affinePrincipalAxes2)
-	run make_initial_affine --xform-ras --mode principal-axes box1.hdr box3.hdr ${tmpdir}/xform
+	run make_initial_affine --mode principal-axes box1.hdr box3.hdr ${tmpdir}/xform
 	check_results xform
 	;;
     make_initial_affinePrincipalAxes3)
-	run make_initial_affine --xform-ras --mode principal-axes box2.hdr box3.hdr ${tmpdir}/xform
+	run make_initial_affine --mode principal-axes box2.hdr box3.hdr ${tmpdir}/xform
 	check_results xform
 	;;
     make_initial_affinePrincipalAxes4)
-	run make_initial_affine --xform-ras --mode principal-axes box1.hdr box4.hdr ${tmpdir}/xform
+	run make_initial_affine --mode principal-axes box1.hdr box4.hdr ${tmpdir}/xform
 	check_results xform
 	;;
     make_initial_affinePrincipalAxes5)
-	run make_initial_affine --xform-ras --mode principal-axes box2.hdr box4.hdr ${tmpdir}/xform
+	run make_initial_affine --mode principal-axes box2.hdr box4.hdr ${tmpdir}/xform
 	check_results xform
 	;;
     make_initial_affinePrincipalAxes6)
-	run make_initial_affine --xform-ras --mode principal-axes box3.hdr box4.hdr ${tmpdir}/xform
+	run make_initial_affine --mode principal-axes box3.hdr box4.hdr ${tmpdir}/xform
 	check_results xform
 	;;
     make_initial_affineDirectionVectorsNrrdAxSa)
-	run make_initial_affine --xform-ras phantom_ax.nhdr phantom_sa.nhdr ${tmpdir}/xform
-	check_results xform
-	;;
-    make_initial_affineDirectionVectorsNrrdAxCo)
-	run make_initial_affine --xform-ras phantom_ax.nhdr phantom_co.nhdr ${tmpdir}/xform
-	check_results xform
-	;;
-    make_initial_affineDirectionVectorsNrrdSaCo)
-	run make_initial_affine --xform-ras phantom_sa.nhdr phantom_co.nhdr ${tmpdir}/xform
-	check_results xform
-	;;
-    make_initial_affineDirectionVectorsNrrdAxSaNative)
 	run make_initial_affine phantom_ax.nhdr phantom_sa.nhdr ${tmpdir}/xform
 	check_results xform
 	;;
-    make_initial_affineDirectionVectorsNrrdAxCoNative)
+    make_initial_affineDirectionVectorsNrrdAxCo)
 	run make_initial_affine phantom_ax.nhdr phantom_co.nhdr ${tmpdir}/xform
 	check_results xform
 	;;
-    make_initial_affineDirectionVectorsNrrdSaCoNative)
+    make_initial_affineDirectionVectorsNrrdSaCo)
 	run make_initial_affine phantom_sa.nhdr phantom_co.nhdr ${tmpdir}/xform
+	check_results xform
+	;;
+    make_initial_affineDirectionVectorsNrrdAxSaNative)
+	run make_initial_affine --native-space phantom_ax.nhdr phantom_sa.nhdr ${tmpdir}/xform
+	check_results xform
+	;;
+    make_initial_affineDirectionVectorsNrrdAxCoNative)
+	run make_initial_affine --native-space phantom_ax.nhdr phantom_co.nhdr ${tmpdir}/xform
+	check_results xform
+	;;
+    make_initial_affineDirectionVectorsNrrdSaCoNative)
+	run make_initial_affine --native-space phantom_sa.nhdr phantom_co.nhdr ${tmpdir}/xform
 	check_results xform
 	;;
     make_initial_affineDB)
