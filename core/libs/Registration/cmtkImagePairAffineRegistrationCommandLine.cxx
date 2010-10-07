@@ -228,18 +228,12 @@ ImagePairAffineRegistrationCommandLine
 
   if ( clArg2 ) 
     {
-    AffineXform::SmartPtr initialXform( new AffineXform() );
-    this->SetInitialTransformation( initialXform );
-    
     Study1 = const_cast<char*>( clArg1 );
     Study2 = const_cast<char*>( clArg2 );
     } 
   else
     {
     inStudylist = clArg1;
-    AffineXform::SmartPtr initialXform( new AffineXform() );
-    this->SetInitialTransformation( initialXform );
-
     if ( InitialStudylist ) 
       {
       StdErr << "Transformation will be overriden by '--initial' list.\n";

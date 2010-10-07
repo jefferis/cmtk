@@ -1220,6 +1220,14 @@ case ${RUNTEST} in
 	run registrationx --db ${tmpdir}/db.sqlite -v --dofs 0 -o ${tmpdir} --initial vol001_mr_t0t1.list --initial-is-inverse vol001_mr_t0t1.list
 	;;
     registrationxAutoLevelsRat4)
+	run registrationx -v --auto-multi-levels 4 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	check_results registration
+	;;
+    registrationxAutoLevelsRat4NONE)
+	run registrationx -v --init none --auto-multi-levels 4 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	check_results registration
+	;;
+    registrationxAutoLevelsRat4FOV)
 	run registrationx -v --init fov --auto-multi-levels 4 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
 	check_results registration
 	;;

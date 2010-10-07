@@ -55,7 +55,7 @@ cmtk
 //@{
 
 ImagePairAffineRegistration::ImagePairAffineRegistration () :
-  m_Initializer( MakeInitialAffineTransformation::NONE ),
+  m_Initializer( MakeInitialAffineTransformation::FOV ),
   m_MatchFltToRefHistogram( false )
 { 
 }
