@@ -39,16 +39,16 @@ SET(cmtkBase_SRCS
   cmtkBitVector.cxx
   cmtkControlPoint.cxx
   cmtkDataGrid.cxx
-  cmtkDataGridConnectedComponents.cxx
-  cmtkDataGridCrop.cxx
+  cmtkDataGrid_Crop.cxx
   cmtkDataGridFilter.cxx
+  cmtkDataGridConnectedComponents.cxx
   cmtkDataGridMorphologicalOperators.cxx
   cmtkDataTypeTraits.cxx
   cmtkDeformationField.cxx
-  cmtkDeformationFieldJacobian.cxx
+  cmtkDeformationField_Jacobian.cxx
   cmtkDirectionSet.cxx
   cmtkFilterVolume.cxx
-  cmtkFilterVolumeCoupe.cxx
+  cmtkFilterVolume_Coupe.cxx
   cmtkFunctional.cxx
   cmtkGeneralLinearModel.cxx
   cmtkHistogram.cxx
@@ -70,9 +70,9 @@ SET(cmtkBase_SRCS
   cmtkLandmark.cxx
   cmtkLandmarkList.cxx
   cmtkMatchedLandmarkList.cxx
-  cmtkMathUtilLinAlg.cxx
-  cmtkMathUtilRandom.cxx
-  cmtkMathUtilStatistics.cxx
+  cmtkMathUtil_LinAlg.cxx
+  cmtkMathUtil_Random.cxx
+  cmtkMathUtil_Statistics.cxx
   cmtkMatrix3x3.cxx
   cmtkMatrix4x4.cxx
   cmtkMetaInformationObject.cxx
@@ -80,18 +80,18 @@ SET(cmtkBase_SRCS
   cmtkScalarImage.cxx
   cmtkSegmentationLabel.cxx
   cmtkSplineWarpXform.cxx
-  cmtkSplineWarpXformInverse.cxx
-  cmtkSplineWarpXformJacobian.cxx
-  cmtkSplineWarpXformRigidity.cxx
+  cmtkSplineWarpXform_Inverse.cxx
+  cmtkSplineWarpXform_Jacobian.cxx
+  cmtkSplineWarpXform_Rigidity.cxx
   cmtkSplineWarpXformUniformVolume.cxx
   cmtkTransformChangeToSpaceAffine.cxx
   cmtkTransformChangeFromSpaceAffine.cxx
   cmtkTransformedVolumeAxes.cxx
   cmtkTypedArray.cxx
+  cmtkTypedArray_Statistics.cxx
   cmtkTypedArrayFunctionHistogramMatching.cxx
   cmtkTypedArrayFunctionHistogramEqualization.cxx
   cmtkTypedArrayNoiseEstimatorNaiveGaussian.cxx
-  cmtkTypedArrayStatistics.cxx
   cmtkTypes.cxx
   cmtkUniformDistanceMap.cxx
   cmtkUniformVolume.cxx

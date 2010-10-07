@@ -84,9 +84,9 @@ AnatomicalOrientation::PermutationMatrix::GetPermutedMatrix( const AffineXform::
       else
 	permutation[i][j] = 0;
       }
-    permutation[3][j] = this->m_Offsets[j];
+    permutation[3][j] = 0; //this->m_Offsets[j];
     }
-  outMatrix = permutation.Invert() * inMatrix;
+  outMatrix = inMatrix * permutation.Invert();
   
   return outMatrix;
 }

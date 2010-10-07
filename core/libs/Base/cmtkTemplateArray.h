@@ -673,6 +673,6 @@ typedef TemplateArray<double> DoubleArray;
 } // namespace cmtk
 
 #include "cmtkTemplateArray.txx"
-#include "cmtkTemplateArrayStatistics.txx"
+#include "cmtkTemplateArray_Statistics.txx"
 
 #endif // #ifndef __cmtkTemplateArray_h_included_
