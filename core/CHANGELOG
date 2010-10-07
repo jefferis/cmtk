@@ -1,6 +1,6 @@
 Release CMTK-1.5.0:
 
-(r) Fixed: "registrationx" tool ignored user specification for transform
+(r2422) Fixed: "registrationx" tool ignored user specification for transform
     initializer and always used an identity transformation unless an explicit
     initial alignment was provided.
 (r2416) Changed: "make_initial_affine" now defaults to writing transformations
