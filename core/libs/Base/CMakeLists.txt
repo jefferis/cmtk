@@ -95,13 +95,14 @@ SET(cmtkBase_SRCS
   cmtkTypes.cxx
   cmtkUniformDistanceMap.cxx
   cmtkUniformVolume.cxx
-  cmtkUniformVolumeCrop.cxx
-  cmtkUniformVolumeDifferential.cxx
+  cmtkUniformVolume_Crop.cxx
+  cmtkUniformVolume_Differential.cxx
+  cmtkUniformVolume_Resample.cxx
+  cmtkUniformVolume_Space.cxx
   cmtkUniformVolumeFilter.cxx
   cmtkUniformVolumeInterpolatorBase.cxx
   cmtkUniformVolumeInterpolatorPartialVolume.cxx
   cmtkUniformVolumePainter.cxx
-  cmtkUniformVolumeResample.cxx
   cmtkVolumeClipping.cxx
   cmtkVolume.cxx
   cmtkVolumeGridToGridLookup.cxx
