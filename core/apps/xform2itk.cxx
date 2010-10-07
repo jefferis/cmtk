@@ -52,6 +52,8 @@ main( const int argc, const char* argv[] )
   const char* inputPath = NULL;
   const char* outputPath = NULL;
 
+  bool invertInputXform = false;
+
   const char* fixedImagePath = NULL;
   const char* movingImagePath = NULL;
   
@@ -63,6 +65,10 @@ main( const int argc, const char* argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode" );
 
+    cl.BeginGroup( "Input", "Input parameters" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
+    cl.AddSwitch( Key( "invert-input" ), &invertInputXform, true, "Invert input transformation before conversion" );
+    cl.EndGroup();
+    
     cl.BeginGroup( "Output", "Output parameters" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
     cl.AddOption( Key( "fixed-image" ), &fixedImagePath, "Override transformation's fixed/reference image (if any) with this one." );
     cl.AddOption( Key( "moving-image" ), &movingImagePath, "Override transformation's moving/floating image (if any) with this one." );
@@ -81,6 +87,9 @@ main( const int argc, const char* argv[] )
     }
 
   cmtk::AffineXform::SmartConstPtr xform = cmtk::AffineXform::SmartConstPtr::DynamicCastFrom( cmtk::XformIO::Read( inputPath, verbose ) );
+  if ( invertInputXform )
+    xform = xform->GetInverse();
+
   if ( !xform )
     {
     cmtk::StdErr << "ERROR: could not read transformation from '" << inputPath << "'\n";
