@@ -122,11 +122,21 @@ TypedStreamStudylist::Read( const char *studylistpath )
     }
   
   classStream >> this->m_AffineXform;
+
+  this->m_AffineXform->SetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, referenceStudy );
+  this->m_AffineXform->SetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, floatingStudy );
+
   if ( legacy )
     {
     this->m_AffineXform = AffineXform::SmartPtr( this->m_AffineXform->MakeInverse() );
     }
+
   classStream.Get( this->m_WarpXform );
+  if ( this->m_WarpXform )
+    {
+    this->m_WarpXform->SetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, referenceStudy );
+    this->m_WarpXform->SetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, floatingStudy );
+    }
   
   classStream.Close();
   return true;
