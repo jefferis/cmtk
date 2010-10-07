@@ -431,6 +431,6 @@ private:
 
 } // namespace cmtk
 
-#include "cmtkMathUtilStatistics.txx"
+#include "cmtkMathUtil_Statistics.txx"
 
 #endif // #ifndef __cmtkMathUtil_h_included_
