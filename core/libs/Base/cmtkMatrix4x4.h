@@ -60,7 +60,7 @@ public:
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
 
-  /// Null object.
+  /// Identity transformation matrix.
   static const Self IdentityMatrix;
 
   /** Default constructor: make identity matrix.
@@ -68,9 +68,6 @@ public:
    * Matrix4x4<>( NULL ).
    */
   Matrix4x4();
-
-  /// Copy constructor.
-  Matrix4x4( const Self& other );
 
   /// Top left submatrix copy constructor.
   Matrix4x4( const Matrix3x3<T>& other );
@@ -97,7 +94,7 @@ public:
   Self& Set( const T *const values );
 
   /// Inversion operator (in place).
-  Self& Invert();
+  const Self GetInverse() const;
 
   /// Transpose operator.
   Self GetTranspose() const;
@@ -119,9 +116,6 @@ public:
   
   /// Multiplication operator.
   const Self operator*( const Self& other ) const;
-
-  /// Assignment operator.
-  Self& operator=( const Self& other );
 
   /// 3x3 submatrix assignment operator.
   Self& operator=( const Matrix3x3<T>& other );

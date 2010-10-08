@@ -85,14 +85,30 @@ AnatomicalOrientation::PermutationMatrix::GetPermutedMatrix( const AffineXform::
 	permutation[i][j] = 0;
       }
 
-#ifdef IGNORE
     if ( this->m_Multipliers[j] < 0 )
-      permutation[3][j] = sourceSize[j];
+      permutation[3][j] = sourceSize[this->m_Axes[j]];
     else
       permutation[3][j] = 0;
-#endif IGNORE
     }
-  outMatrix = inMatrix * permutation.Invert();
+
+  AffineXform::MatrixType inv = permutation.GetInverse();
+  outMatrix = inMatrix * inv;
+
+#ifdef IGNORE
+  int axesPermutation[3][3];
+  AnatomicalOrientation::GetImageToSpaceAxesPermutation( axesPermutation, curOrientation.c_str(), newOrientation );
+
+  for ( int j = 0; j < 3; ++j )
+    {
+    for ( int j2 = 0; j2 < 3; ++j2 )
+      {
+      if ( axesPermutation[j][j2] < 0 )
+	{
+	result->m_IndexToPhysicalMatrix[3][j] = this->m_IndexToPhysicalMatrix[3][j2] - this->Size[j2];
+	}
+      }
+    }
+#endif  
   
   return outMatrix;
 }

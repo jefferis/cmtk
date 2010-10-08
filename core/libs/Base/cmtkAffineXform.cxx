@@ -199,8 +199,7 @@ AffineXform::MakeInverse () const
   Self* inverseXform = new AffineXform();
   inverseXform->m_LogScaleFactors = this->m_LogScaleFactors;
   inverseXform->SetNumberDOFs( this->NumberDOFs );
-  inverseXform->Matrix = this->Matrix;
-  inverseXform->Matrix.Invert();
+  inverseXform->Matrix = this->Matrix.GetInverse();
   inverseXform->DecomposeMatrix();
 
   const Self::SpaceVectorType newCenter = Self::SpaceVectorType( this->RetCenter() ) * this->Matrix;
@@ -449,7 +448,7 @@ AffineXform::RotateWXYZ
 
   this->Matrix *= matrix;
 
-  xlate.Invert();
+  xlate = xlate.GetInverse();
   this->Matrix *= xlate;
   this->DecomposeMatrix();
 
@@ -482,8 +481,7 @@ AffineXform::UpdateInverse() const
     {
     InverseXform->NumberDOFs = this->NumberDOFs;
     InverseXform->m_LogScaleFactors = this->m_LogScaleFactors;
-    InverseXform->Matrix = this->Matrix;
-    InverseXform->Matrix.Invert();
+    InverseXform->Matrix = this->Matrix.GetInverse();
     InverseXform->DecomposeMatrix();
     }
 }

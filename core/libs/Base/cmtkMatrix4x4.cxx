@@ -57,12 +57,6 @@ Matrix4x4<T>::Matrix4x4()
 }
 
 template<class T>
-Matrix4x4<T>::Matrix4x4( const Self& other )
-{
-  memcpy( this->Matrix, other.Matrix, sizeof( this->Matrix ) );
-}
-
-template<class T>
 Matrix4x4<T>::Matrix4x4( const Matrix3x3<T>& other )
 {
   for ( int j=0; j<3; ++j ) 
@@ -224,7 +218,7 @@ Matrix4x4<T>::Decompose
     // remove contribution from transformation matrix
     Self shear;
     shear[i][j] = params[9+k];
-    matrix *= shear.Invert();
+    matrix *= shear.GetInverse();
     }
   
 /*=========================================================================
@@ -386,20 +380,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 template<class T>
-Matrix4x4<T>&
-Matrix4x4<T>::Invert()
+const Matrix4x4<T>
+Matrix4x4<T>::GetInverse() const
 {
   Self inverse;
+  Self temp = *this;
   
   T rowBuff[4];
   for ( int col = 0; col<4; ++col ) 
     {    
     int pivIdx = col;
-    T pivAbs = fabs( this->Matrix[col][col] );
+    T pivAbs = fabs( temp.Matrix[col][col] );
 
     for ( int row = col+1; row<3; ++row )  // 3 to exclude last row!
       {
-      T nextAbs = fabs( this->Matrix[row][col] );
+      T nextAbs = fabs( temp.Matrix[row][col] );
       if (nextAbs > pivAbs ) 
 	{
 	pivIdx = row;
@@ -409,22 +404,22 @@ Matrix4x4<T>::Invert()
     
     if ( col != pivIdx )
       {
-      memcpy( rowBuff, this->Matrix[col], sizeof(rowBuff) );
-      memcpy( this->Matrix[col], this->Matrix[pivIdx], sizeof(rowBuff) );
-      memcpy( this->Matrix[pivIdx], rowBuff, sizeof(rowBuff) );
+      memcpy( rowBuff, temp.Matrix[col], sizeof(rowBuff) );
+      memcpy( temp.Matrix[col], temp.Matrix[pivIdx], sizeof(rowBuff) );
+      memcpy( temp.Matrix[pivIdx], rowBuff, sizeof(rowBuff) );
       
-      memcpy( rowBuff, inverse[col],sizeof(rowBuff));
-      memcpy( inverse[col], inverse[pivIdx], sizeof(rowBuff) );
-      memcpy( inverse[pivIdx], rowBuff, sizeof(rowBuff) );
+      memcpy( rowBuff, inverse.Matrix[col],sizeof(rowBuff));
+      memcpy( inverse.Matrix[col], inverse.Matrix[pivIdx], sizeof(rowBuff) );
+      memcpy( inverse.Matrix[pivIdx], rowBuff, sizeof(rowBuff) );
       }
     
     for ( int c=0; c<4; ++c ) 
       {
       if (c>col )
-	this->Matrix[col][c] /= this->Matrix[col][col];
-      inverse[col][c] /= this->Matrix[col][col];
+	temp.Matrix[col][c] /= temp.Matrix[col][col];
+      inverse.Matrix[col][c] /= temp.Matrix[col][col];
       }
-    this->Matrix[col][col] = 1.0;
+    temp.Matrix[col][col] = 1.0;
     
     for ( int row = 0; row<4; ++row ) 
       {
@@ -433,17 +428,15 @@ Matrix4x4<T>::Invert()
 	for ( int c=0; c<4; ++c ) 
 	  {
 	  if ( c>col ) 
-	    this->Matrix[row][c] -= 
-	      this->Matrix[row][col] * this->Matrix[col][c];
-	  inverse[row][c] -= this->Matrix[row][col] * inverse[col][c];
+	    temp.Matrix[row][c] -= temp.Matrix[row][col] * temp.Matrix[col][c];
+	  inverse.Matrix[row][c] -= temp.Matrix[row][col] * inverse.Matrix[col][c];
 	  }
-	this->Matrix[row][col] = 0;
+	temp.Matrix[row][col] = 0;
 	}
       }
     }
   
-  // finally copy inverse into this object.
-  return (*this = inverse);
+  return inverse;
 }
 
 template<class T>
@@ -471,14 +464,6 @@ Matrix4x4<T>::operator*
     }
 
   return result;
-}
-
-template<class T>
-Matrix4x4<T>& 
-Matrix4x4<T>::operator=( const Self& other )
-{
-  memcpy( this->Matrix, other.Matrix, sizeof( this->Matrix ) );
-  return *this;
 }
 
 template<class T>
@@ -520,8 +505,7 @@ Matrix4x4<T>::ChangeCoordinateSystem
   // apply rotation matrix to previous transformation to apply change of
   // coordinate systems.
   *this *= rotate;
-  rotate.Invert();
-  *this = rotate * *this;
+  *this = rotate.GetInverse() * *this;
 
   return *this;
 }

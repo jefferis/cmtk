@@ -61,20 +61,6 @@ UniformVolume::GetReoriented( const char* newOrientation ) const
   result->m_Offset = pmatrix.GetPermutedArray( this->m_Offset );
   result->m_IndexToPhysicalMatrix = pmatrix.GetPermutedMatrix( this->m_IndexToPhysicalMatrix, this->Size );
 
-  int axesPermutation[3][3];
-  AnatomicalOrientation::GetImageToSpaceAxesPermutation( axesPermutation, curOrientation.c_str(), newOrientation );
-
-  for ( int j = 0; j < 3; ++j )
-    {
-    for ( int j2 = 0; j2 < 3; ++j2 )
-      {
-      if ( axesPermutation[j][j2] < 0 )
-	{
-	result->m_IndexToPhysicalMatrix[3][j] = this->m_IndexToPhysicalMatrix[3][j2] - this->Size[j2];
-	}
-      }
-    }
-  
   result->m_MetaInformation = temp->m_MetaInformation;
   return result;
 }

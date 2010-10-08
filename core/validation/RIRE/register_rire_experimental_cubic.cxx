@@ -198,8 +198,8 @@ void DoRegistration( const char* refFile, const char* fltFile )
   const cmtk::AffineXform::MatrixType fltMatrix = fltVolume->GetImageToPhysicalMatrix ();
   cmtk::AffineXform::SmartPtr affineXform = Registration.GetTransformation();
 
-  cmtk::AffineXform::MatrixType concatMatrix = refMatrix;
-  (concatMatrix.Invert() *= affineXform->Matrix) *= fltMatrix;
+  cmtk::AffineXform::MatrixType concatMatrix = refMatrix.GetInverse();
+  (concatMatrix *= affineXform->Matrix) *= fltMatrix;
   dumpTransformationVanderbilt( concatMatrix, refSize );
   
 // Registration object is destructed here.

@@ -48,8 +48,8 @@ cmtk::TransformChangeToSpaceAffine
   const AffineXform::MatrixType refMatrix = refVolumeOriginalSpace->GetImageToPhysicalMatrix ();
   const AffineXform::MatrixType fltMatrix = fltVolumeOriginalSpace->GetImageToPhysicalMatrix ();
   
-  AffineXform::MatrixType concatMatrix = refMatrix;
-  (concatMatrix.Invert() *= xform.Matrix) *= fltMatrix;
+  AffineXform::MatrixType concatMatrix = refMatrix.GetInverse();
+  (concatMatrix *= xform.Matrix) *= fltMatrix;
   
   // create output transformation and write
   this->m_NewXform.SetMatrix( concatMatrix );
