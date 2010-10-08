@@ -71,7 +71,7 @@ AnatomicalOrientation::PermutationMatrix::PermutationMatrix
 }
 
 AffineXform::MatrixType
-AnatomicalOrientation::PermutationMatrix::GetPermutedMatrix( const AffineXform::MatrixType& inMatrix ) const
+AnatomicalOrientation::PermutationMatrix::GetPermutedMatrix( const AffineXform::MatrixType& inMatrix, const FixedVector<3,Types::Coordinate>& sourceSize ) const
 {
   AffineXform::MatrixType outMatrix, permutation;
 
@@ -84,7 +84,13 @@ AnatomicalOrientation::PermutationMatrix::GetPermutedMatrix( const AffineXform::
       else
 	permutation[i][j] = 0;
       }
-    permutation[3][j] = 0; //this->m_Offsets[j];
+
+#ifdef IGNORE
+    if ( this->m_Multipliers[j] < 0 )
+      permutation[3][j] = sourceSize[j];
+    else
+      permutation[3][j] = 0;
+#endif IGNORE
     }
   outMatrix = inMatrix * permutation.Invert();
   

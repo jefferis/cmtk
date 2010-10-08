@@ -123,7 +123,7 @@ public:
 
     /** Permute index-to-physical matrix
      */
-    AffineXform::MatrixType GetPermutedMatrix( const AffineXform::MatrixType& inMatrix ) const;
+    AffineXform::MatrixType GetPermutedMatrix( const AffineXform::MatrixType& inMatrix, const FixedVector<3,Types::Coordinate>& sourceSize /*!< Size of the FOV before reorientation */ ) const;
     
     /** Get new point index from old point index.
      *\param origPoint The input pixel index.
