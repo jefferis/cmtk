@@ -59,7 +59,7 @@ UniformVolume::GetReoriented( const char* newOrientation ) const
   
   UniformVolume::SmartPtr result( new UniformVolume( temp->GetDims(), newSize, temp->GetData() ) );
   result->m_Offset = pmatrix.GetPermutedArray( this->m_Offset );
-  result->m_IndexToPhysicalMatrix = pmatrix.GetPermutedMatrix( this->m_IndexToPhysicalMatrix, this->Size );
+  result->m_IndexToPhysicalMatrix = pmatrix.GetPermutedMatrix( this->m_IndexToPhysicalMatrix );
 
   result->m_MetaInformation = temp->m_MetaInformation;
   return result;
@@ -109,6 +109,7 @@ AffineXform::MatrixType
 UniformVolume::GetImageToPhysicalMatrix() const
 {
   AffineXform::MatrixType matrix = this->m_IndexToPhysicalMatrix;
+// mDelta[3] is implicitly == 1 (homogeneous coordinates), so 4th matrix row (translation/coordinate origin) stays untouched
   for ( int i = 0; i < 3; ++i )
     for ( int j = 0; j < 3; ++j )
       matrix[i][j] /= this->m_Delta[i];
