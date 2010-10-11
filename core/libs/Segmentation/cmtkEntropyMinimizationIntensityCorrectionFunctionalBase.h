@@ -166,6 +166,11 @@ public:
   /// Evaluate functional for given parameter vector.
   virtual Self::ReturnType EvaluateAt( CoordinateVector& v );
 
+#ifdef CMTK_BUILD_DEMO
+  /// Evaluate functional for given parameter vector.
+  virtual void SnapshotAt( CoordinateVector& v );
+#endif
+
 protected:
   /// Original input image.
   UniformVolume::SmartConstPtr m_InputImage;

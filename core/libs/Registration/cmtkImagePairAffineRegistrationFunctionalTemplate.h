@@ -112,14 +112,20 @@ public:
   virtual typename Self::ReturnType EvaluateAt ( CoordinateVector& v ) 
   {
     this->m_AffineXform->SetParamVector( v );
+    return this->Evaluate();
+  }
+
 #ifdef CMTK_BUILD_DEMO
+  /// Create a snapshot (to disk) of current functional result.
+  virtual void SnapshotAt( ParameterVectorType& v )
+  {
+    this->m_AffineXform->SetParamVector( v );
     static int it = 0;
     char path[PATH_MAX];
     snprintf( path, PATH_MAX, "registration-%03d.xform", it++ );
     XformIO::Write( this->m_AffineXform, path );
-#endif
-    return this->Evaluate();
   }
+#endif
 
   /** Compute functional value with volume clipping.
    * This function iterates over all voxels of the reference image that - after

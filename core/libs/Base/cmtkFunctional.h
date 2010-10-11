@@ -100,6 +100,11 @@ public:
     return this->Evaluate();
   }
 
+#ifdef CMTK_BUILD_DEMO
+  /// Create a snapshot (to disk) of current functional result.
+  virtual void SnapshotAt( ParameterVectorType& ) {}
+#endif
+
   /** Evaluate functional with new parameter vector along previously computed gradient direction..
    * By default this function simply calls Evaluate(), but derived classes can override it to
    * provide more computationally efficient, i.e., restricted, implementations.

@@ -166,6 +166,11 @@ BestDirectionOptimizer::Optimize
       irq = this->CallbackExecuteWithData( v, current );
       StdErr.printf( "%f\r", current );
 
+#ifdef CMTK_BUILD_DEMO
+      if ( update )
+	this->m_Functional->SnapshotAt( v );
+#endif      
+
       if ( (fabs(previous-current) / (fabs(previous)+fabs(current)) ) < this->m_DeltaFThreshold )
 	update = false;
       

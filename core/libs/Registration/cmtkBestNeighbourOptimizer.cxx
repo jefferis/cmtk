@@ -115,6 +115,9 @@ BestNeighbourOptimizer::Optimize
       
       if (update) 
 	{
+#ifdef CMTK_BUILD_DEMO
+	this->m_Functional->SnapshotAt( optimumV );
+#endif
 	v = optimumV;
 	searchTrace.Move( optimumDim, optimumDir );
 	irq = this->CallbackExecuteWithData( v, optimum );

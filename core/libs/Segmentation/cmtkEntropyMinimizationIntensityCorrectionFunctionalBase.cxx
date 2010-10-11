@@ -127,8 +127,17 @@ EntropyMinimizationIntensityCorrectionFunctionalBase
   this->SetParamVector( v );
   this->UpdateBiasFields();
   this->UpdateOutputImage();
-  
+  return this->Evaluate();
+}
+
 #ifdef CMTK_BUILD_DEMO
+void
+EntropyMinimizationIntensityCorrectionFunctionalBase
+::SnapshotAt( CoordinateVector& v )
+{
+  this->SetParamVector( v );
+  this->UpdateBiasFields();
+
   static int it = 0;
   this->UpdateOutputImage( false /*foregroundOnly*/ );
   UniformVolume::SmartConstPtr slice = this->m_OutputImage->ExtractSlice( AXIS_Z, this->m_OutputImage->m_Dims[2] / 2 );
@@ -136,10 +145,9 @@ EntropyMinimizationIntensityCorrectionFunctionalBase
   char path[PATH_MAX];
   snprintf( path, PATH_MAX, "mrbias-%03d.nii", it++ );
   VolumeIO::Write( *slice, path );
+}
 #endif
   
-  return this->Evaluate();
-}
 
 void
 EntropyMinimizationIntensityCorrectionFunctionalBase
