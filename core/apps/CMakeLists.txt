@@ -78,6 +78,7 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
       mat2dof
       mip
       mk_analyze_hdr
+      mk_nifti_hdr
       mk_phantom_3d
       mrbias
       overlap
