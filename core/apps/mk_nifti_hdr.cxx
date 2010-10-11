@@ -34,6 +34,7 @@
 
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkCompressedStream.h>
 
 #include <IO/cmtkAnalyze.h>
 #include <IO/cmtkFileHeader.h>
@@ -41,8 +42,6 @@
 
 #include <Base/cmtkTypes.h>
 #include <Base/cmtkAffineXform.h>
-
-#include <stdio.h>
 
 bool Verbose = false;
 
@@ -127,22 +126,19 @@ int main( const int argc, const char* argv[] )
 
   if ( ImportHdrFile )
     {
-    FILE *hdrIn = fopen( ImportHdrFile, "r" );
-    if ( hdrIn )
+    cmtk::CompressedStream hdrStream( ImportHdrFile );
+    if ( !hdrStream.IsValid() ) 
       {
-      fread( &header, sizeof( header ), 1, hdrIn );
-      fclose( hdrIn );
-      
-      if ( Verbose )
-	{
-	cmtk::StdErr << "Imported header file " << ImportHdrFile << "\n";
-	}
-      }
-    else 
-      {
-      cmtk::StdErr << "ERROR: Could not open file " << ImportHdrFile << " for import.\n";
+      cmtk::StdErr.printf( "ERROR: could not file %s\n", ImportHdrFile );
       exit( 1 );
       }
+    
+    if ( sizeof(header) != hdrStream.Read( &header, 1, sizeof(header) ) ) 
+      {
+      cmtk::StdErr.printf( "ERROR: could not read %d bytes from header file %s\n", int( sizeof( header ) ), ImportHdrFile );
+      exit( 1 );
+      }
+    hdrStream.Close();
     }
   
   // set offset for binary file.
@@ -268,6 +264,14 @@ int main( const int argc, const char* argv[] )
     {
     memcpy( &header.magic, "n+1\x00", 4 );
     header.vox_offset = 352;
+    FILE *hdrFile = fopen( HdrFileName, modestr );
+    if ( hdrFile ) 
+      {
+      fwrite( &header, 1, sizeof( header ), hdrFile );
+      const int extension = 0;
+      fwrite( &extension, 1, 4, hdrFile );
+      fclose( hdrFile );
+      }
     }
 }
 
