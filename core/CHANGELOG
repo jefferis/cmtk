@@ -1,6 +1,6 @@
 Release CMTK-1.5.0:
 
-(r2431) Fixed: "CMakeFiles" directory gets in the way of in-source builds
+(r2434) Fixed: "CMakeFiles" directory gets in the way of in-source builds
     (Issue #5269). Thanks to Dominique Belhachemi for report and fix.
 (r2422) Fixed: "registrationx" tool ignored user specification for transform
     initializer and always used an identity transformation unless an explicit
