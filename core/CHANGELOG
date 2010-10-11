@@ -1,5 +1,7 @@
 Release CMTK-1.5.0:
 
+(r2436) Added: "mk_nifti_hdr" tool to create NIFTI headers from scratch or
+    patch existing headers.
 (r2434) Fixed: "CMakeFiles" directory gets in the way of in-source builds
     (Issue #5269). Thanks to Dominique Belhachemi for report and fix.
 (r2422) Fixed: "registrationx" tool ignored user specification for transform
