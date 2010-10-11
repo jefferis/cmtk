@@ -42,7 +42,7 @@ SET(mxml_SRCS mxml-attr.c
 	      mxml-search.c
 	      mxml-string.c)
 
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles/CheckCInline.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/CheckCInline.cmake)
 
 CHECK_TYPE_SIZE("long long" LONG_LONG_SIZE)
 IF(LONG_LONG_SIZE)

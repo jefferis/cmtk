@@ -79,8 +79,8 @@ TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
 
 #-----------------------------------------------------------------------------
 # Test NaN high bit
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles/TestQnanhibit.cmake)
-TEST_QNANHIBIT(QNANHIBIT_VALUE ${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/TestQnanhibit.cmake)
+TEST_QNANHIBIT(QNANHIBIT_VALUE ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 IF(QNANHIBIT_VALUE)
   SET(QNANHIBIT 1 CACHE INTERNAL "The 22nd bit of 32-bit floating-point quiet NaN.")
 ELSE(QNANHIBIT_VALUE)
@@ -209,7 +209,7 @@ ENDIF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} STRL
 
 ##    OPTION(CMTK_USE_OPENCL "Use OpenCL for GPU computing" OFF)
 ##  IF(CMTK_USE_OPENCL)
-##  INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles/FindOpenCL.cmake)
+##  INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/FindOpenCL.cmake)
 ##  IF(OPENCL_FOUND)
 ##  ENDIF(OPENCL_FOUND)
 ##
@@ -225,7 +225,7 @@ IF(CMTK_USE_CUDA)
 
   # check using cmake's own FindCUDA above v2.8 or use our own for earlier versions
   IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} STRLESS 2.8)
-    INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles/FindCUDA.cmake)
+    INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/FindCUDA.cmake)
   ELSE (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} STRLESS 2.8)
     FIND_PACKAGE(CUDA)
   ENDIF(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} STRLESS 2.8)
@@ -356,7 +356,7 @@ ENDIF(CMTK_USE_BZIP2)
 #-----------------------------------------------------------------------------
 # Add an option to use or not use lzma decompression library
 
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles/FindLZMA.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/FindLZMA.cmake)
 IF(LZMA_FOUND)
   MESSAGE( STATUS "Using system lzma library" )
   SET(CMTK_LZMA_LIBS ${LZMA_LIBRARY})
@@ -401,7 +401,7 @@ ENDIF(CMTK_USE_DCMTK)
 
 OPTION(CMTK_USE_SQLITE "Use sqlite3 library for database support" OFF)
 IF(CMTK_USE_SQLITE)
-  INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMakeFiles/FindSQLite3.cmake)
+  INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/FindSQLite3.cmake)
 
   IF(NOT SQLITE3_FOUND OR SQLITE3_VERSION STRLESS "3.5.0")
     MESSAGE(STATUS "Building bundled sqlite3 library" ) 
