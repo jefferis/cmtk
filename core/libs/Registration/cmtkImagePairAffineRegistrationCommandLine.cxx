@@ -328,7 +328,7 @@ ImagePairAffineRegistrationCommandLine
     {
     if ( inStudylist || InitialStudylist ) 
       {
-      StdErr << "WARNING: Initial transformation was taken from studylist. Selected transformation initializer will be ignored.\n";
+      StdErr << "WARNING: initial transformation was provided. Selected transformation initializer will be ignored.\n";
       } 
     }
   
