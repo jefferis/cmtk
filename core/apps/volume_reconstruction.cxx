@@ -34,6 +34,7 @@
 
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkThreads.h>
 
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkVector3D.h>
@@ -290,6 +291,8 @@ ReconstructVolumeDeblurring()
 int
 main( const int argc, const char* argv[] )
 {
+  cmtk::Threads::CheckEnvironment(); // need this to check for "CMTK_NUM_THREADS" and constrain OpenMP accordingly
+
   /*
   // Parse command line
   */
