@@ -1,5 +1,7 @@
 Release CMTK-1.5.0:
 
+(r2440) Fixed: newly created transformation objects should, by default, set
+    their coordinate space to CMTK's default space, RAS.
 (r2436) Added: "mk_nifti_hdr" tool to create NIFTI headers from scratch or
     patch existing headers.
 (r2434) Fixed: "CMakeFiles" directory gets in the way of in-source builds
