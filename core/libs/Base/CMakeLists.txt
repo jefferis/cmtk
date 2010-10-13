@@ -35,6 +35,7 @@ SET(cmtkBase_SRCS
   cmtkAffineXform.cxx
   cmtkAffineXformUniformVolume.cxx
   cmtkAnatomicalOrientation.cxx
+  cmtkAnatomicalOrientationBase.cxx
   cmtkAnatomicalOrientationPermutationMatrix.cxx
   cmtkBitVector.cxx
   cmtkControlPoint.cxx

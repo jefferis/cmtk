@@ -35,9 +35,6 @@
 #include <System/cmtkConsole.h>
 
 #include <math.h>
-#include <cassert>
-
-#include <string>
 
 namespace
 cmtk
@@ -45,8 +42,6 @@ cmtk
 
 /** \addtogroup Base */
 //@{
-
-const char *const AnatomicalOrientation::ORIENTATION_STANDARD = "RAS";
 
 void
 AnatomicalOrientation
@@ -107,53 +102,6 @@ AnatomicalOrientation
 	  imageToSpaceAxesPermutation[j][i] = 0;
       }
     }
-}
-
-const char* 
-AnatomicalOrientation
-::GetClosestOrientation( const char* desiredOrientation, const char *const availableOrientations[] )
-{
-  const char* result = NULL;
-  int minPenalty = 100;
-
-  const char *const *next = availableOrientations;
-  while ( *next )
-    {
-    int penalty = 0;
-    for ( int axis = 0; axis < 3; ++axis )
-      {
-      if ( desiredOrientation[axis] != (*next)[axis] )
-	{
-	if ( Self::OnSameAxis( desiredOrientation[axis], (*next)[axis] ) )
-	  penalty += 1;
-	else
-	  penalty += 4;
-	}
-      }
-
-    if ( penalty < minPenalty )
-      {
-      result = *next;
-      minPenalty = penalty;
-      }
-
-    ++next;
-    }
-  return result;
-}
-
-bool
-AnatomicalOrientation::OnSameAxis( const char from, const char to )
-{
-  // Set up lists such that the direction corresponding to the 
-  // character at index "from-'A'" is the character that represents
-  // the same axis in reverse direction. Lowercase characters are
-  // for padding and orientation.
-
-  assert( (from=='A') || (from=='P') || (from=='L') || (from=='R') || (from=='I') || (from=='S') );
-  assert( (to=='A') || (to=='P') || (to=='L') || (to=='R') || (to=='I') || (to=='S') );
-
-  return (Self::OppositeDirection( from ) == to);
 }
 
 } // namespace cmtk

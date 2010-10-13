@@ -36,11 +36,10 @@
 #include <cmtkconfig.h>
 
 #include <Base/cmtkMetaInformationObject.h>
-
+#include <Base/cmtkAnatomicalOrientationBase.h>
 #include <Base/cmtkVector.h>
 #include <Base/cmtkFixedVector.h>
 #include <Base/cmtkBitVector.h>
-
 #include <Base/cmtkMatchedLandmarkList.h>
 
 #include <System/cmtkSmartPtr.h>
@@ -84,12 +83,16 @@ public:
       m_ParameterVector( other.m_ParameterVector )
   {
     this->m_Parameters = this->m_ParameterVector->Elements;
+    this->m_MetaInformation[cmtk::META_SPACE] = cmtk::AnatomicalOrientationBase::ORIENTATION_STANDARD;
   }
 
   /// Default constructor.
   Xform()
     : m_Parameters( NULL ),
-      m_NumberOfParameters( 0 ) {}
+      m_NumberOfParameters( 0 ) 
+  {
+    this->m_MetaInformation[cmtk::META_SPACE] = cmtk::AnatomicalOrientationBase::ORIENTATION_STANDARD;
+  }
 
   /// Virtual destructor.
   virtual ~Xform() {}

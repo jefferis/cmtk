@@ -35,14 +35,14 @@
 
 #include <cmtkconfig.h>
 
+#include <Base/cmtkAnatomicalOrientationBase.h>
+
 #include <System/cmtkSmartPtr.h>
 
 #include <Base/cmtkTypes.h>
 #include <Base/cmtkFixedVector.h>
 #include <Base/cmtkMetaInformationObject.h>
 #include <Base/cmtkAffineXform.h>
-
-#include <vector>
 
 namespace
 cmtk
@@ -53,13 +53,14 @@ cmtk
 
 /// Class with helper functions for handling anatomical image orientation.
 class AnatomicalOrientation
+  : public AnatomicalOrientationBase
 {
 public:
   /// This class.
   typedef AnatomicalOrientation Self;
 
-  /// Orientation of STANDARD space (LR/AP/IS).
-  static const char *const ORIENTATION_STANDARD;
+  /// Parent class.
+  typedef AnatomicalOrientationBase Superclass;
 
   /** Get closest anatomical orientation based on space dimensions and image direction vectors.
    *\param orientation The resulting orientation string (three characters plus terminating zero) will
@@ -75,20 +76,6 @@ public:
 
   /// Get permutation table of coordinate axes from space axes and image orientation.
   static void GetImageToSpaceAxesPermutation( int (&imageToSpaceAxesPermutation)[3][3], const char* orientation, const char* spaceAxes );
-
-  /** Get closest orientation from a list.
-   * This function is used to determine which orientation to bring an image into so it can be written to a file
-   * format with limited orientation support (e.g., Analyze).
-   */
-  static const char* GetClosestOrientation( const char* desiredOrientation, const char *const availableOrientations[] );
-
-  /** Return true if the direction corresponding to the 
-   * character 'from' is on the same axis as that corresponding
-   * to 'to'.
-   *\param from Either L, R, A, P, I, or S
-   *\param to Either L, R, A, P, I, or S 
-   */
-  static bool OnSameAxis( const char from, const char to );
 
   /// Class for permutation matrix that can be applied to pixel indexes, as well as dimension, and pixel size arrays.
   class PermutationMatrix
@@ -178,14 +165,6 @@ public:
      */
     FixedVector<3,int> m_Offsets;
   };
-
-private:
-  /// Get inverse of axis orientation.
-  static char OppositeDirection( const char direction )
-  {
-    const char table[27] = "PbcdefghSjkRmnoAqLItuvwxyz";
-    return table[direction-'A'];    
-  }
 };
 
 //@}
