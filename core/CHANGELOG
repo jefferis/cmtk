@@ -1,5 +1,8 @@
 Release CMTK-1.5.0:
 
+(r2445) Fixed: conversion of affine transformation to/from ITK format and
+    native image space failed when fixed and moving images resided in different
+    spaces (fixed image space was used for both of them).
 (r2440) Fixed: newly created transformation objects should, by default, set
     their coordinate space to CMTK's default space, RAS.
 (r2436) Added: "mk_nifti_hdr" tool to create NIFTI headers from scratch or
