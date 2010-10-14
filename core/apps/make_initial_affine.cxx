@@ -49,6 +49,8 @@
 #  include <Registration/cmtkImageXformDB.h>
 #endif
 
+#include <stdlib.h>
+
 int
 main( const int argc, const char* argv[] )
 {
@@ -59,7 +61,12 @@ main( const int argc, const char* argv[] )
   bool verbose = false;
 
   bool centerXform = false;
+
   bool writeXformNativeSpaces = false;
+  if ( getenv( "Slicer3_HOME" ) != NULL )
+    {
+    writeXformNativeSpaces = true;
+    }
 
   int mode = 0;
 
@@ -87,7 +94,8 @@ main( const int argc, const char* argv[] )
     modeGroup->AddSwitch( Key( "identity" ), -1, "Create only an identity transformation" );
     
     cl.AddSwitch( Key( 'C', "center-xform" ), &centerXform, true, "Set transformation center (for rotation, scale) to center of reference image." );
-    cl.AddSwitch( Key( "native-space" ), &writeXformNativeSpaces, true, "Write transformation between the native image spaces, rather than in CMTK standard RAS space." );
+    cl.AddSwitch( Key( "native-space" ), &writeXformNativeSpaces, true, "Write transformation between the native image spaces, rather than in CMTK standard RAS space. This is the default when running this tool as a Slicer plugin." )
+      ->SetProperties( cmtk::CommandLine::PROPS_NOXML );;
     cl.EndGroup();
     
 #ifdef CMTK_USE_SQLITE
