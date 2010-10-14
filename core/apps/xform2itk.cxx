@@ -56,6 +56,9 @@ main( const int argc, const char* argv[] )
 
   const char* fixedImagePath = NULL;
   const char* movingImagePath = NULL;
+
+  const char* fixedImageSpace = NULL;
+  const char* movingImageSpace = NULL;
   
   try 
     {
@@ -66,6 +69,8 @@ main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode" );
 
     cl.BeginGroup( "Input", "Input parameters" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
+    cl.AddOption( Key( "fixed-space" ), &fixedImageSpace, "Change fixed image coordinate space (e.g., 'RAS', 'LPS', ...)" );
+    cl.AddOption( Key( "moving-space" ), &movingImageSpace, "Change moving image coordinate space (e.g., 'RAS', 'LPS', ...)" );
     cl.AddSwitch( Key( "invert-input" ), &invertInputXform, true, "Invert input transformation before conversion" );
     cl.EndGroup();
     
@@ -116,18 +121,28 @@ main( const int argc, const char* argv[] )
     movingImagePath = xform->GetMetaInfo( cmtk::META_XFORM_MOVING_IMAGE_PATH ).c_str();
     }
 
-  cmtk::UniformVolume::SmartConstPtr fixedImage = cmtk::VolumeIO::ReadGridOriented( cmtk::MountPoints::Translate( fixedImagePath ), verbose );
+  cmtk::UniformVolume::SmartPtr fixedImage = cmtk::VolumeIO::ReadGridOriented( cmtk::MountPoints::Translate( fixedImagePath ), verbose );
   if ( ! fixedImage )
     {
     cmtk::StdErr << "ERROR: could not read fixed image '" << fixedImagePath << "'\n";
     exit( 1 );
     }
 
-  cmtk::UniformVolume::SmartConstPtr movingImage = cmtk::VolumeIO::ReadGridOriented( cmtk::MountPoints::Translate( movingImagePath ), verbose );
+  if ( fixedImageSpace )
+    {
+    fixedImage->ChangeCoordinateSpace( fixedImageSpace );
+    }
+
+  cmtk::UniformVolume::SmartPtr movingImage = cmtk::VolumeIO::ReadGridOriented( cmtk::MountPoints::Translate( movingImagePath ), verbose );
   if ( ! movingImage )
     {
     cmtk::StdErr << "ERROR: could not read moving image '" << movingImagePath << "'\n";
     exit( 1 );
+    }
+
+  if ( movingImageSpace )
+    {
+    movingImage->ChangeCoordinateSpace( movingImageSpace );
     }
 
   cmtk::TransformChangeToSpaceAffine toNative( *(xform), *(fixedImage), *(movingImage) );
