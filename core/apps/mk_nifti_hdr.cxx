@@ -93,8 +93,8 @@ int main( const int argc, const char* argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode." );
 
-    cl.AddCallback( Key( 'D', "dims" ), SetDims, "Set dimensions in voxels" );
-    cl.AddCallback( Key( 'V', "voxel" ), SetDeltas, "Set voxel size in [mm]" );
+    cl.AddCallback( Key( 'D', "dims" ), SetDims, "Set dimensions in voxels. Provided as 'DimsX,DimsY,DimsZ'" );
+    cl.AddCallback( Key( 'V', "voxel" ), SetDeltas, "Set voxel size. Provided as 'PixX,PixY,PixZ' [in mm]" );
 
     cl.AddOption( Key( 'O', "offset" ), &Offset, "Binary data file offset", &PutOffset );
 
