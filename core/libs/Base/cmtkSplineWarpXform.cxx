@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -433,7 +433,7 @@ SplineWarpXform::RegisterVolumeAxis
 
   for ( int idx=0; idx<dim; ++idx ) 
     {
-    Types::Coordinate r = invCpgSpacing * (origin + delta * idx);
+    const Types::Coordinate r = invCpgSpacing * (origin + delta * idx);
     g[idx] = std::min( static_cast<int>( r ), cpgDim-4 );
     const Types::Coordinate f = r - g[idx];
     for ( int k = 0; k < 4; ++k ) 

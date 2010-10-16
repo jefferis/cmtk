@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -155,6 +155,12 @@ public:
 
   /** Return Jacobian folding constraint of the current transformation grid. */
   virtual Types::Coordinate GetJacobianFoldingConstraint() const;
+
+  /** Relax the deformation to unfold areas with negative Jacobian at the current image sampling.
+   *\note This requires a uniform pixel grid to be registered with this transformation.
+   *\see RegisterVolume
+   */
+  virtual void RelaxToUnfold();
 
   /// Return rigidity constraint of the current transformation grid.
   virtual Types::Coordinate GetRigidityConstraint() const;

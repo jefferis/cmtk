@@ -796,4 +796,37 @@ SplineWarpXform::GetJacobianConstraintDerivative
   lower /= this->NumberOfControlPoints;
 }
 
+void
+SplineWarpXform::RelaxToUnfold()
+{
+  std::vector<byte> cpList;
+  std::fill( cpList.begin(), cpList.end(), 0 );
+
+  std::vector<double> jacobiansRow( this->VolumeDims[0] );
+
+  bool isFolded = true;
+  while ( isFolded )
+    {
+    // check all Jacobian determinant values to see if grid is folded, and what control points are affected
+    isFolded = false;
+    for ( int k = 0; k < this->VolumeDims[2]; ++k )
+      {
+      for ( int j = 0; j < this->VolumeDims[1]; ++j )
+	{
+	this->GetJacobianDeterminantSequence( &(jacobiansRow[0]), 0, j, k, this->VolumeDims[0] );
+	for ( int i = 0; i < this->VolumeDims[0]; ++i )
+	  {
+	  if ( jacobiansRow[i] <= 0 )
+	    {
+	    isFolded = true;
+	    cpList[ this->gX[i] * this->nextI + this->gY[j] * this->nextJ + this->gZ[k] * this->nextK ] = 1;
+	    }
+	  }
+	}
+      }
+
+    // regularize the affected control points
+    }
+}
+
 } // namespace cmtk
