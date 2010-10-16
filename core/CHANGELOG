@@ -1,5 +1,8 @@
 Release CMTK-1.5.0:
 
+(r2450) Removed: support for pixelwise incompressibility weight maps, which
+    was never really used and hasn't been exposed at the command line for a
+    while. 
 (r2445) Fixed: conversion of affine transformation to/from ITK format and
     native image space failed when fixed and moving images resided in different
     spaces (fixed image space was used for both of them).
