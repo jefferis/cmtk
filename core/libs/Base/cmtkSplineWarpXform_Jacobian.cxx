@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -524,31 +524,14 @@ SplineWarpXform
   int zFrom = rowFrom / me->VolumeDims[2];
 
   double constraint = 0;
-  if ( me->IncompressibilityMap )
+  for ( int z = zFrom; (z < me->VolumeDims[2]) && rowsToDo; ++z ) 
     {
-    for ( int z = zFrom; (z < me->VolumeDims[2]) && rowsToDo; ++z ) 
+    for ( int y = yFrom; (y < me->VolumeDims[1]) && rowsToDo; yFrom = 0, ++y, --rowsToDo ) 
       {
-      for ( int y = yFrom; (y < me->VolumeDims[1]) && rowsToDo; yFrom = 0, ++y, --rowsToDo ) 
+      me->GetJacobianDeterminantSequence( &(valuesJ[0]), 0, y, z, pixelsPerRow );
+      for ( int x = 0; x < pixelsPerRow; ++x ) 
 	{
-	me->GetJacobianDeterminantSequence( &(valuesJ[0]), 0, y, z, pixelsPerRow );
-	for ( int x = 0; x < pixelsPerRow; ++x ) 
-	  {
-	  constraint += me->IncompressibilityMap->GetDataAt( x, y, z ) * fabs( log ( valuesJ[x] / me->GlobalScaling ) );
-	  }
-	}
-      }
-    }
-  else
-    { // no voxel-by-voxel constraint
-    for ( int z = zFrom; (z < me->VolumeDims[2]) && rowsToDo; ++z ) 
-      {
-      for ( int y = yFrom; (y < me->VolumeDims[1]) && rowsToDo; yFrom = 0, ++y, --rowsToDo ) 
-	{
-	me->GetJacobianDeterminantSequence( &(valuesJ[0]), 0, y, z, pixelsPerRow );
-	for ( int x = 0; x < pixelsPerRow; ++x ) 
-	  {
-	  constraint += fabs( log ( valuesJ[x] / me->GlobalScaling ) );
-	  }
+	constraint += fabs( log ( valuesJ[x] / me->GlobalScaling ) );
 	}
       }
     }

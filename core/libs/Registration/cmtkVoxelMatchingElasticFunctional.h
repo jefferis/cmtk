@@ -128,10 +128,6 @@ protected:
    */
   cmtkGetSetMacro(DataGrid::SmartPtr,RigidityConstraintMap);
 
-  /** Spatial map of relative (tissue-specific) incompressibility constraint.
-   */
-  cmtkGetSetMacro(DataGrid::SmartPtr,IncompressibilityMap);
-
   /** Weight of the grid energy relative to voxel similarity measure.
    * If this is zero, only the voxel-based similarity will be computed. If
    * equal to one, only the grid energy will be computed.

@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -165,7 +165,6 @@ public:
   { 
     this->m_IgnoreEdge = 0; 
     this->m_FastMode = false; 
-    IncompressibilityMap = DataGrid::SmartPtr( NULL );
     this->m_Dims[0] = this->m_Dims[1] = this->m_Dims[2] = 0;
     this->InverseSpacing[0] = this->InverseSpacing[1] = this->InverseSpacing[2] = 0.0;
   }
@@ -213,9 +212,6 @@ public:
   ( double& lower, double& upper, const Self* inverse, const UniformVolume* volume, const UniformVolume::RegionType* voi, 
     const unsigned int idx, const Types::Coordinate step );
   
-  /// Set voxel-by-voxel map for incompressibility constraint.
-  virtual void SetIncompressibilityMap( DataGrid::SmartPtr& incompressibility );
-
   /// Get the original position of a control point.
   virtual void GetOriginalControlPointPosition( Self::SpaceVectorType& cp, const Types::Coordinate x, const Types::Coordinate y, const Types::Coordinate z) const 
   { 
@@ -304,10 +300,6 @@ private:
    * etc. and can therefore save a significant amount of computation time.
    */
   cmtkGetSetMacro(BitVector::SmartPtr,ActiveFlags);
-
-  /** Voxel-by-voxel map of incompressibility constraint weight.
-   */
-  DataGrid::SmartPtr IncompressibilityMap;
 
   /// Friend declaration.
   friend class SplineWarpXformUniformVolume;

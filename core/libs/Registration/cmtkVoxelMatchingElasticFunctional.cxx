@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -148,7 +148,6 @@ VoxelMatchingElasticFunctional_WarpTemplate<W>::SetWarpXform
   if ( Warp )
     {
     Warp->RegisterVolume( ReferenceGrid );
-    Warp->SetIncompressibilityMap( this->m_IncompressibilityMap );
     
     if ( Dim != Warp->VariableParamVectorDim() ) 
       {

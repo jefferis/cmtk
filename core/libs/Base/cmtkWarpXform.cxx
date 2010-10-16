@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -268,13 +268,6 @@ void
 WarpXform::DeleteParameterActiveFlags()
 {
   this->m_ActiveFlags = BitVector::SmartPtr::Null;
-}
-
-void 
-WarpXform::SetIncompressibilityMap
-( DataGrid::SmartPtr& incompressibility )
-{
-  IncompressibilityMap = incompressibility;
 }
 
 void
