@@ -77,12 +77,12 @@ public:
   {
   public:
     /// Constructor: set initialization value.
-    Init( const T value ) : m_Value( value ) {}
-
+    explicit Init( const T value ) : m_Value( value ) {}
+    
     /// Array initialization value.
     T m_Value;
   };
-
+  
   /// Initialization constructor.
   explicit FixedVector( const typename Self::Init& init )
   {
