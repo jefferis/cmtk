@@ -35,6 +35,8 @@
 #include <Base/cmtkMathUtil.h>
 #include <System/cmtkThreadPool.h>
 
+#include <Base/cmtkRegionIndexIterator.h>
+
 #include <vector>
 
 namespace

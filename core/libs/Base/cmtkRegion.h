@@ -105,6 +105,20 @@ public:
     return size;
   }
 
+  /// Region "begin" index.
+  const typename Self::IndexType begin() const
+  {
+    return this->m_RegionFrom;
+  }
+  
+  /// Region "end" index.
+  const typename Self::IndexType end() const
+  {
+    Self::IndexType e = this->m_RegionFrom;
+    ++e[NDIM-1];
+    return e;
+  }
+  
 private:
   /// Beginning index.
   typename Self::IndexType m_RegionFrom;

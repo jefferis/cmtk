@@ -66,27 +66,48 @@ public:
 
   /// Constructor from two index, from and to.
   RegionIndexIterator( const typename Self::RegionType& region )
-    : m_Region( region )
+    : m_Region( region ),
+      m_Index( region.begin() )
   {}
 
   /// Increment operator.
   Self& operator++()
   {
-    int idx = NDIM-1;
-    while ( idx >= 0 )
+    for ( size_t idx = NDIM; idx > 0; )
       {
+      --idx;
       if ( (++this->m_Index[idx]) >= this->m_Region.To()[idx] )
 	{
 	this->m_Index[idx] = this->m_Region.From()[idx];
-	--idx;
 	}
+      else
+	break;
       }
   }
-
+  
   /// Get index.
   const typename Self::IndexType& Index() const
   {
     return this->m_Index;
+  }
+
+  /// Assign index.
+  Self& operator=( const typename Self::IndexType& index )
+  {
+    this->m_Index = index;
+    return *this;
+  }
+
+  /// Index equality.
+  bool operator==( const typename Self::IndexType& index )
+  {
+    return (this->m_Index == index);
+  }
+
+  /// Index inequality.
+  bool operator!=( const typename Self::IndexType& index )
+  {
+    return (this->m_Index != index);
   }
 
 private:
