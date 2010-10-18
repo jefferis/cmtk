@@ -78,7 +78,7 @@ public:
   
   /** Get transformed locations of a series (scanline) of linked grid pixels.
    */
-  virtual void GetTransformedGridSequence( Vector3D *const v, const size_t numPoints, const int idxX, const int idxY, const int idxZ ) const;
+  virtual void GetTransformedGridRow( Vector3D *const v, const size_t numPoints, const int idxX, const int idxY, const int idxZ ) const;
   
 private:
   /// The linked transformation.

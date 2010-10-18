@@ -53,7 +53,7 @@ SplineWarpXform::GetJacobian( const Self::SpaceVectorType& v ) const
 }
 
 void
-SplineWarpXform::GetJacobianSequence
+SplineWarpXform::GetJacobianRow
 ( CoordinateMatrix3x3 *const array, const int x, const int y, const int z, const size_t numberOfPoints ) 
   const
 {
@@ -378,7 +378,7 @@ SplineWarpXform::GetJacobianDeterminant
 }
 
 void
-SplineWarpXform::GetJacobianDeterminantSequence
+SplineWarpXform::GetJacobianDeterminantRow
 ( double *const values, const int x, const int y, const int z, 
   const size_t numberOfPoints ) 
   const
@@ -528,7 +528,7 @@ SplineWarpXform
     {
     for ( int y = yFrom; (y < me->VolumeDims[1]) && rowsToDo; yFrom = 0, ++y, --rowsToDo ) 
       {
-      me->GetJacobianDeterminantSequence( &(valuesJ[0]), 0, y, z, pixelsPerRow );
+      me->GetJacobianDeterminantRow( &(valuesJ[0]), 0, y, z, pixelsPerRow );
       for ( int x = 0; x < pixelsPerRow; ++x ) 
 	{
 	constraint += fabs( log ( valuesJ[x] / me->GlobalScaling ) );
@@ -565,7 +565,7 @@ SplineWarpXform
     {
     for ( int y = yFrom; (y < me->VolumeDims[1]) && rowsToDo; yFrom = 0, ++y, --rowsToDo ) 
       {
-      me->GetJacobianDeterminantSequence( &(valuesJ[0]), 0, y, z, pixelsPerRow );
+      me->GetJacobianDeterminantRow( &(valuesJ[0]), 0, y, z, pixelsPerRow );
       for ( int x = 0; x < pixelsPerRow; ++x ) 
 	{
 	constraint += fabs( me->GlobalScaling / valuesJ[x] + valuesJ[x] / me->GlobalScaling - 2 );
@@ -660,7 +660,7 @@ SplineWarpXform::GetJacobianConstraintDerivative
   for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
     for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      this->GetJacobianDeterminantRow( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i )
 	ground += fabs( log( valuesJ[i] / GlobalScaling ) );
       }
@@ -673,7 +673,7 @@ SplineWarpXform::GetJacobianConstraintDerivative
   for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
     for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      this->GetJacobianDeterminantRow( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i )
 	{
 	upper += fabs( log( valuesJ[i] / GlobalScaling ) );
@@ -684,7 +684,7 @@ SplineWarpXform::GetJacobianConstraintDerivative
   for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
     for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      this->GetJacobianDeterminantRow( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i )
 	{
 	lower += fabs( log( valuesJ[i] / GlobalScaling ) );
@@ -709,7 +709,7 @@ SplineWarpXform::GetJacobianFoldingConstraintDerivative
   for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
     for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      this->GetJacobianDeterminantRow( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i )
 	ground += fabs( this->GlobalScaling / valuesJ[i] + valuesJ[i] / this->GlobalScaling - 2 );
       }
@@ -722,7 +722,7 @@ SplineWarpXform::GetJacobianFoldingConstraintDerivative
   for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
     for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      this->GetJacobianDeterminantRow( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i )
 	{
 	upper += fabs( this->GlobalScaling / valuesJ[i] + valuesJ[i] / this->GlobalScaling - 2 );
@@ -734,7 +734,7 @@ SplineWarpXform::GetJacobianFoldingConstraintDerivative
   for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
     for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianDeterminantSequence( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      this->GetJacobianDeterminantRow( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i )
 	{
 	lower += fabs( this->GlobalScaling / valuesJ[i] + valuesJ[i] / this->GlobalScaling - 2 );
@@ -813,7 +813,7 @@ SplineWarpXform::RelaxToUnfold()
       {
       for ( int j = 0; j < this->VolumeDims[1]; ++j )
 	{
-	this->GetJacobianDeterminantSequence( &(jacobiansRow[0]), 0, j, k, this->VolumeDims[0] );
+	this->GetJacobianDeterminantRow( &(jacobiansRow[0]), 0, j, k, this->VolumeDims[0] );
 	for ( int i = 0; i < this->VolumeDims[0]; ++i )
 	  {
 	  if ( jacobiansRow[i] <= 0 )

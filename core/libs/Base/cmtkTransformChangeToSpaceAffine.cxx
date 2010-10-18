@@ -45,11 +45,10 @@ cmtk::TransformChangeToSpaceAffine
   fltVolumeOriginalSpace->ChangeCoordinateSpace( floating.m_MetaInformation[META_SPACE_ORIGINAL] );
   
   // now determine image-to-physical transformations and concatenate these.
-  const AffineXform::MatrixType refMatrix = refVolumeOriginalSpace->GetImageToPhysicalMatrix ();
-  const AffineXform::MatrixType fltMatrix = fltVolumeOriginalSpace->GetImageToPhysicalMatrix ();
+  const AffineXform::MatrixType refMatrix = refVolumeOriginalSpace->GetImageToPhysicalMatrix();
+  const AffineXform::MatrixType fltMatrix = fltVolumeOriginalSpace->GetImageToPhysicalMatrix();
   
-  AffineXform::MatrixType concatMatrix = refMatrix.GetInverse();
-  (concatMatrix *= xform.Matrix) *= fltMatrix;
+  const AffineXform::MatrixType concatMatrix = (refMatrix.GetInverse() * xform.Matrix) * fltMatrix;
   
   // create output transformation and write
   this->m_NewXform.SetMatrix( concatMatrix );

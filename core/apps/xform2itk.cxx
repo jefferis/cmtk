@@ -130,7 +130,7 @@ main( const int argc, const char* argv[] )
 
   if ( fixedImageSpace )
     {
-    fixedImage->ChangeCoordinateSpace( fixedImageSpace );
+    fixedImage->SetMetaInfo( cmtk::META_SPACE_ORIGINAL, fixedImageSpace );
     }
 
   cmtk::UniformVolume::SmartPtr movingImage = cmtk::VolumeIO::ReadGridOriented( cmtk::MountPoints::Translate( movingImagePath ), verbose );
@@ -142,7 +142,7 @@ main( const int argc, const char* argv[] )
 
   if ( movingImageSpace )
     {
-    movingImage->ChangeCoordinateSpace( movingImageSpace );
+    movingImage->SetMetaInfo( cmtk::META_SPACE_ORIGINAL, movingImageSpace );
     }
 
   cmtk::TransformChangeToSpaceAffine toNative( *(xform), *(fixedImage), *(movingImage) );

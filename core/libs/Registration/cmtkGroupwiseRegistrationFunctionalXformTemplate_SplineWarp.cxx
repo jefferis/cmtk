@@ -266,7 +266,7 @@ GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
     {
     for ( int y = yFrom; (y < dimsY) && rowsToDo; yFrom = 0, ++y, --rowsToDo )
       {
-      xform->GetTransformedGridSequence( dimsX, &v[0], 0, y, z );
+      xform->GetTransformedGridRow( dimsX, &v[0], 0, y, z );
       for ( int x = 0; x < dimsX; ++x )
 	{
 	if ( target->ProbeData( value, dataPtr, v[x] ) )

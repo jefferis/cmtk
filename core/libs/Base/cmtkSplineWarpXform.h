@@ -137,7 +137,7 @@ public:
   virtual Types::Coordinate GetJacobianDeterminant ( const int x, const int y, const int z ) const;
 
   /// Compute sequence of Jacobian determinants from given grid location.
-  virtual void GetJacobianDeterminantSequence( double *const values, const int x, const int y, const int z, const size_t numberOfPoints = 1 ) const;
+  virtual void GetJacobianDeterminantRow( double *const values, const int x, const int y, const int z, const size_t numberOfPoints = 1 ) const;
 
   /** Compute Jacobian determinant at a certain control point.
    * As we evaluate the spline polynomials and their derivatives at a known
@@ -310,7 +310,7 @@ public:
   void GetTransformedGrid( Self::SpaceVectorType& v, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get a sequence of grid points from the deformed grid. 
-  void GetTransformedGridSequence( const int numPoints, Self::SpaceVectorType *const v, const int idxX, const int idxY, const int idxZ ) const;
+  void GetTransformedGridRow( const int numPoints, Self::SpaceVectorType *const v, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get parameter stepping.
   virtual Types::Coordinate GetParamStep( const size_t idx, const Self::SpaceVectorType& volSize, const Types::Coordinate mmStep = 1 ) const 
@@ -345,7 +345,7 @@ public:
   virtual void GetJacobianAtControlPoint( const Types::Coordinate* cp, CoordinateMatrix3x3& J ) const;
 
   /// Get sequence of Jacobians for pixel row.
-  virtual void GetJacobianSequence( CoordinateMatrix3x3 *const array, const int x, const int y, const int z, const size_t numberOfPoints ) const;
+  virtual void GetJacobianRow( CoordinateMatrix3x3 *const array, const int x, const int y, const int z, const size_t numberOfPoints ) const;
   
 private:
   /// Register axes points of the volume to be deformed.

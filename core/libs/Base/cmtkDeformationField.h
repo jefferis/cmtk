@@ -131,7 +131,7 @@ public:
   virtual void GetTransformedGrid( Self::SpaceVectorType& v, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get a sequence of grid points from the deformed grid. 
-  virtual void GetTransformedGridSequence( Self::SpaceVectorType *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const;
+  virtual void GetTransformedGridRow( Self::SpaceVectorType *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get Jacobian matrix.
   virtual void GetJacobian( const Self::SpaceVectorType& v, CoordinateMatrix3x3& J ) const;

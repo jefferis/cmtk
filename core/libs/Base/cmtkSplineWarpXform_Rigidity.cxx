@@ -75,7 +75,7 @@ SplineWarpXform::GetRigidityConstraintDerivative
   for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
     for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianSequence( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      this->GetJacobianRow( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
 	ground += this->GetRigidityConstraint( arrayJ[i] );
@@ -90,7 +90,7 @@ SplineWarpXform::GetRigidityConstraintDerivative
   for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
     for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianSequence( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      this->GetJacobianRow( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
 	upper += this->GetRigidityConstraint( arrayJ[i] );
@@ -101,7 +101,7 @@ SplineWarpXform::GetRigidityConstraintDerivative
   for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
     for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianSequence( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      this->GetJacobianRow( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
 	lower += this->GetRigidityConstraint( arrayJ[i] );
@@ -126,7 +126,7 @@ SplineWarpXform::GetRigidityConstraintDerivative
   for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
     for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianSequence( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      this->GetJacobianRow( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
 	ground += weightMap->GetDataAt( voi.From()[0] + i, j, k ) * this->GetRigidityConstraint( arrayJ[i] );
@@ -141,7 +141,7 @@ SplineWarpXform::GetRigidityConstraintDerivative
   for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
     for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianSequence( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      this->GetJacobianRow( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
 	upper += weightMap->GetDataAt( voi.From()[0] + i, j, k ) *
@@ -153,7 +153,7 @@ SplineWarpXform::GetRigidityConstraintDerivative
   for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
     for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
       {
-      this->GetJacobianSequence( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
+      this->GetJacobianRow( &(arrayJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i ) 
 	{
 	lower += weightMap->GetDataAt( voi.From()[0] + i, j, k ) * this->GetRigidityConstraint( arrayJ[i] );
@@ -235,7 +235,7 @@ SplineWarpXform::GetRigidityConstraint () const
   for ( int z = 0; z < VolumeDims[2]; ++z )
     for ( int y = 0; y < VolumeDims[1]; ++y ) 
       {
-      this->GetJacobianSequence( &(arrayJ[0]), 0, y, z, pixelsPerRow );
+      this->GetJacobianRow( &(arrayJ[0]), 0, y, z, pixelsPerRow );
       for ( int x = 0; x < pixelsPerRow; ++x ) 
 	{
 	constraint += this->GetRigidityConstraint( arrayJ[x] );
@@ -257,7 +257,7 @@ SplineWarpXform::GetRigidityConstraint( const DataGrid* weightMap ) const
   for ( int z = 0; z < VolumeDims[2]; ++z )
     for ( int y = 0; y < VolumeDims[1]; ++y ) 
       {
-      this->GetJacobianSequence( &(arrayJ[0]), 0, y, z, pixelsPerRow );
+      this->GetJacobianRow( &(arrayJ[0]), 0, y, z, pixelsPerRow );
       for ( int x = 0; x < pixelsPerRow; ++x ) 
 	{
 	constraint += weightMap->GetDataAt( x, y, z ) * this->GetRigidityConstraint( arrayJ[x] );

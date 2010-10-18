@@ -91,7 +91,7 @@ DeformationField
 }
 
 void 
-DeformationField::GetTransformedGridSequence
+DeformationField::GetTransformedGridRow
 ( Self::SpaceVectorType *const vIn, const int numPoints, const int idxX, const int idxY, const int idxZ ) 
   const
 {

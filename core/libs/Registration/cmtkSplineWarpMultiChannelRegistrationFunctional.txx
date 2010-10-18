@@ -486,7 +486,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
     {
     for ( int pY = region.From()[1]; pY < region.To()[1]; ++pY ) 
       {
-      transformation->GetTransformedGridSequence( pixelsPerLineRegion, &pFloating[0], region.From()[0], pY, pZ );
+      transformation->GetTransformedGridRow( pixelsPerLineRegion, &pFloating[0], region.From()[0], pY, pZ );
 
       size_t r = region.From()[0] + dimsX * (pY + dimsY * pZ );
       for ( int pX = region.From()[0]; pX < region.To()[0]; ++pX, ++r ) 

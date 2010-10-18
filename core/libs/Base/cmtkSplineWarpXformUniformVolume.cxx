@@ -118,7 +118,7 @@ cmtk::SplineWarpXformUniformVolume
 }
 
 void 
-cmtk::SplineWarpXformUniformVolume::GetTransformedGridSequence
+cmtk::SplineWarpXformUniformVolume::GetTransformedGridRow
 ( Vector3D *const vIn, const size_t numPoints, const int idxX, const int idxY, const int idxZ ) 
   const
 {

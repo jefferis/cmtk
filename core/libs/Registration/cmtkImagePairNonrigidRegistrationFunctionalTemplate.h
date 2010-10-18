@@ -182,7 +182,7 @@ public:
       for ( pY = voi.From()[1]; pY<voi.To()[1]; ++pY ) 
 	{
 	pVec = vectorCache;
-	warp.GetTransformedGridSequence( voi.To()[0]-voi.From()[0], pVec, voi.From()[0], pY, pZ );
+	warp.GetTransformedGridRow( voi.To()[0]-voi.From()[0], pVec, voi.From()[0], pY, pZ );
 	for ( pX = voi.From()[0]; pX<voi.To()[0]; ++pX, ++r, ++pVec ) 
 	  {
 	  // Remove this sample from incremental metric according to "ground warp" image.
@@ -406,7 +406,7 @@ private:
       {
       for ( pY = pYfrom; (pY < me->m_DimsY) && rowsToDo; pYfrom = 0, ++pY, --rowsToDo ) 
 	{
-	warp.GetTransformedGridSequence( me->m_DimsX, vectorCache, 0, pY, pZ );
+	warp.GetTransformedGridRow( me->m_DimsX, vectorCache, 0, pY, pZ );
 	pVec = vectorCache;
 	for ( pX = 0; pX<me->m_DimsX; ++pX, ++r, ++pVec ) 
 	  {
