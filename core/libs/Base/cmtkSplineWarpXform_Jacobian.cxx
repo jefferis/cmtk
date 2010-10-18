@@ -802,8 +802,6 @@ void
 SplineWarpXform::RelaxToUnfold()
 {
   std::vector<byte> cpList( this->NumberOfControlPoints );
-  std::fill( cpList.begin(), cpList.end(), 0 );
-
   std::vector<double> jacobiansRow( this->VolumeDims[0] );
 
   bool isFolded = true;
@@ -811,6 +809,8 @@ SplineWarpXform::RelaxToUnfold()
     {
     // check all Jacobian determinant values to see if grid is folded, and what control points are affected
     isFolded = false;
+    std::fill( cpList.begin(), cpList.end(), 0 );
+
     for ( int k = 0; k < this->VolumeDims[2]; ++k )
       {
       for ( int j = 0; j < this->VolumeDims[1]; ++j )
@@ -821,7 +821,7 @@ SplineWarpXform::RelaxToUnfold()
 	  if ( jacobiansRow[i] <= 0 )
 	    {
 	    isFolded = true;
-	    cpList[ (this->gX[i] * this->nextI + this->gY[j] * this->nextJ + this->gZ[k] * this->nextK)/3 ] = 1;
+	    cpList[ (this->gX[i] + this->gY[j] + this->gZ[k])/3 ] = 1;
 	    }
 	  }
 	}
@@ -855,6 +855,29 @@ SplineWarpXform::RelaxToUnfold()
 	    }
 	  }
 	}
+
+      // Get pure deformation at each control point.
+      std::vector<Types::Coordinate> pureDeformation( 3 * this->NumberOfControlPoints );
+
+      size_t param = 0;
+      for ( int k = 0; k < this->m_Dims[2]; ++k )
+	{
+	for ( int j = 0; j < this->m_Dims[1]; ++j )
+	  {
+	  for ( int i = 0; i < this->m_Dims[0]; ++i, param+=3 )
+	    {
+	    Self::SpaceVectorType cp( this->m_Parameters+param );
+	    this->m_InitialAffineXform->GetInverse()->ApplyInPlace( cp );
+
+	    Self::SpaceVectorType cp0;
+	    this->GetOriginalControlPointPosition( cp0, i, j, k );
+
+	    cp -= cp0;
+	    for ( int dim = 0; dim < 3; ++dim )
+	      pureDeformation[param+dim] = cp[dim];
+	    }
+	  }
+	}
       
       // regularize the affected control points
       std::vector<Types::Coordinate> smoothed( this->NumberOfControlPoints );
@@ -883,8 +906,8 @@ SplineWarpXform::RelaxToUnfold()
 		      {
 		      delta[0] = i-ii;
 		      
-		      const Types::Coordinate w = exp( -delta.SumOfSquares() / 27 );
-		      smoothed[cp] = w * this->m_Parameters[ dim + ii*this->nextI + jj*this->nextJ + kk*this->nextK ];
+		      const Types::Coordinate w = exp( -delta.SumOfSquares() );
+		      smoothed[cp] = w * pureDeformation[ dim + ii*this->nextI + jj*this->nextJ + kk*this->nextK ];
 		      weight += w;
 		      }
 		    }
@@ -895,7 +918,7 @@ SplineWarpXform::RelaxToUnfold()
 	      else
 		{
 		// if this control point does not need regularizing, keep it as is
-		smoothed[cp] = this->m_Parameters[dim+cp*3];
+		smoothed[cp] = pureDeformation[dim+cp*3];
 		}
 	      }
 	    }
@@ -904,7 +927,29 @@ SplineWarpXform::RelaxToUnfold()
 	// copy modified control point position component back
 	for ( size_t cp = 0; cp < this->NumberOfControlPoints; ++cp )
 	  {
-	  this->m_Parameters[dim+cp*3] = smoothed[cp];
+	  pureDeformation[dim+cp*3] = smoothed[cp];
+	  }
+	}
+      
+      // put offsets and affine component back
+      param = 0;
+      for ( int k = 0; k < this->m_Dims[2]; ++k )
+	{
+	for ( int j = 0; j < this->m_Dims[1]; ++j )
+	  {
+	  for ( int i = 0; i < this->m_Dims[0]; ++i, param+=3 )
+	    {
+	    Self::SpaceVectorType cp0;
+	    this->GetOriginalControlPointPosition( cp0, i, j, k );
+	    
+	    Self::SpaceVectorType cp( &(pureDeformation[0])+param );
+	    cp += cp0;
+	    
+	    this->m_InitialAffineXform->ApplyInPlace( cp );
+	    
+	    for ( int dim = 0; dim < 3; ++dim )
+	      this->m_Parameters[param+dim] = cp[dim];
+	    }
 	  }
 	}
       }
