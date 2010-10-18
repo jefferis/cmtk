@@ -30,28 +30,30 @@
 //
 */
 
-#ifndef __cmtkRegion_h_included_
-#define __cmtkRegion_h_included_
+#ifndef __cmtkRegionIndexIterator_h_included_
+#define __cmtkRegionIndexIterator_h_included_
 
 #include <cmtkconfig.h>
 
+#include <Base/cmtkRegion.h>
 #include <Base/cmtkFixedVector.h>
 
 #include <System/cmtkSmartPtr.h>
 #include <System/cmtkSmartConstPtr.h>
-
-#include <fstream>
 
 namespace
 cmtk
 {
 /// Class for n-dimensional image index.
 template<size_t NDIM,typename T=int>
-class Region
+class RegionIndexIterator
 {
 public:
   /// This class.
-  typedef Region<NDIM,T> Self;
+  typedef RegionIndexIterator<NDIM,T> Self;
+
+  /// Region type.
+  typedef Region<NDIM,T> RegionType;
 
   /// Index type.
   typedef FixedVector<NDIM,T> IndexType;
@@ -62,71 +64,39 @@ public:
   /// Smart pointer-to-const to this class.
   typedef SmartConstPointer<Self> SmartConstPtr;
 
-  /// Default constructor.
-  Region() {}
-
   /// Constructor from two index, from and to.
-  Region( const typename Self::IndexType& fromIndex, const typename Self::IndexType& toIndex )
+  RegionIndexIterator( const typename Self::RegionType& region )
+    : m_Region( region )
+  {}
+
+  /// Increment operator.
+  Self& operator++()
   {
-    this->m_RegionFrom = fromIndex;
-    this->m_RegionTo = toIndex;
-  }
-  
-  /// Get "from".
-  typename Self::IndexType& From()
-  {
-    return this->m_RegionFrom;
+    int idx = NDIM-1;
+    while ( idx >= 0 )
+      {
+      if ( (++this->m_Index[idx]) >= this->m_Region.To()[idx] )
+	{
+	this->m_Index[idx] = this->m_Region.From()[idx];
+	--idx;
+	}
+      }
   }
 
-  /// Get const "from".
-  const typename Self::IndexType& From() const
+  /// Get index.
+  const typename Self::IndexType& Index() const
   {
-    return this->m_RegionFrom;
-  }
-
-  /// Get "from".
-  typename Self::IndexType& To()
-  {
-    return this->m_RegionTo;
-  }
-
-  /// Get const "from".
-  const typename Self::IndexType& To() const
-  {
-    return this->m_RegionTo;
-  }
-
-  /// Compute region size (e.g., number of pixels for grid regions).
-  T Size() const
-  {
-    T size = (this->m_RegionTo[0]-this->m_RegionFrom[0]);
-    for ( size_t i = 1; i < NDIM; ++i )
-      size *= (this->m_RegionTo[i]-this->m_RegionFrom[i]);
-    return size;
+    return this->m_Index;
   }
 
 private:
   /// Beginning index.
-  typename Self::IndexType m_RegionFrom;
+  typename Self::RegionType m_Region;
 
   /// End index.
-  typename Self::IndexType m_RegionTo;
+  typename Self::IndexType m_Index;
 };
-
-/// Stream input operator.
-template<size_t NDIM,typename T>
-std::ofstream& operator<<( std::ofstream& stream, const Region<NDIM,T>& region )
-{
-  return stream << region.From() << region.To();
-}
-
-/// Stream output operator.
-template<size_t NDIM,typename T>
-std::ifstream& operator>>( std::ifstream& stream, Region<NDIM,T>& region )
-{
-  return stream >> region.From() >> region.To();
-}
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkRegion_h_included_
+#endif // #ifndef __cmtkRegionIndexIterator_h_included_

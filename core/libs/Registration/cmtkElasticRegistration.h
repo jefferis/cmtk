@@ -36,7 +36,7 @@
 #include <cmtkconfig.h>
 
 #include <Registration/cmtkVoxelRegistration.h>
-#include <Base/cmtkWarpXform.h>
+#include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkMatchedLandmarkList.h>
 
 #include <string.h>
@@ -60,10 +60,10 @@ class ElasticRegistration :
 {
 protected:
   /// Initial deformation.
-  WarpXform::SmartPtr InitialWarpXform;
+  SplineWarpXform::SmartPtr InitialWarpXform;
 
   /// Optional inverse warp for inverse-consistent registration.
-  WarpXform::SmartPtr InverseWarpXform;
+  SplineWarpXform::SmartPtr InverseWarpXform;
 
   /** If this flag is set, reference and model volume are exchanged.
    * By default, volume #1 is the reference and volume #2 the model image.
@@ -145,6 +145,9 @@ protected:
 
   /// Matched landmarks list.
   cmtkGetSetMacro(MatchedLandmarkList::SmartPtr,LandmarkList);
+
+  /// Flag to turn on deformation unfolding before each level.
+  bool m_RelaxToUnfold;
 
   /// Set flag and value for forcing values outside the floating image.
   virtual void SetForceOutside( const bool flag = true, const Types::DataItem value = 0 )

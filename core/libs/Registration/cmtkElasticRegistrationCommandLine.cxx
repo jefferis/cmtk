@@ -161,22 +161,22 @@ ElasticRegistrationCommandLine
     cl.AddSwitch( Key( 'S', "switch" ), &this->ForceSwitchVolumes, true, "Switch reference and floating image" );
     cl.EndGroup();
 
-    cl.BeginGroup( "Optimization", "Optimization parameters" );
-    cl.AddOption( Key( 'e', "exploration" ), &this->m_Exploration, "Search space exploration (initial step size)" );
-    cl.AddOption( Key( 'a', "accuracy" ), &this->m_Accuracy, "Search accuracy (initial step size)" );
-    cl.AddOption( Key( 'f', "stepfactor" ), &this->OptimizerStepFactor, "Factor for search step size reduction. Must be > 0.0 and < 1.0 [default: 0.5]" );
-    cl.AddOption( Key( "delta-f-threshold" ), &this->m_DeltaFThreshold, "Optional threshold to terminate optimization (level) if relative change of target function drops below this value." );
-
-    cl.AddSwitch( Key( "no-maxnorm" ), &this->UseMaxNorm, false, "Use Euclid norm for gradient normalication in optimization, rather than maximum norm" );
-
+    cl.BeginGroup( "Regularization", "Regularization parameters" );
     cl.AddOption( Key( "jacobian-weight" ), &this->m_JacobianConstraintWeight, "Weight for Jacobian-based local volume preservation constraint" );
     cl.AddOption( Key( "energy-weight" ), &this->m_GridEnergyWeight, "Weight for grid bending energy constraint" );
     cl.AddOption( Key( "rigidity-weight" ), &this->m_RigidityConstraintWeight, "Weight for local rigidity constraint" );
     cl.AddOption( Key( "landmark-weight" ), &this->m_LandmarkErrorWeight, "Weight for landmark misregistration registration" );
     cl.AddOption( Key( "ic-weight" ), &this->m_InverseConsistencyWeight, "Weight for inverse consistency constraint" );
     cl.AddOption( Key( "relax" ), &this->m_RelaxWeight, "Weight relaxation factor for alternating under-constrained iterations" );
+    cl.AddSwitch( Key( "relax-to-unfold" ), &this->m_RelaxToUnfold, true, "Before each resolution level, regularize negative-Jacobian areas of the deformation to unfold them." );
+    cl.EndGroup();
 
-    cl.AddOption( Key( "rigidity-weight-map" ), &this->RigidityConstraintMapFilename, "Filename for rigidity map weight image" );
+    cl.BeginGroup( "Optimization", "Optimization parameters" );
+    cl.AddOption( Key( 'e', "exploration" ), &this->m_Exploration, "Search space exploration (initial step size)" );
+    cl.AddOption( Key( 'a', "accuracy" ), &this->m_Accuracy, "Search accuracy (initial step size)" );
+    cl.AddOption( Key( 'f', "stepfactor" ), &this->OptimizerStepFactor, "Factor for search step size reduction. Must be > 0.0 and < 1.0 [default: 0.5]" );
+    cl.AddOption( Key( "delta-f-threshold" ), &this->m_DeltaFThreshold, "Optional threshold to terminate optimization (level) if relative change of target function drops below this value." );
+    cl.AddSwitch( Key( "no-maxnorm" ), &this->UseMaxNorm, false, "Use Euclid norm for gradient normalication in optimization, rather than maximum norm" );
     cl.EndGroup();
 
     cl.BeginGroup( "Resolution", "Image resolution parameters" );

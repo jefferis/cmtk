@@ -799,7 +799,7 @@ SplineWarpXform::GetJacobianConstraintDerivative
 void
 SplineWarpXform::RelaxToUnfold()
 {
-  std::vector<byte> cpList;
+  std::vector<byte> cpList( this->NumberOfControlPoints );
   std::fill( cpList.begin(), cpList.end(), 0 );
 
   std::vector<double> jacobiansRow( this->VolumeDims[0] );
@@ -819,13 +819,93 @@ SplineWarpXform::RelaxToUnfold()
 	  if ( jacobiansRow[i] <= 0 )
 	    {
 	    isFolded = true;
-	    cpList[ this->gX[i] * this->nextI + this->gY[j] * this->nextJ + this->gZ[k] * this->nextK ] = 1;
+	    cpList[ (this->gX[i] * this->nextI + this->gY[j] * this->nextJ + this->gZ[k] * this->nextK)/3 ] = 1;
 	    }
 	  }
 	}
       }
 
-    // regularize the affected control points
+    if ( isFolded )
+      {
+      // Expand affected control points to their 4x4x4 neighbourhoods on all sides.
+      for ( int k = 0; k < this->m_Dims[2]; ++k )
+	{
+	for ( int j = 0; j < this->m_Dims[1]; ++j )
+	  {
+	  for ( int i = 0; i < this->m_Dims[0]; ++i )
+	    {
+	    if ( cpList[ (i * this->nextI + j * this->nextJ + k * this->nextK)/3 ] == 1 )
+	      {
+	      for ( int kk = std::max( 0, k-3 ); kk < std::min( k+4, this->m_Dims[2] ); ++kk )
+		{
+		for ( int jj = std::max( 0, j-3 ); jj < std::min( j+4, this->m_Dims[1] ); ++jj )
+		  {
+		  for ( int ii = std::max( 0, i-3 ); ii < std::min( i+4, this->m_Dims[0] ); ++ii )
+		    {
+		    if ( cpList[ ii * this->nextI + jj * this->nextJ + kk * this->nextK ] != 1 )
+		      {
+		      cpList[ ii * this->nextI + jj * this->nextJ + kk * this->nextK ] = 2;
+		      }
+		    }
+		  }
+		}
+	      }
+	    }
+	  }
+	}
+      
+      // regularize the affected control points
+      std::vector<Types::Coordinate> smoothed( this->NumberOfControlPoints );
+      for ( int dim = 0; dim < 3; ++dim )
+	{
+	// get all control point positions for the "dim" component
+	size_t cp = 0;
+	for ( int k = 0; k < this->m_Dims[2]; ++k )
+	  {
+	  for ( int j = 0; j < this->m_Dims[1]; ++j )
+	    {
+	    for ( int i = 0; i < this->m_Dims[0]; ++i, ++cp )
+	      {
+	      if ( cpList[cp] )
+		{
+		// if this is a control point that needs regularizing, do it
+		Types::Coordinate weight = 0;
+		FixedVector<3,Types::Coordinate> delta;		    
+		for ( int kk = std::max( 0, k-3 ); kk < std::min( k+4, this->m_Dims[2] ); ++kk )
+		  {
+		  delta[2] = k-kk;
+		  for ( int jj = std::max( 0, j-3 ); jj < std::min( j+4, this->m_Dims[1] ); ++jj )
+		    {
+		    delta[1] = j-jj;
+		    for ( int ii = std::max( 0, i-3 ); ii < std::min( i+4, this->m_Dims[0] ); ++ii )
+		      {
+		      delta[0] = i-ii;
+		      
+		      const Types::Coordinate w = exp( -delta.SumOfSquares() / 27 );
+		      smoothed[cp] = w * this->m_Parameters[ dim + ii*this->nextI + jj*this->nextJ + kk*this->nextK ];
+		      weight += w;
+		      }
+		    }
+		  }
+		if ( weight > 0 )
+		  smoothed[cp] /= weight;
+		}
+	      else
+		{
+		// if this control point does not need regularizing, keep it as is
+		smoothed[cp] = this->m_Parameters[dim+cp*3];
+		}
+	      }
+	    }
+	  }
+	
+	// copy modified control point position component back
+	for ( size_t cp = 0; cp < this->NumberOfControlPoints; ++cp )
+	  {
+	  this->m_Parameters[dim+cp*3] = smoothed[cp];
+	  }
+	}
+      }
     }
 }
 

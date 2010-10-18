@@ -85,18 +85,18 @@ public:
   virtual void SetGridEnergyWeight( const Self::ReturnType ) = 0;
 
   /// Set warp for forward and backward functional.
-  virtual void SetWarpXform( WarpXform::SmartPtr& warpFwd, WarpXform::SmartPtr& warpBwd ) = 0;
+  virtual void SetWarpXform( SplineWarpXform::SmartPtr& warpFwd, SplineWarpXform::SmartPtr& warpBwd ) = 0;
 };
 
 /// Template for symmtric-consistent elastic registration functional.
-template<class VM, class W>
+template<class VM>
 class SymmetricElasticFunctional_Template :
   /** Inherit from non-template base functional class. */
   public SymmetricElasticFunctional
 {
 public:
   /// This class.
-  typedef SymmetricElasticFunctional_Template<VM,W> Self;
+  typedef SymmetricElasticFunctional_Template<VM> Self;
 
   /// Smart pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
@@ -106,16 +106,16 @@ public:
 
   /// The forward functional.
 #ifdef CMTK_BUILD_SMP
-  ParallelElasticFunctional<VM,W> FwdFunctional;
+  ParallelElasticFunctional<VM> FwdFunctional;
 #else
-  VoxelMatchingElasticFunctional_Template<VM,W> FwdFunctional;
+  VoxelMatchingElasticFunctional_Template<VM> FwdFunctional;
 #endif
 
   /// The backward functional.
 #ifdef CMTK_BUILD_SMP
-  ParallelElasticFunctional<VM,W> BwdFunctional;
+  ParallelElasticFunctional<VM> BwdFunctional;
 #else
-  VoxelMatchingElasticFunctional_Template<VM,W> BwdFunctional;
+  VoxelMatchingElasticFunctional_Template<VM> BwdFunctional;
 #endif
 
   /// Constructor.
@@ -167,7 +167,7 @@ public:
   }
   
   /// Set warp for forward and backward functional.
-  virtual void SetWarpXform( WarpXform::SmartPtr& warpFwd, WarpXform::SmartPtr& warpBwd );
+  virtual void SetWarpXform( SplineWarpXform::SmartPtr& warpFwd, SplineWarpXform::SmartPtr& warpBwd );
 
   /// Return parameter vector.
   virtual void GetParamVector ( CoordinateVector& v )  

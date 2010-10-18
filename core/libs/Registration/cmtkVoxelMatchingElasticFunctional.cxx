@@ -142,7 +142,7 @@ VoxelMatchingElasticFunctional_WarpTemplate<W>::WeightedDerivative
 template<class W> 
 void
 VoxelMatchingElasticFunctional_WarpTemplate<W>::SetWarpXform
-( WarpXform::SmartPtr& warp )
+( typename W::SmartPtr& warp )
 {
   Warp = W::SmartPtr::DynamicCastFrom( warp );
   if ( Warp )
@@ -171,9 +171,9 @@ VoxelMatchingElasticFunctional_WarpTemplate<W>::SetWarpXform
   }
 }
 
-template<class VM, class W>
+template<class VM>
 void
-VoxelMatchingElasticFunctional_Template<VM,W>::UpdateWarpFixedParameters() 
+VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters() 
 {
   if ( !this->ConsistencyHistogram ) 
     {
@@ -333,17 +333,17 @@ CreateElasticFunctional
       switch ( metric ) 
 	{
 	case 0:
-	  return new ParallelElasticFunctional< VoxelMatchingNormMutInf_Trilinear,SplineWarpXform>( refVolume, fltVolume );
+	  return new ParallelElasticFunctional< VoxelMatchingNormMutInf_Trilinear>( refVolume, fltVolume );
 	case 1:
-	  return new ParallelElasticFunctional<VoxelMatchingMutInf_Trilinear,SplineWarpXform>( refVolume, fltVolume );
+	  return new ParallelElasticFunctional<VoxelMatchingMutInf_Trilinear>( refVolume, fltVolume );
 	case 2:
-	  return new ParallelElasticFunctional<VoxelMatchingCorrRatio_Trilinear,SplineWarpXform>( refVolume, fltVolume );
+	  return new ParallelElasticFunctional<VoxelMatchingCorrRatio_Trilinear>( refVolume, fltVolume );
 	case 3:
 	  return NULL; // masked nmi retired
 	case 4:
-	  return new ParallelElasticFunctional<VoxelMatchingMeanSquaredDifference,SplineWarpXform>( refVolume, fltVolume );
+	  return new ParallelElasticFunctional<VoxelMatchingMeanSquaredDifference>( refVolume, fltVolume );
 	case 5:
-	  return new ParallelElasticFunctional<VoxelMatchingCrossCorrelation,SplineWarpXform>( refVolume, fltVolume );
+	  return new ParallelElasticFunctional<VoxelMatchingCrossCorrelation>( refVolume, fltVolume );
 	default:
 	  return NULL;
 	}
@@ -351,17 +351,17 @@ CreateElasticFunctional
       switch ( metric ) 
 	{
 	case 0:
-	  return new ParallelElasticFunctional< VoxelMatchingNormMutInf_NearestNeighbor, SplineWarpXform >( refVolume, fltVolume );
+	  return new ParallelElasticFunctional< VoxelMatchingNormMutInf_NearestNeighbor >( refVolume, fltVolume );
 	case 1:
-	  return new ParallelElasticFunctional<VoxelMatchingMutInf_NearestNeighbor,SplineWarpXform>( refVolume, fltVolume );
+	  return new ParallelElasticFunctional<VoxelMatchingMutInf_NearestNeighbor>( refVolume, fltVolume );
 	case 2:
-	  return new ParallelElasticFunctional<VoxelMatchingCorrRatio_NearestNeighbor,SplineWarpXform>( refVolume, fltVolume );
+	  return new ParallelElasticFunctional<VoxelMatchingCorrRatio_NearestNeighbor>( refVolume, fltVolume );
 	case 3:
 	  return NULL; // masked nmi retired
 	case 4:
-	  return new ParallelElasticFunctional<VoxelMatchingMeanSquaredDifference,SplineWarpXform>( refVolume, fltVolume );
+	  return new ParallelElasticFunctional<VoxelMatchingMeanSquaredDifference>( refVolume, fltVolume );
 	case 5:
-	  return new ParallelElasticFunctional<VoxelMatchingCrossCorrelation,SplineWarpXform>( refVolume, fltVolume );
+	  return new ParallelElasticFunctional<VoxelMatchingCrossCorrelation>( refVolume, fltVolume );
 	default:
 	  return NULL;
 	}
@@ -376,17 +376,17 @@ CreateElasticFunctional
       switch ( metric ) 
 	{
 	case 0:
-	  return new VoxelMatchingElasticFunctional_Template< VoxelMatchingNormMutInf_Trilinear,SplineWarpXform>( refVolume, fltVolume );
+	  return new VoxelMatchingElasticFunctional_Template< VoxelMatchingNormMutInf_Trilinear>( refVolume, fltVolume );
 	case 1:
-	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingMutInf_Trilinear,SplineWarpXform>( refVolume, fltVolume );
+	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingMutInf_Trilinear>( refVolume, fltVolume );
 	case 2:
-	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingCorrRatio_Trilinear,SplineWarpXform>( refVolume, fltVolume );
+	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingCorrRatio_Trilinear>( refVolume, fltVolume );
 	case 3:
 	  return NULL; // masked nmi retired
 	case 4:
-	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingMeanSquaredDifference,SplineWarpXform>( refVolume, fltVolume );
+	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingMeanSquaredDifference>( refVolume, fltVolume );
 	case 5:
-	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingCrossCorrelation,SplineWarpXform>( refVolume, fltVolume );
+	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingCrossCorrelation>( refVolume, fltVolume );
 	default:
 	  return NULL;
 	}
@@ -396,15 +396,15 @@ CreateElasticFunctional
 	case 0:
 	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingNormMutInf_NearestNeighbor, SplineWarpXform>( refVolume, fltVolume );
 	case 1:
-	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingMutInf_NearestNeighbor,SplineWarpXform>( refVolume, fltVolume );
+	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingMutInf_NearestNeighbor>( refVolume, fltVolume );
 	case 2:
-	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingCorrRatio_NearestNeighbor,SplineWarpXform>( refVolume, fltVolume );
+	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingCorrRatio_NearestNeighbor>( refVolume, fltVolume );
 	case 3:
 	  return NULL; // masked nmi retired
 	case 4:
-	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingMeanSquaredDifference,SplineWarpXform>( refVolume, fltVolume );
+	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingMeanSquaredDifference>( refVolume, fltVolume );
 	case 5:
-	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingCrossCorrelation,SplineWarpXform>( refVolume, fltVolume );
+	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingCrossCorrelation>( refVolume, fltVolume );
       default:
 	return NULL;
 	}
@@ -416,17 +416,17 @@ CreateElasticFunctional
 
 template class VoxelMatchingElasticFunctional_WarpTemplate<SplineWarpXform>;
 
-template class VoxelMatchingElasticFunctional_Template<VoxelMatchingNormMutInf_Trilinear, SplineWarpXform>;
-template class VoxelMatchingElasticFunctional_Template<VoxelMatchingNormMutInf_NearestNeighbor, SplineWarpXform>;
+template class VoxelMatchingElasticFunctional_Template<VoxelMatchingNormMutInf_Trilinear>;
+template class VoxelMatchingElasticFunctional_Template<VoxelMatchingNormMutInf_NearestNeighbor>;
 
-template class VoxelMatchingElasticFunctional_Template<VoxelMatchingMutInf_Trilinear, SplineWarpXform>;
-template class VoxelMatchingElasticFunctional_Template<VoxelMatchingMutInf_NearestNeighbor, SplineWarpXform>;
+template class VoxelMatchingElasticFunctional_Template<VoxelMatchingMutInf_Trilinear>;
+template class VoxelMatchingElasticFunctional_Template<VoxelMatchingMutInf_NearestNeighbor>;
 
-template class VoxelMatchingElasticFunctional_Template<VoxelMatchingCorrRatio_Trilinear, SplineWarpXform>;
-template class VoxelMatchingElasticFunctional_Template<VoxelMatchingCorrRatio_NearestNeighbor, SplineWarpXform>;
+template class VoxelMatchingElasticFunctional_Template<VoxelMatchingCorrRatio_Trilinear>;
+template class VoxelMatchingElasticFunctional_Template<VoxelMatchingCorrRatio_NearestNeighbor>;
 
-template class VoxelMatchingElasticFunctional_Template<VoxelMatchingCrossCorrelation, SplineWarpXform>;
+template class VoxelMatchingElasticFunctional_Template<VoxelMatchingCrossCorrelation>;
 
-template class VoxelMatchingElasticFunctional_Template<VoxelMatchingMeanSquaredDifference, SplineWarpXform>;
+template class VoxelMatchingElasticFunctional_Template<VoxelMatchingMeanSquaredDifference>;
 
 } // namespace cmtk

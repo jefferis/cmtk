@@ -61,6 +61,14 @@ public:
   /// Smart pointer-to-const to this class.
   typedef SmartConstPointer<Self> SmartConstPtr;
 
+  /// Zero operator.
+  static const Self Zero()
+  {
+    Self v;
+    std::fill( v.begin(), v.end(), 0 );
+    return v;
+  }
+
   /// Default constructor.
   FixedVector() {}
 

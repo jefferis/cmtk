@@ -49,10 +49,10 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-template<class VM, class W>
+template<class VM>
 void
-SymmetricElasticFunctional_Template<VM,W>::SetWarpXform
-( WarpXform::SmartPtr& warpFwd, WarpXform::SmartPtr& warpBwd ) 
+SymmetricElasticFunctional_Template<VM>::SetWarpXform
+( SplineWarpXform::SmartPtr& warpFwd, SplineWarpXform::SmartPtr& warpBwd ) 
 {
   this->FwdFunctional.SetWarpXform( warpFwd );
   this->FwdFunctional.SetInverseTransformation( warpBwd );
@@ -61,9 +61,9 @@ SymmetricElasticFunctional_Template<VM,W>::SetWarpXform
   this->BwdFunctional.SetInverseTransformation( warpFwd );
 }
 
-template<class VM, class W>
-typename SymmetricElasticFunctional_Template<VM,W>::ReturnType
-SymmetricElasticFunctional_Template<VM,W>
+template<class VM>
+typename SymmetricElasticFunctional_Template<VM>::ReturnType
+SymmetricElasticFunctional_Template<VM>
 ::EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step )
 {
   CoordinateVector vFwd( this->FwdFunctional.ParamVectorDim(), v.Elements, false /*freeElements*/ );
@@ -72,8 +72,7 @@ SymmetricElasticFunctional_Template<VM,W>
   CoordinateVector vBwd( this->BwdFunctional.ParamVectorDim(), v.Elements+this->FwdFunctional.ParamVectorDim(), false /*freeElements*/ );
   CoordinateVector gBwd( this->BwdFunctional.ParamVectorDim(), g.Elements+this->FwdFunctional.ParamVectorDim(), false /*freeElements*/ );
 
-  const typename Self::ReturnType result = this->FwdFunctional.EvaluateWithGradient( vFwd, gFwd, step ) + this->BwdFunctional.EvaluateWithGradient( vBwd, gBwd, step );
-  return result;
+  return this->FwdFunctional.EvaluateWithGradient( vFwd, gFwd, step ) + this->BwdFunctional.EvaluateWithGradient( vBwd, gBwd, step );
 }
 
 SymmetricElasticFunctional* 
@@ -86,17 +85,17 @@ CreateSymmetricElasticFunctional( const int metric, UniformVolume::SmartPtr& ref
       switch ( metric ) 
 	{
 	case 0:
-	  return new SymmetricElasticFunctional_Template< VoxelMatchingNormMutInf_Trilinear,SplineWarpXform>( refVolume, fltVolume );
+	  return new SymmetricElasticFunctional_Template< VoxelMatchingNormMutInf_Trilinear>( refVolume, fltVolume );
 	case 1:
-	  return new SymmetricElasticFunctional_Template<VoxelMatchingMutInf_Trilinear,SplineWarpXform>( refVolume, fltVolume );
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingMutInf_Trilinear>( refVolume, fltVolume );
 	case 2:
-	  return new SymmetricElasticFunctional_Template<VoxelMatchingCorrRatio_Trilinear,SplineWarpXform>( refVolume, fltVolume );
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingCorrRatio_Trilinear>( refVolume, fltVolume );
 	case 3:
 	  return NULL; // masked NMI retired
 	case 4:
-	  return new SymmetricElasticFunctional_Template<VoxelMatchingMeanSquaredDifference,SplineWarpXform>( refVolume, fltVolume );
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingMeanSquaredDifference>( refVolume, fltVolume );
 	case 5:
-	  return new SymmetricElasticFunctional_Template<VoxelMatchingCrossCorrelation,SplineWarpXform>( refVolume, fltVolume );
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingCrossCorrelation>( refVolume, fltVolume );
 	default:
 	  return NULL;
 	}
@@ -104,17 +103,17 @@ CreateSymmetricElasticFunctional( const int metric, UniformVolume::SmartPtr& ref
       switch ( metric ) 
 	{
 	case 0:
-	  return new SymmetricElasticFunctional_Template<VoxelMatchingNormMutInf_NearestNeighbor, SplineWarpXform>( refVolume, fltVolume );
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingNormMutInf_NearestNeighbor>( refVolume, fltVolume );
 	case 1:
-	  return new SymmetricElasticFunctional_Template<VoxelMatchingMutInf_NearestNeighbor,SplineWarpXform>( refVolume, fltVolume );
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingMutInf_NearestNeighbor>( refVolume, fltVolume );
 	case 2:
-	  return new SymmetricElasticFunctional_Template<VoxelMatchingCorrRatio_NearestNeighbor,SplineWarpXform>( refVolume, fltVolume );
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingCorrRatio_NearestNeighbor>( refVolume, fltVolume );
 	case 3:
 	  return NULL; // masked NMI retired
 	case 4:
-	  return new SymmetricElasticFunctional_Template<VoxelMatchingMeanSquaredDifference,SplineWarpXform>( refVolume, fltVolume );
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingMeanSquaredDifference>( refVolume, fltVolume );
 	case 5:
-	  return new SymmetricElasticFunctional_Template<VoxelMatchingCrossCorrelation,SplineWarpXform>( refVolume, fltVolume );
+	  return new SymmetricElasticFunctional_Template<VoxelMatchingCrossCorrelation>( refVolume, fltVolume );
 	default:
 	  return NULL;
 	}

@@ -142,6 +142,9 @@ protected:
   /// Weighting factor of landmark registration error vs. image similarity.
   cmtkGetSetMacro(float,LandmarkErrorWeight);
 
+  /// Flag to turn on deformation unfolding before each level.
+  bool m_RelaxToUnfold;
+
   /** Default constructor.
    * Set initial values for some flags.
    */

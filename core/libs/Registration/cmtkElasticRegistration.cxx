@@ -62,6 +62,7 @@ ElasticRegistration::ElasticRegistration ()
     m_MatchFltToRefHistogram( false ),
     m_RigidityConstraintMap( NULL ),
     m_InverseConsistencyWeight( 0.0 ),
+    m_RelaxToUnfold( false ),
     m_ForceOutsideFlag( false ),
     m_ForceOutsideValue( 0.0 )
 {
@@ -130,10 +131,10 @@ ElasticRegistration::InitRegistration ()
     } 
   else
     {
-    WarpXform::SmartPtr warpXform( this->MakeWarpXform( this->m_ReferenceVolume->Size, affineXform ) );
+    SplineWarpXform::SmartPtr warpXform( this->MakeWarpXform( this->m_ReferenceVolume->Size, affineXform ) );
     
     if ( this->m_InverseConsistencyWeight > 0 ) 
-      InverseWarpXform = WarpXform::SmartPtr( this->MakeWarpXform( this->m_FloatingVolume->Size, initialInverse ) );
+      InverseWarpXform = SplineWarpXform::SmartPtr( this->MakeWarpXform( this->m_FloatingVolume->Size, initialInverse ) );
 
     // MIPSpro needs explicit:
     this->m_Xform = Xform::SmartPtr::DynamicCastFrom( warpXform ); 
@@ -256,8 +257,8 @@ ElasticRegistration::EnterResolution
 ( CoordinateVector::SmartPtr& v, Functional::SmartPtr& functional,
   const int idx, const int total ) 
 {
-  WarpXform::SmartPtr warpXform = WarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
-
+  SplineWarpXform::SmartPtr warpXform = SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
+  
   float effGridEnergyWeight = this->m_GridEnergyWeight;
   float effJacobianConstraintWeight = this->m_JacobianConstraintWeight;
   float effRigidityConstraintWeight = this->m_RigidityConstraintWeight;
@@ -276,6 +277,10 @@ ElasticRegistration::EnterResolution
   if ( elasticFunctional ) 
     {
     elasticFunctional->SetWarpXform( warpXform );
+
+    if ( this->m_RelaxToUnfold )
+      warpXform->RelaxToUnfold();
+
     elasticFunctional->SetGridEnergyWeight( effGridEnergyWeight );
     elasticFunctional->SetJacobianConstraintWeight( effJacobianConstraintWeight );
     elasticFunctional->SetRigidityConstraintWeight( effRigidityConstraintWeight );
@@ -287,6 +292,13 @@ ElasticRegistration::EnterResolution
     if ( symmetricFunctional ) 
       {
       symmetricFunctional->SetWarpXform( warpXform, this->InverseWarpXform );
+
+      if ( this->m_RelaxToUnfold )
+	{
+	warpXform->RelaxToUnfold();
+	this->InverseWarpXform->RelaxToUnfold();
+	}
+
       symmetricFunctional->SetGridEnergyWeight( effGridEnergyWeight );
       symmetricFunctional->SetJacobianConstraintWeight( effJacobianConstraintWeight );
       symmetricFunctional->SetRigidityConstraintWeight( effRigidityConstraintWeight );

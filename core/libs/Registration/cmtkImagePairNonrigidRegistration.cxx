@@ -59,7 +59,8 @@ ImagePairNonrigidRegistration::ImagePairNonrigidRegistration ()
     InverseWarpXform( NULL ),
     m_MatchFltToRefHistogram( false ),
     m_RepeatMatchFltToRefHistogram( false ),
-    m_InverseConsistencyWeight( 0.0 )
+    m_InverseConsistencyWeight( 0.0 ),
+    m_RelaxToUnfold( false )
 {
   this->m_Metric = 0;
   this->m_Algorithm = 3;
@@ -283,6 +284,8 @@ ImagePairNonrigidRegistration::EnterResolution
   SmartPointer<ImagePairNonrigidRegistrationFunctional> nonrigidFunctional = ImagePairNonrigidRegistrationFunctional::SmartPtr::DynamicCastFrom( functional );
   if ( nonrigidFunctional ) 
     {
+    if ( this->m_RelaxToUnfold )
+      warpXform->RelaxToUnfold();
     nonrigidFunctional->SetWarpXform( warpXform );
     nonrigidFunctional->SetGridEnergyWeight( effGridEnergyWeight );
     nonrigidFunctional->SetJacobianConstraintWeight( effJacobianConstraintWeight );
@@ -293,6 +296,11 @@ ImagePairNonrigidRegistration::EnterResolution
     SmartPointer<ImagePairSymmetricNonrigidRegistrationFunctional> symmetricFunctional = ImagePairSymmetricNonrigidRegistrationFunctional::SmartPtr::DynamicCastFrom( functional );
     if ( symmetricFunctional ) 
       {
+      if ( this->m_RelaxToUnfold )
+	{
+	warpXform->RelaxToUnfold();
+	this->InverseWarpXform->RelaxToUnfold();
+	}
       symmetricFunctional->SetWarpXform( warpXform, this->InverseWarpXform );
       symmetricFunctional->SetGridEnergyWeight( effGridEnergyWeight );
       symmetricFunctional->SetJacobianConstraintWeight( effJacobianConstraintWeight );

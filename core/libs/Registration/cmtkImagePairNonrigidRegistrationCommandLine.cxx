@@ -144,19 +144,21 @@ ImagePairNonrigidRegistrationCommandLine
     cl.AddSwitch( Key( "fast" ), &this->m_FastMode, true, "Fast computation mode: may give slightly worse results than accurate mode, but saves substantial CPU time" );
     cl.EndGroup();
 
-    cl.BeginGroup( "Optimization", "Optimization parameters" );
-    cl.AddOption( Key( "max-stepsize" ), &this->m_MaxStepSize, "Maximum optimizer step size, which determines search space exploration." );
-    cl.AddOption( Key( "min-stepsize" ), &this->m_MinStepSize, "Minimum optimizer step size, which determines precision." );
-    cl.AddOption( Key( "stepfactor" ), &this->m_OptimizerStepFactor, "Factor for search step size reduction. Must be > 0.0 and < 1.0 [default: 0.5]" );
-    cl.AddOption( Key( "delta-f-threshold" ), &this->m_DeltaFThreshold, "Optional threshold to terminate optimization (level) if relative change of target function drops below this value." );
-
-    cl.AddSwitch( Key( "no-maxnorm" ), &this->m_UseMaxNorm, false, "Use Euclid norm for gradient normalication in optimization, rather than maximum norm" );
-
+    cl.BeginGroup( "Regularization", "Regularization parameters" );
     cl.AddOption( Key( "jacobian-constraint-weight" ), &this->m_JacobianConstraintWeight, "Weight for Jacobian-based local volume preservation constraint" );
     cl.AddOption( Key( "smoothness-constraint-weight" ), &this->m_GridEnergyWeight, "Weight for smoothness constraint based on second-order grid bending energy." );
     cl.AddOption( Key( "landmark-constraint-weight" ), &this->m_LandmarkErrorWeight, "Weight for landmark misregistration registration" );
     cl.AddOption( Key( "inverse-consistency-weight" ), &this->m_InverseConsistencyWeight, "Weight for inverse consistency constraint" );
     cl.AddOption( Key( "constraint-relaxation-factor" ), &this->m_RelaxWeight, "Weight relaxation factor for alternating under-constrained iterations" );
+    cl.AddSwitch( Key( "relax-to-unfold" ), &this->m_RelaxToUnfold, true, "Before each resolution level, regularize negative-Jacobian areas of the deformation to unfold them." );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Optimization", "Optimization parameters" );
+    cl.AddOption( Key( "max-stepsize" ), &this->m_MaxStepSize, "Maximum optimizer step size, which determines search space exploration." );
+    cl.AddOption( Key( "min-stepsize" ), &this->m_MinStepSize, "Minimum optimizer step size, which determines precision." );
+    cl.AddOption( Key( "stepfactor" ), &this->m_OptimizerStepFactor, "Factor for search step size reduction. Must be > 0.0 and < 1.0 [default: 0.5]" );
+    cl.AddOption( Key( "delta-f-threshold" ), &this->m_DeltaFThreshold, "Optional threshold to terminate optimization (level) if relative change of target function drops below this value." );
+    cl.AddSwitch( Key( "no-maxnorm" ), &this->m_UseMaxNorm, false, "Use Euclid norm for gradient normalication in optimization, rather than maximum norm" );
     cl.EndGroup();
 
     cl.BeginGroup( "Resolution", "Image resolution parameters" );

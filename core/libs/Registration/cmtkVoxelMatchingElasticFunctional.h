@@ -38,7 +38,7 @@
 #include <Registration/cmtkVoxelMatchingFunctional.h>
 
 #include <Base/cmtkVector.h>
-#include <Base/cmtkWarpXform.h>
+#include <Base/cmtkSplineWarpXform.h>
 #include <Base/cmtkJointHistogram.h>
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkMacros.h>
@@ -87,7 +87,7 @@ public:
    * common access point to update the warp transformation after construction
    * of the functional.
    */
-  virtual void SetWarpXform( WarpXform::SmartPtr& warp ) = 0;
+  virtual void SetWarpXform( SplineWarpXform::SmartPtr& warp ) = 0;
 
   /// Set flag and value for forcing pixels outside the floating image.
   virtual void SetForceOutside( const bool flag = true, const Types::DataItem value = 0 ) = 0;
@@ -224,7 +224,7 @@ protected:
 
 public:
   /// Set inverse transformation.
-  void SetInverseTransformation( WarpXform::SmartPtr& inverseTransformation ) 
+  void SetInverseTransformation( typename W::SmartPtr& inverseTransformation ) 
   {
     this->InverseTransformation = W::SmartPtr::DynamicCastFrom( inverseTransformation );
   }
@@ -306,7 +306,7 @@ public:
    * the given warp, while for all other threads a copy of the original object
    * is created by a call to WarpXform::Clone().
    */
-  virtual void SetWarpXform ( WarpXform::SmartPtr& warp );
+  virtual void SetWarpXform ( typename W::SmartPtr& warp );
 
   /// Return parameter vector.
   virtual void GetParamVector ( CoordinateVector& v ) 
@@ -334,13 +334,14 @@ protected:
  * The metric to be optimized is given by a template parameter, therefore 
  * allowing inlined code to be generated for efficient evaluation.
  */
-template<class VM, class W> class VoxelMatchingElasticFunctional_Template 
+template<class VM> 
+class VoxelMatchingElasticFunctional_Template 
   : public VoxelMatchingFunctional_Template<VM>,
-    public VoxelMatchingElasticFunctional_WarpTemplate<W> 
+    public VoxelMatchingElasticFunctional_WarpTemplate<SplineWarpXform> 
 {
 public:
   /// This class.
-  typedef VoxelMatchingElasticFunctional_Template<VM,W> Self;
+  typedef VoxelMatchingElasticFunctional_Template<VM> Self;
 
   /** Constructor.
    * Init pointers to volume and transformation objects and initialize
@@ -350,7 +351,7 @@ public:
    */
   VoxelMatchingElasticFunctional_Template( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating )
     : VoxelMatchingFunctional_Template<VM>( reference, floating ), 
-      VoxelMatchingElasticFunctional_WarpTemplate<W>( reference, floating ),
+      VoxelMatchingElasticFunctional_WarpTemplate<SplineWarpXform>( reference, floating ),
       m_ForceOutsideFlag( false ),
       m_ForceOutsideValueRescaled( 0 )
   {
@@ -369,7 +370,8 @@ public:
   /// Virtual destructor.
   virtual ~VoxelMatchingElasticFunctional_Template() 
   {
-    if ( WarpedVolume ) delete[] WarpedVolume;
+    if ( WarpedVolume ) 
+      delete[] WarpedVolume;
   }
 
   /// Set flag and value for forcing values outside the floating image.
@@ -386,7 +388,7 @@ public:
    *@param voi Volume-of-Influence for the parameter under consideration.
    *@return The metric after recomputation over the given volume-of-influence.
    */
-  typename Self::ReturnType EvaluateIncremental( const W* warp, SmartPointer<VM>& localMetric, const DataGrid::RegionType& voi ) 
+  typename Self::ReturnType EvaluateIncremental( const SplineWarpXform* warp, SmartPointer<VM>& localMetric, const DataGrid::RegionType& voi ) 
   {
     Vector3D *pVec;
     int pX, pY, pZ, offset, r;

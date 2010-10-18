@@ -52,14 +52,14 @@ cmtk
  * time-consuming tasks performed by VoxelMatchingElasticFunctional and its
  * derived classes.
  */
-template<class VM, class W> 
+template<class VM> 
 class ParallelElasticFunctional
   /// Inherit from non-parallel functional.
-  : public VoxelMatchingElasticFunctional_Template<VM,W> 
+  : public VoxelMatchingElasticFunctional_Template<VM> 
 {
 protected:
   /// Array of warp transformation objects for the parallel threads.
-  SmartPointer<W> *ThreadWarp;
+  SplineWarpXform::SmartPtr *ThreadWarp;
 
   /// Array of storage for simultaneously retrieving multiple deformed vectors.
   Vector3D **ThreadVectorCache;
@@ -76,20 +76,20 @@ protected:
 
 public:
   /// This class.
-  typedef ParallelElasticFunctional<VM,W> Self;
+  typedef ParallelElasticFunctional<VM> Self;
 
   /// Superclass.
-  typedef VoxelMatchingElasticFunctional_Template<VM,W> Superclass;
+  typedef VoxelMatchingElasticFunctional_Template<VM> Superclass;
 
   /// Constructor.
   ParallelElasticFunctional ( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating ) :
-    VoxelMatchingElasticFunctional_Template<VM,W>( reference, floating )
+    VoxelMatchingElasticFunctional_Template<VM>( reference, floating )
   {
     ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
     this->m_NumberOfThreads = threadPool.GetNumberOfThreads();
     this->m_NumberOfTasks = 4 * this->m_NumberOfThreads - 3;
     
-    ThreadWarp = Memory::AllocateArray<typename W::SmartPtr>( this->m_NumberOfThreads );
+    ThreadWarp = Memory::AllocateArray<SplineWarpXform::SmartPtr>( this->m_NumberOfThreads );
     
     this->InfoTaskGradient.resize( this->m_NumberOfTasks );
     this->InfoTaskComplete.resize( this->m_NumberOfTasks );
@@ -125,7 +125,7 @@ public:
    * the given warp, while for all other threads a copy of the original object
    * is created by a call to WarpXform::Clone().
    */
-  virtual void SetWarpXform ( WarpXform::SmartPtr& warp ) 
+  virtual void SetWarpXform ( SplineWarpXform::SmartPtr& warp ) 
   {
     this->Superclass::SetWarpXform( warp );
     
@@ -135,7 +135,7 @@ public:
 	{
 	if ( thread ) 
 	  {
-	  ThreadWarp[thread] = typename W::SmartPtr( this->Warp->Clone() );
+	  ThreadWarp[thread] = SplineWarpXform::SmartPtr( this->Warp->Clone() );
 	  ThreadWarp[thread]->RegisterVolume( this->ReferenceGrid );
 	  } 
 	else 
@@ -145,7 +145,7 @@ public:
 	} 
       else
 	{
-	ThreadWarp[thread] = W::SmartPtr::Null;
+	ThreadWarp[thread] = SplineWarpXform::SmartPtr::Null;
 	}
       }
   }
@@ -156,7 +156,7 @@ public:
    *@param voi Volume-of-Influence for the parameter under consideration.
    *@return The metric after recomputation over the given volume-of-influence.
    */
-  typename Self::ReturnType EvaluateIncremental( const W& warp, VM *const localMetric, const DataGrid::RegionType& voi, Vector3D *const vectorCache ) 
+  typename Self::ReturnType EvaluateIncremental( const SplineWarpXform& warp, VM *const localMetric, const DataGrid::RegionType& voi, Vector3D *const vectorCache ) 
   {
     Vector3D *pVec;
     int pX, pY, pZ, offset, r;
@@ -320,7 +320,7 @@ private:
     
     Self *me = info->thisObject;
 
-    W& myWarp = *(me->ThreadWarp[threadIdx]);
+    SplineWarpXform& myWarp = *(me->ThreadWarp[threadIdx]);
     myWarp.SetParamVector( *info->Parameters );
     
     VM* threadMetric = me->TaskMetric[threadIdx];
@@ -385,7 +385,7 @@ private:
     typename Self::EvaluateCompleteTaskInfo *info = static_cast<typename Self::EvaluateCompleteTaskInfo*>( arg );
     
     Self *me = info->thisObject;
-    const W& warp = *(me->ThreadWarp[0]);
+    const SplineWarpXform& warp = *(me->ThreadWarp[0]);
     VM* threadMetric = me->TaskMetric[threadIdx];
     Vector3D *vectorCache = me->ThreadVectorCache[threadIdx];
     
