@@ -75,7 +75,7 @@ public:
   /** Default constructor.
    */
   SmartConstPointer() 
-    : m_ReferenceCount( NULL )
+    : m_ReferenceCount( new SafeCounter( 1 ) )
   { 
     this->m_Object.ptrConst = NULL;
   }
