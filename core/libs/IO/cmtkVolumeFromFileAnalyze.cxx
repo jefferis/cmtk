@@ -258,7 +258,7 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
     StdErr.printf( "WARNING: could not open Analyze image file %s\n", pathImg );
     }
   
-  delete[] pathImg;
+  Memory::DeleteArray( pathImg );
   
   return volume;
 }

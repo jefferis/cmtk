@@ -254,7 +254,7 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
     StdErr.printf( "WARNING: could not open Nifti image file %s\n", pathImg );
     }
   
-  delete[] pathImg;
+  Memory::DeleteArray( pathImg );
   
   return volume;
 }
