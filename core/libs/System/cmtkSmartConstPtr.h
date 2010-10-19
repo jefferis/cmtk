@@ -72,11 +72,19 @@ public:
     return this->m_ReferenceCount->Get(); 
   }
 
+  /** Default constructor.
+   */
+  SmartConstPointer() 
+    : m_ReferenceCount( NULL )
+  { 
+    this->m_Object.ptrConst = NULL;
+  }
+  
   /** Construct from dumb pointer.
    * Note that you MUST NEVER use this constructor more than once for each
    * dumb pointer, other than NULL!
    */
-  explicit SmartConstPointer( T *const object = NULL ) 
+  explicit SmartConstPointer( T *const object ) 
     : m_ReferenceCount( new SafeCounter( 1 ) )
   { 
     this->m_Object.ptrConst = object;

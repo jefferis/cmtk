@@ -76,11 +76,15 @@ public:
   /// Null object.
   static Self Null;
   
+  /** Default constructor.
+   */
+  SmartPointer() {}
+  
   /** Construct from dumb pointer.
    * Note that you MUST NEVER use this constructor more than once for each
    * dumb pointer, other than NULL!
    */
-  explicit SmartPointer( T *const object = NULL ) : SmartConstPointer<T>( object ) {}
+  explicit SmartPointer( T *const object ) : SmartConstPointer<T>( object ) {}
 
   /** Copy constructor template.
    * Increment reference counter in the process.
