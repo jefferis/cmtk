@@ -1,5 +1,12 @@
 Release CMTK-1.5.0:
 
+(r2467) Fixed: make consistent use of C memory allocator to avoid conflicts
+    between core CMTK and external libraries (e.g., NrrdIO).
+(r2467) Added: "warp" and "warpx" tools have new option, "--relax-to-unfold"
+    to unfold deformation regions with negative Jacobians before continuing
+    at the next resolution level. Hopefully, this will allow more aggressive
+    deformations without incurring folding, thus improving registration
+    accuracy.
 (r2450) Removed: support for pixelwise incompressibility weight maps, which
     was never really used and hasn't been exposed at the command line for a
     while. 
