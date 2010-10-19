@@ -130,7 +130,7 @@ public:
   {
     if ( Elements && FreeElements ) 
       {
-      delete[] Elements;
+      Memory::DeleteArray( this->Elements );
       }
   }
   
@@ -151,7 +151,7 @@ public:
       {
       if ( Elements ) 
 	{
-	delete[] Elements;
+	Memory::DeleteArray( this->Elements );
 	}
 
       Dim = dim;
@@ -210,7 +210,7 @@ public:
     if ( Dim != other.Dim ) {
     if (Elements) 
       {
-      delete[] Elements;
+      Memory::DeleteArray( this->Elements );
       Elements = NULL;
       }
     
