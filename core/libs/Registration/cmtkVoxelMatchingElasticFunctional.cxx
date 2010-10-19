@@ -65,7 +65,6 @@ VoxelMatchingElasticFunctional::VoxelMatchingElasticFunctional
 
   this->m_AdaptiveFixParameters = false;
   this->m_AdaptiveFixThreshFactor = 0.5;
-  StepScaleVector = NULL;
 
   VectorCache = Memory::AllocateArray<Vector3D>( ReferenceDims[0] );
   VolumeOfInfluence = NULL;
@@ -73,8 +72,7 @@ VoxelMatchingElasticFunctional::VoxelMatchingElasticFunctional
 
 VoxelMatchingElasticFunctional::~VoxelMatchingElasticFunctional()
 {
-  delete[] VectorCache;
-  delete[] StepScaleVector;
+  Memory::DeleteArray( VectorCache );
 }
 
 template<class W>
@@ -151,10 +149,10 @@ VoxelMatchingElasticFunctional_WarpTemplate<W>::SetWarpXform
     
     if ( Dim != Warp->VariableParamVectorDim() ) 
       {
-      if ( StepScaleVector ) delete[] StepScaleVector;
-      if ( VolumeOfInfluence ) delete[] VolumeOfInfluence;
+      if ( VolumeOfInfluence ) 
+	Memory::DeleteArray( VolumeOfInfluence );
       Dim = Warp->VariableParamVectorDim();
-      this->StepScaleVector = Memory::AllocateArray<Types::Coordinate>( Dim );
+      this->StepScaleVector.resize( Dim );
       this->VolumeOfInfluence = Memory::AllocateArray<DataGrid::RegionType>( Dim );
       }
     

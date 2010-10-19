@@ -37,6 +37,8 @@
 #include <System/cmtkConsole.h>
 #include <System/cmtkProgress.h>
 
+#include <vector>
+
 namespace
 cmtk
 {
@@ -62,7 +64,7 @@ BestNeighbourOptimizer::Optimize
   int numOfSteps = 1+static_cast<int>(log(real_accuracy/exploration)/log(StepFactor));
   Self::ParameterType step = real_accuracy * pow( StepFactor, 1-numOfSteps );
   
-  Self::ParameterType *stepScaleVector = Memory::AllocateArray<Self::ParameterType>( Dim );
+  std::vector<Self::ParameterType> stepScaleVector( Dim );
   for ( int idx=0; idx<Dim; ++idx )
     stepScaleVector[idx] = this->GetParamStep( idx );
 
@@ -138,7 +140,6 @@ BestNeighbourOptimizer::Optimize
   Progress::Done();
 
   this->SetFinalValue( optimum );
-  delete[] stepScaleVector;
   return irq;
 }
 

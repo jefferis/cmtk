@@ -154,8 +154,8 @@ TypedArraySimilarity::GetCorrelationRatio
   Types::DataItem sigmaSqJ, muJ;
   array1->GetStatistics( muJ, sigmaSqJ );
 
-  delete[] sumJ;
-  delete[] sumSquareJ;
+  Memory::DeleteArray( sumJ );
+  Memory::DeleteArray( sumSquareJ );
 
   // return (supposedly) correlation ratio
   return 1.0 - (1.0 /  sigmaSqJ ) * sumSigmaSquare;

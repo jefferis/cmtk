@@ -117,9 +117,8 @@ ActiveDeformationModel<W>::ActiveDeformationModel
   this->Construct( samplePoints, numberOfSamples, numberOfPoints, numberOfModes );
   
   for ( unsigned int n = 0; n < numberOfSamples; ++n )
-    delete[] samplePoints[ n ];
-  delete[] samplePoints;
-  
+    Memory::DeleteArray( samplePoints[ n ] );
+  Memory::DeleteArray( samplePoints );
 }
 
 template<class W>

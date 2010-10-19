@@ -114,7 +114,7 @@ DataGridFilter::GetDataMedianFiltered( const int radiusX, const int radiusY, con
     }
   Progress::Done();
   
-  delete[] sort;
+  Memory::DeleteArray( sort );
   
   if ( status != Progress::OK ) 
     {

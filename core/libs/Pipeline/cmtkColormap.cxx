@@ -55,8 +55,6 @@ const char *Colormap::StandardColormaps[] =
 
 Colormap::Colormap()
 {
-  LookupTable = NULL;
-  LookupTableEntries = 0;
   TableEntries = 256;
   SetStandardColormap( PALETTE_GRAY );
   DataRange[0] = 0;
@@ -71,11 +69,6 @@ Colormap::Colormap()
   Reverse = false;
 
   CreateSystemLabelColorMap( this->LabelColorMap );
-}
-
-Colormap::~Colormap()
-{
-  delete[] LookupTable;
 }
 
 void 
@@ -141,7 +134,7 @@ Colormap::Apply( void *const outPtr, const TypedArray* inPtr, const bool generat
 {
   if ( ( outPtr == NULL ) || (inPtr == NULL) ) return;
 
-  if ( (LookupTable == NULL) || (!TableEntries) ) 
+  if ( (LookupTable.empty()) || (!TableEntries) ) 
     {
     memset( outPtr, 0, 3 * inPtr->GetDataSize() );
     return;
@@ -228,11 +221,11 @@ void Colormap::ApplyPrimitive
 	data = 0;
       
       if ( data <= DataRange[0] ) 
-	outPtr[index] = LookupTable[LookupTableEntries-1];
+	outPtr[index] = LookupTable[LookupTable.size()-1];
       else if ( data >= DataRange[1] ) 
 	outPtr[index] = LookupTable[0];
       else
-	outPtr[index] = LookupTable[ LookupTableEntries - 1 - (int)( (data - DataRange[0]) * InvDataRangeWidth ) ];
+	outPtr[index] = LookupTable[ LookupTable.size() - 1 - (int)( (data - DataRange[0]) * InvDataRangeWidth ) ];
       }
     } 
   else
@@ -246,7 +239,7 @@ void Colormap::ApplyPrimitive
       if ( data <= DataRange[0] ) 
 	outPtr[index] = LookupTable[0];
       else if ( data >= DataRange[1] ) 
-	outPtr[index] = LookupTable[LookupTableEntries-1];
+	outPtr[index] = LookupTable[LookupTable.size()-1];
       else
 	outPtr[index] = LookupTable[ (int)( (data - DataRange[0]) * InvDataRangeWidth ) ];
       }
@@ -266,11 +259,11 @@ void Colormap::ApplyPrimitive
 	data = 0;
       
       if ( data <= DataRange[0] ) 
-	outPtr[index] = LookupTable[LookupTableEntries-1];
+	outPtr[index] = LookupTable[LookupTable.size()-1];
       else if ( inPtr[index] >= DataRange[1] ) 
 	outPtr[index] = LookupTable[0];
       else
-	outPtr[index] = LookupTable[ LookupTableEntries - 1 - (int)( (data - DataRange[0]) * InvDataRangeWidth ) ];
+	outPtr[index] = LookupTable[ LookupTable.size() - 1 - (int)( (data - DataRange[0]) * InvDataRangeWidth ) ];
       outPtr[index].Alpha = 255;
       }
     } 
@@ -285,7 +278,7 @@ void Colormap::ApplyPrimitive
       if ( data <= DataRange[0] ) 
 	outPtr[index] = LookupTable[0];
       else if ( data >= DataRange[1] ) 
-	outPtr[index] = LookupTable[LookupTableEntries-1];
+	outPtr[index] = LookupTable[LookupTable.size()-1];
       else
 	outPtr[index] = LookupTable[ (int)( (data - DataRange[0]) * InvDataRangeWidth ) ];
       
@@ -317,17 +310,7 @@ void Colormap::Execute ()
     TableEntries = 256;
     }
   
-  if ( (LookupTable != NULL) && ( LookupTableEntries != TableEntries ) ) 
-    {
-    delete[] LookupTable;
-    LookupTable = NULL;
-    }
-  
-  if ( LookupTable == NULL ) 
-    {
-    LookupTable = Memory::AllocateArray<RGB>( TableEntries );
-    LookupTableEntries = TableEntries;
-    }
+  LookupTable.resize( TableEntries );
   
   if ( DataRange[0] != DataRange[1] )
     InvDataRangeWidth = (1.0 * (TableEntries - 1)) / (DataRange[1] - DataRange[0]);
@@ -337,7 +320,7 @@ void Colormap::Execute ()
   if ( HaveUserMap ) 
     {
     // if user map exists, build table.
-    for ( int index = 0; index < LookupTableEntries; ++index ) 
+    for ( int index = 0; index < LookupTable.size(); ++index ) 
       {
       SegmentationLabelMap::const_iterator it = LabelColorMap.find( index );
       if ( it != LabelColorMap.end() ) 
@@ -357,17 +340,17 @@ void Colormap::Execute ()
     {
     // if no user-defined map, create map from HSV ramps.
     Types::DataItem H = HueRange[0];
-    const Types::DataItem Hstep = (HueRange[1] - HueRange[0]) / (LookupTableEntries - 1);
+    const Types::DataItem Hstep = (HueRange[1] - HueRange[0]) / (LookupTable.size() - 1);
     
     Types::DataItem S = SaturationRange[0];
-    const Types::DataItem Sstep = (SaturationRange[1] - SaturationRange[0]) / (LookupTableEntries - 1);
+    const Types::DataItem Sstep = (SaturationRange[1] - SaturationRange[0]) / (LookupTable.size() - 1);
     
     Types::DataItem V = ValueRange[0];
-    const Types::DataItem Vstep = (ValueRange[1] - ValueRange[0]) / (LookupTableEntries - 1);
+    const Types::DataItem Vstep = (ValueRange[1] - ValueRange[0]) / (LookupTable.size() - 1);
     
     if ( Gamma > 0 ) 
       {
-      for ( int index = 0; index < LookupTableEntries; ++index, H += Hstep, S += Sstep, V += Vstep ) 
+      for ( int index = 0; index < LookupTable.size(); ++index, H += Hstep, S += Sstep, V += Vstep ) 
 	{
 	if ( V > 0 ) 
 	  {
@@ -382,7 +365,7 @@ void Colormap::Execute ()
       } 
     else
       {
-      for ( int index = 0; index < LookupTableEntries; ++index, H += Hstep, S += Sstep, V += Vstep ) 
+      for ( int index = 0; index < LookupTable.size(); ++index, H += Hstep, S += Sstep, V += Vstep ) 
 	{
 	HSV2RGB( LookupTable[index], H, S, V );
 	}

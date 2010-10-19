@@ -62,7 +62,7 @@ BitVector::BitVector( const size_t size, byte *const bitSet )
 
 BitVector::~BitVector()
 {
-  delete[] this->m_BitVector;
+  Memory::DeleteArray( this->m_BitVector );
 }
 
 BitVector* 

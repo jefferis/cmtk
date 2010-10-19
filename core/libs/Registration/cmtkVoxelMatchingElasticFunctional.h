@@ -47,6 +47,7 @@
 #include <System/cmtkException.h>
 
 #include <cassert>
+#include <vector>
 
 #ifdef HAVE_IEEEFP_H
 #  include <ieeefp.h>
@@ -156,7 +157,7 @@ protected:
    * by the transformation class. These factors can be used to equalized all
    * parameter modifications during gradient computation etc.
    */
-  Types::Coordinate *StepScaleVector;
+  std::vector<Types::Coordinate> StepScaleVector;
 
   /** Volume of influence table.
    * This array holds the precomputed volumes of influence for all 
@@ -371,7 +372,7 @@ public:
   virtual ~VoxelMatchingElasticFunctional_Template() 
   {
     if ( WarpedVolume ) 
-      delete[] WarpedVolume;
+      Memory::DeleteArray( WarpedVolume );
   }
 
   /// Set flag and value for forcing values outside the floating image.

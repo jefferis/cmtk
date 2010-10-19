@@ -54,7 +54,7 @@ CongealingFunctional<TXform>::~CongealingFunctional()
 {
   for ( size_t idx = 0; idx < this->m_HistogramKernel.size(); ++idx )
     if ( this->m_HistogramKernel[idx] )
-      delete[] this->m_HistogramKernel[idx];
+      Memory::DeleteArray( this->m_HistogramKernel[idx] );
   this->m_HistogramKernel.clear();
 }
 
@@ -76,7 +76,7 @@ CongealingFunctional<TXform>::CreateGaussianKernels()
 {
   for ( size_t idx = 0; idx < this->m_HistogramKernel.size(); ++idx )
     if ( this->m_HistogramKernel[idx] )
-      delete[] this->m_HistogramKernel[idx];
+      Memory::DeleteArray( this->m_HistogramKernel[idx] );
 
   this->m_HistogramKernel.resize( this->m_HistogramKernelRadiusMax+1 );
   this->m_HistogramKernelRadius.resize( this->m_HistogramKernelRadiusMax+1 );

@@ -485,7 +485,7 @@ ScalarImage::GetMedianFiltered( const byte range ) const
 	result->Set( static_cast<Types::DataItem>( ( 0.5 * (sort[source/2] + sort[source/2-1]) ) ), offset );
     }
 
-  delete[] sort;
+  Memory::DeleteArray( sort );
 
   return result;
 }

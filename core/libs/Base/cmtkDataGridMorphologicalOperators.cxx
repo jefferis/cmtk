@@ -35,6 +35,8 @@
 #include <Base/cmtkTemplateArray.h>
 #include <System/cmtkException.h>
 
+#include <vector>
+
 namespace
 cmtk
 {
@@ -128,7 +130,7 @@ DataGridMorphologicalOperators::GetEroded( const int iterations ) const
     }
 
   const byte* data = static_cast<const byte*>( dataArray->GetDataPtr() );
-  byte *tmp = Memory::AllocateArray<byte>(  dataArray->GetDataSize()  );
+  std::vector<byte> tmp(  dataArray->GetDataSize()  );
 
   ByteArray::SmartPtr erodedArray = ByteArray::Create( dataArray->GetDataSize() );
   byte* eroded = erodedArray->GetDataPtrConcrete();
@@ -169,10 +171,8 @@ DataGridMorphologicalOperators::GetEroded( const int iterations ) const
 	} // for y
       } // for z
     
-    memcpy( eroded, tmp, erodedArray->GetDataSizeBytes() );
+    memcpy( eroded, &(tmp[0]), erodedArray->GetDataSizeBytes() );
     } // for i
-  
-  delete[] tmp;
   
   return erodedArray;
 }
@@ -187,7 +187,7 @@ DataGridMorphologicalOperators::GetDilated( const int iterations ) const
     }
   
   const byte* data = static_cast<const byte*>( dataArray->GetDataPtr() );
-  byte *tmp = Memory::AllocateArray<byte>(  dataArray->GetDataSize()  );
+  std::vector<byte> tmp(  dataArray->GetDataSize()  );
   
   ByteArray::SmartPtr dilatedArray = ByteArray::Create( dataArray->GetDataSize() );
   byte* dilated = dilatedArray->GetDataPtrConcrete();
@@ -227,10 +227,8 @@ DataGridMorphologicalOperators::GetDilated( const int iterations ) const
 	} // for y
       } // for z
     
-    memcpy( dilated, tmp, dilatedArray->GetDataSizeBytes() );
+    memcpy( dilated, &(tmp[0]), dilatedArray->GetDataSizeBytes() );
     } // for i
-  
-  delete[] tmp;
   
   return dilatedArray;
 }

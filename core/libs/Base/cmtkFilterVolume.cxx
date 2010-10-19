@@ -165,7 +165,7 @@ FilterVolume
 #endif // #ifdef _OPENMP
 
   const size_t iKernelRadius = 1 + static_cast<size_t>( 2 * iFilterSigma.Value() * numBins );
-  Types::DataItem* iKernel = Memory::AllocateArray<Types::DataItem>( iKernelRadius );
+  std::vector<Types::DataItem> iKernel( iKernelRadius );
   if ( iKernelRadius > 1 )
     {
     const Types::DataItem normFactor = static_cast<Types::DataItem>( 1.0/(sqrt(2*M_PI) * iFilterSigma.Value() * numBins) ); // not really necessary since we normalize during convolution
@@ -215,7 +215,7 @@ FilterVolume
 	if ( maskValue && subjectData->Get( valueSubj, offset ) ) 
 	  {
 	  histogram.Reset();
-	  histogram.AddWeightedSymmetricKernel( histogram.ValueToBin( valueSubj ), iKernelRadius, iKernel );
+	  histogram.AddWeightedSymmetricKernel( histogram.ValueToBin( valueSubj ), iKernelRadius, &(iKernel[0]) );
 	  
 	  for (  FilterMask<3>::const_iterator it = filter.begin(); it != filter.end(); ++it ) 
 	    {
@@ -256,8 +256,6 @@ FilterVolume
   
   Progress::Done();
 
-  delete[] iKernel;
-  
   return filtered;
 }
 

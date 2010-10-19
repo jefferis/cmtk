@@ -188,7 +188,7 @@ ClassStream::Get
     } 
   else 
     {
-    delete[] active;
+    Memory::DeleteArray( active );
     }
   
   this->End();

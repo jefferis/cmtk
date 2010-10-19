@@ -76,7 +76,7 @@ public:
   {
     if ( this->m_AsynchronousThreadsRunning )
       this->CancelAsynchronousThreads();
-    delete[] this->m_Ptr;
+    Memory::DeleteArray( this->m_Ptr );
   }
 
   /// Constant access operator.

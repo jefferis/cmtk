@@ -159,7 +159,7 @@ ScalarImageIO::ReadAnalyze( const char* pathHdr )
 		      pathImg );
     }
   
-  delete[] pathImg;
+  Memory::DeleteArray( pathImg );
 
   return image;
 }
@@ -280,7 +280,7 @@ ScalarImageIO::WriteAnalyze
     fclose( imgFile );
     }
 
-  delete[] pathImg;
+  Memory::DeleteArray( pathImg );
 }
 
 } // namespace cmtk

@@ -228,12 +228,12 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
     float* averagePtrMPI = Memory::AllocateArray<float>( numberOfPixels );
     MPI::COMM_WORLD.Reduce( averagePtr, averagePtrMPI, numberOfPixels, MPI::FLOAT, MPI::SUM, 0 );
     memcpy( averagePtr, averagePtrMPI, numberOfPixels * sizeof( *averagePtr ) );
-    delete[] averagePtrMPI;
+    Memory::DeleteArray( averagePtrMPI );
 
     unsigned short* countPtrMPI = Memory::AllocateArray<unsigned short>( numberOfPixels );
     MPI::COMM_WORLD.Reduce( countPtr, countPtrMPI, numberOfPixels, MPI::UNSIGNED_SHORT, MPI::SUM, 0 );
     memcpy( countPtr, countPtrMPI, numberOfPixels * sizeof( *countPtr ) );
-    delete[] countPtrMPI;
+    Memory::DeleteArray( countPtrMPI );
 #endif
 
 #ifdef CMTK_BUILD_MPI

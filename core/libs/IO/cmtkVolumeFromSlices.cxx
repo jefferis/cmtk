@@ -159,7 +159,7 @@ VolumeFromSlices::FinishVolume ( Types::Coordinate& sliceOffset, int& sliceDirec
   VolumeDataArray = TypedArray::SmartPtr::Null; 
 
   for ( idx = 0; idx<3; ++idx )
-    delete[] Points[idx];
+    Memory::DeleteArray( Points[idx] );
 
   Result->m_MetaInformation[META_SPACE] = Result->m_MetaInformation[META_SPACE_ORIGINAL] = "LPS";
 

@@ -96,7 +96,7 @@ GroupwiseRegistrationFunctionalBase::~GroupwiseRegistrationFunctionalBase()
     for ( size_t i = 0; i < numberOfImages; ++i )
       {
       if ( this->m_Data[i] )
-	delete[] this->m_Data[i];
+	Memory::DeleteArray( this->m_Data[i] );
       }
     }
 }
@@ -212,7 +212,7 @@ GroupwiseRegistrationFunctionalBase
       for ( size_t i = 0; i < numberOfImages; ++i )
 	{
 	if ( this->m_Data[i] )
-	  delete[] this->m_Data[i];
+	  Memory::DeleteArray( this->m_Data[i] );
 	}
       }
     

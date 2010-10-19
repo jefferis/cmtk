@@ -42,6 +42,8 @@
 
 #include <IO/cmtkStudy.h>
 
+#include <vector>
+
 namespace
 cmtk
 {
@@ -128,9 +130,8 @@ protected:
   Colormap();
 
   /** Virtual destructor.
-   * Frees the lookup table if one was allocated.
   */
-  virtual ~Colormap();
+  virtual ~Colormap() {}
   
   /** Execute function.
    * Called by the Update() function inherited from Object, this function
@@ -144,15 +145,7 @@ private:
    * "TableEntries" distinct data values in the range DataRange[0] throgh
    * DataRange[1].
    */
-  RGB *LookupTable;
-
-  /** Number of entries allocated for the lookup table.
-   * Before regeneration of the lookup table, this field is compared to 
-   * TableEntries. If both are equal, the already allocated storage is reused
-   * for the refreshed lookup table. Otherwise, the old table is freed and a 
-   * new one is allocated.
-   */
-  int LookupTableEntries;
+  std::vector<RGB> LookupTable;
 
   /// Precomputed scaling factor for data value to table index conversion.
   Types::DataItem InvDataRangeWidth;

@@ -88,7 +88,7 @@ public:
   /// Virtual destructor.
   virtual ~EntropyMinimizationIntensityCorrectionFunctional() 
   {
-    delete[] this->m_MonomialsVec;
+    Memory::DeleteArray( this->m_MonomialsVec );
   }
 
   /// Total number of parameters is number of additive plus number of multiplicative parameters.

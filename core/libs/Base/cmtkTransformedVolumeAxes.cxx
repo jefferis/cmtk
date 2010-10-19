@@ -146,7 +146,7 @@ TransformedVolumeAxes::~TransformedVolumeAxes()
   for ( int dim = 0; dim<3; ++dim ) 
     {
     assert( this->m_Hash[dim] != NULL );
-    delete[] this->m_Hash[dim];
+    Memory::DeleteArray( this->m_Hash[dim] );
     }
 }
 
