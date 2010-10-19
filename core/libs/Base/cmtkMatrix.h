@@ -166,7 +166,7 @@ public:
   {
     if ( (*this)[0] )
       {
-      delete[] (*this)[0];
+      Memory::DeleteArray( (*this)[0] );
       (*this)[0] = NULL;
       }
   }
@@ -193,7 +193,7 @@ public:
       {
       if ( (*this)[0] )
 	{
-	delete[] (*this)[0];
+	Memory::DeleteArray( (*this)[0] );
 	(*this)[0] = NULL;
 	}
       
@@ -290,7 +290,7 @@ public:
       {
       if ( (*this)[0][0] )
 	{
-	delete[] (*this)[0][0];
+	Memory::DeleteArray( (*this)[0][0] );
 	(*this)[0][0] = NULL;
 	}
       
