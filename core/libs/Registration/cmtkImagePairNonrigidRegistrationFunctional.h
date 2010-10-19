@@ -158,7 +158,7 @@ protected:
   ImagePairNonrigidRegistrationFunctional( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating );
 
   /// Array of warp transformation objects for the parallel threads.
-  SplineWarpXform::SmartPtr *m_ThreadWarp;
+  std::vector<SplineWarpXform::SmartPtr> m_ThreadWarp;
 
   /// Array of storage for simultaneously retrieving multiple deformed vectors.
   Vector3D **m_ThreadVectorCache;

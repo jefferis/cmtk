@@ -59,7 +59,7 @@ class ParallelElasticFunctional
 {
 protected:
   /// Array of warp transformation objects for the parallel threads.
-  SplineWarpXform::SmartPtr *ThreadWarp;
+  std::vector<SplineWarpXform::SmartPtr> ThreadWarp;
 
   /// Array of storage for simultaneously retrieving multiple deformed vectors.
   Vector3D **ThreadVectorCache;
@@ -89,7 +89,7 @@ public:
     this->m_NumberOfThreads = threadPool.GetNumberOfThreads();
     this->m_NumberOfTasks = 4 * this->m_NumberOfThreads - 3;
     
-    ThreadWarp = Memory::AllocateArray<SplineWarpXform::SmartPtr>( this->m_NumberOfThreads );
+    ThreadWarp.resize( this->m_NumberOfThreads );
     
     this->InfoTaskGradient.resize( this->m_NumberOfTasks );
     this->InfoTaskComplete.resize( this->m_NumberOfTasks );
@@ -116,8 +116,6 @@ public:
     for ( size_t task = 0; task < this->m_NumberOfThreads; ++task )
       delete this->TaskMetric[task];
     Memory::DeleteArray( this->TaskMetric );
-    
-    Memory::DeleteArray( this->ThreadWarp );
   }
 
   /** Set warp transformation.

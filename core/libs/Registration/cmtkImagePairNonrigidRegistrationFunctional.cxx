@@ -67,7 +67,7 @@ ImagePairNonrigidRegistrationFunctional::ImagePairNonrigidRegistrationFunctional
   this->m_AdaptiveFixThreshFactor = 0.5;
   this->VolumeOfInfluence = NULL;
 
-  this->m_ThreadWarp = Memory::AllocateArray<SplineWarpXform::SmartPtr>( this->m_NumberOfThreads );  
+  this->m_ThreadWarp.resize( this->m_NumberOfThreads );  
 
   this->m_ThreadVectorCache = Memory::AllocateArray<Vector3D*>( this->m_NumberOfThreads );
   for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
@@ -89,8 +89,6 @@ ImagePairNonrigidRegistrationFunctional::~ImagePairNonrigidRegistrationFunctiona
     if ( this->m_ThreadVectorCache[thread] ) 
       Memory::DeleteArray( this->m_ThreadVectorCache[thread] );
   Memory::DeleteArray( this->m_ThreadVectorCache );
-  
-  Memory::DeleteArray( this->m_ThreadWarp );
 }
 
 void
