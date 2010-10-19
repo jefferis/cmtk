@@ -53,7 +53,10 @@ namespace Memory
    */
 size_t GetNextPowerOfTwo( size_t k );
 
-/// Safe allocation of array.
+/** Memory allocation for array.
+ *\warning If this function allocates memory with anything other than the C++ new[] operator,
+ * then objects in the array will not be instantiated.
+ */
 template<class T>
 inline 
 T*
