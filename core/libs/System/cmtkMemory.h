@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -53,13 +53,13 @@ namespace Memory
    */
 size_t GetNextPowerOfTwo( size_t k );
 
-/// Safe allocation of C++ array with catching and output of exceptions
+/// Safe allocation of array.
 template<class T>
 inline 
 T*
 AllocateArray( const size_t size )
 {
-  return new T[size];
+  return static_cast<T*>( malloc( size * sizeof( T ) ) );
 }
 
 /// Delete an array allocated using AllocateArray().
@@ -68,7 +68,7 @@ inline
 void
 DeleteArray( T *const array )
 {
-  delete[] array;
+  free( array );
 }
 
 /** Set (fill) memory region with given value.
