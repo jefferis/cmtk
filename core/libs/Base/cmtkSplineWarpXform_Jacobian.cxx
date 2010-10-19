@@ -844,9 +844,10 @@ SplineWarpXform::RelaxToUnfold()
 		  {
 		  for ( int ii = std::max( 0, i-3 ); ii < std::min( i+4, this->m_Dims[0] ); ++ii )
 		    {
-		    if ( cpList[ ii * this->nextI + jj * this->nextJ + kk * this->nextK ] != 1 )
+		    const size_t cpIdx = (ii * this->nextI + jj * this->nextJ + kk * this->nextK)/3;
+		    if ( cpList[ cpIdx ] != 1 )
 		      {
-		      cpList[ ii * this->nextI + jj * this->nextJ + kk * this->nextK ] = 2;
+		      cpList[ cpIdx ] = 2;
 		      }
 		    }
 		  }
