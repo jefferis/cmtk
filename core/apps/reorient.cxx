@@ -52,7 +52,9 @@ const char* InFileName = NULL;
 const char* OutFileName = NULL;
 
 const char* OldOrientation = NULL;
-const char* NewOrientation = cmtk::AnatomicalOrientation::ORIENTATION_STANDARD;
+const char* NewOrientation = NULL;
+
+const char* NewSpace = NULL;
 
 int
 main( const int argc, const char* argv[] )
@@ -69,6 +71,8 @@ main( const int argc, const char* argv[] )
 
     cl.AddOption( Key( 'i', "input-orientation" ), &OldOrientation, "Override input orientation. This is a three-letter code, e.g., 'RAS', 'LPI', etc." );
     cl.AddOption( Key( 'o', "output-orientation" ), &NewOrientation, "Override output orientation. Default is 'RAS', or the closest match supported by the output image file format" );
+
+    cl.AddOption( Key( "output-space" ), &NewSpace, "Override output coordinate space (e.g., 'RAS', 'LAS', 'LPS'). This does not affect the array order. Default is to write image in the input image space." );
     
     if ( ! cl.Parse( argc, argv ) ) return 1;
        
@@ -97,16 +101,24 @@ main( const int argc, const char* argv[] )
     {
     OldOrientation = volume->m_MetaInformation[cmtk::META_IMAGE_ORIENTATION].c_str();
     }
-  
-  if ( Verbose )
+
+  if ( NewOrientation )
     {
-    cmtk::StdErr << "Reorienting from '" << OldOrientation << "' to '" << NewOrientation << "'\n";
+    if ( Verbose )
+      {
+      cmtk::StdErr << "Reorienting from '" << OldOrientation << "' to '" << NewOrientation << "'\n";
+      }
+    
+    // now reorient here in case the writer function doesn't try to write original orientation
+    volume = cmtk::UniformVolume::SmartPtr( volume->GetReoriented( NewOrientation ) );
+    // override original orientation to force output with desired output orientation
+    volume->m_MetaInformation[cmtk::META_IMAGE_ORIENTATION_ORIGINAL] = NewOrientation;
     }
 
-  // now reorient here in case the writer function doesn't try to write original orientation
-  volume = cmtk::UniformVolume::SmartPtr( volume->GetReoriented( NewOrientation ) );
-  // override original orientation to force output with desired output orientation
-  volume->m_MetaInformation[cmtk::META_IMAGE_ORIENTATION_ORIGINAL] = NewOrientation;
+  if ( NewSpace )
+    {
+    volume->m_MetaInformation[cmtk::META_SPACE_ORIGINAL] = NewSpace;
+    }
   
   if ( Verbose )
     {

@@ -1322,8 +1322,18 @@ case ${RUNTEST} in
 	check_results reorient.img
 	;;
     reorientNrrdToNrrd)
-	run reorient vol001_mr_t0_crop.nrrd ${tmpdir}/vol001_mr_t0_crop.nhdr
-	check_results vol001_mr_t0_crop.nhdr
+        run reorient vol001_mr_t0_crop.nrrd ${tmpdir}/vol001_mr_t0_crop.nhdr
+        check_results vol001_mr_t0_crop.nhdr
+	check_results vol001_mr_t0_crop.raw
+	;;
+    reorientNrrdToNrrdRAS)
+        run reorient --output-orientation RAS vol001_mr_t0_crop.nrrd ${tmpdir}/vol001_mr_t0_crop.nhdr
+        check_results vol001_mr_t0_crop.nhdr
+	check_results vol001_mr_t0_crop.raw
+	;;
+    reorientNrrdToNrrdSpaceLPS)
+        run reorient --output-space LPS vol001_mr_t0_crop.nrrd ${tmpdir}/vol001_mr_t0_crop.nhdr
+        check_results vol001_mr_t0_crop.nhdr
 	check_results vol001_mr_t0_crop.raw
 	;;
     registrationRigidMrPet)

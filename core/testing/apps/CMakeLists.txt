@@ -402,7 +402,10 @@ IF(NOT CMTK_USE_MPI)
     reorientHdrSaToCo)
 
   IF(CMTK_BUILD_NRRD)
-    SET(testList ${testList} reorientNrrdToNrrd)
+    SET(testList ${testList} 
+      reorientNrrdToNrrd
+      reorientNrrdToNrrdRAS
+      reorientNrrdToNrrdSpaceLPS)
   ENDIF(CMTK_BUILD_NRRD)
 
   # ==========================================
