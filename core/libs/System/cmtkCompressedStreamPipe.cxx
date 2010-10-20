@@ -107,9 +107,9 @@ CompressedStream::Pipe::Seek ( long int offset, int whence )
   int result = 0;
   
   this->m_BytesRead += offset;
-  while ( offset ) 
+  while ( offset > 0 ) 
     {
-    if ( offset < Self::BlockSize ) 
+    if ( static_cast<size_t>( offset ) < Self::BlockSize ) 
       {
       result += fread( buffer, sizeof(char), offset, this->m_File );
       offset=0;

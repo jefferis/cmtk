@@ -320,7 +320,7 @@ void Colormap::Execute ()
   if ( HaveUserMap ) 
     {
     // if user map exists, build table.
-    for ( int index = 0; index < LookupTable.size(); ++index ) 
+    for ( size_t index = 0; index < LookupTable.size(); ++index ) 
       {
       SegmentationLabelMap::const_iterator it = LabelColorMap.find( index );
       if ( it != LabelColorMap.end() ) 
@@ -350,7 +350,7 @@ void Colormap::Execute ()
     
     if ( Gamma > 0 ) 
       {
-      for ( int index = 0; index < LookupTable.size(); ++index, H += Hstep, S += Sstep, V += Vstep ) 
+      for ( size_t index = 0; index < LookupTable.size(); ++index, H += Hstep, S += Sstep, V += Vstep ) 
 	{
 	if ( V > 0 ) 
 	  {
@@ -365,7 +365,7 @@ void Colormap::Execute ()
       } 
     else
       {
-      for ( int index = 0; index < LookupTable.size(); ++index, H += Hstep, S += Sstep, V += Vstep ) 
+      for ( size_t index = 0; index < LookupTable.size(); ++index, H += Hstep, S += Sstep, V += Vstep ) 
 	{
 	HSV2RGB( LookupTable[index], H, S, V );
 	}
