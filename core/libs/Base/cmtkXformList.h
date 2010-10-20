@@ -39,6 +39,8 @@
 
 #include <System/cmtkSmartPtr.h>
 
+#include <deque>
+
 namespace
 cmtk
 {
@@ -48,7 +50,7 @@ cmtk
 /// A transformation list.
 class XformList :
   /// Inherit STL list.
-  public std::list< XformListEntry::SmartConstPtr > 
+  public std::deque< XformListEntry::SmartConstPtr > 
 {
 private:
   /// Error threshold for inverse approximation.
@@ -73,8 +75,11 @@ public:
     this->m_Epsilon = epsilon;
   }
   
-  /// Add a transformation
+  /// Add a transformation the the end of the list, i.e., to be applied after the current list of transformations
   void Add( const Xform::SmartConstPtr& xform, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
+  
+  /// Add a transformation the the end of the list, i.e., to be applied before the current list of transformations
+  void AddToFront( const Xform::SmartConstPtr& xform, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
   
   /// Apply a sequence of (inverse) transformations.
   bool ApplyInPlace( Xform::SpaceVectorType& v ) const;

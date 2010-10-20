@@ -39,6 +39,13 @@ cmtk::XformList::Add
   this->push_back( XformListEntry::SmartConstPtr( new XformListEntry( xform, inverse, globalScale ) ) );
 }
 
+void
+cmtk::XformList::AddToFront
+( const Xform::SmartConstPtr& xform, const bool inverse, const Types::Coordinate globalScale  )
+{
+  this->push_front( XformListEntry::SmartConstPtr( new XformListEntry( xform, inverse, globalScale ) ) );
+}
+
 bool
 cmtk::XformList::ApplyInPlace( Xform::SpaceVectorType& v ) const
 {
