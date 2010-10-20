@@ -315,15 +315,15 @@ ElasticRegistrationCommandLine
   AffineXform::SmartPtr affineXform( AffineXform::SmartPtr::DynamicCastFrom( this->m_InitialTransformation ) );
   if ( affineXform )
     {
-    if ( affineXform->m_MetaInformation[META_SPACE] != AnatomicalOrientation::ORIENTATION_STANDARD )
+    if ( affineXform->MetaKeyExists( META_SPACE ) && (affineXform->m_MetaInformation[META_SPACE] != AnatomicalOrientation::ORIENTATION_STANDARD ) )
       {
-      TransformChangeFromSpaceAffine toStandardSpace( *affineXform, *(this->m_Volume_1), *(this->m_Volume_2) );
+      TransformChangeFromSpaceAffine toStandardSpace( *affineXform, *(this->m_Volume_1), *(this->m_Volume_2), affineXform->m_MetaInformation[META_SPACE].c_str() );
       *affineXform = toStandardSpace.GetTransformation();
       affineXform->m_MetaInformation[META_SPACE] = AnatomicalOrientation::ORIENTATION_STANDARD;
       this->SetInitialTransformation( affineXform );
       }
     }
-
+  
   if ( this->RigidityConstraintMapFilename )
     {
     UniformVolume::SmartPtr rigidityWeightMap( VolumeIO::ReadOriented( this->RigidityConstraintMapFilename, Verbose ) );

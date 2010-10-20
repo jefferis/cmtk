@@ -472,7 +472,7 @@ ImagePairAffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v
 
   if ( this->m_OutputPathITK ) 
     {
-    TransformChangeToSpaceAffine toNative( *(this->GetTransformation()), *(this->m_Volume_1), *(this->m_Volume_2) );
+    TransformChangeToSpaceAffine toNative( *(this->GetTransformation()), *(this->m_Volume_1), *(this->m_Volume_2), AnatomicalOrientationBase::SPACE_ITK );
     AffineXformITKIO::Write( this->m_OutputPathITK, toNative.GetTransformation() );
     }
 

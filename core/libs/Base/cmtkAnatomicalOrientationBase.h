@@ -49,8 +49,14 @@ public:
   /// This class.
   typedef AnatomicalOrientationBase Self;
 
-  /// OrientationBase of STANDARD space (LR/AP/IS).
+  /// Orientation of standardized reoriented image axes (LR/AP/IS).
   static const char *const ORIENTATION_STANDARD;
+
+  /// Standard CMTK coordinate space (LR/PA/IS).
+  static const char *const SPACE_CMTK;
+
+  /// Standard ITK coordinate space (RL/AP/IS).
+  static const char *const SPACE_ITK;
 
   /** Get closest orientation from a list.
    * This function is used to determine which orientation to bring an image into so it can be written to a file

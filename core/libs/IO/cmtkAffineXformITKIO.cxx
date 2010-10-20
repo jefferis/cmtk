@@ -118,7 +118,9 @@ cmtk::AffineXformITKIO
 	{
 	stream >> matrix[3][i];
 	}
-      return AffineXform::SmartPtr( new AffineXform( matrix ) );
+      AffineXform::SmartPtr xform( new AffineXform( matrix ) );
+      xform->SetMetaInfo( META_SPACE, AnatomicalOrientationBase::SPACE_ITK );
+      return xform;
       }
     }
   

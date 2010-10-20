@@ -44,6 +44,9 @@ cmtk
 
 const char *const AnatomicalOrientationBase::ORIENTATION_STANDARD = "RAS";
 
+const char *const AnatomicalOrientationBase::SPACE_CMTK = "RAS";
+const char *const AnatomicalOrientationBase::SPACE_ITK = "LPS";
+
 const char* 
 AnatomicalOrientationBase
 ::GetClosestOrientation( const char* desiredOrientation, const char *const availableOrientations[] )

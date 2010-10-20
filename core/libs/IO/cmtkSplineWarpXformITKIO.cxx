@@ -92,7 +92,7 @@ cmtk::SplineWarpXformITKIO
 
     if ( bulkXform )
       {
-      TransformChangeToSpaceAffine toNative( *(bulkXform), refVolume, fltVolume );
+      TransformChangeToSpaceAffine toNative( *(bulkXform), refVolume, fltVolume, AnatomicalOrientationBase::SPACE_ITK );
       AffineXformITKIO::Write( stream, toNative.GetTransformation(), 1 /*idx*/ );
       }
 

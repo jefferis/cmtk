@@ -38,6 +38,7 @@
 
 #include <Base/cmtkMetaInformationObject.h>
 #include <Base/cmtkAffineXform.h>
+#include <Base/cmtkAnatomicalOrientationBase.h>
 #include <Base/cmtkTransformChangeToSpaceAffine.h>
 
 #include <IO/cmtkVolumeIO.h>
@@ -57,8 +58,8 @@ main( const int argc, const char* argv[] )
   const char* fixedImagePath = NULL;
   const char* movingImagePath = NULL;
 
-  const char* fixedImageSpace = NULL;
-  const char* movingImageSpace = NULL;
+  const char* fixedImageSpace = cmtk::AnatomicalOrientationBase::SPACE_ITK;
+  const char* movingImageSpace = cmtk::AnatomicalOrientationBase::SPACE_ITK;
   
   try 
     {
@@ -69,8 +70,8 @@ main( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode" );
 
     cl.BeginGroup( "Input", "Input parameters" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
-    cl.AddOption( Key( "fixed-space" ), &fixedImageSpace, "Change fixed image coordinate space (e.g., 'RAS', 'LPS', ...)" );
-    cl.AddOption( Key( "moving-space" ), &movingImageSpace, "Change moving image coordinate space (e.g., 'RAS', 'LPS', ...)" );
+    cl.AddOption( Key( "fixed-space" ), &fixedImageSpace, "Change fixed image coordinate space (e.g., 'RAS', 'LPS', ...). This defaults to ITK standard space." );
+    cl.AddOption( Key( "moving-space" ), &movingImageSpace, "Change moving image coordinate space (e.g., 'RAS', 'LPS', ...). This defaults to ITK standard space." );
     cl.AddSwitch( Key( "invert-input" ), &invertInputXform, true, "Invert input transformation before conversion" );
     cl.EndGroup();
     
