@@ -40,6 +40,7 @@
 
 #include <IO/cmtkXformIO.h>
 #include <IO/cmtkXformListIO.h>
+#include <IO/cmtkVolumeIO.h>
 
 #include <iostream>
 #include <sstream>
@@ -56,6 +57,9 @@ main( const int argc, const char* argv[] )
 
   std::vector<std::string> inputXformPaths;
 
+  const char* fixedImagePath = NULL;
+  const char* movingImagePath = NULL;
+
   try
     {
     cmtk::CommandLine cl;
@@ -65,6 +69,9 @@ main( const int argc, const char* argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Print each point to STDERR (as well as stdout)" );
     cl.AddOption( Key( "inversion-tolerance" ), &inversionTolerance, "Numerical tolerance of B-spline inversion in mm. Smaller values will lead to more accurate inversion, but may increase failure rate." );
+
+    cl.AddOption( Key( "fixed-image" ), &fixedImagePath, "Set fixed image of the transformation to correct for differences in orientation and coordinate space." );
+    cl.AddOption( Key( "moving-image" ), &movingImagePath, "Set moving image of the transformation to correct for differences in orientation and coordinate space." );
 
     cl.AddParameterVector( &inputXformPaths, "XformList", "List of concatenated transformations. Insert '--inverse' to use the inverse of the transformation listed next." )->SetProperties( cmtk::CommandLine::PROPS_XFORM );  
 
@@ -78,6 +85,28 @@ main( const int argc, const char* argv[] )
 
   cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( inputXformPaths );
   xformList.SetEpsilon( inversionTolerance );
+
+  if ( fixedImagePath )
+    {
+    cmtk::UniformVolume::SmartConstPtr fixedImage( cmtk::VolumeIO::ReadOriented( fixedImagePath, verbose ) );
+    if ( ! fixedImage )
+      {
+      cmtk::StdErr << "ERROR: could not read fixed image '" << fixedImagePath << "'\n";
+      exit( 1 );
+      }
+    xformList.AddToFront( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( fixedImage->GetImageToPhysicalMatrix() ) )->GetInverse() );
+    }
+  
+  if ( movingImagePath )
+    {
+    cmtk::UniformVolume::SmartConstPtr movingImage( cmtk::VolumeIO::ReadOriented( movingImagePath, verbose ) );
+    if ( ! movingImage )
+      {
+      cmtk::StdErr << "ERROR: could not read fixed image '" << fixedImagePath << "'\n";
+      exit( 1 );
+      }
+    xformList.Add( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( movingImage->GetImageToPhysicalMatrix() ) ) );
+    }
   
   // Is VTK file stored in binary format?
   bool binaryMode = false;
