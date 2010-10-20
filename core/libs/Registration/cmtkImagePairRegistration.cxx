@@ -53,7 +53,7 @@ cmtk
 
 ImagePairRegistration::ImagePairRegistration () 
   : m_Metric( 0 ),
-    m_FloatingImageInterpolation( Interpolators::DEFAULT ),
+    m_FloatingImageInterpolation( Interpolators::LINEAR ),
     m_AutoMultiLevels( 0 ),
     m_MaxStepSize( -1 ),
     m_MinStepSize( -1 ),
