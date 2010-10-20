@@ -427,7 +427,7 @@ DataGrid::GetOrthoSlice
 
 DataGrid*
 DataGrid::ExtractSliceVirtual
-( const int axis, const unsigned int plane ) const
+( const int axis, const int plane ) const
 {
   unsigned int dims[2], depth, incX, incY, incZ;
 

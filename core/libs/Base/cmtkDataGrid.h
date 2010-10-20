@@ -310,7 +310,7 @@ public:
   
   /** Extract orthogonal slice as a data grid object.
    */
-  Self::SmartPtr ExtractSlice( const int axis, const unsigned int plane ) const
+  Self::SmartPtr ExtractSlice( const int axis, const int plane ) const
   {
     return Self::SmartPtr( this->ExtractSliceVirtual( axis, plane ) );
   }
@@ -393,7 +393,7 @@ protected:
 
   /** Extract orthogonal slice as a data grid object.
    */
-  virtual Self* ExtractSliceVirtual( const int axis, const unsigned int plane ) const;
+  virtual Self* ExtractSliceVirtual( const int axis, const int plane ) const;
 
 private:
   /** Crop region.

@@ -240,7 +240,7 @@ public:
 
   /** Extract orthogonal slice as a new volume.
    */
-  Self::SmartPtr ExtractSlice( const int axis, const unsigned int plane ) const
+  Self::SmartPtr ExtractSlice( const int axis, const int plane ) const
   {
     return Self::SmartPtr( this->ExtractSliceVirtual( axis, plane ) );
   }
@@ -564,7 +564,7 @@ private:
 
   /** Extract orthogonal slice as a new volume.
    */
-  virtual Self* ExtractSliceVirtual( const int axis, const unsigned int plane ) const;
+  virtual Self* ExtractSliceVirtual( const int axis, const int plane ) const;
 };
 
 //@}
