@@ -186,6 +186,7 @@ ImagePairNonrigidRegistrationCommandLine
     kernelGroup->AddSwitch( Key( "cubic" ), Interpolators::CUBIC, "Tricubic interpolation" );
     kernelGroup->AddSwitch( Key( "cosine-sinc" ), Interpolators::COSINE_SINC, "Cosine-windowed sinc interpolation (most accurate but slowest)" );
     kernelGroup->AddSwitch( Key( "partial-volume" ), Interpolators::PARTIALVOLUME, "Partial volume interpolation (for label data)" );
+    kernelGroup->AddSwitch( Key( "automatic" ), Interpolators::DEFAULT, "Select interpolation automatically based on data type: linear for grey-level data, nearest neighbor for label data." );
 
     cl.AddSwitch( Key( "match-histograms" ), &this->m_MatchFltToRefHistogram, true, "Match floating image histogram to reference image histogram." );
     cl.AddSwitch( Key( "repeat-match-histograms" ), &this->m_RepeatMatchFltToRefHistogram, true, "Repeat histogram matching after every level of the registration to account for volume changes. When registering masked data, it is advisable to also use the --force-outside-value option to prevent poorly matched histograms." );
