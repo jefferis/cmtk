@@ -49,7 +49,7 @@ cmtk::FusionViewApplication
 ::FusionViewApplication( int argc, char* argv[] ) 
   : QApplication( argc, argv ),
     m_MainWindow( new QMainWindow ),
-    m_AffineOnly( false ),
+    m_XformModel( 2 ), // default to full nonrigid
     m_SliceAxis( -1 ),
     m_SliceIndex( -1 ),
     m_Interpolator( Interpolators::LINEAR ),
@@ -207,6 +207,17 @@ cmtk::FusionViewApplication
 
   QObject::connect( interpGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( changeInterpolator( QAction* ) ) );
   
+  QActionGroup* xformGroup = new QActionGroup( this->m_MainWindow );
+  xformGroup->setExclusive( true );
+  this->m_MainWindowUI.actionXformIdentity->setData( QVariant( 0 ) );
+  xformGroup->addAction( this->m_MainWindowUI.actionXformIdentity );
+  this->m_MainWindowUI.actionXformAffine->setData( QVariant( 1 ) );
+  xformGroup->addAction( this->m_MainWindowUI.actionXformAffine );
+  this->m_MainWindowUI.actionXformWarp->setData( QVariant( 2 ) );
+  xformGroup->addAction( this->m_MainWindowUI.actionXformWarp );
+
+  QObject::connect( xformGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( changeXform( QAction* ) ) );
+  
   this->m_MainWindowUI.alphaSlider->setRange( 0, 1000 );
   this->m_MainWindowUI.alphaSlider->setValue( this->m_Transparency * 1000 );
   QObject::connect( this->m_MainWindowUI.alphaSlider, SIGNAL( valueChanged( int ) ), this, SLOT( setTransparency( int ) ) );
@@ -216,8 +227,6 @@ cmtk::FusionViewApplication
 
   QObject::connect( this->m_MainWindowUI.actionLinkedCursor, SIGNAL( toggled( bool ) ), this, SLOT( setLinkedCursorFlag( bool ) ) );  
 
-  QObject::connect( this->m_MainWindowUI.actionAffineOnly, SIGNAL( toggled( bool ) ), this, SLOT( setAffineOnly( bool ) ) );  
-    
   // synchronize sliders of the two graphics views
   QObject::connect( this->m_MainWindowUI.fixedView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), 
 		    this->m_MainWindowUI.movingView->horizontalScrollBar(), SLOT( setValue( int ) ) );
@@ -327,9 +336,9 @@ cmtk::FusionViewApplication
 
 void
 cmtk::FusionViewApplication
-::setAffineOnly( bool affineOnly )
+::changeXform( QAction* action )
 {
-  this->m_AffineOnly = affineOnly;
+  this->m_XformModel = action->data().toInt();
   this->UpdateMovingSlice();
 }
 
@@ -404,7 +413,20 @@ cmtk::FusionViewApplication
   UniformVolumeInterpolatorBase::SmartPtr interpolator ( ReformatVolume::CreateInterpolator( this->m_Interpolator, this->m_Moving.m_Volume ) );
   
   const XformList noXforms;
-  TypedArray::SmartPtr reformatData( ReformatVolume::ReformatUnmasked( this->m_Fixed.m_Slice, this->m_AffineOnly ? this->m_XformListAllAffine :  this->m_XformList, noXforms, plain, this->m_Moving.m_Volume, interpolator ) );
+  TypedArray::SmartPtr reformatData;
+  switch ( this->m_XformModel )
+    {
+    case 0:
+      reformatData = ReformatVolume::ReformatUnmasked( this->m_Fixed.m_Slice, noXforms, noXforms, plain, this->m_Moving.m_Volume, interpolator );
+      break;
+    case 1:
+      reformatData = ReformatVolume::ReformatUnmasked( this->m_Fixed.m_Slice, this->m_XformListAllAffine, noXforms, plain, this->m_Moving.m_Volume, interpolator );
+      break;
+    case 2:
+    default:
+      reformatData = ReformatVolume::ReformatUnmasked( this->m_Fixed.m_Slice, this->m_XformList, noXforms, plain, this->m_Moving.m_Volume, interpolator );
+      break;
+    }
   
   UniformVolume::SmartPtr movingSlice = this->m_Fixed.m_Slice->CloneGrid();
   movingSlice->SetData( reformatData );

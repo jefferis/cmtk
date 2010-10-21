@@ -288,7 +288,9 @@
     <property name="title">
      <string>&amp;Transform</string>
     </property>
-    <addaction name="actionAffineOnly"/>
+    <addaction name="actionXformIdentity"/>
+    <addaction name="actionXformAffine"/>
+    <addaction name="actionXformWarp"/>
    </widget>
    <widget class="QMenu" name="menuSlice">
     <property name="title">
@@ -518,7 +520,7 @@
     <string>Ctrl++</string>
    </property>
   </action>
-  <action name="actionAffineOnly">
+  <action name="actionXformAffine">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -703,6 +705,28 @@
    </property>
    <property name="text">
     <string>&amp;Labels</string>
+   </property>
+  </action>
+  <action name="actionXformIdentity">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Identity</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+I</string>
+   </property>
+  </action>
+  <action name="actionXformWarp">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Warp</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+W</string>
    </property>
   </action>
  </widget>

@@ -75,9 +75,6 @@ private slots:
   /// Update flag for displaying linked cursors.
   void setLinkedCursorFlag( bool flag );
 
-  /// Update flag for affine-only transformations.
-  void setAffineOnly( bool affineOnly );
-
   /// Update zoom factor from UI.
   void changeZoom( QAction* action /*!< Action to set new zoom factor. */ );
 
@@ -89,6 +86,9 @@ private slots:
 
   /// Update interpolator from UI.
   void changeInterpolator( QAction* action /*!< Action to set new interpolator. */ );
+
+  /// Update transformation model selection from UI.
+  void changeXform( QAction* action /*!< Action to set new transformation model. */ );
 
   /// Update slice direction from UI.
   void changeSliceDirection( QAction* action /*!< Action to set new slice direction. */ );
@@ -165,8 +165,11 @@ private:
    */
   XformList m_XformListAllAffine;
 
-  /// Flag to apply only affine transformation components.
-  bool m_AffineOnly;
+  /** Selection of transformation model.
+   * 0: apply no transformation, 1: apply only affine transformation components, 
+   * 2: apply complete nonrigid transformation.
+   */
+  int m_XformModel;
 
   /// The slice axis (0=x, sagittal; 1=y, coronal; 2=z, axial).
   int m_SliceAxis;
