@@ -137,6 +137,8 @@ main( int argc, char* argv[] )
 
     cl.AddOption( Key( 'o', "output" ), &OutputArchive, "Output filename for groupwise registration archive." );
     cl.AddOption( Key( 'O', "output-root" ), &OutputRootDirectory, "Root directory for all output files." );
+    cl.AddOption( Key( "output-average" ), &AverageImagePath, "Output filename for registered average image." );
+    cl.AddSwitch( Key( "average-linear" ), &AverageImageInterpolation, cmtk::Interpolators::LINEAR, "Use linear interpolation for average image" );
     cl.AddSwitch( Key( "average-cubic" ), &AverageImageInterpolation, cmtk::Interpolators::CUBIC, "Use cubic interpolation for average image (default: linear)" );
     cl.AddSwitch( Key( "no-output-average" ), &AverageImagePath, (const char*)NULL, "Do not write average image." );
 
