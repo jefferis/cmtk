@@ -392,7 +392,7 @@ CreateElasticFunctional
       switch ( metric ) 
 	{
 	case 0:
-	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingNormMutInf_NearestNeighbor, SplineWarpXform>( refVolume, fltVolume );
+	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingNormMutInf_NearestNeighbor>( refVolume, fltVolume );
 	case 1:
 	  return new VoxelMatchingElasticFunctional_Template<VoxelMatchingMutInf_NearestNeighbor>( refVolume, fltVolume );
 	case 2:
