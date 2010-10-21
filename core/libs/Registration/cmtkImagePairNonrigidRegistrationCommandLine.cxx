@@ -130,10 +130,10 @@ ImagePairNonrigidRegistrationCommandLine
     cl.EndGroup();
 
     cl.BeginGroup( "Transformation", "Transformation parameters" );
-    cl.AddOption( Key( 'g', "grid-spacing" ), &this->m_GridSpacing, "Control point grid spacing" );
-    cl.AddSwitch( Key( "exact-spacing" ), &this->m_ExactGridSpacing, true, "Use exact control point spacing; do not modify spacing to fit reference image bounding box" );
-    cl.AddOption( Key( "refine" ), &this->m_RefineGrid, "Number of refinements (control point grid resolution levels)" );
+    cl.AddOption( Key( "grid-spacing" ), &this->m_GridSpacing, "Control point grid spacing" );
+    cl.AddOption( Key( "grid-refine" ), &this->m_RefineGrid, "Number of refinements (control point grid resolution levels)" );
     cl.AddSwitch( Key( "delay-refine" ), &this->m_DelayRefineGrid, true, "Delay control point grid refinement; first switch to next higher image resolution" );
+    cl.AddSwitch( Key( "exact-spacing" ), &this->m_ExactGridSpacing, true, "Use exact control point spacing; do not modify spacing to fit reference image bounding box" );
 
     cl.AddOption( Key( "ignore-edge" ), &this->IgnoreEdge, "Ignore n control point layers along each image face" );
     cl.AddOption( Key( "restrict" ), &this->RestrictToAxes, "Restrict deformation to coordinate dimension(s) [one or more of 'x','y','z']" );
