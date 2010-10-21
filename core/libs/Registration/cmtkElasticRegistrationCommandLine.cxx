@@ -604,6 +604,6 @@ cmtkElasticRegistrationCommandLineDispatchSIGUSR1( int sig )
   
   // write intermediate result. give "false" flag for index increment to 
   // preserve to final numbering of levels.
-  cmtk::ElasticRegistrationCommandLine::StaticThis->OutputIntermediate( false );
+  cmtk::ElasticRegistrationCommandLine::StaticThis->OutputIntermediate( true /* Increment count*/ );
 }
 
