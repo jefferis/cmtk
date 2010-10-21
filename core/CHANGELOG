@@ -1,5 +1,7 @@
 Release CMTK-1.5.0:
 
+(r2483) Added: "fview" fusion viewer tool can now switch between no
+    transformation (identity), affine-only and full nonrigid transformation.
 (r2479) Fixed: ITK transformations must be in LPS space, regardless of the
     coordinate spaces of the images being registered.
 (r2467) Fixed: make consistent use of C memory allocator to avoid conflicts
