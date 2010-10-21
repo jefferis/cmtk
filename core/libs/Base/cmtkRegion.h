@@ -114,7 +114,7 @@ public:
   /// Region "end" index.
   const typename Self::IndexType end() const
   {
-    Self::IndexType e = this->m_RegionFrom;
+    typename Self::IndexType e = this->m_RegionFrom;
     ++e[NDIM-1];
     return e;
   }
