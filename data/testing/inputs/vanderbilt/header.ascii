@@ -1,0 +1,34 @@
+Modality := MR
+Manufacturer:= Unknown
+Insititution ID := SRI International
+Comments := This is a file reader test image
+
+Patient ID := 000
+Comments := Patient ID is fictitious.
+
+Contrast/Bolus agent := Gadolinium
+Scanning sequence := SE
+Slice thickness := 20.000000
+Repetition time := 800
+Echo time := 15 
+Number of averages := 2
+Comments := T1 weighted
+
+Study := 1
+Series := 1
+Acquisition := 1
+Patient orientation := L : P : H
+
+Image dimensions := 3
+Rows := 3
+Columns := 4
+Slices := 5
+Pixel size := 60 : 60
+Compression code := Unix compress command
+Bits allocated := 16
+Bits stored := 16
+High bit := 15
+Pixel representation := 1
+Smallest pixel value := -32,768
+Largest pixel value := +32,767
+

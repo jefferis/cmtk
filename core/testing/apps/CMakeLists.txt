@@ -91,6 +91,7 @@ SET(testList ${testList}
   describeEmpty
   describeDICOM
   describeDICOMZ
+  describeVanderbilt
   describeMR1 
   describeMR2
   describeMR3
