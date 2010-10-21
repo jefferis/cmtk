@@ -538,6 +538,14 @@ case ${RUNTEST} in
 	run_eval "${BINDIR}/describe -m empty.nii > ${tmpdir}/describe.txt"
 	check_results describe.txt
 	;;
+    describeDICOM)
+	run_eval "${BINDIR}/describe -m dcm/I0007.dcm > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
+    describeDICOMZ)
+	run_eval "${BINDIR}/describe -m dcmz/I0007.dcm > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
     describeBZip2a)
         run_eval "${BINDIR}/describe -m bzip_test.nii > ${tmpdir}/describe.txt"
 	check_results describe.txt

@@ -89,6 +89,8 @@ ENDIF(CMTK_USE_SQLITE)
 # Tests for "describe" tool
 SET(testList ${testList} 
   describeEmpty
+  describeDICOM
+  describeDICOMZ
   describeMR1 
   describeMR2
   describeMR3
