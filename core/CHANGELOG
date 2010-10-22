@@ -1,5 +1,9 @@
 Release CMTK-1.5.0:
 
+(r2405) Added: "dcm2image" tool can now optionally sort output images by
+    instance numbers of the input image files, rather than by their
+    names. This is useful when using variable-length numbered files that must
+    be stacked in order (e.g., for functional MRI).
 (r2483) Added: "fview" fusion viewer tool can now switch between no
     transformation (identity), affine-only and full nonrigid transformation.
 (r2479) Fixed: ITK transformations must be in LPS space, regardless of the
