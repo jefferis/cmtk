@@ -90,7 +90,7 @@ const char progress_chars[] = "-\\|/";
 int progress = 0;
 
 bool Recursive = false;
-bool SortFilesByName = true;
+int SortFiles = 1;
 
 bool Verbose = false;
 
@@ -134,7 +134,7 @@ public:
   Sint32 AcquisitionNumber;
 
   /// DICOM image number (index in volume).
-  Sint32 ImageNumber;
+  Sint32 InstanceNumber;
 
   /// GE private DICOM tag: raw data type (real, imaginary, phase, magnitude).
   Sint16 GERawDataType;
@@ -247,8 +247,8 @@ ImageFileDCM::ImageFileDCM( const char* filename )
   if ( document->getValue( DCM_ImageOrientationPatient, tmpStr ) )
     ImageOrientationPatient = tmpStr;
 
-  if ( ! document->getValue( DCM_InstanceNumber, ImageNumber ) )
-    ImageNumber = 0;
+  if ( ! document->getValue( DCM_InstanceNumber, InstanceNumber ) )
+    InstanceNumber = 0;
 
   if ( ! document->getValue( DCM_AcquisitionNumber, AcquisitionNumber ) )
     AcquisitionNumber = 0;
@@ -282,6 +282,18 @@ public:
   void WriteToArchive ( const std::string& name ) const;
 
   void print() const;
+
+  /// Compare order based on file name (for lexicographic sorting).
+  static bool lessFileName( const VolumeDCM* lhs, const VolumeDCM* rhs )
+  {
+    return strcmp( (*lhs)[0]->fname, (*rhs)[0]->fname ) < 0;
+  }
+
+  /// Compare order based on image instace (for sorting in acquisition order).
+  static bool lessInstanceNumber( const VolumeDCM* lhs, const VolumeDCM* rhs )
+  {
+    return (*lhs)[0]->InstanceNumber < (*rhs)[0]->InstanceNumber;
+  }
 };
 
 bool
@@ -314,7 +326,7 @@ VolumeDCM::AddImageFileDCM ( ImageFileDCM *const newImage )
 {
   iterator it = begin();
   for ( ; it != end(); ++it )
-    if ( newImage->ImageNumber < (*it)->ImageNumber ) break;
+    if ( newImage->InstanceNumber < (*it)->InstanceNumber ) break;
   insert( it, newImage );
 }
 
@@ -555,10 +567,6 @@ traverse_directory( VolumeList& studylist, const char *path, const char *wildcar
     }
 #endif
 
-  if ( SortFilesByName )
-    {
-    std::sort( fileNameList.begin(), fileNameList.end() );
-    }
   for ( std::vector<std::string>::const_iterator it = fileNameList.begin(); it != fileNameList.end(); ++it )
     {
     try 
@@ -569,6 +577,20 @@ traverse_directory( VolumeList& studylist, const char *path, const char *wildcar
       {
       }
     }
+
+  switch ( SortFiles )
+    {
+    case 0:
+    default:
+      break;
+    case 1:
+      std::sort( studylist.begin(), studylist.end(), VolumeDCM::lessFileName );
+      break;
+    case 2:
+      std::sort( studylist.begin(), studylist.end(), VolumeDCM::lessInstanceNumber );
+      break;
+    }
+  
   std::cout << "\r";
   return 0;
 }
@@ -601,15 +623,26 @@ main ( int argc, char *argv[] )
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-
-    cl.AddOption( Key( 'O', "out-pattern" ), &OutPathPattern, "Output image path pattern (using printf substitutions) [default: '%03d.hdr']" );
-    cl.AddSwitch( Key( 'r', "recurse" ), &Recursive, true, "Recurse into directories [default: no]" );
-    cl.AddSwitch( Key( 'n', "no-sort" ), &SortFilesByName, false, "Do NOT sort files by file name (determines order when resolving spatial collisions)" );
-    cl.AddSwitch( Key( 's', "sort" ), &SortFilesByName, true, "Sort files by file name (this is the default)" );
     
+    cl.BeginGroup( "Input", "Input Options");
+    cl.AddSwitch( Key( 'r', "recurse" ), &Recursive, true, "Recurse into directories" );
+    cl.AddSwitch( Key( "ge-extensions" ), &WithExtensionsGE, true, "Enable GE extensions (e.g., detect image type magnitude vs. complex)" );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Output", "Output Options");
+    cl.AddOption( Key( 'O', "out-pattern" ), &OutPathPattern, "Output image path pattern (using printf substitutions)" );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Sorting", "Sorting Options");
+    cl.AddSwitch( Key( "no-sort" ), &SortFiles, 0, "Do NOT sort files by file name (determines order when resolving spatial collisions)" );
+    cl.AddSwitch( Key( "sort-name" ), &SortFiles, 1, "Sort files lexicographically by file name." );
+    cl.AddSwitch( Key( "sort-instance" ), &SortFiles, 2, "Sort files by image instance number. Use this when file names are different lengths, etc." );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Stacking", "Stacking Options");
     cl.AddSwitch( Key( "no-orientation-check" ), &DisableOrientationCheck, true, "Disable checking of image orientations (to avoid rounding issues)" );
     cl.AddOption( Key( "tolerance" ), &Tolerance, "Tolerance for floating-point comparisons (must be >= 0; 0 = exact matches only; default: 1e-5)" );
-    cl.AddSwitch( Key( "ge-extensions" ), &WithExtensionsGE, true, "Enable GE extensions (e.g., detect image type magnitude vs. complex)" );
+    cl.EndGroup();
 
     if ( ! cl.Parse( argc, const_cast<const char**>( argv ) ) )
       return 1;
