@@ -181,7 +181,7 @@ CompressedStream::OpenDecompressionPipe
 #endif
     else
       {
-      this->m_Reader = ReaderBase::SmartPtr( new Self::Pipe( filename, command ) );
+      this->m_Reader = ReaderBase::SmartPtr( new Self::Pipe( fname, command ) );
       }
     }
   return this->IsValid();
