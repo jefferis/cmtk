@@ -1,6 +1,8 @@
 Release CMTK-1.5.0:
 
-(r2405) Added: "dcm2image" tool can now optionally sort output images by
+(r2500) Fixed: "imagemath" tool performed incorrect operations for the "exp"
+    and  "sqrt" do to incorrect function wrapper.
+(r2495) Added: "dcm2image" tool can now optionally sort output images by
     instance numbers of the input image files, rather than by their
     names. This is useful when using variable-length numbered files that must
     be stacked in order (e.g., for functional MRI).
