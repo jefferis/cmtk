@@ -1,5 +1,7 @@
 Release CMTK-1.5.0:
 
+(r2502) Fixed: "ReformatVolume::CreateInterpolator" did not actually create a
+    nearest neighbor interpolator when so requested.
 (r2500) Fixed: "imagemath" tool performed incorrect operations for the "exp"
     and  "sqrt" do to incorrect function wrapper.
 (r2495) Added: "dcm2image" tool can now optionally sort output images by
