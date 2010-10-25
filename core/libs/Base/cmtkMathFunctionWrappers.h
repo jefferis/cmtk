@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -54,21 +55,21 @@ Log( const double x )
   return log( x );
 }
 
-/// Log function.
+/// Exponential function.
 double
 Exp( const double x )
 {
-  return fabs( x );
+  return Exp( x );
 }
 
-/// Log function.
+/// Square root function.
 double
 Sqrt( const double x )
 {
-  return log( x );
+  return sqrt( x );
 }
 
-/// Log function.
+/// Abs function.
 double
 Abs( const double x )
 {
