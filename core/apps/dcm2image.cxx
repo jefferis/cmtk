@@ -147,6 +147,18 @@ public:
 
   /// Determine whether two images match, i.e., belong to the same volume.
   bool Match( const ImageFileDCM& other ) const;
+
+  /// Compare order based on file name (for lexicographic sorting).
+  static bool lessFileName( const ImageFileDCM* lhs, const ImageFileDCM* rhs )
+  {
+    return strcmp( lhs->fname, rhs->fname ) < 0;
+  }
+
+  /// Compare order based on image instace (for sorting in acquisition order).
+  static bool lessInstanceNumber( const ImageFileDCM* lhs, const ImageFileDCM* rhs )
+  {
+    return lhs->InstanceNumber < rhs->InstanceNumber;
+  }
 };
 
 bool
@@ -282,18 +294,6 @@ public:
   void WriteToArchive ( const std::string& name ) const;
 
   void print() const;
-
-  /// Compare order based on file name (for lexicographic sorting).
-  static bool lessFileName( const VolumeDCM* lhs, const VolumeDCM* rhs )
-  {
-    return strcmp( (*lhs)[0]->fname, (*rhs)[0]->fname ) < 0;
-  }
-
-  /// Compare order based on image instace (for sorting in acquisition order).
-  static bool lessInstanceNumber( const VolumeDCM* lhs, const VolumeDCM* rhs )
-  {
-    return (*lhs)[0]->InstanceNumber < (*rhs)[0]->InstanceNumber;
-  }
 };
 
 bool
@@ -511,7 +511,7 @@ traverse_directory( VolumeList& studylist, const char *path, const char *wildcar
 {
   char fullname[PATH_MAX];
 
-  std::vector<std::string> fileNameList;
+  std::vector<ImageFileDCM*> fileList;
 
 #ifdef _MSC_VER
   WIN32_FIND_DATA fData;
@@ -530,7 +530,7 @@ traverse_directory( VolumeList& studylist, const char *path, const char *wildcar
       }
     else
       {
-      fileNameList.push_back( fullname );
+      fileList.push_back( new ImageFileDCM( fullname ) );
       (cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ]).flush();
       }
     }
@@ -558,7 +558,7 @@ traverse_directory( VolumeList& studylist, const char *path, const char *wildcar
 	    {
 	    cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ];
 	    cmtk::StdErr.flush();
-	    fileNameList.push_back( fullname );
+	    fileList.push_back( new ImageFileDCM( fullname ) );
 	    }
 	  }
 	}
@@ -567,30 +567,30 @@ traverse_directory( VolumeList& studylist, const char *path, const char *wildcar
     }
 #endif
 
-  for ( std::vector<std::string>::const_iterator it = fileNameList.begin(); it != fileNameList.end(); ++it )
-    {
-    try 
-      {
-      studylist.AddImageFileDCM( new ImageFileDCM( it->c_str() ) );
-      }
-    catch (int)
-      {
-      }
-    }
-
   switch ( SortFiles )
     {
     case 0:
     default:
       break;
     case 1:
-      std::sort( studylist.begin(), studylist.end(), VolumeDCM::lessFileName );
+      std::sort( fileList.begin(), fileList.end(), ImageFileDCM::lessFileName );
       break;
     case 2:
-      std::sort( studylist.begin(), studylist.end(), VolumeDCM::lessInstanceNumber );
+      std::sort( fileList.begin(), fileList.end(), ImageFileDCM::lessInstanceNumber );
       break;
     }
   
+  for ( std::vector<ImageFileDCM*>::const_iterator it = fileList.begin(); it != fileList.end(); ++it )
+    {
+    try 
+      {
+      studylist.AddImageFileDCM( *it );
+      }
+    catch (int)
+      {
+      }
+    }
+
   std::cout << "\r";
   return 0;
 }
