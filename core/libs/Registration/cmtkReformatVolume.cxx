@@ -48,6 +48,7 @@
 #include <Base/cmtkUniformVolumeInterpolator.h>
 #include <Base/cmtkSincInterpolator.h>
 #include <Base/cmtkLinearInterpolator.h>
+#include <Base/cmtkNearestNeighborInterpolator.h>
 #include <Base/cmtkCubicInterpolator.h>
 #include <Base/cmtkUniformVolumeInterpolatorPartialVolume.h>
 
@@ -645,6 +646,11 @@ ReformatVolume::CreateInterpolator
     case cmtk::Interpolators::LINEAR:
     {
     typedef UniformVolumeInterpolator<cmtk::Interpolators::Linear> TInterpolator;
+    return TInterpolator::SmartPtr( new TInterpolator( *volume ) );
+    }
+    case cmtk::Interpolators::NEAREST_NEIGHBOR:
+    {
+    typedef UniformVolumeInterpolator<cmtk::Interpolators::NearestNeighbor> TInterpolator;
     return TInterpolator::SmartPtr( new TInterpolator( *volume ) );
     }
     case cmtk::Interpolators::CUBIC:
