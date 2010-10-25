@@ -34,6 +34,7 @@
 
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkThreads.h>
 
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkMathFunctionWrappers.h>
@@ -1261,6 +1262,8 @@ CallbackCombinePCA()
 int
 main( const int argc, const char *argv[] )
 {
+  cmtk::Threads::CheckEnvironment(); // need this to check for "CMTK_NUM_THREADS" and constrain OpenMP accordingly
+
   try
     {
     cmtk::CommandLine cl;
