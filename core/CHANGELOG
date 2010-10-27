@@ -1,7 +1,9 @@
 Release CMTK-1.5.0:
 
 (r2505) Added: "film" tool now has "--padding-value" option to define a
-    padding value for the input image.
+    padding value for the input image. Also to get this to work,
+    UniformVolume::GetInterleavedSubvolume() now copies padding flag and value
+    from input data to output.
 (r2502) Fixed: "ReformatVolume::CreateInterpolator" did not actually create a
     nearest neighbor interpolator when so requested.
 (r2500) Fixed: "imagemath" tool performed incorrect operations for the "exp"
