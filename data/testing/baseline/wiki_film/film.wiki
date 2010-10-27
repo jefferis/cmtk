@@ -20,6 +20,10 @@ where
 
 ; <tt>--verbose</tt> / <tt>-v</tt> : Verbose operation
 
+=== Input Options ===
+
+; <tt>--padding-value</tt> <tt><double></tt> : Set padding value for input image. Pixels with this value will be ignored. '''[Default: disabled]'''
+
 === Interleaving Options ===
 
 ; <tt>--interleave-axis</tt> : Define interleave axis: this is the through-slice direction of the acquisition.Supported values: "<tt>guess-from-input</tt>", "<tt>axial</tt>", "<tt>sagittal</tt>", "<tt>coronal</tt>", "<tt>interleave-x</tt>", "<tt>interleave-y</tt>", "<tt>interleave-z</tt>", where the default is "guess-from-input", or use one of the following
