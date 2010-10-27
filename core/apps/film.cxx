@@ -69,6 +69,9 @@ bool Verbose = false;
 const char* InputFilePath = NULL;
 const char* OutputFilePath = NULL;
 
+cmtk::Types::DataItem PaddingValue = 0;
+bool PaddingFlag = false;
+
 int InterleaveAxis = -1;
 unsigned int NumberOfPasses = 2;
 
@@ -182,7 +185,6 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
   volRecon.Optimize( NumberOfIterations );
   return volRecon.GetCorrectedImage();
 }  
-  
 
 int
 main( const int argc, const char* argv[] )
@@ -199,6 +201,10 @@ main( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Artifact Correction" );
 
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
+    
+    cl.BeginGroup( "input", "Input Options" );
+    cl.AddOption( Key( "padding-value" ), &PaddingValue, "Set padding value for input image. Pixels with this value will be ignored.", &PaddingFlag );
+    cl.EndGroup();
 
     cl.BeginGroup( "interleave", "Interleaving Options" );
     cmtk::CommandLine::EnumGroup<int>::SmartPtr
@@ -275,6 +281,11 @@ main( const int argc, const char* argv[] )
     {
     cmtk::StdErr << "ERROR: Could not read image " << InputFilePath << "\n";
     return 1;
+    }
+
+  if ( PaddingFlag )
+    {
+    volume->GetData()->SetPaddingValue( PaddingValue );
     }
 
   cmtk::UniformVolume::SmartPtr refImage;

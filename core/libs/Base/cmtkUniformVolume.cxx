@@ -245,6 +245,11 @@ UniformVolume::GetInterleavedSubVolume
   // scale direction vector along axis
   for ( int i = 0; i < 3; ++i )
     volume->m_IndexToPhysicalMatrix[axis][i] *= factor;
+
+  if ( this->GetData()->GetPaddingFlag() )
+    {
+    volume->GetData()->SetPaddingValue( this->GetData()->GetPaddingValue() );
+    }
   
   return volume;
 }
