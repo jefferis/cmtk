@@ -1,5 +1,7 @@
 Release CMTK-1.5.0:
 
+(r2512) Fixed: SmartPointer::DynamicCastFrom() was leaking memory due to
+    implicit, rather than explicit, call to inherited constructor.
 (r2505) Added: "film" tool now has "--padding-value" option to define a
     padding value for the input image. Also to get this to work,
     UniformVolume::GetInterleavedSubvolume() now copies padding flag and value
