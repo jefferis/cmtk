@@ -127,12 +127,7 @@ private:
   /** Construct from dumb pointer and existing reference counter.
    * The reference counter is increased in the process.
    */
-  SmartPointer( T *const object, SafeCounter *const counter ) 
-  {
-    this->m_Object.ptr = object;
-    this->m_ReferenceCount = counter;
-    this->m_ReferenceCount->Increment();
-  }
+  SmartPointer( T *const object, SafeCounter *const counter ) : Superclass( object, counter ) {}
   
   /// Make all template instances friends for easy type casting.
   template<class T2> friend class SmartPointer;

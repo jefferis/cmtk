@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,6 +37,7 @@
 
 #include <System/cmtkMutexLock.h>
 #include <System/cmtkLockingPtr.h>
+#include <System/cmtkConsole.h>
 
 namespace
 cmtk
@@ -54,34 +56,31 @@ class SafeCounter
 {
 public:
   /// Constructor.
-  SafeCounter( const unsigned int counter = 0 ) 
-  {
-    Counter = counter;
-  }
+  SafeCounter( const unsigned int counter = 0 ) : m_Counter( counter ) {}
 
   /// Retrieve counter value.
-  unsigned int Get() const { return Counter; }
+  unsigned int Get() const { return this->m_Counter; }
 
   /// Increment and return new counter value.
   unsigned int Increment() volatile 
   { 
-    LockingPtr<unsigned int> counter( Counter, Mutex );
+    LockingPtr<unsigned int> counter( this->m_Counter, this->m_Mutex );
     return ++(*counter);
   }
   
   /// Decrement and return new counter value.
   unsigned int Decrement() volatile 
   { 
-    LockingPtr<unsigned int> counter( Counter, Mutex );
+    LockingPtr<unsigned int> counter( this->m_Counter, this->m_Mutex );
     return --(*counter);
   }
 
 private:
   /// The actual counter.
-  unsigned int Counter;
+  unsigned int m_Counter;
 
   /// Mutex for thread-safe exclusive access to counter.
-  MutexLock Mutex;
+  MutexLock m_Mutex;
 };
 
 //@}
