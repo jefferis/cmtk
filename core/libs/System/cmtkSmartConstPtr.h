@@ -73,6 +73,8 @@ public:
   }
 
   /** Default constructor.
+   * This needs to be separate because the constructor that takes a dumb pointer
+   * must be explicit, but the default constructor should not be.
    */
   SmartConstPointer() 
     : m_ReferenceCount( new SafeCounter( 1 ) )
