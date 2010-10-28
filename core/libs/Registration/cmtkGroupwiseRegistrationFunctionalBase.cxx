@@ -161,11 +161,11 @@ GroupwiseRegistrationFunctionalBase::SetTemplateGrid
     }
   if ( ! this->m_TemplateGrid->MetaKeyExists( META_SPACE ) )
     {
-    templateGrid->SetMetaInfo( META_SPACE, AnatomicalOrientation::ORIENTATION_STANDARD );
+    this->m_TemplateGrid->SetMetaInfo( META_SPACE, AnatomicalOrientation::ORIENTATION_STANDARD );
     }
   if ( ! this->m_TemplateGrid->MetaKeyExists( META_SPACE_ORIGINAL ) )
     {
-    templateGrid->SetMetaInfo( META_SPACE_ORIGINAL, AnatomicalOrientation::ORIENTATION_STANDARD );
+    this->m_TemplateGrid->SetMetaInfo( META_SPACE_ORIGINAL, AnatomicalOrientation::ORIENTATION_STANDARD );
     }
 
   if ( this->m_UseTemplateData )
