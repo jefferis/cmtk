@@ -145,7 +145,7 @@ main( const int argc, const char* argv[] )
   bool firstImage = true;
   cmtk::Types::DataItem refMean, refVariance;
 
-  cmtk::Types::DataItemRange imagesValueRange;
+  cmtk::Types::DataItemRange imagesValueRange( 0, 0 );
 
   std::list<cmtk::TypedArray::SmartPtr> dataList;
 
