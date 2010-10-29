@@ -198,6 +198,7 @@ public:
 
       // new set new array.
       this->Dim = dim;
+      Memory::FreeArray( this->m_Elements );
       this->Elements = newElements;
       } 
     
