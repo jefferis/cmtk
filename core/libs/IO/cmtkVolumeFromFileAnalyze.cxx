@@ -468,6 +468,8 @@ VolumeFromFile::WriteAnalyzeHdr
       }
     fclose( hdrFile );
     }
+
+  Memory::DeleteArray( pathImg );
 }
 
 } // namespace cmtk
