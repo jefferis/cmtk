@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -198,7 +198,7 @@ public:
 
       // new set new array.
       this->Dim = dim;
-      Memory::FreeArray( this->m_Elements );
+      Memory::DeleteArray( this->m_Elements );
       this->Elements = newElements;
       } 
     
