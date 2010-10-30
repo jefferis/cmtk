@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -93,11 +93,8 @@ main( int argc, char *argv[] )
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Be verbose" );
-
     cl.AddSwitch( Key( 'm', "machine-readable" ), &MachineReadable, true, "Print output in format that is easy to parse automatically." );
-
     cl.AddSwitch( Key( "read-ras" ), &ReadOrientation, "RAS", "Read image in RAS orientation" );
-    
     cl.AddCallback( Key( "probe-index" ), CallbackProbeIndex, "Add pixel index for probing." );
 
     cl.Parse( argc, const_cast<const char**>( argv ) );
