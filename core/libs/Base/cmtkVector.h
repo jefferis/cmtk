@@ -198,7 +198,7 @@ public:
 
       // new set new array.
       this->Dim = dim;
-      Memory::DeleteArray( this->m_Elements );
+      Memory::DeleteArray( this->Elements );
       this->Elements = newElements;
       } 
     
