@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 
 #include <IO/cmtkXformIO.h>
@@ -79,7 +80,7 @@ FILE *outfile = stdout;
 FILE *infile=stdin;
 
 int
-main( const int argc, const char *argv[] )
+doMain( const int argc, const char *argv[] )
 {
   try
     {
@@ -112,14 +113,14 @@ main( const int argc, const char *argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e;
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( StudyList, Verbose ) );
   if ( ! xform )
     {
     cmtk::StdErr << "ERROR: could not read transformation\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   cmtk::WarpXform::SmartPtr warpXform = cmtk::WarpXform::SmartPtr::DynamicCastFrom( xform );
@@ -132,7 +133,7 @@ main( const int argc, const char *argv[] )
   if( !affineXform && AffineOnly )
     {
     cmtk::StdErr << "Unable to obtain affine transform from: "<<StudyList<<"\n" ;
-    exit( 2 );
+    throw cmtk::ExitException( 2 );
     }
   
   cmtk::AffineXform::SmartPtr inverseAffineXform( NULL );
@@ -154,7 +155,7 @@ main( const int argc, const char *argv[] )
     if(infile==NULL)  
       {
       cmtk::StdErr << "Unable to open input path: "<<InputPath<<"\n" ;
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     }
   if(OutputPath)
@@ -163,7 +164,7 @@ main( const int argc, const char *argv[] )
     if(outfile==NULL)  
       {
       cmtk::StdErr << "Unable to open output path: "<<OutputPath<<"\n" ;
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     }	  
   
@@ -307,6 +308,9 @@ main( const int argc, const char *argv[] )
   
   return 0;
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace gregxform
 } // namespace apps

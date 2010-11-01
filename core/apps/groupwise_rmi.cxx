@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkTimers.h>
 
 #include <Base/cmtkUniformVolume.h>
@@ -102,7 +103,7 @@ std::vector<const char*> fileNameList;
 std::vector<cmtk::UniformVolume::SmartPtr> imageListOriginal;
 
 int
-main( int argc, char* argv[] )
+doMain( int argc, char* argv[] )
 {
 #ifdef CMTK_BUILD_MPI
 #  ifdef CMTK_BUILD_SMP
@@ -182,7 +183,7 @@ main( int argc, char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   if ( NumberDOFs.empty() )
@@ -207,7 +208,7 @@ main( int argc, char* argv[] )
       {
       cmtk::StdErr << "First input file is an archive, but additional arguments are given.\n"
 		<< "I am terminating just to make sure not to do something stupid.\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     
     cmtk::ClassStream inStream( fileNameList[0], cmtk::ClassStream::READ );
@@ -221,7 +222,7 @@ main( int argc, char* argv[] )
     else
       {
       cmtk::StdErr << "Could not open input groupwise archive " << fileNameList[0] << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     }
   else
@@ -238,7 +239,7 @@ main( int argc, char* argv[] )
 	if ( ! image || ! image->GetData() )
 	  {
 	  cmtk::StdErr << "ERROR: Could not read image " << *fnIt << "\n";
-	  exit( 1 );
+	  throw cmtk::ExitException( 1 );
 	  }
 	nextImage = image;
 	}
@@ -250,7 +251,7 @@ main( int argc, char* argv[] )
 	if ( ! image )
 	  {
 	  cmtk::StdErr << "ERROR: Could not read image " << *fnIt << "\n";
-	  exit( 1 );
+	  throw cmtk::ExitException( 1 );
 	  }
 	nextImage = image;
 	}
@@ -378,3 +379,4 @@ main( int argc, char* argv[] )
   return 0;
 }
 
+#include "cmtkSafeMainMPI"

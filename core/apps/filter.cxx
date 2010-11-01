@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkProgressConsole.h>
 
 #include <IO/cmtkVolumeIO.h>
@@ -86,7 +87,7 @@ const char* updateDB = NULL;
 #endif
 
 int 
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   cmtk::ProgressConsole progressIndicator( "Image Filtering" );
   try 
@@ -146,14 +147,14 @@ main( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << e;
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( InputFileName, Verbose ) );
   if ( !volume || !volume->GetData() )
     {
     cmtk::StdErr << "ERROR: Could not read volume " << InputFileName << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   cmtk::TypedArray::SmartPtr maskData( NULL );
@@ -165,7 +166,7 @@ main( const int argc, const char* argv[] )
     else
       {
       cmtk::StdErr << "ERROR: Could not read mask file " << MaskFileName << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     }
   
@@ -175,14 +176,14 @@ main( const int argc, const char* argv[] )
     if ( ! average || ! average->GetData() ) 
       {
       cmtk::StdErr	<< "ERROR: Could not read average anatomical file " << AverageFileName << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     
     cmtk::UniformVolume::SmartPtr subject( cmtk::VolumeIO::ReadOriented( SubjectFileName, Verbose ) );
     if ( ! subject || ! subject->GetData() ) 
       {
       cmtk::StdErr	<< "ERROR: Could not read subject anatomical file " << SubjectFileName << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
 
     std::list<cmtk::TypedArray::SmartPtr> imageList;
@@ -192,7 +193,7 @@ main( const int argc, const char* argv[] )
       if ( ! next || ! next->GetData() ) 
 	{
 	cmtk::StdErr << "ERROR: Could not read subject anatomical file " << *it << "\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
       imageList.push_back( next->GetData() );
       }
@@ -209,7 +210,7 @@ main( const int argc, const char* argv[] )
       if ( ! subject || ! subject->GetData() ) 
 	{
 	cmtk::StdErr << "ERROR: Could not read subject anatomical file " << SubjectFileName << "\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
 
       cmtk::TypedArray::SmartPtr filtered
@@ -243,8 +244,10 @@ main( const int argc, const char* argv[] )
     db.AddImage( OutputFileName, InputFileName  );
     }
 #endif
-
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace filter
 } // namespace apps

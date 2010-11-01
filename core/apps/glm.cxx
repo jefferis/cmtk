@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkProgressConsole.h>
 #include <System/cmtkMemory.h>
 
@@ -122,7 +123,7 @@ Import
   if ( ! ctlFile.is_open() )
     {
     std::cerr << "Error opening control/parameter file " << ctlFileName << std::endl;
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   FieldNames.clear();
@@ -165,7 +166,7 @@ Import
       if ( snprintf( imgPath, sizeof( imgPath ), imgFilePatt, imgName.c_str() ) > PATH_MAX )
 	{
 	cmtk::StdErr << "ERROR: output path exceeds maximum path length\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
 
       if ( Verbose ) 
@@ -176,7 +177,7 @@ Import
       if ( !volume ) 
 	{
 	cmtk::StdErr << "ERROR: Could not read image file " << imgPath << "\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
       
       if ( CropImages )
@@ -189,7 +190,7 @@ Import
       if ( !imageData ) 
 	{
 	cmtk::StdErr << "ERROR: no image data in file " << imgPath << "\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
       if ( ExponentialModel ) 
 	imageData->ApplyFunctionDouble( cmtk::Wrappers::Log );
@@ -206,7 +207,7 @@ Import
 	  if ( lineStream.eof() )
 	    {
 	    cmtk::StdErr << "ERROR: insufficient number of model parameters in line '" << line << "'\n";
-	    exit( 1 );
+	    throw cmtk::ExitException( 1 );
 	    }
 	  lineStream >> param;
 	  // parameter exclusion by index
@@ -250,7 +251,7 @@ Import
     {
     cmtk::StdErr << "ERROR: number of parameters does not equal expected number"
 		 << "(" << nParameters * imagesData.size() << " != " << vParam.size() << ")\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   parameters = cmtk::Memory::AllocateArray<cmtk::Types::DataItem>( vParam.size() );
@@ -282,7 +283,7 @@ Import
 }
 
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   try 
     {
@@ -326,7 +327,7 @@ main( const int argc, const char* argv[] )
   if ( CtlFileName.empty() || ImgFilePatt.empty() ) 
     {
     cmtk::StdErr << "ERROR: need both a control file name and an image file pattern\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   cmtk::ProgressConsole progressIndicator;
@@ -364,12 +365,12 @@ main( const int argc, const char* argv[] )
     if ( nParametersTotal[idx] != nParametersTotal[0] )
       {
       cmtk::StdErr << "Total number of parameters for control file #" << idx << "does not match that for file #0\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     if ( nParameters[idx] != nParameters[0] )
       {
       cmtk::StdErr << "Number of active parameters for control file #" << idx << "does not match that for file #0\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
 
     const size_t totalNumberOfImages = allImages.size();
@@ -490,6 +491,9 @@ main( const int argc, const char* argv[] )
     
   return 0;
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace model
 } // namespace apps

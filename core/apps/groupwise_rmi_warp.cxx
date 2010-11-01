@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkTimers.h>
 
 #include <Base/cmtkUniformVolume.h>
@@ -98,7 +99,7 @@ float UserBackgroundValue = 0;
 bool UserBackgroundFlag = false;
 
 int
-main( int argc, char ** argv )
+doMain( int argc, char ** argv )
 {
 #ifdef CMTK_BUILD_MPI
 #  ifdef CMTK_BUILD_SMP
@@ -165,7 +166,7 @@ main( int argc, char ** argv )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
 #ifdef CMTK_BUILD_MPI
@@ -310,3 +311,4 @@ main( int argc, char ** argv )
   return 0;
 }
 
+#include "cmtkSafeMainMPI"

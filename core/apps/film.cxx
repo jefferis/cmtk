@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkProgressConsole.h>
 
@@ -108,7 +109,7 @@ CallbackSetPassWeight( const char* argv )
     {
     cmtk::StdErr << "ERROR: pass weights must be given as 'pass:weight', where 'pass' is an integer and 'weight' is a number between 0 and 1.\n"
 	      << "       Parameter provided was '" << argv << "'\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 }
 
@@ -187,7 +188,7 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
 }  
 
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   /*
   // Parse command line
@@ -350,6 +351,9 @@ main( const int argc, const char* argv[] )
   
   return 0;
 }
+
+#include "cmtkSafeMain" 
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace film
 } // namespace apps
