@@ -62,6 +62,26 @@ StackBacktrace
 #endif // #ifndef _MSC_VER
 }
 
+void
+StackBacktrace
+::PrintBacktrace( const int levels )
+{
+#ifdef HAVE_EXECINFO_H
+  void *trace[16];
+  const int trace_size = backtrace(trace, 16);
+  
+  char *const *messages = backtrace_symbols( trace, trace_size );
+  /* skip first stack frame (points here) */
+  printf("[stack] Execution path:\n");
+
+  const int printLevels = levels ? levels+1 : trace_size;
+  for ( int i=1; i<printLevels; ++i )
+    printf( "[stack] %s\n", messages[i] );
+#else // #ifdef HAVE_EXECINFO_H
+  fputs( "Sorry, stack bracktrace() not supported on this platform.\n", stderr );
+#endif // #ifdef HAVE_EXECINFO_H
+}
+
 int StackBacktrace::ExitCode = 1;
 
 } // namespace cmtk
@@ -81,18 +101,7 @@ cmtkStackBacktraceSignalHandler
     printf( "Caught signal %d\n", sig);
     }
   
-#ifdef HAVE_EXECINFO_H
-  void *trace[16];
-  const int trace_size = backtrace(trace, 16); 
-  
-  char *const *messages = backtrace_symbols( trace, trace_size );
-  /* skip first stack frame (points here) */
-  printf("[stack] Execution path:\n");
-  for ( int i=1; i<trace_size; ++i )
-    printf( "[stack] %s\n", messages[i] );
-#else // #ifdef HAVE_EXECINFO_H
-  fputs( "Sorry, stack bracktrace() not supported on this platform.\n", stderr );
-#endif // #ifdef HAVE_EXECINFO_H
+  cmtk::StackBacktrace::PrintBacktrace();
   
   exit( cmtk::StackBacktrace::ExitCode );
 }

@@ -37,7 +37,6 @@
 
 #include <System/cmtkMutexLock.h>
 #include <System/cmtkLockingPtr.h>
-#include <System/cmtkConsole.h>
 
 namespace
 cmtk

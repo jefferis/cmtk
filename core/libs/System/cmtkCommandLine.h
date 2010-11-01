@@ -725,6 +725,9 @@ public:
       m_Properties( PROPS_XML )
     {}
     
+    /// Virtual destructor.
+    virtual ~KeyToAction() {};
+
     /// Test long key from command line and execute if match.
     virtual bool MatchAndExecute( const std::string& key, //!< Key (long option) from the command line.
 				  const size_t argc, //!< Total number of command line arguments.
@@ -806,6 +809,9 @@ public:
       m_Action( action )
     {}
     
+    /// Virtual destructor.
+    virtual ~KeyToActionSingle() {};
+
     /// Test long key from command line and execute if match.
     bool MatchAndExecute( const std::string& key, //!< Key (long option) from the command line.
 			  const size_t argc, //!< Total number of command line arguments.
@@ -888,6 +894,9 @@ public:
       m_EnumGroup( keyToActionEnum )
     {}
     
+    /// Virtual destructor.
+    virtual ~KeyToActionEnum() {};
+
     /// Test long key from command line and execute if match.
     bool MatchAndExecute( const std::string& key, //!< Key (long option) from the command line.
 			  const size_t argc, //!< Total number of command line arguments.

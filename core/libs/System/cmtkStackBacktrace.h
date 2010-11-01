@@ -68,6 +68,9 @@ public:
    * This defaults to "1" but can be set to "0" for CTest testing.
    */
   static int ExitCode;
+
+  /// Print current stack backtrace.
+  static void PrintBacktrace( const int levels = 0 /*!< Maximum number of levels to display (default: 0 = no limit). */ );
 };
 
 //@}

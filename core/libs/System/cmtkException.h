@@ -45,7 +45,7 @@ namespace
 cmtk
 {
 
-/** \addtogroup Base */
+/** \addtogroup System */
 //@{
 
 /** Exception class.

@@ -33,6 +33,7 @@
 #include "cmtkCommandLine.h"
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkExitException.h>
 
 #include <string.h>
 #include <sstream>
@@ -129,21 +130,21 @@ CommandLine::Parse( const int argc, const char* argv[] )
 	if ( !strcmp( this->ArgV[this->Index], "--xml" ) && !(this->m_Properties & PROPS_NOXML) ) 
 	  {
 	  this->WriteXML();
-	  exit( 0 );
+	  throw ExitException( 0 );
 	  }
 	
 	// Check for "--help" special option, which produces textual description of all command line options
 	if ( !strcmp( this->ArgV[this->Index], "--help" ) ) 
 	  {
 	  this->PrintHelp();
-	  exit( 0 );
+	  throw ExitException( 0 );
 	  }
 	
 	// Check for "--wiki" special option, which produces Wiki-markup description of all command line options
 	if ( !strcmp( this->ArgV[this->Index], "--wiki" ) ) 
 	  {
 	  this->PrintWiki();
-	  exit( 0 );
+	  throw ExitException( 0 );
 	  }
 	
 	// Check for "--echo" special option, which echoes the command line to stdout. This does not exit the program automatically.

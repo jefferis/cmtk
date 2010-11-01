@@ -87,13 +87,11 @@ public:
   explicit SmartPointer( T *const object ) : SmartConstPointer<T>( object ) {}
 
   /** Copy constructor template.
-   * Increment reference counter in the process.
    */
   template<class T2>
   SmartPointer( const SmartPointer<T2>& ptr ) : SmartConstPointer<T>( ptr ) {}
   
   /** Copy constructor to prevent compiler-generated copy constructor.
-   * Increment reference counter in the process.
    */
   SmartPointer( const Self& ptr ) : SmartConstPointer<T>( ptr ) {}
   
