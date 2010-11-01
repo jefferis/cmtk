@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 
 #include <IO/cmtkVolumeIO.h>
 
@@ -148,7 +149,7 @@ WriteHistogram( const cmtk::Histogram<double>& histogram, const char* outfile )
 }
 
 int
-main ( const int argc, const char* argv[] ) 
+doMain ( const int argc, const char* argv[] ) 
 {
   try
     {
@@ -197,14 +198,14 @@ main ( const int argc, const char* argv[] )
     if ( ! volume ) 
       {
       cmtk::StdErr << "Cannot read image " << *it << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
 
     cmtk::TypedArray::SmartPtr data = volume->GetData();
     if ( ! data ) 
       {
       cmtk::StdErr << "Cannot read pixel data for image " << *it << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     
     if ( PaddingFlag )
@@ -287,3 +288,5 @@ main ( const int argc, const char* argv[] )
       }
     }
 }
+
+#include "cmtkSafeMain"

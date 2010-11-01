@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkAffineXform.h>
@@ -52,7 +53,7 @@
 #include <stdlib.h>
 
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   const char* referenceImagePath = NULL;
   const char* floatingImagePath = NULL;
@@ -122,14 +123,14 @@ main( const int argc, const char* argv[] )
   if ( ! referenceImage )
     {
     cmtk::StdErr << "ERROR: could not read image " << referenceImagePath << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   cmtk::UniformVolume::SmartPtr floatingImage( cmtk::VolumeIO::ReadOriented( floatingImagePath, verbose ) );
   if ( ! floatingImage )
     {
     cmtk::StdErr << "ERROR: could not read image " << floatingImagePath << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   cmtk::AffineXform::SmartPtr xform;
@@ -172,8 +173,10 @@ main( const int argc, const char* argv[] )
   else
     {
     cmtk::StdErr << "ERROR: at least one of the two images does not have a grid-to-physical space coordinate transformation.\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   return 0;
 }
+
+#include "cmtkSafeMain"

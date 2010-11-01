@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkThreads.h>
 
@@ -161,7 +162,7 @@ CallbackIn( const char** argv, int& argsUsed )
     if ( !volume || !volume->GetData() )
       {
       cmtk::StdErr << "ERROR: could not read input image " << argv[argsUsed] << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
 
     if ( PaddingFlag )
@@ -1260,7 +1261,7 @@ CallbackCombinePCA()
 }
 
 int
-main( const int argc, const char *argv[] )
+doMain( const int argc, const char *argv[] )
 {
   cmtk::Threads::CheckEnvironment(); // need this to check for "CMTK_NUM_THREADS" and constrain OpenMP accordingly
 
@@ -1347,7 +1348,7 @@ main( const int argc, const char *argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   if ( ImageStack.size() > 1 )
@@ -1357,6 +1358,9 @@ main( const int argc, const char *argv[] )
   
   return 0;
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace imagemath
 } // namespace apps

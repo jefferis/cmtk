@@ -32,6 +32,7 @@
 
 #include <cmtkconfig.h>
 
+#include <System/cmtkExitException.h>
 #include <Segmentation/cmtkSimpleLevelsetCommandLine.h>
 #include <GPU/cmtkSimpleLevelsetDevice.h>
 
@@ -44,7 +45,7 @@ namespace levelset_cuda
 {
 #endif
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   cmtk::SimpleLevelsetCommandLine<cmtk::SimpleLevelsetDevice> levelset;
   levelset.GetCommandLine().SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation.GPU" );
@@ -56,6 +57,9 @@ main( const int argc, const char* argv[] )
   levelset.Execute();
   return 0;
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace levelset
 } // namespace apps

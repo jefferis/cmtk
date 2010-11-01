@@ -32,6 +32,8 @@
 
 #include <cmtkconfig.h>
 
+#include <System/cmtkExitException.h>
+
 #include <Segmentation/cmtkSimpleLevelsetCommandLine.h>
 #include <Segmentation/cmtkSimpleLevelset.h>
 
@@ -44,7 +46,7 @@ namespace levelset
 {
 #endif
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   cmtk::SimpleLevelsetCommandLine<cmtk::SimpleLevelset> levelset;
 
@@ -55,6 +57,9 @@ main( const int argc, const char* argv[] )
   levelset.Execute();
   return 0;
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace levelset
 } // namespace apps
