@@ -76,7 +76,7 @@ const char* OutImagePath = NULL;
 std::vector<std::string> InputXformPaths;
 
 int
-main ( const int argc, const char* argv[] ) 
+doMain ( const int argc, const char* argv[] ) 
 {
   cmtk::Threads::GetNumberOfThreads();
 
@@ -117,14 +117,14 @@ main ( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   cmtk::UniformVolume::SmartPtr scalarImage( cmtk::VolumeIO::ReadGridOriented( InputGridPath, Verbose ) );
   if ( ! scalarImage ) 
     {
     cmtk::StdErr << "Could not read grid from image " << InputGridPath << "\n";
-    exit(1);
+    throw cmtk::ExitException(1);
     }
   scalarImage->CreateDataArray( DataType );
 
@@ -178,3 +178,4 @@ main ( const int argc, const char* argv[] )
     }
 }
 
+#include "cmtkSafeMain"

@@ -46,7 +46,7 @@
 #include <IO/cmtkAffineXformITKIO.h>
 
 int 
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   bool verbose = false;
   
@@ -89,7 +89,7 @@ main( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   cmtk::AffineXform::SmartConstPtr xform = cmtk::AffineXform::SmartConstPtr::DynamicCastFrom( cmtk::XformIO::Read( inputPath, verbose ) );
@@ -99,7 +99,7 @@ main( const int argc, const char* argv[] )
   if ( !xform )
     {
     cmtk::StdErr << "ERROR: could not read transformation from '" << inputPath << "'\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   if ( !fixedImagePath )
@@ -107,7 +107,7 @@ main( const int argc, const char* argv[] )
     if ( !xform->MetaKeyExists( cmtk::META_XFORM_FIXED_IMAGE_PATH ) )
       {
       cmtk::StdErr << "ERROR: could not deduce fixed image path from transformation; must be explicitly provided on the command line instead\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     fixedImagePath = xform->GetMetaInfo( cmtk::META_XFORM_FIXED_IMAGE_PATH ).c_str();
     }
@@ -117,7 +117,7 @@ main( const int argc, const char* argv[] )
     if ( !xform->MetaKeyExists( cmtk::META_XFORM_MOVING_IMAGE_PATH ) )
       {
       cmtk::StdErr << "ERROR: could not deduce moving image path from transformation; must be explicitly provided on the command line instead\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     movingImagePath = xform->GetMetaInfo( cmtk::META_XFORM_MOVING_IMAGE_PATH ).c_str();
     }
@@ -126,7 +126,7 @@ main( const int argc, const char* argv[] )
   if ( ! fixedImage )
     {
     cmtk::StdErr << "ERROR: could not read fixed image '" << fixedImagePath << "'\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   if ( fixedImageSpace )
@@ -138,7 +138,7 @@ main( const int argc, const char* argv[] )
   if ( ! movingImage )
     {
     cmtk::StdErr << "ERROR: could not read moving image '" << movingImagePath << "'\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   if ( movingImageSpace )
@@ -152,3 +152,4 @@ main( const int argc, const char* argv[] )
   return 0;
 }
 
+#include "cmtkSafeMain"

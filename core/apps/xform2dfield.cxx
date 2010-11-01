@@ -65,7 +65,7 @@ const char* Downsample = NULL;
 cmtk::Types::Coordinate InversionToleranceFactor = 0.1;
 
 int
-main ( const int argc, const char *argv[] ) 
+doMain ( const int argc, const char *argv[] ) 
 {
   cmtk::Threads::GetNumberOfThreads();
 
@@ -93,7 +93,7 @@ main ( const int argc, const char *argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e;
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   if ( Mask )
@@ -103,7 +103,7 @@ main ( const int argc, const char *argv[] )
   if ( ! volume ) 
     {
     cmtk::StdErr << "Could not read reference volume " << RefFileName << "\n";
-    exit(1);
+    throw cmtk::ExitException(1);
     }          
 
   cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( InputXformPaths );
@@ -122,7 +122,7 @@ main ( const int argc, const char *argv[] )
       if ( nFactors != 3 )
 	{
 	cmtk::StdErr << "ERROR: downsampling factors must either be three integers, x,y,z, or a single integer\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
       }
     volume = cmtk::UniformVolume::SmartPtr( volume->GetDownsampledAndAveraged( factors ) );
@@ -168,3 +168,4 @@ main ( const int argc, const char *argv[] )
   cmtk::XformIO::Write( dfield, OutFileName, Verbose );
 }
 
+#include "cmtkSafeMain"

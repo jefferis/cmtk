@@ -86,7 +86,7 @@ void DrawLine( const std::vector<double>& outputX, const std::vector<double>& ou
 }
 
 int
-main ( const int argc, const char* argv[] )
+doMain ( const int argc, const char* argv[] )
 {
   try
     {
@@ -129,14 +129,14 @@ main ( const int argc, const char* argv[] )
   if ( ! xform ) 
     {
     cmtk::StdErr << "ERROR: could not read transformation " << InListName << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( RefFileName, Verbose ) );
   if ( ! volume ) 
     {
     cmtk::StdErr << "ERROR: could not read image " << RefFileName << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   cmtk::Xform::SmartPtr minusXform( cmtk::Xform::SmartPtr::Null );
@@ -146,7 +146,7 @@ main ( const int argc, const char* argv[] )
     if ( ! minusXform ) 
       {
       cmtk::StdErr << "ERROR: could not read transformation " << MinusXformPath << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     }
 
@@ -325,3 +325,4 @@ main ( const int argc, const char* argv[] )
   return 0;
 }
 
+#include "cmtkSafeMain"
