@@ -198,8 +198,12 @@ public:
 
       // new set new array.
       this->Dim = dim;
-      Memory::DeleteArray( this->Elements );
+      if ( this->FreeElements )
+	{
+	Memory::DeleteArray( this->Elements );
+	}
       this->Elements = newElements;
+      this->FreeElements = true;
       } 
     
     return *this;
