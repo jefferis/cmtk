@@ -49,6 +49,7 @@
 #include <System/cmtkSmartPtr.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLineTypeTraits.h>
+#include <System/cmtkExitException.h>
 
 #include <mxml.h>
 
@@ -1113,7 +1114,7 @@ public:
   void EndGroup();
 
   /// Parse command line.
-  bool Parse( const int argc, const char* argv[] );
+  bool Parse( const int argc, const char* argv[] ) throw( ExitException );
 
   /// Help text indentation.
   static const int HelpTextIndent = 10;

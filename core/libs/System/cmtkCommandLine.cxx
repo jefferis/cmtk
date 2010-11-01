@@ -96,7 +96,7 @@ CommandLine
 }
 
 bool
-CommandLine::Parse( const int argc, const char* argv[] )
+CommandLine::Parse( const int argc, const char* argv[] ) throw( ExitException )
 {
   this->ArgC = argc;
   this->ArgV = argv;
