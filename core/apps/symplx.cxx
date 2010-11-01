@@ -37,7 +37,9 @@
 #include <Registration/cmtkImageSymmetryPlaneFunctional.h>
 
 int
-main ( const int argc, const char* argv[] ) 
+doMain ( const int argc, const char* argv[] ) 
 {
   return cmtk::ImageSymmetryPlaneCommandLine<cmtk::ImageSymmetryPlaneFunctional>().Run( argc, argv );
 }
+
+#include "cmtkSafeMain"

@@ -384,7 +384,7 @@ WriteAligned
 }
 
 int
-main ( const int argc, const char* argv[] ) 
+doMain ( const int argc, const char* argv[] ) 
 {
   if ( ! ParseCommandLine( argc, argv ) ) return 1;
 
@@ -392,7 +392,7 @@ main ( const int argc, const char* argv[] )
   if ( !originalVolume ) 
     {
     cmtk::StdErr.printf( "Could not read image file %s\n", InFileName );
-    exit(1);
+    throw cmtk::ExitException(1);
     }
 
   cmtk::CoordinateVector v( 6 );
@@ -511,3 +511,5 @@ main ( const int argc, const char* argv[] )
     cmtk::XformIO::Write( alignment, WriteXformPath, Verbose );
     }
 }
+
+#include "cmtkSafeMain"

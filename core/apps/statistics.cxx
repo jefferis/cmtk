@@ -345,7 +345,7 @@ AnalyzeGrey( const cmtk::UniformVolume* volume )
 }
 
 int
-main ( const int argc, const char* argv[] ) 
+doMain ( const int argc, const char* argv[] ) 
 {
   try 
     {
@@ -388,7 +388,7 @@ main ( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << e;
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   cmtk::UniformVolume::SmartPtr maskVolume( NULL );
@@ -399,13 +399,13 @@ main ( const int argc, const char* argv[] )
     if ( ! maskVolume ) 
       {
       cmtk::StdErr << "ERROR: could not read mask file " << MaskFileName << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     maskData = maskVolume->GetData();
     if ( ! maskData ) 
       {
       cmtk::StdErr << "ERROR: could not read data from mask file " << MaskFileName << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     
     if ( MaskIsBinary )
@@ -456,6 +456,9 @@ main ( const int argc, const char* argv[] )
       }
     }
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace statistics
 } // namespace apps
