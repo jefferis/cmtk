@@ -371,6 +371,9 @@ private:
     {
     }
 
+    /// Virtual destructor.
+    virtual ~Switch() {}
+
     /// Evaluate and set associated flag.
     virtual void Evaluate( const size_t, const char*[], size_t& )
     { 
@@ -427,6 +430,9 @@ private:
     /// Constructor.
     Option( T *const var, bool *const flag ) : Var( var ), Flag( flag ) {}
     
+    /// Virtual destructor.
+    virtual ~Option() {}
+
     /// Evaluate and set associated option.
     virtual void Evaluate( const size_t argc, const char* argv[], size_t& index );
 
@@ -460,6 +466,9 @@ private:
   public:
     /// Constructor.
     List( std::list<T>& list ) : m_pList( &list ) {}
+
+    /// Virtual destructor.
+    virtual ~List() {}
     
     /// Evaluate and set associated option.
     virtual void Evaluate( const size_t argc, const char* argv[], size_t& index );
@@ -487,6 +496,9 @@ private:
     /// Constructor.
     Vector( std::vector<T>& vector ) : m_pVector( &vector ), m_HasBeenUsed( false ) {}
     
+    /// Virtual destructor.
+    virtual ~Vector() {}
+
     /// Evaluate and set associated option.
     virtual void Evaluate( const size_t argc, const char* argv[], size_t& index );
 
@@ -525,6 +537,9 @@ private:
     /// Constructor for callback with multiple arguments.
     Callback( CallbackFuncMultiArg funcMultiArg ) : m_Func( NULL ), m_FuncArg( NULL ), m_FuncIntArg( NULL ), m_FuncDblArg( NULL ), m_FuncMultiArg(  funcMultiArg ) {}
     
+    /// Virtual destructor.
+    virtual ~Callback() {}
+
     /// Evaluate and set associated option.
     virtual void Evaluate( const size_t argc, const char* argv[], size_t& index );
 
@@ -1022,7 +1037,7 @@ public:
   }
 
   /// Type for key/action lists.
-  typedef std::list<KeyToAction::SmartPtr> KeyActionListType;
+  typedef std::vector<KeyToAction::SmartPtr> KeyActionListType;
 
   /// Reference to current key/action list (current group).
   KeyActionListType* m_KeyActionList;
@@ -1141,19 +1156,19 @@ private:
   size_t Index;
 
   /// Type for group list.
-  typedef std::list<KeyActionGroupType::SmartPtr> KeyActionGroupListType;
+  typedef std::vector<KeyActionGroupType::SmartPtr> KeyActionGroupListType;
   
   /// List of command line keys with associated actions.
   KeyActionGroupListType m_KeyActionGroupList;
 
   /// Type for no-option parameter list.
-  typedef std::list<NonOptionParameter::SmartPtr> NonOptionParameterListType;
+  typedef std::vector<NonOptionParameter::SmartPtr> NonOptionParameterListType;
 
   /// List of non-option parameters (i.e., "the rest of the command line").
   NonOptionParameterListType m_NonOptionParameterList;
 
   /// Type for no-option parameter vector list. These come after the scalar non-option parameters.
-  typedef std::list<NonOptionParameterVector::SmartPtr> NonOptionParameterVectorListType;
+  typedef std::vector<NonOptionParameterVector::SmartPtr> NonOptionParameterVectorListType;
 
   /// List of non-option parameters (i.e., "the rest of the command line").
   NonOptionParameterVectorListType m_NonOptionParameterVectorList;
