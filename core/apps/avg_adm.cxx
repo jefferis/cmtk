@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkProgressConsole.h>
 #include <System/cmtkThreads.h>
@@ -103,7 +104,7 @@ cmtk::Types::DataItem PadOutValue = 0;
 bool HavePadOutValue = false;
 
 int
-main( int argc, char** argv )
+doMain( int argc, char** argv )
 {
 #ifdef CMTK_BUILD_MPI
   MPI::Init( argc, argv );
@@ -168,7 +169,7 @@ main( int argc, char** argv )
   catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << e;
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   std::vector<cmtk::SplineWarpXform::SmartPtr> warpList;
@@ -187,7 +188,7 @@ main( int argc, char** argv )
     if ( !studylist.Read( *inFile ) )
       {
       cmtk::StdErr << "Unable to read studylist " << *inFile << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     
     if ( ! idx ) 
@@ -200,7 +201,7 @@ main( int argc, char** argv )
 	{
 	cmtk::StdErr.printf( "ERROR: Studylist #%d has a different reference study.\n", idx );
 	//continue;
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
       }
     
@@ -242,7 +243,7 @@ main( int argc, char** argv )
     else 
       {
       cmtk::StdErr.printf( "ERROR: Studylist #%d has no spline warp.\n", idx );
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     }
   
@@ -252,7 +253,7 @@ main( int argc, char** argv )
   if ( ! refVolume ) 
     {
     cmtk::StdErr.printf( "ERROR: Cannot read reference volume %s.\n", actualPath.c_str() );
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   // everything worked out, so let's push this item onto lists
@@ -373,4 +374,19 @@ main( int argc, char** argv )
 #endif
 
   return 0;
+}
+
+int
+main( int argc, char* argv[] )
+{
+  int exitCode = 0;
+  try
+    {
+    exitCode = doMain( argc, argv );
+    }
+  catch ( const cmtk::ExitException& ex )
+    {
+    exitCode = ex.ExitCode();
+    }
+  return exitCode;
 }

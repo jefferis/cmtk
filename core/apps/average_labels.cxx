@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkProgress.h>
 
@@ -51,7 +52,7 @@ cmtk::UniformVolume::SmartPtr ReferenceImage;
 const char* OutputImagePath = "average_labels_output.hdr";
 
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   try
     {
@@ -72,7 +73,7 @@ main( const int argc, const char* argv[] )
     if ( !ReferenceImage )
       {
       cmtk::StdErr << "ERROR: cannot read reference volume " << refImagePath << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }    
 
     const char* nextXform = cl.GetNext();
@@ -83,14 +84,14 @@ main( const int argc, const char* argv[] )
       if ( !xform )
 	{
 	cmtk::StdErr << "ERROR: cannot read transformation " << nextXform << "\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
 
       cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( nextVolume, Verbose ) );
       if ( !volume )
 	{
 	cmtk::StdErr << "ERROR: cannot read volume " << nextVolume << "\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
 
       XformVolumeList.push_back( std::pair<cmtk::Xform::SmartPtr,cmtk::UniformVolume::SmartPtr>( xform, volume ) );
@@ -102,7 +103,7 @@ main( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, ReferenceImage->GetNumberOfPixels() ) );
@@ -165,3 +166,4 @@ main( const int argc, const char* argv[] )
   return 0;
 }
 
+#include "cmtkSafeMain"

@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkProgressConsole.h>
 
@@ -91,7 +92,7 @@ GetNormalizationCoefficients
 }
 
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   try 
     {
@@ -136,7 +137,7 @@ main( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << e << "\n";
-    exit(1);
+    throw cmtk::ExitException(1);
     }
 
   cmtk::UniformVolume::SmartPtr volume( NULL );
@@ -157,7 +158,7 @@ main( const int argc, const char* argv[] )
     if ( ! nextVolume ) 
       {
       cmtk::StdErr << "ERROR: Could not open image " << *it << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     
     if ( ! volume )
@@ -299,3 +300,5 @@ main( const int argc, const char* argv[] )
   
   return 0;
 }
+
+#include "cmtkSafeMain"

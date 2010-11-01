@@ -34,6 +34,7 @@
 
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkExitException.h>
 
 #include <Base/cmtkUniformVolume.h>
 #include <IO/cmtkVolumeIO.h>
@@ -57,7 +58,7 @@ const char* NewOrientation = NULL;
 const char* NewSpace = NULL;
 
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   try 
     {
@@ -128,6 +129,9 @@ main( const int argc, const char* argv[] )
   
   return 0;
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace reorient
 } // namespace apps

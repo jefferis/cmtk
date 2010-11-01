@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkProgressConsole.h>
 
@@ -43,7 +44,7 @@
 #include <list>
 
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   bool verbose = false;
   bool fast = false;
@@ -78,7 +79,7 @@ main( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   // Instantiate programm progress indicator.
@@ -88,21 +89,21 @@ main( const int argc, const char* argv[] )
   if ( !targetImg ) 
     {
     cmtk::StdErr << "ERROR: could not read target image " << targetImageName << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   cmtk::UniformVolume::SmartPtr atlasImg( cmtk::VolumeIO::ReadOriented( atlasImageName, verbose ) );
   if ( !atlasImg ) 
     {
     cmtk::StdErr << "ERROR: could not read atlas image " << atlasImageName << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   cmtk::UniformVolume::SmartPtr atlasLbl( cmtk::VolumeIO::ReadOriented( atlasLabelName, verbose ) );
   if ( !atlasLbl ) 
     {
     cmtk::StdErr << "ERROR: could not read atlas labels " << atlasLabelName << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
     
   cmtk::AtlasSegmentation segment( targetImg, atlasImg, atlasLbl );
@@ -113,3 +114,5 @@ main( const int argc, const char* argv[] )
 
   return 0;
 }
+
+#include "cmtkSafeMain"

@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkStrUtility.h>
 #include <System/cmtkTimers.h>
 
@@ -895,7 +896,7 @@ AddVolumeStudyList
 }
 
 int
-main ( const int argc, const char* argv[] ) 
+doMain ( const int argc, const char* argv[] ) 
 {
   try 
     {
@@ -946,7 +947,7 @@ main ( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e;
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   std::list<cmtk::UniformVolume::SmartPtr> volumeList;
@@ -969,7 +970,7 @@ main ( const int argc, const char* argv[] )
 	default:
 	{
 	cmtk::StdErr << "ERROR: all inputs must include transformation in distance map interpolation mode.\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	break;
 	}
 	}
@@ -1027,3 +1028,5 @@ main ( const int argc, const char* argv[] )
     cmtk::VolumeIO::Write( *volume, OutputFileName, Verbose );
     }
 }
+
+#include "cmtkSafeMain"

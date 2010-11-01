@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkStrUtility.h>
 #include <System/cmtkMemory.h>
@@ -206,7 +207,7 @@ ReformatAndAdd
 }    
 
 int
-main ( const int argc, const char* argv[] ) 
+doMain ( const int argc, const char* argv[] ) 
 {
   try
     {
@@ -251,7 +252,7 @@ main ( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e;
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   cmtk::TypedStreamStudylist **studylist = cmtk::Memory::AllocateArray<cmtk::TypedStreamStudylist*>( InListNames.size() );
@@ -275,7 +276,7 @@ main ( const int argc, const char* argv[] )
       if ( strcmp( studylist[idx]->GetReferenceStudyPath(), referenceStudy ) ) 
 	{
 	std::cerr << "Studylist #" << idx << " has a different reference study.\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
       }
     }
@@ -298,7 +299,7 @@ main ( const int argc, const char* argv[] )
   if ( ! referenceVolume ) 
     {
     std::cerr << "Could not read reference image " << referenceStudy << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   size_t reformattedPixelCount = referenceVolume->GetNumberOfPixels();
@@ -368,7 +369,7 @@ main ( const int argc, const char* argv[] )
     else
       {
       std::cerr << "ERROR: Could not read floating volume " << floatingName << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     }
   
@@ -394,3 +395,4 @@ main ( const int argc, const char* argv[] )
   delete[] countData;
 }
 
+#include "cmtkSafeMain"

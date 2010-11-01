@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 
 #include <Base/cmtkAffineXform.h>
 #include <IO/cmtkXformIO.h>
@@ -47,7 +48,7 @@ bool AppendToOutput = false;
 bool InvertOutput = false;
 
 int 
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   cmtk::AffineXform concat;
   bool firstXform = true;
@@ -78,14 +79,14 @@ main( const int argc, const char* argv[] )
       if ( ! xform ) 
 	{
 	cmtk::StdErr << "ERROR: could not read transformation from " << next << "\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
 
       cmtk::AffineXform::SmartPtr affine( cmtk::AffineXform::SmartPtr::DynamicCastFrom( xform ) );
       if ( ! affine )
 	{
 	cmtk::StdErr << "ERROR: transformation " << next << " is not affine.\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
 
       if ( inverse )
@@ -106,7 +107,7 @@ main( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   cmtk::ClassStream outStream;
@@ -126,9 +127,10 @@ main( const int argc, const char* argv[] )
   else
     {
     cmtk::StdErr << "ERROR: could not open o0utput file " << OutputName << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   return 0;
 }
 
+#include "cmtkSafeMain"

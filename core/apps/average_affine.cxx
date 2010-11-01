@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 
 #include <Base/cmtkAffineXform.h>
 #include <IO/cmtkXformIO.h>
@@ -50,7 +51,7 @@ bool InvertOutput = false;
 bool IncludeReference = false;
 
 int 
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   std::list<cmtk::AffineXform::SmartPtr> xformList;
   const cmtk::AffineXform* firstXform = NULL;
@@ -82,14 +83,14 @@ main( const int argc, const char* argv[] )
       if ( ! xform ) 
 	{
 	cmtk::StdErr << "ERROR: could not read transformation from " << next << "\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
 
       cmtk::AffineXform::SmartPtr affine( cmtk::AffineXform::SmartPtr::DynamicCastFrom( xform ) );
       if ( ! affine )
 	{
 	cmtk::StdErr << "ERROR: transformation " << next << " is not affine.\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
 
       if ( inverse )
@@ -115,7 +116,7 @@ main( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   cmtk::AffineXform average;
@@ -165,3 +166,4 @@ main( const int argc, const char* argv[] )
   return 0;
 }
 
+#include "cmtkSafeMain"
