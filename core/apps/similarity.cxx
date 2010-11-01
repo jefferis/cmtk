@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 
 #include <IO/cmtkVolumeIO.h>
@@ -257,12 +258,12 @@ AnalyseStudies
 }
 
 int
-main ( const int argc, const char* argv[] ) 
+doMain ( const int argc, const char* argv[] ) 
 {
   if ( ! ParseCommandLine( argc, argv ) ) return 1;
 
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( Study0, Verbose ) );
-  if ( ! volume ) exit( 1 );
+  if ( ! volume ) throw cmtk::ExitException( 1 );
   Volume0 = volume;
   if ( Padding0 ) 
     {
@@ -278,7 +279,7 @@ main ( const int argc, const char* argv[] )
     }
   
   volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( Study1, Verbose ) );
-  if ( ! volume ) exit( 1 );
+  if ( ! volume ) throw cmtk::ExitException( 1 );
   Volume1 = volume;
   if ( Padding1 ) 
     {
@@ -387,6 +388,9 @@ main ( const int argc, const char* argv[] )
     fprintf( stdout, "AvgRecog:\t%.6f\n", avgRecog );
     }
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace similarity
 } // namespace apps

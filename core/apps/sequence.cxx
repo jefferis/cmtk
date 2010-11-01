@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 
 #include <Base/cmtkValueSequence.h>
@@ -58,7 +59,7 @@ bool AbsoluteValues = false;
 const char* OutputFormat = "%.6f";
 
 int
-main( const int argc, const char* argv[] ) 
+doMain( const int argc, const char* argv[] ) 
 {
   try 
     {
@@ -153,3 +154,4 @@ main( const int argc, const char* argv[] )
   return 0;
 }
 
+#include "cmtkSafeMain"

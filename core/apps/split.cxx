@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 
 #include <IO/cmtkClassStream.h>
@@ -52,7 +53,7 @@ int Factor = 2;
 bool Padded = false;
 
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   try
     {
@@ -131,3 +132,4 @@ main( const int argc, const char* argv[] )
   return 0;
 }
 
+#include "cmtkSafeMain"
