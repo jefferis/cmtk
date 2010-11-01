@@ -42,7 +42,7 @@
 #include <list>
 
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   bool verbose = false;
 
@@ -103,7 +103,7 @@ main( const int argc, const char* argv[] )
 	  if ( (volume->m_Dims[dim] != volumes[0]->m_Dims[dim]) && (volume->m_Dims[dim]+1 != volumes[0]->m_Dims[dim]) )
 	    {
 	    cmtk::StdErr << "ERROR: interleaving dimension of image " << *it << " must be same as, or one smaller than first image's\n";
-	    exit( 1 );
+	    throw cmtk::ExitException( 1 );
 	    }
 	  stackDims[dim] += volume->m_Dims[dim];
 	  }
@@ -112,7 +112,7 @@ main( const int argc, const char* argv[] )
 	  if ( volume->m_Dims[dim] != volumes[0]->m_Dims[dim] )
 	    {
 	    cmtk::StdErr << "ERROR: in-plane dimensions of image " << *it << " do not match first image's\n";
-	    exit( 1 );
+	    throw cmtk::ExitException( 1 );
 	    }
 	  }
 	}
@@ -165,3 +165,4 @@ main( const int argc, const char* argv[] )
   return 0;
 }
 
+#include "cmtkSafeMain"

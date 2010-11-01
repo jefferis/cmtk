@@ -62,7 +62,7 @@ namespace ttest
 typedef enum { TTEST, TTEST_PAIRED, CORRELATION_PAIRED, ZSCORES } ModeEnum;
 
 int
-main ( const int argc, const char* argv[] ) 
+doMain ( const int argc, const char* argv[] ) 
 {
   bool Verbose = false;
 
@@ -138,7 +138,7 @@ main ( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   cmtk::UniformVolume::SmartPtr refVolume;
@@ -471,6 +471,9 @@ main ( const int argc, const char* argv[] )
       }
     }
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace model
 } // namespace apps

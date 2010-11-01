@@ -124,7 +124,7 @@ CallbackSetPassWeight( const char* argv )
     {
     cmtk::StdErr << "ERROR: pass weights must be given as 'pass:weight', where 'pass' is an integer and 'weight' is a number between 0 and 1.\n"
 		 << "       Parameter provided was '" << argv << "'\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 }
 
@@ -144,7 +144,7 @@ CallbackCrop( const char* arg )
   else
     {
     cmtk::StdErr.printf( "ERROR: string '%s' does not describe a valid crop region\n", arg );
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 }
 
@@ -161,7 +161,7 @@ CallbackReconGrid( const char* arg )
   if ( (numArgs != 6) && (numArgs != 9) )
     {
     cmtk::StdErr.printf( "ERROR: reconstruction volume definition must be int,int,int:float,float,float or int,int,int:float,float,float:float,float,float\n", arg );
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   ReconGrid = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( cmtk::UniformVolume::IndexType( gridDims ), gridDelta[0], gridDelta[1], gridDelta[2] ) );
@@ -289,7 +289,7 @@ ReconstructVolumeDeblurring()
 }
 
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   cmtk::Threads::CheckEnvironment(); // need this to check for "CMTK_NUM_THREADS" and constrain OpenMP accordingly
 
@@ -369,7 +369,7 @@ main( const int argc, const char* argv[] )
     if ( ! ReconGrid )
       {
       cmtk::StdErr << "ERROR: Could not read reconstruction grid from image " << ReconstructionGridPath << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     }
   
@@ -379,7 +379,7 @@ main( const int argc, const char* argv[] )
     if ( ! image || ! image->GetData() )
       {
       cmtk::StdErr << "ERROR: Could not read image " << ImagePaths[idx] << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
 
     cmtk::AffineXform::SmartPtr affineXform( new cmtk::AffineXform );
@@ -449,7 +449,7 @@ main( const int argc, const char* argv[] )
     if ( ! PointSpreadFunctionSet )
       {
       cmtk::StdErr << "ERROR: must set point spread function size for deblurring reconstruction\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
 
     switch ( DeblurringKernel )
@@ -468,3 +468,5 @@ main( const int argc, const char* argv[] )
   
   return 0;
 }
+
+#include "cmtkSafeMain"

@@ -49,7 +49,7 @@
 #include <iterator>
 
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   bool verbose = false;
 
@@ -80,7 +80,7 @@ main( const int argc, const char* argv[] )
   catch ( cmtk::CommandLine::Exception ex )
     {
     cmtk::StdErr << ex << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( inputXformPaths );
@@ -92,7 +92,7 @@ main( const int argc, const char* argv[] )
     if ( ! sourceImage )
       {
       cmtk::StdErr << "ERROR: could not read source image '" << sourceImagePath << "'\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     xformList.AddToFront( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( sourceImage->GetImageToPhysicalMatrix() ) )->GetInverse() );
     }
@@ -103,7 +103,7 @@ main( const int argc, const char* argv[] )
     if ( ! targetImage )
       {
       cmtk::StdErr << "ERROR: could not read target image '" << targetImagePath << "'\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     xformList.Add( cmtk::AffineXform::SmartPtr( new cmtk::AffineXform( targetImage->GetImageToPhysicalMatrix() ) ) );
     }
@@ -190,3 +190,4 @@ main( const int argc, const char* argv[] )
   return 0;
 }
 
+#include "cmtkSafeMain"
