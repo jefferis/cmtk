@@ -1,5 +1,10 @@
 Release CMTK-1.5.0:
 
+(r2538) Fixed: all command line tools now use a C++-safe exit mechanism based
+    on throwing an exit exception that is caught in a safe main() wrapper
+    function. 
+(r2538) Fixed: CommandLine class was leaking memory because some local classes
+    did not have virtual destructors.
 (r2512) Fixed: SmartPointer::DynamicCastFrom() was leaking memory due to
     implicit, rather than explicit, call to inherited constructor.
 (r2505) Added: "film" tool now has "--padding-value" option to define a
