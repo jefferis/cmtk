@@ -298,7 +298,7 @@ DoRegistration()
 }
 
 int
-main( const int argc, const char* argv[] ) 
+doMain( const int argc, const char* argv[] ) 
 {
   try 
     {
