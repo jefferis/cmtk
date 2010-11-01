@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkCompressedStream.h>
 
@@ -81,7 +82,8 @@ bool ResetCoordinates = false;
 const char* HdrFileName = "header.hdr";
 const char* ImportHdrFile = NULL;
 
-int main( const int argc, const char* argv[] )
+int 
+doMain( const int argc, const char* argv[] )
 {
   try 
     {
@@ -118,7 +120,7 @@ int main( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   nifti_1_header header;
@@ -130,13 +132,13 @@ int main( const int argc, const char* argv[] )
     if ( !hdrStream.IsValid() ) 
       {
       cmtk::StdErr.printf( "ERROR: could not file %s\n", ImportHdrFile );
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     
     if ( sizeof(header) != hdrStream.Read( &header, 1, sizeof(header) ) ) 
       {
       cmtk::StdErr.printf( "ERROR: could not read %d bytes from header file %s\n", int( sizeof( header ) ), ImportHdrFile );
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     hdrStream.Close();
     }
@@ -275,3 +277,4 @@ int main( const int argc, const char* argv[] )
     }
 }
 
+#include "cmtkSafeMain"

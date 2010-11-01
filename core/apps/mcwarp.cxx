@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkUniformVolumeInterpolator.h>
@@ -165,7 +166,7 @@ DoRegistration()
     if ( !inStream.IsValid() )
       {
       cmtk::StdErr << "ERROR: could not open '" << mcaffineOutput << "' for reading.\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     inStream >> affineFunctional;
     inStream.Close();
@@ -349,7 +350,7 @@ main( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   if ( useCubicInterpolation )
@@ -383,6 +384,9 @@ main( const int argc, const char* argv[] )
 
   return 0;
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace mcwarp
 } // namespace apps

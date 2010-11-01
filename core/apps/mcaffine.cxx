@@ -34,6 +34,8 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
+
 #include <IO/cmtkVolumeIO.h>
 
 #include <Base/cmtkUniformVolume.h>
@@ -156,7 +158,7 @@ DoRegistration()
     else
       {
       cmtk::StdErr << "ERROR: unable to read initial transformation from " << initialXformPath << "\n";
-      exit( 2 );
+      throw cmtk::ExitException( 2 );
       }
     }
   else
@@ -219,7 +221,7 @@ DoRegistration()
 }
 
 int
-main( const int argc, const char* argv[] ) 
+doMain( const int argc, const char* argv[] ) 
 {
   try 
     {
@@ -275,7 +277,7 @@ main( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   if ( numberDOFs.empty() )
@@ -287,7 +289,7 @@ main( const int argc, const char* argv[] )
     if ( !volume || !volume->GetData() )
       {
       cmtk::StdErr << "ERROR: Cannot read image " << *refIt << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     minPixelSize = std::min( volume->GetMinDelta(), minPixelSize );
     refChannelList.push_back( volume );
@@ -299,7 +301,7 @@ main( const int argc, const char* argv[] )
     if ( 3 != sscanf( cropReferenceFromIndex, "%d,%d,%d", &xyz[0], &xyz[1], &xyz[2] ) )
       {
       cmtk::StdErr << "ERROR: reference crop from index could not parse index '" << cropReferenceFromIndex << "' as valid x,y,z index.\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     for ( std::list<cmtk::UniformVolume::SmartPtr>::iterator refIt = refChannelList.begin(); refIt != refChannelList.end(); ++refIt )
       {
@@ -313,7 +315,7 @@ main( const int argc, const char* argv[] )
     if ( 3 != sscanf( cropReferenceToIndex, "%d,%d,%d", &xyz[0], &xyz[1], &xyz[2] ) )
       {
       cmtk::StdErr << "ERROR: reference crop to index could not parse index '" << cropReferenceFromIndex << "' as valid x,y,z index.\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     for ( std::list<cmtk::UniformVolume::SmartPtr>::iterator refIt = refChannelList.begin(); refIt != refChannelList.end(); ++refIt )
       {
@@ -327,7 +329,7 @@ main( const int argc, const char* argv[] )
     if ( !volume || !volume->GetData() )
       {
       cmtk::StdErr << "ERROR: Cannot read image " << *fltIt << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     minPixelSize = std::min( volume->GetMinDelta(), minPixelSize );
     fltChannelList.push_back( volume );
@@ -364,6 +366,9 @@ main( const int argc, const char* argv[] )
   
   return 0;
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace mcaffine
 } // namespace apps

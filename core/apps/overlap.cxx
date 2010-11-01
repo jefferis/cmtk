@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -65,7 +66,7 @@ unsigned int FirstLabel = 0;
 bool ByLabel = false;
 
 int
-main ( const int argc, const char* argv[] ) 
+doMain ( const int argc, const char* argv[] ) 
 {
   try
     {
@@ -87,7 +88,7 @@ main ( const int argc, const char* argv[] )
     
     if ( !cl.Parse( argc, argv ) ) 
       {
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
         
     const char* next = cl.GetNext();
@@ -97,7 +98,7 @@ main ( const int argc, const char* argv[] )
       if ( ! volume || ! volume->GetData() )
 	{
 	cmtk::StdErr << "ERROR: Could not read image " << next << "\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
 
       if ( PaddingInFlag )
@@ -110,7 +111,7 @@ main ( const int argc, const char* argv[] )
 	if ( vectorOfDataArrays[0]->GetDataSize() != volume->GetNumberOfPixels() )
 	  {
 	  cmtk::StdErr << "ERROR: pixel count of image " << next << " does not match other images.\n";
-	  exit( 1 );
+	  throw cmtk::ExitException( 1 );
 	  }
 	}
       vectorOfDataArrays.push_back( volume->GetData() );
@@ -131,7 +132,7 @@ main ( const int argc, const char* argv[] )
     if ( ! maskVolume || ! maskVolume->GetData() )
       {
       cmtk::StdErr << "ERROR: Could not read mask image " << MaskFileName << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     maskData = maskVolume->GetData();
     }
@@ -166,6 +167,9 @@ main ( const int argc, const char* argv[] )
 
   return 0;
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace overlap
 } // namespace apps

@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 
 #include <IO/cmtkVolumeIO.h>
 #include <Base/cmtkMathUtil.h>
@@ -45,7 +46,7 @@ bool WriteIndex = false;
 const char* ImageFileName = NULL;
 
 int
-main( const int argc, const char *argv[] )
+doMain( const int argc, const char *argv[] )
 {
   try
     {
@@ -63,7 +64,7 @@ main( const int argc, const char *argv[] )
   catch ( const cmtk::CommandLine::Exception& ex )
     {
     cmtk::StdErr << ex << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::Read( ImageFileName ) );
@@ -89,3 +90,4 @@ main( const int argc, const char *argv[] )
     }
 }
 
+#include "cmtkSafeMain"

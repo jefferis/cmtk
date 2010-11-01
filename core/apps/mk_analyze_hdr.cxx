@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 
 #include <IO/cmtkAnalyze.h>
@@ -82,7 +83,8 @@ const char* ImportHdrFile = NULL;
 
 const char* Description = NULL;
 
-int main( const int argc, const char* argv[] )
+int 
+doMain( const int argc, const char* argv[] )
 {
   try 
     {
@@ -130,7 +132,7 @@ int main( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   char buffer[348];
@@ -152,7 +154,7 @@ int main( const int argc, const char* argv[] )
     else 
       {
       cmtk::StdErr << "ERROR: Could not open file " << ImportHdrFile << " for import.\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     
     LittleEndian = (buffer[0] != 0x00);
@@ -295,3 +297,4 @@ int main( const int argc, const char* argv[] )
     }
 }
 
+#include "cmtkSafeMain"

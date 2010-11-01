@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkProgressConsole.h>
 #include <System/cmtkThreads.h>
 
@@ -92,7 +93,7 @@ CallbackTargetVolume( const char* arg )
   if ( (numArgs != 6) && (numArgs != 9) )
     {
     cmtk::StdErr.printf( "ERROR: target volume definition must be int,int,int:float,float,float or int,int,int:float,float,float:float,float,float\n", arg );
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   UserDefinedTargetVolume = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( cmtk::UniformVolume::IndexType( gridDims ), gridDelta[0], gridDelta[1], gridDelta[2] ) );
@@ -185,7 +186,7 @@ void InitializeReformatVolume( cmtk::TypedArray::SmartPtr& reformatData, cmtk::U
     if ( ! floatingVolume )
       {
       cmtk::StdErr << "ERROR: floating volume must be defined in plain reformat mode; use '--floating' command line option\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
 
     cmtk::ReformatVolume::Plain plain( DataType );
@@ -238,7 +239,7 @@ ReformatPullback()
   if ( ! targetVolume ) 
     {
     cmtk::StdErr << "ERROR: could not read target volume " << TargetVolumeName << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   if ( CropImages )
@@ -279,7 +280,7 @@ ReformatPullback()
     if ( ! floatingVolume ) 
       {
       cmtk::StdErr << "ERROR: floating volume " << FloatingVolumeName << " could not be read\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     }
   
@@ -290,7 +291,7 @@ ReformatPullback()
     if ( ! floatingData ) 
       {
       cmtk::StdErr << "ERROR: floating volume " << FloatingVolumeName << " seems to have no data\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     }
   
@@ -427,7 +428,7 @@ ReformatPullback()
 }
 
 int 
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   cmtk::Threads::CheckEnvironment(); // need this to check for "CMTK_NUM_THREADS" and constrain OpenMP accordingly
   try 
@@ -512,7 +513,7 @@ main( const int argc, const char* argv[] )
       if ( ! xform ) 
 	{
 	cmtk::StdErr << "ERROR: could not read target-to-reference transformation from " << next << "\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
       
       TargetToReference.Add( xform, inverse, xform->GetGlobalScaling() );
@@ -540,7 +541,7 @@ main( const int argc, const char* argv[] )
 	    if ( ! xform ) 
 	      {
 	      cmtk::StdErr << "ERROR: could not read target-to-floating transformation from " << next << "\n";
-	      exit( 1 );
+	      throw cmtk::ExitException( 1 );
 	      }
 	    
 	    ReferenceToFloating.Add( xform, inverse, xform->GetGlobalScaling() );
@@ -556,13 +557,16 @@ main( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   ReformatPullback();
   
   return 0;
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace reformatx
 } // namespace apps

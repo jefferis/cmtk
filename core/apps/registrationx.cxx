@@ -35,6 +35,7 @@
 #include <System/cmtkTimers.h>
 #include <System/cmtkMemory.h>
 #include <System/cmtkProgressConsole.h>
+#include <System/cmtkExitException.h>
 
 #include <Registration/cmtkImagePairAffineRegistrationCommandLine.h>
 
@@ -50,7 +51,7 @@ namespace registrationx
 {
 #endif
 int
-main
+doMain
 ( const int argc, const char *argv[] )
 {
 #ifdef DEBUG
@@ -80,6 +81,9 @@ main
 #endif
   return 0;
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace registrationx
 } // namespace apps

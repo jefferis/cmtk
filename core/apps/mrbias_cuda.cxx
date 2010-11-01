@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkProgressConsole.h>
 
@@ -83,7 +84,7 @@ const char* updateDB = NULL;
 #endif
 
 int
-main( const int argc, const char *argv[] )
+doMain( const int argc, const char *argv[] )
 {
   try
     {
@@ -138,7 +139,7 @@ main( const int argc, const char *argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   // Instantiate programm progress indicator.
@@ -148,7 +149,7 @@ main( const int argc, const char *argv[] )
   if ( ! inputImage || ! inputImage->GetData() )
     {
     cmtk::StdErr << "ERROR: Could not read input image " << FNameInputImage << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   cmtk::UniformVolume::SmartPtr maskImage;
@@ -158,7 +159,7 @@ main( const int argc, const char *argv[] )
     if ( ! maskImage || ! maskImage->GetData() )
       {
       cmtk::StdErr << "ERROR: Could not read mask image " << FNameMaskImage << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     }
   else
@@ -204,7 +205,7 @@ main( const int argc, const char *argv[] )
     else
       {
       cmtk::StdErr << "ERROR: please use a mask image. Seriously.\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     functional->GetParamVector( v );
     
@@ -283,3 +284,5 @@ main( const int argc, const char *argv[] )
 
   return 0;
 }
+
+#include "cmtkSafeMain"

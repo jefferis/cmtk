@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 
 #include <Base/cmtkUniformVolume.h>
@@ -71,7 +72,7 @@ const char* OutputFileName = "phantom.hdr";
 cmtk::UniformVolumePainter::CoordinateModeEnum CoordinateMode = cmtk::UniformVolumePainter::COORDINATES_INDEXED;
 
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   try 
     {
@@ -184,3 +185,4 @@ main( const int argc, const char* argv[] )
   return 0;
 }
 
+#include "cmtkSafeMain"

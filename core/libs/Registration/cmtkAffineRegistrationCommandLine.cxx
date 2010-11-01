@@ -36,6 +36,7 @@
 #include <System/cmtkThreads.h>
 #include <System/cmtkTimers.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkCompressedStream.h>
 #include <System/cmtkMountPoints.h>
 
@@ -196,13 +197,13 @@ AffineRegistrationCommandLine
   catch ( const CommandLine::Exception& ex )
     {
     StdErr << ex << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   if ( (OptimizerStepFactor <= 0) || (OptimizerStepFactor >= 1) ) 
     {
     StdErr << "ERROR: step factor value " << OptimizerStepFactor << " is invalid. Must be in range (0..1)\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   this->SetInitialTransformation( AffineXform::SmartPtr( new AffineXform() ) );
@@ -228,7 +229,7 @@ AffineRegistrationCommandLine
     if ( ! typedStream.IsValid() ) 
       {
       StdErr << "Could not open studylist archive " << this->m_InitialXformPath << ".\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
 
     typedStream.Seek ( "registration" );
@@ -255,20 +256,20 @@ AffineRegistrationCommandLine
   if ( !Study1 )
     {
     StdErr << "ERROR: reference image path resolved to NULL.\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   if ( !Study2 )
     {
     StdErr << "ERROR: floating image path resolved to NULL.\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   UniformVolume::SmartPtr volume( VolumeIO::ReadOriented( Study1, Verbose ) );
   if ( !volume )
     {
     StdErr << "ERROR: volume " << this->Study1 << " could not be read\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   this->SetVolume_1( UniformVolume::SmartPtr( this->m_PreprocessorRef.GetProcessedImage( volume ) ) );
 
@@ -276,7 +277,7 @@ AffineRegistrationCommandLine
   if ( !volume )
     {
     StdErr << "ERROR: volume " << this->Study2 << " could not be read\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   this->SetVolume_2(  UniformVolume::SmartPtr( this->m_PreprocessorFlt.GetProcessedImage( volume ) ) );
 
@@ -287,14 +288,14 @@ AffineRegistrationCommandLine
     if ( ! xform ) 
       {
       StdErr << "ERROR: could not read transformation from " << InitialStudylist << "\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     
     AffineXform::SmartPtr affine( AffineXform::SmartPtr::DynamicCastFrom( xform ) );
     if ( ! affine )
       {
       StdErr << "ERROR: transformation " << InitialStudylist << " is not affine.\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
 
     if ( affine->m_MetaInformation[META_SPACE] != AnatomicalOrientation::ORIENTATION_STANDARD )

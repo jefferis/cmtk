@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 
 #include <Base/cmtkVector.h>
 #include <Base/cmtkAffineXform.h>
@@ -68,7 +69,7 @@ ReadMatrix( cmtk::Types::Coordinate (&matrix)[4][4], std::istream& stream, const
 }
 
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   const char* CenterStr = NULL;
   const char* OffsetStr = NULL;
@@ -113,7 +114,7 @@ main( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e;
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   cmtk::Types::Coordinate matrix[4][4];
@@ -222,3 +223,4 @@ main( const int argc, const char* argv[] )
     }
 }
 
+#include "cmtkSafeMain"

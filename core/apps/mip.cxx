@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 
 #include <IO/cmtkPGM.h>
 #include <IO/cmtkVolumeIO.h>
@@ -99,7 +100,7 @@ ParseCommandLine( const int argc, const char* argv[] )
   return true;
 }
 
-int main ( const int argc, const char* argv[] ) 
+int doMain ( const int argc, const char* argv[] ) 
 {
   if ( ! ParseCommandLine( argc, argv ) ) 
     {
@@ -133,3 +134,4 @@ int main ( const int argc, const char* argv[] )
   return 0;
 }
 
+#include "cmtkSafeMain"

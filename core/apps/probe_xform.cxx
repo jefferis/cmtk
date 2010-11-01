@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 
 #include <Base/cmtkXform.h>
 #include <Base/cmtkVector3D.h>
@@ -66,7 +67,7 @@ AddProbeLocation( const char* argv )
 cmtk::XformList XformList;
 
 int 
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   try
     {
@@ -91,7 +92,7 @@ main( const int argc, const char* argv[] )
       if ( ! xform )
 	{
 	cmtk::StdErr << "ERROR: could not read transformation from " << next << "\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
       
       XformList.Add( xform, inverse );
@@ -101,7 +102,7 @@ main( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e ) 
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   for ( std::list<cmtk::Vector3D>::iterator probeIt = LocationList.begin(); probeIt != LocationList.end(); ++probeIt ) 
@@ -117,3 +118,4 @@ main( const int argc, const char* argv[] )
   return 0;
 }
 
+#include "cmtkSafeMain"
