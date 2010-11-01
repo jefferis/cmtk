@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 
 #include <Base/cmtkGeneralLinearModel.h>
 #include <Base/cmtkWarpXform.h>
@@ -79,7 +80,7 @@ ParseArgsWarpString( const std::string& in, std::string& fname, std::vector<doub
   if ( colon == std::string::npos )
     {
     cmtk::StdErr << "ERROR: could not parse argument string '" << in << "'; must be ID:x0:[x1...]\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   fname = in.substr( 0, colon );
@@ -87,7 +88,7 @@ ParseArgsWarpString( const std::string& in, std::string& fname, std::vector<doub
 }
 
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   std::list<std::string> pathList;
 
@@ -135,7 +136,7 @@ main( const int argc, const char* argv[] )
   if ( controlStream.fail() )
     {
     cmtk::StdErr << "ERROR: could not open control file " << controlFileName << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   while ( controlStream.good() )
@@ -159,7 +160,7 @@ main( const int argc, const char* argv[] )
 	if ( nActualParameters != args.size() )
 	  {
 	  cmtk::StdErr << "ERROR: number of model parameters changed from " << nActualParameters << " to " << args.size() << " in argument " << line << "\n";
-	  exit( 1 );
+	  throw cmtk::ExitException( 1 );
 	  }
 	}
       else
@@ -241,7 +242,7 @@ main( const int argc, const char* argv[] )
       if ( ! xform )
 	{
 	cmtk::StdErr << "ERROR: transformation '" << *it << "' is either invalid or not a spline warp xform\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
       vWarpXform.push_back( xform );
       }
@@ -312,7 +313,7 @@ main( const int argc, const char* argv[] )
       if ( ! volume )
 	{
 	cmtk::StdErr << "ERROR: image '" << *it << "' could not be read\n";
-	exit( 1 );
+	throw cmtk::ExitException( 1 );
 	}
       vVolume.push_back( volume );
       }
@@ -369,3 +370,4 @@ main( const int argc, const char* argv[] )
   return 0;
 }
 
+#include "cmtkSafeMain"
