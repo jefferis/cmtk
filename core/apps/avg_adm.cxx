@@ -376,17 +376,4 @@ doMain( int argc, char** argv )
   return 0;
 }
 
-int
-main( int argc, char* argv[] )
-{
-  int exitCode = 0;
-  try
-    {
-    exitCode = doMain( argc, argv );
-    }
-  catch ( const cmtk::ExitException& ex )
-    {
-    exitCode = ex.ExitCode();
-    }
-  return exitCode;
-}
+#include "cmtkSafeMainMPI"

@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkTimers.h>
 
 #include <Base/cmtkUniformVolume.h>
@@ -109,7 +110,7 @@ byte UserBackgroundValue = 0;
 bool UserBackgroundFlag = false;
 
 int
-main( int argc, char* argv[] )
+doMain( int argc, char* argv[] )
 {
 #ifdef CMTK_BUILD_MPI
 #  ifdef CMTK_BUILD_SMP
@@ -200,7 +201,7 @@ main( int argc, char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   cmtk::SplineWarpCongealingFunctional::SmartPtr functional( new cmtk::SplineWarpCongealingFunctional );
@@ -227,7 +228,7 @@ main( int argc, char* argv[] )
   if ( ! stream.IsValid() )
     {
     cmtk::StdErr << "Input archive " << AffineGroupRegistration << " could not be opened for reading.\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   stream >> *functional;
   stream.Close();
@@ -247,7 +248,7 @@ main( int argc, char* argv[] )
     if ( ! templateImage )
       {
       cmtk::StdErr << "ERROR: could not read template grid/image " << PreDefinedTemplatePath << "\n";
-      exit( 2 );
+      throw cmtk::ExitException( 2 );
       }
 
     functional->SetTemplateGrid( templateImage, 0 /*downsample*/, false /*useTemplateData: set this later*/ );
@@ -412,3 +413,4 @@ main( int argc, char* argv[] )
   return 0;
 }
 
+#include "cmtkSafeMainMPI"
