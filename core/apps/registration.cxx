@@ -70,11 +70,6 @@ doMain
     {
     return 1;
     }
-  catch (...) 
-    {
-    fputs( "Uncaught exception during registration.", stderr );
-    return 1;
-    }
 
 #ifdef DEBUG
   cmtk::Memory::Diff(entry_mem,"AffineRegistration");

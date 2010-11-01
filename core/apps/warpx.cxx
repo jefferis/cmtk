@@ -48,7 +48,7 @@ namespace warpx
 {
 #endif
 int
-main ( const int argc, const char *argv[] )
+doMain ( const int argc, const char *argv[] )
 {
   try 
     {
@@ -62,14 +62,11 @@ main ( const int argc, const char *argv[] )
     {
     return 1;
     }
-  catch (...) 
-    {
-    fputs( "Uncaught exception during registration.", stderr );
-    return 1;
-    }
-  
   return 0;
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace warpx
 } // namespace apps
