@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 
 #include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkStudy.h>
@@ -597,7 +598,7 @@ traverse_directory( VolumeList& studylist, const char *path, const char *wildcar
 
 
 int
-main ( int argc, char *argv[] )
+doMain ( const int argc, const char *argv[] )
 {
   if (! dcmDataDict.isDictionaryLoaded() ) 
     {
@@ -610,7 +611,7 @@ main ( int argc, char *argv[] )
 #endif
       {
       std::cerr << "Data dictionary not avaliable. Please set DCMDICTPATH variable as path to dicom.dic file.\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     }
 
@@ -656,7 +657,7 @@ main ( int argc, char *argv[] )
   catch ( const cmtk::CommandLine::Exception& ex )
     {
     cmtk::StdErr << ex << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   if ( WithExtensionsGE && !dcmDataDict.rdlock().findEntry( "RawDataType_ImageType" ) )
@@ -672,6 +673,9 @@ main ( int argc, char *argv[] )
   
   studylist.WriteToArchive();
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace dcm2image
 } // namespace apps

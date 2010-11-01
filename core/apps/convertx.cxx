@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkTimers.h>
 
@@ -86,7 +87,7 @@ namespace convert
 bool Verbose = false;
 
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   const char* imagePathIn = NULL;
   const char* imagePathOut = NULL;
@@ -196,7 +197,7 @@ main( const int argc, const char* argv[] )
   if ( ! volume ) 
     {
     cmtk::StdErr << "ERROR: could not read image " << imagePathIn << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   else
     {
@@ -204,7 +205,7 @@ main( const int argc, const char* argv[] )
     if ( ! volumeData ) 
       {
       cmtk::StdErr << "ERROR: image seems to contain no data.\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     }
   
@@ -218,6 +219,9 @@ main( const int argc, const char* argv[] )
   cmtk::VolumeIO::Write( *volume, imagePathOut, Verbose );
   return 0;
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace convert
 } // namespace apps

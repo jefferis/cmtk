@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 
 #include <Base/cmtkUniformVolume.h>
@@ -76,7 +77,7 @@ CallbackProbeIndex( const char* arg )
 }
 
 int
-main( int argc, char *argv[] )
+doMain( int argc, char *argv[] )
 {
 #ifdef CMTK_BUILD_MPI
   MPI::Init( argc, argv );
@@ -211,7 +212,7 @@ main( int argc, char *argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
 #ifdef CMTK_BUILD_MPI
@@ -220,6 +221,9 @@ main( int argc, char *argv[] )
 
   return 0;
 }
+
+#include "cmtkSafeMainMPI" 
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace describe
 } // namespace apps

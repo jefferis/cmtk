@@ -31,6 +31,8 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
+
 #include <Registration/cmtkImageXformDB.h>
 
 #include <string.h>
@@ -215,7 +217,7 @@ getXform( const int argc, const char* argv[] )
 }
 
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   int exitCode = 0;
 
@@ -255,9 +257,10 @@ main( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
 
   return exitCode;
 }
 
+#include "cmtkSafeMain"

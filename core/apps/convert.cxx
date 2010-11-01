@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkTimers.h>
 
@@ -206,7 +207,7 @@ bool FlipZ = false;
 int EliminatePaddingVoting = 0;
 
 int
-main( const int argc, const char* argv[] )
+doMain( const int argc, const char* argv[] )
 {
   try 
     {
@@ -293,14 +294,14 @@ main( const int argc, const char* argv[] )
   if ( ! volume ) 
     {
     cmtk::StdErr << "ERROR: could not read image " << InFileName << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   cmtk::TypedArray::SmartPtr volumeData = volume->GetData();
   if ( ! volumeData ) 
     {
     cmtk::StdErr << "Image seems to contain no data.\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   if ( HavePaddingData ) 
@@ -342,7 +343,7 @@ main( const int argc, const char* argv[] )
     else
       {
       cmtk::StdErr << "ERROR: could not read mask from file " << MaskFileName << "\nProgram will terminate now, just to be safe.\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     }
 
@@ -411,7 +412,7 @@ if ( Downsample )
     if ( nFactors != 3 )
       {
       cmtk::StdErr << "ERROR: downsampling factors must either be three integers, x,y,z, or a single integer\n";
-      exit( 1 );
+      throw cmtk::ExitException( 1 );
       }
     }
   volume = cmtk::UniformVolume::SmartPtr( volume->GetDownsampledAndAveraged( factors ) );
@@ -728,6 +729,9 @@ if ( Downsample )
   cmtk::VolumeIO::Write( *volume, OutFileName, Verbose );
   return 0;
 }
+
+#include "cmtkSafeMain"
+
 #ifdef CMTK_SINGLE_COMMAND_BINARY
 } // namespace convert
 } // namespace apps
