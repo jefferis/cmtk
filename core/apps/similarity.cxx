@@ -331,7 +331,7 @@ doMain ( const int argc, const char* argv[] )
     unsigned int numberLabelsFlt = histogram->GetNumBinsY();
     
     // SI : Similarity Index as defined by Dawant et al., TMI 18(10), 1999
-    fputs( "\n\t\tTotal\tCorrect\t%\tFalseN\t%\tFalseP\t%\tSI\n", stdout );
+    fputs( "\n\t\tTotal\tCorrect\t%\tFalseN\t%\tFalseP\t%\tSI\tJ\n", stdout );
     
     unsigned int sumTotal = 0, sumCorrect = 0, countLabels = 0;
     double sumSI = 0;
@@ -361,9 +361,12 @@ doMain ( const int argc, const char* argv[] )
 	  }
 
 	const unsigned int totalFlt = ( i < numberLabelsFlt ) ? histogram->ProjectToY( i ) : 0;
-	const double SI = static_cast<double>( 2.0 * correct / (totalRef + totalFlt ) );
-	fprintf( stdout, "\nLabel #%d:\t%d\t%d\t%.2lf\t%d\t%.2lf\t%d\t%.2lf\t%.5lf", 
-		 i, totalRef, correct, 100.0 * correct / totalRef, missed, 100.0 * missed / totalRef, wrong, 100.0 * wrong / totalRef, SI );
+	const unsigned int totalRefFlt = totalRef + totalFlt - correct;
+
+	const double SI = static_cast<double>( 2.0 * correct / (totalRef + totalFlt ) ); // Similarity Index / Dice score
+	const double J = static_cast<double>( 1.0 * correct / totalRefFlt ); // Jaccard index
+	fprintf( stdout, "\nLabel #%d:\t%d\t%d\t%.2lf\t%d\t%.2lf\t%d\t%.2lf\t%.5lf\t%.5lf", 
+		 i, totalRef, correct, 100.0 * correct / totalRef, missed, 100.0 * missed / totalRef, wrong, 100.0 * wrong / totalRef, SI, J );
 	
 	if ( i )
 	  { // assume background is label #0 and exclude this
