@@ -510,6 +510,8 @@ doMain ( const int argc, const char* argv[] )
     cmtk::AffineXform::SmartPtr alignment( parametricPlane.GetAlignmentXform( 0 ) );
     cmtk::XformIO::Write( alignment, WriteXformPath, Verbose );
     }
+
+  return 0;
 }
 
 #include "cmtkSafeMain"

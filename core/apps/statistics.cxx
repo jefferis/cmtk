@@ -455,6 +455,7 @@ doMain ( const int argc, const char* argv[] )
 	AnalyzeGrey( volume );
       }
     }
+  return 0;
 }
 
 #include "cmtkSafeMain"

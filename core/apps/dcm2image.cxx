@@ -672,6 +672,8 @@ doMain ( const int argc, const char *argv[] )
   traverse_directory( studylist, SearchRootDir, "*" );
   
   studylist.WriteToArchive();
+
+  return 0;
 }
 
 #include "cmtkSafeMain"

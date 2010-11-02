@@ -1027,6 +1027,8 @@ doMain ( const int argc, const char* argv[] )
     volume->SetData( avgArray );
     cmtk::VolumeIO::Write( *volume, OutputFileName, Verbose );
     }
+
+  return 0;
 }
 
 #include "cmtkSafeMain"

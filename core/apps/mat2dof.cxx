@@ -221,6 +221,8 @@ doMain( const int argc, const char* argv[] )
     for ( unsigned int idx = 0; idx < v.Dim; ++idx )
       std::cout << "#" << idx << "\t" << v.Elements[idx] << "\n";
     }
+
+  return 0;
 }
 
 #include "cmtkSafeMain"

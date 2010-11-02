@@ -176,6 +176,8 @@ doMain ( const int argc, const char* argv[] )
     {
     cmtk::VolumeIO::Write( *scalarImage, OutImagePath, Verbose );
     }
+
+  return 0;
 }
 
 #include "cmtkSafeMain"

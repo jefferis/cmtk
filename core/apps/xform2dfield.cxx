@@ -166,6 +166,8 @@ doMain ( const int argc, const char *argv[] )
   cmtk::Progress::Done();
 
   cmtk::XformIO::Write( dfield, OutFileName, Verbose );
+
+  return 0;
 }
 
 #include "cmtkSafeMain"

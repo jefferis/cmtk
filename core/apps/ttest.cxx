@@ -470,6 +470,8 @@ doMain ( const int argc, const char* argv[] )
       break;
       }
     }
+
+  return 0;
 }
 
 #include "cmtkSafeMain"
