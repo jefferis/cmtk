@@ -387,6 +387,8 @@ doMain ( const int argc, const char* argv[] )
     fprintf( stdout, "Total:\t%d\t%d\t%.2lf\t%.4lf\t%.4lf\n\n", sumTotal, sumCorrect, 100.0 * sumCorrect / sumTotal, sumSI / countLabels, sumSIweighted / sumTotal );
     fprintf( stdout, "AvgRecog:\t%.6f\n", avgRecog );
     }
+
+  return 0;
 }
 
 #include "cmtkSafeMain"
