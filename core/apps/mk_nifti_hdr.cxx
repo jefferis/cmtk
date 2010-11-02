@@ -275,6 +275,8 @@ doMain( const int argc, const char* argv[] )
       fclose( hdrFile );
       }
     }
+
+  return 0;
 }
 
 #include "cmtkSafeMain"

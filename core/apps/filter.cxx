@@ -244,6 +244,8 @@ doMain( const int argc, const char* argv[] )
     db.AddImage( OutputFileName, InputFileName  );
     }
 #endif
+
+  return 0;
 }
 
 #include "cmtkSafeMain"

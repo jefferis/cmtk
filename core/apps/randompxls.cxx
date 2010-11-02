@@ -88,6 +88,8 @@ doMain( const int argc, const char *argv[] )
       std::cout << volume->GetPlaneCoord(cmtk::AXIS_X,x) << "\t" << volume->GetPlaneCoord(cmtk::AXIS_Y,y) << "\t" << volume->GetPlaneCoord(cmtk::AXIS_Z,z) << std::endl;
       }
     }
+
+  return 0;
 }
 
 #include "cmtkSafeMain"

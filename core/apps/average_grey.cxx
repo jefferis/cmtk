@@ -393,6 +393,8 @@ doMain ( const int argc, const char* argv[] )
   delete[] studylist;
   
   delete[] countData;
+
+  return 0;
 }
 
 #include "cmtkSafeMain"
