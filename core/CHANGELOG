@@ -1,5 +1,6 @@
 Release CMTK-1.5.0:
 
+(r2544) Added: "similarity" in label mode now prints Jaccard index, J.
 (r2540) Fixed: all command line tools now use a C++-safe exit mechanism based
     on throwing an exit exception that is caught in a safe main() wrapper
     function. 
