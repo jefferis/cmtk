@@ -1114,7 +1114,7 @@ public:
   void EndGroup();
 
   /// Parse command line.
-  bool Parse( const int argc, const char* argv[] ) throw( ExitException );
+  bool Parse( const int argc, const char* argv[] ) throw( ExitException, Self::Exception );
 
   /// Help text indentation.
   static const int HelpTextIndent = 10;
