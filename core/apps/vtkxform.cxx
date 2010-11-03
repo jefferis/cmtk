@@ -158,6 +158,16 @@ doMain( const int argc, const char* argv[] )
       // Apply transformation sequence
       const bool valid = xformList.ApplyInPlace( xyz );
       
+      if ( ! valid )
+	{
+	// well, not sure what to do now... we should delete the current point from the
+	// mesh, but updating the connectivity isn't a local operation. We could also
+	// keep track of the previous and the next point and put the failed one in the
+	// middle, but that would require a memory and all kinds of special case treatment
+	// (multiple consecutive failues, failures at either end, ...) Also assumes
+	// a 1D mesh (polyline). So maybe not.
+	}
+
       // Write transformed point to output
       // Read original point coordinates from file
       if ( binaryMode )
