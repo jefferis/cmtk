@@ -771,7 +771,36 @@ CallbackMatchHistograms()
   
   cmtk::UniformVolume::SmartPtr ref = ImageStack.front();
   ImageStack.pop_front();
-  ImageStack.front()->GetData()->ApplyFunctionObject( cmtk::TypedArrayFunctionHistogramMatching( *(ImageStack.front()->GetData()), *(ref->GetData()) ) );
+
+  cmtk::TypedArray::SmartPtr result( ImageStack.front()->GetData()->Convert( ResultType ) );
+  result->ApplyFunctionObject( cmtk::TypedArrayFunctionHistogramMatching( *(ImageStack.front()->GetData()), *(ref->GetData()) ) );
+  ImageStack.front()->SetData( result );
+}
+
+void
+CallbackMatchMeanSDev()
+{
+  if ( ImageStack.size() < 2 )
+    {
+    cmtk::StdErr << "ERROR: need at least two images on stack for histogram intensity matching\n";
+    return;
+    }
+  
+  cmtk::UniformVolume::SmartPtr ref = ImageStack.front();
+  ImageStack.pop_front();
+
+  cmtk::Types::DataItem rMean, rVar;
+  ref->GetData()->GetStatistics( rMean, rVar );
+
+  cmtk::Types::DataItem mMean, mVar;
+  ImageStack.front()->GetData()->GetStatistics( mMean, mVar );
+
+  const cmtk::Types::DataItem scale = sqrt( rVar / mVar );
+  const cmtk::Types::DataItem offset = rMean - scale * mMean;
+
+  cmtk::TypedArray::SmartPtr result( ImageStack.front()->GetData()->Convert( ResultType ) );
+  result->Rescale( scale, offset );
+  ImageStack.front()->SetData( result );
 }
 
 void
@@ -1319,7 +1348,8 @@ doMain( const int argc, const char *argv[] )
     cl.AddCallback( Key( "mul" ), CallbackMul, "Multiply top and second image, place result on stack" );
     cl.AddCallback( Key( "div" ), CallbackDiv, "Divide top image by second image, place result on stack" );
     cl.AddCallback( Key( "atan2" ), CallbackAtan2, "Compute atan2() function from tup two image pixel pairs, place result on stack" );    
-    cl.AddCallback( Key( "match-histograms" ), CallbackMatchHistograms, "Scale intensities one image to match intensities another. The image pushed onto the stack last provides the reference intensity distribution, the preceding image will be modified. Both input images will be removed from the stack and the modified image will be pushed onto the stack." );
+    cl.AddCallback( Key( "match-histograms" ), CallbackMatchHistograms, "Scale intensities in one image to match intensities of another. The last image pushed onto the stack provides the reference intensity distribution, the preceding image will be modified. Both input images are removed from the stack and the modified image is pushed onto the stack." );
+    cl.AddCallback( Key( "match-mean-sdev" ), CallbackMatchMeanSDev, "Scale intensities of one image to match mean and standard deviation of another. The last image pushed onto the stack provides the reference intensity distribution, the preceding image will be modified. Both input images are removed from the stack and the modified image is pushed onto the stack." );
     cl.EndGroup();
 
     cl.BeginGroup( "Contract multiple images", "Operators that contract the entire stack into a single image" );
