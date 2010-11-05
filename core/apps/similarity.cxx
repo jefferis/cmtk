@@ -361,9 +361,9 @@ doMain ( const int argc, const char* argv[] )
 	  }
 
 	const unsigned int totalFlt = ( i < numberLabelsFlt ) ? histogram->ProjectToY( i ) : 0;
-	const unsigned int totalRefFlt = totalRef + totalFlt - correct;
-
 	const double SI = static_cast<double>( 2.0 * correct / (totalRef + totalFlt ) ); // Similarity Index / Dice score
+
+	const unsigned int totalRefFlt = totalRef + totalFlt - correct;
 	const double J = static_cast<double>( 1.0 * correct / totalRefFlt ); // Jaccard index
 	fprintf( stdout, "\nLabel #%d:\t%d\t%d\t%.2lf\t%d\t%.2lf\t%d\t%.2lf\t%.5lf\t%.5lf", 
 		 i, totalRef, correct, 100.0 * correct / totalRef, missed, 100.0 * missed / totalRef, wrong, 100.0 * wrong / totalRef, SI, J );
