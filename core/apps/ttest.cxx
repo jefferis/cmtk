@@ -172,8 +172,7 @@ doMain ( const int argc, const char* argv[] )
 	  }
 	}
       
-      cmtk::TypedArray::SmartPtr array
-	( cmtk::TypedArray::Create( cmtk::TYPE_ITEM, data.size() ) );
+      cmtk::TypedArray::SmartPtr array( cmtk::TypedArray::Create( cmtk::TYPE_ITEM, data.size() ) );
       for ( size_t i = 0; i < data.size(); ++i )
 	array->Set( data[i], i );
 
