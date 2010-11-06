@@ -578,7 +578,8 @@ public:
    *@return A histogram object filled with the relative frequencies of values 
    * in this array.
    */
-  virtual Histogram<unsigned int>::SmartPtr GetHistogram( const unsigned int numberOfBins ) const;
+  virtual Histogram<unsigned int>::SmartPtr GetHistogram( const unsigned int numberOfBins /*!< Number of histogram bins */,
+							  const bool centeredBins = false /*!< Flag for bins centered around the samples*/ ) const;
 
   virtual void ApplyFunctionObject( const TypedArrayFunction& f );
 

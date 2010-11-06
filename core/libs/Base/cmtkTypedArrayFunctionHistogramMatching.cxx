@@ -39,10 +39,10 @@ cmtk::TypedArrayFunctionHistogramMatching
 ( const TypedArray& variableArray, const TypedArray& fixedArray, const size_t numberOfHistogramBins )
   : m_Lookup( numberOfHistogramBins )
 {  
-  this->m_FixedArrayHistogram = fixedArray.GetHistogram( numberOfHistogramBins );
+  this->m_FixedArrayHistogram = fixedArray.GetHistogram( numberOfHistogramBins, true /*centeredBins*/ );
   this->m_FixedArrayHistogram->ConvertToCumulative();
   
-  this->m_VariableArrayHistogram = variableArray.GetHistogram( numberOfHistogramBins );
+  this->m_VariableArrayHistogram = variableArray.GetHistogram( numberOfHistogramBins, true /*centeredBins*/ );
   this->m_VariableArrayHistogram->ConvertToCumulative();
   
   this->CreateLookup();

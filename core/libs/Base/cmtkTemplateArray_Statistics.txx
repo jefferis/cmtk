@@ -68,15 +68,19 @@ TemplateArray<T>::GetStatistics
 
 template<class T>
 Histogram<unsigned int>::SmartPtr
-TemplateArray<T>::GetHistogram( const unsigned int numberOfBins ) const
+TemplateArray<T>::GetHistogram( const unsigned int numberOfBins, const bool centeredBins ) const
 {
   Histogram<unsigned int>::SmartPtr histogram( new Histogram<unsigned int>( numberOfBins ) );
-  histogram->SetRange( Types::DataItemRange( this->GetRangeTemplate() ) );
+
+  if ( centeredBins )
+    histogram->SetRangeCentered( Types::DataItemRange( this->GetRangeTemplate() ) );
+  else
+    histogram->SetRange( Types::DataItemRange( this->GetRangeTemplate() ) );
   
   for ( size_t idx = 0; idx < DataSize; ++idx )
     if ( !this->PaddingFlag || (this->Data[idx] != this->Padding) )
       histogram->Increment( histogram->ValueToBin( this->Data[idx] ) );
-
+  
   return histogram;
 }
 
