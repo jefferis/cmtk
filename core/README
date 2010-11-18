@@ -6,7 +6,8 @@ Release Notes -- CMTK 1.5.0
 ===========================
 
 This is a major bug fix release. The internal handling of physical image
-coordinate spaces has been reworked and fixed.
+coordinate spaces has been reworked and fixed to improve interoperability with
+ITK and Slicer.
 
 For a complete list of changes and fixes, see the CHANGELOG file.
 
