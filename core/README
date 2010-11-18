@@ -2,12 +2,8 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
-Release Notes -- CMTK 1.5.0
+Release Notes -- CMTK 1.5.1
 ===========================
-
-This is a major bug fix release. The internal handling of physical image
-coordinate spaces has been reworked and fixed to improve interoperability with
-ITK and Slicer.
 
 For a complete list of changes and fixes, see the CHANGELOG file.
 
