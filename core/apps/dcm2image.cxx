@@ -101,6 +101,8 @@ const char *const GERawDataTypeString[4] = { "magn", "phas", "real", "imag" };
 bool DisableOrientationCheck = false;
 double Tolerance = 1e-5;
 
+bool IgnoreAcquisitionNumber = false;
+
 class ImageFileDCM 
 {
 public:
@@ -179,9 +181,12 @@ ImageFileDCM::Match( const ImageFileDCM& other ) const
     }
 
   return
-    ( SeriesUID == other.SeriesUID ) && ( StudyUID == other.StudyUID ) && 
-    ( EchoTime == other.EchoTime ) && ( RepetitionTime == other.RepetitionTime ) && 
-    ( AcquisitionNumber == other.AcquisitionNumber ) && ( this->GERawDataType == other.GERawDataType );
+    ( SeriesUID == other.SeriesUID ) && 
+    ( StudyUID == other.StudyUID ) && 
+    ( EchoTime == other.EchoTime ) &&
+    ( RepetitionTime == other.RepetitionTime ) && 
+    (( AcquisitionNumber == other.AcquisitionNumber ) || IgnoreAcquisitionNumber) && 
+    ( this->GERawDataType == other.GERawDataType );
 }
 
 ImageFileDCM::ImageFileDCM( const char* filename )
@@ -414,6 +419,8 @@ replacein(std::string &s, const std::string &sub, const std::string &other)
 void
 VolumeList::WriteToArchive() 
 {
+  size_t cntSingleImages = 0;
+
   int idx = 1;
   std::map< std::string,std::vector<const VolumeDCM*> > pathToVolumeMap;
   for ( const_iterator it = begin(); it != end(); ++it ) 
@@ -435,6 +442,15 @@ VolumeList::WriteToArchive()
       else
 	pathToVolumeMap[path].push_back( *it );
       }
+    else
+      {
+      ++cntSingleImages;
+      }
+    }
+
+  if ( cntSingleImages )
+    {
+    cmtk::StdErr << "WARNING: " << cntSingleImages << " single image(s) could not be assigned to multi-image stacks\n";
     }
   
   for ( std::map< std::string,std::vector<const VolumeDCM*> >::const_iterator it = pathToVolumeMap.begin(); it != pathToVolumeMap.end(); ++it )
@@ -641,6 +657,7 @@ doMain ( const int argc, const char *argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Stacking", "Stacking Options");
+    cl.AddSwitch( Key( "ignore-acq-number" ), &IgnoreAcquisitionNumber, true, "Ignore 'AcquisitionNumber' tag for image grouping, i.e., do not separate stacks based on this tag." );
     cl.AddSwitch( Key( "no-orientation-check" ), &DisableOrientationCheck, true, "Disable checking of image orientations (to avoid rounding issues)" );
     cl.AddOption( Key( "tolerance" ), &Tolerance, "Tolerance for floating-point comparisons (must be >= 0; 0 = exact matches only; default: 1e-5)" );
     cl.EndGroup();
