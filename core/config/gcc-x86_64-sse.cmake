@@ -26,5 +26,5 @@
 ##  $LastChangedBy$
 ##
 
-SET(CMAKE_CXX_FLAGS "-march=nocona -mmmx -msse -msse2 -mfpmath=sse")
-SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS})
+SET(CMAKE_CXX_FLAGS "-march=nocona -mmmx -msse -msse2 -mfpmath=sse" CACHE STRING "C compiler flags")
+SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "C++ compiler flags")

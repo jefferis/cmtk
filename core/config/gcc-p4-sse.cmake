@@ -1,6 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
-##  Copyright 2004-2009 SRI International
+##
+##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -27,5 +28,5 @@
 ##  $LastChangedBy$
 ##
 
-SET(CMAKE_CXX_FLAGS "-march=pentium4 -mmmx -msse -msse2 -mfpmath=sse")
-SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS})
+SET(CMAKE_CXX_FLAGS "-m32 -march=pentium4 -mmmx -msse -msse2 -mfpmath=sse" CACHE STRING "C compiler flags")
+SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "C++ compiler flags")

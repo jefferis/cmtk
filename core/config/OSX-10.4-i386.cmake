@@ -29,10 +29,10 @@
 ##
 
 # 32 bit for OS X >=10.4
-SET(CMAKE_OSX_ARCHITECTURES "i386")
-SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.4")
-SET(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.4u.sdk")
+SET(CMAKE_OSX_ARCHITECTURES "i386" CACHE STRING "OS-X architectures")
+SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.4" CACHE STRING "OS-X target")
+SET(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.4u.sdk" CACHE PATH "OS-X SDK")
 
 # Activate SSE support for floating point
-SET(CMAKE_CXX_FLAGS "-march=pentium4 -mmmx -msse -msse2 -mfpmath=sse")
-SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS})
+SET(CMAKE_CXX_FLAGS "-march=pentium4 -mmmx -msse -msse2 -mfpmath=sse" CACHE STRING "C compiler flags")
+SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "C++ compiler flags")
