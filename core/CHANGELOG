@@ -1,5 +1,6 @@
 Release CMTK-1.5.1:
 
+(r2563) Fixed: "dcm2image" tool choked on non-DICOM files.
 (r2560) Added: "dcm2image" tool has new option to ignore AcquisitionNumber tag
     when grouping images, which is useful for Siemens fMRI series. Tool also
     now warns if images are left over that cannot be assigned to any stack.
