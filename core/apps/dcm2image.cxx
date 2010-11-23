@@ -547,8 +547,15 @@ traverse_directory( VolumeList& studylist, const char *path, const char *wildcar
       }
     else
       {
-      fileList.push_back( new ImageFileDCM( fullname ) );
-      (cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ]).flush();
+      try
+	{
+	fileList.push_back( new ImageFileDCM( fullname ) );
+	(cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ]).flush();
+	}
+      catch ( ... )
+	{
+	// not a valid DICOM file
+	}
       }
     }
   while (FindNextFile(hFind, &fData) != 0);
@@ -573,9 +580,16 @@ traverse_directory( VolumeList& studylist, const char *path, const char *wildcar
 	  {
 	  if ( !fnmatch(wildcard,entry_pointer->d_name,FNM_PERIOD) ) 
 	    {
-	    cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ];
-	    cmtk::StdErr.flush();
-	    fileList.push_back( new ImageFileDCM( fullname ) );
+	    try
+	      {
+	      fileList.push_back( new ImageFileDCM( fullname ) );
+	      cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ];
+	      cmtk::StdErr.flush();
+	      }
+	    catch ( ... )
+	      {
+	      // not a valid DICOM file
+	      }
 	    }
 	  }
 	}
