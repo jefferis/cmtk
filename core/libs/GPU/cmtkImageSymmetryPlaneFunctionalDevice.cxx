@@ -32,7 +32,7 @@
 
 #include "cmtkImageSymmetryPlaneFunctionalDevice.h"
 
-#include <GPU/cmtkImageSymmetryPlaneFunctionalDevice_kernels.h>
+#include <GPU/cmtkImagePairAffineRegistrationFunctionalDevice_kernels.h>
 
 namespace
 cmtk
@@ -90,7 +90,8 @@ ImageSymmetryPlaneFunctionalDevice::Evaluate()
       }
     }
   
-  return -ImageSymmetryPlaneFunctionalDeviceEvaluateMSD( this->m_Volume->m_Dims.begin(), this->m_VolumeOnDevice->GetDeviceArrayPtr()->GetArrayOnDevice(), matrix );
+  return -ImagePairAffineRegistrationFunctionalDeviceEvaluateMSD( this->m_Volume->m_Dims.begin(), this->m_VolumeOnDevice->GetDeviceArrayPtr()->GetArrayOnDevice(), 
+								  this->m_Volume->m_Dims.begin(), this->m_VolumeOnDevice->GetDeviceArrayPtr()->GetArrayOnDevice(), matrix );
 }
 
 } // namespace cmtk

@@ -47,7 +47,6 @@ IF(CMTK_USE_CUDA)
     cmtkDeviceArrayCUDA.cxx
     cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.cu
     cmtkImagePairAffineRegistrationFunctionalDevice_kernels.cu
-    cmtkImageSymmetryPlaneFunctionalDevice_kernels.cu
     cmtkSimpleLevelsetDevice_kernels.cu
     cmtkSumReduction_kernel.cu
     )
