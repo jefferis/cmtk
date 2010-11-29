@@ -34,6 +34,7 @@ SET(cmtkGPU_SRCS
   cmtkDeviceUniformVolume.cxx
   cmtkDeviceUniformVolumeArray.cxx
   cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice.cxx
+  cmtkImagePairAffineRegistrationFunctionalDevice.cxx
   cmtkImageSymmetryPlaneFunctionalDevice.cxx
   cmtkSimpleLevelsetDevice.cxx
   )
@@ -45,6 +46,7 @@ IF(CMTK_USE_CUDA)
     cmtkDeviceMemoryCUDA.cxx
     cmtkDeviceArrayCUDA.cxx
     cmtkEntropyMinimizationIntensityCorrectionFunctionalDevice_kernels.cu
+    cmtkImagePairAffineRegistrationFunctionalDevice_kernels.cu
     cmtkImageSymmetryPlaneFunctionalDevice_kernels.cu
     cmtkSimpleLevelsetDevice_kernels.cu
     cmtkSumReduction_kernel.cu

@@ -28,26 +28,24 @@
 //
 */
 
-#include "cmtkDeviceUniformVolumeArray.h"
+#ifndef __cmtkImagePairAffineRegistrationFunctionalDevice_kernels_h_included_
+#define __cmtkImagePairAffineRegistrationFunctionalDevice_kernels_h_included_
 
-#include <System/cmtkMemory.h>
+/** \addtogroup GPU */
+//@{
 
-cmtk::DeviceUniformVolumeArray::
-DeviceUniformVolumeArray( const UniformVolume& volume )
-  : m_DeviceArrayPointer( DeviceArray::Create( volume.m_Dims ) )
+namespace
+cmtk
 {
-  const TypedArray::SmartPtr data = volume.GetData();
-  if ( data )
-    {
-    if ( data->GetType() == TYPE_FLOAT )
-      {
-      m_DeviceArrayPointer->CopyToDevice( static_cast<const float*>( data->GetDataPtr() ) );
-      }
-    else
-      {
-      float* fData = static_cast<float*>( data->ConvertArray( TYPE_FLOAT ) );
-      m_DeviceArrayPointer->CopyToDevice( fData );
-      Memory::DeleteArray( fData );
-      }
-    }
-}
+
+/// Evaluate Mean Squared Difference for symmetry plane computation on GPU.
+float 
+ImagePairAffineRegistrationFunctionalDeviceEvaluateMSD( const int* fixedDims3 /*!< Fixed volume dimensions */, void* fixedArray /*!< Device array with fixed volume data */, 
+							const int* movingDims3 /*!< Movingvolume dimensions */, void* movingArray /*!< Device array with moving volume data */, 
+							const float matrix[4][4] /*!< Mirror matrix: from index to image coordinates, then mirror, then to normalized [0..1] coordinates */ );
+
+} // namespace cmtk
+
+//@}
+
+#endif // #ifndef __cmtkImagePairAffineRegistrationFunctionalDevice_kernels_h_included_
