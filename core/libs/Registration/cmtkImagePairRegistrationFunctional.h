@@ -76,10 +76,10 @@ public:
 
 protected:
   /// Pointer to the reference grid.
-  UniformVolume::SmartPtr m_ReferenceGrid;
+  UniformVolume::SmartConstPtr m_ReferenceGrid;
 
   /// Pointer to the floating grid.
-  UniformVolume::SmartPtr m_FloatingGrid;
+  UniformVolume::SmartConstPtr m_FloatingGrid;
 
   /// Data class of reference image.
   DataClass m_ReferenceDataClass;
@@ -103,7 +103,7 @@ public:
    *@param reference The reference (i.e. static) volume.
    *@param floating The floating (i.e. transformed) volume.
    */
-  ImagePairRegistrationFunctional( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating )
+  ImagePairRegistrationFunctional( UniformVolume::SmartConstPtr& reference, UniformVolume::SmartConstPtr& floating )
     : m_MatchedLandmarkList( NULL ),
       m_ForceOutsideFlag( false )
   {
@@ -176,10 +176,10 @@ private:
   ImagePairRegistrationFunctional ( const ImagePairRegistrationFunctional& ) {}
 
   /// Initialize internal data structures for floating image.
-  void InitFloating( UniformVolume::SmartPtr& floating );
+  void InitFloating( UniformVolume::SmartConstPtr& floating );
 
   /// Initialize internal data structures for reference image.
-  void InitReference( UniformVolume::SmartPtr& reference );
+  void InitReference( UniformVolume::SmartConstPtr& reference );
 };
 
 //@}

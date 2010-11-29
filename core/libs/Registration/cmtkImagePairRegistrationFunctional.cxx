@@ -44,7 +44,7 @@ cmtk
 //@{
 
 void
-ImagePairRegistrationFunctional::InitFloating( UniformVolume::SmartPtr& floating )
+ImagePairRegistrationFunctional::InitFloating( UniformVolume::SmartConstPtr& floating )
 {
   this->m_FloatingGrid = floating;
   
@@ -62,7 +62,7 @@ ImagePairRegistrationFunctional::InitFloating( UniformVolume::SmartPtr& floating
 }
 
 void
-ImagePairRegistrationFunctional::InitReference( UniformVolume::SmartPtr& reference )
+ImagePairRegistrationFunctional::InitReference( UniformVolume::SmartConstPtr& reference )
 {
   this->m_ReferenceGrid = reference;
 
