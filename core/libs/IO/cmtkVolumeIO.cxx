@@ -364,10 +364,6 @@ VolumeIO::Write
   const TypedArray *data = volume.GetData();
   if ( data == NULL ) return;
 
-  FileUtils::RecursiveMkPrefixDir( path );
-  char *dirName = strdup( StrDir( path ) );
-  char *baseName = strdup( StrFName( path ) );
-
   switch ( format ) 
     {
     case FILEFORMAT_ANALYZE_HDR: 
@@ -395,9 +391,6 @@ VolumeIO::Write
     default:
       break;
     }
-  
-  free( dirName );
-  free( baseName );
   
   volume.m_MetaInformation[META_FS_PATH] = path;
 }
