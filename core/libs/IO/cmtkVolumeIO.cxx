@@ -364,9 +364,6 @@ VolumeIO::Write
   const TypedArray *data = volume.GetData();
   if ( data == NULL ) return;
 
-  ScalarImage image( volume.m_Dims[0], volume.m_Dims[1] );
-  image.SetPixelSize( volume.m_Delta[AXIS_X], volume.m_Delta[AXIS_Y] );
-
   FileUtils::RecursiveMkPrefixDir( path );
   char *dirName = strdup( StrDir( path ) );
   char *baseName = strdup( StrFName( path ) );

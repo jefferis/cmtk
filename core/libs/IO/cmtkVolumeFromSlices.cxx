@@ -107,7 +107,7 @@ VolumeFromSlices::FillPlane
 {
   char* rawDataPtr = static_cast<char*>( VolumeDataArray->GetDataPtr() );
 
-  unsigned int bytesPerBlock = BytesPerPixel * Dims[0] * Dims[1];
+  const size_t bytesPerBlock = BytesPerPixel * Dims[0] * Dims[1];
   for ( int planeIdx = 0; planeIdx < image->GetNumberOfFrames(); ++planeIdx, ++plane ) 
     {
     const char *check = this->CheckImage( plane, image, planeIdx );
