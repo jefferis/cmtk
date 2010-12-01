@@ -77,7 +77,6 @@ cmtkImagePairAffineRegistrationFunctionalDeviceEvaluateMSDKernel( float* squares
 	      
 	      const float diff = dataMov-dataFix;
 	      sq += diff*diff;
-	      sq += deviceMatrix[0][0];
 	    }
 	}
     }
