@@ -5,10 +5,10 @@ type: short
 dimension: 3
 space: left-anterior-superior
 sizes: 96 128 23
-space directions: (-1.875,0,0) (-0,1.875,0) (-0,0,3.75)
+space directions: (1.875,0,0) (-0,1.875,0) (-0,0,3.75)
 kinds: domain domain domain
 labels: "x" "y" "z"
 endian: little
 encoding: gzip
-space origin: (178.125,0,0)
+space origin: (-0,0,0)
 data file: split_ax_0.raw.gz

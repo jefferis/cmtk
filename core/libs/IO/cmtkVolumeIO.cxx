@@ -364,32 +364,68 @@ VolumeIO::Write
   const TypedArray *data = volume.GetData();
   if ( data == NULL ) return;
 
-  switch ( format ) 
+  if ( volume.MetaKeyExists( cmtk::META_IMAGE_ORIENTATION_ORIGINAL ) &&
+       (volume.GetMetaInfo( cmtk::META_IMAGE_ORIENTATION ) != volume.GetMetaInfo( cmtk::META_IMAGE_ORIENTATION_ORIGINAL ) ) )
     {
-    case FILEFORMAT_ANALYZE_HDR: 
-    {
-    VolumeFromFile::WriteAnalyzeHdr( path, volume, verbose );
-    break;
-    }
-    case FILEFORMAT_NIFTI_DETACHED: 
-    case FILEFORMAT_NIFTI_SINGLEFILE: 
-    {
-    VolumeFromFile::WriteNifti( path, volume, verbose );
-    break;
-    }
-    case FILEFORMAT_METAIMAGE: 
-    {
-    VolumeFromFile::WriteMetaImage( path, volume );
-    break;
-    }
-    case FILEFORMAT_NRRD: 
-    {
-    VolumeFromFile::WriteNRRD( path, volume, verbose );
-    break;
-    }
-    break;
-    default:
+    cmtk::UniformVolume::SmartConstPtr reorientedVolume( volume.GetReoriented( volume.GetMetaInfo( cmtk::META_IMAGE_ORIENTATION_ORIGINAL ).c_str() ) );
+    
+    switch ( format ) 
+      {
+      case FILEFORMAT_ANALYZE_HDR: 
+      {
+      VolumeFromFile::WriteAnalyzeHdr( path, *reorientedVolume, verbose );
       break;
+      }
+      case FILEFORMAT_NIFTI_DETACHED: 
+      case FILEFORMAT_NIFTI_SINGLEFILE: 
+      {
+      VolumeFromFile::WriteNifti( path, *reorientedVolume, verbose );
+      break;
+      }
+      case FILEFORMAT_METAIMAGE: 
+      {
+      VolumeFromFile::WriteMetaImage( path, *reorientedVolume );
+      break;
+      }
+      case FILEFORMAT_NRRD: 
+      {
+      VolumeFromFile::WriteNRRD( path, *reorientedVolume, verbose );
+      break;
+      }
+      break;
+      default:
+	break;
+      }
+    }
+  else
+    {
+    switch ( format ) 
+      {
+      case FILEFORMAT_ANALYZE_HDR: 
+      {
+      VolumeFromFile::WriteAnalyzeHdr( path, volume, verbose );
+      break;
+      }
+      case FILEFORMAT_NIFTI_DETACHED: 
+      case FILEFORMAT_NIFTI_SINGLEFILE: 
+      {
+      VolumeFromFile::WriteNifti( path, volume, verbose );
+      break;
+      }
+      case FILEFORMAT_METAIMAGE: 
+      {
+      VolumeFromFile::WriteMetaImage( path, volume );
+      break;
+      }
+      case FILEFORMAT_NRRD: 
+      {
+      VolumeFromFile::WriteNRRD( path, volume, verbose );
+      break;
+      }
+      break;
+      default:
+	break;
+      }
     }
   
   volume.m_MetaInformation[META_FS_PATH] = path;

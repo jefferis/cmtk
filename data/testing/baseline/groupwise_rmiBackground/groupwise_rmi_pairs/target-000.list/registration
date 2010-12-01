@@ -1,7 +1,7 @@
 ! TYPEDSTREAM 1.1
 
 registration {
-	reference_study "/fs/axon/torsten/cmtk/stable/bin/../testing/temporary/cluster9.cluster/groupwise_rmiBackground/average_groupwise_rmi.hdr"
+	reference_study "/home/torsten/software/nitrc_build/bin/../testing/temporary/rohlfing.dyndns.org/groupwise_rmiBackground/average_groupwise_rmi.nii"
 	floating_study "spgr_brain_1.hdr"
 	affine_xform {
 		xlate -8.7890625 4.025761565 -0.87890625 
