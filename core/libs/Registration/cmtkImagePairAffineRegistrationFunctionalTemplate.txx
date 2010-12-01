@@ -86,7 +86,7 @@ ImagePairAffineRegistrationFunctionalTemplate<VM>
   Self *me = info->thisObject;
   VM& metric = dynamic_cast<VM&>( *(me->m_Metric) );
   
-  VM& threadMetric = *(me->m_ThreadMetric[threadIdx]);
+  VM& threadMetric = me->m_ThreadMetric[threadIdx];
   threadMetric.Reset();
   
   const Vector3D *hashX = (*info->AxesHash)[0], *hashY = (*info->AxesHash)[1], *hashZ = (*info->AxesHash)[2];

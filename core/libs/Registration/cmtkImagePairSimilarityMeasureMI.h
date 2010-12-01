@@ -83,6 +83,10 @@ public:
    */
   ImagePairSimilarityMeasureMI() {};
 
+  /** Virtual destructor.
+   */
+  virtual ~ImagePairSimilarityMeasureMI() {};
+
   /// Get the value of the metric.
   virtual Self::ReturnType Get() const 
   {

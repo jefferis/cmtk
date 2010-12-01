@@ -85,22 +85,14 @@ public:
    */
   VoxelMatchingAffineFunctionalTemplate( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating, AffineXform::SmartPtr& affineXform )
     : VoxelMatchingAffineFunctional( reference, floating, affineXform ),
-      VoxelMatchingFunctional_Template<VM>( reference, floating ) 
+      VoxelMatchingFunctional_Template<VM>( reference, floating ),
+      m_NumberOfThreads( ThreadPool::GetGlobalThreadPool().GetNumberOfThreads() )    
   {
-    this->m_NumberOfThreads = ThreadPool::GetGlobalThreadPool().GetNumberOfThreads();
-
-    this->m_ThreadMetric = Memory::AllocateArray<VM*>( m_NumberOfThreads );
-    for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
-      this->m_ThreadMetric[thread] = new VM( *(this->Metric) );
+    this->m_ThreadMetric.resize( m_NumberOfThreads, dynamic_cast<const VM&>( *(this->Metric) ) );
   }
 
   /// Destructor.
-  virtual ~VoxelMatchingAffineFunctionalTemplate() 
-  {
-    for ( size_t thread = 0; thread < m_NumberOfThreads; ++thread )
-      delete m_ThreadMetric[thread];
-    Memory::DeleteArray( this->m_ThreadMetric );
-  }
+  virtual ~VoxelMatchingAffineFunctionalTemplate() {}
 
   /// Evaluate with new parameter vector.
   virtual typename Self::ReturnType EvaluateAt ( CoordinateVector& v ) 
@@ -170,7 +162,7 @@ public:
   size_t m_NumberOfThreads;
 
   /// Metric objects for the separate threads.
-  VM** m_ThreadMetric;
+  std::vector<VM> m_ThreadMetric;
 
   /// Mutex lock for access to global Metric field.
   MutexLock m_MetricMutex;
@@ -210,8 +202,8 @@ public:
     Self *me = info->thisObject;
     const VM* Metric = me->Metric;
 
-    VM* threadMetric = me->m_ThreadMetric[threadIdx];
-    threadMetric->Reset();
+    VM& threadMetric = me->m_ThreadMetric[threadIdx];
+    threadMetric.Reset();
 
     const Vector3D *hashX = (*info->AxesHash)[0], *hashY = (*info->AxesHash)[1], *hashZ = (*info->AxesHash)[2];
     Vector3D pFloating;
@@ -269,7 +261,7 @@ public:
 		offset = fltIdx[0]+FltDimsX*(fltIdx[1]+FltDimsY*fltIdx[2]);
 		
 		// Continue metric computation.
-		threadMetric->Increment( Metric->GetSampleX( r ), Metric->GetSampleY( offset, fltFrac ) );
+		threadMetric.Increment( Metric->GetSampleX( r ), Metric->GetSampleY( offset, fltFrac ) );
 		}
 	      }
 	    r += (DimsX-endX);
@@ -289,7 +281,7 @@ public:
       }
 
     me->m_MetricMutex.Lock();
-    me->Metric->AddMetric( *threadMetric );
+    me->Metric->AddMetric( threadMetric );
     me->m_MetricMutex.Unlock();
   }
 };

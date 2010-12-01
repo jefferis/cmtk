@@ -74,6 +74,10 @@ public:
   ImagePairSimilarityMeasureRMS( const UniformVolume::SmartConstPtr& refVolume, const UniformVolume::SmartConstPtr& fltVolume,
 				 const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
 
+  /** Virtual destructor.
+   */
+  virtual ~ImagePairSimilarityMeasureRMS() {};
+
   /// Get the value of the metric.
   virtual Self::ReturnType Get() const 
   {

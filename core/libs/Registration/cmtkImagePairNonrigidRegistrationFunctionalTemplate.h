@@ -87,24 +87,14 @@ public:
     this->m_InfoTaskGradient.resize( this->m_NumberOfTasks );
     this->m_InfoTaskComplete.resize( this->m_NumberOfTasks );
     
-    this->m_Metric = new VM( reference, floating, interpolation );
-
-    this->m_TaskMetric = Memory::AllocateArray<VM*>( this->m_NumberOfThreads );
-    for ( size_t task = 0; task < this->m_NumberOfThreads; ++task )
-      this->m_TaskMetric[task] = new VM( *(dynamic_cast<const VM*>(this->m_Metric) ) );
+    this->m_Metric = ImagePairSimilarityMeasure::SmartPtr( new VM( reference, floating, interpolation ) );
+    this->m_TaskMetric.resize( this->m_NumberOfThreads, dynamic_cast<const VM&>( *this->m_Metric ) );
   }
 
   /** Destructor.
    * Free all per-thread data structures.
    */
-  virtual ~ImagePairNonrigidRegistrationFunctionalTemplate<VM>() 
-  {
-    for ( size_t task = 0; task < this->m_NumberOfThreads; ++task )
-      delete this->m_TaskMetric[task];
-    Memory::DeleteArray( this->m_TaskMetric );
-
-    delete this->m_Metric;
-  }
+  virtual ~ImagePairNonrigidRegistrationFunctionalTemplate<VM>() {}
 
   /// Set flag and value for forcing values outside the floating image.
   virtual void SetForceOutside
@@ -145,14 +135,14 @@ public:
 
     for ( size_t taskIdx = 0; taskIdx < this->m_NumberOfThreads; ++taskIdx ) 
       {
-      this->m_TaskMetric[taskIdx]->Reset();
+      this->m_TaskMetric[taskIdx].Reset();
       }
     
     ThreadPool::GetGlobalThreadPool().Run( EvaluateCompleteThread, this->m_InfoTaskComplete );
     
     for ( size_t taskIdx = 0; taskIdx < this->m_NumberOfThreads; ++taskIdx ) 
       {
-      this->m_Metric->Add( *(this->m_TaskMetric[taskIdx]) );
+      dynamic_cast<VM&>( *(this->m_Metric) ).Add( this->m_TaskMetric[taskIdx] );
       }
     
     return this->WeightedTotal( this->m_Metric->Get(), *(this->m_ThreadWarp[0]) );
@@ -175,7 +165,7 @@ public:
     int endPlaneIncrement = this->m_DimsX * ( voi.From()[1] + (this->m_DimsY - voi.To()[1]) );
     
     const Types::DataItem unsetY = DataTypeTraits<Types::DataItem>::ChoosePaddingValue();
-    localMetric = *this->m_Metric;
+    localMetric = dynamic_cast<VM&>( *this->m_Metric );
     r = voi.From()[0] + this->m_DimsX * ( voi.From()[1] + this->m_DimsY * voi.From()[2] );
     for ( pZ = voi.From()[2]; pZ<voi.To()[2]; ++pZ ) 
       {
@@ -266,14 +256,11 @@ public:
 #endif
 
 private:
-  /// The metric (similarity measure) object.
-  VM* m_Metric;
-  
   /** Metric object for threadwise computation.
    * The objects in this array are the per-thread equivalent of the
    * ImagePairNonrigidRegistrationFunctional::IncrementalMetric object.
    */
-  VM** m_TaskMetric;
+  std::vector<VM> m_TaskMetric;
   
   /// Consistency histogram objects for threadwise computation.
   JointHistogram<unsigned int>** m_ThreadConsistencyHistogram;
@@ -318,7 +305,7 @@ private:
     SplineWarpXform& myWarp = *(me->m_ThreadWarp[threadIdx]);
     myWarp.SetParamVector( *info->Parameters );
     
-    VM& threadMetric = *(me->m_TaskMetric[threadIdx]);
+    VM& threadMetric = me->m_TaskMetric[threadIdx];
     Vector3D *vectorCache = me->m_ThreadVectorCache[threadIdx];
     Types::Coordinate *p = myWarp.m_Parameters;
     
@@ -381,7 +368,7 @@ private:
     
     Self *me = info->thisObject;
     const SplineWarpXform& warp = *(me->m_ThreadWarp[0]);
-    VM& threadMetric = *(me->m_TaskMetric[threadIdx]);
+    VM& threadMetric = me->m_TaskMetric[threadIdx];
     Vector3D *vectorCache = me->m_ThreadVectorCache[threadIdx];
     
     Types::DataItem* warpedVolume = me->m_WarpedVolume;

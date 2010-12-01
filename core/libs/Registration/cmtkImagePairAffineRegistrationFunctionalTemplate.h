@@ -90,23 +90,15 @@ public:
 						 UniformVolume::SmartPtr& floating, 
 						 const Interpolators::InterpolationEnum interpolation,
 						 AffineXform::SmartPtr& affineXform )
-    : ImagePairAffineRegistrationFunctional( reference, floating, affineXform )
+    : ImagePairAffineRegistrationFunctional( reference, floating, affineXform ),
+      m_NumberOfThreads( ThreadPool::GetGlobalThreadPool().GetNumberOfThreads() )
   {
-    this->m_NumberOfThreads = ThreadPool::GetGlobalThreadPool().GetNumberOfThreads();
-
     this->m_Metric = ImagePairSimilarityMeasure::SmartPtr( new VM( reference, floating, interpolation ) );
-    this->m_ThreadMetric = Memory::AllocateArray<VM*>( m_NumberOfThreads );
-    for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
-      this->m_ThreadMetric[thread] = new VM( dynamic_cast<const VM&>( *(this->m_Metric) ) );
+    this->m_ThreadMetric.resize( m_NumberOfThreads, dynamic_cast<const VM&>( *(this->m_Metric) ) );
   }
 
   /// Destructor.
-  virtual ~ImagePairAffineRegistrationFunctionalTemplate() 
-  {
-    for ( size_t thread = 0; thread < m_NumberOfThreads; ++thread )
-      delete m_ThreadMetric[thread];
-    Memory::DeleteArray( this->m_ThreadMetric );
-  }
+  virtual ~ImagePairAffineRegistrationFunctionalTemplate() {}
 
   /// Evaluate with new parameter vector.
   virtual typename Self::ReturnType EvaluateAt ( CoordinateVector& v ) 
@@ -153,7 +145,7 @@ public:
   size_t m_NumberOfThreads;
 
   /// Metric objects for the separate threads.
-  VM** m_ThreadMetric;
+  std::vector<VM> m_ThreadMetric;
 
   /// Mutex lock for access to global Metric field.
   MutexLock m_MetricMutex;

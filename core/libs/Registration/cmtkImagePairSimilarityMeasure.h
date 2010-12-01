@@ -75,6 +75,9 @@ public:
    */
   ImagePairSimilarityMeasure() {};
 
+  /// Virtual destructor.
+  virtual ~ImagePairSimilarityMeasure() {};
+
   /// Set reference volume.
   virtual void SetReferenceVolume( const UniformVolume::SmartConstPtr& refVolume );
 

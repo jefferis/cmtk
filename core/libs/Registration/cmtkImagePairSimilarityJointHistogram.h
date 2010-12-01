@@ -88,6 +88,10 @@ public:
    */
   ImagePairSimilarityJointHistogram() {};
 
+  /** Virtual destructor.
+   */
+  virtual ~ImagePairSimilarityJointHistogram() {};
+
   /** Set reference volume.
    * In addition to setting the reference volume via the base class, this function
    * also performs pre-scaling and parameter selection using Self::PrescaleData().

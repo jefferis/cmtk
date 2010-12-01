@@ -70,6 +70,10 @@ public:
    */
   ImagePairSimilarityMeasureNCC() {};
 
+  /** Virtual destructor.
+   */
+  virtual ~ImagePairSimilarityMeasureNCC() {};
+
   /** Constructor.
    * For reference and floating volume, InitDataset is called.
    *@param refVolume The reference (fixed) volume.
@@ -115,6 +119,7 @@ public:
   /// Compute cross correlation.
   virtual Self::ReturnType Get() const;
 
+  /// Add contribution from another (partial) metric object.
   void Add ( const Self& other )
   {
     SumX += other.SumX;
@@ -125,6 +130,7 @@ public:
     Samples += other.Samples;
   }
 
+  /// Remove contribution from another (partial) metric object.
   void Remove ( const Self& other )
   {
     assert( Samples >= other.Samples );
