@@ -219,6 +219,7 @@ TypedStream
 	  {
 	  Status = TYPEDSTREAM_ERROR_FORMAT;
 	  fclose( File );
+	  File = NULL;
 	  return;
 	  }
       
@@ -226,9 +227,16 @@ TypedStream
 	{
 	Status = TYPEDSTREAM_ERROR_FORMAT;
 	if ( GzFile )
+	  {
 	  gzclose( GzFile );
-	else
+	  GzFile = NULL;
+	  }
+
+	if ( File )
+	  {
 	  fclose( File );
+	  File = NULL;
+	  }
 	return;
 	}
       int releaseMinor, releaseMajor;
@@ -236,9 +244,16 @@ TypedStream
 	{
 	Status = TYPEDSTREAM_ERROR_FORMAT;
 	if ( GzFile )
+	  {
 	  gzclose( GzFile );
-	else
+	  GzFile = NULL;
+	  }
+
+	if ( File )
+	  {
 	  fclose( File );
+	  File = NULL;
+	  }
 	return;
 	}
       if ( releaseMajor == 1 && releaseMinor == 0) 
@@ -255,9 +270,16 @@ TypedStream
 	  /* Unknown Release */
 	  Status = TYPEDSTREAM_ERROR_FORMAT;
 	  if ( GzFile )
+	    {
 	    gzclose( GzFile );
-	  else
+	    GzFile = NULL;
+	    }
+	  
+	  if ( File )
+	    {
 	    fclose( File );
+	    File = NULL;
+	    }
 	  return;
 	  }
       break;
