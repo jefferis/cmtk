@@ -262,9 +262,6 @@ private:
    */
   std::vector<VM> m_TaskMetric;
   
-  /// Consistency histogram objects for threadwise computation.
-  JointHistogram<unsigned int>** m_ThreadConsistencyHistogram;
-  
   /** Thread parameter block for incremental gradient computation.
    * This structure holds all thread-specific information. A pointer to an
    * instance of this structure is given to EvaluateGradientThread() for
