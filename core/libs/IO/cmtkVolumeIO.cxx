@@ -63,6 +63,10 @@ cmtk
 /** \addtogroup IO */
 //@{
 
+/// Environment variable that turns off writing output images in the array order of the input images.
+const char* const CMTK_LEGACY_WRITE_IMAGES_RAS = "CMTK_LEGACY_WRITE_IMAGES_RAS";
+
+/// Static global flag: when true, files are written compressed whenever possible.
 bool VolumeIO::WriteCompressedOn = true;
 
 UniformVolume::SmartPtr
@@ -364,68 +368,47 @@ VolumeIO::Write
   const TypedArray *data = volume.GetData();
   if ( data == NULL ) return;
 
-  if ( volume.MetaKeyExists( cmtk::META_IMAGE_ORIENTATION_ORIGINAL ) &&
-       (volume.GetMetaInfo( cmtk::META_IMAGE_ORIENTATION ) != volume.GetMetaInfo( cmtk::META_IMAGE_ORIENTATION_ORIGINAL ) ) )
+  const UniformVolume* actualVolume = &volume;
+
+  // if volume was reoriented from its original array order, temporarily reorient back and set actual volume to temporary volume.
+  cmtk::UniformVolume::SmartConstPtr reorientedVolume;
+
+  if ( !getenv( CMTK_LEGACY_WRITE_IMAGES_RAS ) )
     {
-    cmtk::UniformVolume::SmartConstPtr reorientedVolume( volume.GetReoriented( volume.GetMetaInfo( cmtk::META_IMAGE_ORIENTATION_ORIGINAL ).c_str() ) );
-    
-    switch ( format ) 
+    if ( volume.MetaKeyExists( cmtk::META_IMAGE_ORIENTATION_ORIGINAL ) &&
+	 (volume.GetMetaInfo( cmtk::META_IMAGE_ORIENTATION ) != volume.GetMetaInfo( cmtk::META_IMAGE_ORIENTATION_ORIGINAL ) ) )
       {
-      case FILEFORMAT_ANALYZE_HDR: 
-      {
-      VolumeFromFile::WriteAnalyzeHdr( path, *reorientedVolume, verbose );
-      break;
-      }
-      case FILEFORMAT_NIFTI_DETACHED: 
-      case FILEFORMAT_NIFTI_SINGLEFILE: 
-      {
-      VolumeFromFile::WriteNifti( path, *reorientedVolume, verbose );
-      break;
-      }
-      case FILEFORMAT_METAIMAGE: 
-      {
-      VolumeFromFile::WriteMetaImage( path, *reorientedVolume );
-      break;
-      }
-      case FILEFORMAT_NRRD: 
-      {
-      VolumeFromFile::WriteNRRD( path, *reorientedVolume, verbose );
-      break;
-      }
-      break;
-      default:
-	break;
+      reorientedVolume = cmtk::UniformVolume::SmartConstPtr( volume.GetReoriented( volume.GetMetaInfo( cmtk::META_IMAGE_ORIENTATION_ORIGINAL ).c_str() ) );
+      actualVolume = reorientedVolume;
       }
     }
-  else
+    
+  switch ( format ) 
     {
-    switch ( format ) 
-      {
-      case FILEFORMAT_ANALYZE_HDR: 
-      {
-      VolumeFromFile::WriteAnalyzeHdr( path, volume, verbose );
+    case FILEFORMAT_ANALYZE_HDR: 
+    {
+    VolumeFromFile::WriteAnalyzeHdr( path, *actualVolume, verbose );
+    break;
+    }
+    case FILEFORMAT_NIFTI_DETACHED: 
+    case FILEFORMAT_NIFTI_SINGLEFILE: 
+    {
+    VolumeFromFile::WriteNifti( path, *actualVolume, verbose );
+    break;
+    }
+    case FILEFORMAT_METAIMAGE: 
+    {
+    VolumeFromFile::WriteMetaImage( path, *actualVolume );
+    break;
+    }
+    case FILEFORMAT_NRRD: 
+    {
+    VolumeFromFile::WriteNRRD( path, *actualVolume, verbose );
+    break;
+    }
+    break;
+    default:
       break;
-      }
-      case FILEFORMAT_NIFTI_DETACHED: 
-      case FILEFORMAT_NIFTI_SINGLEFILE: 
-      {
-      VolumeFromFile::WriteNifti( path, volume, verbose );
-      break;
-      }
-      case FILEFORMAT_METAIMAGE: 
-      {
-      VolumeFromFile::WriteMetaImage( path, volume );
-      break;
-      }
-      case FILEFORMAT_NRRD: 
-      {
-      VolumeFromFile::WriteNRRD( path, volume, verbose );
-      break;
-      }
-      break;
-      default:
-	break;
-      }
     }
   
   volume.m_MetaInformation[META_FS_PATH] = path;

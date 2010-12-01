@@ -436,6 +436,11 @@ case ${RUNTEST} in
 	run convertx spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.nii
 	check_results spgr_brain_1.nii
 	;;
+    convertxAnalyzeToNiftiRAS)
+        export CMTK_LEGACY_WRITE_IMAGES_RAS=1
+	run convertx spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.nii
+	check_results spgr_brain_1.nii
+	;;
     convertxNiftiDetachedToNifti)
 	run convertx spgr_brain_nifti.hdr ${tmpdir}/spgr_brain_1.nii
 	check_results spgr_brain_1.nii

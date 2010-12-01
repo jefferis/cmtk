@@ -214,6 +214,7 @@ IF(NOT CMTK_USE_MPI)
     convertxMedianFilterXYZ
     convertxNiftiToAnalyze
     convertxAnalyzeToNifti
+    convertxAnalyzeToNiftiRAS
     convertxNiftiDetachedToNifti
     convertxAnalyzeToNiftiDetached 
     convertxUncompressedNIFTI1
