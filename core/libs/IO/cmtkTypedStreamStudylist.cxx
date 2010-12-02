@@ -123,8 +123,14 @@ TypedStreamStudylist::Read( const char *studylistpath )
   
   classStream >> this->m_AffineXform;
 
-  this->m_AffineXform->SetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, referenceStudy );
-  this->m_AffineXform->SetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, floatingStudy );
+  if ( referenceStudy )
+    {
+    this->m_AffineXform->SetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, referenceStudy );
+    }
+  if ( floatingStudy )
+    {
+    this->m_AffineXform->SetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, floatingStudy );
+    }
 
   if ( legacy )
     {
@@ -134,8 +140,14 @@ TypedStreamStudylist::Read( const char *studylistpath )
   classStream.Get( this->m_WarpXform );
   if ( this->m_WarpXform )
     {
-    this->m_WarpXform->SetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, referenceStudy );
-    this->m_WarpXform->SetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, floatingStudy );
+    if ( referenceStudy )
+      {
+      this->m_WarpXform->SetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, referenceStudy );
+      }
+    if ( floatingStudy )
+      {
+      this->m_WarpXform->SetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, floatingStudy );
+      }
     }
   
   classStream.Close();
