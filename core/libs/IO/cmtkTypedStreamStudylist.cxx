@@ -79,7 +79,7 @@ TypedStreamStudylist::Read( const char *studylistpath )
   ClassStream classStream( archive, ClassStream::READ );
   if ( ! classStream.IsValid() ) 
     {
-    StdErr.printf( "Could not open studylist archive %s.", archive );
+    StdErr.printf( "Could not open studylist archive %s.\n", archive );
     return false;
     }
   
@@ -96,7 +96,7 @@ TypedStreamStudylist::Read( const char *studylistpath )
   classStream.Open( archive, ClassStream::READ );
   if ( ! classStream.IsValid() ) 
     {
-    StdErr.printf( "Could not open studylist archive %s.", archive );
+    StdErr.printf( "Could not open studylist archive %s.\n", archive );
     return false;
     }
   
@@ -116,8 +116,7 @@ TypedStreamStudylist::Read( const char *studylistpath )
       }
     else
       {
-      StdErr.printf( "WARNING: Studylist %s/registration apparently has neither new 'floating_study'"
-			" nor old 'model_study' entry", archive );
+      StdErr.printf( "WARNING: Studylist %s/registration apparently has neither new 'floating_study' nor old 'model_study' entry\n", archive );
       }
     }
   
