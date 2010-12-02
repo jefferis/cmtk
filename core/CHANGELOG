@@ -1,4 +1,4 @@
-Release CMTK-1.5.1:
+Release CMTK-1.5.1 (2010-12-02):
 
 (r2580) Fixed: segmentation fault when getting cropped subvolume after
     providing out-of-range cropping boundaries.
