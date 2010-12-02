@@ -1,5 +1,7 @@
 Release CMTK-1.5.1:
 
+(r2580) Fixed: segmentation fault when getting cropped subvolume after
+    providing out-of-range cropping boundaries.
 (r2575) Fixed: all output images are now written in the same orientation and
     pixel array order as the respective input images. Previously, images were
     written in internal order, i.e., RAS or closest orientation supported by
