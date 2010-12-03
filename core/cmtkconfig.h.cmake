@@ -98,6 +98,8 @@
 #  define _CRT_SECURE_NO_DEPRECATE
 // disable warnings about unknown (i.e., gcc) pragmas
 #  pragma warning ( disable: 4068 )
+// disable warnings about unimplemented "throw()" declaration
+#pragma warning(disable: 4290)
 // enable POSIX compliance
 #  define _POSIX_
 #  define NOMINMAX
