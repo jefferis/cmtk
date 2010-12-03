@@ -36,3 +36,5 @@ SET(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.5.sdk" CACHE PATH "OS-X SDK")
 # Activate SSE support for floating point
 SET(CMAKE_CXX_FLAGS "-march=nocona -mmmx -msse -msse2 -mfpmath=sse" CACHE STRING "C compiler flags")
 SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "C++ compiler flags")
+
+SET(CMTK_USE_LZMA OFF CACHE BOOL "Use LZMA library for decompression")
