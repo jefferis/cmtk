@@ -368,6 +368,8 @@ VolumeIO::Write
   const TypedArray *data = volume.GetData();
   if ( data == NULL ) return;
 
+  FileUtils::RecursiveMkPrefixDir( path );
+
   const UniformVolume* actualVolume = &volume;
 
   // if volume was reoriented from its original array order, temporarily reorient back and set actual volume to temporary volume.
