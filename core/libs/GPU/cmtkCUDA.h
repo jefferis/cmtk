@@ -38,6 +38,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "System/cmtkStackBacktrace.h"
+
 #define cmtkCheckCallCUDA(cmd) \
   { const cudaError_t cudaError = cmd; if ( cudaError != cudaSuccess ) { fprintf( stderr, "CUDA command failed with error '%s' at %s:%d\n", cudaGetErrorString( cudaError ), __FILE__, __LINE__ ); cmtk::StackBacktrace::PrintBacktrace(); exit(1); } }
   
