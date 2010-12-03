@@ -67,7 +67,7 @@ cmtk::Types::DataItem Background = 0;
 const char* InputImageName = NULL;
 bool InputImageGridOnly = false;
 
-const char* OutputFileName = "phantom.hdr";
+const char* OutputFileName = "phantom.nii";
 
 cmtk::UniformVolumePainter::CoordinateModeEnum CoordinateMode = cmtk::UniformVolumePainter::COORDINATES_INDEXED;
 
