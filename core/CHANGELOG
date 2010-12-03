@@ -1,5 +1,9 @@
 Release CMTK-1.5.2:
 
+(r2591) Fixed: previous release accidentally removed the ability of CMTK's
+    image writer to recursively create non-existing directories in the output
+    path.
+
 
 Release CMTK-1.5.1 (2010-12-02):
 
