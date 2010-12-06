@@ -2,12 +2,8 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
-Release Notes -- CMTK 1.5.2
+Release Notes -- CMTK 1.5.3
 ===========================
-
-This is a minor express bug fix release. The previous release of CMTK
-accidentally removed the ability of CMTK's image writer to recursively create
-non-existing directories in the output path.
 
 For a complete list of changes and fixes, see the CHANGELOG file.
 
