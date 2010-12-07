@@ -147,14 +147,14 @@ CommandLine::Parse( const int argc, const char* argv[] ) throw( ExitException, S
 	  throw ExitException( 0 );
 	  }
 	
-	// Check for "--echo" special option, which echoes the command line to stdout. This does not exit the program automatically.
+	// Check for "--echo" special option, which echoes the command line to stderr. This does not exit the program automatically.
 	if ( !strcmp( this->ArgV[this->Index], "--echo" ) ) 
 	  {
 	  for ( size_t i = 0; i < this->ArgC; ++i )
 	    {
-	    std::cout << this->ArgV[i] << " ";
+	    std::cerr << this->ArgV[i] << " ";
 	    }
-	  std::cout << std::endl;
+	  std::cerr << std::endl;
 	  found = true;
 	  }
 	
