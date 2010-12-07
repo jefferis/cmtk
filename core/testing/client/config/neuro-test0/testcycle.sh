@@ -2,7 +2,8 @@
 
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
-##  Copyright 2004-2009 SRI International
+##
+##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -34,7 +35,7 @@ export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib
 
 lockfile=${HOME}/testcycle.lock
 if test -f ${lockfile}; then
-	exit 1
+    exit 1
 fi
 touch ${lockfile}
 
@@ -43,13 +44,13 @@ tests=`ls *.cmake`
 
 Xpid=""
 if [ "${DISPLAY}" == "" ]; then
-	Xvfb :1 -screen 0 1024x768x24 -ac &
-	Xpid=$!
-	export DISPLAY=:1
+    Xvfb :1 -screen 0 1024x768x24 -ac &
+    Xpid=$!
+    export DISPLAY=:1
 fi
 
 for t in ${tests}; do
-
+    
     if [ ! -d ../data ]; then
 	pushd ..
 	svn co https://www.nitrc.org:443/svn/cmtk/trunk/data/
@@ -62,7 +63,7 @@ for t in ${tests}; do
 done
 
 if [ "${Xpid}" != "" ]; then
-  kill ${Xpid}
+    kill ${Xpid}
 fi
 
 rm ${lockfile}
