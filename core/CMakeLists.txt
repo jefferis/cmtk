@@ -320,23 +320,37 @@ IF(${ZLIB_LIBRARY} MATCHES ".*cmtkZlib.*" )
   SET(ZCONF_INCLUDE_DIR "" CACHE STRING "" FORCE)
 ENDIF(${ZLIB_LIBRARY} MATCHES ".*cmtkZlib.*" )
 
-FIND_PACKAGE(ZLIB)
-IF(ZLIB_FOUND)
-  MESSAGE( STATUS "Using system zlib" )
-  SET(CMTK_ZLIB_LIB "")
-ELSE(ZLIB_FOUND)
+IF(CMTK_BUILD_ZLIB)
+  MESSAGE( STATUS "Building bundled zlib" )
+  SET(CMTK_BUILD_ZLIB 1)
+  SET(ZLIB_FOUND 1)
   MESSAGE( STATUS "Building bundled zlib" ) 	 
   SET(CMTK_BUILD_ZLIB 1)
   SET(ZLIB_FOUND 1) 	 
-
+  
   SET(ZLIB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Utilities/zlib")
   SET(ZCONF_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/Utilities/zlib")
   SET(CMTK_ZLIB_LIB cmtkZlib)
   SET(ZLIB_LIBRARY "")
-  INCLUDE_DIRECTORIES(BEFORE
-    ${ZCONF_INCLUDE_DIR}
-    ${ZLIB_INCLUDE_DIR})
-ENDIF(ZLIB_FOUND)
+ELSE(CMTK_BUILD_ZLIB)
+  FIND_PACKAGE(ZLIB)
+  IF(ZLIB_FOUND)
+    MESSAGE( STATUS "Using system zlib" )
+    SET(CMTK_ZLIB_LIB "")
+  ELSE(ZLIB_FOUND)
+    MESSAGE( STATUS "Building bundled zlib" )
+    SET(CMTK_BUILD_ZLIB 1)
+    SET(ZLIB_FOUND 1)
+    
+    SET(ZLIB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Utilities/zlib")
+    SET(ZCONF_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/Utilities/zlib")
+    SET(CMTK_ZLIB_LIB cmtkZlib)
+    SET(ZLIB_LIBRARY "")
+    INCLUDE_DIRECTORIES(BEFORE
+      ${ZCONF_INCLUDE_DIR}
+      ${ZLIB_INCLUDE_DIR})
+  ENDIF(ZLIB_FOUND)
+ENDIF(CMTK_BUILD_ZLIB)
 
 #-----------------------------------------------------------------------------
 # Add an option to use or not use bzip2 library

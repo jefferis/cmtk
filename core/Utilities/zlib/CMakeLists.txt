@@ -3,10 +3,6 @@ set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS ON)
 
 project(cmtkZlib C)
 
-if(NOT DEFINED BUILD_SHARED_LIBS)
-    option(BUILD_SHARED_LIBS "Build a shared library form of zlib" ON)
-endif()
-
 include(CheckTypeSize)
 include(CheckFunctionExists)
 include(CheckIncludeFile)
@@ -81,6 +77,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.cmakein
 set(ZLIB_PUBLIC_HDRS
     ${CMAKE_CURRENT_BINARY_DIR}/zconf.h
     zlib.h
+    cmtk_zlib_mangle.h
 )
 set(ZLIB_PRIVATE_HDRS
     crc32.h
