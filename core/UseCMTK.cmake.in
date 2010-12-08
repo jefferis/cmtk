@@ -1,5 +1,6 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
+##
 ##  Copyright 2004-2009 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
