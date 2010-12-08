@@ -1,5 +1,8 @@
 Release CMTK-1.5.3:
 
+(r2611) Fixed: properly exit "fview" application with an exception when one of
+    the input images cannot be read.
+
 
 Release CMTK-1.5.2 (2010-12-06):
 
