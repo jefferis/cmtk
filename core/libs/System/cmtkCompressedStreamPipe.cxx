@@ -120,7 +120,7 @@ CompressedStream::Pipe::Seek ( long int offset, int whence )
       offset -= Self::BlockSize;
       }
     }
-  return (result == whence);
+  return (result == offset);
 }
 
 size_t
