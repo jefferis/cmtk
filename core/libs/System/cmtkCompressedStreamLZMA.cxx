@@ -34,6 +34,9 @@
 
 #include <lzmadec.h>
 
+#include <System/cmtkConsole.h>
+#include <System/cmtkExitException.h>
+
 namespace
 cmtk
 {
@@ -46,7 +49,8 @@ CompressedStream::LZMA::LZMA( const char* filename )
   this->m_File = lzmadec_open( filename );
   if ( !this->m_File ) 
     {
-    throw 0;
+    StdErr << "ERROR: lzmadec_open() failed for file '" << filename << "'\n";
+    throw ExitException( 1 );
     }
 }
 
@@ -59,7 +63,13 @@ CompressedStream::LZMA::Close()
 int
 CompressedStream::LZMA::Seek ( long int offset, int whence ) 
 {
-  return lzmadec_seek( this->m_File, offset, whence );
+  const int result = lzmadec_seek( this->m_File, offset, whence );
+  if ( result < 0 ) // error
+    {
+    StdErr << "ERROR: lzmadec_seek() failed\n";
+    throw ExitException( 1 );
+    }
+  return result;
 }
 
 size_t
