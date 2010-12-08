@@ -239,15 +239,18 @@ doMain( const int argc, const char* argv[] )
 
     // get effective argc and argv for command
     const int cargc = argc-cl.GetNextIndex()+1;
-    const char** cargv = argv+cl.GetNextIndex()-1;
+    std::vector<const char*> cargv( cargc );
+    cargv[0] = command;
+    for ( size_t i = 1; i < cargc; ++i )
+      cargv[i] = cl.GetNext();
     
     // run commands
     if ( !strcmp( command, "add_images" ) )
-      exitCode = addImages( cargc, cargv );
+      exitCode = addImages( cargc, &cargv[0] );
     else if ( ! strcmp( command, "list_space" ) )
-      exitCode = listSpace( cargc, cargv );
+      exitCode = listSpace( cargc, &cargv[0] );
     else if ( ! strcmp( command, "get_xform" ) )
-      exitCode = getXform( cargc, cargv );
+      exitCode = getXform( cargc, &cargv[0] );
     else
       {
       cmtk::StdErr << "Unknown command: " << command << "\n";
