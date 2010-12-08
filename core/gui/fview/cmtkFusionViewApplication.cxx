@@ -85,7 +85,8 @@ cmtk::FusionViewApplication
   this->m_Fixed.m_Volume = VolumeIO::ReadOriented( imagePathFix );
   if ( ! this->m_Fixed.m_Volume )
     {
-    exit( 1 );
+    StdErr << "Fixed image '" << imagePathFix << "' could not be read.\n";
+    throw( ExitException( 1 ) );
     }
   this->m_Fixed.m_DataRange = this->m_Fixed.m_Volume->GetData()->GetRange();
 
@@ -98,7 +99,8 @@ cmtk::FusionViewApplication
   this->m_Moving.m_Volume = VolumeIO::ReadOriented( imagePathMov );
   if ( ! this->m_Moving.m_Volume )
     {
-    exit( 1 );
+    StdErr << "Moving image '" << imagePathMov << "' could not be read.\n";
+    throw( ExitException( 1 ) );
     }
   this->m_Moving.m_DataRange = this->m_Moving.m_Volume->GetData()->GetRange();
 

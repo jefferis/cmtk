@@ -39,6 +39,20 @@
 int
 main( int argc, char* argv[] )
 {
-  cmtk::FusionViewApplication app( argc, argv );
-  return app.exec();
+  int returnCode = 0;
+  try
+    {
+    cmtk::FusionViewApplication app( argc, argv );
+    returnCode = app.exec();
+    }
+  catch ( const cmtk::CommandLine::Exception& ex )
+    {
+    cmtk::StdErr << ex << "\n";
+    returnCode = 1;
+    }
+  catch ( const cmtk::ExitException& ex )
+    {
+    returnCode = ex.ExitCode();
+    }
+  return returnCode;
 }
