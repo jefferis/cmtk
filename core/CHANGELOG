@@ -1,5 +1,8 @@
 Release CMTK-1.5.3:
 
+(r2644) Improved: CMTK can now be more flexibly configured to use bundled zlib
+    over existing system zlib. This is partially addressing Issue #5395, with
+    a patch provided by Kent Williams.
 (r2629) Fixed: LZMA decompression was broken on i686 due to bug in
     lzmadec_seek(). The decompression backend classes now use a common fake
     "seek" implementation if seek is not supported by the low-level backend or
