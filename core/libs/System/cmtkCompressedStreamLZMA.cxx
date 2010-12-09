@@ -80,7 +80,7 @@ CompressedStream::LZMA::Get ( char &c)
 }
 
 void
-CompressedStream::LZMA::Rewind () const 
+CompressedStream::LZMA::Rewind ()
 {
   lzmadec_rewind( this->m_File );
 }
