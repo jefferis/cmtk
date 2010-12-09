@@ -55,7 +55,6 @@ cmtk::CompressedStream::ReaderBase::Seek( const long int offset, int whence )
       }
     }
 
-  this->m_BytesRead += result;
   return this->m_BytesRead;
 }
 

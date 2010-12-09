@@ -111,7 +111,9 @@ CompressedStream::Pipe::Rewind()
 size_t
 CompressedStream::Pipe::Read( void *data, size_t size, size_t count ) 
 {
-  return fread( data, size, count, this->m_File );
+  const size_t result = fread( data, size, count, this->m_File );
+  this->m_BytesRead += result;
+  return result / size;  
 }
 
 bool
@@ -121,6 +123,7 @@ CompressedStream::Pipe::Get ( char &c)
   if ( data != EOF ) 
     {
     c=(char) data;
+    ++this->m_BytesRead;
     return true;
     }
 

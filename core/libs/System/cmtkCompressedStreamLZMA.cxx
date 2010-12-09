@@ -63,7 +63,9 @@ CompressedStream::LZMA::Close()
 size_t
 CompressedStream::LZMA::Read ( void *data, size_t size, size_t count ) 
 {
-  return lzmadec_read( this->m_File, reinterpret_cast<uint8_t*>( data ), size * count ) / size;
+  const size_t result = lzmadec_read( this->m_File, reinterpret_cast<uint8_t*>( data ), size * count );
+  this->m_BytesRead += result;
+  return result / size;  
 }
 
 bool
@@ -73,6 +75,7 @@ CompressedStream::LZMA::Get ( char &c)
   if ( data != EOF ) 
     {
     c=(char) data;
+    ++this->m_BytesRead;
     return true;
     }
 

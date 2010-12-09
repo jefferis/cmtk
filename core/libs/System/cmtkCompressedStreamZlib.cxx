@@ -72,7 +72,9 @@ CompressedStream::Zlib::Seek ( const long int offset, int whence )
 size_t
 CompressedStream::Zlib::Read ( void *data, size_t size, size_t count ) 
 {
-  return gzread( this->m_GzFile, data, size * count ) / size;
+  const size_t result = gzread( this->m_GzFile, data, size * count );
+  this->m_BytesRead += result;
+  return result / size;  
 }
 
 bool
@@ -82,6 +84,7 @@ CompressedStream::Zlib::Get ( char &c)
   if ( data != EOF ) 
     {
     c=(char) data;
+    ++this->m_BytesRead;
     return true;
     }
 
