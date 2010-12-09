@@ -62,6 +62,7 @@ void
 CompressedStream::File::Rewind () 
 {
   rewind( this->m_File );
+  this->CompressedStream::ReaderBase::Rewind();
 }
 
 int

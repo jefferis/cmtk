@@ -60,6 +60,7 @@ void
 CompressedStream::Zlib::Rewind ()
 {
   gzrewind( this->m_GzFile );
+  this->CompressedStream::ReaderBase::Rewind();
 }
 
 int

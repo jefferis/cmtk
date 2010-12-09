@@ -83,6 +83,7 @@ void
 CompressedStream::LZMA::Rewind ()
 {
   lzmadec_rewind( this->m_File );
+  this->CompressedStream::ReaderBase::Rewind();
 }
 
 int

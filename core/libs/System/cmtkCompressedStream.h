@@ -213,7 +213,10 @@ private:
     virtual void Close() = 0;
 
     /// Reset read pointer to beginning of stream.
-    virtual void Rewind() = 0;
+    virtual void Rewind()
+    {
+      this->m_BytesRead = 0;
+    }
     
     /** Set filepointer.
       * This class implements a naive seek that optionally calls "this->Rewind()" (if
