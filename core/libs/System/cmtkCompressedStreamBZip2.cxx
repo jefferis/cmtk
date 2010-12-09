@@ -49,7 +49,8 @@ CompressedStream::BZip2::BZip2( const char* filename )
   this->m_BzFile = BZ2_bzopen( filename, CMTK_FILE_MODE );
   if ( !this->m_BzFile ) 
     {
-    throw 0;
+    StdErr << "ERROR: CompressedStream::BZip2 could not open file '" << filename << "'\n";
+    throw ExitException( 1 );
     }
 }
 
