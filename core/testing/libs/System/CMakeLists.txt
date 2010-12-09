@@ -1,6 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
-##  Copyright 2004-2009 SRI International
+##
+##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -45,5 +46,5 @@ ENDFOREACH(D ${DRIVERS})
 SET(Tests StackBacktrace)
 
 FOREACH(T ${Tests})
-	  ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libSystemTests ${T})
+  ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libSystemTests ${T})
 ENDFOREACH(T Tests)
