@@ -124,7 +124,7 @@ public:
    * whence.
    *@param whence File pointer set mode as defined for fseek.
    */
-  int Seek ( long int offset, int whence )
+  int Seek ( const long int offset, int whence )
   {
     return this->m_Reader->Seek( offset, whence );
   }
@@ -223,7 +223,7 @@ private:
       * whence.
       *@param whence File pointer set mode as defined for fseek.
       */
-    virtual int Seek ( long int offset, int whence );
+    virtual int Seek ( const long int offset, int whence );
     
     /// Read block of data.
     virtual size_t Read ( void *data, size_t size, size_t count ) = 0;
@@ -274,7 +274,7 @@ private:
       * whence.
       *@param whence File pointer set mode as defined for fseek.
       */
-    virtual int Seek ( long int offset, int whence );
+    virtual int Seek ( const long int offset, int whence );
     
     /// Read block of data.
     virtual size_t Read ( void *data, size_t size, size_t count );
@@ -367,13 +367,13 @@ private:
       * whence.
       *@param whence File pointer set mode as defined for fseek.
       */
-    virtual int Seek ( long int offset, int whence );
+    virtual int Seek ( const long int offset, int whence );
     
     /// Read block of data.
     virtual size_t Read ( void *data, size_t size, size_t count );
     
     /// Read a single character from the stream.
-    virtual bool Get ( char &c);
+    virtual bool Get ( char &c );
     
     /// Return number of bytes read from stream.
     virtual int Tell () const;

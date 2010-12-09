@@ -65,7 +65,7 @@ CompressedStream::File::Rewind ()
 }
 
 int
-CompressedStream::File::Seek ( long int offset, int whence ) 
+CompressedStream::File::Seek ( const long int offset, int whence ) 
 {
   return fseek( this->m_File, offset, whence );
 }

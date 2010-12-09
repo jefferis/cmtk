@@ -63,7 +63,7 @@ CompressedStream::Zlib::Rewind ()
 }
 
 int
-CompressedStream::Zlib::Seek ( long int offset, int whence ) 
+CompressedStream::Zlib::Seek ( const long int offset, int whence ) 
 {
   return gzseek( this->m_GzFile, offset, whence );
 }
