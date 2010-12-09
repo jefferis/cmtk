@@ -135,14 +135,6 @@ if(NOT CYGWIN)
     set_target_properties(cmtkZlib PROPERTIES VERSION ${ZLIB_FULL_VERSION})
 endif()
 
-if(UNIX)
-    # On unix-like platforms the library is almost always called libz
-   set_target_properties(cmtkZlib PROPERTIES OUTPUT_NAME z)
-elseif(BUILD_SHARED_LIBS AND WIN32)
-    # Creates zlib1.dll when building shared library version
-    set_target_properties(cmtkZlib PROPERTIES SUFFIX "1.dll")
-endif()
-
 if(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL )
     install(TARGETS cmtkZlib
         RUNTIME DESTINATION bin
