@@ -1,5 +1,9 @@
 Release CMTK-1.5.3:
 
+(r2617) Fixed: LZMA decompression was broken on i686 due to bug in
+    lzmadec_seek(). The decompression backend classes now use a common fake
+    "seek" implementation if seek is not supported by the low-level backend or
+    broken. 
 (r2613) Fixed: "dbtool" was warning of unused command line parameters.
 (r2611) Fixed: properly exit "fview" application with an exception when one of
     the input images cannot be read.
