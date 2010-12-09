@@ -56,6 +56,12 @@ CompressedStream::Zlib::Close()
   gzclose( this->m_GzFile );
 }
 
+void
+CompressedStream::Zlib::Rewind ()
+{
+  gzrewind( this->m_GzFile );
+}
+
 int
 CompressedStream::Zlib::Seek ( long int offset, int whence ) 
 {

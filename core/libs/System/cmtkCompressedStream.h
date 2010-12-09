@@ -109,6 +109,13 @@ public:
   /// Close current file stream.
   void Close();
   
+  /** Set filepointer to beginning of file.
+   */
+  void Rewind()
+  {
+    this->m_Reader->Rewind();
+  }
+
   /** Set filepointer.
    * If the object represents a pipe with on-the-fly decompression, only
    * the set mode "SEEK_CUR" is supported and will be simulated by successive
@@ -199,18 +206,24 @@ private:
     /// Smart pointer to this class.
     typedef SmartPointer<Self> SmartPtr;
 
+    /// Default constructor.
+    ReaderBase() : m_BytesRead( 0 ) {}
+
     /// Close current file stream.
     virtual void Close() = 0;
+
+    /// Reset read pointer to beginning of stream.
+    virtual void Rewind() = 0;
     
     /** Set filepointer.
-      * If the object represents a pipe with on-the-fly decompression, only
-      * the set mode "SEEK_CUR" is supported and will be simulated by successive
-      * reading of 8kB data blocks from the pipe.
+      * This class implements a naive seek that optionally calls "this->Rewind()" (if
+      * "whence" is SEEK_SET, then reads "offset" bytes from the input to position
+      * read pointer.
       *@param offset Offset the file pointer is set to, depending on the value of
       * whence.
       *@param whence File pointer set mode as defined for fseek.
       */
-    virtual int Seek ( long int offset, int whence ) = 0;
+    virtual int Seek ( long int offset, int whence );
     
     /// Read block of data.
     virtual size_t Read ( void *data, size_t size, size_t count ) = 0;
@@ -223,6 +236,14 @@ private:
     
     /// Return 1 if and only if end of file reached.
     virtual bool Feof () const = 0;
+
+  private:
+    /// Block size for fake seek() operation.
+    static const size_t SeekBlockSize = 8192;
+
+  protected:
+    /// Count number of bytes read from file or pipe.
+    size_t m_BytesRead;
   };
 
   /// Class for uncompressed file-based reader engine.
@@ -241,6 +262,9 @@ private:
     
     /// Close current file stream.
     virtual void Close();
+    
+    /// Reset read pointer to beginning of stream.
+    virtual void Rewind();
     
     /** Set filepointer.
       * If the object represents a pipe with on-the-fly decompression, only
@@ -286,15 +310,8 @@ private:
     /// Close current file stream.
     virtual void Close();
     
-    /** Set filepointer.
-      * If the object represents a pipe with on-the-fly decompression, only
-      * the set mode "SEEK_CUR" is supported and will be simulated by successive
-      * reading of 8kB data blocks from the pipe.
-      *@param offset Offset the file pointer is set to, depending on the value of
-      * whence.
-      *@param whence File pointer set mode as defined for fseek.
-      */
-    virtual int Seek ( long int offset, int whence );
+    /// Reset read pointer to beginning of stream.
+    virtual void Rewind();
     
     /// Read block of data.
     virtual size_t Read ( void *data, size_t size, size_t count );
@@ -309,15 +326,9 @@ private:
     virtual bool Feof () const;
 
   private:
-    /// Block size for seek() operation.
-    static const size_t BlockSize = 8192;
-
     /// File pointer.
     FILE* m_File;    
     
-    /// Count number of bytes read from file or pipe.
-    size_t m_BytesRead;
-
 #ifdef _MSC_VER
     /** Temporary filename.
    * On platforms where no on-the-fly decompression by via a pipe is possible
@@ -344,6 +355,9 @@ private:
     
     /// Close current file stream.
     virtual void Close();
+    
+    /// Reset read pointer to beginning of stream.
+    virtual void Rewind();
     
     /** Set filepointer.
       * If the object represents a pipe with on-the-fly decompression, only
@@ -390,15 +404,8 @@ private:
     /// Close current file stream.
     virtual void Close();
     
-    /** Set filepointer.
-      * If the object represents a pipe with on-the-fly decompression, only
-      * the set mode "SEEK_CUR" is supported and will be simulated by successive
-      * reading of 8kB data blocks from the pipe.
-      *@param offset Offset the file pointer is set to, depending on the value of
-      * whence.
-      *@param whence File pointer set mode as defined for fseek.
-      */
-    virtual int Seek ( long int offset, int whence );
+    /// Reset read pointer to beginning of stream.
+    virtual void Rewind();
     
     /// Read block of data.
     virtual size_t Read ( void *data, size_t size, size_t count );
@@ -418,9 +425,6 @@ private:
 
     /// BZip2 error variable.
     int m_BzError;
-
-    /// Count number of bytes read from file or pipe.
-    size_t m_BytesRead;
   };
 #endif
 
@@ -442,15 +446,8 @@ private:
     /// Close current file stream.
     virtual void Close();
     
-    /** Set filepointer.
-      * If the object represents a pipe with on-the-fly decompression, only
-      * the set mode "SEEK_CUR" is supported and will be simulated by successive
-      * reading of 8kB data blocks from the pipe.
-      *@param offset Offset the file pointer is set to, depending on the value of
-      * whence.
-      *@param whence File pointer set mode as defined for fseek.
-      */
-    virtual int Seek ( long int offset, int whence );
+    /// Reset read pointer to beginning of stream.
+    virtual void Rewind();
     
     /// Read block of data.
     virtual size_t Read ( void *data, size_t size, size_t count );

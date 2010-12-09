@@ -42,6 +42,7 @@ SET(cmtkSystem_SRCS
   cmtkCompressedStream.cxx
   cmtkCompressedStreamFile.cxx
   cmtkCompressedStreamPipe.cxx
+  cmtkCompressedStreamReaderBase.cxx
   cmtkCompressedStreamZlib.cxx
   cmtkConsole.cxx
   cmtkFileUtils.cxx

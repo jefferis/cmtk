@@ -30,9 +30,10 @@
 //
 */
 
-#include <System/cmtkCompressedStream.h>
+#include "cmtkCompressedStream.h"
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkExitException.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -100,27 +101,11 @@ CompressedStream::Pipe::Close()
 #endif // # ifndef _MSC_VER
 }
 
-int
-CompressedStream::Pipe::Seek ( long int offset, int whence ) 
+void
+CompressedStream::Pipe::Rewind() 
 {
-  char buffer[Self::BlockSize];
-  int result = 0;
-  
-  this->m_BytesRead += offset;
-  while ( offset > 0 ) 
-    {
-    if ( static_cast<size_t>( offset ) < Self::BlockSize ) 
-      {
-      result += fread( buffer, sizeof(char), offset, this->m_File );
-      offset=0;
-      } 
-    else
-      {
-      result += fread( buffer, sizeof(char), Self::BlockSize, this->m_File );
-      offset -= Self::BlockSize;
-      }
-    }
-  return (result == offset);
+  StdErr << "CompressedStream::Pipe::Rewind() is not implemented\n";
+  throw ExitException( 1 );
 }
 
 size_t

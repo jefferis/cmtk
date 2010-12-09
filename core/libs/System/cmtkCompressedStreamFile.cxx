@@ -58,6 +58,12 @@ CompressedStream::File::Close()
   fclose( this->m_File );
 }
 
+void
+CompressedStream::File::Rewind () 
+{
+  rewind( this->m_File );
+}
+
 int
 CompressedStream::File::Seek ( long int offset, int whence ) 
 {

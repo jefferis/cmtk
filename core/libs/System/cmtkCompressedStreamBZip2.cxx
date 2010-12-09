@@ -30,9 +30,12 @@
 //
 */
 
-#include <System/cmtkCompressedStream.h>
+#include "cmtkCompressedStream.h"
 
 #include <bzlib.h>
+
+#include <System/cmtkConsole.h>
+#include <System/cmtkExitException.h>
 
 namespace
 cmtk
@@ -42,7 +45,6 @@ cmtk
 //@{
 
 CompressedStream::BZip2::BZip2( const char* filename ) 
-  : m_BytesRead( 0 )
 {
   this->m_BzFile = BZ2_bzopen( filename, CMTK_FILE_MODE );
   if ( !this->m_BzFile ) 
@@ -57,10 +59,11 @@ CompressedStream::BZip2::Close()
   BZ2_bzclose( this->m_BzFile );
 }
 
-int
-CompressedStream::BZip2::Seek ( long int offset, int whence ) 
+void
+CompressedStream::BZip2::Rewind() 
 {
-  return gzseek( this->m_BzFile, offset, whence );
+  StdErr << "CompressedStream::BZip2::Rewind() is not implemented\n";
+  throw ExitException( 1 );
 }
 
 size_t

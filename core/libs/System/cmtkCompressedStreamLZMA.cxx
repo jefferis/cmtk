@@ -60,18 +60,6 @@ CompressedStream::LZMA::Close()
   lzmadec_close( this->m_File );
 }
 
-int
-CompressedStream::LZMA::Seek ( long int offset, int whence ) 
-{
-  const int result = lzmadec_seek( this->m_File, offset, whence );
-  if ( result < 0 ) // error
-    {
-    StdErr << "ERROR: lzmadec_seek() failed\n";
-    throw ExitException( 1 );
-    }
-  return result;
-}
-
 size_t
 CompressedStream::LZMA::Read ( void *data, size_t size, size_t count ) 
 {
@@ -89,6 +77,12 @@ CompressedStream::LZMA::Get ( char &c)
     }
 
   return false;
+}
+
+void
+CompressedStream::LZMA::Rewind () const 
+{
+  lzmadec_rewind( this->m_File );
 }
 
 int
