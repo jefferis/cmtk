@@ -634,7 +634,7 @@ SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${CMTK_REQUIRED_LINK
 SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${CMTK_REQUIRED_LINK_FLAGS}")
 
 # Disable rpath altogether if we don't use shared libraries
-IF(${CMTK_BUILD_SHARED_LIBS})
+IF(CMTK_BUILD_SHARED_LIBS)
   # use, i.e. don't skip the full RPATH for the build tree
   SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
 
@@ -648,9 +648,9 @@ IF(${CMTK_BUILD_SHARED_LIBS})
   # add the automatically determined parts of the RPATH
   # which point to directories outside the build tree to the install RPATH
   SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-ELSE(${CMTK_BUILD_SHARED_LIBS})
+ELSE(CMTK_BUILD_SHARED_LIBS)
   SET(CMAKE_SKIP_RPATH TRUE)
-ENDIF(${CMTK_BUILD_SHARED_LIBS})
+ENDIF(CMTK_BUILD_SHARED_LIBS)
 
 # Save library dependencies.
 EXPORT_LIBRARY_DEPENDENCIES(${CMTK_BINARY_DIR}/CMTKLibraryDepends.cmake)
