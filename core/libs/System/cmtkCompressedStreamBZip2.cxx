@@ -71,6 +71,13 @@ size_t
 CompressedStream::BZip2::Read ( void *data, size_t size, size_t count ) 
 {
   const size_t bytesRead = BZ2_bzRead( &this->m_BzError, this->m_BzFile, data, size * count );
+
+  if ( this->m_BzError < 0 )
+    {
+    StdErr << "BZ2_bzRead() returned error " << this->m_BzError << "\n";
+    throw( ExitException( 1 ) );
+    }
+
   this->m_BytesRead += bytesRead;
   return bytesRead / size;
 }
