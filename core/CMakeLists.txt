@@ -321,7 +321,7 @@ IF(${ZLIB_LIBRARY} MATCHES ".*cmtkZlib.*" )
 ENDIF(${ZLIB_LIBRARY} MATCHES ".*cmtkZlib.*" )
 
 IF(CMTK_BUILD_ZLIB)
-  MESSAGE( STATUS "Building bundled zlib" ) 	 
+  MESSAGE( STATUS "Building bundled zlib by user configuration" )
   SET(CMTK_BUILD_ZLIB 1)
   SET(ZLIB_FOUND 1) 	 
   
@@ -335,7 +335,7 @@ ELSE(CMTK_BUILD_ZLIB)
     MESSAGE( STATUS "Using system zlib" )
     SET(CMTK_ZLIB_LIB "")
   ELSE(ZLIB_FOUND)
-    MESSAGE( STATUS "Building bundled zlib" )
+    MESSAGE( STATUS "Building bundled zlib due to missing system zlib" )
     SET(CMTK_BUILD_ZLIB 1)
     SET(ZLIB_FOUND 1)
     
