@@ -99,7 +99,7 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
   if ( MaskOutputAllUpTo )
     range.m_UpperBound = MaskOutputAllUpTo;
 
-  const unsigned int numberOfLabels = static_cast<unsigned int>( range.m_UpperBound + 1 );
+  const unsigned int numberOfLabels = static_cast<unsigned int>( range.m_UpperBound - range.m_LowerBound + 1 );
 
   // Number of label voxels.
   std::vector<unsigned int> count( numberOfLabels );
@@ -126,27 +126,25 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
 	
 	if ( data->Get( value, index ) ) 
 	  {
-	  const unsigned int labelIdx = static_cast<unsigned int>( value );
-	  if ( value <= range.m_UpperBound )
-	    {
-	    ++count[labelIdx];
-	    centerOfMass[labelIdx] += volume->GetGridLocation( x, y, z );
-	    
-	    bool isSurface = false;
-	    for ( int dz = -1; (dz < 2) && !isSurface; ++dz )
-	      for ( int dy = -1; (dy < 2) && !isSurface; ++dy )
-		for ( int dx = -1; (dx < 2) && !isSurface; ++dx )
-		  if ( dx || dy || dz )
-		    if ( (dx+x)>=0 && (dx+x)<volume->GetDims()[cmtk::AXIS_X] && (dy+y)>=0 && (dy+y)<volume->GetDims()[cmtk::AXIS_Y] && (dz+z)>=0 && (dz+z)<volume->GetDims()[cmtk::AXIS_Z] ) 
-		      {
-		      const int offset = (x+dx) + volume->GetDims()[cmtk::AXIS_X] * ( ( y+dy ) + volume->GetDims()[cmtk::AXIS_Y] * (z+dz) );
-		      if ( data->Get( neighbor, offset ) && ( neighbor != value ) )
-			isSurface = true;
-		      }
-	    
-	    if ( isSurface )
-	      ++countSurface[labelIdx];	  
-	    }
+	  const int labelIdx = static_cast<int>( value - range.m_LowerBound );
+
+	  ++count[labelIdx];
+	  centerOfMass[labelIdx] += volume->GetGridLocation( x, y, z );
+	  
+	  bool isSurface = false;
+	  for ( int dz = -1; (dz < 2) && !isSurface; ++dz )
+	    for ( int dy = -1; (dy < 2) && !isSurface; ++dy )
+	      for ( int dx = -1; (dx < 2) && !isSurface; ++dx )
+		if ( dx || dy || dz )
+		  if ( (dx+x)>=0 && (dx+x)<volume->GetDims()[cmtk::AXIS_X] && (dy+y)>=0 && (dy+y)<volume->GetDims()[cmtk::AXIS_Y] && (dz+z)>=0 && (dz+z)<volume->GetDims()[cmtk::AXIS_Z] ) 
+		    {
+		    const int offset = (x+dx) + volume->GetDims()[cmtk::AXIS_X] * ( ( y+dy ) + volume->GetDims()[cmtk::AXIS_Y] * (z+dz) );
+		    if ( data->Get( neighbor, offset ) && ( neighbor != value ) )
+		      isSurface = true;
+		    }
+	  
+	  if ( isSurface )
+	    ++countSurface[labelIdx];	  
 	  }
 	}
       }
@@ -167,10 +165,10 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
       centerOfMass[idx] *= (1.0 / count[idx]);
       if ( OutputExpNotation )
 	fprintf( stdout, "%03d\t%14d\t%14d\t%.4e\t(%e,%e,%e)\n", 
-		 (int)idx, count[idx], countSurface[idx], count[idx] * voxelVolume, centerOfMass[idx][0], centerOfMass[idx][1], centerOfMass[idx][2] );
+		 (int)(idx+range.m_LowerBound), count[idx], countSurface[idx], count[idx] * voxelVolume, centerOfMass[idx][0], centerOfMass[idx][1], centerOfMass[idx][2] );
       else
 	fprintf( stdout, "%03d\t%14d\t%14d\t%.4f\t(%f,%f,%f)\n", 
-		 (int)idx, count[idx], countSurface[idx], count[idx] * voxelVolume, centerOfMass[idx][0], centerOfMass[idx][1], centerOfMass[idx][2] );
+		 (int)(idx+range.m_LowerBound), count[idx], countSurface[idx], count[idx] * voxelVolume, centerOfMass[idx][0], centerOfMass[idx][1], centerOfMass[idx][2] );
       totalCount += count[idx];
       
       cmtk::Landmark* landmark = new cmtk::Landmark();
