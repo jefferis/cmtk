@@ -320,6 +320,7 @@ IF(${ZLIB_LIBRARY} MATCHES ".*cmtkZlib.*" )
   SET(ZCONF_INCLUDE_DIR "" CACHE STRING "" FORCE)
 ENDIF(${ZLIB_LIBRARY} MATCHES ".*cmtkZlib.*" )
 
+OPTION(CMTK_BUILD_ZLIB "Build bundled zlib library, even if system zlib exists" OFF)
 FIND_PACKAGE(ZLIB)
 IF(CMTK_BUILD_ZLIB)
   MESSAGE( STATUS "Building bundled zlib by user configuration" )
@@ -328,7 +329,7 @@ IF(CMTK_BUILD_ZLIB)
   
   SET(ZLIB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Utilities/zlib")
   SET(ZCONF_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/Utilities/zlib")
-  SET(CMTK_ZLIB_LIB "cmtkZlib" CACHE FILEPATH "")
+  SET(ZLIB_LIBRARIES "cmtkZlib" CACHE FILEPATH "")
 ELSE(CMTK_BUILD_ZLIB)
   IF(ZLIB_FOUND)
     MESSAGE( STATUS "Using system zlib" )
@@ -340,8 +341,7 @@ ELSE(CMTK_BUILD_ZLIB)
     
     SET(ZLIB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Utilities/zlib")
     SET(ZCONF_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/Utilities/zlib")
-    SET(ZLIB_LIBRARY "" CACHE FILEPATH "")
-    SET(CMTK_ZLIB_LIB "cmtkZlib" CACHE FILEPATH "")
+    SET(ZLIB_LIBRARIES "cmtkZlib" CACHE FILEPATH "")
     INCLUDE_DIRECTORIES(BEFORE
       ${ZCONF_INCLUDE_DIR}
       ${ZLIB_INCLUDE_DIR})
@@ -574,9 +574,6 @@ CPACK_ADD_COMPONENT_GROUP(development
   DISPLAY_NAME "Development Components")
 
 #-----------------------------------------------------------------------------
-# Dispatch the build into the proper subdirectories.
-
-#-----------------------------------------------------------------------------
 # Create the list of include directories needed for header files.
 INCLUDE(${CMTK_SOURCE_DIR}/cmtkIncludeDirectories.cmake)
 
@@ -599,7 +596,10 @@ LINK_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR} ${DCMTK_LIBRARY_DIR}
   )
 
-SET(CMTK_SYSTEM_LIBRARIES ${DCMTK_LIBRARIES} ${DCMTK_LIBRARIES_EXTRA} ${NRRD_LIBRARIES} ${MXML_LIBRARIES} ${CMTK_ZLIB_LIB} ${ZLIB_LIBRARY} ${CMAKE_THREAD_LIBS})
+SET(CMTK_SYSTEM_LIBRARIES ${DCMTK_LIBRARIES} ${DCMTK_LIBRARIES_EXTRA} ${NRRD_LIBRARIES} ${MXML_LIBRARIES} ${ZLIB_LIBRARIES} ${CMAKE_THREAD_LIBS})
+
+#-----------------------------------------------------------------------------
+# Dispatch the build into the proper subdirectories.
 
 IF(BUILD_GUI)
   SUBDIRS(gui)
