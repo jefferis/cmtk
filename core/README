@@ -5,6 +5,9 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 1.5.3
 ===========================
 
+This is a maintenance release to improve CMTK's configuration and fix problems
+with shared library builds.
+
 For a complete list of changes and fixes, see the CHANGELOG file.
 
 CMTK has been built and tested on the following platforms:
