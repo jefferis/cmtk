@@ -574,6 +574,11 @@ CPACK_ADD_COMPONENT_GROUP(development
 CPACK_ADD_COMPONENT_GROUP(runtime
   DISPLAY_NAME "Runtime Components")
 
+IF(BUILD_SHARED_LIBS)
+  SET(CPACK_COMPONENT_APPLICATIONS_DEPENDS libraries)
+  SET(CPACK_COMPONENT_GUI_DEPENDS libraries)
+ENDIF(BUILD_SHARED_LIBS)
+
 #-----------------------------------------------------------------------------
 # Create the list of include directories needed for header files.
 INCLUDE(${CMTK_SOURCE_DIR}/cmtkIncludeDirectories.cmake)
