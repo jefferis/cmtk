@@ -534,7 +534,7 @@ SET(CPACK_PACKAGE_VERSION_PATCH "${CMTK_VERSION_PATCH}")
 SET(CPACK_PACKAGE_FILE_NAME "CMTK-${CMTK_VERSION_MAJOR}.${CMTK_VERSION_MINOR}.${CMTK_VERSION_PATCH}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "CMTK-${CMTK_VERSION_MAJOR}.${CMTK_VERSION_MINOR}.${CMTK_VERSION_PATCH}-${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR}")
 
-set(CPACK_COMPONENTS_ALL applications gui runtime libraries headers documentation)
+set(CPACK_COMPONENTS_ALL applications gui libraries headers documentation)
 
 INCLUDE(CPack)
 
@@ -542,17 +542,15 @@ INSTALL(FILES ${CPACK_RESOURCE_FILE_LICENSE} ${CPACK_PACKAGE_DESCRIPTION_FILE} D
 
 IF(BUILD_APPS)
   CPACK_ADD_COMPONENT(applications
-    DISPLAY_NAME "Command Line Applications")
+    DISPLAY_NAME "Command Line Applications"
+    GROUP runtime)
 ENDIF(BUILD_APPS)
 
 IF(BUILD_GUI)
   CPACK_ADD_COMPONENT(gui
-    DISPLAY_NAME "Graphical User Interface Applications")
+    DISPLAY_NAME "Graphical User Interface Applications"
+    GROUP runtime)
 ENDIF(BUILD_GUI)
-
-CPACK_ADD_COMPONENT(runtime
-  DISPLAY_NAME "Runtime Components"
-  REQUIRED)
 
 CPACK_ADD_COMPONENT(libraries
   DISPLAY_NAME "Link Libraries"
@@ -572,6 +570,9 @@ ENDIF(BUILD_DOCUMENTATION)
 
 CPACK_ADD_COMPONENT_GROUP(development
   DISPLAY_NAME "Development Components")
+
+CPACK_ADD_COMPONENT_GROUP(runtime
+  DISPLAY_NAME "Runtime Components")
 
 #-----------------------------------------------------------------------------
 # Create the list of include directories needed for header files.
