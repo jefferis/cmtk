@@ -82,9 +82,11 @@ double InjectionKernelSigma = 0.5;
 double InjectionKernelRadius = 2;
 
 bool FourthOrderError = false;
+
 int InverseInterpolationKernel = 1;
 int NumberOfIterations = 20;
 bool RegionalIntensityTruncation = true;
+double ConstraintWeightLNorm = 0;
 
 const char* ReferenceImagePath = NULL;
 const char* InjectedImagePath = NULL;
@@ -132,6 +134,7 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
 
   volRecon.SetUseRegionalIntensityTruncation( RegionalIntensityTruncation );
   volRecon.SetUseFourthOrderError( FourthOrderError );
+  volRecon.SetConstraintWeightLNorm( ConstraintWeightLNorm );
 
   if ( xformsToPassImages.size() == NumberOfPasses )
     {
@@ -252,6 +255,7 @@ doMain( const int argc, const char* argv[] )
 
     cl.AddSwitch( Key( 'f', "fourth-order-error" ), &FourthOrderError, true, "Use fourth-order (rather than second-order) error for optimization." );
     cl.AddOption( Key( 'n', "num-iterations" ), &NumberOfIterations, "Maximum number of inverse interpolation iterations" );
+    cl.AddOption( Key( "l-norm-weight" ), &ConstraintWeightLNorm, "Set constraint weight for Tikhonov-type L-Norm regularization (0 disables constraint)" );
     cl.AddSwitch( Key( 'T', "no-truncation" ), &RegionalIntensityTruncation, false, "Turn off regional intensity truncatrion" );
     cl.EndGroup();
     
