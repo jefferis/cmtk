@@ -83,7 +83,7 @@ double InjectionKernelRadius = 2;
 
 bool FourthOrderError = false;
 
-int InverseInterpolationKernel = 1;
+int InverseInterpolationKernel = cmtk::Interpolators::CUBIC;
 int NumberOfIterations = 20;
 bool RegionalIntensityTruncation = true;
 double ConstraintWeightLNorm = 0;
@@ -248,10 +248,10 @@ doMain( const int argc, const char* argv[] )
     cl.BeginGroup( "invint", "Inverse Interpolation Options" );
     cmtk::CommandLine::EnumGroup<int>::SmartPtr kernelGroup = 
       cl.AddEnum( "inverse-interpolation-kernel", &InverseInterpolationKernel, "Kernel for the inverse interpolation reconstruction" );
-    kernelGroup->AddSwitch( Key( 'C', "cubic" ), 1, "Tricubic interpolation" );
-    kernelGroup->AddSwitch( Key( 'L', "linear" ), 0, "Trilinear interpolation (faster but less accurate)" );
-    kernelGroup->AddSwitch( Key( 'H', "hamming-sinc" ), 2, "Hamming-windowed sinc interpolation" );
-    kernelGroup->AddSwitch( Key( 'O', "cosine-sinc" ), 3, "Cosine-windowed sinc interpolation (most accurate but slowest)" );
+    kernelGroup->AddSwitch( Key( 'C', "cubic" ), cmtk::Interpolators::CUBIC, "Tricubic interpolation" );
+    kernelGroup->AddSwitch( Key( 'L', "linear" ), cmtk::Interpolators::LINEAR, "Trilinear interpolation (faster but less accurate)" );
+    kernelGroup->AddSwitch( Key( 'H', "hamming-sinc" ), cmtk::Interpolators::HAMMING_SINC, "Hamming-windowed sinc interpolation" );
+    kernelGroup->AddSwitch( Key( 'O', "cosine-sinc" ), cmtk::Interpolators::COSINE_SINC, "Cosine-windowed sinc interpolation (most accurate but slowest)" );
 
     cl.AddSwitch( Key( 'f', "fourth-order-error" ), &FourthOrderError, true, "Use fourth-order (rather than second-order) error for optimization." );
     cl.AddOption( Key( 'n', "num-iterations" ), &NumberOfIterations, "Maximum number of inverse interpolation iterations" );
@@ -331,16 +331,16 @@ doMain( const int argc, const char* argv[] )
   switch ( InverseInterpolationKernel )
     {
     default:
-    case 0 : 
+    case cmtk::Interpolators::LINEAR: 
       correctedVolume = GetReconstructedImage<cmtk::Interpolators::Linear>( volume, refImage, xformsToPassImages );
       break;
-    case 1 : 
+    case cmtk::Interpolators::CUBIC: 
       correctedVolume = GetReconstructedImage<cmtk::Interpolators::Cubic>( volume, refImage, xformsToPassImages );
       break;
-    case 2 : 
+    case cmtk::Interpolators::HAMMING_SINC: 
       correctedVolume = GetReconstructedImage< cmtk::Interpolators::HammingSinc<3> >( volume, refImage, xformsToPassImages );
       break;
-    case 3 : 
+    case cmtk::Interpolators::COSINE_SINC: 
       correctedVolume = GetReconstructedImage< cmtk::Interpolators::CosineSinc<3> >( volume, refImage, xformsToPassImages );
       break;
     }
