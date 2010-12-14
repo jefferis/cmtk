@@ -1,5 +1,8 @@
 Release CMTK-1.5.4:
 
+(r2660) Fixed: restricting "warpx" tool deformation to certain coordinate
+    directions was broken.
+
 
 Release CMTK-1.5.3 (2010-12-13):
 
