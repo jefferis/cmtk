@@ -81,7 +81,10 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
 
   if ( this->m_ReferenceDataClass == DATACLASS_LABEL ) 
     {
-    this->m_Warp->SetParameterActive();
+    if ( this->m_ActiveCoordinates )
+      this->m_Warp->SetParametersActive( this->m_ActiveCoordinates );
+    else
+      this->m_Warp->SetParametersActive();
     
     for ( int ctrl = 0; ctrl < numCtrlPoints; ++ctrl ) 
       {
@@ -118,7 +121,6 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
 	for ( int idx=0; idx<3; ++idx, ++dim ) 
 	  {
 	  this->m_Warp->SetParameterInactive( dim );
-	  this->m_StepScaleVector[dim] = this->GetParamStep( dim );
 	  }
 	}
       }
@@ -170,8 +172,11 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
     
     const double refThresh = refMin + this->m_AdaptiveFixThreshFactor * (refMax - refMin);
     const double modThresh = modMin + this->m_AdaptiveFixThreshFactor * (modMax - modMin);
-      
-    this->m_Warp->SetParameterActive();
+    
+    if ( this->m_ActiveCoordinates )
+      this->m_Warp->SetParametersActive( this->m_ActiveCoordinates );
+    else
+      this->m_Warp->SetParametersActive();
       
     for ( int ctrl=0; ctrl<numCtrlPoints; ++ctrl ) 
       {
@@ -181,10 +186,21 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
 	for ( int idx=0; idx<3; ++idx, ++dim ) 
 	  {
 	  this->m_Warp->SetParameterInactive( dim );
-	  this->m_StepScaleVector[dim] = this->GetParamStep( dim );
 	  }
 	inactive += 3;
 	}
+      }
+    }
+
+  for ( size_t idx = 0; idx < this->Dim; ++idx ) 
+    {
+    if ( this->m_Warp->GetParameterActive( idx ) )
+      {
+      this->m_StepScaleVector[idx] = this->GetParamStep( idx );
+      }
+    else
+      {
+      this->m_StepScaleVector[idx] = 0;
       }
     }
   

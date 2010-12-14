@@ -186,7 +186,7 @@ WarpXform::GetParamStep
 }
 
 void 
-WarpXform::SetParameterActive()
+WarpXform::SetParametersActive()
 {
   if ( !this->m_ActiveFlags ) 
     {
@@ -221,7 +221,7 @@ WarpXform::SetParametersActive
 {
   if ( !this->m_ActiveFlags ) 
     {
-    this->m_ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, true ) );
+    this->m_ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, false ) );
     }
   for ( unsigned int idx = (unsigned int)axis; idx < this->m_NumberOfParameters; idx += 3 )
     this->m_ActiveFlags->Set( idx, active );
@@ -232,7 +232,7 @@ WarpXform::SetParametersActive( const char* axes )
 {
   if ( !this->m_ActiveFlags ) 
     {
-    this->m_ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, true ) );
+    this->m_ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, false ) );
     }
   if ( axes ) 
     {

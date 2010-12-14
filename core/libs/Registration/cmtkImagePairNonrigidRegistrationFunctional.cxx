@@ -53,7 +53,8 @@ cmtk
 
 ImagePairNonrigidRegistrationFunctional::ImagePairNonrigidRegistrationFunctional
 ( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating )
-  : ImagePairRegistrationFunctional( reference, floating )
+  : ImagePairRegistrationFunctional( reference, floating ),
+    m_ActiveCoordinates( NULL )
 {
   this->m_NumberOfThreads = ThreadPool::GetGlobalThreadPool().GetNumberOfThreads();
   this->m_NumberOfTasks = 4 * this->m_NumberOfThreads - 3;

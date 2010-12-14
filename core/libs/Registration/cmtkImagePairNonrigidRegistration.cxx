@@ -119,7 +119,6 @@ ImagePairNonrigidRegistration::InitRegistration ()
     // for example grid spacing and deformation type.
     InitialWarpXform->SetIgnoreEdge( IgnoreEdge );
     InitialWarpXform->SetFastMode( this->m_FastMode );
-    InitialWarpXform->SetParametersActive( RestrictToAxes );
     // MIPSpro needs explicit.
     this->m_Xform = Xform::SmartPtr::DynamicCastFrom( InitialWarpXform );
     } 
@@ -184,8 +183,7 @@ ImagePairNonrigidRegistration::MakeWarpXform
   
   warpXform->SetIgnoreEdge( this->IgnoreEdge );
   warpXform->SetFastMode( this->m_FastMode );
-  warpXform->SetParametersActive( this->RestrictToAxes );
-
+ 
   return warpXform;
 }
 
@@ -247,6 +245,7 @@ ImagePairNonrigidRegistration::MakeFunctional
     {
     ImagePairNonrigidRegistrationFunctional *newFunctional = 
       ImagePairNonrigidRegistrationFunctional::Create( this->m_Metric, referenceVolume, floatingVolume, this->m_FloatingImageInterpolation );
+    newFunctional->SetActiveCoordinates( this->RestrictToAxes );
     newFunctional->SetAdaptiveFixParameters( this->m_AdaptiveFixParameters );
     newFunctional->SetAdaptiveFixThreshFactor( this->m_AdaptiveFixThreshFactor );
     newFunctional->SetJacobianConstraintWeight( this->m_JacobianConstraintWeight );

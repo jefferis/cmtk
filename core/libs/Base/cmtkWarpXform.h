@@ -259,7 +259,13 @@ public:
   void DeleteParameterActiveFlags();
 
   /// Set all parameters as active.
-  void SetParameterActive();
+  void SetParametersActive();
+
+  /// Set only those parameters as active that influence a given ROI.
+  void SetParametersActive( const UniformVolume::RegionType& roi );
+  
+  /// Set parameters for one spatial dimension as active or inactive.
+  void SetParametersActive( const int axis, const bool active = true );
 
   /** Set a particular parameter as active (or passive).
    *@param index Index of the parameter.
@@ -270,12 +276,6 @@ public:
 
   /// Set a particular parameter as inactive.
   void SetParameterInactive( const size_t index );
-
-  /// Set only those parameters as active that influence a given ROI.
-  void SetParametersActive( const UniformVolume::RegionType& roi );
-  
-  /// Set parameters for one spatial dimension as active or inactive.
-  void SetParametersActive( const int axis, const bool active = true );
 
   /** Set parameters for spatial dimensions as active.
    *@param axes This parameter defiend the activated dimensions in this

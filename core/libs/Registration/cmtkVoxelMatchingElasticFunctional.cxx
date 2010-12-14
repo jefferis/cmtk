@@ -203,7 +203,7 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
 
   if ( this->ReferenceDataClass == DATACLASS_LABEL ) 
     {
-    this->Warp->SetParameterActive();
+    this->Warp->SetParametersActive();
     
     for ( int ctrl = 0; ctrl < numCtrlPoints; ++ctrl ) 
       {
@@ -295,7 +295,7 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
     const double refThresh = refMin + this->m_AdaptiveFixThreshFactor * (refMax - refMin);
     const double modThresh = modMin + this->m_AdaptiveFixThreshFactor * (modMax - modMin);
       
-    this->Warp->SetParameterActive();
+    this->Warp->SetParametersActive();
       
     for ( int ctrl=0; ctrl<numCtrlPoints; ++ctrl ) 
       {

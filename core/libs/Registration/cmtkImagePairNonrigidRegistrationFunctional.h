@@ -94,6 +94,10 @@ public:
    */
   cmtkGetSetMacro(double,AdaptiveFixThreshFactor);
 
+  /** Active coordinate directions.
+   */
+  cmtkGetSetMacroString(ActiveCoordinates);
+
   /** Weight of the Jacobian constraint relative to voxel similarity measure.
    * If this is zero, only the voxel-based similarity will be computed.
    */
