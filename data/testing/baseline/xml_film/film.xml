@@ -285,6 +285,15 @@ export_xforms_path
 </longflag>
 
 </file>
+
+</parameters>
+<parameters>
+<label>
+inject
+</label>
+<description>
+Initial Volume Injection Options
+</description>
 <double>
 <default>
 0.5
@@ -405,6 +414,33 @@ num_iterations
 </longflag>
 
 </integer>
+
+</parameters>
+<parameters>
+<label>
+regularize
+</label>
+<description>
+Reconstruction Regularization Options
+</description>
+<double>
+<default>
+0
+</default>
+<description>
+Set constraint weight for Tikhonov-type L-Norm regularization (0 disables constraint)
+</description>
+<name>
+l_norm_weight
+</name>
+<label>
+l_norm_weight
+</label>
+<longflag>
+--l_norm_weight
+</longflag>
+
+</double>
 <boolean>
 <description>
 Turn off regional intensity truncatrion

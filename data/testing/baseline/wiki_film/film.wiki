@@ -54,6 +54,8 @@ where
 
 ; <tt>--export-xforms-path</tt> <tt><path></tt> : Path of file to which to export transformations between passes. '''[Default value: NONE]'''
 
+=== Initial Volume Injection Options ===
+
 ; <tt>--injection-kernel-sigma</tt> <tt><double></tt> / <tt>-S</tt> <tt><double></tt> : Standard deviation of Gaussian kernel for volume injection in multiples of pixel size in each direction. '''[Default value: 0.5]'''
 
 ; <tt>--injection-kernel-radius</tt> <tt><double></tt> / <tt>-r</tt> <tt><double></tt> : Truncation radius factor of injection kernel. The kernel is truncated at sigma*radius, where sigma is the kernel standard deviation. '''[Default value: 2]'''
@@ -69,6 +71,10 @@ where
 ; <tt>--fourth-order-error</tt> / <tt>-f</tt> : Use fourth-order (rather than second-order) error for optimization.
 
 ; <tt>--num-iterations</tt> <tt><integer></tt> / <tt>-n</tt> <tt><integer></tt> : Maximum number of inverse interpolation iterations '''[Default value: 20]'''
+
+=== Reconstruction Regularization Options ===
+
+; <tt>--l-norm-weight</tt> <tt><double></tt> : Set constraint weight for Tikhonov-type L-Norm regularization (0 disables constraint) '''[Default value: 0]'''
 
 ; <tt>--no-truncation</tt> / <tt>-T</tt> : Turn off regional intensity truncatrion
 

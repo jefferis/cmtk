@@ -1590,39 +1590,39 @@ case ${RUNTEST} in
 	check_results unsplit.nhdr unsplit.raw
 	;;
     volume_injection)
-	run volume_injection --recon-grid-path spgr_3t.hdr -o ${tmpdir}/injection.hdr --gauss-sigma 0.5 --radius 2 split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
+	run volume_injection --recon-grid-path spgr_3t.hdr -o ${tmpdir}/injection.hdr --injection-kernel-sigma 0.5 --injection-kernel-radius 2 split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
 	check_results injection.img
 	;;
     volume_injectionIsotropic)
-	run volume_injection --recon-grid-path spgr_3t.hdr -o ${tmpdir}/injection.hdr --gauss-sigma 0.5 --radius 2 --isotropic-injection split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
+	run volume_injection --recon-grid-path spgr_3t.hdr -o ${tmpdir}/injection.hdr --injection-kernel-sigma 0.5 --injection-kernel-radius 2 --isotropic-injection split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
 	check_results injection.img
 	;;
     volume_injectionNoXform)
-	run volume_injection -o ${tmpdir}/injection.hdr --gauss-sigma 0.5 --radius 2 --exclude-first-image spgr_3t.hdr -- split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
+	run volume_injection -o ${tmpdir}/injection.hdr --injection-kernel-sigma 0.5 --injection-kernel-radius 2 --exclude-first-image spgr_3t.hdr -- split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
 	check_results injection.img
 	;;
     volume_injectionNoXformIsotropic)
-	run volume_injection -o ${tmpdir}/injection.hdr --gauss-sigma 0.5 --radius 2 --isotropic-injection --exclude-first-image spgr_3t.hdr -- split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
+	run volume_injection -o ${tmpdir}/injection.hdr --injection-kernel-sigma 0.5 --injection-kernel-radius 2 --isotropic-injection --exclude-first-image spgr_3t.hdr -- split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
 	check_results injection.img
 	;;
     volume_reconstructionFourthOrder)
-	run volume_reconstruction --recon-grid-path spgr_3t.hdr -o ${tmpdir}/reconstruction.hdr --fourth-order-error --num-iterations 2 --gauss-sigma 0.5 --radius 2 --isotropic-injection --write-splatted-image ${tmpdir}/injection.hdr split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
+	run volume_reconstruction --recon-grid-path spgr_3t.hdr -o ${tmpdir}/reconstruction.hdr --linear --fourth-order-error --num-iterations 2 --injection-kernel-sigma 0.5 --injection-kernel-radius 2 --isotropic-injection --write-splatted-image ${tmpdir}/injection.hdr split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
 	check_results injection.img reconstruction.img
 	;;
     volume_reconstructionCubic)
-	run volume_reconstruction --recon-grid-path spgr_3t.hdr -o ${tmpdir}/reconstruction.hdr --cubic --num-iterations 2 --gauss-sigma 0.5 --radius 2 --isotropic-injection --write-splatted-image ${tmpdir}/injection.hdr split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
+	run volume_reconstruction --recon-grid-path spgr_3t.hdr -o ${tmpdir}/reconstruction.hdr --cubic --num-iterations 2 --injection-kernel-sigma 0.5 --injection-kernel-radius 2 --isotropic-injection --write-splatted-image ${tmpdir}/injection.hdr split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
 	check_results injection.img reconstruction.img
 	;;
     volume_reconstructionNoXform)
-	run volume_reconstruction -o ${tmpdir}/reconstruction.hdr --linear --num-iterations 2 --gauss-sigma 0.5 --radius 2 --isotropic-injection --write-splatted-image ${tmpdir}/injection.hdr --exclude-first-image spgr_3t.hdr -- split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
+	run volume_reconstruction -o ${tmpdir}/reconstruction.hdr --linear --num-iterations 2 --injection-kernel-sigma 0.5 --injection-kernel-radius 2 --isotropic-injection --write-splatted-image ${tmpdir}/injection.hdr --exclude-first-image spgr_3t.hdr -- split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
 	check_results injection.img reconstruction.img
 	;;
     volume_reconstructionBoxPSF)
-	run volume_reconstruction --recon-grid-path spgr_3t.hdr -o ${tmpdir}/reconstruction.hdr --deblurring-box --psf 0.9375,0.9375,1.25 --num-iterations 2 --gauss-sigma 0.5 --radius 2 split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
+	run volume_reconstruction --recon-grid-path spgr_3t.hdr -o ${tmpdir}/reconstruction.hdr --deblurring box --psf 0.9375,0.9375,1.25 --num-iterations 2 --injection-kernel-sigma 0.5 --injection-kernel-radius 2 split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
 	check_results reconstruction.img
 	;;
     volume_reconstructionGaussianPSF)
-	run volume_reconstruction --recon-grid-path spgr_3t.hdr -o ${tmpdir}/reconstruction.hdr --deblurring-gaussian --psf 0.9375,0.9375,1.25 --num-iterations 2 --gauss-sigma 0.5 --radius 2 split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
+	run volume_reconstruction --recon-grid-path spgr_3t.hdr -o ${tmpdir}/reconstruction.hdr --deblurring gaussian --psf 0.9375,0.9375,1.25 --num-iterations 2 --injection-kernel-sigma 0.5 --injection-kernel-radius 2 split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
 	check_results reconstruction.img
 	;;
     warpSingleLevel)
@@ -1677,6 +1677,52 @@ case ${RUNTEST} in
 	;;
     warpLabels)
 	run warp -q --fast --exploration 8 --grid-spacing 90 --accuracy 1 --refine 1 --class-ref label --class-flt label -o ${tmpdir} --initial parc1_parc2_9dof.xform parc1.hdr parc2.hdr
+	check_results registration
+	;;
+    warpxSingleLevel)
+	run warpx --fast --max-stepsize 8 --grid-spacing 160 --min-stepsize 1 --no-adaptive-fix -o ${tmpdir} vol001_mr_t0t1.list
+	check_results registration
+	;;
+    warpxSingleLevelExact)
+	run warpx --fast --max-stepsize 8 --grid-spacing 180 --exact-spacing --min-stepsize 1 --sampling 3 --no-adaptive-fix -o ${tmpdir} vol001_mr_t0t1.list
+	check_results registration
+	;;
+    warpxInverseConsistentCC)
+	run warpx --fast --max-stepsize 8 --grid-spacing 80 --min-stepsize 1 --ncc --ic-weight 1e-2 -o ${tmpdir} vol001_mr_t0t1.list
+	check_results registration
+	;;
+    warpxMultiLevel)
+	run warpx --fast --max-stepsize 8 --grid-spacing 160 --min-stepsize 1 --grid-refine 1 -o ${tmpdir} vol001_mr_t0t1.list
+	check_results registration
+	;;
+    warpxMultiLevelMatchHistograms)
+	run warpx --fast --max-stepsize 8 --match-histograms --msd --grid-spacing 160 --min-stepsize 1 --grid-refine 1 -o ${tmpdir} vol001_mr_t0t1.list
+	check_results registration
+	;;
+    warpxMultiLevelDeltaFThreshold)
+	run warpx --fast --max-stepsize 8 --delta-f-threshold 0.01 --msd --grid-spacing 160 --min-stepsize 1 --grid-refine 1 -o ${tmpdir} vol001_mr_t0t1.list
+	check_results registration
+	;;
+    warpxMultiLevelExact)
+	run warpx --fast --max-stepsize 8 --grid-spacing 160 --exact-spacing --min-stepsize 1 --grid-refine 1 -o ${tmpdir} vol001_mr_t0t1.list
+	check_results registration
+	;;
+    warpxDelayRefine)
+	run warpx --fast --max-stepsize 12 --grid-spacing 160 --min-stepsize 2 --grid-refine 1 --delay-refine --sampling 6 -o ${tmpdir} vol001_mr_t0t1.list
+	check_results registration
+	;;
+    warpxEnergy)
+	run warpx --fast --max-stepsize 8 --grid-spacing 160 --min-stepsize 1 --grid-refine 1 --smoothness-constraint-weight -o ${tmpdir} vol001_mr_t0t1.list
+	check_results registration
+	;;
+    warpxEnergyRelax)
+	run warpx --fast --max-stepsize 8 --grid-spacing 160 --min-stepsize 1 --grid-refine 1 --smoothness-constraint-weight 1e-1 --constraint-relaxation-factor 1e-2 -o ${tmpdir} vol001_mr_t0t1.list
+	check_results registration
+	;;
+    warpxJacobian)
+	export CMTK_NUM_THREADS=1
+	run warpx --fast --max-stepsize 12 --grid-spacing 160 --min-stepsize 2 --grid-refine 1 --jacobian-constraint-weight 1e-1 --sampling 12 --omit-original-data -o ${tmpdir} vol001_mr_t0t1.list
+	unset CMTK_NUM_THREADS
 	check_results registration
 	;;
     warpxLabels)

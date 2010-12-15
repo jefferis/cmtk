@@ -616,6 +616,18 @@ IF(NOT CMTK_USE_MPI)
   # ==========================================
   # Tests for "warpx" tool
   SET(testList ${testList} 
+    warpxSingleLevel
+    warpxSingleLevelExact
+    warpxInverseConsistentCC
+    warpxMultiLevel
+    warpxMultiLevelMatchHistograms
+    warpxMultiLevelDeltaFThreshold
+    warpxMultiLevelExact
+    warpxDelayRefine
+    warpxEnergy
+    warpxEnergyRelax
+    warpxRigidity
+    warpxJacobian
     warpxLabels)
 
   # ==========================================
