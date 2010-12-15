@@ -4,6 +4,12 @@ The Computational Morphometry Toolkit
 
 Release Notes -- CMTK 1.5.4
 ===========================
+
+The  "film", "volume_injection", and "volume_reconstruction" now have more
+logical and consistent command line options. This leads to incompatibility
+with some of their previous options. The "volume_reconstruction" tool also now
+defaults to cubic, rather than linear, inverse interpolation.
+
 For a complete list of changes and fixes, see the CHANGELOG file.
 
 CMTK has been built and tested on the following platforms:
