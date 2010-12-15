@@ -101,11 +101,11 @@ QtWindowLevelControls::slotSetStudy( Study::SmartPtr& study )
   const Volume* volume = this->m_Study->GetVolume();
   if ( volume ) 
     {
-    const TypedArray* data = volume->GetData();
-    if ( data ) 
+    const TypedArray* volumeData = volume->GetData();
+    if ( volumeData ) 
       {
       Types::DataItem mean, variance;
-      data->GetStatistics( mean, variance );
+      volumeData->GetStatistics( mean, variance );
       RangeWidth = sqrt( variance );
       }
     }
