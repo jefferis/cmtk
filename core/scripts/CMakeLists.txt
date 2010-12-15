@@ -25,6 +25,7 @@
 ##
 ##  $LastChangedBy$
 ##
+
 SET(CMTK_BINARY_DIR ${CMAKE_BINARY_DIR}/bin)
 
 SET(scripts utilities iterative_shape_averaging correct_nex_motion)

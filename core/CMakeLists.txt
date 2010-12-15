@@ -28,6 +28,10 @@
 ##  $LastChangedBy$
 ##
 
+##
+## This file borrows heavily from the analogous InsightToolkit file
+##
+
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 IF(COMMAND cmake_policy)
@@ -510,74 +514,45 @@ IF(NOT CMTK_INSTALL_BIN_DIR)
   SET(CMTK_INSTALL_BIN_DIR /bin CACHE PATH "Binary files will be installed here")
 ENDIF(NOT CMTK_INSTALL_BIN_DIR)
 
+IF(NOT CMTK_INSTALL_LIB_DIR)
+  # 64 bit libraries are not installed in the same directories on solaris
+  # Ref: http://docs.sun.com/app/docs/doc/816-5138/6mba6ua5m?a=view
+  SET(sun64 )
+  IF(CMAKE_SYSTEM MATCHES "SunOS.*" AND CMAKE_SIZEOF_VOID_P EQUAL 8)
+    EXEC_PROGRAM("uname"
+      ARGS "-p"
+      OUTPUT_VARIABLE sunproc
+    )
+    IF("${sunproc}" STREQUAL "sparc")
+      SET(sun64 "/sparcv9")
+    ENDIF("${sunproc}" STREQUAL "sparc")
+
+    IF("${sunproc}" STREQUAL "i386")
+      SET(sun64 "/amd64")
+    ENDIF("${sunproc}" STREQUAL "i386")
+
+    IF("${sun64}" STREQUAL "")
+      # sun64 is not set - solaris has been ported to a new architecture?
+      MESSAGE("Warning: Unknown processor '${sunproc}'. The libraries may not be installed in the right place.")
+    ENDIF("${sun64}" STREQUAL "")
+  ENDIF(CMAKE_SYSTEM MATCHES "SunOS.*" AND CMAKE_SIZEOF_VOID_P EQUAL 8)
+
+  SET(CMTK_INSTALL_LIB_DIR "/lib/CMTK${sun64}")
+ENDIF(NOT CMTK_INSTALL_LIB_DIR)
+
+IF(NOT CMTK_INSTALL_DATA_DIR)
+  SET(CMTK_INSTALL_DATA_DIR "/share/CMTK")
+ENDIF(NOT CMTK_INSTALL_DATA_DIR)
+
+IF(NOT CMTK_INSTALL_INCLUDE_DIR)
+  SET(CMTK_INSTALL_INCLUDE_DIR "/include/CMTK")
+ENDIF(NOT CMTK_INSTALL_INCLUDE_DIR)
+
 #-----------------------------------------------------------------------------
 # Set up CPack support, to be able to distribute binary packages.
 #
-INCLUDE(InstallRequiredSystemLibraries)
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  SET(CPACK_GENERATOR "ZIP;NSIS")
-ELSE(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    SET(CPACK_GENERATOR "TGZ;RPM")
-  ELSE(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    SET(CPACK_GENERATOR "TGZ")
-  ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
-SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "CMTK -- The Computational Morphometry Toolkit")
-SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
-SET(CPACK_PACKAGE_VENDOR "SRI International - Neuroscience Program")
-SET(CPACK_PACKAGE_VERSION_MAJOR "${CMTK_VERSION_MAJOR}")
-SET(CPACK_PACKAGE_VERSION_MINOR "${CMTK_VERSION_MINOR}")
-SET(CPACK_PACKAGE_VERSION_PATCH "${CMTK_VERSION_PATCH}")
-SET(CPACK_PACKAGE_FILE_NAME "CMTK-${CMTK_VERSION_MAJOR}.${CMTK_VERSION_MINOR}.${CMTK_VERSION_PATCH}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
-SET(CPACK_PACKAGE_INSTALL_DIRECTORY "CMTK-${CMTK_VERSION_MAJOR}.${CMTK_VERSION_MINOR}.${CMTK_VERSION_PATCH}-${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR}")
-
-set(CPACK_COMPONENTS_ALL applications gui libraries headers documentation)
-
-INCLUDE(CPack)
-
-INSTALL(FILES ${CPACK_RESOURCE_FILE_LICENSE} ${CPACK_PACKAGE_DESCRIPTION_FILE} DESTINATION share/doc/cmtk COMPONENT documentation)
-
-IF(BUILD_APPS)
-  CPACK_ADD_COMPONENT(applications
-    DISPLAY_NAME "Command Line Applications"
-    GROUP runtime)
-ENDIF(BUILD_APPS)
-
-IF(BUILD_GUI)
-  CPACK_ADD_COMPONENT(gui
-    DISPLAY_NAME "Graphical User Interface Applications"
-    GROUP runtime)
-ENDIF(BUILD_GUI)
-
-CPACK_ADD_COMPONENT(libraries
-  DISPLAY_NAME "Link Libraries"
-  GROUP development
-  DISABLED)
-
-CPACK_ADD_COMPONENT(headers
-  DISPLAY_NAME "C/C++ Header Files"
-  GROUP development
-  DISABLED)
-
-IF(BUILD_DOCUMENTATION)
-  CPACK_ADD_COMPONENT(documentation
-    DISPLAY_NAME "CMTK Documentation"
-    DISABLED)
-ENDIF(BUILD_DOCUMENTATION)
-
-CPACK_ADD_COMPONENT_GROUP(development
-  DISPLAY_NAME "Development Components")
-
-CPACK_ADD_COMPONENT_GROUP(runtime
-  DISPLAY_NAME "Runtime Components")
-
-IF(BUILD_SHARED_LIBS)
-  SET(CPACK_COMPONENT_APPLICATIONS_DEPENDS libraries)
-  SET(CPACK_COMPONENT_GUI_DEPENDS libraries)
-ENDIF(BUILD_SHARED_LIBS)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmtkConfigureCPack.cmake)
 
 #-----------------------------------------------------------------------------
 # Create the list of include directories needed for header files.
@@ -585,7 +560,6 @@ INCLUDE(${CMTK_SOURCE_DIR}/cmtkIncludeDirectories.cmake)
 
 INCLUDE_DIRECTORIES(
   ${CMTK_INCLUDE_DIRS_BUILD_TREE}
-  ${CMTK_INCLUDE_DIRS_BUILD_TREE_CXX}
   ${DCMTK_INCLUDE_DIRS}
   ${QT_INCLUDE_DIR} ${QT_INCLUDE_PATH}
   ${NRRD_INCLUDE_DIR}
@@ -617,6 +591,8 @@ SUBDIRS(scripts)
 # Configure this tree
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmtkconfig.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/cmtkconfig.h)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/cmtkconfig.h DESTINATION include COMPONENT headers)
+
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/CTestCustom.ctest.in ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.ctest @ONLY)
 
 #-----------------------------------------------------------------------------
@@ -624,9 +600,11 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/CTestCustom.ctest.in ${CMAKE_CURRENT_
 
 # Copy the UseCMTK.cmake file to the binary tree for backward compatability.
 CONFIGURE_FILE(${CMTK_SOURCE_DIR}/UseCMTK.cmake.in ${CMTK_BINARY_DIR}/UseCMTK.cmake COPYONLY IMMEDIATE)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/UseCMTK.cmake DESTINATION lib COMPONENT headers)
 
 # Create the CMTKConfig.cmake file containing the CMTK configuration.
-INCLUDE (${CMTK_SOURCE_DIR}/cmtkGenerateCMTKConfig.cmake)
+INCLUDE(${CMTK_SOURCE_DIR}/cmtkGenerateCMTKConfig.cmake)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/Utilities/CMTKConfig.cmake DESTINATION lib COMPONENT headers)
 
 #-----------------------------------------------------------------------------
 # Add compiler flags CMTK needs to work on this platform.  This must be
@@ -637,6 +615,9 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMTK_REQUIRED_CXX_FLAGS}")
 SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMTK_REQUIRED_LINK_FLAGS}")
 SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${CMTK_REQUIRED_LINK_FLAGS}")
 SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${CMTK_REQUIRED_LINK_FLAGS}")
+
+#-----------------------------------------------------------------------------
+# Settings for rpath when building shared libraries
 
 # Disable rpath altogether if we don't use shared libraries
 IF(CMTK_BUILD_SHARED_LIBS)
@@ -659,3 +640,4 @@ ENDIF(CMTK_BUILD_SHARED_LIBS)
 
 # Save library dependencies.
 EXPORT_LIBRARY_DEPENDENCIES(${CMTK_BINARY_DIR}/CMTKLibraryDepends.cmake)
+INSTALL(FILES ${CMTK_BINARY_DIR}/CMTKLibraryDepends.cmake DESTINATION lib COMPONENT headers)

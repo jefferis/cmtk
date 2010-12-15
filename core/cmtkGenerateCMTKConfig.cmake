@@ -1,6 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
-##  Copyright 2004-2009 SRI International
+##
+##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -27,6 +28,10 @@
 ##  $LastChangedBy$
 ##
 
+##
+## This file borrows heavily from the analogous InsightToolkit file
+##
+
 # Generate the CMTKConfig.cmake file in the build tree.  Also configure
 # one for installation.  The file tells external projects how to use
 # CMTK.
@@ -48,14 +53,12 @@ SET(CMTK_BUILD_SETTINGS_FILE       CMTKBuildSettings.cmake)
 SET(CMTK_LIBRARY_DEPENDS_FILE       CMTKLibraryDepends.cmake)
 
 # Library directory.
-SET(CMTK_LIBRARY_DIRS_CONFIG ${CMTK_BUILD_LIB_DIR})
+SET(CMTK_LIBRARY_DIRS_CONFIG ${CMTK_LIBRARY_PATH})
 
 # Determine the include directories needed.
-SET(CMTK_INCLUDE_DIRS_CONFIG
-  ${CMTK_INCLUDE_DIRS_BUILD_TREE}
-  ${CMTK_INCLUDE_DIRS_SOURCE_TREE}
-  ${CMTK_INCLUDE_DIRS_SYSTEM}
-)
+SET(CMTK_INCLUDE_DIRS_CONFIG 
+  ${CMTK_INCLUDE_DIRS_BUILD_TREE} 
+  ${CMTK_INCLUDE_DIRS_SYSTEM})
 
 #-----------------------------------------------------------------------------
 # Configure CMTKConfig.cmake for the build tree.
@@ -69,20 +72,47 @@ CONFIGURE_FILE(${CMTK_SOURCE_DIR}/CMTKConfig.cmake.in
 SET(CMTK_LIBRARY_DEPENDS_FILE      CMTKLibraryDepends.cmake)
 
 # Include directories.
-SET(CMTK_INCLUDE_DIRS_CONFIG
-  ${CMTK_INCLUDE_DIRS_INSTALL_TREE}
-  ${CMTK_INCLUDE_DIRS_SYSTEM}
+SET(CMTK_INCLUDE_DIRS_CONFIG 
+  \${CMTK_INSTALL_PREFIX}${CMTK_INSTALL_INCLUDE_DIR}
 )
+
+# List of CMTK libraries
+SET(CMTK_LIBRARIES cmtkIO cmtkPipeline cmtkQt cmtkRegistration cmtkSegmentation cmtkRecon cmtkBase cmtkSystem cmtkNumerics)
+
+IF(CMTK_BUILD_UNSTABLE)
+  SET(CMTK_LIBRARIES cmtkUnstable ${CMTK_LIBRARIES})
+ENDIF(CMTK_BUILD_UNSTABLE)
+
+IF(CMTK_USE_CUDA)
+  SET(CMTK_LIBRARIES cmtkGPU ${CMTK_LIBRARIES})
+ENDIF(CMTK_USE_CUDA)
+
+# Link directories.
+SET(CMTK_LIBRARY_DIRS_CONFIG "\${CMTK_INSTALL_PREFIX}${CMTK_INSTALL_LIB_DIR}")
 
 # Link directories.
 # The install tree will use the directory where CMTKConfig.cmake is found, which
-# happens to be "INSTALLATION/lib/InsightToolkit". That is, it is already the
+# happens to be "INSTALLATION/lib". That is, it is already the
 # same directory where the libraries are installed. Therefore this variable
 # must be empty here. See CMTKConfig.cmake.in for details on how this variable
 # is used.
-SET(CMTK_LIBRARY_DIRS_CONFIG "")  
+SET(CMTK_LIBRARY_DIRS_CONCUR "")  
 
 #-----------------------------------------------------------------------------
 # Configure CMTKConfig.cmake for the install tree.
-CONFIGURE_FILE(${CMTK_SOURCE_DIR}/CMTKConfig.cmake.in
-               ${CMTK_BINARY_DIR}/Utilities/CMTKConfig.cmake @ONLY IMMEDIATE)
+
+# Construct the proper number of GET_FILENAME_COMPONENT(... PATH)
+# calls to compute the installation prefix.
+STRING(REGEX REPLACE "/" ";" CMTK_INSTALL_PACKAGE_DIR_COUNT "${CMTK_INSTALL_PACKAGE_DIR}")
+SET(CMTK_CONFIG_CODE "
+# Compute the installation prefix from this CMTKConfig.cmake file location.
+GET_FILENAME_COMPONENT(CMTK_INSTALL_PREFIX \"\${CMAKE_CURRENT_LIST_FILE}\" PATH)")
+FOREACH(p ${CMTK_INSTALL_PACKAGE_DIR_COUNT})
+  SET(CMTK_CONFIG_CODE
+    "${CMTK_CONFIG_CODE}\nGET_FILENAME_COMPONENT(CMTK_INSTALL_PREFIX \"\${CMTK_INSTALL_PREFIX}\" PATH)"
+    )
+ENDFOREACH(p)
+
+
+CONFIGURE_FILE(${CMTK_SOURCE_DIR}/CMTKConfig.cmake.in 
+  ${CMTK_BINARY_DIR}/Utilities/CMTKConfig.cmake @ONLY IMMEDIATE)
