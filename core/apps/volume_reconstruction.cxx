@@ -73,13 +73,13 @@ const char* OutputImagePath = "reconstructed.hdr";
 const char* LowestMaxErrorImagePath = NULL;
 
 bool VolumeInjectionIsotropic = false;
-double VolumeInjectionSigma = 1;
-double VolumeInjectionRadius = 2;
+double InjectionKernelSigma = 1;
+double InjectionKernelRadius = 2;
 
 bool FourthOrderError = false;
 double ConstraintWeightLNorm = 0;
 
-cmtk::Interpolators::InterpolationEnum Interpolation = cmtk::Interpolators::LINEAR;
+int InverseInterpolationKernel = cmtk::Interpolators::CUBIC;
 
 enum {
   DEBLURRING_BOX = 1,
@@ -208,9 +208,9 @@ ReconstructVolume()
     cmtk::StdErr << "Volume injection...\n";
     }
   if ( VolumeInjectionIsotropic )
-    volRecon.VolumeInjectionIsotropic( VolumeInjectionSigma, VolumeInjectionRadius );
+    volRecon.VolumeInjectionIsotropic( InjectionKernelSigma, InjectionKernelRadius );
   else
-    volRecon.VolumeInjectionAnisotropic( VolumeInjectionSigma, VolumeInjectionRadius );
+    volRecon.VolumeInjectionAnisotropic( InjectionKernelSigma, InjectionKernelRadius );
 
   if ( SplattedImagePath )
     {
@@ -259,9 +259,9 @@ ReconstructVolumeDeblurring()
     cmtk::StdErr << "Volume injection...\n";
     }
   if ( VolumeInjectionIsotropic )
-    volRecon.VolumeInjectionIsotropic( VolumeInjectionSigma, VolumeInjectionRadius );
+    volRecon.VolumeInjectionIsotropic( InjectionKernelSigma, InjectionKernelRadius );
   else
-    volRecon.VolumeInjectionAnisotropic( VolumeInjectionSigma, VolumeInjectionRadius );
+    volRecon.VolumeInjectionAnisotropic( InjectionKernelSigma, InjectionKernelRadius );
 
   if ( SplattedImagePath )
     {
@@ -306,37 +306,56 @@ doMain( const int argc, const char* argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation" );
 
+    cl.BeginGroup( "Input", "Input Options" );
     cl.AddSwitch( Key( 'x', "exclude-first-image" ), &ExcludeFirstImage, true, "Exclude first image from reconstruction as a separate registration target image)" );
+    cl.AddCallback( Key( "crop" ), CallbackCrop, "Crop reference to pixel region x0,y0,z1:x1,y1,z1" );
+    cl.AddCallback( Key( 'W', "pass-weight" ), CallbackSetPassWeight, "Set contribution weight for a pass in the form 'pass:weight'" );
+    cl.EndGroup();
+
+    cl.BeginGroup( "ReconGrid", "Reconstruction Grid" );
     cl.AddCallback( Key( "recon-grid" ), CallbackReconGrid, "Define reconstruction grid as Nx,Ny,Nz:dX,dY,dZ[:Ox,Oy,Oz] (dims:pixel:offset)" );
     cl.AddOption( Key( 'R', "recon-grid-path" ), &ReconstructionGridPath, "Give path to grid that defines reconstructed image grid [including offset]" );
-    cl.AddCallback( Key( "crop" ), CallbackCrop, "Crop reference to pixel region x0,y0,z1:x1,y1,z1" );
-    cl.AddOption( Key( 'o', "output" ), &OutputImagePath, "Output image path" );
+    cl.EndGroup();
 
-    cl.AddCallback( Key( 'W', "pass-weight" ), CallbackSetPassWeight, "Set contribution weight for a pass in the form 'pass:weight'" );
-
+    cl.BeginGroup( "Injection", "Initial Volume Injection Parameters" );
     cl.AddSwitch( Key( "isotropic-injection" ), &VolumeInjectionIsotropic, true, "Use isotropic volume injection [otherwise: scaled with pass image pixel size per dimension]" );
-    cl.AddOption( Key( 'S', "gauss-sigma" ), &VolumeInjectionSigma, "Volume injection Gaussian kernel width factor, taken times pixel size." );
-    cl.AddOption( Key( 'r', "radius" ), &VolumeInjectionRadius, "Volume injection kernel truncation factor, taken times pixel size." );
+    cl.AddOption( Key( 'S', "injection-kernel-sigma" ), &InjectionKernelSigma, "Standard deviation of Gaussian kernel for volume injection in multiples of pixel size in each direction." );
+    cl.AddOption( Key( 'r', "injection-kernel-radius" ), &InjectionKernelRadius, "Truncation radius factor of injection kernel. The kernel is truncated at sigma*radius, where sigma is the kernel standard deviation." );
+    cl.EndGroup();
     
-    cl.AddSwitch( Key( 'L', "linear" ), &Interpolation, cmtk::Interpolators::LINEAR, "Trilinear interpolation" );
-    cl.AddSwitch( Key( 'C', "cubic" ), &Interpolation, cmtk::Interpolators::CUBIC, "Tricubic interpolation" );
-    cl.AddSwitch( Key( 'H', "hamming-sinc" ), &Interpolation, cmtk::Interpolators::HAMMING_SINC, "Hamming-windowed sinc interpolation" );
-    cl.AddSwitch( Key( 'O', "cosine-sinc" ), &Interpolation, cmtk::Interpolators::COSINE_SINC, "Cosine-windowed sinc interpolation" );
+    cl.BeginGroup( "Reconstruction", "Volume Reconstruction Options" );
+    cmtk::CommandLine::EnumGroup<int>::SmartPtr kernelGroup = 
+      cl.AddEnum( "inverse-interpolation-kernel", &InverseInterpolationKernel, "Kernel for the inverse interpolation reconstruction" );
+    kernelGroup->AddSwitch( Key( 'C', "cubic" ), cmtk::Interpolators::CUBIC, "Tricubic interpolation" );
+    kernelGroup->AddSwitch( Key( 'L', "linear" ), cmtk::Interpolators::LINEAR, "Trilinear interpolation (faster but less accurate)" );
+    kernelGroup->AddSwitch( Key( 'H', "hamming-sinc" ), cmtk::Interpolators::HAMMING_SINC, "Hamming-windowed sinc interpolation" );
+    kernelGroup->AddSwitch( Key( 'O', "cosine-sinc" ), cmtk::Interpolators::COSINE_SINC, "Cosine-windowed sinc interpolation (most accurate but slowest)" );
 
-    cl.AddSwitch( Key( "deblurring-box" ), &DeblurringKernel, (int)DEBLURRING_BOX, "Deblurring reconstruction [box PSF]" );
-    cl.AddSwitch( Key( "deblurring-gaussian" ), &DeblurringKernel, (int)DEBLURRING_GAUSSIAN, "Deblurring reconstruction [Gaussian PSF]" );
-    cl.AddCallback( Key( "psf" ), CallbackSetPSF, "Set point spread function as x,y,z" );
-    cl.AddOption( Key( "psf-scale" ), &PointSpreadFunctionScale, "Set point spread function global scale as real value" );
+    cmtk::CommandLine::EnumGroup<int>::SmartPtr deblurGroup = 
+      cl.AddEnum( "deblurring", &DeblurringKernel, "Kernel shape to approximate the point spread function for joint deblurring reconstruction (selecting one of these disables inverse interpolation reconstruction)" );
+    deblurGroup->AddSwitch( Key( "box" ), (int)DEBLURRING_BOX, "Box-shaped kernel" );
+    deblurGroup->AddSwitch( Key( "gaussian" ), (int)DEBLURRING_GAUSSIAN, "Gaussian kernel" );
 
-    cl.AddSwitch( Key( 'f', "fourth-order-error" ), &FourthOrderError, true, "Use fourth-order (rather than second-order) error for optimization." );
-    cl.AddOption( Key( "l-norm-weight" ), &ConstraintWeightLNorm, "Set constraint weight for L-Norm regularization (values <= 0 disable constraint)" );
+    cl.AddCallback( Key( "psf" ), CallbackSetPSF, "Explicitly set point spread function size as x,y,z. Use with 'deblurring' kernel reconstrunction." );
+    cl.AddOption( Key( "psf-scale" ), &PointSpreadFunctionScale, "Scale point spread function size by this value. Use with 'deblurring' kernel reconstrunction." );
+    cl.EndGroup();
+    
+    cl.BeginGroup( "Optimization", "Optimization Parameters" );
     cl.AddOption( Key( 'n', "num-iterations" ), &NumberOfIterations, "Maximum number of inverse interpolation iterations" );
-    cl.AddSwitch( Key( 'T', "no-truncation" ), &RegionalIntensityTruncation, false, "Turn off regional intensity truncatrion" );
-    
-    cl.AddOption( Key( "write-splatted-image" ), &SplattedImagePath, "Write initial Gaussian-splatted image to path" );
+    cl.AddSwitch( Key( 'f', "fourth-order-error" ), &FourthOrderError, true, "Use fourth-order (rather than second-order) error for optimization." );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Regularization", "Regularization Parameters" );
+    cl.AddOption( Key( "l-norm-weight" ), &ConstraintWeightLNorm, "Set constraint weight for Tikhonov-type L-Norm regularization (0 disables constraint)" );
+    cl.AddSwitch( Key( 'T', "no-truncation" ), &RegionalIntensityTruncation, false, "Turn off non-linear regional intensity truncation" );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Output", "Output Options" );
+    cl.AddOption( Key( 'o', "output" ), &OutputImagePath, "Output path for final reconstructed image" );
+    cl.AddOption( Key( "write-splatted-image" ), &SplattedImagePath, "Write initial Gaussian-splatted (volume-injected) image to this path" );
     cl.AddOption( Key( "write-lowest-max-error-image" ), &LowestMaxErrorImagePath, "Optional path to write reconstructed image with lowest MAXIMUM error." );
-    
     cl.AddSwitch( Key( 'F', "write-images-as-float" ), &WriteImagesAsFloat, true, "Write output images as floating point" );
+    cl.EndGroup();
 
     cl.Parse( argc, argv );
 
@@ -427,7 +446,7 @@ doMain( const int argc, const char* argv[] )
   cmtk::UniformVolume::SmartPtr correctedVolume;
   if ( !DeblurringKernel )
     {
-    switch ( Interpolation )
+    switch ( InverseInterpolationKernel )
       {
       case cmtk::Interpolators::LINEAR:
       default:
