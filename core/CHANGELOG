@@ -1,6 +1,9 @@
 Release CMTK-1.5.4:
 
-(r2660) Fixed: restricting "warpx" tool deformation to certain coordinate
+(r2666) Improved: better naming, grouping, and documentation of "film" and
+    "volume_reconstruction" command line options. Also named equivalent
+    options consistently between these tools.
+(r2664) Fixed: restricting "warpx" tool deformation to certain coordinate
     directions was broken.
 
 
