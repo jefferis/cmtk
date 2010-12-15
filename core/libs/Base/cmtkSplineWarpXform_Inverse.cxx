@@ -84,7 +84,6 @@ SplineWarpXform::FindClosestControlPoint
 	  idx[dim] += dir * step;
 	  if ( (idx[dim] > 0) && (idx[dim] <= this->m_Dims[dim]-2) ) 
 	    {
-	    Self::SpaceVectorType cp;
 	    this->GetOriginalControlPointPosition( cp, idx[0], idx[1], idx[2] );
 	    this->ApplyInPlace( cp );
 	    cp -= v;
