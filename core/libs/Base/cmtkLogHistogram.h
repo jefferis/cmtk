@@ -120,7 +120,7 @@ public:
    */
   virtual Types::DataItem BinToValue ( const size_t bin ) const 
   {
-    return this->Superclass::BinToValue( exp( static_cast<Types::DataItem>( bin ) / (this->GetNumBins()-1) * this->m_LogNumBins ) - 1 );
+    return this->Superclass::BinToValue( static_cast<size_t>( exp( static_cast<Types::DataItem>( bin ) / (this->GetNumBins()-1) * this->m_LogNumBins ) - 1 ) );
   }
 
 protected:
