@@ -199,21 +199,15 @@ Matrix4x4<T>::Decompose
     for ( int j = 0; j < 3; ++j )
       matrix2d[i][j] = matrix[i][j];
 
-  std::vector<T> R_diagonal( 3 );
-
   QRDecomposition<T> qr( matrix2d );
+  const Matrix2D<T> R = qr.GetR();
 
-  Matrix2D<T> R = *(qr.GetR());
-
-  for ( int i = 0; i < 3; i++ )
-    R_diagonal[i] = R[i][i];
-                                                                   
   // shear
   for ( int k = 0; k<3; ++k ) 
     {
     const int i = k / 2;           // i.e. i := { 0, 0, 1 }
     const int j = i + (k%2) + 1;   // i.e. j := { 0, 1, 2 } -- so i,j index the upper triangle of aMat, which is R from QR
-    params[9+k] = R[i][j] / R_diagonal[i];
+    params[9+k] = R[i][j] / R[i][i];
 
     // remove contribution from transformation matrix
     Self shear;

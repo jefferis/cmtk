@@ -74,7 +74,7 @@ QRDecomposition<TFloat>
 
 /// Get the Q factor 
 template<class TFloat>
-SmartPointer< Matrix2D<TFloat> >
+Matrix2D<TFloat>&
 QRDecomposition<TFloat>
 ::GetQ() 
 {
@@ -91,12 +91,12 @@ QRDecomposition<TFloat>
 
     extractedQ = true;
     }
-  return this->Q;
+  return *(this->Q);
 }
 
 /// Get the R factor 
 template<class TFloat>
-SmartPointer< Matrix2D<TFloat> >
+Matrix2D<TFloat>&
 QRDecomposition<TFloat>
 ::GetR()
 {
@@ -113,7 +113,7 @@ QRDecomposition<TFloat>
     extractedR = true;
     }
 
-  return this->R;
+  return *(this->R);
 }
 
 } // namespace cmtk

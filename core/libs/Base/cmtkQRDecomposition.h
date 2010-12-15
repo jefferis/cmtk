@@ -51,9 +51,9 @@ template<class TFloat>
 class QRDecomposition
 {
 public:
-
   /// Matrix type
   typedef Matrix2D<TFloat> matrix2D;
+
   /// Matrix pointer
   typedef SmartPointer< matrix2D > matrixPtr;
 
@@ -61,10 +61,10 @@ public:
   QRDecomposition( const Matrix2D<TFloat>& matrix );
 
   /// Get the Q factor 
-  matrixPtr GetQ();
+  matrix2D& GetQ();
   
   /// Get the R factor 
-  matrixPtr GetR(); 
+  matrix2D& GetR(); 
 
 protected:
   /// Alglib compact QR representation

@@ -279,13 +279,9 @@ SplineWarpXform::GetRigidityConstraint( const CoordinateMatrix3x3& J )
       matrix2d[i][j] = J[i][j];
 
   QRDecomposition<Types::Coordinate> qr( matrix2d );
-  Matrix2D<Types::Coordinate> R = *(qr.GetR());
+  const Matrix2D<Types::Coordinate> R = qr.GetR();
   
-  std::vector<Types::Coordinate> R_diagonal( 3 );
-  for ( int i = 0; i < 3; i++ )
-    R_diagonal[i] = R[i][i];
-
-  return MathUtil::Square( R[0][1] / R_diagonal[0] ) + MathUtil::Square( R[0][2] / R_diagonal[0] ) + MathUtil::Square( R[1][2] / R_diagonal[1] );
+  return MathUtil::Square( R[0][1] / R[0][0] ) + MathUtil::Square( R[0][2] / R[0][0] ) + MathUtil::Square( R[1][2] / R[1][1] );
 }
 
 } // namespace cmtk
