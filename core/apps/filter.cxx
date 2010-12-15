@@ -228,7 +228,7 @@ doMain( const int argc, const char* argv[] )
         {
         if ( Coupe ) 
           {
-          cmtk::TypedArray::SmartPtr filtered( cmtk::FilterVolume::CoupeFilter( volume, CoupeWindowRadius, CoupeBeta ) );
+          cmtk::TypedArray::SmartPtr filtered( cmtk::FilterVolume::CoupeFilter( volume, static_cast<int>( CoupeWindowRadius ), CoupeBeta ) );
           volume->SetData( filtered );
           }
         }
