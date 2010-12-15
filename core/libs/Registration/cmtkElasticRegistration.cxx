@@ -206,6 +206,7 @@ ElasticRegistration::MakeWarpXform
   
   warpXform->SetIgnoreEdge( this->IgnoreEdge );
   warpXform->SetFastMode( this->m_FastMode );
+  warpXform->SetParametersActive();
 
   return warpXform;
 }
