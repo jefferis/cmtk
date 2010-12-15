@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -125,7 +125,6 @@ ElasticRegistration::InitRegistration ()
     // for example grid spacing and deformation type.
     InitialWarpXform->SetIgnoreEdge( IgnoreEdge );
     InitialWarpXform->SetFastMode( this->m_FastMode );
-    InitialWarpXform->SetParametersActive( RestrictToAxes );
     // MIPSpro needs explicit.
     this->m_Xform = Xform::SmartPtr::DynamicCastFrom( InitialWarpXform );
     } 
@@ -207,7 +206,6 @@ ElasticRegistration::MakeWarpXform
   
   warpXform->SetIgnoreEdge( this->IgnoreEdge );
   warpXform->SetFastMode( this->m_FastMode );
-  warpXform->SetParametersActive( this->RestrictToAxes );
 
   return warpXform;
 }
@@ -237,6 +235,7 @@ ElasticRegistration::MakeFunctional
     newFunctional->SetJacobianConstraintWeight( this->m_JacobianConstraintWeight );
     newFunctional->SetRigidityConstraintWeight( this->m_RigidityConstraintWeight );
     newFunctional->SetForceOutside( this->m_ForceOutsideFlag, this->m_ForceOutsideValue );
+    newFunctional->SetActiveCoordinates( this->RestrictToAxes );
     if ( rigidityMap )
       {
       newFunctional->SetRigidityConstraintMap( rigidityMap );

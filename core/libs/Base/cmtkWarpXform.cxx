@@ -221,7 +221,7 @@ WarpXform::SetParametersActive
 {
   if ( !this->m_ActiveFlags ) 
     {
-    this->m_ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, false ) );
+    this->m_ActiveFlags = BitVector::SmartPtr( new BitVector( this->m_NumberOfParameters, true ) );
     }
   for ( unsigned int idx = (unsigned int)axis; idx < this->m_NumberOfParameters; idx += 3 )
     this->m_ActiveFlags->Set( idx, active );

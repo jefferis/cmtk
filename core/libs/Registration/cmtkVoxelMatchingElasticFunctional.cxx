@@ -56,7 +56,8 @@ cmtk
 
 VoxelMatchingElasticFunctional::VoxelMatchingElasticFunctional
 ( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating )
-  : VoxelMatchingFunctional( reference, floating )
+  : VoxelMatchingFunctional( reference, floating ),
+    m_ActiveCoordinates( NULL )
 {
   Dim = 0;
 
@@ -203,7 +204,10 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
 
   if ( this->ReferenceDataClass == DATACLASS_LABEL ) 
     {
-    this->Warp->SetParametersActive();
+    if ( this->m_ActiveCoordinates )
+      this->Warp->SetParametersActive( this->m_ActiveCoordinates );
+    else
+      this->Warp->SetParametersActive();
     
     for ( int ctrl = 0; ctrl < numCtrlPoints; ++ctrl ) 
       {
@@ -240,7 +244,6 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
 	for ( int idx=0; idx<3; ++idx, ++dim ) 
 	  {
 	  this->Warp->SetParameterInactive( dim );
-	  this->StepScaleVector[dim] = this->GetParamStep( dim );
 	  }
 	}
       }
@@ -295,8 +298,11 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
     const double refThresh = refMin + this->m_AdaptiveFixThreshFactor * (refMax - refMin);
     const double modThresh = modMin + this->m_AdaptiveFixThreshFactor * (modMax - modMin);
       
-    this->Warp->SetParametersActive();
-      
+    if ( this->m_ActiveCoordinates )
+      this->Warp->SetParametersActive( this->m_ActiveCoordinates );
+    else
+      this->Warp->SetParametersActive();
+          
     for ( int ctrl=0; ctrl<numCtrlPoints; ++ctrl ) 
       {
       if (  ( mapRef[ctrl] < refThresh ) && ( mapMod[ctrl] < modThresh ) ) 
@@ -305,10 +311,22 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
 	for ( int idx=0; idx<3; ++idx, ++dim ) 
 	  {
 	  this->Warp->SetParameterInactive( dim );
-	  this->StepScaleVector[dim] = this->GetParamStep( dim );
 	  }
 	inactive += 3;
 	}
+      }
+    }
+  
+  for ( size_t idx = 0; idx < this->Dim; ++idx ) 
+    {
+
+    if ( this->Warp->GetParameterActive( idx ) )
+      {
+      this->StepScaleVector[idx] = this->GetParamStep( idx );
+      }
+    else
+      {
+      this->StepScaleVector[idx] = 0;
       }
     }
   

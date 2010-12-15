@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -115,6 +115,10 @@ protected:
    * value is 0.5.
    */
   cmtkGetSetMacro(double,AdaptiveFixThreshFactor);
+
+  /** Active coordinate directions.
+   */
+  cmtkGetSetMacroString(ActiveCoordinates);
 
   /** Weight of the Jacobian constraint relative to voxel similarity measure.
    * If this is zero, only the voxel-based similarity will be computed.
