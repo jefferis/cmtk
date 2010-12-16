@@ -173,8 +173,8 @@ doMain( const int argc, const char* argv[] )
     cl.AddCallback( Key( 'W', "pass-weight" ), CallbackSetPassWeight, "Set contribution weight for a pass in the form 'pass:weight'" );
 
     cl.AddSwitch( Key( "isotropic-injection" ), &VolumeInjectionIsotropic, true, "Use isotropic volume injection [default: scaled with pass image pixel size per dimension]" );
-    cl.AddOption( Key( 'S', "gauss-sigma" ), &VolumeInjectionSigma, "Gauss contribution [default: 1]" );
-    cl.AddOption( Key( 'r', "radius" ), &VolumeInjectionRadius, "VolumeInjectionRadius of affected pixel [default: 0]" );
+    cl.AddOption( Key( 'S', "injection-kernel-sigma" ), &VolumeInjectionSigma, "Gauss contribution [default: 1]" );
+    cl.AddOption( Key( 'r', "injection-kernel-radius" ), &VolumeInjectionRadius, "VolumeInjectionRadius of affected pixel [default: 0]" );
 
     cl.AddSwitch( Key( 'F', "write-images-as-float" ), &WriteImagesAsFloat, true, "Write output images as floating point [default: same as input]" );
 
