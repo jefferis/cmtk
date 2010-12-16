@@ -1688,7 +1688,7 @@ case ${RUNTEST} in
 	check_results registration
 	;;
     warpxInverseConsistentCC)
-	run warpx --fast --max-stepsize 8 --grid-spacing 80 --min-stepsize 1 --ncc --ic-weight 1e-2 -o ${tmpdir} vol001_mr_t0t1.list
+	run warpx --fast --max-stepsize 8 --grid-spacing 80 --min-stepsize 1 --ncc --inverse-consistency-weight 1e-2 -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
 	;;
     warpxMultiLevel)
