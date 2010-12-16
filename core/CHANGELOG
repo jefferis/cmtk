@@ -1,10 +1,10 @@
 Release CMTK-1.5.4:
 
-(r2670) Fixed: improved installation and packaging by fixing multiple problems
-    related to CMTK use files.
-(r2666) Improved: better naming, grouping, and documentation of "film",
+(r2680) Improved: better naming, grouping, and documentation of "film",
     "volume_injection", and "volume_reconstruction" command line options. Also
     named equivalent options consistently between these tools.
+(r2670) Fixed: improved installation and packaging by fixing multiple problems
+    related to CMTK use files.
 (r2664) Fixed: restricting "warpx" tool deformation to certain coordinate
     directions was broken.
 
