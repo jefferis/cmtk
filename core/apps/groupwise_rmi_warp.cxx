@@ -185,7 +185,7 @@ doMain( int argc, char ** argv )
   functional->SetForceZeroSumFirstN( ForceZeroSumFirstN );
   functional->SetForceZeroSumNoAffine( ForceZeroSumNoAffine );
   if ( UserBackgroundFlag )
-    functional->SetUserBackgroundValue( UserBackgroundValue );
+    functional->SetUserBackgroundValue( static_cast<byte>( UserBackgroundValue ) );
   
   // disable parameters with less than 1% of maximum contribution
   functional->SetPartialGradientMode( (PartialGradientThreshold > 0) , PartialGradientThreshold );
