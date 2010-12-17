@@ -1,5 +1,5 @@
 ##
-##  Copyright 2009 SRI International
+##  Copyright 2009-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -26,11 +26,19 @@
 ##  $LastChangedBy$
 ##
 
-SET(CMTK_BINARY_DIR ${CMAKE_BINARY_DIR}/bin)
+## Configure scripts for the build tree
+SET(CMTK_BINARY_DIR_CONFIG ${CMAKE_BINARY_DIR}/bin)
 
 SET(scripts utilities iterative_shape_averaging correct_nex_motion)
 FOREACH(s ${scripts})
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${s}.sh.in ${CMAKE_BINARY_DIR}/bin/${s}.sh @ONLY)
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${s}.sh.in ${CMAKE_BINARY_DIR}/bin/${s} @ONLY)
 ENDFOREACH(s ${scripts})
 
-INSTALL(CODE "SET(CMTK_SOURCE_DIR ${CMTK_SOURCE_DIR})" SCRIPT install.cmake)
+## Configure scripts for the install tree
+# Link directories.
+SET(CMTK_BINARY_CONFIG "\${CMTK_INSTALL_PREFIX}${CMTK_INSTALL_BIN_DIR}")
+
+FOREACH(s ${scripts})
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${s}.sh.in ${CMAKE_BINARY_DIR}/Utilities/${s} @ONLY)
+  INSTALL(FILES ${CMAKE_BINARY_DIR}/Utilities/${s} DESTINATION bin COMPONENT runtime)
+ENDFOREACH(s ${scripts})
