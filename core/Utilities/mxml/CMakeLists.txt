@@ -1,4 +1,4 @@
-##  Copyright 2009 SRI International
+##  Copyright 2009-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -67,6 +67,6 @@ INSTALL(TARGETS mxml
   ARCHIVE DESTINATION lib COMPONENT libraries)
 
 FILE(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
-INSTALL(FILES ${files} DESTINATION include/cmtk/mxml COMPONENT headers)
+INSTALL(FILES ${files} ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION ${CMAKE_INSTALL_PREFIX}${CMTK_INSTALL_INCLUDE_DIR}/mxml COMPONENT headers)
 
 SET(MXML_LIBRARIES mxml)
