@@ -164,19 +164,27 @@ doMain( const int argc, const char* argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation" );
 
+    cl.BeginGroup( "Input", "Input Options" );
     cl.AddSwitch( Key( 'x', "exclude-first-image" ), &ExcludeFirstImage, true, "Exclude first image from reconstruction as a separate registration target image)" );
+    cl.AddCallback( Key( 'W', "pass-weight" ), CallbackSetPassWeight, "Set contribution weight for a pass in the form 'pass:weight'" );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Grid", "Reconstruction Grid Options" );
     cl.AddCallback( Key( "recon-grid" ), CallbackReconGrid, "Define reconstruction grid as Nx,Ny,Nz:dX,dY,dZ[:Ox,Oy,Oz] (dims:pixel:offset)" );
     cl.AddOption( Key( 'R', "recon-grid-path" ), &ReconstructionGridPath, "Give path to grid that defines reconstructed image grid [including offset]" );
     cl.AddCallback( Key( "crop" ), CallbackCrop, "Crop reference to pixel region x0,y0,z1:x1,y1,z1" );
-    cl.AddOption( Key( 'o', "output" ), &OutputImagePath, "Output image path [default: reconstructed.hdr]" );
+    cl.EndGroup();
 
-    cl.AddCallback( Key( 'W', "pass-weight" ), CallbackSetPassWeight, "Set contribution weight for a pass in the form 'pass:weight'" );
-
+    cl.BeginGroup( "Injection", "Volume Injection Options" );
     cl.AddSwitch( Key( "isotropic-injection" ), &VolumeInjectionIsotropic, true, "Use isotropic volume injection [default: scaled with pass image pixel size per dimension]" );
     cl.AddOption( Key( 'S', "injection-kernel-sigma" ), &VolumeInjectionSigma, "Gauss contribution [default: 1]" );
     cl.AddOption( Key( 'r', "injection-kernel-radius" ), &VolumeInjectionRadius, "VolumeInjectionRadius of affected pixel [default: 0]" );
+    cl.EndGroup();
 
+    cl.BeginGroup( "Output", "Output Options" );
+    cl.AddOption( Key( 'o', "output" ), &OutputImagePath, "Output image path [default: reconstructed.hdr]" );
     cl.AddSwitch( Key( 'F', "write-images-as-float" ), &WriteImagesAsFloat, true, "Write output images as floating point [default: same as input]" );
+    cl.EndGroup();
 
     cl.Parse( argc, argv );
 
