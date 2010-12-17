@@ -1712,7 +1712,7 @@ case ${RUNTEST} in
 	check_results registration
 	;;
     warpxEnergy)
-	run warpx --fast --max-stepsize 8 --grid-spacing 160 --min-stepsize 1 --grid-refine 1 --smoothness-constraint-weight -o ${tmpdir} vol001_mr_t0t1.list
+	run warpx --fast --max-stepsize 8 --grid-spacing 160 --min-stepsize 1 --grid-refine 1 --smoothness-constraint-weight 1e-1 -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
 	;;
     warpxEnergyRelax)
