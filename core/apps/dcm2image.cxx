@@ -632,8 +632,15 @@ doMain ( const int argc, const char *argv[] )
 {
   if (! dcmDataDict.isDictionaryLoaded() ) 
     {
-#ifdef CMAKE_DCMDICTPATH
-    if ( dcmDataDict.wrlock().loadDictionary( CMAKE_DCMDICTPATH ) )
+#ifdef CMTK_DCMDICTPATH
+    if ( dcmDataDict.wrlock().loadDictionary( CMTK_DCMDICTPATH ) )
+      {
+      dcmDataDict.unlock();
+      }
+    else
+#endif
+#ifdef CMTK_DCMDICTPATH_INSTALL
+    if ( dcmDataDict.wrlock().loadDictionary( CMTK_DCMDICTPATH_INSTALL ) )
       {
       dcmDataDict.unlock();
       }

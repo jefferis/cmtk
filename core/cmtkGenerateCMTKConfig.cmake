@@ -55,15 +55,27 @@ SET(CMTK_LIBRARY_DEPENDS_FILE       CMTKLibraryDepends.cmake)
 # Library directory.
 SET(CMTK_LIBRARY_DIRS_CONFIG ${CMTK_LIBRARY_PATH})
 
+# Binary directory.
+SET(CMTK_BINARY_DIR_CONFIG ${CMTK_BINARY_DIR})
+
 # Determine the include directories needed.
 SET(CMTK_INCLUDE_DIRS_CONFIG 
   ${CMTK_INCLUDE_DIRS_BUILD_TREE} 
   ${CMTK_INCLUDE_DIRS_SYSTEM})
 
+# Set data directory
+SET(CMTK_DATA_ROOT_CONFIG ${CMTK_DATA_ROOT})
+
+# Set DICOM dictionary paths for build AND install tree
+SET(CMTK_DCMDICTPATH_CONFIG ${CMTK_LIBRARY_PATH})
+SET(CMTK_DCMDICTPATH_INSTALL_CONFIG ${CMAKE_INSTALL_PREFIX}${CMTK_INSTALL_LIB_DIR})
+
 #-----------------------------------------------------------------------------
 # Configure CMTKConfig.cmake for the build tree.
 CONFIGURE_FILE(${CMTK_SOURCE_DIR}/CMTKConfig.cmake.in
-               ${CMTK_BINARY_DIR}/CMTKConfig.cmake @ONLY IMMEDIATE)
+  ${CMTK_BINARY_DIR}/CMTKConfig.cmake @ONLY IMMEDIATE)
+CONFIGURE_FILE(${CMTK_SOURCE_DIR}/cmtkconfig.h.cmake
+  ${CMTK_BINARY_DIR}/cmtkconfig.h @ONLY IMMEDIATE)
 
 #-----------------------------------------------------------------------------
 # Settings specific to the install tree.
@@ -98,6 +110,9 @@ SET(CMTK_LIBRARY_DIRS_CONFIG "\${CMTK_INSTALL_PREFIX}${CMTK_INSTALL_LIB_DIR}")
 # is used.
 SET(CMTK_LIBRARY_DIRS_CONCUR "")  
 
+# Binary directory.
+SET(CMTK_BINARY_DIR_CONFIG ${CMAKE_INSTALL_PREFIX}${CMTK_INSTALL_BIN_DIR})
+
 #-----------------------------------------------------------------------------
 # Configure CMTKConfig.cmake for the install tree.
 
@@ -115,4 +130,10 @@ ENDFOREACH(p)
 
 
 CONFIGURE_FILE(${CMTK_SOURCE_DIR}/CMTKConfig.cmake.in 
-  ${CMTK_BINARY_DIR}/Utilities/CMTKConfig.cmake @ONLY IMMEDIATE)
+  ${CMTK_BINARY_DIR}/Install/CMTKConfig.cmake @ONLY IMMEDIATE)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/Install/CMTKConfig.cmake DESTINATION lib COMPONENT headers)
+
+CONFIGURE_FILE(${CMTK_SOURCE_DIR}/cmtkconfig.h.cmake 
+  ${CMTK_BINARY_DIR}/Install/cmtkconfig.h @ONLY IMMEDIATE)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/Install/cmtkconfig.h DESTINATION include COMPONENT headers)
+

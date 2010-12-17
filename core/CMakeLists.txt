@@ -266,7 +266,8 @@ IF(BUILD_TESTING)
   MARK_AS_ADVANCED(CMTK_TESTING_MEMORYCHECK)
 
   IF(NOT CMTK_DATA_ROOT)
-    SET(CMTK_DATA_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../data CACHE PATH "Root directory of the CMTK data tree")
+    GET_FILENAME_COMPONENT(CMTK_SVN_ROOT ${CMAKE_CURRENT_SOURCE_DIR} PATH)
+    SET(CMTK_DATA_ROOT ${CMTK_SVN_ROOT}/data CACHE PATH "Root directory of the CMTK data tree")
   ENDIF(NOT CMTK_DATA_ROOT)
   MARK_AS_ADVANCED(CMTK_DATA_ROOT)  
 ENDIF(BUILD_TESTING)
@@ -590,9 +591,6 @@ SUBDIRS(scripts)
 #-----------------------------------------------------------------------------
 # Configure this tree
 
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmtkconfig.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/cmtkconfig.h)
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/cmtkconfig.h DESTINATION include COMPONENT headers)
-
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/CTestCustom.ctest.in ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.ctest @ONLY)
 
 #-----------------------------------------------------------------------------
@@ -604,7 +602,6 @@ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/UseCMTK.cmake DESTINATION lib COMPONEN
 
 # Create the CMTKConfig.cmake file containing the CMTK configuration.
 INCLUDE(${CMTK_SOURCE_DIR}/cmtkGenerateCMTKConfig.cmake)
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/Utilities/CMTKConfig.cmake DESTINATION lib COMPONENT headers)
 
 #-----------------------------------------------------------------------------
 # Add compiler flags CMTK needs to work on this platform.  This must be
