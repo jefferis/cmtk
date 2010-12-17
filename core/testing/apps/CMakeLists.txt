@@ -626,7 +626,6 @@ IF(NOT CMTK_USE_MPI)
     warpxDelayRefine
     warpxEnergy
     warpxEnergyRelax
-    warpxRigidity
     warpxJacobian
     warpxLabels)
 

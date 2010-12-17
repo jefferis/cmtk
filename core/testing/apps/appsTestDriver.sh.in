@@ -1725,10 +1725,6 @@ case ${RUNTEST} in
 	unset CMTK_NUM_THREADS
 	check_results registration
 	;;
-    warpxRigidity)
-	run warpx --fast --max-stepsize 12 --grid-spacing 160 --min-stepsize 2 --grid-refine 1 --rigidity-constraint-weight 1e-1 --sampling 12 --omit-original-data -o ${tmpdir} vol001_mr_t0t1.list
-	check_results registration
-	;;
     warpxLabels)
 	run warpx --fast --max-stepsize 8 --grid-spacing 90 --min-stepsize 1 --grid-refine 1 --class-ref label --class-flt label -o ${tmpdir} --initial parc1_parc2_9dof.xform parc1.hdr parc2.hdr
 	check_results registration
