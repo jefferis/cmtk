@@ -54,6 +54,8 @@ AnatomicalOrientation
       sqrt( directions[2][0]*directions[2][0] + directions[2][1]*directions[2][1] + directions[2][2]*directions[2][2] )
     };
 
+  bool axisUsed[3] = { false, false, false };
+
   for ( int axis = 0; axis < 3; ++axis )
     {
     Types::Coordinate max = fabs( directions[axis][0] / spacing[axis] );
@@ -61,7 +63,7 @@ AnatomicalOrientation
     for ( int dim = 1; dim < 3; ++dim )
       {
       const Types::Coordinate positive = fabs( directions[axis][dim] / spacing[axis] );
-      if ( positive > max )
+      if ( (positive > max) && !axisUsed[dim] )
 	{
 	max = positive;
 	maxDim = dim;
@@ -81,6 +83,7 @@ AnatomicalOrientation
       }
     
     orientation[axis] = (directions[axis][maxDim] > 0) ? spaceAxes[maxDim] : Self::OppositeDirection( spaceAxes[maxDim] );
+    axisUsed[maxDim] = true;
     }
   orientation[3] = 0;
 }
