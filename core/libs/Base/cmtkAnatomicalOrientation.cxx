@@ -54,12 +54,17 @@ AnatomicalOrientation
       sqrt( directions[2][0]*directions[2][0] + directions[2][1]*directions[2][1] + directions[2][2]*directions[2][2] )
     };
 
+  // keep track of which axes are already used in the direction code
   bool axisUsed[3] = { false, false, false };
 
   for ( int axis = 0; axis < 3; ++axis )
     {
-    Types::Coordinate max = fabs( directions[axis][0] / spacing[axis] );
+    // skip axes already used
     int maxDim = 0;
+    while ( axisUsed[maxDim] ) ++maxDim;
+    
+    // get closest aligned of remaining axes
+    Types::Coordinate max = fabs( directions[axis][0] / spacing[axis] );
     for ( int dim = 1; dim < 3; ++dim )
       {
       const Types::Coordinate positive = fabs( directions[axis][dim] / spacing[axis] );
