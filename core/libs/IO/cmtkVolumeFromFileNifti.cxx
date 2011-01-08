@@ -122,7 +122,7 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
     const float qb = header.GetField<float>( offsetof(nifti_1_header,quatern_b) );
     const float qc = header.GetField<float>( offsetof(nifti_1_header,quatern_c) );
     const float qd = header.GetField<float>( offsetof(nifti_1_header,quatern_d) );
-    const double qa = sqrt( 1.0 - (qb*qb + qc*qc + qd*qd) );
+    const double qa = sqrt( std::max( 0.0, 1.0 - (qb*qb + qc*qc + qd*qd) ) );
 
     const float qfac = (header.GetField<float>( offsetof(nifti_1_header,pixdim) ) >= 0) ? 1.0f : -1.0f;
 
