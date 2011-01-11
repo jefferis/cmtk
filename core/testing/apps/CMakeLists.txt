@@ -1,5 +1,5 @@
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2011 SRI International
 ##
 ##  Copyright 1997-2010 Torsten Rohlfing
 ##
@@ -54,6 +54,7 @@ SET(testList ${testList}
 # Tests for "congeal" tool
 SET(testList ${testList} 
   congealFromInit
+  congealMatchHistograms
   congealFromInitSampling
   congealBackground 
   congealUseTemplate
