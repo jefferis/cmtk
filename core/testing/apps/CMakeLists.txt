@@ -66,6 +66,8 @@ SET(testList ${testList}
   congeal_warpFitFromInit
   congeal_warpFromInitZeroSum
   congeal_warpUseTemplate
+  congeal_warpUseTemplateMatchHistograms
+  congeal_warpMatchHistograms
   congeal_warpFromInitNoBG
   congeal_warpUseTemplateNoBG
   )
