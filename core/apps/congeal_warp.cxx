@@ -205,6 +205,7 @@ doMain( int argc, char* argv[] )
     }
 
   cmtk::SplineWarpCongealingFunctional::SmartPtr functional( new cmtk::SplineWarpCongealingFunctional );
+  functional->SetFreeAndRereadImages( ! HistogramMatching ); // we cannot unload the original images if we still need them for histogram matching
   functional->SetForceZeroSumFirstN( ForceZeroSumFirstN );
   functional->SetForceZeroSum( ForceZeroSum || ForceZeroSumNoAffine );
   functional->SetForceZeroSumNoAffine( ForceZeroSumNoAffine );
