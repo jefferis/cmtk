@@ -1,5 +1,8 @@
 Release CMTK-1.5.4:
 
+(rXXXX) Added: new "groupwise_affine" tool for affine groupwise registration
+    unites the "congeal" and "groupwise_rmi" tools, which will be removed in
+    the next release of CMTK.
 (r2695) Fixed: subtle and rare numerical problem leading to NAN values in
     image-to-physical matrix read from Nifti files with quaternion-based
     orientation.

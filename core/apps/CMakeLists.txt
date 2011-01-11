@@ -41,6 +41,7 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
     describe
     groupwise_rmi
     groupwise_init
+    groupwise_affine
     groupwise_rmi_warp
     )
   

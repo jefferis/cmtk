@@ -710,6 +710,54 @@ case ${RUNTEST} in
 	run_eval "cat vol001_t0_points.xyz | ${BINDIR}/gregxform --affine -f vol001_mr_t0t1_warp.xform | ${BINDIR}/gregxform --affine vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyz"
 	check_results vol001_t0_points.xyz
 	;;
+    groupwise_affineFromInit)
+	run groupwise_affine -v --force-background 0 -O ${tmpdir} --dofs 6 --dofs 9 -e 4 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum groupwise_init_brain123.xforms
+	check_results groupwise.xforms average.nii
+	;;
+    groupwise_affineMatchHistograms)
+	run groupwise_affine -v --match-histograms --force-background 0 -O ${tmpdir} --dofs 6 --dofs 9 -e 4 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum groupwise_init_brain123.xforms
+	check_results groupwise.xforms average.nii
+	;;
+    groupwise_affineFromInitSampling)
+	run groupwise_affine -v --force-background 0 -O ${tmpdir} --dofs 6 --dofs 9 -e 4 -a 0.25 --downsample-to 1 --sampling-density 0.5 --zero-sum groupwise_init_brain123.xforms
+	## no baseline; this mode uses probabilistic sampling
+	;;
+    groupwise_affineBackground)
+	run groupwise_affine -v --force-background 0 -O ${tmpdir} --template spgr_brain_1.hdr --dofs 6 --dofs 9 -e 2 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
+	check_results groupwise.xforms average.nii
+	;;
+    groupwise_affineUseTemplate)
+        export CMTK_NUM_THREADS=1
+	run groupwise_affine -v --force-background 0 -O ${tmpdir} --template spgr_brain_1.hdr --dofs 6 --dofs 9 -e 2 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --template-with-data spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
+	check_results groupwise.xforms average.nii
+        unset CMTK_NUM_THREADS
+	;;
+    groupwise_affineZeroSumSmooth)
+        export CMTK_NUM_THREADS=1
+	run groupwise_affine -v --smooth 0.5 --downsample-to 0 -O ${tmpdir} --template spgr_brain_1.hdr --dofs 6 --dofs 9 -e 2 -a 0.25 --downsample-from 2 --sampling-density 1.0 --zero-sum spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
+	check_results groupwise.xforms average.nii
+        unset CMTK_NUM_THREADS
+	;;
+    groupwise_affineRMIFromInit)
+	run groupwise_affine --rmi --force-background 0 -O ${tmpdir} --dofs 6 --dofs 9 -e 4 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum groupwise_init_brain123.xforms
+	check_results groupwise.xforms average.nii
+	;;
+    groupwise_affineRMIFromInitDeltaF)
+	run groupwise_affine --rmi --force-background 0 -O ${tmpdir} --dofs 6,9 -e 4 --delta-f-threshold 0.1 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum groupwise_init_brain123.xforms
+	check_results groupwise.xforms average.nii
+	;;
+    groupwise_affineRMIFromInitSampling)
+	run groupwise_affine --rmi --force-background 0 -O ${tmpdir} --dofs 6 --dofs 9 -e 4 -a 0.25 --downsample-to 1 --sampling-density 0.5 --zero-sum groupwise_init_brain123.xforms
+	## no baseline; this mode uses probabilistic sampling
+	;;
+    groupwise_affineRMIBackground)
+	run groupwise_affine --rmi --force-background 0 -O ${tmpdir} --template spgr_brain_1.hdr --dofs 6 --dofs 9 -e 2 -a 0.25 --downsample-from 2 --downsample-to 1 --sampling-density 1.0 --zero-sum spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
+	check_results groupwise.xforms average.nii
+	;;
+    groupwise_affineRMIZeroSumSmooth)
+	run groupwise_affine --rmi --smooth 0.5  --downsample-to 0 -O ${tmpdir} --template spgr_brain_1.hdr --dofs 6 --dofs 9 -e 2 -a 0.25 --downsample-from 2 --sampling-density 1.0 --zero-sum spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
+	check_results groupwise.xforms average.nii
+	;;
     groupwise_initCentersOfMass)
 	run groupwise_init -O ${tmpdir} --align-centers-of-mass spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
 	check_results groupwise_init.xforms
