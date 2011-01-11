@@ -190,6 +190,7 @@ doMain( int argc, char* argv[] )
     NumberDOFs.push_back( 6 );
 
   cmtk::AffineGroupwiseRegistrationRMIFunctional::SmartPtr functional( new cmtk::AffineGroupwiseRegistrationRMIFunctional );
+  functional->SetFreeAndRereadImages( ! HistogramMatching ); // we cannot unload the original images if we still need them for histogram matching
   functional->SetForceZeroSum( ForceZeroSum );
   functional->SetForceZeroSumFirstN( ForceZeroSumFirstN );
   functional->SetFreeAndRereadImages( true );
@@ -272,6 +273,24 @@ doMain( int argc, char* argv[] )
       }
     }
   
+  if ( HistogramMatching )
+    {
+    const cmtk::TypedArray* referenceDataForHistogramMatching = NULL; 
+    if ( PreDefinedTemplate && UseTemplateData )
+      {
+      referenceDataForHistogramMatching = PreDefinedTemplate->GetData();
+      }
+    if ( !referenceDataForHistogramMatching )
+      {
+      referenceDataForHistogramMatching = imageListOriginal[0]->GetData();
+      }
+    
+    for ( size_t idx = 1; idx < imageListOriginal.size(); ++idx )
+      {
+      imageListOriginal[idx]->GetData()->ApplyFunctionObject( cmtk::TypedArrayFunctionHistogramMatching( *(imageListOriginal[idx]->GetData()), *referenceDataForHistogramMatching ) );
+      }
+    }
+
   const int downsampleFrom = std::max( DownsampleFrom, DownsampleTo );
   const int downsampleTo = std::min( DownsampleFrom, DownsampleTo );
 
