@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2010 Torsten Rohlfing
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -42,6 +42,7 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
     groupwise_rmi
     groupwise_init
     groupwise_affine
+    groupwise_warp
     groupwise_rmi_warp
     )
   

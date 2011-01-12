@@ -758,6 +758,54 @@ case ${RUNTEST} in
 	run groupwise_affine --rmi --smooth 0.5  --downsample-to 0 -O ${tmpdir} --template spgr_brain_1.hdr --dofs 6 --dofs 9 -e 2 -a 0.25 --downsample-from 2 --sampling-density 1.0 --zero-sum spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
 	check_results groupwise.xforms average.nii
 	;;
+    groupwise_warpFromInit)
+	run groupwise_warp -v --force-background 0 -O ${tmpdir} --grid-spacing 200 --refine-grid 1 -e 2 -a 1 --downsample-from 2 --downsample-to 1 groupwise_init_brain123.xforms
+	check_results groupwise.xforms average.nii
+	;;
+    groupwise_warpFitFromInit)
+	run groupwise_warp -v --force-background 0 -O ${tmpdir} --grid-spacing 200 --grid-spacing-fit --refine-grid 1 -e 4 -a 1 --downsample-from 2 --downsample-to 1 groupwise_init_brain123.xforms
+	check_results groupwise.xforms average.nii
+	;;
+    groupwise_warpUseTemplate)
+	run groupwise_warp -v --force-background 0 -O ${tmpdir} --grid-spacing 200 --refine-grid 1 -e 2 -a 1 --downsample-from 2 --downsample-to 2 --template-with-data spgr_brain_1.hdr groupwise_init_brain123.xforms
+	check_results groupwise.xforms average.nii
+	;;
+    groupwise_warpUseTemplateMatchHistograms)
+        export CMTK_NUM_THREADS=1
+	run groupwise_warp -v --match-histograms --force-background 0 -O ${tmpdir} --grid-spacing 200 --refine-grid 1 -e 2 -a 1 --downsample-from 2 --downsample-to 2 --template-with-data spgr_brain_1.hdr groupwise_init_brain123.xforms
+	check_results groupwise.xforms average.nii
+        unset CMTK_NUM_THREADS
+	;;
+    groupwise_warpMatchHistograms)
+        export CMTK_NUM_THREADS=1
+	run groupwise_warp -v --match-histograms --force-background 0 -O ${tmpdir} --grid-spacing 200 --refine-grid 1 -e 2 -a 1 --downsample-from 2 --downsample-to 2 --template spgr_brain_1.hdr groupwise_init_brain123.xforms
+	check_results groupwise.xforms average.nii
+        unset CMTK_NUM_THREADS
+	;;
+    groupwise_warpFromInitZeroSum)
+	run groupwise_warp -v --zero-sum --force-background 0 -O ${tmpdir} --grid-spacing 200 --refine-grid 1 -e 2 -a 1 --downsample-from 2 --downsample-to 1 groupwise_init_brain123.xforms
+	check_results groupwise.xforms average.nii
+	;;
+    groupwise_warpFromInitNoBG)
+	run groupwise_warp -v -O ${tmpdir} --grid-spacing 200 --refine-grid 1 -e 2 -a 1 --downsample-from 2 --downsample-to 1 groupwise_init_brain123.xforms
+	check_results groupwise.xforms average.nii
+	;;
+    groupwise_warpUseTemplateNoBG)
+	run groupwise_warp -v -O ${tmpdir} --grid-spacing 200 --refine-grid 1 -e 2 -a 1 --downsample-from 2 --downsample-to 2 --template-with-data spgr_brain_1.hdr groupwise_init_brain123.xforms
+	check_results groupwise.xforms average.nii
+	;;
+    groupwise_warpRMIFromInit)
+	run groupwise_warp --rmi -v --force-background 0 -O ${tmpdir} --grid-spacing 200 --refine-grid 1 -e 2 -a 1 --downsample-from 2 --downsample-to 1 groupwise_init_brain123.xforms
+	check_results groupwise.xforms average.nii
+	;;
+    groupwise_warpRMIFitFromInit)
+	run groupwise_warp --rmi -v --force-background 0 -O ${tmpdir} --grid-spacing 200 --grid-spacing-fit --refine-grid 1 -e 4 -a 1 --downsample-from 2 --downsample-to 1 groupwise_init_brain123.xforms
+	check_results groupwise.xforms average.nii
+	;;
+    groupwise_warpRMIFromInitZeroSum)
+	run groupwise_warp --rmi -v --zero-sum --force-background 0 -O ${tmpdir} --grid-spacing 200 --refine-grid 1 -e 2 -a 1 --downsample-from 2 --downsample-to 1 groupwise_init_brain123.xforms
+	check_results groupwise.xforms average.nii
+	;;
     groupwise_initCentersOfMass)
 	run groupwise_init -O ${tmpdir} --align-centers-of-mass spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
 	check_results groupwise_init.xforms

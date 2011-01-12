@@ -113,6 +113,12 @@ IF(CMTK_BUILD_NRRD)
 ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
+# Tests for "groupwise_init" tool
+SET(testList ${testList} 
+  groupwise_initCentersOfMass 
+  groupwise_initCentersOfMassTemplate)
+
+# ==========================================
 # Tests for "groupwise_affine" tool
 SET(testList ${testList}
   groupwise_affineFromInit
@@ -128,10 +134,20 @@ SET(testList ${testList}
   groupwise_affineRMIZeroSumSmooth)
 
 # ==========================================
-# Tests for "groupwise_init" tool
+# Tests for "groupwise_warp" tool
 SET(testList ${testList} 
-  groupwise_initCentersOfMass 
-  groupwise_initCentersOfMassTemplate)
+  groupwise_warpFromInit
+  groupwise_warpFitFromInit
+  groupwise_warpFromInitZeroSum
+  groupwise_warpUseTemplate
+  groupwise_warpUseTemplateMatchHistograms
+  groupwise_warpMatchHistograms
+  groupwise_warpFromInitNoBG
+  groupwise_warpUseTemplateNoBG
+  groupwise_warpRMIFromInit
+  groupwise_warpRMIFitFromInit
+  groupwise_warpRMIFromInitZeroSum
+  )
 
 # ==========================================
 # Tests for "groupwise_rmi" tool
