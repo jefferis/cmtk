@@ -120,7 +120,7 @@ cmtk::ScalarDataType DataType = cmtk::TYPE_NONE;
 cmtk::Types::DataItem OutPaddingValue = 0;
 bool OutPaddingValueFlag = true;
 
-const char* OutputImageName = "reformat.hdr";
+const char* OutputImageName = "reformat.nii";
 
 bool CropImages = false;
 cmtk::DataGrid::RegionType CropImagesRegion;
