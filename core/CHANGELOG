@@ -1,5 +1,7 @@
 Release CMTK-1.5.4:
 
+(r2714) Changed: all command line tools now default to writing output in NIFTI
+    format, not Analyze, if no output file name is given.
 (r2708) Added: new "groupwise_warp" tool for nonrigid groupwise registration
     unites the "congeal_warp" and "groupwise_rmi-warp" tools, which will be
     removed in the next release of CMTK.
