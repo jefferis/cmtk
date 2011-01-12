@@ -79,7 +79,7 @@ bool PutOffset = false;
 
 bool ResetCoordinates = false;
 
-const char* HdrFileName = "header.hdr";
+const char* HdrFileName = "header.nii";
 const char* ImportHdrFile = NULL;
 
 int 
@@ -90,7 +90,7 @@ doMain( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Make NIFTI header file" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Make header file according to NIFTI file format based on user-supplied parameters for geometry, data type, orientation, etc." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] [output.hdr]" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] [output.nii]" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode." );

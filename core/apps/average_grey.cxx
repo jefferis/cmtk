@@ -77,7 +77,7 @@ const char* SetReference = NULL;
 cmtk::ScalarDataType DataType = cmtk::TYPE_NONE;
 
 cmtk::Interpolators::InterpolationEnum Interpolation = cmtk::Interpolators::LINEAR;
-const char *outImage = "average_grey.hdr";
+const char *outImage = "average_grey.nii";
 
 int FromSlice = -1;
 int ToSlice = -1;

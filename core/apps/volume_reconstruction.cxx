@@ -69,7 +69,7 @@ std::vector<const char*> ImagePaths;
 std::vector<cmtk::Xform::SmartPtr> Xforms;
 std::vector<cmtk::UniformVolume::SmartPtr> Images;
 
-const char* OutputImagePath = "reconstructed.hdr";
+const char* OutputImagePath = "reconstructed.nii";
 const char* LowestMaxErrorImagePath = NULL;
 
 bool VolumeInjectionIsotropic = false;

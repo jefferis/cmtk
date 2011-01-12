@@ -50,7 +50,7 @@
 #include <algorithm>
 
 bool Verbose = false;
-const char* OutputFileName = "average.hdr";
+const char* OutputFileName = "average.nii";
 
 bool ApplyLog = false;
 bool ApplyAbs = false;

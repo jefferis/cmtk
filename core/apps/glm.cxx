@@ -92,7 +92,7 @@ bool ExponentialModel = false;
 std::list<const char*> CtlFileName;
 std::list<const char*> ImgFilePatt;
 
-const char* OutputFilePatt = "model_%s_%02d_%s.hdr";
+const char* OutputFilePatt = "model_%s_%02d_%s.nii";
 
 bool CropImages = false;
 cmtk::DataGrid::RegionType CropImagesRegion;
@@ -304,7 +304,7 @@ doMain( const int argc, const char* argv[] )
     cl.AddCallback( Key( 's', "select-parameter" ), CallbackSelect, "Select parameter with given NAME for model. Can be repeated." );
     cl.AddCallback( Key( 'c', "crop" ), CallbackCropImages, "To save space/time, crop images: x0,y0,z0,x1,y1,z2" );
     
-    cl.AddOption( Key( 'O', "output-pattern" ), &OutputFilePatt, "Filename pattern for output (default: 'model_%s_%02d_%s.hdr') with %d for parameter number" );
+    cl.AddOption( Key( 'O', "output-pattern" ), &OutputFilePatt, "Filename pattern for output (default: 'model_%s_%02d_%s.nii') with %d for parameter number" );
 
     cl.Parse( argc, argv );
 

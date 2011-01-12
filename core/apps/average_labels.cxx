@@ -49,7 +49,7 @@ typedef std::deque< std::pair<cmtk::Xform::SmartPtr,cmtk::UniformVolume::SmartPt
 XVQueue XformVolumeList;
 cmtk::UniformVolume::SmartPtr ReferenceImage;
 
-const char* OutputImagePath = "average_labels_output.hdr";
+const char* OutputImagePath = "average_labels_output.nii";
 
 int
 doMain( const int argc, const char* argv[] )

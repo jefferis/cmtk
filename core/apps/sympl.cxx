@@ -77,17 +77,17 @@ cmtk::Units::Degrees Theta;
 cmtk::Units::Degrees Phi;
 
 bool DoWriteMirror = false;
-const char* MirrorOutFile = "symmetry_mirror.hdr";
+const char* MirrorOutFile = "symmetry_mirror.nii";
 
 bool DoWriteAligned = false;
-const char* AlignedOutFile = "symmetry_aligned.hdr";
+const char* AlignedOutFile = "symmetry_aligned.nii";
 bool MarkPlaneAligned = false;
 
 bool DoWriteMarked = false;
-const char* MarkedOutFile = "symmetry_marked.hdr";
+const char* MarkedOutFile = "symmetry_marked.nii";
 
 bool DoWriteDifference = false;
-const char* DifferenceOutFile = "symmetry_diff.hdr";
+const char* DifferenceOutFile = "symmetry_diff.nii";
 
 const char* WriteXformPath = NULL;
 

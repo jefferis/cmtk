@@ -79,7 +79,7 @@ doMain ( const int argc, const char* argv[] )
 
   bool TextFileMode = false;
   
-  const char* OutFileName = "ttest.hdr";
+  const char* OutFileName = "ttest.nii";
   const char* TStatFileName = NULL;
   const char* MaskFileName = NULL;
   

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -63,7 +63,7 @@ std::vector<const char*> ImagePaths;
 std::vector<cmtk::Xform::SmartPtr> Xforms;
 std::vector<cmtk::UniformVolume::SmartPtr> Images;
 
-const char* OutputImagePath = "volume_injection.hdr";
+const char* OutputImagePath = "volume_injection.nii";
 bool WriteImagesAsFloat = false;
 
 bool VolumeInjectionIsotropic = false;
@@ -177,12 +177,12 @@ doMain( const int argc, const char* argv[] )
 
     cl.BeginGroup( "Injection", "Volume Injection Options" );
     cl.AddSwitch( Key( "isotropic-injection" ), &VolumeInjectionIsotropic, true, "Use isotropic volume injection [default: scaled with pass image pixel size per dimension]" );
-    cl.AddOption( Key( 'S', "injection-kernel-sigma" ), &VolumeInjectionSigma, "Gauss contribution [default: 1]" );
-    cl.AddOption( Key( 'r', "injection-kernel-radius" ), &VolumeInjectionRadius, "VolumeInjectionRadius of affected pixel [default: 0]" );
+    cl.AddOption( Key( 'S', "injection-kernel-sigma" ), &VolumeInjectionSigma, "Gauss contribution" );
+    cl.AddOption( Key( 'r', "injection-kernel-radius" ), &VolumeInjectionRadius, "VolumeInjectionRadius of affected pixel" );
     cl.EndGroup();
 
     cl.BeginGroup( "Output", "Output Options" );
-    cl.AddOption( Key( 'o', "output" ), &OutputImagePath, "Output image path [default: reconstructed.hdr]" );
+    cl.AddOption( Key( 'o', "output" ), &OutputImagePath, "Output image path" );
     cl.AddSwitch( Key( 'F', "write-images-as-float" ), &WriteImagesAsFloat, true, "Write output images as floating point [default: same as input]" );
     cl.EndGroup();
 
