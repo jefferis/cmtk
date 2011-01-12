@@ -43,7 +43,7 @@ cmtk::ImageOperationCropThreshold::Apply( cmtk::UniformVolume::SmartPtr& volume 
   
   if ( this->m_WriteXform )
     {
-    const DataGrid::RegionType& cropRegion = volume->CropRegion();
+    const UniformVolume::CoordinateRegionType& cropRegion = volume->GetHighResCropRegion();
     fprintf( stdout, "! TYPEDSTREAM 1.1\n\naffine_xform {\n\txlate %lf %lf %lf\n\trotate 0 0 0\n\tscale 1 1 1\n\tshear 0 0 0\n\tcenter 0 0 0\n}\n",
 	     cropRegion.From()[0], cropRegion.From()[1], cropRegion.From()[2] );
     }
