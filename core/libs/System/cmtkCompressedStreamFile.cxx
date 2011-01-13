@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -102,7 +102,7 @@ CompressedStream::File::Tell () const
 bool
 CompressedStream::File::Feof () const 
 {
-  return feof( this->m_File );
+  return (feof( this->m_File ) != 0);
 }
 
 } // namespace cmtk

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -100,7 +100,7 @@ CompressedStream::Zlib::Tell () const
 bool
 CompressedStream::Zlib::Feof () const 
 {
-  return gzeof( this->m_GzFile );
+  return (gzeof( this->m_GzFile ) != 0);
 }
 
 } // namespace cmtk
