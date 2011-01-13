@@ -141,6 +141,7 @@ doMain( int argc, char* argv[] )
 
     cl.BeginGroup( "Metric", "Registration Metric Options" );
     cl.AddSwitch( Key( "rmi" ), &OptimizeRMI, true, "Use the RMI (a.k.a. regional mutual information) metric to drive the registration)." );
+    cl.AddSwitch( Key( "congeal" ), &OptimizeRMI, false, "Use the congealing algorithm using pixelwise stack entropies to drive the registration." );
     cl.EndGroup();
     
     cl.BeginGroup( "Template", "Template Image Options" );
