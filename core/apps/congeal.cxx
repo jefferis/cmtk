@@ -204,10 +204,9 @@ doMain( int argc, char* argv[] )
     NumberDOFs.push_back( 6 );
 
   cmtk::AffineCongealingFunctional::SmartPtr functional( new cmtk::AffineCongealingFunctional );
-  functional->SetFreeAndRereadImages( ! HistogramMatching ); // we cannot unload the original images if we still need them for histogram matching
   functional->SetForceZeroSum( ForceZeroSum );
   functional->SetForceZeroSumFirstN( ForceZeroSumFirstN );
-  functional->SetFreeAndRereadImages( ! (AlignCentersOfMass || InitScales) );
+  functional->SetFreeAndRereadImages( ! (AlignCentersOfMass || InitScales || HistogramMatching) );
   functional->SetCropImageHistograms( CropImageHistograms );
 
   if ( UserBackgroundFlag )
