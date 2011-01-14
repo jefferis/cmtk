@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -241,6 +241,8 @@ public:
   ( const unsigned int nValues, const T* values, T mean, const bool unbiased = false );
   
   /** Computes variance of a vector of float values.
+    *\param values Vector of values to compute variance from.
+    *\param mean Previously computed mean of vector values.
     *\param unbiased If this flag is set (default: unset), then the variance
     * will be computed over nValues-1; otherwise over nValues.
    */

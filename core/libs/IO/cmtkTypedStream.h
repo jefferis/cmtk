@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -193,14 +193,14 @@ public:
    *@param name Name of the archive to open.
    *@param mode Access mode, ie. read-only, write-only, etc.
    */
-  TypedStream( const char *filename, const TypedStreamMode mode );
+  TypedStream( const char* filename, const TypedStreamMode mode );
 
   /** Open constructor for separate path and archive names.
    *@param dir Directory to open archive in.
    *@param archive Name of the archive to open.
    *@param mode Access mode, ie. read-only, write-only, etc.
    */
-  TypedStream( const char *dir, const char *archive, const TypedStreamMode mode );
+  TypedStream( const char* dir, const char* archive, const TypedStreamMode mode );
 
   /** Destructor.
    * Close() is called to close a possibly open archive.
@@ -209,11 +209,11 @@ public:
 
   /** Open another archive without constructing a new object.
    */
-  void Open( const char *filename, const TypedStreamMode mode );
+  void Open( const char* filename, const TypedStreamMode mode );
 
   /** Open another archive in explicit directory.
    */
-  void Open( const char *dir, const char *archive, const TypedStreamMode mode );
+  void Open( const char* dir, const char* archive, const TypedStreamMode mode );
 
   /** Close an open archive.
    */
@@ -227,7 +227,7 @@ public:
    * were opened in TYPEDSTREAM_READONLY mode. For writeable archive, it 
    * will return an error.
    */
-  TypedStreamCondition Seek( const char *section, const bool forward = false );
+  TypedStreamCondition Seek( const char* section, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Rewind archive.
    * This function resets filepointer of an open archive to the beginning of
@@ -272,42 +272,42 @@ public:
    *@return If reading was succesful, the value from the archive is returned.
    * Otherwise the value given as the "defaultValue" parameter is returned.
    */
-  bool ReadBool( const char* key, const bool defaultValue = false, const bool forward = false );
+  bool ReadBool( const char* key, const bool defaultValue = false, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read array of boole values from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  TypedStreamCondition ReadBoolArray( const char* key, byte *const array, const int size = 0, const bool forward = false );
+  TypedStreamCondition ReadBoolArray( const char* key, byte *const array, const int size = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
   
   /** Read integer value from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  int ReadInt( const char* key, const int defaultValue = 0, const bool forward = false );
+  int ReadInt( const char* key, const int defaultValue = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read array of integer values from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  TypedStreamCondition ReadIntArray( const char* key, int *const array, const int size = 0, const bool forward = false );
+  TypedStreamCondition ReadIntArray( const char* key, int *const array, const int size = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read single-precision value from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  float ReadFloat( const char* key, const float defaultValue = 0, const bool forward = false );
+  float ReadFloat( const char* key, const float defaultValue = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read array of single-precision values from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  TypedStreamCondition ReadFloatArray( const char* key, float *const array, const int size = 0, const bool forward = false );
+  TypedStreamCondition ReadFloatArray( const char* key, float *const array, const int size = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read double-precision value from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  double ReadDouble( const char* key, const double defaultValue = 0, const bool forward = false );
+  double ReadDouble( const char* key, const double defaultValue = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read array of double-precision values from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  TypedStreamCondition ReadDoubleArray( const char* key, double *const array, const int size = 0, const bool forward = false );
+  TypedStreamCondition ReadDoubleArray( const char* key, double *const array, const int size = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read double- or single precision value from an open archive.
    * Whether double- or single-precision data is read depends on the definition
@@ -316,7 +316,7 @@ public:
    *@see CMTK_COORDINATES_DOUBLE
    *@see Types::Coordinate
    */
-  Types::Coordinate ReadCoordinate( const char* key, const Types::Coordinate defaultValue = 0, const bool forward = false ) 
+  Types::Coordinate ReadCoordinate( const char* key, const Types::Coordinate defaultValue = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) 
   {
 #ifdef CMTK_COORDINATES_DOUBLE
     return this->ReadDouble( key, defaultValue, forward );
@@ -332,7 +332,7 @@ public:
    *@see CMTK_DATA_DOUBLE
    *@see Types::DataItem
    */
-  Types::DataItem ReadItem( const char* key, const Types::DataItem defaultValue = 0, const bool forward = false ) 
+  Types::DataItem ReadItem( const char* key, const Types::DataItem defaultValue = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) 
   {
 #ifdef CMTK_DATA_DOUBLE
     return this->ReadDouble( key, defaultValue, forward );
@@ -349,7 +349,7 @@ public:
    *@see Types::Coordinate
    */
   TypedStreamCondition ReadCoordinateArray
-( const char* key, Types::Coordinate *const array, const int size = 0, const bool forward = false ) 
+( const char* key, Types::Coordinate *const array, const int size = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) 
   {
 #ifdef CMTK_COORDINATES_DOUBLE
     return this->ReadDoubleArray( key, array, size, forward );
@@ -365,7 +365,7 @@ public:
    *@see CMTK_DATA_DOUBLE
    *@see Types::DataItem
    */
-  TypedStreamCondition ReadItemArray( const char* key, Types::DataItem *const array, const int size = 0, const bool forward = false ) 
+  TypedStreamCondition ReadItemArray( const char* key, Types::DataItem *const array, const int size = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) 
   {
 #ifdef CMTK_DATA_DOUBLE
     return this->ReadDoubleArray( key, array, size, forward );
@@ -383,7 +383,7 @@ public:
    * the string given as "defaultValue" parameter is returned. If that 
    * parameter was NULL, the same value is also returned.
    */
-  char* ReadString( const char* key, const char* defaultValue = NULL, const bool forward = false );
+  char* ReadString( const char* key, const char* defaultValue = NULL, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /// Write a boolean value to an open archive.
   TypedStreamCondition WriteBool( const char* key, const bool value );
@@ -524,10 +524,10 @@ private:
   char Buffer[TYPEDSTREAM_LIMIT_BUFFER];
 
   /// Pointer to the "key" part of the line currently in Buffer.
-  char *BufferKey;
+  char* BufferKey;
 
   /// Pointer to the "value" part of the line currently in Buffer.
-  char *BufferValue;
+  char* BufferValue;
 
   /** Stack of open section levels.
    * This stack holds the starting positions of all currently open sections.
@@ -545,8 +545,9 @@ private:
    * section.
    */
   TypedStreamCondition GenericReadArray
-  ( const char * key, const int type, void *const array, const int arraySize, const bool forward = false );
-
+  ( const char* key /*!< Field key (name)*/, const int type /*!< Array data type ID */, void *const array /*!< Target storage space for read data */, const int arraySize /*!< Number of array elements */, 
+    const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */ );
+  
   /// Read the next archive line to the buffer.
   TypedStreamToken ReadLineToken();
 
@@ -557,7 +558,7 @@ private:
    *@return 0 for identical strings (up to upper-/lowercase), 1 for 
    * non-identical strings.
    */
-  static int StringCmp( const char * s1, const char * s2 );
+  static int StringCmp( const char* s1, const char* s2 );
 
   /** Separate next token.
    * This function identifies the next token in the given string, sets a NULL
@@ -565,10 +566,10 @@ private:
    * character. The state between calls is saved in the "SplitPosition" field.
    * Calling the function with NULL as a parameter resets the internal state.
    */
-  char* StringSplit( char * s1 ) const;
+  char* StringSplit( char* s1 ) const;
 
   /// Internal position pointer for "StringSplit()".
-  mutable char *SplitPosition;
+  mutable char* SplitPosition;
 
   /// Return the identifier for the generated archive format (version).
   static const char* GetTypedStreamIdent() 

@@ -146,6 +146,7 @@ protected:
    * spacing as defined by the uniform spacings in this array. Otherwise, an
    * instance of igsRectilinearVolume is created with precisely this array as
    * its "Points" field.
+   *\param Data Pixel data array for the new volume.
    *@see igsRectilinearVolume#Points
    *@return The newly created instance of a class derived from Volume.
    *@see Volume
@@ -159,6 +160,7 @@ protected:
    * position are detected and reported.
    *@param plane Index of this image in the sequence.
    *@param image A reference to a structure describing the next image.
+   *@param frame Index of frame within a multi-frame image.
    *@return A pointer to an error message, of NULL if image was okay.
    */
   const char* CheckImage ( const int plane, const ScalarImage* image, const unsigned int frame = 0 );

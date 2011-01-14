@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -90,7 +90,7 @@ public:
     *\param create If true, any studies not found will be created and added
     * to this list object.
     */
-  Study::SmartPtr FindStudyPath( const char *fileSystemPath, const bool create = false );
+  Study::SmartPtr FindStudyPath( const char *fileSystemPath /*!< Path of study to find in filesystem */, const bool create = false /*!< Flag whether to create a study that does not exist already */ );
 
   /// Find constant Study object by file system path.
   const Study *FindStudyName( const char *name ) const;
