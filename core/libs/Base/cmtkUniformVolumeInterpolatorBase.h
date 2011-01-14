@@ -77,7 +77,7 @@ public:
    * from. It may also perform some pre-computations to speed up interpolation,
    * such as indexing etc. It does not perform any interpolation itself.
    */
-  virtual void SetVolume( const UniformVolume& volume );
+  virtual void SetVolume( const UniformVolume& volume /*!< Source volume for interpolation */ );
   
   /** Get data at location.
    *
@@ -87,11 +87,15 @@ public:
    * This function should return true if a value can be interpolated from
    * m_Volume at v, and it should return false if v is outside the range
    * where a value can be interpolated (i.e., outside the volume boundaries).
+   *
+   *\return True is the interpolation was successful and a valid value is returned in "value".
    */
-  virtual bool GetDataAt( const Vector3D& v, Types::DataItem& value ) const = 0;
+  virtual bool GetDataAt( const Vector3D& v /*!< Location for interpolation.*/ , Types::DataItem& value /* The interpolated value is stored via this reference*/ ) const = 0;
 
-  /// Get data at a pre-computed relative pixel index. This is faster if we already know the pixel index and fractional coordinate of a location.
-  virtual Types::DataItem GetDataDirect( const int* imageGridPoint, const Types::Coordinate* insidePixel ) const = 0;
+  /** Get data at a pre-computed relative pixel index. This is faster if we already know the pixel index and fractional coordinate of a location.
+   *\return Interpolated value.
+   */
+  virtual Types::DataItem GetDataDirect( const int* imageGridPoint /*!< Grid index in image */, const Types::Coordinate* insidePixel /*!< Relative position inside indexed pixel */ ) const = 0;
 
 protected:
   /// Pointer to volume data array.
@@ -113,7 +117,7 @@ protected:
   int m_NextK;
 
   /// Get offset from pixel index.
-  size_t GetOffsetFromIndex( const int i, const int j, const int k ) const
+  size_t GetOffsetFromIndex( const int i /*!< Grid index #0 */, const int j /*!< Grid index #1 */, const int k /*!< Grid index #2 */ ) const
   {
     return i + j * this->m_NextJ + k * this->m_NextK;
   }
