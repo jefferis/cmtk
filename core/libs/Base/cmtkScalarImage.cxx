@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -74,82 +74,82 @@ ScalarImage::ScalarImage
 }
 
 ScalarImage::ScalarImage
-( const ScalarImage& other, 
+( const ScalarImage& source, 
   const int* roiFrom, const int* roiTo ) :
   HasROI( false )
 {
-  this->SetDims( other.m_Dims );
-  this->SetPixelSize( other.GetPixelSize() );
+  this->SetDims( source.m_Dims );
+  this->SetPixelSize( source.GetPixelSize() );
 
-  this->SetNumberOfFrames( other.GetNumberOfFrames() );
-  this->SetFrameToFrameSpacing( other.GetFrameToFrameSpacing() );
+  this->SetNumberOfFrames( source.GetNumberOfFrames() );
+  this->SetFrameToFrameSpacing( source.GetFrameToFrameSpacing() );
 
-  this->SetImageOrigin( other.GetImageOrigin() );
-  this->SetImageDirectionX( other.GetImageDirectionX() );
-  this->SetImageDirectionY( other.GetImageDirectionY() );
-  this->SetImageSlicePosition( other.GetImageSlicePosition() );
+  this->SetImageOrigin( source.GetImageOrigin() );
+  this->SetImageDirectionX( source.GetImageDirectionX() );
+  this->SetImageDirectionY( source.GetImageDirectionY() );
+  this->SetImageSlicePosition( source.GetImageSlicePosition() );
 
   if ( roiFrom && roiTo ) 
     {
     const Self::IndexType::ValueType dims[2] = { roiTo[0] - roiFrom[0], roiTo[1] - roiFrom[1] };
     this->SetDims( Self::IndexType( dims ) );
     
-    this->m_ImageOrigin += ( roiFrom[0] * other.GetPixelSize( AXIS_X ) * other.GetImageDirectionX() );
-    this->m_ImageOrigin += ( roiFrom[1] * other.GetPixelSize( AXIS_Y ) * other.GetImageDirectionY() );
+    this->m_ImageOrigin += ( roiFrom[0] * source.GetPixelSize( AXIS_X ) * source.GetImageDirectionX() );
+    this->m_ImageOrigin += ( roiFrom[1] * source.GetPixelSize( AXIS_Y ) * source.GetImageDirectionY() );
     
-    const TypedArray* otherData = other.GetPixelData();
-    if ( otherData ) 
+    const TypedArray* sourceData = source.GetPixelData();
+    if ( sourceData ) 
       {
-      this->CreatePixelData( otherData->GetType() );
-      if ( otherData->GetPaddingFlag() )
-	this->m_PixelData->SetPaddingPtr( otherData->GetPaddingPtr() );
+      this->CreatePixelData( sourceData->GetType() );
+      if ( sourceData->GetPaddingFlag() )
+	this->m_PixelData->SetPaddingPtr( sourceData->GetPaddingPtr() );
       
       size_t offset = 0;
       for ( int y = roiFrom[1]; y < roiTo[1]; ++y ) 
 	{
-	otherData->ConvertSubArray( this->m_PixelData->GetDataPtr( offset ), this->m_PixelData->GetType(), roiFrom[0] + y * other.m_Dims[AXIS_X], this->m_Dims[AXIS_X] );
+	sourceData->ConvertSubArray( this->m_PixelData->GetDataPtr( offset ), this->m_PixelData->GetType(), roiFrom[0] + y * source.m_Dims[AXIS_X], this->m_Dims[AXIS_X] );
 	offset += this->m_Dims[AXIS_X];
 	}
       }
     } 
   else
     { // if we're not cropping, preserve ROI.
-    HasROI = other.HasROI;
-    ROI = other.ROI;
-    if ( other.GetPixelData() )
-      this->SetPixelData( TypedArray::SmartPtr( other.GetPixelData()->Clone() ) );
+    HasROI = source.HasROI;
+    ROI = source.ROI;
+    if ( source.GetPixelData() )
+      this->SetPixelData( TypedArray::SmartPtr( source.GetPixelData()->Clone() ) );
     }
 }
 
 ScalarImage::ScalarImage
-( const ScalarImage& other, const Self::RegionType& roi ) :
+( const ScalarImage& source, const Self::RegionType& roi ) :
   HasROI( false )
 {
   this->SetDims( roi.To() - roi.From() );
-  this->SetPixelSize( other.GetPixelSize() );
+  this->SetPixelSize( source.GetPixelSize() );
 
-  this->SetNumberOfFrames( other.GetNumberOfFrames() );
-  this->SetFrameToFrameSpacing( other.GetFrameToFrameSpacing() );
+  this->SetNumberOfFrames( source.GetNumberOfFrames() );
+  this->SetFrameToFrameSpacing( source.GetFrameToFrameSpacing() );
 
-  this->SetImageOrigin( other.GetImageOrigin() );
-  this->SetImageDirectionX( other.GetImageDirectionX() );
-  this->SetImageDirectionY( other.GetImageDirectionY() );
-  this->SetImageSlicePosition( other.GetImageSlicePosition() );
+  this->SetImageOrigin( source.GetImageOrigin() );
+  this->SetImageDirectionX( source.GetImageDirectionX() );
+  this->SetImageDirectionY( source.GetImageDirectionY() );
+  this->SetImageSlicePosition( source.GetImageSlicePosition() );
 
-  this->m_ImageOrigin += ( roi.From()[0] * other.GetPixelSize( AXIS_X ) * other.GetImageDirectionX() );
-  this->m_ImageOrigin += ( roi.From()[1] * other.GetPixelSize( AXIS_Y ) * other.GetImageDirectionY() );
+  this->m_ImageOrigin += ( roi.From()[0] * source.GetPixelSize( AXIS_X ) * source.GetImageDirectionX() );
+  this->m_ImageOrigin += ( roi.From()[1] * source.GetPixelSize( AXIS_Y ) * source.GetImageDirectionY() );
   
-  const TypedArray* otherData = other.GetPixelData();
-  if ( otherData ) 
+  const TypedArray* sourceData = source.GetPixelData();
+  if ( sourceData ) 
     {
-    this->CreatePixelData( otherData->GetType() );
-    if ( otherData->GetPaddingFlag() )
-      this->m_PixelData->SetPaddingPtr( otherData->GetPaddingPtr() );
+    this->CreatePixelData( sourceData->GetType() );
+    if ( sourceData->GetPaddingFlag() )
+      this->m_PixelData->SetPaddingPtr( sourceData->GetPaddingPtr() );
     
     size_t offset = 0;
     for ( int y = roi.From()[1]; y < roi.To()[1]; ++y ) 
       {
-      otherData->ConvertSubArray( this->m_PixelData->GetDataPtr( offset ), this->m_PixelData->GetType(), roi.From()[0] + y * other.m_Dims[AXIS_X], this->m_Dims[0] );
+      sourceData->ConvertSubArray( this->m_PixelData->GetDataPtr( offset ), this->m_PixelData->GetType(), roi.From()[0] + y * source.m_Dims[AXIS_X], this->m_Dims[0] );
       offset += this->m_Dims[0];
       }
     }
@@ -750,10 +750,10 @@ ScalarImage* operator-
 
 ScalarImage&
 ScalarImage::operator-=
-( const ScalarImage& other )
+( const ScalarImage& source )
 {
   TypedArray *data0 = this->GetPixelData().GetPtr();
-  const TypedArray *data1 = other.GetPixelData();
+  const TypedArray *data1 = source.GetPixelData();
 
   size_t numberOfPixels = this->GetNumberOfPixels();
   Types::DataItem pixel0, pixel1;

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -69,14 +69,8 @@ class VolumeClipping
 public:
   /** Set clipping boundaries.
    * This function sets the boundaries by which clipping is performed.
-   *@param clippingFrom 3D coordinates Front-lower-left corner of the clipping
-   * region. If this parameter is a NULL pointer, the respective coordinate is
-   * set to be the zero vector, ie. the origin of the coordinate space.
-   *@param clippingTo 3D coordinates Back-upper-right corner of the clipping
-   * region. If this parameter is a NULL pointer, the respective coordinate is
-   * set to be the zero vector, ie. the origin of the coordinate space.
    */
-  void SetClippingBoundaries( const UniformVolume::CoordinateRegionType& region );
+  void SetClippingBoundaries( const UniformVolume::CoordinateRegionType& region /*!< The clipping region in image coordinates */ );
 
   /** Set clipped volumes spanning vector in x-direction.
    *@param deltaX The direction vector of the rows in the volume to be clipped.
@@ -84,8 +78,9 @@ public:
    * applied to this vector previously inorder for the clipping to be performed
    * correctly.
    */
-  void SetDeltaX( const Vector3D& deltaX ) {
-    DeltaX = deltaX;
+  void SetDeltaX( const Vector3D& deltaX ) 
+  {
+    this->DeltaX = deltaX;
   }
 
   /** Set clipped volumes spanning vector in y-direction.

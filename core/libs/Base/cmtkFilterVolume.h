@@ -81,10 +81,12 @@ public:
     const int windowRadius,
     const float beta = 0.5 );
 
-  /** Apply Torsaten Rohlfing's single-image intensity-consistent Gaussian filter.
+  /** Apply Torsten Rohlfing's single-image intensity-consistent Gaussian filter.
    *\param volume Input 3D image.
    *\param subjectData Pixel array of the individual grey image from this 
    * subject.
+   *\param maskData Optional binary mask data array.
+   *\param iFilterSigma Width (standard deviation of the Gaussian kernel.
    *\param filterWidth Width (standard deviation of the Gaussian kernel.
    *\param filterRadius Filter radius in multiples of the filter width. 
    * Outside the radius (Euclidean distance) the filter is truncated.
@@ -102,6 +104,7 @@ public:
    *\param subjectData Pixel array of the individual grey image from this 
    * subject.
    *\param averageData Pixel array of the population average grey image.
+   *\param maskData Optional binary mask data array.
    *\param imgList List of pixel arrays from matched 3D images. The consistency
    * between these pixel arrays determines the relative weights of the
    * otherwise Gaussian kernel. Consult Colin's NeuroImage (2003) paper for
@@ -128,6 +131,7 @@ public:
    * are two items in the list, which correspond to the time points between
    * which the Jacobian map in "volume" was computed.
    *\param averageData Pixel array of the population average grey image.
+   *\param maskData Optional binary mask data array.
    *\param imgList List of pixel arrays from matched 3D images. The consistency
    * between these pixel arrays determines the relative weights of the
    * otherwise Gaussian kernel. Consult Colin's NeuroImage (2003) paper for

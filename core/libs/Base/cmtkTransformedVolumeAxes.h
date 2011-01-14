@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -87,6 +87,7 @@ public:
   TransformedVolumeAxes( const UniformVolume& volume, const AffineXform* xform = NULL, const Types::Coordinate* deltas = NULL, const Types::Coordinate* otherOrigin = NULL );
   
   /** Constructor using mirror plane.
+   *\param volume The volume whose axes we are transforming.
    *@param mirrorPlane Mirror plane with respect to which the coordinates of
    * this volume and thus all hash values are mirrored.
    *@param deltas If this parameter is given, it is used as a pointer to a

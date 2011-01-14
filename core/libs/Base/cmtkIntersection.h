@@ -118,10 +118,35 @@ public:
    * IntersectX can be used to computed the exact 2D intersection.
    *
    * Parameters and return value are identical to IntersectionX.
+   *@param fromFactor If the function returned 1, this variable holds the
+   * relative distance to the entrance point of the line into the volume.
+   * 0 means the line's starting point, 1 means its end.
+   *@param toFactor If the function returned 1, this variable holds the 
+   * relative distance to the exit point of the line from the volume. Possible
+   * values range from 0 to 1 and have the same meaning as fromFactor.
+   *@param offset This 3D vector is the line's starting point.
+   *@param dX This is the vector spanning from the starting point of the line 
+   * to its end.
    *@param dY This is the second vector in addition to dX spanning the plane
    * under consideration. In general, dX and dY should be orthogonal, and dY
    * should be defined in the way just as dX is, i.e. as the difference of two
    * plane corner vectors.
+   *@param Size This is the size of the volume. It is always rectilinear with
+   * faces parallel to the coordinate axes and its lower left front corner 
+   * identical to the coordinate origin. If affine transformed volumes are
+   * to be tested, the inverse affine transformation has to be applied to
+   * the line's endpoints instead.
+   *@param initFromFactor The fromFactor parameter's value is initialized
+   * with this value. It is therefore the lower bound of the parameter range
+   * that is available for intersection.
+   *@param initToFactor The toFactor parameter's value is initialized
+   * with this value. It is therefore the upper bound of the parameter range
+   * that is available for intersection. One application for this parameter
+   * is to use a value bigger than 1, even if [0,1] is the allowed range. Then,
+   * by testing if toFactor == 1.0, it can be determined whether clipping
+   * set the value to 1. This, for example allows to tell closed from open
+   * intervals, which may be important for subsequent computation such as
+   * volume probing.
    */
   static int IntersectY ( Types::Coordinate& fromFactor, Types::Coordinate& toFactor,
 			  const Vector3D& offset, const Vector3D& dX, 
@@ -137,11 +162,40 @@ public:
    * intersection.
    *
    * Parameters and return value are identical to IntersectionX.
-   *@param dY This is the third vector in addition to dX and dY spanning the
+   *@param fromFactor If the function returned 1, this variable holds the
+   * relative distance to the entrance point of the line into the volume.
+   * 0 means the line's starting point, 1 means its end.
+   *@param toFactor If the function returned 1, this variable holds the 
+   * relative distance to the exit point of the line from the volume. Possible
+   * values range from 0 to 1 and have the same meaning as fromFactor.
+   *@param offset This 3D vector is the line's starting point.
+   *@param dX This is the vector spanning from the starting point of the line 
+   * to its end.
+   *@param dY This is the second vector in addition to dX spanning the plane
+   * under consideration. In general, dX and dY should be orthogonal, and dY
+   * should be defined in the way just as dX is, i.e. as the difference of two
+   * plane corner vectors.
+   *@param dZ This is the third vector in addition to dX and dY spanning the
    * volume under consideration. In general, dX, dY, and dZ should be
    * orthogonal, and dZ should be defined in the same way as dX and dY are, 
    * i.e. as the difference of two plane corner vectors where one is the volume
    * origin.
+   *@param Size This is the size of the volume. It is always rectilinear with
+   * faces parallel to the coordinate axes and its lower left front corner 
+   * identical to the coordinate origin. If affine transformed volumes are
+   * to be tested, the inverse affine transformation has to be applied to
+   * the line's endpoints instead.
+   *@param initFromFactor The fromFactor parameter's value is initialized
+   * with this value. It is therefore the lower bound of the parameter range
+   * that is available for intersection.
+   *@param initToFactor The toFactor parameter's value is initialized
+   * with this value. It is therefore the upper bound of the parameter range
+   * that is available for intersection. One application for this parameter
+   * is to use a value bigger than 1, even if [0,1] is the allowed range. Then,
+   * by testing if toFactor == 1.0, it can be determined whether clipping
+   * set the value to 1. This, for example allows to tell closed from open
+   * intervals, which may be important for subsequent computation such as
+   * volume probing.
    */
   static int IntersectZ ( Types::Coordinate& fromFactor, Types::Coordinate& toFactor,
 			  const Vector3D& offset, const Vector3D& dX, 

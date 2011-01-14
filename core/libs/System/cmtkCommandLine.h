@@ -889,7 +889,7 @@ public:
      * the supported values.
      */
     KeyToActionEnum( const Key& key /*!< Key: long and/or short command line option for this action.*/,
-		     EnumGroupBase::SmartPtr keyToActionEnum /*!< The definition of the enumeration keys and values.*/
+		     EnumGroupBase::SmartPtr keyToActionEnum /*!< The definition of the enumeration keys and values.*/,
 		     const std::string& comment /*!< Command line help comment for this action.*/ ) :
       KeyToAction( key, comment ),
       m_EnumGroup( keyToActionEnum )

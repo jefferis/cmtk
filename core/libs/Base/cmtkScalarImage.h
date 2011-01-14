@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -97,6 +97,7 @@ public:
   ScalarImage( const int dimsx, const int dimsy, const int numberOfFrames = 1 );
 
   /** Get ROI as sub-image.
+   *\param source The source image to copy an ROI from.
    *\param roiFrom The (x,y) pixel of the original image that will make up the
    * top left (0,0) pixel of this image.
    *\param roiTo The (x,y) pixel of the original image that will make up the
@@ -106,7 +107,7 @@ public:
    * cropped image. The cropped image dimension is therefore
    * (1+roiTo[0]-roiFrom[0],1+roiTo[0]-roiFrom[0]).
    */
-  ScalarImage( const ScalarImage& other, const int* roiFrom = NULL, const int* roiTo = NULL );
+  ScalarImage( const ScalarImage& source, const int* roiFrom = NULL, const int* roiTo = NULL );
 
   /** Get ROI as sub-image.
    */

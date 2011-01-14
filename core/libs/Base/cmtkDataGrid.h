@@ -2,7 +2,7 @@
 //
 //  Copyright 2004-2010 SRI International
 //
-//  Copyright 1997-2010 Torsten Rohlfing
+//  Copyright 1997-2011 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -330,17 +330,19 @@ protected:
    *@param data This reference is set to the interpolated data value. It is 
    * valid if and only if this function returns 1.
    *@param location 3D coordinate to interpolate data at.
-   *@param gridPosition (x,y,z) indices of the voxel containing the given
-   * location.
-   *@param cellFrom 3D coordinate of the lower-left-front voxel of the cell
+   *@param x Grid index x.
+   *@param y Grid index y.
+   *@param z Grid index z.
+   *\param location Location within grid cell.
+   *@param from 3D coordinate of the lower-left-front voxel of the cell
    * enclosing the given location.
-   *@param cellTo 3D coordinate of the upper-right-rear voxel of the cell
+   *@param to 3D coordinate of the upper-right-rear voxel of the cell
    * enclosing the given location.
    *@return True if there is valid data for all eight voxels enclosing the 
    * given location, so that the interpolation could be completed successfully,
    * False otherwise.
    */
-  bool TrilinearInterpolation( Types::DataItem&, const int, const int, const int, const Self::SpaceVectorType&, const Types::Coordinate*, const Types::Coordinate* ) const;
+  bool TrilinearInterpolation( Types::DataItem& data, const int x, const int y, const int z, const Self::SpaceVectorType& location, const Types::Coordinate* cellFrom, const Types::Coordinate* cellTo ) const;
 
   /** Utility function for trilinear interpolation from a primitive data array.
    * This function is provided for computational efficiency when a large number 

@@ -103,11 +103,10 @@ public:
    * transform a given vector. This is needed for rotation-center changes.
    *\note It is safe to use the same address for source and destination of this
    * operation.
-   *@param vM This three-component array holds the rotated, scaled, and
-   * sheared vector after return from the function.
+   *\return The rotated, scaled, and sheared vector.
    *@param v The vector to be rotated, scaled, and sheared.
    */
-  Self::SpaceVectorType RotateScaleShear ( const Self::SpaceVectorType& ) const;
+  Self::SpaceVectorType RotateScaleShear ( const Self::SpaceVectorType& v ) const;
 
   /** Create identity transformation.
    */
@@ -232,6 +231,8 @@ public:
   void Insert( const AffineXform& other );
 
   /** Rotate around axis.
+   *\param angle Rotation angle.
+   *\param direction Direction vector of the rotation axis.
    *\param origin If this parameter is given, it defines the 3D coordinates of
    * a point on the rotation axis. If this parameter is not given, the
    * rotation axis goes through the rotation center of this transformation.
