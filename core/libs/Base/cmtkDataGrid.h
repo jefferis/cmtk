@@ -276,6 +276,7 @@ public:
    *@param recrop If this flag is true, then the cropping will be performed
    * inside an already existing cropping region. If this flag is false 
    * (default), then any pre-set crop region is ignored.
+   *\param margin Width of additional margin added around the threshold-cropped region.
    */
   void AutoCrop( const Types::DataItem threshold, const bool recrop = false, const int margin = 0 );
 

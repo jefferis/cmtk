@@ -93,8 +93,7 @@ public:
      * and returns the dimensions of that volume after the
      * reorientation described by this permutation matrix 
      *\param source Original array 
-     *\param target A three-element array to contain the
-     * permuted results.
+     *\return target A three-element array to contain the permuted results.
      */ 
     template<class T>
     const FixedVector<3,T> GetPermutedArray( const FixedVector<3,T>& source ) const

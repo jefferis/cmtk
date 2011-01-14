@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -171,10 +171,11 @@ private:
    * has already been given this suffix. Afterwards, a pipe through a
    * user-defined command is opened.
    *@param filename The name of the file to read through the pipe.
+   *\param suffix Actual suffix of the file to be read through the pipe.
    *@param command The command to pipe the file through. This should be the
    * name of a program that reads the file with the given name (referenced by
    * "%s" in the command string) and writes its output to stdout.
-   *@param suffix The file suffix corresponding to input files for the given
+   *@param compressedSuffix The file suffix corresponding to input files for the given
    * pipe command, e.g. ".gz" for gzip.
    */
   bool OpenDecompressionPipe ( const char* filename, const char* suffix, const char* command, const char* compressedSuffix );

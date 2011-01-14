@@ -177,12 +177,9 @@ private:
   static void GetCoupeBlock( CoupeBlock block, const TypedArray* data, const int* dims, const int x, const int y, const int z );
 
   /** Compute the NL-weighting factor between two blocks.
-   *\param data Data array from input 3D image.
-   *\param dims Dimensions of the input 3D image.
    *\param smoothingParam Smoothing parameter for the weighting function
    *\param centerBlock The block to be restored using NL-means
    *\param outerBlock A block to contribute to the restoration of centerBlock
-   *\param beta Smoothing adjustment parameter
    */
   static double ComputeCoupeWeight
   ( const Types::DataItem smoothingParam,

@@ -1190,9 +1190,9 @@ private:
   ProgramPropertiesMapType m_ProgramInfo;
 
   /// Add program info item to XML tree.
-  mxml_node_t* AddProgramInfoXML( mxml_node_t *const parent, //!< Parent node for new entry in XML tree.
-				  const ProgramProperties key, //!< Key code for program property.
-				  const char* name ) const; //!< Name of XML tag for this property.
+  mxml_node_t* AddProgramInfoXML( mxml_node_t *const parent /*!< Parent node for new entry in XML tree.*/,
+				  const ProgramProperties key /*!< Key code for program property.*/,
+				  const char* name /*!< Name of XML tag for this property.*/ ) const;
 
   /// Set default values for meta information.
   void SetDefaultInfo();

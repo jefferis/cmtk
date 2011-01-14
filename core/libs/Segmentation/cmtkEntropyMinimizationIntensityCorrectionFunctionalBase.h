@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -197,8 +197,7 @@ protected:
   virtual void UpdateCorrectionFactors() = 0;
 
   /** Update output image estimate based on current bias field parameters.
-   *\param allPixels If this flag is set, any existing image foreground mask is ignored
-   * and all image pixels are updated. Default: only update foreground pixels.
+   *\param forgroundOnly If this flag is set and an image foreground mask is set, then only image pixels are updated for which the mask is nonzero.
    */
   virtual void UpdateOutputImage( const bool foregroundOnly = true );
 
@@ -208,13 +207,19 @@ protected:
   /// Multiplicative bias field.
   FloatArray::SmartPtr m_BiasFieldMul;
 
-  /// Jointly update both bias images.
+  /** Jointly update both bias images.
+   *\param forgroundOnly If this flag is set and an image foreground mask is set, then only image pixels are updated for which the mask is nonzero.
+   */
   virtual void UpdateBiasFields( const bool foregroundOnly = true ) = 0;
 
-  /// Update additive bias image.
+  /** Update additive bias image.
+   *\param forgroundOnly If this flag is set and an image foreground mask is set, then only image pixels are updated for which the mask is nonzero.
+   */
   virtual void UpdateBiasFieldAdd( const bool foregroundOnly = true ) = 0;
 
-  /// Update additive bias image.
+  /** Update additive bias image.
+   *\param forgroundOnly If this flag is set and an image foreground mask is set, then only image pixels are updated for which the mask is nonzero.
+   */
   virtual void UpdateBiasFieldMul( const bool foregroundOnly = true ) = 0;
 
   /// Number of input image pixels.
