@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -90,7 +90,7 @@ public:
    *
    *\return True is the interpolation was successful and a valid value is returned in "value".
    */
-  virtual bool GetDataAt( const Vector3D& v /*!< Location for interpolation.*/ , Types::DataItem& value /* The interpolated value is stored via this reference*/ ) const = 0;
+  virtual bool GetDataAt( const Vector3D& v /*!< Location for interpolation.*/, Types::DataItem& value /*!< The interpolated value is stored via this reference*/ ) const = 0;
 
   /** Get data at a pre-computed relative pixel index. This is faster if we already know the pixel index and fractional coordinate of a location.
    *\return Interpolated value.

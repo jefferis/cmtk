@@ -358,6 +358,7 @@ public:
   }
   
   /** Generate normally distributed random numbers with explicit seed.
+   *@param sigma Standard deviation of the resulting distribution.
    *@param seed Random seed given to srandom() function.
    */
   static inline double NormalRandom( const double sigma, const unsigned int seed ) 

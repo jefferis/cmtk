@@ -97,6 +97,7 @@ public:
    * the array after use.
    *@param paddingflag Flag that indicates whether there are missing elements in
    * the existing data array.
+   *\param paddingData Value that marks missing elements in the data array if "paddingFlag" is true.
    */
   TemplateArray ( void *const data, const size_t datasize, const bool freeArray, const bool paddingflag, const void* paddingData ) 
   {
@@ -604,7 +605,6 @@ private:
 
   /** Allocate data array.
    *@param datasize Number of data items to allocate memory for.
-   *@param allocWith Type of memory handler to be used.
    */
   virtual void Alloc ( const size_t datasize ) 
   {

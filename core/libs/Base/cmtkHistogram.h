@@ -194,7 +194,7 @@ public:
    * neighbouring bins.
    *\note If the bin type of this template object is an integer type, then
    * only the lower of two candidate bins will be decremented by 1.
-   *@param sample Fractional index of histogram field.
+   *@param bin Fractional index of histogram bin.
    */
   void IncrementFractional ( const double bin ) 
   {
@@ -236,7 +236,7 @@ public:
    * neighbouring bins.
    *\note If the bin type of this template object is an integer type, then
    * only the lower of two candidate bins will be decremented by 1.
-   *@param sample Fractional index of histogram field.
+   *@param bin Fractional index of histogram bin.
    */
   void DecrementFractional ( const double bin ) 
   {

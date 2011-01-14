@@ -176,7 +176,8 @@ public:
     return Self::SmartPtr( this->CloneGridVirtual() );
   }
 
-  virtual Types::Coordinate GetDelta( const int axis, const int = 0 ) const
+  /// Get delta (pixel size) in one dimension.
+  virtual Types::Coordinate GetDelta( const int axis ) const
   {
     return this->m_Delta[axis];
   }
@@ -212,23 +213,34 @@ public:
   const UniformVolume::SmartPtr GetReoriented ( const char* newOrientation = AnatomicalOrientation::ORIENTATION_STANDARD ) const;
 
   /** Downsampling constructor function.
+   *\param downsample Downsampling factor.
    *\param approxIsotropic If this is set (default: off), then the downsample
    * factors per dimension are adjusted so that the resulting output volume
    * is as close to isotropic as possible without interpolation.
    */
   virtual UniformVolume* GetDownsampledAndAveraged( const int downsample, const bool approxIsotropic = false ) const;
  
-  /// Downsampling constructor function.
+  /** Downsampling constructor function.
+   *\param downsample Array of per-dimension downsampling factors.
+   */
   virtual UniformVolume* GetDownsampledAndAveraged( const int (&downsample)[3] ) const;
 
-  /// Get interleaved sub-volume along given axis and with given interleave offset.
+  /** Get interleaved sub-volume along given axis and with given interleave offset.
+   *\param axis Coordinate axis along which the image is interleaved.
+   *\param factor Interleave factor, i.e., the number of interleaved sub-volumes.
+   *\param idx Index of interleaved sub-volume to extract.
+   */
   UniformVolume* GetInterleavedSubVolume( const int axis, const int factor, const int idx ) const;
 
-  /// Get interleaved sub-volume along given axis and with given interleave offset, padded with empty image planes.
+  /** Get interleaved sub-volume along given axis and with given interleave offset, padded with empty image planes.
+   *\param axis Coordinate axis along which the image is interleaved.
+   *\param factor Interleave factor, i.e., the number of interleaved sub-volumes.
+   *\param idx Index of interleaved sub-volume to extract.
+   */
   UniformVolume* GetInterleavedPaddedSubVolume( const int axis, const int factor, const int idx ) const;
 
   /// Mirror volume and associated data.
-  virtual void Mirror ( const int axis = AXIS_X );
+  virtual void Mirror ( const int axis = AXIS_X /*!< Mirror with respect to this coordinate axis.*/);
 
   /** Return orthogonal slice.
    * This function calls its equivalent in DataGrid and adds calibration
@@ -338,8 +350,8 @@ public:
   }
 
   /** Get grid index of slice with highest coordinate smaller than given.
-   * @param dim specifies the dimension the location parameters refers to.
-   * @param location specifies the location in the range from 0 to Size[plane].
+   * @param axis The coordinate axis that the location parameters refers to.
+   * @param location The location along the selected coordinate axis in the range from 0 to Size[axis].
    */
   virtual int GetCoordIndex( const int axis, const Types::Coordinate location ) const 
   {
@@ -347,8 +359,8 @@ public:
   }
   
   /** Get grid index corresponding (as close as possible) to coordinate.
-   * @param dim specifies the dimension the location parameters refers to.
-   * @param location specifies the location in the range from 0 to Size[plane].
+   * @param axis The coordinate axis that the location parameters refers to.
+   * @param location The location along the selected coordinate axis in the range from 0 to Size[axis].
    */
   virtual int GetClosestCoordIndex( const int axis, const Types::Coordinate location ) const 
   {
@@ -371,8 +383,8 @@ public:
   }
 
   /** Get grid index corresponding to coordinate by truncation, not rounding..
-   * @param dim specifies the dimension the location parameters refers to.
-   * @param location specifies the location in the range from 0 to Size[plane].
+   * @param axis The coordinate dimension that the location parameters refers to.
+   * @param location The location in the range from 0 to Size[axis].
    */
   virtual int GetTruncCoordIndex( const int axis, const Types::Coordinate location ) const 
   {
@@ -406,7 +418,7 @@ public:
   }
   
   /** Get a grid location in physical coordinates.
-   *@param idxX The index of the intended grid element with respect to the
+   *@param idxV The index of the intended grid element with respect to the
    * three coordinate axes. Valid range is from 0 to Dims[...]-1. Fractional coordinates are permitted.
    *@return The location in image coordinates of the given grid element as a Self::CoordinateVectorType.
    */

@@ -115,9 +115,6 @@ public:
   }
 
   /** Make an identical copy of this object.
-   *@param copyData If this is non-zero (default), then the current values in
-   * the histogram bins are also duplicated. If zero, only the histogram
-   * structure is duplicated.
    *@return The newly created copy of this object.
    */
   Self* Clone () const 
@@ -405,6 +402,7 @@ public:
    * this object's bins.
    *@param sampleY Index of the histogram row to which the 1D histogram is to
    * be added.
+   *\param weight Multiplicative weight factor with which the other histogram is added to this one.
    */
   void AddHistogramRow( const Histogram<T>& other, const size_t sampleY, const float weight = 1 ) 
   {
@@ -420,10 +418,11 @@ public:
    * both histograms actually have the same number and arrangement of bins.
    * It is also a good idea to ensure that the data ranges of these bins are
    * the same in both objects.
-   *@param other A pointer to the other histogram. Its bin values are added to
-   * this object's bins.
    *@param sampleX Index of the histogram column to which the 1D histogram is
    * to be added.
+   *@param other A pointer to the other histogram. Its bin values are added to
+   * this object's bins.
+   *\param weight Multiplicative weight factor with which the other histogram is added to this one.
    */
   void AddHistogramColumn( const size_t sampleX, const Histogram<T>& other, const float weight = 1 ) 
   {
