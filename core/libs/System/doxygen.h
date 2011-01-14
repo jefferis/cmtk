@@ -30,7 +30,7 @@
 //
 */
 
-/** \defgroup System Library of system-related services.
+/** \defgroup System cmtkSystem Library
  * This library provides system-related classes, such as command line parsing,
  * memory allocation, threading, synchronization, and timing.
  */

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -888,9 +888,9 @@ public:
      * per value, plus a group parameter, which sets the variable based on the name of one of
      * the supported values.
      */
-    KeyToActionEnum( const Key& key, //!< Key: long and/or short command line option for this action.
-		     EnumGroupBase::SmartPtr keyToActionEnum, //!< The definition of the enumeration keys and values.
-		     const std::string& comment ) : //!< Command line help comment for this action.
+    KeyToActionEnum( const Key& key /*!< Key: long and/or short command line option for this action.*/,
+		     EnumGroupBase::SmartPtr keyToActionEnum /*!< The definition of the enumeration keys and values.*/
+		     const std::string& comment /*!< Command line help comment for this action.*/ ) :
       KeyToAction( key, comment ),
       m_EnumGroup( keyToActionEnum )
     {}

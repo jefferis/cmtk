@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -52,7 +53,7 @@ cmtk
  * majority of input images assign to that pixel. Pixels with tied voting are assigned
  * a value of 256. The output image is allocated as 16bit short data to accommodate
  * this overflow value.
- *\limitation All labels must be between 0 and 255.
+ *\attention All labels must be between 0 and 255.
  */
 class
 LabelCombinationVoting

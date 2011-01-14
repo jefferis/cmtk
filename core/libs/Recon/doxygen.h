@@ -30,7 +30,7 @@
 //
 */
 
-/** \defgroup Recon Reconstruction library
+/** \defgroup Recon cmtkRecon Library
  * This library provides classes for volume reconstruction by volume injection,
  * inverse interpolation, and deblurring.
  */

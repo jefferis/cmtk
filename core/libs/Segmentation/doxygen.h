@@ -30,7 +30,7 @@
 //
 */
 
-/** \defgroup Segmentation Segmentation library
+/** \defgroup Segmentation cmtkSegmentation Library
  * This library provides classes for atlas-based image segmentation and
  * correction of MR intensity bias field artifacts.
  */

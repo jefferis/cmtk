@@ -30,7 +30,7 @@
 //
 */
 
-/** \defgroup Pipeline Pipeline processing library
+/** \defgroup Pipeline cmtkPipeline Library
  * This library provides pipeline-based processing similar to the paradigms
  * used by VTK and, to lesser extent, ITK.
  *\deprecated This library is deprecated and should not be relied on for

@@ -49,7 +49,7 @@ namespace Memory
 {
 
 /** Utility function: get next power of two.
-   *\url http://en.wikipedia.org/wiki/Power_of_two#Algorithm_to_find_the_next-highest_power_of_two 
+   * http://en.wikipedia.org/wiki/Power_of_two#Algorithm_to_find_the_next-highest_power_of_two 
    */
 size_t GetNextPowerOfTwo( size_t k );
 
@@ -75,7 +75,7 @@ DeleteArray( T *const array )
 }
 
 /** Set (fill) memory region with given value.
- * This is the templated version of ::memset()
+ * This is the templated version of memset()
  */
 template<class T>
 inline void
@@ -86,7 +86,7 @@ Set( T* const to, const T value, const size_t length )
 }
 
 /** Copy memory region.
- * This is the templated version of ::memcpy()
+ * This is the templated version of memcpy()
  */
 template<class T>
 inline void

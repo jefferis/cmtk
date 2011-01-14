@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -83,20 +83,8 @@ public:
    * For reference and floating volume, InitDataset is called.
    *@param refVolume The reference (fixed) volume.
    *@param fltVolume The floating (transformed) volume.
-   *@param numRefBins The desired number of bins to classify the 
-   * reference data. If this parameter is zero (default), a suitable value
-   * is automatically determined.
-   *@param numFltBins The desired number of bins to classify the 
-   * floating image data. If this parameter is zero (default), a suitable value
-   * is automatically determined.
-   *@param minBoundRef Lower bound for reference image values; all actual pixel
-   * values below this bound will be sorted into the lowest histogram bin.
-   *@param minBoundRef Upper bound for reference image values; all actual pixel
-   * values above this bound will be sorted into the highest histogram bin.
-   *@param minBoundFlt Lower bound for floating image values; all actual pixel
-   * values below this bound will be sorted into the lowest histogram bin.
-   *@param minBoundFlt Upper bound for floating image values; all actual pixel
-   * values above this bound will be sorted into the highest histogram bin.
+   *@param rangeRef Range of reference image values.
+   *@param rangeFlt Range of floating image values.
    */
   VoxelMatchingNormMutInf ( const UniformVolume* refVolume, const UniformVolume* fltVolume, const Types::DataItemRange& rangeRef, const Types::DataItemRange& rangeFlt )
     : RegistrationJointHistogram<I>( refVolume, fltVolume, CMTK_HISTOGRAM_AUTOBINS, CMTK_HISTOGRAM_AUTOBINS, rangeRef, rangeFlt ) {};

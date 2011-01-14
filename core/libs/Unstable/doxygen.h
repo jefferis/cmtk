@@ -30,7 +30,6 @@
 //
 */
 
-/** \defgroup GPU cmtkGPU library
- * This library provides classes related to computations on GPU hardware via the CUDA
- * and potentially OpenCL programming paradigms.
+/** \defgroup Unstable cmtkUnstable Library
+ * This library provides classes that are under active development and may have erratic function and quickly varying APIs.
  */

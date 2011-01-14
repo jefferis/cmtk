@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -67,11 +67,11 @@ public:
   /** Constructor.
    * For reference and model volume, InitDataset is called.
    *@param refVolume The reference (fixed) volume.
-   *@param modVolume The model (transformed) volume.
-   *@param numRefBuckets The desired number of buckets to classify the 
+   *@param fltVolume The model (transformed) volume.
+   *@param numRefBins The desired number of bins to classify the 
    * reference data. If this parameter is zero (default), a suitable value
    * is automatically determined.
-   *@param numModBuckets The desired number of buckets to classify the 
+   *@param numModBins The desired number of bins to classify the 
    * model data. If this parameter is zero (default), a suitable value
    * is automatically determined.
    */

@@ -30,7 +30,6 @@
 //
 */
 
-/** \defgroup GPU cmtkGPU library
- * This library provides classes related to computations on GPU hardware via the CUDA
- * and potentially OpenCL programming paradigms.
+/** \defgroup Qt cmtkQt Library
+ * This library provides classes to interface lower-level CMTK classes with the Qt toolkit.
  */
