@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -150,8 +150,9 @@ public:
 
   /** Evaluate functional after change of a single parameter.
    *@param warp The current deformation.
-   *@param metric The metric computed for the base-deformed volume.
+   *@param localMetric The local metric oobject for partial recomputation.
    *@param voi Volume-of-Influence for the parameter under consideration.
+   *\param vectorCache Pre-allocated cache storage for locally used transformed vectors.
    *@return The metric after recomputation over the given volume-of-influence.
    */
   typename Self::ReturnType EvaluateIncremental( const SplineWarpXform& warp, VM& localMetric, const DataGrid::RegionType& voi, Vector3D *const vectorCache ) 

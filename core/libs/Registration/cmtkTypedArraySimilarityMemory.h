@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -61,8 +61,6 @@ public:
    * check for every call to GetRangeX or GetRangeY. If the current data
    * range exceeds the one stored in this object, the latter will be adapted
    * accordingly.
-   *\param safetyMargin The percentage of the actual value range that will be 
-   * stored in this object.
    */
   TypedArraySimilarityMemory( const bool repeatCheck = true )
     : ValidX( false ), ValidY( false ), MinNumBins( 8 ), MaxNumBins( 128 )

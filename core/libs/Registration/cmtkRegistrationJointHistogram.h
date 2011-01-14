@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -93,7 +93,7 @@ public:
    * byte array (see InitDataset).
    *@param refIdx Index of the current reference data sample.
    *@param fltIdx Index of the current floating data sample.
-   *@param location Fractional voxel coordinate of the probed floating data 
+   *@param frac Fractional voxel coordinate of the probed floating data 
    * value.
    */
   inline void Proceed( const size_t refIdx, const size_t fltIdx, const Types::Coordinate* frac ) 

@@ -127,8 +127,6 @@ public:
    *
    * From the resulting sequence of reference/floating voxel pairs, the 
    * selected voxel-based similarity measure (metric) is computed.
-   *@param v The current parameter vector describing the effective coordinate
-   * transformation.
    *@return The computed similarity measure as returned by the "Metric" 
    * subobject.
    *@see VolumeClipping
