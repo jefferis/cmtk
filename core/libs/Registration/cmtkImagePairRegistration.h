@@ -291,7 +291,7 @@ protected:
    * application, etc...
    *@param v The vector of resulting transformation parameters.
    */
-  virtual void OutputResult ( const CoordinateVector* ) {};
+  virtual void OutputResult ( const CoordinateVector* v ) {}
   
   /** Finalize registration.
    * This function is called after registration has been terminated. It can

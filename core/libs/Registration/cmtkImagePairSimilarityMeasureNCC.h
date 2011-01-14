@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -77,10 +77,10 @@ public:
   /** Constructor.
    * For reference and floating volume, InitDataset is called.
    *@param refVolume The reference (fixed) volume.
-   *@param fltVolume The floating (transformed) volume.
+   *@param fltVolume The floating (moving) volume.
+   *\param interpolation ID of the interpolation algorithm to use for the floating image.
    */
-  ImagePairSimilarityMeasureNCC ( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume,
-				  const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
+  ImagePairSimilarityMeasureNCC ( const UniformVolume::SmartPtr& refVolume, const UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
 
   /// Constant copy constructor.
   ImagePairSimilarityMeasureNCC ( const Self& other );

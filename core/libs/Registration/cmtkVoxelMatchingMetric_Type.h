@@ -122,8 +122,6 @@ public:
      *@param volume The original volume data.
      *@param defNumBins The desired number of bins. If this parameter is
      * zero, a suitable number is automatically determined.
-     *@param numBins The referenced variable holds the acutally allocated 
-     * number of bins.
      *@param bounds User-specified bounds for data values. All values
      * outside this range will be set to the upper or lower limit and sorted into the
      * first or last histogram bin, respectively.
