@@ -2,20 +2,8 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
-Release Notes -- CMTK 1.5.4
+Release Notes -- CMTK 1.5.5
 ===========================
-
-This release introduces two new groupwise image registration tools, which
-replace the four previous tools. The tool "groupwise_affine" replaces the
-"groupwise_rmi" and "congeal" tools. The tool "groupwise_warp" replaces the
-"groupwise_rmi_warp" and "congeal_warp" tools. Each of the new tools supports
-command line options "--rmi" and "--congeal", which select the algorithm
-underlying one of the two tools that the respecitve new tool replaces.
-
-The  "film", "volume_injection", and "volume_reconstruction" now have more
-logical and consistent command line options. This leads to incompatibility
-with some of their previous options. The "volume_reconstruction" tool also now
-defaults to cubic, rather than linear, inverse interpolation.
 
 For a complete list of changes and fixes, see the CHANGELOG file.
 
