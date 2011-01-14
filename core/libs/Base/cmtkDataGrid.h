@@ -1,8 +1,8 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
-//  Copyright 1997-2011 Torsten Rohlfing
+//  Copyright 1997-2010 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -334,9 +334,9 @@ protected:
    *@param y Grid index y.
    *@param z Grid index z.
    *\param location Location within grid cell.
-   *@param from 3D coordinate of the lower-left-front voxel of the cell
+   *@param cellFrom 3D coordinate of the lower-left-front voxel of the cell
    * enclosing the given location.
-   *@param to 3D coordinate of the upper-right-rear voxel of the cell
+   *@param cellTo 3D coordinate of the upper-right-rear voxel of the cell
    * enclosing the given location.
    *@return True if there is valid data for all eight voxels enclosing the 
    * given location, so that the interpolation could be completed successfully,
@@ -349,7 +349,9 @@ protected:
    * of interpolations from a given data volume of known pixel type are required.
    *
    *\param dataPtr Pointer to the primitive data array.
-   *@param location 3D coordinate to interpolate data at.
+   *@param x Grid index x.
+   *@param y Grid index y.
+   *@param z Grid index z.
    *@param gridPosition (x,y,z) indices of the voxel containing the given
    * location.
    *@param cellFrom 3D coordinate of the lower-left-front voxel of the cell
@@ -360,8 +362,7 @@ protected:
    */
   template<class TData>
   inline TData TrilinearInterpolation
-  ( const TData* dataPtr, const int x, const int y, const int z, const Self::SpaceVectorType& gridPosition, const Types::Coordinate* cellFrom, 
-    const Types::Coordinate* cellTo ) const;
+  ( const TData* dataPtr, const int x, const int y, const int z, const Self::SpaceVectorType& gridPosition, const Types::Coordinate* cellFrom, const Types::Coordinate* cellTo ) const;
 
   /** Utility function for trilinear interpolation from multiple primitive data arrays of identical grid structure.
    * This function is provided for computational efficiency when a large number 
@@ -369,8 +370,14 @@ protected:
    */
   template<class TData,class TOutputIterator>
   inline void TrilinearInterpolation
-  ( TOutputIterator result, const std::vector<TData*>& dataPtr, const int x, const int y, const int z,
-    const Types::Coordinate fracX, const Types::Coordinate fracY, const Types::Coordinate fracZ ) const;
+  ( TOutputIterator result /*!< Output iterator to store interpolated values.*/,
+    const std::vector<TData*>& dataPtr /*!< Vector of data arrays to interpolate from */, 
+    const int x /*!< Grid position x */, 
+    const int y /*!< Grid position y */, 
+    const int z /*!< Grid position z */,
+    const Types::Coordinate fracX /*!< Fractional coordinate X within pixel */, 
+    const Types::Coordinate fracY /*!< Fractional coordinate Y within pixel */, 
+    const Types::Coordinate fracZ /*!< Fractional coordinate Z within pixel */ ) const;
 
   /// Offset to next voxel column.
   int nextI;
@@ -395,7 +402,7 @@ protected:
 
   /** Extract orthogonal slice as a data grid object.
    */
-  virtual Self* ExtractSliceVirtual( const int axis, const int plane ) const;
+  virtual Self* ExtractSliceVirtual( const int axis /*!< Coordinate axis perpendicular to extracted plane*/, const int plane /*!< Index of extracted plane */ ) const;
 
 private:
   /** Crop region.

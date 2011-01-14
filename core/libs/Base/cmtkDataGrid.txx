@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -166,8 +167,7 @@ DataGrid
   for ( size_t i = 0; i < dataPtr.size(); ++i, ++result )
     {    
     const TData* data = dataPtr[i] + offset;
-    *result = static_cast<TData>( w0 * data[0] +     w1 * data[nextI] +  w2 * data[nextJ] +  w3 * data[nextIJ] +
-				  w4 * data[nextK]+  w5 * data[nextIK] + w6 * data[nextJK] + w7 * data[nextIJK] );
+    *result = static_cast<TData>( w0 * data[0] +     w1 * data[nextI] +  w2 * data[nextJ] +  w3 * data[nextIJ] + w4 * data[nextK]+  w5 * data[nextIK] + w6 * data[nextJK] + w7 * data[nextIJK] );
     }
 }
 
