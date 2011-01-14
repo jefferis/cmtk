@@ -233,7 +233,7 @@ public:
   /** Return orthogonal slice.
    * This function calls its equivalent in DataGrid and adds calibration
    * info (i.e., correct pixel sizes) to the resulting image.
-   *\NOTE The pixel size if taken from the size of the first grid element along
+   *\note The pixel size if taken from the size of the first grid element along
    * each axis -- non-uniform spacings will lead to incorrect results.
    */
   virtual ScalarImage* GetOrthoSlice( const int axis, const unsigned int plane ) const;
@@ -248,7 +248,7 @@ public:
   /** Return interpolated orthogonal slice.
    * This function calls its non-interpolating counterpart twice and performs
    * a 1-D interpolation on the results to form the interpolated slice.
-   *\NOTE The pixel size if taken from the size of the first grid element along
+   *\note The pixel size if taken from the size of the first grid element along
    * each axis -- non-uniform spacings will lead to incorrect results.
    */
   virtual ScalarImage* GetOrthoSliceInterp( const int axis, const Types::Coordinate location ) const;
@@ -256,7 +256,7 @@ public:
   /** Return orthogonal slice by location.
    * This function looks up a given orthogonal slice location and returns the 
    * nearest slice from this volume.
-   *\NOTE The pixel size if taken from the size of the first grid element along
+   *\note The pixel size if taken from the size of the first grid element along
    * each axis -- non-uniform spacings will lead to incorrect results.
    */
   virtual ScalarImage* GetNearestOrthoSlice( const int axis, const Types::Coordinate location ) const;

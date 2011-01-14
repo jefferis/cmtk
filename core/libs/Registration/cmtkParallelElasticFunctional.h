@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -150,7 +150,7 @@ public:
   
   /** Evaluate functional after change of a single parameter.
    *@param warp The current deformation.
-   *@param metric The metric computed for the base-deformed volume.
+   *@param localMetric The local working metric.
    *@param voi Volume-of-Influence for the parameter under consideration.
    *@return The metric after recomputation over the given volume-of-influence.
    */

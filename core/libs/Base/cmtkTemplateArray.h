@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -121,8 +121,8 @@ public:
     this->Alloc( datasize ); 
   }
 
-  /**@memo Destructor.
-    Free memory by a call to FreeData().
+  /** Destructor.
+   * Free memory by a call to FreeData().
    */
   virtual ~TemplateArray () 
   {    

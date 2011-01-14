@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -118,10 +118,10 @@ public:
   virtual void CreateTemplateGrid( const DataGrid::IndexType& dims, const UniformVolume::CoordinateVectorType& deltas );
 
   /** Set template grid.
-   *\param The template grid that defines size and resolution for the
+   *\param templateGrid The template grid that defines size and resolution for the
    *  implicit registration template.
    */
-  virtual void SetTemplateGrid( UniformVolume::SmartPtr& templateGrid, const int downsample = 1, const bool useTemplateData = false );
+  virtual void SetTemplateGrid( UniformVolume::SmartPtr& templateGrid, const int downsample = 1 /*!< Downsampling factor */, const bool useTemplateData = false /*!< Flag to use template data, not just grid */ );
 
   /** Retrieve the template grid.
    */
@@ -472,7 +472,7 @@ protected:
    *  Sufficient memory (for as many pixels as there are in the template grid)
    *  must be allocated there.
    */
-  virtual void InterpolateImage( const size_t /*idx*/, byte* const /*destination*/ ) {} // cannot make this pure virtual because we need to instantiate for affine initialization
+  virtual void InterpolateImage( const size_t idx, byte* const destination ) {} // cannot make this pure virtual because we need to instantiate for affine initialization
 
   /// Vector of reformatted and rescaled image data.
   std::vector<byte*> m_Data;

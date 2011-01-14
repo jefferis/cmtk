@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -57,7 +57,7 @@ cmtk
  * This functional evaluates Lilla Zollei's entropy criterion for massively
  * groupwise image registration.
  *
- *\References
+ *\section ref References
  *
  * [1] L . Zoellei, E. Learned-Miller, E. Grimson, W.M. Wells III: "Efficient 
  *     Population Registration of 3D Data", ICCV 2005, Computer Vision for

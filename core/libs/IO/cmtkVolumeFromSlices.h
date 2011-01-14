@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -169,7 +169,7 @@ protected:
    * By default, all errors are simply printed to the standard error output.
    * Derived classes may override this function to provide 
    * environment-specific interaction.
-   *@message A textual description of the error condition.
+   *\param message A textual description of the error condition.
    */
   virtual void HandleError ( const char* message ) const 
   {

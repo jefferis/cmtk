@@ -71,7 +71,7 @@ public:
    *@param numRefBins The desired number of bins to classify the 
    * reference data. If this parameter is zero (default), a suitable value
    * is automatically determined.
-   *@param numModBins The desired number of bins to classify the 
+   *@param numFltBins The desired number of bins to classify the 
    * model data. If this parameter is zero (default), a suitable value
    * is automatically determined.
    */

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -115,7 +115,7 @@ public:
    *@param dir Direction of the location to add with respect to the current
    * position in search space. This is the index of the parameter we are 
    * modifying.
-   *@step Size of the step, ie. distance of the new location from the current
+   *@param step Size of the step, ie. distance of the new location from the current
    * position in search space.
    */
   void Add ( const double value, const int dir = 0, const R step = 0 ) 

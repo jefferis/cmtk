@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -124,12 +124,9 @@ public:
      * zero, a suitable number is automatically determined.
      *@param numBins The referenced variable holds the acutally allocated 
      * number of bins.
-     *@param minBound User-specified lower boundary for data values. All values
-     * below this limit will be set to equal the limit and sorted into the
-     * first histogram bin.
-     *@param maxBound User-specified upper boundary for data values. All values
-     * above this limit will be set to equal the limit and sorted into the last
-     * histogram bin.
+     *@param bounds User-specified bounds for data values. All values
+     * outside this range will be set to the upper or lower limit and sorted into the
+     * first or last histogram bin, respectively.
      *@return The number of bins required to hold the data. Note that there 
      * will be an extra bin allocated to hold non-existing data values.
      */

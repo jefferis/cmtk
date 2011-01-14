@@ -234,7 +234,7 @@ public:
    * from here. This is useful for looking up the original locations of
    * a large number of closely located vectors, for example all pixels in an
    * image.
-   *\accuracy Accuracy of the inversion, i.e., residual inverse consistency error threshold.
+   *\param accuracy Accuracy of the inversion, i.e., residual inverse consistency error threshold.
    *@return True is the given inverse was succesfully comuted, false if the
    * given warped vector was outside the target domain of this transformation.
    */

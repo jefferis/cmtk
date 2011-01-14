@@ -112,8 +112,8 @@ public:
     AffineXform::MatrixType GetPermutedMatrix( const AffineXform::MatrixType& inMatrix ) const;
     
     /** Get new point index from old point index.
-     *\param origPoint The input pixel index.
-     *\return The offset of the corresponding pixel in the reoriented volume.
+     *\param origPoint The input pixel index in the original image grid.
+     *\param newPoint The output pixel index in the reoriented image grid.
      */
     void GetReorientedIndex( const int* origPoint, int* newPoint ) const
     {

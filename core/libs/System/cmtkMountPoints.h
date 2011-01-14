@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -76,7 +76,7 @@ class MountPoints
 {
 public:
   /** Perform directory substitutions.
-   *@param The original path before substitions.
+   *@param path The original path before substitions.
    *@return A pointer to a static buffer holding the path after all substitions
    * have been done. The buffer is guaranteed to remain unchanged until and 
    * only until the next time Translate() is called.

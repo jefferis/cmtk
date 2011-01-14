@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -124,7 +124,7 @@ public:
    * to 'Parameters' for a detailed description.
    *@see Parameters
    */
-  AffineXform ( const CoordinateVector& v, const bool logScaleFactors = false ) :
+  AffineXform ( const CoordinateVector& v, const bool logScaleFactors = false /*!< Flag for using log scale factors instead of plain scale factors.*/ ) :
       m_LogScaleFactors( logScaleFactors )
   {
     this->AllocateParameterVector( TotalNumberOfParameters );
@@ -137,7 +137,7 @@ public:
    * to 'Parameters' for a detailed description.
    *@see Parameters
    */
-  AffineXform ( const Types::Coordinate v[15], const bool logScaleFactors = false ) :
+  AffineXform ( const Types::Coordinate v[15], const bool logScaleFactors = false /*!< Flag for using log scale factors instead of plain scale factors.*/ ) :
       m_LogScaleFactors( logScaleFactors )
   {
     this->AllocateParameterVector( TotalNumberOfParameters );
