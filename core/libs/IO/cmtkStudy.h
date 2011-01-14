@@ -156,6 +156,7 @@ public:
   /** Read volume data.
    *@param reRead If this is false, then the volume is only read if it has not
    * been read before. Otherwise, it is re-read in any case.
+   *\param orientation Optional three-letter anatomical image orientation.
    *@return True if reading was successful; the "Volume" field has a pointer to
    * the resulting image volume.
    */
@@ -166,7 +167,7 @@ public:
    * parameter is NULL pointer), then a name is constructed from the file 
    * system path of this study.
    */
-  const char* SetMakeName( const char* name = NULL, const int suffix = 0 );
+  const char* SetMakeName( const char* name = NULL /*!< New study name */, const int suffix = 0 /*!< Unique numerical suffix to be added to study name if other studies with the same name exist. */ );
 
   /// Static study reader function.
   static Study* Read( const char* path );

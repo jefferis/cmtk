@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -93,22 +93,31 @@ public:
   }
 
   /** Read image from filesystem and reorient to align anatomy with coordinate axes.
+   *\param path Filesystem path of the image to read.
    *\param orientation Three-character orientation code. The image will be brought into the orientation
    * specified by this string. Default is "RAS", i.e., the returned image will be oriented so that the
    * positive x axis is aligned with the anatomical L/R (left/right) direction, the y axis is aligned 
    * with the P/A (posterior/anterior) direction, and the y axis is aligned with the I/S (inferior/superior) 
    * direction.
+   *\param verbose Flag for verbose operation: if true, write status information to standard error.
    */
   static UniformVolume::SmartPtr ReadOriented( const char *path, const char* orientation, const bool verbose = false );
 
   /** Read image from filesystem and reorient to align anatomy with coordinate axes of standard coordinate system ("RAS").
+   *\param path Filesystem path of the image to read.
+   *\param verbose Flag for verbose operation: if true, write status information to standard error.
    */
   static UniformVolume::SmartPtr ReadOriented( const char *path, const bool verbose = false )
   {
     return Self::ReadOriented( path, AnatomicalOrientation::ORIENTATION_STANDARD, verbose );
   }
 
-  /// Write volume data to filesystem.
+  /** Write volume data to filesystem.
+   *\param volume Image object that is written to disk.
+   *\param format Selector for output file format.
+   *\param path Filesystem path of the image to write.
+   *\param verbose Flag for verbose operation: if true, write status information to standard error.
+   */   
   static void Write( const UniformVolume& volume, const FileFormatID format, const char *path, const bool verbose = false );
 
   /** Write volume data to filesystem with automatic format parsing.
@@ -117,6 +126,9 @@ public:
    *  with private extensions and questionable assumptions regarding the anatomical
    *  orientation of the image. To write a NIFTI hdr/img pair that avoids these problems,
    *  use the filename suffix ".img" (or write a single-file NIFTI using the ".nii" suffix).
+   *\param volume Image object that is written to disk.
+   *\param pathAndFormat Filesystem path of the image to write.
+   *\param verbose Flag for verbose operation: if true, write status information to standard error.
    */
   static void Write( const UniformVolume& volume, const char *pathAndFormat, const bool verbose = false );
 

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -190,8 +190,6 @@ public:
   /** Utility function: Replace one reference counted object by another.
    * References are updated accordingly. Substitution of a pointer by itself
    * does not have any effect. The function is NULL safe.
-   *@param C Template parameter: The type of the objects pointed to by both
-   * function parameters.
    *@param to Reference to a pointer to be replaced by the pointer given as
    * "from" parameter. If both pointers are different, the reference counter
    * of this object is decremented before overwriting the pointer. It is safe

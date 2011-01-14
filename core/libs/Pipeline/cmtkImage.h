@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -114,7 +114,7 @@ public:
   double GetDataAt( const int index, const double def = 0 );
 
   /** Set data at a certain grid location (index).
-   *@param x Index of requested pixel. Valid range is [0..GetNumPixels()-1].
+   *@param index Index of requested pixel. Valid range is [0..GetNumPixels()-1].
    *@param value Value to set pixel to.
    */
   void SetDataAt( const int index, const double value = 0 );

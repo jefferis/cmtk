@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -158,10 +158,12 @@ private:
    *@param inPtr Pointer to the primitive data array of type T.
    *@param count Number of values in the array pointed to by inPtr. As inPtr
    * is not a TypedArray anymore, we have to make this explicit.
+   *\param paddingFlag Flag for use of padding data.
+   *\param paddingData Padding value. Values equal to this are ignored if "paddingFlag" is true.
    *@see Apply
    */
   template<class T>
-  void ApplyPrimitive( RGB *const outPtr, const T* inPtr, const unsigned int count, const bool nullFlag, const T nullData ) const;
+  void ApplyPrimitive( RGB *const outPtr, const T* inPtr, const unsigned int count, const bool paddingFlag, const T paddingData ) const;
 
   /** Apply table lookup with constant alpha for one primitive data type.
    *@param T Template parameter specifying the primitive data type to lookup
@@ -170,11 +172,13 @@ private:
    * lookup.
    *@param inPtr Pointer to the primitive data array of type T.
    *@param count Number of values in the array pointed to by inPtr. As inPtr
-   * is not a TypedArray anymore, we have to make this explicit.
+   * is not a TypedArray anymore, we have to make this explicit.   
+   *\param paddingFlag Flag for use of padding data.
+   *\param paddingData Padding value. Values equal to this are ignored if "paddingFlag" is true.
    *@see Apply
    */
   template<class T>
-  void ApplyPrimitive( RGBA *const outPtr, const T* inPtr, const unsigned int count, const bool nullFlag, const T nullData ) const;
+  void ApplyPrimitive( RGBA *const outPtr, const T* inPtr, const unsigned int count, const bool paddingFlag, const T paddingData ) const;
 
   /// Label color map: is system-defined by default or can be read from file.
   SegmentationLabelMap LabelColorMap;

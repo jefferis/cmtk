@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -162,12 +162,7 @@ protected:
   /** Find rectilinear area in original reference grid.
    *@param fromVOI Lower corner of area to find.
    *@param toVOI Upper corner of area to find.
-   *@param startX On return, this reference holds the index in x direction of
-   * the original reference grid that is the LOWER bound of the region defined
-   * by fromVOI and toVOI. The parameters startY and startZ have equivalent
-   * meanings.
-   *@return The smallest region of reference 
-   * grid voxels that contains the given coordinate range.
+   *@return The smallest region of reference grid voxels that contains the given coordinate range.
    */
   const DataGrid::RegionType GetReferenceGridRange ( const Vector3D& fromVOI, const Vector3D& toVOI );
 

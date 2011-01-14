@@ -190,7 +190,7 @@ public:
   TypedStream();
 
   /** Open constructor.
-   *@param name Name of the archive to open.
+   *@param filename Name of the archive to open.
    *@param mode Access mode, ie. read-only, write-only, etc.
    */
   TypedStream( const char* filename, const TypedStreamMode mode );

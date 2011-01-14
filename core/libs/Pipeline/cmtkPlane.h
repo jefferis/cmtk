@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -90,7 +90,7 @@ public:
 
   /** Project 3D coordinate onto plane.
    *@param p Projected coordinate.
-   *@param v Original coordinate.
+   *@param q Original coordinate.
    */
   void Project( Vector3D& p, const Vector3D& q ) const;
   

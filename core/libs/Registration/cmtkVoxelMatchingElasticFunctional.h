@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -389,7 +389,7 @@ public:
 
   /** Evaluate functional after change of a single parameter.
    *@param warp The current deformation.
-   *@param metric The metric computed for the base-deformed volume.
+   *@param localMetric Metric object for local recomputation.
    *@param voi Volume-of-Influence for the parameter under consideration.
    *@return The metric after recomputation over the given volume-of-influence.
    */
@@ -598,12 +598,11 @@ protected:
  * corresponding to the given parameters.
  *@return A pointer to the newly created functional of NULL if creation failed.
  *@param metric Index of the voxel similarity measure to be used.
- *@param warp Type of elastic transformation: Linear (0) or Spline (1).
  *@param refVolume Reference volume data.
- *@param modVolume Floating volume data.
+ *@param fltVolume Floating volume data.
  * template.
  */
-VoxelMatchingElasticFunctional* CreateElasticFunctional( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& modVolume );
+VoxelMatchingElasticFunctional* CreateElasticFunctional( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume );
 
 } // namespace
 

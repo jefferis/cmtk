@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -209,8 +209,7 @@ Colormap::Apply( void *const outPtr, const TypedArray* inPtr, const bool generat
 
 template<class T>
 void Colormap::ApplyPrimitive
-( RGB *const outPtr, const T* inPtr, const unsigned int count,
-  const bool paddingFlag, const T paddingData ) const
+( RGB *const outPtr, const T* inPtr, const unsigned int count, const bool paddingFlag, const T paddingData ) const
 {
   if ( Reverse ) 
     {

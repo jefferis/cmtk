@@ -108,6 +108,7 @@ public:
    * pixels of all targets in each dimension, and the minimum isotropic
    * pixel size.
    *
+   *\param targets The vector of target images for this groupwise registration.
    *\param downsample Downsampling factor. The voxel size in the template
    * image is increased by this factor.
    */

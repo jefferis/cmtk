@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -256,11 +256,13 @@ protected:
   /** Enter resolution level.
    * This function is called before entering each resolution level. It can
    * be used to update status displays etc.
-   *@param index Index of the current resolution level. 0 is first (coarsest),
+   *\param v Current parameter vector.
+   *\param f Functional for next level.
+   *@param idx Index of the current resolution level. 0 is first (coarsest),
    * subsequent (finer) resolutions have increasing numbers.
    *@param total Total number of resolution levels.
    */
-  virtual void EnterResolution( CoordinateVector::SmartPtr&, Functional::SmartPtr&, const int, const int );
+  virtual void EnterResolution( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f, const int idx, const int total );
 
   /** Finish resolution level.
    * This function is called after every resolution level. It should do any
