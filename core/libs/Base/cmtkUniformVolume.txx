@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -174,13 +174,13 @@ UniformVolume::ComputeProjection( const int axis ) const
   switch ( axis ) 
     {
     case AXIS_X:
-      projectImage->SetPixelSize( this->GetDelta( AXIS_Y, 0 ), this->GetDelta( AXIS_Z, 0 ) );
+      projectImage->SetPixelSize( this->GetDelta( AXIS_Y ), this->GetDelta( AXIS_Z ) );
       break;
     case AXIS_Y:
-      projectImage->SetPixelSize( this->GetDelta( AXIS_X, 0 ), this->GetDelta( AXIS_Z, 0 ) );
+      projectImage->SetPixelSize( this->GetDelta( AXIS_X ), this->GetDelta( AXIS_Z ) );
       break;
     case AXIS_Z:
-      projectImage->SetPixelSize( this->GetDelta( AXIS_X, 0 ), this->GetDelta( AXIS_Y, 0 ) );
+      projectImage->SetPixelSize( this->GetDelta( AXIS_X ), this->GetDelta( AXIS_Y ) );
       break;
     }
   return projectImage;
