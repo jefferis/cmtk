@@ -76,6 +76,8 @@ public:
    *@param numBinsY The desired number of bins to classify the 
    * floating data. If this parameter is zero (default), a suitable value
    * is automatically determined.
+   *\param boundsX Value range for the X data distribution. Values outside this range will be assigned to the first and last histogram bins, respectively.
+   *\param boundsY Value range for the Y data distribution. Values outside this range will be assigned to the first and last histogram bins, respectively.
    */
   RegistrationJointHistogram
   ( const UniformVolume* refVolume, const UniformVolume* fltVolume,

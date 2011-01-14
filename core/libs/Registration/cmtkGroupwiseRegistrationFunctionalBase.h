@@ -116,7 +116,7 @@ public:
 
   /** Create template grid based on geometry.
    */
-  virtual void CreateTemplateGrid( const DataGrid::IndexType& dims, const UniformVolume::CoordinateVectorType& deltas );
+  virtual void CreateTemplateGrid( const DataGrid::IndexType& dims /*!< Template grid dimensions */, const UniformVolume::CoordinateVectorType& deltas /*!< Template grid deltas (i.e., pixel size). */ );
 
   /** Set template grid.
    *\param templateGrid The template grid that defines size and resolution for the
