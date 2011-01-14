@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,8 +30,7 @@
 //
 */
 
-/** \defgroup IO
- *\title Input and output library
+/** \defgroup IO Input and output library
  * This library provides classes for input and output of images, transformations,
  * and other types of objects.
  */

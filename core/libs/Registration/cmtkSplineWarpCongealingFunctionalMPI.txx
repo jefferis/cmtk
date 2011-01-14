@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -29,6 +29,8 @@
 //  $LastChangedBy$
 //
 */
+
+#ifdef CMTK_BUILD_MPI
 
 namespace
 cmtk
@@ -500,3 +502,5 @@ SplineWarpCongealingFunctional
 }
 
 } // namespace cmtk
+
+#endif // #ifdef CMTK_BUILD_MPI

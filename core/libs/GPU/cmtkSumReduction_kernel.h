@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -45,5 +45,7 @@ template<class T>
 T SumReduction( T* data, const int n );
 
 } // namespace cmtk
+
+//@}
 
 #endif // #ifndef __cmtkSumReduction_kernel_h_included_

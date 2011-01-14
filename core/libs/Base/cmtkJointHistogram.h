@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -334,7 +334,7 @@ public:
   /** Compute joint entropy.
    * From the joint bins, an estimate to the joint entropy of both, 
    * reference and model image is computed.
-   *@param HXY Upon return, this reference holds the estimated joint entropy.
+   *\return The estimated joint entropy.
    */
   double GetJointEntropy() const;
   

@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
@@ -73,7 +73,7 @@ public:
    * This function returns a byte data array where each pixel is one if it is
    * a boundary pixel, i.e., if one of its neighbours in this object has a
    * different value than it has itself. All other pixels are set to zero.
-   *\param multiValue If this is set (default: false), then the resulting
+   *\param multiValued If this is set (default: false), then the resulting
    *  boundary map is multi valued, i.e., instead of setting boundary pixels
    *  to "1", they are set to the value present in the image at that location.
    *\note The boundary contours are at least 2 pixels wide since "boundaryness"

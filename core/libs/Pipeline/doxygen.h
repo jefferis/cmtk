@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,8 +30,7 @@
 //
 */
 
-/** \defgroup Pipeline
- *\title Pipeline processing library
+/** \defgroup Pipeline Pipeline processing library
  * This library provides pipeline-based processing similar to the paradigms
  * used by VTK and, to lesser extent, ITK.
  *\deprecated This library is deprecated and should not be relied on for

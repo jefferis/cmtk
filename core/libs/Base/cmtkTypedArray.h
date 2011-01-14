@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -94,8 +94,8 @@ public:
    *@param size Number of data items in the array.
    *@param freeArray On destruction, the created object will de-allocate the
    * array's memory if and only if this flag is true.
-   *@param paddingflag If this flag is not zero, padding data exists in the array.
-   *@param padding Value used for padding data.
+   *@param paddingFlag If this flag is not zero, padding data exists in the array.
+   *@param paddingData Value used for padding data.
    *@return A pointer to a new typed array object, or NULL if an error 
    * occurred.
    */

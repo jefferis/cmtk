@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -68,7 +68,6 @@ public:
    *\param directions The image direction vectors. "directions[0]" is the 3-D vector of the in-plane x image
    * direction, "directions[1]" is in-plane y, and "directions[2]" is the vector from one plane origin to the
    * origin of the next plane.
-   *\param spacing Three-dimensional vector of pixel spacings; directions[i] needs to be divided by spacing[i] to obtain normalized vector (i=0,1,2).
    *\param spaceAxes Six-character string that defines the orientation of the underlying space. The first two characters
    * relate to the x coordinate, the second two to the y coordinate, and the final two to the z coordinate.
    */

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -464,7 +464,7 @@ public:
   /** Return projection (e.g., MIP, sum) along one axis.
    * This function calls its equivalent in DataGrid and adds calibration
    * info (i.e., correct pixel sizes) to the resulting image.
-   *\NOTE The pixel size if taken from the size of the first grid element along
+   *\note The pixel size if taken from the size of the first grid element along
    * each axis -- non-uniform spacings will lead to incorrect results.
    */
   template<class TAccumulator>

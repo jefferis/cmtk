@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -180,9 +180,8 @@ public:
   }
 
   /** Add weighted symmetric kernel to histogram.
-   *@param sample Index of histogram field.
    */
-  void AddWeightedSymmetricKernel( const size_t bin, const size_t kernelRadius, const T* kernel, const T factor = 1 );
+  void AddWeightedSymmetricKernel( const size_t bin /*!< Histogram bin index */, const size_t kernelRadius /*!< Kernel radius */, const T* kernel /* Pointer to kernel values */, const T factor = 1 /*!< Kernel multiplication factor */ );
   
   /** Add weighted symmetric kernel to histogram.
    *@param bin Index of histogram field.

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,7 +47,7 @@ cmtk
 
 void
 WarpXform::InitGrid
-( const FixedVector<3,Types::Coordinate>& domain, const DataGrid::IndexType& dims )
+( const FixedVector<3,Types::Coordinate>& domain, const Self::IndexType& dims )
 {
   this->Domain = domain;
   this->m_Dims = dims;
@@ -108,7 +108,7 @@ WarpXform::GetDerivativeLandmarksMSD
 
 Types::Coordinate
 WarpXform::GetInverseConsistencyError
-( const WarpXform* inverse, const UniformVolume* volume, const DataGrid::RegionType* voi ) const 
+( const Self* inverse, const UniformVolume* volume, const UniformVolume::RegionType* voi ) const 
 {
   Self::SpaceVectorType v, vv;
   Types::Coordinate result = 0.0;
@@ -146,8 +146,8 @@ WarpXform::GetInverseConsistencyError
 
 void
 WarpXform::GetDerivativeInverseConsistencyError
-( double& lower, double& upper, const WarpXform* inverse,
-  const UniformVolume* volume, const DataGrid::RegionType* voi, 
+( double& lower, double& upper, const Self* inverse,
+  const UniformVolume* volume, const UniformVolume::RegionType* voi, 
   const unsigned int idx, const Types::Coordinate step )
 {
   const Types::Coordinate pOld = this->m_Parameters[idx];

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,8 +30,7 @@
 //
 */
 
-/** \defgroup Segmentation
- *\title Segmentation library
+/** \defgroup Segmentation Segmentation library
  * This library provides classes for atlas-based image segmentation and
  * correction of MR intensity bias field artifacts.
  */

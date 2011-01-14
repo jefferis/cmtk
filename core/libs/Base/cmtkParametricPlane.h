@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -196,7 +196,7 @@ public:
    * The object returned by this function represents a rigid transformation 
    * that aligns the normal vector of this object with one of the coordinate
    * axes.
-   *@param axis The index of the axis to align the normal vector with (0, 1, or
+   *@param normalAxis The index of the axis to align the normal vector with (0, 1, or
    * 2 for x, y, or z, respectively).
    */
   AffineXform* GetAlignmentXform( const byte normalAxis = 0 ) const;
