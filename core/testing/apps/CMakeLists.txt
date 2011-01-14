@@ -51,29 +51,6 @@ SET(testList ${testList}
   avg_admWithAffineNoRefData)
 
 # ==========================================
-# Tests for "congeal" tool
-SET(testList ${testList} 
-  congealFromInit
-  congealMatchHistograms
-  congealFromInitSampling
-  congealBackground 
-  congealUseTemplate
-  congealZeroSumSmooth)
-
-# ==========================================
-# Tests for "congeal_warp" tool
-SET(testList ${testList} 
-  congeal_warpFromInit
-  congeal_warpFitFromInit
-  congeal_warpFromInitZeroSum
-  congeal_warpUseTemplate
-  congeal_warpUseTemplateMatchHistograms
-  congeal_warpMatchHistograms
-  congeal_warpFromInitNoBG
-  congeal_warpUseTemplateNoBG
-  )
-
-# ==========================================
 # Tests for "dbtool"
 IF(CMTK_USE_SQLITE)
   SET(testList ${testList}
@@ -147,23 +124,6 @@ SET(testList ${testList}
   groupwise_warpRMIFromInit
   groupwise_warpRMIFitFromInit
   groupwise_warpRMIFromInitZeroSum
-  )
-
-# ==========================================
-# Tests for "groupwise_rmi" tool
-SET(testList ${testList}
-  groupwise_rmiFromInit
-  groupwise_rmiFromInitDeltaF
-  groupwise_rmiFromInitSampling 
-  groupwise_rmiBackground 
-  groupwise_rmiZeroSumSmooth)
-
-# ==========================================
-# Tests for "congeal_warp" tool
-SET(testList ${testList} 
-  groupwise_rmi_warpFromInit
-  groupwise_rmi_warpFitFromInit
-  groupwise_rmi_warpFromInitZeroSum
   )
 
 IF(NOT CMTK_USE_MPI)
@@ -725,14 +685,14 @@ FOREACH(testName ${testList_wiki})
   ENDIF(CMTK_TESTING_MEMORYCHECK)
 ENDFOREACH(testName ${testList_wiki})
 
-SET_TESTS_PROPERTIES(congeal_warpFromInit PROPERTIES TIMEOUT 4800)
-SET_TESTS_PROPERTIES(congeal_warpFitFromInit PROPERTIES TIMEOUT 4800)
-SET_TESTS_PROPERTIES(congeal_warpFromInitZeroSum PROPERTIES TIMEOUT 4800)
-SET_TESTS_PROPERTIES(congeal_warpUseTemplate PROPERTIES TIMEOUT 6400)
-SET_TESTS_PROPERTIES(congeal_warpFromInitNoBG PROPERTIES TIMEOUT 4800)
-SET_TESTS_PROPERTIES(congeal_warpUseTemplateNoBG PROPERTIES TIMEOUT 6400)
+SET_TESTS_PROPERTIES(groupwise_warpFromInit PROPERTIES TIMEOUT 4800)
+SET_TESTS_PROPERTIES(groupwise_warpFitFromInit PROPERTIES TIMEOUT 4800)
+SET_TESTS_PROPERTIES(groupwise_warpFromInitZeroSum PROPERTIES TIMEOUT 4800)
+SET_TESTS_PROPERTIES(groupwise_warpUseTemplate PROPERTIES TIMEOUT 6400)
+SET_TESTS_PROPERTIES(groupwise_warpFromInitNoBG PROPERTIES TIMEOUT 4800)
+SET_TESTS_PROPERTIES(groupwise_warpUseTemplateNoBG PROPERTIES TIMEOUT 6400)
 
-SET_TESTS_PROPERTIES(groupwise_rmi_warpFromInit groupwise_rmi_warpFitFromInit groupwise_rmi_warpFromInitZeroSum PROPERTIES TIMEOUT 4800)
+SET_TESTS_PROPERTIES(groupwise_warpRMIFromInit groupwise_warpRMIFitFromInit groupwise_warpRMIFromInitZeroSum PROPERTIES TIMEOUT 4800)
 
 IF(NOT CMTK_USE_MPI)
   # ==========================================

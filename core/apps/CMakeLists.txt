@@ -36,14 +36,10 @@ IF(CMTK_SINGLE_COMMAND_BINARY)
   SET(APPS cmtk)
 ELSE(CMTK_SINGLE_COMMAND_BINARY)
   SET(APPS avg_adm
-    congeal
-    congeal_warp
     describe
-    groupwise_rmi
     groupwise_init
     groupwise_affine
     groupwise_warp
-    groupwise_rmi_warp
     )
   
   IF(CMTK_USE_CUDA)
