@@ -229,10 +229,12 @@ public:
    * this function computes only a more or less accurate numerical 
    * approximation to the actual origin of a warped vector. Note also that this
    * computation is everything but computationally efficient.
+   *\param v Input location; is replaced with the inverse transformation applied to it upon return.
    *@param initial Initial estimate for the original location. Search goes
    * from here. This is useful for looking up the original locations of
    * a large number of closely located vectors, for example all pixels in an
    * image.
+   *\accuracy Accuracy of the inversion, i.e., residual inverse consistency error threshold.
    *@return True is the given inverse was succesfully comuted, false if the
    * given warped vector was outside the target domain of this transformation.
    */

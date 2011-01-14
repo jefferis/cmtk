@@ -61,6 +61,7 @@ public:
    *\param width Width (standard deviation) of the Gaussian kernel.
    *\param radius Filter radius in multiples of the filter width. Outside the
    * radius (Euclidean distance) the filter is truncated.
+   *\param maskData Optional binary mask data array.
    *\return A newly allocated TypedArray object that can be used, for 
    * example, to replace the one held by the input image. The data type of the
    * array is identical to the input array.

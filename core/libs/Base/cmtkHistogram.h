@@ -183,10 +183,9 @@ public:
    */
   void AddWeightedSymmetricKernel( const size_t bin /*!< Histogram bin index */, const size_t kernelRadius /*!< Kernel radius */, const T* kernel /* Pointer to kernel values */, const T factor = 1 /*!< Kernel multiplication factor */ );
   
-  /** Add weighted symmetric kernel to histogram.
-   *@param bin Index of histogram field.
+  /** Add weighted symmetric kernel to histogram, spreading contriubtions between adjacent bins.
    */
-  void AddWeightedSymmetricKernelFractional( const double bin, const size_t kernelRadius, const T* kernel, const T factor = 1 );
+  void AddWeightedSymmetricKernelFractional( const double bin /*!< Histogram bin index */, const size_t kernelRadius /*!< Kernel radius */, const T* kernel /* Pointer to kernel values */, const T factor = 1 /*!< Kernel multiplication factor */ );
 
   /** Increment the value of a histogram bins by fractions of 1.
    * The histogram field to increment is identified directly by its index;

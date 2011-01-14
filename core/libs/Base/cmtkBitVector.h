@@ -58,14 +58,14 @@ public:
   typedef SmartPointer<BitVector> SmartPtr;
 
   /** Constructor.
-   * The bitset is allocated, but NOT initialized.
    *@param size Number of bits handled by this object.
+   *\param initial Initial value for the bits in the array.
    */
   BitVector( const size_t size, const bool initial = false );
   
   /** Constructor.
-   * The bitset is allocated, but NOT initialized.
    *@param size Number of bits handled by this object.
+   *@param bitset Byte array that is used to initialize the array.
    */
   BitVector( const size_t size, byte *const bitset );
   
