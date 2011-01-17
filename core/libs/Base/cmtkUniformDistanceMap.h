@@ -103,10 +103,10 @@ public:
   } Flags;
 
   /** Construct map from given volume.
-   *@param volume 3-D feature image.
-   *@param flags Computation flags.
-   *@param value Feature value
-   *@param window Window radius around feature value.
+   *\param volume 3-D feature image.
+   *\param flags Computation flags.
+   *\param value Feature value
+   *\param window Window radius around feature value.
    */
   UniformDistanceMap( const UniformVolume& volume, const byte flags = DEFAULT, const Types::DataItem value = 0, const Types::DataItem window = 0 );
 

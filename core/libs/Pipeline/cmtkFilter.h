@@ -48,7 +48,7 @@ cmtk
  * all classes transforming an input into an output object. Both, input and 
  * output type are defined by template parameters "I" and "O", respectively.
  * "O" is passed directly to the Source parent class.
- *@see Source
+ *\see Source
  */
 template<class I, class O> class Filter : public Source<O> 
 {
@@ -62,7 +62,7 @@ public:
   /** Update this object.
    * Check for changes in the Input object first, then call inherited Update()
    * function from Object.
-   *@see Object#Update
+   *\see Object#Update
    */
   virtual long Update () 
   {

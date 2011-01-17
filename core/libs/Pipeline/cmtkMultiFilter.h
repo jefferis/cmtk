@@ -52,8 +52,8 @@ cmtk
  * serves as a template for all classes transforming more than one input into
  * an output object. For just one input, Filter is probably more efficient
  * as it gets along without the STL "list" class.
- *@see Source
- *@see Filter
+ *\see Source
+ *\see Filter
  */
 template<class O> 
 class MultiFilter : 
@@ -87,7 +87,7 @@ public:
   /** Update this object.
    * Check for changes in all input objects first, then call inherited Update()
    * function from PipelineObject.
-   *@see PipelineObject#Update
+   *\see PipelineObject#Update
    */
   virtual long Update () 
   {

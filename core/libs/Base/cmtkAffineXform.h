@@ -58,7 +58,7 @@ cmtk
  * the matrix itself or a parameter vector. Both representations are 
  * permanently accessible and held mutually up-to-date whenever one of them
  * changes.
- *@author $Author$
+ *\author $Author$
  */
 class AffineXform : 
   /// Inherit virtual interface from generic transformation.
@@ -104,7 +104,7 @@ public:
    *\note It is safe to use the same address for source and destination of this
    * operation.
    *\return The rotated, scaled, and sheared vector.
-   *@param v The vector to be rotated, scaled, and sheared.
+   *\param v The vector to be rotated, scaled, and sheared.
    */
   Self::SpaceVectorType RotateScaleShear ( const Self::SpaceVectorType& v ) const;
 
@@ -119,12 +119,11 @@ public:
   }
 
   /** Create transformation from parameter vector.
-   *@param v The parameter vector defining the desired transformation. Refer
-   * to 'Parameters' for a detailed description.
-   *@see Parameters
+   *\see Parameters
    */
-  AffineXform ( const CoordinateVector& v, const bool logScaleFactors = false /*!< Flag for using log scale factors instead of plain scale factors.*/ ) :
-      m_LogScaleFactors( logScaleFactors )
+  AffineXform ( const CoordinateVector& v /*!< The parameter vector defining the desired transformation. Refer to 'Parameters' for a detailed description. */, 
+		const bool logScaleFactors = false /*!< Flag for using log scale factors instead of plain scale factors.*/ ) :
+    m_LogScaleFactors( logScaleFactors )
   {
     this->AllocateParameterVector( TotalNumberOfParameters );
     this->NumberDOFs = this->DefaultNumberOfDOFs();
@@ -132,12 +131,11 @@ public:
   }
 
   /** Create transformation from raw parameter array.
-   *@param v The parameter vector defining the desired transformation. Refer
-   * to 'Parameters' for a detailed description.
-   *@see Parameters
+   *\see Parameters
    */
-  AffineXform ( const Types::Coordinate v[15], const bool logScaleFactors = false /*!< Flag for using log scale factors instead of plain scale factors.*/ ) :
-      m_LogScaleFactors( logScaleFactors )
+  AffineXform ( const Types::Coordinate v[15] /*!<  The parameter vector defining the desired transformation. Refer to 'Parameters' for a detailed description. */, 
+		const bool logScaleFactors = false /*!< Flag for using log scale factors instead of plain scale factors.*/ ) :
+    m_LogScaleFactors( logScaleFactors )
   {
     this->AllocateParameterVector( TotalNumberOfParameters );
     this->NumberDOFs = this->DefaultNumberOfDOFs();
@@ -147,8 +145,8 @@ public:
   }
 
   /** Create transformation from transformation matrix.
-   *@param matrix The homogeneous 4x4 affine transformation matrix.
-   *@param center If non-NULL, this parameter points to a three-coordinate
+   *\param matrix The homogeneous 4x4 affine transformation matrix.
+   *\param center If non-NULL, this parameter points to a three-coordinate
    * vector defining the rotation center of the constructed transformation.
    * This does only effect the computation of the translation vector when
    * decomposing the given matrix into its parameter representation.
@@ -156,8 +154,8 @@ public:
   AffineXform ( const Types::Coordinate matrix[4][4], const Types::Coordinate* center = NULL );
 
   /** Create transformation from transformation matrix.
-   *@param matrix The homogeneous 4x4 affine transformation matrix.
-   *@param center If non-NULL, this parameter points to a three-coordinate
+   *\param matrix The homogeneous 4x4 affine transformation matrix.
+   *\param center If non-NULL, this parameter points to a three-coordinate
    * vector defining the rotation center of the constructed transformation.
    * This does only effect the computation of the translation vector when
    * decomposing the given matrix into its parameter representation.
@@ -167,10 +165,10 @@ public:
   /** Create transformation from transformation matrix.
    * Translation vector and rotation center are given in addition to the
    * 4x4 transformation matrix..
-   *@param matrix The homogeneous 4x4 affine transformation matrix. If a
+   *\param matrix The homogeneous 4x4 affine transformation matrix. If a
    * translation is defined by this matrix, it is ignored.
-   *@param xlate Translation of the constructed transformation.
-   *@param center Rotation center of the constructed transformation.
+   *\param xlate Translation of the constructed transformation.
+   *\param center Rotation center of the constructed transformation.
    */
   AffineXform ( const Types::Coordinate matrix[4][4], const Types::Coordinate xlate[3], const Types::Coordinate center[3] );
   
@@ -282,7 +280,7 @@ public:
     return true;
   }
 
-  /**@name Read-only parameter retrieval.
+  /**\name Read-only parameter retrieval.
    */
   //@{
   /// Return pointer to translation parameters.
@@ -297,7 +295,7 @@ public:
   const Types::Coordinate* RetCenter () const { return this->m_Parameters+12; }
   //@}
 
-  /**@name Modifyable parameter retrieval.
+  /**\name Modifyable parameter retrieval.
    */
   //@{
   /// Return pointer to translation parameters.
@@ -312,7 +310,7 @@ public:
   Types::Coordinate* RetCenter () { return this->m_Parameters+12; }
   //@}
 
-  /**@name Direct parameter modifications.
+  /**\name Direct parameter modifications.
    */
   //@{
   /// Set transformation's translation vector.
@@ -404,7 +402,7 @@ public:
   }
   //@}
   
-  /**@name Matrix access.
+  /**\name Matrix access.
    */
   //@{
 

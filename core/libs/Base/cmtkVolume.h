@@ -63,7 +63,7 @@ cmtk
  * This class handles three-dimensional volume data with a coordinate
  * transformation and associated distance measure. Methods to retrieve data and
  * general structural information are provided.
- *@author Torsten Rohlfing
+ *\author Torsten Rohlfing
  */
 class Volume : 
   /// Inherit from 3-D data grid.
@@ -116,7 +116,7 @@ public:
   virtual ~Volume () {};
 
   /** Get minumum extent.
-   *@return Minimum volume extent among the three spatial dimensions.
+   *\return Minimum volume extent among the three spatial dimensions.
    */
   virtual Types::Coordinate MinSize () const 
   {
@@ -124,7 +124,7 @@ public:
   }
   
   /** Get maximum extent.
-   *@return Maximum volume extent among the three spatial dimensions.
+   *\return Maximum volume extent among the three spatial dimensions.
    */
   virtual Types::Coordinate MaxSize () const 
   {
@@ -132,7 +132,7 @@ public:
   }
   
   /** Get total volume.
-   *@return Product of the spatial extents in all three coordinate directions.
+   *\return Product of the spatial extents in all three coordinate directions.
    */
   virtual Types::Coordinate TotalVolume () const 
   {
@@ -146,13 +146,13 @@ public:
   }
   
   /** Calculate volume center.
-   *@return Returned is the center of the bounding box.
+   *\return Returned is the center of the bounding box.
    */
   Vector3D GetCenter () const;
 
 protected:
   /** Get information needed for trilinear interpolation.
-   *@return 1 if operation was successful, 0 if no valid data could be found
+   *\return 1 if operation was successful, 0 if no valid data could be found
    * at the given location.
    */
   bool GetTrilinear ( ProbeInfo&, const int, const int, const int, const Vector3D&, const Types::Coordinate*, const Types::Coordinate* ) const;

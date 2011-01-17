@@ -72,9 +72,9 @@ public:
 
   /** Constructor.
    * For reference and model volume, InitDataset is called.
-   *@param refVolume The reference (fixed) volume.
-   *@param fltVolume The model (transformed) volume.
-   *@param initData If this flag is set (default), then the internal 
+   *\param refVolume The reference (fixed) volume.
+   *\param fltVolume The model (transformed) volume.
+   *\param initData If this flag is set (default), then the internal 
    * representation of the pixel data for both volumes is also created.
    * Derived classes may want to prevent this if they define their own
    * specific initialization (e.g., igsVoxelMatchingJointHistogram).

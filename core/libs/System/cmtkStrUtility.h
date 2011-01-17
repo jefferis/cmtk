@@ -48,7 +48,7 @@ cmtk
  * This function is a wrapper for the standard library's "strcmp" function.
  * This wrapper is safe in that it accepts any combination of NULL and non-NULL
  * pointers to both arguments.
- *@return 0 if the strings pointed to by "s1" and "s2" are equal, a value
+ *\return 0 if the strings pointed to by "s1" and "s2" are equal, a value
  * greater than zero if s1 is greater than s2, and a value smaller than zero
  * if s1 is smaller than s2. NULL pointers are considered smaller than any
  * other string except the NULL pointer itself.
@@ -71,24 +71,24 @@ void StrFree( char *const s );
 /** Compare string prefix.
  * This function tests whether a given string contains another string as its
  * intial character sequence.
- *@param s The string.
- *@param prefix The initial sequence to be tested.
- *@return A non-zero value is returned if and only if the string 's' starts
+ *\param s The string.
+ *\param prefix The initial sequence to be tested.
+ *\return A non-zero value is returned if and only if the string 's' starts
  * with the string 'prefix'.
  */
 int StrPrefixCmp( const char *s, const char* prefix );
 
 /** Extract directory component from a complete filesystem path.
- *@param path A complete filesystem path.
- *@return A pointer to a buffer containing the directory component of 'path' as
+ *\param path A complete filesystem path.
+ *\return A pointer to a buffer containing the directory component of 'path' as
  * a null-terminated string. This is a static buffer that is only guaranteed to
  * remain unchanged until the next call to one of the functions in the library.
  */
 const char *StrDir( const char *path );
 
 /** Extract filename component from a complete filesystem path.
- *@param path A complete filesystem path.
- *@return A pointer to a buffer containing the filename component of 'path' as
+ *\param path A complete filesystem path.
+ *\return A pointer to a buffer containing the filename component of 'path' as
  * a null-terminated string. This is a static buffer that is only guaranteed to
  * remain unchanged until the next call to one of the functions in the library.
  */

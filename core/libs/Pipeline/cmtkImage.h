@@ -83,48 +83,48 @@ public:
   ScalarImage* GetScalarImage() const;
 
   /** Return data at a certain grid location (pixel).
-   *@param x Index of requested pixel in x-direction. Valid range is 
+   *\param x Index of requested pixel in x-direction. Valid range is 
    * [0..Dims[0]-1].
-   *@param y Index of requested pixel in y-direction. Valid range is 
+   *\param y Index of requested pixel in y-direction. Valid range is 
    * [0..Dims[1]-1].
-   *@param def Value returned when there is no valid data at the queried
+   *\param def Value returned when there is no valid data at the queried
    * position. This parameter defaults to zero.
-   *@return The value of the pixel at position (x,y) or the value of parameter
+   *\return The value of the pixel at position (x,y) or the value of parameter
    * def if there was no valid data for this position.
    */
   double GetDataAt( const int x, const int y, const double def = 0 );
 
   /** Set data at a certain grid location (pixel).
-   *@param x Index of requested pixel in x-direction. Valid range is 
+   *\param x Index of requested pixel in x-direction. Valid range is 
    * [0..Dims[0]-1].
-   *@param y Index of requested pixel in y-direction. Valid range is 
+   *\param y Index of requested pixel in y-direction. Valid range is 
    * [0..Dims[1]-1].
-   *@param value Value to set pixel to.
+   *\param value Value to set pixel to.
    */
   void SetDataAt( const int x, const int y, const double value = 0 );
 
   /** Return data at a certain grid location (index).
-   *@param index Index of requested pixel. Valid range is 
+   *\param index Index of requested pixel. Valid range is 
    * [0..GetNumPixels()-1].
-   *@param def Value returned when there is no valid data at the queried
+   *\param def Value returned when there is no valid data at the queried
    * position. This parameter defaults to zero.
-   *@return The value of the pixel at position (x,y) or the value of parameter
+   *\return The value of the pixel at position (x,y) or the value of parameter
    * def if there was no valid data for this position.
    */
   double GetDataAt( const int index, const double def = 0 );
 
   /** Set data at a certain grid location (index).
-   *@param index Index of requested pixel. Valid range is [0..GetNumPixels()-1].
-   *@param value Value to set pixel to.
+   *\param index Index of requested pixel. Valid range is [0..GetNumPixels()-1].
+   *\param value Value to set pixel to.
    */
   void SetDataAt( const int index, const double value = 0 );
 
   /** Return data at a certain grid location (in world coordinates).
-   *@param x Location of requested pixel in x-direction.
-   *@param y Location of requested pixel in y-direction. 
-   *@param def Value returned when there is no valid data at the specified
+   *\param x Location of requested pixel in x-direction.
+   *\param y Location of requested pixel in y-direction. 
+   *\param def Value returned when there is no valid data at the specified
    * position. This parameter defaults to zero.
-   *@return The value of the pixel at position (x,y) or the value of parameter
+   *\return The value of the pixel at position (x,y) or the value of parameter
    * "def" if there was no valid data for this position.
    */
   double GetDataAt( const double x, const double y, const double def = 0 );

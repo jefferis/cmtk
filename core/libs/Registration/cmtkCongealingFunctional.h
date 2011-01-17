@@ -100,12 +100,11 @@ public:
   virtual void SetNumberOfHistogramBins( const size_t numberOfHistogramBins );
 
   /** Set template grid.
-   *\param templateGrid The template grid that defines size and resolution for the
-   *  implicit registration template.
    */
-  virtual void SetTemplateGrid( UniformVolume::SmartPtr& templateGrid, const int downsample = 1 /*!< Grid downsampling factor */, 
+  virtual void SetTemplateGrid( UniformVolume::SmartPtr& templateGrid /*!< The template grid that defines size and resolution for the implicit registration template. */, 
+				const int downsample = 1 /*!< Grid downsampling factor */, 
 				const bool useTemplateData = false /*!< Flag to use template pixel data, not just grid, in registration */ );
-
+  
   /// Evaluate functional with currently set parameters.
   virtual typename Self::ReturnType Evaluate();
   

@@ -55,7 +55,7 @@ class VolumeFromStudy :
 {
 public:
   /** Build volume from slice images.
-   *@see VolumeFromSlices#AssembleVolume
+   *\see VolumeFromSlices#AssembleVolume
    */
   virtual const UniformVolume::SmartPtr AssembleVolume ( const StudyImageSet* study, const bool verbose = false );
 

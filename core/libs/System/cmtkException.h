@@ -59,9 +59,9 @@ class Exception :
 {
 public:
   /** Constructor.
-   *@param errorMsg An optional error message describing the condition causing
+   *\param errorMsg An optional error message describing the condition causing
    * the exception.
-   *@param fromObject An optional pointer to the object that encountered the
+   *\param fromObject An optional pointer to the object that encountered the
    * condition causing the exception.
    */
   Exception( const std::string& errorMsg = "", const void *const fromObject = NULL ) 

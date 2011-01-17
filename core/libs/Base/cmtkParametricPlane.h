@@ -128,7 +128,7 @@ public:
   }
 
   /** Determine which side of the plane a point is on.
-   *@return 0, if given point is on the plane; +1 if point is on the same side
+   *\return 0, if given point is on the plane; +1 if point is on the same side
    * as Origin; -1, if point is on the other side, seen from Origin.
    */
   char GetWhichSide( const Self::CoordinateVectorType& point ) const 
@@ -196,7 +196,7 @@ public:
    * The object returned by this function represents a rigid transformation 
    * that aligns the normal vector of this object with one of the coordinate
    * axes.
-   *@param normalAxis The index of the axis to align the normal vector with (0, 1, or
+   *\param normalAxis The index of the axis to align the normal vector with (0, 1, or
    * 2 for x, y, or z, respectively).
    */
   AffineXform* GetAlignmentXform( const byte normalAxis = 0 ) const;

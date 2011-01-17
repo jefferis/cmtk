@@ -77,16 +77,16 @@ public:
   ClassStream() : TypedStream() {}
 
   /** Open constructor.
-   *@param name Name of the archive to open.
-   *@param mode Access mode, ie. read-only, write-only, etc.
+   *\param filename Name of the archive to open.
+   *\param mode Access mode, ie. read-only, write-only, etc.
    */
   ClassStream( const char *filename, const FileMode mode )
     : TypedStream( filename,  (TypedStreamMode) mode ) {}
 
   /** Open constructor for separate path and archive names.
-   *@param dir Directory to open archive in.
-   *@param archive Name of the archive to open.
-   *@param mode Access mode, ie. read-only, write-only, etc.
+   *\param dir Directory to open archive in.
+   *\param archive Name of the archive to open.
+   *\param mode Access mode, ie. read-only, write-only, etc.
    */
   ClassStream( const char *dir, const char *archive, const FileMode mode )
     : TypedStream( dir, archive, (TypedStreamMode) mode ) {}

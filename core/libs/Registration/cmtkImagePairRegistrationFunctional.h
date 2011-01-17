@@ -100,8 +100,8 @@ public:
   /** Constructor.
    * Init pointers to volume and transformation objects and initialize
    * internal data structures.
-   *@param reference The reference (i.e. static) volume.
-   *@param floating The floating (i.e. transformed) volume.
+   *\param reference The reference (i.e. static) volume.
+   *\param floating The floating (i.e. transformed) volume.
    */
   ImagePairRegistrationFunctional( UniformVolume::SmartConstPtr& reference, UniformVolume::SmartConstPtr& floating )
     : m_MatchedLandmarkList( NULL ),
@@ -160,9 +160,9 @@ protected:
   Types::DataItem m_ForceOutsideValueRescaled;
 
   /** Find rectilinear area in original reference grid.
-   *@param fromVOI Lower corner of area to find.
-   *@param toVOI Upper corner of area to find.
-   *@return The smallest region of reference grid voxels that contains the given coordinate range.
+   *\param fromVOI Lower corner of area to find.
+   *\param toVOI Upper corner of area to find.
+   *\return The smallest region of reference grid voxels that contains the given coordinate range.
    */
   const DataGrid::RegionType GetReferenceGridRange ( const Vector3D& fromVOI, const Vector3D& toVOI );
 

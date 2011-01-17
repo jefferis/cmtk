@@ -119,7 +119,7 @@ public:
   virtual DataGrid* GetDownsampledAndAveraged( const int (&downsample)[3] ) const;
 
   /** Reorientation constructor function.
-   *@param newOrientation Three letter orientation code that specifies the anatomically-based
+   *\param newOrientation Three letter orientation code that specifies the anatomically-based
    * orientation of the reoriented volume. Each letter can be one of the following: R, L, A, 
    * P, I, S. These stand for Right, Left, Anterior, Posterior, Inferior, Superior. 
    *
@@ -228,7 +228,7 @@ public:
   }
 
   /** Return data after mirroring.
-   *@param axis Coordinate axis normal to mirror plane. Default is AXIS_X
+   *\param axis Coordinate axis normal to mirror plane. Default is AXIS_X
    * (mirror about mid-sagittal plane).
    */
   TypedArray::SmartPtr GetDataMirrorPlane( const int axis = AXIS_X ) const;
@@ -272,8 +272,8 @@ public:
   const Self::IndexType GetCropRegionIncrements() const;
 
   /** Automatically crop to minimal region above given threshold.
-   *@param threshold The cropping threshold.
-   *@param recrop If this flag is true, then the cropping will be performed
+   *\param threshold The cropping threshold.
+   *\param recrop If this flag is true, then the cropping will be performed
    * inside an already existing cropping region. If this flag is false 
    * (default), then any pre-set crop region is ignored.
    *\param margin Width of additional margin added around the threshold-cropped region.
@@ -328,18 +328,18 @@ public:
 
 protected:
   /** Utility function for trilinear interpolation.
-   *@param data This reference is set to the interpolated data value. It is 
+   *\param data This reference is set to the interpolated data value. It is 
    * valid if and only if this function returns 1.
-   *@param location 3D coordinate to interpolate data at.
-   *@param x Grid index x.
-   *@param y Grid index y.
-   *@param z Grid index z.
+   *\param location 3D coordinate to interpolate data at.
+   *\param x Grid index x.
+   *\param y Grid index y.
+   *\param z Grid index z.
    *\param location Location within grid cell.
-   *@param cellFrom 3D coordinate of the lower-left-front voxel of the cell
+   *\param cellFrom 3D coordinate of the lower-left-front voxel of the cell
    * enclosing the given location.
-   *@param cellTo 3D coordinate of the upper-right-rear voxel of the cell
+   *\param cellTo 3D coordinate of the upper-right-rear voxel of the cell
    * enclosing the given location.
-   *@return True if there is valid data for all eight voxels enclosing the 
+   *\return True if there is valid data for all eight voxels enclosing the 
    * given location, so that the interpolation could be completed successfully,
    * False otherwise.
    */
@@ -350,16 +350,16 @@ protected:
    * of interpolations from a given data volume of known pixel type are required.
    *
    *\param dataPtr Pointer to the primitive data array.
-   *@param x Grid index x.
-   *@param y Grid index y.
-   *@param z Grid index z.
-   *@param gridPosition (x,y,z) indices of the voxel containing the given
+   *\param x Grid index x.
+   *\param y Grid index y.
+   *\param z Grid index z.
+   *\param gridPosition (x,y,z) indices of the voxel containing the given
    * location.
-   *@param cellFrom 3D coordinate of the lower-left-front voxel of the cell
+   *\param cellFrom 3D coordinate of the lower-left-front voxel of the cell
    * enclosing the given location.
-   *@param cellTo 3D coordinate of the upper-right-rear voxel of the cell
+   *\param cellTo 3D coordinate of the upper-right-rear voxel of the cell
    * enclosing the given location.
-   *@return The interpolated data value..
+   *\return The interpolated data value..
    */
   template<class TData>
   inline TData TrilinearInterpolation

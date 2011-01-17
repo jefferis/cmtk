@@ -125,20 +125,20 @@ void ByteSwapInPlace( T& value )
     }
 }
 
-/**@name Functions for tracing memory allocation and de-allocation.
+/**\name Functions for tracing memory allocation and de-allocation.
  * These functions can be used to watch the amount of memory allocated and 
  * freed by other functions. Memory holes can be identified and located.
  */
 //@{
 
 /** Get amount of memory used.
- *@return The number of bytes allocated by the process the calling function
+ *\return The number of bytes allocated by the process the calling function
  * is located in.
  */
 size_t Used();
 
 /** Print memory usage.
- *@param msg An optional message to be printed with the amount of bytes 
+ *\param msg An optional message to be printed with the amount of bytes 
  * allocated by the current process. This allows location of memory holes.
  * The parameter may be omitted or given as NULL if no additional message is 
  * required.
@@ -146,9 +146,9 @@ size_t Used();
 void Info ( const char *msg = NULL );
 
 /** Print difference of memory usage.
- *@param before Number of bytes allocated before the inspected operation. This
+ *\param before Number of bytes allocated before the inspected operation. This
  * parameter can be retrieved by al call to memused().
- *@param msg Name of the operation the memory allocation of which was 
+ *\param msg Name of the operation the memory allocation of which was 
  * inspected.
  */
 void Diff ( const size_t before, const char *msg );

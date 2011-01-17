@@ -80,10 +80,10 @@ private:
    * previously seen samples are updated, all components of the tested
    * location must be zero except for the one giving the current search
    * direction.
-   *@param entry The entry in the track list to be tested.
-   *@param dir Direction, i.e. index of the parameter, in which we are moving.
-   *@param step Size of the intended step.
-   *@return 1, if the list entry pointed to by "entry" is the location we
+   *\param entry The entry in the track list to be tested.
+   *\param dir Direction, i.e. index of the parameter, in which we are moving.
+   *\param step Size of the intended step.
+   *\return 1, if the list entry pointed to by "entry" is the location we
    * would be in when making the step defined by "dir" and "step", 0 otherwise.
    */
   int IsHit ( const TraceListEntry* entry, const int dir, const R step ) const 
@@ -110,12 +110,12 @@ public:
   ~SearchTrace () { Clear(); }
 
   /** Add a location to the trace list.
-   *@param value The value of the target function at the location to be
+   *\param value The value of the target function at the location to be
    * added to the list.
-   *@param dir Direction of the location to add with respect to the current
+   *\param dir Direction of the location to add with respect to the current
    * position in search space. This is the index of the parameter we are 
    * modifying.
-   *@param step Size of the step, ie. distance of the new location from the current
+   *\param step Size of the step, ie. distance of the new location from the current
    * position in search space.
    */
   void Add ( const double value, const int dir = 0, const R step = 0 ) 
@@ -130,13 +130,13 @@ public:
   }
 
   /** Get a previously visited location from the list.
-   *@param value This reference is used to return the target function's value
+   *\param value This reference is used to return the target function's value
    * at the location that was asked for. This value is only valid, if the
    * location was in the list. In case the function returns 0, value is
    * undefined.
-   *@param dir Direction in search space towards the location we ask for.
-   *@param step Size of the step to make in the given direction.
-   *@return 1 if the desired location was in the list, 0 otherwise.
+   *\param dir Direction in search space towards the location we ask for.
+   *\param step Size of the step to make in the given direction.
+   *\return 1 if the desired location was in the list, 0 otherwise.
    */
   int Get ( double& value, const int dir = 0, const R step = 0 ) const 
   {
@@ -156,8 +156,8 @@ public:
   /** Move current position in search space.
    * All entries in the table of visited positions are modified accordingly to
    * keep their relative positions up-to-date.
-   *@param dir Parameter modified to do the move.
-   *@param step Size of the update step in the direction defined by 'dir'.
+   *\param dir Parameter modified to do the move.
+   *\param step Size of the update step in the direction defined by 'dir'.
    */
   void Move ( const int dir, const R step ) 
   {

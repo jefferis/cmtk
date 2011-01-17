@@ -62,17 +62,17 @@ public:
   virtual long Update();
 
   /** Make this renderer active.
-   *@see Active
+   *\see Active
    */
   virtual void SetActive() {Active = true; }
 
   /** Make this renderer inactive.
-   *@see Active
+   *\see Active
    */
   virtual void SetInactive() { Active = false; }
 
   /** Query activity state of this renderer.
-   *@see Active
+   *\see Active
    */
   virtual int IsActive() const { return Active; }
 

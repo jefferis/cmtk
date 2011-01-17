@@ -81,7 +81,7 @@ extern int GetNumberOfThreads();
  * If the flag is true, the limitation is not entirely lifted, but the
  * number of threads is limited by the maximum number of threads that
  * can be created by a process on the current operating system.
- *@return The actual number of threads that the library was set to.
+ *\return The actual number of threads that the library was set to.
  */
 extern int SetNumberOfThreads( const int numberOfThreads = 0, const bool force = false );
 
@@ -95,12 +95,12 @@ extern int GetNumberOfProcessors();
 extern int NumberOfThreads;
 
 /** Specialized but more hands-on thread scheduling function.
- *@param threadCall Thread function to be called.
- *@param numberOfThreads Number of parallel threads. This parameter must not
+ *\param threadCall Thread function to be called.
+ *\param numberOfThreads Number of parallel threads. This parameter must not
  * exceed the number of threads set using and returned by SetNumberOfThreads.
- *@param parameters Pointer to an array of parameter blocks for all parallel
+ *\param parameters Pointer to an array of parameter blocks for all parallel
  * threads.
- *@param parameterSize Size in bytes of each thread parameter block in the
+ *\param parameterSize Size in bytes of each thread parameter block in the
  * array pointed to by the previous parameter.
  */
 void RunThreads( ThreadFunction threadCall, const unsigned numberOfThreads, void *const parameters, const size_t parameterSize );
@@ -110,10 +110,10 @@ void RunThreads( ThreadFunction threadCall, const unsigned numberOfThreads, void
  * user-provided thread-specific parameters. It then waits for all threads
  * to complete before returning. This function is a convenience wrapper for
  * the four-parameter function of the same name.
- *@param threadCall Thread function to be called.
- *@param numberOfThreads Number of parallel threads. This parameter must not
+ *\param threadCall Thread function to be called.
+ *\param numberOfThreads Number of parallel threads. This parameter must not
  * exceed the number of threads set using and returned by SetNumberOfThreads.
- *@param parameters Pointer to an array of parameter blocks for all parallel
+ *\param parameters Pointer to an array of parameter blocks for all parallel
  * threads. This is a template type parameter, so arbitrary parameter blocks
  * can be used.
  */

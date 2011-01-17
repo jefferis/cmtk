@@ -119,7 +119,7 @@ public:
   virtual Types::Coordinate GetGridEnergy() const;
 
   /** Return grid bending energy at one control point.
-   *@param cp The control point where the bending energy is to be evaluated.
+   *\param cp The control point where the bending energy is to be evaluated.
    */
   virtual Types::Coordinate GetGridEnergy( const Types::Coordinate *cp ) const;
 
@@ -143,7 +143,7 @@ public:
    * As we evaluate the spline polynomials and their derivatives at a known
    * control point, they reduce to constants which allows for a particularly
    * efficient computation.
-   *@param cp Pointer to the spline control point at which the Jacobian
+   *\param cp Pointer to the spline control point at which the Jacobian
    * determinant is to be evaluated. This pointer is assumed to be pointing
    * to the 0th-component (ie, x) of a non-peripheral control point. Callers
    * have to make sure that this is true.
@@ -209,7 +209,7 @@ public:
    * this function computes only a more or less accurate numerical 
    * approximation to the actual origin of a warped vector. Note also that this
    * computation is everything but computationally efficient.
-   *@return True is the given inverse was succesfully comuted, false if the
+   *\return True is the given inverse was succesfully comuted, false if the
    * given warped vector was outside the target domain of this transformation.
    */
   virtual bool ApplyInverse ( const Self::SpaceVectorType& v, Self::SpaceVectorType& u, const Types::Coordinate accuracy = 0.01  ) const;
@@ -219,7 +219,7 @@ public:
    * this function computes only a more or less accurate numerical 
    * approximation to the actual origin of a warped vector. Note also that this
    * computation is everything but computationally efficient.
-   *@return True is the given inverse was succesfully comuted, false if the
+   *\return True is the given inverse was succesfully comuted, false if the
    * given warped vector was outside the target domain of this transformation.
    */
   virtual bool ApplyInverseInPlace( Self::SpaceVectorType& v, const Types::Coordinate accuracy = 0.01  ) const;
@@ -230,12 +230,12 @@ public:
    * approximation to the actual origin of a warped vector. Note also that this
    * computation is everything but computationally efficient.
    *\param v Input location; is replaced with the inverse transformation applied to it upon return.
-   *@param initial Initial estimate for the original location. Search goes
+   *\param initial Initial estimate for the original location. Search goes
    * from here. This is useful for looking up the original locations of
    * a large number of closely located vectors, for example all pixels in an
    * image.
    *\param accuracy Accuracy of the inversion, i.e., residual inverse consistency error threshold.
-   *@return True is the given inverse was succesfully comuted, false if the
+   *\return True is the given inverse was succesfully comuted, false if the
    * given warped vector was outside the target domain of this transformation.
    */
   virtual bool ApplyInverseInPlaceWithInitial( Self::SpaceVectorType& v, const Self::SpaceVectorType& initial, const Types::Coordinate accuracy = 0.01 ) const;
@@ -370,7 +370,7 @@ protected:
   /// Dimensions of the volume image linked to this transformation.
   DataGrid::IndexType VolumeDims;
 
-  /**@name Precomputed grid indices.
+  /**\name Precomputed grid indices.
    * These arrays hold the precomputed grid indices of the deformed grid's
    * voxels with respect to the control point grid of this deformation.
    */
@@ -383,7 +383,7 @@ protected:
   std::vector<int> gZ;
   //@}
 
-  /**@name Precomputed spline coefficients.
+  /**\name Precomputed spline coefficients.
    * These arrays hold the precomputed spline coefficients for deforming the
    * voxel locations in the associated deformed grid.
    */
@@ -396,7 +396,7 @@ protected:
   std::vector<Types::Coordinate> splineZ;
   //@}
 
-  /**@name Precomputed derivative spline coefficients.
+  /**\name Precomputed derivative spline coefficients.
    * These arrays hold the precomputed derivatives of the spline coefficients.
    * This allows for rapid evaluation of the Jacobian determinant.
    */

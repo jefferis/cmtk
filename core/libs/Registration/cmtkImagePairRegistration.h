@@ -274,14 +274,14 @@ protected:
   /// Pointer to optimizer object.
   Optimizer::SmartPtr m_Optimizer;
 
-  /**@name Member functions to be overwritten.
+  /**\name Member functions to be overwritten.
    */
   //@{
   /** Initialize registration.
    * This function is called by Register before any other operations. It can
    * be overloaded to open status dialog windows, etc. Derived implementations
    * should call their base class' InitRegistration first.
-   *@return 
+   *\return 
    */
   virtual CallbackResult InitRegistration ();
 
@@ -289,9 +289,9 @@ protected:
    * This function is called after finishing registration. It can overloaded
    * to report the resulting transformation, export it to an encapsulating
    * application, etc...
-   *@param v The vector of resulting transformation parameters.
+   *\param v The vector of resulting transformation parameters.
    */
-  virtual void OutputResult ( const CoordinateVector* v ) {}
+  virtual void OutputResult ( const CoordinateVector* v ) { UNUSED(v); }
   
   /** Finalize registration.
    * This function is called after registration has been terminated. It can
@@ -305,16 +305,16 @@ protected:
    * be used to update status displays etc.
    *\param v Current parameter vector.
    *\param f Functional for next level.
-   *@param idx Index of the current resolution level. 0 is first (coarsest),
+   *\param idx Index of the current resolution level. 0 is first (coarsest),
    * subsequent (finer) resolutions have increasing numbers.
-   *@param total Total number of resolution levels.
+   *\param total Total number of resolution levels.
    */
   virtual void EnterResolution( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f, const int idx, const int total );
 
   /** Finish resolution level.
    * This function is called after every resolution level. It should do any
    * necessary cleanups resulting from the previous call to EnterRegistration.
-   *@return If the current level is finished, 1 is returned. Otherwise, ie.
+   *\return If the current level is finished, 1 is returned. Otherwise, ie.
    * if the derived class requests another run of the same level, 0 may be
    * returned. This is used for example by the affine registration in order
    * to make repeated runs of the same level with different numbers of degrees
@@ -338,7 +338,7 @@ public:
   /** Do registration.
    * This function must be called to start the multiresolution optimization
    * using the specified parameters.
-   *@return 1 if registration was terminated by a user interrupt, 0 if
+   *\return 1 if registration was terminated by a user interrupt, 0 if
    * registration was finished.
    */
   virtual CallbackResult Register ();

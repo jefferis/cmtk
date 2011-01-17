@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -93,6 +93,9 @@
 
 /* The size of a `void *', as computed by sizeof. */
 #cmakedefine SIZEOF_VOID_P @CMAKE_SIZEOF_VOID_P@
+
+/// Macro to prevent warnings from unused function arguments.
+#define UNUSED(a) ((void)a)
 
 #ifdef _MSC_VER
 // disable warnings about insecure functions (we want to be portable)

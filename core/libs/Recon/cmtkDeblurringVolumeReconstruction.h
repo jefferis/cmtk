@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -73,6 +73,7 @@ public:
    *\param originalImage Smart pointer to the original image with motion artifacts.
    *\param numberOfPasses The number of interleaved passes, i.e., the number of pass images that comprise the final image.
    *\param interleaveAxis Between-slice axis of the interleaved acquisition.
+   *\param psfScale Optional spatial scale factor for the PSF. Values larger than 1 increase PSF size, smaller than one decrease it.
    */
   DeblurringVolumeReconstruction( const UniformVolume* originalImage, const size_t numberOfPasses, const int interleaveAxis, const Types::Coordinate psfScale = 1.0 )
     : InverseInterpolationVolumeReconstructionBase( originalImage, numberOfPasses, interleaveAxis )

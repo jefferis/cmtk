@@ -89,15 +89,15 @@ public:
   }
 
   /** Project 3D coordinate onto plane.
-   *@param p Projected coordinate.
-   *@param q Original coordinate.
+   *\param p Projected coordinate.
+   *\param q Original coordinate.
    */
   void Project( Vector3D& p, const Vector3D& q ) const;
   
   /** Project 3D coordinate onto image plane pixels.
-   *@param v Original coordinate.
-   *@param i Index of projected pixel in x direction.
-   *@param j Index of projected pixel in y direction.
+   *\param v Original coordinate.
+   *\param i Index of projected pixel in x direction.
+   *\param j Index of projected pixel in y direction.
    */
   void ProjectPixel( const Vector3D& v, unsigned int& i, unsigned int& j ) const;
   

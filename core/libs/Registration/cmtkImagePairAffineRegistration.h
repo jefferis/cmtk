@@ -83,7 +83,7 @@ protected:
    * This function is called by Register before any other operations. It can
    * be overloaded to open status dialog windows, etc. Derived implementations
    * should call their base class' InitRegistration first.
-   *@return Overriding functions should return a value other than 
+   *\return Overriding functions should return a value other than 
    * CALLBACK_OK if the registration is to be interrupted.
    */
   virtual CallbackResult InitRegistration ();

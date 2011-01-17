@@ -54,7 +54,7 @@ cmtk
  * used to read data on a PC mounting Unix filesystems to network drives.
  * Conversely, the Unix box would define "/cdrom=j:,/home=k:" in order to be
  * able to read data written by this PC.
- *@see MountPoints
+ *\see MountPoints
  */
 const char* const CMTK_MOUNTPOINTSVAR = "CMTK_MOUNTPOINTS";
 
@@ -76,11 +76,11 @@ class MountPoints
 {
 public:
   /** Perform directory substitutions.
-   *@param path The original path before substitions.
-   *@return A pointer to a static buffer holding the path after all substitions
+   *\param path The original path before substitions.
+   *\return A pointer to a static buffer holding the path after all substitions
    * have been done. The buffer is guaranteed to remain unchanged until and 
    * only until the next time Translate() is called.
-   *@see CMTK_MOUNTPOINTSVAR
+   *\see CMTK_MOUNTPOINTSVAR
    */
   static const char* Translate ( const char* path );
 

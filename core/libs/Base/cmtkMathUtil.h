@@ -203,12 +203,12 @@ public:
   template<class T> static int Round ( const T a ) { return (int)floor(a+0.5); }
   
   /** Return sign of float value.
-   *@return -1 if a<0, 1 if a>0, 0 if a==0.
+   *\return -1 if a<0, 1 if a>0, 0 if a==0.
    */
   template<class T> static int Sign ( const T a ) { return (a<0)?-1:((a==0)?0:1); }
 
   /** Check if some float value is within a range.
-   *@return 0 if value is in range, -1 if value is below minumum, 1 if value
+   *\return 0 if value is in range, -1 if value is below minumum, 1 if value
    * is above maximum.
    */ 
   template<class T> static int CheckRange ( const T value, const T a, const T b ) 
@@ -233,6 +233,9 @@ public:
   ( const std::vector<T>& values );
   
   /** Computes variance of an array of float values.
+    *\param nValues Number of values in "values" array.
+    *\param values The array of values to compute the variance of.
+    *\param mean Previously calculated mean of the array values.
     *\param unbiased If this flag is set (default: unset), then the variance
     * will be computed over nValues-1; otherwise over nValues.
    */
@@ -333,7 +336,7 @@ public:
    * while the other is stored so that, when this function is called the next 
    * time, the previously computed value can be returned without further 
    * computational expense.
-   *@param sigma Standard deviation of the resulting distribution.
+   *\param sigma Standard deviation of the resulting distribution.
    */
   static inline double NormalRandom( const double sigma ) 
   {
@@ -358,8 +361,8 @@ public:
   }
   
   /** Generate normally distributed random numbers with explicit seed.
-   *@param sigma Standard deviation of the resulting distribution.
-   *@param seed Random seed given to srandom() function.
+   *\param sigma Standard deviation of the resulting distribution.
+   *\param seed Random seed given to srandom() function.
    */
   static inline double NormalRandom( const double sigma, const unsigned int seed ) 
   {

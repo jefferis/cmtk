@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2008-2009 SRI International
+//  Copyright 2008-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -40,6 +40,8 @@ cmtk
 TypedArrayNoiseEstimatorBrummer::TypedArrayNoiseEstimatorBrummer
 ( const TypedArray* data, const size_t histogramBins )
 {
+  UNUSED(histogramBins);
+
   const size_t histogramBinsActual = 255;
   Histogram<unsigned int>::SmartPtr histogram( data->GetHistogram( histogramBinsActual ) );
 
@@ -286,6 +288,7 @@ double
 TypedArrayNoiseEstimatorBrummer::EstimateNumBinsToUse
 ( const TypedArray* data, const Histogram<unsigned int>::SmartPtr histogram, const double sigmaHat )
 {
+  UNUSED(data);
 
   double bestK = 0;
   double curKMinimizer;

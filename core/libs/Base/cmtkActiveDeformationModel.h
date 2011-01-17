@@ -70,10 +70,10 @@ public:
   W* Compose( const Types::Coordinate* weights = NULL );
 
   /** Decompose a deformation into mean and modes of this model.
-   *@param input Input deformation.
-   *@param weights Weights of the modes that make up the given input vector.
+   *\param input Input deformation.
+   *\param weights Weights of the modes that make up the given input vector.
    * This parameter is optional. If not given, no weights will be returned.
-   *@return The value of the multivariate Gaussian PDF represented by this 
+   *\return The value of the multivariate Gaussian PDF represented by this 
    * model atr the location of the input vector.
    */
   float Decompose( const W* input, Types::Coordinate *const weights = NULL ) const;

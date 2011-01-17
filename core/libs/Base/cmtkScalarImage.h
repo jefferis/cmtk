@@ -252,7 +252,7 @@ public:
    */
   virtual void ApplyBinaryMask( const ScalarImage* maskImage, const bool invert = false );
 
-  /**@name Image filter operators.
+  /**\name Image filter operators.
    * These functions perform various filter operations on the image data. For
    * each filter, two functions are implemented: GetXXXFiltered and
    * ApplyXXXFilter. The former returns a pointer to a newly allocated pixel
@@ -264,7 +264,7 @@ public:
    */
   //@{
   /** Return median-filtered image data.
-   *@param range Field of view of the median operator.
+   *\param range Field of view of the median operator.
    */
   TypedArray::SmartPtr GetMedianFiltered( const byte range ) const;
 
@@ -276,7 +276,7 @@ public:
   }
   
   /** Return Gauss-filtered (smoothed) image data.
-   *@param stdDev Standard deviation of the smoothing kernel in world
+   *\param stdDev Standard deviation of the smoothing kernel in world
    * coordinates. This value is internally converted to the effective kernel
    * size in pixels.
    */
@@ -338,9 +338,9 @@ public:
   void AdjustToIsotropic( const Types::Coordinate pixelSize, const bool interpolate = false );
 
   /** Project 3D coordinate onto image plane.
-   *@param v Original coordinate.
-   *@param i Index of projected pixel in x direction.
-   *@param j Index of projected pixel in y direction.
+   *\param v Original coordinate.
+   *\param i Index of projected pixel in x direction.
+   *\param j Index of projected pixel in y direction.
    */
   void ProjectPixel( const Self::SpaceVectorType& v, int& i, int& j ) const;
   

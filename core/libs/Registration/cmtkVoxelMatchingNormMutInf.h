@@ -66,12 +66,12 @@ public:
 
   /** Constructor.
    * For reference and floating volume, InitDataset is called.
-   *@param refVolume The reference (fixed) volume.
-   *@param fltVolume The floating (transformed) volume.
-   *@param numRefBins The desired number of bins to classify the 
+   *\param refVolume The reference (fixed) volume.
+   *\param fltVolume The floating (transformed) volume.
+   *\param numRefBins The desired number of bins to classify the 
    * reference data. If this parameter is zero (default), a suitable value
    * is automatically determined.
-   *@param numFltBins The desired number of bins to classify the 
+   *\param numFltBins The desired number of bins to classify the 
    * floating image data. If this parameter is zero (default), a suitable value
    * is automatically determined.
    */
@@ -81,10 +81,10 @@ public:
   
   /** Constructor with explicit value range limits.
    * For reference and floating volume, InitDataset is called.
-   *@param refVolume The reference (fixed) volume.
-   *@param fltVolume The floating (transformed) volume.
-   *@param rangeRef Range of reference image values.
-   *@param rangeFlt Range of floating image values.
+   *\param refVolume The reference (fixed) volume.
+   *\param fltVolume The floating (transformed) volume.
+   *\param rangeRef Range of reference image values.
+   *\param rangeFlt Range of floating image values.
    */
   VoxelMatchingNormMutInf ( const UniformVolume* refVolume, const UniformVolume* fltVolume, const Types::DataItemRange& rangeRef, const Types::DataItemRange& rangeFlt )
     : RegistrationJointHistogram<I>( refVolume, fltVolume, CMTK_HISTOGRAM_AUTOBINS, CMTK_HISTOGRAM_AUTOBINS, rangeRef, rangeFlt ) {};

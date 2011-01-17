@@ -116,8 +116,8 @@ cmtk
  * This variable is incremented with every query using 
  * Object::GetCurrentTime(). Direct access MUST NOT occur in order 
  * to prevent inconsistent object times.
- *@name igsCurrentTime
- *@see PipelineObject#GetCurrentTime
+ *\name igsCurrentTime
+ *\see PipelineObject#GetCurrentTime
  */
 extern long CurrentTime;
 
@@ -130,11 +130,8 @@ class Object
 public:
   /** Register another object as this objects owner.
    * The reference counter of this object is also incremented.
-   *@param owner The object to be registered as the owner of this object. 
-   * If this parameter is not given, the current owner is left untouched. In
-   * this case, only the reference counter is modified.
-   *@return The new value of the reference counter.
-   *@see ReferenceCount
+   *\return The new value of the reference counter.
+   *\see ReferenceCount
    */
   virtual int Reference() const 
   {
@@ -190,14 +187,14 @@ public:
   /** Utility function: Replace one reference counted object by another.
    * References are updated accordingly. Substitution of a pointer by itself
    * does not have any effect. The function is NULL safe.
-   *@param to Reference to a pointer to be replaced by the pointer given as
+   *\param to Reference to a pointer to be replaced by the pointer given as
    * "from" parameter. If both pointers are different, the reference counter
    * of this object is decremented before overwriting the pointer. It is safe
    * to pass references to NULL pointers here.
-   *@param from The reference counter of the object pointed to by this pointer
+   *\param from The reference counter of the object pointed to by this pointer
    * is increased if a pointer substitution takes place. It is safe to pass a
    * NULL pointer here.
-   *@return "True" is returned if there was an actual replacement. If an object
+   *\return "True" is returned if there was an actual replacement. If an object
    * was basically replaced by itself, "false" is returned instead. Note that
    * only POINTERS are compared to find out which of both has happened.
    */
@@ -228,8 +225,8 @@ public:
   /** Query the time processing counter.
    * Immediately after returning the present time, the time counter is
    * advanced.
-   *@return The present time.
-   *@see igsCurrentTime
+   *\return The present time.
+   *\see igsCurrentTime
    */
   static long GetCurrentTime () 
   { 

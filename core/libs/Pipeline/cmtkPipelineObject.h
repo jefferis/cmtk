@@ -66,11 +66,11 @@ public:
 
   /** Register another object as this objects owner.
    * The reference counter of this object is also incremented.
-   *@param owner The object to be registered as the owner of this object. 
+   *\param owner The object to be registered as the owner of this object. 
    * If this parameter is not given, the current owner is left untouched. In
    * this case, only the reference counter is modified.
-   *@return The new value of the reference counter.
-   *@see ReferenceCount
+   *\return The new value of the reference counter.
+   *\see ReferenceCount
    */
   int Register( PipelineObject *const owner = NULL );
 
@@ -89,9 +89,9 @@ public:
    * Such derived implementations can then use the CheckForUpdate() and
    * ExecuteIfNecessary() member functions for convenient state checking and
    * execution.
-   *@see Execute
-   *@see CheckInputForUpdate
-   *@see ExecuteIfNecessary
+   *\see Execute
+   *\see CheckInputForUpdate
+   *\see ExecuteIfNecessary
    */
   virtual long Update ();
 
@@ -129,7 +129,7 @@ protected:
   virtual int CheckInputForUpdate( PipelineObject *const object );
 
   /** Execute an update if object was modified after last execution.
-   *@return The new time of last execution.
+   *\return The new time of last execution.
    */
   virtual long ExecuteIfNecessary();
 

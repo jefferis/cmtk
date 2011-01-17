@@ -55,7 +55,7 @@ cmtk
 //@{
 
 /** Joint histogram of two distributions.
- *@param T Template parameter: the type of the histogram bins. Can be integral,
+ *\param T Template parameter: the type of the histogram bins. Can be integral,
  * or float in case of fractional bins.
  */
 template<class T>
@@ -115,7 +115,7 @@ public:
   }
 
   /** Make an identical copy of this object.
-   *@return The newly created copy of this object.
+   *\return The newly created copy of this object.
    */
   Self* Clone () const 
   {
@@ -205,8 +205,8 @@ public:
   }
   
   /** Return bin corresponding to a certain value of the X distribution.
-   *@param value A value from the X distribution.
-   *@return The index of the X bin corresponding to the given value.
+   *\param value A value from the X distribution.
+   *\return The index of the X bin corresponding to the given value.
    */
   size_t ValueToBinX ( const Types::DataItem value ) const 
   {
@@ -215,8 +215,8 @@ public:
   }
   
   /** Return bin corresponding to a certain value of the Y distribution.
-   *@param value A value from the Y distribution.
-   *@return The index of the Y bin corresponding to the given value.
+   *\param value A value from the Y distribution.
+   *\return The index of the Y bin corresponding to the given value.
    */
   size_t ValueToBinY ( const Types::DataItem value ) const 
   {
@@ -225,8 +225,8 @@ public:
   }
 
   /** Return center of values represented by a certain X distribution bin.
-   *@param bin Index of a bin from the X distribution.
-   *@return Average of upper and lower margin values of the given bin.
+   *\param bin Index of a bin from the X distribution.
+   *\return Average of upper and lower margin values of the given bin.
    */
   Types::DataItem BinToValueX ( const size_t bin ) const 
   {
@@ -234,8 +234,8 @@ public:
   }
 
   /** Return center of values represented by a certain Y distribution bin.
-   *@param bin Index of a bin from the Y distribution.
-   *@return Average of upper and lower margin values of the given bin.
+   *\param bin Index of a bin from the Y distribution.
+   *\return Average of upper and lower margin values of the given bin.
    */
   Types::DataItem BinToValueY ( const size_t bin ) const 
   {
@@ -245,8 +245,8 @@ public:
   /** Return projection of 2D distribution to X.
    * This function can be used to reconstruct the marginal distribution X from
    * the 2D histogram without explicitly stored 1D distributions.
-   *@param indexX A bin index for the X distribution.
-   *@return Projection of 2D histogram onto X distribution. This is the sum
+   *\param indexX A bin index for the X distribution.
+   *\return Projection of 2D histogram onto X distribution. This is the sum
    * of all bins in Y direction for the given index in X direction.
    */
   T ProjectToX ( const size_t indexX ) const 
@@ -261,8 +261,8 @@ public:
   /** Return projection of 2D distribution to Y.
    * This function can be used to reconstruct the marginal distribution Y from
    * the 2D histogram without explicitly stored 1D distributions.
-   *@param indexY A bin index for the Y distribution.
-   *@return Projection of 2D histogram onto X distribution. This is the sum
+   *\param indexY A bin index for the Y distribution.
+   *\return Projection of 2D histogram onto X distribution. This is the sum
    * of all bins in X direction for the given index in X direction.
    */
   T ProjectToY ( const size_t indexY ) const 
@@ -321,9 +321,9 @@ public:
   /** Compute marginal entropies.
    * From the bin counts, the marginal entropies of both, reference and
    * model data are estimated.
-   *@param HX Upon return, this reference holds the estimated marginal entropy
+   *\param HX Upon return, this reference holds the estimated marginal entropy
    * of the X random variable, i.e. the reference image.
-   *@param HY Upon return, this reference holds the estimated marginal entropy
+   *\param HY Upon return, this reference holds the estimated marginal entropy
    * of the Y random variable, i.e. the model image.
    */
   void GetMarginalEntropies ( double& HX, double& HY ) const;
@@ -338,8 +338,8 @@ public:
   /** Increment the value of a histogram bin by 1.
    * The histogram field to increment is identified directly by its index;
    * no value-rescaling is done internally.
-   *@param sampleX Index of histogram field in x-direction.
-   *@param sampleY Index of histogram field in y-direction.
+   *\param sampleX Index of histogram field in x-direction.
+   *\param sampleY Index of histogram field in y-direction.
    */
   void Increment ( const size_t sampleX, const size_t sampleY ) 
   {
@@ -349,9 +349,9 @@ public:
   /** Increment the value of a histogram bin by an arbitrary value.
    * The histogram field to increment is identified directly by its index;
    * no value-rescaling is done internally.
-   *@param sampleX Index of histogram field in x-direction.
-   *@param sampleY Index of histogram field in y-direction.
-   *@param weight Value to increment the given histogram bin by.
+   *\param sampleX Index of histogram field in x-direction.
+   *\param sampleY Index of histogram field in y-direction.
+   *\param weight Value to increment the given histogram bin by.
    */
   void Increment 
   ( const size_t sampleX, const size_t sampleY, const T weight ) 
@@ -364,8 +364,8 @@ public:
    * no value-rescaling is done internally. Make sure that a value has actually
    * been added to this bin before - otherwise, the next entropy computation my
    * give some unexpected results.
-   *@param sampleX Index of histogram field in x-direction.
-   *@param sampleY Index of histogram field in y-direction.
+   *\param sampleX Index of histogram field in x-direction.
+   *\param sampleY Index of histogram field in y-direction.
    */
   void Decrement ( const size_t sampleX, const size_t sampleY ) 
   {
@@ -384,7 +384,7 @@ public:
    * It is also a good idea to ensure that the data ranges of these bins are
    * the same in both objects. Both can be guaranteed if one histogram was
    * created from the other by a call to Clone() for example.
-   *@param other A pointer to the other histogram. Its bin values are added to
+   *\param other A pointer to the other histogram. Its bin values are added to
    * this object's bins.
    */
   void AddJointHistogram ( const Self& other ) 
@@ -398,9 +398,9 @@ public:
    * both histograms actually have the same number and arrangement of bins.
    * It is also a good idea to ensure that the data ranges of these bins are
    * the same in both objects.
-   *@param other A pointer to the other histogram. Its bin values are added to
+   *\param other A pointer to the other histogram. Its bin values are added to
    * this object's bins.
-   *@param sampleY Index of the histogram row to which the 1D histogram is to
+   *\param sampleY Index of the histogram row to which the 1D histogram is to
    * be added.
    *\param weight Multiplicative weight factor with which the other histogram is added to this one.
    */
@@ -418,9 +418,9 @@ public:
    * both histograms actually have the same number and arrangement of bins.
    * It is also a good idea to ensure that the data ranges of these bins are
    * the same in both objects.
-   *@param sampleX Index of the histogram column to which the 1D histogram is
+   *\param sampleX Index of the histogram column to which the 1D histogram is
    * to be added.
-   *@param other A pointer to the other histogram. Its bin values are added to
+   *\param other A pointer to the other histogram. Its bin values are added to
    * this object's bins.
    *\param weight Multiplicative weight factor with which the other histogram is added to this one.
    */
@@ -437,7 +437,7 @@ public:
    * bins. It is also a good idea to ensure that the data ranges of these bins
    * are the same in both objects. Both can be guaranteed if one histogram was
    * created from the other by a call to Clone() for example.
-   *@param other A pointer to the other histogram. Its bin values are
+   *\param other A pointer to the other histogram. Its bin values are
    * subtracted this object's bins.
    */
   void RemoveJointHistogram ( const Self& other ) 
@@ -449,7 +449,7 @@ public:
   }
   
   /** Normalize histogram values over X dimension.
-   *@param normalizeTo All histogram bins in every row of the histogram are
+   *\param normalizeTo All histogram bins in every row of the histogram are
    * scaled by a common factor so that their sum matches the value of this 
    * parameter.
    */
@@ -468,7 +468,7 @@ public:
   }
   
   /** Normalize histogram values over Y dimension.
-   *@param normalizeTo All histogram bins in every column of the histogram are
+   *\param normalizeTo All histogram bins in every column of the histogram are
    * scaled by a common factor so that their sum matches the value of this 
    * parameter.
    */
@@ -487,8 +487,8 @@ public:
   }
   
   /* Return the index of the bin with the maximum value for one row.
-   *@param j Index of the row.
-   *@return The index of the bin with the maximum value in row j.
+   *\param j Index of the row.
+   *\return The index of the bin with the maximum value in row j.
    */
   size_t GetMaximumBinIndexOverX( const size_t j ) const 
   {
@@ -510,8 +510,8 @@ public:
   }
   
   /* Return the index of the bin with the maximum value for one column.
-   *@param j Index of the column.
-   *@return The index of the bin with the maximum value in column j.
+   *\param j Index of the column.
+   *\return The index of the bin with the maximum value in column j.
    */
   size_t GetMaximumBinIndexOverY( const size_t i ) const 
   {
@@ -533,7 +533,7 @@ public:
   }
 
   /** Compute the (normalized) mutual information of this histogram.
-   *@param normalized If this parameter is true, then the "normalized" version
+   *\param normalized If this parameter is true, then the "normalized" version
    * of Mutual Information as introduced by Studholme et al. [Pattern Analysis
    * 1999] is computed. If this flag is false, the original formula of Viola
    * [IEEE Trans Med Imaging 1997] and Maes is used instead.

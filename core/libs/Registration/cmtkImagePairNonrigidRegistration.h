@@ -51,7 +51,7 @@ cmtk
  * By implementing member functions to retrieve parameters and report results
  * in derived classes, registration can be integrated into various 
  * environments.
- *@version $Revision$ $Date$
+ *\version $Revision$ $Date$
  */
 class ImagePairNonrigidRegistration : 
   /// Inherit basic voxel registration functions.
@@ -155,14 +155,14 @@ protected:
    */
   virtual ~ImagePairNonrigidRegistration() {};
 
-  /**@name Member functions to be overwritten.
+  /**\name Member functions to be overwritten.
    */
   //@{
   /** Initialize registration.
    * This function is called by Register before any other operations. It can
    * be overloaded to open status dialog windows, etc. Derived implementations
    * should call their base class' InitRegistration first.
-   *@return 
+   *\return 
    */
   virtual CallbackResult InitRegistration ();
 

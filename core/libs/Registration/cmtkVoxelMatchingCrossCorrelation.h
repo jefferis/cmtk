@@ -73,8 +73,8 @@ public:
 
   /** Constructor.
    * For reference and floating volume, InitDataset is called.
-   *@param refVolume The reference (fixed) volume.
-   *@param fltVolume The floating (transformed) volume.
+   *\param refVolume The reference (fixed) volume.
+   *\param fltVolume The floating (transformed) volume.
    */
   VoxelMatchingCrossCorrelation ( const UniformVolume* refVolume, const UniformVolume* fltVolume );
 

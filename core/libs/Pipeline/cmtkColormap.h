@@ -96,7 +96,7 @@ public:
   igsClassParameter(bool,Reverse);
 
   /** Chose one out of five predefined colormaps.
-   *@param index The index of the desired standard colormap. Valid values are
+   *\param index The index of the desired standard colormap. Valid values are
    * 0 (Greylevel), 1 (Red), 2 (Green), 3 (Blue), 4 (Rainbow), 5 (Inverse
    * Rainbow). PALETTE_XXX constants are available for convenient access.
    */
@@ -106,14 +106,14 @@ public:
   static const char *StandardColormaps[];
 
   /** Apply this colormap to an image to get an RGB presentation.
-   *@param outPtr Pointer to a suffiently big memory segment that will hold
+   *\param outPtr Pointer to a suffiently big memory segment that will hold
    * the resulting RGB data. The data will be stored as three unsigned
    * 8-bit values per pixel, representing the red, green, and blue components
    * of that pixel.
-   *@param inPtr Pointer to a TypedArray object containing the data to be 
+   *\param inPtr Pointer to a TypedArray object containing the data to be 
    * converted. The primitive data type can be any of the types supported by
    * TypedArray, eg. byte, short, float etc.
-   *@param generateAlpha If this flag is set, a constant alpha value will be
+   *\param generateAlpha If this flag is set, a constant alpha value will be
    * generated for each pixel, resulting in 32 bits of aRGB data per pixel,
    * rather than 24 bits of RGB data. Default value for this parameter is off.
    */
@@ -151,31 +151,31 @@ private:
   Types::DataItem InvDataRangeWidth;
 
   /** Apply table lookup for a particular primitive data type.
-   *@param T Template parameter specifying the primitive data type to lookup
+   * "T" is a template parameter specifying the primitive data type to lookup
    * in the color table, eg. byte, short, float etc.
-   *@param outPtr Pointer to an array holding the RGB pixel data after table
+   *\param outPtr Pointer to an array holding the RGB pixel data after table
    * lookup.
-   *@param inPtr Pointer to the primitive data array of type T.
-   *@param count Number of values in the array pointed to by inPtr. As inPtr
+   *\param inPtr Pointer to the primitive data array of type T.
+   *\param count Number of values in the array pointed to by inPtr. As inPtr
    * is not a TypedArray anymore, we have to make this explicit.
    *\param paddingFlag Flag for use of padding data.
    *\param paddingData Padding value. Values equal to this are ignored if "paddingFlag" is true.
-   *@see Apply
+   *\see Apply
    */
   template<class T>
   void ApplyPrimitive( RGB *const outPtr, const T* inPtr, const unsigned int count, const bool paddingFlag, const T paddingData ) const;
 
   /** Apply table lookup with constant alpha for one primitive data type.
-   *@param T Template parameter specifying the primitive data type to lookup
+   * "T" is a template parameter specifying the primitive data type to lookup
    * in the color table, eg. byte, short, float etc.
-   *@param outPtr Pointer to an array holding the aRGB pixel data after table
+   *\param outPtr Pointer to an array holding the aRGB pixel data after table
    * lookup.
-   *@param inPtr Pointer to the primitive data array of type T.
-   *@param count Number of values in the array pointed to by inPtr. As inPtr
+   *\param inPtr Pointer to the primitive data array of type T.
+   *\param count Number of values in the array pointed to by inPtr. As inPtr
    * is not a TypedArray anymore, we have to make this explicit.   
    *\param paddingFlag Flag for use of padding data.
    *\param paddingData Padding value. Values equal to this are ignored if "paddingFlag" is true.
-   *@see Apply
+   *\see Apply
    */
   template<class T>
   void ApplyPrimitive( RGBA *const outPtr, const T* inPtr, const unsigned int count, const bool paddingFlag, const T paddingData ) const;

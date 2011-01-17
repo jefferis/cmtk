@@ -197,7 +197,7 @@ protected:
   virtual void UpdateCorrectionFactors() = 0;
 
   /** Update output image estimate based on current bias field parameters.
-   *\param forgroundOnly If this flag is set and an image foreground mask is set, then only image pixels are updated for which the mask is nonzero.
+   *\param foregroundOnly If this flag is set and an image foreground mask is set, then only image pixels are updated for which the mask is nonzero.
    */
   virtual void UpdateOutputImage( const bool foregroundOnly = true );
 
@@ -208,17 +208,17 @@ protected:
   FloatArray::SmartPtr m_BiasFieldMul;
 
   /** Jointly update both bias images.
-   *\param forgroundOnly If this flag is set and an image foreground mask is set, then only image pixels are updated for which the mask is nonzero.
+   *\param foregroundOnly If this flag is set and an image foreground mask is set, then only image pixels are updated for which the mask is nonzero.
    */
   virtual void UpdateBiasFields( const bool foregroundOnly = true ) = 0;
 
   /** Update additive bias image.
-   *\param forgroundOnly If this flag is set and an image foreground mask is set, then only image pixels are updated for which the mask is nonzero.
+   *\param foregroundOnly If this flag is set and an image foreground mask is set, then only image pixels are updated for which the mask is nonzero.
    */
   virtual void UpdateBiasFieldAdd( const bool foregroundOnly = true ) = 0;
 
   /** Update additive bias image.
-   *\param forgroundOnly If this flag is set and an image foreground mask is set, then only image pixels are updated for which the mask is nonzero.
+   *\param foregroundOnly If this flag is set and an image foreground mask is set, then only image pixels are updated for which the mask is nonzero.
    */
   virtual void UpdateBiasFieldMul( const bool foregroundOnly = true ) = 0;
 

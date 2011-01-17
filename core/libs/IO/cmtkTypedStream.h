@@ -55,7 +55,7 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-/**@name TypedStream.h
+/**\name TypedStream.h
  */
 //@{
 
@@ -190,15 +190,15 @@ public:
   TypedStream();
 
   /** Open constructor.
-   *@param filename Name of the archive to open.
-   *@param mode Access mode, ie. read-only, write-only, etc.
+   *\param filename Name of the archive to open.
+   *\param mode Access mode, ie. read-only, write-only, etc.
    */
   TypedStream( const char* filename, const TypedStreamMode mode );
 
   /** Open constructor for separate path and archive names.
-   *@param dir Directory to open archive in.
-   *@param archive Name of the archive to open.
-   *@param mode Access mode, ie. read-only, write-only, etc.
+   *\param dir Directory to open archive in.
+   *\param archive Name of the archive to open.
+   *\param mode Access mode, ie. read-only, write-only, etc.
    */
   TypedStream( const char* dir, const char* archive, const TypedStreamMode mode );
 
@@ -227,7 +227,8 @@ public:
    * were opened in TYPEDSTREAM_READONLY mode. For writeable archive, it 
    * will return an error.
    */
-  TypedStreamCondition Seek( const char* section, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  TypedStreamCondition Seek( const char* section /*!< Name of the section whose beginning stream pointer is moved to. */, 
+			     const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Rewind archive.
    * This function resets filepointer of an open archive to the beginning of
@@ -236,29 +237,35 @@ public:
   TypedStreamCondition Rewind();
 
   /** Return validity of archive.
-   *@return 1 if an archive is currently open, 0 if not.
+   *\return 1 if an archive is currently open, 0 if not.
    */
-  int IsValid() { return (File != NULL) || (GzFile != NULL); }
+  int IsValid() 
+  {
+    return (this->File != NULL) || (this->GzFile != NULL); 
+  }
 
   /** Return status of last operation.
    */
-  TypedStreamStatus GetStatus() const { return Status; }
+  TypedStreamStatus GetStatus() const 
+  { 
+    return this->Status; 
+  }
 
   /** Begin a section.
    * In an archive opened for writing, this function will start a new section
    * and increase the indentation level by one. For a read-only archive, this
    * function will generate an error condition.
-   *@param section Name of the new section.
-   *@return Error condition.
+   *\param section Name of the new section.
+   *\return Error condition.
    */
   TypedStreamCondition Begin( const char* section = NULL );
 
   /** End a section.
    * In the open archive, this function will close the last section and 
    * decrease the nesting level by one.
-   *@param flush If this flag is set, the output file buffer will be flushed
+   *\param flush If this flag is set, the output file buffer will be flushed
    * after closing the section.
-   *@return Error condition.
+   *\return Error condition.
    */
   TypedStreamCondition End( const bool flush = false );
 
@@ -266,57 +273,76 @@ public:
    * This function recognizes both yes/no and 0/1 entries in the archive.
    * First, "yes" and "no" is tried, if that doesn't work the function reads
    * an integer value from the same key.
-   *@param key The name of the boolean entry in the archive.
-   *@param defaultValue Default value returned if no valid entry can be read. 
-   * This parameter can be omitted and defaults to 0.
-   *@return If reading was succesful, the value from the archive is returned.
+   *\return If reading was succesful, the value from the archive is returned.
    * Otherwise the value given as the "defaultValue" parameter is returned.
    */
-  bool ReadBool( const char* key, const bool defaultValue = false, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  bool ReadBool( const char* key /*!< The name of the boolean entry in the archive.*/, 
+		 const bool defaultValue = false /*!< Default value returned if no valid entry can be read. This parameter can be omitted and defaults to false.*/,
+		 const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read array of boole values from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  TypedStreamCondition ReadBoolArray( const char* key, byte *const array, const int size = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  TypedStreamCondition ReadBoolArray( const char* key /*!< The name of the array in the archive.*/, 
+				      byte *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
+				      const int size /*!< Size of the array.*/, 
+				      const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
   
   /** Read integer value from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  int ReadInt( const char* key, const int defaultValue = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  int ReadInt( const char* key /*!< The name of the field in the archive.*/, 
+	       const int defaultValue = 0 /*!< Default value returned if no valid entry can be read. This parameter can be omitted and defaults to zero.*/, 
+	       const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read array of integer values from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  TypedStreamCondition ReadIntArray( const char* key, int *const array, const int size = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
-
+  TypedStreamCondition ReadIntArray( const char* key /*!< The name of the array in the archive.*/, 
+				     int *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
+				     const int size /*!< Size of the array.*/, 
+				     const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  
   /** Read single-precision value from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  float ReadFloat( const char* key, const float defaultValue = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  float ReadFloat( const char* key /*!< The name of the field in the archive.*/, 
+		   const float defaultValue = 0 /*!< Default value returned if no valid entry can be read. This parameter can be omitted and defaults to zero.*/, 
+		   const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read array of single-precision values from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  TypedStreamCondition ReadFloatArray( const char* key, float *const array, const int size = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  TypedStreamCondition ReadFloatArray( const char* key /*!< The name of the array in the archive.*/, 
+				       float *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
+				       const int size /*!< Size of the array.*/, 
+				       const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read double-precision value from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  double ReadDouble( const char* key, const double defaultValue = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  double ReadDouble( const char* key /*!< The name of the field in the archive.*/,
+		     const double defaultValue = 0 /*!< Default value returned if the field is not found in the archive. */, 
+		     const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Read array of double-precision values from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  TypedStreamCondition ReadDoubleArray( const char* key, double *const array, const int size = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
-
+  TypedStreamCondition ReadDoubleArray( const char* key /*!< The name of the array in the archive.*/, 
+					double *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
+					const int size /*!< Size of the array.*/, 
+					const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  
   /** Read double- or single precision value from an open archive.
    * Whether double- or single-precision data is read depends on the definition
    * of the CMTK_COORDINATES_DOUBLE preprocessor symbol. This function is thus
    * guaranteed to always match the Types::Coordinate type.
-   *@see CMTK_COORDINATES_DOUBLE
-   *@see Types::Coordinate
+   *\see CMTK_COORDINATES_DOUBLE
+   *\see Types::Coordinate
    */
-  Types::Coordinate ReadCoordinate( const char* key, const Types::Coordinate defaultValue = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) 
+  Types::Coordinate ReadCoordinate( const char* key /*!< The name of the field in the archive.*/, 
+				    const Types::Coordinate defaultValue = 0 /*!< Default value if the field is not found.*/, 
+				    const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) 
   {
 #ifdef CMTK_COORDINATES_DOUBLE
     return this->ReadDouble( key, defaultValue, forward );
@@ -329,10 +355,12 @@ public:
    * Whether double- or single-precision data is read depends on the definition
    * of the CMTK_DATA_DOUBLE preprocessor symbol. This function is thus
    * guaranteed to always match the Types::DataItem type.
-   *@see CMTK_DATA_DOUBLE
-   *@see Types::DataItem
+   *\see CMTK_DATA_DOUBLE
+   *\see Types::DataItem
    */
-  Types::DataItem ReadItem( const char* key, const Types::DataItem defaultValue = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) 
+  Types::DataItem ReadItem( const char* key /*!< The name of the field in the archive.*/, 
+			    const Types::DataItem defaultValue = 0 /*!< Default value returned if the field is not found in the archive. */, 
+			    const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) 
   {
 #ifdef CMTK_DATA_DOUBLE
     return this->ReadDouble( key, defaultValue, forward );
@@ -345,11 +373,13 @@ public:
    * Whether double- or single-precision data is read depends on the definition
    * of the CMTK_COORDINATES_DOUBLE preprocessor symbol. This function is thus
    * guaranteed to always match the Types::Coordinate type.
-   *@see CMTK_COORDINATES_DOUBLE
-   *@see Types::Coordinate
+   *\see CMTK_COORDINATES_DOUBLE
+   *\see Types::Coordinate
    */
-  TypedStreamCondition ReadCoordinateArray
-( const char* key, Types::Coordinate *const array, const int size = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) 
+  TypedStreamCondition ReadCoordinateArray( const char* key /*!< The name of the array in the archive.*/, 
+					    Types::Coordinate *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
+					    const int size /*!< Size of the array.*/, 
+					    const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */)
   {
 #ifdef CMTK_COORDINATES_DOUBLE
     return this->ReadDoubleArray( key, array, size, forward );
@@ -362,10 +392,13 @@ public:
    * Whether double- or single-precision data is read depends on the definition
    * of the CMTK_DATA_DOUBLE preprocessor symbol. This function is thus
    * guaranteed to always match the Types::DataItem type.
-   *@see CMTK_DATA_DOUBLE
-   *@see Types::DataItem
+   *\see CMTK_DATA_DOUBLE
+   *\see Types::DataItem
    */
-  TypedStreamCondition ReadItemArray( const char* key, Types::DataItem *const array, const int size = 0, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) 
+  TypedStreamCondition ReadItemArray( const char* key /*!< The name of the array in the archive.*/, 
+				      Types::DataItem *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
+				      const int size /*!< Size of the array.*/, 
+				      const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) 
   {
 #ifdef CMTK_DATA_DOUBLE
     return this->ReadDoubleArray( key, array, size, forward );
@@ -378,27 +411,34 @@ public:
    * The string returned is newly allocated by this function. So unless NULL
    * is returner, the string must later be freed by the caller in order to
    * avoid memory leaks.
-   *@return A pointer to a newly allocated string is returned if reading was
+   *\return A pointer to a newly allocated string is returned if reading was
    * succesful. If no valid entry could be read from the archive, a copy of
    * the string given as "defaultValue" parameter is returned. If that 
    * parameter was NULL, the same value is also returned.
    */
-  char* ReadString( const char* key, const char* defaultValue = NULL, const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
+  char* ReadString( const char* key /*!< The name of the field in the archive.*/, 
+		    const char* defaultValue = NULL /*!< Default value returned if the field is not found in the archive. */, 
+		    const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /// Write a boolean value to an open archive.
-  TypedStreamCondition WriteBool( const char* key, const bool value );
+  TypedStreamCondition WriteBool( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
+				  const bool value /*!< Value to write to the archive under the given key. */ );
 
   /// Write an integer value to an open archive.
-  TypedStreamCondition WriteInt( const char* key, const int value );
+  TypedStreamCondition WriteInt( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
+				 const int value /*!< Value to write to the archive under the given key. */ );
 
   /// Write a float value to an open archive.
-  TypedStreamCondition WriteFloat( const char* key, const float value );
+  TypedStreamCondition WriteFloat( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
+				   const float value /*!< Value to write to the archive under the given key. */ );
 
   /// Write a double precision float value to an open archive.
-  TypedStreamCondition WriteDouble( const char* key, const double value );
+  TypedStreamCondition WriteDouble( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
+				    const double value /*!< Value to write to the archive under the given key. */ );
 
   /// Write an Types::Coordinate value to an open archive.
-  TypedStreamCondition WriteCoordinate( const char* key, const Types::Coordinate value ) 
+  TypedStreamCondition WriteCoordinate( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
+					const Types::Coordinate value /*!< Value to write to the archive under the given key. */ ) 
   {
 #ifdef CMTK_COORDINATES_FLOAT
     return this->WriteFloat( key, value );
@@ -408,7 +448,8 @@ public:
   }
   
   /// Write an Types::DataItem value to an open archive.
-  TypedStreamCondition WriteItem( const char* key, const Types::DataItem value ) 
+  TypedStreamCondition WriteItem( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
+				  const Types::DataItem value /*!< Value to write to the archive under the given key. */ ) 
   {
 #ifdef CMTK_DATA_FLOAT
     return this->WriteFloat( key, value );
@@ -418,45 +459,61 @@ public:
   }
   
   /// Write a string to an open archive.
-  TypedStreamCondition WriteString( const char* key, const char* value );
+  TypedStreamCondition WriteString( const char* key /*!< The name of the field under which to write this string in the archive.*/, 
+				    const char* value /*!< String to write to the archive under the given key. */ );
 
   /// Write a string to an open archive.
-  TypedStreamCondition WriteString( const char* key, const std::string& value );
+  TypedStreamCondition WriteString( const char* key /*!< The name of the field under which to write this string in the archive.*/, 
+				    const std::string& value /*!< String to write to the archive under the given key. */ );
 
   /// Write a formated comment to an open archive.
-  TypedStreamCondition WriteComment( const char* fmt, ... );
+  TypedStreamCondition WriteComment( const char* fmt /*!< printf-style format string for the remaining variable number of parameters */, ... );
 
   /// Write string array as comment to an open archive.
-  TypedStreamCondition WriteComment( const int argc, const char* argv[] );
+  TypedStreamCondition WriteComment( const int argc /*!< Number of strings in the array. */, const char* argv[] /*!< Array of string pointers. */ );
 
   /// Write string array as comment to an open archive.
-  TypedStreamCondition WriteComment( int argc, char* argv[] );
+  TypedStreamCondition WriteComment( int argc /*!< Number of strings in the array. */, char* argv[] /*!< Array of string pointers. */ );
 
   /** Write array of integer values to an open archive.
    */
-  TypedStreamCondition WriteIntArray( const char* key, const int* array, const int size, const int valuesPerLine = 10  );
+  TypedStreamCondition WriteIntArray( const char* key /*!< The name of the field under which to write this array in the archive.*/, 
+				      const int* array /*!< Pointer to the array to be written.*/, 
+				      const int size /*!< Number of values in the array. This is the number of values written to the archive. */,
+				      const int valuesPerLine = 10 /*!< Optional number of values per line of text written to the archive. This improves readability of the resulting archive as a text. */ );
 
   /** Write array of binay encoded boole values to an open archive.
    */
-  TypedStreamCondition WriteBoolArray( const char* key, const byte* array, const int size, const int valuesPerLine = 10 );
+  TypedStreamCondition WriteBoolArray( const char* key /*!< The name of the field under which to write this array in the archive.*/, 
+				       const byte* array /*!< Pointer to the array to be written.*/, 
+				       const int size /*!< Number of values in the array. This is the number of values written to the archive. */, 
+				       const int valuesPerLine = 10 /*!< Optional number of values per line of text written to the archive. This improves readability of the resulting archive as a text. */ );
 
   /** Write array of single-precision values to an open archive.
    */
-  TypedStreamCondition WriteFloatArray( const char* key, const float* array, const int size, const int valuesPerLine = 10 );
+  TypedStreamCondition WriteFloatArray( const char* key/*!< The name of the field under which to write this array in the archive.*/, 
+					const float* array /*!< Pointer to the array to be written.*/, 
+					const int size /*!< Number of values in the array. This is the number of values written to the archive. */,
+					const int valuesPerLine = 10 /*!< Optional number of values per line of text written to the archive. This improves readability of the resulting archive as a text. */ );
 
   /** Write array of double-precision values to an open archive.
    */
-  TypedStreamCondition WriteDoubleArray( const char* key, const double* array, const int size, const int valuesPerLine = 10 );
+  TypedStreamCondition WriteDoubleArray( const char* key /*!< The name of the field under which to write this array in the archive.*/, 
+					 const double* array /*!< Pointer to the array to be written.*/, 
+					 const int size /*!< Number of values in the array. This is the number of values written to the archive. */,
+					 const int valuesPerLine = 10 /*!< Optional number of values per line of text written to the archive. This improves readability of the resulting archive as a text. */ );
 
   /** Write array of double- or single precision values to an open archive.
    * Whether double- or single-precision data is written depends on the 
    * definition of the CMTK_COORDINATES_DOUBLE preprocessor symbol. This function
    * is thus guaranteed to always match the Types::Coordinate type.
-   *@see CMTK_COORDINATES_DOUBLE
-   *@see Types::Coordinate
+   *\see CMTK_COORDINATES_DOUBLE
+   *\see Types::Coordinate
    */
-  TypedStreamCondition WriteCoordinateArray
-  ( const char* key, const Types::Coordinate* array, const int size, const int valuesPerLine = 10  )
+  TypedStreamCondition WriteCoordinateArray( const char* key/*!< The name of the field under which to write this array in the archive.*/, 
+					     const Types::Coordinate* array /*!< Pointer to the array to be written.*/, 
+					     const int size /*!< Number of values in the array. This is the number of values written to the archive. */,
+					     const int valuesPerLine = 10 /*!< Optional number of values per line of text written to the archive. This improves readability of the resulting archive as a text. */ )
   { 
 #ifdef CMTK_COORDINATES_DOUBLE
     return this->WriteDoubleArray( key, array, size, valuesPerLine );
@@ -469,10 +526,13 @@ public:
    * Whether double- or single-precision data is written depends on the 
    * definition of the CMTK_DATA_DOUBLE preprocessor symbol. This function
    * is thus guaranteed to always match the Types::DataItem type.
-   *@see CMTK_DATA_DOUBLE
-   *@see Types::DataItem
+   *\see CMTK_DATA_DOUBLE
+   *\see Types::DataItem
    */
-  TypedStreamCondition WriteItemArray( const char* key, const Types::DataItem* array, const int size, const int valuesPerLine = 10  )
+  TypedStreamCondition WriteItemArray( const char* key /*!< The name of the field under which to write this array in the archive.*/, 
+				       const Types::DataItem* array /*!< Pointer to the array to be written.*/, 
+				       const int size /*!< Number of values in the array. This is the number of values written to the archive. */, 
+				       const int valuesPerLine = 10 /*!< Optional number of values per line of text written to the archive. This improves readability of the resulting archive as a text. */ )
   { 
 #ifdef CMTK_DATA_DOUBLE
     return this->WriteDoubleArray( key, array, size, valuesPerLine );
@@ -482,7 +542,10 @@ public:
   }
 
   /// Set debugging flag.
-  void SetDebugFlag( const TypedStreamDebugFlag debugFlag = TYPEDSTREAM_DEBUG_ON ) { DebugFlag = debugFlag; }
+  void SetDebugFlag( const TypedStreamDebugFlag debugFlag = TYPEDSTREAM_DEBUG_ON /*!< Set the debug flag to this value. */ )
+  { 
+    DebugFlag = debugFlag;
+  }
   
 private:
   /** Initialize internal data structures.
@@ -540,13 +603,12 @@ private:
    * statement selects the correct code for the effective data type to be read.
    * Besides, common functions such as the skipping of inserted sections are
    * implemented as shared code for all data types.
-   *\param forward If this flag is set, then the search will be forward only,
-   * i.e., the file pointer will NOT be reset to the beginning of the current 
-   * section.
    */
-  TypedStreamCondition GenericReadArray
-  ( const char* key /*!< Field key (name)*/, const int type /*!< Array data type ID */, void *const array /*!< Target storage space for read data */, const int arraySize /*!< Number of array elements */, 
-    const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */ );
+  TypedStreamCondition GenericReadArray( const char* key /*!< Field key (name)*/, 
+					 const int type /*!< Array data type ID */, 
+					 void *const array /*!< Target storage space for read data */, 
+					 const int arraySize /*!< Number of array elements */, 
+					 const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */ );
   
   /// Read the next archive line to the buffer.
   TypedStreamToken ReadLineToken();
@@ -555,7 +617,7 @@ private:
    * Other than the standard library's strcmp() function, this implementation
    * ignores upper and lowercase. Also, strings are terminated by either NULL
    * characters or any white space or newline.
-   *@return 0 for identical strings (up to upper-/lowercase), 1 for 
+   *\return 0 for identical strings (up to upper-/lowercase), 1 for 
    * non-identical strings.
    */
   static int StringCmp( const char* s1, const char* s2 );
@@ -566,7 +628,7 @@ private:
    * character. The state between calls is saved in the "SplitPosition" field.
    * Calling the function with NULL as a parameter resets the internal state.
    */
-  char* StringSplit( char* s1 ) const;
+  char* StringSplit( char* s1 /*!< String to split into tokens. */ ) const;
 
   /// Internal position pointer for "StringSplit()".
   mutable char* SplitPosition;
@@ -581,7 +643,7 @@ private:
   TypedStreamDebugFlag DebugFlag;
   
   /// Output diagnostic message if debug flag is set.
-  void DebugOutput( const char* format, ... );
+  void DebugOutput( const char* format /*!< printf-style format string for the remaining variable number of function arguments.*/, ... );
 };
 
 //@}

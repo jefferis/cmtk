@@ -54,9 +54,9 @@ cmtk
 /** Histogram of a distribution with bins of arbitrary types.
  * This template is the base class for one-dimensional histograms that can
  * hold integer or real-valued bins, depending on the template parameter.
- *@param T Template parameter: the type of the histogram bins. Can be integral,
+ *\param T Template parameter: the type of the histogram bins. Can be integral,
  * or double in case of fractional bins.
- *@param FF Template parameter: boolean double flag. Instantiations need to make
+ *\param FF Template parameter: boolean double flag. Instantiations need to make
  * sure that this parameter is true whenever the instatiated class implements
  * fractional bins, ie., when T is either double or double, and false otherwise.
  */
@@ -172,7 +172,7 @@ public:
   /** Increment the value of a histogram bin by 1.
    * The histogram field to increment is identified directly by its index;
    * no value-rescaling is done internally.
-   *@param sample Index of histogram field.
+   *\param sample Index of histogram field.
    */
   void Increment ( const size_t sample ) 
   {
@@ -194,7 +194,7 @@ public:
    * neighbouring bins.
    *\note If the bin type of this template object is an integer type, then
    * only the lower of two candidate bins will be decremented by 1.
-   *@param bin Fractional index of histogram bin.
+   *\param bin Fractional index of histogram bin.
    */
   void IncrementFractional ( const double bin ) 
   {
@@ -207,8 +207,8 @@ public:
   /** Increment the value of a histogram bin by a given weight.
    * The histogram field to increment is identified directly by its index;
    * no value-rescaling is done internally.
-   *@param sample Index of histogram field.
-   *@param weight Weight of the current value, i.e., real value that the given
+   *\param sample Index of histogram field.
+   *\param weight Weight of the current value, i.e., real value that the given
    * bin is incremented by.
    */
   void Increment ( const size_t sample, const double weight ) 
@@ -221,7 +221,7 @@ public:
    * no value-rescaling is done internally. Make sure that a value has actually
    * been added to this bin before - otherwise, the next entropy computation my
    * give some unexpected results.
-   *@param sample Index of histogram field in direction.
+   *\param sample Index of histogram field in direction.
    */
   void Decrement ( const size_t sample ) 
   {
@@ -236,7 +236,7 @@ public:
    * neighbouring bins.
    *\note If the bin type of this template object is an integer type, then
    * only the lower of two candidate bins will be decremented by 1.
-   *@param bin Fractional index of histogram bin.
+   *\param bin Fractional index of histogram bin.
    */
   void DecrementFractional ( const double bin ) 
   {
@@ -251,8 +251,8 @@ public:
    * no value-rescaling is done internally. Make sure that a value has actually
    * been added to this bin before - otherwise, the next entropy computation my
    * give some unexpected results.
-   *@param sample Index of histogram field in direction.
-   *@param weight Weight of the current value, i.e., real value that the given
+   *\param sample Index of histogram field in direction.
+   *\param weight Weight of the current value, i.e., real value that the given
    * bin is decremented by.
    */
   void Decrement ( const size_t sample, const double weight ) 
@@ -267,7 +267,7 @@ public:
    * It is also a good idea to ensure that the data range of these bins is
    * the same in both objects. Both can be guaranteed if one histogram was
    * created from the other by a call to Clone() for example.
-   *@param other A pointer to the other histogram. Its bin values are added to
+   *\param other A pointer to the other histogram. Its bin values are added to
    * this object's bins.
    */
   void AddHistogram ( const Self& other );
@@ -278,7 +278,7 @@ public:
    * bins. It is also a good idea to ensure that the data ranges of these bins
    * are the same in both objects. Both can be guaranteed if one histogram was
    * created from the other by a call to Clone() for example.
-   *@param other A pointer to the other histogram. Its bin values are
+   *\param other A pointer to the other histogram. Its bin values are
    * subtracted this object's bins.
    */
   void RemoveHistogram ( const Self& other );
@@ -293,13 +293,13 @@ public:
       }
   }
   /** Normalize histogram values by their total sum.
-   *@param normalizeTo All histogram bins are scaled by a common factor so that
+   *\param normalizeTo All histogram bins are scaled by a common factor so that
    * their sum matches the value of this parameter.
    */
   void Normalize( const T normalizeTo = 1 );
 
   /** Normalize histogram values by their maximum.
-   *@param normalizeTo All histogram bins are scaled by a common factor so that
+   *\param normalizeTo All histogram bins are scaled by a common factor so that
    * their maximum matches the value of this parameter.
    */
   void NormalizeMaximum( const T normalizeTo = 1 );

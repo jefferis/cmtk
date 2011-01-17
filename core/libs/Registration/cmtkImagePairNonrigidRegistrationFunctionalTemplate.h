@@ -66,7 +66,7 @@ protected:
    * Before computing the incremental metric after change of one parameter,
    * the global metric is copied to this object. It is then used for in-place
    * application of all necessary changes, leaving the original metric intact.
-   *@see #EvaluateIncremental
+   *\see #EvaluateIncremental
    */
   SmartPointer<VM> m_IncrementalMetric;
   
@@ -149,11 +149,11 @@ public:
   }
 
   /** Evaluate functional after change of a single parameter.
-   *@param warp The current deformation.
-   *@param localMetric The local metric oobject for partial recomputation.
-   *@param voi Volume-of-Influence for the parameter under consideration.
+   *\param warp The current deformation.
+   *\param localMetric The local metric oobject for partial recomputation.
+   *\param voi Volume-of-Influence for the parameter under consideration.
    *\param vectorCache Pre-allocated cache storage for locally used transformed vectors.
-   *@return The metric after recomputation over the given volume-of-influence.
+   *\return The metric after recomputation over the given volume-of-influence.
    */
   typename Self::ReturnType EvaluateIncremental( const SplineWarpXform& warp, VM& localMetric, const DataGrid::RegionType& voi, Vector3D *const vectorCache ) 
   {

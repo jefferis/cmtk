@@ -91,11 +91,11 @@ public:
   
   /** Constructor.
    * A typed array is built from an existing array.
-   *@param data Pointer to the array of values to be stored.
-   *@param datasize Number of elements in the data array.
-   *@param freeArray Tag of the memory handler that has to be used for freeing
+   *\param data Pointer to the array of values to be stored.
+   *\param datasize Number of elements in the data array.
+   *\param freeArray Tag of the memory handler that has to be used for freeing
    * the array after use.
-   *@param paddingflag Flag that indicates whether there are missing elements in
+   *\param paddingflag Flag that indicates whether there are missing elements in
    * the existing data array.
    *\param paddingData Value that marks missing elements in the data array if "paddingFlag" is true.
    */
@@ -212,15 +212,15 @@ public:
   }
   
   /** Convert and copy continuous sub-array to a given destination.
-   *@param toPtr A pointer to the location where the data shall be stored.
-   *@param fromIdx The index of the first copied data item in the array,
+   *\param toPtr A pointer to the location where the data shall be stored.
+   *\param fromIdx The index of the first copied data item in the array,
    * beginning with 0.
-   *@param len Length, ie. number of values, to copy. The calling function
+   *\param len Length, ie. number of values, to copy. The calling function
    * must take care that there is enough memory pointed to by toPtr to store
    * this many values of the transfer data type.
-   *@param substPadding Where there is padding data in the copied range, this value
+   *\param substPadding Where there is padding data in the copied range, this value
    * is put to the output.
-   *@return The pointer given to this function to store the desired data to.
+   *\return The pointer given to this function to store the desired data to.
    */
   virtual Types::DataItem* GetSubArray( Types::DataItem *const toPtr, const size_t fromIdx , const size_t len, const Types::DataItem substPadding = 0 ) const 
   {
@@ -248,12 +248,12 @@ public:
   /** Return a sub array of the current instance.
    * The data is returned in a newly allocated primitive array of the Types::DataItem
    * data exchange type.
-   *@param fromIdx Copying starts at this index in the array. The range for
+   *\param fromIdx Copying starts at this index in the array. The range for
    * this parameter is [0..Size-1].
-   *@param len Number of data elements to be copied.
-   *@param substPadding If this flag is set (default is NO), then during copying
+   *\param len Number of data elements to be copied.
+   *\param substPadding If this flag is set (default is NO), then during copying
    * all elements marked as "non-existent" are replaced by zero.
-   *@return Pointer to a newly allocated Types::DataItem array. Allocation is done
+   *\return Pointer to a newly allocated Types::DataItem array. Allocation is done
    * using the allocator given as template parameter "M" to this class.
    */
   virtual Types::DataItem* GetSubArray( const size_t fromIdx, const size_t len, const Types::DataItem substPadding = 0 ) const 
@@ -265,8 +265,8 @@ public:
   /** Convert Types::DataItem to template type.
    * This function takes an Types::DataItem value and converts it into a value of the
    * type stored in this array.
-   *@param value The item in Types::DataItem representation.
-   *@return The value of type T corresponding to the "value" parameter's value.
+   *\param value The item in Types::DataItem representation.
+   *\return The value of type T corresponding to the "value" parameter's value.
    * Conversion is done using the type converter class given as template
    * parameter "C" to this class. Therefore, rounding will occur if necessary.
    */
@@ -298,8 +298,8 @@ public:
   /** Scale values in the array.
    * A call to this member function will perform an in-place rescaling of the
    * values in the array.
-   *@param scale The original data value is multiplied by the parameter first.
-   *@param offset This value is added to the original data value after 
+   *\param scale The original data value is multiplied by the parameter first.
+   *\param offset This value is added to the original data value after 
    * multiplying it by the scale parameter.
    */
   virtual void Rescale( const Types::DataItem scale = 1, const Types::DataItem offset = 0 ) 
@@ -328,12 +328,12 @@ public:
    * values in the array with value range truncation. Truncation takes place
    * after the scaling itself, i.e., the truncation boundaries refer to the
    * already scaled values.
-   *@param scale The original data value is multiplied by the parameter first.
-   *@param offset This value is added to the original data value after 
+   *\param scale The original data value is multiplied by the parameter first.
+   *\param offset This value is added to the original data value after 
    * multiplying it by the scale parameter.
-   *@param truncLo Lower truncation boundary. Scaled items below this 
+   *\param truncLo Lower truncation boundary. Scaled items below this 
    * threshold will be set to equal its value.
-   *@param truncHi Upper truncation boundary. Scaled items above this 
+   *\param truncHi Upper truncation boundary. Scaled items above this 
    * threshold will be set to equal its value.
    */
   virtual void Rescale( const Types::DataItem scale, const Types::DataItem offset, const Types::DataItem truncLo, const Types::DataItem truncHi = CMTK_ITEM_MAX ) 
@@ -352,7 +352,7 @@ public:
   }
 
   /** Apply gamma correction.
-   *@param gamma The gamma correction coefficient.
+   *\param gamma The gamma correction coefficient.
    */
   virtual void GammaCorrection( const Types::DataItem gamma );
 
@@ -431,12 +431,12 @@ public:
   }
   
   /** Get an item from the array.
-   *@param value The variable referenced by this parameter is set to the
+   *\param value The variable referenced by this parameter is set to the
    * data item stored at the given location in the array. If this item is
    * marked is "padding data", ie. non-existent, "value" is set to zero.
-   *@param index The index of the item to retrieve. Valid values are in the 
+   *\param index The index of the item to retrieve. Valid values are in the 
    * range [0..Datasize()-1].
-   *@return A non-zero value is returned if and only if the value stored in
+   *\return A non-zero value is returned if and only if the value stored in
    * the array at the given location is marked as valid data.
    */
   virtual bool Get ( Types::DataItem& value, const size_t index ) const 
@@ -452,11 +452,11 @@ public:
   }
 
   /** Get a sequence of items from the array.
-   *@param values This must point to an allocated array of at least as many
+   *\param values This must point to an allocated array of at least as many
    * Types::DataItem objects as given in the "length" parameter.
-   *@param index The index of the item to retrieve. Valid values are in the 
+   *\param index The index of the item to retrieve. Valid values are in the 
    * range [0..Datasize()-1].
-   *@param length Number of consecutive values to get.
+   *\param length Number of consecutive values to get.
    */
   virtual void GetSequence ( Types::DataItem *const values, const size_t index, const size_t length ) const
   {
@@ -469,10 +469,10 @@ public:
   }
 
   /** Set an item in the array.
-   *@param value The new value for the specified item.
-   *@param index The index of the item to set. Valid values are in the 
+   *\param value The new value for the specified item.
+   *\param index The index of the item to set. Valid values are in the 
    * range [0..Datasize()-1].
-   *@see Convert
+   *\see Convert
    */
   virtual void Set ( const Types::DataItem value, const size_t index ) 
   {
@@ -488,7 +488,7 @@ public:
    *
    * If this array does NOT have a padding data value, the data pointed to by the
    * result of this function is undefined.
-   *@return Pointer to the padding value of this object.
+   *\return Pointer to the padding value of this object.
    */
   virtual void* GetPaddingPtr () const { return (void*)&Padding; }
 
@@ -503,7 +503,7 @@ public:
   }
   
   /** Get the whole array data as an exchange type array.
-   *@return Pointer to a memory region allocated by Memory::AllocateArray(). This region is
+   *\return Pointer to a memory region allocated by Memory::AllocateArray(). This region is
    * filled with all values in the present array as Types::DataItem values. The created
    * array is not maintained by this object. The caller has to make sure free()
    * is called for it.
@@ -522,7 +522,7 @@ public:
   /** Set all data from an Types::DataItem array.
    * This function sets all values stored in the present array from a memory
    * region with Types::DataItem values.
-   *@param data Pointer to an array of Types::DataItem values.
+   *\param data Pointer to an array of Types::DataItem values.
    * Control over the source array is not taken by this object. If it is on the heap, 
    * then the calling routine remains responsible for de-allocating the array afterwards.
    */
@@ -534,7 +534,7 @@ public:
   }
 
   /** Clear entire array.
-   *@param usePaddingData If this flag is set, then the array will be filled with
+   *\param usePaddingData If this flag is set, then the array will be filled with
    * the PaddingData value, if one exists. Otherwise, the array will be filled
    * with the respective data type's zero value.
    */
@@ -566,7 +566,7 @@ public:
 
   /** Calculate statistics.
    * Results will be both zero if there is not data in the array.
-   *@return The number of valid (i.e., non-padding) values that constitute the
+   *\return The number of valid (i.e., non-padding) values that constitute the
    * given results.
    */
   virtual size_t GetStatistics ( Types::DataItem& mean, Types::DataItem& variance ) const;
@@ -576,7 +576,7 @@ public:
   virtual void BlockSet( const Types::DataItem value, const size_t fromOffset, const size_t toOffset );
 
   /** Get data histogram.
-   *@return A histogram object filled with the relative frequencies of values 
+   *\return A histogram object filled with the relative frequencies of values 
    * in this array.
    */
   virtual Histogram<unsigned int>::SmartPtr GetHistogram( const unsigned int numberOfBins /*!< Number of histogram bins */,
@@ -604,7 +604,7 @@ private:
   T Padding;
 
   /** Allocate data array.
-   *@param datasize Number of data items to allocate memory for.
+   *\param datasize Number of data items to allocate memory for.
    */
   virtual void Alloc ( const size_t datasize ) 
   {
@@ -643,7 +643,7 @@ private:
   }
 };
 
-/**@name Shortcut class typedefs for typed arrays. */
+/**\name Shortcut class typedefs for typed arrays. */
 //@{
 
 /// Array of (unsigned) byte values.

@@ -213,6 +213,7 @@ private:
  
   /** Process a window for NL-means accumulation.
    *\param NL Block in which to put the NL computation
+   *\param blockLocations UNDOCUMENTED
    *\param data Data array from input 3D image.
    *\param dims Dimensions of the input 3D image.
    *\param smoothingParam Smoothing parameter for the weighting function

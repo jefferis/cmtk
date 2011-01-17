@@ -143,8 +143,8 @@ public:
   }
   
   /** Return bin corresponding to a certain value of the distribution.
-   *@param value A value from the distribution.
-   *@return The index of the bin corresponding to the given value.
+   *\param value A value from the distribution.
+   *\return The index of the bin corresponding to the given value.
    */
   virtual size_t ValueToBin ( const Types::DataItem value ) const 
   {
@@ -153,8 +153,8 @@ public:
   }
   
   /** Return fractional bin corresponding to a value of the distribution.
-   *@param value A value from the distribution.
-   *@return The index of the fractional bin index corresponding to the given 
+   *\param value A value from the distribution.
+   *\return The index of the fractional bin index corresponding to the given 
    * value. This value is an integer if and only if the given value is 
    * identical to the lower bound of a bin.
    */
@@ -165,8 +165,8 @@ public:
   }
   
   /** Return center of values represented by a certain bin.
-   *@param bin Index of a bin from the distribution.
-   *@return Average of upper and lower margin values of the given bin.
+   *\param bin Index of a bin from the distribution.
+   *\return Average of upper and lower margin values of the given bin.
    */
   virtual Types::DataItem BinToValue ( const size_t bin ) const 
   {

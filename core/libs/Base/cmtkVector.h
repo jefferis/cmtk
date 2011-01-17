@@ -55,7 +55,7 @@ cmtk
 //@{
 
 /** Numerical vector class.
- *@author Torsten Rohlfing
+ *\author Torsten Rohlfing
  */
 template<class T>
 class Vector
@@ -73,7 +73,7 @@ public:
   /// Smart pointer to igsFloatVector.
   typedef SmartPointer<Self> SmartPtr;
 
-  /**@name Constructors */
+  /**\name Constructors */
   //@{
   /// Create constant (zero-)vector.
   Vector ( const size_t dim = 0, const T value = 0 ) 
@@ -139,11 +139,11 @@ public:
    * the elements array is deleted and a new one is allocated. In any case,
    * there is no guarantee that the data stored in the vector before this call
    * remains unchanged. This is even true for initial elements.
-   *@param dim The number of elements to be stored in this vector after
+   *\param dim The number of elements to be stored in this vector after
    * returning from this function.
-   *@param zero If this parameter is true, all vector elements are set to
+   *\param zero If this parameter is true, all vector elements are set to
    * the zero value in their respective data type.
-   *@return A reference to this object after changing the dimension.
+   *\return A reference to this object after changing the dimension.
    */
   Vector& SetDim ( const size_t dim, const bool zero = true ) 
   {
@@ -175,11 +175,11 @@ public:
   /** Adjust vector dimension.
    * Unlike SetDim(), this function preserves the values of elements in the
    * vector if they are still in the valid index range after size adjustment.
-   *@param dim The number of elements to be stored in this vector after
+   *\param dim The number of elements to be stored in this vector after
    * returning from this function.
-   *@param zero If this parameter is true, all new vector elements are set to
+   *\param zero If this parameter is true, all new vector elements are set to
    * the zero value in their respective data type.
-   *@return A reference to this object after changing the dimension.
+   *\return A reference to this object after changing the dimension.
    */
   Vector& AdjustDimension( const size_t dim, const bool zero = true ) 
   {
@@ -232,10 +232,10 @@ public:
   }
 
   /** Copy another vector to given offset.
-   *@param other Vector from which the specified elements are copied.
-   *@param offs Destination offset. Copying starts at this position in this
+   *\param other Vector from which the specified elements are copied.
+   *\param offs Destination offset. Copying starts at this position in this
    * instance.
-   *@param len Number of elements to be copied. If zero, all elements are 
+   *\param len Number of elements to be copied. If zero, all elements are 
    * copied until the end of one of the vectors is reached.
    */
   void CopyToOffset( const Vector& other, const size_t offs = 0, size_t len = 0 )

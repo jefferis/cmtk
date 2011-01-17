@@ -1148,7 +1148,7 @@ public:
   }
 
   /** Write XML self description according to Slice3 execution model.
-   *@see 
+   *\see 
    */
   void WriteXML() const;
   

@@ -82,7 +82,7 @@ public:
    * two identical position with a flip in the x-direction. For convenient
    * selection of the scan direction, SCANDIRECTION_XXX preprocessor definitions 
    * are available.
-   *@see SCANDIRECTION_XXX
+   *\see SCANDIRECTION_XXX
    */
   igsClassParameter(int,Direction);
 

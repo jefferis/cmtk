@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -238,7 +238,7 @@ doMain( const int argc, const char* argv[] )
     cl.Parse( argc, argv );
 
     // get effective argc and argv for command
-    const int cargc = argc-cl.GetNextIndex()+1;
+    const size_t cargc = argc-cl.GetNextIndex()+1;
     std::vector<const char*> cargv( cargc );
     cargv[0] = command;
     for ( size_t i = 1; i < cargc; ++i )

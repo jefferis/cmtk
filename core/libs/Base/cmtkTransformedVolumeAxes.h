@@ -68,19 +68,19 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /** Constructor using affine transformation.
-   *@param volume The volume for which we are constructing an axes hash.
-   *@param xform Coordinate transformation. If this pointer is NULL, identity is assumed.
-   *@param deltas If this parameter is given, it is used as a pointer to a
+   *\param volume The volume for which we are constructing an axes hash.
+   *\param xform Coordinate transformation. If this pointer is NULL, identity is assumed.
+   *\param deltas If this parameter is given, it is used as a pointer to a
    * three-element coordinate array defining the voxel size in the other volume
    * to obtain fractional voxel indices rather than actual coordinates.
    *
    * Alternatively, this parameter can also be used to provide the volume size (Volume::Size), which creates
    * normalized coordinates (0..1) for each volume axis.
    *
-   *@param otherOrigin If this parameter is given, it is used as a pointer to a
+   *\param otherOrigin If this parameter is given, it is used as a pointer to a
    * three-element coordinate array defining an m_Origin vector for the transformed
    * coordinates.
-   *@return Pointer to an array of three pointers. Each of these points to an
+   *\return Pointer to an array of three pointers. Each of these points to an
    * array of Vector3D objects that contain the vector hashes for the X-, Y-, 
    * and Z-axis.
    */
@@ -88,9 +88,9 @@ public:
   
   /** Constructor using mirror plane.
    *\param volume The volume whose axes we are transforming.
-   *@param mirrorPlane Mirror plane with respect to which the coordinates of
+   *\param mirrorPlane Mirror plane with respect to which the coordinates of
    * this volume and thus all hash values are mirrored.
-   *@param deltas If this parameter is given, it is used as a pointer to a
+   *\param deltas If this parameter is given, it is used as a pointer to a
    * 3 element coordinate array defining the voxel size in the other volume
    * to obtain fractional voxel indices rather than actual coordinates. 
    *

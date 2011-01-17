@@ -45,7 +45,7 @@ cmtk
 //@{
 
 /** Class for command line-controlled affine registration.
- *@author T. Rohlfing
+ *\author T. Rohlfing
  */
 class AffineRegistrationCommandLine : 
   /// Inherit generic affine registration.
@@ -62,11 +62,11 @@ public:
   typedef AffineRegistration Superclass;
 
   /** Constructor.
-   *@param argc Number of command line arguments; this should be the argc
+   *\param argc Number of command line arguments; this should be the argc
    * parameter of the main() function.
-   *@param argv Array of command line arguments; this should be the argv
+   *\param argv Array of command line arguments; this should be the argv
    * parameter of the main() function.
-   *@exception ConstructorFailed This exception is thrown if there where
+   *\exception ConstructorFailed This exception is thrown if there where
    * invalid or unknown options or missing required parameters. In all these
    * cases, an information text describing the known options will have been
    * written to the standard error stream before throwing the exception.

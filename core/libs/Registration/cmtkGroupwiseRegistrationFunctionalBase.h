@@ -119,10 +119,9 @@ public:
   virtual void CreateTemplateGrid( const DataGrid::IndexType& dims /*!< Template grid dimensions */, const UniformVolume::CoordinateVectorType& deltas /*!< Template grid deltas (i.e., pixel size). */ );
 
   /** Set template grid.
-   *\param templateGrid The template grid that defines size and resolution for the
-   *  implicit registration template.
    */
-  virtual void SetTemplateGrid( UniformVolume::SmartPtr& templateGrid, const int downsample = 1 /*!< Downsampling factor */, const bool useTemplateData = false /*!< Flag to use template data, not just grid */ );
+  virtual void SetTemplateGrid( UniformVolume::SmartPtr& templateGrid /*!< The template grid that defines size and resolution for the implicit registration template. */, 
+				const int downsample = 1 /*!< Downsampling factor */, const bool useTemplateData = false /*!< Flag to use template data, not just grid */ );
 
   /** Retrieve the template grid.
    */
@@ -296,6 +295,7 @@ public:
 
   /** Get parameter stepping in milimeters.
    *\param idx Parameter index.
+   *\param mmStep Desired step length. This is typically used as a scalar factor for the default (1mm) step size.
    *\return Step of given parameter that corresponds to 1 mm effective motion.
    */
   virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const 
@@ -311,11 +311,6 @@ public:
       }
   }
   
-  /** Get parameter stepping in milimeters.
-   *\param idx Parameter index.
-   *\return Step of given parameter that corresponds to 1 mm effective motion.
-   */
-
   /** Return the functional's parameter vector dimension.
    * We assume that all transformations have the same number of parameters.
    * This is true for affine transformations.
@@ -473,7 +468,7 @@ protected:
    *  Sufficient memory (for as many pixels as there are in the template grid)
    *  must be allocated there.
    */
-  virtual void InterpolateImage( const size_t idx, byte* const destination ) {} // cannot make this pure virtual because we need to instantiate for affine initialization
+  virtual void InterpolateImage( const size_t idx, byte* const destination ) { UNUSED(idx); UNUSED(destination); } // cannot make this pure virtual because we need to instantiate for affine initialization
 
   /// Vector of reformatted and rescaled image data.
   std::vector<byte*> m_Data;

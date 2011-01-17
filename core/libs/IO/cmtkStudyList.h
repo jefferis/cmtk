@@ -87,34 +87,35 @@ public:
   const Study *FindStudyPath( const char *fileSystemPath ) const;
 
   /** Find non-constant Study object by file system path.
-    *\param create If true, any studies not found will be created and added
-    * to this list object.
     */
   Study::SmartPtr FindStudyPath( const char *fileSystemPath /*!< Path of study to find in filesystem */, const bool create = false /*!< Flag whether to create a study that does not exist already */ );
 
   /// Find constant Study object by file system path.
-  const Study *FindStudyName( const char *name ) const;
+  const Study *FindStudyName( const char *name /*!< Name of the study to find.*/ ) const;
 
   /// Find non-constant Study object by file system path.
-  Study::SmartPtr FindStudyName( const char *name );
+  Study::SmartPtr FindStudyName( const char *name /*!< Name of the study to find.*/ );
 
   /// Add a new study entry.
-  Study::SmartPtr AddStudy( const char *fileSystemPath );
+  Study::SmartPtr AddStudy( const char *fileSystemPath /*!< Name of the study to add.*/ );
   
   /// Add an existing study object.
-  void AddStudy( Study::SmartPtr& study );
+  void AddStudy( Study::SmartPtr& study /*!< Existing study object to add to the study list.*/ );
   
   /// Add a coordinate transformation between two studies.
   void AddXform( Study::SmartPtr& fromStudy, Study::SmartPtr& toStudy, AffineXform::SmartPtr& affineXform, WarpXform::SmartPtr& warpXform = WarpXform::SmartPtr::Null );
 
   /// Add a coordinate transformation between two studies.
-  void AddXform( const char *fromStudyPath, const char *toStudyPath, AffineXform::SmartPtr& affineXform, WarpXform::SmartPtr& warpXform = WarpXform::SmartPtr::Null );
+  void AddXform( const char *fromStudyPath /*!< Path of the study that the transformation maps from.*/, 
+		 const char *toStudyPath /*!< Path of the study that the transformation maps to.*/, 
+		 AffineXform::SmartPtr& affineXform /*!< Affine coordinate transformation between the given studies. */, 
+		 WarpXform::SmartPtr& warpXform = WarpXform::SmartPtr::Null /*!< Optional nonrigid transformation between the two given studies. */);
   
   /// Remove and delete given study object.
-  void DeleteStudy( const Study* study );
+  void DeleteStudy( const Study* study /*!< Study object to delete from the list.*/ );
 
   /// Remove and delete given study object.
-  void DeleteStudy( const unsigned int studyIndex );
+  void DeleteStudy( const unsigned int studyIndex /*!< Index of study to delete from the list.*/ );
 };
 
 //@}

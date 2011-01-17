@@ -71,7 +71,7 @@ cmtk
 
 /** Generic Variable-Typed Data Array.
  * This class delivers the common interface of all variable-typed data arrays.
- *@author Torsten Rohlfing 
+ *\author Torsten Rohlfing 
  */
 class TypedArray
 {
@@ -89,25 +89,25 @@ public:
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /** Create typed data array from existing array of values.
-   *@param dtype Type specifier.
-   *@param data Pointer to the existing data array.
-   *@param size Number of data items in the array.
-   *@param freeArray On destruction, the created object will de-allocate the
+   *\param dtype Type specifier.
+   *\param data Pointer to the existing data array.
+   *\param size Number of data items in the array.
+   *\param freeArray On destruction, the created object will de-allocate the
    * array's memory if and only if this flag is true.
-   *@param paddingFlag If this flag is not zero, padding data exists in the array.
-   *@param paddingData Value used for padding data.
-   *@return A pointer to a new typed array object, or NULL if an error 
+   *\param paddingFlag If this flag is not zero, padding data exists in the array.
+   *\param paddingData Value used for padding data.
+   *\return A pointer to a new typed array object, or NULL if an error 
    * occurred.
    */
   static Self::SmartPtr Create
   ( const ScalarDataType dtype, void *const data, const size_t size, const bool freeArray = true, const bool paddingFlag = false, const void* paddingData = NULL );
   
   /** Create typed data array, allocating new memory for the items array.
-   *@param dtype Type specifier.
-   *@param size Number of items in the array to be allocated. Memory will be
+   *\param dtype Type specifier.
+   *\param size Number of items in the array to be allocated. Memory will be
    * freed when the created object is destroyed. The values in the array are 
    * not initialized.
-   *@return A pointer to a new typed array object, or NULL if an error
+   *\return A pointer to a new typed array object, or NULL if an error
    * occurred.
    */
   static Self::SmartPtr Create( const ScalarDataType dtype, const size_t size );
@@ -126,11 +126,11 @@ public:
   virtual bool Get ( Types::DataItem&, const size_t ) const = 0;
 
   /** Get a sequence of items from the array.
-   *@param values This must point to an allocated array of at least as many
+   *\param values This must point to an allocated array of at least as many
    * Types::DataItem objects as given in the "length" parameter.
-   *@param index The index of the item to retrieve. Valid values are in the 
+   *\param index The index of the item to retrieve. Valid values are in the 
    * range [0..Datasize()-1].
-   *@param length Number of consecutive values to get.
+   *\param length Number of consecutive values to get.
    */
   virtual void GetSequence ( Types::DataItem *const values, const size_t index, const size_t length ) const = 0;
 
@@ -162,7 +162,7 @@ public:
   /** Set all data from an Types::DataItem array.
    * This function sets all values stored in the present array from a memory
    * region with Types::DataItem values.
-   *@param data Pointer to an array of Types::DataItem values.
+   *\param data Pointer to an array of Types::DataItem values.
    * Control over the source array is not taken by this object. If it is on the heap, 
    * then the calling routine remains responsible for de-allocating the array afterwards.
    */
@@ -186,7 +186,7 @@ public:
    * This function uses ConvertSubArray to convert the complete array.
    *\return Newly allocated memory of given type. Caller is responsible for freeing this memory with a call to
    * Memory::DeleteArray().
-   *@see ConvertSubArray
+   *\see ConvertSubArray
    */
   virtual void* ConvertArray ( const ScalarDataType dtype ) const 
   {
@@ -196,7 +196,7 @@ public:
   /** Clear entire array.
    * This method is implemented by derived template classes for better
    * efficiency.
-   *@param usePaddingData If this flag is set, then the array will be filled with
+   *\param usePaddingData If this flag is set, then the array will be filled with
    * the PaddingData value, if one exists. Otherwise, the array will be filled
    * with the respective data type's zero value.
    */
@@ -209,8 +209,8 @@ public:
   /** Scale values in the array.
    * A call to this member function will perform an in-place rescaling of the
    * values in the array.
-   *@param scale The original data value is multiplied by the parameter first.
-   *@param offset This value is added to the original data value after 
+   *\param scale The original data value is multiplied by the parameter first.
+   *\param offset This value is added to the original data value after 
    * multiplying it by the scale parameter.
    */
   virtual void Rescale( const Types::DataItem scale = 1, const Types::DataItem offset = 0 ) = 0;
@@ -224,7 +224,7 @@ public:
   virtual void RescaleToRange( const Types::DataItemRange& toRange );
 
   /** Apply gamma correction.
-   *@param gamma The gamma correction coefficient.
+   *\param gamma The gamma correction coefficient.
    */
   virtual void GammaCorrection( const Types::DataItem gamma ) = 0;
 
@@ -262,12 +262,12 @@ public:
    * values in the array with value range truncation. Truncation takes place
    * after the scaling itself, i.e., the truncation boundaries refer to the
    * already scaled values.
-   *@param scale The original data value is multiplied by the parameter first.
-   *@param offset This value is added to the original data value after 
+   *\param scale The original data value is multiplied by the parameter first.
+   *\param offset This value is added to the original data value after 
    * multiplying it by the scale parameter.
-   *@param truncLo Lower truncation boundary. Scaled items below this 
+   *\param truncLo Lower truncation boundary. Scaled items below this 
    * threshold will be set to equal its value.
-   *@param truncHi Upper truncation boundary. Scaled items above this 
+   *\param truncHi Upper truncation boundary. Scaled items above this 
    * threshold will be set to equal its value.
    */
   virtual void Rescale( const Types::DataItem scale, const Types::DataItem offset, const Types::DataItem truncLo, const Types::DataItem truncHi = CMTK_ITEM_MAX ) = 0;
@@ -337,7 +337,7 @@ public:
   }
   
   /** Return the number of array elements.
-   *@return The number of array elements
+   *\return The number of array elements
    */
   size_t GetDataSize () const { return DataSize; }
 
@@ -349,27 +349,27 @@ public:
   }
 
   /** Return address of the data array.
-   *@return A pointer to the real data array.
+   *\return A pointer to the real data array.
    */
   virtual void* GetDataPtr( const size_t offset = 0) = 0;
 
   /** Return address of the data array.
-   *@return A pointer to the real data array.
+   *\return A pointer to the real data array.
    */
   virtual const void* GetDataPtr( const size_t offset = 0) const = 0;
 
   /** Get part of the stored array.
-   *@return A pointer to the buffer given is returned.
+   *\return A pointer to the buffer given is returned.
    */
   virtual Types::DataItem* GetSubArray( Types::DataItem *const, const size_t, const size_t, const Types::DataItem = 0 ) const = 0;
 
   /** Allocate memory and get part of the stored array.
-   *@return A pointer to the newly allocated buffer is returned.
+   *\return A pointer to the newly allocated buffer is returned.
    */
   virtual Types::DataItem* GetSubArray( const size_t, const size_t, const Types::DataItem = 0 ) const = 0;
 
   /** Return the flag for padding data.
-   *@return If return value is zero, all data stored in the array is valid.
+   *\return If return value is zero, all data stored in the array is valid.
    * A non-zero value indicates, that there are locations with no data present.
    */
   bool GetPaddingFlag () const { return PaddingFlag; }
@@ -429,7 +429,7 @@ public:
 
   /** Calculate statistics.
    * Results will be both zero if there is not data in the array.
-   *@return The number of valid (i.e., non-padding) values that constitute the
+   *\return The number of valid (i.e., non-padding) values that constitute the
    * given results.
    */
   virtual size_t GetStatistics ( Types::DataItem& mean, Types::DataItem& variance ) const = 0;
@@ -453,7 +453,7 @@ public:
     ) const;
 
   /** Get data histogram.
-   *@return A histogram object filled with the relative frequencies of values 
+   *\return A histogram object filled with the relative frequencies of values 
    * in this array.
    */
   virtual Histogram<unsigned int>::SmartPtr GetHistogram( const unsigned int numberOfBins /*!< Number of histogram bins */,

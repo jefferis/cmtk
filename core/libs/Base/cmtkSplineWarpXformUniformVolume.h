@@ -91,7 +91,7 @@ private:
   void RegisterVolumeAxis ( const int, const Types::Coordinate delta, const Types::Coordinate origin, const int, const Types::Coordinate, std::vector<int>& g, 
 			    std::vector<Types::Coordinate>& spline, std::vector<Types::Coordinate>& dspline );
   
-  /**@name Precomputed grid indices.
+  /**\name Precomputed grid indices.
    * These arrays hold the precomputed grid indices of the deformed grid's
    * voxels with respect to the control point grid of this deformation.
    */
@@ -104,7 +104,7 @@ private:
   std::vector<int> gZ;
   //@}
 
-  /**@name Precomputed spline coefficients.
+  /**\name Precomputed spline coefficients.
    * These arrays hold the precomputed spline coefficients for deforming the
    * voxel locations in the associated deformed grid.
    */
@@ -117,7 +117,7 @@ private:
   std::vector<Types::Coordinate> splineZ;
   //@}
 
-  /**@name Precomputed derivative spline coefficients.
+  /**\name Precomputed derivative spline coefficients.
    * These arrays hold the precomputed derivatives of the spline coefficients.
    * This allows for rapid evaluation of the Jacobian determinant.
    */

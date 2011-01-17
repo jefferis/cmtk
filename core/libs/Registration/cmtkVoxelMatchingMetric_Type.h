@@ -119,13 +119,13 @@ public:
      * The volume's data is converted into an array of byte values that
      * directly represent the bin to sort the respective sample into. In 
      * addition, the number of bins is determined and the bins array allocated.
-     *@param volume The original volume data.
-     *@param defNumBins The desired number of bins. If this parameter is
+     *\param volume The original volume data.
+     *\param defNumBins The desired number of bins. If this parameter is
      * zero, a suitable number is automatically determined.
-     *@param bounds User-specified bounds for data values. All values
+     *\param bounds User-specified bounds for data values. All values
      * outside this range will be set to the upper or lower limit and sorted into the
      * first or last histogram bin, respectively.
-     *@return The number of bins required to hold the data. Note that there 
+     *\return The number of bins required to hold the data. Note that there 
      * will be an extra bin allocated to hold non-existing data values.
      */
     size_t Init( const UniformVolume* volume, const size_t defNumBins, const Types::DataItemRange& bounds = Types::DataItemRange( -HUGE_VAL, HUGE_VAL ) );
@@ -136,7 +136,7 @@ public:
      * addition, the number of bins is determined and the bins array allocated.
      * This function can distinguish between different kinds of data 
      * (grey-level, binary, and labels) and handle these accordingly.
-     *@param volume The original volume data.
+     *\param volume The original volume data.
      */
     void Init( const UniformVolume* volume );
     

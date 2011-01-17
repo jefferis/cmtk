@@ -154,10 +154,10 @@ public:
   virtual void UpdateFromVolume();
 
   /** Read volume data.
-   *@param reRead If this is false, then the volume is only read if it has not
+   *\param reRead If this is false, then the volume is only read if it has not
    * been read before. Otherwise, it is re-read in any case.
    *\param orientation Optional three-letter anatomical image orientation.
-   *@return True if reading was successful; the "Volume" field has a pointer to
+   *\return True if reading was successful; the "Volume" field has a pointer to
    * the resulting image volume.
    */
   virtual bool ReadVolume( const bool reRead = false, const char* orientation = NULL );

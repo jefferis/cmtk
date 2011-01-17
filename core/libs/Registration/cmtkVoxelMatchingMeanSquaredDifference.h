@@ -65,8 +65,8 @@ public:
 
   /** Constructor.
    * For reference and model volume, InitDataset is called.
-   *@param refVolume The reference (fixed) volume.
-   *@param fltVolume The floating (moving) volume.
+   *\param refVolume The reference (fixed) volume.
+   *\param fltVolume The floating (moving) volume.
    */
   VoxelMatchingMeanSquaredDifference( const UniformVolume* refVolume, const UniformVolume* fltVolume );
 

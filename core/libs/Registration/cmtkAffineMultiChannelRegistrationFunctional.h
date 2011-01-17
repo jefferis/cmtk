@@ -88,9 +88,9 @@ public:
    *
    * From the resulting sequence of reference/floating voxel pairs, the 
    * selected voxel-based similarity measure (metric) is computed.
-   *@return The computed similarity measure as returned by the "Metric" 
+   *\return The computed similarity measure as returned by the "Metric" 
    * subobject.
-   *@see VolumeClipping
+   *\see VolumeClipping
    */
   virtual typename Self::ReturnType Evaluate();
 
@@ -103,14 +103,14 @@ private:
    * z-direction. It determines the range of indices of those planes in the
    * reference that intersect the floating. This is the range over which to 
    * for-loop during metric computation.
-   *@param clipper A volume clipping object with clipping boundaries and grid
+   *\param clipper A volume clipping object with clipping boundaries and grid
    * orientation set.
-   *@param origin Starting point of the reference volume.
-   *@param start Upon return, this reference is set to the index of first plane
+   *\param origin Starting point of the reference volume.
+   *\param start Upon return, this reference is set to the index of first plane
    * in the reference that intersects the floating.
-   *@param end Upon return, this reference is set to one plus the index of the
+   *\param end Upon return, this reference is set to one plus the index of the
    * last plane in the reference that intersects the floating.
-   *@return true if there is an intersection of reference and floating, false if there
+   *\return true if there is an intersection of reference and floating, false if there
    * isn't. The range of indices returned in "start" and "end" is only
    * guaranteed to be valid if 1 is the return value.
    */
@@ -131,14 +131,14 @@ private:
    * For the right, upper and back boundary, on-boundary voxels are already
    * outside the allowed range as the upper boundaries of the volume are open
    * in terms of interpolation.
-   *@param clipper A volume clipping object with clipping boundaries and grid
+   *\param clipper A volume clipping object with clipping boundaries and grid
    * orientation set.
-   *@param origin Starting point of the current row in the reference volume.
-   *@param start Upon return, this reference is set to the index of first voxel
+   *\param origin Starting point of the current row in the reference volume.
+   *\param start Upon return, this reference is set to the index of first voxel
    * in the reference that intersects the floating image.
-   *@param end Upon return, this reference is set to one plus the index of the
+   *\param end Upon return, this reference is set to one plus the index of the
    * last voxel in the reference that intersects the floating image.
-   *@return true if there is an intersection of the current reference row and
+   *\return true if there is an intersection of the current reference row and
    * the floating, false if there isn't. The range of indices returned in "start"
    * and "end" is only guaranteed to be valid if true is the return value.
    */
@@ -149,14 +149,14 @@ private:
    * y-direction. It determines the range of indices of those rows in the
    * current reference plane that intersect the floating image. This is the
    * range over which to for-loop during metric computation.
-   *@param clipper A volume clipping object with clipping boundaries and grid
+   *\param clipper A volume clipping object with clipping boundaries and grid
    * orientation set.
-   *@param origin Starting point of the current plane in the reference volume.
-   *@param start Upon return, this reference is set to the index of first row
+   *\param origin Starting point of the current plane in the reference volume.
+   *\param start Upon return, this reference is set to the index of first row
    * in the reference that intersects the floating image.
-   *@param end Upon return, this reference is set to one plus the index of the
+   *\param end Upon return, this reference is set to one plus the index of the
    * last row in the reference that intersects the floating image.
-   *@return true if there is an intersection of the current reference plane and
+   *\return true if there is an intersection of the current reference plane and
    * the floating, false if there isn't. The range of indices returned in "start" 
    * and "end" is only guaranteed to be valid if true is the return value.
    */

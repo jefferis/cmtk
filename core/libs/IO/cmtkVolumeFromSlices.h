@@ -30,8 +30,8 @@
 //
 */
 
-/**@name Build Volume from slice images. 
- *@author Torsten Rohlfing
+/**\name Build Volume from slice images. 
+ *\author Torsten Rohlfing
 */
 
 #ifndef __cmtkVolumeFromSlices_h_included_
@@ -46,7 +46,7 @@
 
 #include <stdio.h>
 
-/**@name Error bounds for various floating point situations.
+/**\name Error bounds for various floating point situations.
  */
 //@{
 /// Maximum calibration error in mm. Provides tolerance for fp rounding.
@@ -106,14 +106,14 @@ protected:
   const char* FillPlane ( unsigned int& plane, const ScalarImage* image );
 
   /** Finish volume creation and free temporary storage.
-   *@param sliceOffset This reference is set to the absolute slice coordinate
+   *\param sliceOffset This reference is set to the absolute slice coordinate
    * of the original image that became the first plane in the resulting volume.
    * This can be used to write images with precisely the same absolute
    * positions later.
-   *@param sliceDirection This reference is set to a flag indicating whether 
+   *\param sliceDirection This reference is set to a flag indicating whether 
    * in the original images the slice positions increased (+1) or decreased 
    * (-1) with increasing slice index.
-   *@return The newly created volume object as returned by ConstructVolume().
+   *\return The newly created volume object as returned by ConstructVolume().
    */
   UniformVolume::SmartPtr FinishVolume( Types::Coordinate& sliceOffset, int& sliceDirection );
 
@@ -137,19 +137,19 @@ protected:
    * created for non-uniformly spaced images. Derived classes my override this
    * function to create specialized volume classes derived from the 
    * aforementioned base classes.
-   *@param Dims Dimensions of the 3D data, ie. number of voxels in x-, y-, and
+   *\param Dims Dimensions of the 3D data, ie. number of voxels in x-, y-, and
    * z-direction.
-   *@param Size Extents of data in [mm] in x-, y-, and z-direction.
-   *@param Points Positions of the grid points (voxels) with respect to the 
+   *\param Size Extents of data in [mm] in x-, y-, and z-direction.
+   *\param Points Positions of the grid points (voxels) with respect to the 
    * three spatial coordinates. In case the points are uniformly spaced in all
    * three dimensions, an instance of UniformVolume is created with grid
    * spacing as defined by the uniform spacings in this array. Otherwise, an
    * instance of igsRectilinearVolume is created with precisely this array as
    * its "Points" field.
    *\param Data Pixel data array for the new volume.
-   *@see igsRectilinearVolume#Points
-   *@return The newly created instance of a class derived from Volume.
-   *@see Volume
+   *\see igsRectilinearVolume#Points
+   *\return The newly created instance of a class derived from Volume.
+   *\see Volume
    */
   virtual UniformVolume::SmartPtr ConstructVolume( const DataGrid::IndexType& Dims, const UniformVolume::CoordinateVectorType& Size, const Types::Coordinate *Points[3], TypedArray::SmartPtr& Data ) const;
 
@@ -158,10 +158,10 @@ protected:
    * size, identical pixel calibrations, and the same primitive data type. 
    * Also, slices with zero distance and changing directions of the table
    * position are detected and reported.
-   *@param plane Index of this image in the sequence.
-   *@param image A reference to a structure describing the next image.
-   *@param frame Index of frame within a multi-frame image.
-   *@return A pointer to an error message, of NULL if image was okay.
+   *\param plane Index of this image in the sequence.
+   *\param image A reference to a structure describing the next image.
+   *\param frame Index of frame within a multi-frame image.
+   *\return A pointer to an error message, of NULL if image was okay.
    */
   const char* CheckImage ( const int plane, const ScalarImage* image, const unsigned int frame = 0 );
 

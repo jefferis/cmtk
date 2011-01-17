@@ -81,9 +81,10 @@ public:
   /** Constructor.
    * Init pointers to volume and transformation objects and initialize
    * internal data structures.
-   *@param reference The reference (i.e. static) volume.
-   *@param floating The floating (i.e. transformed) volume.
-   *@param xform A transformation template. This object determines the type
+   *\param reference The reference (i.e. static) volume.
+   *\param floating The floating (i.e. transformed) volume.
+   *\param interpolation ID of the interpolator to use for the floating image.
+   *\param affineXform A transformation template. This object determines the type
    * of transformation to be optimized. Its initial value is not relevant.
    */
   ImagePairAffineRegistrationFunctionalTemplate( UniformVolume::SmartPtr& reference, 
@@ -127,9 +128,9 @@ public:
    *
    * From the resulting sequence of reference/floating voxel pairs, the 
    * selected voxel-based similarity measure (metric) is computed.
-   *@return The computed similarity measure as returned by the "Metric" 
+   *\return The computed similarity measure as returned by the "Metric" 
    * subobject.
-   *@see VolumeClipping
+   *\see VolumeClipping
    */
   virtual typename Self::ReturnType Evaluate();
   

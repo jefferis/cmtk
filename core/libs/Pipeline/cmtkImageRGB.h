@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -70,16 +70,17 @@ public:
    * This function checks whether a data array of the appropriate size exists.
    * If not, the old array is freed and a new one with the correct size is
    * created.
-   *@param forceAlloc If this flag is true, then a data array of
-   * appropriate size is allocated if it had not been done before.
    */
-  const byte *GetDataPtr() const { return Data; }
+  const byte *GetDataPtr() const
+  { 
+    return this->Data; 
+  }
 
   /** Get pointer to RGB data.
    * This function checks whether a data array of the appropriate size exists.
    * If not, the old array is freed and a new one with the correct size is
    * created.
-   *@param forceAlloc If this flag is true, then a data array of
+   *\param forceAlloc If this flag is true, then a data array of
    * appropriate size is allocated if it had not been done before.
    */
   byte *GetDataPtr( const bool forceAlloc );
@@ -142,14 +143,14 @@ private:
   ImageAlphaToggle AlphaChannel;
 
   /** The number of bytes per pixel associated with the current image mode.
-   *@see #AlphaChannel
+   *\see #AlphaChannel
    */
   unsigned int BytesPerPixel;
 
   /** The number of bytes allocated for the currently allocated Data array.
    * Note that this is NOT the number of pixels which, depending on the state
    * of "AlphaChannel", is only 1/4 or 1/3 of this value.
-   *@see #AlphaChannel
+   *\see #AlphaChannel
    */
   unsigned int DataSize;
 };

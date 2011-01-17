@@ -59,7 +59,7 @@ class ScalarImageSimilarityMemory :
  * et al. [Penney G, et al., Similarity Measures for Use in 2D-3D Medical Image
  * Registration, IEEE Trans Med Imaging 17(4):586-595, 1998 (August)] for use
  * in registration of 2-D fluoroscopic images to 3-D CT volumes.
- *@see TypedArraySimilarity for implementation of all operators that do not
+ *\see TypedArraySimilarity for implementation of all operators that do not
  * require 2-D arrangement of pixels but work on the sequential pixel arrays.
  */
 class ScalarImageSimilarity :

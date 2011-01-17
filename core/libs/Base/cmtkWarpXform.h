@@ -268,8 +268,8 @@ public:
   void SetParametersActive( const int axis, const bool active = true );
 
   /** Set a particular parameter as active (or passive).
-   *@param index Index of the parameter.
-   *@param active Flag whether to set the parameter as active (non-zero) or
+   *\param index Index of the parameter.
+   *\param active Flag whether to set the parameter as active (non-zero) or
    * passive (zero).
    */
   void SetParameterActive( const size_t index, const bool active = true );
@@ -278,7 +278,7 @@ public:
   void SetParameterInactive( const size_t index );
 
   /** Set parameters for spatial dimensions as active.
-   *@param axes This parameter defiend the activated dimensions in this
+   *\param axes This parameter defiend the activated dimensions in this
    * transformation. If it contains the characters x, y, or z, then the x, y,
    * and z-directions, respectively, are activated. The remaining directions
    * (if any) are deativated. The order of the axes is not relevant. Both 
@@ -287,8 +287,8 @@ public:
   void SetParametersActive( const char* axes );
 
   /** Test whether a particular parameter is active.
-   *@param index Index of the parameter.
-   *@return Non-zero if and only if the given parameter is active.
+   *\param index Index of the parameter.
+   *\return Non-zero if and only if the given parameter is active.
    */
   int GetParameterActive( const size_t index ) const;
 

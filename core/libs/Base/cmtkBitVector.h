@@ -58,14 +58,14 @@ public:
   typedef SmartPointer<BitVector> SmartPtr;
 
   /** Constructor.
-   *@param size Number of bits handled by this object.
+   *\param size Number of bits handled by this object.
    *\param initial Initial value for the bits in the array.
    */
   BitVector( const size_t size, const bool initial = false );
   
   /** Constructor.
-   *@param size Number of bits handled by this object.
-   *@param bitset Byte array that is used to initialize the array.
+   *\param size Number of bits handled by this object.
+   *\param bitset Byte array that is used to initialize the array.
    */
   BitVector( const size_t size, byte *const bitset );
   

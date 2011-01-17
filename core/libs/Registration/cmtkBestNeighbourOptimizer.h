@@ -67,7 +67,7 @@ public:
   /** Constructor.
    * Hand functional and callback to parent class and initialize local 
    * variables.
-   *@param stepFactor Factor by which the search step size is decreased.
+   *\param stepFactor Factor by which the search step size is decreased.
    */
   BestNeighbourOptimizer ( const Self::ParameterType stepFactor = 0.5 )
   { 

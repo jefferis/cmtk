@@ -153,8 +153,8 @@ public:
   /** Return partial derivatives of node data w.r.t. grid dimensions.
    * The data on the cube faces is used for a finite-difference approximation
    * of the first-order derivatives w.r.t. the grid dimensions x, y, and z.
-   *@param d The object of type Vector3D in which the result is to be stored.
-   *@return A reference to the destination parameter.
+   *\param d The object of type Vector3D in which the result is to be stored.
+   *\return A reference to the destination parameter.
    */
   Vector3D& GetPartialDerivatives ( Vector3D& d ) const 
   {

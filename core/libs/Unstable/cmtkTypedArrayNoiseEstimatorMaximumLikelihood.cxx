@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2008-2010 SRI International
+//  Copyright 2008-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -40,6 +40,7 @@ TypedArrayNoiseEstimatorMaximumLikelihood::TypedArrayNoiseEstimatorMaximumLikeli
 ( const TypedArray* data, const size_t histogramBins ) 
 {
 //  Histogram<unsigned int>::SmartPtr histogram( data->GetHistogram( histogramBins ) );
+  UNUSED(histogramBins);
 
   size_t overriddenHistogramBins = 255;
   Histogram<unsigned int>::SmartPtr histogram( data->GetHistogram( overriddenHistogramBins ) );

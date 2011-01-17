@@ -120,9 +120,9 @@ public:
    * If the object represents a pipe with on-the-fly decompression, only
    * the set mode "SEEK_CUR" is supported and will be simulated by successive
    * reading of 8kB data blocks from the pipe.
-   *@param offset Offset the file pointer is set to, depending on the value of
+   *\param offset Offset the file pointer is set to, depending on the value of
    * whence.
-   *@param whence File pointer set mode as defined for fseek.
+   *\param whence File pointer set mode as defined for fseek.
    */
   int Seek ( const long int offset, int whence )
   {
@@ -170,12 +170,12 @@ private:
    * A suffix is appended to the desired filename, unless the name has
    * has already been given this suffix. Afterwards, a pipe through a
    * user-defined command is opened.
-   *@param filename The name of the file to read through the pipe.
+   *\param filename The name of the file to read through the pipe.
    *\param suffix Actual suffix of the file to be read through the pipe.
-   *@param command The command to pipe the file through. This should be the
+   *\param command The command to pipe the file through. This should be the
    * name of a program that reads the file with the given name (referenced by
    * "%s" in the command string) and writes its output to stdout.
-   *@param compressedSuffix The file suffix corresponding to input files for the given
+   *\param compressedSuffix The file suffix corresponding to input files for the given
    * pipe command, e.g. ".gz" for gzip.
    */
   bool OpenDecompressionPipe ( const char* filename, const char* suffix, const char* command, const char* compressedSuffix );
@@ -223,9 +223,9 @@ private:
       * This class implements a naive seek that optionally calls "this->Rewind()" (if
       * "whence" is SEEK_SET, then reads "offset" bytes from the input to position
       * read pointer.
-      *@param offset Offset the file pointer is set to, depending on the value of
+      *\param offset Offset the file pointer is set to, depending on the value of
       * whence.
-      *@param whence File pointer set mode as defined for fseek.
+      *\param whence File pointer set mode as defined for fseek.
       */
     virtual int Seek ( const long int offset, int whence );
     
@@ -274,9 +274,9 @@ private:
       * If the object represents a pipe with on-the-fly decompression, only
       * the set mode "SEEK_CUR" is supported and will be simulated by successive
       * reading of 8kB data blocks from the pipe.
-      *@param offset Offset the file pointer is set to, depending on the value of
+      *\param offset Offset the file pointer is set to, depending on the value of
       * whence.
-      *@param whence File pointer set mode as defined for fseek.
+      *\param whence File pointer set mode as defined for fseek.
       */
     virtual int Seek ( const long int offset, int whence );
     
@@ -367,9 +367,9 @@ private:
       * If the object represents a pipe with on-the-fly decompression, only
       * the set mode "SEEK_CUR" is supported and will be simulated by successive
       * reading of 8kB data blocks from the pipe.
-      *@param offset Offset the file pointer is set to, depending on the value of
+      *\param offset Offset the file pointer is set to, depending on the value of
       * whence.
-      *@param whence File pointer set mode as defined for fseek.
+      *\param whence File pointer set mode as defined for fseek.
       */
     virtual int Seek ( const long int offset, int whence );
     

@@ -66,12 +66,12 @@ public:
 
   /** Constructor.
    * For reference and model volume, InitDataset is called.
-   *@param refVolume The reference (fixed) volume.
-   *@param fltVolume The model (transformed) volume.
-   *@param numRefBins The desired number of bins to classify the 
+   *\param refVolume The reference (fixed) volume.
+   *\param fltVolume The model (transformed) volume.
+   *\param numRefBins The desired number of bins to classify the 
    * reference data. If this parameter is zero (default), a suitable value
    * is automatically determined.
-   *@param numFltBins The desired number of bins to classify the 
+   *\param numFltBins The desired number of bins to classify the 
    * model data. If this parameter is zero (default), a suitable value
    * is automatically determined.
    */

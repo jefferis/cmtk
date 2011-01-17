@@ -69,8 +69,9 @@ public:
 
   /** Constructor.
    * For reference and model volume, InitDataset is called.
-   *@param refVolume The reference (fixed) volume.
-   *@param fltVolume The floating (moving) volume.
+   *\param refVolume The reference (fixed) volume.
+   *\param fltVolume The floating (moving) volume.
+   *\param interpolation ID of the interpolator to use for the floating image.
    */
   ImagePairSimilarityMeasureMSD( const UniformVolume::SmartConstPtr& refVolume, const UniformVolume::SmartConstPtr& fltVolume, const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT );
 

@@ -101,8 +101,8 @@ public:
   /** Constructor.
    * Init pointers to volume and transformation objects and initialize
    * internal data structures.
-   *@param reference The reference (i.e. static) volume.
-   *@param floating The floating (i.e. transformed) volume.
+   *\param reference The reference (i.e. static) volume.
+   *\param floating The floating (i.e. transformed) volume.
    */
   VoxelMatchingFunctional( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating )
     : m_MatchedLandmarkList( NULL )
@@ -142,9 +142,9 @@ protected:
   UniformVolume::CoordinateVectorType ReferenceInvDelta;
 
   /** Find rectilinear area in original reference grid.
-   *@param fromVOI Lower corner of area to find.
-   *@param toVOI Upper corner of area to find.
-   *@return The smallest box of reference 
+   *\param fromVOI Lower corner of area to find.
+   *\param toVOI Upper corner of area to find.
+   *\return The smallest box of reference 
    * grid voxels that contains the given coordinate range.
    */
   const DataGrid::RegionType GetReferenceGridRange ( const Vector3D& fromVOI, const Vector3D& toVOI );
@@ -184,8 +184,8 @@ public:
   /** Constructor.
    * Init pointers to volume and transformation objects and initialize
    * internal data structures.
-   *@param reference The reference (i.e. static) volume.
-   *@param floating The floating (i.e. transformed) volume.
+   *\param reference The reference (i.e. static) volume.
+   *\param floating The floating (i.e. transformed) volume.
    */
   VoxelMatchingFunctional_Template
   ( UniformVolume::SmartPtr& reference, 

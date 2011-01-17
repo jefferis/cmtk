@@ -44,8 +44,8 @@ cmtk
 /** \addtogroup Registration */
 //@{
 /** Class for command line controlled  voxel registration.
- *@author T. Rohlfing
- *@version $Revision$ $Date$
+ *\author T. Rohlfing
+ *\version $Revision$ $Date$
  */
 class ElasticRegistrationCommandLine : 
   /// Inherit generic elastic registration.
@@ -62,9 +62,9 @@ public:
   typedef ElasticRegistration Superclass;
 
   /** Constructor.
-   *@param argc Number of command line arguments; this should be the argc
+   *\param argc Number of command line arguments; this should be the argc
    * parameter of the main() function.
-   *@param argv Array of command line arguments; this should be the argv
+   *\param argv Array of command line arguments; this should be the argv
    * parameter of the main() function.
    */
   ElasticRegistrationCommandLine ( const int argc, const char *argv[] );

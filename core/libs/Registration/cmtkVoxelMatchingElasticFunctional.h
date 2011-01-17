@@ -351,8 +351,8 @@ public:
   /** Constructor.
    * Init pointers to volume and transformation objects and initialize
    * internal data structures.
-   *@param reference The reference (i.e. static) volume.
-   *@param floating The floating (i.e. transformed) volume.
+   *\param reference The reference (i.e. static) volume.
+   *\param floating The floating (i.e. transformed) volume.
    */
   VoxelMatchingElasticFunctional_Template( UniformVolume::SmartPtr& reference, UniformVolume::SmartPtr& floating )
     : VoxelMatchingFunctional_Template<VM>( reference, floating ), 
@@ -388,10 +388,10 @@ public:
   }
 
   /** Evaluate functional after change of a single parameter.
-   *@param warp The current deformation.
-   *@param localMetric Metric object for local recomputation.
-   *@param voi Volume-of-Influence for the parameter under consideration.
-   *@return The metric after recomputation over the given volume-of-influence.
+   *\param warp The current deformation.
+   *\param localMetric Metric object for local recomputation.
+   *\param voi Volume-of-Influence for the parameter under consideration.
+   *\return The metric after recomputation over the given volume-of-influence.
    */
   typename Self::ReturnType EvaluateIncremental( const SplineWarpXform* warp, SmartPointer<VM>& localMetric, const DataGrid::RegionType& voi ) 
   {
@@ -581,7 +581,7 @@ protected:
    * Before computing the incremental metric after change of one parameter,
    * the global metric is copied to this object. It is then used for in-place
    * application of all necessary changes, leaving the original metric intact.
-   *@see #EvaluateIncremental
+   *\see #EvaluateIncremental
    */
    SmartPointer<VM> IncrementalMetric;
    
@@ -596,10 +596,10 @@ protected:
  * This constructor function returns a pointer to a newly created elastic
  * matching functional. The functional is created from the template
  * corresponding to the given parameters.
- *@return A pointer to the newly created functional of NULL if creation failed.
- *@param metric Index of the voxel similarity measure to be used.
- *@param refVolume Reference volume data.
- *@param fltVolume Floating volume data.
+ *\return A pointer to the newly created functional of NULL if creation failed.
+ *\param metric Index of the voxel similarity measure to be used.
+ *\param refVolume Reference volume data.
+ *\param fltVolume Floating volume data.
  * template.
  */
 VoxelMatchingElasticFunctional* CreateElasticFunctional( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume );

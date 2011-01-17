@@ -106,18 +106,18 @@ public:
   UniformVolume( const UniformVolume& other, const Types::Coordinate resolution = 0, const bool allowUpsampling = false );
 
   /** Create uniform volume "from scratch".
-   *@param dims Number of grid elements for the three spatial dimensions.
-   *@param size Size of the volume in real-world coordinates.
-   *@param data An existing TypedArray containing the scalar voxel data.
+   *\param dims Number of grid elements for the three spatial dimensions.
+   *\param size Size of the volume in real-world coordinates.
+   *\param data An existing TypedArray containing the scalar voxel data.
    */
   UniformVolume( const DataGrid::IndexType& dims, const Self::CoordinateVectorType& size, TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null );
 
   /** Create uniform volume "from scratch".
-   *@param dims Number of grid elements for the three spatial dimensions.
-   *@param deltaX Pixel size in x direction.
-   *@param deltaY Pixel size in y direction.
-   *@param deltaZ Pixel size in z direction.
-   *@param data An existing TypedArray containing the scalar voxel data.
+   *\param dims Number of grid elements for the three spatial dimensions.
+   *\param deltaX Pixel size in x direction.
+   *\param deltaY Pixel size in y direction.
+   *\param deltaZ Pixel size in z direction.
+   *\param data An existing TypedArray containing the scalar voxel data.
    */
   UniformVolume( const DataGrid::IndexType& dims, const Types::Coordinate deltaX, const Types::Coordinate deltaY, const Types::Coordinate deltaZ, TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null );
 
@@ -158,7 +158,7 @@ public:
   virtual AffineXform::MatrixType GetImageToPhysicalMatrix() const;
 
   /** Create a physical copy of this object.
-   *@param copyData If true, the associated data array is also copied.
+   *\param copyData If true, the associated data array is also copied.
    */
   Self::SmartPtr Clone( const bool copyData )
   {
@@ -203,7 +203,7 @@ public:
   /** Resample other volume.
    * Resampling is done by a sliding window algorithm combining both
    * interpolation and averaging, even within one volume.
-   *@return Pointer to a newly created TypedArray object holding the
+   *\return Pointer to a newly created TypedArray object holding the
    * resampled volume data. NULL is returned if sufficient memory is not
    * available.
    */
@@ -296,45 +296,45 @@ public:
   inline bool ProbeNoXform ( ProbeInfo&, const Self::CoordinateVectorType& ) const;
 
   /** Find a voxel in the volume.
-   *@param location Real-world coordinates of the location that is to be 
+   *\param location Real-world coordinates of the location that is to be 
    * found.
-   *@param idx This array is used to store the index components of the model
+   *\param idx This array is used to store the index components of the model
    * voxel containing the given location. Values range from 0 to 
    * ModelDims[dim-1].
-   *@param from Real-world coordinate of the voxel's lower left corner.
-   *@param to Real-world coordinate of the voxel's upper right corner.
-   *@return A non-zero value is returned if and only if the given location
+   *\param from Real-world coordinate of the voxel's lower left corner.
+   *\param to Real-world coordinate of the voxel's upper right corner.
+   *\return A non-zero value is returned if and only if the given location
    * lies within the model volume. If zero is returned, the location is outside
    * and all other output values (see parameters) are invalid.
    */
   inline bool FindVoxel( const Self::CoordinateVectorType& location, int *const idx, Types::Coordinate *const from, Types::Coordinate *const to ) const;
   
   /** Find a voxel in the volume.
-   *@param location Real-world coordinates of the location that is to be 
+   *\param location Real-world coordinates of the location that is to be 
    * found.
-   *@param idx This array is used to store the index components of the model
+   *\param idx This array is used to store the index components of the model
    * voxel containing the given location. Values range from 0 to 
    * ModelDims[dim-1].
-   *@return A non-zero value is returned if and only if the given location
+   *\return A non-zero value is returned if and only if the given location
    * lies within the model volume. If zero is returned, the location is outside
    * and all other output values (see parameters) are invalid.
    */
   inline bool FindVoxel( const Self::CoordinateVectorType& location, int *const idx ) const;
 
   /** Find a grid index inside or outside the volume.
-   *@param location Real-world coordinates of the location that is to be 
+   *\param location Real-world coordinates of the location that is to be 
    * found.
-   *@param idx This array is used to store the index components of the model
+   *\param idx This array is used to store the index components of the model
    * voxel containing the given location. Values range from 0 to 
    * ModelDims[dim-1].
    */
   inline void GetVoxelIndexNoBounds( const Self::CoordinateVectorType& location, int *const idx ) const;
 
   /** Find a voxel in the volume by fractional index.
-   *@param fracIndex Fractional 3D voxel index.
-   *@param idx Output: integer 3D voxel index.
-   *@param frac Output: fractional within-voxel location.
-   *@return True value is returned if and only if the given location lies
+   *\param fracIndex Fractional 3D voxel index.
+   *\param idx Output: integer 3D voxel index.
+   *\param frac Output: fractional within-voxel location.
+   *\return True value is returned if and only if the given location lies
    * within the model volume. If false is returned, the location is outside
    * and all other output values (see parameters) are invalid.
    */
@@ -382,7 +382,7 @@ public:
     return true;
   }
 
-  /** Get grid index corresponding to coordinate by truncation, not rounding..
+  /** Get grid index corresponding to coordinate by truncation, not rounding.
    * @param axis The coordinate dimension that the location parameters refers to.
    * @param location The location in the range from 0 to Size[axis].
    */
@@ -395,7 +395,8 @@ public:
   /** Get grid index corresponding to coordinate by truncation, not rounding.
    *\return True if given point is inside image, false if outside.
    */
-  virtual bool GetTruncGridPointIndex( const Self::CoordinateVectorType v, int *const xyz ) const 
+  virtual bool GetTruncGridPointIndex( const Self::CoordinateVectorType v /*!< Location to find in the grid. */, 
+				       int *const xyz /*!< Truncated grid point index (i.e., nearest grid point between location and grid coordinate origin. */ ) const 
   {
     for ( int dim = 0; dim < 3; ++dim )
       {
@@ -407,9 +408,9 @@ public:
   }
 
   /** Get a grid location in image coordinates.
-   *@param x,y,z The indices of the intended grid element with respect to the
+   *\param x,y,z The indices of the intended grid element with respect to the
    * three coordinate axes. Valid range is from 0 to Dims[...]-1.
-   *@return The location in image coordinates of the given grid element as a Self::CoordinateVectorType.
+   *\return The location in image coordinates of the given grid element as a Self::CoordinateVectorType.
    */
   virtual const Self::CoordinateVectorType GetGridLocation( const int x, const int y, const int z ) const 
   {
@@ -418,9 +419,9 @@ public:
   }
   
   /** Get a grid location in physical coordinates.
-   *@param idxV The index of the intended grid element with respect to the
+   *\param idxV The index of the intended grid element with respect to the
    * three coordinate axes. Valid range is from 0 to Dims[...]-1. Fractional coordinates are permitted.
-   *@return The location in image coordinates of the given grid element as a Self::CoordinateVectorType.
+   *\return The location in image coordinates of the given grid element as a Self::CoordinateVectorType.
    */
   virtual const Self::CoordinateVectorType IndexToPhysical( const Self::CoordinateVectorType& idxV ) const 
   {
@@ -431,9 +432,9 @@ public:
   /** Get a grid coordinate by continuous pixel index.
    * This function directly calculates the grid location from the volume's
    * grid deltas.
-   *@param idx The index of the intended grid element. 
+   *\param idx The index of the intended grid element. 
    * Valid range is from 0 to (Dims[0]*Dims[1]*Dims[2])-1.
-   *@return The location of the given grid element as a Self::CoordinateVectorType.
+   *\return The location of the given grid element as a Self::CoordinateVectorType.
    */
   virtual const Self::CoordinateVectorType GetGridLocation( const size_t idx ) const 
   {
@@ -461,7 +462,7 @@ public:
   }
 
   /** Calculate volume center.
-   *@return Returned is the center of the bounding box.
+   *\return Returned is the center of the bounding box.
    */
   Self::CoordinateVectorType GetCenterCropRegion() const 
   {
@@ -515,7 +516,7 @@ public:
 
 protected:
   /** Create a physical copy of this object.
-   *@param copyData If true, the associated data array is also copied.
+   *\param copyData If true, the associated data array is also copied.
    */
   virtual Self* CloneVirtual( const bool copyData );
   virtual Self* CloneVirtual() const;

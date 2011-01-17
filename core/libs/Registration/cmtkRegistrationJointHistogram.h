@@ -68,12 +68,12 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /** Constructor.
-   *@param refVolume The reference (fixed) volume.
-   *@param fltVolume The floating (transformed) volume.
-   *@param numBinsX The desired number of bins to classify the 
+   *\param refVolume The reference (fixed) volume.
+   *\param fltVolume The floating (transformed) volume.
+   *\param numBinsX The desired number of bins to classify the 
    * reference data. If this parameter is zero (default), a suitable value
    * is automatically determined.
-   *@param numBinsY The desired number of bins to classify the 
+   *\param numBinsY The desired number of bins to classify the 
    * floating data. If this parameter is zero (default), a suitable value
    * is automatically determined.
    *\param boundsX Value range for the X data distribution. Values outside this range will be assigned to the first and last histogram bins, respectively.
@@ -93,9 +93,9 @@ public:
    * of the samples in the original volume data are given. The bin indices of 
    * the respective data values are then retrieved from the pre-calculated raw
    * byte array (see InitDataset).
-   *@param refIdx Index of the current reference data sample.
-   *@param fltIdx Index of the current floating data sample.
-   *@param frac Fractional voxel coordinate of the probed floating data 
+   *\param refIdx Index of the current reference data sample.
+   *\param fltIdx Index of the current floating data sample.
+   *\param frac Fractional voxel coordinate of the probed floating data 
    * value.
    */
   inline void Proceed( const size_t refIdx, const size_t fltIdx, const Types::Coordinate* frac ) 

@@ -58,8 +58,8 @@ cmtk
  * This class' main application is ray clipping for DRR computation and volume
  * clipping for voxel based volume similarity computation. All member functions
  * are static, so they can be used without contructing an object.
- *@author T. Rohlfing
- *@version $Revision$ $Date$
+ *\author T. Rohlfing
+ *\version $Revision$ $Date$
  */
 class Intersection 
 {
@@ -67,27 +67,27 @@ public:
   /** Compute line-to-volume intersection.
    * This function computes the part of a lines that lies within a given
    * volume.
-   *@return This function returns 1 if and only if there is a non-empty
+   *\return This function returns 1 if and only if there is a non-empty
    * intersection of line and volume. In this case, the intersection is
    * described by fromFactor and toFactor.
-   *@param fromFactor If the function returned 1, this variable holds the
+   *\param fromFactor If the function returned 1, this variable holds the
    * relative distance to the entrance point of the line into the volume.
    * 0 means the line's starting point, 1 means its end.
-   *@param toFactor If the function returned 1, this variable holds the 
+   *\param toFactor If the function returned 1, this variable holds the 
    * relative distance to the exit point of the line from the volume. Possible
    * values range from 0 to 1 and have the same meaning as fromFactor.
-   *@param offset This 3D vector is the line's starting point.
-   *@param dX This is the vector spanning from the starting point of the line 
+   *\param offset This 3D vector is the line's starting point.
+   *\param dX This is the vector spanning from the starting point of the line 
    * to its end.
-   *@param Size This is the size of the volume. It is always rectilinear with
+   *\param Size This is the size of the volume. It is always rectilinear with
    * faces parallel to the coordinate axes and its lower left front corner 
    * identical to the coordinate origin. If affine transformed volumes are
    * to be tested, the inverse affine transformation has to be applied to
    * the line's endpoints instead.
-   *@param initFromFactor The fromFactor parameter's value is initialized
+   *\param initFromFactor The fromFactor parameter's value is initialized
    * with this value. It is therefore the lower bound of the parameter range
    * that is available for intersection.
-   *@param initToFactor The toFactor parameter's value is initialized
+   *\param initToFactor The toFactor parameter's value is initialized
    * with this value. It is therefore the upper bound of the parameter range
    * that is available for intersection. One application for this parameter
    * is to use a value bigger than 1, even if [0,1] is the allowed range. Then,
@@ -95,12 +95,12 @@ public:
    * set the value to 1. This, for example allows to tell closed from open
    * intervals, which may be important for subsequent computation such as
    * volume probing.
-   *@param lowerClosed This flag defines whether lower range boundaries are
+   *\param lowerClosed This flag defines whether lower range boundaries are
    * open (value 0, default) or closed (value 1). In case of an open range, 
    * the bounding value itself is not an element of the range. Thus, if an
    * intersection is entirely on the boundary, then it is empty in case of an
    * open range.
-   *@param upperClosed This flag has the same meaning and default as
+   *\param upperClosed This flag has the same meaning and default as
    * lowerClosed, but refers to the ranges' upper bounds.
    */
   static int IntersectX ( Types::Coordinate& fromFactor, Types::Coordinate& toFactor,
@@ -118,28 +118,28 @@ public:
    * IntersectX can be used to computed the exact 2D intersection.
    *
    * Parameters and return value are identical to IntersectionX.
-   *@param fromFactor If the function returned 1, this variable holds the
+   *\param fromFactor If the function returned 1, this variable holds the
    * relative distance to the entrance point of the line into the volume.
    * 0 means the line's starting point, 1 means its end.
-   *@param toFactor If the function returned 1, this variable holds the 
+   *\param toFactor If the function returned 1, this variable holds the 
    * relative distance to the exit point of the line from the volume. Possible
    * values range from 0 to 1 and have the same meaning as fromFactor.
-   *@param offset This 3D vector is the line's starting point.
-   *@param dX This is the vector spanning from the starting point of the line 
+   *\param offset This 3D vector is the line's starting point.
+   *\param dX This is the vector spanning from the starting point of the line 
    * to its end.
-   *@param dY This is the second vector in addition to dX spanning the plane
+   *\param dY This is the second vector in addition to dX spanning the plane
    * under consideration. In general, dX and dY should be orthogonal, and dY
    * should be defined in the way just as dX is, i.e. as the difference of two
    * plane corner vectors.
-   *@param Size This is the size of the volume. It is always rectilinear with
+   *\param Size This is the size of the volume. It is always rectilinear with
    * faces parallel to the coordinate axes and its lower left front corner 
    * identical to the coordinate origin. If affine transformed volumes are
    * to be tested, the inverse affine transformation has to be applied to
    * the line's endpoints instead.
-   *@param initFromFactor The fromFactor parameter's value is initialized
+   *\param initFromFactor The fromFactor parameter's value is initialized
    * with this value. It is therefore the lower bound of the parameter range
    * that is available for intersection.
-   *@param initToFactor The toFactor parameter's value is initialized
+   *\param initToFactor The toFactor parameter's value is initialized
    * with this value. It is therefore the upper bound of the parameter range
    * that is available for intersection. One application for this parameter
    * is to use a value bigger than 1, even if [0,1] is the allowed range. Then,
@@ -162,33 +162,33 @@ public:
    * intersection.
    *
    * Parameters and return value are identical to IntersectionX.
-   *@param fromFactor If the function returned 1, this variable holds the
+   *\param fromFactor If the function returned 1, this variable holds the
    * relative distance to the entrance point of the line into the volume.
    * 0 means the line's starting point, 1 means its end.
-   *@param toFactor If the function returned 1, this variable holds the 
+   *\param toFactor If the function returned 1, this variable holds the 
    * relative distance to the exit point of the line from the volume. Possible
    * values range from 0 to 1 and have the same meaning as fromFactor.
-   *@param offset This 3D vector is the line's starting point.
-   *@param dX This is the vector spanning from the starting point of the line 
+   *\param offset This 3D vector is the line's starting point.
+   *\param dX This is the vector spanning from the starting point of the line 
    * to its end.
-   *@param dY This is the second vector in addition to dX spanning the plane
+   *\param dY This is the second vector in addition to dX spanning the plane
    * under consideration. In general, dX and dY should be orthogonal, and dY
    * should be defined in the way just as dX is, i.e. as the difference of two
    * plane corner vectors.
-   *@param dZ This is the third vector in addition to dX and dY spanning the
+   *\param dZ This is the third vector in addition to dX and dY spanning the
    * volume under consideration. In general, dX, dY, and dZ should be
    * orthogonal, and dZ should be defined in the same way as dX and dY are, 
    * i.e. as the difference of two plane corner vectors where one is the volume
    * origin.
-   *@param Size This is the size of the volume. It is always rectilinear with
+   *\param Size This is the size of the volume. It is always rectilinear with
    * faces parallel to the coordinate axes and its lower left front corner 
    * identical to the coordinate origin. If affine transformed volumes are
    * to be tested, the inverse affine transformation has to be applied to
    * the line's endpoints instead.
-   *@param initFromFactor The fromFactor parameter's value is initialized
+   *\param initFromFactor The fromFactor parameter's value is initialized
    * with this value. It is therefore the lower bound of the parameter range
    * that is available for intersection.
-   *@param initToFactor The toFactor parameter's value is initialized
+   *\param initToFactor The toFactor parameter's value is initialized
    * with this value. It is therefore the upper bound of the parameter range
    * that is available for intersection. One application for this parameter
    * is to use a value bigger than 1, even if [0,1] is the allowed range. Then,

@@ -78,7 +78,7 @@ public:
   /** Check for update.
    * This functions first checks this class' additional "Plane" input object
    * for updates, then it calls the inherited "Update" function.
-   *@see Object#Update
+   *\see Object#Update
    */
   virtual long Update();
 

@@ -109,14 +109,14 @@ protected:
    * z-direction. It determines the range of indices of those planes in the
    * reference that intersect the floating. This is the range over which to 
    * for-loop during metric computation.
-   *@param clipper A volume clipping object with clipping boundaries and grid
+   *\param clipper A volume clipping object with clipping boundaries and grid
    * orientation set.
-   *@param origin Starting point of the reference volume.
-   *@param start Upon return, this reference is set to the index of first plane
+   *\param origin Starting point of the reference volume.
+   *\param start Upon return, this reference is set to the index of first plane
    * in the reference that intersects the floating.
-   *@param end Upon return, this reference is set to one plus the index of the
+   *\param end Upon return, this reference is set to one plus the index of the
    * last plane in the reference that intersects the floating.
-   *@return 1 if there is an intersection of reference and floating, 0 if there
+   *\return 1 if there is an intersection of reference and floating, 0 if there
    * isn't. The range of indices returned in "start" and "end" is only
    * guaranteed to be valid if 1 is the return value.
    */
@@ -154,14 +154,14 @@ protected:
    * For the right, upper and back boundary, on-boundary voxels are already
    * outside the allowed range as the upper boundaries of the volume are open
    * in terms of interpolation.
-   *@param clipper A volume clipping object with clipping boundaries and grid
+   *\param clipper A volume clipping object with clipping boundaries and grid
    * orientation set.
-   *@param origin Starting point of the current row in the reference volume.
-   *@param start Upon return, this reference is set to the index of first voxel
+   *\param origin Starting point of the current row in the reference volume.
+   *\param start Upon return, this reference is set to the index of first voxel
    * in the reference that intersects the floating image.
-   *@param end Upon return, this reference is set to one plus the index of the
+   *\param end Upon return, this reference is set to one plus the index of the
    * last voxel in the reference that intersects the floating image.
-   *@return 1 if there is an intersection of the current reference row and
+   *\return 1 if there is an intersection of the current reference row and
    * the floating, 0 if there isn't. The range of indices returned in "start"
    * and "end" is only guaranteed to be valid if 1 is the return value.
    */
@@ -204,14 +204,14 @@ protected:
    * y-direction. It determines the range of indices of those rows in the
    * current reference plane that intersect the floating image. This is the
    * range over which to for-loop during metric computation.
-   *@param clipper A volume clipping object with clipping boundaries and grid
+   *\param clipper A volume clipping object with clipping boundaries and grid
    * orientation set.
-   *@param origin Starting point of the current plane in the reference volume.
-   *@param start Upon return, this reference is set to the index of first row
+   *\param origin Starting point of the current plane in the reference volume.
+   *\param start Upon return, this reference is set to the index of first row
    * in the reference that intersects the floating image.
-   *@param end Upon return, this reference is set to one plus the index of the
+   *\param end Upon return, this reference is set to one plus the index of the
    * last row in the reference that intersects the floating image.
-   *@return 1 if there is an intersection of the current reference plane and
+   *\return 1 if there is an intersection of the current reference plane and
    * the floating, 0 if there isn't. The range of indices returned in "start" 
    * and "end" is only guaranteed to be valid if 1 is the return value.
    */
