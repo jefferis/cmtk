@@ -1,5 +1,7 @@
 Release CMTK-1.5.5:
 
+(r2752) Improved: addressing all warnings reported by "doxygen", source code
+    documentation has been completed.
 (r2733) Removed: the "congeal", "groupwise_rmi", "congeal_warp", and
     "groupwise_rmi_warp" tools have been removed. These are replaced by the
     "groupwise_affine" and "groupwise_warp" tools introduced in the previous
