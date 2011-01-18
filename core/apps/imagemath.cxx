@@ -804,6 +804,58 @@ CallbackMatchMeanSDev()
 }
 
 void
+CallbackMaskAverage()
+{
+  if ( ImageStack.size() < 2 )
+    {
+    cmtk::StdErr << "ERROR: need two images on stack for mask averaging\n";
+    return;
+    }
+  
+  cmtk::UniformVolume::SmartPtr msk = ImageStack.front();
+  ImageStack.pop_front();
+  
+  const cmtk::TypedArray& mskData = *(msk->GetData());
+  const cmtk::Types::DataItemRange labelRange = mskData.GetRange();
+  
+  const size_t nLabels = static_cast<size_t>( labelRange.Width()+1 );
+  std::vector<double> means( nLabels, 0.0 );
+  std::vector<size_t> count( nLabels, 0 );
+
+  cmtk::TypedArray::SmartPtr result( ImageStack.front()->GetData()->Convert( ResultType ) );
+  ImageStack.front()->SetData( result );
+
+  cmtk::TypedArray& avgData = *(ImageStack.front()->GetData());
+
+  // first pass: compute mean for each labelled ROI
+  const size_t n = mskData.GetDataSize();
+  for ( size_t idx = 0; idx < n; ++idx )
+    {
+    cmtk::Types::DataItem l;
+    mskData.Get( l, idx );
+
+    cmtk::Types::DataItem v;
+    if ( avgData.Get( v, idx ) )
+      {
+      const size_t ll = static_cast<size_t>( l-labelRange.m_LowerBound );
+      means[ll] += v;
+      ++count[ll];
+      }
+    }
+
+  // second pass: replace values with computed ROI means
+#pragma omp parallel for
+  for ( size_t idx = 0; idx < n; ++idx )
+    {
+    cmtk::Types::DataItem l;
+    mskData.Get( l, idx );
+
+    const size_t ll = static_cast<size_t>( l-labelRange.m_LowerBound );
+    avgData.Set( means[ll] / count[ll], idx );
+    }
+}
+
+void
 CallbackSum()
 {
   while ( ImageStack.size() > 1 )
@@ -1350,6 +1402,7 @@ doMain( const int argc, const char *argv[] )
     cl.AddCallback( Key( "atan2" ), CallbackAtan2, "Compute atan2() function from tup two image pixel pairs, place result on stack" );    
     cl.AddCallback( Key( "match-histograms" ), CallbackMatchHistograms, "Scale intensities in one image to match intensities of another. The last image pushed onto the stack provides the reference intensity distribution, the preceding image will be modified. Both input images are removed from the stack and the modified image is pushed onto the stack." );
     cl.AddCallback( Key( "match-mean-sdev" ), CallbackMatchMeanSDev, "Scale intensities of one image to match mean and standard deviation of another. The last image pushed onto the stack provides the reference intensity distribution, the preceding image will be modified. Both input images are removed from the stack and the modified image is pushed onto the stack." );
+    cl.AddCallback( Key( "mask-average" ), CallbackMaskAverage, "Mask averaging: the top image is taken as a multi-label mask. The pixels in the second image are averaged by mask labels, and then replaced with the average value for each mask label." );
     cl.EndGroup();
 
     cl.BeginGroup( "Contract multiple images", "Operators that contract the entire stack into a single image" );
