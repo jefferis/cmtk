@@ -441,6 +441,14 @@ case ${RUNTEST} in
 	run convertx --scale-to-range 128:192 spgr_brain_1.hdr ${tmpdir}/scaled.hdr
 	check_results scaled.img
 	;;
+    convertxReplacePadding)
+	run convertx --byte --set-padding 0 --replace-padding 255 spgr_brain_1.hdr ${tmpdir}/replaced.hdr
+	check_results replaced.img
+        ;;
+    convertxReplaceInfNaN)
+	run convertx --replace-inf-nan 255 infinite.nii ${tmpdir}/replaced.hdr
+	check_results replaced.img
+        ;;
     dbtool_AddImages)
       run dbtool add_images ${tmpdir}/db.sqlite image1 image2
       ${BINDIR}/sqlite ${tmpdir}/db.sqlite "SELECT * FROM images ORDER BY path ASC" > ${tmpdir}/images
