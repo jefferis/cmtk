@@ -2,6 +2,8 @@
 //
 //  Copyright 2010 Torsten Rohlfing
 //
+//  Copyright 2011 SRI International
+//
 //  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
@@ -40,7 +42,7 @@ namespace
 cmtk
 {
 
-/// Image operation: create connected components map.
+/// Image operation: set padding flag and value.
 class ImageOperationSetPadding
 /// Inherit from image operation base class.
   : public ImageOperation

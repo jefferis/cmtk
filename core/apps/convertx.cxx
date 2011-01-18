@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -59,6 +59,7 @@
 #include <Base/cmtkImageOperationScaleToRange.h>
 #include <Base/cmtkImageOperationThreshold.h>
 #include <Base/cmtkImageOperationSetPadding.h>
+#include <Base/cmtkImageOperationReplace.h>
 #include <Base/cmtkImageOperationMedianFilter.h>
 #include <Base/cmtkImageOperationMedialSkeleton.h>
 #include <Base/cmtkImageOperationGaussFilter.h>
@@ -124,6 +125,11 @@ doMain( const int argc, const char* argv[] )
     cl.AddCallback( Key( "double" ), &cmtk::ImageOperationConvertType::NewDouble, "64 bits floating point\n" );
     cl.EndGroup();
     
+    cl.BeginGroup( "Mappings", "Value Mappings" );
+    cl.AddCallback( Key( "replace-padding" ), &cmtk::ImageOperationReplace::NewReplacePadding, "Replace padded pixel data with given value." );
+    cl.AddCallback( Key( "replace-inf-nan" ), &cmtk::ImageOperationReplace::NewReplaceInfNaN, "Replace all infinite and not-a-number pixels with given value." );
+    cl.EndGroup();
+
     cl.BeginGroup( "Flipping", "Image Flipping" );
     cl.AddCallback( Key( "flip-x" ), &cmtk::ImageOperationFlip::NewX, "Flip (mirror) along x-direction" );
     cl.AddCallback( Key( "flip-y" ), &cmtk::ImageOperationFlip::NewY, "Flip (mirror) along y-direction" );
