@@ -9,6 +9,8 @@ Groupwise registration tools have been consolidated.
 
 Old "convert" tool has been removed. Use "convertx" tool instead.
 
+Pre-built binaries for the MacOS/PPC platform are no longer provided.
+
 For a complete list of changes and fixes, see the CHANGELOG file.
 
 CMTK has been built and tested on the following platforms:
@@ -20,7 +22,6 @@ CMTK has been built and tested on the following platforms:
 - Cygwin, gcc 4.5.0
 - Windows XP, VisualStudio 9 (2008 Express Edition), CUDA 3.2
 - Windows XP, VisualStudio 10 (2010 Express Edition)
-- MacOS X, PowerPC, gcc 4.0.1
 - OpenSolaris, SunStudio 12.1, i386 (CC 5.10)
 - OpenSolaris, SunStudio 12.1, x86_64 (CC 5.10)
 - OpenSolaris, Oracle/SunStudio 12.2, x86_64
