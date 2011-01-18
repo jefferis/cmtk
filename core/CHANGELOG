@@ -1,5 +1,7 @@
 Release CMTK-1.6.0:
 
+(r2756) Added: "convertx" tool gained two more missing operations from
+    "convert", namely replace padded pixels and pixels with Inf/NaN values.
 (r2752) Improved: addressing all warnings reported by "doxygen", source code
     documentation has been completed.
 (r2733) Removed: the "congeal", "groupwise_rmi", "congeal_warp", and
