@@ -36,7 +36,7 @@ Release CMTK-1.5.3 (2010-12-13):
 
 (r2652) Improved: CMTK can now be more flexibly configured to use bundled zlib
     over existing system zlib. This is partially addressing Issue #5395, with
-    a patch provided by Kent Williams. This also fixes Issue ##5382, because
+    a patch provided by Kent Williams. This also fixes Issue #5382, because
     we no longer depend on Darwin's broken system zlib.
 (r2629) Fixed: LZMA decompression was broken on i686 due to bug in
     lzmadec_seek(). The decompression backend classes now use a common fake
