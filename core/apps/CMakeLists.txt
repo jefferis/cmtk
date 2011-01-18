@@ -61,7 +61,6 @@ ELSE(CMTK_SINGLE_COMMAND_BINARY)
       average_images
       average_labels
       concat_affine
-      convert
       convertx
       convert_warp
       film

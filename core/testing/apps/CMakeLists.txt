@@ -161,27 +161,6 @@ IF(NOT CMTK_USE_MPI)
     average_imagesZScore)
 
   # ==========================================
-  # Tests for "convert" tool
-  SET(testList ${testList} 
-    convertAutoCrop
-    convertBoundaryMap
-    convertBoundaryMapMultiValue
-    convertDownsample
-    convertErodeDilateErode
-    convertDilateErodeDilate
-    convertMedianFilter1
-    convertMedianFilter2
-    convertNiftiToAnalyze
-    convertAnalyzeToNifti
-    convertNiftiDetachedToNifti
-    convertAnalyzeToNiftiDetached )
-
-  IF(CMTK_BUILD_NRRD)
-    SET(testList ${testList} 
-      convertDownsampleNrrd)
-  ENDIF(CMTK_BUILD_NRRD)
-
-  # ==========================================
   # Tests for "convertx" tool
   SET(testList ${testList} 
     convertxBinarize
