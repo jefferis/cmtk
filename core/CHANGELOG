@@ -1,6 +1,6 @@
 Release CMTK-1.6.0:
 
-(rXXXX) Removed: now-obsolete "convert" tool has been retired. Operations
+(r2760) Removed: now-obsolete "convert" tool has been retired. Operations
     still missing in "convertx" will be added as the need arises.
 (r2756) Added: "convertx" tool gained two more missing operations from
     "convert", namely replace padded pixels and pixels with Inf/NaN values.
