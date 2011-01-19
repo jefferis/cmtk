@@ -54,7 +54,6 @@ IF(NOT CMTK_USE_MPI)
     asegment
     average_affine
     average_edt
-    average_grey
     average_images
     average_labels
     concat_affine
@@ -76,7 +75,6 @@ IF(NOT CMTK_USE_MPI)
     mk_phantom_3d
     mrbias
     overlap
-    probe_xform
     randompxls
     randomwarp
     reformatx
