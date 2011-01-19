@@ -1,6 +1,6 @@
 Release CMTK-1.6.0:
 
-(rXXXX) Removed: unused and redundant "probe_xform" and "average_grey"
+(r2768) Removed: unused and redundant "probe_xform" and "average_grey"
     applications. Use "gregxform" and "reformatx"/"average_images" instead.
 (r2765) Removed: largely unused and incomplete support for building a single
     "cmtk" binary wrapper for all command line tools.
