@@ -54,7 +54,7 @@ LabelCombinationVoting::LabelCombinationVoting( const std::vector<TypedArray::Sm
 #pragma omp parallel for  
   for ( size_t i = 0; i < nValues; ++i )
     {
-    short label[32768];
+    unsigned int label[32768];
     memset( label, 0, numberOfClasses * sizeof( label[0] ) );
 
     for ( size_t curr = 0; curr < data.size(); ++curr )
@@ -68,10 +68,10 @@ LabelCombinationVoting::LabelCombinationVoting( const std::vector<TypedArray::Sm
 
     // Compute winner of label voting.
 
-    int maxLab = 0;
-    int maxCnt = 0;
+    short maxLab = 0;
+    unsigned int maxCnt = 0;
    
-    for ( int lab=0; lab < numberOfClasses; ++lab ) 
+    for ( size_t lab=0; lab < numberOfClasses; ++lab ) 
       {
       // do something with tie case
       if ( label[ lab ] > maxCnt ) 
