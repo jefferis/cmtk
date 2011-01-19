@@ -257,6 +257,7 @@ IF(NOT CMTK_USE_MPI)
   # Tests for "imagemath" tool
   SET(testList ${testList} 
     imagemathAverage 
+    imagemathMaskAverage 
     imagemathXor
     imagemathDupFillMaxValue
     imagemathAnd

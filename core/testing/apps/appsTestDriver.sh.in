@@ -735,6 +735,10 @@ case ${RUNTEST} in
 	run imagemath --in parc1_bin.hdr parc2_bin.hdr parc3_bin.hdr --average --out ${tmpdir}/average.hdr
 	check_results average.img
 	;;
+    imagemathMaskAverage)
+        run imagemath --in spgr_3t.hdr spgr_3t_mask.hdr --mask-average --out ${tmpdir}/average.hdr
+	check_results average.img
+	;;
     imagemathXor)
 	run imagemath --in parc1.hdr --scalar-xor 1 --out ${tmpdir}/xor.hdr
 	check_results xor.img
