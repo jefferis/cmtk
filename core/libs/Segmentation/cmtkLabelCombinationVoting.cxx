@@ -42,7 +42,7 @@ cmtk
 LabelCombinationVoting::LabelCombinationVoting( const std::vector<TypedArray::SmartPtr>& data )
 {
   const size_t nValues = data[ 0 ]->GetDataSize();
-  m_Result = TypedArray::SmartPtr( TypedArray::Create( TYPE_SHORT, nValues ) );
+  this->m_Result = TypedArray::SmartPtr( TypedArray::Create( TYPE_SHORT, nValues ) );
   
   int numberOfClasses = 1;
   for ( size_t k = 0; k < data.size(); ++k )
@@ -62,7 +62,7 @@ LabelCombinationVoting::LabelCombinationVoting( const std::vector<TypedArray::Sm
       Types::DataItem v;
       if ( data[ curr ]->Get( v, i ) ) 
         {
-        ++label[ static_cast<byte>( v ) ];
+        ++label[ static_cast<short>( v ) ];
         }
       }
 
