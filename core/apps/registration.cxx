@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -42,14 +42,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-namespace cmtk
-{
-namespace apps
-{
-namespace registration
-{
-#endif
 int
 doMain
 ( const int argc, const char *argv[] )
@@ -78,10 +70,3 @@ doMain
 }
 
 #include "cmtkSafeMain"
-
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-} // namespace registration
-} // namespace apps
-} // namespace cmtk
-#endif
-

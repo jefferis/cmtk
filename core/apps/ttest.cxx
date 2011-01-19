@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -51,14 +51,6 @@
 #include <fstream>
 #include <vector>
 
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-namespace cmtk
-{
-namespace apps
-{
-namespace ttest
-{
-#endif
 typedef enum { TTEST, TTEST_PAIRED, CORRELATION_PAIRED, ZSCORES } ModeEnum;
 
 int
@@ -474,10 +466,3 @@ doMain ( const int argc, const char* argv[] )
 }
 
 #include "cmtkSafeMain"
-
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-} // namespace model
-} // namespace apps
-} // namespace cmtk
-#endif
-

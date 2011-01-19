@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -57,14 +57,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-namespace cmtk
-{
-namespace apps
-{
-namespace statistics
-{
-#endif
 bool Verbose = false;
 
 bool Label = false;
@@ -457,10 +449,3 @@ doMain ( const int argc, const char* argv[] )
 }
 
 #include "cmtkSafeMain"
-
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-} // namespace statistics
-} // namespace apps
-} // namespace cmtk
-#endif
-

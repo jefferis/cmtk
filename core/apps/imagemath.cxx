@@ -75,15 +75,6 @@ double Logistic( const double x )
 
 } // namespace cmtk
 
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-namespace cmtk
-{
-namespace apps
-{
-namespace imagemath
-{
-#endif
-
 /// Flag for verbose operation.
 bool Verbose = false;
 
@@ -1443,9 +1434,3 @@ doMain( const int argc, const char *argv[] )
 }
 
 #include "cmtkSafeMain"
-
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-} // namespace imagemath
-} // namespace apps
-} // namespace cmtk
-#endif

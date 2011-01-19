@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -47,15 +47,6 @@
 
 #ifdef CMTK_BUILD_MPI
 #    include <mpi.h>
-#endif
-
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-namespace cmtk
-{
-namespace apps
-{
-namespace describe
-{
 #endif
 
 bool Verbose = false;
@@ -223,11 +214,4 @@ doMain( int argc, char *argv[] )
 }
 
 #include "cmtkSafeMainMPI" 
-
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-} // namespace describe
-} // namespace apps
-} // namespace cmtk
-#endif
-
 

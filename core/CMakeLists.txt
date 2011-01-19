@@ -123,12 +123,6 @@ ENDIF(CMTK_BUILD_UNSTABLE)
 OPTION(CMTK_BUILD_STACKTRACE "Build applications with stack trace printing in case of crash (increases build time)" ON)
 MARK_AS_ADVANCED(CMTK_BUILD_STACKTRACE)
 
-OPTION(CMTK_SINGLE_COMMAND_BINARY "Build using a single wrapper binary for all command line tools to avoid name collisions with other packages" OFF)
-MARK_AS_ADVANCED(CMTK_SINGLE_COMMAND_BINARY)
-IF(CMTK_SINGLE_COMMAND_BINARY)
-  ADD_DEFINITIONS(-DCMTK_SINGLE_COMMAND_BINARY)
-ENDIF(CMTK_SINGLE_COMMAND_BINARY)
-
 OPTION(CMTK_BUILD_DEMO "Build demonstration code. Strange things will happen if you turn this on." OFF)
 MARK_AS_ADVANCED(CMTK_BUILD_DEMO)
 IF(CMTK_BUILD_DEMO)

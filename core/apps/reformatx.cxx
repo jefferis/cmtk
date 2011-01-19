@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -58,14 +58,6 @@
 #  include <Registration/cmtkImageXformDB.h>
 #endif
 
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-namespace cmtk
-{
-namespace apps
-{
-namespace reformatx
-{
-#endif
 bool Verbose = false;
 
 bool JacobianCorrectGlobal = true;
@@ -566,10 +558,3 @@ doMain( const int argc, const char* argv[] )
 }
 
 #include "cmtkSafeMain"
-
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-} // namespace reformatx
-} // namespace apps
-} // namespace cmtk
-#endif
-

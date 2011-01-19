@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -46,14 +46,6 @@
 
 #include <vector>
 
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-namespace cmtk
-{
-namespace apps
-{
-namespace overlap
-{
-#endif
 bool Verbose = false;
 
 bool PaddingInFlag = false;
@@ -170,9 +162,3 @@ doMain ( const int argc, const char* argv[] )
 }
 
 #include "cmtkSafeMain"
-
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-} // namespace overlap
-} // namespace apps
-} // namespace cmtk
-#endif

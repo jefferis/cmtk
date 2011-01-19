@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -37,14 +37,6 @@
 #include <Segmentation/cmtkSimpleLevelsetCommandLine.h>
 #include <Segmentation/cmtkSimpleLevelset.h>
 
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-namespace cmtk
-{
-namespace apps
-{
-namespace levelset
-{
-#endif
 int
 doMain( const int argc, const char* argv[] )
 {
@@ -59,10 +51,3 @@ doMain( const int argc, const char* argv[] )
 }
 
 #include "cmtkSafeMain"
-
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-} // namespace levelset
-} // namespace apps
-} // namespace cmtk
-#endif
-

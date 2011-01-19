@@ -76,15 +76,6 @@
 #  include <ieeefp.h>
 #endif
 
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-namespace cmtk
-{
-namespace apps
-{
-namespace convert
-{
-#endif
-
 bool Verbose = false;
 
 int
@@ -227,9 +218,3 @@ doMain( const int argc, const char* argv[] )
 }
 
 #include "cmtkSafeMain"
-
-#ifdef CMTK_SINGLE_COMMAND_BINARY
-} // namespace convert
-} // namespace apps
-} // namespace cmtk
-#endif

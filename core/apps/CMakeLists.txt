@@ -32,99 +32,95 @@ SET(CMTK_LIBRARIES "cmtkSegmentation;cmtkRecon;cmtkRegistration;cmtkIO;cmtkBase;
 
 INCLUDE(${CMAKE_SOURCE_DIR}/libs/cmtkLibInitSrcs.cmake)
 
-IF(CMTK_SINGLE_COMMAND_BINARY)
-  SET(APPS cmtk)
-ELSE(CMTK_SINGLE_COMMAND_BINARY)
-  SET(APPS avg_adm
-    describe
-    groupwise_init
-    groupwise_affine
-    groupwise_warp
-    )
+SET(APPS avg_adm
+  describe
+  groupwise_init
+  groupwise_affine
+  groupwise_warp
+  )
+
+IF(CMTK_USE_CUDA)
+  SET(CUDA_APPS 
+    levelset_cuda
+    mrbias_cuda
+    symplx_cuda)
+ENDIF(CMTK_USE_CUDA)
+
+IF(CMTK_USE_OPENCL)
+ENDIF(CMTK_USE_OPENCL)
+
+IF(NOT CMTK_USE_MPI)
+  SET(APPS ${APPS}
+    asegment
+    average_affine
+    average_edt
+    average_grey
+    average_images
+    average_labels
+    concat_affine
+    convertx
+    convert_warp
+    film
+    filter
+    glm
+    gregxform
+    histogram
+    imagemath
+    jidb
+    levelset
+    make_initial_affine
+    mat2dof
+    mip
+    mk_analyze_hdr
+    mk_nifti_hdr
+    mk_phantom_3d
+    mrbias
+    overlap
+    probe_xform
+    randompxls
+    randomwarp
+    reformatx
+    registration
+    registrationx
+    regress
+    reorient
+    runcheck
+    sequence
+    similarity
+    split
+    statistics
+    sympl
+    symplx
+    ttest
+    unsplit
+    volume_injection
+    volume_reconstruction
+    vtkxform
+    warp
+    warpx
+    warp2ps
+    xform2dfield
+    xform2itk
+    xform2scalar)
   
-  IF(CMTK_USE_CUDA)
-    SET(CUDA_APPS 
-      levelset_cuda
-      mrbias_cuda
-      symplx_cuda)
-  ENDIF(CMTK_USE_CUDA)
-  
-  IF(CMTK_USE_OPENCL)
-  ENDIF(CMTK_USE_OPENCL)
-  
-  IF(NOT CMTK_USE_MPI)
+  IF(CMTK_USE_SQLITE)
     SET(APPS ${APPS}
-      asegment
-      average_affine
-      average_edt
-      average_grey
-      average_images
-      average_labels
-      concat_affine
-      convertx
-      convert_warp
-      film
-      filter
-      glm
-      gregxform
-      histogram
-      imagemath
-      jidb
-      levelset
-      make_initial_affine
-      mat2dof
-      mip
-      mk_analyze_hdr
-      mk_nifti_hdr
-      mk_phantom_3d
-      mrbias
-      overlap
-      probe_xform
-      randompxls
-      randomwarp
-      reformatx
-      registration
-      registrationx
-      regress
-      reorient
-      runcheck
-      sequence
-      similarity
-      split
-      statistics
-      sympl
-      symplx
-      ttest
-      unsplit
-      volume_injection
-      volume_reconstruction
-      vtkxform
-      warp
-      warpx
-      warp2ps
-      xform2dfield
-      xform2itk
-      xform2scalar)
-
-    IF(CMTK_USE_SQLITE)
-      SET(APPS ${APPS}
-	dbtool)
-    ENDIF(CMTK_USE_SQLITE)
-
-    IF(CMTK_ROOT_PATH_SRI24)
-      SET(APPS ${APPS} asegment_sri24)
-    ENDIF(CMTK_ROOT_PATH_SRI24)
-
-    IF(HAVE_STL_HASH_MAP)
-      SET(APPS ${APPS} mcaffine mcwarp)
-    ENDIF(HAVE_STL_HASH_MAP)
-
-    IF(CMTK_USE_DCMTK)
-      SET(APPS ${APPS} dcm2image)
-    ENDIF(CMTK_USE_DCMTK)
-    
-  ENDIF(NOT CMTK_USE_MPI)
-ENDIF(CMTK_SINGLE_COMMAND_BINARY)
+      dbtool)
+  ENDIF(CMTK_USE_SQLITE)
+  
+  IF(CMTK_ROOT_PATH_SRI24)
+    SET(APPS ${APPS} asegment_sri24)
+  ENDIF(CMTK_ROOT_PATH_SRI24)
+  
+  IF(HAVE_STL_HASH_MAP)
+    SET(APPS ${APPS} mcaffine mcwarp)
+  ENDIF(HAVE_STL_HASH_MAP)
+  
+  IF(CMTK_USE_DCMTK)
+    SET(APPS ${APPS} dcm2image)
+  ENDIF(CMTK_USE_DCMTK)
+  
+ENDIF(NOT CMTK_USE_MPI)
 
 FOREACH(APPLICATION ${APPS})
   ADD_EXECUTABLE(${APPLICATION} ${CMTK_LIB_INIT_SRCS} ${APPLICATION}.cxx)
