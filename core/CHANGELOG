@@ -1,5 +1,7 @@
 Release CMTK-1.6.0:
 
+(rXXXX) Fixed: label combination by voting now supports up to 32768 labels
+    (was 256).
 (r2768) Removed: unused and redundant "probe_xform" and "average_grey"
     applications. Use "gregxform" and "reformatx"/"average_images" instead.
 (r2765) Removed: largely unused and incomplete support for building a single

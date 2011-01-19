@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -43,11 +44,18 @@ LabelCombinationVoting::LabelCombinationVoting( const std::vector<TypedArray::Sm
   const size_t nValues = data[ 0 ]->GetDataSize();
   m_Result = TypedArray::SmartPtr( TypedArray::Create( TYPE_SHORT, nValues ) );
   
+  int numberOfClasses = 1;
+  for ( size_t k = 0; k < data.size(); ++k )
+    {
+    const Types::DataItemRange range = data[k]->GetRange();
+    numberOfClasses = std::max( numberOfClasses, 1+static_cast<int>( range.m_UpperBound ) );
+    }
+
 #pragma omp parallel for  
   for ( size_t i = 0; i < nValues; ++i )
     {
-    short label[256];
-    memset( label, 0, sizeof( label ) );
+    short label[32768];
+    memset( label, 0, numberOfClasses * sizeof( label[0] ) );
 
     for ( size_t curr = 0; curr < data.size(); ++curr )
       {
@@ -63,7 +71,7 @@ LabelCombinationVoting::LabelCombinationVoting( const std::vector<TypedArray::Sm
     int maxLab = 0;
     int maxCnt = 0;
    
-    for ( int lab=0; lab < 256; ++lab ) 
+    for ( int lab=0; lab < numberOfClasses; ++lab ) 
       {
       // do something with tie case
       if ( label[ lab ] > maxCnt ) 
