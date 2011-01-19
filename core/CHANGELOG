@@ -1,6 +1,6 @@
 Release CMTK-1.6.0:
 
-(rXXXX) Removed: largely unused and incomplete support for building a single
+(r2765) Removed: largely unused and incomplete support for building a single
     "cmtk" binary wrapper for all command line tools.
 (r2760) Removed: now-obsolete "convert" tool has been retired. Operations
     still missing in "convertx" will be added as the need arises.
