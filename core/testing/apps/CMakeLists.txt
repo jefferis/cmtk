@@ -238,7 +238,11 @@ IF(NOT CMTK_USE_MPI)
 
   # ==========================================
   # Tests for "gregxform" tool
-  SET(testList ${testList} gregxformFordwardBackward gregxformAffine gregxformAffineFromWarp gregxformAffineFromWarpFwdBwd)
+  SET(testList ${testList} 
+    gregxformFordwardBackward 
+    gregxformAffine 
+    gregxformAffineFromWarp
+    gregxformAffineFromWarpFwdBwd)
 
   # ==========================================
   # Tests for "histogram" tool
@@ -404,13 +408,6 @@ IF(NOT CMTK_USE_MPI)
     overlapFirst
     overlapFirstByLabel
     overlapFirstByLabelNumLabels)
-
-  # ==========================================
-  # Tests for "probe_xform" tool
-  SET(testList ${testList}
-    probe_xformSimple
-    probe_xformFwdBwd
-    probe_xformBwdFwd)
 
   # ==========================================
   # Tests for "registration" tool
