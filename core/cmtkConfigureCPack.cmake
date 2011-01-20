@@ -65,17 +65,13 @@ INSTALL(FILES ${CPACK_RESOURCE_FILE_LICENSE} ${CPACK_PACKAGE_DESCRIPTION_FILE} D
 
 INCLUDE(CPack)
 
-IF(BUILD_APPS)
-  CPACK_ADD_COMPONENT(applications
-    DISPLAY_NAME "Command Line Applications"
-    GROUP runtime)
-ENDIF(BUILD_APPS)
+CPACK_ADD_COMPONENT(applications
+  DISPLAY_NAME "Command Line Applications"
+  GROUP runtime)
 
-IF(BUILD_GUI)
-  CPACK_ADD_COMPONENT(gui
-    DISPLAY_NAME "Graphical User Interface Applications"
-    GROUP runtime)
-ENDIF(BUILD_GUI)
+CPACK_ADD_COMPONENT(gui
+  DISPLAY_NAME "Graphical User Interface Applications"
+  GROUP runtime)
 
 CPACK_ADD_COMPONENT(libraries
   DISPLAY_NAME "Link Libraries"
@@ -87,11 +83,9 @@ CPACK_ADD_COMPONENT(headers
   GROUP development
   DISABLED)
 
-IF(BUILD_DOCUMENTATION)
-  CPACK_ADD_COMPONENT(documentation
-    DISPLAY_NAME "CMTK Documentation"
-    DISABLED)
-ENDIF(BUILD_DOCUMENTATION)
+CPACK_ADD_COMPONENT(documentation
+  DISPLAY_NAME "CMTK Documentation"
+  GROUP runtime)
 
 CPACK_ADD_COMPONENT_GROUP(development
   DISPLAY_NAME "Development Components")
@@ -103,4 +97,3 @@ IF(BUILD_SHARED_LIBS)
   SET(CPACK_COMPONENT_APPLICATIONS_DEPENDS libraries)
   SET(CPACK_COMPONENT_GUI_DEPENDS libraries)
 ENDIF(BUILD_SHARED_LIBS)
-
