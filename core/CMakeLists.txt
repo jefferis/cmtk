@@ -53,7 +53,66 @@ INCLUDE (${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeSystem.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityC.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityCXX.cmake)
 
-ADD_DEFINITIONS(-DCMTK_INSTANTIATE_TEMPLATES)
+#-----------------------------------------------------------------------------
+# Output directories.
+IF(NOT LIBRARY_OUTPUT_PATH)
+  SET (LIBRARY_OUTPUT_PATH ${CMTK_BINARY_DIR}/bin CACHE INTERNAL "Single output directory for building all libraries.")
+ENDIF(NOT LIBRARY_OUTPUT_PATH)
+IF(NOT EXECUTABLE_OUTPUT_PATH)
+  SET (EXECUTABLE_OUTPUT_PATH ${CMTK_BINARY_DIR}/bin CACHE INTERNAL "Single output directory for building all executables.")
+ENDIF(NOT EXECUTABLE_OUTPUT_PATH)
+MARK_AS_ADVANCED(LIBRARY_OUTPUT_PATH EXECUTABLE_OUTPUT_PATH)
+IF(NOT CMTK_BUILD_LIB_DIR) # variable used for generating CMTKConfig.cmake for the build tree
+  SET(CMTK_BUILD_LIB_DIR "/bin")
+ENDIF(NOT CMTK_BUILD_LIB_DIR)
+
+SET(CMTK_LIBRARY_PATH "${LIBRARY_OUTPUT_PATH}")
+SET(CMTK_EXECUTABLE_PATH "${EXECUTABLE_OUTPUT_PATH}")
+SET(CXX_TEST_PATH ${EXECUTABLE_OUTPUT_PATH})
+
+# set CMTK_DIR so it can be used by subprojects
+SET(CMTK_DIR "${CMAKE_BINARY_DIR}" CACHE INTERNAL "CMTK dir to be used by subprojects")
+
+#-----------------------------------------------------------------------------
+# Setup install target directories
+IF(NOT CMTK_INSTALL_BIN_DIR)
+  SET(CMTK_INSTALL_BIN_DIR /bin CACHE PATH "Binary files will be installed here")
+ENDIF(NOT CMTK_INSTALL_BIN_DIR)
+
+IF(NOT CMTK_INSTALL_LIB_DIR)
+  # 64 bit libraries are not installed in the same directories on solaris
+  # Ref: http://docs.sun.com/app/docs/doc/816-5138/6mba6ua5m?a=view
+  SET(sun64 )
+  IF(CMAKE_SYSTEM MATCHES "SunOS.*" AND CMAKE_SIZEOF_VOID_P EQUAL 8)
+    EXEC_PROGRAM("uname"
+      ARGS "-p"
+      OUTPUT_VARIABLE sunproc
+    )
+    IF("${sunproc}" STREQUAL "sparc")
+      SET(sun64 "/sparcv9")
+    ENDIF("${sunproc}" STREQUAL "sparc")
+
+    IF("${sunproc}" STREQUAL "i386")
+      SET(sun64 "/amd64")
+    ENDIF("${sunproc}" STREQUAL "i386")
+
+    IF("${sun64}" STREQUAL "")
+      # sun64 is not set - solaris has been ported to a new architecture?
+      MESSAGE("Warning: Unknown processor '${sunproc}'. The libraries may not be installed in the right place.")
+    ENDIF("${sun64}" STREQUAL "")
+  ENDIF(CMAKE_SYSTEM MATCHES "SunOS.*" AND CMAKE_SIZEOF_VOID_P EQUAL 8)
+
+  SET(CMTK_INSTALL_LIB_DIR "/lib/cmtk${sun64}" CACHE PATH "Library files will be installed here")
+ENDIF(NOT CMTK_INSTALL_LIB_DIR)
+
+IF(NOT CMTK_INSTALL_DATA_DIR)
+  SET(CMTK_INSTALL_DATA_DIR "/share/cmtk" CACHE PATH "Data files will be installed here")
+ENDIF(NOT CMTK_INSTALL_DATA_DIR)
+
+IF(NOT CMTK_INSTALL_INCLUDE_DIR)
+  SET(CMTK_INSTALL_INCLUDE_DIR "/include/cmtk" CACHE PATH "Data files will be installed here")
+ENDIF(NOT CMTK_INSTALL_INCLUDE_DIR)
+
 #-----------------------------------------------------------------------------
 # Check for system headers.
 INCLUDE (CheckIncludeFiles)
@@ -488,66 +547,6 @@ OPTION(BUILD_TESTING "Build test code" ON)
 IF (BUILD_TESTING)
   SUBDIRS(testing)
 ENDIF (BUILD_TESTING)
-
-#-----------------------------------------------------------------------------
-# Output directories.
-IF(NOT LIBRARY_OUTPUT_PATH)
-  SET (LIBRARY_OUTPUT_PATH ${CMTK_BINARY_DIR}/bin CACHE INTERNAL "Single output directory for building all libraries.")
-ENDIF(NOT LIBRARY_OUTPUT_PATH)
-IF(NOT EXECUTABLE_OUTPUT_PATH)
-  SET (EXECUTABLE_OUTPUT_PATH ${CMTK_BINARY_DIR}/bin CACHE INTERNAL "Single output directory for building all executables.")
-ENDIF(NOT EXECUTABLE_OUTPUT_PATH)
-MARK_AS_ADVANCED(LIBRARY_OUTPUT_PATH EXECUTABLE_OUTPUT_PATH)
-IF(NOT CMTK_BUILD_LIB_DIR) # variable used for generating CMTKConfig.cmake for the build tree
-  SET(CMTK_BUILD_LIB_DIR "/bin")
-ENDIF(NOT CMTK_BUILD_LIB_DIR)
-
-SET(CMTK_LIBRARY_PATH "${LIBRARY_OUTPUT_PATH}")
-SET(CMTK_EXECUTABLE_PATH "${EXECUTABLE_OUTPUT_PATH}")
-SET(CXX_TEST_PATH ${EXECUTABLE_OUTPUT_PATH})
-
-# set CMTK_DIR so it can be used by subprojects
-SET(CMTK_DIR "${CMAKE_BINARY_DIR}" CACHE INTERNAL "CMTK dir to be used by subprojects")
-
-#-----------------------------------------------------------------------------
-# Setup install target directories
-IF(NOT CMTK_INSTALL_BIN_DIR)
-  SET(CMTK_INSTALL_BIN_DIR /bin CACHE PATH "Binary files will be installed here")
-ENDIF(NOT CMTK_INSTALL_BIN_DIR)
-
-IF(NOT CMTK_INSTALL_LIB_DIR)
-  # 64 bit libraries are not installed in the same directories on solaris
-  # Ref: http://docs.sun.com/app/docs/doc/816-5138/6mba6ua5m?a=view
-  SET(sun64 )
-  IF(CMAKE_SYSTEM MATCHES "SunOS.*" AND CMAKE_SIZEOF_VOID_P EQUAL 8)
-    EXEC_PROGRAM("uname"
-      ARGS "-p"
-      OUTPUT_VARIABLE sunproc
-    )
-    IF("${sunproc}" STREQUAL "sparc")
-      SET(sun64 "/sparcv9")
-    ENDIF("${sunproc}" STREQUAL "sparc")
-
-    IF("${sunproc}" STREQUAL "i386")
-      SET(sun64 "/amd64")
-    ENDIF("${sunproc}" STREQUAL "i386")
-
-    IF("${sun64}" STREQUAL "")
-      # sun64 is not set - solaris has been ported to a new architecture?
-      MESSAGE("Warning: Unknown processor '${sunproc}'. The libraries may not be installed in the right place.")
-    ENDIF("${sun64}" STREQUAL "")
-  ENDIF(CMAKE_SYSTEM MATCHES "SunOS.*" AND CMAKE_SIZEOF_VOID_P EQUAL 8)
-
-  SET(CMTK_INSTALL_LIB_DIR "/lib/cmtk${sun64}" CACHE PATH "Library files will be installed here")
-ENDIF(NOT CMTK_INSTALL_LIB_DIR)
-
-IF(NOT CMTK_INSTALL_DATA_DIR)
-  SET(CMTK_INSTALL_DATA_DIR "/share/cmtk" CACHE PATH "Data files will be installed here")
-ENDIF(NOT CMTK_INSTALL_DATA_DIR)
-
-IF(NOT CMTK_INSTALL_INCLUDE_DIR)
-  SET(CMTK_INSTALL_INCLUDE_DIR "/include/cmtk" CACHE PATH "Data files will be installed here")
-ENDIF(NOT CMTK_INSTALL_INCLUDE_DIR)
 
 #-----------------------------------------------------------------------------
 # Create the list of include directories needed for header files.
