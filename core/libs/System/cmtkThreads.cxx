@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -177,7 +177,7 @@ Threads::GetNumberOfProcessors()
 #elif defined(__APPLE__)
   // use sysctl to get number of available cpus on apple.  Copied from:
   // developer.apple.com/documentation/Porting/Conceptual/PortingUnix/index.html
-  char *name="hw.activecpu";
+  const char *name="hw.activecpu";
   int nproc;  size_t len=4;
   sysctlbyname(name, &nproc, &len, NULL, 0);
   return nproc;
