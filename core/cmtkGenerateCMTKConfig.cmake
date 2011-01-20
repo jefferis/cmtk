@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -131,9 +131,9 @@ ENDFOREACH(p)
 
 CONFIGURE_FILE(${CMTK_SOURCE_DIR}/CMTKConfig.cmake.in 
   ${CMTK_BINARY_DIR}/Install/CMTKConfig.cmake @ONLY IMMEDIATE)
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/Install/CMTKConfig.cmake DESTINATION lib COMPONENT headers)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/Install/CMTKConfig.cmake DESTINATION ${CMTK_INSTALL_LIB_DIR}/cmtk COMPONENT headers)
 
 CONFIGURE_FILE(${CMTK_SOURCE_DIR}/cmtkconfig.h.cmake 
   ${CMTK_BINARY_DIR}/Install/cmtkconfig.h @ONLY IMMEDIATE)
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/Install/cmtkconfig.h DESTINATION ${CMAKE_INSTALL_PREFIX}${CMTK_INSTALL_INCLUDE_DIR}/cmtk/ COMPONENT headers)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/Install/cmtkconfig.h DESTINATION ${CMTK_INSTALL_INCLUDE_DIR}/cmtk/ COMPONENT headers)
 
