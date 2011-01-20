@@ -39,7 +39,7 @@
 
 #ifdef HAVE_IEEEFP_H
 #  include <ieeefp.h>
-#endinf
+#endif
 
 namespace
 cmtk
