@@ -433,6 +433,12 @@ IF(CMTK_BUILD_NRRD)
 ENDIF(CMTK_BUILD_NRRD)
 
 #-----------------------------------------------------------------------------
+# Set up CPack support, to be able to distribute binary packages.
+#
+
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmtkConfigureCPack.cmake)
+
+#-----------------------------------------------------------------------------
 # Configure bundled utilities.
 
 ADD_SUBDIRECTORY(Utilities)
@@ -542,12 +548,6 @@ ENDIF(NOT CMTK_INSTALL_DATA_DIR)
 IF(NOT CMTK_INSTALL_INCLUDE_DIR)
   SET(CMTK_INSTALL_INCLUDE_DIR "/include/cmtk" CACHE PATH "Data files will be installed here")
 ENDIF(NOT CMTK_INSTALL_INCLUDE_DIR)
-
-#-----------------------------------------------------------------------------
-# Set up CPack support, to be able to distribute binary packages.
-#
-
-INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmtkConfigureCPack.cmake)
 
 #-----------------------------------------------------------------------------
 # Create the list of include directories needed for header files.
