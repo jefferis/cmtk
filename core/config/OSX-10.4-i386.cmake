@@ -29,7 +29,9 @@
 ##
 
 # General settings
-SET(CMTK_SYSTEM_NAME "MacOSX-10.4-i686" CACHE STRING "System name")
+SET(CMTK_SYSTEM_NAME "MacOSX-10.4" CACHE STRING "System name")
+SET(CMTK_SYSTEM_PROCESSOR "i686" CACHE STRING "System processor")
+
 SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type")
 SET(CMAKE_INSTALL_PREFIX "/opt/local" CACHE PATH "Install prefix")
 

@@ -1,7 +1,7 @@
 ##
 ##  Copyright 2010 Greg Jefferis
 ##
-##  Copyright 2011 SRI International
+##  Copyright 2010-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -29,7 +29,9 @@
 ##
 
 # General settings
-SET(CMTK_SYSTEM_NAME "MacOSX-10.4-i686" CACHE STRING "System name")
+SET(CMTK_SYSTEM_NAME "MacOSX-10.5" CACHE STRING "System name")
+SET(CMTK_SYSTEM_PROCESSOR "x86_64" CACHE STRING "System processor")
+
 SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type")
 SET(CMAKE_INSTALL_PREFIX "/opt/local" CACHE PATH "Install prefix")
 
