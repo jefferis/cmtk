@@ -37,6 +37,10 @@
 
 #include <Base/cmtkImageOperation.h>
 
+#ifdef HAVE_IEEEFP_H
+#  include <ieeefp.h>
+#endinf
+
 namespace
 cmtk
 {
