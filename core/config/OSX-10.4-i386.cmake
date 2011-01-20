@@ -1,7 +1,7 @@
 ##
 ##  Copyright 2010 Greg Jefferis
 ##
-##  Copyright 2010 SRI International
+##  Copyright 2010-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -27,6 +27,16 @@
 ##
 ##  $LastChangedBy$
 ##
+
+# General settings
+SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type")
+SET(CMAKE_INSTALL_PREFIX "/opt/local" CACHE PATH "Install prefix")
+
+# CMTK config settings
+SET(CMTK_USE_SQLITE ON CACHE BOOL "Use SQLite database")
+SET(CMTK_USE_QT OFF CACHE BOOL "Use Qt toolkit (does not work for 10.4 right now)")
+SET(BUILD_GUI OFF CACHE BOOL "Build GUI applications (requires Qt)")
+SET(CMTK_USE_LZMA OFF CACHE BOOL "Use LZMA library for decompression")
 
 # 32 bit for OS X >=10.4
 SET(CMAKE_OSX_ARCHITECTURES "i386" CACHE STRING "OS-X architectures")
