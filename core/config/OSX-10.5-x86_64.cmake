@@ -41,8 +41,8 @@ SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.5" CACHE STRING "OS-X target")
 SET(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.5.sdk" CACHE PATH "OS-X SDK")
 
 # Activate SSE support for floating point
-SET(CMAKE_CXX_FLAGS "-march=nocona -mmmx -msse -msse2 -mfpmath=sse" CACHE STRING "C compiler flags")
-SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "C++ compiler flags")
+SET(CMAKE_CXX_FLAGS "-march=core2 -mmmx -msse -msse2 -mfpmath=sse" CACHE STRING "C++ compiler flags")
+SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "C compiler flags")
 
 # CMTK config settings
 SET(CMTK_USE_SQLITE OFF CACHE BOOL "Use SQLite database")
