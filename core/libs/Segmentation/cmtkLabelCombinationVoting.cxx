@@ -44,11 +44,11 @@ LabelCombinationVoting::LabelCombinationVoting( const std::vector<TypedArray::Sm
   const size_t nValues = data[ 0 ]->GetDataSize();
   this->m_Result = TypedArray::SmartPtr( TypedArray::Create( TYPE_SHORT, nValues ) );
   
-  int numberOfClasses = 1;
+  size_t numberOfClasses = 1;
   for ( size_t k = 0; k < data.size(); ++k )
     {
     const Types::DataItemRange range = data[k]->GetRange();
-    numberOfClasses = std::max( numberOfClasses, 1+static_cast<int>( range.m_UpperBound ) );
+    numberOfClasses = std::max( numberOfClasses, 1+static_cast<size_t>( range.m_UpperBound ) );
     }
 
 #pragma omp parallel for  
