@@ -35,44 +35,58 @@
 cmtk::ImageOperationMapValues::ImageOperationMapValues( const char* mapping, const bool exclusive )
   : m_Exclusive( exclusive )
 {
-  double value;
-  std::vector<Types::DataItem> fromValues;
-  
   const char* rptr = mapping;
-  const char* comma = strchr( rptr, ',' );
-  while ( comma )
-    {
-    if ( 1 == sscanf( rptr, "%lf", &value ) )
-      fromValues.push_back( value );
-    rptr = comma+1;
-    comma = strchr( rptr, ',' );
-    }
 
-  double newValue;
-  if ( 2 == sscanf( rptr, "%lf:%lf", &value, &newValue ) )
+  while ( rptr )
     {
-    fromValues.push_back( value );
-
-    for ( size_t i = 0; i < fromValues.size(); ++i )
+    const char* comma = strchr( rptr, ',' );
+    const char* plus = strchr( rptr, '+' );
+    
+    double value;
+    std::vector<Types::DataItem> fromValues;
+    while ( comma && ( !plus || comma < plus) )
       {
-      this->m_Mapping[fromValues[i]] = newValue;
+      if ( 1 == sscanf( rptr, "%lf", &value ) )
+	fromValues.push_back( value );
+      rptr = comma+1;
+      comma = strchr( rptr, ',' );
       }
-    }
-  else
-    {
-    if ( 1 == sscanf( rptr, "%lf", &value ) )
+    
+    double newValue;
+    if ( 2 == sscanf( rptr, "%lf:%lf", &value, &newValue ) )
       {
       fromValues.push_back( value );
       
       for ( size_t i = 0; i < fromValues.size(); ++i )
 	{
-	this->m_Mapping[fromValues[i]] = MathUtil::GetDoubleNaN();
+	this->m_Mapping[fromValues[i]] = newValue;
 	}
       }
     else
       {
-      StdErr << "ERROR: could not parse mapping\n\t" << mapping << "\nwhich is supposed to be VAL0[,VAL1,...][:NEWVAL]\n";
+      if ( 1 == sscanf( rptr, "%lf", &value ) )
+	{
+	fromValues.push_back( value );
+	
+	for ( size_t i = 0; i < fromValues.size(); ++i )
+	  {
+	  this->m_Mapping[fromValues[i]] = MathUtil::GetDoubleNaN();
+	  }
+	}
+      else
+	{
+	StdErr << "ERROR: could not parse mapping\n\t" << mapping << "\nwhich is supposed to be VAL0[,VAL1,...][:NEWVAL]\n";
+	}
       }
+
+    // if more rules are following, separated by ";", then move to next one, otherwise terminate loop.
+    if ( plus )
+      {
+      rptr = plus + 1;
+      plus = strchr( rptr, '+' );
+      }
+    else
+      rptr = NULL;
     }
 }
 

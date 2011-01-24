@@ -241,8 +241,20 @@ case ${RUNTEST} in
         run convertx --map-values 82,86:254 --map-values 16:255 --set-padding 128 --map-values 0 ~/develop/nitrc/data/testing/inputs/parc3.hdr ${tmpdir}/mapped.hdr
 	check_results mapped.img
         ;;
+    convertxMapValues2)
+        run convertx --set-padding 128 --map-values 82,86:254+16:255+0 ~/develop/nitrc/data/testing/inputs/parc3.hdr ${tmpdir}/mapped.hdr
+	check_results mapped.img
+        ;;
+    convertxMapValues3)
+        run convertx --set-padding 128 --map-values 16:255+82,86:254+0 ~/develop/nitrc/data/testing/inputs/parc3.hdr ${tmpdir}/mapped.hdr
+	check_results mapped.img
+        ;;
     convertxMapValuesOnly)
         run convertx  --set-padding 255 --map-values-only 82,86:1 ~/develop/nitrc/data/testing/inputs/parc3.hdr ${tmpdir}/mapped.hdr
+	check_results mapped.img
+        ;;
+    convertxMapValuesOnly2)
+        run convertx  --set-padding 255 --map-values-only 82:1+86:1 ~/develop/nitrc/data/testing/inputs/parc3.hdr ${tmpdir}/mapped.hdr
 	check_results mapped.img
         ;;
     convertxRevert)
