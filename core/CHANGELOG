@@ -1,6 +1,6 @@
 Release CMTK-1.6.0:
 
-(r2801) Added: "convertx" can now apply mapping functions to replace image
+(r2805) Added: "convertx" can now apply mapping functions to replace image
     values with other values or with padding data.
 (r2794) Improved: better default configurations for MacOS-X builds.
 (r2794) Fixed: packaging and installation directories.
