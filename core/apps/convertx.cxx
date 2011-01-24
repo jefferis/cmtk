@@ -120,8 +120,10 @@ doMain( const int argc, const char* argv[] )
     cl.BeginGroup( "Mappings", "Value Mappings" );
     cl.AddCallback( Key( "map-values" ), &cmtk::ImageOperationMapValues::New, "Apply mapping function to pixel values. Mapping is defined as 'VAL0[,VAL1,...][:NEWVAL]' to map values VAL0, VAL1, etc. to new value NEWVAL. "
 		    "If NEWVAL is not given, values are set to padding." );
-    cl.AddCallback( Key( "map-values-only" ), &cmtk::ImageOperationMapValues::NewExclusive, "Apply mapping function to pixel values and replace unmapped pixels with padding. "
-		    "Mapping is defined as 'VAL0[,VAL1,...][:NEWVAL]' to map values VAL0, VAL1, etc. to new value NEWVAL. If NEWVAL is not given, values are set to padding." );
+    cl.AddCallback( Key( "map-values-only" ), &cmtk::ImageOperationMapValues::NewExclusive, "Apply mapping function to pixel values and replace unmapped pixels with padding. Multiple such mapping rules can be concatenated as "
+		    "RULE0+RULE1[+...]; all concatenated rules will be applied simultaneously."
+		    "Mapping is defined as 'VAL0[,VAL1,...][:NEWVAL]' to map values VAL0, VAL1, etc. to new value NEWVAL. If NEWVAL is not given, values are set to padding. Multiple such mapping rules can be concatenated as "
+		    "RULE0+RULE1[+...]; all concatenated rules will be applied simultaneously." );
     cl.AddCallback( Key( "replace-padding" ), &cmtk::ImageOperationReplace::NewReplacePadding, "Replace padded pixel data with given value." );
     cl.AddCallback( Key( "replace-inf-nan" ), &cmtk::ImageOperationReplace::NewReplaceInfNaN, "Replace all infinite and not-a-number pixels with given value." );
     cl.EndGroup();
