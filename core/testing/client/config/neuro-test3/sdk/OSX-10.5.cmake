@@ -1,9 +1,7 @@
-#!/bin/sh
-
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2011 SRI International
+##  Copyright 2004-2010 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -23,52 +21,16 @@
 ##  with the Computational Morphometry Toolkit.  If not, see
 ##  <http://www.gnu.org/licenses/>.
 ##
-##  $Revision$
+##  $Revision: 2788 $
 ##
-##  $LastChangedDate$
+##  $LastChangedDate: 2011-01-20 14:02:10 -0800 (Thu, 20 Jan 2011) $
 ##
-##  $LastChangedBy$
+##  $LastChangedBy: torstenrohlfing $
 ##
 
-export LC_ALL=POSIX
 
-lockfile=${HOME}/testcycle.lock
-if test -f ${lockfile}; then
-    exit 1
-fi
-touch ${lockfile}
-
-svn update
-tests=`ls config/*.cmake`
-sdks=`ls sdk/*.cmake`
-
-Xpid=""
-if [ "${DISPLAY}" == "" ]; then
-    /usr/X11/bin/Xvfb :1 -screen 0 1024x768x24 -ac &
-    Xpid=$!
-    export DISPLAY=:1
-fi
-
-for t in ${tests}; do
-    for c in ${config}; do
-	
-	if [ ! -d ../data ]; then
-	    pushd ..
-	    svn co https://www.nitrc.org:443/svn/cmtk/trunk/data/
-	    popd
-	else
-	    svn update ../data
-	fi
-
-	echo "SET(TEST_NAME ${tname})" > /tmp/testfile.cmake
-	cat ${t} ${c} tail.cmake >> /tmp/testfile.cmake
-	
-	/opt/local/bin/ctest -S /tmp/testfile.cmake
-    done
-done
-
-if [ "${Xpid}" != "" ]; then
-    kill ${Xpid}
-fi
-
-rm ${lockfile}
+FILE(APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
+CMAKE_OSX_ARCHITECTURES:STRING=x86_64
+CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.5
+CMAKE_OSX_SYSROOT:STRING=/Developer/SDKs/MacOSX10.5.sdk
+")

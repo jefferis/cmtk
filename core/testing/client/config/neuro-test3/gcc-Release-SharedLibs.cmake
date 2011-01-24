@@ -28,12 +28,11 @@
 ##  $LastChangedBy$
 ##
 
-SET (TEST_NAME gcc-x86_64-Release-SharedLibs)
 SET(CTEST_SITE "neuro-test0")
 SET(CTEST_BUILD_NAME ${TEST_NAME})
 SET(DART_TESTING_TIMEOUT 1800)
 
-SET(CMTK_CTEST_ROOT "/home/testrunner/nitrc/${TEST_NAME}")
+SET(CMTK_CTEST_ROOT "/home/torsten/cmtk/testing/${TEST_NAME}")
 SET(CTEST_SOURCE_DIRECTORY "${CMTK_CTEST_ROOT}/core")
 SET(CTEST_BINARY_DIRECTORY "${CMTK_CTEST_ROOT}/build")
 SET(CTEST_UPDATE_COMMAND "/usr/bin/svn")
