@@ -1,0 +1,188 @@
+#ifndef cmtk_sqlite_mangle_h
+#define cmtk_sqlite_mangle_h
+
+/*
+
+This header file mangles all symbols exported from the sqlite library.
+It is included in all files while building the sqlite library. Due to
+namespace pollution, no sqlite headers should be included in .h files in
+VTK.
+
+The following command was used to obtain the symbol list:
+
+nm libcmtksqlite.so |grep " [TRD] "
+
+This is the way to recreate the whole list:
+
+nm libcmtksqlite.so |grep " [TRD] " | awk '{ print "#define "$3" cmtk_sqlite_"$3 }'
+
+REMOVE the "_init" and "_fini" entries.
+
+*/
+
+#define sqlite3_aggregate_context cmtk_sqlite3_aggregate_context
+#define sqlite3_aggregate_count cmtk_sqlite3_aggregate_count
+#define sqlite3_auto_extension cmtk_sqlite3_auto_extension
+#define sqlite3_backup_finish cmtk_sqlite3_backup_finish
+#define sqlite3_backup_init cmtk_sqlite3_backup_init
+#define sqlite3_backup_pagecount cmtk_sqlite3_backup_pagecount
+#define sqlite3_backup_remaining cmtk_sqlite3_backup_remaining
+#define sqlite3_backup_step cmtk_sqlite3_backup_step
+#define sqlite3_bind_blob cmtk_sqlite3_bind_blob
+#define sqlite3_bind_double cmtk_sqlite3_bind_double
+#define sqlite3_bind_int cmtk_sqlite3_bind_int
+#define sqlite3_bind_int64 cmtk_sqlite3_bind_int64
+#define sqlite3_bind_null cmtk_sqlite3_bind_null
+#define sqlite3_bind_parameter_count cmtk_sqlite3_bind_parameter_count
+#define sqlite3_bind_parameter_index cmtk_sqlite3_bind_parameter_index
+#define sqlite3_bind_parameter_name cmtk_sqlite3_bind_parameter_name
+#define sqlite3_bind_text cmtk_sqlite3_bind_text
+#define sqlite3_bind_text16 cmtk_sqlite3_bind_text16
+#define sqlite3_bind_value cmtk_sqlite3_bind_value
+#define sqlite3_bind_zeroblob cmtk_sqlite3_bind_zeroblob
+#define sqlite3_blob_bytes cmtk_sqlite3_blob_bytes
+#define sqlite3_blob_close cmtk_sqlite3_blob_close
+#define sqlite3_blob_open cmtk_sqlite3_blob_open
+#define sqlite3_blob_read cmtk_sqlite3_blob_read
+#define sqlite3_blob_write cmtk_sqlite3_blob_write
+#define sqlite3_busy_handler cmtk_sqlite3_busy_handler
+#define sqlite3_busy_timeout cmtk_sqlite3_busy_timeout
+#define sqlite3_changes cmtk_sqlite3_changes
+#define sqlite3_clear_bindings cmtk_sqlite3_clear_bindings
+#define sqlite3_close cmtk_sqlite3_close
+#define sqlite3_collation_needed cmtk_sqlite3_collation_needed
+#define sqlite3_collation_needed16 cmtk_sqlite3_collation_needed16
+#define sqlite3_column_blob cmtk_sqlite3_column_blob
+#define sqlite3_column_bytes cmtk_sqlite3_column_bytes
+#define sqlite3_column_bytes16 cmtk_sqlite3_column_bytes16
+#define sqlite3_column_count cmtk_sqlite3_column_count
+#define sqlite3_column_decltype cmtk_sqlite3_column_decltype
+#define sqlite3_column_decltype16 cmtk_sqlite3_column_decltype16
+#define sqlite3_column_double cmtk_sqlite3_column_double
+#define sqlite3_column_int cmtk_sqlite3_column_int
+#define sqlite3_column_int64 cmtk_sqlite3_column_int64
+#define sqlite3_column_name cmtk_sqlite3_column_name
+#define sqlite3_column_name16 cmtk_sqlite3_column_name16
+#define sqlite3_column_text cmtk_sqlite3_column_text
+#define sqlite3_column_text16 cmtk_sqlite3_column_text16
+#define sqlite3_column_type cmtk_sqlite3_column_type
+#define sqlite3_column_value cmtk_sqlite3_column_value
+#define sqlite3_commit_hook cmtk_sqlite3_commit_hook
+#define sqlite3_complete cmtk_sqlite3_complete
+#define sqlite3_complete16 cmtk_sqlite3_complete16
+#define sqlite3_config cmtk_sqlite3_config
+#define sqlite3_context_db_handle cmtk_sqlite3_context_db_handle
+#define sqlite3_create_collation cmtk_sqlite3_create_collation
+#define sqlite3_create_collation16 cmtk_sqlite3_create_collation16
+#define sqlite3_create_collation_v2 cmtk_sqlite3_create_collation_v2
+#define sqlite3_create_function cmtk_sqlite3_create_function
+#define sqlite3_create_function16 cmtk_sqlite3_create_function16
+#define sqlite3_create_module cmtk_sqlite3_create_module
+#define sqlite3_create_module_v2 cmtk_sqlite3_create_module_v2
+#define sqlite3_data_count cmtk_sqlite3_data_count
+#define sqlite3_db_config cmtk_sqlite3_db_config
+#define sqlite3_db_handle cmtk_sqlite3_db_handle
+#define sqlite3_db_mutex cmtk_sqlite3_db_mutex
+#define sqlite3_db_status cmtk_sqlite3_db_status
+#define sqlite3_declare_vtab cmtk_sqlite3_declare_vtab
+#define sqlite3_enable_shared_cache cmtk_sqlite3_enable_shared_cache
+#define sqlite3_errcode cmtk_sqlite3_errcode
+#define sqlite3_errmsg cmtk_sqlite3_errmsg
+#define sqlite3_errmsg16 cmtk_sqlite3_errmsg16
+#define sqlite3_exec cmtk_sqlite3_exec
+#define sqlite3_expired cmtk_sqlite3_expired
+#define sqlite3_extended_errcode cmtk_sqlite3_extended_errcode
+#define sqlite3_extended_result_codes cmtk_sqlite3_extended_result_codes
+#define sqlite3_file_control cmtk_sqlite3_file_control
+#define sqlite3_finalize cmtk_sqlite3_finalize
+#define sqlite3_free cmtk_sqlite3_free
+#define sqlite3_free_table cmtk_sqlite3_free_table
+#define sqlite3_get_autocommit cmtk_sqlite3_get_autocommit
+#define sqlite3_get_auxdata cmtk_sqlite3_get_auxdata
+#define sqlite3_get_table cmtk_sqlite3_get_table
+#define sqlite3_global_recover cmtk_sqlite3_global_recover
+#define sqlite3_initialize cmtk_sqlite3_initialize
+#define sqlite3_interrupt cmtk_sqlite3_interrupt
+#define sqlite3_last_insert_rowid cmtk_sqlite3_last_insert_rowid
+#define sqlite3_libversion cmtk_sqlite3_libversion
+#define sqlite3_libversion_number cmtk_sqlite3_libversion_number
+#define sqlite3_limit cmtk_sqlite3_limit
+#define sqlite3_malloc cmtk_sqlite3_malloc
+#define sqlite3_memory_alarm cmtk_sqlite3_memory_alarm
+#define sqlite3_memory_highwater cmtk_sqlite3_memory_highwater
+#define sqlite3_memory_used cmtk_sqlite3_memory_used
+#define sqlite3_mprintf cmtk_sqlite3_mprintf
+#define sqlite3_next_stmt cmtk_sqlite3_next_stmt
+#define sqlite3_open cmtk_sqlite3_open
+#define sqlite3_open16 cmtk_sqlite3_open16
+#define sqlite3_open_v2 cmtk_sqlite3_open_v2
+#define sqlite3_os_end cmtk_sqlite3_os_end
+#define sqlite3_os_init cmtk_sqlite3_os_init
+#define sqlite3_overload_function cmtk_sqlite3_overload_function
+#define sqlite3_prepare cmtk_sqlite3_prepare
+#define sqlite3_prepare16 cmtk_sqlite3_prepare16
+#define sqlite3_prepare16_v2 cmtk_sqlite3_prepare16_v2
+#define sqlite3_prepare_v2 cmtk_sqlite3_prepare_v2
+#define sqlite3_profile cmtk_sqlite3_profile
+#define sqlite3_progress_handler cmtk_sqlite3_progress_handler
+#define sqlite3_randomness cmtk_sqlite3_randomness
+#define sqlite3_realloc cmtk_sqlite3_realloc
+#define sqlite3_release_memory cmtk_sqlite3_release_memory
+#define sqlite3_reset cmtk_sqlite3_reset
+#define sqlite3_reset_auto_extension cmtk_sqlite3_reset_auto_extension
+#define sqlite3_result_blob cmtk_sqlite3_result_blob
+#define sqlite3_result_double cmtk_sqlite3_result_double
+#define sqlite3_result_error cmtk_sqlite3_result_error
+#define sqlite3_result_error16 cmtk_sqlite3_result_error16
+#define sqlite3_result_error_code cmtk_sqlite3_result_error_code
+#define sqlite3_result_error_nomem cmtk_sqlite3_result_error_nomem
+#define sqlite3_result_error_toobig cmtk_sqlite3_result_error_toobig
+#define sqlite3_result_int cmtk_sqlite3_result_int
+#define sqlite3_result_int64 cmtk_sqlite3_result_int64
+#define sqlite3_result_null cmtk_sqlite3_result_null
+#define sqlite3_result_text cmtk_sqlite3_result_text
+#define sqlite3_result_text16 cmtk_sqlite3_result_text16
+#define sqlite3_result_text16be cmtk_sqlite3_result_text16be
+#define sqlite3_result_text16le cmtk_sqlite3_result_text16le
+#define sqlite3_result_value cmtk_sqlite3_result_value
+#define sqlite3_result_zeroblob cmtk_sqlite3_result_zeroblob
+#define sqlite3_rollback_hook cmtk_sqlite3_rollback_hook
+#define sqlite3_set_authorizer cmtk_sqlite3_set_authorizer
+#define sqlite3_set_auxdata cmtk_sqlite3_set_auxdata
+#define sqlite3_shutdown cmtk_sqlite3_shutdown
+#define sqlite3_sleep cmtk_sqlite3_sleep
+#define sqlite3_snprintf cmtk_sqlite3_snprintf
+#define sqlite3_soft_heap_limit cmtk_sqlite3_soft_heap_limit
+#define sqlite3_sourceid cmtk_sqlite3_sourceid
+#define sqlite3_sql cmtk_sqlite3_sql
+#define sqlite3_status cmtk_sqlite3_status
+#define sqlite3_step cmtk_sqlite3_step
+#define sqlite3_stmt_status cmtk_sqlite3_stmt_status
+#define sqlite3_strnicmp cmtk_sqlite3_strnicmp
+#define sqlite3_test_control cmtk_sqlite3_test_control
+#define sqlite3_thread_cleanup cmtk_sqlite3_thread_cleanup
+#define sqlite3_threadsafe cmtk_sqlite3_threadsafe
+#define sqlite3_total_changes cmtk_sqlite3_total_changes
+#define sqlite3_trace cmtk_sqlite3_trace
+#define sqlite3_transfer_bindings cmtk_sqlite3_transfer_bindings
+#define sqlite3_update_hook cmtk_sqlite3_update_hook
+#define sqlite3_user_data cmtk_sqlite3_user_data
+#define sqlite3_value_blob cmtk_sqlite3_value_blob
+#define sqlite3_value_bytes cmtk_sqlite3_value_bytes
+#define sqlite3_value_bytes16 cmtk_sqlite3_value_bytes16
+#define sqlite3_value_double cmtk_sqlite3_value_double
+#define sqlite3_value_int cmtk_sqlite3_value_int
+#define sqlite3_value_int64 cmtk_sqlite3_value_int64
+#define sqlite3_value_numeric_type cmtk_sqlite3_value_numeric_type
+#define sqlite3_value_text cmtk_sqlite3_value_text
+#define sqlite3_value_text16 cmtk_sqlite3_value_text16
+#define sqlite3_value_text16be cmtk_sqlite3_value_text16be
+#define sqlite3_value_text16le cmtk_sqlite3_value_text16le
+#define sqlite3_value_type cmtk_sqlite3_value_type
+#define sqlite3_version cmtk_sqlite3_version
+#define sqlite3_vfs_find cmtk_sqlite3_vfs_find
+#define sqlite3_vfs_register cmtk_sqlite3_vfs_register
+#define sqlite3_vfs_unregister cmtk_sqlite3_vfs_unregister
+#define sqlite3_vmprintf cmtk_sqlite3_vmprintf
+
+#endif // #ifndef cmtk_sqlite_mangle_h
