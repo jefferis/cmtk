@@ -50,7 +50,7 @@ if [ "${DISPLAY}" == "" ]; then
 fi
 
 for t in ${tests}; do
-    for c in ${config}; do
+    for c in ${sdks}; do
 	
 	if [ ! -d ../data ]; then
 	    pushd ..
@@ -59,6 +59,8 @@ for t in ${tests}; do
 	else
 	    svn update ../data
 	fi
+
+	tname=`basename ${t} .cmake`-`basename ${c} .cmake`
 
 	echo "SET(TEST_NAME ${tname})" > /tmp/testfile.cmake
 	cat ${t} ${c} tail.cmake >> /tmp/testfile.cmake
