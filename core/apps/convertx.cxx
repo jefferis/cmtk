@@ -120,10 +120,12 @@ doMain( const int argc, const char* argv[] )
     cl.BeginGroup( "Mappings", "Value Mappings" );
     cl.AddCallback( Key( "map-values" ), &cmtk::ImageOperationMapValues::New, "Apply mapping function to pixel values. Mapping is defined as 'VAL0[,VAL1,...][:NEWVAL]' to map values VAL0, VAL1, etc. to new value NEWVAL. "
 		    "If NEWVAL is not given, values are set to padding." );
+    cl.AddCallback( Key( "map-values-only" ), &cmtk::ImageOperationMapValues::NewExclusive, "Apply mapping function to pixel values and replace unmapped pixels with padding. "
+		    "Mapping is defined as 'VAL0[,VAL1,...][:NEWVAL]' to map values VAL0, VAL1, etc. to new value NEWVAL. If NEWVAL is not given, values are set to padding." );
     cl.AddCallback( Key( "replace-padding" ), &cmtk::ImageOperationReplace::NewReplacePadding, "Replace padded pixel data with given value." );
     cl.AddCallback( Key( "replace-inf-nan" ), &cmtk::ImageOperationReplace::NewReplaceInfNaN, "Replace all infinite and not-a-number pixels with given value." );
     cl.EndGroup();
-
+    
     cl.BeginGroup( "Flipping", "Image Flipping" );
     cl.AddCallback( Key( "flip-x" ), &cmtk::ImageOperationFlip::NewX, "Flip (mirror) along x-direction" );
     cl.AddCallback( Key( "flip-y" ), &cmtk::ImageOperationFlip::NewY, "Flip (mirror) along y-direction" );

@@ -59,7 +59,8 @@ public:
   typedef ImageOperation Superclass;
 
   /// Constructor.
-  ImageOperationMapValues( const char* mapping /*!< Mapping function defined as 'VAL0[,VAL1,...][:NEWVAL]' to map values VAL0, VAL1, etc. to new value NEWVAL. If NEWVAL is not given, values are set to padding. */ );
+  ImageOperationMapValues( const char* mapping /*!< Mapping function defined as 'VAL0[,VAL1,...][:NEWVAL]' to map values VAL0, VAL1, etc. to new value NEWVAL. If NEWVAL is not given, values are set to padding. */,
+			   const bool exclusive = false /*!< Exclusive mapping flag: if set, all pixels not explicitly mapped will be set to padding; if not set, such pixels will keep their original values. */ );
   
   /// Apply this operation to an image in place.
   virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume );
@@ -70,9 +71,20 @@ public:
     ImageOperation::m_ImageOperationList.push_back( SmartPtr( new Self( mapping ) ) );
   }
   
+  /// Create new operation to replace padded pixels and set all unmapped pixels to padding.
+  static void NewExclusive( const char* mapping /*!< Mapping function defined as 'VAL0[,VAL1,...][:NEWVAL]' to map values VAL0, VAL1, etc. to new value NEWVAL. If NEWVAL is not given, values are set to padding.*/ )
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new Self( mapping, true /*exclusive*/ ) ) );
+  }
+  
 private:
   /// Mapping.
   std::map<Types::DataItem,Types::DataItem> m_Mapping;
+
+  /** Exclusive mapping flag.
+    * If set, all pixels not explicitly mapped will be set to padding; if not set, such pixels will keep their original values.
+    */
+  bool m_Exclusive;
 };
 
 } // namespace cmtk

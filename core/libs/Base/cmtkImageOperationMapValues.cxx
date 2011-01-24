@@ -32,7 +32,8 @@
 
 #include "cmtkImageOperationMapValues.h"
 
-cmtk::ImageOperationMapValues::ImageOperationMapValues( const char* mapping )
+cmtk::ImageOperationMapValues::ImageOperationMapValues( const char* mapping, const bool exclusive )
+  : m_Exclusive( exclusive )
 {
   double value;
   std::vector<Types::DataItem> fromValues;
@@ -93,6 +94,14 @@ cmtk::ImageOperationMapValues::Apply( cmtk::UniformVolume::SmartPtr& volume )
 	  volumeData.Set( newValue, i );
 	else
 	  volumeData.SetPaddingAt( i );
+	}
+      else
+	{
+	// value not explicitly mapped; see if we're in "exclusive" mode.
+	if ( this->m_Exclusive )
+	  {
+	  volumeData.SetPaddingAt( i );
+	  }
 	}
       }
     }
