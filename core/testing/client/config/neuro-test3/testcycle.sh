@@ -60,7 +60,7 @@ for t in ${tests}; do
 	    svn update ../data
 	fi
 
-	tname=`basename ${t} .cmake`-`basename ${c} .cmake`
+	tname=`basename ${c} .cmake`-`basename ${t} .cmake`
 
 	echo "SET(TEST_NAME ${tname})" > /tmp/testfile.cmake
 	cat ${t} ${c} tail.cmake >> /tmp/testfile.cmake
