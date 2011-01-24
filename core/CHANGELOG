@@ -1,5 +1,7 @@
 Release CMTK-1.6.0:
 
+(r2801) Added: "convertx" can now apply mapping functions to replace image
+    values with other values or with padding data.
 (r2794) Improved: better default configurations for MacOS-X builds.
 (r2794) Fixed: packaging and installation directories.
 (r2772) Fixed: label combination by voting now supports up to 32768 labels
