@@ -182,6 +182,7 @@ IF(NOT CMTK_USE_MPI)
     convertxGaussianFilterFWHM
     convertxHistogramEqualization
     convertxHistogramEqualizationNBins
+    convertxMapValues
     convertxMask
     convertxMaskInverse
     convertxMedianFilter1

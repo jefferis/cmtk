@@ -59,6 +59,7 @@
 #include <Base/cmtkImageOperationScaleToRange.h>
 #include <Base/cmtkImageOperationThreshold.h>
 #include <Base/cmtkImageOperationSetPadding.h>
+#include <Base/cmtkImageOperationMapValues.h>
 #include <Base/cmtkImageOperationReplace.h>
 #include <Base/cmtkImageOperationMedianFilter.h>
 #include <Base/cmtkImageOperationMedialSkeleton.h>
@@ -117,6 +118,8 @@ doMain( const int argc, const char* argv[] )
     cl.EndGroup();
     
     cl.BeginGroup( "Mappings", "Value Mappings" );
+    cl.AddCallback( Key( "map-values" ), &cmtk::ImageOperationMapValues::New, "Apply mapping function to pixel values. Mapping is defined as 'VAL0[,VAL1,...][:NEWVAL]' to map values VAL0, VAL1, etc. to new value NEWVAL. "
+		    "If NEWVAL is not given, values are set to padding." );
     cl.AddCallback( Key( "replace-padding" ), &cmtk::ImageOperationReplace::NewReplacePadding, "Replace padded pixel data with given value." );
     cl.AddCallback( Key( "replace-inf-nan" ), &cmtk::ImageOperationReplace::NewReplaceInfNaN, "Replace all infinite and not-a-number pixels with given value." );
     cl.EndGroup();
