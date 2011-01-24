@@ -1,5 +1,8 @@
 Release CMTK-1.6.0:
 
+(rXXXX) Added: CMTK build can now be configured to use bundled sqlite3
+    library, even when system library is available. This avoids problems with
+    multiple different versions of the library in different SDKs on MacOS.
 (r2805) Added: "convertx" can now apply mapping functions to replace image
     values with other values or with padding data.
 (r2794) Improved: better default configurations for MacOS-X builds.
