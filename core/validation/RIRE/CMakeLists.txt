@@ -1,5 +1,5 @@
 ##
-##  Copyright 2009 SRI International
+##  Copyright 2009-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -35,5 +35,5 @@ SET(APPS register_rire register_rire_experimental register_rire_experimental_cub
 FOREACH(APPLICATION ${APPS})
   ADD_EXECUTABLE(${APPLICATION} ${CMTK_LIB_INIT_SRCS} ${APPLICATION}.cxx)
   TARGET_LINK_LIBRARIES(${APPLICATION} ${CMTK_LIBRARIES} ${CMTK_SYSTEM_LIBRARIES})
-  INSTALL(TARGETS ${APPLICATION} RUNTIME DESTINATION bin)
+  INSTALL(TARGETS ${APPLICATION} RUNTIME DESTINATION bin COMPONENT tools)
 ENDFOREACH(APPLICATION ${APPS})

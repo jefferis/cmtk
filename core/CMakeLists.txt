@@ -173,13 +173,13 @@ SET(HAVE_STL_HASH_MAP ${HAVE_UNORDERED_MAP}${HAVE_UNORDERED_MAP_TR1}${HAVE_HASH_
 OPTION(BUILD_SHARED_LIBS "Build CMTK with shared libraries." OFF)
 SET(CMTK_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
 
-OPTION(CMTK_BUILD_UNSTABLE "Build 'unstable' library and applications" OFF)
+OPTION(CMTK_BUILD_UNSTABLE "Build 'unstable' library and tools" OFF)
 MARK_AS_ADVANCED(CMTK_BUILD_UNSTABLE)
 IF(CMTK_BUILD_UNSTABLE)
   ADD_DEFINITIONS(-DCMTK_BUILD_UNSTABLE)
 ENDIF(CMTK_BUILD_UNSTABLE)
 
-OPTION(CMTK_BUILD_STACKTRACE "Build applications with stack trace printing in case of crash (increases build time)" ON)
+OPTION(CMTK_BUILD_STACKTRACE "Build tools with stack trace printing in case of crash (increases build time)" ON)
 MARK_AS_ADVANCED(CMTK_BUILD_STACKTRACE)
 
 OPTION(CMTK_BUILD_DEMO "Build demonstration code. Strange things will happen if you turn this on." OFF)
@@ -543,7 +543,7 @@ ENDIF(NOT CMTK_USE_MPI)
 #-----------------------------------------------------------------------------
 # Add options to enable or disable different compoments
 
-OPTION(BUILD_APPS "Build command line applications" ON)
+OPTION(BUILD_APPS "Build command line tools" ON)
 IF(BUILD_APPS)
   SUBDIRS(apps)
 ENDIF(BUILD_APPS)
