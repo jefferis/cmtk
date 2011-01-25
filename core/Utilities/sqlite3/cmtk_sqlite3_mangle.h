@@ -184,5 +184,16 @@ REMOVE the "_init" and "_fini" entries.
 #define sqlite3_vfs_register cmtk_sqlite3_vfs_register
 #define sqlite3_vfs_unregister cmtk_sqlite3_vfs_unregister
 #define sqlite3_vmprintf cmtk_sqlite3_vmprintf
+#define sqlite3_blob_reopen cmtk_sqlite3_blob_reopen
+#define sqlite3_compileoption_get cmtk_sqlite3_compileoption_get
+#define sqlite3_compileoption_used cmtk_sqlite3_compileoption_used
+#define sqlite3_create_function_v2 cmtk_sqlite3_create_function_v2
+#define sqlite3_log cmtk_sqlite3_log
+#define sqlite3_rtree_geometry_callback cmtk_sqlite3_rtree_geometry_callback
+#define sqlite3_soft_heap_limit64 cmtk_sqlite3_soft_heap_limit64
+#define sqlite3_stmt_readonly cmtk_sqlite3_stmt_readonly
+#define sqlite3_wal_autocheckpoint cmtk_sqlite3_wal_autocheckpoint
+#define sqlite3_wal_checkpoint cmtk_sqlite3_wal_checkpoint
+#define sqlite3_wal_hook cmtk_sqlite3_wal_hook
 
 #endif // #ifndef cmtk_sqlite_mangle_h
