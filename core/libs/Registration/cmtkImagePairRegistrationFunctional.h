@@ -64,8 +64,8 @@ cmtk
  * should therefore help avoiding unnecessary code duplication.
  */
 class ImagePairRegistrationFunctional :
-  /// Inherit Functional interface.
-  public Functional 
+    public Functional, 
+    private CannotBeCopied
 {
 public:
   /// This class.
@@ -167,9 +167,6 @@ protected:
   const DataGrid::RegionType GetReferenceGridRange ( const Vector3D& fromVOI, const Vector3D& toVOI );
 
 private:
-  /// Private copy constructor: prevent copying.
-  ImagePairRegistrationFunctional ( const ImagePairRegistrationFunctional& ) {}
-
   /// Initialize internal data structures for floating image.
   void InitFloating( UniformVolume::SmartConstPtr& floating );
 

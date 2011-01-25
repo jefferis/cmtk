@@ -73,6 +73,7 @@ UniformVolume::UniformVolume
 
 UniformVolume::UniformVolume 
 ( const UniformVolume& other, const Types::Coordinate resolution, const bool allowUpsampling ) 
+  : Volume()
 {
   Self::IndexType newDims;
   for ( int dim=0; dim<3; ++dim ) 
