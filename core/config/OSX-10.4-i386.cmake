@@ -40,6 +40,10 @@ SET(CMAKE_OSX_ARCHITECTURES "i386" CACHE STRING "OS-X architectures")
 SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.4" CACHE STRING "OS-X target")
 SET(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.6.sdk" CACHE PATH "OS-X SDK")
 
+# Use GCC 4.0 for 10.4 SDK
+SET(CMAKE_CXX_COMPILER "/usr/bin/g++-4.0" CACHE FILEPATH "C++ Compiler")
+SET(CMAKE_C_COMPILER "/usr/bin/gcc-4.0" CACHE FILEPATH "C Compiler")
+
 # Activate SSE support for floating point
 SET(CMAKE_CXX_FLAGS "-march=core2 -mmmx -msse -msse2 -mfpmath=sse" CACHE STRING "C++ compiler flags")
 SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "C compiler flags")
