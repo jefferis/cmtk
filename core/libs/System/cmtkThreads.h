@@ -41,10 +41,6 @@
 #include <stdio.h>
 #include <vector>
 
-#ifdef _OPENMP
-#  include <omp.h>
-#endif 
-
 #include <System/cmtkThreadSystemTypes.h>
 #include <System/cmtkThreadParameters.h>
 
