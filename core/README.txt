@@ -20,7 +20,7 @@ CMTK has been built and tested on the following platforms:
 - Linux 64bit (Fedora 14), gcc 4.5.1
 - Linux, i386, Oracle/SunStudio C++ 5.11 (Express June 2010)
 - MacOSX 10.4, i386, gcc 4.0.1
-- MacOSX 10.6, x86_64, gcc 4.2.1
+- MacOSX 10.6, x86_64, gcc 4.2.1, CUDA 3.2
 - Cygwin, gcc 4.5.0
 - Windows XP, VisualStudio 9 (2008 Express Edition), CUDA 3.2
 - Windows XP, VisualStudio 10 (2010 Express Edition)
