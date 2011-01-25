@@ -28,12 +28,7 @@
 ##  $LastChangedBy$
 ##
 
-# General settings
-SET(CMTK_SYSTEM_NAME "MacOSX-10.4" CACHE STRING "System name")
-SET(CMTK_SYSTEM_PROCESSOR "i686" CACHE STRING "System processor")
-
 SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type")
-SET(CMAKE_INSTALL_PREFIX "/opt/local" CACHE PATH "Install prefix")
 
 # 32 bit for OS X >=10.4
 SET(CMAKE_OSX_ARCHITECTURES "i386" CACHE STRING "OS-X architectures")
@@ -45,12 +40,7 @@ SET(CMAKE_CXX_COMPILER "/usr/bin/g++-4.0" CACHE FILEPATH "C++ Compiler")
 SET(CMAKE_C_COMPILER "/usr/bin/gcc-4.0" CACHE FILEPATH "C Compiler")
 
 # Activate SSE support for floating point
-SET(CMAKE_CXX_FLAGS "-march=core2 -mmmx -msse -msse2 -mfpmath=sse" CACHE STRING "C++ compiler flags")
+SET(CMAKE_CXX_FLAGS "-m32 -march=pentium4 -mmmx -msse -msse2 -mfpmath=sse" CACHE STRING "C++ compiler flags")
 SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "C compiler flags")
 
-# CMTK config settings
-SET(CMTK_USE_SQLITE OFF CACHE BOOL "Use SQLite database")
-SET(CMTK_USE_QT OFF CACHE BOOL "Use Qt toolkit (does not work for 10.4 right now)")
-SET(BUILD_GUI OFF CACHE BOOL "Build GUI applications (requires Qt)")
-SET(CMTK_USE_LZMA OFF CACHE BOOL "Use LZMA library for decompression")
 
