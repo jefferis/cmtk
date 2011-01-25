@@ -33,7 +33,7 @@
 #ifndef _SQLITE3_H_
 #define _SQLITE3_H_
 
-#include "cmtk_sqlite_mangle.h"
+#include "cmtk_sqlite3_mangle.h"
 
 #include <stdarg.h>     /* Needed for the definition of va_list */
 
