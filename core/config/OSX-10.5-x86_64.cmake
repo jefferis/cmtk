@@ -28,6 +28,8 @@
 ##  $LastChangedBy$
 ##
 
+SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type")
+
 # General settings
 SET(CMTK_SYSTEM_NAME "MacOSX-10.5" CACHE STRING "System name")
 SET(CMTK_SYSTEM_PROCESSOR "x86_64" CACHE STRING "System processor")
