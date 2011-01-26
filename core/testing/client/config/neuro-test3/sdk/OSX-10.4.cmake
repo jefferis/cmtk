@@ -1,5 +1,5 @@
 ##
-##  Copyright 1997-2009 Torsten Rohlfing
+##  Copyright 1997-2011 Torsten Rohlfing
 ##
 ##  Copyright 2004-2011 SRI International
 ##
@@ -35,4 +35,7 @@ CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.4
 CMAKE_OSX_SYSROOT:STRING=/Developer/SDKs/MacOSX10.4u.sdk
 CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++-4.0
 CMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc-4.0
+
+CMAKE_CXX_FLAGS:STRING=-march=pentium4 -mmmx -msse -msse2 -mfpmath=sse -Wall -Wextra -Wno-deprecated -Wno-unknown-pragmas
+CMAKE_C_FLAGS:STRING=-march=pentium4 -mmmx -msse -msse2 -mfpmath=sse
 ")

@@ -1,5 +1,5 @@
 ##
-##  Copyright 1997-2009 Torsten Rohlfing
+##  Copyright 1997-2011 Torsten Rohlfing
 ##
 ##  Copyright 2004-2011 SRI International
 ##
@@ -51,9 +51,7 @@ CMTK_DATA_ROOT:PATH=/Users/testrunner/nitrc/data
 BUILD_GUI:BOOL=ON
 BUILD_VALIDATION:BOOL=ON
 CMAKE_BUILD_TYPE:STRING=Release
-CMAKE_CXX_FLAGS:STRING=-m64 -march=core2 -mmmx -msse -msse2 -mfpmath=sse -Wall -Wextra -Wno-deprecated -Wno-unknown-pragmas
 CMAKE_CXX_FLAGS_DEBUG:STRING=-g -DDEBUG
-CMAKE_C_FLAGS:STRING=-m64 -march=core2 -mmmx -msse -msse2 -mfpmath=sse
 
 CMTK_USE_DCMTK:BOOL=ON
 CMTK_USE_SQLITE:BOOL=ON

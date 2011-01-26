@@ -1,5 +1,5 @@
 ##
-##  Copyright 1997-2010 Torsten Rohlfing
+##  Copyright 1997-2011 Torsten Rohlfing
 ##
 ##  Copyright 2004-2011 SRI International
 ##
@@ -52,9 +52,7 @@ CMTK_DATA_ROOT:PATH=/Users/torsten/cmtk/nitrc/data
 BUILD_GUI:BOOL=ON
 BUILD_VALIDATION:BOOL=ON
 CMAKE_BUILD_TYPE:STRING=Debug
-CMAKE_CXX_FLAGS:STRING=-m64 -march=core2 -mmmx -msse -msse2 -mfpmath=sse -Wall -Wextra -Wno-deprecated -Wno-unknown-pragmas
 CMAKE_CXX_FLAGS_DEBUG:STRING=-g -DDEBUG -fprofile-arcs -ftest-coverage
-CMAKE_C_FLAGS:STRING=-m64 -march=core2 -mmmx -msse -msse2 -mfpmath=sse
 CMAKE_C_FLAGS_DEBUG:STRING=-g -DDEBUG -fprofile-arcs -ftest-coverage
 
 CMTK_USE_DCMTK:BOOL=ON

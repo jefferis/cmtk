@@ -1,7 +1,7 @@
 ##
-##  Copyright 1997-2009 Torsten Rohlfing
+##  Copyright 1997-2011 Torsten Rohlfing
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -33,4 +33,7 @@ FILE(APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
 CMAKE_OSX_ARCHITECTURES:STRING=x86_64
 CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6
 CMAKE_OSX_SYSROOT:STRING=/Developer/SDKs/MacOSX10.6.sdk
+
+CMAKE_CXX_FLAGS:STRING=-march=core2 -mmmx -msse -msse2 -mfpmath=sse -Wall -Wextra -Wno-deprecated -Wno-unknown-pragmas
+CMAKE_C_FLAGS:STRING=-march=core2 -mmmx -msse -msse2 -mfpmath=sse
 ")
