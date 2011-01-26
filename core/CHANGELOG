@@ -1,5 +1,8 @@
 Release CMTK-1.6.0:
 
+(r2829) Improved: various fixes related to packaging. Now uses non-default
+    installation prefix, renamed installation components, added missing RPM
+    fields.
 (r2818) Fixed: building using MacOSX SDK 10.4u now uses gcc version 4.0, which
     works, unlike the default gcc-4.2 with this SDK version.
 (r2815) Added: CMTK build can now be configured to use bundled sqlite3
