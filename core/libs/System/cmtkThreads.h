@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,8 +34,6 @@
 #define __cmtkThreads_h_included_
 
 #include <cmtkconfig.h>
-
-#include <System/cmtkMemory.h>
 
 #include <stdlib.h>
 #include <stdio.h>
