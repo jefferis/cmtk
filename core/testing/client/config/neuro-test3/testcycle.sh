@@ -52,12 +52,10 @@ fi
 for t in ${tests}; do
     for c in ${sdks}; do
 	
-	if [ ! -d ../data ]; then
-	    pushd ..
+	if [ ! -d data ]; then
 	    svn co https://www.nitrc.org:443/svn/cmtk/trunk/data/
-	    popd
 	else
-	    svn update ../data
+	    svn update data
 	fi
 
 	tname=`basename ${c} .cmake`-`basename ${t} .cmake`
