@@ -55,7 +55,6 @@
 #cmakedefine HAVE_TERMIOS_H 1
 #cmakedefine HAVE_UNISTD_H 1
 #cmakedefine HAVE_VALUES_H 1
-#cmakedefine HAVE_VARARGS_H 1
 
 #cmakedefine HAVE_SYS_IOCTL_H 1
 #cmakedefine HAVE_SYS_PROCFS_H 1
