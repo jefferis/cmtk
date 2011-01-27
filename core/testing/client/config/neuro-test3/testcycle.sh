@@ -30,6 +30,8 @@
 ##  $LastChangedBy$
 ##
 
+DISABLED_TESTS="OSX-10.5-gcc-Debug OSX-10.4-gcc-Debug"
+
 export LC_ALL=POSIX
 
 lockfile=${HOME}/testcycle.lock
@@ -60,10 +62,18 @@ for t in ${tests}; do
 
 	tname=`basename ${c} .cmake`-`basename ${t} .cmake`
 
-	echo "SET(TEST_NAME ${tname})" > /tmp/testfile.cmake
-	cat ${t} ${c} tail.cmake >> /tmp/testfile.cmake
-	
-	/opt/local/bin/ctest -S /tmp/testfile.cmake
+	for d in ${DISABLED_TESTS}; do
+	    if [ "${tname}" == "${d}" ]; then
+		tname=""
+	    fi
+	done
+
+	if [ "${tname}" != "" ]; then
+	    echo "SET(TEST_NAME ${tname})" > /tmp/testfile.cmake
+	    cat ${t} ${c} tail.cmake >> /tmp/testfile.cmake
+	    
+	    /opt/local/bin/ctest -S /tmp/testfile.cmake
+	fi
     done
 done
 
