@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -42,6 +42,13 @@
 #include <IO/cmtkVolumeIO.h>
 
 #include <stdio.h>
+#include <memory>
+
+#ifndef CMTK_HAVE_DCMTK
+#error Build system is broken: this application should not be build if CMTK_HAVE_DCMTK is not set.
+#endif
+
+#include <dcmtk/dcmdata/dctk.h>
 
 bool Verbose = false;
 
@@ -105,7 +112,7 @@ doMain( const int argc, const char* argv[] )
     cl.AddOption( Key( 'B', "bg" ), &Background, "Set the image background value (use to initialize newly created image)." );
 
     cl.AddOption( Key( 'I', "import" ), &InputImageName, "Import image" );
-    cl.AddOption( Key( "import-grid" ), &InputImageName, "Import image grid only, ignore data", &InputImageGridOnly );
+    cl.AddOption( Key( "import-grid" ), &InputImageName, "Import image grid only, ignore data", &InputImageGridOnly );    
     cl.AddOption( Key( 'o', "outfile" ), &OutputFileName, "File name for output image" );
     
     cl.Parse( argc, argv );
@@ -171,6 +178,45 @@ doMain( const int argc, const char* argv[] )
 	  }
 	painter.DrawBox( cmtk::FixedVector<3,cmtk::Types::Coordinate>( boxFrom ), cmtk::FixedVector<3,cmtk::Types::Coordinate>( boxTo ), atof( value ) );
 	}
+
+      if ( ! strcmp( nextCmd, "mrs-voxel" ) )
+	{
+	const char* dicom = cl.GetNextOptional();
+	const char* value = cl.GetNextOptional();
+	
+	std::auto_ptr<DcmFileFormat> fileformat( new DcmFileFormat );
+	
+	fileformat->transferInit();
+	OFCondition status = fileformat->loadFile( dicom );
+	fileformat->transferEnd();
+	
+	if ( !status.good() ) 
+	  {
+	  cmtk::StdErr << "Error: cannot read DICOM file " << dicom << " (" << status.text() << ")\n";
+	  exit( 1 );
+	  }
+	
+	DcmDataset *dataset = fileformat->getDataset();
+	if ( ! dataset )
+	  {
+	  exit( 1 );
+	  }
+	
+	Float64 roiBegin[3];
+	Float64 roiSize[3];
+
+	DcmTagKey searchKey( 0x0043, 0x108c); // private GE tag
+	dataset->findAndGetFloat64( searchKey, roiBegin[1], 0 ); // note that for some reason x and y are switched in the DICOM tag value
+	dataset->findAndGetFloat64( searchKey, roiBegin[0], 1 );
+	dataset->findAndGetFloat64( searchKey, roiBegin[2], 2 );
+    
+	dataset->findAndGetFloat64( searchKey, roiSize[1], 3 ); // note that for some reason x and y are switched in the DICOM tag value
+	dataset->findAndGetFloat64( searchKey, roiSize[0], 4 );
+	dataset->findAndGetFloat64( searchKey, roiSize[2], 5 );
+
+	cmtk::StdErr << roiBegin[0] << "\t" << roiBegin[1] << "\t" << roiBegin[2] << "\t" << roiSize[0] << "\t" << roiSize[1] << "\t" << roiSize[2] << "\n";
+	}
+
       nextCmd = cl.GetNextOptional();
       }
     
