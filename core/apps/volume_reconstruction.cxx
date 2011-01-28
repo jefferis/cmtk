@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -352,7 +352,7 @@ doMain( const int argc, const char* argv[] )
 
     cl.BeginGroup( "Output", "Output Options" );
     cl.AddOption( Key( 'o', "output" ), &OutputImagePath, "Output path for final reconstructed image" );
-    cl.AddOption( Key( "write-splatted-image" ), &SplattedImagePath, "Write initial Gaussian-splatted (volume-injected) image to this path" );
+    cl.AddOption( Key( "write-injected-image" ), &SplattedImagePath, "Write initial volume-injected image to this path" );
     cl.AddOption( Key( "write-lowest-max-error-image" ), &LowestMaxErrorImagePath, "Optional path to write reconstructed image with lowest MAXIMUM error." );
     cl.AddSwitch( Key( 'F', "write-images-as-float" ), &WriteImagesAsFloat, true, "Write output images as floating point" );
     cl.EndGroup();
@@ -428,7 +428,27 @@ doMain( const int argc, const char* argv[] )
     }
 
   if ( ! ReconGrid )
+    {
+    // No recon grid from command line: use first input image.
     ReconGrid = Images[0];
+    }
+  else
+    {
+    // If we have a pre-defined reconstruction grid, make its physical coordinates match the first input image
+    // First, get the recon grid offset
+    const cmtk::UniformVolume::CoordinateVectorType offset = ReconGrid->m_Offset;
+    // Convert offset to input image index coordinates
+    const cmtk::UniformVolume::CoordinateVectorType indexOffset = cmtk::ComponentDivide( offset, Images[0]->m_Delta );
+    // New offset is the index grid offset transformed to physical space
+    const cmtk::UniformVolume::CoordinateVectorType newOffset = Images[0]->IndexToPhysical( indexOffset );
+    // Copy image-to-physical matrix from input to recon image
+    ReconGrid->SetImageToPhysicalMatrix( Images[0]->GetImageToPhysicalMatrix() );
+    // Finally, copy new offset into recon image-to-physical matrix.
+    for ( int i = 0; i < 3; ++i )
+      {
+      ReconGrid->m_IndexToPhysicalMatrix[3][i] = newOffset[i];
+      }
+    }
   
   if ( UseCropRegion )
     {
