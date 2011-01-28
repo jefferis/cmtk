@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -115,6 +115,16 @@ UniformVolume::GetImageToPhysicalMatrix() const
       matrix[i][j] /= this->m_Delta[i];
 
   return matrix;
+}
+
+void
+UniformVolume::SetImageToPhysicalMatrix( const AffineXform::MatrixType& matrix )
+{
+  this->m_IndexToPhysicalMatrix = matrix;
+// mDelta[3] is implicitly == 1 (homogeneous coordinates), so 4th matrix row (translation/coordinate origin) stays untouched
+  for ( int i = 0; i < 3; ++i )
+    for ( int j = 0; j < 3; ++j )
+      this->m_IndexToPhysicalMatrix[i][j] *= this->m_Delta[i];
 }
 
 } // namespace cmtk

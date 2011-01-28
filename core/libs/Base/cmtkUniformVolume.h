@@ -157,6 +157,12 @@ public:
    */
   virtual AffineXform::MatrixType GetImageToPhysicalMatrix() const;
 
+  /** Set matrix that maps form image coordinates to physical space.
+   * The given matrix is converted to internal grid-to-physical representation,
+   * i.e., its columns are multiplied with the pixel sizes.
+   */
+  virtual void SetImageToPhysicalMatrix( const AffineXform::MatrixType& matrix /*!< Existing image-to-physical matrix */ );
+
   /** Create a physical copy of this object.
    *\param copyData If true, the associated data array is also copied.
    */
