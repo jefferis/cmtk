@@ -1590,15 +1590,15 @@ case ${RUNTEST} in
 	check_results injection.img
 	;;
     volume_reconstructionFourthOrder)
-	run volume_reconstruction --recon-grid-path spgr_3t.hdr -o ${tmpdir}/reconstruction.hdr --linear --fourth-order-error --num-iterations 2 --injection-kernel-sigma 0.5 --injection-kernel-radius 2 --isotropic-injection --write-splatted-image ${tmpdir}/injection.hdr split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
+	run volume_reconstruction --recon-grid-path spgr_3t.hdr -o ${tmpdir}/reconstruction.hdr --linear --fourth-order-error --num-iterations 2 --injection-kernel-sigma 0.5 --injection-kernel-radius 2 --isotropic-injection --write-injected-image ${tmpdir}/injection.hdr split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
 	check_results injection.img reconstruction.img
 	;;
     volume_reconstructionCubic)
-	run volume_reconstruction --recon-grid-path spgr_3t.hdr -o ${tmpdir}/reconstruction.hdr --cubic --num-iterations 2 --injection-kernel-sigma 0.5 --injection-kernel-radius 2 --isotropic-injection --write-splatted-image ${tmpdir}/injection.hdr split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
+	run volume_reconstruction --recon-grid-path spgr_3t.hdr -o ${tmpdir}/reconstruction.hdr --cubic --num-iterations 2 --injection-kernel-sigma 0.5 --injection-kernel-radius 2 --isotropic-injection --write-injected-image ${tmpdir}/injection.hdr split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
 	check_results injection.img reconstruction.img
 	;;
     volume_reconstructionNoXform)
-	run volume_reconstruction -o ${tmpdir}/reconstruction.hdr --linear --num-iterations 2 --injection-kernel-sigma 0.5 --injection-kernel-radius 2 --isotropic-injection --write-splatted-image ${tmpdir}/injection.hdr --exclude-first-image spgr_3t.hdr -- split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
+	run volume_reconstruction -o ${tmpdir}/reconstruction.hdr --linear --num-iterations 2 --injection-kernel-sigma 0.5 --injection-kernel-radius 2 --isotropic-injection --write-injected-image ${tmpdir}/injection.hdr --exclude-first-image spgr_3t.hdr -- split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
 	check_results injection.img reconstruction.img
 	;;
     volume_reconstructionBoxPSF)
