@@ -565,7 +565,13 @@ IF(NOT CMTK_USE_MPI)
 
   # ==========================================
   # Tests for "volume_injection" tool
-  SET(testList ${testList} volume_injection volume_injectionIsotropic volume_injectionNoXform volume_injectionNoXformIsotropic)
+  SET(testList ${testList} 
+    volume_injection 
+    volume_injectionReconGrid
+    volume_injectionReconGridOffset
+    volume_injectionIsotropic 
+    volume_injectionNoXform 
+    volume_injectionNoXformIsotropic)
 
   # ==========================================
   # Tests for "volume_reconstruction" tool

@@ -1577,6 +1577,14 @@ case ${RUNTEST} in
 	run volume_injection --recon-grid-path spgr_3t.hdr -o ${tmpdir}/injection.hdr --injection-kernel-sigma 0.5 --injection-kernel-radius 2 split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
 	check_results injection.img
 	;;
+    volume_injectionReconGrid)
+	run volume_injection --recon-grid 49,65,35:3.75,3.75,3.75 -o ${tmpdir}/injection.nii --injection-kernel-sigma 0.5 --injection-kernel-radius 2 split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
+	check_results injection.nii
+	;;
+    volume_injectionReconGridOffset)
+	run volume_injection --recon-grid 48,64,34:3.75,3.75,3.75:1.875,1.875,1.875 -o ${tmpdir}/injection.nii --injection-kernel-sigma 0.5 --injection-kernel-radius 2 split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
+	check_results injection.nii
+	;;
     volume_injectionIsotropic)
 	run volume_injection --recon-grid-path spgr_3t.hdr -o ${tmpdir}/injection.hdr --injection-kernel-sigma 0.5 --injection-kernel-radius 2 --isotropic-injection split_ax_0.hdr split_ax_01.xform split_ax_1.hdr
 	check_results injection.img

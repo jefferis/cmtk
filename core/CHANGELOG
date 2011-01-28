@@ -1,5 +1,8 @@
 Release CMTK-1.6.0:
 
+(r2845) Improved: "volume_injection" and "volume_reconstruction" tools now
+    produce reconstructed images with physical space coordinates matching
+    those of the first input image.
 (r2829) Improved: various fixes related to packaging. Now uses non-default
     installation prefix, renamed installation components, added missing RPM
     fields.
