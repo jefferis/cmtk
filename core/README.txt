@@ -7,6 +7,9 @@ Release Notes -- CMTK 1.6.0
 
 Groupwise registration tools have been consolidated.
 
+Volume injection and reconstruction tools now preserve the physical coordinate
+space of the input images.
+
 Old "convert" tool has been removed. Use "convertx" tool instead.
 
 Pre-built binaries for the MacOS/PPC platform are no longer provided.
