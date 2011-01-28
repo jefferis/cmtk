@@ -253,7 +253,27 @@ doMain( const int argc, const char* argv[] )
     }
 
   if ( ! ReconGrid )
+    {
+    // No recon grid from command line: use first input image.
     ReconGrid = Images[0];
+    }
+  else
+    {
+    // If we have a pre-defined reconstruction grid, make its physical coordinates match the first input image
+    // First, get the recon grid offset
+    const cmtk::UniformVolume::CoordinateVectorType offset = ReconGrid->m_Offset;
+    // Convert offset to input image index coordinates
+    const cmtk::UniformVolume::CoordinateVectorType indexOffset = cmtk::ComponentDivide( offset, Images[0]->m_Delta );
+    // New offset is the index grid offset transformed to physical space
+    const cmtk::UniformVolume::CoordinateVectorType newOffset = Images[0]->IndexToPhysical( indexOffset );
+    // Copy image-to-physical matrix from input to recon image
+    ReconGrid->SetImageToPhysicalMatrix( Images[0]->GetImageToPhysicalMatrix() );
+    // Finally, copy new offset into recon image-to-physical matrix.
+    for ( int i = 0; i < 3; ++i )
+      {
+      ReconGrid->m_IndexToPhysicalMatrix[3][i] = newOffset[i];
+      }
+    }
   
   if ( UseCropRegion )
     {
