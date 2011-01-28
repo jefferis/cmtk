@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010-2011 SRI International
 //
 //  Copyright 2010 Torsten Rohlfing
 //
@@ -285,6 +285,22 @@ const FixedVector<NDIM,T>
 operator-( const FixedVector<NDIM,T>& lhs, const FixedVector<NDIM,T>& rhs )
 {
   return FixedVector<NDIM,T>( lhs ) -= rhs;
+}
+
+/// Componentwise division operator.
+template<size_t NDIM,typename T>
+const FixedVector<NDIM,T>
+ComponentDivide( const FixedVector<NDIM,T>& lhs, const FixedVector<NDIM,T>& rhs )
+{
+  return FixedVector<NDIM,T>( lhs ) /= rhs;
+}
+
+/// Componentwise multiplication operator.
+template<size_t NDIM,typename T>
+const FixedVector<NDIM,T>
+ComponentMultiply( const FixedVector<NDIM,T>& lhs, const FixedVector<NDIM,T>& rhs )
+{
+  return FixedVector<NDIM,T>( lhs ) *= rhs;
 }
 
 /// Scalar product operator.
