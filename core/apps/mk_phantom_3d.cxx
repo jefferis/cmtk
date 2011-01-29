@@ -38,6 +38,7 @@
 
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkUniformVolumePainter.h>
+#include <Base/cmtkFixedVector.h>
 
 #include <IO/cmtkVolumeIO.h>
 
@@ -202,19 +203,25 @@ doMain( const int argc, const char* argv[] )
 	  exit( 1 );
 	  }
 	
-	Float64 roiBegin[3];
-	Float64 roiSize[3];
+	Float64 cntr[3];
+	Float64 size[3];
 
 	DcmTagKey searchKey( 0x0043, 0x108c); // private GE tag
-	dataset->findAndGetFloat64( searchKey, roiBegin[1], 0 ); // note that for some reason x and y are switched in the DICOM tag value
-	dataset->findAndGetFloat64( searchKey, roiBegin[0], 1 );
-	dataset->findAndGetFloat64( searchKey, roiBegin[2], 2 );
+	dataset->findAndGetFloat64( searchKey, cntr[0], 0 ); cntr[0] *= -1; // convert RL to LR
+	dataset->findAndGetFloat64( searchKey, cntr[1], 1 ); cntr[1] *= -1; // convert AP to PA
+	dataset->findAndGetFloat64( searchKey, cntr[2], 2 );
     
-	dataset->findAndGetFloat64( searchKey, roiSize[1], 3 ); // note that for some reason x and y are switched in the DICOM tag value
-	dataset->findAndGetFloat64( searchKey, roiSize[0], 4 );
-	dataset->findAndGetFloat64( searchKey, roiSize[2], 5 );
+	dataset->findAndGetFloat64( searchKey, size[0], 3 ); size[0] *= -1; // convert RL to LR
+	dataset->findAndGetFloat64( searchKey, size[1], 4 ); size[1] *= -1; // convert AP to PA
+	dataset->findAndGetFloat64( searchKey, size[2], 5 );
 
-	cmtk::StdErr << roiBegin[0] << "\t" << roiBegin[1] << "\t" << roiBegin[2] << "\t" << roiSize[0] << "\t" << roiSize[1] << "\t" << roiSize[2] << "\n";
+	cmtk::UniformVolumePainter roiPainter( volume, cmtk::UniformVolumePainter::COORDINATES_INDEXED );
+
+	cmtk::FixedVector<3,cmtk::Types::Coordinate> roiCntr( cntr );
+	cmtk::FixedVector<3,cmtk::Types::Coordinate> roiSize( size );
+	roiSize *= 0.5;
+
+	roiPainter.DrawBox( volume->PhysicalToIndex( roiCntr - roiSize ), volume->PhysicalToIndex( roiCntr + roiSize ), atof( value ) );
 	}
 
       nextCmd = cl.GetNextOptional();
