@@ -39,7 +39,7 @@
 #include <System/cmtkSmartConstPtr.h>
 
 #include <algorithm>
-#include <fstream>
+#include <iostream>
 
 namespace
 cmtk
@@ -327,16 +327,17 @@ operator*( const T2 lhs, const FixedVector<NDIM,T>& rhs )
 
 /// Stream input operator.
 template<size_t NDIM,typename T>
-std::ofstream& operator<<( std::ofstream& stream, const FixedVector<NDIM,T>& index )
+std::ostream& operator<<( std::ostream& stream, const FixedVector<NDIM,T>& index )
 {
   for ( size_t i = 0; i < NDIM; ++i )
-    stream << index[i];
+    stream << index[i] << " ";
+
   return stream;
 }
 
 /// Stream output operator.
 template<size_t NDIM,typename T>
-std::ifstream& operator>>( std::ifstream& stream, FixedVector<NDIM,T>& index )
+std::istream& operator>>( std::istream& stream, FixedVector<NDIM,T>& index )
 {
   for ( size_t i = 0; i < NDIM; ++i )
     stream >> index[i];
