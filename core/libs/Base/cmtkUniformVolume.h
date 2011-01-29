@@ -431,8 +431,15 @@ public:
    */
   virtual const Self::CoordinateVectorType IndexToPhysical( const Self::CoordinateVectorType& idxV ) const 
   {
-    const Self::CoordinateVectorType v( idxV );
-    return v * this->m_IndexToPhysicalMatrix;
+    return idxV * this->m_IndexToPhysicalMatrix;
+  }
+  
+  /** Get a grid index (fractional) corresponding to given physical coordinates.
+   *\return The grid index location coresponding to physical location.
+   */
+  virtual const Self::CoordinateVectorType PhysicalToIndex( const Self::CoordinateVectorType& physical ) const 
+  {
+    return physical * this->m_IndexToPhysicalMatrix.GetInverse();
   }
   
   /** Get a grid coordinate by continuous pixel index.
