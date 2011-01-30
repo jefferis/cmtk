@@ -206,14 +206,29 @@ doMain( const int argc, const char* argv[] )
 	Float64 cntr[3];
 	Float64 size[3];
 
-	DcmTagKey searchKey( 0x0043, 0x108c); // private GE tag
-	dataset->findAndGetFloat64( searchKey, cntr[0], 0 ); cntr[0] *= -1; // convert RL to LR
-	dataset->findAndGetFloat64( searchKey, cntr[1], 1 ); cntr[1] *= -1; // convert AP to PA
-	dataset->findAndGetFloat64( searchKey, cntr[2], 2 );
-    
-	dataset->findAndGetFloat64( searchKey, size[0], 3 ); size[0] *= -1; // convert RL to LR
-	dataset->findAndGetFloat64( searchKey, size[1], 4 ); size[1] *= -1; // convert AP to PA
-	dataset->findAndGetFloat64( searchKey, size[2], 5 );
+	const DcmTagKey keyVoxelLocation( 0x0043, 0x108c); // private GE tag "Voxel Location"
+	if ( dataset->findAndGetFloat64( keyVoxelLocation, cntr[0], 0 ).good() )
+	  {
+	  cntr[0] *= -1; // convert RL to LR
+	  dataset->findAndGetFloat64( keyVoxelLocation, cntr[1], 1 ); cntr[1] *= -1; // convert AP to PA
+	  dataset->findAndGetFloat64( keyVoxelLocation, cntr[2], 2 );
+	  
+	  dataset->findAndGetFloat64( keyVoxelLocation, size[0], 3 );
+	  dataset->findAndGetFloat64( keyVoxelLocation, size[1], 4 );
+	  dataset->findAndGetFloat64( keyVoxelLocation, size[2], 5 );
+	  }
+	else
+	  {
+	  // Some image GE MRS DICOM files do not have "Voxel Location" tag, but store location in different undocumented tags.
+	  // Order of x/y is switched, and some values have negative signs.
+	  dataset->findAndGetFloat64( DcmTagKey( 0x0019, 0x10b3 ), cntr[0] ); // already * -1
+	  dataset->findAndGetFloat64( DcmTagKey( 0x0019, 0x10b2 ), cntr[1] ); cntr[1] *= -1;
+	  dataset->findAndGetFloat64( DcmTagKey( 0x0019, 0x10b4 ), cntr[2] ); 
+
+	  dataset->findAndGetFloat64( DcmTagKey( 0x0019, 0x10b0 ), size[0] ); 
+	  dataset->findAndGetFloat64( DcmTagKey( 0x0019, 0x10af ), size[1] );
+	  dataset->findAndGetFloat64( DcmTagKey( 0x0019, 0x10b1 ), size[2] );
+	  }
 
 	cmtk::UniformVolumePainter roiPainter( volume, cmtk::UniformVolumePainter::COORDINATES_INDEXED );
 
