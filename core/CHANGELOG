@@ -1,5 +1,8 @@
 Release CMTK-1.6.0:
 
+(r2856) Added: "mk_phantom_3d" can now read MRS voxel location and size from
+    GE DICOM files and draw voxel in correct location, if image grid with matching
+    physical scanner coordinates is imported.
 (r2845) Improved: "volume_injection" and "volume_reconstruction" tools now
     produce reconstructed images with physical space coordinates matching
     those of the first input image.
