@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -114,11 +114,16 @@ cmtk::UniformVolumePainter::DrawBox
       // nothing to do - already indexed
       for ( int dim = 0; dim < 3; ++dim )
 	{
-	indexFrom[dim] = static_cast<int>( boxFrom[dim] );
-	indexTo[dim] = static_cast<int>( boxTo[dim] );
+	indexFrom[dim] = static_cast<int>( boxFrom[dim] + 0.5 );
+	indexTo[dim] = static_cast<int>( boxTo[dim] + 0.5 );
 	}
       break;
     }
+
+  // make sure boundaries are in correct order
+  for ( int dim = 0; dim < 3; ++dim )
+    if ( indexFrom[dim] > indexTo[dim] )
+      std::swap( indexFrom[dim], indexTo[dim] );
   
   for ( int k = indexFrom[2]; k <= indexTo[2]; ++k )
     {
