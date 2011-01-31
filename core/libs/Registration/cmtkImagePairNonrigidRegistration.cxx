@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -283,9 +283,11 @@ ImagePairNonrigidRegistration::EnterResolution
   SmartPointer<ImagePairNonrigidRegistrationFunctional> nonrigidFunctional = ImagePairNonrigidRegistrationFunctional::SmartPtr::DynamicCastFrom( functional );
   if ( nonrigidFunctional ) 
     {
-    if ( this->m_RelaxToUnfold )
-      warpXform->RelaxToUnfold();
     nonrigidFunctional->SetWarpXform( warpXform );
+
+    if ( this->m_RelaxToUnfold ) // has to come after functional->SetWarpXform so reference volume is registered with warp grid
+      warpXform->RelaxToUnfold();
+
     nonrigidFunctional->SetGridEnergyWeight( effGridEnergyWeight );
     nonrigidFunctional->SetJacobianConstraintWeight( effJacobianConstraintWeight );
     } 
@@ -295,12 +297,14 @@ ImagePairNonrigidRegistration::EnterResolution
     SmartPointer<ImagePairSymmetricNonrigidRegistrationFunctional> symmetricFunctional = ImagePairSymmetricNonrigidRegistrationFunctional::SmartPtr::DynamicCastFrom( functional );
     if ( symmetricFunctional ) 
       {
-      if ( this->m_RelaxToUnfold )
+      symmetricFunctional->SetWarpXform( warpXform, this->InverseWarpXform );
+
+      if ( this->m_RelaxToUnfold ) // has to come after functional->SetWarpXform so reference volume is registered with warp grid
 	{
 	warpXform->RelaxToUnfold();
 	this->InverseWarpXform->RelaxToUnfold();
 	}
-      symmetricFunctional->SetWarpXform( warpXform, this->InverseWarpXform );
+
       symmetricFunctional->SetGridEnergyWeight( effGridEnergyWeight );
       symmetricFunctional->SetJacobianConstraintWeight( effJacobianConstraintWeight );
       symmetricFunctional->SetInverseConsistencyWeight( effInverseConsistencyWeight );
