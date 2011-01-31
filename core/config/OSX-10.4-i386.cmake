@@ -46,6 +46,3 @@ SET(CMAKE_C_COMPILER "/usr/bin/gcc-4.0" CACHE FILEPATH "C Compiler")
 # Activate SSE support for floating point
 SET(CMAKE_CXX_FLAGS "-m32 -march=pentium4 -mmmx -msse -msse2 -mfpmath=sse" CACHE STRING "C++ compiler flags")
 SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "C compiler flags")
-
-# Don't have Qt for i386
-SET(CMTK_USE_QT "OFF" CACHE BOOL "Use Gt toolkit for GUI tools")

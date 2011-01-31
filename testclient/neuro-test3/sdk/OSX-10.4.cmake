@@ -40,5 +40,4 @@ CMAKE_CXX_FLAGS:STRING=-march=pentium4 -mmmx -msse -msse2 -mfpmath=sse -Wall -We
 CMAKE_C_FLAGS:STRING=-march=pentium4 -mmmx -msse -msse2 -mfpmath=sse
 
 CMTK_USE_CUDA:BOOL=OFF
-CMTK_USE_QT:BOOL=OFF
 ")
