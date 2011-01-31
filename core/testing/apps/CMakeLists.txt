@@ -613,6 +613,7 @@ IF(NOT CMTK_USE_MPI)
     warpxEnergy
     warpxEnergyRelax
     warpxJacobian
+    warpxJacobianUnfold
     warpxLabels)
 
   # ==========================================
