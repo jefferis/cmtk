@@ -1001,6 +1001,34 @@ case ${RUNTEST} in
 	run_eval "${BINDIR}/describe -m ${tmpdir}/analyze.hdr | fgrep --invert-match FNAME > ${tmpdir}/analyze.txt"
 	check_results analyze.hdr analyze.txt
 	;;
+    mk_nifti_hdrDefault)
+        run mk_nifti_hdr ${tmpdir}/nifti.hdr
+	run_eval "${BINDIR}/describe -m ${tmpdir}/nifti.hdr | fgrep --invert-match FNAME > ${tmpdir}/nifti.txt"
+	check_results nifti.hdr nifti.txt
+	;;
+    mk_nifti_hdrDescription)
+        run_eval "${BINDIR}/mk_nifti_hdr --description \"This is a description text\" ${tmpdir}/nifti.hdr"
+	check_results nifti.hdr
+	;;
+    mk_nifti_hdrImport)
+        run mk_nifti_hdr --import phantom_ax.nii ${tmpdir}/nifti.hdr
+	run_eval "${BINDIR}/describe -m ${tmpdir}/nifti.hdr | fgrep --invert-match FNAME > ${tmpdir}/nifti.txt"
+	check_results nifti.hdr nifti.txt
+	;;
+    mk_nifti_hdrDefaultAttached)
+        run mk_nifti_hdr --attached ${tmpdir}/nifti.nii
+	run_eval "${BINDIR}/describe -m ${tmpdir}/nifti.nii | fgrep --invert-match FNAME > ${tmpdir}/nifti.txt"
+	check_results nifti.nii nifti.txt
+	;;
+    mk_nifti_hdrDescriptionAttached)
+        run_eval "${BINDIR}/mk_nifti_hdr --attached --description \"This is a description text\" ${tmpdir}/nifti.nii"
+	check_results nifti.nii
+	;;
+    mk_nifti_hdrImportAttached)
+        run mk_nifti_hdr --attached --import phantom_ax.nii ${tmpdir}/nifti.nii
+	run_eval "${BINDIR}/describe -m ${tmpdir}/nifti.nii | fgrep --invert-match FNAME > ${tmpdir}/nifti.txt"
+	check_results nifti.nii nifti.txt
+	;;
     mk_phantom_3dBoxIndexed)
 	run mk_phantom_3d -o ${tmpdir}/phantom.nii --dims 10,10,10 --voxel 2,2,2 box 2,2,2 5,5,5 10
 	check_results phantom.nii

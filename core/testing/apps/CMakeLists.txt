@@ -362,6 +362,16 @@ IF(NOT CMTK_USE_MPI)
     mk_analyze_hdrBigEndian)
 
   # ==========================================
+  # Tests for "mk_nifti_hdr" tool
+  SET(testList ${testList} 
+    mk_nifti_hdrDefault
+    mk_nifti_hdrDescription
+    mk_nifti_hdrImport
+    mk_nifti_hdrDefaultAttached
+    mk_nifti_hdrDescriptionAttached
+    mk_nifti_hdrImportAttached)
+
+  # ==========================================
   # Tests for "mk_phantom_3d" tool
   SET(testList ${testList} 
     mk_phantom_3dBoxIndexed 

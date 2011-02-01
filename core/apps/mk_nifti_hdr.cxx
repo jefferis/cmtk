@@ -82,6 +82,8 @@ bool ResetCoordinates = false;
 const char* HdrFileName = "header.nii";
 const char* ImportHdrFile = NULL;
 
+const char* Description = NULL;
+
 int 
 doMain( const int argc, const char* argv[] )
 {
@@ -112,6 +114,7 @@ doMain( const int argc, const char* argv[] )
     cl.AddSwitch( Key( "attached" ), &DetachedHeader, false, "Create attached header for use in single-file images. Image data must be concatenated directly onto the created header file." );
     
     cl.AddOption( Key( 'I', "import" ), &ImportHdrFile, "Import data from given header file." );
+    cl.AddOption( Key( "description" ), &Description, "Set description string [max. 80 characters]" );
     
     cl.Parse( argc, argv );
 
@@ -237,6 +240,16 @@ doMain( const int argc, const char* argv[] )
 	header.bitpix = 8 * sizeof(double);
 	break;
       }
+    }
+
+  if ( Description )
+    {
+    if ( Verbose )
+      {
+      cmtk::StdErr << "Setting image description\n";
+      }
+    
+    strncpy( header.descrip, Description, 80 );
     }
 
 #ifdef _MSC_VER
