@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,6 +35,12 @@
 #include <Base/cmtkUniformVolume.h>
 #include <IO/cmtkVolumeIO.h>
 
+#ifdef CMTK_HAVE_DCMTK
+#  include <dcmtk/dcmdata/dctk.h>
+#endif
+
+#include <memory>
+
 int
 main( const int argc, const char*[] )
 {
@@ -43,6 +49,10 @@ main( const int argc, const char*[] )
     const cmtk::UniformVolume::IndexType::ValueType dims[3] = {2,2,2};
     const cmtk::UniformVolume::CoordinateVectorType::ValueType size[3] = {1,1,1};
     cmtk::UniformVolume::SmartConstPtr volume( new cmtk::UniformVolume( cmtk::UniformVolume::IndexType( dims ), cmtk::UniformVolume::CoordinateVectorType( size ) ) );
+
+#ifdef CMTK_HAVE_DCMTK
+    std::auto_ptr<DcmFileFormat> fileformat( new DcmFileFormat );
+#endif
     }
 
   // if we got here, the program probably ran
