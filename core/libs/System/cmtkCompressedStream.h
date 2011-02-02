@@ -60,10 +60,8 @@
 
 #if defined(_MSC_VER)
 #define CMTK_FILE_MODE "rb"
-#elif defined(__linux__)
-#define CMTK_FILE_MODE "r"
 #else
-#define CMTK_FILE_MODE "rb"
+#define CMTK_FILE_MODE "r"
 #endif
 
 namespace

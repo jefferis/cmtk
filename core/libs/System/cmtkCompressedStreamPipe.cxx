@@ -61,7 +61,7 @@ CompressedStream::Pipe::Pipe( const char* filename, const char* command )
   this->m_File = popen( cmd, CMTK_FILE_MODE );
   if ( !this->m_File ) 
     {
-    fprintf( stderr, "ERROR: popen() return NULL (errno=%d).\n", errno );
+    fprintf( stderr, "ERROR: popen(\"%s\") returned NULL (errno=%d).\n", cmd, errno );
     perror( "System message" );
     throw 0;
     } 
