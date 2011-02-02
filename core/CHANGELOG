@@ -1,3 +1,8 @@
+Release CMTK-1.6.1:
+
+(r2869) Improved: "runcheck" tool is now more sensitive to stdlibc++ version.
+
+
 Release CMTK-1.6.0 (2011-02-01):
 
 (r2858) Added: "mk_phantom_3d" can now read MRS voxel location and size from
