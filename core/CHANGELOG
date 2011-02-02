@@ -1,4 +1,4 @@
-Release CMTK-1.6.0:
+Release CMTK-1.6.0 (2011-02-01):
 
 (r2858) Added: "mk_phantom_3d" can now read MRS voxel location and size from
     GE DICOM files and draw voxel in correct location, if image grid with matching
