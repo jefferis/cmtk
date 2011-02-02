@@ -33,6 +33,7 @@
 DISABLED_TESTS="OSX-10.5-gcc-Debug OSX-10.4-gcc-Debug"
 
 export LC_ALL=POSIX
+export PATH=${PATH}:/opt/local/bin
 
 lockfile=${HOME}/testcycle.lock
 if test -f ${lockfile}; then
