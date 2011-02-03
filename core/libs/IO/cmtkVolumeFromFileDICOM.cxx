@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
@@ -259,8 +259,7 @@ VolumeFromFile::ReadDICOM( const char *path )
       imageOrientationY = UniformVolume::CoordinateVectorType( dy );
       }
     }
-  const Types::Coordinate size[3] = { pixelSize[0] * (dims[0]-1), pixelSize[1] * (dims[1]-1), pixelSize[1] * (dims[1]-1) };  
-  return UniformVolume::SmartPtr( new UniformVolume( UniformVolume::IndexType( dims ), UniformVolume::CoordinateVectorType( size ), dataArray ) );
+  return UniformVolume::SmartPtr( new UniformVolume( UniformVolume::IndexType( dims ), pixelSize[0], pixelSize[1], pixelSize[2], dataArray ) );
 }
 
 } // namespace cmtk
