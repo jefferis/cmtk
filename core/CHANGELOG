@@ -1,5 +1,6 @@
 Release CMTK-1.6.1:
 
+(r2871) Fixed: pipe-based decompression was broken on MacOSX
 (r2869) Improved: "runcheck" tool is now more sensitive to stdlibc++ version.
 
 
