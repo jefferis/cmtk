@@ -224,28 +224,28 @@ CommandLine::PrintHelp
   ProgramPropertiesMapType::const_iterator ppit = this->m_ProgramInfo.find(PRG_TITLE);
   if ( ppit != this->m_ProgramInfo.end() )
     {
-    StdErr << "TITLE:\n\n";
-    StdErr.FormatText( ppit->second, 5 ) << "\n";
+    StdOut << "TITLE:\n\n";
+    StdOut.FormatText( ppit->second, 5 ) << "\n";
     }
 
   ppit = this->m_ProgramInfo.find(PRG_DESCR);
   if ( ppit != this->m_ProgramInfo.end() )
     {
-    StdErr << "\nDESCRIPTION:\n\n";
-    StdErr.FormatText( ppit->second, 5 ) << "\n";
+    StdOut << "\nDESCRIPTION:\n\n";
+    StdOut.FormatText( ppit->second, 5 ) << "\n";
     }
 
   ppit = this->m_ProgramInfo.find(PRG_SYNTX);
   if ( ppit != this->m_ProgramInfo.end() )
     {
-    StdErr << "\nSYNTAX:\n\n";
-    StdErr.FormatText( ppit->second, 5 ) << "\n";
+    StdOut << "\nSYNTAX:\n\n";
+    StdOut.FormatText( ppit->second, 5 ) << "\n";
     }
   else
     {
     if ( this->m_NonOptionParameterList.size() || this->m_NonOptionParameterVectorList.size() )
       {
-      StdErr << "\nSYNTAX:\n\n";
+      StdOut << "\nSYNTAX:\n\n";
 
       std::ostringstream fmt;
       fmt << "[options] ";
@@ -257,16 +257,16 @@ CommandLine::PrintHelp
 	{
 	fmt << (*it)->m_Name << " ";
 	}
-      StdErr.FormatText( fmt.str(), 5, lineWidth );
+      StdOut.FormatText( fmt.str(), 5, lineWidth );
 
-      StdErr << "\n  where\n";
+      StdOut << "\n  where\n";
 
       const int indent = 20;
       for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
 	{
 	fmt.str("");
 
-	StdErr << "\n";
+	StdOut << "\n";
 	fmt << (*it)->m_Name << " = ";
 	if ( fmt.str().length() > static_cast<size_t>( indent-2 ) )
 	  fmt << "\n";
@@ -276,14 +276,14 @@ CommandLine::PrintHelp
 	    fmt << " ";
 	  }
 	fmt << (*it)->m_Comment;
-	StdErr.FormatText( fmt.str(), 5+indent, lineWidth, -indent ) << "\n";
+	StdOut.FormatText( fmt.str(), 5+indent, lineWidth, -indent ) << "\n";
 	}
 
       for ( NonOptionParameterVectorListType::const_iterator it = this->m_NonOptionParameterVectorList.begin(); it != this->m_NonOptionParameterVectorList.end(); ++it )
 	{
 	fmt.str("");
 	
-	StdErr << "\n";
+	StdOut << "\n";
 	fmt << (*it)->m_Name << " = ";
 	if ( fmt.str().length() > static_cast<size_t>( indent-2 ) )
 	  fmt << "\n";
@@ -293,12 +293,12 @@ CommandLine::PrintHelp
 	    fmt << " ";
 	  }
 	fmt << (*it)->m_Comment;
-	StdErr.FormatText( fmt.str(), 5+indent, lineWidth, -indent ) << "\n";
+	StdOut.FormatText( fmt.str(), 5+indent, lineWidth, -indent ) << "\n";
 	}
       }
     }
 
-  StdErr << "\nLIST OF SUPPORTED OPTIONS:\n\n";
+  StdOut << "\nLIST OF SUPPORTED OPTIONS:\n\n";
 
   for ( KeyActionGroupListType::const_iterator grp = this->m_KeyActionGroupList.begin(); grp != this->m_KeyActionGroupList.end(); ++grp )
     {
@@ -307,7 +307,7 @@ CommandLine::PrintHelp
     size_t indent = 0;
     if ( name != "MAIN" )
       {
-      StdErr << (*grp)->m_Description << "\n\n";
+      StdOut << (*grp)->m_Description << "\n\n";
       indent = 2;
       }
 
@@ -318,7 +318,7 @@ CommandLine::PrintHelp
       }
     }
   
-  StdErr << "\n";
+  StdOut << "\n";
 }
 
 void
