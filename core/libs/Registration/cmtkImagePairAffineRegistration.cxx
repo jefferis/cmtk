@@ -217,8 +217,8 @@ ImagePairAffineRegistration::GetReformattedFloatingImage( Interpolators::Interpo
 {
   ReformatVolume reformat;
   reformat.SetInterpolation( interpolator );
-  reformat.SetReferenceVolume( this->m_Volume1 );
-  reformat.SetFloatingVolume( this->m_Volume2 );
+  reformat.SetReferenceVolume( this->m_Volume_1 );
+  reformat.SetFloatingVolume( this->m_Volume_2 );
 
   AffineXform::SmartPtr affineXform( this->GetTransformation() );
   reformat.SetAffineXform( affineXform );
