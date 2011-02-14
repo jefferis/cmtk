@@ -379,8 +379,8 @@ ImagePairNonrigidRegistration::GetReformattedFloatingImage( Interpolators::Inter
 {
   ReformatVolume reformat;
   reformat.SetInterpolation( interpolator );
-  reformat.SetReferenceVolume( this->m_ReferenceVolume );
-  reformat.SetFloatingVolume( this->m_FloatingVolume );
+  reformat.SetReferenceVolume( this->m_Volume1 );
+  reformat.SetFloatingVolume( this->m_Volume2 );
 
   WarpXform::SmartPtr warpXform( this->GetTransformation() );
   reformat.SetWarpXform( warpXform );

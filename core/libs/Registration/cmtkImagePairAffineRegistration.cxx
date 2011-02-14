@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -217,8 +217,8 @@ ImagePairAffineRegistration::GetReformattedFloatingImage( Interpolators::Interpo
 {
   ReformatVolume reformat;
   reformat.SetInterpolation( interpolator );
-  reformat.SetReferenceVolume( this->m_ReferenceVolume );
-  reformat.SetFloatingVolume( this->m_FloatingVolume );
+  reformat.SetReferenceVolume( this->m_Volume1 );
+  reformat.SetFloatingVolume( this->m_Volume2 );
 
   AffineXform::SmartPtr affineXform( this->GetTransformation() );
   reformat.SetAffineXform( affineXform );
