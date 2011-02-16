@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -52,7 +53,7 @@ cmtk::CommandLine::KeyToActionEnum
   
   fmt << "or use one of the following";
   
-  StdErr.FormatText( fmt.str(), CommandLine::HelpTextIndent + globalIndent, StdErr.GetLineWidth(), -CommandLine::HelpTextIndent ) << "\n";  
+  StdOut.FormatText( fmt.str(), CommandLine::HelpTextIndent + globalIndent, StdErr.GetLineWidth(), -CommandLine::HelpTextIndent ) << "\n";  
   
   for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
     {

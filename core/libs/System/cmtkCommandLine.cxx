@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -219,7 +219,7 @@ void
 CommandLine::PrintHelp
 () const
 {
-  const size_t lineWidth = StdErr.GetLineWidth();
+  const size_t lineWidth = StdOut.GetLineWidth();
 
   ProgramPropertiesMapType::const_iterator ppit = this->m_ProgramInfo.find(PRG_TITLE);
   if ( ppit != this->m_ProgramInfo.end() )

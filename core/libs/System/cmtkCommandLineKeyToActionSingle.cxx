@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -50,7 +51,7 @@ cmtk::CommandLine::KeyToActionSingle
   this->Superclass::FormatHelp( fmt );
 
   this->m_Action->PrintHelp( fmt );
-  StdErr.FormatText( fmt.str(), CommandLine::HelpTextIndent + globalIndent, StdErr.GetLineWidth(), -CommandLine::HelpTextIndent ) << "\n";  
+  StdOut.FormatText( fmt.str(), CommandLine::HelpTextIndent + globalIndent, StdErr.GetLineWidth(), -CommandLine::HelpTextIndent ) << "\n";  
 }
 
 void
