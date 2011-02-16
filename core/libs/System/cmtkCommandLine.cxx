@@ -126,6 +126,13 @@ CommandLine::Parse( const int argc, const char* argv[] ) throw( ExitException, S
       // not found?
       if ( !found ) 
 	{
+	// Check for "--version" special option, which prints the CMTK version that this tool is part of.
+	if ( !strcmp( this->ArgV[this->Index], "--version" ) ) 
+	  {
+	  StdOut << this->m_ProgramInfo[PRG_VERSN] << "\n";
+	  throw ExitException( 0 );
+	  }
+	
 	// Check for "--xml" special option, which produces self description according to Slicer execution model.
 	if ( !strcmp( this->ArgV[this->Index], "--xml" ) && !(this->m_Properties & PROPS_NOXML) ) 
 	  {
