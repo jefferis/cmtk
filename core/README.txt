@@ -2,10 +2,8 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
-Release Notes -- CMTK 1.6.1
+Release Notes -- CMTK 1.6.2
 ===========================
-
-This is a bugfix release of CMTK's 1.6 release series.
 
 For a complete list of changes and fixes, see the CHANGELOG file.
 
