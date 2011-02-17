@@ -1,5 +1,8 @@
 Release CMTK-1.6.1:
 
+(r2886) Fixed: crash in "fview" fusion viewer application due to incorrect
+    interface of class derived from QApplication.
+    (see http://lists.trolltech.com/qt-interest/2008-01/thread00570-0.html)
 (r2878) Fixed: "--write-reformatted" option of "registration" tool was
     broken. In some cases, the wrong image was used as the fixed image.
 (r2871) Fixed: pipe-based decompression was broken on MacOSX
