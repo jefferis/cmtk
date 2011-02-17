@@ -52,8 +52,7 @@
 #include <queue>
 #include <vector>
 
-#define USE_GRAND_CENTRAL_DISPATCH
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
 #  include <dispatch/dispatch.h>
 #endif
 
@@ -443,7 +442,7 @@ CallbackScalarMul( const double c )
     cmtk::TypedArray::SmartPtr mul( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
     cmtk::TypedArray& mulRef = *mul;
     
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
 #pragma omp parallel for
@@ -460,7 +459,7 @@ CallbackScalarMul( const double c )
 	mulRef.SetPaddingAt( i );
 	}
       }
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
 );
 #endif
     
@@ -489,7 +488,7 @@ CallbackScalarAdd( const double c )
     cmtk::TypedArray::SmartPtr add( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
     cmtk::TypedArray& addRef = *add;
 
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
 #pragma omp parallel for
@@ -506,7 +505,7 @@ CallbackScalarAdd( const double c )
 	addRef.SetPaddingAt( i );
 	}
       }
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
 );
 #endif    
 
@@ -535,7 +534,7 @@ CallbackScalarXor( const long int c )
     cmtk::TypedArray::SmartPtr out( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
     cmtk::TypedArray& outRef = *out;
     
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
 #pragma omp parallel for
@@ -553,7 +552,7 @@ CallbackScalarXor( const long int c )
 	outRef.SetPaddingAt( i );
 	}
       }
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
 );
 #endif
 
@@ -582,7 +581,7 @@ CallbackScalarAnd( const long int c )
     cmtk::TypedArray::SmartPtr out( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
     cmtk::TypedArray& outRef = *out;
     
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
 #pragma omp parallel for
@@ -600,7 +599,7 @@ CallbackScalarAnd( const long int c )
 	outRef.SetPaddingAt( i );
 	}
       }
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
 );
 #endif    
 
@@ -629,7 +628,7 @@ CallbackOneOver()
     cmtk::TypedArray::SmartPtr inv( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
     cmtk::TypedArray& invRef = *inv;
     
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
 #pragma omp parallel for
@@ -646,7 +645,7 @@ CallbackOneOver()
 	invRef.SetPaddingAt( i );
 	}
       }
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
 );
 #endif
     
@@ -675,7 +674,7 @@ CallbackAdd()
   cmtk::TypedArray::SmartPtr add( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
   cmtk::TypedArray& addRef = *add;
   
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
 #pragma omp parallel for
@@ -692,7 +691,7 @@ CallbackAdd()
       addRef.SetPaddingAt( i );
       }
     }
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
 );
 #endif
   
@@ -718,7 +717,7 @@ CallbackMul()
     cmtk::UniformVolume::SmartPtr q = ImageStack.front();
     ImageStack.pop_front();
     
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
 #pragma omp parallel for
@@ -735,7 +734,7 @@ CallbackMul()
 	mulRef.SetPaddingAt( i );
 	}
       }
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
 );
 #endif    
 
@@ -764,7 +763,7 @@ CallbackDiv()
   cmtk::TypedArray::SmartPtr div( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
   cmtk::TypedArray& divRef = *div;
   
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
 #pragma omp parallel for
@@ -781,7 +780,7 @@ CallbackDiv()
       divRef.SetPaddingAt( i );
       }
     }
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
 );
 #endif  
 
@@ -804,7 +803,7 @@ CallbackAtan2()
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
   cmtk::TypedArray& resultRef = *result;
   
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
 #pragma omp parallel for
@@ -821,7 +820,7 @@ CallbackAtan2()
       resultRef.SetPaddingAt( i );
       }
     }
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
 );
 #endif  
 
@@ -1058,7 +1057,7 @@ CallbackStackEntropyLabels()
   cmtk::TypedArray::SmartPtr entropyArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
   cmtk::TypedArray& entropyArrayRef = *entropyArray;
 
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
 #pragma omp parallel for  
@@ -1093,7 +1092,7 @@ CallbackStackEntropyLabels()
     else
       entropyArrayRef.SetPaddingAt( i );       
     }
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
 );
 #endif
 
@@ -1123,7 +1122,7 @@ CallbackMaxIndex()
   cmtk::TypedArray::SmartPtr maxArray( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, numberOfPixels ) );
   cmtk::TypedArray& maxArrayRef = *maxArray;
 
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
 #pragma omp parallel for  
@@ -1161,7 +1160,7 @@ CallbackMaxIndex()
     
     maxArrayRef.Set( maxIndex, i ); 
     }
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
 );
 #endif
   
@@ -1190,7 +1189,7 @@ CallbackMaxValue()
   cmtk::TypedArray::SmartPtr maxArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
   cmtk::TypedArray& maxArrayRef = *maxArray;
 
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
 #pragma omp parallel for  
@@ -1220,7 +1219,7 @@ CallbackMaxValue()
     
     maxArrayRef.Set( maxValue, i ); 
     }
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
 );
 #endif
   
@@ -1249,7 +1248,7 @@ CallbackMinValue()
   cmtk::TypedArray::SmartPtr minArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
   cmtk::TypedArray& minArrayRef = *minArray;
 
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
 #pragma omp parallel for  
@@ -1278,7 +1277,7 @@ CallbackMinValue()
        
     minArrayRef.Set( minValue, i );
     }
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
 );
 #endif
   
@@ -1307,7 +1306,7 @@ CallbackContractLabels()
   cmtk::TypedArray::SmartPtr outArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
   cmtk::TypedArray& outArrayRef = *outArray;
 
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
 #pragma omp parallel for  
@@ -1324,7 +1323,7 @@ CallbackContractLabels()
         
     outArrayRef.Set( v, i );
     }
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
 );
 #endif
   

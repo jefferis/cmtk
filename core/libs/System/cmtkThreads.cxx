@@ -56,8 +56,7 @@
 
 #include <algorithm>
 
-#define USE_GRAND_CENTRAL_DISPATCH
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
 #  include <dispatch/dispatch.h>
 #endif
 
@@ -192,7 +191,7 @@ Threads::GetNumberOfProcessors()
 }
 
 
-#ifdef USE_GRAND_CENTRAL_DISPATCH
+#ifdef CMTK_USE_GCD
 void
 Threads::RunThreads
 ( ThreadFunction threadCall, const unsigned numberOfThreads, void *const parameters, const size_t parameterSize )
@@ -291,7 +290,7 @@ Threads::RunThreads
   omp_set_num_threads( GetNumberOfThreads() );
 #endif
 }
-#endif // USE_GRAND_CENTRAL_DISPATCH
+#endif // CMTK_USE_GCD
 
 void
 Threads::CheckEnvironment()
