@@ -72,6 +72,9 @@
 
 #cmakedefine WORDS_BIGENDIAN 1
 
+// Flag for Grand Central Dispatch
+#cmakedefine CMTK_USE_GCD 1
+
 /* The size of a `char', as computed by sizeof. */
 #cmakedefine SIZEOF_CHAR @CMAKE_SIZEOF_CHAR@
 

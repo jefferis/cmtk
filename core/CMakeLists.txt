@@ -261,6 +261,22 @@ ELSE (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} STRLE
 ENDIF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} STRLESS 2.6.2)
 
 #-----------------------------------------------------------------------------
+# Check for, and configure, Grand Central Dispatch
+
+CHECK_INCLUDE_FILES(dispatch/dispatch.h GCD_FOUND)
+IF(GCD_FOUND)
+  OPTION(CMTK_USE_GCD "Use Grand Central Dispatch for SMP parallelism with system-level load balancing" ON)
+  MARK_AS_ADVANCED(CMTK_USE_GCD)
+  
+  IF(NOT CMTK_BUILD_SMP)
+    SET(CMTK_USE_GCD OFF)
+  ENDIF(NOT CMTK_BUILD_SMP)
+  
+  IF(CMTK_USE_GCD)
+  ENDIF(CMTK_USE_GCD)
+ENDIF(GCD_FOUND)
+
+#-----------------------------------------------------------------------------
 # Check for, and configure, OpenCL
 
 ##    OPTION(CMTK_USE_OPENCL "Use OpenCL for GPU computing" OFF)
