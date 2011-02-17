@@ -298,7 +298,7 @@ ENDIF(CMTK_USE_CUDA)
 # "const char string[10];"
 
 INCLUDE(${CMAKE_ROOT}/Modules/CheckCXXSourceCompiles.cmake)
-CHECK_CXX_SOURCE_COMPILES("int main() { int size = 10; char string[size]; }" COMPILER_VAR_AUTO_ARRAYSIZE)
+CHECK_CXX_SOURCE_COMPILES("class A {}; class B : public A {}; int main() { int size = 10; B array[size]; }" COMPILER_VAR_AUTO_ARRAYSIZE)
 IF(COMPILER_VAR_AUTO_ARRAYSIZE)
   ADD_DEFINITIONS(-DCMTK_VAR_AUTO_ARRAYSIZE)
 ENDIF(COMPILER_VAR_AUTO_ARRAYSIZE)
