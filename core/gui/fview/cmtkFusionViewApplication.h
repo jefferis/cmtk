@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -63,7 +63,7 @@ public:
   typedef FusionViewApplication Self;
 
   /// Constructor.
-  FusionViewApplication( int argc, char* argv[] );
+  FusionViewApplication( int& argc, char* argv[] );
 
 private slots:
   /// Update displayed fixed image slice.

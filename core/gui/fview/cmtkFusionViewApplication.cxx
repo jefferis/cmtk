@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -46,7 +46,7 @@
 #include <string>
 
 cmtk::FusionViewApplication
-::FusionViewApplication( int argc, char* argv[] ) 
+::FusionViewApplication( int& argc, char* argv[] ) 
   : QApplication( argc, argv ),
     m_MainWindow( new QMainWindow ),
     m_XformModel( 2 ), // default to full nonrigid
