@@ -52,6 +52,11 @@
 #include <queue>
 #include <vector>
 
+#define USE_GRAND_CENTRAL_DISPATCH
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+#  include <dispatch/dispatch.h>
+#endif
+
 namespace cmtk
 {
 
@@ -436,20 +441,28 @@ CallbackScalarMul( const double c )
     const size_t numberOfPixels = p.GetNumberOfPixels();
     
     cmtk::TypedArray::SmartPtr mul( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+    cmtk::TypedArray& mulRef = *mul;
     
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+#else
 #pragma omp parallel for
     for ( size_t i = 0; i < numberOfPixels; ++i )
+#endif
       {
       cmtk::Types::DataItem pv;
       if ( p.GetDataAt( pv, i ) )
 	{
-	mul->Set( c * pv, i );
+	mulRef.Set( c * pv, i );
 	}
       else
 	{
-	mul->SetPaddingAt( i );
+	mulRef.SetPaddingAt( i );
 	}
       }
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+);
+#endif
     
     p.SetData( mul );
     
@@ -474,20 +487,29 @@ CallbackScalarAdd( const double c )
     const size_t numberOfPixels = p.GetNumberOfPixels();
     
     cmtk::TypedArray::SmartPtr add( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+    cmtk::TypedArray& addRef = *add;
+
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+#else
 #pragma omp parallel for
     for ( size_t i = 0; i < numberOfPixels; ++i )
+#endif
       {
       cmtk::Types::DataItem pv;
       if ( p.GetDataAt( pv, i ) )
 	{
-	add->Set( c + pv, i );
+	addRef.Set( c + pv, i );
 	}
       else
 	{
-	add->SetPaddingAt( i );
+	addRef.SetPaddingAt( i );
 	}
       }
-    
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+);
+#endif    
+
     p.SetData( add );
     
     if ( ApplyNextToAll )
@@ -511,22 +533,30 @@ CallbackScalarXor( const long int c )
     const size_t numberOfPixels = p.GetNumberOfPixels();
     
     cmtk::TypedArray::SmartPtr out( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+    cmtk::TypedArray& outRef = *out;
     
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+#else
 #pragma omp parallel for
     for ( size_t i = 0; i < numberOfPixels; ++i )
+#endif
       {
       cmtk::Types::DataItem pv;
       if ( p.GetDataAt( pv, i ) )
 	{
 	const long int iv = static_cast<long int>( pv );
-	out->Set( iv ^ c, i );
+	outRef.Set( iv ^ c, i );
 	}
       else
 	{
-	out->SetPaddingAt( i );
+	outRef.SetPaddingAt( i );
 	}
       }
-    
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+);
+#endif
+
     p.SetData( out );
 
     if ( ApplyNextToAll )
@@ -550,22 +580,30 @@ CallbackScalarAnd( const long int c )
     const size_t numberOfPixels = p.GetNumberOfPixels();
     
     cmtk::TypedArray::SmartPtr out( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+    cmtk::TypedArray& outRef = *out;
     
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+#else
 #pragma omp parallel for
     for ( size_t i = 0; i < numberOfPixels; ++i )
+#endif
       {
       cmtk::Types::DataItem pv;
       if ( p.GetDataAt( pv, i ) )
 	{
 	const long int iv = static_cast<long int>( pv );
-	out->Set( iv & c, i );
+	outRef.Set( iv & c, i );
 	}
       else
 	{
-	out->SetPaddingAt( i );
+	outRef.SetPaddingAt( i );
 	}
       }
-    
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+);
+#endif    
+
     p.SetData( out );
 
     if ( ApplyNextToAll )
@@ -589,20 +627,28 @@ CallbackOneOver()
     const size_t numberOfPixels = p.GetNumberOfPixels();
     
     cmtk::TypedArray::SmartPtr inv( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+    cmtk::TypedArray& invRef = *inv;
     
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+#else
 #pragma omp parallel for
     for ( size_t i = 0; i < numberOfPixels; ++i )
+#endif
       {
       cmtk::Types::DataItem pv;
       if ( p.GetDataAt( pv, i ) )
 	{
-	inv->Set( 1.0 / pv, i );
+	invRef.Set( 1.0 / pv, i );
 	}
       else
 	{
-	inv->SetPaddingAt( i );
+	invRef.SetPaddingAt( i );
 	}
       }
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+);
+#endif
     
     p.SetData( inv );
 
@@ -627,20 +673,28 @@ CallbackAdd()
   
   const size_t numberOfPixels = p->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr add( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+  cmtk::TypedArray& addRef = *add;
   
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+#else
 #pragma omp parallel for
   for ( size_t i = 0; i < numberOfPixels; ++i )
+#endif
     {
     cmtk::Types::DataItem pv, qv;
     if ( p->GetDataAt( pv, i ) && q->GetDataAt( qv, i ) )
       {
-      add->Set( pv+qv, i );
+      addRef.Set( pv+qv, i );
       }
     else
       {
-      add->SetPaddingAt( i );
+      addRef.SetPaddingAt( i );
       }
     }
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+);
+#endif
   
   p->SetData( add );
   ImageStack.push_front( p );
@@ -657,26 +711,34 @@ CallbackMul()
 
   const size_t numberOfPixels = p->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr mul( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+  cmtk::TypedArray& mulRef = *mul;
   
   while ( ! ImageStack.empty() )
     {
     cmtk::UniformVolume::SmartPtr q = ImageStack.front();
     ImageStack.pop_front();
     
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+#else
 #pragma omp parallel for
     for ( size_t i = 0; i < numberOfPixels; ++i )
+#endif
       {
       cmtk::Types::DataItem pv, qv;
       if ( p->GetDataAt( pv, i ) && q->GetDataAt( qv, i ) )
 	{
-	mul->Set( pv*qv, i );
+	mulRef.Set( pv*qv, i );
 	}
       else
 	{
-	mul->SetPaddingAt( i );
+	mulRef.SetPaddingAt( i );
 	}
       }
-    
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+);
+#endif    
+
     if ( !ApplyNextToAll )
       break;
     }
@@ -700,21 +762,29 @@ CallbackDiv()
   
   const size_t numberOfPixels = p->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr div( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+  cmtk::TypedArray& divRef = *div;
   
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+#else
 #pragma omp parallel for
   for ( size_t i = 0; i < numberOfPixels; ++i )
+#endif
     {
     cmtk::Types::DataItem pv, qv;
     if ( p->GetDataAt( pv, i ) && q->GetDataAt( qv, i ) && (qv != 0) )
       {
-      div->Set( pv/qv, i );
+      divRef.Set( pv/qv, i );
       }
     else
       {
-      div->SetPaddingAt( i );
+      divRef.SetPaddingAt( i );
       }
     }
-  
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+);
+#endif  
+
   p->SetData( div );
   ImageStack.push_front( p );
 }
@@ -732,21 +802,29 @@ CallbackAtan2()
   
   const size_t numberOfPixels = p->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+  cmtk::TypedArray& resultRef = *result;
   
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+#else
 #pragma omp parallel for
   for ( size_t i = 0; i < numberOfPixels; ++i )
+#endif
     {
     cmtk::Types::DataItem pv, qv;
     if ( p->GetDataAt( pv, i ) && q->GetDataAt( qv, i ) && (qv != 0) )
       {
-      result->Set( atan2( qv, pv ), i );
+      resultRef.Set( atan2( qv, pv ), i );
       }
     else
       {
-      result->SetPaddingAt( i );
+      resultRef.SetPaddingAt( i );
       }
     }
-  
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+);
+#endif  
+
   p->SetData( result );
   ImageStack.push_front( p );
 }
@@ -978,9 +1056,14 @@ CallbackStackEntropyLabels()
   
   const size_t numberOfPixels = volPtrs[ 0 ]->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr entropyArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+  cmtk::TypedArray& entropyArrayRef = *entropyArray;
 
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+#else
 #pragma omp parallel for  
   for ( size_t i = 0; i < numberOfPixels; ++i )
+#endif
     {
     std::map<int,unsigned int> labelCount;
 
@@ -1005,11 +1088,14 @@ CallbackStackEntropyLabels()
 	const double p = factor * it->second;
 	entropy += p * log( p );
 	}
-      entropyArray->Set( -entropy / log( 2.0 ), i );
+      entropyArrayRef.Set( -entropy / log( 2.0 ), i );
       }
     else
-      entropyArray->SetPaddingAt( i );       
+      entropyArrayRef.SetPaddingAt( i );       
     }
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+);
+#endif
 
   volPtrs[0]->SetData( entropyArray );
   ImageStack.push_front( volPtrs[0] );
@@ -1035,9 +1121,14 @@ CallbackMaxIndex()
   
   const size_t numberOfPixels = volPtrs[ 0 ]->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr maxArray( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, numberOfPixels ) );
+  cmtk::TypedArray& maxArrayRef = *maxArray;
 
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+#else
 #pragma omp parallel for  
   for ( size_t i = 0; i < numberOfPixels; ++i )
+#endif
     {
     float maxValue = 0;
     short maxIndex = -2;
@@ -1068,8 +1159,11 @@ CallbackMaxIndex()
         }
       }
     
-    maxArray->Set( maxIndex, i ); 
+    maxArrayRef.Set( maxIndex, i ); 
     }
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+);
+#endif
   
   volPtrs[0]->SetData( maxArray );
   ImageStack.push_front( volPtrs[0] );
@@ -1094,9 +1188,14 @@ CallbackMaxValue()
   
   const size_t numberOfPixels = volPtrs[ 0 ]->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr maxArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+  cmtk::TypedArray& maxArrayRef = *maxArray;
 
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+#else
 #pragma omp parallel for  
   for ( size_t i = 0; i < numberOfPixels; ++i )
+#endif
     {
     cmtk::Types::DataItem maxValue = 0;
     bool maxValueValid = false;
@@ -1119,8 +1218,11 @@ CallbackMaxValue()
       }
     
     
-    maxArray->Set( maxValue, i ); 
+    maxArrayRef.Set( maxValue, i ); 
     }
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+);
+#endif
   
   volPtrs[0]->SetData( maxArray );
   ImageStack.push_front( volPtrs[0] );
@@ -1145,9 +1247,14 @@ CallbackMinValue()
   
   const size_t numberOfPixels = volPtrs[ 0 ]->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr minArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+  cmtk::TypedArray& minArrayRef = *minArray;
 
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+#else
 #pragma omp parallel for  
   for ( size_t i = 0; i < numberOfPixels; ++i )
+#endif
     {
     cmtk::Types::DataItem minValue = 0;
     bool minValueValid = false;
@@ -1168,10 +1275,12 @@ CallbackMinValue()
 	  }
         }
       }
-    
-    
-    minArray->Set( minValue, i ); 
+       
+    minArrayRef.Set( minValue, i );
     }
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+);
+#endif
   
   volPtrs[0]->SetData( minArray );
   ImageStack.push_front( volPtrs[0] );
@@ -1196,9 +1305,14 @@ CallbackContractLabels()
   
   const size_t numberOfPixels = volPtrs[ 0 ]->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr outArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+  cmtk::TypedArray& outArrayRef = *outArray;
 
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+#else
 #pragma omp parallel for  
   for ( size_t i = 0; i < numberOfPixels; ++i )
+#endif
     {
     cmtk::Types::DataItem v = 0;
 
@@ -1208,8 +1322,11 @@ CallbackContractLabels()
 	break;
       }
         
-    outArray->Set( v, i );
+    outArrayRef.Set( v, i );
     }
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+);
+#endif
   
   volPtrs[0]->SetData( outArray );
   ImageStack.push_front( volPtrs[0] );

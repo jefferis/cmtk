@@ -56,6 +56,11 @@
 
 #include <algorithm>
 
+#define USE_GRAND_CENTRAL_DISPATCH
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+#  include <dispatch/dispatch.h>
+#endif
+
 #ifndef _SC_NPROCESSORS_ONLN
 #  ifdef _SC_NPROC_ONLN
 #    define _SC_NPROCESSORS_ONLN _SC_NPROC_ONLN
@@ -186,6 +191,15 @@ Threads::GetNumberOfProcessors()
 #endif
 }
 
+
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+void
+Threads::RunThreads
+( ThreadFunction threadCall, const unsigned numberOfThreads, void *const parameters, const size_t parameterSize )
+{
+  dispatch_apply( numberOfThreads, dispatch_get_global_queue(0, 0), ^(size_t i) { threadCall( ((char*)parameters)+i*parameterSize ); } );
+}
+#else
 void
 Threads::RunThreads
 ( ThreadFunction threadCall, const unsigned numberOfThreads, void *const parameters, const size_t parameterSize )
@@ -277,6 +291,7 @@ Threads::RunThreads
   omp_set_num_threads( GetNumberOfThreads() );
 #endif
 }
+#endif // USE_GRAND_CENTRAL_DISPATCH
 
 void
 Threads::CheckEnvironment()

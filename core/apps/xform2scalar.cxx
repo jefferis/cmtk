@@ -44,6 +44,10 @@
 #include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkXformListIO.h>
 
+#define USE_GRAND_CENTRAL_DISPATCH
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+#  include <dispatch/dispatch.h>
+#endif
 bool Verbose = false;
 
 bool WarpOnly = false;
@@ -128,13 +132,19 @@ doMain ( const int argc, const char* argv[] )
     }
   scalarImage->CreateDataArray( DataType );
 
-  cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( InputXformPaths );
-  cmtk::XformList xformListAffine = xformList.MakeAllAffine();
-  
-  const cmtk::DataGrid::IndexType& dims = scalarImage->GetDims();
+  const cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( InputXformPaths );
+  const cmtk::XformList xformListAffine = xformList.MakeAllAffine();
+
+  cmtk::UniformVolume& image = *scalarImage;
+  const cmtk::DataGrid::IndexType& dims = image.GetDims();
+
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+  dispatch_apply( dims[2], dispatch_get_global_queue(0, 0), ^(size_t z){
+#else
 #pragma omp parallel for
   for ( int z = 0; z < dims[2]; ++z )
     {
+#endif
     size_t offset = z * dims[0] * dims[1];
     for ( int y = 0; y < dims[1]; ++y )
       {
@@ -162,15 +172,18 @@ doMain ( const int argc, const char* argv[] )
 	
 	switch ( Mode )
 	  {
-	  case cmtk::X2S_EXTRACT_X: scalarImage->SetDataAt( v[0], offset ); break;
-	  case cmtk::X2S_EXTRACT_Y: scalarImage->SetDataAt( v[1], offset ); break;
-	  case cmtk::X2S_EXTRACT_Z: scalarImage->SetDataAt( v[2], offset ); break;
-	  case cmtk::X2S_MAGNITUDE: scalarImage->SetDataAt( v.RootSumOfSquares(), offset ); break;
+	  case cmtk::X2S_EXTRACT_X: image.SetDataAt( v[0], offset ); break;
+	  case cmtk::X2S_EXTRACT_Y: image.SetDataAt( v[1], offset ); break;
+	  case cmtk::X2S_EXTRACT_Z: image.SetDataAt( v[2], offset ); break;
+	  case cmtk::X2S_MAGNITUDE: image.SetDataAt( v.RootSumOfSquares(), offset ); break;
 	  default: break;
 	  }
 	}
       }
     }
+#ifdef USE_GRAND_CENTRAL_DISPATCH
+);
+#endif
 
   if ( OutImagePath ) 	 
     {
