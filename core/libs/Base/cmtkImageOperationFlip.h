@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2010 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,92 +31,11 @@
 #ifndef __cmtkImageOperationFlip_h_included_
 #define __cmtkImageOperationFlip_h_included_
 
-#include <cmtkconfig.h>
+namespace 
+cmtk{
 
-#include <Base/cmtkImageOperation.h>
-
-namespace
-cmtk
-{
-
-/// Image operation: convert data type.
-class ImageOperationConvertType
-/// Inherit from image operation base class.
-  : public ImageOperation
-{
-public:
-  /// Constructor:
-  ImageOperationConvertType( const cmtk::ScalarDataType newType ) : m_NewType( newType ) {}
-  
-  /// Apply this operation to an image in place.
-  virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume )
-  {    
-    switch ( this->m_NewType ) 
-      {
-      case cmtk::TYPE_CHAR:
-      case cmtk::TYPE_BYTE:
-      case cmtk::TYPE_SHORT:
-      case cmtk::TYPE_USHORT:
-      case cmtk::TYPE_INT:
-      case cmtk::TYPE_FLOAT:
-      case cmtk::TYPE_DOUBLE:
-	if ( this->m_NewType != volume->GetData()->GetType() ) 
-	  {
-	  volume->SetData( cmtk::TypedArray::SmartPtr( volume->GetData()->Convert( this->m_NewType ) ) );
-	  }
-	break;
-      default:
-	break;
-      }
-    return volume;
-  }
-
-  /// Create object to convert to "char" data.
-  static void NewChar()
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_CHAR ) ) );
-  }
-
-  /// Create object to convert to "byte" data.
-  static void NewByte()
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_BYTE ) ) );
-  }
-
-  /// Create object to convert to "short" data.
-  static void NewShort()
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_SHORT ) ) );
-  }
-
-  /// Create object to convert to "unsigned short" data.
-  static void NewUShort()
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_USHORT ) ) );
-  }
-
-  /// Create object to convert to "int" data.
-  static void NewInt()
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_INT ) ) );
-  }
-
-  /// Create object to convert to "float" data.
-  static void NewFloat()
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_FLOAT ) ) );
-  }
-
-  /// Create object to convert to "double" data.
-  static void NewDouble()
-  {
-    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_DOUBLE ) ) );
-  }
-  
-private:
-  /// New data type.
-  cmtk::ScalarDataType m_NewType;
-};
+/** \addtogroup Base */
+//@{
 
 /// Image operation: flip.
 class ImageOperationFlip
@@ -156,6 +75,8 @@ private:
   /// The normal axis of the flip.
   int m_NormalAxis;
 };
+
+//@}
 
 } // namespace cmtk
 

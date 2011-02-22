@@ -47,6 +47,7 @@
 
 #include <Base/cmtkMathFunctionWrappers.h>
 #include <Base/cmtkImageOperation.h>
+#include <Base/cmtkImageOperationConvertType.h>
 #include <Base/cmtkImageOperationFlip.h>
 #include <IO/cmtkImageOperationApplyMask.h>
 #include <Base/cmtkImageOperationErodeDilate.h>
@@ -113,6 +114,7 @@ doMain( const int argc, const char* argv[] )
     cl.AddCallback( Key( "short" ), &cmtk::ImageOperationConvertType::NewShort, "16 bits, signed integer" );
     cl.AddCallback( Key( "ushort" ), &cmtk::ImageOperationConvertType::NewUShort, "16 bits, unsigned integer" );
     cl.AddCallback( Key( "int" ), &cmtk::ImageOperationConvertType::NewInt, "32 bits signed integer" );
+    cl.AddCallback( Key( "uint" ), &cmtk::ImageOperationConvertType::NewUInt, "32 bits unsigned integer" );
     cl.AddCallback( Key( "float" ), &cmtk::ImageOperationConvertType::NewFloat, "32 bits floating point" );
     cl.AddCallback( Key( "double" ), &cmtk::ImageOperationConvertType::NewDouble, "64 bits floating point\n" );
     cl.EndGroup();

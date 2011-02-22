@@ -474,6 +474,7 @@ doMain( const int argc, const char* argv[] )
     typeGroup->AddSwitch( Key( "short" ), cmtk::TYPE_SHORT, "16 bits, signed" );
     typeGroup->AddSwitch( Key( "ushort" ), cmtk::TYPE_USHORT, "16 bits, unsigned" );
     typeGroup->AddSwitch( Key( "int" ), cmtk::TYPE_INT, "32 bits signed" );
+    typeGroup->AddSwitch( Key( "uint" ), cmtk::TYPE_UINT, "32 bits unsigned" );
     typeGroup->AddSwitch( Key( "float" ), cmtk::TYPE_FLOAT, "32 bits floating point" );
     typeGroup->AddSwitch( Key( "double" ), cmtk::TYPE_DOUBLE, "64 bits floating point\n" );
 
