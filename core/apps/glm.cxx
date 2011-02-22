@@ -329,7 +329,7 @@ doMain( const int argc, const char* argv[] )
     std::set<std::string>::const_iterator it = SelectSet.begin();
     if ( it != SelectSet.end() )
       {
-      cmtk::StdOut << "Selected model parameters:" << std::endl;
+      cmtk::StdOut << "Selected model parameters:" << "\n";
       while ( it != SelectSet.end() )
 	{
         cmtk::StdOut << "\t" << *it;
