@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -50,8 +50,6 @@
 #include <list>
 #include <vector>
 
-bool Verbose = false;
-
 float MaxThreshold = 0;
 bool UseMaxThreshold = false;
 bool AbsoluteValues = false;
@@ -68,8 +66,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Analyze sequence of numerical values, which is read from standard input" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-
     cl.AddOption( Key( 't', "thresh" ), &MaxThreshold, "Maximum value threshold. All values above are ignored.", &UseMaxThreshold );
     cl.AddSwitch( Key( 'a', "abs" ), &AbsoluteValues, true, "Use absolute values." );
     cl.AddOption( Key( 'f', "format" ), &OutputFormat, "Output number format in printf() style." );

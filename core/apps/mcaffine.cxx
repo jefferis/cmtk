@@ -169,7 +169,7 @@ DoRegistration()
   for ( int downsample = std::max(downsampleFrom, downsampleTo); downsample >= std::min(downsampleFrom, downsampleTo); --downsample )
     {
     if ( verbose )
-      cmtk::StdErr.printf( "Downsampling stage 1:%d\n", downsample );
+      cmtk::StdOut.printf( "Downsampling stage 1:%d\n", downsample );
 
     functional->ClearAllChannels();
     for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = refChannelList.begin(); it != refChannelList.end(); ++it )
@@ -189,7 +189,7 @@ DoRegistration()
     for ( std::vector<int>::const_iterator itDOF = numberDOFs.begin(); itDOF != numberDOFs.end(); ++itDOF )
       {
       if ( verbose )
-	cmtk::StdErr.printf( "Setting number of DOFs to %d\n", *itDOF );
+	cmtk::StdOut.printf( "Setting number of DOFs to %d\n", *itDOF );
       
       functional->SetNumberDOFs( *itDOF );
       const cmtk::Types::Coordinate effectiveMinPixelSize = std::max( 1, downsample ) * minPixelSize;

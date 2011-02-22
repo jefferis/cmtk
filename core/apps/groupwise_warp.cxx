@@ -335,7 +335,7 @@ doMain( int argc, char* argv[] )
       
       if ( Verbose )
 	{
-	cmtk::StdErr.printf( "Template grid is %d x %d x %d pixels of size %f x %f x %f\n",
+	cmtk::StdOut.printf( "Template grid is %d x %d x %d pixels of size %f x %f x %f\n",
 			     templateGrid->m_Dims[0], templateGrid->m_Dims[1], templateGrid->m_Dims[2], 
 			     templateGrid->m_Delta[0], templateGrid->m_Delta[1], templateGrid->m_Delta[2] );
 	}

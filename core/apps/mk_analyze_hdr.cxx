@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -148,7 +148,7 @@ doMain( const int argc, const char* argv[] )
 
       if ( Verbose )
 	{
-	cmtk::StdErr << "Imported header file " << ImportHdrFile << "\n";
+	cmtk::StdOut << "Imported header file " << ImportHdrFile << "\n";
 	}
       }
     else 
@@ -175,7 +175,7 @@ doMain( const int argc, const char* argv[] )
     {
     if ( Verbose )
       {
-      cmtk::StdErr << "Setting image dimensions\n";
+      cmtk::StdOut << "Setting image dimensions\n";
       }
 
     header.StoreField<short>( 42, DimsX );
@@ -189,7 +189,7 @@ doMain( const int argc, const char* argv[] )
     {
     if ( Verbose )
       {
-      cmtk::StdErr << "Setting data type\n";
+      cmtk::StdOut << "Setting data type\n";
       }
 
     switch ( DataType ) 
@@ -225,7 +225,7 @@ doMain( const int argc, const char* argv[] )
     {
     if ( Verbose )
       {
-      cmtk::StdErr << "Setting pixel size\n";
+      cmtk::StdOut << "Setting pixel size\n";
       }
 
     header.StoreField<float>( 80, (float)DeltaX );
@@ -244,7 +244,7 @@ doMain( const int argc, const char* argv[] )
     {
     if ( Verbose )
       {
-      cmtk::StdErr << "Setting image file offset\n";
+      cmtk::StdOut << "Setting image file offset\n";
       }
 
     header.StoreField<float>( 108, Offset );
@@ -255,7 +255,7 @@ doMain( const int argc, const char* argv[] )
     {
     if ( Verbose )
       {
-      cmtk::StdErr << "Setting image orientation\n";
+      cmtk::StdOut << "Setting image orientation\n";
       }
     header.StoreField<byte>( 252, Orientation );
     }
@@ -275,7 +275,7 @@ doMain( const int argc, const char* argv[] )
     {
     if ( Verbose )
       {
-      cmtk::StdErr << "Setting image description\n";
+      cmtk::StdOut << "Setting image description\n";
       }
 
     header.StoreFieldString( 148, Description, 80 );

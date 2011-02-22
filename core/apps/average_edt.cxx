@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -132,7 +132,7 @@ Average
 
     if ( Verbose )
       {
-      cmtk::StdErr << "Processing label #" << label << "\r";
+      cmtk::StdOut << "Processing label #" << label << "\r";
       }
 
     inOutDistance->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
@@ -273,7 +273,7 @@ AverageWindowed
 
     if ( Verbose )
       {
-      cmtk::StdErr << "Processing label #" << label << "\r";
+      cmtk::StdOut << "Processing label #" << label << "\r";
       }
 
     inOutDistance->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
@@ -433,7 +433,7 @@ Average
 
     if ( Verbose )
       {
-      cmtk::StdErr << "Processing label #" << label << "\r";
+      cmtk::StdOut << "Processing label #" << label << "\r";
       }
 
     referenceInOutDistance->BlockSet( 0 /*value*/, 0 /*idx*/, nPixelsReference /*len*/ );
@@ -596,7 +596,7 @@ AverageWindowed
 
     if ( Verbose )
       {
-      cmtk::StdErr << "Processing label #" << label << "\r";
+      cmtk::StdOut << "Processing label #" << label << "\r";
       }
 
     referenceInOutDistance->BlockSet( 0 /*value*/, 0 /*idx*/, nPixelsReference /*len*/ );
@@ -712,7 +712,7 @@ AddVolumeFile
 ( const char* fileName, std::list<cmtk::UniformVolume::SmartPtr>& volumeList )
 {
   if ( Verbose ) 
-    cmtk::StdErr << "Opening image " << fileName << ".\n";
+    cmtk::StdOut << "Opening image " << fileName << ".\n";
   
   cmtk::UniformVolume::SmartPtr nextVolume( cmtk::VolumeIO::ReadOriented( fileName, Verbose ) );
   
@@ -750,7 +750,7 @@ AddVolumeStudyList
   cmtk::UniformVolume::SmartPtr& referenceVolume )
 {
   if ( Verbose ) 
-    cmtk::StdErr << "Opening studylist " << listName << ".\n";
+    cmtk::StdOut << "Opening studylist " << listName << ".\n";
 
   cmtk::TypedStreamStudylist studylist;
   studylist.Read( listName );
@@ -796,7 +796,7 @@ AddVolumeStudyList
     floatingVolume = cmtk::UniformVolume::SmartPtr( floatingVolume->GetDownsampledAndAveraged( DownsampleVolume ) );
     if ( Verbose )
       {
-      cmtk::StdErr << "Downsampling atlas by factors " << DownsampleVolumeStr << "\n";
+      cmtk::StdOut << "Downsampling atlas by factors " << DownsampleVolumeStr << "\n";
       }
     }
   
@@ -829,7 +829,7 @@ AddVolumeStudyList
   cmtk::UniformVolume::SmartPtr& referenceVolume )
 {
   if ( Verbose ) 
-    cmtk::StdErr << "Opening studylist " << listName << ".\n";
+    cmtk::StdOut << "Opening studylist " << listName << ".\n";
 
   cmtk::TypedStreamStudylist studylist;
   studylist.Read( listName );
@@ -864,7 +864,7 @@ AddVolumeStudyList
     floatingVolume = cmtk::UniformVolume::SmartPtr( floatingVolume->GetDownsampledAndAveraged( DownsampleVolume ) );
     if ( Verbose )
       {
-      cmtk::StdErr << "Downsampling atlas by factors " << DownsampleVolumeStr << "\n";
+      cmtk::StdOut << "Downsampling atlas by factors " << DownsampleVolumeStr << "\n";
       }
     }
   

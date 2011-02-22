@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -146,7 +146,7 @@ doMain( const int argc, const char* argv[] )
     
     if ( verbose )
       {
-      cmtk::StdErr << line << "\n";
+      cmtk::StdOut << line << "\n";
       }
 
     if ( line.length() )
@@ -232,7 +232,7 @@ doMain( const int argc, const char* argv[] )
     {
     if ( verbose )
       {
-      cmtk::StdErr << "INFO: operating in XFORM mode\n";
+      cmtk::StdOut << "INFO: operating in XFORM mode\n";
       }
 
     std::vector<cmtk::SplineWarpXform::SmartPtr> vWarpXform;
@@ -303,7 +303,7 @@ doMain( const int argc, const char* argv[] )
     {
     if ( verbose )
       {
-      cmtk::StdErr << "INFO: operating in IMAGE mode\n";
+      cmtk::StdOut << "INFO: operating in IMAGE mode\n";
       }
 
     std::vector<cmtk::UniformVolume::SmartPtr> vVolume;

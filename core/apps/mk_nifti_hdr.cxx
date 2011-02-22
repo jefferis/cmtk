@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -151,7 +151,7 @@ doMain( const int argc, const char* argv[] )
     {
     if ( Verbose )
       {
-      cmtk::StdErr << "Setting image file offset\n";
+      cmtk::StdOut << "Setting image file offset\n";
       }
 
     header.vox_offset = Offset;
@@ -203,7 +203,7 @@ doMain( const int argc, const char* argv[] )
     {
     if ( Verbose )
       {
-      cmtk::StdErr << "Setting data type\n";
+      cmtk::StdOut << "Setting data type\n";
       }
 
     switch ( DataType ) 
@@ -246,7 +246,7 @@ doMain( const int argc, const char* argv[] )
     {
     if ( Verbose )
       {
-      cmtk::StdErr << "Setting image description\n";
+      cmtk::StdOut << "Setting image description\n";
       }
     
     strncpy( header.descrip, Description, 80 );

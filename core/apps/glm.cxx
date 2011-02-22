@@ -163,7 +163,7 @@ Import
 
       if ( Verbose ) 
 	{
-	cmtk::StdErr << "Importing image file " << imgPath << "\n";
+	cmtk::StdOut << "Importing image file " << imgPath << "\n";
 	}
       cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( imgPath, Verbose ) );
       if ( !volume ) 
@@ -223,7 +223,7 @@ Import
 	  else
 	    {
 	    if ( Verbose )
-	      cmtk::StdErr << "INFORMATION: Ignoring parameter #" << nParametersTotal << "\n";
+	      cmtk::StdOut << "INFORMATION: Ignoring parameter #" << nParametersTotal << "\n";
 	    }
 	  ++nParametersTotal;
 	  }
@@ -234,7 +234,7 @@ Import
 	// parameters.
 	nParameters = vParam.size();
 	if ( Verbose )
-	  cmtk::StdErr << "NParameters = " << nParameters << "\n";
+	  cmtk::StdOut << "NParameters = " << nParameters << "\n";
 	}
       }
     }
@@ -255,18 +255,18 @@ Import
     for ( size_t j = 0; j < FieldNames.size(); ++j )
       {
       if ( IgnoreSet.find( j ) != IgnoreSet.end() ) continue;
-      fprintf( stderr, "%8s\t", FieldNames[j].c_str() );
+      fprintf( stdout, "%8s\t", FieldNames[j].c_str() );
       }
-    fputs( "\n", stderr );
+    fputs( "\n", stdout );
     
     size_t ofs = 0;
     for ( size_t i = 0; i < imagesData.size(); ++i )
       {
       for ( size_t j = 0; j < nParameters; ++j, ++ofs )
 	{
-	fprintf( stderr, "%8.2f\t", parameters[ofs] );
+	fprintf( stdout, "%8.2f\t", parameters[ofs] );
 	}
-      fputs( "\n", stderr );
+      fputs( "\n", stdout );
       }
     }
 
@@ -329,13 +329,13 @@ doMain( const int argc, const char* argv[] )
     std::set<std::string>::const_iterator it = SelectSet.begin();
     if ( it != SelectSet.end() )
       {
-      std::cerr << "Selected model parameters:" << std::endl;
+      cmtk::StdOut << "Selected model parameters:" << std::endl;
       while ( it != SelectSet.end() )
 	{
-	std::cerr << "\t" << *it;
+        cmtk::StdOut << "\t" << *it;
 	++it;
 	}
-      std::cerr << std::endl;
+      cmtk::StdOut << "\n";
       }
     }
 
@@ -384,33 +384,33 @@ doMain( const int argc, const char* argv[] )
   
   if ( Verbose ) 
     {
-    std::cerr << "Singular values: ";
+    cmtk::StdOut << "Singular values: ";
     size_t p = 0;
     for ( size_t pp = 0; pp < nParametersTotal[0]; ++pp ) 
       {
       // if this parameter is ignored, continue with next one.
       if ( IgnoreSet.find( pp ) != IgnoreSet.end() ) 
 	continue;
-      std::cerr << "\t" << glm.GetSingularValue( p++ );
+      cmtk::StdOut << "\t" << glm.GetSingularValue( p++ );
       }
-    std::cerr << "\n";
+    cmtk::StdOut << "\n";
     }
   
   if ( Verbose ) 
     {
-    std::cerr << "Parameter correlation matrix:\n";
+    std::cout << "Parameter correlation matrix:\n";
 
     cmtk::Matrix2D<double>* cc = glm.GetCorrelationMatrix();
 
-    std::cerr.precision( 2 );
-    std::cerr.setf( std::ios_base::fixed, std::ios_base::floatfield );
+    std::cout.precision( 2 );
+    std::cout.setf( std::ios_base::fixed, std::ios_base::floatfield );
     for ( size_t p = 0; p < nParameters[0]; ++p ) 
       {
       for ( size_t pp = 0; pp < nParameters[0]; ++pp ) 
 	{
-	std::cerr << (*cc)[p][pp] << "\t";
+	std::cout << (*cc)[p][pp] << "\t";
 	}
-      std::cerr << "\n";
+      std::cout << "\n";
       }
       
     delete cc;

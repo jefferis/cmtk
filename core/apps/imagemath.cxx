@@ -998,17 +998,17 @@ CallbackSTAPLE( const long int maxIterations )
 
   if ( Verbose )
     {
-    cmtk::StdErr.printf( "p  " );
+    cmtk::StdOut.printf( "p  " );
     for ( size_t i = 0; i < dataPtrs.size(); ++i )
       {
-      cmtk::StdErr.printf( "%.3f ", staple.GetPValue( i ) );
+      cmtk::StdOut.printf( "%.3f ", staple.GetPValue( i ) );
       }
-    cmtk::StdErr.printf( "\nq  " );
+    cmtk::StdOut.printf( "\nq  " );
     for ( size_t i = 0; i < dataPtrs.size(); ++i )
       {
-      cmtk::StdErr.printf( "%.3f ", staple.GetQValue( i ) );
+      cmtk::StdOut.printf( "%.3f ", staple.GetQValue( i ) );
       }
-    cmtk::StdErr.printf( "\n" );
+    cmtk::StdOut.printf( "\n" );
     }
 }
 
@@ -1421,10 +1421,10 @@ CallbackCombinePCA()
   
   if ( Verbose )
     {
-    cmtk::StdErr << "Principal eigenvector (normalized):\n";
+    cmtk::StdOut << "Principal eigenvector (normalized):\n";
     for ( size_t l = 0; l < numberOfImages; ++l )
       {
-      cmtk::StdErr.printf( "%f\t", ev[l] );
+      cmtk::StdOut.printf( "%f\t", ev[l] );
       }
     cmtk::StdErr << "\n";
     }

@@ -260,11 +260,11 @@ doMain( const int argc, const char *argv[] )
 	  {
 	  if ( success )
 	    {
-	    fprintf( stderr, "%f %f %f\n",  outxyz[0], outxyz[1], outxyz[2] );
+	    fprintf( stdout, "%f %f %f\n",  outxyz[0], outxyz[1], outxyz[2] );
 	    }
 	  else
 	    {
-	    fprintf( stderr, "%f %f %f E %f\n",  outxyz[0], outxyz[1], outxyz[2], error );
+	    fprintf( stdout, "%f %f %f E %f\n",  outxyz[0], outxyz[1], outxyz[2], error );
 	    }
 	  }
 	if (Binary)

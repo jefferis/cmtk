@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -195,7 +195,7 @@ doMain ( const int argc, const char* argv[] )
 
   if ( Verbose )
     {
-    cmtk::StdErr.printf( "Region: [%d,%d] ... [%d,%d]\n", CropRegion[0], CropRegion[1], CropRegion[2], CropRegion[3] );
+    cmtk::StdOut.printf( "Region: [%d,%d] ... [%d,%d]\n", CropRegion[0], CropRegion[1], CropRegion[2], CropRegion[3] );
     }
   
   if ( SliceIndex < 0 )

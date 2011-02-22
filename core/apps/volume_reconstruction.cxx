@@ -205,7 +205,7 @@ ReconstructVolume()
 
   if ( Verbose )
     {
-    cmtk::StdErr << "Volume injection...\n";
+    cmtk::StdOut << "Volume injection...\n";
     }
   if ( VolumeInjectionIsotropic )
     volRecon.VolumeInjectionIsotropic( InjectionKernelSigma, InjectionKernelRadius );
@@ -226,7 +226,7 @@ ReconstructVolume()
 
   if ( Verbose )
     {
-    cmtk::StdErr << "OPT_TIME\t" << cmtk::Timers::GetTimeProcess() - timeBaseline << "\n";
+    cmtk::StdOut << "OPT_TIME\t" << cmtk::Timers::GetTimeProcess() - timeBaseline << "\n";
     }
 
   if ( LowestMaxErrorImagePath )
@@ -256,7 +256,7 @@ ReconstructVolumeDeblurring()
 
   if ( Verbose )
     {
-    cmtk::StdErr << "Volume injection...\n";
+    cmtk::StdOut << "Volume injection...\n";
     }
   if ( VolumeInjectionIsotropic )
     volRecon.VolumeInjectionIsotropic( InjectionKernelSigma, InjectionKernelRadius );
@@ -277,7 +277,7 @@ ReconstructVolumeDeblurring()
 
   if ( Verbose )
     {
-    cmtk::StdErr << "OPT_TIME\t" << cmtk::Timers::GetTimeProcess() - timeBaseline << "\n";
+    cmtk::StdOut << "OPT_TIME\t" << cmtk::Timers::GetTimeProcess() - timeBaseline << "\n";
     }
 
   if ( LowestMaxErrorImagePath )
@@ -458,7 +458,7 @@ doMain( const int argc, const char* argv[] )
 
   if ( Verbose )
     {
-    cmtk::StdErr.printf( "Reconstruction grid: %dx%dx%d pixels, %fx%fx%f pixel size, offset=%f,%f,%f\n",
+    cmtk::StdOut.printf( "Reconstruction grid: %dx%dx%d pixels, %fx%fx%f pixel size, offset=%f,%f,%f\n",
 		      ReconGrid->m_Dims[0], ReconGrid->m_Dims[1], ReconGrid->m_Dims[2], (float)ReconGrid->m_Delta[0], (float)ReconGrid->m_Delta[1], (float)ReconGrid->m_Delta[2],
 		      (float)ReconGrid->m_Offset[0], (float)ReconGrid->m_Offset[1], (float)ReconGrid->m_Offset[2] );
     }

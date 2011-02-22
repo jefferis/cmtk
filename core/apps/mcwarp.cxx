@@ -230,7 +230,7 @@ DoRegistration()
   for ( int downsample = downsampleFrom; !refinementSchedule.empty(); refinementSchedule.pop() )
     {
     if ( verbose )
-      cmtk::StdErr.printf( "Downsampling stage 1:%d\n", downsample );
+      cmtk::StdOut.printf( "Downsampling stage 1:%d\n", downsample );
 
     functional->ClearAllChannels();
     if ( (downsample == 0) || ( (downsample==1) && (smoothSigmaFactor==0) ) )
@@ -263,7 +263,7 @@ DoRegistration()
       }
     
     if ( verbose )
-      cmtk::StdErr.printf( "Number of parameters is %d\n", functional->VariableParamVectorDim() );
+      cmtk::StdOut.printf( "Number of parameters is %d\n", functional->VariableParamVectorDim() );
     
     if ( optimizer.Optimize( params, initialStepSize * downsample * minPixelSize, finalStepSize * downsample * minPixelSize )
 	 != cmtk::CALLBACK_OK )

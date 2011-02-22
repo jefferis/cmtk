@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -134,8 +134,8 @@ doMain( const int argc, const char* argv[] )
   
   if ( verbose )
     {
-    cmtk::StdErr << "Stacked image will have dimensions " << stackDims[0] << "x" << stackDims[1] << "x" << stackDims[2] << "\n";
-    cmtk::StdErr << "Stacked image will have pixel size " << stackDelta[0] << "x" << stackDelta[1] << "x" << stackDelta[2] << "\n";
+    cmtk::StdOut << "Stacked image will have dimensions " << stackDims[0] << "x" << stackDims[1] << "x" << stackDims[2] << "\n";
+    cmtk::StdOut << "Stacked image will have pixel size " << stackDelta[0] << "x" << stackDelta[1] << "x" << stackDelta[2] << "\n";
     }
 
   cmtk::UniformVolume::SmartPtr stacked( new cmtk::UniformVolume( stackDims, stackDelta[0], stackDelta[1], stackDelta[2] ) );

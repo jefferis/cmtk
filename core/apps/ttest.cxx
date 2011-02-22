@@ -146,7 +146,7 @@ doMain ( const int argc, const char* argv[] )
       {
       if ( Verbose )
 	{
-	std::cerr << "Reading X data file " << *fnameIt << "...\n";
+	std::cout << "Reading X data file " << *fnameIt << "...\n";
 	}
       std::ifstream stream( *fnameIt );
       std::vector<cmtk::Types::DataItem> data;
@@ -176,7 +176,7 @@ doMain ( const int argc, const char* argv[] )
       {
       if ( Verbose )
 	{
-	std::cerr << "Reading Y data file " << *fnameIt << "...\n";
+	std::cout << "Reading Y data file " << *fnameIt << "...\n";
 	}
       std::ifstream stream( *fnameIt );
       std::vector<cmtk::Types::DataItem> data;
@@ -321,7 +321,7 @@ doMain ( const int argc, const char* argv[] )
 	{	
 	if ( Verbose )
 	  {
-	  cmtk::StdErr << "Writing T-statistics to file " << TStatFileName << "\n";
+	  cmtk::StdOut << "Writing T-statistics to file " << TStatFileName << "\n";
 	  }
 	
 	refVolume->SetData( cmtk::TypedArray::SmartPtr( tstatsData ) );
@@ -354,7 +354,7 @@ doMain ( const int argc, const char* argv[] )
 	{
 	if ( Verbose )
 	  {
-	  cmtk::StdErr << "Writing T-probablities to file " << OutFileName << "\n";
+	  cmtk::StdOut << "Writing T-probablities to file " << OutFileName << "\n";
 	  }
 	
 	refVolume->SetData( probData );
@@ -375,7 +375,7 @@ doMain ( const int argc, const char* argv[] )
 	{	
 	if ( Verbose )
 	  {
-	  cmtk::StdErr << "Writing T-statistics to file " << TStatFileName << "\n";
+	  cmtk::StdOut << "Writing T-statistics to file " << TStatFileName << "\n";
 	  }
 	
 	refVolume->SetData( cmtk::TypedArray::SmartPtr( tstatsData ) );
@@ -393,7 +393,7 @@ doMain ( const int argc, const char* argv[] )
       
       if ( Verbose )
 	{
-	cmtk::StdErr << "Writing T-probablities to file " << OutFileName << "\n";
+	cmtk::StdOut << "Writing T-probablities to file " << OutFileName << "\n";
 	}
       
       refVolume->SetData( probData );
@@ -421,7 +421,7 @@ doMain ( const int argc, const char* argv[] )
 	{	
 	if ( Verbose )
 	  {
-	  cmtk::StdErr << "Writing probabilities to file " << TStatFileName << "\n";
+	  cmtk::StdOut << "Writing probabilities to file " << TStatFileName << "\n";
 	  }
 	
 	refVolume->SetData( cmtk::TypedArray::SmartPtr( pData ) );
@@ -430,7 +430,7 @@ doMain ( const int argc, const char* argv[] )
       
       if ( Verbose )
 	{
-	cmtk::StdErr << "Writing correlations to file " << OutFileName << "\n";
+	cmtk::StdOut << "Writing correlations to file " << OutFileName << "\n";
 	}
       
       refVolume->SetData( probData );
@@ -452,7 +452,7 @@ doMain ( const int argc, const char* argv[] )
 
       if ( Verbose )
 	{
-	cmtk::StdErr << "Writing z-scores map to file " << OutFileName << "\n";
+	cmtk::StdOut << "Writing z-scores map to file " << OutFileName << "\n";
 	}
       
       refVolume->SetData( zscoreData );

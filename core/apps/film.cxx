@@ -136,7 +136,7 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
     {
     if ( Verbose )
       {
-      cmtk::StdErr << "Computing transformations between passes...\n";
+      cmtk::StdOut << "Computing transformations between passes...\n";
       }
     volRecon.ComputeTransformationsToPassImages( RegistrationMetric );
     xformsToPassImages = volRecon.GetTransformationsToPassImages();
@@ -149,7 +149,7 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
       {
       if ( Verbose )
 	{
-	cmtk::StdErr << "Exporting transformations between passes to " << ExportXformsPath << "\n";
+	cmtk::StdOut << "Exporting transformations between passes to " << ExportXformsPath << "\n";
 	}
       for ( unsigned int pass = 0; pass < NumberOfPasses; ++pass )
 	{
@@ -164,7 +164,7 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
 
   if ( Verbose )
     {
-    cmtk::StdErr << "Volume injection...\n";
+    cmtk::StdOut << "Volume injection...\n";
     }
   volRecon.VolumeInjectionAnisotropic( InjectionKernelSigma, InjectionKernelRadius );
   if ( InjectedImagePath )
@@ -308,7 +308,7 @@ doMain( const int argc, const char* argv[] )
       {
       if ( Verbose )
 	{
-	cmtk::StdErr << "Importing transformations between passes from " << ImportXformsPath << "\n";
+	cmtk::StdOut << "Importing transformations between passes from " << ImportXformsPath << "\n";
 	}
       cmtk::AffineXform xform;
       for ( unsigned int pass = 0; pass < NumberOfPasses; ++pass )

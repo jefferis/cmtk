@@ -99,7 +99,7 @@ doMain( const int argc, const char* argv[] )
     {
     if ( Verbose )
       {
-      cmtk::StdErr << "Reorienting from '" << OldOrientation << "' to '" << NewOrientation << "'\n";
+      cmtk::StdOut << "Reorienting from '" << OldOrientation << "' to '" << NewOrientation << "'\n";
       }
     
     // now reorient here in case the writer function doesn't try to write original orientation
@@ -115,7 +115,7 @@ doMain( const int argc, const char* argv[] )
   
   if ( Verbose )
     {
-    cmtk::StdErr << "Writing to file " << OutFileName << "\n";
+    cmtk::StdOut << "Writing to file " << OutFileName << "\n";
     }
   cmtk::VolumeIO::Write( *volume, OutFileName, Verbose );
   

@@ -251,7 +251,7 @@ ReformatPullback()
 
     if ( Verbose )
       {
-      cmtk::StdErr << "INFO: setting reference image offset to " << TargetImageOffset[0] << "/" << TargetImageOffset[1] << "/" << TargetImageOffset[2] << "\n";
+      cmtk::StdOut << "INFO: setting reference image offset to " << TargetImageOffset[0] << "/" << TargetImageOffset[1] << "/" << TargetImageOffset[2] << "\n";
       }
     }
   
@@ -261,7 +261,7 @@ ReformatPullback()
     
     if ( Verbose )
       {
-      cmtk::StdErr << "INFO: setting reference image offset to " << TargetImageOffset[0] << "/" << TargetImageOffset[1] << "/" << TargetImageOffset[2] << "\n";
+      cmtk::StdOut << "INFO: setting reference image offset to " << TargetImageOffset[0] << "/" << TargetImageOffset[1] << "/" << TargetImageOffset[2] << "\n";
       }
     }
   
@@ -296,7 +296,7 @@ ReformatPullback()
   else
     {
     if ( Verbose )
-      cmtk::StdErr << "INFO: Using target data as binary mask.\n";
+      cmtk::StdOut << "INFO: Using target data as binary mask.\n";
     }
   
   cmtk::ProgressConsole progressIndicator;

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -441,14 +441,14 @@ doMain ( const int argc, const char* argv[] )
 	{
 	cmtk::Types::Coordinate voxelSize = Sampling * pow( 2.0, (Levels-level-2) );
 	if ( Verbose )
-	  fprintf( stderr, "Entering level %d out of %d (%.2f mm voxel size)\n", level+1, Levels, voxelSize );
+	  fprintf( stdout, "Entering level %d out of %d (%.2f mm voxel size)\n", level+1, Levels, voxelSize );
 	
 	volume = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( *originalVolume, voxelSize ) );
 	} 
       else
 	{
 	if ( Verbose )
-	  fprintf(stderr,"Entering level %d out of %d (original voxel size)\n", level+1, Levels );
+	  fprintf(stdout,"Entering level %d out of %d (original voxel size)\n", level+1, Levels );
 	volume = originalVolume; 
 	}
       
