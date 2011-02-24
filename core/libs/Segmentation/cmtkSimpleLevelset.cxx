@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -93,7 +93,9 @@ cmtk::SimpleLevelset
     const Types::DataItem mOutside = outsideSum / nOutside;
 
     if ( verbose )
-      std::cerr << it << " IN: " << nInside << "  " << mInside << "  OUT: " << nOutside << "  " << mOutside << "\r";
+      {
+      StdErr << it << " IN: " << nInside << "  " << mInside << "  OUT: " << nOutside << "  " << mOutside << "\r";
+      }
     
 #pragma omp parallel for
     for ( size_t n = 0; n < numberOfPixels; ++n )

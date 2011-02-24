@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -192,14 +192,18 @@ cmtk::ImageSymmetryPlaneCommandLineBase
 	{
 	Types::Coordinate voxelSize = this->m_Sampling * pow( 2.0, (this->m_Levels-level-2) );
 	if ( this->m_Verbose )
-	  fprintf( stderr, "Entering level %d out of %d (%.2f mm voxel size)\n", level+1, this->m_Levels, voxelSize );
+	  {
+	  StdOut.printf( "Entering level %d out of %d (%.2f mm voxel size)\n", level+1, this->m_Levels, voxelSize );
+	  }
 	
 	volume = UniformVolume::SmartPtr( new UniformVolume( *originalVolume, voxelSize ) );
 	} 
       else
 	{
 	if ( this->m_Verbose )
-	  fprintf(stderr,"Entering level %d out of %d (original voxel size)\n", level+1, this->m_Levels );
+	  {
+	  StdOut.printf( "Entering level %d out of %d (original voxel size)\n", level+1, this->m_Levels );
+	  }
 	volume = originalVolume; 
 	}
       
@@ -231,7 +235,9 @@ cmtk::ImageSymmetryPlaneCommandLineBase
     Progress::Done();
 
     if ( this->m_Verbose )
-      fprintf( stdout, "rho=%f, theta=%f, phi=%f\n", v[0], v[1], v[2] );
+      {
+      StdOut.printf( "rho=%f, theta=%f, phi=%f\n", v[0], v[1], v[2] );
+      }
     }
   
   this->m_SymmetryPlane.SetParameters( v );

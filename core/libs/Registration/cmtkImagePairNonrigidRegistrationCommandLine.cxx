@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -367,7 +367,9 @@ ImagePairNonrigidRegistrationCommandLine
   const int index, const int total )
 {
   if ( Verbose )
-    fprintf( stderr, "\rEntering resolution level %d out of %d...\n", index, total );
+    {
+    StdOut.printf( "\rEntering resolution level %d out of %d...\n", index, total );
+    }
   
   this->Superclass::EnterResolution( v, f, index, total );
 }

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -219,16 +219,18 @@ AffineRegistrationCommandLine
 
     if ( InitialStudylist ) 
       {
-      StdErr << "Transformation will be overriden by '--initial' list.\n";
+      StdErr << "WARNING: transformation will be overriden by '--initial' list.\n";
       }
     
     if ( Verbose )
-      StdErr << "Reading input studylist " << this->m_InitialXformPath << ".\n";
+      {
+      StdOut << "Reading input studylist " << this->m_InitialXformPath << ".\n";
+      }
     
     ClassStream typedStream( MountPoints::Translate(this->m_InitialXformPath), "registration", ClassStream::READ );
     if ( ! typedStream.IsValid() ) 
       {
-      StdErr << "Could not open studylist archive " << this->m_InitialXformPath << ".\n";
+      StdErr << "ERROR: could not open studylist archive " << this->m_InitialXformPath << ".\n";
       throw cmtk::ExitException( 1 );
       }
 
@@ -442,9 +444,9 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
 {
   if ( Verbose ) 
     {
-    fprintf( stderr, "\rResulting transformation parameters: \n" );
+    StdOut.printf( "\rResulting transformation parameters: \n" );
     for ( unsigned int idx=0; idx<v->Dim; ++idx )
-      fprintf( stderr, "#%d: %f\n", idx, v->Elements[idx] );
+      StdOut.printf( "#%d: %f\n", idx, v->Elements[idx] );
     }
   
   if ( this->OutMatrixName )
@@ -511,7 +513,9 @@ AffineRegistrationCommandLine::EnterResolution
   const int index, const int total )
 {
   if ( Verbose )
-    fprintf( stderr, "\rEntering resolution level %d out of %d...\n", index, total );
+    {
+    StdOut.printf( "\rEntering resolution level %d out of %d...\n", index, total );
+    }
   this->Superclass::EnterResolution( v, f, index, total );
 }
 

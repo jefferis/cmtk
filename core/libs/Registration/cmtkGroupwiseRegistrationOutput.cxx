@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -172,7 +172,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
 
     if ( this->m_Verbose )
       {
-      StdErr << "Reformating output images ";
+      StdOut << "Reformating output images ";
       }
 #ifdef CMTK_BUILD_MPI
     const size_t idxFrom = MPI::COMM_WORLD.Get_rank();
@@ -205,7 +205,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
       UniformVolume::SmartPtr ref( reformat.PlainReformat() );
       if ( this->m_Verbose )
 	{
-	StdErr << ".";
+	StdOut << ".";
 	}
       const TypedArray* data = ref->GetData();
 #pragma omp parallel for
@@ -221,7 +221,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
       }
     if ( this->m_Verbose )
       {
-      StdErr << " done\n";
+      StdOut << " done\n";
       }
 
 #ifdef CMTK_BUILD_MPI

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -242,12 +242,14 @@ ImagePairAffineRegistrationCommandLine
       }
     
     if ( Verbose )
-      StdErr << "Reading input studylist " << inStudylist << ".\n";
+      {
+      StdOut << "Reading input studylist " << inStudylist << ".\n";
+      }
     
     ClassStream typedStream( MountPoints::Translate(inStudylist), "registration", ClassStream::READ );
     if ( ! typedStream.IsValid() ) 
       {
-      StdErr << "Could not open studylist archive " << inStudylist << ".\n";
+      StdErr << "ERROR: could not open studylist archive " << inStudylist << ".\n";
       throw cmtk::ExitException( 1 );
       }
 
@@ -451,9 +453,9 @@ ImagePairAffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v
 {
   if ( Verbose ) 
     {
-    fprintf( stderr, "\rResulting transformation parameters: \n" );
+    StdOut.printf( "\rResulting transformation parameters: \n" );
     for ( unsigned int idx=0; idx<v->Dim; ++idx )
-      fprintf( stderr, "#%d: %f\n", idx, v->Elements[idx] );
+      StdOut.printf( "#%d: %f\n", idx, v->Elements[idx] );
     }
   
   if ( this->OutMatrixName )
@@ -520,7 +522,9 @@ ImagePairAffineRegistrationCommandLine::EnterResolution
   const int index, const int total )
 {
   if ( Verbose )
-    fprintf( stderr, "\rEntering resolution level %d out of %d...\n", index, total );
+    {
+    StdOut.printf( "\rEntering resolution level %d out of %d...\n", index, total );
+    }
   this->Superclass::EnterResolution( v, f, index, total );
 }
 

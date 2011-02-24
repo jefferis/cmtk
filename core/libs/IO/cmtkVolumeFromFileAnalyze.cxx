@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -297,7 +297,7 @@ VolumeFromFile::WriteAnalyzeHdr
     {
     if ( verbose )
       {
-      StdErr << "INFO: WriteAnalyzeHdr will reorient output volume from '" << currentOrientation << "' to '" << writeOrientation << "'\n";
+      StdOut << "INFO: WriteAnalyzeHdr will reorient output volume from '" << currentOrientation << "' to '" << writeOrientation << "'\n";
       }
     reorientedVolume = UniformVolume::SmartPtr( volume.GetReoriented( writeOrientation ) );
     writeVolume = reorientedVolume;

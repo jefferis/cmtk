@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -98,7 +98,9 @@ VolumeFromStudy::AssembleVolume( const StudyImageSet* study, const bool verbose 
     while ( it != study->end() ) 
       {      
       if ( verbose )
-	fprintf( stderr, "\r%s", it->c_str() );
+	{
+	StdOut.printf( "\r%s", it->c_str() );
+	}
       
       char fullpath[PATH_MAX];
       snprintf( fullpath, sizeof( fullpath ), "%s/%s", MountPoints::Translate( study->GetImageDirectory() ), it->c_str() );

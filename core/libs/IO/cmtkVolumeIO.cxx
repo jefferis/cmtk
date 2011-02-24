@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -140,7 +140,7 @@ VolumeIO::Read( const char* path, const bool verbose )
   
   if ( verbose && volume ) 
     {
-    StdErr.printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path,
+    StdOut.printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path,
 		      volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2],
 		      volume->Size[0], volume->Size[1], volume->Size[2] );
     
@@ -195,7 +195,7 @@ VolumeIO::ReadGrid( const char* path, const bool verbose )
   
   if ( verbose && volume ) 
     {
-    StdErr.printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path,
+    StdOut.printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path,
 		      volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2],
 		      volume->Size[0], volume->Size[1], volume->Size[2] );
     }
@@ -228,7 +228,7 @@ VolumeIO
       {
       if ( verbose )
 	{
-	StdErr << "INFO: reorienting image from '" << orientationOriginal << "' to '" << orientation << "'\n";
+	StdOut << "INFO: reorienting image from '" << orientationOriginal << "' to '" << orientation << "'\n";
 	}
       
       return volume->GetReoriented( orientation );
@@ -258,7 +258,7 @@ VolumeIO
       {
       if ( verbose )
 	{
-	StdErr << "INFO: reorienting image from '" << orientationOriginal << "' to '" << orientation << "'\n";
+	StdOut << "INFO: reorienting image from '" << orientationOriginal << "' to '" << orientation << "'\n";
 	}
       
       return volume->GetReoriented( orientation );

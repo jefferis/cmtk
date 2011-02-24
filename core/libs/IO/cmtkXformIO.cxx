@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -71,7 +71,7 @@ XformIO::Read( const char* path, const bool verbose )
     {
     if ( verbose ) 
       {
-      StdErr << "Reading transformation from studylist " << realPath << "\n";
+      StdOut << "Reading transformation from studylist " << realPath << "\n";
       }
     
     TypedStreamStudylist studylist( realPath );
@@ -84,7 +84,7 @@ XformIO::Read( const char* path, const bool verbose )
     {
     if ( verbose ) 
       {
-      StdErr << "Reading transformation from typedstream file " << realPath << "\n";
+      StdOut << "Reading transformation from typedstream file " << realPath << "\n";
       }
     
     ClassStream stream( realPath, ClassStream::READ );
