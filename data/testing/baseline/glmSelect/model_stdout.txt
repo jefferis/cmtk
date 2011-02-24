@@ -1,2 +1,55 @@
+Selected model parameters:
+	age
+
+
+Importing image files:
+jacobian-01.nii
+Read 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+INFORMATION: Ignoring parameter #1
+NParameters = 2
+jacobian-02.nii
+Read 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+jacobian-03.nii
+Read 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+jacobian-04.nii
+Read 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+
+
+Design Matrix: 
+     age	   CONST	
+   20.00	    1.00	
+   30.00	    1.00	
+   40.00	    1.00	
+   50.00	    1.00	
+
+
+Singular values:
+	73.5094	0.608376
+
+
+Parameter correlation matrix:
+1.00	0.00	
+0.00	0.00	
+
+
+Parameter normalization factors:
 0	11.180340
 2	1.000000
+
+
+Writing output image files.
+/fs/axon/torsten/cmtk/x86_64/cuda/bin/../testing/temporary/corpus3.cluster/glmSelect/model_fstat_00_model.hdr
+Writing 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
+/fs/axon/torsten/cmtk/x86_64/cuda/bin/../testing/temporary/corpus3.cluster/glmSelect/model_param_00_age.hdr
+Writing 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
+/fs/axon/torsten/cmtk/x86_64/cuda/bin/../testing/temporary/corpus3.cluster/glmSelect/model_tstat_00_age.hdr
+Writing 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
+/fs/axon/torsten/cmtk/x86_64/cuda/bin/../testing/temporary/corpus3.cluster/glmSelect/model_param_02_CONST.hdr
+Writing 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
+/fs/axon/torsten/cmtk/x86_64/cuda/bin/../testing/temporary/corpus3.cluster/glmSelect/model_tstat_02_CONST.hdr
+Writing 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'

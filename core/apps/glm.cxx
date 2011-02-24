@@ -143,6 +143,11 @@ Import
   
   FieldNames.push_back( "CONST" );
 
+  if ( Verbose ) 
+    {
+    cmtk::StdOut << "\n\nImporting image files:\n";
+    }
+  
   nParametersTotal = 0;
   while ( ! ctlFile.eof() ) 
     {
@@ -161,10 +166,6 @@ Import
 	throw cmtk::ExitException( 1 );
 	}
 
-      if ( Verbose ) 
-	{
-	cmtk::StdOut << "Importing image file " << imgPath << "\n";
-	}
       cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( imgPath, Verbose ) );
       if ( !volume ) 
 	{
@@ -223,7 +224,9 @@ Import
 	  else
 	    {
 	    if ( Verbose )
+	      {
 	      cmtk::StdOut << "INFORMATION: Ignoring parameter #" << nParametersTotal << "\n";
+	      }
 	    }
 	  ++nParametersTotal;
 	  }
@@ -234,7 +237,9 @@ Import
 	// parameters.
 	nParameters = vParam.size();
 	if ( Verbose )
+	  {
 	  cmtk::StdOut << "NParameters = " << nParameters << "\n";
+	  }
 	}
       }
     }
@@ -252,24 +257,25 @@ Import
   
   if ( Verbose )
     {
+    cmtk::StdOut << "\n\nDesign Matrix: \n";
     for ( size_t j = 0; j < FieldNames.size(); ++j )
       {
       if ( IgnoreSet.find( j ) != IgnoreSet.end() ) continue;
-      fprintf( stdout, "%8s\t", FieldNames[j].c_str() );
+      cmtk::StdOut.printf( "%8s\t", FieldNames[j].c_str() );
       }
-    fputs( "\n", stdout );
+    cmtk::StdOut << "\n";
     
     size_t ofs = 0;
     for ( size_t i = 0; i < imagesData.size(); ++i )
       {
       for ( size_t j = 0; j < nParameters; ++j, ++ofs )
 	{
-	fprintf( stdout, "%8.2f\t", parameters[ofs] );
+	cmtk::StdOut.printf( "%8.2f\t", parameters[ofs] );
 	}
-      fputs( "\n", stdout );
+      cmtk::StdOut << "\n";
       }
     }
-
+  
   if ( ! ExcludeConstant )
     ++nParametersTotal;
 }
@@ -384,7 +390,7 @@ doMain( const int argc, const char* argv[] )
   
   if ( Verbose ) 
     {
-    cmtk::StdOut << "Singular values: ";
+    cmtk::StdOut << "\n\nSingular values:\n";
     size_t p = 0;
     for ( size_t pp = 0; pp < nParametersTotal[0]; ++pp ) 
       {
@@ -398,43 +404,51 @@ doMain( const int argc, const char* argv[] )
   
   if ( Verbose ) 
     {
-    std::cout << "Parameter correlation matrix:\n";
+    cmtk::StdOut << "\n\nParameter correlation matrix:\n";
 
     cmtk::Matrix2D<double>* cc = glm.GetCorrelationMatrix();
 
-    std::cout.precision( 2 );
-    std::cout.setf( std::ios_base::fixed, std::ios_base::floatfield );
     for ( size_t p = 0; p < nParameters[0]; ++p ) 
       {
       for ( size_t pp = 0; pp < nParameters[0]; ++pp ) 
 	{
-	std::cout << (*cc)[p][pp] << "\t";
+	cmtk::StdOut.printf( "%.2f\t", (*cc)[p][pp] );
 	}
-      std::cout << "\n";
+      cmtk::StdOut << "\n";
       }
-      
+    
     delete cc;
     }
-
+  
   glm.FitModel( allImages, NormalizeParameters );
 
   if ( DumpStatistics ) 
     {
+    if ( Verbose )
+      {
+      cmtk::StdOut << "\n\nParameter normalization factors:\n";
+      }
+
     size_t p = 0;
     for ( size_t pp = 0; pp < nParametersTotal[0]; ++pp ) 
       {	  
       // if this parameter is ignored, continue with next one.
       if ( IgnoreSet.find( pp ) != IgnoreSet.end() ) continue;
 
-      fprintf( stdout, "%d\t%f\n", (int)pp, glm.GetNormFactor( p ) );
-
+      cmtk::StdOut.printf( "%d\t%f\n", (int)pp, glm.GetNormFactor( p ) );
+      
       // increment actual parameter index.
       ++p;
       }
     }
-
+  
   if ( OutputFilePatt ) 
     {
+    if ( Verbose )
+      {
+      cmtk::StdOut << "\n\nWriting output image files.\n";
+      }
+
     char outFileName[PATH_MAX];
 
     cmtk::TypedArray::SmartPtr fstatData = glm.GetFStat();

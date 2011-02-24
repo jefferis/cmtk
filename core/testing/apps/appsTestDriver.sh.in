@@ -571,37 +571,37 @@ case ${RUNTEST} in
 	check_results corrected.img
 	;;
     glmDefault)
-	run_eval "${BINDIR}/glm -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
+	run_eval "${BINDIR}/glm -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii | fgrep -v ${tmpdir} > ${tmpdir}/model_stdout.txt"
 	check_results model_stdout.txt model_fstat_00_model.img  model_tstat_00_age.img model_param_00_age.img
 	check_results model_tstat_01_sex.img model_param_01_sex.img model_tstat_02_CONST.img model_param_02_CONST.img
 	;;
     glmNormalize)
-	run_eval "${BINDIR}/glm --normalize -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
+	run_eval "${BINDIR}/glm --normalize -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii | fgrep -v ${tmpdir} > ${tmpdir}/model_stdout.txt"
 	check_results model_stdout.txt model_fstat_00_model.img  model_tstat_00_age.img model_param_00_age.img
 	check_results model_tstat_01_sex.img model_param_01_sex.img model_tstat_02_CONST.img model_param_02_CONST.img
 	;;
     glmExp)
-	run_eval "${BINDIR}/glm --exp -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
+	run_eval "${BINDIR}/glm --exp -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii | fgrep -v ${tmpdir} > ${tmpdir}/model_stdout.txt"
 	check_results model_stdout.txt model_fstat_00_model.img  model_tstat_00_age.img model_param_00_age.img
 	check_results model_tstat_01_sex.img model_param_01_sex.img model_tstat_02_CONST.img model_param_02_CONST.img
 	;;
     glmNoConstant)
-	run_eval "${BINDIR}/glm --exclude-constant -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
+	run_eval "${BINDIR}/glm --exclude-constant -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii | fgrep -v ${tmpdir} > ${tmpdir}/model_stdout.txt"
 	check_results model_stdout.txt model_fstat_00_model.img  model_tstat_00_age.img model_param_00_age.img
 	check_results model_tstat_01_sex.img model_param_01_sex.img
 	;;
     glmIgnore)
-	run_eval "${BINDIR}/glm --ignore-parameter 1 -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
+	run_eval "${BINDIR}/glm --ignore-parameter 1 -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii | fgrep -v ${tmpdir} > ${tmpdir}/model_stdout.txt"
 	check_results model_stdout.txt model_fstat_00_model.img  model_tstat_00_age.img model_param_00_age.img
 	check_results model_tstat_02_CONST.img model_param_02_CONST.img
 	;;
     glmSelect)
-	run_eval "${BINDIR}/glm --select-parameter age -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
+	run_eval "${BINDIR}/glm --select-parameter age -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii | fgrep -v ${tmpdir} > ${tmpdir}/model_stdout.txt"
 	check_results model_stdout.txt model_fstat_00_model.img
 	check_results model_tstat_00_age.img model_param_00_age.img model_tstat_02_CONST.img model_param_02_CONST.img
 	;; 
     glmCrop)
-	run_eval "${BINDIR}/glm --crop 10,10,0,20,20,2 -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii > ${tmpdir}/model_stdout.txt"
+	run_eval "${BINDIR}/glm --crop 10,10,0,20,20,2 -v -O ${tmpdir}/model_%s_%02d_%s.hdr jacobian_glm.txt jacobian-%s.nii | fgrep -v ${tmpdir} > ${tmpdir}/model_stdout.txt"
 	check_results model_stdout.txt model_fstat_00_model.img  model_tstat_00_age.img model_param_00_age.img
 	check_results model_tstat_01_sex.img model_param_01_sex.img model_tstat_02_CONST.img model_param_02_CONST.img
 	;;

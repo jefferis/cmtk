@@ -1,3 +1,60 @@
+
+
+Importing image files:
+jacobian-01.nii
+Read 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+NParameters = 3
+jacobian-02.nii
+Read 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+jacobian-03.nii
+Read 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+jacobian-04.nii
+Read 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+
+
+Design Matrix: 
+     age	     sex	   CONST	
+   20.00	    0.00	    1.00	
+   30.00	    1.00	    1.00	
+   40.00	    0.00	    1.00	
+   50.00	    1.00	    1.00	
+
+
+Singular values:
+	73.5174	0.909255	0.598389
+
+
+Parameter correlation matrix:
+1.00	0.45	0.00	
+0.45	1.00	0.00	
+0.00	0.00	0.00	
+
+
+Parameter normalization factors:
 0	11.180340
 1	0.500000
 2	1.000000
+
+
+Writing output image files.
+/fs/axon/torsten/cmtk/x86_64/cuda/bin/../testing/temporary/corpus3.cluster/glmExp/model_fstat_00_model.hdr
+Writing 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
+/fs/axon/torsten/cmtk/x86_64/cuda/bin/../testing/temporary/corpus3.cluster/glmExp/model_param_00_age.hdr
+Writing 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
+/fs/axon/torsten/cmtk/x86_64/cuda/bin/../testing/temporary/corpus3.cluster/glmExp/model_tstat_00_age.hdr
+Writing 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
+/fs/axon/torsten/cmtk/x86_64/cuda/bin/../testing/temporary/corpus3.cluster/glmExp/model_param_01_sex.hdr
+Writing 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
+/fs/axon/torsten/cmtk/x86_64/cuda/bin/../testing/temporary/corpus3.cluster/glmExp/model_tstat_01_sex.hdr
+Writing 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
+/fs/axon/torsten/cmtk/x86_64/cuda/bin/../testing/temporary/corpus3.cluster/glmExp/model_param_02_CONST.hdr
+Writing 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
+/fs/axon/torsten/cmtk/x86_64/cuda/bin/../testing/temporary/corpus3.cluster/glmExp/model_tstat_02_CONST.hdr
+Writing 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
+INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'

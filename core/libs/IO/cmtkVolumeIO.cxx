@@ -140,16 +140,13 @@ VolumeIO::Read( const char* path, const bool verbose )
   
   if ( verbose && volume ) 
     {
-    StdOut.printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path,
-		      volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2],
-		      volume->Size[0], volume->Size[1], volume->Size[2] );
+    StdOut.printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
     
     const TypedArray* dataArray = volume->GetData();
     if ( dataArray ) 
       {
       const Types::DataItemRange range = dataArray->GetRange();
-      StdErr.printf( "Data type %s, range [%f .. %f]\n", DataTypeName[ dataArray->GetType() ],
-		     static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
+      StdErr.printf( "Data type %s, range [%f .. %f]\n", DataTypeName[ dataArray->GetType() ], static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
       } 
     else
       {
@@ -195,9 +192,7 @@ VolumeIO::ReadGrid( const char* path, const bool verbose )
   
   if ( verbose && volume ) 
     {
-    StdOut.printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path,
-		      volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2],
-		      volume->Size[0], volume->Size[1], volume->Size[2] );
+    StdOut.printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
     }
   
   if ( volume )
@@ -365,6 +360,11 @@ void
 VolumeIO::Write
 ( const UniformVolume& volume, const FileFormatID format, const char* path, const bool verbose )
 {
+  if ( verbose ) 
+    {
+    StdOut.printf( "%s\nWriting %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume.GetDims()[0], volume.GetDims()[1], volume.GetDims()[2], volume.Size[0], volume.Size[1], volume.Size[2] );
+    }
+  
   const TypedArray *data = volume.GetData();
   if ( data == NULL ) return;
 
