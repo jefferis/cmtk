@@ -47,6 +47,9 @@ namespace
 cmtk
 {
 
+/** \addtogroup Base */
+//@{
+
 /// Image operation: apply mapping function to replace image pixel values.
 class ImageOperationMapValues
   : public ImageOperation
@@ -86,6 +89,8 @@ private:
     */
   bool m_Exclusive;
 };
+
+//@}
 
 } // namespace cmtk
 

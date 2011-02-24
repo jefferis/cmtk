@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2010 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -42,6 +42,9 @@ namespace
 cmtk
 {
 
+/** \addtogroup Base */
+//@{
+
 /** Image operation base class.
  * Classes derived from this base class are used to implement an ordered sequence of operations
  * primarily for the "convertx" command line tool.
@@ -78,6 +81,8 @@ protected:
   /// List of image operations.
   static std::list<Self::SmartPtr> m_ImageOperationList;
 };
+
+//@}
 
 } // namespace cmtk
 

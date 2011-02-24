@@ -45,6 +45,9 @@ namespace
 cmtk
 {
 
+/** \addtogroup Base */
+//@{
+
 /// Image operation: replace image pixel values.
 class ImageOperationReplace
 /// Inherit from image operation base class.
@@ -118,6 +121,8 @@ private:
   /// Padding value.
   Types::DataItem m_ReplacementValue;
 };
+
+//@}
 
 } // namespace cmtk
 

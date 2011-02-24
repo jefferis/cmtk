@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2010 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,6 +39,9 @@ namespace
 cmtk
 {
 
+/** \addtogroup Base */
+//@{
+
 /// Image operation: revert binary mask.
 class ImageOperationRevert
 /// Inherit from image operation base class.
@@ -57,6 +60,8 @@ public:
     ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationRevert() ) );
   }
 };
+
+//@}
 
 } // namespace cmtk
 

@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2010 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -40,6 +40,9 @@ namespace
 cmtk
 {
 
+/** \addtogroup Base */
+//@{
+
 /// Compute distance map.
 class ImageOperationDistanceMap
 /// Inherit generic image operation.
@@ -71,6 +74,8 @@ private:
   /// Flag for signed (inside/outside) vs. unsigned (outside only) distance map.
   bool m_SignedDistance;
 };
+
+//@}
 
 } // namespace cmtk
 

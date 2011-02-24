@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2010 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -38,6 +38,9 @@
 namespace
 cmtk
 {
+
+/** \addtogroup Base */
+//@{
 
 /// Image operation: thresholding
 class ImageOperationThreshold
@@ -95,6 +98,8 @@ private:
   /// Flag for binarization.
   bool m_Binarize;
 };
+
+//@}
 
 } // namespace cmtk
 

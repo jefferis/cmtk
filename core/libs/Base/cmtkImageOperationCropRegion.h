@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,6 +39,9 @@ namespace
 cmtk
 {
 
+/** \addtogroup Base */
+//@{
+
 /// Image operation: crop to region.
 class ImageOperationCropRegion
 /// Inherit from image operation base class.
@@ -61,6 +64,8 @@ private:
   /// Cropping region: x0,y0,z0,x1,y1,z1
   DataGrid::RegionType m_Region;
 };
+
+//@}
 
 } // namespace cmtk
 

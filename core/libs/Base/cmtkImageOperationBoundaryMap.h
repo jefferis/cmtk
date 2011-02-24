@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2010 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -40,6 +40,9 @@ namespace
 cmtk
 {
 
+/** \addtogroup Base */
+//@{
+
 /// Image operation: create binary or multi-valued boundary map.
 class ImageOperationBoundaryMap
 /// Inherit from image operation base class.
@@ -73,6 +76,8 @@ private:
   /// Multi-valued flag: if this is set, a multi-valued boundary map will be created, otherwise a binary map.
   bool m_MultiValued;
 };
+
+//@}
 
 } // namespace cmtk
 

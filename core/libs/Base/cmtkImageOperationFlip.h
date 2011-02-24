@@ -31,8 +31,9 @@
 #ifndef __cmtkImageOperationFlip_h_included_
 #define __cmtkImageOperationFlip_h_included_
 
-namespace 
-cmtk{
+namespace
+cmtk
+{
 
 /** \addtogroup Base */
 //@{

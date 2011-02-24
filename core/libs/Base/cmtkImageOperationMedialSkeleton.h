@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2010 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -40,6 +40,9 @@ namespace
 cmtk
 {
 
+/** \addtogroup Base */
+//@{
+
 /** Compute medical skeleton of a (binary) mask image.
  *\warning This operation is not working properly. Due to discretization of
  * the image gradient and Hessian, we fail to detect the exact locations of
@@ -71,6 +74,8 @@ private:
   /// Dimensionality of the medial skeleton (1 or 2).
   int m_Dimensionality;
 };
+
+//@}
 
 } // namespace cmtk
 

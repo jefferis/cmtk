@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2010 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -40,6 +40,9 @@ namespace
 cmtk
 {
 
+/** \addtogroup Base */
+//@{
+
 /// Image operation: grid downsampling.
 class ImageOperationGaussFilter
 /// Inherit from image operation base class.
@@ -72,6 +75,8 @@ private:
   /// Kernel with specified by coefficient sigma.
   Units::GaussianSigma m_Sigma;
 };
+
+//@}
 
 } // namespace cmtk
 

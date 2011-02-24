@@ -42,6 +42,9 @@ namespace
 cmtk
 {
 
+/** \addtogroup Base */
+//@{
+
 /// Image operation: set padding flag and value.
 class ImageOperationSetPadding
 /// Inherit from image operation base class.
@@ -85,6 +88,8 @@ private:
   /// Padding value.
   Types::DataItem m_PaddingValue;
 };
+
+//@}
 
 } // namespace cmtk
 

@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,6 +39,9 @@ namespace
 cmtk
 {
 
+/** \addtogroup Base */
+//@{
+
 /// Image operation: scale image values to given range.
 class ImageOperationScaleToRange
 /// Inherit from image operation base class.
@@ -58,6 +61,8 @@ private:
   /// Start of range we're scaling to.
   Types::DataItemRange m_ToRange;
 };
+
+//@}
 
 } // namespace cmtk
 

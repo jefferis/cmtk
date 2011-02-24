@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2010 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,6 +39,9 @@
 namespace
 cmtk
 {
+
+/** \addtogroup Base */
+//@{
 
 /// Image operation: erode or dilate.
 class ImageOperationErodeDilate
@@ -84,6 +87,8 @@ private:
   /// Number of iterations of erosion (if negative) or dilation (if positive).
   int m_Iterations;
 };
+
+//@}
 
 } // namespace cmtk
 

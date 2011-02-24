@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,6 +39,9 @@ namespace
 cmtk
 {
 
+/** \addtogroup Base */
+//@{
+
 /// Image operation: histogram equalization with optional number of bins.
 class ImageOperationHistogramEqualization
 /// Inherit from image operation base class.
@@ -64,6 +67,8 @@ private:
   /// Number of histogram bins.
   size_t m_NumberOfBins;
 };
+
+//@}
 
 } // namespace cmtk
 

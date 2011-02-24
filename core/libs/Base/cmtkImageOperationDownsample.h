@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2010 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,6 +39,9 @@ namespace
 cmtk
 {
 
+/** \addtogroup Base */
+//@{
+
 /// Image operation: grid downsampling.
 class ImageOperationDownsample
 /// Inherit from image operation base class.
@@ -64,6 +67,8 @@ private:
   /// Downsampling factor in Z direction.
   int m_FactorZ;
 };
+
+//@}
 
 } // namespace cmtk
 
