@@ -61,6 +61,7 @@ public:
       case cmtk::TYPE_SHORT:
       case cmtk::TYPE_USHORT:
       case cmtk::TYPE_INT:
+      case cmtk::TYPE_UINT:
       case cmtk::TYPE_FLOAT:
       case cmtk::TYPE_DOUBLE:
 	if ( this->m_NewType != volume->GetData()->GetType() ) 
@@ -102,6 +103,12 @@ public:
   static void NewInt()
   {
     ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_INT ) ) );
+  }
+
+  /// Create object to convert to "unsigned int" data.
+  static void NewUInt()
+  {
+    ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationConvertType( cmtk::TYPE_UINT ) ) );
   }
 
   /// Create object to convert to "float" data.
