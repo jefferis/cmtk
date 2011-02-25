@@ -1,9 +1,9 @@
 Release CMTK-1.6.2:
 
+(r2908) Changed: "--verbose" output now written to standard output, not
+    standard error (Issue #5496).
 (r2905) Added: "reformatx" and "convertx" tools now support "unsigned int"
     pixel data type for output files (Issue #5497).
-(r2904) Changed: "--verbose" output now written to standard output, not
-    standard error (Issue #5496).
 
 Release CMTK-1.6.1 (2011-02-17):
 
