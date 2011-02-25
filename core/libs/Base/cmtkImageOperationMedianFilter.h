@@ -43,7 +43,7 @@ cmtk
 /** \addtogroup Base */
 //@{
 
-/// Image operation: grid downsampling.
+/// Image operation: median filtering.
 class ImageOperationMedianFilter
 /// Inherit from image operation base class.
   : public ImageOperation
