@@ -146,11 +146,11 @@ VolumeIO::Read( const char* path, const bool verbose )
     if ( dataArray ) 
       {
       const Types::DataItemRange range = dataArray->GetRange();
-      StdErr.printf( "Data type %s, range [%f .. %f]\n", DataTypeName[ dataArray->GetType() ], static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
+      StdOut.printf( "Data type %s, range [%f .. %f]\n", DataTypeName[ dataArray->GetType() ], static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
       } 
     else
       {
-      StdErr << "Image does not contain valid data.\n";
+      StdOut << "Image does not contain valid data.\n";
       }
     }
 
