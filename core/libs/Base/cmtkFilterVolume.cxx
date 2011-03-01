@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -127,14 +127,6 @@ FilterVolume::GaussianFilter
   Progress::Done();
 
   return filtered;
-}
-
-void 
-printBlock
-( Types::DataItem block[COUPE_BLOCK_SIZE] )
-{
-  for ( int i = 0; i < COUPE_BLOCK_SIZE; i++ )
-    std::cout << block[i] << "   ";
 }
 
 TypedArray::SmartPtr
@@ -654,7 +646,7 @@ FilterVolume::VarianceFilter
         int offset = x + dimX * ( y + dimY * z );
         FilterVolume::GetNeighborhood( neighborhood, windowRadius, inputData, dims, x, y, z );
         Types::DataItem mean = FilterVolume::Mean( neighborhood, neighborhoodSize );
-        Types::DataItem variance = FilterVolume::Variance( neighborhood, COUPE_BLOCK_RADIUS, mean );
+        Types::DataItem variance = FilterVolume::Variance( neighborhood, neighborhoodSize, mean );
         filtered->Set( variance, offset );
         }
   return filtered;

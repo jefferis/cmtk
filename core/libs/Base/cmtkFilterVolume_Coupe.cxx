@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,6 +31,9 @@
 */
 
 #include "cmtkFilterVolume.h"
+
+#define COUPE_BLOCK_SIZE 27
+#define COUPE_BLOCK_RADIUS 1
 
 namespace
 cmtk
@@ -417,8 +420,6 @@ FilterVolume::CoupeFilter
   /*  Loop through the image, computing NL estimates
    *  for each voxel.
    */
-//  CoupeBlock centerBlock;
-//  CoupeBlock curNL;
   Types::DataItem blockAtCurVox = 0.0;
   for ( int Cz = blockRadius; Cz < dimZ - blockRadius; Cz ++ )
     {

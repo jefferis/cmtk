@@ -35,9 +35,6 @@
 
 #include <cmtkconfig.h>
 
-#define COUPE_BLOCK_SIZE 27
-#define COUPE_BLOCK_RADIUS 1
-
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkTypedArray.h>
 #include <Base/cmtkUnits.h>
@@ -53,9 +50,6 @@ cmtk
 class FilterVolume
 {
 public:
-
-  typedef Types::DataItem CoupeBlock[COUPE_BLOCK_SIZE];
-
   /** Apply Gaussian filter.
    *\param volume Input 3D image.
    *\param width Width (standard deviation) of the Gaussian kernel.
