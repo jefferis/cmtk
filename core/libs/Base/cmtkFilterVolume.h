@@ -81,6 +81,72 @@ public:
     const int windowRadius,
     const float beta = 0.5 );
 
+  /** Apply neighborhood-mean filter.
+   *\param volume Input 3D image.
+   *\param windowRadius Distance from center voxel to outer edge of window 
+   *\return A newly allocated TypedArray object that can be used, for 
+   * example, to replace the one held by the input image. The data type of the
+   * array is identical to the input array.
+   */
+  static TypedArray::SmartPtr MeanFilter
+  ( const UniformVolume* volume, 
+    const int windowRadius );
+
+  /** Apply neighborhood-variance filter.
+   *\param volume Input 3D image.
+   *\param windowRadius Distance from center voxel to outer edge of window 
+   *\return A newly allocated TypedArray object that can be used, for 
+   * example, to replace the one held by the input image. The data type of the
+   * array is identical to the input array.
+   */
+  static TypedArray::SmartPtr VarianceFilter
+  ( const UniformVolume* volume, 
+    const int windowRadius );
+
+  /** Apply neighborhood-third-moment filter.
+   *\param volume Input 3D image.
+   *\param windowRadius Distance from center voxel to outer edge of window 
+   *\return A newly allocated TypedArray object that can be used, for 
+   * example, to replace the one held by the input image. The data type of the
+   * array is identical to the input array.
+   */
+  static TypedArray::SmartPtr ThirdMomentFilter
+  ( const UniformVolume* volume, 
+    const int windowRadius );
+
+  /** Apply neighborhood-standard-deviation filter.
+   *\param volume Input 3D image.
+   *\param windowRadius Distance from center voxel to outer edge of window 
+   *\return A newly allocated TypedArray object that can be used, for 
+   * example, to replace the one held by the input image. The data type of the
+   * array is identical to the input array.
+   */
+  static TypedArray::SmartPtr SDFilter
+  ( const UniformVolume* volume, 
+    const int windowRadius );  
+
+  /** Apply neighborhood-smoothness filter.
+   *\param volume Input 3D image.
+   *\param windowRadius Distance from center voxel to outer edge of window 
+   *\return A newly allocated TypedArray object that can be used, for 
+   * example, to replace the one held by the input image. The data type of the
+   * array is identical to the input array.
+   */
+  static TypedArray::SmartPtr SmoothnessFilter
+  ( const UniformVolume* volume, 
+    const int windowRadius );
+  
+  /** Apply neighborhood-entropy filter.
+   *\param volume Input 3D image.
+   *\param windowRadius Distance from center voxel to outer edge of window 
+   *\return A newly allocated TypedArray object that can be used, for 
+   * example, to replace the one held by the input image. The data type of the
+   * array is identical to the input array.
+   */
+  static TypedArray::SmartPtr NeighborhoodEntropyFilter
+  ( const UniformVolume* volume, 
+    const int windowRadius );
+
   /** Apply Torsten Rohlfing's single-image intensity-consistent Gaussian filter.
    *\param volume Input 3D image.
    *\param subjectData Pixel array of the individual grey image from this 
@@ -151,18 +217,52 @@ public:
     const TypedArray* averageData, const TypedArray* maskData,
     std::list<TypedArray::SmartPtr> imgList, const Types::DataItem binWidth,
     const Units::GaussianSigma& filterWidth, const Types::Coordinate filterRadius );
+
 private:
   /** Return the mean value of a vector of Types::DataItems.
    *\param items Block of Types::DataItems. 
    */
-  static Types::DataItem Mean( CoupeBlock items );
+  static Types::DataItem Mean( TypedArray::SmartPtr items, const int numItems );
 
   /** Return the variance of a vector of Types::DataItems.
    *\param items Block of Types::DataItems.
    *\param mean The (pre-computed) mean value of the items vector.
    */
-  static Types::DataItem Variance( CoupeBlock items, const Types::DataItem mean );
+  static Types::DataItem Variance( TypedArray::SmartPtr items, const int numItems, const Types::DataItem mean );
+
+  /** Return the third moment of a vector of Types::DataItems.
+   *\param items Block of Types::DataItems.
+   *\param mean The (pre-computed) mean value of the items vector.
+   */
+  static Types::DataItem ThirdMoment( TypedArray::SmartPtr items, const int numItems, const Types::DataItem mean, const bool normalized = true );
+
+  /** Return the stddev of a vector of Types::DataItems.
+   *\param items Block of Types::DataItems.
+   *\param mean The (pre-computed) mean value of the items vector.
+   */
+  static Types::DataItem StdDev( TypedArray::SmartPtr items, const int numItems, const Types::DataItem mean );
+
+  /** Return the "smoothness" of a vector of Types::DataItems.
+   *  Smoothness = 1 - 1/(1 + Variance)
+   *\param items Block of Types::DataItems.
+   *\param mean The (pre-computed) mean value of the items vector.
+   */
+  static Types::DataItem Smoothness( TypedArray::SmartPtr items, const int numItems, const Types::DataItem mean, const bool normalized = true );
  
+  /** Fill an array with the neighborhood centered around a given voxel.
+   * Note that this routine will only include existing
+   * voxels.  So asking for a block near the edge
+   * of a volume will produce a truncated block.
+   *\param block To store the newly-fetched block
+   *\param data Data array from input 3D image.
+   *\param dims Dimensions of the input 3D image.
+   *\param x X-coordinate of block center.
+   *\param y Y-coordinate of block center.
+   *\param z Z-coordinate of block center.
+   */
+  static void GetNeighborhood( TypedArray::SmartPtr neighborhood, const int radius, const TypedArray* data, 
+			       const int* dims, const int x, const int y, const int z );
+  
   /** Fill a CoupeBlock with the block centered around a given voxel.
    * Note that this routine will only include existing
    * voxels.  So asking for a block near the edge
@@ -174,7 +274,7 @@ private:
    *\param y Y-coordinate of block center.
    *\param z Z-coordinate of block center.
    */
-  static void GetCoupeBlock( CoupeBlock block, const TypedArray* data, const int* dims, const int x, const int y, const int z );
+  static void GetCoupeBlock( TypedArray::SmartPtr block, const TypedArray* data, const int* dims, const int x, const int y, const int z );
 
   /** Compute the NL-weighting factor between two blocks.
    *\param smoothingParam Smoothing parameter for the weighting function
@@ -183,33 +283,33 @@ private:
    */
   static double ComputeCoupeWeight
   ( const Types::DataItem smoothingParam,
-    CoupeBlock centerBlock, 
-    CoupeBlock outerBlock );
+    TypedArray::SmartPtr centerBlock, 
+    TypedArray::SmartPtr outerBlock );
 
   /** Add two blocks, in-place on the first block.
    *\param v1 First vector addend, becomes the sum
    *\param v2 Second vector addend
    */
   static void BlockAddInPlace
-  ( CoupeBlock v1, CoupeBlock v2 );
+  ( TypedArray::SmartPtr v1, TypedArray::SmartPtr v2, const int blockSize );
 
   /** Subtract two blocks.
    *\param diff Block to contain the difference between v1 and v2
    *\param v1 First block subtrahend
    *\param v2 Second block subtrahend
    */
-  static void BlockSubtract( CoupeBlock diff, CoupeBlock v1, CoupeBlock v2 );
+  static void BlockSubtract( TypedArray::SmartPtr diff, TypedArray::SmartPtr v1, TypedArray::SmartPtr v2, const int blockSize );
 
   /** Return the product of the input vector multiplied by a constant float.
    *\param prod An block to store the product
    *\param items An block containing the items to be multiplied
    *\param mult The constant to multiply by
    */
-  static void BlockConstMult( CoupeBlock prod, CoupeBlock items, const Types::DataItem mult );
+  static void BlockConstMult( TypedArray::SmartPtr prod, TypedArray::SmartPtr items, const Types::DataItem mult, const int blockSize );
   
   /** Return the squared Euclidean distance between two blocks.
    */
-  static double BlockSquaredDistance( CoupeBlock centerBlock, CoupeBlock outerBlock );
+  static double BlockSquaredDistance( TypedArray::SmartPtr centerBlock, TypedArray::SmartPtr outerBlock, const int blockSize );
  
   /** Process a window for NL-means accumulation.
    *\param NL Block in which to put the NL computation
@@ -227,7 +327,7 @@ private:
    *\param centerBlock The block to be restored using NL-means
    */
    static void ComputeNLWithinWindow
-  ( CoupeBlock NL,
+  ( TypedArray::SmartPtr NL,
     const TypedArray* blockLocations,
     const TypedArray* data, const int* dims, const Types::DataItem smoothingParam,
     const int x, const int y, const int z, 
@@ -235,7 +335,7 @@ private:
     const float beta, 
     const TypedArray* localMeansMap, 
     const TypedArray* localVariancesMap, 
-    CoupeBlock centerBlock );
+    TypedArray::SmartPtr centerBlock );
 };
 
 //@}

@@ -36,94 +36,98 @@ namespace
 cmtk
 {
 
-Types::DataItem
-FilterVolume::Mean
-( CoupeBlock items )
-{
-  Types::DataItem sum = 0.0;
-  for ( int i = 0; i < COUPE_BLOCK_SIZE; i++ )
-    sum += items[i];
-  return sum / COUPE_BLOCK_SIZE;
-}
-
-Types::DataItem
-FilterVolume::Variance
-( CoupeBlock items, const Types::DataItem mean )
-{
-  Types::DataItem sum = 0.0;
-  for ( int i = 0; i < COUPE_BLOCK_SIZE; i++ )
-    sum += pow( items[i] - mean, 2 );
-  return sum / COUPE_BLOCK_SIZE;
-}
-
 void
 FilterVolume::BlockAddInPlace
-( CoupeBlock v1, CoupeBlock v2 )
+( TypedArray::SmartPtr v1, TypedArray::SmartPtr v2, const int blockSize )
 {
-  
-  for ( int i = 0; i < COUPE_BLOCK_SIZE; i++ )
-    v1[i] += v2[i] ;
+  Types::DataItem item1;
+  Types::DataItem item2;
+  for ( int i = 0; i < blockSize; i++ ) {
+    v1->Get(item1, i);
+    v2->Get(item2, i);
+    v1->Set( item1+item2, i );
+  }
 }
 
 void
 FilterVolume::BlockSubtract
-( CoupeBlock diff, CoupeBlock v1, CoupeBlock v2 )
+( TypedArray::SmartPtr diff, TypedArray::SmartPtr v1, TypedArray::SmartPtr v2, const int blockSize)
 {
-  for ( int i = 0; i < COUPE_BLOCK_SIZE; i++ )
-    diff[i] = v1[i] - v2[i];
+  Types::DataItem item1;
+  Types::DataItem item2;
+  for ( int i = 0; i < blockSize; i++ ) {
+    v1->Get(item1, i);
+    v2->Get(item2, i);
+    diff->Set( item1-item2, i );
+  }
 }
 
 void
 FilterVolume::BlockConstMult
-( CoupeBlock prod, CoupeBlock items, const Types::DataItem mult )
+( TypedArray::SmartPtr prod, TypedArray::SmartPtr items, const Types::DataItem mult, const int blockSize )
 {
-  for ( int i = 0; i < COUPE_BLOCK_SIZE; i++ )
-    prod[i] = items[i] * mult;
+  Types::DataItem curItem;
+  for ( int i = 0; i < blockSize; i++ ) {
+    items->Get(curItem, i);
+    prod->Set( curItem * mult, i );
+  }
 }
 
 double
 FilterVolume::BlockSquaredDistance
-( CoupeBlock centerBlock, CoupeBlock outerBlock )
+( TypedArray::SmartPtr centerBlock, TypedArray::SmartPtr outerBlock, const int blockSize )
 {
-  CoupeBlock diff; 
-  BlockSubtract( diff, centerBlock, outerBlock );   
+  TypedArray::SmartPtr diff = TypedArray::Create( centerBlock->GetType(), blockSize );
+  BlockSubtract( diff, centerBlock, outerBlock, blockSize );   
   
   Types::DataItem sum = 0.0;
-  for ( int i = 0; i < COUPE_BLOCK_SIZE; i++ )
-    sum += pow( diff[i], 2 );
+  Types::DataItem curItem;
+  for ( int i = 0; i < blockSize; i++ ) {
+    diff->Get(curItem, i);
+    sum += pow( curItem, 2 );
+  }
   return ( sum );  // Coupe paper uses squared distance
 }
 
 void
-FilterVolume::GetCoupeBlock
-( CoupeBlock block,
+FilterVolume::GetNeighborhood
+( TypedArray::SmartPtr neighborhood,
+  const int radius,
   const TypedArray* data, const int* dims,
   const int x, const int y, const int z )
 {
 
-  const int blockRadius = COUPE_BLOCK_RADIUS;
   int curBlockSlot = 0;
   /*  No bounds-checking here.  The program should fail if 
    *  a block is requested too close to the edge of the image.
    */
-  for ( int k = z - blockRadius; k <= z + blockRadius; ++k )
-    for ( int j = y - blockRadius; j <= y + blockRadius; ++j )
-      for ( int i = x - blockRadius; i <= x + blockRadius; ++i ) 
+  for ( int k = z - radius; k <= z + radius; ++k )
+    for ( int j = y - radius; j <= y + radius; ++j )
+      for ( int i = x - radius; i <= x + radius; ++i ) 
         {
         int offset = i + dims[AXIS_X] * ( j + dims[AXIS_Y] * k );
         Types::DataItem value;
         data->Get( value, offset );
-        block[curBlockSlot++] = value;
+        neighborhood->Set( value, curBlockSlot++ );
         }
+}
+
+void
+FilterVolume::GetCoupeBlock
+( TypedArray::SmartPtr block,
+  const TypedArray* data, const int* dims,
+  const int x, const int y, const int z )
+{
+  FilterVolume::GetNeighborhood( block, COUPE_BLOCK_RADIUS, data, dims, x, y, z );
 }
 
 double 
 FilterVolume::ComputeCoupeWeight
 ( const Types::DataItem smoothingParam, 
-  CoupeBlock centerBlock, 
-  CoupeBlock outerBlock )
+  TypedArray::SmartPtr centerBlock, 
+  TypedArray::SmartPtr outerBlock )
 {
-  const double numerator = BlockSquaredDistance( centerBlock, outerBlock );
+  const double numerator = BlockSquaredDistance( centerBlock, outerBlock, COUPE_BLOCK_SIZE );
   
   double weight = 1.0;
   if ( numerator != 0 )
@@ -135,7 +139,7 @@ FilterVolume::ComputeCoupeWeight
 
 void
 FilterVolume::ComputeNLWithinWindow
-( CoupeBlock NL,
+( TypedArray::SmartPtr NL,
   const TypedArray* blockLocations,
   const TypedArray* data, const int* dims, const Types::DataItem smoothingParam,
   const int x, const int y, const int z, 
@@ -143,7 +147,7 @@ FilterVolume::ComputeNLWithinWindow
   const float, // beta 
   const TypedArray* localMeansMap, 
   const TypedArray* localVariancesMap, 
-  CoupeBlock centerBlock )
+  TypedArray::SmartPtr centerBlock )
 {
 
   /*  These two constants were determined experimentally
@@ -164,16 +168,16 @@ FilterVolume::ComputeNLWithinWindow
   Types::DataItem centerBlockMean, centerBlockVariance;
   localMeansMap->Get( centerBlockMean, centerOffset );
   localVariancesMap->Get( centerBlockVariance, centerOffset );
-  CoupeBlock curBlock;
+  TypedArray::SmartPtr curBlock = TypedArray::Create( data->GetType(), COUPE_BLOCK_SIZE );
   int offset = 0;
   Types::DataItem blockAtCurVox = 0.0;
-#ifdef CMTK_VAR_AUTO_ARRAYSIZE
-  Types::DataItem neighborBlocks[windowSize][COUPE_BLOCK_SIZE];
-  Types::DataItem neighborWeights[windowSize];
-#else
+//#ifdef CMTK_VAR_AUTO_ARRAYSIZE
+//  Types::DataItem neighborBlocks[windowSize][COUPE_BLOCK_SIZE];
+//  Types::DataItem neighborWeights[windowSize];
+//#else
   Matrix2D<Types::DataItem> neighborBlocks( windowSize, COUPE_BLOCK_SIZE );
   std::vector<Types::DataItem> neighborWeights( windowSize );
-#endif
+//#endif
   Types::DataItem curBlockMean, curBlockVariance;
   Types::DataItem ratioBlockMean, ratioBlockVariance;
   for ( int k = z - windowRadius; k <= z + windowRadius; k++ )
@@ -189,7 +193,8 @@ FilterVolume::ComputeNLWithinWindow
               blockLocations->Get( blockAtCurVox, offset ); 
               if ( blockAtCurVox ) // if there's a block here
                 {
-                GetCoupeBlock( curBlock, data, dims, i, j, k );
+                //FilterVolume::GetCoupeBlock( curBlock, data, dims, i, j, k );
+                FilterVolume::GetNeighborhood( curBlock, COUPE_BLOCK_RADIUS, data, dims, i, j, k );
                 localMeansMap->Get( curBlockMean, offset );
                 localVariancesMap->Get( curBlockVariance, offset );
                 ratioBlockMean = centerBlockMean / curBlockMean;
@@ -276,29 +281,37 @@ FilterVolume::ComputeNLWithinWindow
     weightsSum += neighborWeights[i];
 
   for ( int i = 0; i < COUPE_BLOCK_SIZE; i++ )
-    NL[i] = 0.0;
+    NL->Set( 0.0, i );
 
+  Types::DataItem curVal;
   //if ( weightsSum > 1e-9 ) 
   if ( weightsSum != 0 ) 
     {
     /*  Multiply each neighborBlock by its normalized weight,
      *  then add that to the output NL value.
      */  
-    CoupeBlock weightedCurBlock;
+    TypedArray::SmartPtr weightedCurBlock;
     Types::DataItem tmp = 0.0;
     for ( int i = 0; i < numNeighborsUsed; i++ )
       {
       Types::DataItem normalizedWeight = 0;
         normalizedWeight = neighborWeights[i] / weightsSum;
-
       tmp += normalizedWeight;
-      BlockConstMult( weightedCurBlock, neighborBlocks[i], normalizedWeight );
-      BlockAddInPlace( NL, weightedCurBlock );
+      for (int b = 0; b < COUPE_BLOCK_SIZE; b++) {
+        curVal = neighborBlocks[i][b];
+        curBlock->Set( curVal, b );
+      }
+      BlockConstMult( weightedCurBlock, curBlock, normalizedWeight, COUPE_BLOCK_SIZE );
+      BlockAddInPlace( NL, weightedCurBlock, COUPE_BLOCK_SIZE );
       }
     }
   else
     {
-    BlockAddInPlace( NL, neighborBlocks[centerBlockPos] );
+      for (int b = 0; b < COUPE_BLOCK_SIZE; b++) {
+        curVal = neighborBlocks[centerBlockPos][b];
+        curBlock->Set( curVal, b );
+      }    
+      BlockAddInPlace( NL, curBlock, COUPE_BLOCK_SIZE );
     }
     //std::cout <<x<< ","<<y<<","<<z<<"\t"<< (weightsSum-neighborWeights[centerBlockPos])/(numNeighborsUsed-1);
     //std::cout << "\t" << neighborWeights[centerBlockPos] <<"\n";
@@ -385,7 +398,7 @@ FilterVolume::CoupeFilter
 
   /*  Precompute the local means and local variances maps
    */
-  CoupeBlock curBlock;
+  TypedArray::SmartPtr curBlock = TypedArray::Create( inputData->GetType(), COUPE_BLOCK_SIZE );
   TypedArray::SmartPtr localMeansMap = TypedArray::Create( TYPE_DOUBLE, inputData->GetDataSize() );
   TypedArray::SmartPtr localVariancesMap = TypedArray::Create( TYPE_DOUBLE, inputData->GetDataSize() );
   for ( int z = blockRadius; z < dimZ - blockRadius; z++ )
@@ -393,9 +406,10 @@ FilterVolume::CoupeFilter
       for ( int x = blockRadius; x < dimX - blockRadius; x++ )
 	{
         int offset = x + dimX * ( y + dimY * z );
-        FilterVolume::GetCoupeBlock( curBlock, inputData, dims, x, y, z );
-        Types::DataItem mean = FilterVolume::Mean( curBlock );
-        Types::DataItem variance = FilterVolume::Variance( curBlock, mean );
+        FilterVolume::GetNeighborhood( curBlock, COUPE_BLOCK_RADIUS, inputData, dims, x, y, z );
+        //FilterVolume::GetCoupeBlock( curBlock, inputData, dims, x, y, z );
+        Types::DataItem mean = FilterVolume::Mean( curBlock, COUPE_BLOCK_RADIUS );
+        Types::DataItem variance = FilterVolume::Variance( curBlock, COUPE_BLOCK_RADIUS, mean );
         localMeansMap->Set( mean, offset);
         localVariancesMap->Set( variance, offset);
         }

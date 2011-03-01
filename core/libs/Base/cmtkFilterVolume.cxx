@@ -537,4 +537,255 @@ FilterVolume::StudholmeFilter
   return filtered;
 }
 
+Types::DataItem
+FilterVolume::Mean
+( TypedArray::SmartPtr items, const int numItems )
+{
+  Types::DataItem sum = 0.0;
+  Types::DataItem curItem;
+  for ( int i = 0; i < numItems; i++ ) {
+    items->Get(curItem, i);
+    sum += curItem;
+  }
+  return sum / numItems;
+}
+
+Types::DataItem
+FilterVolume::Variance
+( TypedArray::SmartPtr items, const int numItems, const Types::DataItem mean )
+{
+  Types::DataItem sum = 0.0;
+  Types::DataItem curItem;
+  for ( int i = 0; i < numItems; i++ ) {
+    items->Get(curItem, i);
+    sum += pow( curItem - mean, 2 );
+  }
+  return sum / numItems;
+}
+
+Types::DataItem
+FilterVolume::StdDev
+( TypedArray::SmartPtr items, const int numItems, const Types::DataItem mean )
+{
+  return sqrt( FilterVolume::Variance( items, numItems, mean ) );
+}
+
+Types::DataItem
+FilterVolume::Smoothness
+( TypedArray::SmartPtr items, const int numItems, const Types::DataItem mean, const bool normalized )
+{
+  Types::DataItem variance = FilterVolume::Variance( items, numItems, mean );
+  if (normalized) 
+    variance /= pow( numItems-1, 2 );
+
+  return 1 - 1/(1 + variance );
+}
+
+Types::DataItem
+FilterVolume::ThirdMoment
+( TypedArray::SmartPtr items, const int numItems, const Types::DataItem mean, const bool normalized )
+{
+  Types::DataItem sum = 0.0;
+  Types::DataItem curItem;
+  for ( int i = 0; i < numItems; i++ ) {
+    items->Get(curItem, i);
+    sum += pow( curItem - mean, 3 );
+  }
+  if (normalized) {
+    return sum /= pow( numItems-1, 2 );
+  } else {
+    return sum;
+  }
+}
+
+TypedArray::SmartPtr
+FilterVolume::MeanFilter
+( const UniformVolume* volume, 
+  const int windowRadius )
+{
+
+  const TypedArray* inputData = volume->GetData();
+  if ( ! inputData ) 
+    return TypedArray::SmartPtr( NULL );
+
+  TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
+  const int* dims = volume->GetDims().begin();
+  const int dimX = dims[AXIS_X];
+  const int dimY = dims[AXIS_Y];
+  const int dimZ = dims[AXIS_Z];
+  const int neighborhoodSize = pow( 2 * windowRadius + 1, 3);
+
+  TypedArray::SmartPtr neighborhood = TypedArray::Create( inputData->GetType(), neighborhoodSize );
+  TypedArray::SmartPtr localVariancesMap = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
+  for ( int z = windowRadius; z < dimZ - windowRadius; z++ )
+    for ( int y = windowRadius; y < dimY - windowRadius ; y++ )
+      for ( int x = windowRadius; x < dimX - windowRadius; x++ )
+	{
+        int offset = x + dimX * ( y + dimY * z );
+        FilterVolume::GetNeighborhood( neighborhood, windowRadius, inputData, dims, x, y, z );
+        Types::DataItem mean = FilterVolume::Mean( neighborhood, neighborhoodSize );
+        filtered->Set( mean, offset);
+        }
+  return filtered;
+}
+
+TypedArray::SmartPtr
+FilterVolume::VarianceFilter
+( const UniformVolume* volume, 
+  const int windowRadius )
+{
+
+  const TypedArray* inputData = volume->GetData();
+  if ( ! inputData ) 
+    return TypedArray::SmartPtr( NULL );
+
+  TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
+  const int* dims = volume->GetDims().begin();
+  const int dimX = dims[AXIS_X];
+  const int dimY = dims[AXIS_Y];
+  const int dimZ = dims[AXIS_Z];
+  const int neighborhoodSize = pow( 2 * windowRadius + 1, 3);
+  
+  TypedArray::SmartPtr neighborhood = TypedArray::Create( inputData->GetType(), neighborhoodSize );
+  for ( int z = windowRadius; z < dimZ - windowRadius; z++ )
+    for ( int y = windowRadius; y < dimY - windowRadius ; y++ )
+      for ( int x = windowRadius; x < dimX - windowRadius; x++ )
+	{
+        int offset = x + dimX * ( y + dimY * z );
+        FilterVolume::GetNeighborhood( neighborhood, windowRadius, inputData, dims, x, y, z );
+        Types::DataItem mean = FilterVolume::Mean( neighborhood, neighborhoodSize );
+        Types::DataItem variance = FilterVolume::Variance( neighborhood, COUPE_BLOCK_RADIUS, mean );
+        filtered->Set( variance, offset );
+        }
+  return filtered;
+}
+
+TypedArray::SmartPtr
+FilterVolume::SDFilter
+( const UniformVolume* volume, 
+  const int windowRadius )
+{
+
+  const TypedArray* inputData = volume->GetData();
+  if ( ! inputData ) 
+    return TypedArray::SmartPtr( NULL );
+
+  TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
+  const int* dims = volume->GetDims().begin();
+  const int dimX = dims[AXIS_X];
+  const int dimY = dims[AXIS_Y];
+  const int dimZ = dims[AXIS_Z];
+  const int neighborhoodSize = pow( 2 * windowRadius + 1, 3);
+  
+  TypedArray::SmartPtr neighborhood = TypedArray::Create( inputData->GetType(), neighborhoodSize );
+  for ( int z = windowRadius; z < dimZ - windowRadius; z++ )
+    for ( int y = windowRadius; y < dimY - windowRadius ; y++ )
+      for ( int x = windowRadius; x < dimX - windowRadius; x++ )
+	{
+        int offset = x + dimX * ( y + dimY * z );
+        FilterVolume::GetNeighborhood( neighborhood, windowRadius, inputData, dims, x, y, z );
+        Types::DataItem mean = FilterVolume::Mean( neighborhood, neighborhoodSize );
+        Types::DataItem stddev = FilterVolume::StdDev( neighborhood, neighborhoodSize, mean );
+        filtered->Set( stddev, offset );
+        }
+  return filtered;
+}
+
+TypedArray::SmartPtr
+FilterVolume::ThirdMomentFilter
+( const UniformVolume* volume, 
+  const int windowRadius )
+{
+
+  const TypedArray* inputData = volume->GetData();
+  if ( ! inputData ) 
+    return TypedArray::SmartPtr( NULL );
+
+  TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
+  const int* dims = volume->GetDims().begin();
+  const int dimX = dims[AXIS_X];
+  const int dimY = dims[AXIS_Y];
+  const int dimZ = dims[AXIS_Z];
+  const int neighborhoodSize = pow( 2 * windowRadius + 1, 3);
+  
+  TypedArray::SmartPtr neighborhood = TypedArray::Create( inputData->GetType(), neighborhoodSize );
+  for ( int z = windowRadius; z < dimZ - windowRadius; z++ )
+    for ( int y = windowRadius; y < dimY - windowRadius ; y++ )
+      for ( int x = windowRadius; x < dimX - windowRadius; x++ )
+	{
+        int offset = x + dimX * ( y + dimY * z );
+        FilterVolume::GetNeighborhood( neighborhood, windowRadius, inputData, dims, x, y, z );
+        Types::DataItem mean = FilterVolume::Mean( neighborhood, neighborhoodSize );
+        Types::DataItem thirdmoment = FilterVolume::ThirdMoment( neighborhood, neighborhoodSize, mean );
+        filtered->Set( thirdmoment, offset );
+        }
+  return filtered;
+}
+
+TypedArray::SmartPtr
+FilterVolume::SmoothnessFilter
+( const UniformVolume* volume, 
+  const int windowRadius )
+{
+
+  const TypedArray* inputData = volume->GetData();
+  if ( ! inputData ) 
+    return TypedArray::SmartPtr( NULL );
+
+  TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
+  const int* dims = volume->GetDims().begin();
+  const int dimX = dims[AXIS_X];
+  const int dimY = dims[AXIS_Y];
+  const int dimZ = dims[AXIS_Z];
+  const int neighborhoodSize = pow( 2 * windowRadius + 1, 3);
+  
+  TypedArray::SmartPtr neighborhood = TypedArray::Create( inputData->GetType(), neighborhoodSize );
+  for ( int z = windowRadius; z < dimZ - windowRadius; z++ )
+    for ( int y = windowRadius; y < dimY - windowRadius ; y++ )
+      for ( int x = windowRadius; x < dimX - windowRadius; x++ )
+	{
+        int offset = x + dimX * ( y + dimY * z );
+        FilterVolume::GetNeighborhood( neighborhood, windowRadius, inputData, dims, x, y, z );
+        Types::DataItem mean = FilterVolume::Mean( neighborhood, neighborhoodSize );
+        Types::DataItem smoothness = FilterVolume::Smoothness( neighborhood, mean, true );
+        filtered->Set( smoothness, offset );
+        }
+  return filtered;
+}
+
+TypedArray::SmartPtr
+FilterVolume::NeighborhoodEntropyFilter
+( const UniformVolume* volume, 
+  const int windowRadius )
+{
+
+  const TypedArray* inputData = volume->GetData();
+  if ( ! inputData ) 
+    return TypedArray::SmartPtr( NULL );
+
+  TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
+  const int* dims = volume->GetDims().begin();
+  const int dimX = dims[AXIS_X];
+  const int dimY = dims[AXIS_Y];
+  const int dimZ = dims[AXIS_Z];
+  const int neighborhoodSize = pow( 2 * windowRadius + 1, 3 );
+  const Types::DataItemRange range = inputData->GetRange();
+  const int numBins = range.m_UpperBound - range.m_LowerBound;
+  std::cout << "numBins:" << numBins << std::endl;
+
+  Histogram<unsigned int>::SmartPtr histogram;
+  TypedArray::SmartPtr neighborhood = TypedArray::Create( inputData->GetType(), neighborhoodSize );
+  for ( int z = windowRadius; z < dimZ - windowRadius; z++ )
+    for ( int y = windowRadius; y < dimY - windowRadius ; y++ )
+      for ( int x = windowRadius; x < dimX - windowRadius; x++ )
+	{
+        int offset = x + dimX * ( y + dimY * z );
+        FilterVolume::GetNeighborhood( neighborhood, windowRadius, inputData, dims, x, y, z );
+        histogram = neighborhood->GetHistogram( numBins );
+        Types::DataItem entropy = neighborhood->GetEntropy( histogram );
+        filtered->Set( entropy, offset );
+        }
+  return filtered;
+}
+
 } // namespace cmtk
