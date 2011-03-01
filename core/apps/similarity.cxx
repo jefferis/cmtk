@@ -59,9 +59,6 @@
 
 bool Verbose = false;
 
-bool SwapVolumes = false;
-bool Absolute = false;
-
 bool Padding0 = false;
 bool Padding1 = false;
 
@@ -75,8 +72,8 @@ cmtk::UniformVolume::SmartPtr Volume1;
 
 bool OutsideBG = false;
 
-const char *Study0 = NULL;
-const char *Study1 = NULL;
+const char *imagePath0 = NULL;
+const char *imagePath1 = NULL;
 
 const char* MaskFileName = NULL;
 
@@ -91,34 +88,30 @@ ParseCommandLine( const int argc, const char* argv[] )
     {
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Image similarity" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute similarity between two images" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] image0 image1" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute similarity measures such as intensity difference or label overlaps between two images." );
     
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
     
-    cl.AddSwitch( Key( 's', "swap" ), &SwapVolumes, true, "Swap reference and floating image" );
     cl.AddSwitch( Key( "outside-bg" ), &OutsideBG, true, "Assume voxels outside floating image to be background" );
     
     cl.AddOption( Key( "pad0" ), &PaddingValue0, "Define padding value for reference image", &Padding0 );
     cl.AddOption( Key( "pad1" ), &PaddingValue1, "Define padding value for floating image", &Padding1 );
     
-    cl.AddSwitch( Key( 'g', "grey" ), &LabelMode, false, "Image pixels are intensities [default]" );
+    cl.AddSwitch( Key( 'g', "grey" ), &LabelMode, false, "Image pixels are intensities" );
     cl.AddSwitch( Key( 'l', "labels" ), &LabelMode, true, "Image pixels are labels" );
     
-    cl.AddOption( Key( "study0" ), &Study0, "Override reference study in studylist" );
-    cl.AddOption( Key( "study1" ), &Study1, "Override floating study in studylist" );
     cl.AddOption( Key( 'm', "mask" ), &MaskFileName, "Mask file for optional region-based analysis" );
     
     cl.AddOption( Key( "force-max" ), &ForceMaxLabel, "Force maximum label value" );
     
     cl.AddOption( Key( "histogram-text-file" ), &HistogramTextFileName, "Output file name for histogram (plain text format)." );
     
+    cl.AddParameter( &imagePath0, "Image0", "First input image path. When applicable, this provides the 'ground truth' image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameter( &imagePath1, "Image1", "Second input image path. When applicable, this provides the 'test' image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+
     if ( !cl.Parse( argc, argv ) ) return false;
-    
-    Study0 = cl.GetNext();
-    Study1 = cl.GetNext();
-    }
+        }
   catch ( const cmtk::CommandLine::Exception& ex ) 
     {
     cmtk::StdErr << ex << "\n";
@@ -254,7 +247,7 @@ doMain ( const int argc, const char* argv[] )
 {
   if ( ! ParseCommandLine( argc, argv ) ) return 1;
 
-  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( Study0, Verbose ) );
+  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( imagePath0, Verbose ) );
   if ( ! volume ) throw cmtk::ExitException( 1 );
   Volume0 = volume;
   if ( Padding0 ) 
@@ -270,7 +263,7 @@ doMain ( const int argc, const char* argv[] )
       mask = maskVolume->GetData();
     }
   
-  volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( Study1, Verbose ) );
+  volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( imagePath1, Verbose ) );
   if ( ! volume ) throw cmtk::ExitException( 1 );
   Volume1 = volume;
   if ( Padding1 ) 
@@ -339,15 +332,15 @@ doMain ( const int argc, const char* argv[] )
 	const unsigned int correct = ( i < numberLabelsFlt ) ? histogram->GetBin( i, i ) : 0;
 	avgRecog += static_cast<double>( (1.0 * correct) / totalRef );
 	
-	unsigned int missed = 0, wrong = 0;
+	unsigned int falseNeg = 0, falsePos = 0;
 	for ( unsigned int j = 0; j < numberLabelsFlt; ++j ) 
 	  {
 	  if ( i != j ) 
 	    {
 	    if ( (i < numberLabelsFlt) && (j < numberLabelsRef) )
 	      {
-	      missed += histogram->GetBin( i, j );
-	      wrong += histogram->GetBin( j, i );
+	      falseNeg += histogram->GetBin( i, j );
+	      falsePos += histogram->GetBin( j, i );
 	      }
 	    }
 	  }
@@ -358,7 +351,7 @@ doMain ( const int argc, const char* argv[] )
 	const unsigned int totalRefFlt = totalRef + totalFlt - correct;
 	const double J = static_cast<double>( 1.0 * correct / totalRefFlt ); // Jaccard index
 	fprintf( stdout, "\nLabel #%d:\t%d\t%d\t%.2lf\t%d\t%.2lf\t%d\t%.2lf\t%.5lf\t%.5lf", 
-		 i, totalRef, correct, 100.0 * correct / totalRef, missed, 100.0 * missed / totalRef, wrong, 100.0 * wrong / totalRef, SI, J );
+		 i, totalRef, correct, 100.0 * correct / totalRef, falseNeg, 100.0 * falseNeg / totalRef, falsePos, 100.0 * falsePos / totalRef, SI, J );
 	
 	if ( i )
 	  { // assume background is label #0 and exclude this
