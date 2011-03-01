@@ -316,7 +316,7 @@ doMain ( const int argc, const char* argv[] )
     unsigned int numberLabelsFlt = histogram->GetNumBinsY();
     
     // SI : Similarity Index as defined by Dawant et al., TMI 18(10), 1999
-    fputs( "\n\t\tTotal\tCorrect\t%\tFalseN\t%\tFalseP\t%\tSI\tJ\n", stdout );
+    fputs( "\nLabel\tTotal\tCorrect\tCorr%\tFalseN\tFN%\tFalseP\tFP%\tSI\tJ\n", stdout );
     
     unsigned int sumTotal = 0, sumCorrect = 0, countLabels = 0;
     double sumSI = 0;
