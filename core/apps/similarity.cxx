@@ -350,7 +350,7 @@ doMain ( const int argc, const char* argv[] )
 
 	const unsigned int totalRefFlt = totalRef + totalFlt - correct;
 	const double J = static_cast<double>( 1.0 * correct / totalRefFlt ); // Jaccard index
-	fprintf( stdout, "\n%06d\t%d\t%d\t%.2lf\t%d\t%.2lf\t%d\t%.2lf\t%.5lf\t%.5lf", 
+	fprintf( stdout, "\n%06d\t%d\t%d\t%.5lf\t%d\t%.5lf\t%d\t%.5lf\t%.5lf\t%.5lf", 
 		 i, totalRef, correct, 1.0 * correct / totalRef, falseNeg, 1.0 * falseNeg / totalRef, falsePos, 1.0 * falsePos / totalRef, SI, J );
 	
 	if ( i )
