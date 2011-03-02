@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2010 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -72,7 +72,7 @@ cmtk::SplineWarpXformITKIO
       xform.GetShiftedControlPointPositionByOffset( vx, cp );
 
       vx -= v;
-      stream << " " << vx[0] << " " << vx[1] << " " << vx[2];
+      stream << " " << -vx[0] << " " << -vx[1] << " " << vx[2]; // convert from RAS to LPS by writing -x,-y,+z
       }
     stream << "\n";
 
