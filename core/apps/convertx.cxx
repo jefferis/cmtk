@@ -62,7 +62,7 @@
 #include <Base/cmtkImageOperationSetPadding.h>
 #include <Base/cmtkImageOperationMapValues.h>
 #include <Base/cmtkImageOperationReplace.h>
-#include <Base/cmtkImageOperationMedianFilter.h>
+#include <Base/cmtkImageOperationRegionFilter.h>
 #include <Base/cmtkImageOperationMedialSkeleton.h>
 #include <Base/cmtkImageOperationGaussFilter.h>
 #include <Base/cmtkImageOperationDistanceMap.h>
@@ -168,7 +168,21 @@ doMain( const int argc, const char* argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Filtering", "Filter Operations" );
-    cl.AddCallback( Key( "median-filter" ), &cmtk::ImageOperationMedianFilter::New, "Median filter. This operation takes the filter radius in pixels as the parameter. "
+    cl.AddCallback( Key( "median-filter" ), &cmtk::ImageOperationRegionFilter::NewMedian, "Median filter. This operation takes the filter radius in pixels as the parameter. "
+		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
+    cl.AddCallback( Key( "mean-filter" ), &cmtk::ImageOperationRegionFilter::NewMean, "Regional mean filter. This operation takes the filter radius in pixels as the parameter. "
+		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
+    cl.AddCallback( Key( "variance-filter" ), &cmtk::ImageOperationRegionFilter::NewVariance, "Regional variance filter. "
+		    "This operation takes the filter radius in pixels as the parameter. "
+		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
+    cl.AddCallback( Key( "third-moment-filter" ), &cmtk::ImageOperationRegionFilter::NewThirdMoment, "Regional third moment filter. "
+		    "This operation takes the filter radius in pixels as the parameter. "
+		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
+    cl.AddCallback( Key( "standard-deviation-filter" ), &cmtk::ImageOperationRegionFilter::NewStandardDeviation, "Regional standard deviation filter. "
+		    "This operation takes the filter radius in pixels as the parameter. "
+		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
+    cl.AddCallback( Key( "smoothness-filter" ), &cmtk::ImageOperationRegionFilter::NewSmoothness, "Regional 'smoothness' filter. "
+		    "This operation takes the filter radius in pixels as the parameter. "
 		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
     cl.AddCallback( Key( "gaussian-filter-sigma" ), &cmtk::ImageOperationGaussFilter::NewSigma, 
 		    "Filter image with Gaussian kernel. This operation takes a single real-valued parameter, which specifies the kernel coefficient sigma in world units [e.g., mm] as the parameter." );

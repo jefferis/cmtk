@@ -192,6 +192,11 @@ IF(NOT CMTK_USE_MPI)
     convertxMedianFilter1
     convertxMedianFilter2
     convertxMedianFilterXYZ
+    convertxMeanFilter
+    convertxVarianceFilter
+    convertxThirdMomentFilter
+    convertxStandardDeviationFilter
+    convertxSmoothnessFilter
     convertxNiftiToAnalyze
     convertxAnalyzeToNifti
     convertxAnalyzeToNiftiRAS

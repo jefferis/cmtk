@@ -61,7 +61,7 @@ SET(cmtkBase_SRCS
   cmtkImageOperationDownsample.cxx
   cmtkImageOperationHistogramEqualization.cxx
   cmtkImageOperationMapValues.cxx
-  cmtkImageOperationMedianFilter.cxx
+  cmtkImageOperationRegionFilter.cxx
   cmtkImageOperationMedialSkeleton.cxx
   cmtkImageOperationScaleToRange.cxx
   cmtkImageOperationThreshold.cxx

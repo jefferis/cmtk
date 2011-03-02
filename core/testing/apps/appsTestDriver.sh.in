@@ -347,6 +347,26 @@ case ${RUNTEST} in
 	run convertx --median-filter 2,2,1 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
 	check_results spgr_brain_1.img
 	;;
+    convertxMeanFilter)
+	run convertx --float --mean-filter 1 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
+	check_results spgr_brain_1.img
+	;;
+    convertxVarianceFilter)
+	run convertx --float --variance-filter 1 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
+	check_results spgr_brain_1.img
+	;;
+    convertxThirdMomentFilter)
+	run convertx --float --third-moment-filter 1 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
+	check_results spgr_brain_1.img
+	;;
+    convertxStandardDeviationFilter)
+	run convertx --float --standard-deviation-filter 1 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
+	check_results spgr_brain_1.img
+	;;
+    convertxSmoothnessFilter)
+	run convertx --float --smoothness-filter 1 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
+	check_results spgr_brain_1.img
+	;;
     convertxNiftiToAnalyze)
 	run convertx spgr_brain_1.nii ${tmpdir}/spgr_brain_1.hdr
 	check_results spgr_brain_1.hdr spgr_brain_1.img

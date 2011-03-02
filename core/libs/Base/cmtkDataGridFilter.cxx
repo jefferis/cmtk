@@ -116,7 +116,7 @@ DataGridFilter::RegionStandardDeviationFilter( const int radiusX, const int radi
 cmtk::Types::DataItem
 cmtk::DataGridFilter::SmoothnessOperator::Reduce( std::vector<Types::DataItem>& regionData )
 {
-  return (1.0 - 1.0/(1.0 + VarianceOperator::Reduce( regionData ) )) / MathUtil::Square(regionData.size()-1);
+  return (1.0 - 1.0/(1.0 + VarianceOperator::Reduce( regionData ) ));
 }
 
 TypedArray::SmartPtr
