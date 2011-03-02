@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -33,11 +33,7 @@
 #include "cmtkDataGridFilter.h"
 
 #include <System/cmtkException.h>
-#include <System/cmtkMemory.h>
-#include <System/cmtkProgress.h>
 #include <System/cmtkThreadPool.h>
-
-#include <vector>
 
 namespace
 cmtk
@@ -51,78 +47,141 @@ DataGridFilter
     throw Exception( "ERROR: DataGrid object given to DataGridFilter constructor does not have a data array" );
 }
 
+cmtk::Types::DataItem
+cmtk::DataGridFilter::MedianOperator::Reduce( std::vector<Types::DataItem>& regionData )
+{
+  std::sort( regionData.begin(), regionData.end() );
+  
+  if ( regionData.size() % 2 )
+    return regionData[regionData.size()/2];
+  else
+    return (Types::DataItem) ( 0.5 * (regionData[regionData.size()/2] + regionData[regionData.size()/2-1]) );
+}
+
 TypedArray::SmartPtr
 DataGridFilter::GetDataMedianFiltered( const int radiusX, const int radiusY, const int radiusZ ) const
 {
-  const TypedArray* data = this->m_DataGrid->GetData();
-  TypedArray::SmartPtr result = TypedArray::Create( data->GetType(), data->GetDataSize() );
-  
-  const int widthX = 1 + 2*radiusX;
-  const int widthY = 1 + 2*radiusY;
-  const int widthZ = 1 + 2*radiusZ;
-  Types::DataItem *sort = Memory::AllocateArray<Types::DataItem>(  widthX*widthY*widthZ  );
-  
-  int offset = 0;
-  Progress::Begin( 0, this->m_DataGrid->m_Dims[2], 1 );
-
-  Progress::ResultEnum status = Progress::OK;
-  for ( int z = 0; z < this->m_DataGrid->m_Dims[2]; ++z ) 
-    {
-    status = Progress::SetProgress( z );
-    if ( status != Progress::OK ) break;
-    
-    int zFrom = ( z > radiusZ ) ? ( z - radiusZ ) : 0;
-    int zTo = std::min( z+radiusZ+1, this->m_DataGrid->m_Dims[2] );
-    
-    for ( int y = 0; y < this->m_DataGrid->m_Dims[1]; ++y ) 
-      {      
-      int yFrom = ( y > radiusY ) ? ( y - radiusY ) : 0;
-      int yTo = std::min( y+radiusY+1, this->m_DataGrid->m_Dims[1] );
-      
-      for ( int x = 0; x < this->m_DataGrid->m_Dims[0]; ++x, ++offset ) 
-	{
-	int xFrom = ( x > radiusX ) ? ( x - radiusX ) : 0;
-	int xTo = std::min( x+radiusX+1, this->m_DataGrid->m_Dims[0] );
-	
-	int source = 0;
-	int ofsZ = yFrom + this->m_DataGrid->m_Dims[1] * zFrom;
-	for ( int zz = zFrom; zz < zTo; ++zz, ofsZ += this->m_DataGrid->m_Dims[1] ) 
-	  {
-	  int ofsYZ = this->m_DataGrid->m_Dims[0] * ofsZ ;
-	  for ( int yy = yFrom; yy < yTo; ++yy, ofsYZ += this->m_DataGrid->m_Dims[0] ) 
-	    {
-	    int toYZ = ofsYZ + xTo;
-	    for ( int xx = xFrom + ofsYZ; xx < toYZ; ++xx, ++source ) 
-	      {
-	      data->Get( sort[source], xx );
-	      }
-	    }
-	  }
-	
-#ifdef CMTK_DATA_FLOAT	
-	qsort( sort, source, sizeof( *sort ), MathUtil::CompareFloat );
-#else
-	qsort( sort, source, sizeof( *sort ), MathUtil::CompareDouble );
-#endif
-	
-	if ( source % 2 )
-	  result->Set( sort[source/2], offset );
-	else
-	  result->Set( (Types::DataItem) ( 0.5 * (sort[source/2] + sort[source/2-1]) ), offset );
-	}
-      }
-    }
-  Progress::Done();
-  
-  Memory::DeleteArray( sort );
-  
-  if ( status != Progress::OK ) 
-    {
-    result = TypedArray::SmartPtr( NULL );
-    }
-  
-  return result;
+  return this->ApplyRegionFilter<Self::MedianOperator>( radiusX, radiusY, radiusZ );
 }
+
+cmtk::Types::DataItem
+cmtk::DataGridFilter::MeanOperator::Reduce( std::vector<Types::DataItem>& regionData )
+{
+  Types::DataItem sum = 0;
+  for ( size_t i = 0; i < regionData.size(); ++i )
+    sum += regionData[i];
+  
+  return sum / regionData.size();
+}
+
+TypedArray::SmartPtr
+DataGridFilter::RegionMeanFilter( const int radiusX, const int radiusY, const int radiusZ ) const
+{
+  return this->ApplyRegionFilter<Self::MeanOperator>( radiusX, radiusY, radiusZ );
+}
+
+cmtk::Types::DataItem
+cmtk::DataGridFilter::VarianceOperator::Reduce( std::vector<Types::DataItem>& regionData )
+{
+  const Types::DataItem mean = MeanOperator::Reduce( regionData );
+
+  Types::DataItem sum = 0;
+  for ( size_t i = 0; i < regionData.size(); ++i )
+    {
+    const Types::DataItem diff = mean - regionData[i];
+    sum += diff*diff;
+    }
+  
+  return sum / regionData.size();
+}
+
+TypedArray::SmartPtr
+DataGridFilter::RegionVarianceFilter( const int radiusX, const int radiusY, const int radiusZ ) const
+{
+  return this->ApplyRegionFilter<Self::VarianceOperator>( radiusX, radiusY, radiusZ );
+}
+
+cmtk::Types::DataItem
+cmtk::DataGridFilter::StandardDeviationOperator::Reduce( std::vector<Types::DataItem>& regionData )
+{
+  return sqrt( VarianceOperator::Reduce( regionData ) );
+}
+
+TypedArray::SmartPtr
+DataGridFilter::RegionStandardDeviationFilter( const int radiusX, const int radiusY, const int radiusZ ) const
+{
+  return this->ApplyRegionFilter<Self::StandardDeviationOperator>( radiusX, radiusY, radiusZ );
+}
+
+cmtk::Types::DataItem
+cmtk::DataGridFilter::SmoothnessOperator::Reduce( std::vector<Types::DataItem>& regionData )
+{
+  return (1.0 - 1.0/(1.0 + VarianceOperator::Reduce( regionData ) )) / MathUtil::Square(regionData.size()-1);
+}
+
+TypedArray::SmartPtr
+DataGridFilter::RegionSmoothnessFilter( const int radiusX, const int radiusY, const int radiusZ ) const
+{
+  return this->ApplyRegionFilter<Self::SmoothnessOperator>( radiusX, radiusY, radiusZ );
+}
+
+cmtk::Types::DataItem
+cmtk::DataGridFilter::ThirdMomentOperator::Reduce( std::vector<Types::DataItem>& regionData )
+{
+  const Types::DataItem mean = MeanOperator::Reduce( regionData );
+
+  Types::DataItem sum = 0.0;
+  for ( size_t i = 0; i < regionData.size(); ++i ) 
+    {
+    const Types::DataItem diff = mean - regionData[i];
+    sum += diff*diff*diff;
+    }
+
+  return sum / MathUtil::Square( regionData.size() );
+}
+
+TypedArray::SmartPtr
+DataGridFilter::RegionThirdMomentFilter( const int radiusX, const int radiusY, const int radiusZ ) const
+{
+  return this->ApplyRegionFilter<Self::ThirdMomentOperator>( radiusX, radiusY, radiusZ );
+}
+
+/*
+TypedArray::SmartPtr
+DataGridFilter::NeighborhoodEntropyFilter
+( const UniformVolume* volume, 
+  const int windowRadius )
+{
+
+  const TypedArray* inputData = volume->GetData();
+  if ( ! inputData ) 
+    return TypedArray::SmartPtr( NULL );
+
+  TypedArray::SmartPtr filtered = TypedArray::Create( inputData->GetType(), inputData->GetDataSize() );
+  const int* dims = volume->GetDims().begin();
+  const int dimX = dims[AXIS_X];
+  const int dimY = dims[AXIS_Y];
+  const int dimZ = dims[AXIS_Z];
+  const int neighborhoodSize = pow( 2 * windowRadius + 1, 3 );
+  const Types::DataItemRange range = inputData->GetRange();
+  const int numBins = range.m_UpperBound - range.m_LowerBound;
+  std::cout << "numBins:" << numBins << std::endl;
+
+  Histogram<unsigned int>::SmartPtr histogram;
+  TypedArray::SmartPtr neighborhood = TypedArray::Create( inputData->GetType(), neighborhoodSize );
+  for ( int z = windowRadius; z < dimZ - windowRadius; z++ )
+    for ( int y = windowRadius; y < dimY - windowRadius ; y++ )
+      for ( int x = windowRadius; x < dimX - windowRadius; x++ )
+	{
+        int offset = x + dimX * ( y + dimY * z );
+        DataGridFilter::GetNeighborhood( neighborhood, windowRadius, inputData, dims, x, y, z );
+        histogram = neighborhood->GetHistogram( numBins );
+        Types::DataItem entropy = neighborhood->GetEntropy( histogram );
+        filtered->Set( entropy, offset );
+        }
+  return filtered;
+}
+*/
 
 TypedArray::SmartPtr
 DataGridFilter::GetDataSobelFiltered() const

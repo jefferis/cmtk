@@ -75,72 +75,6 @@ public:
     const int windowRadius,
     const float beta = 0.5 );
 
-  /** Apply neighborhood-mean filter.
-   *\param volume Input 3D image.
-   *\param windowRadius Distance from center voxel to outer edge of window 
-   *\return A newly allocated TypedArray object that can be used, for 
-   * example, to replace the one held by the input image. The data type of the
-   * array is identical to the input array.
-   */
-  static TypedArray::SmartPtr MeanFilter
-  ( const UniformVolume* volume, 
-    const int windowRadius );
-
-  /** Apply neighborhood-variance filter.
-   *\param volume Input 3D image.
-   *\param windowRadius Distance from center voxel to outer edge of window 
-   *\return A newly allocated TypedArray object that can be used, for 
-   * example, to replace the one held by the input image. The data type of the
-   * array is identical to the input array.
-   */
-  static TypedArray::SmartPtr VarianceFilter
-  ( const UniformVolume* volume, 
-    const int windowRadius );
-
-  /** Apply neighborhood-third-moment filter.
-   *\param volume Input 3D image.
-   *\param windowRadius Distance from center voxel to outer edge of window 
-   *\return A newly allocated TypedArray object that can be used, for 
-   * example, to replace the one held by the input image. The data type of the
-   * array is identical to the input array.
-   */
-  static TypedArray::SmartPtr ThirdMomentFilter
-  ( const UniformVolume* volume, 
-    const int windowRadius );
-
-  /** Apply neighborhood-standard-deviation filter.
-   *\param volume Input 3D image.
-   *\param windowRadius Distance from center voxel to outer edge of window 
-   *\return A newly allocated TypedArray object that can be used, for 
-   * example, to replace the one held by the input image. The data type of the
-   * array is identical to the input array.
-   */
-  static TypedArray::SmartPtr SDFilter
-  ( const UniformVolume* volume, 
-    const int windowRadius );  
-
-  /** Apply neighborhood-smoothness filter.
-   *\param volume Input 3D image.
-   *\param windowRadius Distance from center voxel to outer edge of window 
-   *\return A newly allocated TypedArray object that can be used, for 
-   * example, to replace the one held by the input image. The data type of the
-   * array is identical to the input array.
-   */
-  static TypedArray::SmartPtr SmoothnessFilter
-  ( const UniformVolume* volume, 
-    const int windowRadius );
-  
-  /** Apply neighborhood-entropy filter.
-   *\param volume Input 3D image.
-   *\param windowRadius Distance from center voxel to outer edge of window 
-   *\return A newly allocated TypedArray object that can be used, for 
-   * example, to replace the one held by the input image. The data type of the
-   * array is identical to the input array.
-   */
-  static TypedArray::SmartPtr NeighborhoodEntropyFilter
-  ( const UniformVolume* volume, 
-    const int windowRadius );
-
   /** Apply Torsten Rohlfing's single-image intensity-consistent Gaussian filter.
    *\param volume Input 3D image.
    *\param subjectData Pixel array of the individual grey image from this 
@@ -224,25 +158,6 @@ private:
    */
   static Types::DataItem Variance( TypedArray::SmartPtr items, const int numItems, const Types::DataItem mean );
 
-  /** Return the third moment of a vector of Types::DataItems.
-   *\param items Block of Types::DataItems.
-   *\param mean The (pre-computed) mean value of the items vector.
-   */
-  static Types::DataItem ThirdMoment( TypedArray::SmartPtr items, const int numItems, const Types::DataItem mean, const bool normalized = true );
-
-  /** Return the stddev of a vector of Types::DataItems.
-   *\param items Block of Types::DataItems.
-   *\param mean The (pre-computed) mean value of the items vector.
-   */
-  static Types::DataItem StdDev( TypedArray::SmartPtr items, const int numItems, const Types::DataItem mean );
-
-  /** Return the "smoothness" of a vector of Types::DataItems.
-   *  Smoothness = 1 - 1/(1 + Variance)
-   *\param items Block of Types::DataItems.
-   *\param mean The (pre-computed) mean value of the items vector.
-   */
-  static Types::DataItem Smoothness( TypedArray::SmartPtr items, const int numItems, const Types::DataItem mean, const bool normalized = true );
- 
   /** Fill an array with the neighborhood centered around a given voxel.
    * Note that this routine will only include existing
    * voxels.  So asking for a block near the edge

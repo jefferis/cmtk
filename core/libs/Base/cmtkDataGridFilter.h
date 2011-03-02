@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -38,6 +38,8 @@
 #include <System/cmtkCannotBeCopied.h>
 #include <Base/cmtkDataGrid.h>
 
+#include <vector>
+
 namespace
 cmtk
 {
@@ -65,8 +67,61 @@ public:
     return this->GetDataMedianFiltered( radius, radius, radius );
   }
 
-  /// Return data after median-filtering with per-dimension filter radius
+  /** Return data after median-filtering with per-dimension filter radius.
+   *\param radiusX Region radius in x direction.
+   *\param radiusY Region radius in y direction.
+   *\param radiusZ Region radius in z direction.
+   *\return Newly allocated data array with filtered data.
+   */
   TypedArray::SmartPtr GetDataMedianFiltered( const int radiusX, const int radiusY, const int radiusZ ) const;
+  
+  /** Apply neighborhood-mean filter.
+   *\param radiusX Region radius in x direction.
+   *\param radiusY Region radius in y direction.
+   *\param radiusZ Region radius in z direction.
+   *\return Newly allocated data array with filtered data.
+   */
+  TypedArray::SmartPtr RegionMeanFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
+
+  /** Apply neighborhood-variance filter.
+   *\param radiusX Region radius in x direction.
+   *\param radiusY Region radius in y direction.
+   *\param radiusZ Region radius in z direction.
+   *\return Newly allocated data array with filtered data.
+   */
+  TypedArray::SmartPtr RegionVarianceFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
+
+  /** Apply neighborhood-third-moment filter.
+   *\param radiusX Region radius in x direction.
+   *\param radiusY Region radius in y direction.
+   *\param radiusZ Region radius in z direction.
+   *\return Newly allocated data array with filtered data.
+   */
+  TypedArray::SmartPtr RegionThirdMomentFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
+
+  /** Apply neighborhood-standard-deviation filter.
+   *\param radiusX Region radius in x direction.
+   *\param radiusY Region radius in y direction.
+   *\param radiusZ Region radius in z direction.
+   *\return Newly allocated data array with filtered data.
+   */
+  TypedArray::SmartPtr RegionStandardDeviationFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
+
+  /** Apply neighborhood-smoothness filter.
+   *\param radiusX Region radius in x direction.
+   *\param radiusY Region radius in y direction.
+   *\param radiusZ Region radius in z direction.
+   *\return Newly allocated data array with filtered data.
+   */
+  TypedArray::SmartPtr RegionSmoothnessFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
+  
+  /** Apply neighborhood-entropy filter.
+   *\param radiusX Region radius in x direction.
+   *\param radiusY Region radius in y direction.
+   *\param radiusZ Region radius in z direction.
+   *\return Newly allocated data array with filtered data.
+   */
+  TypedArray::SmartPtr RegionEntropyFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
   
   /// Return data after median-filtering.
   TypedArray::SmartPtr GetDataSobelFiltered() const;
@@ -100,8 +155,73 @@ private:
   /// Thread function for separable filtering in z-direction.
   static void GetFilteredDataThreadZ( void *args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
 
+  /** Median operator.
+   * Reduce a vector of values to their median.
+   */
+  class MedianOperator
+  {
+  public:
+    /// Reduction operator: sort vector values in place, then return median element.
+    static Types::DataItem Reduce( std::vector<Types::DataItem>& regionData );
+  };
+
+  /** Mean operator.
+   * Reduce a vector of values to their mean (average).
+   */
+  class MeanOperator
+  {
+  public:
+    /// Reduction operator: compute and return average of vector elements.
+    static Types::DataItem Reduce( std::vector<Types::DataItem>& regionData );
+  };
+
+  /** Variance operator.
+   * Reduce a vector of values to their variance.
+   */
+  class VarianceOperator
+  {
+  public:
+    /// Reduction operator: compute and return variance of vector elements.
+    static Types::DataItem Reduce( std::vector<Types::DataItem>& regionData );
+  };
+
+  /** Standard deviation operator.
+   * Reduce a vector of values to their standard deviation.
+   */
+  class StandardDeviationOperator
+  {
+  public:
+    /// Reduction operator: compute and return standard deviation of vector elements.
+    static Types::DataItem Reduce( std::vector<Types::DataItem>& regionData );
+  };
+  
+  /** Smoothness operator.
+   * Reduce a vector of values to their "smoothness".
+   */
+  class SmoothnessOperator
+  {
+  public:
+    /// Reduction operator: compute and return "smoothness" of vector elements.
+    static Types::DataItem Reduce( std::vector<Types::DataItem>& regionData );
+  };
+  
+  /** Third moment operator.
+   * Reduce a vector of values to their third moment.
+   */
+  class ThirdMomentOperator
+  {
+  public:
+    /// Reduction operator: compute and return third moment of vector elements.
+    static Types::DataItem Reduce( std::vector<Types::DataItem>& regionData );
+  };
+  
+  /// Apply a regional filter operator. The actual operator is given as a class template parameter.
+  template<class TFilter> TypedArray::SmartPtr ApplyRegionFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
+
 };
 
 } // namespace cmtk
+
+#include "cmtkDataGridFilter.txx"
 
 #endif // #ifndef __cmtkDataGridFilter_h_included_
