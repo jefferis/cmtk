@@ -1053,6 +1053,8 @@ CallbackStackEntropyLabels()
     ImageStack.pop_front();
     }
   
+  const std::vector<cmtk::UniformVolume::SmartPtr>& vPtrs = volPtrs; // using const reference, we prevent GCD from segfaulting
+
   const size_t numberOfPixels = volPtrs[ 0 ]->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr entropyArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
   cmtk::TypedArray& entropyArrayRef = *entropyArray;
@@ -1067,10 +1069,10 @@ CallbackStackEntropyLabels()
     std::map<int,unsigned int> labelCount;
 
     size_t totalCount = 0;
-    for ( size_t curVol = 0; curVol < volPtrs.size(); ++curVol )
+    for ( size_t curVol = 0; curVol < vPtrs.size(); ++curVol )
       {
       cmtk::Types::DataItem v;
-      if ( volPtrs[ curVol ]->GetDataAt( v, i ) ) 
+      if ( vPtrs[ curVol ]->GetDataAt( v, i ) ) 
         {
         ++labelCount[ static_cast<int>( v ) ];
 	++totalCount;
@@ -1122,6 +1124,8 @@ CallbackMaxIndex()
   cmtk::TypedArray::SmartPtr maxArray( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, numberOfPixels ) );
   cmtk::TypedArray& maxArrayRef = *maxArray;
 
+  const std::vector<cmtk::UniformVolume::SmartPtr>& vPtrs = volPtrs; // using const reference, we prevent GCD from segfaulting
+
 #ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
@@ -1133,9 +1137,9 @@ CallbackMaxIndex()
     short maxIndex = -2;
     cmtk::Types::DataItem v;
     
-    for ( size_t curVol = 0; curVol < volPtrs.size(); ++curVol )
+    for ( size_t curVol = 0; curVol < vPtrs.size(); ++curVol )
       {
-      if ( volPtrs[ curVol ]->GetDataAt( v, i ) ) 
+      if ( vPtrs[ curVol ]->GetDataAt( v, i ) ) 
         {
 	if ( maxIndex < -1 )
 	  {
@@ -1189,6 +1193,8 @@ CallbackMaxValue()
   cmtk::TypedArray::SmartPtr maxArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
   cmtk::TypedArray& maxArrayRef = *maxArray;
 
+  const std::vector<cmtk::UniformVolume::SmartPtr>& vPtrs = volPtrs; // using const reference, we prevent GCD from segfaulting
+
 #ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
@@ -1200,9 +1206,9 @@ CallbackMaxValue()
     bool maxValueValid = false;
     cmtk::Types::DataItem v;
 
-    for ( size_t curVol = 0; curVol < volPtrs.size(); ++curVol )
+    for ( size_t curVol = 0; curVol < vPtrs.size(); ++curVol )
       {
-      if ( volPtrs[ curVol ]->GetDataAt( v, i ) ) 
+      if ( vPtrs[ curVol ]->GetDataAt( v, i ) ) 
         {
 	if ( maxValueValid )
 	  {
@@ -1248,6 +1254,8 @@ CallbackMinValue()
   cmtk::TypedArray::SmartPtr minArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
   cmtk::TypedArray& minArrayRef = *minArray;
 
+  const std::vector<cmtk::UniformVolume::SmartPtr>& vPtrs = volPtrs; // using const reference, we prevent GCD from segfaulting
+
 #ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
@@ -1259,9 +1267,9 @@ CallbackMinValue()
     bool minValueValid = false;
     cmtk::Types::DataItem v;
 
-    for ( size_t curVol = 0; curVol < volPtrs.size(); ++curVol )
+    for ( size_t curVol = 0; curVol < vPtrs.size(); ++curVol )
       {
-      if ( volPtrs[ curVol ]->GetDataAt( v, i ) ) 
+      if ( vPtrs[ curVol ]->GetDataAt( v, i ) ) 
         {
 	if ( minValueValid )
 	  {
@@ -1306,6 +1314,8 @@ CallbackContractLabels()
   cmtk::TypedArray::SmartPtr outArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
   cmtk::TypedArray& outArrayRef = *outArray;
 
+  const std::vector<cmtk::UniformVolume::SmartPtr>& vPtrs = volPtrs; // using const reference, we prevent GCD from segfaulting
+
 #ifdef CMTK_USE_GCD
   dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
 #else
@@ -1315,9 +1325,9 @@ CallbackContractLabels()
     {
     cmtk::Types::DataItem v = 0;
 
-    for ( size_t curVol = 0; curVol < volPtrs.size(); ++curVol )
+    for ( size_t curVol = 0; curVol < vPtrs.size(); ++curVol )
       {
-      if ( volPtrs[ curVol ]->GetDataAt( v, i ) && v ) 
+      if ( vPtrs[ curVol ]->GetDataAt( v, i ) && v ) 
 	break;
       }
         
