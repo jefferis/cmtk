@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -162,8 +163,8 @@ ThreadParameterArray<TClass,TParam>
   omp_set_num_threads( nThreadsOMP );
 #endif
 
-#if !defined(CMTK_BUILD_SMP)
-  // we're not actually using SMP, so simply run everything "by hand".
+#ifndef CMTK_USE_THREADS
+  // we're not actually using threads, so simply run everything "by hand".
   for ( size_t threadIdx = 0; threadIdx < numberOfThreadsTotal; ++threadIdx ) 
     {
     this->m_Ptr[0].ThisThreadIndex = firstThreadIdx + threadIdx;
@@ -270,7 +271,7 @@ ThreadParameterArray<TClass,TParam>
     pthread_attr_destroy(&attr);
 #endif
     }
-#endif // #if !defined(CMTK_BUILD_SMP)
+#endif // #ifndef CMTK_USE_THREADS
 
 #ifdef _OPENMP
   omp_set_num_threads( GetNumberOfThreads() );
