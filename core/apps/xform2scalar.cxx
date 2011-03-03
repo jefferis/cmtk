@@ -132,7 +132,9 @@ doMain ( const int argc, const char* argv[] )
   scalarImage->CreateDataArray( DataType );
 
   const cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( InputXformPaths );
+  const cmtk::XformList& xformListRef = xformList; // workaround for GCD segfaults
   const cmtk::XformList xformListAffine = xformList.MakeAllAffine();
+  const cmtk::XformList& xformListAffineRef = xformListAffine; // workaround for GCD segfaults
 
   cmtk::UniformVolume& image = *scalarImage;
   const cmtk::DataGrid::IndexType& dims = image.GetDims();
@@ -154,7 +156,7 @@ doMain ( const int argc, const char* argv[] )
 	const cmtk::UniformVolume::CoordinateVectorType v0( v );
 
 	// Apply transformation and subtract original coordinate
-	xformList.ApplyInPlace( v );
+	xformListRef.ApplyInPlace( v );
 	v -= v0;
 
 	// Is this is a B-spline warp and we're only interesting in the nonrigid component?
@@ -162,7 +164,7 @@ doMain ( const int argc, const char* argv[] )
 	  {
 	  // Transform current location also using affine transformation
 	  cmtk::Vector3D vAffine( v0 );
-	  xformListAffine.ApplyInPlace( vAffine );
+	  xformListAffineRef.ApplyInPlace( vAffine );
 	  vAffine -= v0;
 	  
 	  // subtract affine-transformed from total transformed
