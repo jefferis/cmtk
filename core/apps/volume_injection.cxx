@@ -126,6 +126,7 @@ CallbackReconGrid( const char* arg )
     }
   
   ReconGrid = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( cmtk::UniformVolume::IndexType( gridDims ), gridDelta[0], gridDelta[1], gridDelta[2] ) );
+  ReconGrid->m_MetaInformation[cmtk::META_SPACE] = ReconGrid->m_MetaInformation[cmtk::META_SPACE_ORIGINAL] = cmtk::AnatomicalOrientation::ORIENTATION_STANDARD;
   
   if ( numArgs == 9 )
     {
