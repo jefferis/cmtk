@@ -166,14 +166,11 @@ SplineWarpGroupwiseRegistrationRMIFunctional::EvaluateWithGradient
 	threadParams[thread].m_FirstIndexToCompute = firstIndexToCompute;
 	}
 
-      const size_t cpsToCompute = 
-	std::min( this->m_RankMPI ? controlPointsPerNode : controlPointsRootNode, 
-		  (int)numberOfControlPoints - firstIndexToCompute );
+      const size_t cpsToCompute = std::min( this->m_RankMPI ? controlPointsPerNode : controlPointsRootNode, (int)numberOfControlPoints - firstIndexToCompute );
 #ifdef DEBUG_COMM
       std::cerr << this->m_RankMPI << "\t" << "Computing " << firstIndexToCompute << ":" << cpsToCompute << "\n";
 #endif
-      threadParams.RunInParallelFIFO
-	( EvaluateLocalGradientThreadFunc, cpsToCompute, firstIndexToCompute );
+      threadParams.RunInParallelFIFO( EvaluateLocalGradientThreadFunc, cpsToCompute, firstIndexToCompute );
 
       // on root node, simply sort results into gradient fields
       if ( this->m_RankMPI == 0 )
@@ -190,11 +187,9 @@ SplineWarpGroupwiseRegistrationRMIFunctional::EvaluateWithGradient
       else
 	{
 	// send results
-	MPI::COMM_WORLD.Ssend( msgBufferPtr, 3 * numberOfXforms * cpsToCompute * sizeof( Types::Coordinate ), 
-			      MPI::CHAR, 0, tagResults );
+	MPI::COMM_WORLD.Ssend( msgBufferPtr, 3 * numberOfXforms * cpsToCompute * sizeof( Types::Coordinate ), MPI::CHAR, 0, tagResults );
 #ifdef DEBUG_COMM
-	std::cerr << this->m_RankMPI << "\t" << "Sent results of size "
-		  << 3 * numberOfXforms * cpsToCompute * sizeof( Types::Coordinate ) << "\n";
+	std::cerr << this->m_RankMPI << "\t" << "Sent results of size " << 3 * numberOfXforms * cpsToCompute * sizeof( Types::Coordinate ) << "\n";
 #endif
 	}
       }
