@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,55 +35,13 @@
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkMutexLock.h>
-#include <System/cmtkLockingPtr.h>
+#ifdef CMTK_USE_GCD
+#  include "cmtkSafeCounterGCD.h"
+namespace cmtk { typedef SafeCounterGCD SafeCounter; }
+#else
+#  include "cmtkSafeCounterMutex.h"
+namespace cmtk { typedef SafeCounterMutex SafeCounter; }
+#endif // #ifdef CMTK_USE_GCD
 
-namespace
-cmtk
-{
-
-/** \addtogroup System */
-//@{
-
-/** Thread-safe counter.
- * If the library is compiled without SMP support, then this class implements
- * only an interface to a simple unsigned int counter. With SMP support, a
- * mutex lock supplied by the MutexLock class is used to protect the
- * counter from concurrent access of multiple threads.
- */
-class SafeCounter
-{
-public:
-  /// Constructor.
-  SafeCounter( const unsigned int counter = 0 ) : m_Counter( counter ) {}
-
-  /// Retrieve counter value.
-  unsigned int Get() const { return this->m_Counter; }
-
-  /// Increment and return new counter value.
-  unsigned int Increment() volatile 
-  { 
-    LockingPtr<unsigned int> counter( this->m_Counter, this->m_Mutex );
-    return ++(*counter);
-  }
-  
-  /// Decrement and return new counter value.
-  unsigned int Decrement() volatile 
-  { 
-    LockingPtr<unsigned int> counter( this->m_Counter, this->m_Mutex );
-    return --(*counter);
-  }
-
-private:
-  /// The actual counter.
-  unsigned int m_Counter;
-
-  /// Mutex for thread-safe exclusive access to counter.
-  MutexLock m_Mutex;
-};
-
-//@}
-
-} // namespace cmtk
 
 #endif // #ifndef __cmtkSafePtr_h_included_
