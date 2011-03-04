@@ -54,6 +54,12 @@ public:
     m_Counter( counter ), 
     m_Queue( dispatch_queue_create( "SafeCounterGCD", NULL) ) 
   {}
+
+  /// Destructor.
+  ~SafeCounterGCD()
+  {
+    dispatch_release( this->m_Queue );
+  }
   
   /// Retrieve counter value.
   unsigned int Get() const;
