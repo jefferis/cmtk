@@ -32,6 +32,10 @@
 
 #include <System/cmtkConsole.h>
 
+#ifdef _OPENMP
+#  include <omp.h>
+#endif
+
 namespace
 cmtk
 {
