@@ -150,9 +150,6 @@ public:
 	    std::vector<TParam>& taskParameters /*!< Vector of task parameter blocks, one per task.*/,
 	    const size_t numberOfTasksOverride = 0 /*!< This can be used to run a smaller number of tasks than taskParameters.size(), which is useful to allow re-use of larger, allocated vector.*/ );
 
-  /// This function is run as a thread.
-  void ThreadFunction( const size_t threadIdx /*!< Index of the actual thread in the pool. */ );
-  
   /** Get reference to global thread pool.
    * This is shared by all functions in the process and allows re-use of the same "physical" threads 
    * for all types of computations. The thread pool itself is a local static instance within this
@@ -160,7 +157,10 @@ public:
    */
   static Self& GetGlobalThreadPool();
 
-  /// Thread function arguments: identify pool and index of thread in it.
+  /** Thread function arguments: identify pool and index of thread in it.
+   * Cannot be "private" because we need this in a "C" linkage function, which cannot be
+   * a "friend" of this class.
+   */
   class ThreadPoolArg
   {
   public:
@@ -171,6 +171,12 @@ public:
     size_t m_Index;
   };
 
+  /** This function is run as a thread.
+   * Cannot be "private" because we need to call this from a "C" linkage function, which cannot be
+   * a "friend" of this class.
+   */
+  void ThreadFunction( const size_t threadIdx /*!< Index of the actual thread in the pool. */ );
+  
 private:
   /// Semaphore to signal running threads when tasks are waiting.
   ThreadSemaphore m_TaskWaitingSemaphore;
