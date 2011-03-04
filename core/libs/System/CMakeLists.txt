@@ -74,6 +74,7 @@ ENDIF(CMTK_USE_LZMA)
 
 IF(CMTK_USE_GCD)
   SET(cmtkSystem_SRCS
+    ${cmtkSystem_SRCS}
     cmtkSafeCounterGCD.cxx)
 ENDIF(CMTK_USE_GCD)
 
