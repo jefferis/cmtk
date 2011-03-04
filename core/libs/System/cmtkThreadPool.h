@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2010 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -121,13 +122,12 @@ public:
    * temporary storage has been allocated for each thread. Because the number of tasks typically exceeds the
    * number of threads, this is more efficient than allocating temporary storage for each task.
    */
-  typedef void (*TaskFunction)( void *const args, //!< Pointer to parameter block for this task.
-				const size_t taskIdx, //!< Index of this task.
-				const size_t taskCnt, //!< Number of tasks.
-				const size_t threadIdx, //!< Index of the thread that is running this task.
-				const size_t threadCont //!< Number of threads in this pool.
-    );
-
+  typedef void (*TaskFunction)( void *const args /*!< Pointer to parameter block for this task.*/,
+				const size_t taskIdx /*!< Index of this task.*/,
+				const size_t taskCnt /*!< Number of tasks.*/,
+				const size_t threadIdx /*!< Index of the thread that is running this task.*/,
+				const size_t threadCnt /*!< Number of threads in this pool.*/ );
+  
   /** Constructor: create a pool of nThreads running threads.
    *\param nThreads Number of threads to create for this pool. By default, the number
    * of threads created is the current number of available threads, i.e., typically
@@ -146,10 +146,9 @@ public:
 
   /// Run actual worker functions through running threads.
   template<class TParam> 
-  void Run( TaskFunction taskFunction, //!< Pointer to task function.
-	    std::vector<TParam>& taskParameters, //!< Vector of task parameter blocks, one per task.
-	    const size_t numberOfTasksOverride = 0 //!< This can be used to run a smaller number of tasks than taskParameters.size(), which is useful to allow re-use of larger, allocated vector.
-    );
+  void Run( TaskFunction taskFunction /*!< Pointer to task function.*/,
+	    std::vector<TParam>& taskParameters /*!< Vector of task parameter blocks, one per task.*/,
+	    const size_t numberOfTasksOverride = 0 /*!< This can be used to run a smaller number of tasks than taskParameters.size(), which is useful to allow re-use of larger, allocated vector.*/ );
 
   /// This function is run as a thread.
   void ThreadFunction( const size_t threadIdx /*!< Index of the actual thread in the pool. */ );
