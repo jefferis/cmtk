@@ -75,7 +75,8 @@ ENDIF(CMTK_USE_LZMA)
 IF(CMTK_USE_GCD)
   SET(cmtkSystem_SRCS
     ${cmtkSystem_SRCS}
-    cmtkSafeCounterGCD.cxx)
+    cmtkSafeCounterGCD.cxx
+    cmtkThreadPoolGCD.cxx)
 ENDIF(CMTK_USE_GCD)
 
 ADD_LIBRARY(cmtkSystem ${cmtkSystem_SRCS})
