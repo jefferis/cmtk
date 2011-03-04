@@ -39,7 +39,7 @@
 
 template<class TParam> 
 void
-cmtk::ThreadPool::Run
+cmtk::ThreadPoolThreads::Run
 ( const Self::TaskFunction taskFunction, std::vector<TParam>& taskParameters, const size_t numberOfTasksOverride )
 {
   if ( ! this->m_ThreadsRunning )

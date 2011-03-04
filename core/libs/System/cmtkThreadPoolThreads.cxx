@@ -30,17 +30,26 @@
 //
 */
 
-#include "cmtkThreadPool.h"
+#include "cmtkThreadPoolThreads.h"
 
 #include <System/cmtkThreads.h>
 #include <System/cmtkMutexLock.h>
 #include <System/cmtkConsole.h>
 
+/// This is the actual low-level thread function. It calls ThreadFunction() for the cmtk::ThreadPoolThreads instance given as the function parameter.
+extern "C"
+CMTK_THREAD_RETURN_TYPE
+cmtkThreadPoolThreadFunction( CMTK_THREAD_ARG_TYPE arg )
+{
+  static_cast<cmtk::ThreadPoolThreads::ThreadPoolThreadsArg*>( arg )->m_Pool->ThreadFunction( static_cast<cmtk::ThreadPoolThreads::ThreadPoolThreadsArg*>( arg )->m_Index );
+  return CMTK_THREAD_RETURN_VALUE;
+}
+
 namespace
 cmtk
 {
 
-ThreadPool::ThreadPool( const size_t nThreads )
+ThreadPoolThreads::ThreadPoolThreads( const size_t nThreads )
   : m_NumberOfTasks( 0 ),
     m_NextTaskIndex( 0 ),
     m_TaskFunction( NULL ),
@@ -62,7 +71,7 @@ ThreadPool::ThreadPool( const size_t nThreads )
 }
 
 void
-ThreadPool::StartThreads()
+ThreadPoolThreads::StartThreads()
 {
   if ( !this->m_ThreadsRunning )
     {
@@ -119,14 +128,14 @@ ThreadPool::StartThreads()
     }
 }
 
-ThreadPool::~ThreadPool()
+ThreadPoolThreads::~ThreadPoolThreads()
 {
   this->EndThreads();
 }
 
 
 void
-ThreadPool::EndThreads()
+ThreadPoolThreads::EndThreads()
 {
   if ( this->m_ThreadsRunning )
     {
@@ -154,7 +163,7 @@ ThreadPool::EndThreads()
 }
 
 void
-ThreadPool::ThreadFunction( const size_t threadIdx )
+ThreadPoolThreads::ThreadFunction( const size_t threadIdx )
 {
 #ifdef _OPENMP
   // Disable OpenMP inside thread
@@ -184,18 +193,11 @@ ThreadPool::ThreadFunction( const size_t threadIdx )
 #endif // #ifdef CMTK_BUILD_SMP
 }
 
-ThreadPool& 
-ThreadPool::GetGlobalThreadPool()
+ThreadPoolThreads& 
+ThreadPoolThreads::GetGlobalThreadPool()
 {
-  static ThreadPool globalThreadPool;
-  return globalThreadPool;
+  static ThreadPoolThreads globalThreadPoolThreads;
+  return globalThreadPoolThreads;
 }
 
-}
-
-CMTK_THREAD_RETURN_TYPE
-cmtkThreadPoolThreadFunction( CMTK_THREAD_ARG_TYPE arg )
-{
-  static_cast<cmtk::ThreadPool::ThreadPoolArg*>( arg )->m_Pool->ThreadFunction( static_cast<cmtk::ThreadPool::ThreadPoolArg*>( arg )->m_Index );
-  return CMTK_THREAD_RETURN_VALUE;
 }

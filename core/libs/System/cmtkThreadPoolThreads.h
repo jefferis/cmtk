@@ -30,8 +30,8 @@
 //
 */
 
-#ifndef __cmtkThreadPool_h_included_
-#define __cmtkThreadPool_h_included_
+#ifndef __cmtkThreadPoolThreads_h_included_
+#define __cmtkThreadPoolThreads_h_included_
 
 #include <cmtkconfig.h>
 
@@ -103,13 +103,13 @@ cmtk
  * };
  *\endcode
  */
-class ThreadPool :
+class ThreadPoolThreads :
   /// Make class uncopyable via inheritance.
   private CannotBeCopied
 {
 public:
   /// This class.
-  typedef ThreadPool Self;
+  typedef ThreadPoolThreads Self;
 
   /// Smart pointer.
   typedef SmartPointer<Self> SmartPtr;
@@ -133,10 +133,10 @@ public:
    * of threads created is the current number of available threads, i.e., typically
    * the number of CPUs minus the number of currently running threads, if any.
    */
-  ThreadPool( const size_t nThreads = 0 );
+  ThreadPoolThreads( const size_t nThreads = 0 );
 
   /// Destructor: stop all running threads.
-  ~ThreadPool();
+  ~ThreadPoolThreads();
 
   /// Return number of threads in the pool.
   size_t GetNumberOfThreads() const
@@ -161,11 +161,11 @@ public:
    * Cannot be "private" because we need this in a "C" linkage function, which cannot be
    * a "friend" of this class.
    */
-  class ThreadPoolArg
+  class ThreadPoolThreadsArg
   {
   public:
     /// The thread pool.
-    ThreadPool* m_Pool;
+    ThreadPoolThreads* m_Pool;
 
     /// Index of thread in pool.
     size_t m_Index;
@@ -200,7 +200,7 @@ private:
   std::vector<void*> m_TaskParameters;
 
   /// Thread function parameters.
-  std::vector<Self::ThreadPoolArg> m_ThreadArgs;
+  std::vector<Self::ThreadPoolThreadsArg> m_ThreadArgs;
   
   /// Number of running threads.
   size_t m_NumberOfThreads;
@@ -233,9 +233,6 @@ private:
 
 } // namespace cmtk
 
-/// This is the actual low-level thread function. It calls ThreadFunction() for the cmtk::ThreadPool instance given as the function parameter.
-extern "C" CMTK_THREAD_RETURN_TYPE cmtkThreadPoolThreadFunction( CMTK_THREAD_ARG_TYPE arg /*!< This is a pointer to the cmtk::ThreadPool instance.*/ );
+#include "cmtkThreadPoolThreads.txx"
 
-#include "cmtkThreadPool.txx"
-
-#endif // #ifndef __cmtkThreadPool_h_included_
+#endif // #ifndef __cmtkThreadPoolThreads_h_included_
