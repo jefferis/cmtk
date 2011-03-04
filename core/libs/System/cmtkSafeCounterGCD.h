@@ -65,16 +65,16 @@ public:
   /// Increment and return new counter value.
   unsigned int Increment() volatile 
   { 
-    unsigned int result;
-    dispatch_sync( this->m_Queue, ^{ result = ++(*counter); } );
+    __block unsigned int result;
+    dispatch_sync( this->m_Queue, ^{ result = ++(this->m_Counter); } );
     return result;
   }
   
   /// Decrement and return new counter value.
   unsigned int Decrement() volatile 
   { 
-    unsigned int result;
-    dispatch_sync( this->m_Queue, ^{ result = --(*counter); } );
+    __block unsigned int result;
+    dispatch_sync( this->m_Queue, ^{ result = --(this->m_Counter); } );
     return result;
   }
   
