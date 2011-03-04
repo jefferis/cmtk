@@ -58,8 +58,12 @@ public:
   SafeCounterMutex( const unsigned int counter = 0 ) : m_Counter( counter ) {}
 
   /// Retrieve counter value.
-  unsigned int Get() const { return this->m_Counter; }
-
+  unsigned int Get() const
+  { 
+    LockingPtr<unsigned int> counter( this->m_Counter, this->m_Mutex );
+    return *counter;
+  }
+  
   /// Increment and return new counter value.
   unsigned int Increment() volatile 
   { 
