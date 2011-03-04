@@ -107,6 +107,11 @@ private:
 
   /// Thread handles.
   std::vector<dispatch_queue_t> m_Queues;
+
+  /// Low-level dispatch of the jobs to run.
+  void Dispatch( Self::TaskFunction taskFunction /*!< Pointer to task function.*/,
+		 std::vector<void*>& taskParameters /*!< Vector of task parameter blocks, one per task.*/,
+		 const size_t numberOfTasksOverride = 0 /*!< This can be used to run a smaller number of tasks than taskParameters.size(), which is useful to allow re-use of larger, allocated vector.*/ );
 };
 
 } // namespace cmtk

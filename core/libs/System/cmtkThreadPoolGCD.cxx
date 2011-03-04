@@ -61,6 +61,38 @@ ThreadPoolGCD::~ThreadPoolGCD()
     }
 }
 
+void
+ThreadPoolGCD::Dispatch( Self::TaskFunction taskFunction, std::vector<void*>& taskParameters, const size_t numberOfTasksOverride )
+{
+  const size_t numberOfTasks = numberOfTasksOverride ? numberOfTasksOverride : taskParameters.size();
+  if ( ! numberOfTasks )
+    {
+    StdErr << "ERROR: trying to run zero tasks on thread pool. Did you forget to resize the parameter vector?\n";
+    exit( 1 );
+    }
+
+  const size_t nQueues = this->m_Queues.size();
+  for ( size_t taskIdx = 0; taskIdx < numberOfTasks; )
+    {
+    for ( size_t queueIdx = 0; queueIdx < nQueues; ++queueIdx, ++taskIdx )
+      {
+      if ( taskIdx < numberOfTasks )
+	{
+	dispatch_async( this->m_Queues[queueIdx], 
+			^{
+			taskFunction( &taskParameters[taskIdx], taskIdx, numberOfTasks, queueIdx, nQueues );
+			} );
+	}
+      }
+    }
+
+  // wait for all queues to finish
+  for ( size_t queueIdx = 0; queueIdx < nQueues; ++queueIdx )
+    {
+    dispatch_sync( this->m_Queues[queueIdx], ^{} );
+    }
+}
+
 ThreadPoolGCD& 
 ThreadPoolGCD::GetGlobalThreadPool()
 {

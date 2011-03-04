@@ -37,25 +37,11 @@ void
 cmtk::ThreadPoolGCD::Run
 ( const Self::TaskFunction taskFunction, std::vector<TParam>& taskParameters, const size_t numberOfTasksOverride )
 {
-  const size_t numberOfTasks = numberOfTasksOverride ? numberOfTasksOverride : taskParameters.size();
-  if ( ! numberOfTasks )
+  std::vector<void*> taskArgPtr( taskParameters.size() );
+  for ( size_t i = 0; i < taskParameters.size(); ++i )
     {
-    StdErr << "ERROR: trying to run zero tasks on thread pool. Did you forget to resize the parameter vector?\n";
-    exit( 1 );
+    taskArgPtr[i] = &taskParameters[i];
     }
 
-  const size_t nQueues = this->m_Queues.size();
-  for ( size_t taskIdx = 0; taskIdx < numberOfTasks; )
-    {
-    for ( size_t queueIdx = 0; queueIdx < nQueues; ++queueIdx, ++taskIdx )
-      {
-      if ( taskIdx < numberOfTasks )
-	{
-	dispatch_async( this->m_Queues[queueIdx], 
-			^{
-			taskFunction( taskParameters[taskIdx], taskIdx, numberOfTasks, queueIdx, nQueues );
-			} );
-	}
-      }
-    }
+  this->Dispatch( taskFunction, taskArgPtr, numberOfTasksOverride );
 }
