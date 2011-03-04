@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -92,7 +92,7 @@ GroupwiseRegistrationFunctionalXformTemplate<TXform>
 template<class TXform>
 void
 GroupwiseRegistrationFunctionalXformTemplate<TXform>::InterpolateImageThread
-( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
+( void *const args, const size_t taskIdx, const size_t taskCnt )
 {
   InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
   
@@ -144,7 +144,7 @@ GroupwiseRegistrationFunctionalXformTemplate<TXform>::InterpolateImageThread
 template<class TXform>
 void
 GroupwiseRegistrationFunctionalXformTemplate<TXform>::InterpolateImageProbabilisticThread
-( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
+( void *const args, const size_t taskIdx, const size_t taskCnt )
 {
   InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
   

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -96,7 +96,7 @@ UniformVolume::Resample( const UniformVolume& other ) const
 }
 
 void
-UniformVolume::ResampleThreadPoolExecuteLabels( void *const arg, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
+UniformVolume::ResampleThreadPoolExecuteLabels( void *const arg, const size_t taskIdx, const size_t taskCnt )
 {
   UniformVolume::ResampleTaskInfo *info = static_cast<UniformVolume::ResampleTaskInfo*>( arg );
 
@@ -162,7 +162,7 @@ UniformVolume::ResampleThreadPoolExecuteLabels( void *const arg, const size_t ta
 }
 
 void
-UniformVolume::ResampleThreadPoolExecuteGrey( void *const arg, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
+UniformVolume::ResampleThreadPoolExecuteGrey( void *const arg, const size_t taskIdx, const size_t taskCnt )
 {
   UniformVolume::ResampleTaskInfo *info = static_cast<UniformVolume::ResampleTaskInfo*>( arg );
 

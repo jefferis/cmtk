@@ -280,7 +280,7 @@ DataGridFilter::GetDataKernelFiltered
 
 void
 DataGridFilter
-::GetFilteredDataThreadX( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
+::GetFilteredDataThreadX( void* args, const size_t taskIdx, const size_t taskCnt )
 {
   FilterThreadParameters* params = static_cast<FilterThreadParameters*>( args );
   const Self* ThisConst = params->thisObject;
@@ -343,7 +343,7 @@ DataGridFilter
 
 void
 DataGridFilter
-::GetFilteredDataThreadY( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
+::GetFilteredDataThreadY( void* args, const size_t taskIdx, const size_t taskCnt )
 {
   FilterThreadParameters* params = static_cast<FilterThreadParameters*>( args );
   const Self* ThisConst = params->thisObject;
@@ -397,7 +397,7 @@ DataGridFilter
 
 void
 DataGridFilter
-::GetFilteredDataThreadZ( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
+::GetFilteredDataThreadZ( void* args, const size_t taskIdx, const size_t taskCnt )
 { 
   FilterThreadParameters* params = static_cast<FilterThreadParameters*>( args );
   const Self* ThisConst = params->thisObject;

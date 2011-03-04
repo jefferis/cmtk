@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -508,7 +508,7 @@ SplineWarpXform::JacobianDeterminant ( const Types::Coordinate *cp ) const
 
 void
 SplineWarpXform
-::GetJacobianConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
+::GetJacobianConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt )
 {
   Self::JacobianConstraintThreadInfo *info = static_cast<Self::JacobianConstraintThreadInfo*>( args );
 
@@ -545,7 +545,7 @@ SplineWarpXform
 
 void
 SplineWarpXform
-::GetJacobianFoldingConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
+::GetJacobianFoldingConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt )
 {
   Self::JacobianConstraintThreadInfo *info = static_cast<Self::JacobianConstraintThreadInfo*>( args );
 

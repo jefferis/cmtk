@@ -44,6 +44,7 @@ ThreadPool::ThreadPool( const size_t nThreads )
   : m_NumberOfTasks( 0 ),
     m_NextTaskIndex( 0 ),
     m_TaskFunction( NULL ),
+    m_SimpleTaskFunction( NULL ),
     m_ThreadsRunning( false ),
     m_ContinueThreads( true )
 {
@@ -172,9 +173,13 @@ ThreadPool::ThreadFunction( const size_t threadIdx )
     ++this->m_NextTaskIndex;
     this->m_NextTaskIndexLock.Unlock();
     
-    // call task function
-    this->m_TaskFunction( this->m_TaskParameters[taskIdx], taskIdx, this->m_NumberOfTasks, threadIdx, this->m_NumberOfThreads ); 
+    // call task function(s)
+    if ( this->m_TaskFunction )
+      this->m_TaskFunction( this->m_TaskParameters[taskIdx], taskIdx, this->m_NumberOfTasks, threadIdx, this->m_NumberOfThreads ); 
     
+    if ( this->m_SimpleTaskFunction )
+      this->m_SimpleTaskFunction( this->m_TaskParameters[taskIdx], taskIdx, this->m_NumberOfTasks ); 
+        
     // post "task done, thread waiting"
     this->m_ThreadWaitingSemaphore.Post();
 

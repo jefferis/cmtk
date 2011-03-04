@@ -147,13 +147,13 @@ private:
   };
   
   /// Thread function for separable filtering in x-direction.
-  static void GetFilteredDataThreadX( void *args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  static void GetFilteredDataThreadX( void *args, const size_t taskIdx, const size_t taskCnt );
 
   /// Thread function for separable filtering in y-direction.
-  static void GetFilteredDataThreadY( void *args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  static void GetFilteredDataThreadY( void *args, const size_t taskIdx, const size_t taskCnt );
 
   /// Thread function for separable filtering in z-direction.
-  static void GetFilteredDataThreadZ( void *args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  static void GetFilteredDataThreadZ( void *args, const size_t taskIdx, const size_t taskCnt );
 
   /** Median operator.
    * Reduce a vector of values to their median.

@@ -583,10 +583,10 @@ private:
   };
 
   /// Multi-threaded resampling for grey data.
-  static void ResampleThreadPoolExecuteGrey( void *const arg, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCnt );
+  static void ResampleThreadPoolExecuteGrey( void *const arg, const size_t taskIdx, const size_t taskCnt );
 
   /// Multi-threaded resampling for label data (using partial volume averaging).
-  static void ResampleThreadPoolExecuteLabels( void *const arg, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCnt );
+  static void ResampleThreadPoolExecuteLabels( void *const arg, const size_t taskIdx, const size_t taskCnt );
 
   /** Extract orthogonal slice as a new volume.
    */

@@ -43,6 +43,7 @@ SET(cmtkBase_SRCS
   cmtkDataGrid_Crop.cxx
   cmtkDataGridFilter.cxx
   cmtkDataGridConnectedComponents.cxx
+  cmtkDataGridLocalCorrelation.cxx
   cmtkDataGridMorphologicalOperators.cxx
   cmtkDataTypeTraits.cxx
   cmtkDeformationField.cxx

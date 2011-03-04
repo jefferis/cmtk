@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -116,10 +116,10 @@ private:
   std::vector<InterpolateImageThreadParameters> m_InterpolateTaskInfo;
 
   /// Image interpolation thread function.
-  static void InterpolateImageThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCont );
+  static void InterpolateImageThread( void *const args, const size_t taskIdx, const size_t taskCnt );
 
   /// Image interpolation thread function with probabilistic sampling.
-  static void InterpolateImageProbabilisticThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t threadCont );
+  static void InterpolateImageProbabilisticThread( void *const args, const size_t taskIdx, const size_t taskCnt );
 };
 
 //@}
