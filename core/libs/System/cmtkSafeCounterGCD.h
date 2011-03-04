@@ -44,11 +44,7 @@ cmtk
 /** \addtogroup System */
 //@{
 
-/** Thread-safe counter.
- * If the library is compiled without SMP support, then this class implements
- * only an interface to a simple unsigned int counter. With SMP support, a
- * mutex lock supplied by the GCDLock class is used to protect the
- * counter from concurrent access of multiple threads.
+/** Thread-safe counter using Grand Central Dispatch FIFO queue.
  */
 class SafeCounterGCD
 {
