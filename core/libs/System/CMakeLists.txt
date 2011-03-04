@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2010 Torsten Rohlfing
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -71,6 +71,11 @@ IF(CMTK_USE_LZMA)
     cmtkCompressedStreamLZMA.cxx
     )
 ENDIF(CMTK_USE_LZMA)
+
+IF(CMTK_USE_GCD)
+  SET(cmtkSystem_SRCS
+    cmtkSafeCounterGCD.cxx)
+ENDIF(CMTK_USE_GCD)
 
 ADD_LIBRARY(cmtkSystem ${cmtkSystem_SRCS})
 

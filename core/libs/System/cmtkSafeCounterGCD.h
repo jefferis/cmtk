@@ -1,4 +1,4 @@
-/*
+b/*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -63,20 +63,10 @@ public:
   unsigned int Get() const { return this->m_Counter; }
 
   /// Increment and return new counter value.
-  unsigned int Increment() volatile 
-  { 
-    __block unsigned int result;
-    dispatch_sync( this->m_Queue, ^{ result = ++(this->m_Counter); } );
-    return result;
-  }
+  unsigned int Increment();
   
   /// Decrement and return new counter value.
-  unsigned int Decrement() volatile 
-  { 
-    __block unsigned int result;
-    dispatch_sync( this->m_Queue, ^{ result = --(this->m_Counter); } );
-    return result;
-  }
+  unsigned int Decrement();
   
 private:
   /// The actual counter.
