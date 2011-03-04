@@ -45,7 +45,7 @@ cmtk
 /** \addtogroup System */
 //@{
 
-/** Thread-safe counter.
+/** Thread-safe counter using POSIX mutex lock.
  * If the library is compiled without SMP support, then this class implements
  * only an interface to a simple unsigned int counter. With SMP support, a
  * mutex lock supplied by the MutexLock class is used to protect the
