@@ -96,7 +96,7 @@ UniformVolume::Resample( const UniformVolume& other ) const
 }
 
 void
-UniformVolume::ResampleThreadPoolExecuteLabels( void *const arg, const size_t taskIdx, const size_t taskCnt )
+UniformVolume::ResampleThreadPoolExecuteLabels( void *const arg, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   UniformVolume::ResampleTaskInfo *info = static_cast<UniformVolume::ResampleTaskInfo*>( arg );
 
@@ -162,7 +162,7 @@ UniformVolume::ResampleThreadPoolExecuteLabels( void *const arg, const size_t ta
 }
 
 void
-UniformVolume::ResampleThreadPoolExecuteGrey( void *const arg, const size_t taskIdx, const size_t taskCnt )
+UniformVolume::ResampleThreadPoolExecuteGrey( void *const arg, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   UniformVolume::ResampleTaskInfo *info = static_cast<UniformVolume::ResampleTaskInfo*>( arg );
 

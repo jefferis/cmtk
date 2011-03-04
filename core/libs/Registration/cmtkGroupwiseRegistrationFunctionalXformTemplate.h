@@ -116,10 +116,10 @@ private:
   std::vector<InterpolateImageThreadParameters> m_InterpolateTaskInfo;
 
   /// Image interpolation thread function.
-  static void InterpolateImageThread( void *const args, const size_t taskIdx, const size_t taskCnt );
+  static void InterpolateImageThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 
   /// Image interpolation thread function with probabilistic sampling.
-  static void InterpolateImageProbabilisticThread( void *const args, const size_t taskIdx, const size_t taskCnt );
+  static void InterpolateImageProbabilisticThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 };
 
 //@}

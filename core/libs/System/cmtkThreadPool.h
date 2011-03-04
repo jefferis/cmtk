@@ -128,16 +128,6 @@ public:
 				const size_t threadIdx /*!< Index of the thread that is running this task.*/,
 				const size_t threadCnt /*!< Number of threads in this pool.*/ );
   
-  /** Simple task function: this is an alternative interface for the functions called by the pooled threads to do the actual work, which do not need to know what physical thread they execute in.
-   * The task function receives five parameters: a) a pointer to its parameter black, b) the index of the task,
-   * c) the number of tasks. The function should use b) and c) to determine what portion of work 
-   * it needs to do. By not including information about the executing thread, this interface is
-   * limited to functions that do not use pre-allocated per-thread memory.
-   */
-  typedef void (*SimpleTaskFunction)( void *const args /*!< Pointer to parameter block for this task.*/,
-				      const size_t taskIdx /*!< Index of this task.*/,
-				      const size_t taskCnt /*!< Number of tasks.*/ );
-  
   /** Constructor: create a pool of nThreads running threads.
    *\param nThreads Number of threads to create for this pool. By default, the number
    * of threads created is the current number of available threads, i.e., typically
@@ -157,12 +147,6 @@ public:
   /// Run actual worker functions through running threads.
   template<class TParam> 
   void Run( Self::TaskFunction taskFunction /*!< Pointer to task function.*/,
-	    std::vector<TParam>& taskParameters /*!< Vector of task parameter blocks, one per task.*/,
-	    const size_t numberOfTasksOverride = 0 /*!< This can be used to run a smaller number of tasks than taskParameters.size(), which is useful to allow re-use of larger, allocated vector.*/ );
-
-  /// Run actual worker functions through running threads.
-  template<class TParam> 
-  void Run( Self::SimpleTaskFunction taskFunction /*!< Pointer to task function.*/,
 	    std::vector<TParam>& taskParameters /*!< Vector of task parameter blocks, one per task.*/,
 	    const size_t numberOfTasksOverride = 0 /*!< This can be used to run a smaller number of tasks than taskParameters.size(), which is useful to allow re-use of larger, allocated vector.*/ );
 
@@ -205,9 +189,6 @@ private:
 
   /// The current task function.
   Self::TaskFunction m_TaskFunction;
-
-  /// The current task function with a simpler interface.
-  Self::SimpleTaskFunction m_SimpleTaskFunction;
 
   /// Task function parameter pointers.
   std::vector<void*> m_TaskParameters;

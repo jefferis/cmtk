@@ -92,7 +92,7 @@ GroupwiseRegistrationFunctionalXformTemplate<TXform>
 template<class TXform>
 void
 GroupwiseRegistrationFunctionalXformTemplate<TXform>::InterpolateImageThread
-( void *const args, const size_t taskIdx, const size_t taskCnt )
+( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
   
@@ -144,7 +144,7 @@ GroupwiseRegistrationFunctionalXformTemplate<TXform>::InterpolateImageThread
 template<class TXform>
 void
 GroupwiseRegistrationFunctionalXformTemplate<TXform>::InterpolateImageProbabilisticThread
-( void *const args, const size_t taskIdx, const size_t taskCnt )
+( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
   

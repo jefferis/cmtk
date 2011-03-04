@@ -134,7 +134,7 @@ protected:
   }
   
   /// Image interpolation thread function.
-  static void InterpolateImageThread( void *const args, const size_t taskIdx, const size_t taskCnt )
+  static void InterpolateImageThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
   {
     InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
     
@@ -190,7 +190,7 @@ protected:
   }
   
   /// Image interpolation with probabilistic sampling thread function.
-  static void InterpolateImageProbabilisticThread( void *const args, const size_t taskIdx, const size_t taskCnt )
+  static void InterpolateImageProbabilisticThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
   {
     InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
     

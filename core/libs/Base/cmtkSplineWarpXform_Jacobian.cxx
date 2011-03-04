@@ -508,7 +508,7 @@ SplineWarpXform::JacobianDeterminant ( const Types::Coordinate *cp ) const
 
 void
 SplineWarpXform
-::GetJacobianConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt )
+::GetJacobianConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   Self::JacobianConstraintThreadInfo *info = static_cast<Self::JacobianConstraintThreadInfo*>( args );
 
@@ -545,7 +545,7 @@ SplineWarpXform
 
 void
 SplineWarpXform
-::GetJacobianFoldingConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt )
+::GetJacobianFoldingConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   Self::JacobianConstraintThreadInfo *info = static_cast<Self::JacobianConstraintThreadInfo*>( args );
 

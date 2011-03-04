@@ -436,10 +436,10 @@ protected:
   } JacobianConstraintThreadInfo;
   
   /// Thread function for SMP Jacobian constraint computation.
-  static void GetJacobianConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt );
+  static void GetJacobianConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 
   /// Thread function for SMP Jacobian folding constraint computation.
-  static void GetJacobianFoldingConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt );
+  static void GetJacobianFoldingConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 
   /// Find nearest (after deformation) control point.
   void FindClosestControlPoint( const Self::SpaceVectorType& v, Self::SpaceVectorType& cp ) const;

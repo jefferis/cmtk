@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -44,7 +44,6 @@ ThreadPool::ThreadPool( const size_t nThreads )
   : m_NumberOfTasks( 0 ),
     m_NextTaskIndex( 0 ),
     m_TaskFunction( NULL ),
-    m_SimpleTaskFunction( NULL ),
     m_ThreadsRunning( false ),
     m_ContinueThreads( true )
 {
@@ -173,13 +172,9 @@ ThreadPool::ThreadFunction( const size_t threadIdx )
     ++this->m_NextTaskIndex;
     this->m_NextTaskIndexLock.Unlock();
     
-    // call task function(s)
-    if ( this->m_TaskFunction )
-      this->m_TaskFunction( this->m_TaskParameters[taskIdx], taskIdx, this->m_NumberOfTasks, threadIdx, this->m_NumberOfThreads ); 
-    
-    if ( this->m_SimpleTaskFunction )
-      this->m_SimpleTaskFunction( this->m_TaskParameters[taskIdx], taskIdx, this->m_NumberOfTasks ); 
-        
+    // call task function
+    this->m_TaskFunction( this->m_TaskParameters[taskIdx], taskIdx, this->m_NumberOfTasks, threadIdx, this->m_NumberOfThreads ); 
+
     // post "task done, thread waiting"
     this->m_ThreadWaitingSemaphore.Post();
 

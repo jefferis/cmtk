@@ -263,7 +263,7 @@ GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
 void
 GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
 ::InterpolateImageThread
-( void* args, const size_t taskIdx, const size_t taskCnt )
+( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
 {
   InterpolateImageThreadParameters* threadParameters = static_cast<InterpolateImageThreadParameters*>( args );
   
