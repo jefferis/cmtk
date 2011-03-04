@@ -2,8 +2,13 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
-Release Notes -- CMTK 1.6.2
+Release Notes -- CMTK 1.7.0
 ===========================
+
+This release introduced support for Apple's Grand Central Dispatch parallel
+processing framework. This also replaces, in part, the OpenMP parallelization
+on the MacOS-X platform, which is broken with shared library builds (Thanks a
+lot, Apple!)
 
 For a complete list of changes and fixes, see the CHANGELOG file.
 
