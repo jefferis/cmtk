@@ -1,4 +1,4 @@
-b/*
+/*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -60,13 +60,13 @@ public:
   {}
   
   /// Retrieve counter value.
-  unsigned int Get() const { return this->m_Counter; }
+  unsigned int Get() const;
 
   /// Increment and return new counter value.
-  unsigned int Increment();
+  unsigned int Increment() volatile;
   
   /// Decrement and return new counter value.
-  unsigned int Decrement();
+  unsigned int Decrement() volatile;
   
 private:
   /// The actual counter.
