@@ -47,7 +47,7 @@ cmtk::ThreadPoolGCD::Run
   const size_t nQueues = this->m_Queues.size();
   for ( size_t taskIdx = 0; taskIdx < numberOfTasks; )
     {
-    for ( size_t queueIdx = 0; queueIdx < nQueues; ++i, ++taskIdx )
+    for ( size_t queueIdx = 0; queueIdx < nQueues; ++queueIdx, ++taskIdx )
       {
       if ( taskIdx < numberOfTasks )
 	{

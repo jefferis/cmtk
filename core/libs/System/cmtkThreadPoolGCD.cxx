@@ -32,6 +32,7 @@
 
 #include "cmtkThreadPoolGCD.h"
 
+#include <System/cmtkThreads.h>
 #include <System/cmtkConsole.h>
 
 namespace
