@@ -59,17 +59,17 @@ public:
   unsigned int Get() const;
 
   /// Increment and return new counter value.
-  unsigned int Increment() volatile;
+  unsigned int Increment();
   
   /// Decrement and return new counter value.
-  unsigned int Decrement() volatile;
+  unsigned int Decrement();
   
 private:
   /// The actual counter.
   unsigned int m_Counter;
   
   /// GCD for thread-safe exclusive access to counter.
-  dispatch_queue_t m_Queue;
+  mutable dispatch_queue_t m_Queue;
 };
 
 //@}

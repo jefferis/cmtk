@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -53,9 +54,9 @@ class LockingPtr
 {
 public:
   /// Create locking pointer and lock mutex.
-  LockingPtr( volatile T& object, volatile MutexLock& mutexLock ) :
-    m_Object( const_cast<T*>( &object ) ), 
-    m_MutexLock( const_cast<MutexLock*>( &mutexLock ) )
+  LockingPtr( T& object, MutexLock& mutexLock ) :
+    m_Object( &object ), 
+    m_MutexLock( &mutexLock )
   { 
     this->m_MutexLock->Lock();
   }

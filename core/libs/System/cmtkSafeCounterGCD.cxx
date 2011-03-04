@@ -41,7 +41,7 @@ cmtk::SafeCounterGCD::Get() const
 }
 
 unsigned int
-cmtk::SafeCounterGCD::Increment() volatile 
+cmtk::SafeCounterGCD::Increment()
 { 
   __block unsigned int result;
   dispatch_sync( this->m_Queue, ^{ result = ++(this->m_Counter); } );
@@ -49,7 +49,7 @@ cmtk::SafeCounterGCD::Increment() volatile
 }
 
 unsigned int
-cmtk::SafeCounterGCD::Decrement() volatile 
+cmtk::SafeCounterGCD::Decrement()
 { 
   __block unsigned int result;
   dispatch_sync( this->m_Queue, ^{ result = --(this->m_Counter); } );

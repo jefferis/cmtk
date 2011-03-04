@@ -60,19 +60,19 @@ public:
   /// Retrieve counter value.
   unsigned int Get() const
   { 
-    LockingPtr<unsigned int> counter( this->m_Counter, this->m_Mutex );
+    LockingPtr<const unsigned int> counter( this->m_Counter, this->m_Mutex );
     return *counter;
   }
   
   /// Increment and return new counter value.
-  unsigned int Increment() volatile 
+  unsigned int Increment()
   { 
     LockingPtr<unsigned int> counter( this->m_Counter, this->m_Mutex );
     return ++(*counter);
   }
   
   /// Decrement and return new counter value.
-  unsigned int Decrement() volatile 
+  unsigned int Decrement()
   { 
     LockingPtr<unsigned int> counter( this->m_Counter, this->m_Mutex );
     return --(*counter);
@@ -83,7 +83,7 @@ private:
   unsigned int m_Counter;
 
   /// Mutex for thread-safe exclusive access to counter.
-  MutexLock m_Mutex;
+  mutable MutexLock m_Mutex;
 };
 
 //@}
