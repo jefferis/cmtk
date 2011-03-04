@@ -106,7 +106,7 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
 template<class TMultiChannelMetricFunctional>
 void
 AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
-::EvaluateThreadFunction( void* args, const size_t taskIdx, const size_t taskCnt  ) 
+::EvaluateThreadFunction( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t ) 
 {
   typename Self::EvaluateThreadParameters* params = static_cast<typename Self::EvaluateThreadParameters*>( args );
   

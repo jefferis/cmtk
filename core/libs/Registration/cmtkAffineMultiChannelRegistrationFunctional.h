@@ -182,7 +182,7 @@ private:
   };
 
   /** Thread function for metric computation. */
-  static void EvaluateThreadFunction( void* args, const size_t taskIdx, const size_t taskCnt );
+  static void EvaluateThreadFunction( void* args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 
 #ifdef CMTK_BUILD_SMP
   /** Mutex lock for shared metric data object. */
