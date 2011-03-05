@@ -34,7 +34,7 @@
 
 #include <Base/cmtkHistogramBase.h>
 
-#include <System/cmrtkConsole.h>
+#include <System/cmtkConsole.h>
 
 namespace
 cmtk 

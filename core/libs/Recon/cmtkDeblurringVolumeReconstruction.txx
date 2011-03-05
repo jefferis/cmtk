@@ -34,7 +34,7 @@
 
 #include <Base/cmtkHistogramBase.h>
 
-#include <System/cmrtkConsole.h>
+#include <System/cmtkConsole.h>
 
 #ifdef CMTK_USE_GCD
 #  include <dispatch/dispatch.h>
