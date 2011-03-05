@@ -36,6 +36,7 @@
 
 #include <System/cmtkConsole.h>
 
+#undef CMTK_USE_GCD
 #ifdef CMTK_USE_GCD
 #  include <dispatch/dispatch.h>
 #endif
@@ -67,7 +68,7 @@ DeblurringVolumeReconstruction<TPSF>
 
 #ifdef CMTK_USE_GCD
     const size_t stride = passImageDimsXYZ / (2 * Threads::GetNumberOfProcessors() );
-    dispatch_apply( passImageDimsXYZ / stride, , dispatch_get_global_queue(0, 0), ^(size_t i ) 
+    dispatch_apply( passImageDimsXYZ / stride, dispatch_get_global_queue(0, 0), ^(size_t i ) 
 		    { const size_t last = std::min( stride * (i+1), passImageDimsXYZ ); for ( size_t offset = i * stride; offset < last; ++offset )
 #else
 #pragma omp parallel for
@@ -314,8 +315,8 @@ DeblurringVolumeReconstruction<TPSF>
     this->m_Function->m_LowestMaxErrorImage = UniformVolume::SmartPtr( this->m_Function->m_CorrectedImage->Clone( true /*copyData*/ ) );
     }
   
-  StdOout << "f " << f << " MSD " << msd
-	  << " MAX " << this->m_Function->GetMaximumError() 
-	  << " KLD " << this->m_Function->GetOriginalToCorrectedImageKLD( x )
-	  << " LNORM " << lnorm << "\n";
+  StdOut << "f " << f << " MSD " << msd
+	 << " MAX " << this->m_Function->GetMaximumError() 
+	 << " KLD " << this->m_Function->GetOriginalToCorrectedImageKLD( x )
+	 << " LNORM " << lnorm << "\n";
 }
