@@ -443,7 +443,10 @@ CallbackScalarMul( const double c )
     cmtk::TypedArray& mulRef = *mul;
     
 #ifdef CMTK_USE_GCD
-  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+    const size_t stride = numberOfPixels / (2 * Threads::GetNumberOfProcessors() );
+    dispatch_apply( numberOfPixels / stride, dispatch_get_global_queue(0, 0), ^(size_t b)
+		    { const size_t last = std::min( (b+1)*stride, numberOfPixels );
+		      for ( size_t i = b*stride; i < last; ++i )
 #else
 #pragma omp parallel for
     for ( size_t i = 0; i < numberOfPixels; ++i )
@@ -460,7 +463,7 @@ CallbackScalarMul( const double c )
 	}
       }
 #ifdef CMTK_USE_GCD
-);
+		    } );
 #endif
     
     p.SetData( mul );
