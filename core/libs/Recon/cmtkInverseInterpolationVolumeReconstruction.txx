@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -33,6 +33,8 @@
 #include <algorithm>
 
 #include <Base/cmtkHistogramBase.h>
+
+#include <System/cmrtkConsole.h>
 
 namespace
 cmtk 
@@ -307,10 +309,10 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
     this->m_Function->m_LowestMaxErrorImage = UniformVolume::SmartPtr( this->m_Function->m_CorrectedImage->Clone( true /*copyData*/ ) );
     }
   
-  std::cerr << "f " << f << " MSD " << msd
-	    << " MAX " << this->m_Function->GetMaximumError() 
-	    << " KLD " << this->m_Function->GetOriginalToCorrectedImageKLD( x )
-	    << " LNORM " << lnorm << std::endl;
+  StdOut << "f " << f << " MSD " << msd
+	 << " MAX " << this->m_Function->GetMaximumError() 
+	 << " KLD " << this->m_Function->GetOriginalToCorrectedImageKLD( x )
+	 << " LNORM " << lnorm << "\n";
 }
 
 } // namespace cmtk

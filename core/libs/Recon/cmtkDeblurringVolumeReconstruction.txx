@@ -34,6 +34,8 @@
 
 #include <Base/cmtkHistogramBase.h>
 
+#include <System/cmrtkConsole.h>
+
 template<class TPSF>
 void
 DeblurringVolumeReconstruction<TPSF>
@@ -308,8 +310,8 @@ DeblurringVolumeReconstruction<TPSF>
     this->m_Function->m_LowestMaxErrorImage = UniformVolume::SmartPtr( this->m_Function->m_CorrectedImage->Clone( true /*copyData*/ ) );
     }
   
-  std::cerr << "f " << f << " MSD " << msd
-	    << " MAX " << this->m_Function->GetMaximumError() 
-	    << " KLD " << this->m_Function->GetOriginalToCorrectedImageKLD( x )
-	    << " LNORM " << lnorm << std::endl;
+  StdOout << "f " << f << " MSD " << msd
+	  << " MAX " << this->m_Function->GetMaximumError() 
+	  << " KLD " << this->m_Function->GetOriginalToCorrectedImageKLD( x )
+	  << " LNORM " << lnorm << "\n";
 }
