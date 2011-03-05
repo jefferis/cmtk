@@ -443,7 +443,7 @@ CallbackScalarMul( const double c )
     cmtk::TypedArray& mulRef = *mul;
     
 #ifdef CMTK_USE_GCD
-    const size_t stride = numberOfPixels / (2 * Threads::GetNumberOfProcessors() );
+    const size_t stride = numberOfPixels / (2 * cmtk::Threads::GetNumberOfProcessors() );
     dispatch_apply( numberOfPixels / stride, dispatch_get_global_queue(0, 0), ^(size_t b)
 		    { const size_t last = std::min( (b+1)*stride, numberOfPixels );
 		      for ( size_t i = b*stride; i < last; ++i )
