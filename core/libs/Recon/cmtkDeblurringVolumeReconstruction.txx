@@ -59,8 +59,14 @@ DeblurringVolumeReconstruction<TPSF>
     const AffineXform* correctedToPassXform = AffineXform::SmartPtr::DynamicCastFrom( this->m_TransformationsToPassImages[pass] );
     const AffineXform* passToCorrectedXform = AffineXform::SmartPtr::DynamicCastFrom( this->m_TransformationsToPassImages[pass] )->GetInverse();
 
+#ifdef CMTK_USE_GCD
+    const size_t stride = passImageDimsXYZ / (2 * Threads::GetNumberOfProcessors() );
+    dispatch_apply( passImageDimsXYZ / stride, , dispatch_get_global_queue(0, 0), ^(size_t i ) 
+		    { const size_t last = std::min( stride * (i+1), passImageDimsXYZ ); for ( size_t offset = i * stride; offset < last; ++offset )
+#else
 #pragma omp parallel for
     for ( size_t offset = 0; offset < passImageDimsXYZ; ++offset )
+#endif
       {
       const int curPassVox[3] = { (offset % passImageDimsXY) % passImageDimsX, (offset % passImageDimsXY) / passImageDimsX, (offset / passImageDimsXY) };
       
@@ -105,8 +111,7 @@ DeblurringVolumeReconstruction<TPSF>
 	    }
 	  }
 	}
-      /* Assign the blurred value to the result
-           */
+      /* Assign the blurred value to the result */
       if ( totalWeight == 0 )
 	result->GetData()->SetPaddingAt( offset );
       else
@@ -114,6 +119,9 @@ DeblurringVolumeReconstruction<TPSF>
       }
     this->m_InterpolatedPassImages.push_back( result );
     }
+#ifdef CMTK_USE_GCD
+		    } );
+#endif
 }
 
 template <class TPSF>
