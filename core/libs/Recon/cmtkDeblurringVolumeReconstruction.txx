@@ -36,6 +36,10 @@
 
 #include <System/cmrtkConsole.h>
 
+#ifdef CMTK_USE_GCD
+#  include <dispatch/dispatch.h>
+#endif
+
 template<class TPSF>
 void
 DeblurringVolumeReconstruction<TPSF>
