@@ -71,6 +71,8 @@ ThreadPoolGCD::Dispatch( Self::TaskFunction taskFunction, std::vector<void*>& ta
     exit( 1 );
     }
 
+  const std::vector<void*>& vParams = taskParameters;
+
   const size_t nQueues = this->m_Queues.size();
   for ( size_t taskIdx = 0; taskIdx < numberOfTasks; )
     {
@@ -78,9 +80,9 @@ ThreadPoolGCD::Dispatch( Self::TaskFunction taskFunction, std::vector<void*>& ta
       {
       if ( taskIdx < numberOfTasks )
 	{
-	dispatch_async( this->m_Queues[queueIdx], 
+        dispatch_async( this->m_Queues[queueIdx], 
 			^{
-			taskFunction( &taskParameters[taskIdx], taskIdx, numberOfTasks, queueIdx, nQueues );
+			  taskFunction( (void*)( vParams[taskIdx] ), taskIdx, numberOfTasks, queueIdx, nQueues );
 			} );
 	}
       }
