@@ -491,7 +491,9 @@ CallbackScalarAdd( const double c )
     cmtk::TypedArray& addRef = *add;
 
 #ifdef CMTK_USE_GCD
-  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+    const cmtk::Threads::Stride stride( numberOfPixels );
+    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
     for ( size_t i = 0; i < numberOfPixels; ++i )
@@ -508,7 +510,7 @@ CallbackScalarAdd( const double c )
 	}
       }
 #ifdef CMTK_USE_GCD
-);
+		    });
 #endif    
 
     p.SetData( add );
@@ -537,7 +539,9 @@ CallbackScalarXor( const long int c )
     cmtk::TypedArray& outRef = *out;
     
 #ifdef CMTK_USE_GCD
-  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+    const cmtk::Threads::Stride stride( numberOfPixels );
+    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
     for ( size_t i = 0; i < numberOfPixels; ++i )
@@ -555,7 +559,7 @@ CallbackScalarXor( const long int c )
 	}
       }
 #ifdef CMTK_USE_GCD
-);
+		    });
 #endif
 
     p.SetData( out );
@@ -584,7 +588,9 @@ CallbackScalarAnd( const long int c )
     cmtk::TypedArray& outRef = *out;
     
 #ifdef CMTK_USE_GCD
-  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+    const cmtk::Threads::Stride stride( numberOfPixels );
+    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
     for ( size_t i = 0; i < numberOfPixels; ++i )
@@ -602,7 +608,7 @@ CallbackScalarAnd( const long int c )
 	}
       }
 #ifdef CMTK_USE_GCD
-);
+		    });
 #endif    
 
     p.SetData( out );
@@ -631,7 +637,9 @@ CallbackOneOver()
     cmtk::TypedArray& invRef = *inv;
     
 #ifdef CMTK_USE_GCD
-  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+    const cmtk::Threads::Stride stride( numberOfPixels );
+    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
     for ( size_t i = 0; i < numberOfPixels; ++i )
@@ -648,7 +656,7 @@ CallbackOneOver()
 	}
       }
 #ifdef CMTK_USE_GCD
-);
+		    });
 #endif
     
     p.SetData( inv );
@@ -677,7 +685,9 @@ CallbackAdd()
   cmtk::TypedArray& addRef = *add;
   
 #ifdef CMTK_USE_GCD
-  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+  const cmtk::Threads::Stride stride( numberOfPixels );
+  dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
   for ( size_t i = 0; i < numberOfPixels; ++i )
@@ -694,7 +704,7 @@ CallbackAdd()
       }
     }
 #ifdef CMTK_USE_GCD
-);
+		    });
 #endif
   
   p->SetData( add );
@@ -720,7 +730,9 @@ CallbackMul()
     ImageStack.pop_front();
     
 #ifdef CMTK_USE_GCD
-  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+    const cmtk::Threads::Stride stride( numberOfPixels );
+    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
     for ( size_t i = 0; i < numberOfPixels; ++i )
@@ -737,7 +749,7 @@ CallbackMul()
 	}
       }
 #ifdef CMTK_USE_GCD
-);
+		    });
 #endif    
 
     if ( !ApplyNextToAll )
@@ -766,7 +778,9 @@ CallbackDiv()
   cmtk::TypedArray& divRef = *div;
   
 #ifdef CMTK_USE_GCD
-  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+  const cmtk::Threads::Stride stride( numberOfPixels );
+  dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
   for ( size_t i = 0; i < numberOfPixels; ++i )
@@ -783,7 +797,7 @@ CallbackDiv()
       }
     }
 #ifdef CMTK_USE_GCD
-);
+		  });
 #endif  
 
   p->SetData( div );
@@ -806,7 +820,9 @@ CallbackAtan2()
   cmtk::TypedArray& resultRef = *result;
   
 #ifdef CMTK_USE_GCD
-  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+  const cmtk::Threads::Stride stride( numberOfPixels );
+  dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
   for ( size_t i = 0; i < numberOfPixels; ++i )
@@ -823,7 +839,7 @@ CallbackAtan2()
       }
     }
 #ifdef CMTK_USE_GCD
-);
+		  });
 #endif  
 
   p->SetData( result );
@@ -1062,7 +1078,9 @@ CallbackStackEntropyLabels()
   cmtk::TypedArray& entropyArrayRef = *entropyArray;
 
 #ifdef CMTK_USE_GCD
-  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+  const cmtk::Threads::Stride stride( numberOfPixels );
+  dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for  
   for ( size_t i = 0; i < numberOfPixels; ++i )
@@ -1097,7 +1115,7 @@ CallbackStackEntropyLabels()
       entropyArrayRef.SetPaddingAt( i );       
     }
 #ifdef CMTK_USE_GCD
-);
+		  });
 #endif
 
   volPtrs[0]->SetData( entropyArray );
@@ -1129,7 +1147,9 @@ CallbackMaxIndex()
   const std::vector<cmtk::UniformVolume::SmartPtr>& vPtrs = volPtrs; // using const reference, we prevent GCD from segfaulting
 
 #ifdef CMTK_USE_GCD
-  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+  const cmtk::Threads::Stride stride( numberOfPixels );
+  dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for  
   for ( size_t i = 0; i < numberOfPixels; ++i )
@@ -1167,7 +1187,7 @@ CallbackMaxIndex()
     maxArrayRef.Set( maxIndex, i ); 
     }
 #ifdef CMTK_USE_GCD
-);
+		  });
 #endif
   
   volPtrs[0]->SetData( maxArray );
@@ -1198,7 +1218,9 @@ CallbackMaxValue()
   const std::vector<cmtk::UniformVolume::SmartPtr>& vPtrs = volPtrs; // using const reference, we prevent GCD from segfaulting
 
 #ifdef CMTK_USE_GCD
-  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+  const cmtk::Threads::Stride stride( numberOfPixels );
+  dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for  
   for ( size_t i = 0; i < numberOfPixels; ++i )
@@ -1228,7 +1250,7 @@ CallbackMaxValue()
     maxArrayRef.Set( maxValue, i ); 
     }
 #ifdef CMTK_USE_GCD
-);
+		  });
 #endif
   
   volPtrs[0]->SetData( maxArray );
@@ -1259,7 +1281,9 @@ CallbackMinValue()
   const std::vector<cmtk::UniformVolume::SmartPtr>& vPtrs = volPtrs; // using const reference, we prevent GCD from segfaulting
 
 #ifdef CMTK_USE_GCD
-  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+  const cmtk::Threads::Stride stride( numberOfPixels );
+  dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for  
   for ( size_t i = 0; i < numberOfPixels; ++i )
@@ -1288,7 +1312,7 @@ CallbackMinValue()
     minArrayRef.Set( minValue, i );
     }
 #ifdef CMTK_USE_GCD
-);
+		  });
 #endif
   
   volPtrs[0]->SetData( minArray );
@@ -1319,7 +1343,9 @@ CallbackContractLabels()
   const std::vector<cmtk::UniformVolume::SmartPtr>& vPtrs = volPtrs; // using const reference, we prevent GCD from segfaulting
 
 #ifdef CMTK_USE_GCD
-  dispatch_apply( numberOfPixels, dispatch_get_global_queue(0, 0), ^(size_t i)
+  const cmtk::Threads::Stride stride( numberOfPixels );
+  dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for  
   for ( size_t i = 0; i < numberOfPixels; ++i )
@@ -1336,7 +1362,7 @@ CallbackContractLabels()
     outArrayRef.Set( v, i );
     }
 #ifdef CMTK_USE_GCD
-);
+		  });
 #endif
   
   volPtrs[0]->SetData( outArray );
