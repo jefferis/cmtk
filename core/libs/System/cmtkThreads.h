@@ -115,7 +115,51 @@ template<class T> void RunThreads( ThreadFunction threadCall, const unsigned num
 {
   Threads::RunThreads( threadCall, numberOfThreads, parameters, sizeof( T ) );
 }
-}
+
+/** Compute stride for threaded loops.
+ * This class computes stride and loop start and ends for threaded loops, based on
+ * a trade-off between number of CPUs in the system and total loop iterations.
+ */
+class Stride
+{
+public:
+  /// Constructor: compute stride based on 2 blocks per available CPU.
+  Stride( const size_t totalIterations )
+    : m_TotalIterations( totalIterations )
+  {
+    this->m_Stride = this->m_TotalIterations / (2 * cmtk::Threads::GetNumberOfProcessors() );
+    this->m_Blocks = ((this->m_TotalIterations-1) / this->m_Stride) + 1;
+  }
+
+  /// Return number of blocks.
+  size_t NBlocks() const
+  {
+    return this->m_Blocks;
+  }
+
+  /// Loop "from" for a given block.
+  size_t From( const size_t blockIdx ) const
+  {
+    return blockIdx * this->m_Stride;
+  }
+
+  size_t To( const size_t blockIdx ) const
+  {
+    return std::min( (1+blockIdx) * this->m_Stride, this->m_TotalIterations );
+  }
+
+private:
+  /// Total number of loop iterations.
+  size_t m_TotalIterations;
+
+  /// Number of blocks.
+  size_t m_Blocks;
+
+  /// Stride.
+  size_t m_Stride;
+};
+
+} // namespace Threads
 
 //@}
 
