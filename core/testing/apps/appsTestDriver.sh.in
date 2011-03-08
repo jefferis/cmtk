@@ -53,6 +53,11 @@ if [ -e ${tmpdir} ]; then
 fi
 mkdir -p ${tmpdir}
 
+sqlite=${BINDIR}/sqlite
+if [ ! -f ${sqlite} ]; then
+    sqlite=sqlite3
+fi
+
 cd ${DATADIR}
 
 run()
@@ -438,12 +443,12 @@ case ${RUNTEST} in
         ;;
     dbtool_AddImages)
       run dbtool add_images ${tmpdir}/db.sqlite image1 image2
-      ${BINDIR}/sqlite ${tmpdir}/db.sqlite "SELECT * FROM images ORDER BY path ASC" > ${tmpdir}/images
+      ${sqlite} ${tmpdir}/db.sqlite "SELECT * FROM images ORDER BY path ASC" > ${tmpdir}/images
       check_results images
       ;;
     dbtool_AddImages2)
       run dbtool add_images ${tmpdir}/db.sqlite image1 image2 image3 image3
-      ${BINDIR}/sqlite ${tmpdir}/db.sqlite "SELECT * FROM images ORDER BY path ASC" > ${tmpdir}/images
+      ${sqlite} ${tmpdir}/db.sqlite "SELECT * FROM images ORDER BY path ASC" > ${tmpdir}/images
       check_results images
       ;;
     dbtool_ListSpace)
