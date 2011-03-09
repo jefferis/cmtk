@@ -43,6 +43,10 @@
 
 #include <queue>
 
+#ifdef CMTK_USE_GCD
+#  include <dispatch/dispatch.h>
+#endif
+
 bool Verbose = false;
 
 typedef std::deque< std::pair<cmtk::Xform::SmartPtr,cmtk::UniformVolume::SmartPtr> > XVQueue;
@@ -107,11 +111,19 @@ doMain( const int argc, const char* argv[] )
     }
 
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, ReferenceImage->GetNumberOfPixels() ) );
+  short* resultPtr = static_cast<short*>( result->GetDataPtr() );
 
   const cmtk::DataGrid::IndexType& dims = ReferenceImage->GetDims();
   cmtk::Progress::Begin( 0, dims[2], 1, "Label image averaging" );
+
+#ifdef CMTK_USE_GCD
+  const cmtk::Threads::Stride stride( dims[2] );
+  dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		  { for ( size_t z = stride.From( b ); z < stride.To( b ); ++z )
+#else
 #pragma omp parallel for
   for ( int z = 0; z < dims[2]; ++z )
+#endif
     {
     cmtk::Progress::SetProgress( z );
     size_t offset = z * dims[0] * dims[1];
@@ -155,9 +167,12 @@ doMain( const int argc, const char* argv[] )
 	    }
 	  }
 
-	result->Set( maxLabel, offset );
+	resultPtr[offset] = maxLabel; // need to access array via direct ptr to work around GCD bug
 	}  
     }
+#ifdef CMTK_USE_GCD
+		  });
+#endif
   cmtk::Progress::Done();
 
   ReferenceImage->SetData( result );
