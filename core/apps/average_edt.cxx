@@ -57,6 +57,10 @@
 #include <math.h>
 #include <list>
 
+#ifdef CMTK_USE_GCD
+#  include <dispatch/dispatch.h>
+#endif
+
 bool Verbose = false;
 
 const char* DownsampleVolumeStr = NULL;
@@ -102,18 +106,30 @@ Average
   bool labelFlags[256];
   memset( labelFlags, 0, sizeof( labelFlags ) );
 
+#ifdef CMTK_USE_GCD
+  const cmtk::Threads::Stride stride( numPixels );
+#endif
+
   for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = volumes.begin(); it != volumes.end(); ++it )
     {
     const cmtk::TypedArray* data = (*it)->GetData();
+#ifdef CMTK_USE_GCD
+    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
 #pragma omp parallel for
     for ( size_t i = 0; i < numPixels; ++i )
+#endif
       {
       cmtk::Types::DataItem l;
       if ( data->Get( l, i ) )
 	labelFlags[static_cast<byte>( l )] = true;
       }
     }
-  
+#ifdef CMTK_USE_GCD
+		    });
+#endif
+
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_BYTE, numPixels ) );
   result->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
   byte* resultPtr = (byte*) result->GetDataPtr();
@@ -148,26 +164,44 @@ Average
       // if this is the first label, write directly to accumulation distance map
       if ( !label )
 	{
+#ifdef CMTK_USE_GCD
+    const cmtk::Threads::Stride stride( numPixels );
+    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
 #pragma omp parallel for
 	for ( size_t i = 0; i < numPixels; ++i )
+#endif
 	  {
 	  if ( insideDistancePtr[i] > 0 )
 	    totalDistancePtr[i] -= insideDistancePtr[i];
 	  else
 	    totalDistancePtr[i] += outsideDistancePtr[i];
 	  }
+#ifdef CMTK_USE_GCD
+		    });
+#endif
 	}
       else
 	// for all other labels, add to label distance map
 	{
+#ifdef CMTK_USE_GCD
+    const cmtk::Threads::Stride stride( numPixels );
+    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
 #pragma omp parallel for
 	for ( size_t i = 0; i < numPixels; ++i )
+#endif
 	  {
 	  if ( insideDistancePtr[i] > 0 )
 	    inOutDistancePtr[i] -= insideDistancePtr[i];
 	  else
 	    inOutDistancePtr[i] += outsideDistancePtr[i];
 	  }
+#ifdef CMTK_USE_GCD
+		    });
+#endif
 	}
       }
 
