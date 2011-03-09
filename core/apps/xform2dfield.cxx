@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -51,6 +51,10 @@
 
 #include <vector>
 #include <string>
+
+#ifdef CMTK_USE_GCD
+#  include <dispatch/dispatch.h>
+#endif
 
 bool Verbose = false;
 bool Mask = false;
@@ -132,8 +136,13 @@ doMain ( const int argc, const char *argv[] )
   
   const cmtk::DataGrid::IndexType& dims = volume->GetDims();
   cmtk::Progress::Begin( 0, dims[cmtk::AXIS_Z], 1, "Deformation field generation" );
+
+#ifdef CMTK_USE_GCD
+  dispatch_apply( dims[2], dispatch_get_global_queue(0, 0), ^(size_t z){
+#else
 #pragma omp parallel for
   for ( int z = 0; z < dims[cmtk::AXIS_Z]; ++z )
+#endif
     {
     cmtk::Xform::SpaceVectorType v0, v1;
 
@@ -163,6 +172,10 @@ doMain ( const int argc, const char *argv[] )
 	}
       }
     }
+#ifdef CMTK_USE_GCD
+		  });
+#endif
+
   cmtk::Progress::Done();
 
   cmtk::XformIO::Write( dfield, OutFileName, Verbose );

@@ -47,6 +47,7 @@
 #ifdef CMTK_USE_GCD
 #  include <dispatch/dispatch.h>
 #endif
+
 bool Verbose = false;
 
 bool WarpOnly = false;
