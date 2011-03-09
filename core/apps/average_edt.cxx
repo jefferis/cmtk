@@ -105,6 +105,7 @@ Average
 
   bool labelFlags[256];
   memset( labelFlags, 0, sizeof( labelFlags ) );
+  bool* pFlags = labelFlags; // need to use ptr to array to work around GCD bug
 
 #ifdef CMTK_USE_GCD
   const cmtk::Threads::Stride stride( numPixels );
@@ -123,12 +124,12 @@ Average
       {
       cmtk::Types::DataItem l;
       if ( data->Get( l, i ) )
-	labelFlags[static_cast<byte>( l )] = true;
+	pFlags[static_cast<byte>( l )] = true;
       }
-    }
 #ifdef CMTK_USE_GCD
 		    });
 #endif
+    }
 
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_BYTE, numPixels ) );
   result->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
@@ -210,8 +211,14 @@ Average
     // closer than previous closest label
     if ( label )
       {
+#ifdef CMTK_USE_GCD
+      const cmtk::Threads::Stride stride( numPixels );
+      dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
 #pragma omp parallel for
       for ( size_t i = 0; i < numPixels; ++i )
+#endif
 	{
 	if ( inOutDistancePtr[i] < totalDistancePtr[i] )
 	  {
@@ -224,6 +231,9 @@ Average
 	    resultPtr[i] = numLabels;
 	    }	  
 	}
+#ifdef CMTK_USE_GCD
+		      });
+#endif
       }
 
     if ( WriteDistanceMapNameMask )
