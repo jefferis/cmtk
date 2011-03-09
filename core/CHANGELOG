@@ -1,6 +1,6 @@
 Release CMTK-1.7.0:
 
-(r2953) Added: initial support for Grand Central Dispatch, including GCD-based
+(r2974) Added: initial support for Grand Central Dispatch, including GCD-based
     backend for thread pool parallel model.
 (r2919) Added: regional image filters, such as mean, variance, and third
     moment added to "convertx" tool.
