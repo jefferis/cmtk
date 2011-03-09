@@ -107,14 +107,11 @@ Average
   memset( labelFlags, 0, sizeof( labelFlags ) );
   bool* pFlags = labelFlags; // need to use ptr to array to work around GCD bug
 
-#ifdef CMTK_USE_GCD
-  const cmtk::Threads::Stride stride( numPixels );
-#endif
-
   for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = volumes.begin(); it != volumes.end(); ++it )
     {
     const cmtk::TypedArray* data = (*it)->GetData();
 #ifdef CMTK_USE_GCD
+    const cmtk::Threads::Stride stride( numPixels );
     dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
 		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
@@ -282,17 +279,28 @@ AverageWindowed
 
   bool labelFlags[256];
   memset( labelFlags, 0, sizeof( labelFlags ) );
+  bool *pFlags = labelFlags; // need pointer to work around GCD bug
 
   for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = volumes.begin(); it != volumes.end(); ++it )
     {
     const cmtk::TypedArray* data = (*it)->GetData();
+
+#ifdef CMTK_USE_GCD
+    const cmtk::Threads::Stride stride( numPixels );
+    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
 #pragma omp parallel for
     for ( size_t i = 0; i < numPixels; ++i )
+#endif
       {
       cmtk::Types::DataItem l;
       if ( data->Get( l, i ) )
-	labelFlags[static_cast<byte>( l )] = true;
+	pFlags[static_cast<byte>( l )] = true;
       }
+#ifdef CMTK_USE_GCD
+		    });
+#endif
     }
   
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_FLOAT, numPixels ) );
@@ -334,26 +342,44 @@ AverageWindowed
       // if this is the first label, write directly to accumulation distance map
       if ( !label )
 	{
+#ifdef CMTK_USE_GCD
+	const cmtk::Threads::Stride stride( numPixels );
+	dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+			{ for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
 #pragma omp parallel for
 	for ( size_t i = 0; i < numPixels; ++i )
+#endif
 	  {
 	  if ( insideDistancePtr[i] > 0 )
 	    totalDistancePtr[i] -= insideDistancePtr[i];
 	  else
 	    totalDistancePtr[i] += outsideDistancePtr[i];
 	  }
+#ifdef CMTK_USE_GCD
+			});
+#endif
 	}
       else
 	// for all other labels, add to label distance map
 	{
+#ifdef CMTK_USE_GCD
+	const cmtk::Threads::Stride stride( numPixels );
+	dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+			{ for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
 #pragma omp parallel for
 	for ( size_t i = 0; i < numPixels; ++i )
+#endif
 	  {
 	  if ( insideDistancePtr[i] > 0 )
 	    inOutDistancePtr[i] -= insideDistancePtr[i];
 	  else
 	    inOutDistancePtr[i] += outsideDistancePtr[i];
 	  }
+#ifdef CMTK_USE_GCD
+			});
+#endif
 	}
       }
 
@@ -362,8 +388,14 @@ AverageWindowed
     // closer than previous closest label
     if ( label )
       {
+#ifdef CMTK_USE_GCD
+      const cmtk::Threads::Stride stride( numPixels );
+      dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
 #pragma omp parallel for
       for ( size_t i = 0; i < numPixels; ++i )
+#endif
 	{	
 	if ( inOutDistancePtr[i] < totalDistancePtr[i] )
 	  {
@@ -372,12 +404,17 @@ AverageWindowed
 	  resultDividerPtr[i] = 1;
 	  }
 	else
+	  {
 	  if ( !(inOutDistancePtr[i] > totalDistancePtr[i]) )
 	    {
 	    resultPtr[i] += label;
 	    ++resultDividerPtr[i];
-	    }	  
+	    }
+	  }
 	}
+#ifdef CMTK_USE_GCD
+		      });
+#endif
       }
 
     if ( WriteDistanceMapNameMask )
@@ -414,8 +451,14 @@ AverageWindowed
     }
 
   // compute average between min and max window result
+#ifdef CMTK_USE_GCD
+  const cmtk::Threads::Stride stride( numPixels );
+  dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
 #pragma omp parallel for
   for ( size_t i = 0; i < numPixels; ++i )
+#endif
     {
     if ( resultDividerPtr[i] )
       {
@@ -427,6 +470,9 @@ AverageWindowed
       }
     resultDividerPtr[i] = 0;
     }
+#ifdef CMTK_USE_GCD
+		  });
+#endif
 
   result = cmtk::TypedArray::SmartPtr( result->Convert( cmtk::TYPE_BYTE ) );
   return result;
@@ -446,17 +492,28 @@ Average
 
   bool labelFlags[256];
   memset( labelFlags, 0, sizeof( labelFlags ) );
+  bool *pFlags = labelFlags; // need pointer to work around GCD bug
 
   for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator itV = volumes.begin(); itV != volumes.end(); ++itV )
     {
     const cmtk::TypedArray* data = (*itV)->GetData();
+
+#ifdef CMTK_USE_GCD
+    const cmtk::Threads::Stride stride( data->GetDataSize() );
+    dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
 #pragma omp parallel for
     for ( size_t i = 0; i < data->GetDataSize(); ++i )
+#endif
       {
       cmtk::Types::DataItem l;
       if ( data->Get( l, i ) )
-	labelFlags[static_cast<byte>( l )] = true;
+	pFlags[static_cast<byte>( l )] = true;
       }
+#ifdef CMTK_USE_GCD
+		    });
+#endif
     }
   
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( cmtk::TYPE_BYTE, nPixelsReference ) );
@@ -493,14 +550,23 @@ Average
       const float* insideDistancePtr = static_cast<const float*>( insideDistanceMap->GetData()->GetDataPtr() );
       float* inOutDistancePtr = static_cast<float*>( inOutDistanceMap->GetData()->GetDataPtr() );
       
+#ifdef CMTK_USE_GCD
+      const cmtk::Threads::Stride stride( nPixelsFloating );
+      dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
 #pragma omp parallel for
       for ( size_t i = 0; i < nPixelsFloating; ++i )
+#endif
 	{
 	if ( insideDistancePtr[i] > 0 )
 	  inOutDistancePtr[i] = insideDistancePtr[i];
 	else
 	  inOutDistancePtr[i] = inOutDistancePtr[i];
 	}
+#ifdef CMTK_USE_GCD
+		      });
+#endif
 
       cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> interpolator( *inOutDistanceMap );
       
@@ -527,8 +593,14 @@ Average
     // closer than previous closest label
     if ( label )
       {
+#ifdef CMTK_USE_GCD
+      const cmtk::Threads::Stride stride( nPixelsReference );
+      dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
 #pragma omp parallel for
       for ( size_t i = 0; i < nPixelsReference; ++i )
+#endif
 	{
 	if ( referenceInOutDistancePtr[i] < totalDistancePtr[i] )
 	  {
@@ -536,16 +608,22 @@ Average
 	  resultPtr[i] = label;
 	  }
 	else
+	  {
 	  if ( !(referenceInOutDistancePtr[i] > totalDistancePtr[i]) )
 	    {
 	    resultPtr[i] = numLabels;
-	    }	  
+	    }
+	  }
 	}
+#ifdef CMTK_USE_GCD
+		      });
+#endif
+
       }
     else
       {
       // for label 0, simply copy map.
-#pragma omp parallel for
+// #pragma omp parallel for // not worth parallelizing a simple copy
       for ( size_t i = 0; i < nPixelsReference; ++i )
 	{
 	totalDistancePtr[i] = referenceInOutDistancePtr[i];
@@ -669,14 +747,21 @@ AverageWindowed
       cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> interpolator( *inOutDistanceMap );
 
       // accumulate interpolated distances for this label
+#ifdef CMTK_USE_GCD
+      const cmtk::Threads::Stride stride( referenceDims[2] );
+      dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		      { for ( size_t z = stride.From( b ); z < stride.To( b ); ++z )
+#else
 #pragma omp parallel for
       for ( int z = 0; z < referenceDims[2]; ++z )
+#endif
 	{
 	cmtk::Vector3D v;
 	cmtk::Types::DataItem dvalue;
 
 	size_t i = z * referenceDims[0] * referenceDims[1];
 	for ( int y = 0; y < referenceDims[1]; ++y )
+	  {
 	  for ( int x = 0; x < referenceDims[0]; ++x, ++i )
 	    {
 	    (*itX)->GetTransformedGrid( v, x, y, z );
@@ -686,7 +771,11 @@ AverageWindowed
 	      ++countDistanceSamplesPtr[i];
 	      }
 	    }
+	  }
 	}
+#ifdef CMTK_USE_GCD
+		      });
+#endif
       }
     
     // if this is not the first label, compare this label's sum distance map
@@ -694,8 +783,14 @@ AverageWindowed
     // closer than previous closest label
     if ( label )
       {
+#ifdef CMTK_USE_GCD
+      const cmtk::Threads::Stride stride( nPixelsReference );
+      dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
 #pragma omp parallel for
       for ( size_t i = 0; i < nPixelsReference; ++i )
+#endif
 	{
 	if ( countDistanceSamplesPtr[i] )
 	  {
@@ -708,19 +803,30 @@ AverageWindowed
 	    resultDividerPtr[i] = 1;
 	    }
 	  else
+	    {
 	    if ( ! (referenceInOutDistancePtr[i] > totalDistancePtr[i] ) )
 	      {
 	      resultPtr[i] += label;
 	      ++resultDividerPtr[i];
 	      }
+	    }
 	  }
 	}
+#ifdef CMTK_USE_GCD
+		      });
+#endif
       }
     else
       {
       // for label 0, simply copy map.
+#ifdef CMTK_USE_GCD
+      const cmtk::Threads::Stride stride( nPixelsReference );
+      dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
 #pragma omp parallel for
       for ( size_t i = 0; i < nPixelsReference; ++i )
+#endif
 	{
 	if ( countDistanceSamplesPtr[i] )
 	  {
@@ -729,6 +835,9 @@ AverageWindowed
 	  resultDividerPtr[i] = 1;
 	  }
 	}
+#ifdef CMTK_USE_GCD
+		      });
+#endif
       }
     }
 
