@@ -32,6 +32,11 @@
 
 #include "cmtkLabelCombinationSTAPLE.h"
 
+#ifdef CMTK_USE_GCD
+#  include <System/cmtkThreads.h>
+#  include <dispatch/dispatch.h>
+#endif
+
 namespace
 cmtk
 {
@@ -48,8 +53,19 @@ LabelCombinationSTAPLE::LabelCombinationSTAPLE( const std::vector<TypedArray::Sm
   // compute initial estimate as the average of all inputs;
   // this is also the first E-step with all p/q equal to 0.5
   float totalSum = 0;
+
+// The following is currently broken due to Apple bug:
+//  http://forums.macrumors.com/showthread.php?t=952857 
+//  http://lists.apple.com/archives/perfoptimization-dev/2009/Sep/msg00043.html
+//#ifdef CMTK_USE_GCD
+//  const cmtk::Threads::Stride stride( numberOfPixels );
+//  float* threadSum = new float[stride.NBlocks()];
+//  dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+//		  { for ( size_t numberOfPixels = stride.From( b ); numberOfPixels < stride.To( b ); ++numberOfPixels )
+//#else
 #pragma omp parallel for reduction(+:totalSum)
   for ( size_t n = 0; n < numberOfPixels; ++n )
+//#endif
     {
     Types::DataItem w = 0;
     for ( size_t i = 0; i < numberOfInputs; ++i )
@@ -63,6 +79,9 @@ LabelCombinationSTAPLE::LabelCombinationSTAPLE( const std::vector<TypedArray::Sm
       }
     this->m_Result->Set( w / numberOfInputs, n );
     }
+//#ifdef CMTK_USE_GCD
+//		  });
+//#endif
 
   // global prior probability
   const float globalPrior = totalSum / (numberOfInputs * numberOfPixels );

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -38,6 +38,10 @@
 #include <System/cmtkProgress.h>
 
 #include <algorithm>
+
+#ifdef CMTK_USE_GCD
+#  include <dispatch/dispatch.h>
+#endif
 
 namespace
 cmtk
@@ -233,8 +237,17 @@ VolumeInjectionReconstruction
 
   Progress::Begin( 0, correctedImageNumPixels, 1e5, "Anisotropic Volume Injection" );
 
+// The following is currently broken due to Apple bug:
+//  http://forums.macrumors.com/showthread.php?t=952857 
+//  http://lists.apple.com/archives/perfoptimization-dev/2009/Sep/msg00043.html
+//#ifdef CMTK_USE_GCD
+//  const cmtk::Threads::Stride stride( correctedImageNumPixels );
+//  dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+//		  { for ( size_t correctedPx = stride.From( b ); correctedPx < stride.To( b ); ++correctedPx )
+//#else
 #pragma omp parallel for schedule(dynamic)
   for ( size_t correctedPx = 0; correctedPx < correctedImageNumPixels; ++correctedPx )
+//#endif
     {
     if ( (correctedPx % ((size_t)1e5)) == 0 )
       Progress::SetProgress( correctedPx );
@@ -309,6 +322,9 @@ VolumeInjectionReconstruction
     else
       correctedImageData->SetPaddingAt( correctedPx );
     }
+//#ifdef CMTK_USE_GCD
+//		  });
+//#endif
 
   Progress::Done();
 }
