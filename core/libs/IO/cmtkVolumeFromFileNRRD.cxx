@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -112,6 +112,7 @@ VolumeFromFile::ReadNRRD( const char* pathHdr )
       case nrrdTypeUShort: type = TYPE_USHORT; break;
       case nrrdTypeShort:  type = TYPE_SHORT; break;
       case nrrdTypeInt:    type = TYPE_INT; break;
+      case nrrdTypeUInt:   type = TYPE_UINT; break;
       case nrrdTypeFloat:  type = TYPE_FLOAT; break;
       case nrrdTypeDouble: type = TYPE_DOUBLE; break;
       default: break;
@@ -226,6 +227,7 @@ VolumeFromFile::WriteNRRD
     case TYPE_USHORT: type = nrrdTypeUShort; break;
     case TYPE_SHORT:  type = nrrdTypeShort; break;
     case TYPE_INT:    type = nrrdTypeInt; break;
+    case TYPE_UINT:   type = nrrdTypeUInt; break;
     case TYPE_FLOAT:  type = nrrdTypeFloat; break;
     case TYPE_DOUBLE: type = nrrdTypeDouble; break;
     default: break;
@@ -242,7 +244,7 @@ VolumeFromFile::WriteNRRD
   else
     {
     StdErr << "WARNING: Nrrd library does not support Gzip compression encoding.\n"
-	      << " Please add -DTEEM_ZLIB to compiler options when building Nrrd library.\n";
+	   << " Please add -DTEEM_ZLIB to compiler options when building Nrrd library.\n";
     }
   
   try
