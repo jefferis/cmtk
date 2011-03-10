@@ -79,7 +79,7 @@ doMain ( const int argc, const char *argv[] )
     {
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Transformation to Deformation Field" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Convert parametric rigid or nonrigid transformation to deformation field, sampled at pixel locations of a given refernece image" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Convert parametric rigid or nonrigid transformation to deformation field, sampled at pixel locations of a given reference image" );
     
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
@@ -110,9 +110,11 @@ doMain ( const int argc, const char *argv[] )
     throw cmtk::ExitException(1);
     }          
 
-  cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( InputXformPaths );
+  cmtk::XformList xformList = cmtk::XformListIO::MakeFromStringList( InputXformPaths );  
   xformList.SetEpsilon( InversionToleranceFactor * volume->GetMinDelta() );
   
+  const cmtk::XformList& xformListRef = xformList; // need this to work around GCD bug
+
   if ( Downsample )
     {
     int factors[3] = { 1, 1, 1 };
@@ -158,7 +160,7 @@ doMain ( const int argc, const char *argv[] )
 	bool invalid = true;
 	if ( (!Mask) || (volume->GetDataAt( x, y, z ) > 0) )
 	  {
-	  invalid = !xformList.ApplyInPlace( v1 );
+	  invalid = !xformListRef.ApplyInPlace( v1 );
 	  }
 
 	if ( !invalid )
