@@ -532,10 +532,6 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/cmtkConfigureCPack.cmake)
 
 ADD_SUBDIRECTORY(Utilities)
 
-SET(MXML_LIBRARIES "mxml")
-SET(MXML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Utilities/mxml")
-
-
 #-----------------------------------------------------------------------------
 # Add an option to enable or disable QT support and GUI applications
 
