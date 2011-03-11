@@ -105,7 +105,7 @@ const char* AffineGroupRegistration = NULL;
 const char* OutputRootDirectory = NULL;
 const char* OutputArchive = "groupwise.xforms";
 const char* OutputStudyListGroup = "groupwise.list";
-const char* OutputStudyListIndividual = "pairwise";
+const char* OutputStudyListIndividual = "pairs";
 const char* AverageImagePath = "average.nii";
 cmtk::Interpolators::InterpolationEnum AverageImageInterpolation = cmtk::Interpolators::LINEAR;
 

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -55,10 +55,10 @@ const char* PreDefinedTemplatePath = NULL;
 cmtk::UniformVolume::SmartPtr PreDefinedTemplate;
 
 const char* OutputRootDirectory = NULL;
-const char* OutputArchive = "groupwise_init.xforms";
-const char* OutputStudyListGroup = "groupwise_init.list";
-const char* OutputStudyListIndividual = "groupwise_init_pairs";
-const char* AverageImagePath = "groupwise_init_average.nii";
+const char* OutputArchive = "groupwise.xforms";
+const char* OutputStudyListGroup = "groupwise.list";
+const char* OutputStudyListIndividual = "pairs";
+const char* AverageImagePath = "average.nii";
 cmtk::Interpolators::InterpolationEnum AverageImageInterpolation = cmtk::Interpolators::LINEAR;
 
 bool AlignCentersOfMass = false;
