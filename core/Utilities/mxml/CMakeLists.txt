@@ -71,5 +71,5 @@ FILE(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 INSTALL(FILES ${files} ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION ${CMTK_INSTALL_INCLUDE_DIR} COMPONENT headers)
 
 SET(MXML_LIBRARIES "mxml" CACHE INTERNAL "Libraries for the mxml library")
-SET(MXML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Utilities/mxml" CACHE PATH "Include directory for the mxml library headers.")
+SET(MXML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" CACHE PATH "Include directory for the mxml library headers.")
 
