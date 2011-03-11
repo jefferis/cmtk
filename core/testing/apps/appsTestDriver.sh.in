@@ -746,15 +746,15 @@ case ${RUNTEST} in
 	;;
     groupwise_initCentersOfMass)
 	run groupwise_init -O ${tmpdir} --align-centers-of-mass spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
-	check_results groupwise_init.xforms
+	check_results groupwise.xforms
 	# cannot compare separate xforms due to local file system path in the file
-	check_results groupwise_init_average.nii
+	check_results average.nii
 	;;
     groupwise_initCentersOfMassTemplate)
 	run groupwise_init -O ${tmpdir} --template spgr_brain_1.hdr --align-centers-of-mass spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
-	check_results groupwise_init.xforms
-	check_results groupwise_init_pairs/target-000.list/registration groupwise_init_pairs/target-001.list/registration groupwise_init_pairs/target-002.list/registration
-	check_results groupwise_init_average.nii
+	check_results groupwise.xforms
+	check_results pairs/target-000.list/registration pairs/target-001.list/registration pairs/target-002.list/registration
+	check_results average.nii
 	;;
     histogram)
 	run histogram -o ${tmpdir}/histogram spgr_3t.hdr

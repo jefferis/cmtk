@@ -1,0 +1,13 @@
+! TYPEDSTREAM 1.1
+
+registration {
+	reference_study "spgr_brain_1.hdr"
+	floating_study "spgr_brain_2.hdr"
+	affine_xform {
+		xlate 3.810492019 -4.228695586 -1.569864204 
+		rotate 0 0 0 
+		log_scale 0 0 0 
+		shear 0 0 0 
+		center 87.1875 118.125 75 
+	}
+}
