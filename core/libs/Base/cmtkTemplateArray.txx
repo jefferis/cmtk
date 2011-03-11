@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -339,7 +339,7 @@ TemplateArray<T>
   for ( size_t i = 0; i < this->DataSize; ++i )
     {
     if ( !this->PaddingFlag || (this->Data[i] != this->Padding) )
-      this->Data[i] = static_cast<T>( f( this->Data[i] ) );
+      this->Data[i] = TypeTraits::Convert( f( this->Data[i] ) );
     }
 }
 
