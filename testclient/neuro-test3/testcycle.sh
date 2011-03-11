@@ -31,6 +31,14 @@
 ##
 
 DISABLED_TESTS="OSX-10.5-gcc-Debug OSX-10.4-gcc-Debug"
+## disable clang and llvm with 10.4 and 10.5 SDKs, which they do not support
+for c in clang llvm; do
+    for sdk in 10.4 10.5; do
+	for conf in Debug Release Release-Bundled Release-Bundled-Shared; do
+	    DISABLED_TESTS="${DISABLED_TESTS} OSX-${sdk}-${c}-${conf}"
+	done
+    done
+done
 
 export LC_ALL=POSIX
 export PATH=${PATH}:/opt/local/bin

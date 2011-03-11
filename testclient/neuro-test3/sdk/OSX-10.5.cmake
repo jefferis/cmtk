@@ -34,6 +34,9 @@ CMAKE_OSX_ARCHITECTURES:STRING=x86_64
 CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.5
 CMAKE_OSX_SYSROOT:STRING=/Developer/SDKs/MacOSX10.5.sdk
 
+CMAKE_CXX_COMPILER:FILEPATH=/Developer-old/usr/bin/g++-4.2
+CMAKE_C_COMPILER:FILEPATH=/Developer-old/usr/bin/gcc-4.2
+
 CMAKE_CXX_FLAGS:STRING=-march=core2 -mmmx -msse -msse2 -mfpmath=sse -Wall -Wextra -Wno-deprecated -Wno-unknown-pragmas
 CMAKE_C_FLAGS:STRING=-march=core2 -mmmx -msse -msse2 -mfpmath=sse
 ")
