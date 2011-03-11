@@ -384,14 +384,6 @@ MARK_AS_ADVANCED(CMTK_NUMERICS_DOUBLE)
 #-----------------------------------------------------------------------------
 # Add an option to use or not use zlib library
 
-# clear cache if configured to use cmtkZlib with a previous, broken CMake file
-IF(${ZLIB_LIBRARY} MATCHES ".*cmtkZlib.*" )
-  MESSAGE( STATUS "Clearing invalid zlib configuration" )
-  SET(ZLIB_LIBRARY NOTFOUND CACHE STRING "" FORCE)
-  SET(ZLIB_INCLUDE_DIR NOTFOUND CACHE STRING "" FORCE)
-  SET(ZCONF_INCLUDE_DIR "" CACHE STRING "" FORCE)
-ENDIF(${ZLIB_LIBRARY} MATCHES ".*cmtkZlib.*" )
-
 OPTION(CMTK_BUILD_ZLIB "Build bundled zlib library, even if system zlib exists" OFF)
 FIND_PACKAGE(ZLIB)
 IF(CMTK_BUILD_ZLIB)
