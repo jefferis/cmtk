@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -132,8 +132,7 @@ private:
     }
 
     /// Get complete fraction for this range.
-    double GetFractionComplete( const double nestedFraction = 0 //!< For nexted ranges, this is the fraction achieved in he next level down.
-      ) const;
+    double GetFractionComplete( const double nestedFraction = 0 /*!< For nexted ranges, this is the fraction achieved in he next level down.*/ ) const;
 
     /// Start of this range.
     double m_Start;

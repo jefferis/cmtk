@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -91,11 +92,9 @@ public:
   bool WriteXformsSeparateArchives( const char* path, const char* templatePath );
   
   /// Reformat and write average image.
-  bool WriteAverageImage
-  ( const char* path, //<! Path of output image.
-    const cmtk::Interpolators::InterpolationEnum interp = cmtk::Interpolators::LINEAR, //!< Selection of interpolation method (via igsReformatVolume).
-    const bool useTemplateData = false //!< If true, template image data is included in averaging.
-    );
+  bool WriteAverageImage( const char* path /*<! Path of output image.*/,
+			  const cmtk::Interpolators::InterpolationEnum interp = cmtk::Interpolators::LINEAR /*!< Selection of interpolation method (via igsReformatVolume).*/,
+			  const bool useTemplateData = false /*!< If true, template image data is included in averaging.*/ );
   
 private:
   /// Pointer to functional.

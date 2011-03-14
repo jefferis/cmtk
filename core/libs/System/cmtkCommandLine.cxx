@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkExitException.h>
+#include <System/cmtkDebugOutput.h>
 
 #include <string.h>
 #include <sstream>

@@ -155,12 +155,10 @@ private:
    *\return A new volume with the same geometry as the input volume, but for DATACLASS_GREY, all pixel
    * values will have been rescaled to represent histogram bin indexes directly.
    */
-  UniformVolume::SmartPtr PrescaleData
-  ( const UniformVolume::SmartConstPtr& volume, //!< Input volume.
-    size_t* numberOfBins, //!< Output: number of bins that the histogram should allocate for the output volume.
-    Types::DataItem* scaleFactor, //!< Data scaling factor.
-    Types::DataItem* scaleOffset //!< Data scaling offset.
-    );
+  UniformVolume::SmartPtr PrescaleData( const UniformVolume::SmartConstPtr& volume /*!< Input volume.*/,
+					size_t* numberOfBins /*!< Output: number of bins that the histogram should allocate for the output volume.*/,
+					Types::DataItem* scaleFactor /*!< Data scaling factor.*/,
+					Types::DataItem* scaleOffset /*!< Data scaling offset.*/ );
 
   /// Store reference data rescaling offset.
   Types::DataItem m_ScaleOffsetReference;

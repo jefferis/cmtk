@@ -436,22 +436,18 @@ public:
 
   /** Compute approximate percentile value from histogram.
    */
-  virtual Types::DataItem GetPercentile
-  ( const Types::DataItem percentile, //!< The percentile to be computed. Value must be between 0 and 1.
-    const size_t nBins = 256 //!< Number of histogram bins for percentile estimation.
-    ) const;
-
+  virtual Types::DataItem GetPercentile( const Types::DataItem percentile /*!< The percentile to be computed. Value must be between 0 and 1.*/,
+					 const size_t nBins = 256 /*!< Number of histogram bins for percentile estimation.*/ ) const;
+  
   /** Compute list of approximate percentile values from histogram.
    * This function calls GetPercentile for each value in the given input vector and puts
    * all resulting values into the output vector in the same order. The main advantage of
    * using this function is that it is more efficient as a single histogram is created to
    * compute all percentiles.
    */
-  virtual std::vector<Types::DataItem> GetPercentileList
-  ( const std::vector<Types::DataItem>& percentileList, //!< The list of percentiles to be computed. Each value must be between 0 and 1.
-    const size_t nBins = 256 //!< Number of histogram bins for percentile estimation.
-    ) const;
-
+  virtual std::vector<Types::DataItem> GetPercentileList( const std::vector<Types::DataItem>& percentileList /*!< The list of percentiles to be computed. Each value must be between 0 and 1.*/,
+							  const size_t nBins = 256 /*!< Number of histogram bins for percentile estimation.*/ ) const;
+  
   /** Get data histogram.
    *\return A histogram object filled with the relative frequencies of values 
    * in this array.

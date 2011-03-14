@@ -211,13 +211,11 @@ protected:
     Types::DataItem m_AutoCropLevel;
     
     /// Constructor.
-    ImagePreprocessor( const char* name,  //!< There are two preprocessors, for reference and floating image: this parameter names a parameter group for this instance.
-		       const char* key //!< This parameter gives a string key that is appended to each command line option so that reference and floating preprocessors do not collide.
-      );
+    ImagePreprocessor( const char* name /*!< There are two preprocessors, for reference and floating image: this parameter names a parameter group for this instance.*/,
+		       const char* key /*!< This parameter gives a string key that is appended to each command line option so that reference and floating preprocessors do not collide.*/ );
     
     /// Attach this preprocessor to a command line parse.
-    void AttachToCommandLine( CommandLine& cl //!< The command line object to add our options to.
-      ); 
+    void AttachToCommandLine( CommandLine& cl /*!< The command line object to add our options to.*/ ); 
     
     /// Get pre-processed image from original image.
     UniformVolume::SmartPtr GetProcessedImage( const UniformVolume* original );

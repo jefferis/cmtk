@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -89,10 +89,8 @@ public:
    * other two axes' image dimensions, and if all three are the same, the
    * one that doesn't match their spacing (delta).
    */
-  static int GuessInterleaveAxis( 
-    const UniformVolume* image, //!< The interleaved image.
-    const int defaultAxis = 2 //!< In case all guessing fails, this is the default axis we return.
-    );
+  static int GuessInterleaveAxis( const UniformVolume* image /*!< The interleaved image.*/,
+				  const int defaultAxis = 2 /*!< In case all guessing fails, this is the default axis we return.*/ );
 
   /** Compute transformations between the reference image grid and the original pass images.
    * The resulting transformations are stored in the m_TransformationsToPassImages vector.
@@ -125,17 +123,13 @@ public:
   }
 
   /// Create initial approximation using isotropic volume injection.
-  void VolumeInjectionIsotropic
-  ( const Types::Coordinate kernelSigma, //!< Gaussian kernel sigma (standard deviation) parameter
-    const Types::Coordinate kernelRadius //!< Gaussian kernel cut-off radius.
-    );
-
+  void VolumeInjectionIsotropic( const Types::Coordinate kernelSigma /*!< Gaussian kernel sigma (standard deviation) parameter*/,
+				 const Types::Coordinate kernelRadius /*!< Gaussian kernel cut-off radius.*/ );
+  
   /// Create initial approximation using anisotropic volume injection.
-  void VolumeInjectionAnisotropic
-  ( const Types::Coordinate kernelSigmaFactor, //!< Gaussian kernel sigma (standard deviation) factor (multiple of per-dimension pass image spacing)
-    const Types::Coordinate kernelRadiusFactor //!< Gaussian kernel cut-off radius factor (multiple of per-dimension pass image spacing)
-    );
-
+  void VolumeInjectionAnisotropic( const Types::Coordinate kernelSigmaFactor /*!< Gaussian kernel sigma (standard deviation) factor (multiple of per-dimension pass image spacing)*/,
+				   const Types::Coordinate kernelRadiusFactor /*!< Gaussian kernel cut-off radius factor (multiple of per-dimension pass image spacing)*/ );
+  
   /// Returns the corrected image.
   UniformVolume::SmartPtr& GetCorrectedImage();
   
@@ -199,9 +193,7 @@ protected:
    * Side effect: this function first computes the Laplacian image, which is stored in
    * m_CorrectedImageLaplacian for use in the AddLaplacianGradientImage function.
    */
-  ap::real_value_type ComputeCorrectedImageLaplacianNorm( 
-    const ap::real_1d_array& correctedImagePixels //!< Current vector of corrected image pixels.
-    );
+  ap::real_value_type ComputeCorrectedImageLaplacianNorm( const ap::real_1d_array& correctedImagePixels /*!< Current vector of corrected image pixels.*/ );
   
   /// Add weighted gradient image of Laplacian to already computed cost function gradient.
   void AddLaplacianGradientImage( 

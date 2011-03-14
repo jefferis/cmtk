@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -66,9 +66,8 @@ public:
   typedef Matrix2D<RealValueType> ConfusionMatrixType;
   
   /// Constructor: compute label combination.
-  LabelCombinationMultiClassSTAPLE( const std::vector<TypedArray::SmartPtr>& data, //!< Array of typed arrays with input data.
-				    const int maxIterations //!< Maximum number of STAPLE iterations. 
-    );
+  LabelCombinationMultiClassSTAPLE( const std::vector<TypedArray::SmartPtr>& data /*!< Array of typed arrays with input data.*/,
+				    const int maxIterations /*!< Maximum number of STAPLE iterations.*/ );
 
   /// Get result.
   TypedArray::SmartPtr& GetResult()

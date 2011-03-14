@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -57,31 +58,33 @@ public:
   /// Enum that defines all initialization modes supported by this class.
   typedef enum
   {
-    NONE = 0, //!< No initialization. Usually means use identity transformation.
-    FOV = 1, //!< Align centers of fields of view.
-    COM = 2, //!< Align centers of mass.
-    PAX = 3, //!< Align using principal axes.
-    PHYS = 4 //!< Align using physical coordinates, ie., image origins and direction vectors.
+    /// No initialization. Usually means use identity transformation.
+    NONE = 0,
+    /// Align centers of fields of view.
+    FOV = 1,
+    /// Align centers of mass.
+    COM = 2,
+    /// Align using principal axes.
+    PAX = 3,
+    /// Align using physical coordinates, ie., image origins and direction vectors.
+    PHYS = 4
   } Mode;
 
   /// Return a name for each initialization mode.
   static const std::string GetModeName( const Self::Mode mode );
 
   /// Create an initial affine transformation for two images based on a selected mode.
-  static AffineXform* Create( const UniformVolume& referenceImage, //!< The reference (fixed) image
-			      const UniformVolume& floatingImage, //!< The floating (moving) image
-			      const Self::Mode mode //!< Selected initialization method.
-    );
+  static AffineXform* Create( const UniformVolume& referenceImage /*!< The reference (fixed) image*/,
+			      const UniformVolume& floatingImage /*!< The floating (moving) image*/,
+			      const Self::Mode mode /*!< Selected initialization method.*/ );
 
   /** Align images based on their direction vectors.
    * The direction vectors are encoded in each volume's "AffineXform" field.
    */
-  static AffineXform* AlignDirectionVectors
-  ( const UniformVolume& referenceImage, //!< The reference (fixed) image
-    const UniformVolume& floatingImage, //!< The floating (moving) image
-    const bool centerXform = false //!< If this flag is set, the rotation center of the transformation is set to the center of the reference image.
-    );
-
+  static AffineXform* AlignDirectionVectors( const UniformVolume& referenceImage /*!< The reference (fixed) image*/,
+					     const UniformVolume& floatingImage /*!< The floating (moving) image*/,
+					     const bool centerXform = false /*!< If this flag is set, the rotation center of the transformation is set to the center of the reference image.*/ );
+  
   /** Align images based on fields of view.
    *\return This function returns a transformation with three degrees of freedom for a translation only, which
    * aligns the centers of field of view for the two input images. If a crop region is defined in an image, the

@@ -67,17 +67,15 @@ public:
   /// Destructor.
   virtual ~GroupwiseRegistrationFunctionalXformTemplate() {};
 
-///
-  virtual void InitializeXformsFromAffine( const Types::Coordinate gridSpacing, //!< Control point grid spacing in real-world units
-					   std::vector<AffineXform::SmartPtr> initialAffineXformsVector, //!< Vector of initial affine coordinate transformations
-					   const bool exactSpacing = true //!< If set, the control point spacing will be exactly as given in the first parameter
-    );
+  /// Initialize nonrigid from affine transformations.
+  virtual void InitializeXformsFromAffine( const Types::Coordinate gridSpacing /*!< Control point grid spacing in real-world units*/,
+					   std::vector<AffineXform::SmartPtr> initialAffineXformsVector /*!< Vector of initial affine coordinate transformations*/,
+					   const bool exactSpacing = true /*!< If set, the control point spacing will be exactly as given in the first parameter*/ );
   
   /** Initialize spline warp transformations.
    */
-  virtual void InitializeXforms( const Types::Coordinate gridSpacing, //!< Control point grid spacing in real-world units
-				 const bool exactSpacing = true  //!< If set, the control point spacing will be exactly as given in the first parameter
-    )
+  virtual void InitializeXforms( const Types::Coordinate gridSpacing /*!< Control point grid spacing in real-world units*/,
+				 const bool exactSpacing = true /*!< If set, the control point spacing will be exactly as given in the first parameter*/ )
   {
     this->InitializeXformsFromAffine( gridSpacing, this->m_InitialAffineXformsVector, exactSpacing );
   }

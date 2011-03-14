@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -67,12 +67,10 @@ public:
 
   /** Initialize affine transformations.
    */
-  static void InitializeXforms
-  ( GroupwiseRegistrationFunctionalBase& functional, //!<The functional to initialize.
-    const bool alignCenters = true, //!< If set, the centers of all target images will be aligned with the center of the template grid via translations.
-    const bool alignCenterOfMass = false, ///!< If set, target images will be aligned via translations according to their centers of mass.
-    const bool initScales = false //!< If set, approximate initial scaling factors will be computed based on image centers of mass and moments.
-    );
+  static void InitializeXforms( GroupwiseRegistrationFunctionalBase& functional /*!<The functional to initialize.*/,
+				const bool alignCenters = true /*!< If set, the centers of all target images will be aligned with the center of the template grid via translations.*/,
+				const bool alignCenterOfMass = false /*!< If set, target images will be aligned via translations according to their centers of mass.*/,
+				const bool initScales = false /*!< If set, approximate initial scaling factors will be computed based on image centers of mass and moments.*/ );
 };
 
 //@}

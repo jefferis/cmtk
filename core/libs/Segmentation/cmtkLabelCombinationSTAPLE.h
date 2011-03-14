@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -57,11 +58,10 @@ LabelCombinationSTAPLE
 {
 public:
   /// Constructor: compute label combination.
-  LabelCombinationSTAPLE( const std::vector<TypedArray::SmartPtr>& data, //!< Array of typed arrays with input data.
-			  const int maxIterations, //!< Maximum number of STAPLE iterations. 
-			  const ScalarDataType resultType = TYPE_FLOAT //!< Primitive data type for results.
-    );
-
+  LabelCombinationSTAPLE( const std::vector<TypedArray::SmartPtr>& data /*!< Array of typed arrays with input data.*/,
+			  const int maxIterations /*!< Maximum number of STAPLE iterations. */,
+			  const ScalarDataType resultType = TYPE_FLOAT /*!< Primitive data type for results.*/ );
+  
   /// Get result.
   TypedArray::SmartPtr& GetResult()
   {

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -65,22 +66,18 @@ public:
   /** Compute groupwise overlap with advanced options.
    *\return Number of labels included in computation. If this is zero, the resulting overlap values are invalid.
    */
-  size_t ComputeGroupwiseOverlap
-  ( const int firstLabel, //!< Analysis starts with this label.
-    const int numberOfLabels, //!< Analysis covers these labels
-    double& overlapEqualWeighted, //!< Equal-weighted overlap score is returned herein.
-    double& overlapVolumeWeighted, //!< Volume-weighted overlap score is returned herein. 
-    double& overlapInverseWeighted //!< Inverse volume-weighted overlap score is returned herein.
-    ) const;
-
+  size_t ComputeGroupwiseOverlap( const int firstLabel /*!< Analysis starts with this label.*/,
+				  const int numberOfLabels /*!< Analysis covers these labels*/,
+				  double& overlapEqualWeighted /*!< Equal-weighted overlap score is returned herein.*/,
+				  double& overlapVolumeWeighted /*!< Volume-weighted overlap score is returned herein.*/,
+				  double& overlapInverseWeighted /*!< Inverse volume-weighted overlap score is returned herein.*/  ) const;
+  
   /** Compute simple groupwise overlap.
    *\return Number of labels included in computation. If this is zero, the resulting overlap values are invalid.
    */
-  size_t ComputeGroupwiseOverlap
-  ( double& overlapEqualWeighted, //!< Equal-weighted overlap score is returned herein.
-    double& overlapVolumeWeighted, //!< Volume-weighted overlap score is returned herein. 
-    double& overlapInverseWeighted //!< Inverse volume-weighted overlap score is returned herein.
-    ) const
+  size_t ComputeGroupwiseOverlap( double& overlapEqualWeighted /*!< Equal-weighted overlap score is returned herein.*/,
+				  double& overlapVolumeWeighted /*!< Volume-weighted overlap score is returned herein.*/,
+				  double& overlapInverseWeighted /*!< Inverse volume-weighted overlap score is returned herein.*/ ) const
   {
     return this->ComputeGroupwiseOverlap( 0, this->m_MaxLabelValue+1, overlapEqualWeighted, overlapVolumeWeighted, overlapInverseWeighted );
   }

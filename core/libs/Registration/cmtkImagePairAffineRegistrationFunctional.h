@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -257,12 +257,11 @@ public:
    * instance of ImagePairAffineRegistrationFunctional with the correct metric class as template
    * parameter.
    */
-  static ImagePairAffineRegistrationFunctional* Create( const int metric, //!< Index of image similarity measure.
-							UniformVolume::SmartPtr& refVolume, //!< Reference volume.
-							UniformVolume::SmartPtr& fltVolume, //!< Floating volume
-							const Interpolators::InterpolationEnum interpolation, //!< Floating volume interpolation.
-							AffineXform::SmartPtr& affineXform //!< Use this affine transformation.
-    );
+  static ImagePairAffineRegistrationFunctional* Create( const int metric /*!< Index of image similarity measure.*/,
+							UniformVolume::SmartPtr& refVolume /*!< Reference volume.*/,
+							UniformVolume::SmartPtr& fltVolume /*!< Floating volume*/,
+							const Interpolators::InterpolationEnum interpolation /*!< Floating volume interpolation.*/,
+							AffineXform::SmartPtr& affineXform /*!< Use this affine transformation.*/ );
 };
 
 //@}

@@ -85,10 +85,9 @@ public:
 
   /** Initialize spline warp transformations.
    */
-  virtual void InitializeXformsFromAffine( const Types::Coordinate gridSpacing, //!< Control point grid spacing in real-world units
-					   std::vector<AffineXform::SmartPtr> initialAffineXformsVector, //!< Vector of initial affine coordinate transformations
-					   const bool exactSpacing = true //!< If set, the control point spacing will be exactly as given in the first parameter
-    );
+  virtual void InitializeXformsFromAffine( const Types::Coordinate gridSpacing /*!< Control point grid spacing in real-world units*/,
+					   std::vector<AffineXform::SmartPtr> initialAffineXformsVector /*!< Vector of initial affine coordinate transformations*/,
+					   const bool exactSpacing = true /*!< If set, the control point spacing will be exactly as given in the first parameter*/ );
 
   /// Refine transformation control point grids.
   virtual void RefineTransformationGrids();

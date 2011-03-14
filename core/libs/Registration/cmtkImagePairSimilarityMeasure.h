@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -65,11 +65,9 @@ public:
 
   /** Constructor.
    */
-  ImagePairSimilarityMeasure
-  ( const UniformVolume::SmartConstPtr& refVolume, //!< The reference image.
-    const UniformVolume::SmartConstPtr& fltVolume, //!< The floating image.
-    const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT //!< User-selected interpolation kernel
-    );
+  ImagePairSimilarityMeasure( const UniformVolume::SmartConstPtr& refVolume /*!< The reference image.*/,
+			      const UniformVolume::SmartConstPtr& fltVolume /*!< The floating image.*/,
+			      const Interpolators::InterpolationEnum interpolation = Interpolators::DEFAULT /*!< User-selected interpolation kernel*/ );
 
   /** Default constructor.
    */

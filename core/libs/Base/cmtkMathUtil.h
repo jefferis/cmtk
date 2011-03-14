@@ -259,16 +259,12 @@ public:
   T Correlation( const std::vector<T>& x, const std::vector<T>& y );
   
   /// Compute t-statistic from coefficient of correlation.
-  static double TStatFromCorrelation
-  ( const double r, //!< Coefficient of correlation as computed by MathUtil::Correlation function.
-    const size_t df //!< Number of degrees of freedom
-    );
+  static double TStatFromCorrelation( const double r /*!< Coefficient of correlation as computed by MathUtil::Correlation function.*/,
+				      const size_t df /*!< Number of degrees of freedom*/ );
   
   /// Compute probability from T-statistic.
-  static double ProbabilityFromTStat
-  ( const double t, //!< T-statistic as returned for example from MathUtil::TStatFromCorrelation function.
-    const size_t df //!< Number of degrees of freedom.
-    );
+  static double ProbabilityFromTStat( const double t /*!< T-statistic as returned for example from MathUtil::TStatFromCorrelation function.*/,
+				      const size_t df /*!< Number of degrees of freedom.*/ );
   
   /** Performs two-tailed unpaired t-test on two distributions.
    */

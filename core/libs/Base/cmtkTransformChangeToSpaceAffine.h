@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -52,12 +52,11 @@ class TransformChangeToSpaceAffine
 {
 public:
   /// Simplified constructor: compute transformation between images in new, common space.
-  TransformChangeToSpaceAffine( const AffineXform& xform, //!< Transformation from reference to floating in their current spaces.
-				const UniformVolume& reference, //!< Reference (fixed) image.
-				const UniformVolume& floating, //! Floating (moving) image.
-				const char* forceSpace = NULL //!< Force transformation to be in this coordinate space.
-    );
-
+  TransformChangeToSpaceAffine( const AffineXform& xform /*!< Transformation from reference to floating in their current spaces.*/,
+				const UniformVolume& reference /*!< Reference (fixed) image.*/,
+				const UniformVolume& floating /*! Floating (moving) image.*/,
+				const char* forceSpace = NULL /*!< Force transformation to be in this coordinate space.*/ );
+  
   /// Return transformation in native spaces.
   const AffineXform& GetTransformation() const
   {

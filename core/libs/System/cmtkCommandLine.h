@@ -298,15 +298,13 @@ public:
     virtual void Evaluate( const size_t argc, const char* argv[], size_t& index ) = 0;
 
     /// Virtual function that returns an XML tree describing this option.
-    virtual mxml_node_t* MakeXML( mxml_node_t *const parent //!< Parent in the XML tree for the new node.
-      ) const = 0;
+    virtual mxml_node_t* MakeXML( mxml_node_t *const parent /*!< Parent in the XML tree for the new node.*/ ) const = 0;
 
     /// Virtual function returns a string that describes the parameter type associated with this option (derived classes only)
     virtual std::string GetParamTypeString() const { return ""; }
 
     /// Format additional help information.
-    virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
-      ) const
+    virtual std::ostringstream& PrintHelp( std::ostringstream& fmt /*!< Stream that the additional help information is formatted into*/ ) const
     {
       // by default, simply return stream unchanged.
       return fmt;
@@ -392,8 +390,7 @@ private:
     }
 
     /// Format additional help information (e.g., default values).
-    virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
-      ) const
+    virtual std::ostringstream& PrintHelp( std::ostringstream& fmt /*!< Stream that the additional help information is formatted into*/ ) const
     {
       if ( this->IsDefault() )
 	fmt << "\n[This is the default]";
@@ -444,8 +441,7 @@ private:
     virtual std::string GetParamTypeString() const;
 
     /// Format additional help information (e.g., default values).
-    virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
-      ) const;
+    virtual std::ostringstream& PrintHelp( std::ostringstream& fmt /*!< Stream that the additional help information is formatted into*/ ) const;
 
     /// Format additional help information (e.g., default values).
     virtual void PrintWiki() const;
@@ -589,16 +585,14 @@ private:
     virtual void Evaluate( const size_t argc, const char* argv[], size_t& index );
 
     /// Returns an XML tree describing this parameter.
-    virtual mxml_node_t* MakeXMLWithIndex( mxml_node_t *const parent, //!< Parent in the XML tree for the new node.
-					   const int index //!< Running index [0,1,...] of this argument in the argument list.
-      ) const;
-
+    virtual mxml_node_t* MakeXMLWithIndex( mxml_node_t *const parent /*!< Parent in the XML tree for the new node.*/,
+					   const int index /*!< Running index [0,1,...] of this argument in the argument list.*/ ) const;
+    
     /// Return a textual description of the parameter associated with this option
     virtual std::string GetParamTypeString() const;
 
     /// Format additional help information (e.g., default values).
-    virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
-      ) const
+    virtual std::ostringstream& PrintHelp( std::ostringstream& fmt /*!< Stream that the additional help information is formatted into*/ ) const
     {
       // by default, simply return stream unchanged.
       if ( this->Var )
@@ -650,16 +644,14 @@ private:
     virtual void Evaluate( const size_t argc, const char* argv[], size_t& index );
 
     /// Returns an XML tree describing this parameter.
-    virtual mxml_node_t* MakeXMLWithIndex( mxml_node_t *const parent, //!< Parent in the XML tree for the new node.
-					   const int index //!< Running index [0,1,...] of this argument in the argument list.
-      ) const;
+    virtual mxml_node_t* MakeXMLWithIndex( mxml_node_t *const parent /*!< Parent in the XML tree for the new node.*/,
+					   const int index /*!< Running index [0,1,...] of this argument in the argument list.*/ ) const;
 
     /// Return a textual description of the parameter associated with this option
     virtual std::string GetParamTypeString() const;
 
     /// Format additional help information (e.g., default values).
-    virtual std::ostringstream& PrintHelp( std::ostringstream& fmt //!< Stream that the additional help information is formatted into
-      ) const
+    virtual std::ostringstream& PrintHelp( std::ostringstream& fmt /*!< Stream that the additional help information is formatted into*/ ) const
     {
       if ( this->Var->size() )
 	{
@@ -719,8 +711,8 @@ public:
     const Key m_Key;
 
     /// Constructor.
-    KeyToAction( const Key& key, //!< Key: long and/or short command line option for this action.
-		 const std::string& comment ) : //!< Command line help comment for this action.
+    KeyToAction( const Key& key /*!< Key: long and/or short command line option for this action.*/,
+		 const std::string& comment /*!< Command line help comment for this action.*/ ) :
       m_Key( key ),
       m_Comment( comment ),
       m_Properties( PROPS_XML )
@@ -730,18 +722,16 @@ public:
     virtual ~KeyToAction() {};
 
     /// Test long key from command line and execute if match.
-    virtual bool MatchAndExecute( const std::string& key, //!< Key (long option) from the command line.
-				  const size_t argc, //!< Total number of command line arguments.
-				  const char* argv[], //!< Command line argument list.
-				  size_t& index //!< Current index in command line list
-      ) = 0;
+    virtual bool MatchAndExecute( const std::string& key /*!< Key (long option) from the command line.*/,
+				  const size_t argc /*!< Total number of command line arguments.*/,
+				  const char* argv[] /*!< Command line argument list.*/,
+				  size_t& index /*!< Current index in command line list*/ ) = 0;
 
     /// Test short key from command line and execute if match.
-    virtual bool MatchAndExecute( const char keyChar, //!< Key (long option) from the command line.
-				  const size_t argc, //!< Total number of command line arguments.
-				  const char* argv[], //!< Command line argument list.
-				  size_t& index //!< Current index in command line list
-      ) = 0;
+    virtual bool MatchAndExecute( const char keyChar /*!< Key (long option) from the command line.*/,
+				  const size_t argc /*!< Total number of command line arguments.*/,
+				  const char* argv[] /*!< Command line argument list.*/,
+				  size_t& index /*!< Current index in command line list*/ ) = 0;
 
     /// Set action properties.
     virtual void SetProperties( const long int properties );
@@ -750,8 +740,7 @@ public:
     virtual long int GetProperties() const;
     
     /// Returns an XML tree describing this key and action.
-    virtual mxml_node_t* MakeXML( mxml_node_t *const parent //!< Parent in the XML tree for the new node.
-      ) const;
+    virtual mxml_node_t* MakeXML( mxml_node_t *const parent /*!< Parent in the XML tree for the new node.*/ ) const;
 
     /// Print help for this item.
     virtual void PrintHelp( const size_t globalIndent = 0 ) const = 0;
@@ -803,9 +792,9 @@ public:
     typedef SmartPointer<KeyToActionSingle> SmartPtr;
 
     /// Constructor.
-    KeyToActionSingle( const Key& key, //!< Key: long and/or short command line option for this action.
-		       Item::SmartPtr action, //!< The actual action (option, switch, callback, etc.)
-		       const std::string& comment ) : //!< Command line help comment for this action.
+    KeyToActionSingle( const Key& key /*!< Key: long and/or short command line option for this action.*/,
+		       Item::SmartPtr action /*!< The actual action (option, switch, callback, etc.)*/,
+		       const std::string& comment /*!< Command line help comment for this action.*/ ) : 
       KeyToAction( key, comment ),
       m_Action( action )
     {}
@@ -814,22 +803,19 @@ public:
     virtual ~KeyToActionSingle() {};
 
     /// Test long key from command line and execute if match.
-    bool MatchAndExecute( const std::string& key, //!< Key (long option) from the command line.
-			  const size_t argc, //!< Total number of command line arguments.
-			  const char* argv[], //!< Command line argument list.
-			  size_t& index //!< Current index in command line list
-      );
+    bool MatchAndExecute( const std::string& key /*!< Key (long option) from the command line.*/,
+			  const size_t argc /*!< Total number of command line arguments.*/,
+			  const char* argv[] /*!< Command line argument list.*/,
+			  size_t& index /*!< Current index in command line list*/ );
 
     /// Test short key from command line and execute if match.
-    bool MatchAndExecute( const char keyChar, //!< Key (long option) from the command line.
-			  const size_t argc, //!< Total number of command line arguments.
-			  const char* argv[], //!< Command line argument list.
-			  size_t& index //!< Current index in command line list
-      );
+    bool MatchAndExecute( const char keyChar /*!< Key (long option) from the command line.*/,
+			  const size_t argc /*!< Total number of command line arguments.*/,
+			  const char* argv[] /*!< Command line argument list.*/,
+			  size_t& index /*!< Current index in command line list*/ );
 
     /// Returns an XML tree describing this key and action.
-    virtual mxml_node_t* MakeXML( mxml_node_t *const parent //!< Parent in the XML tree for the new node.
-      ) const;
+    virtual mxml_node_t* MakeXML( mxml_node_t *const parent /*!< Parent in the XML tree for the new node.*/ ) const;
 
     /// Print help for this item.
     virtual void PrintHelp( const size_t globalIndent = 0 ) const;
@@ -899,22 +885,19 @@ public:
     virtual ~KeyToActionEnum() {};
 
     /// Test long key from command line and execute if match.
-    bool MatchAndExecute( const std::string& key, //!< Key (long option) from the command line.
-			  const size_t argc, //!< Total number of command line arguments.
-			  const char* argv[], //!< Command line argument list.
-			  size_t& index //!< Current index in command line list
-      );
-
+    bool MatchAndExecute( const std::string& key /*!< Key (long option) from the command line.*/,
+			  const size_t argc /*!< Total number of command line arguments.*/,
+			  const char* argv[] /*!< Command line argument list.*/,
+			  size_t& index /*!< Current index in command line list*/ );
+    
     /// Test short key from command line and execute if match.
-    bool MatchAndExecute( const char keyChar, //!< Key (long option) from the command line.
-			  const size_t argc, //!< Total number of command line arguments.
-			  const char* argv[], //!< Command line argument list.
-			  size_t& index //!< Current index in command line list
-      );
+    bool MatchAndExecute( const char keyChar /*!< Key (long option) from the command line.*/,
+			  const size_t argc /*!< Total number of command line arguments.*/,
+			  const char* argv[] /*!< Command line argument list.*/,
+			  size_t& index /*!< Current index in command line list*/ );
 
     /// Returns an XML tree describing this key and action.
-    virtual mxml_node_t* MakeXML( mxml_node_t *const parent //!< Parent in the XML tree for the new node.
-      ) const;
+    virtual mxml_node_t* MakeXML( mxml_node_t *const parent /*!< Parent in the XML tree for the new node.*/ ) const;
 
     /// Print help for this item.
     virtual void PrintHelp( const size_t globalIndent = 0 ) const;
@@ -941,8 +924,7 @@ public:
     typedef SmartPointer< EnumGroup<TDataType> > SmartPtr;
     
     /// Constructor.
-    EnumGroup( TDataType *const variable //!< The variable handled by this enum group.
-      ) :
+    EnumGroup( TDataType *const variable /*!< The variable handled by this enum group.*/ ) :
       m_Variable( variable )
     {
     }
