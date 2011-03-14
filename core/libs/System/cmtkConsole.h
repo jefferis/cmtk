@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -65,7 +65,6 @@ public:
     : m_Stream( stream )
   { 
     this->IndentLevel = 0; 
-    this->DebugLevel = 0; 
 #ifdef CMTK_BUILD_MPI
     this->m_RankMPI = -1;
 #endif
@@ -121,9 +120,6 @@ private:
   /// Perform indentation.
   void Indent( size_t level = 0 );
   
-  /// Indentiation level.
-  int DebugLevel;
-
   /// Mutex lock for thread safety.
   MutexLock m_MutexLock;
 
