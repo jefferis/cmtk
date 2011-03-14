@@ -137,8 +137,8 @@ doMain ( const int argc, const char* argv[] )
   const cmtk::XformList xformListAffine = xformList.MakeAllAffine();
   const cmtk::XformList& xformListAffineRef = xformListAffine; // workaround for GCD segfaults
 
-  cmtk::UniformVolume& image = *scalarImage;
-  const cmtk::DataGrid::IndexType& dims = image.GetDims();
+  cmtk::UniformVolume* image = scalarImage.GetPtr();
+  const cmtk::DataGrid::IndexType& dims = image->GetDims();
 
 #ifdef CMTK_USE_GCD
   dispatch_apply( dims[2], dispatch_get_global_queue(0, 0), ^(size_t z){
@@ -174,10 +174,10 @@ doMain ( const int argc, const char* argv[] )
 	
 	switch ( Mode )
 	  {
-	  case cmtk::X2S_EXTRACT_X: image.SetDataAt( v[0], offset ); break;
-	  case cmtk::X2S_EXTRACT_Y: image.SetDataAt( v[1], offset ); break;
-	  case cmtk::X2S_EXTRACT_Z: image.SetDataAt( v[2], offset ); break;
-	  case cmtk::X2S_MAGNITUDE: image.SetDataAt( v.RootSumOfSquares(), offset ); break;
+	  case cmtk::X2S_EXTRACT_X: image->SetDataAt( v[0], offset ); break;
+	  case cmtk::X2S_EXTRACT_Y: image->SetDataAt( v[1], offset ); break;
+	  case cmtk::X2S_EXTRACT_Z: image->SetDataAt( v[2], offset ); break;
+	  case cmtk::X2S_MAGNITUDE: image->SetDataAt( v.RootSumOfSquares(), offset ); break;
 	  default: break;
 	  }
 	}
