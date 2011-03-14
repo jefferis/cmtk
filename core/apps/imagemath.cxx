@@ -440,7 +440,7 @@ CallbackScalarMul( const double c )
     const size_t numberOfPixels = p.GetNumberOfPixels();
     
     cmtk::TypedArray::SmartPtr mul( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-    cmtk::TypedArray& mulRef = *mul;
+    cmtk::TypedArray* mulRef = mul.GetPtr(); // need this to work around GCD / clang limitations
     
 #ifdef CMTK_USE_GCD
     const cmtk::Threads::Stride stride( numberOfPixels );
@@ -454,11 +454,11 @@ CallbackScalarMul( const double c )
       cmtk::Types::DataItem pv;
       if ( p.GetDataAt( pv, i ) )
 	{
-	mulRef.Set( c * pv, i );
+	mulRef->Set( c * pv, i );
 	}
       else
 	{
-	mulRef.SetPaddingAt( i );
+	mulRef->SetPaddingAt( i );
 	}
       }
 #ifdef CMTK_USE_GCD
@@ -488,7 +488,7 @@ CallbackScalarAdd( const double c )
     const size_t numberOfPixels = p.GetNumberOfPixels();
     
     cmtk::TypedArray::SmartPtr add( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-    cmtk::TypedArray& addRef = *add;
+    cmtk::TypedArray* addRef = add.GetPtr(); // need this to work around GCD / clang limitations
 
 #ifdef CMTK_USE_GCD
     const cmtk::Threads::Stride stride( numberOfPixels );
@@ -502,11 +502,11 @@ CallbackScalarAdd( const double c )
       cmtk::Types::DataItem pv;
       if ( p.GetDataAt( pv, i ) )
 	{
-	addRef.Set( c + pv, i );
+	addRef->Set( c + pv, i );
 	}
       else
 	{
-	addRef.SetPaddingAt( i );
+	addRef->SetPaddingAt( i );
 	}
       }
 #ifdef CMTK_USE_GCD
@@ -536,7 +536,7 @@ CallbackScalarXor( const long int c )
     const size_t numberOfPixels = p.GetNumberOfPixels();
     
     cmtk::TypedArray::SmartPtr out( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-    cmtk::TypedArray& outRef = *out;
+    cmtk::TypedArray* outRef = out.GetPtr();  // need this to work around GCD / clang limitations
     
 #ifdef CMTK_USE_GCD
     const cmtk::Threads::Stride stride( numberOfPixels );
@@ -551,11 +551,11 @@ CallbackScalarXor( const long int c )
       if ( p.GetDataAt( pv, i ) )
 	{
 	const long int iv = static_cast<long int>( pv );
-	outRef.Set( iv ^ c, i );
+	outRef->Set( iv ^ c, i );
 	}
       else
 	{
-	outRef.SetPaddingAt( i );
+	outRef->SetPaddingAt( i );
 	}
       }
 #ifdef CMTK_USE_GCD
@@ -585,7 +585,7 @@ CallbackScalarAnd( const long int c )
     const size_t numberOfPixels = p.GetNumberOfPixels();
     
     cmtk::TypedArray::SmartPtr out( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-    cmtk::TypedArray& outRef = *out;
+    cmtk::TypedArray* outRef = out.GetPtr(); // need this to work around GCD / clang limitations
     
 #ifdef CMTK_USE_GCD
     const cmtk::Threads::Stride stride( numberOfPixels );
@@ -600,11 +600,11 @@ CallbackScalarAnd( const long int c )
       if ( p.GetDataAt( pv, i ) )
 	{
 	const long int iv = static_cast<long int>( pv );
-	outRef.Set( iv & c, i );
+	outRef->Set( iv & c, i );
 	}
       else
 	{
-	outRef.SetPaddingAt( i );
+	outRef->SetPaddingAt( i );
 	}
       }
 #ifdef CMTK_USE_GCD
@@ -634,7 +634,7 @@ CallbackOneOver()
     const size_t numberOfPixels = p.GetNumberOfPixels();
     
     cmtk::TypedArray::SmartPtr inv( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-    cmtk::TypedArray& invRef = *inv;
+    cmtk::TypedArray* invRef = inv.GetPtr(); // need this to work around GCD / clang limitations
     
 #ifdef CMTK_USE_GCD
     const cmtk::Threads::Stride stride( numberOfPixels );
@@ -648,11 +648,11 @@ CallbackOneOver()
       cmtk::Types::DataItem pv;
       if ( p.GetDataAt( pv, i ) )
 	{
-	invRef.Set( 1.0 / pv, i );
+	invRef->Set( 1.0 / pv, i );
 	}
       else
 	{
-	invRef.SetPaddingAt( i );
+	invRef->SetPaddingAt( i );
 	}
       }
 #ifdef CMTK_USE_GCD
@@ -682,7 +682,7 @@ CallbackAdd()
   
   const size_t numberOfPixels = p->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr add( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-  cmtk::TypedArray& addRef = *add;
+  cmtk::TypedArray* addRef = add.GetPtr(); // need this to work around GCD / clang limitations
   
 #ifdef CMTK_USE_GCD
   const cmtk::Threads::Stride stride( numberOfPixels );
@@ -696,11 +696,11 @@ CallbackAdd()
     cmtk::Types::DataItem pv, qv;
     if ( p->GetDataAt( pv, i ) && q->GetDataAt( qv, i ) )
       {
-      addRef.Set( pv+qv, i );
+      addRef->Set( pv+qv, i );
       }
     else
       {
-      addRef.SetPaddingAt( i );
+      addRef->SetPaddingAt( i );
       }
     }
 #ifdef CMTK_USE_GCD
@@ -722,7 +722,7 @@ CallbackMul()
 
   const size_t numberOfPixels = p->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr mul( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-  cmtk::TypedArray& mulRef = *mul;
+  cmtk::TypedArray* mulRef = mul.GetPtr(); // need this to work around GCD / clang limitations
   
   while ( ! ImageStack.empty() )
     {
@@ -741,11 +741,11 @@ CallbackMul()
       cmtk::Types::DataItem pv, qv;
       if ( p->GetDataAt( pv, i ) && q->GetDataAt( qv, i ) )
 	{
-	mulRef.Set( pv*qv, i );
+	mulRef->Set( pv*qv, i );
 	}
       else
 	{
-	mulRef.SetPaddingAt( i );
+	mulRef->SetPaddingAt( i );
 	}
       }
 #ifdef CMTK_USE_GCD
@@ -775,7 +775,7 @@ CallbackDiv()
   
   const size_t numberOfPixels = p->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr div( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-  cmtk::TypedArray& divRef = *div;
+  cmtk::TypedArray* divRef = div.GetPtr(); // need this to work around GCD / clang limitations
   
 #ifdef CMTK_USE_GCD
   const cmtk::Threads::Stride stride( numberOfPixels );
@@ -789,11 +789,11 @@ CallbackDiv()
     cmtk::Types::DataItem pv, qv;
     if ( p->GetDataAt( pv, i ) && q->GetDataAt( qv, i ) && (qv != 0) )
       {
-      divRef.Set( pv/qv, i );
+      divRef->Set( pv/qv, i );
       }
     else
       {
-      divRef.SetPaddingAt( i );
+      divRef->SetPaddingAt( i );
       }
     }
 #ifdef CMTK_USE_GCD
@@ -817,7 +817,7 @@ CallbackAtan2()
   
   const size_t numberOfPixels = p->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr result( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-  cmtk::TypedArray& resultRef = *result;
+  cmtk::TypedArray* resultRef = result.GetPtr(); // need this to work around GCD / clang limitations
   
 #ifdef CMTK_USE_GCD
   const cmtk::Threads::Stride stride( numberOfPixels );
@@ -831,11 +831,11 @@ CallbackAtan2()
     cmtk::Types::DataItem pv, qv;
     if ( p->GetDataAt( pv, i ) && q->GetDataAt( qv, i ) && (qv != 0) )
       {
-      resultRef.Set( atan2( qv, pv ), i );
+      resultRef->Set( atan2( qv, pv ), i );
       }
     else
       {
-      resultRef.SetPaddingAt( i );
+      resultRef->SetPaddingAt( i );
       }
     }
 #ifdef CMTK_USE_GCD
@@ -1075,7 +1075,7 @@ CallbackStackEntropyLabels()
 
   const size_t numberOfPixels = volPtrs[ 0 ]->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr entropyArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-  cmtk::TypedArray& entropyArrayRef = *entropyArray;
+  cmtk::TypedArray* entropyArrayRef = entropyArray.GetPtr(); // need this to work around GCD / clang limitations
 
 #ifdef CMTK_USE_GCD
   const cmtk::Threads::Stride stride( numberOfPixels );
@@ -1109,10 +1109,10 @@ CallbackStackEntropyLabels()
 	const double p = factor * it->second;
 	entropy += p * log( p );
 	}
-      entropyArrayRef.Set( -entropy / log( 2.0 ), i );
+      entropyArrayRef->Set( -entropy / log( 2.0 ), i );
       }
     else
-      entropyArrayRef.SetPaddingAt( i );       
+      entropyArrayRef->SetPaddingAt( i );       
     }
 #ifdef CMTK_USE_GCD
 		  });
@@ -1142,7 +1142,7 @@ CallbackMaxIndex()
   
   const size_t numberOfPixels = volPtrs[ 0 ]->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr maxArray( cmtk::TypedArray::Create( cmtk::TYPE_SHORT, numberOfPixels ) );
-  cmtk::TypedArray& maxArrayRef = *maxArray;
+  cmtk::TypedArray* maxArrayRef = maxArray.GetPtr(); // need this to work around GCD / clang limitations
 
   const std::vector<cmtk::UniformVolume::SmartPtr>& vPtrs = volPtrs; // using const reference, we prevent GCD from segfaulting
 
@@ -1184,7 +1184,7 @@ CallbackMaxIndex()
         }
       }
     
-    maxArrayRef.Set( maxIndex, i ); 
+    maxArrayRef->Set( maxIndex, i ); 
     }
 #ifdef CMTK_USE_GCD
 		  });
@@ -1213,7 +1213,7 @@ CallbackMaxValue()
   
   const size_t numberOfPixels = volPtrs[ 0 ]->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr maxArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-  cmtk::TypedArray& maxArrayRef = *maxArray;
+  cmtk::TypedArray* maxArrayRef = maxArray.GetPtr(); // need this to work around GCD / clang limitations
 
   const std::vector<cmtk::UniformVolume::SmartPtr>& vPtrs = volPtrs; // using const reference, we prevent GCD from segfaulting
 
@@ -1247,7 +1247,7 @@ CallbackMaxValue()
       }
     
     
-    maxArrayRef.Set( maxValue, i ); 
+    maxArrayRef->Set( maxValue, i ); 
     }
 #ifdef CMTK_USE_GCD
 		  });
@@ -1276,7 +1276,7 @@ CallbackMinValue()
   
   const size_t numberOfPixels = volPtrs[ 0 ]->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr minArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-  cmtk::TypedArray& minArrayRef = *minArray;
+  cmtk::TypedArray* minArrayRef = minArray.GetPtr(); // need this to work around GCD / clang limitations
 
   const std::vector<cmtk::UniformVolume::SmartPtr>& vPtrs = volPtrs; // using const reference, we prevent GCD from segfaulting
 
@@ -1309,7 +1309,7 @@ CallbackMinValue()
         }
       }
        
-    minArrayRef.Set( minValue, i );
+    minArrayRef->Set( minValue, i );
     }
 #ifdef CMTK_USE_GCD
 		  });
@@ -1338,7 +1338,7 @@ CallbackContractLabels()
   
   const size_t numberOfPixels = volPtrs[ 0 ]->GetNumberOfPixels();
   cmtk::TypedArray::SmartPtr outArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
-  cmtk::TypedArray& outArrayRef = *outArray;
+  cmtk::TypedArray* outArrayRef = outArray.GetPtr();
 
   const std::vector<cmtk::UniformVolume::SmartPtr>& vPtrs = volPtrs; // using const reference, we prevent GCD from segfaulting
 
@@ -1359,7 +1359,7 @@ CallbackContractLabels()
 	break;
       }
         
-    outArrayRef.Set( v, i );
+    outArrayRef->Set( v, i );
     }
 #ifdef CMTK_USE_GCD
 		  });
