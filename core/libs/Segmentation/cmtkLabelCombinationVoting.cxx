@@ -32,6 +32,9 @@
 
 #include <Segmentation/cmtkLabelCombinationVoting.h>
 
+#include <vector>
+#include <algorithm>
+
 namespace
 cmtk
 {
@@ -51,18 +54,18 @@ LabelCombinationVoting::LabelCombinationVoting( const std::vector<TypedArray::Sm
     numberOfClasses = std::max( numberOfClasses, 1+static_cast<size_t>( range.m_UpperBound ) );
     }
 
-#pragma omp parallel for  
+  std::vector<unsigned int> label( 1+numberOfClasses );
+
   for ( size_t i = 0; i < nValues; ++i )
     {
-    unsigned int label[32768];
-    memset( label, 0, numberOfClasses * sizeof( label[0] ) );
+    std::fill( label.begin(), label.end(), 0 );
 
     for ( size_t curr = 0; curr < data.size(); ++curr )
       {
       Types::DataItem v;
       if ( data[ curr ]->Get( v, i ) ) 
         {
-        ++label[ static_cast<short>( v ) ];
+        ++label[ std::min( numberOfClasses, static_cast<size_t>( v ) ) ];
         }
       }
 
