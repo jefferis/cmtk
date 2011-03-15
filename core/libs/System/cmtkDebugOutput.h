@@ -51,28 +51,40 @@ public:
 
   /// Constructor.
   DebugOutput( const int level = 0 ) : m_Level( level ) {}
-
-  /// Set debug level.
-  void SetLevel( const int level )
+  
+  /// Output operator.
+  template<class T>
+  Console& operator<<( const T data ) const
   {
-    Self::m_Level = level;
+    return this->GetStream() << data;
   }
 
-  /// Get debug level.
-  int GetLevel()
+  /// Get the appropriate stream for this output object.
+  Console& GetStream() const
   {
-    return Self::m_Level;
+    if ( this->m_Level > Self::GetGlobalLevel() )
+      return StdNull;
+    else
+      return StdOut;
   }
 
-  /// Get global debug output object.
-  static Self& GetGlobalStream()
+  /// Set global debug level.
+  void SetGlobalLevel( const int level )
   {
-    static Self globalStream;
-    return globalStream;
+    Self::GetGlobalLevel() = level;
+  }
+
+  /// Get global debug level (reference to static variable).
+  static int& GetGlobalLevel()
+  {
+    static int globalLevel = 0;
+    return globalLevel;
   }
 
 private:
-  /// Current toolkit-wide debug level.
+  /** Level for this instance.
+   * Output is suppressed if this is higher than the global level.
+   */
   int m_Level;
 };
 

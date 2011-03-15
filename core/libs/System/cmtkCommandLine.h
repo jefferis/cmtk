@@ -579,7 +579,7 @@ private:
     typedef Option<const char*> Superclass;
 
     /// Constructor.
-    NonOptionParameter( const char* *const var, const char* name, const char* comment, bool *const flag ) : Superclass( var, flag ), m_Name( name ), m_Comment( comment ) {};
+    NonOptionParameter( const char* *const var, const char* name, const std::string& comment, bool *const flag ) : Superclass( var, flag ), m_Name( name ), m_Comment( comment ) {};
 
     /// Evaluate and set associated variable.
     virtual void Evaluate( const size_t argc, const char* argv[], size_t& index );
@@ -616,7 +616,7 @@ private:
     const char* m_Name;
 
     /// Comment (description) of this parameter.
-    const char* m_Comment;
+    const std::string m_Comment;
   };
 
   /// Non-option parameter.
@@ -635,7 +635,7 @@ private:
     typedef Option< std::vector<std::string> > Superclass;
 
     /// Constructor.
-    NonOptionParameterVector( std::vector<std::string> *pvec, const char* name, const char* comment, bool *const flag ) 
+    NonOptionParameterVector( std::vector<std::string> *pvec, const char* name, const std::string& comment, bool *const flag ) 
       : Superclass( pvec, flag ), 
 	m_Name( name ), 
 	m_Comment( comment ) {};
@@ -687,7 +687,7 @@ private:
     const char* m_Name;
 
     /// Comment (description) of this parameter.
-    const char* m_Comment;
+    const std::string m_Comment;
   };
 
 public:
@@ -959,7 +959,7 @@ public:
   /// Add switch.
   template<class T> 
   Item::SmartPtr 
-  AddSwitch( const Key& key, T *const var, const T value, const char* comment ) 
+  AddSwitch( const Key& key, T *const var, const T value, const std::string& comment ) 
   {
     return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new Switch<T>( var, value ) ), comment ) ) )->m_Action;
   }
@@ -967,7 +967,7 @@ public:
   /// Add option.
   template<class T> 
   Item::SmartPtr
-  AddOption( const Key& key, T *const var, const char* comment, bool *const flag = NULL ) 
+  AddOption( const Key& key, T *const var, const std::string& comment, bool *const flag = NULL ) 
   {
     return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new Option<T>( var, flag ) ), comment ) ) )->m_Action;
   }
@@ -975,7 +975,7 @@ public:
   /// Add list option (put arguments from repeated uses into a FIFO list).
   template<class T> 
   Item::SmartPtr
-  AddList( const Key& key, std::list<T>& list, const char* comment ) 
+  AddList( const Key& key, std::list<T>& list, const std::string& comment ) 
   {
     return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new List<T>( list ) ), comment ) ) )->m_Action;
   }
@@ -983,14 +983,14 @@ public:
   /// Add vector option (breaks argument into elements of a vector).
   template<class T> 
   Item::SmartPtr
-  AddVector( const Key& key, std::vector<T>& vector, const char* comment ) 
+  AddVector( const Key& key, std::vector<T>& vector, const std::string& comment ) 
   {
     return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new Vector<T>( vector ) ), comment ) ) )->m_Action;
   }
   
   /// Add callback.
   Item::SmartPtr
-  AddCallback( const Key& key, CallbackFunc func, const char* comment ) 
+  AddCallback( const Key& key, CallbackFunc func, const std::string& comment ) 
   {
     return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new Callback( func ) ), comment ) ) )->m_Action;
   }
@@ -998,21 +998,21 @@ public:
   /// Add callback with a single argument.
   template<class TArg>
   Item::SmartPtr
-  AddCallback( const Key& key, void (*funcArg)( const TArg ), const char* comment ) 
+  AddCallback( const Key& key, void (*funcArg)( const TArg ), const std::string& comment ) 
   {
     return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new Callback( funcArg ) ), comment ) ) )->m_Action;
   }
   
   /// Add callback with multiple arguments.
   Item::SmartPtr
-  AddCallback( const Key& key, CallbackFuncMultiArg funcMultiArg, const char* comment ) 
+  AddCallback( const Key& key, CallbackFuncMultiArg funcMultiArg, const std::string& comment ) 
   {
     return this->AddKeyAction( KeyToActionSingle::SmartPtr( new KeyToActionSingle( key, Item::SmartPtr( new Callback( funcMultiArg ) ), comment ) ) )->m_Action;
   }
   
   /// Add single non-option parameter.
   Item::SmartPtr
-  AddParameter( const char* *const var, const char* name, const char* comment, bool *const flag = NULL ) 
+  AddParameter( const char* *const var, const char* name, const std::string& comment, bool *const flag = NULL ) 
   {
     NonOptionParameter::SmartPtr parameter( new NonOptionParameter( var, name, comment, flag ) );
     this->m_NonOptionParameterList.push_back( parameter );
@@ -1021,7 +1021,7 @@ public:
 
   /// Add vector of non-option parameters.
   Item::SmartPtr
-  AddParameterVector( std::vector<std::string>* pvec, const char* name, const char* comment, bool *const flag = NULL ) 
+  AddParameterVector( std::vector<std::string>* pvec, const char* name, const std::string& comment, bool *const flag = NULL ) 
   {
     NonOptionParameterVector::SmartPtr vparameter( new NonOptionParameterVector( pvec, name, comment, flag ) );
     this->m_NonOptionParameterVectorList.push_back( vparameter );
@@ -1185,8 +1185,11 @@ private:
   /// Make switch class friend.
   template<class T> friend class Switch;  
 
+  /// Callback function for "--debug" standard option.
+  static void CallbackSetDebugLevel( const long int level );
+
   /// Make callback class friend.
-  friend class Callback;  
+  friend class Callback;
 };
 
 /// Output of command line exception.

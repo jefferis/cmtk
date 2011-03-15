@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -91,40 +92,40 @@ void
 cmtk::CommandLine::KeyToAction
 ::FormatHelp( std::ostringstream& fmt ) const
 {
-  const std::string& typeInfo = this->GetActionTypeInfo();
-  if ( this->m_Key.m_KeyString.size() )
-    {
-    fmt << "--" << this->m_Key.m_KeyString;
-    if ( typeInfo.length() )
-      {
-      fmt << " " << typeInfo;
-      }
-    }
-
-  if ( this->m_Key.m_KeyChar && this->m_Key.m_KeyString.size() )
-    {
-    fmt << " / ";
-    }
-
-  if ( this->m_Key.m_KeyChar )
-    {
-    fmt << "-" << this->m_Key.m_KeyChar;
-    if ( typeInfo.length() )
-      {
-      fmt << " " << typeInfo;
-      }
-    }
-
-  if ( fmt.str().length() > static_cast<size_t>( CommandLine::HelpTextIndent-2 ) )
-    fmt << "\n";
-  else
-    {
-    while ( fmt.str().length() < static_cast<size_t>( CommandLine::HelpTextIndent ) )
-      fmt << " ";
-    }
-  
   if ( this->m_Comment.length() )
     {
+    const std::string& typeInfo = this->GetActionTypeInfo();
+    if ( this->m_Key.m_KeyString.size() )
+      {
+      fmt << "--" << this->m_Key.m_KeyString;
+      if ( typeInfo.length() )
+	{
+	fmt << " " << typeInfo;
+	}
+      }
+    
+    if ( this->m_Key.m_KeyChar && this->m_Key.m_KeyString.size() )
+      {
+      fmt << " / ";
+      }
+    
+    if ( this->m_Key.m_KeyChar )
+      {
+      fmt << "-" << this->m_Key.m_KeyChar;
+      if ( typeInfo.length() )
+	{
+	fmt << " " << typeInfo;
+	}
+      }
+    
+    if ( fmt.str().length() > static_cast<size_t>( CommandLine::HelpTextIndent-2 ) )
+      fmt << "\n";
+    else
+      {
+      while ( fmt.str().length() < static_cast<size_t>( CommandLine::HelpTextIndent ) )
+	fmt << " ";
+      }
+    
     fmt << this->m_Comment;
     }
 }
@@ -133,36 +134,35 @@ void
 cmtk::CommandLine::KeyToAction
 ::PrintWikiWithPrefix( const std::string& prefix ) const
 {
-  const std::string& typeInfo = this->GetActionTypeInfo();
-
-  StdOut << prefix << "; ";
-  if ( this->m_Key.m_KeyString.size() )
-    {
-    StdOut << "<tt>--" << this->m_Key.m_KeyString << "</tt>";
-    if ( typeInfo.length() )
-      {
-      StdOut << " <tt>" << typeInfo << "</tt>";
-      }
-    }
-
-  if ( this->m_Key.m_KeyChar && this->m_Key.m_KeyString.size() )
-    {
-    StdOut << " / ";
-    }
-
-  if ( this->m_Key.m_KeyChar )
-    {
-    StdOut << "<tt>-" << this->m_Key.m_KeyChar << "</tt>";
-    if ( typeInfo.length() )
-      {
-      StdOut << " <tt>" << typeInfo << "</tt>";
-      }
-    }
-
-  StdOut << " : ";
   if ( this->m_Comment.length() )
     {
-    StdOut << this->m_Comment;
+    const std::string& typeInfo = this->GetActionTypeInfo();
+    
+    StdOut << prefix << "; ";
+    if ( this->m_Key.m_KeyString.size() )
+      {
+      StdOut << "<tt>--" << this->m_Key.m_KeyString << "</tt>";
+      if ( typeInfo.length() )
+	{
+	StdOut << " <tt>" << typeInfo << "</tt>";
+	}
+      }
+    
+    if ( this->m_Key.m_KeyChar && this->m_Key.m_KeyString.size() )
+      {
+      StdOut << " / ";
+      }
+    
+    if ( this->m_Key.m_KeyChar )
+      {
+      StdOut << "<tt>-" << this->m_Key.m_KeyChar << "</tt>";
+      if ( typeInfo.length() )
+	{
+	StdOut << " <tt>" << typeInfo << "</tt>";
+	}
+      }
+    
+    StdOut << " : " << this->m_Comment;
     }
 }
 

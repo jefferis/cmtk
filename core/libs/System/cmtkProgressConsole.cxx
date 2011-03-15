@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -33,6 +33,7 @@
 #include "cmtkProgressConsole.h"
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkTimers.h>
 
 #include <stdlib.h>
@@ -86,11 +87,11 @@ ProgressConsole::UpdateProgress()
     const std::string& currentTaskName = this->GetCurrentTaskName();
     if ( currentTaskName.length() )
       {
-      StdErr.printf( "%s: %d %%\r", currentTaskName.c_str(), static_cast<int>( 100.0 * fraction ) );
+      DebugOutput( 1 ).GetStream().printf( "%s: %d %%\r", currentTaskName.c_str(), static_cast<int>( 100.0 * fraction ) );
       }
     else
       {
-      StdErr.printf( "%d %%\r", static_cast<int>( 100.0 * fraction ) );
+      DebugOutput( 1 ).GetStream().printf( "%d %%\r", static_cast<int>( 100.0 * fraction ) );
       }
     }
 

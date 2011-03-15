@@ -61,8 +61,8 @@ class Console :
 {
 public:
   /// Constructor.
-  Console( std::ostream& stream ) 
-    : m_Stream( stream )
+  Console( std::ostream* stream ) 
+    : m_StreamP( stream )
   { 
     this->IndentLevel = 0; 
 #ifdef CMTK_BUILD_MPI
@@ -85,8 +85,11 @@ public:
   /// Flush output stream.
   void flush() 
   { 
-    LockingPtr<std::ostream> pStream( this->m_Stream, this->m_MutexLock );
-    pStream->flush(); 
+    if ( this->m_StreamP )
+      {
+      LockingPtr<std::ostream> pStream( *this->m_StreamP, this->m_MutexLock );
+      pStream->flush();
+      }
   }
 
   /// Output stream operator.
@@ -98,8 +101,11 @@ public:
     if ( this->m_RankMPI < 0 ) this->m_RankMPI = MPI::COMM_WORLD.Get_rank();
     if ( this->m_RankMPI ) return *this;
 #endif
-    LockingPtr<std::ostream> pStream( this->m_Stream, this->m_MutexLock );
-    this->m_Stream << data; 
+    if ( this->m_StreamP )
+      {
+      LockingPtr<std::ostream> pStream( *this->m_StreamP, this->m_MutexLock );
+      *pStream << data; 
+      }
     return *this; 
   }
 
@@ -111,7 +117,7 @@ public:
 
 private:
   /// The system stream that we're attaching to.
-  std::ostream& m_Stream;
+  std::ostream* m_StreamP;
   
   /// Indentiation level.
   size_t IndentLevel;
@@ -133,6 +139,9 @@ extern Console StdErr;
 
 /// Standard output for the library.
 extern Console StdOut;
+
+/// Standard output for the library.
+extern Console StdNull;
 
 //@}
 

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,6 +36,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkProgress.h>
+#include <System/cmtkDebugOutput.h>
 
 #include <vector>
 
@@ -124,6 +125,8 @@ BestNeighbourOptimizer::Optimize
 	searchTrace.Move( optimumDim, optimumDir );
 	irq = this->CallbackExecuteWithData( v, optimum );
 	this->m_LastOptimizeChangedParameters = true;
+
+	DebugOutput( 5 ) << optimum << "\n";
 
 	// query functional for new parameter steppings if the respective
 	// optimizer flag is set.

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,6 +35,7 @@
 #include <Base/cmtkTypes.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkProgress.h>
+#include <System/cmtkDebugOutput.h>
 
 #include <algorithm>
 
@@ -164,7 +165,7 @@ BestDirectionOptimizer::Optimize
 	}
       
       irq = this->CallbackExecuteWithData( v, current );
-      StdErr.printf( "%f\r", current );
+      DebugOutput( 5 ) << current << "\n";
 
 #ifdef CMTK_BUILD_DEMO
       if ( update )

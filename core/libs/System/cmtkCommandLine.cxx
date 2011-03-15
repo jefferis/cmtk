@@ -48,12 +48,11 @@ cmtk
 
 CommandLine::CommandLine( const int properties ) 
   : ArgC( 0 ),
-    ArgV( NULL )
+    ArgV( NULL ),
+    m_Properties( properties )
 {
-  this->SetDefaultInfo();    
-  this->m_Properties = properties;
-  
   this->BeginGroup( "MAIN", "Main Options" );
+  this->SetDefaultInfo();    
 }
 
 CommandLine::~CommandLine()
@@ -78,6 +77,8 @@ CommandLine::SetDefaultInfo()
   this->m_ProgramInfo[PRG_CATEG] = "CMTK.Miscellaneous";
   this->m_ProgramInfo[PRG_DOCUM] = "https://neuro.sri.com/cmtk/wiki/";
   this->m_ProgramInfo[PRG_VERSN] = CMTK_VERSION_STRING;
+
+  this->AddCallback( Self::Key( "debug" ), &Self::CallbackSetDebugLevel, "" );
 }
 
 CommandLine::KeyActionGroupType::SmartPtr&
@@ -259,11 +260,17 @@ CommandLine::PrintHelp
       fmt << "[options] ";
       for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
 	{
-	fmt << (*it)->m_Name << " ";
+	if ( ! (*it)->m_Comment.empty() )
+	  {
+	  fmt << (*it)->m_Name << " ";
+	  }
 	}
       for ( NonOptionParameterVectorListType::const_iterator it = this->m_NonOptionParameterVectorList.begin(); it != this->m_NonOptionParameterVectorList.end(); ++it )
 	{
-	fmt << (*it)->m_Name << " ";
+	if ( ! (*it)->m_Comment.empty() )
+	  {
+	  fmt << (*it)->m_Name << " ";
+	  }
 	}
       StdOut.FormatText( fmt.str(), 5, lineWidth );
 
@@ -272,36 +279,42 @@ CommandLine::PrintHelp
       const int indent = 20;
       for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
 	{
-	fmt.str("");
-
-	StdOut << "\n";
-	fmt << (*it)->m_Name << " = ";
-	if ( fmt.str().length() > static_cast<size_t>( indent-2 ) )
-	  fmt << "\n";
-	else
+	if ( ! (*it)->m_Comment.empty() )
 	  {
-	  while ( fmt.str().length() < static_cast<size_t>( indent ) )
-	    fmt << " ";
+	  fmt.str("");
+	  
+	  StdOut << "\n";
+	  fmt << (*it)->m_Name << " = ";
+	  if ( fmt.str().length() > static_cast<size_t>( indent-2 ) )
+	    fmt << "\n";
+	  else
+	    {
+	    while ( fmt.str().length() < static_cast<size_t>( indent ) )
+	      fmt << " ";
+	    }
+	  fmt << (*it)->m_Comment;
+	  StdOut.FormatText( fmt.str(), 5+indent, lineWidth, -indent ) << "\n";
 	  }
-	fmt << (*it)->m_Comment;
-	StdOut.FormatText( fmt.str(), 5+indent, lineWidth, -indent ) << "\n";
 	}
 
       for ( NonOptionParameterVectorListType::const_iterator it = this->m_NonOptionParameterVectorList.begin(); it != this->m_NonOptionParameterVectorList.end(); ++it )
 	{
-	fmt.str("");
-	
-	StdOut << "\n";
-	fmt << (*it)->m_Name << " = ";
-	if ( fmt.str().length() > static_cast<size_t>( indent-2 ) )
-	  fmt << "\n";
-	else
+	if ( ! (*it)->m_Comment.empty() )
 	  {
-	  while ( fmt.str().length() < static_cast<size_t>( indent ) )
-	    fmt << " ";
+	  fmt.str("");
+	  
+	  StdOut << "\n";
+	  fmt << (*it)->m_Name << " = ";
+	  if ( fmt.str().length() > static_cast<size_t>( indent-2 ) )
+	    fmt << "\n";
+	  else
+	    {
+	    while ( fmt.str().length() < static_cast<size_t>( indent ) )
+	      fmt << " ";
+	    }
+	  fmt << (*it)->m_Comment;
+	  StdOut.FormatText( fmt.str(), 5+indent, lineWidth, -indent ) << "\n";
 	  }
-	fmt << (*it)->m_Comment;
-	StdOut.FormatText( fmt.str(), 5+indent, lineWidth, -indent ) << "\n";
 	}
       }
     }
@@ -405,6 +418,12 @@ CommandLine::PrintWiki
   
   StdOut << "\n";
 }
+
+void
+CommandLine::CallbackSetDebugLevel( const long int level )
+{
+}
+
 
 Console& operator<<( Console& console, CommandLine::Exception e )
 {

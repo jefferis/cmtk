@@ -36,6 +36,7 @@
 #include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkThreads.h>
+#include <System/cmtkDebugOutput.h>
 
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkMathFunctionWrappers.h>
@@ -94,6 +95,7 @@ bool PaddingFlag = false;
 void
 CallbackSetPaddingValue( const double paddingValue )
 {
+  cmtk::DebugOutput( 2 ) << "CallbackSetPaddingValue\n";
   PaddingValue = paddingValue;
   PaddingFlag = true;
 }
@@ -101,6 +103,7 @@ CallbackSetPaddingValue( const double paddingValue )
 void
 CallbackUnsetPaddingValue()
 {
+  cmtk::DebugOutput( 2 ) << "CallbackUnsetPaddingValue\n";
   PaddingFlag = false;
 }
 
@@ -150,6 +153,7 @@ CheckStackTwoMatchingImages( const char* function )
 void
 CallbackIn( const char** argv, int& argsUsed )
 {
+  cmtk::DebugOutput( 2 ) << "CallbackIn\n";
   argsUsed = 0;
   while ( argv[argsUsed][0] != '-' )
     {
@@ -171,6 +175,7 @@ CallbackIn( const char** argv, int& argsUsed )
 void
 CallbackOut( const char* argv )
 {
+  cmtk::DebugOutput( 2 ) << "CallbackOut\n";
   if ( CheckStackOneImage( "Out" ) )
     {
     cmtk::VolumeIO::Write( *(ImageStack.front()), argv, Verbose );
@@ -180,6 +185,7 @@ CallbackOut( const char* argv )
 void
 CallbackPop()
 {
+  cmtk::DebugOutput( 2 ) << "CallbackPop\n";
   if ( CheckStackOneImage( "Pop" ) )
     {
     ImageStack.pop_front();
@@ -189,6 +195,7 @@ CallbackPop()
 void
 CallbackDup()
 {
+  cmtk::DebugOutput( 2 ) << "CallbackDup\n";
   if ( CheckStackOneImage( "Dup" ) )
     ImageStack.push_front( cmtk::UniformVolume::SmartPtr( ImageStack.front()->Clone() ) );
 }
@@ -202,6 +209,7 @@ CallbackAll()
 void
 CallbackFill( const double value)
 {
+  cmtk::DebugOutput( 2 ) << "CallbackFill\n";
   if ( CheckStackOneImage( "Fill" ) )
     {
     ImageStackType::iterator it = ImageStack.begin();
@@ -222,6 +230,7 @@ CallbackFill( const double value)
 void
 CallbackAbs()
 {
+  cmtk::DebugOutput( 2 ) << "CallbackAbs\n";
   if ( CheckStackOneImage( "Abs" ) )
     {
     ImageStackType::iterator it = ImageStack.begin();

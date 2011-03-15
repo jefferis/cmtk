@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -65,9 +65,9 @@ cmtk::CommandLine::NonOptionParameter
       mxmlNewText( mxmlNewElement( node, "label" ), 0, this->m_Name );
       }
     
-    if ( this->m_Comment )
+    if ( ! this->m_Comment.empty() )
       {
-      mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment );
+      mxmlNewText( mxmlNewElement( node, "description" ), 0, this->m_Comment.c_str() );
       }
     
     if ( index >= 0 )

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -54,8 +54,9 @@ cmtk
 
 /** \addtogroup System */
 //@{
-Console StdErr( std::cerr );
-Console StdOut( std::cout );
+Console StdErr( &std::cerr );
+Console StdOut( &std::cout );
+Console StdNull( NULL );
 
 size_t
 Console::GetLineWidth() const
@@ -137,9 +138,7 @@ Console::printf( const char* format, ... )
   va_end(args);
 
   this->Indent();
-
-  LockingPtr<std::ostream> pStream( this->m_Stream, this->m_MutexLock );
-  *pStream << buffer;
+  *this << buffer;
 }
 
 void 
