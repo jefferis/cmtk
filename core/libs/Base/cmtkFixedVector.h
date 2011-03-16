@@ -38,6 +38,8 @@
 #include <System/cmtkSmartPtr.h>
 #include <System/cmtkSmartConstPtr.h>
 
+#include <math.h>
+
 #include <algorithm>
 #include <iostream>
 
