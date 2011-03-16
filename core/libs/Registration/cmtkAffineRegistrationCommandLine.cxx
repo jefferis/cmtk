@@ -33,6 +33,7 @@
 #include "cmtkAffineRegistrationCommandLine.h"
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkThreads.h>
 #include <System/cmtkTimers.h>
 #include <System/cmtkCommandLine.h>
@@ -107,8 +108,6 @@ AffineRegistrationCommandLine
   InitXlate = 0;
   this->m_NoSwitch = 0;
 
-  Verbose = 0;
-
   const char *InitialStudylist = NULL;
   Study1 = Study2 = NULL;
 
@@ -123,9 +122,6 @@ AffineRegistrationCommandLine
     cl.SetProgramInfo( CommandLine::PRG_CATEG, "CMTK.Registration" );
 
     typedef CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" )->SetProperties( CommandLine::PROPS_NOXML );
-    cl.AddSwitch( Key( 'q', "quiet" ), &Verbose, false, "Quiet mode" )->SetProperties( CommandLine::PROPS_NOXML );
-
     cl.BeginGroup( "Automation", "Automation Options" );
     cl.AddOption( Key( "auto-multi-levels" ), &this->m_AutoMultiLevels, "Automatic optimization and resolution parameter generation for <n> levels" );
 
@@ -222,10 +218,7 @@ AffineRegistrationCommandLine
       StdErr << "WARNING: transformation will be overriden by '--initial' list.\n";
       }
     
-    if ( Verbose )
-      {
-      StdOut << "Reading input studylist " << this->m_InitialXformPath << ".\n";
-      }
+    DebugOutput( 1 ) << "Reading input studylist " << this->m_InitialXformPath << ".\n";
     
     ClassStream typedStream( MountPoints::Translate(this->m_InitialXformPath), "registration", ClassStream::READ );
     if ( ! typedStream.IsValid() ) 
@@ -267,7 +260,7 @@ AffineRegistrationCommandLine
     throw cmtk::ExitException( 1 );
     }
   
-  UniformVolume::SmartPtr volume( VolumeIO::ReadOriented( Study1, Verbose ) );
+  UniformVolume::SmartPtr volume( VolumeIO::ReadOriented( Study1 ) );
   if ( !volume )
     {
     StdErr << "ERROR: volume " << this->Study1 << " could not be read\n";
@@ -275,7 +268,7 @@ AffineRegistrationCommandLine
     }
   this->SetVolume_1( UniformVolume::SmartPtr( this->m_PreprocessorRef.GetProcessedImage( volume ) ) );
 
-  volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( Study2, Verbose ) );
+  volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( Study2 ) );
   if ( !volume )
     {
     StdErr << "ERROR: volume " << this->Study2 << " could not be read\n";
@@ -286,7 +279,7 @@ AffineRegistrationCommandLine
   if ( InitialStudylist ) 
     {
     this->m_InitialXformPath = InitialStudylist;
-    Xform::SmartPtr xform( XformIO::Read( InitialStudylist, Verbose ) );
+    Xform::SmartPtr xform( XformIO::Read( InitialStudylist ) );
     if ( ! xform ) 
       {
       StdErr << "ERROR: could not read transformation from " << InitialStudylist << "\n";
@@ -442,12 +435,9 @@ AffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
 void
 AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
 {
-  if ( Verbose ) 
-    {
-    StdOut.printf( "\rResulting transformation parameters: \n" );
-    for ( unsigned int idx=0; idx<v->Dim; ++idx )
-      StdOut.printf( "#%d: %f\n", idx, v->Elements[idx] );
-    }
+  DebugOutput( 1 ) << "Resulting transformation parameters: \n";
+  for ( unsigned int idx=0; idx<v->Dim; ++idx )
+    DebugOutput( 1 ).GetStream().printf( "#%d: %f\n", idx, v->Elements[idx] );
   
   if ( this->OutMatrixName )
     {
@@ -472,7 +462,7 @@ AffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
 
   if ( this->m_ReformattedImagePath )
     {
-    VolumeIO::Write( *(this->GetReformattedFloatingImage()), this->m_ReformattedImagePath, this->Verbose );
+    VolumeIO::Write( *(this->GetReformattedFloatingImage()), this->m_ReformattedImagePath );
     }
 
 #ifdef CMTK_USE_SQLITE
@@ -512,10 +502,7 @@ AffineRegistrationCommandLine::EnterResolution
 ( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f,
   const int index, const int total )
 {
-  if ( Verbose )
-    {
-    StdOut.printf( "\rEntering resolution level %d out of %d...\n", index, total );
-    }
+  DebugOutput( 1 ).GetStream().printf( "Entering resolution level %d out of %d...\n", index, total );
   this->Superclass::EnterResolution( v, f, index, total );
 }
 
@@ -537,7 +524,7 @@ AffineRegistrationCommandLine::Register ()
       } 
     else 
       {
-      std::cerr << "Could not open time file " << Time << "\n";
+      StdErr << "Could not open time file " << Time << "\n";
       }
     }
   return Result;

@@ -34,6 +34,7 @@
 
 #include <System/cmtkCompressedStream.h>
 #include <System/cmtkProgress.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkMountPoints.h>
 
@@ -63,7 +64,7 @@ cmtk
 
 const UniformVolume::SmartPtr
 VolumeFromStudy::Read
-( const Study* study, const bool verbose )
+( const Study* study )
 {
   if ( !study ) 
     return UniformVolume::SmartPtr( NULL );
@@ -75,11 +76,11 @@ VolumeFromStudy::Read
     return vfs.AssembleVolume( studyImageSet );
     } 
   else
-    return VolumeIO::Read( study->GetFileSystemPath(), verbose );
+    return VolumeIO::Read( study->GetFileSystemPath() );
 }
 
 const UniformVolume::SmartPtr
-VolumeFromStudy::AssembleVolume( const StudyImageSet* study, const bool verbose )
+VolumeFromStudy::AssembleVolume( const StudyImageSet* study )
 {
   UniformVolume::SmartPtr Result( NULL );
   
@@ -88,8 +89,7 @@ VolumeFromStudy::AssembleVolume( const StudyImageSet* study, const bool verbose 
   
   try
     {
-    if ( verbose )
-      fprintf( stderr, "\rReading images from path %s ...\n", MountPoints::Translate( study->GetImageDirectory() ) );
+    DebugOutput( 1 ).GetStream().printf( "Reading images from path %s ...\n", MountPoints::Translate( study->GetImageDirectory() ) );
     
     Progress::Begin( 0, study->size(), 1, "Volume image assembly" );
     
@@ -97,10 +97,7 @@ VolumeFromStudy::AssembleVolume( const StudyImageSet* study, const bool verbose 
     StudyImageSet::const_iterator it = study->begin();
     while ( it != study->end() ) 
       {      
-      if ( verbose )
-	{
-	StdOut.printf( "\r%s", it->c_str() );
-	}
+      DebugOutput( 1 ) << "\r" << *it;
       
       char fullpath[PATH_MAX];
       snprintf( fullpath, sizeof( fullpath ), "%s/%s", MountPoints::Translate( study->GetImageDirectory() ), it->c_str() );

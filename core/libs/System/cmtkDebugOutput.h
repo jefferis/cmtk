@@ -69,9 +69,15 @@ public:
   }
 
   /// Set global debug level.
-  void SetGlobalLevel( const int level )
+  static void SetGlobalLevel( const long int level )
   {
     Self::GetGlobalLevel() = level;
+  }
+
+  /// Increment global debug level by 1.
+  static void IncGlobalLevel()
+  {
+    ++Self::GetGlobalLevel();
   }
 
   /// Get global debug level (reference to static variable).

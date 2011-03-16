@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkSmartPtr.h>
 
@@ -56,8 +57,6 @@ typedef enum { TTEST, TTEST_PAIRED, CORRELATION_PAIRED, ZSCORES } ModeEnum;
 int
 doMain ( const int argc, const char* argv[] ) 
 {
-  bool Verbose = false;
-
   bool Symmetric = false;
 
   ModeEnum Mode = TTEST;
@@ -89,8 +88,6 @@ doMain ( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Statistics and Modeling" );
     
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-
     cl.AddSwitch( Key( 'S', "symmetric" ), &Symmetric, true, "Use mirrored X data as Y data" );
     cl.AddSwitch( Key( 'l', "log" ), &UseLogData, true, "Use log data for testing" );
     cl.AddSwitch( Key( 'a', "abs" ), &UseAbsData, true, "Use absolute data for testing" );
@@ -144,10 +141,8 @@ doMain ( const int argc, const char* argv[] )
     fnameIt = FileListX.begin();
     for ( ; fnameIt != FileListX.end(); ++fnameIt ) 
       {
-      if ( Verbose )
-	{
-	std::cout << "Reading X data file " << *fnameIt << "...\n";
-	}
+      cmtk::DebugOutput( 1 ) << "Reading X data file " << *fnameIt << "...\n";
+
       std::ifstream stream( *fnameIt );
       std::vector<cmtk::Types::DataItem> data;
       while ( ! stream.eof() )
@@ -174,10 +169,7 @@ doMain ( const int argc, const char* argv[] )
     fnameIt = FileListY.begin();
     for ( ; fnameIt != FileListY.end(); ++fnameIt ) 
       {
-      if ( Verbose )
-	{
-	std::cout << "Reading Y data file " << *fnameIt << "...\n";
-	}
+      cmtk::DebugOutput( 1 ) << "Reading Y data file " << *fnameIt << "...\n";
       std::ifstream stream( *fnameIt );
       std::vector<cmtk::Types::DataItem> data;
       
@@ -208,7 +200,7 @@ doMain ( const int argc, const char* argv[] )
     for ( ; fnameIt != FileListX.end(); ++fnameIt ) 
       {
       std::cerr << "Reading X volume " << *fnameIt << "...\n";
-      cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( *fnameIt, Verbose ) );
+      cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( *fnameIt ) );
       if ( volume ) 
 	{
 	if ( ! refVolume ) refVolume = volume;
@@ -233,7 +225,7 @@ doMain ( const int argc, const char* argv[] )
       for ( ; fnameIt != FileListY.end(); ++fnameIt ) 
 	{
 	std::cerr << "Reading Y volume " << *fnameIt << "...\n";
-	cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( *fnameIt, Verbose ) );
+	cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( *fnameIt ) );
 	if ( volume ) 
 	  {
 	  if ( ! refVolume ) refVolume = volume;
@@ -273,7 +265,7 @@ doMain ( const int argc, const char* argv[] )
       }
     else
       {
-      cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( MaskFileName, Verbose ) );
+      cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( MaskFileName ) );
       if ( volume ) 
 	maskData = volume->GetData();
       if ( ! maskData )
@@ -319,13 +311,10 @@ doMain ( const int argc, const char* argv[] )
       
       if ( refVolume && TStatFileName )
 	{	
-	if ( Verbose )
-	  {
-	  cmtk::StdOut << "Writing T-statistics to file " << TStatFileName << "\n";
-	  }
+	cmtk::DebugOutput( 1 ) << "Writing T-statistics to file " << TStatFileName << "\n";
 	
 	refVolume->SetData( cmtk::TypedArray::SmartPtr( tstatsData ) );
-	cmtk::VolumeIO::Write( *refVolume, TStatFileName, Verbose );
+	cmtk::VolumeIO::Write( *refVolume, TStatFileName );
 	}
 
       if ( AbsoluteOutput ) probData->ApplyFunctionDouble( cmtk::Wrappers::Abs );
@@ -352,11 +341,7 @@ doMain ( const int argc, const char* argv[] )
 	}
       else
 	{
-	if ( Verbose )
-	  {
-	  cmtk::StdOut << "Writing T-probablities to file " << OutFileName << "\n";
-	  }
-	
+	cmtk::DebugOutput( 1 ) << "Writing T-probablities to file " << OutFileName << "\n";
 	refVolume->SetData( probData );
 	cmtk::VolumeIO::Write( *refVolume, OutFileName );
 	}
@@ -373,13 +358,9 @@ doMain ( const int argc, const char* argv[] )
       
       if ( refVolume && TStatFileName )
 	{	
-	if ( Verbose )
-	  {
-	  cmtk::StdOut << "Writing T-statistics to file " << TStatFileName << "\n";
-	  }
-	
+	cmtk::DebugOutput( 1 ) << "Writing T-statistics to file " << TStatFileName << "\n";	
 	refVolume->SetData( cmtk::TypedArray::SmartPtr( tstatsData ) );
-	cmtk::VolumeIO::Write( *refVolume, TStatFileName, Verbose );
+	cmtk::VolumeIO::Write( *refVolume, TStatFileName );
 	}
       
       if ( AbsoluteOutput ) probData->ApplyFunctionDouble( cmtk::Wrappers::Abs );
@@ -391,11 +372,7 @@ doMain ( const int argc, const char* argv[] )
 	probData = cmtk::TypedArray::SmartPtr( probData->Convert( cmtk::TYPE_SHORT ) );
 	}
       
-      if ( Verbose )
-	{
-	cmtk::StdOut << "Writing T-probablities to file " << OutFileName << "\n";
-	}
-      
+      cmtk::DebugOutput( 1 ) << "Writing T-probablities to file " << OutFileName << "\n";      
       refVolume->SetData( probData );
       cmtk::VolumeIO::Write( *refVolume, OutFileName );
       break;
@@ -419,20 +396,12 @@ doMain ( const int argc, const char* argv[] )
       
       if ( refVolume && TStatFileName )
 	{	
-	if ( Verbose )
-	  {
-	  cmtk::StdOut << "Writing probabilities to file " << TStatFileName << "\n";
-	  }
-	
+	cmtk::DebugOutput( 1 ) << "Writing probabilities to file " << TStatFileName << "\n";
 	refVolume->SetData( cmtk::TypedArray::SmartPtr( pData ) );
-	cmtk::VolumeIO::Write( *refVolume, TStatFileName, Verbose );
+	cmtk::VolumeIO::Write( *refVolume, TStatFileName );
 	}
       
-      if ( Verbose )
-	{
-	cmtk::StdOut << "Writing correlations to file " << OutFileName << "\n";
-	}
-      
+      cmtk::DebugOutput( 1) << "Writing correlations to file " << OutFileName << "\n";
       refVolume->SetData( probData );
       cmtk::VolumeIO::Write( *refVolume, OutFileName );
       break;
@@ -450,11 +419,7 @@ doMain ( const int argc, const char* argv[] )
 	zscoreData = cmtk::TypedArray::SmartPtr( zscoreData->Convert( cmtk::TYPE_SHORT ) );
 	}
 
-      if ( Verbose )
-	{
-	cmtk::StdOut << "Writing z-scores map to file " << OutFileName << "\n";
-	}
-      
+      cmtk::DebugOutput( 1 ) << "Writing z-scores map to file " << OutFileName << "\n";
       refVolume->SetData( zscoreData );
       cmtk::VolumeIO::Write( *refVolume, OutFileName );
       }

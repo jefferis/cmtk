@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkTimers.h>
@@ -48,8 +49,6 @@
 #include <Registration/cmtkGroupwiseRegistrationOutput.h>
 
 #include <vector>
-
-bool Verbose = false;
 
 const char* PreDefinedTemplatePath = NULL;
 cmtk::UniformVolume::SmartPtr PreDefinedTemplate;
@@ -94,8 +93,6 @@ doMain( int argc, char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Image Registration" );
     
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation." );
-
     cl.AddOption( Key( 't', "template" ), &PreDefinedTemplatePath, "Input filename for pre-defined template image." );
 
     cl.AddOption( Key( 'O', "output-root" ), &OutputRootDirectory, "Root directory for all output files." );
@@ -128,7 +125,7 @@ doMain( int argc, char* argv[] )
   for ( std::vector<const char*>::const_iterator fnIt = fileNameList.begin(); fnIt != fileNameList.end(); ++fnIt, ++idx )
     {
     cmtk::UniformVolume::SmartPtr nextImage;
-    cmtk::UniformVolume::SmartPtr image( cmtk::VolumeIO::ReadOriented( *fnIt, Verbose ) );
+    cmtk::UniformVolume::SmartPtr image( cmtk::VolumeIO::ReadOriented( *fnIt ) );
     if ( ! image || ! image->GetData() )
       {
       cmtk::StdErr << "ERROR: Could not read image " << *fnIt << "\n";
@@ -141,7 +138,7 @@ doMain( int argc, char* argv[] )
   initializer->SetTargetImages( imageListOriginal );
   if ( PreDefinedTemplatePath )
     {
-    PreDefinedTemplate = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( PreDefinedTemplatePath, Verbose ) );
+    PreDefinedTemplate = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( PreDefinedTemplatePath ) );
     }
   
   if ( PreDefinedTemplate )
@@ -151,11 +148,8 @@ doMain( int argc, char* argv[] )
   
   cmtk::UniformVolume::SmartPtr templateGrid = initializer->GetTemplateGrid();
   
-  if ( Verbose )
-    {
-    cmtk::StdOut.printf( "Template grid is %d x %d x %d pixels of size %f x %f x %f\n",
-			 templateGrid->m_Dims[0], templateGrid->m_Dims[1], templateGrid->m_Dims[2], templateGrid->m_Delta[0], templateGrid->m_Delta[1], templateGrid->m_Delta[2] );
-    }
+  cmtk::DebugOutput( 1 ).GetStream().printf( "Template grid is %d x %d x %d pixels of size %f x %f x %f\n",
+					     templateGrid->m_Dims[0], templateGrid->m_Dims[1], templateGrid->m_Dims[2], templateGrid->m_Delta[0], templateGrid->m_Delta[1], templateGrid->m_Delta[2] );
   
   cmtk::GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms( *initializer, true /*alignCenters*/, AlignCentersOfMass, InitScales );
 

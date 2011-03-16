@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -81,9 +81,6 @@ private:
 
   /// The symmetry plane object.
   ParametricPlane m_SymmetryPlane;
-
-  /// Verbosity flag.
-  bool m_Verbose;
 
   /// Minimum data value (lower threshold).
   float m_MinValue;

@@ -34,6 +34,7 @@
 
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkThreads.h>
 
 #include <Base/cmtkUniformVolume.h>
@@ -51,8 +52,6 @@
 #include <algorithm>
 #include <map>
 #include <vector>
-
-bool Verbose = false;
 
 const char* ReconstructionGridPath = NULL;
 bool ExcludeFirstImage = false;
@@ -145,7 +144,7 @@ WriteOutputImage( cmtk::UniformVolume::SmartPtr& image, const char* path )
     outputImage = cmtk::UniformVolume::SmartPtr( outputImage->CloneGrid() );
     outputImage->SetData( cmtk::TypedArray::SmartPtr( image->GetData()->Convert( type ) ) );
     }
-  cmtk::VolumeIO::Write( *outputImage, path, Verbose );
+  cmtk::VolumeIO::Write( *outputImage, path );
 }
 
 int
@@ -163,8 +162,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] refImage xform0 inImage0 [xform1 inImage1 ...]" );
     
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation" );
-
     cl.BeginGroup( "Input", "Input Options" );
     cl.AddSwitch( Key( 'x', "exclude-first-image" ), &ExcludeFirstImage, true, "Exclude first image from reconstruction as a separate registration target image)" );
     cl.AddCallback( Key( 'W', "pass-weight" ), CallbackSetPassWeight, "Set contribution weight for a pass in the form 'pass:weight'" );
@@ -224,7 +221,7 @@ doMain( const int argc, const char* argv[] )
   
   for ( size_t idx = (ExcludeFirstImage?1:0); idx < ImagePaths.size(); ++idx )
     {
-    cmtk::UniformVolume::SmartPtr image( cmtk::VolumeIO::ReadOriented( ImagePaths[idx], Verbose ) );
+    cmtk::UniformVolume::SmartPtr image( cmtk::VolumeIO::ReadOriented( ImagePaths[idx] ) );
     if ( ! image || ! image->GetData() )
       {
       cmtk::StdErr << "ERROR: Could not read image " << ImagePaths[idx] << "\n";
@@ -282,12 +279,9 @@ doMain( const int argc, const char* argv[] )
     ReconGrid = cmtk::UniformVolume::SmartPtr( ReconGrid->GetCroppedVolume() );
     }
 
-  if ( Verbose )
-    {
-    cmtk::StdOut.printf( "Reconstruction grid: %dx%dx%d pixels, %fx%fx%f pixel size, offset=%f,%f,%f\n",
-		      ReconGrid->m_Dims[0], ReconGrid->m_Dims[1], ReconGrid->m_Dims[2], (float)ReconGrid->m_Delta[0], (float)ReconGrid->m_Delta[1], (float)ReconGrid->m_Delta[2],
-		      (float)ReconGrid->m_Offset[0], (float)ReconGrid->m_Offset[1], (float)ReconGrid->m_Offset[2] );
-    }
+  cmtk::DebugOutput( 1 ).GetStream().printf( "Reconstruction grid: %dx%dx%d pixels, %fx%fx%f pixel size, offset=%f,%f,%f\n",
+					     ReconGrid->m_Dims[0], ReconGrid->m_Dims[1], ReconGrid->m_Dims[2], (float)ReconGrid->m_Delta[0], (float)ReconGrid->m_Delta[1], (float)ReconGrid->m_Delta[2],
+					     (float)ReconGrid->m_Offset[0], (float)ReconGrid->m_Offset[1], (float)ReconGrid->m_Offset[2] );
   
   cmtk::VolumeInjectionReconstruction injection( ReconGrid, Images );
   injection.SetTransformationsToPassImages( Xforms );

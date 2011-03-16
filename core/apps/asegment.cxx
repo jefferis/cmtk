@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -46,7 +46,6 @@
 int
 doMain( const int argc, const char* argv[] )
 {
-  bool verbose = false;
   bool fast = false;
   
   const char* targetImageName = NULL;
@@ -62,7 +61,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode." )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
     cl.AddSwitch( Key( 'f', "fast" ), &fast, true, "Fast mode." );
     
     cl.AddParameter( &targetImageName, "TargetImage", "Target image path. This is the image to be segmented." )
@@ -85,21 +83,21 @@ doMain( const int argc, const char* argv[] )
   // Instantiate programm progress indicator.
   cmtk::ProgressConsole progressIndicator( "Atlas-based Segmentation" );
 
-  cmtk::UniformVolume::SmartPtr targetImg( cmtk::VolumeIO::ReadOriented( targetImageName, verbose ) );
+  cmtk::UniformVolume::SmartPtr targetImg( cmtk::VolumeIO::ReadOriented( targetImageName ) );
   if ( !targetImg ) 
     {
     cmtk::StdErr << "ERROR: could not read target image " << targetImageName << "\n";
     throw cmtk::ExitException( 1 );
     }
   
-  cmtk::UniformVolume::SmartPtr atlasImg( cmtk::VolumeIO::ReadOriented( atlasImageName, verbose ) );
+  cmtk::UniformVolume::SmartPtr atlasImg( cmtk::VolumeIO::ReadOriented( atlasImageName ) );
   if ( !atlasImg ) 
     {
     cmtk::StdErr << "ERROR: could not read atlas image " << atlasImageName << "\n";
     throw cmtk::ExitException( 1 );
     }
   
-  cmtk::UniformVolume::SmartPtr atlasLbl( cmtk::VolumeIO::ReadOriented( atlasLabelName, verbose ) );
+  cmtk::UniformVolume::SmartPtr atlasLbl( cmtk::VolumeIO::ReadOriented( atlasLabelName ) );
   if ( !atlasLbl ) 
     {
     cmtk::StdErr << "ERROR: could not read atlas labels " << atlasLabelName << "\n";
@@ -107,7 +105,6 @@ doMain( const int argc, const char* argv[] )
     }
     
   cmtk::AtlasSegmentation segment( targetImg, atlasImg, atlasLbl );
-  segment.SetVerbose( verbose );
   segment.SetFast( fast );
 
   cmtk::VolumeIO::Write( *(segment.GetLabelMap()), outImageName );

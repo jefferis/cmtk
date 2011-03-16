@@ -37,8 +37,7 @@
 #include <IO/cmtkVolumeIO.h>
 
 cmtk::SimpleLevelsetCommandLineBase::SimpleLevelsetCommandLineBase()
-  : m_Verbose( false ),
-    m_ScaleInitialSphere( 1.0 ),
+  : m_ScaleInitialSphere( 1.0 ),
     m_FilterSigma( 2.0 ),    
     m_TimeDelta( 0.1 ),
     m_LevelsetThreshold( 1.0 ),
@@ -57,9 +56,7 @@ cmtk::SimpleLevelsetCommandLineBase::SimpleLevelsetCommandLineBase()
   this->m_CommandLine.SetProgramInfo( CommandLine::PRG_DESCR, "Levelset-type segmentation of foreground/background using minimum regional variance energy" );
   this->m_CommandLine.SetProgramInfo( CommandLine::PRG_CATEG, "CMTK.Segmentation" );
   
-  typedef CommandLine::Key Key;
-  this->m_CommandLine.AddSwitch( Key( 'v', "verbose" ), &this->m_Verbose, true, "Verbose mode" )->SetProperties( CommandLine::PROPS_NOXML );
-  
+  typedef CommandLine::Key Key;  
   this->m_CommandLine.AddSwitch( Key( 'b', "binarize" ), &this->m_Binarize, true, "Binarize levelset and write as byte mask, rather than write floating-point levelset function itself." );
   
   this->m_CommandLine.BeginGroup( "Levelset Initialization", "These parameters control the initialization of the levelset function" )->SetProperties( CommandLine::PROPS_ADVANCED );
@@ -98,7 +95,7 @@ cmtk::SimpleLevelsetCommandLineBase::Init( const int argc, const char* argv[] )
     return 1;
     }
   
-  this->m_Volume = cmtk::VolumeIO::ReadOriented( this->m_InFile, this->m_Verbose );
+  this->m_Volume = cmtk::VolumeIO::ReadOriented( this->m_InFile);
 
   if ( !this->m_Volume )
     return 1;

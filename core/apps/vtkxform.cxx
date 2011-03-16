@@ -88,7 +88,7 @@ doMain( const int argc, const char* argv[] )
 
   if ( sourceImagePath )
     {
-    cmtk::UniformVolume::SmartConstPtr sourceImage( cmtk::VolumeIO::ReadOriented( sourceImagePath, verbose ) );
+    cmtk::UniformVolume::SmartConstPtr sourceImage( cmtk::VolumeIO::ReadOriented( sourceImagePath ) );
     if ( ! sourceImage )
       {
       cmtk::StdErr << "ERROR: could not read source image '" << sourceImagePath << "'\n";
@@ -99,7 +99,7 @@ doMain( const int argc, const char* argv[] )
   
   if ( targetImagePath )
     {
-    cmtk::UniformVolume::SmartConstPtr targetImage( cmtk::VolumeIO::ReadOriented( targetImagePath, verbose ) );
+    cmtk::UniformVolume::SmartConstPtr targetImage( cmtk::VolumeIO::ReadOriented( targetImagePath ) );
     if ( ! targetImage )
       {
       cmtk::StdErr << "ERROR: could not read target image '" << targetImagePath << "'\n";

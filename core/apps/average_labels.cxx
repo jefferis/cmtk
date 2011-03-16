@@ -47,8 +47,6 @@
 #  include <dispatch/dispatch.h>
 #endif
 
-bool Verbose = false;
-
 typedef std::deque< std::pair<cmtk::Xform::SmartPtr,cmtk::UniformVolume::SmartPtr> > XVQueue;
 XVQueue XformVolumeList;
 cmtk::UniformVolume::SmartPtr ReferenceImage;
@@ -66,14 +64,12 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] reference xform0 atlas0 [xform1 atlas1 ...]" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-
     cl.AddOption( Key( 'o', "output" ), &OutputImagePath, "Output image path" );
 
     cl.Parse( argc, argv );
     
     const char* refImagePath = cl.GetNext();
-    ReferenceImage = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( refImagePath, Verbose ) );
+    ReferenceImage = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( refImagePath ) );
     if ( !ReferenceImage )
       {
       cmtk::StdErr << "ERROR: cannot read reference volume " << refImagePath << "\n";
@@ -84,14 +80,14 @@ doMain( const int argc, const char* argv[] )
     const char* nextVolume = cl.GetNext();
     while ( nextXform && nextVolume )
       {
-      cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( nextXform, Verbose ) );
+      cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( nextXform ) );
       if ( !xform )
 	{
 	cmtk::StdErr << "ERROR: cannot read transformation " << nextXform << "\n";
 	throw cmtk::ExitException( 1 );
 	}
 
-      cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( nextVolume, Verbose ) );
+      cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( nextVolume ) );
       if ( !volume )
 	{
 	cmtk::StdErr << "ERROR: cannot read volume " << nextVolume << "\n";
@@ -177,7 +173,7 @@ doMain( const int argc, const char* argv[] )
 
   ReferenceImage->SetData( result );
 
-  cmtk::VolumeIO::Write( *ReferenceImage, OutputImagePath, Verbose );
+  cmtk::VolumeIO::Write( *ReferenceImage, OutputImagePath );
   return 0;
 }
 

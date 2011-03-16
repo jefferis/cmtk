@@ -34,6 +34,7 @@
 
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 
 #include <Base/cmtkUniformVolume.h>
 #include <IO/cmtkVolumeIO.h>
@@ -44,8 +45,6 @@
 int
 doMain( const int argc, const char* argv[] )
 {
-  bool verbose = false;
-
   std::list<const char*> inputFilePaths;
   const char* outputFilePath = NULL;
   int axis = 2;
@@ -58,8 +57,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] inImage0 inImage1 ..." );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose operation" );
-
     cl.AddOption( Key( 'o', "output" ), &outputFilePath, "Path for output image." );
 
     cl.AddSwitch( Key( 'z', "axial" ), &axis, 2, "Interleaved axial images (along z axis) [default]" );
@@ -86,7 +83,7 @@ doMain( const int argc, const char* argv[] )
   std::vector<cmtk::UniformVolume::SmartPtr> volumes;
   for ( std::list<const char*>::const_iterator it = inputFilePaths.begin(); it != inputFilePaths.end(); ++it )
     {
-    cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( *it, verbose ) );
+    cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( *it ) );
     if ( ! volume || ! volume->GetData() )
       {
       cmtk::StdErr << "ERROR: Could not read image " << *it << "\n";
@@ -132,11 +129,8 @@ doMain( const int argc, const char* argv[] )
 
   stackDelta[axis] = volumes[0]->m_Delta[axis] / volumes.size();
   
-  if ( verbose )
-    {
-    cmtk::StdOut << "Stacked image will have dimensions " << stackDims[0] << "x" << stackDims[1] << "x" << stackDims[2] << "\n";
-    cmtk::StdOut << "Stacked image will have pixel size " << stackDelta[0] << "x" << stackDelta[1] << "x" << stackDelta[2] << "\n";
-    }
+  cmtk::DebugOutput( 1 ) << "Stacked image will have dimensions " << stackDims[0] << "x" << stackDims[1] << "x" << stackDims[2] << "\n"
+			 << "Stacked image will have pixel size " << stackDelta[0] << "x" << stackDelta[1] << "x" << stackDelta[2] << "\n";
 
   cmtk::UniformVolume::SmartPtr stacked( new cmtk::UniformVolume( stackDims, stackDelta[0], stackDelta[1], stackDelta[2] ) );
   stacked->CreateDataArray( volumes[0]->GetData()->GetType() );
@@ -159,7 +153,7 @@ doMain( const int argc, const char* argv[] )
   
   if ( outputFilePath )
     {
-    cmtk::VolumeIO::Write( *stacked, outputFilePath, verbose );
+    cmtk::VolumeIO::Write( *stacked, outputFilePath );
     }
 
   return 0;

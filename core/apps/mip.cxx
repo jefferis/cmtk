@@ -34,6 +34,7 @@
 
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
+#include <System/cmtkDebugOutput.h>
 
 #include <IO/cmtkPGM.h>
 #include <IO/cmtkVolumeIO.h>
@@ -44,8 +45,6 @@
 #include <Base/cmtkMathUtil.h>
 
 #include <iostream>
-
-bool Verbose = false;
 
 double Black = cmtk::MathUtil::GetDoubleNaN();
 double White = cmtk::MathUtil::GetDoubleNaN();
@@ -72,7 +71,6 @@ ParseCommandLine( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] input output" );
     
     typedef cmtk::CommandLine::Key Key;    
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode." );
     cl.AddSwitch( Key( 'a', "absolute" ), &Absolute, true, "Use absolute intensity values." );
     cl.AddSwitch( Key( 'A', "adjust" ), &AdjustAspect, true, "Adjust aspect ratio of output image (square pixels).\n" );
     
@@ -107,7 +105,7 @@ int doMain ( const int argc, const char* argv[] )
     return 1;
     }
   
-  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( InFileName, Verbose ) );
+  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( InFileName ) );
   
   if ( Absolute ) 
     volume->GetData()->MakeAbsolute();

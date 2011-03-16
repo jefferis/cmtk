@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkProgressConsole.h>
@@ -57,8 +58,6 @@
 #ifdef CMTK_USE_SQLITE
 #  include <Registration/cmtkImageXformDB.h>
 #endif
-
-bool Verbose = false;
 
 bool JacobianCorrectGlobal = true;
 bool MassPreservingReformat = false;
@@ -223,9 +222,9 @@ ReformatPullback()
   if ( TargetVolumeName )
     {
     if ( TargetMask )
-      targetVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( TargetVolumeName, Verbose ) );
+      targetVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( TargetVolumeName ) );
     else
-      targetVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( TargetVolumeName, Verbose ) );
+      targetVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( TargetVolumeName ) );
     }
 
   if ( ! targetVolume ) 
@@ -249,26 +248,20 @@ ReformatPullback()
       TargetImageOffset[dim] *= targetVolume->m_Delta[dim];
     targetVolume->SetOffset( TargetImageOffset );
 
-    if ( Verbose )
-      {
-      cmtk::StdOut << "INFO: setting reference image offset to " << TargetImageOffset[0] << "/" << TargetImageOffset[1] << "/" << TargetImageOffset[2] << "\n";
-      }
+    cmtk::DebugOutput( 1 ) << "INFO: setting reference image offset to " << TargetImageOffset[0] << "/" << TargetImageOffset[1] << "/" << TargetImageOffset[2] << "\n";
     }
   
   if ( TargetImageOffsetReal )
     {
     targetVolume->SetOffset( TargetImageOffset );
     
-    if ( Verbose )
-      {
-      cmtk::StdOut << "INFO: setting reference image offset to " << TargetImageOffset[0] << "/" << TargetImageOffset[1] << "/" << TargetImageOffset[2] << "\n";
-      }
+    cmtk::DebugOutput( 1 ) << "INFO: setting reference image offset to " << TargetImageOffset[0] << "/" << TargetImageOffset[1] << "/" << TargetImageOffset[2] << "\n";
     }
   
   cmtk::UniformVolume::SmartPtr floatingVolume;
   if ( FloatingVolumeName )
     {
-    floatingVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( FloatingVolumeName, Verbose ) );
+    floatingVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( FloatingVolumeName ) );
     if ( ! floatingVolume ) 
       {
       cmtk::StdErr << "ERROR: floating volume " << FloatingVolumeName << " could not be read\n";
@@ -295,8 +288,7 @@ ReformatPullback()
     } 
   else
     {
-    if ( Verbose )
-      cmtk::StdOut << "INFO: Using target data as binary mask.\n";
+    cmtk::DebugOutput( 1 ) << "INFO: Using target data as binary mask.\n";
     }
   
   cmtk::ProgressConsole progressIndicator;
@@ -400,7 +392,7 @@ ReformatPullback()
   if ( reformatData ) 
     {
     targetVolume->SetData( reformatData );
-    cmtk::VolumeIO::Write( *targetVolume, OutputImageName, Verbose );
+    cmtk::VolumeIO::Write( *targetVolume, OutputImageName );
 
 #ifdef CMTK_USE_SQLITE
     if ( updateDB )
@@ -433,11 +425,8 @@ doMain( const int argc, const char* argv[] )
 		       "WHERE x0 ... xN and xx0 ... xxN is [{-i,--inverse}] transformation##" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-
     cl.BeginGroup( "PlainOptions", "Options for Plain Reformatting" );
-    cmtk::CommandLine::EnumGroup<cmtk::Interpolators::InterpolationEnum>::SmartPtr
-      interpolationGroup = cl.AddEnum( "interpolation", &Interpolation, "Image interpolation method." );
+    cmtk::CommandLine::EnumGroup<cmtk::Interpolators::InterpolationEnum>::SmartPtr interpolationGroup = cl.AddEnum( "interpolation", &Interpolation, "Image interpolation method." );
     interpolationGroup->AddSwitch( Key( "linear" ), cmtk::Interpolators::LINEAR, "Trilinear interpolation" );
     interpolationGroup->AddSwitch( Key( "nn" ), cmtk::Interpolators::NEAREST_NEIGHBOR, "Nearest neighbor interpolation" );
     interpolationGroup->AddSwitch( Key( "cubic" ), cmtk::Interpolators::CUBIC, "Tricubic interpolation" );
@@ -502,7 +491,7 @@ doMain( const int argc, const char* argv[] )
       if ( inverse ) 
 	next = cl.GetNext();
       
-      cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( next, Verbose ) );
+      cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( next ) );
       if ( ! xform ) 
 	{
 	cmtk::StdErr << "ERROR: could not read target-to-reference transformation from " << next << "\n";
@@ -530,7 +519,7 @@ doMain( const int argc, const char* argv[] )
 	    if ( inverse ) 
 	      next = cl.GetNext();
 	    
-	    cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( next, Verbose ) );
+	    cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( next ) );
 	    if ( ! xform ) 
 	      {
 	      cmtk::StdErr << "ERROR: could not read target-to-floating transformation from " << next << "\n";

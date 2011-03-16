@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 
@@ -46,8 +47,6 @@
 #include <fstream>
 #include <list>
 #include <stdio.h>
-
-bool Verbose = false;
 
 const char *maskFile = NULL;
 const char *outFile = NULL;
@@ -160,8 +159,6 @@ doMain ( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Statistics and Modeling" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-
     cl.AddOption( Key( 'n', "nbins" ), &NumberOfBins, "Number of histogram bins (default: number of grey levels)" );
     cl.AddSwitch( Key( 'N', "normalize" ), &NormalizeBins, true, "Normalize histogram to maximum 1.0" );
 
@@ -194,7 +191,7 @@ doMain ( const int argc, const char* argv[] )
   std::list<const char*>::const_iterator it = inFileList.begin();
   for ( ; it != inFileList.end(); ++it )
     {
-    cmtk::Volume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( *it, Verbose ) );
+    cmtk::Volume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( *it ) );
     if ( ! volume ) 
       {
       cmtk::StdErr << "Cannot read image " << *it << "\n";
@@ -253,7 +250,7 @@ doMain ( const int argc, const char* argv[] )
     } 
   else 
     {
-    cmtk::Volume::SmartPtr mask( cmtk::VolumeIO::ReadOriented( maskFile, Verbose ) );
+    cmtk::Volume::SmartPtr mask( cmtk::VolumeIO::ReadOriented( maskFile ) );
 
     if ( mask ) 
       {

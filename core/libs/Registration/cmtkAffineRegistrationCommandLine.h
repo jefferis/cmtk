@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -154,11 +154,6 @@ private:
    * This is defined by the -t or --time command line option.
    */
   const char *Time;
-
-  /** Verbosity flag.
-   * This is set to 'on' by -v or --verbose, and set to 'off' by -q or --quiet.
-   */
-  bool Verbose;
 
   /** Flag for initial center-of-mass translation.
    * This defaults to 'no' and is set to 'yes' by -i or --initxlate command

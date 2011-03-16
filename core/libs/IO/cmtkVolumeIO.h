@@ -78,18 +78,18 @@ public:
   typedef VolumeIO Self;
 
   /// Read volume data from filesystem.
-  static UniformVolume::SmartPtr Read( const char *path, const bool verbose = false );
+  static UniformVolume::SmartPtr Read( const char *path );
 
   /// Read grid only from filesystem.
-  static UniformVolume::SmartPtr ReadGrid( const char *path, const bool verbose = false );
+  static UniformVolume::SmartPtr ReadGrid( const char *path );
 
   /// Read grid only from filesystem and bring into standard "RAS" orientation.
-  static UniformVolume::SmartPtr ReadGridOriented( const char *path, const char* orientation, const bool verbose = false );
+  static UniformVolume::SmartPtr ReadGridOriented( const char *path, const char* orientation );
 
   /// Read grid only from filesystem and bring into standard "RAS" orientation.
-  static UniformVolume::SmartPtr ReadGridOriented( const char *path, const bool verbose = false )
+  static UniformVolume::SmartPtr ReadGridOriented( const char *path )
   {
-    return Self::ReadGridOriented( path, AnatomicalOrientation::ORIENTATION_STANDARD, verbose );
+    return Self::ReadGridOriented( path, AnatomicalOrientation::ORIENTATION_STANDARD );
   }
 
   /** Read image from filesystem and reorient to align anatomy with coordinate axes.
@@ -99,26 +99,24 @@ public:
    * positive x axis is aligned with the anatomical L/R (left/right) direction, the y axis is aligned 
    * with the P/A (posterior/anterior) direction, and the y axis is aligned with the I/S (inferior/superior) 
    * direction.
-   *\param verbose Flag for verbose operation: if true, write status information to standard error.
    */
-  static UniformVolume::SmartPtr ReadOriented( const char *path, const char* orientation, const bool verbose = false );
+  static UniformVolume::SmartPtr ReadOriented( const char *path, const char* orientation );
 
   /** Read image from filesystem and reorient to align anatomy with coordinate axes of standard coordinate system ("RAS").
    *\param path Filesystem path of the image to read.
    *\param verbose Flag for verbose operation: if true, write status information to standard error.
    */
-  static UniformVolume::SmartPtr ReadOriented( const char *path, const bool verbose = false )
+  static UniformVolume::SmartPtr ReadOriented( const char *path )
   {
-    return Self::ReadOriented( path, AnatomicalOrientation::ORIENTATION_STANDARD, verbose );
+    return Self::ReadOriented( path, AnatomicalOrientation::ORIENTATION_STANDARD );
   }
 
   /** Write volume data to filesystem.
    *\param volume Image object that is written to disk.
    *\param format Selector for output file format.
    *\param path Filesystem path of the image to write.
-   *\param verbose Flag for verbose operation: if true, write status information to standard error.
    */   
-  static void Write( const UniformVolume& volume, const FileFormatID format, const char *path, const bool verbose = false );
+  static void Write( const UniformVolume& volume, const FileFormatID format, const char *path );
 
   /** Write volume data to filesystem with automatic format parsing.
    * The output file format is determined automatically from the output name suffix.
@@ -128,9 +126,8 @@ public:
    *  use the filename suffix ".img" (or write a single-file NIFTI using the ".nii" suffix).
    *\param volume Image object that is written to disk.
    *\param pathAndFormat Filesystem path of the image to write.
-   *\param verbose Flag for verbose operation: if true, write status information to standard error.
    */
-  static void Write( const UniformVolume& volume, const char *pathAndFormat, const bool verbose = false );
+  static void Write( const UniformVolume& volume, const char *pathAndFormat );
 
   /// Set flag for writing compressed images.
   static void SetWriteCompressedOn()

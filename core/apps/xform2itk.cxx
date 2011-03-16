@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -48,8 +48,6 @@
 int 
 doMain( const int argc, const char* argv[] )
 {
-  bool verbose = false;
-  
   const char* inputPath = NULL;
   const char* outputPath = NULL;
 
@@ -67,8 +65,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Convert affine transformations to ITK format and correct for differences in image coordinate conventions" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode" );
-
     cl.BeginGroup( "Input", "Input parameters" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
     cl.AddOption( Key( "fixed-space" ), &fixedImageSpace, "Change fixed image coordinate space (e.g., 'RAS', 'LPS', ...). This defaults to ITK standard space." );
     cl.AddOption( Key( "moving-space" ), &movingImageSpace, "Change moving image coordinate space (e.g., 'RAS', 'LPS', ...). This defaults to ITK standard space." );
@@ -92,7 +88,7 @@ doMain( const int argc, const char* argv[] )
     throw cmtk::ExitException( 1 );
     }
 
-  cmtk::AffineXform::SmartConstPtr xform = cmtk::AffineXform::SmartConstPtr::DynamicCastFrom( cmtk::XformIO::Read( inputPath, verbose ) );
+  cmtk::AffineXform::SmartConstPtr xform = cmtk::AffineXform::SmartConstPtr::DynamicCastFrom( cmtk::XformIO::Read( inputPath ) );
   if ( invertInputXform )
     xform = xform->GetInverse();
 
@@ -122,7 +118,7 @@ doMain( const int argc, const char* argv[] )
     movingImagePath = xform->GetMetaInfo( cmtk::META_XFORM_MOVING_IMAGE_PATH ).c_str();
     }
 
-  cmtk::UniformVolume::SmartPtr fixedImage = cmtk::VolumeIO::ReadGridOriented( cmtk::MountPoints::Translate( fixedImagePath ), verbose );
+  cmtk::UniformVolume::SmartPtr fixedImage = cmtk::VolumeIO::ReadGridOriented( cmtk::MountPoints::Translate( fixedImagePath ) );
   if ( ! fixedImage )
     {
     cmtk::StdErr << "ERROR: could not read fixed image '" << fixedImagePath << "'\n";
@@ -134,7 +130,7 @@ doMain( const int argc, const char* argv[] )
     fixedImage->SetMetaInfo( cmtk::META_SPACE_ORIGINAL, fixedImageSpace );
     }
 
-  cmtk::UniformVolume::SmartPtr movingImage = cmtk::VolumeIO::ReadGridOriented( cmtk::MountPoints::Translate( movingImagePath ), verbose );
+  cmtk::UniformVolume::SmartPtr movingImage = cmtk::VolumeIO::ReadGridOriented( cmtk::MountPoints::Translate( movingImagePath ) );
   if ( ! movingImage )
     {
     cmtk::StdErr << "ERROR: could not read moving image '" << movingImagePath << "'\n";

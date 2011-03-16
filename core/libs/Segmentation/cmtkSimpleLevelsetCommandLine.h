@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -81,7 +81,7 @@ public:
     levelset.InitializeCenteredSphere();
     levelset.Evolve( this->m_NumberOfIterations, this->m_ForceIterations );
     
-    cmtk::VolumeIO::Write( *levelset.GetLevelset( this->m_Binarize ), this->m_OutFile, this->m_Verbose );
+    cmtk::VolumeIO::Write( *levelset.GetLevelset( this->m_Binarize ), this->m_OutFile );
     
 #ifdef CMTK_USE_SQLITE
     if ( this->m_UpdateDB )

@@ -59,8 +59,6 @@ doMain( const int argc, const char* argv[] )
   const char* floatingImagePath = NULL;
   const char* outputXformPath = NULL;
   
-  bool verbose = false;
-
   bool centerXform = false;
 
   bool writeXformNativeSpaces = false;
@@ -83,10 +81,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Registration" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.BeginGroup( "Console", "Console output control" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
-    cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode." );
-    cl.EndGroup();
-
     cl.BeginGroup( "Transformation", "Transformation construction control" );
     cmtk::CommandLine::EnumGroup<int>::SmartPtr modeGroup = cl.AddEnum( "mode", &mode, "Mode selection for initialization" );
     modeGroup->AddSwitch( Key( "direction-vectors" ), 0, "Alignment based on image direction vectors" );
@@ -119,14 +113,14 @@ doMain( const int argc, const char* argv[] )
     return 1;
     }
 
-  cmtk::UniformVolume::SmartPtr referenceImage( cmtk::VolumeIO::ReadOriented( referenceImagePath, verbose ) );
+  cmtk::UniformVolume::SmartPtr referenceImage( cmtk::VolumeIO::ReadOriented( referenceImagePath ) );
   if ( ! referenceImage )
     {
     cmtk::StdErr << "ERROR: could not read image " << referenceImagePath << "\n";
     throw cmtk::ExitException( 1 );
     }
 
-  cmtk::UniformVolume::SmartPtr floatingImage( cmtk::VolumeIO::ReadOriented( floatingImagePath, verbose ) );
+  cmtk::UniformVolume::SmartPtr floatingImage( cmtk::VolumeIO::ReadOriented( floatingImagePath ) );
   if ( ! floatingImage )
     {
     cmtk::StdErr << "ERROR: could not read image " << floatingImagePath << "\n";
@@ -155,11 +149,11 @@ doMain( const int argc, const char* argv[] )
     if ( writeXformNativeSpaces )
       {
       cmtk::TransformChangeToSpaceAffine toNative( *xform, *referenceImage, *floatingImage );
-      cmtk::XformIO::Write( &toNative.GetTransformation(), outputXformPath, verbose );
+      cmtk::XformIO::Write( &toNative.GetTransformation(), outputXformPath );
       }
     else
       {
-      cmtk::XformIO::Write( xform, outputXformPath, verbose );
+      cmtk::XformIO::Write( xform, outputXformPath );
       }
 
 #ifdef CMTK_USE_SQLITE

@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkCommandLine.h>
 
 #include <IO/cmtkVolumeIO.h>
@@ -56,8 +57,6 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-
-bool Verbose = false;
 
 bool Label = false;
 bool LogData = false;
@@ -144,8 +143,7 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
   
   cmtk::LandmarkList landmarkList;
   
-  if ( Verbose )
-    fputs( "idx\t\tcount\t\tsurface\t\tvolume\tCenterOfMass\n", stdout );
+  cmtk::DebugOutput( 1 ) << "idx\t\tcount\t\tsurface\t\tvolume\tCenterOfMass\n";
 
   const cmtk::Types::Coordinate voxelVolume = volume->m_Delta[0] * volume->m_Delta[1] * volume->m_Delta[2];
 
@@ -346,8 +344,6 @@ doMain ( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Statistics and Modeling" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-    
     cl.AddSwitch( Key( 'l', "label" ), &Label, true, "Interpret voxel values as labels" );
     cl.AddSwitch( Key( 'g', "gray" ), &Label, false, "Interpret voxel values as gray values (default)" );
     
@@ -385,7 +381,7 @@ doMain ( const int argc, const char* argv[] )
   cmtk::TypedArray::SmartPtr maskData( NULL );
   if ( MaskFileName ) 
     {
-    maskVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( MaskFileName, Verbose ) );
+    maskVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( MaskFileName ) );
     if ( ! maskVolume ) 
       {
       cmtk::StdErr << "ERROR: could not read mask file " << MaskFileName << "\n";
@@ -408,7 +404,7 @@ doMain ( const int argc, const char* argv[] )
   for ( ; it != ImageFileNames.end(); ++it )
     {
     const char* imageFileName = *it;
-    cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( imageFileName, Verbose ) );
+    cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( imageFileName ) );
     if ( ! volume ) 
       {
       cmtk::StdErr << "ERROR: could not read image file " << imageFileName << "\n";

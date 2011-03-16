@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkCommandLine.h>
 
 #include <iostream>
@@ -42,8 +43,6 @@
 
 #include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkXformIO.h>
-
-bool Verbose = false;
 
 const char* RefFileName = NULL;
 
@@ -96,8 +95,6 @@ doMain ( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] referenceImage xform" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-
     cl.AddSwitch( Key( "invert-xform" ), &InvertXform, true, "Invert the main transformation" );
     cl.AddOption( Key( 'm', "minus-xform" ), &MinusXformPath, "Subtract this transformation (e.g., to exclude initial affine component)" );
     cl.AddSwitch( Key( "invert-minus-xform" ), &InvertMinusXform, true, "Invert the minus transformation" );
@@ -132,7 +129,7 @@ doMain ( const int argc, const char* argv[] )
     throw cmtk::ExitException( 1 );
     }
 
-  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( RefFileName, Verbose ) );
+  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( RefFileName ) );
   if ( ! volume ) 
     {
     cmtk::StdErr << "ERROR: could not read image " << RefFileName << "\n";
@@ -193,10 +190,7 @@ doMain ( const int argc, const char* argv[] )
       }
     }
 
-  if ( Verbose )
-    {
-    cmtk::StdOut.printf( "Region: [%d,%d] ... [%d,%d]\n", CropRegion[0], CropRegion[1], CropRegion[2], CropRegion[3] );
-    }
+  cmtk::DebugOutput( 1 ).GetStream().printf( "Region: [%d,%d] ... [%d,%d]\n", CropRegion[0], CropRegion[1], CropRegion[2], CropRegion[3] );
   
   if ( SliceIndex < 0 )
     SliceIndex = volume->GetDims()[Axis] / 2;

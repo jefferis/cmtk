@@ -1185,9 +1185,6 @@ private:
   /// Make switch class friend.
   template<class T> friend class Switch;  
 
-  /// Callback function for "--debug" standard option.
-  static void CallbackSetDebugLevel( const long int level );
-
   /// Make callback class friend.
   friend class Callback;
 };

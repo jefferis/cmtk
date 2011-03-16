@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -46,7 +46,6 @@
 int
 doMain( const int argc, const char* argv[] )
 {
-  bool verbose = false;
   bool fast = false;
   
   const char* targetImageName = NULL;
@@ -63,7 +62,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode." )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
     cl.AddSwitch( Key( 'f', "fast" ), &fast, true, "Fast mode." );
 
     cmtk::CommandLine::EnumGroup<std::string>::SmartPtr channelGroup = 
@@ -95,7 +93,7 @@ doMain( const int argc, const char* argv[] )
   // Instantiate programm progress indicator.
   cmtk::ProgressConsole progressIndicator( "Segmentation Using the SRI24 Atlas" );
 
-  cmtk::UniformVolume::SmartPtr targetImg( cmtk::VolumeIO::ReadOriented( targetImageName, verbose ) );
+  cmtk::UniformVolume::SmartPtr targetImg( cmtk::VolumeIO::ReadOriented( targetImageName ) );
   if ( !targetImg ) 
     {
     cmtk::StdErr << "ERROR: could not read target image " << targetImageName << "\n";
@@ -103,7 +101,7 @@ doMain( const int argc, const char* argv[] )
     }
   
   std::string atlasImageName = std::string( CMTK_ROOT_PATH_SRI24 ) + "/" + channelSRI24 + ".nii";
-  cmtk::UniformVolume::SmartPtr atlasImg( cmtk::VolumeIO::ReadOriented( atlasImageName.c_str(), verbose ) );
+  cmtk::UniformVolume::SmartPtr atlasImg( cmtk::VolumeIO::ReadOriented( atlasImageName.c_str() ) );
   if ( !atlasImg ) 
     {
     cmtk::StdErr << "ERROR: could not read atlas image " << atlasImageName << "\n";
@@ -111,7 +109,7 @@ doMain( const int argc, const char* argv[] )
     }
   
   std::string atlasLabelName = std::string( CMTK_ROOT_PATH_SRI24 ) + "/" + labelsSRI24 + ".nii";
-  cmtk::UniformVolume::SmartPtr atlasLbl( cmtk::VolumeIO::ReadOriented( atlasLabelName.c_str(), verbose ) );
+  cmtk::UniformVolume::SmartPtr atlasLbl( cmtk::VolumeIO::ReadOriented( atlasLabelName.c_str() ) );
   if ( !atlasLbl ) 
     {
     cmtk::StdErr << "ERROR: could not read atlas labels " << atlasLabelName << "\n";
@@ -119,7 +117,6 @@ doMain( const int argc, const char* argv[] )
     }
     
   cmtk::AtlasSegmentation segment( targetImg, atlasImg, atlasLbl );
-  segment.SetVerbose( verbose );
   segment.SetFast( fast );
 
   cmtk::VolumeIO::Write( *(segment.GetLabelMap()), outImageName );

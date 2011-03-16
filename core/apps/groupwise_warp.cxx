@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkTimers.h>
@@ -51,8 +52,6 @@
 #include <IO/cmtkClassStream.h>
 
 #include <vector>
-
-bool Verbose = false;
 
 bool OptimizeRMI = false;
 
@@ -141,8 +140,6 @@ doMain( int argc, char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Image Registration" );
     
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation." )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
-
     cl.BeginGroup( "Metric", "Registration Metric Options" );
     cl.AddSwitch( Key( "rmi" ), &OptimizeRMI, true, "Use the RMI (a.k.a. regional mutual information) metric to drive the registration)." );
     cl.AddSwitch( Key( "congeal" ), &OptimizeRMI, false, "Use the congealing algorithm using pixelwise stack entropies to drive the registration." );
@@ -252,11 +249,11 @@ doMain( int argc, char* argv[] )
     cmtk::UniformVolume::SmartPtr templateImage;
     if ( UseTemplateData )
       {
-      templateImage = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( PreDefinedTemplatePath, Verbose ) );
+      templateImage = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( PreDefinedTemplatePath ) );
       }
     else
       {
-      templateImage = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( PreDefinedTemplatePath, Verbose ) );
+      templateImage = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( PreDefinedTemplatePath ) );
       }
 
     if ( ! templateImage )
@@ -333,12 +330,9 @@ doMain( int argc, char* argv[] )
 	  }
 	}
       
-      if ( Verbose )
-	{
-	cmtk::StdOut.printf( "Template grid is %d x %d x %d pixels of size %f x %f x %f\n",
-			     templateGrid->m_Dims[0], templateGrid->m_Dims[1], templateGrid->m_Dims[2], 
-			     templateGrid->m_Delta[0], templateGrid->m_Delta[1], templateGrid->m_Delta[2] );
-	}
+      cmtk::DebugOutput( 1 ).GetStream().printf( "Template grid is %d x %d x %d pixels of size %f x %f x %f\n",
+						 templateGrid->m_Dims[0], templateGrid->m_Dims[1], templateGrid->m_Dims[2], 
+						 templateGrid->m_Delta[0], templateGrid->m_Delta[1], templateGrid->m_Delta[2] );
       
       if ( SamplingDensity > 0 )
 	{

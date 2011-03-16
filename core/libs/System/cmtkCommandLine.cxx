@@ -35,6 +35,7 @@
 #include <System/cmtkConsole.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkDebugOutput.h>
+#include <System/cmtkThreads.h>
 
 #include <string.h>
 #include <sstream>
@@ -78,7 +79,11 @@ CommandLine::SetDefaultInfo()
   this->m_ProgramInfo[PRG_DOCUM] = "https://neuro.sri.com/cmtk/wiki/";
   this->m_ProgramInfo[PRG_VERSN] = CMTK_VERSION_STRING;
 
-  this->AddCallback( Self::Key( "debug" ), &Self::CallbackSetDebugLevel, "" );
+  this->BeginGroup( "GLOBAL", "Global Toolkit Options" );
+  this->AddCallback( Self::Key( "verbose-level" ), &DebugOutput::SetGlobalLevel, "Set verbosity level." );
+  this->AddCallback( Self::Key( 'v', "verbose" ), &DebugOutput::IncGlobalLevel, "Increment verbosity level by 1." );
+  this->AddCallback( Self::Key( "threads" ), &Threads::SetNumberOfThreads, "Increment verbosity level by 1." );
+  this->EndGroup();
 }
 
 CommandLine::KeyActionGroupType::SmartPtr&
@@ -418,12 +423,6 @@ CommandLine::PrintWiki
   
   StdOut << "\n";
 }
-
-void
-CommandLine::CallbackSetDebugLevel( const long int level )
-{
-}
-
 
 Console& operator<<( Console& console, CommandLine::Exception e )
 {

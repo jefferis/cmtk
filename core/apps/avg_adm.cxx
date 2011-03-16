@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,6 +35,7 @@
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkProgressConsole.h>
 #include <System/cmtkThreads.h>
 #include <System/cmtkTimers.h>
@@ -60,8 +61,6 @@
 #ifdef CMTK_BUILD_MPI
 #  include <mpi.h>
 #endif
-
-bool Verbose = false;
 
 bool Labels = false;
 bool Jacobian = false;
@@ -122,8 +121,6 @@ doMain( int argc, char** argv )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] list0 [list1 ...]" );
     
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-
     cl.AddSwitch( Key( 'l', "label" ), &Labels, true, "Label mode (as opposed to grey)" );
     cl.AddOption( Key( "set-padding" ), &PaddingValue, "Set padding value in input files", &SetPaddingValue );
     cl.AddOption( Key( "replace-padding" ), &NewPaddingValue, "Replace padding value in input files", &ReplacePaddingValue );
@@ -182,12 +179,11 @@ doMain( int argc, char** argv )
 
   for ( std::list<const char*>::const_iterator inFile = inFileList.begin(); inFile != inFileList.end(); ++inFile ) 
     {
-    if ( Verbose ) 
-      cmtk::StdErr.printf( "Opening studylist %s.\n", *inFile );
-
+    cmtk::DebugOutput( 1 ) << "Opening studylist" << *inFile << "\n";
+    
     if ( !studylist.Read( *inFile ) )
       {
-      cmtk::StdErr << "Unable to read studylist " << *inFile << "\n";
+      cmtk::StdErr << "ERROR: Unable to read studylist " << *inFile << "\n";
       throw cmtk::ExitException( 1 );
       }
     
@@ -214,7 +210,7 @@ doMain( int argc, char** argv )
 
       if ( OutImageName && !Jacobian ) 
 	// no out image, no need for input images
-	nextVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( actualPath.c_str(), Verbose ) );
+	nextVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( actualPath.c_str() ) );
 
       if ( OutImageName && !Jacobian && !nextVolume ) 
 	{
@@ -248,7 +244,7 @@ doMain( int argc, char** argv )
     }
   
   std::string actualPath = cmtk::StrReplace( studylist.GetReferenceStudyPath(), ReplaceMap );
-  cmtk::UniformVolume::SmartPtr refVolume( cmtk::VolumeIO::ReadOriented( actualPath.c_str(), Verbose ) );
+  cmtk::UniformVolume::SmartPtr refVolume( cmtk::VolumeIO::ReadOriented( actualPath.c_str() ) );
   
   if ( ! refVolume ) 
     {
@@ -283,10 +279,7 @@ doMain( int argc, char** argv )
 	cmtk::Types::DataItem meanFlt, varFlt;
 	data->GetStatistics( meanFlt, varFlt );
 	
-	if ( Verbose ) 
-	  {
-	  cmtk::StdErr.printf( "Before auto-rescale: [1] %f +/- %f, [2] %f +/- %f\n", meanRef, sqrt( varRef ), meanFlt, sqrt( varFlt ) );
-	  }
+	cmtk::DebugOutput( 1 ).GetStream().printf( "Before auto-rescale: [1] %f +/- %f, [2] %f +/- %f\n", meanRef, sqrt( varRef ), meanFlt, sqrt( varFlt ) );
 
 	// auto rescale, that is, determine scaling factor and offset so that 
 	// after scaling, the intensities in both images have the same mean and
@@ -295,10 +288,10 @@ doMain( int argc, char** argv )
 	const cmtk::Types::DataItem factor = sqrt(varRef) / sqrt(varFlt);
 	data->Rescale( factor, meanRef - factor * meanFlt );
 	
-	if ( Verbose ) 
+	if ( cmtk::DebugOutput::GetGlobalLevel() > 0 ) 
 	  {
 	  data->GetStatistics( meanFlt, varFlt );
-	  cmtk::StdErr.printf( "After auto-rescale: [1] %f +/- %f, [2] %f +/- %f\n", meanRef, sqrt( varRef ), meanFlt, sqrt( varFlt ) );
+	  cmtk::DebugOutput( 1 ).GetStream().printf( "After auto-rescale: [1] %f +/- %f, [2] %f +/- %f\n", meanRef, sqrt( varRef ), meanFlt, sqrt( varFlt ) );
 	  }
 	}
       }
@@ -364,7 +357,7 @@ doMain( int argc, char** argv )
 #ifdef CMTK_BUILD_MPI
     if ( mpiRank == 0 )
 #endif
-      cmtk::VolumeIO::Write( *average, OutImageName, Verbose );
+      cmtk::VolumeIO::Write( *average, OutImageName );
     }
   
   free( referenceStudy );

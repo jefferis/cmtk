@@ -34,12 +34,11 @@
 
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkExitException.h>
 
 #include <Base/cmtkUniformVolume.h>
 #include <IO/cmtkVolumeIO.h>
-
-bool Verbose = false;
 
 const char* InFileName = NULL;
 const char* OutFileName = NULL;
@@ -60,8 +59,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] new-orientation infile outfile" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-
     cl.AddOption( Key( 'i', "input-orientation" ), &OldOrientation, "Override input orientation. This is a three-letter code, e.g., 'RAS', 'LPI', etc." );
     cl.AddOption( Key( 'o', "output-orientation" ), &NewOrientation, "Override output orientation. Default is 'RAS', or the closest match supported by the output image file format" );
 
@@ -78,7 +75,7 @@ doMain( const int argc, const char* argv[] )
     return false;
     }
   
-  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::Read( InFileName, Verbose ) );
+  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::Read( InFileName ) );
   if ( ! volume ) 
     {
     cmtk::StdErr << "ERROR: could not read image " << InFileName << "\n";
@@ -97,10 +94,7 @@ doMain( const int argc, const char* argv[] )
 
   if ( NewOrientation )
     {
-    if ( Verbose )
-      {
-      cmtk::StdOut << "Reorienting from '" << OldOrientation << "' to '" << NewOrientation << "'\n";
-      }
+    cmtk::DebugOutput( 1 ) << "Reorienting from '" << OldOrientation << "' to '" << NewOrientation << "'\n";
     
     // now reorient here in case the writer function doesn't try to write original orientation
     volume = cmtk::UniformVolume::SmartPtr( volume->GetReoriented( NewOrientation ) );
@@ -113,11 +107,7 @@ doMain( const int argc, const char* argv[] )
     volume->m_MetaInformation[cmtk::META_SPACE_ORIGINAL] = NewSpace;
     }
   
-  if ( Verbose )
-    {
-    cmtk::StdOut << "Writing to file " << OutFileName << "\n";
-    }
-  cmtk::VolumeIO::Write( *volume, OutFileName, Verbose );
+  cmtk::VolumeIO::Write( *volume, OutFileName );
   
   return 0;
 }

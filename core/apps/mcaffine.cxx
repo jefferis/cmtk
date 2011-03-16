@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 
@@ -61,8 +62,6 @@
 #else
 typedef long int uint64_t;
 #endif
-
-bool verbose = false;
 
 std::list<const char*> fileListRef;
 std::list<const char*> fileListFlt;
@@ -129,7 +128,7 @@ DoRegistration()
   cmtk::CoordinateVector params;
   if ( initialXformPath )
     {
-    cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( initialXformPath, verbose ) );
+    cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( initialXformPath ) );
     if ( xform )
       {
       const cmtk::AffineXform::SmartPtr affine = cmtk::AffineXform::SmartPtr::DynamicCastFrom( xform );
@@ -168,8 +167,7 @@ DoRegistration()
 
   for ( int downsample = std::max(downsampleFrom, downsampleTo); downsample >= std::min(downsampleFrom, downsampleTo); --downsample )
     {
-    if ( verbose )
-      cmtk::StdOut.printf( "Downsampling stage 1:%d\n", downsample );
+    cmtk::DebugOutput( 1 ).GetStream().printf( "Downsampling stage 1:%d\n", downsample );
 
     functional->ClearAllChannels();
     for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = refChannelList.begin(); it != refChannelList.end(); ++it )
@@ -188,8 +186,7 @@ DoRegistration()
 
     for ( std::vector<int>::const_iterator itDOF = numberDOFs.begin(); itDOF != numberDOFs.end(); ++itDOF )
       {
-      if ( verbose )
-	cmtk::StdOut.printf( "Setting number of DOFs to %d\n", *itDOF );
+      cmtk::DebugOutput( 1 ).GetStream().printf( "Setting number of DOFs to %d\n", *itDOF );
       
       functional->SetNumberDOFs( *itDOF );
       const cmtk::Types::Coordinate effectiveMinPixelSize = std::max( 1, downsample ) * minPixelSize;
@@ -224,8 +221,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Image Registration" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode" );
-
     cl.AddOption( Key( 'o', "out-archive" ), &outArchive, "Output archive path." );
     cl.AddOption( Key( "initial-xform" ), &initialXformPath, "Optional path of a file with the initial transformation." );
 
@@ -277,7 +272,7 @@ doMain( const int argc, const char* argv[] )
 
   for ( std::list<const char*>::const_iterator refIt = fileListRef.begin(); refIt != fileListRef.end(); ++refIt )
     {
-    cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( *refIt, verbose ) );
+    cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( *refIt ) );
     if ( !volume || !volume->GetData() )
       {
       cmtk::StdErr << "ERROR: Cannot read image " << *refIt << "\n";
@@ -317,7 +312,7 @@ doMain( const int argc, const char* argv[] )
 
   for ( std::list<const char*>::const_iterator fltIt = fileListFlt.begin(); fltIt != fileListFlt.end(); ++fltIt )
     {
-    cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( *fltIt, verbose ) );
+    cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( *fltIt ) );
     if ( !volume || !volume->GetData() )
       {
       cmtk::StdErr << "ERROR: Cannot read image " << *fltIt << "\n";

@@ -35,6 +35,7 @@
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkThreads.h>
 #include <System/cmtkDebugOutput.h>
 
@@ -79,9 +80,6 @@ double Logistic( const double x )
 }
 
 } // namespace cmtk
-
-/// Flag for verbose operation.
-bool Verbose = false;
 
 /// The output data type of image operations.
 cmtk::ScalarDataType ResultType = cmtk::TYPE_FLOAT;
@@ -157,7 +155,7 @@ CallbackIn( const char** argv, int& argsUsed )
   argsUsed = 0;
   while ( argv[argsUsed][0] != '-' )
     {
-    cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( argv[argsUsed], Verbose ) );
+    cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( argv[argsUsed] ) );
     if ( !volume || !volume->GetData() )
       {
       cmtk::StdErr << "ERROR: could not read input image " << argv[argsUsed] << "\n";
@@ -178,7 +176,7 @@ CallbackOut( const char* argv )
   cmtk::DebugOutput( 2 ) << "CallbackOut\n";
   if ( CheckStackOneImage( "Out" ) )
     {
-    cmtk::VolumeIO::Write( *(ImageStack.front()), argv, Verbose );
+    cmtk::VolumeIO::Write( *(ImageStack.front()), argv );
     }
 }
 
@@ -1023,19 +1021,19 @@ CallbackSTAPLE( const long int maxIterations )
   imageGrid->SetData( staple.GetResult() );
   ImageStack.push_front( imageGrid );
 
-  if ( Verbose )
+  if ( cmtk::DebugOutput::GetGlobalLevel() > 0 )
     {
-    cmtk::StdOut.printf( "p  " );
+    cmtk::DebugOutput( 1 ) << "p  ";
     for ( size_t i = 0; i < dataPtrs.size(); ++i )
       {
-      cmtk::StdOut.printf( "%.3f ", staple.GetPValue( i ) );
+      cmtk::DebugOutput( 1 ).GetStream().printf( "%.3f ", staple.GetPValue( i ) );
       }
-    cmtk::StdOut.printf( "\nq  " );
+    cmtk::DebugOutput( 1 ).GetStream().printf( "\nq  " );
     for ( size_t i = 0; i < dataPtrs.size(); ++i )
       {
-      cmtk::StdOut.printf( "%.3f ", staple.GetQValue( i ) );
+      cmtk::DebugOutput( 1 ).GetStream().printf( "%.3f ", staple.GetQValue( i ) );
       }
-    cmtk::StdOut.printf( "\n" );
+    cmtk::DebugOutput( 1 ).GetStream().printf( "\n" );
     }
 }
 
@@ -1466,14 +1464,14 @@ CallbackCombinePCA()
     }
   ev *= 1.0 / ev.EuclidNorm();
   
-  if ( Verbose )
+  if ( cmtk::DebugOutput::GetGlobalLevel() > 0 )
     {
-    cmtk::StdOut << "Principal eigenvector (normalized):\n";
+    cmtk::DebugOutput( 1 ) << "Principal eigenvector (normalized):\n";
     for ( size_t l = 0; l < numberOfImages; ++l )
       {
-      cmtk::StdOut.printf( "%f\t", ev[l] );
+      cmtk::DebugOutput( 1 ).GetStream().printf( "%f\t", ev[l] );
       }
-    cmtk::StdErr << "\n";
+    cmtk::DebugOutput( 1 ) << "\n";
     }
   
   // project all pixel vectors onto dominant component  
@@ -1509,8 +1507,6 @@ doMain( const int argc, const char *argv[] )
 		       "Results of all operations are put back onto the stack, where they can be further processed or written back to image files." );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Be verbose" );
-
     cl.BeginGroup( "Input/output", "Input/output operations" );
     cl.AddCallback( Key( "in" ), CallbackIn, "Read input image(s) to top of stack" );
     cl.AddCallback( Key( "out" ), CallbackOut, "Write output image from top of stack (but leave it on the stack)" );

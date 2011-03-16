@@ -34,6 +34,7 @@
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkProgressConsole.h>
 
@@ -48,8 +49,6 @@
 
 #include <string.h>
 #include <list>
-
-bool Verbose = false;
 
 bool Studholme = false;
 bool Rohlfing = false;
@@ -92,8 +91,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Filtering" );
     
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-
     cl.AddOption( Key( 'g', "gaussian" ), &GaussianWidth, "Gaussian filter width (sigma)", &Gaussian );
     cl.AddOption( Key( 'r', "radius" ), &Radius, "Filter radius (truncated outside)" );
     cl.AddOption( Key( 'm', "mask" ), &MaskFileName, "Binary mask file name" );
@@ -142,7 +139,7 @@ doMain( const int argc, const char* argv[] )
     throw cmtk::ExitException( 1 );
     }
   
-  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( InputFileName, Verbose ) );
+  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( InputFileName ) );
   if ( !volume || !volume->GetData() )
     {
     cmtk::StdErr << "ERROR: Could not read volume " << InputFileName << "\n";
@@ -152,7 +149,7 @@ doMain( const int argc, const char* argv[] )
   cmtk::TypedArray::SmartPtr maskData( NULL );
   if ( MaskFileName ) 
     {
-    cmtk::UniformVolume::SmartPtr maskVolume( cmtk::VolumeIO::ReadOriented( MaskFileName, Verbose ) );
+    cmtk::UniformVolume::SmartPtr maskVolume( cmtk::VolumeIO::ReadOriented( MaskFileName ) );
     if ( maskVolume )
       maskData = maskVolume->GetData();
     else
@@ -164,14 +161,14 @@ doMain( const int argc, const char* argv[] )
   
   if ( Studholme ) 
     {
-    cmtk::UniformVolume::SmartPtr average( cmtk::VolumeIO::ReadOriented( AverageFileName, Verbose ) );
+    cmtk::UniformVolume::SmartPtr average( cmtk::VolumeIO::ReadOriented( AverageFileName ) );
     if ( ! average || ! average->GetData() ) 
       {
       cmtk::StdErr	<< "ERROR: Could not read average anatomical file " << AverageFileName << "\n";
       throw cmtk::ExitException( 1 );
       }
     
-    cmtk::UniformVolume::SmartPtr subject( cmtk::VolumeIO::ReadOriented( SubjectFileName, Verbose ) );
+    cmtk::UniformVolume::SmartPtr subject( cmtk::VolumeIO::ReadOriented( SubjectFileName ) );
     if ( ! subject || ! subject->GetData() ) 
       {
       cmtk::StdErr	<< "ERROR: Could not read subject anatomical file " << SubjectFileName << "\n";
@@ -181,7 +178,7 @@ doMain( const int argc, const char* argv[] )
     std::list<cmtk::TypedArray::SmartPtr> imageList;
     for ( std::list<const char*>::const_iterator it = ImageNameList.begin(); it != ImageNameList.end(); ++it ) 
       {
-      cmtk::UniformVolume::SmartPtr next( cmtk::VolumeIO::ReadOriented( *it, Verbose ) );
+      cmtk::UniformVolume::SmartPtr next( cmtk::VolumeIO::ReadOriented( *it ) );
       if ( ! next || ! next->GetData() ) 
 	{
 	cmtk::StdErr << "ERROR: Could not read subject anatomical file " << *it << "\n";
@@ -198,7 +195,7 @@ doMain( const int argc, const char* argv[] )
     {
     if ( Rohlfing ) 
       {
-      cmtk::UniformVolume::SmartPtr subject( cmtk::VolumeIO::ReadOriented( SubjectFileName, Verbose ) );
+      cmtk::UniformVolume::SmartPtr subject( cmtk::VolumeIO::ReadOriented( SubjectFileName ) );
       if ( ! subject || ! subject->GetData() ) 
 	{
 	cmtk::StdErr << "ERROR: Could not read subject anatomical file " << SubjectFileName << "\n";
@@ -227,7 +224,7 @@ doMain( const int argc, const char* argv[] )
       }      
     }
   
-  cmtk::VolumeIO::Write( *volume, OutputFileName, Verbose );
+  cmtk::VolumeIO::Write( *volume, OutputFileName );
 
 #ifdef CMTK_USE_SQLITE
   if ( updateDB )

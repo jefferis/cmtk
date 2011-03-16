@@ -57,8 +57,6 @@
 #  include <sys/stat.h>
 #endif
 
-bool Verbose = false;
-
 bool Padding0 = false;
 bool Padding1 = false;
 
@@ -91,8 +89,6 @@ ParseCommandLine( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute similarity measures such as intensity difference or label overlaps between two images." );
     
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-    
     cl.AddSwitch( Key( "outside-bg" ), &OutsideBG, true, "Assume voxels outside floating image to be background" );
     
     cl.AddOption( Key( "pad0" ), &PaddingValue0, "Define padding value for reference image", &Padding0 );
@@ -247,7 +243,7 @@ doMain ( const int argc, const char* argv[] )
 {
   if ( ! ParseCommandLine( argc, argv ) ) return 1;
 
-  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( imagePath0, Verbose ) );
+  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( imagePath0 ) );
   if ( ! volume ) throw cmtk::ExitException( 1 );
   Volume0 = volume;
   if ( Padding0 ) 
@@ -258,12 +254,12 @@ doMain ( const int argc, const char* argv[] )
   cmtk::TypedArray::SmartPtr mask;
   if ( MaskFileName ) 
     {
-    cmtk::UniformVolume::SmartPtr maskVolume( cmtk::VolumeIO::ReadOriented( MaskFileName, Verbose ) );
+    cmtk::UniformVolume::SmartPtr maskVolume( cmtk::VolumeIO::ReadOriented( MaskFileName ) );
     if ( maskVolume )
       mask = maskVolume->GetData();
     }
   
-  volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( imagePath1, Verbose ) );
+  volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( imagePath1 ) );
   if ( ! volume ) throw cmtk::ExitException( 1 );
   Volume1 = volume;
   if ( Padding1 ) 

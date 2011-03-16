@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -67,8 +67,6 @@ operator<( const IndexValue& x, const IndexValue& y )
 int
 main( const int argc, const char* argv[] )
 {
-  bool verbose = false;
-
   const char* pathFix = NULL;
   const char* pathMov = NULL;
 
@@ -86,8 +84,6 @@ main( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Validation" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Be verbose" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
-
     cl.BeginGroup( "Preprocessing", "Input Image Preprocessing" );
     cl.AddSwitch( Key( "pad" ), &padZero, true, "Pad (ignore) zero-filled areas in both images" );
     cl.EndGroup();
@@ -106,8 +102,8 @@ main( const int argc, const char* argv[] )
     exit( 1 );
     }
 
-  cmtk::UniformVolume::SmartPtr refImage( cmtk::VolumeIO::ReadOriented( pathFix, verbose ) );
-  cmtk::UniformVolume::SmartPtr fltImage( cmtk::VolumeIO::ReadOriented( pathMov, verbose ) );
+  cmtk::UniformVolume::SmartPtr refImage( cmtk::VolumeIO::ReadOriented( pathFix ) );
+  cmtk::UniformVolume::SmartPtr fltImage( cmtk::VolumeIO::ReadOriented( pathMov ) );
 
   // Get sorted list of all reference pixels
   const size_t nPixelsRef = refImage->GetNumberOfPixels();
@@ -146,11 +142,11 @@ main( const int argc, const char* argv[] )
     refImage->SetDataAt( fltImage->GetDataAt( fltIndexValue[static_cast<size_t>(0.5+i*factor)].m_Index ), refIndexValue[i].m_Index );
     }
   
-  cmtk::VolumeIO::Write( *refImage, "reformat.nii", verbose );
+  cmtk::VolumeIO::Write( *refImage, "reformat.nii" );
 
   for ( size_t l = 0; l < pathsLbls.size(); ++l )
     {
-    cmtk::UniformVolume::SmartPtr lblImage( cmtk::VolumeIO::ReadOriented( pathsLbls[l].c_str(), verbose ) );
+    cmtk::UniformVolume::SmartPtr lblImage( cmtk::VolumeIO::ReadOriented( pathsLbls[l].c_str() ) );
     
     for ( size_t i = 0; i < nRef; ++i )
       {
@@ -159,7 +155,7 @@ main( const int argc, const char* argv[] )
     
     char output[PATH_MAX];
     snprintf( output, PATH_MAX, "labels%d.nii", static_cast<int>( l ) );
-    cmtk::VolumeIO::Write( *refImage, output, verbose );    
+    cmtk::VolumeIO::Write( *refImage, output );    
     }
 
   if ( ic_error_path )

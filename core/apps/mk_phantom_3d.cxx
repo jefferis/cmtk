@@ -49,8 +49,6 @@
 #  include <dcmtk/dcmdata/dctk.h>
 #endif
 
-bool Verbose = false;
-
 int Dims[3] = { 256, 256, 256 };
 
 void
@@ -90,8 +88,6 @@ doMain( const int argc, const char* argv[] )
 		       "\t box x0,y0,z0 x1,y1,z1 value\n");
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-
     cl.AddCallback( Key( 'D', "dims" ), SetDims, "Set dimensions in voxels" );
     cl.AddCallback( Key( 'V', "voxel" ), SetDeltas, "Set voxel size in [mm]" );
 
@@ -121,12 +117,12 @@ doMain( const int argc, const char* argv[] )
       {
       if ( InputImageGridOnly )
 	{
-	volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( InputImageName, Verbose ) );
+	volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( InputImageName ) );
 	volume->CreateDataArray( DataType );
 	volume->GetData()->Fill( Background );
 	}
       else
-	volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( InputImageName, Verbose ) );
+	volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( InputImageName ) );
       }
     else
       {
@@ -242,7 +238,7 @@ doMain( const int argc, const char* argv[] )
       nextCmd = cl.GetNextOptional();
       }
     
-    cmtk::VolumeIO::Write( *volume, OutputFileName, Verbose );
+    cmtk::VolumeIO::Write( *volume, OutputFileName );
     }
   catch ( const cmtk::CommandLine::Exception& e ) 
     {

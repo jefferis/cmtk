@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkStrUtility.h>
@@ -60,8 +61,6 @@
 #ifdef CMTK_USE_GCD
 #  include <dispatch/dispatch.h>
 #endif
-
-bool Verbose = false;
 
 const char* DownsampleVolumeStr = NULL;
 int DownsampleVolume[3] = { 1, 1, 1 };
@@ -144,10 +143,7 @@ Average
     /// skip labels that are not in any image.
     if ( ! labelFlags[label] ) continue;
 
-    if ( Verbose )
-      {
-      cmtk::StdOut << "Processing label #" << label << "\r";
-      }
+    cmtk::DebugOutput( 1 ) << "Processing label #" << label << "\r";
 
     inOutDistance->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
 
@@ -245,7 +241,7 @@ Average
 	}
       else
 	{
-	cmtk::VolumeIO::Write( *distanceMap, fname, Verbose );
+	cmtk::VolumeIO::Write( *distanceMap, fname );
 	}
       }
 
@@ -261,7 +257,7 @@ Average
 	}
       else
 	{
-	cmtk::VolumeIO::Write( *labelMap, fname, Verbose );
+	cmtk::VolumeIO::Write( *labelMap, fname );
 	}
       }
     }
@@ -323,10 +319,7 @@ AverageWindowed
     // skip labels that are not in any image.
     if ( ! labelFlags[label] ) continue;
 
-    if ( Verbose )
-      {
-      cmtk::StdOut << "Processing label #" << label << "\r";
-      }
+    cmtk::DebugOutput( 1 ) << "Processing label #" << label << "\r";
 
     inOutDistance->BlockSet( 0 /*value*/, 0 /*idx*/, numPixels /*len*/ );
 
@@ -429,7 +422,7 @@ AverageWindowed
 	}
       else
 	{
-	cmtk::VolumeIO::Write( *distanceMap, fname, Verbose );
+	cmtk::VolumeIO::Write( *distanceMap, fname );
 	}
       }
 
@@ -445,7 +438,7 @@ AverageWindowed
 	}
       else
 	{
-	cmtk::VolumeIO::Write( *labelMap, fname, Verbose );
+	cmtk::VolumeIO::Write( *labelMap, fname );
 	}
       }
     }
@@ -532,10 +525,7 @@ Average
     /// skip labels that are not in any image.
     if ( ! labelFlags[label] ) continue;
 
-    if ( Verbose )
-      {
-      cmtk::StdOut << "Processing label #" << label << "\r";
-      }
+    cmtk::DebugOutput( 1 ) << "Processing label #" << label << "\r";
 
     referenceInOutDistance->BlockSet( 0 /*value*/, 0 /*idx*/, nPixelsReference /*len*/ );
 
@@ -642,7 +632,7 @@ Average
 	}
       else
 	{
-	cmtk::VolumeIO::Write( *distanceMap, fname, Verbose );
+	cmtk::VolumeIO::Write( *distanceMap, fname );
 	}
       }
 
@@ -658,7 +648,7 @@ Average
 	}
       else
 	{
-	cmtk::VolumeIO::Write( *labelMap, fname, Verbose );
+	cmtk::VolumeIO::Write( *labelMap, fname );
 	}
       }
     }
@@ -716,10 +706,7 @@ AverageWindowed
     /// skip labels that are not in any image.
     if ( ! labelFlags[label] ) continue;
 
-    if ( Verbose )
-      {
-      cmtk::StdOut << "Processing label #" << label << "\r";
-      }
+    cmtk::DebugOutput( 1 ) << "Processing label #" << label << "\r";
 
     referenceInOutDistance->BlockSet( 0 /*value*/, 0 /*idx*/, nPixelsReference /*len*/ );
     countDistanceSamples->BlockSet( 0 /*value*/, 0 /*idx*/, nPixelsReference /*len*/ );
@@ -864,10 +851,9 @@ void
 AddVolumeFile
 ( const char* fileName, std::list<cmtk::UniformVolume::SmartPtr>& volumeList )
 {
-  if ( Verbose ) 
-    cmtk::StdOut << "Opening image " << fileName << ".\n";
+  cmtk::DebugOutput( 1 ) << "Opening image " << fileName << ".\n";
   
-  cmtk::UniformVolume::SmartPtr nextVolume( cmtk::VolumeIO::ReadOriented( fileName, Verbose ) );
+  cmtk::UniformVolume::SmartPtr nextVolume( cmtk::VolumeIO::ReadOriented( fileName ) );
   
   if ( ! nextVolume || ! nextVolume->GetData() )
     {
@@ -902,8 +888,7 @@ AddVolumeStudyList
   std::list<cmtk::XformUniformVolume::SmartConstPtr>& xformList,
   cmtk::UniformVolume::SmartPtr& referenceVolume )
 {
-  if ( Verbose ) 
-    cmtk::StdOut << "Opening studylist " << listName << ".\n";
+  cmtk::DebugOutput( 1 ) << "Opening studylist " << listName << ".\n";
 
   cmtk::TypedStreamStudylist studylist;
   studylist.Read( listName );
@@ -911,7 +896,7 @@ AddVolumeStudyList
   if ( ! referenceVolume )
     {
     const std::string actualPath = cmtk::StrReplace( studylist.GetReferenceStudyPath(), ReplaceMap );
-    referenceVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( actualPath.c_str(), Verbose ) );
+    referenceVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( actualPath.c_str() ) );
     if ( ! referenceVolume )
       {
       cmtk::StdErr << "WARNING: could not read reference volume " << actualPath.c_str() << "\n";
@@ -920,7 +905,7 @@ AddVolumeStudyList
     }
 
   const std::string actualPath = cmtk::StrReplace( studylist.GetFloatingStudyPath(), ReplaceMap );
-  cmtk::UniformVolume::SmartPtr floatingVolume( cmtk::VolumeIO::ReadOriented( actualPath.c_str(), Verbose ) );
+  cmtk::UniformVolume::SmartPtr floatingVolume( cmtk::VolumeIO::ReadOriented( actualPath.c_str() ) );
 
   if ( ! floatingVolume )
     {
@@ -947,10 +932,7 @@ AddVolumeStudyList
   if ( DownsampleVolumeStr )
     {
     floatingVolume = cmtk::UniformVolume::SmartPtr( floatingVolume->GetDownsampledAndAveraged( DownsampleVolume ) );
-    if ( Verbose )
-      {
-      cmtk::StdOut << "Downsampling atlas by factors " << DownsampleVolumeStr << "\n";
-      }
+    cmtk::DebugOutput( 1 ) << "Downsampling atlas by factors " << DownsampleVolumeStr << "\n";
     }
   
   volumeList.push_back( floatingVolume );
@@ -981,8 +963,7 @@ AddVolumeStudyList
 ( const char* listName, std::list<cmtk::UniformVolume::SmartPtr>& volumeList,
   cmtk::UniformVolume::SmartPtr& referenceVolume )
 {
-  if ( Verbose ) 
-    cmtk::StdOut << "Opening studylist " << listName << ".\n";
+  cmtk::DebugOutput( 1 ) << "Opening studylist " << listName << ".\n";
 
   cmtk::TypedStreamStudylist studylist;
   studylist.Read( listName );
@@ -990,7 +971,7 @@ AddVolumeStudyList
   if ( ! referenceVolume )
     {
     const std::string actualPath = cmtk::StrReplace( studylist.GetReferenceStudyPath(), ReplaceMap );
-    referenceVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( actualPath.c_str(), Verbose ) );
+    referenceVolume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( actualPath.c_str() ) );
     if ( ! referenceVolume )
       {
       cmtk::StdErr << "WARNING: could not read reference volume!";
@@ -999,7 +980,7 @@ AddVolumeStudyList
     }
 
   const std::string actualPath = cmtk::StrReplace( studylist.GetFloatingStudyPath(), ReplaceMap );
-  cmtk::UniformVolume::SmartPtr floatingVolume( cmtk::VolumeIO::ReadOriented( actualPath.c_str(), Verbose ) );
+  cmtk::UniformVolume::SmartPtr floatingVolume( cmtk::VolumeIO::ReadOriented( actualPath.c_str() ) );
 
   if ( ! floatingVolume->GetData() )
     {
@@ -1015,10 +996,7 @@ AddVolumeStudyList
   if ( DownsampleVolumeStr )
     {
     floatingVolume = cmtk::UniformVolume::SmartPtr( floatingVolume->GetDownsampledAndAveraged( DownsampleVolume ) );
-    if ( Verbose )
-      {
-      cmtk::StdOut << "Downsampling atlas by factors " << DownsampleVolumeStr << "\n";
-      }
+    cmtk::DebugOutput( 1 ) << "Downsampling atlas by factors " << DownsampleVolumeStr << "\n";
     }
   
   cmtk::ReformatVolume reformat;
@@ -1059,8 +1037,6 @@ doMain ( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] list0 [list1 ...]" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-
     cl.AddSwitch( Key( "interpolate-image" ), &InterpolateDistance, false, "Interpolate target image, compute distance on reference grid" );
     cl.AddSwitch( Key( "interpolate-distance" ), &InterpolateDistance, true, "Compute distance maps on target image grid and interpolate distance" );
 
@@ -1135,10 +1111,7 @@ doMain ( const int argc, const char* argv[] )
     else
       avgArray = cmtk::TypedArray::SmartPtr( Average( referenceVolume, volumeList, xformList, NumberOfLabels ) );
 
-    if ( Verbose )
-      {
-      fprintf( stdout, "Time %f sec\n", cmtk::Timers::GetTimeProcess() - timeBaseline );
-      }
+    cmtk::DebugOutput( 1 ).GetStream().printf( "Time %f sec\n", cmtk::Timers::GetTimeProcess() - timeBaseline );
     }
   else
     {
@@ -1165,10 +1138,7 @@ doMain ( const int argc, const char* argv[] )
     else
       avgArray = cmtk::TypedArray::SmartPtr( Average( volumeList, NumberOfLabels ) );
     
-    if ( Verbose )
-      {
-      fprintf( stdout, "Time %f sec\n", cmtk::Timers::GetTimeProcess() - timeBaseline );
-      }
+    cmtk::DebugOutput( 1 ).GetStream().printf( "Time %f sec\n", cmtk::Timers::GetTimeProcess() - timeBaseline );
     }
     
   if ( OutputFileName )
@@ -1178,7 +1148,7 @@ doMain ( const int argc, const char* argv[] )
       volume = *(volumeList.begin());
 
     volume->SetData( avgArray );
-    cmtk::VolumeIO::Write( *volume, OutputFileName, Verbose );
+    cmtk::VolumeIO::Write( *volume, OutputFileName );
     }
 
   return 0;

@@ -46,8 +46,6 @@
 
 #include <vector>
 
-bool Verbose = false;
-
 bool PaddingInFlag = false;
 cmtk::Types::DataItem PaddingInValue = 0;
 
@@ -70,8 +68,6 @@ doMain ( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Statistics and Modeling" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-
     cl.AddOption( Key( 'p', "pad-in" ), &PaddingInValue, "Define padding value for input images", &PaddingInFlag );
     cl.AddOption( Key( 'm', "mask" ), &MaskFileName, "Mask file for optional region-based analysis" );
     
@@ -87,7 +83,7 @@ doMain ( const int argc, const char* argv[] )
     const char* next = cl.GetNext();
     while ( next )
       {
-      cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( next, Verbose ) );
+      cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( next ) );
       if ( ! volume || ! volume->GetData() )
 	{
 	cmtk::StdErr << "ERROR: Could not read image " << next << "\n";
@@ -121,7 +117,7 @@ doMain ( const int argc, const char* argv[] )
   cmtk::TypedArray::SmartPtr maskData;
   if ( MaskFileName ) 
     {
-    cmtk::UniformVolume::SmartPtr maskVolume( cmtk::VolumeIO::ReadOriented( MaskFileName, Verbose ) );
+    cmtk::UniformVolume::SmartPtr maskVolume( cmtk::VolumeIO::ReadOriented( MaskFileName ) );
     if ( ! maskVolume || ! maskVolume->GetData() )
       {
       cmtk::StdErr << "ERROR: Could not read mask image " << MaskFileName << "\n";

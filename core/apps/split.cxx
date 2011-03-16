@@ -42,8 +42,6 @@
 #include <Base/cmtkUniformVolume.h>
 #include <IO/cmtkVolumeIO.h>
 
-bool Verbose = false;
-
 const char* InputFilePath = NULL;
 const char* OutputFilePath = NULL;
 const char* OutputXformPath = NULL;
@@ -62,8 +60,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Split volume image into sub-images, i.e., to separate interleaved images into passes" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation" );
-
     cl.AddSwitch( Key( 'a', "axial" ), &Axis, (int)cmtk::AXIS_Z, "Interleaved axial images" );
     cl.AddSwitch( Key( 's', "sagittal" ), &Axis, (int)cmtk::AXIS_X, "Interleaved sagittal images" );
     cl.AddSwitch( Key( 'c', "coronal" ), &Axis, (int)cmtk::AXIS_Y, "Interleaved coronal images" );
@@ -88,7 +84,7 @@ doMain( const int argc, const char* argv[] )
     return 1;
     }
 
-  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( InputFilePath, Verbose ) );
+  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( InputFilePath ) );
   if ( ! volume || ! volume->GetData() )
     {
     cmtk::StdErr << "ERROR: Could not read image " << InputFilePath << "\n";
@@ -106,7 +102,7 @@ doMain( const int argc, const char* argv[] )
       }
     else
       {
-      cmtk::VolumeIO::Write( *subvolume, path, Verbose );
+      cmtk::VolumeIO::Write( *subvolume, path );
       }
 
     if ( OutputXformPath )

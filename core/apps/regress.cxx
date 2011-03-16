@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 
@@ -92,8 +93,6 @@ doMain( const int argc, const char* argv[] )
 {
   std::list<std::string> pathList;
 
-  bool verbose = false;
-
   const char* outFileName = NULL;
   const char* controlFileName = NULL;
 
@@ -116,8 +115,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] controlFile" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode" );
-
     cl.AddOption( Key( 'o', "output" ), &outFileName, "File name for output." );
     cl.AddOption( Key( 'p', "parameters" ), &sParameters, "Model parameters for regression instantiation" );
     cl.AddOption( Key( 's', "substitution" ), &pathPrintf, "Printf format string for ID-to-path substitition" );
@@ -144,10 +141,7 @@ doMain( const int argc, const char* argv[] )
     std::string line;
     controlStream >> line;
     
-    if ( verbose )
-      {
-      cmtk::StdOut << line << "\n";
-      }
+    cmtk::DebugOutput( 7 ) << line << "\n";
 
     if ( line.length() )
       {
@@ -230,15 +224,12 @@ doMain( const int argc, const char* argv[] )
   if ( cmtk::FileFormat::Identify( pathList.begin()->c_str() ) == cmtk::FILEFORMAT_TYPEDSTREAM )
     // xform mode
     {
-    if ( verbose )
-      {
-      cmtk::StdOut << "INFO: operating in XFORM mode\n";
-      }
+    cmtk::DebugOutput( 1 ) << "INFO: operating in XFORM mode\n";
 
     std::vector<cmtk::SplineWarpXform::SmartPtr> vWarpXform;
     for ( std::list<std::string>::const_iterator it = pathList.begin(); it != pathList.end(); ++it )
       {
-      cmtk::SplineWarpXform::SmartPtr xform = cmtk::SplineWarpXform::SmartPtr::DynamicCastFrom( cmtk::Xform::SmartPtr( cmtk::XformIO::Read( it->c_str(), verbose ) ) );
+      cmtk::SplineWarpXform::SmartPtr xform = cmtk::SplineWarpXform::SmartPtr::DynamicCastFrom( cmtk::Xform::SmartPtr( cmtk::XformIO::Read( it->c_str() ) ) );
       if ( ! xform )
 	{
 	cmtk::StdErr << "ERROR: transformation '" << *it << "' is either invalid or not a spline warp xform\n";
@@ -296,20 +287,17 @@ doMain( const int argc, const char* argv[] )
       }
     
     if ( outFileName )
-      cmtk::XformIO::Write( referenceWarp, outFileName, verbose );
+      cmtk::XformIO::Write( referenceWarp, outFileName );
     }
   else
     // image mode
     {
-    if ( verbose )
-      {
-      cmtk::StdOut << "INFO: operating in IMAGE mode\n";
-      }
+    cmtk::DebugOutput( 1 ) << "INFO: operating in IMAGE mode\n";
 
     std::vector<cmtk::UniformVolume::SmartPtr> vVolume;
     for ( std::list<std::string>::const_iterator it = pathList.begin(); it != pathList.end(); ++it )
       {
-      cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( it->c_str(), verbose ) );
+      cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( it->c_str() ) );
       if ( ! volume )
 	{
 	cmtk::StdErr << "ERROR: image '" << *it << "' could not be read\n";
@@ -364,7 +352,7 @@ doMain( const int argc, const char* argv[] )
       }
     
     if ( outFileName )
-      cmtk::VolumeIO::Write( *referenceVolume, outFileName, verbose );
+      cmtk::VolumeIO::Write( *referenceVolume, outFileName );
     }
 
   return 0;

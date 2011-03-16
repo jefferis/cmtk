@@ -117,6 +117,11 @@ Threads::Available()
 #endif
 }
 
+void
+Threads::SetNumberOfThreads( const long int numberOfThreads )
+{
+  Threads::SetNumberOfThreads( numberOfThreads, true /*force*/ );
+}
 
 int
 Threads

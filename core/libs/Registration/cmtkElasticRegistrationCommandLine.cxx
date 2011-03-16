@@ -33,6 +33,7 @@
 #include "cmtkElasticRegistrationCommandLine.h"
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkTimers.h>
 #include <System/cmtkThreads.h>
@@ -306,11 +307,11 @@ ElasticRegistrationCommandLine
     this->SetInitialTransformation( AffineXform::SmartPtr( dynamic_cast<AffineXform*>( this->m_InitialTransformation->MakeInverse() ) ) );
     }
   
-  UniformVolume::SmartPtr volume( VolumeIO::ReadOriented( Study1, Verbose ) );
+  UniformVolume::SmartPtr volume( VolumeIO::ReadOriented( Study1 ) );
   if ( !volume ) throw ConstructorFailed();
   this->SetVolume_1( UniformVolume::SmartPtr( this->m_PreprocessorRef.GetProcessedImage( volume ) ) );
 
-  volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( Study2, Verbose ) );
+  volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( Study2 ) );
   if ( !volume ) throw ConstructorFailed();
   this->SetVolume_2( UniformVolume::SmartPtr( this->m_PreprocessorFlt.GetProcessedImage( volume ) ) );
 
@@ -328,7 +329,7 @@ ElasticRegistrationCommandLine
   
   if ( this->RigidityConstraintMapFilename )
     {
-    UniformVolume::SmartPtr rigidityWeightMap( VolumeIO::ReadOriented( this->RigidityConstraintMapFilename, Verbose ) );
+    UniformVolume::SmartPtr rigidityWeightMap( VolumeIO::ReadOriented( this->RigidityConstraintMapFilename ) );
     if ( rigidityWeightMap )
       {
       this->SetRigidityConstraintMap( rigidityWeightMap );
@@ -395,7 +396,7 @@ ElasticRegistrationCommandLine
 
   if ( this->m_ReformattedImagePath )
     {
-    VolumeIO::Write( *(this->GetReformattedFloatingImage()), this->m_ReformattedImagePath, this->Verbose );
+    VolumeIO::Write( *(this->GetReformattedFloatingImage()), this->m_ReformattedImagePath );
     }
 
 #ifdef CMTK_USE_SQLITE
@@ -436,11 +437,7 @@ ElasticRegistrationCommandLine
 ( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f, 
   const int index, const int total )
 {
-  if ( Verbose )
-    {
-    StdOut.printf( "\rEntering resolution level %d out of %d...\n", index, total );
-    }
-  
+  DebugOutput( 1 ).GetStream().printf( "\rEntering resolution level %d out of %d...\n", index, total );
   this->Superclass::EnterResolution( v, f, index, total );
 }
 

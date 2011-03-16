@@ -32,6 +32,8 @@
 
 #include "cmtkGroupwiseRegistrationOutput.h"
 
+#include <System/cmtkDebugOutput.h>
+
 #include <IO/cmtkGroupwiseRegistrationFunctionalIO.h>
 #include <IO/cmtkClassStream.h>
 #include <IO/cmtkStudyList.h>
@@ -154,7 +156,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
       {
       if ( ! templateGrid->GetData() )
 	{
-	UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( templateGrid->m_MetaInformation[META_FS_PATH].c_str(), false /*verbose*/ ) );
+	UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( templateGrid->m_MetaInformation[META_FS_PATH].c_str() ) );
 	templateGrid->SetData( readImage->GetData() );
 	}
 
@@ -170,10 +172,8 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
       count->Fill( 0 );
       }
 
-    if ( this->m_Verbose )
-      {
-      StdOut << "Reformating output images ";
-      }
+    DebugOutput( 1 ) << "Reformating output images\n";
+
 #ifdef CMTK_BUILD_MPI
     const size_t idxFrom = MPI::COMM_WORLD.Get_rank();
     const size_t idxSkip = MPI::COMM_WORLD.Get_size();
@@ -185,7 +185,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
       {
       UniformVolume::SmartPtr floatingVolume = this->m_Functional->GetOriginalTargetImage( idx );
       if ( !floatingVolume->GetData() )
-	floatingVolume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( floatingVolume->m_MetaInformation[META_FS_PATH].c_str(), false /*verbose*/ ) );
+	floatingVolume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( floatingVolume->m_MetaInformation[META_FS_PATH].c_str() ) );
       
       cmtk::ReformatVolume reformat;
       reformat.SetReferenceVolume( templateGrid );
@@ -203,10 +203,6 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
 	reformat.SetWarpXform( warpXform );
       
       UniformVolume::SmartPtr ref( reformat.PlainReformat() );
-      if ( this->m_Verbose )
-	{
-	StdOut << ".";
-	}
       const TypedArray* data = ref->GetData();
 #pragma omp parallel for
       for ( size_t i = 0; i < numberOfPixels; ++i )
@@ -218,10 +214,6 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
 	  ++countPtr[i];
 	  }
 	}
-      }
-    if ( this->m_Verbose )
-      {
-      StdOut << " done\n";
       }
 
 #ifdef CMTK_BUILD_MPI
@@ -254,11 +246,11 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
 	{
 	char fullPath[PATH_MAX];
 	snprintf( fullPath, sizeof( fullPath ), "%s/%s", this->m_OutputRootDirectory, path );
-	VolumeIO::Write( *templateGrid, fullPath, this->m_Verbose );
+	VolumeIO::Write( *templateGrid, fullPath );
 	}
       else
 	{
-	VolumeIO::Write( *templateGrid, path, this->m_Verbose );
+	VolumeIO::Write( *templateGrid, path );
 	}
       }
     }

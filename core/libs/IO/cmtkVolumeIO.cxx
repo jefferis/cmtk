@@ -36,6 +36,7 @@
 #include <System/cmtkFileUtils.h>
 #include <System/cmtkProgress.h>
 #include <System/cmtkMountPoints.h>
+#include <System/cmtkDebugOutput.h>
 
 #include <IO/cmtkStudy.h>
 #include <IO/cmtkClassStream.h>
@@ -70,7 +71,7 @@ const char* const CMTK_LEGACY_WRITE_IMAGES_RAS = "CMTK_LEGACY_WRITE_IMAGES_RAS";
 bool VolumeIO::WriteCompressedOn = true;
 
 UniformVolume::SmartPtr
-VolumeIO::Read( const char* path, const bool verbose )
+VolumeIO::Read( const char* path )
 {
   UniformVolume::SmartPtr volume( NULL );
 
@@ -138,22 +139,22 @@ VolumeIO::Read( const char* path, const bool verbose )
       }
     }
   
-  if ( verbose && volume ) 
+  if ( volume ) 
     {
-    StdOut.printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
+    DebugOutput( 1 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
     
     const TypedArray* dataArray = volume->GetData();
     if ( dataArray ) 
       {
       const Types::DataItemRange range = dataArray->GetRange();
-      StdOut.printf( "Data type %s, range [%f .. %f]\n", DataTypeName[ dataArray->GetType() ], static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
+      DebugOutput( 1 ).GetStream().printf( "Data type %s, range [%f .. %f]\n", DataTypeName[ dataArray->GetType() ], static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
       } 
     else
       {
-      StdOut << "Image does not contain valid data.\n";
+      StdErr << "WARNING: image does not contain valid data.\n";
       }
     }
-
+  
   if ( volume )
     {
     volume->m_MetaInformation[META_FS_PATH] = path;
@@ -163,7 +164,7 @@ VolumeIO::Read( const char* path, const bool verbose )
 }
 
 UniformVolume::SmartPtr
-VolumeIO::ReadGrid( const char* path, const bool verbose )
+VolumeIO::ReadGrid( const char* path )
 {
   UniformVolume::SmartPtr volume( NULL );
 
@@ -186,13 +187,13 @@ VolumeIO::ReadGrid( const char* path, const bool verbose )
     default: 
     {
     // For now, default to full reader for other image file formats
-    volume = VolumeIO::Read( path, verbose );
+    volume = VolumeIO::Read( path );
     }
     }
   
-  if ( verbose && volume ) 
+  if ( volume ) 
     {
-    StdOut.printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
+    DebugOutput( 1 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
     }
   
   if ( volume )
@@ -205,9 +206,9 @@ VolumeIO::ReadGrid( const char* path, const bool verbose )
 
 UniformVolume::SmartPtr
 VolumeIO
-::ReadGridOriented( const char *path, const char* orientation, const bool verbose )
+::ReadGridOriented( const char *path, const char* orientation )
 {
-  UniformVolume::SmartPtr volume( Self::ReadGrid( path, verbose ) );
+  UniformVolume::SmartPtr volume( Self::ReadGrid( path ) );
   if ( !volume ) 
     return volume;
   
@@ -221,11 +222,7 @@ VolumeIO
     {
     if ( orientationOriginal != orientation )
       {
-      if ( verbose )
-	{
-	StdOut << "INFO: reorienting image from '" << orientationOriginal << "' to '" << orientation << "'\n";
-	}
-      
+      DebugOutput( 1 ) << "Reorienting image from '" << orientationOriginal << "' to '" << orientation << "'\n";
       return volume->GetReoriented( orientation );
       }
     }
@@ -235,9 +232,9 @@ VolumeIO
 
 UniformVolume::SmartPtr
 VolumeIO
-::ReadOriented( const char *path, const char* orientation, const bool verbose )
+::ReadOriented( const char *path, const char* orientation )
 {
-  UniformVolume::SmartPtr volume( VolumeIO::Read( path, verbose ) );
+  UniformVolume::SmartPtr volume( VolumeIO::Read( path ) );
   if ( !volume ) 
     return volume;
 
@@ -251,11 +248,7 @@ VolumeIO
     {
     if ( orientationOriginal != orientation )
       {
-      if ( verbose )
-	{
-	StdOut << "INFO: reorienting image from '" << orientationOriginal << "' to '" << orientation << "'\n";
-	}
-      
+      DebugOutput( 1 ) << "INFO: reorienting image from '" << orientationOriginal << "' to '" << orientation << "'\n";      
       return volume->GetReoriented( orientation );
       }
     }
@@ -264,7 +257,7 @@ VolumeIO
 
 void 
 VolumeIO::Write
-( const UniformVolume& volume, const char *pathAndFormat, const bool verbose )
+( const UniformVolume& volume, const char *pathAndFormat )
 {
   const char* actualPath = pathAndFormat;
   FileFormatID fileFormat = FILEFORMAT_UNKNOWN;
@@ -353,17 +346,14 @@ VolumeIO::Write
   char absolutePath[PATH_MAX];
   FileUtils::GetAbsolutePath( absolutePath, actualPath );
   
-  Write( volume, fileFormat, absolutePath, verbose );
+  Write( volume, fileFormat, absolutePath );
 }
 
 void
 VolumeIO::Write
-( const UniformVolume& volume, const FileFormatID format, const char* path, const bool verbose )
+( const UniformVolume& volume, const FileFormatID format, const char* path )
 {
-  if ( verbose ) 
-    {
-    StdOut.printf( "%s\nWriting %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume.GetDims()[0], volume.GetDims()[1], volume.GetDims()[2], volume.Size[0], volume.Size[1], volume.Size[2] );
-    }
+  DebugOutput( 1 ).GetStream().printf( "%s\nWriting %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume.GetDims()[0], volume.GetDims()[1], volume.GetDims()[2], volume.Size[0], volume.Size[1], volume.Size[2] );
   
   const TypedArray *data = volume.GetData();
   if ( data == NULL ) return;
@@ -389,13 +379,13 @@ VolumeIO::Write
     {
     case FILEFORMAT_ANALYZE_HDR: 
     {
-    VolumeFromFile::WriteAnalyzeHdr( path, *actualVolume, verbose );
+    VolumeFromFile::WriteAnalyzeHdr( path, *actualVolume );
     break;
     }
     case FILEFORMAT_NIFTI_DETACHED: 
     case FILEFORMAT_NIFTI_SINGLEFILE: 
     {
-    VolumeFromFile::WriteNifti( path, *actualVolume, verbose );
+    VolumeFromFile::WriteNifti( path, *actualVolume );
     break;
     }
     case FILEFORMAT_METAIMAGE: 
@@ -405,7 +395,7 @@ VolumeIO::Write
     }
     case FILEFORMAT_NRRD: 
     {
-    VolumeFromFile::WriteNRRD( path, *actualVolume, verbose );
+    VolumeFromFile::WriteNRRD( path, *actualVolume );
     break;
     }
     break;

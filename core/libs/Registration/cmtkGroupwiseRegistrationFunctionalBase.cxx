@@ -147,7 +147,7 @@ GroupwiseRegistrationFunctionalBase::SetTemplateGrid
   
   if ( this->m_UseTemplateData && ! this->m_TemplateGrid->GetData() )
     {
-    UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( templateGrid->m_MetaInformation[META_FS_PATH].c_str(), false /*verbose*/ ) );
+    UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( templateGrid->m_MetaInformation[META_FS_PATH].c_str() ) );
     this->m_TemplateGrid->SetData( readImage->GetData() );
     }
   
@@ -248,7 +248,7 @@ GroupwiseRegistrationFunctionalBase
 {
   if ( !image->GetData() )
     {
-    UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( image->m_MetaInformation[META_FS_PATH].c_str(), false /*verbose*/ ) );
+    UniformVolume::SmartPtr readImage( VolumeIO::ReadOriented( image->m_MetaInformation[META_FS_PATH].c_str() ) );
     image->SetData( readImage->GetData() );
     }
   
@@ -528,7 +528,7 @@ GroupwiseRegistrationFunctionalBase
 	}
       else
 	{
-	scaledImage = UniformVolume::SmartPtr( VolumeIO::ReadOriented( this->m_OriginalImageVector[i]->m_MetaInformation[META_FS_PATH].c_str(), false /*verbose*/ ) );
+	scaledImage = UniformVolume::SmartPtr( VolumeIO::ReadOriented( this->m_OriginalImageVector[i]->m_MetaInformation[META_FS_PATH].c_str() ) );
 	}
 
       UniformVolume::SmartPtr reformatImage( this->GetReformattedImage( scaledImage, i ) );
@@ -584,7 +584,7 @@ GroupwiseRegistrationFunctionalBase
     {
     writeVolume->SetDataAt( this->m_TemplateData[i], i );
     }
-  VolumeIO::Write( *writeVolume, "template.nii", true );
+  VolumeIO::Write( *writeVolume, "template.nii" );
 
   for ( size_t n = 0; n < this->m_ImageVector.size(); ++n )
     {
@@ -595,7 +595,7 @@ GroupwiseRegistrationFunctionalBase
 
     char path[PATH_MAX];
     sprintf( path, "target%02d.nii", static_cast<int>( n ) );
-    VolumeIO::Write( *writeVolume, path, true );
+    VolumeIO::Write( *writeVolume, path );
     }
 }
 

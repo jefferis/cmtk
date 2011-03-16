@@ -56,7 +56,6 @@
 #  include <dispatch/dispatch.h>
 #endif
 
-bool Verbose = false;
 bool Mask = false;
 
 const char* RefFileName = NULL;
@@ -82,7 +81,6 @@ doMain ( const int argc, const char *argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Convert parametric rigid or nonrigid transformation to deformation field, sampled at pixel locations of a given reference image" );
     
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
     cl.AddSwitch( Key( 'm', "mask" ), &Mask, true, "Use reference image pixels as a binary mask." );
 
     cl.AddOption( Key( "inversion-tolerance-factor" ), &InversionToleranceFactor, "Factor for numerical tolerance of B-spline inversion [multiples of minimum grid pixel size; default=0.1]" );
@@ -101,9 +99,9 @@ doMain ( const int argc, const char *argv[] )
     }
 
   if ( Mask )
-    volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( RefFileName, Verbose ) );
+    volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( RefFileName ) );
   else
-    volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( RefFileName, Verbose ) );
+    volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( RefFileName ) );
   if ( ! volume ) 
     {
     cmtk::StdErr << "Could not read reference volume " << RefFileName << "\n";
@@ -180,7 +178,7 @@ doMain ( const int argc, const char *argv[] )
 
   cmtk::Progress::Done();
 
-  cmtk::XformIO::Write( dfield, OutFileName, Verbose );
+  cmtk::XformIO::Write( dfield, OutFileName );
 
   return 0;
 }

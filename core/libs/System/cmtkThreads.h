@@ -77,7 +77,10 @@ extern int GetNumberOfThreads();
  * can be created by a process on the current operating system.
  *\return The actual number of threads that the library was set to.
  */
-extern int SetNumberOfThreads( const int numberOfThreads = 0, const bool force = false );
+extern int SetNumberOfThreads( const int numberOfThreads, const bool force = false );
+
+/// Helper function for setting number of threads from command line.
+extern void SetNumberOfThreads( const long int numberOfThreads );
 
 /// Return number of threads allowed per process on this system.
 extern int GetMaxThreads();

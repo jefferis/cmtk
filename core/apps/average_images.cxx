@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,6 +35,7 @@
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkProgressConsole.h>
 
 #include <Base/cmtkUniformVolume.h>
@@ -49,7 +50,6 @@
 #include <list>
 #include <algorithm>
 
-bool Verbose = false;
 const char* OutputFileName = "average.nii";
 
 bool ApplyLog = false;
@@ -85,10 +85,7 @@ GetNormalizationCoefficients
   scale = sqrt( refVariance ) / sqrt( fltVariance );
   offset = refMean - scale * fltMean;
 
-  if ( Verbose ) 
-    {
-    fprintf( stderr, "Converted grey values: %f +- %f -> %f +- %f\n", fltMean, sqrt( fltVariance ), refMean, sqrt( refVariance ) );
-    }
+  cmtk::DebugOutput( 1 ).GetStream().printf( "Converted grey values: %f +- %f -> %f +- %f\n", fltMean, sqrt( fltVariance ), refMean, sqrt( refVariance ) );
 }
 
 int
@@ -101,7 +98,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] image0 ..." );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
 
     cmtk::CommandLine::EnumGroup<ModeEnum>::SmartPtr modeGroup = cl.AddEnum( "mode", &Mode, "Mode of averaging operation" );
     modeGroup->AddSwitch( Key( "avg" ), MODE_AVG, "Compute average (i.e., mean) image" );
@@ -153,7 +149,7 @@ doMain( const int argc, const char* argv[] )
   std::list<const char*>::const_iterator it;
   for ( it = imagePathList.begin(); it != imagePathList.end(); ++it ) 
     {
-    cmtk::UniformVolume::SmartPtr nextVolume( cmtk::VolumeIO::ReadOriented( *it, Verbose ) );
+    cmtk::UniformVolume::SmartPtr nextVolume( cmtk::VolumeIO::ReadOriented( *it) );
     
     if ( ! nextVolume ) 
       {
@@ -296,7 +292,7 @@ doMain( const int argc, const char* argv[] )
   cmtk::Progress::Done();
 
   volume->SetData( outputData );
-  cmtk::VolumeIO::Write( *volume, OutputFileName, Verbose );
+  cmtk::VolumeIO::Write( *volume, OutputFileName );
   
   return 0;
 }

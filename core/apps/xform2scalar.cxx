@@ -48,8 +48,6 @@
 #  include <dispatch/dispatch.h>
 #endif
 
-bool Verbose = false;
-
 bool WarpOnly = false;
 
 namespace
@@ -93,7 +91,6 @@ doMain ( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Data Processing" );
 
     typedef cmtk::CommandLine::Key Key;    
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode on." );
 
     cl.BeginGroup( "operation", "Operating Options" );
     cmtk::CommandLine::EnumGroup<cmtk::XformToScalarMode>::SmartPtr modeGroup = cl.AddEnum( "mode", &Mode, "Mode of operation: type of scalar measure to be extracted." );
@@ -124,7 +121,7 @@ doMain ( const int argc, const char* argv[] )
     throw cmtk::ExitException( 1 );
     }
 
-  cmtk::UniformVolume::SmartPtr scalarImage( cmtk::VolumeIO::ReadGridOriented( InputGridPath, Verbose ) );
+  cmtk::UniformVolume::SmartPtr scalarImage( cmtk::VolumeIO::ReadGridOriented( InputGridPath ) );
   if ( ! scalarImage ) 
     {
     cmtk::StdErr << "Could not read grid from image " << InputGridPath << "\n";
@@ -189,7 +186,7 @@ doMain ( const int argc, const char* argv[] )
 
   if ( OutImagePath ) 	 
     {
-    cmtk::VolumeIO::Write( *scalarImage, OutImagePath, Verbose );
+    cmtk::VolumeIO::Write( *scalarImage, OutImagePath );
     }
 
   return 0;

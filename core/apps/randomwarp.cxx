@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -59,7 +59,7 @@ main( const int argc, const char *argv[] )
   const cmtk::Types::Coordinate gridSpacing = atof( argv[2] );
   const cmtk::Types::Coordinate sigma = atof( argv[3] );
 
-  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( filenameIn, true ) );
+  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( filenameIn ) );
   if ( ! volume ) return 1;
 
   cmtk::SplineWarpXform::SmartPtr warp( new cmtk::SplineWarpXform( volume->Size, gridSpacing ) );

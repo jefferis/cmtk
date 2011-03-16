@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkProgressConsole.h>
@@ -56,8 +57,6 @@
 #include <string>
 #include <stdio.h>
 #include <limits.h>
-
-bool Verbose = false;
 
 bool DumpStatistics = true;
 
@@ -143,10 +142,7 @@ Import
   
   FieldNames.push_back( "CONST" );
 
-  if ( Verbose ) 
-    {
-    cmtk::StdOut << "\n\nImporting image files:\n";
-    }
+  cmtk::DebugOutput( 1 ) << "\n\nImporting image files:\n";
   
   nParametersTotal = 0;
   while ( ! ctlFile.eof() ) 
@@ -166,7 +162,7 @@ Import
 	throw cmtk::ExitException( 1 );
 	}
 
-      cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( imgPath, Verbose ) );
+      cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( imgPath ) );
       if ( !volume ) 
 	{
 	cmtk::StdErr << "ERROR: Could not read image file " << imgPath << "\n";
@@ -223,10 +219,7 @@ Import
 	    }
 	  else
 	    {
-	    if ( Verbose )
-	      {
-	      cmtk::StdOut << "INFORMATION: Ignoring parameter #" << nParametersTotal << "\n";
-	      }
+	    cmtk::DebugOutput( 1 ) << "INFORMATION: Ignoring parameter #" << nParametersTotal << "\n";
 	    }
 	  ++nParametersTotal;
 	  }
@@ -236,10 +229,7 @@ Import
 	// set nParameters from parameter array to account for ignored 
 	// parameters.
 	nParameters = vParam.size();
-	if ( Verbose )
-	  {
-	  cmtk::StdOut << "NParameters = " << nParameters << "\n";
-	  }
+	cmtk::DebugOutput( 1 ) << "NParameters = " << nParameters << "\n";
 	}
       }
     }
@@ -255,24 +245,24 @@ Import
   for ( size_t i = 0; i < vParam.size(); ++i )
     parameters[i] = vParam[i];
   
-  if ( Verbose )
+  if ( cmtk::DebugOutput::GetGlobalLevel() > 0 )
     {
-    cmtk::StdOut << "\n\nDesign Matrix: \n";
+    cmtk::DebugOutput( 1 ) << "\n\nDesign Matrix: \n";
     for ( size_t j = 0; j < FieldNames.size(); ++j )
       {
       if ( IgnoreSet.find( j ) != IgnoreSet.end() ) continue;
-      cmtk::StdOut.printf( "%8s\t", FieldNames[j].c_str() );
+      cmtk::DebugOutput( 1 ).GetStream().printf( "%8s\t", FieldNames[j].c_str() );
       }
-    cmtk::StdOut << "\n";
+    cmtk::DebugOutput( 1 ) << "\n";
     
     size_t ofs = 0;
     for ( size_t i = 0; i < imagesData.size(); ++i )
       {
       for ( size_t j = 0; j < nParameters; ++j, ++ofs )
 	{
-	cmtk::StdOut.printf( "%8.2f\t", parameters[ofs] );
+	cmtk::DebugOutput( 1 ).GetStream().printf( "%8.2f\t", parameters[ofs] );
 	}
-      cmtk::StdOut << "\n";
+      cmtk::DebugOutput( 1 ) << "\n";
       }
     }
   
@@ -292,8 +282,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Statistics and Modeling" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-    
     cl.AddSwitch( Key( 'x', "exclude-constant" ), &ExcludeConstant, true, "Exclude automatic constant parameter from model." );
     cl.AddSwitch( Key( 'n', "normalize" ), &NormalizeParameters, true, "Normalize model parameters w.r.t. data variances." );
     cl.AddSwitch( Key( 'e', "exp" ), &ExponentialModel, true, "Use exponential model rather than linear model." );
@@ -330,18 +318,18 @@ doMain( const int argc, const char* argv[] )
   
   cmtk::ProgressConsole progressIndicator;
   
-  if ( Verbose )
+  if ( cmtk::DebugOutput::GetGlobalLevel() > 0 )
     {
     std::set<std::string>::const_iterator it = SelectSet.begin();
     if ( it != SelectSet.end() )
       {
-      cmtk::StdOut << "Selected model parameters:" << "\n";
+      cmtk::DebugOutput( 1 ) << "Selected model parameters:" << "\n";
       while ( it != SelectSet.end() )
 	{
-        cmtk::StdOut << "\t" << *it;
+        cmtk::DebugOutput( 1 ) << "\t" << *it;
 	++it;
 	}
-      cmtk::StdOut << "\n";
+      cmtk::DebugOutput( 1 ) << "\n";
       }
     }
 
@@ -388,33 +376,28 @@ doMain( const int argc, const char* argv[] )
   
   cmtk::GeneralLinearModel glm( nParameters[0], allImages.size(), allParameters );
   
-  if ( Verbose ) 
+  if ( cmtk::DebugOutput::GetGlobalLevel() > 0 )
     {
-    cmtk::StdOut << "\n\nSingular values:\n";
+    cmtk::DebugOutput( 1 ) << "\n\nSingular values:\n";
     size_t p = 0;
     for ( size_t pp = 0; pp < nParametersTotal[0]; ++pp ) 
       {
       // if this parameter is ignored, continue with next one.
       if ( IgnoreSet.find( pp ) != IgnoreSet.end() ) 
 	continue;
-      cmtk::StdOut << "\t" << glm.GetSingularValue( p++ );
+      cmtk::DebugOutput( 1 ) << "\t" << glm.GetSingularValue( p++ );
       }
-    cmtk::StdOut << "\n";
-    }
+    cmtk::DebugOutput( 1 ) << "\n";
   
-  if ( Verbose ) 
-    {
-    cmtk::StdOut << "\n\nParameter correlation matrix:\n";
-
+    cmtk::DebugOutput( 1 ) << "\n\nParameter correlation matrix:\n";
     cmtk::Matrix2D<double>* cc = glm.GetCorrelationMatrix();
-
     for ( size_t p = 0; p < nParameters[0]; ++p ) 
       {
       for ( size_t pp = 0; pp < nParameters[0]; ++pp ) 
 	{
-	cmtk::StdOut.printf( "%.2f\t", (*cc)[p][pp] );
+	cmtk::DebugOutput( 1 ).GetStream().printf( "%.2f\t", (*cc)[p][pp] );
 	}
-      cmtk::StdOut << "\n";
+      cmtk::DebugOutput( 1 ) << "\n";
       }
     
     delete cc;
@@ -424,11 +407,8 @@ doMain( const int argc, const char* argv[] )
 
   if ( DumpStatistics ) 
     {
-    if ( Verbose )
-      {
-      cmtk::StdOut << "\n\nParameter normalization factors:\n";
-      }
-
+    cmtk::DebugOutput( 1 ) << "\n\nParameter normalization factors:\n";
+    
     size_t p = 0;
     for ( size_t pp = 0; pp < nParametersTotal[0]; ++pp ) 
       {	  
@@ -444,10 +424,7 @@ doMain( const int argc, const char* argv[] )
   
   if ( OutputFilePatt ) 
     {
-    if ( Verbose )
-      {
-      cmtk::StdOut << "\n\nWriting output image files.\n";
-      }
+    cmtk::DebugOutput( 1 ) << "\n\nWriting output image files.\n";
 
     char outFileName[PATH_MAX];
 
@@ -459,7 +436,7 @@ doMain( const int argc, const char* argv[] )
     else
       {
       refVolume->SetData( fstatData );
-      cmtk::VolumeIO::Write( *refVolume, outFileName, Verbose );
+      cmtk::VolumeIO::Write( *refVolume, outFileName );
       }
       
     size_t p = 0;
@@ -476,7 +453,7 @@ doMain( const int argc, const char* argv[] )
       else
 	{
 	refVolume->SetData( modelData );
-	cmtk::VolumeIO::Write( *refVolume, outFileName, Verbose );
+	cmtk::VolumeIO::Write( *refVolume, outFileName );
 	}
 	  
       cmtk::TypedArray::SmartPtr modelTStat = glm.GetTStat( p );
@@ -487,7 +464,7 @@ doMain( const int argc, const char* argv[] )
       else
 	{
 	refVolume->SetData( modelTStat );
-	cmtk::VolumeIO::Write( *refVolume, outFileName, Verbose );
+	cmtk::VolumeIO::Write( *refVolume, outFileName );
 	}
       
       // increment actual parameter index.

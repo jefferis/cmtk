@@ -150,11 +150,6 @@ private:
   /// Protocol file name.
   const char* m_ProtocolFileName;
 
-  /** Verbosity flag.
-   * This is set to 'on' by -v or --verbose, and set to 'off' by -q or --quiet.
-   */
-  bool Verbose;
-
   /// Output result as matrix (text) file.
   void OutputResultMatrix( const char* matrixName ) const;
 

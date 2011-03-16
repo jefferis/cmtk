@@ -35,6 +35,7 @@
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkTimers.h>
 
 #include <Base/cmtkUniformVolume.h>
@@ -78,8 +79,6 @@
 #  include <ieeefp.h>
 #endif
 
-bool Verbose = false;
-
 int
 doMain( const int argc, const char* argv[] )
 {
@@ -98,7 +97,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] infile outfile" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
 #ifdef CMTK_USE_SQLITE
     cl.AddOption( Key( "db" ), &updateDB, "Path to image/transformation database that should be updated with the newly created image." );
 #endif
@@ -213,7 +211,7 @@ doMain( const int argc, const char* argv[] )
     return false;
     }
   
-  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( imagePathIn, Verbose ) );
+  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( imagePathIn ) );
   if ( ! volume ) 
     {
     cmtk::StdErr << "ERROR: could not read image " << imagePathIn << "\n";
@@ -231,12 +229,8 @@ doMain( const int argc, const char* argv[] )
   
   volume = cmtk::ImageOperation::ApplyAll( volume );
 
-  if ( Verbose )
-    {
-    cmtk::StdErr << "Writing to file " << imagePathOut << "\n";
-    }
-  
-  cmtk::VolumeIO::Write( *volume, imagePathOut, Verbose );
+  cmtk::DebugOutput( 1 ) << "Writing to file " << imagePathOut << "\n";  
+  cmtk::VolumeIO::Write( *volume, imagePathOut );
   return 0;
 }
 

@@ -33,6 +33,7 @@
 #include "cmtkImagePairNonrigidRegistrationCommandLine.h"
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkTimers.h>
 #include <System/cmtkThreads.h>
@@ -91,7 +92,6 @@ ImagePairNonrigidRegistrationCommandLine
   Studylist = Time = NULL;
 
   this->m_OutputIntermediate = 0;
-  Verbose = 0;
 
   InputStudylist = NULL;
   const char *initialTransformationFile = NULL;
@@ -114,11 +114,6 @@ ImagePairNonrigidRegistrationCommandLine
     cl.SetProgramInfo( CommandLine::PRG_CATEG, "CMTK.Registration" );
 
     typedef CommandLine::Key Key;
-    cl.BeginGroup( "Console", "Console output control" )->SetProperties( CommandLine::PROPS_NOXML );
-    cl.AddSwitch( Key( 'v', "verbose" ), &this->Verbose, true, "Verbose peration" );
-    cl.AddSwitch( Key( 'q', "quiet" ), &Verbose, false, "Quiet mode" );
-    cl.EndGroup();
-
     cl.BeginGroup( "TransformationIO", "Transformation import/export" );
     cl.AddOption( Key( "initial" ), &initialTransformationFile, "Initialize transformation from given path" )->SetProperties( CommandLine::PROPS_XFORM );
     cl.AddSwitch( Key( "invert-initial" ), &initialTransformationInverse, true, "Invert given (affine) initial transformation." );
@@ -238,13 +233,12 @@ ImagePairNonrigidRegistrationCommandLine
     {
     InputStudylist = clArg1;
     
-    if ( Verbose )
-      fprintf( stderr, "Reading input studylist %s.\n", InputStudylist );
+    DebugOutput( 1 ) << "Reading input studylist" << InputStudylist << "\n";
     
     ClassStream classStream( MountPoints::Translate(InputStudylist),"registration", ClassStream::READ );
     if ( ! classStream.IsValid() ) 
       {
-      std::cerr << "Could not open studylist archive " << InputStudylist << ".\n";
+      StdErr << "ERROR: Could not open studylist archive " << InputStudylist << ".\n";
       exit( 1 );
       }
     
@@ -287,11 +281,11 @@ ImagePairNonrigidRegistrationCommandLine
       }
     }
 
-  UniformVolume::SmartPtr volume( VolumeIO::ReadOriented( Study1, Verbose ) );
+  UniformVolume::SmartPtr volume( VolumeIO::ReadOriented( Study1 ) );
   if ( !volume ) throw ConstructorFailed();
   this->SetVolume_1( UniformVolume::SmartPtr( this->m_PreprocessorRef.GetProcessedImage( volume ) ) );
 
-  volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( Study2, Verbose ) );
+  volume = UniformVolume::SmartPtr( VolumeIO::ReadOriented( Study2 ) );
   if ( !volume ) throw ConstructorFailed();
   this->SetVolume_2( UniformVolume::SmartPtr( this->m_PreprocessorFlt.GetProcessedImage( volume ) ) );
 
@@ -356,7 +350,7 @@ ImagePairNonrigidRegistrationCommandLine
 
   if ( this->m_ReformattedImagePath )
     {
-    VolumeIO::Write( *(this->GetReformattedFloatingImage() ), this->m_ReformattedImagePath, this->Verbose );
+    VolumeIO::Write( *(this->GetReformattedFloatingImage() ), this->m_ReformattedImagePath );
     }
 }
 
@@ -366,11 +360,7 @@ ImagePairNonrigidRegistrationCommandLine
 ( CoordinateVector::SmartPtr& v, Functional::SmartPtr& f, 
   const int index, const int total )
 {
-  if ( Verbose )
-    {
-    StdOut.printf( "\rEntering resolution level %d out of %d...\n", index, total );
-    }
-  
+  DebugOutput( 1 ).GetStream().printf( "\rEntering resolution level %d out of %d...\n", index, total );
   this->Superclass::EnterResolution( v, f, index, total );
 }
 

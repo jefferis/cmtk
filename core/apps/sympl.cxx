@@ -34,6 +34,7 @@
 
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkProgress.h>
 #include <System/cmtkProgressConsole.h>
 
@@ -56,8 +57,6 @@
 #include <Registration/cmtkReformatVolume.h>
 
 #include <stdio.h>
-
-bool Verbose = false;
 
 float MinValue = -1e5;
 bool MinValueSet = false;
@@ -129,8 +128,6 @@ ParseCommandLine ( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Registration" );
     
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Turn on verbosity mode." )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
-    
     cl.BeginGroup( "Optimization", "Optimization" );
     cl.AddOption( Key( 'a', "accuracy" ), &Accuracy, "Accuracy (final optimization step size in [mm]." );
     cl.AddOption( Key( 's', "sampling" ), &Sampling, "Resampled image resolution. This is the resolution [in mm] of the first (finest) resampled image in the multi-scale pyramid, "
@@ -388,7 +385,7 @@ doMain ( const int argc, const char* argv[] )
 {
   if ( ! ParseCommandLine( argc, argv ) ) return 1;
 
-  cmtk::UniformVolume::SmartPtr originalVolume( cmtk::VolumeIO::ReadOriented( InFileName, Verbose ) );
+  cmtk::UniformVolume::SmartPtr originalVolume( cmtk::VolumeIO::ReadOriented( InFileName ) );
   if ( !originalVolume ) 
     {
     cmtk::StdErr.printf( "Could not read image file %s\n", InFileName );
@@ -440,16 +437,13 @@ doMain ( const int argc, const char* argv[] )
       if ( level < Levels-1 ) 
 	{
 	cmtk::Types::Coordinate voxelSize = Sampling * pow( 2.0, (Levels-level-2) );
-	if ( Verbose )
-	  fprintf( stdout, "Entering level %d out of %d (%.2f mm voxel size)\n", level+1, Levels, voxelSize );
-	
 	volume = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( *originalVolume, voxelSize ) );
+	cmtk::DebugOutput( 1 ).GetStream().printf( "Entering level %d out of %d (%.2f mm voxel size)\n", level+1, Levels, voxelSize );
 	} 
       else
 	{
-	if ( Verbose )
-	  fprintf(stdout,"Entering level %d out of %d (original voxel size)\n", level+1, Levels );
 	volume = originalVolume; 
+	cmtk::DebugOutput( 1 ).GetStream().printf( "Entering level %d out of %d (original voxel size)\n", level+1, Levels );
 	}
       
       cmtk::SmartPointer<cmtk::SymmetryPlaneFunctional> functional( NULL );
@@ -477,8 +471,7 @@ doMain ( const int argc, const char* argv[] )
 
     cmtk::Progress::Done();
 
-    if ( Verbose )
-      fprintf( stdout, "rho=%f, theta=%f, phi=%f\n", v[0], v[1], v[2] );
+    cmtk::DebugOutput( 1 ).GetStream().printf( "rho=%f, theta=%f, phi=%f\n", v[0], v[1], v[2] );
     }
   
   cmtk::ParametricPlane parametricPlane;
@@ -508,7 +501,7 @@ doMain ( const int argc, const char* argv[] )
   if ( WriteXformPath )
     {
     cmtk::AffineXform::SmartPtr alignment( parametricPlane.GetAlignmentXform( 0 ) );
-    cmtk::XformIO::Write( alignment, WriteXformPath, Verbose );
+    cmtk::XformIO::Write( alignment, WriteXformPath );
     }
 
   return 0;

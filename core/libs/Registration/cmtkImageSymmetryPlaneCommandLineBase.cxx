@@ -41,11 +41,11 @@
 
 #include <System/cmtkProgress.h>
 #include <System/cmtkProgressConsole.h>
+#include <System/cmtkDebugOutput.h>
 
 cmtk::ImageSymmetryPlaneCommandLineBase
 ::ImageSymmetryPlaneCommandLineBase()
-  : m_Verbose( false ),
-    m_MinValueSet( false ),
+  : m_MinValueSet( false ),
     m_MaxValueSet( false ),
     m_Sampling( 1.0 ),
     m_Accuracy( 0.1 ),
@@ -74,8 +74,7 @@ cmtk::ImageSymmetryPlaneCommandLineBase
   this->m_CommandLine.SetProgramInfo( CommandLine::PRG_CATEG, "CMTK.Registration" );
   
   typedef CommandLine::Key Key;
-  this->m_CommandLine.AddSwitch( Key( 'v', "verbose" ), &this->m_Verbose, true, "Turn on verbosity mode." )->SetProperties( CommandLine::PROPS_NOXML );
-  
+
   this->m_CommandLine.BeginGroup( "Optimization", "Optimization" );
   this->m_CommandLine.AddOption( Key( 'a', "accuracy" ), &this->m_Accuracy, "Accuracy (final optimization step size in [mm]." );
   this->m_CommandLine.AddOption( Key( 's', "sampling" ), &this->m_Sampling, "Resampled image resolution. This is the resolution [in mm] of the first (finest) resampled image in the multi-scale pyramid, "
@@ -138,7 +137,7 @@ cmtk::ImageSymmetryPlaneCommandLineBase
   if ( ! this->ParseCommandLine( argc, argv ) )
     return 2;
   
-  UniformVolume::SmartPtr originalVolume( VolumeIO::ReadOriented( this->m_InFileName, this->m_Verbose ) );
+  UniformVolume::SmartPtr originalVolume( VolumeIO::ReadOriented( this->m_InFileName ) );
   if ( !originalVolume ) 
     {
     StdErr.printf( "Could not read image file %s\n", this->m_InFileName );
@@ -191,19 +190,12 @@ cmtk::ImageSymmetryPlaneCommandLineBase
       if ( level < this->m_Levels-1 ) 
 	{
 	Types::Coordinate voxelSize = this->m_Sampling * pow( 2.0, (this->m_Levels-level-2) );
-	if ( this->m_Verbose )
-	  {
-	  StdOut.printf( "Entering level %d out of %d (%.2f mm voxel size)\n", level+1, this->m_Levels, voxelSize );
-	  }
-	
+	DebugOutput( 1 ).GetStream().printf( "Entering level %d out of %d (%.2f mm voxel size)\n", level+1, this->m_Levels, voxelSize );
 	volume = UniformVolume::SmartPtr( new UniformVolume( *originalVolume, voxelSize ) );
 	} 
       else
 	{
-	if ( this->m_Verbose )
-	  {
-	  StdOut.printf( "Entering level %d out of %d (original voxel size)\n", level+1, this->m_Levels );
-	  }
+	DebugOutput( 1 ).GetStream().printf( "Entering level %d out of %d (original voxel size)\n", level+1, this->m_Levels );
 	volume = originalVolume; 
 	}
       
@@ -234,10 +226,7 @@ cmtk::ImageSymmetryPlaneCommandLineBase
 
     Progress::Done();
 
-    if ( this->m_Verbose )
-      {
-      StdOut.printf( "rho=%f, theta=%f, phi=%f\n", v[0], v[1], v[2] );
-      }
+    DebugOutput( 1 ).GetStream().printf( "rho=%f, theta=%f, phi=%f\n", v[0], v[1], v[2] );
     }
   
   this->m_SymmetryPlane.SetParameters( v );
@@ -264,7 +253,7 @@ cmtk::ImageSymmetryPlaneCommandLineBase
   if ( this->m_WriteXformPath )
     {
     AffineXform::SmartPtr alignment( this->m_SymmetryPlane.GetAlignmentXform( 0 ) );
-    XformIO::Write( alignment, this->m_WriteXformPath, this->m_Verbose );
+    XformIO::Write( alignment, this->m_WriteXformPath );
     }
   
   return 0;

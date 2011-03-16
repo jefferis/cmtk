@@ -35,6 +35,7 @@
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkProgressConsole.h>
 
 #include <Registration/cmtkAffineRegistration.h>
@@ -56,8 +57,6 @@
 #include <algorithm>
 #include <map>
 #include <vector>
-
-bool Verbose = false;
 
 const char* InputFilePath = NULL;
 const char* OutputFilePath = NULL;
@@ -134,10 +133,7 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
     }
   else
     {
-    if ( Verbose )
-      {
-      cmtk::StdOut << "Computing transformations between passes...\n";
-      }
+    cmtk::DebugOutput( 2 ) << "Computing transformations between passes...\n";
     volRecon.ComputeTransformationsToPassImages( RegistrationMetric );
     xformsToPassImages = volRecon.GetTransformationsToPassImages();
     }
@@ -147,10 +143,7 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
     cmtk::ClassStream stream( ExportXformsPath, cmtk::ClassStream::WRITE );
     if ( stream.IsValid() )
       {
-      if ( Verbose )
-	{
-	cmtk::StdOut << "Exporting transformations between passes to " << ExportXformsPath << "\n";
-	}
+      cmtk::DebugOutput( 2 ) << "Exporting transformations between passes to " << ExportXformsPath << "\n";
       for ( unsigned int pass = 0; pass < NumberOfPasses; ++pass )
 	{
 	stream << *xformsToPassImages[pass];
@@ -162,10 +155,7 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
       }
     }
 
-  if ( Verbose )
-    {
-    cmtk::StdOut << "Volume injection...\n";
-    }
+  cmtk::DebugOutput( 2 ) << "Volume injection...\n";
   volRecon.VolumeInjectionAnisotropic( InjectionKernelSigma, InjectionKernelRadius );
   if ( InjectedImagePath )
     {
@@ -175,7 +165,7 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
       outputImage = cmtk::UniformVolume::SmartPtr( outputImage->CloneGrid() );
       outputImage->SetData( cmtk::TypedArray::SmartPtr( volRecon.GetCorrectedImage()->GetData()->Convert( volume->GetData()->GetType() ) ) );
       }
-    cmtk::VolumeIO::Write( *outputImage, InjectedImagePath, Verbose );
+    cmtk::VolumeIO::Write( *outputImage, InjectedImagePath );
     }
 
   volRecon.Optimize( NumberOfIterations );
@@ -196,8 +186,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool splits an interleaved input image into the pass images, co-registers them, and reconstructs a motion-corrected image" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Artifact Correction" );
 
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose operation" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
-    
     cl.BeginGroup( "input", "Input Options" );
     cl.AddOption( Key( "padding-value" ), &PaddingValue, "Set padding value for input image. Pixels with this value will be ignored.", &PaddingFlag );
     cl.EndGroup();
@@ -277,7 +265,7 @@ doMain( const int argc, const char* argv[] )
   /*
   // Read input image
   */
-  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( InputFilePath, Verbose ) );
+  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( InputFilePath ) );
   if ( ! volume || ! volume->GetData() )
     {
     cmtk::StdErr << "ERROR: Could not read image " << InputFilePath << "\n";
@@ -292,7 +280,7 @@ doMain( const int argc, const char* argv[] )
   cmtk::UniformVolume::SmartPtr refImage;
   if ( ReferenceImagePath )
     {
-    refImage = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( ReferenceImagePath, Verbose ) );
+    refImage = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( ReferenceImagePath ) );
     if ( ! refImage || ! refImage->GetData() )
       {
       cmtk::StdErr << "ERROR: Could not read image " << ReferenceImagePath << "\n";
@@ -306,10 +294,8 @@ doMain( const int argc, const char* argv[] )
     cmtk::ClassStream stream( ImportXformsPath, cmtk::ClassStream::READ );
     if ( stream.IsValid() )
       {
-      if ( Verbose )
-	{
-	cmtk::StdOut << "Importing transformations between passes from " << ImportXformsPath << "\n";
-	}
+      cmtk::DebugOutput( 1 ) << "Importing transformations between passes from " << ImportXformsPath << "\n";
+
       cmtk::AffineXform xform;
       for ( unsigned int pass = 0; pass < NumberOfPasses; ++pass )
 	{
@@ -347,7 +333,7 @@ doMain( const int argc, const char* argv[] )
     outputImage = cmtk::UniformVolume::SmartPtr( outputImage->CloneGrid() );
     outputImage->SetData( cmtk::TypedArray::SmartPtr( correctedVolume->GetData()->Convert( volume->GetData()->GetType() ) ) );
     }
-  cmtk::VolumeIO::Write( *outputImage, OutputFilePath, Verbose);
+  cmtk::VolumeIO::Write( *outputImage, OutputFilePath );
   
   return 0;
 }
