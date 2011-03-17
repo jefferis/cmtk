@@ -1249,7 +1249,7 @@ case ${RUNTEST} in
 	check_results registration
 	;;
     registrationAutoLevelsCt3)
-	run registration -q --msd --auto-multi-levels 3 --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_ct.hdr
+	run registration --msd --auto-multi-levels 3 --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_ct.hdr
 	check_results registration
 	;;
     registrationxAffineMrMrMSD)
@@ -1342,7 +1342,7 @@ case ${RUNTEST} in
 	check_results registration
 	;;
     registrationxAutoLevelsCt3)
-	run registrationx -q --msd --auto-multi-levels 3 --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_ct.hdr
+	run registrationx --msd --auto-multi-levels 3 --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_ct.hdr
 	check_results registration
 	;;
     registrationxAutoLevelsLabelsNN)
@@ -1399,43 +1399,43 @@ case ${RUNTEST} in
 	check_results vol001_mr_t0_crop.raw
 	;;
     registrationRigidMrPet)
-	run registration -q -i --dofs 6 -o ${tmpdir} pat001_mr_T1.hdr pat001_pet.hdr
+	run registration -i --dofs 6 -o ${tmpdir} pat001_mr_T1.hdr pat001_pet.hdr
 	check_results registration
 	;;
     registrationRigidMrCt)
-	run registration -q -i --dofs 6 -o ${tmpdir} pat002_mr_T2.hdr pat002_ct.hdr
+	run registration -i --dofs 6 -o ${tmpdir} pat002_mr_T2.hdr pat002_ct.hdr
 	check_results registration
 	;;
     registrationRigidCt)
-	run registration -q --msd -i --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_ct.hdr
+	run registration --msd -i --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_ct.hdr
 	check_results registration
 	;;
     registrationRigidPetMr)
-	run registration -q -i --dofs 6 -o ${tmpdir} pat001_pet.hdr pat001_mr_T1.hdr
+	run registration -i --dofs 6 -o ${tmpdir} pat001_pet.hdr pat001_mr_T1.hdr
 	check_results registration
 	;;
     registrationRigidCtMr)
-	run registration -q -i --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_mr_T2.hdr
+	run registration -i --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_mr_T2.hdr
 	check_results registration
 	;;
     registrationRigidMrPetNoSwap)
-	run registration -q --no-switch -i --dofs 6 -o ${tmpdir} pat001_mr_T1.hdr pat001_pet.hdr
+	run registration --no-switch -i --dofs 6 -o ${tmpdir} pat001_mr_T1.hdr pat001_pet.hdr
 	check_results registration
 	;;
     registrationRigidMrCtNoSwap)
-	run registration -q --no-switch -i --dofs 6 -o ${tmpdir} pat002_mr_T2.hdr pat002_ct.hdr
+	run registration --no-switch -i --dofs 6 -o ${tmpdir} pat002_mr_T2.hdr pat002_ct.hdr
 	check_results registration
 	;;
     registrationRigidPetMrDOF9)
-	run registration -q -i --dofs 9 -o ${tmpdir} pat001_pet.hdr pat001_mr_T1.hdr
+	run registration -i --dofs 9 -o ${tmpdir} pat001_pet.hdr pat001_mr_T1.hdr
 	check_results registration
 	;;
     registrationRigidCtMrDOF7)
-	run registration -q -i --dofs 7 -o ${tmpdir} pat002_ct.hdr pat002_mr_T2.hdr
+	run registration -i --dofs 7 -o ${tmpdir} pat002_ct.hdr pat002_mr_T2.hdr
 	check_results registration
 	;;
     registrationRigidLabelsDOF69)
-	run registration -q --dofs 6 --dofs 9 --class-ref label --class-flt label -o ${tmpdir} parc1.hdr parc2.hdr
+	run registration --dofs 6 --dofs 9 --class-ref label --class-flt label -o ${tmpdir} parc1.hdr parc2.hdr
 	check_results registration
 	;;
     registrationRigidCrop)
@@ -1671,57 +1671,57 @@ case ${RUNTEST} in
 	check_results reconstruction.img
 	;;
     warpSingleLevel)
-	run warp -q --fast --exploration 8 --grid-spacing 160 --accuracy 1 --no-adaptive-fix -o ${tmpdir} vol001_mr_t0t1.list
+	run warp --fast --exploration 8 --grid-spacing 160 --accuracy 1 --no-adaptive-fix -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
 	;;
     warpSingleLevelExact)
-	run warp -q --fast --exploration 8 --grid-spacing 180 --exact-spacing --accuracy 1 --sampling 3 --no-adaptive-fix -o ${tmpdir} vol001_mr_t0t1.list
+	run warp --fast --exploration 8 --grid-spacing 180 --exact-spacing --accuracy 1 --sampling 3 --no-adaptive-fix -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
 	;;
     warpInverseConsistentCC)
-	run warp -q --fast --exploration 8 --grid-spacing 80 --accuracy 1 --ncc --ic-weight 1e-2 -o ${tmpdir} vol001_mr_t0t1.list
+	run warp --fast --exploration 8 --grid-spacing 80 --accuracy 1 --ncc --ic-weight 1e-2 -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
 	;;
     warpMultiLevel)
-	run warp -q --fast --exploration 8 --grid-spacing 160 --accuracy 1 --refine 1 -o ${tmpdir} vol001_mr_t0t1.list
+	run warp --fast --exploration 8 --grid-spacing 160 --accuracy 1 --refine 1 -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
 	;;
     warpMultiLevelMatchHistograms)
-	run warp -q --fast --exploration 8 --match-histograms --msd --grid-spacing 160 --accuracy 1 --refine 1 -o ${tmpdir} vol001_mr_t0t1.list
+	run warp --fast --exploration 8 --match-histograms --msd --grid-spacing 160 --accuracy 1 --refine 1 -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
 	;;
     warpMultiLevelDeltaFThreshold)
-	run warp -q --fast --exploration 8 --delta-f-threshold 0.01 --msd --grid-spacing 160 --accuracy 1 --refine 1 -o ${tmpdir} vol001_mr_t0t1.list
+	run warp --fast --exploration 8 --delta-f-threshold 0.01 --msd --grid-spacing 160 --accuracy 1 --refine 1 -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
 	;;
     warpMultiLevelExact)
-	run warp -q --fast --exploration 8 --grid-spacing 160 --exact-spacing --accuracy 1 --refine 1 -o ${tmpdir} vol001_mr_t0t1.list
+	run warp --fast --exploration 8 --grid-spacing 160 --exact-spacing --accuracy 1 --refine 1 -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
 	;;
     warpDelayRefine)
-	run warp -q --fast --exploration 12 --grid-spacing 160 --accuracy 2 --refine 1 --delay-refine --sampling 6 -o ${tmpdir} vol001_mr_t0t1.list
+	run warp --fast --exploration 12 --grid-spacing 160 --accuracy 2 --refine 1 --delay-refine --sampling 6 -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
 	;;
     warpEnergy)
-	run warp -q --fast --exploration 8 --grid-spacing 160 --accuracy 1 --refine 1 --energy-weight 1e-1 -o ${tmpdir} vol001_mr_t0t1.list
+	run warp --fast --exploration 8 --grid-spacing 160 --accuracy 1 --refine 1 --energy-weight 1e-1 -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
 	;;
     warpEnergyRelax)
-	run warp -q --fast --exploration 8 --grid-spacing 160 --accuracy 1 --refine 1 --energy-weight 1e-1 --relax 1e-2 -o ${tmpdir} vol001_mr_t0t1.list
+	run warp --fast --exploration 8 --grid-spacing 160 --accuracy 1 --refine 1 --energy-weight 1e-1 --relax 1e-2 -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
 	;;
     warpJacobian)
 	export CMTK_NUM_THREADS=1
-	run warp -q --fast --exploration 12 --grid-spacing 160 --accuracy 2 --refine 1 --jacobian-weight 1e-1 --sampling 12 --omit-original-data -o ${tmpdir} vol001_mr_t0t1.list
+	run warp --fast --exploration 12 --grid-spacing 160 --accuracy 2 --refine 1 --jacobian-weight 1e-1 --sampling 12 --omit-original-data -o ${tmpdir} vol001_mr_t0t1.list
 	unset CMTK_NUM_THREADS
 	check_results registration
 	;;
     warpRigidity)
-	run warp -q --fast --exploration 12 --grid-spacing 160 --accuracy 2 --refine 1 --rigidity-weight 1e-1 --sampling 12 --omit-original-data -o ${tmpdir} vol001_mr_t0t1.list
+	run warp --fast --exploration 12 --grid-spacing 160 --accuracy 2 --refine 1 --rigidity-weight 1e-1 --sampling 12 --omit-original-data -o ${tmpdir} vol001_mr_t0t1.list
 	check_results registration
 	;;
     warpLabels)
-	run warp -q --fast --exploration 8 --grid-spacing 90 --accuracy 1 --refine 1 --class-ref label --class-flt label -o ${tmpdir} --initial parc1_parc2_9dof.xform parc1.hdr parc2.hdr
+	run warp --fast --exploration 8 --grid-spacing 90 --accuracy 1 --refine 1 --class-ref label --class-flt label -o ${tmpdir} --initial parc1_parc2_9dof.xform parc1.hdr parc2.hdr
 	check_results registration
 	;;
     warpxSingleLevel)
