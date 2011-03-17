@@ -32,7 +32,7 @@ Singular values:
 Parameter correlation matrix:
 1.00	0.00	
 0.00	0.00	
-
+Linear model fitting: 0 %
 
 Parameter normalization factors:
 0	11.180340

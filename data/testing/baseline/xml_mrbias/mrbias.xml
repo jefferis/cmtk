@@ -66,24 +66,6 @@ Output image path
 </index>
 
 </image>
-<boolean>
-<description>
-Write output image with floating point pixel data. If this is not given, the input data type is used.
-</description>
-<name>
-write_float
-</name>
-<label>
-write_float
-</label>
-<flag>
--F
-</flag>
-<longflag>
---write_float
-</longflag>
-
-</boolean>
 
 </parameters>
 <parameters>
@@ -337,10 +319,10 @@ step_min
 </parameters>
 <parameters advanced="true">
 <label>
-Bias Field I/O
+I/O
 </label>
 <description>
-Import and Output of Bias Fields
+Input and Output Options
 </description>
 <image type="scalar">
 <channel>
@@ -426,6 +408,24 @@ write_bias_mul
 </longflag>
 
 </image>
+<boolean>
+<description>
+Write output image with floating point pixel data. If this is not given, the input data type is used.
+</description>
+<name>
+write_float
+</name>
+<label>
+write_float
+</label>
+<flag>
+-F
+</flag>
+<longflag>
+--write_float
+</longflag>
+
+</boolean>
 
 </parameters>
 <parameters>

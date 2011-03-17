@@ -18,9 +18,13 @@ where
 
 == List of Supported Options ==
 
-; <tt>--verbose</tt> / <tt>-v</tt> : Be verbose
+=== Global Toolkit Options ===
 
-; <tt>--write-float</tt> / <tt>-F</tt> : Write output image with floating point pixel data. If this is not given, the input data type is used.
+; <tt>--verbose-level</tt> <tt><integer></tt> : Set verbosity level.
+
+; <tt>--verbose</tt> / <tt>-v</tt> : Increment verbosity level by 1.
+
+; <tt>--threads</tt> <tt><integer></tt> : Increment verbosity level by 1.
 
 === Bias Field Parameterization ===
 
@@ -52,7 +56,7 @@ where
 
 ; <tt>--step-min</tt> <tt><double></tt> : Minimum (final) search step size. '''[Default value: 0.1]'''
 
-=== Import and Output of Bias Fields ===
+=== Input and Output Options ===
 
 ; <tt>--import-bias-add</tt> <tt><image-path></tt> : Import additive bias field (disables optimization). '''[Default value: NONE]'''
 
@@ -61,6 +65,8 @@ where
 ; <tt>--write-bias-add</tt> <tt><image-path></tt> : File name for output of additive bias field. '''[Default value: NONE]'''
 
 ; <tt>--write-bias-mul</tt> <tt><image-path></tt> : File name for output of multiplicative bias field. '''[Default value: NONE]'''
+
+; <tt>--write-float</tt> / <tt>-F</tt> : Write output image with floating point pixel data. If this is not given, the input data type is used.
 
 === Image/Transformation Database ===
 

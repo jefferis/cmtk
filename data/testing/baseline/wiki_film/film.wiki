@@ -18,7 +18,13 @@ where
 
 == List of Supported Options ==
 
-; <tt>--verbose</tt> / <tt>-v</tt> : Verbose operation
+=== Global Toolkit Options ===
+
+; <tt>--verbose-level</tt> <tt><integer></tt> : Set verbosity level.
+
+; <tt>--verbose</tt> / <tt>-v</tt> : Increment verbosity level by 1.
+
+; <tt>--threads</tt> <tt><integer></tt> : Increment verbosity level by 1.
 
 === Input Options ===
 
