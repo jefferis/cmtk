@@ -93,7 +93,6 @@ doMain( const int argc, const char *argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Artifact Correction" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'F', "write-float" ), &OutputFloatImage, true, "Write output image with floating point pixel data. If this is not given, the input data type is used." );
 
     cl.BeginGroup( "Bias Field", "Bias Field Parameterization" );
     cl.AddOption( Key( 'A', "degree-add" ), &PolynomialDegreeAdd, "Polynomial degree for additive correction." );
@@ -118,9 +117,10 @@ doMain( const int argc, const char *argv[] )
     cl.AddOption( Key( "step-min" ), &StepMin, "Minimum (final) search step size." );
     cl.EndGroup();
 
-    cl.BeginGroup( "Bias Field I/O", "Output of Bias Fields" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );;
+    cl.BeginGroup( "Output", "Output Options" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );;
     cl.AddOption( Key( "write-bias-add" ), &FNameBiasFieldAdd, "File name for output of additive bias field." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     cl.AddOption( Key( "write-bias-mul" ), &FNameBiasFieldMul, "File name for output of multiplicative bias field." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddSwitch( Key( 'F', "write-float" ), &OutputFloatImage, true, "Write output image with floating point pixel data. If this is not given, the input data type is used." );
     cl.EndGroup();
     
 #ifdef CMTK_USE_SQLITE

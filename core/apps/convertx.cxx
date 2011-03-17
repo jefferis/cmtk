@@ -98,7 +98,9 @@ doMain( const int argc, const char* argv[] )
 
     typedef cmtk::CommandLine::Key Key;
 #ifdef CMTK_USE_SQLITE
+    cl.BeginGroup( "Database", "Image/Transformation Database" );
     cl.AddOption( Key( "db" ), &updateDB, "Path to image/transformation database that should be updated with the newly created image." );
+    cl.EndGroup();
 #endif
 
     cl.BeginGroup( "Input", "Input Image Controls" );
