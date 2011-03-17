@@ -31,7 +31,9 @@
 */
 
 #include "cmtkXformIO.h"
+
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkFileUtils.h>
 #include <System/cmtkMountPoints.h>
 
@@ -49,7 +51,7 @@ cmtk
 //@{
 
 Xform::SmartPtr 
-XformIO::Read( const char* path, const bool verbose )
+XformIO::Read( const char* path )
 {
   const char* realPath = MountPoints::Translate( path );
   
@@ -58,7 +60,7 @@ XformIO::Read( const char* path, const bool verbose )
     case FILEFORMAT_NRRD: 
     {
 #ifdef CMTK_BUILD_NRRD
-    return Self::ReadNrrd( realPath, verbose );
+    return Self::ReadNrrd( realPath );
 #else
     StdErr << "ERROR: " << realPath << " is a Nrrd file, but Nrrd support is not enabled.\n"
 	   << "  Please re-configure software using either '--with-nrrd' or '--with-nrrd-teem' switch.\n";
@@ -69,10 +71,7 @@ XformIO::Read( const char* path, const bool verbose )
       return AffineXformITKIO::Read( path );
     case FILEFORMAT_STUDYLIST: 
     {
-    if ( verbose ) 
-      {
-      StdOut << "Reading transformation from studylist " << realPath << "\n";
-      }
+    DebugOutput( 1 ) << "Reading transformation from studylist " << realPath << "\n";
     
     TypedStreamStudylist studylist( realPath );
     if ( studylist.GetWarpXform() )
@@ -82,10 +81,7 @@ XformIO::Read( const char* path, const bool verbose )
     }
     case FILEFORMAT_TYPEDSTREAM: 
     {
-    if ( verbose ) 
-      {
-      StdOut << "Reading transformation from typedstream file " << realPath << "\n";
-      }
+    DebugOutput( 1 ) << "Reading transformation from typedstream file " << realPath << "\n";
     
     ClassStream stream( realPath, ClassStream::READ );
     WarpXform* warpXform;
@@ -114,7 +110,7 @@ XformIO::Read( const char* path, const bool verbose )
 
 void 
 XformIO::Write
-( const Xform* xform, const char *path, const bool verbose )
+( const Xform* xform, const char *path )
 {
   FileFormatID fileFormat = FILEFORMAT_TYPEDSTREAM;
 
@@ -141,7 +137,7 @@ XformIO::Write
     {
     case FILEFORMAT_NRRD:
 #ifdef CMTK_BUILD_NRRD
-      WriteNrrd( xform, absolutePath, verbose );
+      WriteNrrd( xform, absolutePath );
 #else
       StdErr << "ERROR: XformIO::Write -- Nrrd support not configured.\n";
 #endif

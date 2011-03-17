@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -52,7 +52,7 @@ cmtk
 //@{
 
 Xform::SmartPtr
-XformIO::ReadNrrd( const char* path, const bool )
+XformIO::ReadNrrd( const char* path )
 {
   DeformationField::SmartPtr dfield( NULL );
   try 
@@ -195,13 +195,13 @@ XformIO::ReadNrrd( const char* path, const bool )
 
 void 
 XformIO::WriteNrrd
-( const Xform* xform, const char *path, const bool )
+( const Xform* xform, const char *path )
 {
   const DeformationField* dfield = dynamic_cast<const DeformationField*>( xform );
   if ( ! dfield )
     {
     StdErr << "ERROR: XformIO::WriteNrrd can only write DeformationField objects so far.\n"
-	      << "       No data was written.\n";
+	   << "       No data was written.\n";
     return;
     }
 

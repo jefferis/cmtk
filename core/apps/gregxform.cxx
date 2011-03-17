@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 
@@ -51,8 +52,6 @@ bool NoCheck = false;
 bool Forward = false;
 
 const char* StudyList = NULL;
-
-bool Verbose = false;
 
 // Greg's additions: option to calculate jacobian at given point
 bool Jacobian = false;
@@ -96,7 +95,6 @@ doMain( const int argc, const char *argv[] )
 					\n\tNB: JDet is >1 if the sample volume is larger than the reference" );
     cl.AddSwitch( Key( 'J', "normalised-jacobian" ), &NormalisedJacobian, true, "Calculate jacobian determinant normalised by global scaling factor (default: false)" );
     cl.AddSwitch( Key( 'g', "return-global-scaling" ), &ReturnGlobalScaling, true, "Return global scaling factor ie the scaling due to initial affine" );
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Print each point to STDERR (as well as stdout)" );
 
     cl.Parse( argc, argv );
 
@@ -108,7 +106,7 @@ doMain( const int argc, const char *argv[] )
     throw cmtk::ExitException( 1 );
     }
 
-  cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( StudyList, Verbose ) );
+  cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( StudyList ) );
   if ( ! xform )
     {
     cmtk::StdErr << "ERROR: could not read transformation\n";
@@ -137,7 +135,7 @@ doMain( const int argc, const char *argv[] )
   cmtk::Xform::SmartPtr fallbackInverseXform;
   if ( FallbackInversePath )
     {
-    fallbackInverseXform = cmtk::Xform::SmartPtr( cmtk::XformIO::Read( FallbackInversePath, Verbose ) );
+    fallbackInverseXform = cmtk::Xform::SmartPtr( cmtk::XformIO::Read( FallbackInversePath ) );
     }
   
   // GJ: Now open files if required
@@ -256,20 +254,17 @@ doMain( const int argc, const char *argv[] )
       if ( success || NoCheck ) 
 	{
 	const float outxyz[3]={(float) v[0],(float) v[1], (float) v[2]};
-	if (Verbose) 
-	  {
-	  if ( success )
-	    {
-	    fprintf( stdout, "%f %f %f\n",  outxyz[0], outxyz[1], outxyz[2] );
-	    }
-	  else
-	    {
-	    fprintf( stdout, "%f %f %f E %f\n",  outxyz[0], outxyz[1], outxyz[2], error );
-	    }
-	  }
 	if (Binary)
 	  {
 	  fwrite( outxyz, sizeof(float), 3, outfile );
+	  if ( success )
+	    {
+	    cmtk::DebugOutput( 1 ).GetStream().printf( "%f %f %f\n",  outxyz[0], outxyz[1], outxyz[2] );
+	    }
+	  else
+	    {
+	    cmtk::DebugOutput( 1 ).GetStream().printf( "%f %f %f E %f\n",  outxyz[0], outxyz[1], outxyz[2], error );
+	    }
 	  } 
 	else
 	  {

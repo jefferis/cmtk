@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -41,8 +41,6 @@
 #include <IO/cmtkClassStream.h>
 #include <IO/cmtkClassStreamAffineXform.h>
 
-bool Verbose = false;
-
 const char* OutputName = "concat.xform";
 bool AppendToOutput = false;
 bool InvertOutput = false;
@@ -60,8 +58,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] x0 [x1 ...] \n WHERE x0 ... xN is [{-i,--inverse}] affine transformation #" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-
     cl.AddOption( Key( 'o', "outfile" ), &OutputName, "Output transformation." );
     cl.AddSwitch( Key( 'a', "append" ), &AppendToOutput, true, "Append to output file [default: overwrite]." );
     cl.AddSwitch( Key( 'I', "invert-output" ), &InvertOutput, true, "Invert concatenated transformation before output [default: no]." );
@@ -75,7 +71,7 @@ doMain( const int argc, const char* argv[] )
       if ( inverse ) 
 	next = cl.GetNext();
       
-      cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( next, Verbose ) );
+      cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( next ) );
       if ( ! xform ) 
 	{
 	cmtk::StdErr << "ERROR: could not read transformation from " << next << "\n";
