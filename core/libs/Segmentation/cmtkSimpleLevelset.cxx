@@ -37,6 +37,7 @@
 #include <Base/cmtkUnits.h>
 
 #include <System/cmtkProgress.h>
+#include <System/cmtkDebugOutput.h>
 
 #ifdef CMTK_BUILD_DEMO
 #  include <IO/cmtkVolumeIO.h>
@@ -59,7 +60,7 @@ cmtk::SimpleLevelset
 
 void
 cmtk::SimpleLevelset
-::Evolve( const int numberOfIterations, const bool forceIterations, const bool verbose )
+::Evolve( const int numberOfIterations, const bool forceIterations )
 {
   const size_t numberOfPixels = this->m_Volume->GetNumberOfPixels();
   size_t nInsideOld = 0, nInside = 1;
@@ -92,10 +93,7 @@ cmtk::SimpleLevelset
     const Types::DataItem mInside = insideSum / nInside;
     const Types::DataItem mOutside = outsideSum / nOutside;
 
-    if ( verbose )
-      {
-      StdErr << it << " IN: " << nInside << "  " << mInside << "  OUT: " << nOutside << "  " << mOutside << "\r";
-      }
+    DebugOutput( 1 ) << it << " IN: " << nInside << "  " << mInside << "  OUT: " << nOutside << "  " << mOutside << "\r";
     
 #pragma omp parallel for
     for ( size_t n = 0; n < numberOfPixels; ++n )

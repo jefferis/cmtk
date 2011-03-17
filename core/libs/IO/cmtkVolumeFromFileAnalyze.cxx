@@ -33,6 +33,7 @@
 #include "cmtkVolumeFromFile.h"
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkCompressedStream.h>
 
 #include <IO/cmtkVolumeIO.h>
@@ -265,7 +266,7 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
 
 void
 VolumeFromFile::WriteAnalyzeHdr
-( const char* pathHdr, const UniformVolume& volume, const bool verbose )
+( const char* pathHdr, const UniformVolume& volume )
 {
   UniformVolume::SmartPtr writeVolume( volume.Clone() );
   if ( writeVolume->MetaKeyExists( META_SPACE_ORIGINAL ) )
@@ -295,10 +296,7 @@ VolumeFromFile::WriteAnalyzeHdr
   UniformVolume::SmartPtr reorientedVolume;
   if ( strcmp( writeOrientation, currentOrientation.c_str() ) )
     {
-    if ( verbose )
-      {
-      StdOut << "INFO: WriteAnalyzeHdr will reorient output volume from '" << currentOrientation << "' to '" << writeOrientation << "'\n";
-      }
+    DebugOutput( 1 ) << "INFO: WriteAnalyzeHdr will reorient output volume from '" << currentOrientation << "' to '" << writeOrientation << "'\n";
     reorientedVolume = UniformVolume::SmartPtr( volume.GetReoriented( writeOrientation ) );
     writeVolume = reorientedVolume;
     }

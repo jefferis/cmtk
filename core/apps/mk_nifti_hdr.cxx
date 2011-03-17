@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkCompressedStream.h>
@@ -43,8 +44,6 @@
 
 #include <Base/cmtkTypes.h>
 #include <Base/cmtkAffineXform.h>
-
-bool Verbose = false;
 
 int DimsX = 0;
 int DimsY = 0;
@@ -95,8 +94,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] [output.nii]" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode." );
-
     cl.AddCallback( Key( 'D', "dims" ), SetDims, "Set dimensions in voxels. Provided as 'DimsX,DimsY,DimsZ'" );
     cl.AddCallback( Key( 'V', "voxel" ), SetDeltas, "Set voxel size. Provided as 'PixX,PixY,PixZ' [in mm]" );
 
@@ -149,11 +146,7 @@ doMain( const int argc, const char* argv[] )
   // set offset for binary file.
   if ( !ImportHdrFile || PutOffset )
     {
-    if ( Verbose )
-      {
-      cmtk::StdOut << "Setting image file offset\n";
-      }
-
+    cmtk::DebugOutput( 1 ) << "Setting image file offset\n";
     header.vox_offset = Offset;
     }
 
@@ -201,10 +194,7 @@ doMain( const int argc, const char* argv[] )
   
   if ( !ImportHdrFile || DataType != cmtk::TYPE_NONE )
     {
-    if ( Verbose )
-      {
-      cmtk::StdOut << "Setting data type\n";
-      }
+    cmtk::DebugOutput( 1 ) << "Setting data type\n";
 
     switch ( DataType ) 
       {
@@ -244,11 +234,7 @@ doMain( const int argc, const char* argv[] )
 
   if ( Description )
     {
-    if ( Verbose )
-      {
-      cmtk::StdOut << "Setting image description\n";
-      }
-    
+    cmtk::DebugOutput( 1 ) << "Setting image description\n";    
     strncpy( header.descrip, Description, 80 );
     }
 

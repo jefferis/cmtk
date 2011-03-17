@@ -107,7 +107,6 @@ ElasticRegistrationCommandLine
   Studylist = Protocol = Time = NULL;
 
   this->m_OutputIntermediate = 0;
-  Verbose = 0;
 
   InputStudylist = NULL;
   const char *initialTransformationFile = NULL;
@@ -131,11 +130,6 @@ ElasticRegistrationCommandLine
     cl.SetProgramInfo( CommandLine::PRG_CATEG, "CMTK.Registration" );
 
     typedef CommandLine::Key Key;
-    cl.BeginGroup( "Console", "Console output control" )->SetProperties( CommandLine::PROPS_NOXML );
-    cl.AddSwitch( Key( 'v', "verbose" ), &this->Verbose, true, "Verbose peration" );
-    cl.AddSwitch( Key( 'q', "quiet" ), &Verbose, false, "Quiet mode" );
-    cl.EndGroup();
-
     cl.BeginGroup( "TransformationIO", "Transformation import/export" );
     cl.AddOption( Key( "initial" ), &initialTransformationFile, "Initialize transformation from given path" )->SetProperties( CommandLine::PROPS_XFORM );
     cl.AddOption( Key( "write-itk-xform" ), &this->m_OutputPathITK, "Output path for final transformation in ITK format" )
@@ -252,15 +246,12 @@ ElasticRegistrationCommandLine
     {
     InputStudylist = clArg1;
     
-    if ( Verbose )
-      {
-      StdOut.printf( "Reading input studylist %s.\n", InputStudylist );
-      }
-    
+    DebugOutput( 1 ) << "Reading input studylist " << InputStudylist << "\n";
+  
     ClassStream classStream( MountPoints::Translate(InputStudylist),"registration", ClassStream::READ );
     if ( ! classStream.IsValid() ) 
       {
-      std::cerr << "Could not open studylist archive " << InputStudylist << ".\n";
+      StdErr << "ERROR: Could not open studylist archive " << InputStudylist << ".\n";
       exit( 1 );
       }
     

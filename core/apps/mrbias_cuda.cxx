@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 #include <System/cmtkProgressConsole.h>
@@ -50,8 +51,6 @@
 #ifdef CMTK_USE_SQLITE
 #  include <Registration/cmtkImageXformDB.h>
 #endif
-
-bool Verbose = false;
 
 const char* FNameBiasFieldAdd = NULL;
 const char* FNameBiasFieldMul = NULL;
@@ -94,7 +93,6 @@ doMain( const int argc, const char *argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Artifact Correction" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Be verbose" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
     cl.AddSwitch( Key( 'F', "write-float" ), &OutputFloatImage, true, "Write output image with floating point pixel data. If this is not given, the input data type is used." );
 
     cl.BeginGroup( "Bias Field", "Bias Field Parameterization" );
@@ -145,7 +143,7 @@ doMain( const int argc, const char *argv[] )
   // Instantiate programm progress indicator.
   cmtk::ProgressConsole progressIndicator( "Intensity Bias Field Correction" );
 
-  cmtk::UniformVolume::SmartPtr inputImage( cmtk::VolumeIO::ReadOriented( FNameInputImage, Verbose ) );
+  cmtk::UniformVolume::SmartPtr inputImage( cmtk::VolumeIO::ReadOriented( FNameInputImage ) );
   if ( ! inputImage || ! inputImage->GetData() )
     {
     cmtk::StdErr << "ERROR: Could not read input image " << FNameInputImage << "\n";
@@ -155,7 +153,7 @@ doMain( const int argc, const char *argv[] )
   cmtk::UniformVolume::SmartPtr maskImage;
   if ( FNameMaskImage )
     {
-    maskImage = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( FNameMaskImage, Verbose ) );
+    maskImage = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( FNameMaskImage ) );
     if ( ! maskImage || ! maskImage->GetData() )
       {
       cmtk::StdErr << "ERROR: Could not read mask image " << FNameMaskImage << "\n";
@@ -209,10 +207,7 @@ doMain( const int argc, const char *argv[] )
       }
     functional->GetParamVector( v );
     
-    if ( Verbose )
-      {
-      cmtk::StdOut.printf( "Estimating bias field with order %d multiplicative / %d additive polynomials.\nNumber of parameters: %d\n", degreeMul, degreeAdd, v.Dim );
-      }
+    cmtk::DebugOutput( 1 ).GetStream().printf( "Estimating bias field with order %d multiplicative / %d additive polynomials.\nNumber of parameters: %d\n", degreeMul, degreeAdd, v.Dim );
     
     if ( (PolynomialDegreeAdd > 0) || (PolynomialDegreeMul > 0) )
       {
@@ -243,7 +238,7 @@ doMain( const int argc, const char *argv[] )
       cmtk::TypedArray::SmartPtr convertedData( outputImage->GetData()->Convert( inputImage->GetData()->GetType() ) );
       outputImage->SetData( convertedData );
       }
-    cmtk::VolumeIO::Write( *outputImage, FNameOutputImage, Verbose );
+    cmtk::VolumeIO::Write( *outputImage, FNameOutputImage );
 
 #ifdef CMTK_USE_SQLITE
     if ( updateDB )
@@ -257,7 +252,7 @@ doMain( const int argc, const char *argv[] )
   if ( FNameBiasFieldAdd && PolynomialDegreeAdd )
     {
     cmtk::UniformVolume::SmartPtr biasField( functional->GetBiasFieldAdd( true /*completeImage*/ ) );
-    cmtk::VolumeIO::Write( *biasField, FNameBiasFieldAdd, Verbose );
+    cmtk::VolumeIO::Write( *biasField, FNameBiasFieldAdd );
 
 #ifdef CMTK_USE_SQLITE
     if ( updateDB )
@@ -271,7 +266,7 @@ doMain( const int argc, const char *argv[] )
   if ( FNameBiasFieldMul && PolynomialDegreeMul )
     {
     cmtk::UniformVolume::SmartPtr biasField( functional->GetBiasFieldMul( true /*completeImage*/ ) );
-    cmtk::VolumeIO::Write( *biasField, FNameBiasFieldMul, Verbose );
+    cmtk::VolumeIO::Write( *biasField, FNameBiasFieldMul );
 
 #ifdef CMTK_USE_SQLITE
     if ( updateDB )

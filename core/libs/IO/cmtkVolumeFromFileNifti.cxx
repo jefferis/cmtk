@@ -261,7 +261,7 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
 
 void
 VolumeFromFile::WriteNifti
-( const char* path, const UniformVolume& volume, const bool )
+( const char* path, const UniformVolume& volume )
 {
   bool detachedHeader = false;
   bool forceCompressed = false;

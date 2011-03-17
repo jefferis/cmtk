@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 
@@ -42,8 +43,6 @@
 #include <Base/cmtkTypes.h>
 
 #include <stdio.h>
-
-bool Verbose = false;
 
 int DimsX = 0;
 int DimsY = 0;
@@ -94,8 +93,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] [output.nii]" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode." );
-
     cl.AddCallback( Key( 'D', "dims" ), SetDims, "Set dimensions in voxels" );
     cl.AddCallback( Key( 'V', "voxel" ), SetDeltas, "Set voxel size in [mm]" );
 
@@ -146,10 +143,7 @@ doMain( const int argc, const char* argv[] )
       fread( buffer, sizeof( buffer ), sizeof( *buffer ), hdrIn );
       fclose( hdrIn );
 
-      if ( Verbose )
-	{
-	cmtk::StdOut << "Imported header file " << ImportHdrFile << "\n";
-	}
+      cmtk::DebugOutput( 1 ) << "Imported header file " << ImportHdrFile << "\n";
       }
     else 
       {
@@ -173,10 +167,7 @@ doMain( const int argc, const char* argv[] )
   // dimensions
   if ( !ImportHdrFile || PutDims )
     {
-    if ( Verbose )
-      {
-      cmtk::StdOut << "Setting image dimensions\n";
-      }
+    cmtk::DebugOutput( 1 ) << "Setting image dimensions\n";
 
     header.StoreField<short>( 42, DimsX );
     header.StoreField<short>( 44, DimsY );
@@ -187,11 +178,8 @@ doMain( const int argc, const char* argv[] )
 
   if ( !ImportHdrFile || DataType != cmtk::TYPE_NONE )
     {
-    if ( Verbose )
-      {
-      cmtk::StdOut << "Setting data type\n";
-      }
-
+    cmtk::DebugOutput( 1 ) << "Setting data type\n";
+    
     switch ( DataType ) 
       {
       default:
@@ -223,10 +211,7 @@ doMain( const int argc, const char* argv[] )
 
   if ( !ImportHdrFile || PutDeltas )
     {
-    if ( Verbose )
-      {
-      cmtk::StdOut << "Setting pixel size\n";
-      }
+    cmtk::DebugOutput( 1 ) << "Setting pixel size\n";
 
     header.StoreField<float>( 80, (float)DeltaX );
     header.StoreField<float>( 84, (float)DeltaY );
@@ -242,21 +227,14 @@ doMain( const int argc, const char* argv[] )
   // set offset for binary file.
   if ( !ImportHdrFile || PutOffset )
     {
-    if ( Verbose )
-      {
-      cmtk::StdOut << "Setting image file offset\n";
-      }
-
+    cmtk::DebugOutput( 1 ) << "Setting image file offset\n";
     header.StoreField<float>( 108, Offset );
     }
 
   // slice orientation
   if ( !ImportHdrFile || Orientation != cmtk::ANALYZE_UNKNOWN )
     {
-    if ( Verbose )
-      {
-      cmtk::StdOut << "Setting image orientation\n";
-      }
+    cmtk::DebugOutput( 1 ) << "Setting image orientation\n";
     header.StoreField<byte>( 252, Orientation );
     }
 
@@ -273,11 +251,7 @@ doMain( const int argc, const char* argv[] )
   
   if ( Description )
     {
-    if ( Verbose )
-      {
-      cmtk::StdOut << "Setting image description\n";
-      }
-
+    cmtk::DebugOutput( 1 ) << "Setting image description\n";
     header.StoreFieldString( 148, Description, 80 );
     }
 

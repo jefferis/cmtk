@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 
@@ -63,8 +64,6 @@
 #else
 typedef long int uint64_t;
 #endif
-
-bool verbose = false;
 
 std::list<const char*> fileListRef;
 std::list<const char*> fileListFlt;
@@ -229,8 +228,7 @@ DoRegistration()
   cmtk::CoordinateVector params;
   for ( int downsample = downsampleFrom; !refinementSchedule.empty(); refinementSchedule.pop() )
     {
-    if ( verbose )
-      cmtk::StdOut.printf( "Downsampling stage 1:%d\n", downsample );
+    cmtk::DebugOutput( 1 ) << "Downsampling stage 1:" << downsample << "\n";
 
     functional->ClearAllChannels();
     if ( (downsample == 0) || ( (downsample==1) && (smoothSigmaFactor==0) ) )
@@ -262,13 +260,11 @@ DoRegistration()
       refinementSchedule.pop();
       }
     
-    if ( verbose )
-      cmtk::StdOut.printf( "Number of parameters is %d\n", functional->VariableParamVectorDim() );
+    cmtk::DebugOutput( 1 ) << "Number of parameters is" << functional->VariableParamVectorDim() << "\n";
     
-    if ( optimizer.Optimize( params, initialStepSize * downsample * minPixelSize, finalStepSize * downsample * minPixelSize )
-	 != cmtk::CALLBACK_OK )
+    if ( optimizer.Optimize( params, initialStepSize * downsample * minPixelSize, finalStepSize * downsample * minPixelSize )!= cmtk::CALLBACK_OK )
       break;
-
+    
     if ( refinementSchedule.front() & 1 )
       {
       --downsample;
@@ -301,8 +297,6 @@ doMain( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Image Registration" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &verbose, true, "Verbose mode" );
-
     cl.AddOption( Key( 'o', "out-archive" ), &outArchive, "Output archive path." );
 
     cl.AddOption( Key( 'd', "downsample-from" ), &downsampleFrom, "Initial downsampling factor [1]." );

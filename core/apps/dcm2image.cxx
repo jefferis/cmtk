@@ -33,6 +33,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 
@@ -84,8 +85,6 @@ int progress = 0;
 
 bool Recursive = false;
 int SortFiles = 1;
-
-bool Verbose = false;
 
 bool WithExtensionsGE = false;
 const char *const GERawDataTypeString[4] = { "magn", "phas", "real", "imag" };
@@ -348,40 +347,34 @@ VolumeDCM::WriteToArchive( const std::string& fname ) const
   if ( volume )
     {
     cmtk::VolumeIO::Write( *volume, fname.c_str() );
-    if ( Verbose )
-      {
-      cmtk::StdOut.printf( "\nOutput file:%s\nImage size: %3dx%3dx%3d pixels\nPixel size: %.4fx%.4fx%.4f mm\n\n", 
-			   fname.c_str(), volume->m_Dims[0], volume->m_Dims[1], volume->m_Dims[2], volume->m_Delta[0], volume->m_Delta[1], volume->m_Delta[2] );
-      }
+    cmtk::DebugOutput( 1 ).GetStream().printf( "\nOutput file:%s\nImage size: %3dx%3dx%3d pixels\nPixel size: %.4fx%.4fx%.4f mm\n\n", 
+					       fname.c_str(), volume->m_Dims[0], volume->m_Dims[1], volume->m_Dims[2], volume->m_Delta[0], volume->m_Delta[1], volume->m_Delta[2] );
     }
   else
     {
-    cmtk::StdOut << "No valid volume was read.\n";
+    cmtk::StdErr << "WARNING: No valid volume was read.\n";
     }
   
-  if ( Verbose )
+  cmtk::DebugOutput( 1 ) << "DICOM Information: \n"
+			 << "  Description: " << first->SeriesDescription << "\n"
+			 << "  Series:      " << first->SeriesUID << "\n"
+			 << "  Study:       " << first->StudyUID << "\n"
+			 << "  Acquisition: " << first->AcquisitionNumber << "\n"
+			 << "  TR / TE:     " << first->RepetitionTime << "ms /" << first->EchoTime << "ms\n"
+			 << "  Position:    " << first->ImagePositionPatient << "\n"
+			 << "  Orientation: " << first->ImageOrientationPatient << "\n";
+  
+  if ( WithExtensionsGE )
     {
-    cmtk::StdOut << "DICOM Information: \n";
-    cmtk::StdOut << "  Description: " << first->SeriesDescription << "\n";
-    cmtk::StdOut << "  Series:      " << first->SeriesUID << "\n";
-    cmtk::StdOut << "  Study:       " << first->StudyUID << "\n";
-    cmtk::StdOut << "  Acquisition: " << first->AcquisitionNumber << "\n";
-    cmtk::StdOut << "  TR / TE:     " << first->RepetitionTime << "ms /" << first->EchoTime << "ms\n";
-    cmtk::StdOut << "  Position:    " << first->ImagePositionPatient << "\n";
-    cmtk::StdOut << "  Orientation: " << first->ImageOrientationPatient << "\n";
-
-    if ( WithExtensionsGE )
-      {
-      cmtk::StdOut << "  GE Raw Data Type: " << first->GERawDataType << "\n";
-      }
-    
-    cmtk::StdOut << "\nImage List:\n";
-    for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
-      {
-      cmtk::StdOut << (*it)->fname << " ";
-      }
-    cmtk::StdOut << "\n====================================================\n";
+    cmtk::DebugOutput( 1 ) << "  GE Raw Data Type: " << first->GERawDataType << "\n";
     }
+    
+  cmtk::DebugOutput( 1 ) << "\nImage List:\n";
+  for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
+    {
+    cmtk::DebugOutput( 1 ) << (*it)->fname << " ";
+    }
+  cmtk::DebugOutput( 1 ) << "\n====================================================\n";
 }
 
 class VolumeList : 
@@ -652,8 +645,6 @@ doMain ( const int argc, const char *argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] directory" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Verbose mode" );
-    
     cl.BeginGroup( "Input", "Input Options");
     cl.AddSwitch( Key( 'r', "recurse" ), &Recursive, true, "Recurse into directories" );
     cl.AddSwitch( Key( "ge-extensions" ), &WithExtensionsGE, true, "Enable GE extensions (e.g., detect image type magnitude vs. complex)" );

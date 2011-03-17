@@ -212,7 +212,7 @@ VolumeFromFile::ReadNRRD( const char* pathHdr )
 
 void
 VolumeFromFile::WriteNRRD
-( const char* pathHdr, const UniformVolume& volume, const bool )
+( const char* pathHdr, const UniformVolume& volume )
 {
   UniformVolume::SmartPtr writeVolume( volume.Clone() );
   if ( writeVolume->MetaKeyExists( META_SPACE_ORIGINAL ) )

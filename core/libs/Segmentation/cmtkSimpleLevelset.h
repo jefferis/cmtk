@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -80,8 +80,7 @@ public:
 
   /// Levelset evolution.
   virtual void Evolve( const int numberOfIterations /*!< Number of iterations */, 
-		       const bool forceIterations = false /*!< If this is set, evolution continues until maximum iteration count is reached, even when convergence is detected */,
-		       const bool verbose = false /*!< Verbose flag */ );
+		       const bool forceIterations = false /*!< If this is set, evolution continues until maximum iteration count is reached, even when convergence is detected */ );
 
   /** Return levelset, optionally converting to a binarized byte pixel representation.
    *\warning If the levelset is retrieved with the "binarize" flag set, then the

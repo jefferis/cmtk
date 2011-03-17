@@ -59,7 +59,6 @@ public:
 
   /// Constructors: link to functional.
   GroupwiseRegistrationOutput( FunctionalPointer& functional = FunctionalPointer::Null ) :
-    m_Verbose( false ),
     m_ExistingTemplatePath( false ),
     m_OutputRootDirectory( NULL )
   {
@@ -99,9 +98,6 @@ public:
 private:
   /// Pointer to functional.
   FunctionalPointer m_Functional;
-
-  /// Verbosity flag.
-  bool m_Verbose;
 
   /// Flag for existing vs. generated template path.
   bool m_ExistingTemplatePath;

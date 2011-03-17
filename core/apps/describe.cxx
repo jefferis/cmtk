@@ -49,8 +49,6 @@
 #    include <mpi.h>
 #endif
 
-bool Verbose = false;
-
 const char* ReadOrientation = NULL;
 
 bool MachineReadable = false;
@@ -84,7 +82,6 @@ doMain( int argc, char *argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] imageFile0 [imageFile1 ...]" );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'v', "verbose" ), &Verbose, true, "Be verbose" );
     cl.AddSwitch( Key( 'm', "machine-readable" ), &MachineReadable, true, "Print output in format that is easy to parse automatically." );
     cl.AddSwitch( Key( "read-ras" ), &ReadOrientation, "RAS", "Read image in RAS orientation" );
     cl.AddCallback( Key( "probe-index" ), CallbackProbeIndex, "Add pixel index for probing." );

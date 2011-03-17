@@ -37,9 +37,10 @@
 #include <Registration/cmtkElasticRegistration.h>
 #include <Registration/cmtkReformatVolume.h>
 
+#include <System/cmtkDebugOutput.h>
+
 cmtk::AtlasSegmentation::AtlasSegmentation
-( UniformVolume::SmartPtr& targetImage, UniformVolume::SmartPtr& atlasImage, UniformVolume::SmartPtr& atlasLabels )  
-  : m_Verbose( false ),
+( UniformVolume::SmartPtr& targetImage, UniformVolume::SmartPtr& atlasImage, UniformVolume::SmartPtr& atlasLabels ) :
     m_Fast( false ),
     m_TargetImage( targetImage ),
     m_AtlasImage( atlasImage ),
@@ -67,16 +68,9 @@ cmtk::AtlasSegmentation
 
   ar.SetUseOriginalData( !this->m_Fast );
   
-  if ( this->m_Verbose ) 
-    {
-    StdOut << "Affine registration...";
-    StdOut.flush();
-    }
+  (DebugOutput( 1 ) << "Affine registration...").flush();
   ar.Register();
-  if ( this->m_Verbose ) 
-    {
-    StdOut << " done.\n";
-    }
+  DebugOutput( 1 ) << " done.\n";
   
   this->m_AffineXform = ar.GetTransformation();
 }
@@ -106,16 +100,10 @@ cmtk::AtlasSegmentation
   er.SetAccuracy( .1 * this->m_TargetImage->GetMinDelta() );
   er.SetSampling( 2 * this->m_TargetImage->GetMaxDelta() );  
   
-  if ( this->m_Verbose ) 
-    {
-    StdOut << "Nonrigid registration...";
-    StdOut.flush();
-    }
+  (DebugOutput( 1 ) << "Nonrigid registration...").flush();
   er.Register();
-  if ( this->m_Verbose ) 
-    {
-    StdOut << " done.\n";
-    }
+  DebugOutput( 1 ) << " done.\n";
+
   this->m_WarpXform = er.GetTransformation();
 }
 

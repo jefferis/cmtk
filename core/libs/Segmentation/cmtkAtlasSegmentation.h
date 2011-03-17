@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -75,12 +76,6 @@ public:
     return this->m_LabelMap;
   }
 
-  /// Set verbose flag.
-  void SetVerbose( const bool verbose )
-  {
-    this->m_Verbose = verbose;
-  }
-
   /// Set fast flag.
   void SetFast( const bool fast )
   {
@@ -88,9 +83,6 @@ public:
   }
 
 private:
-  /// Verbose flag.
-  bool m_Verbose;
-
   /// Flag for "fast" computation.
   bool m_Fast;
 

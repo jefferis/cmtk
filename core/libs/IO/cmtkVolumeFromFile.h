@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -76,10 +76,10 @@ public:
   static const UniformVolume::SmartPtr ReadNifti( const char* pathHdr, const bool detached, const bool readData = true );
 
   /// Write Analyze 7.5 file (separate header file).
-  static void WriteAnalyzeHdr( const char* pathHdr, const UniformVolume& volume, const bool verbose = false );
+  static void WriteAnalyzeHdr( const char* pathHdr, const UniformVolume& volume );
 
   /// Write Nifti file.
-  static void WriteNifti( const char* pathImg, const UniformVolume& volume, const bool verbose = false );
+  static void WriteNifti( const char* pathImg, const UniformVolume& volume );
 
   /// Write MetaImage file.
   static void WriteMetaImage( const char* pathHdr, const UniformVolume& volume );
@@ -89,7 +89,7 @@ public:
   static const UniformVolume::SmartPtr ReadNRRD( const char* path );
 
   /// Write NRRD file.
-  static void WriteNRRD( const char* pathHdr, const UniformVolume& volume, const bool verbose = false );
+  static void WriteNRRD( const char* pathHdr, const UniformVolume& volume );
 #else
   /// Read NRRD file.
   static const UniformVolume::SmartPtr ReadNRRD( const char* ) 
