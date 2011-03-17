@@ -52,8 +52,8 @@ CommandLine::CommandLine( const int properties )
     ArgV( NULL ),
     m_Properties( properties )
 {
-  this->BeginGroup( "MAIN", "Main Options" );
   this->SetDefaultInfo();    
+  this->BeginGroup( "MAIN", "Main Options" );
 }
 
 CommandLine::~CommandLine()
@@ -79,7 +79,7 @@ CommandLine::SetDefaultInfo()
   this->m_ProgramInfo[PRG_DOCUM] = "https://neuro.sri.com/cmtk/wiki/";
   this->m_ProgramInfo[PRG_VERSN] = CMTK_VERSION_STRING;
 
-  this->BeginGroup( "GLOBAL", "Global Toolkit Options" );
+  this->BeginGroup( "GLOBAL", "Global Toolkit Options" )->SetProperties( Self::PROPS_NOXML );
   this->AddCallback( Self::Key( "verbose-level" ), &DebugOutput::SetGlobalLevel, "Set verbosity level." );
   this->AddCallback( Self::Key( 'v', "verbose" ), &DebugOutput::IncGlobalLevel, "Increment verbosity level by 1." );
   this->AddCallback( Self::Key( "threads" ), &Threads::SetNumberOfThreads, "Increment verbosity level by 1." );
