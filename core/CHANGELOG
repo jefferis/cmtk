@@ -1,5 +1,10 @@
 Release CMTK-1.7.0:
 
+(r3003) Improved: CMTK now employs a toolkit-wide, centralized, fine-grain
+    framework for diagnostic outputs of user-defined detail level. Every
+    command line tool supports the new "--verbose-level" option; output
+    previously generated using the deprecated "--verbose" option is at level
+    "1" and can thus be enabled by "--verbose-level 1".
 (r2974) Added: initial support for Grand Central Dispatch, including GCD-based
     backend for thread pool parallel model.
 (r2919) Added: regional image filters, such as mean, variance, and third
