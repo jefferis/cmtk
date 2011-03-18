@@ -82,7 +82,10 @@ CommandLine::SetDefaultInfo()
   this->BeginGroup( "GLOBAL", "Global Toolkit Options" )->SetProperties( Self::PROPS_NOXML );
   this->AddCallback( Self::Key( "help" ), &Self::CallbackInternal, "Write list of command line options to standard output." );
   this->AddCallback( Self::Key( "wiki" ), &Self::CallbackInternal, "Write list of command line options to standard output in MediaWiki markup." );
-  this->AddCallback( Self::Key( "xml" ), &Self::CallbackInternal, "Write command line syntax specification in XML markup (for Slicer integration)." );
+
+  if (! this->m_Properties & PROPS_NOXML ) 
+    this->AddCallback( Self::Key( "xml" ), &Self::CallbackInternal, "Write command line syntax specification in XML markup (for Slicer integration)." );
+
   this->AddCallback( Self::Key( "version" ), &Self::CallbackInternal, "Write toolkit version to standard output." );
   this->AddCallback( Self::Key( "echo" ), &Self::CallbackInternal, "Write the current command line to standard output." );
   this->AddCallback( Self::Key( "verbose-level" ), &DebugOutput::SetGlobalLevel, "Set verbosity level." );
@@ -338,19 +341,17 @@ CommandLine::PrintHelp
 
   for ( KeyActionGroupListType::const_iterator grp = this->m_KeyActionGroupList.begin(); grp != this->m_KeyActionGroupList.end(); ++grp )
     {
-    const std::string& name = (*grp)->m_Name;
-
-    size_t indent = 0;
-    if ( name != "MAIN" )
+    if ( ! (*grp)->m_KeyActionList.empty() )
       {
       StdOut << (*grp)->m_Description << "\n\n";
-      indent = 2;
-      }
-
-    const KeyActionListType& kal = (*grp)->m_KeyActionList;
-    for ( KeyActionListType::const_iterator it = kal.begin(); it != kal.end(); ++it )
-      {
-      (*it)->PrintHelp( indent );
+      
+      const size_t indent = 2;
+      
+      const KeyActionListType& kal = (*grp)->m_KeyActionList;
+      for ( KeyActionListType::const_iterator it = kal.begin(); it != kal.end(); ++it )
+	{
+	(*it)->PrintHelp( indent );
+	}
       }
     }
   
@@ -417,17 +418,16 @@ CommandLine::PrintWiki
 
   for ( KeyActionGroupListType::const_iterator grp = this->m_KeyActionGroupList.begin(); grp != this->m_KeyActionGroupList.end(); ++grp )
     {
-    const std::string& name = (*grp)->m_Name;
-    if ( name != "MAIN" )
+    if ( ! (*grp)->m_KeyActionList.empty() )
       {
       StdOut << "=== " << (*grp)->m_Description << " ===\n\n";
-      }
-
-    const KeyActionListType& kal = (*grp)->m_KeyActionList;
-    for ( KeyActionListType::const_iterator it = kal.begin(); it != kal.end(); ++it )
-      {
-      (*it)->PrintWikiWithPrefix();
-      StdOut << "\n";
+      
+      const KeyActionListType& kal = (*grp)->m_KeyActionList;
+      for ( KeyActionListType::const_iterator it = kal.begin(); it != kal.end(); ++it )
+	{
+	(*it)->PrintWikiWithPrefix();
+	StdOut << "\n";
+	}
       }
     }
   

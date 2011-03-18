@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -95,7 +96,7 @@ CommandLine::WriteXML
     
     for ( KeyActionGroupListType::const_iterator grp = this->m_KeyActionGroupList.begin(); grp != this->m_KeyActionGroupList.end(); ++grp )
       {
-      if ( ! ((*grp)->GetProperties() & PROPS_NOXML) )
+      if ( ! ((*grp)->GetProperties() & PROPS_NOXML) && ! (*grp)->m_KeyActionList.empty() )
 	{
 	mxml_node_t *parameterGroup = mxmlNewElement( x_exec, "parameters" );
 	
