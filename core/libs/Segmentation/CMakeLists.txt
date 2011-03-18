@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -43,7 +43,7 @@ SET(cmtkSegmentation_SRCS
 
 ADD_LIBRARY(cmtkSegmentation ${cmtkSegmentation_SRCS})
 
-TARGET_LINK_LIBRARIES(cmtkSegmentation cmtkBase cmtkSystem cmtkNumerics )
+TARGET_LINK_LIBRARIES(cmtkSegmentation cmtkRegistration cmtkBase cmtkSystem cmtkNumerics )
 
 IF(CMTK_LIBRARY_PROPERTIES)
   SET_TARGET_PROPERTIES(cmtkSegmentation PROPERTIES ${CMTK_LIBRARY_PROPERTIES})
