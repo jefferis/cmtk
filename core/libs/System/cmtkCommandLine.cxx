@@ -183,9 +183,8 @@ CommandLine::Parse( const int argc, const char* argv[] ) throw( ExitException, S
 	  }
 	}
       
-	if ( ! found )
-	  throw( Exception( std::string("Unknown option: ") + std::string( this->ArgV[this->Index] ) ) );
-	}
+      if ( ! found )
+	throw( Exception( std::string("Unknown option: ") + std::string( this->ArgV[this->Index] ) ) );
       } 
     else
       {
