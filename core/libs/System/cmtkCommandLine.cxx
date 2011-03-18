@@ -136,56 +136,55 @@ CommandLine::Parse( const int argc, const char* argv[] ) throw( ExitException, S
     bool found = false;
     if ( this->ArgV[this->Index][1] == '-' ) 
       {
-      // long option
-      for ( KeyActionListType::iterator it = this->m_KeyActionListComplete.begin(); !found && (it != this->m_KeyActionListComplete.end()); ++it )
+      // Check for "--version" special option, which prints the CMTK version that this tool is part of.
+      if ( !strcmp( this->ArgV[this->Index], "--version" ) ) 
 	{
-	found = (*it)->MatchAndExecute( std::string( this->ArgV[this->Index]+2 ), this->ArgC, this->ArgV, this->Index );
+	StdOut << this->m_ProgramInfo[PRG_VERSN] << "\n";
+	throw ExitException( 0 );
 	}
       
-      // not found?
-      if ( !found ) 
+      // Check for "--xml" special option, which produces self description according to Slicer execution model.
+      if ( !strcmp( this->ArgV[this->Index], "--xml" ) && !(this->m_Properties & PROPS_NOXML) ) 
 	{
-	// Check for "--version" special option, which prints the CMTK version that this tool is part of.
-	if ( !strcmp( this->ArgV[this->Index], "--version" ) ) 
+	this->WriteXML();
+	throw ExitException( 0 );
+	}
+      
+      // Check for "--help" special option, which produces textual description of all command line options
+      if ( !strcmp( this->ArgV[this->Index], "--help" ) ) 
+	{
+	this->PrintHelp();
+	throw ExitException( 0 );
+	}
+      
+      // Check for "--wiki" special option, which produces Wiki-markup description of all command line options
+      if ( !strcmp( this->ArgV[this->Index], "--wiki" ) ) 
+	{
+	this->PrintWiki();
+	throw ExitException( 0 );
+	}
+      
+      // Check for "--echo" special option, which echoes the command line to stderr. This does not exit the program automatically.
+      if ( !strcmp( this->ArgV[this->Index], "--echo" ) ) 
+	{
+	for ( size_t i = 0; i < this->ArgC; ++i )
 	  {
-	  StdOut << this->m_ProgramInfo[PRG_VERSN] << "\n";
-	  throw ExitException( 0 );
+	  std::cerr << this->ArgV[i] << " ";
 	  }
+	std::cerr << std::endl;
+	found = true;
+	}
 	
-	// Check for "--xml" special option, which produces self description according to Slicer execution model.
-	if ( !strcmp( this->ArgV[this->Index], "--xml" ) && !(this->m_Properties & PROPS_NOXML) ) 
+      if ( !found )
+	{
+	for ( KeyActionListType::iterator it = this->m_KeyActionListComplete.begin(); !found && (it != this->m_KeyActionListComplete.end()); ++it )
 	  {
-	  this->WriteXML();
-	  throw ExitException( 0 );
+	  found = (*it)->MatchAndExecute( std::string( this->ArgV[this->Index]+2 ), this->ArgC, this->ArgV, this->Index );
 	  }
-	
-	// Check for "--help" special option, which produces textual description of all command line options
-	if ( !strcmp( this->ArgV[this->Index], "--help" ) ) 
-	  {
-	  this->PrintHelp();
-	  throw ExitException( 0 );
-	  }
-	
-	// Check for "--wiki" special option, which produces Wiki-markup description of all command line options
-	if ( !strcmp( this->ArgV[this->Index], "--wiki" ) ) 
-	  {
-	  this->PrintWiki();
-	  throw ExitException( 0 );
-	  }
-	
-	// Check for "--echo" special option, which echoes the command line to stderr. This does not exit the program automatically.
-	if ( !strcmp( this->ArgV[this->Index], "--echo" ) ) 
-	  {
-	  for ( size_t i = 0; i < this->ArgC; ++i )
-	    {
-	    std::cerr << this->ArgV[i] << " ";
-	    }
-	  std::cerr << std::endl;
-	  found = true;
-	  }
-	
+	}
+      
 	if ( ! found )
-	  throw( Exception( std::string("Unknown option: ") + std::string(this->ArgV[this->Index] ) ) );
+	  throw( Exception( std::string("Unknown option: ") + std::string( this->ArgV[this->Index] ) ) );
 	}
       } 
     else
