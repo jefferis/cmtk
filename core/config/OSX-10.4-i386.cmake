@@ -49,3 +49,4 @@ SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "C compiler flags")
 
 # Disable Grand Central Dispatch as it is broken with C++ in 10.4 SDK
 SET(CMTK_USE_GCD OFF CACHE BOOL "Use Grand Central Dispatch")
+SET(CMTK_USE_OPENMP OFF CACHE BOOL "Use OpenMP for parallelization" )

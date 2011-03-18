@@ -50,6 +50,7 @@ SET(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS} CACHE STRING "C compiler flags")
 SET(CMTK_USE_SQLITE OFF CACHE BOOL "Use SQLite database")
 SET(CMTK_USE_QT ON CACHE BOOL "Use Qt toolkit")
 SET(BUILD_GUI ON CACHE BOOL "Build GUI applications (requires Qt)")
+SET(CMTK_USE_OPENMP OFF CACHE BOOL "Use OpenMP for parallelization" )
 SET(CMTK_USE_CUDA ON CACHE BOOL "Use CUDA for GPU acceleration" )
 SET(CMTK_USE_LZMA OFF CACHE BOOL "Use LZMA library for decompression")
 
