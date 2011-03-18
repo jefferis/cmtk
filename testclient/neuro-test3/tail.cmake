@@ -28,7 +28,9 @@
 ##  $LastChangedBy: torstenrohlfing $
 ##
 
-FILE(APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "CMTK_DATA_ROOT:PATH=/Users/torsten/cmtk/testing/data")
+FILE(APPEND "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" 
+"CMTK_DATA_ROOT:PATH=/Users/torsten/cmtk/testing/data
+CMTK_USE_OPENMP:BOOL=OFF")
 
 CTEST_START(Continuous)
 CTEST_UPDATE(SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE res)
