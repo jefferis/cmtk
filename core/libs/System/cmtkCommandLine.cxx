@@ -80,10 +80,22 @@ CommandLine::SetDefaultInfo()
   this->m_ProgramInfo[PRG_VERSN] = CMTK_VERSION_STRING;
 
   this->BeginGroup( "GLOBAL", "Global Toolkit Options" )->SetProperties( Self::PROPS_NOXML );
+  this->AddCallback( Self::Key( "help" ), &Self::CallbackInternal, "Write list of command line options to standard output." );
+  this->AddCallback( Self::Key( "wiki" ), &Self::CallbackInternal, "Write list of command line options to standard output in MediaWiki markup." );
+  this->AddCallback( Self::Key( "xml" ), &Self::CallbackInternal, "Write command line syntax specification in XML markup (for Slicer integration)." );
+  this->AddCallback( Self::Key( "version" ), &Self::CallbackInternal, "Write toolkit version to standard output." );
+  this->AddCallback( Self::Key( "echo" ), &Self::CallbackInternal, "Write the current command line to standard output." );
   this->AddCallback( Self::Key( "verbose-level" ), &DebugOutput::SetGlobalLevel, "Set verbosity level." );
-  this->AddCallback( Self::Key( 'v', "verbose" ), &DebugOutput::IncGlobalLevel, "Increment verbosity level by 1." );
-  this->AddCallback( Self::Key( "threads" ), &Threads::SetNumberOfThreads, "Increment verbosity level by 1." );
+  this->AddCallback( Self::Key( 'v', "verbose" ), &DebugOutput::IncGlobalLevel, "Increment verbosity level by 1 (deprecated; supported for backward compatibility)." );
+  this->AddCallback( Self::Key( "threads" ), &Threads::SetNumberOfThreads, "Set maximum number of parallel threads (for POSIX threads and OpenMP)." );
   this->EndGroup();
+}
+
+void 
+CommandLine::CallbackInternal()
+{
+  StdErr << "ERROR: cmtk::CommandLine::CallbackInternal should never be called.\n";
+  throw ExitException( 1 );
 }
 
 CommandLine::KeyActionGroupType::SmartPtr&

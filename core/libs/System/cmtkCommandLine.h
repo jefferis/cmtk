@@ -1187,6 +1187,9 @@ private:
 
   /// Make callback class friend.
   friend class Callback;
+
+  /// Dummy callback function for internal options.
+  static void CallbackInternal();
 };
 
 /// Output of command line exception.
