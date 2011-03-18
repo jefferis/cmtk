@@ -20,11 +20,19 @@ where
 
 === Global Toolkit Options ===
 
+; <tt>--help</tt> : Write list of command line options to standard output.
+
+; <tt>--wiki</tt> : Write list of command line options to standard output in MediaWiki markup.
+
+; <tt>--version</tt> : Write toolkit version to standard output.
+
+; <tt>--echo</tt> : Write the current command line to standard output.
+
 ; <tt>--verbose-level</tt> <tt><integer></tt> : Set verbosity level.
 
-; <tt>--verbose</tt> / <tt>-v</tt> : Increment verbosity level by 1.
+; <tt>--verbose</tt> / <tt>-v</tt> : Increment verbosity level by 1 (deprecated; supported for backward compatibility).
 
-; <tt>--threads</tt> <tt><integer></tt> : Increment verbosity level by 1.
+; <tt>--threads</tt> <tt><integer></tt> : Set maximum number of parallel threads (for POSIX threads and OpenMP).
 
 === Input Options ===
 

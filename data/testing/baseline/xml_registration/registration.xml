@@ -25,51 +25,6 @@ https://neuro.sri.com/cmtk/wiki/
 </version>
 <parameters>
 <label>
-General
-</label>
-<description>
-General Parameters
-</description>
-<image type="scalar">
-<channel>
-input
-</channel>
-<name>
-ReferenceImage
-</name>
-<label>
-ReferenceImage
-</label>
-<description>
-Reference (fixed) image path
-</description>
-<index>
-0
-</index>
-
-</image>
-<image type="scalar">
-<channel>
-input
-</channel>
-<name>
-FloatingImage
-</name>
-<label>
-FloatingImage
-</label>
-<description>
-Floating (moving) image path
-</description>
-<index>
-1
-</index>
-
-</image>
-
-</parameters>
-<parameters>
-<label>
 Automation
 </label>
 <description>
