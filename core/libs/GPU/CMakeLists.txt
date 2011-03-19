@@ -1,5 +1,5 @@
 ##
-##  Copyright 1997-2009 Torsten Rohlfing
+##  Copyright 1997-2011 Torsten Rohlfing
 ##
 ##  Copyright 2004-2011 SRI International
 ##
@@ -64,7 +64,7 @@ IF(CMTK_USE_OPENCL)
   ADD_LIBRARY(cmtkGPU ${cmtkGPU_SRCS_OPENCL} ${cmtkGPU_SRCS})
 ENDIF(CMTK_USE_OPENCL)
 
-TARGET_LINK_LIBRARIES(cmtkGPU cmtkBase cmtkSystem cmtkNumerics)
+TARGET_LINK_LIBRARIES(cmtkGPU cmtkSegmentation cmtkBase cmtkSystem cmtkNumerics)
 
 IF(CMTK_LIBRARY_PROPERTIES)
   SET_TARGET_PROPERTIES(cmtkGPU PROPERTIES ${CMTK_LIBRARY_PROPERTIES})
