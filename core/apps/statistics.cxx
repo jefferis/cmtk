@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2010 Torsten Rohlfing
+//  Copyright 1997-2011 Torsten Rohlfing
 //
 //  Copyright 2004-2011 SRI International
 //
@@ -115,7 +115,7 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
 	if ( maskData && !(maskData->Get( maskValue, index ) && (maskValue != 0) ) )
 	  continue;
 	
-	if ( data->Get( value, index ) ) 
+	if ( data->Get( value, index ) && range.InRange( value ) ) 
 	  {
 	  const int labelIdx = static_cast<int>( value - range.m_LowerBound );
 

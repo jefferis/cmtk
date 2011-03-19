@@ -2,7 +2,7 @@
 //
 //  Copyright 2004-2010 SRI International
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2011 Torsten Rohlfing
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -169,6 +169,12 @@ public:
   T Width() const
   {
     return this->m_UpperBound - this->m_LowerBound;
+  }
+
+  /// Test whether a given value is within the range.
+  bool InRange( const T& value ) const
+  {
+    return (value >= this->m_LowerBound) && (value <= this->m_UpperBound);
   }
 
   /// Lower bound.

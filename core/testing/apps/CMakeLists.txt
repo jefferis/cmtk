@@ -1,7 +1,7 @@
 ##
 ##  Copyright 2004-2011 SRI International
 ##
-##  Copyright 1997-2010 Torsten Rohlfing
+##  Copyright 1997-2011 Torsten Rohlfing
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -562,7 +562,9 @@ IF(NOT CMTK_USE_MPI)
     statisticsGreyMask 
     statisticsGreyMultiMask
     statisticsMaskMismatch
-    statisticsLabels)
+    statisticsLabels
+    statisticsLabelsAllUpToHi
+    statisticsLabelsAllUpToLo)
 
   # ==========================================
   # Tests for "ttest" tool

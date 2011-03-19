@@ -1,7 +1,7 @@
 ##
 ##  Copyright 2004-2011 SRI International
 ##
-##  Copyright 1997-2010 Torsten Rohlfing
+##  Copyright 1997-2011 Torsten Rohlfing
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -1524,6 +1524,14 @@ case ${RUNTEST} in
 	;;
     statisticsLabels)
 	run_eval "${BINDIR}/statistics -l parc1.hdr > ${tmpdir}/statistics.txt"
+	check_results statistics.txt
+	;;
+    statisticsLabelsAllUpToHi)
+	run_eval "${BINDIR}/statistics --mask-output-all-up-to 256 -l parc1.hdr > ${tmpdir}/statistics.txt"
+	check_results statistics.txt
+	;;
+    statisticsLabelsAllUpToLo)
+	run_eval "${BINDIR}/statistics --mask-output-all-up-to 2 -l parc1.hdr > ${tmpdir}/statistics.txt"
 	check_results statistics.txt
 	;;
     symmetry_plane)
