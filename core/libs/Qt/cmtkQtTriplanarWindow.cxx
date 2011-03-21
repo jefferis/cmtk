@@ -539,7 +539,7 @@ QtTriplanarWindow::slotSwitchImageAx( int imageIndex )
       sliceImage->AdjustToIsotropic( volume->GetMinDelta(), this->m_InterpolateAction->isChecked() );
       PipelineImageAx->SetFromScalarImage( sliceImage );
       }
-    sliceImage = ScalarImage::SmartPtr::Null;
+    sliceImage = ScalarImage::SmartPtr::Null();
 
     LocationEntryZ->setText( QString::number( volume->GetPlaneCoord( AXIS_Z, imageIndex ) ) );
     GridIndex[2] = imageIndex;

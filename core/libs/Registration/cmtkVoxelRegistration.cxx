@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -143,7 +143,7 @@ VoxelRegistration::Register ()
       doneResolution = this->DoneResolution( v, nextFunctional, index, NumResolutionLevels );
       }
     
-    this->m_Optimizer->SetFunctional( Functional::SmartPtr::Null );
+    this->m_Optimizer->SetFunctional( Functional::SmartPtr::Null() );
     
     currentExploration *= 0.5;
 

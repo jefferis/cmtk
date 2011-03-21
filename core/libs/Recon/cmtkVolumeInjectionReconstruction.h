@@ -113,7 +113,7 @@ public:
     if ( passIdx < this->m_TransformationsToPassImages.size() )
       return this->m_TransformationsToPassImages[passIdx];
     else
-      return Xform::SmartPtr::Null;
+      return Xform::SmartPtr::Null();
   }
 
   /// Get transformation to one pass image.
