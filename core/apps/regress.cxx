@@ -259,7 +259,7 @@ doMain( const int argc, const char* argv[] )
 	}
       vData.push_back( data );
       
-      vWarpXform[i] = cmtk::SplineWarpXform::SmartPtr::Null; // no longer needed
+      vWarpXform[i] = cmtk::SplineWarpXform::SmartPtr::Null(); // no longer needed
       }
     
     for ( size_t n = 0; n < mean.size(); ++n )

@@ -136,7 +136,7 @@ doMain ( const int argc, const char* argv[] )
     throw cmtk::ExitException( 1 );
     }
 
-  cmtk::Xform::SmartPtr minusXform( cmtk::Xform::SmartPtr::Null );
+  cmtk::Xform::SmartPtr minusXform( cmtk::Xform::SmartPtr::Null() );
   if ( MinusXformPath )
     {
     minusXform = cmtk::Xform::SmartPtr( cmtk::XformIO::Read( MinusXformPath ) );
