@@ -65,7 +65,7 @@ ENDIF(QT_WRAP_CPP)
 
 ADD_LIBRARY(cmtkQt ${cmtkQt_SRCS})
 
-TARGET_LINK_LIBRARIES(cmtkQt cmtkIO cmtkBase cmtkSystem cmtkNumerics ${QT_LIBRARIES})
+TARGET_LINK_LIBRARIES(cmtkQt cmtkPipeline cmtkIO cmtkBase cmtkSystem cmtkNumerics ${QT_LIBRARIES})
 
 IF(CMTK_LIBRARY_PROPERTIES)
   SET_TARGET_PROPERTIES(cmtkQt PROPERTIES ${CMTK_LIBRARY_PROPERTIES})
