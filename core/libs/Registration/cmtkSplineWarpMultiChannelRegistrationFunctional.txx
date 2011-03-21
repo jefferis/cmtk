@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -84,7 +84,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
     }
 
   this->m_Transformation.Init( domain, gridSpacing, &this->m_InitialAffineTransformation, exact );
-  this->m_ThreadTransformations.resize( this->m_NumberOfThreads, SplineWarpXform::SmartPtr::Null );
+  this->m_ThreadTransformations.resize( this->m_NumberOfThreads, SplineWarpXform::SmartPtr::Null() );
   for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
     {
     this->m_ThreadTransformations[thread] = SplineWarpXform::SmartPtr( new SplineWarpXform( domain, gridSpacing, &this->m_InitialAffineTransformation, exact ) );
