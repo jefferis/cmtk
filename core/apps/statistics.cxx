@@ -152,7 +152,9 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
     {
     if ( count[idx] || MaskOutputAllUpTo ) 
       {
-      centerOfMass[idx] *= (1.0 / count[idx]);
+      if ( count[idx] )
+	centerOfMass[idx] *= (1.0 / count[idx]);
+      
       if ( OutputExpNotation )
 	fprintf( stdout, "%03d\t%14d\t%14d\t%.4e\t(%e,%e,%e)\n", 
 		 (int)(idx+range.m_LowerBound), count[idx], countSurface[idx], count[idx] * voxelVolume, centerOfMass[idx][0], centerOfMass[idx][1], centerOfMass[idx][2] );
