@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -56,7 +56,7 @@ Xform::AllocateParameterVector
     }
   else
     {
-    this->m_ParameterVector = CoordinateVector::SmartPtr::Null;
+    this->m_ParameterVector = CoordinateVector::SmartPtr::Null();
     this->m_Parameters = NULL;
     }
 }

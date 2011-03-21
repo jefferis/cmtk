@@ -267,7 +267,7 @@ WarpXform::GetParameterActive( const size_t index ) const
 void
 WarpXform::DeleteParameterActiveFlags()
 {
-  this->m_ActiveFlags = BitVector::SmartPtr::Null;
+  this->m_ActiveFlags = BitVector::SmartPtr::Null();
 }
 
 void

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -61,7 +61,7 @@ public:
   typedef SmartConstPointer<Self> SmartConstPtr;
 
   /// Constructor.
-  XformListEntry( const Xform::SmartConstPtr& xform = Xform::SmartConstPtr::Null, const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
+  XformListEntry( const Xform::SmartConstPtr& xform = Xform::SmartConstPtr::Null(), const bool inverse = false, const Types::Coordinate globalScale = 1.0 );
   
   /// Destructor.
   ~XformListEntry();

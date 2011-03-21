@@ -140,7 +140,7 @@ UniformVolume::CloneVirtual() const
     }
   else
     {
-    result->SetData( TypedArray::SmartPtr::Null );
+    result->SetData( TypedArray::SmartPtr::Null() );
     }
   
   return result;
