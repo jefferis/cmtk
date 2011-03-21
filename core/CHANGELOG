@@ -1,6 +1,8 @@
 Release CMTK-1.7.0:
 
-(r3016) Fixed: linking errors when building shared libraries on MacOS, caused
+(r3031) Fixed: problem with instantiation of static smart pointer "NULL"
+    object led to crashes on MacOS-X platform. This has been fixed.
+(r3031) Fixed: linking errors when building shared libraries on MacOS, caused
     by missing library dependencies.
 (r3003) Improved: CMTK now employs a toolkit-wide, centralized, fine-grain
     framework for diagnostic outputs of user-defined detail level. Every
