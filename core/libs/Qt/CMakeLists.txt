@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -65,7 +65,7 @@ ENDIF(QT_WRAP_CPP)
 
 ADD_LIBRARY(cmtkQt ${cmtkQt_SRCS})
 
-TARGET_LINK_LIBRARIES(cmtkQt cmtkIO cmtkBase cmtkSystem cmtkNumerics)
+TARGET_LINK_LIBRARIES(cmtkQt cmtkIO cmtkBase cmtkSystem cmtkNumerics ${QT_LIBRARIES})
 
 IF(CMTK_LIBRARY_PROPERTIES)
   SET_TARGET_PROPERTIES(cmtkQt PROPERTIES ${CMTK_LIBRARY_PROPERTIES})
