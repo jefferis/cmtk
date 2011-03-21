@@ -143,7 +143,7 @@ public:
 	} 
       else
 	{
-	ThreadWarp[thread] = SplineWarpXform::SmartPtr::Null;
+	ThreadWarp[thread] = SplineWarpXform::SmartPtr::Null();
 	}
       }
   }
