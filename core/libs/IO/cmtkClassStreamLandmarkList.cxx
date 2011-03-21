@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -61,7 +61,7 @@ ClassStream&
 ClassStream::operator >> ( LandmarkList::SmartPtr& landmarkList )
 {
   if ( !this->IsValid() ) {
-    landmarkList = LandmarkList::SmartPtr::Null;
+  landmarkList = LandmarkList::SmartPtr::Null();
     return *this;
   }
     

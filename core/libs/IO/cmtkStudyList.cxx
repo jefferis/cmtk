@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -61,7 +61,7 @@ StudyList::GetStudy( const unsigned int studyIndex )
     for ( unsigned int i = 0; i < studyIndex; ++i ) ++it;
     return it->first;
   } else
-    return Study::SmartPtr::Null;
+    return Study::SmartPtr::Null();
 }
 
 const Study*
@@ -83,7 +83,7 @@ StudyList::FindStudyPath( const char *fileSystemPath ) const
 Study::SmartPtr
 StudyList::FindStudyPath( const char *fileSystemPath, const bool create )
 {
-  if ( ! fileSystemPath ) return Study::SmartPtr::Null;
+  if ( ! fileSystemPath ) return Study::SmartPtr::Null();
 
   iterator it = this->begin();
   while ( it != this->end() ) {
@@ -94,7 +94,7 @@ StudyList::FindStudyPath( const char *fileSystemPath, const bool create )
   
   // not found: return NULL or create;
   if ( !create )
-    return Study::SmartPtr::Null;
+    return Study::SmartPtr::Null();
   
   Study::SmartPtr newStudy;
   newStudy->SetFileSystemPath( fileSystemPath );
@@ -121,7 +121,7 @@ StudyList::FindStudyName( const char *name ) const
 Study::SmartPtr
 StudyList::FindStudyName( const char *name )
 {
-  if ( ! name ) return Study::SmartPtr::Null;
+  if ( ! name ) return Study::SmartPtr::Null();
 
   iterator it = this->begin();
   while ( it != this->end() ) {
@@ -131,20 +131,20 @@ StudyList::FindStudyName( const char *name )
   }
   
   // not found: return NULL;
-  return Study::SmartPtr::Null;
+  return Study::SmartPtr::Null();
 }
 
 Study::SmartPtr
 StudyList::AddStudy( const char *fileSystemPath )
 {
-  if ( ! fileSystemPath ) return Study::SmartPtr::Null;
+  if ( ! fileSystemPath ) return Study::SmartPtr::Null();
 
   const_iterator it = this->begin();
   while ( it != this->end() ) 
     {
     // if this study is already in the list, we're done.
     if ( ! strcmp( it->first->GetFileSystemPath(), fileSystemPath ) )
-      return Study::SmartPtr::Null;
+      return Study::SmartPtr::Null();
     ++it;
     }
   

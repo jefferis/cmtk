@@ -103,13 +103,13 @@ public:
   void AddStudy( Study::SmartPtr& study /*!< Existing study object to add to the study list.*/ );
   
   /// Add a coordinate transformation between two studies.
-  void AddXform( Study::SmartPtr& fromStudy, Study::SmartPtr& toStudy, AffineXform::SmartPtr& affineXform, WarpXform::SmartPtr& warpXform = WarpXform::SmartPtr::Null );
+  void AddXform( Study::SmartPtr& fromStudy, Study::SmartPtr& toStudy, AffineXform::SmartPtr& affineXform, WarpXform::SmartPtr& warpXform = WarpXform::SmartPtr::Null() );
 
   /// Add a coordinate transformation between two studies.
   void AddXform( const char *fromStudyPath /*!< Path of the study that the transformation maps from.*/, 
 		 const char *toStudyPath /*!< Path of the study that the transformation maps to.*/, 
 		 AffineXform::SmartPtr& affineXform /*!< Affine coordinate transformation between the given studies. */, 
-		 WarpXform::SmartPtr& warpXform = WarpXform::SmartPtr::Null /*!< Optional nonrigid transformation between the two given studies. */);
+		 WarpXform::SmartPtr& warpXform = WarpXform::SmartPtr::Null() /*!< Optional nonrigid transformation between the two given studies. */);
   
   /// Remove and delete given study object.
   void DeleteStudy( const Study* study /*!< Study object to delete from the list.*/ );
