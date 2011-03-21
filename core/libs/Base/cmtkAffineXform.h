@@ -180,7 +180,7 @@ public:
    */
   virtual ~AffineXform() 
   { 
-    InverseXform = Self::SmartPtr::Null; 
+    InverseXform = Self::SmartPtr( NULL ); 
   }
   
   /// Clone and return smart pointer.

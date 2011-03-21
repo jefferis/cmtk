@@ -73,8 +73,12 @@ public:
   /// The underlying raw pointer type.
   typedef T* PointerType;
 
-  /// Null object.
-  static Self Null;
+  /// Reference to static null object.
+  static Self& Null()
+  {
+    static Self null;
+    return null;
+  }
   
   /** Default constructor.
    */
@@ -130,8 +134,6 @@ private:
   /// Make all template instances friends for easy type casting.
   template<class T2> friend class SmartPointer;
 };
-
-template<typename T> SmartPointer<T> SmartPointer<T>::Null;
 
 //@}
 

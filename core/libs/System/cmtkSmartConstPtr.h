@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -63,8 +63,12 @@ public:
   /// The underlying raw pointer type.
   typedef const T* PointerType;
 
-  /// Null object.
-  static Self Null;
+  /// Reference to static null object.
+  static Self& Null()
+  {
+    static Self null;
+    return null;
+  }
   
   /// Get current reference counter value: use with caution!
   unsigned int GetReferenceCount() const 
@@ -227,8 +231,6 @@ protected:
   /// Make all template instances friends for easy type casting.
   template<class T2> friend class SmartConstPointer;
 };
-
-template<typename T> SmartConstPointer<T> SmartConstPointer<T>::Null;
 
 //@}
 

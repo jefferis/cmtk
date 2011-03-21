@@ -99,7 +99,7 @@ public:
   {}
   
   /// Constructor.
-  DataGrid( const Self::IndexType& dims, TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null ) 
+  DataGrid( const Self::IndexType& dims, TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null() ) 
     : m_Dims( dims ), 
       m_Data( data )
   {

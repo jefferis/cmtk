@@ -110,7 +110,7 @@ public:
    *\param size Size of the volume in real-world coordinates.
    *\param data An existing TypedArray containing the scalar voxel data.
    */
-  UniformVolume( const DataGrid::IndexType& dims, const Self::CoordinateVectorType& size, TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null );
+  UniformVolume( const DataGrid::IndexType& dims, const Self::CoordinateVectorType& size, TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null() );
 
   /** Create uniform volume "from scratch".
    *\param dims Number of grid elements for the three spatial dimensions.
@@ -119,7 +119,7 @@ public:
    *\param deltaZ Pixel size in z direction.
    *\param data An existing TypedArray containing the scalar voxel data.
    */
-  UniformVolume( const DataGrid::IndexType& dims, const Types::Coordinate deltaX, const Types::Coordinate deltaY, const Types::Coordinate deltaZ, TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null );
+  UniformVolume( const DataGrid::IndexType& dims, const Types::Coordinate deltaX, const Types::Coordinate deltaY, const Types::Coordinate deltaZ, TypedArray::SmartPtr& data = TypedArray::SmartPtr::Null() );
 
   /// Test whether this grid matches another one, i.e., has the same pixel sizes.
   bool GridMatches( const Self& other ) const
