@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -156,7 +156,7 @@ VolumeFromSlices::FinishVolume ( Types::Coordinate& sliceOffset, int& sliceDirec
   UniformVolume::SmartPtr Result = this->ConstructVolume( Dims, Size, aux, VolumeDataArray );
 
   // clear reference, since now linked by volume.
-  VolumeDataArray = TypedArray::SmartPtr::Null; 
+  VolumeDataArray = TypedArray::SmartPtr::Null(); 
 
   for ( idx = 0; idx<3; ++idx )
     Memory::DeleteArray( Points[idx] );

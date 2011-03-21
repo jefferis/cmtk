@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -46,9 +47,9 @@ VolumeWrapper::New()
 
 VolumeWrapper::VolumeWrapper()
 { 
-  Volume = UniformVolume::SmartPtr::Null; 
-  this->m_AffineXform = AffineXform::SmartPtr::Null;
-  this->m_WarpXform = WarpXform::SmartPtr::Null;
+  Volume = UniformVolume::SmartPtr::Null(); 
+  this->m_AffineXform = AffineXform::SmartPtr::Null();
+  this->m_WarpXform = WarpXform::SmartPtr::Null();
 }
 
 VolumeWrapper::~VolumeWrapper()

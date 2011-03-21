@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -144,7 +144,7 @@ public:
    * to the given plane in the reference image. This is useful for interactive
    * reformatting, where we want a single plane reformatted as fast as possible.
    */
-  TypedArray::SmartPtr PlainReformat( const int plane, TypedArray::SmartPtr& target = TypedArray::SmartPtr::Null, const size_t targetOffset = 0 );
+  TypedArray::SmartPtr PlainReformat( const int plane, TypedArray::SmartPtr& target = TypedArray::SmartPtr::Null(), const size_t targetOffset = 0 );
   
   /// Constants for transformation field mode.
   typedef enum 

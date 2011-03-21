@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -259,7 +259,7 @@ GroupwiseRegistrationFunctionalBase
     
     if ( this->m_FreeAndRereadImages )
       {
-      image->SetData( TypedArray::SmartPtr::Null );
+      image->SetData( TypedArray::SmartPtr::Null() );
       }
     }
   else
@@ -267,7 +267,7 @@ GroupwiseRegistrationFunctionalBase
     if ( this->m_FreeAndRereadImages )
       {
       data = image->GetData();
-      image->SetData( TypedArray::SmartPtr::Null );
+      image->SetData( TypedArray::SmartPtr::Null() );
       }
     else
       {
@@ -517,7 +517,7 @@ GroupwiseRegistrationFunctionalBase
     {
     TypedArray::SmartPtr referenceData = this->m_TemplateGrid->GetData();
     if ( !this->m_UseTemplateData )
-      referenceData = TypedArray::SmartPtr::Null;
+      referenceData = TypedArray::SmartPtr::Null();
     
     for ( size_t i = 0; i < this->m_OriginalImageVector.size(); ++i )
       {

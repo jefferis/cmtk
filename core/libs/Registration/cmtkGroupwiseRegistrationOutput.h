@@ -58,7 +58,7 @@ public:
   typedef FunctionalType::SmartPtr FunctionalPointer;
 
   /// Constructors: link to functional.
-  GroupwiseRegistrationOutput( FunctionalPointer& functional = FunctionalPointer::Null ) :
+  GroupwiseRegistrationOutput( FunctionalPointer& functional = FunctionalPointer::Null() ) :
     m_ExistingTemplatePath( false ),
     m_OutputRootDirectory( NULL )
   {
