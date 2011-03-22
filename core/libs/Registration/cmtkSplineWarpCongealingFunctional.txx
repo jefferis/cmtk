@@ -42,6 +42,7 @@ SplineWarpCongealingFunctional
 ::EvaluateWithGradient
 ( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step )
 {
+  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
   const size_t numberOfThreads = Threads::GetNumberOfThreads();
   this->m_ThreadHistograms.resize( numberOfThreads );
   
@@ -66,14 +67,15 @@ SplineWarpCongealingFunctional
       }
     }
       
-  ThreadParameterArray<Self,EvaluateLocalGradientThreadParameters> threadParams( this, numberOfThreads );
-  for ( size_t thread = 0; thread < numberOfThreads; ++thread )
+  std::vector<EvaluateLocalGradientThreadParameters> params( 4 * numberOfThreads - 3 );
+  for ( size_t taskIdx = 0; taskIdx < params.size(); ++taskIdx )
     {
-    threadParams[thread].m_Step = step;
-    threadParams[thread].m_Gradient = g.Elements;
+    params[taskIdx].thisObject = this;
+    params[taskIdx].m_Step = step;
+    params[taskIdx].m_Gradient = g.Elements;
     }
-  threadParams.RunInParallel( EvaluateLocalGradientThreadFunc );
-
+  threadPool.Run( EvaluateLocalGradientThreadFunc, params );
+  
   if ( this->m_PartialGradientMode )
     {
     const Types::Coordinate gthresh = g.MaxNorm() * this->m_PartialGradientThreshold;
@@ -93,16 +95,15 @@ SplineWarpCongealingFunctional
   return baseValue;
 }
 
-CMTK_THREAD_RETURN_TYPE
+void
 SplineWarpCongealingFunctional
 ::EvaluateLocalGradientThreadFunc
-( void* args )
+( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t )
 {
   EvaluateLocalGradientThreadParameters* threadParameters = static_cast<EvaluateLocalGradientThreadParameters*>( args );
   
   Self* This = threadParameters->thisObject;
   const Self* ThisConst = This;
-  const size_t threadID = threadParameters->ThisThreadIndex;
   
   const size_t numberOfXforms = ThisConst->m_XformVector.size();
   const size_t parametersPerXform = ThisConst->m_ParametersPerXform;
@@ -114,7 +115,7 @@ SplineWarpCongealingFunctional
   const size_t numberOfImages = imagesTo - imagesFrom;
   const size_t numberOfImagesIncludingTemplate = ThisConst->m_UseTemplateData ? numberOfImages+1 : numberOfImages;
   
-  Self::StaticThreadStorage* threadStorage = (&This->m_StaticThreadStorage[threadID]);
+  Self::StaticThreadStorage* threadStorage = (&This->m_StaticThreadStorage[threadIdx]);
   if ( threadStorage->m_NeedToCopyXformParameters )
     {
     for ( size_t xi = 0; xi < numberOfXforms; ++xi )
@@ -127,15 +128,9 @@ SplineWarpCongealingFunctional
   const UniformVolume* templateGrid = ThisConst->m_TemplateGrid;  
   const size_t numberOfControlPoints = ThisConst->m_ParametersPerXform / 3;
 
-  size_t cpIndex;
-
-  This->m_ControlPointIndexLock.Lock();
-  while ( (cpIndex = This->m_ControlPointIndexNext) < This->m_ControlPointIndexLast )
+  for ( size_t cpIndex = taskIdx; cpIndex < This->m_ControlPointIndexLast; cpIndex += taskCnt )
     {
-    ++This->m_ControlPointIndexNext;
-    This->m_ControlPointIndexLock.Unlock();
-
-    if ( !threadID && !(cpIndex % 1000) )
+    if ( !(cpIndex % 1000) )
       {
       std::cerr << cpIndex << " / " << numberOfControlPoints << "\r";
       }    
@@ -317,11 +312,7 @@ SplineWarpCongealingFunctional
 	  }
 	}
       }
-    This->m_ControlPointIndexLock.Lock();
     }
-  This->m_ControlPointIndexLock.Unlock();
-
-  return CMTK_THREAD_RETURN_VALUE;
 }
 
 } // namespace cmtk
