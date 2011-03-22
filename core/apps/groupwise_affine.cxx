@@ -318,12 +318,12 @@ doMain( int argc, char* argv[] )
       referenceDataForHistogramMatching = imageListOriginal[0]->GetData();
       }
     
-    for ( size_t idx = 1; idx < imageListOriginal.size(); ++idx )
+    for ( size_t idx = referenceDataForHistogramMatching?0:1; idx < imageListOriginal.size(); ++idx )
       {
       imageListOriginal[idx]->GetData()->ApplyFunctionObject( cmtk::TypedArrayFunctionHistogramMatching( *(imageListOriginal[idx]->GetData()), *referenceDataForHistogramMatching ) );
       }
     }
-
+  
   if ( UseSamplingDensity )
     {
     functional->SetProbabilisticSampleDensity( SamplingDensity );

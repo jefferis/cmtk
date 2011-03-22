@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -90,8 +90,8 @@ GroupwiseRegistrationFunctionalXformTemplateBase<TXform>
     data->PruneHistogram( true, false, this->m_HistogramBins );
     }
   
-  data->Rescale( 1.0 * (this->m_HistogramBins-1) / data->GetRange().Width(), this->m_HistogramKernelRadiusMax );
-  
+  data->RescaleToRange( Types::DataItemRange( this->m_HistogramKernelRadiusMax, this->m_HistogramKernelRadiusMax + this->m_HistogramBins-1 ) );
+			
   newTargetImage->SetData( TypedArray::SmartPtr( data->Convert( TYPE_BYTE ) ) );
   return newTargetImage;
 }
