@@ -58,6 +58,11 @@ if [ ! -f ${sqlite} ]; then
     sqlite=sqlite3
 fi
 
+sed=/opt/local/bin/gsed
+if [ ! -f ${sed} ]; then
+    sed=sed
+fi
+
 cd ${DATADIR}
 
 run()
@@ -1847,19 +1852,19 @@ case ${RUNTEST} in
 	check_results magnitude.nii
 	;;
     xml_film)
-	run_eval "${BINDIR}/film --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/film.xml"
+	run_eval "${BINDIR}/film --xml | ${sed} '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/film.xml"
 	check_results film.xml
 	;;
     xml_levelset)
-        run_eval "${BINDIR}/levelset --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/levelset.xml"
+        run_eval "${BINDIR}/levelset --xml | ${sed} '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/levelset.xml"
 	check_results levelset.xml
 	;;
     xml_mrbias)
-	run_eval "${BINDIR}/mrbias --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/mrbias.xml"
+	run_eval "${BINDIR}/mrbias --xml | ${sed} '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/mrbias.xml"
 	check_results mrbias.xml
 	;;
     xml_registration)
-	run_eval "${BINDIR}/registration --xml | sed '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/registration.xml"
+	run_eval "${BINDIR}/registration --xml | ${sed} '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/registration.xml"
 	check_results registration.xml
 	;;
     wiki_film)
