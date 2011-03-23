@@ -213,14 +213,14 @@ private:
   /// Static thread storage array.
   std::vector<StaticThreadStorage> m_StaticThreadStorage;
 
+#ifdef CMTK_BUILD_MPI
   /** Task function: Compute local gradient of the cost function for gradient approximation.
    * This function takes into consideration that in a spline warp, each control point
    * effects only a local neighborhood. It also groups the parameters by control
    * point and works over all images and x,y,z to speed things up substantially.
    */
-  static void EvaluateLocalGradientThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
+  static CMTK_THREAD_RETURN_TYPE EvaluateLocalGradientThreadFunc( void* args );
 
-#ifdef CMTK_BUILD_MPI
   /// Enumeration type for MPI message tags.
   typedef enum {
     MESSAGE_TAG_COMPUTE = 1,
@@ -236,6 +236,13 @@ private:
 
   /// Reorder gradient components received from other nodes into final gradient vector.
   void ReorderGradientComponents( Types::Coordinate *const dst, const Types::Coordinate* src, const size_t fromCpIdx, const size_t toCpIdx );
+#else // #ifdef CMTK_BUILD_MPI
+  /** Task function: Compute local gradient of the cost function for gradient approximation.
+   * This function takes into consideration that in a spline warp, each control point
+   * effects only a local neighborhood. It also groups the parameters by control
+   * point and works over all images and x,y,z to speed things up substantially.
+   */
+  static void EvaluateLocalGradientThreadFunc( void* args, const size_t taskIdx, const size_t taskCnt, const size_t threadIdx, const size_t );
 #endif
 };
 
