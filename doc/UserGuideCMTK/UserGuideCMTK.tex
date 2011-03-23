@@ -26,11 +26,11 @@ colorlinks,linkcolor={blue},citecolor={blue},urlcolor={blue},
   Toolkit\footnote{This document is licensed under
     the Creative Commons Attribution License Version 3.0.}}
 
-\release{1.10}
+\release{1.20}
 
 \author{Torsten Rohlfing}
 \authoraddress{Neuroscience Program, SRI International, Menlo Park, CA\footnote{Continued development and maintenance of CMTK is funded by
-    the NIBIB under Grant No. R01~EB008381.}}
+    the National Institute of Biomedical Imaging and Bioengineering under Grant No. R01~EB008381.}}
 
 \begin{document}
 
@@ -104,8 +104,17 @@ vectors within an anatomy-based coordinate space, which is the majority of
 modern formats, CMTK determines the nearest anatomical orientation of the
 image within $\pm 45$ degrees around each rotation axis.
 
-To confirm that images are read correctly, and to diagnose problems, CMTK
-comes with a very simple triplanar image viewer (see screen shot in
+As a matter of policy, all of CMTK's tools that write an output image file
+based on some input image file can be expected to write the output image in
+the same pixel order and orientation as the input, so long as the output file
+format supports this. An example where this is not the case is when a file is
+read in NIFTI format with RAS pixel order, but written in Analyze 7.5 format,
+which does not support RAS order. In this case, the output would be written in
+LAS order as the closest matching orientation.
+
+To confirm that images are read and written correctly, and to diagnose
+problems related to image orientation, CMTK comes with a very simple triplanar
+image viewer \index{GUI!triplanar image viewer} (see screen shot in
 Fig.~\ref{fig:triplanar}), adequately named ``\verb|triplanar|.'' The
 coordinates shown in this viewer for any image are exactly the coordinates
 that all CMTK tools use. Note that for the triplanar viewer to be available,
@@ -114,7 +123,7 @@ toolkit\footnote{\url{http://qt.nokia.com}} (version 4.3.0 or higher), and the
 ``\verb|BUILD_GUI|'' build option must be enabled.
 
 \begin{figure}[tbp]
-\centerline{\includegraphics[width=.5\linewidth]{img/triplanar}}
+\centerline{\includegraphics[width=.7\linewidth]{img/triplanar}}
 \caption{Screen shot of CMTK's triplanar image viewer.}
 \label{fig:triplanar}
 \end{figure}
@@ -191,6 +200,43 @@ variable to ``0'' for example, use
 unset CMTK_WRITE_UNCOMPRESSED
 \end{verbatim}
 or its appropriate equivalent inside your favorite shell.
+
+\subsection{Toolkit-Global Command Line Options}
+
+All command line tools in CMTK support a set of options that control the
+global behaviour of the toolkit. These are summarized in
+Table~\ref{tab:GlobalOptions}. In addition, a number of tools also supports
+the ``{\tt --xml}'' option, which prints a command line description in XML
+format for use of the tools as plugins in \index{3D Slicer software} 3D
+Slicer\footnote{\url{http://www.slicer.org}}.
+
+\begin{table}[tbp]
+\begin{center}
+\begin{tabular}{lp{10cm}}
+\hline
+Option & Function \\
+\hline
+\tt --help & Write a summary of the tool command line options to standard
+  output. \\
+\tt --wiki & Write the command line option summary in MediaWiki markup (this
+is convenient for creating a web-based command line description collection. \\
+\tt --version & Write the CMTK version to standard output. \\
+\tt --verbose-level <n>& Level of verbosity, where ``{\tt <n>}'' is an integer
+number from 0 to 9. Default is 0 for essentially quiet operation. Higher
+levels produce more detailed status output for debugging. \\
+\tt --echo & Write a copy of the entire command line to standard output. This
+is useful for debugging scripts, i.e., when it is unclear whether the tool is
+really invoked with the intended options and arguments. \\
+\tt --threads <n> & Set maximum number of parallel threads to ``{\tt <n>}'' for the
+POSIX Threads and OpenMP parallelization models. This does not affect the
+number of parallel jobs when using Grand Central Dispatch on MacOS-X, which
+determines the number of parallel tasks at system level. \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Command line options supported by all CMTK command line tools.}
+\label{tab:GlobalOptions}
+\end{table}
 
 \clearpage
 \section{Step-by-Step Morphometry}
@@ -319,7 +365,7 @@ resulting level set function, but using the \verb|--binarize| switch turns the
 output into a thresholded, binary mask that is appropriate for use by the
 \verb|mrbias| tool.
 
-\begin{figure}[tb]
+\begin{figure}[tbp]
 \begin{center}
 \begin{tabular}{ccc}
 Image & Mask & Image with Mask Outline \\
@@ -448,6 +494,37 @@ supports cubic ({\tt --cubic}) and cosine-windowed sinc
 ({\tt --sinc-cosine}) interpolation for intensity images, partial volume
 interpolation~\cite{MaesCollVand:1997} ({\tt --pv}) for label images, and
 nearest neighbor ({\tt --nn}) interpolation for all types of images.
+
+\begin{figure}[tbp]
+\centerline{\includegraphics[width=.7\linewidth]{img/fview}}
+\caption{Screen shot of CMTK's {\tt fview} side-by-side registered image
+  viewer.}
+\label{fig:fview}
+\end{figure}
+
+\index{GUI!aligned image pair viewer}
+When built with Qt/GUI support CMTK provides a simple, interactive tool,
+``{\tt fview}'' to verify the successful alignment of images
+(Fig.~\ref{fig:fview}). Applied to the same images and transformations as the
+previous reformatting example, the command line for interactive inspection
+would be
+\begin{verbatim}
+fview img1.nii img3.nii img1_to_2.xform --inverse img3_to_2.xform
+\end{verbatim}
+In general, {\tt fview} is called with at least two parameters, the fixed and
+the moving image. These are followed by a sequence of transformations, each of
+which can be inverted by preceding it with ``{\tt --inverse}''. The effective
+transformation applied to the moving image is the concatenation of the entire
+sequence.
+
+The {\tt fview} tool has a simple, intuitive user interface, which presents a
+side-by-side display of fixed and reformatted moving image, with variable
+transparent overlay of the fixed onto the moving image. Slice orientation
+(axial, sagittal, coronal) and slice location can be adjusted, as can be
+interpolation kernel (linear, cubic, sinc, nearest neighbour, partial
+volumes) and image color maps and window/level settings. In addition, the tool
+can selectively disable the nonrigid components of applied transformations and
+only apply their global affine parts.
 
 \subsection{Jacobian Determinant Maps}
 
@@ -585,8 +662,8 @@ three-tissue (CSF, WM, GM) segmentation.
 
 The integration of a complete atlas-based segmentation workflow with a
 pre-defined atlas is particularly convenient when using CMTK's tools from
-within the \index{Slicer software} 3D
-Slicer\footnote{http://www.slicer.org}. Fig.~\ref{fig:SlicerSRI24} shows an
+within the \index{3D Slicer software} 3D
+Slicer software. Fig.~\ref{fig:SlicerSRI24} shows an
 example of the Slicer-generated user interface for the \verb|asegment_sri24|
 tool, as well as the result of an atlas-based segmentation using the
 ``\verb|tzo116plus|'' label map.
@@ -652,13 +729,42 @@ respect to such choice.
 
 CMTK implements a groupwise registration algorithm called
 ``congealing''~\cite{Learned-Miller:2006}, both using the affine and the
-B-spline FFD transformation models~\cite{BalcGollShen:2007}.
+B-spline FFD transformation models~\cite{BalcGollShen:2007}. Alternatively, a
+groupwise image similarity measure based on Regional Mutual
+Information~\cite{RussTomaRohl:2004} is also supported.
 
-\index{CMTK Tools!congeal@{\tt congeal}} \index{CMTK Tools!congeal\_warp@{\tt
-congeal\_warp}} The two command line tools, {\tt congeal} and {\tt
-congeal\_warp} were used, among other applications, to create the publicly
+\index{CMTK Tools!groupwise_affine@{\tt groupwise\_affine}} \index{CMTK Tools!groupwise\_warp@{\tt
+groupwise\_warp}} The two command line tools, {\tt groupwise\_affine} and {\tt
+groupwise\_warp} were used, among other applications, to create the publicly
 available SRI24 atlas \index{Atlas!SRI24} of normal human brain
 anatomy~\cite{RohlZahrSull:2008,RohlZahrSull:2010}.
+
+A good workflow example to start experimenting with CMTK's groupwise
+registration tools might be as follows for three input images, {\tt
+  image1.nii} through {\tt image3.nii}:
+\begin{verbatim}
+# Initialize three-image groupwise alignment using centers of mass
+groupwise_init -O groupwise/initial -v --align-centers-of-mass \
+    image1.nii image2.nii image3.nii
+
+# Affine groupwise registration with zero-sum transformation parameters
+# over all images. Use 20% stochastic sampling density for speed.
+# Use ``RMI''-based similarity measure; sometimes more robust for affine.
+groupwise_affine --rmi -O groupwise/affine -v --match-histograms \
+    --dofs 6 --dofs 9 --zero-sum \
+    --downsample-from 8 --downsample-to 1 --exploration 8 -a 0.5 \
+    --sampling-density 0.05 --force-background 0 \
+    groupwise/initial/groupwise_init.xforms
+
+# Nonrigid (B-spline) groupwise registration using ``congealing'' criterion.
+# Start with approx. 40mm control point grid (fitted to image FOV), refine 5
+# times, and force displacements to be zero-sum over all images (not
+# considering the global affine transformation component).
+groupwise_warp --congeal -O groupwise/warp -v --match-histograms --histogram-bins 32 \
+    --grid-spacing 40 --grid-spacing-fit --refine-grid 5 --zero-sum-no-affine \
+    --downsample-from 8 --downsample-to 1 --exploration 6.4 --accuracy 0.1 \
+    --force-background 0 groupwise/affine/groupwise_rmi.xforms
+\end{verbatim}
 
 \clearpage
 \section{More Gory Details}
