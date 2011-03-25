@@ -1,6 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
-##  Copyright 2004-2009 SRI International
+##
+##  Copyright 2004-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -29,14 +30,12 @@
 
 FIND_PACKAGE(PythonInterp)
 
-IF(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  IF(BUILD_APPS)
-    SUBDIRS(apps)
-  ENDIF(BUILD_APPS)
+IF(BUILD_APPS)
+  SUBDIRS(apps)
+ENDIF(BUILD_APPS)
   
-  IF(BUILD_GUI)
-    SUBDIRS(gui)	
-  ENDIF(BUILD_GUI)
-ENDIF(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+IF(BUILD_GUI)
+  SUBDIRS(gui)	
+ENDIF(BUILD_GUI)
 
 SUBDIRS(libs)
