@@ -83,7 +83,7 @@ CommandLine::SetDefaultInfo()
   this->AddCallback( Self::Key( "help" ), &Self::CallbackInternal, "Write list of command line options to standard output." );
   this->AddCallback( Self::Key( "wiki" ), &Self::CallbackInternal, "Write list of command line options to standard output in MediaWiki markup." );
 
-  if (! this->m_Properties & PROPS_NOXML ) 
+  if (! (this->m_Properties & PROPS_NOXML) ) 
     this->AddCallback( Self::Key( "xml" ), &Self::CallbackInternal, "Write command line syntax specification in XML markup (for Slicer integration)." );
 
   this->AddCallback( Self::Key( "version" ), &Self::CallbackInternal, "Write toolkit version to standard output." );
