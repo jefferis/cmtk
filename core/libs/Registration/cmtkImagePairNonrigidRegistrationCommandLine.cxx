@@ -472,7 +472,7 @@ ImagePairNonrigidRegistrationCommandLine::OutputIntermediate( const bool increme
   char path[PATH_MAX];
   if ( Studylist ) 
     {
-    snprintf( path, sizeof( path ), "%s/level-%02d.list", Studylist, IntermediateResultIndex );
+    snprintf( path, sizeof( path ), "%s%clevel-%02d.list", Studylist, (int)CMTK_PATH_SEPARATOR, IntermediateResultIndex );
     } 
   else
     {

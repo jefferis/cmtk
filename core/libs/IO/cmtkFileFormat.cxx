@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -214,19 +214,19 @@ FileFormat::IdentifyDirectory( const char* path )
   char filename[PATH_MAX];
   struct stat buf;
 
-  snprintf( filename, sizeof( filename ), "%s/images", path );
+  snprintf( filename, sizeof( filename ), "%s%cimages", (int)CMTK_PATH_SEPARATOR, path );
   if ( (!stat( filename, &buf )) && ( buf.st_mode & S_IFREG ) )
     return FILEFORMAT_STUDY;
 
-  snprintf( filename, sizeof( filename ), "%s/images.gz", path );
+  snprintf( filename, sizeof( filename ), "%s%cimages.gz", (int)CMTK_PATH_SEPARATOR, path );
   if ( (!stat( filename, &buf )) && ( buf.st_mode & S_IFREG ) )
     return FILEFORMAT_STUDY;
 
-  snprintf( filename, sizeof( filename ), "%s/studylist", path );
+  snprintf( filename, sizeof( filename ), "%s%cstudylist", (int)CMTK_PATH_SEPARATOR, path );
   if ( (!stat( filename, &buf )) && ( buf.st_mode & S_IFREG ) )
     return FILEFORMAT_STUDYLIST;
 
-  snprintf( filename, sizeof( filename ), "%s/studylist.gz", path );
+  snprintf( filename, sizeof( filename ), "%s%cstudylist.gz", (int)CMTK_PATH_SEPARATOR, path );
   if ( (!stat( filename, &buf )) && ( buf.st_mode & S_IFREG ) )
     return FILEFORMAT_STUDYLIST;
 

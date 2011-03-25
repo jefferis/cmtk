@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -75,7 +75,7 @@ TypedStreamStudylist::Read( const char *studylistpath )
 {
   char archive[PATH_MAX];
 
-  snprintf( archive, sizeof( archive ), "%s/studylist", MountPoints::Translate( studylistpath ) );
+  snprintf( archive, sizeof( archive ), "%s%cstudylist", (int)CMTK_PATH_SEPARATOR, MountPoints::Translate( studylistpath ) );
   ClassStream classStream( archive, ClassStream::READ );
   if ( ! classStream.IsValid() ) 
     {
@@ -92,7 +92,7 @@ TypedStreamStudylist::Read( const char *studylistpath )
   StudyPath[1] = classStream.ReadString( "studyname", "<unknown>" );
   classStream.Close();
   
-  snprintf( archive, sizeof( archive ), "%s/registration", MountPoints::Translate(studylistpath) );
+  snprintf( archive, sizeof( archive ), "%s%cregistration", MountPoints::Translate(studylistpath), (int)CMTK_PATH_SEPARATOR  );
   classStream.Open( archive, ClassStream::READ );
   if ( ! classStream.IsValid() ) 
     {

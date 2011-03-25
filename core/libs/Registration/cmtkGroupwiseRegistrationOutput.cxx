@@ -66,7 +66,7 @@ GroupwiseRegistrationOutput::WriteGroupwiseArchive( const char* path ) const
       if ( this->m_OutputRootDirectory )
 	{
 	char completePath[PATH_MAX];
-	snprintf( completePath, sizeof( completePath ), "%s/%s", this->m_OutputRootDirectory, path );
+	snprintf( completePath, sizeof( completePath ), "%s%c%s", this->m_OutputRootDirectory, (int)CMTK_PATH_SEPARATOR, path );
 	stream.Open( completePath, ClassStream::WRITE );
 	}
       else
@@ -99,7 +99,7 @@ GroupwiseRegistrationOutput::WriteXformsSeparateArchives
 	Study::SmartPtr refstudy;
 	if ( this->m_OutputRootDirectory  && ! this->m_ExistingTemplatePath )
 	  {
-	  snprintf( fullPath, sizeof( fullPath ), "%s/%s", this->m_OutputRootDirectory, templatePath );
+	  snprintf( fullPath, sizeof( fullPath ), "%s%c%s", this->m_OutputRootDirectory, CMTK_PATH_SEPARATOR, templatePath );
 	  refstudy = slist.AddStudy( fullPath );
 	  }
 	else
@@ -124,11 +124,11 @@ GroupwiseRegistrationOutput::WriteXformsSeparateArchives
 	
 	if ( this->m_OutputRootDirectory )
 	  {
-	  snprintf( fullPath, sizeof( fullPath ), "%s/%s/target-%03d.list", this->m_OutputRootDirectory, path, (int)img );
+	  snprintf( fullPath, sizeof( fullPath ), "%s%c%s%target-%03d.list", this->m_OutputRootDirectory, CMTK_PATH_SEPARATOR, path, CMTK_PATH_SEPARATOR, (int)img );
 	  }
 	else
 	  {
-	  snprintf( fullPath, sizeof( fullPath ), "%s/target-%03d.list", path, (int)img );
+	  snprintf( fullPath, sizeof( fullPath ), "%s%ctarget-%03d.list", path, CMTK_PATH_SEPARATOR, (int)img );
 	  }
 	ClassStreamStudyList::Write( fullPath, &slist );
 	}
@@ -245,7 +245,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
       if ( this->m_OutputRootDirectory )
 	{
 	char fullPath[PATH_MAX];
-	snprintf( fullPath, sizeof( fullPath ), "%s/%s", this->m_OutputRootDirectory, path );
+	snprintf( fullPath, sizeof( fullPath ), "%s%c%s", this->m_OutputRootDirectory, CMTK_PATH_SEPARATOR, path );
 	VolumeIO::Write( *templateGrid, fullPath );
 	}
       else
