@@ -28,15 +28,9 @@
 ##  $LastChangedBy$
 ##
 
-FIND_PROGRAM(SH_PATH sh)
-IF(SH_PATH)
-  SET(testDriver ${SH_PATH} ${CMAKE_CURRENT_BINARY_DIR}/appsTestDriver.sh)
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh.in ${CMAKE_CURRENT_BINARY_DIR}/appsTestDriver.sh @ONLY)
-ELSE(SH_PATH)
-  SET(testDriver python ${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.py)
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.py.in ${CMAKE_CURRENT_BINARY_DIR}/appsTestDriver.py @ONLY)
-ENDIF(SH_PATH)
-
+FIND_PROGRAM(SH_PATH sh PATHS C:/cygwin/bin)
+SET(testDriver ${SH_PATH} ${CMAKE_CURRENT_BINARY_DIR}/appsTestDriver.sh)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh.in ${CMAKE_CURRENT_BINARY_DIR}/appsTestDriver.sh @ONLY)
 
 # ==========================================
 # Tests for "avg_adm" tool
