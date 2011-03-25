@@ -24,6 +24,8 @@ where
 
 ; <tt>--wiki</tt> : Write list of command line options to standard output in MediaWiki markup.
 
+; <tt>--xml</tt> : Write command line syntax specification in XML markup (for Slicer integration).
+
 ; <tt>--version</tt> : Write toolkit version to standard output.
 
 ; <tt>--echo</tt> : Write the current command line to standard output.
