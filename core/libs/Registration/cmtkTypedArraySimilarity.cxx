@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -234,7 +234,6 @@ TypedArraySimilarity::GetCrossCorrelation
   if ( ! CheckArrayDimensions( array0, array1 ) ) 
     return MathUtil::GetFloatNaN();
 
-  Types::DataItem pixel0, pixel1;
   Types::DataItem sumOfProducts = 0, sumOfSquares0 = 0, sumOfSquares1 = 0;
 
   Types::DataItem mean0, mean1, dummy;
@@ -242,9 +241,10 @@ TypedArraySimilarity::GetCrossCorrelation
   array1->GetStatistics( mean1, dummy );
 
   unsigned int numberOfPixels = array0->GetDataSize();
-#pragma omp parallel for reduction(+ : sumOfProducts) reduction(+ : sumOfSquares0) reduction(+ : sumOfSquares1)
+#pragma omp parallel for reduction(+:sumOfProducts,sumOfSquares0,sumOfSquares1)
   for ( unsigned int idx = 0; idx < numberOfPixels; ++idx ) 
     {
+    Types::DataItem pixel0, pixel1;
     if ( array0->Get( pixel0, idx ) && array1->Get( pixel1, idx ) ) 
       {
       sumOfProducts += (pixel0 - mean0) * (pixel1 - mean1);
