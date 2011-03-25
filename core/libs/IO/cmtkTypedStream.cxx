@@ -114,7 +114,7 @@ TypedStream
   // If "dir" parameter is NULL or empty, use current directory instead.
   if ( dir && *dir ) 
     {
-    if ( static_cast<size_t>( snprintf( fname, sizeof( fname ), "%s/%s", dir, archive ) ) >= sizeof( fname ) )
+    if ( static_cast<size_t>( snprintf( fname, sizeof( fname ), "%s%c%s", dir, CMTK_PATH_SEPARATOR, archive ) ) >= sizeof( fname ) )
       {
       StdErr << "WARNING: length of path exceeds system PATH_MAX in TypedStream::Open and will be truncated.\n";
       }
