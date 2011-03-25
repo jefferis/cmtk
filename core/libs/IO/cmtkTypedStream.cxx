@@ -168,6 +168,7 @@ TypedStream
     {
     if ( FileUtils::RecursiveMkPrefixDir( filename ) ) 
       {
+      StdErr << "ERROR: could not recursively create path for \"" << filename << "\"\n";
       Status = TYPEDSTREAM_ERROR_SYSTEM;
       return;
       }
@@ -196,6 +197,7 @@ TypedStream
     GzFile = gzopen( gzName, modestr );
     if ( ! GzFile ) 
       {
+      StdErr << "ERROR: could not open file \"" << filename << "\" with mode \"" << modestr << "\"\n";
       Status = TYPEDSTREAM_ERROR_SYSTEM;
       return;
       }
