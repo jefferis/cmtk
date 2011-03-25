@@ -123,9 +123,10 @@ SET(testList ${testList}
 IF(NOT CMTK_USE_MPI)
   # ==========================================
   # Tests for xml and wiki markups
-  SET(testList_xml film levelset mrbias registration)
-  SET(testList_wiki film levelset mrbias registration)
-
+  FOREACH(t film levelset mrbias registration)
+    SET(testList ${testList} xml_${t} wiki_${t})
+  ENDFOREACH(t film levelset mrbias registration)
+  
   # ==========================================
   # Tests for "concat_affine" tool
   SET(testList ${testList} 
@@ -665,27 +666,11 @@ ENDIF(NOT CMTK_USE_MPI)
 # Set up all tests
 FOREACH(testName ${testList})
   IF(CMTK_TESTING_MEMORYCHECK)
-    ADD_TEST(${testName} ${testDriver} ${testName} ${MEMORYCHECK_COMMAND})
+    ADD_TEST(NAME ${testName} COMMAND ${testDriver} ${testName} $<CONFIGURATION> ${MEMORYCHECK_COMMAND})
   ELSE(CMTK_TESTING_MEMORYCHECK)
-    ADD_TEST(${testName} ${testDriver} ${testName})
+    ADD_TEST(NAME ${testName} COMMAND ${testDriver} ${testName} $<CONFIGURATION>)
   ENDIF(CMTK_TESTING_MEMORYCHECK)
 ENDFOREACH(testName ${testList})
-
-FOREACH(testName ${testList_xml})
-  IF(CMTK_TESTING_MEMORYCHECK)
-    ADD_TEST(xml_${testName} ${testDriver} xml_${testName} ${MEMORYCHECK_COMMAND})
-  ELSE(CMTK_TESTING_MEMORYCHECK)
-    ADD_TEST(xml_${testName} ${testDriver} xml_${testName})
-  ENDIF(CMTK_TESTING_MEMORYCHECK)
-ENDFOREACH(testName ${testList_xml})
-
-FOREACH(testName ${testList_wiki})
-  IF(CMTK_TESTING_MEMORYCHECK)
-    ADD_TEST(wiki_${testName} ${testDriver} wiki_${testName} ${MEMORYCHECK_COMMAND})
-  ELSE(CMTK_TESTING_MEMORYCHECK)
-    ADD_TEST(wiki_${testName} ${testDriver} wiki_${testName})
-  ENDIF(CMTK_TESTING_MEMORYCHECK)
-ENDFOREACH(testName ${testList_wiki})
 
 SET_TESTS_PROPERTIES(groupwise_warpFromInit PROPERTIES TIMEOUT 4800)
 SET_TESTS_PROPERTIES(groupwise_warpFitFromInit PROPERTIES TIMEOUT 4800)
