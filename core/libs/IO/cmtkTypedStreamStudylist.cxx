@@ -75,7 +75,7 @@ TypedStreamStudylist::Read( const char *studylistpath )
 {
   char archive[PATH_MAX];
 
-  snprintf( archive, sizeof( archive ), "%s%cstudylist", (int)CMTK_PATH_SEPARATOR, MountPoints::Translate( studylistpath ) );
+  snprintf( archive, sizeof( archive ), "%s%cstudylist", MountPoints::Translate( studylistpath ), (int)CMTK_PATH_SEPARATOR );
   ClassStream classStream( archive, ClassStream::READ );
   if ( ! classStream.IsValid() ) 
     {

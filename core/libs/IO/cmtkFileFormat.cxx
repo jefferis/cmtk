@@ -214,19 +214,19 @@ FileFormat::IdentifyDirectory( const char* path )
   char filename[PATH_MAX];
   struct stat buf;
 
-  snprintf( filename, sizeof( filename ), "%s%cimages", (int)CMTK_PATH_SEPARATOR, path );
+  snprintf( filename, sizeof( filename ), "%s%cimages", path, (int)CMTK_PATH_SEPARATOR );
   if ( (!stat( filename, &buf )) && ( buf.st_mode & S_IFREG ) )
     return FILEFORMAT_STUDY;
 
-  snprintf( filename, sizeof( filename ), "%s%cimages.gz", (int)CMTK_PATH_SEPARATOR, path );
+  snprintf( filename, sizeof( filename ), "%s%cimages.gz", path, (int)CMTK_PATH_SEPARATOR );
   if ( (!stat( filename, &buf )) && ( buf.st_mode & S_IFREG ) )
     return FILEFORMAT_STUDY;
 
-  snprintf( filename, sizeof( filename ), "%s%cstudylist", (int)CMTK_PATH_SEPARATOR, path );
+  snprintf( filename, sizeof( filename ), "%s%cstudylist", path, (int)CMTK_PATH_SEPARATOR );
   if ( (!stat( filename, &buf )) && ( buf.st_mode & S_IFREG ) )
     return FILEFORMAT_STUDYLIST;
 
-  snprintf( filename, sizeof( filename ), "%s%cstudylist.gz", (int)CMTK_PATH_SEPARATOR, path );
+  snprintf( filename, sizeof( filename ), "%s%cstudylist.gz", path, (int)CMTK_PATH_SEPARATOR );
   if ( (!stat( filename, &buf )) && ( buf.st_mode & S_IFREG ) )
     return FILEFORMAT_STUDYLIST;
 
