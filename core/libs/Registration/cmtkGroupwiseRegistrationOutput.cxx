@@ -124,7 +124,7 @@ GroupwiseRegistrationOutput::WriteXformsSeparateArchives
 	
 	if ( this->m_OutputRootDirectory )
 	  {
-	  snprintf( fullPath, sizeof( fullPath ), "%s%c%s%target-%03d.list", this->m_OutputRootDirectory, CMTK_PATH_SEPARATOR, path, CMTK_PATH_SEPARATOR, (int)img );
+	  snprintf( fullPath, sizeof( fullPath ), "%s%c%s%ctarget-%03d.list", this->m_OutputRootDirectory, CMTK_PATH_SEPARATOR, path, CMTK_PATH_SEPARATOR, (int)img );
 	  }
 	else
 	  {
