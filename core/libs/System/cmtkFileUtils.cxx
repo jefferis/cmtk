@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -83,10 +83,9 @@ RecursiveMkPrefixDir
   struct stat buf;
   for ( unsigned i=0; filename[i]; ++i ) 
     {
-    prefix[i] = filename[i];
-    if ( (prefix[i] == CMTK_PATH_SEPARATOR) ) 
+    if ( (filename[i] == CMTK_PATH_SEPARATOR) ) 
       {
-      prefix[i+1] = 0;
+      prefix[i] = 0;
       if ( stat( prefix, &buf ) != 0 ) 
 	{
 #ifdef _MSC_VER
@@ -97,6 +96,7 @@ RecursiveMkPrefixDir
 	if ( result ) return result;
 	}
       }
+    prefix[i] = filename[i];
     }
   return 0;
 }
