@@ -30,14 +30,22 @@
 //
 */
 
-#include "cmtkThreadSemaphore.h"
+namespace
+cmtk
+{
 
-#ifdef _MSC_VER
-#  include "cmtkThreadSemaphoreWindows.txx"
-#elif defined(__APPLE__) || defined(__CYGWIN__)
-#  include "cmtkThreadSemaphoreAppleIsRetarded.txx"
-#elif defined(CMTK_USE_THREADS)
-#  include "cmtkThreadSemaphorePOSIX.txx"
-#else
-#  include "cmtkThreadSemaphoreNone.txx"
-#endif // #ifdef CMTK_USE_THREADS
+ThreadSemaphore::ThreadSemaphore( const unsigned int )
+{}
+
+ThreadSemaphore::~ThreadSemaphore()
+{}
+
+void
+ThreadSemaphore::Post( const unsigned int )
+{}
+
+void
+ThreadSemaphore::Wait() 
+{}
+
+}
