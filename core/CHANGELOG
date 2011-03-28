@@ -1,9 +1,9 @@
 Release CMTK-1.7.0:
 
+(r3062) Fixed: problem with directory creation due to difference path
+    separator characters for Windows vs. POSIX.
 (r3059) Fixed: broken thread semaphores on Windows due to incorrect
     conditional compilation. (This bug was introduced in r1661.)
-(r3059) Fixed: problem with directory creation due to difference path
-    separator characters for Windows vs. POSIX.
 (r3031) Fixed: problem with instantiation of static smart pointer "NULL"
     object led to crashes on MacOS-X platform. This has been fixed.
 (r3031) Fixed: linking errors when building shared libraries on MacOS, caused
