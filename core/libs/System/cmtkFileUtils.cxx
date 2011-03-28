@@ -85,12 +85,16 @@ RecursiveMkPrefixDir
     {
     if ( (filename[i] == CMTK_PATH_SEPARATOR) ) 
       {
-      prefix[i] = 0;
+      prefix[i+1] = 0;
+      if ( i ) // do not delete single "/" or "\"
+	prefix[i] = 0;
+      else
+	prefix[i] = filename[i];
+      
 #ifdef _MSC_VER
       if ( (i > 0) && (prefix[i-1] == ':') )
 	{
 	prefix[i] = '\\';
-	prefix[i+1] = 0;
 	}
 #endif
       if ( stat( prefix, &buf ) != 0 ) 
