@@ -99,7 +99,12 @@ public:
      * within a range from a given constant will be considered feature voxels.
      * All voxels with lower values will be considered background voxels.
      */
-    VALUE_THRESHOLD = 8
+    VALUE_THRESHOLD = 8,
+    /** Compute signed distance map.
+     * The "INSIDE" flag determines whether negative distance values are assigned to
+     * pixels inside (flag off) or outside (flag on) the labelled region.
+     */
+    SIGNED = 16
   } Flags;
 
   /** Construct map from given volume.

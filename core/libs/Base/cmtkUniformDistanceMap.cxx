@@ -52,6 +52,23 @@ UniformDistanceMap<TDistanceDataType>
 {
   this->BuildDistanceMap( volume, flags, value, window );
 
+  if ( flags & Self::SIGNED )
+    {
+    UniformVolume::SmartConstPtr outsideDistanceMap = this->m_DistanceMap;
+    const UniformVolume& oMap = *outsideDistanceMap;
+
+    // compute complementary distance map.
+    this->BuildDistanceMap( volume, flags ^ Self::INSIDE, value, window );
+    UniformVolume& iMap = *this->m_DistanceMap;
+    
+    const size_t nPixels = volume.GetNumberOfPixels();
+#pragma omp parallel for
+    for ( size_t i = 0; i < nPixels; ++i ) 
+      {
+      iMap.SetDataAt( oMap.GetDataAt( i ) -  iMap.GetDataAt( i ), i );
+      }
+    }
+  
   this->m_DistanceMap->m_IndexToPhysicalMatrix = volume.m_IndexToPhysicalMatrix;
 
   this->m_DistanceMap->SetOffset( volume.m_Offset );
@@ -69,10 +86,10 @@ UniformDistanceMap<TDistanceDataType>
   TypedArray::SmartPtr distanceArray = TypedArray::SmartPtr( TypedArray::Create( DataTypeTraits<DistanceDataType>::DataTypeID, volume.GetNumberOfPixels() ) );
   DistanceDataType *Distance = static_cast<DistanceDataType*>( distanceArray->GetDataPtr() );
 
-  byte inside = ( flags & UniformDistanceMap::INSIDE ) ? 0 : 1;
-  byte outside = 1 - inside;
+  const byte inside = ( flags & UniformDistanceMap::INSIDE ) ? 0 : 1;
+  const byte outside = 1 - inside;
 
-  const TypedArray* Feature = volume.GetData();
+  const TypedArray& feature = *(volume.GetData());
 
   Types::DataItem c;
   DistanceDataType *p = Distance;
@@ -80,7 +97,7 @@ UniformDistanceMap<TDistanceDataType>
     {
     for ( size_t i = 0; i < volume.GetNumberOfPixels(); i++, p++ ) 
       {
-      if ( Feature->Get( c, i ) )
+      if ( feature.Get( c, i ) )
 	{
 	*p = (c == value) ? inside : outside;
 	}
@@ -94,7 +111,7 @@ UniformDistanceMap<TDistanceDataType>
     {
     for ( size_t i = 0; i < volume.GetNumberOfPixels(); i++, p++ ) 
       {
-      if ( Feature->Get( c, i ) )
+      if ( feature.Get( c, i ) )
 	{
 	*p = (c >= value) ? inside : outside;
 	}
@@ -108,7 +125,7 @@ UniformDistanceMap<TDistanceDataType>
     {
     for ( size_t i = 0; i < volume.GetNumberOfPixels(); i++, p++ ) 
       {
-      if ( Feature->Get( c, i ) )
+      if ( feature.Get( c, i ) )
 	{
 	*p = (fabs(c - value)<=window) ? inside : outside;
 	}
@@ -122,7 +139,7 @@ UniformDistanceMap<TDistanceDataType>
     {
     for ( size_t i = 0; i < volume.GetNumberOfPixels(); i++, p++ ) 
       {
-      if ( Feature->Get( c, i ) )
+      if ( feature.Get( c, i ) )
 	{
 	*p = (c) ? inside : outside;
 	}
