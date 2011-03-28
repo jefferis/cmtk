@@ -149,11 +149,8 @@ Average
 
     for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = volumes.begin(); it != volumes.end(); ++it )
       {
-      cmtk::UniformVolume::SmartPtr insideDistanceMap = cmtk::UniformDistanceMap<float>( *(*it), distanceMapFlags + cmtk::UniformDistanceMap<float>::INSIDE, label ).Get();
-      cmtk::UniformVolume::SmartPtr outsideDistanceMap = cmtk::UniformDistanceMap<float>( *(*it), distanceMapFlags, label ).Get();
-
-      const float* insideDistancePtr = (const float*)insideDistanceMap->GetData()->GetDataPtr();
-      const float* outsideDistancePtr = (const float*)outsideDistanceMap->GetData()->GetDataPtr();
+      cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<float>( *(*it), distanceMapFlags + cmtk::UniformDistanceMap<float>::SIGNED, label ).Get();
+      const float* signedDistancePtr = (const float*)signedDistanceMap->GetData()->GetDataPtr();
 
       // if this is the first label, write directly to accumulation distance map
       if ( !label )
@@ -167,10 +164,7 @@ Average
 	for ( size_t i = 0; i < numPixels; ++i )
 #endif
 	  {
-	  if ( insideDistancePtr[i] > 0 )
-	    totalDistancePtr[i] -= insideDistancePtr[i];
-	  else
-	    totalDistancePtr[i] += outsideDistancePtr[i];
+	  totalDistancePtr[i] += signedDistancePtr[i];
 	  }
 #ifdef CMTK_USE_GCD
 		    });
@@ -188,10 +182,7 @@ Average
 	for ( size_t i = 0; i < numPixels; ++i )
 #endif
 	  {
-	  if ( insideDistancePtr[i] > 0 )
-	    inOutDistancePtr[i] -= insideDistancePtr[i];
-	  else
-	    inOutDistancePtr[i] += outsideDistancePtr[i];
+	  inOutDistancePtr[i] += signedDistancePtr[i];
 	  }
 #ifdef CMTK_USE_GCD
 		    });
@@ -326,56 +317,25 @@ AverageWindowed
     std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it;
     for ( it = volumes.begin(); it != volumes.end(); ++it )
       {
-      cmtk::UniformVolume::SmartPtr insideDistanceMap = cmtk::UniformDistanceMap<float>( *(*it), distanceMapFlags + cmtk::UniformDistanceMap<float>::INSIDE, label, FeatureWindowRadius).Get();
-      cmtk::UniformVolume::SmartPtr outsideDistanceMap = cmtk::UniformDistanceMap<float>( *(*it), distanceMapFlags, label, FeatureWindowRadius ).Get();
-      
-      const float* insideDistancePtr = (const float*)insideDistanceMap->GetData()->GetDataPtr();
-      const float* outsideDistancePtr = (const float*)outsideDistanceMap->GetData()->GetDataPtr();
+      cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<float>( *(*it), distanceMapFlags + cmtk::UniformDistanceMap<float>::SIGNED, label, FeatureWindowRadius).Get();
+      const float* signedDistancePtr = (const float*)signedDistanceMap->GetData()->GetDataPtr();
 
-      // if this is the first label, write directly to accumulation distance map
-      if ( !label )
-	{
 #ifdef CMTK_USE_GCD
-	const cmtk::Threads::Stride stride( numPixels );
-	dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-			{ for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+      const cmtk::Threads::Stride stride( numPixels );
+      dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-	for ( size_t i = 0; i < numPixels; ++i )
+			  for ( size_t i = 0; i < numPixels; ++i )
 #endif
-	  {
-	  if ( insideDistancePtr[i] > 0 )
-	    totalDistancePtr[i] -= insideDistancePtr[i];
-	  else
-	    totalDistancePtr[i] += outsideDistancePtr[i];
-	  }
+			    {
+			    inOutDistancePtr[i] += signedDistancePtr[i];
+			    }
 #ifdef CMTK_USE_GCD
-			});
+		      });
 #endif
-	}
-      else
-	// for all other labels, add to label distance map
-	{
-#ifdef CMTK_USE_GCD
-	const cmtk::Threads::Stride stride( numPixels );
-	dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-			{ for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
-#else
-#pragma omp parallel for
-	for ( size_t i = 0; i < numPixels; ++i )
-#endif
-	  {
-	  if ( insideDistancePtr[i] > 0 )
-	    inOutDistancePtr[i] -= insideDistancePtr[i];
-	  else
-	    inOutDistancePtr[i] += outsideDistancePtr[i];
-	  }
-#ifdef CMTK_USE_GCD
-			});
-#endif
-	}
       }
-
+    
     // if this is not the first label, compare this label's sum distance map
     // (over all volumes) pixel by pixel and set this label where it is
     // closer than previous closest label
@@ -532,33 +492,8 @@ Average
     std::list<cmtk::XformUniformVolume::SmartConstPtr>::const_iterator itX = xforms.begin();
     for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator itV = volumes.begin(); itV != volumes.end(); ++itV, ++itX )
       {
-      const size_t nPixelsFloating = (*itV)->GetNumberOfPixels();
-
-      cmtk::UniformVolume::SmartPtr insideDistanceMap = cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags + cmtk::UniformDistanceMap<float>::INSIDE, label ).Get();
-      cmtk::UniformVolume::SmartPtr inOutDistanceMap = cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags, label ).Get();
-      
-      const float* insideDistancePtr = static_cast<const float*>( insideDistanceMap->GetData()->GetDataPtr() );
-      float* inOutDistancePtr = static_cast<float*>( inOutDistanceMap->GetData()->GetDataPtr() );
-      
-#ifdef CMTK_USE_GCD
-      const cmtk::Threads::Stride stride( nPixelsFloating );
-      dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
-		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
-#else
-#pragma omp parallel for
-      for ( size_t i = 0; i < nPixelsFloating; ++i )
-#endif
-	{
-	if ( insideDistancePtr[i] > 0 )
-	  inOutDistancePtr[i] = insideDistancePtr[i];
-	else
-	  inOutDistancePtr[i] = inOutDistancePtr[i];
-	}
-#ifdef CMTK_USE_GCD
-		      });
-#endif
-
-      cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> interpolator( *inOutDistanceMap );
+      cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags + cmtk::UniformDistanceMap<float>::SIGNED, label ).Get();
+      cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> interpolator( *signedDistanceMap );
       
       // accumulate interpolated distances for this label
       cmtk::Vector3D v;
@@ -714,24 +649,8 @@ AverageWindowed
     std::list<cmtk::XformUniformVolume::SmartConstPtr>::const_iterator itX = xforms.begin();
     for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator itV = volumes.begin(); itV != volumes.end(); ++itV, ++itX )
       {
-      const size_t nPixelsFloating = (*itV)->GetNumberOfPixels();
-
-      cmtk::UniformVolume::SmartPtr insideDistanceMap = cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags + cmtk::UniformDistanceMap<float>::INSIDE, label, FeatureWindowRadius ).Get();
-      cmtk::UniformVolume::SmartPtr inOutDistanceMap = cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags, label, FeatureWindowRadius ).Get();
-      
-      const float* insideDistancePtr = static_cast<const float*>( insideDistanceMap->GetData()->GetDataPtr() );
-      float* inOutDistancePtr = static_cast<float*>( inOutDistanceMap->GetData()->GetDataPtr() );
-      
-#pragma omp parallel for
-      for ( size_t i = 0; i < nPixelsFloating; ++i )
-	{
-	if ( insideDistancePtr[i] > 0 )
-	  inOutDistancePtr[i] = insideDistancePtr[i];
-	else
-	  inOutDistancePtr[i] = inOutDistancePtr[i];
-	}
-
-      cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> interpolator( *inOutDistanceMap );
+      cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags + cmtk::UniformDistanceMap<float>::SIGNED, label, FeatureWindowRadius ).Get();
+      cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> interpolator( *signedDistanceMap );
 
       // accumulate interpolated distances for this label
 #ifdef CMTK_USE_GCD
