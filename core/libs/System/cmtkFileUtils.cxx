@@ -89,6 +89,11 @@ RecursiveMkPrefixDir
       if ( stat( prefix, &buf ) != 0 ) 
 	{
 #ifdef _MSC_VER
+	if ( (i > 0) && (prefix[i-1] == ':') )
+	  {
+	  prefix[i] = '\\';
+	  prefix[i+1] = 0;
+	  }
 	int result = _mkdir( prefix );
 #else
 	int result = mkdir( prefix, permissions );
