@@ -98,7 +98,7 @@ cmtk::TypedArray::SmartPtr
 Average
 ( std::list<cmtk::UniformVolume::SmartPtr> volumes, const byte numLabels )
 {
-  const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT;
+  const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT + cmtk::UniformDistanceMap<float>::SIGNED;
 
   const size_t numPixels = (*volumes.begin())->GetNumberOfPixels();
 
@@ -149,7 +149,7 @@ Average
 
     for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = volumes.begin(); it != volumes.end(); ++it )
       {
-      cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<float>( *(*it), distanceMapFlags + cmtk::UniformDistanceMap<float>::SIGNED, label ).Get();
+      cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<float>( *(*it), distanceMapFlags, label ).Get();
       const float* signedDistancePtr = (const float*)signedDistanceMap->GetData()->GetDataPtr();
 
       // if this is the first label, write directly to accumulation distance map
@@ -260,7 +260,7 @@ cmtk::TypedArray::SmartPtr
 AverageWindowed
 ( std::list<cmtk::UniformVolume::SmartPtr> volumes, const byte numLabels )
 {
-  const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_WINDOW;
+  const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_WINDOW + cmtk::UniformDistanceMap<float>::SIGNED;
 
   const size_t numPixels = (*volumes.begin())->GetNumberOfPixels();
 
@@ -317,7 +317,7 @@ AverageWindowed
     std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it;
     for ( it = volumes.begin(); it != volumes.end(); ++it )
       {
-      cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<float>( *(*it), distanceMapFlags + cmtk::UniformDistanceMap<float>::SIGNED, label, FeatureWindowRadius).Get();
+      cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<float>( *(*it), distanceMapFlags, label, FeatureWindowRadius).Get();
       const float* signedDistancePtr = (const float*)signedDistanceMap->GetData()->GetDataPtr();
 
 #ifdef CMTK_USE_GCD
@@ -438,7 +438,7 @@ Average
   std::list<cmtk::XformUniformVolume::SmartConstPtr> xforms,
   const byte numLabels )
 {
-  const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT;
+  const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_EXACT + cmtk::UniformDistanceMap<float>::SIGNED;
 
   const size_t nPixelsReference = referenceVolume->GetNumberOfPixels();
   const cmtk::DataGrid::IndexType& referenceDims = referenceVolume->GetDims();
@@ -492,7 +492,7 @@ Average
     std::list<cmtk::XformUniformVolume::SmartConstPtr>::const_iterator itX = xforms.begin();
     for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator itV = volumes.begin(); itV != volumes.end(); ++itV, ++itX )
       {
-      cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags + cmtk::UniformDistanceMap<float>::SIGNED, label ).Get();
+      cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags, label ).Get();
       cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> interpolator( *signedDistanceMap );
       
       // accumulate interpolated distances for this label
@@ -598,7 +598,7 @@ AverageWindowed
   std::list<cmtk::XformUniformVolume::SmartConstPtr> xforms,
   const byte numLabels )
 {
-  const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_WINDOW;
+  const int distanceMapFlags = cmtk::UniformDistanceMap<float>::VALUE_WINDOW + cmtk::UniformDistanceMap<float>::SIGNED;
 
   const size_t nPixelsReference = referenceVolume->GetNumberOfPixels();
   const cmtk::DataGrid::IndexType& referenceDims = referenceVolume->GetDims();
@@ -649,7 +649,7 @@ AverageWindowed
     std::list<cmtk::XformUniformVolume::SmartConstPtr>::const_iterator itX = xforms.begin();
     for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator itV = volumes.begin(); itV != volumes.end(); ++itV, ++itX )
       {
-      cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags + cmtk::UniformDistanceMap<float>::SIGNED, label, FeatureWindowRadius ).Get();
+      cmtk::UniformVolume::SmartPtr signedDistanceMap = cmtk::UniformDistanceMap<float>( *(*itV), distanceMapFlags, label, FeatureWindowRadius ).Get();
       cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> interpolator( *signedDistanceMap );
 
       // accumulate interpolated distances for this label
