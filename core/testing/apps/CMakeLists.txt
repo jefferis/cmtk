@@ -30,7 +30,12 @@
 
 FIND_PROGRAM(SH_PATH sh PATHS C:/cygwin/bin)
 SET(testDriver ${SH_PATH} ${CMAKE_CURRENT_BINARY_DIR}/appsTestDriver.sh)
+
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh.in ${CMAKE_CURRENT_BINARY_DIR}/appsTestDriver.sh @ONLY)
+# On Windows, remove "\r" (CR) from line ends, which would make Cygwin's sh choke
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  EXECUTE_PROCESS(COMMAND c:\cygwin\bin\sed -i.bak 's/\r//g' ${CMAKE_CURRENT_BINARY_DIR}/appsTestDriver.sh)
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 # ==========================================
 # Tests for "avg_adm" tool
