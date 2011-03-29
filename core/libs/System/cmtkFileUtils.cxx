@@ -50,6 +50,7 @@
 
 #ifdef _MSC_VER
 #  include <direct.h>
+#  include <windows.h>
 #endif
 
 namespace 
@@ -115,6 +116,9 @@ RecursiveMkPrefixDir
 char* 
 GetAbsolutePath( char *absPath, const char* relPath )
 {
+#ifdef _MSC_VER
+  GetFullPathName( relPath, PATH_MAX, absPath, NULL );
+#else
   if ( relPath[0] == CMTK_PATH_SEPARATOR )
     {
     strcpy( absPath, relPath );
@@ -127,6 +131,7 @@ GetAbsolutePath( char *absPath, const char* relPath )
     
     strcat( absPath, relPath );
     }
+#endif
   
   return absPath;
 }
