@@ -83,13 +83,13 @@ RecursiveMkPrefixDir
   struct stat buf;
   for ( unsigned i=0; filename[i]; ++i ) 
     {
-    if ( (filename[i] == CMTK_PATH_SEPARATOR) ) 
+    if ( (filename[i] == CMTK_PATH_SEPARATOR) || (filename[i] == '/') ) 
       {
       prefix[i+1] = 0;
       if ( i ) // do not delete single "/" or "\"
 	prefix[i] = 0;
       else
-	prefix[i] = filename[i];
+	prefix[i] = CMTK_PATH_SEPARATOR;
       
 #ifdef _MSC_VER
       if ( (i > 0) && (prefix[i-1] == ':') )
