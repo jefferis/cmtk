@@ -75,7 +75,7 @@ IF(NOT CMTK_USE_MPI)
     mk_phantom_3d
     mrbias
     overlap
-    pmsegment_learn
+#    pmsegment_learn
     randompxls
     randomwarp
     reformatx
