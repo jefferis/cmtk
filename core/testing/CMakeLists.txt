@@ -28,8 +28,6 @@
 ##  $LastChangedBy$
 ##
 
-FIND_PACKAGE(PythonInterp)
-
 IF(BUILD_APPS)
   SUBDIRS(apps)
 ENDIF(BUILD_APPS)
