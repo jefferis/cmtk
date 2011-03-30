@@ -122,7 +122,7 @@ doMain( const int argc, const char* argv[] )
     }
   else
     {
-    cmtk::StdErr << "ERROR: could not open o0utput file " << OutputName << "\n";
+    cmtk::StdErr << "ERROR: could not open output file " << OutputName << "\n";
     throw cmtk::ExitException( 1 );
     }
 
