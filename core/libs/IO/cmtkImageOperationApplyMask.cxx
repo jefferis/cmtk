@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -52,13 +52,13 @@ cmtk::ImageOperationApplyMask
       }
     }
   
-  const cmtk::TypedArray* maskData = this->m_MaskVolume->GetData();
-  cmtk::TypedArray::SmartPtr& volumeData = volume->GetData();
+  const cmtk::TypedArray& maskData = *(this->m_MaskVolume->GetData());
+  cmtk::TypedArray& volumeData = *(volume->GetData());
   
   const size_t nPixels = volume->GetNumberOfPixels();
   for ( size_t i = 0; i < nPixels; ++i )
-    if ( maskData->IsPaddingOrZeroAt( i ) ) 
-      volumeData->SetPaddingAt( i );
+    if ( maskData.IsPaddingOrZeroAt( i ) ) 
+      volumeData.SetPaddingAt( i );
   return volume;
 }
 
