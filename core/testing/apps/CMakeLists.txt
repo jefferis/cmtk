@@ -82,6 +82,7 @@ SET(testList ${testList}
   describeMR3
   describeMR4
   describeMRBiorad
+  describeMRBioradGz
   describeNiftiDetached348)
 
 IF(CMTK_BUILD_NRRD)

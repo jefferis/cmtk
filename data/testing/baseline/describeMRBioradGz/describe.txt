@@ -1,4 +1,4 @@
-FNAME	bioradvol.PIC
+FNAME	gz_bioradvol.PIC.gz
 FORMAT	BioRad image file [File].
 XDIM	64
 YDIM	56

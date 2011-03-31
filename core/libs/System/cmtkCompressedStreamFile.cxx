@@ -4,6 +4,8 @@
 //
 //  Copyright 2004-2011 SRI International
 //
+//  Copyright 2011 Greg Jefferis
+//
 //  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
@@ -74,9 +76,9 @@ CompressedStream::File::Seek ( const long int offset, int whence )
 size_t
 CompressedStream::File::Read( void *data, size_t size, size_t count ) 
 {
-  const size_t result = fread( data, size, count, this->m_File );
-  this->m_BytesRead += result;
-  return result / size;  
+  const size_t itemsRead = fread( data, size, count, this->m_File );
+  this->m_BytesRead += itemsRead * size;
+  return itemsRead;
 }
 
 bool

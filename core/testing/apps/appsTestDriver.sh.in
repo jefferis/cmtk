@@ -554,7 +554,11 @@ case ${RUNTEST} in
 	check_results describe.txt
 	;;
     describeMRBiorad)
-	run_eval "${BINDIR}/describe -m bioradvol.PIC.gz > ${tmpdir}/describe.txt"
+	run_eval "${BINDIR}/describe -m bioradvol.PIC > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
+    describeMRBioradGz)
+	run_eval "${BINDIR}/describe -m gz_bioradvol.PIC.gz > ${tmpdir}/describe.txt"
 	check_results describe.txt
 	;;
     describeMRNrrd1)
