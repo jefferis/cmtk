@@ -1,5 +1,7 @@
 Release CMTK-1.7.0:
 
+(r3079) Fixed: reading of uncompressed BioRad (and potentially other format)
+    files was broken (patch by Greg Jefferis).
 (r3062) Fixed: problem with directory creation due to difference path
     separator characters for Windows vs. POSIX.
 (r3059) Fixed: broken thread semaphores on Windows due to incorrect
