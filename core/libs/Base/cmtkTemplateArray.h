@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2010 Torsten Rohlfing
+//  Copyright 1997-2011 Torsten Rohlfing
 //
 //  Copyright 2004-2011 SRI International
 //
@@ -660,6 +660,9 @@ typedef TemplateArray<unsigned short> UShortArray;
 
 /// Array of (signed) integer values.
 typedef TemplateArray<int>    IntArray;
+
+/// Array of (unsigned) integer values.
+typedef TemplateArray<int>    UIntArray;
 
 /// Array of single-precision float values.
 typedef TemplateArray<float>  FloatArray;

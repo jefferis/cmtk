@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2010 Torsten Rohlfing
+//  Copyright 1997-2011 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -134,6 +134,9 @@ TypedArray
     case TYPE_INT: 
       return Self::SmartPtr( new IntArray( data, size, freeArray, paddingFlag, paddingData ) );
       break;
+    case TYPE_UINT: 
+      return Self::SmartPtr( new UIntArray( data, size, freeArray, paddingFlag, paddingData ) );
+      break;
     case TYPE_FLOAT: 
       return Self::SmartPtr( new FloatArray( data, size, freeArray, paddingFlag, paddingData ) );
       break;
@@ -168,6 +171,9 @@ TypedArray
       break;
     case TYPE_INT:    
       return Self::SmartPtr( new IntArray( size ) );
+      break;
+    case TYPE_UINT:    
+      return Self::SmartPtr( new UIntArray( size ) );
       break;
     case TYPE_FLOAT:  
       return Self::SmartPtr( new FloatArray( size ) );
