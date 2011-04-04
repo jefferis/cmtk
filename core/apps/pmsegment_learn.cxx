@@ -41,15 +41,57 @@
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkUniformDistanceMap.h>
 
+#include <Registration/cmtkTypedArraySimilarity.h>
+
 #include <IO/cmtkVolumeIO.h>
 
 #include <math.h>
 
 #include <fstream>
 
+const std::pair<size_t,float> 
+GetLeastUnique( const std::vector< std::pair<float,cmtk::TypedArray::SmartPtr> >& patterns )
+{
+  const size_t nPatterns = patterns.size();
+
+  std::vector<float> ncc( (nPatterns * (nPatterns+1)) / 2 );
+
+  size_t ofs = 0;
+  for ( size_t i = 0; i < nPatterns; ++i )
+    {
+    for ( size_t j = 0; j < i; ++j, ++ofs )
+      {
+      ncc[ofs] = cmtk::TypedArraySimilarity::GetCrossCorrelation( patterns[i].second, patterns[j].second );
+      }
+    }
+  
+  float maxValue = 0;
+  size_t maxIndex = 0;
+  
+  for ( size_t i = 0; i < nPatterns; ++i )
+    {
+    float average = 0;
+    for ( size_t j = 0; j < nPatterns; ++j )
+      {
+      if ( j < i )
+	average += ncc[j + i*nPatterns];
+      else if ( i < j )
+	average += ncc[i + j*nPatterns];      
+      }
+    
+    if ( average >= maxValue )
+      {
+      maxValue = average;
+      maxIndex = i;
+      }
+    }
+  
+  return std::pair<size_t,float>( maxIndex, maxValue );
+}
+
 int regionRadius[3] = { 8, 8, 1 };
-double pThreshold = 0.1;
-int patternSetSize = 1000;
+double pThreshold = 0.2;
+int patternSetSize = 100;
 
 std::vector< std::pair<float,cmtk::TypedArray::SmartPtr> > patternsPos;
 std::vector< std::pair<float,cmtk::TypedArray::SmartPtr> > patternsNeg;
@@ -138,6 +180,19 @@ doMain( const int argc, const char* argv[] )
 
 	  if ( (patternsPos.size() + patternsNeg.size()) > patternSetSize )
 	    {
+	    const std::pair<size_t,float> leastUniquePos = GetLeastUnique( patternsPos );
+	    const std::pair<size_t,float> leastUniqueNeg = GetLeastUnique( patternsNeg );
+
+	    if ( leastUniquePos.second > leastUniqueNeg.second )
+	      {
+	      patternsPos[leastUniquePos.first] = *(patternsPos.rbegin());
+	      patternsPos.pop_back();
+	      }
+	    else
+	      {
+	      patternsNeg[leastUniqueNeg.first] = *(patternsNeg.rbegin());
+	      patternsNeg.pop_back();
+	      }
 	    }
 	  }
 	}
@@ -150,11 +205,10 @@ doMain( const int argc, const char* argv[] )
   cmtk::Progress::Done();
 
   // write model
-  int idx = 0;
   char fname[32];
   char path[PATH_MAX];
 
-  exampleImage->SetCropRegion( cmtk::DataGrid::RegionType( center-radius, center+radiusPlus ) );
+  exampleImage->SetCropRegion( cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType( cmtk::DataGrid::IndexType::Init( 0 ) ), radius+radiusPlus ) );
   cmtk::UniformVolume::SmartPtr region( exampleImage->GetCroppedVolume() );
 
   snprintf( path, PATH_MAX, "%s%c%s", modelDirectory, CMTK_PATH_SEPARATOR, "info.txt" );
@@ -164,9 +218,9 @@ doMain( const int argc, const char* argv[] )
     {
     infoStream << regionRadius[0] << " " << regionRadius[1] << " " << regionRadius[2] << "\n";
     
-    for ( size_t i = 0; i < patternsPos.size(); ++i, ++idx )
+    for ( size_t i = 0; i < patternsPos.size(); ++i )
       {
-      snprintf( fname, 32, "pos%c%05d.nii", CMTK_PATH_SEPARATOR, idx );
+      snprintf( fname, 32, "pos%c%05zd.nii", CMTK_PATH_SEPARATOR, i );
       snprintf( path, PATH_MAX, "%s%c%s", modelDirectory, CMTK_PATH_SEPARATOR, fname );
       
       region->SetData( patternsPos[i].second );
@@ -175,9 +229,9 @@ doMain( const int argc, const char* argv[] )
       infoStream << fname << "\t" << patternsPos[i].first << "\n";
       }
     
-    for ( size_t i = 0; i < patternsNeg.size(); ++i, ++idx )
+    for ( size_t i = 0; i < patternsNeg.size(); ++i )
       {
-      snprintf( fname, 32, "neg%c%05d.nii", CMTK_PATH_SEPARATOR, idx );
+      snprintf( fname, 32, "neg%c%05zd.nii", CMTK_PATH_SEPARATOR, i );
       snprintf( path, PATH_MAX, "%s%c%s", modelDirectory, CMTK_PATH_SEPARATOR, fname );
       
       region->SetData( patternsNeg[i].second );
