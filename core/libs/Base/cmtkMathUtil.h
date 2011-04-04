@@ -366,7 +366,9 @@ public:
     return NormalRandom( sigma );
   }
   
-  /// Uniform random number generator.
+  /** Uniform random number generator.
+   *\return A random number from a uniform distribution over the interval [0,1).
+   */
   static double UniformRandom();
   
   /// Compute eigensystem and eigenvalues for square real matrix using Jacobi rotation.
