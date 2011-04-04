@@ -185,6 +185,14 @@ public:
 
     return minus;
   }
+
+  /// Add scalar value to all vector elements.
+  Self& AddScalar( const T& value )
+  {
+    for ( size_t i=0; i<NDIM; ++i ) 
+      this->m_Data[i] += value;
+    return *this;
+  }
   
   /// Pointer to first array element.
   T* begin()
