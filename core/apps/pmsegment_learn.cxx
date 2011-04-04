@@ -49,19 +49,53 @@
 
 #include <fstream>
 
+void
+UpdateNCC( std::vector<float>& ncc, const size_t total, const size_t deleted )
+{
+  size_t ofs = ncc.size() - total;
+  for ( size_t i = 0; i < deleted; ++i, ++ofs )
+    {
+    ncc[i + deleted*(total-1)] = ncc[ofs];
+    }
+
+  ++ofs;
+
+  for ( size_t j = deleted+1; j < total; ++j, ++ofs )
+    {
+    ncc[deleted + j*(total-1)] = ncc[ofs];
+    }
+}
+
 const std::pair<size_t,float> 
-GetLeastUnique( const std::vector< std::pair<float,cmtk::TypedArray::SmartPtr> >& patterns )
+GetLeastUnique( const std::vector< std::pair<float,cmtk::TypedArray::SmartPtr> >& patterns, std::vector<float>& ncc )
 {
   const size_t nPatterns = patterns.size();
 
-  std::vector<float> ncc( (nPatterns * (nPatterns+1)) / 2 );
+  // either initialize or update ncc vector
+  size_t ofs = ncc.size();
+  ncc.resize( ncc.size() + nPatterns );
 
-  size_t ofs = 0;
-  for ( size_t i = 0; i < nPatterns; ++i )
+  if ( ncc.size() == ( (nPatterns * (nPatterns+1)) / 2 ) )
     {
-    for ( size_t j = 0; j < i; ++j, ++ofs )
+#pragma omp parallel for
+    for ( size_t j = 0; j < nPatterns-1; ++j )
       {
-      ncc[ofs] = cmtk::TypedArraySimilarity::GetCrossCorrelation( patterns[i].second, patterns[j].second );
+      ncc[ofs] = cmtk::TypedArraySimilarity::GetCrossCorrelation( patterns[nPatterns-1].second, patterns[j].second );
+      ++ofs;
+      }
+    }
+  else
+    {
+    ncc.resize( (nPatterns * (nPatterns+1)) / 2 );
+    ofs = 0;
+
+#pragma omp parallel for
+    for ( size_t i = 0; i < nPatterns; ++i )
+      {
+      for ( size_t j = 0; j < i; ++j, ++ofs )
+	{
+	ncc[ofs] = cmtk::TypedArraySimilarity::GetCrossCorrelation( patterns[i].second, patterns[j].second );
+	}
       }
     }
   
@@ -89,12 +123,15 @@ GetLeastUnique( const std::vector< std::pair<float,cmtk::TypedArray::SmartPtr> >
   return std::pair<size_t,float>( maxIndex, maxValue );
 }
 
-int regionRadius[3] = { 8, 8, 1 };
-double pThreshold = 0.2;
+int regionRadius[3] = { 4, 4, 1 };
+double pThreshold = 0.1;
 int patternSetSize = 100;
 
 std::vector< std::pair<float,cmtk::TypedArray::SmartPtr> > patternsPos;
+std::vector<float> nccPos;
+
 std::vector< std::pair<float,cmtk::TypedArray::SmartPtr> > patternsNeg;
+std::vector<float> nccNeg;
 
 int
 doMain( const int argc, const char* argv[] )
@@ -180,18 +217,20 @@ doMain( const int argc, const char* argv[] )
 
 	  if ( (patternsPos.size() + patternsNeg.size()) > patternSetSize )
 	    {
-	    const std::pair<size_t,float> leastUniquePos = GetLeastUnique( patternsPos );
-	    const std::pair<size_t,float> leastUniqueNeg = GetLeastUnique( patternsNeg );
-
+	    const std::pair<size_t,float> leastUniquePos = GetLeastUnique( patternsPos, nccPos );
+	    const std::pair<size_t,float> leastUniqueNeg = GetLeastUnique( patternsNeg, nccNeg );
+	    
 	    if ( leastUniquePos.second > leastUniqueNeg.second )
 	      {
 	      patternsPos[leastUniquePos.first] = *(patternsPos.rbegin());
+	      UpdateNCC( nccPos, patternsPos.size(), leastUniquePos.first );
 	      patternsPos.pop_back();
 	      }
 	    else
 	      {
 	      patternsNeg[leastUniqueNeg.first] = *(patternsNeg.rbegin());
 	      patternsNeg.pop_back();
+	      UpdateNCC( nccNeg, patternsNeg.size(), leastUniqueNeg.first );
 	      }
 	    }
 	  }
