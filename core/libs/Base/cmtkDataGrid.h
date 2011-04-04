@@ -175,6 +175,12 @@ public:
     return x + nextJ * y + nextK * z;
   }
 
+  /// Get offset of a pixel.
+  size_t GetOffsetFromIndex( const Self::IndexType& index ) const 
+  {
+    return index[0] + this->nextJ * index[1] + this->nextK * index[2];
+  }
+
   /// Get index of a pixel identified by its offset.
   void GetIndexFromOffset( const size_t offset, int& x, int& y, int& z ) const 
   {
