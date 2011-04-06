@@ -2,6 +2,7 @@
 The Computational Morphometry Toolkit
 ==========================================================================
 
+
 Release Notes -- CMTK 1.7.0
 ===========================
 
@@ -28,6 +29,36 @@ CMTK has been built and tested on the following platforms:
 - OpenSolaris, SunStudio 12.1, i386 (CC 5.10)
 - OpenSolaris, SunStudio 12.1, x86_64 (CC 5.10)
 - OpenSolaris, Oracle/SunStudio 12.2, x86_64
+
+
+Platform-Specific Notes
+=======================
+
+
+Windows
+-------
+
+- CMTK cannot be built using VisualStudio 2008 with OpenMP support enabled.
+  This is because CMTK is using unsigned loop variables, which was not
+  supported prior to OpenMP 3.0. VS2008 implementes an earlier version of the
+  OpenMP standard.
+
+  http://www.nitrc.org/tracker/index.php?func=detail&aid=5603&group_id=212&atid=877
+
+  Workaround: disable OpenMP support in CMTK or switch to more recent compiler
+  (VS 2010).
+
+
+MacOS-X
+-------
+
+- Compilers on MacOS cannot build CMTK with shared libraries and OpenMP
+  support enabled at the same time. This is due to an Apple bug and has
+  nothing to do with CMTK per se. 
+
+  http://www.nitrc.org/tracker/index.php?func=detail&aid=5451&group_id=212&atid=877
+
+  Workaround: build CMTK with static libraries.
 
 
 ==========================================================================
