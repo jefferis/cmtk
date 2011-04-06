@@ -305,7 +305,7 @@ public:
   virtual void Rescale( const Types::DataItem scale = 1, const Types::DataItem offset = 0 ) 
   {
 #pragma omp parallel for    
-    for ( size_t i = 0; i < this->DataSize; ++i )
+    for ( int i = 0; i < static_cast<int>( this->DataSize ); ++i )
       if ( ! PaddingFlag || (Data[i] != Padding ) )
 	Data[i] = TypeTraits::Convert( (scale * Data[i]) + offset );
   }
@@ -318,7 +318,7 @@ public:
   {
     const long int shiftMultiplier = (1<<shiftBits);
 #pragma omp parallel for    
-    for ( size_t i = 0; i < this->DataSize; ++i )
+    for ( int i = 0; i < static_cast<int>( this->DataSize ); ++i )
       if ( ! PaddingFlag || (Data[i] != Padding ) )
 	Data[i] = TypeTraits::Convert( ((scale * Data[i]) + offset) * shiftMultiplier );
   }
@@ -339,7 +339,7 @@ public:
   virtual void Rescale( const Types::DataItem scale, const Types::DataItem offset, const Types::DataItem truncLo, const Types::DataItem truncHi = CMTK_ITEM_MAX ) 
   {
 #pragma omp parallel for    
-    for ( size_t i = 0; i < this->DataSize; ++i )
+    for ( int i = 0; i < static_cast<int>( this->DataSize ); ++i )
       if ( ! PaddingFlag || (Data[i] != Padding ) ) 
 	{
 	Data[i] = TypeTraits::Convert( (scale * Data[i]) + offset );
@@ -373,7 +373,7 @@ public:
     const T lo = TypeTraits::Convert( range.m_LowerBound );
     const T hi = TypeTraits::Convert( range.m_UpperBound );
 #pragma omp parallel for    
-    for ( size_t i = 0; i < this->DataSize; ++i )
+    for ( int i = 0; i < static_cast<int>( this->DataSize ); ++i )
       if ( ! PaddingFlag || (Data[i] != Padding ) ) 
 	{
 	if ( Data[i] < lo )
@@ -393,7 +393,7 @@ public:
     const T lo = TypeTraits::Convert( range.m_LowerBound );
     const T hi = TypeTraits::Convert( range.m_UpperBound );
 #pragma omp parallel for    
-    for ( size_t i = 0; i < this->DataSize; ++i )
+    for ( int i = 0; i < static_cast<int>( this->DataSize ); ++i )
       if ( ! PaddingFlag || (Data[i] != Padding ) ) 
 	{
 	if ( (Data[i] < lo) || (Data[i] > hi) )
@@ -411,7 +411,7 @@ public:
     
     T one = TypeTraits::Convert( 1.0 ), zero = TypeTraits::Convert( 0.0 );
 #pragma omp parallel for    
-    for ( size_t i = 0; i < this->DataSize; ++i )
+    for ( int i = 0; i < static_cast<int>( this->DataSize ); ++i )
       if ( ! PaddingFlag || (Data[i] != Padding ) ) 
 	{
 	if ( Data[i] > thresh )
@@ -425,7 +425,7 @@ public:
   virtual void MakeAbsolute()
   {
 #pragma omp parallel for    
-    for ( size_t i = 0; i < this->DataSize; ++i )
+    for ( int i = 0; i < static_cast<int>( this->DataSize ); ++i )
       if ( ! PaddingFlag || (Data[i] != Padding ) )
 	Data[i] = TypeTraits::Abs( Data[i] );
   }
@@ -529,7 +529,7 @@ public:
   virtual void SetData ( Types::DataItem *const data ) 
   {
 #pragma omp parallel for    
-    for ( size_t idx = 0; idx < this->DataSize; ++idx )
+    for ( int idx = 0; idx < static_cast<int>( this->DataSize ); ++idx )
       Data[idx] = this->ConvertItem( data[idx] );
   }
 

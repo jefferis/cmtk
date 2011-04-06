@@ -205,7 +205,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
       UniformVolume::SmartPtr ref( reformat.PlainReformat() );
       const TypedArray* data = ref->GetData();
 #pragma omp parallel for
-      for ( size_t i = 0; i < numberOfPixels; ++i )
+      for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
 	{
 	Types::DataItem v;
 	if ( data->Get( v, i ) )
@@ -233,7 +233,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
 #endif
       {
 #pragma omp parallel for
-      for ( size_t i = 0; i < numberOfPixels; ++i )
+      for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
 	{
 	if ( countPtr[i] )
 	  averagePtr[i] /= countPtr[i];

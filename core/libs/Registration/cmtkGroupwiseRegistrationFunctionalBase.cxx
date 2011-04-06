@@ -474,7 +474,7 @@ GroupwiseRegistrationFunctionalBase
   const size_t zeroSumFirstN = this->m_ForceZeroSumFirstN ? this->m_ForceZeroSumFirstN : numberOfXforms;
 
 #pragma omp parallel for
-  for ( size_t param = 0; param < this->m_ParametersPerXform; ++param )
+  for ( int param = 0; param < static_cast<int>( this->m_ParametersPerXform ); ++param )
     {
     Types::Coordinate avg = 0;
 

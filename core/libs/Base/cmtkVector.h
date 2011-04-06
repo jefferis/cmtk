@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -273,7 +273,7 @@ public:
 #ifndef __SUNPRO_CC
 #pragma omp parallel for if (Dim>1e4) reduction(+:Result)
 #endif
-    for ( size_t i=0; i<this->Dim; ++i ) 
+    for ( int i=0; i<static_cast<int>( this->Dim ); ++i ) 
       {
       const T e = Elements[i];
       Result+=e*e;
@@ -331,7 +331,7 @@ public:
 #ifndef __SUNPRO_CC
 #pragma omp parallel for if (Dim>1e4)
 #endif
-    for ( size_t i=0; i<this->Dim; ++i )
+    for ( int i=0; i<static_cast<int>( this->Dim ); ++i )
       Elements[i] += delta.Elements[i];
     
     return *this;
@@ -345,7 +345,7 @@ public:
 #ifndef __SUNPRO_CC
 #pragma omp parallel for if (Dim>1e4)
 #endif
-    for ( size_t i=0; i < this->Dim; ++i )
+    for ( int i=0; i < static_cast<int>( this->Dim ); ++i )
       Elements[i] -= delta.Elements[i];
     
     return *this;
@@ -357,7 +357,7 @@ public:
 #ifndef __SUNPRO_CC
 #pragma omp parallel for if (Dim>1e4)
 #endif
-    for ( size_t i=0; i<this->Dim; ++i )
+    for ( int i=0; i<static_cast<int>( this->Dim ); ++i )
       this->Elements[i] *= a;
     
     return *this;

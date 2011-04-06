@@ -219,7 +219,7 @@ TemplateArray<T>
     const double scale = 1.0 / diff;
     
 #pragma omp parallel for if (DataSize>1e5)
-    for ( size_t i = 0; i < DataSize; ++i )
+    for ( int i = 0; i < static_cast<int>( DataSize ); ++i )
       if ( ! PaddingFlag || (Data[i] != Padding ) ) 
 	{
 	if ( Data[i] > range.m_LowerBound ) 
@@ -236,7 +236,7 @@ TemplateArray<T>
 ::ApplyFunctionFloat( typename Self::FunctionTypeFloat f )
 {
 #pragma omp parallel for if (DataSize>1e5)
-  for ( size_t i = 0; i < DataSize; ++i )
+  for ( int i = 0; i < static_cast<int>( DataSize ); ++i )
     if ( ! PaddingFlag || (Data[i] != Padding ) ) 
       {
       Data[i] = TypeTraits::Convert( f( (float)Data[i] ) );
@@ -249,7 +249,7 @@ TemplateArray<T>
 ::ApplyFunctionDouble( typename Self::FunctionTypeDouble f )
 {
 #pragma omp parallel for if (DataSize>1e5)
-  for ( size_t i = 0; i < DataSize; ++i )
+  for ( int i = 0; i < static_cast<int>( DataSize ); ++i )
     if ( ! PaddingFlag || (Data[i] != Padding ) ) 
       {
       Data[i] = TypeTraits::Convert( f( (double)Data[i] ) );
@@ -269,37 +269,37 @@ void TemplateArray<T>
       {
       case TYPE_BYTE:
 #pragma omp parallel for if (len>1e5)
-	for ( size_t idx = 0; idx < len; ++idx )
+	for ( int idx = 0; idx < static_cast<int>( len ); ++idx )
 	  ((byte*)destination)[idx] = DataTypeTraits<byte>::Convert( Data[ idx + fromIdx ] );
 	break;
       case TYPE_CHAR:
 #pragma omp parallel for if (len>1e5)
-	for ( size_t idx = 0; idx < len; ++idx )
+	for ( int idx = 0; idx < static_cast<int>( len ); ++idx )
 	  ((char*)destination)[idx] = DataTypeTraits<char>::Convert( Data[ idx + fromIdx ] );
 	break;
       case TYPE_USHORT:
 #pragma omp parallel for if (len>1e5)
-	for ( size_t idx = 0; idx < len; ++idx )
+	for ( int idx = 0; idx < static_cast<int>( len ); ++idx )
 	  ((unsigned short*)destination)[idx] = DataTypeTraits<unsigned short>::Convert( Data[ idx + fromIdx ] );
 	break;
       case TYPE_SHORT:
 #pragma omp parallel for if (len>1e5)
-	for ( size_t idx = 0; idx < len; ++idx )
+	for ( int idx = 0; idx < static_cast<int>( len ); ++idx )
 	  ((short*)destination)[idx] = DataTypeTraits<short>::Convert( Data[ idx + fromIdx ] );
 	break;
       case TYPE_INT:
 #pragma omp parallel for if (len>1e5)
-	for ( size_t idx = 0; idx < len; ++idx )
+	for ( int idx = 0; idx < static_cast<int>( len ); ++idx )
 	  ((int*)destination)[idx] = DataTypeTraits<int>::Convert( Data[ idx + fromIdx ] );
 	break;
       case TYPE_FLOAT:
 #pragma omp parallel for if (len>1e5)
-	for ( size_t idx = 0; idx < len; ++idx )
+	for ( int idx = 0; idx < static_cast<int>( len ); ++idx )
 	  ((float*)destination)[idx] = DataTypeTraits<float>::Convert( Data[ idx + fromIdx ] );
 	break;
       case TYPE_DOUBLE:
 #pragma omp parallel for if (len>1e5)
-	for ( size_t idx = 0; idx < len; ++idx )
+	for ( int idx = 0; idx < static_cast<int>( len ); ++idx )
 	  ((double*)destination)[idx] = DataTypeTraits<double>::Convert( Data[ idx + fromIdx ] );
 	break;
       default:
@@ -336,7 +336,7 @@ TemplateArray<T>
 ::ApplyFunctionObject( const TypedArrayFunction& f )
 {
 #pragma omp parallel for
-  for ( size_t i = 0; i < this->DataSize; ++i )
+  for ( int i = 0; i < static_cast<int>( this->DataSize ); ++i )
     {
     if ( !this->PaddingFlag || (this->Data[i] != this->Padding) )
       this->Data[i] = TypeTraits::Convert( f( this->Data[i] ) );
@@ -352,7 +352,7 @@ TemplateArray<T>
   T valueT = TypeTraits::Convert( value );
 
 #pragma omp parallel for    
-  for ( size_t i = fromOffset; i < toOffset; ++i )
+  for ( int i = fromOffset; i < static_cast<int>( toOffset ); ++i )
     Data[i] = valueT;
 }
 

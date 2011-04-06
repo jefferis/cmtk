@@ -95,7 +95,7 @@ cmtk::ImageOperationMapValues::Apply( cmtk::UniformVolume::SmartPtr& volume )
 {
   TypedArray& volumeData = *(volume->GetData());
 #pragma omp parallel for
-  for ( size_t i = 0; i < volumeData.GetDataSize(); ++i )
+  for ( int i = 0; i < static_cast<int>( volumeData.GetDataSize() ); ++i )
     {
     Types::DataItem value = 0;
     if ( volumeData.Get( value, i ) )

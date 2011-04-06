@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -119,7 +120,7 @@ inline T operator* ( const Vector<T>& p, const Vector<T>& q )
 
   T Result = 0;
 #pragma omp parallel for if (p.Dim>1e4)
-  for ( size_t i=0; i<p.Dim; ++i )
+  for ( int i=0; i<static_cast<int>( p.Dim ); ++i )
     Result += p.Elements[i] * q.Elements[i];
 
   return Result;

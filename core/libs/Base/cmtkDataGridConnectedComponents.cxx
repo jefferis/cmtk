@@ -2,6 +2,8 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
+//  Copyright 2011 SRI International
+//
 //  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
@@ -116,7 +118,7 @@ cmtk::DataGridMorphologicalOperators::GetBinaryConnectedComponents() const
   // re-number components
   TypedArray::SmartPtr resultArray( TypedArray::Create( TYPE_INT, numberOfPixels ) );
 #pragma omp parallel for
-  for ( size_t px = 0; px < numberOfPixels; ++px )
+  for ( int px = 0; px < static_cast<int>( numberOfPixels ); ++px )
     {
     resultArray->Set( linkMap[result[px]], px );
     }

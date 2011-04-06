@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2010 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -41,7 +41,7 @@ cmtk::ImageOperationDistanceMap
     
     const size_t nPixels = volume->GetNumberOfPixels();
 #pragma omp parallel for
-    for ( size_t n = 0; n < nPixels; ++n )
+    for ( int n = 0; n < static_cast<int>( nPixels ); ++n )
       {
       Types::DataItem iValue = iMap->GetDataAt( n );
       if ( iValue > 0 )

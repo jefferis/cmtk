@@ -63,7 +63,7 @@ UniformDistanceMap<TDistanceDataType>
     
     const size_t nPixels = volume.GetNumberOfPixels();
 #pragma omp parallel for
-    for ( size_t i = 0; i < nPixels; ++i ) 
+    for ( int i = 0; i < static_cast<int>( nPixels ); ++i ) 
       {
       iMap.SetDataAt( oMap.GetDataAt( i ) -  iMap.GetDataAt( i ), i );
       }

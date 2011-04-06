@@ -183,7 +183,7 @@ FilterVolume
   Progress::Begin( 0, dimsZ, 1, "Rohlfing Intensity-Consistent Filter" );
 
 #pragma omp parallel for
-  for ( unsigned int z = 0; z < dimsZ; ++z ) 
+  for ( int z = 0; z < static_cast<int>( dimsZ ); ++z ) 
     {      
     size_t offset = z * dimsX * dimsY;
 
@@ -289,7 +289,7 @@ FilterVolume::StudholmeFilter
   
   Progress::Begin( 0, numberOfRows, 1, "Studholme Intensity-Consistent Filter" );
 #pragma omp parallel for
-  for ( unsigned int row = 0; row < numberOfRows; ++row ) 
+  for ( int row = 0; row < static_cast<int>( numberOfRows ); ++row ) 
     {
     const unsigned int y = row % dimsY;
     const unsigned int z = row / dimsY;
