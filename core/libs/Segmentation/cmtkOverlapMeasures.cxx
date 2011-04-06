@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -122,7 +122,7 @@ OverlapMeasures::ComputeGroupwiseOverlap
   std::vector<double> sumsMax( numberOfThreads * sumsPerThread, 0.0 );
 
 #pragma omp parallel for  
-  for ( size_t px = 0; px < this->m_NumberOfPixels; ++px )
+  for ( int px = 0; px < static_cast<int>( this->m_NumberOfPixels ); ++px )
     {
     if ( (px % progressPixels) == 0 )
 #ifdef _OPENMP

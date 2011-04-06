@@ -307,7 +307,7 @@ public:
 #ifndef __SUNPRO_CC
 #pragma omp parallel for if (Dim>1e5)
 #endif
-    for ( size_t i=0; i < this->Dim; ++i ) 
+    for ( int i=0; i < static_cast<int>( this->Dim ); ++i ) 
       this->Elements[i] = value;
   }
 

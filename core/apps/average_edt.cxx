@@ -115,7 +115,7 @@ Average
 		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-    for ( size_t i = 0; i < numPixels; ++i )
+			for ( int i = 0; i < static_cast<int>( numPixels ); ++i )
 #endif
       {
       cmtk::Types::DataItem l;
@@ -161,7 +161,7 @@ Average
 		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-	for ( size_t i = 0; i < numPixels; ++i )
+			for ( int i = 0; i < static_cast<int>( numPixels ); ++i )
 #endif
 	  {
 	  totalDistancePtr[i] += signedDistancePtr[i];
@@ -179,7 +179,7 @@ Average
 		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-	for ( size_t i = 0; i < numPixels; ++i )
+			for ( int i = 0; i < static_cast<int>( numPixels ); ++i )
 #endif
 	  {
 	  inOutDistancePtr[i] += signedDistancePtr[i];
@@ -201,7 +201,7 @@ Average
 		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-      for ( size_t i = 0; i < numPixels; ++i )
+			  for ( int i = 0; i < static_cast<int>( numPixels ); ++i )
 #endif
 	{
 	if ( inOutDistancePtr[i] < totalDistancePtr[i] )
@@ -278,7 +278,7 @@ AverageWindowed
 		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-    for ( size_t i = 0; i < numPixels; ++i )
+			for ( int i = 0; i < static_cast<int>( numPixels ); ++i )
 #endif
       {
       cmtk::Types::DataItem l;
@@ -326,7 +326,7 @@ AverageWindowed
 		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-			  for ( size_t i = 0; i < numPixels; ++i )
+			  for ( int i = 0; i < static_cast<int>( numPixels ); ++i )
 #endif
 			    {
 			    inOutDistancePtr[i] += signedDistancePtr[i];
@@ -347,7 +347,7 @@ AverageWindowed
 		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-      for ( size_t i = 0; i < numPixels; ++i )
+			  for ( int i = 0; i < static_cast<int>( numPixels ); ++i )
 #endif
 	{	
 	if ( inOutDistancePtr[i] < totalDistancePtr[i] )
@@ -410,7 +410,7 @@ AverageWindowed
 		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-  for ( size_t i = 0; i < numPixels; ++i )
+		      for ( int i = 0; i < static_cast<int>( numPixels ); ++i )
 #endif
     {
     if ( resultDividerPtr[i] )
@@ -457,7 +457,7 @@ Average
 		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-    for ( size_t i = 0; i < data->GetDataSize(); ++i )
+			for ( int i = 0; i < static_cast<int>( data->GetDataSize() ); ++i )
 #endif
       {
       cmtk::Types::DataItem l;
@@ -524,7 +524,7 @@ Average
 		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-      for ( size_t i = 0; i < nPixelsReference; ++i )
+			  for ( int i = 0; i < static_cast<int>( nPixelsReference ); ++i )
 #endif
 	{
 	if ( referenceInOutDistancePtr[i] < totalDistancePtr[i] )
@@ -610,7 +610,7 @@ AverageWindowed
     {
     const cmtk::TypedArray* data = (*itV)->GetData();
 #pragma omp parallel for
-    for ( size_t i = 0; i < data->GetDataSize(); ++i )
+    for ( int i = 0; i < static_cast<int>( data->GetDataSize() ); ++i )
       {
       cmtk::Types::DataItem l;
       if ( data->Get( l, i ) )
@@ -695,7 +695,7 @@ AverageWindowed
 		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-      for ( size_t i = 0; i < nPixelsReference; ++i )
+			  for ( int i = 0; i < static_cast<int>( nPixelsReference ); ++i )
 #endif
 	{
 	if ( countDistanceSamplesPtr[i] )
@@ -731,7 +731,7 @@ AverageWindowed
 		      { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-      for ( size_t i = 0; i < nPixelsReference; ++i )
+			  for ( int i = 0; i < static_cast<int>( nPixelsReference ); ++i )
 #endif
 	{
 	if ( countDistanceSamplesPtr[i] )
@@ -749,7 +749,7 @@ AverageWindowed
 
   // compute average between min and max window result
 #pragma omp parallel for
-  for ( size_t i = 0; i < nPixelsReference; ++i )
+  for ( int i = 0; i < static_cast<int>( nPixelsReference ); ++i )
     {
     if ( resultDividerPtr[i] )
       {

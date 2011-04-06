@@ -72,7 +72,7 @@ DeblurringVolumeReconstruction<TPSF>
 		    { const size_t last = std::min( stride * (i+1), passImageDimsXYZ ); for ( size_t offset = i * stride; offset < last; ++offset )
 #else
 #pragma omp parallel for
-    for ( size_t offset = 0; offset < passImageDimsXYZ; ++offset )
+    for ( int offset = 0; offset < static_cast<int>( passImageDimsXYZ ); ++offset )
 #endif
       {
       const int curPassVox[3] = { (offset % passImageDimsXY) % passImageDimsX, (offset % passImageDimsXY) / passImageDimsX, (offset / passImageDimsXY) };
@@ -157,7 +157,7 @@ DeblurringVolumeReconstruction<TPSF>
       const AffineXform* transformationToPassImage = AffineXform::SmartPtr::DynamicCastFrom( this->m_TransformationsToPassImages[pass] );
       
 #pragma omp parallel for
-      for ( size_t offset = 0; offset < numberOfPixels; ++offset )
+      for ( int offset = 0; offset < static_cast<int>( numberOfPixels ); ++offset )
 	{
 	const int corrCenterVox[3] = { (offset % correctedImageDimsXY) % correctedImageDimsX, (offset % correctedImageDimsXY) / correctedImageDimsX, (offset / correctedImageDimsXY) };
 

@@ -455,7 +455,7 @@ CallbackScalarMul( const double c )
 		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-    for ( size_t i = 0; i < numberOfPixels; ++i )
+			for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
 #endif
       {
       cmtk::Types::DataItem pv;
@@ -503,7 +503,7 @@ CallbackScalarAdd( const double c )
 		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-    for ( size_t i = 0; i < numberOfPixels; ++i )
+			for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
 #endif
       {
       cmtk::Types::DataItem pv;
@@ -551,7 +551,7 @@ CallbackScalarXor( const long int c )
 		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-    for ( size_t i = 0; i < numberOfPixels; ++i )
+			for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
 #endif
       {
       cmtk::Types::DataItem pv;
@@ -600,7 +600,7 @@ CallbackScalarAnd( const long int c )
 		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-    for ( size_t i = 0; i < numberOfPixels; ++i )
+			for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
 #endif
       {
       cmtk::Types::DataItem pv;
@@ -649,7 +649,7 @@ CallbackOneOver()
 		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-    for ( size_t i = 0; i < numberOfPixels; ++i )
+			for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
 #endif
       {
       cmtk::Types::DataItem pv;
@@ -697,7 +697,7 @@ CallbackAdd()
 		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-  for ( size_t i = 0; i < numberOfPixels; ++i )
+		      for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
 #endif
     {
     cmtk::Types::DataItem pv, qv;
@@ -742,7 +742,7 @@ CallbackMul()
 		    { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-    for ( size_t i = 0; i < numberOfPixels; ++i )
+			for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
 #endif
       {
       cmtk::Types::DataItem pv, qv;
@@ -790,7 +790,7 @@ CallbackDiv()
 		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-  for ( size_t i = 0; i < numberOfPixels; ++i )
+		      for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
 #endif
     {
     cmtk::Types::DataItem pv, qv;
@@ -938,7 +938,7 @@ CallbackMaskAverage()
 
   // second pass: replace values with computed ROI means
 #pragma omp parallel for
-  for ( size_t idx = 0; idx < n; ++idx )
+  for ( int idx = 0; idx < static_cast<int>( n ); ++idx )
     {
     cmtk::Types::DataItem l;
     mskData.Get( l, idx );
@@ -1090,7 +1090,7 @@ CallbackStackEntropyLabels()
 		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for  
-  for ( size_t i = 0; i < numberOfPixels; ++i )
+  for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
 #endif
     {
     std::map<int,unsigned int> labelCount;
@@ -1159,7 +1159,7 @@ CallbackMaxIndex()
 		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for  
-  for ( size_t i = 0; i < numberOfPixels; ++i )
+  for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
 #endif
     {
     float maxValue = 0;
@@ -1230,7 +1230,7 @@ CallbackMaxValue()
 		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for  
-  for ( size_t i = 0; i < numberOfPixels; ++i )
+  for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
 #endif
     {
     cmtk::Types::DataItem maxValue = 0;
@@ -1293,7 +1293,7 @@ CallbackMinValue()
 		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for  
-  for ( size_t i = 0; i < numberOfPixels; ++i )
+  for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
 #endif
     {
     cmtk::Types::DataItem minValue = 0;
@@ -1355,7 +1355,7 @@ CallbackContractLabels()
 		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for  
-  for ( size_t i = 0; i < numberOfPixels; ++i )
+  for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
 #endif
     {
     cmtk::Types::DataItem v = 0;

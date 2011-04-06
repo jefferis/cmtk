@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -64,7 +64,7 @@ LabelCombinationSTAPLE::LabelCombinationSTAPLE( const std::vector<TypedArray::Sm
 //		  { for ( size_t numberOfPixels = stride.From( b ); numberOfPixels < stride.To( b ); ++numberOfPixels )
 //#else
 #pragma omp parallel for reduction(+:totalSum)
-  for ( size_t n = 0; n < numberOfPixels; ++n )
+  for ( int n = 0; n < static_cast<int>( numberOfPixels ); ++n )
 //#endif
     {
     Types::DataItem w = 0;
@@ -123,7 +123,7 @@ LabelCombinationSTAPLE::LabelCombinationSTAPLE( const std::vector<TypedArray::Sm
 
     // E-step
 #pragma omp parallel for
-    for ( size_t n = 0; n < numberOfPixels; ++n )
+    for ( int n = 0; n < static_cast<int>( numberOfPixels ); ++n )
       {
       float alpha = globalPrior;
       float beta = (1.0-globalPrior);

@@ -246,7 +246,7 @@ VolumeInjectionReconstruction
 //		  { for ( size_t correctedPx = stride.From( b ); correctedPx < stride.To( b ); ++correctedPx )
 //#else
 #pragma omp parallel for schedule(dynamic)
-  for ( size_t correctedPx = 0; correctedPx < correctedImageNumPixels; ++correctedPx )
+  for ( int correctedPx = 0; correctedPx < static_cast<int>( correctedImageNumPixels ); ++correctedPx )
 //#endif
     {
     if ( (correctedPx % ((size_t)1e5)) == 0 )
@@ -443,7 +443,7 @@ VolumeInjectionReconstruction
     }
   
 #pragma omp parallel for
-  for ( size_t idx = 0; idx < correctedImageNumPixels; ++idx )
+  for ( int idx = 0; idx < static_cast<int>( correctedImageNumPixels ); ++idx )
     {
     const Types::DataItem kernelWeightPixel = static_cast<Types::DataItem>( kernelWeights[idx] );
     if ( kernelWeightPixel > 0 ) // check if pixel is a neighbour
@@ -497,7 +497,7 @@ VolumeInjectionReconstruction
 
   ap::real_value_type lnorm = 0;
 #pragma omp parallel for reduction(+:lnorm)
-  for ( size_t idx = 1; idx <= correctedImageNumPixels; ++idx )
+  for ( int idx = 1; idx <= static_cast<int>( correctedImageNumPixels ); ++idx )
     {
     int x, y, z;
     correctedImage->GetIndexFromOffset( idx-1, x, y, z );
@@ -535,7 +535,7 @@ VolumeInjectionReconstruction
   const int nextK = nextJ * correctedImageDims[1];
   
 #pragma omp parallel for
-  for ( size_t idx = 0; idx < correctedImageNumPixels; ++idx )
+  for ( int idx = 0; idx < static_cast<int>( correctedImageNumPixels ); ++idx )
     {
     int x, y, z;
     correctedImage->GetIndexFromOffset( idx, x, y, z );

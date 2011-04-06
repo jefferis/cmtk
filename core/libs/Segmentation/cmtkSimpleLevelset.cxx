@@ -76,7 +76,7 @@ cmtk::SimpleLevelset
 
     this->m_Levelset->SetData( UniformVolumeFilter( this->m_Levelset ).GetDataGaussFiltered( this->m_FilterSigma ) );
 #pragma omp parallel for reduction(+:nInside) reduction(+:insideSum) reduction(+:outsideSum)
-    for ( size_t n = 0; n < numberOfPixels; ++n )
+    for ( int n = 0; n < static_cast<int>( numberOfPixels ); ++n )
       {
       if ( this->m_Levelset->GetDataAt( n ) > 0 )
 	{
@@ -96,7 +96,7 @@ cmtk::SimpleLevelset
     DebugOutput( 1 ) << it << " IN: " << nInside << "  " << mInside << "  OUT: " << nOutside << "  " << mOutside << "\r";
     
 #pragma omp parallel for
-    for ( size_t n = 0; n < numberOfPixels; ++n )
+    for ( int n = 0; n < static_cast<int>( numberOfPixels ); ++n )
       {
       const Types::DataItem data = this->m_Volume->GetDataAt( n );
       const Types::DataItem zInside = fabs( mInside - data );

@@ -159,7 +159,7 @@ InverseInterpolationVolumeReconstruction<TInterpolator>
     if ( passImageWeight > 0 )
       {
 #pragma omp parallel for
-      for ( size_t offset = 0; offset < numberOfPixels; ++offset )
+      for ( int offset = 0; offset < static_cast<int>( numberOfPixels ); ++offset )
 	{
 	const int correctedImageCurrentGridPoint[3] = 
 	  { (offset % correctedImageDimsXY) % correctedImageDimsX, (offset % correctedImageDimsXY) / correctedImageDimsX, (offset / correctedImageDimsXY) };
