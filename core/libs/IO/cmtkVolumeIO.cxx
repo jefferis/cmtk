@@ -141,13 +141,13 @@ VolumeIO::Read( const char* path )
   
   if ( volume ) 
     {
-    DebugOutput( 1 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
+    DebugOutput( 3 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
     
     const TypedArray* dataArray = volume->GetData();
     if ( dataArray ) 
       {
       const Types::DataItemRange range = dataArray->GetRange();
-      DebugOutput( 1 ).GetStream().printf( "Data type %s, range [%f .. %f]\n", DataTypeName[ dataArray->GetType() ], static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
+      DebugOutput( 3 ).GetStream().printf( "Data type %s, range [%f .. %f]\n", DataTypeName[ dataArray->GetType() ], static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
       } 
     else
       {
@@ -193,7 +193,7 @@ VolumeIO::ReadGrid( const char* path )
   
   if ( volume ) 
     {
-    DebugOutput( 1 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
+    DebugOutput( 3 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
     }
   
   if ( volume )
@@ -222,7 +222,7 @@ VolumeIO
     {
     if ( orientationOriginal != orientation )
       {
-      DebugOutput( 1 ) << "Reorienting image from '" << orientationOriginal << "' to '" << orientation << "'\n";
+      DebugOutput( 3 ) << "Reorienting image from '" << orientationOriginal << "' to '" << orientation << "'\n";
       return volume->GetReoriented( orientation );
       }
     }
@@ -248,7 +248,7 @@ VolumeIO
     {
     if ( orientationOriginal != orientation )
       {
-      DebugOutput( 1 ) << "INFO: reorienting image from '" << orientationOriginal << "' to '" << orientation << "'\n";      
+      DebugOutput( 3 ) << "INFO: reorienting image from '" << orientationOriginal << "' to '" << orientation << "'\n";      
       return volume->GetReoriented( orientation );
       }
     }
@@ -353,7 +353,7 @@ void
 VolumeIO::Write
 ( const UniformVolume& volume, const FileFormatID format, const char* path )
 {
-  DebugOutput( 1 ).GetStream().printf( "%s\nWriting %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume.GetDims()[0], volume.GetDims()[1], volume.GetDims()[2], volume.Size[0], volume.Size[1], volume.Size[2] );
+  DebugOutput( 3 ).GetStream().printf( "%s\nWriting %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume.GetDims()[0], volume.GetDims()[1], volume.GetDims()[2], volume.Size[0], volume.Size[1], volume.Size[2] );
   
   const TypedArray *data = volume.GetData();
   if ( data == NULL ) return;
