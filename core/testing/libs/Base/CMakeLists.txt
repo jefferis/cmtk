@@ -64,6 +64,13 @@ SET(Tests ${Tests} ScalarImage)
 SET(Tests ${Tests} SplineWarpXform SplineWarpXformInverse)
 
 # ==========================================
+# Tests for "cmtk::SymmetricMatrix" class
+SET(Tests ${Tests} 
+  SymmetricMatrix
+  SymmetricMatrixResize
+  SymmetricMatrixEqual)
+
+# ==========================================
 # Tests for "cmtk::TypedArray" class
 SET(Tests ${Tests} 
   TypedArrayMatchHistogram1

@@ -40,6 +40,7 @@
 #include "cmtkRegionTests.txx"
 #include "cmtkScalarImageTests.txx"
 #include "cmtkSplineWarpXformTests.txx"
+#include "cmtkSymmetricMatrixTests.txx"
 #include "cmtkTypedArrayFunctionHistogramMatchingTests.txx"
 #include "cmtkUniformVolumeTests.txx"
 
@@ -59,6 +60,9 @@ main( const int argc, const char* argv[] )
   map.AddTest( "ScalarImage",                   &testScalarImage );
   map.AddTest( "SplineWarpXform",               &testSplineWarpXform );
   map.AddTest( "SplineWarpXformInverse",        &testSplineWarpXformInverse );
+  map.AddTest( "SymmetricMatrix",               &testSymmetricMatrix );
+  map.AddTest( "SymmetricMatrixResize",         &testSymmetricMatrixResize );
+  map.AddTest( "SymmetricMatrixEqual",          &testSymmetricMatrixEqual );
   map.AddTest( "TypedArrayMatchHistogram1",     &testTypedArrayMatchHistogram1 );
   map.AddTest( "TypedArrayMatchHistogram2",     &testTypedArrayMatchHistogram2 );
   map.AddTest( "TypedArrayMatchHistogram3",     &testTypedArrayMatchHistogram3 );
