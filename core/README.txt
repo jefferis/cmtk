@@ -61,6 +61,12 @@ MacOS-X
   Workaround: build CMTK with static libraries.
 
 
+- Code coverage tests are only supported with gcc compiler and SDK 10.6. Older
+  SDKs or the clang and llvm compiler front-ends do not support code coverage.
+
+  http://www.nitrc.org/tracker/index.php?func=detail&aid=5450&group_id=212&atid=877
+
+
 ==========================================================================
 
 This software is available from
