@@ -242,7 +242,7 @@ TypedArraySimilarity::GetCrossCorrelation
 
   unsigned int numberOfPixels = array0->GetDataSize();
 #pragma omp parallel for reduction(+:sumOfProducts,sumOfSquares0,sumOfSquares1)
-  for ( unsigned int idx = 0; idx < numberOfPixels; ++idx ) 
+  for ( int idx = 0; idx < static_cast<int>( numberOfPixels ); ++idx ) 
     {
     Types::DataItem pixel0, pixel1;
     if ( array0->Get( pixel0, idx ) && array1->Get( pixel1, idx ) ) 

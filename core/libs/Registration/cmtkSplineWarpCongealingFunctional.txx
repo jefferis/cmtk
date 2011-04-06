@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -80,7 +80,7 @@ SplineWarpCongealingFunctional
     {
     const Types::Coordinate gthresh = g.MaxNorm() * this->m_PartialGradientThreshold;
 #pragma omp parallel for
-    for ( size_t param = 0; param < g.Dim; ++param )
+    for ( int param = 0; param < static_cast<int>( g.Dim ); ++param )
       if ( fabs( g[param] ) < gthresh )
 	{
 	g[param] = this->m_ParamStepArray[param] = 0.0;
