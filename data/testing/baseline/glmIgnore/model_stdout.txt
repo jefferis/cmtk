@@ -1,20 +1,8 @@
 
 
 Importing image files:
-jacobian-01.nii
-Read 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
-Data type float (32bit), range [0.681502 .. 1.427695]
 INFORMATION: Ignoring parameter #1
 NParameters = 2
-jacobian-02.nii
-Read 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
-Data type float (32bit), range [0.795541 .. 1.458580]
-jacobian-03.nii
-Read 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
-Data type float (32bit), range [0.571797 .. 1.206604]
-jacobian-04.nii
-Read 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
-Data type float (32bit), range [0.634885 .. 1.310586]
 
 
 Design Matrix: 
@@ -40,13 +28,8 @@ Parameter normalization factors:
 
 
 Writing output image files.
-Writing 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
 INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
-Writing 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
 INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
-Writing 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
 INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
-Writing 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
 INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
-Writing 27 x 25 x 2 voxels [26.000000 x 24.000000 x 1.000000 mm total size].
 INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
