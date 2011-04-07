@@ -211,20 +211,13 @@ AnalyzeGrey( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData
     maxLabel = MaskOutputAllUpTo;
     
   std::vector<bool> maskFlags( maxLabel );
-  if ( MaskOutputAllUpTo )
+  std::fill( maskFlags.begin(), maskFlags.end(), false );
+  
+  for ( size_t i = 0; i < maskData->GetDataSize(); ++i )
     {
-    std::fill( maskFlags.begin(), maskFlags.end(), true );
-    }
-  else
-    {
-    std::fill( maskFlags.begin(), maskFlags.end(), false );
-    
-    for ( size_t i = 0; i < maskData->GetDataSize(); ++i )
-      {
-      cmtk::Types::DataItem l;
-      if ( maskData->Get( l, i ) && (l <= maxLabel) )
-	maskFlags[static_cast<int>( l )] = true;
-      }
+    cmtk::Types::DataItem l;
+    if ( maskData->Get( l, i ) && (l <= maxLabel) )
+      maskFlags[static_cast<int>( l )] = true;
     }
   
   if ( ! WriteAsColumn )
@@ -232,25 +225,27 @@ AnalyzeGrey( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData
   
   for ( int maskSelect = 0; maskSelect <= maxLabel; ++maskSelect )
     {
-    histogram.Reset();
-    if ( ! maskFlags[maskSelect] && ! MaskOutputAllUpTo ) continue;
-
-    cmtk::Types::DataItem value, maskValue;
     cmtk::ValueSequence<cmtk::Types::DataItem> seq;
-    
-    size_t index = 0;
-    for ( int z = 0; z < volume->GetDims()[cmtk::AXIS_Z]; ++z ) 
+
+    if ( maskFlags[maskSelect] )
       {
-      for ( int y = 0; y < volume->GetDims()[cmtk::AXIS_Y]; ++y ) 
+      histogram.Reset();
+      cmtk::Types::DataItem value, maskValue;
+      
+      size_t index = 0;
+      for ( int z = 0; z < volume->GetDims()[cmtk::AXIS_Z]; ++z ) 
 	{
-	for ( int x = 0; x < volume->GetDims()[cmtk::AXIS_X]; ++x, ++index ) 
+	for ( int y = 0; y < volume->GetDims()[cmtk::AXIS_Y]; ++y ) 
 	  {
-	  if ( maskData && maskData->Get( maskValue, index ) && (maskValue == maskSelect) )
+	  for ( int x = 0; x < volume->GetDims()[cmtk::AXIS_X]; ++x, ++index ) 
 	    {
-	    if ( data->Get( value, index ) ) 
+	    if ( maskData && maskData->Get( maskValue, index ) && (maskValue == maskSelect) )
 	      {
-	      seq.Proceed( value );
-	      histogram.Increment( histogram.ValueToBin( value ) );
+	      if ( data->Get( value, index ) ) 
+		{
+		seq.Proceed( value );
+		histogram.Increment( histogram.ValueToBin( value ) );
+		}
 	      }
 	    }
 	  }
