@@ -35,20 +35,6 @@ Platform-Specific Notes
 =======================
 
 
-Windows
--------
-
-- CMTK cannot be built using VisualStudio 2008 with OpenMP support enabled.
-  This is because CMTK is using unsigned loop variables, which was not
-  supported prior to OpenMP 3.0. VS2008 implementes an earlier version of the
-  OpenMP standard.
-
-  http://www.nitrc.org/tracker/index.php?func=detail&aid=5603&group_id=212&atid=877
-
-  Workaround: disable OpenMP support in CMTK or switch to more recent compiler
-  (VS 2010).
-
-
 MacOS-X
 -------
 
