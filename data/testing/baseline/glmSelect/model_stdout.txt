@@ -1,8 +1,5 @@
 Selected model parameters:
 	age
-
-
-Importing image files:
 INFORMATION: Ignoring parameter #1
 NParameters = 2
 
@@ -22,16 +19,8 @@ Singular values:
 Parameter correlation matrix:
 1.00	0.00	
 0.00	0.00	
-Linear model fitting: 0 %
+
 
 Parameter normalization factors:
 0	11.180340
 2	1.000000
-
-
-Writing output image files.
-INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
-INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
-INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
-INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
-INFO: WriteAnalyzeHdr will reorient output volume from 'RAS' to 'LAS'
