@@ -112,9 +112,7 @@ GroupwiseRegistrationRMIFunctional<TXform>
   MPI::COMM_WORLD.Allreduce( &totalNumberOfSamples, &this->m_TotalNumberOfSamples, 1, MPI::UNSIGNED, MPI::SUM );
 #endif
 
-  const float result = this->GetMetric( this->m_SumOfProductsMatrix, this->m_SumsVector, this->m_TotalNumberOfSamples, this->m_CovarianceMatrix );
-
-  return result;
+  return this->GetMetric( this->m_SumOfProductsMatrix, this->m_SumsVector, this->m_TotalNumberOfSamples, this->m_CovarianceMatrix );
 }
 
 template<class TXform>
