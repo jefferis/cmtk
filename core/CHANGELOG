@@ -1,6 +1,6 @@
 Release CMTK-1.7.0:
 
-(r3096) Fixed: CMTK should now compile with OpenMP support using VisualStudio
+(r3114) Fixed: CMTK now compiles with OpenMP support using VisualStudio
     compilers. All OpenMP parallel loops are now using signed, rather than
     unsigned, loop variables, thus complying with older (pre-3) versions of
     the OpenMP standard.
