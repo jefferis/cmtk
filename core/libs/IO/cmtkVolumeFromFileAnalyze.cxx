@@ -296,7 +296,7 @@ VolumeFromFile::WriteAnalyzeHdr
   UniformVolume::SmartPtr reorientedVolume;
   if ( strcmp( writeOrientation, currentOrientation.c_str() ) )
     {
-    DebugOutput( 1 ) << "INFO: WriteAnalyzeHdr will reorient output volume from '" << currentOrientation << "' to '" << writeOrientation << "'\n";
+    DebugOutput( 2 ) << "INFO: WriteAnalyzeHdr will reorient output volume from '" << currentOrientation << "' to '" << writeOrientation << "'\n";
     reorientedVolume = UniformVolume::SmartPtr( volume.GetReoriented( writeOrientation ) );
     writeVolume = reorientedVolume;
     }
