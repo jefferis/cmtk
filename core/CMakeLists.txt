@@ -263,8 +263,8 @@ ENDIF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} STRL
 #-----------------------------------------------------------------------------
 # Check for, and configure, Grand Central Dispatch
 
-CHECK_INCLUDE_FILES(dispatch/dispatch.h GCD_FOUND)
-IF(GCD_FOUND)
+CHECK_INCLUDE_FILES(dispatch/dispatch.h HAVE_DISPATCH_H)
+IF(HAVE_DISPATCH_H)
   OPTION(CMTK_USE_GCD "Use Grand Central Dispatch for SMP parallelism with system-level load balancing" ON)
   
   IF(NOT CMTK_BUILD_SMP)
@@ -273,7 +273,7 @@ IF(GCD_FOUND)
   
   IF(CMTK_USE_GCD)
   ENDIF(CMTK_USE_GCD)
-ENDIF(GCD_FOUND)
+ENDIF(HAVE_DISPATCH_H)
 
 #-----------------------------------------------------------------------------
 # Check for, and configure, OpenCL
