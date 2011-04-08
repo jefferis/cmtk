@@ -75,7 +75,6 @@ IF(NOT CMTK_USE_MPI)
     mk_phantom_3d
     mrbias
     overlap
-    pmsegment_learn
     randompxls
     randomwarp
     reformatx
@@ -118,6 +117,10 @@ IF(NOT CMTK_USE_MPI)
   IF(CMTK_USE_DCMTK)
     SET(APPS ${APPS} dcm2image)
   ENDIF(CMTK_USE_DCMTK)
+
+  IF (CMTK_BUILD_UNSTABLE)
+    SET(APPS ${APPS} pmsegment_learn)
+  ENDIF (CMTK_BUILD_UNSTABLE)
   
 ENDIF(NOT CMTK_USE_MPI)
 
