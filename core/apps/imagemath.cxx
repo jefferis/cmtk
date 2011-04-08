@@ -832,7 +832,7 @@ CallbackAtan2()
 		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
 #else
 #pragma omp parallel for
-  for ( size_t i = 0; i < numberOfPixels; ++i )
+		      for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
 #endif
     {
     cmtk::Types::DataItem pv, qv;
