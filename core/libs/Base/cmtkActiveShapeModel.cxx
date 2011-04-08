@@ -207,7 +207,7 @@ ActiveShapeModel::Decompose
     w[mode] = (deviation * *thisMode) / thisMode->EuclidNorm();
     
     const Types::Coordinate variance = (*(this->ModeVariances))[mode];
-    pdf *= exp( -(w[mode]*w[mode]) / (2.0 * variance) ) / sqrt( 2.0 * M_PI * variance);
+    pdf *= static_cast<float>( exp( -(w[mode]*w[mode]) / (2.0 * variance) ) / sqrt( 2.0 * M_PI * variance) );
     }
 #else
   float distance = 0.0;

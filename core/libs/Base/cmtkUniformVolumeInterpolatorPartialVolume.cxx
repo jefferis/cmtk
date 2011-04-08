@@ -74,7 +74,7 @@ UniformVolumeInterpolatorPartialVolume
       for ( int i = 0; i < 2; ++i, ++idx )
 	{
 	corners[idx] = this->m_VolumeDataArray[offset + this->GetOffsetFromIndex( i, j, k )];
-	const bool dataHere = finite( corners[idx] );
+	const bool dataHere = (finite( corners[idx] ) != 0);
 	done[idx] = !dataHere;
 	dataPresent |= dataHere;
 	}
@@ -145,7 +145,7 @@ UniformVolumeInterpolatorPartialVolume
       for ( int i = 0; i < 2; ++i, ++idx )
 	{
 	corners[idx] = this->m_VolumeDataArray[offset + this->GetOffsetFromIndex( i, j, k )];
-	const bool dataHere = finite( corners[idx] );
+	const bool dataHere = (finite( corners[idx] ) != 0);
 	done[idx] = !dataHere;
 	dataPresent |= dataHere;
 	}

@@ -115,7 +115,7 @@ public:
    */
   void Reset ()
   {
-    std::fill( this->m_Bins.begin(), this->m_Bins.end(), 0 );
+    std::fill( this->m_Bins.begin(), this->m_Bins.end(), static_cast<T>( 0 ) );
   }
 
   /// Return number of values in a given bin using [] operator.

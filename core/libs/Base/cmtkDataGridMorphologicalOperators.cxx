@@ -96,7 +96,7 @@ DataGridMorphologicalOperators::EliminatePaddingVoting( const int iterations )
 	      {
 	      if ( valueMap[it] > maxCount )
 		{
-		maxCount = valueMap[it];
+		maxCount = static_cast<char>( valueMap[it] );
 		maxValue = it;
 		}
 	      else

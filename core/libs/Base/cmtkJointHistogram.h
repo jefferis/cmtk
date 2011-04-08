@@ -201,7 +201,7 @@ public:
    */
   void Reset () 
   {
-    std::fill( this->JointBins.begin(), this->JointBins.end(), 0 );
+    std::fill( this->JointBins.begin(), this->JointBins.end(), static_cast<T>( 0 ) );
   }
   
   /** Return bin corresponding to a certain value of the X distribution.

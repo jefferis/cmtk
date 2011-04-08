@@ -490,7 +490,7 @@ FilterVolume::StudholmeFilter
 	      Types::DataItem value;
 	      if ( inputData->Get( value, srcOffset ) ) 
 		{
-		float prob = it->Coefficient;
+		float prob = static_cast<float>( it->Coefficient );
 		
 		std::list<TypedArray::SmartPtr>::iterator subjectIt = subjectData.begin();
 		while ( subjectIt != subjectData.end() ) 
@@ -499,7 +499,7 @@ FilterVolume::StudholmeFilter
 		  if ( (*subjectIt)->Get( valueSubj, srcOffset ) )
 		    {
 		    const size_t binY = histogram.ValueToBinY( valueSubj );
-		    prob *= histogram.GetBin( binX, binY ) / (*avgHistogram)[binX];
+		    prob *= static_cast<float>( histogram.GetBin( binX, binY ) / (*avgHistogram)[binX] );
 		    }
 		  ++subjectIt;
 		  }
