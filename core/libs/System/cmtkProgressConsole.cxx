@@ -87,11 +87,11 @@ ProgressConsole::UpdateProgress()
     const std::string& currentTaskName = this->GetCurrentTaskName();
     if ( currentTaskName.length() )
       {
-      DebugOutput( 1 ).GetStream().printf( "%s: %d %%\r", currentTaskName.c_str(), static_cast<int>( 100.0 * fraction ) );
+      DebugOutput( 2 ).GetStream().printf( "%s: %d %%\r", currentTaskName.c_str(), static_cast<int>( 100.0 * fraction ) );
       }
     else
       {
-      DebugOutput( 1 ).GetStream().printf( "%d %%\r", static_cast<int>( 100.0 * fraction ) );
+      DebugOutput( 2 ).GetStream().printf( "%d %%\r", static_cast<int>( 100.0 * fraction ) );
       }
     }
 
