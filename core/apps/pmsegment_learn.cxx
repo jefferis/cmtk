@@ -40,6 +40,7 @@
 #include <Base/cmtkMathUtil.h>
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkUniformDistanceMap.h>
+#include <Base/cmtkSymmetricMatrix.h>
 
 #include <Registration/cmtkTypedArraySimilarity.h>
 
@@ -50,51 +51,42 @@
 #include <fstream>
 
 void
-UpdateNCC( std::vector<float>& ncc, const size_t total, const size_t deleted )
+UpdateNCC( cmtk::SymmetricMatrix<float>& ncc, const size_t deleted )
 {
-  size_t ofs = ncc.size() - total;
-  for ( size_t i = 0; i < deleted; ++i, ++ofs )
+  const size_t dim = ncc.Dim();
+
+  for ( size_t i = 0; i < dim; ++i )
     {
-    ncc[i + deleted*(total-1)] = ncc[ofs];
+    ncc(i,deleted) = ncc(i,dim-1);
     }
 
-  ++ofs;
-
-  for ( size_t j = deleted+1; j < total; ++j, ++ofs )
-    {
-    ncc[deleted + j*(total-1)] = ncc[ofs];
-    }
+  ncc.Resize( dim-1 );
 }
 
 const std::pair<size_t,float> 
-GetLeastUnique( const std::vector< std::pair<float,cmtk::TypedArray::SmartPtr> >& patterns, std::vector<float>& ncc )
+GetLeastUnique( const std::vector< std::pair<float,cmtk::TypedArray::SmartPtr> >& patterns, cmtk::SymmetricMatrix<float>& ncc )
 {
   const size_t nPatterns = patterns.size();
 
-  // either initialize or update ncc vector
-  size_t ofs = ncc.size();
-  ncc.resize( ncc.size() + nPatterns );
-
-  if ( ncc.size() == ( (nPatterns * (nPatterns+1)) / 2 ) )
+  // either initialize or update ncc matrix
+  if ( ncc.Dim() == nPatterns )
     {
 #pragma omp parallel for
-    for ( size_t j = 0; j < nPatterns-1; ++j )
+    for ( int i = 0; i < static_cast<int>( nPatterns-1 ); ++i )
       {
-      ncc[ofs] = cmtk::TypedArraySimilarity::GetCrossCorrelation( patterns[nPatterns-1].second, patterns[j].second );
-      ++ofs;
+      ncc(i,nPatterns-1) = cmtk::TypedArraySimilarity::GetCrossCorrelation( patterns[nPatterns-1].second, patterns[i].second );
       }
     }
   else
     {
-    ncc.resize( (nPatterns * (nPatterns+1)) / 2 );
-    ofs = 0;
-
+    ncc.Resize( nPatterns );
+    
 #pragma omp parallel for
-    for ( size_t i = 0; i < nPatterns; ++i )
+    for ( int i = 0; i < static_cast<int>( nPatterns ); ++i )
       {
-      for ( size_t j = 0; j < i; ++j, ++ofs )
+      for ( size_t j = 0; j < i; ++j )
 	{
-	ncc[ofs] = cmtk::TypedArraySimilarity::GetCrossCorrelation( patterns[i].second, patterns[j].second );
+	ncc(i,j) = cmtk::TypedArraySimilarity::GetCrossCorrelation( patterns[i].second, patterns[j].second );
 	}
       }
     }
@@ -107,10 +99,7 @@ GetLeastUnique( const std::vector< std::pair<float,cmtk::TypedArray::SmartPtr> >
     float average = 0;
     for ( size_t j = 0; j < nPatterns; ++j )
       {
-      if ( j < i )
-	average += ncc[j + i*nPatterns];
-      else if ( i < j )
-	average += ncc[i + j*nPatterns];      
+      average += ncc(i,j);
       }
     
     if ( average >= maxValue )
@@ -128,10 +117,10 @@ double pThreshold = 0.1;
 int patternSetSize = 100;
 
 std::vector< std::pair<float,cmtk::TypedArray::SmartPtr> > patternsPos;
-std::vector<float> nccPos;
+cmtk::SymmetricMatrix<float> nccPos;
 
 std::vector< std::pair<float,cmtk::TypedArray::SmartPtr> > patternsNeg;
-std::vector<float> nccNeg;
+cmtk::SymmetricMatrix<float> nccNeg;
 
 int
 doMain( const int argc, const char* argv[] )
@@ -223,14 +212,14 @@ doMain( const int argc, const char* argv[] )
 	    if ( leastUniquePos.second > leastUniqueNeg.second )
 	      {
 	      patternsPos[leastUniquePos.first] = *(patternsPos.rbegin());
-	      UpdateNCC( nccPos, patternsPos.size(), leastUniquePos.first );
+	      UpdateNCC( nccPos, leastUniquePos.first );
 	      patternsPos.pop_back();
 	      }
 	    else
 	      {
 	      patternsNeg[leastUniqueNeg.first] = *(patternsNeg.rbegin());
 	      patternsNeg.pop_back();
-	      UpdateNCC( nccNeg, patternsNeg.size(), leastUniqueNeg.first );
+	      UpdateNCC( nccNeg, leastUniqueNeg.first );
 	      }
 	    }
 	  }
