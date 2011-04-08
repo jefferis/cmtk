@@ -142,7 +142,7 @@ Import
   
   FieldNames.push_back( "CONST" );
 
-  cmtk::DebugOutput( 1 ) << "\n\nImporting image files:\n";
+  cmtk::DebugOutput( 2 ) << "\n\nImporting image files.\n";
   
   nParametersTotal = 0;
   while ( ! ctlFile.eof() ) 
@@ -424,7 +424,7 @@ doMain( const int argc, const char* argv[] )
   
   if ( OutputFilePatt ) 
     {
-    cmtk::DebugOutput( 1 ) << "\n\nWriting output image files.\n";
+    cmtk::DebugOutput( 2 ) << "\n\nWriting output image files.\n";
 
     char outFileName[PATH_MAX];
 
