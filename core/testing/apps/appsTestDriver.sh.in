@@ -121,7 +121,7 @@ check_result()
     fi
 
     echo "diff ${BASELINE}/$1 ${tmpdir}/$1"
-    if diff $result $baseline; then
+    if diff --strip-trailing-cr $result $baseline; then
 	return
     else
 	exit 1
