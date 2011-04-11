@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -28,9 +28,17 @@
 //
 */
 
+#ifdef _MSC_VER
+#  include <stdio.h>
+#endif
+
 int
 main( const int argc, const char* argv[] )
 {
+#ifdef _MSC_VER
+   _set_output_format( _TWO_DIGIT_EXPONENT );
+#endif
+
   int exitCode = 0;
   try
     {
