@@ -1,5 +1,7 @@
 Release CMTK-1.7.0:
 
+(r3120) Fixed: Nrrd library was not properly splitting file paths containing
+    Windows-style separators ('\' rather than '/').
 (r3118) Improved: bundled NrrdIO library was updated to 1.11.0 from 1.9.0.
 (r3114) Fixed: CMTK now compiles with OpenMP support using VisualStudio
     compilers. All OpenMP parallel loops are now using signed, rather than
