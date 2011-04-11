@@ -486,15 +486,15 @@ case ${RUNTEST} in
       check_results xform.txt
       ;;
     dcm2image)
-	run dcm2image -O ${tmpdir}/00%n.hdr ${PWD}/dcm/
+	run dcm2image -O ${tmpdir}/00%n.hdr ${DATADIR}/dcm/
 	check_results 001.hdr 001.img 002.hdr 002.img 003.hdr 003.img
 	;;
     dcm2imageZ)
-	run dcm2image -O ${tmpdir}/00%n.nii ${PWD}/dcmz/
+	run dcm2image -O ${tmpdir}/00%n.nii ${DATADIR}/dcmz/
 	check_results 001.nii 002.nii 003.nii
 	;;
     dcm2imageNrrd)
-	run dcm2image -O ${tmpdir}/00%n.nhdr ${PWD}/dcm/
+	run dcm2image -O ${tmpdir}/00%n.nhdr ${DATADIR}/dcm/
 	check_results 001.nhdr 001.raw 002.nhdr 002.raw 003.nhdr 003.raw
 	;;
     describeEmpty)
