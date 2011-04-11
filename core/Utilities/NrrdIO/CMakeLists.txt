@@ -1,40 +1,45 @@
+#
+# Modified 11-Apr-2011 by Torsten Rohlfing for CMTK, 
+# (C) 2011 SRI International
+#
+
 PROJECT(NrrdIO)
 INCLUDE_REGULAR_EXPRESSION("^.*.h$")
 
-SET(nrrdio_SRCS comment.c enumsNrrd.c mop.c string.c 754.c defaultsNrrd.c
-parseAir.c dio.c format.c parseNrrd.c formatEPS.c encoding.c
-formatNRRD.c encodingAscii.c formatPNG.c encodingBzip2.c
-formatPNM.c accessors.c encodingGzip.c formatText.c 
-array.c encodingHex.c formatVTK.c read.c arraysNrrd.c encodingRaw.c 
-gzio.c reorder.c write.c axis.c endianAir.c  keyvalue.c
-biffbiff.c endianNrrd.c methodsNrrd.c  sane.c enum.c
-miscAir.c simple.c )
+#
+# This CMake file configures the NrrdIO library build.  NrrdIO
+# is used by Insight/Code/IO/itkNrrdIO for reading/writing 
+# "Nearly Raw Raster Data" within the open-source Teem software 
+# package. See http://teem.sourceforge.net for more information.
+#
+
+SET(nrrdio_SRCS 754.c mop.c array.c parseAir.c dio.c sane.c endianAir.c 
+string.c enum.c miscAir.c biffbiff.c biffmsg.c accessors.c defaultsNrrd.c 
+enumsNrrd.c arraysNrrd.c methodsNrrd.c reorder.c axis.c simple.c comment.c 
+keyvalue.c endianNrrd.c parseNrrd.c gzio.c read.c write.c format.c 
+formatNRRD.c encoding.c encodingRaw.c encodingAscii.c encodingHex.c 
+encodingGzip.c subset.c encodingBzip2.c formatEPS.c formatPNG.c 
+formatPNM.c formatText.c formatVTK.c )
 
 # Turn on TEEM_BUILD so that the proper dll export def's are 
 # used on windows builds.
 ADD_DEFINITIONS(-DTEEM_BUILD=1)
 
+# Configure files with settings for use by the build.
+CONFIGURE_FILE(${NrrdIO_SOURCE_DIR}/NrrdConfigure.h.in 
+  ${NrrdIO_BINARY_DIR}/NrrdConfigure.h)
+
+# Need to be able to fine NrrdConfig.h
+INCLUDE_DIRECTORIES(
+        ${NrrdIO_BINARY_DIR} 
+)
+
 # Set compiler flags for endian-ness.
-IF(CMAKE_WORDS_BIGENDIAN)
-  ADD_DEFINITIONS(-DTEEM_ENDIAN=4321)
-ELSE(CMAKE_WORDS_BIGENDIAN)
-  ADD_DEFINITIONS(-DTEEM_ENDIAN=1234)
-ENDIF(CMAKE_WORDS_BIGENDIAN)
-
-# Set compiler flags for 32 or 64 bit architecture (based on the size
-# of a void pointer).
-IF(CMAKE_SIZEOF_VOID_P MATCHES  8)
-  ADD_DEFINITIONS(-DTEEM_32BIT=0)
-ELSE(CMAKE_SIZEOF_VOID_P MATCHES 8)
-  ADD_DEFINITIONS(-DTEEM_32BIT=1)
-ENDIF(CMAKE_SIZEOF_VOID_P MATCHES 8)
-
-# The BIGBITFIELD variable is configured by the root level CMakeLists.txt
-IF(BIGBITFIELD)
-  ADD_DEFINITIONS(-DTEEM_BIGBITFIELD=1)
-ELSE(BIGBITFIELD)
-  ADD_DEFINITIONS(-DTEEM_BIGBITFIELD=0)
-ENDIF(BIGBITFIELD)
+#IF(CMAKE_WORDS_BIGENDIAN)
+#  ADD_DEFINITIONS(-DTEEM_ENDIAN=4321)
+#ELSE(CMAKE_WORDS_BIGENDIAN)
+#  ADD_DEFINITIONS(-DTEEM_ENDIAN=1234)
+#ENDIF(CMAKE_WORDS_BIGENDIAN)
 
 #The QNANHIBIT variable is configured by the root level CMakeLists.txt
 IF(QNANHIBIT)
@@ -52,6 +57,17 @@ ENDIF(QNANHIBIT)
 #ELSE(USE_DIRECTIO)
   ADD_DEFINITIONS(-DTEEM_DIO=0)
 #ENDIF(USE_DIRECTIO)
+
+# Tell NRRD to enable nrrdEncodingGzip
+ADD_DEFINITIONS(-DTEEM_ZLIB=1)
+
+IF(CMAKE_COMPILER_IS_GNUCXX)
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing")
+ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+
+##
+## CMTK-speficic add-ons
+##
 
 INCLUDE_DIRECTORIES(BEFORE
   ${ZCONF_INCLUDE_DIR}

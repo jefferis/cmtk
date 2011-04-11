@@ -1,6 +1,6 @@
 /*
   NrrdIO: stand-alone code for basic nrrd functionality
-  Copyright (C) 2005  Gordon Kindlmann
+  Copyright (C) 2008, 2007, 2006, 2005  Gordon Kindlmann
   Copyright (C) 2004, 2003, 2002, 2001, 2000, 1999, 1998  University of Utah
  
   This software is provided 'as-is', without any express or implied
@@ -21,7 +21,6 @@
  
   3. This notice may not be removed or altered from any source distribution.
 */
-
 
 #include "NrrdIO.h"
 #include "teem32bit.h"
@@ -45,7 +44,7 @@
 const char *
 airTeemVersion = TEEM_VERSION_STRING;
 const char *
-airTeemReleaseDate = "26 December 2005";
+airTeemReleaseDate = "late 2009 or early 2010";
 
 double
 _airSanityHelper(double val) {
@@ -250,5 +249,4 @@ const int airMy32Bit = 1;
 #else
 const int airMy32Bit = 0;
 #endif
-
 

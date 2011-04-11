@@ -1,6 +1,6 @@
 /*
   NrrdIO: stand-alone code for basic nrrd functionality
-  Copyright (C) 2005  Gordon Kindlmann
+  Copyright (C) 2008, 2007, 2006, 2005  Gordon Kindlmann
   Copyright (C) 2004, 2003, 2002, 2001, 2000, 1999, 1998  University of Utah
  
   This software is provided 'as-is', without any express or implied
@@ -140,6 +140,8 @@ nrrdKeyValueErase(Nrrd *nrrd, const char *key) {
 **
 ** This will COPY the given strings, and so does not depend on
 ** them existing past the return of this function
+**
+** does NOT use BIFF
 */
 int
 nrrdKeyValueAdd(Nrrd *nrrd, const char *key, const char *value) {
@@ -172,6 +174,8 @@ nrrdKeyValueAdd(Nrrd *nrrd, const char *key, const char *value) {
 ** "inside" the nrrd struct (pointers which you had better not free()!)
 ** is controlled by nrrdStateKeyValueReturnInternalPointers, which defaults
 ** to AIR_FALSE
+**
+** does NOT use BIFF
 */
 char *
 nrrdKeyValueGet(const Nrrd *nrrd, const char *key) {

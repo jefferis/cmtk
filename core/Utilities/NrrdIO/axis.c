@@ -1,6 +1,6 @@
 /*
   NrrdIO: stand-alone code for basic nrrd functionality
-  Copyright (C) 2005  Gordon Kindlmann
+  Copyright (C) 2008, 2007, 2006, 2005  Gordon Kindlmann
   Copyright (C) 2004, 2003, 2002, 2001, 2000, 1999, 1998  University of Utah
  
   This software is provided 'as-is', without any express or implied
@@ -81,7 +81,7 @@ nrrdKindIsDomain(int kind) {
 */
 unsigned int
 nrrdKindSize(int kind) {
-  char me[]="nrrdKindSize";
+  static const char me[]="nrrdKindSize";
   int ret;
   
   if (!( AIR_IN_OP(nrrdKindUnknown, kind, nrrdKindLast) )) {
@@ -704,7 +704,7 @@ _nrrdCenter2(int center, int defCenter) {
 double
 nrrdAxisInfoPos(const Nrrd *nrrd, unsigned int ax, double idx) {
   int center;
-  unsigned int size;
+  size_t size;
   double min, max;
   
   if (!( nrrd && ax <= nrrd->dim-1 )) {
@@ -730,7 +730,7 @@ nrrdAxisInfoPos(const Nrrd *nrrd, unsigned int ax, double idx) {
 double
 nrrdAxisInfoIdx(const Nrrd *nrrd, unsigned int ax, double pos) {
   int center;
-  unsigned int size;
+  size_t size;
   double min, max;
   
   if (!( nrrd && ax <= nrrd->dim-1 )) {
@@ -756,7 +756,7 @@ nrrdAxisInfoPosRange(double *loP, double *hiP,
                      const Nrrd *nrrd, unsigned int ax, 
                      double loIdx, double hiIdx) {
   int center, flip = 0;
-  unsigned size;
+  size_t size;
   double min, max, tmp;
 
   if (!( loP && hiP && nrrd && ax <= nrrd->dim-1 )) {
@@ -808,7 +808,7 @@ nrrdAxisInfoIdxRange(double *loP, double *hiP,
                      const Nrrd *nrrd, unsigned int ax, 
                      double loPos, double hiPos) {
   int center, flip = 0;
-  unsigned size;
+  size_t size;
   double min, max, tmp;
 
   if (!( loP && hiP && nrrd && ax <= nrrd->dim-1 )) {
@@ -929,21 +929,32 @@ nrrdDomainAxesGet(const Nrrd *nrrd, unsigned int axisIdx[NRRD_DIM_MAX]) {
   return domAxi;
 }
 
+int
+_nrrdSpaceVecExists(const Nrrd *nrrd, unsigned int axi) {
+  unsigned int sai;
+  int ret;
+
+  if (!( nrrd && axi < nrrd->dim && nrrd->spaceDim )) {
+    ret = AIR_FALSE;
+  } else {
+    ret = AIR_TRUE;
+    for (sai=0; sai<nrrd->spaceDim; sai++) {
+      ret &= AIR_EXISTS(nrrd->axis[axi].spaceDirection[sai]);
+    }
+  }
+  return ret;
+}
+
 unsigned int
 nrrdSpatialAxesGet(const Nrrd *nrrd, unsigned int axisIdx[NRRD_DIM_MAX]) {
-  unsigned int spcAxi, axi, sai;
-  int good;
+  unsigned int spcAxi, axi;
 
   if (!( nrrd && axisIdx && nrrd->spaceDim)) {
     return 0;
   }
   spcAxi = 0;
   for (axi=0; axi<nrrd->dim; axi++) {
-    good = AIR_TRUE;
-    for (sai=0; sai<nrrd->spaceDim; sai++) {
-      good &= AIR_EXISTS(nrrd->axis[axi].spaceDirection[sai]);
-    }
-    if (good) {
+    if (_nrrdSpaceVecExists(nrrd, axi)) {
       axisIdx[spcAxi++] = axi;
     }
   }
@@ -1063,7 +1074,7 @@ nrrdSpacingCalculate(const Nrrd *nrrd, unsigned int ax,
       *spacing = AIR_NAN;
     }
     if (vector) {
-      _nrrdSpaceVecSetNaN(vector);
+      nrrdSpaceVecSetNaN(vector);
     }
   } else {
     if (AIR_EXISTS(nrrd->axis[ax].spacing)) {
@@ -1073,18 +1084,18 @@ nrrdSpacingCalculate(const Nrrd *nrrd, unsigned int ax,
         ret = nrrdSpacingStatusScalarNoSpace;
       }
       *spacing = nrrd->axis[ax].spacing;
-      _nrrdSpaceVecSetNaN(vector);      
+      nrrdSpaceVecSetNaN(vector);      
     } else {
-      if (nrrd->spaceDim > 0) {
+      if (nrrd->spaceDim > 0 && _nrrdSpaceVecExists(nrrd, ax)) {
         ret = nrrdSpacingStatusDirection;
-        *spacing = _nrrdSpaceVecNorm(nrrd->spaceDim, 
-                                     nrrd->axis[ax].spaceDirection);
-        _nrrdSpaceVecScale(vector, 1.0/(*spacing),
-                           nrrd->axis[ax].spaceDirection);
+        *spacing = nrrdSpaceVecNorm(nrrd->spaceDim, 
+                                    nrrd->axis[ax].spaceDirection);
+        nrrdSpaceVecScale(vector, 1.0/(*spacing),
+                          nrrd->axis[ax].spaceDirection);
       } else {
         ret = nrrdSpacingStatusNone;
         *spacing = AIR_NAN;
-        _nrrdSpaceVecSetNaN(vector);
+        nrrdSpaceVecSetNaN(vector);
       }
     }
   }
@@ -1094,21 +1105,20 @@ nrrdSpacingCalculate(const Nrrd *nrrd, unsigned int ax,
 int
 nrrdOrientationReduce(Nrrd *nout, const Nrrd *nin,
                       int setMinsFromOrigin) {
-  char me[]="nrrdOrientationReduce", err[BIFF_STRLEN];
+  static const char me[]="nrrdOrientationReduce";
   unsigned int spatialAxisNum, spatialAxisIdx[NRRD_DIM_MAX], saxii;
   NrrdAxisInfo *axis;
 
   if (!(nout && nin)) {
-    sprintf(err, "%s: got NULL spacing", me);
-    biffAdd(NRRD, err); return 1;
+    biffAddf(NRRD, "%s: got NULL spacing", me);
+    return 1;
   }
-
+  
   if (nout != nin) {
     if (nrrdCopy(nout, nin)) {
-      sprintf(err, "%s: trouble doing initial copying", me);
-      biffAdd(NRRD, err); return 1;
+      biffAddf(NRRD, "%s: trouble doing initial copying", me);
+      return 1;
     }
-
   }
   if (!nout->spaceDim) {
     /* we're done! */
@@ -1117,8 +1127,8 @@ nrrdOrientationReduce(Nrrd *nout, const Nrrd *nin,
   spatialAxisNum = nrrdSpatialAxesGet(nout, spatialAxisIdx);
   for (saxii=0; saxii<spatialAxisNum; saxii++) {
     axis = nout->axis + spatialAxisIdx[saxii];
-    axis->spacing = _nrrdSpaceVecNorm(nout->spaceDim,
-                                      axis->spaceDirection);
+    axis->spacing = nrrdSpaceVecNorm(nout->spaceDim,
+                                     axis->spaceDirection);
     if (setMinsFromOrigin) {
       axis->min = (saxii < nout->spaceDim 
                    ? nout->spaceOrigin[saxii]

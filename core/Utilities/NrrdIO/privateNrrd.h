@@ -1,4 +1,31 @@
+/*
+  NrrdIO: stand-alone code for basic nrrd functionality
+  Copyright (C) 2008, 2007, 2006, 2005  Gordon Kindlmann
+  Copyright (C) 2004, 2003, 2002, 2001, 2000, 1999, 1998  University of Utah
+ 
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any
+  damages arising from the use of this software.
+ 
+  Permission is granted to anyone to use this software for any
+  purpose, including commercial applications, and to alter it and
+  redistribute it freely, subject to the following restrictions:
+ 
+  1. The origin of this software must not be misrepresented; you must
+     not claim that you wrote the original software. If you use this
+     software in a product, an acknowledgment in the product
+     documentation would be appreciated but is not required.
+ 
+  2. Altered source versions must be plainly marked as such, and must
+     not be misrepresented as being the original software.
+ 
+  3. This notice may not be removed or altered from any source distribution.
+*/
 
+/*
+ * Modified 11-Apr-2011 by Torsten Rohlfing for CMTK, 
+ * (C) 2011 SRI International
+ */
 
 #ifdef _WIN32
 #include <io.h>
@@ -85,20 +112,6 @@ extern int _nrrdFieldCheckSpaceInfo(const Nrrd *nrrd, int useBiff);
 extern int (*_nrrdFieldCheck[NRRD_FIELD_MAX+1])(const Nrrd *nrrd, int useBiff);
 extern void _nrrdSplitSizes(size_t *pieceSize, size_t *pieceNum, 
                             Nrrd *nrrd, unsigned int listDim);
-extern void _nrrdSpaceVecCopy(double dst[NRRD_SPACE_DIM_MAX], 
-                              const double src[NRRD_SPACE_DIM_MAX]);
-extern void _nrrdSpaceVecScaleAdd2(double sum[NRRD_SPACE_DIM_MAX], 
-                                   double sclA, 
-                                   const double vecA[NRRD_SPACE_DIM_MAX],
-                                   double sclB, 
-                                   const double vecB[NRRD_SPACE_DIM_MAX]);
-extern void _nrrdSpaceVecScale(double out[NRRD_SPACE_DIM_MAX], 
-                               double scl, 
-                               const double vec[NRRD_SPACE_DIM_MAX]);
-extern double _nrrdSpaceVecNorm(int sdim,
-                                const double vec[NRRD_SPACE_DIM_MAX]);
-extern void _nrrdSpaceVecSetNaN(double vec[NRRD_SPACE_DIM_MAX]);
-
 
 /* axis.c */
 extern int _nrrdKindAltered(int kindIn, int resampling);
@@ -111,6 +124,7 @@ extern int _nrrdCenter2(int center, int def);
 
 /* convert.c */
 extern void (*_nrrdConv[][NRRD_TYPE_MAX+1])(void *, const void *, size_t);
+extern void (*_nrrdClampConv[][NRRD_TYPE_MAX+1])(void *, const void *, size_t);
 
 /* read.c */
 extern char _nrrdFieldStr[NRRD_FIELD_MAX+1][AIR_STRLEN_SMALL];
@@ -123,10 +137,10 @@ extern void _nrrdSplitName(char **dirP, char **baseP, const char *name);
 /* write.c */
 extern int _nrrdFieldInteresting (const Nrrd *nrrd, NrrdIoState *nio,
                                   int field);
-extern void _nrrdSprintFieldInfo(char **strP, char *prefix,
+extern void _nrrdSprintFieldInfo(char **strP, const char *prefix,
                                  const Nrrd *nrrd, NrrdIoState *nio,
                                  int field);
-extern void _nrrdFprintFieldInfo(FILE *file, char *prefix,
+extern void _nrrdFprintFieldInfo(FILE *file, const char *prefix,
                                  const Nrrd *nrrd, NrrdIoState *nio,
                                  int field);
 
@@ -141,8 +155,8 @@ extern int _nrrdSizeCheck(const size_t *size, unsigned int dim, int useBiff);
 extern void _nrrdTraverse(Nrrd *nrrd);
 
 #if TEEM_ZLIB
-#include <zlib.h>
-
+#include "zlib.h"
+   
 /* gzio.c */
 extern gzFile _nrrdGzOpen(FILE* fd, const char *mode);
 extern int _nrrdGzClose(gzFile file);
