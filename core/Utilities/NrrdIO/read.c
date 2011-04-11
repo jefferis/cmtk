@@ -22,6 +22,11 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
+/*
+ * Modified 11-Apr-2011 by Torsten Rohlfing for CMTK, 
+ * (C) 2011 SRI International
+ */
+
 #include "NrrdIO.h"
 #include "privateNrrd.h"
 
@@ -510,7 +515,15 @@ _nrrdSplitName(char **dirP, char **baseP, const char *name) {
   if (baseP) {
     *baseP = (char *)airFree(*baseP);
   }
+
   where = strrchr(name, '/');
+
+  // Added by Torsten Rohlfing, 11-Apr-2011
+#ifdef _WIN32
+  if ( !where || (strrchr(name, '\\') > where) )
+    where = strrchr(name, '\\');
+#endif
+
   /* we found a valid break if the last directory character
      is somewhere in the string except the last character */
   if (where && airStrlen(where) > 1) {
