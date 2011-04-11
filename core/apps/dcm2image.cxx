@@ -401,6 +401,18 @@ replacein(std::string &s, const std::string &sub, const std::string &other)
   return s;
 }
 
+/// Make a string legal in a path by replacing spaces and colons with "_".
+std::string
+MakeLegalInPath( const std::string& s )
+{
+  std::string result = s;
+
+  replacein( result, " ", "_" );      
+  replacein( result, ":", "_" );  
+
+  return result;
+}
+
 void
 VolumeList::WriteToArchive() 
 {
@@ -414,13 +426,10 @@ VolumeList::WriteToArchive()
       {
       // replace place holders
       std::string path( OutPathPattern );
-      replacein( path, "%D", (*it)[0][0]->SeriesDescription );
-      replacein( path, "%R", (*it)[0][0]->RepetitionTime );
-      replacein( path, "%E", (*it)[0][0]->EchoTime );
+      replacein( path, "%D", MakeLegalInPath( (*it)[0][0]->SeriesDescription ) );
+      replacein( path, "%R", MakeLegalInPath( (*it)[0][0]->RepetitionTime ) );
+      replacein( path, "%E", MakeLegalInPath( (*it)[0][0]->EchoTime ) );
       replacein( path, "%T", GERawDataTypeString[(*it)[0][0]->GERawDataType] );
-      // finally, replace non-path characters
-      replacein( path, " ", "_" );      
-      replacein( path, ":", "_" );
       
       if ( path.length() > PATH_MAX )
 	cmtk::StdErr << "ERROR: output path exceeds maximum path length";
