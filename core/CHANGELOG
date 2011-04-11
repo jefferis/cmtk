@@ -1,5 +1,6 @@
 Release CMTK-1.7.0:
 
+(r3118) Improved: bundled NrrdIO library was updated to 1.11.0 from 1.9.0.
 (r3114) Fixed: CMTK now compiles with OpenMP support using VisualStudio
     compilers. All OpenMP parallel loops are now using signed, rather than
     unsigned, loop variables, thus complying with older (pre-3) versions of
