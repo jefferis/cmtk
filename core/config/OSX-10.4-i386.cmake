@@ -29,6 +29,7 @@
 ##
 
 SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type")
+SET(CMAKE_INSTALL_PREFIX "/opt/local" CACHE PATH "Install prefix")
 
 # General settings
 SET(CMTK_SYSTEM_NAME "MacOSX-10.4" CACHE STRING "System name")
@@ -37,7 +38,7 @@ SET(CMTK_SYSTEM_PROCESSOR "i686" CACHE STRING "System processor")
 # 32 bit for OS X >=10.4
 SET(CMAKE_OSX_ARCHITECTURES "i386" CACHE STRING "OS-X architectures")
 SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.4" CACHE STRING "OS-X target")
-SET(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.5.sdk" CACHE PATH "OS-X SDK")
+SET(CMAKE_OSX_SYSROOT "/Developer-old/SDKs/MacOSX10.5.sdk" CACHE PATH "OS-X SDK")
 
 # Use GCC 4.0 for 10.4 SDK
 SET(CMAKE_CXX_COMPILER "/usr/bin/g++-4.0" CACHE FILEPATH "C++ Compiler")

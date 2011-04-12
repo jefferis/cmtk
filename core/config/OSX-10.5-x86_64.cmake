@@ -29,18 +29,16 @@
 ##
 
 SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type")
+SET(CMAKE_INSTALL_PREFIX "/opt/local" CACHE PATH "Install prefix")
 
 # General settings
 SET(CMTK_SYSTEM_NAME "MacOSX-10.5" CACHE STRING "System name")
 SET(CMTK_SYSTEM_PROCESSOR "x86_64" CACHE STRING "System processor")
 
-SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type")
-SET(CMAKE_INSTALL_PREFIX "/opt/local" CACHE PATH "Install prefix")
-
 # 64 bit for OS X >=10.5
 SET(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "OS-X architecture")
 SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.5" CACHE STRING "OS-X target")
-SET(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.5.sdk" CACHE PATH "OS-X SDK")
+SET(CMAKE_OSX_SYSROOT "/Developer-old/SDKs/MacOSX10.5.sdk" CACHE PATH "OS-X SDK")
 
 # Activate SSE support for floating point
 SET(CMAKE_CXX_FLAGS "-march=core2 -mmmx -msse -msse2 -mfpmath=sse" CACHE STRING "C++ compiler flags")
