@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -242,16 +242,21 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
     stream.Seek( offset, SEEK_CUR );
     
     TypedArray::SmartPtr data( TypedArray::Create( dtype, volume->GetNumberOfPixels() ) );
-    stream.Read( data->GetDataPtr(), data->GetItemSize(), data->GetDataSize() );
-
-    if ( byteSwap ) 
-      data->ChangeEndianness();
-
-    volume->SetData( data );
+    if ( data->GetDataSize() == stream.Read( data->GetDataPtr(), data->GetItemSize(), data->GetDataSize() ) )
+      {
+      if ( byteSwap ) 
+	data->ChangeEndianness();
+      
+      volume->SetData( data );
+      }
+    else
+      {
+      StdErr << "ERROR: could not read " << data->GetDataSize() << " pixels from Nifti image file " << pathImg << "\n";
+      }
     } 
   else
     {
-    StdErr.printf( "WARNING: could not open Nifti image file %s\n", pathImg );
+    StdErr << "ERROR: could not open Nifti image file " << pathImg << "\n";
     }
   
   Memory::DeleteArray( pathImg );

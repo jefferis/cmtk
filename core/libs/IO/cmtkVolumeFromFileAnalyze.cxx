@@ -244,19 +244,24 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
     stream.Seek( offset, SEEK_CUR );
     
     TypedArray::SmartPtr data( TypedArray::Create( dtype, volume->GetNumberOfPixels() ) );
-    stream.Read( data->GetDataPtr(), data->GetItemSize(), data->GetDataSize() );
-
+    if ( data->GetDataSize() == stream.Read( data->GetDataPtr(), data->GetItemSize(), data->GetDataSize() ) )
+      {
 #ifdef WORDS_BIGENDIAN
-    if ( ! bigEndian ) data->ChangeEndianness();
+      if ( ! bigEndian ) data->ChangeEndianness();
 #else
-    if ( bigEndian ) data->ChangeEndianness();
+      if ( bigEndian ) data->ChangeEndianness();
 #endif
-
-    volume->SetData( data );
+      
+      volume->SetData( data );
+      }
+    else
+      {
+      StdErr << "ERROR: could not read " << data->GetDataSize() << " pixels from Analuze image file " << pathImg << "\n";
+      }
     } 
   else
     {
-    StdErr.printf( "WARNING: could not open Analyze image file %s\n", pathImg );
+    StdErr << "ERROR: could not open Analyze image file " << pathImg << "\n";
     }
   
   Memory::DeleteArray( pathImg );
