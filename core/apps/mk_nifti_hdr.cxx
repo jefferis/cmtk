@@ -239,9 +239,9 @@ doMain( const int argc, const char* argv[] )
     }
 
 #ifdef _MSC_VER
-  const char *const modestr = "w9b";
+  const char *const modestr = "wb";
 #else
-  const char *const modestr = "w9";
+  const char *const modestr = "w";
 #endif
     
   if ( DetachedHeader )
