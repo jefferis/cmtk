@@ -52,7 +52,7 @@ LabelCombinationSTAPLE::LabelCombinationSTAPLE( const std::vector<TypedArray::Sm
 
   // compute initial estimate as the average of all inputs;
   // this is also the first E-step with all p/q equal to 0.5
-  float totalSum = 0;
+  double totalSum = 0;
 
 // The following is currently broken due to Apple bug:
 //  http://forums.macrumors.com/showthread.php?t=952857 
@@ -84,7 +84,7 @@ LabelCombinationSTAPLE::LabelCombinationSTAPLE( const std::vector<TypedArray::Sm
 //#endif
 
   // global prior probability
-  const float globalPrior = totalSum / (numberOfInputs * numberOfPixels );
+  const double globalPrior = totalSum / (numberOfInputs * numberOfPixels );
 
   // expert parameters
   this->m_VecP.resize( numberOfInputs );
@@ -99,7 +99,7 @@ LabelCombinationSTAPLE::LabelCombinationSTAPLE( const std::vector<TypedArray::Sm
       this->m_VecP[i] = this->m_VecQ[i] = 0;
       }
 
-    float sumW = 0;
+    double sumW = 0;
     for ( size_t n = 0; n < numberOfPixels; ++n )
       {
       Types::DataItem w;
@@ -125,8 +125,8 @@ LabelCombinationSTAPLE::LabelCombinationSTAPLE( const std::vector<TypedArray::Sm
 #pragma omp parallel for
     for ( int n = 0; n < static_cast<int>( numberOfPixels ); ++n )
       {
-      float alpha = globalPrior;
-      float beta = (1.0-globalPrior);
+      double alpha = globalPrior;
+      double beta = (1.0-globalPrior);
     
       Types::DataItem w = 0;
       for ( size_t i = 0; i < numberOfInputs; ++i )

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -111,7 +111,7 @@ LabelCombinationMultiClassSTAPLE
     for ( int inLabel = 0; inLabel <= numberOfClasses; ++inLabel )
       {
       // compute sum over all output labels for given input label
-      float sum = 0;
+      double sum = 0;
       for ( int outLabel = 0; outLabel < numberOfClasses; ++outLabel )
 	{
 	sum += this->m_Confusion[k][inLabel][outLabel];
@@ -130,7 +130,7 @@ LabelCombinationMultiClassSTAPLE
     }
   
   // allocate array for pixel class weights
-  std::vector<float> W( numberOfClasses );
+  std::vector<double> W( numberOfClasses );
 
   Progress::Begin( 0, maxIterations, 1, "Multi-label STAPLE" );
   
@@ -164,7 +164,7 @@ LabelCombinationMultiClassSTAPLE
 	}
       
       // the following is the M step
-      float sumW = W[0];
+      double sumW = W[0];
       for ( int ci = 1; ci < numberOfClasses; ++ci )
 	sumW += W[ci];
       
@@ -194,7 +194,7 @@ LabelCombinationMultiClassSTAPLE
       // compute sum over all output classifications
       for ( int ci = 0; ci < numberOfClasses; ++ci ) 
 	{
-	float sumW = this->m_ConfusionNew[k][0][ci]; 
+	double sumW = this->m_ConfusionNew[k][0][ci]; 
 	for ( int j = 1; j <= numberOfClasses; ++j )
 	  sumW += this->m_ConfusionNew[k][j][ci];
 	
@@ -238,7 +238,7 @@ LabelCombinationMultiClassSTAPLE
     
     // now determine the label with the maximum W
     int winningLabel = -1;
-    float winningLabelW = 0;
+    double winningLabelW = 0;
     for ( int ci = 0; ci < numberOfClasses; ++ci )
       {
       if ( W[ci] > winningLabelW )

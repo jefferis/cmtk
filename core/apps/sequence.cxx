@@ -50,7 +50,7 @@
 #include <list>
 #include <vector>
 
-float MaxThreshold = 0;
+double MaxThreshold = 0;
 bool UseMaxThreshold = false;
 bool AbsoluteValues = false;
 
@@ -78,11 +78,11 @@ doMain( const int argc, const char* argv[] )
     return 1;
   }
 
-  cmtk::ValueSequence<float> seq;
-  std::list<float> list;
+  cmtk::ValueSequence<double> seq;
+  std::list<double> list;
 
   unsigned int countOverThreshold = 0;
-  float f;
+  double f;
   while ( ! std::cin.eof() ) 
     {
     std::cin >> f; 
@@ -99,7 +99,7 @@ doMain( const int argc, const char* argv[] )
       list.push_back( f );
       }
     
-    f = cmtk::MathUtil::GetFloatNaN();
+    f = cmtk::MathUtil::GetDoubleNaN();
     }
   
   const size_t totalNumberOfValues = seq.GetNValues() + countOverThreshold;
@@ -111,8 +111,8 @@ doMain( const int argc, const char* argv[] )
   printf( format, seq.GetMinimum(), seq.GetMaximum(), seq.GetAverage(), sqrt( seq.GetVariance() ) );
 
   list.sort();
-  std::vector<float> sorted;
-  for ( std::list<float>::const_iterator it = list.begin(); it != list.end(); ++it )
+  std::vector<double> sorted;
+  for ( std::list<double>::const_iterator it = list.begin(); it != list.end(); ++it )
     {
     sorted.push_back( *it );
     }
