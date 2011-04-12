@@ -133,7 +133,7 @@ LabelCombinationSTAPLE::LabelCombinationSTAPLE( const std::vector<TypedArray::Sm
 	{
 	if ( data[i]->Get( w, n ) )
 	  {
-	  alpha *= (1-w-m_VecP[i]);
+	  alpha *= (1.0-w-m_VecP[i]);
 	  beta *= (w-m_VecQ[i]);
 	  }
 	}
