@@ -60,7 +60,7 @@ public:
   typedef LabelCombinationMultiClassSTAPLE Self;
 
   /// Real value type for internal computations.
-  typedef float RealValueType;
+  typedef double RealValueType;
 
   /// Confusion matrix type.
   typedef Matrix2D<RealValueType> ConfusionMatrixType;
