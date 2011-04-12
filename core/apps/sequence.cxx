@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2011 Torsten Rohlfing
 //
 //  Copyright 2004-2011 SRI International
 //
@@ -74,7 +74,7 @@ doMain( const int argc, const char* argv[] )
     }
   catch ( const cmtk::CommandLine::Exception& e ) 
     {
-    cmtk::StdErr << "Something went wrong parsing the command line.\n";
+    cmtk::StdErr << "Command line parse error: " << e << "\n";
     return 1;
   }
 
