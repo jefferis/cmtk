@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 1997-2009 Torsten Rohlfing
+//  Copyright 1997-2011 Torsten Rohlfing
 //
 //  Copyright 2004-2010 SRI International
 //
@@ -373,9 +373,9 @@ VolumeFromFile::WriteNifti
   header.cal_min = static_cast<float>( dataRange.m_LowerBound );
   
 #ifdef _MSC_VER
-  const char *const modestr = "w9b";
+  const char *const modestr = "wb";
 #else
-  const char *const modestr = "w9";
+  const char *const modestr = "w";
 #endif
     
   if ( detachedHeader )
