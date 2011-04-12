@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -59,7 +59,7 @@ Log( const double x )
 double
 Exp( const double x )
 {
-  return Exp( x );
+  return exp( x );
 }
 
 /// Square root function.
