@@ -120,8 +120,16 @@ check_result()
 	exit 1
     fi
 
-    echo "diff ${BASELINE}/$1 ${tmpdir}/$1"
-    if diff --strip-trailing-cr $result $baseline; then
+    echo "diff ${tmpdir}/$1 ${BASELINE}/$1"
+
+    local diff="cmp"
+    local file_type=`file --brief --mime-type $result`
+
+    if [ "${file_type}" == "text/plain" ]; then
+	diff="diff --strip-trailing-cr"
+    fi
+
+    if ${diff} $result $baseline; then
 	return
     else
 	exit 1
