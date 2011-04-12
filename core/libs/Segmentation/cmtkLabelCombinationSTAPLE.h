@@ -60,7 +60,7 @@ public:
   /// Constructor: compute label combination.
   LabelCombinationSTAPLE( const std::vector<TypedArray::SmartPtr>& data /*!< Array of typed arrays with input data.*/,
 			  const int maxIterations /*!< Maximum number of STAPLE iterations. */,
-			  const ScalarDataType resultType = TYPE_FLOAT /*!< Primitive data type for results.*/ );
+			  const ScalarDataType resultType = TYPE_DOUBLE /*!< Primitive data type for results.*/ );
   
   /// Get result.
   TypedArray::SmartPtr& GetResult()
@@ -69,13 +69,13 @@ public:
   }
 
   /// Get one p value.
-  float GetPValue( const size_t i ) const
+  double GetPValue( const size_t i ) const
   {
     return this->m_VecP[i];
   }
 
   /// Get one q value.
-  float GetQValue( const size_t i ) const
+  double GetQValue( const size_t i ) const
   {
     return this->m_VecQ[i];
   }
@@ -85,10 +85,10 @@ private:
   TypedArray::SmartPtr m_Result;
 
   /// p-Values.
-  std::vector<float> m_VecP;
+  std::vector<double> m_VecP;
 
   /// q-Values.
-  std::vector<float> m_VecQ;
+  std::vector<double> m_VecQ;
 };
 
 } // namespace cmtk
