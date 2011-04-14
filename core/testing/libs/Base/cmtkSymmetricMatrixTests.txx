@@ -30,22 +30,57 @@
 
 #include <Base/cmtkSymmetricMatrix.h>
 
+#include <System/cmtkConsole.h>
+
 // test symmetric behaviour
 int
 testSymmetricMatrix()
 {
   cmtk::SymmetricMatrix<float> m( 2 );
 
+  m(0,0) = -1;
+  m(1,1) = -2;
+
+  if ( m(0,0) != -1 )
+    {
+    cmtk::StdErr << "testSymmetricMatrix test failed at label A\n";
+    return 1;
+    }
+
+  if ( m(1,1) != -2 )
+    {
+    cmtk::StdErr << "testSymmetricMatrix test failed at label B\n";
+    return 1;
+    }
+
   m(0,1) = 0;
   m(1,0) = 1;
   
   if ( m(0,1) != 1 )
+    {
+    cmtk::StdErr << "testSymmetricMatrix test failed at label C\n";
     return 1;
+    }
 
   m(0,1) = 2;
   if ( m(1,0) != 2 )
+    {
+    cmtk::StdErr << "testSymmetricMatrix test failed at label D\n";
     return 1;
+    }
 
+  if ( m(0,0) != -1 )
+    {
+    cmtk::StdErr << "testSymmetricMatrix test failed at label E\n";
+    return 1;
+    }
+
+  if ( m(1,1) != -2 )
+    {
+    cmtk::StdErr << "testSymmetricMatrix test failed at label F\n";
+    return 1;
+    }
+  
   return 0;
 }
 
@@ -63,18 +98,30 @@ testSymmetricMatrixResize()
   m(1,1) = 3;
 
   if ( m(0,0) != 1 )
+    {
+    cmtk::StdErr << "testSymmetricMatrixResize failed at label A\n";
     return 1;
+    }
 
   if ( m(1,0) != 2 )
+    {
+    cmtk::StdErr << "testSymmetricMatrixResize failed at label B\n";
     return 1;
+    }
 
   if ( m(1,1) != 3 )
+    {
+    cmtk::StdErr << "testSymmetricMatrixResize failed at label C\n";
     return 1;
+    }
 
   m.Resize( 1 );
 
   if ( m(0,0) != 1 )
+    {
+    cmtk::StdErr << "testSymmetricMatrixResize failed at label D\n";
     return 1;
+    }
 
   return 0;
 }
@@ -87,7 +134,10 @@ testSymmetricMatrixEqual()
   cmtk::SymmetricMatrix<float> m2( 2 );
 
   if ( m1 == m2 )
+    {
+    cmtk::StdErr << "testSymmetricMatrixEqual failed at label A\n";
     return 1;
+    }
 
   m1.Resize( 2 );
   m1(0,0) = m2(0,0) = 1;
@@ -95,7 +145,10 @@ testSymmetricMatrixEqual()
   m1(1,1) = m2(1,1) = 3;
 
   if ( m1 != m2 )
+    {
+    cmtk::StdErr << "testSymmetricMatrixEqual failed at label B\n";
     return 1;
+    }
 
   return 0;
 }
