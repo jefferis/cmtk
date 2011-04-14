@@ -59,7 +59,7 @@ public:
   {
     const size_t row = std::max(i,j);
     const size_t col = std::min(i,j);
-    return this->m_MatrixElements[col + row*(row-1)/2];
+    return this->m_MatrixElements[col + row*(row+1)/2];
   }
   
   /// Reference to const matrix element.
@@ -67,7 +67,7 @@ public:
   {
     const size_t row = std::max(i,j);
     const size_t col = std::min(i,j);
-    return this->m_MatrixElements[col + row*(row-1)/2];
+    return this->m_MatrixElements[col + row*(row+1)/2];
   }
 
   /// Get matrix dimension.
