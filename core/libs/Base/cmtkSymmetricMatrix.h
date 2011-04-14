@@ -57,13 +57,17 @@ public:
   /// Reference to matrix element.
   TElement& operator()( const size_t i, const size_t j )
   {
-    return this->m_MatrixElements[std::max(i,j) + std::min(i,j)*this->m_Dim];
+    const size_t row = std::max(i,j);
+    const size_t col = std::min(i,j);
+    return this->m_MatrixElements[col + row*(row-1)/2];
   }
   
   /// Reference to const matrix element.
   const TElement& operator()( const size_t i, const size_t j ) const
   {
-    return this->m_MatrixElements[std::max(i,j) + std::min(i,j)*this->m_Dim];
+    const size_t row = std::max(i,j);
+    const size_t col = std::min(i,j);
+    return this->m_MatrixElements[col + row*(row-1)/2];
   }
 
   /// Get matrix dimension.
