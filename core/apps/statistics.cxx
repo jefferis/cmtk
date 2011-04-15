@@ -206,7 +206,7 @@ AnalyzeGrey( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData
   cmtk::Histogram<unsigned int> histogram( NumberOfHistogramBins );
   histogram.SetRange( data->GetRange() );
   
-  int maxLabel = static_cast<int>( maskData->GetRange().m_UpperBound )+1;
+  int maxLabel = static_cast<int>( maskData->GetRange().m_UpperBound );
   if ( MaskOutputAllUpTo )
     maxLabel = MaskOutputAllUpTo;
     
