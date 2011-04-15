@@ -210,7 +210,7 @@ AnalyzeGrey( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskData
   if ( MaskOutputAllUpTo )
     maxLabel = MaskOutputAllUpTo;
     
-  std::vector<bool> maskFlags( maxLabel );
+  std::vector<bool> maskFlags( maxLabel+1 );
   std::fill( maskFlags.begin(), maskFlags.end(), false );
   
   for ( size_t i = 0; i < maskData->GetDataSize(); ++i )
