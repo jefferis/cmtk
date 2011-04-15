@@ -34,7 +34,6 @@
 #include <cmtkconfig.h>
 
 #include <vector>
-#include <algorithm>
 
 namespace
 cmtk
@@ -57,17 +56,19 @@ public:
   /// Reference to matrix element.
   TElement& operator()( const size_t i, const size_t j )
   {
-    const size_t row = std::max(i,j);
-    const size_t col = std::min(i,j);
-    return this->m_MatrixElements[col + row*(row+1)/2];
+    if ( i > j )
+      return this->m_MatrixElements[j + i*(i+1)/2];
+    else
+      return this->m_MatrixElements[i + j*(j+1)/2];
   }
   
   /// Reference to const matrix element.
   const TElement& operator()( const size_t i, const size_t j ) const
   {
-    const size_t row = std::max(i,j);
-    const size_t col = std::min(i,j);
-    return this->m_MatrixElements[col + row*(row+1)/2];
+    if ( i > j )
+      return this->m_MatrixElements[j + i*(i+1)/2];
+    else
+      return this->m_MatrixElements[i + j*(j+1)/2];
   }
 
   /// Get matrix dimension.
