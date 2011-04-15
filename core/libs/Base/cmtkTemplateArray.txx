@@ -56,9 +56,9 @@ TemplateArray<T>
     Histogram<double> histogram( numberOfBins );
     histogram.SetRange( this->GetRange() );
     
-    for ( size_t idx = 0; idx < DataSize; ++idx )
-      if ( !PaddingFlag || (Data[idx] != Padding) )
-	histogram.IncrementFractional( histogram.ValueToBinFractional( Data[idx] ) );
+    for ( size_t idx = 0; idx < this->DataSize; ++idx )
+      if ( !this->PaddingFlag || (this->Data[idx] != this->Padding) )
+	histogram.IncrementFractional( histogram.ValueToBinFractional( this->Data[idx] ) );
     entropy = histogram.GetEntropy();
     } 
   else 
@@ -66,9 +66,9 @@ TemplateArray<T>
     Histogram<unsigned int> histogram( numberOfBins );
     histogram.SetRange( this->GetRange() );
     
-    for ( size_t idx = 0; idx < DataSize; ++idx )
-      if ( !PaddingFlag || (Data[idx] != Padding) )
-	histogram.Increment( histogram.ValueToBin( Data[idx] ) );
+    for ( size_t idx = 0; idx < this->DataSize; ++idx )
+      if ( !this->PaddingFlag || (this->Data[idx] != this->Padding) )
+	histogram.Increment( histogram.ValueToBin( this->Data[idx] ) );
     entropy = histogram.GetEntropy();
     }
   return entropy;
@@ -80,9 +80,9 @@ TemplateArray<T>
 ::GetEntropy( Histogram<unsigned int>& histogram ) const 
 {
   histogram.Reset();
-  for ( size_t idx = 0; idx < DataSize; ++idx )
-    if ( !PaddingFlag || (Data[idx] != Padding) )
-      histogram.Increment( histogram.ValueToBin( Data[idx] ) );
+  for ( size_t idx = 0; idx < this->DataSize; ++idx )
+    if ( !this->PaddingFlag || (this->Data[idx] != this->Padding) )
+      histogram.Increment( histogram.ValueToBin( this->Data[idx] ) );
   return histogram.GetEntropy();
 }
 
@@ -93,15 +93,15 @@ TemplateArray<T>
   histogram.Reset();
   if ( fractional ) 
     {
-    for ( size_t idx = 0; idx < DataSize; ++idx )
-      if ( !PaddingFlag || (Data[idx] != Padding) )
-	histogram.IncrementFractional( histogram.ValueToBinFractional( Data[idx] ) );
+    for ( size_t idx = 0; idx < this->DataSize; ++idx )
+      if ( !this->PaddingFlag || (this->Data[idx] != this->Padding) )
+	histogram.IncrementFractional( histogram.ValueToBinFractional( this->Data[idx] ) );
     } 
   else
     {
-    for ( size_t idx = 0; idx < DataSize; ++idx )
-      if ( !PaddingFlag || (Data[idx] != Padding) )
-	histogram.Increment( histogram.ValueToBin( Data[idx] ) );
+    for ( size_t idx = 0; idx < this->DataSize; ++idx )
+      if ( !this->PaddingFlag || (this->Data[idx] != this->Padding) )
+	histogram.Increment( histogram.ValueToBin( this->Data[idx] ) );
     }
   return histogram.GetEntropy();
 }
@@ -111,9 +111,9 @@ TemplateArray<T>
 ::GetEntropy( Histogram<double>& histogram, const double* kernel, const size_t kernelRadius  ) const 
 {
   histogram.Reset();
-  for ( size_t idx = 0; idx < DataSize; ++idx )
-    if ( !PaddingFlag || (Data[idx] != Padding) )
-      histogram.AddWeightedSymmetricKernelFractional( histogram.ValueToBinFractional( Data[idx] ), kernelRadius, kernel );
+  for ( size_t idx = 0; idx < this->DataSize; ++idx )
+    if ( !this->PaddingFlag || (this->Data[idx] != this->Padding) )
+      histogram.AddWeightedSymmetricKernelFractional( histogram.ValueToBinFractional( this->Data[idx] ), kernelRadius, kernel );
   return histogram.GetEntropy();
 }
 
@@ -135,46 +135,46 @@ TemplateArray<T>
   
   // find first finite and non-Padding element
   size_t idx = 0;
-  if ( PaddingFlag )
+  if ( this->PaddingFlag )
     {
-    while ( (idx < DataSize) && ((Data[idx] == Padding) || !finite(Data[idx])) ) 
+    while ( (idx < this->DataSize) && ((this->Data[idx] == this->Padding) || !finite(this->Data[idx])) ) 
       ++idx;
     }
   else
     {
-    while ( (idx < DataSize) && !finite(Data[idx]) ) 
+    while ( (idx < this->DataSize) && !finite(this->Data[idx]) ) 
       ++idx;
     }
   
   // didn't find any? return with error flag.
-  if ( idx < DataSize) 
+  if ( idx < this->DataSize) 
     {
     // otherwise: search for min/max from here
-    range.m_LowerBound = range.m_UpperBound = Data[idx];
+    range.m_LowerBound = range.m_UpperBound = this->Data[idx];
 
-    if ( PaddingFlag ) 
+    if ( this->PaddingFlag ) 
       {
-      for ( ; idx < DataSize; ++idx ) 
+      for ( ; idx < this->DataSize; ++idx ) 
 	{
-	if ( (Data[idx] != Padding) && finite(Data[idx]) ) 
+	if ( (this->Data[idx] != this->Padding) && finite(this->Data[idx]) ) 
 	  {
-	  if (Data[idx] > range.m_UpperBound) 
-	    range.m_UpperBound = Data[idx];
-	  if (Data[idx] < range.m_LowerBound) 
-	    range.m_LowerBound = Data[idx];
+	  if (this->Data[idx] > range.m_UpperBound) 
+	    range.m_UpperBound = this->Data[idx];
+	  if (this->Data[idx] < range.m_LowerBound) 
+	    range.m_LowerBound = this->Data[idx];
 	  }
 	}
       } 
     else
       {
-      for ( ; idx < DataSize; ++idx ) 
+      for ( ; idx < this->DataSize; ++idx ) 
 	{
-	if ( finite(Data[idx]) )
+	if ( finite(this->Data[idx]) )
 	  {
-	  if (Data[idx] > range.m_UpperBound) 
-	    range.m_UpperBound = Data[idx];
-	  if (Data[idx] < range.m_LowerBound) 
-	    range.m_LowerBound = Data[idx];
+	  if (this->Data[idx] > range.m_UpperBound) 
+	    range.m_UpperBound = this->Data[idx];
+	  if (this->Data[idx] < range.m_LowerBound) 
+	    range.m_LowerBound = this->Data[idx];
 	  }
 	}
       }
@@ -192,7 +192,7 @@ TemplateArray<T>
 ::Convert( const ScalarDataType dtype ) const 
 {
   void* data = this->ConvertArray( dtype );
-  return TypedArray::Create( dtype, data, DataSize, true /* freeArray */ );
+  return TypedArray::Create( dtype, data, this->DataSize, true /* freeArray */ );
 }
 
 template<class T>
@@ -218,13 +218,13 @@ TemplateArray<T>
     const T diff = range.m_UpperBound - range.m_LowerBound;
     const double scale = 1.0 / diff;
     
-#pragma omp parallel for if (DataSize>1e5)
-    for ( int i = 0; i < static_cast<int>( DataSize ); ++i )
-      if ( ! PaddingFlag || (Data[i] != Padding ) ) 
+#pragma omp parallel for if (this->DataSize>1e5)
+    for ( int i = 0; i < static_cast<int>( this->DataSize ); ++i )
+      if ( ! this->PaddingFlag || (this->Data[i] != this->Padding ) ) 
 	{
-	if ( Data[i] > range.m_LowerBound ) 
+	if ( this->Data[i] > range.m_LowerBound ) 
 	  {
-	  Data[i] = range.m_LowerBound + TypeTraits::Convert( diff * exp( log( scale * (Data[i]-range.m_LowerBound) ) / gamma ) );
+	  this->Data[i] = range.m_LowerBound + TypeTraits::Convert( diff * exp( log( scale * (this->Data[i]-range.m_LowerBound) ) / gamma ) );
 	  }
 	}
     }
@@ -235,11 +235,11 @@ void
 TemplateArray<T>
 ::ApplyFunctionFloat( typename Self::FunctionTypeFloat f )
 {
-#pragma omp parallel for if (DataSize>1e5)
-  for ( int i = 0; i < static_cast<int>( DataSize ); ++i )
-    if ( ! PaddingFlag || (Data[i] != Padding ) ) 
+#pragma omp parallel for if (this->DataSize>1e5)
+  for ( int i = 0; i < static_cast<int>( this->DataSize ); ++i )
+    if ( ! this->PaddingFlag || (this->Data[i] != this->Padding ) ) 
       {
-      Data[i] = TypeTraits::Convert( f( (float)Data[i] ) );
+      this->Data[i] = TypeTraits::Convert( f( (float)this->Data[i] ) );
       }
 }
 
@@ -248,11 +248,11 @@ void
 TemplateArray<T>
 ::ApplyFunctionDouble( typename Self::FunctionTypeDouble f )
 {
-#pragma omp parallel for if (DataSize>1e5)
-  for ( int i = 0; i < static_cast<int>( DataSize ); ++i )
-    if ( ! PaddingFlag || (Data[i] != Padding ) ) 
+#pragma omp parallel for if (this->DataSize>1e5)
+  for ( int i = 0; i < static_cast<int>( this->DataSize ); ++i )
+    if ( ! this->PaddingFlag || (this->Data[i] != this->Padding ) ) 
       {
-      Data[i] = TypeTraits::Convert( f( (double)Data[i] ) );
+      this->Data[i] = TypeTraits::Convert( f( (double)this->Data[i] ) );
       }
 }
 
@@ -262,7 +262,7 @@ void TemplateArray<T>
 ( void *const destination, const ScalarDataType dtype, const size_t fromIdx, const size_t len ) const 
 {
   if ( dtype == this->GetType() )
-    memcpy( destination, Data + fromIdx, len * this->GetItemSize() );
+    memcpy( destination, this->Data + fromIdx, len * this->GetItemSize() );
   else 
     {
     switch ( dtype ) 
@@ -270,37 +270,37 @@ void TemplateArray<T>
       case TYPE_BYTE:
 #pragma omp parallel for if (len>1e5)
 	for ( int idx = 0; idx < static_cast<int>( len ); ++idx )
-	  ((byte*)destination)[idx] = DataTypeTraits<byte>::Convert( Data[ idx + fromIdx ] );
+	  ((byte*)destination)[idx] = DataTypeTraits<byte>::Convert( this->Data[ idx + fromIdx ] );
 	break;
       case TYPE_CHAR:
 #pragma omp parallel for if (len>1e5)
 	for ( int idx = 0; idx < static_cast<int>( len ); ++idx )
-	  ((char*)destination)[idx] = DataTypeTraits<char>::Convert( Data[ idx + fromIdx ] );
+	  ((char*)destination)[idx] = DataTypeTraits<char>::Convert( this->Data[ idx + fromIdx ] );
 	break;
       case TYPE_USHORT:
 #pragma omp parallel for if (len>1e5)
 	for ( int idx = 0; idx < static_cast<int>( len ); ++idx )
-	  ((unsigned short*)destination)[idx] = DataTypeTraits<unsigned short>::Convert( Data[ idx + fromIdx ] );
+	  ((unsigned short*)destination)[idx] = DataTypeTraits<unsigned short>::Convert( this->Data[ idx + fromIdx ] );
 	break;
       case TYPE_SHORT:
 #pragma omp parallel for if (len>1e5)
 	for ( int idx = 0; idx < static_cast<int>( len ); ++idx )
-	  ((short*)destination)[idx] = DataTypeTraits<short>::Convert( Data[ idx + fromIdx ] );
+	  ((short*)destination)[idx] = DataTypeTraits<short>::Convert( this->Data[ idx + fromIdx ] );
 	break;
       case TYPE_INT:
 #pragma omp parallel for if (len>1e5)
 	for ( int idx = 0; idx < static_cast<int>( len ); ++idx )
-	  ((int*)destination)[idx] = DataTypeTraits<int>::Convert( Data[ idx + fromIdx ] );
+	  ((int*)destination)[idx] = DataTypeTraits<int>::Convert( this->Data[ idx + fromIdx ] );
 	break;
       case TYPE_FLOAT:
 #pragma omp parallel for if (len>1e5)
 	for ( int idx = 0; idx < static_cast<int>( len ); ++idx )
-	  ((float*)destination)[idx] = DataTypeTraits<float>::Convert( Data[ idx + fromIdx ] );
+	  ((float*)destination)[idx] = DataTypeTraits<float>::Convert( this->Data[ idx + fromIdx ] );
 	break;
       case TYPE_DOUBLE:
 #pragma omp parallel for if (len>1e5)
 	for ( int idx = 0; idx < static_cast<int>( len ); ++idx )
-	  ((double*)destination)[idx] = DataTypeTraits<double>::Convert( Data[ idx + fromIdx ] );
+	  ((double*)destination)[idx] = DataTypeTraits<double>::Convert( this->Data[ idx + fromIdx ] );
 	break;
       default:
 	// unsupported / unknown data type. do nothing.
@@ -316,7 +316,7 @@ TemplateArray<T>
 {
   size_t itemSize = this->GetItemSize();
   if ( itemSize < 2 ) return;
-  size_t dataBytes = DataSize * itemSize;
+  size_t dataBytes = this->DataSize * itemSize;
 
   // f is the index of the FIRST byte of the current data item, l is the
   // index of that items LAST byte.
@@ -324,9 +324,9 @@ TemplateArray<T>
   for ( f=0, l=itemSize-1; f<dataBytes; f+=itemSize,l+=itemSize )
     for ( size_t j=0; j<itemSize/2; ++j ) 
       {
-      char d = ((char*)Data)[l-j];
-      ((char*)Data)[l-j] = ((char*)Data)[f+j];
-      ((char*)Data)[f+j] = d;
+      char d = ((char*)this->Data)[l-j];
+      ((char*)this->Data)[l-j] = ((char*)this->Data)[f+j];
+      ((char*)this->Data)[f+j] = d;
       }
 }
 
@@ -353,7 +353,7 @@ TemplateArray<T>
 
 #pragma omp parallel for    
   for ( int i = fromOffset; i < static_cast<int>( toOffset ); ++i )
-    Data[i] = valueT;
+    this->Data[i] = valueT;
 }
 
 } // namespace cmtk
