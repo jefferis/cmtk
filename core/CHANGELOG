@@ -1,3 +1,7 @@
+Release CMTK-1.7.1:
+
+
+
 Release CMTK-1.7.0 (2011-04-18):
 
 (r3158) Fixed: allow OpenMP to be disabled by initial CMake cache file, which

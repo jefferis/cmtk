@@ -3,33 +3,8 @@ The Computational Morphometry Toolkit
 ==========================================================================
 
 
-Release Notes -- CMTK 1.7.0
+Release Notes -- CMTK 1.7.1
 ===========================
-
-This is a usability, feature and bugfix release of CMTK.
-
-CMTK now employs a toolkit-wide system of multi-level verbose output, which
-replaces the former, tool-specific output. Consistency of verbose output and
-streams used for this purpose has been futher improved.
-
-The command line help system now prints only basic options by default (using
-"--help"). Advanced options are shown when using "--help-all" instead. This
-should make it easier for new users to get a quick idea of the essential
-program options.
-
-This release also greatly improves CMTK's reliability on different platforms.
-
-On the Windows platform, a long-existing bug has been fixed that broke
-parallel computation. Also, CMTK now supports application-level automated
-testing, driven by Cygwin-supplied "sh" shell. In the process of setting up
-testing, numerous Windows-specific bugs and problems have been identified and
-fixed. In particular, CMTK now compiles using Visual C++ with OpenMP parallel
-processing support enabled.
-
-On the MacOS platform, this release introduces support for Apple's Grand
-Central Dispatch parallel processing framework. This also replaces, in part,
-the OpenMP parallelization on MacOS, which is broken with shared library
-builds (Thanks a lot, Apple!)
 
 For a complete list of changes and fixes, see the CHANGELOG file.
 
