@@ -1,4 +1,4 @@
-Release CMTK-1.7.0:
+Release CMTK-1.7.0 (2011-04-18):
 
 (r3151) Added: two-level command line help; "--help" now prints only basic
     options, whereas "--help-all" prints all options including those marked as

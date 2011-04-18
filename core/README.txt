@@ -6,11 +6,16 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 1.7.0
 ===========================
 
-This is a feature and bugfix release of CMTK.
+This is a usability, feature and bugfix release of CMTK.
 
 CMTK now employs a toolkit-wide system of multi-level verbose output, which
 replaces the former, tool-specific output. Consistency of verbose output and
 streams used for this purpose has been futher improved.
+
+The command line help system now prints only basic options by default (using
+"--help"). Advanced options are shown when using "--help-all" instead. This
+should make it easier for new users to get a quick idea of the essential
+program options.
 
 This release also greatly improves CMTK's reliability on different platforms.
 
