@@ -128,10 +128,14 @@ SET(testList ${testList}
 
 IF(NOT CMTK_USE_MPI)
   # ==========================================
-  # Tests for xml and wiki markups
+  # Tests for xml, wiki, and help markups
   FOREACH(t film levelset mrbias registration)
     SET(testList ${testList} xml_${t} wiki_${t})
   ENDFOREACH(t film levelset mrbias registration)
+  
+  FOREACH(t film)
+    SET(testList ${testList} help_${t} help_all_${t})
+  ENDFOREACH(t film)
   
   # ==========================================
   # Tests for "concat_affine" tool

@@ -1864,6 +1864,14 @@ case ${RUNTEST} in
 	run xform2scalar --float --output ${tmpdir}/magnitude.nii parc1.hdr parc1_parc2_dfield.nrrd
 	check_results magnitude.nii
 	;;
+    help_film)
+	run_eval "${BINDIR}/film --help > ${tmpdir}/film.help"
+	check_results film.help
+	;;
+    help_all_film)
+	run_eval "${BINDIR}/film --help-all > ${tmpdir}/film.help"
+	check_results film.help
+	;;
     xml_film)
 	run_eval "${BINDIR}/film --xml | ${sed} '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/film.xml"
 	check_results film.xml

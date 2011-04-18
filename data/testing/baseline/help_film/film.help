@@ -1,0 +1,118 @@
+TITLE:
+
+     Fix interleaved motion using inverse interpolation
+
+
+DESCRIPTION:
+
+     This tool splits an interleaved input image into the pass images, co-registers them, and
+     reconstructs a motion-corrected image
+
+
+SYNTAX:
+
+     [options] InputImage OutputImage 
+
+  where
+
+     InputImage =        Input image path
+
+
+     OutputImage =       Output image path
+
+
+LIST OF SUPPORTED OPTIONS:
+
+Global Toolkit Options
+
+  --help    Write list of basic command line options to standard output.
+
+  --help-all
+            Write complete list of basic and advanced command line options to standard output.
+
+Input Options
+
+  --padding-value <double>
+            Set padding value for input image. Pixels with this value will be ignored.
+            [Default: disabled]
+
+Interleaving Options
+
+  --interleave-axis
+            Define interleave axis: this is the through-slice direction of the acquisition.
+            Supported values: "guess-from-input", "axial", "sagittal", "coronal", "interleave-x",
+            "interleave-y", "interleave-z", where the default is "guess-from-input", or use one of
+            the following
+
+            --guess-from-input
+                      Guess from input image
+                      [This is the default]
+
+            --axial / -a
+                      Interleaved axial images
+
+            --sagittal / -s
+                      Interleaved sagittal images
+
+            --coronal / -c
+                      Interleaved coronal images
+
+            --interleave-x / -x
+                      Interleaved along x axis
+
+            --interleave-y / -y
+                      Interleaved along y axis
+
+            --interleave-z / -z
+                      Interleaved along z axis
+
+  --passes <integer> / -p <integer>
+            Number of interleaved passes
+            [Default value: 2]
+
+Initial Volume Injection Options
+
+  --injection-kernel-sigma <double> / -S <double>
+            Standard deviation of Gaussian kernel for volume injection in multiples of pixel size in
+            each direction.
+            [Default value: 0.5]
+
+  --injection-kernel-radius <double> / -r <double>
+            Truncation radius factor of injection kernel. The kernel is truncated at sigma*radius,
+            where sigma is the kernel standard deviation.
+            [Default value: 2]
+
+Inverse Interpolation Options
+
+  --inverse-interpolation-kernel
+            Kernel for the inverse interpolation reconstruction
+            Supported values: "cubic", "linear", "hamming-sinc", "cosine-sinc", where the default is
+            "cubic", or use one of the following
+
+            --cubic / -C
+                      Tricubic interpolation
+                      [This is the default]
+
+            --linear / -L
+                      Trilinear interpolation (faster but less accurate)
+
+            --hamming-sinc / -H
+                      Hamming-windowed sinc interpolation
+
+            --cosine-sinc / -O
+                      Cosine-windowed sinc interpolation (most accurate but slowest)
+
+  --num-iterations <integer> / -n <integer>
+            Maximum number of inverse interpolation iterations
+            [Default value: 20]
+
+Output Options
+
+  --write-injected-image <image-path>
+            Write initial volume injection image to path
+            [Default value: NONE]
+
+  --write-images-as-float / -F
+            Write output images as floating point [default: same as input]
+
+

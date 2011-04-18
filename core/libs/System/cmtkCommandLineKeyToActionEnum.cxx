@@ -34,30 +34,33 @@
 
 void
 cmtk::CommandLine::KeyToActionEnum
-::PrintHelp( const size_t globalIndent ) const
+::PrintHelp( const size_t globalIndent, const bool advanced ) const
 {
-  std::ostringstream fmt;
-  this->Superclass::FormatHelp( fmt );
-
-  fmt << "\nSupported values: ";
-  for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+  if ( ((this->m_Properties & Self::PROPS_ADVANCED)==0) || advanced )
     {
-    fmt << "\"" << (*it)->m_Key.m_KeyString << "\", ";
-    }
-  
-  const std::string defaultKey = this->m_EnumGroup->GetDefaultKey();
-  if ( defaultKey.length() )
-    {
-    fmt << "where the default is \"" << defaultKey << "\", ";
-    }
-  
-  fmt << "or use one of the following";
-  
-  StdOut.FormatText( fmt.str(), CommandLine::HelpTextIndent + globalIndent, StdErr.GetLineWidth(), -CommandLine::HelpTextIndent ) << "\n";  
-  
-  for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
-    {
-    (*it)->PrintHelp( globalIndent + 10 );
+    std::ostringstream fmt;
+    this->Superclass::FormatHelp( fmt );
+    
+    fmt << "\nSupported values: ";
+    for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+      {
+      fmt << "\"" << (*it)->m_Key.m_KeyString << "\", ";
+      }
+    
+    const std::string defaultKey = this->m_EnumGroup->GetDefaultKey();
+    if ( defaultKey.length() )
+      {
+      fmt << "where the default is \"" << defaultKey << "\", ";
+      }
+    
+    fmt << "or use one of the following";
+    
+    StdOut.FormatText( fmt.str(), CommandLine::HelpTextIndent + globalIndent, StdErr.GetLineWidth(), -CommandLine::HelpTextIndent ) << "\n";  
+    
+    for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+      {
+      (*it)->PrintHelp( globalIndent + 10 );
+      }
     }
 }
 

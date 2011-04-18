@@ -20,7 +20,9 @@ where
 
 === Global Toolkit Options ===
 
-; <tt>--help</tt> : Write list of command line options to standard output.
+; <tt>--help</tt> : Write list of basic command line options to standard output.
+
+; <tt>--help-all</tt> : Write complete list of basic and advanced command line options to standard output.
 
 ; <tt>--wiki</tt> : Write list of command line options to standard output in MediaWiki markup.
 

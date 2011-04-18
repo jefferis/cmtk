@@ -45,13 +45,16 @@ cmtk::CommandLine::KeyToActionSingle
 
 void
 cmtk::CommandLine::KeyToActionSingle
-::PrintHelp( const size_t globalIndent ) const
+::PrintHelp( const size_t globalIndent, const bool advanced ) const
 {
   std::ostringstream fmt;
   this->Superclass::FormatHelp( fmt );
 
-  this->m_Action->PrintHelp( fmt );
-  StdOut.FormatText( fmt.str(), CommandLine::HelpTextIndent + globalIndent, StdErr.GetLineWidth(), -CommandLine::HelpTextIndent ) << "\n";  
+  if ( ((this->m_Action->GetProperties() & Self::PROPS_ADVANCED)==0) || advanced )
+    {
+    this->m_Action->PrintHelp( fmt );
+    StdOut.FormatText( fmt.str(), CommandLine::HelpTextIndent + globalIndent, StdErr.GetLineWidth(), -CommandLine::HelpTextIndent ) << "\n";  
+    }
 }
 
 void

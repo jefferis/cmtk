@@ -134,7 +134,7 @@ pass_weight
 </string>
 
 </parameters>
-<parameters>
+<parameters advanced="true">
 <label>
 motion
 </label>
@@ -371,7 +371,7 @@ num_iterations
 </integer>
 
 </parameters>
-<parameters>
+<parameters advanced="true">
 <label>
 regularize
 </label>

@@ -743,7 +743,7 @@ public:
     virtual mxml_node_t* MakeXML( mxml_node_t *const parent /*!< Parent in the XML tree for the new node.*/ ) const;
 
     /// Print help for this item.
-    virtual void PrintHelp( const size_t globalIndent = 0 ) const = 0;
+    virtual void PrintHelp( const size_t globalIndent = 0 /*!< Indent by this many characters.*/, const bool advanced = false /*!< Flag: include advanced help content. */ ) const = 0;
     
   protected:
     /// Format help for key part of this key/action..
@@ -818,7 +818,7 @@ public:
     virtual mxml_node_t* MakeXML( mxml_node_t *const parent /*!< Parent in the XML tree for the new node.*/ ) const;
 
     /// Print help for this item.
-    virtual void PrintHelp( const size_t globalIndent = 0 ) const;
+    virtual void PrintHelp( const size_t globalIndent = 0 /*!< Indent by this many characters.*/, const bool advanced = false /*!< Flag: include advanced help content. */ ) const;
     
     /// Print wiki help for this item.
     virtual void PrintWikiWithPrefix( const std::string& prefix = "" ) const;
@@ -842,6 +842,9 @@ public:
     /// Smart pointer.
     typedef SmartPointer<EnumGroupBase> SmartPtr;
 
+    /// Constructor.
+    EnumGroupBase() : m_Properties( 0 ) {};
+
     /// Get key for the default value.
     std::string GetDefaultKey() const
     {
@@ -854,6 +857,23 @@ public:
 	}
       return "";
     }
+
+    /// Set enum group properties.
+    virtual EnumGroupBase* SetProperties( const long int properties )
+    {
+      this->m_Properties = properties;
+      return this;
+    }
+
+    /// Get item properties.
+    virtual long int GetProperties() const
+    {
+      return this->m_Properties;
+    }
+
+  private:
+    /// Enum group properties.
+    long int m_Properties;
   };
 
   /// Local class that connects command line options with enum group evaluators.
@@ -900,7 +920,7 @@ public:
     virtual mxml_node_t* MakeXML( mxml_node_t *const parent /*!< Parent in the XML tree for the new node.*/ ) const;
 
     /// Print help for this item.
-    virtual void PrintHelp( const size_t globalIndent = 0 ) const;
+    virtual void PrintHelp( const size_t globalIndent = 0 /*!< Indent by this many characters.*/, const bool advanced = false /*!< Flag: include advanced help content. */ ) const;
     
     /// Print help for this item in Wiki markup.
     virtual void PrintWikiWithPrefix( const std::string& prefix = "" ) const;
@@ -1102,7 +1122,7 @@ public:
   static const int HelpTextIndent = 10;
 
   /// Print help text.
-  void PrintHelp() const;
+  void PrintHelp( const bool advanced = false /*!< Flag: include advanced help content.*/ ) const;
 
   /// Print help text.
   void PrintWiki() const;

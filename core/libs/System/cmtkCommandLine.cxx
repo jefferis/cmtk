@@ -80,17 +80,18 @@ CommandLine::SetDefaultInfo()
   this->m_ProgramInfo[PRG_VERSN] = CMTK_VERSION_STRING;
 
   this->BeginGroup( "GLOBAL", "Global Toolkit Options" )->SetProperties( Self::PROPS_NOXML );
-  this->AddCallback( Self::Key( "help" ), &Self::CallbackInternal, "Write list of command line options to standard output." );
-  this->AddCallback( Self::Key( "wiki" ), &Self::CallbackInternal, "Write list of command line options to standard output in MediaWiki markup." );
+  this->AddCallback( Self::Key( "help" ), &Self::CallbackInternal, "Write list of basic command line options to standard output." );
+  this->AddCallback( Self::Key( "help-all" ), &Self::CallbackInternal, "Write complete list of basic and advanced command line options to standard output." );
+  this->AddCallback( Self::Key( "wiki" ), &Self::CallbackInternal, "Write list of command line options to standard output in MediaWiki markup." )->SetProperties( Self::PROPS_ADVANCED );
 
   if (! (this->m_Properties & PROPS_NOXML) ) 
-    this->AddCallback( Self::Key( "xml" ), &Self::CallbackInternal, "Write command line syntax specification in XML markup (for Slicer integration)." );
+    this->AddCallback( Self::Key( "xml" ), &Self::CallbackInternal, "Write command line syntax specification in XML markup (for Slicer integration)." )->SetProperties( Self::PROPS_ADVANCED );
 
-  this->AddCallback( Self::Key( "version" ), &Self::CallbackInternal, "Write toolkit version to standard output." );
-  this->AddCallback( Self::Key( "echo" ), &Self::CallbackInternal, "Write the current command line to standard output." );
-  this->AddCallback( Self::Key( "verbose-level" ), &DebugOutput::SetGlobalLevel, "Set verbosity level." );
-  this->AddCallback( Self::Key( 'v', "verbose" ), &DebugOutput::IncGlobalLevel, "Increment verbosity level by 1 (deprecated; supported for backward compatibility)." );
-  this->AddCallback( Self::Key( "threads" ), &Threads::SetNumberOfThreads, "Set maximum number of parallel threads (for POSIX threads and OpenMP)." );
+  this->AddCallback( Self::Key( "version" ), &Self::CallbackInternal, "Write toolkit version to standard output." )->SetProperties( Self::PROPS_ADVANCED );
+  this->AddCallback( Self::Key( "echo" ), &Self::CallbackInternal, "Write the current command line to standard output." )->SetProperties( Self::PROPS_ADVANCED );
+  this->AddCallback( Self::Key( "verbose-level" ), &DebugOutput::SetGlobalLevel, "Set verbosity level." )->SetProperties( Self::PROPS_ADVANCED );
+  this->AddCallback( Self::Key( 'v', "verbose" ), &DebugOutput::IncGlobalLevel, "Increment verbosity level by 1 (deprecated; supported for backward compatibility)." )->SetProperties( Self::PROPS_ADVANCED );
+  this->AddCallback( Self::Key( "threads" ), &Threads::SetNumberOfThreads, "Set maximum number of parallel threads (for POSIX threads and OpenMP)." )->SetProperties( Self::PROPS_ADVANCED );
   this->EndGroup();
 }
 
@@ -154,9 +155,9 @@ CommandLine::Parse( const int argc, const char* argv[] ) throw( ExitException, S
 	}
       
       // Check for "--help" special option, which produces textual description of all command line options
-      if ( !strcmp( this->ArgV[this->Index], "--help" ) ) 
+      if ( !strcmp( this->ArgV[this->Index], "--help" ) || !strcmp( this->ArgV[this->Index], "--help-all" ) ) 
 	{
-	this->PrintHelp();
+	this->PrintHelp( strcmp( this->ArgV[this->Index], "--help-all" ) == 0 );
 	throw ExitException( 0 );
 	}
       
@@ -244,7 +245,7 @@ CommandLine::Parse( const int argc, const char* argv[] ) throw( ExitException, S
 
 void
 CommandLine::PrintHelp
-() const
+( const bool advanced ) const
 {
   const size_t lineWidth = StdOut.GetLineWidth();
 
@@ -343,14 +344,17 @@ CommandLine::PrintHelp
     {
     if ( ! (*grp)->m_KeyActionList.empty() )
       {
-      StdOut << (*grp)->m_Description << "\n\n";
-      
-      const size_t indent = 2;
-      
-      const KeyActionListType& kal = (*grp)->m_KeyActionList;
-      for ( KeyActionListType::const_iterator it = kal.begin(); it != kal.end(); ++it )
+      if ( (((*grp)->GetProperties() & Self::PROPS_ADVANCED)==0) || advanced )
 	{
-	(*it)->PrintHelp( indent );
+	StdOut << (*grp)->m_Description << "\n\n";
+	
+	const size_t indent = 2;
+	
+	const KeyActionListType& kal = (*grp)->m_KeyActionList;
+	for ( KeyActionListType::const_iterator it = kal.begin(); it != kal.end(); ++it )
+	  {
+	  (*it)->PrintHelp( indent, advanced );
+	  }
 	}
       }
     }

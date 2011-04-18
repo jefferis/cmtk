@@ -202,14 +202,16 @@ doMain( const int argc, const char* argv[] )
     interleaveGroup->AddSwitch( Key( 'z', "interleave-z" ), (int)cmtk::AXIS_Z, "Interleaved along z axis" );
 
     cl.AddOption( Key( 'p', "passes" ), &NumberOfPasses, "Number of interleaved passes" );
-    cl.AddCallback( Key( 'W', "pass-weight" ), CallbackSetPassWeight, "Set contribution weight for a pass in the form 'pass:weight'" );
+    cl.AddCallback( Key( 'W', "pass-weight" ), CallbackSetPassWeight, "Set contribution weight for a pass in the form 'pass:weight'" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
+;
     cl.EndGroup();
 
-    cl.BeginGroup( "motion", "Motion Correction / Registration Options" );
+    cl.BeginGroup( "motion", "Motion Correction / Registration Options" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
     cl.AddOption( Key( 'R', "reference-image" ), &ReferenceImagePath, "Use a separate high-resolution reference image for registration" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
 
     cmtk::CommandLine::EnumGroup<int>::SmartPtr
       metricGroup = cl.AddEnum( "registration-metric", &RegistrationMetric, "Registration metric for motion estimation by image-to-image registration." );
+    metricGroup->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
     metricGroup->AddSwitch( Key( "nmi" ), 0, "Use Normalized Mutual Information for pass-to-refereence registration" );
     metricGroup->AddSwitch( Key( "mi" ), 1, "Use standard Mutual Information for pass-to-refereence registration" );
     metricGroup->AddSwitch( Key( "cr" ), 2, "Use Correlation Ratio for pass-to-refereence registration" );
@@ -217,9 +219,9 @@ doMain( const int argc, const char* argv[] )
     metricGroup->AddSwitch( Key( "cc" ), 5, "Use Cross-Correlation for pass-to-refereence registration" );
 
     cl.AddOption( Key( "import-xforms-path" ), &ImportXformsPath, "Path of file from which to import transformations between passes." )
-      ->SetProperties( cmtk::CommandLine::PROPS_FILENAME );
+      ->SetProperties( cmtk::CommandLine::PROPS_FILENAME | cmtk::CommandLine::PROPS_ADVANCED );
     cl.AddOption( Key( "export-xforms-path" ), &ExportXformsPath, "Path of file to which to export transformations between passes." )
-      ->SetProperties( cmtk::CommandLine::PROPS_FILENAME | cmtk::CommandLine::PROPS_OUTPUT );
+      ->SetProperties( cmtk::CommandLine::PROPS_FILENAME | cmtk::CommandLine::PROPS_ADVANCED | cmtk::CommandLine::PROPS_OUTPUT );
 
     cl.BeginGroup( "inject", "Initial Volume Injection Options" );
     cl.AddOption( Key( 'S', "injection-kernel-sigma" ), &InjectionKernelSigma, "Standard deviation of Gaussian kernel for volume injection in multiples of pixel size in each direction." );
@@ -234,11 +236,11 @@ doMain( const int argc, const char* argv[] )
     kernelGroup->AddSwitch( Key( 'H', "hamming-sinc" ), cmtk::Interpolators::HAMMING_SINC, "Hamming-windowed sinc interpolation" );
     kernelGroup->AddSwitch( Key( 'O', "cosine-sinc" ), cmtk::Interpolators::COSINE_SINC, "Cosine-windowed sinc interpolation (most accurate but slowest)" );
 
-    cl.AddSwitch( Key( 'f', "fourth-order-error" ), &FourthOrderError, true, "Use fourth-order (rather than second-order) error for optimization." );
+    cl.AddSwitch( Key( 'f', "fourth-order-error" ), &FourthOrderError, true, "Use fourth-order (rather than second-order) error for optimization." )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
     cl.AddOption( Key( 'n', "num-iterations" ), &NumberOfIterations, "Maximum number of inverse interpolation iterations" );
     cl.EndGroup();
 
-    cl.BeginGroup( "regularize", "Reconstruction Regularization Options" );
+    cl.BeginGroup( "regularize", "Reconstruction Regularization Options" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
     cl.AddOption( Key( "l-norm-weight" ), &ConstraintWeightLNorm, "Set constraint weight for Tikhonov-type L-Norm regularization (0 disables constraint)" );
     cl.AddSwitch( Key( 'T', "no-truncation" ), &RegionalIntensityTruncation, false, "Turn off regional intensity truncatrion" );
     cl.EndGroup();
