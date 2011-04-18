@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -93,7 +93,7 @@ public:
       return (float) value;
   }
 
-  /** Return PADDING data value (i.e. Inf) for the given type. */
+  /** Return padding data value (i.e. Inf) for the given type. */
   static inline float ChoosePaddingValue () 
   { 
     return std::numeric_limits<float>::infinity();
@@ -133,7 +133,7 @@ public:
       return (double) value;
   }
   
-  /** Return PADDING data value (i.e. Inf) for the given type. */
+  /** Return padding data value (i.e. Inf) for the given type. */
   static inline double ChoosePaddingValue () 
   { 
     return std::numeric_limits<double>::infinity();
@@ -179,7 +179,7 @@ public:
       return (byte) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
   }
   
-  /** Return PADDING data value (i.e. Inf) for the given type. */
+  /** Return padding data value for the given type. */
   static inline byte ChoosePaddingValue () 
   { 
     return 255;
@@ -225,7 +225,7 @@ public:
       return (char) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
   }
   
-  /** Return PADDING data value (i.e. Inf) for the given type. */
+  /** Return padding data value for the given type. */
   static inline char ChoosePaddingValue () 
   { 
     return -1;
@@ -271,7 +271,7 @@ public:
       return (signed short) (((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5)));
   }
   
-  /** Return PADDING data value (i.e. Inf) for the given type. */
+  /** Return padding data value for the given type. */
   static inline signed short ChoosePaddingValue () 
   { 
     return -1;
@@ -317,14 +317,14 @@ public:
       return (unsigned short) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
   }
   
-  /** Return PADDING data value (i.e. Inf) for the given type. */
+  /** Return padding data value for the given type. */
   static inline unsigned short ChoosePaddingValue () 
   { 
     return USHRT_MAX;
   }
 };
 
-/** Data type traits for unsigned short. */
+/** Data type traits for int. */
 template<>
 class DataTypeTraits<int>
 {
@@ -363,10 +363,57 @@ public:
       return (int) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
   }
   
-  /** Return PADDING data value (i.e. Inf) for the given type. */
+  /** Return padding data value for the given type. */
   static inline int ChoosePaddingValue () 
   { 
     return -1;
+  }
+};
+
+/** Data type traits for unsigned int. */
+template<>
+class DataTypeTraits<unsigned int>
+{
+public:
+  /** This class. */
+  typedef DataTypeTraits<unsigned int> Self;
+
+  /** Get the scalar type ID constant for this type. */
+  static ScalarDataType GetScalarDataType() { return TYPE_UINT; }
+
+  static const ScalarDataType DataTypeID = TYPE_UINT;
+
+  /** Minimum value in this type. */
+  static const Types::DataItem Min;
+
+  /** Maximum value in this type. */
+  static const Types::DataItem Max;
+
+  /** Get absolute value. */
+  static inline unsigned int Abs( const unsigned int value ) 
+  {
+    // usigned is always positive
+    return value;
+  }
+
+  /** Return given value converted (and rounded) to discrete type. */
+  template<class T>
+  static inline unsigned int Convert ( const T value, const bool paddingFlag = false, const unsigned int paddingData = 0 ) 
+  { 
+    using namespace std;
+    if ( MathUtil::IsNaN( value ) )
+      if ( paddingFlag )
+	return paddingData;
+      else
+	return ChoosePaddingValue();
+    else
+      return (unsigned int) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
+  }
+  
+  /** Return padding data value for the given type. */
+  static inline unsigned int ChoosePaddingValue () 
+  { 
+    return static_cast<unsigned int>( -1 );
   }
 };
 

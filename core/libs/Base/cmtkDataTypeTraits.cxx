@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -53,5 +53,8 @@ const Types::DataItem DataTypeTraits<unsigned short>::Max = USHRT_MAX;
 
 const Types::DataItem DataTypeTraits<int>::Min = INT_MIN;
 const Types::DataItem DataTypeTraits<int>::Max = INT_MAX;
+
+const Types::DataItem DataTypeTraits<unsigned int>::Min = 0;
+const Types::DataItem DataTypeTraits<unsigned int>::Max = UINT_MAX;
 
 } // namespace cmtk

@@ -4,7 +4,7 @@
 //
 //  Copyright 2004-2011 SRI International
 //
-//  This file is part of the Computational Morphometry Toolkit.
+y//  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
 //
@@ -291,6 +291,11 @@ void TemplateArray<T>
 #pragma omp parallel for if (len>1e5)
 	for ( int idx = 0; idx < static_cast<int>( len ); ++idx )
 	  ((int*)destination)[idx] = DataTypeTraits<int>::Convert( this->Data[ idx + fromIdx ] );
+	break;
+      case TYPE_UINT:
+#pragma omp parallel for if (len>1e5)
+	for ( int idx = 0; idx < static_cast<int>( len ); ++idx )
+	  ((unsigned int*)destination)[idx] = DataTypeTraits<unsigned int>::Convert( this->Data[ idx + fromIdx ] );
 	break;
       case TYPE_FLOAT:
 #pragma omp parallel for if (len>1e5)
