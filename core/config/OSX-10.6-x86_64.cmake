@@ -32,7 +32,7 @@ SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type")
 SET(CMAKE_INSTALL_PREFIX "/opt/local" CACHE PATH "Install prefix")
 
 # General settings
-SET(CMTK_SYSTEM_NAME "MacOSX-10.5" CACHE STRING "System name")
+SET(CMTK_SYSTEM_NAME "MacOSX-10.6" CACHE STRING "System name")
 SET(CMTK_SYSTEM_PROCESSOR "x86_64" CACHE STRING "System processor")
 
 # 64 bit for OS X >=10.6
