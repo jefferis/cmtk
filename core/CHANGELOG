@@ -1,5 +1,9 @@
 Release CMTK-1.7.0:
 
+(r3151) Added: two-level command line help; "--help" now prints only basic
+    options, whereas "--help-all" prints all options including those marked as
+    "advanced." this should make it easier for new users to get a quick
+    overview of essential functions.
 (r3120) Fixed: Nrrd library was not properly splitting file paths containing
     Windows-style separators ('\' rather than '/').
 (r3118) Improved: bundled NrrdIO library was updated to 1.11.0 from 1.9.0.
