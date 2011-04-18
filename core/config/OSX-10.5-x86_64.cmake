@@ -38,7 +38,7 @@ SET(CMTK_SYSTEM_PROCESSOR "x86_64" CACHE STRING "System processor")
 # 64 bit for OS X >=10.5
 SET(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "OS-X architecture")
 SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.5" CACHE STRING "OS-X target")
-SET(CMAKE_OSX_SYSROOT "/Developer-old/SDKs/MacOSX10.5.sdk" CACHE PATH "OS-X SDK")
+SET(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.6.sdk" CACHE PATH "OS-X SDK")
 
 # Activate SSE support for floating point
 SET(CMAKE_CXX_FLAGS "-march=core2 -mmmx -msse -msse2 -mfpmath=sse" CACHE STRING "C++ compiler flags")
@@ -52,5 +52,5 @@ SET(CMTK_USE_OPENMP OFF CACHE BOOL "Use OpenMP for parallelization" )
 SET(CMTK_USE_CUDA ON CACHE BOOL "Use CUDA for GPU acceleration" )
 SET(CMTK_USE_LZMA OFF CACHE BOOL "Use LZMA library for decompression")
 
-# Disable Grand Central Dispatch as it is broken with C++ in 10.4 SDK
-SET(CMTK_USE_GCD OFF CACHE BOOL "Use Grand Central Dispatch")
+# Disable OpenMP - broken on Mac
+SET(CMTK_USE_OPENMP OFF CACHE BOOL "Use OpenMP for parallelization" )

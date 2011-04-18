@@ -52,5 +52,5 @@ SET(CMTK_USE_OPENMP OFF CACHE BOOL "Use OpenMP for parallelization" )
 SET(CMTK_USE_CUDA ON CACHE BOOL "Use CUDA for GPU acceleration" )
 SET(CMTK_USE_LZMA OFF CACHE BOOL "Use LZMA library for decompression")
 
-# Disable Grand Central Dispatch as it is broken with C++ in 10.4 SDK
-SET(CMTK_USE_GCD OFF CACHE BOOL "Use Grand Central Dispatch")
+# Disable OpenMP - broken on Mac
+SET(CMTK_USE_OPENMP OFF CACHE BOOL "Use OpenMP for parallelization" )
