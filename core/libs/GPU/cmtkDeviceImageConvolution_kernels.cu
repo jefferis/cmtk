@@ -28,6 +28,12 @@
 //
 */
 
+#ifdef _WIN32
+// This fixes a strange compile error using VisualStudio 2010 Express.
+// See http://forums.nvidia.com/index.php?showtopic=67822
+#define WIN32_LEAN_AND_MEAN
+#endif
+
 #include "cmtkDeviceImageConvolution_kernels.h"
 
 #include "System/cmtkMemory.h"
