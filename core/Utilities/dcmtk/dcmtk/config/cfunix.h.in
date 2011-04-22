@@ -1,5 +1,5 @@
 /*
-//  Copyright 2004-2009 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -891,15 +891,6 @@ typedef unsigned short ushort;
 /* Define to 1 if type `char' is unsigned and you are not using gcc.  */
 #ifndef __CHAR_UNSIGNED__
 # undef __CHAR_UNSIGNED__
-#endif
-
-/* Additional settings for Visual Studio */
-#ifdef _MSC_VER
-#if _MSC_VER >= 1400
-/* disable warnings about "deprecated" C runtime functions  */
-#pragma warning( disable : 4996 )
-#define _CRT_SECURE_NO_WARNINGS
-#endif
 #endif
 
 #endif /* CFUNIX_H */
