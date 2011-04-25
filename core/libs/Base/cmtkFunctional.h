@@ -102,12 +102,6 @@ public:
   virtual void SnapshotAt( ParameterVectorType& ) {}
 #endif
 
-  /** Evaluate functional with new parameter vector along previously computed gradient direction.
-   * By default this function simply calls Evaluate(), but derived classes can override it to
-   * provide more computationally efficient, i.e., restricted, implementations.
-   */
-  virtual Self::ReturnType EvaluateAlongGradientAt( ParameterVectorType& v ) { return this->EvaluateAt( v ); }
-
   /// Evaluate functional and also return its gradient.
   virtual Self::ReturnType EvaluateWithGradient( ParameterVectorType& v, ParameterVectorType& g, const Types::Coordinate step = 1 );
 
