@@ -63,10 +63,7 @@ public:
   typedef SmartPointer<Self> SmartPtr;
 
   /** Functional return type.
-   * We set this to float (rather than double) because with double we get
-   * different results using different CPUs, even between Pentium4 Nocoma and
-   * Core2/Xeon using the exact same compiled bainary. That is not good for regression
-   * testing, nor is it for consistent results.
+   * This is the higher resolution type of either data item or spatial coordinate type.
    */
   typedef Types::Combined<Types::Coordinate,Types::DataItem>::Type ReturnType;
 
