@@ -1,5 +1,7 @@
 Release CMTK-1.7.1:
 
+(r) Added: "convertx" tool now supports downsampling by pixel selection in
+addition to downsampling by pixel averaging.
 
 
 Release CMTK-1.7.0 (2011-04-18):

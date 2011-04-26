@@ -210,6 +210,45 @@ UniformVolume::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
 }
 
 UniformVolume* 
+UniformVolume::GetDownsampled( const int downsample, const bool approxIsotropic ) const
+{
+  if ( approxIsotropic )
+    {
+    const Types::Coordinate minDelta = std::min<Types::Coordinate>( this->m_Delta[0], std::min<Types::Coordinate>( this->m_Delta[1], this->m_Delta[2] ) );
+    const int downsampleByAxis[3] = { std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->m_Delta[0] / minDelta) ) ),
+				      std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->m_Delta[1] / minDelta) ) ),
+				      std::max<int>( 1, downsample / std::max<int>( 1, static_cast<int>(this->m_Delta[2] / minDelta) ) ) };
+    return this->GetDownsampled( downsampleByAxis );
+    }
+  else
+    {
+    const int downsampleByAxis[3] = { downsample, downsample, downsample };
+    return this->GetDownsampled( downsampleByAxis );
+    }
+}
+
+UniformVolume* 
+UniformVolume::GetDownsampled( const int (&downsample)[3] ) const
+{
+  DataGrid::SmartPtr newDataGrid( this->DataGrid::GetDownsampled( downsample ) );
+  TypedArray::SmartPtr newData = newDataGrid->GetData();
+  
+  // create downsample grid
+  UniformVolume* dsVolume = new UniformVolume( newDataGrid->GetDims(), downsample[0] * this->m_Delta[0], downsample[1] * this->m_Delta[1], downsample[2] * this->m_Delta[2], newData );
+  
+  // compute shift of volume origin
+  const Types::Coordinate shift[3] = { (downsample[0]-1)*this->m_Delta[0]/2, (downsample[1]-1)*this->m_Delta[1]/2, (downsample[2]-1)*this->m_Delta[2]/2 };
+  
+  dsVolume->SetOffset( this->m_Offset );
+  dsVolume->SetHighResCropRegion( this->GetHighResCropRegion() );
+  
+  dsVolume->m_MetaInformation = this->m_MetaInformation;
+  dsVolume->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
+  
+  return dsVolume;
+}
+
+UniformVolume* 
 UniformVolume::GetInterleavedSubVolume
 ( const int axis, const int factor, const int idx ) const
 {

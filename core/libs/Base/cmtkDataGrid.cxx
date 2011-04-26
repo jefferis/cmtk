@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -112,6 +112,47 @@ DataGrid::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
 	    {
 	    newData->SetPaddingAt( toOffset );
 	    }
+	  }
+	}
+      } // end for (z)
+    newDataGrid->SetData( TypedArray::SmartPtr( newData ) );
+    }
+
+  newDataGrid->m_MetaInformation[META_IMAGE_ORIENTATION]  = this->m_MetaInformation[META_IMAGE_ORIENTATION];
+  newDataGrid->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL]  = this->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL];
+  
+  return newDataGrid;
+}
+
+DataGrid* 
+DataGrid::GetDownsampled( const int (&downsample)[3] ) const
+{
+  const int newDims[3] = { (this->m_Dims[0]-1) / downsample[0] + 1, (this->m_Dims[1]-1) / downsample[1] + 1, (this->m_Dims[2]-1) / downsample[2] + 1 };
+
+  DataGrid* newDataGrid = new DataGrid;
+  newDataGrid->SetDims( Self::IndexType( newDims ) );
+  
+  const TypedArray* thisData = this->GetData();
+  if ( thisData )
+    {
+    TypedArray::SmartPtr newData = TypedArray::Create( thisData->GetType(), newDataGrid->GetNumberOfPixels() );
+
+#pragma omp parallel for
+    for ( int z = 0; z < newDims[2]; ++z )
+      {
+      size_t toOffset = z * newDims[0] * newDims[1];
+      int oldZ = z * downsample[2];
+      int oldY = 0;
+      for ( int y = 0; y < newDims[1]; ++y, oldY += downsample[1] ) 
+	{
+	int oldX = 0;
+	for ( int x = 0; x < newDims[0]; ++x, oldX += downsample[0], ++toOffset ) 
+	  {
+	  Types::DataItem value = 0;
+	  if ( thisData->Get( value, this->GetOffsetFromIndex( oldX, oldY, oldZ ) ) )
+	    newData->Set( value, toOffset );
+	  else
+	    newData->SetPaddingAt( toOffset );
 	  }
 	}
       } // end for (z)

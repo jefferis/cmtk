@@ -218,7 +218,7 @@ public:
   /// Get volume reoriented to a different anatomical axis alignment.
   const UniformVolume::SmartPtr GetReoriented ( const char* newOrientation = AnatomicalOrientation::ORIENTATION_STANDARD ) const;
 
-  /** Downsampling constructor function.
+  /** Downsampling and pixel averaging constructor function.
    *\param downsample Downsampling factor.
    *\param approxIsotropic If this is set (default: off), then the downsample
    * factors per dimension are adjusted so that the resulting output volume
@@ -226,10 +226,23 @@ public:
    */
   virtual UniformVolume* GetDownsampledAndAveraged( const int downsample, const bool approxIsotropic = false ) const;
  
-  /** Downsampling constructor function.
+  /** Downsampling and pixel averaging constructor function.
    *\param downsample Array of per-dimension downsampling factors.
    */
   virtual UniformVolume* GetDownsampledAndAveraged( const int (&downsample)[3] ) const;
+
+  /** Downsampling constructor function.
+   *\param downsample Downsampling factor.
+   *\param approxIsotropic If this is set (default: off), then the downsample
+   * factors per dimension are adjusted so that the resulting output volume
+   * is as close to isotropic as possible without interpolation.
+   */
+  virtual UniformVolume* GetDownsampled( const int downsample, const bool approxIsotropic = false ) const;
+ 
+  /** Downsampling constructor function.
+   *\param downsample Array of per-dimension downsampling factors.
+   */
+  virtual UniformVolume* GetDownsampled( const int (&downsample)[3] ) const;
 
   /** Get interleaved sub-volume along given axis and with given interleave offset.
    *\param axis Coordinate axis along which the image is interleaved.

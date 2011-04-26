@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2010 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,12 +35,15 @@ cmtk::ImageOperationDownsample
 ::Apply( cmtk::UniformVolume::SmartPtr& volume )
 {
   const int factors[3] = { this->m_FactorX, this->m_FactorY, this->m_FactorZ };
-  return cmtk::UniformVolume::SmartPtr( volume->GetDownsampledAndAveraged( factors ) );
+  if ( this->m_DoAverage )
+    return cmtk::UniformVolume::SmartPtr( volume->GetDownsampledAndAveraged( factors ) );
+  else
+    return cmtk::UniformVolume::SmartPtr( volume->GetDownsampled( factors ) );
 }
 
 void
 cmtk::ImageOperationDownsample
-::New( const char* arg )
+::NewGeneric( const bool doAverage, const char* arg )
 {
   int factorsX = 1;
   int factorsY = 1;
@@ -59,6 +62,6 @@ cmtk::ImageOperationDownsample
       exit( 1 );
       }
     }
-  ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationDownsample( factorsX, factorsY, factorsZ ) ) );
+  ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationDownsample( doAverage, factorsX, factorsY, factorsZ ) ) );
 }
 

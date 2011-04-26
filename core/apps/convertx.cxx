@@ -191,7 +191,8 @@ doMain( const int argc, const char* argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Grid", "Grid Operations" );
-    cl.AddCallback( Key( "downsample" ), &cmtk::ImageOperationDownsample::New, "Downsample image by factors 'Fx,Fy,Fz' or by single factor 'Fxyz'" );
+    cl.AddCallback( Key( "downsample-select" ), &cmtk::ImageOperationDownsample::NewSelect, "Downsample image by pixel selection using per-axis factors 'Fx,Fy,Fz' or using single factor 'Fxyz'" );
+    cl.AddCallback( Key( "downsample-average" ), &cmtk::ImageOperationDownsample::NewAverage, "Downsample image by averaging using per-axis factors 'Fx,Fy,Fz' or using single factor 'Fxyz'" );
     cl.AddCallback( Key( "crop-by-index" ), &cmtk::ImageOperationCropRegion::New, "Crop image to a region specified by a set of six grid index coordinates given as comma-separated integers x0,y0,z0,x1,y1,z1" );
     cl.AddCallback( Key( "crop-by-threshold" ), &cmtk::ImageOperationCropThreshold::New, "Crop image to region determined via a given threshold. "
 		    "The resulting image will contain all pixels larger than the given parameter." );

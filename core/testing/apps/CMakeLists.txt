@@ -176,6 +176,7 @@ IF(NOT CMTK_USE_MPI)
     convertxCropRegion1
     convertxCropRegion2
     convertxDownsample
+    convertxDownsampleSelect
     convertxDistanceUnsigned
     convertxDistanceSigned
     convertxDistanceSigned2
@@ -221,8 +222,7 @@ IF(NOT CMTK_USE_MPI)
     convertxReplaceInfNaN)
   
   IF(CMTK_BUILD_NRRD)
-    SET(testList ${testList} 
-      convertxDownsampleNrrd)
+    SET(testList ${testList} convertxDownsampleNrrd convertxDownsampleSelectNrrd)
   ENDIF(CMTK_BUILD_NRRD)
 
   # ==========================================

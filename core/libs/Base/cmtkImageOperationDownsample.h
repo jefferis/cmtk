@@ -48,16 +48,34 @@ class ImageOperationDownsample
   : public ImageOperation
 {
 public:
-  /// Constructor:
-  ImageOperationDownsample( const int factorX, const int factorY, const int factorZ ) : m_FactorX( factorX ), m_FactorY( factorY ), m_FactorZ( factorZ ) {}
-  
+  /// This class.
+  typedef ImageOperationDownsample Self;
+
   /// Apply this operation to an image in place.
   virtual cmtk::UniformVolume::SmartPtr  Apply( cmtk::UniformVolume::SmartPtr& volume );
   
-  /// Create a new downsampler.
-  static void New( const char* arg );
+  /// Create a new selecting downsampler.
+  static void NewSelect( const char* arg )
+  {
+    Self::NewGeneric( false /*doAverage*/, arg );
+  }
+  
+  /// Create a new averaging downsampler.
+  static void NewAverage( const char* arg )
+  {
+    Self::NewGeneric( true /*doAverage*/, arg );
+  }
   
 private:
+  /// Constructor:
+  ImageOperationDownsample( const bool doAverage, const int factorX, const int factorY, const int factorZ ) : m_DoAverage( doAverage ), m_FactorX( factorX ), m_FactorY( factorY ), m_FactorZ( factorZ ) {}
+  
+  /// Create a new generic downsampler.
+  static void NewGeneric( const bool doAverage, const char* arg );
+  
+  /// Flag for averaging vs. selecting downsampling.
+  bool m_DoAverage;
+
   /// Downsampling factor in X direction.
   int m_FactorX;
 

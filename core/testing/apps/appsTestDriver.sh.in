@@ -307,11 +307,19 @@ case ${RUNTEST} in
 	check_results cropped.nii
 	;;
     convertxDownsample)
-	run convertx --downsample 8,4,1 phantom_ax.hdr ${tmpdir}/downsample.hdr
+	run convertx --downsample-average 8,4,1 phantom_ax.hdr ${tmpdir}/downsample.hdr
 	check_results downsample.hdr downsample.img
 	;;
     convertxDownsampleNrrd)
-	run convertx --downsample 8,4,1 phantom_ax.nhdr ${tmpdir}/downsample.nhdr
+	run convertx --downsample-average 8,4,1 phantom_ax.nhdr ${tmpdir}/downsample.nhdr
+	check_results downsample.nhdr downsample.raw
+	;;
+    convertxDownsampleSelect)
+	run convertx --downsample-select 8,4,1 phantom_ax.hdr ${tmpdir}/downsample.hdr
+	check_results downsample.hdr downsample.img
+	;;
+    convertxDownsampleSelectNrrd)
+	run convertx --downsample-select 8,4,1 phantom_ax.nhdr ${tmpdir}/downsample.nhdr
 	check_results downsample.nhdr downsample.raw
 	;;
     convertxFlipX)
