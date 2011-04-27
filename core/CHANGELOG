@@ -1,5 +1,7 @@
 Release CMTK-1.7.1:
 
+(r3187) Added: new "destripe" tool removes stripe artifacts from accross-slice
+    intensity variations.
 (r3176) Added: "convertx" tool now supports downsampling by pixel selection in
     addition to downsampling by pixel averaging.
 
