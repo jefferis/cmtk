@@ -59,6 +59,7 @@ IF(NOT CMTK_USE_MPI)
     concat_affine
     convertx
     convert_warp
+    destripe
     film
     filter
     glm
@@ -119,7 +120,7 @@ IF(NOT CMTK_USE_MPI)
   ENDIF(CMTK_USE_DCMTK)
 
   IF (CMTK_BUILD_UNSTABLE)
-    SET(APPS ${APPS} destripe pmsegment_learn)
+    SET(APPS ${APPS} pmsegment_learn)
   ENDIF (CMTK_BUILD_UNSTABLE)
   
 ENDIF(NOT CMTK_USE_MPI)

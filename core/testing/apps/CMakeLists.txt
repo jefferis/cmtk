@@ -90,6 +90,12 @@ IF(CMTK_BUILD_NRRD)
 ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
+# Tests for "destripe" tool
+SET(testList ${testList} 
+  destripeDefault
+  destripeKernelFloat)
+
+# ==========================================
 # Tests for "groupwise_init" tool
 SET(testList ${testList} 
   groupwise_initCentersOfMass 

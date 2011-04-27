@@ -589,6 +589,14 @@ case ${RUNTEST} in
 	run_eval "${BINDIR}/describe -m spgr_brain_nifti_hdr348.hdr > ${tmpdir}/describe.txt"
 	check_results describe.txt
 	;;
+    destripeDefault)
+        run destripe -y stripes_crop_byte.nii ${tmpdir}/destripe.nii
+	check_results destripe.nii
+	;;
+    destripeKernelFloat)
+        run destripe -y --kernel-fwhm 5 --kernel-radius 2 --write-float stripes_crop_byte.nii ${tmpdir}/destripe.nii
+	check_results destripe.nii
+	;;
     filterGaussian)
 	run filter --gaussian 1 --radius 2 rat_fse_erly.hdr ${tmpdir}/filter.hdr
 	check_results filter.img
