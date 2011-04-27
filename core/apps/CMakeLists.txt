@@ -119,7 +119,7 @@ IF(NOT CMTK_USE_MPI)
   ENDIF(CMTK_USE_DCMTK)
 
   IF (CMTK_BUILD_UNSTABLE)
-    SET(APPS ${APPS} pmsegment_learn)
+    SET(APPS ${APPS} destripe pmsegment_learn)
   ENDIF (CMTK_BUILD_UNSTABLE)
   
 ENDIF(NOT CMTK_USE_MPI)
