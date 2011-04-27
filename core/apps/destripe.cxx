@@ -185,7 +185,8 @@ doMain ( const int argc, const char* argv[] )
       }
     }
 
-  cmtk::VolumeIO::Write( *volume, OutputFilePath );
+  if ( OutputFilePath )
+    cmtk::VolumeIO::Write( *volume, OutputFilePath );
   
   return 0;
 }
