@@ -185,18 +185,6 @@ doMain ( const int argc, const char* argv[] )
       }
     }
 
-  for ( int slice = 0; slice < nSlices; ++slice )
-    {
-    cmtk::StdOut << sliceProjection[slice] << " ";
-    }
-  cmtk::StdOut << "\n\n";
-
-  for ( int slice = 0; slice < nSlices; ++slice )
-    {
-    cmtk::StdOut << smoothed[slice] << " ";
-    }
-  cmtk::StdOut << "\n\n";
-
   cmtk::VolumeIO::Write( *volume, OutputFilePath );
   
   return 0;
