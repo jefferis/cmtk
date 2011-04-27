@@ -123,9 +123,7 @@ check_result()
     echo "diff ${tmpdir}/$1 ${BASELINE}/$1"
 
     local diff="cmp"
-    local file_type=`file --brief --mime-type $result`
-
-    if [ "${file_type}" == "text/plain" ]; then
+    if file ${result} | fgrep text; then
 	diff="diff --strip-trailing-cr"
     fi
 
