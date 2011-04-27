@@ -42,7 +42,7 @@
 
 #include <vector>
 
-int SliceAxis = 2;
+int SliceAxis = -1;
 
 double KernelFWHM = 1;
 
@@ -61,7 +61,7 @@ doMain ( const int argc, const char* argv[] )
     typedef cmtk::CommandLine::Key Key;    
 
     cl.BeginGroup( "SliceOrient", "Slice Orientation" );
-    cmtk::CommandLine::EnumGroup<int>::SmartPtr interleaveGroup = cl.AddEnum( "interleave-axis", &SliceAxis, "Define interleave axis: this is the through-slice direction of the acquisition." );
+    cmtk::CommandLine::EnumGroup<int>::SmartPtr interleaveGroup = cl.AddEnum( "interleave-axis", &SliceAxis, "Define slice direction axis: this is the through-slice direction of the acquisition." );
     interleaveGroup->AddSwitch( Key( "guess-from-input" ), -1, "Guess from input image" );
     interleaveGroup->AddSwitch( Key( 'a', "axial" ), (int)cmtk::AXIS_Z, "Interleaved axial images" );
     interleaveGroup->AddSwitch( Key( 's', "sagittal" ),(int)cmtk::AXIS_X, "Interleaved sagittal images" );
@@ -91,6 +91,22 @@ doMain ( const int argc, const char* argv[] )
     }
 
   const cmtk::DataGrid::IndexType volumeDims = volume->GetDims();
+
+  // guess slice orientation - if two dimensions are equal, the thir is usually the slice direction
+  if ( SliceAxis == -1 )
+    {
+    if ( volumeDims[0] == volumeDims[1] )
+      SliceAxis = 2;
+    else if ( volumeDims[0] == volumeDims[2] )
+      SliceAxis = 1;
+    else if ( volumeDims[1] == volumeDims[2] )
+      SliceAxis = 0;
+    else
+      {
+      cmtk::StdErr << "ERROR: cannot guess slice axis when all three image dimensions are different.\n";
+      return 1;
+      }
+    }
 
   const int nSlices = volumeDims[SliceAxis];
   std::vector<cmtk::Types::DataItem> sliceProjection( nSlices );
