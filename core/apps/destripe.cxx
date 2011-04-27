@@ -55,7 +55,7 @@ doMain ( const int argc, const char* argv[] )
   try 
     {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Destripe vokume image data." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Destripe volume image data." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This program corrects stripe artifacts in acquired image stacks which can result from between-slice intensity scale differences." );
     
     typedef cmtk::CommandLine::Key Key;    
