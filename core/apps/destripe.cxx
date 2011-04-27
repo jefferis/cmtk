@@ -45,6 +45,9 @@
 int SliceAxis = -1;
 
 double KernelFWHM = 1;
+int TruncateKernel = 0;
+
+bool WriteFloat = false;
 
 const char* InputFilePath = NULL;
 const char* OutputFilePath = NULL;
@@ -71,6 +74,9 @@ doMain ( const int argc, const char* argv[] )
     sliceGroup->AddSwitch( Key( 'z', "slice-z" ), (int)cmtk::AXIS_Z, "Sliced along z axis" );
 
     cl.AddOption( Key( "kernel-fwhm" ), &KernelFWHM, "Gaussian kernel full width at half maximum (FWHM) in units of slice indexes." );
+    cl.AddOption( Key( "kernel-radius" ), &TruncateKernel, "Truncate kernel radius to this many samples. By default, kernel width is determined to limit approximation error." );
+
+    cl.AddSwitch( Key( "write-float" ), &WriteFloat, true, "Write output image in floating point representation. By default, write using input image pixel data type." );
     
     cl.AddParameter( &InputFilePath, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &OutputFilePath, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT | cmtk::CommandLine::PROPS_OPTIONAL );
@@ -88,6 +94,11 @@ doMain ( const int argc, const char* argv[] )
     {
     cmtk::StdErr << "ERROR: could not read volume " << InputFilePath << "\n";
     return 1;
+    }
+
+  if ( WriteFloat )
+    {
+    volume->GetData()->Convert( cmtk::TYPE_FLOAT );
     }
 
   const cmtk::DataGrid::IndexType volumeDims = volume->GetDims();
@@ -142,13 +153,15 @@ doMain ( const int argc, const char* argv[] )
     }
 
   const std::vector<cmtk::Types::DataItem> kernel = cmtk::GaussianKernel<cmtk::Types::DataItem>::GetHalfKernel( cmtk::Units::GaussianFWHM( KernelFWHM ) );
+  if ( !TruncateKernel )
+    TruncateKernel = kernel.size()-1;
 
   std::vector<cmtk::Types::DataItem> smoothed( nSlices, 0.0 );
   for ( int slice = 0; slice < nSlices; ++ slice )
     {
     cmtk::Types::DataItem kernelSum = kernel[0];
     smoothed[slice] = kernel[0] * sliceProjection[slice];
-    for ( int ofs = 1; ofs < static_cast<int>( kernel.size() ); ++ofs )
+    for ( int ofs = 1; ofs <= TruncateKernel; ++ofs )
       {
       if ( slice - ofs  >= 0 )
 	{
