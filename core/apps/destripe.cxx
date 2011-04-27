@@ -70,7 +70,7 @@ doMain ( const int argc, const char* argv[] )
     sliceGroup->AddSwitch( Key( 'y', "slice-y" ), (int)cmtk::AXIS_Y, "Sliced along y axis" );
     sliceGroup->AddSwitch( Key( 'z', "slice-z" ), (int)cmtk::AXIS_Z, "Sliced along z axis" );
 
-    cl.AddOption( Key( "kernel-fwhm" ), &KernelFWHM, "Gaussian kernel full width at half maximum (FWHM)." );
+    cl.AddOption( Key( "kernel-fwhm" ), &KernelFWHM, "Gaussian kernel full width at half maximum (FWHM) in units of slice indexes." );
     
     cl.AddParameter( &InputFilePath, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &OutputFilePath, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT | cmtk::CommandLine::PROPS_OPTIONAL );
