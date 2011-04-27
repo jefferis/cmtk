@@ -61,14 +61,14 @@ doMain ( const int argc, const char* argv[] )
     typedef cmtk::CommandLine::Key Key;    
 
     cl.BeginGroup( "SliceOrient", "Slice Orientation" );
-    cmtk::CommandLine::EnumGroup<int>::SmartPtr interleaveGroup = cl.AddEnum( "interleave-axis", &SliceAxis, "Define slice direction axis: this is the through-slice direction of the acquisition." );
-    interleaveGroup->AddSwitch( Key( "guess-from-input" ), -1, "Guess from input image" );
-    interleaveGroup->AddSwitch( Key( 'a', "axial" ), (int)cmtk::AXIS_Z, "Interleaved axial images" );
-    interleaveGroup->AddSwitch( Key( 's', "sagittal" ),(int)cmtk::AXIS_X, "Interleaved sagittal images" );
-    interleaveGroup->AddSwitch( Key( 'c', "coronal" ), (int)cmtk::AXIS_Y, "Interleaved coronal images" );
-    interleaveGroup->AddSwitch( Key( 'x', "interleave-x" ), (int)cmtk::AXIS_X, "Interleaved along x axis" );
-    interleaveGroup->AddSwitch( Key( 'y', "interleave-y" ), (int)cmtk::AXIS_Y, "Interleaved along y axis" );
-    interleaveGroup->AddSwitch( Key( 'z', "interleave-z" ), (int)cmtk::AXIS_Z, "Interleaved along z axis" );
+    cmtk::CommandLine::EnumGroup<int>::SmartPtr sliceGroup = cl.AddEnum( "slice-axis", &SliceAxis, "Define slice direction axis: this is the through-slice direction of the acquisition." );
+    sliceGroup->AddSwitch( Key( "guess-from-input" ), -1, "Guess from input image" );
+    sliceGroup->AddSwitch( Key( 'a', "axial" ), (int)cmtk::AXIS_Z, "Sliced axial images" );
+    sliceGroup->AddSwitch( Key( 's', "sagittal" ),(int)cmtk::AXIS_X, "Sliced sagittal images" );
+    sliceGroup->AddSwitch( Key( 'c', "coronal" ), (int)cmtk::AXIS_Y, "Sliced coronal images" );
+    sliceGroup->AddSwitch( Key( 'x', "slice-x" ), (int)cmtk::AXIS_X, "Sliced along x axis" );
+    sliceGroup->AddSwitch( Key( 'y', "slice-y" ), (int)cmtk::AXIS_Y, "Sliced along y axis" );
+    sliceGroup->AddSwitch( Key( 'z', "slice-z" ), (int)cmtk::AXIS_Z, "Sliced along z axis" );
 
     cl.AddOption( Key( "kernel-fwhm" ), &KernelFWHM, "Gaussian kernel full width at half maximum (FWHM)." );
     
