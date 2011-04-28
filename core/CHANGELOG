@@ -1,5 +1,11 @@
 Release CMTK-1.7.1:
 
+(r3190) Fixed: when reformatting a moving image, the reformatted image now
+    inherits the input image's padding flag and value. This addresses an issue
+    with reformatted floating-point images breaking Slicer and other tools do
+    to "Inf" used for padding by default. The registration tools can now be
+    run with the "--pad-flt" flag to set input image padding, which then
+    propagates into the reformatted output image.
 (r3187) Added: new "destripe" tool removes stripe artifacts from accross-slice
     intensity variations.
 (r3176) Added: "convertx" tool now supports downsampling by pixel selection in
