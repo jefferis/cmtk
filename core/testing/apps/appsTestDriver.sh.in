@@ -1374,8 +1374,8 @@ case ${RUNTEST} in
 	check_results registration
 	;;
     registrationxAutoLevelsCt3)
-	run registrationx --msd --auto-multi-levels 3 --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_ct.hdr
-	check_results registration
+	run registrationx --pad-flt -10000 --write-reformatted ${tmpdir}/reformat.nii --msd --auto-multi-levels 3 --dofs 6 -o ${tmpdir} pat002_ct.hdr pat002_ct.hdr
+	check_results registration reformat.nii
 	;;
     registrationxAutoLevelsLabelsNN)
         run registrationx -v --interpolation nearest-neighbor --class-ref label --class-flt label --auto-multi-levels 4 --dofs 6,9 --nmi -o ${tmpdir} parc1.hdr parc2.hdr
@@ -1777,8 +1777,8 @@ case ${RUNTEST} in
 	check_results registration
 	;;
     warpxMultiLevel)
-	run warpx --fast --max-stepsize 8 --grid-spacing 160 --min-stepsize 1 --grid-refine 1 -o ${tmpdir} vol001_mr_t0t1.list
-	check_results registration
+	run warpx --pad-flt -10000 --write-reformatted ${tmpdir}/reformat.nii --fast --max-stepsize 8 --grid-spacing 160 --min-stepsize 1 --grid-refine 1 -o ${tmpdir} vol001_mr_t0t1.list
+	check_results registration reformat.nii
 	;;
     warpxMultiLevelMatchHistograms)
         export CMTK_NUM_THREADS=1

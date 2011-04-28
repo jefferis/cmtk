@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -116,7 +116,16 @@ ReformatVolume::PlainReformat()
     
     TypedArray::SmartPtr targetData( TypedArray::Create( FloatingVolume->GetData()->GetType(), targetVolume->GetNumberOfPixels() ) );
     if ( this->m_UsePaddingValue )
+      {
       targetData->SetPaddingValue( this->m_PaddingValue );
+      }
+    else
+      {
+      if ( FloatingVolume->GetData()->GetPaddingFlag() )
+	{
+	targetData->SetPaddingValue( FloatingVolume->GetData()->GetPaddingValue() );
+	}
+      }
     
     UniformVolumeInterpolatorBase::SmartPtr interpolator( this->CreateInterpolator( this->FloatingVolume ) );
     Vector3D pFlt;
