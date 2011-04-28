@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -237,7 +238,6 @@ bool tridiagonalevd(ap::real_1d_array& d,
     int lm1;
     int lsv;
     int m;
-    int mm;
     int mm1;
     int nm1;
     int nmaxit;
@@ -762,7 +762,6 @@ bool tridiagonalevd(ap::real_1d_array& d,
                     //
                     if( zneeded>0 )
                     {
-                        mm = l-m+1;
                         for(i = m; i <= l-1; i++)
                         {
                             workc(i-m+1) = work1(i);

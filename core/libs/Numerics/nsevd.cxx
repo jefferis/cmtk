@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -320,7 +321,6 @@ void internaltrevc(const ap::real_2d_array& t,
     ap::real_value_type beta;
     ap::real_value_type bignum;
     ap::real_value_type emax;
-    ap::real_value_type ovfl;
     ap::real_value_type rec;
     ap::real_value_type remax;
     ap::real_value_type scl;
@@ -470,7 +470,6 @@ void internaltrevc(const ap::real_2d_array& t,
     // Set the constants to control overflow.
     //
     unfl = ap::minrealnumber;
-    ovfl = 1/unfl;
     ulp = ap::machineepsilon;
     smlnum = unfl*(n/ulp);
     bignum = (1-ulp)/smlnum;

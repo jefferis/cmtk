@@ -115,13 +115,11 @@ VolumeFromFile::ReadDICOM( const char *path )
     }
   dims[2] = tempUint16;
 
-  unsigned short bytesPerPixel = 0;
   unsigned short bitsAllocated = 0;
 
   if ( ( delem = document->search( DCM_BitsAllocated ) ) ) 
     {
     delem->getUint16( bitsAllocated );
-    bytesPerPixel = (((int)bitsAllocated+7)/8);
     } 
   else
     {
@@ -129,7 +127,6 @@ VolumeFromFile::ReadDICOM( const char *path )
     if ( ( delem = document->search( DCM_BitsStored ) ) ) 
       {
       delem->getUint16( bitsAllocated );
-      bytesPerPixel = (((int)bitsAllocated+7)/8);
       }
     }
     

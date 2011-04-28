@@ -470,14 +470,13 @@ DataGrid*
 DataGrid::ExtractSliceVirtual
 ( const int axis, const int plane ) const
 {
-  unsigned int dims[2], depth, incX, incY, incZ;
+  unsigned int dims[2], incX, incY, incZ;
 
   switch ( axis ) 
     {
     case AXIS_X:
       dims[0] = this->m_Dims[1];
       dims[1] = this->m_Dims[2];
-      depth = this->m_Dims[0];
       incX = this->m_Dims[0];
       incY = this->m_Dims[0] * this->m_Dims[1];
       incZ = 1;
@@ -485,7 +484,6 @@ DataGrid::ExtractSliceVirtual
     case AXIS_Y:
       dims[0] = this->m_Dims[0];
       dims[1] = this->m_Dims[2];
-      depth = this->m_Dims[1];
       incX = 1;
       incY = this->m_Dims[0] * this->m_Dims[1];
       incZ = this->m_Dims[0];
@@ -494,7 +492,6 @@ DataGrid::ExtractSliceVirtual
     default:
       dims[0] = this->m_Dims[0];
       dims[1] = this->m_Dims[1];
-      depth = this->m_Dims[2];
       incX = 1;
       incY = this->m_Dims[0];
       incZ = this->m_Dims[0] * this->m_Dims[1];

@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -182,7 +183,6 @@ void internalschurdecomposition(ap::real_2d_array& h,
     int ns;
     int nv;
     ap::real_value_type absw;
-    ap::real_value_type ovfl;
     ap::real_value_type smlnum;
     ap::real_value_type tau;
     ap::real_value_type temp;
@@ -334,7 +334,6 @@ void internalschurdecomposition(ap::real_2d_array& h,
         return;
     }
     unfl = ap::minrealnumber;
-    ovfl = 1/unfl;
     ulp = 2*ap::machineepsilon;
     smlnum = unfl*(n/ulp);
     
@@ -695,7 +694,6 @@ void internalauxschur(bool wantt,
     ap::real_value_type h43h34;
     ap::real_value_type h44;
     ap::real_value_type h44s;
-    ap::real_value_type ovfl;
     ap::real_value_type s;
     ap::real_value_type smlnum;
     ap::real_value_type sn;
@@ -748,7 +746,6 @@ void internalauxschur(bool wantt,
     // If norm(H) <= sqrt(OVFL), overflow should not occur.
     //
     unfl = ap::minrealnumber;
-    ovfl = 1/unfl;
     smlnum = unfl*(nh/ulp);
     
     //

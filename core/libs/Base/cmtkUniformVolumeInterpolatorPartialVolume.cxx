@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -62,7 +62,6 @@ UniformVolumeInterpolatorPartialVolume
   
   const size_t offset = this->GetOffsetFromIndex( imageGridPoint[0], imageGridPoint[1], imageGridPoint[2] );
   
-  bool done[8];
   Types::DataItem corners[8];
   bool dataPresent = false;
 
@@ -75,7 +74,6 @@ UniformVolumeInterpolatorPartialVolume
 	{
 	corners[idx] = this->m_VolumeDataArray[offset + this->GetOffsetFromIndex( i, j, k )];
 	const bool dataHere = (finite( corners[idx] ) != 0);
-	done[idx] = !dataHere;
 	dataPresent |= dataHere;
 	}
       }

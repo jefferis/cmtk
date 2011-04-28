@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -649,7 +650,6 @@ void lbfgsbformk(const int& n,
      ap::real_1d_array& workvec,
      ap::real_2d_array& workmat)
 {
-    int m2;
     int ipntr;
     int jpntr;
     int iy;
@@ -805,7 +805,6 @@ void lbfgsbformk(const int& n,
         }
         ipntr = ipntr%m+1;
     }
-    m2 = 2*m;
     for(iy = 1; iy <= col; iy++)
     {
         iis = col+iy;
@@ -1311,7 +1310,6 @@ void lbfgsbsubsm(const int&,
      int& info)
 {
     int pointr;
-    int m2;
     int col2;
     int ibd = 0;
     int jy;
@@ -1343,7 +1341,6 @@ void lbfgsbsubsm(const int&,
         wv(col+i) = theta*temp2;
         pointr = pointr%m+1;
     }
-    m2 = 2*m;
     col2 = 2*col;
     lbfgsbdtrsl(wn, col2, wv, 11, info);
     if( info!=0 )
@@ -2187,7 +2184,6 @@ lbfgsbminimize
   int ifun;
   int iword;
   int nfree;
-  int nact;
   int ileave;
   int nenter;
   ap::real_value_type theta;
@@ -2309,7 +2305,6 @@ lbfgsbminimize
 	}
       nintol = nintol+nint;
       ap::lbfgsbfreev(n, nfree, index, nenter, ileave, indx2, iwhere, wrk, updatd, cnstnd, iter);
-      nact = n-nfree;
       }
     if( nfree!=0&&col!=0 )
       {

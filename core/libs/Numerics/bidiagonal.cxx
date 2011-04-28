@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -128,7 +128,6 @@ void rmatrixbd(ap::real_2d_array& a,
 {
     ap::real_1d_array work;
     ap::real_1d_array t;
-    int minmn;
     int maxmn;
     int i;
 //    int j;
@@ -142,7 +141,6 @@ void rmatrixbd(ap::real_2d_array& a,
     {
         return;
     }
-    minmn = ap::minint(m, n);
     maxmn = ap::maxint(m, n);
     work.setbounds(0, maxmn);
     t.setbounds(0, maxmn);

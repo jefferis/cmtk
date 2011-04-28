@@ -236,9 +236,6 @@ UniformVolume::GetDownsampled( const int (&downsample)[3] ) const
   // create downsample grid
   UniformVolume* dsVolume = new UniformVolume( newDataGrid->GetDims(), downsample[0] * this->m_Delta[0], downsample[1] * this->m_Delta[1], downsample[2] * this->m_Delta[2], newData );
   
-  // compute shift of volume origin
-  const Types::Coordinate shift[3] = { (downsample[0]-1)*this->m_Delta[0]/2, (downsample[1]-1)*this->m_Delta[1]/2, (downsample[2]-1)*this->m_Delta[2]/2 };
-  
   dsVolume->SetOffset( this->m_Offset );
   dsVolume->SetHighResCropRegion( this->GetHighResCropRegion() );
   

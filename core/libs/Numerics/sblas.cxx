@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -79,7 +80,6 @@ void symmetricmatrixvectormultiply(const ap::real_2d_array& a,
 {
     int i;
     int ba1;
-    int ba2;
     int by1;
     int by2;
     int bx1;
@@ -123,7 +123,6 @@ void symmetricmatrixvectormultiply(const ap::real_2d_array& a,
             by1 = i-i1+2;
             by2 = n;
             ba1 = i+1;
-            ba2 = i2;
             ap::vadd(&y(by1), &a(i, ba1), ap::vlen(by1,by2), v);
             
             //
@@ -132,7 +131,6 @@ void symmetricmatrixvectormultiply(const ap::real_2d_array& a,
             bx1 = i-i1+2;
             bx2 = n;
             ba1 = i+1;
-            ba2 = i2;
             v = ap::vdotproduct(&x(bx1), &a(i, ba1), ap::vlen(bx1,bx2));
             y(i-i1+1) = y(i-i1+1)+v;
         }
@@ -148,7 +146,6 @@ void symmetricmatrixvectormultiply(const ap::real_2d_array& a,
             bx1 = 1;
             bx2 = i-i1;
             ba1 = i1;
-            ba2 = i-1;
             v = ap::vdotproduct(&x(bx1), &a(i, ba1), ap::vlen(bx1,bx2));
             y(i-i1+1) = y(i-i1+1)+v;
             
@@ -159,7 +156,6 @@ void symmetricmatrixvectormultiply(const ap::real_2d_array& a,
             by1 = 1;
             by2 = i-i1;
             ba1 = i1;
-            ba2 = i-1;
             ap::vadd(&y(by1), &a(i, ba1), ap::vlen(by1,by2), v);
         }
     }

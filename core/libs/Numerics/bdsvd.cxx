@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -255,7 +255,6 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
     ap::real_value_type smax;
     ap::real_value_type smin;
     ap::real_value_type sminl;
-    ap::real_value_type sminlo;
     ap::real_value_type sminoa;
     ap::real_value_type sn;
     ap::real_value_type thresh;
@@ -273,7 +272,6 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
     ap::real_1d_array vttemp;
     ap::real_1d_array ctemp;
     ap::real_1d_array etemp;
-    bool rightside;
     bool fwddir;
     ap::real_value_type tmp;
     int mm1;
@@ -315,7 +313,6 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
     vttemp.setbounds(vstart, vend);
     ctemp.setbounds(cstart, cend);
     maxitr = 12;
-    rightside = true;
     fwddir = true;
     
     //
@@ -632,7 +629,6 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
                         iterflag = true;
                         break;
                     }
-                    sminlo = sminl;
                     mu = fabs(d(lll+1))*(mu/(mu+fabs(e(lll))));
                     sminl = ap::minreal(sminl, mu);
                 }
@@ -672,7 +668,6 @@ bool bidiagonalsvddecompositioninternal(ap::real_1d_array& d,
                         iterflag = true;
                         break;
                     }
-                    sminlo = sminl;
                     mu = fabs(d(lll))*(mu/(mu+fabs(e(lll))));
                     sminl = ap::minreal(sminl, mu);
                 }

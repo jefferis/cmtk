@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -212,7 +213,6 @@ void applyreflectionfromtheleft(ap::real_2d_array& c,
 {
     ap::real_value_type t;
     int i;
-    int vm;
 
     if( tau==0||n1>n2||m1>m2 )
     {
@@ -222,7 +222,6 @@ void applyreflectionfromtheleft(ap::real_2d_array& c,
     //
     // w := C' * v
     //
-    vm = m2-m1+1;
     for(i = n1; i <= n2; i++)
     {
         work(i) = 0;
@@ -283,7 +282,6 @@ void applyreflectionfromtheright(ap::real_2d_array& c,
 {
     ap::real_value_type t;
     int i;
-    int vm;
 
     if( tau==0||n1>n2||m1>m2 )
     {
@@ -293,7 +291,6 @@ void applyreflectionfromtheright(ap::real_2d_array& c,
     //
     // w := C * v
     //
-    vm = n2-n1+1;
     for(i = m1; i <= m2; i++)
     {
         t = ap::vdotproduct(&c(i, n1), &v(1), ap::vlen(n1,n2));

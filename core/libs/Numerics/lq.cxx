@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -105,11 +105,9 @@ void rmatrixlq(ap::real_2d_array& a, int m, int n, ap::real_1d_array& tau)
     int i;
     int k;
     int minmn;
-    int maxmn;
     ap::real_value_type tmp;
 
     minmn = ap::minint(m, n);
-    maxmn = ap::maxint(m, n);
     work.setbounds(0, m);
     t.setbounds(0, n);
     tau.setbounds(0, minmn-1);
