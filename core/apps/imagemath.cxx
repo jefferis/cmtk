@@ -901,7 +901,7 @@ CallbackMaskAverage()
 {
   if ( ImageStack.size() < 2 )
     {
-    cmtk::StdErr << "ERROR: need two images on stack for mask averaging\n";
+    cmtk::StdErr << "ERROR: need at last two images on stack for mask averaging\n";
     return;
     }
   
@@ -970,6 +970,12 @@ void
 CallbackAverage()
 {
   const size_t nimages = ImageStack.size();
+  if ( ! nimages )
+    {
+    cmtk::StdErr << "ERROR: need at least two images on stack for averaging\n";
+    return;
+    }
+
   CallbackSum();
   ImageStack.front()->GetData()->Rescale( 1.0 / nimages );
 }
