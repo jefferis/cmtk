@@ -198,7 +198,10 @@ public:
   virtual Self::SmartPtr GetDifference( const AffineXform& other ) const;
 
   /// Get linked inverse of this transformation.
-  const Self::SmartPtr GetInverse() const;
+  Self::SmartPtr& GetInverse();
+
+  /// Get linked inverse of this transformation.
+  const Self::SmartPtr& GetInverse() const;
 
   /// Get global scaling factor.
   virtual Types::Coordinate GetGlobalScaling() const 

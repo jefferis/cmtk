@@ -459,7 +459,22 @@ AffineXform::RotateWXYZ
     }
 }
 
-const AffineXform::SmartPtr
+AffineXform::SmartPtr&
+AffineXform::GetInverse()
+{
+  if ( !InverseXform ) 
+    {
+    InverseXform = AffineXform::SmartPtr( this->MakeInverse() );
+    } 
+  else 
+    {
+    this->UpdateInverse();
+    }
+  
+  return this->InverseXform;
+}
+
+const AffineXform::SmartPtr&
 AffineXform::GetInverse() const
 {
   if ( !InverseXform ) 
@@ -471,7 +486,7 @@ AffineXform::GetInverse() const
     this->UpdateInverse();
     }
   
-  return InverseXform;
+  return this->InverseXform;
 }
 
 void
