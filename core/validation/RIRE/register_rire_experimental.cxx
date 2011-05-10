@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2004 Torsten Rohlfing
 //
-//  Copyright 2009-2010 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -57,7 +57,7 @@ void dumpVolume( const cmtk::UniformVolume *volume )
 
 const char *Investigator = "Rohlfing T";
 const char *Site = "SRI International";
-const char *Method = "CMTK "CMTK_VERSION_STRING" -- re-designed multi-resolution optimization of NMI";
+const char *Method = "CMTK "CMTK_VERSION_STRING" -- symmetric multi-resolution optimization of NMI";
 const char *Date = __DATE__;
 const char *PatientNumber = "undefined";
 const char *FromModality = "undefined";
@@ -171,6 +171,9 @@ void DoRegistration( const char* refFile, const char* fltFile )
   Registration.m_MinStepSize = 0.01;
   Registration.m_Sampling = 1.0;
   Registration.m_UseOriginalData = true;
+
+  // turn on symmetric registration
+  Registration.m_SymmetricFwdBwd = true;
 
 // run registration
   cmtk::CallbackResult result = Registration.Register();
