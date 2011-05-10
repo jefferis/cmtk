@@ -1,5 +1,7 @@
 Release CMTK-1.7.1:
 
+(r3198) Added: symmetric optimization of forward and inverse affine
+    transformation in "registrationx" tool.
 (r3190) Fixed: when reformatting a moving image, the reformatted image now
     inherits the input image's padding flag and value. This addresses an issue
     with reformatted floating-point images breaking Slicer and other tools do
