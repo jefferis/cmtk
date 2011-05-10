@@ -1317,6 +1317,10 @@ case ${RUNTEST} in
 	run registrationx -v --auto-multi-levels 4 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
 	check_results registration
 	;;
+    registrationxAutoLevelsRat4Symmetric)
+	run registrationx -v --symmetric --auto-multi-levels 4 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
+	check_results registration
+	;;
     registrationxAutoLevelsRat4NONE)
 	run registrationx -v --init none --auto-multi-levels 4 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
 	check_results registration

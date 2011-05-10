@@ -117,7 +117,6 @@ public:
   virtual ~ImagePairRegistrationFunctional() {}
 
   /// Set flag and value for forcing values outside the floating image.
-  /// Set flag and value for forcing values outside the floating image.
   virtual void SetForceOutside
   ( const bool flag = true, const Types::DataItem value = 0 )
   {

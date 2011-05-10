@@ -147,6 +147,9 @@ ImagePairAffineRegistrationCommandLine
 		  "7 (rigid plus global scale), 9 (rigid plus anisotropic scales), 12 (rigid plus scales plus shears), or 603 (rigid plus shears, but no scale). "
 		  "This option can be repeated, in which case DOFs are used for successive optimization runs in the order that they appear." );
     cl.AddVector( Key( "dofs-final" ), this->NumberDOFsFinal, "Add number of degrees of freedom for final level only [can be repeated]" );
+    cl.AddSwitch( Key( "symmetric" ), &this->m_SymmetricFwdBwd, true, "Use symmetric registration functional to simultaneously estimate forward and inverse transformation. "
+		  "This increases ragistration time substantially but produces a result that is invariant under exchange of fixed and moving image. "
+		  "It may also be more robust and/or more accurate than forward-only registration." );
     
     CommandLine::EnumGroup<MakeInitialAffineTransformation::Mode>::SmartPtr
       initGroup = cl.AddEnum( "init", &this->m_Initializer, "Select initializer for the affine trasnformation." );

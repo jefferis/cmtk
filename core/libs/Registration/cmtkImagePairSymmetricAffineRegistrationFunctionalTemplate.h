@@ -78,8 +78,13 @@ public:
       BwdFunctional( floating, reference, interpolation, affineXform->GetInverse() )
   {}
 
-  /// Set warp for forward and backward functional.
-  virtual void SetXform( AffineXform::SmartPtr& forward );
+  /// Set flag and value for forcing values outside the floating image.
+  virtual void SetForceOutside
+  ( const bool flag = true, const Types::DataItem value = 0 )
+  {
+    this->FwdFunctional.SetForceOutside( flag, value );
+    this->BwdFunctional.SetForceOutside( flag, value );
+  }
 
   /// Return parameter vector.
   virtual void GetParamVector ( CoordinateVector& v )
@@ -100,7 +105,8 @@ public:
     
     return this->FwdFunctional.EvaluateAt( v ) + this->BwdFunctional.EvaluateAt( vInv );
   }
-  
+
+  /// Evaluate functional with current parameter vector.
   virtual typename Self::ReturnType Evaluate () 
   {
     return this->FwdFunctional.Evaluate() + this->BwdFunctional.Evaluate();

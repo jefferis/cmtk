@@ -49,9 +49,6 @@
 #include <Base/cmtkAnatomicalOrientation.h>
 #include <Base/cmtkTransformChangeFromSpaceAffine.h>
 
-#include <Registration/cmtkVoxelMatchingElasticFunctional.h>
-#include <Registration/cmtkSymmetricElasticFunctional.h>
-
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
 #endif

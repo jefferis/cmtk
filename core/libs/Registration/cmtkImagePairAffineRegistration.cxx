@@ -43,6 +43,7 @@
 #include <Base/cmtkFunctional.h>
 
 #include <Registration/cmtkImagePairAffineRegistrationFunctional.h>
+#include <Registration/cmtkImagePairSymmetricAffineRegistrationFunctional.h>
 #include <Registration/cmtkOptimizer.h>
 #include <Registration/cmtkBestNeighbourOptimizer.h>
 #include <Registration/cmtkReformatVolume.h>
@@ -56,6 +57,7 @@ cmtk
 
 ImagePairAffineRegistration::ImagePairAffineRegistration () :
   m_Initializer( MakeInitialAffineTransformation::FOV ),
+  m_SymmetricFwdBwd( false ),
   m_MatchFltToRefHistogram( false )
 { 
 }
@@ -162,10 +164,19 @@ ImagePairAffineRegistration
     nextRef = this->m_ReferenceVolume;
     nextFlt = this->m_FloatingVolume;
     }
-  
-  ImagePairAffineRegistrationFunctional *functional = ImagePairAffineRegistrationFunctional::Create( this->m_Metric, nextRef, nextFlt, this->m_FloatingImageInterpolation, affineXform );
-  functional->SetForceOutside( this->m_ForceOutsideFlag, this->m_ForceOutsideValue );
-  return functional;
+
+  if ( this->m_SymmetricFwdBwd )
+    {
+    ImagePairSymmetricAffineRegistrationFunctional *functional = ImagePairSymmetricAffineRegistrationFunctional::Create( this->m_Metric, nextRef, nextFlt, this->m_FloatingImageInterpolation, affineXform );
+    functional->SetForceOutside( this->m_ForceOutsideFlag, this->m_ForceOutsideValue );
+    return functional;
+    }
+  else
+    {
+    ImagePairAffineRegistrationFunctional *functional = ImagePairAffineRegistrationFunctional::Create( this->m_Metric, nextRef, nextFlt, this->m_FloatingImageInterpolation, affineXform );
+    functional->SetForceOutside( this->m_ForceOutsideFlag, this->m_ForceOutsideValue );
+    return functional;
+    }
 }
 
 void

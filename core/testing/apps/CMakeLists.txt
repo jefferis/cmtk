@@ -474,6 +474,7 @@ IF(NOT CMTK_USE_MPI)
     registrationxWithInitial
     registrationxWithInitialInverse
     registrationxAutoLevelsRat4
+    registrationxAutoLevelsRat4Symmetric
     registrationxAutoLevelsRat4NONE
     registrationxAutoLevelsRat4FOV
     registrationxAutoLevelsRat4COM

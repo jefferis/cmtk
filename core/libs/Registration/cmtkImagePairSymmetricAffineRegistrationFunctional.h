@@ -66,6 +66,15 @@ public:
   /// Constructor.
   ImagePairSymmetricAffineRegistrationFunctional( AffineXform::SmartPtr& affineXform ) : m_FwdXform( affineXform ) {};
 
+  /// Set warp for forward and backward functional.
+  virtual void SetXform( AffineXform::SmartPtr& forward )
+  {
+    this->m_FwdXform = forward;
+  }
+
+  /// Set flag and value for forcing values outside the floating image.
+  virtual void SetForceOutside( const bool flag = true, const Types::DataItem value = 0 ) = 0;
+
   /// Constructor function.
   static ImagePairSymmetricAffineRegistrationFunctional* Create
   ( const int metric, UniformVolume::SmartPtr& refVolume, UniformVolume::SmartPtr& fltVolume, const Interpolators::InterpolationEnum interpolation, AffineXform::SmartPtr& affineXform );
