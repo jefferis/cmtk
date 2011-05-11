@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -120,19 +120,6 @@ VolumeFromFile::WriteMetaImage
       break;      
     }
   fprintf( outfile, "ElementDataFile = LOCAL\n" );
-
-#ifdef __IGNORE__
-  // re-arrange data in y-direction for maximum compatibility
-  const int* dims = volume.GetDims();
-  for ( int z = 0; z < dims[2]; ++z )
-    {
-    for ( int y = 0; y < dims[1]; ++y )
-      {
-      const void* dataPtr = data->GetDataPtr( volume.GetOffsetOf( 0, dims[1]-1-y, z ) );
-      fwrite( dataPtr, data->GetItemSize(), dims[0], outfile );
-      }
-    }
-#endif
 
   fwrite( data->GetDataPtr(), data->GetItemSize(), data->GetDataSize(), outfile );
   fclose( outfile );
