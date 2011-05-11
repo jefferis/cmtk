@@ -1769,8 +1769,8 @@ case ${RUNTEST} in
 	check_results registration
 	;;
     warpxSingleLevel)
-	run warpx --fast --max-stepsize 8 --grid-spacing 160 --min-stepsize 1 --no-adaptive-fix -o ${tmpdir} vol001_mr_t0t1.list
-	check_results registration
+	run warpx --fast --max-stepsize 8 --grid-spacing 160 --min-stepsize 1 --no-adaptive-fix -o ${tmpdir} --write-itk-xform ${tmpdir}/xform.tfm vol001_mr_t0t1.list
+	check_results registration xform.tfm
 	;;
     warpxSingleLevelExact)
 	run warpx --fast --max-stepsize 8 --grid-spacing 180 --exact-spacing --min-stepsize 1 --sampling 3 --no-adaptive-fix -o ${tmpdir} vol001_mr_t0t1.list
