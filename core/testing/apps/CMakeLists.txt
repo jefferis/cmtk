@@ -209,6 +209,8 @@ IF(NOT CMTK_USE_MPI)
     convertxThirdMomentFilter
     convertxStandardDeviationFilter
     convertxSmoothnessFilter
+    convertxMedialSkeletonFilter1D
+    convertxMedialSkeletonFilter2D
     convertxNiftiToAnalyze
     convertxNiftiToMetaImage
     convertxAnalyzeToNifti
