@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -51,8 +51,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional::EvaluateWithGradient
     this->UpdateInformationByControlPoint();
     }
   // allocate sufficiently many local thread data
-  const size_t safeNumberOfThreads = 
-    std::min( numberOfThreads, this->m_ControlPointScheduleOverlapFreeMaxLength );
+  const size_t safeNumberOfThreads = std::min( numberOfThreads, this->m_ControlPointScheduleOverlapFreeMaxLength );
 
   if ( this->m_ThreadSumOfProductsMatrix.size() < (6 * numberOfXforms * safeNumberOfThreads) )
     {

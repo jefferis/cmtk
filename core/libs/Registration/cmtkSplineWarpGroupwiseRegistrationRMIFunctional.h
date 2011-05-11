@@ -72,7 +72,7 @@ public:
 
   /// Constructor.
   SplineWarpGroupwiseRegistrationRMIFunctional() : 
-    m_NeedsUpdateInformationByControlPoint( false ),  
+    m_NeedsUpdateInformationByControlPoint( true ),
     m_ControlPointScheduleOverlapFreeMaxLength( 0 ) 
   {}
 
