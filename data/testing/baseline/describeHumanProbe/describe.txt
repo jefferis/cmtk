@@ -1,0 +1,51 @@
+File: phantom_ax.nii
+File format: NIFTI single file [File]
+256 x 256 x 3 voxels
+Original image orientation: RAS
+Uniform volume
+0.937500 x 0.937500 x 3.000000 [] voxel size
+239.062500 x 239.062500 x 6.000000 [] volume size
+Volume origin (0.000000,0.000000,0.000000)
+
+Image-to-physical matrix:
+  1.000000 0.000000 0.000000 -119.531502 
+ 0.000000 1.000000 0.000000 -119.530998 
+ 0.000000 0.000000 1.000000 -3.000000 
+ 0.000000 0.000000 0.000000 1.000000 
+
+Data type byte (8bit unsigned), range [0.000000 .. 255.000000]
+Probe 00 = 0.000000 (0.000000e+00)
+File: phantom_co.nii
+File format: NIFTI single file [File]
+256 x 3 x 256 voxels
+Original image orientation: LSA
+Uniform volume
+0.937500 x 3.000000 x 0.937500 [] voxel size
+239.062500 x 6.000000 x 239.062500 [] volume size
+Volume origin (0.000000,0.000000,0.000000)
+
+Image-to-physical matrix:
+  1.000000 0.000000 0.000000 -119.531502 
+ 0.000000 1.000000 0.000000 -3.000000 
+ 0.000000 0.000000 1.000000 -119.530998 
+ 0.000000 0.000000 0.000000 1.000000 
+
+Data type byte (8bit unsigned), range [0.000000 .. 255.000000]
+Probe 00 = 0.000000 (0.000000e+00)
+File: phantom_sa.nii
+File format: NIFTI single file [File]
+3 x 256 x 256 voxels
+Original image orientation: ASL
+Uniform volume
+3.000000 x 0.937500 x 0.937500 [] voxel size
+6.000000 x 239.062500 x 239.062500 [] volume size
+Volume origin (0.000000,0.000000,0.000000)
+
+Image-to-physical matrix:
+  1.000000 0.000000 0.000000 -3.000000 
+ 0.000000 1.000000 0.000000 -119.530998 
+ 0.000000 0.000000 1.000000 -119.530998 
+ 0.000000 0.000000 0.000000 1.000000 
+
+Data type byte (8bit unsigned), range [0.000000 .. 255.000000]
+Probe 00 = 0.000000 (0.000000e+00)
