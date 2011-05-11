@@ -496,10 +496,13 @@ Average
       cmtk::UniformVolumeInterpolator<cmtk::Interpolators::Linear> interpolator( *signedDistanceMap );
       
       // accumulate interpolated distances for this label
-      cmtk::Vector3D v;
-      cmtk::Types::DataItem dvalue;
-      size_t i = 0;
+#pragma omp parallel for
       for ( int z = 0; z < referenceDims[2]; ++z )
+	{
+	cmtk::Vector3D v;
+	cmtk::Types::DataItem dvalue;
+	size_t i = z * referenceDims[0] * referenceDims[1];
+
 	for ( int y = 0; y < referenceDims[1]; ++y )
 	  {
 	  for ( int x = 0; x < referenceDims[0]; ++x, ++i )
@@ -511,6 +514,7 @@ Average
 	      }
 	    }
 	  }
+	}
       }
 
     // if this is not the first label, compare this label's sum distance map
