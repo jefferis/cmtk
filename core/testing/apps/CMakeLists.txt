@@ -210,6 +210,7 @@ IF(NOT CMTK_USE_MPI)
     convertxStandardDeviationFilter
     convertxSmoothnessFilter
     convertxNiftiToAnalyze
+    convertxNiftiToMetaImage
     convertxAnalyzeToNifti
     convertxAnalyzeToNiftiRAS
     convertxNiftiDetachedToNifti

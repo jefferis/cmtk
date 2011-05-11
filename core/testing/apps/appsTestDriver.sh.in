@@ -396,6 +396,10 @@ case ${RUNTEST} in
 	run convertx spgr_brain_1.nii ${tmpdir}/spgr_brain_1.hdr
 	check_results spgr_brain_1.hdr spgr_brain_1.img
 	;;
+    convertxNiftiToMetaImage)
+	run convertx spgr_brain_1.nii ${tmpdir}/spgr_brain_1.mha
+	check_results spgr_brain_1.mha
+	;;
     convertxAnalyzeToNifti)
 	run convertx spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.nii
 	check_results spgr_brain_1.nii
