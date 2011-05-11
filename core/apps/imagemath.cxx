@@ -1547,8 +1547,8 @@ doMain( const int argc, const char *argv[] )
     cl.AddCallback( Key( "scalar-xor" ), CallbackScalarXor, "Bitwise exclusive-or between top level and given scalar value" );
     cl.AddCallback( Key( "scalar-and" ), CallbackScalarAnd, "Bitwise and operation between top level and given scalar value" );
 
-    cl.AddCallback( Key( "threshold-below" ), CallbackThreshBelow, "Set values below given threshold to threshold." );
-    cl.AddCallback( Key( "threshold-above" ), CallbackThreshAbove, "Set values above given threshold to threshold." );
+    cl.AddCallback( Key( "thresh-below" ), CallbackThreshBelow, "Set values below given threshold to threshold." );
+    cl.AddCallback( Key( "thresh-above" ), CallbackThreshAbove, "Set values above given threshold to threshold." );
     cl.EndGroup();
 
     cl.BeginGroup( "Two images", "Image pair operators" );
