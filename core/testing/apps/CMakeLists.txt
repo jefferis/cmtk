@@ -280,20 +280,30 @@ IF(NOT CMTK_USE_MPI)
   # ==========================================
   # Tests for "imagemath" tool
   SET(testList ${testList} 
+    imagemathAbsPop
+    imagemathSqrSqrt
+    imagemathLogExp
+    imagemathDupAddMulDiv
+    imagemathThreshAboveBelow
     imagemathAverage 
     imagemathMaskAverage 
     imagemathXor
     imagemathDupFillMaxValue
     imagemathAnd
     imagemathContractLabels
+    imagemathMaxIndex
+    imagemathMaxValue
     imagemathStackEntropyLabels
     imagemathVote
+    imagemathProduct
     imagemathSTAPLE
     imagemathMultiClassSTAPLE 
     imagemathCombinePCA
     imagemathT2
+    imagemathAtan2
     imagemathLogOddsAdd
     imagemathLogOddsAdd2
+    imagemathMatchMeanSDev
     imagemathMatchHistograms 
     imagemathMatchHistogramsPadding
     imagemathMatchHistogramsPadding2

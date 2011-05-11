@@ -820,6 +820,26 @@ case ${RUNTEST} in
 	run histogram --mask spgr_3t_mask.hdr -o ${tmpdir}/histogram spgr_3t.hdr
 	check_results histogram
 	;;
+    imagemathAbsPop)
+        run imagemath --in pat001_pet.hdr pat001_mr_T1.hdr --pop --abs --out ${tmpdir}/abs.nii
+	check_results abs.nii
+	;;
+    imagemathSqrSqrt)
+        run imagemath --in pat001_pet.hdr --sqr --sqrt --out ${tmpdir}/abs.nii
+	check_results abs.nii
+	;;
+    imagemathLogExp)
+        run imagemath --in spgr_brain_1.hdr --log --exp --out ${tmpdir}/logexp.nii
+	check_results logexp.nii
+	;;
+    imagemathDupAddMulDiv)
+        run imagemath --in spgr_brain_1.hdr --dup --in spgr_brain_2.hdr spgr_brain_3.hdr --add --mul --div --out ${tmpdir}/damd.nii
+	check_results damd.nii
+	;;
+    imagemathThreshAboveBelow)
+        run imagemath --in pat001_pet.hdr --thresh-above 1000 --thresh-below 0 --out ${tmpdir}/thresh.nii
+	check_results thresh.nii
+	;;
     imagemathAverage)
 	run imagemath --in parc1_bin.hdr parc2_bin.hdr parc3_bin.hdr --average --out ${tmpdir}/average.hdr
 	check_results average.img
@@ -844,9 +864,21 @@ case ${RUNTEST} in
 	run imagemath --in parc1.hdr parc2.hdr parc3.hdr --contract-labels --out ${tmpdir}/contract.hdr
 	check_results contract.img
 	;;
+    imagemathMaxIndex)
+	run imagemath --in parc1.hdr parc2.hdr parc3.hdr --max-index --out ${tmpdir}/maxidx.nii
+	check_results maxidx.nii
+	;;
+    imagemathMaxValue)
+	run imagemath --in parc1.hdr parc2.hdr parc3.hdr --max-value --out ${tmpdir}/maxval.nii
+	check_results maxval.nii
+	;;
     imagemathVote)
 	run imagemath --in parc1_bin.hdr parc2_bin.hdr parc3_bin.hdr --vote --out ${tmpdir}/vote.hdr
 	check_results vote.img
+	;;
+    imagemathProduct)
+	run imagemath --in parc1_bin.hdr parc2_bin.hdr parc3_bin.hdr --product --out ${tmpdir}/prod.nii
+	check_results prod.nii
 	;;
     imagemathStackEntropyLabels)
 	run imagemath --in parc1_bin.hdr parc2_bin.hdr parc3_bin.hdr --stack-entropy-labels --out ${tmpdir}/entropy.hdr
@@ -868,6 +900,10 @@ case ${RUNTEST} in
 	run imagemath --float --in rat_fse_erly.hdr --log --in rat_fse_late.hdr --log --scalar-mul -1 --add --one-over --out ${tmpdir}/t2.hdr
 	check_results t2.img
 	;;
+    imagemathAtan2)
+	run imagemath --float --in rat_fse_erly.hdr rat_fse_late.hdr --atan2 --out ${tmpdir}/atan.nii
+	check_results atan.nii
+	;;
     imagemathLogOddsAdd)
 	run imagemath --float --in pbmap_wm_2.nii --logit --in pbmap_wm_1.nii --logit --average --logistic --out ${tmpdir}/logodds_add.hdr
 	check_results logodds_add.img
@@ -876,6 +912,10 @@ case ${RUNTEST} in
 	run imagemath --float --in pbmap_wm_2.nii pbmap_wm_1.nii --all --logit --average --all --logistic --out ${tmpdir}/logodds_add.hdr
 	check_results logodds_add.img
 	;;
+    imagemathMatchMeanSDev)
+        run imagemath --in spgr_brain_{1,2}.hdr --match-mean-sdev --out ${tmpdir}/match.nii
+        check_results match.nii
+        ;;
     imagemathMatchHistograms)
         run imagemath --in spgr_brain_{1,2}.hdr --match-histograms --out ${tmpdir}/match_histograms.hdr
         check_results match_histograms.img
