@@ -655,20 +655,20 @@ doMain ( const int argc, const char *argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.BeginGroup( "Input", "Input Options");
     cl.AddSwitch( Key( 'r', "recurse" ), &Recursive, true, "Recurse into directories" );
-    cl.AddSwitch( Key( "ge-extensions" ), &WithExtensionsGE, true, "Enable GE extensions (e.g., detect image type magnitude vs. complex)" );
+    cl.AddSwitch( Key( "ge-extensions" ), &WithExtensionsGE, true, "Enable GE extensions (e.g., detect image type magnitude vs. complex)" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
     cl.EndGroup();
 
     cl.BeginGroup( "Output", "Output Options");
     cl.AddOption( Key( 'O', "out-pattern" ), &OutPathPattern, "Output image path pattern (using printf substitutions)" );
     cl.EndGroup();
 
-    cl.BeginGroup( "Sorting", "Sorting Options");
+    cl.BeginGroup( "Sorting", "Sorting Options")->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
     cl.AddSwitch( Key( "no-sort" ), &SortFiles, 0, "Do NOT sort files by file name (determines order when resolving spatial collisions)" );
     cl.AddSwitch( Key( "sort-name" ), &SortFiles, 1, "Sort files lexicographically by file name." );
     cl.AddSwitch( Key( "sort-instance" ), &SortFiles, 2, "Sort files by image instance number. Use this when file names are different lengths, etc." );
     cl.EndGroup();
 
-    cl.BeginGroup( "Stacking", "Stacking Options");
+    cl.BeginGroup( "Stacking", "Stacking Options")->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
     cl.AddSwitch( Key( "ignore-acq-number" ), &IgnoreAcquisitionNumber, true, "Ignore 'AcquisitionNumber' tag for image grouping, i.e., do not separate stacks based on this tag." );
     cl.AddSwitch( Key( "no-orientation-check" ), &DisableOrientationCheck, true, "Disable checking of image orientations (to avoid rounding issues)" );
     cl.AddOption( Key( "tolerance" ), &Tolerance, "Tolerance for floating-point comparisons (must be >= 0; 0 = exact matches only; default: 1e-5)" );
