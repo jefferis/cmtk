@@ -76,7 +76,7 @@
 #endif
 
 const char* OutPathPattern = "%03d.nii";
-const char* SearchRootDir = ".";
+std::vector<std::string> SearchRootDirVector;
 
 std::ofstream cnull( "/dev/null" );
 
@@ -518,7 +518,7 @@ VolumeList::AddImageFileDCM( ImageFileDCM *const newImage )
 }
 
 int
-traverse_directory( VolumeList& studylist, const char *path, const char *wildcard )
+traverse_directory( VolumeList& studylist, const std::string& path, const char *wildcard )
 {
   char fullname[PATH_MAX];
 
@@ -527,11 +527,11 @@ traverse_directory( VolumeList& studylist, const char *path, const char *wildcar
 #ifdef _MSC_VER
   WIN32_FIND_DATA fData;
   char pattern[PATH_MAX];
-  snprintf( pattern, sizeof( pattern ), "%s\\%s", path, wildcard );
+  snprintf( pattern, sizeof( pattern ), "%s\\%s", path.c_str(), wildcard );
   HANDLE hFind = FindFirstFile( pattern, &fData);
   do
     {
-    snprintf( fullname, sizeof( fullname ), "%s\\%s", path, fData.cFileName );
+    snprintf( fullname, sizeof( fullname ), "%s\\%s", path.c_str(), fData.cFileName );
     if ( fData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
       {
       if ( Recursive && (fData.cFileName[0] != '.') )
@@ -554,14 +554,14 @@ traverse_directory( VolumeList& studylist, const char *path, const char *wildcar
     }
   while (FindNextFile(hFind, &fData) != 0);
 #else    
-  DIR *dir_pointer = opendir ( path );
+  DIR *dir_pointer = opendir ( path.c_str() );
   if ( dir_pointer != NULL ) 
     {
     struct dirent *entry_pointer;
 
     while ( (entry_pointer = readdir(dir_pointer)) ) 
       {
-      strcat( strcat( strcpy( fullname, path ), "/"), entry_pointer->d_name );
+      strcat( strcat( strcpy( fullname, path.c_str() ), "/"), entry_pointer->d_name );
       struct stat entry_status;
       if ( !stat(fullname, &entry_status) ) 
 	{
@@ -651,7 +651,6 @@ doMain ( const int argc, const char *argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "DICOM to Image" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Combine sets of DICOM slices to 3D image stacks" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] directory" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.BeginGroup( "Input", "Input Options");
@@ -675,14 +674,9 @@ doMain ( const int argc, const char *argv[] )
     cl.AddOption( Key( "tolerance" ), &Tolerance, "Tolerance for floating-point comparisons (must be >= 0; 0 = exact matches only; default: 1e-5)" );
     cl.EndGroup();
 
-    if ( ! cl.Parse( argc, const_cast<const char**>( argv ) ) )
-      return 1;
-
-    const char* next = cl.GetNext();
-    if ( next )
-      {
-      SearchRootDir = next;
-      }
+    cl.AddParameterVector( &SearchRootDirVector, "SearchDirList", "List directories to search for DICOM files. Subdirectories are also search if '--recurse' option is used." );
+    
+    cl.Parse( argc, const_cast<const char**>( argv ) );
     }
   catch ( const cmtk::CommandLine::Exception& ex )
     {
@@ -698,8 +692,10 @@ doMain ( const int argc, const char *argv[] )
     }
 
   VolumeList studylist;
-  
-  traverse_directory( studylist, SearchRootDir, "*" );
+  for ( std::vector<std::string>::const_iterator it = SearchRootDirVector.begin(); it != SearchRootDirVector.end(); ++it )
+    {
+    traverse_directory( studylist, *it, "*" );
+    }
   
   studylist.WriteToArchive();
 
