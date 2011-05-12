@@ -1056,13 +1056,23 @@ case ${RUNTEST} in
 	unset CMTK_NUM_THREADS
 	;;
     mcwarp2)
+	# Test breaks when using multiple threads due to floating point effects
+	export CMTK_NUM_THREADS=1
 	run mcwarp --downsample-from 2 --downsample-to 1 --initial-step-size 1 --final-step-size 0.5 --grid-spacing 14 --refine-grid 2 --histograms -o ${tmpdir}/xform mcaffine_rat_rat2.xform
 	check_results xform
+	unset CMTK_NUM_THREADS
 	;;
     mcwarp3)
 	# Test breaks when using multiple threads due to floating point effects
 	export CMTK_NUM_THREADS=1
 	run mcwarp --downsample-from 2 --downsample-to 1 --delta-f-threshold 0.1 --initial-step-size 1 --final-step-size 0.5 --grid-spacing 14 --refine-grid 2 --covariance -o ${tmpdir}/xform mcaffine_rat_rat2.xform
+	check_results xform
+	unset CMTK_NUM_THREADS
+	;;
+    mcwarp4)
+	# Test breaks when using multiple threads due to floating point effects
+	export CMTK_NUM_THREADS=1
+	run mcwarp --downsample-from 2 --downsample-to 1 --delta-f-threshold 0.1 --initial-step-size 1 --final-step-size 0.5 --grid-spacing 14 --refine-grid 2 --covariance --intensity-correction -o ${tmpdir}/xform mcaffine_rat_rat2.xform
 	check_results xform
 	unset CMTK_NUM_THREADS
 	;;

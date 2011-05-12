@@ -370,7 +370,7 @@ IF(NOT CMTK_USE_MPI)
     # ==========================================
     # Tests for "mcwarp" tool
     SET(testList ${testList} 
-      mcwarp1 mcwarp2 mcwarp3)
+      mcwarp1 mcwarp2 mcwarp3 mcwarp4)
 
   ENDIF(HAVE_STL_HASH_MAP)
 
