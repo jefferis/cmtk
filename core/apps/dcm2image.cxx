@@ -674,7 +674,7 @@ doMain ( const int argc, const char *argv[] )
     cl.AddOption( Key( "tolerance" ), &Tolerance, "Tolerance for floating-point comparisons (must be >= 0; 0 = exact matches only; default: 1e-5)" );
     cl.EndGroup();
 
-    cl.AddParameterVector( &SearchRootDirVector, "SearchDirList", "List directories to search for DICOM files. Subdirectories are also search if '--recurse' option is used." );
+    cl.AddParameterVector( &SearchRootDirVector, "SearchDirList", "List of directories to search for DICOM files. Subdirectories are also search if '--recurse' option is used." );
     
     cl.Parse( argc, const_cast<const char**>( argv ) );
     }
