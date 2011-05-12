@@ -201,6 +201,9 @@ protected:
   /// Number of deactivated control points.
   size_t m_NumberOfActiveControlPoints;
 
+  /// Update local information by control point - to be implemented by derived classes if needed.
+  virtual void UpdateInformationByControlPoint() {}
+
 private:
   /// Thread function parameters for image interpolation.
   class InterpolateImageThreadParameters : 

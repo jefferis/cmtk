@@ -76,6 +76,13 @@ public:
     m_ControlPointScheduleOverlapFreeMaxLength( 0 ) 
   {}
 
+  /// Refine transformation control point grids.
+  virtual void RefineTransformationGrids()
+  {
+    this->Superclass::RefineTransformationGrids();
+    this->m_NeedsUpdateInformationByControlPoint = true;
+  }
+
   /// Evaluate functional with currently set parameters.
   virtual Self::ReturnType Evaluate();
 

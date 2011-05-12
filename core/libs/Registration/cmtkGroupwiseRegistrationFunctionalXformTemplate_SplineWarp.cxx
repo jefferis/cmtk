@@ -105,7 +105,6 @@ void
 GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
 ::RefineTransformationGrids()
 {
-  
   for ( size_t i = 0; i < this->m_XformVector.size(); ++i )
     {
     this->GetXformByIndex(i)->Refine();
