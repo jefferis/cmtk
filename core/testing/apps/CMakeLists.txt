@@ -100,6 +100,7 @@ SET(testList ${testList}
 # Tests for "groupwise_init" tool
 SET(testList ${testList} 
   groupwise_initCentersOfMass 
+  groupwise_initCentersOfMassScale
   groupwise_initCentersOfMassTemplate)
 
 # ==========================================

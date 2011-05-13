@@ -802,6 +802,12 @@ case ${RUNTEST} in
 	# cannot compare separate xforms due to local file system path in the file
 	check_results average.nii
 	;;
+    groupwise_initCentersOfMassScale)
+	run groupwise_init -O ${tmpdir} --align-centers-of-mass --init-scales spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
+	check_results groupwise.xforms
+	# cannot compare separate xforms due to local file system path in the file
+	check_results average.nii
+	;;
     groupwise_initCentersOfMassTemplate)
 	run groupwise_init -O ${tmpdir} --template spgr_brain_1.hdr --align-centers-of-mass spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
 	check_results groupwise.xforms

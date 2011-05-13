@@ -57,8 +57,6 @@ typedef enum { TTEST, TTEST_PAIRED, CORRELATION_PAIRED, ZSCORES } ModeEnum;
 int
 doMain ( const int argc, const char* argv[] ) 
 {
-  bool Symmetric = false;
-
   ModeEnum Mode = TTEST;
 
   bool UseLogData = false;
@@ -88,7 +86,6 @@ doMain ( const int argc, const char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Statistics and Modeling" );
     
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'S', "symmetric" ), &Symmetric, true, "Use mirrored X data as Y data" );
     cl.AddSwitch( Key( 'l', "log" ), &UseLogData, true, "Use log data for testing" );
     cl.AddSwitch( Key( 'a', "abs" ), &UseAbsData, true, "Use absolute data for testing" );
 
@@ -114,15 +111,12 @@ doMain ( const int argc, const char* argv[] )
       next = cl.GetNextOptional();
       }
     
-    if ( ! Symmetric ) 
+    next = cl.GetNextOptional();
+    while ( next ) 
       {
+      FileListY.push_back( next );
       next = cl.GetNextOptional();
-      while ( next ) 
-	{
-	FileListY.push_back( next );
-	next = cl.GetNextOptional();
-	}
-      }    
+      }
   }
   catch ( const cmtk::CommandLine::Exception& e ) 
     {
@@ -208,32 +202,22 @@ doMain ( const int argc, const char* argv[] )
 	if ( volume->GetData() ) 
 	  {
 	  dataX.push_back( volume->GetData() );
-
-	  if ( Symmetric )
-	    {
-	    cmtk::TypedArray::SmartPtr mirroredData
-	      ( volume->GetDataMirrored( cmtk::AXIS_X ) );
-	    dataY.push_back( mirroredData );
-	    }
 	  }
 	}
       }
     
-    if ( ! Symmetric )
+    fnameIt = FileListY.begin();
+    for ( ; fnameIt != FileListY.end(); ++fnameIt ) 
       {
-      fnameIt = FileListY.begin();
-      for ( ; fnameIt != FileListY.end(); ++fnameIt ) 
+      std::cerr << "Reading Y volume " << *fnameIt << "...\n";
+      cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( *fnameIt ) );
+      if ( volume ) 
 	{
-	std::cerr << "Reading Y volume " << *fnameIt << "...\n";
-	cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( *fnameIt ) );
-	if ( volume ) 
+	if ( ! refVolume ) refVolume = volume;
+	
+	if ( volume->GetData() ) 
 	  {
-	  if ( ! refVolume ) refVolume = volume;
-	  
-	  if ( volume->GetData() ) 
-	    {
-	    dataY.push_back( volume->GetData() );
-	    }
+	  dataY.push_back( volume->GetData() );
 	  }
 	}
       }
