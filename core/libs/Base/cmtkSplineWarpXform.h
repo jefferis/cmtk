@@ -153,9 +153,6 @@ public:
   /// Return Jacobian constraint of the current transformation grid.
   virtual Types::Coordinate GetJacobianConstraint() const;
 
-  /** Return Jacobian folding constraint of the current transformation grid. */
-  virtual Types::Coordinate GetJacobianFoldingConstraint() const;
-
   /** Relax the deformation to unfold areas with negative Jacobian at the current image sampling.
    *\note This requires a uniform pixel grid to be registered with this transformation.
    *\see RegisterVolume
@@ -183,9 +180,6 @@ public:
 
   /// Return derivative of Jacobian constraint with respect to one parameter.
   virtual void GetJacobianConstraintDerivative( double& lower, double& upper, const int param, const UniformVolume::RegionType&, const Types::Coordinate step ) const;
-
-  /// Return derivative of Jacobian constraint with respect to one parameter.
-  virtual void GetJacobianFoldingConstraintDerivative( double& lower, double& upper, const int param, const UniformVolume::RegionType&, const Types::Coordinate step ) const;
 
   /// Return derivative of Jacobian constraint with respect to one parameter.
   virtual void GetJacobianConstraintDerivative( double& lower, double& upper, const int param, const Types::Coordinate step ) const;
@@ -437,9 +431,6 @@ protected:
   
   /// Thread function for SMP Jacobian constraint computation.
   static void GetJacobianConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
-
-  /// Thread function for SMP Jacobian folding constraint computation.
-  static void GetJacobianFoldingConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 
   /// Find nearest (after deformation) control point.
   void FindClosestControlPoint( const Self::SpaceVectorType& v, Self::SpaceVectorType& cp ) const;

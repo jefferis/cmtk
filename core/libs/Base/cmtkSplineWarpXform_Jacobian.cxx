@@ -543,43 +543,6 @@ SplineWarpXform
   info->Constraint = constraint;
 }
 
-void
-SplineWarpXform
-::GetJacobianFoldingConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t )
-{
-  Self::JacobianConstraintThreadInfo *info = static_cast<Self::JacobianConstraintThreadInfo*>( args );
-
-  const SplineWarpXform *me = info->thisObject;
-
-  const int pixelsPerRow = me->VolumeDims[0];
-  std::vector<double> valuesJ( pixelsPerRow );
-
-  const int rowCount = ( me->VolumeDims[1] * me->VolumeDims[2] );
-  const int rowFrom = ( rowCount / taskCnt ) * taskIdx;
-  const int rowTo = ( taskIdx == (taskCnt-1) ) ? rowCount : ( rowCount/taskCnt ) * (taskIdx+1);
-  int rowsToDo = rowTo - rowFrom;
-
-  int yFrom = rowFrom % me->VolumeDims[1];
-  int zFrom = rowFrom / me->VolumeDims[2];
-
-  double constraint = 0;
-  for ( int z = zFrom; (z < me->VolumeDims[2]) && rowsToDo; ++z ) 
-    {
-    for ( int y = yFrom; (y < me->VolumeDims[1]) && rowsToDo; yFrom = 0, ++y, --rowsToDo ) 
-      {
-      me->GetJacobianDeterminantRow( &(valuesJ[0]), 0, y, z, pixelsPerRow );
-      for ( int x = 0; x < pixelsPerRow; ++x ) 
-	{
-	constraint += fabs( me->GlobalScaling / valuesJ[x] + valuesJ[x] / me->GlobalScaling - 2 );
-	}
-      }
-    }
-  
-  // Divide by number of control points to normalize with respect to the
-  // number of local Jacobians in the computation.
-  info->Constraint = constraint;
-}
-
 Types::Coordinate
 SplineWarpXform::GetJacobianConstraint () const
 {
@@ -595,33 +558,6 @@ SplineWarpXform::GetJacobianConstraint () const
     }
   
   threadPool.Run( Self::GetJacobianConstraintThread, constraintTaskInfo );
-  
-  double constraint = 0;
-  for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
-    {
-    constraint += constraintTaskInfo[taskIdx].Constraint;
-    }
-  
-  // Divide by number of control points to normalize with respect to the
-  // number of local Jacobians in the computation.
-  return constraint / ( VolumeDims[0] * VolumeDims[1] * VolumeDims[2] );
-}
-
-Types::Coordinate
-SplineWarpXform::GetJacobianFoldingConstraint () const
-{
-  ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
-  const size_t numberOfThreads = threadPool.GetNumberOfThreads();
-  const size_t numberOfTasks = std::min<size_t>( 4 * numberOfThreads - 3, this->m_Dims[2] );
-
-  // Info blocks for parallel threads that evaulate the constraint.
-  std::vector<Self::JacobianConstraintThreadInfo> constraintTaskInfo( numberOfTasks );
-  for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
-    {
-    constraintTaskInfo[taskIdx].thisObject = this;
-    }
-  
-  threadPool.Run( Self::GetJacobianFoldingConstraintThread, constraintTaskInfo );
   
   double constraint = 0;
   for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
@@ -690,56 +626,6 @@ SplineWarpXform::GetJacobianConstraintDerivative
       for ( int i = 0; i < pixelsPerRow; ++i )
 	{
 	lower += fabs( log( valuesJ[i] / GlobalScaling ) );
-	}
-      }
-  this->m_Parameters[param] = oldCoeff;
-  
-  const double invVolume = 1.0 / voi.Size();
-  upper *= invVolume;
-  lower *= invVolume;
-}
-
-void 
-SplineWarpXform::GetJacobianFoldingConstraintDerivative
-( double& lower, double& upper, const int param, const DataGrid::RegionType& voi, const Types::Coordinate step ) const
-{
-  const int pixelsPerRow = voi.To()[0] - voi.From()[0];
-  std::vector<double> valuesJ( pixelsPerRow );
-  
-  double ground = 0;
-
-  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
-    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
-      {
-      this->GetJacobianDeterminantRow( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
-      for ( int i = 0; i < pixelsPerRow; ++i )
-	ground += fabs( this->GlobalScaling / valuesJ[i] + valuesJ[i] / this->GlobalScaling - 2 );
-      }
-  
-  upper = -ground;
-  lower = -ground;
-  
-  const Types::Coordinate oldCoeff = this->m_Parameters[param];
-  this->m_Parameters[param] += step;
-  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
-    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
-      {
-      this->GetJacobianDeterminantRow( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
-      for ( int i = 0; i < pixelsPerRow; ++i )
-	{
-	upper += fabs( this->GlobalScaling / valuesJ[i] + valuesJ[i] / this->GlobalScaling - 2 );
-
-	}
-      }
-  
-  this->m_Parameters[param] = oldCoeff - step;
-  for ( int k = voi.From()[2]; k < voi.To()[2]; ++k )
-    for ( int j = voi.From()[1]; j < voi.To()[1]; ++j ) 
-      {
-      this->GetJacobianDeterminantRow( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
-      for ( int i = 0; i < pixelsPerRow; ++i )
-	{
-	lower += fabs( this->GlobalScaling / valuesJ[i] + valuesJ[i] / this->GlobalScaling - 2 );
 	}
       }
   this->m_Parameters[param] = oldCoeff;
