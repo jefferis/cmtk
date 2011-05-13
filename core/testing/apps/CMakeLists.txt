@@ -175,6 +175,7 @@ IF(NOT CMTK_USE_MPI)
   # ==========================================
   # Tests for "convertx" tool
   SET(testList ${testList} 
+    convertxType
     convertxBinarize
     convertxBoundaryMap
     convertxBoundaryMapMultiValue
