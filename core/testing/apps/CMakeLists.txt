@@ -372,7 +372,7 @@ IF(NOT CMTK_USE_MPI)
     # ==========================================
     # Tests for "mcwarp" tool
     SET(testList ${testList} 
-      mcwarp1 mcwarp2 mcwarp3 mcwarp4)
+      mcwarp1 mcwarp2 mcwarp3 mcwarp4 mcwarp5 mcwarp6)
 
   ENDIF(HAVE_STL_HASH_MAP)
 
@@ -730,7 +730,7 @@ IF(NOT CMTK_USE_MPI)
 
   IF(HAVE_STL_HASH_MAP)
     SET_TESTS_PROPERTIES(mcaffine2 PROPERTIES TIMEOUT 1800)
-    SET_TESTS_PROPERTIES(mcwarp1 mcwarp2 mcwarp3 mcwarp4 PROPERTIES TIMEOUT 1800)
+    SET_TESTS_PROPERTIES(mcwarp1 mcwarp2 mcwarp3 mcwarp4 mcwarp5 mcwarp6 PROPERTIES TIMEOUT 1800)
   ENDIF(HAVE_STL_HASH_MAP)
 
   SET_TESTS_PROPERTIES(mrbiasAddMulMask PROPERTIES TIMEOUT 3600)

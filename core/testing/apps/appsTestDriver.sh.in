@@ -1086,6 +1086,20 @@ case ${RUNTEST} in
 	check_results xform
 	unset CMTK_NUM_THREADS
 	;;
+    mcwarp5)
+	# Test breaks when using multiple threads due to floating point effects
+	export CMTK_NUM_THREADS=1
+	run mcwarp --downsample-from 2 --downsample-to 1 --delta-f-threshold 0.1 --initial-step-size 1 --final-step-size 0.5 --grid-spacing 14 --adaptive-fix-thresh-factor 0.5 -o ${tmpdir}/xform mcaffine_rat_rat2.xform
+	check_results xform
+	unset CMTK_NUM_THREADS
+	;;
+    mcwarp6)
+	# Test breaks when using multiple threads due to floating point effects
+	export CMTK_NUM_THREADS=1
+	run mcwarp --downsample-from 2 --downsample-to 1 --delta-f-threshold 0.1 --initial-step-size 1 --final-step-size 0.5 --grid-spacing 14 --adaptive-fix-thresh-factor-entropy 0.5 -o ${tmpdir}/xform mcaffine_rat_rat2.xform
+	check_results xform
+	unset CMTK_NUM_THREADS
+	;;
     mipDefault)
         run mip --axial spgr_3t.hdr ${tmpdir}/axial.pgm
         run mip --sagittal spgr_3t.hdr ${tmpdir}/sagittal.pgm
