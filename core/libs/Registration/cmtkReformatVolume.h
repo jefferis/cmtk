@@ -159,9 +159,6 @@ public:
   ( const std::vector<SplineWarpXform::SmartPtr>* xformList, std::vector<UniformVolume::SmartPtr>* volumeList, 
     Types::Coordinate *const volumeOffset = NULL, const bool includeReferenceData = true );
 
-  /// Apply forward warp transformation to reference volume.
-  UniformVolume* GetTransformedReference( Types::Coordinate *const volumeOffset = NULL );
-
   /// Average Jacobians into deformed reference coordinate system.
   UniformVolume* GetTransformedReferenceJacobianAvg
   ( const std::vector<SplineWarpXform::SmartPtr>* xformList, Types::Coordinate *const volumeOffset = NULL, const bool includeReferenceData = true );

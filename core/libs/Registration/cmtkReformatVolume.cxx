@@ -247,62 +247,6 @@ ReformatVolume::PlainReformat
   return result;
 }
 
-UniformVolume* 
-ReformatVolume::GetTransformedReference
-( Types::Coordinate *const volumeOffset )
-{
-  UniformVolume* result = NULL;
-
-  const SplineWarpXform* splineXform = dynamic_cast<const SplineWarpXform*>( this->m_WarpXform.GetConstPtr() );
-  if ( ! splineXform ) 
-    {
-    StdErr << "ERROR: ReformatVolume::GetTransformedReference supports spline warp only.\n";
-    return NULL;
-    }
-
-  Types::Coordinate bbFrom[3], delta[3];
-  result = this->CreateTransformedReference( bbFrom, delta, volumeOffset );
-
-  ScalarDataType dtype = ReferenceVolume->GetData()->GetType();
-  TypedArray::SmartPtr dataArray( TypedArray::Create( dtype, result->GetNumberOfPixels() ) );
-
-  if ( this->m_UsePaddingValue )
-    dataArray->SetPaddingValue( this->m_PaddingValue );
-
-  result->SetData( dataArray );
-
-  GetTransformedReferenceTP params;
-  params.thisObject = this;
-  params.ThisThreadIndex = 0;
-  params.NumberOfThreads = 1;
-  params.dims = result->GetDims();
-  params.bbFrom = bbFrom;
-  params.delta = delta;
-  params.splineXform = splineXform;
-  params.dataArray = dataArray;
-
-  UniformVolumeInterpolatorBase::SmartPtr interpolator( this->CreateInterpolator( this->FloatingVolume ) );
-  params.referenceInterpolator = interpolator;
-  
-  DataClass dataClass = ReferenceVolume->GetData()->GetDataClass();
-  switch ( dataClass ) 
-    {
-    default:
-    case DATACLASS_GREY: 
-    {
-    GetTransformedReferenceGrey( &params );
-    }
-    break;
-    case DATACLASS_LABEL: 
-    {
-    GetTransformedReferenceLabel( &params );
-    }
-    break;
-    }
-  
-  return result;
-}
-
 CMTK_THREAD_RETURN_TYPE
 ReformatVolume::GetTransformedReferenceGrey( void *const arg )
 {
