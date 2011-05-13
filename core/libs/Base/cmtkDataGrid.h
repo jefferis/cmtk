@@ -329,9 +329,6 @@ public:
    */
   virtual void SetOrthoSlice( const int axis, const unsigned int idx, const ScalarImage* slice );
 
-  /// Return data after mirror operator.
-  TypedArray::SmartPtr GetDataMirrored( const int axis = AXIS_X ) const;
-
   /// Print object.
   void Print() const;
 

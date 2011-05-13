@@ -352,47 +352,6 @@ DataGrid::MirrorPlaneInPlace
     }
 }
 
-TypedArray::SmartPtr
-DataGrid::GetDataMirrored
-( const int axis ) const
-{
-  const TypedArray* dataArray = this->GetData();
-  if ( ! dataArray ) 
-    throw( Exception( "No input data in DataGrid::GetDataMirrored()" ) );
-  
-  TypedArray::SmartPtr mirroredArray = TypedArray::Create( dataArray->GetType(), dataArray->GetDataSize() );
-  
-  Progress::Begin( 0, this->m_Dims[2], 1, "Mirror image" );
-
-  size_t offset = 0;
-  switch ( axis )
-    {
-    case AXIS_X:
-      for ( int z = 0; z < this->m_Dims[2]; ++z ) 
-	{
-	Progress::SetProgress( z );
-	for ( int y = 0; y < this->m_Dims[1]; ++y ) 
-	  {
-	  for ( int x = 0; x < this->m_Dims[0]; ++x, ++offset ) 
-	    {
-	    dataArray->BlockCopy( *mirroredArray, offset, offset, this->m_Dims[0] );
-	    mirroredArray->BlockReverse( offset, this->m_Dims[0] );
-	    }      
-	  }
-	}
-      break;
-    case AXIS_Y:
-    case AXIS_Z:
-    default:
-      StdErr << "DataGrid::GetDataMirrored: Flip not yet implemented\n";
-      break;
-    }
-  
-  Progress::Done();
-     
-  return mirroredArray;
-}
-
 ScalarImage*
 DataGrid::GetOrthoSlice
 ( const int axis, const unsigned int plane ) const
