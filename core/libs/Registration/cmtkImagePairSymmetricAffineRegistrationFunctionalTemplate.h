@@ -92,9 +92,6 @@ public:
     this->FwdFunctional.GetParamVector( v );
   }
 
-  /// Evaluate functional value and gradient.
-  virtual typename Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step = 1 );
-    
   /// Evaluate functional value.
   virtual typename Self::ReturnType EvaluateAt ( CoordinateVector& v ) 
   {

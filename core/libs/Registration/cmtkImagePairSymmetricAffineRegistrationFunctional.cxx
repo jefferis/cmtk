@@ -50,26 +50,6 @@ cmtk
 /** \addtogroup Registration */
 //@{
 
-template<class VM>
-typename ImagePairSymmetricAffineRegistrationFunctionalTemplate<VM>::ReturnType
-ImagePairSymmetricAffineRegistrationFunctionalTemplate<VM>
-::EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step )
-{
-  this->m_FwdXform->SetParamVector( v );
-
-  CoordinateVector vInv;
-  this->m_FwdXform->GetInverse()->GetParamVector( vInv );
-    
-  CoordinateVector gFwd( this->FwdFunctional.ParamVectorDim() );
-  CoordinateVector gBwd( this->BwdFunctional.ParamVectorDim() );
-
-  const typename Self::ReturnType result = this->FwdFunctional.EvaluateWithGradient( v, gFwd, step ) + this->BwdFunctional.EvaluateWithGradient( vInv, gBwd, step );
-  
-  (g = gFwd) += gBwd;
-
-  return result;
-}
-
 ImagePairSymmetricAffineRegistrationFunctional* 
 ImagePairSymmetricAffineRegistrationFunctional
 ::Create( const int metric, 
