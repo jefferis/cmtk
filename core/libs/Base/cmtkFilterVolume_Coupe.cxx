@@ -39,6 +39,32 @@ namespace
 cmtk
 {
 
+Types::DataItem
+FilterVolume::Mean
+( TypedArray::SmartPtr items, const int numItems )
+{
+  Types::DataItem sum = 0.0;
+  Types::DataItem curItem;
+  for ( int i = 0; i < numItems; i++ ) {
+    items->Get(curItem, i);
+    sum += curItem;
+  }
+  return sum / numItems;
+}
+
+Types::DataItem
+FilterVolume::Variance
+( TypedArray::SmartPtr items, const int numItems, const Types::DataItem mean )
+{
+  Types::DataItem sum = 0.0;
+  Types::DataItem curItem;
+  for ( int i = 0; i < numItems; i++ ) {
+    items->Get(curItem, i);
+    sum += pow( curItem - mean, 2 );
+  }
+  return sum / numItems;
+}
+
 void
 FilterVolume::BlockAddInPlace
 ( TypedArray::SmartPtr v1, TypedArray::SmartPtr v2, const int blockSize )
