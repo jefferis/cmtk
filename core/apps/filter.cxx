@@ -43,7 +43,9 @@
 #include <Base/cmtkFilterVolume.h>
 #include <Base/cmtkUnits.h>
 
-#include <Unstable/cmtkFilterVolumeCoupe.h>
+#ifdef CMTK_BUILD_UNSTABLE
+#  include <Unstable/cmtkFilterVolumeCoupe.h>
+#endif
 
 #ifdef CMTK_USE_SQLITE
 #  include <Registration/cmtkImageXformDB.h>
@@ -55,10 +57,12 @@
 bool Studholme = false;
 bool Rohlfing = false;
 
+#ifdef CMTK_BUILD_UNSTABLE
 bool Coupe = false;
 cmtk::Types::Coordinate CoupeBeta = 1;
 //float CoupeBlockRadius = 0;  commented out while testing, this is defined in cmtk::FilterVolume.h
 cmtk::Types::Coordinate CoupeWindowRadius = 5;
+#endif // #ifdef CMTK_BUILD_UNSTABLE
 
 bool Gaussian = false;
 float GaussianWidth = 0.0;
@@ -100,7 +104,9 @@ doMain( const int argc, const char* argv[] )
     cl.AddSwitch( Key( 's', "studholme" ), &Studholme, true, "Use Studholme's consistent filtering" );
     cl.AddOption( Key( 'b', "bin-width" ), &IntensityBinWidth, "Intensity bin width for consistent filtering" );
 
+#ifdef CMTK_BUILD_UNSTABLE
     cl.AddSwitch( Key( 'C', "coupe" ), &Coupe, true, "Use Coupe's blockwise nonlocal means denoising filter" );
+#endif
     cl.AddSwitch( Key( 'R', "rohlfing" ), &Rohlfing, true, "Use Rohlfing's single-image consistent filtering" );
     cl.AddOption( Key( 'G', "intensity-gaussian" ), &IntensityGaussianSigma, "Intensity gaussian sigma for consistent filtering" );
 
@@ -217,11 +223,13 @@ doMain( const int argc, const char* argv[] )
         }
       else 
         {
+#ifdef CMTK_BUILD_UNSTABLE
         if ( Coupe ) 
           {
           cmtk::TypedArray::SmartPtr filtered( cmtk::FilterVolumeCoupe::CoupeFilter( volume, static_cast<int>( CoupeWindowRadius ), CoupeBeta ) );
           volume->SetData( filtered );
           }
+#endif // #ifdef CMTK_BUILD_UNSTABLE
         }
       }      
     }
