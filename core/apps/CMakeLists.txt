@@ -29,6 +29,9 @@
 ##
 
 SET(CMTK_LIBRARIES "cmtkSegmentation;cmtkRecon;cmtkRegistration;cmtkIO;cmtkBase;cmtkNumerics;cmtkSystem")
+IF(CMTK_BUILD_UNSTABLE)
+  SET(CMTK_LIBRARIES "cmtkUnstable;${CMTK_LIBRARIES}")
+ENDIF(CMTK_BUILD_UNSTABLE)
 
 INCLUDE(${CMAKE_SOURCE_DIR}/libs/cmtkLibInitSrcs.cmake)
 

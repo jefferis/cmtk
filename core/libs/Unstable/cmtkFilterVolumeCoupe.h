@@ -30,8 +30,8 @@
 //
 */
 
-#ifndef __cmtkFilterVolume_h_included_
-#define __cmtkFilterVolume_h_included_
+#ifndef __cmtkFilterVolumeCoupe_h_included_
+#define __cmtkFilterVolumeCoupe_h_included_
 
 #include <cmtkconfig.h>
 
@@ -168,4 +168,4 @@ private:
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkFilterVolume_h_included_
+#endif // #ifndef __cmtkFilterVolumeCoupe_h_included_

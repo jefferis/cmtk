@@ -43,6 +43,8 @@
 #include <Base/cmtkFilterVolume.h>
 #include <Base/cmtkUnits.h>
 
+#include <Unstable/cmtkFilterVolumeCoupe.h>
+
 #ifdef CMTK_USE_SQLITE
 #  include <Registration/cmtkImageXformDB.h>
 #endif
@@ -217,7 +219,7 @@ doMain( const int argc, const char* argv[] )
         {
         if ( Coupe ) 
           {
-          cmtk::TypedArray::SmartPtr filtered( cmtk::FilterVolume::CoupeFilter( volume, static_cast<int>( CoupeWindowRadius ), CoupeBeta ) );
+          cmtk::TypedArray::SmartPtr filtered( cmtk::FilterVolumeCoupe::CoupeFilter( volume, static_cast<int>( CoupeWindowRadius ), CoupeBeta ) );
           volume->SetData( filtered );
           }
         }
