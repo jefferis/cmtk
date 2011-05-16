@@ -50,7 +50,6 @@ SET(cmtkBase_SRCS
   cmtkDeformationField_Jacobian.cxx
   cmtkDirectionSet.cxx
   cmtkFilterVolume.cxx
-  cmtkFilterVolume_Coupe.cxx
   cmtkFunctional.cxx
   cmtkGeneralLinearModel.cxx
   cmtkHistogram.cxx

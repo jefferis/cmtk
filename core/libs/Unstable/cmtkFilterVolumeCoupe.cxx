@@ -30,7 +30,7 @@
 //
 */
 
-#include "cmtkFilterVolume.h"
+#include "cmtkFilterVolumeCoupe.h"
 
 #define COUPE_BLOCK_SIZE 27
 #define COUPE_BLOCK_RADIUS 1
@@ -40,7 +40,7 @@ cmtk
 {
 
 Types::DataItem
-FilterVolume::Mean
+FilterVolumeCoupe::Mean
 ( TypedArray::SmartPtr items, const int numItems )
 {
   Types::DataItem sum = 0.0;
@@ -53,7 +53,7 @@ FilterVolume::Mean
 }
 
 Types::DataItem
-FilterVolume::Variance
+FilterVolumeCoupe::Variance
 ( TypedArray::SmartPtr items, const int numItems, const Types::DataItem mean )
 {
   Types::DataItem sum = 0.0;
@@ -66,7 +66,7 @@ FilterVolume::Variance
 }
 
 void
-FilterVolume::BlockAddInPlace
+FilterVolumeCoupe::BlockAddInPlace
 ( TypedArray::SmartPtr v1, TypedArray::SmartPtr v2, const int blockSize )
 {
   Types::DataItem item1;
@@ -79,7 +79,7 @@ FilterVolume::BlockAddInPlace
 }
 
 void
-FilterVolume::BlockSubtract
+FilterVolumeCoupe::BlockSubtract
 ( TypedArray::SmartPtr diff, TypedArray::SmartPtr v1, TypedArray::SmartPtr v2, const int blockSize)
 {
   Types::DataItem item1;
@@ -92,7 +92,7 @@ FilterVolume::BlockSubtract
 }
 
 void
-FilterVolume::BlockConstMult
+FilterVolumeCoupe::BlockConstMult
 ( TypedArray::SmartPtr prod, TypedArray::SmartPtr items, const Types::DataItem mult, const int blockSize )
 {
   Types::DataItem curItem;
@@ -103,7 +103,7 @@ FilterVolume::BlockConstMult
 }
 
 double
-FilterVolume::BlockSquaredDistance
+FilterVolumeCoupe::BlockSquaredDistance
 ( TypedArray::SmartPtr centerBlock, TypedArray::SmartPtr outerBlock, const int blockSize )
 {
   TypedArray::SmartPtr diff = TypedArray::Create( centerBlock->GetType(), blockSize );
@@ -119,7 +119,7 @@ FilterVolume::BlockSquaredDistance
 }
 
 void
-FilterVolume::GetNeighborhood
+FilterVolumeCoupe::GetNeighborhood
 ( TypedArray::SmartPtr neighborhood,
   const int radius,
   const TypedArray* data, const int* dims,
@@ -142,16 +142,16 @@ FilterVolume::GetNeighborhood
 }
 
 void
-FilterVolume::GetCoupeBlock
+FilterVolumeCoupe::GetCoupeBlock
 ( TypedArray::SmartPtr block,
   const TypedArray* data, const int* dims,
   const int x, const int y, const int z )
 {
-  FilterVolume::GetNeighborhood( block, COUPE_BLOCK_RADIUS, data, dims, x, y, z );
+  FilterVolumeCoupe::GetNeighborhood( block, COUPE_BLOCK_RADIUS, data, dims, x, y, z );
 }
 
 double 
-FilterVolume::ComputeCoupeWeight
+FilterVolumeCoupe::ComputeCoupeWeight
 ( const Types::DataItem smoothingParam, 
   TypedArray::SmartPtr centerBlock, 
   TypedArray::SmartPtr outerBlock )
@@ -167,7 +167,7 @@ FilterVolume::ComputeCoupeWeight
 }
 
 void
-FilterVolume::ComputeNLWithinWindow
+FilterVolumeCoupe::ComputeNLWithinWindow
 ( TypedArray::SmartPtr NL,
   const TypedArray* blockLocations,
   const TypedArray* data, const int* dims, const Types::DataItem smoothingParam,
@@ -222,8 +222,8 @@ FilterVolume::ComputeNLWithinWindow
               blockLocations->Get( blockAtCurVox, offset ); 
               if ( blockAtCurVox ) // if there's a block here
                 {
-                //FilterVolume::GetCoupeBlock( curBlock, data, dims, i, j, k );
-                FilterVolume::GetNeighborhood( curBlock, COUPE_BLOCK_RADIUS, data, dims, i, j, k );
+                //FilterVolumeCoupe::GetCoupeBlock( curBlock, data, dims, i, j, k );
+                FilterVolumeCoupe::GetNeighborhood( curBlock, COUPE_BLOCK_RADIUS, data, dims, i, j, k );
                 localMeansMap->Get( curBlockMean, offset );
                 localVariancesMap->Get( curBlockVariance, offset );
                 ratioBlockMean = centerBlockMean / curBlockMean;
@@ -349,7 +349,7 @@ FilterVolume::ComputeNLWithinWindow
 }
 
 TypedArray::SmartPtr
-FilterVolume::CoupeFilter
+FilterVolumeCoupe::CoupeFilter
 ( const UniformVolume* volume, 
   const int windowRadius,
   const float beta )
@@ -435,10 +435,10 @@ FilterVolume::CoupeFilter
       for ( int x = blockRadius; x < dimX - blockRadius; x++ )
 	{
         int offset = x + dimX * ( y + dimY * z );
-        FilterVolume::GetNeighborhood( curBlock, COUPE_BLOCK_RADIUS, inputData, dims, x, y, z );
-        //FilterVolume::GetCoupeBlock( curBlock, inputData, dims, x, y, z );
-        Types::DataItem mean = FilterVolume::Mean( curBlock, COUPE_BLOCK_RADIUS );
-        Types::DataItem variance = FilterVolume::Variance( curBlock, COUPE_BLOCK_RADIUS, mean );
+        FilterVolumeCoupe::GetNeighborhood( curBlock, COUPE_BLOCK_RADIUS, inputData, dims, x, y, z );
+        //FilterVolumeCoupe::GetCoupeBlock( curBlock, inputData, dims, x, y, z );
+        Types::DataItem mean = FilterVolumeCoupe::Mean( curBlock, COUPE_BLOCK_RADIUS );
+        Types::DataItem variance = FilterVolumeCoupe::Variance( curBlock, COUPE_BLOCK_RADIUS, mean );
         localMeansMap->Set( mean, offset);
         localVariancesMap->Set( variance, offset);
         }
@@ -615,7 +615,7 @@ FilterVolume::CoupeFilter
           } // end if ( blockAtCurVox )
         } // end loop through pixels of image 
 
-//                    FilterVolume::ComputeNLWithinWindow( curNL, blockLocations, inputData, dims, smoothingParam,
+//                    FilterVolumeCoupe::ComputeNLWithinWindow( curNL, blockLocations, inputData, dims, smoothingParam,
 //                                                            Cx, Cy, Cz, 
 //                                                            windowRadius, 
 //                                                            beta,

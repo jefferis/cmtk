@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -30,7 +30,7 @@
 
 # Sources of non-templated classes.
 
-SET(cmtkUnstable_SRCS dummy.cxx cmtkTypedArrayNoiseEstimatorBrummer.cxx cmtkTypedArrayNoiseEstimatorMaximumLikelihood.cxx)
+SET(cmtkUnstable_SRCS dummy.cxx cmtkTypedArrayNoiseEstimatorBrummer.cxx cmtkTypedArrayNoiseEstimatorMaximumLikelihood.cxx cmtkFilterVolumeCoupe.cxx)
 
 ADD_LIBRARY(cmtkUnstable ${cmtkUnstable_SRCS})
 IF(CMTK_LIBRARY_PROPERTIES)
