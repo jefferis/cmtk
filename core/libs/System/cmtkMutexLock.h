@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2010 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -68,12 +69,7 @@ public:
     pthread_mutex_init( &this->m_MutexLock, NULL );
 #else
 #ifdef _MSC_VER
-    this->m_MutexObject = CreateMutex( NULL /*default security attributes*/, FALSE /*initially not owned*/, NULL /*unnamed*/ );
-    if ( ! this->m_MutexObject )
-      {
-      std::cerr << "FATAL: cannot create mutex object\n";
-      exit( 1 );
-      }
+    InitializeCriticalSection( &this->m_MutexObject );
 #endif
 #endif
   }
@@ -85,7 +81,7 @@ public:
     pthread_mutex_destroy( &this->m_MutexLock );
 #else
 #ifdef _MSC_VER
-    CloseHandle( this->m_MutexObject );
+    DeleteCriticalSection( &this->m_MutexObject );
 #endif
 #endif
   }
@@ -97,7 +93,7 @@ public:
     pthread_mutex_lock( &this->m_MutexLock );
 #else
 #ifdef _MSC_VER
-    WaitForSingleObject( this->m_MutexObject, INFINITE );
+    EnterCriticalSection( &this->m_MutexObject );
 #endif
 #endif
   }
@@ -109,7 +105,7 @@ public:
     pthread_mutex_unlock( &this->m_MutexLock );
 #else
 #ifdef _MSC_VER
-    ReleaseMutex( this->m_MutexObject );
+    LeaveCriticalSection( &this->m_MutexObject );
 #endif
 #endif
   }
@@ -121,7 +117,7 @@ protected:
    pthread_mutex_t m_MutexLock;
 #else
 #ifdef _MSC_VER
-  HANDLE m_MutexObject;
+  CRITICAL_SECTION m_MutexObject;
 #endif
 #endif
 };
