@@ -208,6 +208,9 @@ private:
     /// Default constructor.
     ReaderBase() : m_BytesRead( 0 ) {}
 
+    /// Virtual destructor.
+    virtual ~ReaderBase() {}
+
     /// Close current file stream.
     virtual void Close() = 0;
 
@@ -262,6 +265,9 @@ private:
     /// Open new stream from filename.
     File( const char *filename );
     
+    /// Virtual destructor.
+    virtual ~File() {}
+
     /// Close current file stream.
     virtual void Close();
     
@@ -309,6 +315,9 @@ private:
     /// Open new pipe from filename.
     Pipe( const char* filename, const char* command );
     
+    /// Virtual destructor.
+    virtual ~Pipe() {}
+
     /// Close current file stream.
     virtual void Close();
     
@@ -355,6 +364,9 @@ private:
     /// Open new stream from filename.
     Zlib( const char *filename );
     
+    /// Virtual destructor.
+    virtual ~Zlib() {}
+
     /// Close current file stream.
     virtual void Close();
     
@@ -403,6 +415,9 @@ private:
     /// Open new stream from filename.
     BZip2( const char *filename );
     
+    /// Virtual destructor.
+    virtual ~BZip2() {}
+
     /// Close current file stream.
     virtual void Close();
     
@@ -445,6 +460,9 @@ private:
     /// Open new stream from filename.
     LZMA( const char *filename );
     
+    /// Virtual destructor.
+    virtual ~LZMA() {}
+
     /// Close current file stream.
     virtual void Close();
     
