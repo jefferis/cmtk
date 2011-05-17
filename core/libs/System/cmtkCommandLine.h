@@ -1086,6 +1086,9 @@ public:
     /// Constructor: set name and description.
     KeyActionGroupType( const std::string& name, const std::string& description ) : m_Name( name ), m_Description( description ) {};
 
+    /// Virtual destructor.
+    virtual ~KeyActionGroupType() {}
+    
     /// Group name.
     std::string m_Name;
 
