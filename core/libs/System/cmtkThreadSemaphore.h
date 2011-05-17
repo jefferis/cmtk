@@ -65,13 +65,16 @@ public:
   /// Post semaphore.
   void Post( const int increment = 1 )
   {
-    this->m_Mutex.Lock();
-    this->m_Counter += increment;
-    
-    if ( this->m_Counter <= 0 )
-      this->m_Delay.Unlock();
-    else
-      this->m_Mutex.Unlock();
+    for ( int i = 0; i < increment; ++i )
+      {
+      this->m_Mutex.Lock();
+      ++this->m_Counter;
+      
+      if ( this->m_Counter <= 0 )
+	this->m_Delay.Unlock();
+      else
+	this->m_Mutex.Unlock();
+      }
   }
   
   /// Wait for semaphore.
