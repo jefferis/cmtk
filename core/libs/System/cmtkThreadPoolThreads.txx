@@ -80,7 +80,7 @@ cmtk::ThreadPoolThreads::Run
   for ( size_t idx = 0; idx < numberOfTasks; ++idx )
     {
     this->m_ThreadWaitingSemaphore.Wait();
-    }  
+    }
 #else
   // without SMP, just run everything sequentially.
   for ( size_t idx = 0; idx < numberOfTasks; ++idx )
