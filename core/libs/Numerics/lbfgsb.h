@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -70,6 +71,9 @@ namespace ap
 class FunctionAndGradient
 {
 public:
+  /// Virtual destructor.
+  virtual ~FunctionAndGradient() {}
+
   /// Evaluate function value and gradient.
   virtual void Evaluate( const ap::real_1d_array& x, ap::real_value_type& f, ap::real_1d_array& g ) = 0;
 
