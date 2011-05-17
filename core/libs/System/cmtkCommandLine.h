@@ -858,6 +858,9 @@ public:
       return "";
     }
 
+    /// Virtual destructor.
+    virtual ~EnumGroupBase() {}
+
     /// Set enum group properties.
     virtual EnumGroupBase* SetProperties( const long int properties )
     {
