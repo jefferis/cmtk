@@ -1,5 +1,9 @@
 Release CMTK-1.7.1:
 
+(r3240) Refactored: all platforms are now using the same thread semaphore
+    implementation, which CMTK provides itself based on mutex locks. On
+    Windows, mutex lock now uses single-thread "critical section" locking,
+    which should improve performance (although apparently not much).
 (r3198) Added: symmetric optimization of forward and inverse affine
     transformation in "registrationx" tool.
 (r3190) Fixed: when reformatting a moving image, the reformatted image now
