@@ -111,9 +111,9 @@ public:
 
 #if defined(CMTK_USE_THREADS)
 protected:
-   /** Low-level mutex lock for POSIX threads.
+  /** Low-level mutex lock for POSIX threads.
     */
-   pthread_mutex_t m_MutexLock;
+  pthread_mutex_t m_MutexLock;
 #else
 #ifdef _MSC_VER
   CRITICAL_SECTION m_MutexObject;
