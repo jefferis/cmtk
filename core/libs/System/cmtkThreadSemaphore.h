@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,16 +36,7 @@
 #include <cmtkconfig.h>
 
 #include <System/cmtkCannotBeCopied.h>
-
-#if defined(CMTK_USE_THREADS)
-#  if defined(__APPLE__) || defined(__CYGWIN__)
-#    include <pthread.h>
-#  else
-#    include <semaphore.h>
-#  endif
-#elif defined(_MSC_VER)
-#  include <Windows.h>
-#endif
+#include <System/cmtkMutexLock.h>
 
 namespace
 cmtk
@@ -55,9 +46,9 @@ cmtk
 //@{
 
 /** Semaphore for thread synchronization.
- * Because apparently Apple engineers are incapable of implementing an interface for unnamed
- * semaphores as provided by <semaphore.h>, we are building the semaphore ourselves on the
- * Mac OS platform using a mutex and a condition variable.
+ * This is implemented using two low-level mutex locks. See here:
+ * http://ptspts.blogspot.com/2010/05/how-to-implement-semaphore-using.html
+ * http://webhome.csc.uvic.ca/~mcheng/460/notes/gensem.pdf
  */
 class ThreadSemaphore :
   /// Make class uncopyable via inheritance.
@@ -65,37 +56,47 @@ class ThreadSemaphore :
 {
 public:
   /// Initialize semaphore.
-  ThreadSemaphore( const unsigned int initial = 0 );
-
-  /// Destroy semaphore object.
-  ~ThreadSemaphore();
+  ThreadSemaphore( const int initial = 0 ) 
+    : m_Counter( initial ) 
+  {
+    this->m_Delay.Lock();
+  }
 
   /// Post semaphore.
-  void Post( const unsigned int increment = 1 );
+  void Post( const int increment = 1 )
+  {
+    this->m_Mutex.Lock();
+    this->m_Counter += increment;
+    
+    if ( this->m_Counter <= 0 )
+      this->m_Delay.Unlock();
+    else
+      this->m_Mutex.Unlock();
+  }
   
   /// Wait for semaphore.
-  void Wait();
+  void Wait()
+  {
+    this->m_Mutex.Lock();
+    --this->m_Counter;
 
-#if defined(CMTK_USE_THREADS)
-#  if defined(__APPLE__) || defined(__CYGWIN__)
-private:
-  /// Counter (Apple only).
-  long int m_Counter;
+    if ( this->m_Counter < 0 )
+      {
+      this->m_Mutex.Unlock();
+      this->m_Delay.Lock();
+      }
+    this->m_Mutex.Unlock();
+  }
 
-  /// Counter mutex lock (Apple only).
-  pthread_mutex_t m_Mutex;
-  
-  /// Condition variable (Apple only).
-  pthread_cond_t m_Condition;
-#  else // POSIX
-  /// Opaque system semaphore object (POSIX only).
-  sem_t m_Semaphore;
-#  endif
-#elif defined(_MSC_VER)
 private:
-  /// Opaque system semaphore object (Windows native only).
-  HANDLE m_Semaphore;
-#endif
+  /// Semaphore value.
+  int m_Counter;
+
+  /// First mutex.
+  MutexLock m_Mutex;
+
+  /// Second mutex.
+  MutexLock m_Delay;
 };
 
 //@}
