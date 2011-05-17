@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,9 +37,9 @@
 
 #include <System/cmtkMutexLock.h>
 
-#ifdef(CMTK_USE_THREADS)
+#if defined(CMTK_USE_THREADS)
 #  include <pthread.h>
-#endif // #ifdef(CMTK_USE_THREADS)
+#endif // #if defined(CMTK_USE_THREADS)
 
 namespace
 cmtk
@@ -49,14 +50,14 @@ cmtk
 
 /// Condition variable for thread synchronization.
 class ConditionVariable : 
-  /// Inherit and hide mutex lock implementation.
-  private MutexLock
+  /// Inherit mutex lock implementation.
+  public MutexLock
 {
 public:
   /// Constructor.
   ConditionVariable()
   {
-#ifdef(CMTK_USE_THREADS)
+#if defined(CMTK_USE_THREADS)
     pthread_cond_init( &this->m_ConditionVariable, NULL );
 #endif
   }
@@ -64,7 +65,7 @@ public:
   /// Destructor.
   ~ConditionVariable()
   {
-#ifdef(CMTK_USE_THREADS)
+#if defined(CMTK_USE_THREADS)
     pthread_cond_destroy( &this->m_ConditionVariable );
 #endif
   }
@@ -72,7 +73,7 @@ public:
   /// Wait for condition variable.
   void Wait()
   {
-#ifdef(CMTK_USE_THREADS)
+#if defined(CMTK_USE_THREADS)
     pthread_cond_wait( &this->m_ConditionVariable, &this->m_MutexLock );
 #endif
   }
@@ -82,7 +83,7 @@ public:
    */
   void Signal()
   {
-#ifdef(CMTK_USE_THREADS)
+#if defined(CMTK_USE_THREADS)
     pthread_cond_signal( &this->m_ConditionVariable );
 #endif
   }
@@ -92,12 +93,12 @@ public:
    */
   void Broadcast()
   {
-#ifdef(CMTK_USE_THREADS)
+#if defined(CMTK_USE_THREADS)
     pthread_cond_broadcast( &this->m_ConditionVariable );
 #endif
   }
 
-#ifdef(CMTK_USE_THREADS)
+#if defined(CMTK_USE_THREADS)
 private:
   /// The condition variable.
   pthread_cond_t m_ConditionVariable;
