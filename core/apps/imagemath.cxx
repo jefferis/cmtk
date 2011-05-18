@@ -981,6 +981,68 @@ CallbackAverage()
 }
 
 void
+CallbackVariance()
+{
+  if ( ! CheckStackTwoMatchingImages( "Variance" ) )
+    return;
+  
+  std::vector<cmtk::UniformVolume::SmartPtr> volPtrs;
+  while ( ImageStack.size() > 0 ) 
+    {
+    if ( ImageStack.size() > 1 )
+      if ( ! CheckStackTwoMatchingImages( "Variance" ) )
+	return;
+    
+    volPtrs.push_back( ImageStack.front() );
+    ImageStack.pop_front();
+    }
+  
+  const std::vector<cmtk::UniformVolume::SmartPtr>& vPtrs = volPtrs; // using const reference, we prevent GCD from segfaulting
+
+  const size_t numberOfPixels = volPtrs[ 0 ]->GetNumberOfPixels();
+  cmtk::TypedArray::SmartPtr varianceArray( cmtk::TypedArray::Create( ResultType, numberOfPixels ) );
+  cmtk::TypedArray* varianceArrayRef = varianceArray.GetPtr(); // need this to work around GCD / clang limitations
+
+#ifdef CMTK_USE_GCD
+  const cmtk::Threads::Stride stride( numberOfPixels );
+  dispatch_apply( stride.NBlocks(), dispatch_get_global_queue(0, 0), ^(size_t b)
+		  { for ( size_t i = stride.From( b ); i < stride.To( b ); ++i )
+#else
+#pragma omp parallel for  
+  for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
+#endif
+    {
+    double sum = 0;
+    double sum2 = 0;
+    size_t nvalues = 0;
+    for ( size_t curVol = 0; curVol < vPtrs.size(); ++curVol )
+      {
+      cmtk::Types::DataItem v;
+      if ( vPtrs[ curVol ]->GetDataAt( v, i ) ) 
+        {
+	++nvalues;
+	sum += v;
+	sum2 += v*v;
+        }
+      }
+    
+    if ( nvalues )
+      {
+      const double mean = sum / nvalues;
+      varianceArrayRef->Set( (nvalues * mean * mean - 2 * mean * sum + sum2)/nvalues, i );      
+      }
+    else
+      varianceArrayRef->SetPaddingAt( i );       
+    }
+#ifdef CMTK_USE_GCD
+		  });
+#endif
+
+  volPtrs[0]->SetData( varianceArray );
+  ImageStack.push_front( volPtrs[0] );
+}
+
+void
 CallbackVoteCombination()
 {
   if ( ! CheckStackTwoMatchingImages( "Vote" ) )
@@ -1565,11 +1627,11 @@ doMain( const int argc, const char *argv[] )
     cl.AddCallback( Key( "sum" ), CallbackSum, "Sum all images on stack, place result on stack" );
     cl.AddCallback( Key( "product" ), CallbackProduct, "Compute product of all images on stack, place result on stack" );
     cl.AddCallback( Key( "average" ), CallbackAverage, "Average all images on stack, place result on stack" );
+    cl.AddCallback( Key( "variance" ), CallbackVariance, "For each pixel, compute variance over all images on stack, place result on stack" );
     cl.AddCallback( Key( "combine-pca" ), CallbackCombinePCA, "Combine images using PCA by projecting onto direction of largest correlation" );
     cl.AddCallback( Key( "max-value" ), CallbackMaxValue, "For each pixel, compute maximum VALUE over all images, place result on stack" );
     cl.AddCallback( Key( "min-value" ), CallbackMinValue, "For each pixel, compute minimum VALUE over all images, place result on stack" );
     cl.AddCallback( Key( "max-index" ), CallbackMaxIndex, "For each pixel, compute INDEX of image with maximum value, place result on stack" );
-    cl.AddCallback( Key( "contract-labels" ), CallbackContractLabels, "Contract multiple label maps into one by selecting the first (over all images on the stack) non-zero label at each pixel" );
     cl.EndGroup();
 
     cl.BeginGroup( "Contract multiple label images", "Operators that contract a stack of label images into a single label image" );
@@ -1577,6 +1639,7 @@ doMain( const int argc, const char *argv[] )
     cl.AddCallback( Key( "staple" ), CallbackSTAPLE, "Combine binary maps on the stack using [arg] iterations of the STAPLE algorithm. "
 		    "The result of this operation is the spatial map of 'weights' W, which are the probabilities of image foreground at each pixel. In 'verbose' "
 		    "mode, estimated expert parameters p (sensitivity) and q (specificity) are also written to standard output." );
+    cl.AddCallback( Key( "contract-labels" ), CallbackContractLabels, "Contract multiple label maps into one by selecting the first (over all images on the stack) non-zero label at each pixel" );
     cl.AddCallback( Key( "mstaple" ), CallbackMultiClassSTAPLE, "Combine multi-label maps on the stack using [arg] iterations of the multi-class STAPLE algorithm."
 		    "The result of this operation is the combined maximum-likeliood multi-label map." );
     cl.AddCallback( Key( "stack-entropy-labels" ), CallbackStackEntropyLabels, "Compute stack entropy at each pixel from integer (label) input images" );
