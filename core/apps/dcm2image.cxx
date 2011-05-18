@@ -215,7 +215,7 @@ ImageFileDCM::ImageFileDCM( const char* filename )
   
   if ( !status.good() ) 
     {
-    cmtk::StdErr << "Error: cannot read DICOM file " << filename << " (" << status.text() << ")" << std::endl;
+    cmtk::StdErr << "Error: cannot read DICOM file " << filename << " (" << status.text() << ")\n";
     throw (0);
     }
   
