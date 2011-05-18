@@ -294,7 +294,7 @@
    </widget>
    <widget class="QMenu" name="menuSlice">
     <property name="title">
-     <string>S&amp;lice</string>
+     <string>Slice</string>
     </property>
     <widget class="QMenu" name="menuSlice_Orientation">
      <property name="title">
