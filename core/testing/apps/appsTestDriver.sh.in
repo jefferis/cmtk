@@ -858,6 +858,10 @@ case ${RUNTEST} in
 	run imagemath --in parc1_bin.hdr parc2_bin.hdr parc3_bin.hdr --average --out ${tmpdir}/average.hdr
 	check_results average.img
 	;;
+    imagemathVariance)
+	run imagemath --in  spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr --variance --out ${tmpdir}/variance.nii
+	check_results variance.nii
+	;;
     imagemathMaskAverage)
         run imagemath --in spgr_3t.hdr spgr_3t_mask.hdr --mask-average --out ${tmpdir}/average.hdr
 	check_results average.img

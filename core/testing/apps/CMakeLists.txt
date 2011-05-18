@@ -289,6 +289,7 @@ IF(NOT CMTK_USE_MPI)
     imagemathDupAddMulDiv
     imagemathThreshAboveBelow
     imagemathAverage 
+    imagemathVariance
     imagemathMaskAverage 
     imagemathXor
     imagemathDupFillMaxValue
