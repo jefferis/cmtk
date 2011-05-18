@@ -215,7 +215,7 @@ ImageFileDCM::ImageFileDCM( const char* filename )
   
   if ( !status.good() ) 
     {
-    std::cerr << "Error: cannot read DICOM file " << filename << " (" << status.text() << ")" << std::endl;
+    cmtk::StdErr << "Error: cannot read DICOM file " << filename << " (" << status.text() << ")" << std::endl;
     throw (0);
     }
   
@@ -577,8 +577,7 @@ traverse_directory( VolumeList& studylist, const std::string& path, const char *
 	    try
 	      {
 	      fileList.push_back( new ImageFileDCM( fullname ) );
-	      cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ];
-	      cmtk::StdErr.flush();
+	      (cmtk::StdErr << "\r" << progress_chars[ ++progress % 4 ]).flush();
 	      }
 	    catch ( ... )
 	      {
@@ -616,7 +615,7 @@ traverse_directory( VolumeList& studylist, const std::string& path, const char *
       }
     }
 
-  std::cout << "\r";
+  cmtk::StdErr << "\r";
   return 0;
 }
 
@@ -641,7 +640,7 @@ doMain ( const int argc, const char *argv[] )
     else
 #endif
       {
-      std::cerr << "Data dictionary not avaliable. Please set DCMDICTPATH variable as path to dicom.dic file.\n";
+      cmtk::StdErr << "Data dictionary not avaliable. Please set DCMDICTPATH variable as path to dicom.dic file.\n";
       throw cmtk::ExitException( 1 );
       }
     }

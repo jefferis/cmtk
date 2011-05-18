@@ -97,7 +97,7 @@ VolumeFromStudy::AssembleVolume( const StudyImageSet* study )
     StudyImageSet::const_iterator it = study->begin();
     while ( it != study->end() ) 
       {      
-      DebugOutput( 1 ) << "\r" << *it;
+      DebugOutput( 2 ) << "\r" << *it;
       
       char fullpath[PATH_MAX];
       snprintf( fullpath, sizeof( fullpath ), "%s%c%s", MountPoints::Translate( study->GetImageDirectory() ), (int)CMTK_PATH_SEPARATOR, it->c_str() );
