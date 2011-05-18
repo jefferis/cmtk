@@ -153,8 +153,21 @@ public:
   {
     return lhs->InstanceNumber < rhs->InstanceNumber;
   }
+
+  void Print() const;
 };
 
+void
+ImageFileDCM::Print() const
+{
+  cmtk::DebugOutput( 1 ) << "  File Name = [" << this->fpath << "/" << this->fname << "]\n";
+  cmtk::DebugOutput( 1 ) << "  SeriesID =    [" << this->SeriesUID << "]\n";
+  cmtk::DebugOutput( 1 ) << "  StudyID =       [" << this->StudyUID << "]\n";
+  cmtk::DebugOutput( 1 ) << "  EchoTime =        [" << this->EchoTime << "]\n";
+  cmtk::DebugOutput( 1 ) << "  RepetitionTime =    [" << this->RepetitionTime << "]\n";
+  cmtk::DebugOutput( 1 ) << "  AcquisitionNumber =   [" << this->AcquisitionNumber << "]\n";
+}
+  
 bool
 ImageFileDCM::Match( const ImageFileDCM& other ) const
 {
@@ -444,7 +457,19 @@ VolumeList::WriteToArchive()
 
   if ( cntSingleImages )
     {
-    cmtk::StdErr << "WARNING: " << cntSingleImages << " single image(s) could not be assigned to multi-image stacks\n";
+    cmtk::StdErr << "WARNING: " << cntSingleImages << " single image(s) could not be assigned to multi-image stacks.\n";
+
+    cmtk::DebugOutput( 1 ) << "\n====================================================\n";
+    cmtk::DebugOutput( 1 ) << "WARNING: " << cntSingleImages << " single image(s) could not be assigned to multi-image stacks:\n\n";
+    for ( const_iterator it = begin(); it != end(); ++it ) 
+      {
+      if ( (*it)->size() == 1 )
+	{
+	(*(*it))[0]->Print();
+	cmtk::DebugOutput( 1 ) << "\n";
+	}
+      }
+    cmtk::DebugOutput( 1 ) << "\n====================================================\n";
     }
   
   for ( std::map< std::string,std::vector<const VolumeDCM*> >::const_iterator it = pathToVolumeMap.begin(); it != pathToVolumeMap.end(); ++it )
