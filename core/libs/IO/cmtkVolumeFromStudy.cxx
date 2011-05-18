@@ -89,7 +89,7 @@ VolumeFromStudy::AssembleVolume( const StudyImageSet* study )
   
   try
     {
-    DebugOutput( 1 ).GetStream().printf( "Reading images from path %s ...\n", MountPoints::Translate( study->GetImageDirectory() ) );
+    DebugOutput( 2 ).GetStream().printf( "Reading images from path %s ...\n", MountPoints::Translate( study->GetImageDirectory() ) );
     
     Progress::Begin( 0, study->size(), 1, "Volume image assembly" );
     
