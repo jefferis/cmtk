@@ -403,11 +403,8 @@ inline std::string &
 replacein(std::string &s, const std::string &sub, const std::string &other)
 {
   assert(!sub.empty());
-  size_t b = 0;
-  for (;;)
+  for ( size_t b = s.find(sub, 0); b != s.npos; b = s.find(sub, b) )
     {
-    b = s.find(sub, b);
-    if (b == s.npos) break;
     s.replace(b, sub.size(), other);
     b += other.size();
     }
@@ -420,8 +417,8 @@ MakeLegalInPath( const std::string& s )
 {
   std::string result = s;
 
-  replacein( result, " ", "_" );      
-  replacein( result, ":", "_" );  
+  result = replacein( result, " ", "_" );      
+  result = replacein( result, ":", "_" );  
 
   return result;
 }
@@ -683,7 +680,14 @@ doMain ( const int argc, const char *argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Output", "Output Options");
-    cl.AddOption( Key( 'O', "out-pattern" ), &OutPathPattern, "Output image path pattern (using printf substitutions)" );
+    cl.AddOption( Key( 'O', "out-pattern" ), &OutPathPattern, "Output image path pattern. Use the following substitutions: "
+		  "printf-style %d variante (image number); "
+		  "%n (image number with automatic number of digits); "
+		  "%N (like %n, but with a hyphen '-' before number if there is more than one image); "
+		  "%D (DICOM SeriesDescription); "
+		  "%R (DICOM RepetitionTime - MRI only)"
+		  "%E (DICOM EchoTime - MRI only)"
+		  "%T (GE RawDataType - vendor-specific, MRI only)" );
     cl.EndGroup();
 
     cl.BeginGroup( "Sorting", "Sorting Options")->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
