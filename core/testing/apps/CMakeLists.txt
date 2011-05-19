@@ -178,6 +178,9 @@ IF(NOT CMTK_USE_MPI)
   SET(testList ${testList} 
     convertxType
     convertxBinarize
+    convertxPruneHighLow
+    convertxPruneHigh
+    convertxPruneLow
     convertxBoundaryMap
     convertxBoundaryMapMultiValue
     convertxConnectedComponents

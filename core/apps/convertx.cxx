@@ -60,6 +60,7 @@
 #include <Base/cmtkImageOperationCropThreshold.h>
 #include <Base/cmtkImageOperationScaleToRange.h>
 #include <Base/cmtkImageOperationThreshold.h>
+#include <Base/cmtkImageOperationPruneHistogram.h>
 #include <Base/cmtkImageOperationSetPadding.h>
 #include <Base/cmtkImageOperationMapValues.h>
 #include <Base/cmtkImageOperationReplace.h>
@@ -145,6 +146,10 @@ doMain( const int argc, const char* argv[] )
     cl.AddCallback( Key( "thresh-below-to-padding" ), &cmtk::ImageOperationThreshold::NewBelowToPadding, "Set all values below threshold to padding value." );
     cl.AddCallback( Key( "thresh-above-to-padding" ), &cmtk::ImageOperationThreshold::NewAboveToPadding, "Set all values above threshold to padding value." );
     cl.AddCallback( Key( "binarize-thresh" ), &cmtk::ImageOperationThreshold::NewBinarize, "Set all values below threshold to 0, all values equal or above to 1." );
+    cl.AddCallback( Key( "prune-histogram" ), &cmtk::ImageOperationPruneHistogram::New, "Threshold image by 'intensity histogram pruning', i.e., for given argument n [histogram bins] "
+		    "determine thresholds such that the 1/n-th fraction of highest and lowest voxels are thresholded." );
+    cl.AddCallback( Key( "prune-histogram-high" ), &cmtk::ImageOperationPruneHistogram::NewHigh, "Like '--prune-histograms', but only remove high intensities." );
+    cl.AddCallback( Key( "prune-histogram-low" ), &cmtk::ImageOperationPruneHistogram::NewLow, "Like '--prune-histograms', but only remove low intensities." );
     cl.EndGroup();
 
     cl.BeginGroup( "Intensity", "Intensity Transformations" );

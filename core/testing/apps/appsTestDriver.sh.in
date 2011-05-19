@@ -246,6 +246,18 @@ case ${RUNTEST} in
         run convertx --binarize-thresh 100 spgr_brain_1.hdr ${tmpdir}/thresh.hdr
 	check_results thresh.img
 	;;
+    convertxPruneHighLow)
+        run convertx --prune-histogram 16 pat001_pet.hdr ${tmpdir}/prune.nii
+	check_results prune.nii
+	;;
+    convertxPruneHigh)
+        run convertx --prune-histogram-high 16 pat001_pet.hdr ${tmpdir}/prune.nii
+	check_results prune.nii
+	;;
+    convertxPruneLow)
+        run convertx --prune-histogram-low 16 pat001_pet.hdr ${tmpdir}/prune.nii
+	check_results prune.nii
+	;;
     convertxBoundaryMap)
 	run convertx --boundary-map parc1.hdr ${tmpdir}/boundary_map.hdr
 	check_results boundary_map.img
