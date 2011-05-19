@@ -519,6 +519,10 @@ case ${RUNTEST} in
 	run dcm2image -O ${tmpdir}/00%n.hdr ${DATADIR}/dcm/
 	check_results 001.hdr 001.img 002.hdr 002.img 003.hdr 003.img
 	;;
+    dcm2imageSubs)
+        run dcm2image -O ${tmpdir}/%D_%R_%E%N.nii ${DATADIR}/dcm/
+	check_results 3-plane-localizer_5.104_1.52-1.nii 3-plane-localizer_5.104_1.52-2.nii 3-plane-localizer_5.104_1.52-3.nii
+	;;
     dcm2imageZ)
 	run dcm2image -O ${tmpdir}/00%n.nii ${DATADIR}/dcmz/
 	check_results 001.nii 002.nii 003.nii

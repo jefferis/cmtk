@@ -240,7 +240,10 @@ IF(NOT CMTK_USE_MPI)
   # ==========================================
   # Tests for "dcm2image" tool
   IF(CMTK_USE_DCMTK)
-    SET(testList ${testList} dcm2image dcm2imageZ)
+    SET(testList ${testList} 
+      dcm2image 
+      dcm2imageSubs
+      dcm2imageZ)
 
     IF(CMTK_BUILD_NRRD)
       SET(testList ${testList} dcm2imageNrrd)
