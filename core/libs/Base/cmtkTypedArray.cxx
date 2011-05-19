@@ -197,23 +197,21 @@ TypedArray
   Histogram<unsigned int>::SmartPtr originalHistogram( this->GetHistogram( numberOfBinsInternal ) );
   
   const size_t oneBinFraction = this->GetDataSize() / numberOfBinsTarget;
-  size_t accumulatedNumberOfSamples = 0;
 
   const Types::DataItemRange range = this->GetRange();
 
   Types::DataItem min = range.m_LowerBound;
   Types::DataItem max = range.m_UpperBound;
 
-  const Types::DataItem originalMax = max;
-
   if ( pruneHi )
     {
+    size_t accumulatedNumberOfSamples = 0;
     for ( size_t binIdx = numberOfBinsInternal-1; binIdx > 0; --binIdx )
       {
       accumulatedNumberOfSamples += (*originalHistogram)[binIdx];
       if ( accumulatedNumberOfSamples > oneBinFraction )
 	{
-	max = min + (max-min)/1024*binIdx;
+	max = range.m_LowerBound + range.Width()/numberOfBinsInternal*binIdx;
 	break;
 	}
       }
@@ -221,12 +219,13 @@ TypedArray
 
   if ( pruneLo )
     {
+    size_t accumulatedNumberOfSamples = 0;
     for ( size_t binIdx = 0; binIdx < numberOfBinsInternal; ++binIdx )
       {
       accumulatedNumberOfSamples += (*originalHistogram)[binIdx];
       if ( accumulatedNumberOfSamples > oneBinFraction )
 	{
-	min = originalMax - (originalMax-min)/numberOfBinsInternal*binIdx;
+	min = range.m_LowerBound + range.Width()/numberOfBinsInternal*binIdx;
 	break;
 	}
       }
