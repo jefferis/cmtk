@@ -599,8 +599,8 @@ case ${RUNTEST} in
 	run_eval "${BINDIR}/describe -m phantom_ax.nii phantom_co.nii phantom_sa.nii > ${tmpdir}/describe.txt"
 	check_results describe.txt
 	;;
-    describeHumanProbe)
-	run_eval "${BINDIR}/describe --read-ras --probe-index 0,0,0 phantom_ax.nii phantom_co.nii phantom_sa.nii > ${tmpdir}/describe.txt"
+    describeHuman)
+	run_eval "${BINDIR}/describe --read-ras phantom_ax.nii phantom_co.nii phantom_sa.nii > ${tmpdir}/describe.txt"
 	check_results describe.txt
 	;;
     describeMRBiorad)

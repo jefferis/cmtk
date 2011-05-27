@@ -81,7 +81,7 @@ SET(testList ${testList}
   describeMR2
   describeMR3
   describeMR4
-  describeHumanProbe  
+  describeHuman
   describeMRBiorad
   describeMRBioradGz
   describeNiftiDetached348)

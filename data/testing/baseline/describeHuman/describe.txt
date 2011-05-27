@@ -14,7 +14,6 @@ Image-to-physical matrix:
  0.000000 0.000000 0.000000 1.000000 
 
 Data type byte (8bit unsigned), range [0.000000 .. 255.000000]
-Probe 00 = 0.000000 (0.000000e+00)
 File: phantom_co.nii
 File format: NIFTI single file [File]
 256 x 3 x 256 voxels
@@ -31,7 +30,6 @@ Image-to-physical matrix:
  0.000000 0.000000 0.000000 1.000000 
 
 Data type byte (8bit unsigned), range [0.000000 .. 255.000000]
-Probe 00 = 0.000000 (0.000000e+00)
 File: phantom_sa.nii
 File format: NIFTI single file [File]
 3 x 256 x 256 voxels
@@ -48,4 +46,3 @@ Image-to-physical matrix:
  0.000000 0.000000 0.000000 1.000000 
 
 Data type byte (8bit unsigned), range [0.000000 .. 255.000000]
-Probe 00 = 0.000000 (0.000000e+00)

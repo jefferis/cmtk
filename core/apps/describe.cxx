@@ -43,7 +43,6 @@
 #include <IO/cmtkVolumeIO.h>
 
 #include <stdio.h>
-#include <list>
 
 #ifdef CMTK_BUILD_MPI
 #    include <mpi.h>
@@ -52,18 +51,6 @@
 const char* ReadOrientation = NULL;
 
 bool MachineReadable = false;
-
-std::list<cmtk::Vector3D> ProbeListIndex;
-
-void
-CallbackProbeIndex( const char* arg )
-{
-  int xyz[3];
-  if ( 3 == sscanf( arg, "%d,%d,%d", xyz, xyz+1, xyz+2 ) )
-    {
-    ProbeListIndex.push_back( cmtk::UniformVolume::CoordinateVectorType( xyz ) );
-    }
-}
 
 int
 doMain( int argc, char *argv[] )
@@ -84,7 +71,6 @@ doMain( int argc, char *argv[] )
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'm', "machine-readable" ), &MachineReadable, true, "Print output in format that is easy to parse automatically." );
     cl.AddSwitch( Key( "read-ras" ), &ReadOrientation, "RAS", "Read image in RAS orientation" );
-    cl.AddCallback( Key( "probe-index" ), CallbackProbeIndex, "Add pixel index for probing." );
 
     cl.Parse( argc, const_cast<const char**>( argv ) );
 
@@ -178,21 +164,6 @@ doMain( int argc, char *argv[] )
 	else
 	  {
 	  cmtk::StdOut << "Image does not contain valid data.\n";
-	  }
-	}
-     
-      size_t index = 0;
-      std::list<cmtk::Vector3D>::const_iterator it = ProbeListIndex.begin();      
-      for ( ; it != ProbeListIndex.end(); ++it, ++index )
-	{
-	cmtk::Types::DataItem data;
-	if ( volume->GetDataAt( data, (int)(*it)[0], (int)(*it)[1], (int)(*it)[2] ) )
-	  {
-	  fprintf( stdout, "Probe %02d = %f (%e)\n", (int)index, data, data );
-	  }
-	else
-	  {
-	  fprintf( stdout, "Probe %02d = NAN\n", (int)index );
 	  }
 	}
       }
