@@ -233,7 +233,7 @@ public:
       }
 
     ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
-    threadPool.Run( EvaluateGradientThread, InfoTaskGradient );
+    threadPool.Run( EvaluateGradientThread, InfoTaskGradient, numberOfTasks );
     
     return current;
   }
@@ -262,7 +262,7 @@ public:
       this->TaskMetric[taskIdx]->Reset();
       }
     
-    ThreadPool::GetGlobalThreadPool().Run( EvaluateCompleteThread, this->InfoTaskComplete );
+    ThreadPool::GetGlobalThreadPool().Run( EvaluateCompleteThread, this->InfoTaskComplete, numberOfTasks );
     
     for ( size_t taskIdx = 0; taskIdx < this->m_NumberOfThreads; ++taskIdx ) 
       {
