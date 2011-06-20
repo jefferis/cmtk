@@ -1,5 +1,7 @@
 Release CMTK-1.7.1:
 
+(r3263) Fixed: crash in SMP nonrigid registration due to incorrect use of
+    number of tasks submitted to thread pool.
 (r3256) Added: missing "histogram pruning" operator in "convertx" tool.
 (r3198) Added: symmetric optimization of forward and inverse affine
     transformation in "registrationx" tool.
