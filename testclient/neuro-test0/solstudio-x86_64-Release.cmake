@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2009 SRI International
+##  Copyright 2004-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -28,7 +28,7 @@
 ##  $LastChangedBy: torstenrohlfing $
 ##
 
-SET (TEST_NAME sun-x86_64-Minimal)
+SET (TEST_NAME solstudio-x86_64-Release)
 SET(CTEST_SITE "neuro-test0")
 SET(CTEST_BUILD_NAME ${TEST_NAME})
 SET(DART_TESTING_TIMEOUT 1800)
@@ -46,19 +46,18 @@ ENDIF(NOT EXISTS ${CTEST_SOURCE_DIRECTORY})
 CTEST_EMPTY_BINARY_DIRECTORY(${CTEST_BINARY_DIRECTORY})
 
 FILE(WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
-CMAKE_C_COMPILER:FILEPATH=/opt/sun/sunstudio12.1/bin/cc
-CMAKE_CXX_COMPILER:FILEPATH=/opt/sun/sunstudio12.1/bin/CC
+CMAKE_C_COMPILER:FILEPATH=/opt/sun/solstudio12.2/bin/cc
+CMAKE_CXX_COMPILER:FILEPATH=/opt/sun/solstudio12.2/bin/CC
 
-BUILDNAME:STRING=Linux-sun-x86_64-Minimal
+BUILDNAME:STRING=Linux-solstudio-x86_64-Release
 BUILD_TESTING:BOOL=ON
 CMTK_DATA_ROOT:PATH=/home/testrunner/nitrc/data
-CMAKE_BUILD_TYPE:STRING=
+CMAKE_BUILD_TYPE:STRING=Release
 CMAKE_CXX_FLAGS:STRING=
 CMAKE_CXX_FLAGS_DEBUG:STRING=-g -DDEBUG
 CMAKE_C_FLAGS:STRING=
 
 CMTK_BUILD_NRRD:BOOL=ON
-
 CMTK_USE_DCMTK:BOOL=ON
 CMTK_USE_SQLITE:BOOL=ON
 ")
