@@ -1,5 +1,7 @@
 Release CMTK-1.7.1:
 
+(r3265) Fixed: potential infinite loop in "imagemath" tool when images of
+    different size were on the stack for a multi-image operation.
 (r3263) Fixed: crash in SMP nonrigid registration due to incorrect use of
     number of tasks submitted to thread pool.
 (r3256) Added: missing "histogram pruning" operator in "convertx" tool.
