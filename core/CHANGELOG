@@ -1,5 +1,8 @@
-Release CMTK-1.7.1:
+Release CMTK-1.7.1 (2011-06-24):
 
+(r3270) Added: new "probe" tool implements "volume probe" functionality
+    formerly provided by "describe" tool, with several extensions such as
+    flexible coordinate specification and interpolation modes.
 (r3265) Fixed: potential infinite loop in "imagemath" tool when images of
     different size were on the stack for a multi-image operation.
 (r3263) Fixed: crash in SMP nonrigid registration due to incorrect use of
