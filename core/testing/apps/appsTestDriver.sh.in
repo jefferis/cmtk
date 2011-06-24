@@ -1290,6 +1290,34 @@ case ${RUNTEST} in
 	run_eval "${BINDIR}/overlap --by-label --first-label 10 --num-labels 10 parc1.hdr parc2.hdr parc3.hdr > ${tmpdir}/overlap.txt"
 	check_results overlap.txt
 	;;
+    probeIndexed)
+        run_eval "echo 98 154 1 |${BINDIR}/probe --indexed phantom_ax.nii.gz > ${tmpdir}/probe.txt"
+	check_results probe.txt
+	;;
+    probeAbsolute)
+        run_eval "echo 91.875 144.375 3 |${BINDIR}/probe --absolute phantom_ax.nii.gz > ${tmpdir}/probe.txt"
+	check_results probe.txt
+	;;
+    probeRelative)
+        run_eval "echo 0.384313725 0.603921569 0.5 |${BINDIR}/probe --relative phantom_ax.nii.gz > ${tmpdir}/probe.txt"
+	check_results probe.txt
+	;;
+    probePhysical)
+        run_eval "echo -27.656 24.844 0 |${BINDIR}/probe --physical phantom_ax.nii.gz > ${tmpdir}/probe.txt"
+	check_results probe.txt
+	;;
+    probeIndexedLinear)
+        run_eval "echo 98.5 154.5 1 |${BINDIR}/probe --linear --indexed phantom_ax.nii.gz > ${tmpdir}/probe.txt"
+	check_results probe.txt
+	;;
+    probeIndexedCubic)
+        run_eval "echo 98.5 154.5 1 |${BINDIR}/probe --cubic --indexed phantom_ax.nii.gz > ${tmpdir}/probe.txt"
+	check_results probe.txt
+	;;
+    probeIndexedSinc)
+        run_eval "echo 98.5 154.5 1 |${BINDIR}/probe --sinc-cosine --indexed phantom_ax.nii.gz > ${tmpdir}/probe.txt"
+	check_results probe.txt
+	;;
     reformatxNoXform)
 	run reformatx --linear -o ${tmpdir}/reformat.hdr --floating vol001_mr_t1.hdr vol001_mr_t0_crop.hdr
 	check_results reformat.img

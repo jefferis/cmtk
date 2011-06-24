@@ -465,6 +465,17 @@ IF(NOT CMTK_USE_MPI)
     overlapFirstByLabelNumLabels)
 
   # ==========================================
+  # Tests for "probe" tool
+  SET(testList ${testList}
+    probeIndexed
+    probeAbsolute
+    probeRelative
+    probePhysical
+    probeIndexedLinear
+    probeIndexedCubic
+    probeIndexedSinc)
+
+  # ==========================================
   # Tests for "registration" tool
   SET(testList ${testList} 
     registrationAffineMrMrMSD

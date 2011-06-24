@@ -155,7 +155,7 @@ doMain( const int argc, const char *argv[] )
 
   CoordinateModeEnum mode;
 
-  cmtk::Interpolators::InterpolationEnum interpolation = cmtk::Interpolators::LINEAR;
+  cmtk::Interpolators::InterpolationEnum interpolation = cmtk::Interpolators::NEAREST_NEIGHBOR;
   int interpolationWindowRadius = 3;
 
   try
@@ -171,6 +171,16 @@ doMain( const int argc, const char *argv[] )
     modeGroup->AddSwitch( Key( "relative" ), COORDINATES_RELATIVE, "Use relative volume coordinates. For each dimension, the valid range is [0,1]." );
     modeGroup->AddSwitch( Key( "physical" ), COORDINATES_PHYSICAL, "Use physical volume coordinates. "
 			  "Each given location is transformed into image coordinates via the inverse of the images's index-to-physical space matrix." );
+
+    cmtk::CommandLine::EnumGroup<cmtk::Interpolators::InterpolationEnum>::SmartPtr interpolationGroup = cl.AddEnum( "interpolation", &interpolation, "Image interpolation method." );
+    interpolationGroup->AddSwitch( Key( "nn" ), cmtk::Interpolators::NEAREST_NEIGHBOR, "Nearest neighbor interpolation" );
+    interpolationGroup->AddSwitch( Key( "linear" ), cmtk::Interpolators::LINEAR, "Trilinear interpolation" );
+    interpolationGroup->AddSwitch( Key( "cubic" ), cmtk::Interpolators::CUBIC, "Tricubic interpolation" );
+    interpolationGroup->AddSwitch( Key( "pv" ), cmtk::Interpolators::PARTIALVOLUME, "Partial volume interpolation" );
+    interpolationGroup->AddSwitch( Key( "sinc-cosine" ), cmtk::Interpolators::COSINE_SINC, "Sinc interpolation with cosine window" );
+    interpolationGroup->AddSwitch( Key( "sinc-hamming" ), cmtk::Interpolators::HAMMING_SINC, "Sinc interpolation with Hamming window" );
+
+    cl.AddOption( Key( "sinc-window-radius" ), &interpolationWindowRadius, "Window radius for Sinc interpolation" );
 
     cl.AddSwitch( Key( "no-reorient" ), &readOrientation, static_cast<const char*>( NULL ), "Disable image reorientation into RAS alignment." );
 
@@ -205,20 +215,27 @@ doMain( const int argc, const char *argv[] )
     double xyz[3];
     if ( 3 == fscanf( infile, "%lf %lf %lf", xyz, xyz+1, xyz+2 ) )
       {
-      cmtk::UniformVolume::SpaceVectorType v;
+      cmtk::UniformVolume::SpaceVectorType v = cmtk::UniformVolume::SpaceVectorType( xyz );
+      
       switch ( mode )
 	{
 	case COORDINATES_INDEXED:
+	  // absolute image coordinate is index times pixel size
+	  v *= volume->m_Delta;
 	  break;
 	case COORDINATES_ABSOLUTE:
-	  v = cmtk::UniformVolume::SpaceVectorType( xyz );
+	  // nothing to do - lookup will be done by absolute coordinate
 	  break;
 	case COORDINATES_RELATIVE:
+	  // absolute image coordinate is relative times volume size
+	  v *= volume->Size;
 	  break;
 	case COORDINATES_PHYSICAL:
+	  // absolute image coordinate is physical transformed by inverse image-to-physical matrix
+	  v *= volume->GetImageToPhysicalMatrix().GetInverse();	  
 	  break;
 	}
-
+      
       cmtk::Types::DataItem value;
       if ( interpolator->GetDataAt( v, value ) )
 	{
