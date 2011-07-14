@@ -3,15 +3,8 @@ The Computational Morphometry Toolkit
 ==========================================================================
 
 
-Release Notes -- CMTK 1.7.1
+Release Notes -- CMTK 1.7.2
 ===========================
-
-This is a bugfix release of the CMTK 1.7 release serious. It fixes a crash in
-SMP nonrigid registration, an infinite loop in "imagemath", and an issue with
-propagating image data padding settings in the "reformatx" tool.
-
-In addition, the "volume probe" functionality of the "describe" tool has been
-moved into a new, more powerful tool, "probe".
 
 For a complete list of changes and fixes, see the CHANGELOG file.
 
