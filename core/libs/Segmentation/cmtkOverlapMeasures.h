@@ -52,17 +52,6 @@ public:
   /// Constructor: allocate local data structures and do precomputations (e.g., count labels, etc).
   OverlapMeasures( const std::vector<TypedArray::SmartPtr>& dataArrays );
 
-  /// Enumeration for different region weightings.
-  typedef enum
-  {
-    /// Equal weighting of all regions.
-    Equal,
-    /// Weighting of regions proportional to volume.
-    Volume,
-    /// Weighting of regions proportional to inverse volume.
-    VolumeInverse
-  } RegionWeightingMode;
-
   /** Compute groupwise overlap with advanced options.
    *\return Number of labels included in computation. If this is zero, the resulting overlap values are invalid.
    */
