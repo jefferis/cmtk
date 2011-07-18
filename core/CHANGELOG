@@ -1,5 +1,7 @@
 Release CMTK-1.7.2:
 
+(r3277) Changed/fixed: padding flag and value are now propagated to the new
+    array when converting the scalar data type of an existing array.
 
 
 Release CMTK-1.7.1 (2011-07-14):
