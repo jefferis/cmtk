@@ -179,8 +179,9 @@ public:
   virtual void* ConvertSubArray( const ScalarDataType dtype, const size_t fromIdx, const size_t len ) const = 0;
 
   /** Convert a sub-array to given primitive data type into existing array.
+   *\return Pointer "destination".
    */
-  virtual void ConvertSubArray( void *const destination, const ScalarDataType dtype, const size_t fromIdx, const size_t len ) const = 0;
+  virtual void* ConvertSubArray( void *const destination, const ScalarDataType dtype, const size_t fromIdx, const size_t len ) const = 0;
 
   /** Convert the array to any given data type.
    * This function uses ConvertSubArray to convert the complete array.

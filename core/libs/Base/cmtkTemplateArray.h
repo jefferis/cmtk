@@ -287,8 +287,9 @@ public:
   virtual void* ConvertSubArray( const ScalarDataType dtype, const size_t fromIdx, const size_t len ) const;
   
   /** Convert a sub-array to given primitive data type into existing array.
+   *\return Pointer provided as "destination".
    */
-  virtual void ConvertSubArray( void *const destination, const ScalarDataType dtype, const size_t fromIdx, const size_t len ) 
+  virtual void* ConvertSubArray( void *const destination, const ScalarDataType dtype, const size_t fromIdx, const size_t len ) 
     const;
 
   /** Change endianness of data.

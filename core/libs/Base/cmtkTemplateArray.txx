@@ -4,7 +4,7 @@
 //
 //  Copyright 2004-2011 SRI International
 //
-y//  This file is part of the Computational Morphometry Toolkit.
+//  This file is part of the Computational Morphometry Toolkit.
 //
 //  http://www.nitrc.org/projects/cmtk/
 //
@@ -191,8 +191,12 @@ TypedArray::SmartPtr
 TemplateArray<T>
 ::Convert( const ScalarDataType dtype ) const 
 {
-  void* data = this->ConvertArray( dtype );
-  return TypedArray::Create( dtype, data, this->DataSize, true /* freeArray */ );
+  TypedArray::SmartPtr result = TypedArray::Create( dtype, this->ConvertArray( dtype ), this->DataSize, true /* freeArray */ );
+
+  if ( this->PaddingFlag )
+    result->SetPaddingValue( this->Padding );
+
+  return result;
 }
 
 template<class T>
@@ -201,9 +205,7 @@ TemplateArray<T>
 ::ConvertSubArray 
 ( const ScalarDataType dtype, const size_t fromIdx, const size_t len ) const 
 {
-  void* data = Memory::AllocateArray<char>( len * TypeItemSize( dtype ) );
-  this->ConvertSubArray( data, dtype, fromIdx, len );
-  return data;
+  return this->ConvertSubArray( Memory::AllocateArray<char>( len * TypeItemSize( dtype ) ), dtype, fromIdx, len );
 }
 
 template<class T>
@@ -257,7 +259,7 @@ TemplateArray<T>
 }
 
 template<class T>
-void TemplateArray<T>
+void* TemplateArray<T>
 ::ConvertSubArray 
 ( void *const destination, const ScalarDataType dtype, const size_t fromIdx, const size_t len ) const 
 {
@@ -312,6 +314,8 @@ void TemplateArray<T>
 	break;
       }
     }
+
+  return destination;
 }
 
 template<class T>
