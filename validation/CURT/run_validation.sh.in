@@ -1,0 +1,529 @@
+#!/bin/sh
+
+ANTS_BIN_DIR=@ANTS_BIN_DIR@
+CMTK_BIN_DIR=@CMTK_BIN_DIR@
+
+ants()
+{
+    ${ANTS_BIN_DIR}/$*
+}
+
+cmtk()
+{
+    ${CMTK_BIN_DIR}/$*
+}
+
+# check whether file needs update due to updated dependencies
+needs_update()
+{
+    local target=$1
+    if test ! -e ${target}; then
+	if test -e ${target}.gz; then
+	    target=${target}.gz
+	fi
+    fi
+
+    if [ -e ${target}.lock ]; then
+	echo "========================================================================"
+	echo "TARGET LOCKED ${target}"
+	echo "========================================================================"
+	
+	return 1
+    fi
+
+    shift
+    local sources="$*"
+    for source in ${sources}; do
+	if [ ! -e ${source} ]; then
+	    if [ ! -e ${source}.gz ]; then
+		echo "========================================================================"
+		echo "TARGET ${target}"
+		echo "MISSING SOURCE ${source}"
+		echo "========================================================================"
+		
+		return 1
+	    fi
+	fi
+	
+	if [ -e ${source}.lock ]; then
+	    echo "========================================================================"
+	    echo "TARGET ${target}"
+	    echo "SOURCE LOCKED ${source}"
+	    echo "========================================================================"
+	    
+	    return 1
+	fi
+    done
+
+    local source
+
+    if [ ! -e ${target} ]; then
+	echo "========================================================================"
+	echo "CREATE ${target}"
+        echo "========================================================================"
+
+	return 0
+    fi
+
+    for source in ${sources}; do
+	if test ! -e ${source}; then
+	    if test -e ${source}.gz; then
+		source=${source}.gz
+	    fi
+	fi
+	
+	if test ${target} -ot ${source}; then
+            echo "========================================================================"
+	    echo "UPDATE ${target}"
+            echo "DUE TO ${source}"
+            echo "========================================================================"
+
+	    return 0
+	fi
+    done
+
+    return 1
+}
+
+# NFS-safe (hopefully) file locking.
+lockfile_create()
+{
+    local lockfile=$1.lock
+    local hostpid=`hostname`-$$
+
+    if [ -e ${lockfile} ]; then
+	# lockfile already exists, so clearly we were not the first
+	return 1;
+    fi
+
+    mkdir -p `dirname ${lockfile}`
+    echo ${hostpid} >> ${lockfile}
+
+    if [ `head -n 1 ${lockfile}` != ${hostpid} ]; then
+	# first one to write PID was not us
+	return 1;
+    fi
+
+    trap "rm -f ${lockfile}; exit" INT TERM EXIT
+    return 0;
+}
+
+lockfile_delete()
+{
+    local file=${1}
+    local lockfile=${file}.lock
+
+    if [ -f ${file} ]; then
+	touch --no-create -r ${lockfile} ${file}
+    else
+	touch --no-create -r ${lockfile} ${file}.gz
+    fi
+
+    rm -f ${lockfile}
+    trap - INT TERM EXIT
+}
+
+#
+# Combine dependency checking with locking of target
+#
+needs_update_and_lock()
+{
+    if needs_update $*; then
+	if lockfile_create $1; then
+	    return 0
+	fi
+    fi
+    return 1
+}
+
+#
+# Fill holes in IBSR tissue maps
+#
+fill_holes()
+{
+    local ibsr=$1
+
+    local in_seg=images/${ibsr}/${ibsr}_segTRI_ana.nii
+    local in_ana=images/${ibsr}/${ibsr}_ana.nii
+    local out_seg=images/${ibsr}/${ibsr}_segTRI_fill_ana.nii
+    
+    if needs_update_and_lock ${out_seg} ${in_seg} ${in_ana}; then
+	cmtk imagemath --echo --in ${in_ana} --threshold-above 1 --in ${in_seg} --max-value --out ${out_seg}
+	lockfile_delete ${out_seg}
+    fi
+}
+
+#
+# Statistics of the original IBSR images (pixel counts, ROI volumes, etc.)
+#
+statistics()
+{
+    local ibsr=$1
+    
+    local inp=images/${ibsr}/${ibsr}_segTRI_fill_ana.nii
+    local out=statistics/ibsr/${ibsr}_segTRI_ana.txt 
+    if needs_update_and_lock ${out} ${inp}; then
+	cmtk statistics -l ${inp} | grep ^0 | gawk '{print $1 "\t" $2}' > ${out}
+	lockfile_delete ${out}
+    fi
+    
+    local inp=images/${ibsr}/${ibsr}_seg_ana.nii
+    local out=statistics/ibsr/${ibsr}_seg_ana.txt 
+    if needs_update_and_lock ${out} ${inp}; then
+	cmtk statistics -l ${inp} | grep ^0 | gawk '{print $1 "\t" $2}' > ${out}
+	lockfile_delete ${out}
+    fi
+}
+
+pair_affine()
+{
+    local iref=$1
+    local iflt=$2
+
+    local ref_hdr=images/${iref}/${iref}_ana.nii
+    local flt_hdr=images/${iflt}/${iflt}_ana.nii
+
+    local out_xfm=registration/affine/${iref}_${iflt}.list
+    if needs_update_and_lock ${out_xfm} ${ref_hdr} ${flt_hdr}; then
+	cmtk registration --echo --auto-multi-levels 4 --nmi --dofs 6,9 -o ${out_xfm} ${ref_hdr} ${flt_hdr}
+	lockfile_delete ${out_xfm}
+    fi
+}
+
+pair_ants()
+{
+    local iref=$1
+    local iflt=$2
+
+    local ref_hdr=images/${iref}/${iref}_ana.nii.gz
+    local flt_hdr=images/${iflt}/${iflt}_ana.nii.gz
+
+    local out_xfm=registration/ants/${iref}_${iflt}/
+    if needs_update_and_lock ${out_xfm}Warpxvec.nii.gz ${ref_hdr} ${flt_hdr}; then
+	ants ANTS 3 -t SyN[0.25] -r Gauss[3,0] -m CC[${ref_hdr},${flt_hdr},1,4] -o ${out_xfm}
+	lockfile_delete ${out_xfm}Warpxvec.nii.gz
+    fi
+}
+
+pair_warp()
+{
+    local iref=$1
+    local iflt=$2
+
+    local in_xfm=registration/affine/${iref}_${iflt}.list
+    local out_xfm=registration/warp/${iref}_${iflt}.list
+    if needs_update_and_lock ${out_xfm} ${in_xfm}; then
+	cmtk warp --echo --force-outside-value 0 --grid-spacing 40 --coarsest 4 --relax-to-unfold --refine 3 --jacobian-weight 1e-4 --ncc -e 16 -a 0.125 -o ${out_xfm} ${in_xfm} && gzip -9f ${out_xfm}/registration
+	lockfile_delete ${out_xfm}
+    fi
+}
+
+pair_curt()
+{
+    local iref=$1
+    local iflt=$2
+
+    local ref_ana=images/${iref}/${iref}_ana.nii
+    local flt_ana=images/${iflt}/${iflt}_ana.nii
+
+    local flt_tri=images/${iflt}/${iflt}_segTRI_fill_ana.nii
+    local flt_seg=images/${iflt}/${iflt}_seg_ana.nii
+
+    local out_ana=reformat/curt/${iref}_${iflt}_ana.nii.gz
+    local out_tri=reformat/curt/${iref}_${iflt}_segTRI_ana.nii.gz
+    local out_seg=reformat/curt/${iref}_${iflt}_seg_ana.nii.gz
+    local out_ic=consistency/curt/${iref}_${iflt}.txt
+
+    if needs_update_and_lock ${out_tri} ${ref_ana} ${flt_ana} ${flt_tri} ${flt_seg}; then
+	tmpdir=`mktemp -d`
+
+	local wd=${PWD}
+	pushd ${tmpdir} 
+	cmtk curt --pad --echo --ic-error-file ${wd}/${out_ic} ${wd}/${ref_ana} ${wd}/${flt_ana} ${wd}/${flt_tri} ${wd}/${flt_seg}
+	mv reformat.nii.gz ${wd}/${out_ana}
+	mv labels0.nii.gz ${wd}/${out_tri}
+	mv labels1.nii.gz ${wd}/${out_seg}
+
+	popd
+
+	rm -rf ${tmpdir}
+	lockfile_delete ${out_tri}
+    fi
+}
+
+pair_reformat()
+{
+    local iref=$1
+    local iflt=$2
+
+    local ref_ana=images/${iref}/${iref}_ana.nii
+
+    local flt_tri=images/${iflt}/${iflt}_segTRI_fill_ana.nii
+    local flt_seg=images/${iflt}/${iflt}_seg_ana.nii
+    local flt_ana=images/${iflt}/${iflt}_ana.nii
+    
+    for xform in affine warp; do
+	local xfm=registration/${xform}/${iref}_${iflt}.list
+	local out_tri=reformat/${xform}/${iref}_${iflt}_segTRI_ana.nii.gz
+	if needs_update_and_lock ${out_tri} ${ref_ana} ${xfm} ${flt_tri}; then
+	    cmtk reformatx --echo --nn -o ${out_tri} --floating ${flt_tri} ${ref_ana} ${xfm}
+	    lockfile_delete ${out_tri}
+	fi
+	
+	local out_seg=reformat/${xform}/${iref}_${iflt}_seg_ana.nii.gz
+	if needs_update_and_lock ${out_seg} ${ref_ana} ${xfm} ${flt_seg}; then
+	    cmtk reformatx --echo --nn -o ${out_seg} --floating ${flt_seg} ${ref_ana} ${xfm}
+	    lockfile_delete ${out_seg}
+	fi
+	
+	local out_ana=reformat/${xform}/${iref}_${iflt}_ana.nii.gz
+	if needs_update_and_lock ${out_ana} ${ref_ana} ${xfm} ${flt_ana}; then
+	    cmtk reformatx --echo --linear -o ${out_ana} --floating ${flt_ana} ${ref_ana} ${xfm}
+	    lockfile_delete ${out_ana}
+	fi
+    done
+    
+    local xfm=registration/ants/${iref}_${iflt}/
+    
+    local out_tri=reformat/ants/${iref}_${iflt}_segTRI_ana.nii.gz
+    if needs_update_and_lock ${out_tri} ${xfm}Warpxvec.nii.gz; then
+	ants WarpImageMultiTransform 3 ${flt_tri} ${out_tri} -R ${ref_ana} --use-NN ${xfm}Warp.nii.gz ${xfm}Affine.txt
+	lockfile_delete ${out_tri}
+    fi
+    
+    local out_seg=reformat/ants/${iref}_${iflt}_seg_ana.nii.gz
+    if needs_update_and_lock ${out_seg} ${xfm}Warpxvec.nii.gz; then
+	ants WarpImageMultiTransform 3 ${flt_seg} ${out_seg} -R ${ref_ana} --use-NN ${xfm}Warp.nii.gz ${xfm}Affine.txt
+	lockfile_delete ${out_seg}
+    fi
+    
+    local out_ana=reformat/ants/${iref}_${iflt}_ana.nii.gz
+    if needs_update_and_lock ${out_ana} ${xfm}Warpxvec.nii.gz; then
+	ants WarpImageMultiTransform 3 ${flt_ana} ${out_ana} -R ${ref_ana} ${xfm}Warp.nii.gz ${xfm}Affine.txt
+	lockfile_delete ${out_ana}
+    fi
+}
+
+pair_normalize_reformats()
+{
+    local iref=$1
+    local iflt=$2
+
+    local ref_ana=images/${iref}/${iref}_ana.nii
+
+    for xform in affine warp curt ants; do
+	local flt_ana=reformat/${xform}/${iref}_${iflt}_ana.nii.gz
+	local out_ana=reformat/${xform}/${iref}_${iflt}_ana_norm.nii.gz
+	
+	if needs_update_and_lock ${out_ana} ${flt_ana}; then
+	    cmtk imagemath --set-padding-value 0 --in ${flt_ana} ${ref_ana} --match-mean-sdev --out ${out_ana}
+	    lockfile_delete ${out_ana}
+	fi
+    done
+}
+
+pair_overlap()
+{
+    local iref=$1
+    local iflt=$2
+
+    for xform in affine warp curt ants; do
+	    
+	local ref_seg=images/${iref}/${iref}_seg_ana.nii
+	local flt_seg=reformat/${xform}/${iref}_${iflt}_seg_ana.nii.gz
+	local out_txt=overlap/${xform}/${iref}_${iflt}_seg_ana.txt
+	if needs_update_and_lock ${out_txt} ${flt_seg} ${ref_seg}; then
+	    cmtk similarity --echo -l ${ref_seg} ${flt_seg} > ${out_txt}
+	    lockfile_delete ${out_txt}
+	fi
+	
+	local out_txt=overlap/${xform}/${iref}_${iflt}_seg_ana_gtc.txt
+	if needs_update_and_lock ${out_txt} ${flt_seg} ${ref_seg}; then
+	    cmtk overlap --by-label --echo ${ref_seg} ${flt_seg} > ${out_txt}
+	    lockfile_delete ${out_txt}
+	fi
+	
+	local ref_tri=images/${iref}/${iref}_segTRI_fill_ana.nii
+	local flt_tri=reformat/${xform}/${iref}_${iflt}_segTRI_ana.nii.gz
+	local out_txt=overlap/${xform}/${iref}_${iflt}_segTRI_ana.txt
+	if needs_update_and_lock ${out_txt} ${flt_tri} ${ref_tri}; then
+	    cmtk similarity --echo -l ${ref_tri} ${flt_tri} > ${out_txt}
+	    lockfile_delete ${out_txt}
+	fi
+	
+	local ref_ana=images/${iref}/${iref}_ana.nii
+	local flt_ana=reformat/${xform}/${iref}_${iflt}_ana.nii.gz
+	local out_txt=similarity/${xform}/${iref}_${iflt}_ana.txt
+	if needs_update_and_lock ${out_txt} ${flt_ana} ${ref_ana}; then
+	    cmtk similarity --echo --pad0 0 ${ref_ana} ${flt_ana} | fgrep SIM > ${out_txt}
+	    lockfile_delete ${out_txt}
+	fi
+
+	local ref_ana=images/${iref}/${iref}_ana.nii
+	local flt_ana=reformat/${xform}/${iref}_${iflt}_ana_norm.nii.gz
+	local out_txt=similarity/${xform}/${iref}_${iflt}_ana_norm.txt
+	if needs_update_and_lock ${out_txt} ${flt_ana} ${ref_ana}; then
+	    cmtk similarity --echo --pad0 0 ${ref_ana} ${flt_ana} | fgrep SIM > ${out_txt}
+	    lockfile_delete ${out_txt}
+	fi
+    done
+}
+
+pair_ic_error()
+{
+    local iref=$1
+    local iflt=$2
+
+    local ref_nii=images/${iref}/${iref}_ana.nii
+
+    for xform in affine warp; do
+	local xfm_fwd=registration/${xform}/${iref}_${iflt}.list
+	local xfm_bwd=registration/${xform}/${iflt}_${iref}.list
+	
+	local out_txt=consistency/${xform}/${iref}_${iflt}.txt
+	if needs_update_and_lock ${out_txt} ${xfm_fwd} ${xfm_bwd}; then
+	    tmpdir=`mktemp -d`
+	    cmtk xform2scalar --echo -o ${tmpdir}/icmap.nii ${ref_nii} ${xfm_fwd} --inverse ${xfm_bwd}
+	    cmtk statistics --mask ${ref_nii} ${tmpdir}/icmap.nii > ${out_txt}
+	    if [ ! -s ${out_txt} ]; then
+		rm ${out_txt}
+	    fi
+	    rm -rf ${tmpdir}
+	    lockfile_delete ${out_txt}
+	fi
+    done
+    
+    # ANTS
+    local xfm_fwd=registration/ants/${iref}_${iflt}/
+    local out_txt=consistency/ants/${iref}_${iflt}.txt
+    if needs_update_and_lock ${out_txt} ${xfm_fwd}; then
+	local tmpdir=`mktemp -d`
+	ants ComposeMultiTransform 3 ${tmpdir}/fbwarp.nii -R ${ref_nii} ${xfm_fwd}/Warp.nii.gz ${xfm_fwd}/InverseWarp.nii.gz
+	cmtk imagemath --in ${tmpdir}/fbwarp*.nii* --all --sqr --sum --sqrt --out ${tmpdir}/icmap.nii
+	cmtk statistics --mask ${ref_nii} ${tmpdir}/icmap.nii > ${out_txt}
+	if [ ! -s ${out_txt} ]; then
+	    rm ${out_txt}
+	fi
+	rm -rf ${tmpdir}
+	lockfile_delete ${out_txt}
+    fi
+    
+    # ANTS w/ separate fwd/bwd transformations
+    local xfm_fwd=registration/ants/${iref}_${iflt}/
+    local xfm_bwd=registration/ants/${iflt}_${iref}/
+    local out_txt=consistency/ants_separate/${iref}_${iflt}.txt
+    if needs_update_and_lock ${out_txt} ${xfm_fwd}; then
+	local tmpdir=`mktemp -d`
+	ants ComposeMultiTransform 3 ${tmpdir}/fbwarp.nii -R ${ref_nii} ${xfm_fwd}/Warp.nii.gz ${xfm_fwd}/Affine.txt -i ${xfm_bwd}/Affine.txt ${xfm_bwd}/Warp.nii.gz
+	cmtk imagemath --in ${tmpdir}/fbwarp*.nii* --all --sqr --sum --sqrt --out ${tmpdir}/icmap.nii
+	cmtk statistics --mask ${ref_nii} ${tmpdir}/icmap.nii > ${out_txt}
+	if [ ! -s ${out_txt} ]; then
+	    rm ${out_txt}
+	fi
+	rm -rf ${tmpdir}
+	lockfile_delete ${out_txt}
+    fi
+}
+
+pair_statistics()
+{
+    local iref=$1
+    local iflt=$2
+
+    for xform in affine warp ants curt; do	
+
+	local inp=reformat/${xform}/${iref}_${iflt}_segTRI_ana.nii
+	local out=statistics/${xform}/${iref}_${iflt}_segTRI_ana.txt 
+	if needs_update_and_lock ${out} ${inp}; then
+	    cmtk statistics -l ${inp} | grep ^0 | gawk '{print $1 "\t" $2}' > ${out}
+	    lockfile_delete ${out}
+	fi
+
+	local inp=reformat/${xform}/${iref}_${iflt}_seg_ana.nii
+	local out=statistics/${xform}/${iref}_${iflt}_seg_ana.txt 
+	if needs_update_and_lock ${out} ${inp}; then
+	    cmtk statistics -l ${inp} | grep ^0 | gawk '{print $1 "\t" $2}' > ${out}
+	    lockfile_delete ${out}
+	fi
+	
+    done
+}
+
+all_pairs()
+{
+    local iref=$1
+    local iflt=""
+    local cmd=""
+
+    for cmd in pair_affine pair_warp pair_ants pair_curt pair_reformat pair_normalize_reformats pair_overlap pair_ic_error pair_statistics; do
+	for iflt in ${ILIST}; do
+	    if [ ${iref} != ${iflt} ]; then
+		${cmd} ${iref} ${iflt}
+	    fi
+	done
+    done
+}
+
+ILIST=`cd images; ls`
+for cmd in fill_holes statistics all_pairs; do
+    for i in ${ILIST}; do
+	${cmd} ${i}
+    done
+done
+
+#
+# Compute groupwise averages and standard deviation images
+#
+for xform in affine warp ants curt; do
+    inp=`ls reformat/${xform}/IBSR_01_IBSR_??_ana_norm.nii*`
+
+    out=groupwise/${xform}/IBSR_01_group_avg.nii
+    if needs_update_and_lock ${out} ${inp}; then
+	cmtk imagemath --in ${inp} --average --out ${out}
+	lockfile_delete ${out}
+    fi
+    
+    out=groupwise/${xform}/IBSR_01_group_sdv.nii
+    if needs_update_and_lock ${out} ${inp}; then
+	cmtk imagemath --in ${inp} --variance --sqrt --out ${out}
+	lockfile_delete ${out}
+    fi
+done
+
+#
+# Gather image imilarity measures into summary files.
+#
+
+for xform in affine warp ants curt; do
+    inp=`ls similarity/${xform}/IBSR_*ana_norm.txt`
+
+    out=summary/RMS/${xform}.txt
+    if needs_update_and_lock ${out} ${inp}; then
+	echo ${xform} > ${out}
+	fgrep SIMval ${inp} | gawk '{ print sqrt($3) }' >> ${out}
+	lockfile_delete ${out}
+    fi
+
+    out=summary/NCC/${xform}.txt
+    if needs_update_and_lock ${out} ${inp}; then
+	echo ${xform} > ${out}
+	fgrep SIMval ${inp} | gawk '{ print $5 }' >> ${out}
+	lockfile_delete ${out}
+    fi
+
+    out=summary/NMI/${xform}.txt
+    if needs_update_and_lock ${out} ${inp}; then
+	echo ${xform} > ${out}
+	fgrep SIMval ${inp} | gawk '{ print $8 }' >> ${out}
+	lockfile_delete ${out}
+    fi
+done
+
+for metric in RMS NCC NMI; do
+    inp=`ls summary/${metric}/*.txt`
+    out=summary/${metric}/complete.txt
+    if needs_update_and_lock ${out} ${inp}; then
+	paste ${inp} > ${out}
+	lockfile_delete ${out}
+    fi
+done
