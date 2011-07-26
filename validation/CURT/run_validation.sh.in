@@ -3,6 +3,8 @@
 ANTS_BIN_DIR=@ANTS_BIN_DIR@
 CMTK_BIN_DIR=@CMTK_BIN_DIR@
 
+IBSR_DIR=@IBSR_DIR@
+
 ants()
 {
     ${ANTS_BIN_DIR}/$*
@@ -134,6 +136,26 @@ needs_update_and_lock()
 	fi
     fi
     return 1
+}
+
+#
+# Import IBSR images: reorient, convert to NIFTI, apply brain mask, crop
+#
+import_ibsr()
+{
+    for ibsr in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18; do
+	local ori=IBSR/IBSR_${ibsr}/orientation
+	local msk=IBSR/IBSR_${ibsr}/IBSR_${ibsr}_mask.nii
+
+	for img in ana seg_ana segTRI_ana; do
+	    local inp=${IBSR_DIR}/IBSR_${ibsr}/IBSR_${ibsr}_${img}.hdr
+	    local out=images/IBSR_${ibsr}/IBSR_${ibsr}_${img}.nii
+	    if needs_update_and_lock ${out} ${inp} ${msk} ${ori}; then
+		cmtk reorient -i `cat ${ori}` ${inp} ${out} && cmtk convertx --mask ${msk} ${out} ${out}
+		lockfile_delete ${out}
+	    fi
+	done
+    done
 }
 
 #
@@ -465,7 +487,7 @@ all_pairs()
 }
 
 ILIST=`cd images; ls`
-for cmd in fill_holes statistics all_pairs; do
+for cmd in import_ibsr fill_holes statistics all_pairs; do
     for i in ${ILIST}; do
 	${cmd} ${i}
     done
