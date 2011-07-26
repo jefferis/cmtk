@@ -1,15 +1,49 @@
 #!/bin/sh
 
-ANTS_BIN_DIR=@ANTS_BIN_DIR@
-CMTK_BIN_DIR=@CMTK_BIN_DIR@
+##
+##  Copyright 2011 SRI International
+##
+##  This file is part of the Computational Morphometry Toolkit.
+##
+##  http://www.nitrc.org/projects/cmtk/
+##
+##  The Computational Morphometry Toolkit is free software: you can
+##  redistribute it and/or modify it under the terms of the GNU General Public
+##  License as published by the Free Software Foundation, either version 3 of
+##  the License, or (at your option) any later version.
+##
+##  The Computational Morphometry Toolkit is distributed in the hope that it
+##  will be useful, but WITHOUT ANY WARRANTY; without even the implied
+##  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License along
+##  with the Computational Morphometry Toolkit.  If not, see
+##  <http://www.gnu.org/licenses/>.
+##
+##  $Revision: 3281 $
+##
+##  $LastChangedDate: 2011-07-26 14:38:18 -0700 (Tue, 26 Jul 2011) $
+##
+##  $LastChangedBy: torstenrohlfing $
+##
 
+# Directory where the "ANTS" exectuable (and all other ANTs tools) resides
+ANTS_BIN_DIR=@ANTS_BIN_DIR@
+
+# CMTK's binary directory
+CMTK_BIN_DIR=@CMTK_BINARY_DIR@
+
+# Path to the original IBSR data - this is the directory where the IBSR_01 through IBSR_18 per-case directories reside
 IBSR_DIR=@IBSR_DIR@
 
+# Shortcut wrapper for ANTs
 ants()
 {
     ${ANTS_BIN_DIR}/$*
 }
 
+# Shortcut wrapper for CMTK
 cmtk()
 {
     ${CMTK_BIN_DIR}/$*

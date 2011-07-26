@@ -59,7 +59,7 @@ SET(CMTK_LIBRARY_DEPENDS_FILE       CMTKLibraryDepends.cmake)
 SET(CMTK_LIBRARY_DIRS_CONFIG ${CMTK_LIBRARY_PATH})
 
 # Binary directory.
-SET(CMTK_BINARY_DIR_CONFIG ${CMTK_BINARY_DIR})
+SET(CMTK_BINARY_DIR_CONFIG ${CMTK_EXECUTABLE_PATH})
 
 # Determine the include directories needed.
 SET(CMTK_INCLUDE_DIRS_CONFIG 
@@ -117,7 +117,7 @@ SET(CMTK_LIBRARY_DIRS_CONFIG "\${CMTK_INSTALL_PREFIX}/${CMTK_INSTALL_LIB_DIR}")
 SET(CMTK_LIBRARY_DIRS_CONCUR "")  
 
 # Binary directory.
-SET(CMTK_BINARY_DIR_CONFIG ${CMAKE_INSTALL_PREFIX}${CMTK_INSTALL_BIN_DIR})
+SET(CMTK_BINARY_DIR_CONFIG ${CMAKE_INSTALL_PREFIX}/${CMTK_INSTALL_BIN_DIR})
 
 #-----------------------------------------------------------------------------
 # Configure CMTKConfig.cmake for the install tree.
