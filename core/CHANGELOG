@@ -1,6 +1,6 @@
 Release CMTK-1.8.0:
 
-(r3282) Fixed: external projects can now find and use CMTK properly. The
+(r3288) Fixed: external projects can now find and use CMTK properly. The
     "validation" tree has been moved out of "core/" and now uses CMTK's core like
     any other external project.
 (r3277) Changed/fixed: padding flag and value are now propagated to the new
