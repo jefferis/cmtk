@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -58,17 +58,17 @@ SET(CMTK_VERSION_PATCH "@CMTK_VERSION_PATCH@")
 SET(CMTK_USE_FILE "@CMTK_CONFIG_PREFIX_CONFIG@/@CMTK_USE_FILE@")
 
 # The build settings file.
-SET(CMTK_BUILD_SETTINGS_FILE "${CMTK_CONFIG_PREFIX_CONFIG}/@CMTK_BUILD_SETTINGS_FILE@")
+SET(CMTK_BUILD_SETTINGS_FILE "@CMTK_CONFIG_PREFIX_CONFIG@/@CMTK_BUILD_SETTINGS_FILE@")
 
 # The library dependencies file.
-SET(CMTK_LIBRARY_DEPENDS_FILE "${CMTK_CONFIG_PREFIX_CONFIG}/@CMTK_LIBRARY_DEPENDS_FILE@")
+SET(CMTK_LIBRARY_DEPENDS_FILE "@CMTK_CONFIG_PREFIX_CONFIG@/@CMTK_LIBRARY_DEPENDS_FILE@")
 
 # Whether CMTK was built with shared libraries.
 SET(CMTK_BUILD_SHARED "@BUILD_SHARED_LIBS@")
 
 # A list of all libraries for CMTK.  Those listed here should
 # automatically pull in their dependencies.
-SET(CMTK_LIBRARIES cmtkBase cmtkIO cmtkPipeline cmtkQt cmtkRegistration cmtkSegmentation cmtkSystem cmtkVTKWrapper)
+SET(CMTK_LIBRARIES cmtkQt cmtkPipeline cmtkRegistration cmtkSegmentation cmtkIO cmtkBase cmtkSystem)
 
 # The CMTK library dependencies.
 IF(NOT CMTK_NO_LIBRARY_DEPENDS AND
