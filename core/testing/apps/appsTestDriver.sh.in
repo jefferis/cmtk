@@ -950,6 +950,10 @@ case ${RUNTEST} in
         run imagemath --in spgr_brain_{1,2}.hdr --match-mean-sdev --out ${tmpdir}/match.nii
         check_results match.nii
         ;;
+    imagemathMatchMeanSDev3)
+        run imagemath --in spgr_brain_{1,2,3}.hdr --match-mean-sdev3 --out ${tmpdir}/match.nii
+        check_results match.nii
+        ;;
     imagemathMatchHistograms)
         run imagemath --in spgr_brain_{1,2}.hdr --match-histograms --out ${tmpdir}/match_histograms.hdr
         check_results match_histograms.img

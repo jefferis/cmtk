@@ -870,6 +870,35 @@ CallbackMatchMeanSDev()
 }
 
 void
+CallbackMatchMeanSDevThree()
+{
+  if ( ImageStack.size() < 3 )
+    {
+    cmtk::StdErr << "ERROR: need at least three images on stack for histogram intensity matching using separate reference images\n";
+    return;
+    }
+  
+  cmtk::UniformVolume::SmartPtr ref = ImageStack.front();
+  ImageStack.pop_front();
+
+  cmtk::UniformVolume::SmartPtr mod = ImageStack.front();
+  ImageStack.pop_front();
+
+  cmtk::Types::DataItem rMean, rVar;
+  ref->GetData()->GetStatistics( rMean, rVar );
+
+  cmtk::Types::DataItem mMean, mVar;
+  mod->GetData()->GetStatistics( mMean, mVar );
+  
+  const cmtk::Types::DataItem scale = sqrt( rVar / mVar );
+  const cmtk::Types::DataItem offset = rMean - scale * mMean;
+  
+  cmtk::TypedArray::SmartPtr result( ImageStack.front()->GetData()->Convert( ResultType ) );
+  result->Rescale( scale, offset );
+  ImageStack.front()->SetData( result );
+}
+
+void
 CallbackMaskAverage()
 {
   if ( ImageStack.size() < 2 )
@@ -1574,6 +1603,7 @@ doMain( const int argc, const char *argv[] )
     cl.AddCallback( Key( "atan2" ), CallbackAtan2, "Compute atan2() function from tup two image pixel pairs, place result on stack" );    
     cl.AddCallback( Key( "match-histograms" ), CallbackMatchHistograms, "Scale intensities in one image to match intensities of another. The last image pushed onto the stack provides the reference intensity distribution, the preceding image will be modified. Both input images are removed from the stack and the modified image is pushed onto the stack." );
     cl.AddCallback( Key( "match-mean-sdev" ), CallbackMatchMeanSDev, "Scale intensities of one image to match mean and standard deviation of another. The last image pushed onto the stack provides the reference intensity distribution, the preceding image will be modified. Both input images are removed from the stack and the modified image is pushed onto the stack." );
+    cl.AddCallback( Key( "match-mean-sdev3" ), CallbackMatchMeanSDevThree, "Scale intensities of an image by a factor and offset computed from two other images to match their mean and standard deviations. The last image pushed onto the stack provides the reference intensity distribution, the preceding image provides the intensity distribution to match to the reference image's, and the third image on the stack will be modified. All three input images are removed from the stack and the modified image is pushed onto the stack." );
     cl.AddCallback( Key( "mask-average" ), CallbackMaskAverage, "Mask averaging: the top image is taken as a multi-label mask. The pixels in the second image are averaged by mask labels, and then replaced with the average value for each mask label." );
     cl.EndGroup();
 

@@ -314,6 +314,7 @@ IF(NOT CMTK_USE_MPI)
     imagemathLogOddsAdd
     imagemathLogOddsAdd2
     imagemathMatchMeanSDev
+    imagemathMatchMeanSDev3
     imagemathMatchHistograms 
     imagemathMatchHistogramsPadding
     imagemathMatchHistogramsPadding2
