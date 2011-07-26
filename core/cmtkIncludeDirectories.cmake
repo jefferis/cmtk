@@ -30,7 +30,10 @@
 
 #-----------------------------------------------------------------------------
 # Include directories for other projects installed on the system.
-SET(CMTK_INCLUDE_DIRS_SYSTEM "")
+SET(CMTK_INCLUDE_DIRS_SYSTEM 
+  ${QT_INCLUDE_DIR} 
+  ${QT_INCLUDE_PATH}
+  )
 
 #-----------------------------------------------------------------------------
 # Include directories from the build tree.
@@ -38,6 +41,11 @@ SET(CMTK_INCLUDE_DIRS_BUILD_TREE ${CMTK_BINARY_DIR})
 
 # These directories are always needed.
 SET(CMTK_INCLUDE_DIRS_BUILD_TREE ${CMTK_INCLUDE_DIRS_BUILD_TREE}
+  ${DCMTK_INCLUDE_DIRS}
+  ${NRRD_INCLUDE_DIRS}
+  ${MXML_INCLUDE_DIR}
+  ${SQLITE_INCLUDE_DIR}
+  ${ZCONF_INCLUDE_DIR}
+  ${ZLIB_INCLUDE_DIR}
   ${CMTK_SOURCE_DIR}/libs
-)
-
+  )

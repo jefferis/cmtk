@@ -112,7 +112,7 @@ protected:
   /// Standard deviation over all images by pixel.
   std::vector<byte> m_StandardDeviationByPixel;
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   /// Standard deviation over all images by pixel for current MPI node.
   std::vector<byte> m_StandardDeviationByPixelMPI;
 #endif

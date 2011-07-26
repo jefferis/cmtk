@@ -89,7 +89,7 @@ operator>>
   char* targetPath = stream.ReadString( "target", NULL /*default*/, false /*forward*/ );
   while ( targetPath )
     {
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
     UniformVolume::SmartPtr image( NULL );
     if ( MPI::COMM_WORLD.Get_rank() == (imageVector.size() % MPI::COMM_WORLD.Get_size() ) )
       {

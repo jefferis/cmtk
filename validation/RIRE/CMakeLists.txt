@@ -28,8 +28,6 @@
 
 SET(CMTK_LIBRARIES "cmtkSegmentation;cmtkRegistration;cmtkIO;cmtkBase;cmtkNumerics;cmtkSystem")
 
-INCLUDE(${CMAKE_SOURCE_DIR}/libs/cmtkLibInitSrcs.cmake)
-
 SET(APPS register_rire register_rire_experimental register_rire_experimental_cubic)
 
 FOREACH(APPLICATION ${APPS})

@@ -72,8 +72,8 @@ std::vector<cmtk::UniformVolume::SmartPtr> imageListOriginal;
 int
 doMain( int argc, char* argv[] )
 {
-#ifdef CMTK_BUILD_MPI
-#  ifdef CMTK_BUILD_SMP
+#ifdef CMTK_USE_MPI
+#  ifdef CMTK_USE_SMP
   const int threadLevelSupportedMPI = MPI::Init_thread( argc, argv, MPI::THREAD_FUNNELED );
   if ( threadLevelSupportedMPI < MPI::THREAD_FUNNELED )
     {
@@ -169,7 +169,7 @@ doMain( int argc, char* argv[] )
   output.WriteXformsSeparateArchives( OutputStudyListIndividual, PreDefinedTemplatePath );
   output.WriteAverageImage( AverageImagePath, AverageImageInterpolation );
   
-#ifdef CMTK_BUILD_MPI    
+#ifdef CMTK_USE_MPI    
   MPI::Finalize();
 #endif
 

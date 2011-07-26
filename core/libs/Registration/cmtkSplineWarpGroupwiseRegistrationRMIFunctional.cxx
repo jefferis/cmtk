@@ -39,7 +39,7 @@
 
 #include <algorithm>
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
 #  include <mpi.h>
 #endif
 
@@ -57,7 +57,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional
   this->m_NeedsUpdateInformationByControlPoint = false;
 
   const size_t numberOfControlPoints = this->m_VolumeOfInfluenceArray.size();
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   const size_t cpPerNode = 1 + numberOfControlPoints / this->m_SizeMPI;
   std::vector<byte> tmpInformationByCP( cpPerNode );
 #else
@@ -66,7 +66,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional
 
   const byte paddingValue = this->m_PaddingValue;
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   const size_t beginCP = this->m_RankMPI * cpPerNode;
   const size_t endCP = std::min<size_t>( beginCP + cpPerNode, numberOfControlPoints );
 #else
@@ -75,7 +75,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional
 #endif
   for ( size_t cp = beginCP; cp < endCP; ++cp ) 
     {
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
     const size_t ofs = cp-beginCP;
     tmpInformationByCP[ofs] = 0;
 #else
@@ -104,7 +104,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional
 	    }
 	  }
 	}
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
       tmpInformationByCP[ofs] = std::max( (byte)(voiMax-voiMin), tmpInformationByCP[ofs] );
 #else
       this->m_InformationByControlPoint[cp] = std::max( (byte)(voiMax-voiMin), this->m_InformationByControlPoint[cp] );    
@@ -112,7 +112,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional
       }
     }
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   this->m_InformationByControlPoint.resize( cpPerNode * this->m_SizeMPI );
   MPI::COMM_WORLD.Allgather( &tmpInformationByCP[0], cpPerNode, MPI::CHAR, &this->m_InformationByControlPoint[0], cpPerNode, MPI::CHAR );
 #endif
@@ -197,7 +197,7 @@ SplineWarpGroupwiseRegistrationRMIFunctional::Evaluate()
 
 } // namespace cmtk
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
 #  include "cmtkSplineWarpGroupwiseRegistrationRMIFunctionalMPI.txx"
 #else
 #  include "cmtkSplineWarpGroupwiseRegistrationRMIFunctional.txx"

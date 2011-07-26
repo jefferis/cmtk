@@ -37,7 +37,7 @@
 #include <Base/cmtkMathUtil.h>
 #include <IO/cmtkVolumeIO.h>
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
 #  include <mpi.h>
 #  include <IO/cmtkMPI.h>
 #endif

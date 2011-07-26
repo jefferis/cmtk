@@ -45,7 +45,7 @@
 #include <stdio.h>
 #include <memory>
 
-#ifdef CMTK_HAVE_DCMTK
+#ifdef CMTK_USE_DCMTK
 #  include <dcmtk/dcmdata/dctk.h>
 #endif
 
@@ -174,7 +174,7 @@ doMain( const int argc, const char* argv[] )
 	painter.DrawBox( cmtk::FixedVector<3,cmtk::Types::Coordinate>( boxFrom ), cmtk::FixedVector<3,cmtk::Types::Coordinate>( boxTo ), atof( value ) );
 	}
 
-#ifdef CMTK_HAVE_DCMTK
+#ifdef CMTK_USE_DCMTK
       if ( ! strcmp( nextCmd, "mrs-voxel" ) )
 	{
 	const char* dicom = cl.GetNextOptional();
@@ -233,7 +233,7 @@ doMain( const int argc, const char* argv[] )
 
 	roiPainter.DrawBox( volume->PhysicalToIndex( roiCntr - roiSize ), volume->PhysicalToIndex( roiCntr + roiSize ), atof( value ) );
 	}
-#endif // #ifdef CMTK_HAVE_DCMTK
+#endif // #ifdef CMTK_USE_DCMTK
 
       nextCmd = cl.GetNextOptional();
       }

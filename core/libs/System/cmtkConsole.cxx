@@ -125,7 +125,7 @@ Console::FormatText( const std::string& text, const size_t margin, const size_t 
 void 
 Console::printf( const char* format, ... )
 {
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
     // for now, skip the output entirely if this is not the root process.
   if ( this->m_RankMPI < 0 ) this->m_RankMPI = MPI::COMM_WORLD.Get_rank();
     if ( this->m_RankMPI ) return;

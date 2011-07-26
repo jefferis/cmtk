@@ -32,7 +32,7 @@
 
 #include <cmtkconfig.h>
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
 
 #include <Base/cmtkUniformVolume.h>
 
@@ -126,4 +126,4 @@ template void Broadcast<UniformVolume>( ::MPI::Intracomm&, SmartPointer<UniformV
 } // namespace cmtk
 
 
-#endif // #ifdef CMTK_BUILD_MPI
+#endif // #ifdef CMTK_USE_MPI

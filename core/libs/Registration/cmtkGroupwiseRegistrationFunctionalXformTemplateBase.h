@@ -46,7 +46,7 @@
 
 #include <vector>
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
 #  include <mpi.h>
 #endif
 

@@ -40,7 +40,7 @@
 #include <iostream>
 #include <string>
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
 #  include <mpi.h>
 #endif
 
@@ -65,7 +65,7 @@ public:
     : m_StreamP( stream )
   { 
     this->IndentLevel = 0; 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
     this->m_RankMPI = -1;
 #endif
   }
@@ -96,7 +96,7 @@ public:
   template<class T> 
   Console& operator << ( const T data ) 
   { 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
     // for now, skip the output entirely if this is not the root process.
     if ( this->m_RankMPI < 0 ) this->m_RankMPI = MPI::COMM_WORLD.Get_rank();
     if ( this->m_RankMPI ) return *this;
@@ -128,7 +128,7 @@ private:
   /// Mutex lock for thread safety.
   MutexLock m_MutexLock;
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   /// MPI process rank.
   int m_RankMPI;
 #endif

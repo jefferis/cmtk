@@ -141,7 +141,7 @@ private:
     /// Current metric value.
     Self::ReturnType m_MetricBaseValue;
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
     /// Index of first control point to be computed by all threads in this iteration.
     size_t m_FirstIndexToCompute;
 #endif
@@ -154,7 +154,7 @@ private:
    */
   static CMTK_THREAD_RETURN_TYPE EvaluateLocalGradientThreadFunc( void* args );
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   void ReorderGradientComponents( Types::Coordinate *const dst, const Types::Coordinate* src, const size_t fromCpIdx, const size_t toCpIdx );
 #endif
 };

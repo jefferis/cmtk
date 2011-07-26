@@ -37,7 +37,7 @@
 #include <Base/cmtkMathUtil.h>
 #include <IO/cmtkVolumeIO.h>
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
 #  include <mpi.h>
 #  include <IO/cmtkMPI.h>
 #endif
@@ -103,7 +103,7 @@ GroupwiseRegistrationFunctionalXformTemplateBase<TXform>
 {
   this->m_ImageVector.resize( this->m_OriginalImageVector.size() );
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   // using MPI, prepare only some of the images locally, obtain others from other nodes
   const size_t imageFrom = this->m_RankMPI;
   const size_t imageSkip = this->m_SizeMPI;
@@ -116,7 +116,7 @@ GroupwiseRegistrationFunctionalXformTemplateBase<TXform>
     this->m_ImageVector[i] = UniformVolume::SmartPtr( this->PrepareSingleImage( this->m_OriginalImageVector[i] ) );
     }
   
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   // obtain filtered, scaled image data from other nodes
   for ( size_t i = 0; i < this->m_ImageVector.size(); ++i )
     {

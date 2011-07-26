@@ -1,5 +1,5 @@
 ##
-##  Copyright 2009, 2010 SRI International
+##  Copyright 2009-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -25,6 +25,25 @@
 ##
 ##  $LastChangedBy$
 ##
+
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+SET(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
+
+IF(COMMAND cmake_policy)
+  cmake_policy(SET CMP0003 NEW) ## libraries with full paths vs. search paths
+ENDIF(COMMAND cmake_policy)
+SET(CMAKE_OVERRIDE_COMPILER_MISMATCH 1)
+
+PROJECT(CMTKvalidation)
+
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMTKvalidation_SOURCE_DIR})
+
+FIND_PACKAGE(CMTK)
+IF(CMTK_FOUND)
+  INCLUDE(${CMTK_USE_FILE})
+ELSE(CMTK_FOUND)
+  MESSAGE(FATAL_ERROR "Cannot build CMTKvalidation without CMTK.  Please set CMTK_DIR.")
+ENDIF(CMTK_FOUND)
 
 SUBDIRS(RIRE)
 SUBDIRS(CURT)

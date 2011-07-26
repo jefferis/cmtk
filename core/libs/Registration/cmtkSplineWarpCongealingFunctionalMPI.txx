@@ -30,7 +30,7 @@
 //
 */
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
 
 namespace
 cmtk
@@ -503,4 +503,4 @@ SplineWarpCongealingFunctional
 
 } // namespace cmtk
 
-#endif // #ifdef CMTK_BUILD_MPI
+#endif // #ifdef CMTK_USE_MPI

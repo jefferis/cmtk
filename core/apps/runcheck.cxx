@@ -35,7 +35,7 @@
 #include <Base/cmtkUniformVolume.h>
 #include <IO/cmtkVolumeIO.h>
 
-#ifdef CMTK_HAVE_DCMTK
+#ifdef CMTK_USE_DCMTK
 #  include <dcmtk/dcmdata/dctk.h>
 #endif
 
@@ -50,7 +50,7 @@ main( const int argc, const char*[] )
     const cmtk::UniformVolume::CoordinateVectorType::ValueType size[3] = {1,1,1};
     cmtk::UniformVolume::SmartConstPtr volume( new cmtk::UniformVolume( cmtk::UniformVolume::IndexType( dims ), cmtk::UniformVolume::CoordinateVectorType( size ) ) );
 
-#ifdef CMTK_HAVE_DCMTK
+#ifdef CMTK_USE_DCMTK
     std::auto_ptr<DcmFileFormat> fileformat( new DcmFileFormat );
 #endif
     }

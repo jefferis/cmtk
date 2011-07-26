@@ -145,7 +145,7 @@ CongealingFunctional<TXform>::Evaluate()
     count += params[task].m_Count;
     }
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   double partialEntropy = entropy;
   MPI::COMM_WORLD.Allreduce( &partialEntropy, &entropy, 1, MPI::DOUBLE, MPI::SUM );
   
@@ -176,7 +176,7 @@ CongealingFunctional<TXform>::EvaluateThread
   unsigned int count = 0;
 
   const size_t numberOfPixels = ThisConst->m_TemplateNumberOfPixels;
-#ifdef CMTK_BUILD_MPI  
+#ifdef CMTK_USE_MPI  
   const size_t pixelsPerThread = 1+numberOfPixels / ( taskCnt * ThisConst->m_SizeMPI );
   const size_t pixelFrom = ( taskIdx + ThisConst->m_RankMPI * taskCnt ) * pixelsPerThread;
   const size_t pixelTo = std::min( numberOfPixels, pixelFrom + pixelsPerThread );
@@ -252,7 +252,7 @@ CongealingFunctional<TXform>::EvaluateProbabilisticThread
   const byte paddingValue = ThisConst->m_PaddingValue;
 
   const size_t numberOfSamples = ThisConst->m_ProbabilisticSamples.size();
-#ifdef CMTK_BUILD_MPI  
+#ifdef CMTK_USE_MPI  
   const size_t samplesPerThread = numberOfSamples / ( taskCnt * ThisConst->m_SizeMPI );
   const size_t sampleFrom = ( taskIdx + ThisConst->m_RankMPI * taskCnt ) * samplesPerThread;
   const size_t sampleTo = std::min( numberOfSamples, sampleFrom + samplesPerThread );
@@ -330,7 +330,7 @@ CongealingFunctional<TXform>
   if ( this->m_ProbabilisticSamples.size() )
     {
     const size_t numberOfSamples = this->m_ProbabilisticSamples.size();
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
     const size_t samplesPerNode = (numberOfSamples+this->m_SizeMPI-1) / this->m_SizeMPI;
     this->m_StandardDeviationByPixel.resize( samplesPerNode * this->m_SizeMPI );
     this->m_StandardDeviationByPixelMPI.resize( samplesPerNode );
@@ -341,7 +341,7 @@ CongealingFunctional<TXform>
   else
     {
     const size_t numberOfPixels = this->m_TemplateNumberOfPixels;
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
     const size_t pixelsPerNode = (numberOfPixels+this->m_SizeMPI-1) / this->m_SizeMPI;
     this->m_StandardDeviationByPixel.resize( pixelsPerNode * this->m_SizeMPI );
     this->m_StandardDeviationByPixelMPI.resize( pixelsPerNode );
@@ -357,7 +357,7 @@ CongealingFunctional<TXform>
   ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
   threadPool.Run( Self::UpdateStandardDeviationByPixelThreadFunc, params );
   
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   MPI::COMM_WORLD.Allgather( &this->m_StandardDeviationByPixelMPI[0], this->m_StandardDeviationByPixelMPI.size(), 
 			     MPI::CHAR, &this->m_StandardDeviationByPixel[0], this->m_StandardDeviationByPixelMPI.size(), MPI::CHAR );
 #endif
@@ -383,7 +383,7 @@ CongealingFunctional<TXform>
   if ( ThisConst->m_ProbabilisticSamples.size() )
     {
     const size_t numberOfSamples = ThisConst->m_ProbabilisticSamples.size();
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
     const size_t samplesPerNode = (numberOfSamples+ThisConst->m_SizeMPI-1) / ThisConst->m_SizeMPI;
     const size_t samplesPerTask = 1 + (samplesPerNode / taskCnt);
     const size_t sampleFromNode = ThisConst->m_RankMPI * samplesPerNode;
@@ -429,7 +429,7 @@ CongealingFunctional<TXform>
 	const double mu = sum / count;
 	const byte sdev = std::min<byte>( ThisConst->m_HistogramKernelRadiusMax, (byte)(sqrt(( count * mu * mu - 2 * mu * sum + sumsq ) / (count-1)) ) );
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
 	This->m_StandardDeviationByPixelMPI[mpiSmpl++] = sdev;
 #else
 	This->m_StandardDeviationByPixel[smpl] = sdev;
@@ -444,7 +444,7 @@ CongealingFunctional<TXform>
   else
     {
     const size_t numberOfPixels = ThisConst->m_TemplateNumberOfPixels;
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
     const size_t pixelsPerNode = (numberOfPixels+ThisConst->m_SizeMPI-1) / ThisConst->m_SizeMPI;
     const size_t pixelsPerTask = 1 + (pixelsPerNode / taskCnt);
     const size_t pixelFromNode = ThisConst->m_RankMPI * pixelsPerNode;
@@ -488,7 +488,7 @@ CongealingFunctional<TXform>
 	{
 	const double mu = sum / count;
 	const byte sdev = std::min<byte>( ThisConst->m_HistogramKernelRadiusMax, (byte)(sqrt(( count * mu * mu - 2 * mu * sum + sumsq ) / (count-1)) ) );
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
 	This->m_StandardDeviationByPixelMPI[mpiPx++] = sdev;
 #else
 	This->m_StandardDeviationByPixel[px] = sdev;

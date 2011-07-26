@@ -34,7 +34,7 @@
 
 #include <cmtkconfig.h>
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
 
 #include <mpi.h>
 
@@ -60,6 +60,6 @@ Broadcast( MPI::Intracomm& comm, SmartPointer<TClass>& inOutPtr, const int root 
 
 } // namespace cmtk
 
-#endif // #ifdef CMTK_BUILD_MPI
+#endif // #ifdef CMTK_USE_MPI
 
 #endif // #ifndef __cmtkMPI_h_included_

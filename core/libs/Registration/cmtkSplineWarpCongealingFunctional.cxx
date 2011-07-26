@@ -144,7 +144,7 @@ SplineWarpCongealingFunctional
     this->UpdateStandardDeviationByPixel();
 
   const size_t numberOfPixels = this->m_TemplateNumberOfPixels;
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   const size_t pixelsPerNode = (numberOfPixels+this->m_SizeMPI-1) / this->m_SizeMPI;
   this->m_EntropyByPixel.resize( pixelsPerNode * this->m_SizeMPI );
   this->m_EntropyByPixelMPI.resize( pixelsPerNode );
@@ -173,7 +173,7 @@ SplineWarpCongealingFunctional
     count += params[taskIdx].m_Count;
     }
   
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   double partialEntropy = entropy;
   MPI::COMM_WORLD.Allreduce( &partialEntropy, &entropy, 1, MPI::DOUBLE, MPI::SUM );
   
@@ -218,7 +218,7 @@ SplineWarpCongealingFunctional
   size_t count = 0;
 
   const size_t numberOfPixels = ThisConst->m_TemplateNumberOfPixels;
-#ifdef CMTK_BUILD_MPI  
+#ifdef CMTK_USE_MPI  
   const size_t pixelsPerNode = (numberOfPixels+ThisConst->m_SizeMPI-1) / ThisConst->m_SizeMPI;
   const size_t pixelsPerThread = 1 + (pixelsPerNode / taskCnt);
   const size_t pixelFromNode = ThisConst->m_RankMPI * pixelsPerNode;
@@ -269,7 +269,7 @@ SplineWarpCongealingFunctional
     if ( fullCount )
       {
       const double entropy = histogram.GetEntropy();
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
       This->m_EntropyByPixelMPI[mpiOfs++] = entropy;
 #else
       This->m_EntropyByPixel[ofs] = entropy;
@@ -279,7 +279,7 @@ SplineWarpCongealingFunctional
       }
     else
       {
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
       This->m_EntropyByPixelMPI[mpiOfs++] = 0;
 #else
       This->m_EntropyByPixel[ofs] = 0;
@@ -295,7 +295,7 @@ SplineWarpCongealingFunctional
 
 } // namespace cmtk
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
 #  include "cmtkSplineWarpCongealingFunctionalMPI.txx"
 #else
 #  include "cmtkSplineWarpCongealingFunctional.txx"

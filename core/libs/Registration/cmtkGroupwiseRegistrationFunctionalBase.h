@@ -44,7 +44,7 @@
 
 #include <vector>
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
 #  include <mpi.h>
 #endif
 
@@ -497,7 +497,7 @@ protected:
   /// Update probabilistic sample table..
   virtual bool Wiggle();
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   /// MPI process rank.
   int m_RankMPI;
 

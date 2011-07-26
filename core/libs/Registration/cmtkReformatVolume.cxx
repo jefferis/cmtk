@@ -634,7 +634,7 @@ ReformatVolume::CreateInterpolator
 
 } // end namespace cmtk
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
 #  include "cmtkReformatVolumeMPI.txx"
 #else
 #  include "cmtkReformatVolume.txx"

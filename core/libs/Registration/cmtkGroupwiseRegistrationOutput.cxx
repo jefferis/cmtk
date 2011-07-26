@@ -53,7 +53,7 @@ cmtk
 bool
 GroupwiseRegistrationOutput::WriteGroupwiseArchive( const char* path ) const
 {
-#ifdef CMTK_BUILD_MPI    
+#ifdef CMTK_USE_MPI    
   // only root process needs to write outputs
   if ( MPI::COMM_WORLD.Get_rank() == 0 )
 #endif
@@ -84,7 +84,7 @@ bool
 GroupwiseRegistrationOutput::WriteXformsSeparateArchives
 ( const char* path, const char* templatePath )
 { 
-#ifdef CMTK_BUILD_MPI    
+#ifdef CMTK_USE_MPI    
   // only root process needs to write outputs
   if ( MPI::COMM_WORLD.Get_rank() == 0 )
 #endif
@@ -174,7 +174,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
 
     DebugOutput( 1 ) << "Reformating output images\n";
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
     const size_t idxFrom = MPI::COMM_WORLD.Get_rank();
     const size_t idxSkip = MPI::COMM_WORLD.Get_size();
 #else
@@ -216,7 +216,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
 	}
       }
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
     float* averagePtrMPI = Memory::AllocateArray<float>( numberOfPixels );
     MPI::COMM_WORLD.Reduce( averagePtr, averagePtrMPI, numberOfPixels, MPI::FLOAT, MPI::SUM, 0 );
     memcpy( averagePtr, averagePtrMPI, numberOfPixels * sizeof( *averagePtr ) );
@@ -228,7 +228,7 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
     Memory::DeleteArray( countPtrMPI );
 #endif
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
     if ( MPI::COMM_WORLD.Get_rank() == 0 )
 #endif
       {

@@ -43,8 +43,8 @@
 #include <IO/cmtkVolumeFromStudy.h>
 #include <IO/cmtkFileFormat.h>
 
-#ifndef CMTK_HAVE_DCMTK
-#error Build system is broken: this application should not be build if CMTK_HAVE_DCMTK is not set.
+#ifndef CMTK_USE_DCMTK
+#error Build system is broken: this application should not be build if CMTK_USE_DCMTK is not set.
 #endif
 
 #ifdef _MSC_VER

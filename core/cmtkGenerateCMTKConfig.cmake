@@ -49,6 +49,9 @@ SET(CMTK_BUILD_SETTINGS_FILE       CMTKBuildSettings.cmake)
 #-----------------------------------------------------------------------------
 # Settings specific to the build tree.
 
+# Config file prefix is the root of the build tree itself.
+SET(CMTK_CONFIG_PREFIX_CONFIG ${CMTK_BINARY_DIR})
+
 # The library dependencies file.
 SET(CMTK_LIBRARY_DEPENDS_FILE       CMTKLibraryDepends.cmake)
 
@@ -80,12 +83,15 @@ CONFIGURE_FILE(${CMTK_SOURCE_DIR}/cmtkconfig.h.cmake
 #-----------------------------------------------------------------------------
 # Settings specific to the install tree.
 
+# Config prefix is under install tree.
+SET(CMTK_CONFIG_PREFIX_CONFIG ${CMAKE_INSTALL_PREFIX}/${CMTK_INSTALL_LIB_DIR})
+
 # The library dependencies file.
 SET(CMTK_LIBRARY_DEPENDS_FILE      CMTKLibraryDepends.cmake)
 
 # Include directories.
 SET(CMTK_INCLUDE_DIRS_CONFIG 
-  \${CMTK_INSTALL_PREFIX}${CMTK_INSTALL_INCLUDE_DIR}
+  \${CMTK_INSTALL_PREFIX}/${CMTK_INSTALL_INCLUDE_DIR}
 )
 
 # List of CMTK libraries
@@ -100,7 +106,7 @@ IF(CMTK_USE_CUDA)
 ENDIF(CMTK_USE_CUDA)
 
 # Link directories.
-SET(CMTK_LIBRARY_DIRS_CONFIG "\${CMTK_INSTALL_PREFIX}${CMTK_INSTALL_LIB_DIR}")
+SET(CMTK_LIBRARY_DIRS_CONFIG "\${CMTK_INSTALL_PREFIX}/${CMTK_INSTALL_LIB_DIR}")
 
 # Link directories.
 # The install tree will use the directory where CMTKConfig.cmake is found, which
@@ -118,11 +124,11 @@ SET(CMTK_BINARY_DIR_CONFIG ${CMAKE_INSTALL_PREFIX}${CMTK_INSTALL_BIN_DIR})
 
 # Construct the proper number of GET_FILENAME_COMPONENT(... PATH)
 # calls to compute the installation prefix.
-STRING(REGEX REPLACE "/" ";" CMTK_INSTALL_PACKAGE_DIR_COUNT "${CMTK_INSTALL_PACKAGE_DIR}")
+STRING(REGEX REPLACE "/" ";" CMTK_INSTALL_LIB_DIR_COUNT "${CMTK_INSTALL_LIB_DIR}")
 SET(CMTK_CONFIG_CODE "
 # Compute the installation prefix from this CMTKConfig.cmake file location.
 GET_FILENAME_COMPONENT(CMTK_INSTALL_PREFIX \"\${CMAKE_CURRENT_LIST_FILE}\" PATH)")
-FOREACH(p ${CMTK_INSTALL_PACKAGE_DIR_COUNT})
+FOREACH(p ${CMTK_INSTALL_LIB_DIR_COUNT})
   SET(CMTK_CONFIG_CODE
     "${CMTK_CONFIG_CODE}\nGET_FILENAME_COMPONENT(CMTK_INSTALL_PREFIX \"\${CMTK_INSTALL_PREFIX}\" PATH)"
     )

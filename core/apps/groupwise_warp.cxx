@@ -114,8 +114,8 @@ bool UserBackgroundFlag = false;
 int
 doMain( int argc, char* argv[] )
 {
-#ifdef CMTK_BUILD_MPI
-#  ifdef CMTK_BUILD_SMP
+#ifdef CMTK_USE_MPI
+#  ifdef CMTK_USE_SMP
   const int threadLevelSupportedMPI = MPI::Init_thread( argc, argv, MPI::THREAD_FUNNELED );
   if ( threadLevelSupportedMPI < MPI::THREAD_FUNNELED )
     {
@@ -126,7 +126,7 @@ doMain( int argc, char* argv[] )
 #  endif
 #endif
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   const int mpiRank = MPI::COMM_WORLD.Get_rank();
   const int mpiSize = MPI::COMM_WORLD.Get_size();
 #endif
@@ -388,7 +388,7 @@ doMain( int argc, char* argv[] )
 
   // determine and print CPU time (by node, if using MPI)
   const double timeElapsedProcess = cmtk::Timers::GetTimeProcess() - timeBaselineProcess;
-#ifdef CMTK_BUILD_MPI    
+#ifdef CMTK_USE_MPI    
   std::vector<float> timeElapsedByNodeProcess( mpiSize );
   MPI::COMM_WORLD.Gather( &timeElapsedProcess, 1, MPI::FLOAT, &timeElapsedByNodeProcess[0], 1, MPI::FLOAT, 0 /*root*/ );
 
@@ -415,7 +415,7 @@ doMain( int argc, char* argv[] )
   output.WriteXformsSeparateArchives( OutputStudyListIndividual, AverageImagePath );
   output.WriteAverageImage( AverageImagePath, AverageImageInterpolation, UseTemplateData );
 
-#ifdef CMTK_BUILD_MPI    
+#ifdef CMTK_USE_MPI    
   MPI::Finalize();
 #endif
 

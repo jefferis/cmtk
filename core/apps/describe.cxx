@@ -44,7 +44,7 @@
 
 #include <stdio.h>
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
 #    include <mpi.h>
 #endif
 
@@ -55,7 +55,7 @@ bool MachineReadable = false;
 int
 doMain( int argc, char *argv[] )
 {
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   MPI::Init( argc, argv );
   const int mpiRank = MPI::COMM_WORLD.Get_rank();
   const int mpiSize = MPI::COMM_WORLD.Get_size();
@@ -174,7 +174,7 @@ doMain( int argc, char *argv[] )
     throw cmtk::ExitException( 1 );
     }
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   MPI::Finalize();
 #endif
 

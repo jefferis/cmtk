@@ -58,7 +58,7 @@
 #include <list>
 #include <iostream>
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
 #  include <mpi.h>
 #endif
 
@@ -105,7 +105,7 @@ bool HavePadOutValue = false;
 int
 doMain( int argc, char** argv )
 {
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   MPI::Init( argc, argv );
   const int mpiRank = MPI::COMM_WORLD.Get_rank();
   const int mpiSize = MPI::COMM_WORLD.Get_size();
@@ -315,7 +315,7 @@ doMain( int argc, char** argv )
     warpXform = cmtk::WarpXform::SmartPtr::DynamicCastFrom( adm );
     }
   
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   if ( mpiRank == 0 )
 #endif
     {
@@ -354,7 +354,7 @@ doMain( int argc, char** argv )
       average = cmtk::UniformVolume::SmartPtr( reformat.GetTransformedReference( &warpList, &volumeList, NULL /*origin*/, IncludeReferenceData ) );
       }
     
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
     if ( mpiRank == 0 )
 #endif
       cmtk::VolumeIO::Write( *average, OutImageName );
@@ -362,7 +362,7 @@ doMain( int argc, char** argv )
   
   free( referenceStudy );
   
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   MPI::Finalize();
 #endif
 

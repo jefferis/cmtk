@@ -42,8 +42,8 @@ SET(CMAKE_OVERRIDE_COMPILER_MISMATCH 1)
 
 PROJECT(CMTK)
 SET(CMTK_VERSION_MAJOR "1")
-SET(CMTK_VERSION_MINOR "7")
-SET(CMTK_VERSION_PATCH "2svn")
+SET(CMTK_VERSION_MINOR "8")
+SET(CMTK_VERSION_PATCH "0svn")
 
 SET(CMTK_VERSION_STRING "${CMTK_VERSION_MAJOR}.${CMTK_VERSION_MINOR}.${CMTK_VERSION_PATCH}")
 
@@ -175,9 +175,6 @@ SET(CMTK_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
 
 OPTION(CMTK_BUILD_UNSTABLE "Build 'unstable' library and tools" OFF)
 MARK_AS_ADVANCED(CMTK_BUILD_UNSTABLE)
-IF(CMTK_BUILD_UNSTABLE)
-  ADD_DEFINITIONS(-DCMTK_BUILD_UNSTABLE)
-ENDIF(CMTK_BUILD_UNSTABLE)
 
 OPTION(CMTK_BUILD_STACKTRACE "Build tools with stack trace printing in case of crash (increases build time)" ON)
 MARK_AS_ADVANCED(CMTK_BUILD_STACKTRACE)
@@ -186,22 +183,15 @@ OPTION(CMTK_BUILD_DEMO "Build demonstration code. Strange things will happen if 
 MARK_AS_ADVANCED(CMTK_BUILD_DEMO)
 IF(CMTK_BUILD_DEMO)
   MESSAGE( WARNING "Demo mode is enabled. Make sure not to use this build for production use!")
-  ADD_DEFINITIONS(-DCMTK_BUILD_DEMO)
 ENDIF(CMTK_BUILD_DEMO)
 
 #-----------------------------------------------------------------------------
 # Add an option to use or not to use MPI distributed-memory parallelism
 
 OPTION(CMTK_USE_MPI "Use MPI for distributed-memory parallelism" OFF)
-IF(CMTK_USE_MPI)
-  ADD_DEFINITIONS(-DCMTK_BUILD_MPI)
-ENDIF(CMTK_USE_MPI)
+MARK_AS_ADVANCED(CMTK_USE_MPI)
 
-OPTION(CMTK_BUILD_SMP "Enable shared-memory parallelism (requires at least POSIX Threads, OpenMP, or Windows threads)" ON)
-IF(CMTK_BUILD_SMP)
-  ADD_DEFINITIONS(-DCMTK_BUILD_SMP)
-ENDIF(CMTK_BUILD_SMP)
-
+OPTION(CMTK_USE_SMP "Enable shared-memory parallelism (requires at least POSIX Threads, OpenMP, or Windows threads)" ON)
 
 #-----------------------------------------------------------------------------
 # Add an option to enable or disable POSIX threads if pthread.h header exists
@@ -210,17 +200,15 @@ IF(HAVE_PTHREAD_H)
   OPTION(CMTK_USE_PTHREADS "Use POSIX Threads for SMP parallelism" ON)
   MARK_AS_ADVANCED(CMTK_USE_PTHREADS)
 
-  IF(NOT CMTK_BUILD_SMP)
+  IF(NOT CMTK_USE_SMP)
     SET(CMTK_USE_PTHREADS OFF)
-  ENDIF(NOT CMTK_BUILD_SMP)
+  ENDIF(NOT CMTK_USE_SMP)
 ENDIF(HAVE_PTHREAD_H)
 
 #-----------------------------------------------------------------------------
 # for the gnu compiler a -D_PTHREADS is needed on sun
 # for the native compiler a -mt flag is needed on the sun
 IF(CMTK_USE_PTHREADS)
-
-  ADD_DEFINITIONS(-DCMTK_USE_THREADS)
 
   IF(${CMAKE_SYSTEM} MATCHES "SunOS.*")
     IF(CMAKE_COMPILER_IS_GNUCXX)
@@ -251,9 +239,9 @@ IF(NOT DEFINED CMTK_USE_OPENMP)
       OPTION(CMTK_USE_OPENMP "Use OpenMP for SMP parallelism" ON)
       MARK_AS_ADVANCED(CMTK_USE_OPENMP)
       
-      IF(NOT CMTK_BUILD_SMP)
+      IF(NOT CMTK_USE_SMP)
 	SET(CMTK_USE_OPENMP OFF)
-      ENDIF(NOT CMTK_BUILD_SMP)
+      ENDIF(NOT CMTK_USE_SMP)
     ENDIF(OPENMP_FOUND)
   ENDIF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} STRLESS 2.6.2)
 ENDIF(NOT DEFINED CMTK_USE_OPENMP)
@@ -270,9 +258,9 @@ CHECK_INCLUDE_FILES(dispatch/dispatch.h HAVE_DISPATCH_H)
 IF(HAVE_DISPATCH_H)
   OPTION(CMTK_USE_GCD "Use Grand Central Dispatch for SMP parallelism with system-level load balancing" ON)
   
-  IF(NOT CMTK_BUILD_SMP)
+  IF(NOT CMTK_USE_SMP)
     SET(CMTK_USE_GCD OFF)
-  ENDIF(NOT CMTK_BUILD_SMP)
+  ENDIF(NOT CMTK_USE_SMP)
   
   IF(CMTK_USE_GCD)
   ENDIF(CMTK_USE_GCD)
@@ -304,10 +292,6 @@ IF(CMTK_USE_CUDA)
     FIND_PACKAGE(CUDA)
   ENDIF(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} STRLESS 2.8)
   
-  IF(CUDA_FOUND)
-    ADD_DEFINITIONS(-DCMTK_USE_CUDA)
-  ENDIF(CUDA_FOUND)
-
 ENDIF(CMTK_USE_CUDA)
 
 #-----------------------------------------------------------------------------
@@ -317,9 +301,6 @@ ENDIF(CMTK_USE_CUDA)
 
 INCLUDE(${CMAKE_ROOT}/Modules/CheckCXXSourceCompiles.cmake)
 CHECK_CXX_SOURCE_COMPILES("class A {}; class B : public A {}; int main() { int size = 10; B array[size]; }" COMPILER_VAR_AUTO_ARRAYSIZE)
-IF(COMPILER_VAR_AUTO_ARRAYSIZE)
-  ADD_DEFINITIONS(-DCMTK_VAR_AUTO_ARRAYSIZE)
-ENDIF(COMPILER_VAR_AUTO_ARRAYSIZE)
 
 #-----------------------------------------------------------------------------
 # Configure Dart testing support.  This should be done before any
@@ -361,27 +342,12 @@ ENDIF(DOXYGEN_FOUND)
 # Add an option to use double-precision floats for coordinates.
 
 OPTION(CMTK_COORDINATES_DOUBLE "Use double precision floats for coordinates (turn off to save memory)" ON)
-IF(CMTK_COORDINATES_DOUBLE)
-  ADD_DEFINITIONS(-DCMTK_COORDINATES_DOUBLE)
-ELSE(CMTK_COORDINATES_DOUBLE)
-  ADD_DEFINITIONS(-DCMTK_COORDINATES_FLOAT)
-ENDIF(CMTK_COORDINATES_DOUBLE)
 MARK_AS_ADVANCED(CMTK_COORDINATES_DOUBLE) 
 
 OPTION(CMTK_DATA_DOUBLE "Use double precision floats for data exchange between typed arrays" ON)
-IF(CMTK_DATA_DOUBLE)
-  ADD_DEFINITIONS(-DCMTK_DATA_DOUBLE)
-ELSE(CMTK_DATA_DOUBLE)
-  ADD_DEFINITIONS(-DCMTK_DATA_FLOAT)
-ENDIF(CMTK_DATA_DOUBLE)
 MARK_AS_ADVANCED(CMTK_DATA_DOUBLE) 
 
 OPTION(CMTK_NUMERICS_DOUBLE "Use double precision floats for numerical algorithms" ON)
-IF(CMTK_NUMERICS_DOUBLE)
-  ADD_DEFINITIONS(-DCMTK_NUMERICS_DOUBLE)
-ELSE(CMTK_NUMERICS_DOUBLE)
-  ADD_DEFINITIONS(-DCMTK_NUMERICS_FLOAT)
-ENDIF(CMTK_NUMERICS_DOUBLE)
 MARK_AS_ADVANCED(CMTK_NUMERICS_DOUBLE)
 
 #-----------------------------------------------------------------------------
@@ -426,10 +392,6 @@ IF(BZIP2_FOUND)
   MARK_AS_ADVANCED(CMTK_USE_BZIP2)
 ENDIF(BZIP2_FOUND)
 
-IF(CMTK_USE_BZIP2)
-  ADD_DEFINITIONS(-DCMTK_USE_BZIP2)
-ENDIF(CMTK_USE_BZIP2)
-
 #-----------------------------------------------------------------------------
 # Add an option to use or not use lzma decompression library
 
@@ -443,7 +405,6 @@ ENDIF(LZMA_FOUND)
 
 IF(CMTK_USE_LZMA)
   INCLUDE_DIRECTORIES(${LZMA_INCLUDE_DIR})
-  ADD_DEFINITIONS(-DCMTK_USE_LZMA)
 ENDIF(CMTK_USE_LZMA)
 
 #-----------------------------------------------------------------------------
@@ -462,9 +423,9 @@ IF(CMTK_USE_DCMTK)
   SET(DCMTK_LIBRARIES "D4CMTK" CACHE INTERNAL "The bundled DCMTK library.")
   SET(CMAKE_DCMDICTPATH ${DCMTK_SOURCE_ROOT})
   
-  ADD_DEFINITIONS(-DCMTK_HAVE_DCMTK)
   IF(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     ADD_DEFINITIONS(-DHAVE_CONFIG_H)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMTK_REQUIRED_CXX_FLAGS} -DHAVE_CONFIG_H")
   ENDIF(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   
   SET(DCM_DICT_DEFAULT_PATH "${CMAKE_DCMDICTPATH}")
@@ -498,8 +459,6 @@ IF(CMTK_USE_SQLITE)
       INCLUDE_DIRECTORIES(BEFORE ${SQLITE_INCLUDE_DIR})
     ENDIF(SQLITE3_FOUND AND SQLITE3_VERSION STRGREATER "3.5.0")
   ENDIF(CMTK_BUILD_SQLITE)
-  
-  ADD_DEFINITIONS(-DCMTK_USE_SQLITE)
 ENDIF(CMTK_USE_SQLITE)
 
 #-----------------------------------------------------------------------------
@@ -508,7 +467,8 @@ ENDIF(CMTK_USE_SQLITE)
 OPTION(CMTK_BUILD_NRRD "Build NrrdIO library for NRRD import/export" ON)
 
 IF(CMTK_BUILD_NRRD)
-  ADD_DEFINITIONS(-DCMTK_BUILD_NRRD -DTEEM_ZLIB)
+  ADD_DEFINITIONS(-DTEEM_ZLIB)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMTK_REQUIRED_CXX_FLAGS} -DTEEM_ZLIB")
   SET(NRRD_LIBRARIES "NrrdIO" CACHE INTERNAL "The library name for the NrrdIO library")
   SET(NRRD_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/Utilities/NrrdIO ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/NrrdIO)
 ENDIF(CMTK_BUILD_NRRD)
@@ -550,11 +510,6 @@ IF(BUILD_APPS)
   SUBDIRS(apps)
 ENDIF(BUILD_APPS)
 
-OPTION(BUILD_VALIDATION "Build tools for algorithm validation" OFF)
-IF(BUILD_VALIDATION)
-  SUBDIRS(validation)
-ENDIF(BUILD_VALIDATION)
-
 IF(NOT CMTK_USE_MPI)
   IF(CMTK_USE_QT)
     OPTION(BUILD_GUI "Build GUI applications" ON)
@@ -572,13 +527,6 @@ INCLUDE(${CMTK_SOURCE_DIR}/cmtkIncludeDirectories.cmake)
 
 INCLUDE_DIRECTORIES(
   ${CMTK_INCLUDE_DIRS_BUILD_TREE}
-  ${DCMTK_INCLUDE_DIRS}
-  ${QT_INCLUDE_DIR} ${QT_INCLUDE_PATH}
-  ${NRRD_INCLUDE_DIRS}
-  ${MXML_INCLUDE_DIR}
-  ${SQLITE_INCLUDE_DIR}
-  ${ZCONF_INCLUDE_DIR}
-  ${ZLIB_INCLUDE_DIR}
   ${CMTK_INCLUDE_DIRS_SYSTEM}
   )
 

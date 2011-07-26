@@ -44,6 +44,40 @@
 #define CMTK_DCMDICTPATH "@CMTK_DCMDICTPATH_CONFIG@"
 #define CMTK_DCMDICTPATH_INSTALL "@CMTK_DCMDICTPATH_INSTALL_CONFIG@"
 
+//
+// Configuration options
+//
+
+#cmakedefine CMTK_BUILD_UNSTABLE 1
+#cmakedefine CMTK_BUILD_DEMO 1
+#cmakedefine CMTK_BUILD_NRRD 1
+
+#cmakedefine CMTK_USE_MPI 1
+#cmakedefine CMTK_USE_SMP 1
+#cmakedefine CMTK_USE_PTHREADS 1
+#cmakedefine CMTK_USE_CUDA 1
+#cmakedefine CMTK_USE_BZIP2 1
+#cmakedefine CMTK_USE_LZMA 1
+#cmakedefine CMTK_USE_DCMTK 1
+#cmakedefine CMTK_USE_SQLITE 1
+
+#cmakedefine CMTK_COORDINATES_DOUBLE 1
+#ifndef CMTK_COORDINATES_DOUBLE
+#  define CMTK_COORDINATES_FLOAT 1
+#endif
+
+#cmakedefine CMTK_DATA_DOUBLE 1
+#ifndef CMTK_DATA_DOUBLE
+#  define CMTK_DATA_FLOAT 1
+#endif
+
+#cmakedefine CMTK_NUMERICS_DOUBLE 1
+#ifndef CMTK_NUMERICS_DOUBLE
+#  define CMTK_NUMERICS_FLOAT 1
+#endif
+
+#cmakedefine COMPILER_VAR_AUTO_ARRAYSIZE 1
+
 #cmakedefine HAVE_DIRENT_H 1
 #cmakedefine HAVE_EXECINFO_H 1
 #cmakedefine HAVE_FCNTL_H 1

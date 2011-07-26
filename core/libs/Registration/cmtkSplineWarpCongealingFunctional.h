@@ -123,7 +123,7 @@ private:
   /// Entropies over all images by pixel for fast local recomputation.
   std::vector<double> m_EntropyByPixel;
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   /// Temporary storage for values computed on current MPI node.
   std::vector<double> m_EntropyByPixelMPI;
 #endif
@@ -159,7 +159,7 @@ private:
     /// Pointer to array with computed local gradient components.
     Types::Coordinate* m_Gradient;
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
     /// Index of first control point to be computed by all threads in this iteration.
     size_t m_FirstIndexToCompute;
 
@@ -213,7 +213,7 @@ private:
   /// Static thread storage array.
   std::vector<StaticThreadStorage> m_StaticThreadStorage;
 
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   /** Task function: Compute local gradient of the cost function for gradient approximation.
    * This function takes into consideration that in a spline warp, each control point
    * effects only a local neighborhood. It also groups the parameters by control
@@ -236,7 +236,7 @@ private:
 
   /// Reorder gradient components received from other nodes into final gradient vector.
   void ReorderGradientComponents( Types::Coordinate *const dst, const Types::Coordinate* src, const size_t fromCpIdx, const size_t toCpIdx );
-#else // #ifdef CMTK_BUILD_MPI
+#else // #ifdef CMTK_USE_MPI
   /** Task function: Compute local gradient of the cost function for gradient approximation.
    * This function takes into consideration that in a spline warp, each control point
    * effects only a local neighborhood. It also groups the parameters by control

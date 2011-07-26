@@ -99,7 +99,7 @@ GroupwiseRegistrationRMIFunctional<TXform>
   else
     threadPool.Run( EvaluateThread, params );
   
-#ifdef CMTK_BUILD_MPI
+#ifdef CMTK_USE_MPI
   SumsAndProductsVectorType tmpVector( this->m_SumOfProductsMatrix.size() );
   MPI::COMM_WORLD.Allreduce( &(this->m_SumOfProductsMatrix[0]), &(tmpVector[0]), this->m_SumOfProductsMatrix.size(), MPI::LONG, MPI::SUM );
   std::copy( tmpVector.begin(), tmpVector.end(), this->m_SumOfProductsMatrix.begin() );
@@ -188,7 +188,7 @@ GroupwiseRegistrationRMIFunctional<TXform>
   size_t totalNumberOfSamples = 0;
 
   const size_t numberOfPixels = ThisConst->m_TemplateNumberOfPixels;
-#ifdef CMTK_BUILD_MPI  
+#ifdef CMTK_USE_MPI  
   const size_t pixelsPerTask = 1+(numberOfPixels / ( taskCnt * ThisConst->m_SizeMPI ));
   const size_t pixelFrom = ( taskIdx + ThisConst->m_RankMPI * taskCnt ) * pixelsPerTask;
   const size_t pixelTo = std::min( numberOfPixels, pixelFrom + pixelsPerTask );
@@ -266,7 +266,7 @@ GroupwiseRegistrationRMIFunctional<TXform>
   std::fill( sumsVector.begin(), sumsVector.end(), 0 );
 
   const size_t numberOfSamples = ThisConst->m_ProbabilisticSamples.size();
-#ifdef CMTK_BUILD_MPI  
+#ifdef CMTK_USE_MPI  
   const size_t samplesPerTask = 1+(numberOfSamples / ( taskCnt * ThisConst->m_SizeMPI ));
   const size_t sampleFrom = ( taskIdx + ThisConst->m_RankMPI * taskCnt ) * samplesPerTask;
   const size_t sampleTo = std::min( numberOfSamples, sampleFrom + samplesPerTask );
