@@ -417,7 +417,7 @@ AffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
   classStream.Open( studyList, "statistics", ClassStream::WRITE );
   classStream.WriteDouble( "time", this->GetTotalElapsedTime() );
   classStream.WriteDouble( "walltime", this->GetTotalElapsedWalltime() );
-#ifdef CMTK_USE_THREADS
+#ifdef CMTK_USE_PTHREADS
   classStream.WriteDouble( "thread_time", this->GetThreadTotalElapsedTime() );
 #endif
     

@@ -60,7 +60,7 @@ cmtk::ThreadPoolThreads::Run
   omp_set_num_threads( nThreadsOMP );
 #endif
 
-#ifdef CMTK_BUILD_SMP
+#ifdef CMTK_USE_SMP
   // set task function
   this->m_TaskFunction = taskFunction;
 

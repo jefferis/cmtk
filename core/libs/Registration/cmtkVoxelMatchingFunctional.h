@@ -45,7 +45,7 @@
 
 #include <System/cmtkException.h>
 
-#if defined(CMTK_BUILD_SMP)
+#if defined(CMTK_USE_SMP)
 #  include <System/cmtkLockingPtr.h>
 #endif
 
@@ -194,7 +194,7 @@ public:
    */
   virtual ~VoxelMatchingFunctional_Template () {}
 
-#if defined(CMTK_BUILD_SMP)
+#if defined(CMTK_USE_SMP)
 protected:
    /** Mutex lock.
     * This mutex is used by the multi-threaded complete functional evaluation.

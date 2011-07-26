@@ -33,7 +33,7 @@
 #define __cmtkThreadSystemTypes_h_included_
 
 #ifndef _MSC_VER
-#  if defined(CMTK_USE_THREADS)
+#  if defined(CMTK_USE_PTHREADS)
 #    include <pthread.h>
 #  endif
 /// Return type of a thread function.
@@ -58,7 +58,7 @@ cmtk
 //@{
 
 #ifndef _MSC_VER
-#  if defined(CMTK_USE_THREADS)
+#  if defined(CMTK_USE_PTHREADS)
 typedef pthread_t ThreadIDType;
 #  else
 /// Dummy definition for non-threading builds.

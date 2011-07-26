@@ -32,7 +32,7 @@
 
 #include <Registration/cmtkVoxelMatchingElasticFunctional.h>
 
-#ifdef CMTK_BUILD_SMP
+#ifdef CMTK_USE_SMP
 #  include <Registration/cmtkParallelElasticFunctional.h>
 #endif
 
@@ -341,7 +341,7 @@ CreateElasticFunctional
   UniformVolume::SmartPtr& refVolume, 
   UniformVolume::SmartPtr& fltVolume )
 {
-#ifdef CMTK_BUILD_SMP
+#ifdef CMTK_USE_SMP
   switch ( fltVolume->GetData()->GetDataClass() ) 
     {
     case DATACLASS_UNKNOWN :

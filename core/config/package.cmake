@@ -39,7 +39,7 @@ SET(BUILD_TESTING "ON" CACHE BOOL "Build testing components")
 SET(BUILD_VALIDATION "ON" CACHE BOOL "Build validation components")
 
 SET(CMTK_BUILD_NRRD "ON" CACHE BOOL "Build with NRRD file format support")
-SET(CMTK_BUILD_SMP "ON" CACHE BOOL "Build with SMP parallelism support")
+SET(CMTK_USE_SMP "ON" CACHE BOOL "Build with SMP parallelism support")
 SET(CMTK_BUILD_SQLITE "ON" CACHE BOOL "Build with database support")
 SET(CMTK_BUILD_STACKTRACE "ON" CACHE BOOL "Build with stack backtrace printing for crashes")
 SET(CMTK_BUILD_UNSTABLE "OFF" CACHE BOOL "Build unstable, experimental code")

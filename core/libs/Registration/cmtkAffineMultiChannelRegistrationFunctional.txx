@@ -175,11 +175,11 @@ AffineMultiChannelRegistrationFunctional<TMultiChannelMetricFunctional>
       }
     }
 
-#ifdef CMTK_BUILD_SMP
+#ifdef CMTK_USE_SMP
   This->m_MetricDataMutex.Lock();
 #endif
   This->m_MetricData += metricData;
-#ifdef CMTK_BUILD_SMP
+#ifdef CMTK_USE_SMP
   This->m_MetricDataMutex.Unlock();
 #endif
 }

@@ -36,8 +36,8 @@
 #  include "cmtkThreadSemaphoreWindows.txx"
 #elif defined(__APPLE__) || defined(__CYGWIN__)
 #  include "cmtkThreadSemaphoreAppleIsRetarded.txx"
-#elif defined(CMTK_USE_THREADS)
+#elif defined(CMTK_USE_PTHREADS)
 #  include "cmtkThreadSemaphorePOSIX.txx"
 #else
 #  include "cmtkThreadSemaphoreNone.txx"
-#endif // #ifdef CMTK_USE_THREADS
+#endif // #ifdef CMTK_USE_PTHREADS

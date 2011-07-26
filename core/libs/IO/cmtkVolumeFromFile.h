@@ -53,7 +53,7 @@ public:
   /// Read volume from file automatically.
   static const UniformVolume::SmartPtr Read( const char *filename );
 
-#ifdef CMTK_HAVE_DCMTK
+#ifdef CMTK_USE_DCMTK
   /// Read volume in multi-slice DICOM format.
   static const UniformVolume::SmartPtr ReadDICOM( const char *filename );
 #else

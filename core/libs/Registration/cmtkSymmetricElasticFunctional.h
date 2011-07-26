@@ -38,7 +38,7 @@
 #include <Base/cmtkMacros.h>
 #include <Base/cmtkFunctional.h>
 
-#ifdef CMTK_BUILD_SMP
+#ifdef CMTK_USE_SMP
 #  include <Registration/cmtkParallelElasticFunctional.h>
 #else
 #  include <Registration/cmtkVoxelMatchingElasticFunctional.h>
@@ -105,14 +105,14 @@ public:
   typedef SymmetricElasticFunctional Superclass;
 
   /// The forward functional.
-#ifdef CMTK_BUILD_SMP
+#ifdef CMTK_USE_SMP
   ParallelElasticFunctional<VM> FwdFunctional;
 #else
   VoxelMatchingElasticFunctional_Template<VM> FwdFunctional;
 #endif
 
   /// The backward functional.
-#ifdef CMTK_BUILD_SMP
+#ifdef CMTK_USE_SMP
   ParallelElasticFunctional<VM> BwdFunctional;
 #else
   VoxelMatchingElasticFunctional_Template<VM> BwdFunctional;

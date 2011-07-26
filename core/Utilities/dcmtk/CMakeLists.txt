@@ -34,9 +34,9 @@ SET(DCM_DICT_DEFAULT_PATH "/dicom.dic;${DCMTK_PREFIX}/lib/dicom.dic;${CMTK_INSTA
 
 SET(WITH_ZLIB 1)
 
-IF(CMTK_BUILD_SMP)
+IF(CMTK_USE_SMP)
   SET(WITH_THREADS 1)
-ENDIF(CMTK_BUILD_SMP)
+ENDIF(CMTK_USE_SMP)
 
 INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityC.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityCXX.cmake)

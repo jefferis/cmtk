@@ -40,7 +40,7 @@
 #include <dcmtk/dcmimgle/didocu.h>
 #include <dcmtk/dcmimgle/diutils.h>
 
-#ifdef CMTK_HAVE_DCMTK_JPEG
+#ifdef CMTK_USE_DCMTK_JPEG
 #  include <djdecode.h>
 #endif
 
@@ -60,7 +60,7 @@ cmtk
 const UniformVolume::SmartPtr
 VolumeFromFile::ReadDICOM( const char *path )
 {
-#ifdef CMTK_HAVE_DCMTK_JPEG
+#ifdef CMTK_USE_DCMTK_JPEG
   // register global decompression codecs
   static bool decodersRegistered = false;
   if ( ! decodersRegistered ) 

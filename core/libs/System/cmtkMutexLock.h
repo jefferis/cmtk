@@ -37,7 +37,7 @@
 
 #include <System/cmtkCannotBeCopied.h>
 
-#if defined(CMTK_USE_THREADS)
+#if defined(CMTK_USE_PTHREADS)
 #  include <pthread.h>
 #endif
 
@@ -64,7 +64,7 @@ public:
   /// Constructor: initialize low-level lock.
   MutexLock() 
   {
-#if defined(CMTK_USE_THREADS)
+#if defined(CMTK_USE_PTHREADS)
     pthread_mutex_init( &this->m_MutexLock, NULL );
 #else
 #ifdef _MSC_VER
@@ -76,7 +76,7 @@ public:
   /// Destructor: clean up low-level lock.
   ~MutexLock() 
   {
-#if defined(CMTK_USE_THREADS)
+#if defined(CMTK_USE_PTHREADS)
     pthread_mutex_destroy( &this->m_MutexLock );
 #else
 #ifdef _MSC_VER
@@ -88,7 +88,7 @@ public:
   /// Lock: if already locked, wait until unlocked, then lock.
   void Lock() 
   {
-#if defined(CMTK_USE_THREADS)
+#if defined(CMTK_USE_PTHREADS)
     pthread_mutex_lock( &this->m_MutexLock );
 #else
 #ifdef _MSC_VER
@@ -100,7 +100,7 @@ public:
   /// Unlock.
   void Unlock() 
   {
-#if defined(CMTK_USE_THREADS)
+#if defined(CMTK_USE_PTHREADS)
     pthread_mutex_unlock( &this->m_MutexLock );
 #else
 #ifdef _MSC_VER
@@ -109,7 +109,7 @@ public:
 #endif
   }
 
-#if defined(CMTK_USE_THREADS)
+#if defined(CMTK_USE_PTHREADS)
 protected:
   /** Low-level mutex lock for POSIX threads.
     */

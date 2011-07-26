@@ -51,7 +51,7 @@ BUILD_TESTING:BOOL=ON
 CMTK_DATA_ROOT:PATH=/home/testrunner/nitrc/data
 BUILD_GUI:BOOL=ON
 BUILD_VALIDATION:BOOL=ON
-CMTK_BUILD_SMP:BOOL=OFF
+CMTK_USE_SMP:BOOL=OFF
 CMAKE_BUILD_TYPE:STRING=Release
 CMAKE_CXX_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse -Wall -Wextra -Wno-deprecated -Wno-unknown-pragmas
 CMAKE_CXX_FLAGS_DEBUG:STRING=-g -DDEBUG

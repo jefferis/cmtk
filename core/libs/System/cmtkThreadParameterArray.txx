@@ -54,7 +54,7 @@ ThreadParameterArray<TClass,TParam>
   omp_set_num_threads( nThreadsOMP );
 #endif
 
-#ifdef CMTK_USE_THREADS
+#ifdef CMTK_USE_PTHREADS
 
 #ifndef _MSC_VER
   pthread_attr_t attr;
@@ -100,7 +100,7 @@ void
 ThreadParameterArray<TClass,TParam>
 ::JoinAsynchronousThreads()
 {
-#ifdef CMTK_USE_THREADS  
+#ifdef CMTK_USE_PTHREADS  
   for ( size_t threadIdx = 0; threadIdx < this->m_NumberOfThreads; ++threadIdx ) 
     {
 #ifdef _MSC_VER
@@ -130,7 +130,7 @@ void
 ThreadParameterArray<TClass,TParam>
 ::CancelAsynchronousThreads()
 {
-#ifdef CMTK_USE_THREADS  
+#ifdef CMTK_USE_PTHREADS  
   for ( size_t threadIdx = 0; threadIdx < this->m_NumberOfThreads; ++threadIdx ) 
     {
 #ifdef _MSC_VER
@@ -167,7 +167,7 @@ ThreadParameterArray<TClass,TParam>
   omp_set_num_threads( nThreadsOMP );
 #endif
 
-#ifndef CMTK_USE_THREADS
+#ifndef CMTK_USE_PTHREADS
   // we're not actually using threads, so simply run everything "by hand".
   for ( size_t threadIdx = 0; threadIdx < numberOfThreadsTotal; ++threadIdx ) 
     {
@@ -275,7 +275,7 @@ ThreadParameterArray<TClass,TParam>
     pthread_attr_destroy(&attr);
 #endif
     }
-#endif // #ifndef CMTK_USE_THREADS
+#endif // #ifndef CMTK_USE_PTHREADS
 
 #ifdef _OPENMP
   omp_set_num_threads( GetNumberOfThreads() );

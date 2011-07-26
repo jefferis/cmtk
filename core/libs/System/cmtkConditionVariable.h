@@ -37,9 +37,9 @@
 
 #include <System/cmtkMutexLock.h>
 
-#if defined(CMTK_USE_THREADS)
+#if defined(CMTK_USE_PTHREADS)
 #  include <pthread.h>
-#endif // #if defined(CMTK_USE_THREADS)
+#endif // #if defined(CMTK_USE_PTHREADS)
 
 namespace
 cmtk
@@ -57,7 +57,7 @@ public:
   /// Constructor.
   ConditionVariable()
   {
-#if defined(CMTK_USE_THREADS)
+#if defined(CMTK_USE_PTHREADS)
     pthread_cond_init( &this->m_ConditionVariable, NULL );
 #endif
   }
@@ -65,7 +65,7 @@ public:
   /// Destructor.
   ~ConditionVariable()
   {
-#if defined(CMTK_USE_THREADS)
+#if defined(CMTK_USE_PTHREADS)
     pthread_cond_destroy( &this->m_ConditionVariable );
 #endif
   }
@@ -73,7 +73,7 @@ public:
   /// Wait for condition variable.
   void Wait()
   {
-#if defined(CMTK_USE_THREADS)
+#if defined(CMTK_USE_PTHREADS)
     pthread_cond_wait( &this->m_ConditionVariable, &this->m_MutexLock );
 #endif
   }
@@ -83,7 +83,7 @@ public:
    */
   void Signal()
   {
-#if defined(CMTK_USE_THREADS)
+#if defined(CMTK_USE_PTHREADS)
     pthread_cond_signal( &this->m_ConditionVariable );
 #endif
   }
@@ -93,12 +93,12 @@ public:
    */
   void Broadcast()
   {
-#if defined(CMTK_USE_THREADS)
+#if defined(CMTK_USE_PTHREADS)
     pthread_cond_broadcast( &this->m_ConditionVariable );
 #endif
   }
 
-#if defined(CMTK_USE_THREADS)
+#if defined(CMTK_USE_PTHREADS)
 private:
   /// The condition variable.
   pthread_cond_t m_ConditionVariable;

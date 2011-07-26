@@ -205,7 +205,7 @@ private:
   /// Number of running threads.
   size_t m_NumberOfThreads;
 
-#ifdef CMTK_BUILD_SMP
+#ifdef CMTK_USE_SMP
   /// Thread handles.
   std::vector<ThreadIDType> m_ThreadID;
   

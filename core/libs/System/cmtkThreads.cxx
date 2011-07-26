@@ -41,7 +41,7 @@
 #  include <unistd.h>
 #endif
 
-#ifdef CMTK_USE_THREADS
+#ifdef CMTK_USE_PTHREADS
 #  include <pthread.h>
 #  include <errno.h>
 #endif
@@ -94,7 +94,7 @@ Threads::GetNumberOfThreads()
 bool
 Threads::Available()
 {
-#ifndef CMTK_BUILD_SMP
+#ifndef CMTK_USE_SMP
   // Threads are not activated in this library.
   return false;
 #else
@@ -161,9 +161,9 @@ Threads::GetMaxThreads()
 // GJ added extra elif for Apple
 // not sure if this max is sensible, but can't find
 // anywhere to query it
-#elif defined(__APPLE__) && defined(CMTK_USE_THREADS)
+#elif defined(__APPLE__) && defined(CMTK_USE_PTHREADS)
   return std::min( CMTK_MAX_THREADS, CMTK_MAX_THREADS ); 
-#  elif defined(CMTK_USE_THREADS)
+#  elif defined(CMTK_USE_PTHREADS)
   const long sysconfNumThreads = sysconf( _SC_THREAD_THREADS_MAX );
   if ( sysconfNumThreads == -1 )
     return CMTK_MAX_THREADS;
@@ -188,7 +188,7 @@ Threads::GetNumberOfProcessors()
   int nproc;  size_t len=4;
   sysctlbyname(name, &nproc, &len, NULL, 0);
   return nproc;
-#elif defined(CMTK_USE_THREADS)
+#elif defined(CMTK_USE_PTHREADS)
   return sysconf( _SC_NPROCESSORS_ONLN );
 #else
   return 1;
@@ -213,14 +213,14 @@ Threads::RunThreads
   omp_set_num_threads( nThreadsOMP );
 #endif
 
-#ifdef CMTK_BUILD_SMP
+#ifdef CMTK_USE_SMP
   ThreadIDType Thread[CMTK_MAX_THREADS];
 #ifdef _MSC_VER
   HANDLE ThreadHandles[CMTK_MAX_THREADS];
 #endif
 #endif
 
-#ifdef CMTK_USE_THREADS
+#ifdef CMTK_USE_PTHREADS
   pthread_attr_t attr;
   pthread_attr_init(&attr);
   pthread_attr_setscope(&attr, PTHREAD_SCOPE_SYSTEM);
@@ -236,7 +236,7 @@ Threads::RunThreads
     // We do NOT run the last thread as a thread, but rather continue the
     // main thread. This should allow us to compute the actual real time
     // spent on the longest thread, at least approximately.
-#ifdef CMTK_BUILD_SMP
+#ifdef CMTK_USE_SMP
 #ifdef _MSC_VER
     ThreadHandles[threadIdx] = CreateThread( NULL /*default security attributes*/, 0/*use default stack size*/, (LPTHREAD_START_ROUTINE) threadCall, threadParameters,  0/*use default creation flags*/, &Thread[threadIdx] );
     if ( ThreadHandles[threadIdx] == NULL ) 
@@ -255,7 +255,7 @@ Threads::RunThreads
     if ( status ) 
       {
       fprintf( stderr, "Creation of thread #%d failed with status %d.\n", threadIdx, status );
-#if defined(CMTK_BUILD_SMP) && defined(CMTK_USE_THREADS)
+#if defined(CMTK_USE_SMP) && defined(CMTK_USE_PTHREADS)
       Thread[threadIdx] = 0;
 #endif
       threadCall( threadParameters );
@@ -272,7 +272,7 @@ Threads::RunThreads
   // the ones that are already finished.
   for ( int threadIdx = numberOfThreads-1; threadIdx; --threadIdx ) 
     {
-#ifdef CMTK_BUILD_SMP
+#ifdef CMTK_USE_SMP
 #  ifdef _MSC_VER
     WaitForSingleObject( ThreadHandles[threadIdx], INFINITE /*no timeout*/ );
 #  else // _MSC_VER
@@ -285,7 +285,7 @@ Threads::RunThreads
 #endif
     }
   
-#ifdef CMTK_BUILD_SMP
+#ifdef CMTK_USE_SMP
 #ifndef _MSC_VER
   pthread_attr_destroy(&attr);
 #endif

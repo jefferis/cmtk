@@ -32,7 +32,7 @@
 
 #include <Registration/cmtkVoxelMatchingAffineFunctional.h>
 
-#ifdef CMTK_BUILD_SMP
+#ifdef CMTK_USE_SMP
 #  include <System/cmtkThreads.h>
 #endif
 

@@ -37,7 +37,7 @@
 
 #include <System/cmtkCannotBeCopied.h>
 
-#if defined(CMTK_USE_THREADS)
+#if defined(CMTK_USE_PTHREADS)
 #  if defined(__APPLE__) || defined(__CYGWIN__)
 #    include <pthread.h>
 #  else
@@ -76,7 +76,7 @@ public:
   /// Wait for semaphore.
   void Wait();
 
-#if defined(CMTK_USE_THREADS)
+#if defined(CMTK_USE_PTHREADS)
 #  if defined(__APPLE__) || defined(__CYGWIN__)
 private:
   /// Counter (Apple only).

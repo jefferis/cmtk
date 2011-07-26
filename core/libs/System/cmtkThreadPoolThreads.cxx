@@ -61,7 +61,7 @@ ThreadPoolThreads::ThreadPoolThreads( const size_t nThreads )
   else
     this->m_NumberOfThreads = nThreads;
 
-#ifdef CMTK_BUILD_SMP  
+#ifdef CMTK_USE_SMP  
   this->m_ThreadID.resize( this->m_NumberOfThreads, 0 );
 #ifdef _MSC_VER
   this->m_ThreadHandles.resize( this->m_NumberOfThreads, 0 );
@@ -75,8 +75,8 @@ ThreadPoolThreads::StartThreads()
 {
   if ( !this->m_ThreadsRunning )
     {
-#ifdef CMTK_BUILD_SMP  
-#ifdef CMTK_USE_THREADS
+#ifdef CMTK_USE_SMP  
+#ifdef CMTK_USE_PTHREADS
     pthread_attr_t attr;
     pthread_attr_init(&attr);
     pthread_attr_setscope(&attr, PTHREAD_SCOPE_SYSTEM);
@@ -122,8 +122,8 @@ ThreadPoolThreads::StartThreads()
 	exit( 1 );
 	}
       }
-#endif // #ifdef CMTK_USE_THREADS
-#endif // #ifdef CMTK_BUILD_SMP
+#endif // #ifdef CMTK_USE_PTHREADS
+#endif // #ifdef CMTK_USE_SMP
     this->m_ThreadsRunning = true;
     }
 }
@@ -139,7 +139,7 @@ ThreadPoolThreads::EndThreads()
 {
   if ( this->m_ThreadsRunning )
     {
-#ifdef CMTK_USE_THREADS
+#ifdef CMTK_USE_PTHREADS
     // set flag to terminate threads and post one semaphore per actual thread
     this->m_ContinueThreads = false;
     this->m_TaskWaitingSemaphore.Post( this->m_NumberOfThreads );
@@ -170,7 +170,7 @@ ThreadPoolThreads::ThreadFunction( const size_t threadIdx )
   omp_set_num_threads( 1 );
 #endif
 
-#ifdef CMTK_BUILD_SMP
+#ifdef CMTK_USE_SMP
   // wait for task waiting
   this->m_TaskWaitingSemaphore.Wait();
   while ( this->m_ContinueThreads )
@@ -190,7 +190,7 @@ ThreadPoolThreads::ThreadFunction( const size_t threadIdx )
     // wait for task waiting
     this->m_TaskWaitingSemaphore.Wait();
     }
-#endif // #ifdef CMTK_BUILD_SMP
+#endif // #ifdef CMTK_USE_SMP
 }
 
 ThreadPoolThreads& 

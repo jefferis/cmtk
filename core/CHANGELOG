@@ -1010,7 +1010,7 @@ Release CMTK-1.0.0 (2009-06-16):
     always true since we're bundling zlib.
 - Improved: use double instead of float for linear model and regression
 - Improved: use CMake's FindOpenMP to detect and configure OpenMP
-- Improved: prevent configurations where CMTK_USE_THREADS is ON but
+- Improved: prevent configurations where CMTK_USE_PTHREADS is ON but
     CMTK_BUILD_SMP is OFF.
 - Improved: better integration of Doxygen into CMake build system
 - Improved: better output of stacked image information in dcm2image

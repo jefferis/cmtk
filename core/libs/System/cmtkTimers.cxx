@@ -48,7 +48,7 @@
 #  include <sys/procfs.h>
 #endif
 
-#ifdef CMTK_USE_THREADS
+#ifdef CMTK_USE_PTHREADS
 #  include <pthread.h>
 #endif
 
