@@ -81,20 +81,9 @@ public:
 
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
-  static inline float Convert ( const T value, const bool paddingFlag = false, const float paddingData = 0 ) 
+  static inline float Convert ( const T value, const bool = false, const float = 0 ) 
   { 
-    using namespace std;
-    if ( MathUtil::IsFinite( value ) )
-      {
-      return (float) value;
-      }
-    else
-      {
-      if ( paddingFlag )
-	return paddingData;
-      else
-	return ChoosePaddingValue();
-      }
+    return static_cast<float>( value );
   }
 
   /** Return padding data value (i.e. Inf) for the given type. */
@@ -125,20 +114,9 @@ public:
 
   /** Return given value converted (and rounded) to discrete type. */
   template<class T>
-  static inline double Convert ( const T value, const bool paddingFlag = false, const double paddingData = 0 ) 
+  static inline double Convert ( const T value, const bool = false, const double = 0 ) 
   { 
-    using namespace std;
-    if ( MathUtil::IsFinite( value ) )
-      {
-      return (double) value;
-      }
-    else
-      {
-      if ( paddingFlag )
-	return paddingData;
-      else
-	return ChoosePaddingValue();
-      }
+    return static_cast<double>( value );
   }
   
   /** Return padding data value (i.e. Inf) for the given type. */
