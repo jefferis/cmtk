@@ -65,7 +65,9 @@ SolarisStudio Compiler, Linux/Intel
 
   http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6989625
 
-  Workaround: build "Debug" configuration, or use a different compiler
+  Workaround: build "MinSizeRel" configuration, which sets optimization level
+    to O2. Note that OpenMP must be disabled, because otherwise optimization
+    is bumped back to O3 by default.
 
 
 ==========================================================================
