@@ -1,5 +1,7 @@
 Release CMTK-1.8.0:
 
+(r3300) Fixed: broken array indexing made "mcwarp" tool crash when intensity
+    correction was activated. Also produced incorrect results.
 (r3288) Fixed: external projects can now find and use CMTK properly. The
     "validation" tree has been moved out of "core/" and now uses CMTK's core like
     any other external project.
