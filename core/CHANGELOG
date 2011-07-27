@@ -1,5 +1,7 @@
 Release CMTK-1.8.0:
 
+(r3305) Fixed: volume_injection tool selected improper padding value due to
+    problem in the type traits implemented by the cmtkBase library.
 (r3303) Fixed: when moving image had float/double data type, the
     "registration" tool accidentally used zero as padding value and, as a
     result, ignored image background.
