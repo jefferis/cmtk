@@ -1,6 +1,7 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
+//
 //  Copyright 2004-2010 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
@@ -55,20 +56,17 @@ SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional<TMetricFunctiona
     if ( !this->m_ReferenceChannels[ref]->GetDataAt( values[idx++], rindex ) ) return;
     }
   
-  for ( size_t flt = 0; flt < this->m_FloatingChannels.size(); ++flt )
-    {
-    if ( !this->m_FloatingInterpolators[flt]->GetDataAt( fvector, values[idx++] ) )
-      return;
-    }
-  
   const int planeSize = this->m_ReferenceDims[0] * this->m_ReferenceDims[1];
   const int z = rindex / planeSize;
   const int y = (rindex % planeSize) / this->m_ReferenceDims[0];
   const int x = rindex % this->m_ReferenceDims[0];
+
   const Types::DataItem jacobian = static_cast<Types::DataItem>( this->m_Transformation.GetJacobianDeterminant( x, y, z ) );
 
   for ( size_t flt = 0; flt < this->m_FloatingChannels.size(); ++flt, ++idx )
     {
+    if ( !this->m_FloatingInterpolators[flt]->GetDataAt( fvector, values[idx] ) )
+      return;
     values[idx] *= jacobian;
     }
   
@@ -92,27 +90,26 @@ SplineWarpMultiChannelIntensityCorrectionRegistrationFunctional<TMetricFunctiona
     if ( !this->m_ReferenceChannels[ref]->GetDataAt( values[idx++], rindex ) ) return;
     }
   
-  for ( size_t flt = 0; flt < this->m_FloatingChannels.size(); ++flt )
+  const int planeSize = this->m_ReferenceDims[0] * this->m_ReferenceDims[1];
+  const int z = rindex / planeSize;
+  const int y = (rindex % planeSize) / this->m_ReferenceDims[0];
+  const int x = rindex % this->m_ReferenceDims[0];
+
+  const Types::DataItem jacobian = static_cast<Types::DataItem>( this->m_Transformation.GetJacobianDeterminant( x, y, z ) );
+
+  for ( size_t flt = 0; flt < this->m_FloatingChannels.size(); ++flt, ++idx )
     {
-    if ( !this->m_FloatingInterpolators[flt]->GetDataAt( fvector, values[idx++] ) )
+    if ( !this->m_FloatingInterpolators[flt]->GetDataAt( fvector, values[idx] ) )
       {
       for ( size_t f = 0; f < this->m_FloatingChannels.size(); ++f )
 	this->m_ReformattedFloatingChannels[f][rindex] = MathUtil::GetFloatNaN();
       return;
       }
-    }
-  
-  const int planeSize = this->m_ReferenceDims[0] * this->m_ReferenceDims[1];
-  const int z = rindex / planeSize;
-  const int y = (rindex % planeSize) / this->m_ReferenceDims[0];
-  const int x = rindex % this->m_ReferenceDims[0];
-  const Types::DataItem jacobian = static_cast<Types::DataItem>( this->m_Transformation.GetJacobianDeterminant( x, y, z ) );
-  for ( size_t flt = 0; flt < this->m_FloatingChannels.size(); ++flt, ++idx )
-    {
+
     values[idx] *= jacobian;
     this->m_ReformattedFloatingChannels[flt][rindex] = static_cast<float>( values[idx] );
     }
-  
+
   metricData += &(values[0]);
 }
 
