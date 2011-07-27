@@ -167,7 +167,7 @@ case ${RUNTEST} in
 	check_results average.img
 	;;
     average_imagesMeanAbsLog)
-	run average_images -o ${tmpdir}/average.hdr --abs --log spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
+	run average_images --set-padding-value 0 -o ${tmpdir}/average.hdr --abs --log spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr
 	check_results average.img
 	;;
     average_imagesVariance)

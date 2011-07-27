@@ -163,6 +163,7 @@ doMain( const int argc, const char* argv[] )
       }
     
     cmtk::TypedArray::SmartPtr data = nextVolume->GetData();
+    data->Convert( DataType );
 
     if ( Padding ) 
       {
