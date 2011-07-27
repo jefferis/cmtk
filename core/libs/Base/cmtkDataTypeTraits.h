@@ -84,13 +84,17 @@ public:
   static inline float Convert ( const T value, const bool paddingFlag = false, const float paddingData = 0 ) 
   { 
     using namespace std;
-    if ( MathUtil::IsNaN( value ) )
+    if ( MathUtil::IsFinite( value ) )
+      {
+      return (float) value;
+      }
+    else
+      {
       if ( paddingFlag )
 	return paddingData;
       else
 	return ChoosePaddingValue();
-    else
-      return (float) value;
+      }
   }
 
   /** Return padding data value (i.e. Inf) for the given type. */
@@ -124,13 +128,17 @@ public:
   static inline double Convert ( const T value, const bool paddingFlag = false, const double paddingData = 0 ) 
   { 
     using namespace std;
-    if ( MathUtil::IsNaN( value ) )
+    if ( MathUtil::IsFinite( value ) )
+      {
+      return (double) value;
+      }
+    else
+      {
       if ( paddingFlag )
 	return paddingData;
       else
 	return ChoosePaddingValue();
-    else
-      return (double) value;
+      }
   }
   
   /** Return padding data value (i.e. Inf) for the given type. */
@@ -170,13 +178,17 @@ public:
   static inline byte Convert ( const T value, const bool paddingFlag = false, const byte paddingData = 0 ) 
   { 
     using namespace std;
-    if ( MathUtil::IsNaN( value ) )
+    if ( MathUtil::IsFinite( value ) )
+      {
+      return (byte) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
+      }
+    else
+      {
       if ( paddingFlag )
 	return paddingData;
       else
 	return ChoosePaddingValue();
-    else
-      return (byte) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
+      }
   }
   
   /** Return padding data value for the given type. */
@@ -216,13 +228,17 @@ public:
   static inline char Convert ( const T value, const bool paddingFlag = false, const char paddingData = 0 ) 
   { 
     using namespace std;
-    if ( MathUtil::IsNaN( value ) )
+    if ( MathUtil::IsFinite( value ) )
+      {
+      return (char) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
+      }
+    else
+      {
       if ( paddingFlag )
 	return paddingData;
       else
 	return ChoosePaddingValue();
-    else
-      return (char) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
+      }
   }
   
   /** Return padding data value for the given type. */
@@ -262,13 +278,17 @@ public:
   static inline signed short Convert ( const T value, const bool paddingFlag = false, const signed short paddingData = 0 ) 
   { 
     using namespace std;
-    if ( MathUtil::IsNaN( value ) )
+    if ( MathUtil::IsFinite( value ) )
+      {
+      return (signed short) (((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5)));
+      }
+    else
+      {
       if ( paddingFlag )
 	return paddingData;
       else
 	return ChoosePaddingValue();
-    else
-      return (signed short) (((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5)));
+      }
   }
   
   /** Return padding data value for the given type. */
@@ -308,13 +328,17 @@ public:
   static inline unsigned short Convert ( const T value, const bool paddingFlag = false, const unsigned short paddingData = 0 ) 
   { 
     using namespace std;
-    if ( MathUtil::IsNaN( value ) )
+    if ( MathUtil::IsFinite( value ) )
+      {
+      return (unsigned short) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
+      }
+    else
+      {
       if ( paddingFlag )
 	return paddingData;
       else
 	return ChoosePaddingValue();
-    else
-      return (unsigned short) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
+      }
   }
   
   /** Return padding data value for the given type. */
@@ -354,13 +378,17 @@ public:
   static inline int Convert ( const T value, const bool paddingFlag = false, const int paddingData = 0 ) 
   { 
     using namespace std;
-    if ( MathUtil::IsNaN( value ) )
+    if ( MathUtil::IsFinite( value ) )
+      {
+      return (int) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
+      }
+    else
+      {
       if ( paddingFlag )
 	return paddingData;
       else
 	return ChoosePaddingValue();
-    else
-      return (int) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
+      }
   }
   
   /** Return padding data value for the given type. */
@@ -401,13 +429,17 @@ public:
   static inline unsigned int Convert ( const T value, const bool paddingFlag = false, const unsigned int paddingData = 0 ) 
   { 
     using namespace std;
-    if ( MathUtil::IsNaN( value ) )
+    if ( MathUtil::IsFinite( value ) )
+      {
+      return (unsigned int) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
+      }
+    else
+      {
       if ( paddingFlag )
 	return paddingData;
       else
 	return ChoosePaddingValue();
-    else
-      return (unsigned int) ((value<Self::Min) ? Self::Min : (value+0.5>Self::Max) ? Self::Max : floor(value+0.5));
+      }
   }
   
   /** Return padding data value for the given type. */

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -311,7 +311,7 @@ GeneralLinearModel::FitModel
 	  // compute T-statistics
 	  double tStat = static_cast<double>( srp * sqrt( df / (1.0-R2) ) );
 	  // export T-statistics (set to zero if NAN)
-	  if ( MathUtil::IsNaN( tStat ) ) 
+	  if ( ! MathUtil::IsFinite( tStat ) ) 
 	    tStat = 0;
 	  this->TStat[p]->Set( tStat, n ); 
 	  }
