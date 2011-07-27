@@ -56,6 +56,18 @@ MacOS-X
   http://www.nitrc.org/tracker/index.php?func=detail&aid=5450&group_id=212&atid=877
 
 
+SolarisStudio Compiler, Linux/Intel
+-----------------------------------
+
+- SolarisStudio C++ 12.2 crashes when compiling the "Numerics" library with
+  full optimization, -O3. A bug report has been filed with, and accepted by,
+  Oracle:
+
+  http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6989625
+
+  Workaround: build "Debug" configuration, or use a different compiler
+
+
 ==========================================================================
 
 This software is available from
