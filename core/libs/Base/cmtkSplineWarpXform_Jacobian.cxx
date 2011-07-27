@@ -83,7 +83,7 @@ SplineWarpXform::GetJacobianRow
   // along the way
   Types::Coordinate phiCompX, phiCompY, phiCompZ;
 
-#ifdef CMTK_VAR_AUTO_ARRAYSIZE
+#ifdef CMTK_COMPILER_VAR_AUTO_ARRAYSIZE
   Types::Coordinate phiHatX[3*numberOfCells];
   Types::Coordinate phiHatY[3*numberOfCells];
   Types::Coordinate phiHatZ[3*numberOfCells];
@@ -122,7 +122,7 @@ SplineWarpXform::GetJacobianRow
   for ( const int lastPoint = x + numberOfPoints; i < lastPoint; ) 
     {
     // these change only when we enter a new cell
-#ifdef CMTK_VAR_AUTO_ARRAYSIZE
+#ifdef CMTK_COMPILER_VAR_AUTO_ARRAYSIZE
     const Types::Coordinate* phiPtrX = phiHatX + 3*cellIdx;
     const Types::Coordinate* phiPtrY = phiHatY + 3*cellIdx;
     const Types::Coordinate* phiPtrZ = phiHatZ + 3*cellIdx;
@@ -411,7 +411,7 @@ SplineWarpXform::GetJacobianDeterminantRow
   // along the way
   Types::Coordinate phiCompX, phiCompY, phiCompZ;
 
-#ifdef CMTK_VAR_AUTO_ARRAYSIZE
+#ifdef CMTK_COMPILER_VAR_AUTO_ARRAYSIZE
   Types::Coordinate phiHatX[3*numberOfCells];
   Types::Coordinate phiHatY[3*numberOfCells];
   Types::Coordinate phiHatZ[3*numberOfCells];
@@ -450,7 +450,7 @@ SplineWarpXform::GetJacobianDeterminantRow
   for ( const int lastPoint = x + numberOfPoints; i < lastPoint; ) 
     {
     // these change only when we enter a new cell
-#ifdef CMTK_VAR_AUTO_ARRAYSIZE
+#ifdef CMTK_COMPILER_VAR_AUTO_ARRAYSIZE
     const Types::Coordinate* phiPtrX = phiHatX + 3*cellIdx;
     const Types::Coordinate* phiPtrY = phiHatY + 3*cellIdx;
     const Types::Coordinate* phiPtrZ = phiHatZ + 3*cellIdx;

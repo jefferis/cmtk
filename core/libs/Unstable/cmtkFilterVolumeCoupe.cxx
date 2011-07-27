@@ -200,7 +200,7 @@ FilterVolumeCoupe::ComputeNLWithinWindow
   TypedArray::SmartPtr curBlock = TypedArray::Create( data->GetType(), COUPE_BLOCK_SIZE );
   int offset = 0;
   Types::DataItem blockAtCurVox = 0.0;
-//#ifdef CMTK_VAR_AUTO_ARRAYSIZE
+//#ifdef CMTK_COMPILER_VAR_AUTO_ARRAYSIZE
 //  Types::DataItem neighborBlocks[windowSize][COUPE_BLOCK_SIZE];
 //  Types::DataItem neighborWeights[windowSize];
 //#else

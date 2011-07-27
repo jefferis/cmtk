@@ -300,7 +300,7 @@ ENDIF(CMTK_USE_CUDA)
 # "const char string[10];"
 
 INCLUDE(${CMAKE_ROOT}/Modules/CheckCXXSourceCompiles.cmake)
-CHECK_CXX_SOURCE_COMPILES("class A {}; class B : public A {}; int main() { int size = 10; B array[size]; }" COMPILER_VAR_AUTO_ARRAYSIZE)
+CHECK_CXX_SOURCE_COMPILES("class A {}; class B : public A {}; int main() { int size = 10; B array[size]; }" CMTK_COMPILER_VAR_AUTO_ARRAYSIZE)
 
 #-----------------------------------------------------------------------------
 # Configure Dart testing support.  This should be done before any

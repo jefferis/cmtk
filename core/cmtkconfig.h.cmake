@@ -76,7 +76,7 @@
 #  define CMTK_NUMERICS_FLOAT 1
 #endif
 
-#cmakedefine COMPILER_VAR_AUTO_ARRAYSIZE 1
+#cmakedefine CMTK_COMPILER_VAR_AUTO_ARRAYSIZE 1
 
 #cmakedefine HAVE_DIRENT_H 1
 #cmakedefine HAVE_EXECINFO_H 1

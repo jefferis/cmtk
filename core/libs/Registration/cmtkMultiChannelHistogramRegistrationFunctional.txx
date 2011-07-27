@@ -120,7 +120,7 @@ void
 MultiChannelHistogramRegistrationFunctional<TDataType,TInterpolator,THashKeyType,NBitsPerChannel>
 ::ContinueMetric( MetricData& metricData, const size_t rindex, const Vector3D& fvector )
 {
-#ifdef CMTK_VAR_AUTO_ARRAYSIZE
+#ifdef CMTK_COMPILER_VAR_AUTO_ARRAYSIZE
   Types::DataItem values[ this->m_NumberOfChannels ];
 #else
   std::vector<Types::DataItem> values( this->m_NumberOfChannels );
