@@ -61,6 +61,15 @@ Console StdNull( NULL );
 size_t
 Console::GetLineWidth() const
 {
+  // Allow override by user
+  const char *env = getenv( "CMTK_CONSOLE_LINE_WIDTH" );
+  if ( env )
+    {
+    const size_t width = atoi( env );
+    if ( width )
+      return width;
+    }
+  
 #if defined(HAVE_SYS_IOCTL_H) && defined(TIOCGWINSZ)
   struct winsize sz;
   if ( ioctl(0, TIOCGWINSZ, &sz) >= 0 )

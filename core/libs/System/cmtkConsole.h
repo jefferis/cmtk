@@ -70,7 +70,11 @@ public:
 #endif
   }
 
-  /// Get terminal line width, if possible.
+  /** Get terminal line width, if possible.
+   * The line width is determined using an ioctl() call, if available. Line width can be
+   * set (or overridden) by the user by setting the "CMTK_CONSOLE_LINE_WIDTH" environment
+   * variable to the desired number of characters per line.
+   */
   size_t GetLineWidth() const;
 
   /// Format text with line breaks etc.

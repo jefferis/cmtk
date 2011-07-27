@@ -2025,43 +2025,43 @@ case ${RUNTEST} in
 	check_results magnitude.nii
 	;;
     help_film)
-	run_eval "${BINDIR}/film --help > ${tmpdir}/film.help"
+	run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/film --help > ${tmpdir}/film.help"
 	check_results film.help
 	;;
     help_all_film)
-	run_eval "${BINDIR}/film --help-all > ${tmpdir}/film.help"
+	run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/film --help-all > ${tmpdir}/film.help"
 	check_results film.help
 	;;
     xml_film)
-	run_eval "${BINDIR}/film --xml | ${sed} '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/film.xml"
+	run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/film --xml | ${sed} '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/film.xml"
 	check_results film.xml
 	;;
     xml_levelset)
-        run_eval "${BINDIR}/levelset --xml | ${sed} '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/levelset.xml"
+        run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/levelset --xml | ${sed} '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/levelset.xml"
 	check_results levelset.xml
 	;;
     xml_mrbias)
-	run_eval "${BINDIR}/mrbias --xml | ${sed} '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/mrbias.xml"
+	run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/mrbias --xml | ${sed} '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/mrbias.xml"
 	check_results mrbias.xml
 	;;
     xml_registration)
-	run_eval "${BINDIR}/registration --xml | ${sed} '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/registration.xml"
+	run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/registration --xml | ${sed} '/<version>/{ N; s/^.*$/<version>/ }' > ${tmpdir}/registration.xml"
 	check_results registration.xml
 	;;
     wiki_film)
-	run_eval "${BINDIR}/film --wiki > ${tmpdir}/film.wiki"
+	run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/film --wiki > ${tmpdir}/film.wiki"
 	check_results film.wiki
 	;;
     wiki_levelset)
-	run_eval "${BINDIR}/levelset --wiki > ${tmpdir}/levelset.wiki"
+	run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/levelset --wiki > ${tmpdir}/levelset.wiki"
 	check_results levelset.wiki
 	;;
     wiki_mrbias)
-	run_eval "${BINDIR}/mrbias --wiki > ${tmpdir}/mrbias.wiki"
+	run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/mrbias --wiki > ${tmpdir}/mrbias.wiki"
 	check_results mrbias.wiki
 	;;
     wiki_registration)
-	run_eval "${BINDIR}/registration --wiki > ${tmpdir}/registration.wiki"
+	run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/registration --wiki > ${tmpdir}/registration.wiki"
 	check_results registration.wiki
 	;;
     *)
