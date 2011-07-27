@@ -94,6 +94,13 @@ public:
     return isnan( value );
   }
 
+  /// Portable test for "finite" values.
+  template<class T>
+  static bool IsFinite( const T value )
+  {
+    return finite( value );
+  }
+
   /// Get double-precision not-a-number (NaN) value.
   static double GetDoubleNaN()
   {

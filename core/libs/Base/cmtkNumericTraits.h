@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -68,13 +68,13 @@ public:
   static char ConvertFromDataItem( const Types::DataItem value )
   {
     using namespace std;
-    if ( MathUtil::IsNaN( value ) )
+    if ( MathUtil::IsFinite( value ) )
       {
-      return DefaultPaddingValue;
+      return static_cast<char>( value + 0.5 );
       }
     else
       {
-      return static_cast<char>( value + 0.5 );
+      return DefaultPaddingValue;
       }
   }
 };
@@ -88,13 +88,13 @@ public:
   static unsigned char ConvertFromDataItem( const Types::DataItem value )
   {
     using namespace std;
-    if ( MathUtil::IsNaN( value ) )
+    if ( MathUtil::IsFinite( value ) )
       {
-      return DefaultPaddingValue;
+      return static_cast<unsigned char>( value + 0.5 );
       }
     else
       {
-      return static_cast<unsigned char>( value + 0.5 );
+      return DefaultPaddingValue;
       }
   }
 };
@@ -108,13 +108,13 @@ public:
   static short ConvertFromDataItem( const Types::DataItem value )
   {
     using namespace std;
-    if ( MathUtil::IsNaN( value ) )
+    if ( MathUtil::IsFinite( value ) )
       {
-      return DefaultPaddingValue;
+      return static_cast<short>( value + 0.5 );
       }
     else
       {
-      return static_cast<short>( value + 0.5 );
+      return DefaultPaddingValue;
       }
   }
 };

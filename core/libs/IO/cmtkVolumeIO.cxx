@@ -112,35 +112,7 @@ VolumeIO::Read( const char* path )
   if ( volume ) 
     {
     volume->m_MetaInformation[META_FILEFORMAT_ORIGINAL] = FileFormat::Describe( formatID );
-    // for float and double data, automatically recognize Inf as Null Data.
-    TypedArray::SmartPtr dataArray = volume->GetData();
-    if ( dataArray ) 
-      {
-      if ( dataArray->GetType() == TYPE_FLOAT )
-	{
-	const float fInf = MathUtil::GetFloatInf();
-	dataArray->SetPaddingPtr( &fInf );
-	}
-      else
-	{
-	if ( dataArray->GetType() == TYPE_DOUBLE )
-	  {
-	  const double dInf = MathUtil::GetDoubleInf();
-	  dataArray->SetPaddingPtr( &dInf );
-	  }
-	}
 
-      for ( size_t i = 0; i < dataArray->GetDataSize(); ++i )
-	{
-	Types::DataItem v;
-	if ( dataArray->Get( v, i ) && MathUtil::IsNaN( v ) )
-	  dataArray->SetPaddingAt( i );
-	}
-      }
-    }
-  
-  if ( volume ) 
-    {
     DebugOutput( 3 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
     
     const TypedArray* dataArray = volume->GetData();
