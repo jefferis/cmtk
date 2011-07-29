@@ -1,5 +1,6 @@
 Release CMTK-1.8.0:
 
+(r3312) Fixed: crash in non-SMP "warp" B-spline registration.
 (r3305) Fixed: volume_injection tool selected improper padding value due to
     problem in the type traits implemented by the cmtkBase library.
 (r3303) Fixed: when moving image had float/double data type, the
