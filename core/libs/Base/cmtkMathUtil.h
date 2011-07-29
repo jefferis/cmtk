@@ -51,6 +51,10 @@ typedef unsigned int uint32_t;
 #include <math.h>
 #include <stdlib.h>
 
+#ifdef HAVE_IEEEFP_H
+#  include <ieeefp.h>
+#endif
+
 #ifndef M_PI
 #define M_PI            3.14159265358979323846
 #endif
