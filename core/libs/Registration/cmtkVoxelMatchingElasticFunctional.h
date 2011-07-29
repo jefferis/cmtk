@@ -411,7 +411,7 @@ public:
       for ( pY = voi.From()[1]; pY<voi.To()[1]; ++pY ) 
 	{
 	pVec = this->VectorCache;
-	warp->GetTransformedGridRow( voi.From()[0]-voi.To()[0], pVec, voi.From()[0], pY, pZ );
+	warp->GetTransformedGridRow( voi.To()[0]-voi.From()[0], pVec, voi.From()[0], pY, pZ );
 	for ( pX = voi.From()[0]; pX<voi.To()[0]; ++pX, ++r, ++pVec ) 
 	  {
 	  // Remove this sample from incremental metric according to "ground warp" image.
