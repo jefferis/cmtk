@@ -32,10 +32,26 @@
 
 #include "cmtkLabelCombinationLocalVoting.h"
 
+#include <System/cmtkConsole.h>
+#include <System/cmtkExitException.h>
+
 void
 cmtk::LabelCombinationLocalVoting::AddAtlas
 ( UniformVolume::SmartConstPtr& image, UniformVolume::SmartConstPtr& atlas )
 {
+  if ( !this->m_TargetImage->GridMatches( *image ) )
+    {
+    StdErr << "Atlas intensity image grid does not match target image.\n";
+    throw ExitException( 1 );
+    }
+
   this->m_AtlasImages.push_back( image );
+
+  if ( !this->m_TargetImage->GridMatches( *atlas ) )
+    {
+    StdErr << "Atlas label image grid does not match target image.\n";
+    throw ExitException( 1 );
+    }
+
   this->m_AtlasLabels.push_back( atlas );
 }

@@ -55,23 +55,23 @@ doMain
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Local voting." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool combines multiple segmentations fro co-registered and reformatted atlases." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] targetImage atlasImage1 atlasLabels1 [atlasImage2 atlasLabels2 [...]]" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] targetImage atlasIntensity1 atlasLabels1 [atlasIntensity2 atlasLabels2 [...]]" );
 
     typedef cmtk::CommandLine::Key Key;
 
     cl.AddParameter( &targetImagePath, "TargetImage", "Target image path. This is the image to be segmented." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameterVector( &atlasImagesLabels, "AtlasImagesLabels", "List of reformatted atlas images and label maps. This must be an even number of paths, where the first path within each pair is the image channel of"
+    cl.AddParameterVector( &atlasImagesLabels, "AtlasImagesLabels", "List of reformatted atlas intensity and label images. This must be an even number of paths, where the first path within each pair is the intensity channel of"
 			   "an atlas, and the second a label map channel of the same atlas, each reformatted into the space of the target image via an appropriate registration.");
 
     cl.Parse( argc, argv );
 
     if ( atlasImagesLabels.size() < 2 )
       {
-      throw cmtk::CommandLine::Exception( "List of atlas images and label maps must have at least two entries (one image and one label map file)" );
+      throw cmtk::CommandLine::Exception( "List of atlas intensity and label images must have at least two entries (one image and one label map file)" );
       }
     if ( atlasImagesLabels.size() % 2 )
       {
-      throw cmtk::CommandLine::Exception( "List of atlas images and label maps must have an even number of entries (one image and one label map file per atlas)" );
+      throw cmtk::CommandLine::Exception( "List of atlas intensity and label images must have an even number of entries (one image and one label map file per atlas)" );
       }
     }
   catch ( const cmtk::CommandLine::Exception& e )
