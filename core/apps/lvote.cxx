@@ -22,11 +22,11 @@
 //  with the Computational Morphometry Toolkit.  If not, see
 //  <http://www.gnu.org/licenses/>.
 //
-//  $Revision: 2765 $
+//  $Revision$
 //
-//  $LastChangedDate: 2011-01-18 16:17:56 -0800 (Tue, 18 Jan 2011) $
+//  $LastChangedDate$
 //
-//  $LastChangedBy: torstenrohlfing $
+//  $LastChangedBy$
 //
 */
 
@@ -36,8 +36,12 @@
 #include <System/cmtkExitException.h>
 #include <System/cmtkConsole.h>
 
+#include <IO/cmtkVolumeIO.h>
+
 #include <vector>
 #include <string>
+
+#include <Unstable/cmtkLabelCombinationLocalVoting.h>
 
 int
 doMain
@@ -74,6 +78,15 @@ doMain
     {
     cmtk::StdErr << e << "\n";
     throw cmtk::ExitException( 1 );
+    }
+
+  cmtk::UniformVolume::SmartConstPtr targetImage = cmtk::VolumeIO::Read( targetImagePath );
+
+  cmtk::LabelCombinationLocalVoting lvote( targetImage );
+  for ( size_t atlasIdx = 0; atlasIdx < atlasImagesLabels.size(); )
+    {
+    lvote.AddAtlas( cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx++].c_str() ), 
+		    cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx++].c_str() ) );
     }
 
   return 0;
