@@ -30,7 +30,11 @@
 
 # Sources of non-templated classes.
 
-SET(cmtkUnstable_SRCS dummy.cxx cmtkTypedArrayNoiseEstimatorBrummer.cxx cmtkTypedArrayNoiseEstimatorMaximumLikelihood.cxx cmtkFilterVolumeCoupe.cxx)
+SET(cmtkUnstable_SRCS dummy.cxx
+  cmtkTypedArrayNoiseEstimatorBrummer.cxx
+  cmtkTypedArrayNoiseEstimatorMaximumLikelihood.cxx 
+  cmtkFilterVolumeCoupe.cxx
+  cmtkLabelCombinationLocalVoting.cxx)
 
 ADD_LIBRARY(cmtkUnstable ${cmtkUnstable_SRCS})
 IF(CMTK_LIBRARY_PROPERTIES)
