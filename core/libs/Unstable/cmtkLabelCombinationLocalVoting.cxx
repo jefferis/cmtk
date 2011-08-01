@@ -37,7 +37,7 @@
 
 void
 cmtk::LabelCombinationLocalVoting::AddAtlas
-( UniformVolume::SmartConstPtr& image, UniformVolume::SmartConstPtr& atlas )
+( const UniformVolume::SmartConstPtr image, const UniformVolume::SmartConstPtr atlas )
 {
   if ( !this->m_TargetImage->GridMatches( *image ) )
     {
@@ -54,4 +54,63 @@ cmtk::LabelCombinationLocalVoting::AddAtlas
     }
 
   this->m_AtlasLabels.push_back( atlas );
+}
+
+cmtk::TypedArray::SmartPtr 
+cmtk::LabelCombinationLocalVoting::GetResult() const
+{
+  cmtk::TypedArray::SmartPtr result( TypedArray::Create( TYPE_SHORT, this->m_TargetImage->GetNumberOfPixels() ) );
+  
+  const size_t nAtlases = this->m_AtlasImages.size();
+
+  std::vector<bool> valid( nAtlases );
+  std::vector<short> labels( nAtlases );
+
+  for ( size_t i = 0; i < 0; ++i )
+    {
+    
+    for ( size_t n = 0; n < nAtlases; ++n )
+      {
+      Types::DataItem value;
+      if ( (valid[n] = this->m_AtlasLabels[n]->GetData()->Get( value, i ) ) )      
+	labels[n] = static_cast<short>( value );
+      }
+    
+    // find first non-padding atlas label
+    size_t firstValid = 0;
+    while ( (firstValid < nAtlases) && !valid[firstValid] )
+      ++firstValid;
+
+    // if all input atlases are undefined (padding) for this pixel, set output to padding and skip to next pixel.
+    if ( firstValid == nAtlases )
+      {
+      result->SetPaddingAt( i );
+      continue;
+      }
+
+    // check if all (valid) input atlas labels are the same
+    bool allTheSame = true;
+    for ( size_t n = 1; n < nAtlases; ++n )
+      {
+      if ( valid[n] )
+	{
+	if ( labels[n] != labels[firstValid] )
+	  {
+	  allTheSame = false;
+	  break;
+	  }
+	}
+      }
+    
+    // no need for weighted combination if all labels are the same.
+    if ( allTheSame )
+      {
+      result->Set( labels[firstValid], i );
+      }
+    else
+      {
+      }
+    }
+
+  return result;
 }

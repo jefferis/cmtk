@@ -56,10 +56,13 @@ class LabelCombinationLocalVoting
 {
 public:
   /// Constructor: compute label combination.
-  LabelCombinationLocalVoting( const UniformVolume::SmartConstPtr& targetImage ) : m_TargetImage( targetImage ) {}
+  LabelCombinationLocalVoting( const UniformVolume::SmartConstPtr targetImage ) : m_TargetImage( targetImage ) {}
   
   /// Add an atlas (pair of reformatted, target-matched intensity image and label map).
-  void AddAtlas( UniformVolume::SmartConstPtr& image, UniformVolume::SmartConstPtr& atlas );
+  void AddAtlas( const UniformVolume::SmartConstPtr image, const UniformVolume::SmartConstPtr atlas );
+
+  /// Get resulting combined segmentation.
+  TypedArray::SmartPtr GetResult() const;
   
 private:
   /// The target image.
