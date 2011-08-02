@@ -35,6 +35,8 @@
 #include <System/cmtkConsole.h>
 #include <System/cmtkExitException.h>
 
+#include <Registration/cmtkTypedArraySimilarity.h>
+
 void
 cmtk::LabelCombinationLocalVoting::AddAtlas
 ( const UniformVolume::SmartConstPtr image, const UniformVolume::SmartConstPtr atlas )
@@ -64,7 +66,8 @@ cmtk::LabelCombinationLocalVoting::GetResult() const
   const size_t nAtlases = this->m_AtlasImages.size();
 
   std::vector<bool> valid( nAtlases );
-  std::vector<short> labels( nAtlases );
+  std::vector<short> labels( nAtlases );  
+  std::vector<Types::DataItem> weights( nAtlases );  
 
   for ( size_t i = 0; i < 0; ++i )
     {
