@@ -52,6 +52,8 @@ doMain
 
   size_t patchRadius = 5;
 
+  const char* outputImagePath = "lvote.nii";
+
   try
     {
     cmtk::CommandLine cl;
@@ -62,6 +64,7 @@ doMain
     typedef cmtk::CommandLine::Key Key;
 
     cl.AddOption( Key( "patch-radius" ), &patchRadius, "Radius of image patch (in pixels) used for local similarity computation." );
+    cl.AddOption( Key( 'o', "output" ), &outputImagePath, "File system path for the output image." );
 
     cl.AddParameter( &targetImagePath, "TargetImage", "Target image path. This is the image to be segmented." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameterVector( &atlasImagesLabels, "AtlasImagesLabels", "List of reformatted atlas intensity and label images. This must be an even number of paths, where the first path within each pair is the intensity channel of"
@@ -84,8 +87,8 @@ doMain
     throw cmtk::ExitException( 1 );
     }
 
-  cmtk::UniformVolume::SmartConstPtr targetImage = cmtk::VolumeIO::Read( targetImagePath );
-
+  cmtk::UniformVolume::SmartPtr targetImage = cmtk::VolumeIO::Read( targetImagePath );
+  
   cmtk::LabelCombinationLocalVoting lvote( targetImage );
   lvote.SetPatchRadius( patchRadius );
 
@@ -93,6 +96,12 @@ doMain
     {
     lvote.AddAtlas( cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx++].c_str() ), 
 		    cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx++].c_str() ) );
+    }
+
+  targetImage->SetData( lvote.GetResult() );
+  if ( outputImagePath )
+    {
+    cmtk::VolumeIO::Write( *targetImage, outputImagePath );
     }
 
   return 0;
