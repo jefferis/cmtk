@@ -61,6 +61,12 @@ public:
   /// Add an atlas (pair of reformatted, target-matched intensity image and label map).
   void AddAtlas( const UniformVolume::SmartConstPtr image, const UniformVolume::SmartConstPtr atlas );
 
+  /// Set patch radius.
+  void SetPatchRadius( const size_t radius )
+  {
+    this->m_PatchRadius = UniformVolume::IndexType( UniformVolume::IndexType::Init(radius ) );
+  }
+
   /// Get resulting combined segmentation.
   TypedArray::SmartPtr GetResult() const;
   

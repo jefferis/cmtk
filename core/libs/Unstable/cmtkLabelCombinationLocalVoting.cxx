@@ -72,7 +72,6 @@ cmtk::LabelCombinationLocalVoting::GetResult() const
 
   std::vector<bool> valid( nAtlases );
   std::vector<short> labels( nAtlases );  
-  std::vector<Types::DataItem> weights( nAtlases );
 
   const RegionType region = targetImage.CropRegion();
   for ( RegionIndexIterator<RegionType> it( region ); it != region.end(); ++it )
@@ -119,14 +118,31 @@ cmtk::LabelCombinationLocalVoting::GetResult() const
     else
       {
       // Compute weights for the atlases from local image patch similarity.
-      const RegionType patchRegion( Min( region.From(), it.Index() - this->m_PatchRadius ), Max( region.To(), it.Index() + this->m_PatchRadius ) );
+      const RegionType patchRegion( Max( region.From(), it.Index() - this->m_PatchRadius ), Min( region.To(), it.Index() + this->m_PatchRadius ) );
       TypedArray::SmartConstPtr targetDataPatch( targetImage.GetRegionData( patchRegion ) );
 
+      std::map<short,Types::DataItem> labelToTotalWeight;
       for ( size_t n = 0; n < nAtlases; ++n )
 	{
-	TypedArray::SmartConstPtr atlasDataPatch( this->m_AtlasImages[n]->GetRegionData( patchRegion ) );
-	weights[n] = TypedArraySimilarity::GetCrossCorrelation( targetDataPatch, atlasDataPatch );
+	if ( valid[n] )
+	  {
+	  TypedArray::SmartConstPtr atlasDataPatch( this->m_AtlasImages[n]->GetRegionData( patchRegion ) );
+	  labelToTotalWeight[labels[n]] += TypedArraySimilarity::GetCrossCorrelation( targetDataPatch, atlasDataPatch );
+	  }
 	}
+
+      short maxLabel = 0;
+      Types::DataItem maxWeight = 0;
+      for ( std::map<short,Types::DataItem>::const_iterator mapIt = labelToTotalWeight.begin(); mapIt != labelToTotalWeight.end(); ++mapIt )
+	{
+	if ( mapIt->second > maxWeight )
+	  {
+	  maxLabel = mapIt->first;
+	  maxWeight = mapIt->second;
+	  }
+	}
+
+      result->Set( maxLabel, i );
       }
     }
   
