@@ -39,6 +39,10 @@
 
 #include <Registration/cmtkTypedArraySimilarity.h>
 
+#ifdef _OPENMP
+#  include <omp.h>
+#endif
+
 void
 cmtk::LabelCombinationLocalVoting::AddAtlas
 ( const UniformVolume::SmartConstPtr image, const UniformVolume::SmartConstPtr atlas )
@@ -63,18 +67,41 @@ cmtk::LabelCombinationLocalVoting::AddAtlas
 cmtk::TypedArray::SmartPtr 
 cmtk::LabelCombinationLocalVoting::GetResult() const
 {
-  typedef UniformVolume::RegionType RegionType;
-
   const UniformVolume& targetImage = *(this->m_TargetImage);
   cmtk::TypedArray::SmartPtr result( TypedArray::Create( TYPE_SHORT, targetImage.GetNumberOfPixels() ) );
   
-  const size_t nAtlases = this->m_AtlasImages.size();
+  const TargetRegionType region = targetImage.CropRegion();
 
+#ifdef _OPENMP
+  const int nSlices = (region.To()[2]-region.From()[2]);
+
+#pragma omp parallel
+  {
+  if ( omp_get_thread_num() < nSlices )
+    {
+    TargetRegionType threadRegion = region;
+    threadRegion.From()[2] = region.From()[2] + omp_get_thread_num() * nSlices / omp_get_num_threads();
+    threadRegion.To()[2] = std::min( region.To()[2], region.From()[2] + (1+omp_get_thread_num()) * nSlices / omp_get_num_threads() );
+    
+    this->ComputeResultForRegion( threadRegion, *result );
+    }
+  }
+#else // _OPENMP
+  this->ComputeResultForRegion( region, *result );
+#endif // _OPENMP
+  
+  return result;
+}
+
+void
+cmtk::LabelCombinationLocalVoting::ComputeResultForRegion( const Self::TargetRegionType& region, TypedArray& result ) const
+{
+  const UniformVolume& targetImage = *(this->m_TargetImage);
+  const size_t nAtlases = this->m_AtlasImages.size();
   std::vector<bool> valid( nAtlases );
   std::vector<short> labels( nAtlases );  
 
-  const RegionType region = targetImage.CropRegion();
-  for ( RegionIndexIterator<RegionType> it( region ); it != region.end(); ++it )
+  for ( RegionIndexIterator<TargetRegionType> it( region ); it != region.end(); ++it )
     {
     const size_t i = targetImage.GetOffsetFromIndex( it.Index() );
     for ( size_t n = 0; n < nAtlases; ++n )
@@ -92,7 +119,7 @@ cmtk::LabelCombinationLocalVoting::GetResult() const
     // if all input atlases are undefined (padding) for this pixel, set output to padding and skip to next pixel.
     if ( firstValid == nAtlases )
       {
-      result->SetPaddingAt( i );
+      result.SetPaddingAt( i );
       continue;
       }
 
@@ -113,12 +140,12 @@ cmtk::LabelCombinationLocalVoting::GetResult() const
     // no need for weighted combination if all labels are the same.
     if ( allTheSame )
       {
-      result->Set( labels[firstValid], i );
+      result.Set( labels[firstValid], i );
       }
     else
       {
       // Compute weights for the atlases from local image patch similarity.
-      const RegionType patchRegion( Max( region.From(), it.Index() - this->m_PatchRadius ), Min( region.To(), it.Index() + this->m_PatchRadius ) );
+      const TargetRegionType patchRegion( Max( region.From(), it.Index() - this->m_PatchRadius ), Min( region.To(), it.Index() + this->m_PatchRadius ) );
       TypedArray::SmartConstPtr targetDataPatch( targetImage.GetRegionData( patchRegion ) );
 
       std::map<short,Types::DataItem> labelToTotalWeight;
@@ -142,9 +169,7 @@ cmtk::LabelCombinationLocalVoting::GetResult() const
 	  }
 	}
 
-      result->Set( maxLabel, i );
+      result.Set( maxLabel, i );
       }
     }
-  
-  return result;
 }

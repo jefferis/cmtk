@@ -55,6 +55,9 @@ cmtk
 class LabelCombinationLocalVoting
 {
 public:
+  /// This class.
+  typedef LabelCombinationLocalVoting Self;
+
   /// Constructor: compute label combination.
   LabelCombinationLocalVoting( const UniformVolume::SmartConstPtr targetImage ) : m_TargetImage( targetImage ) {}
   
@@ -71,6 +74,12 @@ public:
   TypedArray::SmartPtr GetResult() const;
   
 private:
+  /// Target image region type.
+  typedef UniformVolume::RegionType TargetRegionType;
+
+  /// Compute result for a region.
+  void ComputeResultForRegion( const Self::TargetRegionType& region, TypedArray& result ) const;
+
   /// The target image.
   UniformVolume::SmartConstPtr m_TargetImage;
   
