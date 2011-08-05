@@ -63,6 +63,8 @@ cmtk::LabelCombinationLocalVoting::AddAtlas
 cmtk::TypedArray::SmartPtr 
 cmtk::LabelCombinationLocalVoting::GetResult() const
 {
+  typedef UniformVolume::RegionType RegionType;
+
   const UniformVolume& targetImage = *(this->m_TargetImage);
   cmtk::TypedArray::SmartPtr result( TypedArray::Create( TYPE_SHORT, targetImage.GetNumberOfPixels() ) );
   
@@ -72,8 +74,8 @@ cmtk::LabelCombinationLocalVoting::GetResult() const
   std::vector<short> labels( nAtlases );  
   std::vector<Types::DataItem> weights( nAtlases );
 
-  const UniformVolume::RegionType region = targetImage.CropRegion();
-  for ( RegionIndexIterator<UniformVolume::RegionType> it( region ); it != region.end(); ++it )
+  const RegionType region = targetImage.CropRegion();
+  for ( RegionIndexIterator<RegionType> it( region ); it != region.end(); ++it )
     {
     const size_t i = targetImage.GetOffsetFromIndex( it.Index() );
     for ( size_t n = 0; n < nAtlases; ++n )
@@ -117,9 +119,16 @@ cmtk::LabelCombinationLocalVoting::GetResult() const
     else
       {
       // Compute weights for the atlases from local image patch similarity.
-      
+      const RegionType patchRegion( Min( region.From(), it.Index() - this->m_PatchRadius ), Max( region.To(), it.Index() + this->m_PatchRadius ) );
+      TypedArray::SmartConstPtr targetDataPatch( targetImage.GetRegionData( patchRegion ) );
+
+      for ( size_t n = 0; n < nAtlases; ++n )
+	{
+	TypedArray::SmartConstPtr atlasDataPatch( this->m_AtlasImages[n]->GetRegionData( patchRegion ) );
+	weights[n] = TypedArraySimilarity::GetCrossCorrelation( targetDataPatch, atlasDataPatch );
+	}
       }
     }
-
+  
   return result;
 }

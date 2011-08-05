@@ -341,6 +341,28 @@ operator*( const T2 lhs, const FixedVector<NDIM,T>& rhs )
   return result;
 }
 
+/// Elementwise maximum operator.
+template<size_t NDIM,typename T>
+const FixedVector<NDIM,T>
+Max( const FixedVector<NDIM,T>& lhs, const FixedVector<NDIM,T>& rhs )
+{
+  FixedVector<NDIM,T> result;
+  for ( size_t i = 0; i < NDIM; ++i )
+    result[i] = std::max( lhs[i], rhs[i] );
+  return result;
+}
+
+/// Elementwise minimum operator.
+template<size_t NDIM,typename T>
+const FixedVector<NDIM,T>
+Min( const FixedVector<NDIM,T>& lhs, const FixedVector<NDIM,T>& rhs )
+{
+  FixedVector<NDIM,T> result;
+  for ( size_t i = 0; i < NDIM; ++i )
+    result[i] = std::min( lhs[i], rhs[i] );
+  return result;
+}
+
 /// Stream input operator.
 template<size_t NDIM,typename T>
 std::ostream& operator<<( std::ostream& stream, const FixedVector<NDIM,T>& index )
