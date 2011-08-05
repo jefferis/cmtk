@@ -89,6 +89,7 @@ public:
       else
 	break;
       }
+    return *this;
   }
   
   /// Get index.
