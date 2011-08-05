@@ -292,8 +292,8 @@ public:
   /// Fill volume outside current crop region with constant value.
   void FillCropBackground( const Types::DataItem value );
 
-  /// Return data for cropped volume.
-  TypedArray::SmartPtr GetCroppedData() const;
+  /// Return data for a region of the volume.
+  TypedArray::SmartPtr GetRegionData( const Self::RegionType& region ) const;
 
   /// Accessor functions for protected member variables
   int GetNextI() const { return nextI; }

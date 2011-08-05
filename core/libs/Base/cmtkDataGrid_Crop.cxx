@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -158,7 +158,7 @@ DataGrid::FillCropBackground( const Types::DataItem value )
 }
 
 TypedArray::SmartPtr
-DataGrid::GetCroppedData() const
+DataGrid::GetRegionData( const Self::RegionType& region ) const
 {
   const TypedArray* srcData = this->GetData();
   if ( ! srcData ) 
@@ -166,14 +166,14 @@ DataGrid::GetCroppedData() const
 
   TypedArray::SmartPtr cropData = TypedArray::Create( srcData->GetType(), this->GetCropRegionNumVoxels() );
   
-  const size_t lineLength = this->m_CropRegion.To()[0] - this->m_CropRegion.From()[0];
-  const size_t nextPlane = this->m_Dims[0] * (this->m_Dims[1] - (this->m_CropRegion.To()[1] - this->m_CropRegion.From()[1]));
+  const size_t lineLength = region.To()[0] - region.From()[0];
+  const size_t nextPlane = this->m_Dims[0] * (this->m_Dims[1] - (region.To()[1] - region.From()[1]));
   
   size_t toOffset = 0;
-  size_t fromOffset = this->m_CropRegion.From()[0] + this->m_Dims[0] * ( this->m_CropRegion.From()[1] + this->m_Dims[1] * this->m_CropRegion.From()[2] );
-
-  for ( int z = this->m_CropRegion.From()[2]; z < this->m_CropRegion.To()[2]; ++z, fromOffset += nextPlane )
-    for ( int y = this->m_CropRegion.From()[1]; y < this->m_CropRegion.To()[1]; ++y, fromOffset += this->m_Dims[0] ) 
+  size_t fromOffset = this->GetOffsetFromIndex( region.From() );
+  
+  for ( int z = region.From()[2]; z < region.To()[2]; ++z, fromOffset += nextPlane )
+    for ( int y = region.From()[1]; y < region.To()[1]; ++y, fromOffset += this->m_Dims[0] ) 
       {
       srcData->BlockCopy( *cropData, toOffset, fromOffset, lineLength );
       toOffset += lineLength;

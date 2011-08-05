@@ -70,7 +70,7 @@ cmtk::LabelCombinationLocalVoting::GetResult() const
 
   std::vector<bool> valid( nAtlases );
   std::vector<short> labels( nAtlases );  
-  std::vector<Types::DataItem> weights( nAtlases );  
+  std::vector<Types::DataItem> weights( nAtlases );
 
   const UniformVolume::RegionType region = targetImage.CropRegion();
   for ( RegionIndexIterator<UniformVolume::RegionType> it( region ); it != region.end(); ++it )
@@ -116,6 +116,8 @@ cmtk::LabelCombinationLocalVoting::GetResult() const
       }
     else
       {
+      // Compute weights for the atlases from local image patch similarity.
+      
       }
     }
 

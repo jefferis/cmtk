@@ -91,7 +91,7 @@ UniformVolume::GetCroppedVolume() const
   Self::SmartPtr volume( new UniformVolume( cropDims, cropSize ) );
   
   // get cropped data.
-  TypedArray::SmartPtr croppedData( this->GetCroppedData() );
+  TypedArray::SmartPtr croppedData( this->GetRegionData( this->CropRegion() ) );
   volume->SetData( croppedData );
 
   // prepare new index-to-physical transformation.
