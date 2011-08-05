@@ -35,6 +35,8 @@
 #include <System/cmtkConsole.h>
 #include <System/cmtkExitException.h>
 
+#include <Base/cmtkRegionIndexIterator.h>
+
 #include <Registration/cmtkTypedArraySimilarity.h>
 
 void
@@ -69,6 +71,9 @@ cmtk::LabelCombinationLocalVoting::GetResult() const
   std::vector<short> labels( nAtlases );  
   std::vector<Types::DataItem> weights( nAtlases );  
 
+  const UniformVolume::IndexType region = this->m_TargetImage->GetCropRegion();
+
+   idx;
   for ( size_t i = 0; i < 0; ++i )
     {
     

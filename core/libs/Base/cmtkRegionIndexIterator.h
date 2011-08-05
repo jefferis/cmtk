@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010-2011 SRI International
 //
 //  Copyright 2010 Torsten Rohlfing
 //
@@ -45,18 +45,24 @@ namespace
 cmtk
 {
 /// Class for n-dimensional image index.
-template<size_t NDIM,typename T=int>
+template<typename TRegion>
 class RegionIndexIterator
 {
 public:
   /// This class.
-  typedef RegionIndexIterator<NDIM,T> Self;
+  typedef RegionIndexIterator<TRegion> Self;
 
   /// Region type.
-  typedef Region<NDIM,T> RegionType;
+  typedef TRegion RegionType;
+
+  /// Region dimension.
+  static const size_t Dimension = RegionType::Dimension;
+
+  /// Region scalar type.
+  typedef typename RegionType::ScalarType ScalarType;
 
   /// Index type.
-  typedef FixedVector<NDIM,T> IndexType;
+  typedef FixedVector<Self::Dimension,Self::ScalarType> IndexType;
 
   /// Smart pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
@@ -73,7 +79,7 @@ public:
   /// Increment operator.
   Self& operator++()
   {
-    for ( size_t idx = NDIM; idx > 0; )
+    for ( size_t idx = Self::Dimension; idx > 0; )
       {
       --idx;
       if ( (++this->m_Index[idx]) >= this->m_Region.To()[idx] )

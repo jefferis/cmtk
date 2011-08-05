@@ -73,6 +73,9 @@ private:
 
   /// Vector of target-matched atlas label maps.
   std::vector<UniformVolume::SmartConstPtr> m_AtlasLabels;
+
+  /// Neighborhood radius in pixels (x,y,z).
+  UniformVolume::IndexType m_NeighborhoodRadius;
 };
 
 } // namespace cmtk

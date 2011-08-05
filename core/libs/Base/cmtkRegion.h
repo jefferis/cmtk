@@ -53,6 +53,12 @@ public:
   /// This class.
   typedef Region<NDIM,T> Self;
 
+  /// The region dimension.
+  static const size_t Dimension = NDIM;
+
+  /// The region index variable type.
+  typedef T ScalarType;
+
   /// Index type.
   typedef FixedVector<NDIM,T> IndexType;
 
