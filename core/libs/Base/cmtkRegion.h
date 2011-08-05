@@ -80,7 +80,7 @@ public:
 
     // "End" index is one after last valid element.
     this->m_End = this->m_RegionFrom;
-    ++this->m_End[NDIM-1];
+    this->m_End[NDIM-1] = this->m_RegionTo[NDIM-1];
   }
   
   /// Get "from".
