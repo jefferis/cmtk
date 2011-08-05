@@ -144,6 +144,12 @@ public:
     return true;
   }
 
+  /// Inequality operator.
+  bool operator!=( const Self& rhs ) const
+  {
+    return !this->operator==( rhs );
+  }
+
   /// Multiply by a scalar.
   Self& operator*= ( const T a ) 
   {

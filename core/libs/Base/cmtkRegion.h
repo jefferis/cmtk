@@ -77,6 +77,10 @@ public:
   {
     this->m_RegionFrom = fromIndex;
     this->m_RegionTo = toIndex;
+
+    // "End" index is one after last valid element.
+    this->m_End = this->m_RegionFrom;
+    ++this->m_End[NDIM-1];
   }
   
   /// Get "from".
@@ -119,19 +123,20 @@ public:
   }
   
   /// Region "end" index.
-  const typename Self::IndexType end() const
+  const typename Self::IndexType& end() const
   {
-    typename Self::IndexType e = this->m_RegionFrom;
-    ++e[NDIM-1];
-    return e;
+    return this->m_End;
   }
   
 private:
-  /// Beginning index.
+  /// Lower limit of the region.
   typename Self::IndexType m_RegionFrom;
 
-  /// End index.
+  /// Upper limit of the region.
   typename Self::IndexType m_RegionTo;
+
+  /// "End" of the region.
+  typename Self::IndexType m_End;
 };
 
 /// Stream input operator.

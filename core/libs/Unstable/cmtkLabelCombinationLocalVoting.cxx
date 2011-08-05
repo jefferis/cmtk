@@ -63,7 +63,8 @@ cmtk::LabelCombinationLocalVoting::AddAtlas
 cmtk::TypedArray::SmartPtr 
 cmtk::LabelCombinationLocalVoting::GetResult() const
 {
-  cmtk::TypedArray::SmartPtr result( TypedArray::Create( TYPE_SHORT, this->m_TargetImage->GetNumberOfPixels() ) );
+  const UniformVolume& targetImage = *(this->m_TargetImage);
+  cmtk::TypedArray::SmartPtr result( TypedArray::Create( TYPE_SHORT, targetImage.GetNumberOfPixels() ) );
   
   const size_t nAtlases = this->m_AtlasImages.size();
 
@@ -71,16 +72,14 @@ cmtk::LabelCombinationLocalVoting::GetResult() const
   std::vector<short> labels( nAtlases );  
   std::vector<Types::DataItem> weights( nAtlases );  
 
-  const UniformVolume::IndexType region = this->m_TargetImage->GetCropRegion();
-
-   idx;
-  for ( size_t i = 0; i < 0; ++i )
+  const UniformVolume::RegionType region = targetImage.CropRegion();
+  for ( RegionIndexIterator<UniformVolume::RegionType> it( region ); it != region.end(); ++it )
     {
-    
+    const size_t i = targetImage.GetOffsetFromIndex( it.Index() );
     for ( size_t n = 0; n < nAtlases; ++n )
       {
       Types::DataItem value;
-      if ( (valid[n] = this->m_AtlasLabels[n]->GetData()->Get( value, i ) ) )      
+      if ( (valid[n] = this->m_AtlasLabels[n]->GetData()->Get( value, i ) ) )
 	labels[n] = static_cast<short>( value );
       }
     

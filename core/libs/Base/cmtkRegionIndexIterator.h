@@ -113,7 +113,7 @@ public:
   /// Index inequality.
   bool operator!=( const typename Self::IndexType& index )
   {
-    return (this->m_Index != index);
+    return !(this->m_Index == index);
   }
 
 private:
