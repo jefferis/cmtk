@@ -73,19 +73,15 @@ cmtk::LabelCombinationLocalVoting::GetResult() const
   const TargetRegionType region = targetImage.CropRegion();
 
 #ifdef _OPENMP
-  const int nSlices = (region.To()[2]-region.From()[2]);
-
-#pragma omp parallel
-  {
-  if ( omp_get_thread_num() < nSlices )
+#pragma omp parallel for
+  for ( int slice = region.From()[2]; slice < region.To()[2]; ++slice )
     {
     TargetRegionType threadRegion = region;
-    threadRegion.From()[2] = region.From()[2] + omp_get_thread_num() * nSlices / omp_get_num_threads();
-    threadRegion.To()[2] = std::min( region.To()[2], region.From()[2] + (1+omp_get_thread_num()) * nSlices / omp_get_num_threads() );
+    threadRegion.From()[2] = slice;
+    threadRegion.To()[2] = slice+1;
     
     this->ComputeResultForRegion( threadRegion, *result );
     }
-  }
 #else // _OPENMP
   this->ComputeResultForRegion( region, *result );
 #endif // _OPENMP
