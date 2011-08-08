@@ -146,19 +146,16 @@ DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, cons
 	  }
 	else
 	  {
-	  cntsColumn[idx0] = ++count;	  
-	  sumsColumn[idx0] += sums[offset];
+	  cntsColumn[idx0] = (count+=cnts[offset]);
+	  sumsColumn[idx0] = (sum+=sums[offset]);
 	  }
-
-	count = cntsColumn[idx0];
-	sum = sumsColumn[idx0];	
 	}
       
       //
       // PASS 2 - compute differences between upper and lower end of kernel window
       //
-      idx0 = nPixelsColumn-1;
-      for ( idx[dim] = columnTo-1; idx[dim] >= columnFrom; --idx[dim], --idx0 )
+      idx0 = 0;
+      for ( idx[dim] = columnFrom; idx[dim] < columnTo; ++idx[dim], ++idx0 )
 	{
 	const size_t offset = dataGrid.GetOffsetFromIndex( idx );
 	
@@ -167,7 +164,7 @@ DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, cons
 	cnts[offset] = cntsColumn[upper];
 
 	// if lower end of window is outside range, implicitly subtract zero from sums and counts
-	const int lower = idx0-radius[dim];
+	const int lower = idx0-radius[dim]-1;
 	if ( lower >= 0 )
 	  {
 	  sums[offset] -= sumsColumn[lower];
