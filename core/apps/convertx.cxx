@@ -177,6 +177,8 @@ doMain( const int argc, const char* argv[] )
 		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
     cl.AddCallback( Key( "mean-filter" ), &cmtk::ImageOperationRegionFilter::NewMean, "Regional mean filter. This operation takes the filter radius in pixels as the parameter. "
 		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
+    cl.AddCallback( Key( "fast-mean-filter" ), &cmtk::ImageOperationRegionFilter::NewFastMean, "Regional mean filter (fast, linear time implementation). This operation takes the filter radius in pixels as the parameter. "
+		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
     cl.AddCallback( Key( "variance-filter" ), &cmtk::ImageOperationRegionFilter::NewVariance, "Regional variance filter. "
 		    "This operation takes the filter radius in pixels as the parameter. "
 		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );

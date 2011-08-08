@@ -83,6 +83,14 @@ public:
    */
   TypedArray::SmartPtr RegionMeanFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
 
+  /** Apply fast, recursive neighborhood-mean filter.
+   *\param radiusX Region radius in x direction.
+   *\param radiusY Region radius in y direction.
+   *\param radiusZ Region radius in z direction.
+   *\return Newly allocated data array with filtered data.
+   */
+  TypedArray::SmartPtr FastRegionMeanFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
+
   /** Apply neighborhood-variance filter.
    *\param radiusX Region radius in x direction.
    *\param radiusY Region radius in y direction.

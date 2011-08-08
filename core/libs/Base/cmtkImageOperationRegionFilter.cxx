@@ -66,6 +66,9 @@ cmtk::ImageOperationRegionFilter
     case MEAN:
       volume->SetData( DataGridFilter( volume ).RegionMeanFilter( this->m_RadiusX, this->m_RadiusY, this->m_RadiusZ ) );
       break;
+    case FAST_MEAN:
+      volume->SetData( DataGridFilter( volume ).FastRegionMeanFilter( this->m_RadiusX, this->m_RadiusY, this->m_RadiusZ ) );
+      break;
     case VARIANCE:
       volume->SetData( DataGridFilter( volume ).RegionVarianceFilter( this->m_RadiusX, this->m_RadiusY, this->m_RadiusZ ) );
       break;

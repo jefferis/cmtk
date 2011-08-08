@@ -392,6 +392,10 @@ case ${RUNTEST} in
 	run convertx --float --mean-filter 1 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
 	check_results spgr_brain_1.img
 	;;
+    convertxFastMeanFilter)
+	run convertx --float --fast-mean-filter 1 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
+	check_results spgr_brain_1.img
+	;;
     convertxVarianceFilter)
 	run convertx --float --variance-filter 1 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
 	check_results spgr_brain_1.img

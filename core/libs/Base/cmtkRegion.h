@@ -127,6 +127,9 @@ public:
   {
     return this->m_End;
   }
+
+  /// Get one face of the region, as a region
+  const Self GetFaceRegion( const int dim /*!< Returned face is orthogonal to this index dimension */, const bool upper = false /*!< If true, upper face is returned, otherwise lower face.*/ ) const;
   
 private:
   /// Lower limit of the region.
@@ -139,20 +142,8 @@ private:
   typename Self::IndexType m_End;
 };
 
-/// Stream input operator.
-template<size_t NDIM,typename T>
-std::ofstream& operator<<( std::ofstream& stream, const Region<NDIM,T>& region )
-{
-  return stream << region.From() << region.To();
-}
-
-/// Stream output operator.
-template<size_t NDIM,typename T>
-std::ifstream& operator>>( std::ifstream& stream, Region<NDIM,T>& region )
-{
-  return stream >> region.From() >> region.To();
-}
-
 } // namespace cmtk
+
+#include "cmtkRegion.txx"
 
 #endif // #ifndef __cmtkRegion_h_included_

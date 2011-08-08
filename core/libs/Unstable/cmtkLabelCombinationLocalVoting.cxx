@@ -76,6 +76,9 @@ cmtk::LabelCombinationLocalVoting::GetResult() const
 #pragma omp parallel for
   for ( int slice = region.From()[2]; slice < region.To()[2]; ++slice )
     {
+    if ( omp_get_thread_num() == 0 )
+      StdErr << slice << "\n";
+
     TargetRegionType threadRegion = region;
     threadRegion.From()[2] = slice;
     threadRegion.To()[2] = slice+1;

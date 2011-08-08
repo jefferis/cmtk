@@ -35,6 +35,8 @@
 #include <System/cmtkException.h>
 #include <System/cmtkThreadPool.h>
 
+#include <Base/cmtkRegionIndexIterator.h>
+
 namespace
 cmtk
 {
@@ -78,6 +80,111 @@ TypedArray::SmartPtr
 DataGridFilter::RegionMeanFilter( const int radiusX, const int radiusY, const int radiusZ ) const
 {
   return this->ApplyRegionFilter<Self::MeanOperator>( radiusX, radiusY, radiusZ );
+}
+
+TypedArray::SmartPtr
+DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, const int radiusZ ) const
+{
+  DataGrid::IndexType radius;
+  radius[0] = radiusX;
+  radius[1] = radiusY;
+  radius[2] = radiusZ;
+
+  const DataGrid& dataGrid = *(this->m_DataGrid);
+  const TypedArray& dataArray = *(dataGrid.GetData());  
+
+  const size_t nPixels = dataGrid.GetNumberOfPixels();
+  const DataGrid::RegionType wholeImageRegion = dataGrid.GetWholeImageRegion();
+  
+  std::vector<double> sums( nPixels );
+  std::fill( sums.begin(), sums.end(), 0 );
+
+  std::vector<unsigned short> cnts( nPixels );
+  std::fill( cnts.begin(), cnts.end(), 0 );
+
+  //
+  // Mean filter is separable - process x,y,z separately
+  //
+  for ( int dim = 2; dim >= 0; --dim )
+    {
+    const DataGrid::RegionType face = wholeImageRegion.GetFaceRegion( dim );
+
+    const size_t nPixelsColumn = wholeImageRegion.To()[dim] - wholeImageRegion.From()[dim];
+    std::vector<double> sumsColumn( nPixelsColumn );
+    std::vector<unsigned short> cntsColumn( nPixelsColumn );
+    
+    for ( RegionIndexIterator<DataGrid::RegionType> fIt = RegionIndexIterator<DataGrid::RegionType>( face ); fIt != face.end(); ++fIt )
+      {
+      double sum = 0;
+      unsigned short count = 0;
+
+      //
+      // PASS 1 - accumulate all values and counts upwards
+      //
+      int idx0 = 0;
+      DataGrid::IndexType idx = fIt.Index();
+      for ( idx[dim] = wholeImageRegion.From()[dim]; idx[dim] < wholeImageRegion.To()[dim]; ++idx[dim], ++idx0 )
+	{
+	const size_t offset = dataGrid.GetOffsetFromIndex( idx );
+
+	if ( ! dim ) // get first-pass values from data array
+	  {
+	  Types::DataItem value;
+	  if ( dataArray.Get( value, offset ) )
+	    {
+	    cntsColumn[idx0] = ++count;
+	    }
+	  else
+	    {
+	    value = 0;
+	    }
+	  sumsColumn[idx0] = (sum+=value);
+	  }
+	else
+	  {
+	  cntsColumn[idx0] = ++count;	  
+	  sumsColumn[idx0] += sums[offset];
+	  }
+
+	count = cntsColumn[idx0];
+	sum = sumsColumn[idx0];	
+	}
+      
+      //
+      // PASS 2 - compute differences between upper and lower end of kernel window
+      //
+      for ( idx[dim] = wholeImageRegion.To()[dim]; idx[dim] >= wholeImageRegion.From()[dim]; --idx[dim] )
+	{
+	const size_t offset = dataGrid.GetOffsetFromIndex( idx );
+	
+	const size_t upper = static_cast<size_t>( std::min<int>( idx0+radius[dim], nPixelsColumn-1 ) );	
+	sums[offset] = sumsColumn[upper];
+	cnts[offset] = cntsColumn[upper];
+
+	// if lower end of window is outside range, implicitly subtract zero from sums and counts
+	const int lower = idx0-radius[dim];
+	if ( lower >= 0 )
+	  {
+	  sums[offset] -= sumsColumn[lower];
+	  cnts[offset] -= cntsColumn[lower];
+	  } 
+	}
+      }
+    }
+
+  TypedArray::SmartPtr result( TypedArray::Create( dataArray.GetType(), nPixels ) );
+  for ( size_t ofs = 0; ofs < nPixels; ++ofs )
+    {
+    if ( cnts[ofs] )
+      {
+      result->Set( sums[ofs] / cnts[ofs], ofs );
+      }
+    else
+      {
+      result->SetPaddingAt( ofs );
+      }
+    }
+  return result;
 }
 
 cmtk::Types::DataItem

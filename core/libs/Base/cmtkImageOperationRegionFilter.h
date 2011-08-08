@@ -57,6 +57,7 @@ public:
   {
     MEDIAN, 
     MEAN,
+    FAST_MEAN,
     VARIANCE,
     THIRD_MOMENT,
     STANDARD_DEVIATION,
@@ -80,6 +81,12 @@ public:
   static void NewMean( const char* arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */ )
   {
     Self::NewGeneric( Self::MEAN, arg );
+  }
+  
+  /// Create a new fast region mean filter operation.
+  static void NewFastMean( const char* arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */ )
+  {
+    Self::NewGeneric( Self::FAST_MEAN, arg );
   }
   
   /// Create a new region variance filter operation.
