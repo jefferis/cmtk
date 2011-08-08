@@ -105,11 +105,14 @@ DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, cons
   //
   // Mean filter is separable - process x,y,z separately
   //
-  for ( int dim = 2; dim >= 0; --dim )
+  for ( int dim = 0; dim < 3; ++dim )
     {
     const DataGrid::RegionType face = wholeImageRegion.GetFaceRegion( dim );
 
-    const size_t nPixelsColumn = wholeImageRegion.To()[dim] - wholeImageRegion.From()[dim];
+    const int columnFrom = wholeImageRegion.From()[dim];
+    const int columnTo = wholeImageRegion.To()[dim];
+    const size_t nPixelsColumn = columnTo - columnFrom;
+
     std::vector<double> sumsColumn( nPixelsColumn );
     std::vector<unsigned short> cntsColumn( nPixelsColumn );
     
@@ -123,7 +126,8 @@ DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, cons
       //
       int idx0 = 0;
       DataGrid::IndexType idx = fIt.Index();
-      for ( idx[dim] = wholeImageRegion.From()[dim]; idx[dim] < wholeImageRegion.To()[dim]; ++idx[dim], ++idx0 )
+      
+      for ( idx[dim] = columnFrom; idx[dim] < columnTo; ++idx[dim], ++idx0 )
 	{
 	const size_t offset = dataGrid.GetOffsetFromIndex( idx );
 
@@ -153,7 +157,8 @@ DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, cons
       //
       // PASS 2 - compute differences between upper and lower end of kernel window
       //
-      for ( idx[dim] = wholeImageRegion.To()[dim]; idx[dim] >= wholeImageRegion.From()[dim]; --idx[dim] )
+      idx0 = nPixelsColumn-1;
+      for ( idx[dim] = columnTo-1; idx[dim] >= columnFrom; --idx[dim], --idx0 )
 	{
 	const size_t offset = dataGrid.GetOffsetFromIndex( idx );
 	

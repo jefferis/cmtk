@@ -79,12 +79,12 @@ public:
   /// Increment operator.
   Self& operator++()
   {
-    for ( size_t idx = Self::Dimension; idx > 0; )
+    for ( size_t idx = 0; idx < Self::Dimension; ++idx)
       {
-      --idx;
       if ( (++this->m_Index[idx]) >= this->m_Region.To()[idx] )
 	{
-	this->m_Index[idx] = this->m_Region.From()[idx];
+	if ( idx+1 < Self::Dimension )
+	  this->m_Index[idx] = this->m_Region.From()[idx];
 	}
       else
 	break;
