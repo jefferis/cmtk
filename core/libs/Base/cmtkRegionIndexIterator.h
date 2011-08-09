@@ -73,8 +73,12 @@ public:
   /// Constructor from two index, from and to.
   RegionIndexIterator( const typename Self::RegionType& region )
     : m_Region( region ),
-      m_Index( region.begin() )
-  {}
+      m_Index( region.From() )
+  {
+    // "End" index is one after last valid element.
+    this->m_End = this->m_Region.From();
+    this->m_End[Self::Dimension-1] = this->m_Region.To()[Self::Dimension-1];    
+  }
 
   /// Increment operator.
   Self& operator++()
@@ -98,6 +102,18 @@ public:
     return this->m_Index;
   }
 
+  /// Region "begin" index.
+  const typename Self::IndexType begin() const
+  {
+    return this->m_Region.From();
+  }
+  
+  /// Region "end" index.
+  const typename Self::IndexType& end() const
+  {
+    return this->m_End;
+  }
+
   /// Assign index.
   Self& operator=( const typename Self::IndexType& index )
   {
@@ -118,10 +134,13 @@ public:
   }
 
 private:
-  /// Beginning index.
+  /// Iterated region.
   typename Self::RegionType m_Region;
 
-  /// End index.
+  /// End index (i.e., first non-valid index).
+  typename Self::IndexType m_End;
+
+  /// Current index.
   typename Self::IndexType m_Index;
 };
 

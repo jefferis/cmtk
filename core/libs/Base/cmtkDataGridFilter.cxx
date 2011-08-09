@@ -117,7 +117,7 @@ DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, cons
     std::vector<double> sumsColumn( nPixelsColumn );
     std::vector<unsigned short> cntsColumn( nPixelsColumn );
     
-    for ( RegionIndexIterator<DataGrid::RegionType> fIt = RegionIndexIterator<DataGrid::RegionType>( face ); fIt != face.end(); ++fIt )
+    for ( RegionIndexIterator<DataGrid::RegionType> fIt = RegionIndexIterator<DataGrid::RegionType>( face ); fIt != fIt.end(); ++fIt )
       {
       double sum = 0;
       unsigned short count = 0;

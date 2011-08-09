@@ -76,9 +76,6 @@ cmtk::LabelCombinationLocalVoting::GetResult() const
 #pragma omp parallel for
   for ( int slice = region.From()[2]; slice < region.To()[2]; ++slice )
     {
-    if ( omp_get_thread_num() == 0 )
-      StdErr << slice << "\n";
-
     TargetRegionType threadRegion = region;
     threadRegion.From()[2] = slice;
     threadRegion.To()[2] = slice+1;
@@ -100,9 +97,10 @@ cmtk::LabelCombinationLocalVoting::ComputeResultForRegion( const Self::TargetReg
   std::vector<bool> valid( nAtlases );
   std::vector<short> labels( nAtlases );  
 
-  for ( RegionIndexIterator<TargetRegionType> it( region ); it != region.end(); ++it )
+  for ( RegionIndexIterator<TargetRegionType> it( region ); it != it.end(); ++it )
     {
     const size_t i = targetImage.GetOffsetFromIndex( it.Index() );
+
     for ( size_t n = 0; n < nAtlases; ++n )
       {
       Types::DataItem value;
@@ -147,7 +145,7 @@ cmtk::LabelCombinationLocalVoting::ComputeResultForRegion( const Self::TargetReg
       const TargetRegionType patchRegion( Max( region.From(), it.Index() - this->m_PatchRadius ), Min( region.To(), it.Index() + this->m_PatchRadius ) );
       TypedArray::SmartConstPtr targetDataPatch( targetImage.GetRegionData( patchRegion ) );
 
-      std::map<short,Types::DataItem> labelToTotalWeight;
+      std::map<unsigned short,Types::DataItem> labelToTotalWeight;
       for ( size_t n = 0; n < nAtlases; ++n )
 	{
 	if ( valid[n] )
@@ -159,7 +157,7 @@ cmtk::LabelCombinationLocalVoting::ComputeResultForRegion( const Self::TargetReg
 
       short maxLabel = 0;
       Types::DataItem maxWeight = 0;
-      for ( std::map<short,Types::DataItem>::const_iterator mapIt = labelToTotalWeight.begin(); mapIt != labelToTotalWeight.end(); ++mapIt )
+      for ( std::map<unsigned short,Types::DataItem>::const_iterator mapIt = labelToTotalWeight.begin(); mapIt != labelToTotalWeight.end(); ++mapIt )
 	{
 	if ( mapIt->second > maxWeight )
 	  {

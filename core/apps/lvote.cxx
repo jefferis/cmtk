@@ -92,10 +92,9 @@ doMain
   cmtk::LabelCombinationLocalVoting lvote( targetImage );
   lvote.SetPatchRadius( patchRadius );
 
-  for ( size_t atlasIdx = 0; atlasIdx < atlasImagesLabels.size(); )
+  for ( size_t atlasIdx = 0; atlasIdx < atlasImagesLabels.size(); atlasIdx += 2 )
     {
-    lvote.AddAtlas( cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx++].c_str() ), 
-		    cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx++].c_str() ) );
+    lvote.AddAtlas( cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx].c_str() ), cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx+1].c_str() ) );
     }
 
   targetImage->SetData( lvote.GetResult() );

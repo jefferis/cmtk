@@ -77,10 +77,6 @@ public:
   {
     this->m_RegionFrom = fromIndex;
     this->m_RegionTo = toIndex;
-
-    // "End" index is one after last valid element.
-    this->m_End = this->m_RegionFrom;
-    this->m_End[NDIM-1] = this->m_RegionTo[NDIM-1];
   }
   
   /// Get "from".
@@ -116,18 +112,6 @@ public:
     return size;
   }
 
-  /// Region "begin" index.
-  const typename Self::IndexType begin() const
-  {
-    return this->m_RegionFrom;
-  }
-  
-  /// Region "end" index.
-  const typename Self::IndexType& end() const
-  {
-    return this->m_End;
-  }
-
   /// Get one face of the region, as a region
   const Self GetFaceRegion( const int dim /*!< Returned face is orthogonal to this index dimension */, const bool upper = false /*!< If true, upper face is returned, otherwise lower face.*/ ) const;
   
@@ -137,9 +121,6 @@ private:
 
   /// Upper limit of the region.
   typename Self::IndexType m_RegionTo;
-
-  /// "End" of the region.
-  typename Self::IndexType m_End;
 };
 
 } // namespace cmtk

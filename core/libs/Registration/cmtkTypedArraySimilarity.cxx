@@ -234,14 +234,22 @@ TypedArraySimilarity::GetCrossCorrelation
   if ( ! CheckArrayDimensions( array0, array1 ) ) 
     return MathUtil::GetFloatNaN();
 
+  const size_t numberOfPixels = array0->GetDataSize();
   Types::DataItem sumOfProducts = 0, sumOfSquares0 = 0, sumOfSquares1 = 0;
 
-  Types::DataItem mean0, mean1, dummy;
-  array0->GetStatistics( mean0, dummy );
-  array1->GetStatistics( mean1, dummy );
+  Types::DataItem mean0 = 0, mean1 = 0;
+  size_t count = 0;
+  for ( int idx = 0; idx < static_cast<int>( numberOfPixels ); ++idx ) 
+    {
+    Types::DataItem pixel0, pixel1;
+    if ( array0->Get( pixel0, idx ) && array1->Get( pixel1, idx ) ) 
+      {
+      mean0 += pixel0;
+      mean1 += pixel1;
+      ++count;
+      }
+    }
 
-  unsigned int numberOfPixels = array0->GetDataSize();
-#pragma omp parallel for if(numberOfPixels>10000) reduction(+:sumOfProducts,sumOfSquares0,sumOfSquares1)
   for ( int idx = 0; idx < static_cast<int>( numberOfPixels ); ++idx ) 
     {
     Types::DataItem pixel0, pixel1;

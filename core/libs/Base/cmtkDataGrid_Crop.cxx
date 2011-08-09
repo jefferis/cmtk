@@ -156,7 +156,7 @@ DataGrid::GetRegionData( const Self::RegionType& region ) const
 {
   const TypedArray* srcData = this->GetData();
   if ( ! srcData ) 
-    throw( Exception( "No input data in DataGrid::GetCroppedData()" ) );
+    throw( Exception( "No input data in DataGrid::GetRegionData()" ) );
 
   TypedArray::SmartPtr cropData = TypedArray::Create( srcData->GetType(), region.Size() );
   
