@@ -412,6 +412,22 @@ case ${RUNTEST} in
 	run convertx --float --variance-filter 1 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
 	check_results spgr_brain_1.img
 	;;
+    convertxFastVariance0Filter)
+	run convertx --float --fast-variance-filter 0 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
+	check_results spgr_brain_1.img
+	;;
+    convertxFastVariance1Filter)
+	run convertx --float --fast-variance-filter 1 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
+	check_results spgr_brain_1.img
+	;;
+    convertxFastVariance2Filter)
+	run convertx --float --fast-variance-filter 2 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
+	check_results spgr_brain_1.img
+	;;
+    convertxFastVariance2PadFilter)
+	run convertx --set-padding 0 --float --fast-variance-filter 2 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
+	check_results spgr_brain_1.img
+	;;
     convertxThirdMomentFilter)
 	run convertx --float --third-moment-filter 1 spgr_brain_1.hdr ${tmpdir}/spgr_brain_1.hdr
 	check_results spgr_brain_1.img

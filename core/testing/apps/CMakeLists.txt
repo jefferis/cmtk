@@ -216,6 +216,10 @@ IF(NOT CMTK_USE_MPI)
     convertxFastMean2Filter
     convertxFastMean2PadFilter
     convertxVarianceFilter
+    convertxFastVariance0Filter
+    convertxFastVariance1Filter
+    convertxFastVariance2Filter
+    convertxFastVariance2PadFilter
     convertxThirdMomentFilter
     convertxStandardDeviationFilter
     convertxSmoothnessFilter
