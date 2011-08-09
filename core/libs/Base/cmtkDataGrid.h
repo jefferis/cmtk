@@ -109,6 +109,21 @@ public:
   /// Virtual destructor.
   virtual ~DataGrid() {}
 
+  /** Create a physical copy of this object.
+   *\param copyData If true, the associated data array is also copied.
+   */
+  Self::SmartPtr Clone( const bool copyData )
+  {
+    return Self::SmartPtr( this->CloneVirtual( copyData ) );
+  }
+
+  /** Create a physical copy of this object.
+   */
+  Self::SmartPtr Clone() const
+  {
+    return Self::SmartPtr( this->CloneVirtual() );
+  }
+
   /// Test whether this grid matches another one, i.e., has the same dimensions.
   bool GridMatches( const Self& other ) const
   {
@@ -333,6 +348,12 @@ public:
   void Print() const;
 
 protected:
+  /** Create a physical copy of this object.
+   *\param copyData If true, the associated data array is also copied.
+   */
+  virtual Self* CloneVirtual( const bool copyData );
+  virtual Self* CloneVirtual() const;
+
   /** Utility function for trilinear interpolation.
    *\param data This reference is set to the interpolated data value. It is 
    * valid if and only if this function returns 1.

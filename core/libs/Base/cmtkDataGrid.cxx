@@ -44,6 +44,37 @@ cmtk
 /** \addtogroup Base */
 //@{
 
+DataGrid*
+DataGrid::CloneVirtual( const bool copyData )
+{
+  if ( copyData ) 
+    {
+    return this->CloneVirtual();
+    } 
+  else 
+    {
+    DataGrid *result = new Self( this->m_Dims, this->GetData() );
+    result->m_CropRegion = this->m_CropRegion;
+    
+    return result;
+    }
+}
+
+DataGrid*
+DataGrid::CloneVirtual() const
+{
+  DataGrid *result = new Self( this->m_Dims );
+  result->m_CropRegion = this->m_CropRegion;
+  
+  if ( this->GetData() )
+    {
+    TypedArray::SmartPtr clonedData( this->GetData()->Clone() );
+    result->SetData( clonedData );
+    }
+  
+  return result;
+}
+
 const DataGrid::RegionType
 DataGrid::GetWholeImageRegion() const
 {
