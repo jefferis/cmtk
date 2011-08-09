@@ -45,5 +45,5 @@ cmtk::JointHistogramBase::CalcNumBins
 size_t 
 cmtk::JointHistogramBase::CalcNumBins ( const UniformVolume* volume ) 
 {
-  return Self::CalcNumBins( volume->GetCropRegionNumVoxels(), volume->GetData()->GetRange() ) ;
+  return Self::CalcNumBins( volume->CropRegion().Size(), volume->GetData()->GetRange() ) ;
 }

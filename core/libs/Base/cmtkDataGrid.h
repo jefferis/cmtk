@@ -285,10 +285,6 @@ public:
     return this->m_CropRegion;
   }
 
-  /** Return number of voxels in the cropped remaining image.
-   */
-  int GetCropRegionNumVoxels() const;
-
   /// Get whole image region.
   const RegionType GetWholeImageRegion() const;
 

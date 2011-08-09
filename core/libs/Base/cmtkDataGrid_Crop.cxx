@@ -68,12 +68,6 @@ DataGrid::GetCropRegionIncrements
   return increments;
 }
 
-int
-DataGrid::GetCropRegionNumVoxels() const 
-{
-  return (this->m_CropRegion.To()[0] - this->m_CropRegion.From()[0]) * (this->m_CropRegion.To()[1] - this->m_CropRegion.From()[1]) * (this->m_CropRegion.To()[2] - this->m_CropRegion.From()[2]);
-}
-
 void
 DataGrid::AutoCrop
 ( const Types::DataItem threshold, const bool recrop, const int margin )
@@ -164,7 +158,7 @@ DataGrid::GetRegionData( const Self::RegionType& region ) const
   if ( ! srcData ) 
     throw( Exception( "No input data in DataGrid::GetCroppedData()" ) );
 
-  TypedArray::SmartPtr cropData = TypedArray::Create( srcData->GetType(), this->GetCropRegionNumVoxels() );
+  TypedArray::SmartPtr cropData = TypedArray::Create( srcData->GetType(), region.Size() );
   
   const size_t lineLength = region.To()[0] - region.From()[0];
   const size_t nextPlane = this->m_Dims[0] * (this->m_Dims[1] - (region.To()[1] - region.From()[1]));
