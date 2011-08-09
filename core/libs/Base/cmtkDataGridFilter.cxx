@@ -136,12 +136,13 @@ DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, cons
 	  Types::DataItem value;
 	  if ( dataArray.Get( value, offset ) )
 	    {
-	    cntsColumn[idx0] = ++count;
+	    ++count;
 	    }
 	  else
 	    {
 	    value = 0;
 	    }
+	  cntsColumn[idx0] = count;
 	  sumsColumn[idx0] = (sum+=value);
 	  }
 	else
