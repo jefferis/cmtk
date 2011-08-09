@@ -211,7 +211,10 @@ IF(NOT CMTK_USE_MPI)
     convertxMedianFilter2
     convertxMedianFilterXYZ
     convertxMeanFilter
-    convertxFastMeanFilter
+    convertxFastMean0Filter
+    convertxFastMean1Filter
+    convertxFastMean2Filter
+    convertxFastMean2PadFilter
     convertxVarianceFilter
     convertxThirdMomentFilter
     convertxStandardDeviationFilter
