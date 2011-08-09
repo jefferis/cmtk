@@ -30,6 +30,9 @@
 //
 */
 
+#ifndef __cmtkMathFunctionWrappers_h_included_
+#define __cmtkMathFunctionWrappers_h_included_
+
 #include <cmtkconfig.h>
 
 #include <math.h>
@@ -86,8 +89,26 @@ Trunc( const double x )
 #endif
 }
 
+/// Square function.
+double Square( const double x )
+{
+  return x*x; 
+}
+
+/// Logit function.
+double Logit( const double x )
+{
+  return log(x / (1.0-x)); 
+}
+
+/// Logistic function.
+double Logistic( const double x )
+{
+  return 1.0/(1.0+exp(-x));
+}
 
 } // namespace Wrappers
 
 } // namespace cmtk
 
+#endif // #ifndef __cmtkMathFunctionWrappers_h_included_
