@@ -52,8 +52,8 @@ template<size_t NDIM,typename T>
 const Region<NDIM,T> 
 Region<NDIM,T>::GetFaceRegion( const int dim, const bool upper ) const
 {
-  Self::IndexType from = this->m_RegionFrom;
-  Self::IndexType to = this->m_RegionTo;
+  typename Self::IndexType from = this->m_RegionFrom;
+  typename Self::IndexType to = this->m_RegionTo;
 
   if ( upper )
     {
