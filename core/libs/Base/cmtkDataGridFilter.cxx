@@ -36,6 +36,7 @@
 #include <System/cmtkThreadPool.h>
 
 #include <Base/cmtkRegionIndexIterator.h>
+#include <Base/cmtkMathFunctionWrappers.h>
 
 namespace
 cmtk
@@ -85,6 +86,13 @@ DataGridFilter::RegionMeanFilter( const int radiusX, const int radiusY, const in
 TypedArray::SmartPtr
 DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, const int radiusZ ) const
 {
+  std::vector<unsigned short> cnts;
+  return this->FastRegionMeanFilter( radiusX, radiusY, radiusZ, cnts );
+}
+
+TypedArray::SmartPtr
+DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, const int radiusZ, std::vector<unsigned short>& cnts ) const
+{
   DataGrid::IndexType radius;
   radius[0] = radiusX;
   radius[1] = radiusY;
@@ -99,7 +107,7 @@ DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, cons
   std::vector<double> sums( nPixels );
   std::fill( sums.begin(), sums.end(), 0 );
 
-  std::vector<unsigned short> cnts( nPixels );
+  cnts.resize( nPixels );
   std::fill( cnts.begin(), cnts.end(), 0 );
 
   //
@@ -189,6 +197,36 @@ DataGridFilter::FastRegionMeanFilter( const int radiusX, const int radiusY, cons
     }
   return result;
 }
+
+TypedArray::SmartPtr
+DataGridFilter::FastRegionVarianceFilter( const int radiusX, const int radiusY, const int radiusZ ) const
+{
+  std::vector<unsigned short> cnts;
+  TypedArray::SmartPtr mean = this->FastRegionMeanFilter( radiusX, radiusY, radiusZ, cnts );
+
+  DataGrid::SmartPtr square( this->m_DataGrid->Clone() );
+  square->GetData()->ApplyFunctionDouble( Wrappers::Square );
+  square->SetData( Self( square ).FastRegionMeanFilter( radiusX, radiusY, radiusZ ) );
+
+  TypedArray& squareData = *(square->GetData());  
+
+  const size_t nPixels = square->GetNumberOfPixels();  
+  for ( size_t i = 0; i < nPixels; ++i )
+    {
+    Types::DataItem vMean, vSquare;
+    if ( mean->Get( vMean, i ) && squareData.Get( vSquare, i ) )
+      {
+      squareData.Set( vSquare - vMean * cnts[i], i );
+      }
+    else
+      {
+      squareData.SetPaddingAt( i );
+      }
+    }
+
+  return square->GetData();
+}
+
 
 cmtk::Types::DataItem
 cmtk::DataGridFilter::VarianceOperator::Reduce( std::vector<Types::DataItem>& regionData )

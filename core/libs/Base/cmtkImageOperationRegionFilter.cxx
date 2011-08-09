@@ -72,6 +72,9 @@ cmtk::ImageOperationRegionFilter
     case VARIANCE:
       volume->SetData( DataGridFilter( volume ).RegionVarianceFilter( this->m_RadiusX, this->m_RadiusY, this->m_RadiusZ ) );
       break;
+    case FAST_VARIANCE:
+      volume->SetData( DataGridFilter( volume ).FastRegionVarianceFilter( this->m_RadiusX, this->m_RadiusY, this->m_RadiusZ ) );
+      break;
     case THIRD_MOMENT:
       volume->SetData( DataGridFilter( volume ).RegionThirdMomentFilter( this->m_RadiusX, this->m_RadiusY, this->m_RadiusZ ) ); 
       break;

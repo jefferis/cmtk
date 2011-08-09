@@ -30,53 +30,66 @@
 //
 */
 
-#ifndef __cmtkMathFunctionWrappers_h_included_
-#define __cmtkMathFunctionWrappers_h_included_
-
-#include <cmtkconfig.h>
-
-#include <math.h>
+#include "cmtkMathFunctionWrappers.h"
 
 namespace
 cmtk
 {
 
-/** Wrappers for math.h functions.
- * These are necessary because on some platforms (e.g., Solaris), the
- * math functions are declared extern "C"; so until we find a better way
- * to address this, we wrap these functions.
- */
-
 namespace
 Wrappers
 {
 
-/// Log function.
-double Log( const double x );
+double
+Log( const double x )
+{
+  return log( x );
+}
 
-/// Exponential function.
-double Exp( const double x );
+double
+Exp( const double x )
+{
+  return exp( x );
+}
 
-/// Square root function.
-double Sqrt( const double x );
+double
+Sqrt( const double x )
+{
+  return sqrt( x );
+}
 
-/// Abs function.
-double Abs( const double x );
+double
+Abs( const double x )
+{
+  return fabs( x );
+}
 
-/// Trunc function.
-double Trunc( const double x );
+double
+Trunc( const double x )
+{
+#ifdef _MSC_VER
+  return static_cast<double>( static_cast<long int>( x ) );
+#else
+  return trunc( x );
+#endif
+}
 
-/// Square function.
-double Square( const double x );
+double Square( const double x )
+{
+  return x*x; 
+}
 
-/// Logit function.
-double Logit( const double x );
+double Logit( const double x )
+{
+  return log(x / (1.0-x)); 
+}
 
-/// Logistic function.
-double Logistic( const double x );
+double Logistic( const double x )
+{
+  return 1.0/(1.0+exp(-x));
+}
 
 } // namespace Wrappers
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkMathFunctionWrappers_h_included_

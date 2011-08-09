@@ -59,6 +59,7 @@ public:
     MEAN,
     FAST_MEAN,
     VARIANCE,
+    FAST_VARIANCE,
     THIRD_MOMENT,
     STANDARD_DEVIATION,
     SMOOTHNESS
@@ -93,6 +94,12 @@ public:
   static void NewVariance( const char* arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */ )
   {
     Self::NewGeneric( Self::VARIANCE, arg );
+  }
+  
+  /// Create a new fast region variance filter operation.
+  static void NewFastVariance( const char* arg /*!< Region size argument: either "XYZ" or "X,Y,Z" */ )
+  {
+    Self::NewGeneric( Self::FAST_VARIANCE, arg );
   }
   
   /// Create a new region third moment filter operation.

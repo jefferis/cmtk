@@ -46,7 +46,6 @@
 
 #include <math.h>
 
-#include <Base/cmtkMathFunctionWrappers.h>
 #include <Base/cmtkImageOperation.h>
 #include <Base/cmtkImageOperationConvertType.h>
 #include <Base/cmtkImageOperationFlip.h>
@@ -180,6 +179,9 @@ doMain( const int argc, const char* argv[] )
     cl.AddCallback( Key( "fast-mean-filter" ), &cmtk::ImageOperationRegionFilter::NewFastMean, "Regional mean filter (fast, linear time implementation). This operation takes the filter radius in pixels as the parameter. "
 		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
     cl.AddCallback( Key( "variance-filter" ), &cmtk::ImageOperationRegionFilter::NewVariance, "Regional variance filter. "
+		    "This operation takes the filter radius in pixels as the parameter. "
+		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
+    cl.AddCallback( Key( "fast-variance-filter" ), &cmtk::ImageOperationRegionFilter::NewFastVariance, "Fast (linear-time) regional variance filter. "
 		    "This operation takes the filter radius in pixels as the parameter. "
 		    "A single integer defines the kernel radius in all three dimensions. Three comma-separated integers define separate radii for the three dimensions." );
     cl.AddCallback( Key( "third-moment-filter" ), &cmtk::ImageOperationRegionFilter::NewThirdMoment, "Regional third moment filter. "

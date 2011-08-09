@@ -91,6 +91,15 @@ public:
    */
   TypedArray::SmartPtr FastRegionMeanFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
 
+  /** Apply fast, recursive neighborhood-mean filter.
+   *\param radiusX Region radius in x direction.
+   *\param radiusY Region radius in y direction.
+   *\param radiusZ Region radius in z direction.
+   *\param cnts Vector of value counts per pixel. This is populated by the function to contain the number of actual data values that went into the mean at each pixel, considering field of view and padding.
+   *\return Newly allocated data array with filtered data.
+   */
+  TypedArray::SmartPtr FastRegionMeanFilter( const int radiusX, const int radiusY, const int radiusZ, std::vector<unsigned short>& cnts ) const;
+
   /** Apply neighborhood-variance filter.
    *\param radiusX Region radius in x direction.
    *\param radiusY Region radius in y direction.
@@ -98,6 +107,14 @@ public:
    *\return Newly allocated data array with filtered data.
    */
   TypedArray::SmartPtr RegionVarianceFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
+
+  /** Apply fast neighborhood-variance filter based on linear-time region mean filter.
+   *\param radiusX Region radius in x direction.
+   *\param radiusY Region radius in y direction.
+   *\param radiusZ Region radius in z direction.
+   *\return Newly allocated data array with filtered data.
+   */
+  TypedArray::SmartPtr FastRegionVarianceFilter( const int radiusX, const int radiusY, const int radiusZ ) const;
 
   /** Apply neighborhood-third-moment filter.
    *\param radiusX Region radius in x direction.

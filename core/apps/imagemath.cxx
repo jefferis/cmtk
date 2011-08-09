@@ -58,29 +58,6 @@
 #  include <dispatch/dispatch.h>
 #endif
 
-namespace cmtk
-{
-
-/// Square function.
-double Square( const double x )
-{
-  return x*x; 
-}
-
-/// Logit function.
-double Logit( const double x )
-{
-  return log(x / (1.0-x)); 
-}
-
-/// Logistic function.
-double Logistic( const double x )
-{
-  return 1.0/(1.0+exp(-x));
-}
-
-} // namespace cmtk
-
 /// The output data type of image operations.
 cmtk::ScalarDataType ResultType = cmtk::TYPE_FLOAT;
 
@@ -284,7 +261,7 @@ CallbackLogit()
   while ( it != ImageStack.end() )
     {
     (*it)->SetData( cmtk::TypedArray::SmartPtr( (*it)->GetData()->Convert( ResultType ) ) );
-    (*it)->GetData()->ApplyFunctionDouble( cmtk::Logit );
+    (*it)->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Logit );
     
     if ( ApplyNextToAll )
       ++it;
@@ -303,7 +280,7 @@ CallbackLogistic()
   while ( it != ImageStack.end() )
     {
     (*it)->SetData( cmtk::TypedArray::SmartPtr( (*it)->GetData()->Convert( ResultType ) ) );
-    (*it)->GetData()->ApplyFunctionDouble( cmtk::Logistic );
+    (*it)->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Logistic );
     
     if ( ApplyNextToAll )
       ++it;
@@ -341,7 +318,7 @@ CallbackSqr()
   while ( it != ImageStack.end() )
     {
     (*it)->SetData( cmtk::TypedArray::SmartPtr( (*it)->GetData()->Convert( ResultType ) ) );
-    (*it)->GetData()->ApplyFunctionDouble( cmtk::Square );
+    (*it)->GetData()->ApplyFunctionDouble( cmtk::Wrappers::Square );
     
     if ( ApplyNextToAll )
       ++it;
