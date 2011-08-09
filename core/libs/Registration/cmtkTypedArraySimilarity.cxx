@@ -250,6 +250,9 @@ TypedArraySimilarity::GetCrossCorrelation
       }
     }
 
+  mean0 /= count;
+  mean1 /= count;
+
   for ( int idx = 0; idx < static_cast<int>( numberOfPixels ); ++idx ) 
     {
     Types::DataItem pixel0, pixel1;
