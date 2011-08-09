@@ -1,5 +1,7 @@
 Release CMTK-1.8.0:
 
+(r3344) Added: fast (linear time) region variance filter based on fast region
+    mean filter.
 (r3337) Added: fast (linear-time) region mean filter
 (r3312) Fixed: crash in non-SMP "warp" B-spline registration.
 (r3305) Fixed: volume_injection tool selected improper padding value due to
