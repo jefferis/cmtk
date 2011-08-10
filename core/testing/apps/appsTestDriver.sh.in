@@ -1030,6 +1030,18 @@ case ${RUNTEST} in
         run levelset -v --binarize --delta 1.0 --filter-sigma 4.0 vol001_mr_t1.hdr ${tmpdir}/levelset.hdr
 	check_results levelset.img
 	;;
+    lvoteDefault)
+        run lvote -v -o ${tmpdir}/lvote.nii lvote_target.nii lvote_atlas_i0.nii lvote_atlas_l0.nii lvote_atlas_i1.nii lvote_atlas_l1.nii lvote_atlas_i2.nii lvote_atlas_l2.nii
+	check_results lvote.nii
+	;;
+    lvoteRadius3)
+        run lvote -v -o ${tmpdir}/lvote.nii --patch-radius 3 lvote_target.nii lvote_atlas_i0.nii lvote_atlas_l0.nii lvote_atlas_i1.nii lvote_atlas_l1.nii lvote_atlas_i2.nii lvote_atlas_l2.nii
+	check_results lvote.nii
+	;;
+    lvoteRadius3SBA)
+        run lvote -v -o ${tmpdir}/lvote.nii --patch-radius 3 --use-sba lvote_target.nii lvote_atlas_i0.nii lvote_atlas_l0.nii lvote_atlas_i1.nii lvote_atlas_l1.nii lvote_atlas_i2.nii lvote_atlas_l2.nii
+	check_results lvote.nii
+	;;
     make_initial_affineCenterOfMass)
 	run make_initial_affine --mode centers-of-mass box1.hdr box3.hdr ${tmpdir}/xform
 	check_results xform

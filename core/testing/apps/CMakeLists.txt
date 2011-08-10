@@ -719,6 +719,14 @@ IF(NOT CMTK_USE_MPI)
     SET(testList ${testList} 
       xform2scalarDfield)
   ENDIF(CMTK_BUILD_NRRD)
+
+  IF(CMTK_BUILD_UNSTABLE)
+    SET(testList ${testList} 
+      lvoteDefault
+      lvoteRadius3
+      lvoteRadius3SBA)
+  ENDIF(CMTK_BUILD_UNSTABLE)
+  
   
 ENDIF(NOT CMTK_USE_MPI)
 
