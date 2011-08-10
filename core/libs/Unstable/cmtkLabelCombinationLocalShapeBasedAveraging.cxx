@@ -37,6 +37,7 @@
 
 #include <Base/cmtkRegionIndexIterator.h>
 #include <Base/cmtkUniformDistanceMap.h>
+#include <Base/cmtkMathFunctionWrappers.h>
 
 #include <Registration/cmtkTypedArraySimilarity.h>
 
@@ -49,7 +50,7 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::AddAtlas( const UniformVolume::S
 {
   Superclass::AddAtlas( image, atlas );
 
-  this->m_AtlasDMaps.push_back( UniformDistanceMap<double>( *atlas, UniformDistanceMap<double>::SIGNED ).Get() );
+  this->m_AtlasDMaps.push_back( UniformDistanceMap<double>( *atlas, UniformDistanceMap<double>::SIGNED + UniformDistanceMap<double>::SQUARED ).Get() );
 }
 
 cmtk::TypedArray::SmartPtr 

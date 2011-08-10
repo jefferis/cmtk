@@ -104,7 +104,11 @@ public:
      * The "INSIDE" flag determines whether negative distance values are assigned to
      * pixels inside (flag off) or outside (flag on) the labelled region.
      */
-    SIGNED = 16
+    SIGNED = 16,
+    /** Compute squared distance - do not apply final sqrt() operator.
+     * This can increase efficiency if the outside code wants the squared distance in the first place.
+     */
+    SQUARED = 32
   } Flags;
 
   /** Construct map from given volume.

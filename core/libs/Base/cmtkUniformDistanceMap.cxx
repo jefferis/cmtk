@@ -152,15 +152,19 @@ UniformDistanceMap<TDistanceDataType>
   
   this->ComputeEDT( Distance );
 
-  p = Distance;
-  for ( size_t i = 0; i < volume.GetNumberOfPixels(); ++i, ++p ) 
+  if ( !(flags & Self::SQUARED) )
     {
+    p = Distance;
+    for ( size_t i = 0; i < volume.GetNumberOfPixels(); ++i, ++p ) 
+      {
 #if defined(_MSC_VER) || defined(__SUNPRO_CC)
-    *p = static_cast<DistanceDataType>( sqrt( (double)*p ) );
+      *p = static_cast<DistanceDataType>( sqrt( (double)*p ) );
 #else
-    *p = static_cast<DistanceDataType>( sqrt( *p ) );
+      *p = static_cast<DistanceDataType>( sqrt( *p ) );
 #endif
+      }
     }
+
   this->m_DistanceMap->SetData( distanceArray );
 }
 
