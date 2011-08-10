@@ -28,7 +28,7 @@ idx=0
 for atlas in ${ATLAS_I}; do
     xfm=${tmpdir}/${idx}.xfm
     ffd=${tmpdir}/${idx}.ffd
-    cmtk warpx --echo --grid-spacing 80 --grid-refine 3 --min-stepsize 0.25 --max-stepsize 16 --smoothness-constraint-weight 1e-1 --omit-original-data --delta-f-threshold 0.01 --fast --nmi -o ${ffd} --initial ${xfm} ${TARGET} ${atlas}
+    cmtk warpx --echo --grid-spacing 80 --grid-refine 4 --min-stepsize 0.125 --max-stepsize 16 --smoothness-constraint-weight 1e-1 --omit-original-data --delta-f-threshold 0.01 --fast --nmi -o ${ffd} --initial ${xfm} ${TARGET} ${atlas}
     idx=`expr ${idx} + 1`
 done
 
@@ -53,4 +53,4 @@ for atlas in ${ATLAS_L}; do
     idx=`expr ${idx} + 1`
 done
 
-bin/lvote --echo -o output.nii --patch-radius 5 ${TARGET} ${lvote_inputs}
+bin/lvote --echo -o output.nii --use-sba --patch-radius 5 ${TARGET} ${lvote_inputs}
