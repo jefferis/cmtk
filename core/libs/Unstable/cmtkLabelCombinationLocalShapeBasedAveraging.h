@@ -30,17 +30,12 @@
 //
 */
 
-#ifndef __cmtkLabelCombinationLocalVoting_h_included_
-#define __cmtkLabelCombinationLocalVoting_h_included_
+#ifndef __cmtkLabelCombinationLocalShapeBasedAveraging_h_included_
+#define __cmtkLabelCombinationLocalShapeBasedAveraging_h_included_
 
 #include <cmtkconfig.h>
 
-#include <System/cmtkSmartPtr.h>
-#include <System/cmtkSmartConstPtr.h>
-
-#include <Base/cmtkUniformVolume.h>
-
-#include <vector>
+#include "cmtkLabelCombinationLocalVoting.h"
 
 namespace
 cmtk
@@ -49,51 +44,36 @@ cmtk
 /** \addtogroup Segmentation */
 //@{
 
-/** Segmentation combination by locally-weighted label voting.
- *\attention All labels must be representable as unsigned, short integers between 0 and 65535.
+/** Segmentation combination by locally-weighted shape-based averaging.
+ *\attention Currently all labels maps are treated as binary maps, i.e., all labels not equal to zero are considered equal.
  */
-class LabelCombinationLocalVoting
+class LabelCombinationLocalShapeBasedAveraging
+  : public LabelCombinationLocalVoting
 {
 public:
   /// This class.
-  typedef LabelCombinationLocalVoting Self;
+  typedef LabelCombinationLocalShapeBasedAveraging Self;
+
+  /// Parent class.
+  typedef LabelCombinationLocalVoting Superclass;
 
   /// Constructor: compute label combination.
-  LabelCombinationLocalVoting( const UniformVolume::SmartConstPtr targetImage ) : m_TargetImage( targetImage ) {}
+  LabelCombinationLocalShapeBasedAveraging( const UniformVolume::SmartConstPtr targetImage ) : Superclass( targetImage ) {}
   
   /// Add an atlas (pair of reformatted, target-matched intensity image and label map).
   void AddAtlas( const UniformVolume::SmartConstPtr image, const UniformVolume::SmartConstPtr atlas );
 
-  /// Set patch radius.
-  void SetPatchRadius( const size_t radius )
-  {
-    this->m_PatchRadius = UniformVolume::IndexType( UniformVolume::IndexType::Init(radius ) );
-  }
-
   /// Get resulting combined segmentation.
-  TypedArray::SmartPtr GetResult() const;
-  
-protected:
-  /// Target image region type.
-  typedef UniformVolume::RegionType TargetRegionType;
-
-  /// The target image.
-  UniformVolume::SmartConstPtr m_TargetImage;
-  
-  /// Vector of target-matched atlas images.
-  std::vector<UniformVolume::SmartConstPtr> m_AtlasImages;
-
-  /// Vector of target-matched atlas label maps.
-  std::vector<UniformVolume::SmartConstPtr> m_AtlasLabels;
-
-  /// Image patch radius in pixels (x,y,z).
-  UniformVolume::IndexType m_PatchRadius;
+  TypedArray::SmartPtr GetResult() const;  
 
 private:
   /// Compute result for a region.
   void ComputeResultForRegion( const Self::TargetRegionType& region, TypedArray& result ) const;
+
+  /// Signed distance maps for the atlas label maps.
+  std::vector<UniformVolume::SmartConstPtr> m_AtlasDMaps;
 };
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkLabelCombinationLocalVoting_h_included_
+#endif // #ifndef __cmtkLabelCombinationLocalShapeBasedAveraging_h_included_

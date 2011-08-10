@@ -42,6 +42,7 @@
 #include <string>
 
 #include <Unstable/cmtkLabelCombinationLocalVoting.h>
+#include <Unstable/cmtkLabelCombinationLocalShapeBasedAveraging.h>
 
 int
 doMain
@@ -89,7 +90,8 @@ doMain
 
   cmtk::UniformVolume::SmartPtr targetImage = cmtk::VolumeIO::Read( targetImagePath );
   
-  cmtk::LabelCombinationLocalVoting lvote( targetImage );
+//  cmtk::LabelCombinationLocalVoting lvote( targetImage );
+  cmtk::LabelCombinationLocalShapeBasedAveraging lvote( targetImage );
   lvote.SetPatchRadius( patchRadius );
 
   for ( size_t atlasIdx = 0; atlasIdx < atlasImagesLabels.size(); atlasIdx += 2 )
