@@ -51,6 +51,7 @@ doMain
   const char* targetImagePath = NULL;
   std::vector<std::string> atlasImagesLabels;
 
+  bool useShapeBasedAveraging = false;
   size_t patchRadius = 5;
 
   const char* outputImagePath = "lvote.nii";
@@ -65,6 +66,7 @@ doMain
     typedef cmtk::CommandLine::Key Key;
 
     cl.AddOption( Key( "patch-radius" ), &patchRadius, "Radius of image patch (in pixels) used for local similarity computation." );
+    cl.AddSwitch( Key( "use-sba" ), &useShapeBasedAveraging, true, "Use shape-based averaging of Euclidean distance maps instead of voting (BINARY segmentations only!)." );
     cl.AddOption( Key( 'o', "output" ), &outputImagePath, "File system path for the output image." );
 
     cl.AddParameter( &targetImagePath, "TargetImage", "Target image path. This is the image to be segmented." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
@@ -90,16 +92,31 @@ doMain
 
   cmtk::UniformVolume::SmartPtr targetImage = cmtk::VolumeIO::Read( targetImagePath );
   
-//  cmtk::LabelCombinationLocalVoting lvote( targetImage );
-  cmtk::LabelCombinationLocalShapeBasedAveraging lvote( targetImage );
-  lvote.SetPatchRadius( patchRadius );
-
-  for ( size_t atlasIdx = 0; atlasIdx < atlasImagesLabels.size(); atlasIdx += 2 )
+  if ( useShapeBasedAveraging )
     {
-    lvote.AddAtlas( cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx].c_str() ), cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx+1].c_str() ) );
+    cmtk::LabelCombinationLocalShapeBasedAveraging lvote( targetImage );
+    lvote.SetPatchRadius( patchRadius );
+    
+    for ( size_t atlasIdx = 0; atlasIdx < atlasImagesLabels.size(); atlasIdx += 2 )
+      {
+      lvote.AddAtlas( cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx].c_str() ), cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx+1].c_str() ) );
+      }
+    
+    targetImage->SetData( lvote.GetResult() );
+    }
+  else
+    {
+    cmtk::LabelCombinationLocalVoting lvote( targetImage );
+    lvote.SetPatchRadius( patchRadius );
+    
+    for ( size_t atlasIdx = 0; atlasIdx < atlasImagesLabels.size(); atlasIdx += 2 )
+      {
+      lvote.AddAtlas( cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx].c_str() ), cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx+1].c_str() ) );
+      }
+    
+    targetImage->SetData( lvote.GetResult() );
     }
 
-  targetImage->SetData( lvote.GetResult() );
   if ( outputImagePath )
     {
     cmtk::VolumeIO::Write( *targetImage, outputImagePath );
