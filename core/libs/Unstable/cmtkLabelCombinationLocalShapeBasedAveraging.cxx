@@ -158,8 +158,8 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Se
 	  {
 	  totalDistance += (weights[n]-minWeight)/maxWeight * this->m_AtlasDMaps[n]->GetDataAt( i );
 	  }
-	}
-	  
+	}  
+
       result.Set( (totalDistance <= 0) ? 1 : 0, i );
       }
     }
