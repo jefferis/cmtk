@@ -50,7 +50,7 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::AddAtlas( const UniformVolume::S
 {
   Superclass::AddAtlas( image, atlas );
 
-  this->m_AtlasDMaps.push_back( UniformDistanceMap<double>( *atlas, UniformDistanceMap<double>::SIGNED + UniformDistanceMap<double>::SQUARED ).Get() );
+  this->m_AtlasDMaps.push_back( UniformDistanceMap<double>( *atlas, UniformDistanceMap<double>::SIGNED | UniformDistanceMap<double>::SQUARED ).Get() );
 }
 
 cmtk::TypedArray::SmartPtr 
@@ -85,6 +85,7 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Se
   const size_t nAtlases = this->m_AtlasImages.size();
   std::vector<bool> valid( nAtlases );
   std::vector<short> labels( nAtlases );  
+  std::vector<Types::DataItem> weights( nAtlases );  
 
   for ( RegionIndexIterator<TargetRegionType> it( region ); it != it.end(); ++it )
     {
@@ -126,7 +127,7 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Se
     // no need for weighted combination if all labels are the same.
     if ( allTheSame )
       {
-      result.Set( labels[firstValid], i );
+      result.Set( labels[firstValid] ? 1 : 0, i );
       }
     else
       {
@@ -134,17 +135,31 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Se
       const TargetRegionType patchRegion( Max( region.From(), it.Index() - this->m_PatchRadius ), Min( region.To(), it.Index() + this->m_PatchRadius ) );
       TypedArray::SmartConstPtr targetDataPatch( targetImage.GetRegionData( patchRegion ) );
 
-      double totalDistance = 0;
+      Types::DataItem minWeight = FLT_MAX;
+      Types::DataItem maxWeight = FLT_MIN;
       for ( size_t n = 0; n < nAtlases; ++n )
 	{
 	if ( valid[n] )
 	  {
 	  TypedArray::SmartConstPtr atlasDataPatch( this->m_AtlasImages[n]->GetRegionData( patchRegion ) );
-	  const double cc = TypedArraySimilarity::GetCrossCorrelation( targetDataPatch, atlasDataPatch );
-	  totalDistance += cc * this->m_AtlasDMaps[n]->GetDataAt( i );
+	  weights[n] = TypedArraySimilarity::GetCrossCorrelation( targetDataPatch, atlasDataPatch );
+	  
+	  minWeight = std::min( minWeight, weights[n] );
+	  maxWeight = std::max( maxWeight, weights[n] );
 	  }
 	}
 
+      maxWeight -= minWeight; // turn "max" into "range"
+      
+      double totalDistance = 0;
+      for ( size_t n = 0; n < nAtlases; ++n )
+	{
+	if ( valid[n] )
+	  {
+	  totalDistance += (weights[n]-minWeight)/maxWeight * this->m_AtlasDMaps[n]->GetDataAt( i );
+	  }
+	}
+	  
       result.Set( (totalDistance <= 0) ? 1 : 0, i );
       }
     }
