@@ -62,7 +62,7 @@ public:
   typedef typename RegionType::ScalarType ScalarType;
 
   /// Index type.
-  typedef FixedVector<Self::Dimension,Self::ScalarType> IndexType;
+  typedef FixedVector<Self::Dimension,typename Self::ScalarType> IndexType;
 
   /// Smart pointer to this class.
   typedef SmartPointer<Self> SmartPtr;
