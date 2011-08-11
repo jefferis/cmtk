@@ -50,8 +50,9 @@ for atlas in ${ATLAS_L}; do
 
     lvote_inputs="${lvote_inputs} ${tmpdir}/${idx}_i.nii ${tmpdir}/${idx}_l.nii"
 
-    bin/lvote --echo -o output_${idx}_sba.nii --use-sba --patch-radius 5 ${TARGET} ${lvote_inputs}
-    
     idx=`expr ${idx} + 1`
 done
 
+bin/lvote --echo -o output_${idx}_sba.nii --use-sba --patch-radius 5 ${TARGET} ${lvote_inputs}
+
+rm -rf ${tmpdir}
