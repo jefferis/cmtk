@@ -77,7 +77,7 @@ doMain
     throw cmtk::ExitException( 1 );
     }
 
-  cmtk::StdOut << cmtk::HausdorffDistance( image0, image1 ).GetBinary() << "\n";
+  cmtk::StdOut.printf( "%lf\n", static_cast<double>( cmtk::HausdorffDistance( image0, image1 ).GetBinary() ) );
 
   return 0;
 }
