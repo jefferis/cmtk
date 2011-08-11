@@ -862,6 +862,18 @@ case ${RUNTEST} in
 	check_results pairs/target-000.list/registration pairs/target-001.list/registration pairs/target-002.list/registration
 	check_results average.nii
 	;;
+    hausdorffBinary12)
+        run_eval "${BINDIR}/hausdorff parc1_bin.hdr parc2_bin.hdr > ${tmpdir}/hd.txt"
+	check_results hd.txt
+	;;
+    hausdorffBinary21)
+        run_eval "${BINDIR}/hausdorff parc2_bin.hdr parc1_bin.hdr > ${tmpdir}/hd.txt"
+	check_results hd.txt
+	;;
+    hausdorffBinaryForced)
+        run_eval "${BINDIR}/hausdorff parc1.hdr parc2.hdr > ${tmpdir}/hd.txt"
+	check_results hd.txt
+	;;
     histogram)
 	run histogram -o ${tmpdir}/histogram spgr_3t.hdr
 	check_results histogram

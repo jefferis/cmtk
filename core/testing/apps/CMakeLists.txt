@@ -286,6 +286,13 @@ IF(NOT CMTK_USE_MPI)
     gregxformAffineFromWarpFwdBwd)
 
   # ==========================================
+  # Tests for "hausdorff" tool
+  SET(testList ${testList} 
+    hausdorffBinary12
+    hausdorffBinary21
+    hausdorffBinaryForced)
+
+  # ==========================================
   # Tests for "histogram" tool
   SET(testList ${testList}
     histogram 
