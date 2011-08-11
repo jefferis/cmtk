@@ -67,6 +67,7 @@ IF(NOT CMTK_USE_MPI)
     filter
     glm
     gregxform
+    hausdorff
     histogram
     imagemath
     jidb

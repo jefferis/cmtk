@@ -33,6 +33,8 @@
 #ifndef __cmtkSearchTrace_h_included_
 #define __cmtkSearchTrace_h_included_
 
+#include <cmtkconfig.h>
+
 #include <stdlib.h>
 
 namespace

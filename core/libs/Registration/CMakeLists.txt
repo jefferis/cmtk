@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -47,6 +47,7 @@ SET(cmtkRegistration_SRCS
   cmtkGroupwiseRegistrationFunctionalXformTemplateBase.cxx
   cmtkGroupwiseRegistrationOutput.cxx
   cmtkGroupwiseRegistrationRMIFunctional.cxx
+  cmtkHausdorffDistance.cxx
   cmtkImagePairRegistration.cxx
   cmtkImagePairRegistrationFunctional.cxx
   cmtkImagePairRegistrationImagePreprocessor.cxx
