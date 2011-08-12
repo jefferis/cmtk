@@ -3,7 +3,7 @@ The Computational Morphometry Toolkit
 ==========================================================================
 
 
-Release Notes -- CMTK 1.8.0
+Release Notes -- CMTK 2.0.0
 ===========================
 
 This release of CMTK is targetted primarily at developers. It fixes some major
