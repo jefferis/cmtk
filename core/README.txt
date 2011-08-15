@@ -13,11 +13,14 @@ using either a build tree or an install tree of CMTK's core. Use of CMTK from
 external projects is demonstrated by the applications in the validation/ tree,
 which has been moved out of the core/ tree to the level immediately above.
 
+Other additions include a tool ("hausdorff") for computing Hausdorff distances
+and an experimental tool ("lvote") for locally-weighted voting combination of
+multiple label fields.
+
 For a complete list of changes and fixes, see the CHANGELOG file.
 
 CMTK has been built and tested on the following platforms:
 
-- Linux 32bit (Fedora 13), gcc 4.4.5, CUDA 3.2
 - Linux 32bit (Fedora 15), gcc 4.6.0
 - Linux 64bit (Fedora 13), gcc 4.4.5, CUDA 3.2
 - Linux 64bit (Fedora 14), gcc 4.5.1

@@ -1,4 +1,4 @@
-Release CMTK-2.0.0:
+Release CMTK-2.0.0 (2011-08-15):
 
 (r3360) Added: Hausdorff distance for binary shapes
 (r3344) Added: fast (linear time) region variance filter based on fast region
