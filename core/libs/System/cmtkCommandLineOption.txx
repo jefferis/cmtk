@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009 SRI International
+//  Copyright 2009, 2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -87,7 +87,7 @@ cmtk::CommandLine::Option<T>
   if ( this->Flag && !(*this->Flag) )
     fmt << "\n[Default: disabled]";
   else
-    fmt << "\n[Default value: " << CommandLineTypeTraits<T>::ValueToString( this->Var ) << "]";
+    fmt << "\n[Default: " << CommandLineTypeTraits<T>::ValueToString( this->Var ) << "]";
   return fmt;
 }
 
@@ -99,5 +99,5 @@ cmtk::CommandLine::Option<T>
   if ( this->Flag && !(*this->Flag) )
     StdOut << " '''[Default: disabled]'''";
   else
-    StdOut << " '''[Default value: " << CommandLineTypeTraits<T>::ValueToString( this->Var ) << "]'''";
+    StdOut << " '''[Default: " << CommandLineTypeTraits<T>::ValueToString( this->Var ) << "]'''";
 }
