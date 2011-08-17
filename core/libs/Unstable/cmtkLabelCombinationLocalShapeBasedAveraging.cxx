@@ -50,7 +50,7 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::AddAtlas( const UniformVolume::S
 {
   Superclass::AddAtlas( image, atlas );
 
-  this->m_AtlasDMaps.push_back( UniformDistanceMap<double>( *atlas, UniformDistanceMap<double>::SIGNED | UniformDistanceMap<double>::SQUARED ).Get() );
+  this->m_AtlasDMaps.push_back( UniformDistanceMap<float>( *atlas, UniformDistanceMap<float>::SIGNED | UniformDistanceMap<float>::SQUARED ).Get() );
 }
 
 cmtk::TypedArray::SmartPtr 
