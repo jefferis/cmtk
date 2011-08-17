@@ -70,7 +70,7 @@ doMain
     typedef cmtk::CommandLine::Key Key;
 
     cl.BeginGroup( "input", "Input Options" );
-    cl.AddOption( Key( "padding-value" ), &paddingValue, "Set padding value for input intensity images. Pixels with this value will be ignored.", &paddingFlag );
+    cl.AddOption( Key( "set-padding-value" ), &paddingValue, "Set padding value for input intensity images. Pixels with this value will be ignored.", &paddingFlag );
     cl.EndGroup();
 
     cl.AddOption( Key( "patch-radius" ), &patchRadius, "Radius of image patch (in pixels) used for local similarity computation." );
