@@ -57,6 +57,9 @@ doMain
 
   const char* outputImagePath = "lvote.nii";
 
+  cmtk::Types::DataItem paddingValue = 0;
+  bool paddingFlag = false;
+  
   try
     {
     cmtk::CommandLine cl;
@@ -66,9 +69,14 @@ doMain
 
     typedef cmtk::CommandLine::Key Key;
 
+    cl.BeginGroup( "input", "Input Options" );
+    cl.AddOption( Key( "padding-value" ), &paddingValue, "Set padding value for input intensity images. Pixels with this value will be ignored.", &paddingFlag );
+    cl.EndGroup();
+
     cl.AddOption( Key( "patch-radius" ), &patchRadius, "Radius of image patch (in pixels) used for local similarity computation." );
     cl.AddSwitch( Key( "use-sba" ), &useShapeBasedAveraging, true, "Use shape-based averaging of Euclidean distance maps instead of voting (BINARY segmentations only!)." );
     cl.AddSwitch( Key( "detect-outliers" ), &detectOutliers, true, "Detect and exclude outliers in the Shape Based Averaging procedure." );
+
     cl.AddOption( Key( 'o', "output" ), &outputImagePath, "File system path for the output image." );
 
     cl.AddParameter( &targetImagePath, "TargetImage", "Target image path. This is the image to be segmented." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
@@ -102,7 +110,26 @@ doMain
     
     for ( size_t atlasIdx = 0; atlasIdx < atlasImagesLabels.size(); atlasIdx += 2 )
       {
-      lvote.AddAtlas( cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx].c_str() ), cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx+1].c_str() ) );
+      cmtk::UniformVolume::SmartPtr atlasImage = cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx].c_str() );
+      if ( !atlasImage )
+	{
+	cmtk::StdErr << "ERROR: could not read atlas intensity image " << atlasImagesLabels[atlasIdx] << "\n";
+	throw cmtk::ExitException( 1 );
+	}
+
+      cmtk::UniformVolume::SmartPtr atlasLabels = cmtk::VolumeIO::Read( atlasImagesLabels[atlasIdx+1].c_str() );
+      if ( !atlasLabels )
+	{
+	cmtk::StdErr << "ERROR: could not read atlas label image " << atlasImagesLabels[atlasIdx+1] << "\n";
+	throw cmtk::ExitException( 1 );
+	}      
+      
+      if ( paddingFlag )
+	{
+	atlasImage->GetData()->SetPaddingValue( paddingValue );
+	}
+      
+      lvote.AddAtlas( atlasImage, atlasLabels );
       }
     
     targetImage->SetData( lvote.GetResult() );
