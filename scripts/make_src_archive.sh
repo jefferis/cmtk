@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ##
-##  Copyright 2010 SRI International
+##  Copyright 2010-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -31,6 +31,8 @@
 #
 # This script creates a tar/gzip archive of the current CMTK code tree
 #
+
+[ -d .svn ] && svn update
 
 version_major=`fgrep "SET(CMTK_VERSION_MAJOR" core/CMakeLists.txt | sed 's/.*\"\(.*\)\".*/\1/g'`
 version_minor=`fgrep "SET(CMTK_VERSION_MINOR" core/CMakeLists.txt | sed 's/.*\"\(.*\)\".*/\1/g'`
