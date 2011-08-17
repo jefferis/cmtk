@@ -86,7 +86,7 @@ Interleaving Options
 
   --passes <integer> / -p <integer>
             Number of interleaved passes
-            [Default value: 2]
+            [Default: 2]
 
   --pass-weight <string> / -W <string>
             Set contribution weight for a pass in the form 'pass:weight'
@@ -95,7 +95,7 @@ Motion Correction / Registration Options
 
   --reference-image <image-path> / -R <image-path>
             Use a separate high-resolution reference image for registration
-            [Default value: NONE]
+            [Default: NONE]
 
   --registration-metric
             Registration metric for motion estimation by image-to-image registration.
@@ -115,23 +115,23 @@ Motion Correction / Registration Options
 
   --import-xforms-path <path>
             Path of file from which to import transformations between passes.
-            [Default value: NONE]
+            [Default: NONE]
 
   --export-xforms-path <path>
             Path of file to which to export transformations between passes.
-            [Default value: NONE]
+            [Default: NONE]
 
 Initial Volume Injection Options
 
   --injection-kernel-sigma <double> / -S <double>
             Standard deviation of Gaussian kernel for volume injection in multiples of pixel size in
             each direction.
-            [Default value: 0.5]
+            [Default: 0.5]
 
   --injection-kernel-radius <double> / -r <double>
             Truncation radius factor of injection kernel. The kernel is truncated at sigma*radius,
             where sigma is the kernel standard deviation.
-            [Default value: 2]
+            [Default: 2]
 
 Inverse Interpolation Options
 
@@ -158,13 +158,13 @@ Inverse Interpolation Options
 
   --num-iterations <integer> / -n <integer>
             Maximum number of inverse interpolation iterations
-            [Default value: 20]
+            [Default: 20]
 
 Reconstruction Regularization Options
 
   --l-norm-weight <double>
             Set constraint weight for Tikhonov-type L-Norm regularization (0 disables constraint)
-            [Default value: 0]
+            [Default: 0]
 
   --no-truncation / -T
             Turn off regional intensity truncatrion
@@ -173,7 +173,7 @@ Output Options
 
   --write-injected-image <image-path>
             Write initial volume injection image to path
-            [Default value: NONE]
+            [Default: NONE]
 
   --write-images-as-float / -F
             Write output images as floating point [default: same as input]

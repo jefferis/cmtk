@@ -40,23 +40,23 @@ where
 
 === Automation Options ===
 
-; <tt>--auto-multi-levels</tt> <tt><integer></tt> : Automatic optimization and resolution parameter generation for <n> levels '''[Default value: 0]'''
+; <tt>--auto-multi-levels</tt> <tt><integer></tt> : Automatic optimization and resolution parameter generation for <n> levels '''[Default: 0]'''
 
 === Optimization settings ===
 
-; <tt>--exploration</tt> <tt><double></tt> / <tt>-e</tt> <tt><double></tt> : Exploration [initial optimizer step size] '''[Default value: 8]'''
+; <tt>--exploration</tt> <tt><double></tt> / <tt>-e</tt> <tt><double></tt> : Exploration [initial optimizer step size] '''[Default: 8]'''
 
-; <tt>--accuracy</tt> <tt><double></tt> / <tt>-a</tt> <tt><double></tt> : Accuracy [final optimizer step size] '''[Default value: 0.1]'''
+; <tt>--accuracy</tt> <tt><double></tt> / <tt>-a</tt> <tt><double></tt> : Accuracy [final optimizer step size] '''[Default: 0.1]'''
 
-; <tt>--stepfactor</tt> <tt><double></tt> / <tt>-f</tt> <tt><double></tt> : Factor for search step size reduction. Must be > 0.0 and < 1.0 '''[Default value: 0.5]'''
+; <tt>--stepfactor</tt> <tt><double></tt> / <tt>-f</tt> <tt><double></tt> : Factor for search step size reduction. Must be > 0.0 and < 1.0 '''[Default: 0.5]'''
 
-; <tt>--delta-f-threshold</tt> <tt><double></tt> : Optional threshold to terminate optimization (level) if relative change of target function drops below this value. '''[Default value: 0]'''
+; <tt>--delta-f-threshold</tt> <tt><double></tt> : Optional threshold to terminate optimization (level) if relative change of target function drops below this value. '''[Default: 0]'''
 
 === Image resolution parameters ===
 
-; <tt>--sampling</tt> <tt><double></tt> / <tt>-s</tt> <tt><double></tt> : Image sampling (finest resampled image resolution) '''[Default value: 1]'''
+; <tt>--sampling</tt> <tt><double></tt> / <tt>-s</tt> <tt><double></tt> : Image sampling (finest resampled image resolution) '''[Default: 1]'''
 
-; <tt>--coarsest</tt> <tt><double></tt> : Upper limit for image sampling in multiresolution hierarchy '''[Default value: -1]'''
+; <tt>--coarsest</tt> <tt><double></tt> : Upper limit for image sampling in multiresolution hierarchy '''[Default: -1]'''
 
 ; <tt>--omit-original-data</tt> : Do not use original data in full resolution, omit final stage in multiresolution hierarchy, thus reducing computation time.
 
@@ -70,7 +70,7 @@ where
 
 ; <tt>--initxlate</tt> / <tt>-i</tt> : Initialized transformation by translating floating image FOV center onto reference image FOV center
 
-; <tt>--initial</tt> <tt><transformation-path></tt> : Initialize transformation from given path '''[Default value: NONE]'''
+; <tt>--initial</tt> <tt><transformation-path></tt> : Initialize transformation from given path '''[Default: NONE]'''
 
 ; <tt>--initial-is-inverse</tt> : Invert initial transformation before initializing registration
 
@@ -87,7 +87,7 @@ where
 
 === Reference Image Preprocessing ===
 
-; <tt>--class-ref</tt> <tt><string></tt> : Data class: grey (default) or label '''[Default value: NONE]'''
+; <tt>--class-ref</tt> <tt><string></tt> : Data class: grey (default) or label '''[Default: NONE]'''
 
 ; <tt>--pad-ref</tt> <tt><double></tt> : Padding value '''[Default: disabled]'''
 
@@ -101,13 +101,13 @@ where
 
 ; <tt>--sobel-filter-ref</tt> : Apply Sobel edge detection filter
 
-; <tt>--crop-index-ref</tt> <tt><string></tt> : Cropping region in pixel index coordinates [parsed as %d,%d,%d,%d,%d,%d for i0,j0,k0,i1,j1,k1] '''[Default value: NONE]'''
+; <tt>--crop-index-ref</tt> <tt><string></tt> : Cropping region in pixel index coordinates [parsed as %d,%d,%d,%d,%d,%d for i0,j0,k0,i1,j1,k1] '''[Default: NONE]'''
 
-; <tt>--crop-world-ref</tt> <tt><string></tt> : Cropping region in world coordinates [parsed as %f,%f,%f,%f,%f,%f for x0,y0,z0,x1,y1,z1] '''[Default value: NONE]'''
+; <tt>--crop-world-ref</tt> <tt><string></tt> : Cropping region in world coordinates [parsed as %f,%f,%f,%f,%f,%f for x0,y0,z0,x1,y1,z1] '''[Default: NONE]'''
 
 === Floating Image Preprocessing ===
 
-; <tt>--class-flt</tt> <tt><string></tt> : Data class: grey (default) or label '''[Default value: NONE]'''
+; <tt>--class-flt</tt> <tt><string></tt> : Data class: grey (default) or label '''[Default: NONE]'''
 
 ; <tt>--pad-flt</tt> <tt><double></tt> : Padding value '''[Default: disabled]'''
 
@@ -121,30 +121,30 @@ where
 
 ; <tt>--sobel-filter-flt</tt> : Apply Sobel edge detection filter
 
-; <tt>--crop-index-flt</tt> <tt><string></tt> : Cropping region in pixel index coordinates [parsed as %d,%d,%d,%d,%d,%d for i0,j0,k0,i1,j1,k1] '''[Default value: NONE]'''
+; <tt>--crop-index-flt</tt> <tt><string></tt> : Cropping region in pixel index coordinates [parsed as %d,%d,%d,%d,%d,%d for i0,j0,k0,i1,j1,k1] '''[Default: NONE]'''
 
-; <tt>--crop-world-flt</tt> <tt><string></tt> : Cropping region in world coordinates [parsed as %f,%f,%f,%f,%f,%f for x0,y0,z0,x1,y1,z1] '''[Default value: NONE]'''
+; <tt>--crop-world-flt</tt> <tt><string></tt> : Cropping region in world coordinates [parsed as %f,%f,%f,%f,%f,%f for x0,y0,z0,x1,y1,z1] '''[Default: NONE]'''
 
 === Output parameters ===
 
-; <tt>--outlist</tt> <tt><string></tt> / <tt>-o</tt> <tt><string></tt> : Output path for final transformation '''[Default value: NONE]'''
+; <tt>--outlist</tt> <tt><string></tt> / <tt>-o</tt> <tt><string></tt> : Output path for final transformation '''[Default: NONE]'''
 
-; <tt>--out-matrix</tt> <tt><string></tt> : Output path for final transformation in matrix format '''[Default value: NONE]'''
+; <tt>--out-matrix</tt> <tt><string></tt> : Output path for final transformation in matrix format '''[Default: NONE]'''
 
-; <tt>--out-parameters</tt> <tt><string></tt> : Output path for final transformation in plain parameter list format '''[Default value: NONE]'''
+; <tt>--out-parameters</tt> <tt><string></tt> : Output path for final transformation in plain parameter list format '''[Default: NONE]'''
 
-; <tt>--protocol</tt> <tt><string></tt> / <tt>-p</tt> <tt><string></tt> : Optimization protocol output file name '''[Default value: NONE]'''
+; <tt>--protocol</tt> <tt><string></tt> / <tt>-p</tt> <tt><string></tt> : Optimization protocol output file name '''[Default: NONE]'''
 
-; <tt>--time</tt> <tt><string></tt> / <tt>-t</tt> <tt><string></tt> : Computation time statistics output file name '''[Default value: NONE]'''
+; <tt>--time</tt> <tt><string></tt> / <tt>-t</tt> <tt><string></tt> : Computation time statistics output file name '''[Default: NONE]'''
 
 === Import Results into Slicer ===
 
-; <tt>--out-itk</tt> <tt><transformation-path></tt> : Output path for final transformation in ITK format '''[Default value: NONE]'''
+; <tt>--out-itk</tt> <tt><transformation-path></tt> : Output path for final transformation in ITK format '''[Default: NONE]'''
 
-; <tt>--write-reformatted</tt> <tt><image-path></tt> : Write reformatted floating image. '''[Default value: NONE]'''
+; <tt>--write-reformatted</tt> <tt><image-path></tt> : Write reformatted floating image. '''[Default: NONE]'''
 
 === Image/Transformation Database ===
 
-; <tt>--db</tt> <tt><string></tt> : Path to image/transformation database that should be updated with the new registration and/or reformatted image. '''[Default value: NONE]'''
+; <tt>--db</tt> <tt><string></tt> : Path to image/transformation database that should be updated with the new registration and/or reformatted image. '''[Default: NONE]'''
 
 

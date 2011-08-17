@@ -68,19 +68,19 @@ Interleaving Options
 
   --passes <integer> / -p <integer>
             Number of interleaved passes
-            [Default value: 2]
+            [Default: 2]
 
 Initial Volume Injection Options
 
   --injection-kernel-sigma <double> / -S <double>
             Standard deviation of Gaussian kernel for volume injection in multiples of pixel size in
             each direction.
-            [Default value: 0.5]
+            [Default: 0.5]
 
   --injection-kernel-radius <double> / -r <double>
             Truncation radius factor of injection kernel. The kernel is truncated at sigma*radius,
             where sigma is the kernel standard deviation.
-            [Default value: 2]
+            [Default: 2]
 
 Inverse Interpolation Options
 
@@ -104,13 +104,13 @@ Inverse Interpolation Options
 
   --num-iterations <integer> / -n <integer>
             Maximum number of inverse interpolation iterations
-            [Default value: 20]
+            [Default: 20]
 
 Output Options
 
   --write-injected-image <image-path>
             Write initial volume injection image to path
-            [Default value: NONE]
+            [Default: NONE]
 
   --write-images-as-float / -F
             Write output images as floating point [default: same as input]
