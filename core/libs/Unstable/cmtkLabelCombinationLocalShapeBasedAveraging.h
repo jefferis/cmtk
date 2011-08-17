@@ -59,6 +59,12 @@ public:
 
   /// Constructor: compute label combination.
   LabelCombinationLocalShapeBasedAveraging( const UniformVolume::SmartConstPtr targetImage ) : Superclass( targetImage ) {}
+
+  /// Set flag to detect outliers in the co-registered distance maps.
+  void SetDetectOutliers( const bool detectOutliers = true )
+  {
+    this->m_DetectOutliers = detectOutliers;
+  }
   
   /// Add an atlas (pair of reformatted, target-matched intensity image and label map).
   void AddAtlas( const UniformVolume::SmartConstPtr image, const UniformVolume::SmartConstPtr atlas );
@@ -72,6 +78,9 @@ private:
 
   /// Signed distance maps for the atlas label maps.
   std::vector<UniformVolume::SmartConstPtr> m_AtlasDMaps;
+
+  /// Flag for outlier detection.
+  bool m_DetectOutliers;
 };
 
 } // namespace cmtk

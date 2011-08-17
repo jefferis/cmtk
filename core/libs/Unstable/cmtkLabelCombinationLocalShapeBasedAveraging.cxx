@@ -86,6 +86,7 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Se
   std::vector<bool> valid( nAtlases );
   std::vector<short> labels( nAtlases );  
   std::vector<Types::DataItem> weights( nAtlases );  
+  std::vector<float> distances( nAtlases );
 
   for ( RegionIndexIterator<TargetRegionType> it( region ); it != it.end(); ++it )
     {
@@ -96,6 +97,29 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Se
       Types::DataItem value;
       if ( (valid[n] = this->m_AtlasLabels[n]->GetData()->Get( value, i ) ) )
 	labels[n] = static_cast<short>( value );
+      }
+
+    if ( this->m_DetectOutliers )
+      {
+      for ( size_t n = 0; n < nAtlases; ++n )
+	{
+	distances[n] = this->m_AtlasDMaps[n]->GetDataAt( i );	
+	}
+
+      std::sort( distances.begin(), distances.end() );
+
+      const float Q1 = distances[static_cast<size_t>( 0.25 * distances.size() )];
+      const float Q3 = distances[static_cast<size_t>( 0.75 * distances.size() )];
+
+      const float lThresh = Q1 - 1.5 * (Q3-Q1);
+      const float uThresh = Q3 + 1.5 * (Q3-Q1);
+
+      for ( size_t n = 0; n < nAtlases; ++n )
+	{
+	const float d = this->m_AtlasDMaps[n]->GetDataAt( i );
+	if ( (d < lThresh) || (d > uThresh) )
+	  valid[n] = false;
+	}      
       }
     
     // find first non-padding atlas label
