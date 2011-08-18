@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -30,11 +30,13 @@
 //
 */
 
-#include <Registration/cmtkVoxelMatchingElasticFunctional.h>
+#include "cmtkVoxelMatchingElasticFunctional.h"
 
 #ifdef CMTK_USE_SMP
 #  include <Registration/cmtkParallelElasticFunctional.h>
 #endif
+
+#include <System/cmtkDebugOutput.h>
 
 #include <Registration/cmtkVoxelMatchingMutInf.h>
 #include <Registration/cmtkVoxelMatchingNormMutInf.h>
@@ -330,7 +332,7 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
       }
     }
   
-  fprintf( stderr, "Deactivated %d out of %d parameters.\n", inactive, (int)this->Dim );
+  DebugOutput( 1 ).GetStream().printf( "Deactivated %d out of %d parameters.\n", inactive, (int)this->Dim );
   
   this->WarpNeedsFixUpdate = false;
 }

@@ -30,6 +30,8 @@
 //
 */
 
+#include <System/cmtkDebugOutput.h>
+
 #include <IO/cmtkVolumeIO.h>
 
 #include <Base/cmtkTypes.h>
@@ -360,7 +362,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
       }
     }
 
-  StdErr.printf( "Deactivated %d out of %d control points.\n", (int)inactive / 3, (int)this->ParamVectorDim() / 3 );
+  DebugOutput( 1 ).GetStream().printf( "Deactivated %d out of %d control points.\n", (int)inactive / 3, (int)this->ParamVectorDim() / 3 );
 }
 
 template<class TMetricFunctional>

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,6 +31,8 @@
 */
 
 #include <Base/cmtkTypedArrayFunctionHistogramMatching.h>
+
+#include <System/cmtkDebugOutput.h>
 
 #include <vector>
 
@@ -204,7 +206,7 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
       }
     }
   
-  fprintf( stderr, "Deactivated %d out of %d parameters.\n", inactive, (int)this->Dim );
+  DebugOutput( 1 ).GetStream().printf( "Deactivated %d out of %d parameters.\n", inactive, (int)this->Dim );
   
   this->WarpNeedsFixUpdate = false;
 }

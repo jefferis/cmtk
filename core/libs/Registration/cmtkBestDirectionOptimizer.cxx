@@ -70,7 +70,7 @@ BestDirectionOptimizer::Optimize
     char comment[128];
     snprintf( comment, sizeof( comment ), "Setting step size to %4g [mm]", step );
     this->CallbackComment( comment );
-    StdErr.printf( "%s\n", comment );
+    DebugOutput( 1 ) << comment << "\n";
     
     bool update = true;
     int levelRepeatCounter = this->m_RepeatLevelCount;

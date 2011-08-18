@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -32,6 +32,7 @@
 
 #include "cmtkIterativeDirectionOptimizer.h"
 
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkProgress.h>
 
 #include <vector>
@@ -70,6 +71,7 @@ IterativeDirectionOptimizer::Optimize
     char comment[128];
     snprintf( comment, sizeof( comment ), "Setting step size to %4g [mm]", step );
     this->CallbackComment( comment );
+    DebugOutput( 1 ) << comment << "\n";
 
     bool update = true;
     while ( update && ( irq == CALLBACK_OK ) ) 
@@ -88,7 +90,7 @@ IterativeDirectionOptimizer::Optimize
 	  if ( (irq = this->CallbackExecute()) ) break;
 	  
 	  v[dim] += step * stepScaleVector[dim];
-      const Self::ReturnType fUpper = this->Evaluate( v );
+	  const Self::ReturnType fUpper = this->Evaluate( v );
 	  
 	  Types::Coordinate optimumStep = 0;
 	  
@@ -103,7 +105,7 @@ IterativeDirectionOptimizer::Optimize
 	  if ( (irq = this->CallbackExecute()) ) break;
 	  
 	  v[dim] = vOld - (step * stepScaleVector[dim]);
-      const Self::ReturnType fLower = this->Evaluate( v );
+	  const Self::ReturnType fLower = this->Evaluate( v );
 	  
 	  if ( fLower > optimum ) 
 	    {
@@ -121,7 +123,7 @@ IterativeDirectionOptimizer::Optimize
 	      updateThisDim = false;
 	      vOld = v[dim];
 	      v[dim] += optimumStep * stepScaleVector[dim];
-          const Self::ReturnType f = this->Evaluate( v );
+	      const Self::ReturnType f = this->Evaluate( v );
 	      
 	      if ( f > optimum ) 
 		{
