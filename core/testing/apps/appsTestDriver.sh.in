@@ -1023,7 +1023,7 @@ case ${RUNTEST} in
 	check_results corrected.img
 	;;
     jidbGaussianScale)
-	run jidb --psf gaussian --psf-scale 0.5 --no-truncation --passes 3 --num-iterations 3 --injection-kernel-radius 2 --injection-kernel-sigma 1 interleave_thnfse.hdr ${tmpdir}/corrected.hdr
+	run jidb --psf gaussian --nmi --psf-scale 0.5 --no-truncation --passes 3 --num-iterations 3 --injection-kernel-radius 2 --injection-kernel-sigma 1 interleave_thnfse.hdr ${tmpdir}/corrected.hdr
 	check_results corrected.img
 	;;
     jidbMIRefSPGR)
