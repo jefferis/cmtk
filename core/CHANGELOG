@@ -1,5 +1,10 @@
 Release CMTK-2.0.1:
 
+(r3379) Added: "mrbias" and "mrbias_cuda" tools now have an option for
+    automatic foreground threshold selection based on estimation of image
+    noise. For that purpose, the tools now also support defining a padding
+    value for the  input image (typically zero).
+
 
 Release CMTK-2.0.0 (2011-08-15):
 
