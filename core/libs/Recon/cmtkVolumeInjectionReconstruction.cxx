@@ -139,7 +139,7 @@ VolumeInjectionReconstruction
   this->m_OriginalImageHistogram->SetRange( this->m_OriginalImageRange );
   originalData->GetEntropy( *this->m_OriginalImageHistogram, true /*fractional*/ );
   
-  const HistogramType::BinType noiseSigma = TypedArrayNoiseEstimatorNaiveGaussian( originalData, Self::NumberOfHistogramBins ).GetNoiseLevelSigma();
+  const HistogramType::BinType noiseSigma = TypedArrayNoiseEstimatorNaiveGaussian( *originalData, Self::NumberOfHistogramBins ).GetNoiseLevelSigma();
   const HistogramType::BinType kernelSigma = Self::NumberOfHistogramBins * noiseSigma / this->m_OriginalImageRange.Width();
   size_t kernelRadius = static_cast<size_t>( 1 + 2 * kernelSigma );
 

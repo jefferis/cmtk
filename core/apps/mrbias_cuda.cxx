@@ -39,6 +39,8 @@
 #include <System/cmtkProgressConsole.h>
 
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkTypedArrayNoiseEstimatorNaiveGaussian.h>
+
 #include <IO/cmtkVolumeIO.h>
 
 #include <Registration/cmtkBestDirectionOptimizer.h>
@@ -58,6 +60,7 @@ const char* FNameBiasFieldMul = NULL;
 float ThresholdForegroundMin = -FLT_MAX;
 float ThresholdForegroundMax = FLT_MAX;
 bool ThresholdForegroundFlag = false;
+bool ThresholdAuto = false;
 const char* FNameMaskImage = NULL;
 
 bool UseSamplingDensity = false;
@@ -104,6 +107,7 @@ doMain( const int argc, const char *argv[] )
     cl.AddOption( Key( 'm', "mask" ), &FNameMaskImage, "Binary mask image filename." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_LABELS );
     cl.AddOption( Key( 't', "thresh-min" ), &ThresholdForegroundMin, "Minimum intensity threshold for image foreground.", &ThresholdForegroundFlag );
     cl.AddOption( Key( 'T', "thresh-max" ), &ThresholdForegroundMax, "Minimum intensity threshold for image foreground.", &ThresholdForegroundFlag );
+    cl.AddSwitch( Key( "thresh-auto" ), &ThresholdAuto, true, "Automatic minimum intensity threshold selection for image foreground using an estimate of image noise level." );
     cl.EndGroup();
 
     cl.BeginGroup( "Entropy Estimation", "Entropy Estimation Settings" )->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
@@ -162,6 +166,14 @@ doMain( const int argc, const char *argv[] )
     }
   else
     {
+    if ( ThresholdAuto )
+      {
+      ThresholdForegroundMin = cmtk::TypedArrayNoiseEstimatorNaiveGaussian( *(maskImage->GetData()) ).GetNoiseLevelSigma();
+      ThresholdForegroundFlag = true;
+
+      cmtk::DebugOutput( 1 ) << "INFO: estimated foreground threshold from noise level as " << ThresholdForegroundMin << "\n";
+      }
+
     if ( ThresholdForegroundFlag )
       {
       maskImage = cmtk::UniformVolume::SmartPtr( inputImage->Clone( true /*copyData*/ ) );

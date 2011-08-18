@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2008-2010 SRI International
+//  Copyright 2008-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,7 +49,7 @@ public:
   typedef TypedArrayNoiseEstimatorNaiveGaussian Self;
 
   /// Constructor.
-  TypedArrayNoiseEstimatorNaiveGaussian( const TypedArray* data, const size_t histogramBins = 255 );
+  TypedArrayNoiseEstimatorNaiveGaussian( const TypedArray& data, const size_t histogramBins = 255 );
   
   /// Get noise level.
   Types::DataItem GetNoiseLevelSigma() const

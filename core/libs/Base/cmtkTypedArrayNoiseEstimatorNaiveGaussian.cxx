@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2008-2010 SRI International
+//  Copyright 2008-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -35,9 +35,9 @@ cmtk
 {
 
 TypedArrayNoiseEstimatorNaiveGaussian::TypedArrayNoiseEstimatorNaiveGaussian
-( const TypedArray* data, const size_t histogramBins )
+( const TypedArray& data, const size_t histogramBins )
 {
-  Histogram<unsigned int>::SmartPtr histogram( data->GetHistogram( histogramBins ) );
+  Histogram<unsigned int>::SmartPtr histogram( data.GetHistogram( histogramBins ) );
   
   // find first maximum
   size_t idx = 0;
@@ -60,10 +60,10 @@ TypedArrayNoiseEstimatorNaiveGaussian::TypedArrayNoiseEstimatorNaiveGaussian
 
   Types::DataItem sdev = 0;
   size_t count = 0;
-  for ( size_t i = 0; i < data->GetDataSize(); ++i )
+  for ( size_t i = 0; i < data.GetDataSize(); ++i )
     {
     Types::DataItem value;
-    if ( data->Get( value, i ) )
+    if ( data.Get( value, i ) )
       {
       if ( value <= threshold )
 	{
