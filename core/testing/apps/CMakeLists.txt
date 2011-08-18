@@ -554,6 +554,7 @@ IF(NOT CMTK_USE_MPI)
   # Tests for "mrbias" tool
   SET(testList ${testList} 
     mrbiasMulIncremental
+    mrbiasMulAutoThresh
     mrbiasMulLogIntensity
     mrbiasAddMulMask)
 
