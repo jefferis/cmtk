@@ -60,6 +60,9 @@ const char* ImportBiasFieldMul = NULL;
 const char* FNameBiasFieldAdd = NULL;
 const char* FNameBiasFieldMul = NULL;
 
+cmtk::Types::DataItem PaddingValue = 0;
+bool PaddingFlag = false;
+
 float ThresholdForegroundMin = -FLT_MAX;
 float ThresholdForegroundMax = FLT_MAX;
 bool ThresholdForegroundFlag = false;
@@ -106,6 +109,7 @@ doMain( const int argc, const char *argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Preprocessing", "Input Image Preprocessing" );
+    cl.AddOption( Key( "set-padding-value" ), &PaddingValue, "Set padding value for input intensity image. Pixels with this value will be ignored.", &PaddingFlag );
     cl.AddOption( Key( 'm', "mask" ), &FNameMaskImage, "Binary mask image filename." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_LABELS );
     cl.AddOption( Key( 't', "thresh-min" ), &ThresholdForegroundMin, "Minimum intensity threshold for image foreground.", &ThresholdForegroundFlag );
     cl.AddOption( Key( 'T', "thresh-max" ), &ThresholdForegroundMax, "Minimum intensity threshold for image foreground.", &ThresholdForegroundFlag );
@@ -158,6 +162,11 @@ doMain( const int argc, const char *argv[] )
     throw cmtk::ExitException( 1 );
     }
 
+  if ( PaddingFlag )
+    {
+    inputImage->GetData()->SetPaddingValue( PaddingValue );
+    }
+  
   cmtk::UniformVolume::SmartPtr maskImage;
   if ( FNameMaskImage )
     {
