@@ -57,12 +57,22 @@ public:
     return this->m_NoiseLevelSigma;
   }
 
+  /// Get noise threshold.
+  Types::DataItem GetNoiseThreshold() const
+  {
+    return this->m_Threshold;
+  }
+
 protected:
   /// Default constructor; should not be invoked by user code.
   TypedArrayNoiseEstimatorNaiveGaussian()
   {
+    this->m_Threshold = 0;
     this->m_NoiseLevelSigma = 0;
   }
+
+  /// The estimated noise threshold.
+  Types::DataItem m_Threshold;
 
   /// The estimate noise sigma.
   Types::DataItem m_NoiseLevelSigma;

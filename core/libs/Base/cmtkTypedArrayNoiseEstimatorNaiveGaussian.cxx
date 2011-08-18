@@ -56,7 +56,7 @@ TypedArrayNoiseEstimatorNaiveGaussian::TypedArrayNoiseEstimatorNaiveGaussian
   
   // then, compute standard deviation of all values below that threshold from
   // first maximum.
-  const Types::DataItem threshold = histogram->BinToValue( idx );
+  this->m_Threshold = histogram->BinToValue( idx );
 
   Types::DataItem sdev = 0;
   size_t count = 0;
@@ -65,7 +65,7 @@ TypedArrayNoiseEstimatorNaiveGaussian::TypedArrayNoiseEstimatorNaiveGaussian
     Types::DataItem value;
     if ( data.Get( value, i ) )
       {
-      if ( value <= threshold )
+      if ( value <= this->m_Threshold )
 	{
         sdev += static_cast<Types::DataItem>( MathUtil::Square( value - noiseMean ) );
 	++count;
