@@ -68,7 +68,6 @@ SET(cmtkRegistration_SRCS
   cmtkImageSymmetryPlaneCommandLineBase.cxx
   cmtkImageSymmetryPlaneFunctional.cxx
   cmtkImageSymmetryPlaneFunctionalBase.cxx
-  cmtkIterativeDirectionOptimizer.cxx
   cmtkMakeInitialAffineTransformation.cxx
   cmtkMultiChannelRegistrationFunctionalBase.cxx
   cmtkMultiLevelOptimizer.cxx
