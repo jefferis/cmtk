@@ -99,6 +99,21 @@ Preprocessing
 <description>
 Input Image Preprocessing
 </description>
+<double>
+<description>
+Set padding value for input intensity image. Pixels with this value will be ignored.
+</description>
+<name>
+set_padding_value
+</name>
+<label>
+set_padding_value
+</label>
+<longflag>
+--set_padding_value
+</longflag>
+
+</double>
 <image type="label">
 <channel>
 input
@@ -159,6 +174,21 @@ thresh_max
 </longflag>
 
 </float>
+<boolean>
+<description>
+Automatic minimum intensity threshold selection for image foreground using an estimate of image noise level.
+</description>
+<name>
+thresh_auto
+</name>
+<label>
+thresh_auto
+</label>
+<longflag>
+--thresh_auto
+</longflag>
+
+</boolean>
 
 </parameters>
 <parameters advanced="true">

@@ -48,11 +48,15 @@ where
 
 === Input Image Preprocessing ===
 
+; <tt>--set-padding-value</tt> <tt><double></tt> : Set padding value for input intensity image. Pixels with this value will be ignored. '''[Default: disabled]'''
+
 ; <tt>--mask</tt> <tt><labelmap-path></tt> / <tt>-m</tt> <tt><labelmap-path></tt> : Binary mask image filename. '''[Default: NONE]'''
 
 ; <tt>--thresh-min</tt> <tt><float></tt> / <tt>-t</tt> <tt><float></tt> : Minimum intensity threshold for image foreground. '''[Default: disabled]'''
 
 ; <tt>--thresh-max</tt> <tt><float></tt> / <tt>-T</tt> <tt><float></tt> : Minimum intensity threshold for image foreground. '''[Default: disabled]'''
+
+; <tt>--thresh-auto</tt> : Automatic minimum intensity threshold selection for image foreground using an estimate of image noise level.
 
 === Entropy Estimation Settings ===
 
