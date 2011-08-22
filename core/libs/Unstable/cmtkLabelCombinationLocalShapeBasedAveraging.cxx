@@ -86,6 +86,7 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Se
   std::vector<bool> valid( nAtlases );
   std::vector<short> labels( nAtlases );  
   std::vector<Types::DataItem> weights( nAtlases );  
+  std::vector<size_t> bestPatchOffset( nAtlases );
   std::vector<float> distances( nAtlases );
 
   for ( RegionIndexIterator<TargetRegionType> it( region ); it != it.end(); ++it )
@@ -162,6 +163,7 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Se
     else
       {
       std::fill( weights.begin(), weights.end(), -1 );
+      std::fill( bestPatchOffset.begin(), bestPatchOffset.end(), 0 );
 
       for ( RegionIndexIterator<TargetRegionType> searchIt( this->m_SearchRegion ); searchIt != searchIt.end(); ++searchIt )
 	{
@@ -202,10 +204,10 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Se
 	{
 	if ( valid[n] )
 	  {
-	  totalDistance += (weights[n]-minWeight)/maxWeight * this->m_AtlasDMaps[n]->GetDataAt( i );
+	  totalDistance += (weights[n]-minWeight)/maxWeight * this->m_AtlasDMaps[n]->GetDataAt( i + bestPatchOffset[n] );
 	  }
 	}  
-
+      
       result.Set( (totalDistance <= 0) ? 1 : 0, i );
       }
     }
