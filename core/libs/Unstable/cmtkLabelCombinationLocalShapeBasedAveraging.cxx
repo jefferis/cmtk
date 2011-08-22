@@ -99,21 +99,27 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Se
 	labels[n] = static_cast<short>( (value <= 0) ? 1 : 0 );
       }
 
+    // detect outliers in the distance maps, ie., grossly misregistered atlases
     if ( this->m_DetectOutliers )
       {
+      // create vector of distance values
       for ( size_t n = 0; n < nAtlases; ++n )
 	{
 	distances[n] = this->m_AtlasDMaps[n]->GetDataAt( i );	
 	}
-
+      
+      // sort distance
       std::sort( distances.begin(), distances.end() );
 
+      // determine 1st and 3rd quartile values
       const float Q1 = distances[static_cast<size_t>( 0.25 * distances.size() )];
       const float Q3 = distances[static_cast<size_t>( 0.75 * distances.size() )];
 
+      // compute thresholds from quartiles and inter-quartile range
       const float lThresh = Q1 - 1.5 * (Q3-Q1);
       const float uThresh = Q3 + 1.5 * (Q3-Q1);
 
+      // mark as invalid those atlases with values outside the "inlier" range
       for ( size_t n = 0; n < nAtlases; ++n )
 	{
 	const float d = this->m_AtlasDMaps[n]->GetDataAt( i );
