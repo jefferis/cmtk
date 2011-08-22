@@ -37,7 +37,6 @@
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 #include <System/cmtkProgressConsole.h>
-#include <System/cmtkThreads.h>
 
 #include <Base/cmtkXform.h>
 #include <Base/cmtkUniformVolume.h>
@@ -414,7 +413,6 @@ ReformatPullback()
 int 
 doMain( const int argc, const char* argv[] )
 {
-  cmtk::Threads::CheckEnvironment(); // need this to check for "CMTK_NUM_THREADS" and constrain OpenMP accordingly
   try 
     {
     cmtk::CommandLine cl;

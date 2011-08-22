@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010, 2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -28,9 +28,13 @@
 //
 */
 
+#include <System/cmtkThreads.h>
+
 int
 main( int argc, char* argv[] )
 {
+  cmtk::Threads::CheckEnvironment(); // need this to check for "CMTK_NUM_THREADS" and constrain OpenMP accordingly
+
   int exitCode = 0;
   try
     {
