@@ -58,7 +58,12 @@ public:
   typedef LabelCombinationLocalWeighting Self;
 
   /// Constructor: compute label combination.
-  LabelCombinationLocalWeighting( const UniformVolume::SmartConstPtr targetImage ) : m_TargetImage( targetImage ) {}
+  LabelCombinationLocalWeighting( const UniformVolume::SmartConstPtr targetImage ) : 
+    m_TargetImage( targetImage ),
+    m_PatchRadius( UniformVolume::IndexType::Init( 1 ) ),
+    m_SearchRegion( UniformVolume::IndexType( UniformVolume::IndexType::Init( 0 ) ),
+		    UniformVolume::IndexType( UniformVolume::IndexType::Init( 1 ) ) )
+  {}
   
   /// Add an atlas (pair of reformatted, target-matched intensity image and label map).
   void AddAtlasImage( const UniformVolume::SmartConstPtr image );
@@ -66,9 +71,16 @@ public:
   /// Set patch radius.
   void SetPatchRadius( const size_t radius )
   {
-    this->m_PatchRadius = UniformVolume::IndexType( UniformVolume::IndexType::Init(radius ) );
+    this->m_PatchRadius = UniformVolume::IndexType( UniformVolume::IndexType::Init( radius ) );
   }
 
+  /// Set patch radius.
+  void SetSearchRadius( const size_t radius )
+  {
+    this->m_SearchRegion.From() = UniformVolume::IndexType( UniformVolume::IndexType::Init( -radius ) );
+    this->m_SearchRegion.To() = UniformVolume::IndexType( UniformVolume::IndexType::Init( radius+1 ) );
+  }
+  
   /// Get resulting combined segmentation.
   virtual TypedArray::SmartPtr GetResult() const = 0;
   
@@ -84,6 +96,9 @@ protected:
 
   /// Image patch radius in pixels (x,y,z).
   UniformVolume::IndexType m_PatchRadius;
+
+  /// Patch search region in pixels (x,y,z).
+  UniformVolume::RegionType m_SearchRegion;
 };
 
 } // namespace cmtk

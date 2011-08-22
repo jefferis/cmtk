@@ -161,24 +161,40 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Se
       }
     else
       {
-      // Compute weights for the atlases from local image patch similarity.
-      const TargetRegionType patchRegion( Max( region.From(), it.Index() - this->m_PatchRadius ), Min( region.To(), it.Index() + this->m_PatchRadius ) );
-      TypedArray::SmartConstPtr targetDataPatch( targetImage.GetRegionData( patchRegion ) );
+      std::fill( weights.begin(), weights.end(), -1 );
 
+      for ( RegionIndexIterator<TargetRegionType> searchIt( this->m_SearchRegion ); searchIt != searchIt.end(); ++searchIt )
+	{
+	const TargetRegionType patchRegion( Max( region.From(), it.Index() + searchIt.Index() - this->m_PatchRadius ), Min( region.To(), it.Index() + searchIt.Index() + this->m_PatchRadius ) );
+	TypedArray::SmartConstPtr targetDataPatch( targetImage.GetRegionData( patchRegion ) );
+	
+	for ( size_t n = 0; n < nAtlases; ++n )
+	  {
+	  if ( valid[n] )
+	    {
+	    TypedArray::SmartConstPtr atlasDataPatch( this->m_AtlasImages[n]->GetRegionData( patchRegion ) );
+	    const Types::DataItem w = TypedArraySimilarity::GetCrossCorrelation( targetDataPatch, atlasDataPatch );
+	    if ( w > weights[n] )
+	      {
+	      weights[n] = w;
+	      }
+	    }
+	  }
+	}
+	    
+      // Compute weights for the atlases from local image patch similarity.
       Types::DataItem minWeight = FLT_MAX;
       Types::DataItem maxWeight = FLT_MIN;
+      
       for ( size_t n = 0; n < nAtlases; ++n )
 	{
 	if ( valid[n] )
 	  {
-	  TypedArray::SmartConstPtr atlasDataPatch( this->m_AtlasImages[n]->GetRegionData( patchRegion ) );
-	  weights[n] = TypedArraySimilarity::GetCrossCorrelation( targetDataPatch, atlasDataPatch );
-	  
 	  minWeight = std::min( minWeight, weights[n] );
 	  maxWeight = std::max( maxWeight, weights[n] );
 	  }
 	}
-
+	
       maxWeight -= minWeight; // turn "max" into "range"
       
       double totalDistance = 0;
