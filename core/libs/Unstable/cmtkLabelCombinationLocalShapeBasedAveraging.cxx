@@ -96,7 +96,7 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Se
       {
       Types::DataItem value;
       if ( (valid[n] = this->m_AtlasDMaps[n]->GetData()->Get( value, i ) ) )
-	labels[n] = static_cast<short>( (value > 0) ? 1 : 0 );
+	labels[n] = static_cast<short>( (value <= 0) ? 1 : 0 );
       }
 
     if ( this->m_DetectOutliers )
