@@ -82,6 +82,7 @@ void
 cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Self::TargetRegionType& region, TypedArray& result ) const
 {
   const UniformVolume& targetImage = *(this->m_TargetImage);
+  const Self::TargetRegionType wholeImageRegion = targetImage.CropRegion();
   const size_t nAtlases = this->m_AtlasImages.size();
   std::vector<bool> valid( nAtlases );
   std::vector<short> labels( nAtlases );  
@@ -165,9 +166,11 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Se
       std::fill( weights.begin(), weights.end(), -1 );
       std::fill( bestPatchOffset.begin(), bestPatchOffset.end(), 0 );
 
-      for ( RegionIndexIterator<TargetRegionType> searchIt( this->m_SearchRegion ); searchIt != searchIt.end(); ++searchIt )
+//      const TargetRegionType patchSearchRegion( Max( (-1)*region.From(), this->m_SearchRegion.From() ), Min( region.To(), this->m_SearchRegion.To() ) );
+//      for ( RegionIndexIterator<TargetRegionType> searchIt( patchSearchRegion ); searchIt != searchIt.end(); ++searchIt )
 	{
-	const TargetRegionType patchRegion( Max( region.From(), it.Index() + searchIt.Index() - this->m_PatchRadius ), Min( region.To(), it.Index() + searchIt.Index() + this->m_PatchRadius ) );
+//	const TargetRegionType patchRegion( Max( wholeImageRegion.From(), it.Index() + searchIt.Index() - this->m_PatchRadius ), Min( wholeImageRegion.To(), it.Index() + searchIt.Index() + this->m_PatchRadius ) );
+	const TargetRegionType patchRegion( Max( wholeImageRegion.From(), it.Index() - this->m_PatchRadius ), Min( wholeImageRegion.To(), it.Index() + this->m_PatchRadius ) );
 	TypedArray::SmartConstPtr targetDataPatch( targetImage.GetRegionData( patchRegion ) );
 	
 	for ( size_t n = 0; n < nAtlases; ++n )
