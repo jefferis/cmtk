@@ -35,7 +35,8 @@ SET(cmtkUnstable_SRCS dummy.cxx
   cmtkTypedArrayNoiseEstimatorMaximumLikelihood.cxx 
   cmtkFilterVolumeCoupe.cxx
   cmtkLabelCombinationLocalShapeBasedAveraging.cxx
-  cmtkLabelCombinationLocalVoting.cxx)
+  cmtkLabelCombinationLocalVoting.cxx
+  cmtkLabelCombinationLocalWeighting.cxx)
 
 ADD_LIBRARY(cmtkUnstable ${cmtkUnstable_SRCS})
 IF(CMTK_LIBRARY_PROPERTIES)

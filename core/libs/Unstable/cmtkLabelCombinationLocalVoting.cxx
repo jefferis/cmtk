@@ -47,13 +47,7 @@ void
 cmtk::LabelCombinationLocalVoting::AddAtlas
 ( const UniformVolume::SmartConstPtr image, const UniformVolume::SmartConstPtr atlas )
 {
-  if ( !this->m_TargetImage->GridMatches( *image ) )
-    {
-    StdErr << "Atlas intensity image grid does not match target image.\n";
-    throw ExitException( 1 );
-    }
-
-  this->m_AtlasImages.push_back( image );
+  Superclass::AddAtlasImage( image );
 
   if ( !this->m_TargetImage->GridMatches( *atlas ) )
     {

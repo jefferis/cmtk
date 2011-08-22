@@ -35,7 +35,7 @@
 
 #include <cmtkconfig.h>
 
-#include "cmtkLabelCombinationLocalVoting.h"
+#include <Unstable/cmtkLabelCombinationLocalWeighting.h>
 
 namespace
 cmtk
@@ -48,14 +48,14 @@ cmtk
  *\attention Currently all labels maps are treated as binary maps, i.e., all labels not equal to zero are considered equal.
  */
 class LabelCombinationLocalShapeBasedAveraging
-  : public LabelCombinationLocalVoting
+  : public LabelCombinationLocalWeighting
 {
 public:
   /// This class.
   typedef LabelCombinationLocalShapeBasedAveraging Self;
 
   /// Parent class.
-  typedef LabelCombinationLocalVoting Superclass;
+  typedef LabelCombinationLocalWeighting Superclass;
 
   /// Constructor: compute label combination.
   LabelCombinationLocalShapeBasedAveraging( const UniformVolume::SmartConstPtr targetImage ) : Superclass( targetImage ) {}
@@ -70,7 +70,7 @@ public:
   void AddAtlas( const UniformVolume::SmartConstPtr image, const UniformVolume::SmartConstPtr atlas );
 
   /// Get resulting combined segmentation.
-  TypedArray::SmartPtr GetResult() const;  
+  virtual TypedArray::SmartPtr GetResult() const;  
 
 private:
   /// Compute result for a region.
