@@ -41,7 +41,7 @@
 #include <vector>
 #include <string>
 
-#include <Unstable/cmtkLabelCombinationLocalVoting.h>
+#include <Unstable/cmtkLabelCombinationLocalShapeBasedAveraging.h>
 
 int
 doMain
@@ -53,7 +53,7 @@ doMain
   bool detectOutliers = false;
   size_t patchRadius = 5;
 
-  const char* outputImagePath = "lvote.nii";
+  const char* outputImagePath = "lsbo.nii";
 
   cmtk::Types::DataItem paddingValue = 0;
   bool paddingFlag = false;
@@ -62,7 +62,7 @@ doMain
     {
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Local voting." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool combines multiple segmentations fro co-registered and reformatted atlases using locally-weighted voting." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool combines multiple segmentations from co-registered and reformatted atlases using locally-weighted Shape-Based Averaging." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] targetImage atlasIntensity1 atlasLabels1 [atlasIntensity2 atlasLabels2 [...]]" );
 
     typedef cmtk::CommandLine::Key Key;
@@ -72,6 +72,7 @@ doMain
     cl.EndGroup();
 
     cl.AddOption( Key( "patch-radius" ), &patchRadius, "Radius of image patch (in pixels) used for local similarity computation." );
+    cl.AddSwitch( Key( "detect-outliers" ), &detectOutliers, true, "Detect and exclude outliers in the Shape Based Averaging procedure." );
 
     cl.AddOption( Key( 'o', "output" ), &outputImagePath, "File system path for the output image." );
 
@@ -98,8 +99,9 @@ doMain
 
   cmtk::UniformVolume::SmartPtr targetImage = cmtk::VolumeIO::Read( targetImagePath );
   
-  cmtk::LabelCombinationLocalVoting lvote( targetImage );
-  lvote.SetPatchRadius( patchRadius );
+  cmtk::LabelCombinationLocalShapeBasedAveraging lsba( targetImage );
+  lsba.SetPatchRadius( patchRadius );
+  lsba.SetDetectOutliers( detectOutliers );
   
   for ( size_t atlasIdx = 0; atlasIdx < atlasImagesLabels.size(); atlasIdx += 2 )
     {
@@ -122,11 +124,11 @@ doMain
       atlasImage->GetData()->SetPaddingValue( paddingValue );
       }
     
-    lvote.AddAtlas( atlasImage, atlasLabels );
+    lsba.AddAtlas( atlasImage, atlasLabels );
     }
   
-  targetImage->SetData( lvote.GetResult() );
-  
+  targetImage->SetData( lsba.GetResult() );
+
   if ( outputImagePath )
     {
     cmtk::VolumeIO::Write( *targetImage, outputImagePath );
