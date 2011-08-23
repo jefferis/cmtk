@@ -188,13 +188,13 @@ public:
   }
 
   /// Get offset of a pixel.
-  size_t GetOffsetFromIndex( const int x, const int y, const int z ) const 
+  int GetOffsetFromIndex( const int x, const int y, const int z ) const 
   {
     return x + nextJ * y + nextK * z;
   }
 
   /// Get offset of a pixel.
-  size_t GetOffsetFromIndex( const Self::IndexType& index ) const 
+  int GetOffsetFromIndex( const Self::IndexType& index ) const 
   {
     return index[0] + this->nextJ * index[1] + this->nextK * index[2];
   }

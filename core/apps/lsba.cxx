@@ -52,6 +52,7 @@ doMain
 
   bool detectOutliers = false;
   size_t patchRadius = 5;
+  size_t searchRadius = 0;
 
   const char* outputImagePath = "lsbo.nii";
 
@@ -72,6 +73,7 @@ doMain
     cl.EndGroup();
 
     cl.AddOption( Key( "patch-radius" ), &patchRadius, "Radius of image patch (in pixels) used for local similarity computation." );
+    cl.AddOption( Key( "search-radius" ), &searchRadius, "Search radius for local image patch matching. The algorithm finds the best-matching patch within this radius by exhaustive search." );
     cl.AddSwitch( Key( "detect-outliers" ), &detectOutliers, true, "Detect and exclude outliers in the Shape Based Averaging procedure." );
 
     cl.AddOption( Key( 'o', "output" ), &outputImagePath, "File system path for the output image." );
@@ -101,6 +103,7 @@ doMain
   
   cmtk::LabelCombinationLocalShapeBasedAveraging lsba( targetImage );
   lsba.SetPatchRadius( patchRadius );
+  lsba.SetSearchRadius( searchRadius );
   lsba.SetDetectOutliers( detectOutliers );
   
   for ( size_t atlasIdx = 0; atlasIdx < atlasImagesLabels.size(); atlasIdx += 2 )

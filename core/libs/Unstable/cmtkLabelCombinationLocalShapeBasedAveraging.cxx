@@ -166,11 +166,10 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Se
       std::fill( weights.begin(), weights.end(), -1 );
       std::fill( bestPatchOffset.begin(), bestPatchOffset.end(), 0 );
 
-//      const TargetRegionType patchSearchRegion( Max( (-1)*region.From(), this->m_SearchRegion.From() ), Min( region.To(), this->m_SearchRegion.To() ) );
-//      for ( RegionIndexIterator<TargetRegionType> searchIt( patchSearchRegion ); searchIt != searchIt.end(); ++searchIt )
+      const TargetRegionType patchSearchRegion( Max( (-1)*wholeImageRegion.From(), this->m_SearchRegion.From() ), Min( wholeImageRegion.To() - it.Index(), this->m_SearchRegion.To() ) );
+      for ( RegionIndexIterator<TargetRegionType> searchIt( patchSearchRegion ); searchIt != searchIt.end(); ++searchIt )
 	{
-//	const TargetRegionType patchRegion( Max( wholeImageRegion.From(), it.Index() + searchIt.Index() - this->m_PatchRadius ), Min( wholeImageRegion.To(), it.Index() + searchIt.Index() + this->m_PatchRadius ) );
-	const TargetRegionType patchRegion( Max( wholeImageRegion.From(), it.Index() - this->m_PatchRadius ), Min( wholeImageRegion.To(), it.Index() + this->m_PatchRadius ) );
+	const TargetRegionType patchRegion( Max( wholeImageRegion.From(), it.Index() + searchIt.Index() - this->m_PatchRadius ), Min( wholeImageRegion.To(), it.Index() + searchIt.Index() + this->m_PatchRadius ) );
 	TypedArray::SmartConstPtr targetDataPatch( targetImage.GetRegionData( patchRegion ) );
 	
 	for ( size_t n = 0; n < nAtlases; ++n )
@@ -182,11 +181,12 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Se
 	    if ( w > weights[n] )
 	      {
 	      weights[n] = w;
+	      bestPatchOffset[n] = targetImage.GetOffsetFromIndex( searchIt.Index() );
 	      }
 	    }
 	  }
 	}
-	    
+      
       // Compute weights for the atlases from local image patch similarity.
       Types::DataItem minWeight = FLT_MAX;
       Types::DataItem maxWeight = FLT_MIN;
