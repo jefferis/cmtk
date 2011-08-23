@@ -426,8 +426,13 @@ private:
    */
   bool WarpNeedsFixUpdate;
 
+#ifdef _OPENMP
+  /// Histogram used for consistency computation.
+  std::vector<JointHistogram<unsigned int>::SmartPtr> m_ThreadConsistencyHistograms;
+#else
   /// Histogram used for consistency computation.
   JointHistogram<unsigned int>::SmartPtr m_ConsistencyHistogram;
+#endif // #ifdef _OPENMP
 
   /** Update set of active and passive parameters.
    * This function computes local entropies in the neighborhood of all control

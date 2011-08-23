@@ -52,30 +52,10 @@ template<class VM>
 void
 cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParameters() 
 {
-  if ( !this->m_ConsistencyHistogram ) 
-    {
-    this->m_ConsistencyHistogram = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
-    const unsigned int numSamplesX = this->m_Metric->GetNumberOfSamplesX();
-    const Types::DataItemRange rangeX = this->m_Metric->GetDataRangeX();
-    const unsigned int numBinsX = this->m_ConsistencyHistogram->CalcNumBins( numSamplesX, rangeX );
-    
-    const unsigned int numSamplesY = this->m_Metric->GetNumberOfSamplesY();
-    const Types::DataItemRange rangeY = this->m_Metric->GetDataRangeY();
-    const unsigned int numBinsY = this->m_ConsistencyHistogram->CalcNumBins( numSamplesY, rangeY );
-    
-    this->m_ConsistencyHistogram->Resize( numBinsX, numBinsY );
-    this->m_ConsistencyHistogram->SetRangeX( rangeX );
-    this->m_ConsistencyHistogram->SetRangeY( rangeY );
-    }
-  
   int numCtrlPoints = this->Dim / 3;
   
   std::vector<double> mapRef( numCtrlPoints );
   std::vector<double> mapMod( numCtrlPoints );
-
-  DataGrid::RegionType voi;
-  Vector3D fromVOI, toVOI;
-  int pX, pY, pZ;
 
   int inactive = 0;
 
@@ -88,21 +68,23 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
     else
       this->m_Warp->SetParametersActive();
     
+#pragma omp parallel for reduction(+:inactive)
     for ( int ctrl = 0; ctrl < numCtrlPoints; ++ctrl ) 
       {
       /// We cannot use the precomputed table of VOIs here because in "fast"
       /// mode, these VOIs are smaller than we want them here.
+      Vector3D fromVOI, toVOI;
       this->m_Warp->GetVolumeOfInfluence( 3 * ctrl, this->ReferenceFrom, this->ReferenceTo, fromVOI, toVOI, 0 );
-      voi = this->GetReferenceGridRange( fromVOI, toVOI );
+      const DataGrid::RegionType voi = this->GetReferenceGridRange( fromVOI, toVOI );
       
       int r = voi.From()[0] + this->m_DimsX * ( voi.From()[1] + this->m_DimsY * voi.From()[2] );
       
       bool active = false;
-      for ( pZ = voi.From()[2]; (pZ < voi.To()[2]) && !active; ++pZ ) 
+      for ( int pZ = voi.From()[2]; (pZ < voi.To()[2]) && !active; ++pZ ) 
 	{
-	for ( pY = voi.From()[1]; (pY < voi.To()[1]) && !active; ++pY ) 
+	for ( int pY = voi.From()[1]; (pY < voi.To()[1]) && !active; ++pY ) 
 	  {
-	  for ( pX = voi.From()[0]; (pX < voi.To()[0]); ++pX, ++r ) 
+	  for ( int pX = voi.From()[0]; (pX < voi.To()[0]); ++pX, ++r ) 
 	    {
 	    if ( ( this->m_Metric->GetSampleX( r ) != 0 ) || ( ( this->m_WarpedVolume[r] != unsetY ) && ( this->m_WarpedVolume[r] != 0 ) ) ) 
 	      {
@@ -129,37 +111,84 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
     } 
   else
     {
+#ifdef _OPENMP
+    if ( this->m_ThreadConsistencyHistograms.size() != this->m_NumberOfThreads )
+      {
+      this->m_ThreadConsistencyHistograms.resize( this->m_NumberOfThreads );
+      
+      const unsigned int numSamplesX = this->m_Metric->GetNumberOfSamplesX();
+      const Types::DataItemRange rangeX = this->m_Metric->GetDataRangeX();
+
+      const unsigned int numSamplesY = this->m_Metric->GetNumberOfSamplesY();
+      const Types::DataItemRange rangeY = this->m_Metric->GetDataRangeY();
+
+      for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
+	{
+	this->m_ThreadConsistencyHistograms[thread] = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
+	const unsigned int numBinsX = this->m_ThreadConsistencyHistograms[thread]->CalcNumBins( numSamplesX, rangeX );
+	const unsigned int numBinsY = this->m_ThreadConsistencyHistograms[thread]->CalcNumBins( numSamplesY, rangeY );
+	
+	this->m_ThreadConsistencyHistograms[thread]->Resize( numBinsX, numBinsY );
+	this->m_ThreadConsistencyHistograms[thread]->SetRangeX( rangeX );
+	this->m_ThreadConsistencyHistograms[thread]->SetRangeY( rangeY );
+	}
+      }
+#else
+    if ( !this->m_ConsistencyHistogram )
+      {
+      this->m_ConsistencyHistogram = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
+      const unsigned int numSamplesX = this->m_Metric->GetNumberOfSamplesX();
+      const Types::DataItemRange rangeX = this->m_Metric->GetDataRangeX();
+      const unsigned int numBinsX = this->m_ConsistencyHistogram->CalcNumBins( numSamplesX, rangeX );
+      
+      const unsigned int numSamplesY = this->m_Metric->GetNumberOfSamplesY();
+      const Types::DataItemRange rangeY = this->m_Metric->GetDataRangeY();
+      const unsigned int numBinsY = this->m_ConsistencyHistogram->CalcNumBins( numSamplesY, rangeY );
+      
+      this->m_ConsistencyHistograms->Resize( numBinsX, numBinsY );
+      this->m_ConsistencyHistograms->SetRangeX( rangeX );
+      this->m_ConsistencyHistograms->SetRangeY( rangeY );
+      }
+#endif
+
+#pragma omp parallel for    
     for ( int ctrl = 0; ctrl < numCtrlPoints; ++ctrl ) 
       {
-      this->m_ConsistencyHistogram->Reset();
+#ifdef _OPENMP
+      JointHistogram<unsigned int>& histogram = *(this->m_ThreadConsistencyHistograms[ omp_get_thread_num() ]);
+#else
+      JointHistogram<unsigned int>& histogram = *(this->m_ConsistencyHistogram);
+#endif
+      histogram.Reset();
       
       // We cannot use the precomputed table of VOIs here because in "fast"
       // mode, these VOIs are smaller than we want them here.
+      Vector3D fromVOI, toVOI;
       this->m_Warp->GetVolumeOfInfluence( 3 * ctrl, this->ReferenceFrom, this->ReferenceTo, fromVOI, toVOI, 0 );
-      voi = this->GetReferenceGridRange( fromVOI, toVOI );
+      const DataGrid::RegionType voi = this->GetReferenceGridRange( fromVOI, toVOI );
       
       int r = voi.From()[0] + this->m_DimsX * ( voi.From()[1] + this->m_DimsY * voi.From()[2] );
       
       const int endOfLine = ( voi.From()[0] + ( this->m_DimsX-voi.To()[0]) );
       const int endOfPlane = this->m_DimsX * ( voi.From()[1] + (this->m_DimsY-voi.To()[1]) );
       
-      for ( pZ = voi.From()[2]; pZ<voi.To()[2]; ++pZ ) 
+      for ( int pZ = voi.From()[2]; pZ<voi.To()[2]; ++pZ ) 
 	{
-	for ( pY = voi.From()[1]; pY<voi.To()[1]; ++pY ) 
+	for ( int pY = voi.From()[1]; pY<voi.To()[1]; ++pY ) 
 	  {
-	  for ( pX = voi.From()[0]; pX<voi.To()[0]; ++pX, ++r ) 
+	  for ( int pX = voi.From()[0]; pX<voi.To()[0]; ++pX, ++r ) 
 	    {
 	    // Continue metric computation.
 	    if ( this->m_WarpedVolume[r] != unsetY ) 
 	      {
-	      this->m_ConsistencyHistogram->Increment( this->m_ConsistencyHistogram->ValueToBinX( this->m_Metric->GetSampleX( r ) ), this->m_ConsistencyHistogram->ValueToBinY( this->m_WarpedVolume[r] ) );
+	      histogram.Increment( histogram.ValueToBinX( this->m_Metric->GetSampleX( r ) ), histogram.ValueToBinY( this->m_WarpedVolume[r] ) );
 	      }
 	    }
 	  r += endOfLine;
 	  }
 	r += endOfPlane;
 	}
-      this->m_ConsistencyHistogram->GetMarginalEntropies( mapRef[ctrl], mapMod[ctrl] );
+      histogram.GetMarginalEntropies( mapRef[ctrl], mapMod[ctrl] );
       }
     
     double refMin = HUGE_VAL, refMax = -HUGE_VAL;
