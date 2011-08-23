@@ -1,5 +1,9 @@
 Release CMTK-2.0.1:
 
+(r3408) Refactored: global static cmtk::StackBacktrace object is now
+    initialized in each "main.cxx" file, or in "cmtkSafeMain" wrapper, rather
+    than forcing CMake to re-compile initializer code into separate .o file
+    for every binary.
 (r3405) Added: computation of fixed control points is now parallel in "warp"
     and "warpx" tools if OpenMP support is enabled.
 (r3400) Fixed: the thread-related environment variables (mostly
