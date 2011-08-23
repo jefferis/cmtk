@@ -32,6 +32,9 @@
 #  include <stdio.h>
 #endif
 
+#include <System/cmtkStackBacktrace.h>
+namespace cmtk { static StackBacktrace StackBacktraceInstance; }
+
 #include <System/cmtkThreads.h>
 
 int

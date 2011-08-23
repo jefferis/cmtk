@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -28,8 +28,6 @@
 ##  $LastChangedBy$
 ##
 
-INCLUDE(${CMAKE_SOURCE_DIR}/libs/cmtkLibInitSrcs.cmake)
-
 QT4_WRAP_UI(FVIEW_UIS_H fviewMainWindow.ui)
 
 SET(fview_SRCS
@@ -48,7 +46,7 @@ IF(QT_WRAP_CPP)
   QT_WRAP_CPP(fview fview_SRCS ${fview_MOC_SRCS} )
 ENDIF(QT_WRAP_CPP)
 
-ADD_EXECUTABLE(fview ${CMTK_LIB_INIT_SRCS} main.cxx ${fview_SRCS} ${FVIEW_UIS_H})
+ADD_EXECUTABLE(fview main.cxx ${fview_SRCS} ${FVIEW_UIS_H})
 TARGET_LINK_LIBRARIES(fview ${CMTK_LIBRARIES} ${QT_LIBRARIES} ${CMTK_SYSTEM_LIBRARIES})
 
 INSTALL(TARGETS fview RUNTIME DESTINATION bin COMPONENT gui)

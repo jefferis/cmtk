@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,6 +34,7 @@
 #include <iostream>
 
 #include <System/cmtkStackBacktrace.h>
+namespace cmtk { static StackBacktrace StackBacktraceInstance; }
 
 // deliberately crash to test stack trace output
 int
