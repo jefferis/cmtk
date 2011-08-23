@@ -94,7 +94,7 @@ public:
     this->InfoTaskGradient.resize( this->m_NumberOfTasks );
     this->InfoTaskComplete.resize( this->m_NumberOfTasks );
     
-    this->TaskMetric = Memory::AllocateArray<VM*>( this->m_NumberOfThreads );
+    this->TaskMetric.resize( this->m_NumberOfThreads );
     for ( size_t task = 0; task < this->m_NumberOfThreads; ++task )
       this->TaskMetric[task] = new VM( *(this->Metric) );
     
@@ -115,7 +115,6 @@ public:
     
     for ( size_t task = 0; task < this->m_NumberOfThreads; ++task )
       delete this->TaskMetric[task];
-    Memory::DeleteArray( this->TaskMetric );
   }
 
   /** Set warp transformation.
@@ -207,6 +206,18 @@ public:
     return localMetric->Get();
   }
   
+#ifdef _OPENMP
+  /** Using OpenMP, update set of active and passive parameters.
+   * This function computes local entropies in the neighborhood of all control
+   * points of the Warp transformation. Those control points for which both
+   * reference and floating image have less than half the maximum entropy in
+   * this neighborhood as compared to the rest of the image are set passive.
+   * The passive parameters are not considered for gradient computation and
+   * therefore save significant computation time.
+   */
+  virtual void UpdateWarpFixedParameters();
+#endif // #ifdef _OPENMP
+
   /// Compute functional value and gradient.
   virtual typename Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const typename Self::ParameterType step = 1 ) 
   {
@@ -277,10 +288,12 @@ private:
    * The objects in this array are the per-thread equivalent of the
    * VoxelMatchingElasticFunctional::IncrementalMetric object.
    */
-  VM** TaskMetric;
+  std::vector<VM*> TaskMetric;
   
+#ifdef _OPENMP
   /// Consistency histogram objects for threadwise computation.
-  JointHistogram<unsigned int>** ThreadConsistencyHistogram;
+  std::vector<JointHistogram<unsigned int>::SmartPtr> m_ThreadConsistencyHistograms;
+#endif // #ifdef _OPENMP
   
   /** Thread parameter block for incremental gradient computation.
    * This structure holds all thread-specific information. A pointer to an
@@ -447,5 +460,9 @@ private:
 //@}
 
 } // namespace cmtk
+
+#ifdef _OPENMP
+#include "cmtkParallelElasticFunctional.txx"
+#endif
 
 #endif // __cmtkParallelElasticFunctional_h_included_

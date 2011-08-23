@@ -453,7 +453,7 @@ public:
    * The passive parameters are not considered for gradient computation and
    * therefore save significant computation time.
    */
-  void UpdateWarpFixedParameters();
+  virtual void UpdateWarpFixedParameters();
 
   /// Compute functional value and gradient.
   virtual typename Self::ReturnType EvaluateWithGradient( CoordinateVector& v, CoordinateVector& g, const Types::Coordinate step = 1 ) 
