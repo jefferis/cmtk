@@ -1,7 +1,7 @@
 Release CMTK-2.0.1:
 
-(r3402) Added: computation of fixed control points is now parallel in "warp"
-    tool if OpenMP support is enabled.
+(r3405) Added: computation of fixed control points is now parallel in "warp"
+    and "warpx" tools if OpenMP support is enabled.
 (r3400) Fixed: the thread-related environment variables (mostly
     CMTK_NUM_THREADS) are now checked by tyhe tool-independent "cmtkSafeMain"
     wrapper, which guarantees that they will be observed by every CMTK command
