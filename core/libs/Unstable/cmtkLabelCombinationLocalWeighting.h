@@ -61,6 +61,7 @@ public:
   LabelCombinationLocalWeighting( const UniformVolume::SmartConstPtr targetImage ) : 
     m_TargetImage( targetImage ),
     m_PatchRadius( UniformVolume::IndexType::Init( 1 ) ),
+    m_PatchRadiusPlusOne( UniformVolume::IndexType::Init( 2 ) ),
     m_SearchRegion( UniformVolume::IndexType( UniformVolume::IndexType::Init( 0 ) ),
 		    UniformVolume::IndexType( UniformVolume::IndexType::Init( 1 ) ) )
   {}
@@ -72,6 +73,7 @@ public:
   void SetPatchRadius( const size_t radius )
   {
     this->m_PatchRadius = UniformVolume::IndexType( UniformVolume::IndexType::Init( radius ) );
+    this->m_PatchRadiusPlusOne = UniformVolume::IndexType( UniformVolume::IndexType::Init( radius+1 ) );
   }
 
   /// Set patch radius.
@@ -96,6 +98,9 @@ protected:
 
   /// Image patch radius in pixels (x,y,z).
   UniformVolume::IndexType m_PatchRadius;
+
+  /// Image patch radius in pixels (x,y,z) plus one added to each dimension.
+  UniformVolume::IndexType m_PatchRadiusPlusOne;
 
   /// Patch search region in pixels (x,y,z).
   UniformVolume::RegionType m_SearchRegion;

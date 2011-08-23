@@ -169,7 +169,7 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Se
       const TargetRegionType patchSearchRegion( Max( (-1)*wholeImageRegion.From(), this->m_SearchRegion.From() ), Min( wholeImageRegion.To() - it.Index(), this->m_SearchRegion.To() ) );
       for ( RegionIndexIterator<TargetRegionType> searchIt( patchSearchRegion ); searchIt != searchIt.end(); ++searchIt )
 	{
-	const TargetRegionType patchRegion( Max( wholeImageRegion.From(), it.Index() + searchIt.Index() - this->m_PatchRadius ), Min( wholeImageRegion.To(), it.Index() + searchIt.Index() + this->m_PatchRadius ) );
+	const TargetRegionType patchRegion( Max( wholeImageRegion.From(), it.Index() + searchIt.Index() - this->m_PatchRadius ), Min( wholeImageRegion.To(), it.Index() + searchIt.Index() + this->m_PatchRadiusPlusOne ) );
 	TypedArray::SmartConstPtr targetDataPatch( targetImage.GetRegionData( patchRegion ) );
 	
 	for ( size_t n = 0; n < nAtlases; ++n )

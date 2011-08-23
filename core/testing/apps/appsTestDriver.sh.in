@@ -1058,6 +1058,10 @@ case ${RUNTEST} in
         run lsba -v -o ${tmpdir}/lsba.nii --patch-radius 3 --detect-outliers lvote_target.nii lvote_atlas_i0.nii lvote_atlas_l0.nii lvote_atlas_i1.nii lvote_atlas_l1.nii lvote_atlas_i2.nii lvote_atlas_l2.nii
 	check_results lsba.nii
 	;;
+    lsbaRadius3Search1)
+        run lsba -v -o ${tmpdir}/lsba.nii --search-radius 1 --patch-radius 3 --detect-outliers lvote_target.nii lvote_atlas_i0.nii lvote_atlas_l0.nii lvote_atlas_i1.nii lvote_atlas_l1.nii lvote_atlas_i2.nii lvote_atlas_l2.nii
+	check_results lsba.nii
+	;;
     make_initial_affineCenterOfMass)
 	run make_initial_affine --mode centers-of-mass box1.hdr box3.hdr ${tmpdir}/xform
 	check_results xform

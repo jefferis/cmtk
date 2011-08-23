@@ -733,7 +733,8 @@ IF(NOT CMTK_USE_MPI)
       lvoteDefault
       lvoteRadius3
       lsbaRadius3
-      lsbaRadius3Outliers)
+      lsbaRadius3Outliers
+      lsbaRadius3Search1)
   ENDIF(CMTK_BUILD_UNSTABLE)
   
   

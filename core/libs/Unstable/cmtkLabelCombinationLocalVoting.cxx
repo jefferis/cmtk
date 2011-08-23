@@ -137,7 +137,7 @@ cmtk::LabelCombinationLocalVoting::ComputeResultForRegion( const Self::TargetReg
     else
       {
       // Compute weights for the atlases from local image patch similarity.
-      const TargetRegionType patchRegion( Max( wholeImageRegion.From(), it.Index() - this->m_PatchRadius ), Min( wholeImageRegion.To(), it.Index() + this->m_PatchRadius ) );
+      const TargetRegionType patchRegion( Max( wholeImageRegion.From(), it.Index() - this->m_PatchRadius ), Min( wholeImageRegion.To(), it.Index() + this->m_PatchRadiusPlusOne ) );
       TypedArray::SmartConstPtr targetDataPatch( targetImage.GetRegionData( patchRegion ) );
 
       std::map<unsigned short,Types::DataItem> labelToTotalWeight;
