@@ -103,15 +103,15 @@ cmtk::ParallelElasticFunctional<VM>::UpdateWarpFixedParameters()
       
       const unsigned int numSamplesX = this->Metric->DataX.NumberOfSamples;
       const Types::DataItemRange rangeX = this->Metric->DataX.GetValueRange();
+      const unsigned int numBinsX = JointHistogramBase::CalcNumBins( numSamplesX, rangeX );
 
       const unsigned int numSamplesY = this->Metric->DataY.NumberOfSamples;
       const Types::DataItemRange rangeY = this->Metric->DataY.GetValueRange();
+      const unsigned int numBinsY = JointHistogramBase::CalcNumBins( numSamplesY, rangeY );
       
       for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
 	{
 	this->m_ThreadConsistencyHistograms[thread] = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
-	const unsigned int numBinsX = this->m_ThreadConsistencyHistograms[thread]->CalcNumBins( numSamplesX, rangeX );
-	const unsigned int numBinsY = this->m_ThreadConsistencyHistograms[thread]->CalcNumBins( numSamplesY, rangeY );
 	
 	this->m_ThreadConsistencyHistograms[thread]->Resize( numBinsX, numBinsY );
 	this->m_ThreadConsistencyHistograms[thread]->SetRangeX( rangeX );

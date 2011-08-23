@@ -118,15 +118,15 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
       
       const unsigned int numSamplesX = this->m_Metric->GetNumberOfSamplesX();
       const Types::DataItemRange rangeX = this->m_Metric->GetDataRangeX();
-
+      const unsigned int numBinsX = JointHistogramBase::CalcNumBins( numSamplesX, rangeX );
+      
       const unsigned int numSamplesY = this->m_Metric->GetNumberOfSamplesY();
       const Types::DataItemRange rangeY = this->m_Metric->GetDataRangeY();
+      const unsigned int numBinsY = JointHistogramBase::CalcNumBins( numSamplesY, rangeY );
 
       for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
 	{
 	this->m_ThreadConsistencyHistograms[thread] = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
-	const unsigned int numBinsX = this->m_ThreadConsistencyHistograms[thread]->CalcNumBins( numSamplesX, rangeX );
-	const unsigned int numBinsY = this->m_ThreadConsistencyHistograms[thread]->CalcNumBins( numSamplesY, rangeY );
 	
 	this->m_ThreadConsistencyHistograms[thread]->Resize( numBinsX, numBinsY );
 	this->m_ThreadConsistencyHistograms[thread]->SetRangeX( rangeX );
@@ -139,11 +139,11 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
       this->m_ConsistencyHistogram = JointHistogram<unsigned int>::SmartPtr( new JointHistogram<unsigned int>() );
       const unsigned int numSamplesX = this->m_Metric->GetNumberOfSamplesX();
       const Types::DataItemRange rangeX = this->m_Metric->GetDataRangeX();
-      const unsigned int numBinsX = this->m_ConsistencyHistogram->CalcNumBins( numSamplesX, rangeX );
+      const unsigned int numBinsX = JointHistogramBase::CalcNumBins( numSamplesX, rangeX );
       
       const unsigned int numSamplesY = this->m_Metric->GetNumberOfSamplesY();
       const Types::DataItemRange rangeY = this->m_Metric->GetDataRangeY();
-      const unsigned int numBinsY = this->m_ConsistencyHistogram->CalcNumBins( numSamplesY, rangeY );
+      const unsigned int numBinsY = JointHistogramBase::CalcNumBins( numSamplesY, rangeY );
       
       this->m_ConsistencyHistograms->Resize( numBinsX, numBinsY );
       this->m_ConsistencyHistograms->SetRangeX( rangeX );
