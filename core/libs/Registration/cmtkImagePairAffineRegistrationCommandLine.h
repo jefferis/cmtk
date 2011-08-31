@@ -88,8 +88,10 @@ protected:
    * This function write the transformation that was found to a studylist
    * archive with the name provided by command line arguments. The result is 
    * also printed to stderr in parameter list form.
+   *\param v The vector of resulting transformation parameters.
+   *\param irq The interrupt status - this allows the output function to determine whether computation finished or was interrupted.
    */
-  virtual void OutputResult ( const CoordinateVector* );
+  virtual void OutputResult ( const CoordinateVector* v, const CallbackResult irq = CALLBACK_OK );
 
   /** Enter resolution level.
    * An information is printed to stderr and to the protocol file if one is

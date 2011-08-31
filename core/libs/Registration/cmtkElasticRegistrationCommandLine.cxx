@@ -375,27 +375,41 @@ ElasticRegistrationCommandLine
 void
 ElasticRegistrationCommandLine
 ::OutputResult
-( const CoordinateVector* )
+( const CoordinateVector*, const CallbackResult irq )
 {
   if ( Studylist ) 
+    {
+    std::string path( this->Studylist );
+    if ( irq != CALLBACK_OK )
+      path.append( "-partial" );
+
     this->OutputWarp( Studylist );
+    }
 
   if ( this->m_OutputPathITK ) 
     {
-    SplineWarpXformITKIO::Write( this->m_OutputPathITK, *(this->GetTransformation()), *(this->m_ReferenceVolume), *(this->m_FloatingVolume) );
+    std::string path( this->m_OutputPathITK );
+    if ( irq != CALLBACK_OK )
+      path.append( "-partial" );
+    
+    SplineWarpXformITKIO::Write( path.c_str(), *(this->GetTransformation()), *(this->m_ReferenceVolume), *(this->m_FloatingVolume) );
     }
 
   if ( this->m_ReformattedImagePath )
     {
-    VolumeIO::Write( *(this->GetReformattedFloatingImage()), this->m_ReformattedImagePath );
+    std::string path( this->m_ReformattedImagePath );
+    if ( irq != CALLBACK_OK )
+      path.append( "-partial" );
+    
+    VolumeIO::Write( *(this->GetReformattedFloatingImage()), path.c_str() );
     }
 
 #ifdef CMTK_USE_SQLITE
-  if ( this->m_UpdateDB )
+  if ( this->m_UpdateDB && (irq == CALLBACK_OK) )
     {
     try
       {
-      cmtk::ImageXformDB db( this->m_UpdateDB );
+      ImageXformDB db( this->m_UpdateDB );
       
       if ( this->m_ReformattedImagePath )
 	{
@@ -414,7 +428,7 @@ ElasticRegistrationCommandLine
 	  }
 	}
       }
-    catch ( const cmtk::ImageXformDB::Exception& ex )
+    catch ( const ImageXformDB::Exception& ex )
       {
       StdErr << "DB ERROR: " << ex.what() << " on database " << this->m_UpdateDB << "\n";
       }

@@ -49,6 +49,10 @@
 #include <Base/cmtkAnatomicalOrientation.h>
 #include <Base/cmtkTransformChangeFromSpaceAffine.h>
 
+#ifdef CMTK_USE_SQLITE
+#  include <Registration/cmtkImageXformDB.h>
+#endif
+
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
 #endif
@@ -83,6 +87,11 @@ ImagePairNonrigidRegistrationCommandLine* ImagePairNonrigidRegistrationCommandLi
 ImagePairNonrigidRegistrationCommandLine
 ::ImagePairNonrigidRegistrationCommandLine
 ( const int argc, const char *argv[] ) :
+  m_InitialTransformationFile( NULL ),
+  m_InitialTransformationInverse( false ),
+#ifdef CMTK_USE_SQLITE
+  m_UpdateDB( NULL ),
+#endif
   m_OutputPathITK( NULL ),
   m_ReformattedImagePath( NULL )
 {
@@ -91,8 +100,6 @@ ImagePairNonrigidRegistrationCommandLine
   this->m_OutputIntermediate = 0;
 
   InputStudylist = NULL;
-  const char *initialTransformationFile = NULL;
-  bool initialTransformationInverse = false;
   IntermediateResultIndex = 0;
 
   bool forceOutsideFlag = false;
@@ -112,8 +119,8 @@ ImagePairNonrigidRegistrationCommandLine
 
     typedef CommandLine::Key Key;
     cl.BeginGroup( "TransformationIO", "Transformation import/export" );
-    cl.AddOption( Key( "initial" ), &initialTransformationFile, "Initialize transformation from given path" )->SetProperties( CommandLine::PROPS_XFORM );
-    cl.AddSwitch( Key( "invert-initial" ), &initialTransformationInverse, true, "Invert given (affine) initial transformation." );
+    cl.AddOption( Key( "initial" ), &this->m_InitialTransformationFile, "Initialize transformation from given path" )->SetProperties( CommandLine::PROPS_XFORM );
+    cl.AddSwitch( Key( "invert-initial" ), &this->m_InitialTransformationInverse, true, "Invert given (affine) initial transformation." );
     cl.AddOption( Key( "write-itk-xform" ), &this->m_OutputPathITK, "Output path for final transformation in ITK format" )
       ->SetProperties( CommandLine::PROPS_XFORM | CommandLine::PROPS_OUTPUT )
       ->SetAttribute( "type", "bspline" )->SetAttribute( "reference", "FloatingImage" );
@@ -193,6 +200,12 @@ ImagePairNonrigidRegistrationCommandLine
     cl.AddSwitch( Key( "output-intermediate" ), &this->m_OutputIntermediate, true, "Write transformation for each level [default: only write final transformation]" );
     cl.EndGroup();
 
+#ifdef CMTK_USE_SQLITE
+    cl.BeginGroup( "Database", "Image/Transformation Database" );
+    cl.AddOption( Key( "db" ), &this->m_UpdateDB, "Path to image/transformation database that should be updated with the new registration and/or reformatted image." );
+    cl.EndGroup();
+#endif
+
     cl.AddParameter( &clArg1, "ReferenceImage", "Reference (fixed) image path" )
       ->SetProperties( CommandLine::PROPS_IMAGE );
     cl.AddParameter( &clArg2, "FloatingImage", "Floating (moving) image path" )
@@ -223,7 +236,7 @@ ImagePairNonrigidRegistrationCommandLine
 
     if ( clArg3 )
       {
-      initialTransformationFile = clArg3;
+      this->m_InitialTransformationFile = clArg3;
       }
     }
   else 
@@ -259,15 +272,15 @@ ImagePairNonrigidRegistrationCommandLine
     
     classStream.Close();
     }
-
-  /// Was an initial studylist given? If so, get warp 
-  if ( initialTransformationFile ) 
+  
+  // Was an initial studylist given? If so, get warp 
+  if ( this->m_InitialTransformationFile ) 
     {
-    Xform::SmartPtr initialXform( XformIO::Read( initialTransformationFile ) );
+    Xform::SmartPtr initialXform( XformIO::Read( this->m_InitialTransformationFile ) );
     AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( initialXform );
     if ( affineXform )
       {
-      if ( initialTransformationInverse )
+      if ( this->m_InitialTransformationInverse )
 	this->SetInitialTransformation( affineXform->GetInverse() );
       else
 	this->SetInitialTransformation( affineXform );
@@ -335,20 +348,72 @@ ImagePairNonrigidRegistrationCommandLine
 void
 ImagePairNonrigidRegistrationCommandLine
 ::OutputResult
-( const CoordinateVector* )
+( const CoordinateVector*, const CallbackResult irq )
 {
-  if ( Studylist ) 
-    this->OutputWarp( Studylist );
+  if ( this->Studylist ) 
+    {
+    std::string path( this->Studylist );
+    if ( irq != CALLBACK_OK )
+      path.append( "-partial" );
+
+    this->OutputWarp( path.c_str() );
+    }
 
   if ( this->m_OutputPathITK ) 
     {
-    SplineWarpXformITKIO::Write( this->m_OutputPathITK, *(this->GetTransformation()), *(this->m_ReferenceVolume), *(this->m_FloatingVolume) );
+    std::string path( this->m_OutputPathITK );
+    if ( irq != CALLBACK_OK )
+      path.append( "-partial" );
+    
+    SplineWarpXformITKIO::Write( path.c_str(), *(this->GetTransformation()), *(this->m_ReferenceVolume), *(this->m_FloatingVolume) );
     }
-
+  
   if ( this->m_ReformattedImagePath )
     {
-    VolumeIO::Write( *(this->GetReformattedFloatingImage() ), this->m_ReformattedImagePath );
+    std::string path( this->m_ReformattedImagePath );
+    if ( irq != CALLBACK_OK )
+      path.append( "-partial" );
+    
+    VolumeIO::Write( *(this->GetReformattedFloatingImage() ), path.c_str() );
     }
+
+#ifdef CMTK_USE_SQLITE
+  if ( this->m_UpdateDB && (irq == CALLBACK_OK) )
+    {
+    try
+      {
+      ImageXformDB db( this->m_UpdateDB );
+      
+      if ( this->m_ReformattedImagePath )
+	{
+	db.AddImage( this->m_ReformattedImagePath, this->m_ReferenceVolume->GetMetaInfo( META_FS_PATH ) );
+	}
+      
+      if ( this->Studylist )
+	{
+	if ( this->InputStudylist ) 
+	  {
+	  db.AddRefinedXform( this->Studylist, true /*invertible*/, this->InputStudylist );
+	  }
+	else 
+	  { 
+	  if ( this->m_InitialTransformationFile )
+	    {
+	    db.AddRefinedXform( this->Studylist, true /*invertible*/, this->m_InitialTransformationFile, m_InitialTransformationInverse );
+	    }
+	  else
+	    {
+	    db.AddImagePairXform( this->Studylist, true /*invertible*/, this->m_ReferenceVolume->GetMetaInfo( META_FS_PATH ), this->m_FloatingVolume->GetMetaInfo( META_FS_PATH ) );
+	    }
+	  }
+	}
+      }
+    catch ( const ImageXformDB::Exception& ex )
+      {
+      StdErr << "DB ERROR: " << ex.what() << " on database " << this->m_UpdateDB << "\n";
+      }
+    }
+#endif
 }
 
 void

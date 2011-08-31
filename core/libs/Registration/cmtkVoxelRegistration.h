@@ -241,8 +241,9 @@ protected:
    * to report the resulting transformation, export it to an encapsulating
    * application, etc...
    *\param v The vector of resulting transformation parameters.
+   *\param irq The interrupt status - this allows the output function to determine whether computation finished or was interrupted.
    */
-  virtual void OutputResult ( const CoordinateVector* v ) { UNUSED(v); }
+  virtual void OutputResult ( const CoordinateVector*, const CallbackResult = CALLBACK_OK ) {}
   
   /** Finalize registration.
    * This function is called after registration has been terminated. It can

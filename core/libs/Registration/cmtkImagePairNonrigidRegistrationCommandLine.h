@@ -87,8 +87,10 @@ protected:
    * This function write the transformation that was found to a studylist
    * archive with the name provided by command line arguments. The result is 
    * also printed to stderr in parameter list form.
+   *\param v The vector of resulting transformation parameters.
+   *\param irq The interrupt status - this allows the output function to determine whether computation finished or was interrupted.
    */
-  virtual void OutputResult ( const CoordinateVector* );
+  virtual void OutputResult ( const CoordinateVector* v, const CallbackResult irq = CALLBACK_OK );
 
   /** Enter resolution level.
    * An information is printed to stderr and to the protocol file if one is
@@ -103,10 +105,14 @@ protected:
 
 private:
   /** Name of input studylist.
-   * This is defined by the --inlist command line parameter (not currently
-   * supported).
    */
   const char *InputStudylist;
+
+  /// Initial transformation file.
+  const char *m_InitialTransformationFile;
+
+  /// Flag whether initial transformation is inverted.
+  bool m_InitialTransformationInverse;
 
   /** Name of output studylist.
    * This is defined by the -o or --outlist command line option.
@@ -134,6 +140,11 @@ private:
 
   /// Write deformation to studylist archive.
   void OutputWarp ( const char* ) const;
+
+#ifdef CMTK_USE_SQLITE
+  /// Database to update after registration completes.
+  const char* m_UpdateDB;
+#endif
 
   /// Name of output transformation file in ITK format.
   const char* m_OutputPathITK;

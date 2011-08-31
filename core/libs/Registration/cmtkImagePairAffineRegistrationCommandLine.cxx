@@ -445,7 +445,7 @@ ImagePairAffineRegistrationCommandLine::OutputResultList( const char* studyList 
 }
 
 void
-ImagePairAffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v )
+ImagePairAffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v, const CallbackResult irq )
 {
   DebugOutput( 1 ) << "Resulting transformation parameters: \n";
   for ( unsigned int idx=0; idx<v->Dim; ++idx )
@@ -453,28 +453,48 @@ ImagePairAffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v
   
   if ( this->OutMatrixName )
     {
-    this->OutputResultMatrix( this->OutMatrixName );
+    std::string path( this->OutMatrixName );
+    if ( irq != CALLBACK_OK )
+      path.append( "-partial" );
+
+    this->OutputResultMatrix( path.c_str() );
     }
 
   if ( this->OutParametersName )
     {
-    this->OutputResultParameters( this->OutParametersName, *v );
+    std::string path( this->OutParametersName );
+    if ( irq != CALLBACK_OK )
+      path.append( "-partial" );
+    
+    this->OutputResultParameters( path.c_str(), *v );
     }
 
   if ( this->Studylist ) 
     {
-    this->OutputResultList( this->Studylist );
+    std::string path( this->Studylist );
+    if ( irq != CALLBACK_OK )
+      path.append( "-partial" );
+
+    this->OutputResultList( path.c_str() );
     }
 
   if ( this->m_OutputPathITK ) 
     {
+    std::string path( this->m_OutputPathITK );
+    if ( irq != CALLBACK_OK )
+      path.append( "-partial" );
+    
     TransformChangeToSpaceAffine toNative( *(this->GetTransformation()), *(this->m_Volume_1), *(this->m_Volume_2), AnatomicalOrientationBase::SPACE_ITK );
-    AffineXformITKIO::Write( this->m_OutputPathITK, toNative.GetTransformation() );
+    AffineXformITKIO::Write( path.c_str(), toNative.GetTransformation() );
     }
 
   if ( this->m_ReformattedImagePath )
     {
-    VolumeIO::Write( *(this->GetReformattedFloatingImage()), this->m_ReformattedImagePath );
+    std::string path( this->m_ReformattedImagePath );
+    if ( irq != CALLBACK_OK )
+      path.append( "-partial" );
+    
+    VolumeIO::Write( *(this->GetReformattedFloatingImage()), path.c_str() );
     }
 
 #ifdef CMTK_USE_SQLITE
@@ -482,7 +502,7 @@ ImagePairAffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v
     {
     try
       {
-      cmtk::ImageXformDB db( this->m_UpdateDB );
+      ImageXformDB db( this->m_UpdateDB );
       
       if ( this->m_ReformattedImagePath )
 	{
@@ -501,7 +521,7 @@ ImagePairAffineRegistrationCommandLine::OutputResult ( const CoordinateVector* v
 	  }
 	}
       }
-    catch ( const cmtk::ImageXformDB::Exception& ex )
+    catch ( const ImageXformDB::Exception& ex )
       {
       StdErr << "DB ERROR: " << ex.what() << " on database " << this->m_UpdateDB << "\n";
       }

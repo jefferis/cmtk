@@ -84,12 +84,9 @@ protected:
   virtual CallbackResult InitRegistration();
 
   /** Output registration result.
-   * This function write the transformation that was found to a studylist
-   * archive with the name provided by command line arguments. The result is 
-   * also printed to stderr in parameter list form.
    */
-  virtual void OutputResult ( const CoordinateVector* );
-
+  virtual void OutputResult ( const CoordinateVector* v, const CallbackResult irq = CALLBACK_OK );
+  
   /** Enter resolution level.
    * An information is printed to stderr and to the protocol file if one is
    * written.
