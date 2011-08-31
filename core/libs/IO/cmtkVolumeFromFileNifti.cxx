@@ -260,6 +260,13 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
     }
   
   Memory::DeleteArray( pathImg );
+
+  if ( header.GetField<char>( 148 ) )
+    {
+    char desc[81];
+    desc[80] = 0;
+    volume->m_MetaInformation[META_IMAGE_DESCRIPTION] = std::string( header.GetFieldString( 148, desc, 80 ) );
+    }
   
   return volume;
 }
@@ -376,6 +383,12 @@ VolumeFromFile::WriteNifti
   const Types::DataItemRange dataRange = data->GetRange();
   header.cal_max = static_cast<float>( dataRange.m_UpperBound );
   header.cal_min = static_cast<float>( dataRange.m_LowerBound );
+
+  if ( volume.MetaKeyExists( META_IMAGE_DESCRIPTION ) )
+    {
+    memset( header.descrip, 0, sizeof( header.descrip ) );
+    strncpy( header.descrip, volume.GetMetaInfo( META_IMAGE_DESCRIPTION ).c_str(), sizeof( header.descrip )-1 );
+    }
   
 #ifdef _MSC_VER
   const char *const modestr = "wb";

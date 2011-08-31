@@ -198,6 +198,13 @@ VolumeFromFile::ReadNRRD( const char* pathHdr )
     if ( nrrd->spaceUnits[0] )
       volume->m_MetaInformation[META_SPACE_UNITS_STRING] = nrrd->spaceUnits[0];
 
+    char* desc = nrrdKeyValueGet( nrrd, "description" );
+    if ( desc )
+      {
+      volume->m_MetaInformation[META_IMAGE_DESCRIPTION] = desc;
+      free( desc );
+      }
+
     nrrdNix( nrrd );
     }
   catch ( char* err )
@@ -262,7 +269,12 @@ VolumeFromFile::WriteNRRD
       nval->spaceUnits[1] = strdup( writeVolume->m_MetaInformation[META_SPACE_UNITS_STRING].c_str() );
       nval->spaceUnits[2] = strdup( writeVolume->m_MetaInformation[META_SPACE_UNITS_STRING].c_str() );
       }
-      
+
+    if ( writeVolume->MetaKeyExists( META_IMAGE_DESCRIPTION ) )
+      {
+      nrrdKeyValueAdd( nval, "description", volume.GetMetaInfo( META_IMAGE_DESCRIPTION ).c_str() );
+      }
+    
     int kind[NRRD_DIM_MAX] = { nrrdKindDomain, nrrdKindDomain, nrrdKindDomain };
     nrrdAxisInfoSet_nva( nval, nrrdAxisInfoKind, kind );
 

@@ -265,6 +265,13 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
     }
   
   Memory::DeleteArray( pathImg );
+
+  if ( header.GetField<char>( 148 ) )
+    {
+    char desc[81];
+    desc[80] = 0;
+    volume->m_MetaInformation[META_IMAGE_DESCRIPTION] = std::string( header.GetFieldString( 148, desc, 80 ) );
+    }
   
   return volume;
 }
@@ -389,6 +396,9 @@ VolumeFromFile::WriteAnalyzeHdr
   header.StoreField<int>( 140, static_cast<int>( dataRange.m_UpperBound ) );
   header.StoreField<int>( 144, static_cast<int>( dataRange.m_LowerBound ) );
 
+  if ( volume.MetaKeyExists( META_IMAGE_DESCRIPTION ) )
+    header.StoreFieldString( 148, volume.GetMetaInfo( META_IMAGE_DESCRIPTION ).c_str(), 80 );
+  
   if ( getenv( CMTK_LEGACY_ANALYZE_IO ) || getenv( IGS_LEGACY_ANALYZE_IO ) )
     {
     // slice orientation always axial from caudal to cranial

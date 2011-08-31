@@ -37,6 +37,8 @@
 #include <System/cmtkCommandLine.h>
 #include <System/cmtkExitException.h>
 
+#include <Base/cmtkMetaInformationObject.h>
+
 #include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkStudy.h>
 #include <IO/cmtkStudyImageSet.h>
@@ -94,6 +96,20 @@ double Tolerance = 1e-5;
 
 bool IgnoreAcquisitionNumber = false;
 
+/// Enum type to select DICOM information to be embedded into output images as "description".
+typedef enum
+{
+  /// No embedding.
+  EMBED_NONE = 0,
+  /// Embed patient name.
+  EMBED_PATIENTNAME = 1,
+  /// Embed series description.
+  EMBED_SERIESDESCR = 2
+} EmbedInfoEnum;
+
+/// Selector for embedded image information.
+EmbedInfoEnum EmbedInfo = EMBED_NONE;
+
 class ImageFileDCM 
 {
 public:
@@ -102,7 +118,10 @@ public:
 
   /// File system path (i.e., directory).
   char* fpath;
-  
+
+  /// Patient name.
+  std::string PatientName;
+
   /// DICOM SeriesUID.
   std::string SeriesUID;
 
@@ -248,6 +267,9 @@ ImageFileDCM::ImageFileDCM( const char* filename )
   DcmTagKey searchKey;
     
   const char* tmpStr = NULL;
+  if ( document->getValue( DCM_PatientsName, tmpStr ) )
+    PatientName = tmpStr;
+
   if ( document->getValue( DCM_SeriesInstanceUID, tmpStr ) )
     SeriesUID = tmpStr;
 
@@ -359,6 +381,19 @@ VolumeDCM::WriteToArchive( const std::string& fname ) const
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeFromStudy::Read( &studyImageSet ) );
   if ( volume )
     {
+    switch ( EmbedInfo )
+      {
+      default:
+      case EMBED_NONE:
+	break;
+      case EMBED_PATIENTNAME:
+	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->PatientName );
+	break;
+      case EMBED_SERIESDESCR:
+	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->SeriesDescription );
+	break;
+      }
+
     cmtk::VolumeIO::Write( *volume, fname.c_str() );
     cmtk::DebugOutput( 1 ).GetStream().printf( "\nOutput file:%s\nImage size: %3dx%3dx%3d pixels\nPixel size: %.4fx%.4fx%.4f mm\n\n", 
 					       fname.c_str(), volume->m_Dims[0], volume->m_Dims[1], volume->m_Dims[2], volume->m_Delta[0], volume->m_Delta[1], volume->m_Delta[2] );
@@ -688,6 +723,10 @@ doMain ( const int argc, const char *argv[] )
 		  "%R (DICOM RepetitionTime - MRI only)"
 		  "%E (DICOM EchoTime - MRI only)"
 		  "%T (GE RawDataType - vendor-specific, MRI only)" );
+
+    cmtk::CommandLine::EnumGroup<EmbedInfoEnum>::SmartPtr embedGroup = cl.AddEnum( "embed", &EmbedInfo, "Embed DICOM information into output images as 'description' (if supported by output file format)." );
+    embedGroup->AddSwitch( Key( "PatientName" ), EMBED_PATIENTNAME, "Patient name, tag (0010,0010)" );
+    embedGroup->AddSwitch( Key( "SeriesDescription" ), EMBED_SERIESDESCR, "Series description, tag (0008,103e)" );
     cl.EndGroup();
 
     cl.BeginGroup( "Sorting", "Sorting Options")->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );

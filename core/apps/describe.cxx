@@ -38,6 +38,7 @@
 
 #include <Base/cmtkUniformVolume.h>
 #include <Base/cmtkVector3D.h>
+#include <Base/cmtkMetaInformationObject.h>
 
 #include <IO/cmtkFileFormat.h>
 #include <IO/cmtkVolumeIO.h>
@@ -95,6 +96,10 @@ doMain( int argc, char *argv[] )
 	{
 	fprintf( stdout, "FNAME\t%s\n", next );            
 	fprintf( stdout, "FORMAT\t%s\n", volume->m_MetaInformation[cmtk::META_FILEFORMAT_ORIGINAL].c_str() );
+
+	if ( volume->MetaKeyExists( cmtk::META_IMAGE_DESCRIPTION ) )
+	  fprintf( stdout, "DESCRIP\t\"%s\"\n", volume->GetMetaInfo( cmtk::META_IMAGE_DESCRIPTION ).c_str() );
+	
 	fprintf( stdout, "XDIM\t%d\nYDIM\t%d\nZDIM\t%d\n", volume->GetDims()[cmtk::AXIS_X], volume->GetDims()[cmtk::AXIS_Y], volume->GetDims()[cmtk::AXIS_Z] );
 	fprintf( stdout, "ORIENT\t%s\n", orientOriginal ? orientOriginal : "UNKNOWN" );
       
@@ -127,8 +132,12 @@ doMain( int argc, char *argv[] )
 	{
 	fprintf( stdout, "File: %s\n", next );            
 	fprintf( stdout, "File format: %s\n", volume->m_MetaInformation[cmtk::META_FILEFORMAT_ORIGINAL].c_str() );
-	fprintf( stdout, "%d x %d x %d voxels\n", volume->GetDims()[cmtk::AXIS_X], volume->GetDims()[cmtk::AXIS_Y], volume->GetDims()[cmtk::AXIS_Z] );
 
+	if ( volume->MetaKeyExists( cmtk::META_IMAGE_DESCRIPTION ) )
+	  fprintf( stdout, "Description: \"%s\"\n", volume->GetMetaInfo( cmtk::META_IMAGE_DESCRIPTION ).c_str() );
+	
+	fprintf( stdout, "%d x %d x %d voxels\n", volume->GetDims()[cmtk::AXIS_X], volume->GetDims()[cmtk::AXIS_Y], volume->GetDims()[cmtk::AXIS_Z] );
+	
 	fprintf( stdout, "Original image orientation: %s\n", orientOriginal ? orientOriginal : "UNKNOWN" );
       
 	const char* spaceUnits = "";

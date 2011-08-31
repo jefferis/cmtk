@@ -89,6 +89,16 @@ public:
       strcpy( Header+offset, value );
   }
   
+  /// Get null-terminated string from header.
+  char* GetFieldString( const size_t offset, char* value, const size_t maxlen = 0 ) 
+  {
+    if ( maxlen )
+      strncpy( value, Header+offset, maxlen );
+    else
+      strcpy( value, Header+offset );
+    return value;
+  }
+  
   /** Compare n-character string.
    *\return The comparison result code as returned by memcmp(), i.e., the result is 0 if the given string matches
    * the respective portion of the header.

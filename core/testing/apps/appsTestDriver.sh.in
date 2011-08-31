@@ -575,6 +575,22 @@ case ${RUNTEST} in
 	run dcm2image -O ${tmpdir}/00%n.nhdr ${DATADIR}/dcm/
 	check_results 001.nhdr 001.raw 002.nhdr 002.raw 003.nhdr 003.raw
 	;;
+    dcm2imageEmbedPatientNameAnalyze)
+	run dcm2image --embed PatientName -O ${tmpdir}/00%n.hdr ${DATADIR}/dcm/
+	check_results 001.hdr 002.hdr 003.hdr
+	;;
+    dcm2imageEmbedPatientNameNifti)
+	run dcm2image --embed PatientName -O ${tmpdir}/00%n.nii ${DATADIR}/dcm/
+	check_results 001.nii 002.nii 003.nii
+	;;
+    dcm2imageEmbedSeriesDescriptionNifti)
+	run dcm2image --embed SeriesDescription -O ${tmpdir}/00%n.nii ${DATADIR}/dcm/
+	check_results 001.nii 002.nii 003.nii
+	;;
+    dcm2imageEmbedPatientNameNrrd)
+	run dcm2image --embed PatientName -O ${tmpdir}/00%n.nhdr ${DATADIR}/dcm/
+	check_results 001.nhdr 002.nhdr 003.nhdr
+	;;
     describeEmpty)
 	run_eval "${BINDIR}/describe -m empty.nii > ${tmpdir}/describe.txt"
 	check_results describe.txt
@@ -653,6 +669,18 @@ case ${RUNTEST} in
 	;;
     describeNiftiDetached348)
 	run_eval "${BINDIR}/describe -m spgr_brain_nifti_hdr348.hdr > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
+    describeEmbedAnalyze)
+	run_eval "${BINDIR}/describe -m embed_patient.hdr > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
+    describeEmbedNifti)
+	run_eval "${BINDIR}/describe -m embed_patient.nii > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
+    describeEmbedNrrd)
+	run_eval "${BINDIR}/describe -m embed_patient.nrrd > ${tmpdir}/describe.txt"
 	check_results describe.txt
 	;;
     destripeDefault)

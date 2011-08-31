@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -50,6 +50,7 @@ const char* const META_EXTERNAL_SPACE_ID = "SPACE_ID_EXTERNAL";
 
 const char* const META_IMAGE_ORIENTATION = "IMAGE_ORIENTATION";
 const char* const META_IMAGE_ORIENTATION_ORIGINAL = "IMAGE_ORIENTATION_ORIGINAL";
+const char* const META_IMAGE_DESCRIPTION = "IMAGE_DESCRIPTION";
 
 const char* const META_IMAGE_DIRECTION_VECTORS = "IMAGE_DIRECTION_VECTORS";
 

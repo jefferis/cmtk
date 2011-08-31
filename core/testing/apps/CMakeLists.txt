@@ -84,10 +84,15 @@ SET(testList ${testList}
   describeHuman
   describeMRBiorad
   describeMRBioradGz
-  describeNiftiDetached348)
+  describeNiftiDetached348
+  describeEmbedAnalyze
+  describeEmbedNifti)
 
 IF(CMTK_BUILD_NRRD)
-  SET(testList ${testList} describeMRNrrd1 describeMRNrrd2)
+  SET(testList ${testList} 
+    describeMRNrrd1 
+    describeMRNrrd2
+    describeEmbedNrrd)
 ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
@@ -254,10 +259,15 @@ IF(NOT CMTK_USE_MPI)
     SET(testList ${testList} 
       dcm2image 
       dcm2imageSubs
-      dcm2imageZ)
+      dcm2imageZ
+      dcm2imageEmbedPatientNameAnalyze
+      dcm2imageEmbedPatientNameNifti
+      dcm2imageEmbedSeriesDescriptionNifti)
 
     IF(CMTK_BUILD_NRRD)
-      SET(testList ${testList} dcm2imageNrrd)
+      SET(testList ${testList} 
+	dcm2imageNrrd
+	dcm2imageEmbedPatientNameNrrd)
     ENDIF(CMTK_BUILD_NRRD)
   ENDIF(CMTK_USE_DCMTK)
 
