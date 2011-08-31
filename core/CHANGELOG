@@ -1,5 +1,9 @@
 Release CMTK-2.0.1:
 
+(r3415) Added: the "dcm2image" tool can now embed selected meta information
+    (such as Patient Name) as "image description" in Analyze, Nifti, and NRRD
+    output files. This information is preserved by other CMTK tools (e.g.,
+    "convertx") and is now also displayed by the "describe" tool.
 (r3413) Added: when registration tools (warp, warpx, registration,
     registrationx) are interrupted, suffix "-partial" is added to any results
     files that may be written. This serves to prevent accidental use of
