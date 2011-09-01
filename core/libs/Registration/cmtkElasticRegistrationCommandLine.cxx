@@ -383,7 +383,7 @@ ElasticRegistrationCommandLine
     if ( irq != CALLBACK_OK )
       path.append( "-partial" );
 
-    this->OutputWarp( Studylist );
+    this->OutputWarp( path.c_str() );
     }
 
   if ( this->m_OutputPathITK ) 
