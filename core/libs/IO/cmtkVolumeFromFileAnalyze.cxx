@@ -266,6 +266,7 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
   
   Memory::DeleteArray( pathImg );
 
+  // fill "description" header field
   if ( header.GetField<char>( 148 ) )
     {
     char desc[81];

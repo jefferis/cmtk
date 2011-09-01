@@ -1,4 +1,5 @@
 FORMAT	Analyze 7.5 file [Header+Binary File/Big Endian].
+DESCRIP	"BigEndian"
 XDIM	100
 YDIM	200
 ZDIM	300

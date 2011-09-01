@@ -1,4 +1,5 @@
 FORMAT	Analyze 7.5 file [Header+Binary File/Little Endian].
+DESCRIP	"LittleEndian"
 XDIM	100
 YDIM	200
 ZDIM	300
