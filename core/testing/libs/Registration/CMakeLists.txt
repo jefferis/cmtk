@@ -1,5 +1,6 @@
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2011 SRI International
+##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
@@ -54,7 +55,7 @@ SET(Tests ${Tests} TypedArraySimilarity)
 
 FOREACH(T ${Tests})
   ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libRegistrationTests ${T})
-ENDFOREACH(T Tests)
+ENDFOREACH(T ${Tests})
 
 # ==========================================
 # Tests for "cmtk::XformImageDB" class
@@ -79,6 +80,6 @@ IF(CMTK_USE_SQLITE)
   
   FOREACH(T ${Tests})
     ADD_TEST(${T} ${EXECUTABLE_OUTPUT_PATH}/libRegistrationTestsSQLite ${T})
-  ENDFOREACH(T Tests)
+  ENDFOREACH(T ${Tests})
 ENDIF(CMTK_USE_SQLITE)
 
