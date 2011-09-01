@@ -154,7 +154,7 @@ VoxelRegistration::Register ()
 
   Progress::Done();
 
-  this->OutputResult( v );
+  this->OutputResult( v, irq );
   this->DoneRegistration( v );
   
   return irq;
