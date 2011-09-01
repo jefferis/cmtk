@@ -444,6 +444,10 @@ VolumeFromFile::WriteNifti
 	}
       gzclose( imgFile );
       }
+    else
+      {
+      StdErr << "ERROR: could not open file '" << pathImg << ".gz' for writing\n";
+      }
     }
   else
     {
@@ -459,6 +463,10 @@ VolumeFromFile::WriteNifti
 
       fwrite( data->GetDataPtr(), data->GetItemSize(), data->GetDataSize(), imgFile );
       fclose( imgFile );
+      }
+    else
+      {
+      StdErr << "ERROR: could not open file '" << pathImg << "' for writing\n";
       }
     }
 }

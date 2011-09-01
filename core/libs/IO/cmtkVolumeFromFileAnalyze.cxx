@@ -466,6 +466,10 @@ VolumeFromFile::WriteAnalyzeHdr
       fwrite( data->GetDataPtr(), data->GetItemSize(), data->GetDataSize(), imgFile );
       fclose( imgFile );
       }
+    else
+      {
+      StdErr << "ERROR: could not open file '" << pathImg << "' for writing\n";
+      }
     }
 
   // write header info
@@ -481,6 +485,10 @@ VolumeFromFile::WriteAnalyzeHdr
       StdErr.printf( "ERROR: could not write 348 bytes to header file %s\n", pathHdr );
       }
     fclose( hdrFile );
+    }
+  else
+    {
+    StdErr << "ERROR: could not open file '" << pathHdr << "' for writing\n";
     }
 
   Memory::DeleteArray( pathImg );
