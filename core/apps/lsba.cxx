@@ -50,7 +50,9 @@ doMain
   const char* targetImagePath = NULL;
   std::vector<std::string> atlasImagesLabels;
 
-  bool detectOutliers = false;
+  bool detectLocalOutliers = false;
+  bool detectGlobalOutliers = false;
+
   size_t patchRadius = 5;
   size_t searchRadius = 0;
 
@@ -74,7 +76,8 @@ doMain
 
     cl.AddOption( Key( "patch-radius" ), &patchRadius, "Radius of image patch (in pixels) used for local similarity computation." );
     cl.AddOption( Key( "search-radius" ), &searchRadius, "Search radius for local image patch matching. The algorithm finds the best-matching patch within this radius by exhaustive search." );
-    cl.AddSwitch( Key( "detect-outliers" ), &detectOutliers, true, "Detect and exclude outliers in the Shape Based Averaging procedure." );
+    cl.AddSwitch( Key( "no-local-outliers" ), &detectLocalOutliers, true, "Detect and exclude local outliers in the Shape Based Averaging procedure." );
+    cl.AddSwitch( Key( "no-global-outliers" ), &detectGlobalOutliers, true, "Detect and exclude global outliers by removing poorly correlated atlases prior to local SBA procedure." );
 
     cl.AddOption( Key( 'o', "output" ), &outputImagePath, "File system path for the output image." );
 
@@ -104,7 +107,7 @@ doMain
   cmtk::LabelCombinationLocalShapeBasedAveraging lsba( targetImage );
   lsba.SetPatchRadius( patchRadius );
   lsba.SetSearchRadius( searchRadius );
-  lsba.SetDetectOutliers( detectOutliers );
+  lsba.SetDetectLocalOutliers( detectLocalOutliers );
   
   for ( size_t atlasIdx = 0; atlasIdx < atlasImagesLabels.size(); atlasIdx += 2 )
     {
@@ -129,6 +132,9 @@ doMain
     
     lsba.AddAtlas( atlasImage, atlasLabels );
     }
+
+  if ( detectGlobalOutliers )
+    lsba.ExcludeGlobalOutliers();
   
   targetImage->SetData( lsba.GetResult() );
 

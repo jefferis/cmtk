@@ -60,10 +60,10 @@ public:
   /// Constructor: compute label combination.
   LabelCombinationLocalShapeBasedAveraging( const UniformVolume::SmartConstPtr targetImage ) : Superclass( targetImage ) {}
 
-  /// Set flag to detect outliers in the co-registered distance maps.
-  void SetDetectOutliers( const bool detectOutliers = true )
+  /// Set flag to detect local outliers at each pixel in the co-registered distance maps.
+  void SetDetectLocalOutliers( const bool detectOutliers = true )
   {
-    this->m_DetectOutliers = detectOutliers;
+    this->m_DetectLocalOutliers = detectOutliers;
   }
   
   /// Add an atlas (pair of reformatted, target-matched intensity image and label map).
@@ -80,7 +80,17 @@ private:
   std::vector<UniformVolume::SmartConstPtr> m_AtlasDMaps;
 
   /// Flag for outlier detection.
-  bool m_DetectOutliers;
+  bool m_DetectLocalOutliers;
+
+protected:
+  /** Delete atlas with given index. 
+   * Call inherited member, then delete distance map.
+   */
+  virtual void DeleteAtlas( const size_t i )
+  {
+    this->Superclass::DeleteAtlas( i );
+    this->m_AtlasDMaps.erase( this->m_AtlasDMaps.begin() + i );
+  }
 };
 
 } // namespace cmtk

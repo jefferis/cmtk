@@ -66,8 +66,16 @@ public:
 		    UniformVolume::IndexType( UniformVolume::IndexType::Init( 1 ) ) )
   {}
   
-  /// Add an atlas (pair of reformatted, target-matched intensity image and label map).
+  /// Add an atlas image (reformatted, target-matched intensity image).
   void AddAtlasImage( const UniformVolume::SmartConstPtr image );
+
+  /** Exclude global outliers.
+   * Detect atlases with abnormally low correlation between reformatted atlas and target image,
+   * then delete these atlases. Outliers are defined as NCC below Q1-1.5*(Q3-Q1), where Q1 is
+   * the 25th percentile of NCC between atlas and target over all atlases, Q3 is the 75th 
+   * percentile.
+   */
+  void ExcludeGlobalOutliers();
 
   /// Set patch radius.
   void SetPatchRadius( const size_t radius )
@@ -104,6 +112,15 @@ protected:
 
   /// Patch search region in pixels (x,y,z).
   UniformVolume::RegionType m_SearchRegion;
+
+  /** Delete atlas with given index. 
+   * Derived classes may need to overload this to make sure additional  atlas components (e.g.,
+   * distance map, label map) are also properly deleted.
+   */
+  virtual void DeleteAtlas( const size_t i )
+  {
+    this->m_AtlasImages.erase( this->m_AtlasImages.begin() + i );
+  }
 };
 
 } // namespace cmtk

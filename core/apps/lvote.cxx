@@ -50,13 +50,13 @@ doMain
   const char* targetImagePath = NULL;
   std::vector<std::string> atlasImagesLabels;
 
-  bool detectOutliers = false;
+  bool detectGlobalOutliers = false;
   size_t patchRadius = 5;
 
   const char* outputImagePath = "lvote.nii";
 
   cmtk::Types::DataItem paddingValue = 0;
-  bool paddingFlag = false;
+  bool paddingFlag = false;  
   
   try
     {
@@ -72,6 +72,7 @@ doMain
     cl.EndGroup();
 
     cl.AddOption( Key( "patch-radius" ), &patchRadius, "Radius of image patch (in pixels) used for local similarity computation." );
+    cl.AddSwitch( Key( "no-global-outliers" ), &detectGlobalOutliers, true, "Detect and exclude global outliers by removing poorly correlated atlases prior to local SBA procedure." );
 
     cl.AddOption( Key( 'o', "output" ), &outputImagePath, "File system path for the output image." );
 
@@ -124,7 +125,10 @@ doMain
     
     lvote.AddAtlas( atlasImage, atlasLabels );
     }
-  
+
+  if ( detectGlobalOutliers )
+    lvote.ExcludeGlobalOutliers();
+    
   targetImage->SetData( lvote.GetResult() );
   
   if ( outputImagePath )

@@ -101,8 +101,8 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Se
 	labels[n] = static_cast<short>( (value <= 0) ? 1 : 0 );
       }
 
-    // detect outliers in the distance maps, ie., grossly misregistered atlases
-    if ( this->m_DetectOutliers )
+    // detect local outliers in the distance maps, ie., grossly misregistered atlases
+    if ( this->m_DetectLocalOutliers )
       {
       // create vector of distance values
       for ( size_t n = 0; n < nAtlases; ++n )

@@ -77,6 +77,15 @@ protected:
   /// Vector of target-matched atlas label maps.
   std::vector<UniformVolume::SmartConstPtr> m_AtlasLabels;
 
+  /** Delete atlas with given index. 
+   * Call inherited member, then delete distance map.
+   */
+  virtual void DeleteAtlas( const size_t i )
+  {
+    this->Superclass::DeleteAtlas( i );
+    this->m_AtlasLabels.erase( this->m_AtlasLabels.begin() + i );
+  }
+
 private:
   /// Compute result for a region.
   void ComputeResultForRegion( const Self::TargetRegionType& region, TypedArray& result ) const;

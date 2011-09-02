@@ -742,8 +742,10 @@ IF(NOT CMTK_USE_MPI)
     SET(testList ${testList} 
       lvoteDefault
       lvoteRadius3
+      lvoteOutliersGlobal
       lsbaRadius3
       lsbaRadius3Outliers
+      lsbaRadius3OutliersGlobal
       lsbaRadius3Search1)
   ENDIF(CMTK_BUILD_UNSTABLE)
   
