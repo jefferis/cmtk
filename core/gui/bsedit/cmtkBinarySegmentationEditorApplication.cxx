@@ -57,10 +57,10 @@ cmtk::BinarySegmentationEditorApplication
   cl.SetProgramInfo( CommandLine::PRG_TITLE, "Fusion viewer." );
 
   const char* imagePathFix;
-  cl.AddParameter( &imagePathFix, "FixedImage", "Fixed image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+  cl.AddParameter( &imagePathFix, "MaskImage", "Binary image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
   
   const char* imagePathMov;
-  cl.AddParameter( &imagePathMov, "MovingImage", "Moving image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+  cl.AddParameter( &imagePathMov, "GreyImage", "Intensity image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
 
   try
     {
@@ -71,23 +71,24 @@ cmtk::BinarySegmentationEditorApplication
     throw(ex);
     }
 
-  this->m_Fixed.m_Volume = VolumeIO::ReadOriented( imagePathFix );
-  if ( ! this->m_Fixed.m_Volume )
+  this->m_IntensityImage.m_Volume = VolumeIO::ReadOriented( imagePathFix );
+  if ( ! this->m_IntensityImage.m_Volume )
     {
     StdErr << "Fixed image '" << imagePathFix << "' could not be read.\n";
     throw( ExitException( 1 ) );
     }
-  this->m_Fixed.m_DataRange = this->m_Fixed.m_Volume->GetData()->GetRange();
+  this->m_IntensityImage.m_DataRange = this->m_IntensityImage.m_Volume->GetData()->GetRange();
 
   // per-dimension scale factors make sure non-square pixels are displayed square
-  this->m_ScalePixels = this->m_Fixed.m_Volume->Deltas();
+  this->m_ScalePixels = this->m_IntensityImage.m_Volume->Deltas();
   this->m_ScalePixels *= 1.0 / this->m_ScalePixels.MinValue();
 
   this->m_MainWindowUI.setupUi( this->m_MainWindow );
   this->m_MainWindow->setWindowIcon( QtIcons::WindowIcon() );
 
-  this->InitViewData( this->m_Fixed, this->m_MainWindowUI.fixedView );
-
+  this->InitViewDisplay( this->m_Foreground, this->m_MainWindowUI.fixedView );
+  this->InitViewDisplay( this->m_Background, this->m_MainWindowUI.movingView );
+  
   QObject::connect( this->m_MainWindowUI.blackSliderFix, SIGNAL( valueChanged( int ) ), this, SLOT( fixedBlackWhiteChanged() ) );
   QObject::connect( this->m_MainWindowUI.whiteSliderFix, SIGNAL( valueChanged( int ) ), this, SLOT( fixedBlackWhiteChanged() ) );
   
@@ -163,17 +164,15 @@ cmtk::BinarySegmentationEditorApplication
 
 void
 cmtk::BinarySegmentationEditorApplication
-::InitViewData( Self::Data& data, QGraphicsView* view )
+::InitViewDisplay( Self::Display& display, QGraphicsView* view )
 {
-  data.m_ColorMapIndex = 0;
-
   const QPen redPen( QColor( 255, 0, 0 ) );
 
-  data.m_Scene = new QGraphicsScene;
-  QObject::connect( data.m_PixmapItem, SIGNAL( mousePressed( QGraphicsSceneMouseEvent* ) ), this, SLOT( mousePressed( QGraphicsSceneMouseEvent* ) ) );
-
-  data.m_View = view;
-  data.m_View->setScene( data.m_Scene );
+  display.m_Scene = new QGraphicsScene;
+  QObject::connect( display.m_PixmapItem, SIGNAL( mousePressed( QGraphicsSceneMouseEvent* ) ), this, SLOT( mousePressed( QGraphicsSceneMouseEvent* ) ) );
+  
+  display.m_View = view;
+  display.m_View->setScene( display.m_Scene );
 }
 
 
@@ -181,8 +180,8 @@ void
 cmtk::BinarySegmentationEditorApplication
 ::changeFixedColor( QAction* action )
 {
-  this->m_Fixed.m_ColorMapIndex = action->data().toInt();
-  this->UpdateFixedImage();
+  this->m_IntensityImage.m_ColorMapIndex = action->data().toInt();
+  this->UpdateImage();
 }
 
 void
@@ -193,8 +192,8 @@ cmtk::BinarySegmentationEditorApplication
     {
     this->m_SliceIndex = slice;
 
-    this->m_Fixed.m_Slice = this->m_Fixed.m_Volume->ExtractSlice( this->m_SliceAxis, this->m_SliceIndex );
-    this->UpdateFixedImage();
+    this->m_IntensityImage.m_Slice = this->m_IntensityImage.m_Volume->ExtractSlice( this->m_SliceAxis, this->m_SliceIndex );
+    this->UpdateImage();
 
     this->m_MainWindowUI.sliceLabel->setText( QString("Slice: %1").arg( this->m_SliceIndex ) );
     }
@@ -205,14 +204,14 @@ cmtk::BinarySegmentationEditorApplication
 ::changeZoom( QAction* action )
 {
   this->m_ZoomFactor = static_cast<float>( action->data().toDouble() ); // older Qt doesn't have QVariant::toFloat()
-  this->UpdateFixedImage();
+  this->UpdateImage();
 }
 
 void
 cmtk::BinarySegmentationEditorApplication
 ::fixedBlackWhiteChanged()
 {
-  this->UpdateFixedImage();
+  this->UpdateImage();
 }
 
 void
@@ -240,8 +239,8 @@ cmtk::BinarySegmentationEditorApplication
     this->m_SliceAxis = sliceAxis;
 
     this->m_SliceIndex = -1; // unset previously set slice index to ensure update of moving slice
-    const int newSliceIndex = static_cast<int>( this->m_Fixed.m_Volume->GetDims()[this->m_SliceAxis] / 2 );
-    this->m_MainWindowUI.sliceSlider->setRange( 0, this->m_Fixed.m_Volume->GetDims()[this->m_SliceAxis]-1 );
+    const int newSliceIndex = static_cast<int>( this->m_IntensityImage.m_Volume->GetDims()[this->m_SliceAxis] / 2 );
+    this->m_MainWindowUI.sliceSlider->setRange( 0, this->m_IntensityImage.m_Volume->GetDims()[this->m_SliceAxis]-1 );
     
     this->setFixedSlice( newSliceIndex );
     this->m_MainWindowUI.sliceSlider->setValue( this->m_SliceIndex );
@@ -326,15 +325,15 @@ cmtk::BinarySegmentationEditorApplication
 
 void
 cmtk::BinarySegmentationEditorApplication
-::UpdateFixedImage()
+::UpdateImage()
 {
-  this->MakeColorTable( this->m_Fixed );
+  this->MakeColorTable( this->m_IntensityImage );
+  
+  const float black = this->m_IntensityImage.m_DataRange.m_LowerBound + this->m_IntensityImage.m_DataRange.Width() * this->m_MainWindowUI.blackSliderFix->value() / 500;
+  const float white = this->m_IntensityImage.m_DataRange.m_LowerBound + this->m_IntensityImage.m_DataRange.Width() * this->m_MainWindowUI.whiteSliderFix->value() / 500;
 
-  const float black = this->m_Fixed.m_DataRange.m_LowerBound + this->m_Fixed.m_DataRange.Width() * this->m_MainWindowUI.blackSliderFix->value() / 500;
-  const float white = this->m_Fixed.m_DataRange.m_LowerBound + this->m_Fixed.m_DataRange.Width() * this->m_MainWindowUI.whiteSliderFix->value() / 500;
-
-  this->MakeImage( this->m_Fixed.m_Image, *(this->m_Fixed.m_Slice), this->m_Fixed.m_ColorTable, black, white );
-  this->UpdateView( this->m_Fixed, this->m_Fixed.m_Image );
+  this->MakeImage( this->m_IntensityImage.m_Image, *(this->m_IntensityImage.m_Slice), this->m_IntensityImage.m_ColorTable, black, white );
+  this->UpdateView( this->m_Foreground, this->m_IntensityImage.m_Image );
 }
 
 void
@@ -364,16 +363,16 @@ cmtk::BinarySegmentationEditorApplication
 
 void
 cmtk::BinarySegmentationEditorApplication
-::UpdateView( Self::Data& data, QImage& image )
+::UpdateView( Self::Display& display, QImage& image )
 {
-  data.m_PixmapItem->setPixmap( QPixmap::fromImage( image ) );
+  display.m_PixmapItem->setPixmap( QPixmap::fromImage( image ) );
 
-  const QRectF bb = data.m_PixmapItem->boundingRect();
-  data.m_Scene->setSceneRect( bb );
+  const QRectF bb = display.m_PixmapItem->boundingRect();
+  display.m_Scene->setSceneRect( bb );
 
   const int idxX = this->GetAxis2DX();
   const int idxY = this->GetAxis2DY();
   
   QTransform zoomTransform = QTransform::fromScale( -this->m_ZoomFactor * this->m_ScalePixels[idxX], -this->m_ZoomFactor * this->m_ScalePixels[idxY] );
-  data.m_View->setTransform( zoomTransform );
+  display.m_View->setTransform( zoomTransform );
 }

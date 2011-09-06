@@ -94,7 +94,7 @@ private:
   /// Designed-generated User Interface for the main window.
   Ui::fviewMainWindow m_MainWindowUI;
 
-  /// Class to bundle fixed and moving image objects.
+  /// Class to bundle data relevant to image objects.
   class Data
   {
   public:
@@ -115,25 +115,33 @@ private:
 
     /// QImage for the current slice.
     QImage m_Image;
+  };
 
+  /// The intensity image data.
+  Self::Data m_IntensityImage;
+
+  /// Class to bundle data relevant to display objects.
+  class Display
+  {
+  public:
     /// The graphics view (this is a link to the view created from the main window uic).
     QGraphicsView* m_View;
-
+    
     /// The graphics scene for this volume.
     QGraphicsScene* m_Scene;
-
+    
     /// The pixmap graphics item with mouse events.
     QGraphicsPixmapItemEvents* m_PixmapItem;
   };
+    
+  /// The foreground display data.
+  Self::Display m_Foreground;
 
-  /// The fixed volume data.
-  Self::Data m_Fixed;
+  /// The foreground display data.
+  Self::Display m_Background;
 
-  /// The fixed volume data.
-  Self::Data m_Moving;
-
-  /// Initialize the view data for the given volume (fixed or moving).
-  void InitViewData( Self::Data& data, /*!< Bundled data for given volume.*/ QGraphicsView* view /*!< The view we want to attach this volume to.*/ );
+  /// Initialize the view for the given display (fore- or background).
+  void InitViewDisplay( Self::Display& display, /*!< Bundled data for given volume.*/ QGraphicsView* view /*!< The view we want to attach this volume to.*/ );
 
   /// The slice axis (0=x, sagittal; 1=y, coronal; 2=z, axial).
   int m_SliceAxis;
@@ -148,7 +156,7 @@ private:
   FixedVector<3,float> m_ScalePixels;
 
   /// Update displayed fixed image slice.
-  void UpdateFixedImage();
+  void UpdateImage();
 
   /// Make a color table based on the color map index.
   void MakeColorTable( Self::Data& data );
@@ -157,7 +165,7 @@ private:
   void MakeImage( QImage& image, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel );
 
   /// Update graphics view using a given image.
-  void UpdateView( Self::Data& data, QImage& image );
+  void UpdateView( Self::Display& display, QImage& image );
 
   /// Get 3D coordinate axis corresponding to 2D x axis.
   int GetAxis2DX() const
