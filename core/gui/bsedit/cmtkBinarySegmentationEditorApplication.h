@@ -66,20 +66,20 @@ public:
   BinarySegmentationEditorApplication( int& argc, char* argv[] );
 
 private slots:
-  /// Update displayed fixed image slice.
-  void setFixedSlice( int slice );
+  /// Update displayed image slice.
+  void setSlice( int slice );
 
   /// Update zoom factor from UI.
   void changeZoom( QAction* action /*!< Action to set new zoom factor. */ );
 
-  /// Change fixed image color map.
-  void changeFixedColor( QAction* );
+  /// Change image color map.
+  void changeColor( QAction* );
 
   /// Update slice direction from UI.
   void changeSliceDirection( QAction* action /*!< Action to set new slice direction. */ );
 
   /// Fixed image black/white has changed.
-  void fixedBlackWhiteChanged();
+  void blackWhiteChanged();
 
   /// Update slice direction from integer.
   void changeSliceDirection( const int sliceAxis );
@@ -93,6 +93,9 @@ private:
 
   /// Designed-generated User Interface for the main window.
   Ui::fviewMainWindow m_MainWindowUI;
+
+  /// Binary mask image.
+  UniformVolume::SmartPtr m_BinaryImage;
 
   /// Class to bundle data relevant to image objects.
   class Data
@@ -146,7 +149,7 @@ private:
   /// The slice axis (0=x, sagittal; 1=y, coronal; 2=z, axial).
   int m_SliceAxis;
 
-  /// Slice index in the fixed image along the slice axis.
+  /// Slice index along the slice axis.
   int m_SliceIndex;
 
   /// Zoom scale factor.
@@ -155,7 +158,7 @@ private:
   /// Scale factors for non-square pixels.
   FixedVector<3,float> m_ScalePixels;
 
-  /// Update displayed fixed image slice.
+  /// Update displayed image slice.
   void UpdateImage();
 
   /// Make a color table based on the color map index.

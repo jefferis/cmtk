@@ -21,7 +21,7 @@
        <enum>QLayout::SetMaximumSize</enum>
       </property>
       <item row="4" column="0">
-       <widget class="QSlider" name="blackSliderFix">
+       <widget class="QSlider" name="blackSlider">
         <property name="maximum">
          <number>499</number>
         </property>
@@ -44,7 +44,7 @@
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="0" column="1">
-          <widget class="QGraphicsView" name="fixedView">
+          <widget class="QGraphicsView" name="foregroundView">
            <property name="cursor" stdset="0">
             <cursorShape>CrossCursor</cursorShape>
            </property>
@@ -60,7 +60,7 @@
         </property>
         <layout class="QGridLayout" name="gridLayout_4">
          <item row="0" column="0">
-          <widget class="QGraphicsView" name="movingView">
+          <widget class="QGraphicsView" name="backgroundView">
            <property name="cursor" stdset="0">
             <cursorShape>CrossCursor</cursorShape>
            </property>
@@ -111,7 +111,7 @@
        </layout>
       </item>
       <item row="4" column="1">
-       <widget class="QSlider" name="whiteSliderFix">
+       <widget class="QSlider" name="whiteSlider">
         <property name="maximum">
          <number>499</number>
         </property>
@@ -175,19 +175,19 @@
      <property name="title">
       <string>&amp;Color Map</string>
      </property>
-     <addaction name="actionFixedGrey"/>
+     <addaction name="actionGrey"/>
      <addaction name="separator"/>
-     <addaction name="actionFixedRed"/>
-     <addaction name="actionFixedGreen"/>
-     <addaction name="actionFixedBlue"/>
+     <addaction name="actionRed"/>
+     <addaction name="actionGreen"/>
+     <addaction name="actionBlue"/>
      <addaction name="separator"/>
-     <addaction name="actionFixedCyan"/>
-     <addaction name="actionFixedYellow"/>
-     <addaction name="actionFixedMagenta"/>
+     <addaction name="actionCyan"/>
+     <addaction name="actionYellow"/>
+     <addaction name="actionMagenta"/>
      <addaction name="separator"/>
-     <addaction name="actionFixedBlueRed"/>
-     <addaction name="actionFixedRedBlue"/>
-     <addaction name="actionFixedLabels"/>
+     <addaction name="actionBlueRed"/>
+     <addaction name="actionRedBlue"/>
+     <addaction name="actionLabels"/>
     </widget>
     <widget class="QMenu" name="menuSlice_Orientation">
      <property name="title">
@@ -417,12 +417,7 @@
     <string>About...</string>
    </property>
   </action>
-  <action name="actionMoving_Image_Color_Map">
-   <property name="text">
-    <string>&amp;Moving Image Color Map</string>
-   </property>
-  </action>
-  <action name="actionFixedGrey">
+  <action name="actionGrey">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -433,7 +428,7 @@
     <string>Black/&amp;White</string>
    </property>
   </action>
-  <action name="actionFixedRed">
+  <action name="actionRed">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -441,7 +436,7 @@
     <string>&amp;Red</string>
    </property>
   </action>
-  <action name="actionFixedGreen">
+  <action name="actionGreen">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -449,7 +444,7 @@
     <string>&amp;Green</string>
    </property>
   </action>
-  <action name="actionFixedBlue">
+  <action name="actionBlue">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -457,7 +452,7 @@
     <string>&amp;Blue</string>
    </property>
   </action>
-  <action name="actionFixedCyan">
+  <action name="actionCyan">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -465,7 +460,7 @@
     <string>&amp;Cyan</string>
    </property>
   </action>
-  <action name="actionFixedYellow">
+  <action name="actionYellow">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -473,7 +468,7 @@
     <string>&amp;Yellow</string>
    </property>
   </action>
-  <action name="actionFixedMagenta">
+  <action name="actionMagenta">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -481,7 +476,7 @@
     <string>&amp;Magenta</string>
    </property>
   </action>
-  <action name="actionFixedBlueRed">
+  <action name="actionBlueRed">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -489,7 +484,7 @@
     <string>Blue to Red</string>
    </property>
   </action>
-  <action name="actionFixedRedBlue">
+  <action name="actionRedBlue">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -497,117 +492,12 @@
     <string>Red to Blue</string>
    </property>
   </action>
-  <action name="actionFixedLabels">
+  <action name="actionLabels">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
     <string>&amp;Labels</string>
-   </property>
-  </action>
-  <action name="actionMovingGrey">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Black / &amp;White</string>
-   </property>
-  </action>
-  <action name="actionMovingRed">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Red</string>
-   </property>
-  </action>
-  <action name="actionMovingGreen">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Green</string>
-   </property>
-  </action>
-  <action name="actionMovingBlue">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Blue</string>
-   </property>
-  </action>
-  <action name="actionMovingCyan">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Cyan</string>
-   </property>
-  </action>
-  <action name="actionMovingYellow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Yellow</string>
-   </property>
-  </action>
-  <action name="actionMovingMagenta">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Magenta</string>
-   </property>
-  </action>
-  <action name="actionMovingBlueRed">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Blue to Red</string>
-   </property>
-  </action>
-  <action name="actionMovingRedBlue">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Red to Blue</string>
-   </property>
-  </action>
-  <action name="actionMovingLabels">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Labels</string>
-   </property>
-  </action>
-  <action name="actionXformIdentity">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Identity</string>
-   </property>
-   <property name="shortcut">
-    <string>Alt+I</string>
-   </property>
-  </action>
-  <action name="actionXformWarp">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Warp</string>
-   </property>
-   <property name="shortcut">
-    <string>Alt+W</string>
    </property>
   </action>
  </widget>

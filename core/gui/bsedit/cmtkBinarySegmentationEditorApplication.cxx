@@ -56,11 +56,11 @@ cmtk::BinarySegmentationEditorApplication
   CommandLine cl;
   cl.SetProgramInfo( CommandLine::PRG_TITLE, "Fusion viewer." );
 
-  const char* imagePathFix;
-  cl.AddParameter( &imagePathFix, "MaskImage", "Binary image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+  const char* imagePathMsk;
+  cl.AddParameter( &imagePathMsk, "MaskImage", "Binary image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
   
-  const char* imagePathMov;
-  cl.AddParameter( &imagePathMov, "GreyImage", "Intensity image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+  const char* imagePathInt;
+  cl.AddParameter( &imagePathInt, "GreyImage", "Intensity image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
 
   try
     {
@@ -71,10 +71,17 @@ cmtk::BinarySegmentationEditorApplication
     throw(ex);
     }
 
-  this->m_IntensityImage.m_Volume = VolumeIO::ReadOriented( imagePathFix );
+  this->m_BinaryImage = VolumeIO::ReadOriented( imagePathMsk );
+  if ( ! this->m_BinaryImage )
+    {
+    StdErr << "Binary image '" << imagePathMsk << "' could not be read.\n";
+    throw( ExitException( 1 ) );
+    }
+  
+  this->m_IntensityImage.m_Volume = VolumeIO::ReadOriented( imagePathInt );
   if ( ! this->m_IntensityImage.m_Volume )
     {
-    StdErr << "Fixed image '" << imagePathFix << "' could not be read.\n";
+    StdErr << "Intensity image '" << imagePathInt << "' could not be read.\n";
     throw( ExitException( 1 ) );
     }
   this->m_IntensityImage.m_DataRange = this->m_IntensityImage.m_Volume->GetData()->GetRange();
@@ -86,11 +93,11 @@ cmtk::BinarySegmentationEditorApplication
   this->m_MainWindowUI.setupUi( this->m_MainWindow );
   this->m_MainWindow->setWindowIcon( QtIcons::WindowIcon() );
 
-  this->InitViewDisplay( this->m_Foreground, this->m_MainWindowUI.fixedView );
-  this->InitViewDisplay( this->m_Background, this->m_MainWindowUI.movingView );
+  this->InitViewDisplay( this->m_Foreground, this->m_MainWindowUI.foregroundView );
+  this->InitViewDisplay( this->m_Background, this->m_MainWindowUI.backgroundView );
   
-  QObject::connect( this->m_MainWindowUI.blackSliderFix, SIGNAL( valueChanged( int ) ), this, SLOT( fixedBlackWhiteChanged() ) );
-  QObject::connect( this->m_MainWindowUI.whiteSliderFix, SIGNAL( valueChanged( int ) ), this, SLOT( fixedBlackWhiteChanged() ) );
+  QObject::connect( this->m_MainWindowUI.blackSlider, SIGNAL( valueChanged( int ) ), this, SLOT( blackWhiteChanged() ) );
+  QObject::connect( this->m_MainWindowUI.whiteSlider, SIGNAL( valueChanged( int ) ), this, SLOT( blackWhiteChanged() ) );
   
   QActionGroup* zoomGroup = new QActionGroup( this->m_MainWindow );
   zoomGroup->setExclusive( true );
@@ -109,30 +116,30 @@ cmtk::BinarySegmentationEditorApplication
 
   QObject::connect( zoomGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( changeZoom( QAction* ) ) );
 
-  QActionGroup* fixedColorGroup = new QActionGroup( this->m_MainWindow );
-  fixedColorGroup->setExclusive( true );
-  this->m_MainWindowUI.actionFixedGrey->setData( QVariant( 0 ) );
-  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedGrey );
-  this->m_MainWindowUI.actionFixedRed->setData( QVariant( 1 ) );
-  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedRed );
-  this->m_MainWindowUI.actionFixedGreen->setData( QVariant( 2 ) );
-  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedGreen );
-  this->m_MainWindowUI.actionFixedBlue->setData( QVariant( 3 ) );
-  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedBlue );
-  this->m_MainWindowUI.actionFixedCyan->setData( QVariant( 4 ) );
-  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedCyan );
-  this->m_MainWindowUI.actionFixedYellow->setData( QVariant( 5 ) );
-  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedYellow );
-  this->m_MainWindowUI.actionFixedMagenta->setData( QVariant( 6 ) );
-  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedMagenta );
-  this->m_MainWindowUI.actionFixedBlueRed->setData( QVariant( 7 ) );
-  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedBlueRed );
-  this->m_MainWindowUI.actionFixedRedBlue->setData( QVariant( 8 ) );
-  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedRedBlue );
-  this->m_MainWindowUI.actionFixedLabels->setData( QVariant( 9 ) );
-  fixedColorGroup->addAction( this->m_MainWindowUI.actionFixedLabels );
+  QActionGroup* colorGroup = new QActionGroup( this->m_MainWindow );
+  colorGroup->setExclusive( true );
+  this->m_MainWindowUI.actionGrey->setData( QVariant( 0 ) );
+  colorGroup->addAction( this->m_MainWindowUI.actionGrey );
+  this->m_MainWindowUI.actionRed->setData( QVariant( 1 ) );
+  colorGroup->addAction( this->m_MainWindowUI.actionRed );
+  this->m_MainWindowUI.actionGreen->setData( QVariant( 2 ) );
+  colorGroup->addAction( this->m_MainWindowUI.actionGreen );
+  this->m_MainWindowUI.actionBlue->setData( QVariant( 3 ) );
+  colorGroup->addAction( this->m_MainWindowUI.actionBlue );
+  this->m_MainWindowUI.actionCyan->setData( QVariant( 4 ) );
+  colorGroup->addAction( this->m_MainWindowUI.actionCyan );
+  this->m_MainWindowUI.actionYellow->setData( QVariant( 5 ) );
+  colorGroup->addAction( this->m_MainWindowUI.actionYellow );
+  this->m_MainWindowUI.actionMagenta->setData( QVariant( 6 ) );
+  colorGroup->addAction( this->m_MainWindowUI.actionMagenta );
+  this->m_MainWindowUI.actionBlueRed->setData( QVariant( 7 ) );
+  colorGroup->addAction( this->m_MainWindowUI.actionBlueRed );
+  this->m_MainWindowUI.actionRedBlue->setData( QVariant( 8 ) );
+  colorGroup->addAction( this->m_MainWindowUI.actionRedBlue );
+  this->m_MainWindowUI.actionLabels->setData( QVariant( 9 ) );
+  colorGroup->addAction( this->m_MainWindowUI.actionLabels );
 
-  QObject::connect( fixedColorGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( changeFixedColor( QAction* ) ) );
+  QObject::connect( colorGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( changeColor( QAction* ) ) );
 
   QActionGroup* sliceGroup = new QActionGroup( this->m_MainWindow );
   sliceGroup->setExclusive( true );
@@ -146,18 +153,18 @@ cmtk::BinarySegmentationEditorApplication
   QObject::connect( sliceGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( changeSliceDirection( QAction* ) ) );
   
   this->changeSliceDirection( AXIS_Z );
-  QObject::connect( this->m_MainWindowUI.sliceSlider, SIGNAL( valueChanged( int ) ), this, SLOT( setFixedSlice( int ) ) );
+  QObject::connect( this->m_MainWindowUI.sliceSlider, SIGNAL( valueChanged( int ) ), this, SLOT( setSlice( int ) ) );
 
   // synchronize sliders of the two graphics views
-  QObject::connect( this->m_MainWindowUI.fixedView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), 
-		    this->m_MainWindowUI.movingView->horizontalScrollBar(), SLOT( setValue( int ) ) );
-  QObject::connect( this->m_MainWindowUI.fixedView->verticalScrollBar(), SIGNAL( valueChanged( int ) ), 
-		    this->m_MainWindowUI.movingView->verticalScrollBar(), SLOT( setValue( int) ) );
+  QObject::connect( this->m_MainWindowUI.foregroundView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), 
+		    this->m_MainWindowUI.backgroundView->horizontalScrollBar(), SLOT( setValue( int ) ) );
+  QObject::connect( this->m_MainWindowUI.foregroundView->verticalScrollBar(), SIGNAL( valueChanged( int ) ), 
+		    this->m_MainWindowUI.backgroundView->verticalScrollBar(), SLOT( setValue( int) ) );
 
-  QObject::connect( this->m_MainWindowUI.movingView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), 
-		    this->m_MainWindowUI.fixedView->horizontalScrollBar(), SLOT( setValue( int ) ) );
-  QObject::connect( this->m_MainWindowUI.movingView->verticalScrollBar(), SIGNAL( valueChanged( int ) ), 
-		    this->m_MainWindowUI.fixedView->verticalScrollBar(), SLOT( setValue( int ) ) );
+  QObject::connect( this->m_MainWindowUI.backgroundView->horizontalScrollBar(), SIGNAL( valueChanged( int ) ), 
+		    this->m_MainWindowUI.foregroundView->horizontalScrollBar(), SLOT( setValue( int ) ) );
+  QObject::connect( this->m_MainWindowUI.backgroundView->verticalScrollBar(), SIGNAL( valueChanged( int ) ), 
+		    this->m_MainWindowUI.foregroundView->verticalScrollBar(), SLOT( setValue( int ) ) );
 
   this->m_MainWindow->show();
 }
@@ -178,7 +185,7 @@ cmtk::BinarySegmentationEditorApplication
 
 void
 cmtk::BinarySegmentationEditorApplication
-::changeFixedColor( QAction* action )
+::changeColor( QAction* action )
 {
   this->m_IntensityImage.m_ColorMapIndex = action->data().toInt();
   this->UpdateImage();
@@ -186,7 +193,7 @@ cmtk::BinarySegmentationEditorApplication
 
 void
 cmtk::BinarySegmentationEditorApplication
-::setFixedSlice( int slice )
+::setSlice( int slice )
 {
   if ( this->m_SliceIndex != slice )
     {
@@ -209,7 +216,7 @@ cmtk::BinarySegmentationEditorApplication
 
 void
 cmtk::BinarySegmentationEditorApplication
-::fixedBlackWhiteChanged()
+::blackWhiteChanged()
 {
   this->UpdateImage();
 }
@@ -242,7 +249,7 @@ cmtk::BinarySegmentationEditorApplication
     const int newSliceIndex = static_cast<int>( this->m_IntensityImage.m_Volume->GetDims()[this->m_SliceAxis] / 2 );
     this->m_MainWindowUI.sliceSlider->setRange( 0, this->m_IntensityImage.m_Volume->GetDims()[this->m_SliceAxis]-1 );
     
-    this->setFixedSlice( newSliceIndex );
+    this->setSlice( newSliceIndex );
     this->m_MainWindowUI.sliceSlider->setValue( this->m_SliceIndex );
     
     const char* labelFrom[3] = { "Left", "Posterior", "Inferior" };
@@ -329,8 +336,8 @@ cmtk::BinarySegmentationEditorApplication
 {
   this->MakeColorTable( this->m_IntensityImage );
   
-  const float black = this->m_IntensityImage.m_DataRange.m_LowerBound + this->m_IntensityImage.m_DataRange.Width() * this->m_MainWindowUI.blackSliderFix->value() / 500;
-  const float white = this->m_IntensityImage.m_DataRange.m_LowerBound + this->m_IntensityImage.m_DataRange.Width() * this->m_MainWindowUI.whiteSliderFix->value() / 500;
+  const float black = this->m_IntensityImage.m_DataRange.m_LowerBound + this->m_IntensityImage.m_DataRange.Width() * this->m_MainWindowUI.blackSlider->value() / 500;
+  const float white = this->m_IntensityImage.m_DataRange.m_LowerBound + this->m_IntensityImage.m_DataRange.Width() * this->m_MainWindowUI.whiteSlider->value() / 500;
 
   this->MakeImage( this->m_IntensityImage.m_Image, *(this->m_IntensityImage.m_Slice), this->m_IntensityImage.m_ColorTable, black, white );
   this->UpdateView( this->m_Foreground, this->m_IntensityImage.m_Image );
