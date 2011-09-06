@@ -94,6 +94,17 @@ private:
   /// Designed-generated User Interface for the main window.
   Ui::fviewMainWindow m_MainWindowUI;
 
+  /// Cursor size.
+  int m_CursorSize;
+
+  /** Cursor shape.
+   * 0 - box, 1 - circle
+   */
+  int m_CursorShape;
+
+  /// Update cursor based on zoom factor etc.
+  void UpdateCursor();
+
   /// Binary mask image.
   UniformVolume::SmartPtr m_BinaryImage;
 

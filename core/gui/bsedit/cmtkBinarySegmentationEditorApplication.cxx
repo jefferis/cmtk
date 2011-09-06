@@ -41,6 +41,8 @@
 #include <QtGui/QPainter>
 #include <QtGui/QImage>
 #include <QtGui/QScrollBar>
+#include <QtGui/QCursor>
+#include <QtGui/QBitmap>
 
 #include <vector>
 #include <string>
@@ -49,6 +51,8 @@ cmtk::BinarySegmentationEditorApplication
 ::BinarySegmentationEditorApplication( int& argc, char* argv[] ) 
   : QApplication( argc, argv ),
     m_MainWindow( new QMainWindow ),
+    m_CursorSize( 5 ),
+    m_CursorShape( 0 ),
     m_SliceAxis( -1 ),
     m_SliceIndex( -1 ),
     m_ZoomFactor( 1.0 )
@@ -95,7 +99,9 @@ cmtk::BinarySegmentationEditorApplication
 
   this->InitViewDisplay( this->m_Foreground, this->m_MainWindowUI.foregroundView );
   this->InitViewDisplay( this->m_Background, this->m_MainWindowUI.backgroundView );
-  
+
+  this->UpdateCursor();
+
   QObject::connect( this->m_MainWindowUI.blackSlider, SIGNAL( valueChanged( int ) ), this, SLOT( blackWhiteChanged() ) );
   QObject::connect( this->m_MainWindowUI.whiteSlider, SIGNAL( valueChanged( int ) ), this, SLOT( blackWhiteChanged() ) );
   
@@ -213,6 +219,7 @@ cmtk::BinarySegmentationEditorApplication
 ::changeZoom( QAction* action )
 {
   this->m_ZoomFactor = static_cast<float>( action->data().toDouble() ); // older Qt doesn't have QVariant::toFloat()
+  this->UpdateCursor();
   this->UpdateImage();
 }
 
@@ -358,8 +365,7 @@ cmtk::BinarySegmentationEditorApplication
   int dimX = slice.GetDims()[idxX];
   int dimY = slice.GetDims()[idxY];
 
-  image = QImage( dimX, dimY, QImage::Format_Indexed8 );
-  image.setColorTable( colorTable );
+  image = QImage( dimX, dimY, QImage::Format_RGB32 );
   
   const float scaleLevel = 1.0 / (whiteLevel-blackLevel);
   
@@ -370,11 +376,11 @@ cmtk::BinarySegmentationEditorApplication
       {
       if ( fg == ( this->m_BinarySlice->GetDataAt( idx ) > 0 ) )
 	{
-	image.setPixel( x, y, static_cast<int>( 255 * std::min<float>( 1, std::max<float>( 0, (slice.GetDataAt( idx ) - blackLevel) * scaleLevel ) ) ) );
+	image.setPixel( x, y, colorTable[static_cast<int>( 255 * std::min<float>( 1, std::max<float>( 0, (slice.GetDataAt( idx ) - blackLevel) * scaleLevel ) ) )] );
 	}
       else
 	{
-	image.setPixel( x, y, 0 );
+	image.setPixel( x, y, QColor( 255, 0, 0 ).rgb() );
 	}
       }
     }
@@ -395,3 +401,41 @@ cmtk::BinarySegmentationEditorApplication
   QTransform zoomTransform = QTransform::fromScale( -this->m_ZoomFactor * this->m_ScalePixels[idxX], -this->m_ZoomFactor * this->m_ScalePixels[idxY] );
   display.m_View->setTransform( zoomTransform );
 }
+
+void
+cmtk::BinarySegmentationEditorApplication
+::UpdateCursor()
+{
+  const int size = this->m_CursorSize * this->m_ZoomFactor;
+
+  QBitmap* cursorBitmap = new QBitmap( size, size );
+  QBitmap* cursorMask = new QBitmap( size, size );
+  
+  QPainter pCursorBitmap( cursorBitmap );
+  QPainter pCursorMask( cursorMask );
+  
+  pCursorBitmap.fillRect( 0, 0, size, size, Qt::color0 );
+  pCursorMask.fillRect( 0, 0, size, size, Qt::color0 );
+  
+  pCursorBitmap.setPen( Qt::color1 );
+  pCursorMask.setPen( Qt::color1 );
+  
+  switch ( this->m_CursorShape )
+    {
+    default:
+    case 0 :
+      pCursorBitmap.drawRect( 0, 0, size, size );
+      pCursorMask.drawRect( 0, 0, size, size );
+      pCursorMask.drawRect( 1, 1, size-2, size-2 );
+      break;
+    case 1 :
+      pCursorBitmap.drawEllipse( 0, 0, size, size );
+      pCursorMask.drawEllipse( 0, 0, size, size );
+      pCursorMask.drawEllipse( 1, 1, size-2, size-2 );
+      break;
+    }
+
+  this->m_MainWindowUI.foregroundView->viewport()->setCursor( QCursor( *cursorBitmap, *cursorMask ) );
+  this->m_MainWindowUI.backgroundView->viewport()->setCursor( QCursor( *cursorBitmap, *cursorMask ) );
+}
+

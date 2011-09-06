@@ -44,11 +44,7 @@
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="0" column="1">
-          <widget class="QGraphicsView" name="foregroundView">
-           <property name="cursor" stdset="0">
-            <cursorShape>CrossCursor</cursorShape>
-           </property>
-          </widget>
+          <widget class="QGraphicsView" name="foregroundView"/>
          </item>
         </layout>
        </widget>
@@ -60,11 +56,7 @@
         </property>
         <layout class="QGridLayout" name="gridLayout_4">
          <item row="0" column="0">
-          <widget class="QGraphicsView" name="backgroundView">
-           <property name="cursor" stdset="0">
-            <cursorShape>CrossCursor</cursorShape>
-           </property>
-          </widget>
+          <widget class="QGraphicsView" name="backgroundView"/>
          </item>
         </layout>
        </widget>
