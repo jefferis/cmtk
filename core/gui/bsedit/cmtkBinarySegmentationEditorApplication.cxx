@@ -176,6 +176,8 @@ cmtk::BinarySegmentationEditorApplication
   const QPen redPen( QColor( 255, 0, 0 ) );
 
   display.m_Scene = new QGraphicsScene;
+  display.m_PixmapItem = new QGraphicsPixmapItemEvents;
+
   QObject::connect( display.m_PixmapItem, SIGNAL( mousePressed( QGraphicsSceneMouseEvent* ) ), this, SLOT( mousePressed( QGraphicsSceneMouseEvent* ) ) );
   
   display.m_View = view;
