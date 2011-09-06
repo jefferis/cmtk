@@ -97,6 +97,9 @@ private:
   /// Binary mask image.
   UniformVolume::SmartPtr m_BinaryImage;
 
+  /// Current slice from the binary image.
+  UniformVolume::SmartPtr m_BinarySlice;
+
   /// Class to bundle data relevant to image objects.
   class Data
   {
@@ -116,8 +119,11 @@ private:
     /// Color table.
     QVector<QRgb> m_ColorTable;
 
-    /// QImage for the current slice.
-    QImage m_Image;
+    /// QImage for the current slice foreground.
+    QImage m_ImageForeground;
+
+    /// QImage for the current slice background.
+    QImage m_ImageBackground;
   };
 
   /// The intensity image data.
@@ -165,7 +171,7 @@ private:
   void MakeColorTable( Self::Data& data );
 
   /// Make a QImage from slice data and color table.
-  void MakeImage( QImage& image, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel );
+  void MakeImage( QImage& image, const bool fg /*<! Flag for fore- vs. background*/, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel );
 
   /// Update graphics view using a given image.
   void UpdateView( Self::Display& display, QImage& image );

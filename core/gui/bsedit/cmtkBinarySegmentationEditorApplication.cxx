@@ -173,10 +173,9 @@ void
 cmtk::BinarySegmentationEditorApplication
 ::InitViewDisplay( Self::Display& display, QGraphicsView* view )
 {
-  const QPen redPen( QColor( 255, 0, 0 ) );
-
   display.m_Scene = new QGraphicsScene;
   display.m_PixmapItem = new QGraphicsPixmapItemEvents;
+  display.m_Scene->addItem( display.m_PixmapItem );
 
   QObject::connect( display.m_PixmapItem, SIGNAL( mousePressed( QGraphicsSceneMouseEvent* ) ), this, SLOT( mousePressed( QGraphicsSceneMouseEvent* ) ) );
   
@@ -201,6 +200,7 @@ cmtk::BinarySegmentationEditorApplication
     {
     this->m_SliceIndex = slice;
 
+    this->m_BinarySlice = this->m_BinaryImage->ExtractSlice( this->m_SliceAxis, this->m_SliceIndex );
     this->m_IntensityImage.m_Slice = this->m_IntensityImage.m_Volume->ExtractSlice( this->m_SliceAxis, this->m_SliceIndex );
     this->UpdateImage();
 
@@ -341,13 +341,16 @@ cmtk::BinarySegmentationEditorApplication
   const float black = this->m_IntensityImage.m_DataRange.m_LowerBound + this->m_IntensityImage.m_DataRange.Width() * this->m_MainWindowUI.blackSlider->value() / 500;
   const float white = this->m_IntensityImage.m_DataRange.m_LowerBound + this->m_IntensityImage.m_DataRange.Width() * this->m_MainWindowUI.whiteSlider->value() / 500;
 
-  this->MakeImage( this->m_IntensityImage.m_Image, *(this->m_IntensityImage.m_Slice), this->m_IntensityImage.m_ColorTable, black, white );
-  this->UpdateView( this->m_Foreground, this->m_IntensityImage.m_Image );
+  this->MakeImage( this->m_IntensityImage.m_ImageForeground, true, *(this->m_IntensityImage.m_Slice), this->m_IntensityImage.m_ColorTable, black, white );
+  this->MakeImage( this->m_IntensityImage.m_ImageBackground, false, *(this->m_IntensityImage.m_Slice), this->m_IntensityImage.m_ColorTable, black, white );
+  
+  this->UpdateView( this->m_Foreground, this->m_IntensityImage.m_ImageForeground );
+  this->UpdateView( this->m_Background, this->m_IntensityImage.m_ImageBackground );
 }
 
 void
 cmtk::BinarySegmentationEditorApplication
-::MakeImage( QImage& image, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel )
+::MakeImage( QImage& image, const bool fg, const UniformVolume& slice, const QVector<QRgb>& colorTable, const float blackLevel, const float whiteLevel )
 {
   const int idxX = this->GetAxis2DX();
   const int idxY = this->GetAxis2DY();
@@ -365,7 +368,14 @@ cmtk::BinarySegmentationEditorApplication
     {
     for ( int x = 0; x < dimX; ++x, ++idx )
       {
-      image.setPixel( x, y, static_cast<int>( 255 * std::min<float>( 1, std::max<float>( 0, (slice.GetDataAt( idx ) - blackLevel) * scaleLevel ) ) ) );
+      if ( fg == ( this->m_BinarySlice->GetDataAt( idx ) > 0 ) )
+	{
+	image.setPixel( x, y, static_cast<int>( 255 * std::min<float>( 1, std::max<float>( 0, (slice.GetDataAt( idx ) - blackLevel) * scaleLevel ) ) ) );
+	}
+      else
+	{
+	image.setPixel( x, y, 0 );
+	}
       }
     }
 }
