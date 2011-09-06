@@ -28,8 +28,26 @@
 ##  $LastChangedBy$
 ##
 
-SET(CMTK_LIBRARIES "cmtkQt;cmtkPipeline;cmtkSegmentation;cmtkRegistration;cmtkIO;cmtkBase;cmtkNumerics;cmtkSystem")
+QT4_WRAP_UI(BSEDIT_UIS_H bseditMainWindow.ui)
 
-SUBDIRS(triplanar)
-SUBDIRS(fview)
-SUBDIRS(bsedit)
+SET(bsedit_SRCS
+  cmtkBinarySegmentationEditorApplication.cxx
+  )
+
+SET(bsedit_MOC_SRCS
+  cmtkBinarySegmentationEditorApplication.h
+  )
+
+INCLUDE_DIRECTORIES(
+  ${CMAKE_CURRENT_BINARY_DIR}
+  )
+
+IF(QT_WRAP_CPP)
+  QT_WRAP_CPP(bsedit bsedit_SRCS ${bsedit_MOC_SRCS} )
+ENDIF(QT_WRAP_CPP)
+
+ADD_EXECUTABLE(bsedit main.cxx ${bsedit_SRCS} ${BSEDIT_UIS_H})
+TARGET_LINK_LIBRARIES(bsedit ${CMTK_LIBRARIES} ${QT_LIBRARIES} ${CMTK_SYSTEM_LIBRARIES})
+
+INSTALL(TARGETS bsedit RUNTIME DESTINATION bin COMPONENT gui)
+
