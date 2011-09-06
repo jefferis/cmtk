@@ -33,6 +33,7 @@
 #include "cmtkLabelCombinationLocalWeighting.h"
 
 #include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 #include <System/cmtkExitException.h>
 
 #include <Base/cmtkRegionIndexIterator.h>
@@ -78,13 +79,14 @@ cmtk::LabelCombinationLocalWeighting::ExcludeGlobalOutliers()
   
   // compute threshold from 1st quartile and inter-quartile range
   const Types::DataItem lThresh = Q1 - 1.5 * (Q3-Q1);
-
+  
   size_t iAtlas = 0;
   for ( size_t i = 0; i < this->m_AtlasImages.size(); ++i )
     {
     if ( ncc[i] < lThresh )
       {
-      this->DeleteAtlas( iAtlas );      
+      DebugOutput( 2 ) << "INFO: atlas #" << i << " excluded as outlier based on low NCC with target image (" << ncc[i] << ", thresh=" << lThresh << ")\n";
+      this->DeleteAtlas( iAtlas ); 
       }
     else
       {
