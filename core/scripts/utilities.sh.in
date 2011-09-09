@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ##
-##  Copyright 2007-2010 SRI International
+##  Copyright 2007-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -130,11 +130,17 @@ lockfile_delete()
     local lockfile=${file}.lock
 
     if [ -f ${file} ]; then
-	touch --no-create -r ${lockfile} ${file}
+	# do not update timestamp if file is older than lock (i.e., existed before and did not get updated at all)
+	if test ${lockfile} -ot ${file}; then
+	    touch --no-create -r ${lockfile} ${file}
+	fi
     else
-	touch --no-create -r ${lockfile} ${file}.gz
+	# do not update timestamp if file is older than lock (i.e., existed before and did not get updated at all)
+	if test ${lockfile} -ot ${file}.gz; then
+	    touch --no-create -r ${lockfile} ${file}.gz
+	fi
     fi
-
+    
     rm -f ${lockfile}
     trap - INT TERM EXIT
 }
