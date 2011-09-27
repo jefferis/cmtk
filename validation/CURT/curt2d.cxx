@@ -73,6 +73,7 @@ main( const int argc, const char* argv[] )
   const char* pathFix = NULL;
   const char* pathMov = NULL;
   const char* pathOut = NULL;
+  const char* pathDif = NULL;
 
   try
     {
@@ -85,6 +86,7 @@ main( const int argc, const char* argv[] )
     cl.AddParameter( &pathFix, "FixedImage", "Fixed image path" );
     cl.AddParameter( &pathMov, "MovingImage", "Moving image path" );
     cl.AddParameter( &pathOut, "OutputImage", "Output image path" );
+    cl.AddParameter( &pathDif, "DiffImage", "Difference image path" );
     
     cl.Parse( argc, argv );
     }
@@ -97,6 +99,8 @@ main( const int argc, const char* argv[] )
   // Read input images
   QImage fixImage( pathFix );
   QImage movImage( pathMov );
+  QImage outImage( movImage );
+  QImage difImage( movImage );
 
   // Get sorted list of all fixed image pixels
   const size_t nPixelsFix = fixImage.width() * fixImage.height();
@@ -128,9 +132,12 @@ main( const int argc, const char* argv[] )
     const size_t fixIndex = fixIndexValue[i].m_Index;
     
     const int px = QColor( movImage.pixel( movIndex / movImage.width(), movIndex % movImage.width() ) ).red();
-    fixImage.setPixel( fixIndex / fixImage.width(), fixIndex % fixImage.width(), px );
-    }
+    outImage.setPixel( fixIndex / fixImage.width(), fixIndex % fixImage.width(), px );
 
-  QImageWriter writer( pathOut );
-  writer.write( fixImage );
+    const int px2 = QColor( fixImage.pixel( fixIndex / fixImage.width(), fixIndex % fixImage.width() ) ).red();
+    difImage.setPixel( fixIndex / fixImage.width(), fixIndex % fixImage.width(), (px-px2)/2+128 );
+    }
+  
+  outImage.save( pathOut );
+  difImage.save( pathDif );
 }
