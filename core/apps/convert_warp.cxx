@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -48,7 +48,8 @@ const char* outXformPath = NULL;
 float Fractional = -1;
 bool DeformationOnly = false;
 
-int main ( const int argc, const char* argv[] ) 
+int
+doMain ( const int argc, const char* argv[] ) 
 {
   try
     {
@@ -66,7 +67,7 @@ int main ( const int argc, const char* argv[] )
   catch ( const cmtk::CommandLine::Exception& e )
     {
     cmtk::StdErr << e << "\n";
-    exit( 1 );
+    throw cmtk::ExitException( 1 );
     }
   
   cmtk::Xform::SmartPtr xform( cmtk::XformIO::Read( inXformPath ) );
@@ -99,12 +100,8 @@ int main ( const int argc, const char* argv[] )
       }
     }
   
-  cmtk::DeformationField::SmartPtr deformationField = cmtk::DeformationField::SmartPtr::DynamicCastFrom( xform );
-  if ( deformationField )
-    {
-    }
-  
   cmtk::XformIO::Write( xform, outXformPath );
   return 0;
 }
 
+#include "cmtkSafeMain"
