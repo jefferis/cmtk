@@ -90,7 +90,7 @@ CompressedStream::Zlib::Read ( void *data, size_t size, size_t count )
 
     result += got;
     total -= got;
-    data += got;
+    data = reinterpret_cast<char*>( data ) + got;
     
     if (got < (int)n)
       break;
@@ -98,7 +98,37 @@ CompressedStream::Zlib::Read ( void *data, size_t size, size_t count )
   
   this->m_BytesRead += result;
   return result / size;  
+
+#undef BIG
 }
+
+size_t
+CompressedStream::Zlib::StaticSafeWrite ( gzFile file, const void *data, size_t size ) 
+{
+
+#define BIG (((unsigned)(-1)>>2)+1)
+
+  size_t result = 0;
+
+  while ( size ) 
+    {
+    unsigned n = (size > BIG) ? BIG : (unsigned)size;
+    int written = gzwrite( file, data, n );
+    
+    if (written < 0)
+      return written;
+
+    result += written;
+    size -= written;
+    data = reinterpret_cast<const char*>( data ) + written;
+    
+    if (written < (int)n)
+      break;
+    }
+  
+  return result;
+}
+
 
 bool
 CompressedStream::Zlib::Get ( char &c)

@@ -350,56 +350,6 @@ private:
 #endif
   };
 
-  /// Class for Zlib-based reader engine.
-  class Zlib 
-    : public ReaderBase
-  {
-  public:
-    /// This class.
-    typedef Zlib Self;
-    
-    /// Smart pointer to this class.
-    typedef SmartPointer<Self> SmartPtr;
-
-    /// Open new stream from filename.
-    Zlib( const char *filename );
-    
-    /// Virtual destructor.
-    virtual ~Zlib() {}
-
-    /// Close current file stream.
-    virtual void Close();
-    
-    /// Reset read pointer to beginning of stream.
-    virtual void Rewind();
-    
-    /** Set filepointer.
-      * If the object represents a pipe with on-the-fly decompression, only
-      * the set mode "SEEK_CUR" is supported and will be simulated by successive
-      * reading of 8kB data blocks from the pipe.
-      *\param offset Offset the file pointer is set to, depending on the value of
-      * whence.
-      *\param whence File pointer set mode as defined for fseek.
-      */
-    virtual int Seek ( const long int offset, int whence );
-    
-    /// Read block of data.
-    virtual size_t Read ( void *data, size_t size, size_t count );
-    
-    /// Read a single character from the stream.
-    virtual bool Get ( char &c );
-    
-    /// Return number of bytes read from stream.
-    virtual int Tell () const;
-    
-    /// Return 1 if and only if end of file reached.
-    virtual bool Feof () const;
-
-  private:
-    /// Zlib file pointer.
-    gzFile m_GzFile;    
-  };
-
 #ifdef CMTK_USE_BZIP2
   /// Class for BZip2-based reader engine.
   class BZip2 
@@ -492,6 +442,70 @@ private:
 
   /// Flag whether current stream is from a compressed source.
   bool m_Compressed;
+
+public:
+  /// Class for Zlib-based reader engine.
+  class Zlib 
+    : public ReaderBase
+  {
+  public:
+    /// This class.
+    typedef Zlib Self;
+    
+    /// Smart pointer to this class.
+    typedef SmartPointer<Self> SmartPtr;
+
+    /// Open new stream from filename.
+    Zlib( const char *filename );
+    
+    /// Virtual destructor.
+    virtual ~Zlib() {}
+
+    /// Close current file stream.
+    virtual void Close();
+    
+    /// Reset read pointer to beginning of stream.
+    virtual void Rewind();
+    
+    /** Set filepointer.
+      * If the object represents a pipe with on-the-fly decompression, only
+      * the set mode "SEEK_CUR" is supported and will be simulated by successive
+      * reading of 8kB data blocks from the pipe.
+      *\param offset Offset the file pointer is set to, depending on the value of
+      * whence.
+      *\param whence File pointer set mode as defined for fseek.
+      */
+    virtual int Seek ( const long int offset, int whence );
+    
+    /** Read block of data.
+     * This function, unlike gzread(), is safe to use on very large files.
+     *\see http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=587912
+     *\thanls Yaroslav Halchenko <debian@onerussian.com> pointed this out.
+     */
+
+    virtual size_t Read ( void *data, size_t size, size_t count );
+    
+    /** Safe, static write function.
+     * This is simply here as a service to other classes, which may use this as a plug-in replacement
+     * for gzwrite() to work around a large-file problem in zlib.
+     *\see http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=587912
+     *\thanls Yaroslav Halchenko <debian@onerussian.com> pointed this out.
+     */
+    static size_t StaticSafeWrite ( gzFile file, const void *data, size_t size );
+
+    /// Read a single character from the stream.
+    virtual bool Get ( char &c );
+    
+    /// Return number of bytes read from stream.
+    virtual int Tell () const;
+    
+    /// Return 1 if and only if end of file reached.
+    virtual bool Feof () const;
+
+  private:
+    /// Zlib file pointer.
+    gzFile m_GzFile;    
+  };
 };
 
 //@}

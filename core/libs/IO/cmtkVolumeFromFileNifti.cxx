@@ -438,7 +438,7 @@ VolumeFromFile::WriteNifti
 	}
       
       const size_t dataSize = data->GetItemSize() * data->GetDataSize();
-      if ( dataSize != static_cast<size_t>( gzwrite( imgFile, data->GetDataPtr(), dataSize ) ) )
+      if ( dataSize != CompressedStream::Zlib::StaticSafeWrite( imgFile, data->GetDataPtr(), dataSize ) )
 	{
 	StdErr << "WARNING: gzwrite() returned error when writing to " << pathImg << "\n";
 	}
