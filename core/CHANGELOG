@@ -1,5 +1,8 @@
 Release CMTK-2.0.1:
 
+(r3436) Fixed: proactively fixed a problem reading very large gzip-compressed
+    files. Thanks to Yaroslav Halchenko <debian@onerussian.com> for pointing
+    this out. See http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=587912
 (r3420) Added: when registration tools (warp, warpx, registration,
     registrationx) are interrupted, suffix "-partial" is added to any results
     files that may be written. This serves to prevent accidental use of
