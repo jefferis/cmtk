@@ -72,7 +72,30 @@ CompressedStream::Zlib::Seek ( const long int offset, int whence )
 size_t
 CompressedStream::Zlib::Read ( void *data, size_t size, size_t count ) 
 {
-  const size_t result = gzread( this->m_GzFile, data, size * count );
+// See http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=587912
+// Thanks to Yaroslav Halchenko <debian@onerussian.com> for pointing this out.
+
+#define BIG (((unsigned)(-1)>>2)+1)
+
+  size_t result = 0;
+
+  size_t total = size * count;
+  while ( total ) 
+    {
+    unsigned n = (total > BIG) ? BIG : (unsigned)total;
+    int got = gzread( this->m_GzFile, data, n );
+    
+    if (got < 0)
+      return got;
+
+    result += got;
+    total -= got;
+    data += got;
+    
+    if (got < (int)n)
+      break;
+    }
+  
   this->m_BytesRead += result;
   return result / size;  
 }
