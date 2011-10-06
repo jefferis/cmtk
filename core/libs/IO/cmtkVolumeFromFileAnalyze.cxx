@@ -256,7 +256,7 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
       }
     else
       {
-      StdErr << "ERROR: could not read " << data->GetDataSize() << " pixels from Analuze image file " << pathImg << "\n";
+      StdErr << "ERROR: could not read " << data->GetDataSize() << " pixels from Analyze image file " << pathImg << "\n";
       }
     } 
   else
