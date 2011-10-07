@@ -94,8 +94,8 @@ private:
   /// Designed-generated User Interface for the main window.
   Ui::fviewMainWindow m_MainWindowUI;
 
-  /// Cursor size.
-  int m_CursorSize;
+  /// Cursor radius in pixels.
+  int m_CursorRadius;
 
   /** Cursor shape.
    * 0 - box, 1 - circle

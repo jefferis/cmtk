@@ -51,8 +51,8 @@ cmtk::BinarySegmentationEditorApplication
 ::BinarySegmentationEditorApplication( int& argc, char* argv[] ) 
   : QApplication( argc, argv ),
     m_MainWindow( new QMainWindow ),
-    m_CursorSize( 5 ),
-    m_CursorShape( 0 ),
+    m_CursorRadius( 5 ),
+    m_CursorShape( 1 ),
     m_SliceAxis( -1 ),
     m_SliceIndex( -1 ),
     m_ZoomFactor( 1.0 )
@@ -406,7 +406,7 @@ void
 cmtk::BinarySegmentationEditorApplication
 ::UpdateCursor()
 {
-  const int size = this->m_CursorSize * this->m_ZoomFactor;
+  const int size = (2 * this->m_CursorRadius + 1) * this->m_ZoomFactor;
 
   QBitmap* cursorBitmap = new QBitmap( size, size );
   QBitmap* cursorMask = new QBitmap( size, size );
@@ -416,20 +416,27 @@ cmtk::BinarySegmentationEditorApplication
   
   pCursorBitmap.fillRect( 0, 0, size, size, Qt::color0 );
   pCursorMask.fillRect( 0, 0, size, size, Qt::color0 );
-  
-  pCursorBitmap.setPen( Qt::color1 );
+
   pCursorMask.setPen( Qt::color1 );
   
   switch ( this->m_CursorShape )
     {
     default:
     case 0 :
+      pCursorBitmap.setPen( Qt::color0 );
+      pCursorBitmap.drawRect( 0, 0, size, size );
+      pCursorBitmap.setPen( Qt::color1 );
+  
       pCursorBitmap.drawRect( 0, 0, size, size );
       pCursorMask.drawRect( 0, 0, size, size );
       pCursorMask.drawRect( 1, 1, size-2, size-2 );
       break;
     case 1 :
-      pCursorBitmap.drawEllipse( 0, 0, size, size );
+      pCursorBitmap.setPen( Qt::color0 );
+      pCursorBitmap.drawEllipse( 0, 0, size-1, size-1 );
+      pCursorBitmap.setPen( Qt::color1 );
+  
+      pCursorBitmap.drawEllipse( 1, 1, size-3, size-3 );
       pCursorMask.drawEllipse( 0, 0, size, size );
       pCursorMask.drawEllipse( 1, 1, size-2, size-2 );
       break;
