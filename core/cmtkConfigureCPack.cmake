@@ -75,7 +75,7 @@ ENDIF(NOT CMTK_BUILD_MXML)
 
 # optional package with optional bundled replacement
 IF(CMTK_USE_DCMTK AND NOT CMTK_BUILD_DCMTK)
-  SET(CPACK_RPM_PACKAGE_REQUIRES "dcmtk >= 3.6.0")
+  SET(CPACK_RPM_PACKAGE_REQUIRES "dcmtk >= 3.5.4")
 ENDIF(CMTK_USE_DCMTK AND NOT CMTK_BUILD_DCMTK)
 
 # optional package with optional bundled replacement
