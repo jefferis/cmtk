@@ -24,6 +24,11 @@
 #  define _mxml_h_
 
 /*
+ * add "cmtk_" prefix to exported symbols - we are building this library bundled with CMTK
+ */
+#include <cmtk_mxml_mangle.h>
+
+/*
  * Include necessary headers...
  */
 

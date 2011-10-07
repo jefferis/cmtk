@@ -54,6 +54,8 @@ INCLUDE (${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeSystem.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityC.cmake)
 INCLUDE (${CMAKE_ROOT}/Modules/CMakeBackwardCompatibilityCXX.cmake)
 
+SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
+
 #-----------------------------------------------------------------------------
 # Output directories.
 IF(NOT LIBRARY_OUTPUT_PATH)
@@ -380,6 +382,31 @@ ELSE(CMTK_BUILD_ZLIB)
       ${ZLIB_INCLUDE_DIR})
   ENDIF(ZLIB_FOUND)
 ENDIF(CMTK_BUILD_ZLIB)
+
+#-----------------------------------------------------------------------------
+# Add an option to use or not use mxml library
+
+OPTION(CMTK_BUILD_MXML "Build bundled mxml library, even if system library exists" OFF)
+FIND_PACKAGE(MXML)
+IF(CMTK_BUILD_MXML)
+  MESSAGE( STATUS "Building bundled mxml by user configuration" )
+  SET(CMTK_BUILD_MXML 1)
+  
+  SET(MXML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Utilities/mxml")
+  SET(MXML_LIBRARIES "cmtkMxml" CACHE INTERNAL "")
+  INCLUDE_DIRECTORIES(BEFORE ${MXML_INCLUDE_DIR})
+ELSE(CMTK_BUILD_MXML)
+  IF(MXML_FOUND)
+    MESSAGE( STATUS "Using system mxml" )
+  ELSE(MXML_FOUND)
+    MESSAGE( STATUS "Building bundled mxml due to missing system mxml" )
+    SET(CMTK_BUILD_MXML 1)
+    
+    SET(MXML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Utilities/mxml")
+    SET(MXML_LIBRARIES "cmtkMxml" CACHE INTERNAL "")
+    INCLUDE_DIRECTORIES(BEFORE ${MXML_INCLUDE_DIR})
+  ENDIF(MXML_FOUND)
+ENDIF(CMTK_BUILD_MXML)
 
 #-----------------------------------------------------------------------------
 # Add an option to use or not use bzip2 library

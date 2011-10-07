@@ -20,6 +20,11 @@
  * Include necessary headers...
  */
 
+/*
+ * add "cmtk_" prefix to exported symbols - we are building this library bundled with CMTK
+ */
+#include <cmtk_mxml_mangle.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
