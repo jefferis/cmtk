@@ -1,6 +1,6 @@
 Release CMTK-2.1.0:
 
-(r3446) Added: build configuration can now switch between building bundled
+(r3450) Added: build configuration can now switch between building bundled
     DCMTK DICOM library and using installed system libraries (Issue #6182).
 (r3442) Added: build configuration can now switch between building bundled
     MXML library and using installed system library.
