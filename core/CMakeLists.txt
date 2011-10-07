@@ -440,8 +440,13 @@ IF(CMTK_USE_DCMTK)
 
   OPTION(CMTK_BUILD_DCMTK "Build bundled DCMTK library, even if system library exists" OFF)
 
+  IF(NOT DCMTK_FOUND)
+    MESSAGE( STATUS "DCMTK library not found - defaulting to bundled version." )
+    SET(CMTK_BUILD_DCMTK ON)
+  ENDIF(NOT DCMTK_FOUND)
+
   IF(CMTK_BUILD_DCMTK)
-    MESSAGE( STATUS "Building bundled DCMTK library for DICOM support by user configuration" )
+    MESSAGE( STATUS "Building bundled DCMTK library for DICOM support." )
     SET(CMTK_BUILD_DCMTK 1)
     SET(HAVE_DCMTK 1)
     SET(DCMTK_SOURCE_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/dcmtk)
