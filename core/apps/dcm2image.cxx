@@ -77,6 +77,10 @@
 #define DCM_RawDataType_ImageType DcmTagKey(0x0043,0x102f)
 #endif
 
+#ifndef DCM_PatientsName
+#define DCM_PatientsName DCM_PatientName
+#endif
+
 const char* OutPathPattern = "%03d.nii";
 std::vector<std::string> SearchRootDirVector;
 
