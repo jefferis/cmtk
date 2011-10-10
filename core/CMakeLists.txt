@@ -471,6 +471,11 @@ IF(CMTK_USE_DCMTK)
     SET(CMTK_REQUIRED_CXX_FLAGS "${CMTK_REQUIRED_CXX_FLAGS} -DHAVE_CONFIG_H")
   ENDIF(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     
+ELSE(CMTK_USE_DCMTK)
+
+  MESSAGE( STATUS "Building without DICOM support." )
+  SET(CMTK_BUILD_DCMTK OFF)
+
 ENDIF(CMTK_USE_DCMTK)
 
 #-----------------------------------------------------------------------------
