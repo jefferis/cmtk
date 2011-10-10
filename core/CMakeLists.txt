@@ -443,7 +443,7 @@ IF(CMTK_USE_DCMTK)
 
   IF(NOT DCMTK_FOUND)
     MESSAGE( STATUS "DCMTK library not found - defaulting to bundled version." )
-    SET(CMTK_BUILD_DCMTK ON CACHE BOOL "Build bundled DCMTK library, even if system library exists" )
+    SET(CMTK_BUILD_DCMTK ON CACHE BOOL "Build bundled DCMTK library, even if system library exists" FORCE )
   ENDIF(NOT DCMTK_FOUND)
 
   IF(CMTK_BUILD_DCMTK)
