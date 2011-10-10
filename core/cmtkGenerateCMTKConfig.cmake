@@ -71,7 +71,7 @@ SET(CMTK_DATA_ROOT_CONFIG ${CMTK_DATA_ROOT})
 
 # Set DICOM dictionary paths for build AND install tree
 SET(CMTK_DCMDICTPATH_CONFIG ${CMTK_LIBRARY_PATH})
-SET(CMTK_DCMDICTPATH_INSTALL_CONFIG ${CMAKE_INSTALL_PREFIX}${CMTK_INSTALL_LIB_DIR})
+SET(CMTK_DCMDICTPATH_INSTALL_CONFIG ${CMAKE_INSTALL_PREFIX}/${CMTK_INSTALL_LIB_DIR})
 
 #-----------------------------------------------------------------------------
 # Configure CMTKConfig.cmake for the build tree.
