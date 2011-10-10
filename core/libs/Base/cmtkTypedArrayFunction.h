@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -56,7 +56,7 @@ public:
   virtual Types::DataItem operator()( const Types::DataItem valueIn ) const = 0;
 
   /// Virtual destructor.
-  ~TypedArrayFunction() {}
+  virtual ~TypedArrayFunction() {}
 };
 
 //@}
