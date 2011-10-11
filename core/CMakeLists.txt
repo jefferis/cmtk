@@ -459,6 +459,8 @@ IF(CMTK_USE_DCMTK)
     SET(DCM_DICT_DEFAULT_PATH "${CMAKE_DCMDICTPATH}")
   ELSE(CMTK_BUILD_DCMTK)
 
+    MESSAGE( STATUS "Using system DCMTK library." )
+
     # DCMTK needs png and tiff libraries but FindDCMTK doesn't provide dependencies
     SET(DCMTK_LIBRARIES_EXTRA png tiff)
     
