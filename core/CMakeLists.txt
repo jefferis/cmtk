@@ -462,7 +462,7 @@ IF(CMTK_USE_DCMTK)
     MESSAGE( STATUS "Using system DCMTK library." )
 
     # DCMTK needs png and tiff libraries but FindDCMTK doesn't provide dependencies
-    SET(DCMTK_LIBRARIES_EXTRA png tiff)
+    SET(DCMTK_LIBRARIES_EXTRA png tiff CharLS xml2 ssl)
     
   ENDIF(CMTK_BUILD_DCMTK)
   
