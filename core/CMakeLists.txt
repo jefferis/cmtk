@@ -461,7 +461,6 @@ IF(CMTK_USE_DCMTK)
 
     # DCMTK needs png and tiff libraries but FindDCMTK doesn't provide dependencies
     SET(DCMTK_LIBRARIES_EXTRA png tiff)
-    SET(DCMTK_LIBRARIES ${DCMTK_dcmimage_LIBRARY} ${DCMTK_dcmimgle_LIBRARY} ${DCMTK_dcmdata_LIBRARY} ${DCMTK_ofstd_LIBRARY} ${DCMTK_oflog_LIBRARY} ${DCMTK_LIBRARIES_EXTRA} CACHE INTERNAL "The system DCMTK libraries.")
     
   ENDIF(CMTK_BUILD_DCMTK)
   
