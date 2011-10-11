@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -59,9 +59,10 @@ CMAKE_C_FLAGS:STRING=-m64 -march=nocona -mmmx -msse -msse2 -mfpmath=sse
 
 CMTK_USE_DCMTK:BOOL=ON
 CMTK_USE_SQLITE:BOOL=ON
-
 CMTK_USE_QT:BOOL=ON
+
 CMTK_BUILD_NRRD:BOOL=ON
+CMTK_BUILD_MXML:BOOL=ON
 ")
 
 CTEST_START(Continuous)
