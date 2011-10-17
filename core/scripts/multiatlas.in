@@ -28,6 +28,13 @@
 ##  $LastChangedBy$
 ##
 
+# Check for command line arguments, print help if none given
+if test $# -lt 2; then
+    echo "Locally-weighted multi-atlas label fusion"    
+    echo "USAGE: $0 targetImagePath atlasIntensityImage1 atlasLabelImage1 [[atlasIntensityImage2 atlasLabelImage2] ...]"
+    exit 2
+fi
+ 
 TARGET=$1
 shift
 
