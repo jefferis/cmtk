@@ -1079,7 +1079,7 @@ CallbackSTAPLE( const long int maxIterations )
 }
 
 void
-CallbackMultiClassSTAPLE( const long int maxIterations )
+MultiClassSTAPLE( const long int maxIterations, const bool disputedOnly )
 {
   CheckStackTwoMatchingImages( "MultiClassSTAPLE" );
   
@@ -1095,9 +1095,21 @@ CallbackMultiClassSTAPLE( const long int maxIterations )
     ImageStack.pop_front();
     }
 
-  cmtk::LabelCombinationMultiClassSTAPLE mstaple( dataPtrs, maxIterations );
+  cmtk::LabelCombinationMultiClassSTAPLE mstaple( dataPtrs, maxIterations, disputedOnly );
   imageGrid->SetData( mstaple.GetResult() );
   ImageStack.push_front( imageGrid );
+}
+
+void
+CallbackMultiClassSTAPLE( const long int maxIterations )
+{
+  MultiClassSTAPLE( maxIterations, false /*disputedOnly*/ );
+}
+
+void
+CallbackMultiClassSTAPLEDisputed( const long int maxIterations )
+{
+  MultiClassSTAPLE( maxIterations, true /*disputedOnly*/ );
 }
 
 void
@@ -1601,6 +1613,8 @@ doMain( const int argc, const char *argv[] )
     cl.AddCallback( Key( "contract-labels" ), CallbackContractLabels, "Contract multiple label maps into one by selecting the first (over all images on the stack) non-zero label at each pixel" );
     cl.AddCallback( Key( "mstaple" ), CallbackMultiClassSTAPLE, "Combine multi-label maps on the stack using [arg] iterations of the multi-class STAPLE algorithm."
 		    "The result of this operation is the combined maximum-likeliood multi-label map." );
+    cl.AddCallback( Key( "mstaple-disputed" ), CallbackMultiClassSTAPLEDisputed, "Like previous operation, apply multi-class STAPLE algorithm, but restrict computation to 'disputed'"
+		    "voxels, i.e., those where the input label maps disagree. This often improves results by reducing, e.g., background effects." );
     cl.AddCallback( Key( "stack-entropy-labels" ), CallbackStackEntropyLabels, "Compute stack entropy at each pixel from integer (label) input images" );
     cl.EndGroup();
 

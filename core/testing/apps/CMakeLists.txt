@@ -333,6 +333,7 @@ IF(NOT CMTK_USE_MPI)
     imagemathProduct
     imagemathSTAPLE
     imagemathMultiClassSTAPLE 
+    imagemathMultiClassDisputedSTAPLE 
     imagemathCombinePCA
     imagemathT2
     imagemathAtan2

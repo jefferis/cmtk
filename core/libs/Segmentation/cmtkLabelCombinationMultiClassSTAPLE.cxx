@@ -34,6 +34,10 @@
 #include <Segmentation/cmtkLabelCombinationVoting.h>
 
 #include <System/cmtkProgress.h>
+#include <System/cmtkDebugOutput.h>
+
+#include <vector>
+#include <algorithm>
 
 namespace
 cmtk
@@ -44,11 +48,55 @@ cmtk
 
 LabelCombinationMultiClassSTAPLE
 ::LabelCombinationMultiClassSTAPLE
-( const std::vector<TypedArray::SmartPtr>& data, const int maxIterations )
+( const std::vector<TypedArray::SmartPtr>& data, const int maxIterations, const bool disputedOnly )
 {
   const size_t numberOfInputs = data.size();
   const size_t numberOfPixels = data[ 0 ]->GetDataSize();
 
+  // First, determine which pixels are "active" and will be considered by the algorithm.
+  // If "disputedOnly" is true, these will be the pixels for which at least one input map disagrees with the others.
+  std::vector<bool> activePixels( numberOfPixels );
+
+  if ( disputedOnly )
+    {
+    size_t nDisputed = 0;
+    for ( size_t n = 0; n < numberOfPixels; ++n )
+      {
+      bool disputed = false;
+
+      Types::DataItem refVal = -1;
+      for ( size_t k = 0; (k < numberOfInputs) && !disputed; ++k )
+	{
+	Types::DataItem lVal;
+	if ( data[k]->Get( lVal, n ) )
+	  {
+	  if ( refVal == -1 )
+	    {
+	    refVal = lVal;
+	    }
+	  else
+	    {
+	    if ( lVal != refVal )
+	      {
+	      disputed = true;
+	      ++nDisputed;
+	      }
+	    }
+	  }
+	}
+
+      activePixels[n] = disputed;
+      }
+
+    DebugOutput( 5 ) << "MultiClassSTAPLE running for " << nDisputed << " disputed out of " << numberOfPixels << " total pixels.\n";
+    }
+  else
+    {
+    std::fill( activePixels.begin(), activePixels.end(), true );
+    DebugOutput( 5 ) << "MultiClassSTAPLE running for all pixels.\n";
+    }
+
+  // Next figure out how many classes thare are in the first place.
   int numberOfClasses = 1;
   for ( size_t k = 0; k < numberOfInputs; ++k )
     {
@@ -67,10 +115,13 @@ LabelCombinationMultiClassSTAPLE
     Types::DataItem lVal;
     for ( size_t n = 0; n < numberOfPixels; ++n )
       {
-      if ( data[k]->Get( lVal, n ) )
+      if ( activePixels[n] )
 	{
-	this->m_Priors[static_cast<int>(lVal)]++;
-	++totalMass;
+	if ( data[k]->Get( lVal, n ) )
+	  {
+	  this->m_Priors[static_cast<int>(lVal)]++;
+	  ++totalMass;
+	  }
 	}
       }
     }
@@ -96,11 +147,14 @@ LabelCombinationMultiClassSTAPLE
 
     for ( size_t n = 0; n < numberOfPixels; ++n )
       {
-      Types::DataItem lValue, vValue;
-      if ( data[k]->Get( lValue, n ) )
+      if ( activePixels[n] )
 	{
-	if ( this->m_Result->Get( vValue, n ) && (vValue >= 0) )
-	  ++(this->m_Confusion[k][static_cast<int>(lValue)][static_cast<int>(vValue)]);
+	Types::DataItem lValue, vValue;
+	if ( data[k]->Get( lValue, n ) )
+	  {
+	  if ( this->m_Result->Get( vValue, n ) && (vValue >= 0) )
+	    ++(this->m_Confusion[k][static_cast<int>(lValue)][static_cast<int>(vValue)]);
+	  }
 	}
       }
     }
@@ -147,41 +201,44 @@ LabelCombinationMultiClassSTAPLE
 
     for ( size_t n = 0; n < numberOfPixels; ++n )
       {
-      // the following is the E step
-      for ( int ci = 0; ci < numberOfClasses; ++ci )
-	W[ci] = this->m_Priors[ci];
-      
-      for ( size_t k = 0; k < numberOfInputs; ++k )
+      if ( activePixels[n] )
 	{
-	Types::DataItem lValue;
-	if ( data[k]->Get( lValue, n ) )
+	// the following is the E step
+	for ( int ci = 0; ci < numberOfClasses; ++ci )
+	  W[ci] = this->m_Priors[ci];
+	
+	for ( size_t k = 0; k < numberOfInputs; ++k )
 	  {
-	  for ( int ci = 0; ci < numberOfClasses; ++ci )
+	  Types::DataItem lValue;
+	  if ( data[k]->Get( lValue, n ) )
 	    {
-	    W[ci] *= this->m_Confusion[k][static_cast<int>(lValue)][ci];
+	    for ( int ci = 0; ci < numberOfClasses; ++ci )
+	      {
+	      W[ci] *= this->m_Confusion[k][static_cast<int>(lValue)][ci];
+	      }
 	    }
 	  }
-	}
-      
-      // the following is the M step
-      double sumW = W[0];
-      for ( int ci = 1; ci < numberOfClasses; ++ci )
-	sumW += W[ci];
-      
-      if ( sumW )
-	{
-	for ( int ci = 0; ci < numberOfClasses; ++ci )
-	  W[ci] /= sumW;
-	}
-      
-      for ( size_t k = 0; k < numberOfInputs; ++k )
-	{
-	Types::DataItem lValue;
-	if ( data[k]->Get( lValue, n ) )
+	
+	// the following is the M step
+	double sumW = W[0];
+	for ( int ci = 1; ci < numberOfClasses; ++ci )
+	  sumW += W[ci];
+	
+	if ( sumW )
 	  {
 	  for ( int ci = 0; ci < numberOfClasses; ++ci )
+	    W[ci] /= sumW;
+	  }
+	
+	for ( size_t k = 0; k < numberOfInputs; ++k )
+	  {
+	  Types::DataItem lValue;
+	  if ( data[k]->Get( lValue, n ) )
 	    {
-	    this->m_ConfusionNew[k][static_cast<int>(lValue)][ci] += W[ci];	    
+	    for ( int ci = 0; ci < numberOfClasses; ++ci )
+	      {
+	      this->m_ConfusionNew[k][static_cast<int>(lValue)][ci] += W[ci];	    
+	      }
 	    }
 	  }
 	}
@@ -217,7 +274,7 @@ LabelCombinationMultiClassSTAPLE
 	  }    
     } // main EM loop
 
-  // assemble output
+  // assemble output (this time, all voxels, disputed and non-disputed, to get the complete image)
   for ( size_t n = 0; n < numberOfPixels; ++n )
     {
     // basically, we'll repeat the E step from above

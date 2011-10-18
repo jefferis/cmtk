@@ -67,7 +67,8 @@ public:
   
   /// Constructor: compute label combination.
   LabelCombinationMultiClassSTAPLE( const std::vector<TypedArray::SmartPtr>& data /*!< Array of typed arrays with input data.*/,
-				    const int maxIterations /*!< Maximum number of STAPLE iterations.*/ );
+				    const int maxIterations /*!< Maximum number of STAPLE iterations.*/,
+				    const bool disputedOnly /*!< If set, restrict computation to "disputed" voxels. */ );
 
   /// Get result.
   TypedArray::SmartPtr& GetResult()

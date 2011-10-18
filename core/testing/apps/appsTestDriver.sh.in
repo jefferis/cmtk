@@ -998,6 +998,10 @@ case ${RUNTEST} in
 	run imagemath --in parc1.hdr parc2.hdr parc3.hdr --mstaple 2 --out ${tmpdir}/mstaple.hdr
 	check_results mstaple.img
 	;;
+    imagemathMultiClassDisputedSTAPLE)
+	run imagemath --in parc1.hdr parc2.hdr parc3.hdr --mstaple-disputed 2 --out ${tmpdir}/mstaple.hdr
+	check_results mstaple.img
+	;;
     imagemathCombinePCA)
 	run imagemath --in rat_fse_erly.hdr rat_fse_late.hdr --combine-pca --trunc --out ${tmpdir}/combine_pca.hdr
 	check_results combine_pca.img
