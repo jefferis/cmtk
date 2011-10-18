@@ -1,5 +1,8 @@
 Release CMTK-2.1.0:
 
+(r3471) Added: multi-class STAPLE algorithm can now be limited to "disputed"
+    pixels to improve results (via the "--mstaple-disputed" operation of
+    "imagemath" tool).
 (r3450) Added: build configuration can now switch between building bundled
     DCMTK DICOM library and using installed system libraries (Issue #6182).
 (r3442) Added: build configuration can now switch between building bundled
