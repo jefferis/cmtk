@@ -1,5 +1,10 @@
 Release CMTK-2.1.0:
 
+(r3476) Added: cmtk::CommandLine class can now output program descriptions in
+    'nroff' markup sutibale for creating man pages. In addition, the build
+    system now creates these man pages, if "BUILD_MANPAGES" option is set. The
+    man pages will also be installed and packaged. This was added in response
+    to a request from Yaroslav Halchenko.
 (r3471) Added: multi-class STAPLE algorithm can now be limited to "disputed"
     pixels to improve results (via the "--mstaple-disputed" operation of
     "imagemath" tool).
