@@ -79,10 +79,11 @@ CommandLine::SetDefaultInfo()
   this->m_ProgramInfo[PRG_DOCUM] = "https://neuro.sri.com/cmtk/wiki/";
   this->m_ProgramInfo[PRG_VERSN] = CMTK_VERSION_STRING;
 
-  this->BeginGroup( "GLOBAL", "Global Toolkit Options" )->SetProperties( Self::PROPS_NOXML );
+  this->BeginGroup( "GLOBAL", "Global Toolkit Options (these are shared by all CMTK tools)" )->SetProperties( Self::PROPS_NOXML );
   this->AddCallback( Self::Key( "help" ), &Self::CallbackInternal, "Write list of basic command line options to standard output." );
   this->AddCallback( Self::Key( "help-all" ), &Self::CallbackInternal, "Write complete list of basic and advanced command line options to standard output." );
   this->AddCallback( Self::Key( "wiki" ), &Self::CallbackInternal, "Write list of command line options to standard output in MediaWiki markup." )->SetProperties( Self::PROPS_ADVANCED );
+  this->AddCallback( Self::Key( "man" ), &Self::CallbackInternal, "Write man page source in 'nroff' markup to standard output." )->SetProperties( Self::PROPS_ADVANCED );
 
   if (! (this->m_Properties & PROPS_NOXML) ) 
     this->AddCallback( Self::Key( "xml" ), &Self::CallbackInternal, "Write command line syntax specification in XML markup (for Slicer integration)." )->SetProperties( Self::PROPS_ADVANCED );
@@ -165,6 +166,13 @@ CommandLine::Parse( const int argc, const char* argv[] ) throw( ExitException, S
       if ( !strcmp( this->ArgV[this->Index], "--wiki" ) ) 
 	{
 	this->PrintWiki();
+	throw ExitException( 0 );
+	}
+      
+      // Check for "--man" special option, which produces nroff-markup man page source
+      if ( !strcmp( this->ArgV[this->Index], "--man" ) ) 
+	{
+	this->PrintMan( argv[0] );
 	throw ExitException( 0 );
 	}
       

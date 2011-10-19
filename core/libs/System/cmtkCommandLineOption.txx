@@ -101,3 +101,14 @@ cmtk::CommandLine::Option<T>
   else
     StdOut << " '''[Default: " << CommandLineTypeTraits<T>::ValueToString( this->Var ) << "]'''";
 }
+
+template<class T>
+void
+cmtk::CommandLine::Option<T>
+::PrintMan() const
+{
+  if ( this->Flag && !(*this->Flag) )
+    StdOut << ".B [Default: disabled]\n";
+  else
+    StdOut << ".B [Default: " << CommandLineTypeTraits<T>::ValueToString( this->Var ) << "]\n";
+}

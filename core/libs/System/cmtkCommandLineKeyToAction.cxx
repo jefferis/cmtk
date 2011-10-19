@@ -166,6 +166,43 @@ cmtk::CommandLine::KeyToAction
     }
 }
 
+void
+cmtk::CommandLine::KeyToAction
+::PrintManWithPrefix( const std::string& prefix ) const
+{
+  if ( this->m_Comment.length() )
+    {
+    const std::string& typeInfo = this->GetActionTypeInfo();
+    
+    StdOut << prefix;
+    if ( this->m_Key.m_KeyString.size() )
+      {
+      StdOut << ".TP 5\n";
+      StdOut << "\\fB\\-\\-" << this->m_Key.m_KeyString << "\\fR";
+      if ( typeInfo.length() )
+	{
+	StdOut << " \\fI" << typeInfo << "\\fR";
+	}
+      }
+    
+    if ( this->m_Key.m_KeyChar && this->m_Key.m_KeyString.size() )
+      {
+      StdOut << ", ";
+      }
+    
+    if ( this->m_Key.m_KeyChar )
+      {
+      StdOut << "\\fB\\-" << this->m_Key.m_KeyChar << "\\fR";
+      if ( typeInfo.length() )
+	{
+	StdOut << " \\fI" << typeInfo << "\\fR";
+	}
+      }
+    
+    StdOut << "\n" << this->m_Comment << "\n";
+    }
+}
+
 bool
 cmtk::CommandLine::KeyToAction
 ::MatchLongOption( const std::string& key ) const

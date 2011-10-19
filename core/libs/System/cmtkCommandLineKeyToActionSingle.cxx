@@ -67,6 +67,15 @@ cmtk::CommandLine::KeyToActionSingle
   StdOut << "\n";
 }
 
+void
+cmtk::CommandLine::KeyToActionSingle
+::PrintManWithPrefix( const std::string& prefix ) const
+{
+  this->Superclass::PrintManWithPrefix( prefix );
+  
+  this->m_Action->PrintMan();
+}
+
 bool
 cmtk::CommandLine::KeyToActionSingle
 ::MatchAndExecute( const std::string& key, const size_t argc, const char* argv[], size_t& index )

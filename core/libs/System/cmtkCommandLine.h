@@ -310,8 +310,14 @@ public:
       return fmt;
     }
 
-    /// Format additional help information.
+    /// Format additional Wiki information.
     virtual void PrintWiki() const
+    {
+      // by default, do nothing
+    }
+
+    /// Format additional man page information.
+    virtual void PrintMan() const
     {
       // by default, do nothing
     }
@@ -404,6 +410,13 @@ private:
 	StdOut << " '''[This is the default]'''";
     }
     
+    /// Format additional man page information (e.g., default values).
+    virtual void PrintMan() const
+    {
+      if ( this->IsDefault() )
+	StdOut << ".B \"[This is the default]\"";
+    }
+    
     /// Return true if and only if this item is the default for the associated action or variable.
     virtual bool IsDefault() const
     {
@@ -443,8 +456,11 @@ private:
     /// Format additional help information (e.g., default values).
     virtual std::ostringstream& PrintHelp( std::ostringstream& fmt /*!< Stream that the additional help information is formatted into*/ ) const;
 
-    /// Format additional help information (e.g., default values).
+    /// Format additional Wiki information (e.g., default values).
     virtual void PrintWiki() const;
+
+    /// Format additional man page information (e.g., default values).
+    virtual void PrintMan() const;
 
   protected:
     /// Pointer to associated variable.
@@ -602,7 +618,7 @@ private:
       return fmt;
     }
 
-    /// Format additional help information (e.g., default values).
+    /// Format additional Wiki information (e.g., default values).
     virtual void PrintWiki() const
     {
       // by default, simply return stream unchanged.
@@ -610,6 +626,16 @@ private:
 	StdOut << " '''[Default: " << *(this->Var) << "]'''\n";
       else
 	StdOut << " '''[There is no default for this parameter]'''\n";
+    }
+
+    /// Format additional man page information (e.g., default values).
+    virtual void PrintMan() const
+    {
+      // by default, simply return stream unchanged.
+      if ( this->Var )
+	StdOut << ".b \"[Default: " << *(this->Var) << "]\"\n";
+      else
+	StdOut << ".b \"[There is no default for this parameter]\"\n";
     }
 
     /// Name of this parameter.
@@ -667,7 +693,7 @@ private:
       return fmt;
     }
     
-    /// Format additional help information (e.g., default values).
+    /// Format additional Wiki information (e.g., default values).
     virtual void PrintWiki() const
     {
       if ( this->Var->size() )
@@ -680,6 +706,22 @@ private:
       else
 	{
 	StdOut << "'''[Default: (empty)]'''\n";
+	}
+    }
+    
+    /// Format additional man page information (e.g., default values).
+    virtual void PrintMan() const
+    {
+      if ( this->Var->size() )
+	{
+	StdOut << ".b \"[Default: ( '" << (*this->Var)[0] << "'";
+	for ( size_t i = 1; i < this->Var->size(); ++i )
+	  StdOut << ", '" << (*this->Var)[i] << "' ";
+	StdOut << ") ]\"\n";
+	}
+      else
+	{
+	StdOut << ".b \"[Default: (empty)]\"\n";
 	}
     }
     
@@ -749,8 +791,11 @@ public:
     /// Format help for key part of this key/action..
     virtual void FormatHelp( std::ostringstream& fmt ) const;    
 
-    /// Print help for this item.
+    /// Print Wiki markup for this item.
     virtual void PrintWikiWithPrefix( const std::string& prefix = "" ) const;
+
+    /// Print man page markup for this item.
+    virtual void PrintManWithPrefix( const std::string& prefix = "" ) const;
 
     /// Get type info for action parameter (if any).
     virtual std::string GetActionTypeInfo() const 
@@ -822,6 +867,9 @@ public:
     
     /// Print wiki help for this item.
     virtual void PrintWikiWithPrefix( const std::string& prefix = "" ) const;
+    
+    /// Print man page markup for this item.
+    virtual void PrintManWithPrefix( const std::string& prefix = "" ) const;
     
     /// Get type info for action parameter (if any).
     virtual std::string GetActionTypeInfo() const
@@ -925,8 +973,11 @@ public:
     /// Print help for this item.
     virtual void PrintHelp( const size_t globalIndent = 0 /*!< Indent by this many characters.*/, const bool advanced = false /*!< Flag: include advanced help content. */ ) const;
     
-    /// Print help for this item in Wiki markup.
+    /// Print Wiki markup for this item in Wiki markup.
     virtual void PrintWikiWithPrefix( const std::string& prefix = "" ) const;
+    
+    /// Print man page markup for this item in Wiki markup.
+    virtual void PrintManWithPrefix( const std::string& prefix = "" ) const;
     
   private:
     /// For enum parameter group, list of subkeys and action.
@@ -1132,6 +1183,9 @@ public:
 
   /// Print help text.
   void PrintWiki() const;
+
+  /// Print help text.
+  void PrintMan( const char* argv0 /*!< The first command line argument - this is the program path. */ ) const;
 
   /// Get next parameter index.
   size_t GetNextIndex() const { return this->Index; }

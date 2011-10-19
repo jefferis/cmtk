@@ -90,6 +90,32 @@ cmtk::CommandLine::KeyToActionEnum
     }
 }
 
+void
+cmtk::CommandLine::KeyToActionEnum
+::PrintManWithPrefix( const std::string& prefix ) const
+{
+  this->Superclass::PrintManWithPrefix( prefix );
+
+  StdOut << "Supported values: ";
+  for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+    {
+    StdOut << "\"" << (*it)->m_Key.m_KeyString << "\", ";
+    }
+  
+  const std::string defaultKey = this->m_EnumGroup->GetDefaultKey();
+  if ( defaultKey.length() )
+    {
+    StdOut << "where the default is \"" << defaultKey << "\", ";
+    }
+  
+  StdOut << "or use one of the following\n";
+  
+  for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
+    {
+    (*it)->PrintManWithPrefix();
+    }
+}
+
 mxml_node_t*
 cmtk::CommandLine::KeyToActionEnum
 ::MakeXML( mxml_node_t *const parent ) const

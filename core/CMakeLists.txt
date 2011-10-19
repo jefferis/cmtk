@@ -332,7 +332,7 @@ SET(CMTK_ROOT_PATH_SRI24 "CMTK_ROOT_PATH_SRI24-NOTFOUND" CACHE PATH "Root path o
 
 FIND_PACKAGE(Doxygen)
 IF(DOXYGEN_FOUND)
-  OPTION(BUILD_DOCUMENTATION "Build project documentation using Doxygen" OFF)
+  OPTION(BUILD_DOCUMENTATION "Build html-based library API documentation using Doxygen" OFF)
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
   IF(BUILD_DOCUMENTATION)
     ADD_CUSTOM_TARGET(doc COMMAND doxygen DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
@@ -646,3 +646,9 @@ ENDIF(CMTK_BUILD_SHARED_LIBS)
 # Save library dependencies.
 EXPORT_LIBRARY_DEPENDENCIES(${CMTK_BINARY_DIR}/CMTKLibraryDepends.cmake)
 INSTALL(FILES ${CMTK_BINARY_DIR}/CMTKLibraryDepends.cmake DESTINATION ${CMTK_INSTALL_LIB_DIR} COMPONENT libraries)
+
+#-----------------------------------------------------------------------------
+# After everything else is done, do we want to build man pages?
+
+OPTION(BUILD_MANPAGES "Create application manpages" OFF)
+
