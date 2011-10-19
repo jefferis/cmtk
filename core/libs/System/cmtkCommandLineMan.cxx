@@ -76,7 +76,7 @@ CommandLine::PrintMan
     {
     if ( this->m_NonOptionParameterList.size() || this->m_NonOptionParameterVectorList.size() )
       {
-      StdOut << ".SH SYNOPSIS\n";
+      StdOut << ".SH SYNOPSIS\n\\fB" << cmd << "\\fR ";
       
       for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
 	{
