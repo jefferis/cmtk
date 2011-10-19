@@ -141,9 +141,9 @@ SET(testList ${testList}
 
 IF(NOT CMTK_USE_MPI)
   # ==========================================
-  # Tests for xml, wiki, and help markups
+  # Tests for xml, wiki, man, and help markups
   FOREACH(t film levelset mrbias registration)
-    SET(testList ${testList} xml_${t} wiki_${t})
+    SET(testList ${testList} xml_${t} wiki_${t} man_${t})
   ENDFOREACH(t film levelset mrbias registration)
   
   FOREACH(t film)

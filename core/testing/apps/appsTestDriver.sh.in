@@ -2172,6 +2172,22 @@ case ${RUNTEST} in
 	run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/registration --wiki > ${tmpdir}/registration.wiki"
 	check_results registration.wiki
 	;;
+    man_film)
+	run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/film --man > ${tmpdir}/film.man"
+	check_results film.man
+	;;
+    man_levelset)
+	run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/levelset --man > ${tmpdir}/levelset.man"
+	check_results levelset.man
+	;;
+    man_mrbias)
+	run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/mrbias --man > ${tmpdir}/mrbias.man"
+	check_results mrbias.man
+	;;
+    man_registration)
+	run_eval "CMTK_CONSOLE_LINE_WIDTH=100 ${BINDIR}/registration --man > ${tmpdir}/registration.man"
+	check_results registration.man
+	;;
     *)
 	exit 2
 	;;
