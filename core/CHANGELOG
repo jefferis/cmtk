@@ -1,5 +1,7 @@
 Release CMTK-2.1.0:
 
+(r3486) Added: top-level CMakeLists now automatically detects missing
+    dependencies of the system DCMTK library (Issue ##6184).
 (r3484) Added: cmtk::CommandLine class can now output program descriptions in
     'nroff' markup sutibale for creating man pages. In addition, the build
     system now creates these man pages, if "BUILD_MANPAGES" option is set. The
