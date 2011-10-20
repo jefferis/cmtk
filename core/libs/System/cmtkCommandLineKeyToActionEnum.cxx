@@ -82,7 +82,7 @@ cmtk::CommandLine::KeyToActionEnum
     StdOut << "where the default is \"" << defaultKey << "\", ";
     }
   
-  StdOut << "or use one of the following\n";
+  StdOut << "or use one of the following:\n";
   
   for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
     {
@@ -108,12 +108,14 @@ cmtk::CommandLine::KeyToActionEnum
     StdOut << "where the default is \"" << defaultKey << "\", ";
     }
   
-  StdOut << "or use one of the following\n";
+  StdOut << "or use one of the following:\n.RS 5\n";
   
   for ( EnumGroupBase::const_iterator it = this->m_EnumGroup->begin(); it != this->m_EnumGroup->end(); ++it )
     {
     (*it)->PrintManWithPrefix();
     }
+
+  StdOut << ".RE\n";
 }
 
 mxml_node_t*

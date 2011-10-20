@@ -414,7 +414,7 @@ private:
     virtual void PrintMan() const
     {
       if ( this->IsDefault() )
-	StdOut << ".B \"[This is the default]\"";
+	StdOut << "\\fB[This is the default]\\fR\n";
     }
     
     /// Return true if and only if this item is the default for the associated action or variable.
@@ -633,9 +633,9 @@ private:
     {
       // by default, simply return stream unchanged.
       if ( this->Var )
-	StdOut << ".b \"[Default: " << *(this->Var) << "]\"\n";
+	StdOut << "\\fB[Default: " << *(this->Var) << "]\\fR\n";
       else
-	StdOut << ".b \"[There is no default for this parameter]\"\n";
+	StdOut << "\\fB[There is no default for this parameter]\\fR\n";
     }
 
     /// Name of this parameter.
@@ -714,14 +714,14 @@ private:
     {
       if ( this->Var->size() )
 	{
-	StdOut << ".b \"[Default: ( '" << (*this->Var)[0] << "'";
+	StdOut << "\\fB[Default: ( '" << (*this->Var)[0] << "'";
 	for ( size_t i = 1; i < this->Var->size(); ++i )
 	  StdOut << ", '" << (*this->Var)[i] << "' ";
-	StdOut << ") ]\"\n";
+	StdOut << ") ]\\fR\n";
 	}
       else
 	{
-	StdOut << ".b \"[Default: (empty)]\"\n";
+	StdOut << "\\fB[Default: (empty)]\\fR\n";
 	}
     }
     
