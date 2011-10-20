@@ -23,7 +23,7 @@ SYNTAX:
 
 LIST OF SUPPORTED OPTIONS:
 
-Global Toolkit Options
+Global Toolkit Options (these are shared by all CMTK tools)
 
   --help    Write list of basic command line options to standard output.
 

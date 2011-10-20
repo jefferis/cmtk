@@ -18,13 +18,15 @@ where
 
 == List of Supported Options ==
 
-=== Global Toolkit Options ===
+=== Global Toolkit Options (these are shared by all CMTK tools) ===
 
 ; <tt>--help</tt> : Write list of basic command line options to standard output.
 
 ; <tt>--help-all</tt> : Write complete list of basic and advanced command line options to standard output.
 
 ; <tt>--wiki</tt> : Write list of command line options to standard output in MediaWiki markup.
+
+; <tt>--man</tt> : Write man page source in 'nroff' markup to standard output.
 
 ; <tt>--xml</tt> : Write command line syntax specification in XML markup (for Slicer integration).
 

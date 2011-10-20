@@ -23,7 +23,7 @@ SYNTAX:
 
 LIST OF SUPPORTED OPTIONS:
 
-Global Toolkit Options
+Global Toolkit Options (these are shared by all CMTK tools)
 
   --help    Write list of basic command line options to standard output.
 
@@ -31,6 +31,8 @@ Global Toolkit Options
             Write complete list of basic and advanced command line options to standard output.
 
   --wiki    Write list of command line options to standard output in MediaWiki markup.
+
+  --man     Write man page source in 'nroff' markup to standard output.
 
   --xml     Write command line syntax specification in XML markup (for Slicer integration).
 
