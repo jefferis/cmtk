@@ -81,10 +81,14 @@ CommandLine::WriteXML
   // check for globally disabled XML support (some tools should not be used as Slicer plugins, for example)
   if ( ! (this->m_Properties & PROPS_NOXML) )
     {
-    mxml_node_t *xml = mxmlNewXML("1.0");
+    // The following is what 
+    //    mxml_node_t *xml = mxmlNewXML("1.0");
+    // would do using MiniXML 2.6, but this would be missing the "encoding" property on earlier versions.
+    // So we'll just do it "by hand."
+    mxml_node_t *xml = mxmlNewElement( NULL, "?xml version=\"1.0\" encoding=\"utf-8\"?" );
     
+    // now build XML description for Slicer.
     mxml_node_t *x_exec = mxmlNewElement(xml, "executable");
-    
     this->AddProgramInfoXML( x_exec, PRG_CATEG, "category" );
     this->AddProgramInfoXML( x_exec, PRG_TITLE, "title" );
     this->AddProgramInfoXML( x_exec, PRG_DESCR, "description" );
