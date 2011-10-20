@@ -1,6 +1,6 @@
 Release CMTK-2.1.0:
 
-(r3476) Added: cmtk::CommandLine class can now output program descriptions in
+(r3484) Added: cmtk::CommandLine class can now output program descriptions in
     'nroff' markup sutibale for creating man pages. In addition, the build
     system now creates these man pages, if "BUILD_MANPAGES" option is set. The
     man pages will also be installed and packaged. This was added in response
