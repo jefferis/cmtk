@@ -436,6 +436,15 @@ ENDIF(CMTK_USE_LZMA)
 
 OPTION(CMTK_USE_DCMTK "Build with optional DICOM support" ON)
 
+FUNCTION(CheckLibraryDependency _required _lib _key)
+  SET(CMAKE_REQUIRED_LIBRARIES ${${_required}})
+  CHECK_CXX_SOURCE_COMPILES(${CMAKE_CURRENT_SOURCE_DIR}/CMake/trivial.cxx CHECK_LIBRARY_DEPENDENCY_${_lib} FAIL_REGEX ".*undefined reference to.*${key}.*")
+  IF(NOT CHECK_LIBRARY_DEPENDENCY_${_lib}) 
+    MESSAGE( "Detected required library ${_lib}" )
+    SET(${_required} ${${_required}};${_lib} PARENT_SCOPE)
+  ENDIF(NOT CHECK_LIBRARY_DEPENDENCY_${_lib}) 
+ENDFUNCTION()
+
 IF(CMTK_USE_DCMTK)
   FIND_PACKAGE(DCMTK)
 
@@ -461,9 +470,13 @@ IF(CMTK_USE_DCMTK)
 
     MESSAGE( STATUS "Using system DCMTK library." )
 
-    # DCMTK needs png and tiff libraries but FindDCMTK doesn't provide dependencies
-    SET(DCMTK_LIBRARIES_EXTRA png tiff CharLS xml2 ssl)
-    
+    # Detect missing DCMTK library dependencies by testing the "usual suspects"
+    CheckLibraryDependency(DCMTK_LIBRARIES png png_write_image)
+    CheckLibraryDependency(DCMTK_LIBRARIES tiff TIFFGetVersion)
+    CheckLibraryDependency(DCMTK_LIBRARIES CharLS JpegLsReadHeader)    
+    CheckLibraryDependency(DCMTK_LIBRARIES xml2 xmlGetProp)
+    CheckLibraryDependency(DCMTK_LIBRARIES ssl SSL_new)
+
   ENDIF(CMTK_BUILD_DCMTK)
   
   IF(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
