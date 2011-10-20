@@ -78,7 +78,7 @@ where
 
 === Image data ===
 
-; <tt>--registration-metric</tt> : Registration metric for motion estimation by image-to-image registration.Supported values: "<tt>nmi</tt>", "<tt>mi</tt>", "<tt>cr</tt>", "<tt>msd</tt>", "<tt>ncc</tt>", where the default is "nmi", or use one of the following
+; <tt>--registration-metric</tt> : Registration metric for motion estimation by image-to-image registration.Supported values: "<tt>nmi</tt>", "<tt>mi</tt>", "<tt>cr</tt>", "<tt>msd</tt>", "<tt>ncc</tt>", where the default is "nmi", or use one of the following:
 :; <tt>--nmi</tt> : Normalized Mutual Information metric '''[This is the default]'''
 :; <tt>--mi</tt> : Standard Mutual Information metric
 :; <tt>--cr</tt> : Correlation Ratio metric
