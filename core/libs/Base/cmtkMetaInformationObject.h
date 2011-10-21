@@ -64,6 +64,12 @@ const char* const META_XFORM_MOVING_IMAGE_PATH = "XFORM_MOVING_IMAGE_PATH";
 class MetaInformationObject
 {
 public:
+  /// This class.
+  typedef MetaInformationObject Self;
+
+  /// The map type used for representation of the key/value map.
+  typedef std::map<std::string,std::string> KeyValueMapType;
+
   /// Default constructor: do nothing.
   MetaInformationObject() {}
 
@@ -82,13 +88,13 @@ public:
   }
 
   /// Return a meta info value.
-  const std::string& GetMetaInfo( const std::string& key ) const;
+  const std::string& GetMetaInfo( const std::string& key, const std::string& defaultVal = "" /*!< This string is returned if the key is not found.*/ ) const;
 
   /// Set a meta info value.
   void SetMetaInfo( const std::string& key, const std::string& value );
 
   /// The actual table of meta data: maps keys to values.
-  mutable std::map<std::string,std::string> m_MetaInformation;
+  Self::KeyValueMapType m_MetaInformation;
 };
 
 //@}

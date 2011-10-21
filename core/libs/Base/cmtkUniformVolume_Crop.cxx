@@ -109,10 +109,10 @@ UniformVolume::GetCroppedVolume() const
   if ( this->m_HighResCropRegion )
     volume->SetHighResCropRegion( *this->m_HighResCropRegion );
   
-  volume->m_MetaInformation[META_IMAGE_ORIENTATION]  = this->m_MetaInformation[META_IMAGE_ORIENTATION];
-  volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL]  = this->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL];
+  volume->m_MetaInformation[META_IMAGE_ORIENTATION]  = this->GetMetaInfo( META_IMAGE_ORIENTATION );
+  volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL]  = this->GetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL );
 
-  volume->m_MetaInformation[META_SPACE]  = this->m_MetaInformation[META_SPACE];
+  volume->m_MetaInformation[META_SPACE]  = this->GetMetaInfo( META_SPACE );
 
   return volume;
 }

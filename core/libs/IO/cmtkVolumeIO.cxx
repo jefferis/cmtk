@@ -375,7 +375,7 @@ VolumeIO::Write
       break;
     }
   
-  volume.m_MetaInformation[META_FS_PATH] = path;
+//  volume.SetMetaInfo( META_FS_PATH, path );
 }
 
 VolumeIO::Initializer::Initializer()

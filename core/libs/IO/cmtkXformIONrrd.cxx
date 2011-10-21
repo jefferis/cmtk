@@ -233,7 +233,7 @@ XformIO::WriteNrrd
     
     if ( dfield->MetaKeyExists(META_SPACE_UNITS_STRING) )
       {
-      nval->spaceUnits[0] = strdup( dfield->m_MetaInformation[META_SPACE_UNITS_STRING].c_str() );
+      nval->spaceUnits[0] = strdup( dfield->GetMetaInfo( META_SPACE_UNITS_STRING ).c_str() );
       }
       
     int kind[NRRD_DIM_MAX] = { nrrdKindVector, nrrdKindDomain, nrrdKindDomain, nrrdKindDomain };

@@ -85,7 +85,7 @@ VolumeFromFile::WriteMetaImage
   fprintf( outfile, "CenterOfRotation = 0 0 0\n" );
   fprintf( outfile, "ElementSpacing = %f %f %f\n", volume.m_Delta[AXIS_X], volume.m_Delta[AXIS_Y], volume.m_Delta[AXIS_Z] );
   fprintf( outfile, "DimSize = %d %d %d\n", volume.m_Dims[AXIS_X], volume.m_Dims[AXIS_Y], volume.m_Dims[AXIS_Z] );
-  fprintf( outfile, "AnatomicalOrientation = %s\n", volume.m_MetaInformation[META_SPACE].c_str() );
+  fprintf( outfile, "AnatomicalOrientation = %s\n", volume.GetMetaInfo( META_SPACE ).c_str() );
   fprintf( outfile, "ElementNumberOfChannels = 1\n" );
   
   fputs( "ElementType = ", outfile ) ;

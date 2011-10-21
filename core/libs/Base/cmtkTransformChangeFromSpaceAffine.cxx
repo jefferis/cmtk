@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -48,8 +48,8 @@ cmtk::TransformChangeFromSpaceAffine
     }
   else
     {
-    refVolumeOriginalSpace->ChangeCoordinateSpace( reference.m_MetaInformation[META_SPACE_ORIGINAL] );
-    fltVolumeOriginalSpace->ChangeCoordinateSpace( floating.m_MetaInformation[META_SPACE_ORIGINAL] );
+    refVolumeOriginalSpace->ChangeCoordinateSpace( reference.GetMetaInfo( META_SPACE_ORIGINAL ) );
+    fltVolumeOriginalSpace->ChangeCoordinateSpace( floating.GetMetaInfo( META_SPACE_ORIGINAL ) );
     }
   
   // now determine image-to-physical transformations and concatenate these.

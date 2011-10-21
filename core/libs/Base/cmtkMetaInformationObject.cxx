@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -31,9 +31,13 @@
 #include "cmtkMetaInformationObject.h"
 
 const std::string& 
-cmtk::MetaInformationObject::GetMetaInfo( const std::string& key ) const
+cmtk::MetaInformationObject::GetMetaInfo( const std::string& key, const std::string& defaultVal ) const
 {
-  return this->m_MetaInformation[key];
+  Self::KeyValueMapType::const_iterator it = this->m_MetaInformation.find( key );
+  if ( it != this->m_MetaInformation.end() )
+    return it->second;
+  else
+    return defaultVal;
 }
 
 void

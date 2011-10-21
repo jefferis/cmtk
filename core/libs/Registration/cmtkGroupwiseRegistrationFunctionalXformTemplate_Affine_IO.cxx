@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -55,7 +55,7 @@ operator<<
   
   for ( size_t idx = 0; idx < func.m_XformVector.size(); ++idx )
     {
-    stream.WriteString( "target", func.m_OriginalImageVector[idx]->m_MetaInformation[META_FS_PATH].c_str() );
+    stream.WriteString( "target", func.m_OriginalImageVector[idx]->GetMetaInfo( META_FS_PATH ).c_str() );
     stream << (*func.GetXformByIndex( idx ));
     }
   

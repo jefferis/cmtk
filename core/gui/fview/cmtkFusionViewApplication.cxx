@@ -82,6 +82,11 @@ cmtk::FusionViewApplication
   this->m_XformList = XformListIO::MakeFromStringList( xformList );
   this->m_XformListAllAffine = this->m_XformList.MakeAllAffine();
 
+  if ( !strcmp( imagePathFix, "-" ) )
+    {
+    imagePathFix = (*this->m_XformList.begin())->m_Xform->GetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, "" ).c_str();
+    }
+  
   this->m_Fixed.m_Volume = VolumeIO::ReadOriented( imagePathFix );
   if ( ! this->m_Fixed.m_Volume )
     {
@@ -96,6 +101,11 @@ cmtk::FusionViewApplication
 
   (this->m_CursorPosition = this->m_Fixed.m_Volume->GetDims() ) *= 0.5;
 
+  if ( !strcmp( imagePathMov, "-" ) )
+    {
+    imagePathMov = (*this->m_XformList.rbegin())->m_Xform->GetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, "" ).c_str();
+    }
+  
   this->m_Moving.m_Volume = VolumeIO::ReadOriented( imagePathMov );
   if ( ! this->m_Moving.m_Volume )
     {

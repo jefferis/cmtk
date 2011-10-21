@@ -108,7 +108,7 @@ GroupwiseRegistrationOutput::WriteXformsSeparateArchives
 	  }
 	
 	const UniformVolume* image = this->m_Functional->GetOriginalTargetImage( img );
-	Study::SmartPtr imgstudy = slist.AddStudy( image->m_MetaInformation[META_FS_PATH].c_str() );
+	Study::SmartPtr imgstudy = slist.AddStudy( image->GetMetaInfo( META_FS_PATH ).c_str() );
 	
 	WarpXform::SmartPtr warpXform = WarpXform::SmartPtr::DynamicCastFrom( this->m_Functional->GetGenericXformByIndex( img ) );
 	if ( warpXform )

@@ -51,7 +51,7 @@ UniformVolume::CreateDefaultIndexToPhysicalMatrix()
 const UniformVolume::SmartPtr
 UniformVolume::GetReoriented( const char* newOrientation ) const
 {
-  const std::string curOrientation = this->m_MetaInformation[META_IMAGE_ORIENTATION];
+  const std::string curOrientation = this->GetMetaInfo( META_IMAGE_ORIENTATION );
   DataGrid::SmartPtr temp( DataGrid::GetReoriented( newOrientation ) );
 
   AnatomicalOrientation::PermutationMatrix pmatrix( this->m_Dims, curOrientation, newOrientation );
@@ -101,7 +101,7 @@ UniformVolume
 {
   const AffineXform::MatrixType& matrix = this->m_IndexToPhysicalMatrix;
   char orientationString[4] = { 0,0,0,0 };
-  AnatomicalOrientation::GetOrientationFromDirections( orientationString, matrix, this->m_MetaInformation[META_SPACE].c_str() );
+  AnatomicalOrientation::GetOrientationFromDirections( orientationString, matrix, this->GetMetaInfo( META_SPACE ).c_str() );
   return std::string( orientationString );
 }
 

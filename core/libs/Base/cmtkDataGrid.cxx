@@ -149,8 +149,8 @@ DataGrid::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
     newDataGrid->SetData( TypedArray::SmartPtr( newData ) );
     }
 
-  newDataGrid->m_MetaInformation[META_IMAGE_ORIENTATION]  = this->m_MetaInformation[META_IMAGE_ORIENTATION];
-  newDataGrid->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL]  = this->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL];
+  newDataGrid->m_MetaInformation[META_IMAGE_ORIENTATION]  = this->GetMetaInfo( META_IMAGE_ORIENTATION );
+  newDataGrid->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL]  = this->GetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL );
   
   return newDataGrid;
 }
@@ -190,8 +190,8 @@ DataGrid::GetDownsampled( const int (&downsample)[3] ) const
     newDataGrid->SetData( TypedArray::SmartPtr( newData ) );
     }
 
-  newDataGrid->m_MetaInformation[META_IMAGE_ORIENTATION]  = this->m_MetaInformation[META_IMAGE_ORIENTATION];
-  newDataGrid->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL]  = this->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL];
+  newDataGrid->m_MetaInformation[META_IMAGE_ORIENTATION]  = this->GetMetaInfo( META_IMAGE_ORIENTATION );
+  newDataGrid->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL]  = this->GetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL );
   
   return newDataGrid;
 }
@@ -199,7 +199,7 @@ DataGrid::GetDownsampled( const int (&downsample)[3] ) const
 const DataGrid::SmartPtr
 DataGrid::GetReoriented( const char* newOrientation ) const
 {
-  std::string curOrientation = this->m_MetaInformation[META_IMAGE_ORIENTATION];
+  std::string curOrientation = this->GetMetaInfo( META_IMAGE_ORIENTATION );
   if ( curOrientation.length() != 3 ) 
     {
     curOrientation = std::string( AnatomicalOrientation::ORIENTATION_STANDARD );
@@ -248,7 +248,7 @@ DataGrid::GetReoriented( const char* newOrientation ) const
   
   newDataGrid->m_MetaInformation = this->m_MetaInformation;
   newDataGrid->m_MetaInformation[META_IMAGE_ORIENTATION] = newOrientation;
-  newDataGrid->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = this->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL];
+  newDataGrid->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = this->GetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL );
 
   return Self::SmartPtr( newDataGrid );
 }

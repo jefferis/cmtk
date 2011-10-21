@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -58,7 +58,7 @@ operator<<
   for ( size_t idx = 0; idx < func.GetNumberOfTargetImages(); ++idx )
     {
     const UniformVolume* target = func.GetOriginalTargetImage( idx );
-    stream.WriteString( "target", target->m_MetaInformation[META_FS_PATH].c_str() );
+    stream.WriteString( "target", target->GetMetaInfo( META_FS_PATH ).c_str() );
     
     const Xform* xform = func.GetGenericXformByIndex( idx );
     

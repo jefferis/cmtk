@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -211,9 +211,9 @@ AffineXform::MakeInverse () const
     inverseXform->Matrix.Compose( inverseXform->m_Parameters, this->m_LogScaleFactors );
     }
   
-  inverseXform->m_MetaInformation[META_SPACE] = this->m_MetaInformation[META_SPACE];
-  inverseXform->m_MetaInformation[META_XFORM_FIXED_IMAGE_PATH] = this->m_MetaInformation[META_XFORM_FIXED_IMAGE_PATH];
-  inverseXform->m_MetaInformation[META_XFORM_MOVING_IMAGE_PATH] = this->m_MetaInformation[META_XFORM_MOVING_IMAGE_PATH];
+  inverseXform->m_MetaInformation[META_SPACE] = this->GetMetaInfo( META_SPACE );
+  inverseXform->m_MetaInformation[META_XFORM_FIXED_IMAGE_PATH] = this->GetMetaInfo( META_XFORM_FIXED_IMAGE_PATH );
+  inverseXform->m_MetaInformation[META_XFORM_MOVING_IMAGE_PATH] = this->GetMetaInfo( META_XFORM_MOVING_IMAGE_PATH );
   
   return inverseXform;
 }
