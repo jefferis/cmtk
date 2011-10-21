@@ -31,6 +31,8 @@
 #include "cmtkFusionViewApplication.h"
 
 #include <System/cmtkCommandLine.h>
+#include <System/cmtkConsole.h>
+#include <System/cmtkDebugOutput.h>
 
 #include <IO/cmtkVolumeIO.h>
 #include <IO/cmtkXformListIO.h>
@@ -85,6 +87,15 @@ cmtk::FusionViewApplication
   if ( !strcmp( imagePathFix, "-" ) )
     {
     imagePathFix = (*this->m_XformList.begin())->m_Xform->GetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, "" ).c_str();
+    if ( strlen( imagePathFix ) )
+      {
+      DebugOutput( 2 ) << "INFO: deduced fixed image path as " << imagePathFix << "\n";
+      }
+    else
+      {
+      StdErr << "ERROR: could not deduce fixed image path from transformation(s).\n";
+      throw( ExitException( 1 ) );
+      }
     }
   
   this->m_Fixed.m_Volume = VolumeIO::ReadOriented( imagePathFix );
@@ -104,6 +115,15 @@ cmtk::FusionViewApplication
   if ( !strcmp( imagePathMov, "-" ) )
     {
     imagePathMov = (*this->m_XformList.rbegin())->m_Xform->GetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, "" ).c_str();
+    if ( strlen( imagePathMov ) )
+      {
+      DebugOutput( 2 ) << "INFO: deduced moving image path as " << imagePathMov << "\n";
+      }
+    else
+      {
+      StdErr << "ERROR: could not deduce moving image path from transformation(s).\n";
+      throw( ExitException( 1 ) );
+      }
     }
   
   this->m_Moving.m_Volume = VolumeIO::ReadOriented( imagePathMov );
