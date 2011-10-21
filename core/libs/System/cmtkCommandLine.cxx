@@ -131,8 +131,8 @@ CommandLine::Parse( const int argc, const char* argv[] ) throw( ExitException, S
     // Break at first non-switch argument.
     if ( this->ArgV[this->Index][0] != '-' ) return true;
     
-    // Like POSIX, break at "--" terminator.
-    if ( !strcmp( this->ArgV[this->Index], "--" ) ) 
+    // Like POSIX, break at "--" terminator. Also take "-" by itself as argument.
+    if ( !strcmp( this->ArgV[this->Index], "--" ) || !strcmp( this->ArgV[this->Index], "-" ) ) 
       {
       ++this->Index;
       break;
