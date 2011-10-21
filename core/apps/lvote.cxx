@@ -63,7 +63,7 @@ doMain
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Local voting." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool combines multiple segmentations fro co-registered and reformatted atlases using locally-weighted voting." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, lvote "[options] targetImage atlasIntensity1 atlasLabels1 [atlasIntensity2 atlasLabels2 [...]]" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "lvote [options] targetImage atlasIntensity1 atlasLabels1 [atlasIntensity2 atlasLabels2 [...]]" );
 
     typedef cmtk::CommandLine::Key Key;
 
