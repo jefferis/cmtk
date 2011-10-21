@@ -95,7 +95,7 @@ doMain( const int argc, const char* argv[] )
     {
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Average images" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, average_images "[options] image0 ..." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "average_images [options] image0 ..." );
 
     typedef cmtk::CommandLine::Key Key;
 

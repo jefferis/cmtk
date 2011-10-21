@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -58,7 +58,7 @@ doMain( const int argc, const char* argv[] )
     {
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Average affine transformations" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, average_affine "[options] x0 [x1 ...] \n WHERE x0 ... xN is [{-i,--inverse}] affine transformation #" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "average_affine [options] x0 [x1 ...] \n WHERE x0 ... xN is [{-i,--inverse}] affine transformation #" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'r', "include-reference" ), &IncludeReference, true, "Include reference coordinate system in averaging." );

@@ -55,7 +55,7 @@ doMain( const int argc, const char* argv[] )
     {
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Concatenate affine transformations" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, concat_affine "[options] x0 [x1 ...] \n WHERE x0 ... xN is [{-i,--inverse}] affine transformation #" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "concat_affine [options] x0 [x1 ...] \n WHERE x0 ... xN is [{-i,--inverse}] affine transformation #" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddOption( Key( 'o', "outfile" ), &OutputName, "Output transformation." );

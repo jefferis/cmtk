@@ -337,7 +337,7 @@ doMain ( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Image statistics" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Statistical computations on image pixel intensities, i.e., means and standard deviations" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, statistics "[options] ImageFile0 [ImageFile1 ...]" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "statistics [options] ImageFile0 [ImageFile1 ...]" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Statistics and Modeling" );
 
     typedef cmtk::CommandLine::Key Key;

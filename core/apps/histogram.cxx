@@ -155,7 +155,7 @@ doMain ( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Image histogram" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Create a histogram of image intensities and write as tab-separated text file to standard output" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, histogram "[options] image" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "histogram [options] image" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Statistics and Modeling" );
 
     typedef cmtk::CommandLine::Key Key;

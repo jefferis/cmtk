@@ -54,7 +54,7 @@ doMain( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Unsplit images" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Join separate image stacks into a single interleaved image volume" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, unsplit "[options] inImage0 inImage1 ..." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "unsplit [options] inImage0 inImage1 ..." );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddOption( Key( 'o', "output" ), &outputFilePath, "Path for output image." );

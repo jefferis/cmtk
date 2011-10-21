@@ -957,7 +957,7 @@ doMain ( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Shape-based averaging" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Average segmentations (label fields) using the Euclidean Distance Transform." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, average_edt "[options] list0 [list1 ...]" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "average_edt [options] list0 [list1 ...]" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( "interpolate-image" ), &InterpolateDistance, false, "Interpolate target image, compute distance on reference grid" );

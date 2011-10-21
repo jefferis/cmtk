@@ -285,7 +285,7 @@ doMain( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Volume reconstruction" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Iterative volume reconstruction from co-registered images using inverse interpolation or joint deblurring" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, volume_reconstruction "[options] refImage xform0 inImage0 [xform1 inImage1 ...]" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "volume_reconstruction [options] refImage xform0 inImage0 [xform1 inImage1 ...]" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.BeginGroup( "Input", "Input Options" );

@@ -157,7 +157,7 @@ doMain( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Volume injection" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Reconstruction a high-resolution volume from multiple co-registered (low-resolution) images using forward volume injection" ); 
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, volume_injection "[options] refImage xform0 inImage0 [xform1 inImage1 ...]" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "volume_injection [options] refImage xform0 inImage0 [xform1 inImage1 ...]" );
     
     typedef cmtk::CommandLine::Key Key;
     cl.BeginGroup( "Input", "Input Options" );

@@ -81,7 +81,7 @@ doMain ( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "T-tests" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Pixelwise tests of statistical significance. Also compute correlations and z-scores" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, ttest "[options] imageX0 [imageX1 ...] -- imageY0 [imageY1] ...\n"
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "ttest [options] imageX0 [imageX1 ...] -- imageY0 [imageY1] ...\n"
 		       ttest "[options] --symmetric imageX0 [imageX1 ...]");
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Statistics and Modeling" );
     

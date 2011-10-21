@@ -94,7 +94,7 @@ doMain( const int argc, const char* argv[] )
     cmtk::CommandLine cl;  
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Convert between image file formats and data types. Also apply simple, general-purpose image operations in the process. "
 		       "An arbitrary number of operations can be specified on the command line, which will be applied exactly in the order given." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, convertx "[options] infile outfile" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "convertx [options] infile outfile" );
 
     typedef cmtk::CommandLine::Key Key;
 #ifdef CMTK_USE_SQLITE

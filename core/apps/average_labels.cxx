@@ -61,7 +61,7 @@ doMain( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Label image averaging" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Average co-registered label images using partial volumes" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, average_labels "[options] reference xform0 atlas0 [xform1 atlas1 ...]" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "average_labels [options] reference xform0 atlas0 [xform1 atlas1 ...]" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddOption( Key( 'o', "output" ), &OutputImagePath, "Output image path" );

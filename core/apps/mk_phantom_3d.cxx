@@ -83,7 +83,7 @@ doMain( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Generate phantom image" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Generate 3D digital phantom images using a selection of drawing commands" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, mk_phantom_3d "[options] command0 [command1 ...]\n"
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "mk_phantom_3d [options] command0 [command1 ...]\n"
 		       "\t sphere x,y,z radius value\n"
 		       "\t box x0,y0,z0 x1,y1,z1 value\n");
 

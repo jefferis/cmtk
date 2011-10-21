@@ -118,7 +118,7 @@ doMain( int argc, char** argv )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Average using ADM" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute average-shape average-intensity images and deformation maps using an active deformation model." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, avg_adm "[options] list0 [list1 ...]" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "avg_adm [options] list0 [list1 ...]" );
     
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'l', "label" ), &Labels, true, "Label mode (as opposed to grey)" );

@@ -64,7 +64,7 @@ doMain ( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Overlap computation" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute overlap measures between two or more images" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, overlap "[options] image0 image1 [image2 ...]" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "overlap [options] image0 image1 [image2 ...]" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Statistics and Modeling" );
 
     typedef cmtk::CommandLine::Key Key;
