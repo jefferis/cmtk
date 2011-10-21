@@ -137,7 +137,7 @@ doMain( int argc, char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Nonrigid population registration" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool nonrigidly registers a population of input images simultaneously, without a template, using either the 'congealing' algorithm or a groupwise similarity measure based on "
 		       "a continuous approximation of mutual information ('RMI')." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] affineGroupRegistration" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, groupwise_warp "[options] affineGroupRegistration" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Image Registration" );
     
     typedef cmtk::CommandLine::Key Key;

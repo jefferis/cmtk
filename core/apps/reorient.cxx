@@ -56,7 +56,7 @@ doMain( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Reorientation" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Convert between image orientations, i.e., physically re-order pixel array and adapt stored anatomical orientation information" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] new-orientation infile outfile" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, reorient "[options] new-orientation infile outfile" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddOption( Key( 'i', "input-orientation" ), &OldOrientation, "Override input orientation. This is a three-letter code, e.g., 'RAS', 'LPI', etc." );

@@ -92,7 +92,7 @@ doMain ( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Deformation to PostScript" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Write deformation field as deformed grid in PostScript format for visualization and illustration" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] referenceImage xform" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, warp2ps "[options] referenceImage xform" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( "invert-xform" ), &InvertXform, true, "Invert the main transformation" );

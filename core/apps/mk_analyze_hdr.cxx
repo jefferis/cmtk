@@ -90,7 +90,7 @@ doMain( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Make Analyze header file" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Make header file according Analzye 7.5 format based on user-supplied parameters for geometry, data type, orientation, etc." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] [output.nii]" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, mk_analyze_hdr "[options] [output.nii]" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddCallback( Key( 'D', "dims" ), SetDims, "Set dimensions in voxels" );

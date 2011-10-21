@@ -93,7 +93,7 @@ doMain( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Matrix to degrees of freedom" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Convert transformation matrix to degrees of freedom" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] < matrix" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, mat2dof "[options] < matrix" );
 
     typedef cmtk::CommandLine::Key Key;    
     cl.AddSwitch( Key( '3', "matrix3x3" ), &Matrix3x3, true, "Only input upper left 3x3 submatrix." );

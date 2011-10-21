@@ -181,7 +181,7 @@ doMain( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Fix interleaved motion using joint iterative deblurring" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool splits an interleaved input image into the pass images, co-registers them, and reconstructs a motion-corrected image" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] inImage outImage" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, jidb "[options] inImage outImage" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.BeginGroup( "interleave", "Interleaving Options" );

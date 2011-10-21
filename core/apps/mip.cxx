@@ -68,7 +68,7 @@ ParseCommandLine( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Maximum Intensity Projection" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Compute 2D Maximum Intensity Projection image from a 3D volume image along one of the coordinate directions" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] input output" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, mip "[options] input output" );
     
     typedef cmtk::CommandLine::Key Key;    
     cl.AddSwitch( Key( 'a', "absolute" ), &Absolute, true, "Use absolute intensity values." );

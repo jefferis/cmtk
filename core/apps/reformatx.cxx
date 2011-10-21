@@ -418,8 +418,8 @@ doMain( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Volume reformatter" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Extended volume reformatter tool to compute reformatted images and Jacobian maps from arbitrary sequences of concatenated transformations" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] --floating floatingImg target x0 [x1 ...]\n  OR\n"
-		       "[options] target [x0 x1 ...] {-j,--jacobian} xx0 [xx1 ...]\n  OR\n"
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, reformatx "[options] --floating floatingImg target x0 [x1 ...]\n  OR\n"
+		       reformatx "[options] target [x0 x1 ...] {-j,--jacobian} xx0 [xx1 ...]\n  OR\n"
 		       "WHERE x0 ... xN and xx0 ... xxN is [{-i,--inverse}] transformation##" );
 
     typedef cmtk::CommandLine::Key Key;

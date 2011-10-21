@@ -77,7 +77,7 @@ doMain( const int argc, const char *argv[] )
     {
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Apply coordinate transformations to lists of point coordinates" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] transformation" );      
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, gregxform "[options] transformation" );      
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddOption( Key( 'a', "accuracy" ), &Accuracy, "Approximation accuracy (maximum error)" );

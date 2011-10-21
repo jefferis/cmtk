@@ -133,7 +133,7 @@ doMain( int argc, char* argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Affine population registration" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool registers a population of input images simultaneously, without a template, using either the 'congealing' algorithm or a groupwise similarity measure based on "
 		       "a continuous approximation of mutual information ('RMI')." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] image0 [image1 ...]" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, groupwise_affine "[options] image0 [image1 ...]" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Image Registration" );
 
     typedef cmtk::CommandLine::Key Key;

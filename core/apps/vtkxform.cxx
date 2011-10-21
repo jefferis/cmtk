@@ -62,7 +62,7 @@ doMain( const int argc, const char* argv[] )
     {
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Apply coordinate transformation to point coordinates in VTK file (standard input) and write equivalent file with transformed points to standard output." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] transformation" );      
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, vtkxform "[options] transformation" );      
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddOption( Key( "inversion-tolerance" ), &inversionTolerance, "Numerical tolerance of B-spline inversion in mm. Smaller values will lead to more accurate inversion, but may increase failure rate." );

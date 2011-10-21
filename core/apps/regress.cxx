@@ -112,7 +112,7 @@ doMain( const int argc, const char* argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Regression" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Linear (and higher-order polynomial) regression of deformation fields and images." );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] controlFile" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, regress "[options] controlFile" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddOption( Key( 'o', "output" ), &outFileName, "File name for output." );
