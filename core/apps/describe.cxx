@@ -67,7 +67,7 @@ doMain( int argc, char *argv[] )
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Describe image file formats and parameters" );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool prints a detailed description of the input image(s)" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "[options] imageFile0 [imageFile1 ...]" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "describe [options] imageFile0 [imageFile1 ...]" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.AddSwitch( Key( 'm', "machine-readable" ), &MachineReadable, true, "Print output in format that is easy to parse automatically." );
