@@ -84,12 +84,12 @@ doMain( const int argc, const char* argv[] )
 
   if ( OldOrientation )
     {
-    volume->m_MetaInformation[cmtk::META_IMAGE_ORIENTATION] = OldOrientation;
-    volume->m_MetaInformation[cmtk::META_IMAGE_ORIENTATION_ORIGINAL] = OldOrientation;
+    volume->SetMetaInfo( cmtk::META_IMAGE_ORIENTATION, OldOrientation );
+    volume->SetMetaInfo( cmtk::META_IMAGE_ORIENTATION_ORIGINAL, OldOrientation );
     }
   else
     {
-    OldOrientation = volume->m_MetaInformation[cmtk::META_IMAGE_ORIENTATION].c_str();
+    OldOrientation = volume->GetMetaInfo( cmtk::META_IMAGE_ORIENTATION ).c_str();
     }
 
   if ( NewOrientation )
@@ -99,12 +99,12 @@ doMain( const int argc, const char* argv[] )
     // now reorient here in case the writer function doesn't try to write original orientation
     volume = cmtk::UniformVolume::SmartPtr( volume->GetReoriented( NewOrientation ) );
     // override original orientation to force output with desired output orientation
-    volume->m_MetaInformation[cmtk::META_IMAGE_ORIENTATION_ORIGINAL] = NewOrientation;
+    volume->SetMetaInfo( cmtk::META_IMAGE_ORIENTATION_ORIGINAL, NewOrientation );
     }
 
   if ( NewSpace )
     {
-    volume->m_MetaInformation[cmtk::META_SPACE_ORIGINAL] = NewSpace;
+    volume->SetMetaInfo( cmtk::META_SPACE_ORIGINAL, NewSpace );
     }
   
   cmtk::VolumeIO::Write( *volume, OutFileName );

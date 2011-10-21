@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -83,7 +83,7 @@ public:
       m_ParameterVector( other.m_ParameterVector )
   {
     this->m_Parameters = this->m_ParameterVector->Elements;
-    this->m_MetaInformation[cmtk::META_SPACE] = cmtk::AnatomicalOrientationBase::ORIENTATION_STANDARD;
+    this->SetMetaInfo( cmtk::META_SPACE, cmtk::AnatomicalOrientationBase::ORIENTATION_STANDARD );
   }
 
   /// Default constructor.
@@ -91,7 +91,7 @@ public:
     : m_Parameters( NULL ),
       m_NumberOfParameters( 0 ) 
   {
-    this->m_MetaInformation[cmtk::META_SPACE] = cmtk::AnatomicalOrientationBase::ORIENTATION_STANDARD;
+    this->SetMetaInfo( cmtk::META_SPACE, cmtk::AnatomicalOrientationBase::ORIENTATION_STANDARD );
   }
 
   /// Virtual destructor.

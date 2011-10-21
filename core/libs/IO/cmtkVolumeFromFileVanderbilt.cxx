@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -100,7 +100,8 @@ VolumeFromFile::ReadVanderbilt( const char *path )
 
   // create volume, for the time being with empty data array.
   UniformVolume::SmartPtr volume( new UniformVolume( DataGrid::IndexType( dims ), UniformVolume::CoordinateVectorType( size ) ) );
-  volume->m_MetaInformation[META_IMAGE_ORIENTATION] = volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = orientation;
+  volume->SetMetaInfo( META_IMAGE_ORIENTATION, orientation );
+  volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientation );
 
   // generate image filename from header file path.
   char imageFilename[PATH_MAX], *lastSlash;

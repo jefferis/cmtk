@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -195,7 +195,7 @@ ClassStream::Get
 
   if ( warpXform )
     {
-    warpXform->m_MetaInformation[META_SPACE] = AnatomicalOrientation::ORIENTATION_STANDARD;
+    warpXform->SetMetaInfo( META_SPACE, AnatomicalOrientation::ORIENTATION_STANDARD );
     }
   
   return *this;

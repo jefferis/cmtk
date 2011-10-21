@@ -89,13 +89,13 @@ doMain( int argc, char *argv[] )
 	continue;
 	}
       
-      const char* orientOriginal = volume->m_MetaInformation[cmtk::META_IMAGE_ORIENTATION_ORIGINAL].c_str();
+      const char* orientOriginal = volume->GetMetaInfo( cmtk::META_IMAGE_ORIENTATION_ORIGINAL ).c_str();
       const cmtk::TypedArray* dataArray = volume->GetData();
       
       if ( MachineReadable )
 	{
 	fprintf( stdout, "FNAME\t%s\n", next );            
-	fprintf( stdout, "FORMAT\t%s\n", volume->m_MetaInformation[cmtk::META_FILEFORMAT_ORIGINAL].c_str() );
+	fprintf( stdout, "FORMAT\t%s\n", volume->GetMetaInfo( cmtk::META_FILEFORMAT_ORIGINAL ).c_str() );
 
 	if ( volume->MetaKeyExists( cmtk::META_IMAGE_DESCRIPTION ) )
 	  fprintf( stdout, "DESCRIP\t\"%s\"\n", volume->GetMetaInfo( cmtk::META_IMAGE_DESCRIPTION ).c_str() );
@@ -109,7 +109,7 @@ doMain( int argc, char *argv[] )
 
 	fprintf( stdout, "XORIGIN\t%f\nYORIGIN\t%f\nZORIGIN\t%f\n", volume->m_Offset[0], volume->m_Offset[1], volume->m_Offset[2] );
 	if ( volume->MetaKeyExists(cmtk::META_SPACE_UNITS_STRING ) )
-	  fprintf( stdout, "UNITS\t%s\n", volume->m_MetaInformation[cmtk::META_SPACE_UNITS_STRING].c_str() );
+	  fprintf( stdout, "UNITS\t%s\n", volume->GetMetaInfo( cmtk::META_SPACE_UNITS_STRING ).c_str() );
 	
 	const cmtk::AffineXform::MatrixType a2p = volume->GetImageToPhysicalMatrix();
 	fprintf( stdout, "I2PMAT0\t%f\t%f\t%f\t%f\nI2PMAT1\t%f\t%f\t%f\t%f\nI2PMAT2\t%f\t%f\t%f\t%f\nI2PMAT3\t%f\t%f\t%f\t%f\n", 
@@ -131,7 +131,7 @@ doMain( int argc, char *argv[] )
       else
 	{
 	fprintf( stdout, "File: %s\n", next );            
-	fprintf( stdout, "File format: %s\n", volume->m_MetaInformation[cmtk::META_FILEFORMAT_ORIGINAL].c_str() );
+	fprintf( stdout, "File format: %s\n", volume->GetMetaInfo( cmtk::META_FILEFORMAT_ORIGINAL ).c_str() );
 
 	if ( volume->MetaKeyExists( cmtk::META_IMAGE_DESCRIPTION ) )
 	  fprintf( stdout, "Description: \"%s\"\n", volume->GetMetaInfo( cmtk::META_IMAGE_DESCRIPTION ).c_str() );
@@ -142,7 +142,7 @@ doMain( int argc, char *argv[] )
       
 	const char* spaceUnits = "";
 	if ( volume->MetaKeyExists(cmtk::META_SPACE_UNITS_STRING ) )
-	  spaceUnits = volume->m_MetaInformation[cmtk::META_SPACE_UNITS_STRING].c_str();
+	  spaceUnits = volume->GetMetaInfo( cmtk::META_SPACE_UNITS_STRING ).c_str();
 	
 	fprintf( stdout, "Uniform volume\n%f x %f x %f [%s] voxel size\n%f x %f x %f [%s] volume size\n",
 		 volume->m_Delta[0], volume->m_Delta[1], volume->m_Delta[2], spaceUnits,

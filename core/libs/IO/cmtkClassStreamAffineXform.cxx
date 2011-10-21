@@ -130,7 +130,7 @@ operator >> ( ClassStream& stream, AffineXform& affineXform )
   affineXform.SetUseLogScaleFactors( logScaleFactors );
   affineXform.SetParamVector( pVector );
 
-  affineXform.m_MetaInformation[META_SPACE] = AnatomicalOrientation::ORIENTATION_STANDARD;
+  affineXform.SetMetaInfo( META_SPACE, AnatomicalOrientation::ORIENTATION_STANDARD );
 
   if ( referenceStudy )
     affineXform.SetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, referenceStudy );

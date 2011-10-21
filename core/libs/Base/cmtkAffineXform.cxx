@@ -211,9 +211,9 @@ AffineXform::MakeInverse () const
     inverseXform->Matrix.Compose( inverseXform->m_Parameters, this->m_LogScaleFactors );
     }
   
-  inverseXform->m_MetaInformation[META_SPACE] = this->GetMetaInfo( META_SPACE );
-  inverseXform->m_MetaInformation[META_XFORM_FIXED_IMAGE_PATH] = this->GetMetaInfo( META_XFORM_FIXED_IMAGE_PATH );
-  inverseXform->m_MetaInformation[META_XFORM_MOVING_IMAGE_PATH] = this->GetMetaInfo( META_XFORM_MOVING_IMAGE_PATH );
+  inverseXform->CopyMetaInfo( *this, META_SPACE );
+  inverseXform->CopyMetaInfo( *this, META_XFORM_FIXED_IMAGE_PATH );
+  inverseXform->CopyMetaInfo( *this, META_XFORM_MOVING_IMAGE_PATH );
   
   return inverseXform;
 }

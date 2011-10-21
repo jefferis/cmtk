@@ -163,7 +163,8 @@ CallbackReconGrid( const char* arg )
     }
   
   ReconGrid = cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( cmtk::UniformVolume::IndexType( gridDims ), gridDelta[0], gridDelta[1], gridDelta[2] ) );
-  ReconGrid->m_MetaInformation[cmtk::META_SPACE] = ReconGrid->m_MetaInformation[cmtk::META_SPACE_ORIGINAL] = cmtk::AnatomicalOrientation::ORIENTATION_STANDARD;
+  ReconGrid->SetMetaInfo( cmtk::META_SPACE, cmtk::AnatomicalOrientation::ORIENTATION_STANDARD );
+  ReconGrid->SetMetaInfo( cmtk::META_SPACE_ORIGINAL, cmtk::AnatomicalOrientation::ORIENTATION_STANDARD );
 
   if ( numArgs == 9 )
     {
@@ -398,11 +399,11 @@ doMain( const int argc, const char* argv[] )
 	}
       }
 
-    if ( affineXform->m_MetaInformation[cmtk::META_SPACE] != cmtk::AnatomicalOrientation::ORIENTATION_STANDARD )
+    if ( affineXform->GetMetaInfo( cmtk::META_SPACE ) != cmtk::AnatomicalOrientation::ORIENTATION_STANDARD )
       {
       cmtk::TransformChangeFromSpaceAffine toStandardSpace( *affineXform, *ReconGrid, *image );
       *affineXform = toStandardSpace.GetTransformation();
-      affineXform->m_MetaInformation[cmtk::META_SPACE] = cmtk::AnatomicalOrientation::ORIENTATION_STANDARD;
+      affineXform->SetMetaInfo( cmtk::META_SPACE, cmtk::AnatomicalOrientation::ORIENTATION_STANDARD );
       }
 
     Images.push_back( image );

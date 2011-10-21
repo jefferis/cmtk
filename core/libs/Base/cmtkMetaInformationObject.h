@@ -67,9 +67,6 @@ public:
   /// This class.
   typedef MetaInformationObject Self;
 
-  /// The map type used for representation of the key/value map.
-  typedef std::map<std::string,std::string> KeyValueMapType;
-
   /// Default constructor: do nothing.
   MetaInformationObject() {}
 
@@ -92,6 +89,23 @@ public:
 
   /// Set a meta info value.
   void SetMetaInfo( const std::string& key, const std::string& value );
+
+  /** Copy a meta key/value pair from another meta information object.
+   * If the key does not exist in the source object, it will not be created in this
+   * object either.
+   */
+  void CopyMetaInfo( const Self& other, const std::string& key );
+
+  /** Copy all meta key/value pairs from another meta information object.
+   */
+  void CopyMetaInfo( const Self& other )
+  {
+    this->m_MetaInformation = other.m_MetaInformation;
+  }
+
+private:
+  /// The map type used for representation of the key/value map.
+  typedef std::map<std::string,std::string> KeyValueMapType;
 
   /// The actual table of meta data: maps keys to values.
   Self::KeyValueMapType m_MetaInformation;

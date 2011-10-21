@@ -149,7 +149,7 @@ doMain( const int argc, const char* argv[] )
   cmtk::AffineXform::MatrixType xformMatrix = volumes[0]->GetImageToPhysicalMatrix();
   // and copy to output
   stacked->m_IndexToPhysicalMatrix *= xformMatrix;
-  stacked->m_MetaInformation = volumes[0]->m_MetaInformation;
+  stacked->CopyMetaInfo( *(volumes[0]) );
   
   if ( outputFilePath )
     {

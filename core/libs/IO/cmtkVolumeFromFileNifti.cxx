@@ -114,7 +114,8 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
   UniformVolume::SmartPtr volume( new UniformVolume( DataGrid::IndexType( dims ), UniformVolume::CoordinateVectorType( size ) ) );
   // Nifti is in RAS space.
   const char *const niftiSpace = "RAS";
-  volume->m_MetaInformation[META_SPACE] = volume->m_MetaInformation[META_SPACE_ORIGINAL] = niftiSpace;
+  volume->SetMetaInfo( META_SPACE, niftiSpace );
+  volume->SetMetaInfo( META_SPACE_ORIGINAL, niftiSpace );
 
   const short qform_code = header.GetField<short>( offsetof(nifti_1_header,qform_code) );
   if ( qform_code > 0 )
@@ -144,7 +145,8 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
     
     char orientationImage[4];
     AnatomicalOrientation::GetOrientationFromDirections( orientationImage, m4, niftiSpace );
-    volume->m_MetaInformation[META_IMAGE_ORIENTATION] = volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = orientationImage;
+    volume->SetMetaInfo( META_IMAGE_ORIENTATION, orientationImage );
+    volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientationImage );
     }
   else
     {
@@ -169,12 +171,14 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
     
       char orientationImage[4];
       AnatomicalOrientation::GetOrientationFromDirections( orientationImage, m4, niftiSpace );
-      volume->m_MetaInformation[META_IMAGE_ORIENTATION] = volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = orientationImage;
+      volume->SetMetaInfo( META_IMAGE_ORIENTATION, orientationImage );
+      volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientationImage );
       }
     else
       {
       // no orientation info, default to nifti standard space
-      volume->m_MetaInformation[META_IMAGE_ORIENTATION] = volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = niftiSpace;
+      volume->SetMetaInfo( META_IMAGE_ORIENTATION, niftiSpace );
+      volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, niftiSpace );
       }
     }
   
@@ -265,7 +269,7 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
     {
     char desc[81];
     desc[80] = 0;
-    volume->m_MetaInformation[META_IMAGE_DESCRIPTION] = std::string( header.GetFieldString( 148, desc, 80 ) );
+    volume->SetMetaInfo( META_IMAGE_DESCRIPTION, std::string( header.GetFieldString( 148, desc, 80 ) ) );
     }
   
   return volume;

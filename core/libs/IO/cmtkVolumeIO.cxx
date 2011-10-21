@@ -111,7 +111,7 @@ VolumeIO::Read( const char* path )
   
   if ( volume ) 
     {
-    volume->m_MetaInformation[META_FILEFORMAT_ORIGINAL] = FileFormat::Describe( formatID );
+    volume->SetMetaInfo( META_FILEFORMAT_ORIGINAL, FileFormat::Describe( formatID ) );
 
     DebugOutput( 3 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
     
@@ -129,7 +129,7 @@ VolumeIO::Read( const char* path )
   
   if ( volume )
     {
-    volume->m_MetaInformation[META_FS_PATH] = path;
+    volume->SetMetaInfo( META_FS_PATH, path );
     }
   
   return volume;
@@ -170,7 +170,7 @@ VolumeIO::ReadGrid( const char* path )
   
   if ( volume )
     {
-    volume->m_MetaInformation[META_FS_PATH] = path;
+    volume->SetMetaInfo( META_FS_PATH, path );
     }
   
   return volume;
@@ -184,7 +184,7 @@ VolumeIO
   if ( !volume ) 
     return volume;
   
-  const std::string orientationOriginal = volume->m_MetaInformation[META_IMAGE_ORIENTATION];
+  const std::string orientationOriginal = volume->GetMetaInfo( META_IMAGE_ORIENTATION );
   if ( orientationOriginal == "" )
     {
     StdErr << "WARNING: image does not have valid orientation meta information; cannot reorient.\n";
@@ -210,7 +210,7 @@ VolumeIO
   if ( !volume ) 
     return volume;
 
-  const std::string orientationOriginal = volume->m_MetaInformation[META_IMAGE_ORIENTATION];
+  const std::string orientationOriginal = volume->GetMetaInfo( META_IMAGE_ORIENTATION );
   if ( orientationOriginal == "" )
     {
     StdErr << "WARNING: image does not have valid orientation meta information; cannot reorient.\n";

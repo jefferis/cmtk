@@ -61,7 +61,7 @@ UniformVolume::GetReoriented( const char* newOrientation ) const
   result->m_Offset = pmatrix.GetPermutedArray( this->m_Offset );
   result->m_IndexToPhysicalMatrix = pmatrix.GetPermutedMatrix( this->m_IndexToPhysicalMatrix );
 
-  result->m_MetaInformation = temp->m_MetaInformation;
+  result->CopyMetaInfo( *temp );
   return result;
 }
 
@@ -69,7 +69,7 @@ void
 UniformVolume
 ::ChangeCoordinateSpace( const std::string& newSpace )
 {
-  const std::string currentSpace = this->m_MetaInformation[META_SPACE];
+  const std::string currentSpace = this->GetMetaInfo( META_SPACE );
   if ( currentSpace == newSpace )
     return; // nothing to do.
 
@@ -91,7 +91,7 @@ UniformVolume
       }
     }
   
-  this->m_MetaInformation[META_SPACE] = newSpace;
+  this->SetMetaInfo( META_SPACE, newSpace );
   this->m_IndexToPhysicalMatrix = newMatrix;
 }
 

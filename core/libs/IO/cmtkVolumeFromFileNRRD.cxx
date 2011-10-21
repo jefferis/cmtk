@@ -135,35 +135,35 @@ VolumeFromFile::ReadNRRD( const char* pathHdr )
       case nrrdSpaceRightAnteriorSuperior:
       case nrrdSpaceRightAnteriorSuperiorTime:
 	orientationSpaceAnatomical = "RAS";
-	volume->m_MetaInformation[META_SPACE] = orientationSpaceAnatomical;
+	volume->SetMetaInfo( META_SPACE, orientationSpaceAnatomical );
 	break;
       case nrrdSpaceLeftAnteriorSuperior:
       case nrrdSpaceLeftAnteriorSuperiorTime:
 	orientationSpaceAnatomical = "LAS";
-	volume->m_MetaInformation[META_SPACE] = orientationSpaceAnatomical;
+	volume->SetMetaInfo( META_SPACE, orientationSpaceAnatomical );
 	break;
       case nrrdSpaceLeftPosteriorSuperior:
       case nrrdSpaceLeftPosteriorSuperiorTime:
 	orientationSpaceAnatomical = "LPS";
-	volume->m_MetaInformation[META_SPACE] = orientationSpaceAnatomical;
+	volume->SetMetaInfo( META_SPACE, orientationSpaceAnatomical );
 	break;
       case nrrdSpace3DRightHanded:
-	volume->m_MetaInformation[META_SPACE] = "3DRH";
+	volume->SetMetaInfo( META_SPACE, "3DRH" );
 	break;
       case nrrdSpace3DLeftHanded:
-	volume->m_MetaInformation[META_SPACE] = "3DLH";
+	volume->SetMetaInfo( META_SPACE, "3DLH" );
 	break;
       case nrrdSpace3DRightHandedTime:
-	volume->m_MetaInformation[META_SPACE] = "3DRHT";
+	volume->SetMetaInfo( META_SPACE, "3DRHT" );
 	break;
       case nrrdSpace3DLeftHandedTime:
-	volume->m_MetaInformation[META_SPACE] = "3DLHT";
+	volume->SetMetaInfo( META_SPACE, "3DLHT" );
 	break;
       default:
 	break;
       }
 
-    volume->m_MetaInformation[META_SPACE_ORIGINAL] = volume->m_MetaInformation[META_SPACE];
+    volume->SetMetaInfo( META_SPACE_ORIGINAL, volume->GetMetaInfo( META_SPACE ) );
     
     const Types::Coordinate directions[3][3] = 
       {
@@ -188,7 +188,8 @@ VolumeFromFile::ReadNRRD( const char* pathHdr )
       {        
       char orientationImage[4];
       AnatomicalOrientation::GetOrientationFromDirections( orientationImage, m4, orientationSpaceAnatomical );
-      volume->m_MetaInformation[META_IMAGE_ORIENTATION] = volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = orientationImage;
+      volume->SetMetaInfo( META_IMAGE_ORIENTATION, orientationImage );
+      volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientationImage );
       volume->ChangeCoordinateSpace( AnatomicalOrientation::ORIENTATION_STANDARD );
       }
     else
@@ -196,12 +197,12 @@ VolumeFromFile::ReadNRRD( const char* pathHdr )
       }
 
     if ( nrrd->spaceUnits[0] )
-      volume->m_MetaInformation[META_SPACE_UNITS_STRING] = nrrd->spaceUnits[0];
+      volume->SetMetaInfo( META_SPACE_UNITS_STRING, nrrd->spaceUnits[0] );
 
     char* desc = nrrdKeyValueGet( nrrd, "description" );
     if ( desc )
       {
-      volume->m_MetaInformation[META_IMAGE_DESCRIPTION] = desc;
+      volume->SetMetaInfo( META_IMAGE_DESCRIPTION, desc );
       free( desc );
       }
 
@@ -223,7 +224,7 @@ VolumeFromFile::WriteNRRD
 {
   UniformVolume::SmartPtr writeVolume( volume.Clone() );
   if ( writeVolume->MetaKeyExists( META_SPACE_ORIGINAL ) )
-    writeVolume->ChangeCoordinateSpace( writeVolume->m_MetaInformation[META_SPACE_ORIGINAL] );
+    writeVolume->ChangeCoordinateSpace( writeVolume->GetMetaInfo( META_SPACE_ORIGINAL ) );
   
   void* val = const_cast<void*>( writeVolume->GetData()->GetDataPtr() );
   int type = nrrdTypeUnknown;
@@ -265,9 +266,9 @@ VolumeFromFile::WriteNRRD
 
     if ( writeVolume->MetaKeyExists(META_SPACE_UNITS_STRING) )
       {
-      nval->spaceUnits[0] = strdup( writeVolume->m_MetaInformation[META_SPACE_UNITS_STRING].c_str() );
-      nval->spaceUnits[1] = strdup( writeVolume->m_MetaInformation[META_SPACE_UNITS_STRING].c_str() );
-      nval->spaceUnits[2] = strdup( writeVolume->m_MetaInformation[META_SPACE_UNITS_STRING].c_str() );
+      nval->spaceUnits[0] = strdup( writeVolume->GetMetaInfo( META_SPACE_UNITS_STRING ).c_str() );
+      nval->spaceUnits[1] = strdup( writeVolume->GetMetaInfo( META_SPACE_UNITS_STRING ).c_str() );
+      nval->spaceUnits[2] = strdup( writeVolume->GetMetaInfo( META_SPACE_UNITS_STRING ).c_str() );
       }
 
     if ( writeVolume->MetaKeyExists( META_IMAGE_DESCRIPTION ) )
@@ -278,7 +279,7 @@ VolumeFromFile::WriteNRRD
     int kind[NRRD_DIM_MAX] = { nrrdKindDomain, nrrdKindDomain, nrrdKindDomain };
     nrrdAxisInfoSet_nva( nval, nrrdAxisInfoKind, kind );
 
-    const std::string space = writeVolume->m_MetaInformation[META_SPACE];
+    const std::string space = writeVolume->GetMetaInfo( META_SPACE );
     
     // if the volume has a direction table, write it to the Nrrd
     if ( space == "RAS" )

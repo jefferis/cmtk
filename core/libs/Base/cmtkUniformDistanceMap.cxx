@@ -72,7 +72,7 @@ UniformDistanceMap<TDistanceDataType>
   this->m_DistanceMap->m_IndexToPhysicalMatrix = volume.m_IndexToPhysicalMatrix;
 
   this->m_DistanceMap->SetOffset( volume.m_Offset );
-  this->m_DistanceMap->m_MetaInformation = volume.m_MetaInformation;
+  this->m_DistanceMap->CopyMetaInfo( volume );
 }
 
 template<class TDistanceDataType>

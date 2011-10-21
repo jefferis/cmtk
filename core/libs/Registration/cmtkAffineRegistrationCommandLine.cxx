@@ -293,11 +293,11 @@ AffineRegistrationCommandLine
       throw cmtk::ExitException( 1 );
       }
 
-    if ( affine->m_MetaInformation[META_SPACE] != AnatomicalOrientation::ORIENTATION_STANDARD )
+    if ( affine->GetMetaInfo( META_SPACE ) != AnatomicalOrientation::ORIENTATION_STANDARD )
       {
       TransformChangeFromSpaceAffine toStandardSpace( *affine, *(this->m_Volume_1), *(this->m_Volume_2) );
       *affine = toStandardSpace.GetTransformation();
-      affine->m_MetaInformation[META_SPACE] = AnatomicalOrientation::ORIENTATION_STANDARD;
+      affine->SetMetaInfo( META_SPACE, AnatomicalOrientation::ORIENTATION_STANDARD );
       }
     
     this->SetInitialTransformation( affine );

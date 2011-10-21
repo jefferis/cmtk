@@ -186,10 +186,12 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
     }
   
   UniformVolume::SmartPtr volume( new UniformVolume( dims, UniformVolume::CoordinateVectorType( size ) ) );
-  volume->m_MetaInformation[META_IMAGE_ORIENTATION] = volume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = orientString;
+  volume->SetMetaInfo( META_IMAGE_ORIENTATION, orientString );
+  volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientString );
 
   // Analyze is medical data, which we always treat in RAS space.
-  volume->m_MetaInformation[META_SPACE] = volume->m_MetaInformation[META_SPACE_ORIGINAL] = orientString;
+  volume->SetMetaInfo( META_SPACE, orientString );
+  volume->SetMetaInfo( META_SPACE_ORIGINAL, orientString );
   volume->ChangeCoordinateSpace( AnatomicalOrientation::ORIENTATION_STANDARD );
 
   // don't read data, we're done here.
@@ -271,7 +273,7 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
     {
     char desc[81];
     desc[80] = 0;
-    volume->m_MetaInformation[META_IMAGE_DESCRIPTION] = std::string( header.GetFieldString( 148, desc, 80 ) );
+    volume->SetMetaInfo( META_IMAGE_DESCRIPTION, std::string( header.GetFieldString( 148, desc, 80 ) ) );
     }
   
   return volume;
@@ -283,14 +285,14 @@ VolumeFromFile::WriteAnalyzeHdr
 {
   UniformVolume::SmartPtr writeVolume( volume.Clone() );
   if ( writeVolume->MetaKeyExists( META_SPACE_ORIGINAL ) )
-    writeVolume->ChangeCoordinateSpace( writeVolume->m_MetaInformation[META_SPACE_ORIGINAL] );
+    writeVolume->ChangeCoordinateSpace( writeVolume->GetMetaInfo( META_SPACE_ORIGINAL ) );
 
-  std::string currentOrientation = writeVolume->m_MetaInformation[META_IMAGE_ORIENTATION];
+  std::string currentOrientation = writeVolume->GetMetaInfo( META_IMAGE_ORIENTATION );
   if ( currentOrientation == "" )
     {
     currentOrientation = "LAS"; // default: write as is, axial tag, no reorientation.
     }
-  std::string originalOrientation = writeVolume->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL];
+  std::string originalOrientation = writeVolume->GetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL );
   if ( originalOrientation == "" )
     {
     originalOrientation = currentOrientation;

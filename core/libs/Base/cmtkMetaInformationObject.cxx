@@ -45,3 +45,11 @@ cmtk::MetaInformationObject::SetMetaInfo( const std::string& key, const std::str
 {
   this->m_MetaInformation[key] = value;
 }
+
+void
+cmtk::MetaInformationObject::CopyMetaInfo( const Self& other, const std::string& key )
+{
+  Self::KeyValueMapType::const_iterator it = this->m_MetaInformation.find( key );
+  if ( it != this->m_MetaInformation.end() )
+    this->SetMetaInfo( it->first, it->second );
+}

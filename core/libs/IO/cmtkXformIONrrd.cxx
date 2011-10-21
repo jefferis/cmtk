@@ -153,7 +153,8 @@ XformIO::ReadNrrd( const char* path )
 
     if ( orientationSpace )
       {
-      dfield->m_MetaInformation[META_SPACE] = dfield->m_MetaInformation[META_SPACE_ORIGINAL] = orientationSpace;
+      dfield->SetMetaInfo( META_SPACE, orientationSpace );
+      dfield->SetMetaInfo( META_SPACE_ORIGINAL, orientationSpace );
       
       const Types::Coordinate directions[3][3] = 
 	{
@@ -178,8 +179,8 @@ XformIO::ReadNrrd( const char* path )
       
       char orientationImage[4];
       AnatomicalOrientation::GetOrientationFromDirections( orientationImage, m4, orientationSpace );
-      dfield->m_MetaInformation[META_IMAGE_ORIENTATION] = orientationImage;
-      dfield->m_MetaInformation[META_IMAGE_ORIENTATION_ORIGINAL] = orientationImage;
+      dfield->SetMetaInfo( META_IMAGE_ORIENTATION, orientationImage );
+      dfield->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientationImage );
       }
     
     nrrdNix( nrrd );

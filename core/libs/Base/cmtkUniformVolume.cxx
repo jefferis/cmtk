@@ -109,7 +109,7 @@ UniformVolume::UniformVolume
 
   this->SetHighResCropRegion( other.GetHighResCropRegion() );
   this->SetOffset( other.m_Offset );
-  this->m_MetaInformation = other.m_MetaInformation;
+  this->CopyMetaInfo( other );
 }
 
 UniformVolume*
@@ -151,7 +151,7 @@ UniformVolume::CloneGridVirtual() const
 {
   UniformVolume* clone = new UniformVolume( this->m_Dims, Size );
   clone->SetOffset( this->m_Offset );
-  clone->m_MetaInformation = this->m_MetaInformation;
+  clone->CopyMetaInfo( *this );
   clone->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
   return clone;
 }
@@ -194,7 +194,7 @@ UniformVolume::GetDownsampledAndAveraged( const int (&downsample)[3] ) const
   // set crop region while considering new image offset
   dsVolume->SetHighResCropRegion( this->GetHighResCropRegion() );
 
-  dsVolume->m_MetaInformation = this->m_MetaInformation;
+  dsVolume->CopyMetaInfo( *this );
   dsVolume->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
 
   // apply offset shift to index-to-physical matrix
@@ -239,7 +239,7 @@ UniformVolume::GetDownsampled( const int (&downsample)[3] ) const
   dsVolume->SetOffset( this->m_Offset );
   dsVolume->SetHighResCropRegion( this->GetHighResCropRegion() );
   
-  dsVolume->m_MetaInformation = this->m_MetaInformation;
+  dsVolume->CopyMetaInfo( *this );
   dsVolume->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
   
   return dsVolume;
@@ -273,7 +273,7 @@ UniformVolume::GetInterleavedSubVolume
     volume->SetOrthoSlice( axis, i, slice );
     }
   
-  volume->m_MetaInformation = this->m_MetaInformation;
+  volume->CopyMetaInfo( *this );
 
   volume->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
   // update coordinate offset according to sub-volume index
@@ -309,7 +309,7 @@ UniformVolume::GetInterleavedPaddedSubVolume
     volume->SetOrthoSlice( axis, sliceIdx, slice );
     }
   
-  volume->m_MetaInformation = this->m_MetaInformation;
+  volume->CopyMetaInfo( *this );
   volume->m_IndexToPhysicalMatrix = this->m_IndexToPhysicalMatrix;
   return volume;
 }
