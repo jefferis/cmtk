@@ -436,13 +436,34 @@ ENDIF(CMTK_USE_LZMA)
 
 OPTION(CMTK_USE_DCMTK "Build with optional DICOM support" ON)
 
+# The following using pieces contributed by Yaroslav Halchenko based on CMake's own CHECK_CXX_SOURCE_COMPILES
 FUNCTION(CheckLibraryDependency _required _lib _key)
-  SET(CMAKE_REQUIRED_LIBRARIES ${${_required}})
-  CHECK_CXX_SOURCE_COMPILES(${CMAKE_CURRENT_SOURCE_DIR}/CMake/trivial.cxx CHECK_LIBRARY_DEPENDENCY_${_lib} FAIL_REGEX ".*undefined reference to.*${key}.*")
-  IF(NOT CHECK_LIBRARY_DEPENDENCY_${_lib}) 
-    MESSAGE( "Detected required library ${_lib}" )
+  IF(NOT DEFINED REQUIRED_LIBRARY_${_lib})
+    SET(CHECK_CXX_SOURCE_COMPILES_ADD_LIBRARIES "-DLINK_LIBRARIES:STRING=${${_required}}")
+    FILE(WRITE "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/src.cxx" "int main(void) { return 0; }\n")
+    
+    #MESSAGE( "D: Checking for ${_lib}" )
+    TRY_COMPILE(_VAR_IGNORE_
+      ${CMAKE_BINARY_DIR}
+      ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/src.cxx
+      COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS}
+      CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FUNCTION_DEFINITIONS}
+      "${CHECK_CXX_SOURCE_COMPILES_ADD_LIBRARIES}"
+      OUTPUT_VARIABLE OUTPUT)
+    
+    #MESSAGE( "D: Output was ${OUTPUT}" )
+    IF("${OUTPUT}" MATCHES ".*undefined reference to.*${_key}.*")
+      MESSAGE(STATUS "+ required library ${_lib}" )
+      SET(REQUIRED_LIBRARY_${_lib} TRUE CACHE BOOL "Library ${_lib} is required to resolve dependencies.")
+    ELSE()
+      MESSAGE(STATUS "- tested library ${_lib}" )
+      SET(REQUIRED_LIBRARY_${_lib} FALSE CACHE BOOL "Library ${_lib} is not required to resolve dependencies.")
+    ENDIF()
+  ENDIF(NOT DEFINED REQUIRED_LIBRARY_${_lib})
+
+  IF( REQUIRED_LIBRARY_${_lib} )  
     SET(${_required} ${${_required}};${_lib} PARENT_SCOPE)
-  ENDIF(NOT CHECK_LIBRARY_DEPENDENCY_${_lib}) 
+  ENDIF( REQUIRED_LIBRARY_${_lib} )  
 ENDFUNCTION()
 
 IF(CMTK_USE_DCMTK)
@@ -471,6 +492,9 @@ IF(CMTK_USE_DCMTK)
     MESSAGE( STATUS "Using system DCMTK library." )
 
     # Detect missing DCMTK library dependencies by testing the "usual suspects"
+    CheckLibraryDependency(DCMTK_LIBRARIES dcmdsig SiRIPEMD160)
+    CheckLibraryDependency(DCMTK_LIBRARIES oflog log4cplus)
+    CheckLibraryDependency(DCMTK_LIBRARIES wrap hosts_access)
     CheckLibraryDependency(DCMTK_LIBRARIES png png_write_image)
     CheckLibraryDependency(DCMTK_LIBRARIES tiff TIFFGetVersion)
     CheckLibraryDependency(DCMTK_LIBRARIES CharLS JpegLsReadHeader)    
