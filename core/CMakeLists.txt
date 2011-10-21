@@ -521,6 +521,12 @@ IF(CMTK_USE_SQLITE)
       INCLUDE_DIRECTORIES(BEFORE ${SQLITE_INCLUDE_DIR})
     ENDIF(SQLITE3_FOUND AND SQLITE3_VERSION STRGREATER "3.5.0")
   ENDIF(CMTK_BUILD_SQLITE)
+
+  # if we're using SQLite and building with test support, then we need the "sqlite3" tool.
+  IF(BUILD_TESTING)
+    FIND_PROGRAM(SQLITE3_EXECUTABLE sqlite3)
+  ENDIF(BUILD_TESTING)
+
 ENDIF(CMTK_USE_SQLITE)
 
 #-----------------------------------------------------------------------------

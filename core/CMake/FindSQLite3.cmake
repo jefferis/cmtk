@@ -65,8 +65,6 @@ FIND_LIBRARY(SQLITE3_LIBRARIES NAMES sqlite3
   ${_SQLITE3LinkDir}
 )
 
-FIND_PROGRAM(SQLITE3_EXECUTABLE sqlite3)
-
 INCLUDE(FindPackageHandleStandardArgs)
 
 # handle the QUIETLY and REQUIRED arguments and set SQLITE3_FOUND to TRUE if 
