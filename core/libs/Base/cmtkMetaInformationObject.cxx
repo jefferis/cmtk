@@ -49,7 +49,7 @@ cmtk::MetaInformationObject::SetMetaInfo( const std::string& key, const std::str
 void
 cmtk::MetaInformationObject::CopyMetaInfo( const Self& other, const std::string& key )
 {
-  Self::KeyValueMapType::const_iterator it = this->m_MetaInformation.find( key );
-  if ( it != this->m_MetaInformation.end() )
+  Self::KeyValueMapType::const_iterator it = other.m_MetaInformation.find( key );
+  if ( it != other.m_MetaInformation.end() )
     this->SetMetaInfo( it->first, it->second );
 }
