@@ -484,12 +484,18 @@ IF(CMTK_USE_DCMTK)
     SET(DCMTK_INCLUDE_DIRS "${DCMTK_BINARY_ROOT};${DCMTK_INCLUDE_DIR};${DCMTK_INCLUDE_DIR}/dcmtk/dcmjpeg;${DCMTK_INCLUDE_DIR}/dcmtk/dcmimage;${DCMTK_INCLUDE_DIR}/dcmtk/dcmimgle;${DCMTK_INCLUDE_DIR}/dcmtk/dcmdata;${DCMTK_INCLUDE_DIR}/dcmtk/ofstd")
     INCLUDE_DIRECTORIES(BEFORE ${DCMTK_INCLUDE_DIRS})
     SET(DCMTK_LIBRARIES "D4CMTK" CACHE INTERNAL "The bundled DCMTK library.")
-    SET(CMAKE_DCMDICTPATH ${DCMTK_SOURCE_ROOT})
     
-    SET(DCM_DICT_DEFAULT_PATH "${CMAKE_DCMDICTPATH}")
   ELSE(CMTK_BUILD_DCMTK)
 
     MESSAGE( STATUS "Using system DCMTK library." )
+
+    FIND_PATH(DCMTK_DCMDICTPATH
+      dicom.dic
+      PATHS
+      ${DCMTK_DIR}/${lib}
+      ${DCMTK_DIR}/share
+      /usr/include/dcmtk
+      /usr/share/dcmtk)
 
     # Detect missing DCMTK library dependencies by testing the "usual suspects"
     CheckLibraryDependency(DCMTK_LIBRARIES wrap hosts_access)
