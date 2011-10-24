@@ -1,7 +1,8 @@
 Release CMTK-2.1.0:
 
-(r3486) Added: top-level CMakeLists now automatically detects missing
-    dependencies of the system DCMTK library (Issue ##6184).
+(r3505) Added: build configuration can now switch between building bundled
+    DCMTK DICOM library and using installed system libraries (Issue #6182; see
+    also Issue #6184).
 (r3484) Added: cmtk::CommandLine class can now output program descriptions in
     'nroff' markup sutibale for creating man pages. In addition, the build
     system now creates these man pages, if "BUILD_MANPAGES" option is set. The
@@ -10,8 +11,6 @@ Release CMTK-2.1.0:
 (r3471) Added: multi-class STAPLE algorithm can now be limited to "disputed"
     pixels to improve results (via the "--mstaple-disputed" operation of
     "imagemath" tool).
-(r3450) Added: build configuration can now switch between building bundled
-    DCMTK DICOM library and using installed system libraries (Issue #6182).
 (r3442) Added: build configuration can now switch between building bundled
     MXML library and using installed system library.
 (r3438) Fixed: proactively fixed a problem reading and writing very large
