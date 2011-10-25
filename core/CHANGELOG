@@ -1,6 +1,9 @@
 Release CMTK-2.1.0:
 
-
+(r3509) Added: a wrapper script "cmtk" is now provided for consistent access
+    to CMTK's tools while avoiding name collisions with other tools installed
+    on the same system. To make this work, all binaries are now installed
+    in the CMTK/ subdirectory of the configured install directory.
 (r3505) Added: build configuration can now switch between building bundled
     DCMTK DICOM library and using installed system libraries (Issue #6182; see
     also Issue #6184).
