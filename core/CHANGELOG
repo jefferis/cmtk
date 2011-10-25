@@ -1,5 +1,6 @@
 Release CMTK-2.1.0:
 
+
 (r3505) Added: build configuration can now switch between building bundled
     DCMTK DICOM library and using installed system libraries (Issue #6182; see
     also Issue #6184).

@@ -1,7 +1,9 @@
+#!/bin/bash
+
 ##
-##  Copyright 1997-2009 Torsten Rohlfing
+##  Copyright 2011 Yaroslav Halchenko 
 ##
-##  Copyright 2004-2011 SRI International
+##  Copyright 2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -21,33 +23,28 @@
 ##  with the Computational Morphometry Toolkit.  If not, see
 ##  <http://www.gnu.org/licenses/>.
 ##
-##  $Revision$
+##  $Revision: 3440 $
 ##
-##  $LastChangedDate$
+##  $LastChangedDate: 2011-10-07 08:30:43 -0700 (Fri, 07 Oct 2011) $
 ##
-##  $LastChangedBy$
+##  $LastChangedBy: torstenrohlfing $
 ##
 
-QT4_WRAP_UI(BSEDIT_UIS_H bseditMainWindow.ui)
+CMTK_BIN_DIR=@CMTK_BINARY_DIR_CONFIG@
+CMTK_LIB_DIR=@CMTK_LIBRARY_DIR_CONFIG@
 
-SET(bsedit_SRCS
-  cmtkBinarySegmentationEditorApplication.cxx
-  )
+# TODO: check if nothing or just --help -- then spit out global manpage
+CMD=${CMTK_BIN_DIR}/CMTK/$1
+shift
 
-SET(bsedit_MOC_SRCS
-  cmtkBinarySegmentationEditorApplication.h
-  )
+if [ "${LD_LIBRARY_PATH}" != "" ]; then
+    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CMTK_LIB_DIR}
+else
+    export LD_LIBRARY_PATH=${CMTK_LIB_DIR}
+fi
 
-INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_BINARY_DIR}
-  )
-
-IF(QT_WRAP_CPP)
-  QT_WRAP_CPP(bsedit bsedit_SRCS ${bsedit_MOC_SRCS} )
-ENDIF(QT_WRAP_CPP)
-
-ADD_EXECUTABLE(bsedit main.cxx ${bsedit_SRCS} ${BSEDIT_UIS_H})
-TARGET_LINK_LIBRARIES(bsedit ${CMTK_LIBRARIES} ${QT_LIBRARIES} ${CMTK_SYSTEM_LIBRARIES})
-
-INSTALL(TARGETS bsedit RUNTIME DESTINATION ${CMTK_INSTALL_BIN_DIR}/CMTK COMPONENT gui)
-
+if echo "$@" | grep -q -e --help; then
+    man <( ${CMD} --man)
+else
+    ${CMD} "$@"
+fi
