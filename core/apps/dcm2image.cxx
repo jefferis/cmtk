@@ -43,6 +43,7 @@
 #include <IO/cmtkStudy.h>
 #include <IO/cmtkStudyImageSet.h>
 #include <IO/cmtkVolumeFromStudy.h>
+#include <IO/cmtkVolumeFromFile.h>
 #include <IO/cmtkFileFormat.h>
 
 #ifndef CMTK_USE_DCMTK
@@ -123,6 +124,9 @@ public:
   /// File system path (i.e., directory).
   char* fpath;
 
+  /// Flag for multislice images
+  bool IsMultislice;
+
   /// Patient name.
   std::string PatientName;
 
@@ -195,6 +199,10 @@ ImageFileDCM::Print() const
 bool
 ImageFileDCM::Match( const ImageFileDCM& other ) const
 {
+  // do not stack multislice images
+  if ( this->IsMultislice || other.IsMultislice )
+    return false;
+
   if ( ! DisableOrientationCheck )
     {
     double orientThis[6], orientOther[6];
@@ -218,6 +226,7 @@ ImageFileDCM::Match( const ImageFileDCM& other ) const
 }
 
 ImageFileDCM::ImageFileDCM( const char* filename )
+  : IsMultislice( false )
 {
   if ( cmtk::FileFormat::Identify( filename, false /*decompress*/ ) != cmtk::FILEFORMAT_DICOM ) // need to disable "decompress" in Identify() because DCMTK cannot currently read using on-the-fly decompression.
     throw(0);
@@ -267,11 +276,25 @@ ImageFileDCM::ImageFileDCM( const char* filename )
     {
     throw(2);
     }
-  
-  DcmStack stack;
-  DcmTagKey searchKey;
-    
+
+  // check for multi-slice DICOMs
+  Uint16 nFrames = 0;
+  if ( document->getValue( DCM_NumberOfFrames, nFrames ) ) 
+    {
+    this->IsMultislice = (nFrames > 1 );
+    }
+
+  // check if this is a Siemens mosaic image with multiple slices
   const char* tmpStr = NULL;
+  if ( document->getValue( DCM_Manufacturer, tmpStr ) )
+    {
+    if ( !strncmp( tmpStr, "SIEMENS", 7 ) )
+      {
+      DcmTagKey mosaicTag(0x0043,0x102f);
+      this->IsMultislice = document->getValue( mosaicTag, tmpStr );
+      }      
+    }
+  
   if ( document->getValue( DCM_PatientsName, tmpStr ) )
     PatientName = tmpStr;
 
@@ -370,20 +393,29 @@ VolumeDCM::AddImageFileDCM ( ImageFileDCM *const newImage )
 void
 VolumeDCM::WriteToArchive( const std::string& fname ) const
 {
-  cmtk::StudyImageSet studyImageSet;
-
   const ImageFileDCM *first = this->front();
-
-  studyImageSet.SetImageFormat( cmtk::FILEFORMAT_DICOM );
-  studyImageSet.SetImageDirectory( first->fpath );
-  studyImageSet.SetMultiFile( true );
-
-  for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
+    
+  cmtk::UniformVolume::SmartPtr volume;
+  if ( first->IsMultislice )
     {
-    studyImageSet.push_back( (*it)->fname );
+    cmtk::StudyImageSet studyImageSet;
+    
+    studyImageSet.SetImageFormat( cmtk::FILEFORMAT_DICOM );
+    studyImageSet.SetImageDirectory( first->fpath );
+    studyImageSet.SetMultiFile( true );
+    
+    for ( const_iterator it = this->begin(); it != this->end(); ++it ) 
+      {
+      studyImageSet.push_back( (*it)->fname );
+      }
+    
+    volume = cmtk::VolumeFromStudy::Read( &studyImageSet );
+    }
+  else
+    {
+    volume = cmtk::VolumeFromFile::ReadDICOM( first->fpath );
     }
 
-  cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeFromStudy::Read( &studyImageSet ) );
   if ( volume )
     {
     switch ( EmbedInfo )
@@ -398,7 +430,7 @@ VolumeDCM::WriteToArchive( const std::string& fname ) const
 	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->SeriesDescription );
 	break;
       }
-
+    
     cmtk::VolumeIO::Write( *volume, fname.c_str() );
     cmtk::DebugOutput( 1 ).GetStream().printf( "\nOutput file:%s\nImage size: %3dx%3dx%3d pixels\nPixel size: %.4fx%.4fx%.4f mm\n\n", 
 					       fname.c_str(), volume->m_Dims[0], volume->m_Dims[1], volume->m_Dims[2], volume->m_Delta[0], volume->m_Delta[1], volume->m_Delta[2] );
@@ -472,7 +504,7 @@ VolumeList::WriteToArchive()
   std::map< std::string,std::vector<const VolumeDCM*> > pathToVolumeMap;
   for ( const_iterator it = begin(); it != end(); ++it ) 
     {
-    if ( (*it)->size() > 1 )
+    if ( ((*it)->size() > 1) || (*(*it)->begin())->IsMultislice )
       {
       // replace place holders
       std::string path( OutPathPattern );
