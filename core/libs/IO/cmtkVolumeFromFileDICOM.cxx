@@ -33,8 +33,11 @@
 #include "cmtkVolumeFromFile.h"
 
 #include <Base/cmtkTypedArray.h>
+
 #include <System/cmtkConsole.h>
 #include <System/cmtkException.h>
+
+#include <IO/cmtkFileConstHeader.h>
 
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmimgle/didocu.h>
@@ -263,7 +266,7 @@ VolumeFromFile::ReadDICOM( const char *path )
     {
     if ( !strncmp( tmpStr, "SIEMENS", 7 ) )
       {
-      DcmTagKey mosaicTag(0x0051,0x100b);
+      const DcmTagKey mosaicTag(0x0051,0x100b);
       
       if ( document->getValue( mosaicTag, tmpStr ) )
 	{
@@ -277,7 +280,7 @@ VolumeFromFile::ReadDICOM( const char *path )
 	dims[0] = cols;
 	dims[1] = rows;
 
-	DcmTagKey nSlicesTag(0x0019,0x100a);
+	const DcmTagKey nSlicesTag(0x0019,0x100a);
 	if ( document->getValue( nSlicesTag, tempUint16 ) )
 	  {
 	  dims[2] = tempUint16;
@@ -305,6 +308,36 @@ VolumeFromFile::ReadDICOM( const char *path )
 	else
 	  {
 	  StdErr << "WARNING: image claims to by a Siemens mosaic file, but does not provide number of slices in tag (0x0019,0x100a)\n";
+	  }
+	
+// For the following, see here: http://nipy.sourceforge.net/nibabel/dicom/siemens_csa.html#csa-header
+	const DcmTagKey csaHeaderInfoTag(0x0029,0x1010);
+
+	const Uint8* csaHeaderInfo = NULL;
+	unsigned long csaHeaderLength = 0;
+	dataset->findAndGetUint8Array ( csaHeaderInfoTag, csaHeaderInfo, &csaHeaderLength );
+
+	FileConstHeader fileHeader( csaHeaderInfo, false /*isBigEndian*/ ); // Siemens CSA header is always little endian
+	const size_t nTags = fileHeader.GetField<Uint32>( 8 );
+
+	size_t tagOffset = 16; // start after header
+	for ( int tag = 0; tag < nTags; ++tag )
+	  {
+	  char tagName[65];
+	  fileHeader.GetFieldString( tagOffset, tagName, 64 );
+	  StdErr << tag << "\t" << tagName << "\n";
+
+	  const size_t nItems = fileHeader.GetField<Uint32>( tagOffset + 76 );
+	  StdErr << "  nItems: " << nItems << "\n";
+
+	  tagOffset += 84;
+	  for ( int item = 0; item < nItems; ++item )
+	    {
+	    const size_t itemLen = fileHeader.GetField<Uint32>( tagOffset );
+
+	    StdErr << "    len: " << itemLen << "\n";
+	    tagOffset += 4*((itemLen+3)/4) + 16 /*the 4 ints at the beginning of item, including itemLength*/;
+	    }
 	  }
 	}
       }
