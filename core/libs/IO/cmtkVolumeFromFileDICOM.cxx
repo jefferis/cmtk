@@ -374,7 +374,7 @@ VolumeFromFile::ReadDICOM( const char *path )
 	      char valStr[65];
 	      sliceNormal[item] = atof( fileHeader.GetFieldString( tagOffset+16, valStr, 64 ) );
 
-	      StdErr << "    " << valStr << "\n";
+//	      StdErr << "    " << valStr << "\n";
 	      }
 	    
 	    tagOffset += 4*((itemLen+3)/4) /*move up to nearest 4-byte boundary*/ + 16 /*the 4 ints at the beginning of item, including itemLength*/;
