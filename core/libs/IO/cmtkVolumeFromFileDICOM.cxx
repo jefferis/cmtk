@@ -336,7 +336,16 @@ VolumeFromFile::ReadDICOM( const char *path )
 	    const size_t itemLen = fileHeader.GetField<Uint32>( tagOffset );
 
 	    StdErr << "    len: " << itemLen << "\n";
-	    tagOffset += 4*((itemLen+3)/4) + 16 /*the 4 ints at the beginning of item, including itemLength*/;
+
+	    if ( ! strcmp( tagName, "SliceNormalVector" ) )
+	      {
+	      char valStr[65];
+	      fileHeader.GetFieldString( tagOffset+16, valStr, 64 );
+
+	      StdErr << "    " << valStr << "\n";
+	      }
+	    
+	    tagOffset += 4*((itemLen+3)/4) /*move up to nearest 4-byte boundary*/ + 16 /*the 4 ints at the beginning of item, including itemLength*/;
 	    }
 	  }
 	}
