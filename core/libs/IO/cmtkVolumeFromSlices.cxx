@@ -98,7 +98,7 @@ TypedArray::SmartPtr
 VolumeFromSlices::EncapDataArray ( const ScalarDataType dtype, void *const data, const int data_size ) 
   const
 {
-  return TypedArray::Create( dtype, data, data_size, true /*freeArray*/, Padding, &PaddingValue );
+  return TypedArray::Create( dtype, data, data_size, Padding, &PaddingValue, Memory::ArrayC::Delete );
 }
 
 const char* 

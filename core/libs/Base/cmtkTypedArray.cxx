@@ -115,33 +115,33 @@ TypedArray
 TypedArray::SmartPtr
 TypedArray
 ::Create
-( const ScalarDataType dtype, void *const data, const size_t size, const bool freeArray, const bool paddingFlag, const void* paddingData ) 
+( const ScalarDataType dtype, void *const data, const size_t size, const bool paddingFlag, const void* paddingData, const Memory::DeallocatorFunctionPointer deallocator )
 {
   switch (dtype) 
     {
     case TYPE_BYTE: 
-      return Self::SmartPtr( new ByteArray( data, size, freeArray, paddingFlag, paddingData ) );
+      return Self::SmartPtr( new ByteArray( data, size, paddingFlag, paddingData, deallocator ) );
       break;
     case TYPE_CHAR: 
-      return Self::SmartPtr( new CharArray( data, size, freeArray, paddingFlag, paddingData ) );
+      return Self::SmartPtr( new CharArray( data, size, paddingFlag, paddingData, deallocator ) );
       break;
     case TYPE_SHORT: 
-      return Self::SmartPtr( new ShortArray( data, size, freeArray, paddingFlag, paddingData ) );
+      return Self::SmartPtr( new ShortArray( data, size, paddingFlag, paddingData, deallocator ) );
       break;
     case TYPE_USHORT: 
-      return Self::SmartPtr( new UShortArray( data, size, freeArray, paddingFlag, paddingData ) );
+      return Self::SmartPtr( new UShortArray( data, size, paddingFlag, paddingData, deallocator ) );
       break;
     case TYPE_INT: 
-      return Self::SmartPtr( new IntArray( data, size, freeArray, paddingFlag, paddingData ) );
+      return Self::SmartPtr( new IntArray( data, size, paddingFlag, paddingData, deallocator ) );
       break;
     case TYPE_UINT: 
-      return Self::SmartPtr( new UIntArray( data, size, freeArray, paddingFlag, paddingData ) );
+      return Self::SmartPtr( new UIntArray( data, size, paddingFlag, paddingData, deallocator ) );
       break;
     case TYPE_FLOAT: 
-      return Self::SmartPtr( new FloatArray( data, size, freeArray, paddingFlag, paddingData ) );
+      return Self::SmartPtr( new FloatArray( data, size, paddingFlag, paddingData, deallocator ) );
       break;
     case TYPE_DOUBLE: 
-      return Self::SmartPtr( new DoubleArray( data, size, freeArray, paddingFlag, paddingData ) );
+      return Self::SmartPtr( new DoubleArray( data, size, paddingFlag, paddingData, deallocator ) );
       break;
     default:
       break;

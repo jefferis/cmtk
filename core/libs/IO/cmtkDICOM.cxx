@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -155,6 +155,9 @@ DICOM::Read
   
   pixelDataSigned = pixelDataSigned || (rescaleIntercept < 0);
   
+  Uint16 paddingValue = 0;
+  const bool paddingFlag = ( dataset->findAndGetUint16( DCM_PixelPaddingValue, paddingValue )).good();
+  
   TypedArray::SmartPtr pixelDataArray;
 
 #ifdef DCM_VariablePixelData
@@ -173,11 +176,13 @@ DICOM::Read
       delem->getUint16Array(pdata);
       if ( pixelDataSigned ) 
 	{
-	pixelDataArray = TypedArray::Create( TYPE_SHORT, pdata, totalImageSizePixels );
+	const short paddingShort = static_cast<short>( paddingValue );
+	pixelDataArray = TypedArray::Create( TYPE_SHORT, pdata, totalImageSizePixels, paddingFlag, &paddingShort, Memory::ArrayCXX::DeleteWrapper<short> );
 	} 
       else
 	{
-	pixelDataArray = TypedArray::Create( TYPE_USHORT, pdata, totalImageSizePixels );
+	const unsigned short paddingUShort = static_cast<unsigned short>( paddingValue );
+	pixelDataArray = TypedArray::Create( TYPE_USHORT, pdata, totalImageSizePixels, paddingFlag, &paddingUShort, Memory::ArrayCXX::DeleteWrapper<unsigned short> );
 	}
       } 
     else
@@ -186,11 +191,13 @@ DICOM::Read
       delem->getUint8Array(pdata);
       if ( pixelDataSigned ) 
 	{
-	pixelDataArray = TypedArray::Create( TYPE_CHAR, pdata, totalImageSizePixels );
+	const char paddingChar = static_cast<char>( paddingValue );
+	pixelDataArray = TypedArray::Create( TYPE_CHAR, pdata, totalImageSizePixels, paddingFlag, &paddingChar, Memory::ArrayCXX::DeleteWrapper<char> );
 	} 
       else 
 	{
-	pixelDataArray = TypedArray::Create( TYPE_BYTE, pdata, totalImageSizePixels );
+	const char paddingByte = static_cast<byte>( paddingValue );
+	pixelDataArray = TypedArray::Create( TYPE_BYTE, pdata, totalImageSizePixels, paddingFlag, &paddingByte, Memory::ArrayCXX::DeleteWrapper<byte> );
 	}
       }
     delem->detachValueField();
@@ -200,10 +207,6 @@ DICOM::Read
     {
     StdErr.printf( "Could not read pixel data from image file\n%s", path );
     }
-  
-  Uint16 paddingValue = 0;
-  if ( ( dataset->findAndGetUint16( DCM_PixelPaddingValue, paddingValue )).good() )
-    pixelDataArray->SetPaddingValue( paddingValue );
   
   if ( haveRescaleIntercept || haveRescaleSlope )
     pixelDataArray->Rescale( rescaleSlope, rescaleIntercept );

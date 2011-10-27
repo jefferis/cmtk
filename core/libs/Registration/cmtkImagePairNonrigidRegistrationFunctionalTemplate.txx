@@ -41,7 +41,7 @@ void
 cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::MatchRefFltIntensities()
 {
   const Types::DataItem paddingValue = DataTypeTraits<Types::DataItem>::ChoosePaddingValue();
-  TypedArray::SmartPtr warpedArray( TypedArray::Create( TYPE_ITEM, this->m_WarpedVolume, this->m_FloatingGrid->GetNumberOfPixels(), false /*freeArray*/, true /*padding*/, &paddingValue ) );
+  TypedArray::SmartPtr warpedArray( TypedArray::Create( TYPE_ITEM, this->m_WarpedVolume, this->m_FloatingGrid->GetNumberOfPixels(), true /*padding*/, &paddingValue ) );
 
   UniformVolume::SmartPtr floatingCopy( this->m_FloatingGrid->Clone() );
   floatingCopy->GetData()->ApplyFunctionObject( TypedArrayFunctionHistogramMatching( *warpedArray, *(this->m_ReferenceGrid->GetData()) ) );

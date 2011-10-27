@@ -99,12 +99,12 @@ public:
    * the existing data array.
    *\param paddingData Value that marks missing elements in the data array if "paddingFlag" is true.
    */
-  TemplateArray ( void *const data, const size_t datasize, const bool freeArray, const bool paddingflag, const void* paddingData ) 
+  TemplateArray ( void *const data, const size_t datasize, const bool paddingflag, const void* paddingData, const Memory::DeallocatorFunctionPointer deallocator = NULL ) 
   {
+    this->m_Deallocator = deallocator;
     m_DataType = TypeTraits::GetScalarDataType();
     Data = static_cast<T*>( data );
     DataSize = datasize;
-    FreeArray = freeArray;
     PaddingFlag = paddingflag;
     if ( paddingData )
       Padding = *((T*)paddingData);
@@ -612,21 +612,23 @@ private:
     DataSize = datasize;
     if ( DataSize ) 
       {
-      if ( Data ) 
+      if ( Data && this->m_Deallocator ) 
 	{
-	Memory::ArrayC::Delete( Data );
-	}
+	this->m_Deallocator( Data );
+	} 
+
       Data = Memory::ArrayC::Allocate<T>( DataSize );
+      this->m_Deallocator = &Memory::ArrayC::Delete;
+
       if ( Data == NULL ) 
 	{
 	this->DataSize = 0;
 	}
-      FreeArray = true;
       } 
     else
       {
       Data = NULL;
-      FreeArray = false;
+      this->m_Deallocator = NULL;
       }
   }
   
@@ -636,9 +638,9 @@ private:
    */
   virtual void FreeData() 
   {
-    if ( Data && FreeArray ) 
+    if ( Data && this->m_Deallocator ) 
       {
-      Memory::ArrayC::Delete( Data );
+      this->m_Deallocator( Data );
       } 
     Data = NULL;
   }

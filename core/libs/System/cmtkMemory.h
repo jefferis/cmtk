@@ -53,6 +53,9 @@ namespace Memory
    */
 size_t GetNextPowerOfTwo( size_t k );
 
+/// Memory deallocation fucntion pointer.
+typedef void (*DeallocatorFunctionPointer)( void *const );
+
 /** Memory allocation for C-style array.
  */
 class ArrayC
@@ -94,6 +97,15 @@ public:
   static void Delete( T *const array )
   {
     delete[]( array );
+  }
+
+  /** Delete an array allocated using Allocate(), but referred to by a void*.
+   * This function provides a universal signature that we can use for function pointers.
+   */
+  template<class T>
+  static void DeleteWrapper( void *const array )
+  {
+    delete[]( static_cast<T*>( array ) );
   }
 };
 

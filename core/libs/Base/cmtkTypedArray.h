@@ -92,7 +92,6 @@ public:
    *\param dtype Type specifier.
    *\param data Pointer to the existing data array.
    *\param size Number of data items in the array.
-   *\param freeArray On destruction, the created object will de-allocate the
    * array's memory if and only if this flag is true.
    *\param paddingFlag If this flag is not zero, padding data exists in the array.
    *\param paddingData Value used for padding data.
@@ -100,7 +99,7 @@ public:
    * occurred.
    */
   static Self::SmartPtr Create
-  ( const ScalarDataType dtype, void *const data, const size_t size, const bool freeArray = true, const bool paddingFlag = false, const void* paddingData = NULL );
+  ( const ScalarDataType dtype, void *const data, const size_t size, const bool paddingFlag = false, const void* paddingData = NULL, const Memory::DeallocatorFunctionPointer deallocator = NULL );
   
   /** Create typed data array, allocating new memory for the items array.
    *\param dtype Type specifier.
@@ -112,12 +111,6 @@ public:
    */
   static Self::SmartPtr Create( const ScalarDataType dtype, const size_t size );
 
-  /** Free data allocated by this object. */
-  static void Free( void *const data )
-  {
-    free( data );
-  }
-  
   /** Get an item from the specified index in the data array.
    * If there is no valid data present at the given index, zero is returned
    * and the resulting item is zero, too. This can only happen if PaddingFlag
@@ -314,7 +307,7 @@ public:
   {
     DataSize = 0;
     PaddingFlag = false;
-    FreeArray = false;
+    this->m_Deallocator = NULL;
     this->m_DataClass = DATACLASS_GREY;
   }
   
@@ -334,7 +327,7 @@ public:
    */
   void ReleaseDataPointer () 
   {
-    FreeArray = false;
+    this->m_Deallocator = NULL;
   }
   
   /** Return the number of array elements.
@@ -499,8 +492,8 @@ protected:
    */
   ScalarDataType m_DataType;
 
-  /// If not zero, the object should free the allocated array.
-  bool FreeArray;
+  /// Deallocator function: if not NULL, this is a pointer to the function called to free the data array.
+  Memory::DeallocatorFunctionPointer m_Deallocator;
 
   /// The size of the data array, i.e. the number of items allocated.
   size_t DataSize;
