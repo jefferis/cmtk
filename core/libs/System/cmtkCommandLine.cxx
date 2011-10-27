@@ -203,6 +203,9 @@ CommandLine::Parse( const int argc, const char* argv[] ) throw( ExitException, S
       const char* optChar = this->ArgV[this->Index]+1;
       while ( *optChar ) 
 	{
+	// reset in case of multiple short options
+	found = false;
+
 	// short option
 	for ( KeyActionListType::iterator it = this->m_KeyActionListComplete.begin(); !found && (it != this->m_KeyActionListComplete.end()); ++it )
 	  {
