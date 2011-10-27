@@ -291,7 +291,7 @@ ImageFileDCM::ImageFileDCM( const char* filename )
     if ( !strncmp( tmpStr, "SIEMENS", 7 ) )
       {
       const DcmTagKey nSlicesTag(0x0019,0x100a);
-      this->IsMultislice = document->getValue( nSlicesTag, tmpStr );
+      this->IsMultislice = document->getValue( nSlicesTag, nFrames );
       }      
     }
   
