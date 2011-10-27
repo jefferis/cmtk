@@ -33,6 +33,7 @@
 #include "cmtkVolumeFromFile.h"
 
 #include <Base/cmtkTypedArray.h>
+#include <Base/cmtkSurfaceNormal.h>
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkException.h>
@@ -260,6 +261,9 @@ VolumeFromFile::ReadDICOM( const char *path )
       }
     }
 
+  // without further information, we "guess" the image normal vector
+  UniformVolume::CoordinateVectorType sliceNormal = SurfaceNormal( imageOrientationX, imageOrientationY ).Get();
+
   // detect and treat Siemens multi-slice mosaics
   const char* tmpStr = NULL;
   if ( document->getValue( DCM_Manufacturer, tmpStr ) )
@@ -272,37 +276,46 @@ VolumeFromFile::ReadDICOM( const char *path )
 	{
 	int rows;
 	int cols;
-	sscanf( tmpStr, "%dp*%ds", &rows, &cols);
-
-	const int xMosaic = dims[0] / cols;
-	
-	dims[0] = cols;
-	dims[1] = rows;
-
-	const DcmTagKey nSlicesTag(0x0019,0x100a);
-	if ( document->getValue( nSlicesTag, tempUint16 ) )
+	if ( 2 != sscanf( tmpStr, "%dp*%ds", &rows, &cols) )
 	  {
-	  dims[2] = tempUint16;
-
-	  // de-mosaic the data array
-	  const unsigned long imageSizePixels = dims[0] * dims[1] * dims[2];
-	  TypedArray::SmartPtr newDataArray( TypedArray::Create( dataArray->GetType(), imageSizePixels ) );
-
-	  const size_t pixelsPerSlice = cols * rows;
-	  size_t toOffset = 0;
-	  for ( int slice = 0; slice < dims[2]; ++slice )
+	  if ( 2 != sscanf( tmpStr, "%d*%ds", &rows, &cols) )
 	    {
-	    for ( int j = 0; j < rows; ++j, toOffset += dims[0] )
-	      {
-	      const size_t iPatch = slice % xMosaic;
-	      const size_t jPatch = slice / xMosaic;
-
-	      const size_t fromOffset = jPatch * xMosaic * pixelsPerSlice + j * xMosaic * cols + iPatch * cols;
-	      dataArray->BlockCopy( *newDataArray, toOffset, fromOffset, cols );
-	      }
+	    StdErr << "ERROR: unable to parse mosaic size from " << tmpStr << "\n";
 	    }
+	  }
 
-	  dataArray = newDataArray;
+	if ( (cols > 0) && (rows > 0 ) )
+	  {
+	  const int xMosaic = dims[0] / cols;
+	  
+	  dims[0] = cols;
+	  dims[1] = rows;
+	  
+	  const DcmTagKey nSlicesTag(0x0019,0x100a);
+	  if ( document->getValue( nSlicesTag, tempUint16 ) )
+	    {
+	    dims[2] = tempUint16;
+	    
+	    // de-mosaic the data array
+	    const unsigned long imageSizePixels = dims[0] * dims[1] * dims[2];
+	    TypedArray::SmartPtr newDataArray( TypedArray::Create( dataArray->GetType(), imageSizePixels ) );
+	    
+	    const size_t pixelsPerSlice = cols * rows;
+	    size_t toOffset = 0;
+	    for ( int slice = 0; slice < dims[2]; ++slice )
+	      {
+	      for ( int j = 0; j < rows; ++j, toOffset += dims[0] )
+		{
+		const size_t iPatch = slice % xMosaic;
+		const size_t jPatch = slice / xMosaic;
+		
+		const size_t fromOffset = jPatch * xMosaic * pixelsPerSlice + j * xMosaic * cols + iPatch * cols;
+		dataArray->BlockCopy( *newDataArray, toOffset, fromOffset, cols );
+		}
+	      }
+	    
+	    dataArray = newDataArray;
+	    }
 	  }
 	else
 	  {
@@ -324,22 +337,22 @@ VolumeFromFile::ReadDICOM( const char *path )
 	  {
 	  char tagName[65];
 	  fileHeader.GetFieldString( tagOffset, tagName, 64 );
-	  StdErr << tag << "\t" << tagName << "\n";
+//	  StdErr << tag << "\t" << tagName << "\n";
 
 	  const size_t nItems = fileHeader.GetField<Uint32>( tagOffset + 76 );
-	  StdErr << "  nItems: " << nItems << "\n";
+//	  StdErr << "  nItems: " << nItems << "\n";
 
 	  tagOffset += 84;
 	  for ( size_t item = 0; item < nItems; ++item )
 	    {
 	    const size_t itemLen = fileHeader.GetField<Uint32>( tagOffset );
 
-	    StdErr << "    len: " << itemLen << "\n";
+//	    StdErr << "    len: " << itemLen << "\n";
 
-	    if ( ! strcmp( tagName, "SliceNormalVector" ) )
+	    if ( ! strcmp( tagName, "SliceNormalVector" ) && (item < 3) )
 	      {
 	      char valStr[65];
-	      fileHeader.GetFieldString( tagOffset+16, valStr, 64 );
+	      sliceNormal[item] = atof( fileHeader.GetFieldString( tagOffset+16, valStr, 64 ) );
 
 	      StdErr << "    " << valStr << "\n";
 	      }
@@ -354,6 +367,31 @@ VolumeFromFile::ReadDICOM( const char *path )
   UniformVolume::SmartPtr volume( new UniformVolume( UniformVolume::IndexType( dims ), pixelSize[0], pixelSize[1], pixelSize[2], dataArray ) );
   volume->SetMetaInfo( META_SPACE, "LPS" );
   volume->SetMetaInfo( META_SPACE_ORIGINAL, "LPS" );
+
+  imageOrientationX *= pixelSize[0] / imageOrientationX.RootSumOfSquares();
+  imageOrientationY *= pixelSize[1] / imageOrientationY.RootSumOfSquares();
+  sliceNormal *= pixelSize[2] / sliceNormal.RootSumOfSquares();
+
+  const Types::Coordinate directions[3][3] = 
+    {
+      { imageOrientationX[0], imageOrientationX[1], imageOrientationX[2] },
+      { imageOrientationY[0], imageOrientationY[1], imageOrientationY[2] },
+      { sliceNormal[0], sliceNormal[1], sliceNormal[2] }
+    };
+  
+  const Matrix3x3<Types::Coordinate> m3( directions );
+  Matrix4x4<Types::Coordinate> m4( m3 );
+  for ( int i = 0; i < 3; ++i )
+    m4[3][i] = imageOrigin[i];
+
+  volume->m_IndexToPhysicalMatrix = m4;
+  const std::string orientationString0 = volume->GetOrientationFromDirections();
+  volume->ChangeCoordinateSpace( AnatomicalOrientation::ORIENTATION_STANDARD );
+
+  const std::string orientationString = volume->GetOrientationFromDirections();
+  volume->SetMetaInfo( META_SPACE_UNITS_STRING, "mm" ); // seems to be implied in DICOM
+  volume->SetMetaInfo( META_IMAGE_ORIENTATION, orientationString );
+  volume->SetMetaInfo( META_IMAGE_ORIENTATION_ORIGINAL, orientationString );
 
   return volume;
 }
