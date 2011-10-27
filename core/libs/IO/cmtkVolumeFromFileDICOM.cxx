@@ -290,31 +290,30 @@ VolumeFromFile::ReadDICOM( const char *path )
     {
     if ( !strncmp( tmpStr, "SIEMENS", 7 ) )
       {
-      const DcmTagKey mosaicTag(0x0051,0x100b);
-      
-      if ( document->getValue( mosaicTag, tmpStr ) )
+      const DcmTagKey nSlicesTag(0x0019,0x100a);
+      if ( document->getValue( nSlicesTag, tempUint16 ) )
 	{
-	int rows;
-	int cols;
-	if ( 2 != sscanf( tmpStr, "%dp*%ds", &rows, &cols) )
+	dims[2] = tempUint16;
+	
+	const DcmTagKey mosaicTag(0x0051,0x100b);
+	if ( document->getValue( mosaicTag, tmpStr ) )
 	  {
-	  if ( 2 != sscanf( tmpStr, "%d*%ds", &rows, &cols) )
+	  int rows;
+	  int cols;
+	  if ( 2 != sscanf( tmpStr, "%dp*%ds", &rows, &cols) )
 	    {
-	    StdErr << "ERROR: unable to parse mosaic size from " << tmpStr << "\n";
+	    if ( 2 != sscanf( tmpStr, "%d*%ds", &rows, &cols) )
+	      {
+	      StdErr << "ERROR: unable to parse mosaic size from " << tmpStr << "\n";
+	      }
 	    }
-	  }
-
-	if ( (cols > 0) && (rows > 0 ) )
-	  {
-	  const int xMosaic = dims[0] / cols;
 	  
-	  dims[0] = cols;
-	  dims[1] = rows;
-	  
-	  const DcmTagKey nSlicesTag(0x0019,0x100a);
-	  if ( document->getValue( nSlicesTag, tempUint16 ) )
+	  if ( (cols > 0) && (rows > 0 ) )
 	    {
-	    dims[2] = tempUint16;
+	    const int xMosaic = dims[0] / cols;
+	    
+	    dims[0] = cols;
+	    dims[1] = rows;
 	    
 	    // de-mosaic the data array
 	    const unsigned long imageSizePixels = dims[0] * dims[1] * dims[2];
@@ -336,53 +335,49 @@ VolumeFromFile::ReadDICOM( const char *path )
 	    
 	    pixelDataArray = newDataArray;
 	    }
-	  }
-	else
-	  {
-	  StdErr << "WARNING: image claims to by a Siemens mosaic file, but does not provide number of slices in tag (0x0019,0x100a)\n";
-	  }
-	
+	  
 // For the following, see here: http://nipy.sourceforge.net/nibabel/dicom/siemens_csa.html#csa-header
-	const DcmTagKey csaHeaderInfoTag(0x0029,0x1010);
-
-	const Uint8* csaHeaderInfo = NULL;
-	unsigned long csaHeaderLength = 0;
-	dataset->findAndGetUint8Array ( csaHeaderInfoTag, csaHeaderInfo, &csaHeaderLength );
-
-	FileConstHeader fileHeader( csaHeaderInfo, false /*isBigEndian*/ ); // Siemens CSA header is always little endian
-	const size_t nTags = fileHeader.GetField<Uint32>( 8 );
-
-	size_t tagOffset = 16; // start after header
-	for ( size_t tag = 0; tag < nTags; ++tag )
-	  {
-	  char tagName[65];
-	  fileHeader.GetFieldString( tagOffset, tagName, 64 );
-//	  StdErr << tag << "\t" << tagName << "\n";
-
-	  const size_t nItems = fileHeader.GetField<Uint32>( tagOffset + 76 );
-//	  StdErr << "  nItems: " << nItems << "\n";
-
-	  tagOffset += 84;
-	  for ( size_t item = 0; item < nItems; ++item )
+	  const DcmTagKey csaHeaderInfoTag(0x0029,0x1010);
+	  
+	  const Uint8* csaHeaderInfo = NULL;
+	  unsigned long csaHeaderLength = 0;
+	  dataset->findAndGetUint8Array ( csaHeaderInfoTag, csaHeaderInfo, &csaHeaderLength );
+	  
+	  FileConstHeader fileHeader( csaHeaderInfo, false /*isBigEndian*/ ); // Siemens CSA header is always little endian
+	  const size_t nTags = fileHeader.GetField<Uint32>( 8 );
+	  
+	  size_t tagOffset = 16; // start after header
+	  for ( size_t tag = 0; tag < nTags; ++tag )
 	    {
-	    const size_t itemLen = fileHeader.GetField<Uint32>( tagOffset );
-
-//	    StdErr << "    len: " << itemLen << "\n";
-
-	    if ( ! strcmp( tagName, "SliceNormalVector" ) && (item < 3) )
-	      {
-	      char valStr[65];
-	      sliceNormal[item] = atof( fileHeader.GetFieldString( tagOffset+16, valStr, 64 ) );
-
-//	      StdErr << "    " << valStr << "\n";
-	      }
+	    char tagName[65];
+	    fileHeader.GetFieldString( tagOffset, tagName, 64 );
+//	  StdErr << tag << "\t" << tagName << "\n";
 	    
-	    tagOffset += 4*((itemLen+3)/4) /*move up to nearest 4-byte boundary*/ + 16 /*the 4 ints at the beginning of item, including itemLength*/;
+	    const size_t nItems = fileHeader.GetField<Uint32>( tagOffset + 76 );
+//	  StdErr << "  nItems: " << nItems << "\n";
+	    
+	    tagOffset += 84;
+	    for ( size_t item = 0; item < nItems; ++item )
+	      {
+	      const size_t itemLen = fileHeader.GetField<Uint32>( tagOffset );
+	      
+//	    StdErr << "    len: " << itemLen << "\n";
+	      
+	      if ( ! strcmp( tagName, "SliceNormalVector" ) && (item < 3) )
+		{
+		char valStr[65];
+		sliceNormal[item] = atof( fileHeader.GetFieldString( tagOffset+16, valStr, 64 ) );
+		
+//	      StdErr << "    " << valStr << "\n";
+		}
+	      
+	      tagOffset += 4*((itemLen+3)/4) /*move up to nearest 4-byte boundary*/ + 16 /*the 4 ints at the beginning of item, including itemLength*/;
+	      }
 	    }
 	  }
 	}
-      }
-    }  
+      }  
+    }
 
   UniformVolume::SmartPtr volume( new UniformVolume( UniformVolume::IndexType( dims ), pixelSize[0], pixelSize[1], pixelSize[2], pixelDataArray ) );
   volume->SetMetaInfo( META_SPACE, "LPS" );
