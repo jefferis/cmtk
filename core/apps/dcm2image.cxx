@@ -396,7 +396,7 @@ VolumeDCM::WriteToArchive( const std::string& fname ) const
   const ImageFileDCM *first = this->front();
     
   cmtk::UniformVolume::SmartPtr volume;
-  if ( first->IsMultislice )
+  if ( !first->IsMultislice )
     {
     cmtk::StudyImageSet studyImageSet;
     
@@ -413,7 +413,7 @@ VolumeDCM::WriteToArchive( const std::string& fname ) const
     }
   else
     {
-    volume = cmtk::VolumeFromFile::ReadDICOM( first->fpath );
+    volume = cmtk::VolumeFromFile::ReadDICOM( (std::string( first->fpath ) + std::string( first->fname )).c_str() );
     }
 
   if ( volume )
