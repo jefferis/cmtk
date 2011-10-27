@@ -413,7 +413,14 @@ VolumeDCM::WriteToArchive( const std::string& fname ) const
     }
   else
     {
-    volume = cmtk::VolumeFromFile::ReadDICOM( (std::string( first->fpath ) + std::string( first->fname )).c_str() );
+    char fullPath[PATH_MAX];
+#ifdef MSC_VER
+    snprintf( fullPath, sizeof( fullPath ), "%s\\%s", first->fpath, first->fname );
+#else
+    snprintf( fullPath, sizeof( fullPath ), "%s/%s", first->fpath, first->fname );
+#endif
+
+    volume = cmtk::VolumeFromFile::ReadDICOM( fullPath );
     }
 
   if ( volume )
