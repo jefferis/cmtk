@@ -290,7 +290,7 @@ ImageFileDCM::ImageFileDCM( const char* filename )
     {
     if ( !strncmp( tmpStr, "SIEMENS", 7 ) )
       {
-      DcmTagKey mosaicTag(0x0043,0x102f);
+      DcmTagKey mosaicTag(0x0051,0x100b);
       this->IsMultislice = document->getValue( mosaicTag, tmpStr );
       }      
     }
