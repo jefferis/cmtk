@@ -1,6 +1,6 @@
 Release CMTK-2.1.0:
 
-(r3526) Added: CMTK can now read Siemens MR DICOM images in mosaic format.
+(r3529) Added: CMTK can now read Siemens MR DICOM images in mosaic format.
 (r3522) Fixed: TypedArray data arrays are now de-allocated with proper
     deallocator (free() or new[]()), depending on how they were allocated
     (Issue #6213).
