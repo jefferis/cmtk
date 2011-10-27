@@ -149,6 +149,11 @@ VolumeFromFile::ReadDICOM( const char *path )
     throw Exception( "DICOM file does not specify pixel size" );
     
   const unsigned long totalImageSizePixels = dims[0] * dims[1] * dims[2];
+
+  bool pixelDataSigned = false;
+  Uint16 pixelRepresentation = 0;
+  if ( document->getValue( DCM_PixelRepresentation, pixelRepresentation ) > 0)
+    pixelDataSigned = (pixelRepresentation == 1);
     
   double rescaleIntercept, rescaleSlope;
   const bool haveRescaleIntercept = (0 != document->getValue( DCM_RescaleIntercept, rescaleIntercept ));
@@ -158,15 +163,13 @@ VolumeFromFile::ReadDICOM( const char *path )
   const bool haveRescaleSlope = (0 != document->getValue( DCM_RescaleSlope, rescaleSlope ));
   if ( ! haveRescaleSlope )
     rescaleSlope = 1;
-    
-  bool paddingFlag = false;
-  Uint16 paddingValue = 0;
-  if ( (dataset->findAndGetUint16( DCM_PixelPaddingValue, paddingValue )).good() ) 
-    {
-    paddingFlag = true;
-    } 
 
-  TypedArray::SmartPtr dataArray;
+  pixelDataSigned = pixelDataSigned || (rescaleIntercept < 0);
+    
+  Uint16 paddingValue = 0;
+  const bool paddingFlag = (dataset->findAndGetUint16( DCM_PixelPaddingValue, paddingValue )).good();
+
+  TypedArray::SmartPtr pixelDataArray;
     
 #ifdef DCM_VariablePixelData
   delem = document->search( DCM_VariablePixelData );
@@ -182,29 +185,46 @@ VolumeFromFile::ReadDICOM( const char *path )
       {
       Uint16 *pdata = NULL;
       delem->getUint16Array(pdata);
-      dataArray = TypedArray::SmartPtr( TypedArray::Create( TYPE_SHORT, pdata, totalImageSizePixels, true /*freeArray*/ ) );
+      if ( pixelDataSigned ) 
+	{
+	const short paddingShort = static_cast<short>( paddingValue );
+	pixelDataArray = TypedArray::Create( TYPE_SHORT, pdata, totalImageSizePixels, paddingFlag, &paddingShort, Memory::ArrayCXX::DeleteWrapper<short> );
+	} 
+      else
+	{
+	const unsigned short paddingUShort = static_cast<unsigned short>( paddingValue );
+	pixelDataArray = TypedArray::Create( TYPE_USHORT, pdata, totalImageSizePixels, paddingFlag, &paddingUShort, Memory::ArrayCXX::DeleteWrapper<unsigned short> );
+	}
       } 
-    else 
+    else
       {
       Uint8 *pdata = NULL;
       delem->getUint8Array(pdata);
-      dataArray = TypedArray::SmartPtr( TypedArray::Create( TYPE_CHAR, pdata, totalImageSizePixels, true /*freeArray*/ ) );
+      if ( pixelDataSigned ) 
+	{
+	const char paddingChar = static_cast<char>( paddingValue );
+	pixelDataArray = TypedArray::Create( TYPE_CHAR, pdata, totalImageSizePixels, paddingFlag, &paddingChar, Memory::ArrayCXX::DeleteWrapper<char> );
+	} 
+      else 
+	{
+	const char paddingByte = static_cast<byte>( paddingValue );
+	pixelDataArray = TypedArray::Create( TYPE_BYTE, pdata, totalImageSizePixels, paddingFlag, &paddingByte, Memory::ArrayCXX::DeleteWrapper<byte> );
+	}
       }
-      
-    if ( paddingFlag )
-      dataArray->SetPaddingValue( paddingValue );
-      
-    if ( haveRescaleIntercept || haveRescaleSlope ) 
-      {
-      dataArray->Rescale( rescaleSlope, rescaleIntercept );
-      }
+
     delem->detachValueField();
     }
-  else
+
+  if ( ! pixelDataArray ) 
     {
     throw( "Could not read pixel data from DICOM file" );
     }
     
+  if ( haveRescaleIntercept || haveRescaleSlope ) 
+    {
+    pixelDataArray->Rescale( rescaleSlope, rescaleIntercept );
+    }
+
   // now some more manual readings...
     
   // get slice spacing from multi-slice images.
@@ -298,7 +318,7 @@ VolumeFromFile::ReadDICOM( const char *path )
 	    
 	    // de-mosaic the data array
 	    const unsigned long imageSizePixels = dims[0] * dims[1] * dims[2];
-	    TypedArray::SmartPtr newDataArray( TypedArray::Create( dataArray->GetType(), imageSizePixels ) );
+	    TypedArray::SmartPtr newDataArray( TypedArray::Create( pixelDataArray->GetType(), imageSizePixels ) );
 	    
 	    const size_t pixelsPerSlice = cols * rows;
 	    size_t toOffset = 0;
@@ -310,11 +330,11 @@ VolumeFromFile::ReadDICOM( const char *path )
 		const size_t jPatch = slice / xMosaic;
 		
 		const size_t fromOffset = jPatch * xMosaic * pixelsPerSlice + j * xMosaic * cols + iPatch * cols;
-		dataArray->BlockCopy( *newDataArray, toOffset, fromOffset, cols );
+		pixelDataArray->BlockCopy( *newDataArray, toOffset, fromOffset, cols );
 		}
 	      }
 	    
-	    dataArray = newDataArray;
+	    pixelDataArray = newDataArray;
 	    }
 	  }
 	else
@@ -364,7 +384,7 @@ VolumeFromFile::ReadDICOM( const char *path )
       }
     }  
 
-  UniformVolume::SmartPtr volume( new UniformVolume( UniformVolume::IndexType( dims ), pixelSize[0], pixelSize[1], pixelSize[2], dataArray ) );
+  UniformVolume::SmartPtr volume( new UniformVolume( UniformVolume::IndexType( dims ), pixelSize[0], pixelSize[1], pixelSize[2], pixelDataArray ) );
   volume->SetMetaInfo( META_SPACE, "LPS" );
   volume->SetMetaInfo( META_SPACE_ORIGINAL, "LPS" );
 
