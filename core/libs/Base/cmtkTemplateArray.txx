@@ -191,7 +191,7 @@ TypedArray::SmartPtr
 TemplateArray<T>
 ::Convert( const ScalarDataType dtype ) const 
 {
-  TypedArray::SmartPtr result = TypedArray::Create( dtype, this->ConvertArray( dtype ), this->DataSize, true /* freeArray */ );
+  TypedArray::SmartPtr result = TypedArray::Create( dtype, this->ConvertArray( dtype ), this->DataSize, false /* paddingFlag */, NULL /*paddingValue*/, Memory::ArrayC::Delete );
 
   if ( this->PaddingFlag )
     result->SetPaddingValue( this->Padding );
