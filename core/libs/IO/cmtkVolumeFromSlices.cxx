@@ -73,7 +73,7 @@ VolumeFromSlices::InitSequence
   
   // Allocate array for axis sample points
   for ( unsigned int idx = 0; idx<3; ++idx )
-    Points[idx] = Memory::AllocateArray<Types::Coordinate>( Dims[idx] );
+    Points[idx] = Memory::ArrayC::Allocate<Types::Coordinate>( Dims[idx] );
   
   // Set sample points for uniform original x- and y-axis
   for ( unsigned int dim=0; dim<2; ++dim ) 
@@ -91,7 +91,7 @@ char*
 VolumeFromSlices::AllocDataArray
 ( const int bytesPerPixel, const int dataSize ) const 
 {
-  return Memory::AllocateArray<char>( bytesPerPixel * dataSize );
+  return Memory::ArrayC::Allocate<char>( bytesPerPixel * dataSize );
 }
 
 TypedArray::SmartPtr
@@ -159,7 +159,7 @@ VolumeFromSlices::FinishVolume ( Types::Coordinate& sliceOffset, int& sliceDirec
   VolumeDataArray = TypedArray::SmartPtr::Null(); 
 
   for ( idx = 0; idx<3; ++idx )
-    Memory::DeleteArray( Points[idx] );
+    Memory::ArrayC::Delete( Points[idx] );
 
   Result->SetMetaInfo( META_SPACE, "LPS" );
   Result->SetMetaInfo( META_SPACE_ORIGINAL, "LPS" );

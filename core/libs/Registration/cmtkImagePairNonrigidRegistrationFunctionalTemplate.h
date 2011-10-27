@@ -124,7 +124,7 @@ public:
     this->m_Metric->Reset();
     if ( ! this->m_WarpedVolume )
       {
-      this->m_WarpedVolume = Memory::AllocateArray<Types::DataItem>(  this->m_DimsX * this->m_DimsY * this->m_DimsZ  );
+      this->m_WarpedVolume = Memory::ArrayC::Allocate<Types::DataItem>(  this->m_DimsX * this->m_DimsY * this->m_DimsZ  );
       }
     
     const size_t numberOfTasks = std::min<size_t>( this->m_NumberOfTasks, this->m_DimsY * this->m_DimsZ );

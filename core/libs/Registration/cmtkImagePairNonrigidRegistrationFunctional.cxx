@@ -70,9 +70,9 @@ ImagePairNonrigidRegistrationFunctional::ImagePairNonrigidRegistrationFunctional
 
   this->m_ThreadWarp.resize( this->m_NumberOfThreads );  
 
-  this->m_ThreadVectorCache = Memory::AllocateArray<Vector3D*>( this->m_NumberOfThreads );
+  this->m_ThreadVectorCache = Memory::ArrayC::Allocate<Vector3D*>( this->m_NumberOfThreads );
   for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
-    this->m_ThreadVectorCache[thread] = Memory::AllocateArray<Vector3D>( this->m_ReferenceDims[0] );
+    this->m_ThreadVectorCache[thread] = Memory::ArrayC::Allocate<Vector3D>( this->m_ReferenceDims[0] );
 
   this->m_WarpedVolume = NULL;
   
@@ -88,8 +88,8 @@ ImagePairNonrigidRegistrationFunctional::~ImagePairNonrigidRegistrationFunctiona
 {
   for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
     if ( this->m_ThreadVectorCache[thread] ) 
-      Memory::DeleteArray( this->m_ThreadVectorCache[thread] );
-  Memory::DeleteArray( this->m_ThreadVectorCache );
+      Memory::ArrayC::Delete( this->m_ThreadVectorCache[thread] );
+  Memory::ArrayC::Delete( this->m_ThreadVectorCache );
 }
 
 void
@@ -150,7 +150,7 @@ ImagePairNonrigidRegistrationFunctional::SetWarpXform
       {
       Dim = this->m_Warp->VariableParamVectorDim();
       this->m_StepScaleVector.resize( Dim );
-      VolumeOfInfluence = Memory::AllocateArray<DataGrid::RegionType>( Dim );
+      VolumeOfInfluence = Memory::ArrayC::Allocate<DataGrid::RegionType>( Dim );
       }
     
     DataGrid::RegionType *VOIptr = VolumeOfInfluence;

@@ -376,7 +376,7 @@ public:
   virtual ~VoxelMatchingElasticFunctional_Template() 
   {
     if ( WarpedVolume ) 
-      Memory::DeleteArray( WarpedVolume );
+      Memory::ArrayC::Delete( WarpedVolume );
   }
 
   /// Set flag and value for forcing values outside the floating image.
@@ -516,7 +516,7 @@ public:
   virtual typename Self::ReturnType Evaluate()
   {
     if ( ! WarpedVolume ) 
-      WarpedVolume = Memory::AllocateArray<typename VM::Exchange>(  DimsX * DimsY * DimsZ  );
+      WarpedVolume = Memory::ArrayC::Allocate<typename VM::Exchange>(  DimsX * DimsY * DimsZ  );
 
     this->Metric->Reset();
     const typename VM::Exchange unsetY = this->Metric->DataY.padding();

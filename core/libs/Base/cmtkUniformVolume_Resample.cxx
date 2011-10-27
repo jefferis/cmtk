@@ -56,7 +56,7 @@ UniformVolume::Resample( const UniformVolume& other ) const
   // Info blocks for parallel tasks that do the resampling.
   std::vector<UniformVolume::ResampleTaskInfo> taskInfoVector( numberOfTasks );
    
-  Types::DataItem *resampledData = Memory::AllocateArray<Types::DataItem>( this->GetNumberOfPixels() );
+  Types::DataItem *resampledData = Memory::ArrayC::Allocate<Types::DataItem>( this->GetNumberOfPixels() );
   
   for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 
     {
@@ -90,7 +90,7 @@ UniformVolume::Resample( const UniformVolume& other ) const
     result->SetPaddingValue( fromData->GetPaddingValue() );
     }
 
-  Memory::DeleteArray( resampledData );
+  Memory::ArrayC::Delete( resampledData );
     
   return result;
 }

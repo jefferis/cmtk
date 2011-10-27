@@ -81,7 +81,7 @@ public:
     Dim = dim;
     if ( Dim ) 
       {
-      Elements = Memory::AllocateArray<T>( Dim );
+      Elements = Memory::ArrayC::Allocate<T>( Dim );
       FreeElements = true;
       if ( value==0 )
 	memset( Elements, 0, Dim * sizeof(T) );
@@ -113,7 +113,7 @@ public:
     else
       Dim = other.Dim - from;
     
-    Elements = Memory::AllocateArray<T>( Dim );
+    Elements = Memory::ArrayC::Allocate<T>( Dim );
     FreeElements = true;
     memcpy( Elements, other.Elements + from, Dim * sizeof(T) );
   }
@@ -130,7 +130,7 @@ public:
   {
     if ( Elements && FreeElements ) 
       {
-      Memory::DeleteArray( this->Elements );
+      Memory::ArrayC::Delete( this->Elements );
       }
   }
   
@@ -151,14 +151,14 @@ public:
       {
       if ( Elements ) 
 	{
-	Memory::DeleteArray( this->Elements );
+	Memory::ArrayC::Delete( this->Elements );
 	}
 
       Dim = dim;
       
       if ( Dim ) 
 	{
-	Elements = Memory::AllocateArray<T>( Dim );
+	Elements = Memory::ArrayC::Allocate<T>( Dim );
 	} 
       else
 	Elements = NULL;
@@ -186,7 +186,7 @@ public:
     // If old and new size are the same, there is nothing to do.
     if ( Dim != dim ) 
       {
-      T* newElements = Memory::AllocateArray<T>( dim );
+      T* newElements = Memory::ArrayC::Allocate<T>( dim );
       // copy common elements
       memcpy( newElements, this->Elements, sizeof(T) * std::min( dim, Dim ) );
 
@@ -200,7 +200,7 @@ public:
       this->Dim = dim;
       if ( this->FreeElements )
 	{
-	Memory::DeleteArray( this->Elements );
+	Memory::ArrayC::Delete( this->Elements );
 	}
       this->Elements = newElements;
       this->FreeElements = true;
@@ -215,7 +215,7 @@ public:
     if ( Dim != other.Dim ) {
     if (Elements) 
       {
-      Memory::DeleteArray( this->Elements );
+      Memory::ArrayC::Delete( this->Elements );
       Elements = NULL;
       }
     
@@ -224,7 +224,7 @@ public:
     
     if ( Elements == NULL ) 
       {
-      Elements = Memory::AllocateArray<T>( Dim );
+      Elements = Memory::ArrayC::Allocate<T>( Dim );
       }
     
     memcpy( Elements, other.Elements, Dim * sizeof(T) );

@@ -98,9 +98,9 @@ public:
     for ( size_t task = 0; task < this->m_NumberOfThreads; ++task )
       this->TaskMetric[task] = new VM( *(this->Metric) );
     
-    this->ThreadVectorCache = Memory::AllocateArray<Vector3D*>( this->m_NumberOfThreads );
+    this->ThreadVectorCache = Memory::ArrayC::Allocate<Vector3D*>( this->m_NumberOfThreads );
     for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
-      this->ThreadVectorCache[thread] = Memory::AllocateArray<Vector3D>( this->ReferenceDims[0] );
+      this->ThreadVectorCache[thread] = Memory::ArrayC::Allocate<Vector3D>( this->ReferenceDims[0] );
   }
 
   /** Destructor.
@@ -110,8 +110,8 @@ public:
   {
     for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread )
       if ( ThreadVectorCache[thread] ) 
-	Memory::DeleteArray( this->ThreadVectorCache[thread] );
-    Memory::DeleteArray( this->ThreadVectorCache );
+	Memory::ArrayC::Delete( this->ThreadVectorCache[thread] );
+    Memory::ArrayC::Delete( this->ThreadVectorCache );
     
     for ( size_t task = 0; task < this->m_NumberOfThreads; ++task )
       delete this->TaskMetric[task];
@@ -260,7 +260,7 @@ public:
   {
     this->Metric->Reset();
     if ( ! this->WarpedVolume ) 
-      this->WarpedVolume = Memory::AllocateArray<typename VM::Exchange>(  this->DimsX * this->DimsY * this->DimsZ  );
+      this->WarpedVolume = Memory::ArrayC::Allocate<typename VM::Exchange>(  this->DimsX * this->DimsY * this->DimsZ  );
 
     const size_t numberOfTasks = std::min<size_t>( this->m_NumberOfTasks, this->DimsY * this->DimsZ );
     for ( size_t taskIdx = 0; taskIdx < numberOfTasks; ++taskIdx ) 

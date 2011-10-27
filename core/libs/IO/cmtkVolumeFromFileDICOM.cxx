@@ -275,7 +275,6 @@ VolumeFromFile::ReadDICOM( const char *path )
 	sscanf( tmpStr, "%dp*%ds", &rows, &cols);
 
 	const int xMosaic = dims[0] / cols;
-	const int yMosaic = dims[1] / rows;
 	
 	dims[0] = cols;
 	dims[1] = rows;
@@ -321,7 +320,7 @@ VolumeFromFile::ReadDICOM( const char *path )
 	const size_t nTags = fileHeader.GetField<Uint32>( 8 );
 
 	size_t tagOffset = 16; // start after header
-	for ( int tag = 0; tag < nTags; ++tag )
+	for ( size_t tag = 0; tag < nTags; ++tag )
 	  {
 	  char tagName[65];
 	  fileHeader.GetFieldString( tagOffset, tagName, 64 );
@@ -331,7 +330,7 @@ VolumeFromFile::ReadDICOM( const char *path )
 	  StdErr << "  nItems: " << nItems << "\n";
 
 	  tagOffset += 84;
-	  for ( int item = 0; item < nItems; ++item )
+	  for ( size_t item = 0; item < nItems; ++item )
 	    {
 	    const size_t itemLen = fileHeader.GetField<Uint32>( tagOffset );
 

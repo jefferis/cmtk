@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -131,7 +131,7 @@ ScalarImageIO::ReadAnalyze( const char* pathHdr )
   
   size_t offset = static_cast<size_t>( header.GetField<float>( 108 ) );
 
-  char* pathImg = Memory::AllocateArray<char>(  4 + strlen( pathHdr )  );
+  char* pathImg = Memory::ArrayC::Allocate<char>( 4 + strlen( pathHdr ) );
   strcpy( pathImg, pathHdr );
   char* suffix = strstr( pathImg, ".hdr" );
   if ( suffix ) *suffix = 0;
@@ -155,11 +155,10 @@ ScalarImageIO::ReadAnalyze( const char* pathHdr )
     } 
   else 
     {
-    StdErr.printf( "WARNING: could not open Analyze image file %s\n",
-		      pathImg );
+    StdErr.printf( "WARNING: could not open Analyze image file %s\n", pathImg );
     }
   
-  Memory::DeleteArray( pathImg );
+  Memory::ArrayC::Delete( pathImg );
 
   return image;
 }
@@ -263,7 +262,7 @@ ScalarImageIO::WriteAnalyze
     }
 
   // write binary data
-  char* pathImg = Memory::AllocateArray<char>(  4 + strlen( pathHdr )  );
+  char* pathImg = Memory::ArrayC::Allocate<char>( 4 + strlen( pathHdr ) );
   strcpy( pathImg, pathHdr );
   char* suffix = strstr( pathImg, ".hdr" );
   if ( suffix ) *suffix = 0;
@@ -280,7 +279,7 @@ ScalarImageIO::WriteAnalyze
     fclose( imgFile );
     }
 
-  Memory::DeleteArray( pathImg );
+  Memory::ArrayC::Delete( pathImg );
 }
 
 } // namespace cmtk

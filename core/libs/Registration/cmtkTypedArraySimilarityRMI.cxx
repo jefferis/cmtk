@@ -51,7 +51,7 @@ TypedArraySimilarity::GetMutualInformation
   const size_t dim1 = data1.size();
   const size_t dim = dim0 + dim1;
   
-  double* pts = Memory::AllocateArray<double>( N*dim );  
+  double* pts = Memory::ArrayC::Allocate<double>( N*dim );  
   
   Types::DataItem tmp;
   

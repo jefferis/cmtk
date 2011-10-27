@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -122,7 +122,7 @@ TransformedVolumeAxes::MakeHash
   this->m_Dims = volume.m_Dims;  
   for ( int dim = 0; dim<3; ++dim ) 
     {
-    this->m_Hash[dim] = Memory::AllocateArray<UniformVolume::SpaceVectorType>( this->m_Dims[dim] );
+    this->m_Hash[dim] = Memory::ArrayC::Allocate<UniformVolume::SpaceVectorType>( this->m_Dims[dim] );
     assert( this->m_Hash[dim] != NULL );
     }
 
@@ -146,7 +146,7 @@ TransformedVolumeAxes::~TransformedVolumeAxes()
   for ( int dim = 0; dim<3; ++dim ) 
     {
     assert( this->m_Hash[dim] != NULL );
-    Memory::DeleteArray( this->m_Hash[dim] );
+    Memory::ArrayC::Delete( this->m_Hash[dim] );
     }
 }
 

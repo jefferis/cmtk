@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -67,7 +67,7 @@ public:
     for ( size_t i = 1; i < NDim; ++i )
       nItems *= dims[i];
 
-    TElement* data = Memory::AllocateArray<TElement>( nItems );
+    TElement* data = Memory::ArrayC::Allocate<TElement>( nItems );
   }
 
   /// Destructor.
@@ -138,7 +138,7 @@ public:
     this->m_NumberOfRows = dims1;
     this->m_NumberOfElements = dims0 * dims1;
 
-    (*this)[0] = Memory::AllocateArray<T>(  this->m_NumberOfElements  );
+    (*this)[0] = Memory::ArrayC::Allocate<T>(  this->m_NumberOfElements  );
     for ( size_t i = 1; i < this->m_NumberOfRows; ++i )
       (*this)[i] = (*this)[i-1] + this->m_NumberOfColumns;
     
@@ -154,7 +154,7 @@ public:
     this->m_NumberOfRows = other.m_NumberOfRows;
     this->m_NumberOfElements = other.m_NumberOfElements;
 
-    (*this)[0] = Memory::AllocateArray<T>(  this->m_NumberOfElements  );
+    (*this)[0] = Memory::ArrayC::Allocate<T>(  this->m_NumberOfElements  );
     for ( size_t i = 1; i < this->m_NumberOfRows; ++i )
       (*this)[i] = (*this)[i-1] + this->m_NumberOfColumns;
     
@@ -166,7 +166,7 @@ public:
   {
     if ( (*this)[0] )
       {
-      Memory::DeleteArray( (*this)[0] );
+      Memory::ArrayC::Delete( (*this)[0] );
       (*this)[0] = NULL;
       }
   }
@@ -193,7 +193,7 @@ public:
       {
       if ( (*this)[0] )
 	{
-	Memory::DeleteArray( (*this)[0] );
+	Memory::ArrayC::Delete( (*this)[0] );
 	(*this)[0] = NULL;
 	}
       
@@ -202,7 +202,7 @@ public:
       this->m_NumberOfElements = numberOfColumns * numberOfRows;
       
       this->Superclass::resize( numberOfRows );
-      (*this)[0] = Memory::AllocateArray<T>(  this->m_NumberOfElements  );
+      (*this)[0] = Memory::ArrayC::Allocate<T>( this->m_NumberOfElements );
       for ( size_t i = 1; i < numberOfRows; ++i )
 	(*this)[i] = (*this)[i-1] + numberOfColumns;
       }
@@ -265,7 +265,7 @@ public:
   {
     this->m_NumberOfPlanes = dims0;
     this->m_NumberOfElements = dims0 * dims1 * dims2;
-    (*this)[0][0] = Memory::AllocateArray<T>( this->m_NumberOfElements );
+    (*this)[0][0] = Memory::ArrayC::Allocate<T>( this->m_NumberOfElements );
 
     for ( size_t j = 0; j < this->GetNumberOfRows(); ++j )
       for ( size_t i = 0; i < this->GetNumberOfColumns(); ++i )
@@ -290,7 +290,7 @@ public:
       {
       if ( (*this)[0][0] )
 	{
-	Memory::DeleteArray( (*this)[0][0] );
+	Memory::ArrayC::Delete( (*this)[0][0] );
 	(*this)[0][0] = NULL;
 	}
       
@@ -298,7 +298,7 @@ public:
       this->m_NumberOfElements = numberOfPlanes * numberOfRows * numberOfColumns;
 
       this->Superclass::Resize( numberOfRows, numberOfColumns );
-      (*this)[0][0] = Memory::AllocateArray<T>( this->m_NumberOfElements );
+      (*this)[0][0] = Memory::ArrayC::Allocate<T>( this->m_NumberOfElements );
       
       for ( size_t j = 0; j < this->GetNumberOfRows(); ++j )
 	for ( size_t i = 0; i < this->GetNumberOfColumns(); ++i )

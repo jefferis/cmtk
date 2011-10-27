@@ -69,13 +69,13 @@ VoxelMatchingElasticFunctional::VoxelMatchingElasticFunctional
   this->m_AdaptiveFixParameters = false;
   this->m_AdaptiveFixThreshFactor = 0.5;
 
-  VectorCache = Memory::AllocateArray<Vector3D>( ReferenceDims[0] );
+  VectorCache = Memory::ArrayC::Allocate<Vector3D>( ReferenceDims[0] );
   VolumeOfInfluence = NULL;
 }
 
 VoxelMatchingElasticFunctional::~VoxelMatchingElasticFunctional()
 {
-  Memory::DeleteArray( VectorCache );
+  Memory::ArrayC::Delete( VectorCache );
 }
 
 template<class W>
@@ -153,10 +153,10 @@ VoxelMatchingElasticFunctional_WarpTemplate<W>::SetWarpXform
     if ( Dim != Warp->VariableParamVectorDim() ) 
       {
       if ( VolumeOfInfluence ) 
-	Memory::DeleteArray( VolumeOfInfluence );
+	Memory::ArrayC::Delete( VolumeOfInfluence );
       Dim = Warp->VariableParamVectorDim();
       this->StepScaleVector.resize( Dim );
-      this->VolumeOfInfluence = Memory::AllocateArray<DataGrid::RegionType>( Dim );
+      this->VolumeOfInfluence = Memory::ArrayC::Allocate<DataGrid::RegionType>( Dim );
       }
     
     DataGrid::RegionType *VOIptr = this->VolumeOfInfluence;

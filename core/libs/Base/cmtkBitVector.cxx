@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -46,7 +46,7 @@ cmtk
 BitVector::BitVector( const size_t size, const bool initial )
 {
   this->m_Size = (size+7) / 8; // +7 to allocate an extra byte for 8n+1...8n+7 bits
-  this->m_BitVector = Memory::AllocateArray<byte>( this->m_Size );
+  this->m_BitVector = Memory::ArrayC::Allocate<byte>( this->m_Size );
 
   if ( initial )
     this->Set();
@@ -62,13 +62,13 @@ BitVector::BitVector( const size_t size, byte *const bitSet )
 
 BitVector::~BitVector()
 {
-  Memory::DeleteArray( this->m_BitVector );
+  Memory::ArrayC::Delete( this->m_BitVector );
 }
 
 BitVector* 
 BitVector::Clone() const
 {
-  byte *newBitVector = Memory::AllocateArray<byte>( this->m_Size );
+  byte *newBitVector = Memory::ArrayC::Allocate<byte>( this->m_Size );
   memcpy( newBitVector, this->m_BitVector, this->m_Size );
   return new BitVector( 8*this->m_Size, newBitVector );
 }

@@ -123,7 +123,7 @@ public:
   void Add ( const double value, const int dir = 0, const R step = 0 ) 
   {
     TraceListEntry *add = new TraceListEntry;
-    add->RelativePosition = Memory::AllocateArray<R>( DOF );
+    add->RelativePosition = Memory::ArrayC::Allocate<R>( DOF );
     memset( add->RelativePosition, 0, sizeof(R) );
     add->RelativePosition[dir] += step;
     add->FunctionValue = value;
@@ -180,7 +180,7 @@ public:
     while ( List ) 
       {
       TraceListEntry *save = List->Next;
-      Memory::DeleteArray( List->RelativePosition );
+      Memory::ArrayC::Delete( List->RelativePosition );
       delete List;
       List = save;
       }

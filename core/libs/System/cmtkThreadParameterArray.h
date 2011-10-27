@@ -61,7 +61,7 @@ public:
   {
     this->m_AsynchronousThreadsRunning = false;
     this->m_NumberOfThreads = numberOfThreads;
-    this->m_Ptr = Memory::AllocateArray<TParam>( numberOfThreads );
+    this->m_Ptr = Memory::ArrayC::Allocate<TParam>( numberOfThreads );
     for ( size_t i = 0; i < numberOfThreads; ++i )
       {
       this->m_Ptr[i].thisObject = thisObject;
@@ -76,7 +76,7 @@ public:
   {
     if ( this->m_AsynchronousThreadsRunning )
       this->CancelAsynchronousThreads();
-    Memory::DeleteArray( this->m_Ptr );
+    Memory::ArrayC::Delete( this->m_Ptr );
   }
 
   /// Constant access operator.

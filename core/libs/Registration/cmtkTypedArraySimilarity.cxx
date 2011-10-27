@@ -108,9 +108,9 @@ TypedArraySimilarity::GetCorrelationRatio
 
   // initialize arrays that hold the sums of all floating values and their
   // squares, separated by histogram classes of the reference image.
-  double* sumJ = Memory::AllocateArray<double>( numBins );
+  double* sumJ = Memory::ArrayC::Allocate<double>( numBins );
   memset( sumJ, 0, numBins * sizeof( sumJ[0] ) );
-  double* sumSquareJ = Memory::AllocateArray<double>( numBins );
+  double* sumSquareJ = Memory::ArrayC::Allocate<double>( numBins );
   memset( sumSquareJ, 0, numBins * sizeof( sumSquareJ[0] ) );
 
   // sort all image intensities into data structures.
@@ -154,8 +154,8 @@ TypedArraySimilarity::GetCorrelationRatio
   Types::DataItem sigmaSqJ, muJ;
   array1->GetStatistics( muJ, sigmaSqJ );
 
-  Memory::DeleteArray( sumJ );
-  Memory::DeleteArray( sumSquareJ );
+  Memory::ArrayC::Delete( sumJ );
+  Memory::ArrayC::Delete( sumSquareJ );
 
   // return (supposedly) correlation ratio
   return 1.0 - (1.0 /  sigmaSqJ ) * sumSigmaSquare;

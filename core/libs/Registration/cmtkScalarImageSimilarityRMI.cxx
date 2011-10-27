@@ -56,7 +56,7 @@ ScalarImageSimilarity::GetRegionalMutualInformation
   int d2 = d*d;
   int dim = 2*d2;
   
-  Types::DataItem* pts = Memory::AllocateArray<Types::DataItem>( N*dim );
+  Types::DataItem* pts = Memory::ArrayC::Allocate<Types::DataItem>( N*dim );
   
   
   Types::DataItem tmp1, tmp2;

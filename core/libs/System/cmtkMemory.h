@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -53,26 +53,49 @@ namespace Memory
    */
 size_t GetNextPowerOfTwo( size_t k );
 
-/** Memory allocation for array.
- *\warning If this function allocates memory with anything other than the C++ new[] operator,
- * then objects in the array will not be instantiated.
+/** Memory allocation for C-style array.
  */
-template<class T>
-inline 
-T*
-AllocateArray( const size_t size )
-{
-  return static_cast<T*>( malloc( size * sizeof( T ) ) );
-}
+class ArrayC
+{ 
+public:
+  /** Allocator function: calls malloc()
+   *\warning Objects in the array will not be instantiated.
+   */
+  template<class T>
+  static T* Allocate( const size_t size )
+  {
+    return static_cast<T*>( malloc( size * sizeof( T ) ) );
+  }
+  
+  /// Delete an array allocated using Allocate().
+  template<class T>
+  static void Delete( T *const array )
+  {
+    free( array );
+  }
+};
 
-/// Delete an array allocated using AllocateArray().
-template<class T>
-inline
-void
-DeleteArray( T *const array )
-{
-  free( array );
-}
+/** Memory allocation for C++-style array.
+ */
+class ArrayCXX
+{ 
+public:
+  /** Allocator function: calls new[]()
+   *\warning Objects in the array will not be instantiated.
+   */
+  template<class T>
+  static T* Allocate( const size_t size )
+  {
+    return new T[size];
+  }
+  
+  /// Delete an array allocated using Allocate().
+  template<class T>
+  static void Delete( T *const array )
+  {
+    delete[]( array );
+  }
+};
 
 /** Set (fill) memory region with given value.
  * This is the templated version of memset()

@@ -955,7 +955,7 @@ Types::Coordinate*
 SplineWarpXform::GetPureDeformation( const bool includeScale ) const
 {
   const size_t numberOfParameters = this->m_NumberOfParameters;
-  Types::Coordinate* points = Memory::AllocateArray<Types::Coordinate>(  numberOfParameters  );
+  Types::Coordinate* points = Memory::ArrayC::Allocate<Types::Coordinate>(  numberOfParameters  );
   memcpy( points, this->m_Parameters, sizeof( *points ) * numberOfParameters );
   
   AffineXform::SmartPtr xform( this->GetInitialAffineXform()->MakeInverse() );

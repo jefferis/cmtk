@@ -229,7 +229,7 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
     }  
   
   size_t offset = static_cast<size_t>( header.GetField<float>( 108 ) );
-  char* pathImg = Memory::AllocateArray<char>(  4 + strlen( pathHdr )  );
+  char* pathImg = Memory::ArrayC::Allocate<char>( 4 + strlen( pathHdr ) );
   strcpy( pathImg, pathHdr );
 
   if ( detached )
@@ -263,7 +263,7 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
     StdErr << "ERROR: could not open Nifti image file " << pathImg << "\n";
     }
   
-  Memory::DeleteArray( pathImg );
+  Memory::ArrayC::Delete( pathImg );
 
   if ( header.GetField<char>( 148 ) )
     {

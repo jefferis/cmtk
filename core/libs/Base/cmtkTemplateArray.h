@@ -258,7 +258,7 @@ public:
    */
   virtual Types::DataItem* GetSubArray( const size_t fromIdx, const size_t len, const Types::DataItem substPadding = 0 ) const 
   {
-    Types::DataItem* buffer = Memory::AllocateArray<Types::DataItem>( len );
+    Types::DataItem* buffer = Memory::ArrayC::Allocate<Types::DataItem>( len );
     return this->GetSubArray( buffer, fromIdx, len, substPadding );
   }
 
@@ -504,14 +504,14 @@ public:
   }
   
   /** Get the whole array data as an exchange type array.
-   *\return Pointer to a memory region allocated by Memory::AllocateArray(). This region is
+   *\return Pointer to a memory region allocated by Memory::ArrayC::Allocate(). This region is
    * filled with all values in the present array as Types::DataItem values. The created
    * array is not maintained by this object. The caller has to make sure free()
    * is called for it.
    */
   virtual Types::DataItem* GetData () const 
   {
-    Types::DataItem* Result = Memory::AllocateArray<Types::DataItem>( DataSize );
+    Types::DataItem* Result = Memory::ArrayC::Allocate<Types::DataItem>( DataSize );
     if ( Result ) 
       {
       for ( size_t idx = 0; idx < DataSize; ++idx )
@@ -614,9 +614,9 @@ private:
       {
       if ( Data ) 
 	{
-	Memory::DeleteArray( Data );
+	Memory::ArrayC::Delete( Data );
 	}
-      Data = Memory::AllocateArray<T>( DataSize );
+      Data = Memory::ArrayC::Allocate<T>( DataSize );
       if ( Data == NULL ) 
 	{
 	this->DataSize = 0;
@@ -638,7 +638,7 @@ private:
   {
     if ( Data && FreeArray ) 
       {
-      Memory::DeleteArray( Data );
+      Memory::ArrayC::Delete( Data );
       } 
     Data = NULL;
   }

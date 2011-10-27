@@ -241,7 +241,7 @@ Import
     throw cmtk::ExitException( 1 );
     }
   
-  parameters = cmtk::Memory::AllocateArray<cmtk::Types::DataItem>( vParam.size() );
+  parameters = cmtk::Memory::ArrayC::Allocate<cmtk::Types::DataItem>( vParam.size() );
   for ( size_t i = 0; i < vParam.size(); ++i )
     parameters[i] = vParam[i];
   
@@ -364,7 +364,7 @@ doMain( const int argc, const char* argv[] )
     std::copy( ImagesData[idx].begin(), ImagesData[idx].end(), &allImages[totalNumberOfImages] );
     }
   
-  double* allParameters = cmtk::Memory::AllocateArray<double>( nParameters[0] * allImages.size() );
+  double* allParameters = cmtk::Memory::ArrayC::Allocate<double>( nParameters[0] * allImages.size() );
   size_t idx = 0;
   for ( size_t ctl = 0; ctl < parameters.size(); ++ctl )
     {

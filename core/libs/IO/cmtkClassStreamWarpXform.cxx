@@ -180,7 +180,7 @@ ClassStream::Get
       break;
     };
   
-  byte *active = Memory::AllocateArray<byte>( (numberOfParameters / 8)+1 );
+  byte *active = Memory::ArrayC::Allocate<byte>( (numberOfParameters / 8)+1 );
   if ( this->ReadBoolArray( "active", active, numberOfParameters ) == TYPEDSTREAM_OK ) 
     {
     BitVector::SmartPtr bitSet( new BitVector( numberOfParameters, active ) );
@@ -188,7 +188,7 @@ ClassStream::Get
     } 
   else 
     {
-    Memory::DeleteArray( active );
+    Memory::ArrayC::Delete( active );
     }
   
   this->End();

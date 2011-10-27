@@ -82,13 +82,13 @@ public:
     ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
     this->m_NumberOfThreads = threadPool.GetNumberOfThreads();
     this->m_MonomialsPerThread = std::max( (int)PolynomialTypeAdd::NumberOfMonomials, (int)PolynomialTypeMul::NumberOfMonomials );
-    this->m_MonomialsVec = Memory::AllocateArray<Types::Coordinate>( this->m_NumberOfThreads * this->m_MonomialsPerThread  );
+    this->m_MonomialsVec = Memory::ArrayC::Allocate<Types::Coordinate>( this->m_NumberOfThreads * this->m_MonomialsPerThread  );
   }
 
   /// Virtual destructor.
   virtual ~EntropyMinimizationIntensityCorrectionFunctional() 
   {
-    Memory::DeleteArray( this->m_MonomialsVec );
+    Memory::ArrayC::Delete( this->m_MonomialsVec );
   }
 
   /// Total number of parameters is number of additive plus number of multiplicative parameters.

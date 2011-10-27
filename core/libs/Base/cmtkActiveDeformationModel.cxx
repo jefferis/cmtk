@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -58,7 +58,7 @@ ActiveDeformationModel<W>::ActiveDeformationModel
   if ( IncludeReferenceInModel )
     ++numberOfSamples;
   
-  Types::Coordinate** samplePoints = Memory::AllocateArray<Types::Coordinate*>( numberOfSamples );
+  Types::Coordinate** samplePoints = Memory::ArrayC::Allocate<Types::Coordinate*>( numberOfSamples );
   unsigned int numberOfPoints = 0;
   
   typename std::list< SmartPointer<W> >::const_iterator it = deformationList.begin();
@@ -117,8 +117,8 @@ ActiveDeformationModel<W>::ActiveDeformationModel
   this->Construct( samplePoints, numberOfSamples, numberOfPoints, numberOfModes );
   
   for ( unsigned int n = 0; n < numberOfSamples; ++n )
-    Memory::DeleteArray( samplePoints[ n ] );
-  Memory::DeleteArray( samplePoints );
+    Memory::ArrayC::Delete( samplePoints[ n ] );
+  Memory::ArrayC::Delete( samplePoints );
 }
 
 template<class W>
@@ -126,7 +126,7 @@ Types::Coordinate*
 ActiveDeformationModel<W>::MakeSamplePointsReference( const W* deformation )
 {
   const unsigned int numberOfParameters = deformation->m_NumberOfParameters;
-  Types::Coordinate* points = Memory::AllocateArray<Types::Coordinate>(  numberOfParameters  );
+  Types::Coordinate* points = Memory::ArrayC::Allocate<Types::Coordinate>( numberOfParameters );
 
   Types::Coordinate* ptr = points;
   Vector3D v;
@@ -148,7 +148,7 @@ Types::Coordinate*
 ActiveDeformationModel<W>::MakeSamplePoints( const W* deformation )
 {
   const unsigned int numberOfParameters = deformation->m_NumberOfParameters;
-  Types::Coordinate* points = Memory::AllocateArray<Types::Coordinate>(  numberOfParameters  );
+  Types::Coordinate* points = Memory::ArrayC::Allocate<Types::Coordinate>( numberOfParameters );
   memcpy( points, deformation->m_Parameters, sizeof( *points ) * numberOfParameters );
 
   AffineXform::SmartPtr xform( deformation->GetInitialAffineXform()->MakeInverse() );

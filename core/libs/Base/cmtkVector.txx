@@ -47,7 +47,7 @@ Vector<T> operator+ ( const Vector<T>& p, const Vector<T>& delta )
 {
   assert ( p.Dim == delta.Dim );
 
-  T* Result = Memory::AllocateArray<T>( p.Dim );
+  T* Result = Memory::ArrayC::Allocate<T>( p.Dim );
 #pragma omp parallel for if (p.Dim>1e4)
   for ( size_t i=0; i<p.Dim; ++i )
     Result[i] = p.Elements[i] + delta.Elements[i];
@@ -66,7 +66,7 @@ inline Vector<T> operator-
 {
   assert ( p.Dim == delta.Dim );
 
-  T* Result = Memory::AllocateArray<T>( p.Dim );
+  T* Result = Memory::ArrayC::Allocate<T>( p.Dim );
 #pragma omp parallel for if (p.Dim>1e4)
   for ( size_t i=0; i<p.Dim; ++i )
     Result[i] = p.Elements[i] - delta.Elements[i];
@@ -83,7 +83,7 @@ inline Vector<T> operator-
 template<class T>
 Vector<T> operator* ( const T c, const Vector<T>& p ) 
 {
-  T* Result = Memory::AllocateArray<T>( p.Dim );
+  T* Result = Memory::ArrayC::Allocate<T>( p.Dim );
 #pragma omp parallel for if (p.Dim>1e4)
   for ( size_t i=0; i<p.Dim; ++i )
     Result[i] = c * p.Elements[i];
@@ -100,7 +100,7 @@ Vector<T> CoordMult ( const Vector<T>& p, const Vector<T>& q )
 {
   assert ( p.Dim == q.Dim );
 
-  T* Result = Memory::AllocateArray<T>( p.Dim );
+  T* Result = Memory::ArrayC::Allocate<T>( p.Dim );
 #pragma omp parallel for if (p.Dim>1e4)
   for ( size_t i=0; i<p.Dim; ++i )
     Result[i] = p.Elements[i] * q.Elements[i];

@@ -47,7 +47,7 @@ DeviceUniformVolumeArray( const UniformVolume& volume )
       {
       float* fData = static_cast<float*>( data->ConvertArray( TYPE_FLOAT ) );
       m_DeviceArrayPointer->CopyToDevice( fData );
-      Memory::DeleteArray( fData );
+      Memory::ArrayC::Delete( fData );
       }
     }
 }

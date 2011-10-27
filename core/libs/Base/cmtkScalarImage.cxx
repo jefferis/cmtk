@@ -454,7 +454,7 @@ ScalarImage::GetMedianFiltered( const byte range ) const
 
   TypedArray::SmartPtr result = TypedArray::Create( this->m_PixelData->GetType(), this->m_PixelData->GetDataSize() );
 
-  Types::DataItem *sort = Memory::AllocateArray<Types::DataItem>( range * range * range );
+  Types::DataItem *sort = Memory::ArrayC::Allocate<Types::DataItem>( range * range * range );
 
   int delta = (range-1) / 2;
   int offset = 0;
@@ -485,7 +485,7 @@ ScalarImage::GetMedianFiltered( const byte range ) const
 	result->Set( static_cast<Types::DataItem>( ( 0.5 * (sort[source/2] + sort[source/2-1]) ) ), offset );
     }
 
-  Memory::DeleteArray( sort );
+  Memory::ArrayC::Delete( sort );
 
   return result;
 }

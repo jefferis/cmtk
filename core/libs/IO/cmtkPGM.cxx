@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -144,7 +144,7 @@ PGM::Write
 ( const char* filename, const ScalarImage *image, const Types::DataItem greyFrom, const Types::DataItem greyTo )
 {
   const size_t numberOfPixels = image->GetNumberOfPixels();
-  byte *pgmData = Memory::AllocateArray<byte>(  numberOfPixels  );
+  byte *pgmData = Memory::ArrayC::Allocate<byte>(  numberOfPixels  );
 
   const TypedArray *pixelData = image->GetPixelData();
 
@@ -179,7 +179,7 @@ PGM::Write
     fclose(fp);
     }
 
-  Memory::DeleteArray( pgmData );
+  Memory::ArrayC::Delete( pgmData );
 }
 
 void
@@ -191,7 +191,7 @@ PGM::Write16bit( const char* filename, const ScalarImage *image, const Types::Da
 
   const Types::DataItem greyScale = 255.0 / (greyTo - greyFrom);
   
-  unsigned short *pgmData = Memory::AllocateArray<unsigned short>(  numberOfPixels  );
+  unsigned short *pgmData = Memory::ArrayC::Allocate<unsigned short>( numberOfPixels );
   unsigned short maxData = 0;
   for ( size_t i = 0; i < numberOfPixels; ++i ) 
     {
@@ -234,7 +234,7 @@ PGM::Write16bit( const char* filename, const ScalarImage *image, const Types::Da
     fclose(fp);
     }
   
-  Memory::DeleteArray( pgmData );
+  Memory::ArrayC::Delete( pgmData );
 }
 
 } // namespace cmtk

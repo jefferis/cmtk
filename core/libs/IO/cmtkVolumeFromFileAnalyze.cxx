@@ -234,7 +234,7 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
   
   size_t offset = static_cast<size_t>( header.GetField<float>( 108 ) );
   
-  char* pathImg = Memory::AllocateArray<char>(  4 + strlen( pathHdr )  );
+  char* pathImg = Memory::ArrayC::Allocate<char>( 4 + strlen( pathHdr ) );
   strcpy( pathImg, pathHdr );
   char* suffix = strstr( pathImg, ".hdr" );
   if ( suffix ) *suffix = 0;
@@ -266,7 +266,7 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
     StdErr << "ERROR: could not open Analyze image file " << pathImg << "\n";
     }
   
-  Memory::DeleteArray( pathImg );
+  Memory::ArrayC::Delete( pathImg );
 
   // fill "description" header field
   if ( header.GetField<char>( 148 ) )
@@ -423,7 +423,7 @@ VolumeFromFile::WriteAnalyzeHdr
     }
 
   // write binary data
-  char* pathImg = Memory::AllocateArray<char>(  4 + strlen( pathHdr )  );
+  char* pathImg = Memory::ArrayC::Allocate<char>(  4 + strlen( pathHdr )  );
   strcpy( pathImg, pathHdr );
   char* suffix = strstr( pathImg, ".hdr" );
   if ( suffix ) *suffix = 0;
@@ -493,7 +493,7 @@ VolumeFromFile::WriteAnalyzeHdr
     StdErr << "ERROR: could not open file '" << pathHdr << "' for writing\n";
     }
 
-  Memory::DeleteArray( pathImg );
+  Memory::ArrayC::Delete( pathImg );
 }
 
 } // namespace cmtk

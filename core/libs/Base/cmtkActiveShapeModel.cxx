@@ -168,7 +168,7 @@ ActiveShapeModel::Generate
 {
   Types::Coordinate* target = instance;
   if ( !target )
-    target = Memory::AllocateArray<Types::Coordinate>( NumberOfPoints );
+    target = Memory::ArrayC::Allocate<Types::Coordinate>( NumberOfPoints );
 
   memcpy( target, Mean->Elements, sizeof( *target ) * NumberOfPoints );
 

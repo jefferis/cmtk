@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -56,7 +56,7 @@ ImageRGB::ImageRGB()
 
 ImageRGB::~ImageRGB()
 {
-  Memory::DeleteArray( this->Data );
+  Memory::ArrayC::Delete( this->Data );
 }
 
 byte* 
@@ -67,13 +67,13 @@ ImageRGB::GetDataPtr( const bool forceAlloc )
   if ( Data == NULL ) 
     {
     DataSize = BytesPerPixel * this->Plane::GetNumPixels();
-    Data = Memory::AllocateArray<byte>( DataSize );
+    Data = Memory::ArrayC::Allocate<byte>( DataSize );
     } 
   else
     {
     if ( DataSize != (BytesPerPixel * this->Plane::GetNumPixels()) ) 
       {
-      Memory::DeleteArray( Data );
+      Memory::ArrayC::Delete( Data );
       Data = NULL;
       return this->GetDataPtr( true /* forceAlloc */ );
       } 
@@ -123,7 +123,7 @@ void ImageRGB::SetAlphaChannel( const ImageAlphaToggle alphaChannel, const bool 
 	}
       }
     
-    Memory::DeleteArray( oldData );
+    Memory::ArrayC::Delete( oldData );
     }
 }
 
