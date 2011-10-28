@@ -591,6 +591,10 @@ case ${RUNTEST} in
 	run dcm2image --embed PatientName -O ${tmpdir}/00%n.nhdr ${DATADIR}/dcm/
 	check_results 001.nhdr 002.nhdr 003.nhdr
 	;;
+    dcm2imageMosaic)
+	run dcm2image -O ${tmpdir}/00.nii ${DATADIR}/mr-mosaic/
+	check_results 00.nii
+	;;
     describeEmpty)
 	run_eval "${BINDIR}/describe -m empty.nii > ${tmpdir}/describe.txt"
 	check_results describe.txt
@@ -601,6 +605,10 @@ case ${RUNTEST} in
 	;;
     describeDICOMZ)
 	run_eval "${BINDIR}/describe -m dcmz/I0007.dcm > ${tmpdir}/describe.txt"
+	check_results describe.txt
+	;;
+    describeMosaicDICOM)
+	run_eval "${BINDIR}/describe -m mr-mosaic/fmri.dcm > ${tmpdir}/describe.txt"
 	check_results describe.txt
 	;;
     describeVanderbilt)

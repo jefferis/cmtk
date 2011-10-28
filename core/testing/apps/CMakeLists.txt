@@ -75,6 +75,7 @@ SET(testList ${testList}
   describeXZb
   describeEmpty
   describeDICOM
+  describeMosaicDICOM
   describeDICOMZ
   describeVanderbilt
   describeMR1 
@@ -262,7 +263,8 @@ IF(NOT CMTK_USE_MPI)
       dcm2imageZ
       dcm2imageEmbedPatientNameAnalyze
       dcm2imageEmbedPatientNameNifti
-      dcm2imageEmbedSeriesDescriptionNifti)
+      dcm2imageEmbedSeriesDescriptionNifti
+      dcm2imageMosaic)
 
     IF(CMTK_BUILD_NRRD)
       SET(testList ${testList} 
