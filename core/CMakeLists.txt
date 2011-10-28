@@ -498,6 +498,9 @@ IF(CMTK_USE_DCMTK)
 
     MESSAGE( STATUS "Using system DCMTK library." )
 
+    # system DCMTK should support jpeg
+    ADD_DEFINITIONS(-DCMTK_USE_DCMTK_JPEG)
+
     FIND_PATH(DCMTK_DCMDICTPATH
       dicom.dic
       PATHS
