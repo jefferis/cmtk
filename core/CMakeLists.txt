@@ -462,7 +462,16 @@ FUNCTION(CheckLibraryDependency _required _lib _key)
   ENDIF(NOT DEFINED REQUIRED_LIBRARY_${_lib})
 
   IF( REQUIRED_LIBRARY_${_lib} )  
-    SET(${_required} ${${_required}};${_lib} PARENT_SCOPE)
+    FIND_LIBRARY(LIBRARY_${_lib}_PATH ${_lib} 
+      PATHS
+      ${DCMTK_DIR}/${lib}/libsrc
+      ${DCMTK_DIR}/${lib}/libsrc/Release
+      ${DCMTK_DIR}/${lib}/libsrc/Debug
+      ${DCMTK_DIR}/${lib}/Release
+      ${DCMTK_DIR}/${lib}/Debug
+      ${DCMTK_DIR}/lib
+      /usr/lib/dcmtk)
+    SET(${_required} ${${_required}};${LIBRARY_${_lib}_PATH} PARENT_SCOPE)
   ENDIF( REQUIRED_LIBRARY_${_lib} )  
 ENDFUNCTION()
 
@@ -492,7 +501,7 @@ IF(CMTK_USE_DCMTK)
     FIND_PATH(DCMTK_DCMDICTPATH
       dicom.dic
       PATHS
-      ${DCMTK_DIR}/${lib}
+      ${DCMTK_DIR}/lib
       ${DCMTK_DIR}/share
       /usr/include/dcmtk
       /usr/share/dcmtk)
