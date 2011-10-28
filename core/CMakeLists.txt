@@ -467,7 +467,7 @@ FUNCTION(CheckLibraryDependency _required _lib _key)
 ENDFUNCTION()
 
 IF(CMTK_USE_DCMTK)
-  FIND_PACKAGE(SystemDCMTK)
+  FIND_PACKAGE(DCMTK)
 
   OPTION(CMTK_BUILD_DCMTK "Build bundled DCMTK library, even if system library exists" OFF)
 
@@ -498,6 +498,8 @@ IF(CMTK_USE_DCMTK)
       /usr/share/dcmtk)
 
     # Detect missing DCMTK library dependencies by testing the "usual suspects"
+    CheckLibraryDependency(DCMTK_LIBRARIES dcmdsig SiRIPEMD160)
+    CheckLibraryDependency(DCMTK_LIBRARIES oflog log4cplus)
     CheckLibraryDependency(DCMTK_LIBRARIES wrap hosts_access)
     CheckLibraryDependency(DCMTK_LIBRARIES png png_write_image)
     CheckLibraryDependency(DCMTK_LIBRARIES tiff TIFFGetVersion)
