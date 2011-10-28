@@ -72,7 +72,7 @@ public:
    *\warning As a side effect, this function releases the pixel data array pointer from the DICOM object, i.e., 
    *  this function can only be called ONCE for each object.
    */
-  TypedArray::SmartPtr GetPixelDataArray();
+  TypedArray::SmartPtr GetPixelDataArray( const size_t pixelDataLength );
 
   /// Get const DICOM dataset.
   const DcmDataset& Dataset() const

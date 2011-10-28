@@ -105,7 +105,7 @@ VolumeFromFile::ReadDICOM( const char *path )
     
   const unsigned long totalImageSizePixels = dims[0] * dims[1] * dims[2];
 
-  TypedArray::SmartPtr pixelDataArray = dicom.GetPixelDataArray();
+  TypedArray::SmartPtr pixelDataArray = dicom.GetPixelDataArray( totalImageSizePixels );
     
 
   // now some more manual readings...

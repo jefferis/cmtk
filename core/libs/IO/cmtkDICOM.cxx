@@ -98,7 +98,7 @@ DICOM::DICOM( const char* path )
 }
 
 TypedArray::SmartPtr
-DICOM::GetPixelDataArray()
+DICOM::GetPixelDataArray( const size_t pixelDataLength )
 {
   DcmElement *delem = NULL;
 
@@ -147,8 +147,6 @@ DICOM::GetPixelDataArray()
     
   if (delem) 
     {
-    const size_t pixelDataLength = delem->getLength();
-
     if ( (delem->getTag().getEVR() == EVR_OW) || (bitsAllocated > 8) ) 
       {
       Uint16 *pdata = NULL;
@@ -229,7 +227,7 @@ DICOM::Read
     calibrationX = calibrationY = -1;
   image->SetPixelSize( calibrationX, calibrationY );
   
-  TypedArray::SmartPtr pixelDataArray = dicom.GetPixelDataArray();
+  TypedArray::SmartPtr pixelDataArray = dicom.GetPixelDataArray( dimsX * dimsY * numberOfFrames );
   image->SetPixelData( pixelDataArray );
 
   // now some more manual readings...
