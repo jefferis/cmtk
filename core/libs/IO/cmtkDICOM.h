@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -37,6 +37,12 @@
 
 #include <Base/cmtkScalarImage.h>
 
+#include <dcmtk/dcmdata/dcdeftag.h>
+#include <dcmtk/dcmimgle/didocu.h>
+#include <dcmtk/dcmimgle/diutils.h>
+
+#include <memory>
+
 namespace
 cmtk
 {
@@ -49,9 +55,47 @@ cmtk
 class DICOM
 {
 public:
+  /// This class.
+  typedef DICOM Self;
+
+  /** Constructor.
+   */
+  DICOM( const char* path );
+
+  /// Get const DICOM dataset.
+  const DcmDataset& Dataset() const
+  {
+    return *(this->m_Dataset);
+  }
+
+  /// Get DICOM dataset.
+  DcmDataset& Dataset()
+  {
+    return *(this->m_Dataset);
+  }
+
+  /// Get const DICOM document.
+  const DiDocument& Document() const
+  {
+    return *(this->m_Document);
+  }
+
+  /// Get DICOM document.
+  DiDocument& Document()
+  {
+    return *(this->m_Document);
+  }
+
   /** Read ScalarImage from DICOM file.
    */
   static ScalarImage* Read( const char *path );
+
+private:
+  /// Pointer to the DICOM dataset object
+  DcmDataset* m_Dataset;
+
+  /// Pointer to the DICOM document object
+  std::auto_ptr<DiDocument> m_Document;
 };
 
 //@}

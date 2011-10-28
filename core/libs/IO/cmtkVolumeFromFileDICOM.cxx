@@ -39,6 +39,7 @@
 #include <System/cmtkException.h>
 
 #include <IO/cmtkFileConstHeader.h>
+#include <IO/cmtkDICOM.h>
 
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmimgle/didocu.h>
@@ -52,7 +53,6 @@
 #  include <sys/types.h>
 #endif
 
-#include <memory>
 #include <string.h>
 #include <stdio.h>
 #include <ctime>
@@ -64,71 +64,40 @@ cmtk
 const UniformVolume::SmartPtr
 VolumeFromFile::ReadDICOM( const char *path )
 {
-#ifdef CMTK_USE_DCMTK_JPEG
-  // register global decompression codecs
-  static bool decodersRegistered = false;
-  if ( ! decodersRegistered ) 
-    {
-    DJDecoderRegistration::registerCodecs( EDC_photometricInterpretation, EUC_default, EPC_default, 1 );
-    decodersRegistered = true;
-    }
-#endif
-    
-  std::auto_ptr<DcmFileFormat> fileformat( new DcmFileFormat );
-  if (!fileformat.get()) 
-    {
-    throw Exception( "Could not create DICOM file format object." );
-    }
-    
-  fileformat->transferInit();
-  fileformat->loadFile( path );
-  fileformat->transferEnd();
-    
-  DcmDataset *dataset = fileformat->getAndRemoveDataset();
-  if ( !dataset ) 
-    {
-    throw Exception( "File format has NULL dataset." );
-    }
-    
-  const E_TransferSyntax xfer = dataset->getOriginalXfer();
-  std::auto_ptr<DiDocument> document( new DiDocument( dataset, xfer, CIF_AcrNemaCompatibility ) );
-  if ( ! document.get() || ! document->good() ) 
-    {
-    throw Exception( "Could not create document representation." );
-    }
-    
+  DICOM dicom( path );
+
   DcmElement *delem = NULL;
   Uint16 tempUint16 = 0;
 
   int dims[3] = { 0, 0, 0 };
-  if ( ( delem = document->search( DCM_Rows ) ) ) 
+  if ( ( delem = dicom.Document().search( DCM_Rows ) ) ) 
     {
     delem->getUint16(tempUint16);
     dims[1]=(int)tempUint16;
     }
     
-  if ( ( delem = document->search( DCM_Columns ) ) ) 
+  if ( ( delem = dicom.Document().search( DCM_Columns ) ) ) 
     {
     delem->getUint16(tempUint16);
     dims[0]=(int)tempUint16;
     }
 
   // detect and treat multi-frame files
-  if ( ! document->getValue( DCM_NumberOfFrames, tempUint16 ) ) 
+  if ( ! dicom.Document().getValue( DCM_NumberOfFrames, tempUint16 ) ) 
     {
     tempUint16 = 1;
     }
   dims[2] = tempUint16;
 
   unsigned short bitsAllocated = 0;
-  if ( ( delem = document->search( DCM_BitsAllocated ) ) ) 
+  if ( ( delem = dicom.Document().search( DCM_BitsAllocated ) ) ) 
     {
     delem->getUint16( bitsAllocated );
     } 
   else
     {
     // No "BitsAllocated" tag; use "BitsStored" instead.
-    if ( ( delem = document->search( DCM_BitsStored ) ) ) 
+    if ( ( delem = dicom.Document().search( DCM_BitsStored ) ) ) 
       {
       delem->getUint16( bitsAllocated );
       }
@@ -137,10 +106,10 @@ VolumeFromFile::ReadDICOM( const char *path )
   Types::Coordinate pixelSize[3];
 
   // get calibration from image
-  const bool hasPixelSpacing = (document->getValue(DCM_PixelSpacing, pixelSize[0], 0) > 0);
+  const bool hasPixelSpacing = (dicom.Document().getValue(DCM_PixelSpacing, pixelSize[0], 0) > 0);
   if ( hasPixelSpacing )
     {
-    if (document->getValue(DCM_PixelSpacing, pixelSize[1], 1) < 2) 
+    if (dicom.Document().getValue(DCM_PixelSpacing, pixelSize[1], 1) < 2) 
       {
       throw Exception( "DICOM file does not have two elements in pixel size tag" );
       }
@@ -152,32 +121,32 @@ VolumeFromFile::ReadDICOM( const char *path )
 
   bool pixelDataSigned = false;
   Uint16 pixelRepresentation = 0;
-  if ( document->getValue( DCM_PixelRepresentation, pixelRepresentation ) > 0)
+  if ( dicom.Document().getValue( DCM_PixelRepresentation, pixelRepresentation ) > 0)
     pixelDataSigned = (pixelRepresentation == 1);
     
   double rescaleIntercept, rescaleSlope;
-  const bool haveRescaleIntercept = (0 != document->getValue( DCM_RescaleIntercept, rescaleIntercept ));
+  const bool haveRescaleIntercept = (0 != dicom.Document().getValue( DCM_RescaleIntercept, rescaleIntercept ));
   if ( ! haveRescaleIntercept )
     rescaleIntercept = 0;
     
-  const bool haveRescaleSlope = (0 != document->getValue( DCM_RescaleSlope, rescaleSlope ));
+  const bool haveRescaleSlope = (0 != dicom.Document().getValue( DCM_RescaleSlope, rescaleSlope ));
   if ( ! haveRescaleSlope )
     rescaleSlope = 1;
 
   pixelDataSigned = pixelDataSigned || (rescaleIntercept < 0);
     
   Uint16 paddingValue = 0;
-  const bool paddingFlag = (dataset->findAndGetUint16( DCM_PixelPaddingValue, paddingValue )).good();
+  const bool paddingFlag = (dicom.Dataset().findAndGetUint16( DCM_PixelPaddingValue, paddingValue )).good();
 
   TypedArray::SmartPtr pixelDataArray;
     
 #ifdef DCM_VariablePixelData
-  delem = document->search( DCM_VariablePixelData );
+  delem = dicom.Document().search( DCM_VariablePixelData );
 #else
-  delem = document->search( DCM_ACR_NEMA_2C_VariablePixelData );
+  delem = dicom.Document().search( DCM_ACR_NEMA_2C_VariablePixelData );
 #endif
   if (!delem)
-    delem = document->search( DCM_PixelData );
+    delem = dicom.Document().search( DCM_PixelData );
     
   if (delem) 
     {
@@ -228,7 +197,7 @@ VolumeFromFile::ReadDICOM( const char *path )
   // now some more manual readings...
     
   // get slice spacing from multi-slice images.
-  if ( ! document->getValue( DCM_SpacingBetweenSlices, pixelSize[2] ) )
+  if ( ! dicom.Document().getValue( DCM_SpacingBetweenSlices, pixelSize[2] ) )
     {
     pixelSize[2] = 0;
     }
@@ -236,13 +205,13 @@ VolumeFromFile::ReadDICOM( const char *path )
   // get original image position from file.
   UniformVolume::CoordinateVectorType imageOrigin( UniformVolume::CoordinateVectorType::Init( 0 ) );
   const char *image_position_s = NULL;
-  if ( ! document->getValue( DCM_ImagePositionPatient, image_position_s ) ) 
+  if ( ! dicom.Document().getValue( DCM_ImagePositionPatient, image_position_s ) ) 
     {
     // ImagePositionPatient tag not present, try ImagePosition instead
 #ifdef DCM_ImagePosition
-    document->getValue( DCM_ImagePosition, image_position_s );
+    dicom.Document().getValue( DCM_ImagePosition, image_position_s );
 #else
-    document->getValue( DCM_ACR_NEMA_ImagePosition, image_position_s );
+    dicom.Document().getValue( DCM_ACR_NEMA_ImagePosition, image_position_s );
 #endif
     }
   if ( image_position_s ) 
@@ -262,14 +231,14 @@ VolumeFromFile::ReadDICOM( const char *path )
 
   const char *image_orientation_s = NULL;
 #ifdef DCM_ImageOrientation
-  if ( ! document->getValue( DCM_ImageOrientation, image_orientation_s ) )
+  if ( ! dicom.Document().getValue( DCM_ImageOrientation, image_orientation_s ) )
 #else
-    if ( ! document->getValue( DCM_ACR_NEMA_ImageOrientation, image_orientation_s ) )
+    if ( ! dicom.Document().getValue( DCM_ACR_NEMA_ImageOrientation, image_orientation_s ) )
 #endif
       {
       // ImageOrientation tag not present, try ImageOrientationPatient
       // instead
-      document->getValue( DCM_ImageOrientationPatient, image_orientation_s );
+      dicom.Document().getValue( DCM_ImageOrientationPatient, image_orientation_s );
       }
   if ( image_orientation_s ) 
     {
@@ -286,17 +255,17 @@ VolumeFromFile::ReadDICOM( const char *path )
 
   // detect and treat Siemens multi-slice mosaics
   const char* tmpStr = NULL;
-  if ( document->getValue( DCM_Manufacturer, tmpStr ) )
+  if ( dicom.Document().getValue( DCM_Manufacturer, tmpStr ) )
     {
     if ( !strncmp( tmpStr, "SIEMENS", 7 ) )
       {
       const DcmTagKey nSlicesTag(0x0019,0x100a);
-      if ( document->getValue( nSlicesTag, tempUint16 ) )
+      if ( dicom.Document().getValue( nSlicesTag, tempUint16 ) )
 	{
 	dims[2] = tempUint16;
 	
 	const DcmTagKey mosaicTag(0x0051,0x100b);
-	if ( document->getValue( mosaicTag, tmpStr ) )
+	if ( dicom.Document().getValue( mosaicTag, tmpStr ) )
 	  {
 	  int rows;
 	  int cols;
@@ -341,7 +310,7 @@ VolumeFromFile::ReadDICOM( const char *path )
 	  
 	  const Uint8* csaHeaderInfo = NULL;
 	  unsigned long csaHeaderLength = 0;
-	  dataset->findAndGetUint8Array ( csaHeaderInfoTag, csaHeaderInfo, &csaHeaderLength );
+	  dicom.Dataset().findAndGetUint8Array ( csaHeaderInfoTag, csaHeaderInfo, &csaHeaderLength );
 	  
 	  FileConstHeader fileHeader( csaHeaderInfo, false /*isBigEndian*/ ); // Siemens CSA header is always little endian
 	  const size_t nTags = fileHeader.GetField<Uint32>( 8 );

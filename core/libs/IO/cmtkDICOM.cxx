@@ -36,10 +36,6 @@
 
 #include <System/cmtkConsole.h>
 
-#include <dcmtk/dcmdata/dcdeftag.h>
-#include <dcmtk/dcmimgle/didocu.h>
-#include <dcmtk/dcmimgle/diutils.h>
-
 #ifdef CMTK_USE_DCMTK_JPEG
 #  include <djdecode.h>
 #endif
@@ -48,7 +44,6 @@
 #  include <sys/types.h>
 #endif
 
-#include <memory>
 #include <string.h>
 #include <stdio.h>
 #include <ctime>
@@ -60,12 +55,8 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-ScalarImage* 
-DICOM::Read 
-( const char *path )
+DICOM::DICOM( const char* path )
 {
-  ScalarImage* image = NULL;
-
 #ifdef CMTK_USE_DCMTK_JPEG
   // register global decompression codecs
   static bool decodersRegistered = false;
@@ -79,8 +70,7 @@ DICOM::Read
   std::auto_ptr<DcmFileFormat> fileformat( new DcmFileFormat );
   if (!fileformat.get()) 
     {
-    StdErr << "ERROR: Could not create DICOM file format object.\n";
-    return NULL;
+    throw Exception( "Could not create DICOM file format object." );
     }
   
   fileformat->transferInit();
@@ -89,43 +79,50 @@ DICOM::Read
 
   if ( !status.good() ) 
     {
-    StdErr << "Error: cannot read DICOM file " << path << " (" << status.text() << ")\n";
-    throw (0);
+    throw Exception( "Cannot read DICOM file.." );
+//    StdErr << "Error: cannot read DICOM file " << path << " (" << status.text() << ")\n";
     }
   
-  DcmDataset *dataset = fileformat->getAndRemoveDataset();
+  this->m_Dataset = fileformat->getAndRemoveDataset();
+  
+  if ( !this->m_Dataset ) 
+    {
+    throw Exception( "File format has NULL dataset." );
+    }
+  
+  this->m_Document = std::auto_ptr<DiDocument>( new DiDocument( this->m_Dataset, this->m_Dataset->getOriginalXfer(), CIF_AcrNemaCompatibility ) );
+  if ( ! this->m_Document.get() || ! this->m_Document->good() ) 
+    {
+    throw Exception( "Could not create document representation." );
+    } 
+}
 
-  if ( !dataset ) 
-    {
-    StdErr << "ERROR: File format has NULL dataset.\n";
-    return NULL;
-    }
-  
-  std::auto_ptr<DiDocument> document( new DiDocument( dataset, dataset->getOriginalXfer(), CIF_AcrNemaCompatibility ) );
-  if ( ! document.get() || ! document->good() ) 
-    {
-    StdErr << "ERROR: Could not create document representation.\n";
-    return NULL;
-    }
-  
+ScalarImage* 
+DICOM::Read 
+( const char *path )
+{
+  ScalarImage* image = NULL;
+
+  Self dicom( path );
+
   Uint16 dimsX, dimsY;
-  if ( ! ( document->getValue( DCM_Columns, dimsX ) && document->getValue( DCM_Rows, dimsY ) ) ) 
+  if ( ! ( dicom.Document().getValue( DCM_Columns, dimsX ) && dicom.Document().getValue( DCM_Rows, dimsY ) ) ) 
     {
     StdErr << "ERROR: File " << path << " has no DCM_Columns/DCM_Rows tags.\n";
     return NULL; // no image dimensions, nothing we can do.
     }
   
   Uint16 numberOfFrames = 1;
-  if ( ! document->getValue( DCM_NumberOfFrames, numberOfFrames ) )
+  if ( ! dicom.Document().getValue( DCM_NumberOfFrames, numberOfFrames ) )
     numberOfFrames = 1;
   image = new ScalarImage( dimsX, dimsY, numberOfFrames );
   
   // get calibration from image
   double calibrationX = -1, calibrationY = -1;
-  bool hasPixelSpacing = (document->getValue(DCM_PixelSpacing, calibrationX, 0) > 0);
+  bool hasPixelSpacing = (dicom.Document().getValue(DCM_PixelSpacing, calibrationX, 0) > 0);
   if ( hasPixelSpacing ) 
     {
-    if ( document->getValue(DCM_PixelSpacing, calibrationY, 1) < 2)
+    if ( dicom.Document().getValue(DCM_PixelSpacing, calibrationY, 1) < 2)
       calibrationY = calibrationX;
     } 
   else
@@ -133,40 +130,40 @@ DICOM::Read
   image->SetPixelSize( calibrationX, calibrationY );
   
   Uint16 bitsAllocated = 0;
-  if ( ! document->getValue( DCM_BitsAllocated, bitsAllocated ) )
+  if ( ! dicom.Document().getValue( DCM_BitsAllocated, bitsAllocated ) )
     // No "BitsAllocated" tag; use "BitsStored" instead.
-    document->getValue( DCM_BitsStored, bitsAllocated );
+    dicom.Document().getValue( DCM_BitsStored, bitsAllocated );
   
   bool pixelDataSigned = false;
   Uint16 pixelRepresentation = 0;
-  if ( document->getValue( DCM_PixelRepresentation, pixelRepresentation ) > 0)
+  if ( dicom.Document().getValue( DCM_PixelRepresentation, pixelRepresentation ) > 0)
     pixelDataSigned = (pixelRepresentation == 1);
   
   unsigned long totalImageSizePixels = image->GetDims()[AXIS_X] * image->GetDims()[AXIS_Y] * image->GetNumberOfFrames();
 
   double rescaleIntercept, rescaleSlope;
-  const bool haveRescaleIntercept = (0 != document->getValue( DCM_RescaleIntercept, rescaleIntercept ));
+  const bool haveRescaleIntercept = (0 != dicom.Document().getValue( DCM_RescaleIntercept, rescaleIntercept ));
   if ( ! haveRescaleIntercept )
     rescaleIntercept = 0;
 
-  const bool haveRescaleSlope = (0 != document->getValue( DCM_RescaleSlope, rescaleSlope ));
+  const bool haveRescaleSlope = (0 != dicom.Document().getValue( DCM_RescaleSlope, rescaleSlope ));
   if ( ! haveRescaleSlope )
     rescaleSlope = 1;
   
   pixelDataSigned = pixelDataSigned || (rescaleIntercept < 0);
   
   Uint16 paddingValue = 0;
-  const bool paddingFlag = ( dataset->findAndGetUint16( DCM_PixelPaddingValue, paddingValue )).good();
+  const bool paddingFlag = ( dicom.Dataset().findAndGetUint16( DCM_PixelPaddingValue, paddingValue )).good();
   
   TypedArray::SmartPtr pixelDataArray;
 
 #ifdef DCM_VariablePixelData
-  DcmElement *delem = document->search( DCM_VariablePixelData );
+  DcmElement *delem = dicom.Document().search( DCM_VariablePixelData );
 #else
-  DcmElement *delem = document->search( DCM_ACR_NEMA_2C_VariablePixelData );
+  DcmElement *delem = dicom.Document().search( DCM_ACR_NEMA_2C_VariablePixelData );
 #endif
   if (!delem)
-    delem = document->search( DCM_PixelData );
+    delem = dicom.Document().search( DCM_PixelData );
     
   if (delem) 
     {
@@ -217,17 +214,17 @@ DICOM::Read
 
     // get slice spacing from multi-slice images.
   double frameToFrame = 0;
-  if ( document->getValue( DCM_SpacingBetweenSlices, frameToFrame ) )
+  if ( dicom.Document().getValue( DCM_SpacingBetweenSlices, frameToFrame ) )
     image->SetFrameToFrameSpacing( frameToFrame );
 
     // get original table position from image.
   double sliceLocation = 0;
-  if ( ! document->getValue( DCM_SliceLocation, sliceLocation ) ) 
+  if ( ! dicom.Document().getValue( DCM_SliceLocation, sliceLocation ) ) 
     {
 #ifdef DCM_Location
-    document->getValue( DCM_Location, sliceLocation );
+    dicom.Document().getValue( DCM_Location, sliceLocation );
 #else
-    document->getValue( DCM_ACR_NEMA_Location, sliceLocation );
+    dicom.Document().getValue( DCM_ACR_NEMA_Location, sliceLocation );
 #endif
     }
   image->SetImageSlicePosition( sliceLocation );
@@ -239,13 +236,13 @@ DICOM::Read
       
   // get original image position from file.
   const char *image_position_s = NULL;
-  if ( ! document->getValue( DCM_ImagePositionPatient, image_position_s ) ) 
+  if ( ! dicom.Document().getValue( DCM_ImagePositionPatient, image_position_s ) ) 
     {
     // ImagePositionPatient tag not present, try ImagePosition instead
 #ifdef DCM_ImagePosition
-    document->getValue( DCM_ImagePosition, image_position_s );
+    dicom.Document().getValue( DCM_ImagePosition, image_position_s );
 #else
-    document->getValue( DCM_ACR_NEMA_ImagePosition, image_position_s );
+    dicom.Document().getValue( DCM_ACR_NEMA_ImagePosition, image_position_s );
 #endif
     }
   if ( image_position_s ) 
@@ -266,7 +263,7 @@ DICOM::Read
   imageDirectionY[1] = 1;
 
   const char *image_orientation_s = NULL;
-  document->getValue( DCM_ImageOrientationPatient, image_orientation_s );
+  dicom.Document().getValue( DCM_ImageOrientationPatient, image_orientation_s );
   if ( image_orientation_s ) 
     {
     double dx[3], dy[3];
