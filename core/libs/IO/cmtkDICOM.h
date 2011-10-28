@@ -62,6 +62,18 @@ public:
    */
   DICOM( const char* path );
 
+  /** Get pixel data array.
+   * The pixel data type is determined automatically based on bits allocated and signed vs. unsigned representation.
+   * 
+   * If the RescaleSlope or RescaleIntercept tags are present, intensity rescaling is applied.
+   *
+   * If a padding value is defined in the DICOM file, this value is also set as padding in the output array.
+   *
+   *\warning As a side effect, this function releases the pixel data array pointer from the DICOM object, i.e., 
+   *  this function can only be called ONCE for each object.
+   */
+  TypedArray::SmartPtr GetPixelDataArray();
+
   /// Get const DICOM dataset.
   const DcmDataset& Dataset() const
   {

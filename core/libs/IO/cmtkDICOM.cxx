@@ -97,6 +97,106 @@ DICOM::DICOM( const char* path )
     } 
 }
 
+TypedArray::SmartPtr
+DICOM::GetPixelDataArray()
+{
+  DcmElement *delem = NULL;
+
+  unsigned short bitsAllocated = 0;
+  if ( ( delem = this->m_Document->search( DCM_BitsAllocated ) ) ) 
+    {
+    delem->getUint16( bitsAllocated );
+    } 
+  else
+    {
+    // No "BitsAllocated" tag; use "BitsStored" instead.
+    if ( ( delem = this->m_Document->search( DCM_BitsStored ) ) ) 
+      {
+      delem->getUint16( bitsAllocated );
+      }
+    }
+    
+  bool pixelDataSigned = false;
+  Uint16 pixelRepresentation = 0;
+  if ( this->m_Document->getValue( DCM_PixelRepresentation, pixelRepresentation ) > 0)
+    pixelDataSigned = (pixelRepresentation == 1);
+    
+  double rescaleIntercept, rescaleSlope;
+  const bool haveRescaleIntercept = (0 != this->m_Document->getValue( DCM_RescaleIntercept, rescaleIntercept ));
+  if ( ! haveRescaleIntercept )
+    rescaleIntercept = 0;
+    
+  const bool haveRescaleSlope = (0 != this->m_Document->getValue( DCM_RescaleSlope, rescaleSlope ));
+  if ( ! haveRescaleSlope )
+    rescaleSlope = 1;
+
+  pixelDataSigned = pixelDataSigned || (rescaleIntercept < 0);
+    
+  Uint16 paddingValue = 0;
+  const bool paddingFlag = (this->m_Dataset->findAndGetUint16( DCM_PixelPaddingValue, paddingValue )).good();
+
+  TypedArray::SmartPtr pixelDataArray;
+    
+#ifdef DCM_VariablePixelData
+  delem = this->m_Document->search( DCM_VariablePixelData );
+#else
+  delem = this->m_Document->search( DCM_ACR_NEMA_2C_VariablePixelData );
+#endif
+  if (!delem)
+    delem = this->m_Document->search( DCM_PixelData );
+    
+  if (delem) 
+    {
+    const size_t pixelDataLength = delem->getLength();
+
+    if ( (delem->getTag().getEVR() == EVR_OW) || (bitsAllocated > 8) ) 
+      {
+      Uint16 *pdata = NULL;
+      delem->getUint16Array(pdata);
+      if ( pixelDataSigned ) 
+	{
+	const short paddingShort = static_cast<short>( paddingValue );
+	pixelDataArray = TypedArray::Create( TYPE_SHORT, pdata, pixelDataLength, paddingFlag, &paddingShort, Memory::ArrayCXX::DeleteWrapper<short> );
+	} 
+      else
+	{
+	const unsigned short paddingUShort = static_cast<unsigned short>( paddingValue );
+	pixelDataArray = TypedArray::Create( TYPE_USHORT, pdata, pixelDataLength, paddingFlag, &paddingUShort, Memory::ArrayCXX::DeleteWrapper<unsigned short> );
+	}
+      } 
+    else
+      {
+      Uint8 *pdata = NULL;
+      delem->getUint8Array(pdata);
+      if ( pixelDataSigned ) 
+	{
+	const char paddingChar = static_cast<char>( paddingValue );
+	pixelDataArray = TypedArray::Create( TYPE_CHAR, pdata, pixelDataLength, paddingFlag, &paddingChar, Memory::ArrayCXX::DeleteWrapper<char> );
+	} 
+      else 
+	{
+	const char paddingByte = static_cast<byte>( paddingValue );
+	pixelDataArray = TypedArray::Create( TYPE_BYTE, pdata, pixelDataLength, paddingFlag, &paddingByte, Memory::ArrayCXX::DeleteWrapper<byte> );
+	}
+      }
+
+    delem->detachValueField();
+    }
+
+  if ( ! pixelDataArray ) 
+    {
+    throw( "Could not read pixel data from DICOM file" );
+    }
+    
+  if ( haveRescaleIntercept || haveRescaleSlope ) 
+    {
+    pixelDataArray->Rescale( rescaleSlope, rescaleIntercept );
+    }
+
+  return pixelDataArray;
+}
+
+
 ScalarImage* 
 DICOM::Read 
 ( const char *path )
@@ -129,86 +229,8 @@ DICOM::Read
     calibrationX = calibrationY = -1;
   image->SetPixelSize( calibrationX, calibrationY );
   
-  Uint16 bitsAllocated = 0;
-  if ( ! dicom.Document().getValue( DCM_BitsAllocated, bitsAllocated ) )
-    // No "BitsAllocated" tag; use "BitsStored" instead.
-    dicom.Document().getValue( DCM_BitsStored, bitsAllocated );
-  
-  bool pixelDataSigned = false;
-  Uint16 pixelRepresentation = 0;
-  if ( dicom.Document().getValue( DCM_PixelRepresentation, pixelRepresentation ) > 0)
-    pixelDataSigned = (pixelRepresentation == 1);
-  
-  unsigned long totalImageSizePixels = image->GetDims()[AXIS_X] * image->GetDims()[AXIS_Y] * image->GetNumberOfFrames();
-
-  double rescaleIntercept, rescaleSlope;
-  const bool haveRescaleIntercept = (0 != dicom.Document().getValue( DCM_RescaleIntercept, rescaleIntercept ));
-  if ( ! haveRescaleIntercept )
-    rescaleIntercept = 0;
-
-  const bool haveRescaleSlope = (0 != dicom.Document().getValue( DCM_RescaleSlope, rescaleSlope ));
-  if ( ! haveRescaleSlope )
-    rescaleSlope = 1;
-  
-  pixelDataSigned = pixelDataSigned || (rescaleIntercept < 0);
-  
-  Uint16 paddingValue = 0;
-  const bool paddingFlag = ( dicom.Dataset().findAndGetUint16( DCM_PixelPaddingValue, paddingValue )).good();
-  
-  TypedArray::SmartPtr pixelDataArray;
-
-#ifdef DCM_VariablePixelData
-  DcmElement *delem = dicom.Document().search( DCM_VariablePixelData );
-#else
-  DcmElement *delem = dicom.Document().search( DCM_ACR_NEMA_2C_VariablePixelData );
-#endif
-  if (!delem)
-    delem = dicom.Document().search( DCM_PixelData );
-    
-  if (delem) 
-    {
-    if ( (delem->getTag().getEVR() == EVR_OW) || (bitsAllocated > 8) ) 
-      {
-      Uint16 *pdata = NULL;
-      delem->getUint16Array(pdata);
-      if ( pixelDataSigned ) 
-	{
-	const short paddingShort = static_cast<short>( paddingValue );
-	pixelDataArray = TypedArray::Create( TYPE_SHORT, pdata, totalImageSizePixels, paddingFlag, &paddingShort, Memory::ArrayCXX::DeleteWrapper<short> );
-	} 
-      else
-	{
-	const unsigned short paddingUShort = static_cast<unsigned short>( paddingValue );
-	pixelDataArray = TypedArray::Create( TYPE_USHORT, pdata, totalImageSizePixels, paddingFlag, &paddingUShort, Memory::ArrayCXX::DeleteWrapper<unsigned short> );
-	}
-      } 
-    else
-      {
-      Uint8 *pdata = NULL;
-      delem->getUint8Array(pdata);
-      if ( pixelDataSigned ) 
-	{
-	const char paddingChar = static_cast<char>( paddingValue );
-	pixelDataArray = TypedArray::Create( TYPE_CHAR, pdata, totalImageSizePixels, paddingFlag, &paddingChar, Memory::ArrayCXX::DeleteWrapper<char> );
-	} 
-      else 
-	{
-	const char paddingByte = static_cast<byte>( paddingValue );
-	pixelDataArray = TypedArray::Create( TYPE_BYTE, pdata, totalImageSizePixels, paddingFlag, &paddingByte, Memory::ArrayCXX::DeleteWrapper<byte> );
-	}
-      }
-    delem->detachValueField();
-    }
-  
-  if ( ! pixelDataArray ) 
-    {
-    StdErr.printf( "Could not read pixel data from image file\n%s", path );
-    }
-  
-  if ( haveRescaleIntercept || haveRescaleSlope )
-    pixelDataArray->Rescale( rescaleSlope, rescaleIntercept );
-
-  image->SetPixelData( TypedArray::SmartPtr( pixelDataArray ) );
+  TypedArray::SmartPtr pixelDataArray = dicom.GetPixelDataArray();
+  image->SetPixelData( pixelDataArray );
 
   // now some more manual readings...
 
