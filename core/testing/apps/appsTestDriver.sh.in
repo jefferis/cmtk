@@ -1031,23 +1031,23 @@ case ${RUNTEST} in
 	check_results logodds_add.img
 	;;
     imagemathMatchMeanSDev)
-        run imagemath --in spgr_brain_{1,2}.hdr --match-mean-sdev --out ${tmpdir}/match.nii
+        run imagemath --in spgr_brain_1.hdr spgr_brain_2.hdr --match-mean-sdev --out ${tmpdir}/match.nii
         check_results match.nii
         ;;
     imagemathMatchMeanSDev3)
-        run imagemath --in spgr_brain_{1,2,3}.hdr --match-mean-sdev3 --out ${tmpdir}/match.nii
+        run imagemath --in spgr_brain_1.hdr spgr_brain_2.hdr spgr_brain_3.hdr --match-mean-sdev3 --out ${tmpdir}/match.nii
         check_results match.nii
         ;;
     imagemathMatchHistograms)
-        run imagemath --in spgr_brain_{1,2}.hdr --match-histograms --out ${tmpdir}/match_histograms.hdr
+        run imagemath --in spgr_brain_1.hdr spgr_brain_2.hdr --match-histograms --out ${tmpdir}/match_histograms.hdr
         check_results match_histograms.img
         ;;
     imagemathMatchHistogramsPadding)
-        run imagemath --set-padding-value 0 --in spgr_brain_{1,2}.hdr --match-histograms --out ${tmpdir}/match_histograms.hdr
+        run imagemath --set-padding-value 0 --in spgr_brain_1.hdr spgr_brain_2.hdr --match-histograms --out ${tmpdir}/match_histograms.hdr
         check_results match_histograms.img
         ;;
     imagemathMatchHistogramsPadding2)
-        run imagemath --in spgr_brain_{1,2}.hdr --set-padding-value 0 --match-histograms --out ${tmpdir}/match_histograms.hdr
+        run imagemath --in spgr_brain_1.hdr spgr_brain_2.hdr --set-padding-value 0 --match-histograms --out ${tmpdir}/match_histograms.hdr
         check_results match_histograms.img
         ;;
     imagemathMatchHistogramsPaddingUnset)
