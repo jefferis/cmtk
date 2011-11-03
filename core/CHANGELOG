@@ -1,5 +1,8 @@
 Release CMTK-2.1.0:
 
+(r3542) Added: "fview" tool can now automatically deduce fixed and moving
+    image paths from the applied sequence of transformations, if these paths
+    were stored within the transformation file.
 (r3529) Added: CMTK can now read Siemens MR DICOM images in mosaic format.
 (r3522) Fixed: TypedArray data arrays are now de-allocated with proper
     deallocator (free() or new[]()), depending on how they were allocated
