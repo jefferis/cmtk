@@ -1,5 +1,12 @@
 Release CMTK-2.1.0:
 
+(r3543) Added: as a configuration option ("CMTK_BUILD_WRAPPER"), a wrapper
+    script "cmtk" can now be built for consistent access to CMTK's tools while
+    avoiding name collisions with other tools installed on the same
+    system. When this option is selection, all actual binaries are installed
+    in the bin/ subdirectory of the configured *library* install
+    directory. Only the wrapper script itself is installed in the configured
+    binary install directory.
 (r3542) Added: "fview" tool can now automatically deduce fixed and moving
     image paths from the applied sequence of transformations, if these paths
     were stored within the transformation file.
@@ -7,10 +14,6 @@ Release CMTK-2.1.0:
 (r3522) Fixed: TypedArray data arrays are now de-allocated with proper
     deallocator (free() or new[]()), depending on how they were allocated
     (Issue #6213).
-(r3509) Added: a wrapper script "cmtk" is now provided for consistent access
-    to CMTK's tools while avoiding name collisions with other tools installed
-    on the same system. To make this work, all binaries are now installed
-    in the CMTK/ subdirectory of the configured install directory.
 (r3505) Added: build configuration can now switch between building bundled
     DCMTK DICOM library and using installed system libraries (Issue #6182; see
     also Issue #6184).
