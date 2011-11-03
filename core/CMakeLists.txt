@@ -105,15 +105,15 @@ IF(NOT CMTK_INSTALL_LIB_DIR)
     ENDIF("${sun64}" STREQUAL "")
   ENDIF(CMAKE_SYSTEM MATCHES "SunOS.*" AND CMAKE_SIZEOF_VOID_P EQUAL 8)
 
-  SET(CMTK_INSTALL_LIB_DIR "lib/CMTK${sun64}" CACHE PATH "Library files will be installed here")
+  SET(CMTK_INSTALL_LIB_DIR "lib${sun64}" CACHE PATH "Library files will be installed here")
 ENDIF(NOT CMTK_INSTALL_LIB_DIR)
 
 IF(NOT CMTK_INSTALL_DATA_DIR)
-  SET(CMTK_INSTALL_DATA_DIR "share/CMTK" CACHE PATH "Data files will be installed here")
+  SET(CMTK_INSTALL_DATA_DIR "share/cmtk" CACHE PATH "Data files will be installed here")
 ENDIF(NOT CMTK_INSTALL_DATA_DIR)
 
 IF(NOT CMTK_INSTALL_INCLUDE_DIR)
-  SET(CMTK_INSTALL_INCLUDE_DIR "include/CMTK" CACHE PATH "Data files will be installed here")
+  SET(CMTK_INSTALL_INCLUDE_DIR "include/cmtk" CACHE PATH "Data files will be installed here")
 ENDIF(NOT CMTK_INSTALL_INCLUDE_DIR)
 
 #-----------------------------------------------------------------------------
@@ -174,6 +174,9 @@ SET(HAVE_STL_HASH_MAP ${HAVE_UNORDERED_MAP}${HAVE_UNORDERED_MAP_TR1}${HAVE_HASH_
 # build configuration options.
 OPTION(BUILD_SHARED_LIBS "Build CMTK with shared libraries." OFF)
 SET(CMTK_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
+
+OPTION(CMTK_BUILD_WRAPPER "Build 'cmtk' wrapper script and install all actual executables in a private directory to avoid name collisions" OFF)
+MARK_AS_ADVANCED(CMTK_BUILD_WRAPPER)
 
 OPTION(CMTK_BUILD_UNSTABLE "Build 'unstable' library and tools" OFF)
 MARK_AS_ADVANCED(CMTK_BUILD_UNSTABLE)
