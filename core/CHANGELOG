@@ -1,6 +1,6 @@
 Release CMTK-2.1.0:
 
-(r3546) Added: as a configuration option ("CMTK_BUILD_WRAPPER"), a wrapper
+(r3547) Added: as a configuration option ("CMTK_BUILD_WRAPPER"), a wrapper
     script "cmtk" can now be built for consistent access to CMTK's tools while
     avoiding name collisions with other tools installed on the same
     system. When this option is selection, all actual binaries are installed
