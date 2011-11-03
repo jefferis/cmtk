@@ -63,10 +63,12 @@ cmtk::FusionViewApplication
   cl.SetProgramInfo( CommandLine::PRG_TITLE, "Fusion viewer." );
 
   const char* imagePathFix;
-  cl.AddParameter( &imagePathFix, "FixedImage", "Fixed image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+  cl.AddParameter( &imagePathFix, "FixedImage", "Fixed image path. If this is '?', the program attempts to automatically deduce the fixed image path of the first transformation in the given sequence." )
+    ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
 
   const char* imagePathMov;
-  cl.AddParameter( &imagePathMov, "MovingImage", "Moving image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+  cl.AddParameter( &imagePathMov, "MovingImage", "Moving image path. If this is '?', the program attempts to automatically deduce the moving image path of the last transformation in the given sequence." )
+    ->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
 
   std::vector<std::string> xformList;
   cl.AddParameterVector( &xformList, "XformList", "List of concatenated transformations. Insert '--inverse' to use the inverse of the transformation listed next." )
@@ -84,9 +86,9 @@ cmtk::FusionViewApplication
   this->m_XformList = XformListIO::MakeFromStringList( xformList );
   this->m_XformListAllAffine = this->m_XformList.MakeAllAffine();
 
-  if ( !strcmp( imagePathFix, "-" ) )
+  if ( !strcmp( imagePathFix, "?" ) )
     {
-    imagePathFix = (*this->m_XformList.begin())->m_Xform->GetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, "" ).c_str();
+    imagePathFix = this->m_XformList.GetFixedImagePath().c_str();
     if ( strlen( imagePathFix ) )
       {
       DebugOutput( 2 ) << "INFO: deduced fixed image path as " << imagePathFix << "\n";
@@ -112,9 +114,9 @@ cmtk::FusionViewApplication
 
   (this->m_CursorPosition = this->m_Fixed.m_Volume->GetDims() ) *= 0.5;
 
-  if ( !strcmp( imagePathMov, "-" ) )
+  if ( !strcmp( imagePathMov, "?" ) )
     {
-    imagePathMov = (*this->m_XformList.rbegin())->m_Xform->GetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, "" ).c_str();
+    imagePathMov = this->m_XformList.GetMovingImagePath().c_str();
     if ( strlen( imagePathMov ) )
       {
       DebugOutput( 2 ) << "INFO: deduced moving image path as " << imagePathMov << "\n";

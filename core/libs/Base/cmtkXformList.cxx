@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -155,4 +155,28 @@ cmtk::XformList::MakeAllAffine() const
     }
 
   return allAffine;
+}
+
+std::string
+cmtk::XformList::GetFixedImagePath() const
+{
+  const XformListEntry& first = **(this->begin());
+
+  // if transformation is inverse, get original "moving" path instead.
+  if ( first.Inverse )
+    return first.m_Xform->GetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, "" );
+  else
+    return first.m_Xform->GetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, "" );
+}
+
+std::string
+cmtk::XformList::GetMovingImagePath() const
+{
+  const XformListEntry& last = **(this->rbegin());
+  
+  // if transformation is inverse, get original "fixed" path instead.
+  if ( last.Inverse )
+    return last.m_Xform->GetMetaInfo( META_XFORM_FIXED_IMAGE_PATH, "" );
+  else
+    return last.m_Xform->GetMetaInfo( META_XFORM_MOVING_IMAGE_PATH, "" );
 }

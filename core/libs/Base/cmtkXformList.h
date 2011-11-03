@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -92,6 +92,18 @@ public:
 
   /// Make all-affine copy of this transformation list.
   Self MakeAllAffine() const;
+
+  /** Get fixed image path, if available.
+   * Not every transformation file format stores the fixed image path, in which case
+   * an empty string is returned here.
+   */
+  std::string GetFixedImagePath() const;
+
+  /** Get moving image path, if available.
+   * Not every transformation file format stores the moving image path, in which case
+   * an empty string is returned here.
+   */
+  std::string GetMovingImagePath() const;
 };
 
 //@}
