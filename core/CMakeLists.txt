@@ -105,7 +105,7 @@ IF(NOT CMTK_INSTALL_LIB_DIR)
     ENDIF("${sun64}" STREQUAL "")
   ENDIF(CMAKE_SYSTEM MATCHES "SunOS.*" AND CMAKE_SIZEOF_VOID_P EQUAL 8)
 
-  SET(CMTK_INSTALL_LIB_DIR "lib${sun64}" CACHE PATH "Library files will be installed here")
+  SET(CMTK_INSTALL_LIB_DIR "lib${sun64}/cmtk" CACHE PATH "Library files will be installed here")
 ENDIF(NOT CMTK_INSTALL_LIB_DIR)
 
 IF(NOT CMTK_INSTALL_DATA_DIR)
