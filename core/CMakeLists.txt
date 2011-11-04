@@ -698,7 +698,7 @@ IF(CMTK_BUILD_SHARED_LIBS)
   SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
 
   # the RPATH to be used when installing
-  SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+  SET(CMAKE_INSTALL_RPATH "${CMTK_INSTALL_LIB_DIR}")
 
   # add the automatically determined parts of the RPATH
   # which point to directories outside the build tree to the install RPATH
