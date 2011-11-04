@@ -63,7 +63,7 @@ CommandLine::PrintMan
   ppit = this->m_ProgramInfo.find(PRG_TITLE);
   if ( ppit != this->m_ProgramInfo.end() )
     {
-    StdOut << ".SH NAME\n" << ppit->second << "\n";
+    StdOut << ".SH NAME\n" << cmd << " \\- " << ppit->second << "\n";
     }
 
   ppit = this->m_ProgramInfo.find(PRG_SYNTX);
