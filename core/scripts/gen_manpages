@@ -1,0 +1,93 @@
+#!/bin/sh
+#emacs: -*- mode: shell-script; c-basic-offset: 4; tab-width: 4; indent-tabs-mode: t -*- 
+#ex: set sts=4 ts=4 sw=4 noet:
+#-------------------------- =+- Shell script -+= --------------------------
+#
+# @file      gen_manpage.sh
+# @date      Thu Nov  3 21:46:15 2011
+# @brief
+#
+#
+#  Yaroslav Halchenko                                            Dartmouth
+#  web:     http://www.onerussian.com                              College
+#  e-mail:  yoh@onerussian.com                              ICQ#: 60653192
+#
+# DESCRIPTION (NOTES):
+#
+#  A little helper to generate all needed manpages for CMTK
+#
+# COPYRIGHT: Yaroslav Halchenko 2011
+#
+# LICENSE: MIT
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in
+#  all copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+#  THE SOFTWARE.
+#
+#-----------------\____________________________________/------------------
+
+set -eu
+
+MANDIR=$PWD/debian/manpages \
+	CMTK_LIBDIR=$PWD/debian/cmtk/usr/lib/cmtk \
+	CMTK_BINDIR=$CMTK_LIBDIR/bin
+export CMTK_LIBDIR CMTK_BINDIR MANDIR
+
+# Generate manpages for all tools
+mkdir -p $MANDIR
+
+# Wrap into xvfb-run call since some might need X which might not be
+# available
+xvfb-run -s "-screen 0 1280x1024x24 -noreset" bash -c ' \
+/bin/ls $CMTK_BINDIR/* \
+| grep -v triplanar \
+| while read b; do \
+	LD_LIBRARY_PATH=$CMTK_LIBDIR \
+	  $b --man >| $MANDIR/cmtk-$(basename $b).1 \
+	|| echo "Manpage for $b -- FAILED"; done'
+
+# Some didn't generate ;)
+find $MANDIR -size 0 -delete
+
+# Generate the ultimate manpage giving a brief description for all of
+# the tools
+rm -f $MANDIR/cmtk.1
+{
+	head -1 $MANDIR/cmtk-warp.1 | sed -e 's,warp,CMTK,g'
+	cat <<EOF
+.SH NAME
+The Computational Morphometry Toolkit unified entry point
+.SH SYNOPSIS
+\fBcmtk\fR <command> [options]
+.SH DESCRIPTION
+This helper script provides a unified access to all command line tools provided by CMTK.  Please specify CMTK's command to run and its options. See \fBcmtk-<command>(1)\fR manoage or output of \fBcmtk <command> --help\fR for <command> specific options
+.SH COMMANDS
+EOF
+for f in $MANDIR/*.1; do
+	descr="$(grep -A1 '.SH DESCRIPTION' $f| tail -n 1)"
+	cmd=${f%.*}
+	cmd=${cmd#*cmtk-}
+	cat <<EOF
+.TP 5
+\fB$cmd\fR
+$descr
+EOF
+done
+# Trailer
+sed -ne '/.SH AUTHORS/,$p' $MANDIR/cmtk-warp.1
+
+} >| $MANDIR/cmtk.1
