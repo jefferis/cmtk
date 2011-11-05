@@ -70,7 +70,7 @@ rm -f $MANDIR/cmtk.1
 	head -1 $MANDIR/cmtk-warp.1 | sed -e 's,warp,CMTK,g'
 	cat <<EOF
 .SH NAME
-The Computational Morphometry Toolkit unified entry point
+cmtk \- the Computational Morphometry Toolkit 
 .SH SYNOPSIS
 \fBcmtk\fR <command> [options]
 .SH DESCRIPTION
