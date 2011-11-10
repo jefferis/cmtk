@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2010 SRI International
+##  Copyright 2004-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -28,10 +28,10 @@
 ##  $LastChangedBy$
 ##
 
-SET(BUILD_LIBS_LIST System Numerics Base IO Pipeline Registration Segmentation Recon)
+SET(BUILD_LIBS_LIST System Numerics Base IO Registration Segmentation Recon)
 
 IF(CMTK_USE_QT)
-  SET(BUILD_LIBS_LIST ${BUILD_LIBS_LIST} Qt)
+  SET(BUILD_LIBS_LIST ${BUILD_LIBS_LIST} Pipeline Qt)
 ENDIF(CMTK_USE_QT)
 
 IF(CMTK_USE_CUDA OR CMTK_USE_OPENCL)
