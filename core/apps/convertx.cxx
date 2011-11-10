@@ -92,7 +92,8 @@ doMain( const int argc, const char* argv[] )
   try 
     {
     cmtk::CommandLine cl;  
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Convert between image file formats and data types. Also apply simple, general-purpose image operations in the process. "
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Convert between image file formats and data types." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool converts between image file formats and pixel data types. It can also apply simple, general-purpose image operations in the process. "
 		       "An arbitrary number of operations can be specified on the command line, which will be applied exactly in the order given." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "convertx [options] infile outfile" );
 

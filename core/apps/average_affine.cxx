@@ -58,6 +58,7 @@ doMain( const int argc, const char* argv[] )
     {
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Average affine transformations" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool computes the average of a sequence of user-provided affine coordinate transformations." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "average_affine [options] x0 [x1 ...] \n WHERE x0 ... xN is [{-i,--inverse}] affine transformation #" );
 
     typedef cmtk::CommandLine::Key Key;

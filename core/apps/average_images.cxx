@@ -95,6 +95,7 @@ doMain( const int argc, const char* argv[] )
     {
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Average images" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool computes pixelwiase average, variance, standard deviation, z-score, or entropy images from a list of user-provided intensity images." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "average_images [options] image0 ..." );
 
     typedef cmtk::CommandLine::Key Key;
