@@ -62,7 +62,8 @@ doMain( const int argc, const char* argv[] )
   try 
     {
     cmtk::CommandLine cl;
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Convert affine transformations to ITK format and correct for differences in image coordinate conventions" );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Convert affine transformations to ITK format." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool converts coordinate transformations from CMTK format to ITK format and, in the process, also correct for differences in image coordinate conventions" );
 
     typedef cmtk::CommandLine::Key Key;
     cl.BeginGroup( "Input", "Input parameters" )->SetProperties( cmtk::CommandLine::PROPS_NOXML );
