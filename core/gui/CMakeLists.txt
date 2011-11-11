@@ -32,4 +32,8 @@ SET(CMTK_LIBRARIES "cmtkQt;cmtkPipeline;cmtkSegmentation;cmtkRegistration;cmtkIO
 
 SUBDIRS(triplanar)
 SUBDIRS(fview)
-SUBDIRS(bsedit)
+
+IF(CMTK_BUILD_UNSTABLE)
+  SUBDIRS(bsedit)
+ENDIF(CMTK_BUILD_UNSTABLE)
+
