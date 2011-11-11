@@ -91,7 +91,7 @@ doMain( const int argc, const char* argv[] )
     {
     cmtk::CommandLine cl;
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Filter a volume image" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG:DESCR, "This tool applies spatial filtering operators, including cnotent-sensitive opersators, based on selective Gaussian kernels." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool applies spatial filtering operators, including cnotent-sensitive opersators, based on selective Gaussian kernels." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "filter [options] input output\n"
 		       "filter [options] [-s,--studholme] input output average subject img0 [img1...]\n"
 		       "filter [options] [-R,--rohlfing] input output subject" );
