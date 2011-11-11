@@ -79,7 +79,6 @@ IF(NOT CMTK_USE_MPI)
     mrbias
     overlap
     probe
-    randompxls
     reformatx
     registration
     registrationx
