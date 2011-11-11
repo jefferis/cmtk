@@ -84,7 +84,6 @@ IF(NOT CMTK_USE_MPI)
     registrationx
     regress
     reorient
-    runcheck
     sequence
     similarity
     split
