@@ -54,15 +54,17 @@ doMain ( const int argc, const char* argv[] )
   try
     {
     cmtk::CommandLine cl;
-    typedef cmtk::CommandLine::Key Key;
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Convert nonrigd transformations." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool converts nonrigid BB-spline free-format deformation coordinate transformations between different representations (e.g., absolute vs. relative vectors). Also creates fractional transformations." );
 
+    typedef cmtk::CommandLine::Key Key;
     cl.AddOption( Key( 'f', "fractional" ), &Fractional, "Write fractional deformation. Range: 0=affine to 1=full nonrigid; Default: 1" );
     cl.AddSwitch( Key( 'd', "deformation-only" ), &DeformationOnly, true, "Write only deformation part of transformation (minus global affine component)" );
 
-    cl.Parse( argc, argv );
+    cl.AddParameter( &inXformPath, "InputPath", "Input transformation path" )->SetProperties( cmtk::CommandLine::PROPS_XFORM );
+    cl.AddParameter( &outXformPath, "OutputPath", "Output transformation path" )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
 
-    inXformPath = cl.GetNext();
-    outXformPath = cl.GetNext();
+    cl.Parse( argc, argv );
     }
   catch ( const cmtk::CommandLine::Exception& e )
     {
