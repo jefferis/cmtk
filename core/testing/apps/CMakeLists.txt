@@ -595,6 +595,7 @@ IF(NOT CMTK_USE_MPI)
     reformatxInverseJacobian
     reformatxSincHamming
     reformatxTargetGrid
+    reformatxTargetGridAnalyze
     reformatxTargetGridOffset)
   IF(CMTK_BUILD_NRRD)
     SET(testList ${testList} 
