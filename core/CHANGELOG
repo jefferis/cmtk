@@ -1,4 +1,4 @@
-Release CMTK-2.1.0:
+Release CMTK-2.1.0 (2011-11-21):
 
 (r3570) Fixed: incorrect output image orientation when providing target image
     geometry for "reformatx", "volume_injection", or "volume_reconstruction"

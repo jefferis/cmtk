@@ -3,18 +3,31 @@ The Computational Morphometry Toolkit
 ==========================================================================
 
 
-Release Notes -- CMTK 2.0.1
+Release Notes -- CMTK 2.1.0
 ===========================
+
+This release of CMTK improves the consistency of the configuration, build, and
+packaging options. It is the first release to be included with NeuroDebian.
+
+Significant additions are:
+
+- command line tool documentation in "man" format
+
+- support for mosaic DICOM files produced by Siemens MR scanners
+
+- automatic deduction of fixed/moving image paths in "fview" GUI tool
+
+- option to build with "cmtk" wrapper script and install all actual
+  executables in a private binary directory.
 
 For a complete list of changes and fixes, see the CHANGELOG file.
 
+
 CMTK has been built and tested on the following platforms:
 
-- Linux 32bit (Fedora 15), gcc 4.6.0
-- Linux 64bit (Fedora 13), gcc 4.4.5, CUDA 3.2
-- Linux 64bit (Fedora 14), gcc 4.5.1
+- Linux 32bit (Fedora 15), gcc 4.6.1
+- Linux 64bit (Fedora 15), gcc 4.6.1, CUDA 3.2
 - Linux, i386, Oracle Solaris Studio 12.2 C++ 5.11 2010/08/13
-- MacOSX 10.4, i386, gcc 4.0.1
 - MacOSX 10.6, x86_64, gcc 4.2.1, CUDA 3.2
 - MacOSX 10.6, x86_64, llvm-gcc-4.2.1
 - MacOSX 10.6, x86_64, clang 2.0
@@ -61,6 +74,12 @@ SolarisStudio Compiler, Linux/Intel
     to O2. Note that OpenMP must be disabled, because otherwise optimization
     is bumped back to O3 by default.
 
+
+Open64 Compiler
+---------------
+
+- CMTK does not build in Release mode with the Open64 compiler due to internal
+  compilar errors.
 
 ==========================================================================
 
