@@ -42,23 +42,21 @@
 
 set -eu
 
-MANDIR=$PWD/debian/manpages \
-	CMTK_LIBDIR=$PWD/debian/cmtk/usr/lib/cmtk \
-	CMTK_BINDIR=$CMTK_LIBDIR/bin
+MANDIR=$PWD/debian/manpages
+CMTK_LIBDIR=$PWD/debian/cmtk/usr/lib/cmtk
+CMTK_BINDIR=$CMTK_LIBDIR/bin
 export CMTK_LIBDIR CMTK_BINDIR MANDIR
 
 # Generate manpages for all tools
 mkdir -p $MANDIR
 
-# Wrap into xvfb-run call since some might need X which might not be
-# available
-xvfb-run -s "-screen 0 1280x1024x24 -noreset" bash -c ' \
 /bin/ls $CMTK_BINDIR/* \
 | grep -v triplanar \
-| while read b; do \
+| while read b; do
 	LD_LIBRARY_PATH=$CMTK_LIBDIR \
 	  $b --man >| $MANDIR/cmtk-$(basename $b).1 \
-	|| echo "Manpage for $b -- FAILED"; done'
+	|| echo "Manpage for $b -- FAILED";
+done
 
 # Some didn't generate ;)
 find $MANDIR -size 0 -delete
@@ -70,17 +68,17 @@ rm -f $MANDIR/cmtk.1
 	head -1 $MANDIR/cmtk-warp.1 | sed -e 's,warp,CMTK,g'
 	cat <<EOF
 .SH NAME
-cmtk \- the Computational Morphometry Toolkit 
+cmtk \- the Computational Morphometry Toolkit
 .SH SYNOPSIS
 \fBcmtk\fR <command> [options]
 .SH DESCRIPTION
-This helper script provides a unified access to all command line tools provided by CMTK.  Please specify CMTK's command to run and its options. See \fBcmtk-<command>(1)\fR manoage or output of \fBcmtk <command> --help\fR for <command> specific options
+This helper script provides a unified access to all command line tools provided by CMTK.  Please specify CMTK's command to run and its options. See \fBcmtk-<command>(1)\fR manpage or output of \fBcmtk <command> --help\fR for <command> specific options
 .SH COMMANDS
 EOF
-for f in $MANDIR/*.1; do
-	descr="$(grep -A1 '.SH DESCRIPTION' $f| tail -n 1)"
+/bin/ls $MANDIR/*.1 | grep -v -e 'cmtk\.1' | while read f; do
+	descr="$(grep -a -A1 '.SH DESCRIPTION' $f| tail -n 1)"
 	cmd=${f%.*}
-	cmd=${cmd#*cmtk-}
+	cmd=${cmd##*cmtk-}
 	cat <<EOF
 .TP 5
 \fB$cmd\fR
