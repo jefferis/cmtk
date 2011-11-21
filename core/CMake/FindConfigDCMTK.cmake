@@ -179,14 +179,6 @@ set(DCMTK_INCLUDE_DIR ${DCMTK_INCLUDE_DIRS})
 ##  mark_as_advanced(DCMTK_${EXECUTABLE}_EXECUTABLE)
 ##endforeach()
 
-FIND_PATH(DCMTK_DCMDICTPATH
-  dicom.dic
-  PATHS
-  ${DCMTK_DIR}/lib
-  ${DCMTK_DIR}/share
-  /usr/include/dcmtk
-  /usr/share/dcmtk)
-
 # The following using pieces contributed by Yaroslav Halchenko based on CMake's own CHECK_CXX_SOURCE_COMPILES
 FUNCTION(CheckLibraryDependency _required _lib _key)
   IF(NOT DEFINED REQUIRED_LIBRARY_${_lib})
@@ -217,10 +209,21 @@ FUNCTION(CheckLibraryDependency _required _lib _key)
   ENDIF( REQUIRED_LIBRARY_${_lib} )  
 ENDFUNCTION()
 
-    # Detect missing DCMTK library dependencies by testing the "usual suspects"
-##    CheckLibraryDependency(DCMTK_LIBRARIES wrap hosts_access)
-CheckLibraryDependency(DCMTK_LIBRARIES png png_write_image)
-CheckLibraryDependency(DCMTK_LIBRARIES tiff TIFFGetVersion)
-CheckLibraryDependency(DCMTK_LIBRARIES CharLS JpegLsReadHeader)    
-##    CheckLibraryDependency(DCMTK_LIBRARIES xml2 xmlGetProp)
+IF(DCMTK_FOUND)
+  # Detect missing DCMTK library dependencies by testing the "usual suspects"
+  ##    CheckLibraryDependency(DCMTK_LIBRARIES wrap hosts_access)
+  CheckLibraryDependency(DCMTK_LIBRARIES png png_write_image)
+  CheckLibraryDependency(DCMTK_LIBRARIES tiff TIFFGetVersion)
+  CheckLibraryDependency(DCMTK_LIBRARIES CharLS JpegLsReadHeader)    
+  ##    CheckLibraryDependency(DCMTK_LIBRARIES xml2 xmlGetProp)
+  
+  FIND_PATH(DCMTK_DCMDICTPATH
+    dicom.dic
+    PATHS
+    ${DCMTK_DIR}/lib
+    ${DCMTK_DIR}/share
+    /usr/include/dcmtk
+    /usr/share/dcmtk)
+ENDIF(DCMTK_FOUND)
+
 
