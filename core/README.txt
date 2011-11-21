@@ -25,7 +25,7 @@ For a complete list of changes and fixes, see the CHANGELOG file.
 
 CMTK has been built and tested on the following platforms:
 
-- Linux 32bit (Fedora 15), gcc 4.6.1
+- Linux 32bit (Fedora 16), gcc 4.6.2
 - Linux 64bit (Fedora 15), gcc 4.6.1, CUDA 3.2
 - Linux, i386, Oracle Solaris Studio 12.2 C++ 5.11 2010/08/13
 - MacOSX 10.6, x86_64, gcc 4.2.1, CUDA 3.2
