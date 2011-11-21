@@ -76,6 +76,14 @@ public:
   {
     free( array );
   }
+
+  /** Delete an array allocated using Allocate(), but referred to by a void*.
+   * This function provides a universal signature that we can use for function pointers.
+   */
+  static void DeleteWrapper( void *const array )
+  {
+    free( array );
+  }
 };
 
 /** Memory allocation for C++-style array.

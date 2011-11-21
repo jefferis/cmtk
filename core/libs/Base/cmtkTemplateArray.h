@@ -618,7 +618,7 @@ private:
 	} 
 
       Data = Memory::ArrayC::Allocate<T>( DataSize );
-      this->m_Deallocator = &Memory::ArrayC::Delete;
+      this->m_Deallocator = &Memory::ArrayC::DeleteWrapper;
 
       if ( Data == NULL ) 
 	{
