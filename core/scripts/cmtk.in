@@ -33,8 +33,8 @@
 CMTK_BIN_DIR=@CMTK_BINARY_DIR_CONFIG@
 CMTK_LIB_DIR=@CMTK_LIBRARY_DIR_CONFIG@
 
-# TODO: check if nothing or just --help -- then spit out global manpage
-CMD=${CMTK_BIN_DIR}/CMTK/$1
+CMD=$1
+CMDPATH=${CMTK_BIN_DIR}/$CMD
 shift
 
 if [ "${LD_LIBRARY_PATH}" != "" ]; then
@@ -43,8 +43,8 @@ else
     export LD_LIBRARY_PATH=${CMTK_LIB_DIR}
 fi
 
-if echo "$@" | grep -q -e --help; then
-    man <( ${CMD} --man)
+if echo "$CMD $@" | grep -q -e --help; then
+    [ "$CMD" = "--help" ] && man cmtk || man <( ${CMDPATH} --man )
 else
-    ${CMD} "$@"
+    ${CMDPATH} "$@"
 fi
