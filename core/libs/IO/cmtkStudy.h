@@ -95,9 +95,6 @@ class Study
   /// Voxel dimensions of the volume image.
   DataGrid::IndexType m_Dims;
 
-  /// Voxel dimensions of the volume image.
-  cmtkGetSetMacro3Array(Types::Coordinate,Calibration);
-
   /// Minimum value.
   cmtkGetSetMacro(Types::DataItem,MinimumValue);
 
