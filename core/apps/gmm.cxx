@@ -54,7 +54,7 @@ doMain
   bool priorsInitOnly = false;
 
   byte nClasses = 3;
-  byte nIterations = 5;
+  byte nIterations = 10;
 
   double priorEpsilon = 0;
 
