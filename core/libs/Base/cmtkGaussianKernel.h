@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -53,6 +53,12 @@ public:
   /// This class.
   typedef GaussianKernel<TFloat> Self;
 
+  /// Get raw kernel value.
+  static TFloat GetValue( const TFloat x, const TFloat mu, const TFloat sigma )
+  {
+    return  exp( -MathUtil::Square( x / sigma ) / 2 ) / (sqrt(2*M_PI) * sigma);
+  }
+  
   /// Create symmetric kernel.
   static std::vector<TFloat> GetSymmetricKernel( const Units::GaussianSigma& sigma /*!< Sigma parameter (standard deviation) of the kernel */, 
 						 const TFloat maxError = 1e-5 /*!< Maximum approximation error: the kernel radius is computed so that truncated elements are below this value */ )
