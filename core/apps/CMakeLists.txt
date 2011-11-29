@@ -64,6 +64,7 @@ IF(NOT CMTK_USE_MPI)
     film
     filter
     glm
+    gmm
     gregxform
     hausdorff
     histogram
