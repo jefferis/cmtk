@@ -98,18 +98,6 @@ QtWindowLevelControls::slotSetStudy( Study::SmartPtr& study )
 
   RangeWidth = RangeTo - RangeFrom;
 
-  const Volume* volume = this->m_Study->GetVolume();
-  if ( volume ) 
-    {
-    const TypedArray* volumeData = volume->GetData();
-    if ( volumeData ) 
-      {
-      Types::DataItem mean, variance;
-      volumeData->GetStatistics( mean, variance );
-      RangeWidth = sqrt( variance );
-      }
-    }
-  
   this->slotSwitchModeWL( WindowLevelCheckBox->isChecked() );
 }
 
