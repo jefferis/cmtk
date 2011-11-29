@@ -56,7 +56,7 @@ public:
   /// Get raw kernel value.
   static TFloat GetValue( const TFloat x, const TFloat mu, const TFloat sigma )
   {
-    return  exp( -MathUtil::Square( x / sigma ) / 2 ) / (sqrt(2*M_PI) * sigma);
+    return  exp( -MathUtil::Square( (x-mu) / sigma ) / 2 ) / (sqrt(2*M_PI) * sigma);
   }
   
   /// Create symmetric kernel.
