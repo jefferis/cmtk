@@ -216,7 +216,7 @@ doMain
       
       for ( size_t k = 1; k < nClasses; ++k )
 	{
-	const double pClass = pMaps[0]->GetDataAt( n );
+	const double pClass = pMaps[k]->GetDataAt( n );
 	// if two classes have same probability, pick the one with max prior.
 	if ( (pClass > maxValue) || ( ( pClass == maxValue ) && ( priorImages[k]->GetDataAt( n ) > priorImages[maxLabel]->GetDataAt( n ) ) ) )
 	  {
