@@ -56,7 +56,7 @@ doMain
   byte nClasses = 3;
   byte nIterations = 5;
 
-  double priorEpsilon = 0.01;
+  double priorEpsilon = 0;
 
   std::vector<std::string> priorImagePaths;
 
@@ -67,10 +67,19 @@ doMain
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Segment an image into c classes using the EM algorithm for Gaussian mixtures with optional priors." );
 
     typedef cmtk::CommandLine::Key Key;
-    cl.AddSwitch( Key( 'p', "probability-maps" ), &writeProbMaps, true, "Write probability maps." );
-    cl.AddSwitch( Key( "priors-init-only" ), &priorsInitOnly, true, "Use priors for initialization only." );
-    cl.AddOption( Key( 'c', "classes" ), &nClasses, "Number of classes." );
+
+    cl.BeginGroup( "General", "General Classification Parameters" );
+    cl.AddOption( Key( 'c', "classes" ), &nClasses, "Number of classes." );    
     cl.AddOption( Key( 'n', "iterations" ), &nIterations, "Number of EM iterations." );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Priors", "Handling of Priors" );
+    cl.AddSwitch( Key( "priors-init-only" ), &priorsInitOnly, true, "Use priors for initialization only." );
+    cl.AddOption( Key( 'e', "prior-epsilon" ), &priorEpsilon, "Small value to add to all class priors to eliminate zero priors.." );
+    
+    cl.BeginGroup( "Output", "Output Parameters" );
+    cl.AddSwitch( Key( 'p', "probability-maps" ), &writeProbMaps, true, "Write probability maps." );
+    cl.EndGroup();
 
     cl.AddParameter( &inputImagePath, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &outputImagePath, "OutputImage", "Output image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
