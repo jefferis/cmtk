@@ -129,7 +129,7 @@ doMain
   
   for ( size_t i = 0; i < nIterations; ++i )
     {
-//#pragma omp parallel for
+#pragma omp parallel for
     for ( size_t k = 0; k < nClasses; ++k )
       {
       classMu[k] = pTotal[k] = 0;
@@ -167,7 +167,7 @@ doMain
       }
     cmtk::StdOut << "\n";
 
-//#pragma omp parallel for    
+#pragma omp parallel for    
     for ( size_t n = 0; n < nPixels; ++n )
       {
       double pTotalPixel = 0;
@@ -201,10 +201,39 @@ doMain
     char path[PATH_MAX];
     for ( size_t k = 0; k < nClasses; ++k )
       {
-      snprintf( path, PATH_MAX, "pmap%d.nii", k );
+      snprintf( path, PATH_MAX, "pmap%d.nii", 1+k );
       cmtk::VolumeIO::Write( *(pMaps[k]), path );
       }
     }
+
+#pragma omp parallel for
+  for ( size_t n = 0; n < nPixels; ++n )
+    {
+    if ( inputImage->GetDataAt( n ) > 0 )
+      {
+      byte maxLabel = 0;
+      double maxValue = pMaps[0]->GetDataAt( n );
+      
+      for ( size_t k = 1; k < nClasses; ++k )
+	{
+	const double pClass = pMaps[0]->GetDataAt( n );
+	// if two classes have same probability, pick the one with max prior.
+	if ( (pClass > maxValue) || ( ( pClass == maxValue ) && ( priorImages[k]->GetDataAt( n ) > priorImages[maxLabel]->GetDataAt( n ) ) ) )
+	  {
+	  maxLabel = k;
+	  maxValue = pClass;
+	  }
+	}
+      
+      inputImage->SetDataAt( 1+maxLabel, n );
+      }
+    else
+      {
+      inputImage->SetDataAt( 0, n );
+      }
+    }
+
+  cmtk::VolumeIO::Write( *(inputImage), outputImagePath );
   
   return 0;
 }
