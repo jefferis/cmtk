@@ -3,22 +3,8 @@ The Computational Morphometry Toolkit
 ==========================================================================
 
 
-Release Notes -- CMTK 2.1.0
+Release Notes -- CMTK 2.1.1
 ===========================
-
-This release of CMTK improves the consistency of the configuration, build, and
-packaging options. It is the first release to be included with NeuroDebian.
-
-Significant additions are:
-
-- command line tool documentation in "man" format
-
-- support for mosaic DICOM files produced by Siemens MR scanners
-
-- automatic deduction of fixed/moving image paths in "fview" GUI tool
-
-- option to build with "cmtk" wrapper script and install all actual
-  executables in a private binary directory.
 
 For a complete list of changes and fixes, see the CHANGELOG file.
 
