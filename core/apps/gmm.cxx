@@ -201,11 +201,20 @@ doMain
     char path[PATH_MAX];
     for ( size_t k = 0; k < nClasses; ++k )
       {
-      snprintf( path, PATH_MAX, "pmap%d.nii", 1+k );
+      strncpy( path, outputImagePath, PATH_MAX );
+      char* slash = strchr( path, '/' );
+      if ( ! slash )
+	slash = path;
+      
+      char* period = strchr( slash, '.' );
+      if ( ! period )
+	period = path + strlen( path );
+      
+      snprintf( period, PATH_MAX - (period-path), "_prob%d%s", 1+k, outputImagePath + (period-path) );
       cmtk::VolumeIO::Write( *(pMaps[k]), path );
       }
     }
-
+  
 #pragma omp parallel for
   for ( size_t n = 0; n < nPixels; ++n )
     {
