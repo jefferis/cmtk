@@ -78,7 +78,8 @@ doMain
     cl.AddOption( Key( 'e', "prior-epsilon" ), &priorEpsilon, "Small value to add to all class priors to eliminate zero priors.." );
     
     cl.BeginGroup( "Output", "Output Parameters" );
-    cl.AddSwitch( Key( 'p', "probability-maps" ), &writeProbMaps, true, "Write probability maps." );
+    cl.AddSwitch( Key( 'p', "probability-maps" ), &writeProbMaps, true, "Write probability maps. The file names for these maps will be generated from the output image path by inserting '_prob#' before the file format suffix, "
+		  "where '#' is the index of the respective class, numbered starting at 1 (zero is background)." );
     cl.EndGroup();
 
     cl.AddParameter( &inputImagePath, "InputImage", "Input image path" )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
