@@ -48,6 +48,7 @@ doMain
 ( const int argc, const char *argv[] )
 {
   const char* inputImagePath = NULL;
+  const char* maskImagePath = NULL;
   const char* outputImagePath = NULL;
 
   bool writeProbMaps = false;
@@ -68,14 +69,16 @@ doMain
 
     typedef cmtk::CommandLine::Key Key;
 
-    cl.BeginGroup( "General", "General Classification Parameters" );
+    cl.BeginGroup( "General", "General Classification Parameters" );    
+    cl.AddOption( Key( 'm', "mask" ), &maskImagePath, "Path to foreground mask image. If this is not provided, the input image is used as its own mask, but this does not work properly if the input image itself has pixels with "
+		  "zero or negative values." );
     cl.AddOption( Key( 'c', "classes" ), &nClasses, "Number of classes." );    
     cl.AddOption( Key( 'n', "iterations" ), &nIterations, "Number of EM iterations." );
     cl.EndGroup();
 
     cl.BeginGroup( "Priors", "Handling of Priors" );
     cl.AddSwitch( Key( "priors-init-only" ), &priorsInitOnly, true, "Use priors for initialization only." );
-    cl.AddOption( Key( 'e', "prior-epsilon" ), &priorEpsilon, "Small value to add to all class priors to eliminate zero priors.." );
+    cl.AddOption( Key( 'e', "prior-epsilon" ), &priorEpsilon, "Small value to add to all class priors to eliminate zero priors." );
     
     cl.BeginGroup( "Output", "Output Parameters" );
     cl.AddSwitch( Key( 'p', "probability-maps" ), &writeProbMaps, true, "Write probability maps. The file names for these maps will be generated from the output image path by inserting '_prob#' before the file format suffix, "
@@ -101,6 +104,29 @@ doMain
     }
 
   cmtk::UniformVolume::SmartPtr inputImage = cmtk::VolumeIO::Read( inputImagePath );
+  if ( ! inputImage )
+    {
+    cmtk::StdErr << "ERROR: could not read input image " << inputImagePath << "\n";
+    throw cmtk::ExitException( 1 );
+    }
+
+  cmtk::UniformVolume::SmartConstPtr maskImage = inputImage;
+  if ( maskImagePath )
+    {
+    maskImage = cmtk::VolumeIO::Read( maskImagePath );
+    if ( ! inputImage )
+      {
+      cmtk::StdErr << "ERROR: could not read mask image " << maskImagePath << "\n";
+      throw cmtk::ExitException( 1 );
+      }
+
+    if ( ! inputImage->GridMatches( *(maskImage) ) )
+      {
+      cmtk::StdErr << "ERROR: mask image must have the same discrete grid as the input image.\n";
+      throw cmtk::ExitException( 1 );      
+      }
+    }
+  
   const size_t nPixels = inputImage->GetNumberOfPixels();
   
   std::vector<cmtk::UniformVolume::SmartConstPtr> priorImages( nClasses );
@@ -136,11 +162,10 @@ doMain
       classMu[k] = pTotal[k] = 0;
       for ( size_t n = 0; n < nPixels; ++n )
 	{
-	const double value = inputImage->GetDataAt( n );
-	if ( value > 0 )
+	if ( maskImage->GetDataAt( n ) > 0 )
 	  {
 	  const double w = pMaps[k]->GetDataAt( n );
-	  classMu[k] += w * value;
+	  classMu[k] += w * inputImage->GetDataAt( n );
 	  pTotal[k] += w;
 	  }
 	}
@@ -150,11 +175,10 @@ doMain
       classSigma[k] = 0;
       for ( size_t n = 0; n < nPixels; ++n )
 	{
-	const double value = inputImage->GetDataAt( n );
-	if ( value > 0 )
+	if ( maskImage->GetDataAt( n ) > 0 )
 	  {
 	  const double w = pMaps[k]->GetDataAt( n );
-	  classSigma[k] += w * cmtk::MathUtil::Square( classMu[k] - value );
+	  classSigma[k] += w * cmtk::MathUtil::Square( classMu[k] - inputImage->GetDataAt( n ) );
 	  }
 	}
       
@@ -173,19 +197,18 @@ doMain
       {
       double pTotalPixel = 0;
 
-      const double value = inputImage->GetDataAt( n );
-      if ( value > 0 )
+      if ( maskImage->GetDataAt( n ) > 0 )
 	{
 	for ( size_t k = 0; k < nClasses; ++k )
 	  {
-	  double kernel = cmtk::GaussianKernel<double>::GetValue( value, classMu[k], classSigma[k] );
+	  double kernel = cmtk::GaussianKernel<double>::GetValue( inputImage->GetDataAt( n ), classMu[k], classSigma[k] );
 	  if ( ! priorsInitOnly )
 	    kernel *= priorImages[k]->GetDataAt( n ) + priorEpsilon;
-
+	  
 	  pMaps[k]->SetDataAt( kernel, n );
 	  pTotalPixel += kernel;
 	  }
-
+	
 	if ( pTotalPixel > 0 )
 	  {
 	  for ( size_t k = 0; k < nClasses; ++k )
@@ -219,7 +242,7 @@ doMain
 #pragma omp parallel for
   for ( size_t n = 0; n < nPixels; ++n )
     {
-    if ( inputImage->GetDataAt( n ) > 0 )
+    if ( maskImage->GetDataAt( n ) > 0 )
       {
       byte maxLabel = 0;
       double maxValue = pMaps[0]->GetDataAt( n );
