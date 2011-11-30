@@ -203,7 +203,7 @@ doMain
     for ( size_t k = 0; k < nClasses; ++k )
       {
       strncpy( path, outputImagePath, PATH_MAX );
-      char* slash = strchr( path, '/' );
+      char* slash = strrchr( path, '/' );
       if ( ! slash )
 	slash = path;
       
