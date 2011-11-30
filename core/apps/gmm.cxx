@@ -103,7 +103,7 @@ doMain
     throw cmtk::ExitException( 1 );
     }
 
-  cmtk::UniformVolume::SmartPtr inputImage = cmtk::VolumeIO::Read( inputImagePath );
+  cmtk::UniformVolume::SmartPtr inputImage = cmtk::VolumeIO::ReadOriented( inputImagePath );
   if ( ! inputImage )
     {
     cmtk::StdErr << "ERROR: could not read input image " << inputImagePath << "\n";
@@ -113,7 +113,7 @@ doMain
   cmtk::UniformVolume::SmartConstPtr maskImage = inputImage;
   if ( maskImagePath )
     {
-    maskImage = cmtk::VolumeIO::Read( maskImagePath );
+    maskImage = cmtk::VolumeIO::ReadOriented( maskImagePath );
     if ( ! inputImage )
       {
       cmtk::StdErr << "ERROR: could not read mask image " << maskImagePath << "\n";
@@ -132,7 +132,7 @@ doMain
   std::vector<cmtk::UniformVolume::SmartConstPtr> priorImages( nClasses );
   for ( size_t k = 0; k < nClasses; ++k )
     {
-    priorImages[k] = cmtk::VolumeIO::Read( priorImagePaths[k].c_str() );
+    priorImages[k] = cmtk::VolumeIO::ReadOriented( priorImagePaths[k].c_str() );
 
     if ( ! inputImage->GridMatches( *(priorImages[k]) ) )
       {
