@@ -177,6 +177,39 @@ DICOM::GetImageOrigin() const
   return imageOrigin;
 }
 
+const FixedVector< 2, FixedVector<3,double> > 
+DICOM::GetImageOrientation() const
+{
+  FixedVector< 2, FixedVector<3,double> > orientation;
+  
+  orientation[0] = FixedVector<3,double>( FixedVector<3,double>::Init( 0.0 ) );
+  orientation[1] = FixedVector<3,double>( FixedVector<3,double>::Init( 0.0 ) );
+
+  orientation[0][0] = 1;
+  orientation[1][1] = 1;
+  
+  const char *image_orientation_s = NULL;
+#ifdef DCM_ImageOrientation
+  if ( ! this->Document().getValue( DCM_ImageOrientation, image_orientation_s ) )
+#else
+    if ( ! this->Document().getValue( DCM_ACR_NEMA_ImageOrientation, image_orientation_s ) )
+#endif
+      {
+      // ImageOrientation tag not present, try ImageOrientationPatient instead
+      this->Document().getValue( DCM_ImageOrientationPatient, image_orientation_s );
+      }
+  if ( image_orientation_s ) 
+    {
+    double dx[3], dy[3];
+    if ( 6 == sscanf( image_orientation_s, "%lf%*c%lf%*c%lf%*c%lf%*c%lf%*c%lf", dx, dx+1, dx+2, dy, dy+1, dy+2 ) ) 
+      {
+      orientation[0] = ( FixedVector<3,double>( dx ) );
+      orientation[1] = ( FixedVector<3,double>( dy ) );
+      }
+    }
+
+  return orientation;
+}
 
 TypedArray::SmartPtr
 DICOM::GetPixelDataArray( const size_t pixelDataLength )
@@ -308,32 +341,12 @@ DICOM::Read
 #endif
     }
   image->SetImageSlicePosition( sliceLocation );
-  
-  // Use table position to set image position as long as we don't know better.
-  imageOrigin[2] = sliceLocation;
-      
   image->SetImageOrigin( imageOrigin );
   
   // get original image direction from file.
-  ScalarImage::SpaceVectorType imageDirectionX( ScalarImage::SpaceVectorType::Init(0) );
-  imageDirectionX[0] = 1;
-  ScalarImage::SpaceVectorType imageDirectionY( ScalarImage::SpaceVectorType::Init(0) );
-  imageDirectionY[1] = 1;
-
-  const char *image_orientation_s = NULL;
-  dicom.Document().getValue( DCM_ImageOrientationPatient, image_orientation_s );
-  if ( image_orientation_s ) 
-    {
-    double dx[3], dy[3];
-    if ( 6 == sscanf( image_orientation_s, "%lf%*c%lf%*c%lf%*c%lf%*c%lf%*c%lf", dx, dx+1, dx+2, dy, dy+1, dy+2 ) ) 
-      {
-      imageDirectionX = ScalarImage::SpaceVectorType( dx );
-      imageDirectionY = ScalarImage::SpaceVectorType( dy );
-      }
-    }
-  
-  image->SetImageDirectionX( imageDirectionX );
-  image->SetImageDirectionY( imageDirectionY );
+  FixedVector< 2, FixedVector<3,double> > imageOrientation = dicom.GetImageOrientation();
+  image->SetImageDirectionX( imageOrientation[0] );
+  image->SetImageDirectionY( imageOrientation[1] );
 
   return image;
 }

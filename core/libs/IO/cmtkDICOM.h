@@ -71,6 +71,9 @@ public:
   /// Get image origin in scanner coordinates.
   const FixedVector<3,double> GetImageOrigin() const;
 
+  /// Get image orientation of the i and j grid axes.
+  const FixedVector< 2, FixedVector<3,double> > GetImageOrientation() const;
+
   /** Get pixel data array.
    * The pixel data type is determined automatically based on bits allocated and signed vs. unsigned representation.
    * 

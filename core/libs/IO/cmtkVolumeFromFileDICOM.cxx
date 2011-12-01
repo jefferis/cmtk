@@ -77,38 +77,12 @@ VolumeFromFile::ReadDICOM( const char *path )
   TypedArray::SmartPtr pixelDataArray = dicom.GetPixelDataArray( totalImageSizePixels );
 
   const UniformVolume::CoordinateVectorType imageOrigin = dicom.GetImageOrigin();
-    
+  FixedVector< 2, FixedVector<3,double> > imageOrientation = dicom.GetImageOrientation();
+  
   // now some more manual readings...
     
-  // get original image direction from file.
-  UniformVolume::CoordinateVectorType imageOrientationX( UniformVolume::CoordinateVectorType::Init( 0 ) );
-  imageOrientationX[0] = 1;
-  UniformVolume::CoordinateVectorType imageOrientationY( UniformVolume::CoordinateVectorType::Init( 0 ) );
-  imageOrientationY[1] = 1;
-
-  const char *image_orientation_s = NULL;
-#ifdef DCM_ImageOrientation
-  if ( ! dicom.Document().getValue( DCM_ImageOrientation, image_orientation_s ) )
-#else
-    if ( ! dicom.Document().getValue( DCM_ACR_NEMA_ImageOrientation, image_orientation_s ) )
-#endif
-      {
-      // ImageOrientation tag not present, try ImageOrientationPatient
-      // instead
-      dicom.Document().getValue( DCM_ImageOrientationPatient, image_orientation_s );
-      }
-  if ( image_orientation_s ) 
-    {
-    double dx[3], dy[3];
-    if ( 6 == sscanf( image_orientation_s, "%lf%*c%lf%*c%lf%*c%lf%*c%lf%*c%lf", dx, dx+1, dx+2, dy, dy+1, dy+2 ) ) 
-      {
-      imageOrientationX = UniformVolume::CoordinateVectorType( dx );
-      imageOrientationY = UniformVolume::CoordinateVectorType( dy );
-      }
-    }
-
   // without further information, we "guess" the image normal vector
-  UniformVolume::CoordinateVectorType sliceNormal = SurfaceNormal( imageOrientationX, imageOrientationY ).Get();
+  UniformVolume::CoordinateVectorType sliceNormal = SurfaceNormal( imageOrientation[0], imageOrientation[1] ).Get();
 
   // detect and treat Siemens multi-slice mosaics
   const char* tmpStr = NULL;
@@ -209,14 +183,14 @@ VolumeFromFile::ReadDICOM( const char *path )
   volume->SetMetaInfo( META_SPACE, "LPS" );
   volume->SetMetaInfo( META_SPACE_ORIGINAL, "LPS" );
 
-  imageOrientationX *= pixelSize[0] / imageOrientationX.RootSumOfSquares();
-  imageOrientationY *= pixelSize[1] / imageOrientationY.RootSumOfSquares();
+  imageOrientation[0] *= pixelSize[0] / imageOrientation[0].RootSumOfSquares();
+  imageOrientation[1] *= pixelSize[1] / imageOrientation[1].RootSumOfSquares();
   sliceNormal *= pixelSize[2] / sliceNormal.RootSumOfSquares();
 
   const Types::Coordinate directions[3][3] = 
     {
-      { imageOrientationX[0], imageOrientationX[1], imageOrientationX[2] },
-      { imageOrientationY[0], imageOrientationY[1], imageOrientationY[2] },
+      { imageOrientation[0][0], imageOrientation[0][1], imageOrientation[0][2] },
+      { imageOrientation[1][0], imageOrientation[1][1], imageOrientation[1][2] },
       { sliceNormal[0], sliceNormal[1], sliceNormal[2] }
     };
   
