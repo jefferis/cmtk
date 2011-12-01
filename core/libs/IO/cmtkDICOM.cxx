@@ -33,8 +33,11 @@
 #include "cmtkDICOM.h"
 
 #include <Base/cmtkTypedArray.h>
+#include <Base/cmtkSurfaceNormal.h>
 
 #include <System/cmtkConsole.h>
+
+#include <IO/cmtkFileConstHeader.h>
 
 #ifdef CMTK_USE_DCMTK_JPEG
 #  include <djdecode.h>
@@ -308,6 +311,110 @@ DICOM::GetPixelDataArray( const size_t pixelDataLength )
   return pixelDataArray;
 }
 
+
+const FixedVector<3,double>
+DICOM::DemosaicAndGetNormal( const FixedVector< 2, FixedVector<3,double> >& imageOrientation, FixedVector<3,int>& dims, TypedArray::SmartPtr& pixelDataArray )
+{
+  // without further information, we "guess" the image normal vector
+  FixedVector<3,double> sliceNormal = SurfaceNormal( imageOrientation[0], imageOrientation[1] ).Get();
+  
+  // detect and treat Siemens multi-slice mosaics
+  const char* tmpStr = NULL;
+  if ( this->Document().getValue( DCM_Manufacturer, tmpStr ) )
+    {
+    if ( !strncmp( tmpStr, "SIEMENS", 7 ) )
+      {
+      Uint16 tempUint16 = 0;
+      const DcmTagKey nSlicesTag(0x0019,0x100a);
+      if ( this->Document().getValue( nSlicesTag, tempUint16 ) )
+	{
+	dims[2] = tempUint16;
+	
+	const DcmTagKey mosaicTag(0x0051,0x100b);
+	if ( this->Document().getValue( mosaicTag, tmpStr ) )
+	  {
+	  int rows;
+	  int cols;
+	  if ( 2 != sscanf( tmpStr, "%dp*%ds", &rows, &cols) )
+	    {
+	    if ( 2 != sscanf( tmpStr, "%d*%ds", &rows, &cols) )
+	      {
+	      StdErr << "ERROR: unable to parse mosaic size from " << tmpStr << "\n";
+	      }
+	    }
+	  
+	  if ( (cols > 0) && (rows > 0 ) )
+	    {
+	    const int xMosaic = dims[0] / cols;
+	    
+	    dims[0] = cols;
+	    dims[1] = rows;
+	    
+	    // de-mosaic the data array
+	    const unsigned long imageSizePixels = dims[0] * dims[1] * dims[2];
+	    TypedArray::SmartPtr newDataArray( TypedArray::Create( pixelDataArray->GetType(), imageSizePixels ) );
+	    
+	    const size_t pixelsPerSlice = cols * rows;
+	    size_t toOffset = 0;
+	    for ( int slice = 0; slice < dims[2]; ++slice )
+	      {
+	      for ( int j = 0; j < rows; ++j, toOffset += dims[0] )
+		{
+		const size_t iPatch = slice % xMosaic;
+		const size_t jPatch = slice / xMosaic;
+		
+		const size_t fromOffset = jPatch * xMosaic * pixelsPerSlice + j * xMosaic * cols + iPatch * cols;
+		pixelDataArray->BlockCopy( *newDataArray, toOffset, fromOffset, cols );
+		}
+	      }
+	    
+	    pixelDataArray = newDataArray;
+	    }
+	  
+// For the following, see here: http://nipy.sourceforge.net/nibabel/dicom/siemens_csa.html#csa-header
+	  const DcmTagKey csaHeaderInfoTag(0x0029,0x1010);
+	  
+	  const Uint8* csaHeaderInfo = NULL;
+	  unsigned long csaHeaderLength = 0;
+	  this->Dataset().findAndGetUint8Array ( csaHeaderInfoTag, csaHeaderInfo, &csaHeaderLength );
+	  
+	  FileConstHeader fileHeader( csaHeaderInfo, false /*isBigEndian*/ ); // Siemens CSA header is always little endian
+	  const size_t nTags = fileHeader.GetField<Uint32>( 8 );
+	  
+	  size_t tagOffset = 16; // start after header
+	  for ( size_t tag = 0; tag < nTags; ++tag )
+	    {
+	    char tagName[65];
+	    fileHeader.GetFieldString( tagOffset, tagName, 64 );
+//	  StdErr << tag << "\t" << tagName << "\n";
+	    
+	    const size_t nItems = fileHeader.GetField<Uint32>( tagOffset + 76 );
+//	  StdErr << "  nItems: " << nItems << "\n";
+	    
+	    tagOffset += 84;
+	    for ( size_t item = 0; item < nItems; ++item )
+	      {
+	      const size_t itemLen = fileHeader.GetField<Uint32>( tagOffset );
+	      
+//	    StdErr << "    len: " << itemLen << "\n";
+	      
+	      if ( ! strcmp( tagName, "SliceNormalVector" ) && (item < 3) )
+		{
+		char valStr[65];
+		sliceNormal[item] = atof( fileHeader.GetFieldString( tagOffset+16, valStr, 64 ) );
+		
+//	      StdErr << "    " << valStr << "\n";
+		}
+	      
+	      tagOffset += 4*((itemLen+3)/4) /*move up to nearest 4-byte boundary*/ + 16 /*the 4 ints at the beginning of item, including itemLength*/;
+	      }
+	    }
+	  }
+	}
+      }  
+    }
+  return sliceNormal;
+}
 
 ScalarImage* 
 DICOM::Read 
