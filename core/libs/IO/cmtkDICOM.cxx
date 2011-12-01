@@ -312,26 +312,6 @@ DICOM::Read
   // Use table position to set image position as long as we don't know better.
   imageOrigin[2] = sliceLocation;
       
-  // get original image position from file.
-  const char *image_position_s = NULL;
-  if ( ! dicom.Document().getValue( DCM_ImagePositionPatient, image_position_s ) ) 
-    {
-    // ImagePositionPatient tag not present, try ImagePosition instead
-#ifdef DCM_ImagePosition
-    dicom.Document().getValue( DCM_ImagePosition, image_position_s );
-#else
-    dicom.Document().getValue( DCM_ACR_NEMA_ImagePosition, image_position_s );
-#endif
-    }
-  if ( image_position_s ) 
-    {
-    double xyz[3];
-    if ( 3 == sscanf( image_position_s,"%lf%*c%lf%*c%lf", xyz, xyz+1, xyz+2 ) ) 
-      {
-      imageOrigin = ScalarImage::SpaceVectorType( xyz );
-      }
-    }
-  
   image->SetImageOrigin( imageOrigin );
   
   // get original image direction from file.
