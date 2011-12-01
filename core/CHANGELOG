@@ -1,5 +1,6 @@
 Release CMTK-2.1.1:
 
+(r3604) Refactored: unified DICOM reader utility class.
 (r3591) Added: simple tissue class segmentation tool based on EM optimization
     of a Gaussian mixture model.
 
