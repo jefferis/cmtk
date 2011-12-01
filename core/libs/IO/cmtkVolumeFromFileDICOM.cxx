@@ -70,33 +70,13 @@ VolumeFromFile::ReadDICOM( const char *path )
   Uint16 tempUint16 = 0;
 
   FixedVector<3,int> dims = dicom.GetDims();
+  FixedVector<3,double> pixelSize = dicom.GetPixelSize();
 
-  Types::Coordinate pixelSize[3];
-
-  // get calibration from image
-  const bool hasPixelSpacing = (dicom.Document().getValue(DCM_PixelSpacing, pixelSize[0], 0) > 0);
-  if ( hasPixelSpacing )
-    {
-    if (dicom.Document().getValue(DCM_PixelSpacing, pixelSize[1], 1) < 2) 
-      {
-      throw Exception( "DICOM file does not have two elements in pixel size tag" );
-      }
-    } 
-  else
-    throw Exception( "DICOM file does not specify pixel size" );
-    
   const unsigned long totalImageSizePixels = dims[0] * dims[1] * dims[2];
 
   TypedArray::SmartPtr pixelDataArray = dicom.GetPixelDataArray( totalImageSizePixels );
     
-
   // now some more manual readings...
-    
-  // get slice spacing from multi-slice images.
-  if ( ! dicom.Document().getValue( DCM_SpacingBetweenSlices, pixelSize[2] ) )
-    {
-    pixelSize[2] = 0;
-    }
     
   // get original image position from file.
   UniformVolume::CoordinateVectorType imageOrigin( UniformVolume::CoordinateVectorType::Init( 0 ) );

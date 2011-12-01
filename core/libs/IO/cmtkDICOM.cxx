@@ -124,6 +124,32 @@ DICOM::GetDims() const
   return dims;
 }
 
+const FixedVector<3,double>
+DICOM::GetPixelSize() const
+{
+  FixedVector<3,double> pixelSize( FixedVector<3,double>::Init( 0.0 ) );
+  
+  // get calibration from image
+  const bool hasPixelSpacing = (this->Document().getValue(DCM_PixelSpacing, pixelSize[0], 0) > 0);
+  if ( hasPixelSpacing )
+    {
+    if (this->Document().getValue(DCM_PixelSpacing, pixelSize[1], 1) < 2) 
+      {
+      throw Exception( "DICOM file does not have two elements in pixel size tag" );
+      }
+    } 
+  else
+    throw Exception( "DICOM file does not specify pixel size" );
+
+  // get slice spacing from multi-slice images.
+  if ( ! this->Document().getValue( DCM_SpacingBetweenSlices, pixelSize[2] ) )
+    {
+    pixelSize[2] = 0;
+    }
+
+  return pixelSize;
+}    
+    
 
 TypedArray::SmartPtr
 DICOM::GetPixelDataArray( const size_t pixelDataLength )
@@ -232,30 +258,16 @@ DICOM::Read
   Self dicom( path );
 
   FixedVector<3,int> dims = dicom.GetDims();
+  FixedVector<3,double> pixelSize = dicom.GetPixelSize();
 
   image = new ScalarImage( dims[0], dims[1], dims[2] );
-  
-  // get calibration from image
-  double calibrationX = -1, calibrationY = -1;
-  bool hasPixelSpacing = (dicom.Document().getValue(DCM_PixelSpacing, calibrationX, 0) > 0);
-  if ( hasPixelSpacing ) 
-    {
-    if ( dicom.Document().getValue(DCM_PixelSpacing, calibrationY, 1) < 2)
-      calibrationY = calibrationX;
-    } 
-  else
-    calibrationX = calibrationY = -1;
-  image->SetPixelSize( calibrationX, calibrationY );
+  image->SetPixelSize( pixelSize[0], pixelSize[1] );
+  image->SetFrameToFrameSpacing( pixelSize[2] );
   
   TypedArray::SmartPtr pixelDataArray = dicom.GetPixelDataArray( dims[0] * dims[1] * dims[2] );
   image->SetPixelData( pixelDataArray );
 
   // now some more manual readings...
-
-    // get slice spacing from multi-slice images.
-  double frameToFrame = 0;
-  if ( dicom.Document().getValue( DCM_SpacingBetweenSlices, frameToFrame ) )
-    image->SetFrameToFrameSpacing( frameToFrame );
 
     // get original table position from image.
   double sliceLocation = 0;
