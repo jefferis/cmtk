@@ -68,6 +68,9 @@ public:
   /// Get image pixel size.
   const FixedVector<3,double> GetPixelSize() const;
 
+  /// Get image origin in scanner coordinates.
+  const FixedVector<3,double> GetImageOrigin() const;
+
   /** Get pixel data array.
    * The pixel data type is determined automatically based on bits allocated and signed vs. unsigned representation.
    * 

@@ -150,6 +150,33 @@ DICOM::GetPixelSize() const
   return pixelSize;
 }    
     
+const FixedVector<3,double>
+DICOM::GetImageOrigin() const
+{
+  FixedVector<3,double> imageOrigin( FixedVector<3,double>::Init( 0.0 ) );
+
+  const char *image_position_s = NULL;
+  if ( ! this->Document().getValue( DCM_ImagePositionPatient, image_position_s ) ) 
+    {
+    // ImagePositionPatient tag not present, try ImagePosition instead
+#ifdef DCM_ImagePosition
+    this->Document().getValue( DCM_ImagePosition, image_position_s );
+#else
+    this->Document().getValue( DCM_ACR_NEMA_ImagePosition, image_position_s );
+#endif
+    }
+  if ( image_position_s ) 
+    {
+    double xyz[3];
+    if ( 3 == sscanf( image_position_s,"%lf%*c%lf%*c%lf", xyz, xyz+1, xyz+2 ) ) 
+      {
+      imageOrigin = FixedVector<3,double>( xyz );
+      }
+    }
+  
+  return imageOrigin;
+}
+
 
 TypedArray::SmartPtr
 DICOM::GetPixelDataArray( const size_t pixelDataLength )
@@ -259,6 +286,7 @@ DICOM::Read
 
   FixedVector<3,int> dims = dicom.GetDims();
   FixedVector<3,double> pixelSize = dicom.GetPixelSize();
+  ScalarImage::SpaceVectorType imageOrigin = dicom.GetImageOrigin();
 
   image = new ScalarImage( dims[0], dims[1], dims[2] );
   image->SetPixelSize( pixelSize[0], pixelSize[1] );
@@ -281,9 +309,7 @@ DICOM::Read
     }
   image->SetImageSlicePosition( sliceLocation );
   
-  // Use table position to set image position as long as we don't know
-  // better.
-  ScalarImage::SpaceVectorType imageOrigin( ScalarImage::SpaceVectorType::Init( 0 ) );
+  // Use table position to set image position as long as we don't know better.
   imageOrigin[2] = sliceLocation;
       
   // get original image position from file.

@@ -75,29 +75,10 @@ VolumeFromFile::ReadDICOM( const char *path )
   const unsigned long totalImageSizePixels = dims[0] * dims[1] * dims[2];
 
   TypedArray::SmartPtr pixelDataArray = dicom.GetPixelDataArray( totalImageSizePixels );
+
+  const UniformVolume::CoordinateVectorType imageOrigin = dicom.GetImageOrigin();
     
   // now some more manual readings...
-    
-  // get original image position from file.
-  UniformVolume::CoordinateVectorType imageOrigin( UniformVolume::CoordinateVectorType::Init( 0 ) );
-  const char *image_position_s = NULL;
-  if ( ! dicom.Document().getValue( DCM_ImagePositionPatient, image_position_s ) ) 
-    {
-    // ImagePositionPatient tag not present, try ImagePosition instead
-#ifdef DCM_ImagePosition
-    dicom.Document().getValue( DCM_ImagePosition, image_position_s );
-#else
-    dicom.Document().getValue( DCM_ACR_NEMA_ImagePosition, image_position_s );
-#endif
-    }
-  if ( image_position_s ) 
-    {
-    double xyz[3];
-    if ( 3 == sscanf( image_position_s,"%lf%*c%lf%*c%lf", xyz, xyz+1, xyz+2 ) ) 
-      {
-      imageOrigin = UniformVolume::CoordinateVectorType( xyz );
-      }
-    }
     
   // get original image direction from file.
   UniformVolume::CoordinateVectorType imageOrientationX( UniformVolume::CoordinateVectorType::Init( 0 ) );
