@@ -33,29 +33,8 @@
 #include "cmtkVolumeFromFile.h"
 
 #include <Base/cmtkTypedArray.h>
-#include <Base/cmtkSurfaceNormal.h>
 
-#include <System/cmtkConsole.h>
-#include <System/cmtkException.h>
-
-#include <IO/cmtkFileConstHeader.h>
 #include <IO/cmtkDICOM.h>
-
-#include <dcmtk/dcmdata/dcdeftag.h>
-#include <dcmtk/dcmimgle/didocu.h>
-#include <dcmtk/dcmimgle/diutils.h>
-
-#ifdef CMTK_USE_DCMTK_JPEG
-#  include <djdecode.h>
-#endif
-
-#ifdef HAVE_SYS_TYPES_H
-#  include <sys/types.h>
-#endif
-
-#include <string.h>
-#include <stdio.h>
-#include <ctime>
 
 namespace
 cmtk
@@ -65,9 +44,6 @@ const UniformVolume::SmartPtr
 VolumeFromFile::ReadDICOM( const char *path )
 {
   DICOM dicom( path );
-
-  DcmElement *delem = NULL;
-  Uint16 tempUint16 = 0;
 
   FixedVector<3,int> dims = dicom.GetDims();
   FixedVector<3,double> pixelSize = dicom.GetPixelSize();
@@ -79,106 +55,10 @@ VolumeFromFile::ReadDICOM( const char *path )
   const UniformVolume::CoordinateVectorType imageOrigin = dicom.GetImageOrigin();
   FixedVector< 2, FixedVector<3,double> > imageOrientation = dicom.GetImageOrientation();
   
-  // now some more manual readings...
-    
   // without further information, we "guess" the image normal vector
-  UniformVolume::CoordinateVectorType sliceNormal = SurfaceNormal( imageOrientation[0], imageOrientation[1] ).Get();
+  UniformVolume::CoordinateVectorType sliceNormal = dicom.DemosaicAndGetNormal( imageOrientation, dims, pixelDataArray );
 
-  // detect and treat Siemens multi-slice mosaics
-  const char* tmpStr = NULL;
-  if ( dicom.Document().getValue( DCM_Manufacturer, tmpStr ) )
-    {
-    if ( !strncmp( tmpStr, "SIEMENS", 7 ) )
-      {
-      const DcmTagKey nSlicesTag(0x0019,0x100a);
-      if ( dicom.Document().getValue( nSlicesTag, tempUint16 ) )
-	{
-	dims[2] = tempUint16;
-	
-	const DcmTagKey mosaicTag(0x0051,0x100b);
-	if ( dicom.Document().getValue( mosaicTag, tmpStr ) )
-	  {
-	  int rows;
-	  int cols;
-	  if ( 2 != sscanf( tmpStr, "%dp*%ds", &rows, &cols) )
-	    {
-	    if ( 2 != sscanf( tmpStr, "%d*%ds", &rows, &cols) )
-	      {
-	      StdErr << "ERROR: unable to parse mosaic size from " << tmpStr << "\n";
-	      }
-	    }
-	  
-	  if ( (cols > 0) && (rows > 0 ) )
-	    {
-	    const int xMosaic = dims[0] / cols;
-	    
-	    dims[0] = cols;
-	    dims[1] = rows;
-	    
-	    // de-mosaic the data array
-	    const unsigned long imageSizePixels = dims[0] * dims[1] * dims[2];
-	    TypedArray::SmartPtr newDataArray( TypedArray::Create( pixelDataArray->GetType(), imageSizePixels ) );
-	    
-	    const size_t pixelsPerSlice = cols * rows;
-	    size_t toOffset = 0;
-	    for ( int slice = 0; slice < dims[2]; ++slice )
-	      {
-	      for ( int j = 0; j < rows; ++j, toOffset += dims[0] )
-		{
-		const size_t iPatch = slice % xMosaic;
-		const size_t jPatch = slice / xMosaic;
-		
-		const size_t fromOffset = jPatch * xMosaic * pixelsPerSlice + j * xMosaic * cols + iPatch * cols;
-		pixelDataArray->BlockCopy( *newDataArray, toOffset, fromOffset, cols );
-		}
-	      }
-	    
-	    pixelDataArray = newDataArray;
-	    }
-	  
-// For the following, see here: http://nipy.sourceforge.net/nibabel/dicom/siemens_csa.html#csa-header
-	  const DcmTagKey csaHeaderInfoTag(0x0029,0x1010);
-	  
-	  const Uint8* csaHeaderInfo = NULL;
-	  unsigned long csaHeaderLength = 0;
-	  dicom.Dataset().findAndGetUint8Array ( csaHeaderInfoTag, csaHeaderInfo, &csaHeaderLength );
-	  
-	  FileConstHeader fileHeader( csaHeaderInfo, false /*isBigEndian*/ ); // Siemens CSA header is always little endian
-	  const size_t nTags = fileHeader.GetField<Uint32>( 8 );
-	  
-	  size_t tagOffset = 16; // start after header
-	  for ( size_t tag = 0; tag < nTags; ++tag )
-	    {
-	    char tagName[65];
-	    fileHeader.GetFieldString( tagOffset, tagName, 64 );
-//	  StdErr << tag << "\t" << tagName << "\n";
-	    
-	    const size_t nItems = fileHeader.GetField<Uint32>( tagOffset + 76 );
-//	  StdErr << "  nItems: " << nItems << "\n";
-	    
-	    tagOffset += 84;
-	    for ( size_t item = 0; item < nItems; ++item )
-	      {
-	      const size_t itemLen = fileHeader.GetField<Uint32>( tagOffset );
-	      
-//	    StdErr << "    len: " << itemLen << "\n";
-	      
-	      if ( ! strcmp( tagName, "SliceNormalVector" ) && (item < 3) )
-		{
-		char valStr[65];
-		sliceNormal[item] = atof( fileHeader.GetFieldString( tagOffset+16, valStr, 64 ) );
-		
-//	      StdErr << "    " << valStr << "\n";
-		}
-	      
-	      tagOffset += 4*((itemLen+3)/4) /*move up to nearest 4-byte boundary*/ + 16 /*the 4 ints at the beginning of item, including itemLength*/;
-	      }
-	    }
-	  }
-	}
-      }  
-    }
-
+  // Construct volume and set the DICOM coordinates
   UniformVolume::SmartPtr volume( new UniformVolume( UniformVolume::IndexType( dims ), pixelSize[0], pixelSize[1], pixelSize[2], pixelDataArray ) );
   volume->SetMetaInfo( META_SPACE, "LPS" );
   volume->SetMetaInfo( META_SPACE_ORIGINAL, "LPS" );
