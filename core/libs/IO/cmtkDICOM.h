@@ -62,6 +62,9 @@ public:
    */
   DICOM( const char* path );
 
+  /// Get image dimensions (number of pixels per axis).
+  const FixedVector<3,int> GetDims() const;
+
   /** Get pixel data array.
    * The pixel data type is determined automatically based on bits allocated and signed vs. unsigned representation.
    * 

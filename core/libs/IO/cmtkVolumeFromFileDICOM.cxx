@@ -69,25 +69,7 @@ VolumeFromFile::ReadDICOM( const char *path )
   DcmElement *delem = NULL;
   Uint16 tempUint16 = 0;
 
-  int dims[3] = { 0, 0, 0 };
-  if ( ( delem = dicom.Document().search( DCM_Rows ) ) ) 
-    {
-    delem->getUint16(tempUint16);
-    dims[1]=(int)tempUint16;
-    }
-    
-  if ( ( delem = dicom.Document().search( DCM_Columns ) ) ) 
-    {
-    delem->getUint16(tempUint16);
-    dims[0]=(int)tempUint16;
-    }
-
-  // detect and treat multi-frame files
-  if ( ! dicom.Document().getValue( DCM_NumberOfFrames, tempUint16 ) ) 
-    {
-    tempUint16 = 1;
-    }
-  dims[2] = tempUint16;
+  FixedVector<3,int> dims = dicom.GetDims();
 
   Types::Coordinate pixelSize[3];
 

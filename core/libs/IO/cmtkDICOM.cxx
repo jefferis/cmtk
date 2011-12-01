@@ -97,6 +97,34 @@ DICOM::DICOM( const char* path )
     } 
 }
 
+const FixedVector<3,int>
+DICOM::GetDims() const
+{
+  FixedVector<3,int> dims( FixedVector<3,int>::Init( 0 ) );
+
+  Uint16 tempUint16 = 1;
+  if ( this->Document().getValue( DCM_Columns, tempUint16 ) ) 
+    {
+    dims[0] = static_cast<int>( tempUint16 );
+    }
+
+  if ( this->Document().getValue( DCM_Rows, tempUint16 ) ) 
+    {
+    dims[1] = static_cast<int>( tempUint16 );
+    }
+  
+  // detect and treat multi-frame files
+  if ( ! this->Document().getValue( DCM_NumberOfFrames, tempUint16 ) ) 
+    {
+    // unlike Rows/Columns, NumberofFrames defaults to 1
+    tempUint16 = 1;
+    }
+  dims[2] = tempUint16;
+
+  return dims;
+}
+
+
 TypedArray::SmartPtr
 DICOM::GetPixelDataArray( const size_t pixelDataLength )
 {
@@ -203,17 +231,9 @@ DICOM::Read
 
   Self dicom( path );
 
-  Uint16 dimsX, dimsY;
-  if ( ! ( dicom.Document().getValue( DCM_Columns, dimsX ) && dicom.Document().getValue( DCM_Rows, dimsY ) ) ) 
-    {
-    StdErr << "ERROR: File " << path << " has no DCM_Columns/DCM_Rows tags.\n";
-    return NULL; // no image dimensions, nothing we can do.
-    }
-  
-  Uint16 numberOfFrames = 1;
-  if ( ! dicom.Document().getValue( DCM_NumberOfFrames, numberOfFrames ) )
-    numberOfFrames = 1;
-  image = new ScalarImage( dimsX, dimsY, numberOfFrames );
+  FixedVector<3,int> dims = dicom.GetDims();
+
+  image = new ScalarImage( dims[0], dims[1], dims[2] );
   
   // get calibration from image
   double calibrationX = -1, calibrationY = -1;
@@ -227,7 +247,7 @@ DICOM::Read
     calibrationX = calibrationY = -1;
   image->SetPixelSize( calibrationX, calibrationY );
   
-  TypedArray::SmartPtr pixelDataArray = dicom.GetPixelDataArray( dimsX * dimsY * numberOfFrames );
+  TypedArray::SmartPtr pixelDataArray = dicom.GetPixelDataArray( dims[0] * dims[1] * dims[2] );
   image->SetPixelData( pixelDataArray );
 
   // now some more manual readings...
