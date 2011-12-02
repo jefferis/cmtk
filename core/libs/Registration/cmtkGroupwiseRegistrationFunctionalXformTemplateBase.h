@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -45,10 +45,6 @@
 #include <Base/cmtkXform.h>
 
 #include <vector>
-
-#ifdef CMTK_USE_MPI
-#  include <mpi.h>
-#endif
 
 namespace
 cmtk

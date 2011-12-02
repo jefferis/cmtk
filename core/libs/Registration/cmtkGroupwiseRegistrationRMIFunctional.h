@@ -130,7 +130,6 @@ protected:
   std::vector<SumsAndProductsVectorType> m_ThreadSumsVector;
 
   /** Total number of samples that went into CC computation.
-   * This must be unsigned int to match MPI's data type for Allgather().
    */
   unsigned int m_TotalNumberOfSamples;
 

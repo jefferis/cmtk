@@ -53,30 +53,25 @@ cmtk
 bool
 GroupwiseRegistrationOutput::WriteGroupwiseArchive( const char* path ) const
 {
-#ifdef CMTK_USE_MPI    
-  // only root process needs to write outputs
-  if ( MPI::COMM_WORLD.Get_rank() == 0 )
-#endif
+  // create class stream archive.
+  if ( path )
     {
-    // create class stream archive.
-    if ( path )
+    ClassStream stream;
+    
+    if ( this->m_OutputRootDirectory )
       {
-      ClassStream stream;
-
-      if ( this->m_OutputRootDirectory )
-	{
-	char completePath[PATH_MAX];
-	snprintf( completePath, sizeof( completePath ), "%s%c%s", this->m_OutputRootDirectory, (int)CMTK_PATH_SEPARATOR, path );
-	stream.Open( completePath, ClassStream::WRITE );
-	}
-      else
-	stream.Open( path, ClassStream::WRITE );
-      
-      if ( ! stream.IsValid() ) return false;
-      stream << *this->m_Functional;
-      stream.Close();
+      char completePath[PATH_MAX];
+      snprintf( completePath, sizeof( completePath ), "%s%c%s", this->m_OutputRootDirectory, (int)CMTK_PATH_SEPARATOR, path );
+      stream.Open( completePath, ClassStream::WRITE );
       }
+    else
+      stream.Open( path, ClassStream::WRITE );
+    
+    if ( ! stream.IsValid() ) return false;
+    stream << *this->m_Functional;
+    stream.Close();
     }
+
   return true;
 }
 
@@ -84,56 +79,51 @@ bool
 GroupwiseRegistrationOutput::WriteXformsSeparateArchives
 ( const char* path, const char* templatePath )
 { 
-#ifdef CMTK_USE_MPI    
-  // only root process needs to write outputs
-  if ( MPI::COMM_WORLD.Get_rank() == 0 )
-#endif
+  if ( path )
     {
-    if ( path )
+    char fullPath[PATH_MAX];
+    
+    for ( size_t img = 0; img < this->m_Functional->GetNumberOfTargetImages(); ++img )
       {
-      char fullPath[PATH_MAX];
-      
-      for ( size_t img = 0; img < this->m_Functional->GetNumberOfTargetImages(); ++img )
+      StudyList slist;
+      Study::SmartPtr refstudy;
+      if ( this->m_OutputRootDirectory  && ! this->m_ExistingTemplatePath )
 	{
-	StudyList slist;
-	Study::SmartPtr refstudy;
-	if ( this->m_OutputRootDirectory  && ! this->m_ExistingTemplatePath )
-	  {
-	  snprintf( fullPath, sizeof( fullPath ), "%s%c%s", this->m_OutputRootDirectory, CMTK_PATH_SEPARATOR, templatePath );
-	  refstudy = slist.AddStudy( fullPath );
-	  }
-	else
-	  {
-	  refstudy = slist.AddStudy( templatePath );
-	  }
-	
-	const UniformVolume* image = this->m_Functional->GetOriginalTargetImage( img );
-	Study::SmartPtr imgstudy = slist.AddStudy( image->GetMetaInfo( META_FS_PATH ).c_str() );
-	
-	WarpXform::SmartPtr warpXform = WarpXform::SmartPtr::DynamicCastFrom( this->m_Functional->GetGenericXformByIndex( img ) );
-	if ( warpXform )
-	  {
-	  AffineXform::SmartPtr affineXform( warpXform->GetInitialAffineXform() );
-	  slist.AddXform( refstudy, imgstudy, affineXform, warpXform );
-	  }
-	else
-	  {
-	  AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( this->m_Functional->GetGenericXformByIndex( img ) );
-	  slist.AddXform( refstudy, imgstudy, affineXform );
-	  }
-	
-	if ( this->m_OutputRootDirectory )
-	  {
-	  snprintf( fullPath, sizeof( fullPath ), "%s%c%s%ctarget-%03d.list", this->m_OutputRootDirectory, CMTK_PATH_SEPARATOR, path, CMTK_PATH_SEPARATOR, (int)img );
-	  }
-	else
-	  {
-	  snprintf( fullPath, sizeof( fullPath ), "%s%ctarget-%03d.list", path, CMTK_PATH_SEPARATOR, (int)img );
-	  }
-	ClassStreamStudyList::Write( fullPath, &slist );
+	snprintf( fullPath, sizeof( fullPath ), "%s%c%s", this->m_OutputRootDirectory, CMTK_PATH_SEPARATOR, templatePath );
+	refstudy = slist.AddStudy( fullPath );
 	}
+      else
+	{
+	refstudy = slist.AddStudy( templatePath );
+	}
+      
+      const UniformVolume* image = this->m_Functional->GetOriginalTargetImage( img );
+      Study::SmartPtr imgstudy = slist.AddStudy( image->GetMetaInfo( META_FS_PATH ).c_str() );
+      
+      WarpXform::SmartPtr warpXform = WarpXform::SmartPtr::DynamicCastFrom( this->m_Functional->GetGenericXformByIndex( img ) );
+      if ( warpXform )
+	{
+	AffineXform::SmartPtr affineXform( warpXform->GetInitialAffineXform() );
+	slist.AddXform( refstudy, imgstudy, affineXform, warpXform );
+	}
+      else
+	{
+	AffineXform::SmartPtr affineXform = AffineXform::SmartPtr::DynamicCastFrom( this->m_Functional->GetGenericXformByIndex( img ) );
+	slist.AddXform( refstudy, imgstudy, affineXform );
+	}
+      
+      if ( this->m_OutputRootDirectory )
+	{
+	snprintf( fullPath, sizeof( fullPath ), "%s%c%s%ctarget-%03d.list", this->m_OutputRootDirectory, CMTK_PATH_SEPARATOR, path, CMTK_PATH_SEPARATOR, (int)img );
+	}
+      else
+	{
+	snprintf( fullPath, sizeof( fullPath ), "%s%ctarget-%03d.list", path, CMTK_PATH_SEPARATOR, (int)img );
+	}
+      ClassStreamStudyList::Write( fullPath, &slist );
       }
     }
+
   return true;
 }
 
@@ -174,13 +164,8 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
 
     DebugOutput( 1 ) << "Reformating output images\n";
 
-#ifdef CMTK_USE_MPI
-    const size_t idxFrom = MPI::COMM_WORLD.Get_rank();
-    const size_t idxSkip = MPI::COMM_WORLD.Get_size();
-#else
     const size_t idxFrom = 0;
     const size_t idxSkip = 1;
-#endif
     for ( size_t idx = idxFrom; idx < this->m_Functional->GetNumberOfTargetImages(); idx += idxSkip )
       {
       UniformVolume::SmartPtr floatingVolume = this->m_Functional->GetOriginalTargetImage( idx );
@@ -216,42 +201,25 @@ GroupwiseRegistrationOutput::WriteAverageImage( const char* path, const cmtk::In
 	}
       }
 
-#ifdef CMTK_USE_MPI
-    float* averagePtrMPI = Memory::ArrayC::Allocate<float>( numberOfPixels );
-    MPI::COMM_WORLD.Reduce( averagePtr, averagePtrMPI, numberOfPixels, MPI::FLOAT, MPI::SUM, 0 );
-    memcpy( averagePtr, averagePtrMPI, numberOfPixels * sizeof( *averagePtr ) );
-    Memory::ArrayC::Delete( averagePtrMPI );
-
-    unsigned short* countPtrMPI = Memory::ArrayC::Allocate<unsigned short>( numberOfPixels );
-    MPI::COMM_WORLD.Reduce( countPtr, countPtrMPI, numberOfPixels, MPI::UNSIGNED_SHORT, MPI::SUM, 0 );
-    memcpy( countPtr, countPtrMPI, numberOfPixels * sizeof( *countPtr ) );
-    Memory::ArrayC::Delete( countPtrMPI );
-#endif
-
-#ifdef CMTK_USE_MPI
-    if ( MPI::COMM_WORLD.Get_rank() == 0 )
-#endif
-      {
 #pragma omp parallel for
-      for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
-	{
-	if ( countPtr[i] )
-	  averagePtr[i] /= countPtr[i];
-	else
-	  average->SetPaddingAt( i );
-	}
-      templateGrid->SetData( average );
-
-      if ( this->m_OutputRootDirectory )
-	{
-	char fullPath[PATH_MAX];
-	snprintf( fullPath, sizeof( fullPath ), "%s%c%s", this->m_OutputRootDirectory, CMTK_PATH_SEPARATOR, path );
-	VolumeIO::Write( *templateGrid, fullPath );
-	}
+    for ( int i = 0; i < static_cast<int>( numberOfPixels ); ++i )
+      {
+      if ( countPtr[i] )
+	averagePtr[i] /= countPtr[i];
       else
-	{
-	VolumeIO::Write( *templateGrid, path );
-	}
+	average->SetPaddingAt( i );
+      }
+    templateGrid->SetData( average );
+    
+    if ( this->m_OutputRootDirectory )
+      {
+      char fullPath[PATH_MAX];
+      snprintf( fullPath, sizeof( fullPath ), "%s%c%s", this->m_OutputRootDirectory, CMTK_PATH_SEPARATOR, path );
+      VolumeIO::Write( *templateGrid, fullPath );
+      }
+    else
+      {
+      VolumeIO::Write( *templateGrid, path );
       }
     }
   

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -39,10 +39,6 @@
 
 #include <algorithm>
 
-#ifdef CMTK_USE_MPI
-#  include <mpi.h>
-#endif
-
 namespace
 cmtk
 {
@@ -57,30 +53,16 @@ SplineWarpGroupwiseRegistrationRMIFunctional
   this->m_NeedsUpdateInformationByControlPoint = false;
 
   const size_t numberOfControlPoints = this->m_VolumeOfInfluenceArray.size();
-#ifdef CMTK_USE_MPI
-  const size_t cpPerNode = 1 + numberOfControlPoints / this->m_SizeMPI;
-  std::vector<byte> tmpInformationByCP( cpPerNode );
-#else
   this->m_InformationByControlPoint.resize( numberOfControlPoints );
-#endif
 
   const byte paddingValue = this->m_PaddingValue;
 
-#ifdef CMTK_USE_MPI
-  const size_t beginCP = this->m_RankMPI * cpPerNode;
-  const size_t endCP = std::min<size_t>( beginCP + cpPerNode, numberOfControlPoints );
-#else
   const size_t beginCP = 0;
   const size_t endCP = numberOfControlPoints;
-#endif
+
   for ( size_t cp = beginCP; cp < endCP; ++cp ) 
     {
-#ifdef CMTK_USE_MPI
-    const size_t ofs = cp-beginCP;
-    tmpInformationByCP[ofs] = 0;
-#else
     this->m_InformationByControlPoint[cp] = 0;
-#endif
 
     std::vector<DataGrid::RegionType>::const_iterator voi = this->m_VolumeOfInfluenceArray.begin() + cp;
     for ( size_t img = this->m_ActiveImagesFrom; img < this->m_ActiveImagesTo; ++img )
@@ -104,19 +86,10 @@ SplineWarpGroupwiseRegistrationRMIFunctional
 	    }
 	  }
 	}
-#ifdef CMTK_USE_MPI
-      tmpInformationByCP[ofs] = std::max( (byte)(voiMax-voiMin), tmpInformationByCP[ofs] );
-#else
       this->m_InformationByControlPoint[cp] = std::max( (byte)(voiMax-voiMin), this->m_InformationByControlPoint[cp] );    
-#endif
       }
     }
 
-#ifdef CMTK_USE_MPI
-  this->m_InformationByControlPoint.resize( cpPerNode * this->m_SizeMPI );
-  MPI::COMM_WORLD.Allgather( &tmpInformationByCP[0], cpPerNode, MPI::CHAR, &this->m_InformationByControlPoint[0], cpPerNode, MPI::CHAR );
-#endif
-  
   this->UpdateActiveControlPoints();
 }
   
@@ -197,8 +170,4 @@ SplineWarpGroupwiseRegistrationRMIFunctional::Evaluate()
 
 } // namespace cmtk
 
-#ifdef CMTK_USE_MPI
-#  include "cmtkSplineWarpGroupwiseRegistrationRMIFunctionalMPI.txx"
-#else
-#  include "cmtkSplineWarpGroupwiseRegistrationRMIFunctional.txx"
-#endif
+#include "cmtkSplineWarpGroupwiseRegistrationRMIFunctional.txx"

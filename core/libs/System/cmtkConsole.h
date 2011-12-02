@@ -40,10 +40,6 @@
 #include <iostream>
 #include <string>
 
-#ifdef CMTK_USE_MPI
-#  include <mpi.h>
-#endif
-
 #include <System/cmtkMutexLock.h>
 #include <System/cmtkLockingPtr.h>
 
@@ -65,9 +61,6 @@ public:
     : m_StreamP( stream )
   { 
     this->IndentLevel = 0; 
-#ifdef CMTK_USE_MPI
-    this->m_RankMPI = -1;
-#endif
   }
 
   /** Get terminal line width, if possible.
@@ -100,11 +93,6 @@ public:
   template<class T> 
   Console& operator << ( const T data ) 
   { 
-#ifdef CMTK_USE_MPI
-    // for now, skip the output entirely if this is not the root process.
-    if ( this->m_RankMPI < 0 ) this->m_RankMPI = MPI::COMM_WORLD.Get_rank();
-    if ( this->m_RankMPI ) return *this;
-#endif
     if ( this->m_StreamP )
       {
       LockingPtr<std::ostream> pStream( *this->m_StreamP, this->m_MutexLock );
@@ -131,11 +119,6 @@ private:
   
   /// Mutex lock for thread safety.
   MutexLock m_MutexLock;
-
-#ifdef CMTK_USE_MPI
-  /// MPI process rank.
-  int m_RankMPI;
-#endif
 };
 
 /// Standard error output for the library.

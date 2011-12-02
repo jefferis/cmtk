@@ -52,7 +52,6 @@
 #cmakedefine CMTK_BUILD_DEMO 1
 #cmakedefine CMTK_BUILD_NRRD 1
 
-#cmakedefine CMTK_USE_MPI 1
 #cmakedefine CMTK_USE_SMP 1
 #cmakedefine CMTK_USE_PTHREADS 1
 #cmakedefine CMTK_USE_CUDA 1

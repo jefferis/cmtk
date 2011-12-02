@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -144,13 +144,7 @@ SplineWarpCongealingFunctional
     this->UpdateStandardDeviationByPixel();
 
   const size_t numberOfPixels = this->m_TemplateNumberOfPixels;
-#ifdef CMTK_USE_MPI
-  const size_t pixelsPerNode = (numberOfPixels+this->m_SizeMPI-1) / this->m_SizeMPI;
-  this->m_EntropyByPixel.resize( pixelsPerNode * this->m_SizeMPI );
-  this->m_EntropyByPixelMPI.resize( pixelsPerNode );
-#else
   this->m_EntropyByPixel.resize( numberOfPixels );
-#endif
 
   double entropy = 0;
   unsigned int count = 0;
@@ -172,17 +166,6 @@ SplineWarpCongealingFunctional
     entropy += params[taskIdx].m_Entropy;
     count += params[taskIdx].m_Count;
     }
-  
-#ifdef CMTK_USE_MPI
-  double partialEntropy = entropy;
-  MPI::COMM_WORLD.Allreduce( &partialEntropy, &entropy, 1, MPI::DOUBLE, MPI::SUM );
-  
-  unsigned int partialCount = count;
-  MPI::COMM_WORLD.Allreduce( &partialCount, &count, 1, MPI::UNSIGNED, MPI::SUM );
-
-  const size_t totalSize = sizeof( this->m_EntropyByPixelMPI[0] ) * this->m_EntropyByPixelMPI.size();
-  MPI::COMM_WORLD.Allgather( &this->m_EntropyByPixelMPI[0], totalSize, MPI::CHAR, &this->m_EntropyByPixel[0], totalSize, MPI::CHAR );  
-#endif
   
   if ( count )
     {
@@ -218,18 +201,9 @@ SplineWarpCongealingFunctional
   size_t count = 0;
 
   const size_t numberOfPixels = ThisConst->m_TemplateNumberOfPixels;
-#ifdef CMTK_USE_MPI  
-  const size_t pixelsPerNode = (numberOfPixels+ThisConst->m_SizeMPI-1) / ThisConst->m_SizeMPI;
-  const size_t pixelsPerThread = 1 + (pixelsPerNode / taskCnt);
-  const size_t pixelFromNode = ThisConst->m_RankMPI * pixelsPerNode;
-  const size_t pixelFrom = pixelFromNode + taskIdx * pixelsPerThread;
-  const size_t pixelTo = std::min( numberOfPixels, std::min( pixelFromNode + pixelsPerNode, pixelFrom + pixelsPerThread ) );
-  size_t mpiOfs = taskIdx * pixelsPerThread;
-#else
   const size_t pixelsPerThread = (numberOfPixels / taskCnt);
   const size_t pixelFrom = taskIdx * pixelsPerThread;
   const size_t pixelTo = std::min( numberOfPixels, pixelFrom + pixelsPerThread );
-#endif
   
   const size_t imagesFrom = ThisConst->m_ActiveImagesFrom;
   const size_t imagesTo = ThisConst->m_ActiveImagesTo;
@@ -269,21 +243,13 @@ SplineWarpCongealingFunctional
     if ( fullCount )
       {
       const double entropy = histogram.GetEntropy();
-#ifdef CMTK_USE_MPI
-      This->m_EntropyByPixelMPI[mpiOfs++] = entropy;
-#else
       This->m_EntropyByPixel[ofs] = entropy;
-#endif
       totalEntropy -= entropy;
       ++count;
       }
     else
       {
-#ifdef CMTK_USE_MPI
-      This->m_EntropyByPixelMPI[mpiOfs++] = 0;
-#else
       This->m_EntropyByPixel[ofs] = 0;
-#endif
       }
     }
   
@@ -295,8 +261,4 @@ SplineWarpCongealingFunctional
 
 } // namespace cmtk
 
-#ifdef CMTK_USE_MPI
-#  include "cmtkSplineWarpCongealingFunctionalMPI.txx"
-#else
-#  include "cmtkSplineWarpCongealingFunctional.txx"
-#endif
+#include "cmtkSplineWarpCongealingFunctional.txx"

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -140,11 +140,6 @@ private:
     
     /// Current metric value.
     Self::ReturnType m_MetricBaseValue;
-
-#ifdef CMTK_USE_MPI
-    /// Index of first control point to be computed by all threads in this iteration.
-    size_t m_FirstIndexToCompute;
-#endif
   };
 
   /** Thread function: Compute local gradient of the cost function for gradient approximation.
@@ -153,10 +148,6 @@ private:
    * point and works over all images and x,y,z to speed things up substantially.
    */
   static CMTK_THREAD_RETURN_TYPE EvaluateLocalGradientThreadFunc( void* args );
-
-#ifdef CMTK_USE_MPI
-  void ReorderGradientComponents( Types::Coordinate *const dst, const Types::Coordinate* src, const size_t fromCpIdx, const size_t toCpIdx );
-#endif
 };
 
 //@}

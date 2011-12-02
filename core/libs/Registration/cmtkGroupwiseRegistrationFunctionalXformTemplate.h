@@ -46,10 +46,6 @@
 
 #include <vector>
 
-#ifdef CMTK_USE_MPI
-#  include <mpi.h>
-#endif
-
 namespace
 cmtk
 {

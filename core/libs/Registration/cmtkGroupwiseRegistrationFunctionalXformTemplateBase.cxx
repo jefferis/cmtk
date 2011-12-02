@@ -37,11 +37,6 @@
 #include <Base/cmtkMathUtil.h>
 #include <IO/cmtkVolumeIO.h>
 
-#ifdef CMTK_USE_MPI
-#  include <mpi.h>
-#  include <IO/cmtkMPI.h>
-#endif
-
 namespace
 cmtk
 {
@@ -103,27 +98,14 @@ GroupwiseRegistrationFunctionalXformTemplateBase<TXform>
 {
   this->m_ImageVector.resize( this->m_OriginalImageVector.size() );
 
-#ifdef CMTK_USE_MPI
-  // using MPI, prepare only some of the images locally, obtain others from other nodes
-  const size_t imageFrom = this->m_RankMPI;
-  const size_t imageSkip = this->m_SizeMPI;
-#else
   const size_t imageFrom = 0;
   const size_t imageSkip = 1;
-#endif
+
   for ( size_t i = imageFrom; i < this->m_ImageVector.size(); i += imageSkip )
     {
     this->m_ImageVector[i] = UniformVolume::SmartPtr( this->PrepareSingleImage( this->m_OriginalImageVector[i] ) );
     }
   
-#ifdef CMTK_USE_MPI
-  // obtain filtered, scaled image data from other nodes
-  for ( size_t i = 0; i < this->m_ImageVector.size(); ++i )
-    {
-    cmtk::mpi::Broadcast( MPI::COMM_WORLD, this->m_ImageVector[i], i % this->m_SizeMPI );
-    }
-#endif
-
   this->m_PrivateUserBackgroundValue = this->m_UserBackgroundValue + this->m_HistogramKernelRadiusMax;
 }
 

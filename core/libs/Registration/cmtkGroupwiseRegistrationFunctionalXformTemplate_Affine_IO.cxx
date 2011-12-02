@@ -89,29 +89,12 @@ operator>>
   char* targetPath = stream.ReadString( "target", NULL /*default*/, false /*forward*/ );
   while ( targetPath )
     {
-#ifdef CMTK_USE_MPI
-    UniformVolume::SmartPtr image( NULL );
-    if ( MPI::COMM_WORLD.Get_rank() == (imageVector.size() % MPI::COMM_WORLD.Get_size() ) )
-      {
-      image = UniformVolume::SmartPtr( VolumeIO::ReadOriented( targetPath ) );
-      if ( ! image || ! image->GetData() )
-	{
-	StdErr << "Could not open image " << targetPath << "\n";
-	exit( 1 );
-	}
-      }
-    else
-      {
-      image = UniformVolume::SmartPtr( VolumeIO::ReadGridOriented( targetPath ) );
-      }
-#else
     UniformVolume::SmartPtr image( VolumeIO::ReadOriented( targetPath ) );
     if ( ! image || ! image->GetData() )
       {
       StdErr << "ERROR: Could not open image " << targetPath << "\n";
       exit( 1 );
       }
-#endif
     imageVector.push_back( image );
 
     AffineXform::SmartPtr xform;

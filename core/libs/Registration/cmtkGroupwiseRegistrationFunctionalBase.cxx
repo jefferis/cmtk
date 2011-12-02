@@ -30,9 +30,6 @@
 //
 */
 
-// Define this to debug the MPI communication:
-//#define DEBUG_COMM
-
 #include <Registration/cmtkGroupwiseRegistrationFunctionalBase.h>
 
 #include <Base/cmtkMathUtil.h>
@@ -46,11 +43,6 @@
 #include <Base/cmtkTypedArrayFunctionHistogramMatching.h>
 #include <Base/cmtkUniformVolumeFilter.h>
 #include <Registration/cmtkReformatVolume.h>
-
-#ifdef CMTK_USE_MPI
-#  include <mpi.h>
-#  include <IO/cmtkMPI.h>
-#endif
 
 namespace
 cmtk
@@ -82,10 +74,6 @@ GroupwiseRegistrationFunctionalBase
   this->m_NumberOfTasks = 4 * this->m_NumberOfThreads - 3;
 
   this->m_Data.clear();
-#ifdef CMTK_USE_MPI
-  this->m_RankMPI = MPI::COMM_WORLD.Get_rank();
-  this->m_SizeMPI = MPI::COMM_WORLD.Get_size();
-#endif
 }
 
 GroupwiseRegistrationFunctionalBase::~GroupwiseRegistrationFunctionalBase()
@@ -403,67 +391,26 @@ GroupwiseRegistrationFunctionalBase::EvaluateWithGradient
 void
 GroupwiseRegistrationFunctionalBase::UpdateProbabilisticSamples()
 {
-#ifdef CMTK_USE_MPI
-  const size_t samplesPerNode = 1 + (this->m_TemplateNumberOfSamples / this->m_SizeMPI);
-  std::vector<size_t> nodeSamples( samplesPerNode );
-  this->m_ProbabilisticSamples.resize( samplesPerNode * this->m_SizeMPI );
-#else
   this->m_ProbabilisticSamples.resize( this->m_TemplateNumberOfSamples );
-#endif
   
-  
-#ifdef CMTK_USE_MPI
-  const size_t firstSample = 0;
-  const size_t lastSample = samplesPerNode;
-#else
   const size_t firstSample = 0;
   const size_t lastSample = this->m_TemplateNumberOfSamples;
-#endif
 
   for ( size_t i = firstSample; i < lastSample; ++i )
     {
     const size_t sample = static_cast<size_t>( this->m_TemplateNumberOfPixels * MathUtil::UniformRandom() );
-#ifdef CMTK_USE_MPI
-    nodeSamples[i] = sample;
-#else
     this->m_ProbabilisticSamples[i] = sample;
-#endif
     }
-  
-#ifdef CMTK_USE_MPI
-  MPI::COMM_WORLD.Allgather( &nodeSamples[0], sizeof( nodeSamples[0] ) * samplesPerNode, MPI::CHAR, &this->m_ProbabilisticSamples[0], sizeof( nodeSamples[0] ) * samplesPerNode, MPI::CHAR );
-#endif
-
-#ifdef CMTK_USE_MPI
-  this->m_ProbabilisticSamples.resize( this->m_TemplateNumberOfSamples );
-#endif
 }
 
 void
 GroupwiseRegistrationFunctionalBase
 ::InterpolateAllImages()
 {
-#ifdef CMTK_USE_MPI
-  // do my share of interpolations
-  for ( size_t idx = this->m_ActiveImagesFrom + this->m_RankMPI; idx < this->m_ActiveImagesTo; idx += this->m_SizeMPI )
-    {
-    this->InterpolateImage( idx, this->m_Data[idx] );
-    }
-
-  // exchange results with other processes
-  for ( size_t idx = this->m_ActiveImagesFrom; idx < this->m_ActiveImagesTo; ++idx )
-    {
-#ifdef DEBUG_COMM
-    fprintf( stderr, "%d\tBroadcasting reformated image %d with root %d\n", (int)this->m_RankMPI, (int)idx, (int)((idx-this->m_ActiveImagesFrom) % this->m_SizeMPI) );
-#endif
-    MPI::COMM_WORLD.Bcast( this->m_Data[idx], this->m_TemplateNumberOfSamples, MPI::CHAR, (idx - this->m_ActiveImagesFrom) % this->m_SizeMPI );
-    }
-#else
   for ( size_t idx = this->m_ActiveImagesFrom; idx < this->m_ActiveImagesTo; ++idx )
     {
     this->InterpolateImage( idx, this->m_Data[idx] );
     }
-#endif
 }
 
 void

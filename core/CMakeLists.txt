@@ -191,10 +191,7 @@ IF(CMTK_BUILD_DEMO)
 ENDIF(CMTK_BUILD_DEMO)
 
 #-----------------------------------------------------------------------------
-# Add an option to use or not to use MPI distributed-memory parallelism
-
-OPTION(CMTK_USE_MPI "Use MPI for distributed-memory parallelism" OFF)
-MARK_AS_ADVANCED(CMTK_USE_MPI)
+# Add an option to use or not to use SMP multi-core parallelism
 
 OPTION(CMTK_USE_SMP "Enable shared-memory parallelism (requires at least POSIX Threads, OpenMP, or Windows threads)" ON)
 
@@ -543,20 +540,18 @@ ADD_SUBDIRECTORY(Utilities)
 #-----------------------------------------------------------------------------
 # Add an option to enable or disable QT support and GUI applications
 
-IF(NOT CMTK_USE_MPI)
-  OPTION(CMTK_USE_QT "Use Qt (GUI applications need this)" OFF)
-  IF(CMTK_USE_QT)
-    SET (QT_MT_REQUIRED true)
-    SET (QT_MIN_VERSION "4.3.0")
-    FIND_PACKAGE(Qt4 COMPONENTS QtCore QtGui REQUIRED)
-    IF (QT_FOUND)
-      MESSAGE("Qt4 Found OK (${qt_version_str})")
-      INCLUDE(${QT_USE_FILE})
-    ELSE(QT_FOUND)
-      MESSAGE(FATAL_ERROR "No Qt4")
-    ENDIF(QT_FOUND)
-  ENDIF(CMTK_USE_QT)
-ENDIF(NOT CMTK_USE_MPI)
+OPTION(CMTK_USE_QT "Use Qt (GUI applications need this)" OFF)
+IF(CMTK_USE_QT)
+  SET (QT_MT_REQUIRED true)
+  SET (QT_MIN_VERSION "4.3.0")
+  FIND_PACKAGE(Qt4 COMPONENTS QtCore QtGui REQUIRED)
+  IF (QT_FOUND)
+    MESSAGE("Qt4 Found OK (${qt_version_str})")
+    INCLUDE(${QT_USE_FILE})
+  ELSE(QT_FOUND)
+    MESSAGE(FATAL_ERROR "No Qt4")
+  ENDIF(QT_FOUND)
+ENDIF(CMTK_USE_QT)
 
 #-----------------------------------------------------------------------------
 # Add options to enable or disable different compoments
@@ -566,11 +561,9 @@ IF(BUILD_APPS)
   SUBDIRS(apps)
 ENDIF(BUILD_APPS)
 
-IF(NOT CMTK_USE_MPI)
-  IF(CMTK_USE_QT)
-    OPTION(BUILD_GUI "Build GUI applications" ON)
-  ENDIF(CMTK_USE_QT)
-ENDIF(NOT CMTK_USE_MPI)
+IF(CMTK_USE_QT)
+  OPTION(BUILD_GUI "Build GUI applications" ON)
+ENDIF(CMTK_USE_QT)
 
 OPTION(BUILD_TESTING "Build test code" ON)
 IF (BUILD_TESTING)

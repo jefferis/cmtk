@@ -44,10 +44,6 @@
 
 #include <vector>
 
-#ifdef CMTK_USE_MPI
-#  include <mpi.h>
-#endif
-
 namespace
 cmtk
 {
@@ -455,9 +451,7 @@ protected:
   virtual void UpdateProbabilisticSamples();
 
   /** Interpolate all moving images.
-   * By default, this only calls InterpolateImage() for each image. However,
-   * this functionality can be overriden for better efficiency, for example
-   * in the distributed MPI implementation.
+   * By default, this only calls InterpolateImage() for each image. 
    */
   virtual void InterpolateAllImages();
 
@@ -496,14 +490,6 @@ protected:
 
   /// Update probabilistic sample table..
   virtual bool Wiggle();
-
-#ifdef CMTK_USE_MPI
-  /// MPI process rank.
-  int m_RankMPI;
-
-  /// MPI process count.
-  int m_SizeMPI;
-#endif
 
   /// Prepare data for one image.
   virtual UniformVolume::SmartPtr PrepareSingleImage( UniformVolume::SmartPtr& image );

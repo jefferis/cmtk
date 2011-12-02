@@ -99,19 +99,6 @@ GroupwiseRegistrationRMIFunctional<TXform>
   else
     threadPool.Run( EvaluateThread, params );
   
-#ifdef CMTK_USE_MPI
-  SumsAndProductsVectorType tmpVector( this->m_SumOfProductsMatrix.size() );
-  MPI::COMM_WORLD.Allreduce( &(this->m_SumOfProductsMatrix[0]), &(tmpVector[0]), this->m_SumOfProductsMatrix.size(), MPI::LONG, MPI::SUM );
-  std::copy( tmpVector.begin(), tmpVector.end(), this->m_SumOfProductsMatrix.begin() );
-  
-  tmpVector.resize( this->m_SumsVector.size() );
-  MPI::COMM_WORLD.Allreduce( &(this->m_SumsVector[0]), &(tmpVector[0]), this->m_SumsVector.size(), MPI::LONG, MPI::SUM );
-  std::copy( tmpVector.begin(), tmpVector.end(), this->m_SumsVector.begin() );
-
-  unsigned int totalNumberOfSamples = this->m_TotalNumberOfSamples;
-  MPI::COMM_WORLD.Allreduce( &totalNumberOfSamples, &this->m_TotalNumberOfSamples, 1, MPI::UNSIGNED, MPI::SUM );
-#endif
-
   return this->GetMetric( this->m_SumOfProductsMatrix, this->m_SumsVector, this->m_TotalNumberOfSamples, this->m_CovarianceMatrix );
 }
 
@@ -188,15 +175,9 @@ GroupwiseRegistrationRMIFunctional<TXform>
   size_t totalNumberOfSamples = 0;
 
   const size_t numberOfPixels = ThisConst->m_TemplateNumberOfPixels;
-#ifdef CMTK_USE_MPI  
-  const size_t pixelsPerTask = 1+(numberOfPixels / ( taskCnt * ThisConst->m_SizeMPI ));
-  const size_t pixelFrom = ( taskIdx + ThisConst->m_RankMPI * taskCnt ) * pixelsPerTask;
-  const size_t pixelTo = std::min( numberOfPixels, pixelFrom + pixelsPerTask );
-#else
   const size_t pixelsPerTask = 1+(numberOfPixels / taskCnt);
   const size_t pixelFrom = taskIdx * pixelsPerTask;
   const size_t pixelTo = std::min( numberOfPixels, pixelFrom + pixelsPerTask );
-#endif
 
   for ( size_t ofs = pixelFrom; ofs < pixelTo; ++ofs )
     {
@@ -266,15 +247,9 @@ GroupwiseRegistrationRMIFunctional<TXform>
   std::fill( sumsVector.begin(), sumsVector.end(), 0 );
 
   const size_t numberOfSamples = ThisConst->m_ProbabilisticSamples.size();
-#ifdef CMTK_USE_MPI  
-  const size_t samplesPerTask = 1+(numberOfSamples / ( taskCnt * ThisConst->m_SizeMPI ));
-  const size_t sampleFrom = ( taskIdx + ThisConst->m_RankMPI * taskCnt ) * samplesPerTask;
-  const size_t sampleTo = std::min( numberOfSamples, sampleFrom + samplesPerTask );
-#else
   const size_t samplesPerTask = 1+(numberOfSamples / taskCnt);
   const size_t sampleFrom = taskIdx * samplesPerTask;
   const size_t sampleTo = std::min( numberOfSamples, sampleFrom + samplesPerTask );
-#endif
 
   size_t totalNumberOfSamples = 0;
   for ( size_t sample = sampleFrom; sample < sampleTo; ++sample )
