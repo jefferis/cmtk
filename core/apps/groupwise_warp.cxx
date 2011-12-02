@@ -112,25 +112,8 @@ byte UserBackgroundValue = 0;
 bool UserBackgroundFlag = false;
 
 int
-doMain( int argc, char* argv[] )
+doMain( int argc, const char* argv[] )
 {
-#ifdef CMTK_USE_MPI
-#  ifdef CMTK_USE_SMP
-  const int threadLevelSupportedMPI = MPI::Init_thread( argc, argv, MPI::THREAD_FUNNELED );
-  if ( threadLevelSupportedMPI < MPI::THREAD_FUNNELED )
-    {
-    cmtk::StdErr << "WARNING: your MPI implementation does not seem to support THREAD_FUNNELED.\n";
-    }
-#  else
-  MPI::Init( argc, argv );
-#  endif
-#endif
-
-#ifdef CMTK_USE_MPI
-  const int mpiRank = MPI::COMM_WORLD.Get_rank();
-  const int mpiSize = MPI::COMM_WORLD.Get_size();
-#endif
-
   try 
     {
     cmtk::CommandLine cl;
@@ -386,24 +369,10 @@ doMain( int argc, char* argv[] )
       }
     }
 
-  // determine and print CPU time (by node, if using MPI)
+  // determine and print CPU time
   const double timeElapsedProcess = cmtk::Timers::GetTimeProcess() - timeBaselineProcess;
-#ifdef CMTK_USE_MPI    
-  std::vector<float> timeElapsedByNodeProcess( mpiSize );
-  MPI::COMM_WORLD.Gather( &timeElapsedProcess, 1, MPI::FLOAT, &timeElapsedByNodeProcess[0], 1, MPI::FLOAT, 0 /*root*/ );
-
-  if ( mpiRank == 0 )
-    {
-    cmtk::StdErr << "Process CPU time [s] by node:\n";
-    for ( int node = 0; node < mpiSize; ++node )
-      {
-      cmtk::StdErr.printf( "%d\t%f\n", node, timeElapsedByNodeProcess[node] );
-      }
-    }
-#else
   cmtk::StdErr.printf( "Process CPU time [s]: %f\n", timeElapsedProcess );  
-#endif  
-
+  
   functional->SetTargetImages( imageListOriginal );
   functional->SetTemplateGrid( originalTemplateGrid );
 
@@ -415,11 +384,7 @@ doMain( int argc, char* argv[] )
   output.WriteXformsSeparateArchives( OutputStudyListIndividual, AverageImagePath );
   output.WriteAverageImage( AverageImagePath, AverageImageInterpolation, UseTemplateData );
 
-#ifdef CMTK_USE_MPI    
-  MPI::Finalize();
-#endif
-
   return 0;
 }
 
-#include "cmtkSafeMainMPI"
+#include "cmtkSafeMain"

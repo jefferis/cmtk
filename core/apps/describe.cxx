@@ -45,23 +45,13 @@
 
 #include <stdio.h>
 
-#ifdef CMTK_USE_MPI
-#    include <mpi.h>
-#endif
-
 const char* ReadOrientation = NULL;
 
 bool MachineReadable = false;
 
 int
-doMain( int argc, char *argv[] )
+doMain( int argc, const char *argv[] )
 {
-#ifdef CMTK_USE_MPI
-  MPI::Init( argc, argv );
-  const int mpiRank = MPI::COMM_WORLD.Get_rank();
-  const int mpiSize = MPI::COMM_WORLD.Get_size();
-#endif
-
   try
     {
     cmtk::CommandLine cl;
@@ -183,12 +173,8 @@ doMain( int argc, char *argv[] )
     throw cmtk::ExitException( 1 );
     }
 
-#ifdef CMTK_USE_MPI
-  MPI::Finalize();
-#endif
-
   return 0;
 }
 
-#include "cmtkSafeMainMPI" 
+#include "cmtkSafeMain"
 

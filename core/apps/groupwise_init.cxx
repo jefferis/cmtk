@@ -70,20 +70,8 @@ std::vector<const char*> fileNameList;
 std::vector<cmtk::UniformVolume::SmartPtr> imageListOriginal;
 
 int
-doMain( int argc, char* argv[] )
+doMain( int argc, const char* argv[] )
 {
-#ifdef CMTK_USE_MPI
-#  ifdef CMTK_USE_SMP
-  const int threadLevelSupportedMPI = MPI::Init_thread( argc, argv, MPI::THREAD_FUNNELED );
-  if ( threadLevelSupportedMPI < MPI::THREAD_FUNNELED )
-    {
-    cmtk::StdErr << "WARNING: your MPI implementation does not seem to support THREAD_FUNNELED.\n";
-    }
-#  else
-  MPI::Init( argc, argv );
-#  endif
-#endif
-
   try 
     {
     cmtk::CommandLine cl;
@@ -169,11 +157,7 @@ doMain( int argc, char* argv[] )
   output.WriteXformsSeparateArchives( OutputStudyListIndividual, PreDefinedTemplatePath );
   output.WriteAverageImage( AverageImagePath, AverageImageInterpolation );
   
-#ifdef CMTK_USE_MPI    
-  MPI::Finalize();
-#endif
-
   return 0;
 }
 
-#include "cmtkSafeMainMPI"
+#include "cmtkSafeMain"

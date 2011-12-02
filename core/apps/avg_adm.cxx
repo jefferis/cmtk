@@ -58,10 +58,6 @@
 #include <list>
 #include <iostream>
 
-#ifdef CMTK_USE_MPI
-#  include <mpi.h>
-#endif
-
 bool Labels = false;
 bool Jacobian = false;
 
@@ -103,14 +99,8 @@ cmtk::Types::DataItem PadOutValue = 0;
 bool HavePadOutValue = false;
 
 int
-doMain( int argc, char** argv )
+doMain( int argc, const char* argv[] )
 {
-#ifdef CMTK_USE_MPI
-  MPI::Init( argc, argv );
-  const int mpiRank = MPI::COMM_WORLD.Get_rank();
-  const int mpiSize = MPI::COMM_WORLD.Get_size();
-#endif
-
   std::list<const char*> inFileList;
 
   try 
@@ -315,20 +305,15 @@ doMain( int argc, char** argv )
     warpXform = cmtk::WarpXform::SmartPtr::DynamicCastFrom( adm );
     }
   
-#ifdef CMTK_USE_MPI
-  if ( mpiRank == 0 )
-#endif
+  if ( OutWarpName ) 
     {
-    if ( OutWarpName ) 
+    if ( WriteIncludeAffine ) 
       {
-      if ( WriteIncludeAffine ) 
-	{
-	warpXform->ReplaceInitialAffine( (*(warpList.begin()))->GetInitialAffineXform() );
-	}
-      
-      cmtk::ClassStream stream( OutWarpName, cmtk::ClassStream::WRITE );
-      stream << warpXform;
+      warpXform->ReplaceInitialAffine( (*(warpList.begin()))->GetInitialAffineXform() );
       }
+      
+    cmtk::ClassStream stream( OutWarpName, cmtk::ClassStream::WRITE );
+    stream << warpXform;
     }
 
   if ( OutImageName ) 
@@ -354,19 +339,12 @@ doMain( int argc, char** argv )
       average = cmtk::UniformVolume::SmartPtr( reformat.GetTransformedReference( &warpList, &volumeList, NULL /*origin*/, IncludeReferenceData ) );
       }
     
-#ifdef CMTK_USE_MPI
-    if ( mpiRank == 0 )
-#endif
       cmtk::VolumeIO::Write( *average, OutImageName );
     }
   
   free( referenceStudy );
   
-#ifdef CMTK_USE_MPI
-  MPI::Finalize();
-#endif
-
   return 0;
 }
 
-#include "cmtkSafeMainMPI"
+#include "cmtkSafeMain"
