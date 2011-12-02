@@ -6,6 +6,12 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 2.1.1
 ===========================
 
+Support for distributed computation using MPI has been removed in this
+release. The MPI code in CMTK has been rarely used for years and was poorly
+tested. Also, due to the availability of large multi-core shared-memory
+systems, distributed computation support is no longer as important, at least
+for the computational problems addressed by CMTK.
+
 For a complete list of changes and fixes, see the CHANGELOG file.
 
 
