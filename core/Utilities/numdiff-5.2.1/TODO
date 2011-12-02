@@ -1,0 +1,5 @@
+* At the moment Numdiff manages perfectly only text files with an
+  8-bit encoding (ASCII and ISO 8859-* text files).
+  The use of Numdiff with UTF-8 text files has some restrictions.
+  Sooner or later Numdiff should fully support UTF-8 encoding.
+

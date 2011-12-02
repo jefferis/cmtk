@@ -1,0 +1,250 @@
+2010-01-24  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	Version 5.2.1 released.
+
+2010-01-24  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* Makefile.in: VERSION changed to 5.2.1.
+	
+	* config.h.in: (VERSION): From 5.2.0 to 5.2.1.
+	
+	* NEWS: Added news for version 5.2.1.
+
+	* system.h: [!ENABLE_NLS] (ngettext): Macro definition.
+
+2010-01-07  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	Version 5.2.0 released.
+
+2010-01-07  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* util.c: Doc fixes.
+
+	* util.c: New file.
+
+	* side.c: Doc fixes.
+
+	* side.c: New file.
+
+	* inout.c: Doc fixes.
+
+	* inout.c: New file.
+
+	* analyze.c: Doc fixes.
+
+	* analyze.c: New file.
+
+	* number.c: Doc fixes.
+
+	* options.c: (print_version) [!USE_GMP]: Message string fixed.
+	(print_help): Message string fixed.
+
+2010-01-06  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* NEWS, INSTALL: Doc fixes.
+
+2010-01-05  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* ndselect.c (print_selversion): Fixed Copyright string.
+
+	* read_line.c: Doc fixes.
+
+	* options.c: Doc fixes.
+
+	(print_version): Fixed Copyright string.
+
+	* numutil.c, numdiff.h, number.c: Doc fixes.
+
+	* number.c: New file.
+
+	* new.c, ndselect.h: Doc fixes.
+
+	* ndselect.h: New file.
+
+	* ndselect.c, main.c, io.c, flags.c: Doc fixes.
+
+	* flags.c: New file.
+
+	* errors.c, configure.ac, config.h.in, cmpfns.c, arith.c, README:
+	Doc fixes.
+
+	* README: New file.
+
+	* Makefile.in, INSTALL: Doc fixes.
+
+	* INSTALL, BUGS: New file.
+
+	* AUTHORS: Doc fixes.
+
+	* AUTHORS: New file.
+
+2010-01-03  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* ndselect.c: [USE_GMP]: Removed zalloc.
+	string.h and numutil.c are not anymore included.
+
+	Removed declaration of read_line.
+	Include read_line.c.
+
+	* Makefile.in (SOURCESONE): Added $(srcdir)/read_line.c.
+	(OBJECTSTWO): Removed ./arith.o and ./io.o.
+	(SOURCESTWO): Removed $(srcdir)/arith.c and $(srcdir)/io.c.
+	Added $(srcdir)/read_line.c.
+	(copy): Added instruction to copy read_line.c
+	from source directory to tarball directory.
+
+	* io.c: Doc-fixes: Removed unuseful comments.
+	(read_line): Moved to file read_line.c.
+	Added instruction to include read_line.c.
+
+	* read_line.c, io.c: New file.
+
+	* arith.c: [USE_GMP] (str2C): Replaced isspace by is_space.
+	Replaced '+' by POS_SIGN and '-' by NEG_SIGN.
+	[!USE_GMP] (str2C): Replaced isspace by is_space.
+	Replaced '+' by POS_SIGN and '-' by NEG_SIGN.
+
+	* ndselect.c (setargs): Replaced isspace by is_space.
+
+	* numdiff.h (is_digit, is_punct, is_print): Macro re-definition.
+	(is_space): Macro definition. The macro isspace has been
+	replaced everywhere by is_space.
+
+	* system.h: New file.
+
+	* numutil.c (anum, snum): Replaced toupper by TOLOWER.
+	(anum, acxnum, snum, scxnum): Replaced isspace by is_space.
+
+	* cmpfns.c (strNcasecmp): Replaced tolower by TOLOWER.
+
+	* new.c (bc_a2num): Replaced toupper by TOLOWER.
+	Replaced isspace by is_space.
+
+	* new.c: New file.
+
+2009-12-30  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* NEWS: Added news for version 5.2.0.
+
+	* NEWS: New file.
+
+	* configure.ac: New option --enable-gmp / --disable-gmp.
+	Usage of GNU MP is enabled by default.
+
+	* arith.c: HAVE_LIBGMP has been replaced by USE_GMP.
+	(Epsilon, MEpsilon): Removed.
+	(mpa_define_epsilon, mpa_undef_epsilon): Removed.
+	[USE_GMP] (init_mpa): Signature and definition (argument
+	iscale is used in place of MAX_ISCALE) changed.
+	All callers in other files changed.
+	[!USE_GMP] (init_mpa): Signature changed.
+	All callers in other files changed.
+	(copyR, copyC): Signature and definition changed.
+	All callers in other files changed.
+	[USE_GMP] (str2R, str2C): Calls to mpf_a2num() changed.
+	(cmp, is0): Signature and definition changed.
+	All callers in other files changed.
+	[USE_GMP] (fprintno): Test (u == Inf) has been correctly rewritten.
+	[USE_GMP] (end_mpa): Variable Inf is also cleared now.
+
+	* main.c (init_mpa_support): Call to init_mpa() changed.
+	(print_statistics) [USE_GMP]: Added code to initialize qm_abserr and qm_relerr.
+	(print_statistics): Removed commented out old code.
+	(print_statistics): Changed calls to copyR().
+	(main): Removed calls to mpa_define_epsilon() and mpa_undef_epsilon().
+
+	* ndselect.c: [USE_GMP] (zalloc): New function.
+	[USE_GMP]: Include numutil.c.
+
+	* options.c:
+	(print_version) [USE_GMP]: Added statement on the way the program has been built.
+	(print_version) [!USE_GMP]: Modified statement on the way the program has been built.
+	(set_args) [!USE_GMP]: Removed code to avoid memory leak (not needed in this case
+	and even dangerous).
+
+	* errors.c (out_of_memory):
+	Added missing argument in the call to fprintf().
+
+	* numutil.c: HAVE_LIBGMP has been replaced by USE_GMP.
+	[USE_GMP](mpf_a2num): The case when the number returned by snum()
+	is zero is now correctly handled.
+
+	* cmpfns.c (cmp, is0, copyR): Calls changed.
+
+	* numdiff.h (USE_GMP): New Macro.
+	HAVE_LIBGMP has been replaced by USE_GMP.
+	(MAX_EPXN, MIN_EXPN): They are now constant values of 'long int' type.
+	(cmp, is0, init_mpa, copyR, copyC): Redefinition of signature.
+	All callers changed.
+	(mpa_define_epsilon, mpa_undef_epsilon): Removed.
+
+	* errors.c, options.c, ndselect.c, main.c, cmpfns.c: New file.
+
+2009-12-29  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* configure.ac: AC_INIT(...): From version 5.0 to 5.2.
+
+	* config.h.in (HAVE_LIBGMP): New Macro.
+	(HAVE_LOCALECONV): New Macro.
+	(VERSION): From 5.0.0 to 5.2.0.
+
+	* Makefile.in: VERSION changed to 5.2.0.
+
+	* config.h.in: New file.
+
+	* numutil.c:
+	[HAVE_LIBGMP] (mpf_a2num): Bug fixes after running a text program.
+
+	* numutil.c:
+	[HAVE_LIBGMP] (mpf_a2num): Removed memory leak + Doc fixes.
+
+	* arith.c: [HAVE_LIBGMP] (fprintno): Memory leak removed
+
+2009-12-28  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* numutil.c: [HAVE_LOCALECONV && HAVE_LIBGMP]: Include locale.h.
+	[HAVE_LIBGMP] (mpf_a2num): New function.
+
+	* numutil.c: New file.
+
+	* configure.ac: AC_CHECK_FUNCS(...): Check for localeconv added.
+
+	* numdiff.h (CHAR_ONE CHAR_NINE): Macro definition.
+	[HAVE_LIBGMP] (mpf_a2num): Declaration.
+
+	* arith.c: [HAVE_LIBGMP] (round_far_from_zero fprintno): New functions.
+	[HAVE_LIBGMP] (printno, debug_printno): Transformed into wrappers of the function fprintno.
+	[HAVE_LIBGMP] (str2R): Call to mpf_a2num changed in view of the actual definition of this function.
+
+	* arith.c:
+	[HAVE_LIBGMP] (Zero, Ten, Inf, Epsilon, MEpsilon): Definition of variables.
+	[HAVE_LIBGMP] (init_mpa, mpa_define_epsilon, initR, initC, copyR, copyC)
+	(str2R, str2C, add, square, divide, divide_by_int, square_root)
+	(Cabs, Csub, cmp, is0, smart_cmp, printno, debug_printno)
+	(delR, delC, mpa_undef_epsilon, end_mpa): New functions.
+	[!HAVE_LIBGMP] (copyR, copyC): Re-definition according to the new signature.
+
+	* numdiff.h (copyR copyC): Redefinition of signature.
+	All callers changed.
+
+2009-12-13  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* Makefile.in: Added createdirs, copy and tarball targets.
+	Target dist rewritten.
+
+	* Makefile.in, arith.c: New file.
+
+2009-12-12  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	* numdiff.h: [HAVE_LIBGMP] (Real Complex): Definition of types.
+
+	* numdiff.h: New file.
+
+	* configure.ac: AC_CHECK_LIB(gmp, __gmpz_init): Check for GNUMP added.
+
+	* configure.ac: New file.
+
+2009-11-31  Ivano Primi  <ivprimi(at)libero(dot)it>
+
+	Version 5.0.0 released.
+

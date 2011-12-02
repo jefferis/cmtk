@@ -124,7 +124,8 @@ check_result()
 
     local diff="cmp"
     if file ${result} | fgrep text; then
-	diff="diff --strip-trailing-cr"
+##	diff="diff --strip-trailing-cr"
+	diff="${BINDIR}/numdiff"
     fi
 
     if ${diff} $result $baseline; then

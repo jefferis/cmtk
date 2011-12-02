@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2009 SRI International
+##  Copyright 2004-2011 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -52,3 +52,7 @@ ENDIF(CMTK_BUILD_MXML)
 IF(CMTK_BUILD_SQLITE)
   SUBDIRS(sqlite3)
 ENDIF(CMTK_BUILD_SQLITE)
+
+IF(BUILD_TESTING)
+  SUBDIRS(numdiff-5.2.1)
+ENDIF(BUILD_TESTING)
