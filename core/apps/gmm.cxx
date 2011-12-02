@@ -154,6 +154,19 @@ doMain
     pMaps[k]->SetData( priorImages[k]->GetData()->Convert( cmtk::TYPE_DOUBLE ) );
     }
   
+  // Properly mask all non-foreground pixels  
+  for ( size_t n = 0; n < nPixels; ++n )
+      {
+      if ( maskImage->GetDataAt( n ) <= 0 )
+	{
+	for ( size_t k = 0; k < nClasses; ++k )
+	  {
+	  pMaps[k]->SetDataAt( 0, n );
+	  }
+	}
+      }
+
+  // run EM iterations
   for ( size_t i = 0; i < nIterations; ++i )
     {
 #pragma omp parallel for
@@ -195,10 +208,9 @@ doMain
 #pragma omp parallel for    
     for ( size_t n = 0; n < nPixels; ++n )
       {
-      double pTotalPixel = 0;
-
       if ( maskImage->GetDataAt( n ) > 0 )
 	{
+	double pTotalPixel = 0;
 	for ( size_t k = 0; k < nClasses; ++k )
 	  {
 	  double kernel = cmtk::GaussianKernel<double>::GetValue( inputImage->GetDataAt( n ), classMu[k], classSigma[k] );
