@@ -53,6 +53,17 @@ IF(CMTK_BUILD_SQLITE)
   SUBDIRS(sqlite3)
 ENDIF(CMTK_BUILD_SQLITE)
 
+#
+# If building test code, we need numdiff to tolerantly compare numerical results against baselines
+#
 IF(BUILD_TESTING)
-  SUBDIRS(numdiff-5.2.1)
+  # Tets whether numdiff is already available
+  FIND_PROGRAM(NUMDIFF_EXECUTABLE numdiff PATHS /usr/bin /usr/local/bin /opt/local/bin ENV PATH)
+  # If not available, build our own
+  IF(NOT NUMDIFF_EXECUTABLE)
+    MESSAGE(STATUS "BUILD_TESTING is active - building numdiff for tolerant numerical comparisons")
+    SUBDIRS(numdiff-5.2.1)
+    SET(NUMDIFF_EXECUTABLE ${CMAKE_BINARY_DIR}/bin/numdiff CACHE PATH "Path to numdiff executable" FORCE)
+  ENDIF(NOT NUMDIFF_EXECUTABLE)
+  MARK_AS_ADVANCED(NUMDIFF_EXECUTABLE)
 ENDIF(BUILD_TESTING)
