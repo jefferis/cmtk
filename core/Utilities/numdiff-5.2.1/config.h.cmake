@@ -244,19 +244,19 @@
 #cmakedefine NO_MINUS_C_MINUS_O 1
 
 /* Define to the address where bug reports for this package should be sent. */
-#cmakedefine PACKAGE_BUGREPORT @CMAKE_CONFIG_PACKAGE_BUGREPORT@
+#define PACKAGE_BUGREPORT "@CMAKE_CONFIG_PACKAGE_BUGREPORT@"
 
 /* Define to the full name of this package. */
-#cmakedefine PACKAGE_NAME  @CMAKE_CONFIG_PACKAGE_NAME@
+#define PACKAGE_NAME "@CMAKE_CONFIG_PACKAGE_NAME@"
 
 /* Define to the full name and version of this package. */
-#cmakedefine PACKAGE_STRING @CMAKE_CONFIG_PACKAGE_STRING@
+#define PACKAGE_STRING "@CMAKE_CONFIG_PACKAGE_STRING@"
 
 /* Define to the one symbol short name of this package. */
-#cmakedefine PACKAGE_TARNAME @CMAKE_CONFIG_PACKAGE_TARNAME@
+#define PACKAGE_TARNAME "@CMAKE_CONFIG_PACKAGE_TARNAME@"
 
 /* Define to the version of this package. */
-#cmakedefine PACKAGE_VERSION @CMAKE_CONFIG_PACKAGE_VERSION@
+#define PACKAGE_VERSION "@CMAKE_CONFIG_PACKAGE_VERSION@"
 
 /* Define to 1 if the `S_IS*' macros in <sys/stat.h> do not work properly. */
 #cmakedefine STAT_MACROS_BROKEN 1
@@ -314,28 +314,28 @@
 #cmakedefine _POSIX_SOURCE 1
 
 /* Define to empty if `const' does not conform to ANSI C. */
-#cmakedefine const
+#define const @CMAKE_CONFIG_CONST@
 
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */
 #ifndef __cplusplus
-#cmakedefine inline @CMAKE_CONFIG_INLINE@
+#define inline @CMAKE_CONFIG_INLINE@
 #endif
 
 /* Define to `int' if <sys/types.h> does not define. */
-#cmakedefine pid_t @CMAKE_CONFIG_PID_T@
+#define pid_t @CMAKE_CONFIG_PID_T@
 
 /* Define to `int' if <sys/types.h> does not define. */
-#cmakedefine ptrdiff_t @CMAKE_CONFIG_PTRDIFF_T@
+#define ptrdiff_t @CMAKE_CONFIG_PTRDIFF_T@
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
-#cmakedefine size_t @CMAKE_CONFIG_SIZE_T@
+#define size_t @CMAKE_CONFIG_SIZE_T@
 
 /* Define to `int' if <sys/types.h> does not define. */
-#cmakedefine ssize_t @CMAKE_CONFIG_SIZE_T@
+#define ssize_t @CMAKE_CONFIG_SSIZE_T@
 
 /* Define as `fork' if `vfork' does not work. */
-#cmakedefine vfork @CMAKE_CONFIG_VFORK@
+#define vfork @CMAKE_CONFIG_VFORK@
 
 /* Version + Release number */
 #define VERSION "5.2.1"

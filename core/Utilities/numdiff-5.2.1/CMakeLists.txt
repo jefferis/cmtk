@@ -61,16 +61,20 @@ CHECK_INCLUDE_FILES(wctype.h HAVE_WCTYPE_H)
 
 CHECK_INCLUDE_FILES (sys/dir.h HAVE_SYS_DIR_H)
 CHECK_INCLUDE_FILES (sys/file.h HAVE_SYS_FILE_H)
+CHECK_INCLUDE_FILES (sys/file.h HAVE_SYS_STAT_H)
 CHECK_INCLUDE_FILES (sys/wait.h HAVE_SYS_WAIT_H)
 
-#AC_C_CONST
+#AC_C_CONST -- obsolete according to https://www.gnu.org/software/hello/manual/autoconf/C-Compiler.html#index-AC_005fC_005fCONST-885
+SET(CMAKE_CONFIG_CONST "const")
+
 #AC_C_INLINE
+SET(CMAKE_CONFIG_INLINE "${C_INLINE}")
 
 # Check for variable arrays support in C compiler
 INCLUDE(CheckCSourceCompiles)
 CHECK_C_SOURCE_COMPILES("int main() { int size = 10; char array[size]; }" HAVE_C_VARARRAYS)
 
-# Check for types
+# Check for types and substitute replacement types if they don't exist
 INCLUDE(CheckTypeSize)
 
 CHECK_TYPE_SIZE(pid_t PID_T_SIZE)
@@ -101,9 +105,10 @@ ELSE(SIZE_T_SIZE)
   SET(CMAKE_CONFIG_SIZE_T unsigned int)
 ENDIF(SIZE_T_SIZE)
 
-# AC_STRUCT_ST_BLKSIZE
-# AC_STRUCT_ST_RDEV
-# AC_STRUCT_ST_MTIM_NSEC
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/CheckStructMember.cmake)
+CHECK_STRUCT_MEMBER("struct stat" st_blksize "sys/stat.h" HAVE_STRUCT_STAT_ST_BLKSIZE)
+CHECK_STRUCT_MEMBER("struct stat" st_rdev "sys/stat.h" HAVE_STRUCT_STAT_ST_RDEV)
+CHECK_STRUCT_MEMBER("struct stat" st_mtim_nsed "sys/stat.h" HAVE_STRUCT_STAT_ST_MTIM_NSEC)
 
 # --------------------------------------
 # Checks for libraries
@@ -161,11 +166,9 @@ ELSE(NOT HAVE_STRCSPN)
 ENDIF(NOT HAVE_STRCSPN)
 
 CHECK_FUNCTION_EXISTS(fork HAVE_FORK)
-CHECK_FUNCTION_EXISTS(vfork HAVE_VFORK)
 IF(HAVE_FORK)
-  SET(CMAKE_CONFIG_FORK fork)
-ELSE(HAVE_FORK)
-  SET(CMAKE_CONFIG_FORK vfork)
+  SET(HAVE_WORKING_FORK 1)
+  SET(CMAKE_CONFIG_VFORK fork)
 ENDIF(HAVE_FORK)
 
 CHECK_FUNCTION_EXISTS(strerror_r HAVE_STRERROR_R)
@@ -234,7 +237,7 @@ IF(HAVE_GMP_H AND HAVE_LIBGMP)
   ENDIF(NUMDIFF_USE_GMP)
 ENDIF(HAVE_GMP_H AND HAVE_LIBGMP)
 
-CONFIGURE_FILE(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+CONFIGURE_FILE(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
 ADD_DEFINITIONS(-DHAVE_CONFIG_H)
 
 # actual target:
