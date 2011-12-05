@@ -201,7 +201,7 @@ CHECK_FUNCTION_EXISTS(clock_gettime HAVE_CLOCK_GETTIME)
 #AC_SUBST([LIB_CLOCK_GETTIME])
 
 
-OPTION(USE_UNLOCKED_IO "Define if you want getc etc. to use unlocked I/O if available. Unlocked I/O can improve performance in unithreaded apps, but it is not safe for multithreaded apps." ON )
+OPTION(NUMDIFF_USE_UNLOCKED_IO "Define if you want getc etc. to use unlocked I/O if available. Unlocked I/O can improve performance in unithreaded apps, but it is not safe for multithreaded apps." ON )
 
 CHECK_FUNCTION_EXISTS(clearerr_unlocked HAVE_DECL_CLEARERR_UNLOCKED)
 CHECK_FUNCTION_EXISTS(feof_unlocked HAVE_DECL_FEOF_UNLOCKED)
@@ -229,6 +229,8 @@ IF(HAVE_GMP_H AND HAVE_LIBGMP)
   OPTION(NUMDIFF_USE_GMP "Turn on use of GNU MP" ON)
   IF(NUMDIFF_USE_GMP)
     FIND_LIBRARY(LIBGMP_LIBRARY gmp)
+  ELSE(NUMDIFF_USE_GMP)
+    ADD_DEFINITIONS(-DDISABLE_GMP)
   ENDIF(NUMDIFF_USE_GMP)
 ENDIF(HAVE_GMP_H AND HAVE_LIBGMP)
 
