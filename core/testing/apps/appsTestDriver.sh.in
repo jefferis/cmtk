@@ -48,6 +48,8 @@ fi
 
 HOSTNAME=`uname -n`
 
+NUMDIFF=@NUMDIFF_EXECUTABLE@
+
 tmpdir=${BINDIR}/../testing/temporary/${HOSTNAME}/${RUNTEST}
 if [ -e ${tmpdir} ]; then
     rm -rf ${tmpdir}
