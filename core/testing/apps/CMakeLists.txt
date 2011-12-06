@@ -289,6 +289,14 @@ SET(testList ${testList}
   filmMISincRefSPGR)
 
 # ==========================================
+# Tests for "glm" tool
+SET(testList ${testList} glmDefault glmNormalize glmExp glmNoConstant glmIgnore glmSelect glmCrop)
+
+# ==========================================
+# Tests for "gmm" tool
+LIST(APPEND testList gmmDefault gmmAlternative)
+
+# ==========================================
 # Tests for "gregxform" tool
 SET(testList ${testList} 
   gregxformFordwardBackward 
@@ -452,10 +460,6 @@ SET(testList ${testList}
   mk_phantom_3dBoxSphere 
   mk_phantom_3dImport
   mk_phantom_3dImportGrid)
-
-# ==========================================
-# Tests for "model" tool
-SET(testList ${testList} glmDefault glmNormalize glmExp glmNoConstant glmIgnore glmSelect glmCrop)
 
 # ==========================================
 # Tests for "reorient" tool

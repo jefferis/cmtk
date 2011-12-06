@@ -769,6 +769,14 @@ case ${RUNTEST} in
 	check_results model_stdout.txt model_fstat_00_model.img  model_tstat_00_age.img model_param_00_age.img
 	check_results model_tstat_01_sex.img model_param_01_sex.img model_tstat_02_CONST.img model_param_02_CONST.img
 	;;
+    gmmDefault)
+        run gmm --mask gmm/mask.nii gmm/spgr.nii ${tmpdir}/gmm.nii gmm/prior1.nii gmm/prior2.nii gmm/prior3.nii
+	check_results gmm.nii
+	;;
+    gmmAlternative)
+        run gmm --classes 2 --iterations 5 --priors-init-only --prior-epsilon 0.05 --probability-maps gmm/spgr.nii ${tmpdir}/gmm.nii gmm/prior1.nii gmm/prior2.nii
+	check_results gmm.nii gmm_prob1.nii gmm_prob2.nii
+	;;
     gregxformFordwardBackward)
 	run_eval "cat vol001_t0_points.xyz | ${BINDIR}/gregxform -f vol001_mr_t0t1_warp.xform | ${BINDIR}/gregxform vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyz"
 	check_results vol001_t0_points.xyz
