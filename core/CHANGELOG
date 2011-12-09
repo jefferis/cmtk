@@ -1,5 +1,8 @@
 Release CMTK-2.1.1:
 
+(r3628) Added: "similarity" tool now computes absolute and relative image
+    differences; this feature is used by the applications test driver script
+    to perform tolerant comparisons.
 (r3608) Removed: support for MPI distributed-memory parallelism was
     retired. This was rarely used, poorly tested, and due to ever larger SMP
     systems no longer very critical.
