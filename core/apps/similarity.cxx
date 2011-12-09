@@ -122,12 +122,12 @@ ParseCommandLine( const int argc, const char* argv[] )
 cmtk::JointHistogram<int>*
 AnalyseStudies
 ( unsigned int& voxelCount, double& sumAbs, double& sumSq, double& sumMult, 
-  unsigned int& countVoxelsUnequal, double& maxDifference, cmtk::VoxelMatchingCrossCorrelation& ccMetric, 
+  unsigned int& countVoxelsUnequal, double& maxDifference, double& maxRelDifference, cmtk::VoxelMatchingCrossCorrelation& ccMetric, 
   const cmtk::TypedArray* mask = NULL )
 {
   sumAbs = sumSq = sumMult = 0;
   voxelCount = countVoxelsUnequal = 0;
-  maxDifference = 0;
+  maxDifference = maxRelDifference = 0;
 
   ccMetric.Reset();
 
@@ -180,6 +180,7 @@ AnalyseStudies
 	const double d = fabs( value0 - value1 );
 	sumAbs += d;
 	maxDifference = std::max( maxDifference, d );
+	maxRelDifference = std::max( maxRelDifference, d / std::max( fabs(value0) , fabs(value1)) );
 	sumSq += d*d;
 	sumMult += value0 * value1;
 	}
@@ -285,11 +286,12 @@ doMain ( const int argc, const char* argv[] )
   double sumSq;
   double sumMult;
   double maxDifference;
+  double maxRelDifference;
   unsigned int countVoxelsUnequal;
   
   cmtk::VoxelMatchingCrossCorrelation ccMetric;
   
-  cmtk::JointHistogram<int>::SmartPtr histogram( AnalyseStudies( voxelCount, sumAbs, sumSq, sumMult, countVoxelsUnequal, maxDifference, ccMetric, mask ) );
+  cmtk::JointHistogram<int>::SmartPtr histogram( AnalyseStudies( voxelCount, sumAbs, sumSq, sumMult, countVoxelsUnequal, maxDifference, maxRelDifference, ccMetric, mask ) );
   
   double hX, hY;
   histogram->GetMarginalEntropies( hX, hY );
@@ -297,8 +299,8 @@ doMain ( const int argc, const char* argv[] )
   
   fprintf( stdout, "STAT\tN\tHX\tHY\nSTATval\t%d\t%.5f\t%.5f\n\n", voxelCount, hX, hY );
   
-  fprintf( stdout, "SIM\tNDIFF\tDMAX\tMSD\tMAD\tNCC\tHXY\tMI\tNMI\nSIMval\t%d\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\n",
-	   countVoxelsUnequal, maxDifference, sumSq / voxelCount, sumAbs / voxelCount, ccMetric.Get(), hXY, hX + hY - hXY, ( hX + hY ) / hXY );
+  fprintf( stdout, "SIM\tNDIFF\tDMAX\trDMAX\tMSD\tMAD\tNCC\tHXY\tMI\tNMI\nSIMval\t%d\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\n",
+	   countVoxelsUnequal, maxDifference, maxRelDifference, sumSq / voxelCount, sumAbs / voxelCount, ccMetric.Get(), hXY, hX + hY - hXY, ( hX + hY ) / hXY );
   
   if ( HistogramTextFileName )
     {

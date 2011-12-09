@@ -144,6 +144,43 @@ check_results()
     done
 }
 
+check_image()
+{
+    baseline=`get_unzipped ${BASELINE}/$1`
+    result=`get_unzipped ${tmpdir}/$1`
+
+    if test ! -f ${result}; then
+	echo "Results image ${result} does not exist"
+	exit 1
+    fi
+
+    if test ! -f ${baseline}; then
+	echo "Baseline image ${baseline} does not exist"
+	exit 1
+    fi
+    
+    # see if maximum relative difference between images exceeds 1e-6
+    difference=`${BINDIR}/similarity $baseline $result | fgrep SIMval | cut -f4`
+    threshold=1e-5 ## if this is made much smaller, need to adjust "scale=" on next line:
+    compare=`echo "SCALE; $difference > $threshold" | sed 's/e/*10^/g;s/SCALE/scale=10/' | bc`
+
+    echo difference=$difference compare=$compare
+
+    if [ "${compare}" = "0" ]; then
+	return
+    else
+	echo "Relative image difference $difference exceeds threshold $threshold"
+	exit 1
+    fi
+}
+
+check_images()
+{
+    for r in $*; do
+	check_image $r
+    done
+}
+
 case ${RUNTEST} in
     average_edt)
 	run average_edt -o ${tmpdir}/shape_average.hdr -n 255 --interpolate-image parc1.hdr parc2.hdr parc3.hdr
@@ -775,7 +812,8 @@ case ${RUNTEST} in
 	;;
     gmmAlternative)
         run gmm --classes 2 --iterations 5 --priors-init-only --prior-epsilon 0.05 --probability-maps gmm/spgr.nii ${tmpdir}/gmm.nii gmm/prior1.nii gmm/prior2.nii
-	check_results gmm.nii gmm_prob1.nii gmm_prob2.nii
+	check_results gmm.nii
+	check_images gmm_prob1.nii gmm_prob2.nii
 	;;
     gregxformFordwardBackward)
 	run_eval "cat vol001_t0_points.xyz | ${BINDIR}/gregxform -f vol001_mr_t0t1_warp.xform | ${BINDIR}/gregxform vol001_mr_t0t1_warp.xform > ${tmpdir}/vol001_t0_points.xyz"
