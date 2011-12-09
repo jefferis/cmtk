@@ -122,13 +122,13 @@ check_result()
 	exit 1
     fi
 
-    echo "diff ${tmpdir}/$1 ${BASELINE}/$1"
-
     local diff="cmp"
     if file ${result} | fgrep text; then
 ##	diff="diff --strip-trailing-cr"
 	diff="${NUMDIFF} --relative-tolerance=1e-5"
     fi
+
+    echo "${diff} ${tmpdir}/$1 ${BASELINE}/$1"
 
     if ${diff} $result $baseline; then
 	return

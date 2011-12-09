@@ -57,6 +57,8 @@
 #  include <sys/stat.h>
 #endif
 
+#include <algorithm>
+
 bool Padding0 = false;
 bool Padding1 = false;
 
@@ -120,11 +122,12 @@ ParseCommandLine( const int argc, const char* argv[] )
 cmtk::JointHistogram<int>*
 AnalyseStudies
 ( unsigned int& voxelCount, double& sumAbs, double& sumSq, double& sumMult, 
-  unsigned int& countVoxelsUnequal, cmtk::VoxelMatchingCrossCorrelation& ccMetric, 
+  unsigned int& countVoxelsUnequal, double& maxDifference, cmtk::VoxelMatchingCrossCorrelation& ccMetric, 
   const cmtk::TypedArray* mask = NULL )
 {
   sumAbs = sumSq = sumMult = 0;
   voxelCount = countVoxelsUnequal = 0;
+  maxDifference = 0;
 
   ccMetric.Reset();
 
@@ -174,8 +177,10 @@ AnalyseStudies
       
       if ( insideMask )
 	{
-	sumAbs += fabs( value0 - value1 );
-	sumSq += cmtk::MathUtil::Square( value0 - value1 );
+	const double d = fabs( value0 - value1 );
+	sumAbs += d;
+	maxDifference = std::max( maxDifference, d );
+	sumSq += d*d;
 	sumMult += value0 * value1;
 	}
       
@@ -244,7 +249,11 @@ doMain ( const int argc, const char* argv[] )
   if ( ! ParseCommandLine( argc, argv ) ) return 1;
 
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( imagePath0 ) );
-  if ( ! volume ) throw cmtk::ExitException( 1 );
+  if ( ! volume ) 
+    {
+    cmtk::StdErr << "ERROR: could not read image " << imagePath0 << "\n";
+    throw cmtk::ExitException( 1 );
+    }
   Volume0 = volume;
   if ( Padding0 ) 
     {
@@ -260,7 +269,11 @@ doMain ( const int argc, const char* argv[] )
     }
   
   volume = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( imagePath1 ) );
-  if ( ! volume ) throw cmtk::ExitException( 1 );
+  if ( ! volume ) 
+    {
+    cmtk::StdErr << "ERROR: could not read image " << imagePath1 << "\n";
+    throw cmtk::ExitException( 1 );
+    }
   Volume1 = volume;
   if ( Padding1 ) 
     {
@@ -271,11 +284,12 @@ doMain ( const int argc, const char* argv[] )
   double sumAbs; 
   double sumSq;
   double sumMult;
+  double maxDifference;
   unsigned int countVoxelsUnequal;
   
   cmtk::VoxelMatchingCrossCorrelation ccMetric;
   
-  cmtk::JointHistogram<int>::SmartPtr histogram( AnalyseStudies( voxelCount, sumAbs, sumSq, sumMult, countVoxelsUnequal, ccMetric, mask ) );
+  cmtk::JointHistogram<int>::SmartPtr histogram( AnalyseStudies( voxelCount, sumAbs, sumSq, sumMult, countVoxelsUnequal, maxDifference, ccMetric, mask ) );
   
   double hX, hY;
   histogram->GetMarginalEntropies( hX, hY );
@@ -283,8 +297,8 @@ doMain ( const int argc, const char* argv[] )
   
   fprintf( stdout, "STAT\tN\tHX\tHY\nSTATval\t%d\t%.5f\t%.5f\n\n", voxelCount, hX, hY );
   
-  fprintf( stdout, "SIM\tDIFF\tMSD\tMAD\tNCC\tHXY\tMI\tNMI\nSIMval\t%d\t%.1f\t%.3f\t%.4f\t%.5f\t%.5f\t%.5f\n",
-	   countVoxelsUnequal, sumSq / voxelCount, sumAbs / voxelCount, ccMetric.Get(), hXY, hX + hY - hXY, ( hX + hY ) / hXY );
+  fprintf( stdout, "SIM\tNDIFF\tDMAX\tMSD\tMAD\tNCC\tHXY\tMI\tNMI\nSIMval\t%d\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\t%.5g\n",
+	   countVoxelsUnequal, maxDifference, sumSq / voxelCount, sumAbs / voxelCount, ccMetric.Get(), hXY, hX + hY - hXY, ( hX + hY ) / hXY );
   
   if ( HistogramTextFileName )
     {
