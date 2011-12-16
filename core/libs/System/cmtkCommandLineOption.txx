@@ -64,7 +64,7 @@ cmtk::CommandLine::Option<T>
     if ( !Flag ) // if there is no flag monitoring this option, then there must be a valid default value
       {
       mxml_node_t *dflt = mxmlNewElement( node, "default" );
-      mxmlNewText( dflt, 0, CommandLineTypeTraits<T>::ValueToStringMinimal( this->Var ).c_str() );
+      mxmlNewText( dflt, 0, CommandLineTypeTraits<T>::ValueToStringMinimal( *(this->Var) ).c_str() );
       }
     return node;
     }
@@ -87,7 +87,7 @@ cmtk::CommandLine::Option<T>
   if ( this->Flag && !(*this->Flag) )
     fmt << "\n[Default: disabled]";
   else
-    fmt << "\n[Default: " << CommandLineTypeTraits<T>::ValueToString( this->Var ) << "]";
+    fmt << "\n[Default: " << CommandLineTypeTraits<T>::ValueToString( *(this->Var) ) << "]";
   return fmt;
 }
 
@@ -99,7 +99,7 @@ cmtk::CommandLine::Option<T>
   if ( this->Flag && !(*this->Flag) )
     StdOut << " '''[Default: disabled]'''";
   else
-    StdOut << " '''[Default: " << CommandLineTypeTraits<T>::ValueToString( this->Var ) << "]'''";
+    StdOut << " '''[Default: " << CommandLineTypeTraits<T>::ValueToString( *(this->Var) ) << "]'''";
 }
 
 template<class T>
@@ -110,5 +110,5 @@ cmtk::CommandLine::Option<T>
   if ( this->Flag && !(*this->Flag) )
     StdOut << ".B [Default: disabled]\n";
   else
-    StdOut << ".B [Default: " << CommandLineTypeTraits<T>::ValueToString( this->Var ) << "]\n";
+    StdOut << ".B [Default: " << CommandLineTypeTraits<T>::ValueToString( *(this->Var) ) << "]\n";
 }

@@ -46,18 +46,18 @@ class CommandLineTypeTraitsBase
 {
 public:
   /// Convert a value of this type to string.
-  static std::string ValueToString( const T* value )
+  static std::string ValueToString( const T& value )
   {
     std::ostringstream stream;
-    stream << *value;
+    stream << value;
     return stream.str();
   }
 
   /// Convert a value of this type to string with minimal added markup (for XML output).
-  static std::string ValueToStringMinimal( const T* value )
+  static std::string ValueToStringMinimal( const T& value )
   {
     std::ostringstream stream;
-    stream << *value;
+    stream << value;
     return stream.str();
   }
 };
@@ -89,21 +89,21 @@ public:
     return "string";
   }
 
-  static std::string ValueToString( const char *const * value )
+  static std::string ValueToString( const char*& value )
   {
     std::ostringstream stream;
-    if ( value && *value )
-      stream << "\"" << *value << "\"";
+    if ( value )
+      stream << "\"" << value << "\"";
     else
       stream << "NONE";
     return stream.str();
   }
 
-  static std::string ValueToStringMinimal( const char *const * value )
+  static std::string ValueToStringMinimal( const char*& value )
   {
     std::ostringstream stream;
-    if ( value && *value )
-      stream << *value;
+    if ( value )
+      stream << value;
     return stream.str();
   }
 };
@@ -133,16 +133,16 @@ public:
     return "vector<string>";
   }
 
-  static std::string ValueToString( const std::vector<std::string>* value )
+  static std::string ValueToString( const std::vector<std::string>& value )
   {
     std::ostringstream stream;
-    for ( size_t i = 0; i < value->size(); ++i )
-      stream << (*value)[i] << " ";
+    for ( size_t i = 0; i < value.size(); ++i )
+      stream << value[i] << " ";
     return stream.str();
   }
 
   /// Convert a value of this type to string with minimal added markup (for XML output).
-  static std::string ValueToStringMinimal( const std::vector<std::string>* value )
+  static std::string ValueToStringMinimal( const std::vector<std::string>& value )
   {
     return ValueToString( value );
   }
@@ -208,18 +208,18 @@ CommandLineTypeTraits<signed char>
 {
 public:
   /// Convert a value of this type to numerical string.
-  static std::string ValueToString( const signed char* value )
+  static std::string ValueToString( const signed char& value )
   {
     std::ostringstream stream;
-    stream << static_cast<int>( *value );
+    stream << static_cast<int>( value );
     return stream.str();
   }
 
   /// Convert a value of this type to numerical string with minimal added markup (for XML output).
-  static std::string ValueToStringMinimal( const signed char* value )
+  static std::string ValueToStringMinimal( const signed char& value )
   {
     std::ostringstream stream;
-    stream << static_cast<int>( *value );
+    stream << static_cast<int>( value );
     return stream.str();
   }
 
@@ -237,18 +237,18 @@ CommandLineTypeTraits<unsigned char> :
 {
 public:
   /// Convert a value of this type to numerical string.
-  static std::string ValueToString( const unsigned char* value )
+  static std::string ValueToString( const unsigned char& value )
   {
     std::ostringstream stream;
-    stream << static_cast<int>( *value );
+    stream << static_cast<int>( value );
     return stream.str();
   }
 
   /// Convert a value of this type to numerical string with minimal added markup (for XML output).
-  static std::string ValueToStringMinimal( const unsigned char* value )
+  static std::string ValueToStringMinimal( const unsigned char& value )
   {
     std::ostringstream stream;
-    stream << static_cast<int>( *value );
+    stream << static_cast<int>( value );
     return stream.str();
   }
 
