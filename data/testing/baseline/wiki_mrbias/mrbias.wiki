@@ -36,37 +36,37 @@ where
 
 ; <tt>--verbose-level</tt> <tt><integer></tt> : Set verbosity level.
 
-; <tt>--verbose</tt> / <tt>-v</tt> : Increment verbosity level by 1 (deprecated; supported for backward compatibility).
+; <tt>--verbose</tt>, <tt>-v</tt> : Increment verbosity level by 1 (deprecated; supported for backward compatibility).
 
 ; <tt>--threads</tt> <tt><integer></tt> : Set maximum number of parallel threads (for POSIX threads and OpenMP).
 
 === Bias Field Parameterization ===
 
-; <tt>--degree-add</tt> <tt><integer></tt> / <tt>-A</tt> <tt><integer></tt> : Polynomial degree for additive correction. '''[Default: 0]'''
+; <tt>--degree-add</tt> <tt><integer></tt>, <tt>-A</tt> <tt><integer></tt> : Polynomial degree for additive correction. '''[Default: 0]'''
 
-; <tt>--degree-mul</tt> <tt><integer></tt> / <tt>-M</tt> <tt><integer></tt> : Polynomial degree for multiplicative correction. '''[Default: 2]'''
+; <tt>--degree-mul</tt> <tt><integer></tt>, <tt>-M</tt> <tt><integer></tt> : Polynomial degree for multiplicative correction. '''[Default: 2]'''
 
-; <tt>--incremental</tt> / <tt>-I</tt> : Incrementally increase polynomial degrees.
+; <tt>--incremental</tt>, <tt>-I</tt> : Incrementally increase polynomial degrees.
 
 === Input Image Preprocessing ===
 
 ; <tt>--set-padding-value</tt> <tt><double></tt> : Set padding value for input intensity image. Pixels with this value will be ignored. '''[Default: disabled]'''
 
-; <tt>--mask</tt> <tt><labelmap-path></tt> / <tt>-m</tt> <tt><labelmap-path></tt> : Binary mask image filename. '''[Default: NONE]'''
+; <tt>--mask</tt> <tt><labelmap-path></tt>, <tt>-m</tt> <tt><labelmap-path></tt> : Binary mask image filename. '''[Default: NONE]'''
 
-; <tt>--thresh-min</tt> <tt><float></tt> / <tt>-t</tt> <tt><float></tt> : Minimum intensity threshold for image foreground. '''[Default: disabled]'''
+; <tt>--thresh-min</tt> <tt><float></tt>, <tt>-t</tt> <tt><float></tt> : Minimum intensity threshold for image foreground. '''[Default: disabled]'''
 
-; <tt>--thresh-max</tt> <tt><float></tt> / <tt>-T</tt> <tt><float></tt> : Minimum intensity threshold for image foreground. '''[Default: disabled]'''
+; <tt>--thresh-max</tt> <tt><float></tt>, <tt>-T</tt> <tt><float></tt> : Minimum intensity threshold for image foreground. '''[Default: disabled]'''
 
 ; <tt>--thresh-auto</tt> : Automatic minimum intensity threshold selection for image foreground using an estimate of image noise level.
 
 === Entropy Estimation Settings ===
 
-; <tt>--log-intensities</tt> / <tt>-L</tt> : Use log intensities for entropy estimation.
+; <tt>--log-intensities</tt>, <tt>-L</tt> : Use log intensities for entropy estimation.
 
-; <tt>--sampling-density</tt> <tt><float></tt> / <tt>-s</tt> <tt><float></tt> : Image sampling density to use only subset of image pixels '''[Default: disabled]'''
+; <tt>--sampling-density</tt> <tt><float></tt>, <tt>-s</tt> <tt><float></tt> : Image sampling density to use only subset of image pixels '''[Default: disabled]'''
 
-; <tt>--num-bins</tt> <tt><integer></tt> / <tt>-n</tt> <tt><integer></tt> : Number of histogram bins for entropy estimation '''[Default: 256]'''
+; <tt>--num-bins</tt> <tt><integer></tt>, <tt>-n</tt> <tt><integer></tt> : Number of histogram bins for entropy estimation '''[Default: 256]'''
 
 === Optimization Algorithm Settings ===
 
@@ -84,7 +84,7 @@ where
 
 ; <tt>--write-bias-mul</tt> <tt><image-path></tt> : File name for output of multiplicative bias field. '''[Default: NONE]'''
 
-; <tt>--write-float</tt> / <tt>-F</tt> : Write output image with floating point pixel data. If this is not given, the input data type is used.
+; <tt>--write-float</tt>, <tt>-F</tt> : Write output image with floating point pixel data. If this is not given, the input data type is used.
 
 === Image/Transformation Database ===
 

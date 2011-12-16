@@ -36,7 +36,7 @@ where
 
 ; <tt>--verbose-level</tt> <tt><integer></tt> : Set verbosity level.
 
-; <tt>--verbose</tt> / <tt>-v</tt> : Increment verbosity level by 1 (deprecated; supported for backward compatibility).
+; <tt>--verbose</tt>, <tt>-v</tt> : Increment verbosity level by 1 (deprecated; supported for backward compatibility).
 
 ; <tt>--threads</tt> <tt><integer></tt> : Set maximum number of parallel threads (for POSIX threads and OpenMP).
 
@@ -48,20 +48,20 @@ where
 
 ; <tt>--interleave-axis</tt> : Define interleave axis: this is the through-slice direction of the acquisition.Supported values: "<tt>guess-from-input</tt>", "<tt>axial</tt>", "<tt>sagittal</tt>", "<tt>coronal</tt>", "<tt>interleave-x</tt>", "<tt>interleave-y</tt>", "<tt>interleave-z</tt>", where the default is "guess-from-input", or use one of the following:
 :; <tt>--guess-from-input</tt> : Guess from input image '''[This is the default]'''
-:; <tt>--axial</tt> / <tt>-a</tt> : Interleaved axial images
-:; <tt>--sagittal</tt> / <tt>-s</tt> : Interleaved sagittal images
-:; <tt>--coronal</tt> / <tt>-c</tt> : Interleaved coronal images
-:; <tt>--interleave-x</tt> / <tt>-x</tt> : Interleaved along x axis
-:; <tt>--interleave-y</tt> / <tt>-y</tt> : Interleaved along y axis
-:; <tt>--interleave-z</tt> / <tt>-z</tt> : Interleaved along z axis
+:; <tt>--axial</tt>, <tt>-a</tt> : Interleaved axial images
+:; <tt>--sagittal</tt>, <tt>-s</tt> : Interleaved sagittal images
+:; <tt>--coronal</tt>, <tt>-c</tt> : Interleaved coronal images
+:; <tt>--interleave-x</tt>, <tt>-x</tt> : Interleaved along x axis
+:; <tt>--interleave-y</tt>, <tt>-y</tt> : Interleaved along y axis
+:; <tt>--interleave-z</tt>, <tt>-z</tt> : Interleaved along z axis
 
-; <tt>--passes</tt> <tt><integer></tt> / <tt>-p</tt> <tt><integer></tt> : Number of interleaved passes '''[Default: 2]'''
+; <tt>--passes</tt> <tt><integer></tt>, <tt>-p</tt> <tt><integer></tt> : Number of interleaved passes '''[Default: 2]'''
 
-; <tt>--pass-weight</tt> <tt><string></tt> / <tt>-W</tt> <tt><string></tt> : Set contribution weight for a pass in the form 'pass:weight'
+; <tt>--pass-weight</tt> <tt><string></tt>, <tt>-W</tt> <tt><string></tt> : Set contribution weight for a pass in the form 'pass:weight'
 
 === Motion Correction / Registration Options ===
 
-; <tt>--reference-image</tt> <tt><image-path></tt> / <tt>-R</tt> <tt><image-path></tt> : Use a separate high-resolution reference image for registration '''[Default: NONE]'''
+; <tt>--reference-image</tt> <tt><image-path></tt>, <tt>-R</tt> <tt><image-path></tt> : Use a separate high-resolution reference image for registration '''[Default: NONE]'''
 
 ; <tt>--registration-metric</tt> : Registration metric for motion estimation by image-to-image registration.Supported values: "<tt>nmi</tt>", "<tt>mi</tt>", "<tt>cr</tt>", "<tt>msd</tt>", "<tt>cc</tt>", where the default is "msd", or use one of the following:
 :; <tt>--nmi</tt> : Use Normalized Mutual Information for pass-to-refereence registration
@@ -76,32 +76,32 @@ where
 
 === Initial Volume Injection Options ===
 
-; <tt>--injection-kernel-sigma</tt> <tt><double></tt> / <tt>-S</tt> <tt><double></tt> : Standard deviation of Gaussian kernel for volume injection in multiples of pixel size in each direction. '''[Default: 0.5]'''
+; <tt>--injection-kernel-sigma</tt> <tt><double></tt>, <tt>-S</tt> <tt><double></tt> : Standard deviation of Gaussian kernel for volume injection in multiples of pixel size in each direction. '''[Default: 0.5]'''
 
-; <tt>--injection-kernel-radius</tt> <tt><double></tt> / <tt>-r</tt> <tt><double></tt> : Truncation radius factor of injection kernel. The kernel is truncated at sigma*radius, where sigma is the kernel standard deviation. '''[Default: 2]'''
+; <tt>--injection-kernel-radius</tt> <tt><double></tt>, <tt>-r</tt> <tt><double></tt> : Truncation radius factor of injection kernel. The kernel is truncated at sigma*radius, where sigma is the kernel standard deviation. '''[Default: 2]'''
 
 === Inverse Interpolation Options ===
 
 ; <tt>--inverse-interpolation-kernel</tt> : Kernel for the inverse interpolation reconstructionSupported values: "<tt>cubic</tt>", "<tt>linear</tt>", "<tt>hamming-sinc</tt>", "<tt>cosine-sinc</tt>", where the default is "cubic", or use one of the following:
-:; <tt>--cubic</tt> / <tt>-C</tt> : Tricubic interpolation '''[This is the default]'''
-:; <tt>--linear</tt> / <tt>-L</tt> : Trilinear interpolation (faster but less accurate)
-:; <tt>--hamming-sinc</tt> / <tt>-H</tt> : Hamming-windowed sinc interpolation
-:; <tt>--cosine-sinc</tt> / <tt>-O</tt> : Cosine-windowed sinc interpolation (most accurate but slowest)
+:; <tt>--cubic</tt>, <tt>-C</tt> : Tricubic interpolation '''[This is the default]'''
+:; <tt>--linear</tt>, <tt>-L</tt> : Trilinear interpolation (faster but less accurate)
+:; <tt>--hamming-sinc</tt>, <tt>-H</tt> : Hamming-windowed sinc interpolation
+:; <tt>--cosine-sinc</tt>, <tt>-O</tt> : Cosine-windowed sinc interpolation (most accurate but slowest)
 
-; <tt>--fourth-order-error</tt> / <tt>-f</tt> : Use fourth-order (rather than second-order) error for optimization.
+; <tt>--fourth-order-error</tt>, <tt>-f</tt> : Use fourth-order (rather than second-order) error for optimization.
 
-; <tt>--num-iterations</tt> <tt><integer></tt> / <tt>-n</tt> <tt><integer></tt> : Maximum number of inverse interpolation iterations '''[Default: 20]'''
+; <tt>--num-iterations</tt> <tt><integer></tt>, <tt>-n</tt> <tt><integer></tt> : Maximum number of inverse interpolation iterations '''[Default: 20]'''
 
 === Reconstruction Regularization Options ===
 
 ; <tt>--l-norm-weight</tt> <tt><double></tt> : Set constraint weight for Tikhonov-type L-Norm regularization (0 disables constraint) '''[Default: 0]'''
 
-; <tt>--no-truncation</tt> / <tt>-T</tt> : Turn off regional intensity truncatrion
+; <tt>--no-truncation</tt>, <tt>-T</tt> : Turn off regional intensity truncatrion
 
 === Output Options ===
 
 ; <tt>--write-injected-image</tt> <tt><image-path></tt> : Write initial volume injection image to path '''[Default: NONE]'''
 
-; <tt>--write-images-as-float</tt> / <tt>-F</tt> : Write output images as floating point [default: same as input]
+; <tt>--write-images-as-float</tt>, <tt>-F</tt> : Write output images as floating point [default: same as input]
 
 

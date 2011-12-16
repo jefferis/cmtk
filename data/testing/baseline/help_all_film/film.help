@@ -44,7 +44,7 @@ Global Toolkit Options (these are shared by all CMTK tools)
   --verbose-level <integer>
             Set verbosity level.
 
-  --verbose / -v
+  --verbose, -v
             Increment verbosity level by 1 (deprecated; supported for backward compatibility).
 
   --threads <integer>
@@ -68,34 +68,34 @@ Interleaving Options
                       Guess from input image
                       [This is the default]
 
-            --axial / -a
+            --axial, -a
                       Interleaved axial images
 
-            --sagittal / -s
+            --sagittal, -s
                       Interleaved sagittal images
 
-            --coronal / -c
+            --coronal, -c
                       Interleaved coronal images
 
-            --interleave-x / -x
+            --interleave-x, -x
                       Interleaved along x axis
 
-            --interleave-y / -y
+            --interleave-y, -y
                       Interleaved along y axis
 
-            --interleave-z / -z
+            --interleave-z, -z
                       Interleaved along z axis
 
-  --passes <integer> / -p <integer>
+  --passes <integer>, -p <integer>
             Number of interleaved passes
             [Default: 2]
 
-  --pass-weight <string> / -W <string>
+  --pass-weight <string>, -W <string>
             Set contribution weight for a pass in the form 'pass:weight'
 
 Motion Correction / Registration Options
 
-  --reference-image <image-path> / -R <image-path>
+  --reference-image <image-path>, -R <image-path>
             Use a separate high-resolution reference image for registration
             [Default: NONE]
 
@@ -125,12 +125,12 @@ Motion Correction / Registration Options
 
 Initial Volume Injection Options
 
-  --injection-kernel-sigma <double> / -S <double>
+  --injection-kernel-sigma <double>, -S <double>
             Standard deviation of Gaussian kernel for volume injection in multiples of pixel size in
             each direction.
             [Default: 0.5]
 
-  --injection-kernel-radius <double> / -r <double>
+  --injection-kernel-radius <double>, -r <double>
             Truncation radius factor of injection kernel. The kernel is truncated at sigma*radius,
             where sigma is the kernel standard deviation.
             [Default: 2]
@@ -142,23 +142,23 @@ Inverse Interpolation Options
             Supported values: "cubic", "linear", "hamming-sinc", "cosine-sinc", where the default is
             "cubic", or use one of the following
 
-            --cubic / -C
+            --cubic, -C
                       Tricubic interpolation
                       [This is the default]
 
-            --linear / -L
+            --linear, -L
                       Trilinear interpolation (faster but less accurate)
 
-            --hamming-sinc / -H
+            --hamming-sinc, -H
                       Hamming-windowed sinc interpolation
 
-            --cosine-sinc / -O
+            --cosine-sinc, -O
                       Cosine-windowed sinc interpolation (most accurate but slowest)
 
-  --fourth-order-error / -f
+  --fourth-order-error, -f
             Use fourth-order (rather than second-order) error for optimization.
 
-  --num-iterations <integer> / -n <integer>
+  --num-iterations <integer>, -n <integer>
             Maximum number of inverse interpolation iterations
             [Default: 20]
 
@@ -168,7 +168,7 @@ Reconstruction Regularization Options
             Set constraint weight for Tikhonov-type L-Norm regularization (0 disables constraint)
             [Default: 0]
 
-  --no-truncation / -T
+  --no-truncation, -T
             Turn off regional intensity truncatrion
 
 Output Options
@@ -177,7 +177,7 @@ Output Options
             Write initial volume injection image to path
             [Default: NONE]
 
-  --write-images-as-float / -F
+  --write-images-as-float, -F
             Write output images as floating point [default: same as input]
 
 

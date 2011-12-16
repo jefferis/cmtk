@@ -36,13 +36,13 @@ where
 
 ; <tt>--verbose-level</tt> <tt><integer></tt> : Set verbosity level.
 
-; <tt>--verbose</tt> / <tt>-v</tt> : Increment verbosity level by 1 (deprecated; supported for backward compatibility).
+; <tt>--verbose</tt>, <tt>-v</tt> : Increment verbosity level by 1 (deprecated; supported for backward compatibility).
 
 ; <tt>--threads</tt> <tt><integer></tt> : Set maximum number of parallel threads (for POSIX threads and OpenMP).
 
 === Main Options ===
 
-; <tt>--binarize</tt> / <tt>-b</tt> : Binarize levelset and write as byte mask, rather than write floating-point levelset function itself.
+; <tt>--binarize</tt>, <tt>-b</tt> : Binarize levelset and write as byte mask, rather than write floating-point levelset function itself.
 
 === These parameters control the initialization of the levelset function ===
 
@@ -50,15 +50,15 @@ where
 
 === These parameters control the evolution of the levelset function ===
 
-; <tt>--iterations</tt> <tt><integer></tt> / <tt>-n</tt> <tt><integer></tt> : Maximum number of iterations '''[Default: 100]'''
+; <tt>--iterations</tt> <tt><integer></tt>, <tt>-n</tt> <tt><integer></tt> : Maximum number of iterations '''[Default: 100]'''
 
-; <tt>--force-iterations</tt> / <tt>-f</tt> : Force given number of iterations, even when convergence has been detected
+; <tt>--force-iterations</tt>, <tt>-f</tt> : Force given number of iterations, even when convergence has been detected
 
-; <tt>--filter-sigma</tt> <tt><double></tt> / <tt>-s</tt> <tt><double></tt> : Gaussian filter sigma in world coordinate units (e.g., mm) '''[Default: 2]'''
+; <tt>--filter-sigma</tt> <tt><double></tt>, <tt>-s</tt> <tt><double></tt> : Gaussian filter sigma in world coordinate units (e.g., mm) '''[Default: 2]'''
 
-; <tt>--delta</tt> <tt><double></tt> / <tt>-d</tt> <tt><double></tt> : Time constant for levelset evolution; must be > 0; larger is faster '''[Default: 0.1]'''
+; <tt>--delta</tt> <tt><double></tt>, <tt>-d</tt> <tt><double></tt> : Time constant for levelset evolution; must be > 0; larger is faster '''[Default: 0.1]'''
 
-; <tt>--levelset-threshold</tt> <tt><double></tt> / <tt>-t</tt> <tt><double></tt> : Levelset threshold: levelset function is truncated at +/- this value '''[Default: 1]'''
+; <tt>--levelset-threshold</tt> <tt><double></tt>, <tt>-t</tt> <tt><double></tt> : Levelset threshold: levelset function is truncated at +/- this value '''[Default: 1]'''
 
 === Image/Transformation Database ===
 

@@ -36,7 +36,7 @@ where
 
 ; <tt>--verbose-level</tt> <tt><integer></tt> : Set verbosity level.
 
-; <tt>--verbose</tt> / <tt>-v</tt> : Increment verbosity level by 1 (deprecated; supported for backward compatibility).
+; <tt>--verbose</tt>, <tt>-v</tt> : Increment verbosity level by 1 (deprecated; supported for backward compatibility).
 
 ; <tt>--threads</tt> <tt><integer></tt> : Set maximum number of parallel threads (for POSIX threads and OpenMP).
 
@@ -46,17 +46,17 @@ where
 
 === Optimization settings ===
 
-; <tt>--exploration</tt> <tt><double></tt> / <tt>-e</tt> <tt><double></tt> : Exploration [initial optimizer step size] '''[Default: 8]'''
+; <tt>--exploration</tt> <tt><double></tt>, <tt>-e</tt> <tt><double></tt> : Exploration [initial optimizer step size] '''[Default: 8]'''
 
-; <tt>--accuracy</tt> <tt><double></tt> / <tt>-a</tt> <tt><double></tt> : Accuracy [final optimizer step size] '''[Default: 0.1]'''
+; <tt>--accuracy</tt> <tt><double></tt>, <tt>-a</tt> <tt><double></tt> : Accuracy [final optimizer step size] '''[Default: 0.1]'''
 
-; <tt>--stepfactor</tt> <tt><double></tt> / <tt>-f</tt> <tt><double></tt> : Factor for search step size reduction. Must be > 0.0 and < 1.0 '''[Default: 0.5]'''
+; <tt>--stepfactor</tt> <tt><double></tt>, <tt>-f</tt> <tt><double></tt> : Factor for search step size reduction. Must be > 0.0 and < 1.0 '''[Default: 0.5]'''
 
 ; <tt>--delta-f-threshold</tt> <tt><double></tt> : Optional threshold to terminate optimization (level) if relative change of target function drops below this value. '''[Default: 0]'''
 
 === Image resolution parameters ===
 
-; <tt>--sampling</tt> <tt><double></tt> / <tt>-s</tt> <tt><double></tt> : Image sampling (finest resampled image resolution) '''[Default: 1]'''
+; <tt>--sampling</tt> <tt><double></tt>, <tt>-s</tt> <tt><double></tt> : Image sampling (finest resampled image resolution) '''[Default: 1]'''
 
 ; <tt>--coarsest</tt> <tt><double></tt> : Upper limit for image sampling in multiresolution hierarchy '''[Default: -1]'''
 
@@ -68,9 +68,9 @@ where
 
 ; <tt>--dofs-final</tt> <tt><integer>[,<integer>,...]</tt> : Add number of degrees of freedom for final level only [can be repeated]
 
-; <tt>--no-switch</tt> / <tt>-n</tt> : Do not auto-switch reference and floating image for improved computational performance
+; <tt>--no-switch</tt>, <tt>-n</tt> : Do not auto-switch reference and floating image for improved computational performance
 
-; <tt>--initxlate</tt> / <tt>-i</tt> : Initialized transformation by translating floating image FOV center onto reference image FOV center
+; <tt>--initxlate</tt>, <tt>-i</tt> : Initialized transformation by translating floating image FOV center onto reference image FOV center
 
 ; <tt>--initial</tt> <tt><transformation-path></tt> : Initialize transformation from given path '''[Default: NONE]'''
 
@@ -129,15 +129,15 @@ where
 
 === Output parameters ===
 
-; <tt>--outlist</tt> <tt><string></tt> / <tt>-o</tt> <tt><string></tt> : Output path for final transformation '''[Default: NONE]'''
+; <tt>--outlist</tt> <tt><string></tt>, <tt>-o</tt> <tt><string></tt> : Output path for final transformation '''[Default: NONE]'''
 
 ; <tt>--out-matrix</tt> <tt><string></tt> : Output path for final transformation in matrix format '''[Default: NONE]'''
 
 ; <tt>--out-parameters</tt> <tt><string></tt> : Output path for final transformation in plain parameter list format '''[Default: NONE]'''
 
-; <tt>--protocol</tt> <tt><string></tt> / <tt>-p</tt> <tt><string></tt> : Optimization protocol output file name '''[Default: NONE]'''
+; <tt>--protocol</tt> <tt><string></tt>, <tt>-p</tt> <tt><string></tt> : Optimization protocol output file name '''[Default: NONE]'''
 
-; <tt>--time</tt> <tt><string></tt> / <tt>-t</tt> <tt><string></tt> : Computation time statistics output file name '''[Default: NONE]'''
+; <tt>--time</tt> <tt><string></tt>, <tt>-t</tt> <tt><string></tt> : Computation time statistics output file name '''[Default: NONE]'''
 
 === Import Results into Slicer ===
 
