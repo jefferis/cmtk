@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -206,6 +207,22 @@ CommandLineTypeTraits<signed char>
   : public CommandLineTypeTraitsBase<signed char>
 {
 public:
+  /// Convert a value of this type to numerical string.
+  static std::string ValueToString( const signed char* value )
+  {
+    std::ostringstream stream;
+    stream << static_cast<int>( *value );
+    return stream.str();
+  }
+
+  /// Convert a value of this type to numerical string with minimal added markup (for XML output).
+  static std::string ValueToStringMinimal( const signed char* value )
+  {
+    std::ostringstream stream;
+    stream << static_cast<int>( *value );
+    return stream.str();
+  }
+
   static const char* GetName() 
   { 
     return "integer";
@@ -219,6 +236,22 @@ CommandLineTypeTraits<unsigned char> :
   public CommandLineTypeTraitsBase<unsigned char>
 {
 public:
+  /// Convert a value of this type to numerical string.
+  static std::string ValueToString( const unsigned char* value )
+  {
+    std::ostringstream stream;
+    stream << static_cast<int>( *value );
+    return stream.str();
+  }
+
+  /// Convert a value of this type to numerical string with minimal added markup (for XML output).
+  static std::string ValueToStringMinimal( const unsigned char* value )
+  {
+    std::ostringstream stream;
+    stream << static_cast<int>( *value );
+    return stream.str();
+  }
+
   static const char* GetName() 
   { 
     return "integer";

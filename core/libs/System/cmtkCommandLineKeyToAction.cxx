@@ -106,7 +106,7 @@ cmtk::CommandLine::KeyToAction
     
     if ( this->m_Key.m_KeyChar && this->m_Key.m_KeyString.size() )
       {
-      fmt << " / ";
+      fmt << ", ";
       }
     
     if ( this->m_Key.m_KeyChar )
@@ -150,7 +150,7 @@ cmtk::CommandLine::KeyToAction
     
     if ( this->m_Key.m_KeyChar && this->m_Key.m_KeyString.size() )
       {
-      StdOut << " / ";
+      StdOut << ", ";
       }
     
     if ( this->m_Key.m_KeyChar )
