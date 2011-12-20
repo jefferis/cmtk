@@ -32,6 +32,7 @@
 
 #include "cmtkVolumeIO.h"
 
+#include <System/cmtkExitException.h>
 #include <System/cmtkStrUtility.h>
 #include <System/cmtkFileUtils.h>
 #include <System/cmtkProgress.h>
@@ -127,11 +128,13 @@ VolumeIO::Read( const char* path )
       }
     }
   
-  if ( volume )
+  if ( ! volume )
     {
-    volume->SetMetaInfo( META_FS_PATH, path );
+    StdErr << "ERROR: could not read image from " << path << "\n";
+    throw ExitException( 1 );
     }
   
+  volume->SetMetaInfo( META_FS_PATH, path );
   return volume;
 }
 
@@ -163,15 +166,14 @@ VolumeIO::ReadGrid( const char* path )
     }
     }
   
-  if ( volume ) 
+  if ( ! volume )
     {
-    DebugOutput( 3 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
+    StdErr << "ERROR: could not read image from " << path << "\n";
+    throw ExitException( 1 );
     }
   
-  if ( volume )
-    {
-    volume->SetMetaInfo( META_FS_PATH, path );
-    }
+  DebugOutput( 3 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
+  volume->SetMetaInfo( META_FS_PATH, path );
   
   return volume;
 }
@@ -181,8 +183,6 @@ VolumeIO
 ::ReadGridOriented( const char *path, const char* orientation )
 {
   UniformVolume::SmartPtr volume( Self::ReadGrid( path ) );
-  if ( !volume ) 
-    return volume;
   
   const std::string orientationOriginal = volume->GetMetaInfo( META_IMAGE_ORIENTATION );
   if ( orientationOriginal == "" )
@@ -207,8 +207,6 @@ VolumeIO
 ::ReadOriented( const char *path, const char* orientation )
 {
   UniformVolume::SmartPtr volume( VolumeIO::Read( path ) );
-  if ( !volume ) 
-    return volume;
 
   const std::string orientationOriginal = volume->GetMetaInfo( META_IMAGE_ORIENTATION );
   if ( orientationOriginal == "" )
