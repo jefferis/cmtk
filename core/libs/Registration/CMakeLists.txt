@@ -35,6 +35,7 @@ SET(cmtkRegistration_SRCS
   cmtkBestDirectionOptimizer.cxx
   cmtkBestNeighbourOptimizer.cxx
   cmtkCongealingFunctional.cxx
+  cmtkEchoPlanarUnwarpFunctional.cxx
   cmtkElasticRegistrationCommandLine.cxx
   cmtkElasticRegistration.cxx
   cmtkFunctionalAffine2D.cxx
