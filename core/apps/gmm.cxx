@@ -104,22 +104,11 @@ doMain
     }
 
   cmtk::UniformVolume::SmartPtr inputImage = cmtk::VolumeIO::ReadOriented( inputImagePath );
-  if ( ! inputImage )
-    {
-    cmtk::StdErr << "ERROR: could not read input image " << inputImagePath << "\n";
-    throw cmtk::ExitException( 1 );
-    }
 
   cmtk::UniformVolume::SmartConstPtr maskImage = inputImage;
   if ( maskImagePath )
     {
     maskImage = cmtk::VolumeIO::ReadOriented( maskImagePath );
-    if ( ! inputImage )
-      {
-      cmtk::StdErr << "ERROR: could not read mask image " << maskImagePath << "\n";
-      throw cmtk::ExitException( 1 );
-      }
-
     if ( ! inputImage->GridMatches( *(maskImage) ) )
       {
       cmtk::StdErr << "ERROR: mask image must have the same discrete grid as the input image.\n";

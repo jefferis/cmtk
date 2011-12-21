@@ -225,21 +225,8 @@ doMain( const int argc, const char* argv[] )
     }
   
   cmtk::UniformVolume::SmartPtr volume( cmtk::VolumeIO::ReadOriented( imagePathIn ) );
-  if ( ! volume ) 
-    {
-    cmtk::StdErr << "ERROR: could not read image " << imagePathIn << "\n";
-    throw cmtk::ExitException( 1 );
-    }
-  else
-    {
-    cmtk::TypedArray::SmartPtr volumeData = volume->GetData();
-    if ( ! volumeData ) 
-      {
-      cmtk::StdErr << "ERROR: image seems to contain no data.\n";
-      throw cmtk::ExitException( 1 );
-      }
-    }
-  
+  cmtk::TypedArray::SmartPtr volumeData = volume->GetData();
+
   volume = cmtk::ImageOperation::ApplyAll( volume );
 
   cmtk::DebugOutput( 1 ) << "Writing to file " << imagePathOut << "\n";  

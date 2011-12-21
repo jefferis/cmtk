@@ -105,33 +105,34 @@ VolumeIO::Read( const char* path )
     case FILEFORMAT_NRRD:
       volume = VolumeFromFile::ReadNRRD( translatedPath );
       break;
-    default: 
-    {
-    }
-    }
-  
-  if ( volume ) 
-    {
-    volume->SetMetaInfo( META_FILEFORMAT_ORIGINAL, FileFormat::Describe( formatID ) );
-
-    DebugOutput( 3 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
-    
-    const TypedArray* dataArray = volume->GetData();
-    if ( dataArray ) 
-      {
-      const Types::DataItemRange range = dataArray->GetRange();
-      DebugOutput( 3 ).GetStream().printf( "Data type %s, range [%f .. %f]\n", DataTypeName[ dataArray->GetType() ], static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
-      } 
-    else
-      {
-      StdErr << "WARNING: image does not contain valid data.\n";
-      }
+    default: {}
     }
   
   if ( ! volume )
     {
-    StdErr << "ERROR: could not read image from " << path << "\n";
+    StdErr << "ERROR: could not read image geometry from " << path << "\n";
     throw ExitException( 1 );
+    }
+  
+  if ( ! volume->GetData() )
+    {
+    StdErr << "ERROR: could not read image data from " << path << "\n";
+    throw ExitException( 1 );
+    }
+  
+  volume->SetMetaInfo( META_FILEFORMAT_ORIGINAL, FileFormat::Describe( formatID ) );
+  
+  DebugOutput( 3 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
+  
+  const TypedArray* dataArray = volume->GetData();
+  if ( dataArray ) 
+    {
+    const Types::DataItemRange range = dataArray->GetRange();
+    DebugOutput( 3 ).GetStream().printf( "Data type %s, range [%f .. %f]\n", DataTypeName[ dataArray->GetType() ], static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
+    } 
+  else
+    {
+    StdErr << "WARNING: image does not contain valid data.\n";
     }
   
   volume->SetMetaInfo( META_FS_PATH, path );

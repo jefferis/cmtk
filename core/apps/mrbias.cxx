@@ -156,11 +156,6 @@ doMain( const int argc, const char *argv[] )
   cmtk::ProgressConsole progressIndicator( "Intensity Bias Field Correction" );
 
   cmtk::UniformVolume::SmartPtr inputImage( cmtk::VolumeIO::ReadOriented( FNameInputImage ) );
-  if ( ! inputImage || ! inputImage->GetData() )
-    {
-    cmtk::StdErr << "ERROR: Could not read input image " << FNameInputImage << "\n";
-    throw cmtk::ExitException( 1 );
-    }
 
   if ( PaddingFlag )
     {
