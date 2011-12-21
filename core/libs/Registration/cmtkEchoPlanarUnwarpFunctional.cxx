@@ -30,3 +30,38 @@
 
 #include "cmtkEchoPlanarUnwarpFunctional.h"
 
+#include <Base/cmtkSincInterpolator.h>
+
+#include <algorithm>
+
+void
+cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const UniformVolume& sourceImage, UniformVolume& targetImage, int direction )
+{
+  
+}
+
+cmtk::Types::DataItem 
+cmtk::EchoPlanarUnwarpFunctional::Interpolate1D( const UniformVolume& sourceImage, const FixedVector<3,int>& baseIdx, const Types::Coordinate relative ) const
+{
+  FixedVector<3,int> idx = baseIdx;
+
+  const int iFrom = std::max( 0, idx[this->m_PhaseEncodeDirection] - Self::InterpolationKernelRadius ) - idx[this->m_PhaseEncodeDirection];
+  const int iTo = std::min( sourceImage.m_Dims[this->m_PhaseEncodeDirection], idx[this->m_PhaseEncodeDirection] + Self::InterpolationKernelRadius + 1 ) - sourceImage.m_Dims[this->m_PhaseEncodeDirection];
+
+  idx[this->m_PhaseEncodeDirection] += iFrom;
+
+  Types::DataItem value = 0;
+  Types::Coordinate total = 0;
+
+  for ( int i = iFrom; i < iTo; ++i, ++idx[this->m_PhaseEncodeDirection] )
+    {
+    const Types::Coordinate weight = Interpolators::CosineSinc<Self::InterpolationKernelRadius>::GetWeight( i, relative );
+    value += weight * sourceImage.GetDataAt( sourceImage.GetOffsetFromIndex( idx ) );
+    total += weight;
+    }
+  
+  if ( total > 0 )
+    return static_cast<Types::DataItem>( value / total );
+  else
+    return 0;
+}

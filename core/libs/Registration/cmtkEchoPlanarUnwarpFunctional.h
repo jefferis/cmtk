@@ -35,6 +35,8 @@
 
 #include <Base/cmtkUniformVolume.h>
 
+#include <vector>
+
 namespace
 cmtk
 {
@@ -51,48 +53,53 @@ public:
   /// This class.
   typedef EchoPlanarUnwarpFunctional Self;
 
-  /// Constructor.
-  EchoPlanarUnwarpFunctional( UniformVolume::SmartConstPtr& image0, UniformVolume::SmartConstPtr& image1, const byte phaseEncodeDirection )
-    : m_Image0( image0 ), m_Image1( image1 ), m_PhaseEncodeDirection( phaseEncodeDirection )
-  {
-    this->m_Deformation = image0->CloneGrid();
-    this->m_Deformation->CreateDataArray( TYPE_COORDINATE );
-    
-    this->m_UnwarpImage0 = image0->CloneGrid();
-    this->m_UnwarpImage0->CreateDataArray( TYPE_FLOAT );
+  /// Sinc image interpolation kernel radius.
+  static const int InterpolationKernelRadius = 3; 
 
-    this->m_UnwarpImage1 = image1->CloneGrid();
-    this->m_UnwarpImage1->CreateDataArray( TYPE_FLOAT );
+  /// Constructor.
+  EchoPlanarUnwarpFunctional( UniformVolume::SmartConstPtr& imageFwd /*!< "Forward direction" EPI */, 
+			      UniformVolume::SmartConstPtr& imageRev /*!< "Reverse" direction EPI */, 
+			      const byte phaseEncodeDirection /*!< Phase encoding direction (image coordinate axis) */ )
+    : m_ImageFwd( imageFwd ), m_ImageRev( imageRev ), m_PhaseEncodeDirection( phaseEncodeDirection )
+  {
+    this->m_Deformation.resize( this->m_ImageFwd->GetNumberOfPixels(), 0.0 );
+    this->m_UnwarpImageFwd.resize( this->m_ImageFwd->GetNumberOfPixels() );
+    this->m_UnwarpImageRev.resize( this->m_ImageFwd->GetNumberOfPixels() );
   }
 
   /// Return either first or second corrected image.
-  const UniformVolume::SmartPtr& GetCorrectedImage( const byte idx = 0 )
+  UniformVolume::SmartPtr GetCorrectedImage( const byte idx = 0 )
   {
-    if ( idx == 0 )
-      return this->m_UnwarpImage0;
-    else
-      return this->m_UnwarpImage1;
+    return UniformVolume::SmartPtr( this->m_ImageFwd->CloneGrid() );
   }
   
 private:
   /// Phase encoding direction.
   byte m_PhaseEncodeDirection;
 
-  /// First image.
-  UniformVolume::SmartConstPtr m_Image0;
+  /// "Forward" phase encoding image.
+  UniformVolume::SmartConstPtr m_ImageFwd;
 
-  /// Second image.
-  UniformVolume::SmartConstPtr m_Image1;
+  /// "Reverse" phase encoding image.
+  UniformVolume::SmartConstPtr m_ImageRev;
 
-  /// Deformation map.
-  UniformVolume::SmartPtr m_Deformation;
+  /// 1D deformation map along phase encoding direction.
+  std::vector<Types::Coordinate> m_Deformation;
 
-  /// Deformed first image.
-  UniformVolume::SmartPtr m_UnwarpImage0;
+  /// Deformed "forward" image.
+  std::vector<Types::DataItem> m_UnwarpImageFwd;
 
-  /// Deformed second image.
-  UniformVolume::SmartPtr m_UnwarpImage1;
+  /// Deformed "reverse" image.
+  std::vector<Types::DataItem> m_UnwarpImageRev;
+  
+  /// Compute deformed image.
+  void ComputeDeformedImage( const UniformVolume& sourceImage /*!< Undeformed input image.*/, UniformVolume& targetImage /*!< Reference to deformed output image.*/, 
+			     int direction /*!< Deformation direction - 1 computes unwarped "forward" image, -1 computed unwarped "reverse" image.*/ );
 
+  /// 1D since interpolation
+  Types::DataItem Interpolate1D( const UniformVolume& sourceImage /*!< Image to interpolate from */, 
+				 const FixedVector<3,int>& baseIdx /*!< Grid base index - this is the grid cell where the interpolation kernel is anchored. */, 
+				 const Types::Coordinate relative /*!< Relative position of interpolation location in grid cell, relative to phase encoding direction. */ ) const;
 };
 
 //@}
