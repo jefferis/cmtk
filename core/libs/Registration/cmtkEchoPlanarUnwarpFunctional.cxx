@@ -65,3 +65,9 @@ cmtk::EchoPlanarUnwarpFunctional::Interpolate1D( const UniformVolume& sourceImag
   else
     return 0;
 }
+
+cmtk::Types::Coordinate 
+cmtk::EchoPlanarUnwarpFunctional::GetPartialJacobian( const FixedVector<3,int>& baseIdx ) const
+{
+  return 0;
+}

@@ -96,10 +96,15 @@ private:
   void ComputeDeformedImage( const UniformVolume& sourceImage /*!< Undeformed input image.*/, UniformVolume& targetImage /*!< Reference to deformed output image.*/, 
 			     int direction /*!< Deformation direction - 1 computes unwarped "forward" image, -1 computed unwarped "reverse" image.*/ );
 
-  /// 1D since interpolation
+  /// 1D sinc interpolation
   Types::DataItem Interpolate1D( const UniformVolume& sourceImage /*!< Image to interpolate from */, 
 				 const FixedVector<3,int>& baseIdx /*!< Grid base index - this is the grid cell where the interpolation kernel is anchored. */, 
 				 const Types::Coordinate relative /*!< Relative position of interpolation location in grid cell, relative to phase encoding direction. */ ) const;
+
+  /** Get partial image deformation Jacobian.
+   *\return The forward image Jacobian can be computed from this as Jfwd = 1+Jpartial, the reverse Jacobian as Jrev = 1-Jpartial.
+   */
+  Types::Coordinate GetPartialJacobian( const FixedVector<3,int>& baseIdx /*!< Grid base index - this is the grid cell where the differential operator stencil is anchored. */ ) const;
 };
 
 //@}
