@@ -74,14 +74,14 @@ public:
   }
   
 private:
-  /// Phase encoding direction.
-  byte m_PhaseEncodeDirection;
-
   /// "Forward" phase encoding image.
   UniformVolume::SmartConstPtr m_ImageFwd;
 
   /// "Reverse" phase encoding image.
   UniformVolume::SmartConstPtr m_ImageRev;
+
+  /// Phase encoding direction.
+  byte m_PhaseEncodeDirection;
 
   /// 1D deformation map along phase encoding direction.
   std::vector<Types::Coordinate> m_Deformation;
