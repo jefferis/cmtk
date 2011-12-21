@@ -258,6 +258,10 @@ DataGrid::SetDims( const Self::IndexType& dims )
   this->m_Dims = dims;
   this->m_CropRegion = this->GetWholeImageRegion();
 
+  this->m_GridIncrements[0] = 1;
+  for ( int i = 1; i < 3; ++i )
+    this->m_GridIncrements[i] = this->m_GridIncrements[i-1] * this->m_Dims[i-1];
+  
   nextI = 1;
   nextJ = nextI * this->m_Dims[0];
   nextK = nextJ * this->m_Dims[1];

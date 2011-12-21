@@ -69,5 +69,29 @@ cmtk::EchoPlanarUnwarpFunctional::Interpolate1D( const UniformVolume& sourceImag
 cmtk::Types::Coordinate 
 cmtk::EchoPlanarUnwarpFunctional::GetPartialJacobian( const FixedVector<3,int>& baseIdx ) const
 {
-  return 0;
+  cmtk::Types::Coordinate diff = 0;
+  int normalize = 0;
+
+  size_t offset = this->m_ImageFwd->GetOffsetFromIndex( baseIdx );
+  if ( baseIdx[this->m_PhaseEncodeDirection] > 0 )
+    {
+    diff -= this->m_Deformation[ offset - this->m_ImageGrid->m_GridIncrements[this->m_PhaseEncodeDirection] ];
+    ++normalize;
+    }
+  else
+    {
+    diff -= this->m_Deformation[offset];
+    }
+
+  if ( baseIdx[this->m_PhaseEncodeDirection] < this->m_ImageGrid->m_Dims[this->m_PhaseEncodeDirection]-1 )
+    {
+    diff += this->m_Deformation[ offset + this->m_ImageGrid->m_GridIncrements[this->m_PhaseEncodeDirection] ];
+    ++normalize;
+    }
+  else
+    {
+    diff += this->m_Deformation[offset];
+    }
+  
+  return diff / normalize;
 }

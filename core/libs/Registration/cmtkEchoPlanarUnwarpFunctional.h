@@ -60,7 +60,7 @@ public:
   EchoPlanarUnwarpFunctional( UniformVolume::SmartConstPtr& imageFwd /*!< "Forward direction" EPI */, 
 			      UniformVolume::SmartConstPtr& imageRev /*!< "Reverse" direction EPI */, 
 			      const byte phaseEncodeDirection /*!< Phase encoding direction (image coordinate axis) */ )
-    : m_ImageFwd( imageFwd ), m_ImageRev( imageRev ), m_PhaseEncodeDirection( phaseEncodeDirection )
+    : m_ImageGrid( imageFwd->CloneGrid() ), m_ImageFwd( imageFwd ), m_ImageRev( imageRev ), m_PhaseEncodeDirection( phaseEncodeDirection )
   {
     this->m_Deformation.resize( this->m_ImageFwd->GetNumberOfPixels(), 0.0 );
     this->m_UnwarpImageFwd.resize( this->m_ImageFwd->GetNumberOfPixels() );
@@ -74,6 +74,9 @@ public:
   }
   
 private:
+  /// Unwarped image grid.
+  UniformVolume::SmartPtr m_ImageGrid;
+
   /// "Forward" phase encoding image.
   UniformVolume::SmartConstPtr m_ImageFwd;
 

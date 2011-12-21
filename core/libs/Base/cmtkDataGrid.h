@@ -89,6 +89,9 @@ public:
   /// Number of grid samples in the three spatial dimensions
   Self::IndexType m_Dims;
 
+  /// Offset increments when moving to the next pixel in each of the three grid dimensions.
+  Self::IndexType m_GridIncrements;
+
   /// Data array (element type is variable)
   cmtkGetSetMacro(TypedArray::SmartPtr,Data);
 
