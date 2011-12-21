@@ -45,8 +45,8 @@ cmtk::EchoPlanarUnwarpFunctional::Interpolate1D( const UniformVolume& sourceImag
 {
   FixedVector<3,int> idx = baseIdx;
 
-  const int iFrom = std::max( 0, idx[this->m_PhaseEncodeDirection] - Self::InterpolationKernelRadius ) - idx[this->m_PhaseEncodeDirection];
-  const int iTo = std::min( sourceImage.m_Dims[this->m_PhaseEncodeDirection], idx[this->m_PhaseEncodeDirection] + Self::InterpolationKernelRadius + 1 ) - sourceImage.m_Dims[this->m_PhaseEncodeDirection];
+  const int iFrom = -std::min( Self::InterpolationKernelRadius, idx[this->m_PhaseEncodeDirection] );
+  const int iTo = std::max( Self::InterpolationKernelRadius, sourceImage.m_Dims[this->m_PhaseEncodeDirection] - idx[this->m_PhaseEncodeDirection] - 1 );
 
   idx[this->m_PhaseEncodeDirection] += iFrom;
 
