@@ -34,6 +34,8 @@
 
 #include <algorithm>
 
+const int cmtk::EchoPlanarUnwarpFunctional::InterpolationKernelRadius = 3; 
+
 void
 cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const UniformVolume& sourceImage, UniformVolume& targetImage, int direction )
 {

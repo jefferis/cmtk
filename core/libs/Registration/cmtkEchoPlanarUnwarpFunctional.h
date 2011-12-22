@@ -54,7 +54,7 @@ public:
   typedef EchoPlanarUnwarpFunctional Self;
 
   /// Sinc image interpolation kernel radius.
-  static const int InterpolationKernelRadius = 3; 
+  static const int InterpolationKernelRadius; 
 
   /// Constructor.
   EchoPlanarUnwarpFunctional( UniformVolume::SmartConstPtr& imageFwd /*!< "Forward direction" EPI */, 
