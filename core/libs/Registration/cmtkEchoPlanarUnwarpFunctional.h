@@ -75,12 +75,12 @@ public:
   {
     UniformVolume::SmartPtr gradientImage( this->m_ImageFwd->CloneGrid() );
 
-    const UniformVolume* srcImage = ( idx == 0 ) ? this->m_ImageFwd : this->m_ImageRev;
+    const std::vector<Types::DataItem>& srcImage = ( idx == 0 ) ? this->m_GradientImageFwd : this->m_GradientImageRev;
 
     gradientImage->CreateDataArray( TYPE_FLOAT );
     for ( size_t px = 0; px < this->m_ImageFwd->GetNumberOfPixels(); ++px )
       {
-      gradientImage->SetDataAt( srcImage->GetDataAt( px ), px );
+      gradientImage->SetDataAt( srcImage[px], px );
       }
 
     return gradientImage;
