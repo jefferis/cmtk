@@ -62,13 +62,7 @@ public:
   /// Constructor.
   EchoPlanarUnwarpFunctional( UniformVolume::SmartConstPtr& imageFwd /*!< "Forward direction" EPI */, 
 			      UniformVolume::SmartConstPtr& imageRev /*!< "Reverse" direction EPI */, 
-			      const byte phaseEncodeDirection /*!< Phase encoding direction (image coordinate axis) */ )
-    : m_ImageGrid( imageFwd->CloneGrid() ), m_ImageFwd( imageFwd ), m_ImageRev( imageRev ), m_PhaseEncodeDirection( phaseEncodeDirection )
-  {
-    this->m_Deformation.resize( this->m_ImageFwd->GetNumberOfPixels(), 0.0 );
-    this->m_UnwarpImageFwd.resize( this->m_ImageFwd->GetNumberOfPixels() );
-    this->m_UnwarpImageRev.resize( this->m_ImageFwd->GetNumberOfPixels() );
-  }
+			      const byte phaseEncodeDirection /*!< Phase encoding direction (image coordinate axis) */ );
 
   /// Return either first or second corrected image.
   UniformVolume::SmartPtr GetCorrectedImage( const byte  = 0 )
@@ -92,12 +86,21 @@ private:
   /// 1D deformation map along phase encoding direction.
   std::vector<Types::Coordinate> m_Deformation;
 
+  /// 1D intensity gradient of "forward" image.
+  std::vector<Types::DataItem> m_GradientImageFwd;
+
+  /// 1D intensity gradient of "reverse" image.
+  std::vector<Types::DataItem> m_GradientImageRev;
+  
   /// Deformed "forward" image.
   std::vector<Types::DataItem> m_UnwarpImageFwd;
 
   /// Deformed "reverse" image.
   std::vector<Types::DataItem> m_UnwarpImageRev;
-  
+
+  /// Compute 1D intensity gradient image.
+  void MakeGradientImage( const UniformVolume& sourceImage /*!< Image to compute gradient for.*/, std::vector<Types::DataItem>& gradientImageData /*!< Reference to data array for computed gradient data.*/ );
+
   /// Compute deformed image.
   void ComputeDeformedImage( const UniformVolume& sourceImage /*!< Undeformed input image.*/, std::vector<Types::DataItem>& targetImageData /*!< Reference to deformed output image data.*/, 
 			     int direction /*!< Deformation direction - 1 computes unwarped "forward" image, -1 computed unwarped "reverse" image.*/ );

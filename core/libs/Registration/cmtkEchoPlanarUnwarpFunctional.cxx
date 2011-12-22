@@ -38,12 +38,47 @@
 
 const int cmtk::EchoPlanarUnwarpFunctional::InterpolationKernelRadius = 3; 
 
+cmtk::EchoPlanarUnwarpFunctional::EchoPlanarUnwarpFunctional
+( UniformVolume::SmartConstPtr& imageFwd, UniformVolume::SmartConstPtr& imageRev, const byte phaseEncodeDirection )
+  : m_ImageGrid( imageFwd->CloneGrid() ), 
+    m_ImageFwd( imageFwd ), 
+    m_ImageRev( imageRev ), 
+    m_PhaseEncodeDirection( phaseEncodeDirection )
+{
+  this->m_Deformation.resize( this->m_ImageFwd->GetNumberOfPixels(), 0.0 );
+
+  this->m_UnwarpImageFwd.resize( this->m_ImageFwd->GetNumberOfPixels() );
+  this->m_UnwarpImageRev.resize( this->m_ImageFwd->GetNumberOfPixels() );
+
+  this->MakeGradientImage( *(this->m_ImageFwd), this->m_GradientImageFwd );
+  this->MakeGradientImage( *(this->m_ImageRev), this->m_GradientImageRev );
+}
+
+void
+cmtk::EchoPlanarUnwarpFunctional::MakeGradientImage( const UniformVolume& sourceImage, std::vector<Types::DataItem>& gradientImageData )
+{
+  gradientImageData.resize( sourceImage.GetNumberOfPixels() );
+
+  const DataGrid::RegionType wholeImageRegion = sourceImage.GetWholeImageRegion();
+  for ( RegionIndexIterator<DataGrid::RegionType> it( wholeImageRegion ); it != it.end(); ++it )
+    {
+    DataGrid::IndexType idx = it.Index();
+    const size_t i = sourceImage.GetOffsetFromIndex( idx );
+
+    // use the 1D sinc interpolation for the gradient
+    gradientImageData[i] = this->Interpolate1D( sourceImage, idx, 0.5 );
+
+    --idx[this->m_PhaseEncodeDirection];
+    gradientImageData[i] -=  this->Interpolate1D( sourceImage, idx, 0.5 );;
+    }
+}
+
 void
 cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const UniformVolume& sourceImage, std::vector<Types::DataItem>& targetImageData, int direction )
 {
   const Types::Coordinate pixelSize = sourceImage.Deltas()[this->m_PhaseEncodeDirection];
 
-  const DataGrid::RegionType wholeImageRegion = sourceImage.CropRegion();
+  const DataGrid::RegionType wholeImageRegion = sourceImage.GetWholeImageRegion();
   for ( RegionIndexIterator<DataGrid::RegionType> it( wholeImageRegion ); it != it.end(); ++it )
     {
     DataGrid::IndexType idx = it.Index();
@@ -68,11 +103,13 @@ cmtk::EchoPlanarUnwarpFunctional::Interpolate1D( const UniformVolume& sourceImag
 {
   FixedVector<3,int> idx = baseIdx;
 
-  const int iFrom = -std::min( Self::InterpolationKernelRadius, idx[this->m_PhaseEncodeDirection] );
-  const int iTo = std::max( Self::InterpolationKernelRadius, sourceImage.m_Dims[this->m_PhaseEncodeDirection] - idx[this->m_PhaseEncodeDirection] - 1 );
+  const int maxIdx = sourceImage.m_Dims[this->m_PhaseEncodeDirection] - 1;
 
+  const int iFrom = -std::min( Self::InterpolationKernelRadius, std::max( 0, idx[this->m_PhaseEncodeDirection] ) );
+  const int iTo = std::max( Self::InterpolationKernelRadius, maxIdx - std::min( idx[this->m_PhaseEncodeDirection], maxIdx ) );
+  
   idx[this->m_PhaseEncodeDirection] += iFrom;
-
+  
   Types::DataItem value = 0;
   Types::Coordinate total = 0;
 
@@ -138,6 +175,6 @@ cmtk::EchoPlanarUnwarpFunctional
 
   for ( size_t px = 0; px < nPixels; ++px )
     {
-    
+    g(px) = 1.0 / nPixels;
     }
 }
