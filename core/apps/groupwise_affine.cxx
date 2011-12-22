@@ -223,7 +223,7 @@ doMain( int argc, const char* argv[] )
       throw cmtk::ExitException( 1 );
       }
     
-    cmtk::ClassStream inStream( fileNameList[0], cmtk::ClassStream::READ );
+    cmtk::ClassStream inStream( fileNameList[0], cmtk::ClassStream::MODE_READ );
     if ( inStream.IsValid() )
       {
       inStream >> *functional;

@@ -76,7 +76,7 @@ TypedStreamStudylist::Read( const char *studylistpath )
   char archive[PATH_MAX];
 
   snprintf( archive, sizeof( archive ), "%s%cstudylist", MountPoints::Translate( studylistpath ), (int)CMTK_PATH_SEPARATOR );
-  ClassStream classStream( archive, ClassStream::READ );
+  ClassStream classStream( archive, ClassStream::MODE_READ );
   if ( ! classStream.IsValid() ) 
     {
     StdErr.printf( "Could not open studylist archive %s.\n", archive );
@@ -93,7 +93,7 @@ TypedStreamStudylist::Read( const char *studylistpath )
   classStream.Close();
   
   snprintf( archive, sizeof( archive ), "%s%cregistration", MountPoints::Translate(studylistpath), (int)CMTK_PATH_SEPARATOR  );
-  classStream.Open( archive, ClassStream::READ );
+  classStream.Open( archive, ClassStream::MODE_READ );
   if ( ! classStream.IsValid() ) 
     {
     StdErr.printf( "Could not open studylist archive %s.\n", archive );
@@ -157,7 +157,7 @@ void
 TypedStreamStudylist::Write
 ( const char *path, const char* referenceStudy, const char* floatingStudy, const Xform* xform )
 {
-  ClassStream classStream( path, "studylist", ClassStream::WRITE );
+  ClassStream classStream( path, "studylist", ClassStream::MODE_WRITE );
   if ( ! classStream.IsValid() ) return;
   
   classStream.Begin( "studylist" );
@@ -174,7 +174,7 @@ TypedStreamStudylist::Write
 
   classStream.Close();
 
-  classStream.Open( path, "registration", ClassStream::WRITE );
+  classStream.Open( path, "registration", ClassStream::MODE_WRITE );
   if ( classStream.IsValid() ) 
     {    
     classStream.Begin( "registration" );

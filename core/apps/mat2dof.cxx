@@ -190,7 +190,7 @@ doMain( const int argc, const char* argv[] )
     {
     if ( AppendToOutput )
       {
-      cmtk::ClassStream outStream( OutList, cmtk::ClassStream::APPEND );
+      cmtk::ClassStream outStream( OutList, cmtk::ClassStream::MODE_APPEND );
       if ( Inverse )
 	outStream << *xform->GetInverse();
       else

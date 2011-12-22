@@ -295,7 +295,7 @@ doMain( int argc, const char* argv[] )
   cmtk::WarpXform::SmartPtr warpXform;
   if ( InWarpName ) 
     {
-    cmtk::ClassStream stream( InWarpName, cmtk::ClassStream::READ );
+    cmtk::ClassStream stream( InWarpName, cmtk::ClassStream::MODE_READ );
     stream >> warpXform;
     } 
   else
@@ -312,7 +312,7 @@ doMain( int argc, const char* argv[] )
       warpXform->ReplaceInitialAffine( (*(warpList.begin()))->GetInitialAffineXform() );
       }
       
-    cmtk::ClassStream stream( OutWarpName, cmtk::ClassStream::WRITE );
+    cmtk::ClassStream stream( OutWarpName, cmtk::ClassStream::MODE_WRITE );
     stream << warpXform;
     }
 

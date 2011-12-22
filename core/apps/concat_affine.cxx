@@ -110,9 +110,9 @@ doMain( const int argc, const char* argv[] )
   cmtk::ClassStream outStream;
 
   if ( AppendToOutput )
-    outStream.Open( OutputName, cmtk::ClassStream::APPEND );
+    outStream.Open( OutputName, cmtk::ClassStream::MODE_APPEND );
   else
-    outStream.Open( OutputName, cmtk::ClassStream::WRITE );
+    outStream.Open( OutputName, cmtk::ClassStream::MODE_WRITE );
 
   if ( outStream.IsValid() )
     {

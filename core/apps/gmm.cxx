@@ -235,7 +235,7 @@ doMain
       if ( ! period )
 	period = path + strlen( path );
       
-      snprintf( period, PATH_MAX - (period-path), "_prob%d%s", 1+k, outputImagePath + (period-path) );
+      snprintf( period, PATH_MAX - (period-path), "_prob%d%s", static_cast<int>( 1+k ), outputImagePath + (period-path) );
       cmtk::VolumeIO::Write( *(pMaps[k]), path );
       }
     }

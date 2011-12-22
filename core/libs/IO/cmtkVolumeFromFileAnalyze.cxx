@@ -86,8 +86,11 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
   if ( 348 != fread( buffer, 1, 348, hdrFile ) ) 
     {
     StdErr.printf( "ERROR: could not read 348 bytes from header file %s\n", pathHdr );
+    fclose( hdrFile );
     return UniformVolume::SmartPtr( NULL );
     }
+  fclose( hdrFile );
+
   
   FileHeader header( buffer, bigEndian );
 
@@ -119,8 +122,6 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
   const Types::Coordinate size[3] = { (dims[0] - 1) * fabs( pixelDim[0] ), (dims[1] - 1) * fabs( pixelDim[1] ), (dims[2] - 1) * fabs( pixelDim[2] ) };
 #endif
   
-  fclose( hdrFile );
-
   const byte orient = header.GetField<byte>( 252 );
 
   const char* orientString = NULL;

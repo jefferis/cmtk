@@ -196,7 +196,7 @@ DoRegistration()
 
   if ( outArchive )
     {
-    cmtk::ClassStream stream( outArchive, cmtk::ClassStream::WRITE );
+    cmtk::ClassStream stream( outArchive, cmtk::ClassStream::MODE_WRITE );
     if ( stream.IsValid() )
       {
       stream << *functional;

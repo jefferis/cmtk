@@ -44,7 +44,7 @@ ClassStream::operator>>( ParametricPlane*& parametricPlane )
 {
   parametricPlane = NULL;
 
-  if ( this->Seek( "plane" ) != TYPEDSTREAM_OK )
+  if ( this->Seek( "plane" ) != TypedStream::OK )
     return *this;
   
   parametricPlane = new ParametricPlane();

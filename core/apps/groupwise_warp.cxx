@@ -219,7 +219,7 @@ doMain( int argc, const char* argv[] )
   functional->SetPartialGradientMode( (PartialGradientThreshold > 0) , PartialGradientThreshold );
   functional->SetDeactivateUninformativeMode( DeactivateUninformative );
 
-  cmtk::ClassStream stream( AffineGroupRegistration, cmtk::ClassStream::READ );
+  cmtk::ClassStream stream( AffineGroupRegistration, cmtk::ClassStream::MODE_READ );
   if ( ! stream.IsValid() )
     {
     cmtk::StdErr << "Input archive " << AffineGroupRegistration << " could not be opened for reading.\n";

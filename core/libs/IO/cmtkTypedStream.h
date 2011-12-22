@@ -59,123 +59,6 @@ cmtk
  */
 //@{
 
-/// Access modes for archives.
-typedef enum 
-{
-  /// Read-only access.
-  TYPEDSTREAM_READ,
-  /// Write-only access.
-  TYPEDSTREAM_WRITE,
-  /// Write-only access piped through zlib/gzip compression.
-  TYPEDSTREAM_WRITE_ZLIB,
-  /// Open existing archive and append to it.
-  TYPEDSTREAM_APPEND
-} TypedStreamMode;
-
-/// Condition upon function return.
-typedef enum 
-{
-  /// There was an error.
-  TYPEDSTREAM_ERROR,
-  /// No error encountered; operation completed successfully.
-  TYPEDSTREAM_OK
-} TypedStreamCondition;
-
-/// Classes of error conditions
-typedef enum 
-{
-  /// No error.
-  TYPEDSTREAM_ERROR_NONE,
-  /// Unknown error.
-  TYPEDSTREAM_ERROR_UNKNOWN,
-  /** A call to a system function returned an error condition.
-   * To find out more details, "errno" may be consulted.
-   */
-  TYPEDSTREAM_ERROR_SYSTEM,
-  /** Error in the format of the open archive.
-   */
-  TYPEDSTREAM_ERROR_FORMAT,
-  /** Wrong or invalid arguments given to a function.
-   */
-  TYPEDSTREAM_ERROR_ARG,
-  /** The requested operation is not available in the current stream mode.
-   * This usually means that a write access was requested on a read-only
-   * archive or a Seek() operation on a write-only archive.
-   */
-  TYPEDSTREAM_ERROR_MODE,
-  /** Error in a primitive data object.
-   * A value in the archive does not have the correct syntax for the expected
-   * type.
-   */
-  TYPEDSTREAM_ERROR_TYPE,
-  /** An internal limit was exhausted.
-   * As we are now using a proper STL stack for keeping track of open levels,
-   * this condition should not occur any more.
-   */
-  TYPEDSTREAM_ERROR_LIMIT,
-  /** Close of a level was requested when none was open.
-   */
-  TYPEDSTREAM_ERROR_LEVEL,
-  /** The current stream is invalid.
-   * This condition is set when an access is tried without opening a file 
-   * first.
-   */
-  TYPEDSTREAM_ERROR_INVALID,
-  TYPEDSTREAM_ERROR_MAX
-} TypedStreamStatus;
-
-/// Identifiers for supported primitive data types.
-typedef enum 
-{
-  /// Interger.
-  TYPEDSTREAM_TYPE_INT,
-  /// Boolean (Yes/No).
-  TYPEDSTREAM_TYPE_BOOL,
-  /// Binary boolean (0/1).
-  TYPEDSTREAM_TYPE_BINARYBOOL,
-  /// Single-precision float.
-  TYPEDSTREAM_TYPE_FLOAT,
-  /// Double-precision float
-  TYPEDSTREAM_TYPE_DOUBLE,
-  /// String (char*).
-  TYPEDSTREAM_TYPE_STRING
-} TypedStreamType;
-
-/// Identifiers for tokens in archives.
-typedef enum 
-{
-  /// End-of-file.
-  TYPEDSTREAM_EOF,
-  /// Section beginning "{".
-  TYPEDSTREAM_BEGIN,
-  /// Section end "}".
-  TYPEDSTREAM_END,
-  /// Key (field name).
-  TYPEDSTREAM_KEY,
-  /// Field value.
-  TYPEDSTREAM_VALUE,
-  /// Comment.
-  TYPEDSTREAM_COMMENT
-} TypedStreamToken;
-
-/// Debug flag values.
-typedef enum 
-{
-  /// There was an error.
-  TYPEDSTREAM_DEBUG_OFF,
-  /// No error encountered; operation completed successfully.
-  TYPEDSTREAM_DEBUG_ON
-} TypedStreamDebugFlag;
-
-/// Internal: Length of the read buffer for one archive line.  
-#define TYPEDSTREAM_LIMIT_BUFFER	1024
-
-/// Constant for use with flush parameter of End() member function.
-#define TYPEDSTREAM_FLUSH true
-
-/// Constant for use with flush parameter of End() member function.
-#define TYPEDSTREAM_NOFLUSH false
-
 /** Class for reading and writing og "typedstream" archives.
  * This class provides the same functions as DHZB's old, C-based "typedstream"
  * library. The interface has been remodelled, especially primitive read
@@ -186,6 +69,119 @@ typedef enum
 class TypedStream 
 {
 public:
+  /// This class.
+  typedef TypedStream Self;
+
+  /// Access modes for archives.
+  typedef enum 
+  {
+    /// Currently unset.
+    MODE_UNSET,
+    /// Read-only access.
+    MODE_READ,
+    /// Write-only access.
+    MODE_WRITE,
+    /// Write-only access piped through zlib/gzip compression.
+    MODE_WRITE_ZLIB,
+    /// Open existing archive and append to it.
+    MODE_APPEND
+  } Mode;
+  
+  /// Condition upon function return.
+  typedef enum 
+  {
+    /// There was an error.
+    ERROR,
+    /// No error encountered; operation completed successfully.
+    OK
+  } Condition;
+  
+  /// Classes of error conditions
+  typedef enum 
+  {
+    /// No error.
+    ERROR_NONE,
+    /// Unknown error.
+    ERROR_UNKNOWN,
+    /** A call to a system function returned an error condition.
+     * To find out more details, "errno" may be consulted.
+     */
+    ERROR_SYSTEM,
+    /** Error in the format of the open archive.
+     */
+    ERROR_FORMAT,
+    /** Wrong or invalid arguments given to a function.
+     */
+    ERROR_ARG,
+    /** The requested operation is not available in the current stream mode.
+     * This usually means that a write access was requested on a read-only
+     * archive or a Seek() operation on a write-only archive.
+     */
+    ERROR_MODE,
+    /** Error in a primitive data object.
+     * A value in the archive does not have the correct syntax for the expected
+     * type.
+     */
+    ERROR_TYPE,
+    /** An internal limit was exhausted.
+     * As we are now using a proper STL stack for keeping track of open levels,
+     * this condition should not occur any more.
+     */
+    ERROR_LIMIT,
+    /** Close of a level was requested when none was open.
+     */
+    ERROR_LEVEL,
+    /** The current stream is invalid.
+     * This condition is set when an access is tried without opening a file 
+     * first.
+     */
+    ERROR_INVALID,
+    ERROR_MAX
+  } Status;
+  
+  /// Identifiers for supported primitive data types. 
+  typedef enum 
+  {
+    /// Interger.
+    TYPE_INT,
+    /// Boolean (Yes/No).
+    TYPE_BOOL,
+    /// Binary boolean (0/1).
+    TYPE_BINARYBOOL,
+    /// Single-precision float.
+    TYPE_FLOAT,
+    /// Double-precision float
+    TYPE_DOUBLE,
+    /// String (char*).
+    TYPE_STRING
+  } Type;
+
+  /// Identifiers for tokens in archives.
+  typedef enum 
+  {
+    /// End-of-file.
+    TOKEN_EOF,
+    /// Section beginning "{".
+    TOKEN_BEGIN,
+    /// Section end "}".
+    TOKEN_END,
+    /// Key (field name).
+    TOKEN_KEY,
+    /// Field value.
+    TOKEN_VALUE,
+    /// Comment.
+    TOKEN_COMMENT
+  } Token;
+  
+  /// Debug flag values.
+  typedef enum 
+  {
+    /// There was an error.
+    DEBUG_OFF,
+    /// No error encountered; operation completed successfully.
+    DEBUG_ON
+  } DebugFlag;
+  
   /// Default constructor.
   TypedStream();
 
@@ -193,14 +189,14 @@ public:
    *\param filename Name of the archive to open.
    *\param mode Access mode, ie. read-only, write-only, etc.
    */
-  TypedStream( const char* filename, const TypedStreamMode mode );
+  TypedStream( const char* filename, const Self::Mode mode );
 
   /** Open constructor for separate path and archive names.
    *\param dir Directory to open archive in.
    *\param archive Name of the archive to open.
    *\param mode Access mode, ie. read-only, write-only, etc.
    */
-  TypedStream( const char* dir, const char* archive, const TypedStreamMode mode );
+  TypedStream( const char* dir, const char* archive, const Self::Mode mode );
 
   /** Destructor.
    * Close() is called to close a possibly open archive.
@@ -209,11 +205,11 @@ public:
 
   /** Open another archive without constructing a new object.
    */
-  void Open( const char* filename, const TypedStreamMode mode );
+  void Open( const char* filename, const Self::Mode mode );
 
   /** Open another archive in explicit directory.
    */
-  void Open( const char* dir, const char* archive, const TypedStreamMode mode );
+  void Open( const char* dir, const char* archive, const Self::Mode mode );
 
   /** Close an open archive.
    */
@@ -224,17 +220,17 @@ public:
    * section or after it on the same level.
    *
    * This function may only be called for read-only archive, ie. for such that
-   * were opened in TYPEDSTREAM_READONLY mode. For writeable archive, it 
+   * were opened in MODE_READONLY mode. For writeable archive, it 
    * will return an error.
    */
-  TypedStreamCondition Seek( const char* section /*!< Name of the section whose beginning stream pointer is moved to. */, 
+  Self::Condition Seek( const char* section /*!< Name of the section whose beginning stream pointer is moved to. */, 
 			     const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /** Rewind archive.
    * This function resets filepointer of an open archive to the beginning of
    * the current section.
    */
-  TypedStreamCondition Rewind();
+  Self::Condition Rewind();
 
   /** Return validity of archive.
    *\return 1 if an archive is currently open, 0 if not.
@@ -246,9 +242,9 @@ public:
 
   /** Return status of last operation.
    */
-  TypedStreamStatus GetStatus() const 
+  Self::Status GetStatus() const 
   { 
-    return this->Status; 
+    return this->m_Status; 
   }
 
   /** Begin a section.
@@ -258,7 +254,7 @@ public:
    *\param section Name of the new section.
    *\return Error condition.
    */
-  TypedStreamCondition Begin( const char* section = NULL );
+  Self::Condition Begin( const char* section = NULL );
 
   /** End a section.
    * In the open archive, this function will close the last section and 
@@ -267,7 +263,7 @@ public:
    * after closing the section.
    *\return Error condition.
    */
-  TypedStreamCondition End( const bool flush = false );
+  Self::Condition End( const bool flush = false );
 
   /** Read boolean value from an open archive.
    * This function recognizes both yes/no and 0/1 entries in the archive.
@@ -283,7 +279,7 @@ public:
   /** Read array of boole values from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  TypedStreamCondition ReadBoolArray( const char* key /*!< The name of the array in the archive.*/, 
+  Self::Condition ReadBoolArray( const char* key /*!< The name of the array in the archive.*/, 
 				      byte *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
 				      const int size /*!< Size of the array.*/, 
 				      const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
@@ -298,7 +294,7 @@ public:
   /** Read array of integer values from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  TypedStreamCondition ReadIntArray( const char* key /*!< The name of the array in the archive.*/, 
+  Self::Condition ReadIntArray( const char* key /*!< The name of the array in the archive.*/, 
 				     int *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
 				     const int size /*!< Size of the array.*/, 
 				     const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
@@ -313,7 +309,7 @@ public:
   /** Read array of single-precision values from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  TypedStreamCondition ReadFloatArray( const char* key /*!< The name of the array in the archive.*/, 
+  Self::Condition ReadFloatArray( const char* key /*!< The name of the array in the archive.*/, 
 				       float *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
 				       const int size /*!< Size of the array.*/, 
 				       const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
@@ -328,7 +324,7 @@ public:
   /** Read array of double-precision values from an open archive.
    * For a description of parameters and return value see ReadBool.
    */
-  TypedStreamCondition ReadDoubleArray( const char* key /*!< The name of the array in the archive.*/, 
+  Self::Condition ReadDoubleArray( const char* key /*!< The name of the array in the archive.*/, 
 					double *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
 					const int size /*!< Size of the array.*/, 
 					const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
@@ -376,7 +372,7 @@ public:
    *\see CMTK_COORDINATES_DOUBLE
    *\see Types::Coordinate
    */
-  TypedStreamCondition ReadCoordinateArray( const char* key /*!< The name of the array in the archive.*/, 
+  Self::Condition ReadCoordinateArray( const char* key /*!< The name of the array in the archive.*/, 
 					    Types::Coordinate *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
 					    const int size /*!< Size of the array.*/, 
 					    const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */)
@@ -395,7 +391,7 @@ public:
    *\see CMTK_DATA_DOUBLE
    *\see Types::DataItem
    */
-  TypedStreamCondition ReadItemArray( const char* key /*!< The name of the array in the archive.*/, 
+  Self::Condition ReadItemArray( const char* key /*!< The name of the array in the archive.*/, 
 				      Types::DataItem *const array /*!< Pointer to allocated storage for the array to be read into.*/, 
 				      const int size /*!< Size of the array.*/, 
 				      const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */) 
@@ -421,23 +417,23 @@ public:
 		    const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */);
 
   /// Write a boolean value to an open archive.
-  TypedStreamCondition WriteBool( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
+  Self::Condition WriteBool( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
 				  const bool value /*!< Value to write to the archive under the given key. */ );
 
   /// Write an integer value to an open archive.
-  TypedStreamCondition WriteInt( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
+  Self::Condition WriteInt( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
 				 const int value /*!< Value to write to the archive under the given key. */ );
 
   /// Write a float value to an open archive.
-  TypedStreamCondition WriteFloat( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
+  Self::Condition WriteFloat( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
 				   const float value /*!< Value to write to the archive under the given key. */ );
 
   /// Write a double precision float value to an open archive.
-  TypedStreamCondition WriteDouble( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
+  Self::Condition WriteDouble( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
 				    const double value /*!< Value to write to the archive under the given key. */ );
 
   /// Write an Types::Coordinate value to an open archive.
-  TypedStreamCondition WriteCoordinate( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
+  Self::Condition WriteCoordinate( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
 					const Types::Coordinate value /*!< Value to write to the archive under the given key. */ ) 
   {
 #ifdef CMTK_COORDINATES_FLOAT
@@ -448,7 +444,7 @@ public:
   }
   
   /// Write an Types::DataItem value to an open archive.
-  TypedStreamCondition WriteItem( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
+  Self::Condition WriteItem( const char* key /*!< The name of the field under which to write this value in the archive.*/, 
 				  const Types::DataItem value /*!< Value to write to the archive under the given key. */ ) 
   {
 #ifdef CMTK_DATA_FLOAT
@@ -459,46 +455,46 @@ public:
   }
   
   /// Write a string to an open archive.
-  TypedStreamCondition WriteString( const char* key /*!< The name of the field under which to write this string in the archive.*/, 
+  Self::Condition WriteString( const char* key /*!< The name of the field under which to write this string in the archive.*/, 
 				    const char* value /*!< String to write to the archive under the given key. */ );
 
   /// Write a string to an open archive.
-  TypedStreamCondition WriteString( const char* key /*!< The name of the field under which to write this string in the archive.*/, 
+  Self::Condition WriteString( const char* key /*!< The name of the field under which to write this string in the archive.*/, 
 				    const std::string& value /*!< String to write to the archive under the given key. */ );
 
   /// Write a formated comment to an open archive.
-  TypedStreamCondition WriteComment( const char* fmt /*!< printf-style format string for the remaining variable number of parameters */, ... );
+  Self::Condition WriteComment( const char* fmt /*!< printf-style format string for the remaining variable number of parameters */, ... );
 
   /// Write string array as comment to an open archive.
-  TypedStreamCondition WriteComment( const int argc /*!< Number of strings in the array. */, const char* argv[] /*!< Array of string pointers. */ );
+  Self::Condition WriteComment( const int argc /*!< Number of strings in the array. */, const char* argv[] /*!< Array of string pointers. */ );
 
   /// Write string array as comment to an open archive.
-  TypedStreamCondition WriteComment( int argc /*!< Number of strings in the array. */, char* argv[] /*!< Array of string pointers. */ );
+  Self::Condition WriteComment( int argc /*!< Number of strings in the array. */, char* argv[] /*!< Array of string pointers. */ );
 
   /** Write array of integer values to an open archive.
    */
-  TypedStreamCondition WriteIntArray( const char* key /*!< The name of the field under which to write this array in the archive.*/, 
+  Self::Condition WriteIntArray( const char* key /*!< The name of the field under which to write this array in the archive.*/, 
 				      const int* array /*!< Pointer to the array to be written.*/, 
 				      const int size /*!< Number of values in the array. This is the number of values written to the archive. */,
 				      const int valuesPerLine = 10 /*!< Optional number of values per line of text written to the archive. This improves readability of the resulting archive as a text. */ );
 
   /** Write array of binay encoded boole values to an open archive.
    */
-  TypedStreamCondition WriteBoolArray( const char* key /*!< The name of the field under which to write this array in the archive.*/, 
+  Self::Condition WriteBoolArray( const char* key /*!< The name of the field under which to write this array in the archive.*/, 
 				       const byte* array /*!< Pointer to the array to be written.*/, 
 				       const int size /*!< Number of values in the array. This is the number of values written to the archive. */, 
 				       const int valuesPerLine = 10 /*!< Optional number of values per line of text written to the archive. This improves readability of the resulting archive as a text. */ );
 
   /** Write array of single-precision values to an open archive.
    */
-  TypedStreamCondition WriteFloatArray( const char* key/*!< The name of the field under which to write this array in the archive.*/, 
+  Self::Condition WriteFloatArray( const char* key/*!< The name of the field under which to write this array in the archive.*/, 
 					const float* array /*!< Pointer to the array to be written.*/, 
 					const int size /*!< Number of values in the array. This is the number of values written to the archive. */,
 					const int valuesPerLine = 10 /*!< Optional number of values per line of text written to the archive. This improves readability of the resulting archive as a text. */ );
 
   /** Write array of double-precision values to an open archive.
    */
-  TypedStreamCondition WriteDoubleArray( const char* key /*!< The name of the field under which to write this array in the archive.*/, 
+  Self::Condition WriteDoubleArray( const char* key /*!< The name of the field under which to write this array in the archive.*/, 
 					 const double* array /*!< Pointer to the array to be written.*/, 
 					 const int size /*!< Number of values in the array. This is the number of values written to the archive. */,
 					 const int valuesPerLine = 10 /*!< Optional number of values per line of text written to the archive. This improves readability of the resulting archive as a text. */ );
@@ -510,7 +506,7 @@ public:
    *\see CMTK_COORDINATES_DOUBLE
    *\see Types::Coordinate
    */
-  TypedStreamCondition WriteCoordinateArray( const char* key/*!< The name of the field under which to write this array in the archive.*/, 
+  Self::Condition WriteCoordinateArray( const char* key/*!< The name of the field under which to write this array in the archive.*/, 
 					     const Types::Coordinate* array /*!< Pointer to the array to be written.*/, 
 					     const int size /*!< Number of values in the array. This is the number of values written to the archive. */,
 					     const int valuesPerLine = 10 /*!< Optional number of values per line of text written to the archive. This improves readability of the resulting archive as a text. */ )
@@ -529,10 +525,10 @@ public:
    *\see CMTK_DATA_DOUBLE
    *\see Types::DataItem
    */
-  TypedStreamCondition WriteItemArray( const char* key /*!< The name of the field under which to write this array in the archive.*/, 
-				       const Types::DataItem* array /*!< Pointer to the array to be written.*/, 
-				       const int size /*!< Number of values in the array. This is the number of values written to the archive. */, 
-				       const int valuesPerLine = 10 /*!< Optional number of values per line of text written to the archive. This improves readability of the resulting archive as a text. */ )
+  Self::Condition WriteItemArray( const char* key /*!< The name of the field under which to write this array in the archive.*/, 
+				  const Types::DataItem* array /*!< Pointer to the array to be written.*/, 
+				  const int size /*!< Number of values in the array. This is the number of values written to the archive. */, 
+				  const int valuesPerLine = 10 /*!< Optional number of values per line of text written to the archive. This improves readability of the resulting archive as a text. */ )
   { 
 #ifdef CMTK_DATA_DOUBLE
     return this->WriteDoubleArray( key, array, size, valuesPerLine );
@@ -542,12 +538,15 @@ public:
   }
 
   /// Set debugging flag.
-  void SetDebugFlag( const TypedStreamDebugFlag debugFlag = TYPEDSTREAM_DEBUG_ON /*!< Set the debug flag to this value. */ )
+  void SetDebugFlag( const Self::DebugFlag debugFlag = Self::DEBUG_ON /*!< Set the debug flag to this value. */ )
   { 
-    DebugFlag = debugFlag;
+    this->m_DebugFlag = debugFlag;
   }
   
 private:
+  /// Internal: Length of the read buffer for one archive line.  
+  static const int LIMIT_BUFFER = 1024;
+
   /** Initialize internal data structures.
    * This function is called from both constructors to initialize the internal
    * data structures of this object.
@@ -561,11 +560,11 @@ private:
   gzFile GzFile;
 
   /// Mode the current archive was opened with.
-  TypedStreamMode Mode;
+  Self::Mode m_Mode;
 
   /** Holds the status of the last operation.
    */
-  TypedStreamStatus Status;
+  Self::Status m_Status;
 
   /** Number of significant digits for "float" fields.
    * As all float numbers are written to the archive as strings, part of the
@@ -584,7 +583,7 @@ private:
   int PrecisionDouble;
 
   /// Buffer for the current line read from the archive.
-  char Buffer[TYPEDSTREAM_LIMIT_BUFFER];
+  char Buffer[Self::LIMIT_BUFFER];
 
   /// Pointer to the "key" part of the line currently in Buffer.
   char* BufferKey;
@@ -604,15 +603,15 @@ private:
    * Besides, common functions such as the skipping of inserted sections are
    * implemented as shared code for all data types.
    */
-  TypedStreamCondition GenericReadArray( const char* key /*!< Field key (name)*/, 
-					 const int type /*!< Array data type ID */, 
-					 void *const array /*!< Target storage space for read data */, 
-					 const int arraySize /*!< Number of array elements */, 
-					 const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */ );
+  Self::Condition GenericReadArray( const char* key /*!< Field key (name)*/, 
+				    const int type /*!< Array data type ID */, 
+				    void *const array /*!< Target storage space for read data */, 
+				    const int arraySize /*!< Number of array elements */, 
+				    const bool forward = false /*!< Flag: read forward from current position in stream (if false, reset to current section start) */ );
   
   /// Read the next archive line to the buffer.
-  TypedStreamToken ReadLineToken();
-
+  Self::Token ReadLineToken();
+  
   /** Compare two strings.
    * Other than the standard library's strcmp() function, this implementation
    * ignores upper and lowercase. Also, strings are terminated by either NULL
@@ -640,7 +639,7 @@ private:
   }
   
   /// Debug flag.
-  TypedStreamDebugFlag DebugFlag;
+  Self::DebugFlag m_DebugFlag;
   
   /// Output diagnostic message if debug flag is set.
   void DebugOutput( const char* format /*!< printf-style format string for the remaining variable number of function arguments.*/, ... );

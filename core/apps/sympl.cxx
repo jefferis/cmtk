@@ -201,7 +201,7 @@ ParseCommandLine ( const int argc, const char* argv[] )
     
     if ( SymmetryParametersFile ) 
       {
-      cmtk::ClassStream inStream( SymmetryParametersFile, cmtk::ClassStream::READ );
+      cmtk::ClassStream inStream( SymmetryParametersFile, cmtk::ClassStream::MODE_READ );
       if ( inStream.IsValid() ) 
 	{
 	cmtk::ParametricPlane *plane = NULL;
@@ -479,7 +479,7 @@ doMain ( const int argc, const char* argv[] )
   
   if ( SymmetryOutFileName )
     {
-    cmtk::ClassStream stream( SymmetryOutFileName, cmtk::ClassStream::WRITE );
+    cmtk::ClassStream stream( SymmetryOutFileName, cmtk::ClassStream::MODE_WRITE );
     stream << parametricPlane;
     stream.Close();
     }

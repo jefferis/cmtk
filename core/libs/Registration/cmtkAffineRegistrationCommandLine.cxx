@@ -220,7 +220,7 @@ AffineRegistrationCommandLine
     
     DebugOutput( 1 ) << "Reading input studylist " << this->m_InitialXformPath << ".\n";
     
-    ClassStream typedStream( MountPoints::Translate(this->m_InitialXformPath), "registration", ClassStream::READ );
+    ClassStream typedStream( MountPoints::Translate(this->m_InitialXformPath), "registration", ClassStream::MODE_READ );
     if ( ! typedStream.IsValid() ) 
       {
       StdErr << "ERROR: could not open studylist archive " << this->m_InitialXformPath << ".\n";
@@ -372,7 +372,7 @@ AffineRegistrationCommandLine::OutputResultParameters
 void
 AffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
 {
-  ClassStream classStream( studyList, "studylist", ClassStream::WRITE );
+  ClassStream classStream( studyList, "studylist", ClassStream::MODE_WRITE );
   if ( !classStream.IsValid() ) return;
   
   classStream.Begin( "studylist" );
@@ -389,7 +389,7 @@ AffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
     
   classStream.Close();
     
-  classStream.Open( studyList, "registration", ClassStream::WRITE );
+  classStream.Open( studyList, "registration", ClassStream::MODE_WRITE );
     
   classStream.Begin( "registration" );
   classStream.WriteString( "reference_study", CompressedStream::GetBaseName( Study1 ) );
@@ -400,7 +400,7 @@ AffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
   classStream.End();
   classStream.Close();
     
-  classStream.Open( studyList, "settings", ClassStream::WRITE );
+  classStream.Open( studyList, "settings", ClassStream::MODE_WRITE );
   classStream.WriteDouble( "exploration", this->m_Exploration );
   classStream.WriteDouble( "accuracy", this->m_Accuracy );
   classStream.WriteDouble( "min_sampling", this->m_Sampling );
@@ -414,7 +414,7 @@ AffineRegistrationCommandLine::OutputResultList( const char* studyList ) const
 
   classStream.Close();
     
-  classStream.Open( studyList, "statistics", ClassStream::WRITE );
+  classStream.Open( studyList, "statistics", ClassStream::MODE_WRITE );
   classStream.WriteDouble( "time", this->GetTotalElapsedTime() );
   classStream.WriteDouble( "walltime", this->GetTotalElapsedWalltime() );
 #ifdef CMTK_USE_PTHREADS

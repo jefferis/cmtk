@@ -83,14 +83,14 @@ XformIO::Read( const char* path )
     {
     DebugOutput( 1 ) << "Reading transformation from typedstream file " << realPath << "\n";
     
-    ClassStream stream( realPath, ClassStream::READ );
+    ClassStream stream( realPath, ClassStream::MODE_READ );
     WarpXform* warpXform;
     stream >> warpXform;
     
     if ( warpXform ) 
       return Xform::SmartPtr( warpXform );
     
-    stream.Open( realPath, ClassStream::READ );
+    stream.Open( realPath, ClassStream::MODE_READ );
     try
       {
       AffineXform affineXform;
@@ -151,7 +151,7 @@ XformIO::Write
     }
     case FILEFORMAT_TYPEDSTREAM:
     {
-    ClassStream stream( absolutePath, ClassStream::WRITE );
+    ClassStream stream( absolutePath, ClassStream::MODE_WRITE );
     
     const AffineXform* affineXform = dynamic_cast<const AffineXform*>( xform );
     if ( affineXform )

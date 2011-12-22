@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -61,17 +61,11 @@ class ClassStream :
   public TypedStream 
 {
 public:
-  /// Access modes for archives.
-  typedef enum {
-    /// Read-only access.
-    READ = TYPEDSTREAM_READ,
-    /// Write-only access.
-    WRITE = TYPEDSTREAM_WRITE,
-    /// Write-only access piped through zlib/gzip compression.
-    WRITE_ZLIB = TYPEDSTREAM_WRITE_ZLIB,
-    /// Open existing archive and append to it.
-    APPEND = TYPEDSTREAM_APPEND
-  } FileMode;
+  /// This class.
+  typedef ClassStream Self;
+
+  /// Parent class.
+  typedef TypedStream Superclass;
 
   /// Default constructor.
   ClassStream() : TypedStream() {}
@@ -80,27 +74,27 @@ public:
    *\param filename Name of the archive to open.
    *\param mode Access mode, ie. read-only, write-only, etc.
    */
-  ClassStream( const char *filename, const FileMode mode )
-    : TypedStream( filename,  (TypedStreamMode) mode ) {}
+  ClassStream( const char *filename, const Self::Mode mode )
+    : TypedStream( filename,  mode ) {}
 
   /** Open constructor for separate path and archive names.
    *\param dir Directory to open archive in.
    *\param archive Name of the archive to open.
    *\param mode Access mode, ie. read-only, write-only, etc.
    */
-  ClassStream( const char *dir, const char *archive, const FileMode mode )
-    : TypedStream( dir, archive, (TypedStreamMode) mode ) {}
+  ClassStream( const char *dir, const char *archive, const Self::Mode mode )
+    : TypedStream( dir, archive, mode ) {}
 
   /** Open another archive without constructing a new object.
    */
-  void Open( const char *filename, const FileMode mode ) {
-    this->TypedStream::Open( filename, (TypedStreamMode) mode );
+  void Open( const char *filename, const Self::Mode mode ) {
+    this->TypedStream::Open( filename, mode );
   }
 
   /** Open another archive in explicit directory.
    */
-  void Open( const char *dir, const char *archive, const FileMode mode ) {
-    this->TypedStream::Open( dir, archive, (TypedStreamMode) mode );
+  void Open( const char *dir, const char *archive, const Self::Mode mode ) {
+    this->TypedStream::Open( dir, archive, mode );
   }
 
   /** Write generic transformation object.

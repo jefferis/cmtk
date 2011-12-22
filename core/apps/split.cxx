@@ -116,7 +116,7 @@ doMain( const int argc, const char* argv[] )
       xlate[Axis] = -i * volume->m_Delta[Axis];
       xform.SetXlate( xlate );
 
-      cmtk::ClassStream stream( path, cmtk::ClassStream::WRITE );
+      cmtk::ClassStream stream( path, cmtk::ClassStream::MODE_WRITE );
       if ( stream.IsValid() )
 	{
 	stream << xform;

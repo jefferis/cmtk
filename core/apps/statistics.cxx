@@ -174,7 +174,7 @@ AnalyzeLabels( const cmtk::UniformVolume* volume, const cmtk::TypedArray* maskDa
   
   if ( LandmarksFileName ) 
     {
-    cmtk::ClassStream stream( LandmarksFileName, cmtk::ClassStream::WRITE );
+    cmtk::ClassStream stream( LandmarksFileName, cmtk::ClassStream::MODE_WRITE );
     stream << landmarkList;
     stream.Close();
     }

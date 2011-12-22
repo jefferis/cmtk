@@ -140,7 +140,7 @@ GetReconstructedImage( cmtk::UniformVolume::SmartPtr& volume, cmtk::UniformVolum
   
   if ( ExportXformsPath )
     {
-    cmtk::ClassStream stream( ExportXformsPath, cmtk::ClassStream::WRITE );
+    cmtk::ClassStream stream( ExportXformsPath, cmtk::ClassStream::MODE_WRITE );
     if ( stream.IsValid() )
       {
       cmtk::DebugOutput( 2 ) << "Exporting transformations between passes to " << ExportXformsPath << "\n";
@@ -293,7 +293,7 @@ doMain( const int argc, const char* argv[] )
   std::vector<cmtk::Xform::SmartPtr> xformsToPassImages;
   if ( ImportXformsPath )
     {
-    cmtk::ClassStream stream( ImportXformsPath, cmtk::ClassStream::READ );
+    cmtk::ClassStream stream( ImportXformsPath, cmtk::ClassStream::MODE_READ );
     if ( stream.IsValid() )
       {
       cmtk::DebugOutput( 1 ) << "Importing transformations between passes from " << ImportXformsPath << "\n";

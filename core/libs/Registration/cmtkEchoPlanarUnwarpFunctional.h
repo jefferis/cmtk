@@ -68,7 +68,7 @@ public:
   }
 
   /// Return either first or second corrected image.
-  UniformVolume::SmartPtr GetCorrectedImage( const byte idx = 0 )
+  UniformVolume::SmartPtr GetCorrectedImage( const byte  = 0 )
   {
     return UniformVolume::SmartPtr( this->m_ImageFwd->CloneGrid() );
   }

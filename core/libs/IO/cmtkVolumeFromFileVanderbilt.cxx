@@ -71,7 +71,7 @@ VolumeFromFile::ReadVanderbilt( const char *path )
 	} 
       else if ( ! strcmp( key, "Pixel size " ) ) 
 	{
-	sscanf( value, "%lf : %lf", calib, calib+1 );
+	sscanf( value, "%20lf : %20lf", calib, calib+1 );
 	} 
       else if ( ! strcmp( key, "Slice thickness " ) ) 
 	{

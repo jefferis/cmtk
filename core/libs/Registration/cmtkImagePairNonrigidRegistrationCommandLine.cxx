@@ -245,7 +245,7 @@ ImagePairNonrigidRegistrationCommandLine
     
     DebugOutput( 1 ) << "Reading input studylist" << InputStudylist << "\n";
     
-    ClassStream classStream( MountPoints::Translate(InputStudylist),"registration", ClassStream::READ );
+    ClassStream classStream( MountPoints::Translate(InputStudylist),"registration", ClassStream::MODE_READ );
     if ( ! classStream.IsValid() ) 
       {
       StdErr << "ERROR: Could not open studylist archive " << InputStudylist << ".\n";
@@ -438,7 +438,7 @@ ImagePairNonrigidRegistrationCommandLine::DoneResolution
 void
 ImagePairNonrigidRegistrationCommandLine::OutputWarp ( const char* path ) const
 {
-  ClassStream classStream( path, "studylist", ClassStream::WRITE );
+  ClassStream classStream( path, "studylist", ClassStream::MODE_WRITE );
   if ( ! classStream.IsValid() ) return;
 
   classStream.Begin( "studylist" );
@@ -455,7 +455,7 @@ ImagePairNonrigidRegistrationCommandLine::OutputWarp ( const char* path ) const
 
   classStream.Close();
 
-  classStream.Open( path, "settings", ClassStream::WRITE );
+  classStream.Open( path, "settings", ClassStream::MODE_WRITE );
   classStream.WriteInt( "algorithm", this->m_Algorithm );
   classStream.WriteBool( "use_maxnorm", this->m_UseMaxNorm );
   classStream.WriteDouble( "exploration", this->m_MaxStepSize );
@@ -483,7 +483,7 @@ ImagePairNonrigidRegistrationCommandLine::OutputWarp ( const char* path ) const
 
   classStream.Close();
       
-  classStream.Open( path, "statistics", ClassStream::WRITE );
+  classStream.Open( path, "statistics", ClassStream::MODE_WRITE );
   classStream.WriteDouble( "time_level", this->GetLevelElapsedTime() );
   classStream.WriteDouble( "time_total", this->GetTotalElapsedTime() );
   classStream.WriteDouble( "walltime_level", this->GetLevelElapsedWalltime() );
@@ -506,7 +506,7 @@ ImagePairNonrigidRegistrationCommandLine::OutputWarp ( const char* path ) const
   const WarpXform::SmartPtr warp = WarpXform::SmartPtr::DynamicCastFrom( this->m_Xform );
   if ( warp ) 
     {
-    classStream.Open( path, "registration", ClassStream::WRITE );
+    classStream.Open( path, "registration", ClassStream::MODE_WRITE );
     if ( classStream.IsValid() ) 
       {
       classStream.Begin( "registration" );

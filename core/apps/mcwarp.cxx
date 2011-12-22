@@ -153,7 +153,7 @@ DoRegistration()
   if ( mcaffineOutput )
     {
     cmtk::AffineMultiChannelRegistrationFunctional<TMetricFunctional> affineFunctional;
-    cmtk::ClassStream inStream( mcaffineOutput, cmtk::ClassStream::READ );
+    cmtk::ClassStream inStream( mcaffineOutput, cmtk::ClassStream::MODE_READ );
     if ( !inStream.IsValid() )
       {
       cmtk::StdErr << "ERROR: could not open '" << mcaffineOutput << "' for reading.\n";
@@ -279,7 +279,7 @@ DoRegistration()
   
   if ( outArchive )
     {
-    cmtk::ClassStream stream( outArchive, cmtk::ClassStream::WRITE );
+    cmtk::ClassStream stream( outArchive, cmtk::ClassStream::MODE_WRITE );
     stream << *functional;
     stream.Close();
     }

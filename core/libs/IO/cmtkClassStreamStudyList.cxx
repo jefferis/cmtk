@@ -62,7 +62,7 @@ StudyList*
 ClassStreamStudyList::Merge
 ( StudyList* const studyList, const char *path )
 {
-  ClassStream classStream( MountPoints::Translate( path ), "studylist", ClassStream::READ );
+  ClassStream classStream( MountPoints::Translate( path ), "studylist", ClassStream::MODE_READ );
   if ( ! classStream.IsValid() ) 
     {
     return NULL;
@@ -82,7 +82,7 @@ ClassStreamStudyList::Merge
     }
   classStream.Close();
   
-  classStream.Open( MountPoints::Translate( path ), "registration", ClassStream::READ );
+  classStream.Open( MountPoints::Translate( path ), "registration", ClassStream::MODE_READ );
   if ( ! classStream.IsValid() ) 
     {
     return newStudyList;
@@ -141,7 +141,7 @@ ClassStreamStudyList::Write
 {
   ClassStream stream;
 
-  stream.Open( path, "studylist", ClassStream::WRITE );
+  stream.Open( path, "studylist", ClassStream::MODE_WRITE );
   if ( stream.IsValid() ) 
     {
     StudyList::const_iterator it = studyList->begin();
@@ -159,7 +159,7 @@ ClassStreamStudyList::Write
     StdErr << "ERROR: could not open archive " << path << "/studylist\n";
     }  
   
-  stream.Open( path, "registration", ClassStream::WRITE );
+  stream.Open( path, "registration", ClassStream::MODE_WRITE );
   if ( stream.IsValid() ) 
     {
     StudyList::const_iterator it = studyList->begin();

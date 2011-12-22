@@ -233,7 +233,7 @@ cmtk::ImageSymmetryPlaneCommandLineBase
   
   if ( this->m_SymmetryOutFileName )
     {
-    ClassStream stream( this->m_SymmetryOutFileName, ClassStream::WRITE );
+    ClassStream stream( this->m_SymmetryOutFileName, ClassStream::MODE_WRITE );
     stream << this->m_SymmetryPlane;
     stream.Close();
     }
@@ -280,7 +280,7 @@ cmtk::ImageSymmetryPlaneCommandLineBase
     
     if ( this->m_SymmetryParametersFile ) 
       {
-      ClassStream inStream( this->m_SymmetryParametersFile, ClassStream::READ );
+      ClassStream inStream( this->m_SymmetryParametersFile, ClassStream::MODE_READ );
       if ( inStream.IsValid() ) 
 	{
 	ParametricPlane *plane = NULL;

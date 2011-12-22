@@ -59,23 +59,20 @@ cmtk
 /** \addtogroup IO */
 //@{
 
-TypedStream
-::TypedStream()
+TypedStream::TypedStream()
 {
   this->InitInternals();
 }
 
-TypedStream
-::TypedStream
-( const char *filename, const TypedStreamMode mode )
+TypedStream::TypedStream
+( const char *filename, const Self::Mode mode )
 {
   this->InitInternals();
   this->Open( filename, mode );
 }
 
-TypedStream
-::TypedStream
-( const char *dir, const char *archive, const TypedStreamMode mode )
+TypedStream::TypedStream
+( const char *dir, const char *archive, const Self::Mode mode )
 {
   this->InitInternals();
   this->Open( dir, archive, mode );
@@ -85,14 +82,16 @@ void
 TypedStream
 ::InitInternals()
 {
+  this->m_Mode = Self::MODE_UNSET;
+
   File = NULL;
   GzFile = NULL;
 
   PrecisionFloat = 6;
   PrecisionDouble = 10;
 
-  Status = TYPEDSTREAM_ERROR_NONE;
-  DebugFlag = TYPEDSTREAM_DEBUG_OFF;
+  this->m_Status = Self::ERROR_NONE;
+  this->m_DebugFlag = Self::DEBUG_OFF;
 
   SplitPosition = NULL;
 }
@@ -107,7 +106,7 @@ TypedStream
 void 
 TypedStream
 ::Open
-( const char *dir, const char *archive, const TypedStreamMode mode )
+( const char *dir, const char *archive, const Self::Mode mode )
 {
   static char fname[PATH_MAX];
   
@@ -127,7 +126,7 @@ TypedStream
       }
     }
   
-  if ( mode == TYPEDSTREAM_WRITE || mode == TYPEDSTREAM_WRITE_ZLIB || mode == TYPEDSTREAM_APPEND ) 
+  if ( mode == Self::MODE_WRITE || mode == Self::MODE_WRITE_ZLIB || mode == Self::MODE_APPEND ) 
     {
 #ifndef _MSC_VER
     // check if this is an existing directory; if it is, set access/modification time.
@@ -146,30 +145,30 @@ TypedStream
 void 
 TypedStream
 ::Open
-( const char *filename, const TypedStreamMode mode )
+( const char *filename, const Self::Mode mode )
 {
-  Status = TYPEDSTREAM_ERROR_NONE;
+  this->m_Status = Self::ERROR_NONE;
 
   this->Close();
   
   if ( !filename) 
     {
-    Status = TYPEDSTREAM_ERROR_ARG;
+    this->m_Status = Self::ERROR_ARG;
     return;
     }
   
-  if ( mode != TYPEDSTREAM_READ && mode != TYPEDSTREAM_WRITE && mode != TYPEDSTREAM_WRITE_ZLIB && mode != TYPEDSTREAM_APPEND ) 
+  if ( mode != Self::MODE_READ && mode != Self::MODE_WRITE && mode != Self::MODE_WRITE_ZLIB && mode != Self::MODE_APPEND ) 
     {
-    Status = TYPEDSTREAM_ERROR_ARG;
+    this->m_Status = Self::ERROR_ARG;
     return;
     }
   
-  if ( mode == TYPEDSTREAM_WRITE || mode == TYPEDSTREAM_WRITE_ZLIB ) 
+  if ( mode == Self::MODE_WRITE || mode == Self::MODE_WRITE_ZLIB ) 
     {
     if ( FileUtils::RecursiveMkPrefixDir( filename ) ) 
       {
       StdErr << "ERROR: could not recursively create path for \"" << filename << "\"\n";
-      Status = TYPEDSTREAM_ERROR_SYSTEM;
+      this->m_Status = Self::ERROR_SYSTEM;
       return;
       }
     }
@@ -178,16 +177,17 @@ TypedStream
   switch ( mode ) 
     {
 #ifdef _MSC_VER
-    case TYPEDSTREAM_READ:	modestr = "rb"; break;
-    case TYPEDSTREAM_WRITE:	modestr = "wb"; break;
-    case TYPEDSTREAM_WRITE_ZLIB:	modestr = "wb"; break;
-    case TYPEDSTREAM_APPEND:	modestr = "ab"; break;
+    case Self::MODE_READ:	modestr = "rb"; break;
+    case Self::MODE_WRITE:	modestr = "wb"; break;
+    case Self::MODE_WRITE_ZLIB:	modestr = "wb"; break;
+    case Self::MODE_APPEND:	modestr = "ab"; break;
 #else
-    case TYPEDSTREAM_READ:	modestr = "r"; break;
-    case TYPEDSTREAM_WRITE:	modestr = "w"; break;
-    case TYPEDSTREAM_WRITE_ZLIB:	modestr = "w"; break;
-    case TYPEDSTREAM_APPEND:	modestr = "a"; break;
+    case Self::MODE_READ:	modestr = "r"; break;
+    case Self::MODE_WRITE:	modestr = "w"; break;
+    case Self::MODE_WRITE_ZLIB:	modestr = "w"; break;
+    case Self::MODE_APPEND:	modestr = "a"; break;
 #endif
+    default: modestr = ""; break;
     }
   
   if ( ! ( File = fopen( filename, modestr ) ) ) 
@@ -198,28 +198,29 @@ TypedStream
     if ( ! GzFile ) 
       {
       StdErr << "ERROR: could not open file \"" << filename << "\" with mode \"" << modestr << "\"\n";
-      Status = TYPEDSTREAM_ERROR_SYSTEM;
+      this->m_Status = Self::ERROR_SYSTEM;
       return;
       }
     }
   
-  Mode = mode;
-  switch ( Mode ) 
+  this->m_Mode = mode;
+  switch ( this->m_Mode ) 
     {
-    case TYPEDSTREAM_READ:
+    default: break;
+    case Self::MODE_READ:
       if ( GzFile ) 
 	{
-	if (! gzgets( GzFile, Buffer, TYPEDSTREAM_LIMIT_BUFFER ) ) 
+	if (! gzgets( GzFile, Buffer, sizeof( this->Buffer ) ) ) 
 	  {
-	  Status = TYPEDSTREAM_ERROR_FORMAT;
+	  this->m_Status = Self::ERROR_FORMAT;
 	  gzclose( GzFile );
 	  return;
 	  }
 	} 
       else
-	if (! fgets( Buffer, TYPEDSTREAM_LIMIT_BUFFER, File ) ) 
+	if (! fgets( Buffer, sizeof( this->Buffer) , File ) ) 
 	  {
-	  Status = TYPEDSTREAM_ERROR_FORMAT;
+	  this->m_Status = Self::ERROR_FORMAT;
 	  fclose( File );
 	  File = NULL;
 	  return;
@@ -227,7 +228,7 @@ TypedStream
       
       if (Buffer[0] != '!' && Buffer[0] != '#') 
 	{
-	Status = TYPEDSTREAM_ERROR_FORMAT;
+	this->m_Status = Self::ERROR_FORMAT;
 	if ( GzFile )
 	  {
 	  gzclose( GzFile );
@@ -244,7 +245,7 @@ TypedStream
       int releaseMinor, releaseMajor;
       if (2 != sscanf( Buffer+1, " TYPEDSTREAM %d.%d", &releaseMajor, &releaseMinor)) 
 	{
-	Status = TYPEDSTREAM_ERROR_FORMAT;
+	this->m_Status = Self::ERROR_FORMAT;
 	if ( GzFile )
 	  {
 	  gzclose( GzFile );
@@ -270,7 +271,7 @@ TypedStream
 	else 
 	  {
 	  /* Unknown Release */
-	  Status = TYPEDSTREAM_ERROR_FORMAT;
+	  this->m_Status = Self::ERROR_FORMAT;
 	  if ( GzFile )
 	    {
 	    gzclose( GzFile );
@@ -286,15 +287,15 @@ TypedStream
 	  }
       break;
       
-    case TYPEDSTREAM_WRITE:
-    case TYPEDSTREAM_WRITE_ZLIB:
+    case Self::MODE_WRITE:
+    case Self::MODE_WRITE_ZLIB:
       if ( GzFile )
 	gzprintf( GzFile, "%s\n", GetTypedStreamIdent() );
       else
 	fprintf( File, "%s\n", GetTypedStreamIdent() );
       break;
       
-    case TYPEDSTREAM_APPEND:
+    case Self::MODE_APPEND:
       if ( GzFile ) 
 	{
 	if ( 0 == gztell( File) )
@@ -313,7 +314,7 @@ TypedStream
 {
   if ( File || GzFile )
     {
-    if ( Mode == TYPEDSTREAM_WRITE || Mode == TYPEDSTREAM_APPEND ) 
+    if ( this->m_Mode == Self::MODE_WRITE || this->m_Mode == Self::MODE_APPEND ) 
       {
       while ( ! LevelStack.empty() ) 
 	{
@@ -353,34 +354,34 @@ TypedStream
       }
     }
   
-  Status = TYPEDSTREAM_ERROR_NONE;
+  this->m_Status = Self::ERROR_NONE;
   SplitPosition = NULL;
 }
 
-TypedStreamCondition 
+TypedStream::Condition 
 TypedStream
 ::Begin
 ( const char* section )
 {
   if ( !File && !GzFile)
     {
-    Status = TYPEDSTREAM_ERROR_INVALID;
-    return TYPEDSTREAM_ERROR;
+    this->m_Status = Self::ERROR_INVALID;
+    return Self::ERROR;
     }
 
-  if ( (Mode != TYPEDSTREAM_READ) && !section) 
+  if ( (this->m_Mode != Self::MODE_READ) && !section) 
     {
-    Status = TYPEDSTREAM_ERROR_ARG;
-    return TYPEDSTREAM_ERROR;
+    this->m_Status = Self::ERROR_ARG;
+    return Self::ERROR;
     }
   
-  if ( Mode == TYPEDSTREAM_READ ) 
+  if ( this->m_Mode == Self::MODE_READ ) 
     {
     if ( GzFile )
       gzseek( GzFile, LevelStack.top(), SEEK_SET );
     else
       fseek( File, LevelStack.top(), SEEK_SET );
-    return TYPEDSTREAM_OK;
+    return Self::OK;
     } 
   else 
     {
@@ -406,40 +407,40 @@ TypedStream
       LevelStack.push( ftell( File ) );
     }
   
-  return TYPEDSTREAM_OK;
+  return Self::OK;
 }
 
-TypedStreamCondition
+TypedStream::Condition
 TypedStream
 ::End
 ( const bool flush )
 {
   if ( ! File && ! GzFile )
     {
-    Status = TYPEDSTREAM_ERROR_INVALID;
-    return TYPEDSTREAM_ERROR;
+    this->m_Status = Self::ERROR_INVALID;
+    return Self::ERROR;
     }
   
-  if ( Mode == TYPEDSTREAM_READ ) 
+  if ( this->m_Mode == Self::MODE_READ ) 
     {
     if ( LevelStack.size() == 0 ) 
       {
       // end without begin
-      Status = TYPEDSTREAM_ERROR_LEVEL;
-      return TYPEDSTREAM_ERROR;
+      this->m_Status = Self::ERROR_LEVEL;
+      return Self::ERROR;
       }
 
-    TypedStreamToken token;
+    Self::Token token;
     int currentLevel = 1;
-    while ( currentLevel && (TYPEDSTREAM_EOF != ( token = this->ReadLineToken() ) ) ) 
+    while ( currentLevel && (Self::TOKEN_EOF != ( token = this->ReadLineToken() ) ) ) 
       {
-      if ( token == TYPEDSTREAM_BEGIN ) 
+      if ( token == Self::TOKEN_BEGIN ) 
 	{
 	this->DebugOutput( "Skipping section %s at level %d.", BufferKey, currentLevel );
 	++currentLevel;
 	}
       else
-	if ( token == TYPEDSTREAM_END ) 
+	if ( token == Self::TOKEN_END ) 
 	  {
 	  this->DebugOutput( "Leaving section %d.", currentLevel );
 	  --currentLevel;
@@ -454,8 +455,8 @@ TypedStream
     if ( streamLevel == 0 ) 
       {
       // end without begin
-      Status = TYPEDSTREAM_ERROR_LEVEL;
-      return TYPEDSTREAM_ERROR;
+      this->m_Status = Self::ERROR_LEVEL;
+      return Self::ERROR;
       }
     
     LevelStack.pop();
@@ -478,29 +479,29 @@ TypedStream
     fflush( File );
     }
   
-  return TYPEDSTREAM_OK;
+  return Self::OK;
 }
   
-TypedStreamCondition
+TypedStream::Condition
 TypedStream
 ::Seek
 ( const char* section, const bool forward )
 {
   if ( ! File && ! GzFile )
     {
-    Status = TYPEDSTREAM_ERROR_INVALID;
-    return TYPEDSTREAM_ERROR;
+    this->m_Status = Self::ERROR_INVALID;
+    return Self::ERROR;
     }
 
   if ( ! section ) 
     {
-    Status = TYPEDSTREAM_ERROR_ARG;
-    return TYPEDSTREAM_ERROR;
+    this->m_Status = Self::ERROR_ARG;
+    return Self::ERROR;
     }
-  if ( Mode != TYPEDSTREAM_READ ) 
+  if ( this->m_Mode != Self::MODE_READ ) 
     {
-    Status = TYPEDSTREAM_ERROR_MODE;
-    return TYPEDSTREAM_ERROR;
+    this->m_Status = Self::ERROR_MODE;
+    return Self::ERROR;
     }
   
   unsigned initialLevel = LevelStack.size();
@@ -532,10 +533,10 @@ TypedStream
   unsigned currentLevel = initialLevel;
   
   this->DebugOutput( "Seeking section %s from level %d.", section, initialLevel );
-  TypedStreamToken token;
-  while ( TYPEDSTREAM_EOF != ( token = this->ReadLineToken() ) ) 
+  Self::Token token;
+  while ( Self::TOKEN_EOF != ( token = this->ReadLineToken() ) ) 
     {
-    if ( token == TYPEDSTREAM_BEGIN ) 
+    if ( token == Self::TOKEN_BEGIN ) 
       {
       this->DebugOutput( "Enter section %s at level %d.", BufferKey, currentLevel );
       if ( this->StringCmp( BufferKey, section ) == 0 ) 
@@ -546,7 +547,7 @@ TypedStream
 	    LevelStack.push( gztell( GzFile ) );
 	  else
 	    LevelStack.push( ftell( File ) );
-	  return TYPEDSTREAM_OK;
+	  return Self::OK;
 	  }
 	if ( currentLevel == LevelStack.size()-1 ) 
 	  {
@@ -555,46 +556,46 @@ TypedStream
 	    LevelStack.push( gztell( GzFile ) );
 	  else
 	    LevelStack.push( ftell( File ) );
-	  return TYPEDSTREAM_OK;
+	  return Self::OK;
 	  }
 	}
       ++ currentLevel;
       }
-    if ( token == TYPEDSTREAM_END ) 
+    if ( token == Self::TOKEN_END ) 
       {
       this->DebugOutput( "Leaving section %d.", currentLevel );
       if ( ! currentLevel ) 
 	{
-	Status = TYPEDSTREAM_ERROR_LEVEL;
-	return TYPEDSTREAM_ERROR;
+	this->m_Status = Self::ERROR_LEVEL;
+	return Self::ERROR;
 	}
       if ( currentLevel < initialLevel ) 
 	{
-	Status = TYPEDSTREAM_ERROR_NONE;
-	return TYPEDSTREAM_ERROR;
+	this->m_Status = Self::ERROR_NONE;
+	return Self::ERROR;
 	}
       -- currentLevel;
       }
     }
   
   this->DebugOutput( "Section %s not found.", section );
-  Status = TYPEDSTREAM_ERROR_NONE;
-  return TYPEDSTREAM_ERROR;
+  this->m_Status = Self::ERROR_NONE;
+  return Self::ERROR;
 }
 
-TypedStreamCondition
+TypedStream::Condition
 TypedStream
 ::Rewind()
 {
   if ( ! File && ! GzFile )
     {
-    Status = TYPEDSTREAM_ERROR_INVALID;
-    return TYPEDSTREAM_ERROR;
+    this->m_Status = Self::ERROR_INVALID;
+    return Self::ERROR;
     }
-  if ( Mode != TYPEDSTREAM_READ ) 
+  if ( this->m_Mode != Self::MODE_READ ) 
     {
-    Status = TYPEDSTREAM_ERROR_MODE;
-    return TYPEDSTREAM_ERROR;
+    this->m_Status = Self::ERROR_MODE;
+    return Self::ERROR;
     }
   
   if ( LevelStack.size() )
@@ -606,15 +607,15 @@ TypedStream
       {
       if ( -1 == gzseek( GzFile, 0, SEEK_SET ) ) 
 	{
-	Status = TYPEDSTREAM_ERROR_SYSTEM;
-	return TYPEDSTREAM_ERROR;
+	this->m_Status = Self::ERROR_SYSTEM;
+	return Self::ERROR;
 	}
       } 
     else
       if ( -1 == fseek( File, 0, SEEK_SET ) )
 	{
-	Status = TYPEDSTREAM_ERROR_SYSTEM;
-	return TYPEDSTREAM_ERROR;
+	this->m_Status = Self::ERROR_SYSTEM;
+	return Self::ERROR;
 	}
     } 
   else 
@@ -623,18 +624,18 @@ TypedStream
       {
       if (-1 == gzseek( GzFile, LevelStack.top(), SEEK_SET)) 
 	{
-	Status = TYPEDSTREAM_ERROR_SYSTEM;
-	return TYPEDSTREAM_ERROR;
+	this->m_Status = Self::ERROR_SYSTEM;
+	return Self::ERROR;
 	}
       }
     else
       if (-1 == fseek( File, LevelStack.top(), SEEK_SET)) 
 	{
-	Status = TYPEDSTREAM_ERROR_SYSTEM;
-	return TYPEDSTREAM_ERROR;
+	this->m_Status = Self::ERROR_SYSTEM;
+	return Self::ERROR;
 	}
     }
-  return TYPEDSTREAM_OK;
+  return Self::OK;
 }
 
 bool
@@ -643,18 +644,18 @@ TypedStream
 {
   int value;
   
-  if ( this->GenericReadArray( key, TYPEDSTREAM_TYPE_BOOL, &value, 1, forward ) != TYPEDSTREAM_OK )
-    if ( this->GenericReadArray( key, TYPEDSTREAM_TYPE_INT, &value, 1, forward ) != TYPEDSTREAM_OK )
+  if ( this->GenericReadArray( key, Self::TYPE_BOOL, &value, 1, forward ) != Self::OK )
+    if ( this->GenericReadArray( key, Self::TYPE_INT, &value, 1, forward ) != Self::OK )
       return defaultValue;
   
   return (value != 0);
 }
 
-TypedStreamCondition 
+TypedStream::Condition 
 TypedStream
 ::ReadBoolArray( const char* key, byte *const array, const int size, const bool forward )
 {
-  return this->GenericReadArray( key, TYPEDSTREAM_TYPE_BINARYBOOL, array, size, forward );
+  return this->GenericReadArray( key, Self::TYPE_BINARYBOOL, array, size, forward );
 }
 
 int 
@@ -662,17 +663,17 @@ TypedStream
 ::ReadInt( const char* key, const int defaultValue, const bool forward )
 {
   int value = defaultValue;
-  if ( this->GenericReadArray( key, TYPEDSTREAM_TYPE_INT, &value, 1, forward ) != TYPEDSTREAM_OK )
+  if ( this->GenericReadArray( key, Self::TYPE_INT, &value, 1, forward ) != Self::OK )
     return defaultValue;
   
   return value;
 }
 
-TypedStreamCondition 
+TypedStream::Condition 
 TypedStream
 ::ReadIntArray( const char* key, int *const array, const int size, const bool forward )
 {
-  return this->GenericReadArray( key, TYPEDSTREAM_TYPE_INT, array, size, forward );
+  return this->GenericReadArray( key, Self::TYPE_INT, array, size, forward );
 }
 
 float
@@ -680,17 +681,17 @@ TypedStream
 ::ReadFloat( const char* key, const float defaultValue, const bool forward )
 {
   float value = defaultValue;
-  if ( this->GenericReadArray( key, TYPEDSTREAM_TYPE_FLOAT, &value, 1, forward ) != TYPEDSTREAM_OK )
+  if ( this->GenericReadArray( key, Self::TYPE_FLOAT, &value, 1, forward ) != Self::OK )
     return defaultValue;
   
   return value;
 }
 
-TypedStreamCondition
+TypedStream::Condition
 TypedStream
 ::ReadFloatArray( const char* key, float *const array, const int size, const bool forward )
 {
-  return this->GenericReadArray( key, TYPEDSTREAM_TYPE_FLOAT, array, size, forward );
+  return this->GenericReadArray( key, Self::TYPE_FLOAT, array, size, forward );
 }
 
 double
@@ -698,17 +699,17 @@ TypedStream
 ::ReadDouble( const char* key, const double defaultValue, const bool forward )
 {
   double value = defaultValue;
-  if ( this->GenericReadArray( key, TYPEDSTREAM_TYPE_DOUBLE, &value, 1, forward ) != TYPEDSTREAM_OK )
+  if ( this->GenericReadArray( key, Self::TYPE_DOUBLE, &value, 1, forward ) != Self::OK )
     return defaultValue;
   
   return value;
 }
 
-TypedStreamCondition
+TypedStream::Condition
 TypedStream
 ::ReadDoubleArray( const char* key, double *const array, const int size, const bool forward )
 {
-  return this->GenericReadArray( key, TYPEDSTREAM_TYPE_DOUBLE, array, size, forward );
+  return this->GenericReadArray( key, Self::TYPE_DOUBLE, array, size, forward );
 }
 
 char*
@@ -716,7 +717,7 @@ TypedStream
 ::ReadString( const char* key, const char *defaultValue, const bool forward )
 {
   char *value;
-  if ( this->GenericReadArray( key, TYPEDSTREAM_TYPE_STRING, &value, 1, forward ) != TYPEDSTREAM_OK )
+  if ( this->GenericReadArray( key, Self::TYPE_STRING, &value, 1, forward ) != Self::OK )
     {
     if ( defaultValue )
       return strdup( defaultValue );
@@ -727,7 +728,7 @@ TypedStream
   return value;
 }
 
-TypedStreamCondition 
+TypedStream::Condition 
 TypedStream
 ::WriteBool( const char* key, const bool value )
 {
@@ -744,10 +745,10 @@ TypedStream
       fputs( "\t", File );
     fprintf( File, "%s %s\n", key, (value) ? "yes" : "no");
     }
-  return TYPEDSTREAM_OK;
+  return Self::OK;
 }
 
-TypedStreamCondition
+TypedStream::Condition
 TypedStream
 ::WriteInt( const char* key, const int value )
 {
@@ -764,10 +765,10 @@ TypedStream
       fputs( "\t", File );
     fprintf( File, "%s %d\n", key, value );
     }
-  return TYPEDSTREAM_OK;
+  return Self::OK;
 }
 
-TypedStreamCondition
+TypedStream::Condition
 TypedStream
 ::WriteFloat( const char* key, const float value )
 {
@@ -784,10 +785,10 @@ TypedStream
       fputs( "\t", File );
     fprintf( File, "%s %.*f\n", key, PrecisionFloat, value );
     }
-  return TYPEDSTREAM_OK;
+  return Self::OK;
 }
 
-TypedStreamCondition
+TypedStream::Condition
 TypedStream
 ::WriteDouble( const char* key, const double value )
 {
@@ -804,17 +805,17 @@ TypedStream
       fputs( "\t", File );
     fprintf( File, "%s %.*f\n", key, PrecisionDouble, value );
     }
-  return TYPEDSTREAM_OK;
+  return Self::OK;
 }
 
-TypedStreamCondition
+TypedStream::Condition
 TypedStream
 ::WriteString( const char* key, const std::string& value )
 {
   return this->WriteString( key, value.c_str() );
 }
 
-TypedStreamCondition
+TypedStream::Condition
 TypedStream
 ::WriteString( const char* key, const char* value )
 {
@@ -861,17 +862,17 @@ TypedStream
     fprintf( File, "%s \"%s\"\n", key, Buffer);
     }
   
-  return TYPEDSTREAM_OK;
+  return Self::OK;
 }
 
-TypedStreamCondition 
+TypedStream::Condition 
 TypedStream
 ::WriteComment( const char* fmt, ... )
 {
-  if ( this->Mode != TYPEDSTREAM_WRITE ) 
+  if ( this->m_Mode != Self::MODE_WRITE ) 
     {
-    Status = TYPEDSTREAM_ERROR_MODE;
-    return TYPEDSTREAM_ERROR;
+    this->m_Status = Self::ERROR_MODE;
+    return Self::ERROR;
     }
 
   static char buffer[1024];
@@ -886,24 +887,24 @@ TypedStream
   else
     fprintf( File, "! %s\n", buffer );
 
-  return TYPEDSTREAM_OK;
+  return Self::OK;
 }
 
-TypedStreamCondition 
+TypedStream::Condition 
 TypedStream
 ::WriteComment( int argc, char* argv[] )
 {
   return this->WriteComment( argc, const_cast<const char**>( argv ) );
 }
 
-TypedStreamCondition 
+TypedStream::Condition 
 TypedStream
 ::WriteComment( const int argc, const char* argv[] )
 {
-  if ( this->Mode != TYPEDSTREAM_WRITE ) 
+  if ( this->m_Mode != Self::MODE_WRITE ) 
     {
-    Status = TYPEDSTREAM_ERROR_MODE;
-    return TYPEDSTREAM_ERROR;
+    this->m_Status = Self::ERROR_MODE;
+    return Self::ERROR;
     }
 
   if ( this->GzFile )
@@ -924,17 +925,17 @@ TypedStream
   else
     fputs( "\n", File );
 
-  return TYPEDSTREAM_OK;
+  return Self::OK;
 }
 
-TypedStreamCondition
+TypedStream::Condition
 TypedStream
 ::WriteIntArray( const char* key, const int* array, const int size, const int valuesPerLine )
 {
   if ( !array || size < 1) 
     {
-    Status = TYPEDSTREAM_ERROR_ARG;
-    return TYPEDSTREAM_ERROR;
+    this->m_Status = Self::ERROR_ARG;
+    return Self::ERROR;
     }
   
   int currentLevel = LevelStack.size();
@@ -979,17 +980,17 @@ TypedStream
     fputs( "\n", File);
     }
   
-  return TYPEDSTREAM_OK;
+  return Self::OK;
 }
 
-TypedStreamCondition
+TypedStream::Condition
 TypedStream
 ::WriteBoolArray( const char* key, const byte* array, const int size, const int valuesPerLine )
 {
   if ( !array || size < 1) 
     {
-    Status = TYPEDSTREAM_ERROR_ARG;
-    return TYPEDSTREAM_ERROR;
+    this->m_Status = Self::ERROR_ARG;
+    return Self::ERROR;
     }
   
   int currentLevel = LevelStack.size();
@@ -1034,17 +1035,17 @@ TypedStream
     fputs( "\n", File );
     }
   
-  return TYPEDSTREAM_OK;
+  return Self::OK;
 }
 
-TypedStreamCondition
+TypedStream::Condition
 TypedStream
 ::WriteFloatArray( const char* key, const float* array, const int size, const int valuesPerLine )
 {
   if ( !array || size < 1) 
     {
-    Status = TYPEDSTREAM_ERROR_ARG;
-    return TYPEDSTREAM_ERROR;
+    this->m_Status = Self::ERROR_ARG;
+    return Self::ERROR;
     }
   
   int currentLevel = LevelStack.size();
@@ -1089,17 +1090,17 @@ TypedStream
     fprintf( File, "\n" );
     }
   
-  return TYPEDSTREAM_OK;
+  return Self::OK;
 }
 
-TypedStreamCondition
+TypedStream::Condition
 TypedStream
 ::WriteDoubleArray( const char* key, const double* array, const int size, const int valuesPerLine )
 {
   if ( !array || size < 1) 
     {
-    Status = TYPEDSTREAM_ERROR_ARG;
-    return TYPEDSTREAM_ERROR;
+    this->m_Status = Self::ERROR_ARG;
+    return Self::ERROR;
     }
   
   int currentLevel = LevelStack.size();
@@ -1144,17 +1145,17 @@ TypedStream
     fprintf( File, "\n" );
     }
   
-  return TYPEDSTREAM_OK;
+  return Self::OK;
 }
 
-TypedStreamCondition
+TypedStream::Condition
 TypedStream
 ::GenericReadArray( const char * key, const int type, void *const array, const int arraySize, const bool forward )
 {
   if (!array || arraySize < 1) 
     {
-    Status = TYPEDSTREAM_ERROR_ARG;
-    return TYPEDSTREAM_ERROR;
+    this->m_Status = Self::ERROR_ARG;
+    return Self::ERROR;
     }
   
   unsigned currentLevel = LevelStack.size();
@@ -1176,16 +1177,16 @@ TypedStream
   
   int line;
   char *buffer;
-  while ( TYPEDSTREAM_EOF != ( line = this->ReadLineToken() ) ) 
+  while ( Self::TOKEN_EOF != ( line = this->ReadLineToken() ) ) 
     {
-    if ( line == TYPEDSTREAM_KEY) 
+    if ( line == Self::TOKEN_KEY) 
       {
       if ( (currentLevel == LevelStack.size()) && (this->StringCmp( BufferKey, key )) == 0 ) 
 	{
 	int i = 0;
 	switch (type) 
 	  {
-	  case TYPEDSTREAM_TYPE_INT: 
+	  case Self::TYPE_INT: 
 	  {
 	  int *arrayInt = static_cast<int*>( array ); 
 	  do
@@ -1195,29 +1196,29 @@ TypedStream
 	      {
 	      if ( *buffer == '\"' ) 
 		{
-		Status = TYPEDSTREAM_ERROR_TYPE;
-		return TYPEDSTREAM_ERROR;
+		this->m_Status = Self::ERROR_TYPE;
+		return Self::ERROR;
 		}
 	      if ( i >= arraySize )
-		return TYPEDSTREAM_OK;
+		return Self::OK;
 	      arrayInt[i++] = atoi(buffer);
 	      buffer = strtok( NULL, "\t\n " );
 	      }
-	    } while ( i < arraySize && TYPEDSTREAM_VALUE == this->ReadLineToken() );
+	    } while ( i < arraySize && Self::TOKEN_VALUE == this->ReadLineToken() );
 	  if ( i < arraySize) 
 	    {
-	    Status = TYPEDSTREAM_ERROR_ARG;
-	    return TYPEDSTREAM_ERROR;
+	    this->m_Status = Self::ERROR_ARG;
+	    return Self::ERROR;
 	    }
 	  break;
 	  }
-	  case TYPEDSTREAM_TYPE_BOOL: 
+	  case Self::TYPE_BOOL: 
 	  {
 	  int *arrayInt = static_cast<int*>( array ); 
 	  if (arraySize != 1) 
 	    {
-	    Status = TYPEDSTREAM_ERROR_ARG;
-	    return TYPEDSTREAM_ERROR;
+	    this->m_Status = Self::ERROR_ARG;
+	    return Self::ERROR;
 	    }
 	  do 
 	    {
@@ -1225,7 +1226,7 @@ TypedStream
 	    while ( buffer ) 
 	      {
 	      if ( i >= arraySize )
-		return TYPEDSTREAM_OK;
+		return Self::OK;
 	      if ((buffer[0] == 'y' || buffer[0] == 'Y') &&
 		  (buffer[1] == 'e' || buffer[1] == 'E') &&
 		  (buffer[2] == 's' || buffer[2] == 'S')) 
@@ -1238,15 +1239,15 @@ TypedStream
 		}
 	      buffer = strtok( NULL, "\t\n " );
 	      }
-	    } while ( i < arraySize && TYPEDSTREAM_VALUE == this->ReadLineToken() );
+	    } while ( i < arraySize && Self::TOKEN_VALUE == this->ReadLineToken() );
 	  if ( i < arraySize ) 
 	    {
-	    Status = TYPEDSTREAM_ERROR_ARG;
-	    return TYPEDSTREAM_ERROR;
+	    this->m_Status = Self::ERROR_ARG;
+	    return Self::ERROR;
 	    }
 	  break;
 	  }
-	  case TYPEDSTREAM_TYPE_BINARYBOOL: 
+	  case Self::TYPE_BINARYBOOL: 
 	  {
 	  byte *arrayInt = static_cast<byte*>( array ); 
 	  do 
@@ -1256,7 +1257,7 @@ TypedStream
 	    while ( (buffer[idx]=='0') || (buffer[idx]=='1') ) 
 	      {
 	      if ( i >= arraySize )
-		return TYPEDSTREAM_OK;
+		return Self::OK;
 	      if ( buffer[idx] == '0' )
 		arrayInt[i/8] &= ~(1<<(i%8));
 	      else
@@ -1264,15 +1265,15 @@ TypedStream
 	      ++i;
 	      ++idx;
 	      }
-	    } while ( i < arraySize && TYPEDSTREAM_VALUE == this->ReadLineToken() );
+	    } while ( i < arraySize && Self::TOKEN_VALUE == this->ReadLineToken() );
 	  if ( i < arraySize ) 
 	    {
-	    Status = TYPEDSTREAM_ERROR_ARG;
-	    return TYPEDSTREAM_ERROR;
+	    this->m_Status = Self::ERROR_ARG;
+	    return Self::ERROR;
 	    }
 	  break;
 	  }
-	  case TYPEDSTREAM_TYPE_FLOAT: 
+	  case Self::TYPE_FLOAT: 
 	  {
 	  float *arrayFloat = static_cast<float*>( array );
 	  do
@@ -1282,23 +1283,23 @@ TypedStream
 	      {
 	      if ( *buffer == '\"' ) 
 		{
-		Status = TYPEDSTREAM_ERROR_TYPE;
-		return TYPEDSTREAM_ERROR;
+		this->m_Status = Self::ERROR_TYPE;
+		return Self::ERROR;
 		}
 	      if ( i >= arraySize )
-		return TYPEDSTREAM_OK;
+		return Self::OK;
 	      arrayFloat[i++] = static_cast<float>( atof( buffer ) );
 	      buffer = strtok( NULL, "\t\n " );
 	      }
-	    } while ( i < arraySize && TYPEDSTREAM_VALUE == this->ReadLineToken() );
+	    } while ( i < arraySize && Self::TOKEN_VALUE == this->ReadLineToken() );
 	  if ( i < arraySize ) 
 	    {
-	    Status = TYPEDSTREAM_ERROR_ARG;
-	    return TYPEDSTREAM_ERROR;
+	    this->m_Status = Self::ERROR_ARG;
+	    return Self::ERROR;
 	    }
 	  break;
 	  }
-	case TYPEDSTREAM_TYPE_DOUBLE: 
+	case Self::TYPE_DOUBLE: 
 	{
 	double *arrayDouble = static_cast<double*>( array );
 	do
@@ -1308,23 +1309,23 @@ TypedStream
 	    {
 	    if ( *buffer == '\"' ) 
 	      {
-	      Status = TYPEDSTREAM_ERROR_TYPE;
-	      return TYPEDSTREAM_ERROR;
+	      this->m_Status = Self::ERROR_TYPE;
+	      return Self::ERROR;
 	      }
 	    if ( i >= arraySize )
-	      return TYPEDSTREAM_OK;
+	      return Self::OK;
 	    arrayDouble[i++] = atof( buffer );
 	    buffer = strtok( NULL, "\t\n " );
 	    }
-	  } while ( i < arraySize && TYPEDSTREAM_VALUE == this->ReadLineToken() );
+	  } while ( i < arraySize && Self::TOKEN_VALUE == this->ReadLineToken() );
 	if ( i < arraySize ) 
 	  {
-	  Status = TYPEDSTREAM_ERROR_ARG;
-	  return TYPEDSTREAM_ERROR;
+	  this->m_Status = Self::ERROR_ARG;
+	  return Self::ERROR;
 	  }
 	break;
 	}
-	  case TYPEDSTREAM_TYPE_STRING: 
+	  case Self::TYPE_STRING: 
 	  {
 	  char **arrayString = static_cast<char**>( array );
 	  do 
@@ -1333,19 +1334,19 @@ TypedStream
 	    while ( buffer ) 
 	      {
 	      if ( i >= arraySize )
-		return TYPEDSTREAM_OK;
+		return Self::OK;
 	      if ( *buffer != '\"' ) 
 		{
-		Status = TYPEDSTREAM_ERROR_TYPE;
-		return TYPEDSTREAM_ERROR;
+		this->m_Status = Self::ERROR_TYPE;
+		return Self::ERROR;
 		}
 	      char *b;
 	      if (!(b = (char *)malloc(strlen(buffer)))) 
 		{
 		for (--i; i >= 0; i--)
 		  free( arrayString[i] );
-		Status = TYPEDSTREAM_ERROR_SYSTEM;
-		return TYPEDSTREAM_ERROR;
+		this->m_Status = Self::ERROR_SYSTEM;
+		return Self::ERROR;
 		}
 	      arrayString[i++] = b;
 	      buffer++;
@@ -1374,22 +1375,22 @@ TypedStream
 	      *b = '\0';
 	      buffer = this->StringSplit( NULL );
 	      }
-	    } while ( i < arraySize && TYPEDSTREAM_VALUE == this->ReadLineToken() );
+	    } while ( i < arraySize && Self::TOKEN_VALUE == this->ReadLineToken() );
 	  if ( i < arraySize ) 
 	    {
 	    for (--i; i >= 0; i--)
 	      free( arrayString[i] );
-	    Status = TYPEDSTREAM_ERROR_ARG;
-	    return TYPEDSTREAM_ERROR;
+	    this->m_Status = Self::ERROR_ARG;
+	    return Self::ERROR;
 	    }
 	  break;
 	  }
 	  }
-	return TYPEDSTREAM_OK;
+	return Self::OK;
 	}
       continue;
       }
-    if ( line == TYPEDSTREAM_BEGIN ) 
+    if ( line == Self::TOKEN_BEGIN ) 
       {
       if ( GzFile )
 	LevelStack.push( gztell( GzFile ) );
@@ -1397,33 +1398,33 @@ TypedStream
 	LevelStack.push( ftell( File ) );
       continue;
       }
-    if ( line == TYPEDSTREAM_END ) 
+    if ( line == Self::TOKEN_END ) 
       {
       if ( currentLevel == LevelStack.size() ) 
 	{
-	Status = TYPEDSTREAM_ERROR_NONE;
-	return TYPEDSTREAM_ERROR;
+	this->m_Status = Self::ERROR_NONE;
+	return Self::ERROR;
 	}
       LevelStack.pop();
       continue;
       }
     }
   
-  return TYPEDSTREAM_ERROR;
+  return Self::ERROR;
 }
 
-TypedStreamToken
+TypedStream::Token
 TypedStream
 ::ReadLineToken()
 {
   if ( GzFile )
     {
-    if (! gzgets( GzFile, Buffer, TYPEDSTREAM_LIMIT_BUFFER ) )
-      return TYPEDSTREAM_EOF;
+    if (! gzgets( GzFile, Buffer, sizeof( this->Buffer ) ) )
+      return Self::TOKEN_EOF;
     }
   else
-    if (! fgets( Buffer, TYPEDSTREAM_LIMIT_BUFFER, File ) )
-      return TYPEDSTREAM_EOF;
+    if (! fgets( Buffer, sizeof( this->Buffer ), File ) )
+      return Self::TOKEN_EOF;
   
   char* buffer;
   for ( buffer = Buffer; *buffer; buffer++)
@@ -1431,15 +1432,15 @@ TypedStream
       break;
 
   if (*buffer == '\n' || *buffer == '!' || *buffer == '#')
-    return TYPEDSTREAM_COMMENT;
+    return Self::TOKEN_COMMENT;
 
   if (*buffer == '}')
-    return TYPEDSTREAM_END;
+    return Self::TOKEN_END;
   
   if (*buffer == '\"' || *buffer == '-' || *buffer == '.' || (*buffer >= '0' && *buffer <= '9')) 
     {
     BufferValue = buffer;
-    return TYPEDSTREAM_VALUE;
+    return Self::TOKEN_VALUE;
     }
   
   if (*buffer == '_' || (*buffer >= 'a' && *buffer <= 'z') || (*buffer >= 'A' && *buffer <= 'Z')) 
@@ -1453,12 +1454,12 @@ TypedStream
 	break;
     BufferValue = buffer;
     if (*buffer == '{')
-      return TYPEDSTREAM_BEGIN;
+      return Self::TOKEN_BEGIN;
     
-    return TYPEDSTREAM_KEY;
+    return Self::TOKEN_KEY;
     }
   
-  return TYPEDSTREAM_COMMENT;
+  return Self::TOKEN_COMMENT;
 }
 
 int
@@ -1555,7 +1556,7 @@ void
 TypedStream
 ::DebugOutput( const char* format, ... )
 {
-  if ( DebugFlag != TYPEDSTREAM_DEBUG_ON ) return;
+  if ( this->m_DebugFlag != Self::DEBUG_ON ) return;
 
   static char buffer[1024];
 

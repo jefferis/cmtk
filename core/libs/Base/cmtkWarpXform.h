@@ -160,8 +160,8 @@ protected:
 public:
   /// Default constructor.
   WarpXform () : 
-    NumberOfControlPoints( 0 ),
     m_InitialAffineXform( NULL ), 
+    NumberOfControlPoints( 0 ),
     m_ActiveFlags( NULL )
   { 
     this->m_IgnoreEdge = 0; 
