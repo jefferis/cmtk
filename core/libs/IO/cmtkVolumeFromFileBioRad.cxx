@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -137,17 +137,17 @@ VolumeFromFile::ReadBioRad( const char* path )
     //      StdErr.printf( "%s\n->%s\n", lineheader, line );
     
     double d1, d2, d3;
-    if ( 3 == sscanf( line, "AXIS_2 %lf %lf %lf", &d1, &d2, &d3 ) ) 
+    if ( 3 == sscanf( line, "AXIS_2 %20lf %20lf %20lf", &d1, &d2, &d3 ) ) 
       {
       pixelsizeX = fabs( d3 );
       flipX = (d3 < 0 );
       }
-    if ( 3 == sscanf( line, "AXIS_3 %lf %lf %lf", &d1, &d2, &d3 ) ) 
+    if ( 3 == sscanf( line, "AXIS_3 %20lf %20lf %20lf", &d1, &d2, &d3 ) ) 
       {
       pixelsizeY = fabs( d3 );
       flipY = (d3 < 0 );
       }
-    if ( 3 == sscanf( line, "AXIS_4 %lf %lf %lf", &d1, &d2, &d3 ) ) 
+    if ( 3 == sscanf( line, "AXIS_4 %20lf %20lf %20lf", &d1, &d2, &d3 ) ) 
       {
       pixelsizeZ = fabs( d3 );
       flipZ = (d3 < 0 );

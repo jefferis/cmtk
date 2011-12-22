@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010, 2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -43,7 +43,7 @@ cmtk::ImageOperationCropRegion
 ::New( const char* arg )
 {
   int from[3], to[3];
-  const bool okay = (6 == sscanf( arg, "%d,%d,%d,%d,%d,%d", &from[0], &from[1], &from[2], &to[0], &to[1], &to[2] ) );
+  const bool okay = (6 == sscanf( arg, "%5d,%5d,%5d,%5d,%5d,%5d", &from[0], &from[1], &from[2], &to[0], &to[1], &to[2] ) );
   if ( ! okay )
     {
     throw "Expected six comma-separated integer values.";

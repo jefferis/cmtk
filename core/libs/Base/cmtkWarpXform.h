@@ -160,6 +160,7 @@ protected:
 public:
   /// Default constructor.
   WarpXform () : 
+    NumberOfControlPoints( 0 ),
     m_InitialAffineXform( NULL ), 
     m_ActiveFlags( NULL )
   { 

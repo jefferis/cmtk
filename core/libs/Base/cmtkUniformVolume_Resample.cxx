@@ -155,7 +155,7 @@ UniformVolume::ResampleThreadPoolExecuteLabels( void *const arg, const size_t ta
 	if ( maxLabelWeight > 0 )
 	  dest[offset] = maxLabelIndex;
 	else 
-	  dest[offset] = sqrt( static_cast<Types::DataItem>( -1 ) );
+	  dest[offset] = MathUtil::GetDoubleNaN();
 	}
       }
     }
@@ -223,7 +223,7 @@ UniformVolume::ResampleThreadPoolExecuteGrey( void *const arg, const size_t task
 	  } 
 	else
 	  {
-	  dest[offset] = sqrt( static_cast<Types::DataItem>( -1 ) );
+	  dest[offset] = MathUtil::GetDoubleNaN();
 	  }
 	}
       }

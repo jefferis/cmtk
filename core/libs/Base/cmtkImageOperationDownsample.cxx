@@ -49,7 +49,7 @@ cmtk::ImageOperationDownsample
   int factorsY = 1;
   int factorsZ = 1;
   
-  const size_t nFactors = sscanf( arg, "%d,%d,%d", &factorsX, &factorsY, &factorsZ );
+  const size_t nFactors = sscanf( arg, "%5d,%5d,%5d", &factorsX, &factorsY, &factorsZ );
   if ( nFactors == 1 )
     {
     factorsZ = factorsY = factorsX;

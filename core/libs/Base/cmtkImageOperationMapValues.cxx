@@ -46,14 +46,14 @@ cmtk::ImageOperationMapValues::ImageOperationMapValues( const char* mapping, con
     std::vector<Types::DataItem> fromValues;
     while ( comma && ( !plus || comma < plus) )
       {
-      if ( 1 == sscanf( rptr, "%lf", &value ) )
+      if ( 1 == sscanf( rptr, "%20lf", &value ) )
 	fromValues.push_back( value );
       rptr = comma+1;
       comma = strchr( rptr, ',' );
       }
     
     double newValue;
-    if ( 2 == sscanf( rptr, "%lf:%lf", &value, &newValue ) )
+    if ( 2 == sscanf( rptr, "%20lf:%20lf", &value, &newValue ) )
       {
       fromValues.push_back( value );
       
@@ -64,7 +64,7 @@ cmtk::ImageOperationMapValues::ImageOperationMapValues( const char* mapping, con
       }
     else
       {
-      if ( 1 == sscanf( rptr, "%lf", &value ) )
+      if ( 1 == sscanf( rptr, "%20lf", &value ) )
 	{
 	fromValues.push_back( value );
 	

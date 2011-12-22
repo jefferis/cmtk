@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -129,9 +129,10 @@ Study::SetMakeName( const char* name, const int suffix )
     }
   else
     {
-    char buffer[PATH_MAX];
+    char buffer[PATH_MAX+1];
     strncpy( buffer, this->m_FileSystemPath, PATH_MAX );
-    
+    buffer[PATH_MAX] = 0; // safety - add null at end of buffer
+
     char* lastChar = buffer + strlen( buffer ) - 1;
     while ( (lastChar != buffer) && // not yet empty string
 	    (*lastChar =='/') ) 

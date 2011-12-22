@@ -81,14 +81,14 @@ PGM::Read( const char* filename )
       while (c != '\n') { stream.Get(c); line[idx++] = c; }
       }
     float tmpf0, tmpf1;
-    if ( sscanf( line, "# calibration %f %f", &tmpf0, &tmpf1 ) == 2 ) 
+    if ( sscanf( line, "# calibration %20f %20f", &tmpf0, &tmpf1 ) == 2 ) 
       {
       pixelSize[0] = tmpf0;
       pixelSize[1] = tmpf1;
       } 
     else
       {
-      if ( sscanf( line, "# tablepos %f", &tmpf0 ) == 1 ) 
+      if ( sscanf( line, "# tablepos %20f", &tmpf0 ) == 1 ) 
 	{
 	}
       }
@@ -104,7 +104,7 @@ PGM::Read( const char* filename )
   line[i]=0;
   
   unsigned int dimsx, dimsy, maxvalue;
-  sscanf( line, "%d%d%d", &dimsx , &dimsy, &maxvalue );
+  sscanf( line, "%10d%10d%10d", &dimsx , &dimsy, &maxvalue );
   
   int bytesperpixel = 1;
   while (maxvalue > 255) 

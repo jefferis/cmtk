@@ -171,7 +171,7 @@ DICOM::GetImageOrigin() const
   if ( image_position_s ) 
     {
     double xyz[3];
-    if ( 3 == sscanf( image_position_s,"%lf%*c%lf%*c%lf", xyz, xyz+1, xyz+2 ) ) 
+    if ( 3 == sscanf( image_position_s,"%20lf%*c%20lf%*c%20lf", xyz, xyz+1, xyz+2 ) ) 
       {
       imageOrigin = FixedVector<3,double>( xyz );
       }
@@ -204,7 +204,7 @@ DICOM::GetImageOrientation() const
   if ( image_orientation_s ) 
     {
     double dx[3], dy[3];
-    if ( 6 == sscanf( image_orientation_s, "%lf%*c%lf%*c%lf%*c%lf%*c%lf%*c%lf", dx, dx+1, dx+2, dy, dy+1, dy+2 ) ) 
+    if ( 6 == sscanf( image_orientation_s, "%20lf%*c%20lf%*c%20lf%*c%20lf%*c%20lf%*c%20lf", dx, dx+1, dx+2, dy, dy+1, dy+2 ) ) 
       {
       orientation[0] = ( FixedVector<3,double>( dx ) );
       orientation[1] = ( FixedVector<3,double>( dy ) );

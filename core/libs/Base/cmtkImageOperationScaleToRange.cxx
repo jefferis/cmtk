@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2010 SRI International
+//  Copyright 2009-2011 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,7 +36,7 @@ void
 cmtk::ImageOperationScaleToRange::New( const char* range )
 {
   double rangeFrom, rangeTo;
-  if ( 2 == sscanf( range, "%lf:%lf", &rangeFrom, &rangeTo ) )
+  if ( 2 == sscanf( range, "%20lf:%20lf", &rangeFrom, &rangeTo ) )
     {
     ImageOperation::m_ImageOperationList.push_back( SmartPtr( new ImageOperationScaleToRange( Types::DataItemRange( rangeFrom, rangeTo ) ) ) );
     }

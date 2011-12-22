@@ -38,7 +38,7 @@ cmtk::ImageOperationRegionFilter
   int radiusY = 1;
   int radiusZ = 1;
   
-  const size_t nRadii = sscanf( arg, "%d,%d,%d", &radiusX, &radiusY, &radiusZ );
+  const size_t nRadii = sscanf( arg, "%10d,%10d,%10d", &radiusX, &radiusY, &radiusZ );
   if ( nRadii == 1 )
     {
     radiusZ = radiusY = radiusX;
