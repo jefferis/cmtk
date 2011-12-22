@@ -68,15 +68,19 @@ doMain( int argc, const char *argv[] )
     for ( const char* next = cl.GetNext(); next; next = cl.GetNextOptional() ) 
       {
       cmtk::UniformVolume::SmartPtr volume;
-      if ( ReadOrientation )
-	volume = cmtk::VolumeIO::ReadOriented( next, ReadOrientation );
-      else
- 	volume = cmtk::VolumeIO::Read( next );
-      
-      if ( ! volume ) 
+      try
 	{
-	fprintf( stderr, "Could not read volume data for %s.\n", next );
-	continue;
+	if ( ReadOrientation )
+	  volume = cmtk::VolumeIO::ReadOriented( next, ReadOrientation );
+	else
+	  volume = cmtk::VolumeIO::Read( next );
+	}
+      catch (...) 
+	{
+	if ( ReadOrientation )
+	  volume = cmtk::VolumeIO::ReadGridOriented( next, ReadOrientation );
+	else
+	  volume = cmtk::VolumeIO::ReadGrid( next );
 	}
       
       const char* orientOriginal = volume->GetMetaInfo( cmtk::META_IMAGE_ORIENTATION_ORIGINAL ).c_str();

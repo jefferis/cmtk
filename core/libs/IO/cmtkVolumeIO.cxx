@@ -78,7 +78,7 @@ VolumeIO::Read( const char* path )
 
   const char *translatedPath = MountPoints::Translate( path );
 
-  FileFormatID formatID = FileFormat::Identify( translatedPath );
+  const FileFormatID formatID = FileFormat::Identify( translatedPath );
   switch ( formatID ) 
     {
     case FILEFORMAT_DICOM: // (hopefully) multi-slice DICOM
@@ -114,28 +114,20 @@ VolumeIO::Read( const char* path )
     throw ExitException( 1 );
     }
   
-  if ( ! volume->GetData() )
+  volume->SetMetaInfo( META_FS_PATH, path );
+  volume->SetMetaInfo( META_FILEFORMAT_ORIGINAL, FileFormat::Describe( formatID ) );
+  DebugOutput( 3 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
+  
+  const TypedArray* dataArray = volume->GetData();
+  if ( ! dataArray )
     {
     StdErr << "ERROR: could not read image data from " << path << "\n";
     throw ExitException( 1 );
     }
   
-  volume->SetMetaInfo( META_FILEFORMAT_ORIGINAL, FileFormat::Describe( formatID ) );
-  
-  DebugOutput( 3 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
-  
-  const TypedArray* dataArray = volume->GetData();
-  if ( dataArray ) 
-    {
-    const Types::DataItemRange range = dataArray->GetRange();
-    DebugOutput( 3 ).GetStream().printf( "Data type %s, range [%f .. %f]\n", DataTypeName[ dataArray->GetType() ], static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
-    } 
-  else
-    {
-    StdErr << "WARNING: image does not contain valid data.\n";
-    }
-  
-  volume->SetMetaInfo( META_FS_PATH, path );
+  const Types::DataItemRange range = dataArray->GetRange();
+  DebugOutput( 3 ).GetStream().printf( "Data type %s, range [%f .. %f]\n", DataTypeName[ dataArray->GetType() ], static_cast<float>( range.m_LowerBound ), static_cast<float>( range.m_UpperBound ) );
+
   return volume;
 }
 
@@ -146,27 +138,31 @@ VolumeIO::ReadGrid( const char* path )
 
   const char *translatedPath = MountPoints::Translate( path );
 
-  switch ( FileFormat::Identify( translatedPath ) ) 
+  const FileFormatID formatID = FileFormat::Identify( translatedPath );
+  try
     {
-    case FILEFORMAT_ANALYZE_HDR:
-      volume = VolumeFromFile::ReadAnalyzeHdr( translatedPath, false /*bigendian*/, false /*readData*/ );
-      break;
-    case FILEFORMAT_ANALYZE_HDR_BIGENDIAN:
-      volume = VolumeFromFile::ReadAnalyzeHdr( translatedPath, true /*bigendian*/, false /*readData*/ );
-      break;
-    case FILEFORMAT_NIFTI_SINGLEFILE:
-      volume = VolumeFromFile::ReadNifti( translatedPath, false /*detached*/, false /*readData*/ );
-      break;
-    case FILEFORMAT_NIFTI_DETACHED:
-      volume = VolumeFromFile::ReadNifti( translatedPath, true /*detached*/, false /*readData*/ );
-      break;
-    default: 
-    {
-    // For now, default to full reader for other image file formats
-    volume = VolumeIO::Read( path );
+    switch ( formatID ) 
+      {
+      case FILEFORMAT_ANALYZE_HDR:
+	volume = VolumeFromFile::ReadAnalyzeHdr( translatedPath, false /*bigendian*/, false /*readData*/ );
+	break;
+      case FILEFORMAT_ANALYZE_HDR_BIGENDIAN:
+	volume = VolumeFromFile::ReadAnalyzeHdr( translatedPath, true /*bigendian*/, false /*readData*/ );
+	break;
+      case FILEFORMAT_NIFTI_SINGLEFILE:
+	volume = VolumeFromFile::ReadNifti( translatedPath, false /*detached*/, false /*readData*/ );
+	break;
+      case FILEFORMAT_NIFTI_DETACHED:
+	volume = VolumeFromFile::ReadNifti( translatedPath, true /*detached*/, false /*readData*/ );
+	break;
+      default: {
+      // For now, default to full reader for other image file formats
+      volume = VolumeIO::Read( path );
+      }
+      }
     }
-    }
-  
+  catch (...) {}
+
   if ( ! volume )
     {
     StdErr << "ERROR: could not read image from " << path << "\n";
@@ -174,7 +170,9 @@ VolumeIO::ReadGrid( const char* path )
     }
   
   DebugOutput( 3 ).GetStream().printf( "%s\nRead %d x %d x %d voxels [%f x %f x %f mm total size].\n", path, volume->GetDims()[0], volume->GetDims()[1], volume->GetDims()[2], volume->Size[0], volume->Size[1], volume->Size[2] );
+
   volume->SetMetaInfo( META_FS_PATH, path );
+  volume->SetMetaInfo( META_FILEFORMAT_ORIGINAL, FileFormat::Describe( formatID ) );
   
   return volume;
 }
