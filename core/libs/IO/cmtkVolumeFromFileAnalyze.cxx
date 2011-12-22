@@ -91,7 +91,6 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
     }
   fclose( hdrFile );
 
-  
   FileHeader header( buffer, bigEndian );
 
   short ndims = header.GetField<short>( 40 );
@@ -195,6 +194,14 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
   volume->SetMetaInfo( META_SPACE_ORIGINAL, orientString );
   volume->ChangeCoordinateSpace( AnatomicalOrientation::ORIENTATION_STANDARD );
 
+  // fill "description" header field
+  if ( header.GetField<char>( 148 ) )
+    {
+    char desc[81];
+    desc[80] = 0;
+    volume->SetMetaInfo( META_IMAGE_DESCRIPTION, std::string( header.GetFieldString( 148, desc, 80 ) ) );
+    }
+  
   // don't read data, we're done here.
   if ( ! readData )
     return volume;
@@ -269,14 +276,6 @@ VolumeFromFile::ReadAnalyzeHdr( const char* pathHdr, const bool bigEndian, const
   
   Memory::ArrayC::Delete( pathImg );
 
-  // fill "description" header field
-  if ( header.GetField<char>( 148 ) )
-    {
-    char desc[81];
-    desc[80] = 0;
-    volume->SetMetaInfo( META_IMAGE_DESCRIPTION, std::string( header.GetFieldString( 148, desc, 80 ) ) );
-    }
-  
   return volume;
 }
 

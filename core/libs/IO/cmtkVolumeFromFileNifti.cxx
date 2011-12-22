@@ -182,6 +182,13 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
       }
     }
   
+  if ( header.GetField<char>( 148 ) )
+    {
+    char desc[81];
+    desc[80] = 0;
+    volume->SetMetaInfo( META_IMAGE_DESCRIPTION, std::string( header.GetFieldString( 148, desc, 80 ) ) );
+    }
+  
   // don't read data, we're done here.
   if ( ! readData )
     return volume;
@@ -265,13 +272,6 @@ VolumeFromFile::ReadNifti( const char* pathHdr, const bool detached, const bool 
   
   Memory::ArrayC::Delete( pathImg );
 
-  if ( header.GetField<char>( 148 ) )
-    {
-    char desc[81];
-    desc[80] = 0;
-    volume->SetMetaInfo( META_IMAGE_DESCRIPTION, std::string( header.GetFieldString( 148, desc, 80 ) ) );
-    }
-  
   return volume;
 }
 
