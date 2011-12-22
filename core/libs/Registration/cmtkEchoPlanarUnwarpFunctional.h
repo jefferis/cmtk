@@ -65,9 +65,25 @@ public:
 			      const byte phaseEncodeDirection /*!< Phase encoding direction (image coordinate axis) */ );
 
   /// Return either first or second corrected image.
-  UniformVolume::SmartPtr GetCorrectedImage( const byte  = 0 )
+  UniformVolume::SmartPtr GetCorrectedImage( const byte idx = 0 )
   {
     return UniformVolume::SmartPtr( this->m_ImageFwd->CloneGrid() );
+  }
+  
+  /// Return either first or second 1D gradient image.
+  UniformVolume::SmartPtr GetGradientImage( const byte idx = 0 )
+  {
+    UniformVolume::SmartPtr gradientImage( this->m_ImageFwd->CloneGrid() );
+
+    const UniformVolume* srcImage = ( idx == 0 ) ? this->m_ImageFwd : this->m_ImageRev;
+
+    gradientImage->CreateDataArray( TYPE_FLOAT );
+    for ( size_t px = 0; px < this->m_ImageFwd->GetNumberOfPixels(); ++px )
+      {
+      gradientImage->SetDataAt( srcImage->GetDataAt( px ), px );
+      }
+
+    return gradientImage;
   }
   
 private:
