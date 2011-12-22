@@ -67,7 +67,17 @@ public:
   /// Return either first or second corrected image.
   UniformVolume::SmartPtr GetCorrectedImage( const byte idx = 0 )
   {
-    return UniformVolume::SmartPtr( this->m_ImageFwd->CloneGrid() );
+    UniformVolume::SmartPtr correctedImage( this->m_ImageFwd->CloneGrid() );
+
+    const std::vector<Types::DataItem>& srcImage = ( idx == 0 ) ? this->m_UnwarpImageFwd : this->m_UnwarpImageRev;
+
+    correctedImage->CreateDataArray( TYPE_FLOAT );
+    for ( size_t px = 0; px < this->m_ImageFwd->GetNumberOfPixels(); ++px )
+      {
+      correctedImage->SetDataAt( srcImage[px], px );
+      }
+
+    return correctedImage;
   }
   
   /// Optimize unwarping deformation using L-BFGS optimizer.

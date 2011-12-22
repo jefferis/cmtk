@@ -95,8 +95,8 @@ doMain
   cmtk::EchoPlanarUnwarpFunctional func( inputImage1, inputImage2, phaseEncodeDirection );
   func.Optimize( iterations );
 
-  cmtk::VolumeIO::Write( *func.GetGradientImage( 0 ), outputImagePath1 );
-  cmtk::VolumeIO::Write( *func.GetGradientImage( 1 ), outputImagePath2 );
+  cmtk::VolumeIO::Write( *func.GetCorrectedImage( 0 ), outputImagePath1 );
+  cmtk::VolumeIO::Write( *func.GetCorrectedImage( 1 ), outputImagePath2 );
   
   return 0;
 }

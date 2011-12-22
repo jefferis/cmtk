@@ -196,6 +196,12 @@ cmtk::EchoPlanarUnwarpFunctional::Optimize( const int numberOfIterations )
   
   if ( info < 0 )
     StdErr << "ERROR: lbfgsbminimize returned status code " << info << "\n";
+  else
+    {
+    // update corrected images with final deformation
+    this->ComputeDeformedImage( this->m_Deformation, +1, *(this->m_ImageFwd), this->m_UnwarpImageFwd );
+    this->ComputeDeformedImage( this->m_Deformation, -1, *(this->m_ImageRev), this->m_UnwarpImageRev );
+    }
 }
 
 
@@ -222,7 +228,7 @@ cmtk::EchoPlanarUnwarpFunctional
 
   for ( size_t px = 0; px < nPixels; ++px )
     {
-    g(1+px) = 2.0 * (this->m_Function->m_UnwarpImageFwd[px] - this->m_Function->m_UnwarpImageRev[px]) * (this->m_Function->m_GradientImageFwd[px] + this->m_Function->m_GradientImageRev[px]) / nPixels;
+    g(1+px) = -2.0 * (this->m_Function->m_UnwarpImageFwd[px] - this->m_Function->m_UnwarpImageRev[px]) * (this->m_Function->m_GradientImageFwd[px] + this->m_Function->m_GradientImageRev[px]) / nPixels;
     }
 
   DebugOutput( 2 ) << "f " << f << "\n";
