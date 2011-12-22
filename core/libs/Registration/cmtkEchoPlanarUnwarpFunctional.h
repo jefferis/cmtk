@@ -35,6 +35,9 @@
 
 #include <Base/cmtkUniformVolume.h>
 
+#include <Numerics/ap.h>
+#include <Numerics/lbfgsb.h>
+
 #include <vector>
 
 namespace
@@ -96,7 +99,7 @@ private:
   std::vector<Types::DataItem> m_UnwarpImageRev;
   
   /// Compute deformed image.
-  void ComputeDeformedImage( const UniformVolume& sourceImage /*!< Undeformed input image.*/, UniformVolume& targetImage /*!< Reference to deformed output image.*/, 
+  void ComputeDeformedImage( const UniformVolume& sourceImage /*!< Undeformed input image.*/, std::vector<Types::DataItem>& targetImageData /*!< Reference to deformed output image data.*/, 
 			     int direction /*!< Deformation direction - 1 computes unwarped "forward" image, -1 computed unwarped "reverse" image.*/ );
 
   /// 1D sinc interpolation
@@ -108,6 +111,32 @@ private:
    *\return The forward image Jacobian can be computed from this as Jfwd = 1+Jpartial, the reverse Jacobian as Jrev = 1-Jpartial.
    */
   Types::Coordinate GetPartialJacobian( const FixedVector<3,int>& baseIdx /*!< Grid base index - this is the grid cell where the differential operator stencil is anchored. */ ) const;
+
+  /// Glue class for function and gradient evaluation.
+  class FunctionAndGradient : 
+    /// Inherit from virtual base class.
+    public ap::FunctionAndGradient
+  {
+  public:
+    /// Function class type.
+    typedef EchoPlanarUnwarpFunctional FunctionType;
+
+    /// Constructor.
+    FunctionAndGradient( FunctionType* function )
+    {
+      this->m_Function = function;
+    }
+    
+    /// Evaluate function and gradient.
+    virtual void Evaluate( const ap::real_1d_array& x, ap::real_value_type& f, ap::real_1d_array& g );
+    
+  private:
+    /// Pointer to actual function class.
+    FunctionType* m_Function;
+  };
+
+  /// Give function and gradient evaluator private access.
+  friend class Self::FunctionAndGradient;
 };
 
 //@}

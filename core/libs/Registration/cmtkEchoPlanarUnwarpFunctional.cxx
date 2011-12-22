@@ -30,16 +30,37 @@
 
 #include "cmtkEchoPlanarUnwarpFunctional.h"
 
+#include <Base/cmtkDataGrid.h>
 #include <Base/cmtkSincInterpolator.h>
+#include <Base/cmtkRegionIndexIterator.h>
 
 #include <algorithm>
 
 const int cmtk::EchoPlanarUnwarpFunctional::InterpolationKernelRadius = 3; 
 
 void
-cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const UniformVolume& sourceImage, UniformVolume& targetImage, int direction )
+cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const UniformVolume& sourceImage, std::vector<Types::DataItem>& targetImageData, int direction )
 {
-  
+  const Types::Coordinate pixelSize = sourceImage.Deltas()[this->m_PhaseEncodeDirection];
+
+  const DataGrid::RegionType wholeImageRegion = sourceImage.CropRegion();
+  for ( RegionIndexIterator<DataGrid::RegionType> it( wholeImageRegion ); it != it.end(); ++it )
+    {
+    DataGrid::IndexType idx = it.Index();
+    const size_t i = sourceImage.GetOffsetFromIndex( idx );
+
+    // first, get Jacobian for grid position
+    targetImageData[i] = 1 + direction * this->GetPartialJacobian( idx );
+
+    // now compute deformed position for interpolation
+    const Types::Coordinate shift = direction*this->m_Deformation[i] / pixelSize;
+    const Types::Coordinate position = shift + idx[this->m_PhaseEncodeDirection];
+    
+    idx[this->m_PhaseEncodeDirection] = static_cast<int>( floor( position ) );
+
+    // multiple interpolated data onto previously set Jacobian
+    targetImageData[i] *= this->Interpolate1D( sourceImage, idx, position - idx[this->m_PhaseEncodeDirection] );    
+    }
 }
 
 cmtk::Types::DataItem 
@@ -96,4 +117,27 @@ cmtk::EchoPlanarUnwarpFunctional::GetPartialJacobian( const FixedVector<3,int>& 
     }
   
   return diff / normalize;
+}
+
+void
+cmtk::EchoPlanarUnwarpFunctional
+::FunctionAndGradient
+::Evaluate( const ap::real_1d_array& x, ap::real_value_type& f, ap::real_1d_array& g )
+{
+  this->m_Function->ComputeDeformedImage( *(this->m_Function->m_ImageFwd), this->m_Function->m_UnwarpImageFwd, +1 );
+  this->m_Function->ComputeDeformedImage( *(this->m_Function->m_ImageRev), this->m_Function->m_UnwarpImageRev, -1 );
+
+  const size_t nPixels = this->m_Function->m_ImageGrid->GetNumberOfPixels();
+  ap::real_value_type msd = 0;
+  for ( size_t px = 0; px < nPixels; ++px )
+    {
+    msd += MathUtil::Square( this->m_Function->m_UnwarpImageFwd[px] - this->m_Function->m_UnwarpImageRev[px] );
+    }
+
+  f = msd / nPixels;
+
+  for ( size_t px = 0; px < nPixels; ++px )
+    {
+    
+    }
 }
