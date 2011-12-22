@@ -423,7 +423,7 @@ TypedStream
   
   if ( this->m_Mode == Self::MODE_READ ) 
     {
-    if ( LevelStack.size() == 0 ) 
+    if ( LevelStack.empty() ) 
       {
       // end without begin
       this->m_Status = Self::ERROR_LEVEL;
@@ -598,10 +598,10 @@ TypedStream
     return Self::ERROR;
     }
   
-  if ( LevelStack.size() )
+  if ( !LevelStack.empty() )
     LevelStack.pop();
   
-  if ( LevelStack.size() == 0 ) 
+  if ( LevelStack.empty() ) 
     {
     if ( GzFile ) 
       {

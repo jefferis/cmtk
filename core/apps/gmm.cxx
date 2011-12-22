@@ -223,10 +223,12 @@ doMain
 
   if ( writeProbMaps )
     {
-    char path[PATH_MAX];
+    char path[PATH_MAX+1];
     for ( size_t k = 0; k < nClasses; ++k )
       {
       strncpy( path, outputImagePath, PATH_MAX );
+      path[PATH_MAX] = 0; // for safety - terminate string
+
       char* slash = strrchr( path, '/' );
       if ( ! slash )
 	slash = path;

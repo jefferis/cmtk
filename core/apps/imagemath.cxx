@@ -965,7 +965,7 @@ CallbackVariance()
   CheckStackTwoMatchingImages( "Variance" );
   
   std::vector<cmtk::UniformVolume::SmartPtr> volPtrs;
-  while ( ImageStack.size() > 0 ) 
+  while ( !ImageStack.empty() ) 
     {
     if ( ImageStack.size() > 1 )
       CheckStackTwoMatchingImages( "Variance" );
@@ -1027,7 +1027,7 @@ CallbackVoteCombination()
   cmtk::UniformVolume::SmartPtr grid = ImageStack.front();
   
   std::vector<cmtk::TypedArray::SmartPtr> dataPtrs;
-  while ( ImageStack.size() > 0 ) 
+  while ( ! ImageStack.empty() ) 
     {
     if ( ImageStack.size() > 1 )
       CheckStackTwoMatchingImages( "Vote" );
@@ -1049,7 +1049,7 @@ CallbackSTAPLE( const long int maxIterations )
   cmtk::UniformVolume::SmartPtr imageGrid = ImageStack.front();
 
   std::vector<cmtk::TypedArray::SmartPtr> dataPtrs;
-  while ( ImageStack.size() > 0 ) 
+  while ( ! ImageStack.empty() ) 
     {
     if ( ImageStack.size() > 1 )
       CheckStackTwoMatchingImages( "STAPLE" );
@@ -1086,7 +1086,7 @@ MultiClassSTAPLE( const long int maxIterations, const bool disputedOnly )
   cmtk::UniformVolume::SmartPtr imageGrid = ImageStack.front();
 
   std::vector<cmtk::TypedArray::SmartPtr> dataPtrs;
-  while ( ImageStack.size() > 0 ) 
+  while ( ! ImageStack.empty() ) 
     {
     if ( ImageStack.size() > 1 )
       CheckStackTwoMatchingImages( "MultiClassSTAPLE" );
@@ -1118,7 +1118,7 @@ CallbackStackEntropyLabels()
   CheckStackTwoMatchingImages( "StackEntropyLabels" );
   
   std::vector<cmtk::UniformVolume::SmartPtr> volPtrs;
-  while ( ImageStack.size() > 0 ) 
+  while ( ! ImageStack.empty() ) 
     {
     if ( ImageStack.size() > 1 )
       CheckStackTwoMatchingImages( "StackEntropyLabels" );
@@ -1185,7 +1185,7 @@ CallbackMaxIndex()
   
   std::vector<cmtk::UniformVolume::SmartPtr> volPtrs( ImageStack.size() );
 
-  while ( ImageStack.size() > 0 ) 
+  while ( ! ImageStack.empty() ) 
     {
     if ( ImageStack.size() > 1 )
       CheckStackTwoMatchingImages( "MaxIndex" );
@@ -1254,7 +1254,7 @@ CallbackMaxValue()
   CheckStackTwoMatchingImages( "MaxValue" );
   
   std::vector<cmtk::UniformVolume::SmartPtr> volPtrs;
-  while ( ImageStack.size() > 0 ) 
+  while ( ! ImageStack.empty() ) 
     {
     if ( ImageStack.size() > 1 )
       CheckStackTwoMatchingImages( "MaxValue" );
@@ -1315,7 +1315,7 @@ CallbackMinValue()
   CheckStackTwoMatchingImages( "MinValue" );
   
   std::vector<cmtk::UniformVolume::SmartPtr> volPtrs;
-  while ( ImageStack.size() > 0 ) 
+  while ( ! ImageStack.empty() ) 
     {
     if ( ImageStack.size() > 1 )
       CheckStackTwoMatchingImages( "MinValue" );
@@ -1375,7 +1375,7 @@ CallbackContractLabels()
   CheckStackTwoMatchingImages( "ContractLabels" );
   
   std::vector<cmtk::UniformVolume::SmartPtr> volPtrs;
-  while ( ImageStack.size() > 0 ) 
+  while ( ! ImageStack.empty() ) 
     {
     if ( ImageStack.size() > 1 )
       CheckStackTwoMatchingImages( "ContractLabels" );
@@ -1421,7 +1421,7 @@ void
 CallbackCombinePCA()
 {
   std::vector<cmtk::UniformVolume::SmartPtr> volPtrs;
-  while ( ImageStack.size() > 0 ) 
+  while ( ! ImageStack.empty() ) 
     {
     if ( ImageStack.size() > 1 )
       CheckStackTwoMatchingImages( "CombinePCA" );
