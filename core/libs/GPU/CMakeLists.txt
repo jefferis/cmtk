@@ -54,16 +54,6 @@ IF(CMTK_USE_CUDA)
   CUDA_ADD_LIBRARY(cmtkGPU ${cmtkGPU_SRCS_CUDA} ${cmtkGPU_SRCS})
 ENDIF(CMTK_USE_CUDA)
 
-IF(CMTK_USE_OPENCL)
-  SET(cmtkGPU_SRCS_OPENCL
-    cmtkDeviceContextCL.cxx
-    cmtkDeviceHistogram_kernels.cxx
-    cmtkDeviceMemoryCL.cxx
-    )
-  
-  ADD_LIBRARY(cmtkGPU ${cmtkGPU_SRCS_OPENCL} ${cmtkGPU_SRCS})
-ENDIF(CMTK_USE_OPENCL)
-
 TARGET_LINK_LIBRARIES(cmtkGPU cmtkSegmentation cmtkRegistration cmtkBase cmtkSystem cmtkNumerics)
 
 IF(CMTK_LIBRARY_PROPERTIES)

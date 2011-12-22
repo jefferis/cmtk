@@ -269,18 +269,6 @@ IF(HAVE_DISPATCH_H)
 ENDIF(HAVE_DISPATCH_H)
 
 #-----------------------------------------------------------------------------
-# Check for, and configure, OpenCL
-
-##    OPTION(CMTK_USE_OPENCL "Use OpenCL for GPU computing" OFF)
-##  IF(CMTK_USE_OPENCL)
-##  INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/FindOpenCL.cmake)
-##  IF(OPENCL_FOUND)
-##  ENDIF(OPENCL_FOUND)
-##
-##    ADD_DEFINITIONS(-DCMTK_USE_OPENCL)
-##  ENDIF(CMTK_USE_OPENCL)
-
-#-----------------------------------------------------------------------------
 # Check for, and configure, CUDA
 
 OPTION(CMTK_USE_CUDA "Use CUDA for GPU computing" OFF)
