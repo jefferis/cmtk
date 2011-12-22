@@ -70,6 +70,9 @@ public:
     return UniformVolume::SmartPtr( this->m_ImageFwd->CloneGrid() );
   }
   
+  /// Optimize unwarping deformation using L-BFGS optimizer.
+  void Optimize( const int numberOfIterations );
+
   /// Return either first or second 1D gradient image.
   UniformVolume::SmartPtr GetGradientImage( const byte idx = 0 )
   {
@@ -100,7 +103,7 @@ private:
   byte m_PhaseEncodeDirection;
 
   /// 1D deformation map along phase encoding direction.
-  std::vector<Types::Coordinate> m_Deformation;
+  ap::real_1d_array m_Deformation;
 
   /// 1D intensity gradient of "forward" image.
   std::vector<Types::DataItem> m_GradientImageFwd;
@@ -115,11 +118,15 @@ private:
   std::vector<Types::DataItem> m_UnwarpImageRev;
 
   /// Compute 1D intensity gradient image.
-  void MakeGradientImage( const UniformVolume& sourceImage /*!< Image to compute gradient for.*/, std::vector<Types::DataItem>& gradientImageData /*!< Reference to data array for computed gradient data.*/ );
+  void MakeGradientImage( const ap::real_1d_array& x /*!< Current deformation parameter vector.*/, 
+			  const int direction /*!< +1 = forward image, -1 = reverse image */,
+			  const UniformVolume& sourceImage /*!< Image to compute gradient for.*/, 
+			  std::vector<Types::DataItem>& gradientImageData /*!< Reference to data array for computed gradient data.*/ );
 
   /// Compute deformed image.
-  void ComputeDeformedImage( const UniformVolume& sourceImage /*!< Undeformed input image.*/, std::vector<Types::DataItem>& targetImageData /*!< Reference to deformed output image data.*/, 
-			     int direction /*!< Deformation direction - 1 computes unwarped "forward" image, -1 computed unwarped "reverse" image.*/ );
+  void ComputeDeformedImage( const ap::real_1d_array& x /*!< Current deformation parameter vector.*/, 
+			     int direction /*!< Deformation direction - 1 computes unwarped "forward" image, -1 computed unwarped "reverse" image.*/,
+			     const UniformVolume& sourceImage /*!< Undeformed input image.*/, std::vector<Types::DataItem>& targetImageData /*!< Reference to deformed output image data.*/ );
 
   /// 1D sinc interpolation
   Types::DataItem Interpolate1D( const UniformVolume& sourceImage /*!< Image to interpolate from */, 
@@ -129,7 +136,8 @@ private:
   /** Get partial image deformation Jacobian.
    *\return The forward image Jacobian can be computed from this as Jfwd = 1+Jpartial, the reverse Jacobian as Jrev = 1-Jpartial.
    */
-  Types::Coordinate GetPartialJacobian( const FixedVector<3,int>& baseIdx /*!< Grid base index - this is the grid cell where the differential operator stencil is anchored. */ ) const;
+  Types::Coordinate GetPartialJacobian( const ap::real_1d_array& x /*!< Current deformation parameter vector.*/, 
+					const FixedVector<3,int>& baseIdx /*!< Grid base index - this is the grid cell where the differential operator stencil is anchored. */ ) const;
 
   /// Glue class for function and gradient evaluation.
   class FunctionAndGradient : 

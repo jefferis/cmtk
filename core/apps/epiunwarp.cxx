@@ -50,6 +50,7 @@ doMain
   const char* outputImagePath2 = NULL;
 
   byte phaseEncodeDirection = 1;
+  int iterations = 10;
 
   bool noInitCOM = false;
 
@@ -71,10 +72,12 @@ doMain
 
     cl.AddSwitch( Key( "no-init-com" ), &noInitCOM, true, "Disable initialization of deformation field based on center-of-mass alignment." );
 
+    cl.AddOption( Key( 'i', "iterations" ), &iterations, "Number of L-BFGS optimization iterations." );
+
     cl.AddParameter( &inputImagePath1, "InputImage1", "First input image path - this is the standard b=0 image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &inputImagePath2, "InputImage2", "Second input image path - this is the b=0 image with reversed phase encoding direction." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &outputImagePath1, "OutputImage1", "First output image path - this is the unwarped, corrected first image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
-    cl.AddParameter( &outputImagePath1, "OutputImage2", "Second output image path - this is the unwarped, corrected second image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddParameter( &outputImagePath2, "OutputImage2", "Second output image path - this is the unwarped, corrected second image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
     
     cl.Parse( argc, argv );
     }
@@ -87,10 +90,13 @@ doMain
   cmtk::UniformVolume::SmartPtr inputImage1 = cmtk::VolumeIO::ReadOriented( inputImagePath1 );
   cmtk::UniformVolume::SmartPtr inputImage2 = cmtk::VolumeIO::ReadOriented( inputImagePath2 );
 
-  cmtk::EchoPlanarUnwarpFunctional func( inputImage1, inputImage2, phaseEncodeDirection );
+  inputImage2->ApplyMirrorPlane( phaseEncodeDirection );
 
-  cmtk::VolumeIO::Write( *func.GetCorrectedImage( 0 ), outputImagePath1 );
-  cmtk::VolumeIO::Write( *func.GetCorrectedImage( 1 ), outputImagePath2 );
+  cmtk::EchoPlanarUnwarpFunctional func( inputImage1, inputImage2, phaseEncodeDirection );
+  func.Optimize( iterations );
+
+  cmtk::VolumeIO::Write( *func.GetGradientImage( 0 ), outputImagePath1 );
+  cmtk::VolumeIO::Write( *func.GetGradientImage( 1 ), outputImagePath2 );
   
   return 0;
 }

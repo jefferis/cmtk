@@ -34,6 +34,9 @@
 #include <Base/cmtkSincInterpolator.h>
 #include <Base/cmtkRegionIndexIterator.h>
 
+#include <System/cmtkDebugOutput.h>
+#include <System/cmtkProgress.h>
+
 #include <algorithm>
 
 const int cmtk::EchoPlanarUnwarpFunctional::InterpolationKernelRadius = 3; 
@@ -45,25 +48,34 @@ cmtk::EchoPlanarUnwarpFunctional::EchoPlanarUnwarpFunctional
     m_ImageRev( imageRev ), 
     m_PhaseEncodeDirection( phaseEncodeDirection )
 {
-  this->m_Deformation.resize( this->m_ImageFwd->GetNumberOfPixels(), 0.0 );
+  this->m_Deformation.setbounds( 1, this->m_ImageFwd->GetNumberOfPixels() );
+  for ( size_t i = 1; i < 1+this->m_ImageFwd->GetNumberOfPixels(); ++i )
+    this->m_Deformation(i) = 0.0;
 
   this->m_UnwarpImageFwd.resize( this->m_ImageFwd->GetNumberOfPixels() );
   this->m_UnwarpImageRev.resize( this->m_ImageFwd->GetNumberOfPixels() );
-
-  this->MakeGradientImage( *(this->m_ImageFwd), this->m_GradientImageFwd );
-  this->MakeGradientImage( *(this->m_ImageRev), this->m_GradientImageRev );
 }
 
 void
-cmtk::EchoPlanarUnwarpFunctional::MakeGradientImage( const UniformVolume& sourceImage, std::vector<Types::DataItem>& gradientImageData )
+cmtk::EchoPlanarUnwarpFunctional::MakeGradientImage( const ap::real_1d_array& u, const int direction, const UniformVolume& sourceImage, std::vector<Types::DataItem>& gradientImageData )
 {
+  DebugOutput( 9 ) << "Making gradient image\n";
+
   gradientImageData.resize( sourceImage.GetNumberOfPixels() );
+
+  const Types::Coordinate pixelSize = sourceImage.Deltas()[this->m_PhaseEncodeDirection];
 
   const DataGrid::RegionType wholeImageRegion = sourceImage.GetWholeImageRegion();
   for ( RegionIndexIterator<DataGrid::RegionType> it( wholeImageRegion ); it != it.end(); ++it )
     {
     DataGrid::IndexType idx = it.Index();
     const size_t i = sourceImage.GetOffsetFromIndex( idx );
+
+    // apply deformation
+    const Types::Coordinate shift = direction * u(1+i) / pixelSize;
+    const Types::Coordinate position = shift + idx[this->m_PhaseEncodeDirection];
+    
+    idx[this->m_PhaseEncodeDirection] = static_cast<int>( floor( position ) );
 
     // use the 1D sinc interpolation for the gradient
     gradientImageData[i] = this->Interpolate1D( sourceImage, idx, 0.5 );
@@ -74,8 +86,10 @@ cmtk::EchoPlanarUnwarpFunctional::MakeGradientImage( const UniformVolume& source
 }
 
 void
-cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const UniformVolume& sourceImage, std::vector<Types::DataItem>& targetImageData, int direction )
+cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const ap::real_1d_array& u, int direction, const UniformVolume& sourceImage, std::vector<Types::DataItem>& targetImageData )
 {
+  DebugOutput( 9 ) << "Computing deformed image\n";
+
   const Types::Coordinate pixelSize = sourceImage.Deltas()[this->m_PhaseEncodeDirection];
 
   const DataGrid::RegionType wholeImageRegion = sourceImage.GetWholeImageRegion();
@@ -85,10 +99,10 @@ cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const UniformVolume& sou
     const size_t i = sourceImage.GetOffsetFromIndex( idx );
 
     // first, get Jacobian for grid position
-    targetImageData[i] = 1 + direction * this->GetPartialJacobian( idx );
+    targetImageData[i] = 1 + direction * this->GetPartialJacobian( u, idx );
 
     // now compute deformed position for interpolation
-    const Types::Coordinate shift = direction*this->m_Deformation[i] / pixelSize;
+    const Types::Coordinate shift = direction * u(1+i) / pixelSize;
     const Types::Coordinate position = shift + idx[this->m_PhaseEncodeDirection];
     
     idx[this->m_PhaseEncodeDirection] = static_cast<int>( floor( position ) );
@@ -127,7 +141,7 @@ cmtk::EchoPlanarUnwarpFunctional::Interpolate1D( const UniformVolume& sourceImag
 }
 
 cmtk::Types::Coordinate 
-cmtk::EchoPlanarUnwarpFunctional::GetPartialJacobian( const FixedVector<3,int>& baseIdx ) const
+cmtk::EchoPlanarUnwarpFunctional::GetPartialJacobian( const ap::real_1d_array& u, const FixedVector<3,int>& baseIdx ) const
 {
   cmtk::Types::Coordinate diff = 0;
   int normalize = 0;
@@ -135,36 +149,66 @@ cmtk::EchoPlanarUnwarpFunctional::GetPartialJacobian( const FixedVector<3,int>& 
   size_t offset = this->m_ImageFwd->GetOffsetFromIndex( baseIdx );
   if ( baseIdx[this->m_PhaseEncodeDirection] > 0 )
     {
-    diff -= this->m_Deformation[ offset - this->m_ImageGrid->m_GridIncrements[this->m_PhaseEncodeDirection] ];
+    diff -= u( 1 + offset - this->m_ImageGrid->m_GridIncrements[this->m_PhaseEncodeDirection] );
     ++normalize;
     }
   else
     {
-    diff -= this->m_Deformation[offset];
+    diff -= u( 1 + offset );
     }
 
   if ( baseIdx[this->m_PhaseEncodeDirection] < this->m_ImageGrid->m_Dims[this->m_PhaseEncodeDirection]-1 )
     {
-    diff += this->m_Deformation[ offset + this->m_ImageGrid->m_GridIncrements[this->m_PhaseEncodeDirection] ];
+    diff += u( 1 + offset + this->m_ImageGrid->m_GridIncrements[this->m_PhaseEncodeDirection] );
     ++normalize;
     }
   else
     {
-    diff += this->m_Deformation[offset];
+    diff += u( 1 + offset );
     }
   
   return diff / normalize;
 }
+
+
+void
+cmtk::EchoPlanarUnwarpFunctional::Optimize( const int numberOfIterations )
+{
+  const int numberOfPixels = this->m_ImageGrid->GetNumberOfPixels();
+
+  ap::integer_1d_array nbd;
+  nbd.setbounds( 1, numberOfPixels );
+  for ( int i = 1; i <= numberOfPixels; ++i )
+    {
+    nbd(i) = 0;
+    }
+
+  // dummy array for unused constraints
+  ap::real_1d_array dummy;
+  
+  Progress::Begin( 0, numberOfIterations, 1, "EPI Unwarping" );
+  
+  int info;
+  Self::FunctionAndGradient functionAndGradient( this );
+  ap::lbfgsbminimize( &(functionAndGradient), numberOfPixels, 5, this->m_Deformation, 1e-10 /*epsg*/, 1e-10 /*epsf*/, 1e-10 /*epsx*/, numberOfIterations, nbd, dummy, dummy, info );
+
+  Progress::Done();
+  
+  if ( info < 0 )
+    StdErr << "ERROR: lbfgsbminimize returned status code " << info << "\n";
+}
+
 
 void
 cmtk::EchoPlanarUnwarpFunctional
 ::FunctionAndGradient
 ::Evaluate( const ap::real_1d_array& x, ap::real_value_type& f, ap::real_1d_array& g )
 {
-  this->m_Function->ComputeDeformedImage( *(this->m_Function->m_ImageFwd), this->m_Function->m_UnwarpImageFwd, +1 );
-  this->m_Function->ComputeDeformedImage( *(this->m_Function->m_ImageRev), this->m_Function->m_UnwarpImageRev, -1 );
-
   const size_t nPixels = this->m_Function->m_ImageGrid->GetNumberOfPixels();
+
+  this->m_Function->ComputeDeformedImage( x, +1, *(this->m_Function->m_ImageFwd), this->m_Function->m_UnwarpImageFwd );
+  this->m_Function->ComputeDeformedImage( x, -1, *(this->m_Function->m_ImageRev), this->m_Function->m_UnwarpImageRev );
+
   ap::real_value_type msd = 0;
   for ( size_t px = 0; px < nPixels; ++px )
     {
@@ -173,8 +217,13 @@ cmtk::EchoPlanarUnwarpFunctional
 
   f = msd / nPixels;
 
+  this->m_Function->MakeGradientImage( x, +1, *(this->m_Function->m_ImageFwd), this->m_Function->m_GradientImageFwd );
+  this->m_Function->MakeGradientImage( x, -1, *(this->m_Function->m_ImageRev), this->m_Function->m_GradientImageRev );
+
   for ( size_t px = 0; px < nPixels; ++px )
     {
-    g(px) = 1.0 / nPixels;
+    g(1+px) = 2.0 * (this->m_Function->m_UnwarpImageFwd[px] - this->m_Function->m_UnwarpImageRev[px]) * (this->m_Function->m_GradientImageFwd[px] + this->m_Function->m_GradientImageRev[px]) / nPixels;
     }
+
+  DebugOutput( 2 ) << "f " << f << "\n";
 }
