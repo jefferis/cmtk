@@ -298,16 +298,6 @@ cmtk::EchoPlanarUnwarpFunctional
 
   const size_t nPixels = function.m_ImageGrid->GetNumberOfPixels();
 
-//  ap::real_value_type msd = 0;
-//  for ( size_t px = 0; px < nPixels; ++px )
-//    {
-//    // difference term derivative
-//    const Types::Coordinate diff = function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px];
-//    msd += MathUtil::Square( diff );
-//    g(1+px) = 2.0 * diff * (function.m_GradientImageFwd[px] + function.m_GradientImageRev[px]) / nPixels;
-//    }
-//  f = (msd /= nPixels);
-
   ap::real_value_type msd = 0;
   for ( RegionIndexIterator<DataGrid::RegionType> it( insideRegion ); it != it.end(); ++it )
     {
@@ -328,7 +318,7 @@ cmtk::EchoPlanarUnwarpFunctional
     idx[function.m_PhaseEncodeDirection] += 2;
     px = sourceImage.GetOffsetFromIndex( idx );
     // subtract second part because derivatives of J1 and J2 are negative here
-    g(1+px) -= 0.5 / insideRegionSize * (function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px]) * ( function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev
+    g(1+px) -= 0.5 / insideRegionSize * (function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev
     }
   f = (msd /= insideRegionSize);
 
