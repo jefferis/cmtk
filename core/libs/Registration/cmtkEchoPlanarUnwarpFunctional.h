@@ -93,7 +93,10 @@ public:
   /// Return either first or second 1D gradient image.
   UniformVolume::SmartPtr GetGradientImage( const byte idx = 0 )
   {
-    UniformVolume::SmartPtr gradientImage( this->m_ImageFwd->CloneGrid() );
+    UniformVolume::SmartPtr gradientImage( this->m_ImageGrid->CloneGrid() );
+
+    this->MakeGradientImage( this->m_Deformation, +1, *(this->m_SmoothImageFwd), this->m_GradientImageFwd );
+    this->MakeGradientImage( this->m_Deformation, -1, *(this->m_SmoothImageRev), this->m_GradientImageRev );
 
     const std::vector<Types::DataItem>& srcImage = ( idx == 0 ) ? this->m_GradientImageFwd : this->m_GradientImageRev;
 
