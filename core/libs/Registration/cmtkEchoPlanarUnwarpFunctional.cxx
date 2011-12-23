@@ -239,13 +239,13 @@ cmtk::EchoPlanarUnwarpFunctional
   this->m_Function->ComputeDeformedImage( x, +1, *(this->m_Function->m_ImageFwd), this->m_Function->m_UnwarpImageFwd );
   this->m_Function->ComputeDeformedImage( x, -1, *(this->m_Function->m_ImageRev), this->m_Function->m_UnwarpImageRev );
 
-  ap::real_value_type msd = 0;
+  f = 0;
   for ( size_t px = 0; px < nPixels; ++px )
     {
-    msd += MathUtil::Square( this->m_Function->m_UnwarpImageFwd[px] - this->m_Function->m_UnwarpImageRev[px] );
+    f += MathUtil::Square( this->m_Function->m_UnwarpImageFwd[px] - this->m_Function->m_UnwarpImageRev[px] );
     }
 
-  f = msd / nPixels;
+  f /= nPixels;
 
   this->m_Function->MakeGradientImage( x, +1, *(this->m_Function->m_ImageFwd), this->m_Function->m_GradientImageFwd );
   this->m_Function->MakeGradientImage( x, -1, *(this->m_Function->m_ImageRev), this->m_Function->m_GradientImageRev );
