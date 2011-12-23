@@ -300,7 +300,7 @@ cmtk::EchoPlanarUnwarpFunctional
 
   // add gradient term for Jacobians
   DataGrid::RegionType insideRegion = wholeImageRegion;  
-  insideRegion.From()[functiom.m_PhaseEncodeDirection] += 1;
+  insideRegion.From()[function.m_PhaseEncodeDirection] += 1;
   insideRegion.To()[functiom.m_PhaseEncodeDirection] -= 1;
 
   for ( RegionIndexIterator<DataGrid::RegionType> it( insideRegion ); it != it.end(); ++it )
