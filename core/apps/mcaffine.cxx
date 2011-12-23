@@ -94,7 +94,7 @@ const char* cropReferenceFromIndex = NULL;
 const char* cropReferenceToIndex = NULL;
 
 cmtk::UniformVolume::SmartPtr
-MakeDownsampled( const cmtk::UniformVolume::SmartPtr& image, const int downsample, const cmtk::Types::Coordinate smoothSigmaFactor )
+MakeDownsampled( cmtk::UniformVolume::SmartConstPtr& image, const int downsample, const cmtk::Types::Coordinate smoothSigmaFactor )
 {
   if ( downsampleWithAverage )
     return cmtk::UniformVolume::SmartPtr( new cmtk::UniformVolume( *image, downsample * image->GetMinDelta() ) );
@@ -170,14 +170,14 @@ DoRegistration()
     cmtk::DebugOutput( 1 ).GetStream().printf( "Downsampling stage 1:%d\n", downsample );
 
     functional->ClearAllChannels();
-    for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = refChannelList.begin(); it != refChannelList.end(); ++it )
+    for ( std::list<cmtk::UniformVolume::SmartPtr>::iterator it = refChannelList.begin(); it != refChannelList.end(); ++it )
       {
       cmtk::UniformVolume::SmartPtr image = MakeDownsampled( (*it), downsample, smoothSigmaFactor );
       image->CopyMetaInfo( **it, cmtk::META_FS_PATH );
       functional->AddReferenceChannel( image );
       }
 
-    for ( std::list<cmtk::UniformVolume::SmartPtr>::const_iterator it = fltChannelList.begin(); it != fltChannelList.end(); ++it )
+    for ( std::list<cmtk::UniformVolume::SmartPtr>::iterator it = fltChannelList.begin(); it != fltChannelList.end(); ++it )
       {
       cmtk::UniformVolume::SmartPtr image = MakeDownsampled( (*it), downsample, smoothSigmaFactor );
       image->CopyMetaInfo( **it, cmtk::META_FS_PATH );
