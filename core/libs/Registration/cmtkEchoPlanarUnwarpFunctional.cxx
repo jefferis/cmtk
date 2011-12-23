@@ -293,30 +293,29 @@ cmtk::EchoPlanarUnwarpFunctional
   function.MakeGradientImage( x, +1, *(function.m_SmoothImageFwd), function.m_GradientImageFwd );
   function.MakeGradientImage( x, -1, *(function.m_SmoothImageRev), function.m_GradientImageRev );
 
-  for ( size_t px = 0; px < nPixels; ++px )
-    {
-    g(1+px) = 2.0 * (function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px]) * (function.m_GradientImageFwd[px] + function.m_GradientImageRev[px]) / nPixels;
-    }
-
-  // add gradient term for Jacobians
   DataGrid::RegionType insideRegion = wholeImageRegion;  
   insideRegion.From()[function.m_PhaseEncodeDirection] += 1;
   insideRegion.To()[function.m_PhaseEncodeDirection] -= 1;
 
   for ( RegionIndexIterator<DataGrid::RegionType> it( insideRegion ); it != it.end(); ++it )
     {
-//2*(j1(u, umm)*I1(x+um)-j2(u, umm)*I2(x-um)))*((diff(j1(u, umm), u))*I1(x+um)-(diff(j2(u, umm), u))*I2(x-um)
+    // difference term derivative
     DataGrid::IndexType idx = it.Index();
-
-    idx[function.m_PhaseEncodeDirection] -= 1;
     size_t px = sourceImage.GetOffsetFromIndex( idx );
-    g(1+px) += 0.5 * (function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // + because partial J deriv is negative for Rev										       
-    
-//(2*(j1(upp, u)*I1(x+up)-j2(upp, u)*I2(x-up)))*((diff(j1(upp, u), u))*I1(x+up)-(diff(j2(upp, u), u))*I2(x-up))
+    g(1+px) = 2.0 * (function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px]) * (function.m_GradientImageFwd[px] + function.m_GradientImageRev[px]);
+
+    // add gradient terms for Jacobians
+    //2*(j1(u, umm)*I1(x+um)-j2(u, umm)*I2(x-um)))*((diff(j1(u, umm), u))*I1(x+um)-(diff(j2(u, umm), u))*I2(x-um)
+    idx[function.m_PhaseEncodeDirection] -= 1;
+    px = sourceImage.GetOffsetFromIndex( idx );
+    g(1+px) += 0.5 * (function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev										       
+    //(2*(j1(upp, u)*I1(x+up)-j2(upp, u)*I2(x-up)))*((diff(j1(upp, u), u))*I1(x+up)-(diff(j2(upp, u), u))*I2(x-up))
     idx[function.m_PhaseEncodeDirection] += 2;
     px = sourceImage.GetOffsetFromIndex( idx );
     // subtract second part because derivatives of J1 and J2 are negative here
-    g(1+px) -= 0.5 * (function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] );// + because partial J deriv is negative for Rev
+    g(1+px) -= 0.5 * (function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px]) * ( function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev
+
+    g(1+px) /= nPixels;
     }
 
   // smoothness constraint and its derivative
