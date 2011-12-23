@@ -98,6 +98,14 @@ public:
 
     return gradientImage;
   }
+
+  /** Set smoothness constraint weight.
+   * This is \lambda_2 in Eq. (9) in Holland et al. NIMG 2010.
+   */
+  void SetSmoothnessConstraintWeight( const Types::Coordinate weight )
+  {
+    this->m_SmoothnessConstraintWeight = weight;
+  }
   
 private:
   /// Unwarped image grid.
@@ -111,6 +119,9 @@ private:
 
   /// Phase encoding direction.
   byte m_PhaseEncodeDirection;
+
+  /// Smoothness constraint weight.
+  Types::Coordinate m_SmoothnessConstraintWeight;
 
   /// 1D deformation map along phase encoding direction.
   ap::real_1d_array m_Deformation;

@@ -50,6 +50,8 @@ doMain
   const char* outputImagePath2 = NULL;
 
   byte phaseEncodeDirection = 1;
+
+  double smoothnessConstraintWeight = 10000;
   int iterations = 10;
 
   bool noInitCOM = false;
@@ -72,6 +74,7 @@ doMain
 
     cl.AddSwitch( Key( "no-init-com" ), &noInitCOM, true, "Disable initialization of deformation field based on center-of-mass alignment." );
 
+    cl.AddOption( Key( "smoothness-constraint-weight" ), &smoothnessConstraintWeight, "Weight factor for the second-order smoothness constraint term in the unwarping cost function." );
     cl.AddOption( Key( 'i', "iterations" ), &iterations, "Number of L-BFGS optimization iterations." );
 
     cl.AddParameter( &inputImagePath1, "InputImage1", "First input image path - this is the standard b=0 image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
@@ -93,6 +96,7 @@ doMain
   inputImage2->ApplyMirrorPlane( phaseEncodeDirection );
 
   cmtk::EchoPlanarUnwarpFunctional func( inputImage1, inputImage2, phaseEncodeDirection );
+  func.SetSmoothnessConstraintWeight( smoothnessConstraintWeight );
   func.Optimize( iterations );
 
   cmtk::VolumeIO::Write( *func.GetCorrectedImage( 0 ), outputImagePath1 );

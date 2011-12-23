@@ -234,19 +234,20 @@ cmtk::EchoPlanarUnwarpFunctional
 ::FunctionAndGradient
 ::Evaluate( const ap::real_1d_array& x, ap::real_value_type& f, ap::real_1d_array& g )
 {
-  const size_t nPixels = this->m_Function->m_ImageGrid->GetNumberOfPixels();
+  const UniformVolume& sourceImage = *(this->m_Function->m_ImageGrid);
+  const size_t nPixels = sourceImage.GetNumberOfPixels();
 
   this->m_Function->ComputeDeformedImage( x, +1, *(this->m_Function->m_ImageFwd), this->m_Function->m_UnwarpImageFwd );
   this->m_Function->ComputeDeformedImage( x, -1, *(this->m_Function->m_ImageRev), this->m_Function->m_UnwarpImageRev );
 
-  f = 0;
+  ap::real_value_type msd = 0;
   for ( size_t px = 0; px < nPixels; ++px )
     {
-    f += MathUtil::Square( this->m_Function->m_UnwarpImageFwd[px] - this->m_Function->m_UnwarpImageRev[px] );
+    msd += MathUtil::Square( this->m_Function->m_UnwarpImageFwd[px] - this->m_Function->m_UnwarpImageRev[px] );
     }
+  f = (msd /= nPixels);
 
-  f /= nPixels;
-
+  // initialize gradient vector with derivative of image differences
   this->m_Function->MakeGradientImage( x, +1, *(this->m_Function->m_ImageFwd), this->m_Function->m_GradientImageFwd );
   this->m_Function->MakeGradientImage( x, -1, *(this->m_Function->m_ImageRev), this->m_Function->m_GradientImageRev );
 
@@ -255,5 +256,32 @@ cmtk::EchoPlanarUnwarpFunctional
     g(1+px) = 2.0 * (this->m_Function->m_UnwarpImageFwd[px] - this->m_Function->m_UnwarpImageRev[px]) * (this->m_Function->m_GradientImageFwd[px] + this->m_Function->m_GradientImageRev[px]) / nPixels;
     }
 
-  DebugOutput( 2 ) << "f " << f << "\n";
+  // smoothness constraint and its derivative
+  const DataGrid::RegionType wholeImageRegion = sourceImage.GetWholeImageRegion();
+  DataGrid::RegionType insideRegion = wholeImageRegion;
+  insideRegion.From().AddScalar( 1 );
+  insideRegion.To().AddScalar( -1 );
+
+  // compute smoothness term
+  const ap::real_value_type lambda2 = this->m_Function->m_SmoothnessConstraintWeight;
+  ap::real_value_type smooth = 0;
+
+  for ( RegionIndexIterator<DataGrid::RegionType> it( insideRegion ); it != it.end(); ++it )
+    {
+    const size_t ofs = 1 + sourceImage.GetOffsetFromIndex( it.Index() );
+    for ( int dim = 0; dim < 3; ++dim )
+      {
+      const ap::real_value_type diff = x( ofs + sourceImage.m_GridIncrements[dim] ) - x( ofs - sourceImage.m_GridIncrements[dim] );
+      // increment smoothness term
+      smooth += MathUtil::Square( diff );
+      // increment relevant gradient elements
+      g( ofs + sourceImage.m_GridIncrements[dim] ) += 2 * lambda2 * diff;
+      g( ofs - sourceImage.m_GridIncrements[dim] ) -= 2 * lambda2 * diff;
+      }
+    }
+  
+  f += lambda2 * smooth;
+  
+  DebugOutput( 2 ) << "f " << f << " msd " << msd << " smooth " << smooth << "\n";
+
 }
