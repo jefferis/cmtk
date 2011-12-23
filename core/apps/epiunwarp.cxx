@@ -57,8 +57,8 @@ doMain
   int iterations = 10;
 
   double smoothSigmaMax = 4.0;
-  double smoothSigmaMin = 1.0;
-  double smoothSigmaFactor = 0.5;
+  double smoothSigmaMin = 0.5;
+  double smoothSigmaDiff = 0.25;
   
   try
     {
@@ -77,8 +77,7 @@ doMain
     phaseEncodeGroup->AddSwitch( Key( 'x', "phase-encode-lr" ), 0, "Lateral, left/right phase encoding (this is very rare)" );
 
     cl.AddOption( Key( "smooth-sigma-max" ), &smoothSigmaMax, "Maximum image smoothing kernel width for coarsest level of multi-scale computation." );
-    cl.AddOption( Key( "smooth-sigma-min" ), &smoothSigmaMin, "Minimum image smoothing kernel width for finest level of multi-scale computation (before using unsmoothed data)." );
-    cl.AddOption( Key( "smooth-sigma-factor" ), &smoothSigmaFactor, "Factor for image smoothing kernel width between two successive levels of the multi-scale computation (must be between 0 and 1." );
+    cl.AddOption( Key( "smooth-sigma-diff" ), &smoothSigmaDiff, "Difference between image smoothing kernel widths between two successive levels of the multi-scale computation." );
     
     cl.AddOption( Key( "smoothness-constraint-weight" ), &smoothnessConstraintWeight, "Weight factor for the second-order smoothness constraint term in the unwarping cost function." );
     cl.AddOption( Key( 'i', "iterations" ), &iterations, "Number of L-BFGS optimization iterations (per multi-scale level)." );
@@ -103,7 +102,7 @@ doMain
 
   cmtk::EchoPlanarUnwarpFunctional func( inputImage1, inputImage2, phaseEncodeDirection );
   func.SetSmoothnessConstraintWeight( smoothnessConstraintWeight );
-  func.Optimize( iterations, cmtk::Units::GaussianSigma( smoothSigmaMax ), cmtk::Units::GaussianSigma( smoothSigmaMin ), smoothSigmaFactor );
+  func.Optimize( iterations, cmtk::Units::GaussianSigma( smoothSigmaMax ), cmtk::Units::GaussianSigma( smoothSigmaDiff ) );
 
   cmtk::VolumeIO::Write( *func.GetCorrectedImage( 0 ), outputImagePath1 );
   cmtk::VolumeIO::Write( *func.GetCorrectedImage( 1 ), outputImagePath2 );

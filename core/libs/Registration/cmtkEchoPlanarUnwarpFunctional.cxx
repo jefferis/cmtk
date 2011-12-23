@@ -232,7 +232,7 @@ cmtk::EchoPlanarUnwarpFunctional::GetPartialJacobian( const ap::real_1d_array& u
 
 
 void
-cmtk::EchoPlanarUnwarpFunctional::Optimize( const int numberOfIterations, const Units::GaussianSigma& smoothMax, const Units::GaussianSigma& smoothMin, const Types::Coordinate smoothFactor )
+cmtk::EchoPlanarUnwarpFunctional::Optimize( const int numberOfIterations, const Units::GaussianSigma& smoothMax, const Units::GaussianSigma& smoothDiff )
 {
   const int numberOfPixels = this->m_ImageGrid->GetNumberOfPixels();
   
@@ -246,11 +246,8 @@ cmtk::EchoPlanarUnwarpFunctional::Optimize( const int numberOfIterations, const 
   // dummy array for unused constraints
   ap::real_1d_array dummy;
   
-  for ( Units::GaussianSigma smoothness = smoothMax; smoothness.Value() > 0; smoothness = smoothFactor * smoothness )
+  for ( Units::GaussianSigma smoothness = smoothMax; smoothness.Value() >= 0; smoothness = smoothness - smoothDiff )
     {
-    if ( smoothness < smoothMin )
-      smoothness = Units::GaussianSigma( 0 );
-
     DebugOutput( 4 ) << "Setting image smoothing kernel sigma=" << smoothness.Value() << "\n";
     this->SetSmoothingKernelWidth( smoothness );
     
@@ -314,12 +311,12 @@ cmtk::EchoPlanarUnwarpFunctional
     const size_t ofs = 1 + sourceImage.GetOffsetFromIndex( it.Index() );
     for ( int dim = 0; dim < 3; ++dim )
       {
-      const ap::real_value_type diff = x( ofs + sourceImage.m_GridIncrements[dim] ) - x( ofs - sourceImage.m_GridIncrements[dim] );
+      const ap::real_value_type diff = x( ofs + sourceImage.m_GridIncrements[dim] ) - x( ofs - sourceImage.m_GridIncrements[dim] ) / 2;
       // increment smoothness term
       smooth += MathUtil::Square( diff );
       // increment relevant gradient elements
-      g( ofs + sourceImage.m_GridIncrements[dim] ) += 2 * lambda2 * diff / nPixels;
-      g( ofs - sourceImage.m_GridIncrements[dim] ) -= 2 * lambda2 * diff / nPixels;
+      g( ofs + sourceImage.m_GridIncrements[dim] ) += lambda2 * diff / nPixels;
+      g( ofs - sourceImage.m_GridIncrements[dim] ) -= lambda2 * diff / nPixels;
       }
     }
   
