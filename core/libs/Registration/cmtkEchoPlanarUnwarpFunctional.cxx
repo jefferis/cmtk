@@ -48,12 +48,12 @@ cmtk::EchoPlanarUnwarpFunctional::EchoPlanarUnwarpFunctional
     m_ImageRev( imageRev ), 
     m_PhaseEncodeDirection( phaseEncodeDirection )
 {
-  this->m_Deformation.setbounds( 1, this->m_ImageFwd->GetNumberOfPixels() );
-  for ( size_t i = 1; i < 1+this->m_ImageFwd->GetNumberOfPixels(); ++i )
+  this->m_Deformation.setbounds( 1, this->m_ImageGrid->GetNumberOfPixels() );
+  for ( size_t i = 1; i < 1+this->m_ImageGrid->GetNumberOfPixels(); ++i )
     this->m_Deformation(i) = 0.0;
 
-  this->m_UnwarpImageFwd.resize( this->m_ImageFwd->GetNumberOfPixels() );
-  this->m_UnwarpImageRev.resize( this->m_ImageFwd->GetNumberOfPixels() );
+  this->m_UnwarpImageFwd.resize( this->m_ImageGrid->GetNumberOfPixels() );
+  this->m_UnwarpImageRev.resize( this->m_ImageGrid->GetNumberOfPixels() );
 }
 
 void
@@ -63,26 +63,38 @@ cmtk::EchoPlanarUnwarpFunctional::MakeGradientImage( const ap::real_1d_array& u,
 
   gradientImageData.resize( sourceImage.GetNumberOfPixels() );
 
-  const Types::Coordinate pixelSize = sourceImage.Deltas()[this->m_PhaseEncodeDirection];
-
   const DataGrid::RegionType wholeImageRegion = sourceImage.GetWholeImageRegion();
-  for ( RegionIndexIterator<DataGrid::RegionType> it( wholeImageRegion ); it != it.end(); ++it )
+
+#ifndef _OPENMP
+  const DataGrid::RegionType region = wholeImageRegion;
+#else // _OPENMP
+#pragma omp parallel for
+  for ( int slice = wholeImageRegion.From()[2]; slice < wholeImageRegion.To()[2]; ++slice )
     {
-    DataGrid::IndexType idx = it.Index();
-    const size_t i = sourceImage.GetOffsetFromIndex( idx );
-
-    // apply deformation
-    const Types::Coordinate shift = direction * u(1+i) / pixelSize;
-    const Types::Coordinate position = shift + idx[this->m_PhaseEncodeDirection];
-    
-    idx[this->m_PhaseEncodeDirection] = static_cast<int>( floor( position ) );
-
-    // use the 1D sinc interpolation for the gradient
-    gradientImageData[i] = this->Interpolate1D( sourceImage, idx, 0.5 );
-
-    --idx[this->m_PhaseEncodeDirection];
-    gradientImageData[i] -=  this->Interpolate1D( sourceImage, idx, 0.5 );;
+    DataGrid::RegionType region = wholeImageRegion;
+    region.From()[2] = slice;
+    region.To()[2] = slice+1;
+#endif
+    for ( RegionIndexIterator<DataGrid::RegionType> it( region ); it != it.end(); ++it )
+      {
+      DataGrid::IndexType idx = it.Index();
+      const size_t i = sourceImage.GetOffsetFromIndex( idx );
+      
+      // apply deformation
+      const Types::Coordinate shift = direction * u(1+i);
+      const Types::Coordinate position = shift + idx[this->m_PhaseEncodeDirection];
+      
+      idx[this->m_PhaseEncodeDirection] = static_cast<int>( floor( position ) );
+      
+      // use the 1D sinc interpolation for the gradient
+      gradientImageData[i] = this->Interpolate1D( sourceImage, idx, 0.5 );
+      
+      --idx[this->m_PhaseEncodeDirection];
+      gradientImageData[i] -=  this->Interpolate1D( sourceImage, idx, 0.5 );;
+      }
+#ifdef _OPENMP
     }
+#endif
 }
 
 void
@@ -90,26 +102,38 @@ cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const ap::real_1d_array&
 {
   DebugOutput( 9 ) << "Computing deformed image\n";
 
-  const Types::Coordinate pixelSize = sourceImage.Deltas()[this->m_PhaseEncodeDirection];
-
   const DataGrid::RegionType wholeImageRegion = sourceImage.GetWholeImageRegion();
-  for ( RegionIndexIterator<DataGrid::RegionType> it( wholeImageRegion ); it != it.end(); ++it )
+
+#ifndef _OPENMP
+  const DataGrid::RegionType region = wholeImageRegion;
+#else // _OPENMP
+#pragma omp parallel for
+  for ( int slice = wholeImageRegion.From()[2]; slice < wholeImageRegion.To()[2]; ++slice )
     {
-    DataGrid::IndexType idx = it.Index();
-    const size_t i = sourceImage.GetOffsetFromIndex( idx );
-
-    // first, get Jacobian for grid position
-    targetImageData[i] = 1 + direction * this->GetPartialJacobian( u, idx );
-
-    // now compute deformed position for interpolation
-    const Types::Coordinate shift = direction * u(1+i) / pixelSize;
-    const Types::Coordinate position = shift + idx[this->m_PhaseEncodeDirection];
-    
-    idx[this->m_PhaseEncodeDirection] = static_cast<int>( floor( position ) );
-
-    // multiple interpolated data onto previously set Jacobian
-    targetImageData[i] *= this->Interpolate1D( sourceImage, idx, position - idx[this->m_PhaseEncodeDirection] );    
+    DataGrid::RegionType region = wholeImageRegion;
+    region.From()[2] = slice;
+    region.To()[2] = slice+1;
+#endif
+    for ( RegionIndexIterator<DataGrid::RegionType> it( region ); it != it.end(); ++it )
+      {
+      DataGrid::IndexType idx = it.Index();
+      const size_t i = sourceImage.GetOffsetFromIndex( idx );
+      
+      // first, get Jacobian for grid position
+      targetImageData[i] = 1; // + direction * this->GetPartialJacobian( u, idx );
+      
+      // now compute deformed position for interpolation
+      const Types::Coordinate shift = direction * u(1+i);
+      const Types::Coordinate position = shift + idx[this->m_PhaseEncodeDirection];
+      
+      idx[this->m_PhaseEncodeDirection] = static_cast<int>( floor( position ) );
+      
+      // multiple interpolated data onto previously set Jacobian
+      targetImageData[i] *= this->Interpolate1D( sourceImage, idx, position - idx[this->m_PhaseEncodeDirection] );    
+      }
+#ifdef _OPENMP
     }
+#endif
 }
 
 cmtk::Types::DataItem 
