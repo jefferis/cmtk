@@ -59,6 +59,9 @@ cmtk::EchoPlanarUnwarpFunctional::EchoPlanarUnwarpFunctional
 
   this->m_UnwarpImageFwd.resize( this->m_ImageGrid->GetNumberOfPixels() );
   this->m_UnwarpImageRev.resize( this->m_ImageGrid->GetNumberOfPixels() );
+
+  this->m_CorrectedImageFwd.resize( this->m_ImageGrid->GetNumberOfPixels() );
+  this->m_CorrectedImageRev.resize( this->m_ImageGrid->GetNumberOfPixels() );
 }
 
 void
@@ -161,7 +164,7 @@ cmtk::EchoPlanarUnwarpFunctional::Interpolate1D( const UniformVolume& sourceImag
 }
 
 void
-cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const ap::real_1d_array& u, int direction, const UniformVolume& sourceImage, std::vector<Types::DataItem>& targetImageData )
+cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const ap::real_1d_array& u, int direction, const UniformVolume& sourceImage, std::vector<Types::DataItem>& targetUnwarpData, std::vector<Types::DataItem>& targetCorrectedData )
 {
   DebugOutput( 9 ) << "Computing deformed image\n";
 
@@ -183,7 +186,7 @@ cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const ap::real_1d_array&
       const size_t i = sourceImage.GetOffsetFromIndex( idx );
       
       // first, get Jacobian for grid position
-      targetImageData[i] = 1 + direction * this->GetPartialJacobian( u, idx );
+      targetCorrectedData[i] = 1 + direction * this->GetPartialJacobian( u, idx );
       
       // now compute deformed position for interpolation
       const Types::Coordinate shift = direction * u(1+i);
@@ -192,7 +195,7 @@ cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const ap::real_1d_array&
       idx[this->m_PhaseEncodeDirection] = static_cast<int>( floor( position ) );
       
       // multiple interpolated data onto previously set Jacobian
-      targetImageData[i] *= this->Interpolate1D( sourceImage, idx, position - idx[this->m_PhaseEncodeDirection] );    
+      targetCorrectedData[i] *= (targetUnwarpData[i] = this->Interpolate1D( sourceImage, idx, position - idx[this->m_PhaseEncodeDirection] ));
       }
 #ifdef _OPENMP
     }
@@ -262,8 +265,8 @@ cmtk::EchoPlanarUnwarpFunctional::Optimize( const int numberOfIterations, const 
     }
 
   // update corrected images using unsmoothed images with final deformation
-  this->ComputeDeformedImage( this->m_Deformation, +1, *(this->m_ImageFwd), this->m_UnwarpImageFwd );
-  this->ComputeDeformedImage( this->m_Deformation, -1, *(this->m_ImageRev), this->m_UnwarpImageRev );
+  this->ComputeDeformedImage( this->m_Deformation, +1, *(this->m_ImageFwd), this->m_UnwarpImageFwd, this->m_CorrectedImageFwd );
+  this->ComputeDeformedImage( this->m_Deformation, -1, *(this->m_ImageRev), this->m_UnwarpImageRev, this->m_CorrectedImageRev );
 }
 
 
@@ -281,8 +284,8 @@ cmtk::EchoPlanarUnwarpFunctional
   const UniformVolume& sourceImage = *(function.m_ImageGrid);
   const DataGrid::RegionType wholeImageRegion = sourceImage.GetWholeImageRegion();
   
-  function.ComputeDeformedImage( x, +1, *(function.m_SmoothImageFwd), function.m_UnwarpImageFwd );
-  function.ComputeDeformedImage( x, -1, *(function.m_SmoothImageRev), function.m_UnwarpImageRev );
+  function.ComputeDeformedImage( x, +1, *(function.m_SmoothImageFwd), function.m_UnwarpImageFwd, function.m_CorrectedImageFwd );
+  function.ComputeDeformedImage( x, -1, *(function.m_SmoothImageRev), function.m_UnwarpImageRev, function.m_CorrectedImageRev );
 
   // initialize gradient vector with derivative of image differences
   function.MakeGradientImage( x, +1, *(function.m_SmoothImageFwd), function.m_GradientImageFwd );
@@ -312,7 +315,7 @@ cmtk::EchoPlanarUnwarpFunctional
     DataGrid::IndexType idx = it.Index();
     size_t px = sourceImage.GetOffsetFromIndex( idx );
 
-    const Types::Coordinate diff = function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px];
+    const Types::Coordinate diff = function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px];
     msd += MathUtil::Square( diff );
     g(1+px) = 2.0 * diff * (function.m_GradientImageFwd[px] + function.m_GradientImageRev[px]) / insideRegionSize;
 
@@ -320,12 +323,12 @@ cmtk::EchoPlanarUnwarpFunctional
     //2*(j1(u, umm)*I1(x+um)-j2(u, umm)*I2(x-um)))*((diff(j1(u, umm), u))*I1(x+um)-(diff(j2(u, umm), u))*I2(x-um)
     idx[function.m_PhaseEncodeDirection] -= 1;
     px = sourceImage.GetOffsetFromIndex( idx );
-    g(1+px) += 0.5 / insideRegionSize * (function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev										       
+    g(1+px) += 0.5 / insideRegionSize * (function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev										       
     //(2*(j1(upp, u)*I1(x+up)-j2(upp, u)*I2(x-up)))*((diff(j1(upp, u), u))*I1(x+up)-(diff(j2(upp, u), u))*I2(x-up))
     idx[function.m_PhaseEncodeDirection] += 2;
     px = sourceImage.GetOffsetFromIndex( idx );
     // subtract second part because derivatives of J1 and J2 are negative here
-    g(1+px) -= 0.5 / insideRegionSize * (function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px]) * ( function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev
+    g(1+px) -= 0.5 / insideRegionSize * (function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px]) * ( function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev
     }
   f = (msd /= insideRegionSize);
 

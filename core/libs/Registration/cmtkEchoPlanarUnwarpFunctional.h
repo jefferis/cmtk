@@ -76,7 +76,7 @@ public:
   {
     UniformVolume::SmartPtr correctedImage( this->m_ImageFwd->CloneGrid() );
 
-    const std::vector<Types::DataItem>& srcImage = ( idx == 0 ) ? this->m_UnwarpImageFwd : this->m_UnwarpImageRev;
+    const std::vector<Types::DataItem>& srcImage = ( idx == 0 ) ? this->m_CorrectedImageFwd : this->m_CorrectedImageRev;
 
     correctedImage->CreateDataArray( TYPE_FLOAT );
     for ( size_t px = 0; px < this->m_ImageFwd->GetNumberOfPixels(); ++px )
@@ -154,6 +154,12 @@ private:
   /// Deformed "reverse" image.
   std::vector<Types::DataItem> m_UnwarpImageRev;
 
+  /// Deformed and intensity-corrected "forward" image.
+  std::vector<Types::DataItem> m_CorrectedImageFwd;
+
+  /// Deformed and intensity-corrected "reverse" image.
+  std::vector<Types::DataItem> m_CorrectedImageRev;
+
   /// Compute 1D intensity gradient image.
   void MakeGradientImage( const ap::real_1d_array& x /*!< Current deformation parameter vector.*/, 
 			  const int direction /*!< +1 = forward image, -1 = reverse image */,
@@ -163,7 +169,9 @@ private:
   /// Compute deformed image.
   void ComputeDeformedImage( const ap::real_1d_array& x /*!< Current deformation parameter vector.*/, 
 			     int direction /*!< Deformation direction - 1 computes unwarped "forward" image, -1 computed unwarped "reverse" image.*/,
-			     const UniformVolume& sourceImage /*!< Undeformed input image.*/, std::vector<Types::DataItem>& targetImageData /*!< Reference to deformed output image data.*/ );
+			     const UniformVolume& sourceImage /*!< Undeformed input image.*/, 
+			     std::vector<Types::DataItem>& targetUnwarpData /*!< Reference to deformed output image data.*/,
+			     std::vector<Types::DataItem>& targetCorrectedData /*!< Reference to deformed and intensity-corrected output image data.*/ );
 
   /// 1D sinc interpolation
   Types::DataItem Interpolate1D( const UniformVolume& sourceImage /*!< Image to interpolate from */, 
