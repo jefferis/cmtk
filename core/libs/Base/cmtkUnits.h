@@ -77,13 +77,6 @@ class Arithmetic
 {
 public:
   /// Left-hand scalar multiplication.
-  T& operator*=( const double lhs )
-  {
-    this->m_Value *= lhs;
-    return *this;
-  }
-
-  /// Left-hand scalar multiplication.
   friend const T operator*( const double lhs, const T& rhs )
   {
     return T( lhs * rhs.Value() );
@@ -114,7 +107,7 @@ public:
   }
 
   /// Less-than operator
-  friend const bool operator<( const T& lhs, const T& rhs )
+  friend bool operator<( const T& lhs, const T& rhs )
   {
     return lhs.Value() < rhs.Value();
   }
