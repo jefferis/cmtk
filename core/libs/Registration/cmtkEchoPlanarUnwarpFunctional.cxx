@@ -117,55 +117,15 @@ cmtk::EchoPlanarUnwarpFunctional::MakeGradientImage( const ap::real_1d_array& u,
       const size_t i = sourceImage.GetOffsetFromIndex( idx );
       
       // apply deformation
-      const Types::Coordinate shift = direction * u(1+i);
-      const Types::Coordinate position = shift + idx[this->m_PhaseEncodeDirection];
-      
+      const Types::Coordinate shift = direction * u(1+i) + idx[this->m_PhaseEncodeDirection];
+
+      Types::Coordinate position = shift + 0.5;      
       idx[this->m_PhaseEncodeDirection] = static_cast<int>( floor( position ) );
+      gradientImageData[i] = this->Interpolate1D( sourceImage, idx, position -  idx[this->m_PhaseEncodeDirection] );
       
-      // use the 1D sinc interpolation for the gradient
-      gradientImageData[i] = this->Interpolate1D( sourceImage, idx, 0.5 );
-      
-      --idx[this->m_PhaseEncodeDirection];
-      gradientImageData[i] -=  this->Interpolate1D( sourceImage, idx, 0.5 );;
-      }
-#ifdef _OPENMP
-    }
-#endif
-}
-
-void
-cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const ap::real_1d_array& u, int direction, const UniformVolume& sourceImage, std::vector<Types::DataItem>& targetImageData )
-{
-  DebugOutput( 9 ) << "Computing deformed image\n";
-
-  const DataGrid::RegionType wholeImageRegion = sourceImage.GetWholeImageRegion();
-
-#ifndef _OPENMP
-  const DataGrid::RegionType region = wholeImageRegion;
-#else // _OPENMP
-#pragma omp parallel for
-  for ( int slice = wholeImageRegion.From()[2]; slice < wholeImageRegion.To()[2]; ++slice )
-    {
-    DataGrid::RegionType region = wholeImageRegion;
-    region.From()[2] = slice;
-    region.To()[2] = slice+1;
-#endif
-    for ( RegionIndexIterator<DataGrid::RegionType> it( region ); it != it.end(); ++it )
-      {
-      DataGrid::IndexType idx = it.Index();
-      const size_t i = sourceImage.GetOffsetFromIndex( idx );
-      
-      // first, get Jacobian for grid position
-      targetImageData[i] = 1; // + direction * this->GetPartialJacobian( u, idx );
-      
-      // now compute deformed position for interpolation
-      const Types::Coordinate shift = direction * u(1+i);
-      const Types::Coordinate position = shift + idx[this->m_PhaseEncodeDirection];
-      
+      position = shift - 0.5;      
       idx[this->m_PhaseEncodeDirection] = static_cast<int>( floor( position ) );
-      
-      // multiple interpolated data onto previously set Jacobian
-      targetImageData[i] *= this->Interpolate1D( sourceImage, idx, position - idx[this->m_PhaseEncodeDirection] );    
+      gradientImageData[i] -= this->Interpolate1D( sourceImage, idx, position -  idx[this->m_PhaseEncodeDirection] );
       }
 #ifdef _OPENMP
     }
@@ -200,6 +160,45 @@ cmtk::EchoPlanarUnwarpFunctional::Interpolate1D( const UniformVolume& sourceImag
     return 0;
 }
 
+void
+cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const ap::real_1d_array& u, int direction, const UniformVolume& sourceImage, std::vector<Types::DataItem>& targetImageData )
+{
+  DebugOutput( 9 ) << "Computing deformed image\n";
+
+  const DataGrid::RegionType wholeImageRegion = sourceImage.GetWholeImageRegion();
+
+#ifndef _OPENMP
+  const DataGrid::RegionType region = wholeImageRegion;
+#else // _OPENMP
+#pragma omp parallel for
+  for ( int slice = wholeImageRegion.From()[2]; slice < wholeImageRegion.To()[2]; ++slice )
+    {
+    DataGrid::RegionType region = wholeImageRegion;
+    region.From()[2] = slice;
+    region.To()[2] = slice+1;
+#endif
+    for ( RegionIndexIterator<DataGrid::RegionType> it( region ); it != it.end(); ++it )
+      {
+      DataGrid::IndexType idx = it.Index();
+      const size_t i = sourceImage.GetOffsetFromIndex( idx );
+      
+      // first, get Jacobian for grid position
+      targetImageData[i] = 1 + direction * this->GetPartialJacobian( u, idx );
+      
+      // now compute deformed position for interpolation
+      const Types::Coordinate shift = direction * u(1+i);
+      const Types::Coordinate position = shift + idx[this->m_PhaseEncodeDirection];
+      
+      idx[this->m_PhaseEncodeDirection] = static_cast<int>( floor( position ) );
+      
+      // multiple interpolated data onto previously set Jacobian
+      targetImageData[i] *= this->Interpolate1D( sourceImage, idx, position - idx[this->m_PhaseEncodeDirection] );    
+      }
+#ifdef _OPENMP
+    }
+#endif
+}
+
 cmtk::Types::Coordinate 
 cmtk::EchoPlanarUnwarpFunctional::GetPartialJacobian( const ap::real_1d_array& u, const FixedVector<3,int>& baseIdx ) const
 {
@@ -229,7 +228,6 @@ cmtk::EchoPlanarUnwarpFunctional::GetPartialJacobian( const ap::real_1d_array& u
   
   return diff / normalize;
 }
-
 
 void
 cmtk::EchoPlanarUnwarpFunctional::Optimize( const int numberOfIterations, const Units::GaussianSigma& smoothMax, const Units::GaussianSigma& smoothDiff )
@@ -274,37 +272,61 @@ cmtk::EchoPlanarUnwarpFunctional
 ::FunctionAndGradient
 ::Evaluate( const ap::real_1d_array& x, ap::real_value_type& f, ap::real_1d_array& g )
 {
-  const UniformVolume& sourceImage = *(this->m_Function->m_ImageGrid);
+  FunctionType& function = *(this->m_Function);
+
+  const UniformVolume& sourceImage = *(function.m_ImageGrid);
   const size_t nPixels = sourceImage.GetNumberOfPixels();
 
-  this->m_Function->ComputeDeformedImage( x, +1, *(this->m_Function->m_SmoothImageFwd), this->m_Function->m_UnwarpImageFwd );
-  this->m_Function->ComputeDeformedImage( x, -1, *(this->m_Function->m_SmoothImageRev), this->m_Function->m_UnwarpImageRev );
+  const DataGrid::RegionType wholeImageRegion = sourceImage.GetWholeImageRegion();
+  
+  function.ComputeDeformedImage( x, +1, *(function.m_SmoothImageFwd), function.m_UnwarpImageFwd );
+  function.ComputeDeformedImage( x, -1, *(function.m_SmoothImageRev), function.m_UnwarpImageRev );
 
   ap::real_value_type msd = 0;
   for ( size_t px = 0; px < nPixels; ++px )
     {
-    msd += MathUtil::Square( this->m_Function->m_UnwarpImageFwd[px] - this->m_Function->m_UnwarpImageRev[px] );
+    msd += MathUtil::Square( function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px] );
     }
   f = (msd /= nPixels);
 
   // initialize gradient vector with derivative of image differences
-  this->m_Function->MakeGradientImage( x, +1, *(this->m_Function->m_SmoothImageFwd), this->m_Function->m_GradientImageFwd );
-  this->m_Function->MakeGradientImage( x, -1, *(this->m_Function->m_SmoothImageRev), this->m_Function->m_GradientImageRev );
+  function.MakeGradientImage( x, +1, *(function.m_SmoothImageFwd), function.m_GradientImageFwd );
+  function.MakeGradientImage( x, -1, *(function.m_SmoothImageRev), function.m_GradientImageRev );
 
   for ( size_t px = 0; px < nPixels; ++px )
     {
-    g(1+px) = 2.0 * (this->m_Function->m_UnwarpImageFwd[px] - this->m_Function->m_UnwarpImageRev[px]) * (this->m_Function->m_GradientImageFwd[px] + this->m_Function->m_GradientImageRev[px]) / nPixels;
+    g(1+px) = 2.0 * (function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px]) * (function.m_GradientImageFwd[px] + function.m_GradientImageRev[px]) / nPixels;
+    }
+
+  // add gradient term for Jacobians
+  DataGrid::RegionType insideRegion = wholeImageRegion;  
+  insideRegion.From()[functiom.m_PhaseEncodeDirection] += 1;
+  insideRegion.To()[functiom.m_PhaseEncodeDirection] -= 1;
+
+  for ( RegionIndexIterator<DataGrid::RegionType> it( insideRegion ); it != it.end(); ++it )
+    {
+//2*(j1(u, umm)*I1(x+um)-j2(u, umm)*I2(x-um)))*((diff(j1(u, umm), u))*I1(x+um)-(diff(j2(u, umm), u))*I2(x-um)
+    DataGrid::IndexType idx = it.Index();
+
+    idx[function.m_PhaseEncodeDirection] -= 1;
+    size_t px = sourceImage.GetOffsetFromIndex( idx );
+    g(1+px) += 0.5 * (function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // + because partial J deriv is negative for Rev										       
+    
+//(2*(j1(upp, u)*I1(x+up)-j2(upp, u)*I2(x-up)))*((diff(j1(upp, u), u))*I1(x+up)-(diff(j2(upp, u), u))*I2(x-up))
+    idx[function.m_PhaseEncodeDirection] += 2;
+    px = sourceImage.GetOffsetFromIndex( idx );
+    // subtract second part because derivatives of J1 and J2 are negative here
+    g(1+px) -= 0.5 * (function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] );// + because partial J deriv is negative for Rev
     }
 
   // smoothness constraint and its derivative
-  const DataGrid::RegionType wholeImageRegion = sourceImage.GetWholeImageRegion();
-  DataGrid::RegionType insideRegion = wholeImageRegion;  
+  // compute smoothness term
+  const ap::real_value_type lambda2 = function.m_SmoothnessConstraintWeight;
+  ap::real_value_type smooth = 0;
+
+  insideRegion = wholeImageRegion;  
   insideRegion.From().AddScalar( 1 );
   insideRegion.To().AddScalar( -1 );
-
-  // compute smoothness term
-  const ap::real_value_type lambda2 = this->m_Function->m_SmoothnessConstraintWeight;
-  ap::real_value_type smooth = 0;
 
   for ( RegionIndexIterator<DataGrid::RegionType> it( insideRegion ); it != it.end(); ++it )
     {
