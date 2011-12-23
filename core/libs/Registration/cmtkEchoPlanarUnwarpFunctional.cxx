@@ -33,9 +33,12 @@
 #include <Base/cmtkDataGrid.h>
 #include <Base/cmtkSincInterpolator.h>
 #include <Base/cmtkRegionIndexIterator.h>
+#include <Base/cmtkUniformVolumeFilter.h>
 
 #include <System/cmtkDebugOutput.h>
 #include <System/cmtkProgress.h>
+
+#include <IO/cmtkVolumeIO.h>
 
 #include <algorithm>
 
@@ -46,6 +49,8 @@ cmtk::EchoPlanarUnwarpFunctional::EchoPlanarUnwarpFunctional
   : m_ImageGrid( imageFwd->CloneGrid() ), 
     m_ImageFwd( imageFwd ), 
     m_ImageRev( imageRev ), 
+    m_SmoothImageFwd( imageFwd ), 
+    m_SmoothImageRev( imageRev ), 
     m_PhaseEncodeDirection( phaseEncodeDirection )
 {
   this->m_Deformation.setbounds( 1, this->m_ImageGrid->GetNumberOfPixels() );
@@ -55,6 +60,37 @@ cmtk::EchoPlanarUnwarpFunctional::EchoPlanarUnwarpFunctional
   this->m_UnwarpImageFwd.resize( this->m_ImageGrid->GetNumberOfPixels() );
   this->m_UnwarpImageRev.resize( this->m_ImageGrid->GetNumberOfPixels() );
 }
+
+void
+cmtk::EchoPlanarUnwarpFunctional::SetSmoothingKernelWidth( const Units::GaussianSigma& sigma, const Types::Coordinate maxError )
+{
+  if ( sigma.Value() > 0 )
+    {
+    {
+    UniformVolumeFilter filterFwd( this->m_ImageFwd );
+    UniformVolume::SmartPtr smooth = UniformVolume::SmartPtr( this->m_ImageGrid->CloneGrid() );
+    smooth->SetData( filterFwd.GetDataGaussFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
+    this->m_SmoothImageFwd = smooth;
+
+    VolumeIO::Write( *(this->m_SmoothImageFwd), "smoothF.nii" );
+    }
+
+    {
+    UniformVolumeFilter filterRev( this->m_ImageRev );
+    UniformVolume::SmartPtr smooth = UniformVolume::SmartPtr( this->m_ImageGrid->CloneGrid() );
+    smooth->SetData( filterRev.GetDataGaussFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
+    this->m_SmoothImageRev = smooth;
+
+    VolumeIO::Write( *(this->m_SmoothImageRev), "smoothR.nii" );
+    }    
+    }
+  else
+    {
+    this->m_SmoothImageFwd = this->m_ImageFwd;
+    this->m_SmoothImageRev = this->m_ImageRev;
+    }
+}
+
 
 void
 cmtk::EchoPlanarUnwarpFunctional::MakeGradientImage( const ap::real_1d_array& u, const int direction, const UniformVolume& sourceImage, std::vector<Types::DataItem>& gradientImageData )
@@ -170,7 +206,7 @@ cmtk::EchoPlanarUnwarpFunctional::GetPartialJacobian( const ap::real_1d_array& u
   cmtk::Types::Coordinate diff = 0;
   int normalize = 0;
 
-  size_t offset = this->m_ImageFwd->GetOffsetFromIndex( baseIdx );
+  size_t offset = this->m_ImageGrid->GetOffsetFromIndex( baseIdx );
   if ( baseIdx[this->m_PhaseEncodeDirection] > 0 )
     {
     diff -= u( 1 + offset - this->m_ImageGrid->m_GridIncrements[this->m_PhaseEncodeDirection] );
@@ -196,10 +232,10 @@ cmtk::EchoPlanarUnwarpFunctional::GetPartialJacobian( const ap::real_1d_array& u
 
 
 void
-cmtk::EchoPlanarUnwarpFunctional::Optimize( const int numberOfIterations )
+cmtk::EchoPlanarUnwarpFunctional::Optimize( const int numberOfIterations, const Units::GaussianSigma& smoothMax, const Units::GaussianSigma& smoothMin, const Types::Coordinate smoothFactor )
 {
   const int numberOfPixels = this->m_ImageGrid->GetNumberOfPixels();
-
+  
   ap::integer_1d_array nbd;
   nbd.setbounds( 1, numberOfPixels );
   for ( int i = 1; i <= numberOfPixels; ++i )
@@ -210,22 +246,29 @@ cmtk::EchoPlanarUnwarpFunctional::Optimize( const int numberOfIterations )
   // dummy array for unused constraints
   ap::real_1d_array dummy;
   
-  Progress::Begin( 0, numberOfIterations, 1, "EPI Unwarping" );
-  
-  int info;
-  Self::FunctionAndGradient functionAndGradient( this );
-  ap::lbfgsbminimize( &(functionAndGradient), numberOfPixels, 5, this->m_Deformation, 1e-10 /*epsg*/, 1e-10 /*epsf*/, 1e-10 /*epsx*/, numberOfIterations, nbd, dummy, dummy, info );
-
-  Progress::Done();
-  
-  if ( info < 0 )
-    StdErr << "ERROR: lbfgsbminimize returned status code " << info << "\n";
-  else
+  for ( Units::GaussianSigma smoothness = smoothMax; smoothness.Value() > 0; smoothness = smoothFactor * smoothness )
     {
-    // update corrected images with final deformation
-    this->ComputeDeformedImage( this->m_Deformation, +1, *(this->m_ImageFwd), this->m_UnwarpImageFwd );
-    this->ComputeDeformedImage( this->m_Deformation, -1, *(this->m_ImageRev), this->m_UnwarpImageRev );
+    if ( smoothness < smoothMin )
+      smoothness = Units::GaussianSigma( 0 );
+
+    DebugOutput( 4 ) << "Setting image smoothing kernel sigma=" << smoothness.Value() << "\n";
+    this->SetSmoothingKernelWidth( smoothness );
+    
+    Progress::Begin( 0, numberOfIterations, 1, "EPI Unwarping" );
+    
+    int info;
+    Self::FunctionAndGradient functionAndGradient( this );
+    ap::lbfgsbminimize( &(functionAndGradient), numberOfPixels, 5, this->m_Deformation, 1e-10 /*epsg*/, 1e-10 /*epsf*/, 1e-10 /*epsx*/, numberOfIterations, nbd, dummy, dummy, info );
+    
+    Progress::Done();
+    
+    if ( info < 0 )
+      StdErr << "ERROR: lbfgsbminimize returned status code " << info << "\n";
     }
+
+  // update corrected images using unsmoothed images with final deformation
+  this->ComputeDeformedImage( this->m_Deformation, +1, *(this->m_ImageFwd), this->m_UnwarpImageFwd );
+  this->ComputeDeformedImage( this->m_Deformation, -1, *(this->m_ImageRev), this->m_UnwarpImageRev );
 }
 
 
@@ -237,8 +280,8 @@ cmtk::EchoPlanarUnwarpFunctional
   const UniformVolume& sourceImage = *(this->m_Function->m_ImageGrid);
   const size_t nPixels = sourceImage.GetNumberOfPixels();
 
-  this->m_Function->ComputeDeformedImage( x, +1, *(this->m_Function->m_ImageFwd), this->m_Function->m_UnwarpImageFwd );
-  this->m_Function->ComputeDeformedImage( x, -1, *(this->m_Function->m_ImageRev), this->m_Function->m_UnwarpImageRev );
+  this->m_Function->ComputeDeformedImage( x, +1, *(this->m_Function->m_SmoothImageFwd), this->m_Function->m_UnwarpImageFwd );
+  this->m_Function->ComputeDeformedImage( x, -1, *(this->m_Function->m_SmoothImageRev), this->m_Function->m_UnwarpImageRev );
 
   ap::real_value_type msd = 0;
   for ( size_t px = 0; px < nPixels; ++px )
@@ -248,8 +291,8 @@ cmtk::EchoPlanarUnwarpFunctional
   f = (msd /= nPixels);
 
   // initialize gradient vector with derivative of image differences
-  this->m_Function->MakeGradientImage( x, +1, *(this->m_Function->m_ImageFwd), this->m_Function->m_GradientImageFwd );
-  this->m_Function->MakeGradientImage( x, -1, *(this->m_Function->m_ImageRev), this->m_Function->m_GradientImageRev );
+  this->m_Function->MakeGradientImage( x, +1, *(this->m_Function->m_SmoothImageFwd), this->m_Function->m_GradientImageFwd );
+  this->m_Function->MakeGradientImage( x, -1, *(this->m_Function->m_SmoothImageRev), this->m_Function->m_GradientImageRev );
 
   for ( size_t px = 0; px < nPixels; ++px )
     {
@@ -258,7 +301,7 @@ cmtk::EchoPlanarUnwarpFunctional
 
   // smoothness constraint and its derivative
   const DataGrid::RegionType wholeImageRegion = sourceImage.GetWholeImageRegion();
-  DataGrid::RegionType insideRegion = wholeImageRegion;
+  DataGrid::RegionType insideRegion = wholeImageRegion;  
   insideRegion.From().AddScalar( 1 );
   insideRegion.To().AddScalar( -1 );
 
@@ -275,13 +318,13 @@ cmtk::EchoPlanarUnwarpFunctional
       // increment smoothness term
       smooth += MathUtil::Square( diff );
       // increment relevant gradient elements
-      g( ofs + sourceImage.m_GridIncrements[dim] ) += 2 * lambda2 * diff;
-      g( ofs - sourceImage.m_GridIncrements[dim] ) -= 2 * lambda2 * diff;
+      g( ofs + sourceImage.m_GridIncrements[dim] ) += 2 * lambda2 * diff / nPixels;
+      g( ofs - sourceImage.m_GridIncrements[dim] ) -= 2 * lambda2 * diff / nPixels;
       }
     }
   
-  f += lambda2 * smooth;
+  f += lambda2 * (smooth /= nPixels);
   
-  DebugOutput( 2 ) << "f " << f << " msd " << msd << " smooth " << smooth << "\n";
+  DebugOutput( 5 ) << "f " << f << " msd " << msd << " smooth " << smooth << "\n";
 
 }

@@ -38,6 +38,8 @@
 
 #include <IO/cmtkVolumeIO.h>
 
+#include <Base/cmtkUnits.h>
+
 #include <Registration/cmtkEchoPlanarUnwarpFunctional.h>
 
 int
@@ -54,8 +56,10 @@ doMain
   double smoothnessConstraintWeight = 10000;
   int iterations = 10;
 
-  bool noInitCOM = false;
-
+  double smoothSigmaMax = 4.0;
+  double smoothSigmaMin = 1.0;
+  double smoothSigmaFactor = 0.5;
+  
   try
     {
     cmtk::CommandLine cl;
@@ -72,10 +76,12 @@ doMain
     phaseEncodeGroup->AddSwitch( Key( 'z', "phase-encode-is" ), 2, "Top/bottom phase encoding" );
     phaseEncodeGroup->AddSwitch( Key( 'x', "phase-encode-lr" ), 0, "Lateral, left/right phase encoding (this is very rare)" );
 
-    cl.AddSwitch( Key( "no-init-com" ), &noInitCOM, true, "Disable initialization of deformation field based on center-of-mass alignment." );
-
+    cl.AddOption( Key( "smooth-sigma-max" ), &smoothSigmaMax, "Maximum image smoothing kernel width for coarsest level of multi-scale computation." );
+    cl.AddOption( Key( "smooth-sigma-min" ), &smoothSigmaMin, "Minimum image smoothing kernel width for finest level of multi-scale computation (before using unsmoothed data)." );
+    cl.AddOption( Key( "smooth-sigma-factor" ), &smoothSigmaFactor, "Factor for image smoothing kernel width between two successive levels of the multi-scale computation (must be between 0 and 1." );
+    
     cl.AddOption( Key( "smoothness-constraint-weight" ), &smoothnessConstraintWeight, "Weight factor for the second-order smoothness constraint term in the unwarping cost function." );
-    cl.AddOption( Key( 'i', "iterations" ), &iterations, "Number of L-BFGS optimization iterations." );
+    cl.AddOption( Key( 'i', "iterations" ), &iterations, "Number of L-BFGS optimization iterations (per multi-scale level)." );
 
     cl.AddParameter( &inputImagePath1, "InputImage1", "First input image path - this is the standard b=0 image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &inputImagePath2, "InputImage2", "Second input image path - this is the b=0 image with reversed phase encoding direction." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
@@ -97,7 +103,7 @@ doMain
 
   cmtk::EchoPlanarUnwarpFunctional func( inputImage1, inputImage2, phaseEncodeDirection );
   func.SetSmoothnessConstraintWeight( smoothnessConstraintWeight );
-  func.Optimize( iterations );
+  func.Optimize( iterations, cmtk::Units::GaussianSigma( smoothSigmaMax ), cmtk::Units::GaussianSigma( smoothSigmaMin ), smoothSigmaFactor );
 
   cmtk::VolumeIO::Write( *func.GetCorrectedImage( 0 ), outputImagePath1 );
   cmtk::VolumeIO::Write( *func.GetCorrectedImage( 1 ), outputImagePath2 );

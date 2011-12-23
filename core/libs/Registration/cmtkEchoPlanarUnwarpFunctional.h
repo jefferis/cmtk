@@ -64,6 +64,13 @@ public:
 			      UniformVolume::SmartConstPtr& imageRev /*!< "Reverse" direction EPI */, 
 			      const byte phaseEncodeDirection /*!< Phase encoding direction (image coordinate axis) */ );
 
+  /** Set image smoothing kernel width and create smoothed images.
+   *\note Smoothing is applied only in phase encoding direction because the deformation field is restricted to this direction, and the optimization can thus not
+   * get "caught" in local minima in the other two directions.
+   */
+  void SetSmoothingKernelWidth ( const Units::GaussianSigma& sigma, /*!< Kernel parameter "sigma" (standard deviation). Setting kernel width to "0" simply uses original images. */
+				 const Types::Coordinate maxError = 0.01 /*!< Maximum approximation error: the kernel is truncated when it falls below this threshold */ );
+
   /// Return either first or second corrected image.
   UniformVolume::SmartPtr GetCorrectedImage( const byte idx = 0 )
   {
@@ -81,8 +88,8 @@ public:
   }
   
   /// Optimize unwarping deformation using L-BFGS optimizer.
-  void Optimize( const int numberOfIterations );
-
+  void Optimize( const int numberOfIterations, const Units::GaussianSigma& smoothMax, const Units::GaussianSigma& smoothMin, const Types::Coordinate smoothFactor );
+  
   /// Return either first or second 1D gradient image.
   UniformVolume::SmartPtr GetGradientImage( const byte idx = 0 )
   {
@@ -116,6 +123,12 @@ private:
 
   /// "Reverse" phase encoding image.
   UniformVolume::SmartConstPtr m_ImageRev;
+
+  /// Smoothed "forward" phase encoding image.
+  UniformVolume::SmartConstPtr m_SmoothImageFwd;
+
+  /// Smoothed "reverse" phase encoding image.
+  UniformVolume::SmartConstPtr m_SmoothImageRev;
 
   /// Phase encoding direction.
   byte m_PhaseEncodeDirection;
