@@ -252,7 +252,7 @@ cmtk::EchoPlanarUnwarpFunctional
 
   for ( size_t px = 0; px < nPixels; ++px )
     {
-    g(1+px) = -2.0 * (this->m_Function->m_UnwarpImageFwd[px] - this->m_Function->m_UnwarpImageRev[px]) * (this->m_Function->m_GradientImageFwd[px] + this->m_Function->m_GradientImageRev[px]) / nPixels;
+    g(1+px) = 2.0 * (this->m_Function->m_UnwarpImageFwd[px] - this->m_Function->m_UnwarpImageRev[px]) * (this->m_Function->m_GradientImageFwd[px] + this->m_Function->m_GradientImageRev[px]) / nPixels;
     }
 
   DebugOutput( 2 ) << "f " << f << "\n";
