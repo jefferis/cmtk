@@ -100,6 +100,12 @@ public:
     return T( lhs.Value() + rhs.Value() );
   }
 
+  /// Subtraction.
+  friend const T operator-( const T& lhs, const T& rhs )
+  {
+    return T( lhs.Value() - rhs.Value() );
+  }
+
   /// Negation.
   friend const T operator-( const T& rhs )
   {
