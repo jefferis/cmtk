@@ -2162,7 +2162,7 @@ lbfgsbminimize
   ap::boolean_1d_array lsave;
   ap::integer_1d_array isave;
   ap::real_1d_array dsave;
-  int task;
+  int task = 0;
   bool prjctd;
   bool cnstnd;
   bool boxed;
