@@ -392,31 +392,49 @@ DataGridFilter::GetDataKernelFiltered
   const std::vector<Types::DataItem>& filterY,
   const std::vector<Types::DataItem>& filterZ ) const
 {
-  TypedArray::SmartPtr result = TypedArray::Create( this->m_DataGrid->GetData()->GetType(), this->m_DataGrid->GetNumberOfPixels() );
+  // create and initialize result (data are copied at this point from the source array)
+  TypedArray::SmartPtr result( this->m_DataGrid->GetData()->Clone() );
   
   ThreadPool& threadPool = ThreadPool::GetGlobalThreadPool();
   const size_t numberOfTasks = 4 * threadPool.GetNumberOfThreads() - 3;
 
+  // initialize common thread data
   std::vector<FilterThreadParameters> params( numberOfTasks );
   for ( size_t task = 0; task < numberOfTasks; ++task )
     {
     params[task].thisObject = this;
-    params[task].m_Filter = &filterX;
     params[task].m_Result = result;
     }
-  threadPool.Run( GetFilteredDataThreadX, params );
 
-  for ( size_t task = 0; task < numberOfTasks; ++task )
+  // run x filter
+  if ( filterX.size() > 1 )
     {
-    params[task].m_Filter = &filterY;
+    for ( size_t task = 0; task < numberOfTasks; ++task )
+      {
+      params[task].m_Filter = &filterX;
+      }
+    threadPool.Run( GetFilteredDataThreadX, params );
     }
-  threadPool.Run( GetFilteredDataThreadY, params );
 
-  for ( size_t task = 0; task < numberOfTasks; ++task )
+  // run y filter
+  if ( filterY.size() > 1 )
     {
-    params[task].m_Filter = &filterZ;
+    for ( size_t task = 0; task < numberOfTasks; ++task )
+      {
+      params[task].m_Filter = &filterY;
+      }
+    threadPool.Run( GetFilteredDataThreadY, params );
     }
-  threadPool.Run( GetFilteredDataThreadZ, params );
+  
+  // run z filter
+  if ( filterZ.size() > 1 )
+    {
+    for ( size_t task = 0; task < numberOfTasks; ++task )
+      {
+      params[task].m_Filter = &filterZ;
+      }
+    threadPool.Run( GetFilteredDataThreadZ, params );
+    }
   
   return result;
 }
@@ -445,7 +463,7 @@ DataGridFilter
       // copy row data to buffer
       size_t ofs = ThisConst->m_DataGrid->GetOffsetFromIndex( 0, y, z );
       for ( int x=0; x < dims[0]; ++x, ++ofs )
-	if ( !ThisConst->m_DataGrid->GetDataAt( pixelBufferFrom[x], ofs ) )
+	if ( !result->Get( pixelBufferFrom[x], ofs ) )
 	  pixelBufferFrom[x] = 0;
       
       // convolve row with filter
