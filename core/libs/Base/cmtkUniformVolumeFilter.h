@@ -63,6 +63,11 @@ public:
   TypedArray::SmartPtr GetDataGaussFiltered( const Units::GaussianSigma& sigma, /*!< Kernel parameter "sigma" (standard deviation) */
 					     const Types::Coordinate maxError = 0.01 /*!< Maximum approximation error: the kernel is truncated when it falls below this threshold */ ) const;
 
+  /// Gaussian 1D filter.
+  TypedArray::SmartPtr GetDataGaussFiltered1D( const int direction /*!< Coordinate direction: 0 = x, 1 = y, 2 = z */,
+					       const Units::GaussianSigma& sigma, /*!< Kernel parameter "sigma" (standard deviation) */
+					       const Types::Coordinate maxError = 0.01 /*!< Maximum approximation error: the kernel is truncated when it falls below this threshold */ ) const;
+
 private:
   /// The UniformVolume object we're working on.
   UniformVolume::SmartPtr m_UniformVolume;

@@ -52,4 +52,21 @@ UniformVolumeFilter::GetDataGaussFiltered( const Units::GaussianSigma& sigma, co
 						GaussianKernel<Types::DataItem>::GetHalfKernel( sigma / this->m_UniformVolume->Deltas()[2], maxError ) );
 }
 
+TypedArray::SmartPtr
+UniformVolumeFilter::GetDataGaussFiltered1D( const int direction, const Units::GaussianSigma& sigma, const Types::Coordinate maxError ) const
+{
+  const std::vector<Types::Coordinate> empty( 1, 1.0 );
+
+  switch ( direction )
+    {
+    default:
+    case 0:
+      return DataGridFilter::GetDataKernelFiltered( GaussianKernel<Types::DataItem>::GetHalfKernel( sigma / this->m_UniformVolume->Deltas()[0], maxError ), empty, empty );
+    case 1:
+      return DataGridFilter::GetDataKernelFiltered( empty, GaussianKernel<Types::DataItem>::GetHalfKernel( sigma / this->m_UniformVolume->Deltas()[1], maxError ), empty );
+    case 2:
+      return DataGridFilter::GetDataKernelFiltered( empty, empty, GaussianKernel<Types::DataItem>::GetHalfKernel( sigma / this->m_UniformVolume->Deltas()[2], maxError ) );
+    }
+}
+
 } // namespace cmtk
