@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010 SRI International
+//  Copyright 2010, 2011 SRI International
 //
 //  Copyright 2010 Torsten Rohlfing
 //
@@ -77,6 +77,13 @@ class Arithmetic
 {
 public:
   /// Left-hand scalar multiplication.
+  T& operator*=( const double lhs )
+  {
+    this->m_Value *= lhs;
+    return *this;
+  }
+
+  /// Left-hand scalar multiplication.
   friend const T operator*( const double lhs, const T& rhs )
   {
     return T( lhs * rhs.Value() );
@@ -104,6 +111,12 @@ public:
   friend const T operator-( const T& rhs )
   {
     return T( -rhs.Value() );
+  }
+
+  /// Less-than operator
+  friend const bool operator<( const T& lhs, const T& rhs )
+  {
+    return lhs.Value() < rhs.Value();
   }
 };
 
