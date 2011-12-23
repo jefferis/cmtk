@@ -59,7 +59,7 @@ public:
   typedef DataGridFilter Self;
 
   /// Constructor: link to DataGrid object.
-  explicit DataGridFilter( DataGrid::SmartPtr dataGrid );
+  explicit DataGridFilter( DataGrid::SmartConstPtr dataGrid );
 
   /// Return data after median-filtering with global filter radius (convenience function).
   TypedArray::SmartPtr GetDataMedianFiltered( const int radius ) const
@@ -147,7 +147,7 @@ public:
 
 private:
   /// The DataGrid object we're working on.
-  DataGrid::SmartPtr m_DataGrid;
+  DataGrid::SmartConstPtr m_DataGrid;
 
   /// Thread parameter for entropy evaluation.
   class FilterThreadParameters : 

@@ -57,7 +57,7 @@ public:
   typedef UniformVolumeFilter Self;
 
   /// Constructor: link to UniformVolume object.
-  explicit UniformVolumeFilter( UniformVolume::SmartPtr volume ) : DataGridFilter( volume ), m_UniformVolume( volume ) {}
+  explicit UniformVolumeFilter( UniformVolume::SmartConstPtr& volume ) : DataGridFilter( volume ), m_UniformVolume( volume ) {}
 
   /// Gaussian filter (using faster, separable filtering).
   TypedArray::SmartPtr GetDataGaussFiltered( const Units::GaussianSigma& sigma, /*!< Kernel parameter "sigma" (standard deviation) */
@@ -70,7 +70,7 @@ public:
 
 private:
   /// The UniformVolume object we're working on.
-  UniformVolume::SmartPtr m_UniformVolume;
+  UniformVolume::SmartConstPtr m_UniformVolume;
 };
 
 } // namespace cmtk

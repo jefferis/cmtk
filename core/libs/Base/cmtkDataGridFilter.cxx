@@ -43,7 +43,7 @@ cmtk
 {
 
 DataGridFilter
-::DataGridFilter( DataGrid::SmartPtr dataGrid )
+::DataGridFilter( DataGrid::SmartConstPtr dataGrid )
   : m_DataGrid( dataGrid )
 {
   if ( !this->m_DataGrid->GetData() )
