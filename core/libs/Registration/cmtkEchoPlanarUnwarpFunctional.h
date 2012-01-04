@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2011 SRI International
+//  Copyright 2011, 2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -143,6 +143,14 @@ private:
 
   /// Phase encoding direction.
   byte m_PhaseEncodeDirection;
+
+  /** Readout direction.
+   * This is a bit misnamed - really this is the coordinate dimension, excluding the phase encoding direction,
+   * with the maximum number of pixels. The purpose of this is for a maximally efficient partition for SMP
+   * computation. So while the name may not always fit the determined value, and there may be cases when this is
+   * selected as the slice direction, it does serve its purpose.
+   */
+  byte m_ReadoutDirection;
 
   /// Smoothness constraint weight.
   Types::Coordinate m_SmoothnessConstraintWeight;
