@@ -345,13 +345,15 @@ cmtk::EchoPlanarUnwarpFunctional
     for ( RegionIndexIterator<DataGrid::RegionType> it( insideRegion ); it != it.end(); ++it )
       {
       const size_t ofs = 1 + sourceImage.GetOffsetFromIndex( it.Index() );
-      const ap::real_value_type jac = 1 + x( ofs ) - x( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] );
+
+      const ap::real_value_type jacF = 1 + x( ofs ) - x( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] );
+      const ap::real_value_type jacR = 1 - x( ofs ) + x( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] );
       
-      fold -= log( jac );
+      fold += ( 1.0 / (jacF*jacF) - 1.0 / (jacR*jacR) );
 
       // increment relevant gradient elements
-      g( ofs ) += lambda3 / (jac * insideRegionSize);
-      g( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] ) -= lambda3 / (jac * insideRegionSize);
+      g( ofs ) -= 2 * lambda3 * ( 1.0 / (jacF * jacF * jacF * insideRegionSize) - 1.0 / (jacR * jacR * jacR * insideRegionSize) ) ;
+      g( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] ) += 2 * lambda3 * ( 1.0 / (jacF * jacF * jacF * insideRegionSize) - 1.0 / (jacR * jacR * jacR * insideRegionSize) );
       }
     
     f += lambda3 * (fold /= insideRegionSize);
