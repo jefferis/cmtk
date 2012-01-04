@@ -349,11 +349,11 @@ cmtk::EchoPlanarUnwarpFunctional
       const ap::real_value_type jacF = 1 + x( ofs ) - x( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] );
       const ap::real_value_type jacR = 1 - x( ofs ) + x( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] );
       
-      fold += ( 1.0 / (jacF*jacF) - 1.0 / (jacR*jacR) );
-
+      fold -= ( log( jacF ) + log( jacR ) );
+      
       // increment relevant gradient elements
-      g( ofs ) -= 2 * lambda3 * ( 1.0 / (jacF * jacF * jacF * insideRegionSize) - 1.0 / (jacR * jacR * jacR * insideRegionSize) ) ;
-      g( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] ) += 2 * lambda3 * ( 1.0 / (jacF * jacF * jacF * insideRegionSize) - 1.0 / (jacR * jacR * jacR * insideRegionSize) );
+      g( ofs ) += lambda3 * (1.0 / jacF - 1.0 / jacR) / insideRegionSize;
+      g( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] ) -= lambda3 * (1.0 / jacF - 1.0 / jacR) / insideRegionSize;
       }
     
     f += lambda3 * (fold /= insideRegionSize);
