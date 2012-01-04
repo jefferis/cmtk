@@ -309,9 +309,9 @@ cmtk::EchoPlanarUnwarpFunctional
 
   // smoothness constraint and its derivative
   const ap::real_value_type lambda2 = function.m_SmoothnessConstraintWeight;
+  ap::real_value_type smooth = 0;
   if ( lambda2 > 0 )
     {    
-    ap::real_value_type smooth = 0;
     for ( int dim = 0; dim < 3; ++dim )
       {
       insideRegion = wholeImageRegion;  
@@ -326,6 +326,7 @@ cmtk::EchoPlanarUnwarpFunctional
 	smooth += diff * diff;
 	// increment relevant gradient elements
 	g( ofs ) += 2 * lambda2 * diff / insideRegionSize;
+	g( ofs - sourceImage.m_GridIncrements[dim] ) -= 2 * lambda2 * diff / insideRegionSize;
 	}
       }
     
@@ -333,12 +334,10 @@ cmtk::EchoPlanarUnwarpFunctional
     }
   
   // folding prevention constraint
-  ap::real_value_type smooth = 0;
+  ap::real_value_type fold = 0;
   const ap::real_value_type lambda3 = function.m_FoldingConstraintWeight;
   if ( lambda3 > 0 )
     {    
-    ap::real_value_type fold = 0;
-    
     insideRegion = wholeImageRegion;  
     insideRegion.From()[phaseEncodeDirection] += 1;
     insideRegionSize = insideRegion.Size();
@@ -346,17 +345,18 @@ cmtk::EchoPlanarUnwarpFunctional
     for ( RegionIndexIterator<DataGrid::RegionType> it( insideRegion ); it != it.end(); ++it )
       {
       const size_t ofs = 1 + sourceImage.GetOffsetFromIndex( it.Index() );
-      const ap::real_value_type diff = x( ofs ) - x( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] );
+      const ap::real_value_type jac = 1 + x( ofs ) - x( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] );
       
-      fold += log( diff );
+      fold -= log( jac );
 
       // increment relevant gradient elements
-      g( ofs ) += 2 * lambda2 * diff / insideRegionSize;
+      g( ofs ) -= 1.0 / (jac * insideRegionSize);
+      g( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] ) += 1.0 / (jac * insideRegionSize);
       }
     
     f += lambda3 * (fold /= insideRegionSize);
     }
   
-  DebugOutput( 5 ) << "f " << f << " msd " << msd << " smooth " << smooth << "\n";
+  DebugOutput( 5 ) << "f " << f << " msd " << msd << " smooth " << smooth << " fold " << fold << "\n";
 
 }
