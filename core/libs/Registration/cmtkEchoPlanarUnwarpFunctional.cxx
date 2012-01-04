@@ -129,6 +129,9 @@ cmtk::EchoPlanarUnwarpFunctional::MakeGradientImage( const ap::real_1d_array& u,
       position = shift - 0.5;      
       idx[this->m_PhaseEncodeDirection] = static_cast<int>( floor( position ) );
       gradientImageData[i] -= this->Interpolate1D( sourceImage, idx, position -  idx[this->m_PhaseEncodeDirection] );
+
+      // apply Jacobian - this is needed implicitly in cost function gradient
+      gradientImageData[i] *= (1 + direction * this->GetPartialJacobian( u, idx ));
       }
 #ifdef _OPENMP
     }
@@ -186,7 +189,7 @@ cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const ap::real_1d_array&
       const size_t i = sourceImage.GetOffsetFromIndex( idx );
       
       // first, get Jacobian for grid position
-      targetCorrectedData[i] = 1; // + direction * this->GetPartialJacobian( u, idx );
+      targetCorrectedData[i] = 1 + direction * this->GetPartialJacobian( u, idx );
       
       // now compute deformed position for interpolation
       const Types::Coordinate shift = direction * u(1+i);
@@ -298,12 +301,12 @@ cmtk::EchoPlanarUnwarpFunctional
     //2*(j1(u, umm)*I1(x+um)-j2(u, umm)*I2(x-um)))*((diff(j1(u, umm), u))*I1(x+um)-(diff(j2(u, umm), u))*I2(x-um)
     idx[phaseEncodeDirection] -= 1;
     px = sourceImage.GetOffsetFromIndex( idx );
-//    g(1+px) += 0.5 / insideRegionSize * (function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev										       
+    g(1+px) += 0.5 / insideRegionSize * (function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev										       
     //(2*(j1(upp, u)*I1(x+up)-j2(upp, u)*I2(x-up)))*((diff(j1(upp, u), u))*I1(x+up)-(diff(j2(upp, u), u))*I2(x-up))
     idx[phaseEncodeDirection] += 2;
     px = sourceImage.GetOffsetFromIndex( idx );
     // subtract second part because derivatives of J1 and J2 are negative here
-//    g(1+px) -= 0.5 / insideRegionSize * (function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev
+    g(1+px) -= 0.5 / insideRegionSize * (function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev
     }
   f = (msd /= insideRegionSize);
 
@@ -349,11 +352,11 @@ cmtk::EchoPlanarUnwarpFunctional
       const ap::real_value_type jacF = 1 + x( ofs ) - x( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] );
       const ap::real_value_type jacR = 1 - x( ofs ) + x( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] );
       
-      fold += ( 1.0 / (jacF*jacF) + 1.0 / (jacR*jacR) );
+      fold += ( 1.0 / jacF + 1.0 / jacR );
       
       // increment relevant gradient elements
-      g( ofs ) -= 2 * lambda3 * ( 1.0 / (jacF * jacF * jacF * insideRegionSize) - 1.0 / (jacR * jacR * jacR * insideRegionSize) ) ;
-      g( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] ) += 2 * lambda3 * ( 1.0 / (jacF * jacF * jacF * insideRegionSize) - 1.0 / (jacR * jacR * jacR * insideRegionSize) );
+      g( ofs ) += lambda3 / insideRegionSize * ( 1.0 / (jacF * jacF) - 1.0 / (jacR * jacR) ) ;
+      g( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] ) -= lambda3 / insideRegionSize * ( 1.0 / (jacF * jacF) - 1.0 / (jacR * jacR) );
       }
     
     f += lambda3 * (fold /= insideRegionSize);
