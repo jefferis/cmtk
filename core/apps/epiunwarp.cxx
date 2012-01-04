@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -54,6 +54,7 @@ doMain
   byte phaseEncodeDirection = 1;
 
   double smoothnessConstraintWeight = 10000;
+  double foldingConstraintWeight = 1e-5;
   int iterations = 10;
 
   double smoothSigmaMax = 4.0;
@@ -80,6 +81,7 @@ doMain
     cl.AddOption( Key( "smooth-sigma-diff" ), &smoothSigmaDiff, "Difference between image smoothing kernel widths between two successive levels of the multi-scale computation." );
     
     cl.AddOption( Key( "smoothness-constraint-weight" ), &smoothnessConstraintWeight, "Weight factor for the second-order smoothness constraint term in the unwarping cost function." );
+    cl.AddOption( Key( "folding-constraint-weight" ), &foldingConstraintWeight, "Weight factor for the folding-prevention constraint term in the unwarping cost function." );
     cl.AddOption( Key( 'i', "iterations" ), &iterations, "Number of L-BFGS optimization iterations (per multi-scale level)." );
 
     cl.AddParameter( &inputImagePath1, "InputImage1", "First input image path - this is the standard b=0 image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
@@ -101,7 +103,12 @@ doMain
   inputImage2->ApplyMirrorPlane( phaseEncodeDirection );
 
   cmtk::EchoPlanarUnwarpFunctional func( inputImage1, inputImage2, phaseEncodeDirection );
+
+  cmtk::VolumeIO::Write( *func.GetGradientImage( 0 ), "gradient1.nii" );
+  cmtk::VolumeIO::Write( *func.GetGradientImage( 1 ), "gradient2.nii" );
+  
   func.SetSmoothnessConstraintWeight( smoothnessConstraintWeight );
+  func.SetFoldingConstraintWeight( foldingConstraintWeight );
   func.Optimize( iterations, cmtk::Units::GaussianSigma( smoothSigmaMax ), cmtk::Units::GaussianSigma( smoothSigmaDiff ) );
 
   cmtk::VolumeIO::Write( *func.GetCorrectedImage( 0 ), outputImagePath1 );
