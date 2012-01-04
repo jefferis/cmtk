@@ -205,31 +205,15 @@ cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const ap::real_1d_array&
 cmtk::Types::Coordinate 
 cmtk::EchoPlanarUnwarpFunctional::GetPartialJacobian( const ap::real_1d_array& u, const FixedVector<3,int>& baseIdx ) const
 {
-  cmtk::Types::Coordinate diff = 0;
-  int normalize = 0;
-
   size_t offset = this->m_ImageGrid->GetOffsetFromIndex( baseIdx );
-  if ( baseIdx[this->m_PhaseEncodeDirection] > 0 )
+  if ( (baseIdx[this->m_PhaseEncodeDirection] > 0) && (baseIdx[this->m_PhaseEncodeDirection] < this->m_ImageGrid->m_Dims[this->m_PhaseEncodeDirection]-1) )
     {
-    diff -= u( 1 + offset - this->m_ImageGrid->m_GridIncrements[this->m_PhaseEncodeDirection] );
-    ++normalize;
+    return 0.5 * ( u( 1 + offset - this->m_ImageGrid->m_GridIncrements[this->m_PhaseEncodeDirection] ) - u( 1 + offset + this->m_ImageGrid->m_GridIncrements[this->m_PhaseEncodeDirection] ) );
     }
   else
     {
-    diff -= u( 1 + offset );
+    return 0;
     }
-
-  if ( baseIdx[this->m_PhaseEncodeDirection] < this->m_ImageGrid->m_Dims[this->m_PhaseEncodeDirection]-1 )
-    {
-    diff += u( 1 + offset + this->m_ImageGrid->m_GridIncrements[this->m_PhaseEncodeDirection] );
-    ++normalize;
-    }
-  else
-    {
-    diff += u( 1 + offset );
-    }
-  
-  return diff / normalize;
 }
 
 void
