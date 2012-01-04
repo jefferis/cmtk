@@ -292,21 +292,24 @@ cmtk::EchoPlanarUnwarpFunctional
     // difference term derivative
     DataGrid::IndexType idx = it.Index();
     size_t px = sourceImage.GetOffsetFromIndex( idx );
+    const size_t pxg = 1+px;
 
     const Types::Coordinate diff = function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px];
     msd += diff * diff;
-    g(1+px) = 2.0 * diff * (function.m_GradientImageFwd[px] + function.m_GradientImageRev[px]) / insideRegionSize;
+    g(pxg) = 2.0 * diff * (function.m_GradientImageFwd[px] + function.m_GradientImageRev[px]);
 
     // add gradient terms for Jacobians
     //2*(j1(u, umm)*I1(x+um)-j2(u, umm)*I2(x-um)))*((diff(j1(u, umm), u))*I1(x+um)-(diff(j2(u, umm), u))*I2(x-um)
     idx[phaseEncodeDirection] -= 1;
     px = sourceImage.GetOffsetFromIndex( idx );
-    g(1+px) += 0.5 / insideRegionSize * (function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev										       
+    g(pxg) -= 0.5 * (function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev										       
     //(2*(j1(upp, u)*I1(x+up)-j2(upp, u)*I2(x-up)))*((diff(j1(upp, u), u))*I1(x+up)-(diff(j2(upp, u), u))*I2(x-up))
     idx[phaseEncodeDirection] += 2;
     px = sourceImage.GetOffsetFromIndex( idx );
     // subtract second part because derivatives of J1 and J2 are negative here
-    g(1+px) -= 0.5 / insideRegionSize * (function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev
+    g(pxg) += 0.5 * (function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev
+
+    g(pxg) /= insideRegionSize;
     }
   f = (msd /= insideRegionSize);
 
