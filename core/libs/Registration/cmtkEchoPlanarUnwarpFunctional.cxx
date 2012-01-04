@@ -350,8 +350,8 @@ cmtk::EchoPlanarUnwarpFunctional
       fold -= log( jac );
 
       // increment relevant gradient elements
-      g( ofs ) -= 1.0 / (jac * insideRegionSize);
-      g( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] ) += 1.0 / (jac * insideRegionSize);
+      g( ofs ) += lambda3 / (jac * insideRegionSize);
+      g( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] ) -= lambda3 / (jac * insideRegionSize);
       }
     
     f += lambda3 * (fold /= insideRegionSize);
