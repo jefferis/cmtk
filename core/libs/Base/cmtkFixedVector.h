@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010-2011 SRI International
+//  Copyright 2010-2012 SRI International
 //
 //  Copyright 2010 Torsten Rohlfing
 //
@@ -230,10 +230,22 @@ public:
     return *(std::max_element( this->begin(), this->end() ) );
   }
 
+  /// Maximum element index.
+  size_t MaxIndex() const
+  {
+    return std::max_element( this->begin(), this->end() ) - this->m_Data;
+  }
+
   /// Minimum value.
   T MinValue() const
   {
     return *(std::min_element( this->begin(), this->end() ) );
+  }
+
+  /// Minimum element index.
+  size_t MinIndex() const
+  {
+    return std::min_element( this->begin(), this->end() ) - this->m_Data;
   }
 
   /// Calculate sum of vector elements.
