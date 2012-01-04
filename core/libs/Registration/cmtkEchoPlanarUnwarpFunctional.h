@@ -117,6 +117,14 @@ public:
     this->m_SmoothnessConstraintWeight = weight;
   }
   
+  /** Set folding constraint weight.
+   * This is based on the log() of the local 1D Jacobians of the deformation field.
+   */
+  void SetFoldingConstraintWeight( const Types::Coordinate weight )
+  {
+    this->m_FoldingConstraintWeight = weight;
+  }
+  
 private:
   /// Unwarped image grid.
   UniformVolume::SmartPtr m_ImageGrid;
@@ -138,6 +146,9 @@ private:
 
   /// Smoothness constraint weight.
   Types::Coordinate m_SmoothnessConstraintWeight;
+
+  /// Folding constraint weight.
+  Types::Coordinate m_FoldingConstraintWeight;
 
   /// 1D deformation map along phase encoding direction.
   ap::real_1d_array m_Deformation;
