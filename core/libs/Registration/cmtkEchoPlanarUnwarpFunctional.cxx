@@ -77,14 +77,16 @@ cmtk::EchoPlanarUnwarpFunctional::SetSmoothingKernelWidth( const Units::Gaussian
     {
     UniformVolumeFilter filterFwd( this->m_ImageFwd );
     UniformVolume::SmartPtr smooth = UniformVolume::SmartPtr( this->m_ImageGrid->CloneGrid() );
-    smooth->SetData( filterFwd.GetDataGaussFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
+//    smooth->SetData( filterFwd.GetDataGaussFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
+    smooth->SetData( filterFwd.GetDataGaussFiltered( sigma, maxError ) );
     this->m_SmoothImageFwd = smooth;
     }
 
     {
     UniformVolumeFilter filterRev( this->m_ImageRev );
     UniformVolume::SmartPtr smooth = UniformVolume::SmartPtr( this->m_ImageGrid->CloneGrid() );
-    smooth->SetData( filterRev.GetDataGaussFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
+//    smooth->SetData( filterRev.GetDataGaussFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
+    smooth->SetData( filterRev.GetDataGaussFiltered( sigma, maxError ) );
     this->m_SmoothImageRev = smooth;
     }    
     }
@@ -221,7 +223,7 @@ cmtk::EchoPlanarUnwarpFunctional::GetPartialJacobian( const ap::real_1d_array& u
 }
 
 void
-cmtk::EchoPlanarUnwarpFunctional::Optimize( const int numberOfIterations, const Units::GaussianSigma& smoothMax, const Units::GaussianSigma& smoothDiff )
+cmtk::EchoPlanarUnwarpFunctional::Optimize( const int numberOfIterations, const Units::GaussianSigma& smoothMax, const Units::GaussianSigma& smoothMin, const Units::GaussianSigma& smoothDiff )
 {
   const int numberOfPixels = this->m_ImageGrid->GetNumberOfPixels();
   
@@ -235,7 +237,7 @@ cmtk::EchoPlanarUnwarpFunctional::Optimize( const int numberOfIterations, const 
   // dummy array for unused constraints
   ap::real_1d_array dummy;
   
-  for ( Units::GaussianSigma smoothness = smoothMax; smoothness.Value() >= 0; smoothness = smoothness - smoothDiff )
+  for ( Units::GaussianSigma smoothness = smoothMax; ! (smoothness < smoothMin); smoothness = smoothness - smoothDiff )
     {
     DebugOutput( 4 ) << "Setting image smoothing kernel sigma=" << smoothness.Value() << "\n";
     this->SetSmoothingKernelWidth( smoothness );

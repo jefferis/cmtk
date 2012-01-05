@@ -88,7 +88,7 @@ public:
   }
   
   /// Optimize unwarping deformation using L-BFGS optimizer.
-  void Optimize( const int numberOfIterations, const Units::GaussianSigma& smoothMax, const Units::GaussianSigma& smoothDiff );
+  void Optimize( const int numberOfIterations, const Units::GaussianSigma& smoothMax, const Units::GaussianSigma& smoothMin, const Units::GaussianSigma& smoothDiff );
   
   /// Return either first or second 1D gradient image.
   UniformVolume::SmartPtr GetGradientImage( const byte idx = 0 )
