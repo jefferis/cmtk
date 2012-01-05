@@ -289,6 +289,14 @@ cmtk::EchoPlanarUnwarpFunctional
 
   const size_t nPixels = function.m_ImageGrid->GetNumberOfPixels();
 
+  // precompute composite images for MSD gradient
+  std::vector<double> compositeImage( nPixels );
+#pragma omp parallel for
+  for ( size_t px = 0; px < nPixels; ++px )
+    {
+    compositeImage[px] = 0.5 * (function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev
+    }
+
   double msd = 0;
 #ifndef _OPENMP
   DataGrid::RegionType region = insideRegion;
@@ -315,13 +323,12 @@ cmtk::EchoPlanarUnwarpFunctional
       // add gradient terms for Jacobians
       //2*(j1(u, umm)*I1(x+um)-j2(u, umm)*I2(x-um)))*((diff(j1(u, umm), u))*I1(x+um)-(diff(j2(u, umm), u))*I2(x-um)
       idx[phaseEncodeDirection] -= 1;
-      px = sourceImage.GetOffsetFromIndex( idx );
-      g(pxg) -= 0.5 * (function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev										       
+      g(pxg) -= compositeImage[sourceImage.GetOffsetFromIndex( idx )];
+										       
       //(2*(j1(upp, u)*I1(x+up)-j2(upp, u)*I2(x-up)))*((diff(j1(upp, u), u))*I1(x+up)-(diff(j2(upp, u), u))*I2(x-up))
       idx[phaseEncodeDirection] += 2;
-      px = sourceImage.GetOffsetFromIndex( idx );
       // subtract second part because derivatives of J1 and J2 are negative here
-      g(pxg) += 0.5 * (function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev
+      g(pxg) += compositeImage[sourceImage.GetOffsetFromIndex( idx )]; 
       
       g(pxg) /= insideRegionSize;
       }
@@ -356,9 +363,11 @@ cmtk::EchoPlanarUnwarpFunctional
 	  const ap::real_value_type diff = x( ofs ) - x( ofs - sourceImage.m_GridIncrements[dim] );
 	  // increment smoothness term
 	  smooth += diff * diff;
+
 	  // increment relevant gradient elements
-	  g( ofs ) += 2 * lambda2 * diff / insideRegionSize;
-	  g( ofs - sourceImage.m_GridIncrements[dim] ) -= 2 * lambda2 * diff / insideRegionSize;
+	  const ap::real_value_type delta = 2 * lambda2 * diff / insideRegionSize;
+	  g( ofs ) += delta;
+	  g( ofs - sourceImage.m_GridIncrements[dim] ) -= delta;
 	  }
 	}
       }
@@ -390,14 +399,16 @@ cmtk::EchoPlanarUnwarpFunctional
 	  {
 	  const size_t ofs = 1 + sourceImage.GetOffsetFromIndex( it.Index() );
 	  
-	  const ap::real_value_type jacF = 1 + x( ofs ) - x( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] );
-	  const ap::real_value_type jacR = 1 - x( ofs ) + x( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] );
+	  const ap::real_value_type j = x( ofs ) - x( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] );
+	  const ap::real_value_type jacF = 1 + j;
+	  const ap::real_value_type jacR = 1 - j;
 	  
 	  fold -= ( log( jacF ) + log( jacR ) );
 	  
 	  // increment relevant gradient elements
-	  g( ofs ) -= lambda3 * (1.0 / jacF - 1.0 / jacR) / insideRegionSize;
-	  g( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] ) += lambda3 * (1.0 / jacF - 1.0 / jacR) / insideRegionSize;
+	  const ap::real_value_type delta = lambda3 * (1.0 / jacF - 1.0 / jacR) / insideRegionSize;
+	  g( ofs ) -= delta;
+	  g( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] ) += delta;
 	  }
 	}
       
