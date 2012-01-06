@@ -1,5 +1,8 @@
 Release CMTK-2.1.1:
 
+(r3698) Changed: by default, "dcm2image" now embeds concatenated DICOM tags
+    StudyID and StudyDate into "description" fields of Analyze, NIFTI, and
+    Nrrd output images. 
 (r3628) Added: "similarity" tool now computes absolute and relative image
     differences; this feature is used by the applications test driver script
     to perform tolerant comparisons.
