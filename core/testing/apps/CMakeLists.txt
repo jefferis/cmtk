@@ -1,5 +1,5 @@
 ##
-##  Copyright 2004-2011 SRI International
+##  Copyright 2004-2012 SRI International
 ##
 ##  Copyright 1997-2011 Torsten Rohlfing
 ##
@@ -256,15 +256,17 @@ ENDIF(CMTK_BUILD_NRRD)
 # ==========================================
 # Tests for "dcm2image" tool
 IF(CMTK_USE_DCMTK)
-  SET(testList ${testList} 
+  LIST(APPEND testList
     dcm2image 
     dcm2imageSubs
     dcm2imageZ
     dcm2imageEmbedPatientNameAnalyze
     dcm2imageEmbedPatientNameNifti
     dcm2imageEmbedSeriesDescriptionNifti
+    dcm2imageEmbedStudyIDDateNifti
+    dcm2imageEmbedDefaultNifti
     dcm2imageMosaic)
-
+  
   IF(CMTK_BUILD_NRRD)
     SET(testList ${testList} 
       dcm2imageNrrd

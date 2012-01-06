@@ -1,5 +1,5 @@
 ##
-##  Copyright 2004-2011 SRI International
+##  Copyright 2004-2012 SRI International
 ##
 ##  Copyright 1997-2011 Torsten Rohlfing
 ##
@@ -600,19 +600,19 @@ case ${RUNTEST} in
       check_results xform.txt
       ;;
     dcm2image)
-	run dcm2image -O ${tmpdir}/00%n.hdr ${DATADIR}/dcm/
+	run dcm2image --embed None -O ${tmpdir}/00%n.hdr ${DATADIR}/dcm/
 	check_results 001.hdr 001.img 002.hdr 002.img 003.hdr 003.img
 	;;
     dcm2imageSubs)
-        run dcm2image -O ${tmpdir}/%D_%R_%E%N.nii ${DATADIR}/dcm/
+        run dcm2image --embed None -O ${tmpdir}/%D_%R_%E%N.nii ${DATADIR}/dcm/
 	check_results 3-plane-localizer_5.104_1.52-1.nii 3-plane-localizer_5.104_1.52-2.nii 3-plane-localizer_5.104_1.52-3.nii
 	;;
     dcm2imageZ)
-	run dcm2image -O ${tmpdir}/00%n.nii ${DATADIR}/dcmz/
+	run dcm2image --embed None -O ${tmpdir}/00%n.nii ${DATADIR}/dcmz/
 	check_results 001.nii 002.nii 003.nii
 	;;
     dcm2imageNrrd)
-	run dcm2image -O ${tmpdir}/00%n.nhdr ${DATADIR}/dcm/
+	run dcm2image --embed None -O ${tmpdir}/00%n.nhdr ${DATADIR}/dcm/
 	check_results 001.nhdr 001.raw 002.nhdr 002.raw 003.nhdr 003.raw
 	;;
     dcm2imageEmbedPatientNameAnalyze)
@@ -627,12 +627,20 @@ case ${RUNTEST} in
 	run dcm2image --embed SeriesDescription -O ${tmpdir}/00%n.nii ${DATADIR}/dcm/
 	check_results 001.nii 002.nii 003.nii
 	;;
+    dcm2imageEmbedStudyIDDateNifti)
+        run dcm2image --embed StudyID_StudyDate -O ${tmpdir}/00%n.nii ${DATADIR}/dcm/
+	check_results 001.nii
+	;;
+    dcm2imageEmbedDefaultNifti)
+	run dcm2image -O ${tmpdir}/00%n.nii ${DATADIR}/dcm/
+	check_results 001.nii
+	;;
     dcm2imageEmbedPatientNameNrrd)
 	run dcm2image --embed PatientName -O ${tmpdir}/00%n.nhdr ${DATADIR}/dcm/
 	check_results 001.nhdr 002.nhdr 003.nhdr
 	;;
     dcm2imageMosaic)
-	run dcm2image -O ${tmpdir}/00.nii ${DATADIR}/mr-mosaic/
+	run dcm2image --embed None -O ${tmpdir}/00.nii ${DATADIR}/mr-mosaic/
 	check_results 00.nii
 	;;
     describeEmpty)

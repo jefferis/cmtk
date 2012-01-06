@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -106,14 +106,16 @@ typedef enum
 {
   /// No embedding.
   EMBED_NONE = 0,
+  /// Embed StudyID plus Date.
+  EMBED_STUDYID_STUDYDATE = 1,
   /// Embed patient name.
-  EMBED_PATIENTNAME = 1,
+  EMBED_PATIENTNAME = 2,
   /// Embed series description.
-  EMBED_SERIESDESCR = 2
+  EMBED_SERIESDESCR = 3
 } EmbedInfoEnum;
 
 /// Selector for embedded image information.
-EmbedInfoEnum EmbedInfo = EMBED_NONE;
+EmbedInfoEnum EmbedInfo = EMBED_STUDYID_STUDYDATE;
 
 class ImageFileDCM 
 {
@@ -136,6 +138,12 @@ public:
   /// DICOM SeriesDescription
   std::string SeriesDescription;
 
+  /// DICOM StudyID.
+  std::string StudyID;
+
+  /// DICOM StudyDate.
+  std::string StudyDate;
+  
   /// DICOM StudyUID.
   std::string StudyUID;
 
@@ -307,6 +315,12 @@ ImageFileDCM::ImageFileDCM( const char* filename )
   if ( document->getValue( DCM_StudyInstanceUID, tmpStr ) )
     StudyUID = tmpStr;
 
+  if ( document->getValue( DCM_StudyID, tmpStr ) )
+    StudyID = tmpStr;
+
+  if ( document->getValue( DCM_StudyDate, tmpStr ) )
+    StudyDate = tmpStr;
+  
   if ( document->getValue( DCM_EchoTime, tmpStr ) )
     EchoTime = tmpStr;
 
@@ -429,6 +443,10 @@ VolumeDCM::WriteToArchive( const std::string& fname ) const
       {
       default:
       case EMBED_NONE:
+	break;
+      case EMBED_STUDYID_STUDYDATE:
+	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->StudyID + "_" + first->StudyDate );
+	break;
 	break;
       case EMBED_PATIENTNAME:
 	volume->SetMetaInfo( cmtk::META_IMAGE_DESCRIPTION, first->PatientName );
@@ -769,8 +787,11 @@ doMain ( const int argc, const char *argv[] )
 		  "%T (GE RawDataType - vendor-specific, MRI only)" );
 
     cmtk::CommandLine::EnumGroup<EmbedInfoEnum>::SmartPtr embedGroup = cl.AddEnum( "embed", &EmbedInfo, "Embed DICOM information into output images as 'description' (if supported by output file format)." );
+    embedGroup->AddSwitch( Key( "StudyID_StudyDate" ), EMBED_STUDYID_STUDYDATE, "StudyID, tag (0020,0010), then underscore, followed by StudyDate, tag (0008,0020). "
+			   "Date is appended because StudyID is four digits only and will repeat sooner or later." );
     embedGroup->AddSwitch( Key( "PatientName" ), EMBED_PATIENTNAME, "Patient name, tag (0010,0010)" );
     embedGroup->AddSwitch( Key( "SeriesDescription" ), EMBED_SERIESDESCR, "Series description, tag (0008,103e)" );
+    embedGroup->AddSwitch( Key( "None" ), EMBED_NONE, "Embed no information - leave 'description' field empty." );
     cl.EndGroup();
 
     cl.BeginGroup( "Sorting", "Sorting Options")->SetProperties( cmtk::CommandLine::PROPS_ADVANCED );
