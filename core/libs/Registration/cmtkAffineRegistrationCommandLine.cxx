@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -215,7 +215,7 @@ AffineRegistrationCommandLine
 
     if ( InitialStudylist ) 
       {
-      StdErr << "WARNING: transformation will be overriden by '--initial' list.\n";
+      StdErr << "WARNING: transformation of input studylist will be overriden by transformation provided with '--initial'.\n";
       }
     
     DebugOutput( 1 ) << "Reading input studylist " << this->m_InitialXformPath << ".\n";
