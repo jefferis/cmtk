@@ -69,7 +69,7 @@ public:
    * get "caught" in local minima in the other two directions.
    */
   void SetSmoothingKernelWidth ( const Units::GaussianSigma& sigma, /*!< Kernel parameter "sigma" (standard deviation). Setting kernel width to "0" simply uses original images. */
-				 const Types::Coordinate maxError = 0.01 /*!< Maximum approximation error: the kernel is truncated when it falls below this threshold */ );
+				 const Types::Coordinate maxError = 1e-5 /*!< Maximum approximation error: the kernel is truncated when it falls below this threshold */ );
 
   /// Return either first or second corrected image.
   UniformVolume::SmartPtr GetCorrectedImage( const byte idx = 0 )
@@ -94,10 +94,6 @@ public:
   UniformVolume::SmartPtr GetGradientImage( const byte idx = 0 )
   {
     UniformVolume::SmartPtr gradientImage( this->m_ImageGrid->CloneGrid() );
-
-    this->MakeGradientImage( this->m_Deformation, +1, *(this->m_SmoothImageFwd), this->m_GradientImageFwd );
-    this->MakeGradientImage( this->m_Deformation, -1, *(this->m_SmoothImageRev), this->m_GradientImageRev );
-
     const std::vector<Types::DataItem>& srcImage = ( idx == 0 ) ? this->m_GradientImageFwd : this->m_GradientImageRev;
 
     gradientImage->CreateDataArray( TYPE_FLOAT );

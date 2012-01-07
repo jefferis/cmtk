@@ -52,6 +52,7 @@ cmtk::EchoPlanarUnwarpFunctional::EchoPlanarUnwarpFunctional
     m_SmoothImageFwd( imageFwd ), 
     m_SmoothImageRev( imageRev ), 
     m_PhaseEncodeDirection( phaseEncodeDirection )
+  
 {
   this->m_Deformation.setbounds( 1, this->m_ImageGrid->GetNumberOfPixels() );
   for ( size_t i = 1; i < 1+this->m_ImageGrid->GetNumberOfPixels(); ++i )
@@ -77,17 +78,19 @@ cmtk::EchoPlanarUnwarpFunctional::SetSmoothingKernelWidth( const Units::Gaussian
     {
     UniformVolumeFilter filterFwd( this->m_ImageFwd );
     UniformVolume::SmartPtr smooth = UniformVolume::SmartPtr( this->m_ImageGrid->CloneGrid() );
-//    smooth->SetData( filterFwd.GetDataGaussFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
-    smooth->SetData( filterFwd.GetDataGaussFiltered( sigma, maxError ) );
+    smooth->SetData( filterFwd.GetDataGaussFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
     this->m_SmoothImageFwd = smooth;
+
+    VolumeIO::Write( *smooth, "smoothF.nii" );
     }
 
     {
     UniformVolumeFilter filterRev( this->m_ImageRev );
     UniformVolume::SmartPtr smooth = UniformVolume::SmartPtr( this->m_ImageGrid->CloneGrid() );
-//    smooth->SetData( filterRev.GetDataGaussFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
-    smooth->SetData( filterRev.GetDataGaussFiltered( sigma, maxError ) );
+    smooth->SetData( filterRev.GetDataGaussFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
     this->m_SmoothImageRev = smooth;
+
+    VolumeIO::Write( *smooth, "smoothR.nii" );
     }    
     }
   else
@@ -192,7 +195,7 @@ cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const ap::real_1d_array&
       const size_t i = sourceImage.GetOffsetFromIndex( idx );
       
       // first, get Jacobian for grid position
-      targetCorrectedData[i] = 1 + direction * this->GetPartialJacobian( u, idx );
+      targetCorrectedData[i] = fabs( 1 + direction * this->GetPartialJacobian( u, idx ) );
       
       // now compute deformed position for interpolation
       const Types::Coordinate shift = direction * u(1+i);
@@ -214,7 +217,7 @@ cmtk::EchoPlanarUnwarpFunctional::GetPartialJacobian( const ap::real_1d_array& u
   size_t offset = this->m_ImageGrid->GetOffsetFromIndex( baseIdx );
   if ( (baseIdx[this->m_PhaseEncodeDirection] > 0) && (baseIdx[this->m_PhaseEncodeDirection] < this->m_ImageGrid->m_Dims[this->m_PhaseEncodeDirection]-1) )
     {
-    return 0.5 * ( u( 1 + offset - this->m_ImageGrid->m_GridIncrements[this->m_PhaseEncodeDirection] ) - u( 1 + offset + this->m_ImageGrid->m_GridIncrements[this->m_PhaseEncodeDirection] ) );
+    return 0.5 * ( u( 1 + offset + this->m_ImageGrid->m_GridIncrements[this->m_PhaseEncodeDirection] ) - u( 1 + offset - this->m_ImageGrid->m_GridIncrements[this->m_PhaseEncodeDirection] ) );
     }
   else
     {
@@ -278,10 +281,13 @@ cmtk::EchoPlanarUnwarpFunctional
   function.ComputeDeformedImage( x, +1, *(function.m_SmoothImageFwd), function.m_UnwarpImageFwd, function.m_CorrectedImageFwd );
   function.ComputeDeformedImage( x, -1, *(function.m_SmoothImageRev), function.m_UnwarpImageRev, function.m_CorrectedImageRev );
 
-  // initialize gradient vector with derivative of image differences
   function.MakeGradientImage( x, +1, *(function.m_SmoothImageFwd), function.m_GradientImageFwd );
   function.MakeGradientImage( x, -1, *(function.m_SmoothImageRev), function.m_GradientImageRev );
 
+//  VolumeIO::Write( *(function.GetGradientImage(0)), "gradient1.nii" );
+//  VolumeIO::Write( *(function.GetGradientImage(1)), "gradient2.nii" );
+
+  // initialize gradient vector with derivative of image differences
   DataGrid::RegionType insideRegion = wholeImageRegion;  
   insideRegion.From()[phaseEncodeDirection] += 1;
   insideRegion.To()[phaseEncodeDirection] -= 1;
@@ -290,16 +296,18 @@ cmtk::EchoPlanarUnwarpFunctional
   const size_t nPixels = function.m_ImageGrid->GetNumberOfPixels();
 
   // precompute composite images for MSD gradient
+  std::vector<double> diffImage( nPixels );
   std::vector<double> compositeImage( nPixels );
 #pragma omp parallel for
   for ( size_t px = 0; px < nPixels; ++px )
     {
-    compositeImage[px] = 0.5 * (function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px]) * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] ); // "+" because partial J deriv is negative for Rev
+    diffImage[px] = function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px];
+    compositeImage[px] = diffImage[px] * ( function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px] );
     }
 
   double msd = 0;
 #ifndef _OPENMP
-  DataGrid::RegionType region = insideRegion;
+  const DataGrid::RegionType region = insideRegion;
   {
 #else // _OPENMP
 #pragma omp parallel for reduction(+:msd)
@@ -316,19 +324,18 @@ cmtk::EchoPlanarUnwarpFunctional
       size_t px = sourceImage.GetOffsetFromIndex( idx );
       const size_t pxg = 1+px;
       
-      const Types::Coordinate diff = function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px];
+      const Types::Coordinate diff = diffImage[px];
       msd += diff * diff;
-      g(pxg) = 2.0 * diff * (function.m_GradientImageFwd[px] + function.m_GradientImageRev[px]);
+      g(pxg) = 2.0 * diff * (function.m_GradientImageFwd[px] + function.m_GradientImageRev[px]); // need "+" between gradient terms because we copmpute d/dx, not d/du
       
       // add gradient terms for Jacobians
-      //2*(j1(u, umm)*I1(x+um)-j2(u, umm)*I2(x-um)))*((diff(j1(u, umm), u))*I1(x+um)-(diff(j2(u, umm), u))*I2(x-um)
       idx[phaseEncodeDirection] -= 1;
-      g(pxg) -= compositeImage[sourceImage.GetOffsetFromIndex( idx )];
+      px = sourceImage.GetOffsetFromIndex( idx );      
+//      g(pxg) += compositeImage[px];
 										       
-      //(2*(j1(upp, u)*I1(x+up)-j2(upp, u)*I2(x-up)))*((diff(j1(upp, u), u))*I1(x+up)-(diff(j2(upp, u), u))*I2(x-up))
       idx[phaseEncodeDirection] += 2;
-      // subtract second part because derivatives of J1 and J2 are negative here
-      g(pxg) += compositeImage[sourceImage.GetOffsetFromIndex( idx )]; 
+      px = sourceImage.GetOffsetFromIndex( idx );      
+//      g(pxg) -= compositeImage[px]; 
       
       g(pxg) /= insideRegionSize;
       }
@@ -347,7 +354,7 @@ cmtk::EchoPlanarUnwarpFunctional
       insideRegionSize = insideRegion.Size();
       
 #ifndef _OPENMP
-      region = insideRegion;
+      const DataGrid::RegionType region = insideRegion;
       {
 #else // _OPENMP
 #pragma omp parallel for reduction(+:smooth)
@@ -385,35 +392,34 @@ cmtk::EchoPlanarUnwarpFunctional
     insideRegionSize = insideRegion.Size();
     
 #ifndef _OPENMP
-      region = insideRegion;
-      {
+    const DataGrid::RegionType region = insideRegion;
 #else // _OPENMP
 #pragma omp parallel for reduction(+:fold)
-      for ( int slice = insideRegion.From()[function.m_ReadoutDirection]; slice < insideRegion.To()[function.m_ReadoutDirection]; ++slice )
-	{
-	DataGrid::RegionType region = insideRegion;
-	region.From()[function.m_ReadoutDirection] = slice;
-	region.To()[function.m_ReadoutDirection] = slice+1;
+    for ( int slice = insideRegion.From()[function.m_ReadoutDirection]; slice < insideRegion.To()[function.m_ReadoutDirection]; ++slice )
+      {
+      DataGrid::RegionType region = insideRegion;
+      region.From()[function.m_ReadoutDirection] = slice;
+      region.To()[function.m_ReadoutDirection] = slice+1;
 #endif
-	for ( RegionIndexIterator<DataGrid::RegionType> it( region ); it != it.end(); ++it )
-	  {
-	  const size_t ofs = 1 + sourceImage.GetOffsetFromIndex( it.Index() );
-	  
-	  const ap::real_value_type j = x( ofs ) - x( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] );
-	  const ap::real_value_type jacF = 1 + j;
-	  const ap::real_value_type jacR = 1 - j;
-	  
-	  fold -= ( log( jacF ) + log( jacR ) );
-	  
-	  // increment relevant gradient elements
-	  const ap::real_value_type delta = lambda3 * (1.0 / jacF - 1.0 / jacR) / insideRegionSize;
-	  g( ofs ) -= delta;
-	  g( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] ) += delta;
-	  }
+      for ( RegionIndexIterator<DataGrid::RegionType> it( region ); it != it.end(); ++it )
+	{
+	const size_t ofs = 1 + sourceImage.GetOffsetFromIndex( it.Index() );
+	
+	const ap::real_value_type diff = x( ofs ) - x( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] );
+	
+	fold += diff*diff;
+	
+	// increment relevant gradient elements
+	const ap::real_value_type delta = 2 * lambda3 * diff / insideRegionSize;
+	g( ofs ) += delta;
+	g( ofs - sourceImage.m_GridIncrements[phaseEncodeDirection] ) -= delta;
 	}
-      
-      f += lambda3 * (fold /= insideRegionSize);
+      }
+    
+    f += lambda3 * (fold /= insideRegionSize);
+#ifdef _OPENMP
     }
+#endif
   
   DebugOutput( 5 ) << "f " << f << " msd " << msd << " smooth " << smooth << " fold " << fold << "\n";
 
