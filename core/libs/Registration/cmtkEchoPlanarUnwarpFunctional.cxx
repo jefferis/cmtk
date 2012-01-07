@@ -137,7 +137,7 @@ cmtk::EchoPlanarUnwarpFunctional::MakeGradientImage( const ap::real_1d_array& u,
       gradientImageData[i] -= this->Interpolate1D( sourceImage, idx, position -  idx[this->m_PhaseEncodeDirection] );
 
       // apply Jacobian - this is needed implicitly in cost function gradient
-      gradientImageData[i] *= (1 + direction * this->GetPartialJacobian( u, idx ));
+      gradientImageData[i] *= (1 + direction * this->GetPartialJacobian( u, it.Index() ));
       }
 #ifdef _OPENMP
     }
@@ -194,17 +194,14 @@ cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const ap::real_1d_array&
       DataGrid::IndexType idx = it.Index();
       const size_t i = sourceImage.GetOffsetFromIndex( idx );
       
-      // first, get Jacobian for grid position
-      targetCorrectedData[i] = fabs( 1 + direction * this->GetPartialJacobian( u, idx ) );
-      
       // now compute deformed position for interpolation
       const Types::Coordinate shift = direction * u(1+i);
       const Types::Coordinate position = shift + idx[this->m_PhaseEncodeDirection];
       
       idx[this->m_PhaseEncodeDirection] = static_cast<int>( floor( position ) );
       
-      // multiple interpolated data onto previously set Jacobian
-      targetCorrectedData[i] *= (targetUnwarpData[i] = this->Interpolate1D( sourceImage, idx, position - idx[this->m_PhaseEncodeDirection] ));
+      targetUnwarpData[i] = this->Interpolate1D( sourceImage, idx, position - idx[this->m_PhaseEncodeDirection] );
+      targetCorrectedData[i] = targetUnwarpData[i] * (1 + direction * this->GetPartialJacobian( u, it.Index() ));
       }
 #ifdef _OPENMP
     }
@@ -219,10 +216,8 @@ cmtk::EchoPlanarUnwarpFunctional::GetPartialJacobian( const ap::real_1d_array& u
     {
     return 0.5 * ( u( 1 + offset + this->m_ImageGrid->m_GridIncrements[this->m_PhaseEncodeDirection] ) - u( 1 + offset - this->m_ImageGrid->m_GridIncrements[this->m_PhaseEncodeDirection] ) );
     }
-  else
-    {
-    return 0;
-    }
+
+  return 0;
 }
 
 void
@@ -331,11 +326,11 @@ cmtk::EchoPlanarUnwarpFunctional
       // add gradient terms for Jacobians
       idx[phaseEncodeDirection] -= 1;
       px = sourceImage.GetOffsetFromIndex( idx );      
-//      g(pxg) += compositeImage[px];
+      g(pxg) += compositeImage[px];
 										       
       idx[phaseEncodeDirection] += 2;
       px = sourceImage.GetOffsetFromIndex( idx );      
-//      g(pxg) -= compositeImage[px]; 
+      g(pxg) -= compositeImage[px]; 
       
       g(pxg) /= insideRegionSize;
       }
