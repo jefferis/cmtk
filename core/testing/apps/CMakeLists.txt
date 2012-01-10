@@ -30,6 +30,7 @@
 
 FIND_PROGRAM(SH_PATH sh PATHS C:/cygwin/bin)
 SET(testDriver ${SH_PATH} ${CMAKE_CURRENT_BINARY_DIR}/appsTestDriver.sh)
+SET(testList "")
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/appsTestDriver.sh.in ${CMAKE_CURRENT_BINARY_DIR}/appsTestDriver.sh @ONLY)
 # On Windows, remove "\r" (CR) from line ends, which would make Cygwin's sh choke
@@ -39,7 +40,7 @@ ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 # ==========================================
 # Tests for "avg_adm" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   avg_admDefault2
   avg_admDefault3
   avg_admJacobianFloat
@@ -66,7 +67,7 @@ ENDIF(CMTK_USE_SQLITE)
 
 # ==========================================
 # Tests for "describe" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   describeBZip2a
   describeBZip2b
   describeLZMAa 
@@ -90,7 +91,7 @@ SET(testList ${testList}
   describeEmbedNifti)
 
 IF(CMTK_BUILD_NRRD)
-  SET(testList ${testList} 
+  LIST(APPEND testList
     describeMRNrrd1 
     describeMRNrrd2
     describeEmbedNrrd)
@@ -98,13 +99,17 @@ ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
 # Tests for "destripe" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   destripeDefault
   destripeKernelFloat)
 
 # ==========================================
+# Tests for "epiunwarp" tool
+LIST(APPEND testList epiunwarp)
+
+# ==========================================
 # Tests for "groupwise_init" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   groupwise_initCentersOfMass 
   groupwise_initCentersOfMassScale
   groupwise_initCentersOfMassTemplate)
@@ -126,7 +131,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "groupwise_warp" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   groupwise_warpFromInit
   groupwise_warpFitFromInit
   groupwise_warpFromInitZeroSum
@@ -143,16 +148,16 @@ SET(testList ${testList}
 # ==========================================
 # Tests for xml, wiki, man, and help markups
 FOREACH(t film levelset mrbias registration)
-  SET(testList ${testList} xml_${t} wiki_${t} man_${t})
+  LIST(APPEND testListxml_${t} wiki_${t} man_${t})
 ENDFOREACH(t film levelset mrbias registration)
 
 FOREACH(t film)
-  SET(testList ${testList} help_${t} help_all_${t})
+  LIST(APPEND testListhelp_${t} help_all_${t})
 ENDFOREACH(t film)
 
 # ==========================================
 # Tests for "concat_affine" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   concat_affineABA
   concat_affineABAInvert
   concat_affineAB1A	     
@@ -161,7 +166,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "average_edt" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   average_edt 
   average_edtWindowed
   average_edtWindowedInterpolation
@@ -169,7 +174,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "average_images" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   average_imagesMean 
   average_imagesMeanNormPadd 
   average_imagesMeanAbsLog 
@@ -180,7 +185,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "convertx" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   convertxType
   convertxBinarize
   convertxPruneHighLow
@@ -250,7 +255,7 @@ SET(testList ${testList}
   convertxReplaceInfNaN)
 
 IF(CMTK_BUILD_NRRD)
-  SET(testList ${testList} convertxDownsampleNrrd convertxDownsampleSelectNrrd)
+  LIST(APPEND testListconvertxDownsampleNrrd convertxDownsampleSelectNrrd)
 ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
@@ -268,7 +273,7 @@ IF(CMTK_USE_DCMTK)
     dcm2imageMosaic)
   
   IF(CMTK_BUILD_NRRD)
-    SET(testList ${testList} 
+    LIST(APPEND testList
       dcm2imageNrrd
       dcm2imageEmbedPatientNameNrrd)
   ENDIF(CMTK_BUILD_NRRD)
@@ -276,7 +281,7 @@ ENDIF(CMTK_USE_DCMTK)
 
 # ==========================================
 # Tests for "filter" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   filterGaussian
   filterGaussianSmallKernel
   filterGaussianNoFilter
@@ -284,7 +289,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "film" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   filmCubic
   filmFourthOrder
   filmMSDLinearNoTrunc
@@ -292,7 +297,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "glm" tool
-SET(testList ${testList} glmDefault glmNormalize glmExp glmNoConstant glmIgnore glmSelect glmCrop)
+LIST(APPEND testListglmDefault glmNormalize glmExp glmNoConstant glmIgnore glmSelect glmCrop)
 
 # ==========================================
 # Tests for "gmm" tool
@@ -300,7 +305,7 @@ LIST(APPEND testList gmmDefault gmmAlternative)
 
 # ==========================================
 # Tests for "gregxform" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   gregxformFordwardBackward 
   gregxformAffine 
   gregxformAffineFromWarp
@@ -308,7 +313,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "hausdorff" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   hausdorffBinary12
   hausdorffBinary21
   hausdorffBinaryForced)
@@ -324,7 +329,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "imagemath" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   imagemathAbsPop
   imagemathSqrSqrt
   imagemathLogExp
@@ -359,7 +364,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "jidb" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   jidbGaussian
   jidbBoxFourthOrder
   jidbGaussianScale
@@ -367,7 +372,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "levelset" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   levelsetDefault
   levelsetScaleInitial
   levelsetBinarizeFastWideBinary
@@ -375,7 +380,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "make_initial_affine" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   make_initial_affineCenterOfMass
   make_initial_affinePrincipalAxes1
   make_initial_affinePrincipalAxes2
@@ -401,7 +406,7 @@ ENDIF(CMTK_USE_SQLITE)
 
 # ==========================================
 # Tests for "mat2dof" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   mat2dof1
   mat2dof2
   mat2dofFile)
@@ -411,19 +416,19 @@ SET(testList ${testList}
 IF(HAVE_STL_HASH_MAP)
   # ==========================================
   # Tests for "mcaffine" tool
-  SET(testList ${testList} 
+  LIST(APPEND testList
     mcaffine1 mcaffine2 mcaffine3 mcaffine4)
   
   # ==========================================
   # Tests for "mcwarp" tool
-  SET(testList ${testList} 
+  LIST(APPEND testList
     mcwarp1 mcwarp2 mcwarp3 mcwarp4 mcwarp5 mcwarp6)
 
 ENDIF(HAVE_STL_HASH_MAP)
 
 # ==========================================
 # Tests for "mip" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   mipDefault
   mipBlackWhite
   mipAdjust
@@ -432,7 +437,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "mk_analyze_hdr" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   mk_analyze_hdrDefault
   mk_analyze_hdrImport
   mk_analyze_hdrLittleEndian
@@ -440,7 +445,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "mk_nifti_hdr" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   mk_nifti_hdrDefault
   mk_nifti_hdrDescription
   mk_nifti_hdrImport
@@ -450,7 +455,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "mk_phantom_3d" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   mk_phantom_3dBoxIndexed 
   mk_phantom_3dBoxAbsolute
   mk_phantom_3dBoxRelative
@@ -474,7 +479,7 @@ SET(testList ${testList}
   reorientHdrSaToCo)
 
 IF(CMTK_BUILD_NRRD)
-  SET(testList ${testList} 
+  LIST(APPEND testList
     reorientNrrdToNrrd
     reorientNrrdToNrrdRAS
     reorientNrrdToNrrdSpaceLPS)
@@ -482,10 +487,10 @@ ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
 # Tests for "split" tool
-SET(testList ${testList} splitAxial splitSagittal2 splitCoronal3)
+LIST(APPEND testListsplitAxial splitSagittal2 splitCoronal3)
 
 IF(CMTK_BUILD_NRRD)
-  SET(testList ${testList} splitAxialNrrd)
+  LIST(APPEND testListsplitAxialNrrd)
 ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
@@ -511,7 +516,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "registration" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   registrationAffineMrMrMSD
   registrationRigidMrPet 
   registrationRigidMrCt
@@ -535,7 +540,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "registrationx" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   registrationxAffineMrMrMSD
   registrationxShearNoScaleMrMrMSD
   registrationxFromList
@@ -561,7 +566,7 @@ SET(testList ${testList}
   registrationxAutoLevelsCt3)
 
 IF(CMTK_USE_SQLITE)
-  SET(testList ${testList} 
+  LIST(APPEND testList
     registrationxFromListDB
     registrationxWithInitialDB
     registrationxWithInitialInverseDB
@@ -570,14 +575,14 @@ ENDIF(CMTK_USE_SQLITE)
 
 # ==========================================
 # Tests for "mrbias" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   mrbiasMulIncremental
   mrbiasMulAutoThresh
   mrbiasMulLogIntensity
   mrbiasAddMulMask)
 
 IF(CMTK_USE_CUDA)
-  SET(testList ${testList} 
+  LIST(APPEND testList
     mrbiasMulIncrementalCUDA
     mrbiasMulLogIntensityCUDA
     mrbiasAddMulMaskCUDA)
@@ -585,7 +590,7 @@ ENDIF(CMTK_USE_CUDA)
 
 # ==========================================
 # Tests for "reformatx" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   reformatxNoXform
   reformatxLinear 
   ##		   reformatxLinearFwdBwd
@@ -603,32 +608,32 @@ SET(testList ${testList}
   reformatxTargetGridAnalyze
   reformatxTargetGridOffset)
 IF(CMTK_BUILD_NRRD)
-  SET(testList ${testList} 
+  LIST(APPEND testList
     reformatxDfieldNrrd
     reformatxDfieldNrrdJacobian)
 ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
 # Tests for "sequence" tool
-SET(testList ${testList} sequenceDefault sequenceFormat sequenceThresh sequenceAbs sequenceAbsThresh)
+LIST(APPEND testListsequenceDefault sequenceFormat sequenceThresh sequenceAbs sequenceAbsThresh)
 
 # ==========================================
 # Tests for "similarity" tool
-SET(testList ${testList} similarityGrey similarityLabels similarityGreyMask similarityLabelsMask)
+LIST(APPEND testListsimilarityGrey similarityLabels similarityGreyMask similarityLabelsMask)
 
 # ==========================================
 # Tests for "sympl" tool
-SET(testList ${testList} symmetry_plane symmetry_planeThresh)
+LIST(APPEND testListsymmetry_plane symmetry_planeThresh)
 
 # ==========================================
 # Tests for "symplx" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   symplx_Default
   symplx_Thresh
   symplx_FixOffset)
 
 IF(CMTK_USE_CUDA)
-  SET(testList ${testList} 
+  LIST(APPEND testList
     symplx_DefaultCUDA
     symplx_ThreshCUDA
     symplx_FixOffsetCUDA)
@@ -636,7 +641,7 @@ ENDIF(CMTK_USE_CUDA)
 
 # ==========================================
 # Tests for "statistics" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   statisticsGrey 
   statisticsPercentiles
   statisticsGreyColumn 
@@ -650,21 +655,21 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "ttest" tool
-SET(testList ${testList} ttestDefault ttestLog ttestAbsLog ttestInvert
+LIST(APPEND testListttestDefault ttestLog ttestAbsLog ttestInvert
   ttestPaired ttestCrossCorrelation ttestZScores
   ttestMask ttestOneSided)
 
 # ==========================================
 # Tests for "unsplit" tool
-SET(testList ${testList} unsplitHdrAx unsplitHdrSa unsplitHdrCo)
+LIST(APPEND testListunsplitHdrAx unsplitHdrSa unsplitHdrCo)
 
 IF(CMTK_BUILD_NRRD)
-  SET(testList ${testList} unsplitHdrNrrdAx unsplitHdrNrrdSa unsplitHdrNrrdCo unsplitNrrdNrrd)
+  LIST(APPEND testListunsplitHdrNrrdAx unsplitHdrNrrdSa unsplitHdrNrrdCo unsplitNrrdNrrd)
 ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
 # Tests for "volume_injection" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   volume_injection 
   volume_injectionReconGrid
   volume_injectionReconGridOffset
@@ -674,7 +679,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "volume_reconstruction" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   volume_reconstructionFourthOrder 
   volume_reconstructionCubic
   volume_reconstructionNoXform
@@ -683,7 +688,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "warp" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   warpSingleLevel
   warpSingleLevelExact
   warpInverseConsistentCC
@@ -700,7 +705,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "warpx" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   warpxSingleLevel
   warpxSingleLevelExact
   warpxInverseConsistentCC
@@ -718,7 +723,7 @@ SET(testList ${testList}
 # ==========================================
 # Tests for "xform2dfield" tool
 IF(CMTK_BUILD_NRRD)
-  SET(testList ${testList} 
+  LIST(APPEND testList
     xform2dfieldWarpNrrd
     xform2dfieldAffineNrrd
     xform2dfieldDownsampleXYZNrrd
@@ -729,7 +734,7 @@ ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
 # Tests for "xform2scalar" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   xform2scalarAffine 
   xform2scalarAffineDoubleY 
   xform2scalarWarp 
@@ -738,17 +743,17 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "vtkxform" tool
-SET(testList ${testList} 
+LIST(APPEND testList
   vtkxform
   vtkxformInverse)
 
 IF(CMTK_BUILD_NRRD)
-  SET(testList ${testList} 
+  LIST(APPEND testList
     xform2scalarDfield)
 ENDIF(CMTK_BUILD_NRRD)
 
 IF(CMTK_BUILD_UNSTABLE)
-  SET(testList ${testList} 
+  LIST(APPEND testList
     lvoteDefault
     lvoteRadius3
     lvoteOutliersGlobal

@@ -747,6 +747,12 @@ case ${RUNTEST} in
         run destripe -y --kernel-fwhm 5 --kernel-radius 2 --write-float stripes_crop_byte.nii ${tmpdir}/destripe.nii
 	check_results destripe.nii
 	;;
+    epiunwarp)
+        export CMTK_NUM_THREADS=1
+        run epiunwarp --write-jacobian-fwd ${tmpdir}/jacobian.nii --folding-constraint-weight 0 --smooth-sigma-max 16 --smooth-sigma-min 0 --smooth-sigma-diff 1 --iterations 5 --smoothness-constraint-weight 1e4 --phase-encode-ap ~/develop/nitrc/data/testing/inputs/dwi_* ${tmpdir}/c1.nii ${tmpdir}/c2.nii ${tmpdir}/df.nrrd
+        unset CMTK_NUM_THREADS
+	check_results c1.nii c2.nii df.nrrd jacobian.nii
+	;;
     filterGaussian)
 	run filter --gaussian 1 --radius 2 rat_fse_erly.hdr ${tmpdir}/filter.hdr
 	check_results filter.img
