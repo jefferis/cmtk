@@ -80,8 +80,6 @@ cmtk::EchoPlanarUnwarpFunctional::SetSmoothingKernelWidth( const Units::Gaussian
     UniformVolume::SmartPtr smooth = UniformVolume::SmartPtr( this->m_ImageGrid->CloneGrid() );
     smooth->SetData( filterFwd.GetDataGaussFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
     this->m_SmoothImageFwd = smooth;
-
-//    VolumeIO::Write( *smooth, "smoothF.nii" );
     }
 
     {
@@ -89,8 +87,6 @@ cmtk::EchoPlanarUnwarpFunctional::SetSmoothingKernelWidth( const Units::Gaussian
     UniformVolume::SmartPtr smooth = UniformVolume::SmartPtr( this->m_ImageGrid->CloneGrid() );
     smooth->SetData( filterRev.GetDataGaussFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
     this->m_SmoothImageRev = smooth;
-
-//    VolumeIO::Write( *smooth, "smoothR.nii" );
     }    
     }
   else
