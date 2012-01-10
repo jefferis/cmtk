@@ -1,7 +1,8 @@
 /*
 //
 //  Copyright 1997-2009 Torsten Rohlfing
-//  Copyright 2004-2009 SRI International
+//
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -34,6 +35,8 @@
 
 #include <cmtkconfig.h>
 
+#include <System/cmtkExitException.h>
+
 namespace
 cmtk
 {
@@ -52,7 +55,7 @@ public:
   static const int RegionSizeLeftRight = 2;
 
   /// Get specific interpolation weight for relative coordinate.
-  static Types::Coordinate GetWeight( const int weight, const Types::Coordinate x)
+  static Types::Coordinate GetWeight( const int weight, const Types::Coordinate x )
   {
     const Types::Coordinate xsquare = x * x;
     const Types::Coordinate xcube = xsquare * x;
@@ -67,10 +70,8 @@ public:
       case 2:
 	return 0.5 * xcube - 0.5 * xsquare;
       default:
-#ifdef DEBUG
-	std::cerr << "weight=" << weight << " shouldn't happen!" << std::endl;
-	exit( 1 );
-#endif
+	StdErr << "weight=" << weight << " shouldn't happen!\n";
+	throw ExitException( 1 );
 	break;
       }
     return 0;
