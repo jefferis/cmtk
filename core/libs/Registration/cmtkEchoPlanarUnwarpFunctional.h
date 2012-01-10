@@ -34,6 +34,7 @@
 #include <cmtkconfig.h>
 
 #include <Base/cmtkUniformVolume.h>
+#include <Base/cmtkDeformationField.h>
 
 #include <Numerics/ap.h>
 #include <Numerics/lbfgsb.h>
@@ -72,21 +73,14 @@ public:
 				 const Types::Coordinate maxError = 1e-5 /*!< Maximum approximation error: the kernel is truncated when it falls below this threshold */ );
 
   /// Return either first or second corrected image.
-  UniformVolume::SmartPtr GetCorrectedImage( const byte idx = 0 )
-  {
-    UniformVolume::SmartPtr correctedImage( this->m_ImageFwd->CloneGrid() );
+  UniformVolume::SmartPtr GetCorrectedImage( const int direction /*!< Select forward (+1) vs. reverse encoding (-1) image */ ) const;
 
-    const std::vector<Types::DataItem>& srcImage = ( idx == 0 ) ? this->m_CorrectedImageFwd : this->m_CorrectedImageRev;
+  /// Return either first or second Jacobian intensity correction factor map.
+  UniformVolume::SmartPtr GetJacobianMap( const int direction /*!< Select forward (+1) vs. reverse encoding (-1) map */ ) const;
 
-    correctedImage->CreateDataArray( TYPE_FLOAT );
-    for ( size_t px = 0; px < this->m_ImageFwd->GetNumberOfPixels(); ++px )
-      {
-      correctedImage->SetDataAt( srcImage[px], px );
-      }
+  /// Get forward or reverse deformation field.
+  DeformationField::SmartPtr GetDeformationField( const int direction /*!< Select forward (+1) vs. reverse encoding (-1) deformation field */ ) const;
 
-    return correctedImage;
-  }
-  
   /// Optimize unwarping deformation using L-BFGS optimizer.
   void Optimize( const int numberOfIterations, const Units::GaussianSigma& smoothMax, const Units::GaussianSigma& smoothMin, const Units::GaussianSigma& smoothDiff );
   

@@ -37,6 +37,7 @@
 #include <System/cmtkSmartPtr.h>
 
 #include <IO/cmtkVolumeIO.h>
+#include <IO/cmtkXformIO.h>
 
 #include <Base/cmtkUnits.h>
 
@@ -48,16 +49,22 @@ doMain
 {
   const char* inputImagePath1 = NULL;
   const char* inputImagePath2 = NULL;
+
   const char* outputImagePath1 = NULL;
   const char* outputImagePath2 = NULL;
 
+  const char* outputDField = NULL;
+
+  const char* writeJacobianPath1 = NULL;
+  const char* writeJacobianPath2 = NULL;  
+
   byte phaseEncodeDirection = 1;
 
-  double smoothnessConstraintWeight = 10000;
-  double foldingConstraintWeight = 1e-5;
+  double smoothnessConstraintWeight = 0;
+  double foldingConstraintWeight = 0;
   int iterations = 10;
 
-  double smoothSigmaMax = 4.0;
+  double smoothSigmaMax = 8.0;
   double smoothSigmaMin = 0;
   double smoothSigmaDiff = 0.25;
   
@@ -69,14 +76,14 @@ doMain
 
     typedef cmtk::CommandLine::Key Key;
 
-    cl.BeginGroup( "General", "General Parameters" );    
-    cl.EndGroup();
-
+    cl.BeginGroup( "Input", "Input Image Parameters" );    
     cmtk::CommandLine::EnumGroup<byte>::SmartPtr phaseEncodeGroup = cl.AddEnum( "phase-encode", &phaseEncodeDirection, "Define the phase-encoded image coordinate direction." );
     phaseEncodeGroup->AddSwitch( Key( 'y', "phase-encode-ap" ), 1, "Anterior/posterior phase encoding (this is the most common case)" );
-    phaseEncodeGroup->AddSwitch( Key( 'z', "phase-encode-is" ), 2, "Top/bottom phase encoding" );
-    phaseEncodeGroup->AddSwitch( Key( 'x', "phase-encode-lr" ), 0, "Lateral, left/right phase encoding (this is very rare)" );
+    phaseEncodeGroup->AddSwitch( Key( 'z', "phase-encode-is" ), 2, "Top/bottom phase encoding (this is rare)" );
+    phaseEncodeGroup->AddSwitch( Key( 'x', "phase-encode-lr" ), 0, "Lateral, left/right phase encoding (this is extremely rare)" );
+    cl.EndGroup();
 
+    cl.BeginGroup( "Optimization", "Optimization Parameters" );    
     cl.AddOption( Key( "smooth-sigma-max" ), &smoothSigmaMax, "Maximum image smoothing kernel width for coarsest level of multi-scale computation." );
     cl.AddOption( Key( "smooth-sigma-min" ), &smoothSigmaMin, "Minimum image smoothing kernel width for finest level of multi-scale computation (0 = no smoothing; original image scale)." );
     cl.AddOption( Key( "smooth-sigma-diff" ), &smoothSigmaDiff, "Difference between image smoothing kernel widths between two successive levels of the multi-scale computation." );
@@ -84,11 +91,18 @@ doMain
     cl.AddOption( Key( "smoothness-constraint-weight" ), &smoothnessConstraintWeight, "Weight factor for the second-order smoothness constraint term in the unwarping cost function." );
     cl.AddOption( Key( "folding-constraint-weight" ), &foldingConstraintWeight, "Weight factor for the folding-prevention constraint term in the unwarping cost function." );
     cl.AddOption( Key( 'i', "iterations" ), &iterations, "Number of L-BFGS optimization iterations (per multi-scale level)." );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Output", "Output Options" );
+    cl.AddOption( Key( "write-jacobian-fwd" ), &writeJacobianPath1, "Write Jacobian intensity correction map for forward image." );
+    cl.AddOption( Key( "write-jacobian-rev" ), &writeJacobianPath2, "Write Jacobian intensity correction map for reverse-encoded image." );
+    cl.EndGroup();
 
     cl.AddParameter( &inputImagePath1, "InputImage1", "First input image path - this is the standard b=0 image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
     cl.AddParameter( &inputImagePath2, "InputImage2", "Second input image path - this is the b=0 image with reversed phase encoding direction." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameter( &outputImagePath1, "OutputImage1", "First output image path - this is the unwarped, corrected first image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
-    cl.AddParameter( &outputImagePath2, "OutputImage2", "Second output image path - this is the unwarped, corrected second image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddParameter( &outputImagePath1, "OutputImage1", "First output image path - this is the unwarped, corrected standard b=0 image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddParameter( &outputImagePath2, "OutputImage2", "Second output image path - this is the unwarped, corrected reversed-encoding b=0 image." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE | cmtk::CommandLine::PROPS_OUTPUT );
+    cl.AddParameter( &outputDField, "OutputDField", "Path for deformation field (this can be applied to other images, e.g., diffusion-weighted images." )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
     
     cl.Parse( argc, argv );
     }
@@ -105,16 +119,25 @@ doMain
 
   cmtk::EchoPlanarUnwarpFunctional func( inputImage1, inputImage2, phaseEncodeDirection );
 
-  cmtk::VolumeIO::Write( *func.GetGradientImage( 0 ), "gradient1.nii" );
-  cmtk::VolumeIO::Write( *func.GetGradientImage( 1 ), "gradient2.nii" );
-  
   func.SetSmoothnessConstraintWeight( smoothnessConstraintWeight );
   func.SetFoldingConstraintWeight( foldingConstraintWeight );
   func.Optimize( iterations, cmtk::Units::GaussianSigma( smoothSigmaMax ), cmtk::Units::GaussianSigma( smoothSigmaMin ), cmtk::Units::GaussianSigma( smoothSigmaDiff ) );
 
-  cmtk::VolumeIO::Write( *func.GetCorrectedImage( 0 ), outputImagePath1 );
-  cmtk::VolumeIO::Write( *func.GetCorrectedImage( 1 ), outputImagePath2 );
-  
+  cmtk::VolumeIO::Write( *func.GetCorrectedImage( +1 ), outputImagePath1 );
+  cmtk::VolumeIO::Write( *func.GetCorrectedImage( -1 ), outputImagePath2 );
+
+  if ( outputDField )
+    {
+    cmtk::DeformationField::SmartPtr dfield( func.GetDeformationField( +1 ) );
+    cmtk::XformIO::Write( dfield, outputDField );
+    }
+    
+  if ( writeJacobianPath1 )
+    cmtk::VolumeIO::Write( *func.GetJacobianMap( +1 ), writeJacobianPath1 );
+
+  if ( writeJacobianPath2 )
+    cmtk::VolumeIO::Write( *func.GetJacobianMap( -1 ), writeJacobianPath2 );
+
   return 0;
 }
 

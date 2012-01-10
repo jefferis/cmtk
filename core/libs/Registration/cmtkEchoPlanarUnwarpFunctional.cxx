@@ -32,6 +32,7 @@
 
 #include <Base/cmtkDataGrid.h>
 #include <Base/cmtkSincInterpolator.h>
+#include <Base/cmtkCubicInterpolator.h>
 #include <Base/cmtkRegionIndexIterator.h>
 #include <Base/cmtkUniformVolumeFilter.h>
 
@@ -54,6 +55,12 @@ cmtk::EchoPlanarUnwarpFunctional::EchoPlanarUnwarpFunctional
     m_PhaseEncodeDirection( phaseEncodeDirection )
   
 {
+  if ( ! this->m_ImageFwd->GridMatches( *(this->m_ImageRev) ) )
+    {
+    StdErr << "ERROR: forward and reverse-encoded image must have same grids.\n";
+    throw ExitException( 1 );
+    }
+  
   this->m_Deformation.setbounds( 1, this->m_ImageGrid->GetNumberOfPixels() );
   for ( size_t i = 1; i < 1+this->m_ImageGrid->GetNumberOfPixels(); ++i )
     this->m_Deformation(i) = 0.0;
@@ -96,6 +103,68 @@ cmtk::EchoPlanarUnwarpFunctional::SetSmoothingKernelWidth( const Units::Gaussian
     }
 }
 
+cmtk::UniformVolume::SmartPtr 
+cmtk::EchoPlanarUnwarpFunctional::GetCorrectedImage( const int direction ) const
+{
+  UniformVolume::SmartPtr correctedImage( this->m_ImageFwd->CloneGrid() );
+  
+  const std::vector<Types::DataItem>& srcImage = ( direction > 0 ) ? this->m_CorrectedImageFwd : this->m_CorrectedImageRev;
+  
+  correctedImage->CreateDataArray( TYPE_FLOAT );
+  for ( size_t px = 0; px < this->m_ImageFwd->GetNumberOfPixels(); ++px )
+    {
+    correctedImage->SetDataAt( srcImage[px], px );
+    }
+  
+  return correctedImage;
+}
+
+cmtk::UniformVolume::SmartPtr 
+cmtk::EchoPlanarUnwarpFunctional::GetJacobianMap( const int direction ) const
+{
+  UniformVolume::SmartPtr jacobianImage( this->m_ImageGrid->CloneGrid() );
+  jacobianImage->CreateDataArray( TYPE_DOUBLE );
+  
+  const DataGrid::RegionType wholeImageRegion = this->m_ImageGrid->GetWholeImageRegion();
+  
+#ifndef _OPENMP
+  const DataGrid::RegionType region = wholeImageRegion;
+#else // _OPENMP
+#pragma omp parallel for
+  for ( int slice = wholeImageRegion.From()[this->m_ReadoutDirection]; slice < wholeImageRegion.To()[this->m_ReadoutDirection]; ++slice )
+    {
+    DataGrid::RegionType region = wholeImageRegion;
+    region.From()[this->m_ReadoutDirection] = slice;
+    region.To()[this->m_ReadoutDirection] = slice+1;
+#endif
+    for ( RegionIndexIterator<DataGrid::RegionType> it( region ); it != it.end(); ++it )
+      {
+      jacobianImage->SetDataAt( 1 + direction * this->GetPartialJacobian( this->m_Deformation, it.Index() ), this->m_ImageGrid->GetOffsetFromIndex( it.Index() ) );
+      }
+#ifdef _OPENMP
+    }
+#endif
+
+  return jacobianImage;
+}
+
+cmtk::DeformationField::SmartPtr
+cmtk::EchoPlanarUnwarpFunctional::GetDeformationField( const int direction ) const
+{
+  cmtk::DeformationField::SmartPtr dfield( new DeformationField( this->m_ImageGrid ) );
+  
+  const Types::Coordinate delta = direction * this->m_ImageGrid->Deltas()[this->m_PhaseEncodeDirection];
+  
+  const size_t nPixels = this->m_ImageGrid->GetNumberOfPixels();
+  size_t offset = 0;
+  for ( size_t px = 0; px < nPixels; ++px, offset += 3 )
+    {
+    dfield->m_Parameters[offset+0] = dfield->m_Parameters[offset+1] = dfield->m_Parameters[offset+2] = 0;
+    dfield->m_Parameters[offset+this->m_PhaseEncodeDirection] = delta * this->m_Deformation(px+1);
+    }
+  
+  return dfield;
+}
 
 void
 cmtk::EchoPlanarUnwarpFunctional::MakeGradientImage( const ap::real_1d_array& u, const int direction, const UniformVolume& sourceImage, std::vector<Types::DataItem>& gradientImageData )
