@@ -90,21 +90,6 @@ public:
   /// Optimize unwarping deformation using L-BFGS optimizer.
   void Optimize( const int numberOfIterations, const Units::GaussianSigma& smoothMax, const Units::GaussianSigma& smoothMin, const Units::GaussianSigma& smoothDiff );
   
-  /// Return either first or second 1D gradient image.
-  UniformVolume::SmartPtr GetGradientImage( const byte idx = 0 )
-  {
-    UniformVolume::SmartPtr gradientImage( this->m_ImageGrid->CloneGrid() );
-    const std::vector<Types::DataItem>& srcImage = ( idx == 0 ) ? this->m_GradientImageFwd : this->m_GradientImageRev;
-
-    gradientImage->CreateDataArray( TYPE_FLOAT );
-    for ( size_t px = 0; px < this->m_ImageFwd->GetNumberOfPixels(); ++px )
-      {
-      gradientImage->SetDataAt( srcImage[px], px );
-      }
-
-    return gradientImage;
-  }
-
   /** Set smoothness constraint weight.
    * This is \lambda_2 in Eq. (9) in Holland et al. NIMG 2010.
    */

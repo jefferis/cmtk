@@ -191,8 +191,7 @@ cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const ap::real_1d_array&
       const size_t i = sourceImage.GetOffsetFromIndex( idx );
       
       // now compute deformed position for interpolation
-      const Types::Coordinate shift = direction * u(1+i);
-      const Types::Coordinate position = shift + idx[this->m_PhaseEncodeDirection];
+      const Types::Coordinate position = direction * u(1+i) + idx[this->m_PhaseEncodeDirection];
       
       idx[this->m_PhaseEncodeDirection] = static_cast<int>( floor( position ) );
       
@@ -274,9 +273,6 @@ cmtk::EchoPlanarUnwarpFunctional
 
   function.MakeGradientImage( x, +1, *(function.m_SmoothImageFwd), function.m_GradientImageFwd );
   function.MakeGradientImage( x, -1, *(function.m_SmoothImageRev), function.m_GradientImageRev );
-
-//  VolumeIO::Write( *(function.GetGradientImage(0)), "gradient1.nii" );
-//  VolumeIO::Write( *(function.GetGradientImage(1)), "gradient2.nii" );
 
   // initialize gradient vector with derivative of image differences
   DataGrid::RegionType insideRegion = wholeImageRegion;  
