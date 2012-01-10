@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2010 Torsten Rohlfing
 ##
-##  Copyright 2004-2011 SRI International
+##  Copyright 2004-2012 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -43,7 +43,7 @@ SET(CMAKE_OVERRIDE_COMPILER_MISMATCH 1)
 PROJECT(CMTK)
 SET(CMTK_VERSION_MAJOR "2")
 SET(CMTK_VERSION_MINOR "1")
-SET(CMTK_VERSION_PATCH "1svn")
+SET(CMTK_VERSION_PATCH "1")
 
 SET(CMTK_VERSION_STRING "${CMTK_VERSION_MAJOR}.${CMTK_VERSION_MINOR}.${CMTK_VERSION_PATCH}")
 

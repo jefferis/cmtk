@@ -1,5 +1,8 @@
-Release CMTK-2.1.1:
+Release CMTK-2.1.1 (2012-01-10):
 
+(r3711) Added: new "epiunwarp" tool implements an algorithm by Holland et
+    al. (NeuroImage 2010) for unwarping echo-planar MR images (e.g., DWI)
+    using two images acquired with reversed phase encoding direction.
 (r3698) Changed: by default, "dcm2image" now embeds concatenated DICOM tags
     StudyID and StudyDate into "description" fields of Analyze, NIFTI, and
     Nrrd output images. 

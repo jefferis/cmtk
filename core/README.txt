@@ -6,6 +6,12 @@ The Computational Morphometry Toolkit
 Release Notes -- CMTK 2.1.1
 ===========================
 
+This release adds two new command line tools: 1) "gmm" computes a simple
+Gaussian mixture model using spatial priors, which can be used for tissue
+class segmentation. 2) "epiunwarp" implements an algorithm by Holland et
+al. (NeuroImage 2010) for unwarping echo planar images using two images
+acquired with reversed phase encoding direction.
+
 Support for distributed computation using MPI has been removed in this
 release. The MPI code in CMTK has been rarely used for years and was poorly
 tested. Also, due to the availability of large multi-core shared-memory
