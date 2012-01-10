@@ -81,7 +81,7 @@ cmtk::EchoPlanarUnwarpFunctional::SetSmoothingKernelWidth( const Units::Gaussian
     smooth->SetData( filterFwd.GetDataGaussFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
     this->m_SmoothImageFwd = smooth;
 
-    VolumeIO::Write( *smooth, "smoothF.nii" );
+//    VolumeIO::Write( *smooth, "smoothF.nii" );
     }
 
     {
@@ -90,7 +90,7 @@ cmtk::EchoPlanarUnwarpFunctional::SetSmoothingKernelWidth( const Units::Gaussian
     smooth->SetData( filterRev.GetDataGaussFiltered1D( this->m_PhaseEncodeDirection, sigma, maxError ) );
     this->m_SmoothImageRev = smooth;
 
-    VolumeIO::Write( *smooth, "smoothR.nii" );
+//    VolumeIO::Write( *smooth, "smoothR.nii" );
     }    
     }
   else
@@ -128,16 +128,16 @@ cmtk::EchoPlanarUnwarpFunctional::MakeGradientImage( const ap::real_1d_array& u,
       // apply deformation
       const Types::Coordinate shift = direction * u(1+i) + idx[this->m_PhaseEncodeDirection];
 
-      Types::Coordinate position = shift + 0.5;      
+      Types::Coordinate position = shift + 1;      
       idx[this->m_PhaseEncodeDirection] = static_cast<int>( floor( position ) );
       gradientImageData[i] = this->Interpolate1D( sourceImage, idx, position -  idx[this->m_PhaseEncodeDirection] );
       
-      position = shift - 0.5;      
+      position = shift - 1;      
       idx[this->m_PhaseEncodeDirection] = static_cast<int>( floor( position ) );
       gradientImageData[i] -= this->Interpolate1D( sourceImage, idx, position -  idx[this->m_PhaseEncodeDirection] );
 
       // apply Jacobian - this is needed implicitly in cost function gradient
-      gradientImageData[i] *= (1 + direction * this->GetPartialJacobian( u, it.Index() ));
+      gradientImageData[i] *= 0.5 * (1 + direction * this->GetPartialJacobian( u, it.Index() ));
       }
 #ifdef _OPENMP
     }
@@ -297,9 +297,10 @@ cmtk::EchoPlanarUnwarpFunctional
   for ( size_t px = 0; px < nPixels; ++px )
     {
     diffImage[px] = function.m_CorrectedImageFwd[px] - function.m_CorrectedImageRev[px];
-    compositeImage[px] = diffImage[px] * ( function.m_UnwarpImageFwd[px] - function.m_UnwarpImageRev[px] );
+    compositeImage[px] = diffImage[px] * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] );
     }
 
+  std::vector<double> gJ( nPixels, 0.0 );
   double msd = 0;
 #ifndef _OPENMP
   const DataGrid::RegionType region = insideRegion;
@@ -321,18 +322,23 @@ cmtk::EchoPlanarUnwarpFunctional
       
       const Types::Coordinate diff = diffImage[px];
       msd += diff * diff;
-      g(pxg) = 2.0 * diff * (function.m_GradientImageFwd[px] + function.m_GradientImageRev[px]); // need "+" between gradient terms because we copmpute d/dx, not d/du
+      g(pxg) = 2.0 * diff * (function.m_GradientImageFwd[px] + function.m_GradientImageRev[px]); // need "+" between gradient terms because we computed dI/dx, not dI/du, and -du==dx
       
       // add gradient terms for Jacobians
       idx[phaseEncodeDirection] -= 1;
       px = sourceImage.GetOffsetFromIndex( idx );      
       g(pxg) += compositeImage[px];
+
+      gJ[pxg-1] -= compositeImage[px];
 										       
       idx[phaseEncodeDirection] += 2;
       px = sourceImage.GetOffsetFromIndex( idx );      
       g(pxg) -= compositeImage[px]; 
       
       g(pxg) /= insideRegionSize;
+
+      gJ[pxg-1] += compositeImage[px];
+      gJ[pxg-1] /= insideRegionSize;
       }
     }
   f = (msd /= insideRegionSize);
@@ -415,7 +421,25 @@ cmtk::EchoPlanarUnwarpFunctional
 #ifdef _OPENMP
     }
 #endif
+
+  static int iter=0;
+  char numStr[16];
+  sprintf( numStr, "%d.txt", iter );
+  std::ofstream ofs( numStr );
+
+  for ( size_t i = 0; i < 128; ++i )
+    {
+    ofs << i << "\t" << x(1+i) << "\t" << function.m_SmoothImageFwd->GetDataAt( i ) << "\t" << function.m_SmoothImageRev->GetDataAt( i ) << "\t" << function.m_GradientImageFwd[i] << "\t" << function.m_GradientImageRev[i] << "\t"
+	<< function.m_CorrectedImageFwd[i] << "\t" << function.m_CorrectedImageRev[i] << "\t" << gJ[i] << "\n";
+    }
   
+  if ( iter > 5 )
+    {
+    exit(1);
+    }
+  
+  ++iter;  
+
   DebugOutput( 5 ) << "f " << f << " msd " << msd << " smooth " << smooth << " fold " << fold << "\n";
 
 }
