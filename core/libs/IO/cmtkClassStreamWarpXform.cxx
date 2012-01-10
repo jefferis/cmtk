@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -94,22 +94,22 @@ ClassStream::Get
   warpXform = NULL;
 
   int WarpType = -1;
-  if ( this->Seek( "spline_warp" ) == TypedStream::OK ) 
+  if ( this->Seek( "spline_warp" ) == TypedStream::CONDITION_OK ) 
     WarpType = 1;
   else
-    if ( this->Seek( "linear_warp" ) == TypedStream::OK )
+    if ( this->Seek( "linear_warp" ) == TypedStream::CONDITION_OK )
       WarpType = 0;
     else 
       {
       this->Rewind();
-      if ( this->Seek( "registration", true /*forward*/ ) != TypedStream::OK )
+      if ( this->Seek( "registration", true /*forward*/ ) != TypedStream::CONDITION_OK )
 	{
 	return *this;
 	}
-      if ( this->Seek( "spline_warp" ) == TypedStream::OK ) 
+      if ( this->Seek( "spline_warp" ) == TypedStream::CONDITION_OK ) 
 	WarpType = 1;
       else
-	if ( this->Seek( "linear_warp" ) == TypedStream::OK )
+	if ( this->Seek( "linear_warp" ) == TypedStream::CONDITION_OK )
 	  WarpType = 0;
 	else
 	  return *this;
@@ -130,7 +130,7 @@ ClassStream::Get
   int absolute = this->ReadBool( "absolute", 0 );
   
   int dims[3];
-  if ( TypedStream::OK != this->ReadIntArray( "dims", dims, 3 ) ) 
+  if ( TypedStream::CONDITION_OK != this->ReadIntArray( "dims", dims, 3 ) ) 
     {
     return *this;
     }
@@ -143,12 +143,12 @@ ClassStream::Get
   Vector3D domain;
   Vector3D origin;
 
-  if ( this->ReadCoordinateArray( "domain", domain.begin(), 3 ) != TypedStream::OK )
+  if ( this->ReadCoordinateArray( "domain", domain.begin(), 3 ) != TypedStream::CONDITION_OK )
     this->ReadCoordinateArray( "extent", domain.begin(), 3 );
   
   int readOrigin = this->ReadCoordinateArray( "origin", origin.begin(), 3 );
   this->ReadCoordinateArray( "coefficients", Coefficients, numberOfParameters );
-  if ( !absolute && (readOrigin == TypedStream::OK) ) 
+  if ( !absolute && (readOrigin == TypedStream::CONDITION_OK) ) 
     {
     Types::Coordinate *p = Coefficients;
     for ( int z=0; z<dims[2]; ++z )
@@ -181,7 +181,7 @@ ClassStream::Get
     };
   
   byte *active = Memory::ArrayC::Allocate<byte>( (numberOfParameters / 8)+1 );
-  if ( this->ReadBoolArray( "active", active, numberOfParameters ) == TypedStream::OK ) 
+  if ( this->ReadBoolArray( "active", active, numberOfParameters ) == TypedStream::CONDITION_OK ) 
     {
     BitVector::SmartPtr bitSet( new BitVector( numberOfParameters, active ) );
     warpXform->SetActiveFlags( bitSet );

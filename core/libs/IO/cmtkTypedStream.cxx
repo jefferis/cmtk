@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -366,13 +366,13 @@ TypedStream
   if ( !File && !GzFile)
     {
     this->m_Status = Self::ERROR_INVALID;
-    return Self::ERROR;
+    return Self::CONDITION_ERROR;
     }
 
   if ( (this->m_Mode != Self::MODE_READ) && !section) 
     {
     this->m_Status = Self::ERROR_ARG;
-    return Self::ERROR;
+    return Self::CONDITION_ERROR;
     }
   
   if ( this->m_Mode == Self::MODE_READ ) 
@@ -381,7 +381,7 @@ TypedStream
       gzseek( GzFile, LevelStack.top(), SEEK_SET );
     else
       fseek( File, LevelStack.top(), SEEK_SET );
-    return Self::OK;
+    return Self::CONDITION_OK;
     } 
   else 
     {
@@ -407,7 +407,7 @@ TypedStream
       LevelStack.push( ftell( File ) );
     }
   
-  return Self::OK;
+  return Self::CONDITION_OK;
 }
 
 TypedStream::Condition
@@ -418,7 +418,7 @@ TypedStream
   if ( ! File && ! GzFile )
     {
     this->m_Status = Self::ERROR_INVALID;
-    return Self::ERROR;
+    return Self::CONDITION_ERROR;
     }
   
   if ( this->m_Mode == Self::MODE_READ ) 
@@ -427,7 +427,7 @@ TypedStream
       {
       // end without begin
       this->m_Status = Self::ERROR_LEVEL;
-      return Self::ERROR;
+      return Self::CONDITION_ERROR;
       }
 
     Self::Token token;
@@ -456,7 +456,7 @@ TypedStream
       {
       // end without begin
       this->m_Status = Self::ERROR_LEVEL;
-      return Self::ERROR;
+      return Self::CONDITION_ERROR;
       }
     
     LevelStack.pop();
@@ -479,7 +479,7 @@ TypedStream
     fflush( File );
     }
   
-  return Self::OK;
+  return Self::CONDITION_OK;
 }
   
 TypedStream::Condition
@@ -490,18 +490,18 @@ TypedStream
   if ( ! File && ! GzFile )
     {
     this->m_Status = Self::ERROR_INVALID;
-    return Self::ERROR;
+    return Self::CONDITION_ERROR;
     }
 
   if ( ! section ) 
     {
     this->m_Status = Self::ERROR_ARG;
-    return Self::ERROR;
+    return Self::CONDITION_ERROR;
     }
   if ( this->m_Mode != Self::MODE_READ ) 
     {
     this->m_Status = Self::ERROR_MODE;
-    return Self::ERROR;
+    return Self::CONDITION_ERROR;
     }
   
   unsigned initialLevel = LevelStack.size();
@@ -547,7 +547,7 @@ TypedStream
 	    LevelStack.push( gztell( GzFile ) );
 	  else
 	    LevelStack.push( ftell( File ) );
-	  return Self::OK;
+	  return Self::CONDITION_OK;
 	  }
 	if ( currentLevel == LevelStack.size()-1 ) 
 	  {
@@ -556,7 +556,7 @@ TypedStream
 	    LevelStack.push( gztell( GzFile ) );
 	  else
 	    LevelStack.push( ftell( File ) );
-	  return Self::OK;
+	  return Self::CONDITION_OK;
 	  }
 	}
       ++ currentLevel;
@@ -567,12 +567,12 @@ TypedStream
       if ( ! currentLevel ) 
 	{
 	this->m_Status = Self::ERROR_LEVEL;
-	return Self::ERROR;
+	return Self::CONDITION_ERROR;
 	}
       if ( currentLevel < initialLevel ) 
 	{
 	this->m_Status = Self::ERROR_NONE;
-	return Self::ERROR;
+	return Self::CONDITION_ERROR;
 	}
       -- currentLevel;
       }
@@ -580,7 +580,7 @@ TypedStream
   
   this->DebugOutput( "Section %s not found.", section );
   this->m_Status = Self::ERROR_NONE;
-  return Self::ERROR;
+  return Self::CONDITION_ERROR;
 }
 
 TypedStream::Condition
@@ -590,12 +590,12 @@ TypedStream
   if ( ! File && ! GzFile )
     {
     this->m_Status = Self::ERROR_INVALID;
-    return Self::ERROR;
+    return Self::CONDITION_ERROR;
     }
   if ( this->m_Mode != Self::MODE_READ ) 
     {
     this->m_Status = Self::ERROR_MODE;
-    return Self::ERROR;
+    return Self::CONDITION_ERROR;
     }
   
   if ( !LevelStack.empty() )
@@ -608,14 +608,14 @@ TypedStream
       if ( -1 == gzseek( GzFile, 0, SEEK_SET ) ) 
 	{
 	this->m_Status = Self::ERROR_SYSTEM;
-	return Self::ERROR;
+	return Self::CONDITION_ERROR;
 	}
       } 
     else
       if ( -1 == fseek( File, 0, SEEK_SET ) )
 	{
 	this->m_Status = Self::ERROR_SYSTEM;
-	return Self::ERROR;
+	return Self::CONDITION_ERROR;
 	}
     } 
   else 
@@ -625,17 +625,17 @@ TypedStream
       if (-1 == gzseek( GzFile, LevelStack.top(), SEEK_SET)) 
 	{
 	this->m_Status = Self::ERROR_SYSTEM;
-	return Self::ERROR;
+	return Self::CONDITION_ERROR;
 	}
       }
     else
       if (-1 == fseek( File, LevelStack.top(), SEEK_SET)) 
 	{
 	this->m_Status = Self::ERROR_SYSTEM;
-	return Self::ERROR;
+	return Self::CONDITION_ERROR;
 	}
     }
-  return Self::OK;
+  return Self::CONDITION_OK;
 }
 
 bool
@@ -644,8 +644,8 @@ TypedStream
 {
   int value;
   
-  if ( this->GenericReadArray( key, Self::TYPE_BOOL, &value, 1, forward ) != Self::OK )
-    if ( this->GenericReadArray( key, Self::TYPE_INT, &value, 1, forward ) != Self::OK )
+  if ( this->GenericReadArray( key, Self::TYPE_BOOL, &value, 1, forward ) != Self::CONDITION_OK )
+    if ( this->GenericReadArray( key, Self::TYPE_INT, &value, 1, forward ) != Self::CONDITION_OK )
       return defaultValue;
   
   return (value != 0);
@@ -663,7 +663,7 @@ TypedStream
 ::ReadInt( const char* key, const int defaultValue, const bool forward )
 {
   int value = defaultValue;
-  if ( this->GenericReadArray( key, Self::TYPE_INT, &value, 1, forward ) != Self::OK )
+  if ( this->GenericReadArray( key, Self::TYPE_INT, &value, 1, forward ) != Self::CONDITION_OK )
     return defaultValue;
   
   return value;
@@ -681,7 +681,7 @@ TypedStream
 ::ReadFloat( const char* key, const float defaultValue, const bool forward )
 {
   float value = defaultValue;
-  if ( this->GenericReadArray( key, Self::TYPE_FLOAT, &value, 1, forward ) != Self::OK )
+  if ( this->GenericReadArray( key, Self::TYPE_FLOAT, &value, 1, forward ) != Self::CONDITION_OK )
     return defaultValue;
   
   return value;
@@ -699,7 +699,7 @@ TypedStream
 ::ReadDouble( const char* key, const double defaultValue, const bool forward )
 {
   double value = defaultValue;
-  if ( this->GenericReadArray( key, Self::TYPE_DOUBLE, &value, 1, forward ) != Self::OK )
+  if ( this->GenericReadArray( key, Self::TYPE_DOUBLE, &value, 1, forward ) != Self::CONDITION_OK )
     return defaultValue;
   
   return value;
@@ -717,7 +717,7 @@ TypedStream
 ::ReadString( const char* key, const char *defaultValue, const bool forward )
 {
   char *value;
-  if ( this->GenericReadArray( key, Self::TYPE_STRING, &value, 1, forward ) != Self::OK )
+  if ( this->GenericReadArray( key, Self::TYPE_STRING, &value, 1, forward ) != Self::CONDITION_OK )
     {
     if ( defaultValue )
       return strdup( defaultValue );
@@ -745,7 +745,7 @@ TypedStream
       fputs( "\t", File );
     fprintf( File, "%s %s\n", key, (value) ? "yes" : "no");
     }
-  return Self::OK;
+  return Self::CONDITION_OK;
 }
 
 TypedStream::Condition
@@ -765,7 +765,7 @@ TypedStream
       fputs( "\t", File );
     fprintf( File, "%s %d\n", key, value );
     }
-  return Self::OK;
+  return Self::CONDITION_OK;
 }
 
 TypedStream::Condition
@@ -785,7 +785,7 @@ TypedStream
       fputs( "\t", File );
     fprintf( File, "%s %.*f\n", key, PrecisionFloat, value );
     }
-  return Self::OK;
+  return Self::CONDITION_OK;
 }
 
 TypedStream::Condition
@@ -805,7 +805,7 @@ TypedStream
       fputs( "\t", File );
     fprintf( File, "%s %.*f\n", key, PrecisionDouble, value );
     }
-  return Self::OK;
+  return Self::CONDITION_OK;
 }
 
 TypedStream::Condition
@@ -862,7 +862,7 @@ TypedStream
     fprintf( File, "%s \"%s\"\n", key, Buffer);
     }
   
-  return Self::OK;
+  return Self::CONDITION_OK;
 }
 
 TypedStream::Condition 
@@ -872,7 +872,7 @@ TypedStream
   if ( this->m_Mode != Self::MODE_WRITE ) 
     {
     this->m_Status = Self::ERROR_MODE;
-    return Self::ERROR;
+    return Self::CONDITION_ERROR;
     }
 
   static char buffer[1024];
@@ -887,7 +887,7 @@ TypedStream
   else
     fprintf( File, "! %s\n", buffer );
 
-  return Self::OK;
+  return Self::CONDITION_OK;
 }
 
 TypedStream::Condition 
@@ -904,7 +904,7 @@ TypedStream
   if ( this->m_Mode != Self::MODE_WRITE ) 
     {
     this->m_Status = Self::ERROR_MODE;
-    return Self::ERROR;
+    return Self::CONDITION_ERROR;
     }
 
   if ( this->GzFile )
@@ -925,7 +925,7 @@ TypedStream
   else
     fputs( "\n", File );
 
-  return Self::OK;
+  return Self::CONDITION_OK;
 }
 
 TypedStream::Condition
@@ -935,7 +935,7 @@ TypedStream
   if ( !array || size < 1) 
     {
     this->m_Status = Self::ERROR_ARG;
-    return Self::ERROR;
+    return Self::CONDITION_ERROR;
     }
   
   int currentLevel = LevelStack.size();
@@ -980,7 +980,7 @@ TypedStream
     fputs( "\n", File);
     }
   
-  return Self::OK;
+  return Self::CONDITION_OK;
 }
 
 TypedStream::Condition
@@ -990,7 +990,7 @@ TypedStream
   if ( !array || size < 1) 
     {
     this->m_Status = Self::ERROR_ARG;
-    return Self::ERROR;
+    return Self::CONDITION_ERROR;
     }
   
   int currentLevel = LevelStack.size();
@@ -1035,7 +1035,7 @@ TypedStream
     fputs( "\n", File );
     }
   
-  return Self::OK;
+  return Self::CONDITION_OK;
 }
 
 TypedStream::Condition
@@ -1045,7 +1045,7 @@ TypedStream
   if ( !array || size < 1) 
     {
     this->m_Status = Self::ERROR_ARG;
-    return Self::ERROR;
+    return Self::CONDITION_ERROR;
     }
   
   int currentLevel = LevelStack.size();
@@ -1090,7 +1090,7 @@ TypedStream
     fprintf( File, "\n" );
     }
   
-  return Self::OK;
+  return Self::CONDITION_OK;
 }
 
 TypedStream::Condition
@@ -1100,7 +1100,7 @@ TypedStream
   if ( !array || size < 1) 
     {
     this->m_Status = Self::ERROR_ARG;
-    return Self::ERROR;
+    return Self::CONDITION_ERROR;
     }
   
   int currentLevel = LevelStack.size();
@@ -1145,7 +1145,7 @@ TypedStream
     fprintf( File, "\n" );
     }
   
-  return Self::OK;
+  return Self::CONDITION_OK;
 }
 
 TypedStream::Condition
@@ -1155,7 +1155,7 @@ TypedStream
   if (!array || arraySize < 1) 
     {
     this->m_Status = Self::ERROR_ARG;
-    return Self::ERROR;
+    return Self::CONDITION_ERROR;
     }
   
   unsigned currentLevel = LevelStack.size();
@@ -1197,10 +1197,10 @@ TypedStream
 	      if ( *buffer == '\"' ) 
 		{
 		this->m_Status = Self::ERROR_TYPE;
-		return Self::ERROR;
+		return Self::CONDITION_ERROR;
 		}
 	      if ( i >= arraySize )
-		return Self::OK;
+		return Self::CONDITION_OK;
 	      arrayInt[i++] = atoi(buffer);
 	      buffer = strtok( NULL, "\t\n " );
 	      }
@@ -1208,7 +1208,7 @@ TypedStream
 	  if ( i < arraySize) 
 	    {
 	    this->m_Status = Self::ERROR_ARG;
-	    return Self::ERROR;
+	    return Self::CONDITION_ERROR;
 	    }
 	  break;
 	  }
@@ -1218,7 +1218,7 @@ TypedStream
 	  if (arraySize != 1) 
 	    {
 	    this->m_Status = Self::ERROR_ARG;
-	    return Self::ERROR;
+	    return Self::CONDITION_ERROR;
 	    }
 	  do 
 	    {
@@ -1226,7 +1226,7 @@ TypedStream
 	    while ( buffer ) 
 	      {
 	      if ( i >= arraySize )
-		return Self::OK;
+		return Self::CONDITION_OK;
 	      if ((buffer[0] == 'y' || buffer[0] == 'Y') &&
 		  (buffer[1] == 'e' || buffer[1] == 'E') &&
 		  (buffer[2] == 's' || buffer[2] == 'S')) 
@@ -1243,7 +1243,7 @@ TypedStream
 	  if ( i < arraySize ) 
 	    {
 	    this->m_Status = Self::ERROR_ARG;
-	    return Self::ERROR;
+	    return Self::CONDITION_ERROR;
 	    }
 	  break;
 	  }
@@ -1257,7 +1257,7 @@ TypedStream
 	    while ( (buffer[idx]=='0') || (buffer[idx]=='1') ) 
 	      {
 	      if ( i >= arraySize )
-		return Self::OK;
+		return Self::CONDITION_OK;
 	      if ( buffer[idx] == '0' )
 		arrayInt[i/8] &= ~(1<<(i%8));
 	      else
@@ -1269,7 +1269,7 @@ TypedStream
 	  if ( i < arraySize ) 
 	    {
 	    this->m_Status = Self::ERROR_ARG;
-	    return Self::ERROR;
+	    return Self::CONDITION_ERROR;
 	    }
 	  break;
 	  }
@@ -1284,10 +1284,10 @@ TypedStream
 	      if ( *buffer == '\"' ) 
 		{
 		this->m_Status = Self::ERROR_TYPE;
-		return Self::ERROR;
+		return Self::CONDITION_ERROR;
 		}
 	      if ( i >= arraySize )
-		return Self::OK;
+		return Self::CONDITION_OK;
 	      arrayFloat[i++] = static_cast<float>( atof( buffer ) );
 	      buffer = strtok( NULL, "\t\n " );
 	      }
@@ -1295,7 +1295,7 @@ TypedStream
 	  if ( i < arraySize ) 
 	    {
 	    this->m_Status = Self::ERROR_ARG;
-	    return Self::ERROR;
+	    return Self::CONDITION_ERROR;
 	    }
 	  break;
 	  }
@@ -1310,10 +1310,10 @@ TypedStream
 	    if ( *buffer == '\"' ) 
 	      {
 	      this->m_Status = Self::ERROR_TYPE;
-	      return Self::ERROR;
+	      return Self::CONDITION_ERROR;
 	      }
 	    if ( i >= arraySize )
-	      return Self::OK;
+	      return Self::CONDITION_OK;
 	    arrayDouble[i++] = atof( buffer );
 	    buffer = strtok( NULL, "\t\n " );
 	    }
@@ -1321,7 +1321,7 @@ TypedStream
 	if ( i < arraySize ) 
 	  {
 	  this->m_Status = Self::ERROR_ARG;
-	  return Self::ERROR;
+	  return Self::CONDITION_ERROR;
 	  }
 	break;
 	}
@@ -1334,11 +1334,11 @@ TypedStream
 	    while ( buffer ) 
 	      {
 	      if ( i >= arraySize )
-		return Self::OK;
+		return Self::CONDITION_OK;
 	      if ( *buffer != '\"' ) 
 		{
 		this->m_Status = Self::ERROR_TYPE;
-		return Self::ERROR;
+		return Self::CONDITION_ERROR;
 		}
 	      char *b;
 	      if (!(b = (char *)malloc(strlen(buffer)))) 
@@ -1346,7 +1346,7 @@ TypedStream
 		for (--i; i >= 0; i--)
 		  free( arrayString[i] );
 		this->m_Status = Self::ERROR_SYSTEM;
-		return Self::ERROR;
+		return Self::CONDITION_ERROR;
 		}
 	      arrayString[i++] = b;
 	      buffer++;
@@ -1381,12 +1381,12 @@ TypedStream
 	    for (--i; i >= 0; i--)
 	      free( arrayString[i] );
 	    this->m_Status = Self::ERROR_ARG;
-	    return Self::ERROR;
+	    return Self::CONDITION_ERROR;
 	    }
 	  break;
 	  }
 	  }
-	return Self::OK;
+	return Self::CONDITION_OK;
 	}
       continue;
       }
@@ -1403,14 +1403,14 @@ TypedStream
       if ( currentLevel == LevelStack.size() ) 
 	{
 	this->m_Status = Self::ERROR_NONE;
-	return Self::ERROR;
+	return Self::CONDITION_ERROR;
 	}
       LevelStack.pop();
       continue;
       }
     }
   
-  return Self::ERROR;
+  return Self::CONDITION_ERROR;
 }
 
 TypedStream::Token

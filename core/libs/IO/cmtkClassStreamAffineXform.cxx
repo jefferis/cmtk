@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -80,10 +80,10 @@ operator >> ( ClassStream& stream, AffineXform& affineXform )
   const char *referenceStudy = NULL;
   const char *floatingStudy = NULL;
 
-  if ( stream.Seek( "affine_xform", true /*forward*/ ) != TypedStream::OK )
+  if ( stream.Seek( "affine_xform", true /*forward*/ ) != TypedStream::CONDITION_OK )
     {
     stream.Rewind();
-    if ( stream.Seek( "registration", true /*forward*/ ) != TypedStream::OK )
+    if ( stream.Seek( "registration", true /*forward*/ ) != TypedStream::CONDITION_OK )
       {
       throw Exception( "Did not find 'registration' section in affine xform archive" );
       }
@@ -91,24 +91,24 @@ operator >> ( ClassStream& stream, AffineXform& affineXform )
     referenceStudy = stream.ReadString( "reference_study", NULL );
     floatingStudy = stream.ReadString( "floating_study", NULL );
 
-    if ( stream.Seek( "affine_xform", false /*forward*/ ) != TypedStream::OK )
+    if ( stream.Seek( "affine_xform", false /*forward*/ ) != TypedStream::CONDITION_OK )
       {
       throw Exception( "Did not find 'affine_xform' section in affine xform archive" );
       }
     }
 
-  if ( stream.ReadCoordinateArray( "xlate", parameters, 3 ) != TypedStream::OK )
+  if ( stream.ReadCoordinateArray( "xlate", parameters, 3 ) != TypedStream::CONDITION_OK )
     {
     parameters[0] = parameters[1] = parameters[2] = 0;
     }
-  if ( stream.ReadCoordinateArray( "rotate", parameters+3, 3 ) != TypedStream::OK )
+  if ( stream.ReadCoordinateArray( "rotate", parameters+3, 3 ) != TypedStream::CONDITION_OK )
     {
     parameters[3] = parameters[4] = parameters[5] = 0;
     }
   bool logScaleFactors = false;
-  if ( stream.ReadCoordinateArray( "scale", parameters+6, 3 ) != TypedStream::OK )
+  if ( stream.ReadCoordinateArray( "scale", parameters+6, 3 ) != TypedStream::CONDITION_OK )
     {
-    if ( stream.ReadCoordinateArray( "log_scale", parameters+6, 3 ) == TypedStream::OK )
+    if ( stream.ReadCoordinateArray( "log_scale", parameters+6, 3 ) == TypedStream::CONDITION_OK )
       {
       logScaleFactors = true;
       }
@@ -117,11 +117,11 @@ operator >> ( ClassStream& stream, AffineXform& affineXform )
       parameters[6] = parameters[7] = parameters[8] = 1;
       }
     }
-  if ( stream.ReadCoordinateArray( "shear", parameters+9, 3 ) != TypedStream::OK )
+  if ( stream.ReadCoordinateArray( "shear", parameters+9, 3 ) != TypedStream::CONDITION_OK )
     {
     parameters[9] = parameters[10] = parameters[11] = 0;
     }
-  if ( stream.ReadCoordinateArray( "center", parameters+12, 3 ) != TypedStream::OK )
+  if ( stream.ReadCoordinateArray( "center", parameters+12, 3 ) != TypedStream::CONDITION_OK )
     {
     parameters[12] = parameters[13] = parameters[14] = 0;
     }

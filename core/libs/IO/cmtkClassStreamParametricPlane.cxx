@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -44,7 +44,7 @@ ClassStream::operator>>( ParametricPlane*& parametricPlane )
 {
   parametricPlane = NULL;
 
-  if ( this->Seek( "plane" ) != TypedStream::OK )
+  if ( this->Seek( "plane" ) != TypedStream::CONDITION_OK )
     return *this;
   
   parametricPlane = new ParametricPlane();
