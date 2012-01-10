@@ -300,7 +300,6 @@ cmtk::EchoPlanarUnwarpFunctional
     compositeImage[px] = diffImage[px] * ( function.m_UnwarpImageFwd[px] + function.m_UnwarpImageRev[px] );
     }
 
-  std::vector<double> gJ( nPixels, 0.0 );
   double msd = 0;
 #ifndef _OPENMP
   const DataGrid::RegionType region = insideRegion;
@@ -328,17 +327,12 @@ cmtk::EchoPlanarUnwarpFunctional
       idx[phaseEncodeDirection] -= 1;
       px = sourceImage.GetOffsetFromIndex( idx );      
       g(pxg) += compositeImage[px];
-
-      gJ[pxg-1] -= compositeImage[px];
 										       
       idx[phaseEncodeDirection] += 2;
       px = sourceImage.GetOffsetFromIndex( idx );      
       g(pxg) -= compositeImage[px]; 
       
       g(pxg) /= insideRegionSize;
-
-      gJ[pxg-1] += compositeImage[px];
-      gJ[pxg-1] /= insideRegionSize;
       }
     }
   f = (msd /= insideRegionSize);
@@ -421,24 +415,6 @@ cmtk::EchoPlanarUnwarpFunctional
 #ifdef _OPENMP
     }
 #endif
-
-  static int iter=0;
-  char numStr[16];
-  sprintf( numStr, "%d.txt", iter );
-  std::ofstream ofs( numStr );
-
-  for ( size_t i = 0; i < 128; ++i )
-    {
-    ofs << i << "\t" << x(1+i) << "\t" << function.m_SmoothImageFwd->GetDataAt( i ) << "\t" << function.m_SmoothImageRev->GetDataAt( i ) << "\t" << function.m_GradientImageFwd[i] << "\t" << function.m_GradientImageRev[i] << "\t"
-	<< function.m_CorrectedImageFwd[i] << "\t" << function.m_CorrectedImageRev[i] << "\t" << gJ[i] << "\n";
-    }
-  
-  if ( iter > 5 )
-    {
-    exit(1);
-    }
-  
-  ++iter;  
 
   DebugOutput( 5 ) << "f " << f << " msd " << msd << " smooth " << smooth << " fold " << fold << "\n";
 
