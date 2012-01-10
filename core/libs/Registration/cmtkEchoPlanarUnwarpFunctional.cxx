@@ -32,10 +32,10 @@
 
 #include <Base/cmtkDataGrid.h>
 #include <Base/cmtkSincInterpolator.h>
-#include <Base/cmtkCubicInterpolator.h>
 #include <Base/cmtkRegionIndexIterator.h>
 #include <Base/cmtkUniformVolumeFilter.h>
 
+#include <System/cmtkExitException.h>
 #include <System/cmtkDebugOutput.h>
 #include <System/cmtkProgress.h>
 
@@ -43,7 +43,7 @@
 
 #include <algorithm>
 
-const int cmtk::EchoPlanarUnwarpFunctional::InterpolationKernelRadius = 3; 
+const int cmtk::EchoPlanarUnwarpFunctional::InterpolationKernelRadius = 2;
 
 cmtk::EchoPlanarUnwarpFunctional::EchoPlanarUnwarpFunctional
 ( UniformVolume::SmartConstPtr& imageFwd, UniformVolume::SmartConstPtr& imageRev, const byte phaseEncodeDirection )
