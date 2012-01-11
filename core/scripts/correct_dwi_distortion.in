@@ -49,6 +49,22 @@ b0Rev=$2
 b0Fwd=$3
 
 shift 3
+bXlist="$*"
+
+#
+# First, do eddy currents by registering all bX images to forward b=0 image
+#
+for bX in ${bXlist}; do
+    base=`basename $bX`
+    pref=`echo ${base} | sed 's/\..*//g'`
+
+    xform=${outdir}/eddy/b0_${pref}.xform
+    if needs_update_and_lock ${xform} ${b0Fwd} ${bX}; then
+	echo "Computing eddy current correction for ${base}..."
+	cmtk registrationx  --cubic --dofs 9,12 --auto-multi-levels 2 --nmi -o ${xform} ${b0Fwd} ${bX}
+	lockfile_delete ${xform}
+    fi
+done
  
 if needs_update_and_lock ${outdir}/dfield_fwd.nrrd ${b0Fwd} ${b0Rev}; then
     echo "Computing deformation..."
@@ -62,11 +78,13 @@ if needs_update_and_lock ${average} ${outdir}/b0Fwd.nii ${outdir}/b0Rev.nii; the
     lockfile_delete ${average}
 fi
 
-for bX in $*; do
+for bX in ${bXlist}; do
     base=`basename $bX`
-    if needs_update_and_lock ${outdir}/${base} ${bX} ${outdir}/dfield_fwd.nrrd; then
+    pref=`echo ${base} | sed 's/\..*//g'`
+    xform=${outdir}/eddy/b0_${pref}.xform
+    if needs_update_and_lock ${outdir}/${base} ${bX} ${outdir}/dfield_fwd.nrrd ${xform}; then
 	echo "Unwarping $bX"
-	cmtk reformatx --sinc-cosine -o ${outdir}/${base} --floating ${bX} ${average} ${outdir}/dfield_fwd.nrrd && cmtk imagemath --in ${outdir}/jacobian.nii ${outdir}/${base} --mul --out ${outdir}/${base}
+	cmtk reformatx --sinc-cosine -o ${outdir}/${base} --floating ${bX} ${average} ${outdir}/dfield_fwd.nrrd ${xform} && cmtk imagemath --in ${outdir}/jacobian.nii ${outdir}/${base} --mul --out ${outdir}/${base}
 	lockfile_delete ${outdir}/${base}
     fi
 done
