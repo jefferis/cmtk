@@ -53,7 +53,7 @@ LIST(APPEND testList
 # ==========================================
 # Tests for "dbtool"
 IF(CMTK_USE_SQLITE)
-  SET(testList ${testList}
+  LIST(APPEND testList
     dbtool_AddImages
     dbtool_AddImages2
     dbtool_ListSpace
@@ -116,7 +116,7 @@ LIST(APPEND testList
 
 # ==========================================
 # Tests for "groupwise_affine" tool
-SET(testList ${testList}
+LIST(APPEND testList
   groupwise_affineFromInit
   groupwise_affineMatchHistograms
   groupwise_affineFromInitSampling
@@ -148,11 +148,11 @@ LIST(APPEND testList
 # ==========================================
 # Tests for xml, wiki, man, and help markups
 FOREACH(t film levelset mrbias registration)
-  LIST(APPEND testListxml_${t} wiki_${t} man_${t})
+  LIST(APPEND testList xml_${t} wiki_${t} man_${t})
 ENDFOREACH(t film levelset mrbias registration)
 
 FOREACH(t film)
-  LIST(APPEND testListhelp_${t} help_all_${t})
+  LIST(APPEND testList help_${t} help_all_${t})
 ENDFOREACH(t film)
 
 # ==========================================
@@ -255,7 +255,7 @@ LIST(APPEND testList
   convertxReplaceInfNaN)
 
 IF(CMTK_BUILD_NRRD)
-  LIST(APPEND testListconvertxDownsampleNrrd convertxDownsampleSelectNrrd)
+  LIST(APPEND testList convertxDownsampleNrrd convertxDownsampleSelectNrrd)
 ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
@@ -297,7 +297,8 @@ LIST(APPEND testList
 
 # ==========================================
 # Tests for "glm" tool
-LIST(APPEND testListglmDefault glmNormalize glmExp glmNoConstant glmIgnore glmSelect glmCrop)
+LIST(APPEND testList
+  glmDefault glmNormalize glmExp glmNoConstant glmIgnore glmSelect glmCrop)
 
 # ==========================================
 # Tests for "gmm" tool
@@ -320,7 +321,7 @@ LIST(APPEND testList
 
 # ==========================================
 # Tests for "histogram" tool
-SET(testList ${testList}
+LIST(APPEND testList
   histogram 
   histogramNorm
   histogramBinsMinMax
@@ -390,7 +391,7 @@ LIST(APPEND testList
   make_initial_affinePrincipalAxes6)
 
 IF(CMTK_BUILD_NRRD)
-  SET(testList ${testList}
+  LIST(APPEND testList
     make_initial_affineDirectionVectorsNrrdAxSa
     make_initial_affineDirectionVectorsNrrdAxCo
     make_initial_affineDirectionVectorsNrrdSaCo
@@ -400,7 +401,7 @@ IF(CMTK_BUILD_NRRD)
 ENDIF(CMTK_BUILD_NRRD)
 
 IF(CMTK_USE_SQLITE)
-  SET(testList ${testList}
+  LIST(APPEND testList
     make_initial_affineDB)
 ENDIF(CMTK_USE_SQLITE)  
 
@@ -470,7 +471,7 @@ LIST(APPEND testList
 
 # ==========================================
 # Tests for "reorient" tool
-SET(testList ${testList}
+LIST(APPEND testList
   reorientHdrSaToAx
   reorientHdrCoToAx
   reorientHdrAxToSa
@@ -487,15 +488,15 @@ ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
 # Tests for "split" tool
-LIST(APPEND testListsplitAxial splitSagittal2 splitCoronal3)
+LIST(APPEND testList splitAxial splitSagittal2 splitCoronal3)
 
 IF(CMTK_BUILD_NRRD)
-  LIST(APPEND testListsplitAxialNrrd)
+  LIST(APPEND testList splitAxialNrrd)
 ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
 # Tests for "overlap" tool
-SET(testList ${testList}
+LIST(APPEND testList
   overlap
   overlapNumLabels
   overlapByLabel
@@ -505,7 +506,7 @@ SET(testList ${testList}
 
 # ==========================================
 # Tests for "probe" tool
-SET(testList ${testList}
+LIST(APPEND testList
   probeIndexed
   probeAbsolute
   probeRelative
@@ -618,15 +619,15 @@ ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
 # Tests for "sequence" tool
-LIST(APPEND testListsequenceDefault sequenceFormat sequenceThresh sequenceAbs sequenceAbsThresh)
+LIST(APPEND testList sequenceDefault sequenceFormat sequenceThresh sequenceAbs sequenceAbsThresh)
 
 # ==========================================
 # Tests for "similarity" tool
-LIST(APPEND testListsimilarityGrey similarityLabels similarityGreyMask similarityLabelsMask)
+LIST(APPEND testList similarityGrey similarityLabels similarityGreyMask similarityLabelsMask)
 
 # ==========================================
 # Tests for "sympl" tool
-LIST(APPEND testListsymmetry_plane symmetry_planeThresh)
+LIST(APPEND testList symmetry_plane symmetry_planeThresh)
 
 # ==========================================
 # Tests for "symplx" tool
@@ -658,16 +659,16 @@ LIST(APPEND testList
 
 # ==========================================
 # Tests for "ttest" tool
-LIST(APPEND testListttestDefault ttestLog ttestAbsLog ttestInvert
+LIST(APPEND testList ttestDefault ttestLog ttestAbsLog ttestInvert
   ttestPaired ttestCrossCorrelation ttestZScores
   ttestMask ttestOneSided)
 
 # ==========================================
 # Tests for "unsplit" tool
-LIST(APPEND testListunsplitHdrAx unsplitHdrSa unsplitHdrCo)
+LIST(APPEND testList unsplitHdrAx unsplitHdrSa unsplitHdrCo)
 
 IF(CMTK_BUILD_NRRD)
-  LIST(APPEND testListunsplitHdrNrrdAx unsplitHdrNrrdSa unsplitHdrNrrdCo unsplitNrrdNrrd)
+  LIST(APPEND testList unsplitHdrNrrdAx unsplitHdrNrrdSa unsplitHdrNrrdCo unsplitNrrdNrrd)
 ENDIF(CMTK_BUILD_NRRD)
 
 # ==========================================
