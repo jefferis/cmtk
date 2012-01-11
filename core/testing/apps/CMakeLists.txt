@@ -547,6 +547,9 @@ LIST(APPEND testList
   registrationxWithInitial
   registrationxWithInitialInverse
   registrationxAutoLevelsRat4
+  registrationxAutoLevelsRat4XY
+  registrationxAutoLevelsRat4YZ
+  registrationxAutoLevelsRat4XZ
   registrationxAutoLevelsRat4Symmetric
   registrationxAutoLevelsRat4NONE
   registrationxAutoLevelsRat4FOV

@@ -1642,6 +1642,18 @@ case ${RUNTEST} in
 	run registrationx -v --auto-multi-levels 4 --dofs 6 -o ${tmpdir} --write-itk ${tmpdir}/xform.tfm rat_fse_erly.hdr rat_fse_late.hdr
 	check_results registration xform.tfm
 	;;
+    registrationxAutoLevelsRat4XY)
+        run registrationx -v --restrict-in-plane xy --auto-multi-levels 4 --dofs 6,12 -o ${tmpdir} rat_fse_erly.hdr rat2_fse_late.hdr
+	check_results registration
+	;;
+    registrationxAutoLevelsRat4XZ)
+        run registrationx -v --restrict-in-plane xz --auto-multi-levels 4 --dofs 6,12 -o ${tmpdir} rat_fse_erly.hdr rat2_fse_late.hdr
+	check_results registration
+	;;
+    registrationxAutoLevelsRat4YZ)
+        run registrationx -v --restrict-in-plane yz --auto-multi-levels 4 --dofs 6,12 -o ${tmpdir} rat_fse_erly.hdr rat2_fse_late.hdr
+	check_results registration
+	;;
     registrationxAutoLevelsRat4Symmetric)
 	run registrationx -v --symmetric --auto-multi-levels 4 --dofs 6 -o ${tmpdir} rat_fse_erly.hdr rat_fse_late.hdr
 	check_results registration

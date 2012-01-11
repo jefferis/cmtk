@@ -1,0 +1,13 @@
+! TYPEDSTREAM 1.1
+
+registration {
+	reference_study "rat_fse_erly.hdr"
+	floating_study "rat2_fse_late.hdr"
+	affine_xform {
+		xlate 0.4 0.4 0 
+		rotate 0 0 0.0643083083 
+		scale 0.980952381 0.9642857143 1 
+		shear -0.006349206349 0 0 
+		center 31.5 31.5 7.200000286 
+	}
+}
