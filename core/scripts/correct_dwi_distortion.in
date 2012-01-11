@@ -61,7 +61,7 @@ for bX in ${bXlist}; do
     xform=${outdir}/eddy/b0_${pref}.xform
     if needs_update_and_lock ${xform} ${b0Fwd} ${bX}; then
 	echo "Computing eddy current correction for ${base}..."
-	cmtk registrationx  --cubic --dofs 9,12 --auto-multi-levels 2 --nmi -o ${xform} ${b0Fwd} ${bX}
+	cmtk registrationx --restrict-in-plane xy --cubic --dofs 9,12 --auto-multi-levels 2 --nmi -o ${xform} ${b0Fwd} ${bX}
 	lockfile_delete ${xform}
     fi
 done

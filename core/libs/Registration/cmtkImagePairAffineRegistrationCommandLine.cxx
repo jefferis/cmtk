@@ -150,10 +150,17 @@ ImagePairAffineRegistrationCommandLine
     cl.AddSwitch( Key( "symmetric" ), &this->m_SymmetricFwdBwd, true, "Use symmetric registration functional to simultaneously estimate forward and inverse transformation. "
 		  "This increases ragistration time substantially but produces a result that is invariant under exchange of fixed and moving image. "
 		  "It may also be more robust and/or more accurate than forward-only registration." );
+
+    CommandLine::EnumGroup<int>::SmartPtr
+      inPlaneGroup = cl.AddEnum( "restrict-in-plane", &this->m_RestrictToInPlane, "Restrict the affine trasnformation to be in-plane for planes perpendicular to a given coordinate axis." );
+    inPlaneGroup->AddSwitch( Key( "xy" ), 2, "Transformation restricted to in-plane for 'xy' plane (perpendicular to z coordinate axis)." );
+    inPlaneGroup->AddSwitch( Key( "xz" ), 1, "Transformation restricted to in-plane for 'xz' plane (perpendicular to y coordinate axis)." );
+    inPlaneGroup->AddSwitch( Key( "yz" ), 0, "Transformation restricted to in-plane for 'yz' plane (perpendicular to x coordinate axis)." );
+    inPlaneGroup->AddSwitch( Key( "none" ), -1, "Full 3D affine transformation is computed." );
     
     CommandLine::EnumGroup<MakeInitialAffineTransformation::Mode>::SmartPtr
       initGroup = cl.AddEnum( "init", &this->m_Initializer, "Select initializer for the affine trasnformation." );
-    initGroup->AddSwitch( Key( "none" ), MakeInitialAffineTransformation::NONE, "Use input transformation, or identity transformation if none was provided ." );
+    initGroup->AddSwitch( Key( "none" ), MakeInitialAffineTransformation::NONE, "Use input transformation, or identity transformation if none was provided." );
     initGroup->AddSwitch( Key( "fov" ), MakeInitialAffineTransformation::FOV, "Align centers of field of view (or crop regions) using a translation." );
     initGroup->AddSwitch( Key( "com" ), MakeInitialAffineTransformation::COM, "Align centers of mass using a translation." );
     initGroup->AddSwitch( Key( "pax" ), MakeInitialAffineTransformation::PAX, "Align images by rotation using principal axes and translation using centers of mass." );

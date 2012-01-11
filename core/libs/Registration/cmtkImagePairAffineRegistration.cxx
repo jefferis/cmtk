@@ -58,7 +58,8 @@ cmtk
 ImagePairAffineRegistration::ImagePairAffineRegistration () :
   m_Initializer( MakeInitialAffineTransformation::FOV ),
   m_SymmetricFwdBwd( false ),
-  m_MatchFltToRefHistogram( false )
+  m_MatchFltToRefHistogram( false ),
+  m_RestrictToInPlane( -1 )
 { 
 }
 
@@ -169,12 +170,22 @@ ImagePairAffineRegistration
     {
     ImagePairSymmetricAffineRegistrationFunctional *functional = ImagePairSymmetricAffineRegistrationFunctional::Create( this->m_Metric, nextRef, nextFlt, this->m_FloatingImageInterpolation, affineXform );
     functional->SetForceOutside( this->m_ForceOutsideFlag, this->m_ForceOutsideValue );
+
+    if ( this->m_RestrictToInPlane >=0 )
+      {
+      StdErr << "WARNING: cannot restrict transformation to in-plane when symmetric computation is used; ignoring this.\n";
+      }
+    
     return functional;
     }
   else
     {
     ImagePairAffineRegistrationFunctional *functional = ImagePairAffineRegistrationFunctional::Create( this->m_Metric, nextRef, nextFlt, this->m_FloatingImageInterpolation, affineXform );
     functional->SetForceOutside( this->m_ForceOutsideFlag, this->m_ForceOutsideValue );
+    if ( this->m_RestrictToInPlane >=0 )
+      {
+      functional->SetRestrictToInPlane( this->m_RestrictToInPlane );
+      }
     return functional;
     }
 }

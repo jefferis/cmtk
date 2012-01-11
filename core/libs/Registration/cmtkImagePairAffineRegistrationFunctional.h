@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -80,10 +80,7 @@ public:
   }
 
   /// Return parameter stepping.
-  virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const 
-  {
-    return this->m_AffineXform->GetParamStep( idx, this->m_FloatingSize, mmStep );
-  }
+  virtual Types::Coordinate GetParamStep( const size_t idx, const Types::Coordinate mmStep = 1 ) const;
 
   /// Return the transformation's parameter vector dimension.
   virtual size_t ParamVectorDim() const 
@@ -97,9 +94,23 @@ public:
     return this->m_AffineXform->VariableParamVectorDim();
   }
 
+  /// Set optional restriction to axis-orthogonal in-plane transformations.
+  void SetRestrictToInPlane( const int axis )
+  {
+    this->m_RestrictToInPlane = axis;
+  }
+
 protected:
   /// Current coordinate transformation.
   AffineXform::SmartPtr m_AffineXform;
+
+  /** Restrict to in-plance transformations.
+   * If this is -1 (default), then the full 3D transformation is optimized. If set to 0, 1, or 2, the
+   * value is the index of a coordinate axis (x, y, or z), and the transformation is restricted to
+   * components in-plane perpendicular to that axis, e.g., rotation around the axis and translations
+   * perpendicular to it.
+   */
+  int m_RestrictToInPlane;
 
   /// Utility object for volume clipping.
   VolumeClipping Clipper;
@@ -245,7 +256,8 @@ public:
   /// Constructor.
   ImagePairAffineRegistrationFunctional( UniformVolume::SmartPtr refVolume, UniformVolume::SmartPtr modVolume, AffineXform::SmartPtr& affineXform ) 
     : ImagePairRegistrationFunctional( refVolume, modVolume ),
-      m_AffineXform( affineXform )   
+      m_AffineXform( affineXform ),
+      m_RestrictToInPlane( -1 )
   {}
 
   /// Destructor.

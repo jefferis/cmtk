@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -46,6 +46,60 @@ cmtk
 
 /** \addtogroup Registration */
 //@{
+
+Types::Coordinate
+ImagePairAffineRegistrationFunctional::GetParamStep( const size_t idx, const Types::Coordinate mmStep ) const 
+{
+  switch ( this->m_RestrictToInPlane )
+    {
+    case 0:
+      switch ( idx )
+	{
+	case 0: //xlate x
+	case 4: //rot y
+	case 5: //rot z
+	case 6: //scale x
+	case 9: //shear xy
+	case 10: //shear xz
+	  return 0.0;
+	default:
+	  break;
+	}
+      break;
+    case 1:
+      switch ( idx )
+	{
+	case 1: //xlate y
+	case 3: //rot x
+	case 5: //rot z
+	case 7: //scale y
+	case 9: //shear xy
+	case 11: //shear yz
+	  return 0.0;
+	default:
+	  break;
+	}
+      break;
+    case 2:
+      switch ( idx )
+	{
+	case 2: //xlate z
+	case 3: //rot x
+	case 4: //rot y
+	case 8: //scale z
+	case 10: //shear xz
+	case 11: //shear yz
+	  return 0.0;
+	default:
+	  break;
+	}
+      break;
+    default:
+      break;
+    }
+  
+  return this->m_AffineXform->GetParamStep( idx, this->m_FloatingSize, mmStep );  
+}
 
 ImagePairAffineRegistrationFunctional* 
 ImagePairAffineRegistrationFunctional

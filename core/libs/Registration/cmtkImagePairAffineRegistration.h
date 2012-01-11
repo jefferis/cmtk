@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -81,6 +81,13 @@ protected:
    * of freedom for the finest resolution level.
    */
   std::vector<short> NumberDOFsFinal;
+
+  /** Restrict to in-plane transformations.
+   * If this is set to a number between 0 and 2, it indexes a coordinate axis,
+   * and computed transformations are restricted to be in-plane with respect to
+   * planes perpendicular to that axis.
+   */
+  int m_RestrictToInPlane;
 
   /** Initialize registration.
    * This function is called by Register before any other operations. It can
