@@ -1,5 +1,8 @@
 Release CMTK-2.1.2:
 
+(r3722) Added: "registrationx" tool can now compute transformations restricted
+    to in-plane components for a selected plane (xy, xz, or yz). This is
+    useful for eddy current distortion correction in EPI unwarping,
 (r3719) Added: new "correct_dwi_distortion" script applies distortion
     correction to an entire series of diffusion-weighted images.
 
