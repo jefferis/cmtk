@@ -1,5 +1,7 @@
 Release CMTK-2.1.2:
 
+(r3719) Added: new "correct_dwi_distortion" script applies distortion
+    correction to an entire series of diffusion-weighted images.
 
 
 Release CMTK-2.1.1 (2012-01-10):
