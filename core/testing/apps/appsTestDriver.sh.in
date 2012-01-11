@@ -751,7 +751,8 @@ case ${RUNTEST} in
         export CMTK_NUM_THREADS=1
         run epiunwarp --write-jacobian-fwd ${tmpdir}/jacobian.nii --folding-constraint-weight 0 --smooth-sigma-max 16 --smooth-sigma-min 0 --smooth-sigma-diff 1 --iterations 5 --smoothness-constraint-weight 1e4 --phase-encode-ap dwi_fwd.nii dwi_rev.nii ${tmpdir}/c1.nii ${tmpdir}/c2.nii ${tmpdir}/df.nrrd
         unset CMTK_NUM_THREADS
-	check_images c1.nii c2.nii df.nrrd jacobian.nii
+	check_images c1.nii c2.nii jacobian.nii
+	check_results df.nrrd
 	;;
     filterGaussian)
 	run filter --gaussian 1 --radius 2 rat_fse_erly.hdr ${tmpdir}/filter.hdr
