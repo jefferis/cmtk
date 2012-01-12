@@ -147,9 +147,11 @@ LIST(APPEND testList
 
 # ==========================================
 # Tests for xml, wiki, man, and help markups
-FOREACH(t film levelset mrbias registration)
-  LIST(APPEND testList xml_${t} wiki_${t} man_${t})
-ENDFOREACH(t film levelset mrbias registration)
+IF(CMTK_USE_SQLITE)
+  FOREACH(t film levelset mrbias registration)
+    LIST(APPEND testList xml_${t} wiki_${t} man_${t})
+  ENDFOREACH(t film levelset mrbias registration)
+ENDIF(CMTK_USE_SQLITE)
 
 FOREACH(t film)
   LIST(APPEND testList help_${t} help_all_${t})
