@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -62,6 +62,7 @@ cmtk::Interpolators::InterpolationEnum AverageImageInterpolation = cmtk::Interpo
 
 bool AlignCentersOfMass = false;
 bool InitScales = false;
+bool CenterTemplate = false;
 
 // this vector holds all target image filenames
 std::vector<const char*> fileNameList;
@@ -86,11 +87,12 @@ doMain( int argc, const char* argv[] )
     cl.AddOption( Key( 'O', "output-root" ), &OutputRootDirectory, "Root directory for all output files." );
     cl.AddOption( Key( 'o', "output" ), &OutputArchive, "Output filename for groupwise registration archive." );
     cl.AddOption( Key( "output-average" ), &AverageImagePath, "Output filename for registered average image." );
-    cl.AddSwitch( Key( "average-cubic" ), &AverageImageInterpolation, cmtk::Interpolators::CUBIC, "Use cubic interpolation for average image (default: linear)" );
+    cl.AddSwitch( Key( "average-cubic" ), &AverageImageInterpolation, cmtk::Interpolators::CUBIC, "Use cubic (rather than linear) interpolation for average image." );
     cl.AddSwitch( Key( "no-output-average" ), &AverageImagePath, (const char*)NULL, "Do not write average image." );
 
-    cl.AddSwitch( Key( "align-centers-of-mass" ), &AlignCentersOfMass, true, "Initially align centers of mass [default: centers of Bounding Boxes]" );
-    cl.AddSwitch( Key( "init-scales" ), &InitScales, true, "Initialize scale factors using first-order moments [default: off]" );
+    cl.AddSwitch( Key( "align-centers-of-mass" ), &AlignCentersOfMass, true, "Initially align centers of mass rather than centers of bounding boxes." );
+    cl.AddSwitch( Key( "init-scales" ), &InitScales, true, "Initialize scale factors using first-order moments" );
+    cl.AddSwitch( Key( "center-template" ), &CenterTemplate, true, "Center aligned images in template grid field of view." );
 
     cl.Parse( argc, const_cast<const char**>( argv ) );
 
@@ -139,7 +141,7 @@ doMain( int argc, const char* argv[] )
   cmtk::DebugOutput( 1 ).GetStream().printf( "Template grid is %d x %d x %d pixels of size %f x %f x %f\n",
 					     templateGrid->m_Dims[0], templateGrid->m_Dims[1], templateGrid->m_Dims[2], templateGrid->m_Delta[0], templateGrid->m_Delta[1], templateGrid->m_Delta[2] );
   
-  cmtk::GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms( *initializer, true /*alignCenters*/, AlignCentersOfMass, InitScales );
+  cmtk::GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms( *initializer, true /*alignCenters*/, AlignCentersOfMass, InitScales, CenterTemplate );
 
   cmtk::GroupwiseRegistrationOutput output;
   if ( PreDefinedTemplatePath )

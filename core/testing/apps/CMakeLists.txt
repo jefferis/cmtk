@@ -110,7 +110,8 @@ LIST(APPEND testList epiunwarp)
 # ==========================================
 # Tests for "groupwise_init" tool
 LIST(APPEND testList
-  groupwise_initCentersOfMass 
+  groupwise_initCenterFOV
+  groupwise_initCentersOfMass   
   groupwise_initCentersOfMassScale
   groupwise_initCentersOfMassTemplate)
 

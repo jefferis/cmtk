@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -43,7 +43,7 @@ cmtk
 
 void
 GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms
-( GroupwiseRegistrationFunctionalBase& functional, const bool alignCenters, const bool alignCenterOfMass, const bool initScales )
+( GroupwiseRegistrationFunctionalBase& functional, const bool alignCenters, const bool alignCenterOfMass, const bool initScales, const bool centerInTemplateFOV )
 {
   const size_t numberOfImages = functional.m_ImageVector.size();
 
@@ -56,8 +56,6 @@ GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms
   functional.m_XformVector.resize( numberOfImages );
 
   Vector3D centerAverage;
-  std::fill( centerAverage.begin(), centerAverage.end(), 0 );
-
   // first get all image centers (either FOV or center of mass)
   for ( size_t imageIdx = 0; imageIdx < numberOfImages; ++imageIdx )
     {
@@ -79,11 +77,25 @@ GroupwiseRegistrationFunctionalAffineInitializer::InitializeXforms
 	centers[imageIdx] = functional.m_ImageVector[imageIdx]->GetCenter();
 	}
       }
-    centerAverage += centers[imageIdx];
     }
-
-  // compute average of all image centers
-  centerAverage *= (1.0 / numberOfImages);
+  
+  if ( centerInTemplateFOV )
+    {
+    // if so desired, center in template image FOV
+    centerAverage = centerTemplate;
+    }
+  else
+    {
+    // if not aligning with template FOV, compute centrioid of input image centers.
+    std::fill( centerAverage.begin(), centerAverage.end(), 0 );
+    for ( size_t imageIdx = 0; imageIdx < numberOfImages; ++imageIdx )
+      {
+      centerAverage += centers[imageIdx];
+      }
+    
+    // compute average of all image centers
+    centerAverage *= (1.0 / numberOfImages);
+    }
   
   // now make sure every image gests shifted so their center align, and the overall shift is zero
   for ( size_t imageIdx = 0; imageIdx < numberOfImages; ++imageIdx )
