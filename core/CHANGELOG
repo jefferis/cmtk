@@ -1,5 +1,7 @@
 Release CMTK-2.1.2:
 
+(r3728) Added: "groupwise_init" tool can now center aligned image ensemble
+    inside template field of view ("--center-template" command line switch).
 (r3722) Added: "registrationx" tool can now compute transformations restricted
     to in-plane components for a selected plane (xy, xz, or yz). This is
     useful for eddy current distortion correction in EPI unwarping,
