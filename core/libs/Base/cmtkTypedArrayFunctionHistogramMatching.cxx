@@ -79,8 +79,10 @@ cmtk::TypedArrayFunctionHistogramMatching
     normalizedFixedHistogram[l] = 1.0 * (*(this->m_FixedArrayHistogram))[l] / (*(this->m_FixedArrayHistogram))[fixedNumBins-1];
     }
   
+  this->m_Lookup[0] = 0;
+  
   size_t j = 0;
-  for ( size_t i = 0; i < variableNumBins; ++i )
+  for ( size_t i = 1; i < variableNumBins; ++i )
     {
     while ((j < fixedNumBins) && (normalizedFixedHistogram[j] < normalizedVariableHistogram[i]))
       {
