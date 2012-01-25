@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2010 Torsten Rohlfing
 ##
-##  Copyright 2004-2011 SRI International
+##  Copyright 2004-2012 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -47,6 +47,7 @@ SET(APPS avg_adm
   convertx
   convert_warp
   destripe
+  dfield2xform
   epiunwarp
   film
   filter
