@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -58,7 +58,8 @@ doMain( const int argc, const char* argv[] )
     {
     cmtk::CommandLine  cl( cmtk::CommandLine::PROPS_XML );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_TITLE, "Segmentation using SRI24 atlas" );
-    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Register a target image to a selected channel of the SRI24 atlas, then reformat one of the atlas label maps to the target image." );
+    cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Register a target image to a selected channel of the SRI24 human brain atlas, then reformat one of the atlas label maps to the target image. "
+		       "Note: it is assume that the target image is skull-stripped, i.e., contains only the brain." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_CATEG, "CMTK.Segmentation" );
 
     typedef cmtk::CommandLine::Key Key;
@@ -73,7 +74,7 @@ doMain( const int argc, const char* argv[] )
     
     cmtk::CommandLine::EnumGroup<std::string>::SmartPtr labelsGroup = 
       cl.AddEnum( "label-map", &labelsSRI24, "The SRI24 label map that is reformatted to the target image." );
-    labelsGroup->AddSwitch( Key( "tzo116plus" ), "tzo116plus", "Extended cortical parcellation template based on Tzourio-Mazoyer 116 region template." );
+    labelsGroup->AddSwitch( Key( "tzo116plus" ), "tzo116plus", "Extended cortical parcellation template based on Tzourio-Mazoyer AAL 116 region template." );
     labelsGroup->AddSwitch( Key( "lpba40" ), "lpba40", "Template based on the 40 subject LONI Probabilistic Brain Atlas segmentation." );
     labelsGroup->AddSwitch( Key( "tissue" ), "tissue", "SRI24 maximum likelihood three compartment (GM, WM, CSF) tissue segmentation map." );
     
