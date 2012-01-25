@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -92,7 +92,7 @@ CommandLine::PrintHelp
 	}
       StdOut.FormatText( fmt.str(), 5, lineWidth );
 
-      StdOut << "\n  where\n";
+      StdOut << "\n  where\n\n";
 
       const int indent = 20;
       for ( NonOptionParameterListType::const_iterator it = this->m_NonOptionParameterList.begin(); it != this->m_NonOptionParameterList.end(); ++it )
@@ -101,7 +101,6 @@ CommandLine::PrintHelp
 	  {
 	  fmt.str("");
 	  
-	  StdOut << "\n";
 	  fmt << (*it)->m_Name << " = ";
 	  if ( fmt.str().length() > static_cast<size_t>( indent-2 ) )
 	    fmt << "\n";
@@ -121,7 +120,6 @@ CommandLine::PrintHelp
 	  {
 	  fmt.str("");
 	  
-	  StdOut << "\n";
 	  fmt << (*it)->m_Name << " = ";
 	  if ( fmt.str().length() > static_cast<size_t>( indent-2 ) )
 	    fmt << "\n";
