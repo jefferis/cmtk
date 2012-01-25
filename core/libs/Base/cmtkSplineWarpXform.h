@@ -437,6 +437,9 @@ protected:
 
   /// Friend declaration.
   friend class SplineWarpXformUniformVolume;
+
+  /// Fitting class is a friend.
+  friend class FitSplineWarpToDeformationField;
 };
 
 } // namespace
