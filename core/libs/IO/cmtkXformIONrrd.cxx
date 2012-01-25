@@ -256,7 +256,7 @@ XformIO::WriteNrrd
 	if ( i )
 	  {
 	  if ( i-1 == j )
-	    spaceDir[i][j] = dfield->Spacing[ i-1 ];
+	    spaceDir[i][j] = dfield->m_Spacing[ i-1 ];
 	  else
 	    spaceDir[i][j] = 0.0;
 	  }

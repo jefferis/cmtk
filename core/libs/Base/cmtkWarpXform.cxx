@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -49,12 +49,12 @@ void
 WarpXform::InitGrid
 ( const FixedVector<3,Types::Coordinate>& domain, const Self::IndexType& dims )
 {
-  this->Domain = domain;
+  this->m_Domain = domain;
   this->m_Dims = dims;
   std::fill( this->m_Offset.begin(), this->m_Offset.end(), 0 );
   
-  NumberOfControlPoints = this->m_Dims[0] * this->m_Dims[1] * this->m_Dims[2];
-  this->AllocateParameterVector( 3 * NumberOfControlPoints );
+  this->m_NumberOfControlPoints = this->m_Dims[0] * this->m_Dims[1] * this->m_Dims[2];
+  this->AllocateParameterVector( 3 * this->m_NumberOfControlPoints );
   this->Update();
 }
 
@@ -287,7 +287,7 @@ WarpXform::ReplaceInitialAffine( const AffineXform* newAffineXform )
 
   // apply effective change to all control points.
   Types::Coordinate *coeff = this->m_Parameters;
-  for ( unsigned int idx = 0; idx < NumberOfControlPoints; ++idx, coeff+=3 ) 
+  for ( unsigned int idx = 0; idx < this->m_NumberOfControlPoints; ++idx, coeff+=3 ) 
     {
     Self::SpaceVectorType p( coeff );
     change.ApplyInPlace( p );
@@ -315,7 +315,7 @@ WarpXform::ConcatAffine( const AffineXform* affineXform )
 {
   // apply effective change to all control points.
   Types::Coordinate *coeff = this->m_Parameters;
-  for ( unsigned int idx = 0; idx < NumberOfControlPoints; ++idx, coeff+=3 ) 
+  for ( unsigned int idx = 0; idx < this->m_NumberOfControlPoints; ++idx, coeff+=3 ) 
     {
     Self::SpaceVectorType p( coeff );
     affineXform->ApplyInPlace( p );

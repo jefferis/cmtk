@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -52,7 +52,7 @@ SplineWarpXform::SplineWarpXform()
 
 void SplineWarpXform::Init () 
 {
-  this->GlobalScaling = 1.0;
+  this->m_GlobalScaling = 1.0;
 }
 
 SplineWarpXform::SplineWarpXform 
@@ -67,16 +67,16 @@ SplineWarpXform
 ( const Self::SpaceVectorType& domain, const Types::Coordinate delta, const AffineXform* initialXform, const bool exactDelta  )
 {
   this->Init();
-  this->Domain = domain;
+  this->m_Domain = domain;
   this->m_InitialAffineXform = initialXform->Clone();
 
   if ( exactDelta ) 
     {
     for ( int dim=0; dim<3; ++dim ) 
       {
-      Spacing[dim] = delta;
-      this->m_Dims[dim] = static_cast<int>( 4 + (Domain[dim] / Spacing[dim]) );
-      Domain[dim] = (this->m_Dims[dim] - 3) * Spacing[dim];
+      this->m_Spacing[dim] = delta;
+      this->m_Dims[dim] = static_cast<int>( 4 + (this->m_Domain[dim] / this->m_Spacing[dim]) );
+      this->m_Domain[dim] = (this->m_Dims[dim] - 3) * this->m_Spacing[dim];
       }
     } 
   else
@@ -85,8 +85,8 @@ SplineWarpXform
       this->m_Dims[dim] = 2 + std::max( 2, 1+static_cast<int>( domain[dim]/delta ) );
     }
   
-  NumberOfControlPoints = this->m_Dims[0] * this->m_Dims[1] * this->m_Dims[2];
-  this->AllocateParameterVector( 3 * NumberOfControlPoints );
+  this->m_NumberOfControlPoints = this->m_Dims[0] * this->m_Dims[1] * this->m_Dims[2];
+  this->AllocateParameterVector( 3 * this->m_NumberOfControlPoints );
   
   this->Update( exactDelta );
   this->InitControlPoints( this->m_InitialAffineXform );
@@ -96,21 +96,21 @@ SplineWarpXform::SplineWarpXform
 ( const FixedVector<3,Types::Coordinate>& domain, const Self::IndexType& dims, CoordinateVector::SmartPtr& parameters, const AffineXform* initialXform )
 {
   this->Init();
-  this->Domain = domain;
+  this->m_Domain = domain;
   this->m_Dims = dims;
 
   if ( initialXform )
     {
     this->m_InitialAffineXform = initialXform->Clone();
-    GlobalScaling = this->m_InitialAffineXform->GetGlobalScaling();
+    this->m_GlobalScaling = this->m_InitialAffineXform->GetGlobalScaling();
     } 
   else
     {
     this->m_InitialAffineXform = AffineXform::SmartPtr( NULL );
     }
 
-  NumberOfControlPoints = this->m_Dims[0] * this->m_Dims[1] * this->m_Dims[2];
-  this->m_NumberOfParameters = 3 * NumberOfControlPoints;
+  this->m_NumberOfControlPoints = this->m_Dims[0] * this->m_Dims[1] * this->m_Dims[2];
+  this->m_NumberOfParameters = 3 * this->m_NumberOfControlPoints;
 
   if ( !parameters )
     this->m_ParameterVector = CoordinateVector::SmartPtr( new CoordinateVector( this->m_NumberOfParameters ) );
@@ -128,14 +128,14 @@ void
 SplineWarpXform::InitControlPoints( const AffineXform* affineXform )
 {
   Types::Coordinate *ofs = this->m_Parameters;
-  Types::Coordinate pZ = -Spacing[2];
-  for ( int z=0; z<this->m_Dims[2]; ++z, pZ+=Spacing[2] ) 
+  Types::Coordinate pZ = -this->m_Spacing[2];
+  for ( int z=0; z<this->m_Dims[2]; ++z, pZ+=this->m_Spacing[2] ) 
     {
-    Types::Coordinate pY = -Spacing[1];
-    for ( int y=0; y<this->m_Dims[1]; ++y, pY+=Spacing[1] ) 
+    Types::Coordinate pY = -this->m_Spacing[1];
+    for ( int y=0; y<this->m_Dims[1]; ++y, pY+=this->m_Spacing[1] ) 
       {
-      Types::Coordinate pX = -Spacing[0];
-      for ( int x=0; x<this->m_Dims[0]; ++x, pX+=Spacing[0], ofs+=3 ) 
+      Types::Coordinate pX = -this->m_Spacing[0];
+      for ( int x=0; x<this->m_Dims[0]; ++x, pX+=this->m_Spacing[0], ofs+=3 ) 
 	{
 	ofs[0] = pX;
 	ofs[1] = pY;
@@ -147,7 +147,7 @@ SplineWarpXform::InitControlPoints( const AffineXform* affineXform )
   if ( affineXform ) 
     {
     ofs = this->m_Parameters;
-    for ( unsigned int idx = 0; idx < NumberOfControlPoints; ++idx, ofs+=3 ) 
+    for ( unsigned int idx = 0; idx < this->m_NumberOfControlPoints; ++idx, ofs+=3 ) 
       {
       Self::SpaceVectorType p( ofs );
       affineXform->ApplyInPlace( p );
@@ -156,12 +156,12 @@ SplineWarpXform::InitControlPoints( const AffineXform* affineXform )
       ofs[2] = p[2];
       }
     
-    affineXform->GetScales( this->InverseAffineScaling );
-    GlobalScaling = affineXform->GetGlobalScaling();
+    affineXform->GetScales( this->m_InverseAffineScaling );
+    this->m_GlobalScaling = affineXform->GetGlobalScaling();
     } 
   else
     {
-    InverseAffineScaling[0] = InverseAffineScaling[1] = InverseAffineScaling[2] = GlobalScaling = 1.0;
+    this->m_InverseAffineScaling[0] = this->m_InverseAffineScaling[1] = this->m_InverseAffineScaling[2] = this->m_GlobalScaling = 1.0;
     }
 }
 
@@ -176,14 +176,14 @@ SplineWarpXform::Update
     assert( this->m_Dims[dim] > 3 );
     if ( exactDelta ) 
       {
-      InverseSpacing[dim] = 1.0 / Spacing[dim];
+      this->m_InverseSpacing[dim] = 1.0 / this->m_Spacing[dim];
       } 
     else
       {
-      Spacing[dim] = Domain[dim] / (this->m_Dims[dim]-3);
-      InverseSpacing[dim] = 1.0*(this->m_Dims[dim]-3) / Domain[dim];
+      this->m_Spacing[dim] = this->m_Domain[dim] / (this->m_Dims[dim]-3);
+      this->m_InverseSpacing[dim] = 1.0*(this->m_Dims[dim]-3) / this->m_Domain[dim];
       }
-    m_Offset[dim] = -Spacing[dim];
+    m_Offset[dim] = -this->m_Spacing[dim];
     }
   
   int dml = 0;
@@ -201,12 +201,12 @@ SplineWarpXform::CloneVirtual() const
   newXform->m_ParameterVector = CoordinateVector::SmartPtr( this->m_ParameterVector->Clone() );
   newXform->m_Parameters = newXform->m_ParameterVector->Elements;
   newXform->m_NumberOfParameters = this->m_NumberOfParameters;
-  newXform->NumberOfControlPoints = this->NumberOfControlPoints;
+  newXform->m_NumberOfControlPoints = this->m_NumberOfControlPoints;
   
   newXform->m_Dims = this->m_Dims;
-  newXform->Domain = this->Domain;
-  memcpy( newXform->Spacing, Spacing, sizeof( newXform->Spacing ) );
-  memcpy( newXform->InverseSpacing, InverseSpacing, sizeof( newXform->InverseSpacing ) );
+  newXform->m_Domain = this->m_Domain;
+  memcpy( newXform->m_Spacing, this->m_Spacing, sizeof( newXform->m_Spacing ) );
+  memcpy( newXform->m_InverseSpacing, this->m_InverseSpacing, sizeof( newXform->m_InverseSpacing ) );
   newXform->m_Offset = this->m_Offset;
 
   if ( this->m_ActiveFlags ) 
@@ -222,7 +222,7 @@ SplineWarpXform::CloneVirtual() const
     newXform->m_InitialAffineXform = AffineXform::SmartPtr( this->m_InitialAffineXform->Clone() );
     }
   
-  newXform->GlobalScaling = this->GlobalScaling;
+  newXform->m_GlobalScaling = this->m_GlobalScaling;
 
   newXform->nextI = this->nextI;
   newXform->nextJ = this->nextJ;
@@ -268,7 +268,7 @@ SplineWarpXform::Refine()
   Types::Coordinate newSpacing[3];
   for ( int dim=0; dim<3; ++dim ) 
     {
-    newSpacing[dim] = Domain[dim] / (newDims[dim]-3);
+    newSpacing[dim] = this->m_Domain[dim] / (newDims[dim]-3);
     }
 
   // no linear refinement here
@@ -346,7 +346,7 @@ SplineWarpXform::Refine()
       }
     }
 
-  NumberOfControlPoints = newNumSamples;
+  this->m_NumberOfControlPoints = newNumSamples;
   this->m_NumberOfParameters = newNumCoefficients;
 
   this->m_ParameterVector = newParameters;
@@ -358,9 +358,9 @@ SplineWarpXform::Refine()
   for ( int dim=0; dim<3; ++dim ) 
     {
     assert( this->m_Dims[dim] > 1 );
-    Spacing[dim] = newSpacing[dim];
-    InverseSpacing[dim] = 1.0 / Spacing[dim];
-    m_Offset[dim] = -Spacing[dim];
+    this->m_Spacing[dim] = newSpacing[dim];
+    this->m_InverseSpacing[dim] = 1.0 / this->m_Spacing[dim];
+    m_Offset[dim] = -this->m_Spacing[dim];
     }
   
   // MUST do this AFTER acutal refinement, as precomputed increments are used
@@ -402,16 +402,16 @@ SplineWarpXform::GetVolumeOfInfluence
     {
     for ( int dim = 0; dim < 3; ++dim )
       {
-      xyzLow[dim] = Spacing[dim] * std::max( 0, xyz[dim]-2 );
-      xyzUp[dim] = Spacing[dim] * std::min( this->m_Dims[dim]-3, xyz[dim] );
+      xyzLow[dim] = this->m_Spacing[dim] * std::max( 0, xyz[dim]-2 );
+      xyzUp[dim] = this->m_Spacing[dim] * std::min( this->m_Dims[dim]-3, xyz[dim] );
       }
     } 
   else
     {
     for ( int dim = 0; dim < 3; ++dim )
       {
-      xyzLow[dim] = Spacing[dim] * std::max( 0, xyz[dim]-3 );
-      xyzUp[dim] = Spacing[dim] * std::min( this->m_Dims[dim]-2, xyz[dim]+1 );
+      xyzLow[dim] = this->m_Spacing[dim] * std::max( 0, xyz[dim]-3 );
+      xyzUp[dim] = this->m_Spacing[dim] * std::min( this->m_Dims[dim]-2, xyz[dim]+1 );
       }
     }
   
@@ -450,9 +450,9 @@ void
 SplineWarpXform::RegisterVolumePoints
 ( const DataGrid::IndexType& volDims, const Self::SpaceVectorType& delta, const Self::SpaceVectorType& origin )
 {
-  this->RegisterVolumeAxis( volDims[0], delta[0], origin[0], this->m_Dims[0], this->InverseSpacing[0], gX, splineX, dsplineX );
-  this->RegisterVolumeAxis( volDims[1], delta[1], origin[1], this->m_Dims[1], this->InverseSpacing[1], gY, splineY, dsplineY );
-  this->RegisterVolumeAxis( volDims[2], delta[2], origin[2], this->m_Dims[2], this->InverseSpacing[2], gZ, splineZ, dsplineZ );
+  this->RegisterVolumeAxis( volDims[0], delta[0], origin[0], this->m_Dims[0], this->m_InverseSpacing[0], gX, splineX, dsplineX );
+  this->RegisterVolumeAxis( volDims[1], delta[1], origin[1], this->m_Dims[1], this->m_InverseSpacing[1], gY, splineY, dsplineY );
+  this->RegisterVolumeAxis( volDims[2], delta[2], origin[2], this->m_Dims[2], this->m_InverseSpacing[2], gZ, splineZ, dsplineZ );
 
   for ( int idx = 0; idx<volDims[0]; ++idx ) gX[idx] *= nextI;
   for ( int idx = 0; idx<volDims[1]; ++idx ) gY[idx] *= nextJ;
@@ -669,7 +669,7 @@ SplineWarpXform
   
   for ( int dim = 0; dim<3; ++dim ) 
     {
-    r[dim] = InverseSpacing[dim] * v[dim];
+    r[dim] = this->m_InverseSpacing[dim] * v[dim];
     grid[dim] = std::min( static_cast<int>( r[dim] ), this->m_Dims[dim]-4 );
     f[dim] = std::max<Types::Coordinate>( 0, std::min<Types::Coordinate>( 1.0, r[dim] - grid[dim] ) );
     }
@@ -738,18 +738,18 @@ SplineWarpXform
   
   const double energy = 
     // single variable second-order derivatives
-    MathUtil::Square( InverseSpacing[0] ) *
+    MathUtil::Square( this->m_InverseSpacing[0] ) *
     ( J[0][0] * J[0][0] + J[0][1] * J[0][1] + J[0][2] * J[0][2] ) +
-    MathUtil::Square( InverseSpacing[1] ) *
+    MathUtil::Square( this->m_InverseSpacing[1] ) *
     ( J[1][0] * J[1][0] + J[1][1] * J[1][1] + J[1][2] * J[1][2] ) +
-    MathUtil::Square( InverseSpacing[2] ) *
+    MathUtil::Square( this->m_InverseSpacing[2] ) *
     ( J[2][0] * J[2][0] + J[2][1] * J[2][1] + J[2][2] * J[2][2] ) +
     // two-variable mixed derivatives
-    2 * ( InverseSpacing[0] * InverseSpacing[1] *
+    2 * ( this->m_InverseSpacing[0] * this->m_InverseSpacing[1] *
 	  ( K[0][0] * K[0][0] + K[0][1] * K[0][1] + K[0][2] * K[0][2] ) +
-	  InverseSpacing[1] * InverseSpacing[2] *
+	  this->m_InverseSpacing[1] * this->m_InverseSpacing[2] *
 	  ( K[1][0] * K[1][0] + K[1][1] * K[1][1] + K[1][2] * K[1][2] ) +
-	  InverseSpacing[2] * InverseSpacing[0] *
+	  this->m_InverseSpacing[2] * this->m_InverseSpacing[0] *
 	  ( K[2][0] * K[2][0] + K[2][1] * K[2][1] + K[2][2] * K[2][2] )
 	  );
   
@@ -821,18 +821,18 @@ SplineWarpXform
   
   const double energy = 
     // single variable second-order derivatives
-    MathUtil::Square( InverseSpacing[0] ) *
+    MathUtil::Square( this->m_InverseSpacing[0] ) *
     ( J[0][0] * J[0][0] + J[0][1] * J[0][1] + J[0][2] * J[0][2] ) +
-    MathUtil::Square( InverseSpacing[1] ) *
+    MathUtil::Square( this->m_InverseSpacing[1] ) *
     ( J[1][0] * J[1][0] + J[1][1] * J[1][1] + J[1][2] * J[1][2] ) +
-    MathUtil::Square( InverseSpacing[2] ) *
+    MathUtil::Square( this->m_InverseSpacing[2] ) *
     ( J[2][0] * J[2][0] + J[2][1] * J[2][1] + J[2][2] * J[2][2] ) +
     // two-variable mixed derivatives
-    2 * ( InverseSpacing[0] * InverseSpacing[1] *
+    2 * ( this->m_InverseSpacing[0] * this->m_InverseSpacing[1] *
 	  ( K[0][0] * K[0][0] + K[0][1] * K[0][1] + K[0][2] * K[0][2] ) +
-	  InverseSpacing[1] * InverseSpacing[2] *
+	  this->m_InverseSpacing[1] * this->m_InverseSpacing[2] *
 	  ( K[1][0] * K[1][0] + K[1][1] * K[1][1] + K[1][2] * K[1][2] ) +
-	  InverseSpacing[2] * InverseSpacing[0] *
+	  this->m_InverseSpacing[2] * this->m_InverseSpacing[0] *
 	  ( K[2][0] * K[2][0] + K[2][1] * K[2][1] + K[2][2] * K[2][2] )
 	  );
   
@@ -887,8 +887,8 @@ SplineWarpXform::GetGridEnergyDerivative
 
   m_Parameters[param] = oldCoeff;
 
-  upper /= NumberOfControlPoints;
-  lower /= NumberOfControlPoints;
+  upper /= this->m_NumberOfControlPoints;
+  lower /= this->m_NumberOfControlPoints;
 }
 
 Types::Coordinate
@@ -912,9 +912,9 @@ SplineWarpXform::GetInverseConsistencyError
     myVoi = volume->GetWholeImageRegion();
     }
 
-  const int dX = 1 + static_cast<int>( this->Spacing[0] / 2 * volume->m_Delta[AXIS_X] );
-  const int dY = 1 + static_cast<int>( this->Spacing[1] / 2 * volume->m_Delta[AXIS_Y] );
-  const int dZ = 1 + static_cast<int>( this->Spacing[2] / 2 * volume->m_Delta[AXIS_Z] );
+  const int dX = 1 + static_cast<int>( this->m_Spacing[0] / 2 * volume->m_Delta[AXIS_X] );
+  const int dY = 1 + static_cast<int>( this->m_Spacing[1] / 2 * volume->m_Delta[AXIS_Y] );
+  const int dZ = 1 + static_cast<int>( this->m_Spacing[2] / 2 * volume->m_Delta[AXIS_Z] );
 
   const int startX = pVoi->From()[0] - (pVoi->From()[0] % dX);
   const int startY = pVoi->From()[1] - (pVoi->From()[1] % dY);

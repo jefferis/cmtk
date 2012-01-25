@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -68,9 +68,9 @@ cmtk::SplineWarpXformUniformVolume::RegisterVolume
 {
   const SplineWarpXform& xform = *(this->m_Xform);
 
-  this->RegisterVolumeAxis( volume.m_Dims[0], volume.m_Delta[0], volume.m_Offset[0], xform.m_Dims[0], xform.InverseSpacing[0], this->gX, this->splineX, this->dsplineX );
-  this->RegisterVolumeAxis( volume.m_Dims[1], volume.m_Delta[1], volume.m_Offset[1], xform.m_Dims[1], xform.InverseSpacing[1], this->gY, this->splineY, this->dsplineY );
-  this->RegisterVolumeAxis( volume.m_Dims[2], volume.m_Delta[2], volume.m_Offset[2], xform.m_Dims[2], xform.InverseSpacing[2], this->gZ, this->splineZ, this->dsplineZ );
+  this->RegisterVolumeAxis( volume.m_Dims[0], volume.m_Delta[0], volume.m_Offset[0], xform.m_Dims[0], xform.m_InverseSpacing[0], this->gX, this->splineX, this->dsplineX );
+  this->RegisterVolumeAxis( volume.m_Dims[1], volume.m_Delta[1], volume.m_Offset[1], xform.m_Dims[1], xform.m_InverseSpacing[1], this->gY, this->splineY, this->dsplineY );
+  this->RegisterVolumeAxis( volume.m_Dims[2], volume.m_Delta[2], volume.m_Offset[2], xform.m_Dims[2], xform.m_InverseSpacing[2], this->gZ, this->splineZ, this->dsplineZ );
   
   for ( int idx = 0; idx < volume.m_Dims[0]; ++idx ) 
     gX[idx] *= xform.nextI;

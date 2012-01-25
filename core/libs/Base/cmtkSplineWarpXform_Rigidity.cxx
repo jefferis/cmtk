@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -60,7 +60,7 @@ SplineWarpXform::GetRigidityConstraintSparse () const
   
   // Divide by number of control points to normalize with respect to the
   // number of local Jacobians in the computation.
-  return (Types::Coordinate)(Constraint / this->NumberOfControlPoints);
+  return (Types::Coordinate)(Constraint / this->m_NumberOfControlPoints);
 }
 
 void 
@@ -221,8 +221,8 @@ SplineWarpXform::GetRigidityConstraintDerivative
 	}
   this->m_Parameters[param] = oldCoeff;
 
-  upper /= this->NumberOfControlPoints;
-  lower /= this->NumberOfControlPoints;
+  upper /= this->m_NumberOfControlPoints;
+  lower /= this->m_NumberOfControlPoints;
 }
 
 Types::Coordinate

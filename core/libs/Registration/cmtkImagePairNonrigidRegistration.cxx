@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
@@ -136,7 +136,7 @@ ImagePairNonrigidRegistration::InitRegistration ()
   if ( this->m_MaxStepSize <= 0 )
     {
     const SplineWarpXform* warp = SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_Xform ); 
-    this->m_MaxStepSize = 0.25 * std::max( warp->Spacing[0], std::max( warp->Spacing[1], warp->Spacing[2] ) );
+    this->m_MaxStepSize = 0.25 * std::max( warp->m_Spacing[0], std::max( warp->m_Spacing[1], warp->m_Spacing[2] ) );
     }
 
   if ( this->m_CoarsestResolution <= 0 ) 

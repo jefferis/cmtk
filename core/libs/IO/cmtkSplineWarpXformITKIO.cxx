@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2009-2011 SRI International
+//  Copyright 2009-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -87,7 +87,7 @@ cmtk::SplineWarpXformITKIO
     stream << "FixedParameters: "
 	   << xform.m_Dims[0] << " " << xform.m_Dims[1] << " " << xform.m_Dims[2] << " "
 	   << origin[0] << " " << origin[1] << " " << origin[2] << " "
-	   << xform.Spacing[0] << " " << xform.Spacing[1] << " " << xform.Spacing[2] << " "
+	   << xform.m_Spacing[0] << " " << xform.m_Spacing[1] << " " << xform.m_Spacing[2] << " "
 	   << "1 0 0 0 1 0 0 0 1\n";
 
     if ( bulkXform )

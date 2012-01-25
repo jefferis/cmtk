@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -138,17 +138,17 @@ SplineWarpXform::GetJacobianRow
       // compute transformed voxel by taking precomputed y- and z-contributions
       // and adding x. The loops to do this have been unrolled for increased
       // performance.
-      J[0][0] = this->InverseSpacing[0] * ( dspX[0] * phiPtrX[0] + dspX[1] * phiPtrX[3] + dspX[2] * phiPtrX[6] + dspX[3] * phiPtrX[9] );
-      J[0][1] = this->InverseSpacing[0] * ( dspX[0] * phiPtrX[1] + dspX[1] * phiPtrX[4] + dspX[2] * phiPtrX[7] + dspX[3] * phiPtrX[10] );
-      J[0][2] = this->InverseSpacing[0] * ( dspX[0] * phiPtrX[2] + dspX[1] * phiPtrX[5] + dspX[2] * phiPtrX[8] + dspX[3] * phiPtrX[11] );
+      J[0][0] = this->m_InverseSpacing[0] * ( dspX[0] * phiPtrX[0] + dspX[1] * phiPtrX[3] + dspX[2] * phiPtrX[6] + dspX[3] * phiPtrX[9] );
+      J[0][1] = this->m_InverseSpacing[0] * ( dspX[0] * phiPtrX[1] + dspX[1] * phiPtrX[4] + dspX[2] * phiPtrX[7] + dspX[3] * phiPtrX[10] );
+      J[0][2] = this->m_InverseSpacing[0] * ( dspX[0] * phiPtrX[2] + dspX[1] * phiPtrX[5] + dspX[2] * phiPtrX[8] + dspX[3] * phiPtrX[11] );
 
-      J[1][0] = this->InverseSpacing[1] * ( spX[0] * phiPtrY[0] + spX[1] * phiPtrY[3] + spX[2] * phiPtrY[6] + spX[3] * phiPtrY[9] );
-      J[1][1] = this->InverseSpacing[1] * ( spX[0] * phiPtrY[1] + spX[1] * phiPtrY[4] + spX[2] * phiPtrY[7] + spX[3] * phiPtrY[10] );
-      J[1][2] = this->InverseSpacing[1] * ( spX[0] * phiPtrY[2] + spX[1] * phiPtrY[5] + spX[2] * phiPtrY[8] + spX[3] * phiPtrY[11] );
+      J[1][0] = this->m_InverseSpacing[1] * ( spX[0] * phiPtrY[0] + spX[1] * phiPtrY[3] + spX[2] * phiPtrY[6] + spX[3] * phiPtrY[9] );
+      J[1][1] = this->m_InverseSpacing[1] * ( spX[0] * phiPtrY[1] + spX[1] * phiPtrY[4] + spX[2] * phiPtrY[7] + spX[3] * phiPtrY[10] );
+      J[1][2] = this->m_InverseSpacing[1] * ( spX[0] * phiPtrY[2] + spX[1] * phiPtrY[5] + spX[2] * phiPtrY[8] + spX[3] * phiPtrY[11] );
 
-      J[2][0] = this->InverseSpacing[2] * ( spX[0] * phiPtrZ[0] + spX[1] * phiPtrZ[3] + spX[2] * phiPtrZ[6] + spX[3] * phiPtrZ[9] );
-      J[2][1] = this->InverseSpacing[2] * ( spX[0] * phiPtrZ[1] + spX[1] * phiPtrZ[4] + spX[2] * phiPtrZ[7] + spX[3] * phiPtrZ[10] );
-      J[2][2] = this->InverseSpacing[2] * ( spX[0] * phiPtrZ[2] + spX[1] * phiPtrZ[5] + spX[2] * phiPtrZ[8] + spX[3] * phiPtrZ[11] );
+      J[2][0] = this->m_InverseSpacing[2] * ( spX[0] * phiPtrZ[0] + spX[1] * phiPtrZ[3] + spX[2] * phiPtrZ[6] + spX[3] * phiPtrZ[9] );
+      J[2][1] = this->m_InverseSpacing[2] * ( spX[0] * phiPtrZ[1] + spX[1] * phiPtrZ[4] + spX[2] * phiPtrZ[7] + spX[3] * phiPtrZ[10] );
+      J[2][2] = this->m_InverseSpacing[2] * ( spX[0] * phiPtrZ[2] + spX[1] * phiPtrZ[5] + spX[2] * phiPtrZ[8] + spX[3] * phiPtrZ[11] );
 
       array[i-x].Set( &J[0][0] );
 
@@ -203,7 +203,7 @@ SplineWarpXform::GetJacobianAtControlPoint
   for ( int i = 0; i<3; ++i ) 
     {
     for ( int j = 0; j<3; ++j )
-      J[i][j] *= this->InverseSpacing[i];
+      J[i][j] *= this->m_InverseSpacing[i];
     }
 }
 
@@ -216,7 +216,7 @@ SplineWarpXform::GetJacobian
   
   for ( int dim = 0; dim<3; ++dim ) 
     {
-    r[dim] = this->InverseSpacing[dim] * v[dim];
+    r[dim] = this->m_InverseSpacing[dim] * v[dim];
     grid[dim] = std::min( static_cast<int>( r[dim] ), this->m_Dims[dim]-4 );
     f[dim] = std::max<Types::Coordinate>( 0, std::min<Types::Coordinate>( 1.0, r[dim] - grid[dim] ) );
     }
@@ -271,7 +271,7 @@ SplineWarpXform::GetJacobian
   for ( int i = 0; i<3; ++i ) 
     {
     for ( int j = 0; j<3; ++j )
-      J[i][j] *= this->InverseSpacing[i];
+      J[i][j] *= this->m_InverseSpacing[i];
     }
 }
 
@@ -315,7 +315,7 @@ SplineWarpXform::GetJacobianDeterminant
     ++coeff;
     }
   
-  return InverseSpacing[0] * InverseSpacing[1] * InverseSpacing[2] * 
+  return this->m_InverseSpacing[0] * this->m_InverseSpacing[1] * this->m_InverseSpacing[2] * 
     ( J[0][0] * (J[1][1]*J[2][2] - J[1][2]*J[2][1]) + 
       J[0][1] * (J[1][2]*J[2][0] - J[1][0]*J[2][2]) + 
       J[0][2] * (J[1][0]*J[2][1] - J[1][1]*J[2][0]) );
@@ -333,7 +333,7 @@ SplineWarpXform::GetJacobianDeterminant
 
   for ( int dim = 0; dim<3; ++dim ) 
     {
-    r[dim] = InverseSpacing[dim] * v[dim];
+    r[dim] = this->m_InverseSpacing[dim] * v[dim];
     grid[dim] = std::min( static_cast<int>( r[dim] ), this->m_Dims[dim]-4 );
     f[dim] = std::max<Types::Coordinate>( 0, std::min<Types::Coordinate>( 1.0, r[dim] - grid[dim] ) );
     }
@@ -373,7 +373,7 @@ SplineWarpXform::GetJacobianDeterminant
     ++coeff;
     }
   
-  return InverseSpacing[0] * InverseSpacing[1] * InverseSpacing[2] * 
+  return this->m_InverseSpacing[0] * this->m_InverseSpacing[1] * this->m_InverseSpacing[2] * 
     ( J[0][0] * (J[1][1]*J[2][2] - J[1][2]*J[2][1]) + 
       J[0][1] * (J[1][2]*J[2][0] - J[1][0]*J[2][2]) + 
       J[0][2] * (J[1][0]*J[2][1] - J[1][1]*J[2][0]) );
@@ -389,7 +389,7 @@ SplineWarpXform::GetJacobianDeterminantRow
   const Types::Coordinate *dspX = &dsplineX[x<<2], *dspY = &dsplineY[y<<2], *dspZ = &dsplineZ[z<<2];
   const Types::Coordinate *coeff = this->m_Parameters + gX[x] + gY[y] + gZ[z];
 
-  const Types::Coordinate globalInverseSpacing = InverseSpacing[0] * InverseSpacing[1] * InverseSpacing[2];
+  const Types::Coordinate globalInverseSpacing = this->m_InverseSpacing[0] * this->m_InverseSpacing[1] * this->m_InverseSpacing[2];
 
   // precompute the products of B_j(v) and B_k(w) for the 4 x 4 neighborhood
   // in y- and z-direction.
@@ -500,7 +500,7 @@ SplineWarpXform::JacobianDeterminant ( const Types::Coordinate *cp ) const
   CoordinateMatrix3x3 J;
   this->GetJacobianAtControlPoint( cp, J );
   
-  return InverseSpacing[0] * InverseSpacing[1] * InverseSpacing[2] * 
+  return this->m_InverseSpacing[0] * this->m_InverseSpacing[1] * this->m_InverseSpacing[2] * 
     ( J[0][0] * (J[1][1]*J[2][2] - J[1][2]*J[2][1]) + 
       J[0][1] * (J[1][2]*J[2][0] - J[1][0]*J[2][2]) + 
       J[0][2] * (J[1][0]*J[2][1] - J[1][1]*J[2][0]) );
@@ -533,7 +533,7 @@ SplineWarpXform
       me->GetJacobianDeterminantRow( &(valuesJ[0]), 0, y, z, pixelsPerRow );
       for ( int x = 0; x < pixelsPerRow; ++x ) 
 	{
-	constraint += fabs( log ( valuesJ[x] / me->GlobalScaling ) );
+	constraint += fabs( log ( valuesJ[x] / me->m_GlobalScaling ) );
 	}
       }
     }
@@ -579,11 +579,11 @@ SplineWarpXform::GetJacobianConstraintSparse () const
   for ( int z = 1; z<this->m_Dims[2]-1; ++z, coeff+=2*nextJ )
     for ( int y = 1; y<this->m_Dims[1]-1; ++y, coeff+=2*nextI )
       for ( int x = 1; x<this->m_Dims[0]-1; ++x, coeff+=nextI )
-	Constraint += fabs( log ( this->GetJacobianDeterminant( Self::SpaceVectorType( coeff ) ) / GlobalScaling ) );
+	Constraint += fabs( log ( this->GetJacobianDeterminant( Self::SpaceVectorType( coeff ) ) / this->m_GlobalScaling ) );
   
   // Divide by number of control points to normalize with respect to the
   // number of local Jacobians in the computation.
-  return (double)(Constraint / this->NumberOfControlPoints);
+  return (double)(Constraint / this->m_NumberOfControlPoints);
 }
 
 void 
@@ -600,7 +600,7 @@ SplineWarpXform::GetJacobianConstraintDerivative
       {
       this->GetJacobianDeterminantRow( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i )
-	ground += fabs( log( valuesJ[i] / GlobalScaling ) );
+	ground += fabs( log( valuesJ[i] / this->m_GlobalScaling ) );
       }
   
   upper = -ground;
@@ -614,7 +614,7 @@ SplineWarpXform::GetJacobianConstraintDerivative
       this->GetJacobianDeterminantRow( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i )
 	{
-	upper += fabs( log( valuesJ[i] / GlobalScaling ) );
+	upper += fabs( log( valuesJ[i] / this->m_GlobalScaling ) );
 	}
       }
   
@@ -625,7 +625,7 @@ SplineWarpXform::GetJacobianConstraintDerivative
       this->GetJacobianDeterminantRow( &(valuesJ[0]), voi.From()[0], j, k, pixelsPerRow );
       for ( int i = 0; i < pixelsPerRow; ++i )
 	{
-	lower += fabs( log( valuesJ[i] / GlobalScaling ) );
+	lower += fabs( log( valuesJ[i] / this->m_GlobalScaling ) );
 	}
       }
   this->m_Parameters[param] = oldCoeff;
@@ -661,7 +661,7 @@ SplineWarpXform::GetJacobianConstraintDerivative
   for ( int k = kFrom; k < kTo; ++k )
     for ( int j = jFrom; j < jTo; ++j )
       for ( int i = iFrom; i < iTo; ++i )
-	ground += fabs( log( this->GetJacobianDeterminant( Self::SpaceVectorType( coeff + i*nextI + j*nextJ + k*nextK ) ) / GlobalScaling ) );
+	ground += fabs( log( this->GetJacobianDeterminant( Self::SpaceVectorType( coeff + i*nextI + j*nextJ + k*nextK ) ) / this->m_GlobalScaling ) );
 
   upper = -ground;
   lower = -ground;
@@ -671,23 +671,23 @@ SplineWarpXform::GetJacobianConstraintDerivative
   for ( int k = kFrom; k < kTo; ++k )
     for ( int j = jFrom; j < jTo; ++j )
       for ( int i = iFrom; i < iTo; ++i )
-	upper += fabs( log( this->GetJacobianDeterminant( Self::SpaceVectorType( coeff + i*nextI + j*nextJ + k*nextK ) ) / GlobalScaling ) );
+	upper += fabs( log( this->GetJacobianDeterminant( Self::SpaceVectorType( coeff + i*nextI + j*nextJ + k*nextK ) ) / this->m_GlobalScaling ) );
 
   this->m_Parameters[param] = oldCoeff - step;
   for ( int k = kFrom; k < kTo; ++k )
     for ( int j = jFrom; j < jTo; ++j )
       for ( int i = iFrom; i < iTo; ++i )
-	lower += fabs( log( this->GetJacobianDeterminant( Self::SpaceVectorType( coeff + i*nextI + j*nextJ + k*nextK ) ) / GlobalScaling ) );
+	lower += fabs( log( this->GetJacobianDeterminant( Self::SpaceVectorType( coeff + i*nextI + j*nextJ + k*nextK ) ) / this->m_GlobalScaling ) );
   this->m_Parameters[param] = oldCoeff;
 
-  upper /= this->NumberOfControlPoints;
-  lower /= this->NumberOfControlPoints;
+  upper /= this->m_NumberOfControlPoints;
+  lower /= this->m_NumberOfControlPoints;
 }
 
 void
 SplineWarpXform::RelaxToUnfold()
 {
-  std::vector<byte> cpList( this->NumberOfControlPoints );
+  std::vector<byte> cpList( this->m_NumberOfControlPoints );
   std::vector<double> jacobiansRow( this->VolumeDims[0] );
 
   bool isFolded = true;
@@ -744,7 +744,7 @@ SplineWarpXform::RelaxToUnfold()
 	}
 
       // Get pure deformation at each control point.
-      std::vector<Types::Coordinate> pureDeformation( 3 * this->NumberOfControlPoints );
+      std::vector<Types::Coordinate> pureDeformation( 3 * this->m_NumberOfControlPoints );
 
       size_t param = 0;
       for ( int k = 0; k < this->m_Dims[2]; ++k )
@@ -767,7 +767,7 @@ SplineWarpXform::RelaxToUnfold()
 	}
       
       // regularize the affected control points
-      std::vector<Types::Coordinate> smoothed( this->NumberOfControlPoints );
+      std::vector<Types::Coordinate> smoothed( this->m_NumberOfControlPoints );
       for ( int dim = 0; dim < 3; ++dim )
 	{
 	// get all control point positions for the "dim" component
@@ -812,7 +812,7 @@ SplineWarpXform::RelaxToUnfold()
 	  }
 	
 	// copy modified control point position component back
-	for ( size_t cp = 0; cp < this->NumberOfControlPoints; ++cp )
+	for ( size_t cp = 0; cp < this->m_NumberOfControlPoints; ++cp )
 	  {
 	  pureDeformation[dim+cp*3] = smoothed[cp];
 	  }

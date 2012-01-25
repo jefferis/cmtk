@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -82,17 +82,19 @@ public:
   Self::IndexType m_Dims;
 
   /// Domain of control point grid in world coordinates.
-  FixedVector<3,Types::Coordinate> Domain;
+  FixedVector<3,Types::Coordinate> m_Domain;
 
   /// Array of spacings between the control points.
-  Types::Coordinate Spacing[3];
+  Types::Coordinate m_Spacing[3];
 
   /// Array of spacings between the control points.
   Self::SpaceVectorType m_Offset;
 
   /// Get global scaling factor.
   virtual Types::Coordinate GetGlobalScaling() const
-  { return this->GlobalScaling; }
+  { 
+    return this->m_GlobalScaling;
+  }
 
   /// Initial affine transformation.
   cmtkGetSetMacro(AffineXform::SmartPtr,InitialAffineXform);
@@ -111,18 +113,18 @@ public:
   /// Get number of control points.
   size_t GetNumberOfControlPoints() const
   {
-    return this->NumberOfControlPoints;
+    return this->m_NumberOfControlPoints;
   }
 
 protected:
   /// Number of control points.
-  size_t NumberOfControlPoints;
+  size_t m_NumberOfControlPoints;
 
   /** Inverted spacings between the control points.
    * These values are used for multiplication instead of division by those in
    * Spacing[].
    */
-  Types::Coordinate InverseSpacing[3];
+  Types::Coordinate m_InverseSpacing[3];
 
   /// Number of edge planes in the control point grid to keep unmoved.
   cmtkGetSetMacro(unsigned int,IgnoreEdge);
@@ -131,10 +133,10 @@ protected:
   cmtkGetSetMacroDefault(bool,FastMode,true);
 
   /// Precomputed global scaling of initial affine transformation.
-  Types::Coordinate GlobalScaling;
+  Types::Coordinate m_GlobalScaling;
 
   /// Stored scale factors of the initial affine transformation.
-  Types::Coordinate InverseAffineScaling[3];
+  Types::Coordinate m_InverseAffineScaling[3];
 
   /// Offset of next control grid column.
   int nextI;
@@ -161,13 +163,13 @@ public:
   /// Default constructor.
   WarpXform () : 
     m_InitialAffineXform( NULL ), 
-    NumberOfControlPoints( 0 ),
+    m_NumberOfControlPoints( 0 ),
     m_ActiveFlags( NULL )
   { 
     this->m_IgnoreEdge = 0; 
     this->m_FastMode = false; 
     this->m_Dims[0] = this->m_Dims[1] = this->m_Dims[2] = 0;
-    this->InverseSpacing[0] = this->InverseSpacing[1] = this->InverseSpacing[2] = 0.0;
+    this->m_InverseSpacing[0] = this->m_InverseSpacing[1] = this->m_InverseSpacing[2] = 0.0;
   }
 
   /// Destructor.
@@ -180,9 +182,9 @@ public:
   virtual bool InDomain( const Self::SpaceVectorType& v ) const 
   {
     return 
-      ( v[0] >= 0 ) && ( v[0] <= Domain[0] ) &&
-      ( v[1] >= 0 ) && ( v[1] <= Domain[1] ) &&
-      ( v[2] >= 0 ) && ( v[2] <= Domain[2] );
+      ( v[0] >= 0 ) && ( v[0] <= this->m_Domain[0] ) &&
+      ( v[1] >= 0 ) && ( v[1] <= this->m_Domain[1] ) &&
+      ( v[2] >= 0 ) && ( v[2] <= this->m_Domain[2] );
   }
   
   /// Update internal representation.
@@ -216,9 +218,9 @@ public:
   /// Get the original position of a control point.
   virtual void GetOriginalControlPointPosition( Self::SpaceVectorType& cp, const Types::Coordinate x, const Types::Coordinate y, const Types::Coordinate z) const 
   { 
-    cp[0] = this->m_Offset[0] + x*this->Spacing[0];
-    cp[1] = this->m_Offset[1] + y*this->Spacing[1];
-    cp[2] = this->m_Offset[2] + z*this->Spacing[2];
+    cp[0] = this->m_Offset[0] + x*this->m_Spacing[0];
+    cp[1] = this->m_Offset[1] + y*this->m_Spacing[1];
+    cp[2] = this->m_Offset[2] + z*this->m_Spacing[2];
   }
   
   /// Get the original position of a control point by index.

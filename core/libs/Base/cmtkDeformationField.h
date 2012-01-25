@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -97,12 +97,12 @@ public:
     for ( int dim = 0; dim < 3; ++dim )
       {
       if ( dims[dim] > 1 )
-	this->Spacing[dim] = domain[dim] / (dims[dim]-1);
+	this->m_Spacing[dim] = domain[dim] / (dims[dim]-1);
       else
-	this->Spacing[dim] = 1.0;
-      this->InverseSpacing[dim] = 1.0 / this->Spacing[dim];
+	this->m_Spacing[dim] = 1.0;
+      this->m_InverseSpacing[dim] = 1.0 / this->m_Spacing[dim];
       }
-    this->InverseAffineScaling[0] = this->InverseAffineScaling[1] = this->InverseAffineScaling[2] = this->GlobalScaling = 1.0;
+    this->m_InverseAffineScaling[0] = this->m_InverseAffineScaling[1] = this->m_InverseAffineScaling[2] = this->m_GlobalScaling = 1.0;
   }
   
   /// Initialize control point positions, potentially with affine displacement.

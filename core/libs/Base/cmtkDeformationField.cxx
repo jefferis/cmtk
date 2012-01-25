@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -50,13 +50,13 @@ DeformationField::InitControlPoints( const AffineXform* affineXform )
 
     Self::SpaceVectorType p;
     p[2] = this->m_Offset[2];
-    for ( int z = 0; z < this->m_Dims[2]; ++z, p[2] += this->Spacing[2] ) 
+    for ( int z = 0; z < this->m_Dims[2]; ++z, p[2] += this->m_Spacing[2] ) 
       {
       p[1] = this->m_Offset[1];
-      for ( int y = 0; y < this->m_Dims[1]; ++y, p[1] += this->Spacing[1] ) 
+      for ( int y = 0; y < this->m_Dims[1]; ++y, p[1] += this->m_Spacing[1] ) 
 	{
 	p[0] = this->m_Offset[0];
-	for ( int x = 0; x < this->m_Dims[0]; ++x, p[0] += this->Spacing[0], ofs+=3 ) 
+	for ( int x = 0; x < this->m_Dims[0]; ++x, p[0] += this->m_Spacing[0], ofs+=3 ) 
 	  {
 	  Self::SpaceVectorType q( p );
 	  affineXform->ApplyInPlace( q );
@@ -69,12 +69,12 @@ DeformationField::InitControlPoints( const AffineXform* affineXform )
 	}
       }	
     
-    affineXform->GetScales( this->InverseAffineScaling );
-    this->GlobalScaling = affineXform->GetGlobalScaling();
+    affineXform->GetScales( this->m_InverseAffineScaling );
+    this->m_GlobalScaling = affineXform->GetGlobalScaling();
     } 
   else
     {
-    this->InverseAffineScaling[0] = this->InverseAffineScaling[1] = this->InverseAffineScaling[2] = this->GlobalScaling = 1.0;
+    this->m_InverseAffineScaling[0] = this->m_InverseAffineScaling[1] = this->m_InverseAffineScaling[2] = this->m_GlobalScaling = 1.0;
     }
 }
 
@@ -85,9 +85,9 @@ DeformationField
 {
   const Types::Coordinate* coeff = this->m_Parameters + nextI * idxX + nextJ * idxY + nextK * idxZ;
 
-  v[0] = this->m_Offset[0] + this->Spacing[0] * idxX + coeff[0];
-  v[1] = this->m_Offset[1] + this->Spacing[1] * idxY + coeff[1];
-  v[2] = this->m_Offset[2] + this->Spacing[2] * idxZ + coeff[2];
+  v[0] = this->m_Offset[0] + this->m_Spacing[0] * idxX + coeff[0];
+  v[1] = this->m_Offset[1] + this->m_Spacing[1] * idxY + coeff[1];
+  v[2] = this->m_Offset[2] + this->m_Spacing[2] * idxZ + coeff[2];
 }
 
 void 
@@ -98,12 +98,12 @@ DeformationField::GetTransformedGridRow
   Self::SpaceVectorType *v = vIn;
   const Types::Coordinate* coeff = this->m_Parameters + 3 * (idxX + nextJ * (idxY + nextK * idxZ ));
 
-  const Types::Coordinate Y = this->m_Offset[1] + this->Spacing[1] * idxY;
-  const Types::Coordinate Z = this->m_Offset[2] + this->Spacing[2] * idxZ;
+  const Types::Coordinate Y = this->m_Offset[1] + this->m_Spacing[1] * idxY;
+  const Types::Coordinate Z = this->m_Offset[2] + this->m_Spacing[2] * idxZ;
 
   for ( int n = 0; n < numPoints; ++n, ++v, coeff += 3 )
     {
-    v[n][0] = this->m_Offset[0] + this->Spacing[0] * idxX + coeff[0];
+    v[n][0] = this->m_Offset[0] + this->m_Spacing[0] * idxX + coeff[0];
     v[n][1] = Y + coeff[1];
     v[n][2] = Z + coeff[2];
     }
@@ -121,7 +121,7 @@ DeformationField::ApplyInPlace
     {
     // This is the (real-valued) index of the control point grid cell the
     // given location is in.
-    r[dim] = this->InverseSpacing[dim] * ( v[dim] - this->m_Offset[dim] );
+    r[dim] = this->m_InverseSpacing[dim] * ( v[dim] - this->m_Offset[dim] );
     // This is the actual cell index.
     grid[dim] = std::min( static_cast<int>( r[dim] ), this->m_Dims[dim]-2 );
     // And here's the relative position within the cell.

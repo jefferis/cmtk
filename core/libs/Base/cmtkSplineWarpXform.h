@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -246,7 +246,7 @@ public:
       {
       // This is the (real-valued) index of the control point grid cell the
       // given location is in.
-      r[dim] = this->InverseSpacing[dim] * v[dim];
+      r[dim] = this->m_InverseSpacing[dim] * v[dim];
       // This is the actual cell index.
       grid[dim] = std::min<int>( static_cast<int>( r[dim] ), this->m_Dims[dim]-4 );
       // And here's the relative position within the cell.

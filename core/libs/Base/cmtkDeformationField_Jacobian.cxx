@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -50,7 +50,7 @@ DeformationField::GetJacobian
   
   for ( int dim = 0; dim<3; ++dim ) 
     {
-    r[dim] = this->InverseSpacing[dim] * (v[dim] - this->m_Offset[dim]);
+    r[dim] = this->m_InverseSpacing[dim] * (v[dim] - this->m_Offset[dim]);
     grid[dim] = static_cast<int>( r[dim]-1 );
     if ( (grid[dim] < 0) || (grid[dim] >= this->m_Dims[dim]-3) )
       {

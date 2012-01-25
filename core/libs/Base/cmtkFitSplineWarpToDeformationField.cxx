@@ -33,5 +33,22 @@
 cmtk::SplineWarpXform::SmartPtr 
 cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing, const Types::Coordinate initialSpacing )
 {
-  return cmtk::SplineWarpXform::SmartPtr();
+  // compute the start spacing of multi-level approximation by doubling final spacing until user-defined initial spacing is exceeded.
+  Types::Coordinate spacing = finalSpacing;
+  while ( spacing < initialSpacing )
+    {
+    spacing *= 2;
+    }
+
+  SplineWarpXform* splineWarp = new SplineWarpXform( this->m_DeformationField->m_Domain, spacing );
+
+  for ( ; spacing >= initialSpacing; spacing /= 2 )
+    {
+    if ( spacing > initialSpacing )
+      {
+      splineWarp->Refine();
+      }
+    }
+  
+  return cmtk::SplineWarpXform::SmartPtr( splineWarp );
 }

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -123,7 +123,7 @@ SplineWarpXform::ApplyInverseInPlaceWithInitial
   // project into domain
   for ( int dim = 0; dim < 3; ++dim )
     {
-    u[dim] = std::max<Types::Coordinate>( 0, std::min<Types::Coordinate>( u[dim], this->Domain[dim] ) );
+    u[dim] = std::max<Types::Coordinate>( 0, std::min<Types::Coordinate>( u[dim], this->m_Domain[dim] ) );
     }
 
   Self::SpaceVectorType vu( initial ), delta;
@@ -150,7 +150,7 @@ SplineWarpXform::ApplyInverseInPlaceWithInitial
       // project into domain
       for ( int dim = 0; dim < 3; ++dim )
 	{
-	vu[dim] = std::max<Types::Coordinate>( 0, std::min<Types::Coordinate>( vu[dim], this->Domain[dim] ) );
+	vu[dim] = std::max<Types::Coordinate>( 0, std::min<Types::Coordinate>( vu[dim], this->m_Domain[dim] ) );
 	}
       }
     

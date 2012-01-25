@@ -62,7 +62,7 @@ ClassStream::PutWarp
   this->WriteBool ( "absolute", true );
   this->WriteIntArray( "dims", warpXform->m_Dims.begin(), 3 );
   
-  this->WriteCoordinateArray( "domain", warpXform->Domain.begin(), 3 );
+  this->WriteCoordinateArray( "domain", warpXform->m_Domain.begin(), 3 );
   this->WriteCoordinateArray( "origin", warpXform->m_Offset.begin(), 3 );
   this->WriteCoordinateArray( "coefficients", nCoeff, warpXform->m_NumberOfParameters, 3 );
   

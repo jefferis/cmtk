@@ -64,7 +64,7 @@ ActiveDeformationModel<W>::ActiveDeformationModel
   typename std::list< SmartPointer<W> >::const_iterator it = deformationList.begin();
 
   // prepare this object to act as an actual deformation.
-  this->InitGrid( (*it)->Domain, (*it)->m_Dims );
+  this->InitGrid( (*it)->m_Domain, (*it)->m_Dims );
   // copy Origin field of first warp.
   this->m_Offset = (*it)->m_Offset;
   
@@ -107,11 +107,11 @@ ActiveDeformationModel<W>::ActiveDeformationModel
   // was preserved as part of the actual model.
   if ( ! IncludeScaleInModel ) 
     {
-    this->GlobalScaling = exp( globalScaling / sample );
+    this->m_GlobalScaling = exp( globalScaling / sample );
     } 
   else
     {
-    this->GlobalScaling = 1.0;
+    this->m_GlobalScaling = 1.0;
     }
 
   this->Construct( samplePoints, numberOfSamples, numberOfPoints, numberOfModes );

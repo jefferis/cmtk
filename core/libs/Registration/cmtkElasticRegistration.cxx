@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -148,7 +148,7 @@ ElasticRegistration::InitRegistration ()
   if ( this->m_Exploration <= 0 )
     {
     const SplineWarpXform* warp = SplineWarpXform::SmartPtr::DynamicCastFrom( this->m_Xform ); 
-    this->m_Exploration = 0.25 * std::max( warp->Spacing[0], std::max( warp->Spacing[1], warp->Spacing[2] ) );
+    this->m_Exploration = 0.25 * std::max( warp->m_Spacing[0], std::max( warp->m_Spacing[1], warp->m_Spacing[2] ) );
     }
 
   if ( this->CoarsestResolution <= 0 ) 
