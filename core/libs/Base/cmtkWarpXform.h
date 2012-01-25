@@ -85,7 +85,7 @@ public:
   FixedVector<3,Types::Coordinate> m_Domain;
 
   /// Array of spacings between the control points.
-  Types::Coordinate m_Spacing[3];
+  FixedVector<3,Types::Coordinate> m_Spacing;
 
   /// Array of spacings between the control points.
   Self::SpaceVectorType m_Offset;
@@ -124,7 +124,7 @@ protected:
    * These values are used for multiplication instead of division by those in
    * Spacing[].
    */
-  Types::Coordinate m_InverseSpacing[3];
+  FixedVector<3,Types::Coordinate> m_InverseSpacing;
 
   /// Number of edge planes in the control point grid to keep unmoved.
   cmtkGetSetMacro(unsigned int,IgnoreEdge);

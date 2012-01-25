@@ -299,6 +299,12 @@ public:
     this->RegisterVolumePoints( volume->m_Dims, volume->m_Delta, volume->m_Offset );
   }
 
+  /// Register axes points of the volume to be deformed.
+  void RegisterVolumePoints ( const DataGrid::IndexType&, const Self::SpaceVectorType& );
+
+  /// Register axes points of the volume to be deformed.
+  void RegisterVolumePoints( const DataGrid::IndexType&, const Self::SpaceVectorType&, const Self::SpaceVectorType& );
+
   /// Unegister axes points, ie free all internal data structures.
   void UnRegisterVolume();
   
@@ -344,12 +350,6 @@ public:
   virtual void GetJacobianRow( CoordinateMatrix3x3 *const array, const int x, const int y, const int z, const size_t numberOfPoints ) const;
   
 private:
-  /// Register axes points of the volume to be deformed.
-  void RegisterVolumePoints ( const DataGrid::IndexType&, const Self::SpaceVectorType& );
-
-  /// Register axes points of the volume to be deformed.
-  void RegisterVolumePoints( const DataGrid::IndexType&, const Self::SpaceVectorType&, const Self::SpaceVectorType& );
-
   /// Register a single axis of the uniform volume to be deformed.
   void RegisterVolumeAxis ( const DataGrid::IndexType::ValueType, const Types::Coordinate delta, const Types::Coordinate origin, const int, const Types::Coordinate, 
 			    std::vector<int>& g, std::vector<Types::Coordinate>& spline, std::vector<Types::Coordinate>& dspline );

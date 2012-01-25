@@ -205,8 +205,8 @@ SplineWarpXform::CloneVirtual() const
   
   newXform->m_Dims = this->m_Dims;
   newXform->m_Domain = this->m_Domain;
-  memcpy( newXform->m_Spacing, this->m_Spacing, sizeof( newXform->m_Spacing ) );
-  memcpy( newXform->m_InverseSpacing, this->m_InverseSpacing, sizeof( newXform->m_InverseSpacing ) );
+  newXform->m_Spacing = this->m_Spacing;
+  newXform->m_InverseSpacing = this->m_InverseSpacing;
   newXform->m_Offset = this->m_Offset;
 
   if ( this->m_ActiveFlags ) 
