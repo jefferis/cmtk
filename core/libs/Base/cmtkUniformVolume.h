@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -360,7 +360,7 @@ public:
   inline bool FindVoxelByIndex( const Self::CoordinateVectorType& fracIndex, int *const idx, Types::Coordinate *const frac ) const;
 
   /// Get 3D grid region from continuous lower and upper corner.
-  const UniformVolume::RegionType GetGridRange( const Self::CoordinateVectorType& fromVOI, const Self::CoordinateVectorType& toVOI ) const;
+  const Self::RegionType GetGridRange( const Self::CoordinateRegionType& region /*!< The coordinate region*/ ) const;
  
   /// Get plane coordinate.
   virtual Types::Coordinate GetPlaneCoord( const int axis, const int plane ) const 

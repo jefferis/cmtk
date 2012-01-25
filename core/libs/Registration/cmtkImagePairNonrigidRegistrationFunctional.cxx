@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
@@ -61,8 +61,7 @@ ImagePairNonrigidRegistrationFunctional::ImagePairNonrigidRegistrationFunctional
     
   Dim = 0;
 
-  ReferenceFrom = UniformVolume::CoordinateVectorType( UniformVolume::CoordinateVectorType::Init( 0 ) );
-  ReferenceTo = reference->Size;
+  this->m_ReferenceDomain = UniformVolume::CoordinateRegionType( UniformVolume::CoordinateVectorType( UniformVolume::CoordinateVectorType::Init( 0 ) ), reference->Size );
 
   this->m_AdaptiveFixParameters = false;
   this->m_AdaptiveFixThreshFactor = 0.5;
@@ -154,12 +153,10 @@ ImagePairNonrigidRegistrationFunctional::SetWarpXform
       }
     
     DataGrid::RegionType *VOIptr = VolumeOfInfluence;
-    Vector3D fromVOI, toVOI;
     for ( size_t dim=0; dim<Dim; ++dim, ++VOIptr ) 
       {
       this->m_StepScaleVector[dim] = this->GetParamStep( dim );
-      this->m_Warp->GetVolumeOfInfluence( dim, ReferenceFrom, ReferenceTo, fromVOI, toVOI );
-      *VOIptr = this->GetReferenceGridRange( fromVOI, toVOI );
+      *VOIptr = this->GetReferenceGridRange( this->m_Warp->GetVolumeOfInfluence( dim, this->m_ReferenceDomain ) );
       }
     
     for ( size_t thread = 0; thread < this->m_NumberOfThreads; ++thread ) 

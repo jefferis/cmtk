@@ -291,7 +291,9 @@ public:
   }
 
   /// Get volume influenced by one parameter.
-  virtual void GetVolumeOfInfluence( const size_t idx, const Self::SpaceVectorType&, const Self::SpaceVectorType&, Self::SpaceVectorType&, Self::SpaceVectorType&, const int = -1 ) const;
+  virtual UniformVolume::CoordinateRegionType GetVolumeOfInfluence( const size_t idx /*!< Parameter point index */, 
+								    const UniformVolume::CoordinateRegionType& domain /*!< Underlying image domain. */, 
+								    const int fastMode = -1 /*!< Fast mode selector (in fast mode, VOI is reduced). When -1, global m_FastMode is used. When 0, "slow" mode is forced. */ ) const;
   
   /// Register the grid points of the deformed uniform or non-uniform volume.
   void RegisterVolume( const UniformVolume* volume )

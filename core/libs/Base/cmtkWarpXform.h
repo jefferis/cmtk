@@ -82,10 +82,10 @@ public:
   Self::IndexType m_Dims;
 
   /// Domain of control point grid in world coordinates.
-  FixedVector<3,Types::Coordinate> m_Domain;
+  Self::SpaceVectorType m_Domain;
 
   /// Array of spacings between the control points.
-  FixedVector<3,Types::Coordinate> m_Spacing;
+  Self::SpaceVectorType m_Spacing;
 
   /// Array of spacings between the control points.
   Self::SpaceVectorType m_Offset;
@@ -124,7 +124,7 @@ protected:
    * These values are used for multiplication instead of division by those in
    * Spacing[].
    */
-  FixedVector<3,Types::Coordinate> m_InverseSpacing;
+  Self::SpaceVectorType m_InverseSpacing;
 
   /// Number of edge planes in the control point grid to keep unmoved.
   cmtkGetSetMacro(unsigned int,IgnoreEdge);
@@ -136,7 +136,7 @@ protected:
   Types::Coordinate m_GlobalScaling;
 
   /// Stored scale factors of the initial affine transformation.
-  Types::Coordinate m_InverseAffineScaling[3];
+  Self::SpaceVectorType m_InverseAffineScaling;
 
   /// Offset of next control grid column.
   int nextI;

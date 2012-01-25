@@ -156,7 +156,7 @@ SplineWarpXform::InitControlPoints( const AffineXform* affineXform )
       ofs[2] = p[2];
       }
     
-    affineXform->GetScales( this->m_InverseAffineScaling );
+    this->m_InverseAffineScaling = affineXform->GetScales();
     this->m_GlobalScaling = affineXform->GetGlobalScaling();
     } 
   else
@@ -385,18 +385,18 @@ SplineWarpXform::Refine()
   this->UnRegisterVolume();
 }
 
-void 
-SplineWarpXform::GetVolumeOfInfluence 
-( const size_t idx, const Self::SpaceVectorType& fromVol, const Self::SpaceVectorType& toVol,
-  Self::SpaceVectorType& fromVOI, Self::SpaceVectorType& toVOI, const int fastMode ) const
+UniformVolume::CoordinateRegionType
+SplineWarpXform::GetVolumeOfInfluence( const size_t idx, const UniformVolume::CoordinateRegionType& domain, const int fastMode ) const
 {
+  Self::SpaceVectorType regionFrom, regionTo;
+  
   int relIdx = idx / 3;
 
   const int xyz[3] = { ( relIdx %  this->m_Dims[0] ), 
-		       ( (relIdx /  this->m_Dims[0]) % this->m_Dims[1] ), 
-		       ( (relIdx /  this->m_Dims[0]) / this->m_Dims[1] ) };
+		       ( (relIdx / this->m_Dims[0]) % this->m_Dims[1] ), 
+		       ( (relIdx / this->m_Dims[0]) / this->m_Dims[1] ) };
   
-  Types::Coordinate xyzLow[3], xyzUp[3];
+  FixedVector<3,Types::Coordinate> xyzLow, xyzUp;
 
   if ( (fastMode==1) || (this->m_FastMode && (fastMode<0)) ) 
     {
@@ -417,9 +417,11 @@ SplineWarpXform::GetVolumeOfInfluence
   
   for ( int dim = 0; dim < 3; ++dim )
     {
-    fromVOI[dim] = std::min( toVol[dim], std::max( xyzLow[dim], fromVol[dim]) );
-    toVOI[dim] = std::max( fromVol[dim], std::min( xyzUp[dim], toVol[dim]) ); 
+    regionFrom[dim] = std::min( domain.To()[dim], std::max( xyzLow[dim], domain.From()[dim]) );
+    regionTo[dim] = std::max( domain.From()[dim], std::min( xyzUp[dim], domain.To()[dim]) ); 
     }
+
+  return UniformVolume::CoordinateRegionType( regionFrom, regionTo );
 }
 
 void

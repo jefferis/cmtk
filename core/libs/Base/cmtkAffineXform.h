@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -355,8 +355,9 @@ public:
   }
 
   /// Get scale factors with implicit conversion of log scales.
-  template<class T> void GetScales( T (&scales)[3] ) const
+  FixedVector<3,Types::Coordinate> GetScales() const
   { 
+    FixedVector<3,Types::Coordinate> scales;
     if ( this->m_LogScaleFactors )
       {
       for ( size_t i = 0; i < 3; ++i )
@@ -371,6 +372,7 @@ public:
 	scales[i] = this->m_Parameters[6+i];
 	}
       }
+    return scales;
   }
 
   /// Set transformation's scaling factors.

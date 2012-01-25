@@ -69,7 +69,7 @@ DeformationField::InitControlPoints( const AffineXform* affineXform )
 	}
       }	
     
-    affineXform->GetScales( this->m_InverseAffineScaling );
+    this->m_InverseAffineScaling = affineXform->GetScales();
     this->m_GlobalScaling = affineXform->GetGlobalScaling();
     } 
   else

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -250,11 +250,8 @@ protected:
    */
   DataGrid::RegionType *VolumeOfInfluence;
 
-  /// Coordinate of the beginning of the reference colume crop area.
-  Vector3D ReferenceFrom;
-
-  /// Coordinate of the end of the reference colume crop area.
-  Vector3D ReferenceTo;
+  /// Coordinate domain of the reference image.
+  UniformVolume::CoordinateRegionType m_ReferenceDomain;
 
   /// Make smart pointer class friend so we can keep destructor protected.
   friend class SmartPointer<Self>;

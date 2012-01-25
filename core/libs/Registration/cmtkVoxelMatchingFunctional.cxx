@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -79,13 +79,13 @@ VoxelMatchingFunctional::InitReference( UniformVolume::SmartPtr& reference )
 
 const DataGrid::RegionType
 VoxelMatchingFunctional::GetReferenceGridRange
-( const Vector3D& fromVOI, const Vector3D& toVOI )
+( const UniformVolume::CoordinateRegionType& region ) const
 {
   DataGrid::IndexType from, to;
   for ( int i = 0; i < 3; ++i )
     {
-    from[i] = std::max( this->m_ReferenceCropRegion.From()[i], static_cast<int>( fromVOI[i] * this->ReferenceInvDelta[i] ) );
-    to[i] = 1+std::min( this->m_ReferenceCropRegion.To()[i]-1, 1+static_cast<int>( toVOI[i] * this->ReferenceInvDelta[i] ) );
+    from[i] = std::max( this->m_ReferenceCropRegion.From()[i], static_cast<int>( region.From()[i] * this->ReferenceInvDelta[i] ) );
+    to[i] = 1+std::min( this->m_ReferenceCropRegion.To()[i]-1, 1+static_cast<int>( region.To()[i] * this->ReferenceInvDelta[i] ) );
     }
 
   return DataGrid::RegionType( from, to );

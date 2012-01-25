@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -127,14 +127,11 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   const size_t numberOfControlPoints = this->m_Transformation.VariableParamVectorDim() / 3;
   this->m_VolumeOfInfluenceVector.resize( numberOfControlPoints );
   
-  const Vector3D referenceFrom( this->m_ReferenceChannels[0]->m_Offset );
-  const Vector3D referenceTo( this->m_ReferenceChannels[0]->Size );
+  const UniformVolume::CoordinateRegionType referenceDomain( this->m_ReferenceChannels[0]->m_Offset, this->m_ReferenceChannels[0]->Size );
   
   for ( size_t idx = 0; idx < numberOfControlPoints; ++idx ) 
     {
-    Vector3D regionFrom, regionTo;
-    this->m_Transformation.GetVolumeOfInfluence( idx * 3, referenceFrom, referenceTo, regionFrom, regionTo );
-    this->m_VolumeOfInfluenceVector[idx] = this->m_ReferenceChannels[0]->GetGridRange( regionFrom, regionTo );
+    this->m_VolumeOfInfluenceVector[idx] = this->m_ReferenceChannels[0]->GetGridRange( this->m_Transformation.GetVolumeOfInfluence( idx * 3, referenceDomain ) );
     }
 
   m_UpdateTransformationFixedControlPointsRequired = true;
@@ -161,10 +158,7 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
   
   const size_t numberOfControlPoints = this->m_Transformation.VariableParamVectorDim() / 3;
 
-  const Vector3D referenceFrom( this->m_ReferenceChannels[0]->m_Offset );
-  const Vector3D referenceTo( this->m_ReferenceChannels[0]->Size );
-  Vector3D regionFrom, regionTo;
-  DataGrid::RegionType region;
+  const UniformVolume::CoordinateRegionType referenceDomain( this->m_ReferenceChannels[0]->m_Offset, this->m_ReferenceChannels[0]->Size );
 
   std::vector<bool> active( numberOfControlPoints );
   std::fill( active.begin(), active.end(), true );
@@ -181,10 +175,8 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
       
       for ( size_t cp = 0; cp < numberOfControlPoints; ++cp ) 
 	{
-	// We cannot use the precomputed table of VOIs here because in "fast"
-	// mode, these VOIs are smaller than we want them here.
-	this->m_Transformation.GetVolumeOfInfluence( 3 * cp, referenceFrom, referenceTo, regionFrom, regionTo, false /*fast*/ );
-	region = this->m_ReferenceChannels[0]->GetGridRange( regionFrom, regionTo );
+	// We cannot use the precomputed table of VOIs here because in "fast" mode, these VOIs are smaller than we want them here.
+	const DataGrid::RegionType region = this->m_ReferenceChannels[0]->GetGridRange( this->m_Transformation.GetVolumeOfInfluence( 3 * cp, referenceDomain, false /*fast*/ ) );
 	
 	for ( size_t channel = 0; channel < this->m_NumberOfChannels; ++channel )
 	  {
@@ -265,10 +257,8 @@ SplineWarpMultiChannelRegistrationFunctional<TMetricFunctional>
       
       for ( size_t cp = 0; cp < numberOfControlPoints; ++cp ) 
 	{
-	// We cannot use the precomputed table of VOIs here because in "fast"
-	// mode, these VOIs are smaller than we want them here.
-	this->m_Transformation.GetVolumeOfInfluence( 3 * cp, referenceFrom, referenceTo, regionFrom, regionTo, false /*fast*/ );
-	region = this->m_ReferenceChannels[0]->GetGridRange( regionFrom, regionTo );
+	// We cannot use the precomputed table of VOIs here because in "fast" mode, these VOIs are smaller than we want them here.
+	const DataGrid::RegionType region = this->m_ReferenceChannels[0]->GetGridRange( this->m_Transformation.GetVolumeOfInfluence( 3 * cp, referenceDomain, false /*fast*/ ) );
 	
 	active[cp] = false;
 

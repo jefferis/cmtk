@@ -30,6 +30,13 @@
 
 #include "cmtkFitSplineWarpToDeformationField.h"
 
+cmtk::FitSplineWarpToDeformationField::FitSplineWarpToDeformationField( DeformationField::SmartConstPtr dfield ) 
+  : m_DeformationField( dfield ),
+    m_DeformationFieldFOV( dfield->m_Offset, dfield->m_Domain )
+{  
+}
+
+
 cmtk::SplineWarpXform::SmartPtr 
 cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing, const Types::Coordinate initialSpacing )
 {
@@ -45,7 +52,16 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
 
   for ( ; spacing >= initialSpacing; spacing /= 2 )
     {
-    
+    // loop over all control points
+    for ( size_t cp = 0; cp < splineWarp->m_NumberOfControlPoints; ++cp )
+      {
+      Vector3D fromVOI, toVOI;
+      Region<3,Types::Coordinate> voiCoordinates = splineWarp->GetVolumeOfInfluence( 3 * cp, this->m_DeformationFieldFOV, 0 );
+//      const DataGrid::RegionType voi = this->GetReferenceGridRange( fromVOI, toVOI );
+      
+      }
+
+    // refine if necessary
     if ( spacing > initialSpacing )
       {
       splineWarp->Refine();

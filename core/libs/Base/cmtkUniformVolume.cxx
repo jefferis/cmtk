@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -316,14 +316,14 @@ UniformVolume::GetInterleavedPaddedSubVolume
 
 const UniformVolume::RegionType
 UniformVolume::GetGridRange
-( const Self::CoordinateVectorType& fromVOI, const Self::CoordinateVectorType& toVOI ) const
+( const Self::CoordinateRegionType& region ) const
 {
   Self::IndexType from, to;
 
   for ( size_t i = 0; i < 3; ++i )
     {
-    from[i] = std::max<IndexType::ValueType>( 0, static_cast<IndexType::ValueType>( (fromVOI[i]-this->m_Offset[i]) / this->m_Delta[i] ) );
-    to[i] = 1+std::min( this->m_Dims[i]-1, 1+static_cast<IndexType::ValueType>( (toVOI[i]-this->m_Offset[i]) / this->m_Delta[i] ) );
+    from[i] = std::max<IndexType::ValueType>( 0, static_cast<IndexType::ValueType>( (region.From()[i]-this->m_Offset[i]) / this->m_Delta[i] ) );
+    to[i] = 1+std::min( this->m_Dims[i]-1, 1+static_cast<IndexType::ValueType>( (region.To()[i]-this->m_Offset[i]) / this->m_Delta[i] ) );
     }
 
   return UniformVolume::RegionType( from, to );

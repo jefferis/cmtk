@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -120,22 +120,18 @@ void
 GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
 ::UpdateVolumesOfInfluence()
 {
-  const Vector3D templateFrom( this->m_TemplateGrid->m_Offset );
-  const Vector3D templateTo(  this->m_TemplateGrid->m_Offset + this->m_TemplateGrid->Size );
+  const UniformVolume::CoordinateRegionType templateDomain( this->m_TemplateGrid->m_Offset, this->m_TemplateGrid->m_Offset + this->m_TemplateGrid->Size );
   
   this->m_VolumeOfInfluenceArray.resize( this->m_ParametersPerXform / 3 );
-
+  
   this->m_MaximumNumberOfPixelsPerLineVOI = 0;
   this->m_MaximumNumberOfPixelsVOI = 0;
   
   const SplineWarpXform* xform0 = this->GetXformByIndex(0);
   for ( size_t param = 0; param < this->m_ParametersPerXform; param += 3 ) 
     { 
-    Vector3D fromVOI, toVOI;
-    xform0->GetVolumeOfInfluence( param, templateFrom, templateTo, fromVOI, toVOI );
-
     DataGrid::RegionType& voi = this->m_VolumeOfInfluenceArray[param/3];
-    voi = this->m_TemplateGrid->GetGridRange( fromVOI, toVOI );
+    voi = this->m_TemplateGrid->GetGridRange( xform0->GetVolumeOfInfluence( param, templateDomain ) );
     
     this->m_MaximumNumberOfPixelsVOI = std::max<size_t>( voi.Size(), this->m_MaximumNumberOfPixelsVOI );
     this->m_MaximumNumberOfPixelsPerLineVOI = std::max<size_t>( voi.To()[0]-voi.From()[0], this->m_MaximumNumberOfPixelsPerLineVOI );

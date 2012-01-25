@@ -35,8 +35,8 @@
 
 #include <Base/cmtkDeformationField.h>
 #include <Base/cmtkSplineWarpXform.h>
-
 #include <Base/cmtkCubicSpline.h>
+#include <Base/cmtkRegion.h>
 
 namespace
 cmtk
@@ -54,7 +54,7 @@ public:
   typedef FitSplineWarpToDeformationField Self;
 
   /// Constructor.
-  FitSplineWarpToDeformationField( DeformationField::SmartConstPtr dfield ) : m_DeformationField( dfield ) {};
+  FitSplineWarpToDeformationField( DeformationField::SmartConstPtr dfield );
 
   /// Fit spline warp.
   SplineWarpXform::SmartPtr Fit( const Types::Coordinate finalSpacing /*!< Final control point spacing of the fitted B-spline free-form deformation*/, 
@@ -63,6 +63,9 @@ public:
 private:
   /// Input deformation field.
   DeformationField::SmartConstPtr m_DeformationField;
+
+  /// Deformation field coverage, i.e., field of fiew.
+  Region<3,Types::Coordinate> m_DeformationFieldFOV;
 };
 
 } // namespace

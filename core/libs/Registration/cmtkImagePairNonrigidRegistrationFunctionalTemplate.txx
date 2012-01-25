@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -71,11 +71,8 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
 #pragma omp parallel for reduction(+:inactive)
     for ( int ctrl = 0; ctrl < numCtrlPoints; ++ctrl ) 
       {
-      /// We cannot use the precomputed table of VOIs here because in "fast"
-      /// mode, these VOIs are smaller than we want them here.
-      Vector3D fromVOI, toVOI;
-      this->m_Warp->GetVolumeOfInfluence( 3 * ctrl, this->ReferenceFrom, this->ReferenceTo, fromVOI, toVOI, 0 );
-      const DataGrid::RegionType voi = this->GetReferenceGridRange( fromVOI, toVOI );
+      /// We cannot use the precomputed table of VOIs here because in "fast" mode, these VOIs are smaller than we want them here.
+      const DataGrid::RegionType voi = this->GetReferenceGridRange( this->m_Warp->GetVolumeOfInfluence( 3 * ctrl, this->m_ReferenceDomain, 0 ) );
       
       int r = voi.From()[0] + this->m_DimsX * ( voi.From()[1] + this->m_DimsY * voi.From()[2] );
       
@@ -161,11 +158,8 @@ cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::UpdateWarpFixedParame
 #endif
       histogram.Reset();
       
-      // We cannot use the precomputed table of VOIs here because in "fast"
-      // mode, these VOIs are smaller than we want them here.
-      Vector3D fromVOI, toVOI;
-      this->m_Warp->GetVolumeOfInfluence( 3 * ctrl, this->ReferenceFrom, this->ReferenceTo, fromVOI, toVOI, 0 );
-      const DataGrid::RegionType voi = this->GetReferenceGridRange( fromVOI, toVOI );
+      // We cannot use the precomputed table of VOIs here because in "fast" mode, these VOIs are smaller than we want them here.
+      const DataGrid::RegionType voi = this->GetReferenceGridRange( this->m_Warp->GetVolumeOfInfluence( 3 * ctrl, this->m_ReferenceDomain, 0 ) );
       
       int r = voi.From()[0] + this->m_DimsX * ( voi.From()[1] + this->m_DimsY * voi.From()[2] );
       

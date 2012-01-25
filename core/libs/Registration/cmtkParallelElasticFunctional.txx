@@ -57,11 +57,8 @@ cmtk::ParallelElasticFunctional<VM>::UpdateWarpFixedParameters()
 #pragma omp parallel for reduction(+:inactive)
     for ( int ctrl = 0; ctrl < numCtrlPoints; ++ctrl ) 
       {
-      /// We cannot use the precomputed table of VOIs here because in "fast"
-      /// mode, these VOIs are smaller than we want them here.
-      Vector3D fromVOI, toVOI;
-      this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->ReferenceFrom, this->ReferenceTo, fromVOI, toVOI, 0 );
-      const DataGrid::RegionType voi = this->GetReferenceGridRange( fromVOI, toVOI );
+      /// We cannot use the precomputed table of VOIs here because in "fast" mode, these VOIs are smaller than we want them here.
+      const DataGrid::RegionType voi = this->GetReferenceGridRange( this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->m_ReferenceDomain, 0 ) );
       
       int r = voi.From()[0] + this->DimsX * ( voi.From()[1] + this->DimsY * voi.From()[2] );
       
@@ -125,11 +122,8 @@ cmtk::ParallelElasticFunctional<VM>::UpdateWarpFixedParameters()
       JointHistogram<unsigned int>& threadHistogram = *(this->m_ThreadConsistencyHistograms[ omp_get_thread_num() ]);
       threadHistogram.Reset();
       
-      // We cannot use the precomputed table of VOIs here because in "fast"
-      // mode, these VOIs are smaller than we want them here.
-      Vector3D fromVOI, toVOI;
-      this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->ReferenceFrom, this->ReferenceTo, fromVOI, toVOI, 0 );
-      const DataGrid::RegionType voi = this->GetReferenceGridRange( fromVOI, toVOI );
+      // We cannot use the precomputed table of VOIs here because in "fast" mode, these VOIs are smaller than we want them here.
+      const DataGrid::RegionType voi = this->GetReferenceGridRange( this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->m_ReferenceDomain, 0 ) );
       
       int r = voi.From()[0] + this->DimsX * ( voi.From()[1] + this->DimsY * voi.From()[2] );
       

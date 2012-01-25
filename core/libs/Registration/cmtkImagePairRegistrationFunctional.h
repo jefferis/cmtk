@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -159,11 +159,9 @@ protected:
   Types::DataItem m_ForceOutsideValueRescaled;
 
   /** Find rectilinear area in original reference grid.
-   *\param fromVOI Lower corner of area to find.
-   *\param toVOI Upper corner of area to find.
    *\return The smallest region of reference grid voxels that contains the given coordinate range.
    */
-  const DataGrid::RegionType GetReferenceGridRange ( const Vector3D& fromVOI, const Vector3D& toVOI );
+  const DataGrid::RegionType GetReferenceGridRange ( const UniformVolume::CoordinateRegionType& region /*!< Coordinate region.*/ ) const;
 
 private:
   /// Initialize internal data structures for floating image.

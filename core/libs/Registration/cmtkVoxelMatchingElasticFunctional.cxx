@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -63,8 +63,7 @@ VoxelMatchingElasticFunctional::VoxelMatchingElasticFunctional
 {
   Dim = 0;
 
-  ReferenceFrom = UniformVolume::CoordinateVectorType( UniformVolume::CoordinateVectorType::Init( 0 ) );
-  ReferenceTo = reference->Size;
+  this->m_ReferenceDomain = UniformVolume::CoordinateRegionType( UniformVolume::CoordinateVectorType( UniformVolume::CoordinateVectorType::Init( 0 ) ), reference->Size );
 
   this->m_AdaptiveFixParameters = false;
   this->m_AdaptiveFixThreshFactor = 0.5;
@@ -160,12 +159,10 @@ VoxelMatchingElasticFunctional_WarpTemplate<W>::SetWarpXform
       }
     
     DataGrid::RegionType *VOIptr = this->VolumeOfInfluence;
-    Vector3D fromVOI, toVOI;
     for ( size_t dim=0; dim<Dim; ++dim, ++VOIptr ) 
       {
-      StepScaleVector[dim] = this->GetParamStep( dim );
-      Warp->GetVolumeOfInfluence( dim, ReferenceFrom, ReferenceTo, fromVOI, toVOI );
-       *VOIptr = this->GetReferenceGridRange( fromVOI, toVOI );
+      StepScaleVector[dim] = this->GetParamStep( dim );      
+      *VOIptr = this->GetReferenceGridRange( Warp->GetVolumeOfInfluence( dim, this->m_ReferenceDomain ) );
       }
     
     WarpNeedsFixUpdate = true;
@@ -213,10 +210,8 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
     
     for ( int ctrl = 0; ctrl < numCtrlPoints; ++ctrl ) 
       {
-      /// We cannot use the precomputed table of VOIs here because in "fast"
-      /// mode, these VOIs are smaller than we want them here.
-      this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->ReferenceFrom, this->ReferenceTo, fromVOI, toVOI, 0 );
-      const DataGrid::RegionType voi = this->GetReferenceGridRange( fromVOI, toVOI );
+      /// We cannot use the precomputed table of VOIs here because in "fast" mode, these VOIs are smaller than we want them here.
+      const DataGrid::RegionType voi = this->GetReferenceGridRange( this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->m_ReferenceDomain, 0 ) );
       
       int r = voi.From()[0] + this->DimsX * ( voi.From()[1] + this->DimsY * voi.From()[2] );
       
@@ -256,10 +251,8 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
       {
       this->ConsistencyHistogram->Reset();
       
-      // We cannot use the precomputed table of VOIs here because in "fast"
-      // mode, these VOIs are smaller than we want them here.
-      this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->ReferenceFrom, this->ReferenceTo, fromVOI, toVOI, 0 );
-      const DataGrid::RegionType voi = this->GetReferenceGridRange( fromVOI, toVOI );
+      // We cannot use the precomputed table of VOIs here because in "fast" mode, these VOIs are smaller than we want them here.
+      const DataGrid::RegionType voi = this->GetReferenceGridRange( this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->m_ReferenceDomain, 0 ) );
       
       int r = voi.From()[0] + this->DimsX * ( voi.From()[1] + this->DimsY * voi.From()[2] );
       

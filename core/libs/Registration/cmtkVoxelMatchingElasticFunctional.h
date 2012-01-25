@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -171,11 +171,8 @@ protected:
    */
   DataGrid::RegionType *VolumeOfInfluence;
 
-  /// Coordinate of the beginning of the reference colume crop area.
-  Vector3D ReferenceFrom;
-
-  /// Coordinate of the end of the reference colume crop area.
-  Vector3D ReferenceTo;
+  /// Reference volume coordinate domain.
+  UniformVolume::CoordinateRegionType m_ReferenceDomain;
 
   /// Storage for simultaneously retrieving multiple deformed vectors.
   Vector3D *VectorCache;

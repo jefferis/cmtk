@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2010 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -78,7 +78,7 @@ ImagePairRegistrationFunctional::InitReference( UniformVolume::SmartConstPtr& re
 
 const DataGrid::RegionType
 ImagePairRegistrationFunctional::GetReferenceGridRange
-( const Vector3D& fromVOI, const Vector3D& toVOI )
+( const UniformVolume::CoordinateRegionType& region ) const
 {
   const FixedVector<3,int>& cropRegionFrom = this->m_ReferenceCropRegion.From();
   const FixedVector<3,int>& cropRegionTo = this->m_ReferenceCropRegion.To();
@@ -86,8 +86,8 @@ ImagePairRegistrationFunctional::GetReferenceGridRange
   DataGrid::IndexType from, to;
   for ( int i = 0; i < 3; ++i )
     {
-    from[i] = std::min( cropRegionTo[i]-1, std::max( cropRegionFrom[i], static_cast<int>( fromVOI[i] * this->m_ReferenceInverseDelta[i] ) ) );
-    to[i] = 1+std::max( cropRegionFrom[i], std::min( cropRegionTo[i]-1, 1+static_cast<int>( toVOI[i] * this->m_ReferenceInverseDelta[i] ) ) );
+    from[i] = std::min( cropRegionTo[i]-1, std::max( cropRegionFrom[i], static_cast<int>( region.From()[i] * this->m_ReferenceInverseDelta[i] ) ) );
+    to[i] = 1+std::max( cropRegionFrom[i], std::min( cropRegionTo[i]-1, 1+static_cast<int>( region.To()[i] * this->m_ReferenceInverseDelta[i] ) ) );
     }
 
   return DataGrid::RegionType( from, to );
