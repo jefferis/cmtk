@@ -80,8 +80,8 @@ const DataGrid::RegionType
 ImagePairRegistrationFunctional::GetReferenceGridRange
 ( const UniformVolume::CoordinateRegionType& region ) const
 {
-  const FixedVector<3,int>& cropRegionFrom = this->m_ReferenceCropRegion.From();
-  const FixedVector<3,int>& cropRegionTo = this->m_ReferenceCropRegion.To();
+  const DataGrid::IndexType& cropRegionFrom = this->m_ReferenceCropRegion.From();
+  const DataGrid::IndexType& cropRegionTo = this->m_ReferenceCropRegion.To();
 
   DataGrid::IndexType from, to;
   for ( int i = 0; i < 3; ++i )
