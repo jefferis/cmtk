@@ -41,14 +41,15 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
     }
 
   SplineWarpXform* splineWarp = new SplineWarpXform( this->m_DeformationField->m_Domain, spacing );
-
   splineWarp->RegisterVolumePoints( this->m_DeformationField->m_Dims, this->m_DeformationField->m_Spacing, this->m_DeformationField->m_Offset );
 
   for ( ; spacing >= initialSpacing; spacing /= 2 )
     {
+    
     if ( spacing > initialSpacing )
       {
       splineWarp->Refine();
+      splineWarp->RegisterVolumePoints( this->m_DeformationField->m_Dims, this->m_DeformationField->m_Spacing, this->m_DeformationField->m_Offset );
       }
     }
   

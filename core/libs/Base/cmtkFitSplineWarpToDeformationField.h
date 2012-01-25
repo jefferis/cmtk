@@ -54,7 +54,7 @@ public:
   typedef FitSplineWarpToDeformationField Self;
 
   /// Constructor.
-  FitSplineWarpToDeformationField( DeformationField::SmartConstPtr& dfield ) : m_DeformationField( dfield ) {};
+  FitSplineWarpToDeformationField( DeformationField::SmartConstPtr dfield ) : m_DeformationField( dfield ) {};
 
   /// Fit spline warp.
   SplineWarpXform::SmartPtr Fit( const Types::Coordinate finalSpacing /*!< Final control point spacing of the fitted B-spline free-form deformation*/, 
