@@ -36,6 +36,11 @@ cmtk::FitSplineWarpToDeformationField::FitSplineWarpToDeformationField( Deformat
 {  
 }
 
+cmtk::DataGrid::RegionType
+cmtk::FitSplineWarpToDeformationField::GetDeformationGridRange( const UniformVolume::CoordinateRegionType& region ) const
+{
+  return cmtk::DataGrid::RegionType();
+}
 
 cmtk::SplineWarpXform::SmartPtr 
 cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing, const Types::Coordinate initialSpacing )
@@ -55,10 +60,7 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
     // loop over all control points
     for ( size_t cp = 0; cp < splineWarp->m_NumberOfControlPoints; ++cp )
       {
-      Vector3D fromVOI, toVOI;
-      Region<3,Types::Coordinate> voiCoordinates = splineWarp->GetVolumeOfInfluence( 3 * cp, this->m_DeformationFieldFOV, 0 );
-//      const DataGrid::RegionType voi = this->GetReferenceGridRange( fromVOI, toVOI );
-      
+      const DataGrid::RegionType voi = this->GetDeformationGridRange( splineWarp->GetVolumeOfInfluence( 3 * cp, this->m_DeformationFieldFOV, 0 /*fastMode=off*/ ) );
       }
 
     // refine if necessary

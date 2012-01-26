@@ -66,6 +66,9 @@ private:
 
   /// Deformation field coverage, i.e., field of fiew.
   Region<3,Types::Coordinate> m_DeformationFieldFOV;
+
+  /// Get deformation grid region corresponding to given coordinate region.
+  DataGrid::RegionType GetDeformationGridRange( const UniformVolume::CoordinateRegionType& region ) const;
 };
 
 } // namespace
