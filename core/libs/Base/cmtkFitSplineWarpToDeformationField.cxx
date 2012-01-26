@@ -44,6 +44,26 @@ cmtk::FitSplineWarpToDeformationField::GetDeformationGridRange( const UniformVol
   return cmtk::DataGrid::RegionType();
 }
 
+void
+cmtk::FitSplineWarpToDeformationField::ComputeResiduals( const SplineWarpXform& splineWarp )
+{
+  const DataGrid::IndexType dims = this->m_DeformationField->m_Dims;
+
+  this->m_Residuals.resize( dims.Product() );
+
+  size_t ofs = 0;
+  for ( int z = 0; z < dims[2]; ++z )
+    {
+    for ( int y = 0; y < dims[1]; ++y )
+      {
+      for ( int x = 0; x < dims[0]; ++x, ofs+=3 )
+	{
+	this->m_Residuals[ofs] = this->m_DeformationField->GetTransformedGrid( x, y, z ) - splineWarp.GetTransformedGrid( x, y, z );
+	}
+      }
+    }
+}
+
 cmtk::SplineWarpXform::SmartPtr 
 cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing, const Types::Coordinate initialSpacing )
 {
@@ -56,11 +76,14 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
 
   // initialize B-spline transformation
   SplineWarpXform* splineWarp = new SplineWarpXform( this->m_DeformationField->m_Domain, spacing );
-  splineWarp->RegisterVolumePoints( this->m_DeformationField->m_Dims, this->m_DeformationField->m_Spacing, this->m_DeformationField->m_Offset );
 
   // loop until final control point spacing
   for ( ; spacing >= initialSpacing; spacing /= 2 )
     {
+    // compute residuals
+    splineWarp->RegisterVolumePoints( this->m_DeformationField->m_Dims, this->m_DeformationField->m_Spacing, this->m_DeformationField->m_Offset );
+    this->ComputeResiduals( *splineWarp );
+
     // loop over all control points
     for ( size_t cp = 0; cp < splineWarp->m_NumberOfControlPoints; ++cp )
       {
@@ -77,7 +100,6 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
     if ( spacing > initialSpacing )
       {
       splineWarp->Refine();
-      splineWarp->RegisterVolumePoints( this->m_DeformationField->m_Dims, this->m_DeformationField->m_Spacing, this->m_DeformationField->m_Offset );
       }
     }
   

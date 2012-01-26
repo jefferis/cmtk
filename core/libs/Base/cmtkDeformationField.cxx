@@ -78,16 +78,18 @@ DeformationField::InitControlPoints( const AffineXform* affineXform )
     }
 }
 
-void
+DeformationField::SpaceVectorType
 DeformationField
 ::GetTransformedGrid 
-( Self::SpaceVectorType& v, const int idxX, const int idxY, const int idxZ ) const
+( const int idxX, const int idxY, const int idxZ ) const
 {
   const Types::Coordinate* coeff = this->m_Parameters + nextI * idxX + nextJ * idxY + nextK * idxZ;
 
+  Self::SpaceVectorType v;
   v[0] = this->m_Offset[0] + this->m_Spacing[0] * idxX + coeff[0];
   v[1] = this->m_Offset[1] + this->m_Spacing[1] * idxY + coeff[1];
   v[2] = this->m_Offset[2] + this->m_Spacing[2] * idxZ + coeff[2];
+  return v;
 }
 
 void 

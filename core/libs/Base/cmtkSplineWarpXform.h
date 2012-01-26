@@ -311,7 +311,7 @@ public:
   void UnRegisterVolume();
   
   /// Get a grid point from the deformed grid.
-  void GetTransformedGrid( Self::SpaceVectorType& v, const int idxX, const int idxY, const int idxZ ) const;
+  Self::SpaceVectorType GetTransformedGrid( const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get a sequence of grid points from the deformed grid. 
   void GetTransformedGridRow( const int numPoints, Self::SpaceVectorType *const v, const int idxX, const int idxY, const int idxZ ) const;

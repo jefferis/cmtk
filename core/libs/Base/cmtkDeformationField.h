@@ -68,6 +68,9 @@ public:
   /// Smart pointer to DeformationField
   typedef SmartPointer<Self> SmartPtr;
 
+  /// Smart pointer to DeformationField
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
 public:
   /// Constructor.
   DeformationField( const UniformVolume* volume ) 
@@ -128,7 +131,7 @@ public:
   }
 
   /// Get a grid point from the deformed grid.
-  virtual void GetTransformedGrid( Self::SpaceVectorType& v, const int idxX, const int idxY, const int idxZ ) const;
+  virtual Self::SpaceVectorType GetTransformedGrid( const int idxX, const int idxY, const int idxZ ) const;
   
   /// Get a sequence of grid points from the deformed grid. 
   virtual void GetTransformedGridRow( Self::SpaceVectorType *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const;

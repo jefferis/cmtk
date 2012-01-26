@@ -64,11 +64,17 @@ private:
   /// Input deformation field.
   DeformationField::SmartConstPtr m_DeformationField;
 
+  /// Deformation field residuals, i.e., pixel-wise difference between B-spline transformation and deformation field.
+  std::vector< FixedVector<3,Types::Coordinate> > m_Residuals;
+
   /// Deformation field coverage, i.e., field of fiew.
   Region<3,Types::Coordinate> m_DeformationFieldFOV;
 
   /// Get deformation grid region corresponding to given coordinate region.
   DataGrid::RegionType GetDeformationGridRange( const UniformVolume::CoordinateRegionType& region ) const;
+
+  /// Compute residuals, i.e., pixel-wise difference between B-spline transformation and deformation field.
+  void ComputeResiduals( const SplineWarpXform& splineWarp );
 };
 
 } // namespace

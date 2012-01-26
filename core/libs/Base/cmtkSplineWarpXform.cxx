@@ -521,11 +521,13 @@ SplineWarpXform::GetDeformedControlPointPosition
   return v;
 }
 
-void
+SplineWarpXform::SpaceVectorType
 SplineWarpXform
 ::GetTransformedGrid 
-( Self::SpaceVectorType& v, const int idxX, const int idxY, const int idxZ ) const
+( const int idxX, const int idxY, const int idxZ ) const
 {
+  Self::SpaceVectorType v;
+
   const Types::Coordinate* coeff = this->m_Parameters + gX[idxX] + gY[idxY] + gZ[idxZ];
   const Types::Coordinate *spX = &splineX[idxX<<2], *spY = &splineY[idxY<<2], *spZ = &splineZ[idxZ<<2];
   
@@ -554,6 +556,8 @@ SplineWarpXform
       v[ dim ] = mm;
       ++coeff;
     }
+
+  return v;
 }
 
 void 
