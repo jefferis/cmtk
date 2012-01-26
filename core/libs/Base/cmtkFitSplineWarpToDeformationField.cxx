@@ -30,6 +30,8 @@
 
 #include "cmtkFitSplineWarpToDeformationField.h"
 
+#include <Base/cmtkRegionIndexIterator.h>
+
 cmtk::FitSplineWarpToDeformationField::FitSplineWarpToDeformationField( DeformationField::SmartConstPtr dfield ) 
   : m_DeformationField( dfield ),
     m_DeformationFieldFOV( dfield->m_Offset, dfield->m_Domain )
@@ -52,18 +54,26 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
     spacing *= 2;
     }
 
+  // initialize B-spline transformation
   SplineWarpXform* splineWarp = new SplineWarpXform( this->m_DeformationField->m_Domain, spacing );
   splineWarp->RegisterVolumePoints( this->m_DeformationField->m_Dims, this->m_DeformationField->m_Spacing, this->m_DeformationField->m_Offset );
 
+  // loop until final control point spacing
   for ( ; spacing >= initialSpacing; spacing /= 2 )
     {
     // loop over all control points
     for ( size_t cp = 0; cp < splineWarp->m_NumberOfControlPoints; ++cp )
       {
+      // volume of influence for the current control point
       const DataGrid::RegionType voi = this->GetDeformationGridRange( splineWarp->GetVolumeOfInfluence( 3 * cp, this->m_DeformationFieldFOV, 0 /*fastMode=off*/ ) );
+      
+      // iterate over all voxels influenced by current control point.
+      for ( RegionIndexIterator<DataGrid::RegionType> it( voi ); it != it.end(); ++it )
+	{
+	}
       }
-
-    // refine if necessary
+    
+    // refine control point grid if necessary for the next iteration
     if ( spacing > initialSpacing )
       {
       splineWarp->Refine();
