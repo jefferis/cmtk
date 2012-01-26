@@ -435,7 +435,7 @@ protected:
   static void GetJacobianConstraintThread( void *const args, const size_t taskIdx, const size_t taskCnt, const size_t, const size_t );
 
   /// Find nearest (after deformation) control point.
-  void FindClosestControlPoint( const Self::SpaceVectorType& v, Self::SpaceVectorType& cp ) const;
+  Self::SpaceVectorType FindClosestControlPoint( const Self::SpaceVectorType& v ) const;
 
   /// Friend declaration.
   friend class SplineWarpXformUniformVolume;

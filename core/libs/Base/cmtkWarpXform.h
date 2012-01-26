@@ -47,7 +47,6 @@
 #include <Base/cmtkAffineXform.h>
 #include <Base/cmtkBitVector.h>
 
-#include <Base/cmtkControlPoint.h>
 #include <Base/cmtkMatchedLandmarkList.h>
 
 #include <System/cmtkSmartPtr.h>
@@ -216,30 +215,34 @@ public:
     const unsigned int idx, const Types::Coordinate step );
   
   /// Get the original position of a control point.
-  virtual void GetOriginalControlPointPosition( Self::SpaceVectorType& cp, const Types::Coordinate x, const Types::Coordinate y, const Types::Coordinate z) const 
+  virtual Self::SpaceVectorType GetOriginalControlPointPosition( const Types::Coordinate x, const Types::Coordinate y, const Types::Coordinate z) const 
   { 
+    Self::SpaceVectorType cp;
     cp[0] = this->m_Offset[0] + x*this->m_Spacing[0];
     cp[1] = this->m_Offset[1] + y*this->m_Spacing[1];
     cp[2] = this->m_Offset[2] + z*this->m_Spacing[2];
+    return cp;
   }
   
   /// Get the original position of a control point by index.
-  virtual void GetOriginalControlPointPositionByOffset( Self::SpaceVectorType& v, const size_t offset ) const 
+  virtual Self::SpaceVectorType GetOriginalControlPointPositionByOffset( const size_t offset ) const 
   {
-    this->GetOriginalControlPointPosition( v, offset % this->m_Dims[0], (offset % (this->m_Dims[0]*this->m_Dims[1])) / this->m_Dims[0], offset / (this->m_Dims[0]*this->m_Dims[1]) ); 
+    return this->GetOriginalControlPointPosition( offset % this->m_Dims[0], (offset % (this->m_Dims[0]*this->m_Dims[1])) / this->m_Dims[0], offset / (this->m_Dims[0]*this->m_Dims[1]) ); 
   }
 
   /// Get shifted control point position.
-  virtual void GetShiftedControlPointPosition( Self::SpaceVectorType& v, const int x, const int y, const int z ) const 
+  virtual Self::SpaceVectorType GetShiftedControlPointPosition( const int x, const int y, const int z ) const 
   { 
-    this->GetShiftedControlPointPositionByOffset( v, x + this->m_Dims[0] * (y + this->m_Dims[1] * z ) );
+    return this->GetShiftedControlPointPositionByOffset( x + this->m_Dims[0] * (y + this->m_Dims[1] * z ) );
   }
 
   /// Get shifted control point position by offset.
-  virtual void GetShiftedControlPointPositionByOffset( Self::SpaceVectorType& v, const size_t offset ) const 
+  virtual Self::SpaceVectorType GetShiftedControlPointPositionByOffset( const size_t offset ) const 
   { 
+    Self::SpaceVectorType v;
     for ( size_t i = 0; i<3; ++i )
       v[i] = this->m_Parameters[offset*3+i];
+    return v;
   }
 
   /// Set shifted control point position.

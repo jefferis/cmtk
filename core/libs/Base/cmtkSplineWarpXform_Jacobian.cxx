@@ -756,10 +756,7 @@ SplineWarpXform::RelaxToUnfold()
 	    Self::SpaceVectorType cp( this->m_Parameters+param );
 	    this->m_InitialAffineXform->GetInverse()->ApplyInPlace( cp );
 
-	    Self::SpaceVectorType cp0;
-	    this->GetOriginalControlPointPosition( cp0, i, j, k );
-
-	    cp -= cp0;
+	    cp -= this->GetOriginalControlPointPosition( i, j, k );
 	    for ( int dim = 0; dim < 3; ++dim )
 	      pureDeformation[param+dim] = cp[dim];
 	    }
@@ -826,11 +823,8 @@ SplineWarpXform::RelaxToUnfold()
 	  {
 	  for ( int i = 0; i < this->m_Dims[0]; ++i, param+=3 )
 	    {
-	    Self::SpaceVectorType cp0;
-	    this->GetOriginalControlPointPosition( cp0, i, j, k );
-	    
 	    Self::SpaceVectorType cp( &(pureDeformation[0])+param );
-	    cp += cp0;
+	    cp += this->GetOriginalControlPointPosition( i, j, k );
 	    
 	    this->m_InitialAffineXform->ApplyInPlace( cp );
 	    

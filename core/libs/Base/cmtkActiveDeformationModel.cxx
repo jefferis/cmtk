@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -129,11 +129,10 @@ ActiveDeformationModel<W>::MakeSamplePointsReference( const W* deformation )
   Types::Coordinate* points = Memory::ArrayC::Allocate<Types::Coordinate>( numberOfParameters );
 
   Types::Coordinate* ptr = points;
-  Vector3D v;
   for ( unsigned int pointIdx = 0; pointIdx < numberOfParameters / 3; ++pointIdx, ptr += 3 ) 
     {
     // get original (undeformed) control point position
-    deformation->GetOriginalControlPointPositionByOffset( v, pointIdx );
+    const Vector3D v = deformation->GetOriginalControlPointPositionByOffset( pointIdx );
     
     // copy the result into ouput array
     for ( unsigned int dim = 0; dim < 3; ++dim ) 

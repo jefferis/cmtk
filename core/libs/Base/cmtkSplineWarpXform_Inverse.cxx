@@ -53,14 +53,12 @@ bool
 SplineWarpXform::ApplyInverseInPlace 
 ( Self::SpaceVectorType& v, const Types::Coordinate accuracy ) const
 {
-  Self::SpaceVectorType u;
-  this->FindClosestControlPoint( v, u );
-  return this->ApplyInverseInPlaceWithInitial( v, u, accuracy );
+  return this->ApplyInverseInPlaceWithInitial( v, this->FindClosestControlPoint( v ), accuracy );
 }
 
-void
+SplineWarpXform::SpaceVectorType
 SplineWarpXform::FindClosestControlPoint
-( const Self::SpaceVectorType& v, Self::SpaceVectorType& cp ) const
+( const Self::SpaceVectorType& v ) const
 {
   // find closest control point -- we'll go from there.
   Types::Coordinate closestDistance = FLT_MAX;
@@ -84,7 +82,7 @@ SplineWarpXform::FindClosestControlPoint
 	  idx[dim] += dir * step;
 	  if ( (idx[dim] > 0) && (idx[dim] <= this->m_Dims[dim]-2) ) 
 	    {
-	    this->GetOriginalControlPointPosition( cp, idx[0], idx[1], idx[2] );
+	    Self::SpaceVectorType cp = this->GetOriginalControlPointPosition( idx[0], idx[1], idx[2] );
 	    this->ApplyInPlace( cp );
 	    cp -= v;
 	    const Types::Coordinate distance = cp.RootSumOfSquares();
@@ -110,7 +108,7 @@ SplineWarpXform::FindClosestControlPoint
   assert( (idx[0] <= this->m_Dims[0]-1) && (idx[1] <= this->m_Dims[1]-1 ) && (idx[2] <= this->m_Dims[2]-1) );
   assert( idx[0] >= 0 && idx[1] >= 0 && idx[2] >= 0 );
 
-  this->GetOriginalControlPointPosition( cp, idx[0], idx[1], idx[2] );
+  return this->GetOriginalControlPointPosition( idx[0], idx[1], idx[2] );
 }
 
 bool

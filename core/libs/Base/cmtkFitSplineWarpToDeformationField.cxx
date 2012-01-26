@@ -84,7 +84,8 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
     splineWarp->RegisterVolumePoints( this->m_DeformationField->m_Dims, this->m_DeformationField->m_Spacing, this->m_DeformationField->m_Offset );
     this->ComputeResiduals( *splineWarp );
 
-    // loop over all control points
+    // loop over all control points to compute delta
+    std::vector< FixedVector<3,Types::Coordinate> > delta( splineWarp->m_NumberOfControlPoints );
     for ( size_t cp = 0; cp < splineWarp->m_NumberOfControlPoints; ++cp )
       {
       // volume of influence for the current control point
@@ -94,6 +95,11 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
       for ( RegionIndexIterator<DataGrid::RegionType> it( voi ); it != it.end(); ++it )
 	{
 	}
+      }
+
+    // apply delta
+    for ( size_t cp = 0; cp < splineWarp->m_NumberOfControlPoints; ++cp )
+      {
       }
     
     // refine control point grid if necessary for the next iteration

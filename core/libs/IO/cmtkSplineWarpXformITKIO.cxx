@@ -66,10 +66,10 @@ cmtk::SplineWarpXformITKIO
 
     for ( size_t cp = 0; cp < xform.GetNumberOfControlPoints(); ++cp )
       {
-      xform.GetOriginalControlPointPositionByOffset( v, cp );
+      v = xform.GetOriginalControlPointPositionByOffset( cp );
       if ( bulkXform )
 	bulkXform->ApplyInPlace( v );
-      xform.GetShiftedControlPointPositionByOffset( vx, cp );
+      vx = xform.GetShiftedControlPointPositionByOffset( cp );
 
       vx -= v;
       stream << " " << -vx[0] << " " << -vx[1] << " " << vx[2]; // convert from RAS to LPS by writing -x,-y,+z

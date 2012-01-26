@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -86,9 +86,8 @@ doMain ( const int argc, const char* argv[] )
       const size_t numberOfControlPoints = splineWarpXform->GetNumberOfControlPoints();
       for ( size_t idx = 0; idx < numberOfControlPoints; ++idx )
 	{
-	cmtk::Vector3D v0, v1;
-	splineWarpXform->GetOriginalControlPointPositionByOffset( v0, idx );
-	splineWarpXform->GetShiftedControlPointPositionByOffset( v1, idx );
+	cmtk::Vector3D v0 = splineWarpXform->GetOriginalControlPointPositionByOffset( idx );
+	cmtk::Vector3D v1 = splineWarpXform->GetShiftedControlPointPositionByOffset( idx );
 
 	((v1 -= v0) *= Fractional) += v0;
 
