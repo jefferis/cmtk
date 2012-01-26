@@ -68,7 +68,7 @@ public:
   /// Smart pointer to DeformationField
   typedef SmartPointer<Self> SmartPtr;
 
-  /// Smart pointer to DeformationField
+  /// Smart pointer to const DeformationField
   typedef SmartConstPointer<Self> SmartConstPtr;
 
 public:
