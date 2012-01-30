@@ -48,7 +48,7 @@ cmtk
 WarpXform::ControlPointRegionType 
 WarpXform::GetAllControlPointsRegion() const
 {
-  return Self::ControlPointRegionType( Self::ControlPointIndexType::Init( 0 ), this->m_Dims );
+  return Self::ControlPointRegionType( (Self::ControlPointIndexType::Init( 0.0 )), this->m_Dims );
 }
 
 void
