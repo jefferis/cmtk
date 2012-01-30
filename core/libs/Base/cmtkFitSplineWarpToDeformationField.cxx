@@ -92,7 +92,10 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
 
     // loop over all control points to compute deltas as the spline coefficients that fit current residuals
     std::vector< FixedVector<3,Types::Coordinate> > delta( splineWarp->m_NumberOfControlPoints );
-    for ( size_t cp = 0; cp < splineWarp->m_NumberOfControlPoints; ++cp )
+
+    const WarpXform::ControlPointRegionType cpRegion = splineWarp->GetAllControlPointsRegion();
+    size_t cp = 0;
+    for ( RegionIndexIterator<WarpXform::ControlPointRegionType> cpIt( cpRegion); cpIt != cpIt.end(); ++cpIt, ++cp )
       {
       // volume of influence for the current control point
       const DataGrid::RegionType voi = this->GetDeformationGridRange( splineWarp->GetVolumeOfInfluence( 3 * cp, this->m_DeformationFieldFOV, 0 /*fastMode=off*/ ) );
@@ -107,7 +110,8 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
 	FixedVector<3,Types::Coordinate> Pc = this->m_Residuals[cp]; // S_c(u1...un)
 	for ( int axis = 0; axis < 3; ++axis )
 	  {
-//	  assert( splineWarp->m_GridIndexes[axis][idx[axis]] >= 
+	  assert( splineWarp->m_GridIndexes[axis][idx[axis]] >= cpIt.Index()[axis] );
+	  assert( splineWarp->m_GridIndexes[axis][idx[axis]] < cpIt.Index()[axis]+4 );
 	  }
 
 	// Eq. (11)
