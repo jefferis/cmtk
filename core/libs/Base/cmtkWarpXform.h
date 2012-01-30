@@ -180,6 +180,9 @@ public:
   /// Initialized internal data structures for new control point grid.
   virtual void InitGrid( const FixedVector<3,Types::Coordinate>& domain, const Self::ControlPointIndexType& dims );
 
+  /// Get region containing all control point indexes.
+  virtual Self::ControlPointRegionType GetAllControlPointsRegion() const;
+
   /// Check whether coordinate is in domain of transformation.
   virtual bool InDomain( const Self::SpaceVectorType& v ) const 
   {

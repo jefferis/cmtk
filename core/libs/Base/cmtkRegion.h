@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010-2011 SRI International
+//  Copyright 2010-2012 SRI International
 //
 //  Copyright 2010 Torsten Rohlfing
 //
@@ -72,8 +72,8 @@ public:
   Region() {}
 
   /// Constructor from two indexes, from and to.
-  Region( const typename Self::IndexType& fromIndex /*!< Region goes from this index. */, 
-	  const typename Self::IndexType& toIndex /*!< Region goes to this index. */ )
+  Region( const typename Self::IndexType fromIndex /*!< Region goes from this index. */, 
+	  const typename Self::IndexType toIndex /*!< Region goes to this index. */ )
   {
     this->m_RegionFrom = fromIndex;
     this->m_RegionTo = toIndex;

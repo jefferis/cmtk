@@ -45,6 +45,12 @@ cmtk
 /** \addtogroup Base */
 //@{
 
+WarpXform::ControlPointRegionType 
+WarpXform::GetAllControlPointsRegion() const
+{
+  return Self::ControlPointRegionType( Self::ControlPointIndexType::Init( 0 ), this->m_Dims );
+}
+
 void
 WarpXform::InitGrid
 ( const FixedVector<3,Types::Coordinate>& domain, const Self::ControlPointIndexType& dims )
