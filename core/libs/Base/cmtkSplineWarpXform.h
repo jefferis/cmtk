@@ -89,7 +89,7 @@ public:
   
   /** Construct new warp from volume size, grid dimensions and parameters
    */
-  SplineWarpXform( const FixedVector<3,Types::Coordinate>& domain, const Self::IndexType& dims, CoordinateVector::SmartPtr& parameters, const AffineXform *initialXform = NULL );
+  SplineWarpXform( const FixedVector<3,Types::Coordinate>& domain, const Self::ControlPointIndexType& dims, CoordinateVector::SmartPtr& parameters, const AffineXform *initialXform = NULL );
 
   /// Clone and return smart pointer.
   Self::SmartPtr Clone () const 

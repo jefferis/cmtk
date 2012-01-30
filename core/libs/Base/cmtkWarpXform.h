@@ -74,11 +74,14 @@ public:
   /// Smart pointer to const WarpXform
   typedef SmartConstPointer<Self> SmartConstPtr;
 
-  /// Grid index type.
-  typedef FixedVector<3,int> IndexType;
-  
+  /// Region type.
+  typedef Region<3,int> ControlPointRegionType;
+
+  /// Index type.
+  typedef ControlPointRegionType::IndexType ControlPointIndexType;
+
   /// Dimensions of control point grid.
-  Self::IndexType m_Dims;
+  Self::ControlPointIndexType m_Dims;
 
   /// Domain of control point grid in world coordinates.
   Self::SpaceVectorType m_Domain;
@@ -175,7 +178,7 @@ public:
   virtual ~WarpXform () {}
 
   /// Initialized internal data structures for new control point grid.
-  virtual void InitGrid( const FixedVector<3,Types::Coordinate>& domain, const Self::IndexType& dims );
+  virtual void InitGrid( const FixedVector<3,Types::Coordinate>& domain, const Self::ControlPointIndexType& dims );
 
   /// Check whether coordinate is in domain of transformation.
   virtual bool InDomain( const Self::SpaceVectorType& v ) const 

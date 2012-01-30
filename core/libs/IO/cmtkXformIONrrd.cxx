@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -106,7 +106,7 @@ XformIO::ReadNrrd( const char* path )
 
     const Types::Coordinate size[3] = { (dims[0]-1) * spacing[0], (dims[1]-1) * spacing[1], (dims[2]-1) * spacing[2] };
     const Types::Coordinate origin[3] = { nrrd->spaceOrigin[0], nrrd->spaceOrigin[1], nrrd->spaceOrigin[2] };
-    dfield = DeformationField::SmartPtr( new DeformationField( FixedVector<3,Types::Coordinate>( size ), DeformationField::IndexType( dims ), origin ) );
+    dfield = DeformationField::SmartPtr( new DeformationField( FixedVector<3,Types::Coordinate>( size ), DeformationField::ControlPointIndexType( dims ), origin ) );
     
     ScalarDataType type = TYPE_NONE;
     switch ( nrrd->type )

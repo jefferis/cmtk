@@ -47,7 +47,7 @@ cmtk
 
 void
 WarpXform::InitGrid
-( const FixedVector<3,Types::Coordinate>& domain, const Self::IndexType& dims )
+( const FixedVector<3,Types::Coordinate>& domain, const Self::ControlPointIndexType& dims )
 {
   this->m_Domain = domain;
   this->m_Dims = dims;

@@ -41,7 +41,13 @@ cmtk::FitSplineWarpToDeformationField::FitSplineWarpToDeformationField( Deformat
 cmtk::DataGrid::RegionType
 cmtk::FitSplineWarpToDeformationField::GetDeformationGridRange( const UniformVolume::CoordinateRegionType& region ) const
 {
-  return cmtk::DataGrid::RegionType();
+  cmtk::DataGrid::IndexType regionFrom, regionTo;
+
+  regionFrom = ComponentDivide( region.From() - this->m_DeformationField->m_Offset, this->m_DeformationField->m_Spacing );
+  regionTo = ComponentDivide( region.To() - this->m_DeformationField->m_Offset, this->m_DeformationField->m_Spacing );
+  regionTo.AddScalar( 1 );
+  
+  return cmtk::DataGrid::RegionType( regionFrom, regionTo );
 }
 
 void
@@ -84,7 +90,7 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
     splineWarp->RegisterVolumePoints( this->m_DeformationField->m_Dims, this->m_DeformationField->m_Spacing, this->m_DeformationField->m_Offset );
     this->ComputeResiduals( *splineWarp );
 
-    // loop over all control points to compute delta
+    // loop over all control points to compute deltas as the spline coefficients that fit current residuals
     std::vector< FixedVector<3,Types::Coordinate> > delta( splineWarp->m_NumberOfControlPoints );
     for ( size_t cp = 0; cp < splineWarp->m_NumberOfControlPoints; ++cp )
       {
@@ -92,14 +98,30 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
       const DataGrid::RegionType voi = this->GetDeformationGridRange( splineWarp->GetVolumeOfInfluence( 3 * cp, this->m_DeformationFieldFOV, 0 /*fastMode=off*/ ) );
       
       // iterate over all voxels influenced by current control point.
+      Types::Coordinate normalize = 0;
       for ( RegionIndexIterator<DataGrid::RegionType> it( voi ); it != it.end(); ++it )
 	{
+	const DataGrid::IndexType idx = it.Index();
+
+	// Eq. (8)
+	FixedVector<3,Types::Coordinate> Pc = this->m_Residuals[cp]; // S_c(u1...un)
+	for ( int axis = 0; axis < 3; ++axis )
+	  {
+//	  assert( splineWarp->m_GridIndexes[axis][idx[axis]] >= 
+	  }
+
+	// Eq. (11)
+	delta[cp] += Pc;
 	}
+
+      // Eq. (11) denominator
+      delta[cp] /= normalize;
       }
 
     // apply delta
     for ( size_t cp = 0; cp < splineWarp->m_NumberOfControlPoints; ++cp )
       {
+      splineWarp->SetShiftedControlPointPositionByOffset( splineWarp->GetShiftedControlPointPositionByOffset( cp ) + delta[cp], cp );
       }
     
     // refine control point grid if necessary for the next iteration

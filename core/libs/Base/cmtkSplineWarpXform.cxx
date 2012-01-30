@@ -93,7 +93,7 @@ SplineWarpXform
 }
 
 SplineWarpXform::SplineWarpXform
-( const FixedVector<3,Types::Coordinate>& domain, const Self::IndexType& dims, CoordinateVector::SmartPtr& parameters, const AffineXform* initialXform )
+( const FixedVector<3,Types::Coordinate>& domain, const Self::ControlPointIndexType& dims, CoordinateVector::SmartPtr& parameters, const AffineXform* initialXform )
 {
   this->Init();
   this->m_Domain = domain;
@@ -247,7 +247,7 @@ SplineWarpXform::Refine()
 {
   if ( !this->m_ParameterVector ) return;
 
-  Self::IndexType newDims;
+  Self::ControlPointIndexType newDims;
   for ( int dim=0; dim<3; ++dim ) 
     newDims[dim] = 2 * this->m_Dims[dim] - 3;
 
