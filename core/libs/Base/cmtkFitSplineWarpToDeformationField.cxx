@@ -106,18 +106,37 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
 	{
 	const DataGrid::IndexType idx = it.Index();
 
-	// Eq. (8)
-	FixedVector<3,Types::Coordinate> Pc = this->m_Residuals[cp]; // S_c(u1...un)
+	// Enumerator of Eq. (8) - this is a vector
+	FixedVector<3,Types::Coordinate> ePc = this->m_Residuals[cp]; // S_c(u1...un)
 	for ( int axis = 0; axis < 3; ++axis )
 	  {
-	  assert( splineWarp->m_GridIndexes[axis][idx[axis]] >= cpIt.Index()[axis] );
-	  assert( splineWarp->m_GridIndexes[axis][idx[axis]] < cpIt.Index()[axis]+4 );
+	  // relative index of spline function for current pixel relative to current control point
+	  const int relIdx = cpIt.Index()[axis] - splineWarp->m_GridIndexes[axis][idx[axis]];
+	  // sanity range checks
+	  assert( (relIdx >= 0) && (relIdx < 4) );
+
+	  ePc *= splineWarp->m_GridSpline[axis][4*it.Index()[axis]+relIdx];
 	  }
 
-	// Eq. (11)
-	delta[cp] += Pc;
-	}
+	// Denominator of Eq. (8) - this is a scalar
+	Types::Coordinate dPc = 0;
+	for ( int axis = 0; axis < 3; ++axis )
+	  {
+	  Types::Coordinate prod = MathUtil::Square( splineWarp->m_GridSpline[axis][4*it.Index()[axis]] );
+	  for ( int relIdx = 1; relIdx < 4; ++relIdx )
+	    {
+	    prod *= MathUtil::Square( splineWarp->m_GridSpline[axis][4*it.Index()[axis]+relIdx] );
+	    }
 
+	  dPc += prod;
+	  }
+
+	// HOW DO WE GET "normalize"?
+
+	// Eq. (11)
+	delta[cp] += (1.0 / dPc) * ePc;
+	}
+      
       // Eq. (11) denominator
       delta[cp] /= normalize;
       }
