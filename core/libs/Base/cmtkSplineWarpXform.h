@@ -370,40 +370,20 @@ protected:
    * These arrays hold the precomputed grid indices of the deformed grid's
    * voxels with respect to the control point grid of this deformation.
    */
-  //@{
-  /// x-axis.
-  std::vector<int> gX;
-  /// y-axis.
-  std::vector<int> gY;
-  /// z-axis.
-  std::vector<int> gZ;
-  //@}
+  FixedVector< 3,std::vector<int> > m_GridIndexes;
 
   /**\name Precomputed spline coefficients.
    * These arrays hold the precomputed spline coefficients for deforming the
    * voxel locations in the associated deformed grid.
    */
-  //@{
-  /// x-axis.
-  std::vector<Types::Coordinate> splineX;
-  /// y-axis.
-  std::vector<Types::Coordinate> splineY;
-  /// z-axis.
-  std::vector<Types::Coordinate> splineZ;
-  //@}
-
+  FixedVector< 3,std::vector<Types::Coordinate> > m_GridSpline;
+  
   /**\name Precomputed derivative spline coefficients.
    * These arrays hold the precomputed derivatives of the spline coefficients.
    * This allows for rapid evaluation of the Jacobian determinant.
    */
-  //@{
   /// x-axis.
-  std::vector<Types::Coordinate> dsplineX;
-  /// y-axis.
-  std::vector<Types::Coordinate> dsplineY;
-  /// z-axis.
-  std::vector<Types::Coordinate> dsplineZ;
-  //@}
+  FixedVector< 3,std::vector<Types::Coordinate> > m_GridDerivSpline;
 
   /// Relative offsets of all control points in a 4 x 4 x 4 neighborhood.
   int GridPointOffset[48];

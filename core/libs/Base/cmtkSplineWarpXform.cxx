@@ -235,17 +235,9 @@ SplineWarpXform::CloneVirtual() const
 
   newXform->VolumeDims = this->VolumeDims;
 
-  newXform->gX = this->gX;
-  newXform->gY = this->gY;
-  newXform->gZ = this->gZ;
-
-  newXform->splineX = this->splineX;
-  newXform->splineY = this->splineY;
-  newXform->splineZ = this->splineZ;
-
-  newXform->dsplineX = this->dsplineX;
-  newXform->dsplineY = this->dsplineY;
-  newXform->dsplineZ = this->dsplineZ;
+  newXform->m_GridIndexes = this->m_GridIndexes;
+  newXform->m_GridSpline = this->m_GridSpline;
+  newXform->m_GridDerivSpline = this->m_GridDerivSpline;
 
   return newXform;
 }
@@ -452,30 +444,27 @@ void
 SplineWarpXform::RegisterVolumePoints
 ( const DataGrid::IndexType& volDims, const Self::SpaceVectorType& delta, const Self::SpaceVectorType& origin )
 {
-  this->RegisterVolumeAxis( volDims[0], delta[0], origin[0], this->m_Dims[0], this->m_InverseSpacing[0], gX, splineX, dsplineX );
-  this->RegisterVolumeAxis( volDims[1], delta[1], origin[1], this->m_Dims[1], this->m_InverseSpacing[1], gY, splineY, dsplineY );
-  this->RegisterVolumeAxis( volDims[2], delta[2], origin[2], this->m_Dims[2], this->m_InverseSpacing[2], gZ, splineZ, dsplineZ );
-
-  for ( int idx = 0; idx<volDims[0]; ++idx ) gX[idx] *= nextI;
-  for ( int idx = 0; idx<volDims[1]; ++idx ) gY[idx] *= nextJ;
-  for ( int idx = 0; idx<volDims[2]; ++idx ) gZ[idx] *= nextK;
+  for ( int axis = 0; axis < 3; ++axis )
+    this->RegisterVolumeAxis( volDims[axis], delta[axis], origin[axis], this->m_Dims[axis], this->m_InverseSpacing[axis], this->m_GridIndexes[axis], this->m_GridSpline[axis], this->m_GridDerivSpline[axis] );
+  
+  for ( int idx = 0; idx<volDims[0]; ++idx ) 
+    this->m_GridIndexes[0][idx] *= nextI;
+  for ( int idx = 0; idx<volDims[1]; ++idx ) 
+    this->m_GridIndexes[1][idx] *= nextJ;
+  for ( int idx = 0; idx<volDims[2]; ++idx ) 
+    this->m_GridIndexes[2][idx] *= nextK;
 
   this->VolumeDims = volDims;
 }
 
 void SplineWarpXform::UnRegisterVolume()
 {
-  gX.resize( 0 );
-  gY.resize( 0 );
-  gZ.resize( 0 );
-
-  splineX.resize( 0 );
-  splineY.resize( 0 );
-  splineZ.resize( 0 );
-
-  dsplineX.resize( 0 );
-  dsplineY.resize( 0 );
-  dsplineZ.resize( 0 );
+  for ( int axis = 0; axis < 3; ++axis )
+    {
+    this->m_GridIndexes[axis].resize( 0 );
+    this->m_GridSpline[axis].resize( 0 );
+    this->m_GridDerivSpline[axis].resize( 0 );
+    }
 }
 
 SplineWarpXform::SpaceVectorType& 
@@ -528,8 +517,8 @@ SplineWarpXform
 {
   Self::SpaceVectorType v;
 
-  const Types::Coordinate* coeff = this->m_Parameters + gX[idxX] + gY[idxY] + gZ[idxZ];
-  const Types::Coordinate *spX = &splineX[idxX<<2], *spY = &splineY[idxY<<2], *spZ = &splineZ[idxZ<<2];
+  const Types::Coordinate* coeff = this->m_Parameters + this->m_GridIndexes[0][idxX] + this->m_GridIndexes[1][idxY] + this->m_GridIndexes[2][idxZ];
+  const Types::Coordinate *spX = &this->m_GridSpline[0][idxX<<2], *spY = &this->m_GridSpline[1][idxY<<2], *spZ = &this->m_GridSpline[2][idxZ<<2];
   
   for ( int dim = 0; dim<3; ++dim ) 
     {
@@ -566,8 +555,8 @@ SplineWarpXform::GetTransformedGridRow
   const
 {
   Self::SpaceVectorType *v = vIn;
-  const Types::Coordinate* coeff = m_Parameters + gX[idxX] + gY[idxY] + gZ[idxZ];
-  const Types::Coordinate *spX = &splineX[idxX<<2], *spY = &splineY[idxY<<2], *spZ = &splineZ[idxZ<<2];
+  const Types::Coordinate* coeff = m_Parameters + this->m_GridIndexes[0][idxX] + this->m_GridIndexes[1][idxY] + this->m_GridIndexes[2][idxZ];
+  const Types::Coordinate *spX = &this->m_GridSpline[0][idxX<<2], *spY = &this->m_GridSpline[1][idxY<<2], *spZ = &this->m_GridSpline[2][idxZ<<2];
   
   // precompute the products of B_j(v) and B_k(w) for the 4 x 4 neighborhood
   // in y- and z-direction.
@@ -581,7 +570,7 @@ SplineWarpXform::GetTransformedGridRow
     }
   
   // determine the number of CPG cells on our way along the row
-  const int numberOfCells = (gX[idxX + numPoints - 1] - gX[idxX]) / nextI + 4;
+  const int numberOfCells = (this->m_GridIndexes[0][idxX + numPoints - 1] - this->m_GridIndexes[0][idxX]) / nextI + 4;
   
   // pre-compute the contributions of all control points in y- and z-direction
   // along the way
@@ -636,7 +625,7 @@ SplineWarpXform::GetTransformedGridRow
       ++v;
       // repeat this until we leave current CPG cell.
       } 
-    while ( ( gX[i-1] == gX[i] ) && ( i < lastPoint ) );
+    while ( ( this->m_GridIndexes[0][i-1] == this->m_GridIndexes[0][i] ) && ( i < lastPoint ) );
     
     // we've just left a cell -- shift index of precomputed control points
     // to the next one.

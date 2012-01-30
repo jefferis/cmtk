@@ -59,9 +59,9 @@ SplineWarpXform::GetJacobianRow
 ( CoordinateMatrix3x3 *const array, const int x, const int y, const int z, const size_t numberOfPoints ) 
   const
 {
-  const Types::Coordinate *spX = &splineX[x<<2], *spY = &splineY[y<<2], *spZ = &splineZ[z<<2];
-  const Types::Coordinate *dspX = &dsplineX[x<<2], *dspY = &dsplineY[y<<2], *dspZ = &dsplineZ[z<<2];
-  const Types::Coordinate *coeff = this->m_Parameters + gX[x] + gY[y] + gZ[z];
+  const Types::Coordinate *spX = &this->m_GridSpline[0][x<<2], *spY = &this->m_GridSpline[1][y<<2], *spZ = &this->m_GridSpline[2][z<<2];
+  const Types::Coordinate *dspX = &this->m_GridDerivSpline[0][x<<2], *dspY = &this->m_GridDerivSpline[1][y<<2], *dspZ = &this->m_GridDerivSpline[2][z<<2];
+  const Types::Coordinate *coeff = this->m_Parameters + this->m_GridIndexes[0][x] + this->m_GridIndexes[1][y] + this->m_GridIndexes[2][z];
 
   // precompute the products of B_j(v) and B_k(w) for the 4 x 4 neighborhood
   // in y- and z-direction.
@@ -77,7 +77,7 @@ SplineWarpXform::GetJacobianRow
     }
   
   // determine the number of CPG cells on our way along the row
-  const int numberOfCells = (gX[x + numberOfPoints - 1] - gX[x]) / nextI + 4;
+  const int numberOfCells = (this->m_GridIndexes[0][x + numberOfPoints - 1] - this->m_GridIndexes[0][x]) / nextI + 4;
   
   // pre-compute the contributions of all control points in y- and z-direction
   // along the way
@@ -157,7 +157,7 @@ SplineWarpXform::GetJacobianRow
       spX += 4;
       dspX += 4;
       // repeat this until we leave current CPG cell.
-    } while ( ( gX[i-1] == gX[i] ) && ( i < lastPoint ) );
+    } while ( ( this->m_GridIndexes[0][i-1] == this->m_GridIndexes[0][i] ) && ( i < lastPoint ) );
 
     // we've just left a cell -- shift index of precomputed control points
     // to the next one.
@@ -279,9 +279,9 @@ Types::Coordinate
 SplineWarpXform::GetJacobianDeterminant
 ( const int x, const int y, const int z ) const
 {
-  const Types::Coordinate *spX = &splineX[x<<2], *spY = &splineY[y<<2], *spZ = &splineZ[z<<2];
-  const Types::Coordinate *dspX = &dsplineX[x<<2], *dspY = &dsplineY[y<<2], *dspZ = &dsplineZ[z<<2];
-  const Types::Coordinate *coeff = this->m_Parameters + gX[x] + gY[y] + gZ[z];
+  const Types::Coordinate *spX = &this->m_GridSpline[0][x<<2], *spY = &this->m_GridSpline[1][y<<2], *spZ = &this->m_GridSpline[2][z<<2];
+  const Types::Coordinate *dspX = &this->m_GridDerivSpline[0][x<<2], *dspY = &this->m_GridDerivSpline[1][y<<2], *dspZ = &this->m_GridDerivSpline[2][z<<2];
+  const Types::Coordinate *coeff = this->m_Parameters + this->m_GridIndexes[0][x] + this->m_GridIndexes[1][y] + this->m_GridIndexes[2][z];
   
   double J[3][3];
   memset( J, 0, sizeof( J ) );
@@ -385,9 +385,9 @@ SplineWarpXform::GetJacobianDeterminantRow
   const size_t numberOfPoints ) 
   const
 {
-  const Types::Coordinate *spX = &splineX[x<<2], *spY = &splineY[y<<2], *spZ = &splineZ[z<<2];
-  const Types::Coordinate *dspX = &dsplineX[x<<2], *dspY = &dsplineY[y<<2], *dspZ = &dsplineZ[z<<2];
-  const Types::Coordinate *coeff = this->m_Parameters + gX[x] + gY[y] + gZ[z];
+  const Types::Coordinate *spX = &this->m_GridSpline[0][x<<2], *spY = &this->m_GridSpline[1][y<<2], *spZ = &this->m_GridSpline[2][z<<2];
+  const Types::Coordinate *dspX = &this->m_GridDerivSpline[0][x<<2], *dspY = &this->m_GridDerivSpline[1][y<<2], *dspZ = &this->m_GridDerivSpline[2][z<<2];
+  const Types::Coordinate *coeff = this->m_Parameters + this->m_GridIndexes[0][x] + this->m_GridIndexes[1][y] + this->m_GridIndexes[2][z];
 
   const Types::Coordinate globalInverseSpacing = this->m_InverseSpacing[0] * this->m_InverseSpacing[1] * this->m_InverseSpacing[2];
 
@@ -405,7 +405,7 @@ SplineWarpXform::GetJacobianDeterminantRow
     }
   
   // determine the number of CPG cells on our way along the row
-  const int numberOfCells = (gX[x + numberOfPoints - 1] - gX[x]) / nextI + 4;
+  const int numberOfCells = (this->m_GridIndexes[0][x + numberOfPoints - 1] - this->m_GridIndexes[0][x]) / nextI + 4;
   
   // pre-compute the contributions of all control points in y- and z-direction
   // along the way
@@ -486,7 +486,7 @@ SplineWarpXform::GetJacobianDeterminantRow
       spX += 4;
       dspX += 4;
       // repeat this until we leave current CPG cell.
-    } while ( ( gX[i-1] == gX[i] ) && ( i < lastPoint ) );
+    } while ( ( this->m_GridIndexes[0][i-1] == this->m_GridIndexes[0][i] ) && ( i < lastPoint ) );
 
     // we've just left a cell -- shift index of precomputed control points
     // to the next one.
@@ -707,7 +707,7 @@ SplineWarpXform::RelaxToUnfold()
 	  if ( jacobiansRow[i] <= 0 )
 	    {
 	    isFolded = true;
-	    cpList[ (this->gX[i] + this->gY[j] + this->gZ[k])/3 ] = 1;
+	    cpList[ (this->m_GridIndexes[0][i] + this->m_GridIndexes[1][j] + this->m_GridIndexes[2][k])/3 ] = 1;
 	    }
 	  }
 	}
