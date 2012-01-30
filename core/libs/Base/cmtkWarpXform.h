@@ -246,7 +246,7 @@ public:
   }
 
   /// Set shifted control point position.
-  virtual void SetShiftedControlPointPositionByOffset( const Self::SpaceVectorType& v, const int x, const int y, const int z ) const 
+  virtual void SetShiftedControlPointPosition( const Self::SpaceVectorType& v, const int x, const int y, const int z ) const 
   { 
     this->SetShiftedControlPointPositionByOffset( v, x + this->m_Dims[0] * (y + this->m_Dims[1] * z ) );
   }
