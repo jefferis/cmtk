@@ -46,6 +46,8 @@ cmtk
 //@{
 
 /** Fit B-spline-based free-form deformation to pixel-wise deformation field.
+ * This class implements the algorithm from: N. J. Tustison, B. B. Avants, and J. C. Gee, "Directly manipulated free-form deformation image registration," IEEE Transactions on Image Processing, vol. 18, no. 3, pp. 624-635, 2009;
+ * http://dx.doi.org/10.1109/TIP.2008.2010072
  */
 class FitSplineWarpToDeformationField
 {
