@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -92,6 +92,7 @@ std::vector<int> NumberDOFs;
 bool AlignCentersOfMass = false;
 bool InitScales = false;
 bool HistogramMatching = false;
+bool FreeAndRereadImages = false;
 
 cmtk::Types::Coordinate Accuracy = 0.01;
 cmtk::Types::Coordinate Exploration = 0.25;
@@ -139,7 +140,7 @@ doMain( int argc, const char* argv[] )
     cl.AddSwitch( Key( "no-output-average" ), &AverageImagePath, (const char*)NULL, "Do not write average image." );
     cl.EndGroup();
 
-    cl.BeginGroup( "Multuresolution", "Multuresolution Parameters" );
+    cl.BeginGroup( "Multiresolution", "Multiresolution Parameters" );
     cl.AddOption( Key( 'd', "downsample-from" ), &DownsampleFrom, "Initial downsampling factor" );
     cl.AddOption( Key( 'D', "downsample-to" ), &DownsampleTo, "Final downsampling factor." );
     cl.AddOption( Key( 's', "sampling-density" ), &SamplingDensity, "Probabilistic sampling density. Legal values between 0 and 1.", &UseSamplingDensity );
@@ -151,6 +152,8 @@ doMain( int argc, const char* argv[] )
     cl.AddSwitch( Key( "crop-histograms" ), &CropImageHistograms, true, "Crop image histograms to make better use of histogram bins." );
     cl.AddOption( Key( "smooth" ), &SmoothSigmaFactor, "Sigma of Gaussian smoothing kernel in multiples of template image pixel size.", &UseSmoothSigmaFactor );
     cl.AddSwitch( Key( "match-histograms" ), &HistogramMatching, true, "Match all image histograms to template data (or first image, if no template image is given)" );
+    cl.AddSwitch( Key( "free-and-reread" ), &FreeAndRereadImages, true, "Free memory allocated for original image whenever these are not needed and re-read image files as needed."
+		  " This can be useful when running on a machine with limited memory resources." );
     cl.EndGroup();
 
     cl.BeginGroup( "Transformation", "Transformation Parameters" );
@@ -200,7 +203,7 @@ doMain( int argc, const char* argv[] )
 
   functional->SetForceZeroSum( ForceZeroSum );
   functional->SetForceZeroSumFirstN( ForceZeroSumFirstN );
-  functional->SetFreeAndRereadImages( ! (AlignCentersOfMass || InitScales || HistogramMatching) );
+  functional->SetFreeAndRereadImages( FreeAndRereadImages );
   functional->SetCropImageHistograms( CropImageHistograms );
 
   if ( UserBackgroundFlag )
@@ -227,7 +230,10 @@ doMain( int argc, const char* argv[] )
     if ( inStream.IsValid() )
       {
       inStream >> *functional;
-      PreDefinedTemplate = functional->GetTemplateGrid();
+      if ( ! PreDefinedTemplatePath )
+	{
+	PreDefinedTemplate = functional->GetTemplateGrid();
+	}
       imageListOriginal = functional->GetOriginalTargetImages();
       TransformationsFromArchive = true;
       }
@@ -253,23 +259,23 @@ doMain( int argc, const char* argv[] )
       nextImage = image;      
       imageListOriginal.push_back( nextImage );
       }
+    }
     
-    if ( PreDefinedTemplatePath )
+  if ( PreDefinedTemplatePath )
+    {
+    if ( UseTemplateData )
       {
-      if ( UseTemplateData )
-	{
-	PreDefinedTemplate = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( PreDefinedTemplatePath ) );
-	}
-      else
-	{
-	PreDefinedTemplate = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( PreDefinedTemplatePath ) );
-	}
-
-      if ( ! PreDefinedTemplate )
-	{
-	cmtk::StdErr << "ERROR: could not read template grid/image " << PreDefinedTemplatePath << "\n";
-	throw cmtk::ExitException( 2 );
-	}
+      PreDefinedTemplate = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadOriented( PreDefinedTemplatePath ) );
+      }
+    else
+      {
+      PreDefinedTemplate = cmtk::UniformVolume::SmartPtr( cmtk::VolumeIO::ReadGridOriented( PreDefinedTemplatePath ) );
+      }
+    
+    if ( ! PreDefinedTemplate )
+      {
+      cmtk::StdErr << "ERROR: could not read template grid/image " << PreDefinedTemplatePath << "\n";
+      throw cmtk::ExitException( 2 );
       }
     }
 
