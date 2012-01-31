@@ -366,11 +366,11 @@ protected:
   /// Dimensions of the volume image linked to this transformation.
   DataGrid::IndexType VolumeDims;
 
-  /**\name Precomputed grid indices.
+  /**\name Precomputed grid index offsets.
    * These arrays hold the precomputed grid indices of the deformed grid's
    * voxels with respect to the control point grid of this deformation.
    */
-  FixedVector< 3,std::vector<int> > m_GridIndexes;
+  FixedVector< 3,std::vector<int> > m_GridOffsets;
 
   /**\name Precomputed spline coefficients.
    * These arrays hold the precomputed spline coefficients for deforming the
