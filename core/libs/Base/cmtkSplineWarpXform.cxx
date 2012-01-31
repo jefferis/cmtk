@@ -426,17 +426,17 @@ SplineWarpXform::GetVolumeOfInfluence( const size_t idx, const UniformVolume::Co
 void
 SplineWarpXform::RegisterVolumeAxis 
 ( const DataGrid::IndexType::ValueType dim, const Types::Coordinate delta, const Types::Coordinate origin, const int cpgDim, const Types::Coordinate invCpgSpacing,
-  std::vector<int>& g, std::vector<Types::Coordinate>& spline, std::vector<Types::Coordinate>& dspline )
+  std::vector<int>& gIdx, std::vector<Types::Coordinate>& spline, std::vector<Types::Coordinate>& dspline )
 {
-  g.resize( dim+1 );
+  gIdx.resize( dim+1 );
   spline.resize( 4*dim );
   dspline.resize( 4*dim );
 
   for ( int idx=0; idx<dim; ++idx ) 
     {
     const Types::Coordinate r = invCpgSpacing * (origin + delta * idx);
-    g[idx] = std::min( static_cast<int>( r ), cpgDim-4 );
-    const Types::Coordinate f = r - g[idx];
+    gIdx[idx] = std::min( static_cast<int>( r ), cpgDim-4 );
+    const Types::Coordinate f = r - gIdx[idx];
     for ( int k = 0; k < 4; ++k ) 
       {
       spline[4*idx+k] = CubicSpline::ApproxSpline( k, f );
@@ -444,7 +444,7 @@ SplineWarpXform::RegisterVolumeAxis
       }
     }
   // guard element
-  g[dim] = -1;
+  gIdx[dim] = -1;
 }
 
 void
@@ -452,15 +452,15 @@ SplineWarpXform::RegisterVolumePoints
 ( const DataGrid::IndexType& volDims, const Self::SpaceVectorType& delta, const Self::SpaceVectorType& origin )
 {
   for ( int axis = 0; axis < 3; ++axis )
-    this->RegisterVolumeAxis( volDims[axis], delta[axis], origin[axis], this->m_Dims[axis], this->m_InverseSpacing[axis], this->m_GridOffsets[axis], this->m_GridSpline[axis], this->m_GridDerivSpline[axis] );
+    this->RegisterVolumeAxis( volDims[axis], delta[axis], origin[axis], this->m_Dims[axis], this->m_InverseSpacing[axis], this->m_GridIndexes[axis], this->m_GridSpline[axis], this->m_GridDerivSpline[axis] );
   
   for ( int idx = 0; idx<volDims[0]; ++idx ) 
-    this->m_GridOffsets[0][idx] *= nextI;
+    this->m_GridOffsets[0][idx] = this->m_GridIndexes[0][idx] * nextI;
   for ( int idx = 0; idx<volDims[1]; ++idx ) 
-    this->m_GridOffsets[1][idx] *= nextJ;
+    this->m_GridOffsets[1][idx] = this->m_GridIndexes[1][idx] * nextJ;
   for ( int idx = 0; idx<volDims[2]; ++idx ) 
-    this->m_GridOffsets[2][idx] *= nextK;
-
+    this->m_GridOffsets[2][idx] = this->m_GridIndexes[2][idx] * nextK;
+  
   this->VolumeDims = volDims;
 }
 

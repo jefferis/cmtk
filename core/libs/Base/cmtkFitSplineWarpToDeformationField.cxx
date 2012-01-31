@@ -112,7 +112,7 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
 	for ( int axis = 0; axis < 3; ++axis )
 	  {
 	  // relative index of spline function for current pixel relative to current control point
-	  const int relIdx = cpIt.Index()[axis] - splineWarp->m_GridOffsets[axis][idx[axis]];
+	  const int relIdx = cpIt.Index()[axis] - splineWarp->m_GridIndexes[axis][idx[axis]];
 	  // sanity range checks
 	  assert( (relIdx >= 0) && (relIdx < 4) );
 

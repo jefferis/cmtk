@@ -354,7 +354,7 @@ public:
 private:
   /// Register a single axis of the uniform volume to be deformed.
   void RegisterVolumeAxis ( const DataGrid::IndexType::ValueType, const Types::Coordinate delta, const Types::Coordinate origin, const int, const Types::Coordinate, 
-			    std::vector<int>& g, std::vector<Types::Coordinate>& spline, std::vector<Types::Coordinate>& dspline );
+			    std::vector<int>& gIdx, std::vector<Types::Coordinate>& spline, std::vector<Types::Coordinate>& dspline );
 
   /// Return rigidity constraint based on given Jacobian matrix.
   Types::Coordinate GetRigidityConstraint( const CoordinateMatrix3x3& J ) const;
@@ -366,9 +366,17 @@ protected:
   /// Dimensions of the volume image linked to this transformation.
   DataGrid::IndexType VolumeDims;
 
-  /**\name Precomputed grid index offsets.
-   * These arrays hold the precomputed grid indices of the deformed grid's
-   * voxels with respect to the control point grid of this deformation.
+  /**\name Precomputed grid index values.
+   * These arrays hold the precomputed grid indexes of the deformed grid's
+   * voxels with respect to the control point grid of this deformation. 
+   */
+  FixedVector< 3,std::vector<int> > m_GridIndexes;
+
+  /**\name Precomputed coefficient array offsets.
+   * These arrays hold the precomputed grid offsets of the deformed grid's
+   * voxels with respect to the control point grid of this deformation. These
+   * values are the grid indexes multiplied by the number of elements to skip in
+   * the coefficient array that corresponds to the respective index.
    */
   FixedVector< 3,std::vector<int> > m_GridOffsets;
 
