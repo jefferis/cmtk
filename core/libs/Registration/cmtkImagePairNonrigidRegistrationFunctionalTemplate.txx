@@ -36,6 +36,10 @@
 
 #include <vector>
 
+#ifdef _OPENMP
+#  include <omp.h>
+#endif
+
 template<class VM>
 void
 cmtk::ImagePairNonrigidRegistrationFunctionalTemplate<VM>::MatchRefFltIntensities()
