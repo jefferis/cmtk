@@ -68,7 +68,14 @@ SplineWarpXform
 {
   this->Init();
   this->m_Domain = domain;
-  this->m_InitialAffineXform = initialXform->Clone();
+  if ( initialXform )
+    {
+    this->m_InitialAffineXform = initialXform->Clone();
+    }
+  else
+    {
+    this->m_InitialAffineXform = AffineXform::SmartPtr( NULL );
+    }
 
   if ( exactDelta ) 
     {
