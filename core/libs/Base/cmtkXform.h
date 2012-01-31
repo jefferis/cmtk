@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -194,9 +194,6 @@ public:
    * landmark after transformation and desired target landmark.
    */
   virtual Types::Coordinate GetLandmarksMSD( const MatchedLandmarkList* ll ) const;
-  
-  /// Get volume influenced by one parameter.
-  virtual void GetVolumeOfInfluence( const size_t idx, const Self::SpaceVectorType&, const Self::SpaceVectorType&, Self::SpaceVectorType&, Self::SpaceVectorType&, const int = -1 ) const;
   
 protected:
   /** Encapsulated representation of the transformation parameters.

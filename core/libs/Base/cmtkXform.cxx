@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -96,14 +96,6 @@ Xform::GetParamVector
   v.AdjustDimension( std::max<int>( v.Dim, targetOffset + this->ParamVectorDim() ) );
   v.CopyToOffset( *this->m_ParameterVector, targetOffset, this->ParamVectorDim() );
   return v;
-}
-
-void
-Xform::GetVolumeOfInfluence
-( const size_t, const Self::SpaceVectorType& fromVol, const Self::SpaceVectorType& toVol, Self::SpaceVectorType& fromVOI, Self::SpaceVectorType& toVOI, const int ) const
-{
-  fromVOI = fromVol;
-  toVOI = toVol;
 }
 
 Types::Coordinate
