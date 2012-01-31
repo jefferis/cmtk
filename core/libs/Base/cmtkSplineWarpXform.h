@@ -353,8 +353,8 @@ public:
   
 private:
   /// Register a single axis of the uniform volume to be deformed.
-  void RegisterVolumeAxis ( const DataGrid::IndexType::ValueType, const Types::Coordinate delta, const Types::Coordinate origin, const int, const Types::Coordinate, 
-			    std::vector<int>& gIdx, std::vector<Types::Coordinate>& spline, std::vector<Types::Coordinate>& dspline );
+  void RegisterVolumeAxis ( const DataGrid::IndexType::ValueType, const Types::Coordinate delta, const Types::Coordinate origin, const int, const size_t ofs, const Types::Coordinate, 
+			    std::vector<int>& gIdx, std::vector<int>& gOfs, std::vector<Types::Coordinate>& spline, std::vector<Types::Coordinate>& dspline );
 
   /// Return rigidity constraint based on given Jacobian matrix.
   Types::Coordinate GetRigidityConstraint( const CoordinateMatrix3x3& J ) const;
