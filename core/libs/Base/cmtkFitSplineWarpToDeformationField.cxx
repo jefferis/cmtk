@@ -126,10 +126,11 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
 	Types::Coordinate dPc = 0;
 	for ( int axis = 0; axis < 3; ++axis )
 	  {
-	  Types::Coordinate prod = MathUtil::Square( splineWarp->m_GridSpline[axis][4*it.Index()[axis]] );
-	  for ( int relIdx = 1; relIdx < 4; ++relIdx )
+	  size_t ofs = 4*it.Index()[axis];
+	  Types::Coordinate prod = MathUtil::Square( splineWarp->m_GridSpline[axis][ofs] );
+	  for ( int relIdx = 1; relIdx < 4; ++relIdx, ++ofs )
 	    {
-	    prod *= MathUtil::Square( splineWarp->m_GridSpline[axis][4*it.Index()[axis]+relIdx] );
+	    prod *= MathUtil::Square( splineWarp->m_GridSpline[axis][ofs] );
 	    }
 
 	  dPc += prod;
