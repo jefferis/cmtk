@@ -45,7 +45,9 @@ cmtk::FitSplineWarpToDeformationField::GetDeformationGridRange( const UniformVol
 
   regionFrom = ComponentDivide( region.From() - this->m_DeformationField->m_Offset, this->m_DeformationField->m_Spacing );
   regionTo = ComponentDivide( region.To() - this->m_DeformationField->m_Offset, this->m_DeformationField->m_Spacing );
-  regionTo.AddScalar( 1 );
+
+  regionFrom.AddScalar( 1 ); // to compensate for float-to-int truncation
+  /// regionTo.AddScalar( 1 ); // necessary to convert to for() range, but COMMENT OUT to compensate for float-to-int truncation
   
   return cmtk::DataGrid::RegionType( regionFrom, regionTo );
 }
