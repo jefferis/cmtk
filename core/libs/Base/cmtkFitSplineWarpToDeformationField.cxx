@@ -86,7 +86,7 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
   SplineWarpXform* splineWarp = new SplineWarpXform( this->m_DeformationField->m_Domain, spacing );
 
   // loop until final control point spacing
-  for ( ; spacing >= initialSpacing; spacing /= 2 )
+  for ( ; spacing >= finalSpacing; spacing /= 2 )
     {
     // compute residuals
     splineWarp->RegisterVolumePoints( this->m_DeformationField->m_Dims, this->m_DeformationField->m_Spacing, this->m_DeformationField->m_Offset );
