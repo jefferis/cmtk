@@ -108,6 +108,7 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
 
 	// Enumerator of Eq. (8) - this is a vector
 	FixedVector<3,Types::Coordinate> ePc = this->m_Residuals[cp]; // S_c(u1...un)
+	Types::Coordinate pSquares = 1; // this is the product over the B^2-s in Eq. (11)
 	for ( int axis = 0; axis < 3; ++axis )
 	  {
 	  // relative index of spline function for current pixel relative to current control point
@@ -116,6 +117,7 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
 	  assert( (relIdx >= 0) && (relIdx < 4) );
 
 	  ePc *= splineWarp->m_GridSpline[axis][4*it.Index()[axis]+relIdx];
+	  pSquares *= MathUtil::Square( splineWarp->m_GridSpline[axis][4*it.Index()[axis]+relIdx] );
 	  }
 
 	// Denominator of Eq. (8) - this is a scalar
@@ -131,16 +133,15 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
 	  dPc += prod;
 	  }
 
-	// HOW DO WE GET "normalize"?
-
 	// Eq. (11)
-	delta[cp] += (1.0 / dPc) * ePc;
+	delta[cp] += (pSquares / dPc) * ePc;
+	normalize += pSquares;
 	}
       
       // Eq. (11) denominator
       delta[cp] /= normalize;
       }
-
+    
     // apply delta
     for ( size_t cp = 0; cp < splineWarp->m_NumberOfControlPoints; ++cp )
       {
