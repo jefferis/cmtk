@@ -66,7 +66,8 @@ SolarisStudio Compiler, Linux/Intel
 - SolarisStudio C++ 12.3 crashes when compiling the file
   "cmtkEchoPlanarUnwarpFunctional.cxx" with OpenMP support turned on.
 
-  Workaround: set "CMTK_USE_OPENMP" configuration option to "OFF"
+  Workaround: set "CMTK_USE_OPENMP" configuration option to "OFF"; this will
+    lead to much of CMTK's functionality executing single-threaded.
 
 
 Open64 Compiler
