@@ -180,8 +180,10 @@ cmtk::EchoPlanarUnwarpFunctional::MakeGradientImage( const ap::real_1d_array& u,
 #ifndef _OPENMP
   const DataGrid::RegionType region = wholeImageRegion;
 #else // _OPENMP
+  const int sliceFrom = wholeImageRegion.From()[this->m_ReadoutDirection];
+  const int sliceTo = wholeImageRegion.To()[this->m_ReadoutDirection];
 #pragma omp parallel for
-  for ( int slice = wholeImageRegion.From()[this->m_ReadoutDirection]; slice < wholeImageRegion.To()[this->m_ReadoutDirection]; ++slice )
+  for ( int slice = sliceFrom; slice < sliceTo; ++slice )
     {
     DataGrid::RegionType region = wholeImageRegion;
     region.From()[this->m_ReadoutDirection] = slice;
@@ -249,8 +251,10 @@ cmtk::EchoPlanarUnwarpFunctional::ComputeDeformedImage( const ap::real_1d_array&
 #ifndef _OPENMP
   const DataGrid::RegionType region = wholeImageRegion;
 #else // _OPENMP
+  const int sliceFrom = wholeImageRegion.From()[this->m_ReadoutDirection];
+  const int sliceTo = wholeImageRegion.To()[this->m_ReadoutDirection];
 #pragma omp parallel for
-  for ( int slice = wholeImageRegion.From()[this->m_ReadoutDirection]; slice < wholeImageRegion.To()[this->m_ReadoutDirection]; ++slice )
+  for ( int slice = sliceFrom; slice < sliceTo; ++slice )
     {
     DataGrid::RegionType region = wholeImageRegion;
     region.From()[this->m_ReadoutDirection] = slice;
@@ -368,8 +372,10 @@ cmtk::EchoPlanarUnwarpFunctional
   const DataGrid::RegionType region = insideRegion;
   {
 #else // _OPENMP
+  const int sliceFrom = wholeImageRegion.From()[function.m_ReadoutDirection];
+  const int sliceTo = wholeImageRegion.To()[function.m_ReadoutDirection];
 #pragma omp parallel for reduction(+:msd)
-  for ( int slice = insideRegion.From()[function.m_ReadoutDirection]; slice < insideRegion.To()[function.m_ReadoutDirection]; ++slice )
+  for ( int slice = sliceFrom; slice < sliceTo; ++slice )
     {
     DataGrid::RegionType region = insideRegion;
     region.From()[function.m_ReadoutDirection] = slice;
@@ -415,8 +421,10 @@ cmtk::EchoPlanarUnwarpFunctional
       const DataGrid::RegionType region = insideRegion;
       {
 #else // _OPENMP
+      const int sliceFrom = insideRegion.From()[function.m_ReadoutDirection];
+      const int sliceTo = insideRegion.To()[function.m_ReadoutDirection];
 #pragma omp parallel for reduction(+:smooth)
-      for ( int slice = insideRegion.From()[function.m_ReadoutDirection]; slice < insideRegion.To()[function.m_ReadoutDirection]; ++slice )
+      for ( int slice = sliceFrom; slice < sliceTo; ++slice )
 	{
 	DataGrid::RegionType region = insideRegion;
 	region.From()[function.m_ReadoutDirection] = slice;
@@ -452,8 +460,10 @@ cmtk::EchoPlanarUnwarpFunctional
 #ifndef _OPENMP
     const DataGrid::RegionType region = insideRegion;
 #else // _OPENMP
+    const int sliceFrom = insideRegion.From()[function.m_ReadoutDirection];
+    const int sliceTo = insideRegion.To()[function.m_ReadoutDirection];
 #pragma omp parallel for reduction(+:fold)
-    for ( int slice = insideRegion.From()[function.m_ReadoutDirection]; slice < insideRegion.To()[function.m_ReadoutDirection]; ++slice )
+    for ( int slice = sliceFrom; slice < sliceTo; ++slice )
       {
       DataGrid::RegionType region = insideRegion;
       region.From()[function.m_ReadoutDirection] = slice;
