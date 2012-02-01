@@ -38,7 +38,9 @@ MacOS-X
 
   http://www.nitrc.org/tracker/index.php?func=detail&aid=5451&group_id=212&atid=877
 
-  Workaround: use MacPorts gcc compiler.
+  Workaround 1: use MacPorts gcc compiler.
+
+  Workaround 2: set "CMTK_USE_OPENMP" configuration option to "OFF"
 
 
 - Code coverage tests are only supported with gcc compiler and SDK 10.6. Older
