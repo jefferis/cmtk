@@ -56,13 +56,19 @@ public:
   typedef FitSplineWarpToDeformationField Self;
 
   /// Constructor.
-  FitSplineWarpToDeformationField( DeformationField::SmartConstPtr dfield );
+  FitSplineWarpToDeformationField( DeformationField::SmartConstPtr dfield, const bool absolute /*!< Flag for absolute transformation vs. relative deformation field */ );
 
   /// Fit spline warp.
   SplineWarpXform::SmartPtr Fit( const Types::Coordinate finalSpacing /*!< Final control point spacing of the fitted B-spline free-form deformation*/, 
 				 const Types::Coordinate initialSpacing = 0 /*!< Initial control point spacing for optional multi-resolution fit (default: single-resolution fit)*/  );
 
 private:
+  /** Flag for absolute vs. relative deformation fields.
+   * If this is true, the deformation field is an absolute transformation. 
+   * If this is false, the deformation field is a relative offset field.
+   */
+  bool m_Absolute;
+
   /// Input deformation field.
   DeformationField::SmartConstPtr m_DeformationField;
 

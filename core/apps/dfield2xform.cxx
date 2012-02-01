@@ -72,7 +72,7 @@ doMain ( const int argc, const char *argv[] )
 
   cmtk::DeformationField::SmartPtr dfield = cmtk::DeformationField::SmartPtr::DynamicCastFrom( cmtk::XformIO::Read( InputPath ) );
   
-  cmtk::FitSplineWarpToDeformationField fitSpline( dfield );
+  cmtk::FitSplineWarpToDeformationField fitSpline( dfield, true /*absolute*/ );
   cmtk::SplineWarpXform::SmartPtr splineWarp = fitSpline.Fit( GridSpacing );
 
   cmtk::XformIO::Write( splineWarp, OutputPath );

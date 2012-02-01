@@ -32,8 +32,9 @@
 
 #include <Base/cmtkRegionIndexIterator.h>
 
-cmtk::FitSplineWarpToDeformationField::FitSplineWarpToDeformationField( DeformationField::SmartConstPtr dfield ) 
-  : m_DeformationField( dfield ),
+cmtk::FitSplineWarpToDeformationField::FitSplineWarpToDeformationField( DeformationField::SmartConstPtr dfield, const bool absolute ) 
+  : m_Absolute( absolute ), 
+    m_DeformationField( dfield ),
     m_DeformationFieldFOV( dfield->m_Offset, dfield->m_Domain )
 {  
 }
@@ -66,7 +67,9 @@ cmtk::FitSplineWarpToDeformationField::ComputeResiduals( const SplineWarpXform& 
       {
       for ( int x = 0; x < dims[0]; ++x, ++ofs )
 	{
-	this->m_Residuals[ofs] = this->m_DeformationField->GetOriginalControlPointPosition( x, y, z ) + this->m_DeformationField->GetTransformedGrid( x, y, z ) - splineWarp.GetTransformedGrid( x, y, z );
+	this->m_Residuals[ofs] = this->m_DeformationField->GetTransformedGrid( x, y, z ) - splineWarp.GetTransformedGrid( x, y, z );
+	if ( this->m_Absolute )
+	  this->m_Residuals[ofs] += this->m_DeformationField->GetOriginalControlPointPosition( x, y, z );
 	}
       }
     }
