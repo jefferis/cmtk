@@ -16,12 +16,13 @@ CMTK has been built and tested on the following platforms:
 - Linux 32bit (Fedora 16), gcc 4.6.2
 - Linux 64bit (Fedora 16), gcc 4.6.2, CUDA 3.2
 - Linux, i386, Oracle Solaris Studio 12.3 C++ 5.12 2011/11/16
-- MacOSX 10.6, x86_64, gcc 4.2.1, CUDA 3.2
+- MacOSX 10.6, x86_64, gcc 4.2.1, CUDA 4.1
+- MacOSX 10.6, x86_64, MacPorts gcc 4.6.2, CUDA 4.1
 - MacOSX 10.6, x86_64, llvm-gcc-4.2.1
 - MacOSX 10.6, x86_64, clang 2.0
 - Cygwin, gcc 4.5.3
 - Windows XP, VisualStudio 9 (2008 Express Edition), CUDA 3.2
-- Windows XP, VisualStudio 10SP1 (2010 Express Edition), CUDA 4.0
+- Windows XP, VisualStudio 10SP1 (2010 Express Edition), CUDA 4.1
 
 
 Platform-Specific Issues
@@ -31,13 +32,13 @@ Platform-Specific Issues
 MacOS-X
 -------
 
-- Compilers on MacOS cannot build CMTK with shared libraries and OpenMP
-  support enabled at the same time. This is due to an Apple bug and has
-  nothing to do with CMTK per se. 
+- XCode gcc compiler on MacOS cannot build CMTK with OpenMP support enabled 
+  at the same time. This is due to an Apple bug and has nothing to do with 
+  CMTK per se.
 
   http://www.nitrc.org/tracker/index.php?func=detail&aid=5451&group_id=212&atid=877
 
-  Workaround: build CMTK with static libraries.
+  Workaround: use MacPorts gcc compiler.
 
 
 - Code coverage tests are only supported with gcc compiler and SDK 10.6. Older
@@ -58,6 +59,14 @@ SolarisStudio Compiler, Linux/Intel
   Workaround: build "MinSizeRel" configuration, which sets optimization level
     to O2. Note that OpenMP must be disabled, because otherwise optimization
     is bumped back to O3 by default.
+
+  This problem is also fixed in SolarisStudio 12.3, but see next issue.
+
+
+- SolarisStudio C++ 12.3 crashes when compiling the file
+  "cmtkEchoPlanarUnwarpFunctional.cxx" with OpenMP support turned on.
+
+  Workaround: set "CMTK_USE_OPENMP" configuration option to "OFF"
 
 
 Open64 Compiler
