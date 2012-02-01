@@ -124,20 +124,22 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
 
 	// Denominator of Eq. (8) - this is a scalar
 	Types::Coordinate dPc = 0;
-	for ( int axis = 0; axis < 3; ++axis )
-	  {
-	  size_t ofs = 4*it.Index()[axis];
-	  Types::Coordinate prod = MathUtil::Square( splineWarp->m_GridSpline[axis][ofs] );
-	  for ( int relIdx = 1; relIdx < 4; ++relIdx, ++ofs )
-	    {
-	    prod *= MathUtil::Square( splineWarp->m_GridSpline[axis][ofs] );
-	    }
 
+	const DataGrid::RegionType neighborhood( DataGrid::IndexType::Init( 0 ), DataGrid::IndexType::Init( 4 ) );
+	for ( RegionIndexIterator<DataGrid::RegionType> nIt( neighborhood ); nIt != nIt.end(); ++nIt )
+	  {
+	  Types::Coordinate prod = 1;
+	  for ( int axis = 0; axis < 3; ++axis )
+	    {
+	    prod *= MathUtil::Square( splineWarp->m_GridSpline[axis][it.Index()[axis]+nIt.Index()[axis]] );
+	    }
+	  
 	  dPc += prod;
 	  }
 
 	// Eq. (11)
 	delta[cp] += (pSquares / dPc) * ePc;
+
 	normalize += pSquares;
 	}
       
