@@ -118,6 +118,12 @@ public:
     return this->m_NumberOfControlPoints;
   }
 
+  /// Get offset of a control point from its index.  
+  size_t GetOffsetFromIndex( const Self::ControlPointIndexType& index ) const
+  {
+    return index[0] * nextI + index[1] * this->nextJ + index[2] * nextK;
+  }
+  
 protected:
   /// Number of control points.
   size_t m_NumberOfControlPoints;

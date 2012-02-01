@@ -86,13 +86,14 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
     }
 
   // initialize B-spline transformation
-  SplineWarpXform* splineWarp = new SplineWarpXform( this->m_DeformationField->m_Domain, spacing );
+  SplineWarpXform* splineWarp = new SplineWarpXform( this->m_DeformationField->m_Domain, spacing, AffineXform::SmartPtr( new AffineXform ) );
 
   // loop until final control point spacing
   for ( ; spacing >= finalSpacing; spacing /= 2 )
     {
     // compute residuals
     splineWarp->RegisterVolumePoints( this->m_DeformationField->m_Dims, this->m_DeformationField->m_Spacing, this->m_DeformationField->m_Offset );
+
     this->ComputeResiduals( *splineWarp );
 
     // loop over all control points to compute deltas as the spline coefficients that fit current residuals
@@ -112,7 +113,7 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
 	const DataGrid::IndexType idx = it.Index();
 
 	// Enumerator of Eq. (8) - this is a vector
-	FixedVector<3,Types::Coordinate> ePc = this->m_Residuals[cp]; // S_c(u1...un)
+	FixedVector<3,Types::Coordinate> ePc = this->m_Residuals[this->m_DeformationField->GetOffsetFromIndex( idx )/3]; // S_c(u1...un)
 	Types::Coordinate pSquares = 1; // this is the product over the B^2-s in Eq. (11)
 	for ( int axis = 0; axis < 3; ++axis )
 	  {
@@ -155,7 +156,7 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
       {
       splineWarp->SetShiftedControlPointPositionByOffset( splineWarp->GetShiftedControlPointPositionByOffset( cp ) + delta[cp], cp );
       }
-    
+
     // refine control point grid if necessary for the next iteration
     if ( spacing > initialSpacing )
       {
