@@ -131,7 +131,9 @@ cmtk::EchoPlanarUnwarpFunctional::GetJacobianMap( const int direction ) const
   const DataGrid::RegionType region = wholeImageRegion;
 #else // _OPENMP
 #pragma omp parallel for
-  for ( int slice = wholeImageRegion.From()[this->m_ReadoutDirection]; slice < wholeImageRegion.To()[this->m_ReadoutDirection]; ++slice )
+  const int sliceFrom = wholeImageRegion.From()[this->m_ReadoutDirection];
+  const int sliceTo = wholeImageRegion.To()[this->m_ReadoutDirection];
+  for ( int slice = sliceFrom; slice < sliceTo; ++slice )
     {
     DataGrid::RegionType region = wholeImageRegion;
     region.From()[this->m_ReadoutDirection] = slice;
