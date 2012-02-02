@@ -60,8 +60,8 @@ doMain ( const int argc, const char *argv[] )
     
     typedef cmtk::CommandLine::Key Key;
     cl.BeginGroup( "Input", "Input Options" );
-    cl.AddSwitch( Key( "absolute" ), &Absolute, true, "Input is absolute transformation field, x->u(x)." );
-    cl.AddSwitch( Key( "relative" ), &Absolute, false, "Input is relative deformation field, x->x+u(x)." );
+    cl.AddSwitch( Key( "absolute" ), &Absolute, true, "Input is an absolute transformation field [x maps to input(x)]" );
+    cl.AddSwitch( Key( "relative" ), &Absolute, false, "Input is relative deformation field, e.g., a gradient or force field [x maps to x+input(x)]" );
     cl.EndGroup();
 
     cl.BeginGroup( "Output", "Output Options" );
