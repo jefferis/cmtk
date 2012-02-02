@@ -283,6 +283,15 @@ IF(CMTK_USE_DCMTK)
 ENDIF(CMTK_USE_DCMTK)
 
 # ==========================================
+# Tests for "dfield2xform" tool
+LIST(APPEND testList
+  dfield2xformSpacing
+  dfield2xformSpacingMultiLevel
+  dfield2xformDims
+  dfield2xformDimsMultiLevel
+  dfield2xformDimsMultiLevelSafe)
+
+# ==========================================
 # Tests for "filter" tool
 LIST(APPEND testList
   filterGaussian

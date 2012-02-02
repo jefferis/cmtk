@@ -747,6 +747,26 @@ case ${RUNTEST} in
         run destripe -y --kernel-fwhm 5 --kernel-radius 2 --write-float stripes_crop_byte.nii ${tmpdir}/destripe.nii
 	check_results destripe.nii
 	;;
+    dfield2xformSpacing)
+        run dfield2xform --final-cp-spacing 40 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+	check_results warp.xform
+	;;
+    dfield2xformSpacingMultiLevel)
+        run dfield2xform --final-cp-spacing 40 --levels 2 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+	check_results warp.xform
+	;;
+    dfield2xformDims)
+        run dfield2xform --final-cp-dims 10,10,5 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+	check_results warp.xform
+	;;
+    dfield2xformDimsMultiLevel)
+        run dfield2xform --final-cp-dims 10,10,5 --levels 2 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+	check_results warp.xform
+	;;
+    dfield2xformDimsMultiLevelSafe)
+        run dfield2xform --final-cp-dims 10,10,5 --levels 400 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+	check_results warp.xform
+	;;
     epiunwarp)
         export CMTK_NUM_THREADS=1
         run epiunwarp --write-jacobian-fwd ${tmpdir}/jacobian.nii --folding-constraint-weight 0 --smooth-sigma-max 16 --smooth-sigma-min 0 --smooth-sigma-diff 1 --iterations 5 --smoothness-constraint-weight 1e4 --phase-encode-ap dwi_fwd.nii dwi_rev.nii ${tmpdir}/c1.nii ${tmpdir}/c2.nii ${tmpdir}/df.nrrd
