@@ -81,27 +81,21 @@ public:
 
   /** Construct new warp from volume size and control grid density.
    */
-  SplineWarpXform( const FixedVector<3,Types::Coordinate>& domain, const Types::Coordinate delta, const AffineXform *initialXform = NULL, const bool exactDelta = false );
+  SplineWarpXform( const Self::SpaceVectorType& domain, const Types::Coordinate delta, const AffineXform *initialXform = NULL, const bool exactDelta = false );
+
+  /** Construct new warp from volume size, grid dimensions and parameters
+   */
+  SplineWarpXform( const Self::SpaceVectorType& domain, const Self::ControlPointIndexType& dims, CoordinateVector::SmartPtr& parameters = CoordinateVector::SmartPtr::Null(), const AffineXform *initialXform = NULL );
 
   /** Initialize warp from volume size and control grid density.
    */
   void Init( const Self::SpaceVectorType& domain, const Types::Coordinate delta, const AffineXform *initialXform = NULL, const bool exactDelta = false );
   
-  /** Construct new warp from volume size, grid dimensions and parameters
-   */
-  SplineWarpXform( const FixedVector<3,Types::Coordinate>& domain, const Self::ControlPointIndexType& dims, CoordinateVector::SmartPtr& parameters, const AffineXform *initialXform = NULL );
-
   /// Clone and return smart pointer.
   Self::SmartPtr Clone () const 
   {
     return Self::SmartPtr( this->CloneVirtual() );
   }
-
-  /// Initialize control point positions, potentially with affine displacement.
-  void InitControlPoints( const AffineXform* affineXform = NULL );
-
-  /// Update internal representation.
-  virtual void Update( const bool exactDelta = false );
 
   /** Create inverse transformation.
    * This function returns NULL as there is no explicit inverse of a spline
@@ -352,6 +346,12 @@ public:
   virtual void GetJacobianRow( CoordinateMatrix3x3 *const array, const int x, const int y, const int z, const size_t numberOfPoints ) const;
   
 private:
+  /// Initialize control point positions, potentially with affine displacement.
+  void InitControlPoints( const AffineXform* affineXform = NULL );
+
+  /// Update internal representation.
+  virtual void Update( const bool exactDelta = false );
+
   /// Register a single axis of the uniform volume to be deformed.
   void RegisterVolumeAxis ( const DataGrid::IndexType::ValueType, const Types::Coordinate delta, const Types::Coordinate origin, const int, const size_t ofs, const Types::Coordinate, 
 			    std::vector<int>& gIdx, std::vector<int>& gOfs, std::vector<Types::Coordinate>& spline, std::vector<Types::Coordinate>& dspline );

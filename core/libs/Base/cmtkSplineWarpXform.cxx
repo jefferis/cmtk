@@ -56,51 +56,13 @@ void SplineWarpXform::Init ()
 }
 
 SplineWarpXform::SplineWarpXform 
-( const FixedVector<3,Types::Coordinate>& domain, const Types::Coordinate delta, const AffineXform* initialXform, const bool exactDelta  )
+( const Self::SpaceVectorType& domain, const Types::Coordinate delta, const AffineXform* initialXform, const bool exactDelta  )
 {
   this->Init( domain, delta, initialXform, exactDelta );
 }
 
-void
-SplineWarpXform
-::Init
-( const Self::SpaceVectorType& domain, const Types::Coordinate delta, const AffineXform* initialXform, const bool exactDelta  )
-{
-  this->Init();
-  this->m_Domain = domain;
-  if ( initialXform )
-    {
-    this->m_InitialAffineXform = initialXform->Clone();
-    }
-  else
-    {
-    this->m_InitialAffineXform = AffineXform::SmartPtr( NULL );
-    }
-
-  if ( exactDelta ) 
-    {
-    for ( int dim=0; dim<3; ++dim ) 
-      {
-      this->m_Spacing[dim] = delta;
-      this->m_Dims[dim] = static_cast<int>( 4 + (this->m_Domain[dim] / this->m_Spacing[dim]) );
-      this->m_Domain[dim] = (this->m_Dims[dim] - 3) * this->m_Spacing[dim];
-      }
-    } 
-  else
-    {
-    for ( int dim=0; dim<3; ++dim )
-      this->m_Dims[dim] = 2 + std::max( 2, 1+static_cast<int>( domain[dim]/delta ) );
-    }
-  
-  this->m_NumberOfControlPoints = this->m_Dims[0] * this->m_Dims[1] * this->m_Dims[2];
-  this->AllocateParameterVector( 3 * this->m_NumberOfControlPoints );
-  
-  this->Update( exactDelta );
-  this->InitControlPoints( this->m_InitialAffineXform );
-}
-
 SplineWarpXform::SplineWarpXform
-( const FixedVector<3,Types::Coordinate>& domain, const Self::ControlPointIndexType& dims, CoordinateVector::SmartPtr& parameters, const AffineXform* initialXform )
+( const Self::SpaceVectorType& domain, const Self::ControlPointIndexType& dims, CoordinateVector::SmartPtr& parameters, const AffineXform* initialXform )
 {
   this->Init();
   this->m_Domain = domain;
@@ -129,6 +91,46 @@ SplineWarpXform::SplineWarpXform
 
   if ( !parameters )
     this->InitControlPoints( this->m_InitialAffineXform );
+}
+
+void
+SplineWarpXform
+::Init
+( const Self::SpaceVectorType& domain, const Types::Coordinate delta, const AffineXform* initialXform, const bool exactDelta  )
+{
+  this->Init();
+  this->m_Domain = domain;
+  if ( initialXform )
+    {
+    this->m_InitialAffineXform = initialXform->Clone();
+    this->m_GlobalScaling = this->m_InitialAffineXform->GetGlobalScaling();
+    }
+  else
+    {
+    this->m_InitialAffineXform = AffineXform::SmartPtr( NULL );
+    this->m_GlobalScaling = this->m_InitialAffineXform->GetGlobalScaling();
+    }
+
+  if ( exactDelta ) 
+    {
+    for ( int dim=0; dim<3; ++dim ) 
+      {
+      this->m_Spacing[dim] = delta;
+      this->m_Dims[dim] = static_cast<int>( 4 + (this->m_Domain[dim] / this->m_Spacing[dim]) );
+      this->m_Domain[dim] = (this->m_Dims[dim] - 3) * this->m_Spacing[dim];
+      }
+    } 
+  else
+    {
+    for ( int dim=0; dim<3; ++dim )
+      this->m_Dims[dim] = 2 + std::max( 2, 1+static_cast<int>( domain[dim]/delta ) );
+    }
+  
+  this->m_NumberOfControlPoints = this->m_Dims[0] * this->m_Dims[1] * this->m_Dims[2];
+  this->AllocateParameterVector( 3 * this->m_NumberOfControlPoints );
+  
+  this->Update( exactDelta );
+  this->InitControlPoints( this->m_InitialAffineXform );
 }
 
 void
