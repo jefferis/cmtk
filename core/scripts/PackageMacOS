@@ -1,0 +1,23 @@
+#!/bin/sh
+
+SDKs="$*"
+if [ "${SDKs}" == "" ]; then
+	SDKs="10.4 10.5 10.6 gcc4.6-macports-OSX-10.6"
+fi
+
+svn update source
+for sdk in ${SDKs}; do
+	if [ ! -d ${sdk} ]; then
+		mkdir ${sdk}
+		pushd ${sdk}
+		cmake -C ../source/config/package.cmake -C ../source/config/OSX-${sdk}*.cmake ../source/
+	else
+		pushd ${sdk}
+	fi
+
+	cmake .
+	make -j2 package
+	cpack -G PackageMaker
+	popd
+done
+
