@@ -80,11 +80,14 @@ cmtk::FitSplineWarpToDeformationField::ComputeResiduals( const SplineWarpXform& 
 cmtk::SplineWarpXform::SmartPtr 
 cmtk::FitSplineWarpToDeformationField::Fit( const SplineWarpXform::ControlPointIndexType& finalDims, const int nLevels )
 {
-  // compute initial dims based on nInitial = (nFinal-1) * 2^(nLevels-1) + 1
+  // compute initial dims based on nInitial = (nFinal-1) / 2^(nLevels-1) + 1
   SplineWarpXform::ControlPointIndexType initialDims = finalDims;
-  initialDims.AddScalar( -1 );
-  initialDims *= (1 << (nLevels-1));
-  initialDims.AddScalar( +1 );
+  for ( int level = 1; level < nLevels;++level )
+    {
+    // apply the inverse of the refinement formula used in SplineWarpXform::Refine()
+    initialDims.AddScalar( +3 );
+    initialDims /= 2;
+    }
 
   // initialize B-spline transformation
   SplineWarpXform* splineWarp = new SplineWarpXform( this->m_DeformationField->m_Domain, initialDims, CoordinateVector::SmartPtr::Null(), AffineXform::SmartPtr( new AffineXform ) );
@@ -115,12 +118,13 @@ cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, c
   for ( int level = 0; level < nLevels; ++level )
     {
     DebugOutput( 5 ) << "Multi-resolution spline fitting level " << level+1 << " out of " << nLevels << "\n";
-
     // refine control point grid unless this is first iteration
     if ( level )
       {
       splineWarp.Refine();
       }
+
+    DebugOutput( 6 ) << "  Control point grid is " << splineWarp.m_Dims[0] << "x" << splineWarp.m_Dims[1] << "x" << splineWarp.m_Dims[2] << "\n";
 
     // compute residuals
     splineWarp.RegisterVolumePoints( this->m_DeformationField->m_Dims, this->m_DeformationField->m_Spacing, this->m_DeformationField->m_Offset );
@@ -130,57 +134,74 @@ cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, c
     // loop over all control points to compute deltas as the spline coefficients that fit current residuals
     std::vector< FixedVector<3,Types::Coordinate> > delta( splineWarp.m_NumberOfControlPoints );
 
-    const WarpXform::ControlPointRegionType cpRegion = splineWarp.GetAllControlPointsRegion();
-    size_t cp = 0;
-    for ( RegionIndexIterator<WarpXform::ControlPointRegionType> cpIt( cpRegion); cpIt != cpIt.end(); ++cpIt, ++cp )
+    const WarpXform::ControlPointRegionType cpRegionAll = splineWarp.GetAllControlPointsRegion();
+#ifndef _OPENMP
+    const WarpXform::ControlPointRegionType cpRegion = cpRegionAll;
+#else // _OPENMP
+    const size_t maxIdx = (cpRegionAll.To()-cpRegionAll.From()).MaxIndex();
+    const int sliceFrom = cpRegionAll.From()[maxIdx];
+    const int sliceTo = cpRegionAll.To()[maxIdx];
+#pragma omp parallel for
+    for ( int slice = sliceFrom; slice < sliceTo; ++slice )
       {
-      // volume of influence for the current control point
-      const DataGrid::RegionType voi = this->GetDeformationGridRange( splineWarp.GetVolumeOfInfluence( 3 * cp, this->m_DeformationFieldFOV, 0 /*fastMode=off*/ ) );
-      
-      // iterate over all voxels influenced by current control point.
-      Types::Coordinate normalize = 0;
-      for ( RegionIndexIterator<DataGrid::RegionType> it( voi ); it != it.end(); ++it )
+      WarpXform::ControlPointRegionType cpRegion = cpRegionAll;
+      cpRegion.From()[maxIdx] = slice;
+      cpRegion.To()[maxIdx] = slice+1;
+#endif
+      for ( RegionIndexIterator<WarpXform::ControlPointRegionType> cpIt( cpRegion); cpIt != cpIt.end(); ++cpIt )
 	{
-	const DataGrid::IndexType idx = it.Index();
-
-	// Enumerator of Eq. (8) - this is a vector
-	FixedVector<3,Types::Coordinate> ePc = this->m_Residuals[this->m_DeformationField->GetOffsetFromIndex( idx )/3]; // S_c(u1...un)
-	Types::Coordinate pSquares = 1; // this is the product over the B^2-s in Eq. (11)
-	for ( int axis = 0; axis < 3; ++axis )
+	const size_t cp = splineWarp.GetOffsetFromIndex( cpIt.Index() ) / 3;
+	
+	// volume of influence for the current control point
+	const DataGrid::RegionType voi = this->GetDeformationGridRange( splineWarp.GetVolumeOfInfluence( 3 * cp, this->m_DeformationFieldFOV, 0 /*fastMode=off*/ ) );
+	
+	// iterate over all voxels influenced by current control point.
+	Types::Coordinate normalize = 0;
+	for ( RegionIndexIterator<DataGrid::RegionType> it( voi ); it != it.end(); ++it )
 	  {
-	  // relative index of spline function for current pixel relative to current control point
-	  const int relIdx = cpIt.Index()[axis] - splineWarp.m_GridIndexes[axis][idx[axis]];
-	  // sanity range checks
-	  assert( (relIdx >= 0) && (relIdx < 4) );
-
-	  ePc *= splineWarp.m_GridSpline[axis][4*it.Index()[axis]+relIdx];
-	  pSquares *= MathUtil::Square( splineWarp.m_GridSpline[axis][4*it.Index()[axis]+relIdx] );
-	  }
-
-	// Denominator of Eq. (8) - this is a scalar
-	Types::Coordinate dPc = 0;
-
-	const DataGrid::RegionType neighborhood( DataGrid::IndexType::Init( 0 ), DataGrid::IndexType::Init( 4 ) );
-	for ( RegionIndexIterator<DataGrid::RegionType> nIt( neighborhood ); nIt != nIt.end(); ++nIt )
-	  {
-	  Types::Coordinate prod = 1;
+	  const DataGrid::IndexType idx = it.Index();
+	  
+	  // Enumerator of Eq. (8) - this is a vector
+	  FixedVector<3,Types::Coordinate> ePc = this->m_Residuals[this->m_DeformationField->GetOffsetFromIndex( idx )/3]; // S_c(u1...un)
+	  Types::Coordinate pSquares = 1; // this is the product over the B^2-s in Eq. (11)
 	  for ( int axis = 0; axis < 3; ++axis )
 	    {
-	    prod *= MathUtil::Square( splineWarp.m_GridSpline[axis][it.Index()[axis]+nIt.Index()[axis]] );
+	    // relative index of spline function for current pixel relative to current control point
+	    const int relIdx = cpIt.Index()[axis] - splineWarp.m_GridIndexes[axis][idx[axis]];
+	    // sanity range checks
+	    assert( (relIdx >= 0) && (relIdx < 4) );
+	    
+	    ePc *= splineWarp.m_GridSpline[axis][4*it.Index()[axis]+relIdx];
+	    pSquares *= MathUtil::Square( splineWarp.m_GridSpline[axis][4*it.Index()[axis]+relIdx] );
 	    }
 	  
-	  dPc += prod;
+	  // Denominator of Eq. (8) - this is a scalar
+	  Types::Coordinate dPc = 0;
+	  
+	  const DataGrid::RegionType neighborhood( DataGrid::IndexType::Init( 0 ), DataGrid::IndexType::Init( 4 ) );
+	  for ( RegionIndexIterator<DataGrid::RegionType> nIt( neighborhood ); nIt != nIt.end(); ++nIt )
+	    {
+	    Types::Coordinate prod = 1;
+	    for ( int axis = 0; axis < 3; ++axis )
+	      {
+	      prod *= MathUtil::Square( splineWarp.m_GridSpline[axis][it.Index()[axis]+nIt.Index()[axis]] );
+	      }
+	    
+	    dPc += prod;
+	    }
+	  
+	  // Eq. (11)
+	  delta[cp] += (pSquares / dPc) * ePc;
+	  
+	  normalize += pSquares;
 	  }
-
-	// Eq. (11)
-	delta[cp] += (pSquares / dPc) * ePc;
-
-	normalize += pSquares;
+	
+	// Eq. (11) denominator
+	delta[cp] /= normalize;
 	}
-      
-      // Eq. (11) denominator
-      delta[cp] /= normalize;
+#ifdef _OPENMP
       }
+#endif
     
     // apply delta
     for ( size_t cp = 0; cp < splineWarp.m_NumberOfControlPoints; ++cp )
