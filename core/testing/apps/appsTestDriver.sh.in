@@ -759,6 +759,10 @@ case ${RUNTEST} in
         run dfield2xform --final-cp-dims 10,10,5 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
 	check_results warp.xform
 	;;
+    dfield2xformDimsRelative)
+        run dfield2xform --relative --final-cp-dims 10,10,5 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
+	check_results warp.xform
+	;;
     dfield2xformDimsMultiLevel)
         run dfield2xform --final-cp-dims 10,10,5 --levels 2 vol001_mr_t0t1_dfield.nrrd ${tmpdir}/warp.xform
 	check_results warp.xform

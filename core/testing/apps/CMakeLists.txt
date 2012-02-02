@@ -288,6 +288,7 @@ LIST(APPEND testList
   dfield2xformSpacing
   dfield2xformSpacingMultiLevel
   dfield2xformDims
+  dfield2xformDimsRelative
   dfield2xformDimsMultiLevel
   dfield2xformDimsMultiLevelSafe)
 
