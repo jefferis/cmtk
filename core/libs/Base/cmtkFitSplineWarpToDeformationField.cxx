@@ -62,9 +62,11 @@ cmtk::FitSplineWarpToDeformationField::ComputeResiduals( const SplineWarpXform& 
 
   this->m_Residuals.resize( dims.Product() );
 
-  size_t ofs = 0;
+#pragma omp parallel for
   for ( int z = 0; z < dims[2]; ++z )
     {
+    size_t ofs = z * dims[0] * dims[1];
+
     for ( int y = 0; y < dims[1]; ++y )
       {
       for ( int x = 0; x < dims[0]; ++x, ++ofs )

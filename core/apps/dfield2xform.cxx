@@ -102,14 +102,14 @@ doMain ( const int argc, const char *argv[] )
     {
     if ( GridDims )
       {
-      cmtk::FixedVector<3,double> dims;
-      if ( 3 != sscanf( GridDims, "%lf,%lf,%lf", dims[0], dims[1], dims[2] ) )
+      double dims[3];
+      if ( 3 != sscanf( GridDims, "%lf,%lf,%lf", &(dims[0]), &(dims[1]), &(dims[2]) ) )
 	{
 	cmtk::StdErr << "ERROR: grid dimensions must be specified as dimsX,dimsY,dimsZ\n";
 	throw cmtk::ExitException( 1 );
 	}
       
-      splineWarp = fitSpline.Fit( dims, Levels );
+      splineWarp = fitSpline.Fit( cmtk::FixedVector<3,double>( dims ), Levels );
       }
     else
       {

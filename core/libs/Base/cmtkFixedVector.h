@@ -375,6 +375,17 @@ Min( const FixedVector<NDIM,T>& lhs, const FixedVector<NDIM,T>& rhs )
   return result;
 }
 
+/// Less-than operator.
+template<size_t NDIM,typename T>
+bool
+operator<( const FixedVector<NDIM,T>& lhs, const FixedVector<NDIM,T>& rhs )
+{
+  for ( size_t i = 0; i < NDIM; ++i )
+    if ( ! (lhs[i] < rhs[i] ) )
+      return false;
+  return true;
+}
+
 /// Stream input operator.
 template<size_t NDIM,typename T>
 std::ostream& operator<<( std::ostream& stream, const FixedVector<NDIM,T>& index )
