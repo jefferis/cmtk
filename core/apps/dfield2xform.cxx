@@ -47,6 +47,8 @@ const char *OutputPath = NULL;
 
 cmtk::Types::Coordinate GridSpacing = 0;
 
+bool Absolute = false;
+
 int
 doMain ( const int argc, const char *argv[] ) 
 {
@@ -57,7 +59,14 @@ doMain ( const int argc, const char *argv[] )
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "Fit a parametric nonrigid transformation (B-spline free-form deformation) to a deformation field" );
     
     typedef cmtk::CommandLine::Key Key;
-    cl.AddOption( Key( "grid-spacing" ), &GridSpacing, "Control point grid spacing." );
+    cl.BeginGroup( "Input", "Input Options" );
+    cl.AddSwitch( Key( "absolute" ), &Absolute, true, "Input is absolute transformation field, x->u(x)." );
+    cl.AddSwitch( Key( "relative" ), &Absolute, false, "Input is relative deformation field, x->x+u(x)." );
+    cl.EndGroup();
+
+    cl.BeginGroup( "Output", "Output Options" );
+    cl.AddOption( Key( "grid-spacing" ), &GridSpacing, "Control point grid spacing of the output B-spline transformation." );
+    cl.EndGroup();
 
     cl.AddParameter( &InputPath, "InputDField", "Input deformation field." )->SetProperties( cmtk::CommandLine::PROPS_XFORM );  
     cl.AddParameter( &OutputPath, "OutputXform", "Path for the output transformation." )->SetProperties( cmtk::CommandLine::PROPS_XFORM | cmtk::CommandLine::PROPS_OUTPUT );
@@ -72,7 +81,7 @@ doMain ( const int argc, const char *argv[] )
 
   cmtk::DeformationField::SmartPtr dfield = cmtk::DeformationField::SmartPtr::DynamicCastFrom( cmtk::XformIO::Read( InputPath ) );
   
-  cmtk::FitSplineWarpToDeformationField fitSpline( dfield, true /*absolute*/ );
+  cmtk::FitSplineWarpToDeformationField fitSpline( dfield, Absolute );
   cmtk::SplineWarpXform::SmartPtr splineWarp = fitSpline.Fit( GridSpacing );
 
   cmtk::XformIO::Write( splineWarp, OutputPath );

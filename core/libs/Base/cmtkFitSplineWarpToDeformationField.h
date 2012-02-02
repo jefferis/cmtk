@@ -67,7 +67,7 @@ private:
    * If this is true, the deformation field is an absolute transformation. 
    * If this is false, the deformation field is a relative offset field.
    */
-  bool m_Absolute;
+  bool m_DFieldIsAbsolute;
 
   /// Input deformation field.
   DeformationField::SmartConstPtr m_DeformationField;
