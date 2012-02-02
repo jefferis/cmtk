@@ -76,6 +76,7 @@ SplineWarpXform::SplineWarpXform
   else
     {
     this->m_InitialAffineXform = AffineXform::SmartPtr( NULL );
+    this->m_GlobalScaling = 1.0;
     }
 
   this->m_NumberOfControlPoints = this->m_Dims[0] * this->m_Dims[1] * this->m_Dims[2];
@@ -108,7 +109,7 @@ SplineWarpXform
   else
     {
     this->m_InitialAffineXform = AffineXform::SmartPtr( NULL );
-    this->m_GlobalScaling = this->m_InitialAffineXform->GetGlobalScaling();
+    this->m_GlobalScaling = 1.0;
     }
 
   if ( exactDelta ) 
