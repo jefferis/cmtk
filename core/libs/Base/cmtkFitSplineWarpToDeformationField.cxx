@@ -80,19 +80,31 @@ cmtk::FitSplineWarpToDeformationField::ComputeResiduals( const SplineWarpXform& 
 cmtk::SplineWarpXform::SmartPtr 
 cmtk::FitSplineWarpToDeformationField::Fit( const SplineWarpXform::ControlPointIndexType& finalDims, const int nLevels )
 {
-  // compute initial dims based on nInitial = (nFinal-1) / 2^(nLevels-1) + 1
+  // we may have to adjust nLevels downwards
+  int numberOfLevels = nLevels;
+  
   SplineWarpXform::ControlPointIndexType initialDims = finalDims;
-  for ( int level = 1; level < nLevels;++level )
+  for ( int level = 1; level < numberOfLevels; ++level )
     {
-    // apply the inverse of the refinement formula used in SplineWarpXform::Refine()
-    initialDims.AddScalar( +3 );
-    initialDims /= 2;
+    if ( (initialDims[0]&1) && (initialDims[1]&1) && (initialDims[2]&1) && // check that all dims are still odd numbers
+	 (initialDims.MinValue()>4) ) // check that at least 4 control points will be left in each dimension
+      {
+      // apply the inverse of the refinement formula used in SplineWarpXform::Refine()
+      initialDims.AddScalar( +3 );
+      initialDims /= 2;
+      }
+    else
+      {
+      numberOfLevels = level;
+
+      DebugOutput(2) << "INFO: adjusted number of levels to " << numberOfLevels << " from " << nLevels << " to ensure sufficient number of control points\n";
+      }
     }
 
   // initialize B-spline transformation
   SplineWarpXform* splineWarp = new SplineWarpXform( this->m_DeformationField->m_Domain, initialDims, CoordinateVector::SmartPtr::Null(), AffineXform::SmartPtr( new AffineXform ) );
   
-  this->FitSpline( *splineWarp, nLevels );
+  this->FitSpline( *splineWarp, numberOfLevels );
   
   return cmtk::SplineWarpXform::SmartPtr( splineWarp );
 }
