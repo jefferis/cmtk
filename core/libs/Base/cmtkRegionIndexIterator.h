@@ -1,6 +1,6 @@
 /*
 //
-//  Copyright 2010-2011 SRI International
+//  Copyright 2010-2012 SRI International
 //
 //  Copyright 2010 Torsten Rohlfing
 //
@@ -75,9 +75,13 @@ public:
     : m_Region( region ),
       m_Index( region.From() )
   {
-    // "End" index is one after last valid element.
     this->m_End = this->m_Region.From();
-    this->m_End[Self::Dimension-1] = this->m_Region.To()[Self::Dimension-1];    
+    if ( this->m_Region.From() < this->m_Region.To() )
+      {
+      // for non-empty regions "End" index is one after last valid element.
+      this->m_End[Self::Dimension-1] = this->m_Region.To()[Self::Dimension-1];
+      }
+    // (for empty regions, "From" is already the "End"
   }
 
   /// Increment operator.
