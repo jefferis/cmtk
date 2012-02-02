@@ -76,21 +76,23 @@ cmtk::FitSplineWarpToDeformationField::ComputeResiduals( const SplineWarpXform& 
 }
 
 cmtk::SplineWarpXform::SmartPtr 
-cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing, const Types::Coordinate initialSpacing )
+cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing, const int nLevels )
 {
   // compute the start spacing of multi-level approximation by doubling final spacing until user-defined initial spacing is exceeded.
-  Types::Coordinate spacing = finalSpacing;
-  while ( spacing < initialSpacing )
-    {
-    spacing *= 2;
-    }
+  Types::Coordinate spacing = finalSpacing * (1 << (nLevels-1));
 
   // initialize B-spline transformation
   SplineWarpXform* splineWarp = new SplineWarpXform( this->m_DeformationField->m_Domain, spacing, AffineXform::SmartPtr( new AffineXform ) );
 
   // loop until final control point spacing
-  for ( ; spacing >= finalSpacing; spacing /= 2 )
+  for ( int level = 0; level < nLevels; ++level )
     {
+    // refine control point grid unless this is first iteration
+    if ( level )
+      {
+      splineWarp->Refine();
+      }
+
     // compute residuals
     splineWarp->RegisterVolumePoints( this->m_DeformationField->m_Dims, this->m_DeformationField->m_Spacing, this->m_DeformationField->m_Offset );
 
@@ -155,12 +157,6 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
     for ( size_t cp = 0; cp < splineWarp->m_NumberOfControlPoints; ++cp )
       {
       splineWarp->SetShiftedControlPointPositionByOffset( splineWarp->GetShiftedControlPointPositionByOffset( cp ) + delta[cp], cp );
-      }
-
-    // refine control point grid if necessary for the next iteration
-    if ( spacing > initialSpacing )
-      {
-      splineWarp->Refine();
       }
     }
   

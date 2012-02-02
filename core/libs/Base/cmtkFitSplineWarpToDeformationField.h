@@ -60,7 +60,7 @@ public:
 
   /// Fit spline warp.
   SplineWarpXform::SmartPtr Fit( const Types::Coordinate finalSpacing /*!< Final control point spacing of the fitted B-spline free-form deformation*/, 
-				 const Types::Coordinate initialSpacing = 0 /*!< Initial control point spacing for optional multi-resolution fit (default: single-resolution fit)*/  );
+				 const int nLevels = 1 /*!< Number of levels for optional multi-resolution fit (default: single-resolution fit)*/  );
 
 private:
   /** Flag for absolute vs. relative deformation fields.

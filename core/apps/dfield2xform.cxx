@@ -46,8 +46,9 @@ const char* InputPath = NULL;
 const char *OutputPath = NULL;
 
 cmtk::Types::Coordinate GridSpacing = 0;
+int Levels = 1;
 
-bool Absolute = false;
+bool Absolute = true;
 
 int
 doMain ( const int argc, const char *argv[] ) 
@@ -65,7 +66,8 @@ doMain ( const int argc, const char *argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Output", "Output Options" );
-    cl.AddOption( Key( "grid-spacing" ), &GridSpacing, "Control point grid spacing of the output B-spline transformation." );
+    cl.AddOption( Key( "grid-spacing" ), &GridSpacing, "Final control point grid spacing of the output B-spline transformation." );
+    cl.AddOption( Key( "levels" ), &Levels, "Number of levels in the multi-level B-spline approximation procedure." );
     cl.EndGroup();
 
     cl.AddParameter( &InputPath, "InputDField", "Input deformation field." )->SetProperties( cmtk::CommandLine::PROPS_XFORM );  
