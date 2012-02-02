@@ -45,6 +45,7 @@
 const char* InputPath = NULL;
 const char *OutputPath = NULL;
 
+const char* GridDims = NULL;
 cmtk::Types::Coordinate GridSpacing = 0;
 int Levels = 1;
 
@@ -67,6 +68,7 @@ doMain ( const int argc, const char *argv[] )
 
     cl.BeginGroup( "Output", "Output Options" );
     cl.AddOption( Key( "grid-spacing" ), &GridSpacing, "Final control point grid spacing of the output B-spline transformation." );
+    cl.AddOption( Key( "grid-dims" ), &GridDims, "Final control point grid dimensions (i.e., number of controlpoints) of the output B-spline transformation. To be provided as 'dimX,dimY,dimZ'." );
     cl.AddOption( Key( "levels" ), &Levels, "Number of levels in the multi-level B-spline approximation procedure." );
     cl.EndGroup();
 
@@ -84,7 +86,7 @@ doMain ( const int argc, const char *argv[] )
   cmtk::DeformationField::SmartPtr dfield = cmtk::DeformationField::SmartPtr::DynamicCastFrom( cmtk::XformIO::Read( InputPath ) );
   
   cmtk::FitSplineWarpToDeformationField fitSpline( dfield, Absolute );
-  cmtk::SplineWarpXform::SmartPtr splineWarp = fitSpline.Fit( GridSpacing );
+  cmtk::SplineWarpXform::SmartPtr splineWarp = fitSpline.Fit( GridSpacing, Levels );
 
   cmtk::XformIO::Write( splineWarp, OutputPath );
 

@@ -32,6 +32,8 @@
 
 #include <Base/cmtkRegionIndexIterator.h>
 
+#include <System/cmtkDebugOutput.h>
+
 cmtk::FitSplineWarpToDeformationField::FitSplineWarpToDeformationField( DeformationField::SmartConstPtr dfield, const bool absolute ) 
   : m_DFieldIsAbsolute( absolute ), 
     m_DeformationField( dfield ),
@@ -76,6 +78,23 @@ cmtk::FitSplineWarpToDeformationField::ComputeResiduals( const SplineWarpXform& 
 }
 
 cmtk::SplineWarpXform::SmartPtr 
+cmtk::FitSplineWarpToDeformationField::Fit( const SplineWarpXform::ControlPointIndexType& finalDims, const int nLevels )
+{
+  // compute initial dims based on nInitial = (nFinal-1) * 2^(nLevels-1) + 1
+  SplineWarpXform::ControlPointIndexType initialDims = finalDims;
+  initialDims.AddScalar( -1 );
+  initialDims *= (1 << (nLevels-1));
+  initialDims.AddScalar( +1 );
+
+  // initialize B-spline transformation
+  SplineWarpXform* splineWarp = new SplineWarpXform( this->m_DeformationField->m_Domain, initialDims, CoordinateVector::SmartPtr::Null(), AffineXform::SmartPtr( new AffineXform ) );
+  
+  this->FitSpline( *splineWarp, nLevels );
+  
+  return cmtk::SplineWarpXform::SmartPtr( splineWarp );
+}
+
+cmtk::SplineWarpXform::SmartPtr 
 cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing, const int nLevels )
 {
   // compute the start spacing of multi-level approximation by doubling final spacing until user-defined initial spacing is exceeded.
@@ -84,29 +103,39 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
   // initialize B-spline transformation
   SplineWarpXform* splineWarp = new SplineWarpXform( this->m_DeformationField->m_Domain, spacing, AffineXform::SmartPtr( new AffineXform ) );
 
+  this->FitSpline( *splineWarp, nLevels );
+  
+  return cmtk::SplineWarpXform::SmartPtr( splineWarp );
+}
+
+void 
+cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, const int nLevels )
+{
   // loop until final control point spacing
   for ( int level = 0; level < nLevels; ++level )
     {
+    DebugOutput( 5 ) << "Multi-resolution spline fitting level " << level+1 << " out of " << nLevels << "\n";
+
     // refine control point grid unless this is first iteration
     if ( level )
       {
-      splineWarp->Refine();
+      splineWarp.Refine();
       }
 
     // compute residuals
-    splineWarp->RegisterVolumePoints( this->m_DeformationField->m_Dims, this->m_DeformationField->m_Spacing, this->m_DeformationField->m_Offset );
+    splineWarp.RegisterVolumePoints( this->m_DeformationField->m_Dims, this->m_DeformationField->m_Spacing, this->m_DeformationField->m_Offset );
 
-    this->ComputeResiduals( *splineWarp );
+    this->ComputeResiduals( splineWarp );
 
     // loop over all control points to compute deltas as the spline coefficients that fit current residuals
-    std::vector< FixedVector<3,Types::Coordinate> > delta( splineWarp->m_NumberOfControlPoints );
+    std::vector< FixedVector<3,Types::Coordinate> > delta( splineWarp.m_NumberOfControlPoints );
 
-    const WarpXform::ControlPointRegionType cpRegion = splineWarp->GetAllControlPointsRegion();
+    const WarpXform::ControlPointRegionType cpRegion = splineWarp.GetAllControlPointsRegion();
     size_t cp = 0;
     for ( RegionIndexIterator<WarpXform::ControlPointRegionType> cpIt( cpRegion); cpIt != cpIt.end(); ++cpIt, ++cp )
       {
       // volume of influence for the current control point
-      const DataGrid::RegionType voi = this->GetDeformationGridRange( splineWarp->GetVolumeOfInfluence( 3 * cp, this->m_DeformationFieldFOV, 0 /*fastMode=off*/ ) );
+      const DataGrid::RegionType voi = this->GetDeformationGridRange( splineWarp.GetVolumeOfInfluence( 3 * cp, this->m_DeformationFieldFOV, 0 /*fastMode=off*/ ) );
       
       // iterate over all voxels influenced by current control point.
       Types::Coordinate normalize = 0;
@@ -120,12 +149,12 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
 	for ( int axis = 0; axis < 3; ++axis )
 	  {
 	  // relative index of spline function for current pixel relative to current control point
-	  const int relIdx = cpIt.Index()[axis] - splineWarp->m_GridIndexes[axis][idx[axis]];
+	  const int relIdx = cpIt.Index()[axis] - splineWarp.m_GridIndexes[axis][idx[axis]];
 	  // sanity range checks
 	  assert( (relIdx >= 0) && (relIdx < 4) );
 
-	  ePc *= splineWarp->m_GridSpline[axis][4*it.Index()[axis]+relIdx];
-	  pSquares *= MathUtil::Square( splineWarp->m_GridSpline[axis][4*it.Index()[axis]+relIdx] );
+	  ePc *= splineWarp.m_GridSpline[axis][4*it.Index()[axis]+relIdx];
+	  pSquares *= MathUtil::Square( splineWarp.m_GridSpline[axis][4*it.Index()[axis]+relIdx] );
 	  }
 
 	// Denominator of Eq. (8) - this is a scalar
@@ -137,7 +166,7 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
 	  Types::Coordinate prod = 1;
 	  for ( int axis = 0; axis < 3; ++axis )
 	    {
-	    prod *= MathUtil::Square( splineWarp->m_GridSpline[axis][it.Index()[axis]+nIt.Index()[axis]] );
+	    prod *= MathUtil::Square( splineWarp.m_GridSpline[axis][it.Index()[axis]+nIt.Index()[axis]] );
 	    }
 	  
 	  dPc += prod;
@@ -154,11 +183,9 @@ cmtk::FitSplineWarpToDeformationField::Fit( const Types::Coordinate finalSpacing
       }
     
     // apply delta
-    for ( size_t cp = 0; cp < splineWarp->m_NumberOfControlPoints; ++cp )
+    for ( size_t cp = 0; cp < splineWarp.m_NumberOfControlPoints; ++cp )
       {
-      splineWarp->SetShiftedControlPointPositionByOffset( splineWarp->GetShiftedControlPointPositionByOffset( cp ) + delta[cp], cp );
+      splineWarp.SetShiftedControlPointPositionByOffset( splineWarp.GetShiftedControlPointPositionByOffset( cp ) + delta[cp], cp );
       }
     }
-  
-  return cmtk::SplineWarpXform::SmartPtr( splineWarp );
 }
