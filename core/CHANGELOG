@@ -1,5 +1,7 @@
 Release CMTK-2.1.2:
 
+(r3801) Added: "dfield2xform" tool to fit B-spline free-form deformation to
+    pixel-wise deformation field.
 (r3799) Fixed: prevent empty region traversal in cmtk::RegionIndexIterator
 (r3751) Fixed: "groupwise_affine" was not actually using template image
     specified on the command line.
