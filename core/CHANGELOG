@@ -1,5 +1,6 @@
 Release CMTK-2.1.2:
 
+(r3799) Fixed: prevent empty region traversal in cmtk::RegionIndexIterator
 (r3751) Fixed: "groupwise_affine" was not actually using template image
     specified on the command line.
 (r3730) Fixed: histogram-based intensity matching should preserve intensity
