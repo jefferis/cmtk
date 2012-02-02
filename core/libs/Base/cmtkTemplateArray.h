@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2011 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -93,11 +93,10 @@ public:
    * A typed array is built from an existing array.
    *\param data Pointer to the array of values to be stored.
    *\param datasize Number of elements in the data array.
-   *\param freeArray Tag of the memory handler that has to be used for freeing
-   * the array after use.
    *\param paddingflag Flag that indicates whether there are missing elements in
    * the existing data array.
    *\param paddingData Value that marks missing elements in the data array if "paddingFlag" is true.
+   *\param deallocator Pointer to deallocator object, or NULL if deallocation of data block is handled by another object.
    */
   TemplateArray ( void *const data, const size_t datasize, const bool paddingflag, const void* paddingData, const Memory::DeallocatorFunctionPointer deallocator = NULL ) 
   {

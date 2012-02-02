@@ -480,7 +480,7 @@ public:
     /** Read block of data.
      * This function, unlike gzread(), is safe to use on very large files.
      *\see http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=587912
-     *\thanks Yaroslav Halchenko <debian@onerussian.com> pointed this out.
+     *\remark Yaroslav Halchenko <debian@onerussian.com> pointed this out.
      */
 
     virtual size_t Read ( void *data, size_t size, size_t count );
@@ -489,7 +489,7 @@ public:
      * This is simply here as a service to other classes, which may use this as a plug-in replacement
      * for gzwrite() to work around a large-file problem in zlib.
      *\see http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=587912
-     *\thanks Yaroslav Halchenko <debian@onerussian.com> pointed this out.
+     *\remark Yaroslav Halchenko <debian@onerussian.com> pointed this out.
      */
     static size_t StaticSafeWrite ( gzFile file, const void *data, size_t size );
 

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2010 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -95,6 +95,7 @@ public:
    * array's memory if and only if this flag is true.
    *\param paddingFlag If this flag is not zero, padding data exists in the array.
    *\param paddingData Value used for padding data.
+   *\param deallocator Pointer to a deallocator object that should be used to free the given data block (or NULL if memory is handled by another object)
    *\return A pointer to a new typed array object, or NULL if an error 
    * occurred.
    */

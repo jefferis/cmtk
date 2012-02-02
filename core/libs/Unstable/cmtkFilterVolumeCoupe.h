@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -115,14 +115,15 @@ private:
   /** Add two blocks, in-place on the first block.
    *\param v1 First vector addend, becomes the sum
    *\param v2 Second vector addend
+   *\param blockSize Size of the block.
    */
-  static void BlockAddInPlace
-  ( TypedArray::SmartPtr v1, TypedArray::SmartPtr v2, const int blockSize );
+  static void BlockAddInPlace( TypedArray::SmartPtr v1, TypedArray::SmartPtr v2, const int blockSize );
 
   /** Subtract two blocks.
    *\param diff Block to contain the difference between v1 and v2
    *\param v1 First block subtrahend
    *\param v2 Second block subtrahend
+   *\param blockSize Size of the block.
    */
   static void BlockSubtract( TypedArray::SmartPtr diff, TypedArray::SmartPtr v1, TypedArray::SmartPtr v2, const int blockSize );
 
@@ -130,6 +131,7 @@ private:
    *\param prod An block to store the product
    *\param items An block containing the items to be multiplied
    *\param mult The constant to multiply by
+   *\param blockSize Size of the block.
    */
   static void BlockConstMult( TypedArray::SmartPtr prod, TypedArray::SmartPtr items, const Types::DataItem mult, const int blockSize );
   

@@ -85,7 +85,7 @@ public:
   void Optimize( const int numberOfIterations, const Units::GaussianSigma& smoothMax, const Units::GaussianSigma& smoothMin, const Units::GaussianSigma& smoothDiff );
   
   /** Set smoothness constraint weight.
-   * This is \lambda_2 in Eq. (9) in Holland et al. NIMG 2010.
+   * This is lambda_2 in Eq. (9) in Holland et al. NIMG 2010.
    */
   void SetSmoothnessConstraintWeight( const Types::Coordinate weight )
   {

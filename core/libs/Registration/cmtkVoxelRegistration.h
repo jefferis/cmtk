@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -240,10 +240,9 @@ protected:
    * This function is called after finishing registration. It can overloaded
    * to report the resulting transformation, export it to an encapsulating
    * application, etc...
-   *\param v The vector of resulting transformation parameters.
-   *\param irq The interrupt status - this allows the output function to determine whether computation finished or was interrupted.
    */
-  virtual void OutputResult ( const CoordinateVector*, const CallbackResult = CALLBACK_OK ) {}
+  virtual void OutputResult ( const CoordinateVector* /*!< The vector of resulting transformation parameters. */, 
+			      const CallbackResult = CALLBACK_OK /*!< The interrupt status - this allows the output function to determine whether computation finished or was interrupted. */ ) {}
   
   /** Finalize registration.
    * This function is called after registration has been terminated. It can

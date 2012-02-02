@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -104,7 +104,6 @@ public:
 
   /** Read image from filesystem and reorient to align anatomy with coordinate axes of standard coordinate system ("RAS").
    *\param path Filesystem path of the image to read.
-   *\param verbose Flag for verbose operation: if true, write status information to standard error.
    */
   static UniformVolume::SmartPtr ReadOriented( const char *path )
   {
