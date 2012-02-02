@@ -67,8 +67,8 @@ doMain ( const int argc, const char *argv[] )
     cl.EndGroup();
 
     cl.BeginGroup( "Output", "Output Options" );
-    cl.AddOption( Key( "grid-spacing" ), &GridSpacing, "Final control point grid spacing of the output B-spline transformation." );
-    cl.AddOption( Key( "grid-dims" ), &GridDims, "Final control point grid dimensions (i.e., number of controlpoints) of the output B-spline transformation. To be provided as 'dimX,dimY,dimZ'." );
+    cl.AddOption( Key( "final-cp-spacing" ), &GridSpacing, "Final control point grid spacing of the output B-spline transformation." );
+    cl.AddOption( Key( "final-cp-dims" ), &GridDims, "Final control point grid dimensions (i.e., number of controlpoints) of the output B-spline transformation. To be provided as 'dimX,dimY,dimZ'." );
     cl.AddOption( Key( "levels" ), &Levels, "Number of levels in the multi-level B-spline approximation procedure." );
     cl.EndGroup();
 
@@ -83,11 +83,41 @@ doMain ( const int argc, const char *argv[] )
     throw cmtk::ExitException( 1 );
     }
 
+  if ( GridDims && GridSpacing )
+    {
+    cmtk::StdErr << "ERROR: must specify either output spline control point spacing or grid dimensions, but not both.\n";
+    throw cmtk::ExitException( 1 );
+    }
+
   cmtk::DeformationField::SmartPtr dfield = cmtk::DeformationField::SmartPtr::DynamicCastFrom( cmtk::XformIO::Read( InputPath ) );
   
   cmtk::FitSplineWarpToDeformationField fitSpline( dfield, Absolute );
-  cmtk::SplineWarpXform::SmartPtr splineWarp = fitSpline.Fit( GridSpacing, Levels );
+  cmtk::SplineWarpXform::SmartPtr splineWarp;
 
+  if ( GridSpacing )
+    {
+    splineWarp = fitSpline.Fit( GridSpacing, Levels );
+    }
+  else
+    {
+    if ( GridDims )
+      {
+      cmtk::FixedVector<3,double> dims;
+      if ( 3 != sscanf( GridDims, "%lf,%lf,%lf", dims[0], dims[1], dims[2] ) )
+	{
+	cmtk::StdErr << "ERROR: grid dimensions must be specified as dimsX,dimsY,dimsZ\n";
+	throw cmtk::ExitException( 1 );
+	}
+      
+      splineWarp = fitSpline.Fit( dims, Levels );
+      }
+    else
+      {
+      cmtk::StdErr << "ERROR: must specify either output spline control point spacing or grid dimensions.\n";
+      throw cmtk::ExitException( 1 );
+      }
+    }
+  
   cmtk::XformIO::Write( splineWarp, OutputPath );
 
   return 0;
