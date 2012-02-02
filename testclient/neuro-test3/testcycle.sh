@@ -3,7 +3,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2011 SRI International
+##  Copyright 2004-2012 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -31,12 +31,17 @@
 ##
 
 DISABLED_TESTS="OSX-10.5-gcc-Debug OSX-10.4-gcc-Debug"
-## disable clang and llvm with 10.4 and 10.5 SDKs, which they do not support
-for c in clang llvm; do
-    for sdk in 10.4 10.5; do
-	for conf in Debug Release Release-Bundled Release-Bundled-Shared; do
+for sdk in 10.4 10.5; do
+    for conf in Debug Release Release-Bundled Release-Bundled-Shared; do
+	for c in clang llvm; do
+	    ## disable clang and llvm with 10.4 and 10.5 SDKs, which they do not support
 	    DISABLED_TESTS="${DISABLED_TESTS} OSX-${sdk}-${c}-${conf}"
 	done
+
+	## Also disable everything but one config for gcc - too redundant
+	if [ "${conf}" != "Release-Bundled" ]; then
+	    DISABLED_TESTS="${DISABLED_TESTS} OSX-${sdk}-gcc-${conf}"
+	fi
     done
 done
 
