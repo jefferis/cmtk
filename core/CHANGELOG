@@ -1,5 +1,7 @@
 Release CMTK-2.1.2:
 
+(r3805) Added: script for creating all officially distributed MacOS builds is
+    now included as core/scripts/PackageMacOS
 (r3801) Added: "dfield2xform" tool to fit B-spline free-form deformation to
     pixel-wise deformation field.
 (r3799) Fixed: prevent empty region traversal in cmtk::RegionIndexIterator
