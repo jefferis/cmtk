@@ -42,8 +42,11 @@ for sdk in 10.4 10.5; do
 	if [ "${conf}" != "Release-Bundled" ]; then
 	    DISABLED_TESTS="${DISABLED_TESTS} OSX-${sdk}-gcc-${conf}"
 	fi
+
     done
 done
+
+DISABLED_TESTS="${DISABLED_TESTS} OSX-10.4-gcc-mp-Debug OSX-10.5-gcc-mp-Debug"
 
 export LC_ALL=POSIX
 export PATH=${PATH}:/opt/local/bin
