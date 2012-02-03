@@ -1,7 +1,7 @@
 ##
 ##  Copyright 1997-2009 Torsten Rohlfing
 ##
-##  Copyright 2004-2011 SRI International
+##  Copyright 2004-2012 SRI International
 ##
 ##  This file is part of the Computational Morphometry Toolkit.
 ##
@@ -33,6 +33,9 @@ SET(cmtkSegmentation_SRCS
   cmtkAtlasSegmentation.cxx
   cmtkEntropyMinimizationIntensityCorrectionFunctionalBase.cxx
   cmtkEntropyMinimizationIntensityCorrectionFunctional.cxx
+  cmtkLabelCombinationLocalShapeBasedAveraging.cxx
+  cmtkLabelCombinationLocalVoting.cxx
+  cmtkLabelCombinationLocalWeighting.cxx
   cmtkLabelCombinationMultiClassSTAPLE.cxx
   cmtkLabelCombinationSTAPLE.cxx
   cmtkLabelCombinationVoting.cxx

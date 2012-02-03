@@ -59,6 +59,8 @@ SET(APPS avg_adm
   imagemath
   jidb
   levelset
+  lsba
+  lvote
   make_initial_affine
   mat2dof
   mip
@@ -99,25 +101,20 @@ IF(CMTK_USE_CUDA)
 ENDIF(CMTK_USE_CUDA)
 
 IF(CMTK_USE_SQLITE)
-  SET(APPS ${APPS}
-    dbtool)
+  LIST(APPEND APPS dbtool)
 ENDIF(CMTK_USE_SQLITE)
 
 IF(CMTK_ROOT_PATH_SRI24)
-  SET(APPS ${APPS} asegment_sri24)
+  LIST(APPEND APPS asegment_sri24)
 ENDIF(CMTK_ROOT_PATH_SRI24)
 
 IF(HAVE_STL_HASH_MAP)
-  SET(APPS ${APPS} mcaffine mcwarp)
+  LIST(APPEND APPS mcaffine mcwarp)
 ENDIF(HAVE_STL_HASH_MAP)
 
 IF(CMTK_USE_DCMTK)
-  SET(APPS ${APPS} dcm2image)
+  LIST(APPEND APPS dcm2image)
 ENDIF(CMTK_USE_DCMTK)
-
-IF (CMTK_BUILD_UNSTABLE)
-  SET(APPS ${APPS} lsba lvote)
-ENDIF (CMTK_BUILD_UNSTABLE)
 
 FOREACH(APPLICATION ${APPS})
   ADD_EXECUTABLE(${APPLICATION} ${APPLICATION}.cxx)

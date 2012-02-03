@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -41,7 +41,7 @@
 #include <vector>
 #include <string>
 
-#include <Unstable/cmtkLabelCombinationLocalVoting.h>
+#include <Segmentation/cmtkLabelCombinationLocalVoting.h>
 
 int
 doMain
@@ -65,20 +65,24 @@ doMain
     cl.SetProgramInfo( cmtk::CommandLine::PRG_DESCR, "This tool combines multiple segmentations fro co-registered and reformatted atlases using locally-weighted voting." );
     cl.SetProgramInfo( cmtk::CommandLine::PRG_SYNTX, "lvote [options] targetImage atlasIntensity1 atlasLabels1 [atlasIntensity2 atlasLabels2 [...]]" );
 
+    cl.AddParameter( &targetImagePath, "TargetImage", "Target image path. This is the image to be segmented." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
+    cl.AddParameterVector( &atlasImagesLabels, "AtlasImagesLabels", "List of reformatted atlas intensity and label images. This must be an even number of paths, where the first path within each pair is the intensity channel of"
+			   "an atlas, and the second a label map channel of the same atlas, each reformatted into the space of the target image via an appropriate registration.");
+
     typedef cmtk::CommandLine::Key Key;
 
     cl.BeginGroup( "input", "Input Options" );
     cl.AddOption( Key( "set-padding-value" ), &paddingValue, "Set padding value for input intensity images. Pixels with this value will be ignored.", &paddingFlag );
     cl.EndGroup();
 
+    cl.BeginGroup( "combine", "Label Combination Options" );
     cl.AddOption( Key( "patch-radius" ), &patchRadius, "Radius of image patch (in pixels) used for local similarity computation." );
     cl.AddSwitch( Key( "no-global-outliers" ), &detectGlobalOutliers, true, "Detect and exclude global outliers by removing poorly correlated atlases prior to local SBA procedure." );
+    cl.EndGroup();
 
+    cl.BeginGroup( "output", "Output Options" );
     cl.AddOption( Key( 'o', "output" ), &outputImagePath, "File system path for the output image." );
-
-    cl.AddParameter( &targetImagePath, "TargetImage", "Target image path. This is the image to be segmented." )->SetProperties( cmtk::CommandLine::PROPS_IMAGE );
-    cl.AddParameterVector( &atlasImagesLabels, "AtlasImagesLabels", "List of reformatted atlas intensity and label images. This must be an even number of paths, where the first path within each pair is the intensity channel of"
-			   "an atlas, and the second a label map channel of the same atlas, each reformatted into the space of the target image via an appropriate registration.");
+    cl.EndGroup();
 
     cl.Parse( argc, argv );
 
