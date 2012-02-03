@@ -146,7 +146,7 @@ cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, c
     this->ComputeResiduals( splineWarp );
 
     // loop over all control points to compute deltas as the spline coefficients that fit current residuals
-    std::vector< FixedVector<3,Types::Coordinate> > delta( splineWarp.m_NumberOfControlPoints );
+    std::vector< FixedVector<3,Types::Coordinate> > delta( splineWarp.m_NumberOfControlPoints, FixedVector<3,Types::Coordinate>( FixedVector<3,Types::Coordinate>::Init( 0.0 ) ) );
 
     const WarpXform::ControlPointRegionType cpRegionAll = splineWarp.GetAllControlPointsRegion();
 #ifndef _OPENMP
@@ -176,8 +176,7 @@ cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, c
 	  const DataGrid::IndexType idx = it.Index();
 	  
 	  // Enumerator of Eq. (8) - this is a vector
-	  FixedVector<3,Types::Coordinate> ePc = this->m_Residuals[this->m_DeformationField->GetOffsetFromIndex( idx )/3]; // S_c(u1...un)
-	  Types::Coordinate pSquares = 1; // this is the product over the B^2-s in Eq. (11)
+	  Types::Coordinate pB = 1; // this is the product over the B in enumerator of Eq. (8)
 	  for ( int axis = 0; axis < 3; ++axis )
 	    {
 	    // relative index of spline function for current pixel relative to current control point
@@ -185,8 +184,7 @@ cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, c
 	    // sanity range checks
 	    assert( (relIdx >= 0) && (relIdx < 4) );
 	    
-	    ePc *= splineWarp.m_GridSpline[axis][4*it.Index()[axis]+relIdx];
-	    pSquares *= MathUtil::Square( splineWarp.m_GridSpline[axis][4*it.Index()[axis]+relIdx] );
+	    pB *= splineWarp.m_GridSpline[axis][4*it.Index()[axis]+relIdx];
 	    }
 	  
 	  // Denominator of Eq. (8) - this is a scalar
@@ -198,16 +196,16 @@ cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, c
 	    Types::Coordinate prod = 1;
 	    for ( int axis = 0; axis < 3; ++axis )
 	      {
-	      prod *= MathUtil::Square( splineWarp.m_GridSpline[axis][it.Index()[axis]+nIt.Index()[axis]] );
+	      prod *= splineWarp.m_GridSpline[axis][(4*it.Index()[axis])+nIt.Index()[axis]];
 	      }
 	    
-	    dPc += prod;
+	    dPc += MathUtil::Square( prod );
 	    }
 	  
 	  // Eq. (11)
-	  delta[cp] += (pSquares / dPc) * ePc;
-	  
-	  normalize += pSquares;
+	  const Types::Coordinate pB2 = MathUtil::Square( pB );
+	  delta[cp] += pB2 * (pB / dPc) * this->m_Residuals[this->m_DeformationField->GetOffsetFromIndex( idx )/3]; // S_c(u1...un)
+	  normalize += pB2;
 	  }
 	
 	// Eq. (11) denominator
