@@ -49,11 +49,11 @@ cmtk::FitSplineWarpToDeformationField::GetDeformationGridRange( const SplineWarp
   for ( int axis = 0; axis < 3; ++axis )
     {
     size_t idx = 0;
-    while ( (cpIdx[axis] - splineWarp.m_GridIndexes[axis][idx] > 3) && (idx < this->m_DeformationField->m_Dims[axis]-1) )
+    while ( ((splineWarp.m_GridIndexes[axis][idx]+3) < cpIdx[axis]) && (idx < this->m_DeformationField->m_Dims[axis]) )
       ++idx;
     regionFrom[axis] = idx;
 
-    while ( (cpIdx[axis] < splineWarp.m_GridIndexes[axis][idx]) && (idx < this->m_DeformationField->m_Dims[axis]-1) )
+    while ( (splineWarp.m_GridIndexes[axis][idx] <= cpIdx[axis]) && (idx < this->m_DeformationField->m_Dims[axis]) )
       ++idx;
     regionTo[axis] = idx;
     }
