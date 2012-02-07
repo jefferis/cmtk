@@ -32,6 +32,10 @@
 
 #include <Registration/cmtkGroupwiseRegistrationFunctionalXformTemplate.h>
 
+#include <System/cmtkDebugOutput.h>
+
+#include <Base/cmtkRegionIndexIterator.h>
+
 namespace
 cmtk
 {
@@ -127,11 +131,11 @@ GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
   this->m_MaximumNumberOfPixelsPerLineVOI = 0;
   this->m_MaximumNumberOfPixelsVOI = 0;
   
-  const SplineWarpXform* xform0 = this->GetXformByIndex(0);
+  const SplineWarpXform& xform0 = *(this->GetXformByIndex(0));
   for ( size_t param = 0; param < this->m_ParametersPerXform; param += 3 ) 
     { 
     DataGrid::RegionType& voi = this->m_VolumeOfInfluenceArray[param/3];
-    voi = this->m_TemplateGrid->GetGridRange( xform0->GetVolumeOfInfluence( param, templateDomain ) );
+    voi = this->m_TemplateGrid->GetGridRange( xform0.GetVolumeOfInfluence( param, templateDomain ) );
     
     this->m_MaximumNumberOfPixelsVOI = std::max<size_t>( voi.Size(), this->m_MaximumNumberOfPixelsVOI );
     this->m_MaximumNumberOfPixelsPerLineVOI = std::max<size_t>( voi.To()[0]-voi.From()[0], this->m_MaximumNumberOfPixelsPerLineVOI );
@@ -325,6 +329,25 @@ GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>::UpdateActiveContr
 
   if ( this->m_DisableControlPointsMask )
     {
+    size_t cntDisabled = 0;
+
+    const UniformVolume::CoordinateRegionType templateDomain( this->m_TemplateGrid->m_Offset, this->m_TemplateGrid->m_Offset + this->m_TemplateGrid->Size );
+    const SplineWarpXform& xform0 = *(this->GetXformByIndex(0));
+    for ( size_t cp = 0; cp < numberOfControlPoints; ++cp )
+      {
+      const DataGrid::RegionType maskRegion = this->m_DisableControlPointsMask->GetGridRange( xform0.GetVolumeOfInfluence( 3*cp, templateDomain ) );
+      for ( RegionIndexIterator<DataGrid::RegionType> it( maskRegion ); it != it.end(); ++it )
+	{
+	if ( this->m_DisableControlPointsMask->GetDataAt( this->m_DisableControlPointsMask->GetOffsetFromIndex( it.Index() ) ) > 0 )
+	  {
+	  this->m_ActiveControlPointFlags[cp] = false;
+	  ++cntDisabled;
+	  break;
+	  }
+	}
+      }
+
+    DebugOutput( 2 ) << "Disabled " << cntDisabled << " control points due to provided mask.\n";
     }
 }
 

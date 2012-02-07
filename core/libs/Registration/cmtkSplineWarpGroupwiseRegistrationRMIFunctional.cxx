@@ -142,11 +142,12 @@ SplineWarpGroupwiseRegistrationRMIFunctional::UpdateActiveControlPoints()
       if ( this->m_ActiveControlPointFlags[cp] )
 	{
 	this->m_ActiveControlPointFlags[cp] = (this->m_InformationByControlPoint[cp] > (this->m_HistogramBins / 4) );
-	if ( !this->m_ActiveControlPointFlags[cp] ) 
-	  --this->m_NumberOfActiveControlPoints;
 	}
-      }
 
+      if ( !this->m_ActiveControlPointFlags[cp] ) 
+	--this->m_NumberOfActiveControlPoints;
+      }
+    
     DebugOutput( 2 ) << "Enabled " << this->m_NumberOfActiveControlPoints << "/" << this->m_ParametersPerXform / 3 << " control points as informative.\n";
     }
   

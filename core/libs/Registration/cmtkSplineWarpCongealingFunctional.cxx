@@ -105,9 +105,9 @@ SplineWarpCongealingFunctional
     std::vector<DataGrid::RegionType>::const_iterator voi = this->m_VolumeOfInfluenceArray.begin();
     for ( size_t cp = 0; cp < numberOfControlPoints; ++cp, ++voi )
       {
+      bool active = false;
       if ( this->m_ActiveControlPointFlags[cp] )
 	{
-	bool active = false;
 	for ( int z = voi->From()[2]; (z < voi->To()[2]) && !active; ++z ) 
 	  {
 	  for ( int y = voi->From()[1]; (y < voi->To()[1]) && !active; ++y )
@@ -122,11 +122,11 @@ SplineWarpCongealingFunctional
 	      }
 	    }
 	  }
-
-	this->m_ActiveControlPointFlags[cp] = active;
-	if ( !active ) 
-	  --this->m_NumberOfActiveControlPoints;
 	}
+      
+      this->m_ActiveControlPointFlags[cp] = active;
+      if ( !active ) 
+	--this->m_NumberOfActiveControlPoints;
       }
     
     DebugOutput( 2 ) << "Enabled " << this->m_NumberOfActiveControlPoints << "/" << this->m_ParametersPerXform / 3 << " control points as informative.\n";
