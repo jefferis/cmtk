@@ -924,6 +924,10 @@ case ${RUNTEST} in
 	run groupwise_warp -v --force-background 0 -O ${tmpdir} --grid-spacing 200 --refine-grid 1 -e 2 -a 1 --downsample-from 2 --downsample-to 1 groupwise_init_brain123.xforms
 	check_results groupwise.xforms average.nii
 	;;
+    groupwise_warpFromInitProtect)
+	run groupwise_warp -v --force-background 0 -vv --disable-cp-mask box_corner.nii -O ${tmpdir} --grid-spacing 200 --refine-grid 1 -e 2 -a 1 --downsample-from 2 --downsample-to 1 groupwise_init_brain123.xforms
+	check_results groupwise.xforms
+	;;
     groupwise_warpFitFromInit)
 	run groupwise_warp -v --force-background 0 -O ${tmpdir} --grid-spacing 200 --grid-spacing-fit --refine-grid 1 -e 4 -a 1 --downsample-from 2 --downsample-to 1 groupwise_init_brain123.xforms
 	check_results groupwise.xforms average.nii

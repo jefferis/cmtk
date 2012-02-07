@@ -134,6 +134,7 @@ LIST(APPEND testList
 # Tests for "groupwise_warp" tool
 LIST(APPEND testList
   groupwise_warpFromInit
+  groupwise_warpFromInitProtect
   groupwise_warpFitFromInit
   groupwise_warpFromInitZeroSum
   groupwise_warpUseTemplate
