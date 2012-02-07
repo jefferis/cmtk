@@ -146,7 +146,7 @@ GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
 
   this->m_ParamStepArray.resize( this->ParamVectorDim() );
 
-  if ( this->m_DeactivateUninformativeMode &&
+  if ( ( this->m_DeactivateUninformativeMode || this->m_DisableControlPointsMask ) &&
        ( this->m_ActiveControlPointFlags.size() == this->m_ParametersPerXform / 3 ) )
     {
     for ( size_t param = 0; param < this->ParamVectorDim(); ++param ) 
@@ -310,5 +310,23 @@ GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>
       }
     }
 }
+
+void
+GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>::UpdateActiveControlPoints()
+{
+  const size_t numberOfControlPoints = this->m_VolumeOfInfluenceArray.size();
+  
+  if ( numberOfControlPoints )
+    {
+    this->m_ActiveControlPointFlags.resize( numberOfControlPoints );
+    std::fill( this->m_ActiveControlPointFlags.begin(), this->m_ActiveControlPointFlags.end(), true );
+    this->m_NumberOfActiveControlPoints = numberOfControlPoints;
+    }
+
+  if ( this->m_DisableControlPointsMask )
+    {
+    }
+}
+
 
 } // namespace cmtk

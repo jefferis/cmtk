@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -60,6 +60,8 @@ int DownsampleTo = 1;
 
 const char* PreDefinedTemplatePath = NULL;
 bool UseTemplateData = false;
+
+const char* DisableControlPointsMaskPath = NULL;
 
 int RefineTransformationGrid = 0;
 float JacobianConstraintWeight = 0.0;
@@ -180,6 +182,8 @@ doMain( int argc, const char* argv[] )
     cl.AddOption( Key( "delta-f-threshold" ), &OptimizerDeltaFThreshold, "Optional threshold to terminate optimization (level) if relative change of target function drops below this value." );
     cl.AddOption( Key( 'p', "partial-gradient-thresh" ), &PartialGradientThreshold, "Threshold factor for partial gradient zeroing [<0 turn off]" );
     cl.AddSwitch( Key( "activate-uninformative" ), &DeactivateUninformative, false, "Activate potentially uninformative control points" );
+    cl.AddOption( Key( "disable-cp-mask" ), &DisableControlPointsMaskPath, "Path to mask image (matching template grid) defining areas in which control points should be disabled. "
+		  "This guarantees that mask foreground areas remain undeformed." );
     cl.AddSwitch( Key( "disable-optimization" ), &DisableOptimization, true, "Disable optimization and output initial configuration." );
     cl.EndGroup();
       
@@ -276,6 +280,11 @@ doMain( int argc, const char* argv[] )
   functional->InitializeXforms( GridSpacing, GridSpacingExact ); // must do this before downsampling template grid
   functional->SetRepeatIntensityHistogramMatching( RepeatHistogramMatching );
   const cmtk::Types::Coordinate FinestGridSpacing = GridSpacing / (1<<RefineTransformationGrid);
+
+  if ( DisableControlPointsMaskPath )
+    {
+    functional->SetDisableControlPointsMask( cmtk::UniformVolume::SmartConstPtr( cmtk::VolumeIO::Read( DisableControlPointsMaskPath ) ) );
+    }
 
   const double timeBaselineProcess = cmtk::Timers::GetTimeProcess();
 

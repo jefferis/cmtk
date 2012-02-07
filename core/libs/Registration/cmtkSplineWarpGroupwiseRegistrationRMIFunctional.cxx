@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -36,6 +36,7 @@
 #include <Base/cmtkMatrix.h>
 
 #include <System/cmtkThreadParameterArray.h>
+#include <System/cmtkDebugOutput.h>
 
 #include <algorithm>
 
@@ -125,35 +126,28 @@ SplineWarpGroupwiseRegistrationRMIFunctional::UpdateControlPointSchedule()
 void
 SplineWarpGroupwiseRegistrationRMIFunctional::UpdateActiveControlPoints()
 {
+  Superclass::UpdateActiveControlPoints();
+  
   if ( this->m_DeactivateUninformativeMode )
     {
     const size_t numberOfControlPoints = this->m_VolumeOfInfluenceArray.size();
+
+    const Vector3D templateFrom( this->m_TemplateGrid->m_Offset );
+    const Vector3D templateTo(  this->m_TemplateGrid->m_Offset + this->m_TemplateGrid->Size );
+    Vector3D fromVOI, toVOI;
     
-    if ( numberOfControlPoints )
+    std::vector<DataGrid::RegionType>::const_iterator voi = this->m_VolumeOfInfluenceArray.begin();
+    for ( size_t cp = 0; cp < numberOfControlPoints; ++cp, ++voi )
       {
-      this->m_ActiveControlPointFlags.resize( numberOfControlPoints );
-      this->m_NumberOfActiveControlPoints = 0;
-      
-      const Vector3D templateFrom( this->m_TemplateGrid->m_Offset );
-      const Vector3D templateTo(  this->m_TemplateGrid->m_Offset + this->m_TemplateGrid->Size );
-      Vector3D fromVOI, toVOI;
-      
-      std::vector<DataGrid::RegionType>::const_iterator voi = this->m_VolumeOfInfluenceArray.begin();
-      for ( size_t cp = 0; cp < numberOfControlPoints; ++cp, ++voi )
+      if ( this->m_ActiveControlPointFlags[cp] )
 	{
 	this->m_ActiveControlPointFlags[cp] = (this->m_InformationByControlPoint[cp] > (this->m_HistogramBins / 4) );
-	if ( this->m_ActiveControlPointFlags[cp] ) 
-	  ++this->m_NumberOfActiveControlPoints;
+	if ( !this->m_ActiveControlPointFlags[cp] ) 
+	  --this->m_NumberOfActiveControlPoints;
 	}
-      
-      StdErr << "Enabled " << this->m_NumberOfActiveControlPoints 
-		<< "/" << this->m_ParametersPerXform / 3
-		<< " control points.\n";
       }
-    }
-  else
-    {
-    this->m_NumberOfActiveControlPoints = this->m_VolumeOfInfluenceArray.size();
+
+    DebugOutput( 2 ) << "Enabled " << this->m_NumberOfActiveControlPoints << "/" << this->m_ParametersPerXform / 3 << " control points as informative.\n";
     }
   
   this->UpdateParamStepArray();

@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -37,6 +37,7 @@
 
 #include <System/cmtkThreadPool.h>
 #include <System/cmtkThreadParameterArray.h>
+#include <System/cmtkDebugOutput.h>
 
 #include <algorithm>
 
@@ -85,28 +86,26 @@ SplineWarpCongealingFunctional
 {
   this->Superclass::UpdateStandardDeviationByPixel();
   this->UpdateActiveControlPoints();
-  this->UpdateParamStepArray();
 }
 
 void
 SplineWarpCongealingFunctional
 ::UpdateActiveControlPoints()
 {
+  Superclass::UpdateActiveControlPoints();
+
   if ( this->m_DeactivateUninformativeMode )
     {
     const size_t numberOfControlPoints = this->m_VolumeOfInfluenceArray.size();
     
-    if ( numberOfControlPoints )
+    const Vector3D templateFrom( this->m_TemplateGrid->m_Offset );
+    const Vector3D templateTo( this->m_TemplateGrid->m_Offset + this->m_TemplateGrid->Size );
+    Vector3D fromVOI, toVOI;
+    
+    std::vector<DataGrid::RegionType>::const_iterator voi = this->m_VolumeOfInfluenceArray.begin();
+    for ( size_t cp = 0; cp < numberOfControlPoints; ++cp, ++voi )
       {
-      this->m_ActiveControlPointFlags.resize( numberOfControlPoints );
-      this->m_NumberOfActiveControlPoints = 0;
-      
-      const Vector3D templateFrom( this->m_TemplateGrid->m_Offset );
-      const Vector3D templateTo( this->m_TemplateGrid->m_Offset + this->m_TemplateGrid->Size );
-      Vector3D fromVOI, toVOI;
-      
-      std::vector<DataGrid::RegionType>::const_iterator voi = this->m_VolumeOfInfluenceArray.begin();
-      for ( size_t cp = 0; cp < numberOfControlPoints; ++cp, ++voi )
+      if ( this->m_ActiveControlPointFlags[cp] )
 	{
 	bool active = false;
 	for ( int z = voi->From()[2]; (z < voi->To()[2]) && !active; ++z ) 
@@ -123,17 +122,17 @@ SplineWarpCongealingFunctional
 	      }
 	    }
 	  }
-	this->m_ActiveControlPointFlags[cp] = active;
-	if ( active ) ++this->m_NumberOfActiveControlPoints;
-	}
 
-      StdErr << "Enabled " << this->m_NumberOfActiveControlPoints << "/" << this->m_ParametersPerXform / 3 << " control points.\n";
+	this->m_ActiveControlPointFlags[cp] = active;
+	if ( !active ) 
+	  --this->m_NumberOfActiveControlPoints;
+	}
       }
+    
+    DebugOutput( 2 ) << "Enabled " << this->m_NumberOfActiveControlPoints << "/" << this->m_ParametersPerXform / 3 << " control points as informative.\n";
     }
-  else
-    {
-    this->m_NumberOfActiveControlPoints = this->m_VolumeOfInfluenceArray.size();
-    }
+  
+  this->UpdateParamStepArray();
 }
 
 SplineWarpCongealingFunctional::ReturnType

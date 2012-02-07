@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -113,7 +113,13 @@ public:
 
   /// Call inherited function and allocate local storage.
   virtual void SetTemplateGrid( UniformVolume::SmartPtr& templateGrid, const int downsample = 1, const bool useTemplateData = false );
-    
+
+  /// Set mask for explicitly disabling control points.
+  virtual void SetDisableControlPointsMask( UniformVolume::SmartConstPtr mask )
+  {
+    this->m_DisableControlPointsMask = mask;
+  }
+  
 protected:
   /// Maximum number of pixels in any VOI.
   size_t m_MaximumNumberOfPixelsVOI;
@@ -125,7 +131,7 @@ protected:
   virtual void UpdateVolumesOfInfluence();
 
   /// Update deactivated control points.
-  virtual void UpdateActiveControlPoints() = 0;
+  virtual void UpdateActiveControlPoints();
   
   /** Interpolate given moving image to template.
    * This function overrides the interpolation function provided by the base
@@ -173,6 +179,9 @@ protected:
    * and not used for gradient approximation.
    */
   bool m_PartialGradientMode;
+
+  /// Mask volume for explicitly disabling control points affecting mask foreground.
+  UniformVolume::SmartConstPtr m_DisableControlPointsMask;
 
   /// Initial affine transformations.
   std::vector<AffineXform::SmartPtr> m_InitialAffineXformsVector;
