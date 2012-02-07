@@ -1,6 +1,6 @@
 Release CMTK-2.1.2:
 
-(r3819) Added: "groupwise_warp" tool can now protect regions from deformation
+(r3821) Added: "groupwise_warp" tool can now protect regions from deformation
     if an "exclusion" mask is provided.
 (r3814) Added: label combination by locally-weighted voting and local
     shape-based averaging (tools "lvote" and "lsba") has been moved out of the
