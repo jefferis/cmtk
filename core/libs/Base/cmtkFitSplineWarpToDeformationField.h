@@ -81,8 +81,10 @@ private:
   /// Deformation field coverage, i.e., field of fiew.
   Region<3,Types::Coordinate> m_DeformationFieldFOV;
 
-  /// Get deformation grid region corresponding to given coordinate region.
-  DataGrid::RegionType GetDeformationGridRange( const UniformVolume::CoordinateRegionType& region ) const;
+  /// Get deformation grid region corresponding to the influenced coordinate region of a given spline control point.
+  DataGrid::RegionType GetDeformationGridRange( const SplineWarpXform& splineWarp /*!< The spline warp object */, 
+						const size_t cp /*!< Control point index (scalar offset).*/, 
+						const SplineWarpXform::ControlPointIndexType& cpIdx /*!< Control point 3D grid index */ ) const;
 
   /// Compute residuals, i.e., pixel-wise difference between B-spline transformation and deformation field.
   void ComputeResiduals( const SplineWarpXform& splineWarp );

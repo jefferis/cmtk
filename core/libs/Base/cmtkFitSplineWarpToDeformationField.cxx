@@ -42,15 +42,21 @@ cmtk::FitSplineWarpToDeformationField::FitSplineWarpToDeformationField( Deformat
 }
 
 cmtk::DataGrid::RegionType
-cmtk::FitSplineWarpToDeformationField::GetDeformationGridRange( const UniformVolume::CoordinateRegionType& region ) const
+cmtk::FitSplineWarpToDeformationField::GetDeformationGridRange( const SplineWarpXform& splineWarp, const size_t cp, const SplineWarpXform::ControlPointIndexType& cpIdx ) const
 {
   cmtk::DataGrid::IndexType regionFrom, regionTo;
+  
+  for ( int axis = 0; axis < 3; ++axis )
+    {
+    size_t idx = 0;
+    while ( (cpIdx[axis] - splineWarp.m_GridIndexes[axis][idx] > 3) && (idx < this->m_DeformationField->m_Dims[axis]-1) )
+      ++idx;
+    regionFrom[axis] = idx;
 
-  regionFrom = ComponentDivide( region.From() - this->m_DeformationField->m_Offset, this->m_DeformationField->m_Spacing );
-  regionTo = ComponentDivide( region.To() - this->m_DeformationField->m_Offset, this->m_DeformationField->m_Spacing );
-
-  regionFrom.AddScalar( 1 ); // to compensate for float-to-int truncation
-  /// regionTo.AddScalar( 1 ); // necessary to convert to for() range, but COMMENT OUT to compensate for float-to-int truncation
+    while ( (cpIdx[axis] < splineWarp.m_GridIndexes[axis][idx]) && (idx < this->m_DeformationField->m_Dims[axis]-1) )
+      ++idx;
+    regionTo[axis] = idx;
+    }
   
   return cmtk::DataGrid::RegionType( regionFrom, regionTo );
 }
@@ -162,14 +168,15 @@ cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, c
       cpRegion.From()[maxIdx] = slice;
       cpRegion.To()[maxIdx] = slice+1;
 #endif
+      // this is the loop over all (i_1,i_2,i_3) control point indexes
       for ( RegionIndexIterator<WarpXform::ControlPointRegionType> cpIt( cpRegion); cpIt != cpIt.end(); ++cpIt )
 	{
 	const size_t cp = splineWarp.GetOffsetFromIndex( cpIt.Index() ) / 3;
 	
 	// volume of influence for the current control point
-	const DataGrid::RegionType voi = this->GetDeformationGridRange( splineWarp.GetVolumeOfInfluence( 3 * cp, this->m_DeformationFieldFOV, false /*fastMode=off*/ ) );
+	const DataGrid::RegionType voi = this->GetDeformationGridRange( splineWarp, cp, cpIt.Index() );
 	
-	// iterate over all voxels influenced by current control point.
+	// iterate over all voxels, "c", influenced by current control point.
 	Types::Coordinate normalize = 0;
 	for ( RegionIndexIterator<DataGrid::RegionType> it( voi ); it != it.end(); ++it )
 	  {
