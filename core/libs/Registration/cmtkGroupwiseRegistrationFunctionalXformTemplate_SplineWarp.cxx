@@ -335,7 +335,7 @@ GroupwiseRegistrationFunctionalXformTemplate<SplineWarpXform>::UpdateActiveContr
     const SplineWarpXform& xform0 = *(this->GetXformByIndex(0));
     for ( size_t cp = 0; cp < numberOfControlPoints; ++cp )
       {
-      const DataGrid::RegionType maskRegion = this->m_DisableControlPointsMask->GetGridRange( xform0.GetVolumeOfInfluence( 3*cp, templateDomain ) );
+      const DataGrid::RegionType maskRegion = this->m_DisableControlPointsMask->GetGridRange( xform0.GetVolumeOfInfluence( 3*cp, templateDomain, false /*force slow, accurate mode*/ ) );
       for ( RegionIndexIterator<DataGrid::RegionType> it( maskRegion ); it != it.end(); ++it )
 	{
 	if ( this->m_DisableControlPointsMask->GetDataAt( this->m_DisableControlPointsMask->GetOffsetFromIndex( it.Index() ) ) > 0 )

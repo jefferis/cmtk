@@ -388,7 +388,7 @@ SplineWarpXform::Refine()
 }
 
 UniformVolume::CoordinateRegionType
-SplineWarpXform::GetVolumeOfInfluence( const size_t idx, const UniformVolume::CoordinateRegionType& domain, const int fastMode ) const
+SplineWarpXform::GetVolumeOfInfluence( const size_t idx, const UniformVolume::CoordinateRegionType& domain, const bool fastMode ) const
 {
   Self::SpaceVectorType regionFrom, regionTo;
   
@@ -400,7 +400,7 @@ SplineWarpXform::GetVolumeOfInfluence( const size_t idx, const UniformVolume::Co
   
   FixedVector<3,Types::Coordinate> xyzLow, xyzUp;
 
-  if ( (fastMode==1) || (this->m_FastMode && (fastMode<0)) ) 
+  if ( fastMode ) 
     {
     for ( int dim = 0; dim < 3; ++dim )
       {

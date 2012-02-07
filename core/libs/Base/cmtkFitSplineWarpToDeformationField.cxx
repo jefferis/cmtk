@@ -167,7 +167,7 @@ cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, c
 	const size_t cp = splineWarp.GetOffsetFromIndex( cpIt.Index() ) / 3;
 	
 	// volume of influence for the current control point
-	const DataGrid::RegionType voi = this->GetDeformationGridRange( splineWarp.GetVolumeOfInfluence( 3 * cp, this->m_DeformationFieldFOV, 0 /*fastMode=off*/ ) );
+	const DataGrid::RegionType voi = this->GetDeformationGridRange( splineWarp.GetVolumeOfInfluence( 3 * cp, this->m_DeformationFieldFOV, false /*fastMode=off*/ ) );
 	
 	// iterate over all voxels influenced by current control point.
 	Types::Coordinate normalize = 0;

@@ -211,7 +211,7 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
     for ( int ctrl = 0; ctrl < numCtrlPoints; ++ctrl ) 
       {
       /// We cannot use the precomputed table of VOIs here because in "fast" mode, these VOIs are smaller than we want them here.
-      const DataGrid::RegionType voi = this->GetReferenceGridRange( this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->m_ReferenceDomain, 0 ) );
+      const DataGrid::RegionType voi = this->GetReferenceGridRange( this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->m_ReferenceDomain, false /* disable fast mode */ ) );
       
       int r = voi.From()[0] + this->DimsX * ( voi.From()[1] + this->DimsY * voi.From()[2] );
       
@@ -252,7 +252,7 @@ VoxelMatchingElasticFunctional_Template<VM>::UpdateWarpFixedParameters()
       this->ConsistencyHistogram->Reset();
       
       // We cannot use the precomputed table of VOIs here because in "fast" mode, these VOIs are smaller than we want them here.
-      const DataGrid::RegionType voi = this->GetReferenceGridRange( this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->m_ReferenceDomain, 0 ) );
+      const DataGrid::RegionType voi = this->GetReferenceGridRange( this->Warp->GetVolumeOfInfluence( 3 * ctrl, this->m_ReferenceDomain, false /* disable fast mode */ ) );
       
       int r = voi.From()[0] + this->DimsX * ( voi.From()[1] + this->DimsY * voi.From()[2] );
       
