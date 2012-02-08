@@ -35,40 +35,10 @@
 #include <System/cmtkDebugOutput.h>
 
 cmtk::FitSplineWarpToDeformationField::FitSplineWarpToDeformationField( DeformationField::SmartConstPtr dfield, const bool absolute ) 
-  : m_DFieldIsAbsolute( absolute ), 
+  : m_FitAbsolute( absolute ), 
     m_DeformationField( dfield ),
     m_DeformationFieldFOV( dfield->m_Offset, dfield->m_Domain )
 {  
-}
-
-cmtk::DataGrid::RegionType
-cmtk::FitSplineWarpToDeformationField::GetDeformationGridRange( const SplineWarpXform& splineWarp, const SplineWarpXform::ControlPointIndexType& cpIdx ) const
-{
-  const int regionFrom[3] = { this->m_ControlPointRegionRange[0][cpIdx[0]][0], this->m_ControlPointRegionRange[1][cpIdx[1]][0], this->m_ControlPointRegionRange[2][cpIdx[2]][0] };
-  const int regionTo[3] = { this->m_ControlPointRegionRange[0][cpIdx[0]][1], this->m_ControlPointRegionRange[1][cpIdx[1]][1], this->m_ControlPointRegionRange[2][cpIdx[2]][1] };
-  
-  return cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType( regionFrom ), cmtk::DataGrid::IndexType( regionTo ) );
-}
-
-void
-cmtk::FitSplineWarpToDeformationField::CreateGridLookupTables( const SplineWarpXform& splineWarp )
-{
-  for ( int axis = 0; axis < 3; ++axis )
-    {
-    this->m_ControlPointRegionRange[axis].resize( splineWarp.m_Dims[axis] );
-    
-    for ( int cpIdx = 0; cpIdx < splineWarp.m_Dims[axis]; ++cpIdx )
-      {
-      size_t idx = 0;
-      while ( ((splineWarp.m_GridIndexes[axis][idx]+3) < cpIdx) && (idx < this->m_DeformationField->m_Dims[axis]) )
-	++idx;
-      this->m_ControlPointRegionRange[axis][cpIdx][0] = idx;
-      
-      while ( (splineWarp.m_GridIndexes[axis][idx] <= cpIdx) && (idx < this->m_DeformationField->m_Dims[axis]) )
-	++idx;
-      this->m_ControlPointRegionRange[axis][cpIdx][1] = idx;
-      }
-    }
 }
 
 void
@@ -87,8 +57,8 @@ cmtk::FitSplineWarpToDeformationField::ComputeResiduals( const SplineWarpXform& 
       {
       for ( int x = 0; x < dims[0]; ++x, ++ofs )
 	{
-	this->m_Residuals[ofs] = this->m_DeformationField->GetTransformedGrid( x, y, z ) - splineWarp.GetTransformedGrid( x, y, z );
-	if ( !this->m_DFieldIsAbsolute )
+	this->m_Residuals[ofs] = this->m_DeformationField->GetDeformedControlPointPosition( x, y, z ) - splineWarp.GetTransformedGrid( x, y, z );
+	if ( this->m_FitAbsolute )
 	  this->m_Residuals[ofs] += this->m_DeformationField->GetOriginalControlPointPosition( x, y, z );
 	}
       }
@@ -158,84 +128,49 @@ cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, c
 
     // compute residuals
     splineWarp.RegisterVolumePoints( this->m_DeformationField->m_Dims, this->m_DeformationField->m_Spacing, this->m_DeformationField->m_Offset );
-    this->CreateGridLookupTables( splineWarp );
     this->ComputeResiduals( splineWarp );
     
     // loop over all control points to compute deltas as the spline coefficients that fit current residuals
     std::vector< FixedVector<3,Types::Coordinate> > delta( splineWarp.m_NumberOfControlPoints, FixedVector<3,Types::Coordinate>( FixedVector<3,Types::Coordinate>::Init( 0.0 ) ) );
-
-    const WarpXform::ControlPointRegionType cpRegionAll = splineWarp.GetAllControlPointsRegion();
-#ifndef _OPENMP
-    const WarpXform::ControlPointRegionType cpRegion = cpRegionAll;
-#else // _OPENMP
-    const size_t maxIdx = (cpRegionAll.To()-cpRegionAll.From()).MaxIndex();
-    const int sliceFrom = cpRegionAll.From()[maxIdx];
-    const int sliceTo = cpRegionAll.To()[maxIdx];
-#pragma omp parallel for
-    for ( int slice = sliceFrom; slice < sliceTo; ++slice )
+    std::vector< Types::Coordinate > weight( splineWarp.m_NumberOfControlPoints, 0.0 );
+    
+    for ( RegionIndexIterator<WarpXform::ControlPointRegionType> voxelIt( this->m_DeformationField->GetAllControlPointsRegion() ); voxelIt != voxelIt.end(); ++voxelIt )
       {
-      WarpXform::ControlPointRegionType cpRegion = cpRegionAll;
-      cpRegion.From()[maxIdx] = slice;
-      cpRegion.To()[maxIdx] = slice+1;
-#endif
-      // this is the loop over all (i_1,i_2,i_3) control point indexes
-      for ( RegionIndexIterator<WarpXform::ControlPointRegionType> cpIt( cpRegion); cpIt != cpIt.end(); ++cpIt )
-	{
-	const size_t cp = splineWarp.GetOffsetFromIndex( cpIt.Index() ) / 3;
-	
-	// volume of influence for the current control point
-	const DataGrid::RegionType voi = this->GetDeformationGridRange( splineWarp, cpIt.Index() );
-	
-	// iterate over all voxels, "c", influenced by current control point.
-	Types::Coordinate normalize = 0;
-	for ( RegionIndexIterator<DataGrid::RegionType> it( voi ); it != it.end(); ++it )
-	  {
-	  const DataGrid::IndexType idx = it.Index();
-	  
-	  // Enumerator of Eq. (8) - this is a vector
-	  Types::Coordinate pB = 1; // this is the product over the B in enumerator of Eq. (8)
-	  for ( int axis = 0; axis < 3; ++axis )
+      const DataGrid::IndexType voxelIdx = voxelIt.Index();
+
+      Types::Coordinate sumOfSquares = 0;
+      for ( int m = 0; m < 4; ++m )
+	for ( int l = 0; l < 4; ++l )
+	  for ( int k = 0; k < 4; ++k )
 	    {
-	    // relative index of spline function for current pixel relative to current control point
-	    const int relIdx = cpIt.Index()[axis] - splineWarp.m_GridIndexes[axis][idx[axis]];
-	    // sanity range checks
-	    assert( (relIdx >= 0) && (relIdx < 4) );
-	    
-	    pB *= splineWarp.m_GridSpline[axis][4*it.Index()[axis]+relIdx];
+	    sumOfSquares += MathUtil::Square( splineWarp.m_GridSpline[0][4*voxelIdx[0]+k] * splineWarp.m_GridSpline[1][4*voxelIdx[1]+l] * splineWarp.m_GridSpline[2][4*voxelIdx[2]+m] );
 	    }
-	  
-	  // Denominator of Eq. (8) - this is a scalar
-	  Types::Coordinate dPc = 0;
-	  
-	  const DataGrid::RegionType neighborhood( DataGrid::IndexType::Init( 0 ), DataGrid::IndexType::Init( 4 ) );
-	  for ( RegionIndexIterator<DataGrid::RegionType> nIt( neighborhood ); nIt != nIt.end(); ++nIt )
+      
+      for ( int m = 0; m < 4; ++m )
+	for ( int l = 0; l < 4; ++l )
+	  for ( int k = 0; k < 4; ++k )
 	    {
-	    Types::Coordinate prod = 1;
-	    for ( int axis = 0; axis < 3; ++axis )
-	      {
-	      prod *= splineWarp.m_GridSpline[axis][(4*it.Index()[axis])+nIt.Index()[axis]];
-	      }
-	    
-	    dPc += MathUtil::Square( prod );
+	    const size_t cpOfs = splineWarp.m_GridIndexes[0][voxelIdx[0]] + k + splineWarp.m_Dims[0] * ( splineWarp.m_GridIndexes[1][voxelIdx[1]] + l + splineWarp.m_Dims[1] * ( splineWarp.m_GridIndexes[2][voxelIdx[2]] + m ) );
+	    const Types::Coordinate wklm = splineWarp.m_GridSpline[0][4*voxelIdx[0]+k] * splineWarp.m_GridSpline[1][4*voxelIdx[1]+l] * splineWarp.m_GridSpline[2][4*voxelIdx[2]+m];
+
+	    delta[cpOfs] += MathUtil::Square( wklm ) * wklm / sumOfSquares * this->m_Residuals[this->m_DeformationField->GetOffsetFromIndex( voxelIdx )/3];
+	    weight[cpOfs] += MathUtil::Square( wklm );
 	    }
-	  
-	  // Eq. (11)
-	  const Types::Coordinate pB2 = MathUtil::Square( pB );
-	  delta[cp] += pB2 * (pB / dPc) * this->m_Residuals[this->m_DeformationField->GetOffsetFromIndex( idx )/3]; // S_c(u1...un)
-	  normalize += pB2;
-	  }
-	
-	// Eq. (11) denominator
-	delta[cp] /= normalize;
-	}
-#ifdef _OPENMP
       }
-#endif
     
     // apply delta
     for ( size_t cp = 0; cp < splineWarp.m_NumberOfControlPoints; ++cp )
       {
-      splineWarp.SetShiftedControlPointPositionByOffset( splineWarp.GetShiftedControlPointPositionByOffset( cp ) + delta[cp], cp );
+      if ( weight[cp] != 0 )
+	{
+	delta[cp] /= weight[cp];
+	splineWarp.SetShiftedControlPointPositionByOffset( splineWarp.GetShiftedControlPointPositionByOffset( cp ) + delta[cp], cp );
+	}
+      else
+	{
+	// nothing to do - keep control point where it is.
+	}
       }
     }
 }
+

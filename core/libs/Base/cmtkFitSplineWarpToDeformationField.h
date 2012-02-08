@@ -56,7 +56,7 @@ public:
   typedef FitSplineWarpToDeformationField Self;
 
   /// Constructor.
-  FitSplineWarpToDeformationField( DeformationField::SmartConstPtr dfield, const bool absolute /*!< Flag for absolute transformation vs. relative deformation field */ );
+  FitSplineWarpToDeformationField( DeformationField::SmartConstPtr dfield, const bool absolute /*!< Flag fitting absolute transformation vs. relative deformation field */ );
 
   /// Fit spline warp based on final grid dimensions.
   SplineWarpXform::SmartPtr Fit( const SplineWarpXform::ControlPointIndexType& finalDims, const int nLevels );
@@ -67,10 +67,10 @@ public:
 
 private:
   /** Flag for absolute vs. relative deformation fields.
-   * If this is true, the deformation field is an absolute transformation. 
-   * If this is false, the deformation field is a relative offset field.
+   * If this is true, the spline is fitted to the absolute transformation defined by the deformation field.
+   * If this is false, the spline is fitted to the relative deformation field itself.
    */
-  bool m_DFieldIsAbsolute;
+  bool m_FitAbsolute;
 
   /// Input deformation field.
   DeformationField::SmartConstPtr m_DeformationField;
@@ -81,18 +81,6 @@ private:
   /// Deformation field coverage, i.e., field of fiew.
   Region<3,Types::Coordinate> m_DeformationFieldFOV;
   
-  /// Lookup tables for pixel index ranges by spline control point per dimension.
-  FixedVector< 3, std::vector< FixedVector< 2,int > > > m_ControlPointRegionRange;
-
-  /// Create pixel index range lookup tables.
-  void CreateGridLookupTables( const SplineWarpXform& splineWarp );
-
-  /** Get deformation grid region corresponding to the influenced coordinate region of a given spline control point.
-   * This should is implemented via per-axis lookup tables, m_ControlPointRegionRange.
-   */
-  DataGrid::RegionType GetDeformationGridRange( const SplineWarpXform& splineWarp /*!< The spline warp object */, 
-						const SplineWarpXform::ControlPointIndexType& cpIdx /*!< Control point 3D grid index */ ) const;
-
   /// Compute residuals, i.e., pixel-wise difference between B-spline transformation and deformation field.
   void ComputeResiduals( const SplineWarpXform& splineWarp );
 

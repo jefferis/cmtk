@@ -136,6 +136,15 @@ public:
   /// Get a sequence of grid points from the deformed grid. 
   virtual void GetTransformedGridRow( Self::SpaceVectorType *const v, const int numPoints, const int idxX, const int idxY, const int idxZ ) const;
   
+  /** Get the deformed position of a transformation control point.
+   *\note This function does not return the shifted control point position,
+   * but rather it applies the current transformation to the given control
+   * point. It does so more efficiently than applying the transformation to
+   * the explicit 3D coordinate of the control point, because most spline
+   * coefficients vanish at control points and need not be considered.
+   */
+  virtual Self::SpaceVectorType GetDeformedControlPointPosition( const int, const int, const int ) const;
+  
   /// Get Jacobian matrix.
   virtual void GetJacobian( const Self::SpaceVectorType& v, CoordinateMatrix3x3& J ) const;
 

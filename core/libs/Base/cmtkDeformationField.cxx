@@ -92,6 +92,14 @@ DeformationField
   return v;
 }
 
+DeformationField::SpaceVectorType
+DeformationField
+::GetDeformedControlPointPosition
+( const int idxX, const int idxY, const int idxZ ) const
+{
+  return Self::SpaceVectorType( this->m_Parameters + nextI * idxX + nextJ * idxY + nextK * idxZ );
+}
+
 void 
 DeformationField::GetTransformedGridRow
 ( Self::SpaceVectorType *const vIn, const int numPoints, const int idxX, const int idxY, const int idxZ ) 
