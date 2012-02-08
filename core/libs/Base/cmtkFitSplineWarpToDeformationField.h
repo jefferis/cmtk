@@ -48,6 +48,8 @@ cmtk
 /** Fit B-spline-based free-form deformation to pixel-wise deformation field.
  *\see This class implements the algorithm from: N. J. Tustison, B. B. Avants, and J. C. Gee, "Directly manipulated free-form deformation image registration," IEEE Transactions on Image Processing, vol. 18, no. 3, pp. 624-635, 2009;
  * http://dx.doi.org/10.1109/TIP.2008.2010072
+ *\see The implementation itself is more closely following S. Lee, G. Wolberg, and S. Y. Shin, “Scattered data interpolation with multilevel B-splines,” IEEE Transactions on Visualization and Computer Graphics, 
+ * vol. 3, no. 3, pp. 228-244, 1997. http://dx.doi.org/10.1109/2945.620490
  */
 class FitSplineWarpToDeformationField
 {
