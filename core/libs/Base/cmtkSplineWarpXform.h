@@ -330,7 +330,7 @@ public:
    * the explicit 3D coordinate of the control point, because most spline
    * coefficients vanish at control points and need not be considered.
    */
-  virtual Self::SpaceVectorType& GetDeformedControlPointPosition( Self::SpaceVectorType&, const int, const int, const int ) const;
+  virtual Self::SpaceVectorType GetDeformedControlPointPosition( const int, const int, const int ) const;
   
   /** Return array of pre deformation vectors.
    * The newly alocated data array contains the control point positions

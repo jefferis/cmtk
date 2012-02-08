@@ -57,9 +57,9 @@ cmtk::FitSplineWarpToDeformationField::ComputeResiduals( const SplineWarpXform& 
       {
       for ( int x = 0; x < dims[0]; ++x, ++ofs )
 	{
-	this->m_Residuals[ofs] = this->m_DeformationField->GetDeformedControlPointPosition( x, y, z ) - splineWarp.GetTransformedGrid( x, y, z );
+	this->m_Residuals[ofs] = this->m_DeformationField->GetShiftedControlPointPositionByOffset( ofs ) - splineWarp.GetTransformedGrid( x, y, z );
 	if ( this->m_FitAbsolute )
-	  this->m_Residuals[ofs] += this->m_DeformationField->GetOriginalControlPointPosition( x, y, z );
+	  this->m_Residuals[ofs] += this->m_DeformationField->GetOriginalControlPointPositionByOffset( ofs );
 	}
       }
     }

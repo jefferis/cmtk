@@ -475,11 +475,11 @@ void SplineWarpXform::UnRegisterVolume()
     }
 }
 
-SplineWarpXform::SpaceVectorType& 
-SplineWarpXform::GetDeformedControlPointPosition
-( Self::SpaceVectorType& v, const int x, const int y, const int z) 
-  const 
+SplineWarpXform::SpaceVectorType
+SplineWarpXform::GetDeformedControlPointPosition( const int x, const int y, const int z) const 
 {
+  Self::SpaceVectorType v;
+  
   // Create a pointer to the front-lower-left corner of the c.p.g. cell.
   const Types::Coordinate* coeff = m_Parameters + 3 * ( (x-1) + this->m_Dims[0] * ((y-1) + this->m_Dims[1] * (z-1)) );  
   static const Types::Coordinate spline[3] = { 1.0/6, 4.0/6, 1.0/6 };
