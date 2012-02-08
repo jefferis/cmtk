@@ -80,12 +80,17 @@ private:
 
   /// Deformation field coverage, i.e., field of fiew.
   Region<3,Types::Coordinate> m_DeformationFieldFOV;
+  
+  /// Lookup tables for pixel index ranges by spline control point per dimension.
+  FixedVector< 3, std::vector< FixedVector< 2,int > > > m_ControlPointRegionRange;
+
+  /// Create pixel index range lookup tables.
+  void CreateGridLookupTables( const SplineWarpXform& splineWarp );
 
   /** Get deformation grid region corresponding to the influenced coordinate region of a given spline control point.
-   *\TODO This should be implemented via per-axis lookup tables.
+   * This should is implemented via per-axis lookup tables, m_ControlPointRegionRange.
    */
   DataGrid::RegionType GetDeformationGridRange( const SplineWarpXform& splineWarp /*!< The spline warp object */, 
-						const size_t cp /*!< Control point index (scalar offset).*/, 
 						const SplineWarpXform::ControlPointIndexType& cpIdx /*!< Control point 3D grid index */ ) const;
 
   /// Compute residuals, i.e., pixel-wise difference between B-spline transformation and deformation field.

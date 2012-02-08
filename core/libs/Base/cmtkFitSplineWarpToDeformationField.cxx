@@ -42,23 +42,33 @@ cmtk::FitSplineWarpToDeformationField::FitSplineWarpToDeformationField( Deformat
 }
 
 cmtk::DataGrid::RegionType
-cmtk::FitSplineWarpToDeformationField::GetDeformationGridRange( const SplineWarpXform& splineWarp, const size_t cp, const SplineWarpXform::ControlPointIndexType& cpIdx ) const
+cmtk::FitSplineWarpToDeformationField::GetDeformationGridRange( const SplineWarpXform& splineWarp, const SplineWarpXform::ControlPointIndexType& cpIdx ) const
 {
-  cmtk::DataGrid::IndexType regionFrom, regionTo;
+  const int regionFrom[3] = { this->m_ControlPointRegionRange[0][cpIdx[0]][0], this->m_ControlPointRegionRange[1][cpIdx[1]][0], this->m_ControlPointRegionRange[2][cpIdx[2]][0] };
+  const int regionTo[3] = { this->m_ControlPointRegionRange[0][cpIdx[0]][1], this->m_ControlPointRegionRange[1][cpIdx[1]][1], this->m_ControlPointRegionRange[2][cpIdx[2]][1] };
   
+  return cmtk::DataGrid::RegionType( cmtk::DataGrid::IndexType( regionFrom ), cmtk::DataGrid::IndexType( regionTo ) );
+}
+
+void
+cmtk::FitSplineWarpToDeformationField::CreateGridLookupTables( const SplineWarpXform& splineWarp )
+{
   for ( int axis = 0; axis < 3; ++axis )
     {
-    size_t idx = 0;
-    while ( ((splineWarp.m_GridIndexes[axis][idx]+3) < cpIdx[axis]) && (idx < this->m_DeformationField->m_Dims[axis]) )
-      ++idx;
-    regionFrom[axis] = idx;
-
-    while ( (splineWarp.m_GridIndexes[axis][idx] <= cpIdx[axis]) && (idx < this->m_DeformationField->m_Dims[axis]) )
-      ++idx;
-    regionTo[axis] = idx;
+    this->m_ControlPointRegionRange[axis].resize( splineWarp.m_Dims[axis] );
+    
+    for ( int cpIdx = 0; cpIdx < splineWarp.m_Dims[axis]; ++cpIdx )
+      {
+      size_t idx = 0;
+      while ( ((splineWarp.m_GridIndexes[axis][idx]+3) < cpIdx) && (idx < this->m_DeformationField->m_Dims[axis]) )
+	++idx;
+      this->m_ControlPointRegionRange[axis][cpIdx][0] = idx;
+      
+      while ( (splineWarp.m_GridIndexes[axis][idx] <= cpIdx) && (idx < this->m_DeformationField->m_Dims[axis]) )
+	++idx;
+      this->m_ControlPointRegionRange[axis][cpIdx][1] = idx;
+      }
     }
-  
-  return cmtk::DataGrid::RegionType( regionFrom, regionTo );
 }
 
 void
@@ -148,9 +158,9 @@ cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, c
 
     // compute residuals
     splineWarp.RegisterVolumePoints( this->m_DeformationField->m_Dims, this->m_DeformationField->m_Spacing, this->m_DeformationField->m_Offset );
-
+    this->CreateGridLookupTables( splineWarp );
     this->ComputeResiduals( splineWarp );
-
+    
     // loop over all control points to compute deltas as the spline coefficients that fit current residuals
     std::vector< FixedVector<3,Types::Coordinate> > delta( splineWarp.m_NumberOfControlPoints, FixedVector<3,Types::Coordinate>( FixedVector<3,Types::Coordinate>::Init( 0.0 ) ) );
 
@@ -174,7 +184,7 @@ cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, c
 	const size_t cp = splineWarp.GetOffsetFromIndex( cpIt.Index() ) / 3;
 	
 	// volume of influence for the current control point
-	const DataGrid::RegionType voi = this->GetDeformationGridRange( splineWarp, cp, cpIt.Index() );
+	const DataGrid::RegionType voi = this->GetDeformationGridRange( splineWarp, cpIt.Index() );
 	
 	// iterate over all voxels, "c", influenced by current control point.
 	Types::Coordinate normalize = 0;
