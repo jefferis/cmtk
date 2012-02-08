@@ -38,7 +38,6 @@ SET(CMTK_SYSTEM_PROCESSOR "x86_64" CACHE STRING "System processor")
 # 64 bit for OS X >=10.6
 SET(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "OS-X architecture")
 SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.6" CACHE STRING "OS-X target")
-SET(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.6.sdk" CACHE PATH "OS-X SDK")
 
 # Select MacPorts compiler
 SET(CMAKE_CXX_COMPILER "/opt/local/bin/g++-mp-4.6" CACHE FILEPATH "C++ compiler path")
