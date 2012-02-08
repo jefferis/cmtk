@@ -139,26 +139,34 @@ cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, c
       const DataGrid::IndexType voxelIdx = voxelIt.Index();
 
       Types::Coordinate sumOfSquares = 0;
+      Types::Coordinate wklm[4][4][4];
       for ( int m = 0; m < 4; ++m )
+	{
 	for ( int l = 0; l < 4; ++l )
+	  {
+	  const Types::Coordinate wlm = splineWarp.m_GridSpline[1][4*voxelIdx[1]+l] * splineWarp.m_GridSpline[2][4*voxelIdx[2]+m];
 	  for ( int k = 0; k < 4; ++k )
 	    {
-	    sumOfSquares += MathUtil::Square( splineWarp.m_GridSpline[0][4*voxelIdx[0]+k] * splineWarp.m_GridSpline[1][4*voxelIdx[1]+l] * splineWarp.m_GridSpline[2][4*voxelIdx[2]+m] );
+	    wklm[k][l][m] = splineWarp.m_GridSpline[0][4*voxelIdx[0]+k] * wlm;
+	    sumOfSquares += MathUtil::Square( wklm[k][l][m] );
 	    }
+	  }
+	}
       
       for ( int m = 0; m < 4; ++m )
 	for ( int l = 0; l < 4; ++l )
 	  for ( int k = 0; k < 4; ++k )
 	    {
 	    const size_t cpOfs = splineWarp.m_GridIndexes[0][voxelIdx[0]] + k + splineWarp.m_Dims[0] * ( splineWarp.m_GridIndexes[1][voxelIdx[1]] + l + splineWarp.m_Dims[1] * ( splineWarp.m_GridIndexes[2][voxelIdx[2]] + m ) );
-	    const Types::Coordinate wklm = splineWarp.m_GridSpline[0][4*voxelIdx[0]+k] * splineWarp.m_GridSpline[1][4*voxelIdx[1]+l] * splineWarp.m_GridSpline[2][4*voxelIdx[2]+m];
 
-	    delta[cpOfs] += MathUtil::Square( wklm ) * wklm / sumOfSquares * this->m_Residuals[this->m_DeformationField->GetOffsetFromIndex( voxelIdx )/3];
-	    weight[cpOfs] += MathUtil::Square( wklm );
+	    const Types::Coordinate square = MathUtil::Square( wklm[k][l][m] );
+	    delta[cpOfs] += square * wklm[k][l][m] / sumOfSquares * this->m_Residuals[this->m_DeformationField->GetOffsetFromIndex( voxelIdx )/3];
+	    weight[cpOfs] += square;
 	    }
       }
     
     // apply delta
+#pragma omp parallel for
     for ( size_t cp = 0; cp < splineWarp.m_NumberOfControlPoints; ++cp )
       {
       if ( weight[cp] != 0 )
