@@ -1,5 +1,7 @@
 Release CMTK-2.1.2:
 
+(r3837) Added: "dfield2xform" tool to fit B-spline free-form deformation to
+    pixel-wise deformation field.
 (r3821) Added: "groupwise_warp" tool can now protect regions from deformation
     if an "exclusion" mask is provided.
 (r3814) Added: label combination by locally-weighted voting and local
@@ -7,8 +9,6 @@ Release CMTK-2.1.2:
     "Unstable" library and added to the default CMTK build set.
 (r3805) Added: script for creating all officially distributed MacOS builds is
     now included as core/scripts/PackageMacOS
-(r3801) Added: "dfield2xform" tool to fit B-spline free-form deformation to
-    pixel-wise deformation field.
 (r3799) Fixed: prevent empty region traversal in cmtk::RegionIndexIterator
 (r3751) Fixed: "groupwise_affine" was not actually using template image
     specified on the command line.
