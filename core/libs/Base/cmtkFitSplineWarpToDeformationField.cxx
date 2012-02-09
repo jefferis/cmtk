@@ -139,7 +139,7 @@ cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, c
       const DataGrid::IndexType voxelIdx = voxelIt.Index();
 
       Types::Coordinate sumOfSquares = 0;
-      Types::Coordinate wklm[4][4][4];
+      Types::Coordinate wklm[4][4][4], w2klm[4][4][4];
       for ( int m = 0; m < 4; ++m )
 	{
 	for ( int l = 0; l < 4; ++l )
@@ -147,8 +147,7 @@ cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, c
 	  const Types::Coordinate wlm = splineWarp.m_GridSpline[1][4*voxelIdx[1]+l] * splineWarp.m_GridSpline[2][4*voxelIdx[2]+m];
 	  for ( int k = 0; k < 4; ++k )
 	    {
-	    wklm[k][l][m] = splineWarp.m_GridSpline[0][4*voxelIdx[0]+k] * wlm;
-	    sumOfSquares += MathUtil::Square( wklm[k][l][m] );
+	    sumOfSquares += (w2klm[m][l][k] = MathUtil::Square( wklm[m][l][k] = splineWarp.m_GridSpline[0][4*voxelIdx[0]+k] * wlm ) );
 	    }
 	  }
 	}
@@ -162,9 +161,8 @@ cmtk::FitSplineWarpToDeformationField::FitSpline( SplineWarpXform& splineWarp, c
 	    {
 	    const size_t cpOfs = splineWarp.m_GridIndexes[0][voxelIdx[0]] + k + mlOfs;
 	    
-	    const Types::Coordinate square = MathUtil::Square( wklm[k][l][m] );
-	    delta[cpOfs] += square * wklm[k][l][m] / sumOfSquares * this->m_Residuals[this->m_DeformationField->GetOffsetFromIndex( voxelIdx )/3];
-	    weight[cpOfs] += square;
+	    delta[cpOfs] += w2klm[m][l][k] * wklm[m][l][k] / sumOfSquares * this->m_Residuals[this->m_DeformationField->GetOffsetFromIndex( voxelIdx )/3];
+	    weight[cpOfs] += w2klm[m][l][k];
 	    }
 	  }
 	}
