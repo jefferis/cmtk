@@ -87,7 +87,7 @@ for t in ${tests}; do
 
 	if [ "${tname}" != "" ]; then
 	    echo "SET(TEST_NAME ${tname})" > /tmp/testfile.cmake
-	    cat ${t} ${c} tail.cmake >> /tmp/testfile.cmake
+	    cat ${c} ${t} tail.cmake >> /tmp/testfile.cmake
 	    
 	    /opt/local/bin/ctest -S /tmp/testfile.cmake
 	fi
