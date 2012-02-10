@@ -773,6 +773,7 @@ ENDIF(CMTK_BUILD_NRRD)
 IF(CMTK_BUILD_UNSTABLE)
   LIST(APPEND testList
     lvoteDefault
+    lvoteGlobalWeights
     lvoteRadius3
     lvoteOutliersGlobal
     lsbaRadius3

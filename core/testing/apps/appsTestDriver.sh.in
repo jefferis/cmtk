@@ -1184,6 +1184,10 @@ case ${RUNTEST} in
         run lvote -v -o ${tmpdir}/lvote.nii lvote_target.nii lvote_atlas_i0.nii lvote_atlas_l0.nii lvote_atlas_i1.nii lvote_atlas_l1.nii lvote_atlas_i2.nii lvote_atlas_l2.nii
 	check_results lvote.nii
 	;;
+    lvoteGlobalWeights)
+        run lvote -v -o ${tmpdir}/lvote.nii --use-global-weights lvote_target.nii lvote_atlas_i0.nii lvote_atlas_l0.nii lvote_atlas_i1.nii lvote_atlas_l1.nii lvote_atlas_i2.nii lvote_atlas_l2.nii
+	check_results lvote.nii
+	;;
     lvoteRadius3)
         run lvote -v -o ${tmpdir}/lvote.nii --patch-radius 3 lvote_target.nii lvote_atlas_i0.nii lvote_atlas_l0.nii lvote_atlas_i1.nii lvote_atlas_l1.nii lvote_atlas_i2.nii lvote_atlas_l2.nii
 	check_results lvote.nii
