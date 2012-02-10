@@ -398,7 +398,7 @@ public:
     Types::Coordinate fltFrac[3];
 
     int endLineIncrement = ( voi.From()[0] + (DimsX - voi.To()[0]) );
-    int endPlaneIncrement = DimsX * ( voi.From()[1] + (DimsY - voi.To()[2]) );
+    int endPlaneIncrement = DimsX * ( voi.From()[1] + (DimsY - voi.To()[1]) );
     
     const typename VM::Exchange unsetY = this->Metric->DataY.padding();
     *localMetric = *this->Metric;
