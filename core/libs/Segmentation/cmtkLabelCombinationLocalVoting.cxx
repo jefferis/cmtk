@@ -2,7 +2,7 @@
 //
 //  Copyright 1997-2009 Torsten Rohlfing
 //
-//  Copyright 2004-2011 SRI International
+//  Copyright 2004-2012 SRI International
 //
 //  This file is part of the Computational Morphometry Toolkit.
 //
@@ -63,6 +63,21 @@ cmtk::LabelCombinationLocalVoting::GetResult() const
 {
   const UniformVolume& targetImage = *(this->m_TargetImage);
   cmtk::TypedArray::SmartPtr result( TypedArray::Create( TYPE_SHORT, targetImage.GetNumberOfPixels() ) );
+  
+  const size_t nAtlases = this->m_AtlasImages.size();
+  this->m_GlobalAtlasWeights.resize( nAtlases );
+  
+  if ( this->m_UseGlobalAtlasWeights )
+    {
+    for ( size_t n = 0; n < nAtlases; ++n )
+      {
+      this->m_GlobalAtlasWeights[n] = 1.0 / TypedArraySimilarity::GetCrossCorrelation( targetImage.GetData(), this->m_AtlasImages[n]->GetData() );
+      }
+    }
+  else
+    {
+    std::fill( this->m_GlobalAtlasWeights.begin(), this->m_GlobalAtlasWeights.end(), 1.0 );
+    }
   
   const TargetRegionType region = targetImage.CropRegion();
 
@@ -146,7 +161,7 @@ cmtk::LabelCombinationLocalVoting::ComputeResultForRegion( const Self::TargetReg
 	if ( valid[n] )
 	  {
 	  TypedArray::SmartConstPtr atlasDataPatch( this->m_AtlasImages[n]->GetRegionData( patchRegion ) );
-	  labelToTotalWeight[labels[n]] += TypedArraySimilarity::GetCrossCorrelation( targetDataPatch, atlasDataPatch );
+	  labelToTotalWeight[labels[n]] += TypedArraySimilarity::GetCrossCorrelation( targetDataPatch, atlasDataPatch ) * this->m_GlobalAtlasWeights[n];
 	  }
 	}
 

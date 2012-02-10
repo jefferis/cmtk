@@ -53,6 +53,8 @@ doMain
   bool detectGlobalOutliers = false;
   size_t patchRadius = 5;
 
+  bool useGlobalWeights = false;
+
   const char* outputImagePath = "lvote.nii";
 
   cmtk::Types::DataItem paddingValue = 0;
@@ -77,7 +79,8 @@ doMain
 
     cl.BeginGroup( "combine", "Label Combination Options" );
     cl.AddOption( Key( "patch-radius" ), &patchRadius, "Radius of image patch (in pixels) used for local similarity computation." );
-    cl.AddSwitch( Key( "no-global-outliers" ), &detectGlobalOutliers, true, "Detect and exclude global outliers by removing poorly correlated atlases prior to local SBA procedure." );
+    cl.AddSwitch( Key( "use-global-weights" ), &useGlobalWeights, true, "Use global weights per atlas to normalize the patch-pased local similarity scores." );
+    cl.AddSwitch( Key( "no-global-outliers" ), &detectGlobalOutliers, true, "Detect and exclude global outliers by removing poorly correlated atlases prior to local voting procedure." );
     cl.EndGroup();
 
     cl.BeginGroup( "output", "Output Options" );
@@ -105,6 +108,7 @@ doMain
   
   cmtk::LabelCombinationLocalVoting lvote( targetImage );
   lvote.SetPatchRadius( patchRadius );
+  lvote.SetUseGlobalAtlasWeights( useGlobalWeights );
   
   for ( size_t atlasIdx = 0; atlasIdx < atlasImagesLabels.size(); atlasIdx += 2 )
     {

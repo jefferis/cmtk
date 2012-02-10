@@ -72,6 +72,12 @@ public:
 
   /// Get resulting combined segmentation.
   virtual TypedArray::SmartPtr GetResult() const;
+
+  /// Set flag for using global atlas weights for normalization.
+  void SetUseGlobalAtlasWeights( const bool flag )
+  {
+    this->m_UseGlobalAtlasWeights = flag;
+  }
   
 protected:
   /// Vector of target-matched atlas label maps.
@@ -87,6 +93,15 @@ protected:
   }
 
 private:
+  /// Flag for using global atlas weights for normalization.
+  bool m_UseGlobalAtlasWeights;
+
+  /** Vector of global atlas weights.
+   * If global weights are used, these are the inverses of each atlas intensity image's correlation with the
+   * target image. Otherwise, these are all 1.
+   */
+  mutable std::vector<Types::DataItem> m_GlobalAtlasWeights;
+  
   /// Compute result for a region.
   void ComputeResultForRegion( const Self::TargetRegionType& region, TypedArray& result ) const;
 };
