@@ -44,8 +44,8 @@ cmtk
 /** \addtogroup Segmentation */
 //@{
 
-/** Segmentation combination by locally-weighted shape-based averaging.
- *\attention Currently all labels maps are treated as binary maps, i.e., all labels not equal to zero are considered equal.
+/** Combination of binary segmentations by locally-weighted shape-based averaging.
+ *\attention All labels maps are treated as binary maps, i.e., all labels not equal to zero are considered equal.
  */
 class LabelCombinationLocalBinaryShapeBasedAveraging
   : public LabelCombinationLocalWeighting
