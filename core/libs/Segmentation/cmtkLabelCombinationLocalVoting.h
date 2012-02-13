@@ -83,6 +83,9 @@ protected:
   /// Vector of target-matched atlas label maps.
   std::vector<UniformVolume::SmartConstPtr> m_AtlasLabels;
 
+  /// Compute maximum label value in the input label maps.
+  int GetMaximumLabelValue() const;
+
   /** Delete atlas with given index. 
    * Call inherited member, then delete distance map.
    */

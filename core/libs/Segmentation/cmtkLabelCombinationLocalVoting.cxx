@@ -36,8 +36,11 @@
 #include <System/cmtkExitException.h>
 
 #include <Base/cmtkRegionIndexIterator.h>
+#include <Base/cmtkTypedArray.h>
 
 #include <Registration/cmtkTypedArraySimilarity.h>
+
+#include <algorithm>
 
 #ifdef _OPENMP
 #  include <omp.h>
@@ -56,6 +59,18 @@ cmtk::LabelCombinationLocalVoting::AddAtlas
     }
 
   this->m_AtlasLabels.push_back( atlas );
+}
+
+int 
+cmtk::LabelCombinationLocalVoting::GetMaximumLabelValue() const
+{
+  int maxLabel = 0;
+  for ( size_t n = 0; n < this->m_AtlasLabels.size(); ++n )
+    {
+    maxLabel = std::max( maxLabel, static_cast<int>( this->m_AtlasLabels[n]->GetData()->GetRange().m_UpperBound ) );
+    }
+
+  return maxLabel;
 }
 
 cmtk::TypedArray::SmartPtr 
