@@ -41,7 +41,7 @@
 #include <vector>
 #include <string>
 
-#include <Segmentation/cmtkLabelCombinationLocalShapeBasedAveraging.h>
+#include <Segmentation/cmtkLabelCombinationLocalBinaryShapeBasedAveraging.h>
 
 int
 doMain
@@ -107,7 +107,7 @@ doMain
 
   cmtk::UniformVolume::SmartPtr targetImage = cmtk::VolumeIO::Read( targetImagePath );
   
-  cmtk::LabelCombinationLocalShapeBasedAveraging lsba( targetImage );
+  cmtk::LabelCombinationLocalBinaryShapeBasedAveraging lsba( targetImage );
   lsba.SetPatchRadius( patchRadius );
   lsba.SetSearchRadius( searchRadius );
   lsba.SetDetectLocalOutliers( detectLocalOutliers );

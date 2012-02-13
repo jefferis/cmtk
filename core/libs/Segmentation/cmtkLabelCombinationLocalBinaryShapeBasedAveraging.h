@@ -30,8 +30,8 @@
 //
 */
 
-#ifndef __cmtkLabelCombinationLocalShapeBasedAveraging_h_included_
-#define __cmtkLabelCombinationLocalShapeBasedAveraging_h_included_
+#ifndef __cmtkLabelCombinationLocalBinaryShapeBasedAveraging_h_included_
+#define __cmtkLabelCombinationLocalBinaryShapeBasedAveraging_h_included_
 
 #include <cmtkconfig.h>
 
@@ -47,18 +47,18 @@ cmtk
 /** Segmentation combination by locally-weighted shape-based averaging.
  *\attention Currently all labels maps are treated as binary maps, i.e., all labels not equal to zero are considered equal.
  */
-class LabelCombinationLocalShapeBasedAveraging
+class LabelCombinationLocalBinaryShapeBasedAveraging
   : public LabelCombinationLocalWeighting
 {
 public:
   /// This class.
-  typedef LabelCombinationLocalShapeBasedAveraging Self;
+  typedef LabelCombinationLocalBinaryShapeBasedAveraging Self;
 
   /// Parent class.
   typedef LabelCombinationLocalWeighting Superclass;
 
   /// Constructor: compute label combination.
-  LabelCombinationLocalShapeBasedAveraging( const UniformVolume::SmartConstPtr targetImage ) : Superclass( targetImage ) {}
+  LabelCombinationLocalBinaryShapeBasedAveraging( const UniformVolume::SmartConstPtr targetImage ) : Superclass( targetImage ) {}
 
   /// Set flag to detect local outliers at each pixel in the co-registered distance maps.
   void SetDetectLocalOutliers( const bool detectOutliers = true )
@@ -95,4 +95,4 @@ protected:
 
 } // namespace cmtk
 
-#endif // #ifndef __cmtkLabelCombinationLocalShapeBasedAveraging_h_included_
+#endif // #ifndef __cmtkLabelCombinationLocalBinaryShapeBasedAveraging_h_included_

@@ -30,7 +30,7 @@
 //
 */
 
-#include "cmtkLabelCombinationLocalShapeBasedAveraging.h"
+#include "cmtkLabelCombinationLocalBinaryShapeBasedAveraging.h"
 
 #include <System/cmtkConsole.h>
 #include <System/cmtkExitException.h>
@@ -46,7 +46,7 @@
 #endif
 
 void
-cmtk::LabelCombinationLocalShapeBasedAveraging::AddAtlas( const UniformVolume::SmartConstPtr image, const UniformVolume::SmartConstPtr atlas )
+cmtk::LabelCombinationLocalBinaryShapeBasedAveraging::AddAtlas( const UniformVolume::SmartConstPtr image, const UniformVolume::SmartConstPtr atlas )
 {
   Superclass::AddAtlasImage( image );
 
@@ -54,7 +54,7 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::AddAtlas( const UniformVolume::S
 }
 
 cmtk::TypedArray::SmartPtr 
-cmtk::LabelCombinationLocalShapeBasedAveraging::GetResult() const
+cmtk::LabelCombinationLocalBinaryShapeBasedAveraging::GetResult() const
 {
   const UniformVolume& targetImage = *(this->m_TargetImage);
   cmtk::TypedArray::SmartPtr result( TypedArray::Create( TYPE_SHORT, targetImage.GetNumberOfPixels() ) );
@@ -79,7 +79,7 @@ cmtk::LabelCombinationLocalShapeBasedAveraging::GetResult() const
 }
 
 void
-cmtk::LabelCombinationLocalShapeBasedAveraging::ComputeResultForRegion( const Self::TargetRegionType& region, TypedArray& result ) const
+cmtk::LabelCombinationLocalBinaryShapeBasedAveraging::ComputeResultForRegion( const Self::TargetRegionType& region, TypedArray& result ) const
 {
   const UniformVolume& targetImage = *(this->m_TargetImage);
   const Self::TargetRegionType wholeImageRegion = targetImage.CropRegion();
