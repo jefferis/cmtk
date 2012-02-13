@@ -53,6 +53,12 @@ public:
   /// This class.
   typedef LabelCombinationLocalShapeBasedAveraging Self;
 
+  /// Smart pointer to this class.
+  typedef SmartPointer<Self> SmartPtr;
+
+  /// Smart pointer to const to this class.
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
   /// Parent class.
   typedef LabelCombinationLocalVoting Superclass;
 
@@ -77,23 +83,16 @@ private:
    */
   int m_MaxLabelValue;
   
-  /// Compute result for a region.
-  void ComputeResultForRegion( const Self::TargetRegionType& region, TypedArray& result ) const;
-
-  /// Signed distance maps for the atlas label maps.
-  std::vector<UniformVolume::SmartConstPtr> m_AtlasDMaps;
-
   /// Flag for outlier detection.
   bool m_DetectLocalOutliers;
 
-protected:
-  /** Delete atlas with given index. 
-   * Call inherited member, then delete distance map.
-   */
-  virtual void DeleteAtlas( const size_t i )
-  {
-    this->Superclass::DeleteAtlas( i );
-  }
+  /// Compute result for a region.
+  void ComputeResultForRegion( TypedArray& result /*!< Evolving result label map */, 
+			       std::vector<float>& resultDistance /*!< Evolving result distance map */, 
+			       const int label /*!< Current label */,
+			       const Self::TargetRegionType& region /*!< Image region to work on */, 
+			       std::vector<UniformVolume::SmartConstPtr> dmaps /*!< Vector of distance maps per atlas for the current label */ ) const;
+  
 };
 
 } // namespace cmtk

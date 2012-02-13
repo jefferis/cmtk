@@ -61,6 +61,12 @@ public:
   /// This class.
   typedef LabelCombinationLocalVoting Self;
 
+  /// Smart pointer to this class.
+  typedef SmartPointer<Self> SmartPtr;
+
+  /// Smart pointer to const to this class.
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
   /// Parent class.
   typedef LabelCombinationLocalWeighting Superclass;
 

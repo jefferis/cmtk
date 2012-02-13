@@ -57,6 +57,12 @@ public:
   /// This class.
   typedef LabelCombinationLocalWeighting Self;
 
+  /// Smart pointer to this class.
+  typedef SmartPointer<Self> SmartPtr;
+
+  /// Smart pointer to const to this class.
+  typedef SmartConstPointer<Self> SmartConstPtr;
+
   /// Constructor: compute label combination.
   LabelCombinationLocalWeighting( const UniformVolume::SmartConstPtr targetImage ) : 
     m_TargetImage( targetImage ),
