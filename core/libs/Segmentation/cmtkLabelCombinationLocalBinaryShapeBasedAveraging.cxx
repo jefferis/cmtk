@@ -105,28 +105,33 @@ cmtk::LabelCombinationLocalBinaryShapeBasedAveraging::ComputeResultForRegion( co
     if ( this->m_DetectLocalOutliers )
       {
       // create vector of distance values
+      size_t nn = 0;
       for ( size_t n = 0; n < nAtlases; ++n )
 	{
-	distances[n] = this->m_AtlasDMaps[n]->GetDataAt( i );	
+	if ( valid[n] )
+	  distances[nn++] = this->m_AtlasDMaps[n]->GetDataAt( i );	
 	}
       
       // sort distance
-      std::sort( distances.begin(), distances.end() );
+      std::sort( distances.begin(), distances.begin()+nn );
 
       // determine 1st and 3rd quartile values
-      const float Q1 = distances[static_cast<size_t>( 0.25 * distances.size() )];
-      const float Q3 = distances[static_cast<size_t>( 0.75 * distances.size() )];
-
+      const float Q1 = distances[static_cast<size_t>( 0.25 * nn )];
+      const float Q3 = distances[static_cast<size_t>( 0.75 * nn )];
+      
       // compute thresholds from quartiles and inter-quartile range
       const float lThresh = Q1 - 1.5 * (Q3-Q1);
       const float uThresh = Q3 + 1.5 * (Q3-Q1);
-
+      
       // mark as invalid those atlases with values outside the "inlier" range
       for ( size_t n = 0; n < nAtlases; ++n )
 	{
-	const float d = this->m_AtlasDMaps[n]->GetDataAt( i );
-	if ( (d < lThresh) || (d > uThresh) )
-	  valid[n] = false;
+	if ( valid[n] )
+	  {
+	  const float d = this->m_AtlasDMaps[n]->GetDataAt( i );
+	  if ( (d < lThresh) || (d > uThresh) )
+	    valid[n] = false;
+	  }
 	}      
       }
     
@@ -134,7 +139,7 @@ cmtk::LabelCombinationLocalBinaryShapeBasedAveraging::ComputeResultForRegion( co
     size_t firstValid = 0;
     while ( (firstValid < nAtlases) && !valid[firstValid] )
       ++firstValid;
-
+    
     // if all input atlases are undefined (padding) for this pixel, set output to padding and skip to next pixel.
     if ( firstValid == nAtlases )
       {
